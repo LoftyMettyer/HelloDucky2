@@ -187,7 +187,7 @@ Namespace Code
 			' Check for dupliacte column names
 			If duplicates.Count > 0 Then
 
-				Errors.Add(String.Format("The following merge fields are duplicated within your defintion:" _
+				Errors.Add(String.Format("The following merge fields are duplicated within your definition:" _
 							& "{0}{0}{1}{0}{0}Please edit your definition.", "<br/>", Join(duplicates.ToArray(), "<br/>")))
 				Return False
 			End If
