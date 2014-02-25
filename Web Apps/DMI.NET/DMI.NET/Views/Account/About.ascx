@@ -112,7 +112,7 @@
 					<tr>
 						<td colspan="2" style="vertical-align: top; text-align: left; white-space: nowrap;">
 							<br />
-							Copyright © Advanced Business Software and Solutions Ltd 2013
+							Copyright © Advanced Business Software and Solutions Ltd 2014
 						</td>
 					</tr>
 					<tr>
@@ -130,7 +130,7 @@
 						</td>
 					</tr>
 					<tr>
-						<td colspan="2" style="vertical-align: top; text-align: left; white-space: nowrap;">Contacts for Support :
+						<td colspan="2" style="vertical-align: top; text-align: left; white-space: nowrap;">Contacts for Customer Services : 
 						</td>
 					</tr>
 					<tr>
@@ -155,7 +155,7 @@
 								onfocus="try{hypertextARef_onFocus(this);}catch(e){}"
 								onblur="try{hypertextARef_onBlur(this);}catch(e){}">service.delivery@advancedcomputersoftware.com</a>
 							<%Else%>
-							<a href="mailto://<%=session("SupportEmail") %>?subject=OpenHR Support Query - Intranet Login" class="hypertext"
+							<a href="mailto://<%=session("SupportEmail") %>?subject=OpenHR Support Query - Web Login" class="hypertext"
 								onmouseover="try{hypertextARef_onMouseOver(this);}catch(e){}"
 								onmouseout="try{hypertextARef_onMouseOut(this);}catch(e){}"
 								onfocus="try{hypertextARef_onFocus(this);}catch(e){}"
