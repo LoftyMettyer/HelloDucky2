@@ -2488,7 +2488,76 @@ Namespace Controllers
 
 		<ValidateInput(False)>
 		Function util_run_promptedvalues() As ActionResult
+
+			Session("utiltype") = Request.Form("utiltype")
+			Session("utilid") = Request.Form("utilid")
+			Session("utilname") = Request.Form("utilname")
+			Session("action") = Request.Form("action")
+			Session("MailMerge_Template") = Nothing
+
 			Return View()
+		End Function
+
+		<HttpPost()>
+		Function util_run_uploadtemplate(TemplateFile As HttpPostedFileBase) As ActionResult
+
+			Try
+
+				If Not TemplateFile Is Nothing Then
+					' Read input stream from request
+					Dim Buffer = New Byte(TemplateFile.InputStream.Length - 1) {}
+					Dim offset As Integer = 0
+					Dim cnt As Integer = 0
+					While (InlineAssignHelper(cnt, TemplateFile.InputStream.Read(Buffer, offset, 10))) > 0
+						offset += cnt
+					End While
+
+					Session("MailMerge_Template") = New MemoryStream(Buffer)
+
+				End If
+
+			Catch ex As Exception
+				Session("ErrorTitle") = "File upload"
+				Session("ErrorText") = "You could not upload the template file because of the following error:<p>" & FormatError(ex.Message)
+			End Try
+
+			Return Content("hello ducky")
+
+		End Function
+
+		<HttpPost()>
+		Function util_run_promptedvalues_submit(TemplateFile As HttpPostedFileBase) As ActionResult
+
+			'		Try
+
+			'For Each ob As HttpPostedFile In Request.Files
+
+			'	Dim helloducky = ob
+
+			'Next
+
+
+			'	Dim blah = CType(Request.Form("TemplateFile"), HttpPostedFile)
+
+			'	If Not TemplateFile Is Nothing Then
+			'		' Read input stream from request
+			'		Dim Buffer = New Byte(TemplateFile.InputStream.Length - 1) {}
+			'		Dim offset As Integer = 0
+			'		Dim cnt As Integer = 0
+			'		While (InlineAssignHelper(cnt, TemplateFile.InputStream.Read(Buffer, offset, 10))) > 0
+			'			offset += cnt
+			'		End While
+
+			'		Session("MailMerge_Template") = New MemoryStream(Buffer)
+
+			'	End If
+
+			'Catch ex As Exception
+			'	Session("ErrorTitle") = "File upload"
+			'	Session("ErrorText") = "You could not upload the template file because of the following error:<p>" & FormatError(ex.Message)
+			'End Try
+
+			Return View("util_run")
 		End Function
 
 		<ValidateInput(False)>

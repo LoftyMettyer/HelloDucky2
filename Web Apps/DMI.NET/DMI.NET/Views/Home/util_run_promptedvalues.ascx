@@ -4,24 +4,6 @@
 <%@ Import Namespace="System.Data" %>
 <%@ Import Namespace="System.Data.SqlClient" %>
 
-<% 
-	
-	' This page is called from DefSel.asp.  If receives the following
-	' information via the request object:
-	'
-	' ConfirmType - ok/yesno
-	' UtilType    - 0-13 (see UtilityType code in DATMGR .exe
-	' UtilName    - <the name of the utility>
-	' UtilID      - <the id of the utility>
-	' Action      - run/delete
-	' FollowPage  - page to go to if YES is clicked <util_run.asp>
-	Session("utiltype") = Request.Form("utiltype")
-	Session("utilid") = Request.Form("utilid")
-	Session("utilname") = Request.Form("utilname")
-	Session("action") = Request.Form("action")
-
-%>
-
 
 <script type="text/javascript">
 
@@ -93,6 +75,7 @@
 			}
 		}
 	}
+
 </script>
 
 
@@ -102,9 +85,10 @@
 				<i class='pageTitleIcon icon-circle-arrow-left'></i>
 			</a>
 			<span class="pageTitle"><% =Session("utilname")%></span>
-		</div>	
+		</div>
+		<br/>
 	<div id="dataRow">
-		<form name="frmPromptedValues" id="frmPromptedValues" method="POST" action='util_run'>
+		<form name="frmPromptedValues" id="frmPromptedValues" method="POST" action="util_run_promptedvalues_submit">
 
 			<%
 				' Get variables for Absence Breakdown / Bradford Factor
@@ -149,15 +133,15 @@
 				Dim rstPromptedValue As DataTable
 				Dim rstLookupValues As DataTable
 				
-				Dim iPromptCount As Integer
 				Dim fDefaultFound As Boolean
 				Dim fFirstValueDone As Boolean
 				Dim sFirstValue As String
 
 				Dim iValueType As Integer
 	
-				iPromptCount = 0
-									
+				Dim bAddUploadTemplate As Boolean = (CType(Session("utiltype"), Enums.UtilityType) = Enums.UtilityType.utlMailMerge)
+				Dim iPromptCount = CInt(IIf(bAddUploadTemplate, 1, 0))
+				
 				rstPromptedValue = objDatabaseAccess.GetDataTable("sp_ASRIntGetUtilityPromptedValues", CommandType.StoredProcedure, _
 										New SqlParameter("piUtilType", SqlDbType.Int) With {.Value = CInt(CleanNumeric(Session("utiltype")))}, _
 										New SqlParameter("piUtilID", SqlDbType.Int) With {.Value = CInt(CleanNumeric(Session("utilid")))}, _
@@ -165,20 +149,13 @@
 				
 				If rstPromptedValue.Rows.Count > 0 Then
 
-					Response.Write("<table align=center class=""outline"" cellPadding=5 cellSpacing=0 style=""width:100%;"">" & vbCrLf)
-					Response.Write("  <tr>" & vbCrLf)
-					Response.Write("	  <td>" & vbCrLf)
-					Response.Write("			<table align=center class=""invisible"" cellspacing=0 cellpadding=0 style=""width:100%;"">" & vbCrLf)
-					Response.Write("				<tr>" & vbCrLf)
-					Response.Write("					<td colspan=5 align=center><H3 align=center>Prompted Values</H3></td>" & vbCrLf)
-					Response.Write("				</tr>" & vbCrLf)
+					Response.Write("			<table align=center class=""invisible"" cellspacing=5 cellpadding=0 style=""width:100%;"">" & vbCrLf)
 
 					For Each objRow As DataRow In rstPromptedValue.Rows
 					
-						iPromptCount = iPromptCount + 1
+						iPromptCount += 1
 				
 						Response.Write("    <tr>" & vbCrLf)
-						Response.Write("      <td width=20>&nbsp;</td>" & vbCrLf)
 						Response.Write("      <td width='auto' nowrap>" & vbCrLf)
 
 						If objRow("ValueType") = 3 Then
@@ -324,36 +301,8 @@
 					Next
 			
 			%>
-			<tr>
-				<td colspan="5" height="10">&nbsp;</td>
-			</tr>
-			<tr height="20">
-				<td width="20">&nbsp;</td>
-				<td colspan="3" align='center'>
-					<table class="invisible" cellspacing="0" cellpadding="0" align='center'>
-						<td width="20">&nbsp;</td>
-						<td width="80">
-
-							<input type="button" class="btn" name="Submit" value="OK" style="WIDTH: 80px"
-								onclick="SubmitPrompts()" />
-						</td>
-						<td width="20">&nbsp;</td>
-						<td width="80">
-							<input type="button" class="btn" name="Cancel" value="Cancel" style="WIDTH: 80px"
-								onclick="closepromptedclick()" />
-						</td>
-					</table>
-				</td>
-				<td width="20">&nbsp;</td>
-			</tr>
-			<tr>
-				<td colspan="5" height="5">&nbsp;</td>
-			</tr>
 							
 			</table>
-		</td>
-	</tr>
-</table>
 
 			
 
@@ -375,11 +324,33 @@
 			<input type="hidden" id="txtLocaleDecimalSeparator" name="txtLocaleDecimalSeparator" value="">
 			<input type="hidden" id="txtLocaleThousandSeparator" name="txtLocaleThousandSeparator" value="">
 		</form>
+		
+		<%If bAddUploadTemplate Then%>
+			<form name="frmTemplateFile" id="frmTemplateFile" method="post" enctype="multipart/form-data" action="util_run_uploadtemplate" target="submit-iframe">
+				Template File: <input type="file" id="TemplateFile" name="TemplateFile" onchange="SubmitTemplate();" />
+			</form>		
+		<%End If%>
+		
+		<% If iPromptCount > 0 Then%>
+			<br/>						
+			<div class="centered">			
+				<input type="button" class="btn" name="Submit" value="OK" style="WIDTH: 80px" onclick="SubmitPrompts()" />
+				<input type="button" class="btn" name="Cancel" value="Cancel" style="WIDTH: 80px" onclick="closepromptedclick()" />
+			</div>	
+		<% End If%>
+
+		<iframe name="submit-iframe" style="display: none;"></iframe>
+
 	</div>
 </div>
 
 <script type="text/javascript">
 
+	function SubmitTemplate() {
+		var frmTemplateFile = $("#frmTemplateFile")[0];
+		frmTemplateFile.submit();
+	}
+	
 	function SubmitPrompts() {
 
 		// Validate the prompt values before submitting the form.

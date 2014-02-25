@@ -154,7 +154,15 @@ Namespace Code
 
 			Try
 
-				Dim doc As New Document(TemplateName)
+				Dim objTemplate = CType(HttpContext.Current.Session("MailMerge_Template"), Stream)
+
+				If objTemplate Is Nothing Then
+					Errors.Add("No template file selected")
+					Return False
+				End If
+
+				Dim doc As New Document(objTemplate)
+				'Dim doc As New Document(TemplateName)
 				doc.MailMerge.FieldMergingCallback = Me
 				doc.MailMerge.Execute(MergeData)
 				MergeDocument = New MemoryStream

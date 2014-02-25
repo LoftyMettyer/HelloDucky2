@@ -136,7 +136,7 @@
 	End If
 	%>
 
-	<% If bDownloadFile %>
+	<%	If bDownloadFile And blnSuccess Then%>
 	document.getElementById("frmMailMergeOutput").submit();
 	<% End If %>
 	
