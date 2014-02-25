@@ -2293,6 +2293,9 @@ Namespace Controllers
 							For Each objRow As DataRow In dv.ToTable.Rows	'Loop over the dataview's rows
 								If TryCast(objRow("HORIZONTAL_ID"), String) <> "No Access" And TryCast(objRow("HORIZONTAL_ID"), String) <> "No Data" Then
 									seriesName = objRow("VERTICAL").ToString()
+									If seriesName = "" Then
+										seriesName = "(No name)"
+									End If
 									Dim columnName As String = objRow("HORIZONTAL").ToString()
 									Dim yVal As Integer = CInt(objRow("Aggregate"))
 									Dim pointBackColor As Color
