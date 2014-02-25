@@ -60,7 +60,10 @@
       // If Any ActiveX controls are in the workframeset, move the dailog to the very top of the screen to avoid it being hidden behind the ActiveX
 			if ($('#workframeset object').length > 0) {
 				$('#dialog-confirm').dialog('option', 'position', 'top');
+			} else {
+				$('#dialog-confirm').dialog('option', 'position', 'center');
 			}
+				
 },
 
 		modalMessage = function (message, title) {
