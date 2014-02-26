@@ -124,6 +124,12 @@
 		$("#cmdOutput").show();
 		$("#cmdOutput").button({ disabled: false });
 
+		if (menu_isSSIMode() == false) {
+			$("#cmdClose").show();
+		} else {
+			$("#cmdClose").hide();  // Don't show the Close button in SSI
+		}
+
 		$("#reportbreakdownframe").hide();
 		$("#top").hide();
 		$("#outputoptions").hide();
@@ -304,6 +310,12 @@ End If
 	//$("#cmdCancel").hide();	
 	$("#cmdCancel").button({ disabled: true });
 	$("#cmdOK").hide();
+
+	if (menu_isSSIMode() == false) {
+		$("#cmdClose").show();
+	} else {
+		$("#cmdClose").hide();
+	}
 
 	if ($("#txtPreview")[0].value == "False") {
 		var frmGetDataForm = OpenHR.getForm("reportworkframe", "frmExportData");
