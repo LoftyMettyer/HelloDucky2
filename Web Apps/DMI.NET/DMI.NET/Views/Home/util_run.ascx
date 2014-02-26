@@ -130,7 +130,6 @@
 		$("#optionsframeset").show();
 		$("#reportframe").show();
 		$("#reportworkframe").show();
-		$("#cmdCancel").val("Output");
 
 	}
 
@@ -157,9 +156,7 @@
 		
 		$("#cmdOK").show();
 		$("#cmdCancel").show();
-		$("#cmdCancel").val("Preview");
 		$("#cmdCancel").button({ disabled: false });
-		
 		$("#cmdOutput").hide();
 
 	}
@@ -242,14 +239,9 @@
 			<div style="float: right;">
 				<input class="btn" type="button" id="cmdPrint" name="cmdPrint" value="Print" onclick="outputOptionsPrintClick()" />
 				<input class="btn" type="button" id="cmdOK" name="cmdOK" value="Export" onclick="outputOptionsOKClick()" />
-				<input class="btn" type="button" id="cmdOutput" name="cmdOutput" value="Preview" onclick="ExportDataPrompt();" />
-				<input class="btn" type="button" id="cmdCancel" name="cmdCancel" value="Output" onclick="ShowDataFrame();" />
-				<input class="btn" type="button" id="cmdClose" name="cmdClose" value="Close" onclick="closeclick();" />
-				<%--<input class="btn" type="button" id="cmdPrint" name="cmdPrint" value="Print" onclick="outputOptionsPrintClick()" />
-				<input class="btn" type="button" id="cmdOK" name="cmdOK" value="Export" onclick="outputOptionsOKClick()" />
-				<input class="btn" type="button" id="cmdOutput" name="cmdOutput" value="Export" onclick="ExportDataPrompt();" />
+				<input class="btn" type="button" id="cmdOutput" name="cmdOutput" value="Output" onclick="ExportDataPrompt();" />
 				<input class="btn" type="button" id="cmdCancel" name="cmdCancel" value="Preview" onclick="ShowDataFrame();" />
-				<input class="btn" type="button" id="cmdClose" name="cmdClose" value="Close" onclick="closeclick();" />--%>
+				<input class="btn" type="button" id="cmdClose" name="cmdClose" value="Close" onclick="closeclick();" />
 			</div>
 		</div>
 
