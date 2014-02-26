@@ -380,18 +380,23 @@
 		}
 	
 		function GoBack() {
-			if (menu_saveChanges("", true, false) != 2) {
+			
+			var hasChanged = menu_saveChanges("", true, false);
+			if (hasChanged == 6) { // 6 = No Change
 				loadPartialView("linksMain", "Home", "workframe", null);
-			}
-			else {
-				return;
-			}
-			//if ($("#ctlRecordEdit #changed").val() == "true") { //If the user made any changes to the record, prompt to Save
-			//	if (menu_saveChanges("", true, false) != 2) { // 2 = vbCancel
-			//		return;
-			//	}
-			//}
-			//loadPartialView("linksMain", "Home", "workframe", null);
+				return false;
+			} else if (hasChanged == 0) { // 0 = Changed, allow prompted navigation.
+				OpenHR.modalPrompt("You have made changes. Click 'OK' to discard your changes, or 'Cancel' to continue editing.", 1, "Confirm").then(function (answer) {
+					if (answer == 1) { // OK
+						loadPartialView("linksMain", "Home", "workframe", null);
+						return false;
+					} else {
+						return false;
+					}
+				});
+			} else
+				return false;
+
 		}
 
 		function enableSaveButton() {
@@ -612,7 +617,7 @@
 		<div class="pageTitleDiv">
 			<%--<a href='javascript:loadPartialView("linksMain", "Home", "workframe", null);' title='Home'>--%>
 				<a href='#'
-					title='Home'
+					title='Back'
 					onclick="GoBack()"
 					>
 				<i class='pageTitleIcon icon-circle-arrow-left'></i>

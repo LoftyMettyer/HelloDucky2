@@ -1259,7 +1259,7 @@
 
 <div id="workflowDisplay" class="absolutefull" style="display: none; background-color: transparent; text-align: center;">
 	<div class="pageTitleDiv" style="text-align: left;">
-		<a href='<%=Url.Action("Main", "Home", New With {.SSIMode = "True"})%>' title='Home'>
+		<a href='<%=Url.Action("Main", "Home", New With {.SSIMode = "True"})%>' title='Back'>
 			<i class='pageTitleIcon icon-circle-arrow-left'></i>
 		</a>
 		<span class="pageTitle">Workflow</span>

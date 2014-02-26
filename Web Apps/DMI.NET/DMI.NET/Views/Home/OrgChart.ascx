@@ -93,7 +93,7 @@
 
 <div class="absolutefull">
 	<div class="pageTitleDiv">
-		<a href='javascript:loadPartialView("linksMain", "Home", "workframe", null);' title='Home'>
+		<a href='javascript:loadPartialView("linksMain", "Home", "workframe", null);' title='Back'>
 			<i class='pageTitleIcon icon-circle-arrow-left'></i>
 		</a>
 		<span style="margin-left: 40px; margin-right: 20px" class="pageTitle" id="RecordEdit_PageTitle">Organisation Chart
