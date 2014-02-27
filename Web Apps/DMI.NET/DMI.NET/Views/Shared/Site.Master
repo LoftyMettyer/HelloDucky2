@@ -233,14 +233,14 @@
 			setCookie("cookiewireframeTheme", cookiewireframeTheme, 100);
 			setCookie("cookieapplyWireframeTheme", window.cookieapplyWireframeTheme, 100);
 
-			//Apply ajax please wait message
+			//Apply ajax Loading message
 			$(document).ajaxStart(function () {
 				setTimeout('updateProgressMsg()', 50);
 				$("body").addClass("loading");
 			});
 
 			$(document).ajaxStop(function () {
-				$('#txtProgressMessage').val('Please wait...');
+				$('#txtProgressMessage').val('Loading...');
 				$("body").removeClass("loading");
 				setTimeout('updateProgressMsg()', 50);
 			});
@@ -395,7 +395,7 @@
 	<div class="modal">
 		<!-- AJAX please wait spinner -->
 		<div class="divProgressMessage">			
-			<p class="progressMessage"><span class="ui-state-highlight ui-corner-all">Please wait...</span></p>
+			<p class="progressMessage"><span class="ui-state-highlight ui-corner-all">Loading...</span></p>
 		</div>
 	</div>
 

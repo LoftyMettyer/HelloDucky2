@@ -735,7 +735,7 @@ Session("fromMenu") = 0
 
     function setnew() {
         if (!$("#mnutoolNewUtil").hasClass("disabled")) {
-            OpenHR.showPopup("Loading form. Please wait...");
+            OpenHR.showPopup("Loading form...");
             document.frmDefSel.action.value = "new";
             OpenHR.submitForm(document.frmDefSel);
         }
@@ -745,7 +745,7 @@ Session("fromMenu") = 0
         if (!$("#mnutoolCopyUtil").hasClass("disabled")) {
             var frmDefSel = document.getElementById('frmDefSel');
 
-            OpenHR.showPopup("Copying definition. Please wait...");
+            OpenHR.showPopup("Copying definition...");
             frmDefSel.action.value = "copy";
             OpenHR.submitForm(frmDefSel);
         }
@@ -756,7 +756,7 @@ Session("fromMenu") = 0
         if (!$("#mnutoolEditUtil").hasClass("disabled")) {
             var frmDefSel = document.getElementById('frmDefSel');
 
-            OpenHR.showPopup("Loading definition. Please wait...");
+            OpenHR.showPopup("Loading definition...");
 
             if (frmDefSel.cmdEdit.value == "Edit") {
                 document.frmDefSel.action.value = "edit";

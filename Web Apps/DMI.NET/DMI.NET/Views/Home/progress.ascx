@@ -63,7 +63,7 @@
 
 	'						<INPUT onclick=window.parent.self.close(); id=Cancel style="WIDTH: 80px" type=button width=80 value=Cancel name=Cancel> 
 %>
-						Please Wait...
+						Loading...
 								</td>
 									<td width="20"></td>
 							</tr>

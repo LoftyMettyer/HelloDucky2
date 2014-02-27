@@ -142,7 +142,7 @@
 			<td>
 				<table class="outline" cellspacing="0" cellpadding="0" align="center">
 					<tr>
-						<td height="100" width="50%" align="middle">Loading menu. Please wait ...
+						<td height="100" width="50%" align="middle">Loading menu...
 						</td>
 					</tr>
 				</table>

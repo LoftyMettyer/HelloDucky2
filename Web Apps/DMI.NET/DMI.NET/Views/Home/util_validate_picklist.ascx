@@ -12,7 +12,7 @@
 				$("#reportframe").attr("data-framesource", "UTIL_VALIDATE_PICKLIST");
 
 				if (txtDisplay.value != "False") {
-						// Hide the 'please wait' message.
+					// Hide the 'Loading' message.
 						trPleaseWait1.style.visibility = 'hidden';
 						trPleaseWait1.style.display = 'none';
 						trPleaseWait2.style.visibility = 'hidden';
@@ -97,7 +97,7 @@
 
 								<tr id="trPleaseWait2">
 										<td width="20"></td>
-										<td align="center" colspan="3">Please Wait...
+										<td align="center" colspan="3">Loading...
 										</td>
 										<td width="20"></td>
 								</tr>

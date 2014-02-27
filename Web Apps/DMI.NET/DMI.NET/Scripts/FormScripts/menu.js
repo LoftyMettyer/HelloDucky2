@@ -2590,7 +2590,7 @@ function menu_saveChanges(psAction, pfPrompt, pfTBOverride) {
 					frmDataArea.txtTBOverride.value = pfTBOverride;
 
 					if (frmDataArea.txtInsertUpdateDef.value != "") {
-						menu_ShowWait("Saving record. Please wait...");
+						menu_ShowWait("Saving record...");
 						menu_disableMenu(); // HC: Is this correct? It will only disable RecEdit buttons
 
 						ExecutePostSaveCode();
@@ -2700,7 +2700,7 @@ function menu_saveChanges(psAction, pfPrompt, pfTBOverride) {
 	var sToolKey;
 	var frmMenuInfo = document.getElementById('frmMenuInfo');
 	
-	menu_ShowWait("Loading screen. Please wait...");
+	menu_ShowWait("Loading screen...");
 	menu_disableMenu();
 	
 	// Get the table, view and screen info from the tool name.
@@ -2802,7 +2802,7 @@ function menu_saveChanges(psAction, pfPrompt, pfTBOverride) {
 	var frmWorkArea;
 	var frmRecEdit;
 	
-	menu_ShowWait("Loading find records. Please wait...");
+	menu_ShowWait("Loading find records...");
 	menu_disableMenu();   // HC: Is this correct? It will only disable RecEdit buttons
 	
 	// Submit the current "workframe" form, and then load the required record Edit page.
@@ -2851,7 +2851,7 @@ function menu_saveChanges(psAction, pfPrompt, pfTBOverride) {
 	var frmData;
 	var iIndex;
 		
-	menu_ShowWait("Loading find records. Please wait...");
+	menu_ShowWait("Loading find records...");
 	//disableMenu();
 
 	// Get the table, view and screen info from the tool name.
@@ -2906,7 +2906,7 @@ function menu_saveChanges(psAction, pfPrompt, pfTBOverride) {
 	var frmRecEditArea;
 	var frmOptionArea;
 	
-	menu_ShowWait("Loading lookup find records. Please wait...");
+	menu_ShowWait("Loading lookup find records...");
 	menu_disableMenu(); // HC: Is this correct? It will only disable RecEdit buttons
 	
 	frmRecEditArea = OpenHR.getForm("workframe", "frmRecordEditForm");
@@ -2942,7 +2942,7 @@ function menu_saveChanges(psAction, pfPrompt, pfTBOverride) {
 	var frmOptionArea;
 
 	
-	menu_ShowWait("Loading link find records. Please wait...");
+	menu_ShowWait("Loading link find records...");
 	menu_disableMenu(); // HC: Is this correct? It will only disable RecEdit buttons
 	
 	frmRecEditArea = OpenHR.getForm("workframe", "frmRecordEditForm");
@@ -2972,7 +2972,7 @@ function menu_saveChanges(psAction, pfPrompt, pfTBOverride) {
 	var frmRecEditArea;
 	var frmOptionArea;
 
-	menu_ShowWait("Loading matching course records. Please wait...");
+	menu_ShowWait("Loading matching course records...");
 	menu_disableMenu(); // HC: Is this correct? It will only disable RecEdit buttons
 
 	
@@ -3007,13 +3007,13 @@ function menu_saveChanges(psAction, pfPrompt, pfTBOverride) {
 	var frmOptionArea;
 	
 	if (plngOLEType == 1) {
-	menu_ShowWait("Loading OLE (server) list. Please wait...");
+	menu_ShowWait("Loading OLE (server) list...");
 }
 	else if (plngOLEType == 0) {
-	menu_ShowWait("Loading OLE (local) list. Please wait...");
+	menu_ShowWait("Loading OLE (local) list...");
 }
 	else if (plngOLEType > 1) {
-	menu_ShowWait("Loading document. Please wait...");
+	menu_ShowWait("Loading document...");
 }
 
 	menu_disableMenu();
@@ -3260,10 +3260,10 @@ function menu_saveChanges(psAction, pfPrompt, pfTBOverride) {
 
 	if (fValidLocateValue == true) {
 	if (psAction == "RELOAD") {
-	menu_ShowWait("Reloading find records. Please wait...");
+	menu_ShowWait("Reloading find records...");
 }
 	else {
-	menu_ShowWait("Loading find records. Please wait...");
+	menu_ShowWait("Loading find records...");
 }
 	menu_disableMenu(); // HC: Is this correct? It will only disable RecEdit buttons
 
@@ -3578,7 +3578,7 @@ function menu_pausecomp(millis) {
 		if (sCurrentWorkPage == "FIND") {
 			// Submit the current "workframe" form, and then load the required record Edit page.
 					// And then get it to create a new record.
-					menu_ShowWait("Loading screen. Please wait...");
+					menu_ShowWait("Loading screen...");
 			menu_disableMenu(); // HC: Is this correct? It will only disable RecEdit buttons
 				
 			frmWorkArea = OpenHR.getForm("workframe", "frmGoto");
@@ -3640,7 +3640,7 @@ function menu_pausecomp(millis) {
 	if (sCurrentWorkPage == "FIND") {			
 	// Submit the current "workframe" form, and then load the required record Edit page.
 			// And then get it to create a new record.
-			menu_ShowWait("Loading screen. Please wait...");
+			menu_ShowWait("Loading screen...");
 	menu_disableMenu();
 				
 	lngRecordID = selectedRecordID();	// function in find.aspx
@@ -3675,7 +3675,7 @@ function menu_pausecomp(millis) {
 	lngRecordID = selectedRecordID();
 
 	if (lngRecordID > 0) {
-	menu_ShowWait("Loading screen. Please wait...");
+	menu_ShowWait("Loading screen...");
 	menu_disableMenu();
 
 	// Submit the current "workframe" form, and then load the required record Edit page.
@@ -3710,7 +3710,7 @@ function menu_pausecomp(millis) {
 
 	if (sCurrentWorkPage == "RECORDEDIT") {
 	if (OpenHR.messageBox("Delete the current record, are you sure ?", 36) == 6) { // 36 = vbQuestion + vbYesNo, 6 = vbYes
-	menu_ShowWait("Deleting record. Please wait...");
+	menu_ShowWait("Deleting record...");
 			//disableMenu();
 					
 			// Get the data.asp to get the save the current record.
@@ -3744,7 +3744,7 @@ function menu_pausecomp(millis) {
 	if (lngRecordID > 0) {
 	if (OpenHR.messageBox("Delete the current record, are you sure ?", 36) == 6) { // 36 = vbQuestion + vbYesNo, 6 = vbYes
 	// Get the data.asp to get the save the current record.
-					menu_ShowWait("Deleting record. Please wait...");
+					menu_ShowWait("Deleting record...");
 					//disableMenu()	;
 						
 	frmDataArea = OpenHR.getForm("dataframe", "frmGetData");
@@ -3811,7 +3811,7 @@ function menu_pausecomp(millis) {
 }
 	else {
 	if (sCurrentWorkPage == "FIND") {
-	menu_ShowWait("Loading screen. Please wait...");
+	menu_ShowWait("Loading screen...");
 			
 	menu_disableMenu(); // HC: Is this correct? It will only disable RecEdit buttons
 				
@@ -3872,7 +3872,7 @@ function menu_pausecomp(millis) {
 	var frmRecEditArea;
 	var iIndex;
 
-	menu_ShowWait("Loading screen. Please wait...");
+	menu_ShowWait("Loading screen...");
 	menu_disableMenu(); // HC: Is this correct? It will only disable RecEdit buttons
 					
 	frmWorkArea = OpenHR.getForm("workframe", "frmGoto");
@@ -3928,7 +3928,7 @@ function menu_pausecomp(millis) {
 	lngRecordID = frmFindArea.txtCurrentRecordID.value;
 	
 	if (lngRecordID > 0) {
-	menu_ShowWait("Loading screen. Please wait...");
+	menu_ShowWait("Loading screen...");
 	menu_disableMenu(); // HC: Is this correct? It will only disable RecEdit buttons
 	
 	
@@ -3967,7 +3967,7 @@ function menu_pausecomp(millis) {
 	
 		function move_RecordEdit() {
 	// Get the data.asp to get the move to the FIRST record.
-			menu_ShowWait("Locating record. Please wait...");
+			menu_ShowWait("Locating record...");
 	menu_disableMenu();
 					
 	frmDataArea = OpenHR.getForm("dataframe", "frmGetData");
@@ -4368,7 +4368,7 @@ function menu_loadSelectOrderFilter(psType) {
 		lngRecordID = selectedRecordID();	//shold be in scope
 
 		if (lngRecordID > 0) {
-			menu_ShowWait("Loading matching courses. Please wait...");
+			menu_ShowWait("Loading matching courses...");
 			menu_disableMenu();
 
 			frmOptionArea = OpenHR.getForm("optionframe", "frmGotoOption");
@@ -4406,7 +4406,7 @@ function menu_loadSelectOrderFilter(psType) {
 	lngRecordID = selectedRecordID();
 
 	if (lngRecordID > 0) {
-	menu_ShowWait("Loading matching courses. Please wait...");
+	menu_ShowWait("Loading matching courses...");
 	menu_disableMenu();
 
 	frmOptionArea = OpenHR.getForm("optionframe", "frmGotoOption");
@@ -4511,7 +4511,7 @@ function menu_loadSelectOrderFilter(psType) {
 	var frmMenuInfo = document.getElementById("frmMenuInfo");
 	
 	if (lngRecordID > 0) {
-	menu_ShowWait("Loading matching employees. Please wait...");
+	menu_ShowWait("Loading matching employees...");
 	menu_disableMenu();
 
 	frmOptionArea = OpenHR.getForm("optionframe", "frmGotoOption");
@@ -4732,7 +4732,7 @@ function menu_loadSelectOrderFilter(psType) {
 	var strRealSource;
 
 	// Show loading screen
-	menu_ShowWait("Loading absence calendar. Please wait...");
+	menu_ShowWait("Loading absence calendar...");
 	menu_disableMenu();
 
 	// Submit the current "workframe" form, and then load the required page.

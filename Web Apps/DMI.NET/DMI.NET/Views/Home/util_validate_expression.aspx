@@ -136,7 +136,7 @@
 %>				
 						</h3>
 						<br />		
-						Please wait...
+						Loading...
 						<br />		
 						<br />		
 						<input type="button" value="Cancel" class="btn" name="Cancel" style="width: 80px" id="Cancel" onclick="cancelClick()" />

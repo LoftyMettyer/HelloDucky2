@@ -146,7 +146,7 @@
 
 						<tr id="trPleaseWait2">
 							<td width="20"></td>
-							<td align="center" colspan="3">Please Wait...
+							<td align="center" colspan="3">Loading...
 							</td>
 							<td width="20"></td>
 						</tr>

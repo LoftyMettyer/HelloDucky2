@@ -492,7 +492,7 @@
 
 	<input type="hidden" id="txtMenuSaved" name="txtMenuSaved" value="0">
 	
-	<input type="hidden" id="txtProgressMessage" name="txtProgressMessage" value="Please wait..."/>
+	<input type="hidden" id="txtProgressMessage" name="txtProgressMessage" value="Loading..."/>
 </FORM>
 
 <script type="text/javascript">
