@@ -1,5 +1,7 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
 <%@ Import Namespace="DMI.NET" %>
+<%@ Import Namespace="HR.Intranet.Server" %>
+<%@ Import Namespace="System.Data" %>
 
 <script type="text/javascript">
 	function util_def_calendarreportdates_window_onload() {
@@ -510,11 +512,7 @@
 					</td>
 					<td width="25">
 						<input id="cmdEventFilter" name="cmdEventFilter" disabled="disabled" class="btn " style="width: 100%" type="button" value="..."
-							onclick=" selectRecordOptionDates('event', 'filter') "
-							onmouseover=" try {button_onMouseOver(this);} catch(e) {} "
-							onmouseout=" try {button_onMouseOut(this);} catch(e) {} "
-							onfocus=" try {button_onFocus(this);} catch(e) {} "
-							onblur=" try {button_onBlur(this);} catch(e) {} " />
+							onclick=" selectRecordOptionDates('event', 'filter') " />
 					</td>
 				</tr>
 				<tr style="font-weight: bold; padding-top: 20px">
@@ -553,18 +551,12 @@
 					<td width="5"></td>
 					<td colspan="1">
 						<input type="radio" name="optEnd" id="optEndDate"
-							onclick=" refreshEventControls(); eventChanged(); "
-							onmouseover=" try {radio_onMouseOver(this);} catch(e) {} "
-							onmouseout=" try {radio_onMouseOut(this);} catch(e) {} "
-							onfocus=" try {radio_onFocus(this);} catch(e) {} "
-							onblur=" try {radio_onBlur(this);} catch(e) {} " />
+							onclick=" refreshEventControls(); eventChanged(); " />
 					</td>
 					<td style="white-space: nowrap; padding-left: 2px">
 						<label tabindex="-1"
 							for="optEndDate"
-							class="radio"
-							onmouseover=" try {radioLabel_onMouseOver(this);} catch(e) {} "
-							onmouseout=" try {radioLabel_onMouseOut(this);} catch(e) {} ">
+							class="radio">
 							End</label>
 					</td>
 					<td width="5" colspan="2"></td>
@@ -599,18 +591,12 @@
 					<td colspan="1">
 						<input type="radio" name="optEnd" id="optDuration"
 							onclick=" refreshEventControls(); "
-							onchange=" eventChanged(); "
-							onmouseover=" try {radio_onMouseOver(this);} catch(e) {} "
-							onmouseout=" try {radio_onMouseOut(this);} catch(e) {} "
-							onfocus=" try {radio_onFocus(this);} catch(e) {} "
-							onblur=" try {radio_onBlur(this);} catch(e) {} "></td>
+							onchange=" eventChanged(); "></td>
 					<td style="white-space: nowrap; padding-left: 2px">
 						<label
 							tabindex="-1"
 							for="optDuration"
-							class="radio"
-							onmouseover=" try {radioLabel_onMouseOver(this);} catch(e) {} "
-							onmouseout=" try {radioLabel_onMouseOut(this);} catch(e) {} ">
+							class="radio">
 							Duration</label>
 					</td>
 					<td width="5"></td>
@@ -627,19 +613,13 @@
 					<td width="5"></td>
 					<td>
 						<input type="radio" name="optEnd" id="optNoEnd"
-							onclick=" refreshEventControls(); eventChanged(); "
-							onmouseover=" try {radio_onMouseOver(this);} catch(e) {} "
-							onmouseout=" try {radio_onMouseOut(this);} catch(e) {} "
-							onfocus=" try {radio_onFocus(this);} catch(e) {} "
-							onblur=" try {radio_onBlur(this);} catch(e) {} " />
+							onclick=" refreshEventControls(); eventChanged(); " />
 					</td>
 					<td style="white-space: nowrap; padding-left: 2px">
 						<label
 							tabindex="-1"
 							for="optNoEnd"
-							class="radio"
-							onmouseover=" try {radioLabel_onMouseOver(this);} catch(e) {} "
-							onmouseout=" try {radioLabel_onMouseOut(this);} catch(e) {} ">
+							class="radio">
 							None</label>
 					</td>
 					<td width="5" colspan="2"></td>
@@ -652,19 +632,13 @@
 					<td width="5"></td>
 					<td colspan="1">
 						<input type="radio" name="optKey" id="optCharacter" disabled="disabled"
-							onclick=" refreshLegendControls(); eventChanged(); "
-							onmouseover=" try {radio_onMouseOver(this);} catch(e) {} "
-							onmouseout=" try {radio_onMouseOut(this);} catch(e) {} "
-							onfocus=" try {radio_onFocus(this);} catch(e) {} "
-							onblur=" try {radio_onBlur(this);} catch(e) {} " />
+							onclick=" refreshLegendControls(); eventChanged(); " />
 					</td>
 					<td nowrap colspan="1">
 						<label
 							tabindex="-1"
 							for="optCharacter"
-							class="radio radiodisabled"
-							onmouseover=" try {radioLabel_onMouseOver(this);} catch(e) {} "
-							onmouseout=" try {radioLabel_onMouseOut(this);} catch(e) {} ">
+							class="radio radiodisabled">
 							Character</label>
 					</td>
 					<td width="5"></td>
@@ -680,19 +654,13 @@
 					<td width="5"></td>
 					<td colspan="1">
 						<input type="radio" name="optKey" id="optLegendLookup" disabled="disabled"
-							onclick=" refreshLegendControls(); eventChanged(); "
-							onmouseover=" try {radio_onMouseOver(this);} catch(e) {} "
-							onmouseout=" try {radio_onMouseOut(this);} catch(e) {} "
-							onfocus=" try {radio_onFocus(this);} catch(e) {} "
-							onblur=" try {radio_onBlur(this);} catch(e) {} " />
+							onclick=" refreshLegendControls(); eventChanged(); " />
 					</td>
 					<td style="width: 100%; white-space: nowrap" colspan="3">
 						<label
 							tabindex="-1"
 							for="optLegendLookup"
-							class="radio radiodisabled"
-							onmouseover=" try {radioLabel_onMouseOver(this);} catch(e) {} "
-							onmouseout=" try {radioLabel_onMouseOut(this);} catch(e) {} ">
+							class="radio radiodisabled">
 							Lookup Table</label>
 					</td>
 					<td width="5"></td>
@@ -720,38 +688,25 @@
 						<select id="cboLegendTable" name="cboLegendTable" disabled="disabled" class="combo combodisabled" style="width: 100%"
 							onchange=" changeLegendTable(); ">
 
-							<%
+							<%	' Get the lookup table records.
 								Dim sErrorDescription = ""
 
-								' Get the lookup table records.
-								Dim cmdLookupTables = CreateObject("ADODB.Command")
-								cmdLookupTables.CommandText = "spASRIntGetLookupTables"
-								cmdLookupTables.CommandType = 4	' Stored Procedure
-								cmdLookupTables.ActiveConnection = Session("databaseConnection")
+								Try
+									Dim objDataAccess As clsDataAccess = CType(Session("DatabaseAccess"), clsDataAccess)
+							
+									Dim rstLookupTablesInfo = objDataAccess.GetFromSP("spASRIntGetLookupTables")
+									
+									For Each objRow As DataRow In rstLookupTablesInfo.Rows
+										Response.Write("<option value='" & objRow("tableID").ToString() & "'>" & objRow("tableName").ToString() & vbCrLf)									
+									Next
 
-								Err.Clear()
-								Dim rstLookupTablesInfo = cmdLookupTables.Execute
-
-								If (Err.Number <> 0) Then
+									
+								Catch ex As Exception
 									sErrorDescription = "The lookup tables information could not be retrieved." & vbCrLf &
-									FormatError(Err.Description)
-								End If
+									FormatError(ex.Message)
 
-								If Len(sErrorDescription) = 0 Then
-									Do While Not rstLookupTablesInfo.EOF
-										Response.Write(
-										"<OPTION value='" & rstLookupTablesInfo.fields("tableID").value & "'>" &
-										rstLookupTablesInfo.fields("tableName").value & vbCrLf)
-										rstLookupTablesInfo.MoveNext()
-									Loop
-
-									' Release the ADO recordset object.
-									rstLookupTablesInfo.close()
-									rstLookupTablesInfo = Nothing
-								End If
-
-								' Release the ADO command object.
-								cmdLookupTables = Nothing
+								End Try
+								
 							%>
 						</select>
 					</td>
@@ -817,19 +772,11 @@
 			<input id="cmdOK" type="button" value="OK" name="cmdOK"
 				class="button ui-button ui-widget ui-state-default ui-widget-content ui-corner-tl ui-corner-br"
 				style="width: 80px"
-				onclick=" setForm() "
-				onmouseover=" try {button_onMouseOver(this);} catch(e) {} "
-				onmouseout=" try {button_onMouseOut(this);} catch(e) {} "
-				onfocus=" try {button_onFocus(this);} catch(e) {} "
-				onblur=" try {button_onBlur(this);} catch(e) {} " />
+				onclick=" setForm() "/>
 			<input id="cmdCancel" type="button" value="Cancel" name="cmdCancel"
 				class="button ui-button ui-widget ui-state-default ui-widget-content ui-corner-tl ui-corner-br"
 				style="width: 80px"
-				onclick="self.close();"
-				onmouseover=" try {button_onMouseOver(this);} catch(e) {} "
-				onmouseout=" try {button_onMouseOut(this);} catch(e) {} "
-				onfocus=" try {button_onFocus(this);} catch(e) {} "
-				onblur=" try {button_onBlur(this);} catch(e) {} " />
+				onclick="self.close();" />
 		</div>
 
 		<input type="hidden" id="txtLookupColumnsLoaded" name="txtLookupColumnsLoaded">

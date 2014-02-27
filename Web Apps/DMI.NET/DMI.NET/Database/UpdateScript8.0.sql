@@ -39547,14 +39547,14 @@ GO
 SET QUOTED_IDENTIFIER ON
 GO
 
-CREATE Procedure [dbo].[spASRIntGetLookupTables]
+CREATE PROCEDURE [dbo].[spASRIntGetLookupTables]
 AS
 BEGIN
-	/* return a recordset of all the HR Pro Lookup tables. */
+	/* return a recordset of all the lookup tables. */
 	SELECT ASRSysTables.TableName, ASRSysTables.TableID 
     FROM ASRSysTables
     WHERE ASRSysTables.TableType = 3
-    ORDER BY ASRSysTables.TableName
+    ORDER BY ASRSysTables.TableName;
 END	
 
 GO
