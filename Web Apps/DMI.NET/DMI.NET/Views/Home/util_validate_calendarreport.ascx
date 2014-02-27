@@ -1,5 +1,8 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
 <%@ Import Namespace="DMI.NET" %>
+<%@ Import Namespace="HR.Intranet.Server" %>
+<%@ Import Namespace="System.Data.SqlClient" %>
+<%@ Import Namespace="System.Data" %>
 
 <link href="<%:Url.LatestContent("~/Content/OpenHR.css")%>" rel="stylesheet" type="text/css" />
 <script src="<%:Url.LatestContent("~/Scripts/jquery/jquery-1.8.3.js")%>" type="text/javascript"></script>
@@ -12,12 +15,6 @@
 <script src="<%:Url.LatestContent("~/Scripts/jquery/jquery.ui.touch-punch.min.js")%>" type="text/javascript"></script>
 <script src="<%:Url.LatestContent("~/Scripts/jquery/jsTree/jquery.jstree.js")%>" type="text/javascript"></script>
 <script id="officebarscript" src="<%: Url.LatestContent("~/Scripts/officebar/jquery.officebar.js")%>" type="text/javascript"></script>
-
-<%--<html>
-<head id="Head1" runat="server">
-	<title>OpenHR Intranet</title>
-</head>
-<body id="Body1">--%>
 
 	<script type="text/javascript">
 		function util_validate_calendarreport_window_onload() {
@@ -159,106 +156,51 @@
 							<td width="20"></td>
 							<td align="center" colspan="3">
 								<input type="button" value="Cancel" class="btn" name="Cancel" style="WIDTH: 80px" width="80" id="Cancel"
-									onclick="self.close()"
-									onmouseover="try{button_onMouseOver(this);}catch(e){}"
-									onmouseout="try{button_onMouseOut(this);}catch(e){}"
-									onfocus="try{button_onFocus(this);}catch(e){}"
-									onblur="try{button_onBlur(this);}catch(e){}" />
+									onclick="self.close()" />
 							</td>
 							<td width="20"></td>
 						</tr>
 
 
 						<%
-							Dim cmdValidate = CreateObject("ADODB.Command")
-							cmdValidate.CommandText = "spASRIntValidateCalendarReport"
-							cmdValidate.CommandType = 4	' Stored Procedure
-							cmdValidate.ActiveConnection = Session("databaseConnection")
-
-							Dim prmUtilName = cmdValidate.CreateParameter("utilName", 200, 1, 8000)	' 200=varchar, 1=input, 8000=size
-							cmdValidate.Parameters.Append(prmUtilName)
-							prmUtilName.value = Request("validateName")
-
-							Dim prmUtilID = cmdValidate.CreateParameter("utilID", 3, 1)	'3=integer, 1=input
-							cmdValidate.Parameters.Append(prmUtilID)
-							prmUtilID.value = CleanNumeric(Request("validateUtilID"))
-
-							Dim prmTimestamp = cmdValidate.CreateParameter("timestamp", 3, 1)	'3=integer, 1=input
-							cmdValidate.Parameters.Append(prmTimestamp)
-							prmTimestamp.value = CleanNumeric(Request("validateTimestamp"))
-
-							Dim prmBasePicklist = cmdValidate.CreateParameter("basePicklist", 3, 1)	'3=integer, 1=input
-							cmdValidate.Parameters.Append(prmBasePicklist)
-							prmBasePicklist.value = CleanNumeric(Request("validateBasePicklist"))
-
-							Dim prmBaseFilter = cmdValidate.CreateParameter("baseFilter", 3, 1)	'3=integer, 1=input
-							cmdValidate.Parameters.Append(prmBaseFilter)
-							prmBaseFilter.value = CleanNumeric(Request("validateBaseFilter"))
-
-							Dim prmEmailGroup = cmdValidate.CreateParameter("emailGroup", 3, 1)	'3=integer, 1=input
-							cmdValidate.Parameters.Append(prmEmailGroup)
-							prmEmailGroup.value = CleanNumeric(Request("validateEmailGroup"))
-
-							Dim prmDescExpr = cmdValidate.CreateParameter("descExpr", 3, 1)	'3=integer, 1=input
-							cmdValidate.Parameters.Append(prmDescExpr)
-							prmDescExpr.value = CleanNumeric(Request("validateDescExpr"))
-
-							Dim prmEventFilter = cmdValidate.CreateParameter("eventFilter", 200, 1, 8000)	'200=varchar, 1=input, 8000=size
-							cmdValidate.Parameters.Append(prmEventFilter)
-							prmEventFilter.value = Request("validateEventFilter")
-
-							Dim prmCustomStart = cmdValidate.CreateParameter("customStart", 3, 1)	'3=integer, 1=input
-							cmdValidate.Parameters.Append(prmCustomStart)
-							prmCustomStart.value = CleanNumeric(Request("validateCustomStart"))
-
-							Dim prmCustomEnd = cmdValidate.CreateParameter("customEnd", 3, 1)	'3=integer, 1=input
-							cmdValidate.Parameters.Append(prmCustomEnd)
-							prmCustomEnd.value = CleanNumeric(Request("validateCustomEnd"))
+							
+							Dim objDataAccess As clsDataAccess = CType(Session("DatabaseAccess"), clsDataAccess)
 	
-							Dim prmHiddenGroups = cmdValidate.CreateParameter("hiddenGroups", 200, 1, 8000)	'200=varchar, 1=input, 8000=size
-							cmdValidate.Parameters.Append(prmHiddenGroups)
-							prmHiddenGroups.value = Request("validateHiddenGroups")
-
-							Dim prmErrorMsg = cmdValidate.CreateParameter("errorMsg", 200, 2, 8000)	'200=varchar, 2=output, 8000=size
-							cmdValidate.Parameters.Append(prmErrorMsg)
-
-							Dim prmErrorCode = cmdValidate.CreateParameter("errorCode", 3, 2)	'3=integer, 2=output
-							cmdValidate.Parameters.Append(prmErrorCode)
+							Dim prmErrorMsg As New SqlParameter("psErrorMsg", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
+							Dim prmErrorCode As New SqlParameter("piErrorCode", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
+							Dim prmDeletedFilters As New SqlParameter("psDeletedFilters", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
+							Dim prmHiddenFilters As New SqlParameter("psHiddenFilters", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
+							Dim prmDeletedCalcs As New SqlParameter("psDeletedCalcs", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
+							Dim prmHiddenCalcs As New SqlParameter("psHiddenCalcs", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
+							Dim prmDeletedPicklists As New SqlParameter("psDeletedPicklists", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
+							Dim prmHiddenPicklists As New SqlParameter("psHiddenPicklists", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
+							Dim prmJobIDsToHide As New SqlParameter("psJobIDsToHide", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
+							
+							objDataAccess.ExecuteSP("spASRIntValidateCalendarReport", _
+									New SqlParameter("psUtilName", SqlDbType.VarChar, 255) With {.Value = Request("validateName")}, _
+									New SqlParameter("piUtilID", SqlDbType.Int) With {.Value = CleanNumeric(Request("validateUtilID"))}, _
+									New SqlParameter("piTimestamp", SqlDbType.Int) With {.Value = CleanNumeric(Request("validateTimestamp"))}, _
+									New SqlParameter("piBasePicklistID", SqlDbType.Int) With {.Value = CleanNumeric(Request("validateBasePicklist"))}, _
+									New SqlParameter("piBaseFilterID", SqlDbType.Int) With {.Value = CleanNumeric(Request("validateBaseFilter"))}, _
+									New SqlParameter("piEmailGroupID", SqlDbType.Int) With {.Value = CleanNumeric(Request("validateEmailGroup"))}, _
+									New SqlParameter("piDescExprID", SqlDbType.Int) With {.Value = CleanNumeric(Request("validateDescExpr"))}, _
+									New SqlParameter("psEventFilterIDs", SqlDbType.VarChar, -1) With {.Value = Request("validateEventFilter")}, _
+									New SqlParameter("piCustomStartID", SqlDbType.Int) With {.Value = CleanNumeric(Request("validateCustomStart"))}, _
+									New SqlParameter("piCustomEndID", SqlDbType.Int) With {.Value = CleanNumeric(Request("validateCustomEnd"))}, _
+									New SqlParameter("psHiddenGroups ", SqlDbType.VarChar, -1) With {.Value = Request("validateHiddenGroups")}, _
+									prmErrorMsg, prmErrorCode, prmDeletedFilters, prmHiddenFilters, _
+									prmDeletedCalcs, prmHiddenCalcs, prmDeletedPicklists, prmHiddenPicklists, prmJobIDsToHide)
 	
-							Dim prmDeletedFilters = cmdValidate.CreateParameter("deletedFilters", 200, 2, 8000)	'200=varchar, 2=output, 8000=size
-							cmdValidate.Parameters.Append(prmDeletedFilters)
+							Response.Write("<input type=hidden id=txtErrorCode name=txtErrorCode value=" & prmErrorCode.Value & ">" & vbCrLf)
+							Response.Write("<input type=hidden id=txtDeletedFilters name=txtDeletedFilters value=" & prmDeletedFilters.Value & ">" & vbCrLf)
+							Response.Write("<input type=hidden id=txtHiddenFilters name=txtHiddenFilters value=" & prmHiddenFilters.Value & ">" & vbCrLf)
+							Response.Write("<input type=hidden id=txtDeletedCalcs name=txtDeletedCalcs value=" & prmDeletedCalcs.Value & ">" & vbCrLf)
+							Response.Write("<input type=hidden id=txtHiddenCalcs name=txtHiddenCalcs value=" & prmHiddenCalcs.Value & ">" & vbCrLf)
+							Response.Write("<input type=hidden id=txtDeletedPicklists name=txtDeletedPicklists value=" & prmDeletedPicklists.Value & ">" & vbCrLf)
+							Response.Write("<input type=hidden id=txtHiddenPicklists name=txtHiddenPicklists value=" & prmHiddenPicklists.Value & ">" & vbCrLf)
+							Response.Write("<input type=hidden id=txtJobIDsToHide name=txtJobIDsToHide value=""" & prmJobIDsToHide.Value & """>" & vbCrLf)
 
-							Dim prmHiddenFilters = cmdValidate.CreateParameter("hiddenFilters", 200, 2, 8000)	'200=varchar, 2=output, 8000=size
-							cmdValidate.Parameters.Append(prmHiddenFilters)
-	
-							Dim prmDeletedCalcs = cmdValidate.CreateParameter("deletedCalcs", 200, 2, 8000)	'200=varchar, 2=output, 8000=size
-							cmdValidate.Parameters.Append(prmDeletedCalcs)
-
-							Dim prmHiddenCalcs = cmdValidate.CreateParameter("hiddenCalcs", 200, 2, 8000)	'200=varchar, 2=output, 8000=size
-							cmdValidate.Parameters.Append(prmHiddenCalcs)
-
-							Dim prmDeletedPicklists = cmdValidate.CreateParameter("deletedPicklists", 200, 2, 8000)	'200=varchar, 2=output, 8000=size
-							cmdValidate.Parameters.Append(prmDeletedPicklists)
-
-							Dim prmHiddenPicklists = cmdValidate.CreateParameter("hiddenPicklists", 200, 2, 8000)	'200=varchar, 2=output, 8000=size
-							cmdValidate.Parameters.Append(prmHiddenPicklists)
-	
-							Dim prmJobIDsToHide = cmdValidate.CreateParameter("jobsToHide", 200, 2, 8000)	'200=varchar, 2=output, 8000=size
-							cmdValidate.Parameters.Append(prmJobIDsToHide)
-
-							Err.Number = 0
-							cmdValidate.Execute()
-
-							Response.Write("<INPUT type=hidden id=txtErrorCode name=txtErrorCode value=" & cmdValidate.Parameters("errorCode").Value & ">" & vbCrLf)
-							Response.Write("<INPUT type=hidden id=txtDeletedFilters name=txtDeletedFilters value=" & cmdValidate.Parameters("deletedFilters").Value & ">" & vbCrLf)
-							Response.Write("<INPUT type=hidden id=txtHiddenFilters name=txtHiddenFilters value=" & cmdValidate.Parameters("hiddenFilters").Value & ">" & vbCrLf)
-							Response.Write("<INPUT type=hidden id=txtDeletedCalcs name=txtDeletedCalcs value=" & cmdValidate.Parameters("deletedCalcs").Value & ">" & vbCrLf)
-							Response.Write("<INPUT type=hidden id=txtHiddenCalcs name=txtHiddenCalcs value=" & cmdValidate.Parameters("hiddenCalcs").Value & ">" & vbCrLf)
-							Response.Write("<INPUT type=hidden id=txtDeletedPicklists name=txtDeletedPicklists value=" & cmdValidate.Parameters("deletedPicklists").Value & ">" & vbCrLf)
-							Response.Write("<INPUT type=hidden id=txtHiddenPicklists name=txtHiddenPicklists value=" & cmdValidate.Parameters("hiddenPicklists").Value & ">" & vbCrLf)
-							Response.Write("<INPUT type=hidden id=txtJobIDsToHide name=txtJobIDsToHide value=""" & cmdValidate.Parameters("jobsToHide").Value & """>" & vbCrLf)
-
-							If cmdValidate.Parameters("errorCode").Value = 1 Then
+							If prmErrorCode.Value = 1 Then
 								Response.Write("			  <tr>" & vbCrLf)
 								Response.Write("					<td width=20></td>" & vbCrLf)
 								Response.Write("			    <td align=center colspan=3> " & vbCrLf)
@@ -269,7 +211,7 @@
 								Response.Write("			  <tr>" & vbCrLf)
 								Response.Write("					<td width=20></td>" & vbCrLf)
 								Response.Write("			    <td align=center colspan=3> " & vbCrLf)
-								Response.Write("						" & cmdValidate.Parameters("errorMsg").Value & vbCrLf)
+								Response.Write("						" & prmErrorMsg.Value & vbCrLf)
 								Response.Write("			    </td>" & vbCrLf)
 								Response.Write("					<td width=20></td>" & vbCrLf)
 								Response.Write("			  </tr>" & vbCrLf)
@@ -289,7 +231,7 @@
 								Response.Write("					<td width=20></td>" & vbCrLf)
 								Response.Write("			  </tr>" & vbCrLf)
 							Else
-								If cmdValidate.Parameters("errorCode").Value = 2 Then
+								If prmErrorCode.Value = 2 Then
 									Response.Write("			  <tr>" & vbCrLf)
 									Response.Write("					<td width=20></td>" & vbCrLf)
 									Response.Write("			    <td align=center colspan=3> " & vbCrLf)
@@ -300,7 +242,7 @@
 									Response.Write("			  <tr>" & vbCrLf)
 									Response.Write("					<td width=20></td>" & vbCrLf)
 									Response.Write("			    <td align=center colspan=3> " & vbCrLf)
-									Response.Write("						" & cmdValidate.Parameters("errorMsg").Value & vbCrLf)
+									Response.Write("						" & prmErrorMsg.Value & vbCrLf)
 									Response.Write("			    </td>" & vbCrLf)
 									Response.Write("					<td width=20></td>" & vbCrLf)
 									Response.Write("			  </tr>" & vbCrLf)
@@ -330,7 +272,7 @@
 									Response.Write("			  </tr>" & vbCrLf)
 
 								Else
-									If cmdValidate.Parameters("errorCode").Value = 3 Then
+									If prmErrorCode.Value = 3 Then
 										Response.Write("			  <tr>" & vbCrLf)
 										Response.Write("					<td width=20></td>" & vbCrLf)
 										Response.Write("			    <td align=center colspan=3> " & vbCrLf)
@@ -341,7 +283,7 @@
 										Response.Write("			  <tr>" & vbCrLf)
 										Response.Write("					<td width=20></td>" & vbCrLf)
 										Response.Write("			    <td align=center colspan=3> " & vbCrLf)
-										Response.Write("						" & cmdValidate.Parameters("errorMsg").Value & vbCrLf)
+										Response.Write("						" & prmErrorMsg.Value & vbCrLf)
 										Response.Write("			    </td>" & vbCrLf)
 										Response.Write("					<td width=20></td>" & vbCrLf)
 										Response.Write("			  </tr>" & vbCrLf)
@@ -370,7 +312,7 @@
 										Response.Write("					<td width=20></td>" & vbCrLf)
 										Response.Write("				</tr>" & vbCrLf)
 									Else
-										If cmdValidate.Parameters("errorCode").Value = 4 Then
+										If prmErrorCode.Value = 4 Then
 											Response.Write("			  <tr>" & vbCrLf)
 											Response.Write("					<td width=20></td>" & vbCrLf)
 											Response.Write("			    <td align=center colspan=3> " & vbCrLf)
@@ -381,7 +323,7 @@
 											Response.Write("			  <tr>" & vbCrLf)
 											Response.Write("					<td width=20></td>" & vbCrLf)
 											Response.Write("			    <td align=center colspan=3> " & vbCrLf)
-											Response.Write("						" & cmdValidate.Parameters("errorMsg").Value & vbCrLf)
+											Response.Write("						" & prmErrorMsg.Value & vbCrLf)
 											Response.Write("			    </td>" & vbCrLf)
 											Response.Write("					<td width=20></td>" & vbCrLf)
 											Response.Write("			  </tr>" & vbCrLf)
