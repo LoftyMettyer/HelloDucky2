@@ -244,19 +244,13 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 																<tr>
 																	<td width="5" nowrap>
 																		<input checked id="optRecordSelection1" name="optRecordSelection" type="radio"
-																			onclick="changeBaseTableRecordOptions()"
-																			onmouseover="try{radio_onMouseOver(this);}catch(e){}"
-																			onmouseout="try{radio_onMouseOut(this);}catch(e){}"
-																			onfocus="try{radio_onFocus(this);}catch(e){}"
-																			onblur="try{radio_onBlur(this);}catch(e){}" />
+																			onclick="changeBaseTableRecordOptions()" />
 																	</td>
 																	<td></td>
 																	<td colspan="4">
 																		<label tabindex="-1"
 																			for="optRecordSelection1"
-																			class="radio"
-																			onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}"
-																			onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}">
+																			class="radio">
 																			All</label>
 																	</td>
 																	<td colspan="3">&nbsp;</td>
@@ -267,20 +261,14 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 																<tr>
 																	<td width="5" nowrap>
 																		<input id="optRecordSelection2" name="optRecordSelection" type="radio"
-																			onclick="changeBaseTableRecordOptions()"
-																			onmouseover="try{radio_onMouseOver(this);}catch(e){}"
-																			onmouseout="try{radio_onMouseOut(this);}catch(e){}"
-																			onfocus="try{radio_onFocus(this);}catch(e){}"
-																			onblur="try{radio_onBlur(this);}catch(e){}" />
+																			onclick="changeBaseTableRecordOptions()" />
 																	</td>
 																	<td></td>
 																	<td width="5">
 																		<label
 																			tabindex="-1"
 																			for="optRecordSelection2"
-																			class="radio"
-																			onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}"
-																			onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}">
+																			class="radio" >
 																			Picklist</label>
 																	</td>
 																	<td width="5">&nbsp;</td>
@@ -289,11 +277,7 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 																	</td>
 																	<td>
 																		<input id="cmdBasePicklist" name="cmdBasePicklist"  type="button" disabled="disabled" class="btn btndisabled" value="..."
-																			onclick="selectRecordOptionCalDef('base', 'picklist')"
-																			onmouseover="try{button_onMouseOver(this);}catch(e){}"
-																			onmouseout="try{button_onMouseOut(this);}catch(e){}"
-																			onfocus="try{button_onFocus(this);}catch(e){}"
-																			onblur="try{button_onBlur(this);}catch(e){}" style="WIDTH: 100%"/>
+																			onclick="selectRecordOptionCalDef('base', 'picklist')" style="WIDTH: 100%"/>
 																	</td>
 																</tr>
 																<tr>
@@ -302,20 +286,14 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 																<tr>
 																	<td width="5" >
 																		<input id="optRecordSelection3" name="optRecordSelection" type="radio"
-																			onclick="changeBaseTableRecordOptions()"
-																			onmouseover="try{radio_onMouseOver(this);}catch(e){}"
-																			onmouseout="try{radio_onMouseOut(this);}catch(e){}"
-																			onfocus="try{radio_onFocus(this);}catch(e){}"
-																			onblur="try{radio_onBlur(this);}catch(e){}" />
+																			onclick="changeBaseTableRecordOptions()" />
 																	</td>
 																	<td></td>
 																	<td width="5">
 																		<label
 																			tabindex="-1"
 																			for="optRecordSelection3"
-																			class="radio"
-																			onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}"
-																			onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}">
+																			class="radio" >
 																			Filter</label>
 																	</td>
 																	<td width="5"></td>
@@ -324,11 +302,7 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 																	</td>
 																	<td>
 																		<input id="cmdBaseFilter" name="cmdBaseFilter"  type="button" disabled="disabled" value="..." class="btn btndisabled"
-																			onclick="selectRecordOptionCalDef('base', 'filter')"
-																			onmouseover="try{button_onMouseOver(this);}catch(e){}"
-																			onmouseout="try{button_onMouseOut(this);}catch(e){}"
-																			onfocus="try{button_onFocus(this);}catch(e){}"
-																			onblur="try{button_onBlur(this);}catch(e){}" />
+																			onclick="selectRecordOptionCalDef('base', 'filter')"/>
 																	</td>
 																</tr>
 															</table>
@@ -351,8 +325,6 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 														<td></td>
 														<td style="white-space: nowrap" colspan="2">
 															<input name="chkPrintFilterHeader" id="chkPrintFilterHeader" type="checkbox" disabled="disabled" tabindex="0"
-																onmouseover="try{checkbox_onMouseOver(this);}catch(e){}"
-																onmouseout="try{checkbox_onMouseOut(this);}catch(e){}"
 																onclick="changeTab1Control();">
 															<label
 																id="lblPrintFilterHeader"
@@ -360,11 +332,7 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 																for="chkPrintFilterHeader"
 																class="checkbox checkboxdisabled"
 																tabindex="-1"
-																onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}"
-																onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}"
-																onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}"
-																onfocus="try{checkboxLabel_onFocus(this);}catch(e){}"
-																onblur="try{checkboxLabel_onBlur(this);}catch(e){}"
+
 																style="white-space: nowrap">
 																Display filter or picklist title in the report header 
 															</label>
@@ -405,11 +373,7 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 															        </td>
                                                                     <td style="width:10%">
                                                                         <input id="cmdDescExpr" name="cmdDescExpr" style="width:100%" type="button" disabled="disabled" class="btn btndisabled" value="..."
-																        onclick="selectCalc('baseDesc', false)"
-																        onmouseover="try{button_onMouseOver(this);}catch(e){}"
-																        onmouseout="try{button_onMouseOut(this);}catch(e){}"
-																        onfocus="try{button_onFocus(this);}catch(e){}"
-																        onblur="try{button_onBlur(this);}catch(e){}" />
+																        onclick="selectCalc('baseDesc', false)" />
                                                                      </td>
                                                                     </tr>
                                                             </table>
@@ -419,19 +383,12 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 														</td>
 														<td></td>
 														<td style="text-align: left; width: 15px; vertical-align: central" id="qq" colspan ="2">
-															<input valign="center" name="chkGroupByDesc" id="Checkbox1" type="checkbox" disabled="disabled" tabindex="0"
-																onmouseover="try{checkbox_onMouseOver(this);}catch(e){}"
-																onmouseout="try{checkbox_onMouseOut(this);}catch(e){}"
+															<input valign="center" name="chkGroupByDesc" id="chkGroupByDesc" type="checkbox" disabled="disabled" tabindex="0"
 																onclick="changeTab1Control(); refreshTab3Controls();" />
                                                             <label
 																for="chkGroupByDesc"
 																class="checkbox checkboxdisabled"
-																tabindex="-1"
-																onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}"
-																onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}"
-																onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}"
-																onfocus="try{checkboxLabel_onFocus(this);}catch(e){}"
-																onblur="try{checkboxLabel_onBlur(this);}catch(e){}">
+																tabindex="-1">
 																Group By Description</label>
 														</td>
 														<td>															
@@ -786,11 +743,7 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 																	<td width="10">&nbsp;</td>
 																	<td width="80">
 																		<input type="button" id="cmdAddEvent" name="cmdAddEvent" value="Add..." style="WIDTH: 100%" class="btn"
-																			onclick="eventAdd()"
-																			onmouseover="try{button_onMouseOver(this);}catch(e){}"
-																			onmouseout="try{button_onMouseOut(this);}catch(e){}"
-																			onfocus="try{button_onFocus(this);}catch(e){}"
-																			onblur="try{button_onBlur(this);}catch(e){}" />
+																			onclick="eventAdd()" />
 																	</td>
 																	<td width="5">&nbsp;</td>
 																</tr>
@@ -804,11 +757,7 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 																	<td width="5">&nbsp;</td>
 																	<td width="80">
 																		<input type="button" id="cmdEditEvent" name="cmdChildEvent" value="Edit..." style="WIDTH: 100%" class="btn"
-																			onclick="eventEdit()"
-																			onmouseover="try{button_onMouseOver(this);}catch(e){}"
-																			onmouseout="try{button_onMouseOut(this);}catch(e){}"
-																			onfocus="try{button_onFocus(this);}catch(e){}"
-																			onblur="try{button_onBlur(this);}catch(e){}" />
+																			onclick="eventEdit()"/>
 																	</td>
 																	<td width="5">&nbsp;</td>
 																</tr>
@@ -822,11 +771,7 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 																	<td width="5">&nbsp;</td>
 																	<td width="80">
 																		<input type="button" id="cmdRemoveEvent" name="cmdRemoveEvent" value="Remove" style="WIDTH: 100%" class="btn"
-																			onclick="eventRemove()"
-																			onmouseover="try{button_onMouseOver(this);}catch(e){}"
-																			onmouseout="try{button_onMouseOut(this);}catch(e){}"
-																			onfocus="try{button_onFocus(this);}catch(e){}"
-																			onblur="try{button_onBlur(this);}catch(e){}" />
+																			onclick="eventRemove()" />
 																	</td>
 																	<td width="5">&nbsp;</td>
 																</tr>
@@ -840,11 +785,7 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 																	<td width="5">&nbsp;</td>
 																	<td width="80">
 																		<input type="button" id="cmdRemoveAllEvents" name="cmdRemoveAllEvents" value="Remove All" style="WIDTH: 100%" class="btn"
-																			onclick="eventRemoveAll()"
-																			onmouseover="try{button_onMouseOver(this);}catch(e){}"
-																			onmouseout="try{button_onMouseOut(this);}catch(e){}"
-																			onfocus="try{button_onFocus(this);}catch(e){}"
-																			onblur="try{button_onBlur(this);}catch(e){}" />
+																			onclick="eventRemoveAll()" />
 																	</td>
 																	<td width="5">&nbsp;</td>
 																</tr>
@@ -883,20 +824,14 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 																				<td width="5">&nbsp;</td>
 																				<td align="left" width="15">
 																					<input type="radio" name="optStart" id="optFixedStart"
-																						onclick="changeTab3Control();"
-																						onmouseover="try{radio_onMouseOver(this);}catch(e){}"
-																						onmouseout="try{radio_onMouseOut(this);}catch(e){}"
-																						onfocus="try{radio_onFocus(this);}catch(e){}"
-																						onblur="try{radio_onBlur(this);}catch(e){}" />
+																						onclick="changeTab3Control();" />
 																				</td>
 																				<td width="10">&nbsp;</td>
 																				<td align="left" width="15" nowrap>
 																					<label
 																						tabindex="-1"
 																						for="optFixedStart"
-																						class="radio"
-																						onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}"
-																						onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}">
+																						class="radio">
 																						Fixed</label>
 																				</td>
 																				<td width="30" nowrap>&nbsp;</td>
@@ -913,20 +848,14 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 																				<td width="5">&nbsp;</td>
 																				<td align="left" width="15">
 																					<input type="radio" name="optStart" id="optCurrentStart"
-																						onclick="changeTab3Control();"
-																						onmouseover="try{radio_onMouseOver(this);}catch(e){}"
-																						onmouseout="try{radio_onMouseOut(this);}catch(e){}"
-																						onfocus="try{radio_onFocus(this);}catch(e){}"
-																						onblur="try{radio_onBlur(this);}catch(e){}" />
+																						onclick="changeTab3Control();"/>
 																				</td>
 																				<td width="10">&nbsp;</td>
 																				<td colspan="3" align="left" nowrap>
 																					<label
 																						tabindex="-1"
 																						for="optCurrentStart"
-																						class="radio"
-																						onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}"
-																						onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}">
+																						class="radio">
 																						Current Date</label>
 																				</td>
 																				<td width="5">&nbsp;</td>
@@ -938,11 +867,7 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 																				<td width="5">&nbsp;</td>
 																				<td align="left" width="15" nowrap>
 																					<input type="radio" name="optStart" id="optOffsetStart"
-																						onclick="changeTab3Control();"
-																						onmouseover="try{radio_onMouseOver(this);}catch(e){}"
-																						onmouseout="try{radio_onMouseOut(this);}catch(e){}"
-																						onfocus="try{radio_onFocus(this);}catch(e){}"
-																						onblur="try{radio_onBlur(this);}catch(e){}" />
+																						onclick="changeTab3Control();"/>
 																				</td>
 																				<td width="10">&nbsp;</td>
 																				<td align="left" width="15" nowrap>
@@ -965,19 +890,11 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 																							</td>
 																							<td>
 																								<input style="WIDTH: 15px" type="button" value="+" id="cmdPeriodStartUp" name="cmdPeriodStartUp" class="btn"
-																									onclick="spinRecords(true, frmDefinition.txtFreqStart); setRecordsNumeric(frmDefinition.txtFreqStart); changeTab3Control(); validateOffsets();"
-																									onmouseover="try{button_onMouseOver(this);}catch(e){}"
-																									onmouseout="try{button_onMouseOut(this);}catch(e){}"
-																									onfocus="try{button_onFocus(this);}catch(e){}"
-																									onblur="try{button_onBlur(this);}catch(e){}" />
+																									onclick="spinRecords(true, frmDefinition.txtFreqStart); setRecordsNumeric(frmDefinition.txtFreqStart); changeTab3Control(); validateOffsets();" />
 																							</td>
 																							<td>
 																								<input style="WIDTH: 15px" type="button" value="-" id="cmdPeriodStartDown" name="cmdPeriodStartDown" class="btn"
-																									onclick="spinRecords(false, frmDefinition.txtFreqStart); setRecordsNumeric(frmDefinition.txtFreqStart); changeTab3Control(); validateOffsets();"
-																									onmouseover="try{button_onMouseOver(this);}catch(e){}"
-																									onmouseout="try{button_onMouseOut(this);}catch(e){}"
-																									onfocus="try{button_onFocus(this);}catch(e){}"
-																									onblur="try{button_onBlur(this);}catch(e){}" />
+																									onclick="spinRecords(false, frmDefinition.txtFreqStart); setRecordsNumeric(frmDefinition.txtFreqStart); changeTab3Control(); validateOffsets();" />
 																							</td>
 																							<td width="10">&nbsp;</td>
 																							<td width="100%">
@@ -1005,20 +922,14 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 																				<td width="5">&nbsp;</td>
 																				<td align="left" width="15" nowrap>
 																					<input type="radio" name="optStart" id="optCustomStart"
-																						onclick="changeTab3Control();"
-																						onmouseover="try{radio_onMouseOver(this);}catch(e){}"
-																						onmouseout="try{radio_onMouseOut(this);}catch(e){}"
-																						onfocus="try{radio_onFocus(this);}catch(e){}"
-																						onblur="try{radio_onBlur(this);}catch(e){}" />
+																						onclick="changeTab3Control();" />
 																				</td>
 																				<td width="10">&nbsp;</td>
 																				<td align="left" width="15" nowrap>
 																					<label
 																						tabindex="-1"
 																						for="optCustomStart"
-																						class="radio"
-																						onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}"
-																						onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}">
+																						class="radio">
 																						Custom</label>
 																				</td>
 																				<td width="30" nowrap>&nbsp;</td>
@@ -1030,11 +941,7 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 																							</td>
 																							<td width="30">
 																								<input id="cmdCustomStart" name="cmdCustomStart" style="WIDTH: 100%" type="button" disabled="disabled" value="..." class="btn btndisabled"
-																									onclick="selectCalc('startDate', true)"
-																									onmouseover="try{button_onMouseOver(this);}catch(e){}"
-																									onmouseout="try{button_onMouseOut(this);}catch(e){}"
-																									onfocus="try{button_onFocus(this);}catch(e){}"
-																									onblur="try{button_onBlur(this);}catch(e){}" />
+																									onclick="selectCalc('startDate', true)" />
 																							</td>
 																						</tr>
 																					</table>
@@ -1060,20 +967,14 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 																				<td width="5">&nbsp;</td>
 																				<td align="left" width="15">
 																					<input type="radio" name="optEnd" id="optFixedEnd"
-																						onclick="changeTab3Control();"
-																						onmouseover="try{radio_onMouseOver(this);}catch(e){}"
-																						onmouseout="try{radio_onMouseOut(this);}catch(e){}"
-																						onfocus="try{radio_onFocus(this);}catch(e){}"
-																						onblur="try{radio_onBlur(this);}catch(e){}" />
+																						onclick="changeTab3Control();" />
 																				</td>
 																				<td width="10">&nbsp;</td>
 																				<td align="left" width="15" nowrap>
 																					<label
 																						tabindex="-1"
 																						for="optFixedEnd"
-																						class="radio"
-																						onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}"
-																						onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}">
+																						class="radio">
 																						Fixed</label>
 																				</td>
 																				<td width="30" nowrap>&nbsp;</td>
@@ -1090,20 +991,14 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 																				<td width="5">&nbsp;</td>
 																				<td align="left" width="15">
 																					<input type="radio" name="optEnd" id="optCurrentEnd"
-																						onclick="changeTab3Control();"
-																						onmouseover="try{radio_onMouseOver(this);}catch(e){}"
-																						onmouseout="try{radio_onMouseOut(this);}catch(e){}"
-																						onfocus="try{radio_onFocus(this);}catch(e){}"
-																						onblur="try{radio_onBlur(this);}catch(e){}" />
+																						onclick="changeTab3Control();" />
 																				</td>
 																				<td width="10">&nbsp;</td>
 																				<td colspan="3" align="left" nowrap>
 																					<label
 																						tabindex="-1"
 																						for="optCurrentEnd"
-																						class="radio"
-																						onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}"
-																						onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}">
+																						class="radio">
 																						Current Date</label>
 																				</td>
 																				<td width="5">&nbsp;</td>
@@ -1115,20 +1010,14 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 																				<td width="5">&nbsp;</td>
 																				<td align="left" width="15" nowrap>
 																					<input type="radio" name="optEnd" id="optOffsetEnd"
-																						onclick="changeTab3Control();"
-																						onmouseover="try{radio_onMouseOver(this);}catch(e){}"
-																						onmouseout="try{radio_onMouseOut(this);}catch(e){}"
-																						onfocus="try{radio_onFocus(this);}catch(e){}"
-																						onblur="try{radio_onBlur(this);}catch(e){}" />
+																						onclick="changeTab3Control();"/>
 																				</td>
 																				<td width="10">&nbsp;</td>
 																				<td align="left" width="15" nowrap>
 																					<label
 																						tabindex="-1"
 																						for="optOffsetEnd"
-																						class="radio"
-																						onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}"
-																						onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}">
+																						class="radio">
 																						Offset</label>
 																				</td>
 																				<td width="30" nowrap>&nbsp;</td>
@@ -1142,19 +1031,11 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 																							</td>
 																							<td>
 																								<input style="WIDTH: 15px" type="button" value="+" id="cmdPeriodEndUp" name="cmdPeriodEndUp" class="btn"
-																									onclick="spinRecords(true, frmDefinition.txtFreqEnd); setRecordsNumeric(frmDefinition.txtFreqEnd); changeTab3Control(); validateOffsets();"
-																									onmouseover="try{button_onMouseOver(this);}catch(e){}"
-																									onmouseout="try{button_onMouseOut(this);}catch(e){}"
-																									onfocus="try{button_onFocus(this);}catch(e){}"
-																									onblur="try{button_onBlur(this);}catch(e){}" />
+																									onclick="spinRecords(true, frmDefinition.txtFreqEnd); setRecordsNumeric(frmDefinition.txtFreqEnd); changeTab3Control(); validateOffsets();" />
 																							</td>
 																							<td>
 																								<input style="WIDTH: 15px" type="button" value="-" id="cmdPeriodEndDown" name="cmdPeriodEndDown" class="btn"
-																									onclick="spinRecords(false, frmDefinition.txtFreqEnd); setRecordsNumeric(frmDefinition.txtFreqEnd); changeTab3Control(); validateOffsets();"
-																									onmouseover="try{button_onMouseOver(this);}catch(e){}"
-																									onmouseout="try{button_onMouseOut(this);}catch(e){}"
-																									onfocus="try{button_onFocus(this);}catch(e){}"
-																									onblur="try{button_onBlur(this);}catch(e){}" />
+																									onclick="spinRecords(false, frmDefinition.txtFreqEnd); setRecordsNumeric(frmDefinition.txtFreqEnd); changeTab3Control(); validateOffsets();" />
 																							</td>
 																							<td width="10">&nbsp;</td>
 																							<td width="100%">
@@ -1182,20 +1063,14 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 																				<td width="5">&nbsp;</td>
 																				<td align="left" width="15" nowrap>
 																					<input type="radio" name="optEnd" id="optCustomEnd"
-																						onclick="changeTab3Control();"
-																						onmouseover="try{radio_onMouseOver(this);}catch(e){}"
-																						onmouseout="try{radio_onMouseOut(this);}catch(e){}"
-																						onfocus="try{radio_onFocus(this);}catch(e){}"
-																						onblur="try{radio_onBlur(this);}catch(e){}" />
+																						onclick="changeTab3Control();" />
 																				</td>
 																				<td width="10">&nbsp;</td>
 																				<td align="left" width="15" nowrap>
 																					<label
 																						tabindex="-1"
 																						for="optCustomEnd"
-																						class="radio"
-																						onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}"
-																						onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}">
+																						class="radio">
 																						Custom
 																					</label>
 																				</td>
@@ -1208,11 +1083,7 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 																							</td>
 																							<td width="30">
 																								<input id="cmdCustomEnd" name="cmdCustomEnd" style="WIDTH: 100%" type="button" disabled="disabled" value='...' class="btn btndisabled"
-																									onclick="selectCalc('endDate', true)"
-																									onmouseover="try{button_onMouseOver(this);}catch(e){}"
-																									onmouseout="try{button_onMouseOut(this);}catch(e){}"
-																									onfocus="try{button_onFocus(this);}catch(e){}"
-																									onblur="try{button_onBlur(this);}catch(e){}" />
+																									onclick="selectCalc('endDate', true)" />
 																							</td>
 																						</tr>
 																					</table>
@@ -1240,18 +1111,11 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 																				<td width="5">&nbsp;</td>
 																				<td>
 																					<input name="chkIncludeBHols" id="chkIncludeBHols" type="checkbox" disabled="disabled" tabindex="0"
-																						onclick="changeTab3Control();"
-																						onmouseover="try{checkbox_onMouseOver(this);}catch(e){}"
-																						onmouseout="try{checkbox_onMouseOut(this);}catch(e){}" />
+																						onclick="changeTab3Control();" />
 																					<label
 																						for="chkIncludeBHols"
 																						class="checkbox"
-																						tabindex="-1"
-																						onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}"
-																						onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}"
-																						onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}"
-																						onfocus="try{checkboxLabel_onFocus(this);}catch(e){}"
-																						onblur="try{checkboxLabel_onBlur(this);}catch(e){}">
+																						tabindex="-1">
 																						Include Bank Holidays 
 																					</label>
 																				</td>
@@ -1264,18 +1128,11 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 																				<td width="5">&nbsp;</td>
 																				<td>
 																					<input name="chkIncludeWorkingDaysOnly" id="chkIncludeWorkingDaysOnly" type="checkbox" disabled="disabled" tabindex="0"
-																						onclick="changeTab3Control();"
-																						onmouseover="try{checkbox_onMouseOver(this);}catch(e){}"
-																						onmouseout="try{checkbox_onMouseOut(this);}catch(e){}" />
+																						onclick="changeTab3Control();" />
 																					<label
 																						for="chkIncludeWorkingDaysOnly"
 																						class="checkbox checkboxdisabled"
-																						tabindex="-1"
-																						onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}"
-																						onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}"
-																						onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}"
-																						onfocus="try{checkboxLabel_onFocus(this);}catch(e){}"
-																						onblur="try{checkboxLabel_onBlur(this);}catch(e){}">
+																						tabindex="-1">
 																						Working Days Only 
 																					</label>
 																				</td>
@@ -1288,18 +1145,11 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 																				<td width="5">&nbsp;</td>
 																				<td>
 																					<input name="chkShadeBHols" id="chkShadeBHols" type="checkbox" disabled="disabled" tabindex="0"
-																						onclick="changeTab3Control();"
-																						onmouseover="try{checkbox_onMouseOver(this);}catch(e){}"
-																						onmouseout="try{checkbox_onMouseOut(this);}catch(e){}" />
+																						onclick="changeTab3Control();" />
 																					<label
 																						for="chkShadeBHols"
 																						class="checkbox checkboxdisabled"
-																						tabindex="-1"
-																						onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}"
-																						onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}"
-																						onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}"
-																						onfocus="try{checkboxLabel_onFocus(this);}catch(e){}"
-																						onblur="try{checkboxLabel_onBlur(this);}catch(e){}">
+																						tabindex="-1">
 																						Show Bank Holidays 
 																					</label>
 																				</td>
@@ -1312,18 +1162,11 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 																				<td width="5">&nbsp;</td>
 																				<td>
 																					<input name="chkCaptions" id="chkCaptions" type="checkbox" disabled="disabled" tabindex="0"
-																						onclick="changeTab3Control();"
-																						onmouseover="try{checkbox_onMouseOver(this);}catch(e){}"
-																						onmouseout="try{checkbox_onMouseOut(this);}catch(e){}" />
+																						onclick="changeTab3Control();" />
 																					<label
 																						for="chkCaptions"
 																						class="checkbox checkboxdisabled"
-																						tabindex="-1"
-																						onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}"
-																						onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}"
-																						onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}"
-																						onfocus="try{checkboxLabel_onFocus(this);}catch(e){}"
-																						onblur="try{checkboxLabel_onBlur(this);}catch(e){}">
+																						tabindex="-1">
 																						Show Calendar Captions
 																					</label>
 																				</td>
@@ -1336,18 +1179,11 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 																				<td width="5">&nbsp;</td>
 																				<td>
 																					<input name="chkShadeWeekends" id="chkShadeWeekends" type="checkbox" disabled="disabled" tabindex="0"
-																						onclick="changeTab3Control();"
-																						onmouseover="try{checkbox_onMouseOver(this);}catch(e){}"
-																						onmouseout="try{checkbox_onMouseOut(this);}catch(e){}" />
+																						onclick="changeTab3Control();"/>
 																					<label
 																						for="chkShadeWeekends"
 																						class="checkbox checkboxdisabled"
-																						tabindex="-1"
-																						onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}"
-																						onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}"
-																						onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}"
-																						onfocus="try{checkboxLabel_onFocus(this);}catch(e){}"
-																						onblur="try{checkboxLabel_onBlur(this);}catch(e){}">
+																						tabindex="-1">
 																						Show Weekends 
 																					</label>
 																				</td>
@@ -1360,18 +1196,11 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 																				<td width="5">&nbsp;</td>
 																				<td>
 																					<input name="chkStartOnCurrentMonth" id="chkStartOnCurrentMonth" type="checkbox" disabled="disabled" tabindex="0"
-																						onclick="changeTab3Control();"
-																						onmouseover="try{checkbox_onMouseOver(this);}catch(e){}"
-																						onmouseout="try{checkbox_onMouseOut(this);}catch(e){}" />
+																						onclick="changeTab3Control();"/>
 																					<label
 																						for="chkStartOnCurrentMonth"
 																						class="checkbox checkboxdisabled"
-																						tabindex="-1"
-																						onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}"
-																						onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}"
-																						onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}"
-																						onfocus="try{checkboxLabel_onFocus(this);}catch(e){}"
-																						onblur="try{checkboxLabel_onBlur(this);}catch(e){}">
+																						tabindex="-1">
 																						Start on Current Month 
 																					</label>
 																				</td>
@@ -1417,11 +1246,7 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 														<td width="10">&nbsp;</td>
 														<td width="100">
 															<input type="button" id="cmdSortAdd" name="cmdSortAdd" value="Add..." style="WIDTH: 100%" class="btn"
-																onclick="sortAdd()"
-																onmouseover="try{button_onMouseOver(this);}catch(e){}"
-																onmouseout="try{button_onMouseOut(this);}catch(e){}"
-																onfocus="try{button_onFocus(this);}catch(e){}"
-																onblur="try{button_onBlur(this);}catch(e){}" />
+																onclick="sortAdd()" />
 														</td>
 														<td width="5">&nbsp;</td>
 													</tr>
@@ -1435,11 +1260,7 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 														<td width="5">&nbsp;</td>
 														<td width="100">
 															<input type="button" id="cmdSortEdit" name="cmdSortEdit" value="Edit..." style="WIDTH: 100%" class="btn"
-																onclick="sortEdit()"
-																onmouseover="try{button_onMouseOver(this);}catch(e){}"
-																onmouseout="try{button_onMouseOut(this);}catch(e){}"
-																onfocus="try{button_onFocus(this);}catch(e){}"
-																onblur="try{button_onBlur(this);}catch(e){}" />
+																onclick="sortEdit()" />
 														</td>
 														<td width="5">&nbsp;</td>
 													</tr>
@@ -1454,11 +1275,7 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 														<td width="5">&nbsp;</td>
 														<td width="100">
 															<input type="button" id="cmdSortRemove" name="cmdSortRemove" value="Remove" style="WIDTH: 100%" class="btn"
-																onclick="sortRemove()"
-																onmouseover="try{button_onMouseOver(this);}catch(e){}"
-																onmouseout="try{button_onMouseOut(this);}catch(e){}"
-																onfocus="try{button_onFocus(this);}catch(e){}"
-																onblur="try{button_onBlur(this);}catch(e){}" />
+																onclick="sortRemove()" />
 														</td>
 														<td width="5">&nbsp;</td>
 													</tr>
@@ -1473,11 +1290,7 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 														<td width="5">&nbsp;</td>
 														<td width="100">
 															<input type="button" id="cmdSortRemoveAll" name="cmdSortRemoveAll" value="Remove All" style="WIDTH: 100%" class="btn"
-																onclick="sortRemoveAll()"
-																onmouseover="try{button_onMouseOver(this);}catch(e){}"
-																onmouseout="try{button_onMouseOut(this);}catch(e){}"
-																onfocus="try{button_onFocus(this);}catch(e){}"
-																onblur="try{button_onBlur(this);}catch(e){}" />
+																onclick="sortRemoveAll()" />
 														</td>
 														<td width="5">&nbsp;</td>
 													</tr>
@@ -1491,11 +1304,7 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 														<td width="5">&nbsp;</td>
 														<td width="100">
 															<input type="button" id="cmdSortMoveUp" name="cmdSortMoveUp" value="Move Up" style="WIDTH: 100%" class="btn"
-																onclick="sortMove(true)"
-																onmouseover="try{button_onMouseOver(this);}catch(e){}"
-																onmouseout="try{button_onMouseOut(this);}catch(e){}"
-																onfocus="try{button_onFocus(this);}catch(e){}"
-																onblur="try{button_onBlur(this);}catch(e){}" />
+																onclick="sortMove(true)" />
 														</td>
 														<td width="5">&nbsp;</td>
 													</tr>
@@ -1509,11 +1318,7 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 														<td width="5">&nbsp;</td>
 														<td width="100">
 															<input type="button" id="cmdSortMoveDown" name="cmdSortMoveDown" value="Move Down" style="WIDTH: 100%" class="btn"
-																onclick="sortMove(false)"
-																onmouseover="try{button_onMouseOver(this);}catch(e){}"
-																onmouseout="try{button_onMouseOut(this);}catch(e){}"
-																onfocus="try{button_onFocus(this);}catch(e){}"
-																onblur="try{button_onBlur(this);}catch(e){}" />
+																onclick="sortMove(false)" />
 														</td>
 
 														<td width="5">&nbsp;</td>
@@ -1547,19 +1352,13 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 																				<td width="5">&nbsp;</td>
 																				<td align="left" width="15">
 																					<input type="radio" width="20" style="WIDTH: 20px" name="optOutputFormat" id="optOutputFormat0" value="0"
-																						onclick="formatClick(0);"
-																						onmouseover="try{radio_onMouseOver(this);}catch(e){}"
-																						onmouseout="try{radio_onMouseOut(this);}catch(e){}"
-																						onfocus="try{radio_onFocus(this);}catch(e){}"
-																						onblur="try{radio_onBlur(this);}catch(e){}" />
+																						onclick="formatClick(0);"/>
 																				</td>
 																				<td style="text-align: left; white-space: nowrap; padding-left: 5px">
 																					<label
 																						tabindex="-1"
 																						for="optOutputFormat0"
-																						class="radio"
-																						onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}"
-																						onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}">
+																						class="radio">
 																						Data Only
 																					</label>
 																				</td>
@@ -1572,19 +1371,13 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 																				<td width="5">&nbsp;</td>
 																				<td align="left" width="15">
 																					<input type="radio" width="20" style="WIDTH: 20px" name="optOutputFormat" id="optOutputFormat2" value="2"
-																						onclick="formatClick(2);"
-																						onmouseover="try{radio_onMouseOver(this);}catch(e){}"
-																						onmouseout="try{radio_onMouseOut(this);}catch(e){}"
-																						onfocus="try{radio_onFocus(this);}catch(e){}"
-																						onblur="try{radio_onBlur(this);}catch(e){}" />
+																						onclick="formatClick(2);" />
 																				</td>
 																				<td style="text-align: left; white-space: nowrap; padding-left: 5px">
 																					<label
 																						tabindex="-1"
 																						for="optOutputFormat2"
-																						class="radio"
-																						onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}"
-																						onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}">
+																						class="radio">
 																						HTML Document
 																					</label>
 																				</td>
@@ -1597,19 +1390,13 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 																				<td width="5">&nbsp;</td>
 																				<td align="left" width="15">
 																					<input type="radio" width="20" style="WIDTH: 20px" name="optOutputFormat" id="optOutputFormat3" value="3"
-																						onclick="formatClick(3);"
-																						onmouseover="try{radio_onMouseOver(this);}catch(e){}"
-																						onmouseout="try{radio_onMouseOut(this);}catch(e){}"
-																						onfocus="try{radio_onFocus(this);}catch(e){}"
-																						onblur="try{radio_onBlur(this);}catch(e){}" />
+																						onclick="formatClick(3);"/>
 																				</td>
 																				<td style="text-align: left; white-space: nowrap; padding-left: 5px">
 																					<label
 																						tabindex="-1"
 																						for="optOutputFormat3"
-																						class="radio"
-																						onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}"
-																						onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}">
+																						class="radio">
 																						Word Document
 																					</label>
 																				</td>
@@ -1622,19 +1409,13 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 																				<td width="5">&nbsp;</td>
 																				<td align="left" width="15">
 																					<input type="radio" width="20" style="WIDTH: 20px" name="optOutputFormat" id="optOutputFormat4" value="4"
-																						onclick="formatClick(4);"
-																						onmouseover="try{radio_onMouseOver(this);}catch(e){}"
-																						onmouseout="try{radio_onMouseOut(this);}catch(e){}"
-																						onfocus="try{radio_onFocus(this);}catch(e){}"
-																						onblur="try{radio_onBlur(this);}catch(e){}" />
+																						onclick="formatClick(4);"/>
 																				</td>
 																				<td style="text-align: left; white-space: nowrap; padding-left: 5px">
 																					<label
 																						tabindex="-1"
 																						for="optOutputFormat4"
-																						class="radio"
-																						onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}"
-																						onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}">
+																						class="radio">
 																						Excel Worksheet</label>
 																				</td>
 																				<td width="5">&nbsp;</td>
@@ -1646,24 +1427,9 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 																				<td width="5">&nbsp;</td>
 																				<td align="left" width="15">
 																					<input type="radio" width="20" name="optOutputFormat" id="optOutputFormat1" value="1" style="visibility: hidden"
-																						onclick="formatClick(1);"
-																						onmouseover="try{radio_onMouseOver(this);}catch(e){}"
-																						onmouseout="try{radio_onMouseOut(this);}catch(e){}"
-																						onfocus="try{radio_onFocus(this);}catch(e){}"
-																						onblur="try{radio_onBlur(this);}catch(e){}" />
+																						onclick="formatClick(1);" />
 																				</td>
 																				<td align="left" nowrap>
-																					<!--
-																																						<label 
-																																								tabindex=-1
-																																								for="optOutputFormat1"
-																																								class="radio"
-																																								onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}" 
-																																								onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}"
-																																						/>
-																						CSV File
-																																				</label>
-																			-->
 																				</td>
 																				<td width="5">&nbsp;</td>
 																			</tr>
@@ -1674,24 +1440,9 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 																				<td width="5">&nbsp;</td>
 																				<td align="left" width="15">
 																					<input type="radio" width="20" name="optOutputFormat" id="optOutputFormat5" value="5" style="visibility: hidden"
-																						onclick="formatClick(5);"
-																						onmouseover="try{radio_onMouseOver(this);}catch(e){}"
-																						onmouseout="try{radio_onMouseOut(this);}catch(e){}"
-																						onfocus="try{radio_onFocus(this);}catch(e){}"
-																						onblur="try{radio_onBlur(this);}catch(e){}" />
+																						onclick="formatClick(5);" />
 																				</td>
 																				<td>
-																					<!--
-																																						<label 
-																																								tabindex=-1
-																																								for="optOutputFormat5"
-																																								class="radio"
-																																								onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}" 
-																																								onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}"
-																																						/>
-																					Excel Chart
-																																				</label>
-																			-->
 																				</td>
 																				<td width="5">&nbsp;</td>
 																			</tr>
@@ -1702,24 +1453,10 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 																				<td width="5">&nbsp;</td>
 																				<td align="left" width="15">
 																					<input type="radio" width="20" name="optOutputFormat" id="optOutputFormat6" value="6" style="visibility: hidden"
-																						onclick="formatClick(6);"
-																						onmouseover="try{radio_onMouseOver(this);}catch(e){}"
-																						onmouseout="try{radio_onMouseOut(this);}catch(e){}"
-																						onfocus="try{radio_onFocus(this);}catch(e){}"
-																						onblur="try{radio_onBlur(this);}catch(e){}" />
+																						onclick="formatClick(6);"/>
 																				</td>
 																				<td>
-																					<!--
-																																						<label 
-																																								tabindex=-1
-																																								for="optOutputFormat6"
-																																								class="radio"
-																																								onmouseover="try{radioLabel_onMouseOver(this);}catch(e){}" 
-																																								onmouseout="try{radioLabel_onMouseOut(this);}catch(e){}"
-																																						/>
-																					Excel Pivot Table
-																																				</label>
-																			-->
+
 																				</td>
 																				<td width="5">&nbsp;</td>
 																			</tr>
@@ -1742,18 +1479,11 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 																				<td width="5">&nbsp;</td>
 																				<td align="left" colspan="6" nowrap>
 																					<input name="chkPreview" id="chkPreview" type="checkbox" disabled="disabled" tabindex="0"
-																						onclick="changeTab5Control();"
-																						onmouseover="try{checkbox_onMouseOver(this);}catch(e){}"
-																						onmouseout="try{checkbox_onMouseOut(this);}catch(e){}" />
+																						onclick="changeTab5Control();" />
 																					<label
 																						for="chkPreview"
 																						class="checkbox checkboxdisabled"
-																						tabindex="-1"
-																						onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}"
-																						onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}"
-																						onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}"
-																						onfocus="try{checkboxLabel_onFocus(this);}catch(e){}"
-																						onblur="try{checkboxLabel_onBlur(this);}catch(e){}">
+																						tabindex="-1">
 																						Preview on screen
 																					</label>
 																				</td>
@@ -1768,18 +1498,11 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 																				<td></td>
 																				<td align="left" colspan="6" nowrap>
 																					<input name="chkDestination0" id="chkDestination0" type="checkbox" disabled="disabled" tabindex="0"
-																						onclick="changeTab5Control();"
-																						onmouseover="try{checkbox_onMouseOver(this);}catch(e){}"
-																						onmouseout="try{checkbox_onMouseOut(this);}catch(e){}" />
+																						onclick="changeTab5Control();" />
 																					<label
 																						for="chkDestination0"
 																						class="checkbox checkboxdisabled"
-																						tabindex="-1"
-																						onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}"
-																						onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}"
-																						onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}"
-																						onfocus="try{checkboxLabel_onFocus(this);}catch(e){}"
-																						onblur="try{checkboxLabel_onBlur(this);}catch(e){}">
+																						tabindex="-1">
 																						Display output on screen
 																					</label>
 																				</td>
@@ -1794,18 +1517,11 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 																				<td></td>
 																				<td align="left" nowrap>
 																					<input name="chkDestination1" id="chkDestination1" type="checkbox" disabled="disabled" tabindex="0"
-																						onclick="changeTab5Control();"
-																						onmouseover="try{checkbox_onMouseOver(this);}catch(e){}"
-																						onmouseout="try{checkbox_onMouseOut(this);}catch(e){}" />
+																						onclick="changeTab5Control();" />
 																					<label
 																						for="chkDestination1"
 																						class="checkbox checkboxdisabled"
-																						tabindex="-1"
-																						onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}"
-																						onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}"
-																						onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}"
-																						onfocus="try{checkboxLabel_onFocus(this);}catch(e){}"
-																						onblur="try{checkboxLabel_onBlur(this);}catch(e){}">
+																						tabindex="-1">
 																						Send to printer 
 																					</label>
 																				</td>
@@ -1830,18 +1546,11 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 																				<td></td>
 																				<td align="left" nowrap>
 																					<input name="chkDestination2" id="chkDestination2" type="checkbox" disabled="disabled" tabindex="0"
-																						onclick="changeTab5Control();"
-																						onmouseover="try{checkbox_onMouseOver(this);}catch(e){}"
-																						onmouseout="try{checkbox_onMouseOut(this);}catch(e){}" />
+																						onclick="changeTab5Control();" />
 																					<label
 																						for="chkDestination2"
 																						class="checkbox checkboxdisabled"
-																						tabindex="-1"
-																						onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}"
-																						onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}"
-																						onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}"
-																						onfocus="try{checkboxLabel_onFocus(this);}catch(e){}"
-																						onblur="try{checkboxLabel_onBlur(this);}catch(e){}">
+																						tabindex="-1">
 																						Save to file 
 																					</label>
 																				</td>
@@ -1855,11 +1564,7 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 																						class="text textdisabled" disabled="disabled" tabindex="-1">
 																				
 																					<input id="cmdFilename" name="cmdFilename" class="btn btndisabled" type="button" value='...' disabled="disabled"
-																						onclick="saveFile(); changeTab5Control();"
-																						onmouseover="try{button_onMouseOver(this);}catch(e){}"
-																						onmouseout="try{button_onMouseOut(this);}catch(e){}"
-																						onfocus="try{button_onFocus(this);}catch(e){}"
-																						onblur="try{button_onBlur(this);}catch(e){}" style="width: 12%;"/>
+																						onclick="saveFile(); changeTab5Control();"style="width: 12%;"/>
 																				</td>
                                                                                 <td></td>
 																				<td></td>
@@ -1887,17 +1592,10 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 																				<td></td>
 																				<td align="left" nowrap>
 																					<input name="chkDestination3" id="chkDestination3" type="checkbox" disabled="disabled" tabindex="0"
-																						onclick="changeTab5Control();"
-																						onmouseover="try{checkbox_onMouseOver(this);}catch(e){}"
-																						onmouseout="try{checkbox_onMouseOut(this);}catch(e){}" />
+																						onclick="changeTab5Control();"/>
 																					<label for="chkDestination3"
 																						class="checkbox checkboxdisabled"
-																						tabindex="-1"
-																						onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}"
-																						onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}"
-																						onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}"
-																						onfocus="try{checkboxLabel_onFocus(this);}catch(e){}"
-																						onblur="try{checkboxLabel_onBlur(this);}catch(e){}">
+																						tabindex="-1">
 																						Send as email
 																					</label>
 																				</td>
@@ -1911,11 +1609,7 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 																					<input id="txtEmailGroupID" name="txtEmailGroupID" type="hidden" class="text textdisabled" disabled="disabled" tabindex="-1">
 																				
 																					<input id="cmdEmailGroup" name="cmdEmailGroup" type="button" value='...' disabled="disabled" class="btn btndisabled"
-																						onclick="selectEmailGroup(); changeTab5Control();"
-																						onmouseover="try{button_onMouseOver(this);}catch(e){}"
-																						onmouseout="try{button_onMouseOut(this);}catch(e){}"
-																						onfocus="try{button_onFocus(this);}catch(e){}"
-																						onblur="try{button_onBlur(this);}catch(e){}" style="width: 12%;" />
+																						onclick="selectEmailGroup(); changeTab5Control();" style="width: 12%;" />
 																				</td>
 																				<td></td>
                                                                                 <td></td>
@@ -1927,12 +1621,7 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 																				<td></td>
 																				<td style="white-space: nowrap;">
 																					<label for="txtEmailSubject"
-																						tabindex="-1"
-																						onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}"
-																						onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}"
-																						onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}"
-																						onfocus="try{checkboxLabel_onFocus(this);}catch(e){}"
-																						onblur="try{checkboxLabel_onBlur(this);}catch(e){}">
+																						tabindex="-1">
 																						Email subject :</label>
 																				</td>
 																				<td style="padding-top: 5px">
@@ -1952,12 +1641,7 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 																				<td></td>
 																				<td style="white-space: nowrap;">
 																					<label for="txtEmailAttachAs"
-																						tabindex="-1"
-																						onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}" 
-																						onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}" 
-																						onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}" 
-																						onfocus="try{checkboxLabel_onFocus(this);}catch(e){}" 
-																						onblur="try{checkboxLabel_onBlur(this);}catch(e){}">
+																						tabindex="-1">
 																						Attach as : 
 																					</label>
 																				</td>
@@ -2012,20 +1696,12 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 								<td>&nbsp;</td>
 								<td width="80">
 									<input type="button" id="cmdOK" name="cmdOK" value="OK" style="WIDTH: 100%" class="btn"
-										onclick="okCalClick()"
-										onmouseover="try{button_onMouseOver(this);}catch(e){}"
-										onmouseout="try{button_onMouseOut(this);}catch(e){}"
-										onfocus="try{button_onFocus(this);}catch(e){}"
-										onblur="try{button_onBlur(this);}catch(e){}" />
+										onclick="okCalClick()" />
 								</td>
 								<td width="10"></td>
 								<td width="80">
 									<input type="button" id="cmdCancel" name="cmdCancel" value="Cancel" style="WIDTH: 100%" class="btn"
-										onclick="cancelClick()"
-										onmouseover="try{button_onMouseOver(this);}catch(e){}"
-										onmouseout="try{button_onMouseOut(this);}catch(e){}"
-										onfocus="try{button_onFocus(this);}catch(e){}"
-										onblur="try{button_onBlur(this);}catch(e){}" />
+										onclick="cancelClick()"/>
 								</td>
 							</tr>
 						</table>
@@ -2076,370 +1752,214 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 <form id="frmOriginalDefinition" name="frmOriginalDefinition" style="visibility: hidden; display: none">
 	<%
 		Dim sErrMsg = ""
-		Dim prmUtilID
 	
 		If LCase(Session("action")) <> "new" Then
-			Dim cmdDefn = CreateObject("ADODB.Command")
-			cmdDefn.CommandText = "spASRIntGetCalendarReportDefinition"
-			cmdDefn.CommandType = 4	' Stored Procedure
-			cmdDefn.ActiveConnection = Session("databaseConnection")
-		
-			prmUtilID = cmdDefn.CreateParameter("utilID", 3, 1)	' 3=integer, 1=input
-			cmdDefn.Parameters.Append(prmUtilID)
-			prmUtilID.value = CleanNumeric(Session("utilid"))
+			
+			Dim prmErrMsg = New SqlParameter("psErrorMsg", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
+			Dim prmName = New SqlParameter("psCalendarReportName", SqlDbType.VarChar, 255) With {.Direction = ParameterDirection.Output}
+			Dim prmOwner = New SqlParameter("psCalendarReportOwner", SqlDbType.VarChar, 255) With {.Direction = ParameterDirection.Output}
+			Dim prmDescription = New SqlParameter("psCalendarReportDesc", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
+			Dim prmBaseTableID = New SqlParameter("piBaseTableID", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
+			Dim prmAllRecords = New SqlParameter("pfAllRecords", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
+			Dim prmPicklistID = New SqlParameter("piPicklistID", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
+			Dim prmPicklistName = New SqlParameter("psPicklistName", SqlDbType.VarChar, 255) With {.Direction = ParameterDirection.Output}
+			Dim prmPicklistHidden = New SqlParameter("pfPicklistHidden", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
+			Dim prmFilterID = New SqlParameter("piFilterID", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
+			Dim prmFilterName = New SqlParameter("psFilterName", SqlDbType.VarChar, 255) With {.Direction = ParameterDirection.Output}
+			Dim prmFilterHidden = New SqlParameter("pfFilterHidden", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
+			Dim prmPrintFilterHeader = New SqlParameter("pfPrintFilterHeader", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
+			Dim prmDesc1ID = New SqlParameter("piDesc1ID", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
+			Dim prmDesc2ID = New SqlParameter("piDesc2ID", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
+			Dim prmDescExprID = New SqlParameter("piDescExprID", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
+			Dim prmDescExprName = New SqlParameter("psDescExprName", SqlDbType.VarChar, 255) With {.Direction = ParameterDirection.Output}
+			Dim prmDescCalcHidden = New SqlParameter("pfDescCalcHidden", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
+			Dim prmRegionID = New SqlParameter("piRegionID", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
+			Dim prmGroupByDesc = New SqlParameter("pfGroupByDesc", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
+			Dim prmDescSeparator = New SqlParameter("pfDescSeparator", SqlDbType.VarChar, 255) With {.Direction = ParameterDirection.Output}
+			Dim prmStartType = New SqlParameter("piStartType", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
+			Dim prmFixedStart = New SqlParameter("pdFixedStart", SqlDbType.Date) With {.Direction = ParameterDirection.Output}
+			Dim prmStartFrequency = New SqlParameter("piStartFrequency", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
+			Dim prmStartPeriod = New SqlParameter("piStartPeriod", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
+			Dim prmCustomStartID = New SqlParameter("piCustomStartID", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
+			Dim prmCustomStartName = New SqlParameter("psCustomStartName", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
+			Dim prmStartDateCalcHidden = New SqlParameter("pfStartDateCalcHidden", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
+			Dim prmEndType = New SqlParameter("piEndType", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
+			Dim prmFixedEnd = New SqlParameter("pdFixedEnd", SqlDbType.Date) With {.Direction = ParameterDirection.Output}
+			Dim prmEndFrequency = New SqlParameter("piEndFrequency", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
+			Dim prmEndPeriod = New SqlParameter("piEndPeriod", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
+			Dim prmCustomEndID = New SqlParameter("piCustomEndID", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
+			Dim prmCustomEndName = New SqlParameter("psCustomEndName", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
+			Dim prmEndDateCalcHidden = New SqlParameter("pfEndDateCalcHidden", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
+			Dim prmShadeBHols = New SqlParameter("pfShadeBHols", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
+			Dim prmShowCaptions = New SqlParameter("pfShowCaptions", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
+			Dim prmShadeWeekends = New SqlParameter("pfShadeWeekends", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
+			Dim prmStartOnCurrentMonth = New SqlParameter("pfStartOnCurrentMonth", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
+			Dim prmIncludeWorkingDaysOnly = New SqlParameter("pfIncludeWorkingDaysOnly", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
+			Dim prmIncludeBHols = New SqlParameter("pfIncludeBHols", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
+			Dim prmOutputPreview = New SqlParameter("pfOutputPreview", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
+			Dim prmOutputFormat = New SqlParameter("piOutputFormat", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
+			Dim prmOutputScreen = New SqlParameter("pfOutputScreen", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
+			Dim prmOutputPrinter = New SqlParameter("pfOutputPrinter", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
+			Dim prmOutputPrinterName = New SqlParameter("psOutputPrinterName", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
+			Dim prmOutputSave = New SqlParameter("pfOutputSave", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
+			Dim prmOutputSaveExisting = New SqlParameter("piOutputSaveExisting", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
+			Dim prmOutputEmail = New SqlParameter("pfOutputEmail", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
+			Dim prmOutputEmailAddr = New SqlParameter("piOutputEmailAddr", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
+			Dim prmOutputEmailAddrName = New SqlParameter("psOutputEmailName", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
+			Dim prmOutputEmailSubject = New SqlParameter("psOutputEmailSubject", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
+			Dim prmOutputEmailAttachAs = New SqlParameter("psOutputEmailAttachAs", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
+			Dim prmOutputFilename = New SqlParameter("psOutputFilename", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
+			Dim prmTimestamp = New SqlParameter("piTimestamp", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
 
-			Dim prmUser = cmdDefn.CreateParameter("user", 200, 1, 8000)	' 200=varchar, 1=input, 8000=size
-			cmdDefn.Parameters.Append(prmUser)
-			prmUser.value = Session("username")
+			Try				
 
-			Dim prmAction = cmdDefn.CreateParameter("action", 200, 1, 8000)	' 200=varchar, 1=input, 8000=size
-			cmdDefn.Parameters.Append(prmAction)
-			prmAction.value = Session("action")
+				Dim rstDefinition = objDataAccess.GetFromSP("spASRIntGetCalendarReportDefinition", _
+						New SqlParameter("@piCalendarReportID", SqlDbType.Int) With {.Value = CleanNumeric(Session("utilid"))}, _
+						New SqlParameter("psCurrentUser", SqlDbType.VarChar, 255) With {.Value = Session("username")}, _
+						New SqlParameter("psAction", SqlDbType.VarChar, 255) With {.Value = Session("action")}, _
+						prmErrMsg, prmName, prmOwner, prmDescription, prmBaseTableID, _
+						prmAllRecords, prmPicklistID, prmPicklistName, prmPicklistHidden, _
+						prmFilterID, prmFilterName, prmFilterHidden, prmPrintFilterHeader, _
+						prmDesc1ID, prmDesc2ID, prmDescExprID, prmDescExprName, prmDescCalcHidden, _
+						prmRegionID, prmGroupByDesc, prmDescSeparator, prmStartType, prmFixedStart, _
+						prmStartFrequency, prmStartPeriod, prmCustomStartID, prmCustomStartName, prmStartDateCalcHidden, _
+						prmEndType, prmFixedEnd, prmEndFrequency, prmEndPeriod, prmCustomEndID, prmCustomEndName, prmEndDateCalcHidden, _
+						prmShadeBHols, prmShowCaptions, prmShadeWeekends, prmStartOnCurrentMonth, prmIncludeWorkingDaysOnly, prmIncludeBHols, _
+						prmOutputPreview, prmOutputFormat, prmOutputScreen, prmOutputPrinter, prmOutputPrinterName, prmOutputSave, prmOutputSaveExisting, _
+						prmOutputEmail, prmOutputEmailAddr, prmOutputEmailAddrName, prmOutputEmailSubject, prmOutputEmailAttachAs, prmOutputFilename, prmTimestamp)
 
-			Dim prmErrMsg = cmdDefn.CreateParameter("errMsg", 200, 2, 8000)	'200=varchar, 2=output, 8000=size
-			cmdDefn.Parameters.Append(prmErrMsg)
+				
+				Dim iHiddenEventFilterCount = 0
+				Dim iCount = 0
+				
 
-			Dim prmName = cmdDefn.CreateParameter("name", 200, 2, 8000)	'200=varchar, 2=output, 8000=size
-			cmdDefn.Parameters.Append(prmName)
-
-			Dim prmOwner = cmdDefn.CreateParameter("owner", 200, 2, 8000)	'200=varchar, 2=output, 8000=size
-			cmdDefn.Parameters.Append(prmOwner)
-
-			Dim prmDescription = cmdDefn.CreateParameter("description", 200, 2, 8000)	'200=varchar, 2=output, 8000=size
-			cmdDefn.Parameters.Append(prmDescription)
-
-			Dim prmBaseTableID = cmdDefn.CreateParameter("baseTableID", 3, 2)	'3=integer, 2=output
-			cmdDefn.Parameters.Append(prmBaseTableID)
-
-			Dim prmAllRecords = cmdDefn.CreateParameter("allRecords", 11, 2) '11=bit, 2=output
-			cmdDefn.Parameters.Append(prmAllRecords)
-
-			Dim prmPicklistID = cmdDefn.CreateParameter("picklistID", 3, 2)	'3=integer, 2=output
-			cmdDefn.Parameters.Append(prmPicklistID)
-
-			Dim prmPicklistName = cmdDefn.CreateParameter("picklistName", 200, 2, 8000)	'200=varchar, 2=output, 8000=size
-			cmdDefn.Parameters.Append(prmPicklistName)
-
-			Dim prmPicklistHidden = cmdDefn.CreateParameter("picklistHidden", 11, 2) '11=bit, 2=output
-			cmdDefn.Parameters.Append(prmPicklistHidden)
-
-			Dim prmFilterID = cmdDefn.CreateParameter("filterID", 3, 2)	'3=integer, 2=output
-			cmdDefn.Parameters.Append(prmFilterID)
-
-			Dim prmFilterName = cmdDefn.CreateParameter("filterName", 200, 2, 8000)	'200=varchar, 2=output, 8000=size
-			cmdDefn.Parameters.Append(prmFilterName)
-
-			Dim prmFilterHidden = cmdDefn.CreateParameter("filterHidden", 11, 2) '11=bit, 2=output
-			cmdDefn.Parameters.Append(prmFilterHidden)
-		
-			Dim prmPrintFilterHeader = cmdDefn.CreateParameter("printFilterHeader", 11, 2) '11=bit, 2=output
-			cmdDefn.Parameters.Append(prmPrintFilterHeader)
-		
-			Dim prmDesc1ID = cmdDefn.CreateParameter("desc1ID", 3, 2)	'3=integer, 2=output
-			cmdDefn.Parameters.Append(prmDesc1ID)
-
-			Dim prmDesc2ID = cmdDefn.CreateParameter("desc2ID", 3, 2)	'3=integer, 2=output
-			cmdDefn.Parameters.Append(prmDesc2ID)
-		
-			Dim prmDescExprID = cmdDefn.CreateParameter("descExprID", 3, 2)	'3=integer, 2=output
-			cmdDefn.Parameters.Append(prmDescExprID)
-		
-			Dim prmDescExprName = cmdDefn.CreateParameter("descExprName", 200, 2, 8000)	'200=varchar, 2=output, 8000=size
-			cmdDefn.Parameters.Append(prmDescExprName)
-		
-			Dim prmDescCalcHidden = cmdDefn.CreateParameter("descCalcHidden", 11, 2) '11=bit, 2=output
-			cmdDefn.Parameters.Append(prmDescCalcHidden)
-		
-			Dim prmRegionID = cmdDefn.CreateParameter("regionID", 3, 2)	'3=integer, 2=output
-			cmdDefn.Parameters.Append(prmRegionID)
-
-			Dim prmGroupByDesc = cmdDefn.CreateParameter("groupByDesc", 11, 2) '11=bit, 2=output
-			cmdDefn.Parameters.Append(prmGroupByDesc)
-		
-			Dim prmDescSeparator = cmdDefn.CreateParameter("descSeparator", 200, 2, 8000)	'11=bit, 2=output
-			cmdDefn.Parameters.Append(prmDescSeparator)
-		
-			Dim prmStartType = cmdDefn.CreateParameter("startType", 3, 2)	'3=integer, 2=output
-			cmdDefn.Parameters.Append(prmStartType)
-
-			Dim prmFixedStart = cmdDefn.CreateParameter("fixedStart", 135, 2)	'135=datetime, 2=output
-			cmdDefn.Parameters.Append(prmFixedStart)
-		
-			Dim prmStartFrequency = cmdDefn.CreateParameter("startFrequency", 3, 2)	'3=integer, 2=output
-			cmdDefn.Parameters.Append(prmStartFrequency)
-		
-			Dim prmStartPeriod = cmdDefn.CreateParameter("startPeriod", 3, 2)	'3=integer, 2=output
-			cmdDefn.Parameters.Append(prmStartPeriod)
-		
-			Dim prmCustomStartID = cmdDefn.CreateParameter("customStartID", 3, 2)	'3=integer, 2=output
-			cmdDefn.Parameters.Append(prmCustomStartID)
-		
-			Dim prmCustomStartName = cmdDefn.CreateParameter("customStartName", 200, 2, 8000)	'200=varchar, 2=output, 8000=size
-			cmdDefn.Parameters.Append(prmCustomStartName)
-		
-			Dim prmStartDateCalcHidden = cmdDefn.CreateParameter("startDateCalcHidden", 11, 2) '11=bit, 2=output
-			cmdDefn.Parameters.Append(prmStartDateCalcHidden)
-		
-			Dim prmEndType = cmdDefn.CreateParameter("endType", 3, 2)	'3=integer, 2=output
-			cmdDefn.Parameters.Append(prmEndType)
-
-			Dim prmFixedEnd = cmdDefn.CreateParameter("fixedEnd", 135, 2)	'135=datetime, 2=output
-			cmdDefn.Parameters.Append(prmFixedEnd)
-		
-			Dim prmEndFrequency = cmdDefn.CreateParameter("endFrequency", 3, 2)	'3=integer, 2=output
-			cmdDefn.Parameters.Append(prmEndFrequency)
-		
-			Dim prmEndPeriod = cmdDefn.CreateParameter("endPeriod", 3, 2)	'3=integer, 2=output
-			cmdDefn.Parameters.Append(prmEndPeriod)
-		
-			Dim prmCustomEndID = cmdDefn.CreateParameter("customEndID", 3, 2)	'3=integer, 2=output
-			cmdDefn.Parameters.Append(prmCustomEndID)
-
-			Dim prmCustomEndName = cmdDefn.CreateParameter("customEndName", 200, 2, 8000)	'200=varchar, 2=output, 8000=size
-			cmdDefn.Parameters.Append(prmCustomEndName)
-		
-			Dim prmEndDateCalcHidden = cmdDefn.CreateParameter("endDateCalcHidden", 11, 2) '11=bit, 2=output
-			cmdDefn.Parameters.Append(prmEndDateCalcHidden)
-		
-			Dim prmShadeBHols = cmdDefn.CreateParameter("shadeBHols", 11, 2) '11=bit, 2=output
-			cmdDefn.Parameters.Append(prmShadeBHols)
-		
-			Dim prmShowCaptions = cmdDefn.CreateParameter("showCaptions", 11, 2) '11=bit, 2=output
-			cmdDefn.Parameters.Append(prmShowCaptions)
-		
-			Dim prmShadeWeekends = cmdDefn.CreateParameter("shadeWeekends", 11, 2) '11=bit, 2=output
-			cmdDefn.Parameters.Append(prmShadeWeekends)
-		
-			Dim prmStartOnCurrentMonth = cmdDefn.CreateParameter("startOnCurrentMonth", 11, 2) '11=bit, 2=output
-			cmdDefn.Parameters.Append(prmStartOnCurrentMonth)
-		
-			Dim prmIncludeWorkingDaysOnly = cmdDefn.CreateParameter("includeWorkingDaysOnly", 11, 2) '11=bit, 2=output
-			cmdDefn.Parameters.Append(prmIncludeWorkingDaysOnly)
-		
-			Dim prmIncludeBHols = cmdDefn.CreateParameter("includeBHols", 11, 2) '11=bit, 2=output
-			cmdDefn.Parameters.Append(prmIncludeBHols)
-			'-----------------------------------------
-			Dim prmOutputPreview = cmdDefn.CreateParameter("outputPreview", 11, 2) '11=bit, 2=output
-			cmdDefn.Parameters.Append(prmOutputPreview)
-		
-			Dim prmOutputFormat = cmdDefn.CreateParameter("outputFormat", 3, 2)	'3=integer, 2=output
-			cmdDefn.Parameters.Append(prmOutputFormat)
-		
-			Dim prmOutputScreen = cmdDefn.CreateParameter("outputScreen", 11, 2) '11=bit, 2=output
-			cmdDefn.Parameters.Append(prmOutputScreen)
-		
-			Dim prmOutputPrinter = cmdDefn.CreateParameter("outputPrinter", 11, 2) '11=bit, 2=output
-			cmdDefn.Parameters.Append(prmOutputPrinter)
-		
-			Dim prmOutputPrinterName = cmdDefn.CreateParameter("outputPrinterName", 200, 2, 8000)	'200=varchar, 2=output, 8000=size
-			cmdDefn.Parameters.Append(prmOutputPrinterName)
-		
-			Dim prmOutputSave = cmdDefn.CreateParameter("outputSave", 11, 2) '11=bit, 2=output
-			cmdDefn.Parameters.Append(prmOutputSave)
-		
-			Dim prmOutputSaveExisting = cmdDefn.CreateParameter("outputSaveExisting", 3, 2)	'3=integer, 2=output
-			cmdDefn.Parameters.Append(prmOutputSaveExisting)
-		
-			Dim prmOutputEmail = cmdDefn.CreateParameter("outputEmail", 11, 2) '11=bit, 2=output
-			cmdDefn.Parameters.Append(prmOutputEmail)
-		
-			Dim prmOutputEmailAddr = cmdDefn.CreateParameter("outputEmailAddr", 3, 2)	'3=integer, 2=output
-			cmdDefn.Parameters.Append(prmOutputEmailAddr)
-		
-			Dim prmOutputEmailAddrName = cmdDefn.CreateParameter("outputEmailAddrName", 200, 2, 8000)	'200=varchar, 2=output, 8000=size
-			cmdDefn.Parameters.Append(prmOutputEmailAddrName)
-		
-			Dim prmOutputEmailSubject = cmdDefn.CreateParameter("outputEmailSubject", 200, 2, 8000)	'200=varchar, 2=output, 8000=size
-			cmdDefn.Parameters.Append(prmOutputEmailSubject)
-
-			Dim prmOutputEmailAttachAs = cmdDefn.CreateParameter("outputEmailAttachAs", 200, 2, 8000)	'200=varchar, 2=output, 8000=size
-			cmdDefn.Parameters.Append(prmOutputEmailAttachAs)
-
-			Dim prmOutputFilename = cmdDefn.CreateParameter("outputFilename", 200, 2, 8000)	'200=varchar, 2=output, 8000=size
-			cmdDefn.Parameters.Append(prmOutputFilename)
-			'-----------------------------------------
-	
-			Dim prmTimestamp = cmdDefn.CreateParameter("timestamp", 3, 2)	' 3=integer, 2=output
-			cmdDefn.Parameters.Append(prmTimestamp)
-
-			Err.Number = 0
-			Dim rstDefinition = cmdDefn.Execute
-		
-			Dim iHiddenEventFilterCount = 0
-			Dim iCount = 0
-			If (Err.Number <> 0) Then
-				sErrMsg = CType(("'" & Session("utilname") & "' report definition could not be read." & vbCrLf) & FormatError(Err.Description), String)
-			Else
-				If rstDefinition.state <> 0 Then
-					' Read recordset values.
-					iCount = 0
-					Do While Not rstDefinition.EOF
-						iCount = iCount + 1
+				For Each objRow As DataRow In rstDefinition.Rows
+					iCount += 1
 					
-						Response.Write("<INPUT type='hidden' id=txtReportDefnEvent_" & iCount & " name=txtReportDefnEvent_" & iCount & " value=""" & Replace(rstDefinition.fields("definitionString").value, """", "&quot;") & """>" & vbCrLf)
+					Response.Write("<input type='hidden' id=txtReportDefnEvent_" & iCount & " name=txtReportDefnEvent_" & iCount & " value=""" & Replace(objRow("definitionString").ToString(), """", "&quot;") & """>" & vbCrLf)
 					
-						If rstDefinition.fields("FilterHidden").value = "Y" Then
-							iHiddenEventFilterCount = iHiddenEventFilterCount + 1
-						End If
+					If objRow("FilterHidden").ToString() = "Y" Then
+						iHiddenEventFilterCount += 1
+					End If
 					
-						rstDefinition.MoveNext()
-					Loop
-
-					' Release the ADO recordset object.
-					rstDefinition.close()
-				End If
-				rstDefinition = Nothing
+				Next
 			
 				Session("hiddenfiltercount") = iHiddenEventFilterCount
 				Session("CalendarEventCount") = iCount
 				' NB. IMPORTANT ADO NOTE.
 				' When calling a stored procedure which returns a recordset AND has output parameters
 				' you need to close the recordset and set it to nothing before using the output parameters. 
-				If Len(cmdDefn.Parameters("errMsg").value) > 0 Then
-					sErrMsg = CType(("'" & Session("utilname") & "' " & cmdDefn.Parameters("errMsg").value), String)
+				If Len(prmErrMsg.Value) > 0 Then
+					sErrMsg = CType(("'" & Session("utilname") & "' " & prmErrMsg.Value), String)
 				End If
 
-	            Response.Write("<INPUT type='hidden' id=txtDefn_Name name=txtDefn_Name value=""" & Replace(cmdDefn.Parameters("name").value, """", "&quot;") & """>" & vbCrLf)
-				Response.Write("<INPUT type='hidden' id=txtDefn_Owner name=txtDefn_Owner value=""" & Replace(cmdDefn.Parameters("owner").value, """", "&quot;") & """>" & vbCrLf)
-				Response.Write("<INPUT type='hidden' id=txtDefn_Description name=txtDefn_Description value=""" & Replace(cmdDefn.Parameters("description").value, """", "&quot;") & """>" & vbCrLf)
-				Response.Write("<INPUT type='hidden' id=txtDefn_BaseTableID name=txtDefn_BaseTableID value=" & cmdDefn.Parameters("baseTableID").value & ">" & vbCrLf)
-				Response.Write("<INPUT type='hidden' id=txtDefn_AllRecords name=txtDefn_AllRecords value=" & cmdDefn.Parameters("allRecords").value & ">" & vbCrLf)
-				Response.Write("<INPUT type='hidden' id=txtDefn_PicklistID name=txtDefn_PicklistID value=" & cmdDefn.Parameters("picklistID").value & ">" & vbCrLf)
-				Response.Write("<INPUT type='hidden' id=txtDefn_PicklistName name=txtDefn_PicklistName value=""" & Replace(cmdDefn.Parameters("picklistName").value, """", "&quot;") & """>" & vbCrLf)
-				Response.Write("<INPUT type='hidden' id=txtDefn_PicklistHidden name=txtDefn_PicklistHidden value=" & cmdDefn.Parameters("picklistHidden").value & ">" & vbCrLf)
-				Response.Write("<INPUT type='hidden' id=txtDefn_FilterID name=txtDefn_FilterID value=" & cmdDefn.Parameters("filterID").value & ">" & vbCrLf)
-				Response.Write("<INPUT type='hidden' id=txtDefn_FilterName name=txtDefn_FilterName value=""" & Replace(cmdDefn.Parameters("filterName").value, """", "&quot;") & """>" & vbCrLf)
-				Response.Write("<INPUT type='hidden' id=txtDefn_FilterHidden name=txtDefn_FilterHidden value=" & cmdDefn.Parameters("filterHidden").value & ">" & vbCrLf)
-				Response.Write("<INPUT type='hidden' id=txtDefn_PrintFilterHeader name=txtDefn_PrintFilterHeader value=" & cmdDefn.Parameters("PrintFilterHeader").value & ">" & vbCrLf)
-				Response.Write("<INPUT type='hidden' id=txtDefn_Desc1ID name=txtDefn_Desc1ID value=" & cmdDefn.Parameters("Desc1ID").value & ">" & vbCrLf)
-				Response.Write("<INPUT type='hidden' id=txtDefn_Desc2ID name=txtDefn_Desc2ID value=" & cmdDefn.Parameters("Desc2ID").value & ">" & vbCrLf)
-				Response.Write("<INPUT type='hidden' id=txtDefn_DescExprID name=txtDefn_DescExprID value=" & cmdDefn.Parameters("descExprID").value & ">" & vbCrLf)
-				If IsDBNull(cmdDefn.Parameters("descExprName").value) Then
-					Response.Write("<INPUT type='hidden' id=txtDefn_DescExprName name=txtDefn_DescExprName value="""">" & vbCrLf)
+				Response.Write("<input type='hidden' id=txtDefn_Name name=txtDefn_Name value=""" & Replace(prmName.Value.ToString(), """", "&quot;") & """>" & vbCrLf)
+				Response.Write("<input type='hidden' id=txtDefn_Owner name=txtDefn_Owner value=""" & Replace(prmOwner.Value.ToString(), """", "&quot;") & """>" & vbCrLf)
+				Response.Write("<input type='hidden' id=txtDefn_Description name=txtDefn_Description value=""" & Replace(prmDescription.Value.ToString(), """", "&quot;") & """>" & vbCrLf)
+				Response.Write("<input type='hidden' id=txtDefn_BaseTableID name=txtDefn_BaseTableID value=" & prmBaseTableID.Value & ">" & vbCrLf)
+				Response.Write("<input type='hidden' id=txtDefn_AllRecords name=txtDefn_AllRecords value=" & prmAllRecords.Value & ">" & vbCrLf)
+				Response.Write("<input type='hidden' id=txtDefn_PicklistID name=txtDefn_PicklistID value=" & prmPicklistID.Value & ">" & vbCrLf)
+				Response.Write("<input type='hidden' id=txtDefn_PicklistName name=txtDefn_PicklistName value=""" & Replace(prmPicklistName.Value.ToString(), """", "&quot;") & """>" & vbCrLf)
+				Response.Write("<input type='hidden' id=txtDefn_PicklistHidden name=txtDefn_PicklistHidden value=" & prmPicklistHidden.Value & ">" & vbCrLf)
+				Response.Write("<input type='hidden' id=txtDefn_FilterID name=txtDefn_FilterID value=" & prmFilterID.Value & ">" & vbCrLf)
+				Response.Write("<input type='hidden' id=txtDefn_FilterName name=txtDefn_FilterName value=""" & Replace(prmFilterName.Value.ToString(), """", "&quot;") & """>" & vbCrLf)
+				Response.Write("<input type='hidden' id=txtDefn_FilterHidden name=txtDefn_FilterHidden value=" & prmFilterHidden.Value & ">" & vbCrLf)
+				Response.Write("<input type='hidden' id=txtDefn_PrintFilterHeader name=txtDefn_PrintFilterHeader value=" & prmPrintFilterHeader.Value & ">" & vbCrLf)
+				Response.Write("<input type='hidden' id=txtDefn_Desc1ID name=txtDefn_Desc1ID value=" & prmDesc1ID.Value & ">" & vbCrLf)
+				Response.Write("<input type='hidden' id=txtDefn_Desc2ID name=txtDefn_Desc2ID value=" & prmDesc2ID.Value & ">" & vbCrLf)
+				Response.Write("<input type='hidden' id=txtDefn_DescExprID name=txtDefn_DescExprID value=" & prmDescExprID.Value & ">" & vbCrLf)
+				If IsDBNull(prmDescExprName.Value) Then
+					Response.Write("<input type='hidden' id=txtDefn_DescExprName name=txtDefn_DescExprName value="""">" & vbCrLf)
 				Else
-					Response.Write("<INPUT type='hidden' id=txtDefn_DescExprName name=txtDefn_DescExprName value=""" & Replace(cmdDefn.Parameters("descExprName").value, """", "&quot;") & """>" & vbCrLf)
+					Response.Write("<input type='hidden' id=txtDefn_DescExprName name=txtDefn_DescExprName value=""" & Replace(prmDescExprName.Value.ToString(), """", "&quot;") & """>" & vbCrLf)
 				End If
-				Response.Write("<INPUT type='hidden' id=txtDefn_DescExprHidden name=txtDefn_DescExprHidden value=" & cmdDefn.Parameters("descCalcHidden").value & ">" & vbCrLf)
-				Response.Write("<INPUT type='hidden' id=txtDefn_RegionID name=txtDefn_RegionID value=" & cmdDefn.Parameters("RegionID").value & ">" & vbCrLf)
-				Response.Write("<INPUT type='hidden' id=txtDefn_GroupByDesc name=txtDefn_GroupByDesc value=" & cmdDefn.Parameters("GroupByDesc").value & ">" & vbCrLf)
-				Response.Write("<INPUT type='hidden' id=txtDefn_DescSeparator name=txtDefn_DescSeparator value=""" & cmdDefn.Parameters("DescSeparator").value & """>" & vbCrLf)
+				Response.Write("<input type='hidden' id=txtDefn_DescExprHidden name=txtDefn_DescExprHidden value=" & prmDescCalcHidden.Value & ">" & vbCrLf)
+				Response.Write("<input type='hidden' id=txtDefn_RegionID name=txtDefn_RegionID value=" & prmRegionID.Value & ">" & vbCrLf)
+				Response.Write("<input type='hidden' id=txtDefn_GroupByDesc name=txtDefn_GroupByDesc value=" & prmGroupByDesc.Value & ">" & vbCrLf)
+				Response.Write("<input type='hidden' id=txtDefn_DescSeparator name=txtDefn_DescSeparator value=""" & prmDescSeparator.Value & """>" & vbCrLf)
 
-				Response.Write("<INPUT type='hidden' id=txtDefn_StartType name=txtDefn_StartType value=" & cmdDefn.Parameters("StartType").value & ">" & vbCrLf)
+				Response.Write("<input type='hidden' id=txtDefn_StartType name=txtDefn_StartType value=" & prmStartType.Value & ">" & vbCrLf)
 			
-				If IsDBNull(cmdDefn.Parameters("FixedStart").value) Then
-					Response.Write("<INPUT type='hidden' id=txtDefn_FixedStart name=txtDefn_FixedStart value="""">" & vbCrLf)
+				If IsDBNull(prmFixedStart.Value) Then
+					Response.Write("<input type='hidden' id=txtDefn_FixedStart name=txtDefn_FixedStart value="""">" & vbCrLf)
 				Else
-					Response.Write("<INPUT type='hidden' id=txtDefn_FixedStart name=txtDefn_FixedStart value=" & ConvertSqlDateToLocale(cmdDefn.Parameters("FixedStart").value) & ">" & vbCrLf)
+					Response.Write("<input type='hidden' id=txtDefn_FixedStart name=txtDefn_FixedStart value=" & ConvertSQLDateToLocale(prmFixedStart.Value) & ">" & vbCrLf)
 				End If
-				Response.Write("<INPUT type='hidden' id=txtDefn_StartFrequency name=txtDefn_StartFrequency value=" & cmdDefn.Parameters("StartFrequency").value & ">" & vbCrLf)
-				Response.Write("<INPUT type='hidden' id=txtDefn_StartPeriod name=txtDefn_StartPeriod value=" & cmdDefn.Parameters("StartPeriod").value & ">" & vbCrLf)
-				Response.Write("<INPUT type='hidden' id=txtDefn_CustomStartID name=txtDefn_CustomStartID value=" & cmdDefn.Parameters("customStartID").value & ">" & vbCrLf)
-				If IsDBNull(cmdDefn.Parameters("customStartName").value) Then
-					Response.Write("<INPUT type='hidden' id=txtDefn_CustomStartName name=txtDefn_CustomStartName value="""">" & vbCrLf)
+				Response.Write("<input type='hidden' id=txtDefn_StartFrequency name=txtDefn_StartFrequency value=" & prmStartFrequency.Value & ">" & vbCrLf)
+				Response.Write("<input type='hidden' id=txtDefn_StartPeriod name=txtDefn_StartPeriod value=" & prmStartPeriod.Value & ">" & vbCrLf)
+				Response.Write("<input type='hidden' id=txtDefn_CustomStartID name=txtDefn_CustomStartID value=" & prmCustomStartID.Value & ">" & vbCrLf)
+				If IsDBNull(prmCustomStartName.Value) Then
+					Response.Write("<input type='hidden' id=txtDefn_CustomStartName name=txtDefn_CustomStartName value="""">" & vbCrLf)
 				Else
-					Response.Write("<INPUT type='hidden' id=txtDefn_CustomStartName name=txtDefn_CustomStartName value=""" & Replace(cmdDefn.Parameters("customStartName").value, """", "&quot;") & """>" & vbCrLf)
+					Response.Write("<input type='hidden' id=txtDefn_CustomStartName name=txtDefn_CustomStartName value=""" & Replace(prmCustomStartName.Value.ToString(), """", "&quot;") & """>" & vbCrLf)
 				End If
-				Response.Write("<INPUT type='hidden' id=txtDefn_CustomStartCalcHidden name=txtDefn_CustomStartCalcHidden value=" & cmdDefn.Parameters("startDateCalcHidden").value & ">" & vbCrLf)
-				Response.Write("<INPUT type='hidden' id=txtDefn_EndType name=txtDefn_EndType value=" & cmdDefn.Parameters("EndType").value & ">" & vbCrLf)
-				Response.Write("<INPUT type='hidden' id=txtDefn_FixedEnd name=txtDefn_FixedEnd value=" & ConvertSqlDateToLocale(cmdDefn.Parameters("FixedEnd").value) & ">" & vbCrLf)
-				Response.Write("<INPUT type='hidden' id=txtDefn_EndFrequency name=txtDefn_EndFrequency value=" & cmdDefn.Parameters("EndFrequency").value & ">" & vbCrLf)
-				Response.Write("<INPUT type='hidden' id=txtDefn_EndPeriod name=txtDefn_EndPeriod value=" & cmdDefn.Parameters("EndPeriod").value & ">" & vbCrLf)
-				Response.Write("<INPUT type='hidden' id=txtDefn_CustomEndID name=txtDefn_CustomEndID value=" & cmdDefn.Parameters("customEndID").value & ">" & vbCrLf)
-				If IsDBNull(cmdDefn.Parameters("customEndName").value) Then
-					Response.Write("<INPUT type='hidden' id=txtDefn_CustomEndName name=txtDefn_CustomEndName value="""">" & vbCrLf)
+				Response.Write("<input type='hidden' id=txtDefn_CustomStartCalcHidden name=txtDefn_CustomStartCalcHidden value=" & prmStartDateCalcHidden.Value & ">" & vbCrLf)
+				Response.Write("<input type='hidden' id=txtDefn_EndType name=txtDefn_EndType value=" & prmEndType.Value & ">" & vbCrLf)
+				Response.Write("<input type='hidden' id=txtDefn_FixedEnd name=txtDefn_FixedEnd value=" & ConvertSQLDateToLocale(prmFixedEnd.Value) & ">" & vbCrLf)
+				Response.Write("<input type='hidden' id=txtDefn_EndFrequency name=txtDefn_EndFrequency value=" & prmEndFrequency.Value & ">" & vbCrLf)
+				Response.Write("<input type='hidden' id=txtDefn_EndPeriod name=txtDefn_EndPeriod value=" & prmEndPeriod.Value & ">" & vbCrLf)
+				Response.Write("<input type='hidden' id=txtDefn_CustomEndID name=txtDefn_CustomEndID value=" & prmCustomEndID.Value & ">" & vbCrLf)
+				If IsDBNull(prmCustomEndName.Value) Then
+					Response.Write("<input type='hidden' id=txtDefn_CustomEndName name=txtDefn_CustomEndName value="""">" & vbCrLf)
 				Else
-					Response.Write("<INPUT type='hidden' id=txtDefn_CustomEndName name=txtDefn_CustomEndName value=""" & Replace(cmdDefn.Parameters("customEndName").value, """", "&quot;") & """>" & vbCrLf)
+					Response.Write("<input type='hidden' id=txtDefn_CustomEndName name=txtDefn_CustomEndName value=""" & Replace(prmCustomEndName.Value.ToString(), """", "&quot;") & """>" & vbCrLf)
 				End If
-				Response.Write("<INPUT type='hidden' id=txtDefn_CustomEndCalcHidden name=txtDefn_CustomEndCalcHidden value=" & cmdDefn.Parameters("endDateCalcHidden").value & ">" & vbCrLf)
-				Response.Write("<INPUT type='hidden' id=txtDefn_ShadeBHols name=txtDefn_ShadeBHols value=" & cmdDefn.Parameters("ShadeBHols").value & ">" & vbCrLf)
-				Response.Write("<INPUT type='hidden' id=txtDefn_ShowCaptions name=txtDefn_ShowCaptions value=" & cmdDefn.Parameters("ShowCaptions").value & ">" & vbCrLf)
-				Response.Write("<INPUT type='hidden' id=txtDefn_ShadeWeekends name=txtDefn_ShadeWeekends value=" & cmdDefn.Parameters("ShadeWeekends").value & ">" & vbCrLf)
-				Response.Write("<INPUT type='hidden' id=txtDefn_StartOnCurrentMonth name=txtDefn_StartOnCurrentMonth value=" & cmdDefn.Parameters("StartOnCurrentMonth").value & ">" & vbCrLf)
-				Response.Write("<INPUT type='hidden' id=txtDefn_IncludeWorkingDaysOnly name=txtDefn_IncludeWorkingDaysOnly value=" & cmdDefn.Parameters("IncludeWorkingDaysOnly").value & ">" & vbCrLf)
-				Response.Write("<INPUT type='hidden' id=txtDefn_IncludeBHols name=txtDefn_IncludeBHols value=" & cmdDefn.Parameters("IncludeBHols").value & ">" & vbCrLf)
+				Response.Write("<input type='hidden' id=txtDefn_CustomEndCalcHidden name=txtDefn_CustomEndCalcHidden value=" & prmEndDateCalcHidden.Value & ">" & vbCrLf)
+				Response.Write("<input type='hidden' id=txtDefn_ShadeBHols name=txtDefn_ShadeBHols value=" & prmShadeBHols.Value & ">" & vbCrLf)
+				Response.Write("<input type='hidden' id=txtDefn_ShowCaptions name=txtDefn_ShowCaptions value=" & prmShowCaptions.Value & ">" & vbCrLf)
+				Response.Write("<input type='hidden' id=txtDefn_ShadeWeekends name=txtDefn_ShadeWeekends value=" & prmShadeWeekends.Value & ">" & vbCrLf)
+				Response.Write("<input type='hidden' id=txtDefn_StartOnCurrentMonth name=txtDefn_StartOnCurrentMonth value=" & prmStartOnCurrentMonth.Value & ">" & vbCrLf)
+				Response.Write("<input type='hidden' id=txtDefn_IncludeWorkingDaysOnly name=txtDefn_IncludeWorkingDaysOnly value=" & prmIncludeWorkingDaysOnly.Value & ">" & vbCrLf)
+				Response.Write("<input type='hidden' id=txtDefn_IncludeBHols name=txtDefn_IncludeBHols value=" & prmIncludeBHols.Value & ">" & vbCrLf)
 			
-				Response.Write("<INPUT type='hidden' id=txtDefn_OutputPreview name=txtDefn_OutputPreview value=" & cmdDefn.Parameters("OutputPreview").value & ">" & vbCrLf)
-				Response.Write("<INPUT type='hidden' id=txtDefn_OutputFormat name=txtDefn_OutputFormat value=" & cmdDefn.Parameters("OutputFormat").value & ">" & vbCrLf)
-				Response.Write("<INPUT type='hidden' id=txtDefn_OutputScreen name=txtDefn_OutputScreen value=" & cmdDefn.Parameters("OutputScreen").value & ">" & vbCrLf)
-				Response.Write("<INPUT type='hidden' id=txtDefn_OutputPrinter name=txtDefn_OutputPrinter value=" & cmdDefn.Parameters("OutputPrinter").value & ">" & vbCrLf)
-				Response.Write("<INPUT type='hidden' id=txtDefn_OutputPrinterName name=txtDefn_OutputPrinterName value=""" & cmdDefn.Parameters("OutputPrinterName").value & """>" & vbCrLf)
-				Response.Write("<INPUT type='hidden' id=txtDefn_OutputSave name=txtDefn_OutputSave value=" & cmdDefn.Parameters("OutputSave").value & ">" & vbCrLf)
-				Response.Write("<INPUT type='hidden' id=txtDefn_OutputSaveExisting name=txtDefn_OutputSaveExisting value=" & cmdDefn.Parameters("OutputSaveExisting").value & ">" & vbCrLf)
-				Response.Write("<INPUT type='hidden' id=txtDefn_OutputEmail name=txtDefn_OutputEmail value=" & cmdDefn.Parameters("OutputEmail").value & ">" & vbCrLf)
-				Response.Write("<INPUT type='hidden' id=txtDefn_OutputEmailAddr name=txtDefn_OutputEmailAddr value=" & cmdDefn.Parameters("OutputEmailAddr").value & ">" & vbCrLf)
-				Response.Write("<INPUT type='hidden' id=txtDefn_OutputEmailAddrName name=txtDefn_OutputEmailName value=""" & Replace(cmdDefn.Parameters("OutputEmailAddrName").value, """", "&quot;") & """>" & vbCrLf)
-				Response.Write("<INPUT type='hidden' id=txtDefn_OutputEmailSubject name=txtDefn_OutputEmailSubject value=""" & Replace(cmdDefn.Parameters("OutputEmailSubject").value, """", "&quot;") & """>" & vbCrLf)
-				Response.Write("<INPUT type='hidden' id=txtDefn_OutputEmailAttachAs name=txtDefn_OutputEmailAttachAs value=""" & Replace(cmdDefn.Parameters("OutputEmailAttachAs").value, """", "&quot;") & """>" & vbCrLf)
-				Response.Write("<INPUT type='hidden' id=txtDefn_OutputFilename name=txtDefn_OutputFilename value=""" & cmdDefn.Parameters("OutputFilename").value & """>" & vbCrLf)
+				Response.Write("<input type='hidden' id=txtDefn_OutputPreview name=txtDefn_OutputPreview value=" & prmOutputPreview.Value & ">" & vbCrLf)
+				Response.Write("<input type='hidden' id=txtDefn_OutputFormat name=txtDefn_OutputFormat value=" & prmOutputFormat.Value & ">" & vbCrLf)
+				Response.Write("<input type='hidden' id=txtDefn_OutputScreen name=txtDefn_OutputScreen value=" & prmOutputScreen.Value & ">" & vbCrLf)
+				Response.Write("<input type='hidden' id=txtDefn_OutputPrinter name=txtDefn_OutputPrinter value=" & prmOutputPrinter.Value & ">" & vbCrLf)
+				Response.Write("<input type='hidden' id=txtDefn_OutputPrinterName name=txtDefn_OutputPrinterName value=""" & prmOutputPrinterName.Value & """>" & vbCrLf)
+				Response.Write("<input type='hidden' id=txtDefn_OutputSave name=txtDefn_OutputSave value=" & prmOutputSave.Value & ">" & vbCrLf)
+				Response.Write("<input type='hidden' id=txtDefn_OutputSaveExisting name=txtDefn_OutputSaveExisting value=" & prmOutputSaveExisting.Value & ">" & vbCrLf)
+				Response.Write("<input type='hidden' id=txtDefn_OutputEmail name=txtDefn_OutputEmail value=" & prmOutputEmail.Value & ">" & vbCrLf)
+				Response.Write("<input type='hidden' id=txtDefn_OutputEmailAddr name=txtDefn_OutputEmailAddr value=" & prmOutputEmailAddr.Value & ">" & vbCrLf)
+				Response.Write("<input type='hidden' id=txtDefn_OutputEmailAddrName name=txtDefn_OutputEmailName value=""" & Replace(prmOutputEmailAddrName.Value.ToString(), """", "&quot;") & """>" & vbCrLf)
+				Response.Write("<input type='hidden' id=txtDefn_OutputEmailSubject name=txtDefn_OutputEmailSubject value=""" & Replace(prmOutputEmailSubject.Value.ToString(), """", "&quot;") & """>" & vbCrLf)
+				Response.Write("<input type='hidden' id=txtDefn_OutputEmailAttachAs name=txtDefn_OutputEmailAttachAs value=""" & Replace(prmOutputEmailAttachAs.Value.ToString(), """", "&quot;") & """>" & vbCrLf)
+				Response.Write("<input type='hidden' id=txtDefn_OutputFilename name=txtDefn_OutputFilename value=""" & prmOutputFilename.Value & """>" & vbCrLf)
 			
-				Response.Write("<INPUT type='hidden' id=txtDefn_Timestamp name=txtDefn_Timestamp value=" & cmdDefn.Parameters("timestamp").value & ">" & vbCrLf)
+				Response.Write("<input type='hidden' id=txtDefn_Timestamp name=txtDefn_Timestamp value=" & prmTimestamp.Value & ">" & vbCrLf)
 
 				'********************************************************************************
 
-				Dim cmdReportOrder = CreateObject("ADODB.Command")
-				cmdReportOrder.CommandText = "spASRIntGetCalendarReportOrder"
-				cmdReportOrder.CommandType = 4	'Stored Procedure
-				cmdReportOrder.ActiveConnection = Session("databaseConnection")
-		
-				Dim prmUtilID2 = cmdReportOrder.CreateParameter("utilID2", 3, 1) ' 3=integer, 1=input
-				cmdReportOrder.Parameters.Append(prmUtilID2)
-				prmUtilID2.value = CleanNumeric(Session("utilid"))
-		
-				Dim prmErrMsg2 = cmdReportOrder.CreateParameter("errMsg2", 200, 2, 8000) '200=varchar, 2=output, 8000=size
-				cmdReportOrder.Parameters.Append(prmErrMsg2)
+				Dim prmErrMsg2 = New SqlParameter("psErrorMsg", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
 
-				Err.Clear()
-				Dim rstOrder = cmdReportOrder.Execute
+				Dim rstOrder = objDataAccess.GetFromSP("spASRIntGetCalendarReportOrder", _
+						New SqlParameter("@piCalendarReportID", SqlDbType.Int) With {.Value = CleanNumeric(Session("utilid"))}, _
+						prmErrMsg2)
 		
 				iCount = 0
-				If (Err.Number <> 0) Then
-					sErrMsg = "'" & Session("utilname") & "' report order definition could not be read." & vbCrLf & FormatError(Err.Description)
-				Else
-					If rstOrder.state <> 0 Then
-						' Read recordset values.
-			
-						Do While Not rstOrder.EOF
-							iCount = iCount + 1
-							Response.Write("<INPUT type='hidden' id=txtReportDefnOrder_" & iCount & " name=txtReportDefnOrder_" & iCount & " value=""" & rstOrder.fields("orderString").value & """>" & vbCrLf)
-
-							rstOrder.MoveNext()
-						Loop
-						' Release the ADO recordset object.
-						rstOrder.close()
-					End If
-					rstOrder = Nothing
-				End If
+				For Each objRow As DataRow In rstOrder.Rows
+					iCount += 1
+					Response.Write("<input type='hidden' id=txtReportDefnOrder_" & iCount & " name=txtReportDefnOrder_" & iCount & " value=""" & objRow("orderString").ToString() & """>" & vbCrLf)
+				Next
 
 				Session("CalendarOrderCount") = iCount
 
-				' NB. IMPORTANT ADO NOTE.
-				' When calling a stored procedure which returns a recordset AND has output parameters
-				' you need to close the recordset and set it to nothing before using the output parameters. 
-				If Len(cmdReportOrder.Parameters("errMsg2").value) > 0 Then
-					sErrMsg = "'" & Session("utilname") & "' " & cmdDefn.Parameters("errMsg2").value
+				If Len(prmErrMsg2.Value) > 0 Then
+					sErrMsg = "'" & Session("utilname") & "' " & prmErrMsg2.Value
 				End If
 
-				cmdReportOrder = Nothing
-
-				'********************************************************************************
-
-			End If
-
-			' Release the ADO command object.
-			cmdDefn = Nothing
-
-			If Len(sErrMsg) > 0 Then
+	
+			Catch ex As Exception
+				sErrMsg = CType(("'" & Session("utilname") & "' report definition could not be read." & vbCrLf) & FormatError(Err.Description), String)
 				Session("confirmtext") = sErrMsg
 				Session("confirmtitle") = "OpenHR Intranet"
-																						
-			Session("followpage") = "defsel"
-																						
-			Session("reaction") = "CALENDARREPORTS"
-																						
-			Response.Clear()
-																						
+				Session("followpage") = "defsel"
+				Session("reaction") = "CALENDARREPORTS"
+				Response.Clear()
 				Response.Redirect("confirmok")
-			End If
+
+			End Try
+
 	
 		Else
 			Session("CalendarEventCount") = 0
