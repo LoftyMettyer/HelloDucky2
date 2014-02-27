@@ -167,8 +167,8 @@
 			
 						<div id ="divSaveButtons" style="text-align:right">
 							
-								<input id="btnDiv2OK" name="btnDiv2OK" type="button" class="btn" value="OK" style="WIDTH: 75px;" onclick="saveLayoutandTheme()" />	
-								<input id="btnDiv2Cancel" name="btnDiv2Cancel" type="button" class="btn" value="Cancel" style="WIDTH: 75px;"  onclick="themeEditor_cancelClick()"/>
+								<input id="btnDiv2OK" name="btnDiv2OK" type="button" class="btn" value="OK" onclick="saveLayoutandTheme()" />	
+								<input id="btnDiv2Cancel" name="btnDiv2Cancel" type="button" class="btn" value="Cancel" onclick="themeEditor_cancelClick()"/>
 						
 								</div>
 		</div>
