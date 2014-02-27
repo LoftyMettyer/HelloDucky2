@@ -1,6 +1,5 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
 <%@ Import Namespace="DMI.NET" %>
-<%@ Import Namespace="ADODB" %>
 <%@ Import Namespace="HR.Intranet.Server.Enums" %>
 <%@ Import Namespace="HR.Intranet.Server" %>
 <%@ Import Namespace="System.Data.SqlClient" %>
@@ -55,41 +54,22 @@
 			Dim sErrorDescription = ""
 
 			' Get the table records.
-			Dim cmdTables As Command = New Command()
-			cmdTables.CommandText = "sp_ASRIntGetCrossTabTablesInfo"
-			cmdTables.CommandType = CommandTypeEnum.adCmdStoredProc
-			cmdTables.ActiveConnection = Session("databaseConnection")
-	
-			Response.Write("<B>Set Connection</B>")
-	
-			Err.Clear()
-			Dim rstTablesInfo = cmdTables.Execute
-	
-			Response.Write("<B>Executed SP</B>")
-	
-			If (Err.Number <> 0) Then
-				sErrorDescription = "The tables information could not be retrieved." & vbCrLf & FormatError(Err.Description)
-			End If
+			Try
+				Dim rstTablesInfo = objDataAccess.GetFromSP("sp_ASRIntGetCrossTabTablesInfo")
+				
+				For Each objRow As DataRow In rstTablesInfo.Rows
+					Response.Write("<input type='hidden' id=txtTableName_" & objRow("tableID") & " name=txtTableName_" & objRow("tableID") & " value=""" & objRow("tableName") & """>" & vbCrLf)
+					Response.Write("<input type='hidden' id=txtTableType_" & objRow("tableID") & " name=txtTableType_" & objRow("tableID") & " value=" & objRow("tableType") & ">" & vbCrLf)
+					Response.Write("<input type='hidden' id=txtTableChildren_" & objRow("tableID") & " name=txtTableChildren_" & objRow("tableID") & " value=""" & objRow("childrenString") & """>" & vbCrLf)
+					Response.Write("<input type='hidden' id=txtTableChildrenNames_" & objRow("tableID") & " name=txtTableChildrenNames_" & objRow("tableID") & " value=""" & objRow("childrenNames") & """>" & vbCrLf)
+					Response.Write("<input type='hidden' id=txtTableParents_" & objRow("tableID") & " name=txtTableParents_" & objRow("tableID") & " value=""" & objRow("parentsString") & """>" & vbCrLf)
+				Next
 
-			If Len(sErrorDescription) = 0 Then
-				' Dim iCount = 0
-				Do While Not rstTablesInfo.EOF
-					Response.Write("<input type='hidden' id=txtTableName_" & rstTablesInfo.fields("tableID").value & " name=txtTableName_" & rstTablesInfo.fields("tableID").value & " value=""" & rstTablesInfo.fields("tableName").value & """>" & vbCrLf)
-					Response.Write("<input type='hidden' id=txtTableType_" & rstTablesInfo.fields("tableID").value & " name=txtTableType_" & rstTablesInfo.fields("tableID").value & " value=" & rstTablesInfo.fields("tableType").value & ">" & vbCrLf)
-					Response.Write("<input type='hidden' id=txtTableChildren_" & rstTablesInfo.fields("tableID").value & " name=txtTableChildren_" & rstTablesInfo.fields("tableID").value & " value=""" & rstTablesInfo.fields("childrenString").value & """>" & vbCrLf)
-					Response.Write("<input type='hidden' id=txtTableChildrenNames_" & rstTablesInfo.fields("tableID").value & " name=txtTableChildrenNames_" & rstTablesInfo.fields("tableID").value & " value=""" & rstTablesInfo.fields("childrenNames").value & """>" & vbCrLf)
-					Response.Write("<input type='hidden' id=txtTableParents_" & rstTablesInfo.fields("tableID").value & " name=txtTableParents_" & rstTablesInfo.fields("tableID").value & " value=""" & rstTablesInfo.fields("parentsString").value & """>" & vbCrLf)
+			Catch ex As Exception
+				sErrorDescription = "The tables information could not be retrieved." & vbCrLf & FormatError(ex.Message)
 
-					rstTablesInfo.MoveNext()
-				Loop
-
-				' Release the ADO recordset object.
-				rstTablesInfo.close()
-				rstTablesInfo = Nothing
-			End If
-	
-			' Release the ADO command object.
-			cmdTables = Nothing
+			End Try
+				
 		%>
 	</form>
 
@@ -105,253 +85,147 @@
 			Dim lngPStart = 0
 			Dim lngPStop = 0
 			Dim lngPStep = 0
-
+			
+			Dim prmErrMsg = New SqlParameter("psErrorMsg", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
+			Dim prmName = New SqlParameter("psReportName", SqlDbType.VarChar, 255) With {.Direction = ParameterDirection.Output}
+			Dim prmOwner = New SqlParameter("psReportOwner", SqlDbType.VarChar, 255) With {.Direction = ParameterDirection.Output}
+			Dim prmDescription = New SqlParameter("psReportDesc", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
+			Dim prmBaseTableID = New SqlParameter("piBaseTableID", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
+			Dim prmAllRecords = New SqlParameter("pfAllRecords", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
+			Dim prmPicklistID = New SqlParameter("piPicklistID", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
+			Dim prmPicklistName = New SqlParameter("psPicklistName", SqlDbType.VarChar, 255) With {.Direction = ParameterDirection.Output}
+			Dim prmPicklistHidden = New SqlParameter("pfPicklistHidden", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
+			Dim prmFilterID = New SqlParameter("piFilterID", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
+			Dim prmFilterName = New SqlParameter("psFilterName", SqlDbType.VarChar, 255) With {.Direction = ParameterDirection.Output}
+			Dim prmFilterHidden = New SqlParameter("pfFilterHidden", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
+			Dim prmPrintFilter = New SqlParameter("pfPrintFilterHeader", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
+			Dim prmHColID = New SqlParameter("HColID", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
+			Dim prmHStart = New SqlParameter("HStart", SqlDbType.VarChar, 20) With {.Direction = ParameterDirection.Output}
+			Dim prmHStop = New SqlParameter("HStop", SqlDbType.VarChar, 20) With {.Direction = ParameterDirection.Output}
+			Dim prmHStep = New SqlParameter("HStep", SqlDbType.VarChar, 20) With {.Direction = ParameterDirection.Output}
+			Dim prmVColID = New SqlParameter("VColID", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
+			Dim prmVStart = New SqlParameter("VStart", SqlDbType.VarChar, 20) With {.Direction = ParameterDirection.Output}
+			Dim prmVStop = New SqlParameter("VStop", SqlDbType.VarChar, 20) With {.Direction = ParameterDirection.Output}
+			Dim prmVStep = New SqlParameter("VStep", SqlDbType.VarChar, 20) With {.Direction = ParameterDirection.Output}
+			Dim prmPColID = New SqlParameter("PColID", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
+			Dim prmPStart = New SqlParameter("PStart", SqlDbType.VarChar, 20) With {.Direction = ParameterDirection.Output}
+			Dim prmPStop = New SqlParameter("PStop", SqlDbType.VarChar, 20) With {.Direction = ParameterDirection.Output}
+			Dim prmPStep = New SqlParameter("PStep", SqlDbType.VarChar, 20) With {.Direction = ParameterDirection.Output}
+			Dim prmIType = New SqlParameter("IType", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
+			Dim prmIColID = New SqlParameter("IColID", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
+			Dim prmPercentage = New SqlParameter("Percentage", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
+			Dim prmPerPage = New SqlParameter("PerPage", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
+			Dim prmSuppress = New SqlParameter("Suppress", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
+			Dim prmThousand = New SqlParameter("Thousand", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
+			Dim prmOutputPreview = New SqlParameter("pfOutputPreview", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
+			Dim prmOutputFormat = New SqlParameter("piOutputFormat", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
+			Dim prmOutputScreen = New SqlParameter("pfOutputScreen", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
+			Dim prmOutputPrinter = New SqlParameter("pfOutputPrinter", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
+			Dim prmOutputPrinterName = New SqlParameter("psOutputPrinterName", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
+			Dim prmOutputSave = New SqlParameter("pfOutputSave", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
+			Dim prmOutputSaveExisting = New SqlParameter("piOutputSaveExisting", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
+			Dim prmOutputEmail = New SqlParameter("pfOutputEmail", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
+			Dim prmOutputEmailAddr = New SqlParameter("piOutputEmailAddr", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
+			Dim prmOutputEmailAddrName = New SqlParameter("psOutputEmailName", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
+			Dim prmOutputEmailSubject = New SqlParameter("psOutputEmailSubject", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
+			Dim prmOutputEmailAttachAs = New SqlParameter("psOutputEmailAttachAs", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
+			Dim prmOutputFilename = New SqlParameter("psOutputFilename", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
+			Dim prmTimestamp = New SqlParameter("piTimestamp", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
+																	
 			If Session("action") <> "new" Then
-				Dim cmdDefn As Command = New Command()
-				cmdDefn.CommandText = "sp_ASRIntGetCrossTabDefinition"
-				cmdDefn.CommandType = CommandTypeEnum.adCmdStoredProc
-				cmdDefn.ActiveConnection = Session("databaseConnection")
-								
-				Dim prmUtilDefnID = cmdDefn.CreateParameter("utilid", 3, 1)	' 3=integer, 1=input
-				cmdDefn.Parameters.Append(prmUtilDefnID)
-				prmUtilDefnID.value = CleanNumeric(Session("utilid"))
-								
-				Dim prmUser = cmdDefn.CreateParameter("user", 200, 1, 8000)	' 200=varchar, 1=input, 8000=size
-				cmdDefn.Parameters.Append(prmUser)
-				prmUser.value = Session("username")
 
-				Dim prmAction = cmdDefn.CreateParameter("action", 200, 1, 8000)	' 200=varchar, 1=input, 8000=size
-				cmdDefn.Parameters.Append(prmAction)
-				prmAction.value = Session("action")
+				Try
+					
+					objDataAccess.GetFromSP("sp_ASRIntGetCrossTabDefinition", _
+							New SqlParameter("piReportID", SqlDbType.Int) With {.Value = CleanNumeric(Session("utilid"))}, _
+							New SqlParameter("psCurrentUser", SqlDbType.VarChar, 255) With {.Value = Session("username")}, _
+							New SqlParameter("psAction", SqlDbType.VarChar, 255) With {.Value = Session("action")}, _
+							prmErrMsg, prmName, prmOwner, prmDescription, prmBaseTableID, _
+							prmAllRecords, prmPicklistID, prmPicklistName, prmPicklistHidden, prmFilterID, prmFilterName, prmFilterHidden, _
+							prmPrintFilter, prmHColID, prmHStart, prmHStop, prmHStep, prmVColID, prmVStart, prmVStop, prmVStep, prmPColID, _
+							prmPStart, prmPStop, prmPStep, prmIType, prmIColID, prmPercentage, prmPerPage, prmSuppress, prmThousand, _
+							prmOutputPreview, prmOutputFormat, prmOutputScreen, prmOutputPrinter, prmOutputPrinterName, prmOutputSave, prmOutputSaveExisting, _
+							prmOutputEmail, prmOutputEmailAddr, prmOutputEmailAddrName, prmOutputEmailSubject, prmOutputEmailAttachAs, prmOutputFilename, prmTimestamp)
 
-				Dim prmErrMsg = cmdDefn.CreateParameter("errMsg", 200, 2, 8000)	'200=varchar, 2=output, 8000=size
-				cmdDefn.Parameters.Append(prmErrMsg)
+					Dim iHiddenCalcCount As Integer = 0
 
-				Dim prmName = cmdDefn.CreateParameter("name", 200, 2, 8000)	'200=varchar, 2=output, 8000=size
-				cmdDefn.Parameters.Append(prmName)
-
-				Dim prmOwner = cmdDefn.CreateParameter("owner", 200, 2, 8000)	'200=varchar, 2=output, 8000=size
-				cmdDefn.Parameters.Append(prmOwner)
-
-				Dim prmDescription = cmdDefn.CreateParameter("description", 200, 2, 8000)	'200=varchar, 2=output, 8000=size
-				cmdDefn.Parameters.Append(prmDescription)
-
-				Dim prmBaseTableID = cmdDefn.CreateParameter("baseTableID", 3, 2)	'3=integer, 2=output
-				cmdDefn.Parameters.Append(prmBaseTableID)
-
-				Dim prmAllRecords = cmdDefn.CreateParameter("allRecords", 11, 2) '11=bit, 2=output
-				cmdDefn.Parameters.Append(prmAllRecords)
-
-				Dim prmPicklistID = cmdDefn.CreateParameter("picklistID", 3, 2)	'3=integer, 2=output
-				cmdDefn.Parameters.Append(prmPicklistID)
-
-				Dim prmPicklistName = cmdDefn.CreateParameter("picklistName", 200, 2, 8000)	'200=varchar, 2=output, 8000=size
-				cmdDefn.Parameters.Append(prmPicklistName)
-
-				Dim prmPicklistHidden = cmdDefn.CreateParameter("picklistHidden", 11, 2) '11=bit, 2=output
-				cmdDefn.Parameters.Append(prmPicklistHidden)
-
-				Dim prmFilterID = cmdDefn.CreateParameter("filterID", 3, 2)	'3=integer, 2=output
-				cmdDefn.Parameters.Append(prmFilterID)
-
-				Dim prmFilterName = cmdDefn.CreateParameter("filterName", 200, 2, 8000)	'200=varchar, 2=output, 8000=size
-				cmdDefn.Parameters.Append(prmFilterName)
-
-				Dim prmFilterHidden = cmdDefn.CreateParameter("filterHidden", 11, 2) '11=bit, 2=output
-				cmdDefn.Parameters.Append(prmFilterHidden)
-		
-				Dim prmPrintFilter = cmdDefn.CreateParameter("PrintFilter", 11, 2) '11=bit, 2=output
-				cmdDefn.Parameters.Append(prmPrintFilter)
-
-				Dim prmHColID = cmdDefn.CreateParameter("HColID", 3, 2)	'3=integer, 2=output
-				cmdDefn.Parameters.Append(prmHColID)
-
-				Dim prmHStart = cmdDefn.CreateParameter("HStart", 200, 2, 20)	'3=integer, 2=output, 20=size
-				cmdDefn.Parameters.Append(prmHStart)
-
-				Dim prmHStop = cmdDefn.CreateParameter("HStop", 200, 2, 20)	'3=integer, 2=output, 20=size
-				cmdDefn.Parameters.Append(prmHStop)
-
-				Dim prmHStep = cmdDefn.CreateParameter("HStep", 200, 2, 20)	'3=integer, 2=output, 20=size
-				cmdDefn.Parameters.Append(prmHStep)
-
-				Dim prmVColID = cmdDefn.CreateParameter("VColID", 3, 2)	'3=integer, 2=output
-				cmdDefn.Parameters.Append(prmVColID)
-
-				Dim prmVStart = cmdDefn.CreateParameter("VStart", 200, 2, 20)	'3=integer, 2=output, 20=size
-				cmdDefn.Parameters.Append(prmVStart)
-
-				Dim prmVStop = cmdDefn.CreateParameter("VStop", 200, 2, 20)	'3=integer, 2=output, 20=size
-				cmdDefn.Parameters.Append(prmVStop)
-
-				Dim prmVStep = cmdDefn.CreateParameter("VStep", 200, 2, 20)	'3=integer, 2=output, 20=size
-				cmdDefn.Parameters.Append(prmVStep)
-
-				Dim prmPColID = cmdDefn.CreateParameter("PColID", 3, 2)	'3=integer, 2=output
-				cmdDefn.Parameters.Append(prmPColID)
-
-				Dim prmPStart = cmdDefn.CreateParameter("PStart", 200, 2, 20)	'3=integer, 2=output, 20=size
-				cmdDefn.Parameters.Append(prmPStart)
-
-				Dim prmPStop = cmdDefn.CreateParameter("PStop", 200, 2, 20)	'3=integer, 2=output, 20=size
-				cmdDefn.Parameters.Append(prmPStop)
-
-				Dim prmPStep = cmdDefn.CreateParameter("PStep", 200, 2, 20)	'3=integer, 2=output, 20=size
-				cmdDefn.Parameters.Append(prmPStep)
-
-				Dim prmIType = cmdDefn.CreateParameter("IType", 3, 2)	'3=integer, 2=output
-				cmdDefn.Parameters.Append(prmIType)
-
-				Dim prmIColID = cmdDefn.CreateParameter("IColID", 3, 2)	'3=integer, 2=output
-				cmdDefn.Parameters.Append(prmIColID)
-
-				Dim prmPercentage = cmdDefn.CreateParameter("Percentage", 11, 2) '11=bit, 2=output
-				cmdDefn.Parameters.Append(prmPercentage)
-
-				Dim prmPerPage = cmdDefn.CreateParameter("PerPage", 11, 2) '11=bit, 2=output
-				cmdDefn.Parameters.Append(prmPerPage)
-
-				Dim prmSuppress = cmdDefn.CreateParameter("Suppress", 11, 2) '11=bit, 2=output
-				cmdDefn.Parameters.Append(prmSuppress)
-
-				Dim prmThousand = cmdDefn.CreateParameter("Thousand", 11, 2) '11=bit, 2=output
-				cmdDefn.Parameters.Append(prmThousand)
-
-				Dim prmOutputPreview = cmdDefn.CreateParameter("outputPreview", 11, 2) '11=bit, 2=output
-				cmdDefn.Parameters.Append(prmOutputPreview)
-		
-				Dim prmOutputFormat = cmdDefn.CreateParameter("outputFormat", 3, 2)	'3=integer, 2=output
-				cmdDefn.Parameters.Append(prmOutputFormat)
-		
-				Dim prmOutputScreen = cmdDefn.CreateParameter("outputScreen", 11, 2) '11=bit, 2=output
-				cmdDefn.Parameters.Append(prmOutputScreen)
-		
-				Dim prmOutputPrinter = cmdDefn.CreateParameter("outputPrinter", 11, 2) '11=bit, 2=output
-				cmdDefn.Parameters.Append(prmOutputPrinter)
-		
-				Dim prmOutputPrinterName = cmdDefn.CreateParameter("outputPrinterName", 200, 2, 8000)	'200=varchar, 2=output, 8000=size
-				cmdDefn.Parameters.Append(prmOutputPrinterName)
-		
-				Dim prmOutputSave = cmdDefn.CreateParameter("outputSave", 11, 2) '11=bit, 2=output
-				cmdDefn.Parameters.Append(prmOutputSave)
-		
-				Dim prmOutputSaveExisting = cmdDefn.CreateParameter("outputSaveExisting", 3, 2)	'3=integer, 2=output
-				cmdDefn.Parameters.Append(prmOutputSaveExisting)
-		
-				Dim prmOutputEmail = cmdDefn.CreateParameter("outputEmail", 11, 2) '11=bit, 2=output
-				cmdDefn.Parameters.Append(prmOutputEmail)
-		
-				Dim prmOutputEmailAddr = cmdDefn.CreateParameter("outputEmailAddr", 3, 2)	'3=integer, 2=output
-				cmdDefn.Parameters.Append(prmOutputEmailAddr)
-
-				Dim prmOutputEmailAddrName = cmdDefn.CreateParameter("outputEmailAddrName", 200, 2, 8000)	'200=varchar, 2=output, 8000=size
-				cmdDefn.Parameters.Append(prmOutputEmailAddrName)
-
-				Dim prmOutputEmailSubject = cmdDefn.CreateParameter("outputEmailSubject", 200, 2, 8000)	'200=varchar, 2=output, 8000=size
-				cmdDefn.Parameters.Append(prmOutputEmailSubject)
-
-				Dim prmOutputEmailAttachAs = cmdDefn.CreateParameter("outputEmailAttachAs", 200, 2, 8000)	'200=varchar, 2=output, 8000=size
-				cmdDefn.Parameters.Append(prmOutputEmailAttachAs)
-
-				Dim prmOutputFilename = cmdDefn.CreateParameter("outputFilename", 200, 2, 8000)	'200=varchar, 2=output, 8000=size
-				cmdDefn.Parameters.Append(prmOutputFilename)
-
-				Dim prmTimestamp = cmdDefn.CreateParameter("timestamp", 3, 2)	' 3=integer, 2=output
-				cmdDefn.Parameters.Append(prmTimestamp)
-
-				Err.Clear()
-				cmdDefn.Execute()
-
-				Dim iHiddenCalcCount As Integer = 0
-				If (Err.Number <> 0) Then
-					sErrMsg = "'" & Session("utilname") & "' cross tab definition could not be read." & vbCrLf & FormatError(Err.Description)
-				Else
-
-					'rstDefinition.close
-					'set rstDefinition = nothing
-
-					' NB. IMPORTANT ADO NOTE.
-					' When calling a stored procedure which returns a recordset AND has output parameters
-					' you need to close the recordset and set it to nothing before using the output parameters. 
-					If Len(cmdDefn.Parameters("errMsg").value) > 0 Then
-						sErrMsg = "'" & Session("utilname") & "' " & cmdDefn.Parameters("errMsg").value
+					If Len(prmErrMsg.Value) > 0 Then
+						sErrMsg = "'" & Session("utilname") & "' " & prmErrMsg.Value
 					End If
 
-					lngHStart = cmdDefn.Parameters("HStart").value
-					lngHStop = cmdDefn.Parameters("HStop").value
-					lngHStep = cmdDefn.Parameters("HStep").value
-					lngVStart = cmdDefn.Parameters("VStart").value
-					lngVStop = cmdDefn.Parameters("VStop").value
-					lngVStep = cmdDefn.Parameters("VStep").value
-					lngPStart = cmdDefn.Parameters("PStart").value
-					lngPStop = cmdDefn.Parameters("PStop").value
-					lngPStep = cmdDefn.Parameters("PStep").value
+					lngHStart = CInt(prmHStart.Value)
+					lngHStop = CInt(prmHStop.Value)
+					lngHStep = CInt(prmHStep.Value)
+					lngVStart = CInt(prmVStart.Value)
+					lngVStop = CInt(prmVStop.Value)
+					lngVStep = CInt(prmVStep.Value)
+					lngPStart = CInt(prmPStart.Value)
+					lngPStop = CInt(prmPStop.Value)
+					lngPStep = CInt(prmPStep.Value)
 
-					Response.Write("<input type='hidden' id=txtDefn_Name name=txtDefn_Name value=""" & Replace(cmdDefn.Parameters("name").value, """", "&quot;") & """>" & vbCrLf)
-					Response.Write("<input type='hidden' id=txtDefn_Owner name=txtDefn_Owner value=""" & Replace(cmdDefn.Parameters("owner").value, """", "&quot;") & """>" & vbCrLf)
-					Response.Write("<input type='hidden' id=txtDefn_Description name=txtDefn_Description value=""" & Replace(cmdDefn.Parameters("description").value, """", "&quot;") & """>" & vbCrLf)
-					Response.Write("<input type='hidden' id=txtDefn_BaseTableID name=txtDefn_BaseTableID value=" & cmdDefn.Parameters("baseTableID").value & ">" & vbCrLf)
-					Response.Write("<input type='hidden' id=txtDefn_AllRecords name=txtDefn_AllRecords value=" & cmdDefn.Parameters("allRecords").value & ">" & vbCrLf)
-					Response.Write("<input type='hidden' id=txtDefn_PicklistID name=txtDefn_PicklistID value=" & cmdDefn.Parameters("picklistID").value & ">" & vbCrLf)
-					Response.Write("<input type='hidden' id=txtDefn_PicklistName name=txtDefn_PicklistName value=""" & Replace(cmdDefn.Parameters("picklistName").value, """", "&quot;") & """>" & vbCrLf)
-					Response.Write("<input type='hidden' id=txtDefn_PicklistHidden name=txtDefn_PicklistHidden value=" & cmdDefn.Parameters("picklistHidden").value & ">" & vbCrLf)
-					Response.Write("<input type='hidden' id=txtDefn_FilterID name=txtDefn_FilterID value=" & cmdDefn.Parameters("filterID").value & ">" & vbCrLf)
-					Response.Write("<input type='hidden' id=txtDefn_FilterName name=txtDefn_FilterName value=""" & Replace(cmdDefn.Parameters("filterName").value, """", "&quot;") & """>" & vbCrLf)
-					Response.Write("<input type='hidden' id=txtDefn_FilterHidden name=txtDefn_FilterHidden value=" & cmdDefn.Parameters("filterHidden").value & ">" & vbCrLf)
-					Response.Write("<input type='hidden' id=txtDefn_FilterHeader name=txtDefn_FilterHeader value=" & cmdDefn.Parameters("PrintFilter").value & ">" & vbCrLf)
-					Response.Write("<input type='hidden' id=txtDefn_PrintFilter name=txtDefn_PrintFilter value=" & cmdDefn.Parameters("PrintFilter").value & ">" & vbCrLf)
-					Response.Write("<input type='hidden' id=txtDefn_HColID name=txtDefn_HColID value=" & cmdDefn.Parameters("HColID").value & ">" & vbCrLf)
-					Response.Write("<input type='hidden' id=txtDefn_HStart name=txtDefn_HStart value=" & cmdDefn.Parameters("HStart").value & ">" & vbCrLf)
-					Response.Write("<input type='hidden' id=txtDefn_HStop name=txtDefn_HStop value=" & cmdDefn.Parameters("HStop").value & ">" & vbCrLf)
-					Response.Write("<input type='hidden' id=txtDefn_HStep name=txtDefn_HStep value=" & cmdDefn.Parameters("HStep").value & ">" & vbCrLf)
-					Response.Write("<input type='hidden' id=txtDefn_VColID name=txtDefn_VColID value=" & cmdDefn.Parameters("VColID").value & ">" & vbCrLf)
-					Response.Write("<input type='hidden' id=txtDefn_VStart name=txtDefn_VStart value=" & cmdDefn.Parameters("VStart").value & ">" & vbCrLf)
-					Response.Write("<input type='hidden' id=txtDefn_VStop name=txtDefn_VStop value=" & cmdDefn.Parameters("VStop").value & ">" & vbCrLf)
-					Response.Write("<input type='hidden' id=txtDefn_VStep name=txtDefn_VStep value=" & cmdDefn.Parameters("VStep").value & ">" & vbCrLf)
-					Response.Write("<input type='hidden' id=txtDefn_PColID name=txtDefn_PColID value=" & cmdDefn.Parameters("PColID").value & ">" & vbCrLf)
-					Response.Write("<input type='hidden' id=txtDefn_PStart name=txtDefn_PStart value=" & cmdDefn.Parameters("PStart").value & ">" & vbCrLf)
-					Response.Write("<input type='hidden' id=txtDefn_PStop name=txtDefn_PStop value=" & cmdDefn.Parameters("PStop").value & ">" & vbCrLf)
-					Response.Write("<input type='hidden' id=txtDefn_PStep name=txtDefn_PStep value=" & cmdDefn.Parameters("PStep").value & ">" & vbCrLf)
-					Response.Write("<input type='hidden' id=txtDefn_IType name=txtDefn_IType value=" & cmdDefn.Parameters("IType").value & ">" & vbCrLf)
-					Response.Write("<input type='hidden' id=txtDefn_IColID name=txtDefn_IColID value=" & cmdDefn.Parameters("IColID").value & ">" & vbCrLf)
-					Response.Write("<input type='hidden' id=txtDefn_Percentage name=txtDefn_Percentage value=" & cmdDefn.Parameters("Percentage").value & ">" & vbCrLf)
-					Response.Write("<input type='hidden' id=txtDefn_PerPage name=txtDefn_PerPage value=" & cmdDefn.Parameters("PerPage").value & ">" & vbCrLf)
-					Response.Write("<input type='hidden' id=txtDefn_Suppress name=txtDefn_Suppress value=" & cmdDefn.Parameters("Suppress").value & ">" & vbCrLf)
-					Response.Write("<input type='hidden' id=txtDefn_Use1000 name=txtDefn_Use1000 value=" & cmdDefn.Parameters("Thousand").value & ">" & vbCrLf)
+					Response.Write("<input type='hidden' id=txtDefn_Name name=txtDefn_Name value=""" & Replace(prmName.Value.ToString(), """", "&quot;") & """>" & vbCrLf)
+					Response.Write("<input type='hidden' id=txtDefn_Owner name=txtDefn_Owner value=""" & Replace(prmOwner.Value.ToString(), """", "&quot;") & """>" & vbCrLf)
+					Response.Write("<input type='hidden' id=txtDefn_Description name=txtDefn_Description value=""" & Replace(prmDescription.Value.ToString(), """", "&quot;") & """>" & vbCrLf)
+					Response.Write("<input type='hidden' id=txtDefn_BaseTableID name=txtDefn_BaseTableID value=" & prmBaseTableID.Value & ">" & vbCrLf)
+					Response.Write("<input type='hidden' id=txtDefn_AllRecords name=txtDefn_AllRecords value=" & prmAllRecords.Value & ">" & vbCrLf)
+					Response.Write("<input type='hidden' id=txtDefn_PicklistID name=txtDefn_PicklistID value=" & prmPicklistID.Value & ">" & vbCrLf)
+					Response.Write("<input type='hidden' id=txtDefn_PicklistName name=txtDefn_PicklistName value=""" & Replace(prmPicklistName.Value.ToString(), """", "&quot;") & """>" & vbCrLf)
+					Response.Write("<input type='hidden' id=txtDefn_PicklistHidden name=txtDefn_PicklistHidden value=" & prmPicklistHidden.Value & ">" & vbCrLf)
+					Response.Write("<input type='hidden' id=txtDefn_FilterID name=txtDefn_FilterID value=" & prmFilterID.Value & ">" & vbCrLf)
+					Response.Write("<input type='hidden' id=txtDefn_FilterName name=txtDefn_FilterName value=""" & Replace(prmFilterName.Value.ToString(), """", "&quot;") & """>" & vbCrLf)
+					Response.Write("<input type='hidden' id=txtDefn_FilterHidden name=txtDefn_FilterHidden value=" & prmFilterHidden.Value & ">" & vbCrLf)
+					Response.Write("<input type='hidden' id=txtDefn_FilterHeader name=txtDefn_FilterHeader value=" & prmPrintFilter.Value & ">" & vbCrLf)
+					Response.Write("<input type='hidden' id=txtDefn_PrintFilter name=txtDefn_PrintFilter value=" & prmPrintFilter.Value & ">" & vbCrLf)
+					Response.Write("<input type='hidden' id=txtDefn_HColID name=txtDefn_HColID value=" & prmHColID.Value & ">" & vbCrLf)
+					Response.Write("<input type='hidden' id=txtDefn_HStart name=txtDefn_HStart value=" & prmHStart.Value & ">" & vbCrLf)
+					Response.Write("<input type='hidden' id=txtDefn_HStop name=txtDefn_HStop value=" & prmHStop.Value & ">" & vbCrLf)
+					Response.Write("<input type='hidden' id=txtDefn_HStep name=txtDefn_HStep value=" & prmHStep.Value & ">" & vbCrLf)
+					Response.Write("<input type='hidden' id=txtDefn_VColID name=txtDefn_VColID value=" & prmVColID.Value & ">" & vbCrLf)
+					Response.Write("<input type='hidden' id=txtDefn_VStart name=txtDefn_VStart value=" & prmVStart.Value & ">" & vbCrLf)
+					Response.Write("<input type='hidden' id=txtDefn_VStop name=txtDefn_VStop value=" & prmVStop.Value & ">" & vbCrLf)
+					Response.Write("<input type='hidden' id=txtDefn_VStep name=txtDefn_VStep value=" & prmVStep.Value & ">" & vbCrLf)
+					Response.Write("<input type='hidden' id=txtDefn_PColID name=txtDefn_PColID value=" & prmPColID.Value & ">" & vbCrLf)
+					Response.Write("<input type='hidden' id=txtDefn_PStart name=txtDefn_PStart value=" & prmPStart.Value & ">" & vbCrLf)
+					Response.Write("<input type='hidden' id=txtDefn_PStop name=txtDefn_PStop value=" & prmPStop.Value & ">" & vbCrLf)
+					Response.Write("<input type='hidden' id=txtDefn_PStep name=txtDefn_PStep value=" & prmPStep.Value & ">" & vbCrLf)
+					Response.Write("<input type='hidden' id=txtDefn_IType name=txtDefn_IType value=" & prmIType.Value & ">" & vbCrLf)
+					Response.Write("<input type='hidden' id=txtDefn_IColID name=txtDefn_IColID value=" & prmIColID.Value & ">" & vbCrLf)
+					Response.Write("<input type='hidden' id=txtDefn_Percentage name=txtDefn_Percentage value=" & prmPercentage.Value & ">" & vbCrLf)
+					Response.Write("<input type='hidden' id=txtDefn_PerPage name=txtDefn_PerPage value=" & prmPerPage.Value & ">" & vbCrLf)
+					Response.Write("<input type='hidden' id=txtDefn_Suppress name=txtDefn_Suppress value=" & prmSuppress.Value & ">" & vbCrLf)
+					Response.Write("<input type='hidden' id=txtDefn_Use1000 name=txtDefn_Use1000 value=" & prmThousand.Value & ">" & vbCrLf)
 
-					Response.Write("<input type='hidden' id=txtDefn_OutputPreview name=txtDefn_OutputPreview value=" & cmdDefn.Parameters("OutputPreview").value & ">" & vbCrLf)
-					Response.Write("<input type='hidden' id=txtDefn_OutputFormat name=txtDefn_OutputFormat value=" & cmdDefn.Parameters("OutputFormat").value & ">" & vbCrLf)
-					Response.Write("<input type='hidden' id=txtDefn_OutputScreen name=txtDefn_OutputScreen value=" & cmdDefn.Parameters("OutputScreen").value & ">" & vbCrLf)
-					Response.Write("<input type='hidden' id=txtDefn_OutputPrinter name=txtDefn_OutputPrinter value=" & cmdDefn.Parameters("OutputPrinter").value & ">" & vbCrLf)
-					Response.Write("<input type='hidden' id=txtDefn_OutputPrinterName name=txtDefn_OutputPrinterName value=""" & cmdDefn.Parameters("OutputPrinterName").value & """>" & vbCrLf)
-					Response.Write("<input type='hidden' id=txtDefn_OutputSave name=txtDefn_OutputSave value=" & cmdDefn.Parameters("OutputSave").value & ">" & vbCrLf)
-					Response.Write("<input type='hidden' id=txtDefn_OutputSaveExisting name=txtDefn_OutputSaveExisting value=" & cmdDefn.Parameters("OutputSaveExisting").value & ">" & vbCrLf)
-					Response.Write("<input type='hidden' id=txtDefn_OutputEmail name=txtDefn_OutputEmail value=" & cmdDefn.Parameters("OutputEmail").value & ">" & vbCrLf)
-					Response.Write("<input type='hidden' id=txtDefn_OutputEmailAddr name=txtDefn_OutputEmailAddr value=" & cmdDefn.Parameters("OutputEmailAddr").value & ">" & vbCrLf)
-					Response.Write("<input type='hidden' id=txtDefn_OutputEmailAddrName name=txtDefn_OutputEmailName value=""" & Replace(cmdDefn.Parameters("OutputEmailAddrName").value, """", "&quot;") & """>" & vbCrLf)
-					Response.Write("<input type='hidden' id=txtDefn_OutputEmailSubject name=txtDefn_OutputEmailSubject value=""" & Replace(cmdDefn.Parameters("OutputEmailSubject").value, """", "&quot;") & """>" & vbCrLf)
-					Response.Write("<input type='hidden' id=txtDefn_OutputEmailAttachAs name=txtDefn_OutputEmailAttachAs value=""" & Replace(cmdDefn.Parameters("OutputEmailAttachAs").value, """", "&quot;") & """>" & vbCrLf)
-					Response.Write("<input type='hidden' id=txtDefn_OutputFilename name=txtDefn_OutputFilename value=""" & cmdDefn.Parameters("OutputFilename").value & """>" & vbCrLf)
+					Response.Write("<input type='hidden' id=txtDefn_OutputPreview name=txtDefn_OutputPreview value=" & prmOutputPreview.Value & ">" & vbCrLf)
+					Response.Write("<input type='hidden' id=txtDefn_OutputFormat name=txtDefn_OutputFormat value=" & prmOutputFormat.Value & ">" & vbCrLf)
+					Response.Write("<input type='hidden' id=txtDefn_OutputScreen name=txtDefn_OutputScreen value=" & prmOutputScreen.Value & ">" & vbCrLf)
+					Response.Write("<input type='hidden' id=txtDefn_OutputPrinter name=txtDefn_OutputPrinter value=" & prmOutputPrinter.Value & ">" & vbCrLf)
+					Response.Write("<input type='hidden' id=txtDefn_OutputPrinterName name=txtDefn_OutputPrinterName value=""" & prmOutputPrinterName.Value & """>" & vbCrLf)
+					Response.Write("<input type='hidden' id=txtDefn_OutputSave name=txtDefn_OutputSave value=" & prmOutputSave.Value & ">" & vbCrLf)
+					Response.Write("<input type='hidden' id=txtDefn_OutputSaveExisting name=txtDefn_OutputSaveExisting value=" & prmOutputSaveExisting.Value & ">" & vbCrLf)
+					Response.Write("<input type='hidden' id=txtDefn_OutputEmail name=txtDefn_OutputEmail value=" & prmOutputEmail.Value & ">" & vbCrLf)
+					Response.Write("<input type='hidden' id=txtDefn_OutputEmailAddr name=txtDefn_OutputEmailAddr value=" & prmOutputEmailAddr.Value & ">" & vbCrLf)
+					Response.Write("<input type='hidden' id=txtDefn_OutputEmailAddrName name=txtDefn_OutputEmailName value=""" & Replace(prmOutputEmailAddrName.Value.ToString(), """", "&quot;") & """>" & vbCrLf)
+					Response.Write("<input type='hidden' id=txtDefn_OutputEmailSubject name=txtDefn_OutputEmailSubject value=""" & Replace(prmOutputEmailSubject.Value.ToString(), """", "&quot;") & """>" & vbCrLf)
+					Response.Write("<input type='hidden' id=txtDefn_OutputEmailAttachAs name=txtDefn_OutputEmailAttachAs value=""" & Replace(prmOutputEmailAttachAs.Value.ToString(), """", "&quot;") & """>" & vbCrLf)
+					Response.Write("<input type='hidden' id=txtDefn_OutputFilename name=txtDefn_OutputFilename value=""" & prmOutputFilename.Value & """>" & vbCrLf)
 
-					Response.Write("<input type='hidden' id=txtDefn_Timestamp name=txtDefn_Timestamp value=" & cmdDefn.Parameters("timestamp").value & ">" & vbCrLf)
+					Response.Write("<input type='hidden' id=txtDefn_Timestamp name=txtDefn_Timestamp value=" & prmTimestamp.Value & ">" & vbCrLf)
 					Response.Write("<input type='hidden' id=txtDefn_HiddenCalcCount name=txtDefn_HiddenCalcCount value=" & iHiddenCalcCount & ">" & vbCrLf)
 					Response.Write("<input type='hidden' id=session_action name=session_action value=" & Session("action") & ">" & vbCrLf)
 					Response.Write("</form>" & vbCrLf)
 
-				End If
-
-				' Release the ADO command object.
-				cmdDefn = Nothing
-
-				If Len(sErrMsg) > 0 Then
+				Catch ex As Exception
+					sErrMsg = "'" & Session("utilname") & "' cross tab definition could not be read." & vbCrLf & FormatError(ex.Message)
 					Session("confirmtext") = sErrMsg
 					Session("confirmtitle") = "OpenHR Intranet"
 					Session("followpage") = "defsel"
 					Session("reaction") = "CROSSTABS"
 					Response.Clear()
 					Response.Redirect("confirmok")
-				End If
-	
+
+				End Try
+					
+					
 			Else
 				Session("childcount") = 0
 				Session("hiddenfiltercount") = 0
