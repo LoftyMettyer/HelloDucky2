@@ -124,10 +124,10 @@
 		$("#cmdOutput").show();
 		$("#cmdOutput").button({ disabled: false });
 
-		if (menu_isSSIMode() == false) {
-			$("#cmdClose").show();
-		} else {
+		if (menu_isSSIMode() == true) {
 			$("#cmdClose").hide();  // Don't show the Close button in SSI
+		} else {
+			$("#cmdClose").show();
 		}
 
 		$("#reportbreakdownframe").hide();
