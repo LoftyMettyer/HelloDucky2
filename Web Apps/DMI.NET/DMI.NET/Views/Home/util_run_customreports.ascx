@@ -375,7 +375,7 @@
 				sGroupFieldList &= String.Format("{0}'{1}'", IIf(sGroupFieldList.Length > 0, ", ", ""), sColumnHeading)
 				sGroupColumnShowList &= String.Format("{0}{1}", IIf(sGroupColumnShowList.Length > 0, ", ", ""), (bGroupWithNext = False).ToString().ToLower())
 				sGroupTextList &= String.Format("{0}'{{0}}'", IIf(sGroupTextList.Length > 0, ", ", ""))
-				sGroupOrder &= String.Format("{0}'{1}'", IIf(sGroupOrder.Length > 0, ", ", ""), objRow.Item("SortOrder"))
+				sGroupOrder &= String.Format("{0}'{1}'", IIf(sGroupOrder.Length > 0, ", ", ""), objRow.Item("SortOrder").ToString().ToLower())
 			End If
 		
 			If objRow.Item("Hidden") Or bGroupWithNext Then isVisibleString = ", hidden: true"
@@ -613,6 +613,7 @@ End If
 		colNames: g_colNamesArray,
 		colModel: g_colModelArray,
 		data: g_colData,
+		ignoreCase: true,
 		rowNum: 200000		
 			<%=sGroupingParams%>,
 		loadComplete: function() { <%=jsFooterFunction%> }
