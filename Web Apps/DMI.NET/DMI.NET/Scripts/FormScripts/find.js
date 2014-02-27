@@ -44,8 +44,8 @@ function find_window_onload() {
 		var sErrorMsg;
 		var sAction;
 		var dataCollection;
-	    var sControlName;
-	    var sColumnName;
+			var sControlName;
+			var sColumnName;
 		var iCount;
 		var fRecordAdded;
 		var sColumnType;
@@ -53,8 +53,8 @@ function find_window_onload() {
 		var colNames;
 		var sColDef;
 		var iIndex;
-	    var i;
-	    var colData;
+			var i;
+			var colData;
 		var colDataArray;
 		var obj;
 		var iCount2;
@@ -94,7 +94,7 @@ function find_window_onload() {
 										colMode.push({ name: sColumnName, edittype: "numeric", sorttype: 'integer', formatter: 'numeric', formatoptions: { disabled: true }, align: 'right', width: 100 });
 										break;
 									case "datetime": //Date - 135
-										colMode.push({ name: sColumnName, edittype: "date", formatter: 'date', formatoptions: { srcformat: 'd/m/Y', newformat: 'd/m/Y', disabled: true }, align: 'left', width: 100 });
+										colMode.push({ name: sColumnName, edittype: "date", sorttype: 'date', formatter: 'date', formatoptions: { srcformat: 'd/m/Y', newformat: 'd/m/Y', disabled: true }, align: 'left', width: 100 });
 										break;
 									default:
 										colMode.push({ name: sColumnName, width: 100 });
@@ -145,7 +145,7 @@ function find_window_onload() {
 					//autowidth: true,
 					shrinktofit: shrinkToFit,
 					ondblClickRow: function () {
-					    menu_editRecord();
+							menu_editRecord();
 					}
 				});
 
@@ -194,7 +194,7 @@ function find_window_onload() {
 			}
 
 			if (fOk == true) {
-			    var sControlPrefix;
+					var sControlPrefix;
 				var sColumnId;
 				var ctlSummaryControl;
 				var sSummaryControlName;
@@ -289,12 +289,12 @@ function selectedRecordID() {
 
 /* Sequential search the grid for the required ID. */
 function locateRecord(psSearchFor, pfIdMatch) {
-    //select the grid row that contains the record with the passed in ID.
-    var rowNumber = $("#findGridTable input[value='" + psSearchFor + "']").parent().parent().attr("id");
-    if (rowNumber >= 0) {
-        $("#findGridTable").jqGrid('setSelection', rowNumber);
-    } else {
-        $("#findGridTable").jqGrid('setSelection', 1);
-    }
+		//select the grid row that contains the record with the passed in ID.
+		var rowNumber = $("#findGridTable input[value='" + psSearchFor + "']").parent().parent().attr("id");
+		if (rowNumber >= 0) {
+				$("#findGridTable").jqGrid('setSelection', rowNumber);
+		} else {
+				$("#findGridTable").jqGrid('setSelection', 1);
+		}
 }
 
