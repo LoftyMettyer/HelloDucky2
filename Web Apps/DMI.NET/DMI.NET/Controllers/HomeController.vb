@@ -1960,7 +1960,8 @@ Namespace Controllers
 											elementType As ElementType,
 											sortOrderID As Long,
 											sortDirection As Long,
-											colourID As Long) As FileContentResult
+											colourID As Long,
+											title As String) As FileContentResult
 
 			Err.Clear()
 
@@ -2002,6 +2003,12 @@ Namespace Controllers
 								chart1.Legends("Default").BackColor = Color.Transparent
 								chart1.Legends("Default").ShadowOffset = 2
 								chart1.Legends("Default").BackColor = ColorTranslator.FromHtml("#D3DFF0")
+							End If
+
+							If Not String.IsNullOrEmpty(title) Then
+								chart1.Titles.Add("MainTitle")
+								chart1.Titles(0).Text = title
+								chart1.Titles(0).Font = New Font(chart1.Titles(0).Font.Name, 20) 'Set the font size without changing the font family
 							End If
 
 							chart1.ChartAreas.Add("ChartArea1")
@@ -2151,7 +2158,8 @@ Namespace Controllers
 											columnID_3 As Long,
 											sortOrderID As Long,
 											sortDirection As Long,
-											colourID As Long) As FileContentResult
+											colourID As Long,
+											title As String) As FileContentResult
 
 			Err.Clear()
 
@@ -2198,6 +2206,12 @@ Namespace Controllers
 								MultiAxisChart.Legends("Default").BackColor = Color.Transparent
 								MultiAxisChart.Legends("Default").ShadowOffset = 2
 								MultiAxisChart.Legends("Default").BackColor = ColorTranslator.FromHtml("#D3DFF0")
+							End If
+
+							If Not String.IsNullOrEmpty(title) Then
+								MultiAxisChart.Titles.Add("MainTitle")
+								MultiAxisChart.Titles(0).Text = title
+								MultiAxisChart.Titles(0).Font = New Font(MultiAxisChart.Titles(0).Font.Name, 20) 'Set the font size without changing the font family
 							End If
 
 							seriesName = "Default"

@@ -135,6 +135,7 @@
     <Compile Include="Controllers\AccountController.vb" />
     <Compile Include="Controllers\HomeController.vb" />
     <Compile Include="Controllers\SessionLessController.vb" />
+    <Compile Include="Enums\Layout.vb" />
     <Compile Include="Global.asax.vb">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>

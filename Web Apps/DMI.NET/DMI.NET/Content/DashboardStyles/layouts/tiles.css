@@ -134,7 +134,9 @@ body
 	font-size: 11pt;		
 	}
 
-.linkspagebuttontext img { display: none;}
+.linkspagebuttontext img {
+	border: none;
+}
 
 .hypertextlinktileIcon, .linkspagebuttontileIcon, .dropdownlinktileIcon
 {
@@ -200,7 +202,13 @@ width:12em; */
 }
 
 .widgetplaceholder {
-	display: none;
+	text-align: center;
+	margin: 0px 30px 10px 20px;
+	height: 120px;
+}
+
+.chart {
+	margin: 0;
 }
 
 .cols2 { width: 280px;}

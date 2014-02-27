@@ -166,6 +166,16 @@
 				if (cookieLayout === undefined || cookieLayout === "undefined" || cookieLayout.length <= 0) cookieLayout = "winkit";
 				if('<%=currentLayout%>' != 'tiles') window.currentLayout = cookieLayout;
 
+				<%
+		If currentLayout <> "tiles" Then
+			If Request.Cookies("Intranet_Layout") Is Nothing Then
+				Session("CurrentLayout") = DMIEnums.Layout.winkit
+			Else
+				Session("CurrentLayout") = Request.Cookies("Intranet_Layout").Value
+			End If
+		End If
+		%> 
+
 				var cookieTheme = getCookie('Intranet_Theme');
 				if (cookieTheme === undefined || cookieTheme === "undefined" || cookieTheme.length <= 0) cookieTheme = "white";
 				//window.currentTheme = cookieTheme;	

@@ -28,7 +28,7 @@
 	}
 }
 
-function popoutchart(MultiAxis, Chart_ShowLegend, Chart_ShowGrid, Chart_ShowValues, Chart_StackSeries, Chart_ShowPercentages, iChart_Type, iChart_TableID,iChart_ColumnID, iChart_FilterID, iChart_AggregateType, iChart_ElementType,iChart_TableID_2,iChart_ColumnID_2,iChart_TableID_3,  iChart_ColumnID_3, iChart_SortOrderID,  iChart_SortDirection,iChart_ColourID) {
+function popoutchart(MultiAxis, Chart_ShowLegend, Chart_ShowGrid, Chart_ShowValues, Chart_StackSeries, Chart_ShowPercentages, iChart_Type, iChart_TableID, iChart_ColumnID, iChart_FilterID, iChart_AggregateType, iChart_ElementType, iChart_TableID_2, iChart_ColumnID_2,iChart_TableID_3, iChart_ColumnID_3, iChart_SortOrderID, iChart_SortDirection, iChart_ColourID, ChartTitle) {
 			
 	var windowHeight = 500;
 	var windowWidth = 500;
@@ -142,16 +142,14 @@ function popoutchart(MultiAxis, Chart_ShowLegend, Chart_ShowGrid, Chart_ShowValu
 	}
 	w.document.write('&SortOrderID=' + iChart_SortOrderID);
 	w.document.write('&SortDirection=' + iChart_SortDirection);
-	w.document.write('&ColourID=' + iChart_ColourID + '";');
+	w.document.write('&ColourID=' + iChart_ColourID);
+	w.document.write('&Title=' + ChartTitle + '";');
 	w.document.write('document.getElementById("chartImage").src = psURL;');
 	w.document.write('}');
 	w.document.write('setTimeout("loadChart()", 500);');
 	w.document.write('</scri');
 	w.document.write('pt>');
 	w.document.close();
-
-			
-
 }
 
 function refreshPendingWorkflowTiles() {
