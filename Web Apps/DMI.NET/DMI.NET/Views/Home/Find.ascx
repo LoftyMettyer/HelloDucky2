@@ -88,7 +88,7 @@
 			<div id="findGridRow" style="height: <%If Session("parentTableID") > 0 Then%>65%<%Else%>85%<%End If%>; margin-right: 20px; margin-left: 20px;">
 				<%
 					Dim sTemp As String
-					Dim sThousandColumns As String
+					Dim sThousandColumns As String = ""
 					Dim sBlankIfZeroColumns As String
 					Dim sColDef As String
 					Dim iCount As Integer
@@ -215,12 +215,18 @@
 										ElseIf GeneralUtilities.IsDataColumnDecimal(rstFindRecords.Columns(iloop)) Then
 											' Field is a numeric so format as such.
 											If Not IsDBNull(row(iloop)) Then
+												
+												Dim numberAsString As String = row(iloop).ToString()
+												Dim indexOfDecimalPoint As Integer = numberAsString.IndexOf(".", System.StringComparison.Ordinal)
+												Dim numberOfDecimals As Integer = 0
+												If indexOfDecimalPoint > 0 Then numberOfDecimals = numberAsString.Substring(indexOfDecimalPoint + 1).Length											
+												
 												If Mid(sThousandColumns, iloop + 1, 1) = "1" Then
 													sTemp = ""
-													sTemp = FormatNumber(row(iloop), , True, False, True)
+													sTemp = FormatNumber(row(iloop), numberOfDecimals, TriState.True, TriState.False, TriState.True)
 												Else
 													sTemp = ""
-													sTemp = FormatNumber(row(iloop), , True, False, False)
+													sTemp = FormatNumber(row(iloop), numberOfDecimals, TriState.True, TriState.False, TriState.False)
 												End If
 												sTemp = Replace(sTemp, ".", "x")
 												sTemp = Replace(sTemp, ",", Session("LocaleThousandSeparator"))

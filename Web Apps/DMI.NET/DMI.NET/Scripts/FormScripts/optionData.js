@@ -70,18 +70,24 @@ function optiondata_onload() {
 						iIndex = sColDef.indexOf("	");
 						if (iIndex >= 0) {
 							sColumnName = sColDef.substr(0, iIndex);
-							sColumnType = sColDef.substr(iIndex + 1);
+							sColumnType = sColDef.substr(iIndex + 1).replace('System.', '').toLowerCase();
 							colNames.push(sColumnName);
 
 							if (sColumnName == "ID") {
 								colMode.push({ name: sColumnName, hidden: true });
 							} else {
 								switch (sColumnType) {
-									case "11":
-										colMode.push({ name: sColumnName, edittype: "checkbox", formatter: 'checkbox', formatoptions: { disabled: true }, align: 'center' });
+									case "boolean": // "11":
+										colMode.push({ name: sColumnName, edittype: "checkbox", formatter: 'checkbox', formatoptions: { disabled: true }, align: 'center', width: 100 });
+										break;
+									case "decimal":
+										colMode.push({ name: sColumnName, edittype: "numeric", sorttype: 'integer', formatter: 'numeric', formatoptions: { disabled: true }, align: 'right', width: 100 });
+										break;
+									case "datetime": //Date - 135
+										colMode.push({ name: sColumnName, edittype: "date",sorttype: 'date', formatter: 'date', formatoptions: { srcformat: 'd/m/Y', newformat: 'd/m/Y', disabled: true }, align: 'left', width: 100 });
 										break;
 									default:
-										colMode.push({ name: sColumnName });
+										colMode.push({ name: sColumnName, width: 100 });
 								}
 							}
 
@@ -114,6 +120,9 @@ function optiondata_onload() {
 				}
 
 				//create the column layout:
+				var shrinkToFit = false;
+				if (colMode.length < 8) shrinkToFit = true;
+
 				$("#ssOleDBGridLinkRecords").jqGrid({
 					data: colData,
 					datatype: "local",
@@ -121,6 +130,7 @@ function optiondata_onload() {
 					colModel: colMode,
 					rowNum: 1000,
 					autowidth: true,
+					shrinktofit: shrinkToFit,
 					onSelectRow: function () {
 						linkFind_refreshControls();
 					},
@@ -195,18 +205,25 @@ function optiondata_onload() {
 						iIndex = sColDef.indexOf("	");
 						if (iIndex >= 0) {
 							sColumnName = sColDef.substr(0, iIndex);
-							sColumnType = sColDef.substr(iIndex + 1);
+							sColumnType = sColDef.substr(iIndex + 1).replace('System.', '').toLowerCase();							
 							colNames.push(sColumnName);
 
 							if (sColumnName == "ID") {
 								colMode.push({ name: sColumnName, hidden: true });
 							} else {
 								switch (sColumnType) {
-									case "11":
-										colMode.push({ name: sColumnName, edittype: "checkbox", formatter: 'checkbox', formatoptions: { disabled: true }, align: 'center' });
+									case "boolean": // "11":
+										colMode.push({ name: sColumnName, edittype: "checkbox", formatter: 'checkbox', formatoptions: { disabled: true }, align: 'center', width: 100 });
+										break;
+									case "decimal":
+										colMode.push({ name: sColumnName, edittype: "numeric", sorttype: 'integer', formatter: 'numeric', formatoptions: { disabled: true }, align: 'right', width: 100 });
+										break;
+									case "datetime": //Date - 135
+										colMode.push({ name: sColumnName, edittype: "date",sorttype: 'date', formatter: 'date', formatoptions: { srcformat: 'd/m/Y', newformat: 'd/m/Y', disabled: true }, align: 'left', width: 100 });
 										break;
 									default:
-										colMode.push({ name: sColumnName });
+										colMode.push({ name: sColumnName, width: 100 });								
+										break;
 								}
 							}
 
@@ -241,6 +258,9 @@ function optiondata_onload() {
 				}
 
 				//create the column layout:
+				var shrinkToFit = false;
+				if (colMode.length < 8) shrinkToFit = true;
+				
 				$("#ssOleDBGrid").jqGrid({
 					data: colData,
 					datatype: "local",
@@ -248,6 +268,7 @@ function optiondata_onload() {
 					colModel: colMode,
 					rowNum: 1000,
 					autowidth: true,
+					shrinktofit: shrinkToFit,
 					onSelectRow: function () {
 						lookupFind_refreshControls();
 					},

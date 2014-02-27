@@ -86,18 +86,18 @@ function find_window_onload() {
 							if (sColumnName == "ID") {
 								colMode.push({ name: sColumnName, hidden: true });
 							} else {
-								switch (sColumnType) {
-									case "11": //checkbox
-										colMode.push({ name: sColumnName, edittype: "checkbox", formatter: 'checkbox', formatoptions: { disabled: true }, align: 'center' });
+								switch (sColumnType.toLowerCase()) {
+									case "boolean": //checkbox - 11
+										colMode.push({ name: sColumnName, edittype: "checkbox", formatter: 'checkbox', formatoptions: { disabled: true }, align: 'center', width: 100 });
 										break;
-									case "131": //Numeric
-										colMode.push({ name: sColumnName, edittype: "numeric", formatter: 'numeric', formatoptions: { disabled: true }, align: 'right' });
+									case "decimal": //Numeric - 131
+										colMode.push({ name: sColumnName, edittype: "numeric", sorttype: 'integer', formatter: 'numeric', formatoptions: { disabled: true }, align: 'right', width: 100 });
 										break;
-									case "135": //Date
-										colMode.push({ name: sColumnName, edittype: "date", formatter: 'date', formatoptions: { disabled: true }, align: 'center' });
+									case "datetime": //Date - 135
+										colMode.push({ name: sColumnName, edittype: "date", formatter: 'date', formatoptions: { srcformat: 'd/m/Y', newformat: 'd/m/Y', disabled: true }, align: 'left', width: 100 });
 										break;
 									default:
-										colMode.push({ name: sColumnName });
+										colMode.push({ name: sColumnName, width: 100 });
 								}
 							}
 						}
@@ -127,6 +127,12 @@ function find_window_onload() {
 						iCount = iCount + 1;
 					}
 				}
+				
+				var shrinkToFit = false;
+				var wfSetWidth = $('#workframeset').width();
+				//if (colMode.length < (wfSetWidth / 100)) shrinkToFit = true;
+				var gridWidth = menu_isSSIMode() ? 'auto' : wfSetWidth - 100;
+
 
 				//create the column layout:
 				$("#findGridTable").jqGrid({
@@ -135,8 +141,9 @@ function find_window_onload() {
 					colNames: colNames,
 					colModel: colMode,
 					rowNum: 1000,
-					autowidth: true,
-					shrinktofit: false,
+					width: gridWidth,
+					//autowidth: true,
+					shrinktofit: shrinkToFit,
 					ondblClickRow: function () {
 					    menu_editRecord();
 					}
