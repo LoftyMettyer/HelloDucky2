@@ -4935,14 +4935,15 @@ Namespace Controllers
 
 		<HttpPost()>
 	 Function orderselect_Submit(value As FormCollection)
-			On Error Resume Next
+
+			Dim objDataAccess As clsDataAccess = CType(Session("DatabaseAccess"), clsDataAccess)
 
 			Dim sErrorMsg = ""
 
 			' Read the information from the calling form.
-			Dim lngScreenID = Request.Form("txtGotoOptionScreenID")
-			Dim lngViewID = Request.Form("txtGotoOptionViewID")
-			Dim lngOrderID = Request.Form("txtGotoOptionOrderID")
+			Dim lngScreenID = CleanNumeric(Request.Form("txtGotoOptionScreenID"))
+			Dim lngViewID = CleanNumeric(Request.Form("txtGotoOptionViewID"))
+			Dim lngOrderID = CleanNumeric(Request.Form("txtGotoOptionOrderID"))
 			Dim sNextPage = Request.Form("txtGotoOptionPage")
 			Dim sAction = Request.Form("txtGotoOptionAction")
 
@@ -4986,40 +4987,23 @@ Namespace Controllers
 			End If
 
 			If sAction = "SELECTORDER" Then
-				' Get the SQL code for the selected order.
-				Dim cmdOrder = CreateObject("ADODB.Command")
-				cmdOrder.CommandText = "sp_ASRIntGetOrderSQL"
-				cmdOrder.CommandType = 4 ' Stored Procedure
-				cmdOrder.ActiveConnection = Session("databaseConnection")
 
-				Dim prmScreenID = cmdOrder.CreateParameter("screenID", 3, 1)
-				cmdOrder.Parameters.Append(prmScreenID)
-				prmScreenID.value = CleanNumeric(lngScreenID)
+				Try
+					Dim prmFromDef = New SqlParameter("psFromDef", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
 
-				Dim prmViewID = cmdOrder.CreateParameter("viewID", 3, 1)
-				cmdOrder.Parameters.Append(prmViewID)
-				prmViewID.value = CleanNumeric(lngViewID)
+					objDataAccess.ExecuteSP("sp_ASRIntGetOrderSQL" _
+							, New SqlParameter("piScreenID", SqlDbType.Int) With {.Value = lngScreenID} _
+							, New SqlParameter("piViewID", SqlDbType.Int) With {.Value = lngViewID} _
+							, New SqlParameter("piOrderID", SqlDbType.Int) With {.Value = lngOrderID} _
+							, prmFromDef)
 
-				Dim prmOrderID = cmdOrder.CreateParameter("orderID", 3, 1)
-				cmdOrder.Parameters.Append(prmOrderID)
-				prmOrderID.value = CleanNumeric(lngOrderID)
+					Session("fromDef") = prmFromDef.Value
 
-				Dim prmFromDef = cmdOrder.CreateParameter("fromDef", 200, 2, 8000) ' 200=varchar, 2=output, 8000=size
-				cmdOrder.Parameters.Append(prmFromDef)
-
-				Err.Clear()
-				cmdOrder.Execute()
-
-				If (Err.Number <> 0) Then
+				Catch ex As Exception
 					sErrorMsg = "Error retrieving the new order definition." & vbCrLf & FormatError(Err.Description)
-				Else
-					Session("fromDef") = cmdOrder.Parameters("fromDef").Value
-				End If
+					Session("errorMessage") = sErrorMsg
 
-				' Release the ADO command object.
-				cmdOrder = Nothing
-
-				Session("errorMessage") = sErrorMsg
+				End Try
 
 				' Go to the requested page.
 				Return RedirectToAction(sNextPage)
