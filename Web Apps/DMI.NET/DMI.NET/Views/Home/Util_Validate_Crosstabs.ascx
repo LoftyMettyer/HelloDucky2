@@ -1,9 +1,8 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
 <%@Import namespace="DMI.NET" %>
-
-<script type="text/javascript">
-<%--	<%Html.RenderPartial("Util_Def_Crosstabs/dialog")%>--%>
-</script>
+<%@ Import Namespace="HR.Intranet.Server" %>
+<%@ Import Namespace="System.Data.SqlClient" %>
+<%@ Import Namespace="System.Data" %>
 
 <script type="text/javascript">
 	function util_validate_crosstab_window_onload() {
@@ -65,65 +64,33 @@
 
 
 <%
-	Dim cmdValidate = CreateObject("ADODB.Command")
-	cmdValidate.CommandText = "sp_ASRIntValidateCrossTab"
-	cmdValidate.CommandType = 4	' Stored Procedure
-	cmdValidate.ActiveConnection = Session("databaseConnection")
 
-	Dim prmUtilName = cmdValidate.CreateParameter("utilName", 200, 1, 8000)	' 200=varchar, 1=input, 8000=size
-	cmdValidate.Parameters.Append(prmUtilName)
-	prmUtilName.value = Request("validateName")
-
-	Dim prmUtilID = cmdValidate.CreateParameter("utilID", 3, 1)	'3=integer, 1=input
-	cmdValidate.Parameters.Append(prmUtilID)
-	prmUtilID.value = CleanNumeric(Request("validateUtilID"))
-
-	Dim prmTimestamp = cmdValidate.CreateParameter("timestamp", 3, 1)	'3=integer, 1=input
-	cmdValidate.Parameters.Append(prmTimestamp)
-	prmTimestamp.value = CleanNumeric(Request("validateTimestamp"))
-
-	Dim prmBasePicklist = cmdValidate.CreateParameter("basePicklist", 3, 1)	'3=integer, 1=input
-	cmdValidate.Parameters.Append(prmBasePicklist)
-	prmBasePicklist.value = CleanNumeric(Request("validateBasePicklist"))
-
-	Dim prmBaseFilter = cmdValidate.CreateParameter("baseFilter", 3, 1)	'3=integer, 1=input
-	cmdValidate.Parameters.Append(prmBaseFilter)
-	prmBaseFilter.value = CleanNumeric(Request("validateBaseFilter"))
-
-	Dim prmEmailGroup = cmdValidate.CreateParameter("emailGroup", 3, 1)	'3=integer, 1=input
-	cmdValidate.Parameters.Append(prmEmailGroup)
-	prmEmailGroup.value = CleanNumeric(Request("validateEmailGroup"))
-
-	Dim prmHiddenGroups = cmdValidate.CreateParameter("hiddenGroups", 200, 1, 8000)	'200=varchar, 1=input, 8000=size
-	cmdValidate.Parameters.Append(prmHiddenGroups)
-	prmHiddenGroups.value = Request("validateHiddenGroups")
-
-	Dim prmErrorMsg = cmdValidate.CreateParameter("errorMsg", 200, 2, 8000)	'200=varchar, 2=output, 8000=size
-	cmdValidate.Parameters.Append(prmErrorMsg)
-
-	Dim prmErrorCode = cmdValidate.CreateParameter("errorCode", 3, 2)	'3=integer, 2=output
-	cmdValidate.Parameters.Append(prmErrorCode)
+	Dim objDataAccess As clsDataAccess = CType(Session("DatabaseAccess"), clsDataAccess)
 	
-	Dim prmDeletedFilters = cmdValidate.CreateParameter("deletedFilters", 200, 2, 8000)	'200=varchar, 2=output, 8000=size
-	cmdValidate.Parameters.Append(prmDeletedFilters)
-
-	Dim prmHiddenFilters = cmdValidate.CreateParameter("hiddenFilters", 200, 2, 8000)	'200=varchar, 2=output, 8000=size
-	cmdValidate.Parameters.Append(prmHiddenFilters)
-
-	Dim prmJobIDsToHide = cmdValidate.CreateParameter("jobsToHide", 200, 2, 8000)	'200=varchar, 2=output, 8000=size
-	cmdValidate.Parameters.Append(prmJobIDsToHide)
-
-	Err.Clear()
-	cmdValidate.Execute()
-
+	Dim prmErrorMsg As New SqlParameter("@psErrorMsg", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
+	Dim prmErrorCode As New SqlParameter("@piErrorCode", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
+	Dim prmDeletedFilters As New SqlParameter("@psDeletedFilters", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
+	Dim prmHiddenFilters As New SqlParameter("@psHiddenFilters", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
+	Dim prmJobIDsToHide As New SqlParameter("@psJobIDsToHide", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
+	      
+	objDataAccess.ExecuteSP("sp_ASRIntValidateCrossTab", _
+					New SqlParameter("psUtilName", SqlDbType.VarChar, 255) With {.Value = Request("validateName")}, _
+					New SqlParameter("piUtilID", SqlDbType.Int) With {.Value = CleanNumeric(Request("validateUtilID"))}, _
+					New SqlParameter("piTimestamp", SqlDbType.Int) With {.Value = CleanNumeric(Request("validateTimestamp"))}, _
+					New SqlParameter("piBasePicklistID", SqlDbType.Int) With {.Value = CleanNumeric(Request("validateBasePicklist"))}, _
+					New SqlParameter("piBaseFilterID", SqlDbType.Int) With {.Value = CleanNumeric(Request("validateBaseFilter"))}, _
+					New SqlParameter("piEmailGroupID", SqlDbType.Int) With {.Value = CleanNumeric(Request("validateEmailGroup"))}, _
+					New SqlParameter("psHiddenGroups ", SqlDbType.VarChar, -1) With {.Value = Request("validateHiddenGroups")}, _
+					prmErrorMsg, prmErrorCode, prmDeletedFilters, prmHiddenFilters, prmJobIDsToHide)
+	
 	Dim ResponseString As String = String.Concat( _
-		"<input type='hidden' id='txtErrorCode' 'name='txtErrorCode' value='", cmdValidate.Parameters("errorCode").Value, "'>", vbCrLf, _
-		"<input type='hidden' id='txtDeletedFilters' name='txtDeletedFilters' value='", cmdValidate.Parameters("deletedFilters").Value, "'>", vbCrLf, _
-		"<input type='hidden' id='txtHiddenFilters' name='txtHiddenFilters' value='", cmdValidate.Parameters("hiddenFilters").Value, "'>", vbCrLf, _
-		"<input type='hidden' id='txtJobIDsToHide' name='txtJobIDsToHide' value='", cmdValidate.Parameters("jobsToHide").Value, "'>", vbCrLf)
+		"<input type='hidden' id='txtErrorCode' 'name='txtErrorCode' value='", prmErrorCode.Value, "'>", vbCrLf, _
+		"<input type='hidden' id='txtDeletedFilters' name='txtDeletedFilters' value='", prmDeletedFilters.Value, "'>", vbCrLf, _
+		"<input type='hidden' id='txtHiddenFilters' name='txtHiddenFilters' value='", prmHiddenFilters.Value, "'>", vbCrLf, _
+		"<input type='hidden' id='txtJobIDsToHide' name='txtJobIDsToHide' value='", prmJobIDsToHide.Value, "'>", vbCrLf)
 	
 	'The following bit is common if an error code was returned
-	If cmdValidate.Parameters("errorCode").Value <> 0 Then
+	If prmErrorCode.Value <> 0 Then
 		ResponseString = String.Concat(ResponseString, _
 			"			  <tr>", vbCrLf, _
 			"					<td width='20'></td>", vbCrLf, _
@@ -135,7 +102,7 @@
 			"			  <tr>", vbCrLf, _
 			"					<td width='20'></td>", vbCrLf, _
 			"			    <td align='center' colspan='3'> ", vbCrLf, _
-			"						" & cmdValidate.Parameters("errorMsg").Value, vbCrLf, _
+			"						" & prmErrorMsg.Value, vbCrLf, _
 			"			    </td>", vbCrLf, _
 			"					<td width='20'></td>", vbCrLf, _
 			"			  </tr>", vbCrLf, _
@@ -146,12 +113,12 @@
 			"					<td width='20'></td>", vbCrLf)
 	End If
 	
-	If cmdValidate.Parameters("errorCode").Value = 1 Then
+	If prmErrorCode.Value = 1 Then
 		ResponseString = String.Concat(ResponseString, _
 			"			    <td align='center' colspan='3'> ", vbCrLf, _
 			"    				    <input type='button' value='Close' class='btn' name='Cancel' style='width: 80px' id='Cancel' OnClick='self.close()' />", vbCrLf, _
 			"			    </td>", vbCrLf)
-	ElseIf cmdValidate.Parameters("errorCode").Value = 2 Then
+	ElseIf prmErrorCode.Value = 2 Then
 		ResponseString = String.Concat(ResponseString, _
 			"			    <td align='right'>", vbCrLf, _
 			"    				    <input type='button' value='Yes' class='btn' name='btnYes' style='width: 80px' id='btnYes' OnClick='createNew()' />", vbCrLf, _
@@ -160,7 +127,7 @@
 			"			    <td align='left'> ", vbCrLf, _
 			"    				    <input type='button' value='No' class='btn' name='btnNo' style='width: 80px' id='btnNo' OnClick='self.close()' />", vbCrLf, _
 			"			    </td>", vbCrLf)
-	ElseIf cmdValidate.Parameters("errorCode").Value = 3 Then
+	ElseIf prmErrorCode.Value = 3 Then
 		ResponseString = String.Concat(ResponseString, _
 			"			    <td align='right'> ", vbCrLf, _
 			"    				    <input type='button' value='Yes' class='btn' name='btnYes' style='width: 80px' id='btnYes' OnClick='overwrite()' />", vbCrLf, _
@@ -169,7 +136,7 @@
 			"			    <td align='left'> ", vbCrLf, _
 			"    				    <input type='button' value='No' class='btn' name='btnNo' style='width: 80px' id='btnNo' OnClick='self.close()' />", vbCrLf, _
 			"			    </td>", vbCrLf)
-	ElseIf cmdValidate.Parameters("errorCode").Value = 4 Then
+	ElseIf prmErrorCode.Value = 4 Then
 		ResponseString = String.Concat(ResponseString, _
 			"			    <td align='right'> ", vbCrLf, _
 			"    				    <input type='button' value='Yes' class='btn' name='btnYes' style='width: 80px' id='btnYes' OnClick='continueSave()' />", vbCrLf, _
@@ -181,7 +148,7 @@
 	End If
 	
 	'The following bit is common if an error code was returned
-	If cmdValidate.Parameters("errorCode").Value <> 0 Then
+	If prmErrorCode.Value <> 0 Then
 		ResponseString = String.Concat(ResponseString, _
 			"					<td width='20'></td>", vbCrLf, _
 			"			  </tr>", vbCrLf)
@@ -196,8 +163,6 @@
 	Response.Write("	trPleaseWait4.style.display='none';" & vbCrLf)
 	Response.Write("	trPleaseWait5.style.display='none';" & vbCrLf)
 	Response.Write("</script>" & vbCrLf)
-	
-	cmdValidate = Nothing
 	
 %>
 
