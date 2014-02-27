@@ -113,8 +113,8 @@ namespace Fusion.Connector.OpenHR.MessageHandlers
                 }
                 catch (Exception e)
                 {
-                    Logger.ErrorFormat("Inbound message {0}/{1} - {2} failed database save with error",
-                                       message.GetMessageName(), message.EntityRef, e.Message);
+                  Logger.ErrorFormat("Inbound message {0}/{1} - {2} failed database save with error", message.GetMessageName(), message.EntityRef, e.Message);
+	                throw;
                 }
 
             }
