@@ -828,14 +828,14 @@
 											If mrstEventData.Rows.Count Then
 									%>
 									<tr>
-										<td colspan="2" style="font-weight: bold; font-size: xx-small; border-bottom: 1px solid gray">Diary Links</td>
+										<td colspan="2" style="font-weight: bold; font-size: small; border-bottom: 1px solid gray">Diary Links</td>
 									</tr>
 									<%    
 										For Each objRow As DataRow In mrstEventData.Rows
 													
 									%>
 									<tr>
-										<td colspan="2" style="font-weight: normal; font-size: xx-small"><%=objRow(3).ToString%></td>
+										<td colspan="2" style="font-weight: normal; font-size: small"><%=objRow(3).ToString%></td>
 									</tr>
 									<%                
 										iRecNum = iRecNum + 1
@@ -863,13 +863,13 @@
 								If mrstEventData.Rows.Count > 0 Then
 									%>
 									<tr>
-										<td colspan="2" style="font-weight: bold; font-size: xx-small; border-bottom: 1px solid gray">Outlook Calendar Links</td>
+										<td colspan="2" style="font-weight: bold; font-size: small; border-bottom: 1px solid gray">Outlook Calendar Links</td>
 									</tr>
 									<%
 										For Each objRow As DataRow In mrstEventData.Rows
 									%>
 									<tr>
-										<td colspan="2" style="font-weight: normal; font-size: xx-small"><%=Trim(objRow(2).ToString())%></td>
+										<td colspan="2" style="font-weight: normal; font-size: small"><%=Trim(objRow(2).ToString())%></td>
 									</tr>
 									<%
 										iRecNum += 1
@@ -895,7 +895,7 @@
 								If mrstEventData.Rows.Count > 0 Then
 									%>
 									<tr>
-										<td colspan="2" style="font-weight: bold; font-size: xx-small; border-bottom: 1px solid gray">Today's Absences</td>
+										<td colspan="2" style="font-weight: bold; font-size: small; border-bottom: 1px solid gray">Today's Absences</td>
 									</tr>
 									<%             
 												
@@ -903,7 +903,7 @@
 													
 									%>
 									<tr>
-										<td colspan="2" style="font-weight: normal; font-size: xx-small"><%=Trim(objRow(0).ToString)%></td>
+										<td colspan="2" style="font-weight: normal; font-size: small"><%=Trim(objRow(0).ToString)%></td>
 									</tr>
 									<%                
 										iRecNum = iRecNum + 1
