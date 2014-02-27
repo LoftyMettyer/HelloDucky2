@@ -26,6 +26,7 @@
 			},
 			ondblClickRow: function(rowID) {
 			},
+			cmTemplate: { sortable: false },
 			rowNum: 1000   //TODO set this to blocksize...
 		});
 		

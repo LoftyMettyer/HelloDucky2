@@ -245,6 +245,7 @@ Session("fromMenu") = 0
             ondblClickRow: function (rowID) {
                 ssOleDBGridDefSelRecords_dblClick();
             },
+            cmTemplate: {sortable:false},
             ignoreCase: true,
             rowNum: 1000    //TODO set this to blocksize...
         });
