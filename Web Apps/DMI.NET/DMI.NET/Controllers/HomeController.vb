@@ -4275,66 +4275,29 @@ Namespace Controllers
 		<HttpPost()>
 		Function util_def_picklist_submit()
 
-			On Error Resume Next
+			Try
 
-			Dim cmdSave
-			Dim prmName
-			Dim prmDescription
-			Dim prmAccess
-			Dim prmUserName
-			Dim prmColumns
-			Dim prmColumns2
-			Dim prmID
-			Dim prmTableID
+				Dim objDataAccess As clsDataAccess = CType(Session("DatabaseAccess"), clsDataAccess)
+				Dim prmID = New SqlParameter("piId", SqlDbType.Int) With {.Direction = ParameterDirection.InputOutput, .Value = CleanNumeric(Request.Form("txtSend_ID"))}
 
-			cmdSave = Server.CreateObject("ADODB.Command")
-			cmdSave.CommandText = "sp_ASRIntSavePicklist"
-			cmdSave.CommandType = 4	' Stored Procedure
-			cmdSave.ActiveConnection = Session("databaseConnection")
+				objDataAccess.ExecuteSP("sp_ASRIntSavePicklist", _
+					New SqlParameter("psName", SqlDbType.VarChar, 255) With {.Value = Request.Form("txtSend_name")}, _
+					New SqlParameter("psDescription", SqlDbType.VarChar, -1) With {.Value = Request.Form("txtSend_description")}, _
+					New SqlParameter("psAccess", SqlDbType.VarChar, -1) With {.Value = Request.Form("txtSend_access")}, _
+					New SqlParameter("psUserName", SqlDbType.VarChar, 255) With {.Value = Request.Form("txtSend_userName")}, _
+					New SqlParameter("psColumns", SqlDbType.VarChar, -1) With {.Value = Request.Form("txtSend_columns")}, _
+					New SqlParameter("psColumns2", SqlDbType.VarChar, -1) With {.Value = Request.Form("txtSend_columns2")}, _
+					prmID, _
+					New SqlParameter("piTableID", SqlDbType.Int) With {.Value = CleanNumeric(Request.Form("txtSend_tableID"))})
 
-			prmName = cmdSave.CreateParameter("name", 200, 1, 8000)	' 200=varchar,1=input,8000=size
-			cmdSave.Parameters.Append(prmName)
-			prmName.value = Request.Form("txtSend_name")
-
-			prmDescription = cmdSave.CreateParameter("description", 200, 1, 8000)	' 200=varchar,1=input,8000=size
-			cmdSave.Parameters.Append(prmDescription)
-			prmDescription.value = Request.Form("txtSend_description")
-
-			prmAccess = cmdSave.CreateParameter("access", 200, 1, 8000)	' 200=varchar,1=input,8000=size
-			cmdSave.Parameters.Append(prmAccess)
-			prmAccess.value = Request.Form("txtSend_access")
-
-			prmUserName = cmdSave.CreateParameter("user", 200, 1, 8000)	' 200=varchar,1=input,8000=size
-			cmdSave.Parameters.Append(prmUserName)
-			prmUserName.value = Request.Form("txtSend_userName")
-
-			prmColumns = cmdSave.CreateParameter("columns", 200, 1, 8000)	' 200=varchar,1=input,8000=size
-			cmdSave.Parameters.Append(prmColumns)
-			prmColumns.value = Request.Form("txtSend_columns")
-
-			prmColumns2 = cmdSave.CreateParameter("columns2", 200, 1, 8000)	' 200=varchar,1=input,8000=size
-			cmdSave.Parameters.Append(prmColumns2)
-			prmColumns2.value = Request.Form("txtSend_columns2")
-
-			prmID = cmdSave.CreateParameter("id", 3, 3)	' 3=integer,3=input/output
-			cmdSave.Parameters.Append(prmID)
-			prmID.value = CleanNumeric(Request.Form("txtSend_ID"))
-
-			prmTableID = cmdSave.CreateParameter("tableID", 3, 1)	' 3=integer,1=input
-			cmdSave.Parameters.Append(prmTableID)
-			prmTableID.value = CleanNumeric(Request.Form("txtSend_tableID"))
-
-			Err.Clear()
-			cmdSave.Execute()
-
-			If Err.Number = 0 Then
 				Session("confirmtext") = "Picklist has been saved successfully"
 				Session("confirmtitle") = "Picklists"
 				Session("followpage") = "defsel"
 				Session("reaction") = Request.Form("txtSend_reaction")
-				Session("utilid") = cmdSave.Parameters("id").Value
+				Session("utilid") = prmID.Value
 
-			Else
+			Catch ex As Exception
+
 				Response.Write("<HTML>" & vbCrLf)
 				Response.Write("	<HEAD>" & vbCrLf)
 				Response.Write("		<META NAME=""GENERATOR"" Content=""Microsoft Visual Studio 6.0"">" & vbCrLf)
@@ -4367,7 +4330,7 @@ Namespace Controllers
 				Response.Write("				  <tr> " & vbCrLf)
 				Response.Write("				    <td width=20 height=10></td> " & vbCrLf)
 				Response.Write("				    <td> " & vbCrLf)
-				Response.Write(Err.Description & vbCrLf)
+				Response.Write(ex.Message & vbCrLf)
 				Response.Write("			    </td>" & vbCrLf)
 				Response.Write("			    <td width=20></td> " & vbCrLf)
 				Response.Write("			  </tr>" & vbCrLf)
@@ -4393,9 +4356,7 @@ Namespace Controllers
 				Response.Write("	</BODY>" & vbCrLf)
 				Response.Write("<HTML>" & vbCrLf)
 
-			End If
-
-			cmdSave = Nothing
+			End Try
 
 			Return RedirectToAction("ConfirmOK")
 
