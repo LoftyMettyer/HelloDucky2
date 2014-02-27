@@ -40,16 +40,13 @@
 		<%
 			Dim aPrompts(1, 0)
 
-			Const adStateOpen = 1
-
 			Session("flagOverrideFilter") = False
 
-			Dim objUtilities As HR.Intranet.Server.Utilities
+			Dim objUtilities As Utilities
 
 			Dim sErrorDescription As String = ""
 			Dim sNonFatalErrorDescription As String = ""
 
-			Dim prmTableID As ADODB.Parameter
 			Dim prmThousandColumns As SqlParameter
 			Dim sThousandColumns As String
 		
@@ -62,16 +59,7 @@
 			Dim sPrompts As String
 			Dim iIndex1 As Integer
 			Dim iIndex2 As Integer
-		
-			Dim prmSelectionType As ADODB.Parameter
-			Dim prmSelectionID As ADODB.Parameter
-			Dim prmSelectedIDs As ADODB.Parameter
-			Dim prmPromptSQL As ADODB.Parameter
-		
-			Dim prmErrMsg As ADODB.Parameter
-			Dim cmdPicklist As Command
-			Dim prmExpectedCount As ADODB.Parameter
-		
+				
 			Response.Write("<INPUT type='hidden' id=txtErrorMessage name=txtErrorMessage value=""" & Replace(Session("errorMessage"), """", "&quot;") & """>" & vbCrLf)
 
 			' Get the required record count if we have a query.
@@ -918,115 +906,89 @@
 
 					objUtilities = Nothing
 				End If
-								
-				cmdPicklist = New ADODB.Command()
-				cmdPicklist.CommandText = "sp_ASRIntGetSelectedPicklistRecords"
-				cmdPicklist.CommandType = CommandTypeEnum.adCmdStoredProc
-				cmdPicklist.CommandTimeout = 180
-				cmdPicklist.ActiveConnection = Session("databaseConnection")
 
-				prmSelectionType = cmdPicklist.CreateParameter("selectionType", 200, 1, 8000)	'200=varchar,1=input,8000=size
-				cmdPicklist.Parameters.Append(prmSelectionType)
-				prmSelectionType.Value = Session("optionPageAction")
 
-				prmSelectionID = cmdPicklist.CreateParameter("selectionID", 3, 1)	'3=integer,1=input
-				cmdPicklist.Parameters.Append(prmSelectionID)
-				prmSelectionID.Value = CleanNumeric(Session("optionRecordID"))
-			
-				prmSelectedIDs = cmdPicklist.CreateParameter("selectedIDs", 200, 1, 2147483646)	'200=varchar,1=input,8000=size
-				cmdPicklist.Parameters.Append(prmSelectedIDs)
-				prmSelectedIDs.Value = Session("optionValue")
+				Try
 
-				prmPromptSQL = cmdPicklist.CreateParameter("promptSQL", 200, 1, 2147483646)	'200=varchar,1=input,8000=size
-				cmdPicklist.Parameters.Append(prmPromptSQL)
-				If Len(Session("optionPromptSQL")) = 0 Then
-					prmPromptSQL.Value = ""
-				Else
-					prmPromptSQL.Value = Session("optionPromptSQL")
-				End If
-						
-				prmTableID = cmdPicklist.CreateParameter("tableID", 3, 1)	'3=integer,1=input
-				cmdPicklist.Parameters.Append(prmTableID)
-				prmTableID.Value = CleanNumeric(Session("optionTableID"))
+					Dim prmPromptSQL = New SqlParameter("psPromptSQL", SqlDbType.VarChar, -1)
+					Dim prmErrMsg = New SqlParameter("psErrorMessage", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
+					Dim prmExpectedCount = New SqlParameter("piExpectedRecords", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
 
-				prmErrMsg = cmdPicklist.CreateParameter("errMsg", DataTypeEnum.adVarChar, ParameterDirectionEnum.adParamOutput, 2147483646)
-				cmdPicklist.Parameters.Append(prmErrMsg)
-
-				prmExpectedCount = cmdPicklist.CreateParameter("expectedCount", 3, 2)	'3=integer,2=output
-				cmdPicklist.Parameters.Append(prmExpectedCount)
-
-				objUtilities = Session("UtilitiesObject")
-
-				objUtilities.UDFFunctions(True)
-		
-				Err.Clear()
-				Dim rstFindRecords = cmdPicklist.Execute
-
-				objUtilities.UDFFunctions(False)
-			
-				objUtilities = Nothing
-	
-				If (Err.Number <> 0) Then
-					sErrorDescription = "Error reading the records." & vbCrLf & FormatError(Err.Description)
-				End If
-			
-				If Len(sErrorDescription) = 0 Then
-					If rstFindRecords.State = adStateOpen Then
-						iCount = 0
-						Do While Not rstFindRecords.EOF
-							sAddString = ""
-						
-							For iloop = 0 To (rstFindRecords.Fields.Count - 1)
-								If iloop > 0 Then
-									sAddString = sAddString & "	"
-								End If
-							
-								If iCount = 0 Then
-									sColDef = Replace(rstFindRecords.Fields(iloop).Name, "_", " ") & "	" & rstFindRecords.Fields(iloop).Type
-									Response.Write("<INPUT type='hidden' id=txtOptionColDef_" & iloop & " name=txtOptionColDef_" & iloop & " value=""" & sColDef & """>" & vbCrLf)
-								End If
-							
-								If rstFindRecords.Fields(iloop).Type = 135 Then
-									' Field is a date so format as such.
-									sAddString = sAddString & ConvertSQLDateToLocale(rstFindRecords.Fields(iloop).Value)
-								ElseIf rstFindRecords.Fields(iloop).Type = 131 Then
-									' Field is a numeric so format as such.
-									If Not IsDBNull(rstFindRecords.Fields(iloop).Value) Then
-										If Mid(Session("option1000SepCols"), iloop + 1, 1) = "1" Then
-											sTemp = ""
-											sTemp = FormatNumber(rstFindRecords.Fields(iloop).Value, rstFindRecords.Fields(iloop).NumericScale, True, False, True)
-										Else
-											sTemp = ""
-											sTemp = FormatNumber(rstFindRecords.Fields(iloop).Value, rstFindRecords.Fields(iloop).NumericScale, True, False, False)
-										End If
-										sTemp = Replace(sTemp, ".", "x")
-										sTemp = Replace(sTemp, ",", Session("LocaleThousandSeparator"))
-										sTemp = Replace(sTemp, "x", Session("LocaleDecimalSeparator"))
-										sAddString = sAddString & sTemp
-									End If
-								Else
-									If Not IsDBNull(rstFindRecords.Fields(iloop).Value) Then
-										sAddString = sAddString & Replace(rstFindRecords.Fields(iloop).Value, """", "&quot;")
-									End If
-								End If
-							Next
-
-							Response.Write("<INPUT type='hidden' id=txtOptionData_" & iCount & " name=txtOptionData_" & iCount & " value=""" & sAddString & """>" & vbCrLf)
-					
-							iCount = iCount + 1
-							rstFindRecords.MoveNext()
-						Loop
-	
-						' Release the ADO recordset object.
-						rstFindRecords.Close()
+					If Len(Session("optionPromptSQL")) = 0 Then
+						prmPromptSQL.Value = ""
+					Else
+						prmPromptSQL.Value = Session("optionPromptSQL")
 					End If
 
-				End If
-				rstFindRecords = Nothing
+					objUtilities = CType(Session("UtilitiesObject"), Utilities)
+					objUtilities.UDFFunctions(True)
+		
+					Dim rstFindRecords = objDataAccess.GetFromSP("sp_ASRIntGetSelectedPicklistRecords" _
+									, New SqlParameter("@psSelectionType", SqlDbType.VarChar, 255) With {.Value = Session("optionPageAction")} _
+									, New SqlParameter("@piSelectionID", SqlDbType.Int) With {.Value = CleanNumeric(Session("optionRecordID"))} _
+									, New SqlParameter("@psSelectedIDs", SqlDbType.VarChar, -1) With {.Value = Session("optionValue")} _
+									, prmPromptSQL _
+									, New SqlParameter("@piTableID", SqlDbType.Int) With {.Value = CleanNumeric(Session("optionTableID"))} _
+									, prmErrMsg, prmExpectedCount)
 
-				Response.Write("<INPUT type='hidden' id=txtExpectedCount name=txtExpectedCount value=" & cmdPicklist.Parameters("expectedCount").Value & ">" & vbCrLf)
+					objUtilities.UDFFunctions(False)
 			
-				cmdPicklist = Nothing
+					iCount = 0
+					For Each objRow As DataRow In rstFindRecords.Rows
+						sAddString = ""
+						
+						For iloop = 0 To (rstFindRecords.Columns.Count - 1)
+
+							If iloop > 0 Then
+								sAddString = sAddString & "	"
+							End If
+							
+							If iCount = 0 Then
+								sColDef = Replace(rstFindRecords.Columns(iloop).ColumnName, "_", " ") & "	" & rstFindRecords.Columns(iloop).DataType.ToString.Replace("System.", "")
+								Response.Write("<INPUT type='hidden' id=txtOptionColDef_" & iloop & " name=txtOptionColDef_" & iloop & " value=""" & sColDef & """>" & vbCrLf)
+							End If
+
+							Dim numberAsString As String = objRow(iloop).ToString()
+							Dim indexOfDecimalPoint As Integer = numberAsString.IndexOf(".", StringComparison.Ordinal)
+							Dim numberOfDecimals As Integer = 0
+							If indexOfDecimalPoint > 0 Then numberOfDecimals = numberAsString.Substring(indexOfDecimalPoint + 1).Length									
+							
+							If rstFindRecords.Columns(0).DataType = GetType(DateTime) Then
+								' Field is a date so format as such.
+								sAddString = sAddString & ConvertSQLDateToLocale(objRow(iloop))
+																
+							ElseIf IsDataColumnDecimal(rstFindRecords.Columns(iloop)) Then
+								' Field is a numeric so format as such.
+								If Not IsDBNull(objRow(iloop)) Then
+									If Mid(Session("option1000SepCols"), iloop + 1, 1) = "1" Then
+										sTemp = FormatNumber(objRow(iloop), numberOfDecimals, TriState.True, TriState.False, TriState.True)
+									Else
+										sTemp = FormatNumber(objRow(iloop), numberOfDecimals, TriState.True, TriState.False, TriState.False)
+									End If
+									
+									sTemp = Replace(sTemp, ".", "x")
+									sTemp = Replace(sTemp, ",", Session("LocaleThousandSeparator"))
+									sTemp = Replace(sTemp, "x", Session("LocaleDecimalSeparator"))
+									sAddString = sAddString & sTemp
+								End If
+							Else
+								If Not IsDBNull(objRow(iloop)) Then
+									sAddString = sAddString & Replace(objRow(iloop), """", "&quot;")
+								End If
+							End If
+						Next
+
+						Response.Write("<INPUT type='hidden' id=txtOptionData_" & iCount & " name=txtOptionData_" & iCount & " value=""" & sAddString & """>" & vbCrLf)
+					
+						iCount += 1
+					Next
+
+					Response.Write("<input type='hidden' id=txtExpectedCount name=txtExpectedCount value=" & prmExpectedCount.Value & ">" & vbCrLf)
+
+				Catch ex As Exception
+					sErrorDescription = "Error reading the records." & vbCrLf & FormatError(ex.Message)
+
+				End Try
 
 
 			ElseIf Session("optionAction") = "SELECTBULKBOOKINGS_2" Then
@@ -1070,7 +1032,7 @@
 					Next
 					
 				Catch ex As Exception
-					sErrorDescription = "Error reading component columns." & vbCrLf & formatError(ex.Message)
+					sErrorDescription = "Error reading component columns." & vbCrLf & FormatError(ex.Message)
 
 				End Try
 				
@@ -1093,7 +1055,7 @@
 					Response.Write("<input type='hidden' id=txtLookupDataType name=txtLookupDataType value=" & prmDataType.Value.ToString() & ">" & vbCrLf)
 					
 				Catch ex As Exception
-					sErrorDescription = "Error reading component values." & vbCrLf & formatError(ex.Message)
+					sErrorDescription = "Error reading component values." & vbCrLf & FormatError(ex.Message)
 				End Try
 								
 			End If

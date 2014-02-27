@@ -1,5 +1,8 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
 <%@ Import Namespace="DMI.NET" %>
+<%@ Import Namespace="HR.Intranet.Server" %>
+<%@ Import Namespace="System.Data" %>
+<%@ Import Namespace="System.Data.SqlClient" %>
 
 <script src="<%: Url.LatestContent("~/bundles/utilities_picklists")%>" type="text/javascript"></script>
 
@@ -146,39 +149,22 @@
 														<tr height="10">
 															<td rowspan="14">
 																<%
+																																	
 																	' Get the employee find columns.
-																	Dim cmdFindRecords As ADODB.Command
-																	Dim prmTableID As ADODB.Parameter
-																	Dim prmErrorMsg As ADODB.Parameter
-																	Dim prm1000SepCols As ADODB.Parameter
-																	Dim rstFindRecords As ADODB.Recordset
+																	Dim objDataAccess As clsDataAccess = CType(Session("DatabaseAccess"), clsDataAccess)
+
 																	Dim sErrorDescription As String
-																	Dim lngColCount As Long
+																	Dim lngColCount As Long															
 
-																	cmdFindRecords = New ADODB.Command
-																	cmdFindRecords.CommandText = "sp_ASRIntGetDefaultOrderColumns"
-																	cmdFindRecords.CommandType = ADODB.CommandTypeEnum.adCmdStoredProc
-																	cmdFindRecords.ActiveConnection = Session("databaseConnection")
-																	cmdFindRecords.CommandTimeout = 180
+																	Try
+																		Dim prmErrMsg = New SqlParameter("psErrorMsg", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
+																		Dim prm1000SepCols = New SqlParameter("ps1000SeparatorCols", SqlDbType.VarChar, 8000) With {.Direction = ParameterDirection.Output}
 
-																	prmTableID = cmdFindRecords.CreateParameter("tableID", 3, 1) ' 3=integer, 1 = input
-																	cmdFindRecords.Parameters.Append(prmTableID)
-																	prmTableID.value = CleanNumeric(Session("utiltableid"))
+																		Dim rstFindRecords = objDataAccess.GetFromSP("sp_ASRIntGetDefaultOrderColumns" _
+																				, New SqlParameter("piTableID", SqlDbType.Int) With {.Value = CleanNumeric(Session("utiltableid"))} _
+																				, prmErrMsg, prm1000SepCols)
+																		
 
-																	prmErrorMsg = cmdFindRecords.CreateParameter("errorMsg", 200, 2, 8000) ' 200=varchar, 2=output, 8000=size
-																	cmdFindRecords.Parameters.Append(prmErrorMsg)
-
-																	prm1000SepCols = cmdFindRecords.CreateParameter("1000SepCols", 200, 2, 8000) ' 200=varchar, 2=output, 8000=size
-																	cmdFindRecords.Parameters.Append(prm1000SepCols)
-
-																	Err.Clear()
-																	rstFindRecords = cmdFindRecords.Execute
-
-																	If (Err.Number <> 0) Then
-																		sErrorDescription = "The find columns could not be retrieved." & vbCrLf & formatError(Err.Description)
-																	End If
-
-																	If Len(sErrorDescription) = 0 Then
 																		' Instantiate and initialise the grid. 
 																		Response.Write("<OBJECT classid=""clsid:4A4AA697-3E6F-11D2-822F-00104B9E07A1"" id=ssOleDBGrid name=ssOleDBGrid  codebase=""cabs/COAInt_Grid.cab#version=3,1,3,6"" style=""LEFT: 0px; TOP: 0px; WIDTH:100%; HEIGHT:400px"">" & vbCrLf)
 																		Response.Write("	<PARAM NAME=""ScrollBars"" VALUE=""4"">" & vbCrLf)
@@ -248,20 +234,20 @@
 																		Response.Write("	<PARAM NAME=""SplitterVisible"" VALUE=""0"">" & vbCrLf)
 
 																		lngColCount = 0
-																		Do While Not rstFindRecords.EOF
+																		For Each objRow As DataRow In rstFindRecords.Rows
 																			Response.Write("	<PARAM NAME=""Columns(" & lngColCount & ").Width"" VALUE=""3200"">" & vbCrLf)
 	
-																			If rstFindRecords.fields("columnName").value = "ID" Then
+																			If objRow("columnName").ToString() = "ID" Then
 																				Response.Write("	<PARAM NAME=""Columns(" & lngColCount & ").Visible"" VALUE=""0"">" & vbCrLf)
 																			Else
 																				Response.Write("	<PARAM NAME=""Columns(" & lngColCount & ").Visible"" VALUE=""-1"">" & vbCrLf)
 																			End If
 	
 																			Response.Write("	<PARAM NAME=""Columns(" & lngColCount & ").Columns.Count"" VALUE=""1"">" & vbCrLf)
-																			Response.Write("	<PARAM NAME=""Columns(" & lngColCount & ").Caption"" VALUE=""" & Replace(rstFindRecords.fields("columnName").value, "_", " ") & """>" & vbCrLf)
-																			Response.Write("	<PARAM NAME=""Columns(" & lngColCount & ").Name"" VALUE=""" & rstFindRecords.fields("columnName").value & """>" & vbCrLf)
+																			Response.Write("	<PARAM NAME=""Columns(" & lngColCount & ").Caption"" VALUE=""" & Replace(objRow("columnName").ToString(), "_", " ") & """>" & vbCrLf)
+																			Response.Write("	<PARAM NAME=""Columns(" & lngColCount & ").Name"" VALUE=""" & objRow("columnName").ToString() & """>" & vbCrLf)
 				
-																			If (rstFindRecords.fields("dataType").value = 131) Or (rstFindRecords.fields("dataType").value = 3) Then
+																			If (objRow("dataType") = 131) Or (objRow("dataType") = 3) Then
 																				Response.Write("	<PARAM NAME=""Columns(" & lngColCount & ").Alignment"" VALUE=""1"">" & vbCrLf)
 																			Else
 																				Response.Write("	<PARAM NAME=""Columns(" & lngColCount & ").Alignment"" VALUE=""0"">" & vbCrLf)
@@ -278,7 +264,7 @@
 																			Response.Write("	<PARAM NAME=""Columns(" & lngColCount & ").VertScrollBar"" VALUE=""0"">" & vbCrLf)
 																			Response.Write("	<PARAM NAME=""Columns(" & lngColCount & ").Locked"" VALUE=""0"">" & vbCrLf)
 				
-																			If rstFindRecords.fields("dataType").value = -7 Then
+																			If objRow("dataType") = -7 Then
 																				' Find column is a logic column.
 																				Response.Write("	<PARAM NAME=""Columns(" & lngColCount & ").Style"" VALUE=""2"">" & vbCrLf)
 																			Else
@@ -304,10 +290,9 @@
 																			Response.Write("	<PARAM NAME=""Columns(" & lngColCount & ").ClipMode"" VALUE=""0"">" & vbCrLf)
 																			Response.Write("	<PARAM NAME=""Columns(" & lngColCount & ").PromptChar"" VALUE=""95"">" & vbCrLf)
 
-																			lngColCount = lngColCount + 1
-																			rstFindRecords.MoveNext()
-																		Loop
-		
+																			lngColCount += 1
+																		Next
+																		
 																		Response.Write("	<PARAM NAME=""Columns.Count"" VALUE=""" & lngColCount & """>" & vbCrLf)
 																		Response.Write("	<PARAM NAME=""Col.Count"" VALUE=""" & lngColCount & """>" & vbCrLf)
 
@@ -324,28 +309,26 @@
 
 																		Response.Write("</OBJECT>" & vbCrLf)
 
-																		' Release the ADO recordset object.
-																		rstFindRecords.close()
-																		rstFindRecords = Nothing
-
 																		' NB. IMPORTANT ADO NOTE.
 																		' When calling a stored procedure which returns a recordset AND has output parameters
 																		' you need to close the recordset and set it to nothing before using the output parameters. 
-																		If Len(cmdFindRecords.Parameters("errorMsg").Value) > 0 Then
+																		If Len(prmErrMsg.Value) > 0 Then
 																			Session("ErrorTitle") = "Picklist Definition Page"
-																			Session("ErrorText") = cmdFindRecords.Parameters("errorMsg").Value
+																			Session("ErrorText") = prmErrMsg.Value
 																			Response.Clear()
 			
 																			'Response.Redirect("error.asp")
 																			Response.Redirect("FormError")
 			
 																		Else
-																			Response.Write("<INPUT type='hidden' id=txt1000SepCols name=txt1000SepCols value=""" & cmdFindRecords.Parameters("1000SepCols").Value & """>" & vbCrLf)
+																			Response.Write("<INPUT type='hidden' id=txt1000SepCols name=txt1000SepCols value=""" & prm1000SepCols.Value & """>" & vbCrLf)
 																		End If
-																	End If
-	
-																	' Release the ADO command object.
-																	cmdFindRecords = Nothing
+
+																	Catch ex As Exception
+																		sErrorDescription = "The find columns could not be retrieved." & vbCrLf & FormatError(ex.Message)
+
+																	End Try
+
 																%>
 															</td>
 															<td rowspan="14" width="10">&nbsp;</td>
@@ -436,84 +419,47 @@
 <form id="frmOriginalDefinition" style="visibility: hidden; display: none">
 	<%
 		Dim sErrMsg As String
-		Dim cmdDefn As ADODB.Command
-		Dim prmUtilID As ADODB.Parameter
-		Dim prmAction As ADODB.Parameter
-		Dim prmErrMsg As ADODB.Parameter
-		Dim prmName As ADODB.Parameter
-		Dim prmOwner As ADODB.Parameter
-		
-		Dim prmDescription As ADODB.Parameter
-		Dim prmAccess As ADODB.Parameter
-		Dim prmTimestamp As ADODB.Parameter
-		Dim rstDefinition As ADODB.Recordset
 		Dim sSelectedRecords As String
 		
 		sErrMsg = ""
 
 		If Session("action") <> "new" Then
-			cmdDefn = New ADODB.Command
-			cmdDefn.CommandText = "sp_ASRIntGetPicklistDefinition"
-			cmdDefn.CommandType = ADODB.CommandTypeEnum.adCmdStoredProc
-			cmdDefn.ActiveConnection = Session("databaseConnection")
+			
+			Try
 
-			prmUtilID = cmdDefn.CreateParameter("utilID", 3, 1)	' 3=integer, 1=input
-			cmdDefn.Parameters.Append(prmUtilID)
-			prmUtilID.value = CLng(CleanNumeric(Session("utilid")))
+				Dim prmErrMsg = New SqlParameter("psErrorMsg", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
+				Dim prmName = New SqlParameter("psPicklistName", SqlDbType.VarChar, 255) With {.Direction = ParameterDirection.Output}
+				Dim prmOwner = New SqlParameter("psPicklistOwner", SqlDbType.VarChar, 255) With {.Direction = ParameterDirection.Output}
+				Dim prmDescription = New SqlParameter("psPicklistDesc", SqlDbType.VarChar, 255) With {.Direction = ParameterDirection.Output}
+				Dim prmAccess = New SqlParameter("psAccess", SqlDbType.VarChar, 255) With {.Direction = ParameterDirection.Output}
+				Dim prmTimestamp = New SqlParameter("piTimestamp", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
 
-			prmAction = cmdDefn.CreateParameter("action", 200, 1, 8000)	' 200=varchar, 1=input, 8000=size
-			cmdDefn.Parameters.Append(prmAction)
-			prmAction.value = Session("action")
-
-			prmErrMsg = cmdDefn.CreateParameter("errMsg", 200, 2, 8000)	'200=varchar, 2=output, 8000=size
-			cmdDefn.Parameters.Append(prmErrMsg)
-
-			prmName = cmdDefn.CreateParameter("name", 200, 2, 8000)	'200=varchar, 2=output, 8000=size
-			cmdDefn.Parameters.Append(prmName)
-
-			prmOwner = cmdDefn.CreateParameter("owner", 200, 2, 8000)	'200=varchar, 2=output, 8000=size
-			cmdDefn.Parameters.Append(prmOwner)
-
-			prmDescription = cmdDefn.CreateParameter("description", 200, 2, 8000)	'200=varchar, 2=output, 8000=size
-			cmdDefn.Parameters.Append(prmDescription)
-
-			prmAccess = cmdDefn.CreateParameter("access", 200, 2, 8000)	'200=varchar, 2=output, 8000=size
-			cmdDefn.Parameters.Append(prmAccess)
-
-			prmTimestamp = cmdDefn.CreateParameter("timestamp", 3, 2)	' 3=integer, 2=output
-			cmdDefn.Parameters.Append(prmTimestamp)
-
-			Err.Clear()
-			rstDefinition = cmdDefn.Execute
-
-
-			If (Err.Number <> 0) Then
-				sErrMsg = "'" & Session("utilname") & "' picklist definition could not be read." & vbCrLf & formatError(Err.Description)
-			Else
+				Dim rstDefinition = objDataAccess.GetFromSP("sp_ASRIntGetPicklistDefinition" _
+					, New SqlParameter("piPicklistID", SqlDbType.Int) With {.Value = CleanNumeric(Session("utilid"))} _
+					, New SqlParameter("psAction", SqlDbType.VarChar, 255) With {.Value = Session("action")} _
+					, prmErrMsg, prmName, prmOwner, prmDescription, prmAccess, prmTimestamp)
+		
+			
 				sSelectedRecords = "0"
 				Response.Write("<input type='hidden' id='txtSelectedRecords' name='txtSelectedRecords' value='" & sSelectedRecords & "'>" & vbCrLf)
-	
-				' Release the ADO recordset object.
-				rstDefinition.Close()
-				rstDefinition = Nothing
-			
-				' NB. IMPORTANT ADO NOTE.
-				' When calling a stored procedure which returns a recordset AND has output parameters
-				' you need to close the recordset and set it to nothing before using the output parameters. 
-				If Len(cmdDefn.Parameters("errMsg").Value) > 0 Then
-					sErrMsg = "'" & Session("utilname") & "' " & cmdDefn.Parameters("errMsg").Value
+				
+				If Len(prmErrMsg.Value) > 0 Then
+					sErrMsg = "'" & Session("utilname") & "' " & prmErrMsg.Value
 				Else
 				
-					Response.Write("<input type='hidden' id='txtDefn_Name' name='txtDefn_Name' value='" & Replace(cmdDefn.Parameters("name").Value, """", "&quot;") & "'>" & vbCrLf)
-					Response.Write("<input type='hidden' id='txtDefn_Owner' name='txtDefn_Owner' value='" & Replace(cmdDefn.Parameters("owner").Value, """", "&quot;") & "'>" & vbCrLf)
-					Response.Write("<input type='hidden' id='txtDefn_Description' name='txtDefn_Description' value='" & Replace(cmdDefn.Parameters("description").Value, """", "&quot;") & "'>" & vbCrLf)
-					Response.Write("<input type='hidden' id='txtDefn_Access' name='txtDefn_Access' value='" & cmdDefn.Parameters("access").Value & "'>" & vbCrLf)
-					Response.Write("<input type='hidden' id='txtDefn_Timestamp' name='txtDefn_Timestamp' value='" & cmdDefn.Parameters("timestamp").Value & "'>" & vbCrLf)
+					Response.Write("<input type='hidden' id='txtDefn_Name' name='txtDefn_Name' value='" & Replace(prmName.Value.ToString(), """", "&quot;") & "'>" & vbCrLf)
+					Response.Write("<input type='hidden' id='txtDefn_Owner' name='txtDefn_Owner' value='" & Replace(prmOwner.Value.ToString(), """", "&quot;") & "'>" & vbCrLf)
+					Response.Write("<input type='hidden' id='txtDefn_Description' name='txtDefn_Description' value='" & Replace(prmDescription.Value.ToString(), """", "&quot;") & "'>" & vbCrLf)
+					Response.Write("<input type='hidden' id='txtDefn_Access' name='txtDefn_Access' value='" & prmAccess.Value & "'>" & vbCrLf)
+					Response.Write("<input type='hidden' id='txtDefn_Timestamp' name='txtDefn_Timestamp' value='" & prmTimestamp.Value & "'>" & vbCrLf)
 				End If
-			End If
 
-			' Release the ADO command object.
-			cmdDefn = Nothing
+			Catch ex As Exception
+				sErrMsg = "'" & Session("utilname") & "' picklist definition could not be read." & vbCrLf & FormatError(ex.Message)
+
+				
+			End Try
+
 		End If
 	%>
 </form>
