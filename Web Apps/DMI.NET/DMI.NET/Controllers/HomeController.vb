@@ -3358,230 +3358,84 @@ Namespace Controllers
 		End Function
 
 		Function util_def_calendarreport_submit()
-			On Error Resume Next
 
-			Dim cmdSave = CreateObject("ADODB.Command")
-			cmdSave.CommandText = "spASRIntSaveCalendarReport"
-			cmdSave.CommandType = 4	' Stored Procedure
-			cmdSave.ActiveConnection = Session("databaseConnection")
+			Try
 
-			Dim prmName = cmdSave.CreateParameter("name", 200, 1, 8000)	' 200=varchar,1=input,8000=size
-			cmdSave.Parameters.Append(prmName)
-			prmName.value = Request.Form("txtSend_name")
+				Dim objDataAccess As clsDataAccess = CType(Session("DatabaseAccess"), clsDataAccess)
+				Dim prmID = New SqlParameter("piId", SqlDbType.Int) With {.Direction = ParameterDirection.InputOutput, .Value = CleanNumeric(Request.Form("txtSend_ID"))}
 
-			Dim prmDescription = cmdSave.CreateParameter("description", 200, 1, 8000)	' 200=varchar,1=input,8000=size
-			cmdSave.Parameters.Append(prmDescription)
-			prmDescription.value = Request.Form("txtSend_description")
+				Dim prmFixedStart = New SqlParameter("psFixedStart", SqlDbType.VarChar, 100)
+				If Len(Request.Form("txtSend_FixedStart")) > 0 Then
+					prmFixedStart.Value = Request.Form("txtSend_FixedStart")
+				Else
+					prmFixedStart.Value = ""
+				End If
 
-			Dim prmBaseTable = cmdSave.CreateParameter("baseTable", 3, 1)	' 3=integer,1=input
-			cmdSave.Parameters.Append(prmBaseTable)
-			prmBaseTable.value = CleanNumeric(Request.Form("txtSend_baseTable"))
+				Dim prmFixedEnd = New SqlParameter("psFixedEnd", SqlDbType.VarChar, 100)
+				If Len(Request.Form("txtSend_FixedEnd")) > 0 Then
+					prmFixedEnd.Value = Request.Form("txtSend_FixedEnd")
+				Else
+					prmFixedEnd.Value = ""
+				End If
 
-			Dim prmAllRecords = cmdSave.CreateParameter("allRecords", 11, 1) ' 11=boolean, 1=input
-			cmdSave.Parameters.Append(prmAllRecords)
-			prmAllRecords.value = CleanBoolean(Request.Form("txtSend_allRecords"))
+				objDataAccess.ExecuteSP("spASRIntSaveCalendarReport", _
+				New SqlParameter("psName", SqlDbType.VarChar, 255) With {.Value = Request.Form("txtSend_name")}, _
+					New SqlParameter("psDescription", SqlDbType.VarChar, -1) With {.Value = Request.Form("txtSend_description")}, _
+					New SqlParameter("piBaseTable", SqlDbType.Int) With {.Value = CleanNumeric(Request.Form("txtSend_baseTable"))}, _
+					New SqlParameter("pfAllRecords", SqlDbType.Bit) With {.Value = CleanBoolean(Request.Form("txtSend_allRecords"))}, _
+					New SqlParameter("piPicklist", SqlDbType.Int) With {.Value = CleanNumeric(Request.Form("txtSend_picklist"))}, _
+					New SqlParameter("piFilter", SqlDbType.Int) With {.Value = CleanNumeric(Request.Form("txtSend_filter"))}, _
+					New SqlParameter("pfPrintFilterHeader", SqlDbType.Bit) With {.Value = CleanBoolean(Request.Form("txtSend_printFilterHeader"))}, _
+					New SqlParameter("psUserName", SqlDbType.VarChar, 255) With {.Value = Request.Form("txtSend_userName")}, _
+					New SqlParameter("piDescription1", SqlDbType.Int) With {.Value = CleanNumeric(Request.Form("txtSend_desc1"))}, _
+					New SqlParameter("piDescription2", SqlDbType.Int) With {.Value = CleanNumeric(Request.Form("txtSend_desc2"))}, _
+					New SqlParameter("piDescriptionExpr", SqlDbType.Int) With {.Value = CleanNumeric(Request.Form("txtSend_descExpr"))}, _
+					New SqlParameter("piRegion", SqlDbType.Int) With {.Value = CleanNumeric(Request.Form("txtSend_region"))}, _
+					New SqlParameter("pfGroupByDesc", SqlDbType.Bit) With {.Value = CleanBoolean(Request.Form("txtSend_groupbydesc"))}, _
+					New SqlParameter("psDescSeparator", SqlDbType.VarChar, 100) With {.Value = Request.Form("txtSend_descseparator")}, _
+					New SqlParameter("piStartType", SqlDbType.Int) With {.Value = CleanNumeric(Request.Form("txtSend_StartType"))}, _
+					prmFixedStart, _
+					New SqlParameter("piStartFrequency", SqlDbType.Int) With {.Value = CleanNumeric(Request.Form("txtSend_StartFrequency"))}, _
+					New SqlParameter("piStartPeriod", SqlDbType.Int) With {.Value = CleanNumeric(Request.Form("txtSend_StartPeriod"))}, _
+					New SqlParameter("piStartDateExpr", SqlDbType.Int) With {.Value = CleanNumeric(Request.Form("txtSend_CustomStart"))}, _
+					New SqlParameter("piEndType", SqlDbType.Int) With {.Value = CleanNumeric(Request.Form("txtSend_EndType"))}, _
+					prmFixedEnd, _
+					New SqlParameter("piEndFrequency", SqlDbType.Int) With {.Value = CleanNumeric(Request.Form("txtSend_EndFrequency"))}, _
+					New SqlParameter("piEndPeriod", SqlDbType.Int) With {.Value = CleanNumeric(Request.Form("txtSend_EndPeriod"))}, _
+					New SqlParameter("piEndDateExpr", SqlDbType.Int) With {.Value = CleanNumeric(Request.Form("txtSend_CustomEnd"))}, _
+					New SqlParameter("pfShowBankHols", SqlDbType.Bit) With {.Value = CleanBoolean(Request.Form("txtSend_ShadeBHols"))}, _
+					New SqlParameter("pfShowCaptions", SqlDbType.Bit) With {.Value = CleanBoolean(Request.Form("txtSend_Captions"))}, _
+					New SqlParameter("pfShowWeekends", SqlDbType.Bit) With {.Value = CleanBoolean(Request.Form("txtSend_ShadeWeekends"))}, _
+					New SqlParameter("pfStartOnCurrentMonth", SqlDbType.Bit) With {.Value = CleanBoolean(Request.Form("txtSend_StartOnCurrentMonth"))}, _
+					New SqlParameter("pfIncludeWorkdays", SqlDbType.Bit) With {.Value = CleanBoolean(Request.Form("txtSend_IncludeWorkingDaysOnly"))}, _
+					New SqlParameter("pfIncludeBankHols", SqlDbType.Bit) With {.Value = CleanBoolean(Request.Form("txtSend_IncludeBHols"))}, _
+					New SqlParameter("pfOutputPreview", SqlDbType.Bit) With {.Value = CleanBoolean(Request.Form("txtSend_OutputPreview"))}, _
+					New SqlParameter("piOutputFormat", SqlDbType.Int) With {.Value = CleanNumeric(Request.Form("txtSend_OutputFormat"))}, _
+					New SqlParameter("pfOutputScreen", SqlDbType.Bit) With {.Value = CleanBoolean(Request.Form("txtSend_OutputScreen"))}, _
+					New SqlParameter("pfOutputPrinter", SqlDbType.Bit) With {.Value = CleanBoolean(Request.Form("txtSend_OutputPrinter"))}, _
+					New SqlParameter("psOutputPrinterName", SqlDbType.VarChar, -1) With {.Value = Request.Form("txtSend_OutputPrinterName")}, _
+					New SqlParameter("pfOutputSave", SqlDbType.Bit) With {.Value = CleanBoolean(Request.Form("txtSend_OutputSave"))}, _
+					New SqlParameter("piOutputSaveExisting", SqlDbType.Int) With {.Value = CleanNumeric(Request.Form("txtSend_OutputSaveExisting"))}, _
+					New SqlParameter("pfOutputEmail", SqlDbType.Bit) With {.Value = CleanBoolean(Request.Form("txtSend_OutputEmail"))}, _
+					New SqlParameter("pfOutputEmailAddr", SqlDbType.Int) With {.Value = CleanNumeric(Request.Form("txtSend_OutputEmailAddr"))}, _
+					New SqlParameter("psOutputEmailSubject", SqlDbType.VarChar, -1) With {.Value = Request.Form("txtSend_OutputEmailSubject")}, _
+					New SqlParameter("psOutputEmailAttachAs", SqlDbType.VarChar, -1) With {.Value = Request.Form("txtSend_OutputEmailAttachAs")}, _
+					New SqlParameter("psOutputFilename", SqlDbType.VarChar, -1) With {.Value = Request.Form("txtSend_OutputFilename")}, _
+					New SqlParameter("psAccess", SqlDbType.VarChar, -1) With {.Value = Request.Form("txtSend_access")}, _
+					New SqlParameter("psJobsToHide", SqlDbType.VarChar, -1) With {.Value = Request.Form("txtSend_jobsToHide")}, _
+					New SqlParameter("psJobsToHideGroups", SqlDbType.VarChar, -1) With {.Value = Request.Form("txtSend_jobsToHideGroups")}, _
+					New SqlParameter("psEvents", SqlDbType.VarChar, -1) With {.Value = Request.Form("txtSend_Events")}, _
+					New SqlParameter("psEvents2", SqlDbType.VarChar, -1) With {.Value = Request.Form("txtSend_Events2")}, _
+					New SqlParameter("psOrderString", SqlDbType.VarChar, -1) With {.Value = Request.Form("txtSend_OrderString")}, _
+					prmID)
 
-			Dim prmPicklist = cmdSave.CreateParameter("picklist", 3, 1)	' 3=integer,1=input
-			cmdSave.Parameters.Append(prmPicklist)
-			prmPicklist.value = CleanNumeric(Request.Form("txtSend_picklist"))
-
-			Dim prmFilter = cmdSave.CreateParameter("filt)er", 3, 1)	' 3=integer,1=input
-			cmdSave.Parameters.Append(prmFilter)
-			prmFilter.value = CleanNumeric(Request.Form("txtSend_filter"))
-
-			Dim prmPrintFilterHeader = cmdSave.CreateParameter("printFilterHeader", 11, 1) ' 11=boolean, 1=input
-			cmdSave.Parameters.Append(prmPrintFilterHeader)
-			prmPrintFilterHeader.value = CleanBoolean(Request.Form("txtSend_printFilterHeader"))
-
-			Dim prmUserName = cmdSave.CreateParameter("userName", 200, 1, 8000)	' 200=varchar,1=input,8000=size
-			cmdSave.Parameters.Append(prmUserName)
-			prmUserName.value = Request.Form("txtSend_userName")
-
-			Dim prmDescription1 = cmdSave.CreateParameter("description1", 3, 1)	' 3=integer,1=input
-			cmdSave.Parameters.Append(prmDescription1)
-			prmDescription1.value = CleanNumeric(Request.Form("txtSend_desc1"))
-
-			Dim prmDescription2 = cmdSave.CreateParameter("description2", 3, 1)	' 3=integer,1=input
-			cmdSave.Parameters.Append(prmDescription2)
-			prmDescription2.value = CleanNumeric(Request.Form("txtSend_desc2"))
-
-			Dim prmDescriptionExpr = cmdSave.CreateParameter("descriptionExpr", 3, 1)	' 3=integer,1=input
-			cmdSave.Parameters.Append(prmDescriptionExpr)
-			prmDescriptionExpr.value = CleanNumeric(Request.Form("txtSend_descExpr"))
-
-			Dim prmRegion = cmdSave.CreateParameter("region", 3, 1)	' 3=integer,1=input
-			cmdSave.Parameters.Append(prmRegion)
-			prmRegion.value = CleanNumeric(Request.Form("txtSend_region"))
-
-			Dim prmGroupByDesc = cmdSave.CreateParameter("groupByDesc", 11, 1) ' 11=boolean, 1=input
-			cmdSave.Parameters.Append(prmGroupByDesc)
-			prmGroupByDesc.value = CleanBoolean(Request.Form("txtSend_groupbydesc"))
-
-			Dim prmDescSeparator = cmdSave.CreateParameter("descSeparator", 200, 1, 8000)	' 200=varchar,1=input,8000=size
-			cmdSave.Parameters.Append(prmDescSeparator)
-			prmDescSeparator.value = Request.Form("txtSend_descseparator")
-
-			Dim prmStartType = cmdSave.CreateParameter("startType", 3, 1)	' 3=integer,1=input
-			cmdSave.Parameters.Append(prmStartType)
-			prmStartType.value = CleanNumeric(Request.Form("txtSend_StartType"))
-
-			Dim prmFixedStart = cmdSave.CreateParameter("fixedStart", 200, 1, 8000)	' 200=varchar,1=input,8000=size
-			cmdSave.Parameters.Append(prmFixedStart)
-			If Len(Request.Form("txtSend_FixedStart")) > 0 Then
-				prmFixedStart.value = Request.Form("txtSend_FixedStart")
-			Else
-				prmFixedStart.value = ""
-			End If
-
-			Dim prmStartFrequency = cmdSave.CreateParameter("startFrequency", 3, 1)	' 3=integer,1=input
-			cmdSave.Parameters.Append(prmStartFrequency)
-			prmStartFrequency.value = CleanNumeric(Request.Form("txtSend_StartFrequency"))
-
-			Dim prmStartPeriod = cmdSave.CreateParameter("startPeriod", 3, 1)	' 3=integer,1=input
-			cmdSave.Parameters.Append(prmStartPeriod)
-			prmStartPeriod.value = CleanNumeric(Request.Form("txtSend_StartPeriod"))
-
-			Dim prmStartDateExpr = cmdSave.CreateParameter("startDateExpr", 3, 1)	' 3=integer,1=input
-			cmdSave.Parameters.Append(prmStartDateExpr)
-			prmStartDateExpr.value = CleanNumeric(Request.Form("txtSend_CustomStart"))
-
-			Dim prmEndType = cmdSave.CreateParameter("endType", 3, 1)	' 3=integer,1=input
-			cmdSave.Parameters.Append(prmEndType)
-			prmEndType.value = CleanNumeric(Request.Form("txtSend_EndType"))
-
-			Dim prmFixedEnd = cmdSave.CreateParameter("fixedEnd", 200, 1, 8000)	' 200=varchar,1=input,8000=size
-			cmdSave.Parameters.Append(prmFixedEnd)
-			If Len(Request.Form("txtSend_FixedEnd")) > 0 Then
-				prmFixedEnd.value = Request.Form("txtSend_FixedEnd")
-			Else
-				prmFixedEnd.value = ""
-			End If
-
-			Dim prmEndFrequency = cmdSave.CreateParameter("endFrequency", 3, 1)	' 3=integer,1=input
-			cmdSave.Parameters.Append(prmEndFrequency)
-			prmEndFrequency.value = CleanNumeric(Request.Form("txtSend_EndFrequency"))
-
-			Dim prmEndPeriod = cmdSave.CreateParameter("endPeriod", 3, 1)	' 3=integer,1=input
-			cmdSave.Parameters.Append(prmEndPeriod)
-			prmEndPeriod.value = CleanNumeric(Request.Form("txtSend_EndPeriod"))
-
-			Dim prmEndDateExpr = cmdSave.CreateParameter("endDateExpr", 3, 1)	' 3=integer,1=input
-			cmdSave.Parameters.Append(prmEndDateExpr)
-			prmEndDateExpr.value = CleanNumeric(Request.Form("txtSend_CustomEnd"))
-
-			Dim prmShowBankHols = cmdSave.CreateParameter("showBankHols", 11, 1) ' 11=boolean, 1=input
-			cmdSave.Parameters.Append(prmShowBankHols)
-			prmShowBankHols.value = CleanBoolean(Request.Form("txtSend_ShadeBHols"))
-
-			Dim prmShowCaptions = cmdSave.CreateParameter("showCaptions", 11, 1) ' 11=boolean, 1=input
-			cmdSave.Parameters.Append(prmShowCaptions)
-			prmShowCaptions.value = CleanBoolean(Request.Form("txtSend_Captions"))
-
-			Dim prmShowWeekends = cmdSave.CreateParameter("showWeekends", 11, 1) ' 11=boolean, 1=input
-			cmdSave.Parameters.Append(prmShowWeekends)
-			prmShowWeekends.value = CleanBoolean(Request.Form("txtSend_ShadeWeekends"))
-
-			Dim prmStartOnCurrentMonth = cmdSave.CreateParameter("startOnCurrentMonth", 11, 1) ' 11=boolean, 1=input
-			cmdSave.Parameters.Append(prmStartOnCurrentMonth)
-			prmStartOnCurrentMonth.value = CleanBoolean(Request.Form("txtSend_StartOnCurrentMonth"))
-
-			Dim prmIncludeWorkdays = cmdSave.CreateParameter("includeWorkdays", 11, 1) ' 11=boolean, 1=input
-			cmdSave.Parameters.Append(prmIncludeWorkdays)
-			prmIncludeWorkdays.value = CleanBoolean(Request.Form("txtSend_IncludeWorkingDaysOnly"))
-
-			Dim prmIncludeBankHols = cmdSave.CreateParameter("includeBankHols", 11, 1) ' 11=boolean, 1=input
-			cmdSave.Parameters.Append(prmIncludeBankHols)
-			prmIncludeBankHols.value = CleanBoolean(Request.Form("txtSend_IncludeBHols"))
-
-			Dim prmOutputPreview = cmdSave.CreateParameter("outputPreview", 11, 1) ' 11=boolean, 1=input
-			cmdSave.Parameters.Append(prmOutputPreview)
-			prmOutputPreview.value = CleanBoolean(Request.Form("txtSend_OutputPreview"))
-
-			Dim prmOutputFormat = cmdSave.CreateParameter("outputFormat", 3, 1)	' 3=integer,1=input
-			cmdSave.Parameters.Append(prmOutputFormat)
-			prmOutputFormat.value = CleanNumeric(Request.Form("txtSend_OutputFormat"))
-
-			Dim prmOutputScreen = cmdSave.CreateParameter("outputScreen", 11, 1) ' 11=boolean, 1=input
-			cmdSave.Parameters.Append(prmOutputScreen)
-			prmOutputScreen.value = CleanBoolean(Request.Form("txtSend_OutputScreen"))
-
-			Dim prmOutputPrinter = cmdSave.CreateParameter("outputPrinter", 11, 1) ' 11=boolean, 1=input
-			cmdSave.Parameters.Append(prmOutputPrinter)
-			prmOutputPrinter.value = CleanBoolean(Request.Form("txtSend_OutputPrinter"))
-
-			Dim prmOutputPrinterName = cmdSave.CreateParameter("outputPrinterName", 200, 1, 8000)	' 200=varchar,1=input,8000=size
-			cmdSave.Parameters.Append(prmOutputPrinterName)
-			prmOutputPrinterName.value = Request.Form("txtSend_OutputPrinterName")
-
-			Dim prmOutputSave = cmdSave.CreateParameter("outputSave", 11, 1) ' 11=boolean, 1=input
-			cmdSave.Parameters.Append(prmOutputSave)
-			prmOutputSave.value = CleanBoolean(Request.Form("txtSend_OutputSave"))
-
-			Dim prmOutputSaveExisting = cmdSave.CreateParameter("outputSaveExisting", 3, 1)	' 3=integer,1=input
-			cmdSave.Parameters.Append(prmOutputSaveExisting)
-			prmOutputSaveExisting.value = CleanNumeric(Request.Form("txtSend_OutputSaveExisting"))
-
-			Dim prmOutputEmail = cmdSave.CreateParameter("outputEmail", 11, 1) ' 11=boolean, 1=input
-			cmdSave.Parameters.Append(prmOutputEmail)
-			prmOutputEmail.value = CleanBoolean(Request.Form("txtSend_OutputEmail"))
-
-			Dim prmOutputEmailAddr = cmdSave.CreateParameter("outputEmailAddr", 3, 1)	' 3=integer,1=input
-			cmdSave.Parameters.Append(prmOutputEmailAddr)
-			prmOutputEmailAddr.value = CleanNumeric(Request.Form("txtSend_OutputEmailAddr"))
-
-			Dim prmOutputEmailSubject = cmdSave.CreateParameter("outputEmailSubject", 200, 1, 8000)	' 200=varchar,1=input,8000=size
-			cmdSave.Parameters.Append(prmOutputEmailSubject)
-			prmOutputEmailSubject.value = Request.Form("txtSend_OutputEmailSubject")
-
-			Dim prmOutputEmailAttachAs = cmdSave.CreateParameter("outputEmailAttachAs", 200, 1, 8000)	' 200=varchar,1=input,8000=size
-			cmdSave.Parameters.Append(prmOutputEmailAttachAs)
-			prmOutputEmailAttachAs.value = Request.Form("txtSend_OutputEmailAttachAs")
-
-			Dim prmOutputFilename = cmdSave.CreateParameter("outputFilename", 200, 1, 8000)	' 200=varchar,1=input,8000=size
-			cmdSave.Parameters.Append(prmOutputFilename)
-			prmOutputFilename.value = Request.Form("txtSend_OutputFilename")
-
-			Dim prmAccess = cmdSave.CreateParameter("access", 200, 1, 8000)	' 200=varchar,1=input,8000=size
-			cmdSave.Parameters.Append(prmAccess)
-			prmAccess.value = Request.Form("txtSend_access")
-
-			Dim prmJobToHide = cmdSave.CreateParameter("jobsToHide", 200, 1, 8000) ' 200=varchar,1=input,8000=size
-			cmdSave.Parameters.Append(prmJobToHide)
-			prmJobToHide.value = Request.Form("txtSend_jobsToHide")
-
-			Dim prmJobToHideGroups = cmdSave.CreateParameter("acess", 200, 1, 8000)	' 200=varchar,1=input,8000=size
-			cmdSave.Parameters.Append(prmJobToHideGroups)
-			prmJobToHideGroups.value = Request.Form("txtSend_jobsToHideGroups")
-
-			Dim prmEvents = cmdSave.CreateParameter("events", 200, 1, 8000)	' 200=varchar,1=input,8000=size
-			cmdSave.Parameters.Append(prmEvents)
-			prmEvents.value = Request.Form("txtSend_Events")
-			Dim prmEvents2 = cmdSave.CreateParameter("events2", 200, 1, 8000)	' 200=varchar,1=input,8000=size
-			cmdSave.Parameters.Append(prmEvents2)
-			prmEvents2.value = Request.Form("txtSend_Events2")
-
-			'pass the order string to the stored procedure, the stored procedure 
-			'saves the order information to the ASRSysCalendarReportOrder table.
-			Dim prmOrderString = cmdSave.CreateParameter("orderstring", 200, 1, 8000)	 ' 200=varchar,1=input,8000=size
-			cmdSave.Parameters.Append(prmOrderString)
-			prmOrderString.value = Request.Form("txtSend_OrderString")
-
-			Dim prmID = cmdSave.CreateParameter("id", 3, 3)	' 3=integer,3=input/output
-			cmdSave.Parameters.Append(prmID)
-			prmID.value = CleanNumeric(Request.Form("txtSend_ID"))
-
-			cmdSave.Execute()
-
-			If Err.Number = 0 Then
 				Session("confirmtext") = "Report has been saved successfully"
 				Session("confirmtitle") = "Calendar Reports"
 				Session("followpage") = "defsel"
 				Session("reaction") = Request.Form("txtSend_reaction")
-				Session("utilid") = cmdSave.Parameters("id").Value
+				Session("utilid") = prmID.Value
 
-				'Response.Redirect("confirmok.asp")
-				Return RedirectToAction("ConfirmOK")
-			Else
+			Catch ex As Exception
 				Response.Write("<HTML>" & vbCrLf)
 				Response.Write("	<HEAD>" & vbCrLf)
 				Response.Write("		<META NAME=""GENERATOR"" Content=""Microsoft Visual Studio 6.0"">" & vbCrLf)
@@ -3615,7 +3469,7 @@ Namespace Controllers
 				Response.Write("				  <tr> " & vbCrLf)
 				Response.Write("				    <td width=20 height=10></td> " & vbCrLf)
 				Response.Write("				    <td> " & vbCrLf)
-				Response.Write(Err.Description & vbCrLf)
+				Response.Write(ex.Message & vbCrLf)
 				Response.Write("			    </td>" & vbCrLf)
 				Response.Write("			    <td width=20></td> " & vbCrLf)
 				Response.Write("			  </tr>" & vbCrLf)
@@ -3636,9 +3490,10 @@ Namespace Controllers
 				Response.Write("</table>" & vbCrLf)
 				Response.Write("	</BODY>" & vbCrLf)
 				Response.Write("<HTML>" & vbCrLf)
-			End If
 
-			cmdSave = Nothing
+			End Try
+
+			Return RedirectToAction("ConfirmOK")
 
 		End Function
 
