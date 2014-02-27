@@ -1,8 +1,8 @@
 ﻿<%@ Page Language="VB" Inherits="System.Web.Mvc.ViewPage" %>
 <%@ Import Namespace="DMI.NET" %>
-<%@ Import Namespace="ADODB" %>
 <%@ Import Namespace="HR.Intranet.Server" %>
 <%@ Import Namespace="System.Data" %>
+<%@ Import Namespace="System.Data.SqlClient" %>
 
 <!DOCTYPE html>
 
@@ -150,22 +150,7 @@
 
 	Dim objDatabase As Database = CType(Session("DatabaseFunctions"), Database)
 	Dim objSessionInfo As SessionInfo = CType(Session("SessionContext"), SessionInfo)
-
-	Dim cmdValidate As Command
-	Dim prmUtilName As ADODB.Parameter
-	Dim prmUtilID As ADODB.Parameter
-	Dim prmExprType As ADODB.Parameter
-	Dim prmUtilOwner As ADODB.Parameter
-	Dim prmBaseTableID As ADODB.Parameter
-	Dim prmComponentDefn As ADODB.Parameter
-	Dim prmTimestamp As ADODB.Parameter
-	Dim prmDeletedKeys As ADODB.Parameter
-	Dim prmHiddenOwnerKeys As ADODB.Parameter
-	Dim prmHiddenNotOwnerKeys As ADODB.Parameter
-	Dim prmDeletedDescs As ADODB.Parameter
-	Dim prmHiddenOwnerDescs As ADODB.Parameter
-	Dim prmHiddenNotOwnerDescs As ADODB.Parameter
-	Dim prmErrorCode As ADODB.Parameter
+	Dim objDataAccess As clsDataAccess = CType(Session("DatabaseAccess"), clsDataAccess)
 
 	Dim iErrorCode As Integer
 	Dim sDeletedKeys As String
@@ -183,14 +168,9 @@
 	Dim iValidityCode As Integer
 	Dim sValidityMessage As String
 	Dim iOriginalReturnType As Integer
-	Dim cmdDefPropRecords As Command
-	Dim prmType As ADODB.Parameter
-	Dim prmID As ADODB.Parameter
 	Dim sDescription As String
-	Dim cmdCheckHidden As Command
 		
-	Dim prmResult As ADODB.Parameter
-	Dim prmMsg As ADODB.Parameter
+
 	Dim sHiddenErrorMsg As String
 		
 	fOK = True
@@ -207,78 +187,45 @@
 	End If
 		
 	If Request.Form("validatePass") = 1 Then
-		cmdValidate = New Command
-		cmdValidate.CommandText = "sp_ASRIntValidateExpression"
-		cmdValidate.CommandType = CommandTypeEnum.adCmdStoredProc
-		cmdValidate.ActiveConnection = Session("databaseConnection")
 
-		prmUtilName = cmdValidate.CreateParameter("utilName", 200, 1, 8000)	' 200=varchar, 1=input, 8000=size
-		cmdValidate.Parameters.Append(prmUtilName)
-		prmUtilName.value = Request.Form("validateName")
+		Dim prmDeletedKeys = New SqlParameter("psDeletedKeys", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
+		Dim prmHiddenOwnerKeys = New SqlParameter("psHiddenOwnerKeys", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
+		Dim prmHiddenNotOwnerKeys = New SqlParameter("psHiddenNotOwnerKeys", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
+		Dim prmDeletedDescs = New SqlParameter("psDeletedDescs", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
+		Dim prmHiddenOwnerDescs = New SqlParameter("psHiddenOwnerDescs", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
+		Dim prmHiddenNotOwnerDescs = New SqlParameter("psHiddenNotOwnerDescs", SqlDbType.VarChar - 1) With {.Direction = ParameterDirection.Output}
+		Dim prmErrorCode = New SqlParameter("piErrorCode", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
 
-		prmUtilID = cmdValidate.CreateParameter("utilID", 3, 1)	'3=integer, 1=input
-		cmdValidate.Parameters.Append(prmUtilID)
-		prmUtilID.value = CleanNumeric(Request.Form("validateUtilID"))
+		Try
 
-		prmExprType = cmdValidate.CreateParameter("exprtype", 3, 1)	'3=integer, 1=input
-		cmdValidate.Parameters.Append(prmExprType)
-		prmExprType.value = CleanNumeric(iExprType)
+			objDataAccess.ExecuteSP("sp_ASRIntValidateExpression" _
+				, New SqlParameter("psUtilName", SqlDbType.VarChar, 255) With {.Value = Request.Form("validateName")} _
+				, New SqlParameter("piUtilID", SqlDbType.Int) With {.Value = CleanNumeric(Request.Form("validateUtilID"))} _
+				, New SqlParameter("piUtilType", SqlDbType.Int) With {.Value = CleanNumeric(iExprType)} _
+				, New SqlParameter("psUtilOwner", SqlDbType.VarChar, 128) With {.Value = Request.Form("validateOwner")} _
+				, New SqlParameter("piBaseTableID", SqlDbType.Int) With {.Value = CleanNumeric(Request.Form("validateBaseTableID"))} _
+				, New SqlParameter("psComponentDefn", SqlDbType.VarChar, -1) With {.Value = Request.Form("components1")} _
+				, New SqlParameter("piTimestamp", SqlDbType.Int) With {.Value = CleanNumeric(Request.Form("validateTimestamp"))} _
+				, prmDeletedKeys, prmHiddenOwnerKeys, prmHiddenNotOwnerKeys, prmDeletedDescs _
+				, prmHiddenOwnerDescs, prmHiddenNotOwnerDescs, prmErrorCode)
 
-		prmUtilOwner = cmdValidate.CreateParameter("utilOwner", 200, 1, 8000)	' 200=varchar, 1=input, 8000=size
-		cmdValidate.Parameters.Append(prmUtilOwner)
-		prmUtilOwner.value = Request.Form("validateOwner")
+		Catch ex As Exception
+			Throw ex
+		End Try
 
-		prmBaseTableID = cmdValidate.CreateParameter("baseTableID", 3, 1)	'3=integer, 1=input
-		cmdValidate.Parameters.Append(prmBaseTableID)
-		prmBaseTableID.value = CleanNumeric(Request.Form("validateBaseTableID"))
+		Response.Write("<input type='hidden' id='txtErrorCode' name='txtErrorCode' value='" & prmErrorCode.Value & "'>" & vbCrLf)
+		Response.Write("<input type='hidden' id='txtDeletedKeys' name='txtDeletedKeys' value='" & prmDeletedKeys.Value & "'>" & vbCrLf)
+		Response.Write("<input type='hidden' id='txtHiddenOwnerKeys' name='txtHiddenOwnerKeys' value='" & prmHiddenOwnerKeys.Value & "'>" & vbCrLf)
+		Response.Write("<input type='hidden' id='txtHiddenNotOwnerKeys' name='txtHiddenNotOwnerKeys' value='" & prmHiddenNotOwnerKeys.Value & "'>" & vbCrLf)
 
-		prmComponentDefn = cmdValidate.CreateParameter("componentDefn", 200, 1, 2147483646)
-		cmdValidate.Parameters.Append(prmComponentDefn)
-		prmComponentDefn.value = Request.Form("components1")
+		iErrorCode = CInt(prmErrorCode.Value)
+		sDeletedKeys = prmDeletedKeys.Value.ToString()
+		sHiddenOwnerKeys = prmHiddenOwnerKeys.Value.ToString()
+		sHiddenNotOwnerKeys = prmHiddenNotOwnerKeys.Value.ToString()
+		sDeletedDescs = prmDeletedDescs.Value.ToString()
+		sHiddenOwnerDescs = prmHiddenOwnerDescs.Value.ToString()
+		sHiddenNotOwnerDescs = prmHiddenNotOwnerDescs.Value.ToString()
 
-		prmTimestamp = cmdValidate.CreateParameter("timestamp", 3, 1)	'3=integer, 1=input
-		cmdValidate.Parameters.Append(prmTimestamp)
-		prmTimestamp.value = CleanNumeric(Request.Form("validateTimestamp"))
-
-		prmDeletedKeys = cmdValidate.CreateParameter("deletedKeys", 200, 2, 2147483646)
-		cmdValidate.Parameters.Append(prmDeletedKeys)
-
-		prmHiddenOwnerKeys = cmdValidate.CreateParameter("hiddenOwnerKeys", 200, 2, 2147483646)
-		cmdValidate.Parameters.Append(prmHiddenOwnerKeys)
- 
-		prmHiddenNotOwnerKeys = cmdValidate.CreateParameter("hiddenNotOwnerKeys", 200, 2, 2147483646)
-		cmdValidate.Parameters.Append(prmHiddenNotOwnerKeys)
-	 
-		prmDeletedDescs = cmdValidate.CreateParameter("deletedDescs", 200, 2, 2147483646)
-		cmdValidate.Parameters.Append(prmDeletedDescs)
-
-		prmHiddenOwnerDescs = cmdValidate.CreateParameter("hiddenOwnerDescs", 200, 2, 2147483646)
-		cmdValidate.Parameters.Append(prmHiddenOwnerDescs)
-
-		prmHiddenNotOwnerDescs = cmdValidate.CreateParameter("hiddenNotOwnerDescs", 200, 2, 2147483646)
-		cmdValidate.Parameters.Append(prmHiddenNotOwnerDescs)
-
-		prmErrorCode = cmdValidate.CreateParameter("errorCode", 3, 2)	'3=integer, 2=output
-		cmdValidate.Parameters.Append(prmErrorCode)
-
-		Err.Clear()
-		cmdValidate.Execute()
-
-		Response.Write("<input type='hidden' id='txtErrorCode' name='txtErrorCode' value='" & cmdValidate.Parameters("errorCode").Value & "'>" & vbCrLf)
-		Response.Write("<input type='hidden' id='txtDeletedKeys' name='txtDeletedKeys' value='" & cmdValidate.Parameters("deletedKeys").Value & "'>" & vbCrLf)
-		Response.Write("<input type='hidden' id='txtHiddenOwnerKeys' name='txtHiddenOwnerKeys' value='" & cmdValidate.Parameters("hiddenOwnerKeys").Value & "'>" & vbCrLf)
-		Response.Write("<input type='hidden' id='txtHiddenNotOwnerKeys' name='txtHiddenNotOwnerKeys' value='" & cmdValidate.Parameters("hiddenNotOwnerKeys").Value & "'>" & vbCrLf)
-
-		iErrorCode = cmdValidate.Parameters("errorCode").Value
-		sDeletedKeys = cmdValidate.Parameters("deletedKeys").Value
-		sHiddenOwnerKeys = cmdValidate.Parameters("hiddenOwnerKeys").Value
-		sHiddenNotOwnerKeys = cmdValidate.Parameters("hiddenNotOwnerKeys").Value
-		sDeletedDescs = cmdValidate.Parameters("deletedDescs").Value
-		sHiddenOwnerDescs = cmdValidate.Parameters("hiddenOwnerDescs").Value
-		sHiddenNotOwnerDescs = cmdValidate.Parameters("hiddenNotOwnerDescs").Value
-
-		cmdValidate = Nothing
-											
 		If (iErrorCode = 1) Or (iErrorCode = 2) Then
 			' 1 = Expression deleted by another user. Save as new ? 
 			' 2 = Made hidden/read-only by another user. Save as new ? 
@@ -466,7 +413,7 @@
 								iIndex = InStr(sHiddenOwnerDescs, "	")
 								Do While iIndex > 0
 									sDesc = Left(sHiddenOwnerDescs, iIndex - 1)
-									Response.Write(sDesc & "<br/>")											
+									Response.Write(sDesc & "<br/>")
 									sHiddenOwnerDescs = Mid(sHiddenOwnerDescs, iIndex + 1)
 									iIndex = InStr(sHiddenOwnerDescs, "	")
 								Loop
@@ -656,40 +603,40 @@
 		If fOK Then
 			iValidityCode = objExpression.ValidateExpression
 			If iValidityCode > 0 Then
-                fDisplay = True
-                Response.Write("			  <table align = 'center'>" & vbCrLf)
+				fDisplay = True
+				Response.Write("			  <table align = 'center'>" & vbCrLf)
 				Response.Write("			  <tr>" & vbCrLf)
 				Response.Write("					<td width='20'></td>" & vbCrLf)
-                Response.Write("			        <td align='center' colspan='3'> " & vbCrLf)
-                Response.Write("					    <h3>Error Saving " & sUtilType & "</h3>" & vbCrLf)
-                Response.Write("			        </td>" & vbCrLf)
+				Response.Write("			        <td align='center' colspan='3'> " & vbCrLf)
+				Response.Write("					    <h3>Error Saving " & sUtilType & "</h3>" & vbCrLf)
+				Response.Write("			        </td>" & vbCrLf)
 				Response.Write("					<td width='20'></td>" & vbCrLf)
 				Response.Write("			  </tr>" & vbCrLf)
 				Response.Write("			  <tr>" & vbCrLf)
 				Response.Write("					<td width='20'></td>" & vbCrLf)
-                Response.Write("			        <td align='center' colspan='3'> " & vbCrLf)
-                sValidityMessage = objExpression.ValidityMessage(CInt(iValidityCode))
-                sValidityMessage = Replace(sValidityMessage, vbCr, "<BR>")
-                Response.Write("						 " & sValidityMessage & vbCrLf)
-                Response.Write("			        </td>" & vbCrLf)
+				Response.Write("			        <td align='center' colspan='3'> " & vbCrLf)
+				sValidityMessage = objExpression.ValidityMessage(CInt(iValidityCode))
+				sValidityMessage = Replace(sValidityMessage, vbCr, "<BR>")
+				Response.Write("						 " & sValidityMessage & vbCrLf)
+				Response.Write("			        </td>" & vbCrLf)
 				Response.Write("					<td width='20'></td>" & vbCrLf)
 				Response.Write("			  </tr>" & vbCrLf)
 				Response.Write("			  <tr>" & vbCrLf)
-                Response.Write("					<td height='20'></td>" & vbCrLf)
-                Response.Write("					<td height='20'  colspan='3'></td>" & vbCrLf)
-                Response.Write("					<td height='20' ></td>" & vbCrLf)
+				Response.Write("					<td height='20'></td>" & vbCrLf)
+				Response.Write("					<td height='20'  colspan='3'></td>" & vbCrLf)
+				Response.Write("					<td height='20' ></td>" & vbCrLf)
 				Response.Write("			  </tr>" & vbCrLf)
 				Response.Write("			  <tr> " & vbCrLf)
-                Response.Write("				<td width='20'></td>" & vbCrLf)
+				Response.Write("				<td width='20'></td>" & vbCrLf)
 				Response.Write("			    <td align='center'  colspan='3'> " & vbCrLf)
-                Response.Write("    				    <input type='button' value='Close' class='btn' name='Cancel' style='width: 80px' id='Cancel'" & vbCrLf)
+				Response.Write("    				    <input type='button' value='Close' class='btn' name='Cancel' style='width: 80px' id='Cancel'" & vbCrLf)
 				Response.Write("    				        OnClick=""cancelClick()""/>" & vbCrLf)
 				Response.Write("			    </td>" & vbCrLf)
 				Response.Write("					<td width='20'></td>" & vbCrLf)
-                Response.Write("			  </tr>" & vbCrLf)
-                 Response.Write("			  </table>" & vbCrLf)
+				Response.Write("			  </tr>" & vbCrLf)
+				Response.Write("			  </table>" & vbCrLf)
 			Else
-				iReturnType = objExpression.returnType
+				iReturnType = objExpression.ReturnType
 			End If
 		End If
 			
@@ -767,7 +714,6 @@
 						Response.Write("			  </tr>" & vbCrLf)
 					End If
 										 
-					cmdDefPropRecords = Nothing
 				End If
 			End If
 		End If
@@ -780,36 +726,20 @@
 				(Request.Form("validateOriginalAccess") <> "HD") Then
 			' Check if the expression can be made hidden.
 
-			cmdCheckHidden = New Command()
-			cmdCheckHidden.CommandText = "sp_ASRIntCheckCanMakeHidden"
-			cmdCheckHidden.CommandType = CommandTypeEnum.adCmdStoredProc
-			cmdCheckHidden.CommandTimeout = 0
+			Dim prmResult = New SqlParameter("piResult", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
+			Dim prmMsg = New SqlParameter("psMessage", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
 
-			cmdCheckHidden.ActiveConnection = Session("databaseConnection")
+			objDataAccess.ExecuteSP("sp_ASRIntCheckCanMakeHidden" _
+							, New SqlParameter("piUtilityType", SqlDbType.Int) With {.Value = CleanNumeric(Request.Form("validateUtilType"))} _
+							, New SqlParameter("piUtilityID", SqlDbType.VarChar, 255) With {.Value = CleanNumeric(Request.Form("validateUtilID"))} _
+							, prmResult, prmMsg)
 
-			prmType = cmdCheckHidden.CreateParameter("type", 3, 1)	' 3=integer, 1=input
-			cmdCheckHidden.Parameters.Append(prmType)
-			prmType.value = CleanNumeric(Request.Form("validateUtilType"))
-
-			prmID = cmdCheckHidden.CreateParameter("id", 3, 1) ' 3=integer, 1=input
-			cmdCheckHidden.Parameters.Append(prmID)
-			prmID.value = CleanNumeric(Request.Form("validateUtilID"))
-
-			prmResult = cmdCheckHidden.CreateParameter("result", 3, 2) ' 3=integer, 2=output
-			cmdCheckHidden.Parameters.Append(prmResult)
-
-			prmMsg = cmdCheckHidden.CreateParameter("msg", 200, 2, 8000) ' 200=varchar, 2=output, 8000=size
-			cmdCheckHidden.Parameters.Append(prmMsg)
-
-			Err.Clear()
-			cmdCheckHidden.Execute()
-
-			If cmdCheckHidden.Parameters("result").Value = 1 Then
+			If prmResult.Value = 1 Then
 				' calc/filter used only in utilities owned by the current user - we then need to prompt the user if they want to make these utilities hidden too.
 				fDisplay = True
 				sHiddenErrorMsg = "Making this " & sUtilType2 & " hidden will automatically make the following definition(s), of which you are the owner, hidden also :" & _
 					"<BR><BR>" & _
-					cmdCheckHidden.Parameters("msg").Value.ToString() & _
+					prmMsg.Value.ToString() & _
 					"<BR><BR>" & _
 					"Do you wish to continue ?"
 				
@@ -845,23 +775,23 @@
 				Response.Write("				</tr>" & vbCrLf)
 			End If
 
-			If (cmdCheckHidden.Parameters("result").Value = 2) Or _
-				(cmdCheckHidden.Parameters("result").Value = 3) Or _
-				(cmdCheckHidden.Parameters("result").Value = 4) Then
+			If (prmResult.Value = 2) Or _
+				(prmResult.Value = 3) Or _
+				(prmResult.Value = 4) Then
 				' calc/filter used in utilities which are in batch jobs not owned by the current user - Cannot therefore make the calc/filter hidden.
-				If (cmdCheckHidden.Parameters("result").Value = 2) Then
+				If (prmResult.Value = 2) Then
 					sHiddenErrorMsg = "This " & sUtilType2 & " cannot be made hidden as it is used in definition(s) which are included in the following batch jobs of which you are not the owner :" & _
 						"<BR><BR>" & _
-						cmdCheckHidden.Parameters("msg").Value.ToString()
+						prmMsg.Value.ToString()
 				Else
-					If (cmdCheckHidden.Parameters("result").Value = 3) Then
+					If (prmResult.Value = 3) Then
 						sHiddenErrorMsg = "This " & sUtilType2 & " cannot be made hidden as it is used in definition(s), of which you are not the owner :" & _
 							"<BR><BR>" & _
-							cmdCheckHidden.Parameters("msg").Value.ToString()
+							prmMsg.Value.ToString()
 					Else
 						sHiddenErrorMsg = "This " & sUtilType2 & " cannot be made hidden as it is used in definition(s) which are included in the following batch jobs which are scheduled to be run by other user groups :" & _
 							"<BR><BR>" & _
-							cmdCheckHidden.Parameters("msg").Value.ToString()
+							prmMsg.Value.ToString()
 					End If
 				End If
 				fDisplay = True
