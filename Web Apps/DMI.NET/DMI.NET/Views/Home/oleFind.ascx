@@ -107,7 +107,6 @@
 				//frmFindForm.ASRIntOLE1.FileName = frmGotoOption.txtOLEFile.value;				
 				//frmFindForm.ASRIntOLE1.IsFileEncrypted = frmGotoOption.txtOLEEncryption.value;
 				//frmFindForm.ASRIntOLE1.DisplayFileImage();
-				
 				if (frmGotoOption.txtOLEFile.value == "") {
 					button_disable(frmFindForm.cmdEmbed, ((frmFindForm.txtOLEReadOnly.value == 'true') ||
 						(frmFindForm.txtOLEMaxEmbedSize.value == 0)));
@@ -958,8 +957,7 @@
 
 				}
 			}
-			else {
-				
+			else {				
 				button_disable(frmFindForm.cmdEdit, (frmFindForm.txtOLEReadOnly.value == 'true') );
 				button_disable(frmFindForm.cmdSelect, (frmFindForm.txtOLEReadOnly.value == 'true'));				
 			}
@@ -973,8 +971,7 @@
 			}
 		}
 		else {			
-			button_disable(frmFindForm.cmdEdit, (frmGotoOption.txtOLEFile.value == ""));
-			button_disable(frmFindForm.cmdEdit, (frmFindForm.txtOLEType.value == 3));
+			button_disable(frmFindForm.cmdEdit, ((frmGotoOption.txtOLEFile.value == "") || (frmFindForm.txtOLEType.value == 3)));
 			$('#oleCaption').show();
 			$('#fileUpload').hide();
 		}
