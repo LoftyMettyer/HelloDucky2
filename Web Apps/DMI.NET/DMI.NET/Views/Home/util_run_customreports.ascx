@@ -321,6 +321,7 @@
 	Dim fNoRecords As Boolean
 	Dim sGroupingParams As String = ""
 	Dim jsFooterFunction As String = ""
+	Dim jsSrvFunction As New StringBuilder
 
 	fNoRecords = objReport.NoRecords
 
@@ -377,6 +378,17 @@
 				sGroupTextList &= String.Format("{0}'{{0}}'", IIf(sGroupTextList.Length > 0, ", ", ""))
 				sGroupOrder &= String.Format("{0}'{1}'", IIf(sGroupOrder.Length > 0, ", ", ""), objRow.Item("SortOrder").ToString().ToLower())
 			End If
+			
+			' Suppress repeated values
+			If CBool(objRow.Item("Srv")) Then
+				jsSrvFunction.Append("var lastValue = $('#grdReport tr:first td:nth-child(" & iColIndex + 1.ToString() & ")').text();")
+				jsSrvFunction.Append("$('#grdReport tr td:nth-child(" & iColIndex + 1.ToString() & ")').each(function () {")
+				jsSrvFunction.Append("if($(this).text() == lastValue) {")
+				jsSrvFunction.Append("	$(this).text('');")
+				jsSrvFunction.Append("}")
+				jsSrvFunction.Append("else {lastValue = $(this).text();}")
+				jsSrvFunction.Append("});")
+			End If
 		
 			If objRow.Item("Hidden") Or bGroupWithNext Then isVisibleString = ", hidden: true"
 			If CBool(objRow.Item("GroupWithNextColumn")) Then cellAttributes = ", cellattr: function (rowId, tv, rawObject, cm, rdata) {return 'style=""white-space: normal;""';}"
@@ -424,7 +436,7 @@
 		
 			' Build sortOrder string for dataview when binding the DATA below..
 			If objRow.Item("SortOrder").ToString().ToUpper() = "ASC" Or objRow.Item("SortOrder").ToString().ToUpper() = "DESC" Then
-				sSortString &= String.Format("{0}{1} {2}", IIf(sSortString.Length > 0, ", ", ""), sColumnHeading, objRow.Item("SortOrder"))								
+				sSortString &= String.Format("{0}{1} {2}", IIf(sSortString.Length > 0, ", ", ""), sColumnHeading, objRow.Item("SortOrder"))
 			End If
 			
 			iColIndex += 1
@@ -582,8 +594,8 @@ End If
 		Response.Write("	<input type='hidden' id=txtDefn_Name name=txtDefn_Name value=""" & Replace(CType(Session("utilname"), String), """", "&quot;") & """>" & vbCrLf)
 		Response.Write("	<input type='hidden' id=txtDefn_ErrMsg name=txtDefn_ErrMsg value=""" & sErrMsg & """>" & vbCrLf)
 	%>
-	<input type="hidden" id="txtUserName" name="txtUserName" value="<%Session("username").ToString()%>">
-	<input type="hidden" id="txtDateFormat" name="txtDateFormat" value="<%Session("LocaleDateFormat").ToString()%>">
+	<input type="hidden" id="txtUserName" name="txtUserName" value="<%=Session("username").ToString()%>">
+	<input type="hidden" id="txtDateFormat" name="txtDateFormat" value="<%=Session("LocaleDateFormat").ToString()%>">
 
 	<input type="hidden" id="txtCancelPrint" name="txtCancelPrint">
 	<input type="hidden" id="txtOptionsDone" name="txtOptionsDone">
@@ -616,7 +628,7 @@ End If
 		ignoreCase: true,
 		rowNum: 200000		
 			<%=sGroupingParams%>,
-		loadComplete: function() { <%=jsFooterFunction%> }
+		loadComplete: function() { <%=jsFooterFunction%>;<%=jsSrvFunction.ToString()%> }
 	});
 
 	//jqGrid style overrides
