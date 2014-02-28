@@ -21,6 +21,71 @@ Public Module ASRFunctions
 
 	End Function
 
+	Public Sub PopulateTrainingBookingSessionVariables()
+
+		Try
+
+			Dim objDataAccess As clsDataAccess = CType(HttpContext.Current.Session("DatabaseAccess"), clsDataAccess)
+
+			Dim prmEmpTableID = New SqlParameter("piEmployeeTableID", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
+			Dim prmCourseTableID = New SqlParameter("piCourseTableID", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
+			Dim prmCourseCancelDateColumnID = New SqlParameter("piCourseCancelDateColumnID", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
+			Dim prmTBTableID = New SqlParameter("piTBTableID", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
+			Dim prmTBTableSelect = New SqlParameter("pfTBTableSelect", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
+			Dim prmTBTableInsert = New SqlParameter("pfTBTableInsert", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
+			Dim prmTBTableUpdate = New SqlParameter("pfTBTableUpdate", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
+			Dim prmTBStatusColumnID = New SqlParameter("piTBStatusColumnID", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
+			Dim prmTBStatusColumnUpdate = New SqlParameter("pfTBStatusColumnUpdate", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
+			Dim prmTBCancelDateColumnID = New SqlParameter("piTBCancelDateColumnID", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
+			Dim prmTBCancelDateColumnUpdate = New SqlParameter("pfTBCancelDateColumnUpdate", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
+			Dim prmTBStatusPExists = New SqlParameter("pfTBProvisionalStatusExists", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
+			Dim prmWaitListTableID = New SqlParameter("piWaitListTableID", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
+			Dim prmWaitListTableInsert = New SqlParameter("pfWaitListTableInsert", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
+			Dim prmWaitListTableDelete = New SqlParameter("pfWaitListTableDelete", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
+			Dim prmWaitListCourseTitleColumnID = New SqlParameter("piWaitListCourseTitleColumnID", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
+			Dim prmWaitListCourseTitleColumnUpdate = New SqlParameter("pfWaitListCourseTitleColumnUpdate", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
+			Dim prmWaitListCourseTitleColumnSelect = New SqlParameter("pfWaitListCourseTitleColumnSelect", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
+			Dim prmBulkBookingDefaultViewID = New SqlParameter("piBulkBookingDefaultViewID", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
+
+			objDataAccess.ExecuteSP("sp_ASRIntGetTrainingBookingParameters", _
+					prmEmpTableID, prmCourseTableID, prmCourseCancelDateColumnID, prmTBTableID, prmTBTableSelect, prmTBTableInsert, prmTBTableUpdate, _
+					prmTBStatusColumnID, prmTBStatusColumnUpdate, prmTBCancelDateColumnID, prmTBCancelDateColumnUpdate, prmTBStatusPExists, prmWaitListTableID, _
+					prmWaitListTableInsert, prmWaitListTableDelete, prmWaitListCourseTitleColumnID, prmWaitListCourseTitleColumnUpdate, prmWaitListCourseTitleColumnSelect, _
+					prmBulkBookingDefaultViewID)
+
+			HttpContext.Current.Session("TB_EmpTableID") = prmEmpTableID.Value
+			HttpContext.Current.Session("TB_CourseTableID") = prmCourseTableID.Value
+			HttpContext.Current.Session("TB_CourseCancelDateColumnID") = prmCourseCancelDateColumnID.Value
+			HttpContext.Current.Session("TB_TBTableID") = prmTBTableID.Value
+			HttpContext.Current.Session("TB_TBTableSelect") = prmTBTableSelect.Value
+			HttpContext.Current.Session("TB_TBTableInsert") = prmTBTableInsert.Value
+			HttpContext.Current.Session("TB_TBTableUpdate") = prmTBTableUpdate.Value
+			HttpContext.Current.Session("TB_TBStatusColumnID") = prmTBStatusColumnID.Value
+			HttpContext.Current.Session("TB_TBStatusColumnUpdate") = prmTBStatusColumnUpdate.Value
+			HttpContext.Current.Session("TB_TBCancelDateColumnID") = prmTBCancelDateColumnID.Value
+			HttpContext.Current.Session("TB_TBCancelDateColumnUpdate") = prmTBCancelDateColumnUpdate.Value
+			HttpContext.Current.Session("TB_TBStatusPExists") = prmTBStatusPExists.Value
+			HttpContext.Current.Session("TB_WaitListTableID") = prmWaitListTableID.Value
+			HttpContext.Current.Session("TB_WaitListTableInsert") = prmWaitListTableInsert.Value
+			HttpContext.Current.Session("TB_WaitListTableDelete") = prmWaitListTableDelete.Value
+			HttpContext.Current.Session("TB_WaitListCourseTitleColumnID") = prmWaitListCourseTitleColumnID.Value
+			HttpContext.Current.Session("TB_WaitListCourseTitleColumnUpdate") = prmWaitListCourseTitleColumnUpdate.Value
+			HttpContext.Current.Session("TB_WaitListCourseTitleColumnSelect") = prmWaitListCourseTitleColumnSelect.Value
+
+			HttpContext.Current.Session("TB_BulkBookingDefaultViewID") = prmBulkBookingDefaultViewID.Value
+
+			If CStr(HttpContext.Current.Session("TB_TBTableID")) = "" Then HttpContext.Current.Session("TB_TBTableID") = 0
+
+		Catch ex As Exception
+			Throw
+
+		End Try
+
+	End Sub
+
+
+
+
 	Public Function CalculatePromptedDate(objRow As DataRow) As Date
 
 		Dim iPromptDateType As PromptedDateType

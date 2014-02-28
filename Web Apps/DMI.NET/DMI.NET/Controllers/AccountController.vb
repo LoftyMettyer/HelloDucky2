@@ -579,112 +579,18 @@ Namespace Controllers
 			Session("WF_OutOfOffice") = fWorkflowOutOfOffice
 			Session("WF_RecordCount") = iWorkflowRecordCount
 
-			' Get Training Booking module parameters		
-			Dim cmdTrainingBooking = New Command
-			cmdTrainingBooking.CommandText = "sp_ASRIntGetTrainingBookingParameters"
-			cmdTrainingBooking.CommandType = 4	' Stored Procedure
-			cmdTrainingBooking.ActiveConnection = conX
 
-			prmEmpTableID = cmdTrainingBooking.CreateParameter("empTableID", 3, 2)	' 3=integer, 2=output
-			cmdTrainingBooking.Parameters.Append(prmEmpTableID)
+			Try
+				PopulateTrainingBookingSessionVariables()
 
-			Dim prmCourseTableID = cmdTrainingBooking.CreateParameter("courseTableID", 3, 2) ' 3=integer, 2=output
-			cmdTrainingBooking.Parameters.Append(prmCourseTableID)
-
-			Dim prmCourseCancelDateColumnID = cmdTrainingBooking.CreateParameter("courseCancelDateColumnID", 3, 2) ' 3=integer, 2=output
-			cmdTrainingBooking.Parameters.Append(prmCourseCancelDateColumnID)
-
-			Dim prmTBTableID = cmdTrainingBooking.CreateParameter("tbTableID", 3, 2) ' 3=integer, 2=output
-			cmdTrainingBooking.Parameters.Append(prmTBTableID)
-
-			Dim prmTBTableSelect = cmdTrainingBooking.CreateParameter("tbTableSelect", 11, 2)	' 11=boolean, 2=output
-			cmdTrainingBooking.Parameters.Append(prmTBTableSelect)
-
-			Dim prmTBTableInsert = cmdTrainingBooking.CreateParameter("tbTableInsert", 11, 2)	' 11=boolean, 2=output
-			cmdTrainingBooking.Parameters.Append(prmTBTableInsert)
-
-			Dim prmTBTableUpdate = cmdTrainingBooking.CreateParameter("tbTableUpdate", 11, 2)	' 11=boolean, 2=output
-			cmdTrainingBooking.Parameters.Append(prmTBTableUpdate)
-
-			Dim prmTBStatusColumnID = cmdTrainingBooking.CreateParameter("tbStatusColumnID", 3, 2) ' 3=integer, 2=output
-			cmdTrainingBooking.Parameters.Append(prmTBStatusColumnID)
-
-			Dim prmTBStatusColumnUpdate = cmdTrainingBooking.CreateParameter("tbStatusColumnUpdate", 11, 2)	' 11=boolean, 2=output
-			cmdTrainingBooking.Parameters.Append(prmTBStatusColumnUpdate)
-
-			Dim prmTBCancelDateColumnID = cmdTrainingBooking.CreateParameter("tbCancelDateColumnID", 3, 2) ' 3=integer, 2=output
-			cmdTrainingBooking.Parameters.Append(prmTBCancelDateColumnID)
-
-			Dim prmTBCancelDateColumnUpdate = cmdTrainingBooking.CreateParameter("tbCancelDateColumnUpdate", 11, 2)	' 11=boolean, 2=output
-			cmdTrainingBooking.Parameters.Append(prmTBCancelDateColumnUpdate)
-
-			Dim prmTBStatusPExists = cmdTrainingBooking.CreateParameter("tbStatusPExists", 11, 2)	' 11=boolean, 2=output
-			cmdTrainingBooking.Parameters.Append(prmTBStatusPExists)
-
-			Dim prmWaitListTableID = cmdTrainingBooking.CreateParameter("waitListTableID", 3, 2) ' 3=integer, 2=output
-			cmdTrainingBooking.Parameters.Append(prmWaitListTableID)
-
-			Dim prmWaitListTableInsert = cmdTrainingBooking.CreateParameter("waitListTableInsert", 11, 2)	' 11=boolean, 2=output
-			cmdTrainingBooking.Parameters.Append(prmWaitListTableInsert)
-
-			Dim prmWaitListTableDelete = cmdTrainingBooking.CreateParameter("waitListTableDelete", 11, 2)	' 11=boolean, 2=output
-			cmdTrainingBooking.Parameters.Append(prmWaitListTableDelete)
-
-			Dim prmWaitListCourseTitleColumnID = cmdTrainingBooking.CreateParameter("waitListCourseTitleColumnID", 3, 2) ' 3=integer, 2=output
-			cmdTrainingBooking.Parameters.Append(prmWaitListCourseTitleColumnID)
-
-			Dim prmWaitListCourseTitleColumnUpdate = cmdTrainingBooking.CreateParameter("waitListCourseTitleColumnUpdate", 11, 2)	' 11=boolean, 2=output
-			cmdTrainingBooking.Parameters.Append(prmWaitListCourseTitleColumnUpdate)
-
-			Dim prmWaitListCourseTitleColumnSelect = cmdTrainingBooking.CreateParameter("waitListCourseTitleColumnSelect", 11, 2)	' 11=boolean, 2=output
-			cmdTrainingBooking.Parameters.Append(prmWaitListCourseTitleColumnSelect)
-
-			Dim prmBulkBookingDefaultViewID = cmdTrainingBooking.CreateParameter("bulkBookingDefaultViewID", 3, 2) ' 3=integer, 2=output
-			cmdTrainingBooking.Parameters.Append(prmBulkBookingDefaultViewID)
-
-			'		Set prmWaitListOverRideColumnID = cmdTrainingBooking.CreateParameter("WaitListOverRideColumnID", 3, 2) ' 3=integer, 2=output
-			'		cmdTrainingBooking.Parameters.Append prmWaitListOverRideColumnID
-
-			Err.Number = 0
-			cmdTrainingBooking.Execute()
-
-			If (Err.Number <> 0) Then
+			Catch ex As Exception
 				Session("ErrorTitle") = "Login Page"
-				Session("ErrorText") = "You could not login to the OpenHR database because of the following reason:<p>" &
-				 FormatError(Err.Description)
+				Session("ErrorText") = "You could not login to the OpenHR database because of the following reason:<p>" & FormatError(ex.Message)
 				Return RedirectToAction("Loginerror")
-			End If
 
-			Session("TB_EmpTableID") = cmdTrainingBooking.Parameters("empTableID").Value
+			End Try
 
-			Session("TB_CourseTableID") = cmdTrainingBooking.Parameters("courseTableID").Value
-			Session("TB_CourseCancelDateColumnID") = cmdTrainingBooking.Parameters("courseCancelDateColumnID").Value
 
-			Session("TB_TBTableID") = cmdTrainingBooking.Parameters("tbTableID").Value
-			Session("TB_TBTableSelect") = cmdTrainingBooking.Parameters("tbTableSelect").Value
-			Session("TB_TBTableInsert") = cmdTrainingBooking.Parameters("tbTableInsert").Value
-			Session("TB_TBTableUpdate") = cmdTrainingBooking.Parameters("tbTableUpdate").Value
-			Session("TB_TBStatusColumnID") = cmdTrainingBooking.Parameters("tbStatusColumnID").Value
-			Session("TB_TBStatusColumnUpdate") = cmdTrainingBooking.Parameters("tbStatusColumnUpdate").Value
-			Session("TB_TBCancelDateColumnID") = cmdTrainingBooking.Parameters("tbCancelDateColumnID").Value
-			Session("TB_TBCancelDateColumnUpdate") = cmdTrainingBooking.Parameters("tbCancelDateColumnUpdate").Value
-			Session("TB_TBStatusPExists") = cmdTrainingBooking.Parameters("tbStatusPExists").Value
-
-			Session("TB_WaitListTableID") = cmdTrainingBooking.Parameters("waitListTableID").Value
-			Session("TB_WaitListTableInsert") = cmdTrainingBooking.Parameters("waitListTableInsert").Value
-			Session("TB_WaitListTableDelete") = cmdTrainingBooking.Parameters("waitListTableDelete").Value
-			Session("TB_WaitListCourseTitleColumnID") = cmdTrainingBooking.Parameters("waitListCourseTitleColumnID").Value
-			Session("TB_WaitListCourseTitleColumnUpdate") =
-			 cmdTrainingBooking.Parameters("waitListCourseTitleColumnUpdate").Value
-			Session("TB_WaitListCourseTitleColumnSelect") =
-			 cmdTrainingBooking.Parameters("waitListCourseTitleColumnSelect").Value
-
-			Session("TB_BulkBookingDefaultViewID") = cmdTrainingBooking.Parameters("bulkBookingDefaultViewID").Value
-			'session("TB_WaitListOverRideColumnID") = cmdTrainingBooking.Parameters("WaitListOverRideColumnID").Value
-
-			cmdTrainingBooking = Nothing
-
-			If CStr(Session("TB_TBTableID")) = "" Then Session("TB_TBTableID") = 0
 
 			'MH 07/07/2004: Moved from default.asp so background stuff only gets called on
 			'login and not every time you go back to default.asp (as per request from JPD).
