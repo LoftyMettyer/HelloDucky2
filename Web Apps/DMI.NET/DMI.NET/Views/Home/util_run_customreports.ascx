@@ -396,7 +396,7 @@
 			End If
 			If CBool(objRow.Item("Avge")) Then
 				summaryType = ", summaryType: ""avg"", summaryTpl: ""Sub Average: {0}"""
-				jsFooterFunction &= String.Format("var avge_{2} = jQuery('#grdReport').jqGrid('getCol', '{0}', false, 'avg').toFixed({1});", sColumnHeading, decimalPlaces, sColumnHeading.Replace(" ", "_"))
+				jsFooterFunction &= String.Format("var avge_{0} = Number({1}).toFixed({2});", sColumnHeading.Replace(" ", "_"), objReport.mrstCustomReportsOutput.Compute("Avg(" & sColumnHeading & ")", ""), decimalPlaces)
 				sFooterText &= String.Format("{0}'Average: ' + avge_{1}", IIf(sFooterText.Length > 0, "+ '<br/>' + ", ""), sColumnHeading.Replace(" ", "_"))
 			End If
 		
