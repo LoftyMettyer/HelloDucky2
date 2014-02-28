@@ -3,9 +3,7 @@
 <%' OLE TYPES:  0 = Local OLE, 1 = Server OLE, 2 = Embedded OLE, 3 = Linked OLE. %>
 
 
-<%Dim sErrorDescription = ""
-	Dim sDialogTitle As String
-	
+<%Dim sDialogTitle As String
 	If Session("optionIsPhoto") = "true" Then
 		sDialogTitle = "Select Image File"
 	Else
@@ -13,12 +11,11 @@
 	End If
 	
 	If Session("optionOLEReadOnly") = "true" Then sDialogTitle &= " (Read Only)"
-	
 %>
+
 <script src="<%: Url.LatestContent("~/Scripts/ctl_SetFont.js")%>" type="text/javascript"></script>
 
 <script type='text/javascript'>
-
 	function oleFind_window_onload() {
 
 		var fOK;
@@ -65,7 +62,6 @@
 			}
 
 			// Expand the option frame and hide the work frame.
-			//window.parent.document.all.item("workframeset").cols = "0, *";
 			$("#optionframe").attr("data-framesource", "SELECTOLE");
 			$("#optionframe").dialog({
 				title: '<%=sDialogTitle%>',
@@ -97,16 +93,8 @@
 						// Select the top row.
 						moveFirst();
 					}
-					//frmFindForm.ssOleDBGrid.focus();
 				}
 			} else {
-				//frmFindForm.ASRIntOLE1.DMIBackColor = 16777215;
-				//frmFindForm.ASRIntOLE1.IsPhoto = false;
-				//frmFindForm.ASRIntOLE1.OLEType = frmGotoOption.txtOLEType.value;
-				//frmFindForm.ASRIntOLE1.DisplayFileName = frmGotoOption.txtOLEJustFileName.value;
-				//frmFindForm.ASRIntOLE1.FileName = frmGotoOption.txtOLEFile.value;				
-				//frmFindForm.ASRIntOLE1.IsFileEncrypted = frmGotoOption.txtOLEEncryption.value;
-				//frmFindForm.ASRIntOLE1.DisplayFileImage();
 				if (frmGotoOption.txtOLEFile.value == "") {
 					button_disable(frmFindForm.cmdEmbed, ((frmFindForm.txtOLEReadOnly.value == 'true') ||
 						(frmFindForm.txtOLEMaxEmbedSize.value == 0)));
@@ -121,11 +109,6 @@
 					button_disable(frmFindForm.cmdLink, true);
 					button_disable(frmFindForm.cmdRemove, (frmFindForm.txtOLEReadOnly.value == 'true'));
 					setASRIntOLE1_FileName(frmGotoOption.txtOLEJustFileName.value);
-					if (frmGotoOption.txtOLEType.value == 3) {
-						//frmFindForm.cmdRemove.value = "Unlink";
-					} else {
-						//frmFindForm.cmdRemove.value = "Delete";
-					}
 				}
 			}
 		
@@ -133,9 +116,6 @@
 			menu_disableMenu();
 		}
 
-		// Get menu.asp to refresh the menu.
-		//window.parent.frames("menuframe").refreshMenu();
-		//CloseWait();
 		return false;
 	}
 
@@ -217,15 +197,12 @@
 
 	function bookmarksCount() {
 		return 1;
-		//var selRowIds = $('#ssOleDBGrid').jqGrid('getGridParam', 'selarrrow');
-		//return selRowIds.length;
 	}
 
 
 	function FolderList(pstrLocation) {
 		//use AJAX to return array of files in the OLE path - server-side only...
 		//this only works because we convert the returned values to json for jqGrid.
-
 		if (pstrLocation.length > 0) {
 
 			$.ajax({
@@ -252,7 +229,11 @@
 						autowidth: true
 					});
 
-				}
+				},
+				error: function () {
+					//assume invalid path.
+					$('#ssOleDBGrid').html('<tr><td align="center"><h3>Server OLE Path is unavailable :<br/></h3><h2>' + pstrLocation + '</h2></td></tr>');					
+				},
 			});
 		} else {
 			//No path set.
@@ -260,35 +241,11 @@
 		}
 	}
 
-	//use menu_disableMenu instead. - not even needed because we're in a modal dialog now.
-	//function disableMenu() {
-	//	var iLoop;
-	//	var objMainMenu;
-
-
-	//	objMainMenu = window.parent.frames("menuframe").abMainMenu;
-
-	//	for (iLoop = 0; iLoop < objMainMenu.Bands.Item("mnuMainMenu").Tools.Count(); iLoop++) {
-	//		objMainMenu.Bands.Item("mnuMainMenu").Tools.Item(iLoop).Enabled = false;
-	//	}
-
-	//	for (iLoop = 0; iLoop < objMainMenu.Bands.Item("mnubandMainToolBar").Tools.Count(); iLoop++) {
-	//		objMainMenu.Bands.Item("mnubandMainToolBar").Tools.Item(iLoop).Enabled = false;
-	//	}
-
-	//	objMainMenu.RecalcLayout();
-	//	objMainMenu.ResetHooks();
-	//	objMainMenu.Refresh();
-	//}
-
 	function Select() {		
 		var frmFindForm = document.getElementById('frmFindForm');
 		var frmGotoOption = document.getElementById('frmFindForm');
 		if (bookmarksCount() > 0) {
 			$("#optionframe").dialog("destroy");
-			// Fault 3503
-			//window.parent.frames("workframe").document.forms("frmRecordEditForm").ctlRecordEdit.style.visibility = "visible";
-
 			frmGotoOption.txtGotoOptionColumnID.value = frmFindForm.txtOptionColumnID.value;
 			frmGotoOption.txtGotoOptionFile.value = selectedValue();
 			frmGotoOption.txtGotoOptionAction.value = "SELECTOLE";
@@ -303,8 +260,6 @@
 	}
 
 	function Clear() {
-		// Fault 3503
-		//window.parent.frames("workframe").document.forms("frmRecordEditForm").ctlRecordEdit.style.visibility = "visible";
 		var frmFindForm = document.getElementById('frmFindForm');
 		var frmGotoOption = document.getElementById('frmFindForm');
 
@@ -353,31 +308,12 @@
 		}
 	}
 
-	/*
-	function CheckAttachment()
-	{
-		var ret = true;
-		if (document.doattach.attfile.value!="")
-		{
-			document.doattach._HMAction.value="FastAttach";
-			document.doattach[0].name='Attach.x';
-			document.doattach.submit();
-			ret = false;
-		}
-		
-		return ret
-	}
-	*/
-	
-
 	//This function is called when frmFindForm is submitted...
 	$('#frmFindForm').submit(function (e) {
 		var fOK;
 		fOK = true;
 		var frmFindForm = document.getElementById('frmFindForm');
 		var frmGotoOption = document.getElementById('frmFindForm');
-		// Fault 3503
-		//window.parent.frames("workframe").document.forms("frmRecordEditForm").ctlRecordEdit.style.visibility = "visible";		
 
 		if (frmGotoOption.txtOLEType.value < 2) {
 			e.preventDefault();
@@ -438,8 +374,6 @@
 				//TODO: 
 				recEdit_setTimeStamp('<%=session("timestamp")%>');
 
-				//menu_refreshMenu();
-
 				e.preventDefault();
 				this.submit();
 
@@ -473,66 +407,6 @@
 			}
 		});
 	}
-
-	//replaced by jQuery '$('#frmFindForm').submit()' function above.
-	function OKClick() {		
-		//var fOK;
-		//fOK = true;
-
-		//var frmFindForm = document.getElementById('frmFindForm');
-		//var frmGotoOption = document.getElementById('frmFindForm');
-
-		//// Fault 3503
-		////window.parent.frames("workframe").document.forms("frmRecordEditForm").ctlRecordEdit.style.visibility = "visible";
-		//$("#optionframe").dialog("destroy");
-
-		//// If not blank and ole type is embedded
-		//if ((frmGotoOption.txtOLEJustFileName.value != "") && (frmGotoOption.txtOLEType.value == 2) && (frmGotoOption.txtOLEIsNew.value == "True")) {
-		//	if (frmGotoOption.txtOLECommit.value == 1) {
-		//		try {
-		//			//get the uploaded file as an object:
-		//			var file = document.getElementById('filSelectFile').files[0];
-
-		//			//frmGotoOption.txtOLEFile.value = window.parent.frames("menuframe").ASRIntranetFunctions.OLEEncryptFile(frmGotoOption.txtOLEFile.value, frmGotoOption.txtOLEUploadPath.value, frmGotoOption.txtOLESession.value);
-		//			frmGotoOption.txtOLEFile.value = file.name;
-		//			frmGotoOption.txtOLEEncryption.value = true;
-
-		//		} catch(e) {
-		//			OpenHR.messageBox("Unable to save your document.\nContact your system administrator.", 16);
-		//			fOK = false;
-		//		}
-		//	}
-		//}
-
-		//// Pass the new filename in with the text to flag it as a linked file
-		//if (fOK == true) {
-		//	frmGotoOption.txtGotoOptionFile.value = frmGotoOption.txtOLEJustFileName.value;
-		//	if (frmGotoOption.txtOLEType.value == 3) {
-		//		frmGotoOption.txtGotoOptionFile.value = frmGotoOption.txtGotoOptionFile.value + "::LINKED_OLE_DOCUMENT::";
-		//	}
-		//	else {
-		//		frmGotoOption.txtGotoOptionFile.value = frmGotoOption.txtGotoOptionFile.value + "::EMBEDDED_OLE_DOCUMENT::";
-		//	}
-
-		//	frmGotoOption.txtGotoOptionColumnID.value = frmFindForm.txtOptionColumnID.value;
-
-		//	if (frmGotoOption.txtOLECommit.value == 1)
-		//	{ frmGotoOption.txtGotoOptionAction.value = "LINKOLE"; }
-		//	else
-		//	{ frmGotoOption.txtGotoOptionAction.value = ""; }
-
-		//	frmGotoOption.txtGotoOptionPage.value = "emptyoption";
-		//	//frmGotoOption.submit();
-
-		//	$("#frmGotoOption").submit();
-
-		//	//OpenHR.submitForm(frmGotoOption);
-		//}
-		//else {
-		//	button_disable(frmFindForm.cmdSelect, true);
-		//}
-	}
-
 
 	function showFileUpload(linkType) {
 		$('#txtFFOLEType').val(linkType);
@@ -574,17 +448,6 @@
 			}
 		}
 
-		//TODO: move to post
-		////If embedded file, make sure it's not any larger than the defined size		
-		//if ((plngOLEType == 2) && (sFile.length > 0)) {
-
-		//	lngFileSize = file.size; //window.parent.frames("menuframe").ASRIntranetFunctions.FileSize(sFile);
-
-		//	if (lngFileSize > frmFindForm.txtOLEMaxEmbedSize.value * 1000) {
-		//		OpenHR.messageBox("File is too large to embed. \nMaximum for this column is " + frmFindForm.txtOLEMaxEmbedSize.value + "KB", 48);
-		//		bOK = false;
-		//	}
-		//}				
 		// Check that the filename/unc isn't too long
 		if (plngOleType != 2) {
 			if ((sFile.length > 0) && (plngOleType > 1)) {
@@ -604,8 +467,6 @@
 			frmGotoOption.txtOLEType.value = plngOleType;
 			frmGotoOption.txtOLEEncryption.value = false;
 			frmGotoOption.txtOLECommit.value = 1;
-			//IE9 cannot access filesize or datelastmodified - moved to controller
-			//frmGotoOption.txtOLEFileSize.value = file.size; // window.parent.frames("menuframe").ASRIntranetFunctions.FileSize(frmGotoOption.txtOLEFile.value);						
 
 			var datelastmodified;
 			//IE9 won't do this:
@@ -894,50 +755,6 @@
 		}
 	}
 
-	//function locateRecord(psFileName, pfExactMatch) {
-	//	var fFound
-	//	fFound = false;
-
-	//	frmFindForm.ssOleDBGrid.redraw = false;
-
-	//	frmFindForm.ssOleDBGrid.MoveLast();
-	//	frmFindForm.ssOleDBGrid.MoveFirst();
-
-	//	for (iIndex = 1; iIndex <= frmFindForm.ssOleDBGrid.rows; iIndex++) {
-	//		if (pfExactMatch == true) {
-	//			if (frmFindForm.ssOleDBGrid.Columns(0).value == psFileName) {
-	//				frmFindForm.ssOleDBGrid.SelBookmarks.Add(frmFindForm.ssOleDBGrid.Bookmark);
-	//				fFound = true;
-	//				break;
-	//			}
-	//		}
-	//		else {
-	//			var sGridValue = new String(frmFindForm.ssOleDBGrid.Columns(0).value);
-	//			sGridValue = sGridValue.substr(0, psFileName.length).toUpperCase();
-	//			if (sGridValue == psFileName.toUpperCase()) {
-	//				frmFindForm.ssOleDBGrid.SelBookmarks.Add(frmFindForm.ssOleDBGrid.Bookmark);
-	//				fFound = true;
-	//				break;
-	//			}
-	//		}
-
-	//		if (iIndex < frmFindForm.ssOleDBGrid.rows) {
-	//			frmFindForm.ssOleDBGrid.MoveNext();
-	//		}
-	//		else {
-	//			break;
-	//		}
-	//	}
-
-	//	if ((fFound == false) && (frmFindForm.ssOleDBGrid.rows > 0)) {
-	//		// Select the top row.
-	//		frmFindForm.ssOleDBGrid.MoveFirst();
-	//		frmFindForm.ssOleDBGrid.SelBookmarks.Add(frmFindForm.ssOleDBGrid.Bookmark);
-	//	}
-
-	//	frmFindForm.ssOleDBGrid.redraw = true;
-	//}
-
 	function refreshControls() {
 		
 		var frmFindForm = document.getElementById('frmFindForm');
@@ -951,10 +768,8 @@
 					button_disable(frmFindForm.cmdSelect, (frmFindForm.txtOLEReadOnly.value == 'true'));
 				}
 				else {
-					
 					button_disable(frmFindForm.cmdEdit, true);
 					button_disable(frmFindForm.cmdSelect, true);
-
 				}
 			}
 			else {				
@@ -963,7 +778,8 @@
 			}
 			
 			//if no path set, disable all buttons except cancel.
-			if (frmFindForm.txtOLEServerPath.value.length == 0) {
+			var serverPathMessage = $('#ssOleDBGrid h3').text();
+			if ((frmFindForm.txtOLEServerPath.value.length == 0) || (serverPathMessage.length > 0)) {
 				button_disable(frmFindForm.cmdAdd, true);
 				button_disable(frmFindForm.cmdEdit, true);
 				button_disable(frmFindForm.cmdClear, true);
@@ -995,36 +811,15 @@
 <div <%=session("BodyTag")%>>
 	<form action="oleFind_Submit" method="post" id="frmFindForm" name="frmFindForm" enctype="multipart/form-data" target="submit-iframe">
 
-		<table align="center" class="outline" cellpadding="5" cellspacing="0"
-			<%
-			If Session("optionOLEType") > 1 Then
-				'Response.Write("width=50% height=50%")
-			Else
-				'Response.Write("width=100% height=90%")
-			End If
- %>>
+		<table class="outline aligncenter cellpadding5 cellspace0">
 			<tr>
 				<td>
-					<table width="100%" height="100%" class="invisible" cellspacing="0" cellpadding="0">
+					<table width="100%" height="100%" class="invisible cellspace0 cellpadding0">
 						<tr>
 							<td height="10" colspan="3"></td>
 						</tr>
 						<tr>
-							<td height="10" colspan="3" id="tdDescription">
-								<h6 align="center" style="margin: 0">
-									<%
-										If Session("optionOLEReadOnly") = "true" Then
-											'Response.Write("Select Document (Read Only)")
-										Else
-											'Response.Write("Select Document")
-										End If
-									%>
-								</h6>
-							</td>
-						</tr>
-						<tr>
 							<td width="20"></td>
-
 							<% 
 								If Session("optionOLEType") < 2 Then
 							%>
@@ -1033,18 +828,17 @@
 									<table id="ssOleDBGrid" name="ssOleDBGrid" style="HEIGHT: 100%; LEFT: 0; TOP: 0; WIDTH: 100%"></table>
 								</div>
 							</td>
-
 							<%
 							Else
 							%>
-							<td align="center" id="oleCaption" style="display: none;">
+							<td id="oleCaption" style="display: none;text-align: center;">
 								<h3 align="center"></h3>
 							</td>
 							<%
 							End If
 							%>
 
-							<td align="center" id="fileUpload" style="display: none;">
+							<td id="fileUpload" style="display: none; text-align: center">
 								<label for="filSelectFile">File:</label>
 								<input type="file" name="filSelectFile" id="filSelectFile" onchange="EmbedLink()" />
 							</td>
@@ -1057,7 +851,7 @@
 						<tr>
 							<td width="20"></td>
 							<td height="10">
-								<table width="100%" class="invisible" cellspacing="0" cellpadding="0">
+								<table width="100%" class="invisible cellspace0 cellpadding0">
 									<tr>
 										<td colspan="12"></td>
 									</tr>
@@ -1072,49 +866,21 @@
 										<td></td>
 										<td></td>
 										<td width="10">
-											<input id="cmdAdd" name="cmdAdd" type="button" value="Upload" class="btn"
-												onclick="Add()"
-												onmouseover="try{button_onMouseOver(this);}catch(e){}"
-												onmouseout="try{button_onMouseOut(this);}catch(e){}"
-												onfocus="try{button_onFocus(this);}catch(e){}"
-												onblur="try{button_onBlur(this);}catch(e){}" />
+											<input id="cmdAdd" name="cmdAdd" type="button" value="Upload" class="btn" onclick="Add()"/>
 										</td>
 										<%
 											' Linked / Embedded
 										Else
 										%>
 										<td width="10">
-											<input id="cmdLink" name="cmdLink" type="button" value="Link" class="btn hidden"
-												onclick="showFileUpload(3)"
-												onmouseover="try{button_onMouseOver(this);}catch(e){}"
-												onmouseout="try{button_onMouseOut(this);}catch(e){}"
-												onfocus="try{button_onFocus(this);}catch(e){}"
-												onblur="try{button_onBlur(this);}catch(e){}" />
+											<input id="cmdLink" name="cmdLink" type="button" value="Link" class="btn hidden" onclick="showFileUpload(3)"/>
 										</td>
 										<td width="40">&nbsp;&nbsp;
 										</td>
 										<td width="10">
-											<%
-												If Session("optionOLEMaxEmbedSize") > 0 Then
-											%>
-											<input id="cmdEmbed" name="cmdEmbed" type="button" value="Embed" class="btn"
-												onclick="showFileUpload(2)"
-												onmouseover="try{button_onMouseOver(this);}catch(e){}"
-												onmouseout="try{button_onMouseOut(this);}catch(e){}"
-												onfocus="try{button_onFocus(this);}catch(e){}"
-												onblur="try{button_onBlur(this);}catch(e){}" />
-											<%
-											Else
-											%>
-											<input disabled="disabled" id="cmdEmbed" name="cmdEmbed" type="button" value="Embed" class="btn btndisabled"
-												onclick="showFileUpload(2)"
-												onmouseover="try{button_onMouseOver(this);}catch(e){}"
-												onmouseout="try{button_onMouseOut(this);}catch(e){}"
-												onfocus="try{button_onFocus(this);}catch(e){}"
-												onblur="try{button_onBlur(this);}catch(e){}" />
-											<%
-											End If
-											%>
+											<input id="cmdEmbed" name="cmdEmbed" type="button" value="Embed" class="btn" onclick="showFileUpload(2)"
+											<%If Session("optionOLEMaxEmbedSize") <= 0 Then%>disabled="disabled"<%End If%>
+											/>
 										</td>
 										<%
 										End If
@@ -1122,12 +888,7 @@
 										<td width="40">&nbsp;&nbsp;
 										</td>
 										<td width="10">
-											<input id="cmdEdit" name="cmdEdit" type="button" value="Download" class="btn"
-												onclick="Edit()"
-												onmouseover="try{button_onMouseOver(this);}catch(e){}"
-												onmouseout="try{button_onMouseOut(this);}catch(e){}"
-												onfocus="try{button_onFocus(this);}catch(e){}"
-												onblur="try{button_onBlur(this);}catch(e){}" />
+											<input id="cmdEdit" name="cmdEdit" type="button" value="Download" class="btn" onclick="Edit()"/>
 										</td>
 										<td width="40">&nbsp;&nbsp;
 										</td>
@@ -1138,66 +899,41 @@
 												' Clear
 										%>
 										<td width="10">
-											<input id="cmdClear" name="cmdClear" type="button" value="None" class="btn"
-												onclick="Clear()"
-												onmouseover="try{button_onMouseOver(this);}catch(e){}"
-												onmouseout="try{button_onMouseOut(this);}catch(e){}"
-												onfocus="try{button_onFocus(this);}catch(e){}"
-												onblur="try{button_onBlur(this);}catch(e){}" />
+											<input id="cmdClear" name="cmdClear" type="button" value="None" class="btn" onclick="Clear()"/>
 										</td>
 
 										<td width="40">&nbsp;&nbsp;
 										</td>
 										<td width="10">
-											<input id="cmdSelect" name="cmdSelect" type="button" value="Select" class="btn"
-												onclick="Select()"
-												onmouseover="try{button_onMouseOver(this);}catch(e){}"
-												onmouseout="try{button_onMouseOut(this);}catch(e){}"
-												onfocus="try{button_onFocus(this);}catch(e){}"
-												onblur="try{button_onBlur(this);}catch(e){}" />
-											<input id="cmdUpload2" name="cmdSelect" type="submit" value="OK" style="display: none;" />
+											<input id="cmdSelect" name="cmdSelect" type="button" value="Select" class="btn" onclick="Select()"/>
+											<input id="cmdUpload2" name="cmdUpload2" type="submit" value="OK" style="display: none;" />
 										</td>
 										<%
 										Else
 											' Properties button
 										%>
 										<td width="10">
-											<input id="cmdProperties" name="cmdProperties" type="button" value="Properties" class="btn"
-												onclick="Properties()"
-												onmouseover="try{button_onMouseOver(this);}catch(e){}"
-												onmouseout="try{button_onMouseOut(this);}catch(e){}"
-												onfocus="try{button_onFocus(this);}catch(e){}"
-												onblur="try{button_onBlur(this);}catch(e){}" />
+											<input id="cmdProperties" name="cmdProperties" type="button" value="Properties" class="btn" onclick="Properties()"/>
 										</td>
 										<td width="40">
 										&nbsp;&nbsp;
 
 															<td width="10">
-																<input id="cmdRemove" name="cmdRemove" type="button" value="Clear" class="btn"
-																	onclick="Remove()"
-																	onmouseover="try{button_onMouseOver(this);}catch(e){}"
-																	onmouseout="try{button_onMouseOut(this);}catch(e){}"
-																	onfocus="try{button_onFocus(this);}catch(e){}"
-																	onblur="try{button_onBlur(this);}catch(e){}" />
+																<input id="cmdRemove" name="cmdRemove" type="button" value="Clear" class="btn" onclick="Remove()"/>
 															</td>
 
 										<td width="40">&nbsp;&nbsp;
-										</td>
+										</td>		
 										<td width="10">
-											<input id="cmdSelect" name="cmdSelect" type="submit" value="OK" disabled="disabled" class="btn btndisabled" />
-										</td>
+											<input id="cmdSelect" name="cmdSelect" type="submit" value="OK" disabled="disabled" class="btn" />
+										</td>								
 										<%
 										End If
 										%>
 										<td width="40">&nbsp;&nbsp;
 										</td>
 										<td width="10">
-											<input id="cmdCancel" name="cmdCancel" type="button" value="Cancel" class="btn"
-												onclick="Cancel()"
-												onmouseover="try{button_onMouseOver(this);}catch(e){}"
-												onmouseout="try{button_onMouseOut(this);}catch(e){}"
-												onfocus="try{button_onFocus(this);}catch(e){}"
-												onblur="try{button_onBlur(this);}catch(e){}" />
+											<input id="cmdCancel" name="cmdCancel" type="button" value="Cancel" class="btn" onclick="Cancel()"/>
 										</td>
 									</tr>
 								</table>
@@ -1213,14 +949,13 @@
 		</table>
 
 		<%
-			Response.Write("<INPUT type='hidden' id='txtErrorDescription' name='txtErrorDescription' value=""" & sErrorDescription & """>" & vbCrLf)
+			Response.Write("<INPUT type='hidden' id='txtErrorDescription' name='txtErrorDescription' value=''>" & vbCrLf)
 			Response.Write("<INPUT type='hidden' id='txtOptionColumnID' name='txtOptionColumnID' value='" & Session("optionColumnID") & "'>" & vbCrLf)
-			Response.Write("<INPUT type='hidden' id='txtFile' name='txtFile' value=""" & Replace(Session("optionFile"), """", "&quot;") & """>" & vbCrLf)
+			Response.Write("<INPUT type='hidden' id='txtFile' name='txtFile' value=""" & Replace(Session("optionFile").ToString(), """", "&quot;") & """>" & vbCrLf)
 			Response.Write("<INPUT type='hidden' id='txtFFOLEType' name='txtFFOLEType' value='" & Session("optionOLEType") & "'>" & vbCrLf)
 			Response.Write("<INPUT type='hidden' id='txtOLEMaxEmbedSize' name='txtOLEMaxEmbedSize' value='" & Session("optionOLEMaxEmbedSize") & "'>" & vbCrLf)
 			Response.Write("<INPUT type='hidden' id='txtOLEReadOnly' name='txtOLEReadOnly' value='" & Session("optionOLEReadOnly") & "'>" & vbCrLf)
 			Response.Write("<INPUT type='hidden' id='txtIsPhoto' name='txtIsPhoto' value='" & Session("optionIsPhoto") & "'>" & vbCrLf)
-			
 			
 			' Create the document from the database into the temporary UNC path
 			Dim strUploadPath As String

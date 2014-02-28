@@ -131,6 +131,29 @@ hr
 		COLOR: #83389b;
 }
 
+
+table.cellspace0 {
+	border-spacing: 0;
+}
+
+table.cellpadding0 {
+	border-collapse: collapse;
+}
+
+table.cellpadding5 td {
+	padding: 5px;
+}
+
+table.aligncenter {
+	margin-left: auto;
+	margin-right: auto;
+	text-align: center;
+}
+
+table.border0 {
+	border: none;
+}
+
 INPUT
 {
 	/*padding: 3px;*/
