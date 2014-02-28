@@ -591,7 +591,7 @@ End If
 
 <form id="frmOriginalDefinition" style="visibility: hidden; display: none">
 	<%
-		Response.Write("	<input type='hidden' id=txtDefn_Name name=txtDefn_Name value=""" & Replace(CType(Session("utilname"), String), """", "&quot;") & """>" & vbCrLf)
+		Response.Write("	<input type='hidden' id='txtDefn_Name' name='txtDefn_Name' value='" & objReport.ReportCaption.ToString() & "'>" & vbCrLf)
 		Response.Write("	<input type='hidden' id=txtDefn_ErrMsg name=txtDefn_ErrMsg value=""" & sErrMsg & """>" & vbCrLf)
 	%>
 	<input type="hidden" id="txtUserName" name="txtUserName" value="<%=Session("username").ToString()%>">
@@ -637,7 +637,7 @@ End If
 	$('#gview_grdReport tr.jqgrow td').css('vertical-align', 'top');	//float text to top, in case of multi-line cells
 	$('#gview_grdReport .s-ico span').css('display', 'none');	//hide the sort order icons - they don't tie in to the dataview model.
 	
-	if (menu_isSSIMode()) $('#gbox_grdReport').css('margin', '0 auto');	//center the report in self-service screen.
+	if (menu_isSSIMode()) $('#gbox_grdReport').css('margin', '0 auto');	//center the report in self-service screen.	
 
 	<%end if%>
 	
