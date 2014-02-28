@@ -315,11 +315,8 @@
 										<td height="10">
 											<table width="100%" class="invisible" cellspacing="0" cellpadding="0">
 												<tr>
-													<td width="40">View :
-													</td>
-													<td width="10">&nbsp;
-													</td>
-													<td width="175">
+													<td width="5%">View : </td>
+													<td width="20%">
 														<select id="selectView" name="selectView" class="combo" style="HEIGHT: 22px; WIDTH: 200px">
 															<%
 
@@ -361,25 +358,27 @@
 															%>
 														</select>
 													</td>
-													<td width="17" id="tdTViewHelp" name="tdTViewHelp" onclick="doViewHelp()" style="white-space: nowrap; " disabled>
-															&nbsp;&nbsp;&nbsp;
+																						
+													<td width="10%" id="tdTViewHelp" name="tdTViewHelp" onclick="doViewHelp()" style="white-space: nowrap; text-align:center;" >
+															
 														<img id="imgTViewHelp" name="imgTViewHelp" alt="help"
 														     src="<%=Url.Content("~/Content/images/Help32.png")%>"
 														     
 														     title="What happens if I change the view?" style="width:17px; height:17px; border:0; cursor: pointer"/>
-															&nbsp;&nbsp;&nbsp;
+															
 													</td>
-													<td width="10">
+													<td  width="5%"></td>
+													<td width="5%">
 														<input type="button" value="Go" class="btn" id="btnGoView" name="btnGoView"
 															onclick="goView()" />
 													</td>
-													<td>&nbsp;
+													<td  width="5%">
 													</td>
-													<td style="text-align: right;">Order :
+													<td style="text-align: right; width:5%";>Order :
 													</td>
-													<td width="10">&nbsp;
+													<td width="5%">
 													</td>
-													<td width="175">
+													<td width="20%">
 														<select id="selectOrder" name="selectOrder" class="combo" style="HEIGHT: 22px; WIDTH: 200px">
 															<%
 																
@@ -399,14 +398,16 @@
 															%>
 														</select>
 													</td>
-													<td width="17" id="tdTOrderHelp" name="tdTOrderHelp" onclick="doOrderHelp()" style="white-space: nowrap;" disabled>
-															&nbsp;&nbsp;&nbsp;
+																			
+													<td width="10%" id="tdTOrderHelp" name="tdTOrderHelp" onclick="doOrderHelp()" style="white-space: nowrap; text-align:center;"  >
+															
 														<img id="imgTOrderHelp" name="imgTOrderHelp" alt="help"
 														     src="<%=Url.Content("~/Content/images/Help32.png")%>"														     
 														     title="What happens if I change the order?" style="width:17px; height:17px; border:0; cursor: pointer"/>
-															&nbsp;&nbsp;&nbsp;
+														
 													</td>
-													<td width="10">
+													<td  width="5%"></td>
+													<td width="10%">
 														<input type="button" value="Go" class="btn" id="btnGoOrder" name="btnGoOrder"
 															onclick="goOrder()" />
 													</td>
