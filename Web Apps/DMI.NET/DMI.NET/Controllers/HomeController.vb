@@ -1768,7 +1768,8 @@ Namespace Controllers
 											sortOrderID As Long,
 											sortDirection As Long,
 											colourID As Long,
-											title As String) As FileContentResult
+											title As String,
+											showLabels As Boolean) As FileContentResult
 
 			Err.Clear()
 
@@ -1828,6 +1829,9 @@ Namespace Controllers
 							chart1.ChartAreas("ChartArea1").AxisY.MajorGrid.LineColor = Color.FromArgb(64, 64, 64, 64)
 							chart1.ChartAreas("ChartArea1").AxisX.LineColor = Color.FromArgb(64, 64, 64, 64)
 							chart1.ChartAreas("ChartArea1").AxisX.MajorGrid.LineColor = Color.FromArgb(64, 64, 64, 64)
+
+							chart1.ChartAreas("ChartArea1").AxisX.LabelStyle.Enabled = showLabels
+							chart1.ChartAreas("ChartArea1").AxisY.LabelStyle.Enabled = showLabels
 
 							' Gridlines
 							If dottedGrid = True Then
@@ -1916,7 +1920,12 @@ Namespace Controllers
 										End Try
 									End If
 
-									chart1.Series("Default").Points.Add(New DataPoint() With {.AxisLabel = objRow(0), .YValues = New Double() {objRow(1)}, .Color = pointBackColor})
+									If showLabels Then
+										chart1.Series("Default").Points.Add(New DataPoint() With {.AxisLabel = objRow(0), .YValues = New Double() {objRow(1)}, .Color = pointBackColor})
+									Else
+										chart1.Series("Default").Points.Add(New DataPoint() With {.Label = " ", .YValues = New Double() {objRow(1)}, .Color = pointBackColor})
+									End If
+
 									If showLegend = True Then
 										chart1.Legends("Default").CustomItems.Add(New LegendItem(objRow(0), pointBackColor, ""))
 									End If
@@ -1966,7 +1975,8 @@ Namespace Controllers
 											sortOrderID As Long,
 											sortDirection As Long,
 											colourID As Long,
-											title As String) As FileContentResult
+											title As String,
+											showLabels As Boolean) As FileContentResult
 
 			Err.Clear()
 
@@ -2032,6 +2042,9 @@ Namespace Controllers
 							MultiAxisChart.ChartAreas(seriesName).AxisY.MajorGrid.LineColor = Color.FromArgb(64, 64, 64, 64)
 							MultiAxisChart.ChartAreas(seriesName).AxisX.LineColor = Color.FromArgb(64, 64, 64, 64)
 							MultiAxisChart.ChartAreas(seriesName).AxisX.MajorGrid.LineColor = Color.FromArgb(64, 64, 64, 64)
+
+							MultiAxisChart.ChartAreas(seriesName).AxisX.LabelStyle.Enabled = showLabels
+							MultiAxisChart.ChartAreas(seriesName).AxisY.LabelStyle.Enabled = showLabels
 
 							' Gridlines
 							If dottedGrid = True Then
@@ -2171,12 +2184,21 @@ Namespace Controllers
 										End Select
 									End If
 
-									MultiAxisChart.Series(seriesName).Points.Add(New DataPoint() With {
-																																										 .AxisLabel = columnName,
+									If showLabels Then
+										MultiAxisChart.Series(seriesName).Points.Add(New DataPoint() With {
+																																											 .AxisLabel = columnName,
+																																											 .YValues = New Double() {yVal},
+																																											 .Color = pointBackColor,
+																																											 .IsEmpty = (yVal = 0)
+																																											 })
+									Else
+										MultiAxisChart.Series(seriesName).Points.Add(New DataPoint() With {
+																																										 .Label = " ",
 																																										 .YValues = New Double() {yVal},
 																																										 .Color = pointBackColor,
 																																										 .IsEmpty = (yVal = 0)
 																																										 })
+									End If
 
 									If showLegend = True Then
 										Dim legendAdded As Boolean = False
@@ -2193,8 +2215,10 @@ Namespace Controllers
 								pointNum += 1
 							Next
 
-							MultiAxisChart.ChartAreas("Default").AxisX.Interval = 1	'Show all X axis legends (labels?)
-							MultiAxisChart.AlignDataPointsByAxisLabel()
+							If showLabels Then
+								MultiAxisChart.ChartAreas("Default").AxisX.Interval = 1	'Show all X axis legends (labels?)
+								MultiAxisChart.AlignDataPointsByAxisLabel()
+							End If
 
 							'Make all the datapoints semi-transparent							
 							MultiAxisChart.ApplyPaletteColors()

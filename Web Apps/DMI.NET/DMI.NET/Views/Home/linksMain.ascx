@@ -454,18 +454,18 @@
 									
 						%>
 
-						<li data-col="<%=iColNum %>" data-row="<%=iRowNum %>" data-sizex="<%=IIf(Session("CurrentLayout").ToString = DMIEnums.Layout.tiles.ToString, "2", "1")%>" data-sizey="1" class="linkspagebuttontext <%=sTileColourClass%> displayonly">
+						<li data-col="<%=iColNum %>" data-row="<%=iRowNum %>" data-sizex="1" data-sizey="1" class="linkspagebuttontext <%=sTileColourClass%> displayonly">
 							<a href="#"><%If navlink.InitialDisplayMode = 0 And Session("CurrentLayout").ToString <> DMIEnums.Layout.tiles.ToString Then Response.Write(navlink.Text)%>
 								<%
 									If navlink.UtilityID > 0 And navlink.DrillDownHidden = False Then
 										iHideableDrillDownIconID += 1
 								%>
-								<img id="drillDownIcon<%=iHideableDrillDownIconID%>"  src="<%:Url.Content("~/Content/images/Utilities.gif")%>" style="background: wheat; border: 1px black; float: right; cursor: pointer; width: 16px; height: 16px; vertical-align: bottom; margin-right: 5px" alt="Drilldown..." title="Drill down to data..."
+								<img id="drillDownIcon<%=iHideableDrillDownIconID%>" src="<%:Url.Content("~/Content/images/Utilities.gif")%>" style="<%=IIf(Session("CurrentLayout").ToString = DMIEnums.Layout.tiles.ToString, "background: wheat;", "")%> float: right; cursor: pointer; width: 16px; height: 16px; vertical-align: bottom; margin-right: 5px" alt="Drilldown..." title="Drill down to data..."
 									onclick="<%=sOnClick %>" />
 								<%
 								End If
 								%>
-								<img id="popupIcon<%=iHideablePopupIconID%>" src="<%:Url.Content("~/Content/images/Chart_Popout.png")%>" style="background: wheat; border: 1px black; float: right; cursor: pointer; width: 16px; height: 16px; vertical-align: bottom;" alt="Popout chart..." title="View this chart in a new window"
+								<img id="popupIcon<%=iHideablePopupIconID%>" src="<%:Url.Content("~/Content/images/Chart_Popout.png")%>" style="<%=IIf(Session("CurrentLayout").ToString = DMIEnums.Layout.tiles.ToString, "background: wheat;", "")%> float: right; cursor: pointer; width: 16px; height: 16px; vertical-align: bottom;" alt="Popout chart..." title="View this chart in a new window"
 									onclick="popoutchart('<%=fMultiAxis%>', '<%=navlink.Chart_ShowLegend%>', '<%=navlink.Chart_ShowGrid%>', '<%=navlink.Chart_ShowValues%>', '<%=navlink.Chart_StackSeries%>', '<%=navlink.Chart_ShowPercentages%>', '<%=iChart_Type%>', '<%=iChart_TableID%>', '<%=iChart_ColumnID%>', '<%=iChart_FilterID%>', '<%=iChart_AggregateType%>', '<%=CInt(iChart_ElementType)%>', '<%=iChart_TableID_2%>', '<%=iChart_ColumnID_2%>', '<%=iChart_TableID_3%>', '<%=iChart_ColumnID_3%>', '<%=iChart_SortOrderID%>', '<%=iChart_SortDirection%>', '<%=iChart_ColourID%>',encodeURI('<%=navlink.Text%>').replace(/&/g,'%26'))" />
 							</a>
 							<%If Not (navlink.InitialDisplayMode = 0 Or Session("CurrentLayout").ToString = DMIEnums.Layout.tiles.ToString) Then%>
@@ -475,27 +475,39 @@
 							<%End If%>
 							<%
 								iHideablePopupIconID += 1
+								
+								'Set some values that depend on the current layout
 								Dim Height As Integer = 296
 								Dim Width As Integer = 412
 								Dim ShowLegend As Boolean = navlink.Chart_ShowLegend
+								Dim ShowLabels As Boolean = True
 								If Session("CurrentLayout").ToString = DMIEnums.Layout.tiles.ToString Then
-									Height = 120
-									Width = 250
+									Height = 120 'Tile height
+									Width = 120 'Tile width
 									ShowLegend = False
+									ShowLabels = False
 								End If
 								If navlink.InitialDisplayMode = 0 Or Session("CurrentLayout").ToString = DMIEnums.Layout.tiles.ToString Then%>
 							<div class="widgetplaceholder chart">
 								<%If fMultiAxis Then%>
 								<div>
-									<img onerror="$('#popupIcon<%=iHideablePopupIconID - 1%>').hide(); $(this).parent().parent().css('height', '20px'); $(this).parent().parent().html('No matching records found');" 
-											 src="<%:Url.Action("GetMultiAxisChart", "Home", New With {.Height = Height, .Width = Width, .ShowLegend = ShowLegend, .DottedGrid = navlink.Chart_ShowGrid, .ShowValues = navlink.Chart_ShowValues, .Stack = navlink.Chart_StackSeries, .ShowPercent = navlink.Chart_ShowPercentages, .ChartType = iChart_Type, .TableID = iChart_TableID, .ColumnID = iChart_ColumnID, .FilterID = iChart_FilterID, .AggregateType = iChart_AggregateType, .ElementType = CInt(iChart_ElementType), .TableID_2 = iChart_TableID_2, .ColumnID_2 = iChart_ColumnID_2, .TableID_3 = iChart_TableID_3, .ColumnID_3 = iChart_ColumnID_3, .SortOrderID = iChart_SortOrderID, .SortDirection = iChart_SortDirection, .ColourID = iChart_ColourID})%>"
-											 alt="Chart" />
+									<img onerror="$('#popupIcon<%=iHideablePopupIconID - 1%>').hide(); $(this).parent().parent().css('height', '20px'); $(this).parent().parent().html('<%If navlink.InitialDisplayMode = 0 And Session("CurrentLayout").ToString = DMIEnums.Layout.tiles.ToString Then Response.Write(navlink.Text & "<br/>")%>No matching records found');" 
+											 src="<%:Url.Action("GetMultiAxisChart", "Home", New With {.Height = Height, .Width = Width, .ShowLegend = ShowLegend, .DottedGrid = navlink.Chart_ShowGrid, .ShowValues = navlink.Chart_ShowValues, .Stack = navlink.Chart_StackSeries, .ShowPercent = navlink.Chart_ShowPercentages, .ChartType = iChart_Type, .TableID = iChart_TableID, .ColumnID = iChart_ColumnID, .FilterID = iChart_FilterID, .AggregateType = iChart_AggregateType, .ElementType = CInt(iChart_ElementType), .TableID_2 = iChart_TableID_2, .ColumnID_2 = iChart_ColumnID_2, .TableID_3 = iChart_TableID_3, .ColumnID_3 = iChart_ColumnID_3, .SortOrderID = iChart_SortOrderID, .SortDirection = iChart_SortDirection, .ColourID = iChart_ColourID, .ShowLabels = ShowLabels})%>"
+											 alt="Chart"
+											 title="<%:navlink.Text%>"
+											 style="cursor: pointer"
+										   onclick="popoutchart('<%=fMultiAxis%>', '<%=navlink.Chart_ShowLegend%>', '<%=navlink.Chart_ShowGrid%>', '<%=navlink.Chart_ShowValues%>', '<%=navlink.Chart_StackSeries%>', '<%=navlink.Chart_ShowPercentages%>', '<%=iChart_Type%>', '<%=iChart_TableID%>', '<%=iChart_ColumnID%>', '<%=iChart_FilterID%>', '<%=iChart_AggregateType%>', '<%=CInt(iChart_ElementType)%>', '<%=iChart_TableID_2%>', '<%=iChart_ColumnID_2%>', '<%=iChart_TableID_3%>', '<%=iChart_ColumnID_3%>', '<%=iChart_SortOrderID%>', '<%=iChart_SortDirection%>', '<%=iChart_ColourID%>',encodeURI('<%=navlink.Text%>').replace(/&/g,'%26'))"
+										 />
 								</div>
 								<%Else%>
 								<div>
-									<img onerror="$('#popupIcon<%=iHideablePopupIconID - 1%>').hide(); $(this).parent().parent().css('height', '20px'); $(this).parent().parent().html('No matching records found');"
-											 src="<%:Url.Action("GetChart", "Home", New With {.Height = Height, .Width = Width, .ShowLegend = ShowLegend, .DottedGrid = navlink.Chart_ShowGrid, .ShowValues = navlink.Chart_ShowValues, .Stack = navlink.Chart_StackSeries, .ShowPercent = navlink.Chart_ShowPercentages, .ChartType = iChart_Type, .TableID = iChart_TableID, .ColumnID = iChart_ColumnID, .FilterID = iChart_FilterID, .AggregateType = iChart_AggregateType, .ElementType = CInt(iChart_ElementType), .SortOrderID = iChart_SortOrderID, .SortDirection = iChart_SortDirection, .ColourID = iChart_ColourID})%>" 
-											 alt="Chart" />
+									<img onerror="$('#popupIcon<%=iHideablePopupIconID - 1%>').hide(); $(this).parent().parent().css('height', '20px'); $(this).parent().parent().html('<%If navlink.InitialDisplayMode = 0 And Session("CurrentLayout").ToString = DMIEnums.Layout.tiles.ToString Then Response.Write(navlink.Text & "<br/>")%>No matching records found');"
+											 src="<%:Url.Action("GetChart", "Home", New With {.Height = Height, .Width = Width, .ShowLegend = ShowLegend, .DottedGrid = navlink.Chart_ShowGrid, .ShowValues = navlink.Chart_ShowValues, .Stack = navlink.Chart_StackSeries, .ShowPercent = navlink.Chart_ShowPercentages, .ChartType = iChart_Type, .TableID = iChart_TableID, .ColumnID = iChart_ColumnID, .FilterID = iChart_FilterID, .AggregateType = iChart_AggregateType, .ElementType = CInt(iChart_ElementType), .SortOrderID = iChart_SortOrderID, .SortDirection = iChart_SortDirection, .ColourID = iChart_ColourID, .ShowLabels = ShowLabels})%>" 
+											 alt="Chart" 
+											 title="<%:navlink.Text%>"
+											 style="cursor: pointer"
+											 onclick="popoutchart('<%=fMultiAxis%>', '<%=navlink.Chart_ShowLegend%>', '<%=navlink.Chart_ShowGrid%>', '<%=navlink.Chart_ShowValues%>', '<%=navlink.Chart_StackSeries%>', '<%=navlink.Chart_ShowPercentages%>', '<%=iChart_Type%>', '<%=iChart_TableID%>', '<%=iChart_ColumnID%>', '<%=iChart_FilterID%>', '<%=iChart_AggregateType%>', '<%=CInt(iChart_ElementType)%>', '<%=iChart_TableID_2%>', '<%=iChart_ColumnID_2%>', '<%=iChart_TableID_3%>', '<%=iChart_ColumnID_3%>', '<%=iChart_SortOrderID%>', '<%=iChart_SortDirection%>', '<%=iChart_ColourID%>',encodeURI('<%=navlink.Text%>').replace(/&/g,'%26'))"
+										 />
 								</div>
 								<%End If%>
 								<a href="#"></a>

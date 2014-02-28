@@ -143,6 +143,7 @@ function popoutchart(MultiAxis, Chart_ShowLegend, Chart_ShowGrid, Chart_ShowValu
 	w.document.write('&SortOrderID=' + iChart_SortOrderID);
 	w.document.write('&SortDirection=' + iChart_SortDirection);
 	w.document.write('&ColourID=' + iChart_ColourID);
+	w.document.write('&ShowLabels=True');
 	w.document.write('&Title=' + ChartTitle + '";');
 	w.document.write('document.getElementById("chartImage").src = psURL;');
 	w.document.write('}');
