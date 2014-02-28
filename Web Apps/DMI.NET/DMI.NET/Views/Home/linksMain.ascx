@@ -24,7 +24,7 @@
 <%Session("recordID") = 0
 	Session("singleRecordID") = 0
 	
-	Dim fWFDisplayPendingSteps As Boolean = True
+	Dim fWFDisplayPendingSteps As Boolean = NullSafeInteger(Session("SSILinkViewID")) = NullSafeInteger(Session("SingleRecordViewID"))
 	Dim _PendingWorkflowStepsHTMLTable As New StringBuilder	'Used to construct the (temporary) HTML table that will be transformed into a jQuey grid table
 	Dim _StepCount As Integer = 0
 	Dim _WorkflowGood As Boolean = True
@@ -1298,7 +1298,7 @@
 
 <script type="text/javascript">
 	//Display Pending Workflow Steps if appropriate
-	if (('<%=fWFDisplayPendingSteps%>' == 'True') && (Number('<%=_StepCount%>') > 0) && ('<%=Session("ViewDescription")%>' == '')) {
+	if (('<%=fWFDisplayPendingSteps%>' == 'True') && (Number('<%=_StepCount%>') > 0)) {		
 		relocateURL('WorkflowPendingSteps', 0);
 	}
 
