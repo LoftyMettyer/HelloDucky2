@@ -5,7 +5,6 @@ Imports System.Web.Mvc
 Imports System.Web.UI.DataVisualization.Charting
 Imports System.IO
 Imports System.Web
-Imports ADODB
 Imports System.Drawing
 Imports DMI.NET.Code
 Imports HR.Intranet.Server.Enums

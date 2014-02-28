@@ -1,12 +1,8 @@
-﻿'Imports ADODB
-Imports System.Web.Configuration
-Imports ADODB
-Imports System.IO
+﻿Imports System.IO
 Imports System.Drawing
 Imports DMI.NET.Code
 Imports HR.Intranet.Server
 Imports System.Data.SqlClient
-Imports HR.Intranet.Server.Structures
 
 Namespace Controllers
 	Public Class AccountController
@@ -177,7 +173,6 @@ Namespace Controllers
 			Dim sLocaleDecimalSeparator As String
 			Dim sLocaleThousandSeparator As String
 			Dim fForcePasswordChange As Boolean
-			Dim sConnectString As String
 			Dim bWindowsAuthentication As Boolean = False
 
 			fForcePasswordChange = False
@@ -228,13 +223,6 @@ Namespace Controllers
 
 			' HRPRO-3531
 			Session("MSBrowser") = (Request.Form("txtMSBrowser") = "true")
-
-
-			' Open a connection to the database.
-			Dim conX As New Connection
-
-
-			Session("databaseConnection") = conX
 
 			Dim objLogin As New HR.Intranet.Server.Structures.LoginInfo
 			Dim objServerSession As New HR.Intranet.Server.SessionInfo
@@ -644,8 +632,7 @@ Namespace Controllers
 			Session("ErrorText") = Nothing
 
 			Try
-				Dim objServerSession As HR.Intranet.Server.SessionInfo = Session("sessionContext")
-				Dim objConnection As Connection
+				Dim objServerSession As SessionInfo = Session("sessionContext")
 
 				Dim objDataAccess As New clsDataAccess(objServerSession.LoginInfo)
 
@@ -657,13 +644,6 @@ Namespace Controllers
 
 				objDataAccess.ExecuteSP("sp_ASRIntAuditAccess", prmLogIn, prmUserName)
 
-				objConnection = Session("databaseConnection")
-
-				If objConnection.State = 1 Then
-					objConnection.Close()
-				End If
-
-				Session("databaseConnection") = Nothing
 				Session("avPrimaryMenuInfo") = Nothing
 				Session("avSubMenuInfo") = Nothing
 				Session("avQuickEntryMenuInfo") = Nothing

@@ -744,9 +744,6 @@
 	Response.Write("<input type='hidden' id=txtRecEditFilterDef name=txtRecEditFilterDef value=""" & Replace(Session("filterDef"), """", "&quot;") & """>" & vbCrLf)
 	Response.Write("<input type='hidden' id=txtRecEditFilterSQL name=txtRecEditFilterSQL value=""" & Replace(Session("filterSQL"), """", "&quot;") & """>" & vbCrLf)
 
-	' JPD 20021021 - Added pictures functionlity.
-	' JPD 20021127 - Moved Utilities object into session variable.
-	'objUtilities.Connection = session("databaseConnection")
 	Dim objUtilities As HR.Intranet.Server.Utilities = Session("UtilitiesObject")
 	
 		Dim sTempPath = Server.MapPath("~/pictures")

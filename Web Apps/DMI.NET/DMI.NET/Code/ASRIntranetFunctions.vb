@@ -2,7 +2,6 @@
 Imports System.Drawing
 Imports System.IO
 Imports System.Drawing.Imaging
-Imports ADODB
 Imports System.Data.OleDb
 Imports HR.Intranet.Server.Enums
 Imports HR.Intranet.Server
@@ -153,20 +152,7 @@ Public Module ASRIntranetFunctions
 		Next
 		Return Nothing
 	End Function
-
-	Public Function RecordSetToDataTable(ByVal objRS As Recordset) As DataTable
-
-		Dim objDA As New OleDbDataAdapter()
-		Dim objDT As New DataTable()
-
-		' get rid of this if we can implement properly i.e. read sql directly into this datatable
-		objRS.Requery()
-
-		objDA.Fill(objDT, objRS)
-		Return objDT
-
-	End Function
-
+	
 	Public Function ConvertVb6ColourToArgb(systemColour As Integer) As System.Drawing.Color
 		Dim red As String
 		Dim green As String

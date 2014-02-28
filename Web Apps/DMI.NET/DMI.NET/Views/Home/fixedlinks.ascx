@@ -1,24 +1,13 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
-<%@ Import Namespace="DMI.NET" %>
+<%@ Import Namespace="HR.Intranet.Server" %>
 
-<%If Session("databaseConnection") Is Nothing Then Return%>
+<%
+	Dim objDataAccess As clsDataAccess = CType(Session("DatabaseAccess"), clsDataAccess)
+	If objDataAccess Is Nothing Then Return
+%>
 <script type="text/javascript">
 	$(document).ready(function () {
 		$(".officebar").officebar({});
-
-		//$("#toolbarRecord").hide();
-		//$("#mnuSectionUtilities").hide();
-
-				// Commented out for now
-		//menu_toolbarEnableItem("mnutoolNewUtil", false);
-		//menu_toolbarEnableItem("mnutoolEditUtil", false);
-		//menu_toolbarEnableItem("mnutoolCopyUtil", false);
-		//menu_toolbarEnableItem("mnutoolDeleteUtil", false);
-		//menu_toolbarEnableItem("mnutoolPrintUtil", false);
-		//menu_toolbarEnableItem("mnutoolPropertiesUtil", false);
-		//menu_toolbarEnableItem("mnutillRunUtil", false);
-
-		//$("#toolbarHome").click();
 
 		$("#officebar .button").addClass("ui-corner-all");
 
