@@ -352,9 +352,8 @@ Namespace Controllers
 		<HttpPost()>
 		Function passwordChange_Submit(value As FormCollection) As JsonResult
 
-			On Error Resume Next
+			Dim objDataAccess As clsDataAccess = CType(Session("DatabaseAccess"), clsDataAccess)
 
-			Dim sReferringPage = ""
 			Dim fSubmitPasswordChange = ""
 			Dim sErrorText = ""
 			Dim fRedirectToSSI As Boolean
@@ -364,7 +363,7 @@ Namespace Controllers
 
 				If fSubmitPasswordChange Then
 					' Force password change only if there are no other users logged in with the same name.
-					Dim iUserSessionCount As Integer = ASRFunctions.GetCurrentUsersCountOnServer(Session("Username"))
+					Dim iUserSessionCount As Integer = GetCurrentUsersCountOnServer(Session("Username"))
 
 					' variables to help select which main screen we return to after change or cancel
 					fRedirectToSSI = CleanBoolean(Request.Form("txtRedirectToSSI"))
@@ -375,89 +374,9 @@ Namespace Controllers
 						Dim sCurrentPassword = Request.Form("txtCurrentPassword")
 						Dim sNewPassword = Request.Form("txtPassword1")
 
-
-
-						' Attempt to change the password on the SQL Server.
-						Dim cmdChangePassword = CreateObject("ADODB.Command")
-						cmdChangePassword.CommandText = "sp_password"
-						cmdChangePassword.CommandType = 4	' Stored Procedure
-						cmdChangePassword.ActiveConnection = Session("databaseConnection")
-
-						Dim prmCurrentPassword = cmdChangePassword.CreateParameter("currentPassword", 200, 1, 255)
-						cmdChangePassword.Parameters.Append(prmCurrentPassword)
-						If Len(sCurrentPassword) > 0 Then
-							prmCurrentPassword.value = sCurrentPassword
-						Else
-							prmCurrentPassword.value = DBNull.Value
-						End If
-
-						Dim prmNewPassword = cmdChangePassword.CreateParameter("newPassword", 200, 1, 255)
-						cmdChangePassword.Parameters.Append(prmNewPassword)
-						If Len(sNewPassword) > 0 Then
-							prmNewPassword.value = sNewPassword
-						Else
-							prmNewPassword.value = DBNull.Value
-						End If
-
-						Err.Clear()
-						cmdChangePassword.Execute()
-
-						' Release the ADO command object.
-						cmdChangePassword = Nothing
-
-						If Err.Number <> 0 Then
-							Session("ErrorTitle") = "Change Password Page"
-							Session("ErrorText") = "You could not change your password because of the following error:<p>" & FormatError(Err.Description)
-							Dim data = New ErrMsgJsonAjaxResponse() With {.ErrorTitle = Session("ErrorTitle"), .ErrorMessage = Session("ErrorText"), .Redirect = sMainRedirect}
-							Return Json(data, JsonRequestBehavior.AllowGet)
-							' Return RedirectToAction("error", "home")
-						Else
-							' Password changed okay. Update the appropriate record in the ASRSysPasswords table.
-							Dim cmdPasswordOK = CreateObject("ADODB.Command")
-							cmdPasswordOK.CommandText = "sp_ASRIntPasswordOK"
-							cmdPasswordOK.CommandType = 4	' Stored Procedure
-							cmdPasswordOK.ActiveConnection = Session("databaseConnection")
-
-							Err.Clear()
-							cmdPasswordOK.Execute()
-							If Err.Number <> 0 Then
-								Session("ErrorTitle") = "Change Password Page"
-								Session("ErrorText") = "You could not change your password because of the following error:<p>" & FormatError(Err.Description)
-								Dim data1 = New ErrMsgJsonAjaxResponse() With {.ErrorTitle = Session("ErrorTitle"), .ErrorMessage = Session("ErrorText"), .Redirect = sMainRedirect}
-								Return Json(data1, JsonRequestBehavior.AllowGet)
-								' Return RedirectToAction("error", "Account")
-							End If
-
-							' Release the ADO command object.
-							cmdPasswordOK = Nothing
-
-							' Close and reopen the connection object.
-							Dim conX = Session("databaseConnection")
-							Dim sConnString = conX.connectionString
-
-							Dim iPos1 = InStr(UCase(sConnString), UCase(";PWD=" & sCurrentPassword))
-							If iPos1 > 0 Then
-								conX.close()
-								conX = Nothing
-								Session("databaseConnection") = ""
-
-
-								Dim sNewConnString = Left(sConnString, iPos1 + 4) & sNewPassword & Mid(sConnString, iPos1 + 5 + Len(sCurrentPassword))
-								' Open a connection to the database.
-								conX = CreateObject("ADODB.Connection")
-								conX.open(sNewConnString)
-
-								If Err.Number <> 0 Then
-									Session("ErrorTitle") = "Change Password Page"
-									Session("ErrorText") = "You could not change your password because of the following error:<p>" & FormatError(Err.Description)
-									Dim data1 = New ErrMsgJsonAjaxResponse() With {.ErrorTitle = Session("ErrorTitle"), .ErrorMessage = Session("ErrorText"), .Redirect = sMainRedirect}
-									Return Json(data1, JsonRequestBehavior.AllowGet)
-									' Return RedirectToAction("error", "Account")
-								End If
-
-								Session("databaseConnection") = conX
-
-							End If
+						Try
+							clsDataAccess.ChangePassword(objDataAccess.Login, sNewPassword)
+							objDataAccess.Login.Password = sNewPassword
 
 							' Tell the user that the password was changed okay.
 							Session("ErrorTitle") = "Change Password Page"
@@ -465,8 +384,15 @@ Namespace Controllers
 
 							Dim data = New ErrMsgJsonAjaxResponse() With {.ErrorTitle = Session("ErrorTitle"), .ErrorMessage = Session("ErrorText"), .Redirect = sMainRedirect}
 							Return Json(data, JsonRequestBehavior.AllowGet)
-							' Return RedirectToAction("message", "Account")
-						End If
+
+						Catch ex As Exception
+							Session("ErrorTitle") = "Change Password Page"
+							Session("ErrorText") = "You could not change your password because of the following error:<p>" & FormatError(ex.Message)
+							Dim data = New ErrMsgJsonAjaxResponse() With {.ErrorTitle = Session("ErrorTitle"), .ErrorMessage = Session("ErrorText"), .Redirect = sMainRedirect}
+							Return Json(data, JsonRequestBehavior.AllowGet)
+
+						End Try
+
 					Else
 						Session("ErrorTitle") = "Change Password Page"
 						sErrorText = "You could not change your password.<p>The account is currently being used by "

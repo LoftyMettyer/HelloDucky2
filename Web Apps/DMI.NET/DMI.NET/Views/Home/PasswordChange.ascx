@@ -65,18 +65,6 @@
 			frmPasswordChangeForm.txtPassword1.focus();
 		}
 
-		/* Check if the new password is long enough. */
-		if ((fChangeOK) && (txtMinPasswordLength.value > 0) && (txtMinPasswordLength.value > sNewPassword1.length)) {
-			sErrorMessage = "The password must be at least ";
-			sErrorMessage = sErrorMessage.concat(txtMinPasswordLength.value);
-			sErrorMessage = sErrorMessage.concat(" characters long.");
-			OpenHR.messageBox(sErrorMessage);
-			fChangeOK = false;
-			frmPasswordChangeForm.txtPassword1.value = "";
-			frmPasswordChangeForm.txtPassword2.value = "";
-			frmPasswordChangeForm.txtPassword1.focus();
-		}
-
 		/* If everything is okay, submit the password change. */
 		if (fChangeOK) {
 			OpenHR.submitForm(frmPasswordChangeForm);
@@ -232,33 +220,7 @@
 		<%Html.RenderPartial("~/Views/Shared/gotoWork.ascx")%>
 	</form>
 </div>
-<%
-	On Error Resume Next
-	
-	Dim sErrorDescription = ""
-				
-	' Get the minimum password length.
-	Dim cmdPwdLength = CreateObject("ADODB.Command")
-	cmdPwdLength.CommandText = "sp_ASRIntGetMinimumPasswordLength"
-	cmdPwdLength.CommandType = 4 ' Stored Procedure
-	cmdPwdLength.ActiveConnection = Session("databaseConnection")
-		
-	Dim prmMinPasswordLength = cmdPwdLength.CreateParameter("MinPasswordLength", 3, 2) ' 3 = integer, 2 = output
-	cmdPwdLength.Parameters.Append(prmMinPasswordLength)
 
-	Err.Clear()
-	cmdPwdLength.Execute()
-	If (Err.Number <> 0) Then
-		sErrorDescription = "The minimum password length could not be determined." & vbCrLf & FormatError(Err.Description)
-	End If
-
-	Response.Write("<INPUT type='hidden' id=txtMinPasswordLength name=txtMinPasswordLength value=" & cmdPwdLength.Parameters("MinPasswordLength").Value & ">" & vbCrLf)
-
-	' Release the ADO command object.
-	cmdPwdLength = Nothing
-
-	Response.Write("<INPUT type='hidden' id=txtErrorDescription name=txtErrorDescription value=""" & sErrorDescription & """>")
-%>
-
+<input type='hidden' id=txtErrorDescription name=txtErrorDescription value="">
 <script type="type/javascript"> PasswordChange_window_onload(); </script>
 

@@ -1,12 +1,14 @@
 ﻿<%@ Page Title="" Language="VB" MasterPageFile="~/Views/Shared/Site.Master" Inherits="System.Web.Mvc.ViewPage" %>
+<%@ Import Namespace="HR.Intranet.Server" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="TitleContent" runat="server">
 
 <%
 	Dim sReferringPage As String
-
+	Dim objDataAccess As clsDataAccess = CType(Session("DatabaseAccess"), clsDataAccess)
+	
 	' If the database connection session variable does not exist, redirect to the login page.
-	If Session("databaseConnection") Is Nothing Then
+	If objDataAccess Is Nothing Then
 		Response.Redirect("../account/login")
 		Response.Clear()
 	Else

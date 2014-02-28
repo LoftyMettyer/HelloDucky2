@@ -8,7 +8,6 @@
 		' GET: /SessionLess
 
 		Function Test(index As Integer) As JsonResult
-			Dim con = Session("databaseConnection")
 			System.Threading.Thread.Sleep(1000)
 			Return Json(index, JsonRequestBehavior.AllowGet)
 		End Function

@@ -16,6 +16,27 @@ Public Class clsDataAccess
 		_objLogin = value
 	End Sub
 
+	Public ReadOnly Property Login As LoginInfo
+		Get
+			Return _objLogin
+		End Get
+	End Property
+
+	Public Shared Sub ChangePassword(Login As LoginInfo, sNewPassword As String)
+
+		Dim strConn As String = GetConnectionString(Login)
+
+		Try
+			SqlConnection.ChangePassword(strConn, sNewPassword)
+
+		Catch ex As Exception
+			Throw
+
+		End Try
+
+	End Sub
+
+
 	Public Sub ExecuteSql(sSQL As String)
 		' Execute the given SQL statement.
 		Dim strConn As String = GetConnectionString(_objLogin)
@@ -41,7 +62,7 @@ Public Class clsDataAccess
 
 	End Sub
 
-	Private Function GetConnectionString(LoginDetail As LoginInfo) As String
+	Private Shared Function GetConnectionString(LoginDetail As LoginInfo) As String
 
 		Const _AppName As String = "OpenHR"
 

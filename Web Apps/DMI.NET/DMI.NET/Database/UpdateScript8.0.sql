@@ -1459,10 +1459,6 @@ GO
 DROP PROCEDURE [dbo].[sp_ASRIntPoll]
 GO
 
-/****** Object:  StoredProcedure [dbo].[sp_ASRIntPasswordOK]    Script Date: 23/07/2013 11:18:30 ******/
-DROP PROCEDURE [dbo].[sp_ASRIntPasswordOK]
-GO
-
 /****** Object:  StoredProcedure [dbo].[sp_ASRIntNewUser]    Script Date: 23/07/2013 11:18:30 ******/
 DROP PROCEDURE [dbo].[sp_ASRIntNewUser]
 GO
@@ -1563,9 +1559,6 @@ GO
 DROP PROCEDURE [dbo].[sp_ASRIntGetModuleParameter]
 GO
 
-/****** Object:  StoredProcedure [dbo].[sp_ASRIntGetMinimumPasswordLength]    Script Date: 23/07/2013 11:18:30 ******/
-DROP PROCEDURE [dbo].[sp_ASRIntGetMinimumPasswordLength]
-GO
 
 /****** Object:  StoredProcedure [dbo].[sp_ASRIntGetLookupValues]    Script Date: 23/07/2013 11:18:30 ******/
 DROP PROCEDURE [dbo].[sp_ASRIntGetLookupValues]
@@ -13517,40 +13510,6 @@ BEGIN
 END
 GO
 
-
-/****** Object:  StoredProcedure [dbo].[sp_ASRIntGetMinimumPasswordLength]    Script Date: 23/07/2013 11:18:30 ******/
-SET ANSI_NULLS ON
-GO
-
-SET QUOTED_IDENTIFIER ON
-GO
-
-CREATE PROCEDURE [dbo].[sp_ASRIntGetMinimumPasswordLength] (
-	@piMinPassordLength	integer		OUTPUT
-)
-AS
-BEGIN
-
-	SET NOCOUNT ON;
-
-	/* Return the minimum password length. */
-	DECLARE 
-		@sValue				varchar(MAX),
-		@fNewSettingFound	bit,
-		@fOldSettingFound	bit;
-
-	/* Get the minimum password length. */
-	SET @piMinPassordLength = 0;
-	exec sp_ASRIntGetSystemSetting 'password', 'minimum length', 'minimumPasswordLength', @sValue OUTPUT, @fNewSettingFound OUTPUT, @fOldSettingFound OUTPUT;
-	IF (@fNewSettingFound = 1) OR (@fOldSettingFound = 1) 
-	BEGIN
-		SET @piMinPassordLength = convert(integer, @sValue);
-	END
-
-	IF @piMinPassordLength IS NULL SET @piMinPassordLength = 0;
-END
-GO
-
 /****** Object:  StoredProcedure [dbo].[sp_ASRIntGetModuleParameter]    Script Date: 23/07/2013 11:18:30 ******/
 SET ANSI_NULLS ON
 GO
@@ -20389,45 +20348,6 @@ Err:
 Done:
 	RETURN (@hResult);
 
-END
-GO
-
-/****** Object:  StoredProcedure [dbo].[sp_ASRIntPasswordOK]    Script Date: 23/07/2013 11:18:30 ******/
-SET ANSI_NULLS ON
-GO
-
-SET QUOTED_IDENTIFIER ON
-GO
-
-CREATE PROCEDURE [dbo].[sp_ASRIntPasswordOK]
-AS
-BEGIN
-
-	SET NOCOUNT ON;
-
-	/* Update the current user's record into ASRSysPassword table.. */
-	DECLARE @iCount		integer,
-		@sCurrentUser	sysname;
-
-	SET @sCurrentUser = system_user;
-
-	/* Check that the current user has a record in the table. */
-	SELECT @iCount = COUNT(userName)
-	FROM ASRSysPasswords
-	WHERE userName = @sCurrentUser;
-
-	IF @iCount = 0
-	BEGIN
-		INSERT INTO ASRSysPasswords (userName, lastChanged, forceChange)
-		VALUES (@sCurrentUser, GETDATE(), 0);
-	END
-	ELSE
-	BEGIN
-		UPDATE ASRSysPasswords 
-		SET lastChanged = GETDATE(), 
-			forceChange = 0
-		WHERE userName = @sCurrentUser;
-	END
 END
 GO
 
@@ -44767,10 +44687,6 @@ GO
 DROP PROCEDURE [dbo].[sp_ASRIntPoll]
 GO
 
-/****** Object:  StoredProcedure [dbo].[sp_ASRIntPasswordOK]    Script Date: 13/09/2013 08:59:32 ******/
-DROP PROCEDURE [dbo].[sp_ASRIntPasswordOK]
-GO
-
 /****** Object:  StoredProcedure [dbo].[sp_ASRIntNewUser]    Script Date: 13/09/2013 08:59:32 ******/
 DROP PROCEDURE [dbo].[sp_ASRIntNewUser]
 GO
@@ -44932,10 +44848,6 @@ GO
 
 /****** Object:  StoredProcedure [dbo].[sp_ASRIntGetModuleParameter]    Script Date: 13/09/2013 08:59:32 ******/
 DROP PROCEDURE [dbo].[sp_ASRIntGetModuleParameter]
-GO
-
-/****** Object:  StoredProcedure [dbo].[sp_ASRIntGetMinimumPasswordLength]    Script Date: 13/09/2013 08:59:32 ******/
-DROP PROCEDURE [dbo].[sp_ASRIntGetMinimumPasswordLength]
 GO
 
 /****** Object:  StoredProcedure [dbo].[sp_ASRIntGetLookupValues]    Script Date: 13/09/2013 08:59:32 ******/
@@ -64360,41 +64272,6 @@ END
 GO
 
 
-/****** Object:  StoredProcedure [dbo].[sp_ASRIntGetMinimumPasswordLength]    Script Date: 13/09/2013 08:59:34 ******/
-SET ANSI_NULLS ON
-GO
-
-SET QUOTED_IDENTIFIER ON
-GO
-
-
-CREATE PROCEDURE [dbo].[sp_ASRIntGetMinimumPasswordLength] (
-	@piMinPassordLength	integer		OUTPUT
-)
-AS
-BEGIN
-
-	SET NOCOUNT ON;
-
-	/* Return the minimum password length. */
-	DECLARE 
-		@sValue				varchar(MAX),
-		@fNewSettingFound	bit,
-		@fOldSettingFound	bit;
-
-	/* Get the minimum password length. */
-	SET @piMinPassordLength = 0;
-	exec sp_ASRIntGetSystemSetting 'password', 'minimum length', 'minimumPasswordLength', @sValue OUTPUT, @fNewSettingFound OUTPUT, @fOldSettingFound OUTPUT;
-	IF (@fNewSettingFound = 1) OR (@fOldSettingFound = 1) 
-	BEGIN
-		SET @piMinPassordLength = convert(integer, @sValue);
-	END
-
-	IF @piMinPassordLength IS NULL SET @piMinPassordLength = 0;
-END
-
-GO
-
 /****** Object:  StoredProcedure [dbo].[sp_ASRIntGetModuleParameter]    Script Date: 13/09/2013 08:59:34 ******/
 SET ANSI_NULLS ON
 GO
@@ -78592,47 +78469,6 @@ END
 
 GO
 
-/****** Object:  StoredProcedure [dbo].[sp_ASRIntPasswordOK]    Script Date: 13/09/2013 08:59:35 ******/
-SET ANSI_NULLS ON
-GO
-
-SET QUOTED_IDENTIFIER ON
-GO
-
-
-CREATE PROCEDURE [dbo].[sp_ASRIntPasswordOK]
-AS
-BEGIN
-
-	SET NOCOUNT ON;
-
-	/* Update the current user's record into ASRSysPassword table.. */
-	DECLARE @iCount		integer,
-		@sCurrentUser	sysname;
-
-	SET @sCurrentUser = system_user;
-
-	/* Check that the current user has a record in the table. */
-	SELECT @iCount = COUNT(userName)
-	FROM ASRSysPasswords
-	WHERE userName = @sCurrentUser;
-
-	IF @iCount = 0
-	BEGIN
-		INSERT INTO ASRSysPasswords (userName, lastChanged, forceChange)
-		VALUES (@sCurrentUser, GETDATE(), 0);
-	END
-	ELSE
-	BEGIN
-		UPDATE ASRSysPasswords 
-		SET lastChanged = GETDATE(), 
-			forceChange = 0
-		WHERE userName = @sCurrentUser;
-	END
-END
-
-GO
-
 /****** Object:  StoredProcedure [dbo].[sp_ASRIntPoll]    Script Date: 13/09/2013 08:59:35 ******/
 SET ANSI_NULLS ON
 GO
@@ -83783,6 +83619,13 @@ IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spASRIntIs
 	DROP PROCEDURE [dbo].[spASRIntIsLookupTable]
 GO
 
+IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[sp_ASRIntGetMinimumPasswordLength]') AND xtype in (N'P'))
+	DROP PROCEDURE [dbo].[sp_ASRIntGetMinimumPasswordLength]
+GO
+
+IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[sp_ASRIntPasswordOK]') AND xtype in (N'P'))
+	DROP PROCEDURE [dbo].[sp_ASRIntPasswordOK]
+GO
 
 
 IF TYPE_ID(N'DataPermissions') IS NOT NULL

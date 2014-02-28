@@ -14,7 +14,6 @@
 		var fChangeOK;
 		var sErrorMessage;
 		var frmPasswordChangeForm = document.getElementById('frmPasswordChangeForm');
-		var txtMinPasswordLength = document.getElementById('txtMinPasswordLength');
 
 		fChangeOK = true;
 		sCurrentPassword = frmPasswordChangeForm.txtCurrentPassword.value.toLowerCase();
@@ -38,18 +37,6 @@
 			frmPasswordChangeForm.txtPassword1.focus();
 		}
 
-		/* Check if the new password is long enough. */
-		if ((fChangeOK) && (txtMinPasswordLength.value > 0) && (txtMinPasswordLength.value > sNewPassword1.length)) {
-			sErrorMessage = "The password must be at least ";
-			sErrorMessage = sErrorMessage.concat(txtMinPasswordLength.value);
-			sErrorMessage = sErrorMessage.concat(" characters long.");
-			alert(sErrorMessage);
-			fChangeOK = false;
-			frmPasswordChangeForm.txtPassword1.value = "";
-			frmPasswordChangeForm.txtPassword2.value = "";
-			frmPasswordChangeForm.txtPassword1.focus();
-		}
-
 	    /* If everything is okay, submit the password change. */
 		if (fChangeOK) {
 		    
@@ -61,7 +48,7 @@
 	}
 </script>
 
-<div <%=session("BodyTag")%> style="top: 190px; position: absolute; left: 37%;">
+<div <%=session("BodyTag")%> class="centered" style="top: 190px; position: absolute; left: 37%;">
 
 <form action="forcedPasswordChange_Submit" method="post" id="frmPasswordChangeForm" name="frmPasswordChangeForm">
     <table class="outline" align="center" cellpadding="5" cellspacing="0">
@@ -112,7 +99,20 @@
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td colspan="5" height="10"></td>
+                                    <td colspan="5" height="10">
+	                                    
+							<% 
+			If Not Session("ErrorText") Is Nothing Then
+				If Len(Session("ErrorText").ToString()) > 0 Then
+					Response.Write(Session("ErrorText").ToString())
+				End If
+			End If
+		%>
+
+
+                                    </td>
+																	
+
                                 </tr>
                             </table>
                         </td>
@@ -120,12 +120,11 @@
                 </table>
             </td>
         </tr>
+
+
     </table>
 </form>
 
-<%
-	On Error Resume Next
-    Response.Write("<input type='hidden' id='txtMinPasswordLength' name='txtMinPasswordLength' value='" & Session("minPasswordLength") & "'>" & vbCrLf)
-%>
+
 </div>
 </asp:Content>

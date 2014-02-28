@@ -5,6 +5,7 @@ Imports HR.Intranet.Server.Enums
 Imports HR.Intranet.Server.BaseClasses
 Imports System.Data.SqlClient
 Imports HR.Intranet.Server.Structures
+Imports System.Web
 
 Public Class Database
 	Inherits BaseForDMI
@@ -31,7 +32,9 @@ Public Class Database
 	End Function
 
 	' Return 0 or an error code
-	Public Sub CheckLogin(ByRef Login As LoginInfo, ApplicationVersion As String)
+	Public Sub CheckLogin(objLogin As LoginInfo, ApplicationVersion As String)
+
+		'	Dim objDataAccess As clsDataAccess = CType(HttpContext.Current.Session("DatabaseAccess"), clsDataAccess)
 
 		Dim sSQL As String
 
@@ -51,7 +54,7 @@ Public Class Database
 			prmIntranetVersion.Value = ApplicationVersion
 
 			Dim prmPasswordLength = New SqlParameter("piPasswordLength", SqlDbType.Int)
-			prmPasswordLength.Value = Len(Login.Password)
+			prmPasswordLength.Value = Len(objLogin.Password)
 
 			Dim prmUserType = New SqlParameter("piUserType", SqlDbType.Int)
 			prmUserType.Direction = ParameterDirection.Output
@@ -65,21 +68,20 @@ Public Class Database
 
 			DB.ExecuteSP("sp_ASRIntCheckLogin", prmSuccessFlag, prmErrorMessage, prmMinPasswordLength, prmIntranetVersion, prmPasswordLength, prmUserType, prmUserGroup, prmSelfServiceUserType)
 
-			Login.UserType = CInt(prmUserType.Value)
-			Login.SelfServiceUserType = CInt(prmSelfServiceUserType.Value)
-			Login.UserGroup = prmUserGroup.Value.ToString()
-			Login.LoginFailReason = prmErrorMessage.Value.ToString()
+			objLogin.UserType = CInt(prmUserType.Value)
+			objLogin.SelfServiceUserType = CInt(prmSelfServiceUserType.Value)
+			objLogin.UserGroup = prmUserGroup.Value.ToString()
+			objLogin.LoginFailReason = prmErrorMessage.Value.ToString()
 
 			' Are we system or security manager (merge in with check login when we do license changes?)
 			sSQL = "SELECT count(*) AS [result] FROM ASRSysGroupPermissions INNER JOIN ASRSysPermissionItems ON (ASRSysGroupPermissions.itemID  = ASRSysPermissionItems.itemID" _
 				& " AND (ASRSysPermissionItems.itemKey = 'SYSTEMMANAGER' OR ASRSysPermissionItems.itemKey = 'SECURITYMANAGER'))" _
 				& " INNER JOIN ASRSysPermissionCategories ON (ASRSysPermissionItems.categoryID = ASRSysPermissionCategories.categoryID" _
 				& "   AND ASRSysPermissionCategories.categoryKey = 'MODULEACCESS') WHERE ASRSysGroupPermissions.permitted = 1 AND ASRSysGroupPermissions.groupname = '" _
-				& Login.UserGroup & "'"
+				& objLogin.UserGroup & "'"
 			Dim rowPermission = DB.GetDataTable(sSQL).Rows(0)
 
-			Login.IsSystemOrSecurityAdmin = (CInt(rowPermission(0)) > 0)
-
+			objLogin.IsSystemOrSecurityAdmin = (CInt(rowPermission(0)) > 0)
 
 		Catch ex As Exception
 			Throw

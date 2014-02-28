@@ -229,92 +229,10 @@ Namespace Controllers
 			' HRPRO-3531
 			Session("MSBrowser") = (Request.Form("txtMSBrowser") = "true")
 
-			' Check if the server DLL is registered.
-			Try
-
-			Catch ex As Exception
-				If Err.Number <> 0 Then
-					Session("ErrorTitle") = "Login Page"
-					Session("ErrorText") =
-					 "You could not login to the OpenHR database because of the following reason:<p>COAInt_Server.DLL has not been registered on the IIS server.  Please contact support." & vbCrLf &
-					 "error: " & Err.Number.ToString & ": " & Err.Description
-					Return RedirectToAction("Loginerror")
-				End If
-			End Try
-
-			Dim objSettings = New HR.Intranet.Server.clsSettings
-
-			'Check that SQL Server client is installed
-			Dim GetSQLProviderString As String = objSettings.GetSQLProviderString
-			If GetSQLProviderString = vbNullString Then
-				Session("ErrorTitle") = "Login Page"
-				Session("ErrorText") = "SQL Server Client is missing on the server where OpenHR is installed.  Please contact support."
-				Return RedirectToAction("Loginerror")
-			End If
-
-			sConnectString = GetSQLProviderString & "Data Source=" & sServerName & ";Initial Catalog=" &
-			 sDatabaseName & ";Application Name=OpenHR Intranet;DataTypeCompatibility=80;MARS Connection=True;"
-			objSettings = Nothing
-
-			' Different connection string depending if use are using Windows Authentication
-			If bWindowsAuthentication Then
-				sConnectString = sConnectString & ";Trusted_Connection=yes;"
-				sConnectString = sConnectString & ";Integrated Security=SSPI;"
-			Else
-				sConnectString = sConnectString & ";User ID=" & sUserName & ";Password=" & sPassword
-			End If
-
-			sConnectString = sConnectString & ";Persist Security Info=True;"
 
 			' Open a connection to the database.
 			Dim conX As New Connection
-			conX.ConnectionTimeout = 60
 
-			Try
-				conX.Open(sConnectString)
-			Catch ex As Exception
-				If InStr(1, Err.Description, "The password of the account must be changed") Or
-				 InStr(1, Err.Description, "The password for this login has expired") Or
-				 InStr(1, Err.Description, "The password of the account has expired") Then
-					Session("SQL2005Force") = "Server=" & sServerName & ";UID=" & sUserName
-					Return RedirectToAction("ForcedPasswordChange", "Account")
-				End If
-
-				If Err.Number <> 0 Then
-					Session("ErrorTitle") = "Login Page"
-					Session("ErrorText") = "The system could not log you on. Make sure your details are correct, then retype your password."
-					Return RedirectToAction("Loginerror")
-				End If
-			End Try
-
-			' Set no command timeout
-			conX.CommandTimeout = 0
-
-			' Enter the current session in the poll table. This will ensure that even if the login checks fail, the session will still be killed after 1 minute.
-			Dim cmdHit = New Command
-			cmdHit.CommandText = "sp_ASRIntPoll"
-			cmdHit.CommandType = 4
-			' Stored Procedure
-			cmdHit.ActiveConnection = conX
-			Err.Number = 0
-			cmdHit.Execute()
-			If (Err.Number <> 0) Then
-				Session("ErrorTitle") = "Login Page"
-				Dim sErrorText = "You could not login to the OpenHR database because of the following reason:<p>"
-
-				If (Err.Number = -2147217900) _
-				 And (UCase(Left(FormatError(Err.Description), 31)) = "COULD NOT FIND STORED PROCEDURE") Then
-					sErrorText = sErrorText &
-					 "The database has not been scripted to run the intranet.<P>" &
-					 "Contact your system administrator."
-				Else
-					sErrorText = sErrorText & FormatError(Err.Description)
-				End If
-
-				Session("ErrorText") = sErrorText
-				Return RedirectToAction("Loginerror")
-			End If
-			cmdHit = Nothing
 
 			Session("databaseConnection") = conX
 
@@ -329,7 +247,6 @@ Namespace Controllers
 
 			objServerSession.Username = sUserName
 			objServerSession.LoginInfo = objLogin
-			objServerSession.Initialise()
 
 			Dim objDataAccess As New clsDataAccess(objServerSession.LoginInfo)
 			Dim objDatabase As New Database
@@ -338,9 +255,10 @@ Namespace Controllers
 			Session("DatabaseFunctions") = objDatabase
 			Session("DatabaseAccess") = objDataAccess
 
-
 			Try
 				objDatabase.CheckLogin(objServerSession.LoginInfo, Session("version").ToString())
+
+				objServerSession.Initialise()
 
 				If objServerSession.LoginInfo.LoginFailReason.Length <> 0 Then
 					Session("ErrorText") = "You could not login to the OpenHR database because of the following reason:<p>" &
@@ -355,6 +273,13 @@ Namespace Controllers
 					Session("ErrorText") = "You could not login to the OpenHR database because of the following reason:<p>" &
 					"You are not permitted to use the Self-service Intranet module with this user name."
 					Return RedirectToAction("Loginerror")
+				End If
+
+			Catch ex As SqlException
+
+				' Password has expired / must change
+				If ex.Number = 18487 Or ex.Number = 18488 Then
+					Return RedirectToAction("ForcedPasswordChange", "Account")
 				End If
 
 
@@ -755,162 +680,51 @@ Namespace Controllers
 
 		End Function
 
+
 		<HttpPost()>
 		Function ForcedPasswordChange_Submit(value As FormCollection) As ActionResult
 
-			On Error Resume Next
-
-			Dim strErrorMessage As String = ""
-			Dim sConnectString As String = ""
+			Dim objDataAccess As clsDataAccess = CType(Session("DatabaseAccess"), clsDataAccess)
 
 			Dim fSubmitPasswordChange = (Len(Request.Form("txtGotoPage")) = 0)
 
 			If fSubmitPasswordChange Then
-				' Force password change only if there are no other users logged in with the same name.
-				Dim iUserSessionCount As Integer = ASRFunctions.GetCurrentUsersCountOnServer(Session("Username"))
 
-				If iUserSessionCount < 2 Then
-					' Read the Password details from the Password form.
-					Dim sCurrentPassword = Request.Form("txtCurrentPassword")
-					Dim sNewPassword = Request.Form("txtPassword1")
+				' Read the Password details from the Password form.
+				Dim sNewPassword = Request.Form("txtPassword1")
 
-					' Attempt to change the password on the SQL Server.
-					Dim cmdChangePassword = CreateObject("ADODB.Command")
-					cmdChangePassword.CommandText = "sp_password"
-					cmdChangePassword.CommandType = 4	' Stored Procedure
-					cmdChangePassword.ActiveConnection = Session("databaseConnection")
+				Try
+					objDataAccess.Login.Password = Request.Form("txtCurrentPassword")
+					clsDataAccess.ChangePassword(objDataAccess.Login, sNewPassword)
+					objDataAccess.Login.Password = sNewPassword
 
-					Dim prmCurrentPassword = cmdChangePassword.CreateParameter("currentPassword", 200, 1, 255)
-					cmdChangePassword.Parameters.Append(prmCurrentPassword)
-					If Len(sCurrentPassword) > 0 Then
-						prmCurrentPassword.value = sCurrentPassword
-					Else
-						prmCurrentPassword.value = DBNull.Value
-					End If
+					Session("MessageTitle") = "Change Password Page"
+					Session("MessageText") = "Password changed successfully. You may now login."
+					Return RedirectToAction("Loginmessage", "Account")
 
-					Dim prmNewPassword = cmdChangePassword.CreateParameter("newPassword", 200, 1, 255)
-					cmdChangePassword.Parameters.Append(prmNewPassword)
-					If Len(sNewPassword) > 0 Then
-						prmNewPassword.value = sNewPassword
-					Else
-						prmNewPassword.value = DBNull.Value
-					End If
-
-					Err.Clear()
-					cmdChangePassword.Execute()
-
-					' Release the ADO command object.
-					cmdChangePassword = Nothing
-
-					' SQL Native Client Stuff
-					If Err.Number = 3709 Then
-						Err.Clear()
-
-						Dim conX = CreateObject("ADODB.Connection")
-						conX.ConnectionTimeout = 60
-
-						Dim objSettings = New Global.HR.Intranet.Server.clsSettings
-
-						Select Case objSettings.GetSQLNCLIVersion
-							Case 9
-								sConnectString = "Provider=SQLNCLI;"
-							Case 10
-								sConnectString = "Provider=SQLNCLI10;"
-							Case 11
-								sConnectString = "Provider=SQLNCLI11;"
-						End Select
-						objSettings = Nothing
-
-						sConnectString = sConnectString & "DataTypeCompatibility=80;MARS Connection=False;" & Session("SQL2005Force") & _
-							 ";Old Password='" & Replace(sCurrentPassword, "'", "''") & "';Password='" & Replace(sNewPassword, "'", "''") & "'"
-
-						conX.open(sConnectString)
-
-						If Err.Number <> 0 Then
-							If Err.Number <> 3706 Then	 ' 3706 = Provider not found
-								strErrorMessage = Err.Description
-							End If
-							Session("ErrorTitle") = "Change Password Page"
-							Session("ErrorText") = strErrorMessage
-							' Return RedirectToAction("Loginerror", "Account")
-							Return RedirectToAction("Loginerror", "Account")
-						Else
-							conX.close()
-							Session("MessageTitle") = "Change Password Page"
-							Session("MessageText") = "Password changed successfully. You may now login."
-							' Response.Redirect("loginmessage")
-							Return RedirectToAction("Loginmessage", "Account")
-						End If
-					End If
-
-					If Err.Number <> 0 Then
-						Session("ErrorTitle") = "Change Password Page"
-						Session("ErrorText") = "You could not change your password because of the following error:<p>" & Err.Description
-						Return RedirectToAction("Loginerror", "Account")
-					Else
-						' Password changed okay. Update the appropriate record in the ASRSysPasswords table.
-						Dim cmdPasswordOK = CreateObject("ADODB.Command")
-						cmdPasswordOK.CommandText = "sp_ASRIntPasswordOK"
-						cmdPasswordOK.CommandType = 4	' Stored Procedure
-						cmdPasswordOK.ActiveConnection = Session("databaseConnection")
-
-						Err.Clear()
-						cmdPasswordOK.Execute()
-						If Err.Number <> 0 Then
-							Session("ErrorTitle") = "Change Password Page"
-							Session("ErrorText") = "You could not change your password because of the following error:<p>" & Err.Description
-							Return RedirectToAction("Loginerror", "Account")
-						End If
-
-						' Release the ADO command object.
-						cmdPasswordOK = Nothing
-
-						' Close and reopen the connection object.
-						Dim conX = Session("databaseConnection")
-						Dim sConnString = conX.connectionString
-
-						Dim iPos1 = InStr(UCase(sConnString), UCase(";PWD=" & sCurrentPassword))
-						If iPos1 > 0 Then
-							conX.close()
-							conX = Nothing
-							Session("databaseConnection") = ""
-
-							Dim sNewConnString = Left(sConnString, iPos1 + 4) & sNewPassword & Mid(sConnString, iPos1 + 5 + Len(sCurrentPassword))
-							' Open a connection to the database.
-							conX = CreateObject("ADODB.Connection")
-							conX.open(sNewConnString)
-
-							If Err.Number <> 0 Then
-								Session("ErrorTitle") = "Change Password Page"
-								Session("ErrorText") = "You could not change your password because of the following error:<p>" & Err.Description
-								Return RedirectToAction("Loginerror", "Account")
-							End If
-
-							Session("databaseConnection") = conX
-						End If
-
-						Session("MessageTitle") = "Change Password Page"
-						Session("MessageText") = "Password changed successfully."
-						Response.Redirect("loginmessage")
-						'Response.Redirect("confirmok")
-					End If
-				Else
+				Catch ex As SqlException
 					Session("ErrorTitle") = "Change Password Page"
-					Dim sErrorText = "You could not change your password.<p>The account is currently being used by "
-					If iUserSessionCount > 2 Then
-						sErrorText = sErrorText & iUserSessionCount & " users"
-					Else
-						sErrorText = sErrorText & "another user"
-					End If
-					sErrorText = sErrorText & " in the system."
-					Session("ErrorText") = sErrorText
 
+					Dim iOccurs = ex.Message.IndexOf("Changed database context", 0)
+					Dim sMessage As String = ex.Message
+					If iOccurs > 0 Then
+						sMessage = ex.Message.Substring(0, iOccurs)
+					End If
+					Session("ErrorText") = sMessage
+					Return RedirectToAction("ForcedPasswordChange", "Account")
+
+				Catch ex As Exception
+					Session("ErrorTitle") = "Change Password Page"
+					Session("ErrorText") = ex.Message
 					Return RedirectToAction("Loginerror", "Account")
-				End If
-			Else
-				' Go to the main page.
-				Response.Redirect("main")
+
+				End Try
+
 			End If
+
+			' Go to the main page.
+			Return RedirectToAction("Main", "Home")
+
 		End Function
 
 		Function ForcedPasswordChange() As ActionResult

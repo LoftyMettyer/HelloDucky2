@@ -133,7 +133,6 @@
     <Build Include="Stored Procedures\Web\sp_ASRIntGetLookupFindRecords.sql" />
     <Build Include="Stored Procedures\Web\sp_ASRIntGetLookupValues.sql" />
     <Build Include="Stored Procedures\Web\sp_ASRIntGetMailMergeDefinition.sql" />
-    <Build Include="Stored Procedures\Web\sp_ASRIntGetMinimumPasswordLength.sql" />
     <Build Include="Stored Procedures\Web\sp_ASRIntGetModuleParameter.sql" />
     <Build Include="Stored Procedures\Web\sp_ASRIntGetOrders.sql" />
     <Build Include="Stored Procedures\Web\sp_ASRIntGetOrderSQL.sql" />
@@ -168,7 +167,6 @@
     <Build Include="Stored Procedures\Web\sp_ASRIntMakeBulkBookings.sql" />
     <Build Include="Stored Procedures\Web\sp_ASRIntMakeUtilitiesHidden.sql" />
     <Build Include="Stored Procedures\Web\sp_ASRIntNewUser.sql" />
-    <Build Include="Stored Procedures\Web\sp_ASRIntPasswordOK.sql" />
     <Build Include="Stored Procedures\Web\sp_ASRIntPoll.sql" />
     <Build Include="Stored Procedures\Web\sp_ASRIntPopulateDefsel.sql" />
     <Build Include="Stored Procedures\Web\sp_ASRIntSaveCrossTab.sql" />
