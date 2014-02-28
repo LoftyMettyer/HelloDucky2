@@ -13,22 +13,18 @@ function addControl(tabNumber, controlDef) {
 			//The control to be added has a tab number, but the tab doesn't yet exist - create it...
 			var tabFontName = $("#txtRecEditFontName").val();
 			var tabFontSize = $("#txtRecEditFontSize ").val();
-
 			//var tabCss = "style='font-family: " + tabFontName + " ; font-size: " + tabFontSize + "pt'";
 			var tabCss = "";
-
 			var tabs = $("#ctlRecordEdit").tabs();
-
 			var label = getTabCaption(tabNumber),
 				li = "<li><a " + tabCss + " href='#" + tabID + "'>" + label + "</a></li>";
-
 			tabs.find(".ui-tabs-nav").append(li);
 			tabs.append("<div style='position: relative;' id='" + tabID + "'></div>");
 			tabs.tabs("refresh");
 			if (tabNumber == 1) tabs.tabs("option", "active", 0);
 		} else {
 			$("#ctlRecordEdit").append("<div style='position: relative;' id='" + tabID + "'></div>");
-			$("#ctlRecordEdit").css("background-color", "white");
+			//$("#ctlRecordEdit").css("background-color", "white");
 			$("#ctlRecordEdit").css("border", "1px solid gray");
 		}
 	}
