@@ -1704,43 +1704,24 @@ Namespace Controllers
 
 		Public Sub ShowImageFromDb(imageID As String)
 
-			imageID = CleanNumeric(imageID)
-
-			' Get the required picture using PictureID.
-			Dim cmdReadPicture = CreateObject("ADODB.Command")
-			cmdReadPicture.CommandText = "spASRIntGetPicture"
-			cmdReadPicture.CommandType = 4 ' Stored Procedure
-			cmdReadPicture.ActiveConnection = Session("databaseConnection")
-
-			Dim prmPictureID = cmdReadPicture.CreateParameter("pictureid", 3, 1) ' 3=integer, 1=input
-			cmdReadPicture.Parameters.Append(prmPictureID)
-			prmPictureID.value = imageID
-
-			Err.Clear()
-			Dim objRs = cmdReadPicture.Execute
-
-			If (Err.Number <> 0) Then
-				Response.End()
-			End If
-
+			Dim objDataAccess As clsDataAccess = CType(Session("DatabaseAccess"), clsDataAccess)
+			Dim objRs As DataTable
 			Dim image(-1) As Byte
 
-			Do While Not objRs.EOF
-				image = CType(objRs.fields(1).value, Byte())
-
-				If image.Length > 0 Then Exit Do
-
-				objRs.moveNext()
-			Loop
-
-			If image Is Nothing Then
-				Throw New HttpException(404, "Image not found")
-			End If
-
-			' Check file extension to ensure correct MIME type.
 			Try
+				objRs = objDataAccess.GetFromSP("spASRIntGetPicture", _
+						 New SqlParameter("piPictureID", SqlDbType.Int) With {.Value = CleanNumeric(imageID)})
 
-				Dim imageExtension As String = Path.GetExtension(objRs.fields(0).value).ToLowerInvariant()
+				Dim objRow = objRs.Rows(0)
+
+				image = CType(objRow(1), Byte())
+
+				If image Is Nothing Then
+					Throw New HttpException(404, "Image not found")
+				End If
+
+				' Check file extension to ensure correct MIME type.
+				Dim imageExtension As String = Path.GetExtension(objRow(0).ToString()).ToLowerInvariant()
 				Select Case imageExtension
 					Case ".ico"
 						Response.ContentType = "image/x-icon"
@@ -1768,8 +1749,6 @@ Namespace Controllers
 				' um...
 			End Try
 
-			objRs.close()
-			objRs = Nothing
 
 		End Sub
 

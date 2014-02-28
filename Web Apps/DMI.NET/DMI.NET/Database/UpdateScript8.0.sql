@@ -22829,11 +22829,6 @@ GO
 DROP PROCEDURE [dbo].[spASRIntGetRecordDescriptionInView]
 GO
 
-
-/****** Object:  StoredProcedure [dbo].[spASRIntGetPicture]    Script Date: 23/07/2013 11:19:27 ******/
-DROP PROCEDURE [dbo].[spASRIntGetPicture]
-GO
-
 /****** Object:  StoredProcedure [dbo].[spASRIntGetParentValues]    Script Date: 23/07/2013 11:19:27 ******/
 DROP PROCEDURE [dbo].[spASRIntGetParentValues]
 GO
@@ -29620,29 +29615,6 @@ BEGIN
 
 	EXECUTE sp_executeSQL @sParentSelectSQL;
 	
-END
-GO
-
-/****** Object:  StoredProcedure [dbo].[spASRIntGetPicture]    Script Date: 23/07/2013 11:19:27 ******/
-SET ANSI_NULLS ON
-GO
-
-SET QUOTED_IDENTIFIER ON
-GO
-
-CREATE PROCEDURE [dbo].[spASRIntGetPicture]
-(
-	@piPictureID		integer
-)
-AS
-BEGIN
-
-	SET NOCOUNT ON;
-
-	SELECT TOP 1 name, picture
-	FROM ASRSysPictures
-	WHERE pictureID = @piPictureID;
-
 END
 GO
 
