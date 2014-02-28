@@ -21,6 +21,73 @@ Public Module ASRFunctions
 
 	End Function
 
+	Public Sub PopulatePersonnelSessionVariables()
+
+		Dim objDataAccess As clsDataAccess = CType(HttpContext.Current.Session("DatabaseAccess"), clsDataAccess)
+		Dim prmEmpTableID = New SqlParameter("piEmployeeTableID", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
+
+		Try
+			objDataAccess.ExecuteSP("sp_ASRIntGetPersonnelParameters", prmEmpTableID)
+
+			HttpContext.Current.Session("Personnel_EmpTableID") = prmEmpTableID.Value
+
+		Catch ex As Exception
+			Throw
+
+		End Try
+
+	End Sub
+
+	Public Sub PopulateWorkflowSessionVariables()
+
+		Dim objDataAccess As clsDataAccess = CType(HttpContext.Current.Session("DatabaseAccess"), clsDataAccess)
+		Dim prmWFEnabled = New SqlParameter("pfWFEnabled", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
+		Dim prmWFOutOfOfficeConfig = New SqlParameter("pfOutOfOfficeConfigured", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
+		Dim bWorkflowEnabled As Boolean = False
+		Dim fWorkflowOutOfOfficeConfigured = False
+		Dim fWorkflowOutOfOffice = False
+		Dim iWorkflowRecordCount = 0
+
+		Try
+			objDataAccess.ExecuteSP("spASRIntGetWorkflowParameters", prmWFEnabled)
+
+			bWorkflowEnabled = CBool(prmWFEnabled.Value)
+			HttpContext.Current.Session("WF_Enabled") = bWorkflowEnabled
+
+			' Check if the OutOfOffice parameters have been configured.
+			If bWorkflowEnabled Then
+
+				objDataAccess.ExecuteSP("spASRWorkflowOutOfOfficeConfigured", prmWFOutOfOfficeConfig)
+
+				fWorkflowOutOfOfficeConfigured = CBool(prmWFOutOfOfficeConfig.Value)
+
+				If fWorkflowOutOfOfficeConfigured Then
+					' Check if the current user OutOfOffice
+					Dim prmOutOfOffice As SqlParameter = New SqlParameter("pfOutOfOffice", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
+					Dim prmRecordCount As SqlParameter = New SqlParameter("piRecordCount", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
+
+					objDataAccess.ExecuteSP("spASRWorkflowOutOfOfficeCheck", prmOutOfOffice, prmRecordCount)
+
+					fWorkflowOutOfOffice = CBool(prmOutOfOffice.Value)
+					iWorkflowRecordCount = CInt(prmRecordCount.Value)
+
+				End If
+			End If
+
+			HttpContext.Current.Session("WF_OutOfOfficeConfigured") = fWorkflowOutOfOfficeConfigured
+			HttpContext.Current.Session("WF_OutOfOffice") = fWorkflowOutOfOffice
+			HttpContext.Current.Session("WF_RecordCount") = iWorkflowRecordCount
+
+		Catch ex As Exception
+			Throw
+
+		End Try
+
+
+
+	End Sub
+
+
 	Public Sub PopulateTrainingBookingSessionVariables()
 
 		Try

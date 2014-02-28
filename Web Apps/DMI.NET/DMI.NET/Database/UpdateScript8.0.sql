@@ -1,12 +1,15 @@
 ﻿DROP PROCEDURE [dbo].[spASRIntGetSelfServiceRecordID]
 DROP PROCEDURE [dbo].[spASRIntGetActualUserDetails]
-DROP PROCEDURE [dbo].[sp_ASRIntGetPersonnelParameters]
 DROP PROCEDURE [dbo].[sp_ASR_AbsenceBreakdown_Run]
 DROP PROCEDURE [dbo].[sp_ASR_Bradford_DeleteAbsences]
 DROP PROCEDURE [dbo].[sp_ASRIntCheckLogin]
 
 IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[sp_ASRIntGetMailMergeDefinition]') AND xtype in (N'P'))
 	DROP PROCEDURE [dbo].[sp_ASRIntGetMailMergeDefinition]
+GO
+
+IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spASRWorkflowOutOfOfficeConfigured]') AND xtype in (N'P'))
+	DROP PROCEDURE [dbo].[spASRWorkflowOutOfOfficeConfigured]
 GO
 
 IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spASRIntGetActualUserDetails_DmiNet]') AND xtype in (N'P'))
@@ -1125,58 +1128,6 @@ BEGIN
 END
 GO
 
-CREATE PROCEDURE [dbo].[sp_ASRIntGetPersonnelParameters] (
-	@piEmployeeTableID	integer	OUTPUT
-)
-AS
-BEGIN
-
-	SET NOCOUNT ON;
-
-	/* Return a recordset of the given screen's definition and table permission info. */
-	DECLARE @fOK			bit,
-		@fSysSecMgr			bit,
-		@iUserGroupID		integer,
-		@sUserGroupName		sysname,
-		@sActualUserName	sysname;
-
-	/* Personnel information. */
-	SET @fOK = 1;
-	SET @piEmployeeTableID = 0;
-
-	/* Get the current user's group id. */
-	EXEC [dbo].[spASRIntGetActualUserDetails]
-		@sActualUserName OUTPUT,
-		@sUserGroupName OUTPUT,
-		@iUserGroupID OUTPUT;
-
-	/* Check if the current user is a System or Security manager. */
-	SELECT @fSysSecMgr = CASE WHEN count(*) > 0 THEN 1 ELSE 0 END
-	FROM ASRSysGroupPermissions
-	INNER JOIN ASRSysPermissionItems ON ASRSysGroupPermissions.itemID = ASRSysPermissionItems.itemID
-	INNER JOIN ASRSysPermissionCategories ON ASRSysPermissionItems.categoryID = ASRSysPermissionCategories.categoryID
-	INNER JOIN sysusers ON ASRSysGroupPermissions.groupName = sysusers.name
-	WHERE sysusers.uid = @iUserGroupID
-	AND (ASRSysPermissionItems.itemKey = 'SYSTEMMANAGER'
-	OR ASRSysPermissionItems.itemKey = 'SECURITYMANAGER')
-	AND ASRSysGroupPermissions.permitted = 1
-	AND ASRSysPermissionCategories.categorykey = 'MODULEACCESS';
-
-	-- Activate module
-	EXEC [dbo].[spASRIntActivateModule] 'PERSONNEL', @fOK OUTPUT;
-
-	/* Get the required training booking module paramaters. */
-	IF @fOK = 1
-	BEGIN
-		/* Get the EMPLOYEE table information. */
-		SELECT @piEmployeeTableID = convert(integer, parameterValue)
-		FROM ASRSysModuleSetup
-		WHERE moduleKey = 'MODULE_PERSONNEL'
-			AND parameterKey = 'Param_TablePersonnel';
-		IF @piEmployeeTableID IS NULL SET @piEmployeeTableID = 0;
-	END
-END
-GO
 
 CREATE PROCEDURE [dbo].[sp_ASR_AbsenceBreakdown_Run]
 (
@@ -1602,10 +1553,6 @@ GO
 
 /****** Object:  StoredProcedure [dbo].[sp_ASRIntGetRecord]    Script Date: 23/07/2013 11:18:30 ******/
 DROP PROCEDURE [dbo].[sp_ASRIntGetRecord]
-GO
-
-/****** Object:  StoredProcedure [dbo].[sp_ASRIntGetPersonnelParameters]    Script Date: 23/07/2013 11:18:30 ******/
-DROP PROCEDURE [dbo].[sp_ASRIntGetPersonnelParameters]
 GO
 
 /****** Object:  StoredProcedure [dbo].[sp_ASRIntGetOrders]    Script Date: 23/07/2013 11:18:30 ******/
@@ -13696,66 +13643,6 @@ BEGIN
 END
 GO
 
-/****** Object:  StoredProcedure [dbo].[sp_ASRIntGetPersonnelParameters]    Script Date: 23/07/2013 11:18:30 ******/
-SET ANSI_NULLS ON
-GO
-
-SET QUOTED_IDENTIFIER ON
-GO
-
-CREATE PROCEDURE [dbo].[sp_ASRIntGetPersonnelParameters] (
-	@piEmployeeTableID	integer	OUTPUT
-)
-AS
-BEGIN
-
-	SET NOCOUNT ON;
-
-	/* Return a recordset of the given screen's definition and table permission info. */
-	DECLARE @fOK			bit,
-		@fSysSecMgr			bit,
-		@iUserGroupID		integer,
-		@sUserGroupName		sysname,
-		@sActualUserName	sysname;
-
-	/* Personnel information. */
-	SET @fOK = 1;
-	SET @piEmployeeTableID = 0;
-
-	/* Get the current user's group id. */
-	EXEC [dbo].[spASRIntGetActualUserDetails]
-		@sActualUserName OUTPUT,
-		@sUserGroupName OUTPUT,
-		@iUserGroupID OUTPUT;
-
-	/* Check if the current user is a System or Security manager. */
-	SELECT @fSysSecMgr = CASE WHEN count(*) > 0 THEN 1 ELSE 0 END
-	FROM ASRSysGroupPermissions
-	INNER JOIN ASRSysPermissionItems ON ASRSysGroupPermissions.itemID = ASRSysPermissionItems.itemID
-	INNER JOIN ASRSysPermissionCategories ON ASRSysPermissionItems.categoryID = ASRSysPermissionCategories.categoryID
-	INNER JOIN sysusers ON ASRSysGroupPermissions.groupName = sysusers.name
-	WHERE sysusers.uid = @iUserGroupID
-	AND (ASRSysPermissionItems.itemKey = 'SYSTEMMANAGER'
-	OR ASRSysPermissionItems.itemKey = 'SECURITYMANAGER')
-	AND ASRSysGroupPermissions.permitted = 1
-	AND ASRSysPermissionCategories.categorykey = 'MODULEACCESS';
-
-	-- Activate module
-	EXEC [dbo].[spASRIntActivateModule] 'PERSONNEL', @fOK OUTPUT;
-
-	/* Get the required training booking module paramaters. */
-	IF @fOK = 1
-	BEGIN
-		/* Get the EMPLOYEE table information. */
-		SELECT @piEmployeeTableID = convert(integer, parameterValue)
-		FROM ASRSysModuleSetup
-		WHERE moduleKey = 'MODULE_PERSONNEL'
-			AND parameterKey = 'Param_TablePersonnel';
-		IF @piEmployeeTableID IS NULL SET @piEmployeeTableID = 0;
-	END
-END
-GO
-
 /****** Object:  StoredProcedure [dbo].[sp_ASRIntGetRecord]    Script Date: 23/07/2013 11:18:30 ******/
 SET ANSI_NULLS ON
 GO
@@ -22890,10 +22777,6 @@ GO
 DROP PROCEDURE [dbo].[spASRIntInsertNewRecord]
 GO
 
-/****** Object:  StoredProcedure [dbo].[spASRIntGetWorkflowParameters]    Script Date: 23/07/2013 11:19:27 ******/
-DROP PROCEDURE [dbo].[spASRIntGetWorkflowParameters]
-GO
-
 /****** Object:  StoredProcedure [dbo].[spASRIntGetViewName]    Script Date: 23/07/2013 11:19:27 ******/
 DROP PROCEDURE [dbo].[spASRIntGetViewName]
 GO
@@ -31685,28 +31568,6 @@ BEGIN
 	SELECT @psViewName = viewName
 		FROM [dbo].[ASRSysViews]
 		WHERE viewID = @piViewID;
-
-END
-GO
-
-/****** Object:  StoredProcedure [dbo].[spASRIntGetWorkflowParameters]    Script Date: 23/07/2013 11:19:27 ******/
-SET ANSI_NULLS ON
-GO
-
-SET QUOTED_IDENTIFIER ON
-GO
-
-CREATE PROCEDURE [dbo].[spASRIntGetWorkflowParameters] 
-(
-	@pfWFEnabled			bit	OUTPUT
-)
-AS
-BEGIN
-	
-	SET NOCOUNT ON;
-
-	-- Activate module
-	EXEC [dbo].[spASRIntActivateModule] 'WORKFLOW', @pfWFEnabled OUTPUT;
 
 END
 GO
@@ -90396,6 +90257,48 @@ CREATE PROCEDURE [dbo].[sp_ASRIntGetMailMergeDefinition] (
 				END		
 			END		
 		END
+
+
+
+GO
+CREATE PROCEDURE [dbo].[spASRWorkflowOutOfOfficeConfigured]
+(
+    @pfOutOfOfficeConfigured bit output
+)
+AS
+BEGIN
+	DECLARE	@iCount	integer;
+
+	-- Check if the SP that checks if the current user is OutOfOffice exists
+	SELECT @iCount = COUNT(*)
+	FROM sysobjects
+	WHERE id = object_id('spASRWorkflowOutOfOfficeCheck')
+		AND sysstat & 0xf = 4;
+
+	IF @iCount > 0 
+	BEGIN
+		-- Check if the SP that sets/resets the current user to be OutOfOffice exists
+		SELECT @iCount = COUNT(*)
+		FROM sysobjects
+		WHERE id = object_id('spASRWorkflowOutOfOfficeSet')
+			AND sysstat & 0xf = 4;
+	END
+
+	IF @iCount > 0 
+	BEGIN
+		-- Check if the the Activation column has been defined
+		SELECT @iCount = convert(integer, isnull(parameterValue, '0'))
+		FROM ASRSysModuleSetup
+		WHERE moduleKey = 'MODULE_WORKFLOW'
+			AND parameterKey = 'Param_DelegationActivatedColumn';
+	END
+
+	SET @pfOutOfOfficeConfigured = 
+	CASE	
+		WHEN @iCount > 0 THEN 1
+		ELSE 0
+	END;
+END
 
 
 
