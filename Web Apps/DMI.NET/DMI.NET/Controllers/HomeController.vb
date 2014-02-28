@@ -4440,32 +4440,23 @@ Namespace Controllers
 					' Get the employee record ID from the given Waiting List record.
 					Dim iEmpRecID = 0
 
-					Dim cmdEmpIDFromWLID = CreateObject("ADODB.Command")
-					cmdEmpIDFromWLID.CommandText = "sp_ASRIntGetEmpIDFromWLID"
-					cmdEmpIDFromWLID.CommandType = 4 ' Stored procedure
-					cmdEmpIDFromWLID.ActiveConnection = Session("databaseConnection")
+					Try
 
-					Dim prmTBEmployeeRecordID = cmdEmpIDFromWLID.CreateParameter("empRecID", 3, 2) '3=integer, 2=output
-					cmdEmpIDFromWLID.Parameters.Append(prmTBEmployeeRecordID)
+						Dim prmTBEmployeeRecordID = New SqlParameter("piEmpRecordID", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
+						objDataAccess.ExecuteSP("sp_ASRIntGetEmpIDFromWLID", _
+								prmTBEmployeeRecordID, _
+								New SqlParameter("@piWLRecordID", SqlDbType.Int) With {.Value = CleanNumeric(NullSafeInteger(Session("optionRecordID")))})
 
-					Dim prmTBWLRecordID = cmdEmpIDFromWLID.CreateParameter("WLRecID", 3, 1)	'3=integer, 1=input
-					cmdEmpIDFromWLID.Parameters.Append(prmTBWLRecordID)
-					prmTBWLRecordID.value = CleanNumeric(NullSafeInteger(Session("optionRecordID")))
-
-					Err.Clear()
-					cmdEmpIDFromWLID.Execute()
-					If (Err.Number <> 0) Then
-						sErrorMsg = "Error getting employee ID." & vbCrLf & FormatError(Err.Description)
-					End If
-
-					If Len(sErrorMsg) = 0 Then
-						iEmpRecID = cmdEmpIDFromWLID.Parameters("empRecID").Value
+						iEmpRecID = CInt(prmTBEmployeeRecordID.Value)
 
 						If iEmpRecID = 0 Then
 							sErrorMsg = "Error getting employee ID."
 						End If
-					End If
-					cmdEmpIDFromWLID = Nothing
+
+					Catch ex As Exception
+						sErrorMsg = "Error getting employee ID." & vbCrLf & FormatError(Err.Description)
+
+					End Try
 
 					If Len(sErrorMsg) = 0 Then
 						' Validate the booking.
