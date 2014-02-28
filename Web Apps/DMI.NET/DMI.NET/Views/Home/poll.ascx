@@ -1,7 +1,9 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>    
 <%@Import namespace="DMI.NET" %>
+<%@ Import Namespace="HR.Intranet.Server" %>
+<%@ Import Namespace="System.Data" %>
 
-		<link href="<%: Url.LatestContent("~/Content/OpenHR.css")%>" rel="stylesheet" type="text/css">
+<link href="<%: Url.LatestContent("~/Content/OpenHR.css")%>" rel="stylesheet" type="text/css">
 
 		<script type="text/javascript">
 				function poll_window_onload() {
@@ -37,37 +39,27 @@
 
 		<form id="frmMessages" name="frmMessages">
 				<%
-						Dim cmdHit = CreateObject("ADODB.Command")
+					
+					Dim objDataAccess As clsDataAccess = CType(Session("DatabaseAccess"), clsDataAccess)
+					
+					Try
+						Dim rstMessages = objDataAccess.GetDataTable("sp_ASRIntPoll")
+
+						Dim iloop = 1
+						For Each objRow As DataRow In rstMessages.Rows
+							%>		
+								<input type='hidden' 
+									id=txtMessage_<%=iLoop%> 
+									name=txtMessage_<%=iLoop%> 
+									value="<%=Replace(objRow(0).ToString(), """", "&quot;")%>">
+						<%    
+							iloop += 1
+						Next
 						
-						cmdHit.CommandText = "sp_ASRIntPoll"
-						cmdHit.CommandType = 4 ' Stored Procedure
-						cmdHit.ActiveConnection = Session("databaseConnection")
+					Catch ex As Exception
 
-						Err.Clear()
-						Dim rstMessages = cmdHit.Execute
-
-						If (Err.Number = 0) Then
-								Dim iloop = 1
-								Do While Not rstMessages.EOF
-										' Response.Write("<INPUT type='hidden' id=txtMessage_" & iLoop & " name=txtMessage_" & iLoop & " value=""" & Replace(rstMessages.Fields(0).Value, """", "&quot;") & """>" & vbCrLf)
-%>		
-	<INPUT type='hidden' 
-		id=txtMessage_<%=iLoop%> 
-		name=txtMessage_<%=iLoop%> 
-		value="<%=replace(rstMessages.Fields(0).Value, """", "&quot;")%>">
-<%                    
-										rstMessages.MoveNext()
-	
-										iloop = iloop + 1
-								Loop
-
-								' Release the ADO recordset object.
-								rstMessages.close()
-								' rstMessages = Nothing
-						End If
-	
-						' Release the ADO command object.
-						
+					End Try
+											
 				%>
 		</form>
 		
