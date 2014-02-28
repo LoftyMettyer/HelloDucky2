@@ -396,20 +396,20 @@
 			' Count, Sum, Average functions.
 			Dim decimalPlaces As Integer = NullSafeInteger(objRow.Item("dp"))
 
+			If CBool(objRow.Item("Avge")) Then
+				summaryType = ", summaryType: ""avg"", summaryTpl: ""Sub Average: {0}"""
+				jsFooterFunction &= String.Format("var avge_{0} = Number({1}).toFixed({2});", sColumnHeading.Replace(" ", "_"), objReport.mrstCustomReportsOutput.Compute("Avg(" & sColumnHeading & ")", ""), decimalPlaces)
+				sFooterText = String.Format("'Average: ' + avge_{0}", sColumnHeading.Replace(" ", "_"))
+			End If
 			If CBool(objRow.Item("Cnt")) Then
 				summaryType = ", summaryType: ""count"", summaryTpl: ""Sub Count: {0}"""
-				jsFooterFunction &= String.Format("var cnt_{2} = {1};", sColumnHeading, objReport.mrstCustomReportsOutput.Rows.Count, sColumnHeading.Replace(" ", "_"))
-				sFooterText = String.Format("'Count: ' + cnt_{0}", sColumnHeading.Replace(" ", "_"))
+				jsFooterFunction &= String.Format("var cnt_{1} = {0};", objReport.mrstCustomReportsOutput.Rows.Count, sColumnHeading.Replace(" ", "_"))
+				sFooterText &= String.Format("{0}'Count: ' + cnt_{1}", IIf(sFooterText.Length > 0, "+ '<br/>' + ", ""), sColumnHeading.Replace(" ", "_"))
 			End If
 			If CBool(objRow.Item("Tot")) Then
 				summaryType = ", summaryType: ""sum"", summaryTpl: ""Sub Total: {0}"""
 				jsFooterFunction &= String.Format("var sum_{2} = jQuery('#grdReport').jqGrid('getCol', '{0}', false, 'sum').toFixed({1});", sColumnHeading, decimalPlaces, sColumnHeading.Replace(" ", "_"))
 				sFooterText &= String.Format("{0}'Total: ' + sum_{1}", IIf(sFooterText.Length > 0, "+ '<br/>' + ", ""), sColumnHeading.Replace(" ", "_"))
-			End If
-			If CBool(objRow.Item("Avge")) Then
-				summaryType = ", summaryType: ""avg"", summaryTpl: ""Sub Average: {0}"""
-				jsFooterFunction &= String.Format("var avge_{0} = Number({1}).toFixed({2});", sColumnHeading.Replace(" ", "_"), objReport.mrstCustomReportsOutput.Compute("Avg(" & sColumnHeading & ")", ""), decimalPlaces)
-				sFooterText &= String.Format("{0}'Average: ' + avge_{1}", IIf(sFooterText.Length > 0, "+ '<br/>' + ", ""), sColumnHeading.Replace(" ", "_"))
 			End If
 		
 			If CBool(objRow.Item("IsNumeric")) Then alignment = ", align: ""right"", sorttype: ""integer"", formatter: ""number"", formatoptions:{ thousandsSeparator: """", defaultValue: """"}"
