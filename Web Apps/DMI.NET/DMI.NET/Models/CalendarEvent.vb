@@ -8,7 +8,7 @@
 		Public Property StartSession() As String
 		Public Property EndDate() As DateTime
 		Public Property EndSession() As String
-		Public Property Duration As Long
+		Public Property Duration As Decimal
 		Public Property Reason As String
 		Public Property CalendarCode As String
 		Public Property Region As String
