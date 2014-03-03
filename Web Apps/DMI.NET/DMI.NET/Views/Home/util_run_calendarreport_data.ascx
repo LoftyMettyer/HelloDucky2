@@ -88,7 +88,7 @@
 
 </script>
 
-<div style="float: left; width: 80%">
+<div style="float: left; width: 80%; height: 500px;overflow: auto">
 	<DayPilot:DayPilotScheduler ID="DayPilotScheduler1" runat="server"
 		HeaderFontSize="8pt" HeaderHeight="20"
 		DataStartField="startdate"
