@@ -1431,7 +1431,7 @@
 
 
 		//display view details
-		$('.ViewDescription p').text('<%=Session("ViewDescription")%>');
+		$('.ViewDescription p').text('<%=Session("ViewDescription").ToString()%>');
 
 	});
 

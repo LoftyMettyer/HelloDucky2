@@ -1579,7 +1579,7 @@ Namespace Controllers
 					End If
 
 					' get the view name, and append it.
-					If sViewName.Length > 0 Then sViewDescription = sViewName.Replace("_", " ") & sViewDescription
+					If sViewName.Length > 0 Then sViewDescription = sViewName.Replace("_", " ") & sViewDescription.Replace("'", "\'")
 
 					Session("ViewDescription") = sViewDescription
 
