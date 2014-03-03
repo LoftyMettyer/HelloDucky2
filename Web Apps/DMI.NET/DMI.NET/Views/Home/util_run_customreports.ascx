@@ -639,7 +639,7 @@ End If
 	$("#gview_grdReport > .ui-jqgrid-titlebar").hide();	//no title bar; this is in the dialog title
 	$('#gview_grdReport tr.jqgrow td').css('vertical-align', 'top');	//float text to top, in case of multi-line cells
 	$('#gview_grdReport .s-ico span').css('display', 'none');	//hide the sort order icons - they don't tie in to the dataview model.
-	
+	$('#gview_grdReport tr.footrow td').css('vertical-align', 'top'); //float text to top, in case of multi-line footers
 	if (menu_isSSIMode()) $('#gbox_grdReport').css('margin', '0 auto');	//center the report in self-service screen.	
 
 	<%end if%>
