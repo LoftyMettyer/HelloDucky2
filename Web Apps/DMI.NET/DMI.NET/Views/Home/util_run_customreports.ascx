@@ -487,6 +487,9 @@
 					End If					
 				End If
 
+				' Bug JIRA#3767 - convert to proper case if grouping; jQGrid grouping is case sensitive ('fixed' in v4.6 I believe, but too much for v8.0?)
+				If bGrouping Then sColumnValue = StrConv(sColumnValue, VbStrConv.ProperCase)
+				
 				sColumnValue = Html.Encode(sColumnValue)
 				sColumnValue = sColumnValue.Replace(vbNewLine, "<br/>")
 
