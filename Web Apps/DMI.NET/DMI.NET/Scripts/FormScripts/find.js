@@ -131,7 +131,8 @@ function find_window_onload() {
 				var shrinkToFit = false;
 				var wfSetWidth = $('#workframeset').width();
 				//if (colMode.length < (wfSetWidth / 100)) shrinkToFit = true;
-				var gridWidth = menu_isSSIMode() ? 'auto' : wfSetWidth - 100;
+				//var gridWidth = menu_isSSIMode() ? 'auto' : wfSetWidth - 100;
+				var gridWidth = wfSetWidth - 100;
 
 
 				//create the column layout:
