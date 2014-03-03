@@ -629,7 +629,7 @@
 			</span>
 		</div>	
 		
-<div id="ctlRecordEdit" style="margin:0 auto; " >
+<div id="ctlRecordEdit" class="ui-widget-content" style="margin:0 auto; " >
 		<ul id="tabHeaders">        
 		</ul>
 		<input type="hidden" id="changed" value="false"/>
