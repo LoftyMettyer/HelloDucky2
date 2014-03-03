@@ -24,9 +24,10 @@
 		<td>End Date</td>
 		<td><%: Html.Label("EndDate", Model.EndDate.ToLongDateString())%> <%: Html.DisplayFor(Function(m) m.EndSession)%></td>
 	</tr>
+
 	<tr>
 		<td>Duration</td>
-		<td"><%: Html.DisplayFor(Function(m) m.Duration)%></td>
+		<td><%: Html.DisplayFor(Function(m) m.Duration)%></td>
 	</tr>
 	<tr>
 		<td>Reason</td>
