@@ -44,7 +44,7 @@
 			//$("#optionframe").show();
 			$("#optionframe").dialog({
 				autoOpen: true,
-				modal: false,
+				modal: true,
 				width: 750,
 				height: 800,
 				close: function() {
