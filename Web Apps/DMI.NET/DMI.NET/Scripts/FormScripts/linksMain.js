@@ -299,24 +299,23 @@ function refreshSession() {
 	catch (e) { }
 }
 
-function relocateURL(psURL, pfNewWindow) {
+function relocateURL(psUrl, pfNewWindow) {
 
 	if (!dragged) {
 		// Submit the refresh.asp to keep the session alive
-
 		refreshSession();
 
 		//NPG20081102 Fault 12873
-		if (isEMail(psURL) == 0) {
-			window.location.href = psURL;
+		if (isEMail(psUrl) == 0) {
+			window.location.href = psUrl;
 			return false;
 		}
 		if (pfNewWindow == 1) {
-			window.open(psURL);
+			window.open(psUrl);
 		} else {
 			try {
-				var aParameters = psURL.split('?');
-				loadPartialView(psURL, 'home', 'workframe', aParameters[1]);
+				var aParameters = psUrl.split('?');
+				loadPartialView(psUrl, 'home', 'workframe', aParameters[1]);
 			}
 			catch (e) {
 				alert('error in link');
@@ -325,12 +324,31 @@ function relocateURL(psURL, pfNewWindow) {
 	}
 }
 
-function goURL(psURL, pfNewWindow, pfExternal) {
+function goURL(psUrl, pfNewWindow, pfExternal) {
+	
+	if (pfExternal == true) {
+		if (isEMail(psUrl) == 0) {
+			window.location.href = psUrl;
+			return false;
+		}
+		
+		if (pfNewWindow == 1) {
+			window.open(psUrl);
+			return false;
+		}
+		
+		//external content
+		$('.DashContent').hide();
+		$('#workflowDisplay').show();
+		$('#externalContentFrame').attr('src', psUrl);
+		$('#workflowDisplay .pageTitle').text(psUrl);
+		return false;
+	}
 
 	try {
-		pfNewWindow = (pfExternal==true?1:0);
+		//pfNewWindow = (pfExternal==true?1:0);
 		//if (txtHypertextLinksEnabled.value != 0) {
-		relocateURL(psURL, pfNewWindow);
+		relocateURL(psUrl, pfNewWindow);
 		//}
 	}
 	catch (e) {
@@ -395,11 +413,9 @@ function goUtility(sUtilityType, sUtilityID, sUtilityName, sUtilityBaseTable) {
 }
 
 function goDropLink(sLinkInfo) {
-			
 	if (sLinkInfo == undefined) {
 		sLinkInfo = $('.DropdownlistSelect').val();				
 	}
-
 	
 	var sLinkType = sLinkInfo.substr(0, 1);
 	sLinkInfo = sLinkInfo.substr(2);
@@ -412,7 +428,7 @@ function goDropLink(sLinkInfo) {
 			// URL link
 			sNewWindow = sLinkInfo.substr(0, 1);
 			sLinkInfo = sLinkInfo.substr(2);
-			goURL(sLinkInfo, sNewWindow);
+			goURL(sLinkInfo, sNewWindow, true);
 			break;
 		case "2":
 			// Utility link
@@ -445,6 +461,14 @@ function goDropLink(sLinkInfo) {
 	}
 
 }
+
+
+function goApp(sAppFilePath, sAppParameters) {
+
+	OpenHR.modalMessage("Application links are not available.");
+
+}
+
 
 function launchWorkflow(url, name) {
 
