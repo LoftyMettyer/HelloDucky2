@@ -111,7 +111,7 @@
 				For Each navlink In Model.NavigationLinks.FindAll(Function(n) n.LinkType = LinkType.HyperLink)
 					Dim sTileColourClass = "Colour" & CStr(CInt(Math.Ceiling(Rnd() * 7)))
 							
-					If (navlink.Element_Type = 1 Or navlink.LinkOrder = 0) And navlink.UtilityType = -1 Then		' separator
+					If (navlink.Element_Type = 1 Or navlink.LinkOrder = 0) Then		' separator
 						iRowNum = 1
 						iColNum = 1
 						If fFirstSeparator Then
@@ -126,12 +126,12 @@
 						
 							iSeparatorNum += 1
 				
-							If navlink.Text.Length > 0 Then
+							If navlink.Text.Length > 0 And navlink.Element_Type = 1 Then
 								sText = Html.Encode(navlink.Text)
 								sText = sText.Replace("--", "")
 								sText = sText.Replace("'", """")
 							Else
-								sText = ""
+								sText = "Hypertext Links"
 							End If
 							%>
 
@@ -145,7 +145,9 @@
 				<div class="gridster hypertextlinkcontent" id="gridster_Hypertextlink_<%=tileCount%>">
 					<ul>
 						<%
-						Else
+						End If
+						
+						If navlink.Element_Type <> 1 Then	' not a separator; i.e. add a tile.
 							If iRowNum > iMaxRows Then
 								iColNum += 1
 								iRowNum = 1
@@ -346,7 +348,7 @@
 						End If
 					End If
 
-					If navlink.Element_Type = 1 Then		' separator
+					If navlink.Element_Type = 1 Or navlink.LinkOrder = 0 Then			' separator
 						iRowNum = 1
 						iColNum = 1
 						Dim sSeparatorColor = ""
@@ -365,18 +367,31 @@
 	<div class="ButtonLinkColumn">
 		<%
 		End If
-		iSeparatorNum += 1%>
+		
+		iSeparatorNum += 1
+		
+		If navlink.Text.Length > 0 And navlink.Element_Type = 1 Then
+			sText = Html.Encode(navlink.Text)
+			sText = sText.Replace("--", "")
+			sText = sText.Replace("'", """")
+		Else
+			sText = "Button Links"
+		End If
+
+		
+		%>
 		<ul class="linkspagebuttonseparatorframe" id="linkspagebuttonseparatorframe_<%=iSeparatorNum %>">
 			<li class="linkspagebutton-displaytype">
 				<div class="wrapupcontainer linkspagebuttonseparator-bordercolour" style="<%=sSeparatorColor%>">
 					<div class="wrapuptext">
-						<p class="linkspagebuttonseparator linkspagebuttonseparator-font linkspagebuttonseparator-colour linkspagebuttonseparator-size linkspagebuttonseparator-bold linkspagebuttonseparator-italics"><%: navlink.Text %></p>
+						<p class="linkspagebuttonseparator linkspagebuttonseparator-font linkspagebuttonseparator-colour linkspagebuttonseparator-size linkspagebuttonseparator-bold linkspagebuttonseparator-italics"><%=ste%></p>
 					</div>
 				</div>
 				<div class="gridster buttonlinkcontent" id="gridster_buttonlink_<%=tileCount%>">
 					<ul>
 						<%											
-						Else
+						End If
+						If navlink.Element_Type <> 1 Then	' not a separator...
 							If iRowNum > iMaxRows Then	 ' start a new column if required (affects tiles only)
 								iColNum += 1
 								iRowNum = 1
