@@ -384,7 +384,7 @@
 			<li class="linkspagebutton-displaytype">
 				<div class="wrapupcontainer linkspagebuttonseparator-bordercolour" style="<%=sSeparatorColor%>">
 					<div class="wrapuptext">
-						<p class="linkspagebuttonseparator linkspagebuttonseparator-font linkspagebuttonseparator-colour linkspagebuttonseparator-size linkspagebuttonseparator-bold linkspagebuttonseparator-italics"><%=ste%></p>
+						<p class="linkspagebuttonseparator linkspagebuttonseparator-font linkspagebuttonseparator-colour linkspagebuttonseparator-size linkspagebuttonseparator-bold linkspagebuttonseparator-italics"><%=sText%></p>
 					</div>
 				</div>
 				<div class="gridster buttonlinkcontent" id="gridster_buttonlink_<%=tileCount%>">
