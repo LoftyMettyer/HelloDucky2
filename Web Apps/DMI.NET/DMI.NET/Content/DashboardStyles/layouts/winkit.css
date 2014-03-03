@@ -67,6 +67,10 @@ body
 	display: none!important;
 }
 
+.DMI .pageTitleDiv {
+	display: none;
+}
+
 .SSI .pageTitleDiv {
 	 height: 50px;
 		margin: 0 0 40px 0;
