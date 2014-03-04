@@ -140,10 +140,26 @@
 	}
 
 	function outputOptionsPrintClick() {
-
+		//Creates a new window, copies the report grid to it, formats the grid and sends to print.
 		var divToPrint = document.getElementById('reportworkframe');
-		var newWin = window.open("", "_blank", 'toolbar=no,status=no,menubar=no,scrollbars=no,resizable=no, width=1, height=1, visible=none', "");
+		var newWin = window.open("", "_blank", 'toolbar=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=1, height=1, visible=none', "");
+		newWin.document.write('<sty');
+		newWin.document.write('le>.ui-jqgrid-bdiv {height:auto!important;}');
+		newWin.document.write('body {font-family:verdana;}');
+		newWin.document.write('tr.ui-jqgrid-labels {display:none;}');
+		newWin.document.write('tr.jqgfirstrow {background-color:lightgray;}');
+		newWin.document.write('tr.jqgrow>td {border-bottom: 1px solid lightgray; padding-right: 5px;}');
+		newWin.document.write('</sty');
+		newWin.document.write('le>');
 		newWin.document.write(divToPrint.innerHTML);
+		newWin.document.write('<scri');
+		newWin.document.write('pt type="text/javascript">');
+		newWin.document.write("var headerCells = document.querySelectorAll('.ui-th-column>div');");
+		newWin.document.write("for (var i = 0, len = headerCells.length; i < len; i++) {");
+		newWin.document.write("	document.querySelector('tr.jqgfirstrow>td:nth-child(' + (i + 1) + ')').innerText = headerCells[i].innerText.replace('_', ' ');");
+		newWin.document.write("	}");
+		newWin.document.write('</scri');
+		newWin.document.write('pt>');
 		newWin.document.close();
 		newWin.focus();
 		newWin.print();
