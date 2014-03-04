@@ -412,8 +412,8 @@
 				sFooterText &= String.Format("{0}'Total: ' + sum_{1}", IIf(sFooterText.Length > 0, "+ '<br/>' + ", ""), sColumnHeading.Replace(" ", "_"))
 			End If
 		
-			If CBool(objRow.Item("IsNumeric")) Then alignment = ", align: ""right"", sorttype: ""integer"", formatter: ""number"", formatoptions:{ thousandsSeparator: """", defaultValue: """"}"
-		
+			If CBool(objRow.Item("IsNumeric")) And Not CBool(objRow.Item("GroupWithNextColumn")) Then alignment = ", align: ""right"", sorttype: ""integer"", formatter: ""number"", formatoptions:{ thousandsSeparator: """", defaultValue: """", decimalPlaces: " & decimalPlaces & "}"
+					
 			' This is a Date Column - format as such
 			If objReport.mrstCustomReportsOutput.Columns(iColIndex).DataType = System.Type.GetType("System.DateTime") Then
 				alignment = ", align: ""left"", sorttype: ""date"", formatter: ""date"", formatoptions: {srcformat: ""d/m/Y"", newformat: ""d/m/Y""}"
@@ -472,28 +472,35 @@
 		
 		For Each objRow As DataRow In dv.ToTable().Rows		' objReport.mrstCustomReportsOutput.Rows
 			colData.Append("{")
+			
+			bGroupWithNext = False
+			Dim sColumnValue As String = ""
+			Dim sColumnName As String = ""
+			
 			For iColIndex = 0 To objRow.ItemArray.Count() - 1
 				Dim objThisColumn As ReportDetailItem = objReport.DisplayColumns(iColIndex)
-					
-				Dim sColumnValue = objRow.Item(iColIndex).ToString()
-				If objThisColumn.IsNumeric And sColumnValue = "" Then
-					sColumnValue = "0"
-				End If
 				
-				If objThisColumn.GroupWithNextColumn Then
+				If Not bGroupWithNext Then
+					sColumnValue = objRow.Item(iColIndex).ToString()
+					sColumnName = objReport.mrstCustomReportsOutput.Columns(iColIndex).ColumnName
+				Else
 					' add next col too.
-					If objRow.Item(iColIndex + 1).ToString().Length > 0 Then
-						sColumnValue &= vbNewLine & objRow.Item(iColIndex + 1).ToString()
-					End If					
+					If objRow.Item(iColIndex).ToString().Length > 0 Then
+						sColumnValue &= vbNewLine & objRow.Item(iColIndex).ToString()
+					End If
 				End If
 
+				bGroupWithNext = objThisColumn.GroupWithNextColumn
+				
 				' Bug JIRA#3767 - convert to proper case if grouping; jQGrid grouping is case sensitive ('fixed' in v4.6 I believe, but too much for v8.0?)
 				If bGrouping Then sColumnValue = StrConv(sColumnValue, VbStrConv.ProperCase)
 				
-				sColumnValue = Html.Encode(sColumnValue)
-				sColumnValue = sColumnValue.Replace(vbNewLine, "<br/>")
+				If Not bGroupWithNext Then
+					sColumnValue = Html.Encode(sColumnValue)
+					sColumnValue = sColumnValue.Replace(vbNewLine, "<br/>")
 
-				colData.Append(String.Format("'{0}':'{1}',", objReport.mrstCustomReportsOutput.Columns(iColIndex).ColumnName, sColumnValue))
+					colData.Append(String.Format("'{0}':'{1}',", sColumnName, sColumnValue))
+				End If
 			Next
 
 			' trailing comma removal
@@ -620,6 +627,13 @@ End If
 	var gridWidth;
 	var gridHeight;
 	
+	//Get count of visible columns
+	var iVisibleCount = 0;
+	for (var iArrayPos = 0; iArrayPos < g_colModelArray.length; iArrayPos++) {
+		if (g_colModelArray[iArrayPos].hidden !== true) iVisibleCount++;
+	}
+
+
 	if (menu_isSSIMode()) {
 		try {
 			gridWidth = $('#reportworkframe').width();
@@ -631,7 +645,7 @@ End If
 		ShrinkToFit = true;
 	} else {
 		//DMI options.
-		if (g_colModelArray.length < 8) ShrinkToFit = true;
+		if (iVisibleCount < 8) ShrinkToFit = true;
 		gridWidth = 770;
 		gridHeight = 390;
 	}
@@ -649,16 +663,24 @@ End If
 		ignoreCase: true,
 		rowNum: 200000		
 			<%=sGroupingParams%>,
-		loadComplete: function() { <%=jsFooterFunction%>;<%=jsSrvFunction.ToString()%> }
+		loadComplete: function () {
+			<%=jsFooterFunction%>;
+			<%=jsSrvFunction.ToString()%>;
+			stylejqGrid();
+		}
 	});
 
-	//jqGrid style overrides
-	//hide caption
-	$("#gview_grdReport > .ui-jqgrid-titlebar").hide();	//no title bar; this is in the dialog title
-	$('#gview_grdReport tr.jqgrow td').css('vertical-align', 'top');	//float text to top, in case of multi-line cells
-	$('#gview_grdReport .s-ico span').css('display', 'none');	//hide the sort order icons - they don't tie in to the dataview model.
-	$('#gview_grdReport tr.footrow td').css('vertical-align', 'top'); //float text to top, in case of multi-line footers
-	if (menu_isSSIMode()) $('#gbox_grdReport').css('margin', '0 auto');	//center the report in self-service screen.	
+	function stylejqGrid() {
+		//jqGrid style overrides
+		//hide caption	
+		$("#gview_grdReport > .ui-jqgrid-titlebar").hide(); //no title bar; this is in the dialog title
+		$('#gview_grdReport tr.jqgrow td').css('vertical-align', 'top'); //float text to top, in case of multi-line cells
+		$('#gview_grdReport .s-ico span').css('display', 'none'); //hide the sort order icons - they don't tie in to the dataview model.
+		$('#gview_grdReport tr.footrow td').css('vertical-align', 'top'); //float text to top, in case of multi-line footers
+	}
+
+	if (menu_isSSIMode()) $('#gbox_grdReport').css('margin', '0 auto'); //center the report in self-service screen.	
+	
 
 	<%end if%>
 	
