@@ -117,7 +117,6 @@
 	}
 
 	function ShowDataFrame() {
-		debugger;
 
 		$("#cmdOK").hide();
 		//$("#cmdCancel").hide();
@@ -265,7 +264,7 @@
 	%>
 	$(".popup").dialog({ width: 750, height: 400, resizable: true });
 	<%Else%>
-	$(".popup").dialog({ width: 1100, height: 720, resizable: true });	
+	$(".popup").dialog({ width: 1100, height: 720, resizable: true });
 	<%End If%>
 	
 	<%
@@ -277,13 +276,6 @@ ElseIf Session("utiltype") = "16" Then
 	<%
 Else
 	%>
-	
-	$("#cmdOutput").button({ disabled: true });
-	if ($("#grdReport").length > 0) {
-		debugger;
-		$("#cmdOutput").button({ disabled: false });
-	}
-
 	$(".popup").dialog({
 		width: 810,
 		height: 720,
@@ -305,7 +297,6 @@ End If
 	$('.popup').bind('dialogclose', function () {
 		closeclick();
 	});
-	
 
 	if (menu_isSSIMode() == false) {
 		$('#main').css('marginTop', '30px'); //.css('borderTop', '1px solid rgb(206, 206, 206)');
@@ -318,20 +309,18 @@ End If
 
 	//$("#cmdCancel").hide();	
 	$("#cmdCancel").button({ disabled: true });
-	
 	$("#cmdOK").hide();
-	
-	// To hide close button for error;
-	//if (menu_isSSIMode() == false) {
-	//	$("#cmdClose").show();
-	//} else {
-		$("#cmdClose").hide();
-	//}
 
-		if ($("#txtPreview")[0].value == "False") {			
-			var frmGetDataForm = OpenHR.getForm("reportworkframe", "frmExportData");
-			frmGetDataForm.submit();
-			closeclick();
+	if (menu_isSSIMode() == false) {
+		$("#cmdClose").show();
+	} else {
+		$("#cmdClose").hide();
+	}
+
+	if ($("#txtPreview")[0].value == "False") {
+		var frmGetDataForm = OpenHR.getForm("reportworkframe", "frmExportData");
+		frmGetDataForm.submit();
+		closeclick();
 	}
 	
 </script>
