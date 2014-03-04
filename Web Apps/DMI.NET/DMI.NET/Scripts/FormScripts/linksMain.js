@@ -159,12 +159,16 @@ function popoutchart(MultiAxis, Chart_ShowLegend, Chart_ShowGrid, Chart_ShowValu
 	w.document.write('&FilterID=' + iChart_FilterID);
 	w.document.write('&AggregateType=' + iChart_AggregateType);
 	w.document.write('&ElementType=' + iChart_ElementType);
-	if (MultiAxis == 'True')
-	{
+	if (MultiAxis == 'True') {
 		w.document.write('&TableID_2=' + iChart_TableID_2);
 		w.document.write('&ColumnID_2=' + iChart_ColumnID_2);
 		w.document.write('&TableID_3=' + iChart_TableID_3);
 		w.document.write('&ColumnID_3=' + iChart_ColumnID_3);
+	} else {
+		w.document.write('&TableID_2=0');
+		w.document.write('&ColumnID_2=0');
+		w.document.write('&TableID_3=0');
+		w.document.write('&ColumnID_3=0');
 	}
 	w.document.write('&SortOrderID=' + iChart_SortOrderID);
 	w.document.write('&SortDirection=' + iChart_SortDirection);
