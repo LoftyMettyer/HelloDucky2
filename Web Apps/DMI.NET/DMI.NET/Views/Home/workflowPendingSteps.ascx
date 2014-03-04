@@ -212,7 +212,7 @@
 					<a href='javascript:loadPartialView("linksMain", "Home", "workframe", null);' title='Back'>
 						<i class='pageTitleIcon icon-circle-arrow-left'></i>
 					</a>
-					<span style="margin-left: 40px; margin-right: 20px" class="pageTitle">Pending Workflow Steps</span>
+					<span class="pageTitle">Pending Workflow Steps</span>
 				</div>
 			</div>
 			<div id="findGridRow" style="height: 85%; margin-right: 20px; margin-left: 20px;">

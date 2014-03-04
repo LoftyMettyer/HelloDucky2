@@ -67,7 +67,7 @@ body
 	display: none!important;
 }
 
-.DMI .pageTitleDiv {
+.DMI #reportframe div.pageTitleDiv {
 	display: none;
 }
 
