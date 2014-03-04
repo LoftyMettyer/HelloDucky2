@@ -18,7 +18,7 @@
 			 Manufacturer="Advanced Computer Software"
 			 UpgradeCode="{E5C9F391-5787-4fd1-81E6-D1A4A91D226D}" >
 
-		<Package InstallerVersion="200" Compressed="yes" />
+		<Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
 
 		<Media Id="1" Cabinet="OpenHR.cab" EmbedCab="yes" />
 
