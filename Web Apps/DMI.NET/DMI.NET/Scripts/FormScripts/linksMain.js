@@ -199,7 +199,7 @@ function popoutchart(MultiAxis, Chart_ShowLegend, Chart_ShowGrid, Chart_ShowValu
 	w.document.write('var head = document.getElementsByTagName("head")[0];');
 	w.document.write('var ScriptjQueryUI = document.createElement("script");');
 	w.document.write('ScriptjQueryUI.type = "text/javascript";');
-	w.document.write('ScriptjQueryUI.src =  path + "/Scripts/jquery/jquery-ui-1.9.2.custom.js";');
+	w.document.write('ScriptjQueryUI.src = pathToResources + "/Scripts/jquery/jquery-ui-1.9.2.custom.js";');
 	w.document.write('ScriptjQueryUI.onreadystatechange = ScriptjQueryUICallback;');
 	w.document.write('ScriptjQueryUI.onload = ScriptjQueryUICallback;');
 	w.document.write('head.appendChild(ScriptjQueryUI);');
@@ -209,7 +209,7 @@ function popoutchart(MultiAxis, Chart_ShowLegend, Chart_ShowGrid, Chart_ShowValu
 	w.document.write('var head = document.getElementsByTagName("head")[0];');
 	w.document.write('var ScriptjqGrid = document.createElement("script");');
 	w.document.write('ScriptjqGrid.type = "text/javascript";');
-	w.document.write('ScriptjqGrid.src =  path + "/Scripts/jquery/jquery.jqGrid.src.js";');
+	w.document.write('ScriptjqGrid.src = pathToResources + "/Scripts/jquery/jquery.jqGrid.src.js";');
 	w.document.write('ScriptjqGrid.onreadystatechange = ScriptjqGridCallback;');
 	w.document.write('ScriptjqGrid.onload = ScriptjqGridCallback;');
 	w.document.write('head.appendChild(ScriptjqGrid);');
@@ -217,11 +217,12 @@ function popoutchart(MultiAxis, Chart_ShowLegend, Chart_ShowGrid, Chart_ShowValu
 
 	w.document.write('function ScriptjqGridCallback(){loadData();}');
 
-	w.document.write('var path = window.location.pathname.substring(0, window.location.pathname.substring(1).indexOf("/") + 1);');
+	w.document.write('var pathToResources = window.location.pathname.substring(0, window.location.pathname.substring(1).indexOf("/") + 1);');
+	w.document.write('if (pathToResources == "/Home") {pathToResources = ""};'); //Needed when code is running from Visual Studio
 	w.document.write('var head = document.getElementsByTagName("head")[0];');
 	w.document.write('var ScriptjQuery = document.createElement("script");');
 	w.document.write('ScriptjQuery.type = "text/javascript";');
-	w.document.write('ScriptjQuery.src = path + "/Scripts/jquery/jquery-1.8.3.js";');
+	w.document.write('ScriptjQuery.src = pathToResources + "/Scripts/jquery/jquery-1.8.3.js";');
 	w.document.write('ScriptjQuery.onreadystatechange = ScriptjQueryCallback;');
 	w.document.write('ScriptjQuery.onload = ScriptjQueryCallback;');
 	w.document.write('head.appendChild(ScriptjQuery);');
@@ -230,7 +231,7 @@ function popoutchart(MultiAxis, Chart_ShowLegend, Chart_ShowGrid, Chart_ShowValu
 	w.document.write('var DMIthemeLink = document.createElement("link");');
 	w.document.write('DMIthemeLink.rel = "stylesheet";');
 	w.document.write('DMIthemeLink.type = "text/css";');
-	w.document.write('DMIthemeLink.href =  path + "/Content/themes/' + CurrentTheme + '/jquery-ui.min.css";');
+	w.document.write('DMIthemeLink.href = pathToResources + "/Content/themes/' + CurrentTheme + '/jquery-ui.min.css";');
 	w.document.write('head.appendChild(DMIthemeLink);');
 
 	w.document.writeln('</script>');
