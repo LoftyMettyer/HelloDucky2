@@ -360,7 +360,8 @@
 		' Configure COLUMNS Model for jqGrid
 		For Each objRow As DataRow In objReport.mrstCustomReportsDetails.Rows
 			
-			Dim sColumnHeading As String = objReport.mrstCustomReportsOutput.Columns(iColIndex).ColumnName
+			Dim sColumnHeading As String = objReport.mrstCustomReportsOutput.Columns(iColIndex).ColumnName	' displayname
+			Dim sCodeSafeColumnHeading As String = objRow.Item("columnname").ToString()
 			Dim sFooterText As String = ""
 			Dim isVisibleString As String = ""
 			Dim cellAttributes As String = ""
@@ -398,18 +399,18 @@
 
 			If CBool(objRow.Item("Avge")) Then
 				summaryType = ", summaryType: ""avg"", summaryTpl: ""Sub Average: {0}"""
-				jsFooterFunction &= String.Format("var avge_{0} = Number({1}).toFixed({2});", sColumnHeading.Replace(" ", "_"), objReport.mrstCustomReportsOutput.Compute("Avg(" & sColumnHeading & ")", ""), decimalPlaces)
-				sFooterText = String.Format("'Average: ' + avge_{0}", sColumnHeading.Replace(" ", "_"))
+				jsFooterFunction &= String.Format("var avge_{0} = Number({1}).toFixed({2});", sCodeSafeColumnHeading, objReport.mrstCustomReportsOutput.Compute("Avg([" & sColumnHeading & "])", ""), decimalPlaces)
+				sFooterText = String.Format("'Average: ' + avge_{0}", sCodeSafeColumnHeading)
 			End If
 			If CBool(objRow.Item("Cnt")) Then
 				summaryType = ", summaryType: ""count"", summaryTpl: ""Sub Count: {0}"""
-				jsFooterFunction &= String.Format("var cnt_{1} = {0};", objReport.mrstCustomReportsOutput.Compute("Count(" & sColumnHeading & ")", ""), sColumnHeading.Replace(" ", "_"))
-				sFooterText &= String.Format("{0}'Count: ' + cnt_{1}", IIf(sFooterText.Length > 0, "+ '<br/>' + ", ""), sColumnHeading.Replace(" ", "_"))
+				jsFooterFunction &= String.Format("var cnt_{1} = {0};", objReport.mrstCustomReportsOutput.Compute("Count([" & sColumnHeading & "])", ""), sCodeSafeColumnHeading)
+				sFooterText &= String.Format("{0}'Count: ' + cnt_{1}", IIf(sFooterText.Length > 0, "+ '<br/>' + ", ""), sCodeSafeColumnHeading)
 			End If
 			If CBool(objRow.Item("Tot")) Then
 				summaryType = ", summaryType: ""sum"", summaryTpl: ""Sub Total: {0}"""
-				jsFooterFunction &= String.Format("var sum_{0} = Number({1}).toFixed({2});", sColumnHeading.Replace(" ", "_"), objReport.mrstCustomReportsOutput.Compute("Sum(" & sColumnHeading & ")", ""), decimalPlaces)
-				sFooterText &= String.Format("{0}'Total: ' + sum_{1}", IIf(sFooterText.Length > 0, "+ '<br/>' + ", ""), sColumnHeading.Replace(" ", "_"))
+				jsFooterFunction &= String.Format("var sum_{0} = Number({1}).toFixed({2});", sCodeSafeColumnHeading, objReport.mrstCustomReportsOutput.Compute("Sum([" & sColumnHeading & "])", ""), decimalPlaces)
+				sFooterText &= String.Format("{0}'Total: ' + sum_{1}", IIf(sFooterText.Length > 0, "+ '<br/>' + ", ""), sCodeSafeColumnHeading)
 			End If
 		
 			If CBool(objRow.Item("IsNumeric")) And Not CBool(objRow.Item("GroupWithNextColumn")) Then alignment = ", align: ""right"", sorttype: ""integer"", formatter: ""number"", formatoptions:{ thousandsSeparator: """", defaultValue: """", decimalPlaces: " & decimalPlaces & "}"

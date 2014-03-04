@@ -316,11 +316,12 @@ End If
 	} else {
 		$("#cmdClose").hide();
 	}
-
 	if ($("#txtPreview")[0].value == "False") {
-		var frmGetDataForm = OpenHR.getForm("reportworkframe", "frmExportData");
-		frmGetDataForm.submit();
-		closeclick();
+		if ($('#txtNoRecs').val() == "0") {
+			var frmGetDataForm = OpenHR.getForm("reportworkframe", "frmExportData");
+			frmGetDataForm.submit();
+			closeclick();
+		}
 	}
 	
 </script>
