@@ -45,13 +45,13 @@ Public Class clsMultiAxisChart
 
 
 		Dim fOK As Boolean
-		Dim strTableName As String
-		Dim strColumnName As String
-		Dim strTableName2 As String
-		Dim strColumnName2 As String
-		Dim strTableName3 As String
-		Dim strColumnName3 As String
-		Dim strColourColumnName As String
+		Dim strTableName As String = ""
+		Dim strColumnName As String = ""
+		Dim strTableName2 As String = ""
+		Dim strColumnName2 As String = ""
+		Dim strTableName3 As String = ""
+		Dim strColumnName3 As String = ""
+		Dim strColourColumnName As String = ""
 		Dim lngTableID As Integer
 		Dim lngColumnID As Integer
 		Dim lngTableID2 As Integer
