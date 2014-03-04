@@ -28,16 +28,16 @@
 	}
 }
 
-function popoutchart(MultiAxis, Chart_ShowLegend, Chart_ShowGrid, Chart_ShowValues, Chart_StackSeries, Chart_ShowPercentages, iChart_Type, iChart_TableID, iChart_ColumnID, iChart_FilterID, iChart_AggregateType, iChart_ElementType, iChart_TableID_2, iChart_ColumnID_2,iChart_TableID_3, iChart_ColumnID_3, iChart_SortOrderID, iChart_SortDirection, iChart_ColourID, ChartTitle) {
+function popoutchart(MultiAxis, Chart_ShowLegend, Chart_ShowGrid, Chart_ShowValues, Chart_StackSeries, Chart_ShowPercentages, iChart_Type, iChart_TableID, iChart_ColumnID, iChart_FilterID, iChart_AggregateType, iChart_ElementType, iChart_TableID_2, iChart_ColumnID_2,iChart_TableID_3, iChart_ColumnID_3, iChart_SortOrderID, iChart_SortDirection, iChart_ColourID, ChartTitle, CurrentTheme) {
 			
 	var windowHeight = 500;
 	var windowWidth = 500;
 			
 	var w = window.open('Chart', '_blank', 'width=' + windowWidth + ', height=' + windowHeight + ',location=no,resizable=yes,toolbar=no,titlebar=no,menubar=no');
 	w.document.open();
-	w.document.write('<div style="width: 100%; height: 100%;"><img id="chartImage" style="" src="" alt="Chart" />');
-	w.document.write('</div>');
-	w.document.write('<div style="position: fixed; bottom: 0;">');
+	w.document.write("<div id='chartDataDiv' style='width: 90%; height: 90%; display: none'></div>");
+	w.document.write("<div style='width: 100%; height: 100%;' id='chartImageDiv'><img id='chartImage' style='' src='' alt='Chart' /></div>");
+	w.document.write("<div style='position: fixed; bottom: 0;'>");
 	w.document.write('<table align="center" border="solid 1px" bgcolor="#cccccc">');
 	w.document.write("<tr style='font-family:Verdana;font-size:x-small'>");
 	w.document.write("<td>");
@@ -100,11 +100,12 @@ function popoutchart(MultiAxis, Chart_ShowLegend, Chart_ShowGrid, Chart_ShowValu
 		w.document.write("<td><input value='Reset rotation' id='btnResetRotation' type='button' onClick='document.getElementById(\"Inclination\").value=10; document.getElementById(\"Rotation\").value=10; loadChart();'/></td>");
 	}
 	w.document.write("<td><input value='Print' id='btnPrint' type='button' onClick='window.print()'/></td>");
+	//Add a toggle button to show the image or the data
+	//w.document.write('<td><input value="Toggle chart/data" id="btnToggle" type="button" onclick=\'$("#chartDataDiv").toggle(); $("#chartImageDiv").toggle();\' /></td>');
 	w.document.write("</tr>");
 	w.document.write("</table>");
 	w.document.write('</div>');
-	w.document.write('<scri');
-	w.document.write('pt type="text/javascript">');
+	w.document.write('<script type="text/javascript">');
 	w.document.write('function loadChart() {');
 	w.document.write('var windowHeight = window.innerHeight - 80;'); //reduce height for toolbar.
 	w.document.write('var chartType = document.getElementById("selChartType").value;');
@@ -148,8 +149,91 @@ function popoutchart(MultiAxis, Chart_ShowLegend, Chart_ShowGrid, Chart_ShowValu
 	w.document.write('document.getElementById("chartImage").src = psURL;');
 	w.document.write('}');
 	w.document.write('setTimeout("loadChart()", 500);');
-	w.document.write('</scri');
-	w.document.write('pt>');
+
+
+	//Call the server to get the data
+	w.document.write('function loadData(){');
+	w.document.write('var ajaxCall = "GetChartDataAsHTML?');
+	w.document.write('TableID=' + iChart_TableID);
+	w.document.write('&ColumnID=' + iChart_ColumnID);
+	w.document.write('&FilterID=' + iChart_FilterID);
+	w.document.write('&AggregateType=' + iChart_AggregateType);
+	w.document.write('&ElementType=' + iChart_ElementType);
+	if (MultiAxis == 'True')
+	{
+		w.document.write('&TableID_2=' + iChart_TableID_2);
+		w.document.write('&ColumnID_2=' + iChart_ColumnID_2);
+		w.document.write('&TableID_3=' + iChart_TableID_3);
+		w.document.write('&ColumnID_3=' + iChart_ColumnID_3);
+	}
+	w.document.write('&SortOrderID=' + iChart_SortOrderID);
+	w.document.write('&SortDirection=' + iChart_SortDirection);
+	w.document.write('&ColourID=' + iChart_ColourID);
+	w.document.write('&Title=' + ChartTitle);
+	w.document.write('&MultiAxisChart=' + MultiAxis + '";');
+	w.document.write('$.ajax({'); //Ajax call
+	w.document.write('url: ajaxCall,');
+	w.document.write('type: "GET",');
+	w.document.write('dataType: "text",');
+	w.document.write('async: true,');
+	w.document.write('success: function (data) {');
+	w.document.write('		try {');
+	w.document.write('			$("#chartDataDiv").html("");');
+	w.document.write('			$("#chartDataDiv").html(data);');
+	w.document.write('		} catch (e) { }');
+	w.document.write('	}');
+	w.document.write('});'); //End of ajax call
+	w.document.write('$(document).ready(function () {'); //On document ready
+	w.document.write('$("#chartData").setGridWidth($("#chartDataDiv").width());');
+	w.document.write('$("#chartData").setGridHeight($("#chartDataDiv").height());');
+	w.document.write('$(window).resize(function() {'); //When the window is resized, resize datagrid and chart
+	w.document.write('$("#chartData").setGridWidth($("#chartDataDiv").width());');
+	w.document.write('$("#chartData").setGridHeight($("#chartDataDiv").height());');
+	w.document.write('loadChart();');
+	w.document.write('});'); //End of resize
+	w.document.write('});'); //End of document ready
+	w.document.write('};'); //End of function loadData
+
+	//Below there are several functions that are chained to be called during loading of jQuery and other scripts
+	w.document.write('function ScriptjQueryCallback(){');
+	w.document.write('var head = document.getElementsByTagName("head")[0];');
+	w.document.write('var ScriptjQueryUI = document.createElement("script");');
+	w.document.write('ScriptjQueryUI.type = "text/javascript";');
+	w.document.write('ScriptjQueryUI.src =  path + "/Scripts/jquery/jquery-ui-1.9.2.custom.js";');
+	w.document.write('ScriptjQueryUI.onreadystatechange = ScriptjQueryUICallback;');
+	w.document.write('ScriptjQueryUI.onload = ScriptjQueryUICallback;');
+	w.document.write('head.appendChild(ScriptjQueryUI);');
+	w.document.write('};');
+
+	w.document.write('function ScriptjQueryUICallback(){');
+	w.document.write('var head = document.getElementsByTagName("head")[0];');
+	w.document.write('var ScriptjqGrid = document.createElement("script");');
+	w.document.write('ScriptjqGrid.type = "text/javascript";');
+	w.document.write('ScriptjqGrid.src =  path + "/Scripts/jquery/jquery.jqGrid.src.js";');
+	w.document.write('ScriptjqGrid.onreadystatechange = ScriptjqGridCallback;');
+	w.document.write('ScriptjqGrid.onload = ScriptjqGridCallback;');
+	w.document.write('head.appendChild(ScriptjqGrid);');
+	w.document.write('}');
+
+	w.document.write('function ScriptjqGridCallback(){loadData();}');
+
+	w.document.write('var path = window.location.pathname.substring(0, window.location.pathname.substring(1).indexOf("/") + 1);');
+	w.document.write('var head = document.getElementsByTagName("head")[0];');
+	w.document.write('var ScriptjQuery = document.createElement("script");');
+	w.document.write('ScriptjQuery.type = "text/javascript";');
+	w.document.write('ScriptjQuery.src = path + "/Scripts/jquery/jquery-1.8.3.js";');
+	w.document.write('ScriptjQuery.onreadystatechange = ScriptjQueryCallback;');
+	w.document.write('ScriptjQuery.onload = ScriptjQueryCallback;');
+	w.document.write('head.appendChild(ScriptjQuery);');
+
+	//Add CSS
+	w.document.write('var DMIthemeLink = document.createElement("link");');
+	w.document.write('DMIthemeLink.rel = "stylesheet";');
+	w.document.write('DMIthemeLink.type = "text/css";');
+	w.document.write('DMIthemeLink.href =  path + "/Content/themes/' + CurrentTheme + '/jquery-ui.min.css";');
+	w.document.write('head.appendChild(DMIthemeLink);');
+
+	w.document.writeln('</script>');
 	w.document.close();
 }
 

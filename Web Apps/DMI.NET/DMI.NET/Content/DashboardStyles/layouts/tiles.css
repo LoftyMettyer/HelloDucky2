@@ -211,6 +211,10 @@ width:12em; */
 	margin: 0;
 }
 
+.datagrid {
+	margin: 0;	
+}
+
 .cols2 { width: 280px;}
 .cols3 { width: 420px;}
 .cols4 { width: 560px;}

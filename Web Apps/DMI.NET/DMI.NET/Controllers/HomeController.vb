@@ -1878,7 +1878,82 @@ Namespace Controllers
 
 		End Function
 
+		' This function creates and HTML table with the chart data, as well as jquery script that wll turn the table into a jqGrid
+		Function GetChartDataAsHTML(
+											tableID As Long,
+											columnID As Long,
+											filterID As Long,
+											aggregateType As Long,
+											elementType As ElementType,
+											tableID_2 As Long,
+											columnID_2 As Long,
+											tableID_3 As Long,
+											columnID_3 As Long,
+											sortOrderID As Long,
+											sortDirection As Long,
+											colourID As Long,
+											title As String,
+											MultiAxisChart As Boolean) As String
 
+			Dim ChartData As DataTable
+
+			Dim objChart = New HR.Intranet.Server.clsChart
+			objChart.SessionInfo = CType(Session("SessionContext"), SessionInfo)
+			If MultiAxisChart Then
+				ChartData = objChart.GetChartData(tableID, columnID, filterID, aggregateType, elementType, tableID_2, columnID_2, tableID_3, columnID_3, sortOrderID, sortDirection, colourID)
+			Else
+				ChartData = objChart.GetChartData(tableID, columnID, filterID, aggregateType, elementType, 0, 0, 0, 0, sortOrderID, sortDirection, colourID)
+			End If
+
+			Dim HTMLTable As String = ""
+			Dim colNames As String = ""
+			Dim colModel As String = ""
+			Dim Script As String = ""
+
+			'Create the HTML table with the data
+			HTMLTable = "<table id='chartData'>"
+			HTMLTable = String.Concat(HTMLTable, "<tr>")
+			For Each col As DataColumn In ChartData.Columns
+				HTMLTable = String.Concat(HTMLTable, "<th>", col.ColumnName, "</th>")
+				colNames = String.Concat(colNames, "'", col.ColumnName, "', ")
+				colModel = String.Concat(colModel, "{ name: '", col.ColumnName, "', index: '", col.ColumnName, "', sortable: 'true'},")
+			Next
+			colNames = colNames.TrimEnd(",") 'Remove extra comma
+			colModel = colModel.TrimEnd(",") 'Remove extra comma
+			HTMLTable = String.Concat(HTMLTable, "</tr>")
+
+			'Loop over the records
+			For Each objRow As DataRow In ChartData.Rows
+				HTMLTable = String.Concat(HTMLTable, "<tr>")
+				For Each col As DataColumn In ChartData.Columns
+					HTMLTable = String.Concat(HTMLTable, "<td>", objRow(col).ToString(), "</td>")
+				Next
+				HTMLTable = String.Concat(HTMLTable, "</tr>")
+			Next
+			HTMLTable = String.Concat(HTMLTable, "</table>")
+
+			'Create the script that will turn the table above into a datagrid
+			Script = String.Concat("<script type='text/javascript'>", _
+														 "tableToGrid('#chartData', {")
+			colNames = String.Concat("colNames:[", colNames, "]")
+			colModel = String.Concat("colModel:[", colModel, "]")
+			'Script = String.Concat(Script,
+			'										 colNames, ",", _
+			'										 colModel, ",", _
+			'										 "rownum: 1000,", _
+			'										 "scroll: true,", _
+			'										 "autowidth: true", _
+			'										 "});", _
+			'										 "</script>")
+
+			Script = String.Concat(Script,
+													 colNames, ",", _
+													 colModel, _
+													 "});", _
+													 "</script>")
+
+			Return String.Concat(HTMLTable, Script)
+		End Function
 
 		Function GetMultiAxisChart(height As Long,
 											width As Long,
