@@ -617,14 +617,32 @@ End If
 	<%If fok = True Then%>
 	//Shrink to fit, or set to 100px per column?
 	var ShrinkToFit = false;
-	var gridWidth = menu_isSSIMode() ? 'auto' : 770;
-	if (g_colModelArray.length < 8) ShrinkToFit = true;
+	var gridWidth;
+	var gridHeight;
 	
+	if (menu_isSSIMode()) {
+		try {
+			gridWidth = $('#reportworkframe').width();
+			gridHeight = $('#reportworkframe').height() - 100;
+		} catch(e) {
+			gridWidth = 'auto';
+			gridHeight = 'auto';
+		}
+		ShrinkToFit = true;
+	} else {
+		//DMI options.
+		if (g_colModelArray.length < 8) ShrinkToFit = true;
+		gridWidth = 770;
+		gridHeight = 390;
+	}
+	
+
+
 	jQuery("#grdReport").jqGrid({
 		datatype: "local",
 		shrinkToFit: ShrinkToFit,
 		width: gridWidth,
-		height: 390,
+		height: gridHeight,
 		colNames: g_colNamesArray,
 		colModel: g_colModelArray,
 		data: g_colData,

@@ -2,7 +2,7 @@
 
 <input type='hidden' id="txtLoadCount" name="txtLoadCount" value="0">
 
-<div id="reportworkframe" data-framesource="util_run_customreports" style="display: inline-block; width:100%">
+<div id="reportworkframe" data-framesource="util_run_customreports" style="display: inline-block; width:100%; height: 100%;">
 		<%
 			If Session("utiltype") = "16" Then
 				' Bradford Factor
