@@ -125,7 +125,7 @@
 							End If
 						
 							iSeparatorNum += 1
-				
+							
 							If navlink.Text.Length > 0 And navlink.Element_Type = 1 Then
 								sText = Html.Encode(navlink.Text)
 								sText = sText.Replace("--", "")
@@ -203,7 +203,13 @@
 						%>
 						<li class="hypertextlinktext hypertextlinktext-highlightcolour <%=sTileColourClass%> flipTile" data-col="<%=iColNum %>" data-row="<%=iRowNum %>"
 							data-sizex="1" data-sizey="1" onclick="<%=sOnclick%>">
-							<a class="hypertextlinktext-font hypertextlinktext-colour hypertextlinktext-size hypertextlinktext-bold hypertextlinktext-italics" href="#" title="<%: navlink.Text%>"><%: navlink.Text %></a>
+							<%
+								sText = navlink.Text
+								If navlink.Text.Length > 30 Then
+									sText = navlink.Text.Substring(0, 30) + "x1x"
+								End If
+							%>
+							<a class="hypertextlinktext-font hypertextlinktext-colour hypertextlinktext-size hypertextlinktext-bold hypertextlinktext-italics" href="#" title="<%: navlink.Text%>"><%: sText%></a>
 							<p class="hypertextlinktileIcon"><i class="<%=classIcon %>"></i></p>
 						</li>
 						<%
@@ -225,6 +231,10 @@
 						If objNavLink.Text1.Trim().Length > 0 Then sLinkText.Append(Html.Encode(objNavLink.Text1) & " ")
 						sLinkText.Append(Html.Encode(objNavLink.Text2.Trim()))
 						sText = sLinkText.ToString()
+						
+						If sLinkText.Length > 30 Then
+							sText = sLinkText.ToString().Substring(0, 30) + "..."
+						End If
 		
 						If objNavLink.LinkToFind = 0 Then
 							sDestination = "linksMain?" & CStr(objNavLink.TableID) & "!" & CStr(objNavLink.ViewID)
@@ -370,6 +380,10 @@
 		
 		iSeparatorNum += 1
 		
+		If navlink.Text.Length > 30 Then
+			navlink.Text = navlink.Text.Substring(0, 30)
+		End If
+		
 		If navlink.Text.Length > 0 And navlink.Element_Type = 1 Then
 			sText = Html.Encode(navlink.Text)
 			sText = sText.Replace("--", "")
@@ -413,8 +427,11 @@
 								ElseIf navlink.UtilityType = 25 Then
 									sIconClass = "icon-magic"
 								End If
-						%>
-
+						
+								If navlink.Text.Length > 30 Then
+									navlink.Text = navlink.Text.Substring(0, 30) + "..."
+								End If
+								%>
 						<li data-col="<%=iColNum %>" data-row="<%=iRowNum %>" data-sizex="1" data-sizey="1" class="linkspagebuttontext <%=sTileColourClass%>" onclick="<%=sOnclick%>">
 							<a class="linkspagebutton-displaytype linkspagebuttontext-alignment linkspagebutton-colourtheme" href="#"><span class="linkspageprompttext-font linkspageprompttext-colour linkspageprompttext-size linkspageprompttext-bold linkspageprompttext-italics"><%: navlink.Prompt.Replace("...", "") & " "%></span>
 								<span class="linkspagebuttontext-font linkspagebuttontext-colour linkspagebuttontext-size linkspagebuttontext-bold linkspagebuttontext-italics"><%: navlink.Text %></span><img src="<%: Url.Content("~/Content/images/extlink2.png") %>" alt="" /></a>
@@ -815,7 +832,13 @@
 							</div>
 							<a href="#">
 								<p class="DBValueCaption" style="color: <%=sCFForeColor%>; <%=sCFFontBold%>; <%=sCFFontItalic%>">
-									<%: navlink.Text %>
+									<%sText = navlink.Text
+										If sText.Length > 30 Then
+											sText = sText.Substring(0, 30) + "..."
+										End If
+									sText = sText.Replace("--", "")
+									sText = sText.Replace("'", """")%>
+									<%: sText %>
 								</p>
 							</a>
 						</li>
@@ -834,7 +857,13 @@
 							</div>
 							<a href="#">
 								<p class="DBValueCaption">
-									<%: navlink.Text %>
+									<%sText = navlink.Text
+										If sText.Length > 30 Then
+											sText = sText.Substring(0, 30) + "..."
+										End If
+										sText = sText.Replace("--", "")
+										sText = sText.Replace("'", """")%>
+									<%: sText%>
 								</p>
 							</a>
 						</li>
@@ -1016,6 +1045,10 @@
 				If objNavLink.Text1.Trim().Length > 0 Then sLinkText.Append(Html.Encode(objNavLink.Text1) & " ")
 				sLinkText.Append(Html.Encode(objNavLink.Text2.Trim()))
 				sText = sLinkText.ToString()
+						
+				If sLinkText.Length > 30 Then
+					sText = sLinkText.ToString().Substring(0, 30) + "..."
+				End If
 
 		
 				If objNavLink.LinkToFind = 0 Then
@@ -1169,7 +1202,12 @@
 						</p>
 						<p>
 							<a href="#" data-ddlvalue="<%=sValue%>">
-								<%: navlink.Text %></a>
+								<%If navlink.Text.Length > 30 Then
+										navlink.Text = navlink.Text.Substring(0, 30) + "..."
+									End If
+									%>
+								<%: navlink.Text %>
+							</a>
 						</p>
 					</li>
 					<%iRowNum += 1
@@ -1181,8 +1219,13 @@
 						Dim sLinkText As New StringBuilder
 						If objNavLink.Text1.Trim().Length > 0 Then sLinkText.Append(Html.Encode(objNavLink.Text1) & " ")
 						sLinkText.Append(Html.Encode(objNavLink.Text2.Trim()))
+						
 						sText = sLinkText.ToString()
-
+						
+						If sLinkText.Length > 30 Then
+							sText = sLinkText.ToString().Substring(0, 30) + "..."
+						End If
+						
 						Dim sValue As String = ""
 
 		
@@ -1395,6 +1438,16 @@
 					$(this).find('span').css({ "font-size": newFontSize, "line-height": newFontSize / 1.2 + "px" });
 				}
 			});
+			
+			//Limit number of characters in a tile to 30 when in Tiles mode
+			//$('.DBValueCaption').each(function () {
+			//	alert($(this).value);
+			//	if( $(this).length > 30) {
+			//		var output = $(this).substring(0, 30);
+			//		var ellipse = "...";
+			//		$(this)["text html"] = concat(output, ellipse);
+			//	}
+			//});
 
 		} else {
 			// for wireframe layout, convert the dropdownlinks to a <select> element
