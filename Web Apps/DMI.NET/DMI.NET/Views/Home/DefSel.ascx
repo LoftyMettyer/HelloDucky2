@@ -859,12 +859,12 @@ Session("fromMenu") = 0
 			strKeyPrefix = "WORKFLOW"
 				
 	End Select
-
-	fNewGranted = objSession.IsPermissionGranted(strKeyPrefix & "_NEW")
-	fEditGranted = objSession.IsPermissionGranted(strKeyPrefix & "_EDIT")
-	fDeleteGranted = objSession.IsPermissionGranted(strKeyPrefix & "_DELETE")
-	fRunGranted = objSession.IsPermissionGranted(strKeyPrefix & "_RUN")
-	fViewGranted = objSession.IsPermissionGranted(strKeyPrefix & "_VIEW")
+	
+	fNewGranted = objSession.IsPermissionGranted(strKeyPrefix, "NEW")
+	fEditGranted = objSession.IsPermissionGranted(strKeyPrefix, "EDIT")
+	fDeleteGranted = objSession.IsPermissionGranted(strKeyPrefix, "DELETE")
+	fRunGranted = objSession.IsPermissionGranted(strKeyPrefix, "RUN")
+	fViewGranted = objSession.IsPermissionGranted(strKeyPrefix, "_VIEW")
 	
 	Response.Write("<input type=hidden id=""grantnew"" name=""grantnew"" value = " & IIf(fNewGranted, 1, 0) & ">" & vbCrLf)
 	Response.Write("<input type=hidden id=""grantedit"" name=""grantedit"" value = " & IIf(fEditGranted, 1, 0) & ">" & vbCrLf)

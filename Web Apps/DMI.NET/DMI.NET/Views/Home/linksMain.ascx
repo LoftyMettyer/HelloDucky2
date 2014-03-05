@@ -1265,7 +1265,10 @@
 		Response.Write("<INPUT type=""hidden"" id=txtDefaultStartPage name=txtDefaultStartPage value=""" & Replace(Session("DefaultStartPage"), """", "&quot;") & """>")
 		Response.Write("<INPUT type=""hidden"" id=txtDatabase name=txtDatabase value=""" & Replace(Session("Database"), """", "&quot;") & """>")
 	%>
-	<input type="hidden" id="txtUserType" name="txtUserType" value='<%=session("userType")%>'>
+
+	<input type="hidden" id="txtIsDMIUser" name="txtIsDMIUser" value=<%= objSession.LoginInfo.IsDMIUser%>>
+	<input type="hidden" id="txtIsDMISingle" name="txtIsDMISingle" value=<%= objSession.LoginInfo.IsDMISingle%>>
+	<input type="hidden" id="txtIsSSIUser" name="txtIsSSIUser" value='<%= objSession.LoginInfo.IsSSIUser%>'>
 
 	<input type="hidden" id="txtPersonnel_EmpTableID" name="txtPersonnel_EmpTableID" value='<%=session("Personnel_EmpTableID")%>'>
 

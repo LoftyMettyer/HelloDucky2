@@ -90,7 +90,7 @@
 
                     <tr>
                         <td colspan="3" align="center">
-                            <h3>OpenHR Login</h3>
+                            <h3>You could not login to the OpenHR database because of the following reason: </h3>
                         </td>
                     </tr>
 

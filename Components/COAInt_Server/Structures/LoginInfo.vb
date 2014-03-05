@@ -13,27 +13,16 @@ Namespace Structures
 		Public InvalidPasswordAttempts As Integer
 		Public LockedOut As Boolean
 		Public LockoutTime As Date
+		Public MustChangePassword As Boolean
 
-		Public UserType As Integer
-		Public SelfServiceUserType As Integer
 		Public UserGroup As String
 		Public LoginFailReason As String = ""
+
+		Public IsServerRole As Boolean = False
 		Public IsSystemOrSecurityAdmin As Boolean = False
-
-		'Public ReadOnly Property OldConnectionString() As String
-		'	Get
-
-
-		'	End Get
-		'End Property
-
-		'Public ReadOnly Property OldConnectionString() As String
-		'	Get
-
-
-		'	End Get
-		'End Property
-
+		Public IsDMIUser As Boolean = False
+		Public IsDMISingle As Boolean = False
+		Public IsSSIUser As Boolean = False
 
 	End Class
 End Namespace

@@ -94,7 +94,6 @@
     <Build Include="Stored Procedures\Web\sp_ASRIntCancelCourse.sql" />
     <Build Include="Stored Procedures\Web\sp_ASRIntCancelCoursePart2.sql" />
     <Build Include="Stored Procedures\Web\sp_ASRIntCheckCanMakeHidden.sql" />
-    <Build Include="Stored Procedures\Web\sp_ASRIntCheckLogin.sql" />
     <Build Include="Stored Procedures\Web\sp_ASRIntCheckPolls.sql" />
     <Build Include="Stored Procedures\Web\sp_ASRIntDefProperties.sql" />
     <Build Include="Stored Procedures\Web\sp_ASRIntDefUsage.sql" />
@@ -584,7 +583,6 @@
     <Build Include="User Defined Functions\udfsys_wholemonthsbetweentwodates.sql" />
     <Build Include="User Defined Functions\udfsys_wholeyearsbetweentwodates.sql" />
     <Build Include="User Defined Functions\udfsys_workingdaysbetweentwodates.sql" />
-    <Build Include="Stored Procedures\Web\spASRIntGetUserGroup.sql" />
     <Build Include="Stored Procedures\Workflow\spASRActionActiveWorkflowSteps.sql" />
     <Build Include="Stored Procedures\System Manager\spsys_setsystemsetting.sql" />
     <Build Include="Stored Procedures\System Manager\spsys_getmodulesetting.sql" />
@@ -644,6 +642,8 @@
     <Build Include="Stored Procedures\Auto Generated\spASRIntCheckPendingWorkflowSteps.sql" />
     <Build Include="Stored Procedures\Auto Generated\spASRIntGetCancelCourseDate.sql" />
     <Build Include="Stored Procedures\Web\spASRIntGetLookupTables.sql" />
+    <Build Include="Stored Procedures\Auto Generated\sp_ASRLockCheck.sql" />
+    <Build Include="Stored Procedures\Web\spASRIntGetLoginDetails.sql" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Stored Procedures\Other\sp_ASR_Bradford_CalculateDurations.sql" />

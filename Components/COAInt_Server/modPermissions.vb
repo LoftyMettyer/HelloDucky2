@@ -188,16 +188,6 @@ Module modPermissions
 		fSysSecManager = CBool(objSecurityRow("IsSysSecMgr"))
 
 
-		' Populate our system settings
-		Permissions = New Collection(Of Permission)
-		For Each objRow As DataRow In dsPermissions.Tables(SecurityPermissions).Rows
-			Dim objPermissionItem = New Permission
-			objPermissionItem.Key = objRow("key").ToString()
-			objPermissionItem.IsPermitted = CBool(objRow("permitted"))
-			Permissions.Add(objPermissionItem)
-		Next
-
-
 		' Initialise the collection with items for each TABLE in the system.
 		For Each objTable In Tables
 			objItem = New TablePrivilege()

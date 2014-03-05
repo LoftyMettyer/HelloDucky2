@@ -1,12 +1,11 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
 <%@ Import Namespace="DMI.NET" %>
-<%@ Import Namespace="System.Collections.ObjectModel" %>
 <%@ Import Namespace="HR.Intranet.Server" %>
 <%@ Import Namespace="HR.Intranet.Server.Structures" %>
 
 <%
 	On Error Resume Next
-
+	
 	Dim sErrorDescription As String
 	Dim avPrimaryMenuInfo As List(Of MenuInfo)
 	Dim avQuickEntryMenuInfo As List(Of MenuInfo)
@@ -17,12 +16,12 @@
 	Dim sToolCaption As String
 	Dim sToolID As String
 	
-	Dim objSession As SessionInfo = CType(Session("sessionContext"), SessionInfo)
+	Dim objSessionContext As SessionInfo = CType(Session("sessionContext"), SessionInfo)
 
 	sErrorDescription = ""
 	
 	objMenu = New HR.Intranet.Server.Menu()
-	objMenu.SessionInfo = objSession
+	objMenu.SessionInfo = objSessionContext
 		
 	Response.Write(vbCrLf & "<script type=""text/javascript"">" & vbCrLf)
 
@@ -30,71 +29,72 @@
 	' Create the sub-routine to populate the database menu with the tables available
 	' to the current user.
 	' ------------------------------------------------------------------------------
-
-	
 	Response.Write("function refreshDatabaseMenu() {" & vbCrLf)
-	Response.Write("  var objFileTool;" & vbCrLf)
-	Response.Write("  var sLastToolName;" & vbCrLf)
-	Response.Write("  var lngLastScreenID;" & vbCrLf & vbCrLf)
-	Response.Write("  var frmMenuInfo = document.getElementById('frmMenuInfo');" & vbCrLf)
-	Response.Write("  if (frmMenuInfo.txtDoneDatabaseMenu.value == 1) {" & vbCrLf)
-	Response.Write("    return;" & vbCrLf)
-	Response.Write("  }" & vbCrLf & vbCrLf)
-	Response.Write("  frmMenuInfo.txtDoneDatabaseMenu.value = 1;" & vbCrLf & vbCrLf)
+	If objSessionContext.LoginInfo.IsDMIUser Or objSessionContext.LoginInfo.IsDMISingle Then
+
+		Response.Write("  var objFileTool;" & vbCrLf)
+		Response.Write("  var sLastToolName;" & vbCrLf)
+		Response.Write("  var lngLastScreenID;" & vbCrLf & vbCrLf)
+		Response.Write("  var frmMenuInfo = document.getElementById('frmMenuInfo');" & vbCrLf)
+		Response.Write("  if (frmMenuInfo.txtDoneDatabaseMenu.value == 1) {" & vbCrLf)
+		Response.Write("    return;" & vbCrLf)
+		Response.Write("  }" & vbCrLf & vbCrLf)
+		Response.Write("  frmMenuInfo.txtDoneDatabaseMenu.value = 1;" & vbCrLf & vbCrLf)
 	
-	If Session("avPrimaryMenuInfo") Is Nothing Then
-		avPrimaryMenuInfo = objMenu.GetPrimaryTableMenu
-		Session("avPrimaryMenuInfo") = avPrimaryMenuInfo
-	Else
-		avPrimaryMenuInfo = Session("avPrimaryMenuInfo")
-	End If
-	
-	For Each objMenuItem In avPrimaryMenuInfo
-		
-		If objMenuItem.TableScreenID > 0 Then
-			' The user has 'read' permission on the table, and no views on the table.
-			' There is only one screen defined for the table.
-				
-			' Add a menu option to call up the primary table screen.
-			' new method to insert a new menu item.
-			Response.Write("  menu_insertMenuItem('mnubandDatabase', '" & CleanStringForJavaScript(Replace(objMenuItem.TableName, "_", " ")) & "..." & "', 'PT_" & objMenuItem.TableID & "_0_" & objMenuItem.TableScreenID & "');" & vbCrLf)
-		ElseIf objMenuItem.ViewID > 0 Then
-			' The user does NOT have 'read' permission on the table, but does have
-			' 'read' permission on one view of the table.
-			' There is only one screen defined for the view.
-			' new method to insert a new menu item.
-			Response.Write("  menu_insertMenuItem('mnubandDatabase', '" & CleanStringForJavaScript(Replace(objMenuItem.TableName, "_", " ")) & " (" & CleanStringForJavaScript(Replace(objMenuItem.ViewName, "_", " ")) & " view)..." & "', 'PV_" & objMenuItem.TableID & "_" & objMenuItem.ViewID & "_" & objMenuItem.ViewScreenID & "');" & vbCrLf)
-		ElseIf (objMenuItem.ViewScreenCount > 0) Or ((objMenuItem.TableReadable = True) And (objMenuItem.TableScreenCount > 0)) Then
-			' The user has 'read' permission on the table, and the table has more than one screen defined for it.
-			' Or there are views on the table.
-			'Instantiate the submenu heading tool and set properties
-
-			' new method to insert a new submenu item.
-			Response.Write("  menu_insertSubMenuItem('mnubandDatabase', '" & CleanStringForJavaScript(Replace(objMenuItem.TableName, "_", " ")) & "', 'PS_" & objMenuItem.TableID & "', 'mnusubband_" & CleanStringForJavaScript(objMenuItem.TableName) & "');" & vbCrLf & vbCrLf)
-			
-			' Add the submenu.			
-			Response.Write("  lngLastScreenID = 0;" & vbCrLf)
-			Response.Write("  sLastToolName = """";" & vbCrLf)
-			
-			For Each objSubMenu In objMenuItem.SubItems
-						
-				If objSubMenu.ViewID > 0 Then
-					sToolID = "PV_" & objMenuItem.TableID & "_" & objSubMenu.ViewID & "_" & objSubMenu.TableScreenID
-					sToolCaption = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" & CleanStringForJavaScript(Replace(objSubMenu.ViewName, "_", " ")) & " view..."
-				Else
-					sToolID = "PT_" & objMenuItem.TableID & "_0_" & objSubMenu.TableScreenID
-					sToolCaption = CleanStringForJavaScript(Replace(objSubMenu.ScreenName, "_", " ")) & "..."
-				End If
-
-				Response.Write("  lngLastScreenID = " & objSubMenu.TableScreenID & ";" & vbCrLf)
-				Response.Write("	sLastToolName = '" & sToolID & "'" & vbCrLf)
-
-				' new method to insert a new menu item.
-				Response.Write("  menu_insertMenuItem('mnusubband_" & CleanStringForJavaScript(objMenuItem.TableName) & "', '" & sToolCaption & "', '" & sToolID & "','someClass');" & vbCrLf & vbCrLf)
-			Next
+		If Session("avPrimaryMenuInfo") Is Nothing Then
+			avPrimaryMenuInfo = objMenu.GetPrimaryTableMenu
+			Session("avPrimaryMenuInfo") = avPrimaryMenuInfo
+		Else
+			avPrimaryMenuInfo = Session("avPrimaryMenuInfo")
 		End If
-	Next
 	
+		For Each objMenuItem In avPrimaryMenuInfo
+		
+			If objMenuItem.TableScreenID > 0 Then
+				' The user has 'read' permission on the table, and no views on the table.
+				' There is only one screen defined for the table.
+				
+				' Add a menu option to call up the primary table screen.
+				' new method to insert a new menu item.
+				Response.Write("  menu_insertMenuItem('mnubandDatabase', '" & CleanStringForJavaScript(Replace(objMenuItem.TableName, "_", " ")) & "..." & "', 'PT_" & objMenuItem.TableID & "_0_" & objMenuItem.TableScreenID & "');" & vbCrLf)
+			ElseIf objMenuItem.ViewID > 0 Then
+				' The user does NOT have 'read' permission on the table, but does have
+				' 'read' permission on one view of the table.
+				' There is only one screen defined for the view.
+				' new method to insert a new menu item.
+				Response.Write("  menu_insertMenuItem('mnubandDatabase', '" & CleanStringForJavaScript(Replace(objMenuItem.TableName, "_", " ")) & " (" & CleanStringForJavaScript(Replace(objMenuItem.ViewName, "_", " ")) & " view)..." & "', 'PV_" & objMenuItem.TableID & "_" & objMenuItem.ViewID & "_" & objMenuItem.ViewScreenID & "');" & vbCrLf)
+			ElseIf (objMenuItem.ViewScreenCount > 0) Or ((objMenuItem.TableReadable = True) And (objMenuItem.TableScreenCount > 0)) Then
+				' The user has 'read' permission on the table, and the table has more than one screen defined for it.
+				' Or there are views on the table.
+				'Instantiate the submenu heading tool and set properties
+
+				' new method to insert a new submenu item.
+				Response.Write("  menu_insertSubMenuItem('mnubandDatabase', '" & CleanStringForJavaScript(Replace(objMenuItem.TableName, "_", " ")) & "', 'PS_" & objMenuItem.TableID & "', 'mnusubband_" & CleanStringForJavaScript(objMenuItem.TableName) & "');" & vbCrLf & vbCrLf)
+			
+				' Add the submenu.			
+				Response.Write("  lngLastScreenID = 0;" & vbCrLf)
+				Response.Write("  sLastToolName = """";" & vbCrLf)
+			
+				For Each objSubMenu In objMenuItem.SubItems
+						
+					If objSubMenu.ViewID > 0 Then
+						sToolID = "PV_" & objMenuItem.TableID & "_" & objSubMenu.ViewID & "_" & objSubMenu.TableScreenID
+						sToolCaption = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" & CleanStringForJavaScript(Replace(objSubMenu.ViewName, "_", " ")) & " view..."
+					Else
+						sToolID = "PT_" & objMenuItem.TableID & "_0_" & objSubMenu.TableScreenID
+						sToolCaption = CleanStringForJavaScript(Replace(objSubMenu.ScreenName, "_", " ")) & "..."
+					End If
+
+					Response.Write("  lngLastScreenID = " & objSubMenu.TableScreenID & ";" & vbCrLf)
+					Response.Write("	sLastToolName = '" & sToolID & "'" & vbCrLf)
+
+					' new method to insert a new menu item.
+					Response.Write("  menu_insertMenuItem('mnusubband_" & CleanStringForJavaScript(objMenuItem.TableName) & "', '" & sToolCaption & "', '" & sToolID & "','someClass');" & vbCrLf & vbCrLf)
+				Next
+			End If
+		Next
+	
+	End If
 	Response.Write("}" & vbCrLf & vbCrLf)
 	
 	
@@ -115,7 +115,7 @@
 	End If
 	
 	For Each objMenuItem In avQuickEntryMenuInfo
-		Response.Write("  menu_insertMenuItem('mnubandQuickEntry', '" & CleanStringForJavaScript(Replace(objMenuItem.TableName, "_", " ")) & "..." & "', 'QE_" & CleanStringForJavaScript(objMenuItem.TableID) & "_0_" & CleanStringForJavaScript(objMenuItem.TableScreenID) & "');" & vbCrLf)		
+		Response.Write("  menu_insertMenuItem('mnubandQuickEntry', '" & CleanStringForJavaScript(Replace(objMenuItem.TableName, "_", " ")) & "..." & "', 'QE_" & CleanStringForJavaScript(objMenuItem.TableID) & "_0_" & CleanStringForJavaScript(objMenuItem.TableScreenID) & "');" & vbCrLf)
 	Next
 	
 	Response.Write("  if (lngQuickEntryCount == 0) {" & vbCrLf)
@@ -286,23 +286,25 @@
 	Dim iFiltersGranted As Integer = 0
 	Dim iPicklistsGranted As Integer = 0
 	Dim iNewUserGranted As Integer = 0
+	Dim sKey As String
 		
-	For Each objPermission In objSession.Permissions
+	For Each objPermission In objSessionContext.Permissions
 
-		Response.Write("<input type='hidden' id=txtSysPerm_" & Replace(objPermission.Key, " ", "_") & " name=txtSysPerm_" & Replace(objPermission.Key, " ", "_") & " value=""" & IIf(objPermission.IsPermitted, "1", "0") & """>" & vbCrLf)
-		If Left(objPermission.Key, 13) = "CUSTOMREPORTS" And objPermission.IsPermitted Then iCustomReportsGranted = 1
-		If Left(objPermission.Key, 9) = "CROSSTABS" And objPermission.IsPermitted Then iCrossTabsGranted = 1
-		If Left(objPermission.Key, 15) = "CALENDARREPORTS" And objPermission.IsPermitted Then iCalendarReportsGranted = 1
-		If Left(objPermission.Key, 9) = "MAILMERGE" And objPermission.IsPermitted Then iMailMergeGranted = 1
-		If objPermission.Key = "WORKFLOW_RUN" And objPermission.IsPermitted Then iWorkflowGranted = 1
-		If Left(objPermission.Key, 12) = "CALCULATIONS" And objPermission.IsPermitted Then iCalculationsGranted = 1
-		If Left(objPermission.Key, 7) = "FILTERS" And objPermission.IsPermitted Then iFiltersGranted = 1
-		If Left(objPermission.Key, 9) = "PICKLISTS" And objPermission.IsPermitted Then iPicklistsGranted = 1
-		If (objPermission.Key = "MODULEACCESS_SYSTEMMANAGER" Or objPermission.Key = "MODULEACCESS_SECURITYMANAGER") And objPermission.IsPermitted Then iNewUserGranted = 1
+		sKey = String.Format("txtSysPerm_{0}_{1}", objPermission.CategoryKey, objPermission.Key)
+		Response.Write("<input type='hidden' id=" & sKey & " name=" & sKey & " value=""" & IIf(objPermission.IsPermitted, "1", "0") & """>" & vbCrLf)
+		If Left(objPermission.CategoryKey, 13) = "CUSTOMREPORTS" And objPermission.IsPermitted Then iCustomReportsGranted = 1
+		If Left(objPermission.CategoryKey, 9) = "CROSSTABS" And objPermission.IsPermitted Then iCrossTabsGranted = 1
+		If Left(objPermission.CategoryKey, 15) = "CALENDARREPORTS" And objPermission.IsPermitted Then iCalendarReportsGranted = 1
+		If Left(objPermission.CategoryKey, 9) = "MAILMERGE" And objPermission.IsPermitted Then iMailMergeGranted = 1
+		If objPermission.CategoryKey = "WORKFLOW_RUN" And objPermission.IsPermitted Then iWorkflowGranted = 1
+		If Left(objPermission.CategoryKey, 12) = "CALCULATIONS" And objPermission.IsPermitted Then iCalculationsGranted = 1
+		If Left(objPermission.CategoryKey, 7) = "FILTERS" And objPermission.IsPermitted Then iFiltersGranted = 1
+		If Left(objPermission.CategoryKey, 9) = "PICKLISTS" And objPermission.IsPermitted Then iPicklistsGranted = 1
+		If objSessionContext.LoginInfo.IsSystemOrSecurityAdmin Then iNewUserGranted = 1
 			
 	Next
 	
-	Dim bAbsenceEnabled = objSession.IsModuleEnabled("ABSENCE")
+	Dim bAbsenceEnabled = objSessionContext.IsModuleEnabled("ABSENCE")
 
 	Response.Write("<input type='hidden' id=txtAbsenceEnabled name=txtAbsenceEnabled value=" & IIf(bAbsenceEnabled, "1", "0") & ">")
 	Response.Write("<input type='hidden' id=txtCustomReportsGranted name=txtCustomReportsGranted value=" & iCustomReportsGranted & ">")
@@ -452,7 +454,9 @@
 	Response.Write("<INPUT type=""hidden"" id=txtDefaultStartPage name=txtDefaultStartPage value=""" & Replace(Session("DefaultStartPage"), """", "&quot;") & """>")
 	Response.Write("<INPUT type=""hidden"" id=txtDatabase name=txtDatabase value=""" & Replace(Session("Database"), """", "&quot;") & """>")
 %>
-	<input type="hidden" id="txtUserType" name="txtUserType" value='<%=session("userType")%>'>
+	<input type="hidden" id="txtIsDMIUser" name="txtIsDMIUser" value=<%= objSessionContext.LoginInfo.IsDMIUser%>>
+	<input type="hidden" id="txtIsDMISingle" name="txtIsDMISingle" value=<%= objSessionContext.LoginInfo.IsDMISingle%>>
+	<input type="hidden" id="txtIsSSIUser" name="txtIsSSIUser" value='<%= IIf(objSessionContext.LoginInfo.IsSSIUser, "1", "0")%>'>
 
 	<input type="hidden" id="txtPersonnel_EmpTableID" name="txtPersonnel_EmpTableID" value='<%=session("Personnel_EmpTableID")%>'>
 

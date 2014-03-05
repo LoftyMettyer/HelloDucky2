@@ -175,9 +175,10 @@ function find_window_onload() {
 				//setGridFont(frmFindForm.ssOleDBGridFindRecords);
 
 				var frmMenuInfo = document.getElementById("frmMenuInfo");
+				var isDMISingle = ($("#txtIsDMISingle")[0].value == "True");
 
 				if ($("#workframe").length == 0) { //only check if not in SSI mode.
-					if ((frmMenuInfo.txtUserType.value == 1) &&
+					if (isDMISingle &&
 							(frmMenuInfo.txtPersonnel_EmpTableID.value == frmFindForm.txtCurrentTableID.value) &&
 							(frmFindForm.txtRecordCount.value > 1)) {
 

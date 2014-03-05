@@ -510,11 +510,11 @@ LocalErr:
 
 	Public Function SendEmail(strAttachment As String) As Boolean
 
-		If Not Permissions.GetByKey("EMAILGROUPS_VIEW") Then
-			mstrErrorMessage = "You do not have permission to use email groups."
-			SendEmail = False
-			Exit Function
-		End If
+		'If Not Permissions.GetByKey("EMAILGROUPS_VIEW") Then
+		'	mstrErrorMessage = "You do not have permission to use email groups."
+		'	SendEmail = False
+		'	Exit Function
+		'End If
 
 		If Trim(Replace(mstrEmailAddresses, ";", "")) = vbNullString Then
 			mstrErrorMessage = "Error sending email (invalid email address)"

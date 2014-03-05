@@ -2,7 +2,9 @@
 <%@ Import Namespace="HR.Intranet.Server" %>
 
 <%
+	Dim objSessionContext = CType(Session("sessionContext"), SessionInfo)
 	Dim objDataAccess As clsDataAccess = CType(Session("DatabaseAccess"), clsDataAccess)
+	
 	If objDataAccess Is Nothing Then Return
 %>
 <script type="text/javascript">
@@ -1088,6 +1090,8 @@
 <script>
 	$(document).ready(function() {
 		menu_setVisibleMenuItem("userDropdownmenu_Layout", menu_isSSIMode()); //Set visibility of Layout menu
+		menu_setVisibleMenuItem("mnutoolFixedSelfService", '<%=objSessionContext.LoginInfo.IsSSIUser%>');
+		menu_setVisibleMenuItem("mnutoolFixedOpenHR", '<%=objSessionContext.LoginInfo.IsDMISingle Or objSessionContext.LoginInfo.IsDMIUser%>');
 
 		$("#userDropdownmenu a").on("click", function ()
 		{

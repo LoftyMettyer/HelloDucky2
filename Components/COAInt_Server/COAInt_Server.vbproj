@@ -143,6 +143,7 @@
     <Compile Include="Extensions\TablePrivilegeExtensions.vb" />
     <Compile Include="Extensions\UserSettingExtensions.vb" />
     <Compile Include="Interfaces\IChart.vb" />
+    <Compile Include="Metadata\DatabaseStatus.vb" />
     <Compile Include="Metadata\Link.vb" />
     <Compile Include="clsNavigationLinks.vb" />
     <Compile Include="clsOutlookLinks.vb" />

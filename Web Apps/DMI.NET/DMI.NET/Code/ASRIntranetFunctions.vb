@@ -337,5 +337,15 @@ Public Module ASRIntranetFunctions
 
 	End Sub
 
+	Public Function CompareVersion(Version1 As Version, Version2 As Version, IgnoreBuild As Boolean) As Boolean
+
+		If Version1.Major = Version2.Major And Version1.Minor = Version2.Minor _
+			And (Version1.Build = Version2.Build Or IgnoreBuild) Then
+			Return True
+		End If
+
+		Return False
+
+	End Function
 
 End Module

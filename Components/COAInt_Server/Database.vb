@@ -31,65 +31,8 @@ Public Class Database
 
 	End Function
 
-	' Return 0 or an error code
-	Public Sub CheckLogin(objLogin As LoginInfo, ApplicationVersion As String)
-
-		'	Dim objDataAccess As clsDataAccess = CType(HttpContext.Current.Session("DatabaseAccess"), clsDataAccess)
-
-		Dim sSQL As String
-
-		Try
-
-			Dim prmSuccessFlag = New SqlParameter("piSuccessFlag", SqlDbType.Int)
-			prmSuccessFlag.Direction = ParameterDirection.Output
-
-			Dim prmErrorMessage = New SqlParameter("psErrorMessage", SqlDbType.VarChar, 255)
-			prmErrorMessage.Direction = ParameterDirection.Output
-
-			' Yes, I know - this parameter is spelt incorrectly (Not my fault). To rectify mean regenerating the stored proc!
-			Dim prmMinPasswordLength = New SqlParameter("piMinPassordLength", SqlDbType.Int)
-			prmMinPasswordLength.Direction = ParameterDirection.Output
-
-			Dim prmIntranetVersion = New SqlParameter("psIntranetAppVersion", SqlDbType.VarChar, 50)
-			prmIntranetVersion.Value = ApplicationVersion
-
-			Dim prmPasswordLength = New SqlParameter("piPasswordLength", SqlDbType.Int)
-			prmPasswordLength.Value = Len(objLogin.Password)
-
-			Dim prmUserType = New SqlParameter("piUserType", SqlDbType.Int)
-			prmUserType.Direction = ParameterDirection.Output
-
-			Dim prmUserGroup = New SqlParameter("psUserGroup", SqlDbType.VarChar, 250)
-			prmUserGroup.Direction = ParameterDirection.Output
-			prmUserGroup.Value = ""
-
-			Dim prmSelfServiceUserType = New SqlParameter("iSelfServiceUserType", SqlDbType.Int)
-			prmSelfServiceUserType.Direction = ParameterDirection.Output
-
-			DB.ExecuteSP("sp_ASRIntCheckLogin", prmSuccessFlag, prmErrorMessage, prmMinPasswordLength, prmIntranetVersion, prmPasswordLength, prmUserType, prmUserGroup, prmSelfServiceUserType)
-
-			objLogin.UserType = CInt(prmUserType.Value)
-			objLogin.SelfServiceUserType = CInt(prmSelfServiceUserType.Value)
-			objLogin.UserGroup = prmUserGroup.Value.ToString()
-			objLogin.LoginFailReason = prmErrorMessage.Value.ToString()
-
-			' Are we system or security manager (merge in with check login when we do license changes?)
-			sSQL = "SELECT count(*) AS [result] FROM ASRSysGroupPermissions INNER JOIN ASRSysPermissionItems ON (ASRSysGroupPermissions.itemID  = ASRSysPermissionItems.itemID" _
-				& " AND (ASRSysPermissionItems.itemKey = 'SYSTEMMANAGER' OR ASRSysPermissionItems.itemKey = 'SECURITYMANAGER'))" _
-				& " INNER JOIN ASRSysPermissionCategories ON (ASRSysPermissionItems.categoryID = ASRSysPermissionCategories.categoryID" _
-				& "   AND ASRSysPermissionCategories.categoryKey = 'MODULEACCESS') WHERE ASRSysGroupPermissions.permitted = 1 AND ASRSysGroupPermissions.groupname = '" _
-				& objLogin.UserGroup & "'"
-			Dim rowPermission = DB.GetDataTable(sSQL).Rows(0)
-
-			objLogin.IsSystemOrSecurityAdmin = (CInt(rowPermission(0)) > 0)
-
-		Catch ex As Exception
-			Throw
-
-		End Try
 
 
-	End Sub
 
 	Public Sub LogOut()
 
@@ -144,7 +87,7 @@ Public Class Database
 
 		End Try
 
-		Return prmResult.value
+		Return prmResult.Value
 
 	End Function
 

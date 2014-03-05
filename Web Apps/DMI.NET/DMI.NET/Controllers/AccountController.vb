@@ -3,6 +3,8 @@ Imports System.Drawing
 Imports DMI.NET.Code
 Imports HR.Intranet.Server
 Imports System.Data.SqlClient
+Imports System.Reflection
+Imports HR.Intranet.Server.Structures
 
 Namespace Controllers
 	Public Class AccountController
@@ -224,95 +226,105 @@ Namespace Controllers
 			' HRPRO-3531
 			Session("MSBrowser") = (Request.Form("txtMSBrowser") = "true")
 
-			Dim objLogin As New HR.Intranet.Server.Structures.LoginInfo
-			Dim objServerSession As New HR.Intranet.Server.SessionInfo
+			Dim objLogin As LoginInfo
+			Dim objServerSession As New SessionInfo
 
-			objLogin.Server = sServerName
-			objLogin.Database = sDatabaseName
-			objLogin.Username = sUserName
-			objLogin.Password = sPassword
-			objLogin.TrustedConnection = bWindowsAuthentication
-
-			objServerSession.Username = sUserName
-			objServerSession.LoginInfo = objLogin
-
-			Dim objDataAccess As New clsDataAccess(objServerSession.LoginInfo)
 			Dim objDatabase As New Database
-
-			objDatabase.SessionInfo = objServerSession
-			Session("DatabaseFunctions") = objDatabase
-			Session("DatabaseAccess") = objDataAccess
+			Dim objDataAccess As clsDataAccess
 
 			Try
-				objDatabase.CheckLogin(objServerSession.LoginInfo, Session("version").ToString())
 
-				objServerSession.Initialise()
+				' Validate the login
+				objLogin = objServerSession.SessionLogin(sUserName, sPassword, sDatabaseName, sServerName, bWindowsAuthentication)
 
-				If objServerSession.LoginInfo.LoginFailReason.Length <> 0 Then
-					Session("ErrorText") = "You could not login to the OpenHR database because of the following reason:<p>" &
+				' Has the password expired? Cannot log in until they've successfully changed it.
+				If objLogin.MustChangePassword Then
+					Return RedirectToAction("ForcedPasswordChange", "Account")
+				End If
+
+				' Generic login fail.
+				If objLogin.LoginFailReason.Length <> 0 Then
+					Session("ErrorText") = FormatError(objServerSession.LoginInfo.LoginFailReason)
+					Return RedirectToAction("Loginerror")
+				End If
+
+				' Database update in progress
+				If objServerSession.DatabaseStatus.IsUpdateInProgress Then
+					Session("ErrorText") = "A database update is in progress."
+					Return RedirectToAction("Loginerror")
+				End If
+
+				' Users that are assigned certain server roles cannot log in (I think its dodgy because we rely too heavily on dbo)
+				If objLogin.IsServerRole Then
+					Session("ErrorText") = "Users assigned to fixed SQL Server roles cannot use OpenHR web."
 					FormatError(objServerSession.LoginInfo.LoginFailReason)
 					Return RedirectToAction("Loginerror")
 				End If
 
+				' Is the DB the correct version
+				Dim objAppVersion As Version = Assembly.GetExecutingAssembly().GetName().Version
+
+				If Not CompareVersion(objServerSession.DatabaseStatus.IntranetVersion, objAppVersion, False) _
+					Or Not CompareVersion(objServerSession.DatabaseStatus.SysMgrVersion, objAppVersion, True) Then
+					Session("ErrorText") = String.Format("The database is out of date.<BR>Please ask the System Administrator to update the database for use with version {0}.{1}.{2}" _
+							, objAppVersion.Major, objAppVersion.MajorRevision, objAppVersion.MinorRevision)
+					Return RedirectToAction("Loginerror")
+				End If
+
+				' Valid login, but do we have any kind of access?
+				If Not objLogin.IsSSIUser And Not objLogin.IsDMIUser And Not objLogin.IsDMISingle Then
+					Session("ErrorText") = "You are not permitted to use OpenHR Web with this user name."
+					Return RedirectToAction("Loginerror")
+				End If
 
 				'Bounce non-IE users who have no SSI access...
-				If Session("MSBrowser") = False And
-					(objServerSession.LoginInfo.SelfServiceUserType = 1 Or objServerSession.LoginInfo.SelfServiceUserType = 2) Then
-					Session("ErrorText") = "You could not login to the OpenHR database because of the following reason:<p>" &
-					"You are not permitted to use the Self-service Intranet module with this user name."
+				If Session("MSBrowser") = False And Not objLogin.IsSSIUser Then
+					Session("ErrorText") = "You are not permitted to use OpenHR Self-service with this user name."
 					Return RedirectToAction("Loginerror")
 				End If
 
-			Catch ex As SqlException
+				' User is allowed into OpenHR, now populate some metadata
+				objDatabase.SessionInfo = objServerSession
+				objServerSession.Initialise()
 
-				' Password has expired / must change
-				If ex.Number = 18487 Or ex.Number = 18488 Then
-					Return RedirectToAction("ForcedPasswordChange", "Account")
-				End If
-
-
-			Catch ex As Exception
-				' These error codes need updating
-				Session("ErrorTitle") = "Login Page"
-				If Err.Number = -2147217900 Then
-					Session("ErrorText") = "Unable to login to the OpenHR database:<p>" &
-					 FormatError(
-						"Please ask the System Administrator to update the database in the System Manager.")
-					Return RedirectToAction("Loginerror")
-				Else
-					Session("ErrorText") = "You could not login to the OpenHR database because of the following reason:<p>" &
-					 FormatError(Err.Description)
-				End If
-				Return RedirectToAction("Loginerror")
-
-			End Try
-
-			Session("sessionContext") = objServerSession
-			Session("Server") = sServerName
-			Session("Database") = sDatabaseName
-			Session("WinAuth") = bWindowsAuthentication
-			Session("userType") = objServerSession.LoginInfo.UserType
-			Session("SelfServiceUserType") = objServerSession.LoginInfo.SelfServiceUserType
-			Session("UserGroup") = objServerSession.LoginInfo.UserGroup
-
-			Try
-
-				' If the users default database is not 'master' then make it so. (Although I don't know why!?!?!)
-				objDataAccess.ExecuteSQL("IF EXISTS(SELECT 1 FROM master..syslogins WHERE loginname = SUSER_NAME() AND dbname <> 'master')" & vbNewLine &
-					"	EXEC sp_defaultdb [" & sUserName & "], master")
+				objDataAccess = New clsDataAccess(objServerSession.LoginInfo)
+				Session("DatabaseFunctions") = objDatabase
+				Session("DatabaseAccess") = objDataAccess
+				Session("sessionContext") = objServerSession
 
 				' Put entry in the audit access log
 				objDataAccess.ExecuteSP("sp_ASRIntAuditAccess" _
 					, New SqlParameter("blnLoggingIn", SqlDbType.Bit) With {.Value = True} _
-					, New SqlParameter("strUsername", SqlDbType.VarChar, 1000) With {.Value = sUserName})
+					, New SqlParameter("strUsername", SqlDbType.VarChar, 1000) With {.Value = objLogin.Username})
+
+				' Get module parameters
+				PopulatePersonnelSessionVariables()
+				PopulateWorkflowSessionVariables()
+				PopulateTrainingBookingSessionVariables()
+
+				' Get parameters for the single record
+				Dim prmTableID = New SqlParameter("piTableID", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
+				Dim prmViewID = New SqlParameter("piViewID", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
+
+				objDataAccess.ExecuteSP("spASRIntGetSingleRecordViewID", prmTableID, prmViewID)
+				Session("SingleRecordTableID") = CInt(prmTableID.Value)
+				Session("SingleRecordViewID") = CInt(prmViewID.Value)
+				Session("SSILinkTableID") = 0
+				Session("SSILinkViewID") = 0
+
 
 			Catch ex As Exception
-
-				Session("ErrorTitle") = "Login Page - Audit Access"
-				Session("ErrorText") = "You could not login to the OpenHR database because of the following reason:<p>" & ex.Message
+				Session("ErrorText") = FormatError(ex.Message)
 				Return RedirectToAction("Loginerror")
 
 			End Try
+
+
+			Session("Server") = sServerName
+			Session("Database") = sDatabaseName
+			Session("WinAuth") = bWindowsAuthentication
+			Session("UserGroup") = objServerSession.LoginInfo.UserGroup
+
 
 
 
@@ -402,19 +414,6 @@ Namespace Controllers
 			End Select
 
 
-			Try
-				PopulatePersonnelSessionVariables()
-				PopulateWorkflowSessionVariables()
-				PopulateTrainingBookingSessionVariables()
-
-			Catch ex As Exception
-				Session("ErrorTitle") = "Login Page"
-				Session("ErrorText") = "You could not login to the OpenHR database because of the following reason:<p>" & FormatError(ex.Message)
-				Return RedirectToAction("Loginerror")
-
-			End Try
-
-
 
 			'MH 07/07/2004: Moved from default.asp so background stuff only gets called on
 			'login and not every time you go back to default.asp (as per request from JPD).
@@ -486,25 +485,6 @@ Namespace Controllers
 			End Select
 
 
-			Try
-
-				Dim prmTableID = New SqlParameter("piTableID", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
-				Dim prmViewID = New SqlParameter("piViewID", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
-
-				objDataAccess.ExecuteSP("spASRIntGetSingleRecordViewID", prmTableID, prmViewID)
-
-				Session("SingleRecordTableID") = CInt(prmTableID.Value)
-				Session("SingleRecordViewID") = CInt(prmViewID.Value)
-				Session("SSILinkTableID") = 0
-				Session("SSILinkViewID") = 0
-
-			Catch ex As Exception
-				Session("ErrorTitle") = "Login Page - Module setup"
-				Session("ErrorText") = "You could not login to the OpenHR database because of the following error :<p>" & FormatError(ex.Message)
-				Return RedirectToAction("Loginerror", "Account")
-
-			End Try
-
 			Dim lngSSIWelcomeColumnID = CLng(objDatabase.GetModuleParameter("MODULE_PERSONNEL", "Param_FieldsSSIWelcome"))
 			If lngSSIWelcomeColumnID <= 0 Then lngSSIWelcomeColumnID = 0
 
@@ -559,72 +539,31 @@ Namespace Controllers
 
 			End Try
 
+			Dim cookie = New HttpCookie("Login")
+			cookie.Expires = DateTime.Now.AddYears(1)
+			cookie.HttpOnly = True
+			cookie("User") = Request.Form("txtUserNameCopy")
+			'dont save or retrieve these anymore HRPRO-3030 / 3031
+			'cookie("Database") = Request.Form("txtDatabase")
+			'cookie("Server") = Request.Form("txtServer")
+			cookie("WindowsAuthentication") = Request.Form("chkWindowsAuthentication")
+			Response.Cookies.Add(cookie)
 
-
-
-
-			Session("EnableSQL2000Functions") = False
-
-			If Session("WinAuth") Then
-				' Do not force password change for Windows Authenticated users.
-				fForcePasswordChange = False
-			End If
-
-			If fForcePasswordChange = True Then
-				' Force password change only if there are no other users logged in with the same name.
-				Dim iUserSessionCount As Integer = ASRFunctions.GetCurrentUsersCountOnServer(Session("Username"))
-
-				If iUserSessionCount < 2 Then
-					Return RedirectToAction("ForcedPasswordChange")
-				Else
-					Return RedirectToAction("Main", "Home")
-				End If
+			If Session("DMIRequiresIE") = "TRUE" And Session("MSBrowser") <> True Then
+				' non-IE browsers don't get DMI access yet.
+				ViewBag.SSIMode = True
 			Else
 
-
-
-				Dim cookie = New HttpCookie("Login")
-				cookie.Expires = DateTime.Now.AddYears(1)
-				cookie.HttpOnly = True
-				cookie("User") = Request.Form("txtUserNameCopy")
-				'dont save or retrieve these anymore HRPRO-3030 / 3031
-				'cookie("Database") = Request.Form("txtDatabase")
-				'cookie("Server") = Request.Form("txtServer")
-				cookie("WindowsAuthentication") = Request.Form("chkWindowsAuthentication")
-				Response.Cookies.Add(cookie)
-
-				If Session("DMIRequiresIE") = "TRUE" And Session("MSBrowser") <> True Then
-					' non-IE browsers don't get DMI access yet.
-					ViewBag.SSIMode = True
+				If objLogin.IsDMIUser Or objLogin.IsDMISingle Then
+					ViewBag.SSIMode = False
 				Else
-					Select Case Session("SelfServiceUserType")
-						Case 1		'IF DMI Multi
-							' Return RedirectToAction("Main", "Home")
-							ViewBag.SSIMode = False
-						Case 2		'IF DMI Single
-							' Return RedirectToAction("Main", "Home")
-							ViewBag.SSIMode = False
-						Case 3		'IF DMI Single And SSI
-							' Return RedirectToAction("LinksMain", "Home")
-							ViewBag.SSIMode = True
-						Case 4		'IF SSI Only
-							' Return RedirectToAction("LinksMain", "Home")
-							ViewBag.SSIMode = True
-						Case 5		'IF DMI Multi AND SSI
-							' Return RedirectToAction("Main", "Home")
-							ViewBag.SSIMode = False
-						Case Else
-							' Return RedirectToAction("login", "account")
-							Session("ErrorTitle") = "Login Page"
-							Session("ErrorText") = "You could not login to the OpenHR database."
-							Return RedirectToAction("Loginerror", "Account")
-					End Select
+					ViewBag.SSIMode = True
 				End If
 
-				' always main.
-				Return RedirectToAction("Main", "Home", New With {.SSIMode = ViewBag.SSIMode})
-
 			End If
+
+			' always main.
+			Return RedirectToAction("Main", "Home", New With {.SSIMode = ViewBag.SSIMode})
 
 		End Function
 

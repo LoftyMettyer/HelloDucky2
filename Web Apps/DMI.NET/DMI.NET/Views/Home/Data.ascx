@@ -253,7 +253,9 @@
 					}
 				}
 
-				if ((frmMenuInfo.txtUserType.value == 1) && 
+				var isDMISingle = ($("#txtIsDMISingle")[0].value == "True");
+				
+				if (isDMISingle &&
 					(frmMenuInfo.txtPersonnel_EmpTableID.value == frmRecEditArea.txtCurrentTableID.value) && 
 					(frmData.txtRecordCount.value > 1)) {
 					

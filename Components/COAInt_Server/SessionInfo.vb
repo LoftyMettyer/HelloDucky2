@@ -1,33 +1,38 @@
 ﻿Imports System.Collections.Generic
 Imports HR.Intranet.Server.Metadata
 Imports HR.Intranet.Server.Structures
+Imports System.Collections.ObjectModel
+Imports System.Data.SqlClient
 
 Public Class SessionInfo
 
 	Private _objLogin As LoginInfo
+	Private _licenseKey As String
 
 	Public ActiveConnections As Integer = 0
+	Public DatabaseStatus As New DatabaseStatus
+	Public Permissions As ICollection(Of Permission)
 
-	Public Property Username() As String
+	Public ReadOnly Property LoginInfo As LoginInfo
 		Get
-			Return gsUsername
-		End Get
-		Set(value As String)
-			gsUsername = value
-		End Set
-	End Property
-
-	Public ReadOnly Property Permissions() As ICollection(Of Permission)
-		Get
-			Return Declarations.Permissions
+			Return _objLogin
 		End Get
 	End Property
 
-	Public Function IsPermissionGranted(ByVal sKey As String) As Boolean
-		Return Declarations.Permissions.GetByKey(sKey)
+	'Public Property Username() As String
+	'	Get
+	'		Return gsUsername
+	'	End Get
+	'	Set(value As String)
+	'		gsUsername = value
+	'	End Set
+	'End Property
+
+	Public Function IsPermissionGranted(Category As String, Key As String) As Boolean
+		Return Permissions.IsPermitted(Category, Key)
 	End Function
 
-	Public Function IsModuleEnabled(ByVal name As String) As Boolean
+	Public Function IsModuleEnabled(name As String) As Boolean
 		Return Modules.GetByKey(name).Enabled
 	End Function
 
@@ -40,7 +45,80 @@ Public Class SessionInfo
 
 	End Function
 
+	Public Function SessionLogin(blahUserName As String, sPassword As String, sDatabaseName As String, sServerName As String, bWindowsAuthentication As Boolean) As LoginInfo
+
+		Dim objRow As DataRow
+
+		_objLogin = New LoginInfo With {
+			.Username = blahUserName,
+			.Password = sPassword,
+			.Database = sDatabaseName,
+			.Server = sServerName,
+			.TrustedConnection = bWindowsAuthentication}
+
+		Try
+
+			Dim objDataAccess As New clsDataAccess(_objLogin)
+			Dim dsLoginData As DataSet = objDataAccess.GetDataSet("spASRIntGetLoginDetails")
+
+			Dim rowDBInfo = dsLoginData.Tables(1).Rows(0)
+			_licenseKey = rowDBInfo("LicenseKey").ToString()
+
+			DatabaseStatus.SysMgrVersion = Version.Parse(rowDBInfo("SysMgrDBVersion").ToString())
+			DatabaseStatus.IntranetVersion = Version.Parse(rowDBInfo("IntDBVersion").ToString())
+			DatabaseStatus.IsUpdateInProgress = CBool(rowDBInfo("UpdateInProgress"))
+			DatabaseStatus.IsLocked = CBool(rowDBInfo("IsLocked"))
+			DatabaseStatus.LockMessage = rowDBInfo("lockmessage").ToString()
+
+			' Populate our system settings
+			Permissions = New Collection(Of Permission)
+			For Each objRow In dsLoginData.Tables(2).Rows
+				Dim objPermissionItem = New Permission
+				objPermissionItem.CategoryKey = objRow("categorykey").ToString()
+				objPermissionItem.Key = objRow("itemkey").ToString()
+				objPermissionItem.IsPermitted = CBool(objRow("permitted"))
+				Permissions.Add(objPermissionItem)
+			Next
+
+			_objLogin.IsDMIUser = Permissions.IsPermitted("MODULEACCESS", "INTRANET")
+			_objLogin.IsDMISingle = Permissions.IsPermitted("MODULEACCESS", "INTRANET_SELFSERVICE")
+			_objLogin.IsSSIUser = Permissions.IsPermitted("MODULEACCESS", "SSINTRANET")
+			_objLogin.IsSystemOrSecurityAdmin = Permissions.IsPermitted("MODULEACCESS", "SYSTEMMANAGER")
+
+			objRow = dsLoginData.Tables(3).Rows(0)
+			_objLogin.IsServerRole = CBool(objRow("IsServeradmin")) Or CBool(objRow("IsSecurityadmin")) Or CBool(objRow("IsSysadmin"))
+
+
+		Catch ex As SqlException
+
+			Select Case ex.Number
+
+				' This procedure not found - likely an out of date database
+				Case 2812
+					DatabaseStatus.SysMgrVersion = New Version(0, 0, 0, 0)
+					DatabaseStatus.IntranetVersion = New Version(0, 0, 0, 0)
+
+					' Force Password change
+				Case 18487, 18488
+					_objLogin.MustChangePassword = True
+
+					' Anything else
+				Case Else
+					_objLogin.LoginFailReason = ex.Message
+
+			End Select
+
+		Catch ex As Exception
+			Throw
+
+		End Try
+
+		Return _objLogin
+
+	End Function
+
 	Public Sub Initialise()
+
 		Tables = Nothing
 		gcoTablePrivileges = Nothing
 		gcolColumnPrivilegesCollection = Nothing
@@ -52,18 +130,5 @@ Public Class SessionInfo
 
 		ActiveConnections = 1
 	End Sub
-
-	Public Property LoginInfo() As LoginInfo
-		Get
-			Return _objLogin
-		End Get
-		Set(value As LoginInfo)
-
-			_objLogin = value
-			dataAccess = New clsDataAccess(value)
-
-		End Set
-	End Property
-
 
 End Class

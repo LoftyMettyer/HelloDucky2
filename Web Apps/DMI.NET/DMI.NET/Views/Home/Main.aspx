@@ -54,6 +54,7 @@
 		window.location.href = "<%=Url.Action("Login", "Account")%>";
 	}
 
+
 	$(function () {               
 
 			var SelfServiceUserType = '<%=ViewBag.SSIMode%>';
@@ -101,7 +102,8 @@
 			}
 		});
 
-		$(document).ready(function() {
+	$(document).ready(function () {
+		
 				$("#fixedlinksframe").show();
 				$("#FixedLinksContent").fadeIn("slow");
 

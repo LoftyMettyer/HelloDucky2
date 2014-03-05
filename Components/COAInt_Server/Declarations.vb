@@ -30,6 +30,5 @@ Module Declarations
 
 	Public Modules As List(Of ModuleSetting)
 
-	Public Permissions As ICollection(Of Permission)
 
 End Module
