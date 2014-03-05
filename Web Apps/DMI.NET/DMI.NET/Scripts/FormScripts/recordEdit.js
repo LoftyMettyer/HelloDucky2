@@ -4,12 +4,12 @@
 //array to hold changed photos/oles.
 window.malngChangedOLEPhotos = [];
 
-function addControl(tabNumber, controlDef) {
 
+function addTabControl(tabNumber) {
+	
 	var tabID = "FI_21_" + tabNumber;
 
 	if ($("#" + tabID).length <= 0) {
-		if (tabNumber > 0) {
 			//The control to be added has a tab number, but the tab doesn't yet exist - create it...
 			var tabFontName = $("#txtRecEditFontName").val();
 			var tabFontSize = $("#txtRecEditFontSize ").val();
@@ -22,12 +22,20 @@ function addControl(tabNumber, controlDef) {
 			tabs.append("<div style='position: relative;' id='" + tabID + "'></div>");
 			tabs.tabs("refresh");
 			if (tabNumber == 1) tabs.tabs("option", "active", 0);
-		} else {
-			$("#ctlRecordEdit").append("<div style='position: relative;' id='" + tabID + "'></div>");
-			//$("#ctlRecordEdit").css("background-color", "white");
-			$("#ctlRecordEdit").css("border", "1px solid gray");
-		}
 	}
+}
+
+
+function addControl(tabNumber, controlDef) {
+
+	var tabID = "FI_21_" + tabNumber;
+
+	if (($("#" + tabID).length <= 0) && (tabNumber <= 0)) {
+		$("#ctlRecordEdit").append("<div style='position: relative;' id='" + tabID + "'></div>");
+		//$("#ctlRecordEdit").css("background-color", "white");
+		$("#ctlRecordEdit").css("border", "1px solid gray");
+	}
+
 
 	//add control to tab.
 	try {
@@ -1256,6 +1264,16 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
 					if (controlItemArray[35].length > 0) {
 						$(textbox).mask(controlItemArray[35]); //One less TODO to do!
 					}
+					
+					//Alignment; this is not used by the plugin so we'll add it as a CSS style
+					if (controlItemArray[38] == "0") {
+						$(textbox).css('text-align', 'left');
+					} else if (controlItemArray[38] == "1") {
+						$(textbox).css('text-align', 'right');
+					} else {
+						$(textbox).css('text-align', 'center');
+					}
+
 				}
 
 				if (!fControlEnabled) $(textbox).prop('disabled', true);
@@ -1297,11 +1315,17 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
 		case 256: //Label
 			span = document.createElement('span');
 			applyLocation(span, controlItemArray, false);
-			span.style.backgroundColor = "transparent";
+			//span.style.backgroundColor = "transparent";
+			span.style.backgroundColor = (Number(controlItemArray[9]) !== -2147483633) ? decimalColorToHTMLcolor(controlItemArray[9]) : 'transparent';
 			span.style.fontFamily = controlItemArray[11];
 			span.style.fontSize = controlItemArray[12] + 'pt';
-			span.textContent = controlItemArray[8];
-			if(Number(controlItemArray[10]) !== 0) span.style.color = decimalColorToHTMLcolor(controlItemArray[10]);			//only colour label if not black (0)
+			label = document.createElement('label');
+			span.style.textDecoration = (Number(controlItemArray[15]) != 0) ? "line-through" : "none";
+			if ((Number(controlItemArray[10]) !== 0) || (Number(controlItemArray[9]) !== -2147483633)) span.style.color = decimalColorToHTMLcolor(controlItemArray[10]);			//only colour label if not black (0)
+			label.style.textDecoration = (Number(controlItemArray[16]) != 0) ? "underline" : "none";
+			label.textContent = controlItemArray[8];
+			//span.textContent = controlItemArray[8];
+			span.appendChild(label);
 			span.setAttribute("data-control-key", key);
 
 			//replaces the SetControlLevel function in recordDMI.ocx.
@@ -1313,22 +1337,32 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
 
 			break;
 		case 512: //Frame
+			
 			var fieldset = document.createElement('fieldset');
 			applyLocation(fieldset, controlItemArray, true);
-			fieldset.style.backgroundColor = "transparent";
-			//fieldset.style.color = "Black";
+			fieldset.style.backgroundColor = ((controlItemArray[9] !== '-2147483633') ? decimalColorToHTMLcolor(controlItemArray[9]) : "transparent");
+			//fieldset.style.color = "Black";			
 			fieldset.style.padding = "0px";
-		    if (controlItemArray[8].length > 0) {
-		        var legend = fieldset.appendChild(document.createElement('legend'));
-		        legend.style.fontFamily = controlItemArray[11];
-		        legend.style.fontSize = controlItemArray[12] + 'pt';
-		        legend.style.fontWeight = (Number(controlItemArray[13]) != 0) ? "bold" : "normal";
-		        legend.style.textDecoration = (Number(controlItemArray[16]) != 0) ? "underline" : "none";
-		        legend.appendChild(document.createTextNode(controlItemArray[8].replace('&&', '&')));
-		        legend.className = 'ui-helper-reset';
-			    
-		    }
-		    fieldset.setAttribute("data-control-key", key);
+			if (controlItemArray[8].length > 0) {
+				var legend = fieldset.appendChild(document.createElement('legend'));
+				if (Number(controlItemArray[10]) !== 0) legend.style.color = decimalColorToHTMLcolor(controlItemArray[10]);
+				legend.style.backgroundColor = (Number(controlItemArray[9]) !== -2147483633) ? decimalColorToHTMLcolor(controlItemArray[9]) : 'transparent';
+				legend.style.fontFamily = controlItemArray[11];
+				legend.style.fontSize = controlItemArray[12] + 'pt';
+				legend.style.fontWeight = (Number(controlItemArray[13]) != 0) ? "bold" : "normal";
+				legend.style.textDecoration = (Number(controlItemArray[16]) != 0) ? "underline" : "none";
+				if (Number(controlItemArray[15]) != 0) {
+					span = document.createElement('span');
+					span.style.textDecoration = "line-through";
+					span.appendChild(document.createTextNode(controlItemArray[8].replace('&&', '&')));
+					legend.appendChild(span);
+				} else {
+					legend.appendChild(document.createTextNode(controlItemArray[8].replace('&&', '&')));
+				}				
+				legend.className = 'ui-helper-reset';
+
+			}
+			fieldset.setAttribute("data-control-key", key);
 
 			addControl(iPageNo, fieldset);
 
