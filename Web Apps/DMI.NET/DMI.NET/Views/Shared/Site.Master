@@ -1,7 +1,6 @@
 ﻿<%@ Master Language="VB" Inherits="System.Web.Mvc.ViewMasterPage" %>
 
 <%@ Import Namespace="DMI.NET" %>
-<%@ Import Namespace="DMI.NET.Code" %>
 
 <!DOCTYPE html>
 <html>
@@ -28,6 +27,8 @@
 				currentLayout = "tiles"				
 			End If
 		End If
+		
+		Session("CurrentLayout") = DMIEnums.Layout.winkit
 		
 		%>
 
