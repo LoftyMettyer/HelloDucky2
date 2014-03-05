@@ -2237,7 +2237,7 @@ function getTabCaption(tabNumber) {
 		return false;
 	}
 
-	var tabCaption = arr[tabNumber - 1].replace('&&', '&');
+	var tabCaption = arr[tabNumber - 1].split('&&').join('&');
 
 	return tabCaption;
 
