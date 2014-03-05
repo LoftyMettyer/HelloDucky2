@@ -1,6 +1,7 @@
 ﻿<%@ Master Language="VB" Inherits="System.Web.Mvc.ViewMasterPage" %>
 
 <%@ Import Namespace="DMI.NET" %>
+<%@ Import Namespace="DMI.NET.Code" %>
 
 <!DOCTYPE html>
 <html>
@@ -25,10 +26,10 @@
 			If ua.Contains("iPhone") Or ua.Contains("iPad") Or ua.Contains("Android") Then
 				'currentTheme = "blue"
 				currentLayout = "tiles"				
-				Session("isMobileDevice") = True
 			End If
 		End If
-	%>
+		
+		%>
 
 
 	<%--Here's the stylesheets for the font-icons displayed on the dashboard for wireframe and tile layouts--%>

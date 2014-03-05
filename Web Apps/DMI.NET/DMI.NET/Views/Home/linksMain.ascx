@@ -1329,6 +1329,27 @@
 </div>
 
 <script type="text/javascript">
+
+	function setupTiles() {
+
+		$('.gridster').each(function () {
+			var id = $(this).attr('id');
+			griditup(id, true);
+		});
+
+		//add mousewheel scrollability to the main content window
+		if ('<%=session("isMobileDevice")%>' != "True") {
+		$(".DashContent").mousewheel(function (event, delta) {
+			this.scrollLeft -= (delta * 30);
+			event.preventDefault();
+		});
+	} else {
+		$('.DashContent').css('overflow-x', 'auto');
+	}
+}
+
+
+
 	//Display Pending Workflow Steps if appropriate
 	if (('<%=fWFDisplayPendingSteps%>' == 'True') && (Number('<%=_StepCount%>') > 0)) {		
 		relocateURL('WorkflowPendingSteps', 0);

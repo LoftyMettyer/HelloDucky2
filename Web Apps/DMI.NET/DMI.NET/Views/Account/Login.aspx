@@ -1,6 +1,5 @@
 ﻿<%@ Page Title="" Language="VB" Inherits="System.Web.Mvc.ViewPage" MasterPageFile="~/Views/Shared/Site.Master" %>
 <%@ Import Namespace="DMI.NET" %>
-<%@ import Namespace="System.Web.Configuration" %>
 <%@ Import Namespace="DMI.NET.Code" %>
 
 <script runat="server">
@@ -53,7 +52,9 @@
 	Session("server") = ""
 	
 	Session("showLoginDetails") = Request.QueryString("Details")
-
+	Session("isMobileDevice") = Platform.IsMobileDevice()
+	
+	
 	'TODO
 	' Clear out any session objects.
 	'For Each sessitem in Session.Contents
@@ -168,11 +169,10 @@
 		var sPassword;
 		var sDatabase;
 		var sServer;
-		var fLoginOK;
+		var fLoginOK = true;
 		var sWindowsAuthentication;
 		var frmLoginForm = document.getElementById('frmLoginForm');
 	
-		fLoginOK = true;
 		frmLoginForm.txtUserNameCopy.value = frmLoginForm.txtUserName.value;
 		sUserName = frmLoginForm.txtUserName.value;
 		sUserName = sUserName.toUpperCase();
@@ -181,42 +181,35 @@
 		sServer = frmLoginForm.txtServer.value;
 		sWindowsAuthentication = frmLoginForm.chkWindowsAuthentication.checked;
 
-		if (fLoginOK) {
-			if (sUserName == "") {
-			    //alert("The user name is not valid.");
-			    OpenHR.modalMessage('The user name is not valid', 'OpenHR Web')
-				fLoginOK = false;
-			}
+		if (sUserName == "") {
+			OpenHR.modalMessage('The user name is not valid', 'OpenHR Web');
+			fLoginOK = false;
 		}
 
 		if (fLoginOK) {
 			if (sUserName == "SA") {
-		        OpenHR.modalMessage('The System Administrator cannot use the OpenHR Web module.', 'OpenHR Web')
-				//alert("The System Administrator cannot use the OpenHR Web module.");
+				OpenHR.modalMessage('The System Administrator cannot use the OpenHR Web module.', 'OpenHR Web');
 				fLoginOK = false;
 			}
 		}
 
 		if (fLoginOK) {
 			if (sDatabase == "") {
-		        OpenHR.modalMessage('The database is not valid.', 'OpenHR Web')
-				//alert("The database is not valid.");
+				OpenHR.modalMessage('The database is not valid.', 'OpenHR Web');
 				fLoginOK = false;
 			}
 		}
 
 		if (fLoginOK) {
 			if (sDatabase.indexOf("'") > 0) {
-		        OpenHR.modalMessage('The database name contains an apostrophe.', 'OpenHR Web')
-				//alert("The database name contains an apostrophe.");
+				OpenHR.modalMessage('The database name contains an apostrophe.', 'OpenHR Web');
 				fLoginOK = false;
 			}
 		}
 
 		if (fLoginOK) {
 			if (sServer == "") {
-			    OpenHR.modalMessage('The server is not valid.', 'OpenHR Web')
-			    //alert("The server is not valid.");
+				OpenHR.modalMessage('The server is not valid.', 'OpenHR Web');
 				fLoginOK = false;
 			}
 		}
@@ -441,7 +434,7 @@
 
 							<tr class="">
 								<%
-									If Request.ServerVariables("LOGON_USER") <> "" Then
+									If Platform.IsWindowsSupported() Then
 								%>
 								<td style="font-weight: bold; text-align: left;" colspan="3">
 									<input id="chkWindowsAuthentication" name="chkWindowsAuthentication" type="checkbox" tabindex="0"
@@ -449,12 +442,7 @@
 									<label
 										for="chkWindowsAuthentication"
 										class="checkbox"
-										tabindex="0"
-										onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}"
-										onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}"
-										onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}"
-										onfocus="try{checkboxLabel_onFocus(this);}catch(e){}"
-										onblur="try{checkboxLabel_onBlur(this);}catch(e){}">
+										tabindex="0">
 										Use Windows Authentication
 									</label>
 								</td>
@@ -558,7 +546,6 @@
 	<input type="hidden" id="txtExcelVer" name="txtExcelVer" value="12">
 	<input type="hidden" id="txtMSBrowser" name="txtMSBrowser" value="false" />
 
-
 	<script type="text/javascript">		
 		//Set MS browser flag
 		if ("ActiveXObject" in window) {			
@@ -592,4 +579,5 @@
 
 
 </asp:Content>
+
 

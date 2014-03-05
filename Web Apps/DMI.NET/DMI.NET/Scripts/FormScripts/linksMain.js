@@ -297,26 +297,6 @@ function setDocumentDisplayVisible(newSetting) {
 
 }
 
-function setupTiles() {
-	//apply the gridster functionality.
-	//griditup(true);
-
-	$('.gridster').each(function() {
-		var id = $(this).attr('id');
-		griditup(id, true);
-	});
-			
-	//add mousewheel scrollability to the main content window
-	if ('<%=session("isMobileDevice")%>' != "True") {
-		$(".DashContent").mousewheel(function(event, delta) {
-			this.scrollLeft -= (delta * 30);
-			event.preventDefault();
-		});
-	} else {
-		$('.DashContent').css('overflow-x', 'auto');
-	}
-}
-
 function griditup(objectID, mode) {
 	if (mode == true) {
 		$("#" + objectID + " > ul").gridster({
