@@ -269,11 +269,13 @@ function insertUpdateDef() {
 						if (ConvertData($(objControl).val(), objScreenControl.DataType) == null) {
 							asColumnsToAdd[1] = "''";
 							asColumnsToAdd[3] = "";
-						} else {
-							asColumnsToAdd[1] = "'" + ConvertData($(objControl).val(), objScreenControl.DataType).replace("'", "''") + "'";
+						} else {							
+							//asColumnsToAdd[1] = "'" + ConvertData($(objControl).val(), objScreenControl.DataType).replace("'", "''") + "'";
+							asColumnsToAdd[1] = "'" + ConvertData($(objControl).val(), objScreenControl.DataType).split("'").join("''") + "'";
 							//JPD 20051121 Fault 10583
 							//asColumns(4, iNextIndex) = ConvertData(objControl.Text, mobjScreenControls.Item(sTag).DataType)
-							asColumnsToAdd[3] = ConvertData($(objControl).val(), objScreenControl.DataType).replace("\t", " ");
+							//asColumnsToAdd[3] = ConvertData($(objControl).val(), objScreenControl.DataType).replace("\t", " ");
+							asColumnsToAdd[3] = ConvertData($(objControl).val(), objScreenControl.DataType).split("\t").join(" ");
 						}
 					}
 
@@ -299,10 +301,10 @@ function insertUpdateDef() {
 							asColumnsToAdd[3] = "null";
 						} else {
 							$(objControl).val(CaseConversion($(objControl).val(), objScreenControl.ConvertCase));
-							asColumnsToAdd[1] = "'" + $(objControl).val().replace("'", "''") + "'";
+							asColumnsToAdd[1] = "'" + $(objControl).val().split("'").join("''") + "'";
 							//	JPD 20051121 Fault 10583
 							//	'asColumns(4, iNextIndex) = objControl.Text
-							asColumnsToAdd[3] = $(objControl).val().replace("\t", " ");
+							asColumnsToAdd[3] = $(objControl).val().split("\t").join(" ");
 						}
 					}
 
@@ -315,10 +317,10 @@ function insertUpdateDef() {
 						//TextBox Then
 						//	Character field from an unmasked textbox (CHAR type column). Save the text from the control.
 						$(objControl).val(CaseConversion($(objControl).val(), objScreenControl.ConvertCase));
-						asColumnsToAdd[1] = "'" + $(objControl).val().replace("'", "''") + "'";
+						asColumnsToAdd[1] = "'" + $(objControl).val().split("'").join("''") + "'";
 						//	JPD 20051121 Fault 10583
 						//	asColumns(4, iNextIndex) = objControl.Text
-						asColumnsToAdd[3] = $(objControl).val().replace("\t", " ");
+						asColumnsToAdd[3] = $(objControl).val().split("\t").join(" ");
 					}
 
 					else if ((objScreenControl.ControlType == 64) &&
@@ -349,10 +351,10 @@ function insertUpdateDef() {
 
 							case 12:
 							case -1:
-								asColumnsToAdd[1] = "'" + $(objControl).val().replace("'", "''") + "'";
+								asColumnsToAdd[1] = "'" + $(objControl).val().split("'").join("''") + "'";
 								//	JPD 20051121 Fault 10583
 								//	asColumns(4, iNextIndex) = objControl.Text
-								asColumnsToAdd[3] = $(objControl).val().replace("\t", " ");
+								asColumnsToAdd[3] = $(objControl).val().split("\t").join(" ");
 								break;
 							case 4:
 							case 2:
@@ -362,8 +364,8 @@ function insertUpdateDef() {
 									asColumnsToAdd[1] = ConvertData($(objControl).val(), objScreenControl.DataType);
 									//TODO: remove the next line and fetch value from 'somewhere'...
 									var msLocaleThousandSeparator = ",";
-									asColumnsToAdd[1] = ConvertNumberForSQL(asColumns(2, iNextIndex)).replace(msLocaleThousandSeparator, "");
-									asColumnsToAdd[3] = ConvertNumberForSQL(asColumns(2, iNextIndex)).replace(msLocaleThousandSeparator, "");
+									asColumnsToAdd[1] = ConvertNumberForSQL(asColumns(2, iNextIndex)).split(msLocaleThousandSeparator).join("");
+									asColumnsToAdd[3] = ConvertNumberForSQL(asColumns(2, iNextIndex)).split(msLocaleThousandSeparator).join("");
 								} else {
 									asColumnsToAdd[1] = "null";
 									asColumnsToAdd[3] = "null";
@@ -376,7 +378,7 @@ function insertUpdateDef() {
 									//	'JPD 20051121 Fault 10583
 									//	'asColumns(4, iNextIndex) = Replace(Format(ConvertData(objControl.Text, mobjScreenControls.Item(sTag).DataType), "mm/dd/yyyy"), msLocaleDateSeparator, "/")
 									// asColumns(4, iNextIndex) = Replace(Replace(Format(ConvertData(objControl.Text, mobjScreenControls.Item(sTag).DataType), "mm/dd/yyyy"), msLocaleDateSeparator, "/"), vbTab, " ")
-									asColumnsToAdd[4] = OpenHR.convertLocaleDateToSQL($(objControl).val()).replace("\t", " ");
+									asColumnsToAdd[4] = OpenHR.convertLocaleDateToSQL($(objControl).val()).split("\t").join(" ");
 								} else {
 									asColumnsToAdd[1] = "null";
 									asColumnsToAdd[3] = "null";
@@ -396,11 +398,11 @@ function insertUpdateDef() {
 							asColumnsToAdd[1] = "";
 							asColumnsToAdd[3] = "";
 						} else {
-							asColumnsToAdd[1] = "'" + optionSelected.replace("'", "''") + "'";
+							asColumnsToAdd[1] = "'" + optionSelected.split("'").join("''") + "'";
 							//asColumnsToAdd[1] = "'" + $(objControl).val().replace("'", "''") + "'";
 							//	'JPD 20051121 Fault 10583
 							//	'asColumns(4, iNextIndex) = objControl.Text
-							asColumnsToAdd[3] = optionSelected.replace("\t", " ");
+							asColumnsToAdd[3] = optionSelected.split("\t").join(" ");
 						}
 					}
 
@@ -442,7 +444,7 @@ function insertUpdateDef() {
 							//	'JPD 20051121 Fault 10583
 							//	'asColumns(4, iNextIndex) = Replace(Format(ConvertData(objControl.Text, mobjScreenControls.Item(sTag).DataType), "mm/dd/yyyy"), msLocaleDateSeparator, "/")
 							//	asColumns(4, iNextIndex) = Replace(Replace(Format(ConvertData(objControl.Text, mobjScreenControls.Item(sTag).DataType), "mm/dd/yyyy"), msLocaleDateSeparator, "/"), vbTab, " ")
-							asColumnsToAdd[3] = OpenHR.convertLocaleDateToSQL($(objControl).val()).replace("\t", " ");
+							asColumnsToAdd[3] = OpenHR.convertLocaleDateToSQL($(objControl).val()).split("\t").join(" ");
 						}
 					}
 
@@ -592,7 +594,7 @@ function ConvertData(pvData, pDataType) {
 			case -1:
 			case 12:
 				//sqlVarChar, sqlLongVarChar
-				vReturnData = (pvData).replace(/~+$/, ''); //rtrim function
+				vReturnData = (pvData).split(/~+$/).join(''); //rtrim function
 				if (vReturnData.length == 0) {
 					vReturnData = null;
 				}
@@ -610,7 +612,7 @@ function ConvertData(pvData, pDataType) {
 				if ($.trim(pvData).length == 0) {
 					vReturnData = null;
 				} else {
-					vReturnData = Number(pvData.toString().replace(window.LocaleThousandSeparator, ""));
+					vReturnData = Number(pvData.toString().split(window.LocaleThousandSeparator).join(""));
 				}
 				break;
 			case 4:
@@ -619,7 +621,7 @@ function ConvertData(pvData, pDataType) {
 
 					vReturnData = null;
 				} else {
-					vReturnData = Number(pvData.toString().replace(window.LocaleThousandSeparator, ""));
+					vReturnData = Number(pvData.toString().split(window.LocaleThousandSeparator).join(""));
 				}
 				break;
 
@@ -1150,7 +1152,7 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
 				legend.style.fontFamily = controlItemArray[11];
 				legend.style.fontSize = controlItemArray[12] + 'pt';
 				legend.style.fontWeight = (Number(controlItemArray[13]) != 0) ? "bold" : "normal";
-				legend.appendChild(document.createTextNode(controlItemArray[8].replace('&&', '&')));
+				legend.appendChild(document.createTextNode(controlItemArray[8].split('&&').join('&')));
 			}
 
 			if (!fControlEnabled) $(fieldset).prop('disabled', true);
@@ -1354,10 +1356,10 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
 				if (Number(controlItemArray[15]) != 0) {
 					span = document.createElement('span');
 					span.style.textDecoration = "line-through";
-					span.appendChild(document.createTextNode(controlItemArray[8].replace('&&', '&')));
+					span.appendChild(document.createTextNode(controlItemArray[8].split('&&').join('&')));
 					legend.appendChild(span);
 				} else {
-					legend.appendChild(document.createTextNode(controlItemArray[8].replace('&&', '&')));
+					legend.appendChild(document.createTextNode(controlItemArray[8].split('&&').join('&')));
 				}				
 				legend.className = 'ui-helper-reset';
 
