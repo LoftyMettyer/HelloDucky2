@@ -440,61 +440,49 @@ Namespace Controllers
 		' GET: /Home
 		Function Main(Optional SSIMode As Boolean = vbFalse) As ActionResult
 
-			'Dim iSingleRecordViewID As Integer = CleanNumeric(Session("SingleRecordViewID"))
+			Dim objSessionInfo = CType(Session("SessionContext"), SessionInfo)
+			Dim bOK As Boolean = True
 
-			'Dim prmRecordID = New SqlParameter("piRecordID", SqlDbType.Int)
-			'prmRecordID.Direction = ParameterDirection.Output
-
-			'Dim prmRecordCount = New SqlParameter("piRecordCount", SqlDbType.Int)
-			'prmRecordCount.Direction = ParameterDirection.Output
-
-			'clsDataAccess.GetDataSet("spASRIntGetSelfServiceRecordID", prmRecordID, prmRecordCount _
-			'											, New SqlParameter("piViewID", iSingleRecordViewID))
-
-			'' Reload the toplevelrecid session variable as linksMain may have reset it.
-			'Dim sErrorDescription = ""
-
-			'If (Err.Number <> 0) Then
-			'	sErrorDescription = "Unable to get the personnel record ID." & vbCrLf & FormatError(Err.Description)
-			'End If
-
-			'If Len(sErrorDescription) = 0 Then
-			'	If prmRecordCount.Value = 1 Then
-			'		' Only one record.
-			'		Session("TopLevelRecID") = CLng(prmRecordID.Value)
-			'	Else
-			'		If prmRecordCount.Value = 0 Then
-			'			' No personnel record. 
-			'			Session("TopLevelRecID") = 0
-			'		Else
-			'			' More than one personnel record.
-			'			sErrorDescription = "You have access to more than one record in the defined Single-record view."
-
-			'			Session("ErrorTitle") = "Login Page"
-			'			Session("ErrorText") =
-			'			 "You could not login to the OpenHR database because of the following reason:" & sErrorDescription & "<p>" & vbCrLf
-
-			'			Response.Redirect("FormError")
-
-			'			' Return RedirectToAction("Loginerror", "Account")
-			'		End If
-			'	End If
-			'Else
-			'	Session("ErrorTitle") = "Login Page"
-			'	Session("ErrorText") =
-			'	 "You could not login to the OpenHR database because of the following reason:" & vbCrLf & sErrorDescription & "<p>" & vbCrLf
-			'	Response.Redirect("FormError")
-			'	' Return RedirectToAction("Loginerror", "Account")
-			'End If
-
-			''	cmdSSRecord = Nothing
+			If objSessionInfo Is Nothing Then
+				Return RedirectToAction("login", "Account")
+			End If
 
 			ResetSessionVars()
 
+			Session("utilid") = ""
 			Session("selectSQL") = ""
 			ViewBag.SSIMode = SSIMode
 
-			Return View()
+			' Non IE browsers attempt to goto SSI
+			If Session("DMIRequiresIE") = "TRUE" And Session("MSBrowser") <> True Then
+				If Not objSessionInfo.LoginInfo.IsSSIUser Then
+					Session("ErrorText") = "You are not permitted to use OpenHR Self-service with this user name."
+					bOK = False
+				End If
+
+				ViewBag.SSIMode = True
+
+			Else
+
+				' IE goes where requested (security permitting)
+				If ViewBag.SSIMode = True And Not objSessionInfo.LoginInfo.IsSSIUser Then
+					Session("ErrorText") = "You are not permitted to use OpenHR Self-service with this user name."
+					bOK = False
+				End If
+
+				If ViewBag.SSIMode = False And Not objSessionInfo.LoginInfo.IsDMIUser And Not objSessionInfo.LoginInfo.IsDMISingle Then
+					Session("ErrorText") = "You are not permitted to use OpenHR Web with this user name."
+					bOK = False
+				End If
+
+			End If
+
+			If bOK Then
+				Return View()
+			Else
+				Return RedirectToAction("LoginError", "Account")
+			End If
+
 		End Function
 
 		Function Find(Optional sParameters As String = "") As ActionResult

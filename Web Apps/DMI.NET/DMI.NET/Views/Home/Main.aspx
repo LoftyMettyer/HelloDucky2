@@ -1,47 +1,13 @@
 ﻿<%@ Page Title="" Language="VB" MasterPageFile="~/Views/Shared/Site.Master" Inherits="System.Web.Mvc.ViewPage" %>
-<%@ Import Namespace="HR.Intranet.Server" %>
 
-<asp:Content ID="Content1" ContentPlaceHolderID="TitleContent" runat="server">
-
-<%
-	Dim sReferringPage As String
-	Dim objDataAccess As clsDataAccess = CType(Session("DatabaseAccess"), clsDataAccess)
-	
-	' If the database connection session variable does not exist, redirect to the login page.
-	If objDataAccess Is Nothing Then
-		Response.Redirect("../account/login")
-		Response.Clear()
-	Else
-		' Only open the form if the referring page was the login page.
-		' If it wasn't then redirect to the login page.
-		sReferringPage = Request.ServerVariables("HTTP_REFERER")
-		If InStrRev(sReferringPage, "/") > 0 Then
-			sReferringPage = Mid(sReferringPage, InStrRev(sReferringPage, "/") + 1)
-		End If
-
-		If (UCase(sReferringPage) <> UCase("login")) And _
-		 (UCase(sReferringPage) <> UCase("loginMessage")) Then
-
-		End If
-
-	End If
-
-	' RH 18/04/01 - Clear this session variable
-	Session("utilid") = ""
-
-%>
-		
-		<%=DMI.NET.svrCleanup.GetPageTitle("") %>
-
+<asp:Content ID="Content1" ContentPlaceHolderID="TitleContent" runat="server">	
+<%=DMI.NET.svrCleanup.GetPageTitle("") %>
 </asp:Content>
 
 
 <asp:Content runat="server" ID="Content1a" ContentPlaceHolderID="FixedLinksContent">
 	<div id="fixedlinksframe" style="display: none;"><%	Html.RenderPartial("~/views/home/fixedlinks.ascx")%></div>	
 </asp:Content>
-
-
-
 
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
 
