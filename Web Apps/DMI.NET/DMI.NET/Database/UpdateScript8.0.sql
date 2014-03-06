@@ -2,7 +2,7 @@
 DROP PROCEDURE [dbo].[sp_ASR_AbsenceBreakdown_Run]
 DROP PROCEDURE [dbo].[sp_ASR_Bradford_DeleteAbsences]
 
-IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[ASRSysCurrentLogins]') AND xtype in (N'T'))
+IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[ASRSysCurrentLogins]') AND xtype in (N'U'))
 	DROP TABLE ASRSysCurrentLogins
 GO
 
