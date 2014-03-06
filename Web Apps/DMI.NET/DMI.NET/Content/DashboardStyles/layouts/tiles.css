@@ -106,13 +106,13 @@ body
 	transition:opacity 0.6s; opacity: 0.8; -o-transition: opacity .6s; -moz-transition: opacity .6s; -webkit-transition: opacity .6s;
 }
 
-.hypertextlinks, .hypertextlinkseparatorframe, .linkspagebutton, .ButtonLinkColumn, .linkspagebuttonseparatorframe, .dropdownlinks, .dropdownlinkseparatorframe, .pendingworkflowsframe, .pendingworkflowlinkseparator {float:left;}
+.hypertextlinks, .hypertextlinkseparatorframe, .linkspagebutton, .ButtonLinkColumn, .linkspagebuttonseparatorframe, .dropdownlinks, .docdisplaylinks, .dropdownlinkseparatorframe, .docdisplaylinkseparatorframe, .pendingworkflowsframe, .pendingworkflowlinkseparator {float:left;}
 
 .DropLinkGoText {
 	display: none;
 }
 
-.linkspagebuttontext, .hypertextlinktext, .dropdownlinktext, .pendingworkflowtext {border: none; color: Black;overflow: hidden;}
+.linkspagebuttontext, .hypertextlinktext, .dropdownlinktext, .docdisplaylinktext .pendingworkflowtext {border: none; color: Black;overflow: hidden;}
 
 	.linkspagebuttontext:hover, .hypertextlinktext:hover, .pendingworkflowtext:hover {
 		-moz-box-shadow: 0 0 10px orange!important; /* FF3.5+ */
@@ -127,7 +127,7 @@ body
 }
 
 
-.linkspagebuttontext a, .hypertextlinktext a, .dropdownlinktext a, .DBValueCaption p
+.linkspagebuttontext a, .hypertextlinktext a, .dropdownlinktext a, .docdisplaylinktext a, .DBValueCaption p
 {
 	position: absolute;bottom: 0px; text-align: center; text-decoration: none; margin: 0px 2px 5px 2px;
 	width: 100%; 
@@ -138,7 +138,7 @@ body
 	border: none;
 }
 
-.hypertextlinktileIcon, .linkspagebuttontileIcon, .dropdownlinktileIcon
+.hypertextlinktileIcon, .linkspagebuttontileIcon, .dropdownlinktileIcon, .docdisplaylinktileIcon
 {
 	margin: 0;
 	text-align: center;
@@ -178,11 +178,11 @@ body
 	font-size: x-small;
 }
 
-.hypertextlinkseparatorframe, .linkspagebuttonseparatorframe, .dropdownlinkseparatorframe, .pendingworkflowsframe  {
+.hypertextlinkseparatorframe, .linkspagebuttonseparatorframe, .dropdownlinkseparatorframe, .docdisplaylinkseparatorframe, .pendingworkflowsframe  {
 	border: none;width: 140px;margin-right: 10px;
 }
 
-.hypertextlinkseparator, .linkspagebuttonseparator, .dropdownlinkseparator, .pendingworkflowlinkseparator
+.hypertextlinkseparator, .linkspagebuttonseparator, .dropdownlinkseparator, .docdisplaylinkseparator, .pendingworkflowlinkseparator
 {
 	/*white-space:nowrap; 
 width:12em; */
@@ -194,6 +194,8 @@ width:12em; */
 	color: white!important;
 	text-shadow: 0 0 5px #000000;
 }
+
+.docdisplaylinkseparator { margin-top: 0;margin-bottom: 10px;}
 
 .linkspagebuttonseparator h2 {
 	font-size: inherit;

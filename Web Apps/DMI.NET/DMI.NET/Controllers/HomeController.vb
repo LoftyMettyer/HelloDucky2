@@ -1591,7 +1591,7 @@ Namespace Controllers
 			objNavigation.LoadLinks()
 			objNavigation.LoadNavigationLinks()
 
-			Dim viewModel = New NavLinksViewModel With {.NavigationLinks = objNavigation.GetAllLinks, .NumberOfLinks = objNavigation.GetAllLinks.Count}
+			Dim viewModel = New NavLinksViewModel With {.NavigationLinks = objNavigation.GetAllLinks, .NumberOfLinks = objNavigation.GetAllLinks.Count, .DocumentDisplayLinkCount = objNavigation.GetLinks(LinkType.DocumentDisplay).Count}
 
 			Return View(viewModel)
 		End Function

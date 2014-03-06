@@ -1282,9 +1282,76 @@
 
 <%End If%>
 
+
+
+
+<%If Session("CurrentLayout").ToString() = DMIEnums.Layout.tiles.ToString() Then%>
+<%If Model.DocumentDisplayLinkCount > 0 Then%>
+<div class="docdisplaylinks">
+	<ul class="docdisplaylinkseparatorframe" id="docdisplaylinkseparatorframe_<%=iSeparatorNum %>">
+		<li class="docdisplaylink-displaytype">
+			<p class="docdisplaylinkseparator">Document Display links:</p>
+			<div class="gridster docdisplaylinkcontent" id="gridster_docdisplayLinks">
+				<ul class="DocDisplayListMenu">
+					<%iRowNum = 1
+						iColNum = 1
+
+						For Each navlink In Model.NavigationLinks.FindAll(Function(n) n.LinkType = LinkType.DocumentDisplay)
+						
+							Dim sTileColourClass = "Colour" & CStr(CInt(Math.Ceiling(Rnd() * 7)))
+							Dim sValue As String
+							
+							sURL = Html.Encode(navlink.DocumentFilePath)
+							sURL = Replace(sURL, "'", "\'")
+
+							sNewWindow = "1"
+		 
+							sValue = "0_" & sNewWindow & "_" & sURL
+							sOnClick = "goDropLink('" + sValue + "')"
+							
+
+							If iRowNum > iMaxRows Then	 ' start a new column if required (affects tiles only)
+								iColNum += 1
+								iRowNum = 1%>
+					<script type="text/javascript">
+						$("#docdisplaylinksseparatorframe<%=iSeparatorNum %>").removeClass("cols<%=iColNum-1 %>");
+						$("#docdisplaylinksseparatorframe<%=iSeparatorNum %>").addClass("cols<%=iColNum %>");
+					</script>
+					<%End If%>
+					<li class="docdisplaylinktext <%=sTileColourClass%>" data-col="<%=iColNum %>" data-row="<%=iRowNum %>" data-sizex="1"
+						data-sizey="1" onclick="<%=sOnclick%>">
+						<p class="docdisplaylinktileIcon">
+							<i class="icon-external-link"></i>
+						</p>
+						<p>
+							<a href="#" data-ddlvalue="<%=sValue%>">
+								<%If navlink.Text.Length > 30 Then
+										navlink.Text = navlink.Text.Substring(0, 30) + "..."
+									End If
+									%>
+								<%: navlink.Text %>
+							</a>
+						</p>
+					</li>
+					<%iRowNum += 1
+
+					Next				
+
+%>
+				</ul>				
+			</div>
+		</li>
+
+	</ul>
+</div>
 		</div>
 	</div>
+<%End If%>
 
+<%Else%>
+
+		</div>
+	</div>
 
 <div id="documentDisplay">
 	<div id="divResize">
@@ -1296,6 +1363,7 @@
 	</div>
 </div>
 
+<%End If%>
 <div id="pollframeset">
 	<div id="poll" data-framesource="poll.asp" style="display: none"></div>
 	<div id="pollmessageframe" data-framesource="pollmessage.asp" style="display: none"><%Html.RenderPartial("~/views/home/pollmessage.ascx")%></div>

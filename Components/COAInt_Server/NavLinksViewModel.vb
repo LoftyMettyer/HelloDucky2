@@ -6,4 +6,5 @@ Public Class NavLinksViewModel
 
 	Public Property NavigationLinks As List(Of Link)
 
+	Public Property DocumentDisplayLinkCount As Integer
 End Class
