@@ -227,9 +227,11 @@
 		<div id="main" data-framesource="util_run" style="height: 80%; margin: 0 0 0 0; ">
 
 			<%   
+				Dim sPrintButtonLabel As String = "Print Screen"
 				If Session("utiltype") = "1" Then
 					Html.RenderPartial("~/Views/Home/util_run_crosstabsMain.ascx")
 				ElseIf Session("utiltype") = "2" Then
+					sPrintButtonLabel = "Print"
 					Html.RenderPartial("~/Views/Home/util_run_customreportsMain.ascx")
 				ElseIf Session("utiltype") = "3" Then
 					'Html.RenderPartial("~/Views/Home/util_run_datatransfer.ascx")
@@ -259,7 +261,7 @@
 
 		<div id="divReportButtons" style="margin: 5px 20px 0 25px; visibility: hidden">
 			<div style="float: right;">
-				<input class="btn" type="button" id="cmdPrint" name="cmdPrint" value="Print" onclick="outputOptionsPrintClick()" />
+				<input class="btn" type="button" id="cmdPrint" name="cmdPrint" value="<%=sPrintButtonLabel%>" onclick="outputOptionsPrintClick()" />
 				<input class="btn" type="button" id="cmdOK" name="cmdOK" value="Export" onclick="outputOptionsOKClick()" />
 				<input class="btn" type="button" id="cmdOutput" name="cmdOutput" value="Output" onclick="ExportDataPrompt();" />
 				<input class="btn" type="button" id="cmdCancel" name="cmdCancel" value="Preview" onclick="ShowDataFrame();" />
