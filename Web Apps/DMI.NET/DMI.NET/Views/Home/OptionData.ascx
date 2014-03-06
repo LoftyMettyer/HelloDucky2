@@ -161,7 +161,9 @@
 				End Try
 
 			ElseIf Session("optionAction") = "LOADLOOKUPFIND" Then
-
+				' StoredProc defaults to 1000 if no value set.
+				Dim iLookupFindRecords As Integer = 10000	' replaces CleanNumeric(Session("FindRecords")
+						
 				Dim rstFindRecords As DataTable
 								
 				' Check if the filter value column is in the current screen.
@@ -219,7 +221,7 @@
 							, New SqlParameter("piViewID", SqlDbType.Int) With {.Value = CleanNumeric(Session("optionViewID"))} _
 							, New SqlParameter("piOrderID", SqlDbType.Int) With {.Value = CleanNumeric(Session("optionOrderID"))} _
 							, New SqlParameter("piLookupColumnID", SqlDbType.Int) With {.Value = CleanNumeric(Session("optionLookupColumnID"))} _
-							, New SqlParameter("piRecordsRequired", SqlDbType.Int) With {.Value = CleanNumeric(Session("FindRecords"))} _
+							, New SqlParameter("piRecordsRequired", SqlDbType.Int) With {.Value = iLookupFindRecords} _
 							, prmIsFirstPage _
 							, prmIsLastPage _
 							, New SqlParameter("psLocateValue", SqlDbType.VarChar, -1) With {.Value = Session("optionLocateValue")} _
@@ -250,10 +252,9 @@
 
 						sThousandColumns = prmThousandColumns.Value.ToString()
 						
-		
 						rstFindRecords = objDataAccess.GetFromSP("spASRIntGetLookupFindRecords" _
 							, New SqlParameter("piLookupColumnID", SqlDbType.Int) With {.Value = CleanNumeric(Session("optionLookupColumnID"))} _
-							, New SqlParameter("piRecordsRequired", SqlDbType.Int) With {.Value = CleanNumeric(Session("FindRecords"))} _
+							, New SqlParameter("piRecordsRequired", SqlDbType.Int) With {.Value = iLookupFindRecords} _
 							, prmIsFirstPage _
 							, prmIsLastPage _
 							, New SqlParameter("psLocateValue", SqlDbType.VarChar, -1) With {.Value = Session("optionLocateValue")} _
