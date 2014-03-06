@@ -2398,6 +2398,9 @@ Namespace Controllers
 
 		<ValidateInput(False)>
 		Function util_run() As ActionResult
+
+			Session("MailMerge_Template") = Nothing
+
 			Return PartialView()
 		End Function
 

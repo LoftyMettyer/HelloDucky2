@@ -45,6 +45,7 @@
 	objMailMergeOutput.Name = objMailMerge.DefName
 	objMailMergeOutput.TemplateName = objMailMerge.DefTemplateFile
 	objMailMergeOutput.OutputFileName = objMailMerge.DefOutputFileName
+	objMailMergeOutput.PrinterName = objMailMerge.DefOutputPrinterName
 	objMailMergeOutput.EmailSubject = objMailMerge.DefEMailSubject
 	objMailMergeOutput.EmailCalculationID = objMailMerge.DefEmailAddrCalc
 	objMailMergeOutput.IsAttachment = objMailMerge.DefEMailAttachment
@@ -89,14 +90,22 @@
 
 		objMailMergeOutput.MergeData = objMailMerge.MergeData
 
-		If objMailMerge.DefOutputFormat = MailMergeOutputTypes.WordDocument Then
-			blnSuccess = objMailMergeOutput.ExecuteMailMerge()
-			bDownloadFile = True
-		Else
-			blnSuccess = objMailMergeOutput.ExecuteToEmail()
-			bDownloadFile = False
-		End If
+		Select Case objMailMerge.DefOutputFormat
+			Case MailMergeOutputTypes.WordDocument
+				blnSuccess = objMailMergeOutput.ExecuteMailMerge(False)
+				bDownloadFile = True
+			
+			Case MailMergeOutputTypes.IndividualEmail
+				blnSuccess = objMailMergeOutput.ExecuteToEmail()
+				bDownloadFile = False
 
+			Case Else
+				blnSuccess = objMailMergeOutput.ExecuteMailMerge(True)
+				bDownloadFile = False			
+				
+		End Select
+		
+		
 		Session("MailMerge_CompletedDocument") = objMailMergeOutput
 
 	End If

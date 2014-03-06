@@ -20,6 +20,7 @@ Namespace Code
 		Public IsAttachment As Boolean
 		Public AttachmentName As String
 		Public Name As String
+		Public PrinterName As String
 
 		Public MergeData As DataTable
 		Public MergeDocument As MemoryStream
@@ -150,7 +151,7 @@ Namespace Code
 
 		End Function
 
-		Public Function ExecuteMailMerge() As Boolean
+		Public Function ExecuteMailMerge(DirectToPrinter As Boolean) As Boolean
 
 			Try
 
@@ -166,12 +167,18 @@ Namespace Code
 				doc.MailMerge.FieldMergingCallback = Me
 				doc.MailMerge.Execute(MergeData)
 				MergeDocument = New MemoryStream
-				doc.Save(MergeDocument, SaveFormat.Docx)
+
+				If DirectToPrinter Then
+					doc.Print(PrinterName)
+				Else
+					doc.Save(MergeDocument, SaveFormat.Docx)
+				End If
+
 				MergeDocument.Position = 0
 
 			Catch ex As Exception
-				Trace.WriteLine(ex.ToString())
-				Throw
+				Errors.Add(ex.Message)
+				Return False
 
 			End Try
 
