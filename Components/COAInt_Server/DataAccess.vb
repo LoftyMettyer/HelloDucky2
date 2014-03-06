@@ -64,7 +64,7 @@ Public Class clsDataAccess
 
 	Private Shared Function GetConnectionString(LoginDetail As LoginInfo) As String
 
-		Const _AppName As String = "OpenHR"
+		Const _AppName As String = "OpenHR Web"
 
 		If LoginDetail.TrustedConnection Then
 			Return String.Format("Data Source={0};Initial Catalog={1};Trusted_Connection=yes;Application Name={2}" _
@@ -332,5 +332,15 @@ Public Class clsDataAccess
 		Return objDataSet
 
 	End Function
+
+	Public Sub CloseConnection()
+
+		Dim strConn As String = GetConnectionString(_objLogin)
+
+		Using sqlConnection As New SqlConnection(strConn)
+			sqlConnection.Close()
+		End Using
+
+	End Sub
 
 End Class

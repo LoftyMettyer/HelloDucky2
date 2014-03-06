@@ -2,6 +2,29 @@
 DROP PROCEDURE [dbo].[sp_ASR_AbsenceBreakdown_Run]
 DROP PROCEDURE [dbo].[sp_ASR_Bradford_DeleteAbsences]
 
+IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[ASRSysCurrentLogins]') AND xtype in (N'T'))
+	DROP TABLE ASRSysCurrentLogins
+GO
+
+CREATE TABLE ASRSysCurrentLogins(
+	[username]		nvarchar(128),
+	[usergroup]		nvarchar(255),
+	[usergroupid]	integer,
+	[userSID]		uniqueidentifier,
+	[loginTime]		datetime,
+	[application]	varchar(255),
+	[clientmachine]		nvarchar(255))
+
+GO
+
+IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spASRGetCurrentUsersFromMaster]') AND xtype in (N'P'))
+	DROP PROCEDURE [dbo].[spASRGetCurrentUsersFromMaster]
+GO
+
+IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spASRTrackSession]') AND xtype in (N'P'))
+	DROP PROCEDURE [dbo].[spASRTrackSession]
+GO
+
 IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spASRIntGetLoginDetails]') AND xtype in (N'P'))
 	DROP PROCEDURE [dbo].[spASRIntGetLoginDetails]
 GO
@@ -770,10 +793,6 @@ GO
 DROP PROCEDURE [dbo].[sp_ASRIntBookCourse]
 GO
 
-/****** Object:  StoredProcedure [dbo].[sp_ASRIntAuditAccess]    Script Date: 23/07/2013 11:18:30 ******/
-DROP PROCEDURE [dbo].[sp_ASRIntAuditAccess]
-GO
-
 /****** Object:  StoredProcedure [dbo].[sp_ASRIntAddFromWaitingList]    Script Date: 23/07/2013 11:18:30 ******/
 DROP PROCEDURE [dbo].[sp_ASRIntAddFromWaitingList]
 GO
@@ -1173,54 +1192,6 @@ BEGIN
 		' WHERE ' + @sWLCourseTitleColumnName + ' = ''' + replace(@sCourseTitle,'''','''''') + '''' + 
 		' AND id_' + convert(nvarchar(MAX), @iEmpTableID) + ' = ' + convert(nvarchar(MAX), @piEmpRecordID);
 	EXEC sp_executesql @sExecString;
-END
-GO
-
-/****** Object:  StoredProcedure [dbo].[sp_ASRIntAuditAccess]    Script Date: 23/07/2013 11:18:30 ******/
-SET ANSI_NULLS ON
-GO
-
-SET QUOTED_IDENTIFIER ON
-GO
-
-CREATE PROCEDURE [dbo].[sp_ASRIntAuditAccess]
-(
-	@blnLoggingIn bit,
-	@strUsername varchar(1000)
-)
-AS
-BEGIN
-
-	SET NOCOUNT ON;
-
-	DECLARE @iUserGroupID	integer,
-		@sUserGroupName		sysname,
-		@sActualUserName	sysname;
-		
-	/* Get the current user's group ID. */
-	EXEC spASRIntGetActualUserDetails
-		@sActualUserName OUTPUT,
-		@sUserGroupName OUTPUT,
-		@iUserGroupID OUTPUT;
-		
-	IF @sUserGroupName IS NULL
-	BEGIN
-		SET @sUserGroupName = '<Unknown>';
-	END
-
-	/* Put an entry in the Audit Access Log */
-	IF @blnLoggingIn <> 0
-	BEGIN
-		INSERT INTO [dbo].[ASRSysAuditAccess]
-			(DateTimeStamp,UserGroup,UserName,ComputerName,HRProModule,Action) 
-			VALUES (GetDate(), @sUserGroupName, @strUserName, LOWER(HOST_NAME()), 'Intranet', 'Log In');
-	END
-	ELSE
-	BEGIN
-		INSERT INTO [dbo].[ASRSysAuditAccess]
-			(DateTimeStamp,UserGroup,UserName,ComputerName,HRProModule,Action) 
-			VALUES (GetDate(), @sUserGroupName, @strUserName, LOWER(HOST_NAME()), 'Intranet', 'Log Out');
-	END
 END
 GO
 
@@ -42681,10 +42652,6 @@ GO
 DROP PROCEDURE [dbo].[sp_ASRIntBookCourse]
 GO
 
-/****** Object:  StoredProcedure [dbo].[sp_ASRIntAuditAccess]    Script Date: 13/09/2013 08:59:32 ******/
-DROP PROCEDURE [dbo].[sp_ASRIntAuditAccess]
-GO
-
 /****** Object:  StoredProcedure [dbo].[sp_ASRIntAddFromWaitingList]    Script Date: 13/09/2013 08:59:32 ******/
 DROP PROCEDURE [dbo].[sp_ASRIntAddFromWaitingList]
 GO
@@ -43091,55 +43058,6 @@ END
 
 GO
 
-/****** Object:  StoredProcedure [dbo].[sp_ASRIntAuditAccess]    Script Date: 13/09/2013 08:59:32 ******/
-SET ANSI_NULLS ON
-GO
-
-SET QUOTED_IDENTIFIER ON
-GO
-
-
-CREATE PROCEDURE [dbo].[sp_ASRIntAuditAccess]
-(
-	@blnLoggingIn bit,
-	@strUsername varchar(1000)
-)
-AS
-BEGIN
-
-	SET NOCOUNT ON;
-
-	DECLARE @iUserGroupID	integer,
-		@sUserGroupName		sysname,
-		@sActualUserName	sysname;
-		
-	/* Get the current user's group ID. */
-	EXEC spASRIntGetActualUserDetails
-		@sActualUserName OUTPUT,
-		@sUserGroupName OUTPUT,
-		@iUserGroupID OUTPUT;
-		
-	IF @sUserGroupName IS NULL
-	BEGIN
-		SET @sUserGroupName = '<Unknown>';
-	END
-
-	/* Put an entry in the Audit Access Log */
-	IF @blnLoggingIn <> 0
-	BEGIN
-		INSERT INTO [dbo].[ASRSysAuditAccess]
-			(DateTimeStamp,UserGroup,UserName,ComputerName,HRProModule,Action) 
-			VALUES (GetDate(), @sUserGroupName, @strUserName, LOWER(HOST_NAME()), 'Intranet', 'Log In');
-	END
-	ELSE
-	BEGIN
-		INSERT INTO [dbo].[ASRSysAuditAccess]
-			(DateTimeStamp,UserGroup,UserName,ComputerName,HRProModule,Action) 
-			VALUES (GetDate(), @sUserGroupName, @strUserName, LOWER(HOST_NAME()), 'Intranet', 'Log Out');
-	END
-END
-
-GO
 
 /****** Object:  StoredProcedure [dbo].[sp_ASRIntBookCourse]    Script Date: 13/09/2013 08:59:32 ******/
 SET ANSI_NULLS ON
@@ -79765,6 +79683,10 @@ IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[sp_ASRIntP
 	DROP PROCEDURE [dbo].[sp_ASRIntPasswordOK]
 GO
 
+IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[sp_ASRIntAuditAccess]') AND xtype in (N'P'))
+	DROP PROCEDURE [dbo].[sp_ASRIntAuditAccess]
+GO
+
 
 IF TYPE_ID(N'DataPermissions') IS NOT NULL
 	DROP TYPE [dbo].[DataPermissions]
@@ -86183,6 +86105,101 @@ BEGIN
 		, IS_SRVROLEMEMBER('sysadmin') AS IsSysAdmin;
 
 END
+
+GO
+
+CREATE PROCEDURE dbo.[spASRTrackSession](
+	@LoggingIn		bit,
+	@Application	varchar(255),
+	@ClientMachine	varchar(255))
+AS
+BEGIN
+
+	DECLARE @sUserName		nvarchar(MAX), 
+			@sUserGroup		nvarchar(MAX),
+			@iUserGroupID	integer;
+
+	EXEC [dbo].[spASRIntGetActualUserDetails] @sUserName OUTPUT, @sUserGroup OUTPUT, @iUserGroupID OUTPUT
+
+	IF @sUserGroup IS NULL
+		SET @sUserGroup = '<Unknown>';
+
+	DELETE FROM dbo.ASRSysCurrentLogins WHERE Username = @sUserName AND [clientmachine] = @ClientMachine;
+
+	IF @LoggingIn = 1
+	BEGIN
+			
+		INSERT dbo.ASRSysCurrentLogins ([username], [usergroup], [usergroupid], [usersid], [loginTime], [application], clientmachine)
+			VALUES (@sUserName, @sUserGroup, @iUserGroupID, USER_SID(), GETDATE(), @Application, @ClientMachine);
+
+		INSERT INTO [dbo].[ASRSysAuditAccess]
+			(DateTimeStamp,UserGroup,UserName,ComputerName,HRProModule,Action) 
+			VALUES (GetDate(), @sUserGroup, @sUserName, LOWER(HOST_NAME()), 'Intranet', 'Log In');
+	END
+	ELSE
+	BEGIN
+
+		INSERT INTO [dbo].[ASRSysAuditAccess]
+			(DateTimeStamp,UserGroup,UserName,ComputerName,HRProModule,Action) 
+			VALUES (GetDate(), @sUserGroup, @sUserName, LOWER(HOST_NAME()), 'Intranet', 'Log Out');
+
+	END
+
+END
+
+
+GO
+CREATE PROCEDURE [dbo].[spASRGetCurrentUsersFromMaster]
+AS
+BEGIN
+
+   SET NOCOUNT ON;
+
+   DECLARE @login_time datetime;
+
+	DECLARE @processes TABLE (
+		[hostname]		nvarchar(128),
+		[loginame]		nvarchar(128),
+		program_name	nvarchar(128),
+		host_process_id	integer,
+		security_id		varbinary(85),
+		login_time		datetime,
+		spid			smallint,
+		uid				integer)
+
+   SELECT TOP 1 @login_time = l.Lock_Time
+   FROM ASRSysLock l
+		INNER JOIN sys.dm_exec_sessions es on es.session_id = l.spid
+         AND es.login_time = l.Login_Time
+   WHERE L.Priority < 3
+   ORDER BY l.Priority;
+
+   SET @login_time = ISNULL(@login_time, GETDATE());
+
+	-- Fat Clients
+   INSERT @processes
+	SELECT es.host_name, es.login_name, es.program_name, es.host_process_id
+        , es.security_id, es.login_time, es.session_id, 0
+   FROM sys.dm_exec_sessions es
+   WHERE es.program_name LIKE 'OpenHR%'
+     AND es.program_name NOT LIKE 'OpenHR Web%'
+     AND es.program_name NOT LIKE 'OpenHR Workflow%'
+     AND es.program_name NOT LIKE 'OpenHR Mobile%'
+     AND es.program_name NOT LIKE 'OpenHR Outlook%'
+     AND es.program_name NOT LIKE 'System Framework Assembly%'
+     AND es.program_name NOT LIKE 'OpenHR Intranet Embedding%'
+     AND (es.login_Time < @login_time)
+
+	-- Thin clients
+   INSERT @processes
+	SELECT clientmachine, username, 'OpenHR Web', '', userSID, loginTime, 0, 0
+         FROM ASRSysCurrentLogins
+
+	SELECT * FROM @processes ORDER BY loginame;
+
+END
+
+
 
 
 

@@ -1,18 +1,11 @@
-CREATE PROCEDURE [dbo].[spASRGetCurrentUsersCountOnServer]
-(
+CREATE PROCEDURE [dbo].[spASRGetCurrentUsersCountOnServer] (
 	@iLoginCount	integer OUTPUT,
-	@psLoginName	varchar(MAX)
-)
+	@psLoginName	varchar(MAX))
 AS
 BEGIN
 
 	DECLARE @sSQLVersion	integer,
 			@Mode			smallint;
-
-	IF EXISTS (SELECT Name FROM sysobjects WHERE id = object_id('sp_ASRIntCheckPolls') AND sysstat & 0xf = 4)
-	BEGIN
-		EXEC sp_ASRIntCheckPolls;
-	END
 
 	SELECT @sSQLVersion = dbo.udfASRSQLVersion();
 	SELECT @Mode = [SettingValue] FROM ASRSysSystemSettings WHERE [Section] = 'ProcessAccount' AND [SettingKey] = 'Mode';

@@ -4,9 +4,24 @@ Option Explicit On
 Imports HR.Intranet.Server.Enums
 Imports HR.Intranet.Server
 Imports System.Data.SqlClient
-Imports HR.Intranet.Server.Structures
 
 Public Module ASRFunctions
+
+	Public Sub LogOff()
+
+		Dim objSession As SessionInfo = CType(HttpContext.Current.Session("SessionContext"), SessionInfo)
+
+		Try
+			objSession.TrackUser(False)
+
+		Catch ex As Exception
+			Throw
+
+		End Try
+
+	End Sub
+
+
 	Public Function GetCurrentUsersCountOnServer(LoginName As String) As Integer
 		Dim objSession As SessionInfo = CType(HttpContext.Current.Session("SessionContext"), SessionInfo)	'Set session info
 		Dim objDataAccess As New clsDataAccess(objSession.LoginInfo) 'Instantiate DataAccess class
@@ -21,7 +36,7 @@ Public Module ASRFunctions
 		Return CInt(iLoginCount.Value)
 
 	End Function
-	
+
 	Public Sub PopulatePersonnelSessionVariables()
 
 		Dim objDataAccess As clsDataAccess = CType(HttpContext.Current.Session("DatabaseAccess"), clsDataAccess)

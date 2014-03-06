@@ -87,7 +87,6 @@
   <ItemGroup>
     <Build Include="Stored Procedures\Web\sp_ASRIntAddEventLogHeader.sql" />
     <Build Include="Stored Procedures\Web\sp_ASRIntAddFromWaitingList.sql" />
-    <Build Include="Stored Procedures\Web\sp_ASRIntAuditAccess.sql" />
     <Build Include="Stored Procedures\Web\sp_ASRIntBookCourse.sql" />
     <Build Include="Stored Procedures\Web\sp_ASRIntCalcDefaults.sql" />
     <Build Include="Stored Procedures\Web\sp_ASRIntCancelBooking.sql" />
@@ -644,6 +643,9 @@
     <Build Include="Stored Procedures\Web\spASRIntGetLookupTables.sql" />
     <Build Include="Stored Procedures\Auto Generated\sp_ASRLockCheck.sql" />
     <Build Include="Stored Procedures\Web\spASRIntGetLoginDetails.sql" />
+    <Build Include="Stored Procedures\System Manager\spASRGetCurrentUsersFromMaster.sql" />
+    <Build Include="Stored Procedures\Web\spASRTrackSession.sql" />
+    <Build Include="Tables\ASRSysCurrentLogins.sql" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Stored Procedures\Other\sp_ASR_Bradford_CalculateDurations.sql" />

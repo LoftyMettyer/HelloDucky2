@@ -4,8 +4,6 @@ Option Strict On
 Imports HR.Intranet.Server.Enums
 Imports HR.Intranet.Server.BaseClasses
 Imports System.Data.SqlClient
-Imports HR.Intranet.Server.Structures
-Imports System.Web
 
 Public Class Database
 	Inherits BaseForDMI
@@ -31,26 +29,6 @@ Public Class Database
 
 	End Function
 
-
-
-
-	Public Sub LogOut()
-
-		Try
-
-			Dim prmLoggingIn As New SqlParameter("blnLoggingIn", SqlDbType.Bit)
-			prmLoggingIn.Value = False
-
-			Dim prmUser As New SqlParameter("strUsername", SqlDbType.VarChar, 1000)
-			prmUser.Value = Replace(_login.Username, "'", "''")
-
-			DB.ExecuteSP("sp_ASRIntAuditAccess", prmLoggingIn, prmUser)
-
-		Catch ex As Exception
-
-		End Try
-
-	End Sub
 
 	Public Sub SaveUserSetting(strSection As String, strKey As String, varSetting As Object)
 

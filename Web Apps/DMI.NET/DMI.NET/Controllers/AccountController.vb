@@ -283,6 +283,9 @@ Namespace Controllers
 					Return RedirectToAction("Loginerror")
 				End If
 
+				' Track and audit that we've logged in
+				objServerSession.TrackUser(True)
+
 				' User is allowed into OpenHR, now populate some metadata
 				objDatabase.SessionInfo = objServerSession
 				objServerSession.Initialise()
@@ -291,11 +294,6 @@ Namespace Controllers
 				Session("DatabaseFunctions") = objDatabase
 				Session("DatabaseAccess") = objDataAccess
 				Session("sessionContext") = objServerSession
-
-				' Put entry in the audit access log
-				objDataAccess.ExecuteSP("sp_ASRIntAuditAccess" _
-					, New SqlParameter("blnLoggingIn", SqlDbType.Bit) With {.Value = True} _
-					, New SqlParameter("strUsername", SqlDbType.VarChar, 1000) With {.Value = objLogin.Username})
 
 				' Get module parameters
 				PopulatePersonnelSessionVariables()
@@ -572,16 +570,7 @@ Namespace Controllers
 
 			Try
 				Dim objServerSession As SessionInfo = Session("sessionContext")
-
-				Dim objDataAccess As New clsDataAccess(objServerSession.LoginInfo)
-
-				Dim prmLogIn = New SqlParameter("blnLoggingIn", SqlDbType.Bit, 1, ParameterDirection.Input)
-				prmLogIn.Value = False
-
-				Dim prmUserName = New SqlParameter("strUsername", SqlDbType.VarChar, 1000, ParameterDirection.Input)
-				prmUserName.Value = Replace(Session("Username"), "'", "''")
-
-				objDataAccess.ExecuteSP("sp_ASRIntAuditAccess", prmLogIn, prmUserName)
+				objServerSession.TrackUser(False)
 
 				Session("avPrimaryMenuInfo") = Nothing
 				Session("avSubMenuInfo") = Nothing

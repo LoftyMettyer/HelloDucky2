@@ -3,6 +3,7 @@ Imports HR.Intranet.Server.Metadata
 Imports HR.Intranet.Server.Structures
 Imports System.Collections.ObjectModel
 Imports System.Data.SqlClient
+Imports System.Web
 
 Public Class SessionInfo
 
@@ -18,15 +19,6 @@ Public Class SessionInfo
 			Return _objLogin
 		End Get
 	End Property
-
-	'Public Property Username() As String
-	'	Get
-	'		Return gsUsername
-	'	End Get
-	'	Set(value As String)
-	'		gsUsername = value
-	'	End Set
-	'End Property
 
 	Public Function IsPermissionGranted(Category As String, Key As String) As Boolean
 		Return Permissions.IsPermitted(Category, Key)
@@ -45,12 +37,12 @@ Public Class SessionInfo
 
 	End Function
 
-	Public Function SessionLogin(blahUserName As String, sPassword As String, sDatabaseName As String, sServerName As String, bWindowsAuthentication As Boolean) As LoginInfo
+	Public Function SessionLogin(UserName As String, sPassword As String, sDatabaseName As String, sServerName As String, bWindowsAuthentication As Boolean) As LoginInfo
 
 		Dim objRow As DataRow
 
 		_objLogin = New LoginInfo With {
-			.Username = blahUserName,
+			.Username = UserName,
 			.Password = sPassword,
 			.Database = sDatabaseName,
 			.Server = sServerName,
@@ -129,6 +121,34 @@ Public Class SessionInfo
 		ReadPersonnelParameters()
 
 		ActiveConnections = 1
+	End Sub
+
+	Public Sub TrackUser(IsLogin As Boolean)
+
+		Dim objDataAccess As New clsDataAccess(_objLogin)
+		Dim sMachineName As String
+
+		Try
+			Dim objUserMachine = Net.Dns.GetHostEntry(HttpContext.Current.Request.UserHostName)
+			sMachineName = objUserMachine.HostName
+
+		Catch ex As Exception
+			sMachineName = "Unknown"
+
+		End Try
+
+		Try
+
+			objDataAccess.ExecuteSP("spASRTrackSession" _
+					, New SqlParameter("LoggingIn", SqlDbType.Bit) With {.Value = IsLogin} _
+					, New SqlParameter("Application", SqlDbType.VarChar, 255) With {.Value = "OpenHR Web"} _
+					, New SqlParameter("ClientMachine", SqlDbType.VarChar, 255) With {.Value = sMachineName})
+
+		Catch ex As Exception
+			Throw
+
+		End Try
+
 	End Sub
 
 End Class
