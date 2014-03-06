@@ -122,11 +122,17 @@
 	Dim sErrorMessage As String
 	
 	' Errors during the merge
-	If objMailMergeOutput.Errors.Count > 0 Then		
-		sErrorMessage = HttpUtility.JavaScriptStringEncode(Join(objMailMergeOutput.Errors.ToArray()))		
-		Response.Write(String.Format("raiseWarning(""{0}"", ""{1}"");", objMailMergeOutput.Name, sErrorMessage))		
+	If objMailMergeOutput.Errors.Count > 0 Then
+		objMailMerge.EventLogChangeHeaderStatus(EventLog_Status.elsFailed)
+
+		sErrorMessage = Join(objMailMergeOutput.Errors.ToArray())
+		objMailMerge.FailedMessage = sErrorMessage
+		sErrorMessage = HttpUtility.JavaScriptStringEncode(sErrorMessage)
+		Response.Write(String.Format("raiseWarning(""{0}"", ""{1}"");", objMailMergeOutput.Name, sErrorMessage))
+		
 	Else
-	
+		objMailMerge.EventLogChangeHeaderStatus(EventLog_Status.elsSuccessful)
+		
 		' No data in result set
 		If objMailMerge.NoRecords Then
 			sErrorMessage = "Completed successfully, however there were no records that meet the selection criteria. No document has been produced."

@@ -298,6 +298,7 @@ Public Class MailMerge
 		Catch ex As Exception
 			fOK = False
 			mstrStatusMessage = "Error retrieving merge data " & ex.Message
+			Logs.AddDetailEntry(mstrStatusMessage)
 			Return fOK
 
 		End Try
@@ -392,6 +393,7 @@ Public Class MailMerge
 
 		Catch ex As Exception
 			mstrStatusMessage = "Error reading Mail Merge definition"
+			Logs.AddDetailEntry(mstrStatusMessage)
 			fOK = False
 
 		End Try
@@ -456,6 +458,7 @@ Public Class MailMerge
 
 LocalErr:
 		mstrStatusMessage = "Error processing picklist"
+		Logs.AddDetailEntry(mstrStatusMessage)
 		fOK = False
 
 	End Function
@@ -570,6 +573,7 @@ LocalErr:
 
 LocalErr:
 		mstrStatusMessage = "Error processing calculation/column definitions."
+		Logs.AddDetailEntry(mstrStatusMessage)
 		Return False
 
 	End Function
@@ -739,6 +743,7 @@ LocalErr:
 
 LocalErr:
 		mstrStatusMessage = "Error building SQL Statement"
+		Logs.AddDetailEntry(mstrStatusMessage)
 		fOK = False
 
 	End Sub
@@ -962,6 +967,7 @@ LocalErr:
 
 ErrorTrap:
 		mstrStatusMessage = "Error whilst setting prompted values. " & Err.Description
+		Logs.AddDetailEntry(mstrStatusMessage)
 		Return False
 
 	End Function
