@@ -511,8 +511,7 @@ LocalErr:
 
 				For Each objRow As DataRow In .Rows
 
-					'01/08/2001 MH Fault 2125
-					intIndex = intIndex + 1
+					intIndex += 1
 
 					Select Case objRow("ColExp")
 						Case "Col"
@@ -526,15 +525,12 @@ LocalErr:
 								Exit Function
 
 							ElseIf IsCalcValid(CInt(objRow("ColExpID"))) <> vbNullString Then
-								'MH20011127
-								'mstrStatusMessage = "You cannot run this Global definition as it contains one or more calculation(s) which have been deleted or made hidden by another user." & vbNewLine & _
-								'"Please re-visit your definition to remove the hidden calculations." & vbNewLine
 								mstrStatusMessage = "You cannot run this Mail Merge definition as it contains one or more calculation(s) which have been deleted or made hidden by another user. " & "Please re-visit your definition to remove the hidden calculations."
 								fOK = False
 								Exit Function
 
 							Else
-								SQLAddCalculation(CInt(objRow("ColExpID")), objRow("Table").ToString() & objRow("Name").ToString())
+								SQLAddCalculation(CInt(objRow("ColExpID")), objRow("Table").ToString() & objRow("Name").ToString().ToString.Replace(" ", "_"))
 
 							End If
 

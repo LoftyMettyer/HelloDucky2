@@ -11,9 +11,9 @@ Namespace Metadata
 		Public ReadOnly Property MergeName() As String
 			Get
 				If IsExpression Then
-					Return String.Format("{0}{1}", TableName, Name)
+					Return String.Format("{0}{1}", TableName, Name.Replace(" ", "_"))
 				Else
-					Return String.Format("{0}_{1}", TableName, Name)
+					Return String.Format("{0}_{1}", TableName, Name.Replace(" ", "_"))
 				End If
 
 			End Get
