@@ -1287,7 +1287,7 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
 			applyLocation(textbox, controlItemArray, true);
 			textbox.style.fontFamily = controlItemArray[11];
 			textbox.style.fontSize = controlItemArray[12] + 'pt';
-			textbox.style.padding = "0 2px 0 2px";
+			if (Number(controlItemArray[37]) == 0)  textbox.style.padding = "0 2px 0 2px";
 			textbox.setAttribute("data-columnID", columnID);
 			textbox.setAttribute('data-controlType', controlItemArray[3]);
 			textbox.setAttribute("data-control-key", key);
@@ -1300,6 +1300,15 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
 
 			if (Number(controlItemArray[37]) != 0) { //Multi-line textbox (i.e. textarea); for this we need a slight adjustment to the height
 				textbox.style.height = (Number((controlItemArray[6]) / 15 - 1)) + "px";
+
+				//Alignment				
+				if (controlItemArray[38] == "0") {
+					$(textbox).css('text-align', 'left');
+				} else if (controlItemArray[38] == "1") {
+					$(textbox).css('text-align', 'right');
+				} else {
+					$(textbox).css('text-align', 'center');
+				}
 			}
 
 			//Check if control should be disabled (read only or screen read only)
