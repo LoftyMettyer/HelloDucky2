@@ -130,10 +130,10 @@ function find_window_onload() {
 
 				var shrinkToFit = false;
 				var wfSetWidth = $('#workframeset').width();
-				//if (colMode.length < (wfSetWidth / 100)) shrinkToFit = true;
+				if (colMode.length < (wfSetWidth / 100)) shrinkToFit = true;
 				//var gridWidth = menu_isSSIMode() ? 'auto' : wfSetWidth - 100;
 				var gridWidth = wfSetWidth - 100;
-
+				//var rowNum = (Number($('#txtFindRecords').val()) > 100) ? 100 : Number($('#txtFindRecords').val());
 
 				//create the column layout:
 				$("#findGridTable").jqGrid({
@@ -141,8 +141,10 @@ function find_window_onload() {
 					datatype: "local",
 					colNames: colNames,
 					colModel: colMode,
-					rowNum: 1000,
+					rowNum: 50,
 					width: gridWidth,
+					pager: $('#pager-coldata'),
+					ignoreCase: true,
 					//autowidth: true,
 					shrinkToFit: shrinkToFit,
 					ondblClickRow: function () {
@@ -159,8 +161,17 @@ function find_window_onload() {
 					}
 				});
 
+				//search options.
+				$("#findGridTable").jqGrid('navGrid', '#pager-coldata', { del: false, add: false, edit: false, search: false });
+				$("#findGridTable").jqGrid('filterToolbar', { stringResult: true, searchOnEnter: false });
+
 				//resize the grid to the height of its container.
-				$("#findGridTable").jqGrid('setGridHeight', $("#findGridRow").height());
+				var gridRowHeight = $("#findGridRow").height();
+				var gridHeaderHeight = $('#findGridRow .ui-jqgrid-hdiv').height();
+				var gridFooterHeight = $('#findGridRow .ui-jqgrid-pager').height();
+				var newHeight = gridRowHeight - gridHeaderHeight - gridFooterHeight;
+				
+				$("#findGridTable").jqGrid('setGridHeight', newHeight);
 			}
 
 			//NOTE: may come in useful.

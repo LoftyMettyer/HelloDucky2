@@ -93,7 +93,8 @@
 					Dim sAddString As String
 								
 					Const AD_STATE_OPEN = 1
-								
+					Const iNumberOfRecords As Integer = 100000
+					
 					Dim fCancelDateColumn = True
 									
 					If (Len(sErrorDescription) = 0) And (Session("TB_CourseTableID") > 0) And Len(NullSafeString(Session("lineage"))) > 0 Then
@@ -159,7 +160,7 @@
 							New SqlParameter("@piParentTableID", SqlDbType.Int) With {.Value = CleanNumeric(Session("parentTableID"))}, _
 							New SqlParameter("@piParentRecordID", SqlDbType.Int) With {.Value = CleanNumeric(Session("parentRecordID"))}, _
 							New SqlParameter("@psFilterDef", SqlDbType.VarChar, -1) With {.Value = Session("filterDef")}, _
-							New SqlParameter("@piRecordsRequired", SqlDbType.Int) With {.Value = CleanNumeric(Session("FindRecords"))}, _
+							New SqlParameter("@piRecordsRequired", SqlDbType.Int) With {.Value = iNumberOfRecords}, _
 							prmIsFirstPage, _
 							prmIsLastPage, _
 							New SqlParameter("@psLocateValue", SqlDbType.VarChar, -1) With {.Value = Session("locateValue")}, _
