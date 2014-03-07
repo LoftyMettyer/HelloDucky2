@@ -206,7 +206,7 @@
 							<%
 								sText = navlink.Text
 								If navlink.Text.Length > 30 Then
-									sText = navlink.Text.Substring(0, 30) + "x1x"
+									sText = navlink.Text.Substring(0, 30) + "..."
 								End If
 							%>
 							<a class="hypertextlinktext-font hypertextlinktext-colour hypertextlinktext-size hypertextlinktext-bold hypertextlinktext-italics" href="#" title="<%: navlink.Text%>"><%: sText%></a>
