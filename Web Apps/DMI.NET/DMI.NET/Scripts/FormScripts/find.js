@@ -144,7 +144,7 @@ function find_window_onload() {
 					rowNum: 1000,
 					width: gridWidth,
 					//autowidth: true,
-					shrinktofit: shrinkToFit,
+					shrinkToFit: shrinkToFit,
 					ondblClickRow: function () {
 					    menu_editRecord();
 					},

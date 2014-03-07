@@ -258,7 +258,7 @@ function optiondata_onload() {
 				}
 
 				//create the column layout:
-				var shrinkToFit = false;
+				shrinkToFit = false;
 				if (colMode.length < 8) shrinkToFit = true;
 				
 				$("#ssOleDBGrid").jqGrid({
@@ -266,9 +266,12 @@ function optiondata_onload() {
 					datatype: "local",
 					colNames: colNames,
 					colModel: colMode,
-					rowNum: 1000,
-					autowidth: true,
-					shrinktofit: shrinkToFit,
+					rowNum: 30,
+					//autowidth: true,
+					width: 700,
+					ignoreCase: true,
+					pager: $('#ssOLEDBPager'),
+					shrinkToFit: shrinkToFit,
 					onSelectRow: function () {
 						lookupFind_refreshControls();
 					},
@@ -276,6 +279,10 @@ function optiondata_onload() {
 						SelectLookup();
 					}
 				});
+
+				//search options.
+				$("#ssOleDBGrid").jqGrid('navGrid', '#ssOLEDBPager', { del: false, add: false, edit: false, search: false });
+				$("#ssOleDBGrid").jqGrid('filterToolbar', { stringResult: true, searchOnEnter: false });
 
 				$("#ssOleDBGrid").jqGrid('bindKeys', {
 					"onEnter": function () {

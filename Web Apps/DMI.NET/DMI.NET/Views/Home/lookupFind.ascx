@@ -425,8 +425,9 @@
 					</table>
 				</div>
 				<%End If 'if fIsLookupTable then%>
-				<div id="lookupFindGridRow" style="height: <%If fIsLookupTable Then%>75%<%Else%>60%<%End If%>; margin-bottom: 50px;">
+				<div id="lookupFindGridRow" style="height: <%If fIsLookupTable Then%>70%<%Else%>55%<%End If%>; margin-bottom: 150px;">
 					<table class="outline" style="width: 100%;" id="ssOleDBGrid"></table>
+					<div id="ssOLEDBPager"></div>					
 				</div>
 				<div id="row3">
 					<table width="100%" class="invisible" cellspacing="0" cellpadding="0">
