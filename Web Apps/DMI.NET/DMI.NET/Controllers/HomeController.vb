@@ -2241,12 +2241,50 @@ Namespace Controllers
 			Return View()
 		End Function
 
-		'Function ForcePasswordChange() As ActionResult
-		'    Return View()
-		'End Function
 
-		Function Poll() As PartialViewResult
-			'Return PartialView()
+		Function sessionTimeOut() As ActionResult
+
+			Dim objMessageModel As New PollMessageModel With {.Body = ""}
+
+			Try
+				LogOff()
+				objMessageModel.IsTimedOut = True
+
+			Catch ex As Exception
+
+			End Try
+
+			Return PartialView("PollMessage", objMessageModel)
+
+		End Function
+
+		Function pollMessage() As ActionResult
+
+			Dim objMessageModel As New PollMessageModel With {.Body = ""}
+
+			Try
+				Dim objSessionContext As SessionInfo = CType(Session("sessionContext"), SessionInfo)
+				Dim objDataAccess As clsDataAccess = CType(Session("DatabaseAccess"), clsDataAccess)
+
+				Dim dsMessages = objDataAccess.GetFromSP("spASRIntGetMessages" _
+						, New SqlParameter("LoginTime", SqlDbType.DateTime) With {.Value = objSessionContext.LoginInfo.LoginTime})
+
+				If dsMessages.Rows.Count > 0 Then
+					Dim rowMessage As DataRow = dsMessages.Rows(0)
+					objMessageModel.Caption = String.Format("Message From {0}", rowMessage("messageFrom").ToString())
+					objMessageModel.Body = rowMessage("message").ToString()
+					objMessageModel.From = rowMessage("messageFrom").ToString()
+					objMessageModel.SentDate = CDate(rowMessage("messagetime"))
+				End If
+
+			Catch ex As Exception
+				objMessageModel.IsTimedOut = True
+
+			End Try
+
+
+			Return PartialView(objMessageModel)
+
 		End Function
 
 #Region "Event Log Forms"
@@ -3156,14 +3194,6 @@ Namespace Controllers
 		Function Progress() As ActionResult
 			Return PartialView()
 		End Function
-
-		Function Refresh() As ActionResult
-			Return View()
-		End Function
-
-		'  Function util_run_promptedvaluessubmit() As ActionResult
-		'     Return RedirectToAction("util_run")
-		'    End Function
 
 #End Region
 

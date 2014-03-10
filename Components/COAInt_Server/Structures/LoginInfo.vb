@@ -8,8 +8,8 @@ Namespace Structures
 		Public Username As String
 		Public Password As String
 		Public TrustedConnection As Boolean
-		Public LoginTime As Date
-		Public LastLoginTime As Date
+		Public LoginTime As DateTime
+		Public LastLoginTime As DateTime
 		Public InvalidPasswordAttempts As Integer
 		Public LockedOut As Boolean
 		Public LockoutTime As Date

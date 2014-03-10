@@ -157,6 +157,7 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Compile Include="Models\PollMessageModel.vb" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="My Project\Resources.resx">
@@ -1139,6 +1140,7 @@
     <Content Include="Scripts\autoNumeric-1.9.15.js" />
     <Content Include="Scripts\jquery\jquery.tablesorter.min.js" />
     <Content Include="Scripts\jquery\MonthPicker.js" />
+    <Content Include="Views\Home\pollMessage.aspx" />
     <Content Include="Views\Home\util_run_bradford_factor.ascx" />
     <Content Include="Web.custom.config.template">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -1614,12 +1616,9 @@
     <Content Include="Views\Home\picklistSelection.ascx" />
     <Content Include="Views\Home\picklistSelectionData.ascx" />
     <Content Include="Views\Home\picklistSelectionMain.ascx" />
-    <Content Include="Views\Home\poll.ascx" />
-    <Content Include="Views\Home\pollmessage.ascx" />
     <Content Include="Views\Home\progress.ascx" />
     <Content Include="Views\Home\quickfind.ascx" />
     <Content Include="Views\Home\recordEdit.ascx" />
-    <Content Include="Views\Home\refresh.ascx" />
     <Content Include="Views\Home\Util_CustomReportChilds.aspx" />
     <Content Include="Views\Home\Util_Def_Crosstabs.ascx" />
     <Content Include="Views\Home\Util_Def_CustomReports.ascx" />

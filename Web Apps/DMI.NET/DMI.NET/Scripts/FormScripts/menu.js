@@ -358,7 +358,7 @@ function menu_abMainMenu_Click(pTool) {
 	
 	//Reset the idle timeout.
 	window.clearTimeout(window.timeoutHandle);
-	window.timeoutHandle = window.setTimeout('try{menu_logoffIntranet();}catch(e){}', window.timeoutMs);
+	window.timeoutHandle = window.setTimeout('OpenHR.SessionTimeout();', window.timeoutMs);
 	window.onbeforeunload = null;
 
 	//reject disabled icon clicks
@@ -3466,6 +3466,15 @@ function menu_pausecomp(millis) {
 	//		}
 	//	}
 }
+
+function menu_sessionTimeout() {
+
+
+
+	window.location.href = window.ROOT + "Home/sessionTimeout";
+
+}
+
 
 	function menu_logoffIntranet() {
 	//	if (saveChanges("LOGOFF", true, false) != 2) { // 2 = vbCancel

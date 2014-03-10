@@ -424,7 +424,7 @@
 			setTimeout(function () {
 				//alert('thanks for staying!');
 				window.clearTimeout(window.timeoutHandle);
-				window.timeoutHandle = window.setTimeout('try{menu_logoffIntranet();}catch(e){}', window.timeoutMs);
+				window.timeoutHandle = window.setTimeout('OpenHR.SessionTimeout();', window.timeoutMs);
 			}, 1000);
 			return "You will lose your changes if you do not save before leaving this page.\n\nWhat do you want to do?";
 		}

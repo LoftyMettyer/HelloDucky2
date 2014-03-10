@@ -126,6 +126,13 @@
 			    resizable: false
 			});
 
+			$("#divPollMessage").dialog({
+				autoOpen: false,
+				modal: true,
+				width: 350,
+				height: 300,
+				resizable: false
+			});
 			
 			$("#dialog-confirm").dialog({
 				autoOpen: false,
@@ -272,6 +279,7 @@
 		function updateProgressMsg() {
 			$('.progressMessage span').text($('#txtProgressMessage').val());
 		}
+		
 	</script>
 
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -306,7 +314,7 @@
 			var c_value = escape(value) + ((exdays == null) ? "" : "; expires=" + exdate.toUTCString());
 			document.cookie = c_name + "=" + c_value;
 		}
-		
+
 		//window.currentTheme = "<d%=currentTheme %>";
 		window.currentLayout = "<%=currentLayout %>";
 
@@ -442,6 +450,10 @@
 	</div>
 
 	<div id="divthemeRoller" title=""></div>
+	
+	<div id="divPollMessage" style="display: block;">
+		<form id="frmPollMessage" action="pollMessage" />		
+	</div>
 
 	<%--<div id="footer-banner" class="footer-banner ui-widget ui-state-default">
 		<p id="footerbannerprogress" class="footer-banner-p-progress" runat="server"></p>

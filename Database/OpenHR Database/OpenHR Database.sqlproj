@@ -93,7 +93,6 @@
     <Build Include="Stored Procedures\Web\sp_ASRIntCancelCourse.sql" />
     <Build Include="Stored Procedures\Web\sp_ASRIntCancelCoursePart2.sql" />
     <Build Include="Stored Procedures\Web\sp_ASRIntCheckCanMakeHidden.sql" />
-    <Build Include="Stored Procedures\Web\sp_ASRIntCheckPolls.sql" />
     <Build Include="Stored Procedures\Web\sp_ASRIntDefProperties.sql" />
     <Build Include="Stored Procedures\Web\sp_ASRIntDefUsage.sql" />
     <Build Include="Stored Procedures\Web\sp_ASRIntDeleteUtility.sql" />
@@ -165,7 +164,6 @@
     <Build Include="Stored Procedures\Web\sp_ASRIntMakeBulkBookings.sql" />
     <Build Include="Stored Procedures\Web\sp_ASRIntMakeUtilitiesHidden.sql" />
     <Build Include="Stored Procedures\Web\sp_ASRIntNewUser.sql" />
-    <Build Include="Stored Procedures\Web\sp_ASRIntPoll.sql" />
     <Build Include="Stored Procedures\Web\sp_ASRIntPopulateDefsel.sql" />
     <Build Include="Stored Procedures\Web\sp_ASRIntSaveCrossTab.sql" />
     <Build Include="Stored Procedures\Web\sp_ASRIntSaveCustomReport.sql" />
@@ -646,6 +644,7 @@
     <Build Include="Stored Procedures\System Manager\spASRGetCurrentUsersFromMaster.sql" />
     <Build Include="Stored Procedures\Web\spASRTrackSession.sql" />
     <Build Include="Tables\ASRSysCurrentLogins.sql" />
+    <Build Include="Stored Procedures\Web\spASRIntGetMessages.sql" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Stored Procedures\Other\sp_ASR_Bradford_CalculateDurations.sql" />

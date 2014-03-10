@@ -25,6 +25,10 @@ IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spASRTrack
 	DROP PROCEDURE [dbo].[spASRTrackSession]
 GO
 
+IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spASRIntGetMessages]') AND xtype in (N'P'))
+	DROP PROCEDURE [dbo].[spASRIntGetMessages]
+GO
+
 IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spASRIntGetLoginDetails]') AND xtype in (N'P'))
 	DROP PROCEDURE [dbo].[spASRIntGetLoginDetails]
 GO
@@ -532,10 +536,6 @@ GO
 DROP PROCEDURE [dbo].[sp_ASRIntPopulateDefsel]
 GO
 
-/****** Object:  StoredProcedure [dbo].[sp_ASRIntPoll]    Script Date: 23/07/2013 11:18:30 ******/
-DROP PROCEDURE [dbo].[sp_ASRIntPoll]
-GO
-
 /****** Object:  StoredProcedure [dbo].[sp_ASRIntNewUser]    Script Date: 23/07/2013 11:18:30 ******/
 DROP PROCEDURE [dbo].[sp_ASRIntNewUser]
 GO
@@ -767,10 +767,6 @@ GO
 
 /****** Object:  StoredProcedure [dbo].[sp_ASRIntDefProperties]    Script Date: 23/07/2013 11:18:30 ******/
 DROP PROCEDURE [dbo].[sp_ASRIntDefProperties]
-GO
-
-/****** Object:  StoredProcedure [dbo].[sp_ASRIntCheckPolls]    Script Date: 23/07/2013 11:18:30 ******/
-DROP PROCEDURE [dbo].[sp_ASRIntCheckPolls]
 GO
 
 /****** Object:  StoredProcedure [dbo].[sp_ASRIntCancelCoursePart2]    Script Date: 23/07/2013 11:18:30 ******/
@@ -3508,123 +3504,7 @@ BEGIN
 END
 GO
 
-
-CREATE PROCEDURE [dbo].[sp_ASRIntCheckPolls] AS
-BEGIN
-	DECLARE	@iSPID				integer,
-			@sExecSQL			nvarchar(MAX),
-			@iDBID				integer, 
-			@iID				integer, 
-			@dtLoginTime		datetime, 
-			@sLoginName			varchar(256),
-			@iCount				integer,
-			@UserGroupName		varchar(256),
-			@iUserGroupID		integer,
-			@sActualUserName	sysname;
-
-	SET NOCOUNT ON;
-
-	IF IS_SRVROLEMEMBER('processadmin') = 1 and @@trancount = 0
-	BEGIN
-	
-		/* Kill any intranet processes that have not been polled for a while. */
-		DECLARE hits_cursor CURSOR LOCAL FAST_FORWARD FOR 
-		SELECT ip.spid,
-			ip.dbID,
-			ip.loginTime,
-			ip.loginName
-		FROM ASRSysIntPoll ip
-		WHERE (ip.hitTime < dateadd(second, -45, getdate()))
-		OR (ip.loginTime > (
-			SELECT l.Lock_Time FROM
-			(
-				SELECT TOP 1 * 
-				FROM ASRSysLock
-				WHERE Priority < 3
-				ORDER BY Lock_Time
-			) AS l
-			INNER JOIN master..sysprocesses p
-			ON p.spid = l.spid
-			AND p.dbID = ip.dbid));
-			
-		OPEN hits_cursor;
-		FETCH NEXT FROM hits_cursor INTO @iSPID, @iDBID, @dtLoginTime, @sLoginName;
-
-		WHILE (@@fetch_status = 0)
-		BEGIN
-			SELECT @iCount = COUNT(*)
-			FROM master..sysprocesses
-			WHERE spid = @iSPID
-				AND dbID = @iDBID
-				AND login_time = @dtLoginTime
-				AND loginame = @sLoginName
-				AND ((program_name = 'OpenHR Intranet') OR (program_name = 'OpenHR Self-service Intranet'))
-				AND status = 'sleeping'
-				AND (last_batch < dateadd(second, -45, getdate()))
-				OR (login_Time > (SELECT TOP 1 Lock_Time FROM ASRSysLock WHERE Priority < 3 ORDER BY Priority, Lock_Time));
-
-			IF @iCount > 0
-			BEGIN
-				SET @sExecSQL = 'KILL ' + convert(varchar(MAX), @iSPID);
-				EXECUTE sp_executeSQL @sExecSQL;
-
-				/* Get the current user's group ID. */
-				EXEC [dbo].[spASRIntGetActualUserDetailsForLogin]
-					@sLoginName,
-					@sActualUserName OUTPUT,
-					@UserGroupName OUTPUT,
-					@iUserGroupID OUTPUT;
-						
-				IF @UserGroupName IS null SET @UserGroupName = '<Unknown>';
-						
-				SET @sExecSQL = 'INSERT INTO AsrSysAuditAccess (DateTimeStamp,UserGroup,UserName,ComputerName,HRProModule,Action)
-				                 VALUES (GetDate(), '''+replace(@UserGroupName,'''','''''')+''', '''+replace(rtrim(@sLoginName),'''','''''')+''', LOWER(HOST_NAME()), ''Intranet'', ''Log Out'')';
-				EXECUTE sp_executeSQL @sExecSQL;
-			END
-
-			DELETE FROM [dbo].[ASRSysIntPoll]
-				WHERE spid = @iSPID;
-
-			FETCH NEXT FROM hits_cursor INTO @iSPID, @iDBID, @dtLoginTime, @sLoginName;
-		END
 		
-		CLOSE hits_cursor;
-		DEALLOCATE hits_cursor;
-
-		/* Remove any orphaned messages. */
-		DECLARE messages_cursor CURSOR LOCAL FAST_FORWARD FOR 
-		SELECT id,
-			loginName, 
-			dbID, 
-			loginTime 
-		FROM ASRSysMessages;
-
-		OPEN messages_cursor;	
-		FETCH NEXT FROM messages_cursor INTO @iID, @sLoginName, @iDBID, @dtLoginTime;
-		WHILE (@@fetch_status = 0)
-		BEGIN
-			SELECT @iCount = COUNT(loginame) 
-			FROM master..sysprocesses
-			WHERE loginame =  @sLoginName
-				AND dbID = @iDBID
-				AND login_time = @dtLoginTime;
-
-			IF @iCount = 0
-			BEGIN
-				DELETE FROM ASRSysMessages 
-				WHERE id = @iID;
-			END
-				
-			FETCH NEXT FROM messages_cursor INTO @iID, @sLoginName, @iDBID, @dtLoginTime;
-		END
-		
-		CLOSE messages_cursor;
-		DEALLOCATE messages_cursor;
-
-	END
-
-END
-GO
 
 /****** Object:  StoredProcedure [dbo].[sp_ASRIntDefProperties]    Script Date: 23/07/2013 11:18:30 ******/
 SET ANSI_NULLS ON
@@ -18620,80 +18500,6 @@ Err:
 Done:
 	RETURN (@hResult);
 
-END
-GO
-
-/****** Object:  StoredProcedure [dbo].[sp_ASRIntPoll]    Script Date: 23/07/2013 11:18:30 ******/
-SET ANSI_NULLS ON
-GO
-
-SET QUOTED_IDENTIFIER ON
-GO
-
-CREATE PROCEDURE [dbo].[sp_ASRIntPoll] AS
-BEGIN
-
-	SET NOCOUNT ON;
-
-	/* Update the ASRSysIntHit table to show that the database has been hit by an intranet user.
-	Return a recordset of the messages for the user. */
-	DECLARE @iCount		integer,
-		@iDBID			integer,
-		@iUID			integer,
-		@dtLoginTime	datetime,
-		@sLoginName		varchar(256);
-
-	/* Check if the current user already has a record in the poll table. */
-	SELECT @iCount = COUNT(*) 
-	FROM [dbo].[ASRSysIntPoll]
-	WHERE spid = @@spid;
-
-	/* Get the current user's process information. */
-	SELECT @iDBID = dbID,
-		@iUID = uid,
-		@dtLoginTime = login_time,
-		@sLoginName = loginame
-	FROM master..sysprocesses
-	WHERE spid = @@spid;
-	
-	/* Create/update the current user's record in the poll table. */
-	IF @iCount  = 0 
-	BEGIN
-		INSERT INTO [dbo].[ASRSysIntPoll] (spid, hitTime, dbID, uID, loginTime, loginName)
-			VALUES (@@spid, getdate(), @iDBID, @iUID, @dtLoginTime, @sLoginName);
-	END
-	ELSE
-	BEGIN
-		UPDATE [dbo].[ASRSysIntPoll]
-		SET hitTime = getdate(),
-			dbID = @iDBID, 
-			uID = @iUID, 
-			loginTime = @dtLoginTime, 
-			loginName = @sLoginName
-		WHERE spid = @@spid;
-	END
-
-	/* Return a recordset of the messages for the current user. */
-	SELECT 'Message from user ''' + ltrim(rtrim(messageFrom)) + 
-		''' using ''' + ltrim(rtrim(messageSource)) + 
-		' (' + convert(varchar(100), messageTime, 100) +')' + 
-		char(10) + message
-	FROM [dbo].[ASRSysMessages]
-	WHERE loginName = @sLoginName
-		AND spid = @@spid
-		AND dbID = @iDBID
-		AND uid = @iUID
-		AND loginTime = @dtLoginTime;
-
-	/* Remove any orphaned messages. */
-	DELETE
-	FROM [dbo].[ASRSysMessages]
-	WHERE loginName = @sLoginName
-		AND spid = @@spid
-		AND dbID = @iDBID
-		AND uid = @iUID
-		AND loginTime = @dtLoginTime;
-		
 END
 GO
 
@@ -42281,10 +42087,6 @@ GO
 DROP PROCEDURE [dbo].[sp_ASRIntPopulateDefsel]
 GO
 
-/****** Object:  StoredProcedure [dbo].[sp_ASRIntPoll]    Script Date: 13/09/2013 08:59:32 ******/
-DROP PROCEDURE [dbo].[sp_ASRIntPoll]
-GO
-
 /****** Object:  StoredProcedure [dbo].[sp_ASRIntNewUser]    Script Date: 13/09/2013 08:59:32 ******/
 DROP PROCEDURE [dbo].[sp_ASRIntNewUser]
 GO
@@ -42618,10 +42420,6 @@ GO
 
 /****** Object:  StoredProcedure [dbo].[sp_ASRIntDefProperties]    Script Date: 13/09/2013 08:59:32 ******/
 DROP PROCEDURE [dbo].[sp_ASRIntDefProperties]
-GO
-
-/****** Object:  StoredProcedure [dbo].[sp_ASRIntCheckPolls]    Script Date: 13/09/2013 08:59:32 ******/
-DROP PROCEDURE [dbo].[sp_ASRIntCheckPolls]
 GO
 
 /****** Object:  StoredProcedure [dbo].[sp_ASRIntCheckForUsage]    Script Date: 13/09/2013 08:59:32 ******/
@@ -50410,131 +50208,6 @@ END
 GO
 
 
-/****** Object:  StoredProcedure [dbo].[sp_ASRIntCheckPolls]    Script Date: 13/09/2013 08:59:33 ******/
-SET ANSI_NULLS ON
-GO
-
-SET QUOTED_IDENTIFIER ON
-GO
-
-
-CREATE PROCEDURE [dbo].[sp_ASRIntCheckPolls] AS
-BEGIN
-	DECLARE	@iSPID				integer,
-			@sExecSQL			nvarchar(MAX),
-			@iDBID				integer, 
-			@iID				integer, 
-			@dtLoginTime		datetime, 
-			@sLoginName			varchar(256),
-			@iCount				integer,
-			@UserGroupName		varchar(256),
-			@iUserGroupID		integer,
-			@sActualUserName	sysname;
-
-	SET NOCOUNT ON;
-
-	IF IS_SRVROLEMEMBER('processadmin') = 1 and @@trancount = 0
-	BEGIN
-	
-		/* Kill any intranet processes that have not been polled for a while. */
-		DECLARE hits_cursor CURSOR LOCAL FAST_FORWARD FOR 
-		SELECT ip.spid,
-			ip.dbID,
-			ip.loginTime,
-			ip.loginName
-		FROM ASRSysIntPoll ip
-		WHERE (ip.hitTime < dateadd(second, -45, getdate()))
-		OR (ip.loginTime > (
-			SELECT l.Lock_Time FROM
-			(
-				SELECT TOP 1 * 
-				FROM ASRSysLock
-				WHERE Priority < 3
-				ORDER BY Lock_Time
-			) AS l
-			INNER JOIN master..sysprocesses p
-			ON p.spid = l.spid
-			AND p.dbID = ip.dbid));
-			
-		OPEN hits_cursor;
-		FETCH NEXT FROM hits_cursor INTO @iSPID, @iDBID, @dtLoginTime, @sLoginName;
-
-		WHILE (@@fetch_status = 0)
-		BEGIN
-			SELECT @iCount = COUNT(*)
-			FROM master..sysprocesses
-			WHERE spid = @iSPID
-				AND dbID = @iDBID
-				AND login_time = @dtLoginTime
-				AND loginame = @sLoginName
-				AND ((program_name = 'OpenHR Intranet') OR (program_name = 'OpenHR Self-service Intranet'))
-				AND status = 'sleeping'
-				AND (last_batch < dateadd(second, -45, getdate()))
-				OR (login_Time > (SELECT TOP 1 Lock_Time FROM ASRSysLock WHERE Priority < 3 ORDER BY Priority, Lock_Time));
-
-			IF @iCount > 0
-			BEGIN
-				SET @sExecSQL = 'KILL ' + convert(varchar(MAX), @iSPID);
-				EXECUTE sp_executeSQL @sExecSQL;
-
-				/* Get the current user's group ID. */
-				EXEC [dbo].[spASRIntGetActualUserDetailsForLogin]
-					@sLoginName,
-					@sActualUserName OUTPUT,
-					@UserGroupName OUTPUT,
-					@iUserGroupID OUTPUT;
-						
-				IF @UserGroupName IS null SET @UserGroupName = '<Unknown>';
-						
-				SET @sExecSQL = 'INSERT INTO AsrSysAuditAccess (DateTimeStamp,UserGroup,UserName,ComputerName,HRProModule,Action)
-				                 VALUES (GetDate(), '''+replace(@UserGroupName,'''','''''')+''', '''+replace(rtrim(@sLoginName),'''','''''')+''', LOWER(HOST_NAME()), ''Intranet'', ''Log Out'')';
-				EXECUTE sp_executeSQL @sExecSQL;
-			END
-
-			DELETE FROM [dbo].[ASRSysIntPoll]
-				WHERE spid = @iSPID;
-
-			FETCH NEXT FROM hits_cursor INTO @iSPID, @iDBID, @dtLoginTime, @sLoginName;
-		END
-		
-		CLOSE hits_cursor;
-		DEALLOCATE hits_cursor;
-
-		/* Remove any orphaned messages. */
-		DECLARE messages_cursor CURSOR LOCAL FAST_FORWARD FOR 
-		SELECT id,
-			loginName, 
-			dbID, 
-			loginTime 
-		FROM ASRSysMessages;
-
-		OPEN messages_cursor;	
-		FETCH NEXT FROM messages_cursor INTO @iID, @sLoginName, @iDBID, @dtLoginTime;
-		WHILE (@@fetch_status = 0)
-		BEGIN
-			SELECT @iCount = COUNT(loginame) 
-			FROM master..sysprocesses
-			WHERE loginame =  @sLoginName
-				AND dbID = @iDBID
-				AND login_time = @dtLoginTime;
-
-			IF @iCount = 0
-			BEGIN
-				DELETE FROM ASRSysMessages 
-				WHERE id = @iID;
-			END
-				
-			FETCH NEXT FROM messages_cursor INTO @iID, @sLoginName, @iDBID, @dtLoginTime;
-		END
-		
-		CLOSE messages_cursor;
-		DEALLOCATE messages_cursor;
-
-	END
-
-END
-
-GO
 
 /****** Object:  StoredProcedure [dbo].[sp_ASRIntDefProperties]    Script Date: 13/09/2013 08:59:33 ******/
 SET ANSI_NULLS ON
@@ -74521,83 +74194,7 @@ Err:
 Done:
 	RETURN (@hResult);
 
-END
-
-GO
-
-/****** Object:  StoredProcedure [dbo].[sp_ASRIntPoll]    Script Date: 13/09/2013 08:59:35 ******/
-SET ANSI_NULLS ON
-GO
-
-SET QUOTED_IDENTIFIER ON
-GO
-
-
-CREATE PROCEDURE [dbo].[sp_ASRIntPoll] AS
-BEGIN
-
-	SET NOCOUNT ON;
-
-	/* Update the ASRSysIntHit table to show that the database has been hit by an intranet user.
-	Return a recordset of the messages for the user. */
-	DECLARE @iCount		integer,
-		@iDBID			integer,
-		@iUID			integer,
-		@dtLoginTime	datetime,
-		@sLoginName		varchar(256);
-
-	/* Check if the current user already has a record in the poll table. */
-	SELECT @iCount = COUNT(*) 
-	FROM [dbo].[ASRSysIntPoll]
-	WHERE spid = @@spid;
-
-	/* Get the current user's process information. */
-	SELECT @iDBID = dbID,
-		@iUID = uid,
-		@dtLoginTime = login_time,
-		@sLoginName = loginame
-	FROM master..sysprocesses
-	WHERE spid = @@spid;
-	
-	/* Create/update the current user's record in the poll table. */
-	IF @iCount  = 0 
-	BEGIN
-		INSERT INTO [dbo].[ASRSysIntPoll] (spid, hitTime, dbID, uID, loginTime, loginName)
-			VALUES (@@spid, getdate(), @iDBID, @iUID, @dtLoginTime, @sLoginName);
 	END
-	ELSE
-	BEGIN
-		UPDATE [dbo].[ASRSysIntPoll]
-		SET hitTime = getdate(),
-			dbID = @iDBID, 
-			uID = @iUID, 
-			loginTime = @dtLoginTime, 
-			loginName = @sLoginName
-		WHERE spid = @@spid;
-	END
-
-	/* Return a recordset of the messages for the current user. */
-	SELECT 'Message from user ''' + ltrim(rtrim(messageFrom)) + 
-		''' using ''' + ltrim(rtrim(messageSource)) + 
-		' (' + convert(varchar(100), messageTime, 100) +')' + 
-		char(10) + message
-	FROM [dbo].[ASRSysMessages]
-	WHERE loginName = @sLoginName
-		AND spid = @@spid
-		AND dbID = @iDBID
-		AND uid = @iUID
-		AND loginTime = @dtLoginTime;
-
-	/* Remove any orphaned messages. */
-	DELETE
-	FROM [dbo].[ASRSysMessages]
-	WHERE loginName = @sLoginName
-		AND spid = @@spid
-		AND dbID = @iDBID
-		AND uid = @iUID
-		AND loginTime = @dtLoginTime;
-		
-END
 
 GO
 
@@ -79686,6 +79283,16 @@ GO
 IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[sp_ASRIntAuditAccess]') AND xtype in (N'P'))
 	DROP PROCEDURE [dbo].[sp_ASRIntAuditAccess]
 GO
+
+IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[sp_ASRIntPoll]') AND xtype in (N'P'))
+	DROP PROCEDURE [dbo].[sp_ASRIntPoll]
+GO
+
+IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[sp_ASRIntCheckPolls]') AND xtype in (N'P'))
+	DROP PROCEDURE [dbo].[sp_ASRIntCheckPolls]
+GO
+
+
 
 
 IF TYPE_ID(N'DataPermissions') IS NOT NULL
@@ -86111,7 +85718,8 @@ GO
 CREATE PROCEDURE dbo.[spASRTrackSession](
 	@LoggingIn		bit,
 	@Application	varchar(255),
-	@ClientMachine	varchar(255))
+	@ClientMachine	varchar(255),
+	@LoginTime		datetime OUTPUT)
 AS
 BEGIN
 
@@ -86126,22 +85734,24 @@ BEGIN
 
 	DELETE FROM dbo.ASRSysCurrentLogins WHERE Username = @sUserName AND [clientmachine] = @ClientMachine;
 
+	SET @LoginTime = GETDATE();
+
 	IF @LoggingIn = 1
 	BEGIN
 			
 		INSERT dbo.ASRSysCurrentLogins ([username], [usergroup], [usergroupid], [usersid], [loginTime], [application], clientmachine)
-			VALUES (@sUserName, @sUserGroup, @iUserGroupID, USER_SID(), GETDATE(), @Application, @ClientMachine);
+			VALUES (@sUserName, @sUserGroup, @iUserGroupID, USER_SID(), @LoginTime, @Application, @ClientMachine);
 
 		INSERT INTO [dbo].[ASRSysAuditAccess]
 			(DateTimeStamp,UserGroup,UserName,ComputerName,HRProModule,Action) 
-			VALUES (GetDate(), @sUserGroup, @sUserName, LOWER(HOST_NAME()), 'Intranet', 'Log In');
+			VALUES (@LoginTime, @sUserGroup, @sUserName, LOWER(HOST_NAME()), 'Intranet', 'Log In');
 	END
 	ELSE
 	BEGIN
 
 		INSERT INTO [dbo].[ASRSysAuditAccess]
 			(DateTimeStamp,UserGroup,UserName,ComputerName,HRProModule,Action) 
-			VALUES (GetDate(), @sUserGroup, @sUserName, LOWER(HOST_NAME()), 'Intranet', 'Log Out');
+			VALUES (@LoginTime, @sUserGroup, @sUserName, LOWER(HOST_NAME()), 'Intranet', 'Log Out');
 
 	END
 
@@ -86192,7 +85802,7 @@ BEGIN
 
 	-- Thin clients
    INSERT @processes
-	SELECT clientmachine, username, 'OpenHR Web', '', userSID, loginTime, 0, 0
+	SELECT clientmachine, username, 'OpenHR Web', '', userSID, loginTime, 999, 0
          FROM ASRSysCurrentLogins
 
 	SELECT * FROM @processes ORDER BY loginame;
@@ -86200,6 +85810,33 @@ BEGIN
 END
 
 
+GO
+
+CREATE PROCEDURE [dbo].[spASRIntGetMessages]
+	(@Logintime as datetime)
+AS
+BEGIN
+
+	SET NOCOUNT ON;
+
+	DECLARE @iUID		integer,
+		@sLoginName		varchar(255),
+		@sUserGroup		varchar(255);
+
+	-- Get security info for this user
+	EXEC [dbo].[spASRIntGetActualUserDetails] @sLoginName OUTPUT, @sUserGroup OUTPUT, @iUID OUTPUT
+
+	-- Return a recordset of the messages for the current user.
+	SELECT messagetime, messageFrom, [message] , messageSource
+		FROM [dbo].[ASRSysMessages]
+		WHERE loginName = @sLoginName	AND loginTime = @Logintime;
+
+	-- Remove any orphaned messages.
+	DELETE
+	FROM [dbo].[ASRSysMessages]
+	WHERE loginName = @sLoginName	AND loginTime = @Logintime;
+
+END
 
 
 

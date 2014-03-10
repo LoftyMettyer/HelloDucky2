@@ -14,6 +14,7 @@
 <script type="text/javascript">
 
 	function handleAjaxError(html) {
+
 		//handle error
 		OpenHR.messageBox(html.ErrorMessage.replace("<p>", "\n\n"), 48, html.ErrorTitle);
 
@@ -69,15 +70,11 @@
 		});
 
 	$(document).ready(function () {
+
+			OpenHR.CheckForMessages();
 		
 				$("#fixedlinksframe").show();
 				$("#FixedLinksContent").fadeIn("slow");
-
-				//Load Poll.asp, then reload every 30 seconds to keep
-				//session alive, and check for server messages.
-				refreshPollFrame(); // first time
-				// re-call the function each 30 seconds
-				window.setInterval("refreshPollFrame()", 30000);
 
 				$(".popup").dialog({
 						overflow: false,
@@ -85,8 +82,7 @@
 						modal: true,
 						height: 550,
 						width: 800
-				});
-			
+				});		
 
 			//load menu for dmi, or linksmain for ssi
 			var SelfServiceUserType = '<%=ViewBag.SSIMode%>';
@@ -142,33 +138,19 @@
 
 			}
 
+		//Timeout functionality
+		try {
+			window.timeoutMs = (Number('<%=Session("TimeoutSecs")%>') * 1000);
+			}
+		catch (e) {
+			//default to 20 minutes.
+			window.timeoutMs = 1200000;
+		}
 
-			//Timeout functionality
-			try {
-				 window.timeoutMs = (Number('<%=Session("TimeoutSecs")%>') * 1000);
-			}
-			catch (e) {
-				//default to 20 minutes.
-				window.timeoutMs = 1200000;
-			}
-			
-			window.timeoutHandle = window.setTimeout('try{menu_logoffIntranet();}catch(e){}', window.timeoutMs);
-			
+		window.timeoutHandle = window.setTimeout('OpenHR.SessionTimeout();', window.timeoutMs);
+
 		});
 
-		function refreshPollFrame() {
-				$.ajax({
-					url: "<%:Url.Action("poll", "home")%>",
-					dataType: 'html',
-						type: "POST",
-						success: function (html) {
-								$("#poll").html(html);
-						},
-						error: function (req, status, errorObj) {
-								//alert("OpenHR.submitForm ajax call to '" + url + "' failed with '" + errorObj + "'.");
-						}
-				});
-		}
 
 
 </script>
@@ -193,7 +175,7 @@
 
 
 <div id="mainframeset">
-	
+		
 	<div id="workframeset" style="display: block;" class="ui-widget ui-widget-content">
 		<div id="SSILinksFrame" style="display: none"></div>
 		<div id="workframe" data-framesource="default.asp"><%Html.RenderPartial("~/views/home/_default.ascx")%></div>
@@ -205,20 +187,9 @@
 		<div id="optiondataframe" data-framesource="optionData.asp" style="display: none"><%Html.RenderPartial("~/views/home/optiondata.ascx")%></div>
 	</div>
 
-	<div id="refresh" data-framesource="refresh.asp" style="display: none"></div>
-
-	<div id="pollframeset">
-		<div id="poll" data-framesource="poll.asp" style="display: none"></div>
-		<div id="pollmessageframe" data-framesource="pollmessage.asp" style="display: none"><%Html.RenderPartial("~/views/home/pollmessage.ascx")%></div>
-	</div>
-
 	<div id="reportframeset" class="popup" data-framesource="util_run" style="">
 		<div id="reportframe" style="height: 100%"></div>
 	</div>
-
-		<div id="messageframe" style="display: none">Message Page</div>
-
-	<div id="waitpage" data-framesource="WaitPage.asp" style="display: none">waitpage</div>
 
 </div>
 

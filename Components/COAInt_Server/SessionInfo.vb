@@ -138,11 +138,16 @@ Public Class SessionInfo
 		End Try
 
 		Try
+			Dim prmLoginTime = New SqlParameter("LoginTime", SqlDbType.DateTime) With {.Direction = ParameterDirection.Output}
 
 			objDataAccess.ExecuteSP("spASRTrackSession" _
 					, New SqlParameter("LoggingIn", SqlDbType.Bit) With {.Value = IsLogin} _
 					, New SqlParameter("Application", SqlDbType.VarChar, 255) With {.Value = "OpenHR Web"} _
-					, New SqlParameter("ClientMachine", SqlDbType.VarChar, 255) With {.Value = sMachineName})
+					, New SqlParameter("ClientMachine", SqlDbType.VarChar, 255) With {.Value = sMachineName} _
+					, prmLoginTime)
+
+			_objLogin.LoginTime = prmLoginTime.Value
+
 
 		Catch ex As Exception
 			Throw

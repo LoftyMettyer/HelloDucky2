@@ -43,14 +43,9 @@ Public Class MvcApplication
 	Sub Session_Start()
 
 		'If the user isn't requesting the Login form, redirect them there.
-
 		Session("version") = My.Application.Info.Version.Major & "." & My.Application.Info.Version.Minor & "." & My.Application.Info.Version.Build
-		Session.Timeout = 20
 		Session("TimeoutSecs") = Session.Timeout * 60
 		Server.ScriptTimeout = 1000
-
-		' sDefaultStartPage = "login.asp"
-		' Session("DefaultStartPage") = sDefaultStartPage
 
 		Session("database") = Request.QueryString("database")
 		Session("server") = Request.QueryString("server")
@@ -131,8 +126,6 @@ Public Class MvcApplication
 	Sub Session_End()
 
 		Try
-
-			LogOff()
 
 			' Clear up any temporary files from OLE functionality
 			Session("OLEObject") = Nothing

@@ -1364,10 +1364,6 @@
 </div>
 
 <%End If%>
-<div id="pollframeset">
-	<div id="poll" data-framesource="poll.asp" style="display: none"></div>
-	<div id="pollmessageframe" data-framesource="pollmessage.asp" style="display: none"><%Html.RenderPartial("~/views/home/pollmessage.ascx")%></div>
-</div>
 
 <div id="pwfs"><%Response.Write(_PendingWorkflowStepsHTMLTable.ToString())%></div>
 
@@ -1459,8 +1455,6 @@
 	}
 }
 
-
-
 	//Display Pending Workflow Steps if appropriate
 	if (('<%=fWFDisplayPendingSteps%>' == 'True') && (Number('<%=_StepCount%>') > 0)) {		
 		relocateURL('WorkflowPendingSteps', 0);
@@ -1472,6 +1466,7 @@
 
 		$("#fixedlinksframe").show();
 		
+		OpenHR.CheckForMessages();
 		showDefaultRibbon();
 
 		//Hide DMI button for non-IE browsers					
@@ -1566,13 +1561,6 @@
 			//$('.ViewDescription').addClass('ui-widget ui-widget-content');
 
 		}
-
-
-		//Load Poll.asp, then reload every 30 seconds to keep
-		//session alive, and check for server messages.
-		loadPartialView("poll", "home"); // first time
-		// re-call the function each 30 seconds
-		window.setInterval("loadPartialView('poll', 'home')", 30000);
 
 		// This replaces the big fat grey scrollbar with the nice thin dark one. (HRPRO-2952)
 		if ('<%=session("isMobileDevice")%>' != "True") {

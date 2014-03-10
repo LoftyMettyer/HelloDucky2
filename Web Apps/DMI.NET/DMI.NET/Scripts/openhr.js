@@ -3,6 +3,24 @@
 (function (window, $) {
 	"use strict";
 
+	function checkForMessages() {
+		var frmMessage = OpenHR.getForm("divPollMessage", "frmPollMessage");
+
+		if (frmMessage != undefined) {
+			frmMessage.txtIsSessionTiemout = false;
+			OpenHR.submitForm(frmMessage, "divPollMessage");
+		}		
+	}
+
+	function sessionTimeout() {
+		var frmMessage = OpenHR.getForm("divPollMessage", "frmPollMessage");
+
+		if (frmMessage != undefined) {
+			frmMessage.txtIsSessionTiemout = true;
+			OpenHR.submitForm(frmMessage, "divPollMessage");
+		}
+	}
+
 	function handleAjaxError(html) {
 		//handle error
 		messageBox(html.ErrorMessage.replace("<p>", "\n\n"), 48, html.ErrorTitle);
@@ -635,7 +653,9 @@
 		GetPathOnly: GetPathOnly,		
 		getCookie: getCookie,
 		CheckOLEFileNameLength: CheckOLEFileNameLength,
-		GetFileExtension: getFileExtension
+		GetFileExtension: getFileExtension,
+		CheckForMessages: checkForMessages,
+		SessionTimeout: sessionTimeout
 	};
 
 })(window, jQuery);

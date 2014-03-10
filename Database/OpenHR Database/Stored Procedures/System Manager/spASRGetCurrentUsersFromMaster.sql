@@ -41,7 +41,7 @@ BEGIN
 
 	-- Thin clients
    INSERT @processes
-	SELECT clientmachine, username, 'OpenHR Web', '', userSID, loginTime, 0, 0
+	SELECT clientmachine, username, 'OpenHR Web', '', userSID, loginTime, 999, 0
          FROM ASRSysCurrentLogins
 
 	SELECT * FROM @processes ORDER BY loginame;
