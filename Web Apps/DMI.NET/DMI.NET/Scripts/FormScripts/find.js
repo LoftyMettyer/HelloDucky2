@@ -44,8 +44,8 @@ function find_window_onload() {
 		var sErrorMsg;
 		var sAction;
 		var dataCollection;
-	    var sControlName;
-	    var sColumnName;
+		var sControlName;
+		var sColumnName;
 		var iCount;
 		var fRecordAdded;
 		var sColumnType;
@@ -53,12 +53,12 @@ function find_window_onload() {
 		var colNames;
 		var sColDef;
 		var iIndex;
-	    var i;
-	    var colData;
+		var i;
+		var colData;
 		var colDataArray;
 		var obj;
 		var iCount2;
-		
+
 		if (sCurrentWorkPage == "FIND") {
 			sErrorMsg = frmFindForm.txtErrorDescription.value;
 			if (sErrorMsg.length > 0) {
@@ -82,7 +82,7 @@ function find_window_onload() {
 							sColumnName = sColDef.substr(0, iIndex);
 							sColumnType = sColDef.substr(iIndex + 1);
 							colNames.push(sColumnName);
-							
+
 							if (sColumnName == "ID") {
 								colMode.push({ name: sColumnName, hidden: true });
 							} else {
@@ -147,40 +147,40 @@ function find_window_onload() {
 					ignoreCase: true,
 					shrinkToFit: shrinkToFit,
 					ondblClickRow: function () {
-					    menu_editRecord();
+						menu_editRecord();
 					},
-					loadComplete: function() {
+					loadComplete: function () {
 						moveFirst();
 					}
 				});
 
 				$("#findGridTable").jqGrid('bindKeys', {
-					"onEnter": function() {
+					"onEnter": function () {
 						menu_editRecord();
 					}
 				});
 
 				//search options.
 				$("#findGridTable").jqGrid('navGrid', '#pager-coldata', { del: false, add: false, edit: false, search: false });
-				
+
 				$("#findGridTable").jqGrid('navButtonAdd', "#pager-coldata", {
-						caption: '',
-						buttonicon: 'ui-icon-search',
-						onClickButton: function () {
-							$("#findGridTable").jqGrid('filterToolbar', { stringResult: true, searchOnEnter: false });
-						},
-						position: 'first',
-						title: '',
-						cursor: 'pointer'					
-				});				
-				
+					caption: '',
+					buttonicon: 'ui-icon-search',
+					onClickButton: function () {
+						$("#findGridTable").jqGrid('filterToolbar', { stringResult: true, searchOnEnter: false });
+					},
+					position: 'first',
+					title: '',
+					cursor: 'pointer'
+				});
+
 
 				//resize the grid to the height of its container.
 				var gridRowHeight = $("#findGridRow").height();
 				var gridHeaderHeight = $('#findGridRow .ui-jqgrid-hdiv').height();
 				var gridFooterHeight = $('#findGridRow .ui-jqgrid-pager').height();
 				var newHeight = gridRowHeight - gridHeaderHeight - gridFooterHeight;
-				
+
 				$("#findGridTable").jqGrid('setGridHeight', newHeight);
 			}
 
@@ -220,7 +220,7 @@ function find_window_onload() {
 			}
 
 			if (fOk == true) {
-			    var sControlPrefix;
+				var sControlPrefix;
 				var sColumnId;
 				var ctlSummaryControl;
 				var sSummaryControlName;
@@ -291,13 +291,13 @@ function find_window_onload() {
 			}
 		}
 	}
-	
+
 	$("#findGridTable").keydown(function (event) {
 		//If keyboard pressed while grid is in focus, check it's not the grid keys, then pass focus to locate box...
-		
+
 		var keyPressed = event.which;
 		//up arrow, down arrow, Enter, spacebar, home, end, pgup and pgdn.
-		if((keyPressed!=40) && (keyPressed!=38) && (keyPressed!=13) && (keyPressed!=32) && (keyPressed!=33) && (keyPressed!=34) && (keyPressed!=35) && (keyPressed!=36))
+		if ((keyPressed != 40) && (keyPressed != 38) && (keyPressed != 13) && (keyPressed != 32) && (keyPressed != 33) && (keyPressed != 34) && (keyPressed != 35) && (keyPressed != 36))
 			$('#txtLocateRecordFind').focus();
 	});
 
@@ -306,7 +306,7 @@ function find_window_onload() {
 /* Return the ID of the record selected in the find form. */
 function selectedRecordID() {
 	var iRecordId;
-	
+
 	iRecordId = $("#findGridTable").getGridParam('selrow');
 	iRecordId = $("#findGridTable").jqGrid('getCell', iRecordId, 'ID');
 
@@ -315,12 +315,12 @@ function selectedRecordID() {
 
 /* Sequential search the grid for the required ID. */
 function locateRecord(psSearchFor, pfIdMatch) {
-    //select the grid row that contains the record with the passed in ID.
-    var rowNumber = $("#findGridTable input[value='" + psSearchFor + "']").parent().parent().attr("id");
-    if (rowNumber >= 0) {
-        $("#findGridTable").jqGrid('setSelection', rowNumber);
-    } else {
-        $("#findGridTable").jqGrid('setSelection', 1);
-    }
+	//select the grid row that contains the record with the passed in ID.
+	var rowNumber = $("#findGridTable input[value='" + psSearchFor + "']").parent().parent().attr("id");
+	if (rowNumber >= 0) {
+		$("#findGridTable").jqGrid('setSelection', rowNumber);
+	} else {
+		$("#findGridTable").jqGrid('setSelection', 1);
+	}
 }
 
