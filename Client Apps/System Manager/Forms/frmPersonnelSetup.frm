@@ -48,18 +48,14 @@ Begin VB.Form frmPersonnelSetup
       TabCaption(1)   =   "C&areer Change"
       TabPicture(1)   =   "frmPersonnelSetup.frx":0028
       Tab(1).ControlEnabled=   0   'False
-      Tab(1).Control(0)=   "fraWorkingPattern"
-      Tab(1).Control(0).Enabled=   0   'False
-      Tab(1).Control(1)=   "fraRegion"
-      Tab(1).Control(1).Enabled=   0   'False
+      Tab(1).Control(0)=   "fraRegion"
+      Tab(1).Control(1)=   "fraWorkingPattern"
       Tab(1).ControlCount=   2
       TabCaption(2)   =   "&Hierarchy"
       TabPicture(2)   =   "frmPersonnelSetup.frx":0044
       Tab(2).ControlEnabled=   0   'False
-      Tab(2).Control(0)=   "fraPostAllocationTable"
-      Tab(2).Control(0).Enabled=   0   'False
-      Tab(2).Control(1)=   "fraHierarchyTable"
-      Tab(2).Control(1).Enabled=   0   'False
+      Tab(2).Control(0)=   "fraHierarchyTable"
+      Tab(2).Control(1)=   "fraPostAllocationTable"
       Tab(2).ControlCount=   2
       Begin VB.Frame fraPostAllocationTable 
          Caption         =   "Post Allocation Table :"
@@ -1379,8 +1375,7 @@ Private Sub RefreshPersonnelColumnControls()
           End If
           
           ' Photograph column combo for SSI
-          If !DataType = dtVARBINARY Or _
-                !DataType = dtLONGVARBINARY Then
+          If !DataType = dtVARBINARY And !OLEType = 2 And !MaxOLESizeEnabled Then
             cboSSIPhotograph.AddItem !ColumnName
             cboSSIPhotograph.ItemData(cboSSIPhotograph.NewIndex) = !ColumnID
             If !ColumnID = mvar_lngSSIPhotographID Then
