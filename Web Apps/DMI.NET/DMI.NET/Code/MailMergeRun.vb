@@ -162,8 +162,9 @@ Namespace Code
 					Return False
 				End If
 
+				objTemplate.Position = 0
+
 				Dim doc As New Document(objTemplate)
-				'Dim doc As New Document(TemplateName)
 				doc.MailMerge.FieldMergingCallback = Me
 				doc.MailMerge.Execute(MergeData)
 				MergeDocument = New MemoryStream
