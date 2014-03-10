@@ -145,7 +145,6 @@ function find_window_onload() {
 					width: gridWidth,
 					pager: $('#pager-coldata'),
 					ignoreCase: true,
-					//autowidth: true,
 					shrinkToFit: shrinkToFit,
 					ondblClickRow: function () {
 					    menu_editRecord();
@@ -163,7 +162,18 @@ function find_window_onload() {
 
 				//search options.
 				$("#findGridTable").jqGrid('navGrid', '#pager-coldata', { del: false, add: false, edit: false, search: false });
-				$("#findGridTable").jqGrid('filterToolbar', { stringResult: true, searchOnEnter: false });
+				
+				$("#findGridTable").jqGrid('navButtonAdd', "#pager-coldata", {
+						caption: '',
+						buttonicon: 'ui-icon-search',
+						onClickButton: function () {
+							$("#findGridTable").jqGrid('filterToolbar', { stringResult: true, searchOnEnter: false });
+						},
+						position: 'first',
+						title: '',
+						cursor: 'pointer'					
+				});				
+				
 
 				//resize the grid to the height of its container.
 				var gridRowHeight = $("#findGridRow").height();

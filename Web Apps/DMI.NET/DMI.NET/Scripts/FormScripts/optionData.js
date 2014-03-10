@@ -282,7 +282,19 @@ function optiondata_onload() {
 
 				//search options.
 				$("#ssOleDBGrid").jqGrid('navGrid', '#ssOLEDBPager', { del: false, add: false, edit: false, search: false });
-				$("#ssOleDBGrid").jqGrid('filterToolbar', { stringResult: true, searchOnEnter: false });
+				
+				$("#ssOleDBGrid").jqGrid('navButtonAdd', "#ssOLEDBPager", {
+					caption: '',
+					buttonicon: 'ui-icon-search',
+					onClickButton: function () {
+						$("#ssOleDBGrid").jqGrid('filterToolbar', { stringResult: true, searchOnEnter: false });
+					},
+					position: 'first',
+					title: '',
+					cursor: 'pointer'
+				});
+
+				//$("#ssOleDBGrid").jqGrid('filterToolbar', { stringResult: true, searchOnEnter: false });
 
 				$("#ssOleDBGrid").jqGrid('bindKeys', {
 					"onEnter": function () {
