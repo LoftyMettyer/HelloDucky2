@@ -86247,7 +86247,6 @@ GRANT EXEC ON TYPE::[dbo].[DataPermissions] TO ASRSysGroup
 
 
 EXEC spsys_setsystemsetting 'database', 'version', '8.0';
-EXEC spsys_setsystemsetting 'intranet', 'version', '8.0.27';
-EXEC spsys_setsystemsetting 'ssintranet', 'version', '8.0.27';
-
+EXEC spsys_setsystemsetting 'intranet', 'version', '8.0.28';
+EXEC spsys_setsystemsetting 'ssintranet', 'version', '8.0.28';
 
