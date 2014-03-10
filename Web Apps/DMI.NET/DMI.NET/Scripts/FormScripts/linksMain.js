@@ -105,7 +105,8 @@ function popoutchart(MultiAxis, Chart_ShowLegend, Chart_ShowGrid, Chart_ShowValu
 	w.document.write("</tr>");
 	w.document.write("</table>");
 	w.document.write('</div>');
-	w.document.write('<script type="text/javascript">');
+	w.document.write('<scri');
+	w.document.write('pt type="text/javascript">');
 	w.document.write('function loadChart() {');
 	w.document.write('var windowHeight = window.innerHeight - 80;'); //reduce height for toolbar.
 	w.document.write('var chartType = document.getElementById("selChartType").value;');
@@ -238,7 +239,8 @@ function popoutchart(MultiAxis, Chart_ShowLegend, Chart_ShowGrid, Chart_ShowValu
 	w.document.write('DMIthemeLink.href = pathToResources + "/Content/themes/' + CurrentTheme + '/jquery-ui.min.css";');
 	w.document.write('head.appendChild(DMIthemeLink);');
 
-	w.document.writeln('</script>');
+	w.document.write('</scr');
+	w.document.write('ipt>');
 	w.document.close();
 }
 
