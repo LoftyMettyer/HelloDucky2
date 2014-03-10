@@ -1133,6 +1133,7 @@
     <Content Include="Scripts\jquery\jOrgChart\images\raspberry.jpg" />
     <Content Include="Scripts\jquery\jOrgChart\jquery.jOrgChart.js" />
     <Content Include="Scripts\jquery\jOrgChart\prettify.js" />
+    <Content Include="Scripts\jquery\jquery-debouncedresize.js" />
     <Content Include="Scripts\jquery\jquery-ui-1.9.2.custom.js" />
     <Content Include="Scripts\jquery\jquery.jqGrid.min.js" />
     <Content Include="Scripts\jquery\jquery.jqGrid.src.js" />

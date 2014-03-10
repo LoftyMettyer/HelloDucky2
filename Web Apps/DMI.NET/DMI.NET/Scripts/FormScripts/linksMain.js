@@ -191,15 +191,17 @@ function popoutchart(MultiAxis, Chart_ShowLegend, Chart_ShowGrid, Chart_ShowValu
 	w.document.write('$(document).ready(function () {'); //On document ready
 	w.document.write('$("#chartData").setGridWidth($("#chartDataDiv").width());');
 	w.document.write('$("#chartData").setGridHeight($("#chartDataDiv").height());');
-	w.document.write('$(window).resize(function() {'); //When the window is resized, resize datagrid and chart
+	w.document.write('$(window).on("debouncedresize", function() {'); //When the window is resized, resize datagrid and chart
 	w.document.write('$("#chartData").setGridWidth($("#chartDataDiv").width());');
 	w.document.write('$("#chartData").setGridHeight($("#chartDataDiv").height());');
 	w.document.write('loadChart();');
-	w.document.write('});'); //End of resize
+	w.document.write('});'); //End of window.debouncedresize
 	w.document.write('});'); //End of document ready
 	w.document.write('};'); //End of function loadData
 
 	//Below there are several functions that are chained to be called during loading of jQuery and other scripts
+	w.document.write('function ScriptjQueryDebouncedResizeCallback(){loadData();}');
+	
 	w.document.write('function ScriptjQueryCallback(){');
 	w.document.write('var head = document.getElementsByTagName("head")[0];');
 	w.document.write('var ScriptjQueryUI = document.createElement("script");');
@@ -220,7 +222,15 @@ function popoutchart(MultiAxis, Chart_ShowLegend, Chart_ShowGrid, Chart_ShowValu
 	w.document.write('head.appendChild(ScriptjqGrid);');
 	w.document.write('}');
 
-	w.document.write('function ScriptjqGridCallback(){loadData();}');
+	w.document.write('function ScriptjqGridCallback(){');
+	w.document.write('var head = document.getElementsByTagName("head")[0];');
+	w.document.write('var jQueryDebouncedResize = document.createElement("script");');
+	w.document.write('jQueryDebouncedResize.type = "text/javascript";');
+	w.document.write('jQueryDebouncedResize.src = pathToResources + "/Scripts/jquery/jquery-debouncedresize.js";');
+	w.document.write('jQueryDebouncedResize.onreadystatechange = ScriptjQueryDebouncedResizeCallback;');
+	w.document.write('jQueryDebouncedResize.onload = ScriptjQueryDebouncedResizeCallback;');
+	w.document.write('head.appendChild(jQueryDebouncedResize);');
+	w.document.write('}');
 
 	w.document.write('var pathToResources = window.location.pathname.substring(0, window.location.pathname.substring(1).indexOf("/") + 1);');
 	w.document.write('if (pathToResources == "/Home") {pathToResources = ""};'); //Needed when code is running from Visual Studio
