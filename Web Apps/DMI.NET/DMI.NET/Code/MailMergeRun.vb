@@ -213,26 +213,33 @@ Namespace Code
 			'				& " that is accessible from the OpenHR Web server.", TemplateName, "<br/>"))
 			'	Return False
 			'End If
+			Try
 
-			Dim objTemplate = CType(HttpContext.Current.Session("MailMerge_Template"), Stream)
-			If objTemplate Is Nothing Then
-				Errors.Add("No template file selected")
+				Dim objTemplate = CType(HttpContext.Current.Session("MailMerge_Template"), Stream)
+				If objTemplate Is Nothing Then
+					Errors.Add("No template file selected")
+					Return False
+				End If
+
+				' Verify template integrity
+				Dim doc As New Document(objTemplate)
+				Dim templateFields = doc.MailMerge.GetFieldNames().Distinct().ToList()
+
+				For Each objColumn In Columns
+					templateFields.Remove(objColumn.MergeName)
+				Next
+
+				If templateFields.Count > 0 Then
+					Errors.Add(String.Format("The uploaded template has the following merge fields which are missing from your definition:{0}{0}{1}{0}{0}Please edit the template or the definition." _
+												, "<br/>", Join(templateFields.ToArray(), "<br/>")))
+					Return False
+				End If
+
+			Catch ex As Exception
+				Errors.Add(ex.Message)
 				Return False
-			End If
 
-			' Verify template integrity
-			Dim doc As New Document(objTemplate)
-			Dim templateFields = doc.MailMerge.GetFieldNames().Distinct().ToList()
-
-			For Each objColumn In Columns
-				templateFields.Remove(objColumn.MergeName)
-			Next
-
-			If templateFields.Count > 0 Then
-				Errors.Add(String.Format("The uploaded template has the following merge fields which are missing from your definition:{0}{0}{1}{0}{0}Please edit the template or the definition." _
-											, "<br/>", Join(templateFields.ToArray(), "<br/>")))
-				Return False
-			End If
+			End Try
 
 			Return True
 
