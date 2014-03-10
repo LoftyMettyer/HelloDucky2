@@ -207,9 +207,13 @@ width:12em; */
 }
 
 .widgetplaceholder {
-	text-align: center;
+	/*text-align: center;*/
 	margin: 0px 30px 10px 20px;
 	height: 120px;
+}
+
+.widgetplaceholder i {
+	display: none;
 }
 
 .chart {

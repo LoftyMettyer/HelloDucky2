@@ -681,7 +681,10 @@
 						</li>
 						<%iRowNum += 1%>
 
-						<%Case ElementType.PendingWorkflows%>
+						<%Case ElementType.PendingWorkflows
+								sText = "No pending workflow steps"
+								If _StepCount > 0 Then sText = String.Format("{0} Pending workflow steps", _StepCount)
+								%>
 						<li data-col="<%=iColNum %>" data-row="<%=iRowNum %>" data-sizex="2" data-sizey="1" class="linkspagebuttontext <%=sTileColourClass%> displayonly pwfslink" onclick="relocateURL('WorkflowPendingSteps', 0)">
 							<div class="pwfTile <%=sTileColourClass%>">
 								<p class="linkspagebuttontileIcon">
@@ -690,7 +693,7 @@
 								</p>
 								<div class="widgetplaceholder generaltheme">
 									<div><i class="icon-inbox"></i></div>
-									<a class="linkspageprompttext-font linkspageprompttext-colour linkspageprompttext-size linkspageprompttext-bold linkspageprompttext-italics" href="#">Pending Workflows</a>
+									<a class="linkspageprompttext-font linkspageprompttext-colour linkspageprompttext-size linkspageprompttext-bold linkspageprompttext-italics" href="#"><%=sText%></a>
 								</div>
 							</div>
 							<div class="pwfList <%=sTileColourClass%>" style="display: none;">
