@@ -19,7 +19,7 @@ Public Class MailMerge
 	Private mlngFailCount As Integer
 
 	Private fOK As Boolean
-	Private mstrStatusMessage As String
+	Private mstrStatusMessage As String = ""
 
 	'Merge Definition Variables
 	Private mstrDefName As String
@@ -224,7 +224,7 @@ Public Class MailMerge
 
 	Public ReadOnly Property ErrorString() As String
 		Get
-			ErrorString = mstrStatusMessage
+			Return mstrStatusMessage
 		End Get
 	End Property
 
@@ -473,11 +473,12 @@ LocalErr:
 
 		On Error GoTo LocalErr
 
-		mstrSQLSelect = vbNullString
-		mstrSQLFrom = vbNullString
-		mstrSQLJoin = vbNullString
-		mstrSQLWhere = vbNullString
-		mstrSQLOrder = vbNullString
+		mstrSQLSelect = ""
+		mstrSQLFrom = ""
+		mstrSQLJoin = ""
+		mstrSQLWhere = ""
+		mstrSQLOrder = ""
+		mstrWhereIDs = ""
 
 		ReDim mastrUDFsRequired(0)
 
@@ -524,7 +525,7 @@ LocalErr:
 								fOK = False
 								Exit Function
 
-							ElseIf IsCalcValid(CInt(objRow("ColExpID"))) <> vbNullString Then
+							ElseIf IsCalcValid(CInt(objRow("ColExpID"))) <> "" Then
 								mstrStatusMessage = "You cannot run this Mail Merge definition as it contains one or more calculation(s) which have been deleted or made hidden by another user. " & "Please re-visit your definition to remove the hidden calculations."
 								fOK = False
 								Exit Function
@@ -687,7 +688,7 @@ LocalErr:
 
 								mstrSQLJoin = mstrSQLJoin & vbNewLine & " LEFT OUTER JOIN " & sSource & " ON " & sBaseIDColumn & " = " & sSource & ".ID"
 
-								mstrWhereIDs = mstrWhereIDs & IIf(mstrWhereIDs <> vbNullString, " OR ", vbNullString).ToString() & sBaseIDColumn & " IN (SELECT ID FROM " & sSource & ")" & " OR (ISNULL(" & sBaseIDColumn & ", 0) = 0)"
+								mstrWhereIDs = mstrWhereIDs & IIf(mstrWhereIDs <> "", " OR ", "").ToString() & sBaseIDColumn & " IN (SELECT ID FROM " & sSource & ")" & " OR (ISNULL(" & sBaseIDColumn & ", 0) = 0)"
 
 							End If
 						End If

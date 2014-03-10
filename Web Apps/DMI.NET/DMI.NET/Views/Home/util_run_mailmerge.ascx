@@ -63,7 +63,6 @@
 		fNotCancelled = Response.IsClientConnected
 		If fok Then fok = fNotCancelled
 	End If
-
 	
 	If fok Then
 		fok = objMailMerge.SQLCodeCreate
@@ -131,7 +130,11 @@
 	Dim sErrorMessage As String
 	
 	' Errors during the merge
-	If objMailMergeOutput.Errors.Count > 0 Then
+	If Len(objMailMerge.ErrorString) > 0 Then
+		sErrorMessage = HttpUtility.JavaScriptStringEncode(objMailMerge.ErrorString)
+		Response.Write(String.Format("raiseWarning(""{0}"", ""{1}"");", objMailMerge.DefName, sErrorMessage))
+	
+	ElseIf objMailMergeOutput.Errors.Count > 0 Then
 		objMailMerge.EventLogChangeHeaderStatus(EventLog_Status.elsFailed)
 
 		sErrorMessage = Join(objMailMergeOutput.Errors.ToArray())

@@ -88,21 +88,21 @@ Namespace BaseClasses
 
 		End Function
 
-		Protected Function IsPicklistValid(ByVal varID As Long) As String
-			IsPicklistValid = IsSelectionValid(varID, "picklist")
+		Protected Function IsPicklistValid(varID As Integer) As String
+			Return IsSelectionValid(varID, "picklist")
 		End Function
 
-		Protected Function IsCalcValid(ByVal varID As Long) As String
-			IsCalcValid = IsSelectionValid(varID, "calculation")
+		Protected Function IsCalcValid(varID As Integer) As String
+			Return IsSelectionValid(varID, "calculation")
 		End Function
 
-		Protected Function IsSelectionValid(ByVal varID As Long, ByRef strType As String) As String
+		Protected Function IsSelectionValid(varID As Integer, strType As String) As String
 
 			Dim rsTemp As DataTable
 
 			IsSelectionValid = vbNullString
 			'UPGRADE_WARNING: Couldn't resolve default property of object varID. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			If Val(varID) = 0 Then Exit Function
+			If varID = 0 Then Exit Function
 
 			rsTemp = GetSelectionAccess(varID, strType)
 
@@ -120,7 +120,7 @@ Namespace BaseClasses
 
 		End Function
 
-		Private Function GetSelectionAccess(ByRef ID As Long, ByRef strType As String) As DataTable
+		Private Function GetSelectionAccess(ID As Integer, strType As String) As DataTable
 
 			Dim strSQL As String
 
