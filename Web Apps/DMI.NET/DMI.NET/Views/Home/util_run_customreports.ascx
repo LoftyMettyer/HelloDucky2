@@ -578,12 +578,12 @@ Else%>
 					<tr>
 						<td colspan="3" height="10">&nbsp;</td>
 					</tr>
-					<tr>
+					<%--<tr>
 						<td colspan="3" height="10" align="center">
 							<input type="button" id="cmdClose" name="cmdClose" value="Close" style="WIDTH: 80px" width="80" class="btn"
 								onclick="closeclick();" />
 						</td>
-					</tr>
+					</tr>--%>
 					<tr>
 						<td colspan="3" height="10"></td>
 					</tr>

@@ -15,6 +15,7 @@
 	Session("CALREP_ShowWeekends") = 0
 	Session("CALREP_ChangeOptions") = 0
 	
+	
 	Session("EmailGroupID") = 0
 	Session("OutputOptions_Format") = 0
 	Session("OutputOptions_Screen") = "true"
@@ -294,6 +295,11 @@ ElseIf Session("utiltype") = "16" Then
 	<%
 Else
 	%>
+	$("#cmdOutput").button({ disabled: true });
+	if ($("#grdReport").length > 0) {
+		$("#cmdOutput").button({ disabled: false });
+	};
+
 	$(".popup").dialog({
 		width: 810,
 		height: 720,
