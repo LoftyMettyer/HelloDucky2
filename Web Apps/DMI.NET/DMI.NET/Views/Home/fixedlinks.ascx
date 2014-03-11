@@ -1073,11 +1073,13 @@
 							<span>Out Of Office</span>
 						</a>
 					</li>
+					<%If UCase(Session("ui-layout-selectable")) = "TRUE" Then%>
 					<li class="linkspagebuttontext" id="userDropdownmenu_Layout">
 						<a href="javascript: showThemeEditor();">
 							<span>Layout</span>
 						</a>
 					</li>
+					<%End If%>
 					<li class="linkspagebuttontext">
 						<a id="mnutoolFixedAbout" href="javascript:fixedlinks_mnutoolAboutHRPro()" rel="table" title="">
 							<span>About</span>

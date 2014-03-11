@@ -1,13 +1,17 @@
 ﻿<appSettings>
 	<add key="LoginPage_Database" value="" />
 	<add key="LoginPage_Server" value="" />
-	<add key="UI_Theme" value="redmond" />
+
+	<add key="UI_Admin_Theme" value="redmond" />
+	<add key="UI_Layout_Selectable" value="false" />
+	<add key="UI_Self_Service_Layout" value="winkit" />
+	<add key="UI_Wireframe_Theme" value="redmond" />
+	<add key="UI_Winkit_Theme" value="redmond" />
+	<add key="UI_Tiles_Theme" value="start" />
+
 	<add key="UI_Banner_Colour" value="" />
 	<add key="UI_Banner_Justification" value="" />
-	<add key="UI_Wireframe_Theme" value="abs" />
-	<add key="UI_Self_Service_Layout" value="winkit" />
-	<add key="UI_Layout_Selectable" value="true" />
-	<add key="DMIRequiresIE" value="true" />
+	<add key="AdminRequiresIE" value="true" />
 	<add key="SMTP_From" value="" />
 	<add key="SMTP_Host" value="" />
 	<!-- Default SMTP port is 25 -->

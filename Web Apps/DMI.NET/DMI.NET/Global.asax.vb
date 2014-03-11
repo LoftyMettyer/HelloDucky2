@@ -54,20 +54,31 @@ Public Class MvcApplication
 			Session("username") = Request.QueryString("user")
 		End If
 
-		' get the theme out the web config.
-		Session("ui-theme") = ApplicationSettings.UI_Theme
-		If Session("ui-theme") Is Nothing Or Len(Session("ui-theme")) <= 0 Then Session("ui-theme") = "redmond"
+		' get the LAYOUT_SELECTABLE setting from web config.
+		Session("ui-layout-selectable") = ApplicationSettings.UI_Layout_Selectable
+		If Session("ui-layout-selectable") Is Nothing Or Len(Session("ui-layout-selectable")) <= 0 Then Session("ui-layout-selectable") = "false"
+
+		' get the SELF_SERVICE_LAYOUT setting from web config.
+		Session("ui-self-service-layout") = ApplicationSettings.UI_Self_Service_Layout
+		If Session("ui-self-service-layout") Is Nothing Or Len(Session("ui-self-service-layout")) <= 0 Then Session("ui-self-service-layout") = "winkit"
+
+		' get the ADMIN (DMI) theme out of web config.
+		Session("ui-admin-theme") = ApplicationSettings.UI_Admin_Theme
+		If Session("ui-admin-theme") Is Nothing Or Len(Session("ui-admin-theme")) <= 0 Then Session("ui-admin-theme") = "redmond"
 
 		' Check for a valid themename, then default to redmond if not valid.
-		If Not File.Exists(Server.MapPath("~/Content/themes/" & Session("ui-theme").ToString() & "/jquery-ui.min.css")) Then
-			Session("ui-theme") = "redmond"
+		If Not File.Exists(Server.MapPath("~/Content/themes/" & Session("ui-admin-theme").ToString() & "/jquery-ui.min.css")) Then
+			Session("ui-admin-theme") = "redmond"
 		End If
 
-		Session("Config-banner-colour") = ApplicationSettings.UI_Banner_Colour
-		If Session("Config-banner-colour") Is Nothing Or Len(Session("Config-banner-colour")) <= 0 Then Session("Config-banner-colour") = "white"
+		' get the TILES theme out of web config.
+		Session("ui-tiles-theme") = ApplicationSettings.UI_Tiles_Theme
+		If Session("ui-tiles-theme") Is Nothing Or Len(Session("ui-tiles-theme")) <= 0 Then Session("ui-tiles-theme") = "start"
 
-		Session("Config-banner-justification") = ApplicationSettings.UI_Banner_Justification
-		If Session("Config-banner-justification") Is Nothing Or Len(Session("Config-banner-justification")) <= 0 Then Session("Config-banner-justification") = "justify"
+		' Check for a valid themename, then default to redmond if not valid.
+		If Not File.Exists(Server.MapPath("~/Content/themes/" & Session("ui-tiles-theme").ToString() & "/jquery-ui.min.css")) Then
+			Session("ui-tiles-theme") = "start"
+		End If
 
 		' get the WIREFRAME theme out the web config.
 		Session("ui-wireframe-theme") = ApplicationSettings.UI_Wireframe_Theme
@@ -78,10 +89,25 @@ Public Class MvcApplication
 			Session("ui-wireframe-theme") = "redmond"
 		End If
 
+		' get the WINKIT theme out the web config.
+		Session("ui-winkit-theme") = ApplicationSettings.UI_Winkit_Theme
+		If Session("ui-winkit-theme") Is Nothing Or Len(Session("ui-winkit-theme")) <= 0 Then Session("ui-winkit-theme") = "redmond"
+
+		' Check for a valid themename, then default to redmond if not valid.
+		If Not File.Exists(Server.MapPath("~/Content/themes/" & Session("ui-winkit-theme").ToString() & "/jquery-ui.min.css")) Then
+			Session("ui-winkit-theme") = "redmond"
+		End If
+
+		Session("Config-banner-colour") = ApplicationSettings.UI_Banner_Colour
+		If Session("Config-banner-colour") Is Nothing Or Len(Session("Config-banner-colour")) <= 0 Then Session("Config-banner-colour") = "white"
+
+		Session("Config-banner-justification") = ApplicationSettings.UI_Banner_Justification
+		If Session("Config-banner-justification") Is Nothing Or Len(Session("Config-banner-justification")) <= 0 Then Session("Config-banner-justification") = "justify"
+
 		' Set browser compatibility
-		Session("DMIRequiresIE") = ApplicationSettings.DMIRequiresIE
-		If Session("DMIRequiresIE") Is Nothing Or Len(Session("DMIRequiresIE")) <= 0 Then Session("DMIRequiresIE") = "true"
-		Session("DMIRequiresIE") = Session("DMIRequiresIE").ToString().ToUpper()
+		Session("AdminRequiresIE") = ApplicationSettings.AdminRequiresIE
+		If Session("AdminRequiresIE") Is Nothing Or Len(Session("AdminRequiresIE")) <= 0 Then Session("AdminRequiresIE") = "true"
+		Session("AdminRequiresIE") = Session("AdminRequiresIE").ToString().ToUpper()
 
 		' Banner layout
 		' leftmost banner graphic

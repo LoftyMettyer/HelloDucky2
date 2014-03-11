@@ -454,7 +454,7 @@ Namespace Controllers
 			ViewBag.SSIMode = SSIMode
 
 			' Non IE browsers attempt to goto SSI
-			If Session("DMIRequiresIE") = "TRUE" And Session("MSBrowser") <> True Then
+			If Session("AdminRequiresIE") = "TRUE" And Session("MSBrowser") <> True Then
 				If Not objSessionInfo.LoginInfo.IsSSIUser Then
 					Session("ErrorText") = "You are not permitted to use OpenHR Self-service with this user name."
 					bOK = False

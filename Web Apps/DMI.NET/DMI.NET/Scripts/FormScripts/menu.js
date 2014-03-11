@@ -1405,7 +1405,7 @@ function menu_CloseWait() {
 
 function showDefaultRibbon() {
 	// Hide all tabs except FixedLinks
-	if (('True' !== '<%=Session("MSBrowser")%>') && ('TRUE' == '<%=Session("DMIRequiresIE")%>')) {
+	if (('True' !== '<%=Session("MSBrowser")%>') && ('TRUE' == '<%=Session("AdminRequiresIE")%>')) {
 		$("#toolbarHome").parent().hide();
 	} else {
 		$("#toolbarHome").parent().show();

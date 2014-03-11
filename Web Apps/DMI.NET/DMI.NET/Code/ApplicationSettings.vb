@@ -13,9 +13,24 @@ Namespace Code
 				Return ConfigurationManager.AppSettings("LoginPage_Server")
 			End Get
 		End Property
-		Public Shared ReadOnly Property UI_Theme As String
+		Public Shared ReadOnly Property UI_Admin_Theme As String
 			Get
-				Return ConfigurationManager.AppSettings("UI_Theme")
+				Return ConfigurationManager.AppSettings("UI_Admin_Theme")
+			End Get
+		End Property
+		Public Shared ReadOnly Property UI_Tiles_Theme As String
+			Get
+				Return ConfigurationManager.AppSettings("UI_Tiles_Theme")
+			End Get
+		End Property
+		Public Shared ReadOnly Property UI_Wireframe_Theme As String
+			Get
+				Return ConfigurationManager.AppSettings("UI_Wireframe_Theme")
+			End Get
+		End Property
+		Public Shared ReadOnly Property UI_Winkit_Theme As String
+			Get
+				Return ConfigurationManager.AppSettings("UI_Winkit_Theme")
 			End Get
 		End Property
 		Public Shared ReadOnly Property UI_Banner_Colour As String
@@ -28,11 +43,6 @@ Namespace Code
 				Return ConfigurationManager.AppSettings("UI_Banner_Justification")
 			End Get
 		End Property
-		Public Shared ReadOnly Property UI_Wireframe_Theme As String
-			Get
-				Return ConfigurationManager.AppSettings("UI_Wireframe_Theme")
-			End Get
-		End Property
 		Public Shared ReadOnly Property UI_Self_Service_Layout As String
 			Get
 				Return ConfigurationManager.AppSettings("UI_Self_Service_Layout")
@@ -43,9 +53,9 @@ Namespace Code
 				Return ConfigurationManager.AppSettings("UI_Layout_Selectable")
 			End Get
 		End Property
-		Public Shared ReadOnly Property DMIRequiresIE As String	'Strictly speaking this property should return a Boolean, but it has been used as a string throughout the application, so String it is
+		Public Shared ReadOnly Property AdminRequiresIE As String	'Strictly speaking this property should return a Boolean, but it has been used as a string throughout the application, so String it is
 			Get
-				Return ConfigurationManager.AppSettings("DMIRequiresIE")
+				Return ConfigurationManager.AppSettings("AdminRequiresIE")
 			End Get
 		End Property
 		Public Shared ReadOnly Property SMTP_From As String
