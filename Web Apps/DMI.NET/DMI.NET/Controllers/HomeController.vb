@@ -1004,13 +1004,13 @@ Namespace Controllers
 		End Function
 
 		Function Data_Submit() As ActionResult
-			Dim iRETRIES = 5
-			Dim iRetryCount = 0
-			Dim sErrorMsg = "", sErrMsg = ""
+
+			Dim sErrorMsg = ""
 			Dim fWarning = False
 			Dim fOk = False
 			Dim fTBOverride = False
 
+			Dim objSessionInfo = CType(Session("SessionContext"), SessionInfo)
 			Dim objDataAccess As clsDataAccess = CType(Session("DatabaseAccess"), clsDataAccess)
 
 			' Read the information from the calling form.
@@ -1018,7 +1018,7 @@ Namespace Controllers
 			Dim lngTableID = Request.Form("txtCurrentTableID")
 			Dim lngScreenID = Request.Form("txtCurrentScreenID")
 			Dim lngViewID = Request.Form("txtCurrentViewID")
-			Dim lngRecordID = Request.Form("txtRecordID")
+			Dim lngRecordID = CInt(Request.Form("txtRecordID"))
 			Dim sAction = Request.Form("txtAction")
 			Dim sReaction = Request.Form("txtReaction")
 			Dim sInsertUpdateDef = Request.Form("txtInsertUpdateDef")
@@ -1148,12 +1148,23 @@ Namespace Controllers
 						If lngRecordID = 0 Then
 							' Inserting.
 							Try
+								Dim lngOriginalRecordID = CInt(Request.Form("txtOriginalRecordID"))
+
 								Dim prmRecordID As New SqlParameter("piNewRecordID", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
 								objDataAccess.ExecuteSP("spASRIntInsertNewRecord" _
 									, prmRecordID _
 									, New SqlParameter("psInsertDef", SqlDbType.VarChar, -1) With {.Value = sInsertUpdateDef})
 
 								lngRecordID = prmRecordID.Value
+
+								' This was a copied record - ensure that OLE columns are also copied
+								If lngOriginalRecordID > 0 Then
+
+									objDataAccess.ExecuteSP("spasrIntCopyRecordPostSave" _
+										, New SqlParameter("tableID", SqlDbType.Int) With {.Value = lngTableID} _
+										, New SqlParameter("FromRecordID", SqlDbType.Int) With {.Value = lngOriginalRecordID} _
+										, New SqlParameter("ToRecordID", SqlDbType.Int) With {.Value = lngRecordID})
+								End If
 
 								If Len(sReaction) > 0 Then
 									sAction = sReaction

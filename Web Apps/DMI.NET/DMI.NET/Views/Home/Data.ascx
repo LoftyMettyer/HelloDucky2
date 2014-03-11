@@ -20,7 +20,7 @@
 		var frmFindForm = OpenHR.getForm("workframe", "frmFindForm");
 		var recEditForm = OpenHR.getForm("workframe", "frmRecordEditForm");
 		var frmLog = OpenHR.getForm("workframe", "frmLog");
-		
+
 		var sFatalErrorMsg = frmData.txtErrorDescription.value;
 		var sInsertGranted;
 		var sErrorMsg, sErrMsg;
@@ -322,6 +322,7 @@
 						frmGetData.txtFilterDef.value = "";
 						frmGetData.txtRealSource.value = recEditForm.txtRecEditRealSource.value;
 						frmGetData.txtRecordID.value = frmData.txtRecordID.value;
+						frmGetData.txtOriginalRecordID.value = frmData.txtOriginalRecordID.value;
 						frmGetData.txtParentTableID.value = frmData.txtParentTableID.value;
 						frmGetData.txtParentRecordID.value = frmData.txtParentRecordID.value;
 						frmGetData.txtDefaultCalcCols.value = CalculatedDefaultColumns();
@@ -345,6 +346,7 @@
 							frmGetData.txtFilterDef.value = "";
 							frmGetData.txtRealSource.value = recEditForm.txtRecEditRealSource.value;
 							frmGetData.txtRecordID.value = frmData.txtRecordID.value;
+							frmGetData.txtOriginalRecordID.value = frmData.txtOriginalRecordID.value;
 							frmGetData.txtParentTableID.value = frmData.txtParentTableID.value;
 							frmGetData.txtParentRecordID.value = frmData.txtParentRecordID.value;
 							frmGetData.txtDefaultCalcCols.value = CalculatedDefaultColumns();
@@ -545,6 +547,7 @@
 		<input type="hidden" id="txtFilterSQL" name="txtFilterSQL">
 		<input type="hidden" id="txtFilterDef" name="txtFilterDef">
 		<input type="hidden" id="txtRealSource" name="txtRealSource">
+		<input type="hidden" id="txtOriginalRecordID" name="txtOriginalRecordID">
 		<input type="hidden" id="txtRecordID" name="txtRecordID">
 		<input type="hidden" id="txtParentTableID" name="txtParentTableID">
 		<input type="hidden" id="txtParentRecordID" name="txtParentRecordID">

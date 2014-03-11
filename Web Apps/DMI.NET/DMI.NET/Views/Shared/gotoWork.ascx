@@ -6,6 +6,7 @@
 <input type="hidden" id="txtGotoScreenID" name="txtGotoScreenID">
 <input type="hidden" id="txtGotoOrderID" name="txtGotoOrderID">
 <input type="hidden" id="txtGotoRecordID" name="txtGotoRecordID">
+<input type="hidden" id="txtGotoOriginalRecordID" name="txtGotoOriginalRecordID">
 <input type="hidden" id="txtGotoParentTableID" name="txtGotoParentTableID">
 <input type="hidden" id="txtGotoParentRecordID" name="txtGotoParentRecordID">
 <input type="hidden" id="txtGotoRealSource" name="txtGotoRealSource">

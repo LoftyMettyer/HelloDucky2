@@ -2552,6 +2552,7 @@ function menu_saveChanges(psAction, pfPrompt, pfTBOverride) {
 					frmDataArea.txtFilterDef.value = frmRecEditArea.txtRecEditFilterDef.value;
 					frmDataArea.txtRealSource.value = frmRecEditArea.txtRecEditRealSource.value;
 					frmDataArea.txtRecordID.value = frmRecEditArea.txtCurrentRecordID.value;
+					frmDataArea.txtOriginalRecordID.value = frmRecEditArea.txtOriginalRecordID.value;
 					frmDataArea.txtParentTableID.value = frmRecEditArea.txtCurrentParentTableID.value;
 					frmDataArea.txtParentRecordID.value = frmRecEditArea.txtCurrentParentRecordID.value;
 					frmDataArea.txtDefaultCalcCols.value = CalculatedDefaultColumns();
@@ -2566,9 +2567,9 @@ function menu_saveChanges(psAction, pfPrompt, pfTBOverride) {
 						menu_ShowWait("Saving record...");
 						menu_disableMenu(); // HC: Is this correct? It will only disable RecEdit buttons
 
-						ExecutePostSaveCode();
+						OpenHR.submitForm(frmDataArea);
 
-						data_refreshData();
+						ExecutePostSaveCode();
 					}
 				}
 				iResult = 6;
@@ -3533,6 +3534,7 @@ function menu_sessionTimeout() {
 			frmDataArea.txtFilterDef.value = frmRecEditArea.txtRecEditFilterDef.value;
 			frmDataArea.txtRealSource.value = frmRecEditArea.txtRecEditRealSource.value;
 			frmDataArea.txtRecordID.value = frmRecEditArea.txtCurrentRecordID.value;
+			frmDataArea.txtOriginalRecordID.value = frmRecEditArea.txtCurrentRecordID.value;
 			frmDataArea.txtParentTableID.value = frmRecEditArea.txtCurrentParentTableID.value;
 			frmDataArea.txtParentRecordID.value = frmRecEditArea.txtCurrentParentRecordID.value;
 			frmDataArea.txtDefaultCalcCols.value = CalculatedDefaultColumns(); //TODO: frmRecEditArea.ctlRecordEdit.CalculatedDefaultColumns();
@@ -3669,6 +3671,7 @@ function menu_sessionTimeout() {
 	frmWorkArea.txtGotoScreenID.value = frmFindArea.txtCurrentScreenID.value;
 	frmWorkArea.txtGotoOrderID.value = frmFindArea.txtCurrentOrderID.value;
 	frmWorkArea.txtGotoRecordID.value = lngRecordID;
+	frmWorkArea.txtGotoOriginalRecordID.value = lngRecordID;
 	frmWorkArea.txtGotoParentTableID.value = frmFindArea.txtCurrentParentTableID.value;
 	frmWorkArea.txtGotoParentRecordID.value = frmFindArea.txtCurrentParentRecordID.value;
 	frmWorkArea.txtGotoLineage.value = frmFindArea.txtLineage.value;
@@ -3971,6 +3974,7 @@ function menu_sessionTimeout() {
 	frmDataArea.txtFilterDef.value = frmRecEditArea.txtRecEditFilterDef.value;
 	frmDataArea.txtRealSource.value = frmRecEditArea.txtRecEditRealSource.value;
 	frmDataArea.txtRecordID.value = frmRecEditArea.txtCurrentRecordID.value;
+	frmDataArea.txtOriginalRecordID.value = frmRecEditArea.txtCurrentRecordID.value;
 	frmDataArea.txtParentTableID.value = frmRecEditArea.txtCurrentParentTableID.value;
 	frmDataArea.txtParentRecordID.value = frmRecEditArea.txtCurrentParentRecordID.value;
 	data_refreshData();

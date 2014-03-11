@@ -287,11 +287,11 @@
 								//var action = document.getElementById("txtAction");
 								var dataForm = OpenHR.getForm("dataframe", "frmGetData");
 
-								if (((frmRecordEditForm.txtAction.value == "NEW") ||
-												(frmRecordEditForm.txtAction.value == "COPY")) &&
+								if ((frmRecordEditForm.txtAction.value == "NEW" || frmRecordEditForm.txtAction.value == "COPY") &&
 										(frmRecordEditForm.txtRecEditInsertGranted.value == "True")) {
-									// action.value = frmRecordEditForm.txtAction.value;
+
 									dataForm.txtAction.value = frmRecordEditForm.txtAction.value;
+									dataForm.txtOriginalRecordID.value = frmRecordEditForm.txtCurrentRecordID.value;
 								} else {
 									dataForm.txtAction.value = "LOAD";
 								}
@@ -309,12 +309,11 @@
 								dataForm.txtFilterDef.value = "";
 								dataForm.txtRealSource.value = frmRecordEditForm.txtRecEditRealSource.value;
 								dataForm.txtRecordID.value = frmRecordEditForm.txtCurrentRecordID.value;
+								dataForm.txtOriginalRecordID.value = frmRecordEditForm.txtCurrentRecordID.value;
 								dataForm.txtParentTableID.value = frmRecordEditForm.txtCurrentParentTableID.value;
 								dataForm.txtParentRecordID.value = frmRecordEditForm.txtCurrentParentRecordID.value;
 								dataForm.txtDefaultCalcCols.value = CalculatedDefaultColumns();
-
-								//this should be in scope by now.
-								data_refreshData(); //window.parent.frames("dataframe").refreshData();
+								OpenHR.submitForm(dataForm);
 						}
 
 						if (fOK != true) {
@@ -657,6 +656,7 @@
 	Response.Write("<input type='hidden' id=txtCurrentScreenID name=txtCurrentScreenID value=" & Session("screenID") & ">" & vbCrLf)
 	Response.Write("<input type='hidden' id=txtCurrentOrderID name=txtCurrentOrderID value=" & Session("orderID") & ">" & vbCrLf)
 	Response.Write("<input type='hidden' id=txtCurrentRecordID name=txtCurrentRecordID value=" & Session("recordID") & ">" & vbCrLf)
+	Response.Write("<input type='hidden' id=txtOriginalRecordID name=txtOriginalRecordID value=" & Session("recordID") & ">" & vbCrLf)
 	Response.Write("<input type='hidden' id=txtCurrentParentTableID name=txtCurrentParentTableID value=" & Session("parentTableID") & ">" & vbCrLf)
 	Response.Write("<input type='hidden' id=txtCurrentParentRecordID name=txtCurrentParentRecordID value=" & Session("parentRecordID") & ">" & vbCrLf)
 	Response.Write("<input type='hidden' id=txtLineage name=txtLineage value=" & Session("lineage") & ">" & vbCrLf)
