@@ -1018,7 +1018,7 @@ Namespace Controllers
 			Dim lngTableID = Request.Form("txtCurrentTableID")
 			Dim lngScreenID = Request.Form("txtCurrentScreenID")
 			Dim lngViewID = Request.Form("txtCurrentViewID")
-			Dim lngRecordID = CInt(Request.Form("txtRecordID"))
+			Dim lngRecordID = Request.Form("txtRecordID")
 			Dim sAction = Request.Form("txtAction")
 			Dim sReaction = Request.Form("txtReaction")
 			Dim sInsertUpdateDef = Request.Form("txtInsertUpdateDef")
