@@ -818,8 +818,8 @@ div#pwfs {
 
 #userDropdownmenu ul ul {
 	position: relative;
-	height: 210px;
-	top: -237px;
+	/*height: 210px;
+	top: -237px;*/
 	margin-left: -18px;
 }
 
@@ -830,6 +830,11 @@ div#pwfs {
 #userDropdownmenu ul li.last ul {
 	left: 0px;
 }
+
+#userDropdownmenu ul ul li a {
+	margin: 0;
+}
+
 /* End of User dropdown menu */
 
 /* Org Chart scrollbar for tiles only*/

@@ -1106,6 +1106,9 @@
 		{
 			$("#userDropdownmenu ul").css("visibility", "visible");
 			$("#userDropdownmenu ul li").css("visibility", "visible");
+			var userMenuHeight = Number($('#userDropdownmenu ul ul').height());
+			var topPos = (userMenuHeight + 26) * -1;			
+			if (window.currentLayout == "tiles") $('#userDropdownmenu ul ul').css('top', topPos).css('height', userMenuHeight);			
 		});
 
 		$('#userDropdownmenu').hover(function() {
@@ -1116,8 +1119,7 @@
 			$("#userDropdownmenu li").css("visibility", "hidden");
 		});
 
-		$("#userDropdownmenu_Items").menu();
-
+		$("#userDropdownmenu_Items").menu();			
 	});
 </script>
 

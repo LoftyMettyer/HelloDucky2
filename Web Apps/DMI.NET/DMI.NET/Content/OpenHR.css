@@ -374,6 +374,12 @@ select[disabled=""] {
 	filter: Alpha(Opacity=65)!important;
 }
 
+
+.linkspagebuttontext.ui-state-disabled {
+	opacity: 1!important;
+	filter: Alpha(Opacity=100)!important;	
+}
+
 select.combodisabled
 {
 	/*background-color: #fdf3e4;

@@ -93,7 +93,7 @@
 				<li class="pendingworkflowlink-displaytype">
 					<div class="wrapupcontainer">
 						<div class="wrapuptext">
-							<p class="pendingworkflowlinkseparator">To-do list (Pending workflows)</p>
+							<p class="pendingworkflowlinkseparator">Pending Workflows (max. four)</p>
 						</div>
 					</div>
 					<div class="gridster pendingworkflowlinkcontent" id="gridster_PendingWorkflow">
@@ -434,7 +434,7 @@
 								%>
 						<li data-col="<%=iColNum %>" data-row="<%=iRowNum %>" data-sizex="1" data-sizey="1" class="linkspagebuttontext <%=sTileColourClass%>" onclick="<%=sOnclick%>">
 							<a class="linkspagebutton-displaytype linkspagebuttontext-alignment linkspagebutton-colourtheme" href="#"><span class="linkspageprompttext-font linkspageprompttext-colour linkspageprompttext-size linkspageprompttext-bold linkspageprompttext-italics"><%: navlink.Prompt.Replace("...", "") & " "%></span>
-								<span class="linkspagebuttontext-font linkspagebuttontext-colour linkspagebuttontext-size linkspagebuttontext-bold linkspagebuttontext-italics"><%: navlink.Text %></span><img src="<%: Url.Content("~/Content/images/extlink2.png") %>" alt="" /></a>
+								<span class="linkspagebuttontext-font linkspagebuttontext-colour linkspagebuttontext-size linkspagebuttontext-bold linkspagebuttontext-italics"><%: navlink.Text %></span></a>
 							<p class="linkspagebuttontileIcon"><i class="<%=sIconClass%>"></i></p>
 						</li>
 						<%
@@ -486,7 +486,7 @@
 									
 						%>
 
-						<li data-col="<%=iColNum %>" data-row="<%=iRowNum %>" data-sizex="1" data-sizey="1" class="linkspagebuttontext <%=sTileColourClass%> displayonly">
+						<li data-col="<%=iColNum %>" data-row="<%=iRowNum %>" data-sizex="1" data-sizey="1" class="linkspagebuttontext ui-state-disabled <%=sTileColourClass%> displayonly">
 							<a href="#"><%If Session("CurrentLayout").ToString() <> DMIEnums.Layout.tiles.ToString() Then Response.Write(navlink.Text)%>
 								<%
 									If navlink.UtilityID > 0 And navlink.DrillDownHidden = False Then
@@ -823,7 +823,7 @@
 								If fFormattingApplies Then
 						%>
 						<li id="li_<%: navlink.id %>" data-col="<%=iColNum %>" data-row="<%=iRowNum %>" data-sizex="1"
-							data-sizey="1" class="linkspagebuttontext <%=sTileColourClass%> displayonly linkspagebuttontext-font linkspagebuttontext-colour linkspagebuttontext-size linkspagebuttontext-bold linkspagebuttontext-italics">
+							data-sizey="1" class="linkspagebuttontext ui-state-disabled <%=sTileColourClass%> displayonly linkspagebuttontext-font linkspagebuttontext-colour linkspagebuttontext-size linkspagebuttontext-bold linkspagebuttontext-italics">
 							<div class="DBValueScroller" id="marqueeDBV<%: navlink.id %>">
 								<p class="DBValue" style="color: <%=sCFForeColor%>; <%=sCFFontBold%>; <%=sCFFontItalic%>" id="DBV<%: navlink.id %>">
 									<%If fUseFormatting = True Then%>
@@ -848,7 +848,7 @@
 
 						<%Else%>
 						<li id="li_<%: navlink.id %>" data-col="<%=iColNum %>" data-row="<%=iRowNum %>" data-sizex="1"
-							data-sizey="1" class="linkspagebuttontext <%=sTileColourClass%> displayonly linkspagebuttontext-font linkspagebuttontext-colour linkspagebuttontext-size linkspagebuttontext-bold linkspagebuttontext-italics">
+							data-sizey="1" class="linkspagebuttontext ui-state-disabled <%=sTileColourClass%> displayonly linkspagebuttontext-font linkspagebuttontext-colour linkspagebuttontext-size linkspagebuttontext-bold linkspagebuttontext-italics">
 							<div class="DBValueScroller" id="marqueeDBV<%: navlink.id %>">
 								<p class="DBValue" id="DBV<%: navlink.id %>">
 									<%If fUseFormatting = True Then%>
@@ -1007,7 +1007,7 @@
 
 							<div class="linkspagebuttontileIcon"><span>
 								<p><%=iNumberOfEvents%></p>
-								<p style="font-size: small;">Events</p>
+								<p style="font-size: small;">Event<%If iNumberOfEvents > 1 Then%>s<%End If%></p>
 							</span></div>
 						</li>
 						<%
@@ -1016,7 +1016,7 @@
 						Case ElementType.OrgChart
 							sOnClick = "loadPartialView('OrgChart', 'home', 'workframe')"%>
 						<li data-col="<%=iColNum %>" data-row="<%=iRowNum %>" data-sizex="1" data-sizey="1" class="linkspagebuttontext <%=sTileColourClass%>" onclick="<%=sOnclick%>">
-							<a href="#"><%: navlink.Text %><img src="<%: Url.Content("~/Content/images/extlink2.png") %>" alt="" /></a>
+							<a href="#"><%: navlink.Text %></a>
 							<p class="linkspagebuttontileIcon"><i class="icon-sitemap"></i></p>
 						</li>
 
