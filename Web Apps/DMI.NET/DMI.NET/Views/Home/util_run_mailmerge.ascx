@@ -1,4 +1,4 @@
-﻿c<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %><%@ Import Namespace="DMI.NET" %>
+﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %><%@ Import Namespace="DMI.NET" %>
 <%@ Import Namespace="HR.Intranet.Server.Enums" %>
 <%@ Import Namespace="HR.Intranet.Server" %>
 
