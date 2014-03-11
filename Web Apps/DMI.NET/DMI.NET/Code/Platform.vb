@@ -30,5 +30,12 @@ Namespace Code
 
 		End Function
 
+		Public Shared Function IsWindowsAuthenicatedEnabled() As Boolean
+
+			Dim sUserName = HttpContext.Current.Request.ServerVariables("LOGON_USER").ToString()
+			Return sUserName.Length > 0
+
+		End Function
+
 	End Class
 End Namespace

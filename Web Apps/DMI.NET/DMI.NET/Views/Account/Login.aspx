@@ -434,7 +434,7 @@
 
 							<tr class="">
 								<%
-									If Platform.IsWindowsSupported() Then
+									If Platform.IsWindowsSupported() And Platform.IsWindowsAuthenicatedEnabled() Then
 								%>
 								<td style="font-weight: bold; text-align: left;" colspan="3">
 									<input id="chkWindowsAuthentication" name="chkWindowsAuthentication" type="checkbox" tabindex="0"
