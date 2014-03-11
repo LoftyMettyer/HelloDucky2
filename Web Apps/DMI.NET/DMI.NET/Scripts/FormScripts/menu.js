@@ -4973,7 +4973,6 @@ function menu_loadSelectOrderFilter(psType) {
 
 
 	function menu_setVisibleMenuItem(itemId, fNewSetting) {
-	
 	var sNewValue = "";
 
 	if ($("#" + itemId).length == 0) {
@@ -4981,14 +4980,19 @@ function menu_loadSelectOrderFilter(psType) {
 }
 
 	if (fNewSetting == "True" || fNewSetting == true || fNewSetting == 1) {
+		$("#" + itemId + " a:first").show();
+		if (itemId == "mnutoolFixedWorkflowOutOfOffice") { //This menu item is not placed inside a div, so the code that shows it has to be slightly different
+			$("#" + itemId).show();
+		}
 	if ($("#" + itemId).hasClass("hidden")) {
-	$("#" + itemId + " a:first").show();
 	$("#" + itemId).removeClass("hidden");
 }
+	} else {
+		$("#" + itemId + " a:first").hide();
+		if (itemId == "mnutoolFixedWorkflowOutOfOffice") { //This menu item is not placed inside a div, so the code that hides it has to be slightly different
+			$("#" + itemId).hide();
 }
-	else {
 	if (!$("#" + itemId).hasClass("hidden")) {
-	$("#" + itemId + " a:first").hide();
 	$("#" + itemId).addClass("hidden");
 }
 }
