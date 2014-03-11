@@ -1459,7 +1459,7 @@
 }
 
 	//Display Pending Workflow Steps if appropriate
-	if (('<%=fWFDisplayPendingSteps%>' == 'True') && (Number('<%=_StepCount%>') > 0)) {		
+	if (('<%=fWFDisplayPendingSteps%>' == 'True') && (Number('<%=_StepCount%>') > 0) && ('<%=Session("LoggingIn")%>' == '')) {		
 		relocateURL('WorkflowPendingSteps', 0);
 	}
 
@@ -1601,3 +1601,6 @@
 	});
 
 </script>
+
+<%Session("LoggingIn") = False%>
+

@@ -444,6 +444,15 @@ function menu_MenuClick(sTool) {
 		}
 	}
 
+	if (sToolName == "mnutoolFixedPWFS") {
+		if (menu_isSSIMode()) {
+			javascript: relocateURL('WorkflowPendingSteps', 0);
+			return false;
+		} else {
+			sToolName = 'mnutoolWorkflowPendingSteps';
+		}
+	}
+	
 	if ((sToolName == "mnutoolPasswordChange") || (sToolName == "mnutoolNewUser")) {
 		showDefaultRibbon();
 		$("#toolbarHome").click();

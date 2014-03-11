@@ -1062,16 +1062,21 @@
 						</a>
 					</li>
 					<li class="linkspagebuttontext">
+						<a id="mnutoolFixedPWFS" href="#" rel="table" title="">
+							<span>Pending Workflow Steps</span>
+						</a>
+					</li>
+					<li class="linkspagebuttontext">
 						<a id="mnutoolFixedWorkflowOutOfOffice" href="#">
 							<span>Out Of Office</span>
 						</a>
 					</li>
-                    <li class="linkspagebuttontext" id="userDropdownmenu_Layout">
+					<li class="linkspagebuttontext" id="userDropdownmenu_Layout">
 						<a href="javascript: showThemeEditor();">
 							<span>Layout</span>
 						</a>
 					</li>
-                    <li class="linkspagebuttontext">
+					<li class="linkspagebuttontext">
 						<a id="mnutoolFixedAbout" href="javascript:fixedlinks_mnutoolAboutHRPro()" rel="table" title="">
 							<span>About</span>
 						</a>
@@ -1080,8 +1085,8 @@
 						<a id="mnutoolLogoff" href="#">
 							<span>Log Off</span>
 						</a>
-					</li>	
-					
+					</li>
+
 				</ul>
 			</li>
 		</ul>
