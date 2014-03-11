@@ -167,8 +167,11 @@
 		' session(currentlayout) is only used in linksMain BTW.
 		If currentLayout <> "tiles" Then
 			If UCase(Session("ui-layout-selectable")) = "TRUE" Then
-				Session("CurrentLayout") = Request.Cookies("Intranet_Layout")
-				If Session("CurrentLayout") Is Nothing Then Session("CurrentLayout") = "winkit"
+				If Request.Cookies("Intranet_Layout") Is Nothing Then
+					Session("CurrentLayout") = "winkit"
+				Else
+					Session("CurrentLayout") = Request.Cookies("Intranet_Layout").Value
+				End If
 			Else
 				Session("CurrentLayout") = Session("ui-self-service-layout")
 			End If
