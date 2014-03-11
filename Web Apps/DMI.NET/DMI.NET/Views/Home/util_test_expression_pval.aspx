@@ -1,6 +1,5 @@
 ﻿<%@ Page Language="VB" Inherits="System.Web.Mvc.ViewPage"%>
 <%@ Import Namespace="DMI.NET" %>
-<%@ Import Namespace="ADODB" %>
 <%@ Import Namespace="HR.Intranet.Server" %>
 <%@ Import Namespace="System.Data.SqlClient" %>
 <%@ Import Namespace="System.Data" %>
