@@ -1,31 +1,20 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
-<%@ Import Namespace="DMI.NET" %>
 <%@ Import Namespace="HR.Intranet.Server" %>
 
 <%
-	Dim fok As Boolean
-	Dim objCalendar As HR.Intranet.Server.CalendarReport
-	Dim fNotCancelled As Boolean
-	Dim fBadUtilDef As Boolean
+	Dim fok As Boolean = True
+	Dim objCalendar As New CalendarReport
+	Dim fNotCancelled As Boolean = True
 	Dim fNoRecords As Boolean
 	Dim blnShowCalendar As Boolean
 	Dim aPrompts
-		
-	fBadUtilDef = (Session("utiltype") = "") Or _
-		 (Session("utilname") = "") Or _
-		 (Session("utilid") = "") Or _
-		 (Session("action") = "")
-	
-	fok = Not fBadUtilDef
-	fNotCancelled = True
-	
+			
 	'objCalendar = Nothing
 	Session("objCalendar" & Session("UtilID")) = Nothing
 	Session("objCalendar" & Session("UtilID")) = ""
 	
 	If fok Then
-		' Create the reference to the DLL (Report Class)
-		objCalendar = New HR.Intranet.Server.CalendarReport
+
 		objCalendar.SessionInfo = CType(Session("SessionContext"), SessionInfo)
 					
 		' Pass required info to the DLL
@@ -134,135 +123,11 @@
 
 <%
 Else
-	If fBadUtilDef Then
-%>
-
-<input type='hidden' id="txtOK" name="txtOK" value="False">
-<table align="center" class="outline" cellpadding="5" cellspacing="0">
-	<tr>
-		<td>
-			<table class="invisible" cellspacing="0" cellpadding="0">
-				<tr>
-					<td colspan="3" height="10"></td>
-				</tr>
-				<tr>
-					<td colspan="3" align="center">
-						<h3>Error</h3>
-					</td>
-				</tr>
-				<tr>
-					<td width="20" height="10"></td>
-					<td>
-						<h4>Not all session variables found</h4>
-					</td>
-					<td width="20"></td>
-				</tr>
-				<tr>
-					<td width="20" height="10"></td>
-					<td>Type = <%Session("utiltype").ToString()%>
-					</td>
-					<td width="20"></td>
-				</tr>
-				<tr>
-					<td width="20" height="10"></td>
-					<td>Utility Name = <%Session("utilname").ToString()%>
-					</td>
-					<td width="20"></td>
-				</tr>
-				<tr>
-					<td width="20" height="10"></td>
-					<td>Utility ID = <%Session("utilid").ToString()%>
-					</td>
-					<td width="20"></td>
-				</tr>
-				<tr>
-					<td width="20" height="10"></td>
-					<td>Action = <%Session("action").ToString()%>
-					</td>
-					<td width="20"></td>
-				</tr>
-				<tr>
-					<td colspan="3" height="10">&nbsp;</td>
-				</tr>
-				<tr>
-					<td colspan="3" height="10" align="center">
-						<input type="button" value="Close" name="cmdClose" style="WIDTH: 80px" width="80" id="cmdClose" class="btn"
-							onclick="closeclick();" />
-					</td>
-				</tr>
-				<tr>
-					<td colspan="3" height="10"></td>
-				</tr>
-			</table>
-		</td>
-	</tr>
-</table>
-<input type="hidden" id="txtSuccessFlag" name="txtSuccessFlag" value="1">
-
-	<%
-	Else
-		Session("CalendarReports_FailedOrNoRecords") = True
-	%>
-
-<input type='hidden' id="txtOK" name="txtOK" value="False">
-<form id="frmPopup" name="frmPopup">
-	<table align="center" class="outline" cellpadding="5" cellspacing="0">
-		<tr>
-			<td>
-				<table class="invisible" cellspacing="0" cellpadding="0">
-					<tr>
-						<td colspan="3" height="10"></td>
-					</tr>
-					<%
-						Dim sCloseFunction As String
-		
-						Response.Write("			  <tr> " & vbCrLf)
-						Response.Write("			    <td width=20 height=10></td> " & vbCrLf)
-						Response.Write("			    <td align=center> " & vbCrLf)
-
-						If fNoRecords Then
-							Response.Write("						<H4>Calendar Report '" & Session("utilname") & "' Completed successfully.</H4>" & vbCrLf)
-							sCloseFunction = "closeclick();"
-						Else
-							Response.Write("						<H4>Calendar Report '" & Session("utilname") & "' Failed." & vbCrLf)
-							sCloseFunction = "closeclick();"
-						End If
-						Response.Write("			    </td>" & vbCrLf)
-						Response.Write("			    <td width=20></td> " & vbCrLf)
-						Response.Write("			  </tr>" & vbCrLf)
-					%>
-					<tr>
-						<td width="20" height="10"></td>
-						<td align="center" nowrap>
-							<%=objCalendar.ErrorString%>
-						</td>
-						<td width="20"></td>
-					</tr>
-					<tr>
-						<td colspan="3" height="10">&nbsp;</td>
-					</tr>
-					<tr>
-						<td colspan="3" height="10" align="center">
-							<input type="button" value="Close" name="cmdClose" style="WIDTH: 80px" width="80" id="cmdClose" class="btn"
-								onclick="closeclick();" />
-						</td>
-					</tr>
-					<tr>
-						<td colspan="3" height="10"></td>
-					</tr>
-				</table>
-			</td>
-		</tr>
-	</table>
-</form>
-<input type="hidden" id="txtSuccessFlag" name="txtSuccessFlag" value="1">
-<input type='hidden' id="txtPreview" name="txtPreview" value="0">
-<%
-End If
+	Session("CalendarReports_FailedOrNoRecords") = True
 End If
 
 Response.Write("<input type=hidden id=txtTitle name=txtTitle value=""" & Replace(objCalendar.CalendarReportName, """", "&quot;") & """>" & vbCrLf)
-objCalendar = Nothing
+
 %>
 
 <form id="frmOriginalDefinition" style="visibility: hidden; display: none">
@@ -284,13 +149,12 @@ objCalendar = Nothing
 	<input type="hidden" id="txtCalRep_UtilID" name="txtCalRep_UtilID" value="<%Session("UtilID").ToString()%>">
 </form>
 
-
 <form action="util_run_calendarreport_download" method="post" id="frmCalendarOutput" name="frmCalendarOutput">
 </form>
 
 
 <script type="text/javascript">
-
+	
 	$("#reportframe").show();
 
 	$("#PageDivTitle").html($("#txtTitle").val());
@@ -298,11 +162,31 @@ objCalendar = Nothing
 	$("#top").hide();
 	$("#calendarframeset").show();
 
-	<%	If Not blnShowCalendar Then%>
+	<%
+	Dim sErrorMessage As String
+	
+	' Errors during the merge
+	If Len(objCalendar.ErrorString) > 0 Then
+		sErrorMessage = HttpUtility.JavaScriptStringEncode(objCalendar.ErrorString)
+		
+		Response.Write(String.Format("raiseWarning(""{0}"", ""{1}"");", objCalendar.CalendarReportName, sErrorMessage))
+
+	ElseIf fok And blnShowCalendar Then
+			%>
+		$(".popup").dialog("open");
+			<%
+ElseIf Not blnShowCalendar Then
+				%>
 	document.getElementById("frmCalendarOutput").submit();
-	closeclick();
-	<%	End If%>
+	$(".popup").dialog("close");
+
+	if (menu_isSSIMode()) {
+		loadPartialView("linksMain", "Home", "workframe", null);
+	}
+			<%
+End If
+ %>
+
+
 
 </script>
-
-
