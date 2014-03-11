@@ -6,6 +6,8 @@ Imports HR.Intranet.Server.Structures
 
 Public Class clsDataAccess
 
+	Const _CommandTimeOut = 600
+
 	Private ReadOnly _objLogin As LoginInfo
 
 	Public Sub New()
@@ -47,6 +49,7 @@ Public Class clsDataAccess
 				Using objCommand = New SqlCommand(sSQL, sqlConnection)
 
 					objCommand.CommandType = CommandType.Text
+					objCommand.CommandTimeout = _CommandTimeOut
 
 					objCommand.Parameters.Clear()
 					sqlConnection.Open()
@@ -65,14 +68,15 @@ Public Class clsDataAccess
 	Private Shared Function GetConnectionString(LoginDetail As LoginInfo) As String
 
 		Const _AppName As String = "OpenHR Web"
+		Const _ConnectionTimeOut As String = "10"
 
 		If LoginDetail.TrustedConnection Then
-			Return String.Format("Data Source={0};Initial Catalog={1};Trusted_Connection=yes;Application Name={2}" _
-													 , LoginDetail.Server, LoginDetail.Database, _AppName)
+			Return String.Format("Data Source={0};Initial Catalog={1};Trusted_Connection=yes;Application Name={2};Connection Timeout={3}" _
+													 , LoginDetail.Server, LoginDetail.Database, _AppName, _ConnectionTimeOut)
 
 		Else
-			Return String.Format("Data Source={0};Initial Catalog={1};User Id={2};Password={3};Application Name={4}" _
-													 , LoginDetail.Server, LoginDetail.Database, LoginDetail.Username, LoginDetail.Password, _AppName)
+			Return String.Format("Data Source={0};Initial Catalog={1};User Id={2};Password={3};Application Name={4};Connection Timeout={5}" _
+													 , LoginDetail.Server, LoginDetail.Database, LoginDetail.Username, LoginDetail.Password, _AppName, _ConnectionTimeOut)
 
 		End If
 
@@ -107,6 +111,7 @@ Public Class clsDataAccess
 			Using objCommand = New SqlCommand(ProcedureName, sqlConnection)
 
 				objCommand.CommandType = CommandType.StoredProcedure
+				objCommand.CommandTimeout = _CommandTimeOut
 
 				objCommand.Parameters.Clear()
 				For Each sqlParm As SqlParameter In args
@@ -194,6 +199,8 @@ Public Class clsDataAccess
 			Using sqlConnection As New SqlConnection(strConn)
 				objAdaptor.SelectCommand = New SqlCommand(procedureName, sqlConnection)
 				objAdaptor.SelectCommand.CommandType = CommandType.StoredProcedure
+				objAdaptor.SelectCommand.CommandTimeout = _CommandTimeOut
+
 				objAdaptor.SelectCommand.Parameters.Clear()
 
 				Dim objParameter As SqlParameter = objAdaptor.SelectCommand.Parameters.AddWithValue(parameterName, dataList)
@@ -304,6 +311,7 @@ Public Class clsDataAccess
 
 					objAdaptor.SelectCommand = New SqlCommand(sProcedureName, sqlConnection)
 					objAdaptor.SelectCommand.CommandType = CommandType
+					objAdaptor.SelectCommand.CommandTimeout = _CommandTimeOut
 
 					objAdaptor.SelectCommand.Parameters.Clear()
 					For Each sqlParm In args
