@@ -225,7 +225,7 @@
 			</span>
 		</div>
 
-		<div id="main" data-framesource="util_run" style="height: 80%; margin: 0 0 0 0; ">
+		<div id="main" data-framesource="util_run" style="height: 80%; margin: 0 0 0 0;">
 
 			<%   
 				Dim sPrintButtonLabel As String = "Print Screen"
@@ -285,7 +285,7 @@
 	<%Else%>
 	$(".popup").dialog({ width: 1100, height: 720, resizable: true });
 	<%End If%>
-	
+	$('#main').css('overflow', 'auto');
 	<%
 	Session.Remove("CalendarReports_FailedOrNoRecords")
 ElseIf Session("utiltype") = "16" Then
