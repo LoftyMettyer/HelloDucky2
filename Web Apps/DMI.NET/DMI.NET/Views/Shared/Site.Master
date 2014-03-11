@@ -17,10 +17,11 @@
 		If Not ua = Nothing Then
 			If ua.Contains("iPhone") Or ua.Contains("iPad") Or ua.Contains("Android") Then
 				currentLayout = "tiles"
+				Session("ui-layout-selectable") = "false"
 			End If
 		End If
 		
-		Session("CurrentLayout") = DMIEnums.Layout.winkit		' this is for Admin/DMI mode only; superseded below in SSI mode
+		Session("CurrentLayout") = DMIEnums.Layout.winkit
 		%>
 
 
@@ -175,6 +176,9 @@
 			Else
 				Session("CurrentLayout") = Session("ui-self-service-layout")
 			End If
+		Else
+			' Mobile only.
+			Session("CurrentLayout") = "tiles"
 		End If
 		
 		%>
