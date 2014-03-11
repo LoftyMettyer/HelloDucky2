@@ -541,13 +541,13 @@ Private Function CreateSP_ResetPassword() As Boolean
     "      VALUES (''," & vbNewLine & _
     "        ''," & vbNewLine & _
     "        getdate()," & vbNewLine & _
-    "        'OpenHR Self-service Intranet'," & vbNewLine & _
+    "        'OpenHR Web'," & vbNewLine & _
     "        1," & vbNewLine & _
     "        0," & vbNewLine & _
     "        @psEmailAddress," & vbNewLine & _
     "        @sMessage," & vbNewLine & _
     "        0," & vbNewLine & _
-    "        'How to reset your self-service intranet password');" & vbNewLine & vbNewLine
+    "        'How to reset your OpenHR Web password');" & vbNewLine & vbNewLine
     
   sProcSQL = sProcSQL & "      EXEC [dbo].[spASREmailImmediate] 'OpenHR Mobile';" & vbNewLine & _
     "    END;" & vbNewLine & _
