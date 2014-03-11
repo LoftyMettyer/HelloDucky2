@@ -72,6 +72,8 @@ Public Class SessionInfo
 				Permissions.Add(objPermissionItem)
 			Next
 
+			_objLogin.UserGroup = dsLoginData.Tables(0).Rows(0)(1)
+
 			_objLogin.IsDMIUser = Permissions.IsPermitted("MODULEACCESS", "INTRANET")
 			_objLogin.IsDMISingle = Permissions.IsPermitted("MODULEACCESS", "INTRANET_SELFSERVICE")
 			_objLogin.IsSSIUser = Permissions.IsPermitted("MODULEACCESS", "SSINTRANET")
