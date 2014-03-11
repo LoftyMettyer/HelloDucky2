@@ -1061,11 +1061,13 @@
 							<span>Change Password</span>
 						</a>
 					</li>
+					<%If UCase(Session("WF_Enabled")) = "TRUE" Then%>
 					<li class="linkspagebuttontext">
 						<a id="mnutoolFixedPWFS" href="#" rel="table" title="">
 							<span>Pending Workflow Steps</span>
 						</a>
 					</li>
+					<%End If%>
 					<li class="linkspagebuttontext">
 						<a id="mnutoolFixedWorkflowOutOfOffice" href="#">
 							<span>Out Of Office</span>
