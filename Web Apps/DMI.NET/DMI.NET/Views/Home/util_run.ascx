@@ -296,7 +296,9 @@ ElseIf Session("utiltype") = "16" Then
 Else
 	%>
 	$("#cmdOutput").button({ disabled: true });
+	$("#cmdPrint").button({ disabled: true });
 	if ($("#grdReport").length > 0) {
+		$("#cmdPrint").button({ disabled: false });
 		$("#cmdOutput").button({ disabled: false });
 	};
 
