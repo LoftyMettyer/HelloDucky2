@@ -710,26 +710,6 @@ function menu_MenuClick(sTool) {
 			return;
 	}
 
-	if (sToolName == "mnutoolFirstRecordFind") {
-			menu_moveRecord("MOVEFIRST");
-			return;
-	}
-
-	if (sToolName == "mnutoolPreviousRecordFind") {
-			menu_moveRecord("MOVEPREVIOUS");
-			return;
-	}
-
-	if (sToolName == "mnutoolNextRecordFind") {
-			menu_moveRecord("MOVENEXT");
-			return;
-	}
-
-	if (sToolName == "mnutoolLastRecordFind") {
-			menu_moveRecord("MOVELAST");
-			return;
-	}
-
 	if ((sToolName == "mnutoolLocateRecordsCaption") || (sToolName == "mnutoolPositionRecordFind"))
 	{
 			// Do nothing
@@ -1876,17 +1856,10 @@ function menu_refreshMenu() {
 			menu_toolbarEnableItem("mnutoolParentRecordFind", (frmFind.txtCurrentParentTableID.value > 0));
 			menu_setVisibleMenuItem("mnutoolBackRecordFind", !menu_isSSIMode());
 			menu_toolbarEnableItem("mnutoolBackRecordFind", (parseInt(frmFind.txtCurrentRecordID.value) > 0));
-			
-			menu_setVisibleMenuItem("mnutoolFirstRecordFind", true);
-			menu_toolbarEnableItem("mnutoolFirstRecordFind", (frmFind.txtIsFirstPage.value.toUpperCase() == "FALSE"));
-			menu_setVisibleMenuItem("mnutoolPreviousRecordFind", true);
-			menu_toolbarEnableItem("mnutoolPreviousRecordFind", (frmFind.txtIsFirstPage.value.toUpperCase() == "FALSE"));
-			menu_setVisibleMenuItem("mnutoolNextRecordFind", true);
-			menu_toolbarEnableItem("mnutoolNextRecordFind", (frmFind.txtIsLastPage.value.toUpperCase() == "FALSE"));
-			menu_setVisibleMenuItem("mnutoolLastRecordFind", true);
-			menu_toolbarEnableItem("mnutoolLastRecordFind", (frmFind.txtIsLastPage.value.toUpperCase() == "FALSE"));
 
-			if (menu_isSSIMode()) {				
+			menu_setVisibletoolbarGroupById("mnuSectionRecordFindNavigate", !(menu_isSSIMode() && ($("#mnutoolAccessLinksFind").hasClass("hidden"))));
+
+			if (menu_isSSIMode()) {
 				menu_setVisibletoolbarGroupById('mnuSectionRecordFindOrder', false);
 			}
 			
@@ -1913,8 +1886,6 @@ function menu_refreshMenu() {
 					(frmFind.txtCurrentTableID.value != frmMenuInfo.txtPersonnel_EmpTableID.value)));
 					menu_setVisibleMenuItem("mnutoolClearFilterRecordFind", true);
 					menu_toolbarEnableItem("mnutoolClearFilterRecordFind", (frmFind.txtFilterDef.value.length > 0));
-					$('#mnutoolLocateRecordFind').removeClass('disabled'); //Can't use menu_toolbarEnableItem to enable this because that function relies on an img being inside the div and this div doesn't have one
-					$('#mnutoolLocateRecordFind input').removeAttr('disabled'); //Enable text box
 			}
 
 
@@ -1926,11 +1897,7 @@ function menu_refreshMenu() {
 				iStartPosition = parseInt(frmFind.txtFirstRecPos.value);
 				iEndPosition = iStartPosition - 1 + parseInt(frmFind.txtRecordCount.value);
 
-				sCaption = "Records " +
-						iStartPosition +
-						" to " +
-						iEndPosition +
-						" of " +
+				sCaption = "Record(s) : " +
 						frmFind.txtTotalRecordCount.value;
 			}
 			else {
@@ -2380,8 +2347,6 @@ function menu_refreshMenu() {
 	//}
 
 	if (sCurrentWorkPage == "TBBULKBOOKING") {
-		$('#mnutoolLocateRecordFind').addClass('disabled'); //Can't use menu_toolbarEnableItem to disable this because that function relies on an img being inside the div and this div doesn't have one
-		$('#mnutoolLocateRecordFind input').attr('disabled', 'disabled'); //Disable text box
 		menu_disableFindMenu();
 	} else {
 		menu_enableMenu();
@@ -2476,10 +2441,6 @@ function menu_disableFindMenu() {
 
 		menu_toolbarEnableItem('mnutoolParentRecordFind', false);
 		menu_toolbarEnableItem('mnutoolBackRecordFind', false);
-		menu_toolbarEnableItem('mnutoolFirstRecordFind', false);
-		menu_toolbarEnableItem('mnutoolPreviousRecordFind', false);
-		menu_toolbarEnableItem('mnutoolNextRecordFind', false);
-		menu_toolbarEnableItem('mnutoolLastRecordFind', false);
 
 		menu_toolbarEnableItem('mnutoolChangeOrderRecordFind', false);
 		menu_toolbarEnableItem('mnutoolFilterRecordFind', false);
@@ -4162,8 +4123,6 @@ function menu_loadSelectOrderFilter(psType) {
 		sOptionPage = "orderselect";
 
 		//Disable all ribbon items
-		$('#mnutoolLocateRecordFind').addClass('disabled'); //Can't use menu_toolbarEnableItem to disable this because that function relies on an img being inside the div and this div doesn't have one
-		$('#mnutoolLocateRecordFind input').attr('disabled', 'disabled'); //Disable text box
 		menu_disableFindMenu();
 	}
 	else {

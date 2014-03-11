@@ -184,42 +184,6 @@
 									<h6>Return to the<br/>links page</h6>
 								</a>
 							</div>
-
-							<div id="mnutoolFirstRecordFind" class="button">
-								<a href="#" rel="table" title="First Record">
-									<img src="<%: Url.Content("~/Scripts/officebar/winkit/first64HOVER.png") %>" alt="" />
-									<i class="icon-step-backward"></i>
-									<h6>First</h6>
-								</a>
-							</div>
-							<div id="mnutoolPreviousRecordFind" class="button">
-								<a href="#" rel="table" title="Previous Record">
-									<img src="<%: Url.Content("~/Scripts/officebar/winkit/back64HOVER.png") %>" alt="" />
-									<i class="icon-backward"></i>
-									<h6>Previous</h6>
-								</a>
-							</div>
-							<div id="mnutoolNextRecordFind" class="button">
-								<a href="#" rel="table" title="Next Record">
-									<img src="<%: Url.Content("~/Scripts/officebar/winkit/next64HOVER.png") %>" alt="" />
-									<i class="icon-forward"></i>
-									<h6>Next</h6>
-								</a>
-							</div>
-							<div id="mnutoolLastRecordFind" class="button">
-								<a href="#" rel="table" title="Last Record">
-									<img src="<%: Url.Content("~/Scripts/officebar/winkit/last64HOVER.png") %>" alt="" />
-									<i class="icon-step-forward"></i>
-									<h6>Last</h6>
-								</a>
-							</div>
-						</li>
-						<li id="mnuSectionLocateRecordFind">
-							<div id="mnutoolLocateRecordFind" class="textboxlist">
-								<ul>
-									<li>Go To<input type="text" id="txtLocateRecordFind" /></li>
-								</ul>
-							</div>
 						</li>
 						<li id="mnuSectionRecordFindOrder"><span>Order</span>
 							<div id="mnutoolChangeOrderRecordFind" class="button" title="Change Order">
@@ -294,11 +258,11 @@
 								</a>
 							</div>
 						</li>
-						<li id="mnuSectionPositionRecordFind"><span>Record Position</span>
+						<li id="mnuSectionPositionRecordFind"><span>Record Count</span>
 							<div id="mnutoolPositionRecordFind" class="textboxlist">
 								<ul>
 									<li>
-										<span>Record n of m [(filtered)]</span>
+										<span>Record(s) : x [(filtered)]</span>
 									</li>
 								</ul>
 							</div>
@@ -1119,7 +1083,7 @@
 			$("#userDropdownmenu li").css("visibility", "hidden");
 		});
 
-		$("#userDropdownmenu_Items").menu();			
+		$("#userDropdownmenu_Items").menu();
 	});
 </script>
 
