@@ -689,7 +689,7 @@ div.officetab li div.textboxlist {
 }
 
 /* Formatting for SSI based utilities	*/
-.SSI #frmOutputDef table { color: white;}
+.SSI #frmOutputDef table { }
 /*.SSI #frmDefSel table { color: white;}*/
 
 div.pwfList {		
