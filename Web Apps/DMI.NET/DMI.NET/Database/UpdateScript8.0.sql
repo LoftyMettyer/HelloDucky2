@@ -1,4 +1,89 @@
-﻿DROP PROCEDURE [dbo].[spASRIntGetSelfServiceRecordID]
+﻿/* ----------------------------------------------------------------------- */
+/* Variable declarations                                                   */
+/*                                                                         */
+/* NB. Variable with the naming convention @sSPCode_<n> are declared below */
+/* ----------------------------------------------------------------------- */
+DECLARE @iCount integer,
+    @sDBVersion varchar(10),
+    @sTemp varchar(10),
+    @iTemp integer,
+    @iTemp2 integer,
+    @iMajor integer,
+    @iMinor integer,
+    @iRevision integer,
+    @NVarCommand nvarchar(4000),
+    @JobID BINARY(16),
+    @ReturnCode integer,
+    @sJobName nvarchar(4000),
+    @sDBName nvarchar(4000),
+    @sErrMsg nvarchar(4000),
+    @sVersion varchar(100),
+    @sGroup sysname,
+    @sObject sysname,
+    @sObjectType char(2),
+    @sSQL varchar(8000),
+    @iCurrentUserCount integer,
+    @iHRProLockCount integer,
+    @iSQLVersion integer;
+
+/* -------------------------- */
+/* Set the new version number */
+/* -------------------------- */
+SET @sVersion = '8.0.28'
+
+/* ------------------------------------ */
+/* Get the name of the current database */
+/* ------------------------------------ */
+SELECT @sDBName = master..sysdatabases.name
+FROM master..sysdatabases
+INNER JOIN master..sysprocesses ON master..sysdatabases.dbid = master..sysprocesses.dbid
+WHERE master..sysprocesses.spid = @@spid
+
+/* -------------------------------------- */
+/* Check SQL Server version compatibility */
+/* -------------------------------------- */
+SELECT @iSQLVersion = convert(int,convert(float,substring(@@version,charindex('-',@@version)+2,2)))
+IF (@iSQLVersion < 10)
+BEGIN
+    Print '+--------------------------------------------------------------------------+'
+    Print '|                                                                          |'
+    Print '|                            SCRIPT FAILURE                                |'
+    Print '|                                                                          |'
+    Print '| This version of OpenHR is only compatible with SQL Server 2008 or later. |'
+    Print '| Please upgrade SQL Server before upgrading to this version of OpenHR.    |'
+    Print '|                                                                          |'
+    Print '+--------------------------------------------------------------------------+'
+		RETURN
+END
+
+IF @sDBName = 'master'
+BEGIN
+    Print '+-----------------------------------------------------------------------+'
+    Print '|                                                                       |'
+    Print '|                            SCRIPT FAILURE                             |'
+    Print '|                                                                       |'
+    Print '|        This script should not be run on the ''master'' database.      |'
+    Print '|                                                                       |'
+    Print '+-----------------------------------------------------------------------+'
+    RETURN
+END
+
+IF IS_SRVROLEMEMBER('systemadmin') = 0
+BEGIN
+    Print '+-----------------------------------------------------------------------+'
+    Print '|                                                                       |'
+    Print '|                            SCRIPT FAILURE                             |'
+    Print '|                                                                       |'
+    Print '| This script can only be run by a member of the ''systemadmin'' role.  |'
+    Print '|                                                                       |'
+    Print '+-----------------------------------------------------------------------+'
+    RETURN
+END
+
+
+GO
+
+DROP PROCEDURE [dbo].[spASRIntGetSelfServiceRecordID]
 DROP PROCEDURE [dbo].[sp_ASR_AbsenceBreakdown_Run]
 DROP PROCEDURE [dbo].[sp_ASR_Bradford_DeleteAbsences]
 
@@ -15,6 +100,22 @@ CREATE TABLE ASRSysCurrentLogins(
 	[application]	varchar(255),
 	[clientmachine]		nvarchar(255))
 
+GO
+
+IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[sp_ASRIntGetSubExpressionsAndComponents]') AND xtype in (N'P'))
+	DROP PROCEDURE [dbo].[sp_ASRIntGetSubExpressionsAndComponents]
+GO
+
+IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[sp_ASRIntGetFullAccessChildView]') AND xtype in (N'P'))
+	DROP PROCEDURE [dbo].[sp_ASRIntGetFullAccessChildView]
+GO
+
+IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spASRIntSysSecMgr]') AND xtype in (N'P'))
+	DROP PROCEDURE [dbo].[spASRIntSysSecMgr]
+GO
+
+IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[sp_ASRIntGetRootExpressionIDs]') AND xtype in (N'P'))
+	DROP PROCEDURE [dbo].[sp_ASRIntGetRootExpressionIDs]
 GO
 
 IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spASRIntCopyRecordPostSave]') AND xtype in (N'P'))
@@ -121,6 +222,61 @@ IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[spASR
 	DROP PROCEDURE [dbo].[spASRIntGetUserGroup]
 GO
 
+
+
+CREATE PROCEDURE [dbo].[spASRIntGetActualUserDetails]
+(
+		@psUserName sysname OUTPUT,
+		@psUserGroup sysname OUTPUT,
+		@piUserGroupID integer OUTPUT
+)
+AS
+BEGIN
+
+	SET NOCOUNT ON;
+	EXEC dbo.spASRGetActualUserDetails @psUserName OUTPUT, @psUserGroup OUTPUT, @piUserGroupID  OUTPUT, '';
+
+END
+
+GO
+
+CREATE PROCEDURE [dbo].[spASRIntSysSecMgr]
+(
+		@pfSysSecMgr bit OUTPUT
+)
+AS
+BEGIN
+
+	SET NOCOUNT ON;
+
+	DECLARE
+		@sRoleName			sysname,
+		@sActualUserName	sysname,
+		@iActualUserGroupID	integer;
+		
+	EXEC spASRIntGetActualUserDetails
+		@sActualUserName OUTPUT,
+		@sRoleName OUTPUT,
+		@iActualUserGroupID OUTPUT;
+					
+	SELECT @pfSysSecMgr = 
+		CASE
+			WHEN (SELECT count(*)
+				FROM ASRSysGroupPermissions
+				INNER JOIN ASRSysPermissionItems 
+					ON (ASRSysGroupPermissions.itemID  = ASRSysPermissionItems.itemID
+						AND (ASRSysPermissionItems.itemKey = 'SYSTEMMANAGER'
+						OR ASRSysPermissionItems.itemKey = 'SECURITYMANAGER'))
+				INNER JOIN ASRSysPermissionCategories 
+					ON (ASRSysPermissionItems.categoryID = ASRSysPermissionCategories.categoryID
+						AND ASRSysPermissionCategories.categoryKey = 'MODULEACCESS')
+				WHERE ASRSysGroupPermissions.groupname = @sRoleName
+					AND ASRSysGroupPermissions.permitted = 1) > 0 THEN 1
+			ELSE 0
+		END;
+END
+GO
+
 CREATE PROCEDURE [dbo].[spASRIntGetSelfServiceRecordID] (
 	@piRecordID		integer 		OUTPUT,
 	@piRecordCount	integer 		OUTPUT,
@@ -198,17 +354,40 @@ BEGIN
 END
 GO
 
-CREATE PROCEDURE [dbo].[spASRIntGetActualUserDetails]
-(
-		@psUserName sysname OUTPUT,
-		@psUserGroup sysname OUTPUT,
-		@piUserGroupID integer OUTPUT
-)
+
+
+CREATE PROCEDURE [dbo].[sp_ASRUniqueObjectName](
+		  @psUniqueObjectName sysname OUTPUT
+		, @Prefix sysname
+		, @Type int)
 AS
 BEGIN
 
 	SET NOCOUNT ON;
-	EXEC dbo.spASRGetActualUserDetails @psUserName OUTPUT, @psUserGroup OUTPUT, @piUserGroupID  OUTPUT, '';
+
+	DECLARE @NewObj 		as sysname
+		, @Count 			as integer
+		, @sUserName		as sysname
+		, @sCommandString	nvarchar(MAX)	
+ 		, @sParamDefinition	nvarchar(500);
+
+	SET @sUserName = SYSTEM_USER;
+	SET @Count = 1;
+	SET @NewObj = @Prefix + CONVERT(varchar(100),@Count);
+
+	WHILE (EXISTS (SELECT * FROM sysobjects WHERE id = object_id(@NewObj) AND sysstat & 0xf = @Type))
+		OR (EXISTS (SELECT * FROM ASRSysSQLObjects WHERE Name = @NewObj AND Type = @Type))
+		BEGIN
+			SET @Count = @Count + 1;
+			SET @NewObj = @Prefix + CONVERT(varchar(10),@Count);
+		END
+
+	INSERT INTO [dbo].[ASRSysSQLObjects] ([Name], [Type], [DateCreated], [Owner])
+		VALUES (@NewObj, @Type, GETDATE(), @sUserName);
+
+	SET @sCommandString = 'SELECT @psUniqueObjectName = ''' + @NewObj + '''';
+	SET @sParamDefinition = N'@psUniqueObjectName sysname output';
+	EXECUTE sp_executesql @sCommandString, @sParamDefinition, @psUniqueObjectName output;
 
 END
 
@@ -580,10 +759,6 @@ GO
 DROP PROCEDURE [dbo].[sp_ASRIntGetSystemSetting]
 GO
 
-/****** Object:  StoredProcedure [dbo].[sp_ASRIntGetSubExpressionsAndComponents]    Script Date: 23/07/2013 11:18:30 ******/
-DROP PROCEDURE [dbo].[sp_ASRIntGetSubExpressionsAndComponents]
-GO
-
 /****** Object:  StoredProcedure [dbo].[sp_ASRIntGetSetting]    Script Date: 23/07/2013 11:18:30 ******/
 DROP PROCEDURE [dbo].[sp_ASRIntGetSetting]
 GO
@@ -602,10 +777,6 @@ GO
 
 /****** Object:  StoredProcedure [dbo].[sp_ASRIntGetScreenControls]    Script Date: 23/07/2013 11:18:30 ******/
 DROP PROCEDURE [dbo].[sp_ASRIntGetScreenControls]
-GO
-
-/****** Object:  StoredProcedure [dbo].[sp_ASRIntGetRootExpressionIDs]    Script Date: 23/07/2013 11:18:30 ******/
-DROP PROCEDURE [dbo].[sp_ASRIntGetRootExpressionIDs]
 GO
 
 /****** Object:  StoredProcedure [dbo].[sp_ASRIntGetReportDefinition]    Script Date: 23/07/2013 11:18:30 ******/
@@ -3539,6 +3710,33 @@ BEGIN
 END
 GO
 
+
+
+CREATE PROCEDURE [dbo].[sp_ASRIntGetRootExpressionIDs] (
+	@piCompID		integer,
+	@piRootExprID	varchar(255)	OUTPUT)
+AS
+BEGIN
+
+	SET NOCOUNT ON;
+
+	DECLARE @iParentCompID	integer;
+
+	SELECT @iParentCompID = ASRSysExpressions.parentComponentID, 
+		@piRootExprID = ASRSysExpressions.exprID
+	FROM [dbo].[ASRSysExpressions]
+	JOIN ASRSysExprComponents ON ASRSysExpressions.exprID = ASRSysExprComponents.exprID
+	WHERE ASRSysExprComponents.componentID = @piCompID;
+
+	IF (@iParentCompID > 0)
+	BEGIN
+		EXECUTE [dbo].[sp_ASRIntGetRootExpressionIDs] @iParentCompID, @piRootExprID OUTPUT;
+	END
+
+	IF @piRootExprID IS null SET @piRootExprID = 0;
+END
+
+GO
 /****** Object:  StoredProcedure [dbo].[sp_ASRIntDefUsage]    Script Date: 23/07/2013 11:18:30 ******/
 SET ANSI_NULLS ON
 GO
@@ -7402,12 +7600,93 @@ BEGIN
 END
 GO
 
-/****** Object:  StoredProcedure [dbo].[sp_ASRIntGetExpressionDefinition]    Script Date: 23/07/2013 11:18:30 ******/
-SET ANSI_NULLS ON
+
+CREATE PROCEDURE [dbo].[sp_ASRIntGetSubExpressionsAndComponents] (
+	@piExprID				integer, 
+	@psTempExprIDs 			varchar(MAX)	OUTPUT, 
+	@psTempComponentIDs		varchar(MAX)	OUTPUT
+)
+AS
+BEGIN
+
+	SET NOCOUNT ON;
+
+	DECLARE
+		@iComponentID		integer,
+		@iExpressionID		integer,
+		@sSubExprIDs 		varchar(MAX), 
+		@sSubComponentIDs	varchar(MAX);	
+
+	SET @psTempExprIDs = '';
+	SET @psTempComponentIDs = '';
+
+	DECLARE components_cursor CURSOR LOCAL FAST_FORWARD FOR 
+		SELECT ASRSysExprComponents.componentID
+		FROM ASRSysExprComponents
+		WHERE ASRSysExprComponents.exprID = @piExprID;
+	OPEN components_cursor;
+	FETCH NEXT FROM components_cursor INTO @iComponentID;
+	WHILE (@@fetch_status = 0)
+	BEGIN
+		SET @psTempComponentIDs = @psTempComponentIDs +
+			CASE
+				WHEN len(@psTempComponentIDs) > 0 THEN ','
+				ELSE ''
+			END +
+			convert(varchar(100), @iComponentID);
+			
+		FETCH NEXT FROM components_cursor INTO @iComponentID;
+	END
+	CLOSE components_cursor;
+	DEALLOCATE components_cursor;
+
+	DECLARE expressions_cursor CURSOR LOCAL FAST_FORWARD FOR 
+		SELECT ASRSysExpressions.exprID
+		FROM ASRSysExpressions
+		WHERE ASRSysExpressions.parentComponentID IN
+			(SELECT ASRSysExprComponents.componentID
+			FROM ASRSysExprComponents
+			WHERE ASRSysExprComponents.exprID = @piExprID);
+	OPEN expressions_cursor;
+	FETCH NEXT FROM expressions_cursor INTO @iExpressionID;
+	WHILE (@@fetch_status = 0)
+	BEGIN
+		SET @psTempExprIDs = @psTempExprIDs +
+			CASE
+				WHEN len(@psTempExprIDs) > 0 THEN ','
+				ELSE ''
+			END +
+			convert(varchar(100), @iExpressionID);
+		
+		exec [dbo].[sp_ASRIntGetSubExpressionsAndComponents] @iExpressionID, @sSubExprIDs OUTPUT, @sSubComponentIDs OUTPUT;
+		
+		IF len(@sSubExprIDs) > 0
+		BEGIN
+			SET @psTempExprIDs = @psTempExprIDs +
+				CASE
+					WHEN len(@psTempExprIDs) > 0 THEN ','
+					ELSE ''
+				END +
+				@sSubExprIDs;
+		END
+
+		IF len(@sSubComponentIDs) > 0
+		BEGIN
+			SET @psTempComponentIDs = @psTempComponentIDs +
+				CASE
+					WHEN len(@psTempComponentIDs) > 0 THEN ','
+					ELSE ''
+				END +
+				@sSubComponentIDs;
+		END
+
+		FETCH NEXT FROM expressions_cursor INTO @iExpressionID;
+	END
+	CLOSE expressions_cursor;
+	DEALLOCATE expressions_cursor;
+END
 GO
 
-SET QUOTED_IDENTIFIER ON
-GO
 
 CREATE PROCEDURE [dbo].[sp_ASRIntGetExpressionDefinition] (
 	@piExprID		integer,
@@ -14186,38 +14465,6 @@ BEGIN
 END
 GO
 
-/****** Object:  StoredProcedure [dbo].[sp_ASRIntGetRootExpressionIDs]    Script Date: 23/07/2013 11:18:30 ******/
-SET ANSI_NULLS ON
-GO
-
-SET QUOTED_IDENTIFIER ON
-GO
-
-CREATE PROCEDURE [dbo].[sp_ASRIntGetRootExpressionIDs] (
-	@piCompID		integer,
-	@piRootExprID	varchar(255)	OUTPUT)
-AS
-BEGIN
-
-	SET NOCOUNT ON;
-
-	DECLARE @iParentCompID	integer;
-
-	SELECT @iParentCompID = ASRSysExpressions.parentComponentID, 
-		@piRootExprID = ASRSysExpressions.exprID
-	FROM [dbo].[ASRSysExpressions]
-	JOIN ASRSysExprComponents ON ASRSysExpressions.exprID = ASRSysExprComponents.exprID
-	WHERE ASRSysExprComponents.componentID = @piCompID;
-
-	IF (@iParentCompID > 0)
-	BEGIN
-		EXECUTE [dbo].[sp_ASRIntGetRootExpressionIDs] @iParentCompID, @piRootExprID OUTPUT;
-	END
-
-	IF @piRootExprID IS null SET @piRootExprID = 0;
-END
-GO
-
 /****** Object:  StoredProcedure [dbo].[sp_ASRIntGetScreenControls]    Script Date: 23/07/2013 11:18:30 ******/
 SET ANSI_NULLS ON
 GO
@@ -15214,98 +15461,7 @@ BEGIN
 END
 GO
 
-/****** Object:  StoredProcedure [dbo].[sp_ASRIntGetSubExpressionsAndComponents]    Script Date: 23/07/2013 11:18:30 ******/
-SET ANSI_NULLS ON
-GO
 
-SET QUOTED_IDENTIFIER ON
-GO
-
-CREATE PROCEDURE [dbo].[sp_ASRIntGetSubExpressionsAndComponents] (
-	@piExprID				integer, 
-	@psTempExprIDs 			varchar(MAX)	OUTPUT, 
-	@psTempComponentIDs		varchar(MAX)	OUTPUT
-)
-AS
-BEGIN
-
-	SET NOCOUNT ON;
-
-	DECLARE
-		@iComponentID		integer,
-		@iExpressionID		integer,
-		@sSubExprIDs 		varchar(MAX), 
-		@sSubComponentIDs	varchar(MAX);	
-
-	SET @psTempExprIDs = '';
-	SET @psTempComponentIDs = '';
-
-	DECLARE components_cursor CURSOR LOCAL FAST_FORWARD FOR 
-		SELECT ASRSysExprComponents.componentID
-		FROM ASRSysExprComponents
-		WHERE ASRSysExprComponents.exprID = @piExprID;
-	OPEN components_cursor;
-	FETCH NEXT FROM components_cursor INTO @iComponentID;
-	WHILE (@@fetch_status = 0)
-	BEGIN
-		SET @psTempComponentIDs = @psTempComponentIDs +
-			CASE
-				WHEN len(@psTempComponentIDs) > 0 THEN ','
-				ELSE ''
-			END +
-			convert(varchar(100), @iComponentID);
-			
-		FETCH NEXT FROM components_cursor INTO @iComponentID;
-	END
-	CLOSE components_cursor;
-	DEALLOCATE components_cursor;
-
-	DECLARE expressions_cursor CURSOR LOCAL FAST_FORWARD FOR 
-		SELECT ASRSysExpressions.exprID
-		FROM ASRSysExpressions
-		WHERE ASRSysExpressions.parentComponentID IN
-			(SELECT ASRSysExprComponents.componentID
-			FROM ASRSysExprComponents
-			WHERE ASRSysExprComponents.exprID = @piExprID);
-	OPEN expressions_cursor;
-	FETCH NEXT FROM expressions_cursor INTO @iExpressionID;
-	WHILE (@@fetch_status = 0)
-	BEGIN
-		SET @psTempExprIDs = @psTempExprIDs +
-			CASE
-				WHEN len(@psTempExprIDs) > 0 THEN ','
-				ELSE ''
-			END +
-			convert(varchar(100), @iExpressionID);
-		
-		exec [dbo].[sp_ASRIntGetSubExpressionsAndComponents] @iExpressionID, @sSubExprIDs OUTPUT, @sSubComponentIDs OUTPUT;
-		
-		IF len(@sSubExprIDs) > 0
-		BEGIN
-			SET @psTempExprIDs = @psTempExprIDs +
-				CASE
-					WHEN len(@psTempExprIDs) > 0 THEN ','
-					ELSE ''
-				END +
-				@sSubExprIDs;
-		END
-
-		IF len(@sSubComponentIDs) > 0
-		BEGIN
-			SET @psTempComponentIDs = @psTempComponentIDs +
-				CASE
-					WHEN len(@psTempComponentIDs) > 0 THEN ','
-					ELSE ''
-				END +
-				@sSubComponentIDs;
-		END
-
-		FETCH NEXT FROM expressions_cursor INTO @iExpressionID;
-	END
-	CLOSE expressions_cursor;
-	DEALLOCATE expressions_cursor;
-END
-GO
 
 
 /****** Object:  StoredProcedure [dbo].[sp_ASRIntGetSystemSetting]    Script Date: 23/07/2013 11:18:30 ******/
@@ -20765,10 +20921,6 @@ GO
 
 /****** Object:  StoredProcedure [dbo].[spASRIntUpdateRecord]    Script Date: 23/07/2013 11:19:27 ******/
 DROP PROCEDURE [dbo].[spASRIntUpdateRecord]
-GO
-
-/****** Object:  StoredProcedure [dbo].[spASRIntSysSecMgr]    Script Date: 23/07/2013 11:19:27 ******/
-DROP PROCEDURE [dbo].[spASRIntSysSecMgr]
 GO
 
 /****** Object:  StoredProcedure [dbo].[spASRIntSetEventLogPurge]    Script Date: 23/07/2013 11:19:27 ******/
@@ -29453,49 +29605,6 @@ BEGIN
 END
 GO
 
-/****** Object:  StoredProcedure [dbo].[spASRIntSysSecMgr]    Script Date: 23/07/2013 11:19:27 ******/
-SET ANSI_NULLS ON
-GO
-
-SET QUOTED_IDENTIFIER ON
-GO
-
-CREATE PROCEDURE [dbo].[spASRIntSysSecMgr]
-(
-		@pfSysSecMgr bit OUTPUT
-)
-AS
-BEGIN
-
-	SET NOCOUNT ON;
-
-	DECLARE
-		@sRoleName			sysname,
-		@sActualUserName	sysname,
-		@iActualUserGroupID	integer;
-		
-	EXEC spASRIntGetActualUserDetails
-		@sActualUserName OUTPUT,
-		@sRoleName OUTPUT,
-		@iActualUserGroupID OUTPUT;
-					
-	SELECT @pfSysSecMgr = 
-		CASE
-			WHEN (SELECT count(*)
-				FROM ASRSysGroupPermissions
-				INNER JOIN ASRSysPermissionItems 
-					ON (ASRSysGroupPermissions.itemID  = ASRSysPermissionItems.itemID
-						AND (ASRSysPermissionItems.itemKey = 'SYSTEMMANAGER'
-						OR ASRSysPermissionItems.itemKey = 'SECURITYMANAGER'))
-				INNER JOIN ASRSysPermissionCategories 
-					ON (ASRSysPermissionItems.categoryID = ASRSysPermissionCategories.categoryID
-						AND ASRSysPermissionCategories.categoryKey = 'MODULEACCESS')
-				WHERE ASRSysGroupPermissions.groupname = @sRoleName
-					AND ASRSysGroupPermissions.permitted = 1) > 0 THEN 1
-			ELSE 0
-		END;
-END
-GO
 
 /****** Object:  StoredProcedure [dbo].[spASRIntUpdateRecord]    Script Date: 23/07/2013 11:19:27 ******/
 SET ANSI_NULLS ON
@@ -29631,10 +29740,6 @@ GO
 
 /****** Object:  StoredProcedure [dbo].[spASRIntTestFilter]    Script Date: 13/09/2013 08:57:58 ******/
 DROP PROCEDURE [dbo].[spASRIntTestFilter]
-GO
-
-/****** Object:  StoredProcedure [dbo].[spASRIntSysSecMgr]    Script Date: 13/09/2013 08:57:58 ******/
-DROP PROCEDURE [dbo].[spASRIntSysSecMgr]
 GO
 
 /****** Object:  StoredProcedure [dbo].[spASRIntShowOutOfOfficeHyperlink]    Script Date: 13/09/2013 08:57:58 ******/
@@ -41155,51 +41260,6 @@ CREATE PROCEDURE [dbo].[spASRIntShowOutOfOfficeHyperlink]
 	END
 GO
 
-/****** Object:  StoredProcedure [dbo].[spASRIntSysSecMgr]    Script Date: 13/09/2013 08:58:00 ******/
-SET ANSI_NULLS ON
-GO
-
-SET QUOTED_IDENTIFIER ON
-GO
-
-
-CREATE PROCEDURE [dbo].[spASRIntSysSecMgr]
-(
-		@pfSysSecMgr bit OUTPUT
-)
-AS
-BEGIN
-
-	SET NOCOUNT ON;
-
-	DECLARE
-		@sRoleName			sysname,
-		@sActualUserName	sysname,
-		@iActualUserGroupID	integer;
-		
-	EXEC spASRIntGetActualUserDetails
-		@sActualUserName OUTPUT,
-		@sRoleName OUTPUT,
-		@iActualUserGroupID OUTPUT;
-					
-	SELECT @pfSysSecMgr = 
-		CASE
-			WHEN (SELECT count(*)
-				FROM ASRSysGroupPermissions
-				INNER JOIN ASRSysPermissionItems 
-					ON (ASRSysGroupPermissions.itemID  = ASRSysPermissionItems.itemID
-						AND (ASRSysPermissionItems.itemKey = 'SYSTEMMANAGER'
-						OR ASRSysPermissionItems.itemKey = 'SECURITYMANAGER'))
-				INNER JOIN ASRSysPermissionCategories 
-					ON (ASRSysPermissionItems.categoryID = ASRSysPermissionCategories.categoryID
-						AND ASRSysPermissionCategories.categoryKey = 'MODULEACCESS')
-				WHERE ASRSysGroupPermissions.groupname = @sRoleName
-					AND ASRSysGroupPermissions.permitted = 1) > 0 THEN 1
-			ELSE 0
-		END;
-END
-
-GO
 
 /****** Object:  StoredProcedure [dbo].[spASRIntTestFilter]    Script Date: 13/09/2013 08:58:00 ******/
 SET ANSI_NULLS ON
@@ -42150,10 +42210,6 @@ GO
 DROP PROCEDURE [dbo].[sp_ASRIntGetSystemSetting]
 GO
 
-/****** Object:  StoredProcedure [dbo].[sp_ASRIntGetSubExpressionsAndComponents]    Script Date: 13/09/2013 08:59:32 ******/
-DROP PROCEDURE [dbo].[sp_ASRIntGetSubExpressionsAndComponents]
-GO
-
 /****** Object:  StoredProcedure [dbo].[sp_ASRIntGetSetting]    Script Date: 13/09/2013 08:59:32 ******/
 DROP PROCEDURE [dbo].[sp_ASRIntGetSetting]
 GO
@@ -42188,10 +42244,6 @@ GO
 
 /****** Object:  StoredProcedure [dbo].[sp_ASRIntGetScreenControlAndLookupValuesString]    Script Date: 13/09/2013 08:59:32 ******/
 DROP PROCEDURE [dbo].[sp_ASRIntGetScreenControlAndLookupValuesString]
-GO
-
-/****** Object:  StoredProcedure [dbo].[sp_ASRIntGetRootExpressionIDs]    Script Date: 13/09/2013 08:59:32 ******/
-DROP PROCEDURE [dbo].[sp_ASRIntGetRootExpressionIDs]
 GO
 
 /****** Object:  StoredProcedure [dbo].[sp_ASRIntGetReportDefinition]    Script Date: 13/09/2013 08:59:32 ******/
@@ -42276,10 +42328,6 @@ GO
 
 /****** Object:  StoredProcedure [dbo].[sp_ASRIntGetHistoryMainMenu]    Script Date: 13/09/2013 08:59:32 ******/
 DROP PROCEDURE [dbo].[sp_ASRIntGetHistoryMainMenu]
-GO
-
-/****** Object:  StoredProcedure [dbo].[sp_ASRIntGetFullAccessChildView]    Script Date: 13/09/2013 08:59:32 ******/
-DROP PROCEDURE [dbo].[sp_ASRIntGetFullAccessChildView]
 GO
 
 /****** Object:  StoredProcedure [dbo].[sp_ASRIntGetFindWindowTitle]    Script Date: 13/09/2013 08:59:32 ******/
@@ -50244,6 +50292,9 @@ END
 
 GO
 
+
+
+
 /****** Object:  StoredProcedure [dbo].[sp_ASRIntDefUsage]    Script Date: 13/09/2013 08:59:33 ******/
 SET ANSI_NULLS ON
 GO
@@ -58023,12 +58074,6 @@ END
 
 GO
 
-/****** Object:  StoredProcedure [dbo].[sp_ASRIntGetFullAccessChildView]    Script Date: 13/09/2013 08:59:33 ******/
-SET ANSI_NULLS ON
-GO
-
-SET QUOTED_IDENTIFIER ON
-GO
 
 CREATE PROCEDURE [dbo].[sp_ASRIntGetFullAccessChildView]
 (
@@ -63705,39 +63750,6 @@ BEGIN
 END
 GO
 
-/****** Object:  StoredProcedure [dbo].[sp_ASRIntGetRootExpressionIDs]    Script Date: 13/09/2013 08:59:34 ******/
-SET ANSI_NULLS ON
-GO
-
-SET QUOTED_IDENTIFIER ON
-GO
-
-
-CREATE PROCEDURE [dbo].[sp_ASRIntGetRootExpressionIDs] (
-	@piCompID		integer,
-	@piRootExprID	varchar(255)	OUTPUT)
-AS
-BEGIN
-
-	SET NOCOUNT ON;
-
-	DECLARE @iParentCompID	integer;
-
-	SELECT @iParentCompID = ASRSysExpressions.parentComponentID, 
-		@piRootExprID = ASRSysExpressions.exprID
-	FROM [dbo].[ASRSysExpressions]
-	JOIN ASRSysExprComponents ON ASRSysExpressions.exprID = ASRSysExprComponents.exprID
-	WHERE ASRSysExprComponents.componentID = @piCompID;
-
-	IF (@iParentCompID > 0)
-	BEGIN
-		EXECUTE [dbo].[sp_ASRIntGetRootExpressionIDs] @iParentCompID, @piRootExprID OUTPUT;
-	END
-
-	IF @piRootExprID IS null SET @piRootExprID = 0;
-END
-
-GO
 
 /****** Object:  StoredProcedure [dbo].[sp_ASRIntGetScreenControlAndLookupValuesString]    Script Date: 13/09/2013 08:59:34 ******/
 SET ANSI_NULLS ON
@@ -66184,100 +66196,6 @@ END
 
 GO
 
-/****** Object:  StoredProcedure [dbo].[sp_ASRIntGetSubExpressionsAndComponents]    Script Date: 13/09/2013 08:59:34 ******/
-SET ANSI_NULLS ON
-GO
-
-SET QUOTED_IDENTIFIER ON
-GO
-
-
-CREATE PROCEDURE [dbo].[sp_ASRIntGetSubExpressionsAndComponents] (
-	@piExprID				integer, 
-	@psTempExprIDs 			varchar(MAX)	OUTPUT, 
-	@psTempComponentIDs		varchar(MAX)	OUTPUT
-)
-AS
-BEGIN
-
-	SET NOCOUNT ON;
-
-	DECLARE
-		@iComponentID		integer,
-		@iExpressionID		integer,
-		@sSubExprIDs 		varchar(MAX), 
-		@sSubComponentIDs	varchar(MAX);	
-
-	SET @psTempExprIDs = '';
-	SET @psTempComponentIDs = '';
-
-	DECLARE components_cursor CURSOR LOCAL FAST_FORWARD FOR 
-		SELECT ASRSysExprComponents.componentID
-		FROM ASRSysExprComponents
-		WHERE ASRSysExprComponents.exprID = @piExprID;
-	OPEN components_cursor;
-	FETCH NEXT FROM components_cursor INTO @iComponentID;
-	WHILE (@@fetch_status = 0)
-	BEGIN
-		SET @psTempComponentIDs = @psTempComponentIDs +
-			CASE
-				WHEN len(@psTempComponentIDs) > 0 THEN ','
-				ELSE ''
-			END +
-			convert(varchar(100), @iComponentID);
-			
-		FETCH NEXT FROM components_cursor INTO @iComponentID;
-	END
-	CLOSE components_cursor;
-	DEALLOCATE components_cursor;
-
-	DECLARE expressions_cursor CURSOR LOCAL FAST_FORWARD FOR 
-		SELECT ASRSysExpressions.exprID
-		FROM ASRSysExpressions
-		WHERE ASRSysExpressions.parentComponentID IN
-			(SELECT ASRSysExprComponents.componentID
-			FROM ASRSysExprComponents
-			WHERE ASRSysExprComponents.exprID = @piExprID);
-	OPEN expressions_cursor;
-	FETCH NEXT FROM expressions_cursor INTO @iExpressionID;
-	WHILE (@@fetch_status = 0)
-	BEGIN
-		SET @psTempExprIDs = @psTempExprIDs +
-			CASE
-				WHEN len(@psTempExprIDs) > 0 THEN ','
-				ELSE ''
-			END +
-			convert(varchar(100), @iExpressionID);
-		
-		exec [dbo].[sp_ASRIntGetSubExpressionsAndComponents] @iExpressionID, @sSubExprIDs OUTPUT, @sSubComponentIDs OUTPUT;
-		
-		IF len(@sSubExprIDs) > 0
-		BEGIN
-			SET @psTempExprIDs = @psTempExprIDs +
-				CASE
-					WHEN len(@psTempExprIDs) > 0 THEN ','
-					ELSE ''
-				END +
-				@sSubExprIDs;
-		END
-
-		IF len(@sSubComponentIDs) > 0
-		BEGIN
-			SET @psTempComponentIDs = @psTempComponentIDs +
-				CASE
-					WHEN len(@psTempComponentIDs) > 0 THEN ','
-					ELSE ''
-				END +
-				@sSubComponentIDs;
-		END
-
-		FETCH NEXT FROM expressions_cursor INTO @iExpressionID;
-	END
-	CLOSE expressions_cursor;
-	DEALLOCATE expressions_cursor;
-END
-
-GO
 
 /****** Object:  StoredProcedure [dbo].[sp_ASRIntGetSystemSetting]    Script Date: 13/09/2013 08:59:34 ******/
 SET ANSI_NULLS ON
@@ -85237,43 +85155,6 @@ END
 GO
 
 
-CREATE PROCEDURE [dbo].[sp_ASRUniqueObjectName](
-		  @psUniqueObjectName sysname OUTPUT
-		, @Prefix sysname
-		, @Type int)
-AS
-BEGIN
-
-	SET NOCOUNT ON;
-
-	DECLARE @NewObj 		as sysname
-		, @Count 			as integer
-		, @sUserName		as sysname
-		, @sCommandString	nvarchar(MAX)	
- 		, @sParamDefinition	nvarchar(500);
-
-	SET @sUserName = SYSTEM_USER;
-	SET @Count = 1;
-	SET @NewObj = @Prefix + CONVERT(varchar(100),@Count);
-
-	WHILE (EXISTS (SELECT * FROM sysobjects WHERE id = object_id(@NewObj) AND sysstat & 0xf = @Type))
-		OR (EXISTS (SELECT * FROM ASRSysSQLObjects WHERE Name = @NewObj AND Type = @Type))
-		BEGIN
-			SET @Count = @Count + 1;
-			SET @NewObj = @Prefix + CONVERT(varchar(10),@Count);
-		END
-
-	INSERT INTO [dbo].[ASRSysSQLObjects] ([Name], [Type], [DateCreated], [Owner])
-		VALUES (@NewObj, @Type, GETDATE(), @sUserName);
-
-	SET @sCommandString = 'SELECT @psUniqueObjectName = ''' + @NewObj + '''';
-	SET @sParamDefinition = N'@psUniqueObjectName sysname output';
-	EXECUTE sp_executesql @sCommandString, @sParamDefinition, @psUniqueObjectName output;
-
-END
-
-GO
-
 CREATE PROCEDURE [dbo].[spASRIntGetUniqueExpressionID](
 	@settingkey AS varchar(50),
 	@settingvalue AS integer OUTPUT)
@@ -85920,7 +85801,43 @@ GO
 GRANT EXEC ON TYPE::[dbo].[DataPermissions] TO ASRSysGroup
 
 
-EXEC spsys_setsystemsetting 'database', 'version', '8.0';
-EXEC spsys_setsystemsetting 'intranet', 'version', '8.0.28';
-EXEC spsys_setsystemsetting 'ssintranet', 'version', '8.0.28';
+DECLARE @sVersion varchar(10) = '8.0.28'
 
+EXEC spsys_setsystemsetting 'database', 'version', @sVersion;
+EXEC spsys_setsystemsetting 'intranet', 'version', @sVersion;
+EXEC spsys_setsystemsetting 'ssintranet', 'version', @sVersion;
+
+
+/*---------------------------------------------*/
+/* Insert a record into the Audit Access table */
+/*---------------------------------------------*/
+INSERT INTO ASRSysAuditAccess
+(DateTimeStamp, UserGroup, UserName, ComputerName, HRProModule, Action)
+VALUES (getdate(),'<none>',left(system_user,50),lower(left(host_name(),30)),'Intranet','v8.0.28' + @sVersion)
+
+Print ''
+Print '+-----------------------------------------------------------------------+'
+Print '|                                                                       |'
+Print '|                            SCRIPT SUCCESS                             |'
+Print '|                                                                       |'
+Print '+-----------------------------------------------------------------------+'
+
+/* ------------------------------------- */
+/* Reapply the (1 Row Affected) messages */
+/* ------------------------------------- */
+SET NOCOUNT OFF
+
+GoTo EndSave
+
+QuitWithRollback:
+    Print ''
+    Print '+-----------------------------------------------------------------------+'
+    Print '|                                                                       |'
+    Print '|                            SCRIPT FAILURE                             |'
+    Print '|                                                                       |'
+    Print '|                    See error messages listed above                    |'
+    Print '|                                                                       |'
+    Print '+-----------------------------------------------------------------------+'
+    IF (@@TRANCOUNT > 0) ROLLBACK TRANSACTION
+
+EndSave:
