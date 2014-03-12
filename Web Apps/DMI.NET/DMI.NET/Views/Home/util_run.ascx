@@ -121,6 +121,7 @@
 
 		$("#cmdOK").hide();
 		//$("#cmdCancel").hide();
+		$("#cmdCancel").removeClass('ui-state-focus');
 		$("#cmdCancel").button({ disabled: true });
 		$("#cmdOutput").show();
 		$("#cmdOutput").button({ disabled: false });
