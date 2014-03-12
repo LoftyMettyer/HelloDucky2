@@ -267,7 +267,7 @@ Namespace Controllers
 				If Not CompareVersion(objServerSession.DatabaseStatus.IntranetVersion, objAppVersion, False) _
 					Or Not CompareVersion(objServerSession.DatabaseStatus.SysMgrVersion, objAppVersion, True) Then
 					Session("ErrorText") = String.Format("The database is out of date.<BR>Please ask the System Administrator to update the database for use with version {0}.{1}.{2}" _
-							, objAppVersion.Major, objAppVersion.MajorRevision, objAppVersion.MinorRevision)
+							, objAppVersion.Major, objAppVersion.Minor, objAppVersion.Build)
 					Return RedirectToAction("Loginerror")
 				End If
 
