@@ -259,51 +259,24 @@
 		Else
 			Dim sMessage As String
 			If _WorkflowGood = True Then
-				' Display message saying no pending steps.
-				sMessage = "No pending workflow steps"
+				sMessage = "No Pending Workflow Steps"
 			Else
-				' Display error message.
 				sMessage = "Error getting the pending workflow steps"
 			End If
 		%>
-		<table align="center" class="outline hidden" cellpadding="5" cellspacing="0" id="tblMessage">
-			<tr>
-				<td width="20"></td>
-				<td>
-					<table class="invisible" cellspacing="0" cellpadding="0">
-						<tr>
-							<td height="10"></td>
-						</tr>
-
-						<tr>
-							<td align="center">
-								<h3>Pending Workflow Steps</h3>
-							</td>
-						</tr>
-
-						<tr>
-							<td align="center"><%=sMessage%></td>
-						</tr>
-
-						<tr>
-							<td height="20"></td>
-						</tr>
-
-						<tr>
-							<td height="10" align="center"></td>
-						</tr>
-
-						<tr>
-							<td height="10"></td>
-						</tr>
-					</table>
-				</td>
-				<td width="20"></td>
-			</tr>
-		</table>
+		<div class="absolutefull">
+			<div id="row1" style="margin-left: 20px; margin-right: 20px">
+				<div class="pageTitleDiv">
+					<a href='javascript:loadPartialView("linksMain", "Home", "workframe", null);' title='Back'>
+						<i class='pageTitleIcon icon-circle-arrow-left'></i>
+					</a>
+					<span class="pageTitle"><%=sMessage %></span>
+				</div>
+			</div>
+		</div>
 		<%			
+		End If
 	End If
-End If
 		%>
 	</form>
 
