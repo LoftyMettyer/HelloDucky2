@@ -140,7 +140,8 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 }
 </script>
 
-<div <%=session("BodyTag")%>>
+<div id="divCalendarReportDefinition">
+
 	<form id="frmDefinition" name="frmDefinition">
 		<table  >
 			<tr>
@@ -1715,7 +1716,6 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 			</table>
 		</div>
 </form>
-</div>
 
 <form id="frmTables" style="visibility: hidden; display: none">
 	<%
@@ -2188,8 +2188,6 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 	<input type="hidden" id="calcEndDateHidden" name="calcEndDateHidden" value="N">
 </form>
 
-
-<div>
 	<input type='hidden' id="txtTicker" name="txtTicker" value="0">
 	<input type='hidden' id="txtLastKeyFind" name="txtLastKeyFind" value="">
 </div>

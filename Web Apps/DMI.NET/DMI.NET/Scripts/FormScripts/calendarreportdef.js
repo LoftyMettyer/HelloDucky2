@@ -1736,6 +1736,8 @@ function checkUniqueEventKey(psNewKey) {
 
 function eventEdit() {
 	var sURL;
+	var frmEventDetails = OpenHR.getForm("divCalendarReportDefinition", "frmEventDetails");
+
 	frmEventDetails.eventAction.value = "EDIT";
 	frmEventDetails.eventName.value = frmDefinition.grdEvents.Columns("Name").value;
 	frmEventDetails.eventID.value = frmDefinition.grdEvents.Columns("EventKey").value;
