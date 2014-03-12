@@ -37,8 +37,28 @@
 		
 		$("#searchDashboardString").keyup(function (event) {
 			//Dashboard search functionality - tiles only.
-			var searchString = $('#searchDashboardString').val();
+			var searchString = $('#searchDashboardString').val();			
+			if (searchString.length == 0) {
+				$('.pendingworkflowlinkcontent li').css('opacity', '1');
+				$('.dropdownlinkcontent li').css('opacity', '1');
+				$('.hypertextlinkcontent li').css('opacity', '1');
+				$('.buttonlinkcontent li').css('opacity', '1');
+			} else {
+				$('.pendingworkflowlinkcontent li').css('opacity', '.1');
+				$('.dropdownlinkcontent li').css('opacity', '.1');
+				$('.hypertextlinkcontent li').css('opacity', '.1');
+				$('.buttonlinkcontent li').css('opacity', '.1');
+				$("span:MyCaseInsensitiveContains('" + searchString + "')").parent('li').css('opacity', '1');
+				$("a:MyCaseInsensitiveContains('" + searchString + "')").parent('li').css('opacity', '1');
+			}
+		});
 
+		
+		//To handle close button click
+		$("#searchDashboardString").mouseleave(function (event) {		
+			
+			//Dashboard search functionality - tiles only.
+			var searchString = $('#searchDashboardString').val();			
 			if (searchString.length == 0) {
 				$('.pendingworkflowlinkcontent li').css('opacity', '1');
 				$('.dropdownlinkcontent li').css('opacity', '1');
