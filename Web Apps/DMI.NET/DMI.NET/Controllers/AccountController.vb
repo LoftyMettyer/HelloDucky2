@@ -310,7 +310,8 @@ Namespace Controllers
 				Session("SSILinkTableID") = 0
 				Session("SSILinkViewID") = 0
 
-
+				'Store in Session the logged in user's RecordID
+				Session("LoggedInUserRecordID") = ASRIntranetFunctions.GetLoggedInUserRecordID(Session("SingleRecordViewID"))
 			Catch ex As Exception
 				Session("ErrorText") = FormatError(ex.Message)
 				Return RedirectToAction("Loginerror")

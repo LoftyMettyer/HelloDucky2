@@ -27,21 +27,8 @@ Namespace Models
 			Dim objDataAccess As New clsDataAccess(objSession.LoginInfo)
 
 			If iTopLevelRecID = 0 Then
-				Dim iSingleRecordViewID As Integer = CInt(CleanNumeric(HttpContext.Current.Session("SingleRecordViewID")))
-
-				Dim prmRecordID = New SqlParameter("piRecordID", SqlDbType.Int)
-				prmRecordID.Direction = ParameterDirection.Output
-
-				Dim prmRecordCount = New SqlParameter("piRecordCount", SqlDbType.Int)
-				prmRecordCount.Direction = ParameterDirection.Output
-
-				Err.Clear()
-
-				objDataAccess.GetDataSet("spASRIntGetSelfServiceRecordID", prmRecordID, prmRecordCount, New SqlParameter("piViewID", iSingleRecordViewID))
-
-				If Err.Number = 0 And CInt(prmRecordCount.Value) = 1 Then
-					' Only one record.
-					iTopLevelRecID = CInt(prmRecordID.Value)
+				If HttpContext.Current.Session("LoggedInUserRecordID") > 0 Then
+					iTopLevelRecID = HttpContext.Current.Session("LoggedInUserRecordID")
 				End If
 			End If
 

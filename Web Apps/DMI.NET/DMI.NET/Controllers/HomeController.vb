@@ -1480,35 +1480,17 @@ Namespace Controllers
 					Dim sErrorDescription = ""
 
 					' Get the self-service record ID.
-
-					Dim prmRecordID = New SqlParameter("piRecordID", SqlDbType.Int)
-					prmRecordID.Direction = ParameterDirection.Output
-
-					Dim prmRecordCount = New SqlParameter("piRecordCount", SqlDbType.Int)
-					prmRecordCount.Direction = ParameterDirection.Output
-
-					objDataAccess.ExecuteSP("spASRIntGetSelfServiceRecordID", prmRecordID, prmRecordCount _
-																, New SqlParameter("piViewID", CleanNumeric(Session("SingleRecordViewID"))))
-
-
-					If prmRecordCount.Value = 1 Then
-						' Only one record.
-						Session("TopLevelRecID") = NullSafeInteger(prmRecordID.Value)
+					If Session("LoggedInUserRecordID") >= 0 Then
+						Session("TopLevelRecID") = Session("LoggedInUserRecordID")
 					Else
-						If prmRecordCount.Value = 0 Then
-							' No personnel record. 
-							Session("TopLevelRecID") = 0
-						Else
-							' More than one personnel record.
-							sErrorDescription = "You have access to more than one record in the defined Single-record view."
+						' More than one personnel record.
+						sErrorDescription = "You have access to more than one record in the defined Single-record view."
 
-							Session("ErrorTitle") = "Login Page"
-							Session("ErrorText") =
-							 "You could not login to the OpenHR database because of the following reason:" & sErrorDescription & "<p>" & vbCrLf
+						Session("ErrorTitle") = "Login Page"
+						Session("ErrorText") =
+						 "You could not login to the OpenHR database because of the following reason:" & sErrorDescription & "<p>" & vbCrLf
 
-							Response.Redirect("FormError")
-
-						End If
+						Response.Redirect("FormError")
 					End If
 
 					Err.Clear()
@@ -5452,9 +5434,14 @@ Namespace Controllers
 					Dim objDatabase As Database = CType(Session("DatabaseFunctions"), Database)
 					Session("timestamp") = objDatabase.GetRecordTimestamp(CleanNumeric(Session("optionRecordID")), Session("realSource"))
 
-					'Update the ID badge picture in Session
-					Session("SelfServicePhotograph_Src") = "data:image/jpeg;base64," & Session("optionFileValue")
-
+					'Update the ID badge picture in Session only if the user that is being edited is the same as the logged in user
+					If CInt(Session("PreviousRecordID")) = CInt(Session("LoggedInUserRecordID")) Then
+						If Session("optionFileValue") = "" Then
+							Session("SelfServicePhotograph_Src") = Url.Content("~/Content/images/anonymous.png")
+						Else
+							Session("SelfServicePhotograph_Src") = "data:image/jpeg;base64," & Session("optionFileValue")
+						End If
+					End If
 				End If
 
 				Session("optionScreenID") = Request.Form("txtGotoOptionScreenID")

@@ -348,4 +348,38 @@ Public Module ASRIntranetFunctions
 
 	End Function
 
+	Public Function GetLoggedInUserRecordID(SingleRecordViewID As Integer) As Integer
+		Dim objSession As SessionInfo = CType(HttpContext.Current.Session("SessionContext"), SessionInfo)	'Set session info
+		Dim objDataAccess As New clsDataAccess(objSession.LoginInfo) 'Instantiate DataAccess class
+
+		Dim ReturnValue As Integer = -1	'Default value to return in case the SP returns an error or there is more than one personal record
+
+		Dim prmRecordID = New SqlParameter("piRecordID", SqlDbType.Int)
+		prmRecordID.Direction = ParameterDirection.Output
+
+		Dim prmRecordCount = New SqlParameter("piRecordCount", SqlDbType.Int)
+		prmRecordCount.Direction = ParameterDirection.Output
+
+		Try
+			objDataAccess.GetDataSet("spASRIntGetSelfServiceRecordID", prmRecordID, prmRecordCount, New SqlParameter("piViewID", SingleRecordViewID))
+
+			If prmRecordCount.Value = 1 Then
+				' Only one record.
+				ReturnValue = CInt(prmRecordID.Value)
+			Else
+				If prmRecordCount.Value = 0 Then
+					' No personnel record. 
+					ReturnValue = 0
+				Else
+					' More than one personnel record.
+					ReturnValue = -1
+				End If
+			End If
+		Catch ex As Exception
+
+		End Try
+
+		Return ReturnValue
+	End Function
+
 End Module

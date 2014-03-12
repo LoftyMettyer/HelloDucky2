@@ -782,6 +782,7 @@
 					Response.Write("<input type='hidden' id='txtRecordPosition' name='txtRecordPosition' value='" & prmRecordPosition.Value.ToString() & "'>" & vbCrLf)
 				
 					lngRecordID = CInt(prmRecordId.Value)
+					Session("PreviousRecordID") = lngRecordID
 				End If
 			Else
 				Response.Write("<input type='hidden' id='txtRecordID' name='txtRecordID' value='0'>" & vbCrLf)
