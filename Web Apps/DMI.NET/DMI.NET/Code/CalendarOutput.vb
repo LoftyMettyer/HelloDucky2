@@ -116,7 +116,7 @@ Namespace Code
 				objMonthSheet.IsGridlinesVisible = False
 
 				' Nice display of month and year
-				Dim strWorksheetTitle = (String.Format("{0} ({1} {2})", Calendar.CalendarReportName, MonthName(dCurrentMonthStart.Month), dCurrentMonthStart.Year))
+				Dim strWorksheetTitle = (String.Format("{0} ({1} {2})", Calendar.Name, MonthName(dCurrentMonthStart.Month), dCurrentMonthStart.Year))
 				objMonthSheet.Cells(yOffset, 0).PutValue(strWorksheetTitle)
 				objMonthSheet.Cells(yOffset, 0).SetStyle(stlCaption)
 				objMonthSheet.AutoFitRow(yOffset)

@@ -49,7 +49,7 @@ Namespace BaseClasses
 
 			<DebuggerStepThrough()> _
 			Get
-				Return _outputFilename
+				Return DownloadFileName
 			End Get
 
 			<DebuggerStepThrough()> _
@@ -61,21 +61,21 @@ Namespace BaseClasses
 
 		Public ReadOnly Property DownloadFileName As String
 			Get
+				Dim sName As String = _outputFilename
+
 				If _outputFilename = "" Then
-					Return Name & DefaultFileExtension(_outputFormat)
-				Else
-
-					Select Case _outputFormat
-						Case OutputFormats.fmtExcelGraph, OutputFormats.fmtExcelPivotTable, OutputFormats.fmtExcelWorksheet
-							Return Path.GetFileName(_outputFilename)
-
-						Case Else
-							'Return Path.GetFileNameWithoutExtension(_outputFilename) & DefaultFileExtension(_outputFormat)
-							Return Path.GetFileNameWithoutExtension(_outputFilename) & DefaultFileExtension(_outputFormat)
-
-					End Select
-
+					sName = Name
 				End If
+
+				Select Case _outputFormat
+					Case OutputFormats.fmtExcelGraph, OutputFormats.fmtExcelPivotTable, OutputFormats.fmtExcelWorksheet
+						Return Path.GetFileNameWithoutExtension(sName) & DefaultFileExtension(_outputFormat)
+
+					Case Else
+						Return Path.GetFileNameWithoutExtension(sName) & DefaultFileExtension(OutputFormat)
+
+				End Select
+
 
 			End Get
 		End Property

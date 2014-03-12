@@ -2848,7 +2848,7 @@ Namespace Controllers
 			Dim sEmailAddresses As String = ""
 			Dim sErrorDescription As String = ""
 
-			Dim strDownloadFileName As String
+			Dim strDownloadFileName As String = objReport.DownloadFileName
 			Dim strDownloadExtension As String
 
 			'Set Options
@@ -2864,7 +2864,6 @@ Namespace Controllers
 				strEmailSubject = Session("OutputOptions_EmailSubject")
 				strEmailAttachAs = Session("OutputOptions_EmailAttachAs")
 				strDownloadFileName = Request("txtFilename")
-
 			Else
 				lngFormat = objReport.OutputFormat
 				blnScreen = objReport.OutputScreen
@@ -2876,12 +2875,9 @@ Namespace Controllers
 				lngEmailGroupID = CLng(objReport.OutputEmailID)
 				strEmailSubject = objReport.OutputEmailSubject
 				strEmailAttachAs = objReport.OutputEmailAttachAs
-				strDownloadFileName = objReport.DownloadFileName
 			End If
 
 			If strDownloadFileName.Length = 0 Then
-				objReport.OutputFormat = lngFormat
-				objReport.OutputFilename = ""
 				strDownloadFileName = objReport.DownloadFileName
 			End If
 
@@ -3130,17 +3126,20 @@ Namespace Controllers
 
 		Function util_run_calendarreport_download() As FileStreamResult
 
-			Dim strDownloadFileName As String = Request("txtFilename")
 			Dim objCalendar = CType(Session("objCalendar" & Session("UtilID")), CalendarReport)
+			Dim strDownloadFileName As String = objCalendar.DownloadFileName
 
 			Dim objOutput As New CalendarOutput
 			objOutput.ReportData = objCalendar.Events
 			objOutput.Calendar = objCalendar
 
-			If strDownloadFileName = "" Then
-				strDownloadFileName = objCalendar.CalendarReportName + ".xlsx"
+			If objCalendar.OutputPreview Then
+				strDownloadFileName = Request("txtFilename")
 			End If
 
+			If strDownloadFileName.Length = 0 Then
+				strDownloadFileName = objCalendar.DownloadFileName
+			End If
 
 			objOutput.DownloadFileName = strDownloadFileName
 			objOutput.Generate(objCalendar.OutputFormat)

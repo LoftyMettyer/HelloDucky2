@@ -126,7 +126,7 @@ Else
 	Session("CalendarReports_FailedOrNoRecords") = True
 End If
 
-Response.Write("<input type=hidden id=txtTitle name=txtTitle value=""" & Replace(objCalendar.CalendarReportName, """", "&quot;") & """>" & vbCrLf)
+Response.Write("<input type=hidden id=txtTitle name=txtTitle value=""" & Replace(objCalendar.Name, """", "&quot;") & """>" & vbCrLf)
 
 %>
 
@@ -169,7 +169,7 @@ Response.Write("<input type=hidden id=txtTitle name=txtTitle value=""" & Replace
 	If Len(objCalendar.ErrorString) > 0 Then
 		sErrorMessage = HttpUtility.JavaScriptStringEncode(objCalendar.ErrorString)
 		
-		Response.Write(String.Format("raiseWarning(""{0}"", ""{1}"");", objCalendar.CalendarReportName, sErrorMessage))
+		Response.Write(String.Format("raiseWarning(""{0}"", ""{1}"");", objCalendar.Name, sErrorMessage))
 
 	ElseIf fok And blnShowCalendar Then
 			%>

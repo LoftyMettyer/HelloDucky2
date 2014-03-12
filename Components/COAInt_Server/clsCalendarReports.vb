@@ -53,7 +53,6 @@ Public Class CalendarReport
 	Private mblnStaticWP As Boolean
 
 	'Variables to store definition (report level variables)
-	Private mstrCalendarReportsName As String
 	Private mlngCalendarReportsBaseTable As Integer
 	Private mstrCalendarReportsBaseTableName As String
 	Private mlngCalendarReportsPickListID As Integer
@@ -94,9 +93,7 @@ Public Class CalendarReport
 	Private mstrFilteredIDs As String
 
 	'New Default Output Variables
-	Private mblnOutputPreview As Boolean
-	Private mlngOutputFormat As Integer
-	Private mblnOutputScreen As Boolean
+
 	Private mblnOutputPrinter As Boolean
 	Private mstrOutputPrinterName As String
 	Private mblnOutputSave As Boolean
@@ -106,7 +103,6 @@ Public Class CalendarReport
 	Private mstrOutputEmailName As String
 	Private mstrOutputEmailSubject As String
 	Private mstrOutputEmailAttachAs As String
-	Private mstrOutputFilename As String
 
 	'Recordset to store the final data from the temp table
 	Private mrsCalendarReportsOutput As DataTable
@@ -367,24 +363,6 @@ Public Class CalendarReport
 		End Get
 	End Property
 
-	Public ReadOnly Property OutputPreview() As Boolean
-		Get
-			OutputPreview = mblnOutputPreview
-		End Get
-	End Property
-
-	Public ReadOnly Property OutputFormat() As Integer
-		Get
-			OutputFormat = mlngOutputFormat
-		End Get
-	End Property
-
-	Public ReadOnly Property OutputScreen() As Boolean
-		Get
-			OutputScreen = mblnOutputScreen
-		End Get
-	End Property
-
 	Public ReadOnly Property OutputPrinter() As Boolean
 		Get
 			OutputPrinter = mblnOutputPrinter
@@ -436,12 +414,6 @@ Public Class CalendarReport
 	Public ReadOnly Property OutputEmailAttachAs() As String
 		Get
 			OutputEmailAttachAs = mstrOutputEmailAttachAs
-		End Get
-	End Property
-
-	Public ReadOnly Property OutputFilename() As String
-		Get
-			OutputFilename = mstrOutputFilename
 		End Get
 	End Property
 
@@ -631,24 +603,17 @@ Public Class CalendarReport
 		Get
 			If mblnCustomReportsPrintFilterHeader Then
 				If (mlngCalendarReportsFilterID > 0) Then
-					CalendarReportTitle = mstrCalendarReportsName & " (Base Table filter : " & General.GetFilterName(mlngCalendarReportsFilterID) & ")"
+					CalendarReportTitle = Name & " (Base Table filter : " & General.GetFilterName(mlngCalendarReportsFilterID) & ")"
 				ElseIf (mlngCalendarReportsPickListID > 0) Then
-					CalendarReportTitle = mstrCalendarReportsName & " (Base Table picklist : " & General.GetPicklistName(mlngCalendarReportsPickListID) & ")"
+					CalendarReportTitle = Name & " (Base Table picklist : " & General.GetPicklistName(mlngCalendarReportsPickListID) & ")"
 				End If
 			Else
-				CalendarReportTitle = mstrCalendarReportsName
+				CalendarReportTitle = Name
 			End If
 		End Get
 	End Property
 
-	Public ReadOnly Property CalendarReportName() As String
-		Get
-			CalendarReportName = mstrCalendarReportsName
-		End Get
-	End Property
-
 	Public Events As DataTable
-
 
 	Public ReadOnly Property EventsRecordset() As DataTable
 		Get
@@ -3423,8 +3388,8 @@ TidyUpAndExit:
 				Exit Function
 			End If
 
-			mstrCalendarReportsName = rowDefinition("Name").ToString
-			Logs.AddHeader(EventLog_Type.eltCalandarReport, mstrCalendarReportsName)
+			Name = rowDefinition("Name").ToString
+			Logs.AddHeader(EventLog_Type.eltCalandarReport, Name)
 			mlngCalendarReportsBaseTable = CInt(rowDefinition("BaseTable"))
 			mstrCalendarReportsBaseTableName = GetTableName(mlngCalendarReportsBaseTable)
 
@@ -3608,9 +3573,9 @@ TidyUpAndExit:
 			mblnIncludeBankHolidays = rowDefinition("IncludeBankHolidays")
 			mblnCustomReportsPrintFilterHeader = rowDefinition("PrintFilterHeader")
 
-			mblnOutputPreview = rowDefinition("OutputPreview")
-			mlngOutputFormat = rowDefinition("OutputFormat")
-			mblnOutputScreen = rowDefinition("OutputScreen")
+			OutputPreview = rowDefinition("OutputPreview")
+			OutputFormat = rowDefinition("OutputFormat")
+			OutputScreen = rowDefinition("OutputScreen")
 			mblnOutputPrinter = rowDefinition("OutputPrinter")
 			mstrOutputPrinterName = rowDefinition("OutputPrinterName")
 			mblnOutputSave = rowDefinition("OutputSave")
@@ -3621,15 +3586,15 @@ TidyUpAndExit:
 			mstrOutputEmailSubject = rowDefinition("OutputEmailSubject")
 			'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
 			mstrOutputEmailAttachAs = IIf(IsDBNull(rowDefinition("OutputEmailAttachAs")), vbNullString, rowDefinition("OutputEmailAttachAs"))
-			mstrOutputFilename = rowDefinition("OutputFilename")
+			OutputFilename = rowDefinition("OutputFilename")
 
 			mblnPersonnelBase = (mlngCalendarReportsBaseTable = glngPersonnelTableID)
 
 			If mblnCustomReportsPrintFilterHeader And (mlngSingleRecordID < 1) Then
 				If (mlngCalendarReportsFilterID > 0) Then
-					mstrCalendarReportsName = mstrCalendarReportsName & " (Base Table filter : " & General.GetFilterName(mlngCalendarReportsFilterID) & ")"
+					Name = Name & " (Base Table filter : " & General.GetFilterName(mlngCalendarReportsFilterID) & ")"
 				ElseIf (mlngCalendarReportsPickListID > 0) Then
-					mstrCalendarReportsName = mstrCalendarReportsName & " (Base Table picklist : " & General.GetPicklistName(mlngCalendarReportsPickListID) & ")"
+					Name = Name & " (Base Table picklist : " & General.GetPicklistName(mlngCalendarReportsPickListID) & ")"
 				End If
 			End If
 
@@ -6010,7 +5975,7 @@ GenerateSQLWhere_ERROR:
 
 		On Error GoTo ClearUp_ERROR
 
-		mstrCalendarReportsName = vbNullString
+		Name = vbNullString
 		mlngCalendarReportsBaseTable = 0
 		mstrCalendarReportsBaseTableName = vbNullString
 		mlngCalendarReportsPickListID = 0
@@ -6031,9 +5996,9 @@ GenerateSQLWhere_ERROR:
 		mblnIncludeBankHolidays = False
 
 		'New Default Output Variables
-		mblnOutputPreview = False
-		mlngOutputFormat = 0
-		mblnOutputScreen = True
+		OutputPreview = False
+		OutputFormat = OutputFormats.fmtDataOnly
+		OutputScreen = True
 		mblnOutputPrinter = False
 		mstrOutputPrinterName = vbNullString
 		mblnOutputSave = False
@@ -6043,7 +6008,7 @@ GenerateSQLWhere_ERROR:
 		mstrOutputEmailName = vbNullString
 		mstrOutputEmailSubject = vbNullString
 		mstrOutputEmailAttachAs = vbNullString
-		mstrOutputFilename = vbNullString
+		OutputFilename = vbNullString
 
 		' Recordsets
 		'UPGRADE_NOTE: Object mrsCalendarReportsOutput may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
