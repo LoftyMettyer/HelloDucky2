@@ -45,7 +45,7 @@
 				autoOpen: true,
 				modal: true,
 				width: 750,
-				height: 800,
+				height: 1000,
 				close: function() {
 					CancelLookup();
 				}
