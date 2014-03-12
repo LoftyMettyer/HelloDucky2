@@ -682,8 +682,8 @@
 						<%iRowNum += 1%>
 
 						<%Case ElementType.PendingWorkflows
-								sText = "No pending workflow steps"
-								If _StepCount > 0 Then sText = String.Format("{0} Pending workflow steps", _StepCount)
+								sText = "No pending workflow steps"								
+								sText = String.Format("{0} Pending workflow step{1}", _StepCount, IIf(_StepCount <> 1, "s", ""))
 								%>
 						<li data-col="<%=iColNum %>" data-row="<%=iRowNum %>" data-sizex="2" data-sizey="1" class="linkspagebuttontext <%=sTileColourClass%> displayonly pwfslink" onclick="relocateURL('WorkflowPendingSteps', 0)">
 							<div class="pwfTile <%=sTileColourClass%>">
@@ -1007,7 +1007,7 @@
 
 							<div class="linkspagebuttontileIcon"><span>
 								<p><%=iNumberOfEvents%></p>
-								<p style="font-size: small;">Event<%If iNumberOfEvents > 1 Then%>s<%End If%></p>
+								<p style="font-size: small;">Event<%If iNumberOfEvents <> 1 Then%>s<%End If%></p>
 							</span></div>
 						</li>
 						<%
