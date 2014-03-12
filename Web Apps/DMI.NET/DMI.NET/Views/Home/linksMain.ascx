@@ -1546,7 +1546,7 @@
 
 		}
 
-		if (window.currentLayout == "wireframe") {
+		if ((window.currentLayout == "wireframe") || (window.currentLayout == "winkit")) {
 			//set up the classes 
 
 			$(".hypertextlinks").addClass("ui-accordion ui-widget ui-helper-reset");

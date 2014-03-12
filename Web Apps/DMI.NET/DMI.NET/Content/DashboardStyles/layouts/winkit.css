@@ -14,15 +14,6 @@ body
 #workframeset
 {
 	top: 170px;
-	/*
-	background: -moz-linear-gradient(left, rgba(41,137,216,1) 0%, rgba(30,87,153,0.94) 32%, rgba(30,87,153,0.87) 66%, rgba(41,136,214,0.8) 99%, rgba(41,137,216,1) 100%);
-	background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(41,137,216,1)), color-stop(32%,rgba(30,87,153,0.94)), color-stop(66%,rgba(30,87,153,0.87)), color-stop(99%,rgba(41,136,214,0.8)), color-stop(100%,rgba(41,137,216,1)));
-	background: -webkit-linear-gradient(left, rgba(41,137,216,1) 0%,rgba(30,87,153,0.94) 32%,rgba(30,87,153,0.87) 66%,rgba(41,136,214,0.8) 99%,rgba(41,137,216,1) 100%);
-	background: -o-linear-gradient(left, rgba(41,137,216,1) 0%,rgba(30,87,153,0.94) 32%,rgba(30,87,153,0.87) 66%,rgba(41,136,214,0.8) 99%,rgba(41,137,216,1) 100%);
-	background: -ms-linear-gradient(left, rgba(41,137,216,1) 0%,rgba(30,87,153,0.94) 32%,rgba(30,87,153,0.87) 66%,rgba(41,136,214,0.8) 99%,rgba(41,137,216,1) 100%);
-	background: linear-gradient(to right, rgba(41,137,216,1) 0%,rgba(30,87,153,0.94) 32%,rgba(30,87,153,0.87) 66%,rgba(41,136,214,0.8) 99%,rgba(41,137,216,1) 100%);
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#2989d8', endColorstr='#2989d8',GradientType=1 );
-	*/
 }
 
 .RecDescPhoto {
@@ -42,7 +33,6 @@ body
 
 .ViewDescription p {
 	font-size: large;
-	color: white;
 }
 
 #fixedlinks {
@@ -133,8 +123,8 @@ body
 {
 	margin: 0px 0px 0px 0px;
 	 padding: 0px;
-	 border-style: solid;
-	 border-width: 2px;
+	 /*border-style: solid;
+	 border-width: 2px;*/
 	 /*height: 99.5%;*/
 }
 															
@@ -206,8 +196,8 @@ body
 	margin: 0px 10px 10px 0px;
 	 list-style: none;
 	 padding: 0px;
-	 border-style: solid;
-	 border-width: 2px;                              
+	 /*border-style: solid;
+	 border-width: 2px;*/                              
 }
 
 .linkspagebuttonseparatorframe ul {padding: 0px; min-width: 300px;}
@@ -285,15 +275,7 @@ body
 	width: 100%;
 	padding: 10px;
 	white-space: nowrap;
-	/* IE9 SVG, needs conditional override of 'filter' to 'none' */
-	background: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDEgMSIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSI+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJncmFkLXVjZ2ctZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIwJSIgeTI9IjEwMCUiPgogICAgPHN0b3Agb2Zmc2V0PSIxJSIgc3RvcC1jb2xvcj0iI2QxZDFkMSIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjExJSIgc3RvcC1jb2xvcj0iI2ZmZmZmZiIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjkwJSIgc3RvcC1jb2xvcj0iI2ZmZmZmZiIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNkMWQxZDEiIHN0b3Atb3BhY2l0eT0iMSIvPgogIDwvbGluZWFyR3JhZGllbnQ+CiAgPHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0idXJsKCNncmFkLXVjZ2ctZ2VuZXJhdGVkKSIgLz4KPC9zdmc+);
-	background: -moz-linear-gradient(top, rgba(209,209,209,0.3) 1%, rgba(255,255,255,0) 11%, rgba(255,255,255,0) 90%, rgba(209,209,209,0.3) 100%); /* FF3.6+ */
-	background: -webkit-gradient(linear, left top, left bottom, color-stop(1%,rgba(209,209,209,0.3)), color-stop(11%,rgba(255,255,255,0)), color-stop(90%,rgba(255,255,255,0)), color-stop(100%,rgba(209,209,209,0.3))); /* Chrome,Safari4+ */
-	background: -webkit-linear-gradient(top, rgba(209,209,209,0.3) 1%,rgba(255,255,255,0) 11%,rgba(255,255,255,0) 90%,rgba(209,209,209,0.3) 100%); /* Chrome10+,Safari5.1+ */
-	background: -o-linear-gradient(top, rgba(209,209,209,0.3) 1%,rgba(255,255,255,0) 11%,rgba(255,255,255,0) 90%,rgba(209,209,209,0.3) 100%); /* Opera 11.10+ */
-	background: -ms-linear-gradient(top, rgba(209,209,209,0.3) 1%,rgba(255,255,255,0) 11%,rgba(255,255,255,0) 90%,rgba(209,209,209,0.3) 100%); /* IE10+ */
-	background: linear-gradient(to bottom, rgba(209,209,209,0.3) 1%,rgba(255,255,255,0) 11%,rgba(255,255,255,0) 90%,rgba(209,209,209,0.3) 100%); /* W3C */
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#d1d1d1', endColorstr='#d1d1d1',GradientType=0 ); /* IE6-8 */
+	
 }
 
 .DropdownlistSelect {
@@ -327,7 +309,7 @@ body
 .widgetplaceholder  
 {
 	text-align: center;
-	border: 1px solid white;
+	/*border: 1px solid white;*/
 	margin: 0px 30px 10px 20px;
 	height: 120px;
 }
@@ -878,7 +860,7 @@ div.officetab li div.textboxlist input {
 
 /* Formatting for SSI based utilities	*/
 .SSI #dataRow {
-	width: 30%; margin: 0 auto;color: black;
+	width: 30%; margin: 0 auto;
 }
 
 #pwfs { display: none;}
@@ -976,37 +958,3 @@ div.officetab li div.textboxlist input {
 	text-align: left;
 }
 /* End of User dropdown menu */
-
-.headerbar {background-color: #e9eef7;}
-.DashHeader {background-color: rgb(191, 219, 255);}
-
-li {background-color: transparent;}
-
-.linkspagebuttonseparatorframe {border-color: rgb(191, 219, 255);}
-.hypertextlinkseparatorframe {border-color: rgb(191, 219, 255);}
-.hypertextlinkseparator {
-	 /* Chuck all possibilities at the browser for gradients... */
-	 background-color: #1a82f7; 
-	 filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#bfdbff', endColorstr='#ffffff',GradientType=0 );
-	 background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#bfdbff), to(#ffffff));
-	 background-image: -webkit-linear-gradient(top, #bfdbff, #ffffff); 
-	 background-image:    -moz-linear-gradient(top, #bfdbff, #ffffff);
-	 background-image:     -ms-linear-gradient(top, #bfdbff, #ffffff);
-	 background-image:      -o-linear-gradient(top, #bfdbff, #ffffff);	
-}
-
-.linkspagebuttonseparator {
-	 /* Chuck all possibilities at the browser for gradients... */
-	 background-color: #1a82f7; 
-	 filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#bfdbff', endColorstr='#ffffff',GradientType=0 );
-	 background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#bfdbff), to(#ffffff));
-	 background-image: -webkit-linear-gradient(top, #bfdbff, #ffffff); 
-	 background-image:    -moz-linear-gradient(top, #bfdbff, #ffffff);
-	 background-image:     -ms-linear-gradient(top, #bfdbff, #ffffff);
-	 background-image:      -o-linear-gradient(top, #bfdbff, #ffffff);	
-}
-
-.hypertextlinktext:hover { background-color: rgb(55, 151, 251); }
-.linkspagebuttontext:hover {	background-color: rgb(55, 151, 251); }
-.linkspagebutton .displayonly { background-color: transparent; }
-.generaltheme {background-color: rgb(191, 219, 255);}
