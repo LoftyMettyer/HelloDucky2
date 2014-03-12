@@ -77,7 +77,8 @@
 	}
 
 	function toggleWeekends() {
-		$(".scheduler_white_cell").toggleClass("scheduler_white_weekendcell", ($("#chkShowWeekends")[0].checked == true));
+		$(".scheduler_white_weekend").toggleClass("scheduler_white_weekendcell");
+
 	}
 
 	function toggleBankHolidays() {

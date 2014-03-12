@@ -173,7 +173,9 @@ Response.Write("<input type=hidden id=txtTitle name=txtTitle value=""" & Replace
 
 	ElseIf fok And blnShowCalendar Then
 			%>
+	if (!menu_isSSIMode()){
 		$(".popup").dialog("open");
+	}
 			<%
 ElseIf Not blnShowCalendar Then
 				%>
