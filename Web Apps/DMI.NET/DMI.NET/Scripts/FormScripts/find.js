@@ -30,8 +30,14 @@ function find_window_onload() {
 	if (sErrMsg.length > 0) {
 		fOk = false;
 
-		OpenHR.messageBox(sErrMsg);
-		menu_loadPage("_default");
+		if (menu_isSSIMode()) {
+			raiseWarning("Error", sErrMsg);
+			loadPartialView("linksMain", "Home", "workframe", null);
+		} else {
+			OpenHR.messageBox(sErrMsg);
+			menu_loadPage("_default");
+		}
+
 	}
 
 	var sFatalErrorMsg = frmFindForm.txtErrorDescription.value;

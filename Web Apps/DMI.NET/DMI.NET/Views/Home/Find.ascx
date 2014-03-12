@@ -178,22 +178,21 @@
 						Try
 							resultDataSet = objDataAccess.GetDataSet("sp_ASRIntGetFindRecords3", SPParameters)
 
-							' Get the recordset parameters
-							sThousandColumns = resultDataSet.Tables(0).Rows(0)("ThousandColumns").ToString()
-							sBlankIfZeroColumns = resultDataSet.Tables(0).Rows(0)("BlankIfZeroColumns").ToString()
+							If prmSomeSelectable.Value = 0 Then								
+								sErrorDescription = "You do not have permission to read any of the selected order's find columns."
+							Else
+													
+								' Get the recordset parameters
+								sThousandColumns = resultDataSet.Tables(0).Rows(0)("ThousandColumns").ToString()
+								sBlankIfZeroColumns = resultDataSet.Tables(0).Rows(0)("BlankIfZeroColumns").ToString()
 									
-							' Get the actual data
-							rstFindRecords = resultDataSet.Tables(1)
-						Catch ex As Exception
-							sErrorDescription = "The find records could not be retrieved." & vbCrLf & FormatError(ex.Message)
-						End Try
+								' Get the actual data
+								rstFindRecords = resultDataSet.Tables(1)
 
-						If Len(sErrorDescription) = 0 Then
-							' Instantiate and initialise the grid. 
-							Response.Write("<table class='outline' style='width : 100%; ' id='findGridTable'>" & vbCrLf)
-							Response.Write("<div id='pager-coldata'></div>" & vbCrLf)
+								' Instantiate and initialise the grid. 
+								Response.Write("<table class='outline' style='width : 100%; ' id='findGridTable'>" & vbCrLf)
+								Response.Write("<div id='pager-coldata'></div>" & vbCrLf)
 										
-							If Len(sErrorDescription) = 0 Then
 								iCount = 0
 								For Each row As DataRow In rstFindRecords.Rows
 									sAddString = ""
@@ -218,13 +217,11 @@
 												Dim numberAsString As String = row(iloop).ToString()
 												Dim indexOfDecimalPoint As Integer = numberAsString.IndexOf(".", System.StringComparison.Ordinal)
 												Dim numberOfDecimals As Integer = 0
-												If indexOfDecimalPoint > 0 Then numberOfDecimals = numberAsString.Substring(indexOfDecimalPoint + 1).Length											
+												If indexOfDecimalPoint > 0 Then numberOfDecimals = numberAsString.Substring(indexOfDecimalPoint + 1).Length
 												
 												If Mid(sThousandColumns, iloop + 1, 1) = "1" Then
-													sTemp = ""
 													sTemp = FormatNumber(row(iloop), numberOfDecimals, TriState.True, TriState.False, TriState.True)
 												Else
-													sTemp = ""
 													sTemp = FormatNumber(row(iloop), numberOfDecimals, TriState.True, TriState.False, TriState.False)
 												End If
 												sTemp = Replace(sTemp, ".", "x")
@@ -239,43 +236,36 @@
 										End If
 									Next
 
-									Response.Write("<INPUT type='hidden' id=txtAddString_" & iCount & " name=txtAddString_" & iCount & " value=""" & sAddString & """>" & vbCrLf)
+									Response.Write("<input type='hidden' id=txtAddString_" & iCount & " name=txtAddString_" & iCount & " value=""" & sAddString & """>" & vbCrLf)
 					
-									iCount = iCount + 1
+									iCount += 1
 								Next
 							
 							End If
-							rstFindRecords = Nothing
+
 							Response.Write("</table>")
-	
-							' NB. IMPORTANT ADO NOTE.
-							' When calling a stored procedure which returns a recorddim AND has output parameters
-							' you need to close the recorddim and dim it to nothing before using the output parameters. 
-							If prmError.Value <> 0 Then
-								sErrorDescription = "Error reading order definition."
-							Else
-								If prmSomeSelectable.Value = 0 Then
-									sErrorDescription = "You do not have permission to read any of the selected order's find columns."
-								End If
-							End If
-			
-							Response.Write("<INPUT type='hidden' id=txtInsertGranted name=txtInsertGranted value=" & prmInsertGranted.Value & ">" & vbCrLf)
-							Response.Write("<INPUT type='hidden' id=txtDeleteGranted name=txtDeleteGranted value=" & prmDeleteGranted.Value & ">" & vbCrLf)
-							Response.Write("<INPUT type='hidden' id=txtIsFirstPage name=txtIsFirstPage value=" & prmIsFirstPage.Value & ">" & vbCrLf)
-							Response.Write("<INPUT type='hidden' id=txtIsLastPage name=txtIsLastPage value=" & prmIsLastPage.Value & ">" & vbCrLf)
-							Response.Write("<INPUT type='hidden' id=txtFirstColumnType name=txtFirstColumnType value=" & prmColumnType.Value & ">" & vbCrLf)
-							Response.Write("<INPUT type='hidden' id=txtRecordCount name=txtRecordCount value=" & iCount & ">" & vbCrLf)
-							Response.Write("<INPUT type='hidden' id=txtTotalRecordCount name=txtTotalRecordCount value=" & prmTotalRecCount.Value & ">" & vbCrLf)
-							Response.Write("<INPUT type='hidden' id=txtFindRecords name=txtFindRecords value=" & Session("FindRecords") & ">" & vbCrLf)
-							Response.Write("<INPUT type='hidden' id=txtFirstRecPos name=txtFirstRecPos value=" & prmFirstRecPos.Value & ">" & vbCrLf)
-							Response.Write("<INPUT type='hidden' id=txtCurrentRecCount name=txtCurrentRecCount value=" & iCount & ">" & vbCrLf)
-							Response.Write("<INPUT type='hidden' id=txtFirstColumnSize name=txtFirstColumnSize value=" & prmColumnSize.Value & ">" & vbCrLf)
-							Response.Write("<INPUT type='hidden' id=txtFirstColumnDecimals name=txtFirstColumnDecimals value=" & prmColumnDecimals.Value & ">" & vbCrLf)
-							Response.Write("<INPUT type='hidden' id=txtCancelDateColumn name=txtCancelDateColumn value=" & fCancelDateColumn & ">" & vbCrLf)
-							Response.Write("<INPUT type='hidden' id=txtGotoAction name=txtGotoAction value=" & Session("action") & ">" & vbCrLf)
+				
+							Response.Write("<input type='hidden' id=txtInsertGranted name=txtInsertGranted value=" & prmInsertGranted.Value & ">" & vbCrLf)
+							Response.Write("<input type='hidden' id=txtDeleteGranted name=txtDeleteGranted value=" & prmDeleteGranted.Value & ">" & vbCrLf)
+							Response.Write("<input type='hidden' id=txtIsFirstPage name=txtIsFirstPage value=" & prmIsFirstPage.Value & ">" & vbCrLf)
+							Response.Write("<input type='hidden' id=txtIsLastPage name=txtIsLastPage value=" & prmIsLastPage.Value & ">" & vbCrLf)
+							Response.Write("<input type='hidden' id=txtFirstColumnType name=txtFirstColumnType value=" & prmColumnType.Value & ">" & vbCrLf)
+							Response.Write("<input type='hidden' id=txtRecordCount name=txtRecordCount value=" & iCount & ">" & vbCrLf)
+							Response.Write("<input type='hidden' id=txtTotalRecordCount name=txtTotalRecordCount value=" & prmTotalRecCount.Value & ">" & vbCrLf)
+							Response.Write("<input type='hidden' id=txtFindRecords name=txtFindRecords value=" & Session("FindRecords") & ">" & vbCrLf)
+							Response.Write("<input type='hidden' id=txtFirstRecPos name=txtFirstRecPos value=" & prmFirstRecPos.Value & ">" & vbCrLf)
+							Response.Write("<input type='hidden' id=txtCurrentRecCount name=txtCurrentRecCount value=" & iCount & ">" & vbCrLf)
+							Response.Write("<input type='hidden' id=txtFirstColumnSize name=txtFirstColumnSize value=" & prmColumnSize.Value & ">" & vbCrLf)
+							Response.Write("<input type='hidden' id=txtFirstColumnDecimals name=txtFirstColumnDecimals value=" & prmColumnDecimals.Value & ">" & vbCrLf)
+							Response.Write("<input type='hidden' id=txtCancelDateColumn name=txtCancelDateColumn value=" & fCancelDateColumn & ">" & vbCrLf)
+							Response.Write("<input type='hidden' id=txtGotoAction name=txtGotoAction value=" & Session("action") & ">" & vbCrLf)
 			
 							Session("realSource") = prmRealSource.Value
-						End If
+							
+						Catch ex As Exception
+							sErrorDescription = "The find records could not be retrieved." & vbCrLf & FormatError(ex.Message)
+						End Try
+
 					End If
 				%>
 			</div>
@@ -482,20 +472,20 @@ End If
 End If
 	
 If Len(sErrorDescription) = 0 Then
-Response.Write("				<INPUT type='hidden' id=txtCurrentTableID name=txtCurrentTableID value=" & Session("tableID") & ">" & vbCrLf)
-Response.Write("				<INPUT type='hidden' id=txtCurrentViewID name=txtCurrentViewID value=" & Session("viewID") & ">" & vbCrLf)
-Response.Write("				<INPUT type='hidden' id=txtCurrentScreenID name=txtCurrentScreenID value=" & Session("screenID") & ">" & vbCrLf)
-Response.Write("				<INPUT type='hidden' id=txtCurrentOrderID name=txtCurrentOrderID value=" & Session("orderID") & ">" & vbCrLf)
-Response.Write("				<INPUT type='hidden' id=txtCurrentRecordID name=txtCurrentRecordID value=" & Session("recordID") & ">" & vbCrLf)
-Response.Write("				<INPUT type='hidden' id=txtCurrentParentTableID name=txtCurrentParentTableID value=" & Session("parentTableID") & ">" & vbCrLf)
-Response.Write("				<INPUT type='hidden' id=txtCurrentParentRecordID name=txtCurrentParentRecordID value=" & Session("parentRecordID") & ">" & vbCrLf)
-Response.Write("				<INPUT type='hidden' id=txtRealSource name=txtRealSource value=" & Session("realSource") & ">" & vbCrLf)
-Response.Write("				<INPUT type='hidden' id=txtLineage name=txtLineage value=" & Session("lineage") & ">" & vbCrLf)
-Response.Write("				<INPUT type='hidden' id=txtFilterDef name=txtFilterDef value=""" & Replace(Session("filterDef"), """", "&quot;") & """>" & vbCrLf)
-Response.Write("				<INPUT type='hidden' id=txtFilterSQL name=txtFilterSQL value=""" & Replace(Session("filterSQL"), """", "&quot;") & """>" & vbCrLf)
+Response.Write("				<input type='hidden' id=txtCurrentTableID name=txtCurrentTableID value=" & Session("tableID") & ">" & vbCrLf)
+Response.Write("				<input type='hidden' id=txtCurrentViewID name=txtCurrentViewID value=" & Session("viewID") & ">" & vbCrLf)
+Response.Write("				<input type='hidden' id=txtCurrentScreenID name=txtCurrentScreenID value=" & Session("screenID") & ">" & vbCrLf)
+Response.Write("				<input type='hidden' id=txtCurrentOrderID name=txtCurrentOrderID value=" & Session("orderID") & ">" & vbCrLf)
+Response.Write("				<input type='hidden' id=txtCurrentRecordID name=txtCurrentRecordID value=" & Session("recordID") & ">" & vbCrLf)
+Response.Write("				<input type='hidden' id=txtCurrentParentTableID name=txtCurrentParentTableID value=" & Session("parentTableID") & ">" & vbCrLf)
+Response.Write("				<input type='hidden' id=txtCurrentParentRecordID name=txtCurrentParentRecordID value=" & Session("parentRecordID") & ">" & vbCrLf)
+Response.Write("				<input type='hidden' id=txtRealSource name=txtRealSource value=" & Session("realSource") & ">" & vbCrLf)
+Response.Write("				<input type='hidden' id=txtLineage name=txtLineage value=" & Session("lineage") & ">" & vbCrLf)
+Response.Write("				<input type='hidden' id=txtFilterDef name=txtFilterDef value=""" & Replace(Session("filterDef"), """", "&quot;") & """>" & vbCrLf)
+Response.Write("				<input type='hidden' id=txtFilterSQL name=txtFilterSQL value=""" & Replace(Session("filterSQL"), """", "&quot;") & """>" & vbCrLf)
 End If
 
-Response.Write("				<INPUT type='hidden' id=txtErrorDescription name=txtErrorDescription value=""" & sErrorDescription & """>")
+Response.Write("				<input type='hidden' id=txtErrorDescription name=txtErrorDescription value=""" & sErrorDescription & """>")
 			%>
 		</div>
 	</form>
@@ -503,7 +493,7 @@ Response.Write("				<INPUT type='hidden' id=txtErrorDescription name=txtErrorDes
 	<form id="frmTBData" name="frmTBData">
 		<%
 			If CLng(Session("tableID")) = CLng(Session("TB_TBTableID")) Then
-				Response.Write("				<INPUT type='hidden' id=txtTBCancelCourseDate name=txtTBCancelCourseDate value=""" & Session("lineage") & """>")
+				Response.Write("				<input type='hidden' id=txtTBCancelCourseDate name=txtTBCancelCourseDate value=""" & Session("lineage") & """>")
 			End If
 		%>
 	</form>
