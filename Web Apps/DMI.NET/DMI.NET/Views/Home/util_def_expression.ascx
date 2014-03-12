@@ -6,6 +6,8 @@
 
 <script src="<%: Url.LatestContent("~/bundles/utilities_expressions")%>" type="text/javascript"></script>
 
+<div id ="divDefExpression">
+
 <object classid="clsid:6976CB54-C39B-4181-B1DC-1A829068E2E7" codebase="cabs/COAInt_Client.cab#Version=1,0,0,5"
 	id="abExprMenu" name="abExprMenu" style="left: 0px; top: 0px; position: absolute; height: 10px;">
 	<param name="_ExtentX" value="0">
@@ -578,7 +580,8 @@
 	
 	%>
 </form>
-
+	
+</div>
 
 <script type="text/javascript">
 	util_def_expression_addhandlers();

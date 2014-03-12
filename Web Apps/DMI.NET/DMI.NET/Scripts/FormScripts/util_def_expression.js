@@ -1,7 +1,7 @@
 ﻿
-var frmOriginalDefinition = OpenHR.getForm("workframe", "frmOriginalDefinition");
-var frmDefinition = OpenHR.getForm("workframe", "frmDefinition");
-var frmUseful = OpenHR.getForm("workframe", "frmUseful");
+var frmOriginalDefinition = OpenHR.getForm("divDefExpression", "frmOriginalDefinition");
+var frmDefinition = OpenHR.getForm("divDefExpression", "frmDefinition");
+var frmUseful = OpenHR.getForm("divDefExpression", "frmUseful");
 
 function util_def_expression_onload() {
 
@@ -1380,6 +1380,8 @@ function testClick() {
 	var sFiltersAndCalcs;
 	var sURL;
 
+	var frmSend = OpenHR.getForm("divDefExpression", "frmSend");
+
 	if (validateExpression() == false) return;
 	if (populateSendForm() == false) return;
 
@@ -1448,6 +1450,9 @@ function testClick() {
 }
 
 function okClick() {
+
+	var frmSend = OpenHR.getForm("divDefExpression", "frmSend");
+
 	menu_disableMenu();
 
 	switch (frmUseful.txtUtilType.value) {
@@ -1918,6 +1923,9 @@ function submitDefinition() {
 	if (populateSendForm() == false) { menu_refreshMenu(); return false; }
 
 	// first populate the validate fields
+	var frmValidate = OpenHR.getForm("divDefExpression", "frmValidate");
+	var frmSend = OpenHR.getForm("divDefExpression", "frmSend");
+
 	frmValidate.validatePass.value = 1;
 	frmValidate.validateName.value = frmDefinition.txtName.value;
 	frmValidate.validateAccess.value = frmSend.txtSend_access.value;
