@@ -865,7 +865,8 @@ header {
 	left: 0;
 	z-index: 598;
 	margin-top: 0;
-	width: 170px;
+	width: 200px;
+	white-space: nowrap;
 }
 
 #userDropdownmenu ul ul li {
