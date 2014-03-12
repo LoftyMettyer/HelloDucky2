@@ -225,6 +225,13 @@ Namespace Code
 				Dim doc As New Document(objTemplate)
 				Dim templateFields = doc.MailMerge.GetFieldNames().Distinct().ToList()
 
+				' If no template fields no point running the merge (Also stops corrupt files being used (e.g pdf))
+				If templateFields.Count = 0 Then
+					Errors.Add(String.Format("The uploaded template has no merge fields defined or is an invalid template.{0}" _
+												, "<br/>"))
+					Return False
+				End If
+
 				For Each objColumn In Columns
 					templateFields.Remove(objColumn.MergeName)
 				Next
