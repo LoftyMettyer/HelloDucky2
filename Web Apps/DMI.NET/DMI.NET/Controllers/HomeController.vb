@@ -167,7 +167,7 @@ Namespace Controllers
 
 #End Region
 
-		<HttpPost()>
+		<HttpPost(), ValidateInput(False)>
 		Function util_def_crosstabs_submit(value As FormCollection)
 
 			Try
@@ -3219,6 +3219,7 @@ Namespace Controllers
 			Return RedirectToAction("util_def_calendarreportdates_data")
 		End Function
 
+		<ValidateInput(False)>
 		Function util_def_calendarreport_submit()
 
 			Try
@@ -3371,6 +3372,7 @@ Namespace Controllers
 			Return View()
 		End Function
 
+		<ValidateInput(False)>
 		Function util_def_customreports_submit()
 
 			Try
@@ -4148,7 +4150,7 @@ Namespace Controllers
 			Return View()
 		End Function
 
-		<HttpPost()>
+		<HttpPost(), ValidateInput(False)>
 		Function util_def_mailmerge_submit()
 
 			Dim objDataAccess As clsDataAccess = CType(Session("DatabaseAccess"), clsDataAccess)
