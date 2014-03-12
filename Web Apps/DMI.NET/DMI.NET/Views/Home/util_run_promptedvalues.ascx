@@ -12,18 +12,18 @@
 		var frmPromptedValues = document.getElementById("frmPromptedValues");
 
 		$(".datepicker").datepicker({ dateFormat: 'dd/mm/yy' });
-		$(document).on('keydown', '.datepicker', function(event) {
+		$(document).on('keydown', '.datepicker', function (event) {
 			var queryDate = new Date();
 			queryDate = $.datepicker.formatDate('dd/mm/yy', queryDate);
 
 			switch (event.keyCode) {
-			case 113:
-				$(this).val(queryDate);
-				$(this).datepicker('widget').hide('true');
-				break;
+				case 113:
+					$(this).val(queryDate);
+					$(this).datepicker('widget').hide('true');
+					break;
 			}
 		});
-
+		
 		frmPromptedValues.txtLocaleDateFormat.value = OpenHR.LocaleDateFormat;
 		frmPromptedValues.txtLocaleDecimalSeparator.value = OpenHR.LocaleDecimalSeparator;
 		frmPromptedValues.txtLocaleThousandSeparator.value = OpenHR.LocaleThousandSeparator;
@@ -53,7 +53,7 @@
 		} else {
 
 			if (menu_isSSIMode() == false) {
-				$(".popup").dialog("open");				
+				$(".popup").dialog("open");
 			}
 
 			// Set focus on the first prompt control.
@@ -74,6 +74,7 @@
 
 			}
 		}
+
 	}
 
 </script>
@@ -87,7 +88,11 @@
 			<span class="pageTitle"><% =Session("utilname")%></span>
 		</div>
 		<br/>
+
 	<div id="dataRow">
+
+		<p tabindex="1"></p>
+
 		<form name="frmPromptedValues" id="frmPromptedValues" method="POST" action="util_run_promptedvalues_submit">
 
 			<%
@@ -334,7 +339,7 @@
 		<% If iPromptCount > 0 Then%>
 			<br/>						
 			<div class="centered">			
-				<input type="button" class="btn" name="Submit" value="OK" style="WIDTH: 80px" onclick="SubmitPrompts()" />
+				<input type="button" id="butPromptedSubmit" class="btn" name="butPromptedSubmit" value="OK" style="WIDTH: 80px" onclick="SubmitPrompts()" />
 				<input type="button" class="btn" name="Cancel" value="Cancel" style="WIDTH: 80px" onclick="closepromptedclick()" />
 			</div>	
 		<% End If%>
@@ -785,5 +790,6 @@
 
 <script type="text/javascript">
 	promptedvalues_window_onload();
+
 </script>
 
