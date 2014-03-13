@@ -142,6 +142,7 @@
     </Compile>
     <Compile Include="Models\OrgChart.vb" />
     <Compile Include="Models\CalendarEvent.vb" />
+    <Compile Include="Models\PopoutChartModel.vb" />
     <Compile Include="My Project\AssemblyInfo.vb" />
     <Compile Include="My Project\Application.Designer.vb">
       <AutoGen>True</AutoGen>
@@ -1143,6 +1144,7 @@
     <Content Include="Scripts\jquery\MonthPicker.js" />
     <Content Include="Views\Home\pollMessage.aspx" />
     <Content Include="Views\Home\util_run_bradford_factor.ascx" />
+    <Content Include="Views\Home\_showChart.ascx" />
     <Content Include="Web.custom.config.template">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

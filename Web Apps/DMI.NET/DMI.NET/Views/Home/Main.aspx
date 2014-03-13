@@ -195,6 +195,8 @@
 
 </div>
 
+<%Session("LoggingIn") = False%>	
+
 </asp:Content>
 
 

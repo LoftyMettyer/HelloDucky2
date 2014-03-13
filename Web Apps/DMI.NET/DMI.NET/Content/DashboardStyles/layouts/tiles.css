@@ -224,6 +224,11 @@ width:12em; */
 	margin: 0;	
 }
 
+#chartPopout .datagrid {
+	max-height: none;
+	height: 80%;
+}
+
 .cols2 { width: 280px;}
 .cols3 { width: 420px;}
 .cols4 { width: 560px;}

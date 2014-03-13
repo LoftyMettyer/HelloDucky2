@@ -498,7 +498,7 @@
 								End If
 								%>
 								<img id="popupIcon<%=iHideablePopupIconID%>" src="<%:Url.Content("~/Content/images/Chart_Popout.png")%>" style="<%=IIf(Session("CurrentLayout").ToString() = DMIEnums.Layout.tiles.ToString(), "background: wheat;", "")%> float: right; cursor: pointer; width: 16px; height: 16px; vertical-align: bottom;" alt="Popout chart..." title="View this chart in a new window"
-									onclick="popoutchart('<%=fMultiAxis%>', '<%=navlink.Chart_ShowLegend%>', '<%=navlink.Chart_ShowGrid%>', '<%=navlink.Chart_ShowValues%>', '<%=navlink.Chart_StackSeries%>', '<%=navlink.Chart_ShowPercentages%>', '<%=iChart_Type%>', '<%=iChart_TableID%>', '<%=iChart_ColumnID%>', '<%=iChart_FilterID%>', '<%=iChart_AggregateType%>', '<%=CInt(iChart_ElementType)%>', '<%=iChart_TableID_2%>', '<%=iChart_ColumnID_2%>', '<%=iChart_TableID_3%>', '<%=iChart_ColumnID_3%>', '<%=iChart_SortOrderID%>', '<%=iChart_SortDirection%>', '<%=iChart_ColourID%>',encodeURI('<%=navlink.Text%>').replace(/&/g,'%26'), '<%=Session("ui-admin-theme").ToString() %>')" />
+									onclick="popoutchart('<%=fMultiAxis%>', '<%=navlink.Chart_ShowLegend%>', '<%=navlink.Chart_ShowGrid%>', '<%=navlink.Chart_ShowValues%>', '<%=navlink.Chart_StackSeries%>', '<%=navlink.Chart_ShowPercentages%>', '<%=iChart_Type%>', '<%=iChart_TableID%>', '<%=iChart_ColumnID%>', '<%=iChart_FilterID%>', '<%=iChart_AggregateType%>', '<%=CInt(iChart_ElementType)%>', '<%=iChart_TableID_2%>', '<%=iChart_ColumnID_2%>', '<%=iChart_TableID_3%>', '<%=iChart_ColumnID_3%>', '<%=iChart_SortOrderID%>', '<%=iChart_SortDirection%>', '<%=iChart_ColourID%>','<%=navlink.Text%>', '<%=Session("ui-admin-theme").ToString() %>')" />
 							</a>
 							<%If Not (navlink.InitialDisplayMode = 0 Or Session("CurrentLayout").ToString() = DMIEnums.Layout.tiles.ToString()) Then%>
 							<p class="linkspagebuttontileIcon">
@@ -529,7 +529,7 @@
 											 alt="Chart"
 											 title="<%:navlink.Text%>"
 											 style="cursor: pointer"
-										   onclick="popoutchart('<%=fMultiAxis%>', '<%=navlink.Chart_ShowLegend%>', '<%=navlink.Chart_ShowGrid%>', '<%=navlink.Chart_ShowValues%>', '<%=navlink.Chart_StackSeries%>', '<%=navlink.Chart_ShowPercentages%>', '<%=iChart_Type%>', '<%=iChart_TableID%>', '<%=iChart_ColumnID%>', '<%=iChart_FilterID%>', '<%=iChart_AggregateType%>', '<%=CInt(iChart_ElementType)%>', '<%=iChart_TableID_2%>', '<%=iChart_ColumnID_2%>', '<%=iChart_TableID_3%>', '<%=iChart_ColumnID_3%>', '<%=iChart_SortOrderID%>', '<%=iChart_SortDirection%>', '<%=iChart_ColourID%>',encodeURI('<%=navlink.Text%>').replace(/&/g,'%26'), '<%=Session("ui-admin-theme").ToString()%>')"
+										   onclick="popoutchart('<%=fMultiAxis%>', '<%=navlink.Chart_ShowLegend%>', '<%=navlink.Chart_ShowGrid%>', '<%=navlink.Chart_ShowValues%>', '<%=navlink.Chart_StackSeries%>', '<%=navlink.Chart_ShowPercentages%>', '<%=iChart_Type%>', '<%=iChart_TableID%>', '<%=iChart_ColumnID%>', '<%=iChart_FilterID%>', '<%=iChart_AggregateType%>', '<%=CInt(iChart_ElementType)%>', '<%=iChart_TableID_2%>', '<%=iChart_ColumnID_2%>', '<%=iChart_TableID_3%>', '<%=iChart_ColumnID_3%>', '<%=iChart_SortOrderID%>', '<%=iChart_SortDirection%>', '<%=iChart_ColourID%>','<%=navlink.Text%>', '<%=Session("ui-admin-theme").ToString()%>', '<%=navlink.Chart_ColumnName%>', '<%=navlink.Chart_ColumnName_2%>')"
 										 />
 								</div>
 								<%Else%>
@@ -539,10 +539,11 @@
 											 alt="Chart" 
 											 title="<%:navlink.Text%>"
 											 style="cursor: pointer"
-											 onclick="popoutchart('<%=fMultiAxis%>', '<%=navlink.Chart_ShowLegend%>', '<%=navlink.Chart_ShowGrid%>', '<%=navlink.Chart_ShowValues%>', '<%=navlink.Chart_StackSeries%>', '<%=navlink.Chart_ShowPercentages%>', '<%=iChart_Type%>', '<%=iChart_TableID%>', '<%=iChart_ColumnID%>', '<%=iChart_FilterID%>', '<%=iChart_AggregateType%>', '<%=CInt(iChart_ElementType)%>', '<%=iChart_TableID_2%>', '<%=iChart_ColumnID_2%>', '<%=iChart_TableID_3%>', '<%=iChart_ColumnID_3%>', '<%=iChart_SortOrderID%>', '<%=iChart_SortDirection%>', '<%=iChart_ColourID%>',encodeURI('<%=navlink.Text%>').replace(/&/g,'%26'), '<%=Session("ui-admin-theme").ToString()%>')"
+											 onclick="popoutchart('<%=fMultiAxis%>', '<%=navlink.Chart_ShowLegend%>', '<%=navlink.Chart_ShowGrid%>', '<%=navlink.Chart_ShowValues%>', '<%=navlink.Chart_StackSeries%>', '<%=navlink.Chart_ShowPercentages%>', '<%=iChart_Type%>', '<%=iChart_TableID%>', '<%=iChart_ColumnID%>', '<%=iChart_FilterID%>', '<%=iChart_AggregateType%>', '<%=CInt(iChart_ElementType)%>', '<%=iChart_TableID_2%>', '<%=iChart_ColumnID_2%>', '<%=iChart_TableID_3%>', '<%=iChart_ColumnID_3%>', '<%=iChart_SortOrderID%>', '<%=iChart_SortDirection%>', '<%=iChart_ColourID%>','<%=navlink.Text%>', '<%=Session("ui-admin-theme").ToString()%>', '<%=navlink.Chart_ColumnName%>', '<%=navlink.Chart_ColumnName_2%>')"
 										 />
 								</div>
 								<%End If%>
+																			
 								<a href="#"></a>
 							</div>
 							<%
@@ -1607,4 +1608,64 @@
 </script>
 
 <%Session("LoggingIn") = False%>
+
+
+<div id="chartPopout"></div>
+<script type="text/javascript">	
+	function popoutchart(multiAxis, showLegend, showGrid, showValues, stackSeries, showPercentages, chartType, chartTableID, chartColumnID, chartFilterID,
+				aggregateType, elementType, chartTableID2, chartColumnID2, chartTableID3, chartColumnID3, sortOrderID, sortDirection, colourID, chartText, themeName,
+				chartColumnName, chartColumnName2) {
+		
+		var chartModel = {
+			multiAxis: multiAxis,
+			showLegend: showLegend,
+			showGrid: showGrid,
+			showValues: showValues,
+			stackSeries: stackSeries,
+			showPercentages: showPercentages,
+			chartType: chartType,
+			chartTableID: chartTableID,
+			chartColumnID: chartColumnID,
+			chartFilterID: chartFilterID,
+			aggregateType: aggregateType,
+			elementType: elementType,
+			chartTableID2: chartTableID2,
+			chartColumnID2: chartColumnID2,
+			chartTableID3: chartTableID3,
+			chartColumnID3: chartColumnID3,
+			sortOrderID: sortOrderID,
+			sortDirection: sortDirection,
+			colourID: colourID,
+			chartText: chartText,
+			themeName: themeName,
+			chartColumnName: chartColumnName,
+			chartColumnName2: chartColumnName2
+		};
+		
+		$('#chartPopout').dialog({
+			autoOpen: true,
+			width: 700,
+			height: 560,
+			resizable: true,
+			title: chartText,
+			modal: true,
+			open: function (event, ui) {
+				//Load the showChart action which will return 
+				// the partial view _showChart
+				$(this).load("<%:Url.Action("ShowChart", "Home")%>", chartModel);
+			},
+			resize: function () {
+				var doit;				
+					clearTimeout(doit);
+					doit = setTimeout(loadChart, 100);				
+			},
+			buttons: {
+					"Close": function () {
+						$(this).dialog("close");
+					}
+				}				
+		});		
+	}
+	
+</script>
 

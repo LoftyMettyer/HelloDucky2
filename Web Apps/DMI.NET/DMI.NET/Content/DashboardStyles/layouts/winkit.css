@@ -326,6 +326,11 @@ body
 	overflow-y: auto;
 }
 
+#chartPopout .datagrid {
+	max-height: none;
+	height: 80%;
+}
+
 .widgetplaceholder i { font-size: 48pt;}
 
 .widgetplaceholder>div { width: 100%;}

@@ -154,6 +154,10 @@ table.border0 {
 	border: none;
 }
 
+table.rulesAll td {
+	border: 1px solid #ccc;
+}
+
 INPUT
 {
 	/*padding: 3px;*/

@@ -75,7 +75,7 @@
 			$('#dialog-confirm').dialog('option', 'title', title);
 			$('#dialog-confirm p').text(prompt);
 			$('#dialog-confirm').dialog('open');
-      // If Any ActiveX controls are in the workframeset, move the dailog to the very top of the screen to avoid it being hidden behind the ActiveX
+			// If Any ActiveX controls are in the workframeset, move the dailog to the very top of the screen to avoid it being hidden behind the ActiveX
 			if ($('#workframeset object').length > 0) {
 				$('#dialog-confirm').dialog('option', 'position', 'top');
 			} else {
@@ -618,7 +618,25 @@
 		getFileExtension = function(strFilename) {
 			return strFilename.substr(strFilename.lastIndexOf('.') + 1);
 
-		};
+		},
+	printDiv = function (divID) {
+		//Creates a new window, copies the specified div contents to it and sends to printer.
+		var divToPrint = document.getElementById(divID);
+		var newWin = window.open("", "_blank", 'toolbar=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=1, height=1, visible=none', "");
+		newWin.document.write('<sty');
+		newWin.document.write('le>');
+		newWin.document.write('</sty');
+		newWin.document.write('le>');
+		newWin.document.write(divToPrint.innerHTML);
+		newWin.document.write('<scri');
+		newWin.document.write('pt type="text/javascript">');
+		newWin.document.write('</scri');
+		newWin.document.write('pt>');
+		newWin.document.close();
+		newWin.focus();
+		newWin.print();
+		newWin.close();
+	};
 
 	window.OpenHR = {
 		version: version,
@@ -655,7 +673,8 @@
 		CheckOLEFileNameLength: CheckOLEFileNameLength,
 		GetFileExtension: getFileExtension,
 		CheckForMessages: checkForMessages,
-		SessionTimeout: sessionTimeout
+		SessionTimeout: sessionTimeout,
+		printDiv: printDiv
 	};
 
 })(window, jQuery);

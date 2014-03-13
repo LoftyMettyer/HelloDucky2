@@ -1711,7 +1711,8 @@ Namespace Controllers
 								chart1.Legends("Default").ShadowOffset = 2
 								chart1.Legends("Default").BackColor = ColorTranslator.FromHtml("#D3DFF0")
 							End If
-
+							' kill the title
+							title = ""
 							If Not String.IsNullOrEmpty(title) Then
 								chart1.Titles.Add("MainTitle")
 								chart1.Titles(0).Text = title
@@ -1998,7 +1999,8 @@ Namespace Controllers
 								MultiAxisChart.Legends("Default").ShadowOffset = 2
 								MultiAxisChart.Legends("Default").BackColor = ColorTranslator.FromHtml("#D3DFF0")
 							End If
-
+							' kill the title
+							title = ""
 							If Not String.IsNullOrEmpty(title) Then
 								MultiAxisChart.Titles.Add("MainTitle")
 								MultiAxisChart.Titles(0).Text = title
@@ -5688,6 +5690,14 @@ Namespace Controllers
 			Session("linkType") = ""
 			Session("ViewDescription") = ""
 		End Sub
+
+		<HttpPost()>
+		Public Function ShowChart(model As PopoutChartModel) As PartialViewResult
+
+
+			Return PartialView("_showChart", model)
+
+		End Function
 
 	End Class
 
