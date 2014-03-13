@@ -50,10 +50,6 @@
 			//window.parent.document.all.item("workframeset").cols = "*, 0";	
 			$("#workframe").attr("data-framesource", "DEFAULT");
 			
-			// Get menu.asp to refresh the menu.
-			//window.parent.frames("menuframe").refreshMenu();			
-			menu_refreshMenu();
-
 			if ("<%=Session("action")%>" == "WORKFLOWOUTOFOFFICE_CHECK")
 			{
 				if ($('#txtWorkflowRecordCount').val() == 0)
