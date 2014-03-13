@@ -158,7 +158,8 @@ Response.Write("<input type=hidden id=txtTitle name=txtTitle value=""" & Replace
 	$("#reportframe").show();
 
 	$("#PageDivTitle").html($("#txtTitle").val());
-	$(".popup").dialog('option', 'title', "Calendar Reports"); //Reports now have a title, so the window title here should be the generic one
+	//$(".popup").dialog('option', 'title', "Calendar Reports"); //Reports now have a title, so the window title here should be the generic one
+	$(".popup").dialog('option', 'title', $("#txtTitle").val()); //Reports now have a title, so the window title here should be the generic one
 	$("#top").hide();
 	$("#calendarframeset").show();
 
@@ -180,6 +181,7 @@ Response.Write("<input type=hidden id=txtTitle name=txtTitle value=""" & Replace
 ElseIf Not blnShowCalendar Then
 				%>
 	document.getElementById("frmCalendarOutput").submit();
+	$(".popup").dialog('option', 'title', "");
 	$(".popup").dialog("close");
 
 	if (menu_isSSIMode()) {

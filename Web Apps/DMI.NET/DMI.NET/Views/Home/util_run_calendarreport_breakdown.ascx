@@ -1,6 +1,12 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl(Of DMI.NET.Models.CalendarEvent)" %>
 
 <script type="text/javascript">
+	
+	$(document).ready(function () {
+		$("#CalendarEvent").dialog('option', 'title', "Calendar Breakdown");
+	});
+		
+		
 	function closeCalendarEvent() {
 		$("#CalendarEvent").dialog("close");
 	}

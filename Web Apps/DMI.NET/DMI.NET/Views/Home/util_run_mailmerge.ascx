@@ -158,6 +158,7 @@
 	document.getElementById("frmMailMergeOutput").submit();
 	<% End If %>
 	
+	$(".popup").dialog('option', 'title', "");
 	$(".popup").dialog("close");
 
 	if (menu_isSSIMode()) {

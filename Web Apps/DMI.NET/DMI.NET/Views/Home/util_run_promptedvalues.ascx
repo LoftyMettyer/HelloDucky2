@@ -53,6 +53,7 @@
 		} else {
 
 			if (menu_isSSIMode() == false) {
+				$(".popup").dialog('option', 'title', "Prompted Value"); 
 				$(".popup").dialog("open");
 			}
 
