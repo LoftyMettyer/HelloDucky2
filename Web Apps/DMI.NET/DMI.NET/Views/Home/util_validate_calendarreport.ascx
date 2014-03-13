@@ -120,8 +120,7 @@
 
 	</script>
 
-	<%--<div bgcolor='<%=session("ConvertedDesktopColour")%>' onload="return window_onload()" id="bdyMain" leftmargin="20" topmargin="20" bottommargin="20" rightmargin="5">--%>
-		<div bgcolor='<%=session("ConvertedDesktopColour")%>' id="Div1" leftmargin="20" topmargin="20" bottommargin="20" rightmargin="5">
+		<div id="Div1" leftmargin="20" topmargin="20" bottommargin="20" rightmargin="5">
 		<table align="center" class="outline" cellpadding="5" cellspacing="0">
 			<tr>
 				<td>

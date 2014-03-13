@@ -773,7 +773,7 @@
 
 <script src="<%: Url.LatestContent("~/Scripts/ctl_SetStyles.js")%>" type="text/javascript"></script>
 
-<div bgcolor='<%=session("ConvertedDesktopColour")%>' leftmargin=20 topmargin=20 bottommargin=20 rightmargin=5>
+<div leftmargin=20 topmargin=20 bottommargin=20 rightmargin=5>
 
 <%
 	if (ucase(session("selectionType")) <> ucase("picklist")) and _

@@ -79,7 +79,7 @@
 	<link href="<%: Url.LatestContent("~/Content/ui.jqgrid.css")%>" rel="stylesheet" type="text/css" />
 </head>
 
-<body id="bdyMain" bgcolor='<%=session("ConvertedDesktopColour")%>' leftmargin="20" topmargin="20" bottommargin="20" rightmargin="5">
+<body id="bdyMain" leftmargin="20" topmargin="20" bottommargin="20" rightmargin="5">
 	
 <div style="margin-left: 10px; margin-right: 10px;">
 	<form id="frmPopup" name="frmPopup" onsubmit="return setForm();" style="visibility: hidden; display: none">

@@ -178,7 +178,6 @@ Namespace Controllers
 			Dim bWindowsAuthentication As Boolean = False
 
 			fForcePasswordChange = False
-			Session("ConvertedDesktopColour") = "#f9f7fb"
 
 			If Not isWidgetLogin Then
 				' Read the User Name and Password from the Login form.
@@ -359,74 +358,6 @@ Namespace Controllers
 			Session("SupportEmail") = rowSettings("SupportEmail")
 			Session("SupportWebpage") = rowSettings("SupportWebpage")
 			Session("DesktopColour") = rowSettings("DesktopColour")
-
-
-			' Convert the read Desktop colour into a value that can be used by the BODY tag.
-			Select Case CStr(Session("DesktopColour"))
-				Case "-2147483648"
-					Session("ConvertedDesktopColour") = "scrollbar"
-				Case "-2147483647"
-					Session("ConvertedDesktopColour") = "background"
-				Case "-2147483646"
-					Session("ConvertedDesktopColour") = "activecaption"
-				Case "-2147483645"
-					Session("ConvertedDesktopColour") = "inactivecaption"
-				Case "-2147483644"
-					Session("ConvertedDesktopColour") = "menu"
-				Case "-2147483643"
-					Session("ConvertedDesktopColour") = "window"
-				Case "-2147483642"
-					Session("ConvertedDesktopColour") = "windowframe"
-				Case "-2147483641"
-					Session("ConvertedDesktopColour") = "menutext"
-				Case "-2147483640"
-					Session("ConvertedDesktopColour") = "windowtext"
-				Case "-2147483639"
-					Session("ConvertedDesktopColour") = "captiontext"
-				Case "-2147483638"
-					Session("ConvertedDesktopColour") = "activeborder"
-				Case "-2147483637"
-					Session("ConvertedDesktopColour") = "inactiveborder"
-				Case "-2147483636"
-					Session("ConvertedDesktopColour") = "appworkspace"
-				Case "-2147483635"
-					Session("ConvertedDesktopColour") = "highlight"
-				Case "-2147483634"
-					Session("ConvertedDesktopColour") = "highlighttext"
-				Case "-2147483633"
-					Session("ConvertedDesktopColour") = "threedface"
-				Case "-2147483632"
-					Session("ConvertedDesktopColour") = "threedshadow"
-				Case "-2147483631"
-					Session("ConvertedDesktopColour") = "graytext"
-				Case "-2147483630"
-					Session("ConvertedDesktopColour") = "buttontext"
-				Case "-2147483629"
-					Session("ConvertedDesktopColour") = "inactivecaptiontext"
-				Case "-2147483628"
-					Session("ConvertedDesktopColour") = "threedhighlight"
-				Case "-2147483627"
-					Session("ConvertedDesktopColour") = "threeddarkshadow"
-				Case "-2147483626"
-					Session("ConvertedDesktopColour") = "threedlightshadow"
-				Case "-2147483625"
-					Session("ConvertedDesktopColour") = "infotext"
-				Case "-2147483624"
-					Session("ConvertedDesktopColour") = "infobackground"
-				Case Else
-					Dim sColour = Hex(CLng(Session("DesktopColour")))
-
-					Do While (Len(sColour) < 6)
-						sColour = "0" & sColour
-					Loop
-
-					Dim sConvertedColour = "#"
-					sConvertedColour = sConvertedColour & Mid(sColour, 5, 2)
-					sConvertedColour = sConvertedColour & Mid(sColour, 3, 2)
-					sConvertedColour = sConvertedColour & Mid(sColour, 1, 2)
-
-					Session("ConvertedDesktopColour") = sConvertedColour
-			End Select
 
 
 
