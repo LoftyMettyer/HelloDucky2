@@ -162,34 +162,6 @@
 
 <%session("utilid")="" %>
 
-<script runat="server">
-	Private Sub Page_Load(sender As Object, e As System.EventArgs) Handles Me.Load
-		' Are we displaying the Workflow Out of Office Hyperlink for this view?
-		Dim objSession = CType(Session("SessionContext"), SessionInfo)
-		Dim objDataAccess As New clsDataAccess(objSession.LoginInfo)
-		Dim lngSSILinkTableID As Short = Convert.ToInt16(Session("SingleRecordTableID"))
-		Dim lngSSILinkViewID As Short = Convert.ToInt16(Session("SingleRecordViewID"))
-		Dim fShowOOOHyperlink As Boolean = False
-
-		Dim prmTableID2 = New SqlParameter("piTableID", SqlDbType.Int)
-		prmTableID2.Value = lngSSILinkTableID
-
-		Dim prmViewID2 = New SqlParameter("piViewID", SqlDbType.Int)
-		prmViewID2.Value = lngSSILinkViewID
-
-		Dim prmDisplayHyperlink = New SqlParameter("pfDisplayHyperlink", SqlDbType.Bit)
-		prmDisplayHyperlink.Direction = ParameterDirection.Output
-
-		objDataAccess.ExecuteSP("spASRIntShowOutOfOfficeHyperlink", prmTableID2, prmViewID2, prmDisplayHyperlink)
-
-		If Err.Number() = 0 Then
-			fShowOOOHyperlink = prmDisplayHyperlink.Value
-		End If
-
-		Session("WF_ShowOutOfOffice") = fShowOOOHyperlink
-	End Sub
-</script>
-
 <div id="menuframe" style="display: none;">
 <div class="ContextMenu-panel open">
 <div class="ContextMenu-tab ui-state-default" style="text-align:center;vertical-align: middle">

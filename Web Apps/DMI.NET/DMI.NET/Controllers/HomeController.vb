@@ -1494,31 +1494,6 @@ Namespace Controllers
 					End If
 
 					Err.Clear()
-
-					' Are we displaying the Workflow Out of Office Hyperlink for this view?
-					Dim lngSSILinkTableID As Short = Convert.ToInt16(Session("SingleRecordTableID"))
-					Dim lngSSILinkViewID As Short = Convert.ToInt16(Session("SingleRecordViewID"))
-					Dim fShowOOOHyperlink As Boolean = False
-
-					Dim prmTableID2 = New SqlParameter("piTableID", SqlDbType.Int)
-					prmTableID2.Value = lngSSILinkTableID
-
-					Dim prmViewID2 = New SqlParameter("piViewID", SqlDbType.Int)
-					prmViewID2.Value = lngSSILinkViewID
-
-					Dim prmDisplayHyperlink = New SqlParameter("pfDisplayHyperlink", SqlDbType.Bit)
-					prmDisplayHyperlink.Direction = ParameterDirection.Output
-
-					objDataAccess.ExecuteSP("spASRIntShowOutOfOfficeHyperlink", prmTableID2, prmViewID2, prmDisplayHyperlink)
-
-					If (Err.Number() <> 0) Then
-						sErrorDescription = "Error getting the Workflow Out of Office hyperlink setting." & vbCrLf & FormatError(Err.Description)
-					Else
-						fShowOOOHyperlink = prmDisplayHyperlink.Value
-					End If
-
-					Session("WF_ShowOutOfOffice") = fShowOOOHyperlink
-
 				Catch ex As Exception
 
 					Session("ErrorTitle") = "Login Page"

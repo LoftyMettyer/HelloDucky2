@@ -318,14 +318,30 @@ Namespace Controllers
 
 			End Try
 
+			' Are we displaying the Workflow Out of Office Hyperlink for this view?
+			Dim fShowOOOHyperlink As Boolean = False
 
+			Dim prmTableID2 = New SqlParameter("piTableID", SqlDbType.Int)
+			prmTableID2.Value = Convert.ToInt16(Session("SingleRecordTableID"))
+
+			Dim prmViewID2 = New SqlParameter("piViewID", SqlDbType.Int)
+			prmViewID2.Value = Convert.ToInt16(Session("SingleRecordViewID"))
+
+			Dim prmDisplayHyperlink = New SqlParameter("pfDisplayHyperlink", SqlDbType.Bit)
+			prmDisplayHyperlink.Direction = ParameterDirection.Output
+			Try
+				objDataAccess.ExecuteSP("spASRIntShowOutOfOfficeHyperlink", prmTableID2, prmViewID2, prmDisplayHyperlink)
+				fShowOOOHyperlink = prmDisplayHyperlink.Value
+			Catch ex As Exception
+
+			End Try
+			Session("WF_ShowOutOfOffice") = fShowOOOHyperlink
+
+			'
 			Session("Server") = sServerName
 			Session("Database") = sDatabaseName
 			Session("WinAuth") = bWindowsAuthentication
 			Session("UserGroup") = objServerSession.LoginInfo.UserGroup
-
-
-
 
 			' Successful login.
 			Dim dtSettings = objDataAccess.GetDataTable("spASRIntGetSessionSettings", CommandType.StoredProcedure)
