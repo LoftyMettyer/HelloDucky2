@@ -646,6 +646,7 @@
     <Build Include="Tables\ASRSysCurrentLogins.sql" />
     <Build Include="Stored Procedures\Web\spASRIntGetMessages.sql" />
     <Build Include="Stored Procedures\Web\spASRIntCopyRecordPostSave.sql" />
+    <Build Include="Stored Procedures\System Manager\spASRDatabaseStatus.sql" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Stored Procedures\Other\sp_ASR_Bradford_CalculateDurations.sql" />

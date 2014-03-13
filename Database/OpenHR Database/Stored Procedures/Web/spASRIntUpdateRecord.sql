@@ -5,7 +5,8 @@ CREATE PROCEDURE [dbo].[spASRIntUpdateRecord]
 	@piTableID		integer,		/* TableID being updated. */
 	@psRealSource	sysname,		/* RealSource being updated. */
 	@piID			integer,		/* ID the record being updated. */
-	@piTimestamp	integer			/* Original timestamp of the record being updated. */
+	@piTimestamp	integer,			/* Original timestamp of the record being updated. */
+	@errorMessage	nvarchar(MAX) OUTPUT
 )
 AS
 BEGIN
@@ -14,6 +15,11 @@ BEGIN
 	/* Return 2 if the record has been amended AND is no longer in the given table/view. */
 	/* Return 3 if the record has been deleted from the table. */
 	SET NOCOUNT ON;
+
+		-- Check database status before saving
+	EXEC dbo.spASRDatabaseStatus @errorMessage OUTPUT;
+	IF LEN(@errorMessage) > 0 RETURN;
+
 
 	DECLARE
 		@iCurrentTimestamp	integer,

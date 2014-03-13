@@ -1,11 +1,16 @@
 CREATE PROCEDURE [dbo].[spASRIntInsertNewRecord]
 (
-	@piNewRecordID	integer	OUTPUT,	/* Output variable to hold the new record ID. */
-	@psInsertDef	nvarchar(MAX)	/* SQL Insert string to insert the new record. */
+	@piNewRecordID	integer	OUTPUT,
+	@psInsertDef		nvarchar(MAX),
+	@errorMessage	nvarchar(MAX) OUTPUT
 )
 AS
 BEGIN
 	SET NOCOUNT ON;
+
+	-- Check database status before saving
+	EXEC dbo.spASRDatabaseStatus @errorMessage OUTPUT;
+	IF LEN(@errorMessage) > 0 RETURN;
 
 	DECLARE
 		@sTempString	nvarchar(MAX),

@@ -102,6 +102,10 @@ CREATE TABLE ASRSysCurrentLogins(
 
 GO
 
+IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spASRDatabaseStatus]') AND xtype in (N'P'))
+	DROP PROCEDURE [dbo].[spASRDatabaseStatus]
+GO
+
 IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[sp_ASRIntGetSubExpressionsAndComponents]') AND xtype in (N'P'))
 	DROP PROCEDURE [dbo].[sp_ASRIntGetSubExpressionsAndComponents]
 GO
@@ -220,6 +224,42 @@ GO
 
 IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[spASRIntGetUserGroup]') AND type in (N'P', N'PC'))
 	DROP PROCEDURE [dbo].[spASRIntGetUserGroup]
+GO
+
+
+CREATE PROCEDURE dbo.spASRDatabaseStatus (
+	@message	nvarchar(MAX) OUTPUT)
+AS
+BEGIN
+
+	SET NOCOUNT ON;
+
+	DECLARE @SystemStatus	integer,
+			@lockUser		varchar(255),
+			@lockhost		varchar(255)
+
+	SET @message = '';
+
+	SELECT TOP 1 @SystemStatus= ISNULL(Priority,0), @lockUser = [username], @lockhost = [hostname]
+		FROM ASRSysLock
+		ORDER BY [Priority];
+
+	IF @SystemStatus = 1
+	BEGIN
+		SET @message = 'A database update has been started by user ' + @lockUser + ' on machine ' + @lockhost + CHAR(13) + CHAR(13) 
+			+ 'Data may be lost until you log off and the update has completed.' + CHAR(13) + CHAR(13) 
+			+ 'Please contact your HR system administrator.'
+	END
+	ELSE IF @SystemStatus = 2
+	BEGIN
+		SET @message = 'The user ' + @lockUser + ' has locked the database on machine ' + @lockhost + CHAR(13) + CHAR(13) 
+			+ 'You are unable to make any changes at this time.' + CHAR(13) + CHAR(13) 
+			+ 'Please contact your HR system administrator.'
+	
+	END
+
+
+END
 GO
 
 
@@ -20919,16 +20959,8 @@ END
 GO
 
 
-/****** Object:  StoredProcedure [dbo].[spASRIntUpdateRecord]    Script Date: 23/07/2013 11:19:27 ******/
-DROP PROCEDURE [dbo].[spASRIntUpdateRecord]
-GO
-
 /****** Object:  StoredProcedure [dbo].[spASRIntSetEventLogPurge]    Script Date: 23/07/2013 11:19:27 ******/
 DROP PROCEDURE [dbo].[spASRIntSetEventLogPurge]
-GO
-
-/****** Object:  StoredProcedure [dbo].[spASRIntInsertNewRecord]    Script Date: 23/07/2013 11:19:27 ******/
-DROP PROCEDURE [dbo].[spASRIntInsertNewRecord]
 GO
 
 /****** Object:  StoredProcedure [dbo].[spASRIntGetViewName]    Script Date: 23/07/2013 11:19:27 ******/
@@ -29439,148 +29471,6 @@ BEGIN
 END
 GO
 
-/****** Object:  StoredProcedure [dbo].[spASRIntInsertNewRecord]    Script Date: 23/07/2013 11:19:27 ******/
-SET ANSI_NULLS ON
-GO
-
-SET QUOTED_IDENTIFIER ON
-GO
-
-CREATE PROCEDURE [dbo].[spASRIntInsertNewRecord]
-(
-	@piNewRecordID	integer	OUTPUT,	/* Output variable to hold the new record ID. */
-	@psInsertDef	nvarchar(MAX)	/* SQL Insert string to insert the new record. */
-)
-AS
-BEGIN
-	SET NOCOUNT ON;
-
-	DECLARE
-		@sTempString	nvarchar(MAX),
-		@sInsertString	nvarchar(MAX),
-		@iTemp			integer,
-		@iCounter		integer,
-		@iIndex1		integer,
-		@iIndex2		integer,
-		@iIndex3		integer,
-		@sColumnID		varchar(255),
-		@sValue			varchar(MAX),
-		@sColumnList	varchar(MAX),
-		@sValueList		varchar(MAX),
-		@iCopiedRecordID	integer,
-		@iDataType		integer,
-		@sColumnName	varchar(255),
-		@sRealSource	sysname,
-		@sMask			varchar(255),
-		@iOLEType		integer,
-		@fCopyImageData	bit,
-		@tablename		varchar(255);
-
-	SET @sColumnList = '';
-	SET @sValueList = '';
-
-	SET @iIndex1 = charindex(CHAR(9), @psInsertDef);
-	SET @iIndex2 = charindex(CHAR(9), @psInsertDef, @iIndex1+1);
-	SET @iIndex3 = charindex(CHAR(9), @psInsertDef, @iIndex2+1);
-
-	SET @sRealSource = replace(LEFT(@psInsertDef, @iIndex1-1), '''', '''''');
-	SET @sValue = replace(SUBSTRING(@psInsertDef, @iIndex1+1, @iIndex2-@iIndex1-1), '''', '''''');
-	SET @fCopyImageData = convert(bit, @sValue);
-	SET @sValue = replace(SUBSTRING(@psInsertDef, @iIndex2+1, @iIndex3-@iIndex2-1), '''', '''''');
-	SET @iCopiedRecordID = convert(integer, @sValue);
-
-	SET @psInsertDef = SUBSTRING(@psInsertDef, @iIndex3+1, LEN(@psInsertDef) - @iIndex3);
-
-	SET @sColumnList = 'INSERT ' + convert(varchar(255), @sRealSource) + ' (';
-	SET @sValueList = '';
-	SET @iCounter = 0;
-
-	WHILE charindex(CHAR(9), @psInsertDef) > 0
-	BEGIN
-		SET @iIndex1 = charindex(CHAR(9), @psInsertDef);
-		SET @iIndex2 = charindex(CHAR(9), @psInsertDef, @iIndex1+1);
-
-		SET @sColumnID = replace(LEFT(@psInsertDef, @iIndex1-1), '''', '''''');
-		SET @sValue = replace(SUBSTRING(@psInsertDef, @iIndex1+1, @iIndex2-@iIndex1-1), '''', '''''');
-
-		IF LEFT(@sColumnID, 3) = 'ID_'
-		BEGIN
-			SET @sColumnName = @sColumnID;
-		END
-		ELSE
-		BEGIN
-			SELECT @sColumnName = ASRSysColumns.columnName,
-				@iDataType = ASRSysColumns.dataType,
-				@sMask = ASRSysColumns.mask
-			FROM ASRSysColumns
-			WHERE ASRSysColumns.columnID = convert(integer, @sColumnID);
-
-			-- Date
-			IF (@iDataType = 11 AND @sValue <> 'null') SET @sValue = '''' + @sValue + '''';
-
-			-- Character
-			IF (@iDataType = 12 AND (LEN(@sMask) = 0 OR @sValue <> 'null')) SET @sValue = '''' + @sValue + '''';
-
-			-- WorkingPattern
-			IF (@iDataType = -1) SET @sValue = '''' + @sValue + '''';
-
-			-- Photo / OLE
-			IF (@iDataType = -3 OR @iDataType = -4)
-			BEGIN
-				SET @iOLEType = convert(integer, LEFT(@sValue, 1));
-				SET @sValue = SUBSTRING(@sValue, 2, LEN(@sValue) - 1);
-				IF (@iOLEType < 2) SET @sValue = '''' + @sValue + '''';
-			END
-		END
-
-		SET @sTempString =
-			CASE
-				WHEN @iCounter > 0 THEN ','
-				ELSE ''
-			END
-			+ convert(varchar(255), @sColumnName);
-
-		SET @sColumnList = @sColumnList + @sTempString;
-		SET @sTempString =
-			CASE
-				WHEN @iCounter > 0 THEN ','
-				ELSE ''
-			END
-			+ CASE
-				WHEN @fCopyImageData = 1 THEN REPLACE(convert(varchar(MAX), @sValue), '''', '''''')
-				ELSE convert(varchar(MAX), @sValue)
-			END;
-
-		SET @sValueList = @sValueList + @sTempString;
-		SET @iCounter = @iCounter + 1;
-		SET @psInsertDef = SUBSTRING(@psInsertDef, @iIndex2+1, LEN(@psInsertDef) - @iIndex2);
-	END
-
-	IF @fCopyImageData = 1
-	BEGIN
-		SET @sInsertString = @sColumnList + ')'
-			+ ' EXECUTE(''SELECT ' + @sValueList
-			+ ' FROM ' + convert(varchar(255), @sRealSource)
-			+ ' WHERE id = ' + convert(varchar(255), @iCopiedRecordID) + ''')';
-	END
-	ELSE
-	BEGIN
-		SET @sInsertString = @sColumnList + ')' + ' VALUES(' + @sValueList + ')';
-	END
-
-	-- Run the constructed SQL INSERT string
-	EXECUTE sp_executesql @sInsertString;
-
-	-- Calculate the ID
-	SET  @sInsertString = REPLACE(' ' + @sInsertString,' INSERT INTO ','')
-	SET  @sInsertString = REPLACE(' ' + @sInsertString,' INSERT ','')
-	SET @tablename = SUBSTRING(@sInsertString,0, CHARINDEX('(', @sInsertString));
-
-	SET @sTempString = 'SELECT @ID = MAX(ID) FROM ' + @tablename;
-	EXECUTE sp_executesql @sTempString, N'@ID int OUTPUT', @ID = @piNewRecordID OUTPUT;
-						  
-END
-GO
 
 /****** Object:  StoredProcedure [dbo].[spASRIntSetEventLogPurge]    Script Date: 23/07/2013 11:19:27 ******/
 SET ANSI_NULLS ON
@@ -29604,126 +29494,6 @@ BEGIN
 
 END
 GO
-
-
-/****** Object:  StoredProcedure [dbo].[spASRIntUpdateRecord]    Script Date: 23/07/2013 11:19:27 ******/
-SET ANSI_NULLS ON
-GO
-
-SET QUOTED_IDENTIFIER ON
-GO
-
-CREATE PROCEDURE [dbo].[spASRIntUpdateRecord]
-(
-	@piResult		integer	OUTPUT,	/* Output variable to hold the result. */
-	@psUpdateDef	varchar(MAX),	/* Update definition to update the record. */
-	@piTableID		integer,		/* TableID being updated. */
-	@psRealSource	sysname,		/* RealSource being updated. */
-	@piID			integer,		/* ID the record being updated. */
-	@piTimestamp	integer			/* Original timestamp of the record being updated. */
-)
-AS
-BEGIN
-	/* Return 0 if the record was OK to update. */
-	/* Return 1 if the record has been amended AND is still in the given table/view. */
-	/* Return 2 if the record has been amended AND is no longer in the given table/view. */
-	/* Return 3 if the record has been deleted from the table. */
-	SET NOCOUNT ON;
-
-	DECLARE
-		@iCurrentTimestamp	integer,
-		@sSQL				nvarchar(MAX),
-		@iCount				integer,
-		@sUpdateString		nvarchar(MAX),
-		@sTempString		varchar(MAX),
-		@iCounter			integer,
-		@iIndex1			integer,
-		@iIndex2			integer,
-		@sColumnID			varchar(255),
-		@sValue				varchar(MAX),
-		@iDataType			integer,
-		@sColumnName		varchar(255),
-		@sMask				varchar(MAX),
-		@iOLEType			integer;
-
-	-- Clean the input string parameters.
-	IF len(@psRealsource) > 0 SET @psRealsource = replace(@psRealsource, '''', '''''');
-
-	SET @piResult = 0;
-	SET @sUpdateString = 'UPDATE ' + convert(varchar(255), @psRealSource) + ' SET ';
-	SET @iCounter = 0;
-
-	-- Get status of amended record
-	EXEC dbo.sp_ASRRecordAmended @piResult OUTPUT,
-	    @piTableID,
-		@psRealSource,
-		@piID,
-		@piTimestamp;
-
-	IF @piResult = 0
-	BEGIN
-		WHILE charindex(CHAR(9), @psUpdateDef) > 0
-		BEGIN
-			SET @iIndex1 = charindex(CHAR(9), @psUpdateDef);
-			SET @iIndex2 = charindex(CHAR(9), @psUpdateDef, @iIndex1+1);
-
-			SET @sColumnID = replace(LEFT(@psUpdateDef, @iIndex1-1), '''', '''''');
-			SET @sValue = replace(SUBSTRING(@psUpdateDef, @iIndex1+1, @iIndex2-@iIndex1-1), '''', '''''');
-
-			IF LEFT(@sColumnID, 3) = 'ID_'
-			BEGIN
-				SET @sColumnName = @sColumnID;
-			END
-			ELSE
-			BEGIN
-				SELECT @sColumnName = ASRSysColumns.columnName,
-					@iDataType = ASRSysColumns.dataType,
-					@sMask = ASRSysColumns.mask
-				FROM ASRSysColumns
-				WHERE ASRSysColumns.columnID = convert(integer, @sColumnID);
-
-				-- Date
-				IF (@iDataType = 11 AND @sValue <> 'null') SET @sValue = '''' + @sValue + '''';
-
-				-- Character
-				IF (@iDataType = 12 AND (LEN(@sMask) = 0 OR @sValue <> 'null')) SET @sValue = '''' + @sValue + '''';
-
-				-- WorkingPattern
-				IF (@iDataType = -1) SET @sValue = '''' + @sValue + '''';
-
-				-- Photo / OLE
-				IF (@iDataType = -3 OR @iDataType = -4)
-				BEGIN
-					SET @iOLEType = convert(integer, LEFT(@sValue, 1));
-					SET @sValue = SUBSTRING(@sValue, 2, LEN(@sValue) - 1);
-					IF (@iOLEType < 2) SET @sValue = '''' + @sValue + '''';
-				END
-			END
-
-			SET @sTempString =
-				CASE
-					WHEN @iCounter > 0 THEN ','
-					ELSE ''
-				END
-				+ convert(varchar(255), @sColumnName) + ' = ' + convert(varchar(MAX), @sValue);
-
-			SET @sUpdateString = @sUpdateString + @sTempString;
-			SET @iCounter = @iCounter + 1;
-			SET @psUpdateDef = SUBSTRING(@psUpdateDef, @iIndex2+1, LEN(@psUpdateDef) - @iIndex2);
-		END
-
-		SET @sUpdateString = @sUpdateString + ' WHERE id = ' + convert(varchar(255), @piID);
-
-		-- Run the constructed SQL UPDATE string.
-		EXEC sp_executeSQL @sUpdateString;
-	END
-END
-GO
-
-
----------------------------------------------------------------
--- Script 8.0.11
----------------------------------------------------------------
 
 
 /****** Object:  StoredProcedure [dbo].[spASRIntValidateCalendarReport]    Script Date: 13/09/2013 08:57:58 ******/
@@ -29754,7 +29524,6 @@ GO
 DROP PROCEDURE [dbo].[spASRIntSaveCalendarReport]
 GO
 
-/****** Object:  StoredProcedure [dbo].[spASRIntInsertNewRecord]    Script Date: 13/09/2013 08:57:58 ******/
 DROP PROCEDURE [dbo].[spASRIntInsertNewRecord]
 GO
 
@@ -40534,7 +40303,7 @@ END
 
 GO
 
-/****** Object:  StoredProcedure [dbo].[spASRIntInsertNewRecord]    Script Date: 13/09/2013 08:58:00 ******/
+
 SET ANSI_NULLS ON
 GO
 
@@ -40544,12 +40313,17 @@ GO
 
 CREATE PROCEDURE [dbo].[spASRIntInsertNewRecord]
 (
-	@piNewRecordID	integer	OUTPUT,	/* Output variable to hold the new record ID. */
-	@psInsertDef	nvarchar(MAX)	/* SQL Insert string to insert the new record. */
+	@piNewRecordID	integer	OUTPUT,
+	@psInsertDef	nvarchar(MAX),
+	@errorMessage	nvarchar(MAX) OUTPUT
 )
 AS
 BEGIN
 	SET NOCOUNT ON;
+
+	-- Check database status before saving
+	EXEC dbo.spASRDatabaseStatus @errorMessage OUTPUT;
+	IF LEN(@errorMessage) > 0 RETURN;
 
 	DECLARE
 		@sTempString	nvarchar(MAX),
@@ -41325,7 +41099,7 @@ As
 
 GO
 
-/****** Object:  StoredProcedure [dbo].[spASRIntUpdateRecord]    Script Date: 13/09/2013 08:58:00 ******/
+
 SET ANSI_NULLS ON
 GO
 
@@ -41340,7 +41114,8 @@ CREATE PROCEDURE [dbo].[spASRIntUpdateRecord]
 	@piTableID		integer,		/* TableID being updated. */
 	@psRealSource	sysname,		/* RealSource being updated. */
 	@piID			integer,		/* ID the record being updated. */
-	@piTimestamp	integer			/* Original timestamp of the record being updated. */
+	@piTimestamp	integer,			/* Original timestamp of the record being updated. */
+	@errorMessage	nvarchar(MAX) OUTPUT
 )
 AS
 BEGIN
@@ -41349,6 +41124,11 @@ BEGIN
 	/* Return 2 if the record has been amended AND is no longer in the given table/view. */
 	/* Return 3 if the record has been deleted from the table. */
 	SET NOCOUNT ON;
+
+		-- Check database status before saving
+	EXEC dbo.spASRDatabaseStatus @errorMessage OUTPUT;
+	IF LEN(@errorMessage) > 0 RETURN;
+
 
 	DECLARE
 		@iCurrentTimestamp	integer,
@@ -41400,7 +41180,7 @@ BEGIN
 					@iDataType = ASRSysColumns.dataType,
 					@sMask = ASRSysColumns.mask
 				FROM ASRSysColumns
-				WHERE ASRSysColumns.columnID = convert(integer, @sColumnID);
+				WHERE ASRSysColumns.columnId = convert(integer, @sColumnID);
 
 				-- Date
 				IF (@iDataType = 11 AND @sValue <> 'null') SET @sValue = '''' + @sValue + '''';
@@ -85803,7 +85583,7 @@ GRANT EXEC ON TYPE::[dbo].[DataPermissions] TO ASRSysGroup
 
 DECLARE @sVersion varchar(10) = '8.0.28'
 
-EXEC spsys_setsystemsetting 'database', 'version', @sVersion;
+EXEC spsys_setsystemsetting 'database', 'version', '8.0';
 EXEC spsys_setsystemsetting 'intranet', 'version', @sVersion;
 EXEC spsys_setsystemsetting 'ssintranet', 'version', @sVersion;
 

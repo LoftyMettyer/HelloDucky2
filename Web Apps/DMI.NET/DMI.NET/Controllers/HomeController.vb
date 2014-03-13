@@ -1151,28 +1151,37 @@ Namespace Controllers
 								Dim lngOriginalRecordID = CInt(Request.Form("txtOriginalRecordID"))
 
 								Dim prmRecordID As New SqlParameter("piNewRecordID", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
+								Dim prmErrorMessage As New SqlParameter("errorMessage", SqlDbType.NVarChar, -1) With {.Direction = ParameterDirection.Output}
+
 								objDataAccess.ExecuteSP("spASRIntInsertNewRecord" _
 									, prmRecordID _
-									, New SqlParameter("psInsertDef", SqlDbType.VarChar, -1) With {.Value = sInsertUpdateDef})
+									, New SqlParameter("psInsertDef", SqlDbType.VarChar, -1) With {.Value = sInsertUpdateDef} _
+									, prmErrorMessage)
 
-								lngRecordID = prmRecordID.Value
-
-								' This was a copied record - ensure that OLE columns are also copied
-								If lngOriginalRecordID > 0 Then
-
-									objDataAccess.ExecuteSP("spasrIntCopyRecordPostSave" _
-										, New SqlParameter("tableID", SqlDbType.Int) With {.Value = lngTableID} _
-										, New SqlParameter("FromRecordID", SqlDbType.Int) With {.Value = lngOriginalRecordID} _
-										, New SqlParameter("ToRecordID", SqlDbType.Int) With {.Value = lngRecordID})
-								End If
-
-								If Len(sReaction) > 0 Then
-									sAction = sReaction
+								If prmErrorMessage.Value.ToString().Length > 0 Then
+									sAction = "SAVEERROR"
+									sErrorMsg = prmErrorMessage.Value.ToString()
 								Else
-									sAction = "LOAD"
-								End If
 
-								objDataAccess.ExecuteSP("spASREmailImmediate", New SqlParameter("@Username", SqlDbType.VarChar, 255) With {.Value = Session("Username")})
+									lngRecordID = prmRecordID.Value
+
+									' This was a copied record - ensure that OLE columns are also copied
+									If lngOriginalRecordID > 0 Then
+
+										objDataAccess.ExecuteSP("spasrIntCopyRecordPostSave" _
+											, New SqlParameter("tableID", SqlDbType.Int) With {.Value = lngTableID} _
+											, New SqlParameter("FromRecordID", SqlDbType.Int) With {.Value = lngOriginalRecordID} _
+											, New SqlParameter("ToRecordID", SqlDbType.Int) With {.Value = lngRecordID})
+									End If
+
+									If Len(sReaction) > 0 Then
+										sAction = sReaction
+									Else
+										sAction = "LOAD"
+									End If
+
+									objDataAccess.ExecuteSP("spASREmailImmediate", New SqlParameter("@Username", SqlDbType.VarChar, 255) With {.Value = Session("Username")})
+								End If
 
 							Catch ex As SqlException
 								If ex.Number.Equals(50000) Then
@@ -1195,32 +1204,41 @@ Namespace Controllers
 							' Updating.
 							Try
 								Dim prmResult As New SqlParameter("piResult", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
+								Dim prmErrorMessage As New SqlParameter("errorMessage", SqlDbType.NVarChar, -1) With {.Direction = ParameterDirection.Output}
+
 								objDataAccess.ExecuteSP("spASRIntUpdateRecord" _
 									, prmResult _
 									, New SqlParameter("psUpdateDef", SqlDbType.VarChar, -1) With {.Value = sInsertUpdateDef} _
 									, New SqlParameter("piTableID", SqlDbType.Int) With {.Value = NullSafeInteger(CleanNumeric(lngTableID))} _
 									, New SqlParameter("psRealSource", SqlDbType.VarChar, 255) With {.Value = sRealSource} _
 									, New SqlParameter("piID", SqlDbType.Int) With {.Value = CleanNumeric(lngRecordID)} _
-									, New SqlParameter("piTimestamp", SqlDbType.Int) With {.Value = CleanNumeric(iTimestamp)})
+									, New SqlParameter("piTimestamp", SqlDbType.Int) With {.Value = CleanNumeric(iTimestamp)} _
+									, prmErrorMessage)
 
-								Select Case prmResult.Value
-									Case 1 ' Record changed by another user, and is no longer in the current table/view.
-										sErrorMsg = "The record has been amended by another user and will be refreshed."
-									Case 2 ' Record changed by another user, and still in the current table/view.
-										sErrorMsg = "The record has been amended by another user and will be refreshed."
-									Case 3 ' Record deleted by another user.
-										sErrorMsg = "The record has been deleted by another user."
-								End Select
-
-								If Len(sReaction) > 0 Then
-									sAction = sReaction
+								If prmErrorMessage.Value.ToString().Length > 0 Then
+									sAction = "SAVEERROR"
+									sErrorMsg = prmErrorMessage.Value.ToString()
 								Else
-									sAction = "LOAD"
+
+									Select Case prmResult.Value
+										Case 1 ' Record changed by another user, and is no longer in the current table/view.
+											sErrorMsg = "The record has been amended by another user and will be refreshed."
+										Case 2 ' Record changed by another user, and still in the current table/view.
+											sErrorMsg = "The record has been amended by another user and will be refreshed."
+										Case 3 ' Record deleted by another user.
+											sErrorMsg = "The record has been deleted by another user."
+									End Select
+
+									If Len(sReaction) > 0 Then
+										sAction = sReaction
+									Else
+										sAction = "LOAD"
+									End If
+
+									objDataAccess.ExecuteSP("spASREmailImmediate", _
+											New SqlParameter("@Username", SqlDbType.VarChar, 255) With {.Value = Session("Username")})
+
 								End If
-
-								objDataAccess.ExecuteSP("spASREmailImmediate", _
-										New SqlParameter("@Username", SqlDbType.VarChar, 255) With {.Value = Session("Username")})
-
 
 							Catch ex As Exception
 
