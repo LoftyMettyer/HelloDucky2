@@ -31,12 +31,3 @@ BEGIN
 
 
 END
-
-
-GO
-
---select * from ASRSysLock
-
-DECLARE @MESSAGE nvarchar(max)
-EXEC spASRDatabaseStatus @MESSAGE OUTPUT
-print @MESSAGE
