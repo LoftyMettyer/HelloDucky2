@@ -720,7 +720,7 @@ GetCustomReportDefinition_ERROR:
 				If IIf((IsDBNull(objRow("Hidden")) Or (objRow("Hidden"))), True, False) Then
 					objReportItemDetail.IDColumnName = "?ID_HD_" & objRow("Type") & "_" & objRow("ColExprID")
 				Else
-					objReportItemDetail.IDColumnName = objRow("Heading")
+					objReportItemDetail.IDColumnName = objRow("Heading").ToString().Replace("'", "")
 				End If
 
 				'*************************************************************************
