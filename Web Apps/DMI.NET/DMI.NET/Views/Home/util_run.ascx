@@ -296,13 +296,7 @@ ElseIf Session("utiltype") = "16" Then
 	<%
 Else
 	%>
-	
-	$("#cmdPrint").button({ disabled: false });
-
-	if ($("#grdReport").length > 0) {
-		$("#cmdOutput").button({ disabled: false });
-	}
-	
+		
 	$(".popup").dialog({
 		width: 810,
 		height: 720,
@@ -341,15 +335,8 @@ End If
 
 	menu_refreshMenu();
 
-	//$("#cmdCancel").hide();	
-	$("#cmdCancel").button({ disabled: true });
-	$("#cmdOK").hide();
+	ShowDataFrame();
 
-	if (menu_isSSIMode() == false) {
-		$("#cmdClose").show();
-	} else {
-		$("#cmdClose").hide();
-	}
 	if ($("#txtPreview")[0].value == "False") {
 		if ($('#txtNoRecs').val() == "0") {
 			var frmGetDataForm = OpenHR.getForm("reportworkframe", "frmExportData");

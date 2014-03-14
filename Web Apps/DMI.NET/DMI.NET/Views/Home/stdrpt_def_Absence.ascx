@@ -1048,7 +1048,7 @@
 		</div>
 		
 		<div id="RunBackButtons" style="visibility: hidden; float: left; padding: 10px">
-			<input type="button" id="cmdOK" name="cmdOK" class="btn" value="Run"
+			<input type="button" id="cmdRun" name="cmdRun" class="btn" value="Run"
 				onclick="absence_okClick()" />
 			<input type="button" id="cmdBack" name="cmdBack" class="btn" value="Back"
 				onclick="absence_returnToRecEdit()" />
