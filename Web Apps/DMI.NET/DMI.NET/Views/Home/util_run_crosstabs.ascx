@@ -199,7 +199,9 @@ Session("utiltype = 17 		Calendar Report--%>
 <%End If%>--%>
 
 <form id="frmOriginalDefinition">
-	<input type="hidden" id="txtDefn_Name" name="txtDefn_Name" value="<%=session("utilname")%>">
+	<%
+		Response.Write("	<input type='hidden' id='txtDefn_Name' name='txtDefn_Name' value='" & objCrossTab.CrossTabName.ToString() & "'>" & vbCrLf)
+	%>
 	<input type="hidden" id="txtUserName" name="txtUserName" value="<%=session("username")%>">
 	<input type="hidden" id="txtDateFormat" name="txtDateFormat" value="<%=session("LocaleDateFormat")%>">
 	<input type="hidden" id="txtDatabase" name="txtDatabase" value="<%=session("database")%>">

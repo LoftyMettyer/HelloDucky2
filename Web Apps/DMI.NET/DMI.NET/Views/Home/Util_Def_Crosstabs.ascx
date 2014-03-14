@@ -4,6 +4,7 @@
 <%@ Import Namespace="HR.Intranet.Server" %>
 <%@ Import Namespace="System.Data.SqlClient" %>
 <%@ Import Namespace="System.Data" %>
+<%@ Import Namespace="System.Diagnostics" %>
 
 <script src="<%: Url.LatestContent("~/Scripts/FormScripts/crosstabdef.js")%>" type="text/javascript"></script>
 
