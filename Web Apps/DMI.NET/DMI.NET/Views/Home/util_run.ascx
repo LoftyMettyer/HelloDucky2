@@ -229,11 +229,10 @@
 		<div id="main" data-framesource="util_run" style="height: 80%; margin: 0 0 0 0;">
 
 			<%   
-				Dim sPrintButtonLabel As String = "Print Screen"
+				Dim sPrintButtonLabel As String = "Print"
 				If Session("utiltype") = "1" Then
 					Html.RenderPartial("~/Views/Home/util_run_crosstabsMain.ascx")
 				ElseIf Session("utiltype") = "2" Then
-					sPrintButtonLabel = "Print"
 					Html.RenderPartial("~/Views/Home/util_run_customreportsMain.ascx")
 				ElseIf Session("utiltype") = "3" Then
 					'Html.RenderPartial("~/Views/Home/util_run_datatransfer.ascx")
