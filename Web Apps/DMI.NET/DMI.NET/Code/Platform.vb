@@ -1,4 +1,7 @@
 ﻿' Mobiles. Fix as tiles display.
+Imports System.Globalization
+Imports HR.Intranet.Server.Structures
+
 Namespace Code
 	Public Class Platform
 
@@ -34,6 +37,17 @@ Namespace Code
 
 			Dim sUserName = HttpContext.Current.Request.ServerVariables("LOGON_USER").ToString()
 			Return sUserName.Length > 0
+
+		End Function
+
+		Public Shared Function GetRegionalSettings() As RegionalSettings
+
+			Dim objCulture = CultureInfo.CreateSpecificCulture(HttpContext.Current.Request.UserLanguages(0))
+			Dim objSettings As New RegionalSettings
+			objSettings.DateFormat = objCulture.DateTimeFormat
+			objSettings.DateSeparator = "/"
+
+			Return objSettings
 
 		End Function
 

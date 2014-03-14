@@ -9,6 +9,8 @@ Namespace BaseClasses
 
 	Public Class BaseForDMI
 
+		Protected RegionalSettings As RegionalSettings
+
 		Public DB As clsDataAccess
 		Protected General As clsGeneral
 		Protected Logs As clsEventLog
@@ -32,6 +34,7 @@ Namespace BaseClasses
 				' Tempry one for expressions as there's a lot of code in module and not classes - yuck!
 				dataAccess = New clsDataAccess(_sessionInfo.LoginInfo)
 
+				RegionalSettings = value.RegionalSettings
 
 			End Set
 			Get

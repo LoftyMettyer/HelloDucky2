@@ -283,6 +283,7 @@
     <Compile Include="Structures\HistoryScreen.vb" />
     <Compile Include="Structures\LoginInfo.vb" />
     <Compile Include="Structures\MenuInfo.vb" />
+    <Compile Include="Structures\RegionalSettings.vb" />
     <Compile Include="Structures\ReportColumn.vb" />
     <Compile Include="Structures\ReportDetailItem.vb" />
     <Compile Include="Structures\ReportSortItem.vb" />

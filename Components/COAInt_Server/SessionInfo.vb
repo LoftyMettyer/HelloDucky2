@@ -14,6 +14,8 @@ Public Class SessionInfo
 	Public DatabaseStatus As New DatabaseStatus
 	Public Permissions As ICollection(Of Permission)
 
+	Public RegionalSettings As RegionalSettings
+
 	Public ReadOnly Property LoginInfo As LoginInfo
 		Get
 			Return _objLogin

@@ -2511,8 +2511,6 @@ CheckRecordSet_ERROR:
 		'           grid, calculating summary info, breaking, page breaking etc.
 		'           Its a bit of a 'mare but it works ok. (JDM - I question that!)
 
-		On Error GoTo LoadRecords_ERROR
-
 		Dim aryAddString As ArrayList
 		Dim vDisplayData As String
 		Dim colColumns As ICollection(Of ReportColumn)
@@ -2551,394 +2549,394 @@ CheckRecordSet_ERROR:
 		Dim objNextItem As ReportDetailItem
 		Dim objReportColumn As ReportColumn
 
-		' Construct a collection of the columns in the report.
-		colColumns = New Collection(Of ReportColumn)
-		For Each objReportItem In ColumnDetails
-			objReportColumn = New ReportColumn()
-			objReportColumn.ID = objReportItem.ID
-			objReportColumn.BreakOrPageOnChange = objReportItem.IsBreakOnChange Or objReportItem.IsPageOnChange
-			objReportColumn.HasSummaryLine = objReportItem.IsAverage Or objReportItem.IsCount Or objReportItem.IsTotal
-			objReportColumn.LastValue = DBNull.Value
-			colColumns.Add(objReportColumn)
-		Next
+		Try
 
-		datCustomReportOutput_Start()
+			' Construct a collection of the columns in the report.
+			colColumns = New Collection(Of ReportColumn)
+			For Each objReportItem In ColumnDetails
+				objReportColumn = New ReportColumn()
+				objReportColumn.ID = objReportItem.ID
+				objReportColumn.BreakOrPageOnChange = objReportItem.IsBreakOnChange Or objReportItem.IsPageOnChange
+				objReportColumn.HasSummaryLine = objReportItem.IsAverage Or objReportItem.IsCount Or objReportItem.IsTotal
+				objReportColumn.LastValue = DBNull.Value
+				colColumns.Add(objReportColumn)
+			Next
 
-		For Each objRow As DataRow In mrstCustomReportsOutput.Rows
+			datCustomReportOutput_Start()
 
-			aryAddString = New ArrayList()
+			For Each objRow As DataRow In mrstCustomReportsOutput.Rows
 
-			'bRecordChanged used for repetition funcionality.
-			If Not mbIsBradfordIndexReport Then
-				If CInt(objRow("?ID")) <> lngCurrentRecordID Then
-					bBaseRecordChanged = True
-					lngCurrentRecordID = CInt(objRow("?ID"))
-				Else
-					bBaseRecordChanged = False
+				aryAddString = New ArrayList()
+
+				'bRecordChanged used for repetition funcionality.
+				If Not mbIsBradfordIndexReport Then
+					If CInt(objRow("?ID")) <> lngCurrentRecordID Then
+						bBaseRecordChanged = True
+						lngCurrentRecordID = CInt(objRow("?ID"))
+					Else
+						bBaseRecordChanged = False
+					End If
 				End If
-			End If
 
-			' Dont do summary info for first record (otherwise blank!)
-			'If mrstCustomReportsOutput.AbsolutePosition > 1 Then
-			If fNotFirstTime Then
-				' Put the values from the previous record in the column array.
+				' Dont do summary info for first record (otherwise blank!)
+				'If mrstCustomReportsOutput.AbsolutePosition > 1 Then
+				If fNotFirstTime Then
+					' Put the values from the previous record in the column array.
 
-				For Each objReportItem In ColumnDetails
-					colColumns.GetById(objReportItem.ID).LastValue = objReportItem.LastValue
-				Next
-
-				' From last column in the order to first, check changes.
-				For iLoop7 = colSortOrder.Count - 1 To 0 Step -1
-					' Find the column in the details array.
-					iColumnIndex = 0
-					iLoop2 = 1
 					For Each objReportItem In ColumnDetails
-						If (objReportItem.ID = colSortOrder.GetByIndex(iLoop7).ColExprID) And (objReportItem.Type = "C") Then
-							iColumnIndex = iLoop2 - 1
-							Exit For
-						End If
-						iLoop2 += 1
+						colColumns.GetById(objReportItem.ID).LastValue = objReportItem.LastValue
 					Next
 
-					'If iColumnIndex > 0 Then
-
-					If colColumns.GetByIndex(iColumnIndex).BreakOrPageOnChange Then
-						fBreak = False
-
-						objReportItem = ColumnDetails.GetByIndex(iColumnIndex)
-
-						' The column breaks. Check if its changed.
-						vValue = PopulateGrid_FormatData(objReportItem, objRow(iColumnIndex), False, False)
-
-						'Now that we store the formatted value in position (11) of the mcolDetails
-						'Comparison made after adjusting the size of the field.
-						'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-						If IsDBNull(vValue) Or IsDBNull(objRow(iColumnIndex)) Then
-							fBreak = ("" <> objReportItem.LastValue)
-						Else
-							If objReportItem.IsBitColumn Then	'Bit
-								'UPGRADE_WARNING: Couldn't resolve default property of object vValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-								fBreak = (RTrim(LCase(vValue)) <> RTrim(LCase(objReportItem.LastValue)))
-							Else
-								fBreak = Not (vValue = objReportItem.LastValue)
+					' From last column in the order to first, check changes.
+					For iLoop7 = colSortOrder.Count - 1 To 0 Step -1
+						' Find the column in the details array.
+						iColumnIndex = 0
+						iLoop2 = 1
+						For Each objReportItem In ColumnDetails
+							If (objReportItem.ID = colSortOrder.GetByIndex(iLoop7).ColExprID) And (objReportItem.Type = "C") Then
+								iColumnIndex = iLoop2 - 1
+								Exit For
 							End If
-						End If
+							iLoop2 += 1
+						Next
 
+						'If iColumnIndex > 0 Then
 
-						If objReportItem.IsPageOnChange Then
-							sBreakValue = IIf(Len(objReportItem.LastValue) < 1, "<Empty>", objReportItem.LastValue) & IIf(Len(sBreakValue) > 0, " - ", "").ToString() & sBreakValue
-						End If
+						If colColumns.GetByIndex(iColumnIndex).BreakOrPageOnChange Then
+							fBreak = False
 
-						If Not fBreak Then
-							' The value has not changed, but check if we need to do the summary due to another column changing.
-							For iLoop2 = iLoop7 - 1 To 0 Step -1
-								iOtherColumnIndex = 0
-								For Each objItem In ColumnDetails
-									If objItem.ID = colSortOrder.GetByIndex(iLoop2).ColExprID And objItem.Type = "C" Then
-										otherColumnDetail = objItem
-										Exit For
-									End If
-									iOtherColumnIndex += 1
-								Next
+							objReportItem = ColumnDetails.GetByIndex(iColumnIndex)
 
-								If Not otherColumnDetail Is Nothing Then
-									If colColumns.GetByIndex(iOtherColumnIndex).BreakOrPageOnChange Then
-										' The column breaks. Check if its changed.
-										If IsDBNull(objRow(iOtherColumnIndex)) And (Not otherColumnDetail.IsNumeric) And (Not otherColumnDetail.IsDateColumn) And (Not otherColumnDetail.IsBitColumn) Then
-											' Field value is null but a character data type, so set it to be "".
-											vValue = ""
+							' The column breaks. Check if its changed.
+							vValue = PopulateGrid_FormatData(objReportItem, objRow(iColumnIndex), False, False)
 
-										ElseIf otherColumnDetail.IsNumeric Then	'Numeric
-											If IsDBNull(objRow(iOtherColumnIndex)) Then
-												vValue = "0"
-											Else
-												vValue = Left(objRow(iOtherColumnIndex), otherColumnDetail.Size)
-											End If
-
-
-										ElseIf otherColumnDetail.IsBitColumn Then	 'Bit
-											If IsDBNull(objRow(iOtherColumnIndex)) Then
-												vValue = ""
-											Else
-												If (objRow(iOtherColumnIndex) = True) Or (objRow(iOtherColumnIndex) = 1) Then vValue = "Y"
-												If (objRow(iOtherColumnIndex) = False) Or (objRow(iOtherColumnIndex) = 0) Then vValue = "N"
-											End If
-
-										Else
-											'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(1, iOtherColumnIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-											'UPGRADE_WARNING: Couldn't resolve default property of object vValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-											vValue = Left(objRow(iOtherColumnIndex).ToString(), otherColumnDetail.Size)
-
-									End If
-
-										'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-										If IsDBNull(vValue) Or IsDBNull(objRow(iOtherColumnIndex)) Then
-											fBreak = ("" <> otherColumnDetail.LastValue)
-										Else
-											If otherColumnDetail.IsBitColumn Then	'Bit
-												'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-												'UPGRADE_WARNING: Couldn't resolve default property of object vValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-												fBreak = (RTrim(LCase(vValue)) <> RTrim(LCase(otherColumnDetail.LastValue)))
-											Else
-												'TM23112004 Fault 9072
-												'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-												fBreak = (RTrim(LCase(objRow(iOtherColumnIndex))) <> RTrim(LCase(otherColumnDetail.LastValue)))
-											End If
-										End If
-
-										If (fBreak = True) Then
-											Exit For
-										End If
-									End If
+							'Now that we store the formatted value in position (11) of the mcolDetails
+							'Comparison made after adjusting the size of the field.
+							'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
+							If IsDBNull(vValue) Or IsDBNull(objRow(iColumnIndex)) Then
+								fBreak = ("" <> objReportItem.LastValue)
+							Else
+								If objReportItem.IsBitColumn Then	'Bit
+									'UPGRADE_WARNING: Couldn't resolve default property of object vValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+									fBreak = (RTrim(LCase(vValue)) <> RTrim(LCase(objReportItem.LastValue)))
+								Else
+									fBreak = Not (vValue = objReportItem.LastValue)
 								End If
-							Next iLoop2
-						End If
+							End If
 
-						' RH 09/02/01 - Report was doing summary info even when no aggregate was
-						'               selected for the column, so check for aggregate too, and only
-						'               do summary info if its true.
-						If fBreak Then
-							PopulateGrid_DoSummaryInfo(colColumns, iColumnIndex, iLoop7)
-
-							' Do the page break ?
 
 							If objReportItem.IsPageOnChange Then
-								mblnPageBreak = True
-								mblnReportHasPageBreak = True
+								sBreakValue = IIf(Len(objReportItem.LastValue) < 1, "<Empty>", objReportItem.LastValue) & IIf(Len(sBreakValue) > 0, " - ", "").ToString() & sBreakValue
+							End If
+
+							If Not fBreak Then
+								' The value has not changed, but check if we need to do the summary due to another column changing.
+								For iLoop2 = iLoop7 - 1 To 0 Step -1
+									iOtherColumnIndex = 0
+									For Each objItem In ColumnDetails
+										If objItem.ID = colSortOrder.GetByIndex(iLoop2).ColExprID And objItem.Type = "C" Then
+											otherColumnDetail = objItem
+											Exit For
+										End If
+										iOtherColumnIndex += 1
+									Next
+
+									If Not otherColumnDetail Is Nothing Then
+										If colColumns.GetByIndex(iOtherColumnIndex).BreakOrPageOnChange Then
+											' The column breaks. Check if its changed.
+											If IsDBNull(objRow(iOtherColumnIndex)) And (Not otherColumnDetail.IsNumeric) And (Not otherColumnDetail.IsDateColumn) And (Not otherColumnDetail.IsBitColumn) Then
+												' Field value is null but a character data type, so set it to be "".
+												vValue = ""
+
+											ElseIf otherColumnDetail.IsNumeric Then	'Numeric
+												If IsDBNull(objRow(iOtherColumnIndex)) Then
+													vValue = "0"
+												Else
+													vValue = Left(objRow(iOtherColumnIndex), otherColumnDetail.Size)
+												End If
+
+
+											ElseIf otherColumnDetail.IsBitColumn Then	 'Bit
+												If IsDBNull(objRow(iOtherColumnIndex)) Then
+													vValue = ""
+												Else
+													If (objRow(iOtherColumnIndex) = True) Or (objRow(iOtherColumnIndex) = 1) Then vValue = "Y"
+													If (objRow(iOtherColumnIndex) = False) Or (objRow(iOtherColumnIndex) = 0) Then vValue = "N"
+												End If
+
+											Else
+												'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(1, iOtherColumnIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+												'UPGRADE_WARNING: Couldn't resolve default property of object vValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+												vValue = Left(objRow(iOtherColumnIndex).ToString(), otherColumnDetail.Size)
+
+											End If
+
+											'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
+											If IsDBNull(vValue) Or IsDBNull(objRow(iOtherColumnIndex)) Then
+												fBreak = ("" <> otherColumnDetail.LastValue)
+											Else
+												If otherColumnDetail.IsBitColumn Then	'Bit
+													'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+													'UPGRADE_WARNING: Couldn't resolve default property of object vValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+													fBreak = (RTrim(LCase(vValue)) <> RTrim(LCase(otherColumnDetail.LastValue)))
+												Else
+													'TM23112004 Fault 9072
+													'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+													fBreak = (RTrim(LCase(objRow(iOtherColumnIndex))) <> RTrim(LCase(otherColumnDetail.LastValue)))
+												End If
+											End If
+
+											If (fBreak = True) Then
+												Exit For
+											End If
+										End If
+									End If
+								Next iLoop2
+							End If
+
+							' RH 09/02/01 - Report was doing summary info even when no aggregate was
+							'               selected for the column, so check for aggregate too, and only
+							'               do summary info if its true.
+							If fBreak Then
+								PopulateGrid_DoSummaryInfo(colColumns, iColumnIndex, iLoop7)
+
+								' Do the page break ?
+
+								If objReportItem.IsPageOnChange Then
+									mblnPageBreak = True
+									mblnReportHasPageBreak = True
+								End If
 							End If
 						End If
-					End If
-					'End If
-				Next
-			End If
-
-
-			If mblnPageBreak Then
-				NEW_AddToArray_Data(RowType.Data, "*")
-
-				mintPageBreakRowIndex = mintPageBreakRowIndex + 1
-				AddPageBreakValue(mintPageBreakRowIndex - 1, sBreakValue)
-			End If
-			mblnPageBreak = False
-			sBreakValue = vbNullString
-
-			intColCounter = 1
-			' Loop thru each field, adding to the string to add to the grid
-			For iLoop = 0 To (mrstCustomReportsOutput.Columns.Count - 1)
-
-				intColCounter = intColCounter + 1
-				isHiddenColumn = (mrstCustomReportsOutput.Columns(iLoop).ColumnName.Substring(0, 1) = "?")		' there should be a cleaner way of deciding if this is an ID column, but would need more bigger changes. This will have to do for the moment. Sorry
-
-				' yet another hack beacsue this is an over complex array instead of an easily modifyable class
-				If mbIsBradfordIndexReport And iLoop > 12 Then
-					isHiddenColumn = True
+						'End If
+					Next
 				End If
 
-				Dim objSkippedItem As ReportDetailItem = ColumnDetails.GetByIndex(intSkippedIndex + 1)
 
-				If Not iLoop = (mrstCustomReportsOutput.Columns.Count - 1) Then
-					objNextItem = ColumnDetails.GetByIndex(iLoop)
+				If mblnPageBreak Then
+					NEW_AddToArray_Data(RowType.Data, "*")
 
-					' Only suppress values for new records in the Bradford Factor report
-					bSuppress = IIf(mbIsBradfordIndexReport And fBreak, False, True)
+					mintPageBreakRowIndex = mintPageBreakRowIndex + 1
+					AddPageBreakValue(mintPageBreakRowIndex - 1, sBreakValue)
+				End If
+				mblnPageBreak = False
+				sBreakValue = vbNullString
 
-					If objNextItem.IsBitColumn Then	 'Bit
-						'UPGRADE_WARNING: Couldn't resolve default property of object tmpLogicValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						If IsDBNull(objRow(iLoop)) Then
-							vDisplayData = ""
-						Else
-							'UPGRADE_WARNING: Couldn't resolve default property of object tmpLogicValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-							If (objRow(iLoop) = "True") Or (objRow(iLoop) = 1) Then vDisplayData = "Y"
-							'UPGRADE_WARNING: Couldn't resolve default property of object tmpLogicValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-							If (objRow(iLoop) = "False") Or (objRow(iLoop) = 0) Then vDisplayData = "N"
-						End If
+				intColCounter = 1
+				' Loop thru each field, adding to the string to add to the grid
+				For iLoop = 0 To (mrstCustomReportsOutput.Columns.Count - 1)
 
-					Else
-						' Get the formatted data to display in the grid
-						'UPGRADE_WARNING: Couldn't resolve default property of object PopulateGrid_FormatData(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						'UPGRADE_WARNING: Couldn't resolve default property of object vDisplayData. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						vDisplayData = PopulateGrid_FormatData(objNextItem, objRow(iLoop), bSuppress, bBaseRecordChanged)
+					intColCounter = intColCounter + 1
+					isHiddenColumn = (mrstCustomReportsOutput.Columns(iLoop).ColumnName.Substring(0, 1) = "?")		' there should be a cleaner way of deciding if this is an ID column, but would need more bigger changes. This will have to do for the moment. Sorry
+
+					' yet another hack beacsue this is an over complex array instead of an easily modifyable class
+					If mbIsBradfordIndexReport And iLoop > 12 Then
+						isHiddenColumn = True
 					End If
 
-					If blnSkipped Then
-						' Store the ACTUAL data in the array (previous value dimension)
-						'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-						If IsDBNull(objRow(intSkippedIndex)) And (Not objSkippedItem.IsNumeric) And (Not objSkippedItem.IsDateColumn) And (Not objSkippedItem.IsBitColumn) Then
-							' Field value is null but a character data type, so set it to be "".
-							objSkippedItem.LastValue = ""
+					Dim objSkippedItem As ReportDetailItem = ColumnDetails.GetByIndex(intSkippedIndex + 1)
 
-						Else
-							'TM17052005 Fault 10086 - Need to store diffent values depending on the type.
-							If objSkippedItem.IsDateColumn Then	'Date
-								objSkippedItem.LastValue = VB6.Format(objRow(intSkippedIndex), DateFormat)
+					If Not iLoop = (mrstCustomReportsOutput.Columns.Count - 1) Then
+						objNextItem = ColumnDetails.GetByIndex(iLoop)
 
-							ElseIf objSkippedItem.IsNumeric Then	'Numeric
-								'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-								objSkippedItem.LastValue = IIf(IsDBNull(objRow(intSkippedIndex)), "", objRow(intSkippedIndex))
+						' Only suppress values for new records in the Bradford Factor report
+						bSuppress = IIf(mbIsBradfordIndexReport And fBreak, False, True)
 
-							ElseIf (objSkippedItem.IsBitColumn) Then	 'Bit
-								If (objRow(intSkippedIndex) = "True") Or (objRow(intSkippedIndex) = 1) Then objSkippedItem.LastValue = "Y"
-								If (objRow(intSkippedIndex) = "False") Or (objRow(intSkippedIndex) = 0) Then objSkippedItem.LastValue = "N"
-								'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-								If IsDBNull(objRow(intSkippedIndex)) Then objSkippedItem.LastValue = ""
-
-							Else 'Varchar
-								objSkippedItem.LastValue = objRow(intSkippedIndex)
+						If objNextItem.IsBitColumn Then	 'Bit
+							'UPGRADE_WARNING: Couldn't resolve default property of object tmpLogicValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+							If IsDBNull(objRow(iLoop)) Then
+								vDisplayData = ""
+							Else
+								If (objRow(iLoop) = "True") Or (objRow(iLoop) = 1) Then vDisplayData = "Y"
+								If (objRow(iLoop) = "False") Or (objRow(iLoop) = 0) Then vDisplayData = "N"
 							End If
 
+						Else
+							' Get the formatted data to display in the grid
+							vDisplayData = PopulateGrid_FormatData(objNextItem, objRow(iLoop), bSuppress, bBaseRecordChanged)
 						End If
 
-					Else
-						' Store the ACTUAL data in the array (previous value dimension)
-						'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-						If IsDBNull(objRow(iLoop)) And (Not objNextItem.IsNumeric) And (Not objNextItem.IsDateColumn) And (Not objNextItem.IsBitColumn) Then
-							' Field value is null but a character data type, so set it to be "".
-							objNextItem.LastValue = ""
-						Else
+						If blnSkipped Then
+							' Store the ACTUAL data in the array (previous value dimension)
+							'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
+							If IsDBNull(objRow(intSkippedIndex)) And (Not objSkippedItem.IsNumeric) And (Not objSkippedItem.IsDateColumn) And (Not objSkippedItem.IsBitColumn) Then
+								' Field value is null but a character data type, so set it to be "".
+								objSkippedItem.LastValue = ""
 
-							'TM17052005 Fault 10086 - Need to store diffent values depending on the type.
-							If objNextItem.IsDateColumn Then	'Date
-								objNextItem.LastValue = VB6.Format(objRow(iLoop), DateFormat)
+							Else
+								'TM17052005 Fault 10086 - Need to store diffent values depending on the type.
+								If objSkippedItem.IsDateColumn Then	'Date
+									objSkippedItem.LastValue = DateToString(objRow(intSkippedIndex), RegionalSettings)
 
-							ElseIf objNextItem.IsNumeric Then	'Numeric
-								objNextItem.LastValue = IIf(IsDBNull(objRow(iLoop)), "", objRow(iLoop))
+								ElseIf objSkippedItem.IsNumeric Then	'Numeric
+									'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
+									objSkippedItem.LastValue = IIf(IsDBNull(objRow(intSkippedIndex)), "", objRow(intSkippedIndex))
 
-							ElseIf objNextItem.IsBitColumn Then	 'Bit
-								If IsDBNull(objRow(iLoop)) Then
-									objNextItem.LastValue = ""
-								Else
-									If (objRow(iLoop) = "True") Or (objRow(iLoop) = 1) Then objNextItem.LastValue = "Y"
-									If (objRow(iLoop) = "False") Or (objRow(iLoop) = 0) Then objNextItem.LastValue = "N"
+								ElseIf (objSkippedItem.IsBitColumn) Then	 'Bit
+									If (objRow(intSkippedIndex) = "True") Or (objRow(intSkippedIndex) = 1) Then objSkippedItem.LastValue = "Y"
+									If (objRow(intSkippedIndex) = "False") Or (objRow(intSkippedIndex) = 0) Then objSkippedItem.LastValue = "N"
+									'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
+									If IsDBNull(objRow(intSkippedIndex)) Then objSkippedItem.LastValue = ""
+
+								Else 'Varchar
+									objSkippedItem.LastValue = objRow(intSkippedIndex)
 								End If
 
-							Else 'Varchar
-								objNextItem.LastValue = objRow(iLoop)
+							End If
+
+						Else
+							' Store the ACTUAL data in the array (previous value dimension)
+							'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
+							If IsDBNull(objRow(iLoop)) And (Not objNextItem.IsNumeric) And (Not objNextItem.IsDateColumn) And (Not objNextItem.IsBitColumn) Then
+								' Field value is null but a character data type, so set it to be "".
+								objNextItem.LastValue = ""
+							Else
+
+								'TM17052005 Fault 10086 - Need to store diffent values depending on the type.
+								If objNextItem.IsDateColumn Then	'Date
+									objNextItem.LastValue = DateToString(objRow(iLoop).ToString(), RegionalSettings)
+
+								ElseIf objNextItem.IsNumeric Then	'Numeric
+									objNextItem.LastValue = IIf(IsDBNull(objRow(iLoop)), "", objRow(iLoop))
+
+								ElseIf objNextItem.IsBitColumn Then	 'Bit
+									If IsDBNull(objRow(iLoop)) Then
+										objNextItem.LastValue = ""
+									Else
+										If (objRow(iLoop) = "True") Or (objRow(iLoop) = 1) Then objNextItem.LastValue = "Y"
+										If (objRow(iLoop) = "False") Or (objRow(iLoop) = 0) Then objNextItem.LastValue = "N"
+									End If
+
+								Else 'Varchar
+									objNextItem.LastValue = objRow(iLoop).ToString()
+								End If
 							End If
 						End If
+
+						' Group with next column
+						If (objNextItem.GroupWithNextColumn And (Not objNextItem.IsHidden)) Then
+							If Not vDisplayData = "" Then
+								sLastValue = sLastValue & vDisplayData & IIf(Not vDisplayData Is "\n", vbNewLine, "")	' & vbNewLine
+							End If
+
+						Else
+
+							If Not isHiddenColumn Then ' hidden columns at end of recordset (hopefully)
+
+								vDisplayData = sLastValue & vDisplayData
+								aryAddString.Add(vDisplayData)
+								sLastValue = vbNullString
+
+							End If
+
+						End If
 					End If
 
-					' Group with next column
-					If (objNextItem.GroupWithNextColumn And (Not objNextItem.IsHidden)) Then
-						If Not vDisplayData = "" Then
-							sLastValue = sLastValue & vDisplayData & IIf(Not vDisplayData Is "\n", vbNewLine, "")	' & vbNewLine
-						End If
+				Next iLoop
+
+				' Only Add the addstring to the grid if its not a summary report
+				If mblnCustomReportsSummaryReport = False Then
+					If Not NEW_AddToArray_Data(RowType.Data, aryAddString) Then
+
+						Return False
 
 					Else
+						mintPageBreakRowIndex = mintPageBreakRowIndex + 1
 
-						If Not isHiddenColumn Then ' hidden columns at end of recordset (hopefully)
+						If blnHasGroupWithNext Then
+							strGroupString = vbNullString
+							For intGroupCount = 0 To UBound(mvarGroupWith, 2) Step 1
+								'UPGRADE_WARNING: Couldn't resolve default property of object mvarGroupWith(0, intGroupCount). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+								strGroupString = strGroupString & vbNewLine & mvarGroupWith(0, intGroupCount)
 
-							vDisplayData = sLastValue & vDisplayData
-							aryAddString.Add(vDisplayData)
-							sLastValue = vbNullString
+								mintPageBreakRowIndex = mintPageBreakRowIndex + 1
+							Next intGroupCount
+
+							AddToArray_Data(strGroupString, RowType.Data)
 
 						End If
 
 					End If
+				End If
+
+				'Clear the Group Arrays/Variables
+				ReDim mvarGroupWith(1, 0)
+				blnHasGroupWithNext = False
+
+				fNotFirstTime = True
+
+			Next
+
+			mblnPageBreak = False
+
+			' Now do the final summary for the last bit (before the grand summary)
+			' Put the values from the previous record in the column array.
+
+			For Each objReportItem In ColumnDetails
+				colColumns.GetById(objReportItem.ID).LastValue = objReportItem.LastValue
+			Next
+
+
+			Dim objColumnIndex As ReportDetailItem
+
+			' From last column in the order to first, check changes.
+			For iLoop = colSortOrder.Count - 1 To 0 Step -1
+				' Find the column in the details array.
+				iColumnIndex = 0
+				For Each objItem In ColumnDetails
+
+					If objItem.ID = colSortOrder.GetByIndex(iLoop).ColExprID And objItem.Type = "C" Then
+						objColumnIndex = objItem
+						iColumnIndex = iLoop2
+						Exit For
+					End If
+				Next
+
+
+				If objColumnIndex.IsBreakOnChange Or objColumnIndex.IsPageOnChange Then
+
+					If objColumnIndex.IsPageOnChange Then
+						mblnPageBreak = True
+						sBreakValue = IIf(Len(objColumnIndex.LastValue) < 1, "<Empty>", objColumnIndex.LastValue) & IIf(Len(sBreakValue) > 0, " - ", "") & sBreakValue
+					End If
+
+					PopulateGrid_DoSummaryInfo(colColumns, iColumnIndex, iLoop)
 				End If
 
 			Next iLoop
 
-			' Only Add the addstring to the grid if its not a summary report
-			If mblnCustomReportsSummaryReport = False Then
-				If Not NEW_AddToArray_Data(RowType.Data, aryAddString) Then
 
-					Return False
-
-				Else
-					mintPageBreakRowIndex = mintPageBreakRowIndex + 1
-
-					If blnHasGroupWithNext Then
-						strGroupString = vbNullString
-						For intGroupCount = 0 To UBound(mvarGroupWith, 2) Step 1
-							'UPGRADE_WARNING: Couldn't resolve default property of object mvarGroupWith(0, intGroupCount). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-							strGroupString = strGroupString & vbNewLine & mvarGroupWith(0, intGroupCount)
-
-							mintPageBreakRowIndex = mintPageBreakRowIndex + 1
-						Next intGroupCount
-
-						AddToArray_Data(strGroupString, RowType.Data)
-
-					End If
-
-				End If
-			End If
-
-			'Clear the Group Arrays/Variables
-			ReDim mvarGroupWith(1, 0)
-			blnHasGroupWithNext = False
-
-			fNotFirstTime = True
-
-		Next
-
-		mblnPageBreak = False
-
-		' Now do the final summary for the last bit (before the grand summary)
-		' Put the values from the previous record in the column array.
-
-		For Each objReportItem In ColumnDetails
-			colColumns.GetById(objReportItem.ID).LastValue = objReportItem.LastValue
-		Next
-
-
-		Dim objColumnIndex As ReportDetailItem
-
-		' From last column in the order to first, check changes.
-		For iLoop = colSortOrder.Count - 1 To 0 Step -1
-			' Find the column in the details array.
-			iColumnIndex = 0
-			For Each objItem In ColumnDetails
-
-				If objItem.ID = colSortOrder.GetByIndex(iLoop).ColExprID And objItem.Type = "C" Then
-					objColumnIndex = objItem
-					iColumnIndex = iLoop2
-					Exit For
-				End If
-			Next
-
-
-			If objColumnIndex.IsBreakOnChange Or objColumnIndex.IsPageOnChange Then
-
-				If objColumnIndex.IsPageOnChange Then
-					mblnPageBreak = True
-					sBreakValue = IIf(Len(objColumnIndex.LastValue) < 1, "<Empty>", objColumnIndex.LastValue) & IIf(Len(sBreakValue) > 0, " - ", "") & sBreakValue
-				End If
-
-				PopulateGrid_DoSummaryInfo(colColumns, iColumnIndex, iLoop)
-			End If
-
-		Next iLoop
-
-
-		If mblnPageBreak Then
-			mintPageBreakRowIndex = mintPageBreakRowIndex + 1
-			AddPageBreakValue(mintPageBreakRowIndex - 1, sBreakValue)
-		End If
-		sBreakValue = vbNullString
-
-		' Now do the grand summary information
-		If Not mbIsBradfordIndexReport Then
-			PopulateGrid_DoGrandSummary()
-
-			If mblnPageBreak And mblnDoesHaveGrandSummary Then
-				AddPageBreakValue(mintPageBreakRowIndex - 1, sBreakValue)
+			If mblnPageBreak Then
 				mintPageBreakRowIndex = mintPageBreakRowIndex + 1
+				AddPageBreakValue(mintPageBreakRowIndex - 1, sBreakValue)
+			End If
+			sBreakValue = vbNullString
+
+			' Now do the grand summary information
+			If Not mbIsBradfordIndexReport Then
+				PopulateGrid_DoGrandSummary()
+
+				If mblnPageBreak And mblnDoesHaveGrandSummary Then
+					AddPageBreakValue(mintPageBreakRowIndex - 1, sBreakValue)
+					mintPageBreakRowIndex = mintPageBreakRowIndex + 1
+				End If
+
 			End If
 
-		End If
+			If Not NEW_AddToArray_Data(RowType.Data, Nothing) Then
+				Return False
+			End If
 
-		If Not NEW_AddToArray_Data(RowType.Data, Nothing) Then
+
+		Catch ex As Exception
+			mstrErrorString = mstrErrorString & "LOADRECORDS_ERROR (In Dll) - Error in PopulateGrid_LoadRecords." & vbNewLine & ex.Message
+			Logs.AddDetailEntry(mstrErrorString)
+			Logs.ChangeHeaderStatus(EventLog_Status.elsFailed)
 			Return False
-		End If
+
+		End Try
 
 		Return True
-
-LoadRecords_ERROR:
-
-		mstrErrorString = mstrErrorString & "LOADRECORDS_ERROR (In Dll) - Error in PopulateGrid_LoadRecords." & vbNewLine & Err.Number & " - " & Err.Description
-		Logs.AddDetailEntry(mstrErrorString)
-		Logs.ChangeHeaderStatus(EventLog_Status.elsFailed)
-		Return False
 
 	End Function
 
@@ -2957,6 +2955,7 @@ LoadRecords_ERROR:
 		'           in the grid
 		' Input   : None
 		' Output  : True/False
+
 		Dim vOriginalData As String
 
 		If IsDBNull(vData) Then Return ""
@@ -3033,6 +3032,7 @@ LoadRecords_ERROR:
 	End Function
 
 	Private Sub PopulateGrid_DoSummaryInfo(pavColumns As ICollection(Of ReportColumn), piColumnIndex As Integer, piSortIndex As Integer)
+
 
 		Dim fDoValue As Boolean
 		Dim iLoop As Integer

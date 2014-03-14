@@ -286,8 +286,10 @@ Namespace Controllers
 				objServerSession.TrackUser(True)
 
 				' User is allowed into OpenHR, now populate some metadata
+				objServerSession.RegionalSettings = Platform.GetRegionalSettings
 				objDatabase.SessionInfo = objServerSession
 				objServerSession.Initialise()
+
 
 				objDataAccess = New clsDataAccess(objServerSession.LoginInfo)
 				Session("DatabaseFunctions") = objDatabase
