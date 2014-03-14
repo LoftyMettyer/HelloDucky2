@@ -56,6 +56,6 @@
 </table>
 
 <div style="text-align: center;padding-top: 20px">
-<input id="cmdOK" type="button" value="OK" class="btn" name="cmdOK" onclick="closeCalendarEvent();" />
+<input id="cmdCloseEvent" type="button" value="OK" class="btn" name="cmdCloseEvent" onclick="closeCalendarEvent();" />
 	</div>
 
