@@ -81,7 +81,7 @@ Namespace ExClientCode
 			_mblnXlAutoFitCols = gblnSettingAutoFitCols
 			_mblnXlLandscape = gblnSettingLandscape
 
-			_mlngDataStartRow = glngSettingDataRow
+			_mlngDataStartRow = glngSettingDataRow - 1
 			_mlngDataStartCol = glngSettingDataCol
 
 			_mblnSizeColumnsIndependently = False
@@ -234,7 +234,6 @@ Namespace ExClientCode
 					_mstrErrorMessage = "Your User Configuration Output Options are set to use a template file which is not compatible with your version of Microsoft Office."
 					Exit Sub
 				End If
-
 			End If
 
 			_mstrSheetMode = strWorksheet
@@ -360,102 +359,114 @@ Namespace ExClientCode
 			'Disable the numbers stored as text option
 			opt.SetErrorCheck(ErrorCheckType.TextNumber, False)
 
-			' PrepareRows sets the datatype for each column. However, they're overwritten at present - need to rethink.
-			PrepareRows(UBound(strArray, 2), colColumns, colStyles)
+			If _mblnChart Then	' Excel chart?
+				ApplyStyle(UBound(strArray, 1), UBound(strArray, 2), colStyles)
+				ApplyCellOptions(UBound(strArray, 1), colStyles, True)
+
+				CreateChart(_mlngDataCurrentRow + UBound(strArray, 2), _mlngDataStartCol + UBound(strArray, 1), colStyles)
+				ApplyCellOptions(UBound(strArray, 1), colStyles, False)
+
+				'Delete superfluous rows and cols if setup in User Config reports section
+				If _mblnXlExcelOmitLeftCol Then _mxlWorkSheet.Cells.DeleteColumn(0)
+				If _mblnXlExcelOmitTopRow Then _mxlWorkSheet.Cells.DeleteRows(0, 1)
+
+			ElseIf _mblnPivotTable Then
+
+				If UBound(strArray, 1) < 1 Then
+					_mstrErrorMessage = "Unable to create a pivot table for a single column of data."
+				Else
+					ApplyStyle(UBound(strArray, 1), UBound(strArray, 2), colStyles)
+
+					CreatePivotTable(_mlngDataCurrentRow + UBound(strArray, 2), _mlngDataStartCol + UBound(strArray, 1), strArray(0, 0), strArray(1, 0), strArray(UBound(strArray), 0), colStyles, colColumns)
+				End If
+
+			Else
+				If _mblnApplyStyles Then
+					ApplyStyle(UBound(strArray, 1), UBound(strArray, 2), colStyles)
+					ApplyMerges(colMerges)
+				End If
+				ApplyCellOptions(UBound(strArray, 1), colStyles, True)
+
+				'Delete superfluous rows and cols if setup in User Config reports section
+				If _mblnXlExcelOmitLeftCol Then _mxlWorkSheet.Cells.DeleteColumn(0)
+				If _mblnXlExcelOmitTopRow Then _mxlWorkSheet.Cells.DeleteRows(0, 1)
+			End If
+
+			' PrepareRows sets the datatype for each column. 
+			' JIRA HRPRO-3963 calling PrepareRows overwrites all required formatting options.
+			' PrepareRows(UBound(strArray, 2), colColumns, colStyles)
 
 			lngExcelCol = _mlngDataStartCol
 			lngExcelRow = _mlngDataCurrentRow
 
 			For lngGridRow = 0 To UBound(strArray, 2)
 				For lngGridCol = 0 To colColumns.Count - 1
-					
-						With _mxlWorkSheet.Cells(lngExcelRow + lngGridRow - 1, lngExcelCol + lngGridCol - 1)
 
-							Dim stlNumeric As Style = _mxlWorkBook.Styles(_mxlWorkBook.Styles.Add())
-							Dim stlGeneral As Style = _mxlWorkBook.Styles(_mxlWorkBook.Styles.Add())
-							Dim stlDate As Style = _mxlWorkBook.Styles(_mxlWorkBook.Styles.Add())
-							Dim flag As StyleFlag = New StyleFlag()
+					With _mxlWorkSheet.Cells(lngExcelRow + lngGridRow - 1, lngExcelCol + lngGridCol - 1)
 
-							stlNumeric.Number = 4
-							stlGeneral.Number = 49
-							stlDate.Number = 14
+						Dim stlNumeric As Style = .GetStyle()
+						Dim stlGeneral As Style = .GetStyle()
+						Dim stlDate As Style = .GetStyle()
+						Dim flag As StyleFlag = New StyleFlag()
 
+						' Replicate style formats from ActiveX...
+						stlNumeric.Number = 0	' General style
+						stlNumeric.VerticalAlignment = TextAlignmentType.Top
+						stlNumeric.HorizontalAlignment = TextAlignmentType.Right
+						stlGeneral.Number = 49	' Text style		
+						stlGeneral.VerticalAlignment = TextAlignmentType.Top
+						stlGeneral.HorizontalAlignment = TextAlignmentType.Left
+						stlDate.Number = 49	' Text style
+						stlDate.VerticalAlignment = TextAlignmentType.Top
+						stlDate.HorizontalAlignment = TextAlignmentType.Right
+
+						If Not strArray(lngGridCol, lngGridRow) Is Nothing Then
 							Select Case colColumns.Item(lngGridCol).DataType
 
 								Case SQLDataType.sqlNumeric, SQLDataType.sqlInteger
-								.SetStyle(stlNumeric)
-								.PutValue(strArray(lngGridCol, lngGridRow))
-							Case SQLDataType.sqlBoolean
-								.SetStyle(stlGeneral)
-								.PutValue(strArray(lngGridCol, lngGridRow))
-							Case SQLDataType.sqlUnknown
-								'Leave it alone! (Required for percentages on Standard Reports)
-								.SetStyle(stlGeneral)
-								.PutValue(strArray(lngGridCol, lngGridRow))
-							Case SQLDataType.sqlDate
-								.SetStyle(stlDate)
-								'MH20050104 Fault 9695 & 9696
-								'Adding ;@ to the end formats it as "short date" so excel will look at the
-								'regional settings when opening the workbook rather than force it to always
-								'be in the format of the user who created the workbook.
-								.PutValue(strArray(lngGridCol, lngGridRow))
-							Case Else
-								.SetStyle(stlGeneral)
-								.PutValue(strArray(lngGridCol, lngGridRow))
-						End Select
+									.SetStyle(stlNumeric)
+									.PutValue(strArray(lngGridCol, lngGridRow))
+								Case SQLDataType.sqlBoolean
+									.SetStyle(stlGeneral)
+									.PutValue(strArray(lngGridCol, lngGridRow))
+								Case SQLDataType.sqlUnknown
+									'Leave it alone! (Required for percentages on Standard Reports)
+									.SetStyle(stlGeneral)
+									.PutValue(strArray(lngGridCol, lngGridRow))
+								Case SQLDataType.sqlDate
+									.SetStyle(stlDate)
+									'MH20050104 Fault 9695 & 9696
+									'Adding ;@ to the end formats it as "short date" so excel will look at the
+									'regional settings when opening the workbook rather than force it to always
+									'be in the format of the user who created the workbook.
+									.PutValue(strArray(lngGridCol, lngGridRow))
+								Case Else
+									Dim strValue As String = strArray(lngGridCol, lngGridRow).TrimEnd()
+									' If lngGridRow = 0 Then strValue = strValue.Replace("_", " ")
+									If InStr(strValue, vbNewLine) > 0 Then stlGeneral.IsTextWrapped = True
+									.SetStyle(stlGeneral)
+									.PutValue(strArray(lngGridCol, lngGridRow).Replace(vbNewLine, Microsoft.VisualBasic.Constants.vbLf))
+							End Select
+						End If
 
-
-							'MH20031113 Fault 7602
-							' .Value = IIf(Left(strArray(lngGridCol, lngGridRow), 1) = "'", "'", vbNullString) & strArray(lngGridCol, lngGridRow)
-							'If lngGridRow < mlngHeaderRows Then
-							'  .HorizontalAlignment = xlCenter
-							'End If
-						End With
-					Next
+						'MH20031113 Fault 7602
+						' .Value = IIf(Left(strArray(lngGridCol, lngGridRow), 1) = "'", "'", vbNullString) & strArray(lngGridCol, lngGridRow)
+						'If lngGridRow < mlngHeaderRows Then
+						'  .HorizontalAlignment = xlCenter
+						'End If
+					End With
 				Next
+			Next
 
-				If _mblnChart Then
-					ApplyStyle(UBound(strArray, 1), UBound(strArray, 2), colStyles)
-					ApplyCellOptions(UBound(strArray, 1), colStyles, True)
+			If _mblnXlAutoFitCols Then
+				_mxlWorkSheet.AutoFitColumns()
+			End If
 
-					CreateChart(_mlngDataCurrentRow + UBound(strArray, 2), _mlngDataStartCol + UBound(strArray, 1), colStyles)
-					ApplyCellOptions(UBound(strArray, 1), colStyles, False)
-
-					'Delete superfluous rows and cols if setup in User Config reports section
-					If _mblnXlExcelOmitLeftCol Then _mxlWorkSheet.Cells.DeleteColumn(0)
-					If _mblnXlExcelOmitTopRow Then _mxlWorkSheet.Cells.DeleteRows(0, 1)
-
-				ElseIf _mblnPivotTable Then
-
-					If UBound(strArray, 1) < 1 Then
-						_mstrErrorMessage = "Unable to create a pivot table for a single column of data."
-					Else
-						ApplyStyle(UBound(strArray, 1), UBound(strArray, 2), colStyles)
-
-						CreatePivotTable(_mlngDataCurrentRow + UBound(strArray, 2), _mlngDataStartCol + UBound(strArray, 1), strArray(0, 0), strArray(1, 0), strArray(UBound(strArray), 0), colStyles, colColumns)
-					End If
-
-				Else
-					If _mblnApplyStyles Then
-						ApplyStyle(UBound(strArray, 1), UBound(strArray, 2), colStyles)
-						ApplyMerges(colMerges)
-					End If
-					ApplyCellOptions(UBound(strArray, 1), colStyles, True)
-
-					'Delete superfluous rows and cols if setup in User Config reports section
-					If _mblnXlExcelOmitLeftCol Then _mxlWorkSheet.Cells.DeleteColumn(0)
-					If _mblnXlExcelOmitTopRow Then _mxlWorkSheet.Cells.DeleteRows(0, 1)
-
-				End If
-
-				_mlngDataCurrentRow = _mlngDataCurrentRow + UBound(strArray, 2) + IIf(_mblnApplyStyles, 2, 1)
+			_mlngDataCurrentRow = _mlngDataCurrentRow + UBound(strArray, 2) + IIf(_mblnApplyStyles, 2, 1)
 
 		End Sub
 
 		Private Sub CreateChart(ByRef lngMaxRows As Integer, ByRef lngMaxCols As Integer, ByRef colStyles As Collection)
-
-
-
 			Dim strSheetName As String
 
 			On Error GoTo LocalErr
@@ -480,7 +491,6 @@ Namespace ExClientCode
 			xlCategories.Name = "xlCategories"
 			xlData = _mxlWorkSheet.Cells.CreateRange(dataFirstRow, dataFirstCol + dataColumnCount, dataRowCount, 1)
 			xlData.Name = "xlData"
-
 
 			' xlChart = mxlApp.Charts.Add(After:=mxlWorkSheet)
 
@@ -513,16 +523,11 @@ Namespace ExClientCode
 				.Title.Font.Color = ColorTranslator.FromWin32(colStyles.Item("Title").ForeCol)
 			End With
 
-
 			' SetSheetName((mxlWorkBook.ActiveChart), strSheetName)
-
-
 			' SetSheetName(_mxlWorkSheet, strSheetName)
 			'If mxlFirstSheet Is Nothing Then
 			'	mxlFirstSheet = mxlWorkBook.ActiveChart
 			'End If
-
-
 			Exit Sub
 
 LocalErr:
@@ -575,69 +580,69 @@ LocalErr:
 		End Sub
 
 
-		Private Sub PrepareRows(lngRowCount As Integer, ByRef colColumns As List(Of Metadata.Column), ByRef colStyles As Collection)
+		'		Private Sub PrepareRows(lngRowCount As Integer, ByRef colColumns As List(Of Metadata.Column), ByRef colStyles As Collection)
 
-			Dim objColumn As Metadata.Column
-			Dim lngCount As Integer = 0
+		'			Dim objColumn As Metadata.Column
+		'			Dim lngCount As Integer = 0
 
-			On Error GoTo LocalErr
+		'			On Error GoTo LocalErr
 
-			With _mxlWorkSheet
+		'			With _mxlWorkSheet
 
-				If _mlngHeaderRows > 0 Then
-					' Define style for header row and apply it.
-					Dim stlHeaderRow As Style = _mxlWorkBook.Styles(_mxlWorkBook.Styles.Add())
-					stlHeaderRow.Custom = "@"
-					Dim range As Range = _mxlWorkSheet.Cells.CreateRange(_mlngDataCurrentRow - 1, _mlngDataStartCol - 1, _mlngHeaderRows, colColumns.Count())
-					'Name the range.
-					range.Name = "HeaderRange"
-					range.SetStyle(stlHeaderRow)
-				End If
+		'				'If _mlngHeaderRows > 0 Then
+		'				'	' Define style for header row and apply it.
+		'				'	Dim stlHeaderRow As Style = _mxlWorkBook.Styles(_mxlWorkBook.Styles.Add())
+		'				'	stlHeaderRow.Custom = "@"
+		'				'	Dim range As Range = _mxlWorkSheet.Cells.CreateRange(_mlngDataCurrentRow - 1, _mlngDataStartCol - 1, _mlngHeaderRows, colColumns.Count())
+		'				'	'Name the range.
+		'				'	range.Name = "HeaderRange"
+		'				'	range.SetStyle(stlHeaderRow)
+		'				'End If
 
-				Dim stlColumnStyleTmp As Style = _mxlWorkBook.Styles(_mxlWorkBook.Styles.Add())
+		'				Dim stlColumnStyleTmp As Style = _mxlWorkBook.Styles(_mxlWorkBook.Styles.Add())
 
-				For Each objColumn In colColumns
+		'				For Each objColumn In colColumns
 
-					Dim columnRange As Range = _mxlWorkSheet.Cells.CreateRange(_mlngDataCurrentRow + _mlngHeaderRows - 1, _mlngDataStartCol - 1 + lngCount, _mlngDataCurrentRow + lngRowCount, 1)
-					Select Case objColumn.DataType
-						Case SQLDataType.sqlNumeric, SQLDataType.sqlInteger
-							If objColumn.Decimals > 0 Then
-								If objColumn.Decimals > 100 Then objColumn.Decimals = 100
-								' .NumberFormat = IIf(objColumn.ThousandSeparator, "#,##0", "0") & IIf(objColumn.DecPlaces, "." & New String("0", objColumn.DecPlaces), "")
-								stlColumnStyleTmp.Custom = IIf(objColumn.Use1000Separator, "#,##0", "0") & IIf(objColumn.Decimals, "." & New String("0", objColumn.Decimals), "")
-								' 								stlColumnStyleTmp.Number = 4
-							Else
-								stlColumnStyleTmp.Custom = "@"
-							End If
-						Case SQLDataType.sqlBoolean
-							' .HorizontalAlignment = TextAlignmentType.Center
-							stlColumnStyleTmp.Custom = "@"
-						Case SQLDataType.sqlUnknown
-							'Leave it alone! (Required for percentages on Standard Reports)
-							stlColumnStyleTmp.Custom = "@"
-						Case SQLDataType.sqlDate
-							'MH20050104 Fault 9695 & 9696
-							'Adding ;@ to the end formats it as "short date" so excel will look at the
-							'regional settings when opening the workbook rather than force it to always
-							'be in the format of the user who created the workbook.
-							stlColumnStyleTmp.Custom = DateFormat() & ";@"
-						Case Else
-							stlColumnStyleTmp.Custom = "@"
-					End Select
+		'					Dim columnRange As Range = _mxlWorkSheet.Cells.CreateRange(_mlngDataCurrentRow + _mlngHeaderRows - 1, _mlngDataStartCol - 1 + lngCount, _mlngDataCurrentRow + lngRowCount, 1)
+		'					Select Case objColumn.DataType
+		'						Case SQLDataType.sqlNumeric, SQLDataType.sqlInteger
+		'							If objColumn.Decimals > 0 Then
+		'								If objColumn.Decimals > 100 Then objColumn.Decimals = 100
+		'								' .NumberFormat = IIf(objColumn.ThousandSeparator, "#,##0", "0") & IIf(objColumn.DecPlaces, "." & New String("0", objColumn.DecPlaces), "")
+		'								stlColumnStyleTmp.Custom = IIf(objColumn.Use1000Separator, "#,##0", "0") & IIf(objColumn.Decimals, "." & New String("0", objColumn.Decimals), "")
+		'								' 								stlColumnStyleTmp.Number = 4
+		'							Else
+		'								stlColumnStyleTmp.Custom = "@"
+		'							End If
+		'						Case SQLDataType.sqlBoolean
+		'							' .HorizontalAlignment = TextAlignmentType.Center
+		'							stlColumnStyleTmp.Custom = "@"
+		'						Case SQLDataType.sqlUnknown
+		'							'Leave it alone! (Required for percentages on Standard Reports)
+		'							stlColumnStyleTmp.Custom = "@"
+		'						Case SQLDataType.sqlDate
+		'							'MH20050104 Fault 9695 & 9696
+		'							'Adding ;@ to the end formats it as "short date" so excel will look at the
+		'							'regional settings when opening the workbook rather than force it to always
+		'							'be in the format of the user who created the workbook.
+		'							stlColumnStyleTmp.Custom = DateFormat() & ";@"
+		'						Case Else
+		'							stlColumnStyleTmp.Custom = "@"
+		'					End Select
 
-					' Apply style.
-					columnRange.SetStyle(stlColumnStyleTmp)
+		'					' Apply style.
+		'					'columnRange.SetStyle(stlColumnStyleTmp)
 
-				Next
+		'				Next
 
-			End With
+		'			End With
 
-			Exit Sub
+		'			Exit Sub
 
-LocalErr:
-			_mstrErrorMessage = Err.Description
+		'LocalErr:
+		'			_mstrErrorMessage = Err.Description
 
-		End Sub
+		'		End Sub
 
 
 		Private Sub ApplyCellOptions(ByRef lngColCount As Integer, ByRef colStyles As Collection, ByRef blnGridLines As Boolean)
@@ -653,7 +658,7 @@ LocalErr:
 
 			If _mblnXlAutoFitCols Then
 				' mxlWorkSheet.Range(mxlWorkSheet.Cells._Default(mlngDataCurrentRow, mlngDataStartCol), mxlWorkSheet.Cells._Default(mlngDataCurrentRow, mlngDataStartCol + lngColCount)).EntireColumn.AutoFit()
-				_mxlWorkSheet.AutoFitColumns()
+				'_mxlWorkSheet.AutoFitColumns()
 
 				' TODO: NOt required?
 				'If Not mblnSizeColumnsIndependently Then
@@ -784,7 +789,7 @@ LocalErr:
 						Dim totalRows = (objStyle.EndRow + lngRow) - (objStyle.StartRow + lngRow - 1)
 						Dim totalCols = (objStyle.EndCol + lngCol) - (objStyle.StartCol + lngCol - 1)
 
-						objRange = _mxlWorkSheet.Cells.CreateRange(objStyle.StartRow + lngRow - 1, objStyle.StartCol + lngCol - 1, totalRows, totalCols)
+						objRange = _mxlWorkSheet.Cells.CreateRange(objStyle.StartRow + (lngRow - 1), objStyle.StartCol + lngCol - 1, totalRows, totalCols)
 						ApplyStyleToRange(objRange, objStyle)
 					End If
 				End If
@@ -849,6 +854,7 @@ LocalErr:
 
 				'Don't do the backcol nor gridlines for the title...
 				If objStyle.Name <> "Title" Then
+					' We use foregroundColor for the background...
 					rangeStyle.ForegroundColor = ColorTranslator.FromWin32(objStyle.BackCol)
 					rangeStyle.Pattern = BackgroundType.Solid
 
