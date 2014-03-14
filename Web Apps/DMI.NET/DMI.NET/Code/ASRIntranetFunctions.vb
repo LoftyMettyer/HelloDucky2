@@ -286,7 +286,7 @@ Public Module ASRIntranetFunctions
 
 		For Each objRow As DataRow In objCalendar.Events.Rows
 
-			sEventDescription = objRow("eventdescription1").ToString() & objRow("eventdescription2").ToString()
+			sEventDescription = objRow("eventdescription1").ToString() & " " & objRow("eventdescription2").ToString()
 
 			If sEventDescription = "" Then
 				sEventDescription = objRow(0).ToString()
