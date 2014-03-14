@@ -296,13 +296,13 @@ ElseIf Session("utiltype") = "16" Then
 	<%
 Else
 	%>
-	$("#cmdOutput").button({ disabled: true });
-	$("#cmdPrint").button({ disabled: true });
-	if ($("#grdReport").length > 0) {
-		$("#cmdPrint").button({ disabled: false });
-		$("#cmdOutput").button({ disabled: false });
-	};
+	
+	$("#cmdPrint").button({ disabled: false });
 
+	if ($("#grdReport").length > 0) {
+		$("#cmdOutput").button({ disabled: false });
+	}
+	
 	$(".popup").dialog({
 		width: 810,
 		height: 720,
@@ -316,6 +316,13 @@ Else
 	<%
 End If
 	%>
+
+	if ($('#txtNoRecs').val() == "1") {
+		$("#cmdPrint").hide();
+		$("#cmdOutput").hide();
+		$("#cmdCancel").hide();
+	}
+
 
 	$(".popup").dialog("option", "position", ['center', 'center']); //Center popup in screen
 
