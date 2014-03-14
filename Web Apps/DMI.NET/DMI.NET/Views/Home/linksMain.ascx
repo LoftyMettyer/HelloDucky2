@@ -1663,7 +1663,9 @@
 					"Close": function () {
 						$(this).dialog("close");
 					}
-				}				
+			},
+			minHeight: 300,
+			minWidth: 300
 		});		
 	}
 	
