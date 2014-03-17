@@ -1,15 +1,21 @@
 Option Strict Off
 Option Explicit On
 
+Imports HR.Intranet.Server.BaseClasses
 Imports HR.Intranet.Server.Metadata
+Imports System.Collections.ObjectModel
 
 Namespace ModuleSpecifics
 
 	Friend Class modAbsenceSpecifics
+		Inherits BaseModuleSpecific
+
+		Public Sub New(value As SessionInfo)
+			MyBase.New(value)
+		End Sub
 
 		' Module parameters.
 		Public gfAbsenceEnabled As Boolean
-
 
 		' Absence Stuff
 		Public glngAbsenceTableID As Integer
@@ -67,105 +73,105 @@ Namespace ModuleSpecifics
 			' Read the Absence module parameters from the database.
 			glngAbsenceTableID = Val(GetModuleParameter(gsMODULEKEY_ABSENCE, gsPARAMETERKEY_ABSENCETABLE))
 			If glngAbsenceTableID > 0 Then
-				gsAbsenceTableName = datGeneral.GetTableName(glngAbsenceTableID)
+				gsAbsenceTableName = _tables.GetById(glngAbsenceTableID).Name
 			Else
 				gsAbsenceTableName = ""
 			End If
 
 			glngAbsenceTypeTableID = Val(GetModuleParameter(gsMODULEKEY_ABSENCE, gsPARAMETERKEY_ABSENCETYPETABLE))
 			If glngAbsenceTypeTableID > 0 Then
-				gsAbsenceTypeTableName = datGeneral.GetTableName(glngAbsenceTypeTableID)
+				gsAbsenceTypeTableName = _tables.GetById(glngAbsenceTypeTableID).Name
 			Else
 				gsAbsenceTypeTableName = ""
 			End If
 
 			mvar_lngAbsenceStartDateID = Val(GetModuleParameter(gsMODULEKEY_ABSENCE, gsPARAMETERKEY_ABSENCESTARTDATE))
 			If mvar_lngAbsenceStartDateID > 0 Then
-				gsAbsenceStartDateColumnName = datGeneral.GetColumnName(mvar_lngAbsenceStartDateID)
+				gsAbsenceStartDateColumnName = _columns.GetById(mvar_lngAbsenceStartDateID).Name
 			Else
 				gsAbsenceStartDateColumnName = ""
 			End If
 
 			mvar_lngAbsenceStartSessionID = Val(GetModuleParameter(gsMODULEKEY_ABSENCE, gsPARAMETERKEY_ABSENCESTARTSESSION))
 			If mvar_lngAbsenceStartSessionID > 0 Then
-				gsAbsenceStartSessionColumnName = datGeneral.GetColumnName(mvar_lngAbsenceStartSessionID)
+				gsAbsenceStartSessionColumnName = _columns.GetById(mvar_lngAbsenceStartSessionID).Name
 			Else
 				gsAbsenceStartSessionColumnName = ""
 			End If
 
 			mvar_lngAbsenceEndDateID = Val(GetModuleParameter(gsMODULEKEY_ABSENCE, gsPARAMETERKEY_ABSENCEENDDATE))
 			If mvar_lngAbsenceEndDateID > 0 Then
-				gsAbsenceEndDateColumnName = datGeneral.GetColumnName(mvar_lngAbsenceEndDateID)
+				gsAbsenceEndDateColumnName = _columns.GetById(mvar_lngAbsenceEndDateID).Name
 			Else
 				gsAbsenceEndDateColumnName = ""
 			End If
 
 			mvar_lngAbsenceEndSessionID = Val(GetModuleParameter(gsMODULEKEY_ABSENCE, gsPARAMETERKEY_ABSENCEENDSESSION))
 			If mvar_lngAbsenceEndSessionID > 0 Then
-				gsAbsenceEndSessionColumnName = datGeneral.GetColumnName(mvar_lngAbsenceEndSessionID)
+				gsAbsenceEndSessionColumnName = _columns.GetById(mvar_lngAbsenceEndSessionID).Name
 			Else
 				gsAbsenceEndSessionColumnName = ""
 			End If
 
 			mvar_lngAbsenceTypeID = Val(GetModuleParameter(gsMODULEKEY_ABSENCE, gsPARAMETERKEY_ABSENCETYPE))
 			If mvar_lngAbsenceTypeID > 0 Then
-				gsAbsenceTypeColumnName = datGeneral.GetColumnName(mvar_lngAbsenceTypeID)
+				gsAbsenceTypeColumnName = _columns.GetById(mvar_lngAbsenceTypeID).Name
 			Else
 				gsAbsenceTypeColumnName = ""
 			End If
 
 			mvar_lngAbsenceReasonID = Val(GetModuleParameter(gsMODULEKEY_ABSENCE, gsPARAMETERKEY_ABSENCEREASON))
 			If mvar_lngAbsenceReasonID > 0 Then
-				gsAbsenceReasonColumnName = datGeneral.GetColumnName(mvar_lngAbsenceReasonID)
+				gsAbsenceReasonColumnName = _columns.GetById(mvar_lngAbsenceReasonID).Name
 			Else
 				gsAbsenceReasonColumnName = ""
 			End If
 
 			mvar_lngAbsenceDurationID = Val(GetModuleParameter(gsMODULEKEY_ABSENCE, gsPARAMETERKEY_ABSENCEDURATION))
 			If mvar_lngAbsenceDurationID > 0 Then
-				gsAbsenceDurationColumnName = datGeneral.GetColumnName(mvar_lngAbsenceDurationID)
+				gsAbsenceDurationColumnName = _columns.GetById(mvar_lngAbsenceDurationID).Name
 			Else
 				gsAbsenceDurationColumnName = ""
 			End If
 
 			mvar_lngAbsenceTypeTypeID = Val(GetModuleParameter(gsMODULEKEY_ABSENCE, gsPARAMETERKEY_ABSENCETYPETYPE))
 			If mvar_lngAbsenceTypeTypeID > 0 Then
-				gsAbsenceTypeTypeColumnName = datGeneral.GetColumnName(mvar_lngAbsenceTypeTypeID)
+				gsAbsenceTypeTypeColumnName = _columns.GetById(mvar_lngAbsenceTypeTypeID).Name
 			Else
 				gsAbsenceTypeTypeColumnName = ""
 			End If
 
 			mvar_lngAbsenceTypeCodeID = Val(GetModuleParameter(gsMODULEKEY_ABSENCE, gsPARAMETERKEY_ABSENCETYPECODE))
 			If mvar_lngAbsenceTypeCodeID > 0 Then
-				gsAbsenceTypeCodeColumnName = datGeneral.GetColumnName(mvar_lngAbsenceTypeCodeID)
+				gsAbsenceTypeCodeColumnName = _columns.GetById(mvar_lngAbsenceTypeCodeID).Name
 			Else
 				gsAbsenceTypeCodeColumnName = ""
 			End If
 
 			mvar_lngAbsenceTypeSSPID = Val(GetModuleParameter(gsMODULEKEY_ABSENCE, gsPARAMETERKEY_ABSENCETYPESSP))
 			If mvar_lngAbsenceTypeSSPID > 0 Then
-				gsAbsenceTypeSSPColumnName = datGeneral.GetColumnName(mvar_lngAbsenceTypeSSPID)
+				gsAbsenceTypeSSPColumnName = _columns.GetById(mvar_lngAbsenceTypeSSPID).Name
 			Else
 				gsAbsenceTypeSSPColumnName = ""
 			End If
 
 			mvar_lngAbsenceTypeCalCodeID = Val(GetModuleParameter(gsMODULEKEY_ABSENCE, gsPARAMETERKEY_ABSENCETYPECALCODE))
 			If mvar_lngAbsenceTypeCalCodeID > 0 Then
-				gsAbsenceTypeCalCodeColumnName = datGeneral.GetColumnName(mvar_lngAbsenceTypeCalCodeID)
+				gsAbsenceTypeCalCodeColumnName = _columns.GetById(mvar_lngAbsenceTypeCalCodeID).Name
 			Else
 				gsAbsenceTypeCalCodeColumnName = ""
 			End If
 
 			mvar_lngAbsenceTypeIncludeID = Val(GetModuleParameter(gsMODULEKEY_ABSENCE, gsPARAMETERKEY_ABSENCETYPEINCLUDE))
 			If mvar_lngAbsenceTypeIncludeID > 0 Then
-				gsAbsenceTypeIncludeColumnName = datGeneral.GetColumnName(mvar_lngAbsenceTypeIncludeID)
+				gsAbsenceTypeIncludeColumnName = _columns.GetById(mvar_lngAbsenceTypeIncludeID).Name
 			Else
 				gsAbsenceTypeIncludeColumnName = ""
 			End If
 
 			mvar_lngAbsenceTypeBradfordIndexID = Val(GetModuleParameter(gsMODULEKEY_ABSENCE, gsPARAMETERKEY_ABSENCETYPEBRADFORDINDEX))
 			If mvar_lngAbsenceTypeBradfordIndexID > 0 Then
-				gsAbsenceTypeBradfordIndexColumnName = datGeneral.GetColumnName(mvar_lngAbsenceTypeBradfordIndexID)
+				gsAbsenceTypeBradfordIndexColumnName = _columns.GetById(mvar_lngAbsenceTypeBradfordIndexID).Name
 			Else
 				gsAbsenceTypeBradfordIndexColumnName = ""
 			End If
@@ -248,7 +254,8 @@ Namespace ModuleSpecifics
 
 				' Check that types exist
 				If Len(strMessage) = 0 Then
-					rsType = datGeneral.GetReadOnlyRecords("SELECT *" & " FROM " & gsAbsenceTypeTableName & " ORDER BY " & gsAbsenceTypeTypeColumnName)
+					Dim objDataAccess = New clsDataAccess(_objLogin)
+					rsType = objDataAccess.GetDataTable("SELECT * FROM " & gsAbsenceTypeTableName & " ORDER BY " & gsAbsenceTypeTypeColumnName)
 					If rsType.Rows.Count = 0 Then
 						strMessage = strMessage & "You do not have any entries in the '" & gsAbsenceTypeTableName & "' table." & vbNewLine
 					End If
@@ -272,7 +279,6 @@ Namespace ModuleSpecifics
 			ValidateAbsenceParameters_BreakdownReport = fValid
 
 		End Function
-
 
 		Public Function ValidateAbsenceParameters() As Boolean
 
@@ -372,102 +378,6 @@ Namespace ModuleSpecifics
 
 		End Function
 
-		Public Function CheckPermission_Absence() As Boolean
-
-			Dim pblnOK As Boolean
-			Dim pstrBadColumn As String
-			Dim objTable As TablePrivilege
-			Dim objColumn As CColumnPrivileges
-
-			pblnOK = True
-
-			' Retrieve the correct asrsyschildview for the absence table
-			objTable = gcoTablePrivileges.FindTableID(glngAbsenceTableID)
-
-			If objTable.AllowSelect = False Then
-				pblnOK = False
-				pstrBadColumn = "Absence Table"
-			End If
-
-			gsAbsenceTableName = objTable.RealSource
-
-			' Now check that read permission is available for the required columns
-			objColumn = GetColumnPrivileges((objTable.TableName))
-
-			' Check Absence Start Date
-			If pblnOK Then
-				pblnOK = objColumn.IsValid(gsAbsenceStartDateColumnName)
-				If pblnOK Then
-					pblnOK = objColumn.Item(gsAbsenceStartDateColumnName).AllowSelect
-					If pblnOK = False Then pstrBadColumn = "Absence 'Start Date' column"
-				Else
-					pstrBadColumn = "Absence 'Start Date' column"
-				End If
-			End If
-
-			' Check Absence Start Session
-			If pblnOK Then
-				pblnOK = objColumn.IsValid(gsAbsenceStartSessionColumnName)
-				If pblnOK Then
-					pblnOK = objColumn.Item(gsAbsenceStartSessionColumnName).AllowSelect
-					If pblnOK = False Then pstrBadColumn = "Absence 'Start Session' column"
-				Else
-					pstrBadColumn = "Absence 'Start Session' column"
-				End If
-			End If
-
-			' Check Absence End Date
-			If pblnOK Then
-				pblnOK = objColumn.IsValid(gsAbsenceEndDateColumnName)
-				If pblnOK Then
-					pblnOK = objColumn.Item(gsAbsenceEndDateColumnName).AllowSelect
-					If pblnOK = False Then pstrBadColumn = "Absence 'End Date' column"
-				Else
-					pstrBadColumn = "Absence 'End Date' column"
-				End If
-			End If
-
-			' Check Absence End Session
-			If pblnOK Then
-				pblnOK = objColumn.IsValid(gsAbsenceEndSessionColumnName)
-				If pblnOK Then
-					pblnOK = objColumn.Item(gsAbsenceEndSessionColumnName).AllowSelect
-					If pblnOK = False Then pstrBadColumn = "Absence 'End Session' column"
-				Else
-					pstrBadColumn = "Absence 'End Session' column"
-				End If
-			End If
-
-			' Check Absence Type
-			If pblnOK Then
-				pblnOK = objColumn.IsValid(gsAbsenceTypeColumnName)
-				If pblnOK Then
-					pblnOK = objColumn.Item(gsAbsenceTypeColumnName).AllowSelect
-					If pblnOK = False Then pstrBadColumn = "Absence 'Type' column"
-				Else
-					pstrBadColumn = "Absence 'Type' column"
-				End If
-			End If
-
-			' Check Absence Reason
-			If pblnOK Then
-				pblnOK = objColumn.IsValid(gsAbsenceReasonColumnName)
-				If pblnOK Then
-					pblnOK = objColumn.Item(gsAbsenceReasonColumnName).AllowSelect
-					If pblnOK = False Then pstrBadColumn = "Absence 'Reason' column"
-				Else
-					pstrBadColumn = "Absence 'Reason' column"
-				End If
-			End If
-
-			'UPGRADE_NOTE: Object objTable may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-			objTable = Nothing
-			'UPGRADE_NOTE: Object objColumn may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-			objColumn = Nothing
-
-			CheckPermission_Absence = pblnOK
-
-		End Function
 	End Class
 
 End Namespace

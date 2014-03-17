@@ -150,7 +150,7 @@ Public Class clsNavigationLinks
 				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
 				objLink.Chart_ColumnName = IIf(IsDBNull(objRow("Chart_ColumnName")), "", objRow("Chart_ColumnName"))
 				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-				objLink.Chart_ColumnName_2 = General.GetColumnName(CInt(IIf(IsDBNull(objRow("Chart_ColumnID_2")), 0, objRow("Chart_ColumnID_2"))))
+				objLink.Chart_ColumnName_2 = GetColumnName(CInt(IIf(IsDBNull(objRow("Chart_ColumnID_2")), 0, objRow("Chart_ColumnID_2"))))
 				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
 				objLink.InitialDisplayMode = IIf(IsDBNull(objRow("InitialDisplayMode")), 0, objRow("InitialDisplayMode"))
 				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'

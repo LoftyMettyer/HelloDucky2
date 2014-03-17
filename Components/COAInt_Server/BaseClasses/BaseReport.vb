@@ -132,7 +132,47 @@ Namespace BaseClasses
 
 		End Function
 
+		Public Function DoesColumnUseSeparators(plngColumnID As Integer) As Boolean
+			Return Columns.GetById(plngColumnID).Use1000Separator
+		End Function
+
+		Public Function GetDecimalsSize(plngColumnID As Integer) As Integer
+			Return Columns.GetById(plngColumnID).Decimals
+		End Function
+
 #End Region
+
+#Region "FROM modIntranet"
+
+		Friend Function GetEmailGroupName(lngGroupID As Integer) As String
+
+			Dim rsTemp As DataTable
+			Dim strSQL As String
+
+			Try
+
+				strSQL = "SELECT Name FROM ASRSysEmailGroupName " & "WHERE EmailGroupID = " & CStr(lngGroupID)
+				rsTemp = DB.GetDataTable(strSQL, CommandType.Text)
+
+				For Each objRow As DataRow In rsTemp.Rows
+					'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
+					If Not IsDBNull(objRow("Name")) Then
+						Return objRow("Name").ToString
+					End If
+				Next
+
+			Catch ex As Exception
+				Throw
+
+			End Try
+
+			Return ""
+
+		End Function
+
+#End Region
+
+
 
 	End Class
 End Namespace

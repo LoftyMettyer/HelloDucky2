@@ -1800,7 +1800,7 @@ Error_Trap:
 							' included in the report, but referred to by a child table calculation.
 							For iLoop2 = 1 To UBound(mlngTableViews, 2)
 								If mlngTableViews(1, iLoop2) = 0 Then
-									If General.IsAChildOf(mlngTableViews(2, iLoop2), (pobjTableView.TableID)) Then
+									If IsAChildOf(mlngTableViews(2, iLoop2), (pobjTableView.TableID)) Then
 										objChildTable = gcoTablePrivileges.FindTableID(mlngTableViews(2, iLoop2))
 
 										sOtherParentJoinCode = sOtherParentJoinCode & " LEFT OUTER JOIN " & pobjTableView.RealSource & " ON " & objChildTable.RealSource & ".ID_" & CStr(pobjTableView.TableID) & " = " & pobjTableView.RealSource & ".ID"
@@ -1856,11 +1856,10 @@ Error_Trap:
 						sChildJoinCode = sChildJoinCode & " (SELECT TOP" & IIf(lngTempMaxRecords < 1, " 100 PERCENT", " " & lngTempMaxRecords) & " " & objChildTable.RealSource & ".ID FROM " & objChildTable.RealSource
 
 						' Now the child order by bit - done here in case tables need to be joined.
-						'          Set rsTemp = datGeneral.GetOrderDefinition(datGeneral.GetDefaultOrder(mlngCustomReportsChildTable))
 						If lngTempOrderID > 0 Then
 							rsTemp = GetOrderDefinition(lngTempOrderID)
 						Else
-							rsTemp = GetOrderDefinition(General.GetDefaultOrder(lngTempChildID))
+							rsTemp = GetOrderDefinition(GetDefaultOrder(lngTempChildID))
 						End If
 
 						sChildOrderString = DoChildOrderString(rsTemp, sChildJoin, lngTempChildID)
@@ -4038,7 +4037,7 @@ Check_ERROR:
 		Dim objBradfordDetail As ReportDetailItem
 
 		' Get the absence start/end field details
-		strAbsenceType = mstrAbsenceRealSource & "." & General.GetColumnName(Val(GetModuleParameter(gsMODULEKEY_ABSENCE, gsPARAMETERKEY_ABSENCETYPE)))
+		strAbsenceType = mstrAbsenceRealSource & "." & GetColumnName(Val(GetModuleParameter(gsMODULEKEY_ABSENCE, gsPARAMETERKEY_ABSENCETYPE)))
 
 		' Force the inputted string into an array
 		'UPGRADE_WARNING: Couldn't resolve default property of object pstrIncludeTypes. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
@@ -4327,7 +4326,7 @@ GenerateSQLBradford_ERROR:
 				objReportItem.IsBreakOnChange = False
 				objReportItem.Size = 99
 				objReportItem.Decimals = 0
-				objReportItem.IsNumeric = (General.GetDataType(lngTableID, lngColumnID) = 2)
+				objReportItem.IsNumeric = (GetDataType(lngTableID, lngColumnID) = 2)
 				objReportItem.IsAverage = False
 				objReportItem.IsCount = False
 				objReportItem.IsTotal = False
@@ -4402,10 +4401,10 @@ GenerateSQLBradford_ERROR:
 
 						If lngTableID = mlngCustomReportsBaseTable Then
 							'Personnel
-							objReportItem.IDColumnName = mstrSQLFrom & "." & General.GetColumnName(lngColumnID)
+							objReportItem.IDColumnName = mstrSQLFrom & "." & GetColumnName(lngColumnID)
 						Else
 							'Absence
-							objReportItem.IDColumnName = mstrRealSource & "." & General.GetColumnName(lngColumnID)
+							objReportItem.IDColumnName = mstrRealSource & "." & GetColumnName(lngColumnID)
 						End If
 
 				End Select
@@ -4425,10 +4424,10 @@ GenerateSQLBradford_ERROR:
 				objReportItem.Type = "C"
 				objReportItem.TableID = lngTableID
 				objReportItem.TableName = GetTableName(lngTableID)
-				objReportItem.ColumnName = General.GetColumnName(objReportItem.ID)
+				objReportItem.ColumnName = GetColumnName(objReportItem.ID)
 				objReportItem.IsDateColumn = IsDateColumn("C", lngTableID, lngColumnID)	'??? - check these out 22/03/01
 				objReportItem.IsBitColumn = IsBitColumn("C", lngTableID, lngColumnID)
-				objReportItem.Use1000Separator = General.DoesColumnUseSeparators(lngColumnID)	'Does this column use 1000 separators?
+				objReportItem.Use1000Separator = DoesColumnUseSeparators(lngColumnID)	'Does this column use 1000 separators?
 
 				'Adjust the size of the field if digit separator is used
 				If objReportItem.Use1000Separator Then
@@ -4590,6 +4589,10 @@ GetBradfordRecordSet_ERROR:
 
 		Return DB.GetDataTable("sp_ASRGetOrderDefinition", CommandType.StoredProcedure, prmID)
 
+	End Function
+
+	Private Function GetDefaultOrder(plngTableID As Integer) As Integer
+		Return Tables.GetById(plngTableID).DefaultOrderID
 	End Function
 
 

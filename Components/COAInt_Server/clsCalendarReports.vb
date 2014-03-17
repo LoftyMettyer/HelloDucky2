@@ -766,15 +766,15 @@ Public Class CalendarReport
 		'get the datatype/properties for the desc1 column
 		'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
 		If (plngColumnID > 0) And (Not IsDBNull(pvarValue)) Then
-			If General.DoesColumnUseSeparators(plngColumnID) Then
-				iDecimals = General.GetDecimalsSize(plngColumnID)
+			If DoesColumnUseSeparators(plngColumnID) Then
+				iDecimals = GetDecimalsSize(plngColumnID)
 				strFormat = "#,0" & IIf(iDecimals > 0, "." & New String("#", iDecimals), "")
 				strTempEventDesc = Format(pvarValue, strFormat)
 
-			ElseIf General.GetColumnDataType(plngColumnID) = SQLDataType.sqlBoolean Then
+			ElseIf GetColumnDataType(plngColumnID) = SQLDataType.sqlBoolean Then
 				strTempEventDesc = pvarValue
 
-			ElseIf General.GetColumnDataType(plngColumnID) = SQLDataType.sqlDate Then
+			ElseIf GetColumnDataType(plngColumnID) = SQLDataType.sqlDate Then
 				strTempEventDesc = VB6.Format(pvarValue, mstrClientDateFormat)
 
 			Else
@@ -801,9 +801,9 @@ Public Class CalendarReport
 
 		'get the datatype/properties for the desc1 column
 		If (mlngDescription1 > 0) Then
-			If General.DoesColumnUseSeparators(mlngDescription1) Then
+			If DoesColumnUseSeparators(mlngDescription1) Then
 				mintType_BaseDesc1 = 3
-				iDecimals = General.GetDecimalsSize(mlngDescription1)
+				iDecimals = GetDecimalsSize(mlngDescription1)
 				mstrFormat_BaseDesc1 = "#,0" & IIf(iDecimals > 0, "." & New String("#", iDecimals), "")
 			ElseIf IsBitColumn("C", mlngCalendarReportsBaseTable, mlngDescription1) Then
 				mintType_BaseDesc1 = 2
@@ -815,9 +815,9 @@ Public Class CalendarReport
 		End If
 		'get the datatype/properties for the desc2 column
 		If (mlngDescription2 > 0) Then
-			If General.DoesColumnUseSeparators(mlngDescription2) Then
+			If DoesColumnUseSeparators(mlngDescription2) Then
 				mintType_BaseDesc2 = 3
-				iDecimals = General.GetDecimalsSize(mlngDescription2)
+				iDecimals = GetDecimalsSize(mlngDescription2)
 				mstrFormat_BaseDesc2 = "#,0" & IIf(iDecimals > 0, "." & New String("#", iDecimals), "")
 			ElseIf IsBitColumn("C", mlngCalendarReportsBaseTable, mlngDescription2) Then
 				mintType_BaseDesc2 = 2
@@ -1021,91 +1021,6 @@ AddError:
 
 	End Function
 
-	Public Function OutputReport(ByRef blnPrompt As Boolean) As Boolean
-
-		Dim intMonth As Short
-		Dim intMonthCount As Integer
-		Dim dtMonth As Date
-		Dim fOK As Boolean
-		Dim strPageName As String
-
-		On Error GoTo ErrorTrap
-
-		ReDim mvarOutputArray_Styles(0)
-		ReDim mvarOutputArray_Merges(0)
-
-		fOK = True
-
-		mlngBC_Data = 13434879
-		mlngColor_Weekend = 12632256
-		mlngColor_RangeDisabled = 9868950
-		mlngColor_Disabled = 8421504
-
-		mstrExcludedColours = CStr(mlngBC_Data)
-		'UPGRADE_WARNING: Couldn't resolve default property of object GetUserSetting(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		mlngBC_Data = General.GetUserSetting("output", "databackcolour", 13434879)
-		mstrExcludedColours = mstrExcludedColours & ", " & CStr(mlngBC_Data)
-
-		GetAvailableColours(mstrExcludedColours)
-
-		mlngGridRowIndex = 0
-
-		Load_Legend()
-
-		intMonthCount = DateDiff(Microsoft.VisualBasic.DateInterval.Month, mdtStartDate, mdtEndDate)
-
-		'***********************************************************
-		'get an array for the key
-		mlngStylePageArrayIndex = 0
-		mlngMergePageArrayIndex = 0
-		OutputArray_GetLegendArray()
-		AddToArray_Data(CShort(UBound(mvarOutputArray_Data)), 0, "*")
-		AddToArray_Data(CShort(UBound(mvarOutputArray_Data)), 1, "Key")
-		mlngGridRowIndex = mlngGridRowIndex + 1
-		'***********************************************************
-
-		For intMonth = 0 To intMonthCount Step 1
-			mlngStylePageArrayIndex = mlngStylePageArrayIndex + 1
-			mlngMergePageArrayIndex = mlngMergePageArrayIndex + 1
-
-			mcolBaseDescIndex_Output = New Collection
-
-			dtMonth = DateAdd(Microsoft.VisualBasic.DateInterval.Month, intMonth, mdtStartDate)
-			mlngYear_Output = Year(dtMonth)
-			mlngMonth_Output = Month(dtMonth)
-
-			mintDaysInMonth_Output = DaysInMonth(dtMonth)
-
-			'Define the current visible Start and End Dates.
-			mdtVisibleEndDate_Output = DateAdd(Microsoft.VisualBasic.DateInterval.Day, CDbl(mintDaysInMonth_Output - VB.Day(dtMonth)), dtMonth)
-			mdtVisibleStartDate_Output = DateAdd(Microsoft.VisualBasic.DateInterval.Day, CDbl(-(mintDaysInMonth_Output - 1)), mdtVisibleEndDate_Output)
-
-			mintFirstDayOfMonth_Output = Weekday(mdtVisibleStartDate_Output, FirstDayOfWeek.Sunday)
-
-			OutputArray_GetArray()
-
-			strPageName = MonthName(mlngMonth_Output) & " " & mlngYear_Output
-
-			AddToArray_Data(CInt(UBound(mvarOutputArray_Data)), 1, strPageName, False)
-			AddToArray_Data(CInt(UBound(mvarOutputArray_Data)), 0, "*", IIf((intMonth = intMonthCount), True, False))
-			mlngGridRowIndex = mlngGridRowIndex + 1
-
-			'UPGRADE_NOTE: Object mcolBaseDescIndex_Output may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-			mcolBaseDescIndex_Output = Nothing
-
-		Next intMonth
-
-		OutputReport = True
-
-TidyUpAndExit:
-		Exit Function
-
-ErrorTrap:
-		OutputReport = False
-		GoTo TidyUpAndExit
-
-	End Function
-
 	Private Function OutputArray_AddCalendar() As Boolean
 
 		On Error GoTo ErrorTrap
@@ -1162,8 +1077,8 @@ ErrorTrap:
 				' Get base description 1
 				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
 				If Not IsDBNull(objRow("Description1")) Then
-					If General.DoesColumnUseSeparators(mlngDescription1) Then
-						iDecimals = General.GetDecimalsSize(mlngDescription1)
+					If DoesColumnUseSeparators(mlngDescription1) Then
+						iDecimals = GetDecimalsSize(mlngDescription1)
 						strFormat = "#,0" & IIf(iDecimals > 0, "." & New String("#", iDecimals), "")
 						'UPGRADE_WARNING: Couldn't resolve default property of object strBaseDescription1. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 						strBaseDescription1 = Format(objRow("Description1"), strFormat)
@@ -1185,8 +1100,8 @@ ErrorTrap:
 				' Get base description 2
 				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
 				If Not IsDBNull(objRow("Description2")) Then
-					If General.DoesColumnUseSeparators(mlngDescription2) Then
-						iDecimals = General.GetDecimalsSize(mlngDescription2)
+					If DoesColumnUseSeparators(mlngDescription2) Then
+						iDecimals = GetDecimalsSize(mlngDescription2)
 						strFormat = "#,0" & IIf(iDecimals > 0, "." & New String("#", iDecimals), "")
 						'UPGRADE_WARNING: Couldn't resolve default property of object strBaseDescription2. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 						strBaseDescription2 = Format(objRow("Description2"), strFormat)
@@ -3414,8 +3329,8 @@ TidyUpAndExit:
 			'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
 			mlngDescription1 = IIf(IsDBNull(rowDefinition("Description1")), 0, rowDefinition("Description1"))
 			If mlngDescription1 > 0 Then
-				mstrDescription1 = General.GetColumnName(rowDefinition("Description1"))
-				mblnDesc1IsDate = (General.GetDataType(mlngCalendarReportsBaseTable, mlngDescription1) = SQLDataType.sqlDate)
+				mstrDescription1 = GetColumnName(rowDefinition("Description1"))
+				mblnDesc1IsDate = (GetDataType(mlngCalendarReportsBaseTable, mlngDescription1) = SQLDataType.sqlDate)
 			Else
 				mstrDescription1 = vbNullString
 				mblnDesc1IsDate = False
@@ -3424,8 +3339,8 @@ TidyUpAndExit:
 			'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
 			mlngDescription2 = IIf(IsDBNull(rowDefinition("Description2")), 0, rowDefinition("Description2"))
 			If mlngDescription2 > 0 Then
-				mstrDescription2 = General.GetColumnName(rowDefinition("Description2"))
-				mblnDesc2IsDate = (General.GetDataType(mlngCalendarReportsBaseTable, mlngDescription2) = SQLDataType.sqlDate)
+				mstrDescription2 = GetColumnName(rowDefinition("Description2"))
+				mblnDesc2IsDate = (GetDataType(mlngCalendarReportsBaseTable, mlngDescription2) = SQLDataType.sqlDate)
 			Else
 				mstrDescription2 = vbNullString
 				mblnDesc2IsDate = False
@@ -3454,7 +3369,7 @@ TidyUpAndExit:
 
 			mlngRegion = rowDefinition("Region")
 			If mlngRegion > 0 Then
-				mstrRegion = General.GetColumnName(rowDefinition("Region"))
+				mstrRegion = GetColumnName(rowDefinition("Region"))
 
 			ElseIf (mlngCalendarReportsBaseTable = PersonnelModule.glngPersonnelTableID) And (PersonnelModule.grtRegionType = RegionType.rtStaticRegion) Then
 
@@ -4403,7 +4318,7 @@ ErrorTrap:
 							colWorkingPatterns = Nothing
 						End If
 						colWorkingPatterns = New clsCalendarEvents
-
+						colWorkingPatterns.SessionInfo = SessionInfo
 						lngBaseRecordID = objRow(mstrBaseIDColumn)
 						blnNewBaseRecord = True
 
@@ -4883,38 +4798,39 @@ DisableWPs:
 			End If
 
 			mcolEvents = New clsCalendarEvents
+			mcolEvents.SessionInfo = SessionInfo
 
 			For Each objRow As DataRow In rsTemp.Rows
 
 				sTempTableName = objRow("TableName")
 
 				If objRow("EventStartDateID") > 0 Then
-					sTempStartDateName = General.GetColumnName(objRow("EventStartDateID"))
+					sTempStartDateName = GetColumnName(objRow("EventStartDateID"))
 				Else
 					GetEventsCollection = False
 					GoTo TidyUpAndExit
 				End If
 
 				If objRow("EventStartSessionID") > 0 Then
-					sTempStartSessionName = General.GetColumnName(objRow("EventStartSessionID"))
+					sTempStartSessionName = GetColumnName(objRow("EventStartSessionID"))
 				Else
 					sTempStartSessionName = vbNullString
 				End If
 
 				If objRow("EventEndDateID") > 0 Then
-					sTempEndDateName = General.GetColumnName(objRow("EventEndDateID"))
+					sTempEndDateName = GetColumnName(objRow("EventEndDateID"))
 				Else
 					sTempEndDateName = vbNullString
 				End If
 
 				If objRow("EventEndSessionID") > 0 Then
-					sTempEndSessionName = General.GetColumnName(objRow("EventEndSessionID"))
+					sTempEndSessionName = GetColumnName(objRow("EventEndSessionID"))
 				Else
 					sTempEndSessionName = vbNullString
 				End If
 
 				If objRow("EventDurationID") > 0 Then
-					sTempDurationName = General.GetColumnName(objRow("EventDurationID"))
+					sTempDurationName = GetColumnName(objRow("EventDurationID"))
 				Else
 					sTempDurationName = vbNullString
 				End If
@@ -4926,31 +4842,31 @@ DisableWPs:
 				End If
 
 				If objRow("LegendLookupColumnID") > 0 Then
-					sTempLegendColumnName = General.GetColumnName(objRow("LegendLookupColumnID"))
+					sTempLegendColumnName = GetColumnName(objRow("LegendLookupColumnID"))
 				Else
 					sTempLegendColumnName = vbNullString
 				End If
 
 				If objRow("LegendLookupCodeID") > 0 Then
-					sTempLegendCodeName = General.GetColumnName(objRow("LegendLookupCodeID"))
+					sTempLegendCodeName = GetColumnName(objRow("LegendLookupCodeID"))
 				Else
 					sTempLegendCodeName = vbNullString
 				End If
 
 				If objRow("LegendEventColumnID") > 0 Then
-					sTempLegendEventTypeName = General.GetColumnName(objRow("LegendEventColumnID"))
+					sTempLegendEventTypeName = GetColumnName(objRow("LegendEventColumnID"))
 				Else
 					sTempLegendEventTypeName = vbNullString
 				End If
 
 				If objRow("EventDesc1ColumnID") > 0 Then
-					sTempDesc1Name = General.GetColumnName(objRow("EventDesc1ColumnID"))
+					sTempDesc1Name = GetColumnName(objRow("EventDesc1ColumnID"))
 				Else
 					sTempDesc1Name = vbNullString
 				End If
 
 				If objRow("EventDesc2ColumnID") > 0 Then
-					sTempDesc2Name = General.GetColumnName(objRow("EventDesc2ColumnID"))
+					sTempDesc2Name = GetColumnName(objRow("EventDesc2ColumnID"))
 				Else
 					sTempDesc2Name = vbNullString
 				End If
@@ -5367,7 +5283,7 @@ Error_Trap:
 							& "'" & .Description1Name & "' AS 'EventDescription1Column', " & vbNewLine
 
 					'TM20030407 Fault 5259 - if logic field...convert to 'Y' or 'N' accordingly.
-					If General.GetDataType(lngTempTableID, .Description1ID) = SQLDataType.sqlBoolean Then
+					If GetDataType(lngTempTableID, .Description1ID) = SQLDataType.sqlBoolean Then
 						strColList = strColList & "CASE " & strTableColumn & " WHEN 1 THEN 'Y' ELSE 'N' END AS 'EventDescription1', " & vbNewLine
 					Else
 						strColList = strColList & "CONVERT(varchar(MAX)," & strTableColumn & ") AS 'EventDescription1', " & vbNewLine
@@ -5397,7 +5313,7 @@ Error_Trap:
 							& "'" & .Description2Name & "' AS 'EventDescription2Column', " & vbNewLine
 
 					'TM20030407 Fault 5259 - if logic field...convert to 'Y' or 'N' accordingly.
-					If General.GetDataType(lngTempTableID, .Description2ID) = SQLDataType.sqlBoolean Then
+					If GetDataType(lngTempTableID, .Description2ID) = SQLDataType.sqlBoolean Then
 						strColList = strColList & "CASE " & strTableColumn & " WHEN 1 THEN 'Y' ELSE 'N' END AS 'EventDescription2', " & vbNewLine
 					Else
 						strColList = strColList & "CONVERT(varchar(MAX)," & strTableColumn & ") AS 'EventDescription2', " & vbNewLine
@@ -5697,10 +5613,10 @@ GenerateSQLSelect_ERROR:
 				bViewContains_DurationColumn = IsColumnInView((objTableView.ViewID), (objEvent.DurationID))
 			End If
 
-			If (objTableView.TableID = mlngCalendarReportsBaseTable) And (objTableView.ViewID > 0) Or (General.IsAParentOf((objTableView.TableID), mlngCalendarReportsBaseTable)) Then
+			If (objTableView.TableID = mlngCalendarReportsBaseTable) And (objTableView.ViewID > 0) Or (IsAParentOf((objTableView.TableID), mlngCalendarReportsBaseTable)) Then
 				' Get the table/view object from the id stored in the array
 
-				If (General.IsAParentOf((objTableView.TableID), mlngCalendarReportsBaseTable)) Then
+				If (IsAParentOf((objTableView.TableID), mlngCalendarReportsBaseTable)) Then
 					mstrSQLJoin = mstrSQLJoin & " LEFT OUTER JOIN " & objTableView.RealSource & " ON " & mstrBaseTableRealSource & ".ID_" & objTableView.TableID & " = " & objTableView.RealSource & ".ID"
 
 					mstrSQLBaseData = mstrSQLBaseData & " LEFT OUTER JOIN " & objTableView.RealSource & " ON " & mstrBaseTableRealSource & ".ID_" & objTableView.TableID & " = " & objTableView.RealSource & ".ID"
@@ -5730,7 +5646,7 @@ GenerateSQLSelect_ERROR:
 					End If
 				End If
 
-			ElseIf (General.IsAChildOf(mlngTableViews(2, intLoop), mlngCalendarReportsBaseTable)) And (objEvent.TableID = objTableView.TableID) Then
+			ElseIf (IsAChildOf(mlngTableViews(2, intLoop), mlngCalendarReportsBaseTable)) And (objEvent.TableID = objTableView.TableID) Then
 				objChildTable = gcoTablePrivileges.FindTableID(mlngTableViews(2, intLoop))
 
 				If objChildTable.AllowSelect Then

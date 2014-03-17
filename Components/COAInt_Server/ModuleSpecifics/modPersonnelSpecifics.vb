@@ -1,12 +1,18 @@
 Option Strict Off
 Option Explicit On
 
+Imports HR.Intranet.Server.BaseClasses
 Imports HR.Intranet.Server.Enums
 Imports HR.Intranet.Server.Metadata
 
 Namespace ModuleSpecifics
 
 	Friend Class modPersonnelSpecifics
+		Inherits BaseModuleSpecific
+
+		Public Sub New(value As SessionInfo)
+			MyBase.New(value)
+		End Sub
 
 		' Module parameters.
 		Public gfPersonnelEnabled As Boolean
@@ -63,26 +69,6 @@ Namespace ModuleSpecifics
 		Public glngHierarchyTableID As Integer
 		Public gsHierarchyTableName As String
 
-		Public Function IdentifyingColumnDataType() As SQLDataType
-			Dim lngIdentifyingColumnID As Integer
-			Dim datGeneral As clsGeneral
-
-			datGeneral = New clsGeneral
-
-			lngIdentifyingColumnID = Val(GetModuleParameter(gsMODULEKEY_HIERARCHY, gsPARAMETERKEY_IDENTIFIER))
-
-			If lngIdentifyingColumnID = 0 Then
-				IdentifyingColumnDataType = SQLDataType.sqlUnknown
-			Else
-				IdentifyingColumnDataType = datGeneral.GetColumnDataType(lngIdentifyingColumnID)
-			End If
-
-			'UPGRADE_NOTE: Object datGeneral may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-			datGeneral = Nothing
-
-		End Function
-
-
 		Public Sub ReadPersonnelParameters()
 
 			Dim objTable As TablePrivilege
@@ -90,63 +76,63 @@ Namespace ModuleSpecifics
 			' Read the Personnel module parameters from the database.
 			glngPersonnelTableID = Val(GetModuleParameter(gsMODULEKEY_PERSONNEL, gsPARAMETERKEY_PERSONNELTABLE))
 			If glngPersonnelTableID > 0 Then
-				gsPersonnelTableName = datGeneral.GetTableName(glngPersonnelTableID)
+				gsPersonnelTableName = _tables.GetById(glngPersonnelTableID).Name
 			Else
 				gsPersonnelTableName = ""
 			End If
 
 			mvar_lngPersonnelEmployeeNumberID = Val(GetModuleParameter(gsMODULEKEY_PERSONNEL, gsPARAMETERKEY_EMPLOYEENUMBER))
 			If mvar_lngPersonnelEmployeeNumberID > 0 Then
-				gsPersonnelEmployeeNumberColumnName = datGeneral.GetColumnName(mvar_lngPersonnelEmployeeNumberID)
+				gsPersonnelEmployeeNumberColumnName = _columns.GetById(mvar_lngPersonnelEmployeeNumberID).Name
 			Else
 				gsPersonnelEmployeeNumberColumnName = ""
 			End If
 
 			mvar_lngPersonnelSurnameID = Val(GetModuleParameter(gsMODULEKEY_PERSONNEL, gsPARAMETERKEY_SURNAME))
 			If mvar_lngPersonnelSurnameID > 0 Then
-				gsPersonnelSurnameColumnName = datGeneral.GetColumnName(mvar_lngPersonnelSurnameID)
+				gsPersonnelSurnameColumnName = _columns.GetById(mvar_lngPersonnelSurnameID).Name
 			Else
 				gsPersonnelSurnameColumnName = ""
 			End If
 
 			mvar_lngPersonnelForenameID = Val(GetModuleParameter(gsMODULEKEY_PERSONNEL, gsPARAMETERKEY_FORENAME))
 			If mvar_lngPersonnelForenameID > 0 Then
-				gsPersonnelForenameColumnName = datGeneral.GetColumnName(mvar_lngPersonnelForenameID)
+				gsPersonnelForenameColumnName = _columns.GetById(mvar_lngPersonnelForenameID).Name
 			Else
 				gsPersonnelForenameColumnName = ""
 			End If
 
 			glngPersonnelStartDateID = Val(GetModuleParameter(gsMODULEKEY_PERSONNEL, gsPARAMETERKEY_STARTDATE))
 			If glngPersonnelStartDateID > 0 Then
-				gsPersonnelStartDateColumnName = datGeneral.GetColumnName(glngPersonnelStartDateID)
+				gsPersonnelStartDateColumnName = _columns.GetById(glngPersonnelStartDateID).Name
 			Else
 				gsPersonnelStartDateColumnName = ""
 			End If
 
 			mvar_lngPersonnelLeavingDateID = Val(GetModuleParameter(gsMODULEKEY_PERSONNEL, gsPARAMETERKEY_LEAVINGDATE))
 			If mvar_lngPersonnelLeavingDateID > 0 Then
-				gsPersonnelLeavingDateColumnName = datGeneral.GetColumnName(mvar_lngPersonnelLeavingDateID)
+				gsPersonnelLeavingDateColumnName = _columns.GetById(mvar_lngPersonnelLeavingDateID).Name
 			Else
 				gsPersonnelLeavingDateColumnName = ""
 			End If
 
 			mvar_lngPersonnelFullPartTimeID = Val(GetModuleParameter(gsMODULEKEY_PERSONNEL, gsPARAMETERKEY_FULLPARTTIME))
 			If mvar_lngPersonnelFullPartTimeID > 0 Then
-				gsPersonnelFullPartTimeColumnName = datGeneral.GetColumnName(mvar_lngPersonnelFullPartTimeID)
+				gsPersonnelFullPartTimeColumnName = _columns.GetById(mvar_lngPersonnelFullPartTimeID).Name
 			Else
 				gsPersonnelFullPartTimeColumnName = ""
 			End If
 
 			mvar_lngPersonnelEmailID = Val(GetModuleParameter(gsMODULEKEY_PERSONNEL, gsPARAMETERKEY_EMAIL))
 			If mvar_lngPersonnelEmailID > 0 Then
-				gsPersonnelEmailColumnName = datGeneral.GetColumnName(mvar_lngPersonnelEmailID)
+				gsPersonnelEmailColumnName = _columns.GetById(mvar_lngPersonnelEmailID).Name
 			Else
 				gsPersonnelEmailColumnName = ""
 			End If
 
 			mvar_lngPersonnelDepartmentID = Val(GetModuleParameter(gsMODULEKEY_PERSONNEL, gsPARAMETERKEY_DEPARTMENT))
 			If mvar_lngPersonnelDepartmentID > 0 Then
-				gsPersonnelDepartmentColumnName = datGeneral.GetColumnName(mvar_lngPersonnelDepartmentID)
+				gsPersonnelDepartmentColumnName = _columns.GetById(mvar_lngPersonnelDepartmentID).Name
 			Else
 				gsPersonnelDepartmentColumnName = ""
 			End If
@@ -154,7 +140,7 @@ Namespace ModuleSpecifics
 			' Static Region
 			mvar_lngPersonnelRegionID = Val(GetModuleParameter(gsMODULEKEY_PERSONNEL, gsPARAMETERKEY_REGION))
 			If mvar_lngPersonnelRegionID > 0 Then
-				gsPersonnelRegionColumnName = datGeneral.GetColumnName(mvar_lngPersonnelRegionID)
+				gsPersonnelRegionColumnName = _columns.GetById(mvar_lngPersonnelRegionID).Name
 				grtRegionType = RegionType.rtStaticRegion
 			Else
 				gsPersonnelRegionColumnName = ""
@@ -165,7 +151,8 @@ Namespace ModuleSpecifics
 			mvar_lngPersonnelHRegionTableID = Val(GetModuleParameter(gsMODULEKEY_PERSONNEL, gsPARAMETERKEY_HREGIONTABLE))
 			glngPersonnelHRegionTableID = mvar_lngPersonnelHRegionTableID
 			If mvar_lngPersonnelHRegionTableID > 0 Then
-				gsPersonnelHRegionTableName = datGeneral.GetTableName(mvar_lngPersonnelHRegionTableID)
+				gsPersonnelHRegionTableName = _tables.GetById(mvar_lngPersonnelHRegionTableID).Name
+
 				' Get the realsource into a variable too
 				objTable = gcoTablePrivileges.FindTableID(mvar_lngPersonnelHRegionTableID)
 				gsPersonnelHRegionTableRealSource = objTable.RealSource
@@ -177,7 +164,7 @@ Namespace ModuleSpecifics
 
 			mvar_lngPersonnelHRegionFieldID = Val(GetModuleParameter(gsMODULEKEY_PERSONNEL, gsPARAMETERKEY_HREGIONFIELD))
 			If mvar_lngPersonnelHRegionFieldID > 0 Then
-				gsPersonnelHRegionColumnName = datGeneral.GetColumnName(mvar_lngPersonnelHRegionFieldID)
+				gsPersonnelHRegionColumnName = _columns.GetById(mvar_lngPersonnelHRegionFieldID).Name
 			Else
 				gsPersonnelHRegionColumnName = ""
 				If grtRegionType <> RegionType.rtStaticRegion Then grtRegionType = RegionType.rtNotDefined
@@ -185,7 +172,7 @@ Namespace ModuleSpecifics
 
 			mvar_lngPersonnelHRegionDateID = Val(GetModuleParameter(gsMODULEKEY_PERSONNEL, gsPARAMETERKEY_HREGIONDATE))
 			If mvar_lngPersonnelHRegionDateID > 0 Then
-				gsPersonnelHRegionDateColumnName = datGeneral.GetColumnName(mvar_lngPersonnelHRegionDateID)
+				gsPersonnelHRegionDateColumnName = _columns.GetById(mvar_lngPersonnelHRegionDateID).Name
 			Else
 				gsPersonnelHRegionDateColumnName = ""
 				If grtRegionType <> RegionType.rtStaticRegion Then grtRegionType = RegionType.rtNotDefined
@@ -194,7 +181,7 @@ Namespace ModuleSpecifics
 			' Static Working Pattern
 			mvar_lngPersonnelWorkingPatternID = Val(GetModuleParameter(gsMODULEKEY_PERSONNEL, gsPARAMETERKEY_WORKINGPATTERN))
 			If mvar_lngPersonnelWorkingPatternID > 0 Then
-				gsPersonnelWorkingPatternColumnName = datGeneral.GetColumnName(mvar_lngPersonnelWorkingPatternID)
+				gsPersonnelWorkingPatternColumnName = _columns.GetById(mvar_lngPersonnelWorkingPatternID).Name
 				gwptWorkingPatternType = WorkingPatternType.wptStaticWPattern
 			Else
 				gsPersonnelWorkingPatternColumnName = ""
@@ -204,7 +191,8 @@ Namespace ModuleSpecifics
 			' Historic Working Pattern
 			mvar_lngPersonnelHWorkingPatternTableID = Val(GetModuleParameter(gsMODULEKEY_PERSONNEL, gsPARAMETERKEY_HWORKINGPATTERNTABLE))
 			If mvar_lngPersonnelHWorkingPatternTableID > 0 Then
-				gsPersonnelHWorkingPatternTableName = datGeneral.GetTableName(mvar_lngPersonnelHWorkingPatternTableID)
+				gsPersonnelHWorkingPatternTableName = _tables.GetById(mvar_lngPersonnelHWorkingPatternTableID).Name
+
 				' Get the realsource into a variable too
 				objTable = gcoTablePrivileges.FindTableID(mvar_lngPersonnelHWorkingPatternTableID)
 				gsPersonnelHWorkingPatternTableRealSource = objTable.RealSource
@@ -216,7 +204,7 @@ Namespace ModuleSpecifics
 
 			mvar_lngPersonnelHWorkingPatternFieldID = Val(GetModuleParameter(gsMODULEKEY_PERSONNEL, gsPARAMETERKEY_HWORKINGPATTERNFIELD))
 			If mvar_lngPersonnelHWorkingPatternFieldID > 0 Then
-				gsPersonnelHWorkingPatternColumnName = datGeneral.GetColumnName(mvar_lngPersonnelHWorkingPatternFieldID)
+				gsPersonnelHWorkingPatternColumnName = _columns.GetById(mvar_lngPersonnelHWorkingPatternFieldID).Name
 			Else
 				gsPersonnelHWorkingPatternColumnName = ""
 				If gwptWorkingPatternType <> WorkingPatternType.wptStaticWPattern Then gwptWorkingPatternType = WorkingPatternType.wptnotDefined
@@ -224,7 +212,7 @@ Namespace ModuleSpecifics
 
 			mvar_lngPersonnelHWorkingPatternDateID = Val(GetModuleParameter(gsMODULEKEY_PERSONNEL, gsPARAMETERKEY_HWORKINGPATTERNDATE))
 			If mvar_lngPersonnelHWorkingPatternDateID > 0 Then
-				gsPersonnelHWorkingPatternDateColumnName = datGeneral.GetColumnName(mvar_lngPersonnelHWorkingPatternDateID)
+				gsPersonnelHWorkingPatternDateColumnName = _columns.GetById(mvar_lngPersonnelHWorkingPatternDateID).Name
 			Else
 				gsPersonnelHWorkingPatternDateColumnName = ""
 				If gwptWorkingPatternType <> WorkingPatternType.wptStaticWPattern Then gwptWorkingPatternType = WorkingPatternType.wptnotDefined
@@ -233,7 +221,7 @@ Namespace ModuleSpecifics
 			' Read the Personnel module parameters from the database.
 			glngHierarchyTableID = Val(GetModuleParameter(gsMODULEKEY_HIERARCHY, gsPARAMETERKEY_HIERARCHYTABLE))
 			If glngHierarchyTableID > 0 Then
-				gsHierarchyTableName = datGeneral.GetTableName(glngHierarchyTableID)
+				gsHierarchyTableName = _tables.GetById(glngHierarchyTableID).Name
 			Else
 				gsHierarchyTableName = ""
 			End If

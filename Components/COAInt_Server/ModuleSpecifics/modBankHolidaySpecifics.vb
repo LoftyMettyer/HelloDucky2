@@ -1,11 +1,17 @@
 Option Strict Off
 Option Explicit On
 
+Imports HR.Intranet.Server.BaseClasses
 Imports HR.Intranet.Server.Metadata
 
 Namespace ModuleSpecifics
 
 	Friend Class modBankHolidaySpecifics
+		Inherits BaseModuleSpecific
+
+		Public Sub New(value As SessionInfo)
+			MyBase.New(value)
+		End Sub
 
 		Public gfBankHolidaysEnabled As Boolean
 
@@ -41,7 +47,7 @@ Namespace ModuleSpecifics
 			' Bank Holiday Region Table and Column
 			glngBHolRegionTableID = Val(GetModuleParameter(gsMODULEKEY_ABSENCE, gsPARAMETERKEY_BHOLREGIONTABLE))
 			If glngBHolRegionTableID > 0 Then
-				gsBHolRegionTableName = datGeneral.GetTableName(glngBHolRegionTableID)
+				gsBHolRegionTableName = _tables.GetById(glngBHolRegionTableID).Name
 			Else
 				gsBHolRegionTableName = ""
 				gfBankHolidaysEnabled = False
@@ -49,7 +55,7 @@ Namespace ModuleSpecifics
 
 			glngBHolRegionID = Val(GetModuleParameter(gsMODULEKEY_ABSENCE, gsPARAMETERKEY_BHOLREGION))
 			If glngBHolRegionID > 0 Then
-				gsBHolRegionColumnName = datGeneral.GetColumnName(glngBHolRegionID)
+				gsBHolRegionColumnName = _columns.GetById(glngBHolRegionID).Name
 			Else
 				gsBHolRegionColumnName = ""
 				gfBankHolidaysEnabled = False
@@ -59,7 +65,7 @@ Namespace ModuleSpecifics
 
 			glngBHolTableID = Val(GetModuleParameter(gsMODULEKEY_ABSENCE, gsPARAMETERKEY_BHOLTABLE))
 			If glngBHolTableID > 0 Then
-				gsBHolTableName = datGeneral.GetTableName(glngBHolTableID)
+				gsBHolTableName = _tables.GetById(glngBHolTableID).Name
 
 				' Get the realsource into a variable too
 				objTable = gcoTablePrivileges.FindTableID(glngBHolTableID)
@@ -74,7 +80,7 @@ Namespace ModuleSpecifics
 
 			glngBHolDateID = Val(GetModuleParameter(gsMODULEKEY_ABSENCE, gsPARAMETERKEY_BHOLDATE))
 			If glngBHolDateID > 0 Then
-				gsBHolDateColumnName = datGeneral.GetColumnName(glngBHolDateID)
+				gsBHolDateColumnName = _columns.GetById(glngBHolDateID).Name
 			Else
 				gsBHolDateColumnName = ""
 				gfBankHolidaysEnabled = False
@@ -82,7 +88,7 @@ Namespace ModuleSpecifics
 
 			glngBHolDescriptionID = Val(GetModuleParameter(gsMODULEKEY_ABSENCE, gsPARAMETERKEY_BHOLDESCRIPTION))
 			If glngBHolDescriptionID > 0 Then
-				gsBHolDescriptionColumnName = datGeneral.GetColumnName(glngBHolDescriptionID)
+				gsBHolDescriptionColumnName = _columns.GetById(glngBHolDescriptionID).Name
 			Else
 				gsBHolDescriptionColumnName = ""
 				gfBankHolidaysEnabled = False

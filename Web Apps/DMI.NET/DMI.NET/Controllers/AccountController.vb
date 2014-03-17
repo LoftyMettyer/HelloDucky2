@@ -287,11 +287,8 @@ Namespace Controllers
 
 				' User is allowed into OpenHR, now populate some metadata
 				objServerSession.RegionalSettings = Platform.GetRegionalSettings
-
-				objDatabase.SessionInfo = objServerSession
 				objServerSession.Initialise()
 				objServerSession.ReadModuleParameters()
-
 
 				objDataAccess = New clsDataAccess(objServerSession.LoginInfo)
 				Session("DatabaseFunctions") = objDatabase
@@ -315,6 +312,9 @@ Namespace Controllers
 
 				'Store in Session the logged in user's RecordID
 				Session("LoggedInUserRecordID") = ASRIntranetFunctions.GetLoggedInUserRecordID(Session("SingleRecordViewID"))
+
+				objDatabase.SessionInfo = objServerSession
+
 			Catch ex As Exception
 				Session("ErrorText") = FormatError(ex.Message)
 				Return RedirectToAction("Loginerror")

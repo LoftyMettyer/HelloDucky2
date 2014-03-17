@@ -84,23 +84,23 @@ Public Class clsMultiAxisChart
 
 		If lngTableID > 0 Then
 			strTableName = GetTableName(lngTableID)
-			strColumnName = General.GetColumnName(lngColumnID)
+			strColumnName = GetColumnName(lngColumnID)
 		End If
 
 		If lngTableID2 > 0 Then
 			strTableName2 = GetTableName(lngTableID2)
-			strColumnName2 = General.GetColumnName(lngColumnID2)
+			strColumnName2 = GetColumnName(lngColumnID2)
 		End If
 
 		If lngTableID3 > 0 Then
 			strTableName3 = GetTableName(lngTableID3)
-			strColumnName3 = General.GetColumnName(lngColumnID3)
+			strColumnName3 = GetColumnName(lngColumnID3)
 		End If
 
-		strColourColumnName = General.GetColumnName(lngColourColumnID)
+		strColourColumnName = GetColumnName(lngColourColumnID)
 
-		If General.IsAChildOf(lngTableID, lngTableID2) = True Then
-			If General.IsAChildOf(lngTableID, lngTableID3) = True Then
+		If IsAChildOf(lngTableID, lngTableID2) = True Then
+			If IsAChildOf(lngTableID, lngTableID3) = True Then
 				' 1 is base
 				mlngBaseTableID = lngTableID
 			Else
@@ -108,7 +108,7 @@ Public Class clsMultiAxisChart
 				mlngBaseTableID = lngTableID3
 			End If
 		Else
-			If General.IsAChildOf(lngTableID2, lngTableID3) = True Then
+			If IsAChildOf(lngTableID2, lngTableID3) = True Then
 				' 2 is base
 				mlngBaseTableID = lngTableID2
 			Else
@@ -191,7 +191,7 @@ Public Class clsMultiAxisChart
 					pstrVerticalIDColumn = Trim(objRow("VERTICAL_ID").ToString())
 					pstrVerticalIDColumn = Replace(pstrVerticalIDColumn, "'", "''")
 
-					If General.GetColumnDataType(plngColumnID) = SQLDataType.sqlDate Then
+					If GetColumnDataType(plngColumnID) = SQLDataType.sqlDate Then
 						pstrVerticalIDColumn = ReverseDateTextField(pstrVerticalIDColumn)
 					End If
 					pstrCaseStatements = pstrCaseStatements & " WHEN " & IIf(pstrVerticalIDColumn = "NULL", "NULL", "'" & pstrVerticalIDColumn & "'").ToString() & " THEN " & CStr(piCount)
@@ -260,7 +260,7 @@ SQLSelectVerticalID_ERROR:
 				pstrHorizontalIDColumn = Trim(objRow("HORIZONTAL_ID").ToString())
 				pstrHorizontalIDColumn = Replace(pstrHorizontalIDColumn, "'", "''")
 
-				If General.GetColumnDataType(lngColumnID) = SQLDataType.sqlDate Then
+				If GetColumnDataType(lngColumnID) = SQLDataType.sqlDate Then
 					pstrHorizontalIDColumn = ReverseDateTextField(pstrHorizontalIDColumn)
 				End If
 				pstrCaseStatements = pstrCaseStatements & " WHEN " & IIf(pstrHorizontalIDColumn = "NULL", "NULL", "'" & pstrHorizontalIDColumn & "'").ToString() & " THEN " & CStr(piCount)
@@ -728,7 +728,7 @@ GenerateSQLFrom_ERROR:
 				End If
 			Else
 				If (pobjTableView.ViewName <> mstrBaseTableRealSource) Then
-					If General.IsAChildOf((pobjTableView.TableID), lngTableID) = True Then
+					If IsAChildOf((pobjTableView.TableID), lngTableID) = True Then
 						mstrSQLJoin = mstrSQLJoin & " LEFT OUTER JOIN " & pobjTableView.RealSource & " ON " & pobjTableView.RealSource & ".ID_" & lngTableID & " = " & mstrBaseTableRealSource & ".ID"
 					Else
 						'

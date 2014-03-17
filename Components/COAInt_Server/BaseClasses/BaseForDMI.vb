@@ -1,6 +1,7 @@
-﻿Option Strict On
+﻿Option Strict Off
 Option Explicit On
 
+Imports System.Collections.Generic
 Imports HR.Intranet.Server.Enums
 Imports HR.Intranet.Server.Structures
 Imports HR.Intranet.Server.Metadata
@@ -13,6 +14,14 @@ Namespace BaseClasses
 		Friend AbsenceModule As modAbsenceSpecifics
 		Friend BankHolidayModule As modBankHolidaySpecifics
 		Friend PersonnelModule As modPersonnelSpecifics
+
+		Friend Tables As ICollection(Of Table)
+		Friend Columns As ICollection(Of Column)
+		Friend Relations As List(Of Relation)
+
+		Private _moduleSettings As ICollection(Of ModuleSetting)
+		Private _userSettings As ICollection(Of UserSetting)
+		Public SystemSettings As IList(Of UserSetting)
 
 		Public DB As clsDataAccess
 		Protected General As clsGeneral
@@ -34,13 +43,18 @@ Namespace BaseClasses
 				Logs = New clsEventLog(_sessionInfo.LoginInfo)
 				AccessLog = New AccessLog(_sessionInfo.LoginInfo)
 
-				' Tempry one for expressions as there's a lot of code in module and not classes - yuck!
-				dataAccess = New clsDataAccess(_sessionInfo.LoginInfo)
-
 				RegionalSettings = value.RegionalSettings
 				AbsenceModule = value.AbsenceModule
 				BankHolidayModule = value.BankHolidayModule
 				PersonnelModule = value.PersonnelModule
+
+				Tables = value.Tables
+				Columns = value.Columns
+				Relations = value.Relations
+
+				_moduleSettings = value.ModuleSettings
+				_userSettings = value.UserSettings
+				SystemSettings = value.SystemSettings
 
 			End Set
 			Get
@@ -335,7 +349,7 @@ ErrorTrap:
 #Region "From clsGeneral"
 
 		Public Function GetModuleParameter(psModuleKey As String, psParameterKey As String) As String
-			Return ModuleSettings.GetSetting(psModuleKey, psParameterKey).ParameterValue
+			Return _moduleSettings.GetSetting(psModuleKey, psParameterKey).ParameterValue
 		End Function
 
 		Protected Function FilteredIDs(plngExprID As Integer, ByRef psIDSQL As String, ByRef psUDFs() As String, Optional paPrompts As Object = Nothing) As Boolean
@@ -358,6 +372,42 @@ ErrorTrap:
 
 		End Function
 
+		Public Function GetDataType(lTableID As Integer, lngColumnID As Integer) As SQLDataType
+			Return Columns.GetById(lngColumnID).DataType
+		End Function
+
+		Public Function GetColumnTable(plngColumnID As Integer) As Integer
+			Return Columns.GetById(plngColumnID).TableID
+		End Function
+
+		Public Function GetColumnName(plngColumnID As Integer) As String
+			If plngColumnID = 0 Then
+				Return ""
+			Else
+				Return Columns.GetById(plngColumnID).Name
+			End If
+		End Function
+
+		Friend Function GetColumnDataType(plngColumnID As Integer) As SQLDataType
+			Return Columns.GetById(plngColumnID).DataType
+		End Function
+
+		Public Function IsPhotoDataType(lngColumnID As Integer) As Boolean
+			Return Columns.GetById(lngColumnID).DataType = SQLDataType.sqlVarBinary
+		End Function
+
+		Public Function GetColumnTableName(plngColumnID As Integer) As String
+			Return Columns.GetById(plngColumnID).TableName
+		End Function
+
+		Public Function IsAChildOf(lTestTableID As Integer, lBaseTableID As Integer) As Boolean
+			Return Relations.IsRelation(lBaseTableID, lTestTableID)
+		End Function
+
+		Public Function IsAParentOf(lTestTableID As Integer, lBaseTableID As Integer) As Boolean
+			Return Relations.IsRelation(lTestTableID, lBaseTableID)
+		End Function
+
 #End Region
 
 #Region "Accessible from dmi.net - may need to move to a metadata class at a future date"
@@ -372,6 +422,67 @@ ErrorTrap:
 		End Function
 
 #End Region
+
+#Region "FROM modPermissions"
+
+		Friend Function GetColumnPrivileges(ByRef psTableViewName As String) As CColumnPrivileges
+			' Return the column privileges collection for the given table.
+			On Error GoTo ErrorTrap
+
+			Dim fOK As Boolean
+			Dim iLoop As Integer
+			Dim objColumnPrivileges As CColumnPrivileges
+
+			fOK = True
+
+			' Instantiate  the Column Privileges collection if it does not already exist.
+			If gcolColumnPrivilegesCollection Is Nothing Then
+				gcolColumnPrivilegesCollection = New Collection
+			End If
+
+			' If the given table/view's column privilege collection has already been
+			' read then simply return it.
+			For iLoop = 1 To gcolColumnPrivilegesCollection.Count()
+				'UPGRADE_WARNING: Couldn't resolve default property of object gcolColumnPrivilegesCollection().Tag. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+				If UCase(gcolColumnPrivilegesCollection.Item(iLoop).Tag) = UCase(psTableViewName) Then
+					Return gcolColumnPrivilegesCollection.Item(iLoop)
+				End If
+			Next iLoop
+
+TidyUpAndExit:
+			If fOK Then
+				GetColumnPrivileges = objColumnPrivileges
+			Else
+				'UPGRADE_NOTE: Object GetColumnPrivileges may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
+				GetColumnPrivileges = Nothing
+			End If
+			Exit Function
+
+ErrorTrap:
+			'NO MSGBOX ON THE SERVER ! - MsgBox Err.Description & " - GetColumnPrivileges"
+			fOK = False
+			Resume TidyUpAndExit
+
+		End Function
+
+#End Region
+
+#Region "FROM clsSettings"
+
+		Public Function GetUserSetting(strSection As String, strKey As String, varDefault As Object) As Object
+
+			Dim objSetting = _userSettings.GetUserSetting(strSection.ToLower(), strKey.ToLower())
+			If objSetting Is Nothing Then
+				Return varDefault
+			Else
+				Return objSetting.Value
+			End If
+
+		End Function
+
+
+#End Region
+
 
 	End Class
 End Namespace

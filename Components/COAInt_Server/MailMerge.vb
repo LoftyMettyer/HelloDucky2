@@ -312,7 +312,7 @@ Public Class MailMerge
 
 		Try
 
-			Dim dsData = dataAccess.GetDataSet("spASRIntGetMailMergeDS", New SqlParameter("id", SqlDbType.Int) With {.Value = mlngMailMergeID})
+			Dim dsData = DB.GetDataSet("spASRIntGetMailMergeDS", New SqlParameter("id", SqlDbType.Int) With {.Value = mlngMailMergeID})
 
 			rsMailMergeDefinition = dsData.Tables(0)
 
@@ -841,7 +841,7 @@ LocalErr:
 					'TM20020904 Fault 4364 - depending on whether the table that is about to
 					'                        joined is a Parent or Child denotes which ID
 					'                        columns are used to establish the join.
-					If General.IsAParentOf((objTableView.TableID), mlngDefBaseTableID) Then
+					If IsAParentOf((objTableView.TableID), mlngDefBaseTableID) Then
 						'Table/View is parent of Base Table.
 						mstrSQLJoin = mstrSQLJoin & vbNewLine & " LEFT OUTER JOIN " & sSource & " ON " & mstrSQLFrom & ".ID_" & CStr(objTableView.TableID) & " = " & sSource & ".ID"
 					End If
@@ -880,7 +880,7 @@ LocalErr:
 					'TM20020904 Fault 4364 - depending on whether the table that is about to
 					'                        joined is a Parent or Child denotes which ID
 					'                        columns are used to establish the join.
-					If General.IsAParentOf((objTableView.TableID), mlngDefBaseTableID) Then
+					If IsAParentOf((objTableView.TableID), mlngDefBaseTableID) Then
 						'Table/View is parent of Base Table.
 						mstrSQLJoin = mstrSQLJoin & vbNewLine & " LEFT OUTER JOIN " & sSource & " ON " & mstrSQLFrom & ".ID_" & lngCalcViews(2, intCount) & " = " & sSource & ".ID"
 					End If

@@ -116,6 +116,7 @@
   <ItemGroup>
     <Compile Include="BaseClasses\BaseExpressionComponent.vb" />
     <Compile Include="BaseClasses\BaseForDMI.vb" />
+    <Compile Include="BaseClasses\BaseModuleSpecific.vb" />
     <Compile Include="BaseClasses\BaseOutput.vb" />
     <Compile Include="BaseClasses\BaseReport.vb" />
     <Compile Include="clsAbsenceCalendar.vb" />
@@ -260,9 +261,6 @@
     </Compile>
     <Compile Include="ModuleSpecifics\modBankHolidaySpecifics.vb" />
     <Compile Include="modIntranet.vb">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="modPermissions.vb">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="ModuleSpecifics\modPersonnelSpecifics.vb">

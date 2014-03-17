@@ -104,9 +104,9 @@ Public Class clsGeneral
 		Return DB.GetDataTable(sSQL)
 	End Function
 
-	Public Function GetTableName(plngTableID As Integer) As String
-		Return Tables.GetById(plngTableID).Name
-	End Function
+	'Public Function GetTableName(plngTableID As Integer) As String
+	'	Return Tables.GetById(plngTableID).Name
+	'End Function
 
 	Public Function GetFilterName(lFilterID As Integer) As String
 
@@ -147,40 +147,6 @@ Public Class clsGeneral
 
 	End Function
 
-	Public Function GetDataType(lTableID As Integer, lngColumnID As Integer) As SQLDataType
-		Return Columns.GetById(lngColumnID).DataType
-	End Function
-
-	Public Function GetColumnTable(plngColumnID As Integer) As Integer
-		Return Columns.GetById(plngColumnID).TableID
-	End Function
-
-	Public Function GetDefaultOrder(plngTableID As Integer) As Integer
-		Return Tables.GetById(plngTableID).DefaultOrderID
-	End Function
-
-	Public Function GetColumnName(plngColumnID As Integer) As String
-		If plngColumnID = 0 Then
-			Return ""
-		Else
-			Return Columns.GetById(plngColumnID).Name
-		End If
-	End Function
-
-	Shared Function GetModuleParameter(psModuleKey As String, psParameterKey As String) As String
-		Return ModuleSettings.GetSetting(psModuleKey, psParameterKey).ParameterValue
-	End Function
-
-	Public Function GetUserSetting(strSection As String, strKey As String, ByRef varDefault As Object) As Object
-		Dim objData = UserSettings.GetUserSetting(strSection, strKey)
-
-		If objData Is Nothing Then
-			Return varDefault
-		Else
-			Return objData.Value
-		End If
-
-	End Function
 
 	Friend Function UniqueSQLObjectName(strPrefix As String, intType As Integer) As String
 
@@ -227,36 +193,6 @@ Public Class clsGeneral
 
 	End Function
 
-	Public Function DoesColumnUseSeparators(plngColumnID As Integer) As Boolean
-		Return Columns.GetById(plngColumnID).Use1000Separator
-	End Function
-
-	' Returns the amount of decimals that are specificed for a column
-	Public Function GetDecimalsSize(plngColumnID As Integer) As Integer
-		Return Columns.GetById(plngColumnID).Decimals
-	End Function
-
-	Public Function IsAChildOf(lTestTableID As Integer, lBaseTableID As Integer) As Boolean
-		Return Relations.IsRelation(lBaseTableID, lTestTableID)
-	End Function
-
-	Public Function IsAParentOf(lTestTableID As Integer, lBaseTableID As Integer) As Boolean
-		Return Relations.IsRelation(lTestTableID, lBaseTableID)
-	End Function
-
-
-
-	Public Function GetColumnDataType(plngColumnID As Integer) As SQLDataType
-		Return Columns.GetById(plngColumnID).DataType
-	End Function
-
-	Public Function GetColumnTableName(plngColumnID As Integer) As String
-		Return Columns.GetById(plngColumnID).TableName
-	End Function
-
-	Public Function IsPhotoDataType(lngColumnID As Integer) As Boolean
-		Return Columns.GetById(lngColumnID).DataType = SQLDataType.sqlVarBinary
-	End Function
 
 	Friend Function UDFFunctions(ByRef paFunctions As String(), ByRef pbCreate As Boolean) As Boolean
 

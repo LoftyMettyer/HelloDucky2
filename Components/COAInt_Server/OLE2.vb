@@ -135,7 +135,7 @@ Public Class Ole
 				Return Nothing
 			End If
 
-			strColumnName = General.GetColumnName(plngColumnID)
+			strColumnName = GetColumnName(plngColumnID)
 
 			sSQL = "SELECT " & strColumnName & " FROM " & pstrRealSource & " WHERE ID=" & plngRecordID
 			rsDocument = DB.GetDataTable(sSQL).Rows(0)
@@ -221,9 +221,9 @@ Public Class Ole
 		End If
 
 		strTempFile = GetTmpFName()
-		_misPhoto = General.IsPhotoDataType(plngColumnID)
+		_misPhoto = IsPhotoDataType(plngColumnID)
 
-		strColumnName = General.GetColumnName(plngColumnID)
+		strColumnName = GetColumnName(plngColumnID)
 		sSQL = "SELECT " & strColumnName & " FROM " & pstrRealSource & " WHERE ID=" & plngRecordID
 
 		rsDocument = DB.GetDataTable(sSQL).Rows(0)
@@ -289,9 +289,9 @@ Public Class Ole
 			Exit Function
 		End If
 
-		Dim bIsPhoto = General.IsPhotoDataType(plngColumnID)
+		Dim bIsPhoto = IsPhotoDataType(plngColumnID)
 
-		strColumnName = General.GetColumnName(plngColumnID)
+		strColumnName = GetColumnName(plngColumnID)
 		sSQL = "SELECT " & strColumnName & " FROM " & pstrRealSource & " WHERE ID=" & plngRecordID
 
 		rsDocument = DB.GetDataTable(sSQL).Rows(0)

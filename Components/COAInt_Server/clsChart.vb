@@ -58,8 +58,8 @@ Public Class clsChart
 		lngColourID = plngChart_ColourID
 
 		strTableName = GetTableName(lngTableID)
-		strColumnName = General.GetColumnName(lngColumnID)
-		strColourColumnName = General.GetColumnName(lngColourID)
+		strColumnName = GetColumnName(lngColumnID)
+		strColourColumnName = GetColumnName(lngColourID)
 
 		If fOK Then fOK = GenerateSQLSelect(lngTableID, strTableName, lngColumnID, strColumnName, False)
 		If fOK And piElementType = 2 And lngColourID > 0 Then fOK = GenerateSQLSelect(lngTableID, strTableName, lngColourID, strColourColumnName, True)

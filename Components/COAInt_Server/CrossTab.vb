@@ -567,23 +567,23 @@ ErrorTrap:
 			mdblMin(HOR) = Val(objRow("HorizontalStart"))
 			mdblMax(HOR) = Val(objRow("HorizontalStop"))
 			mdblStep(HOR) = Val(objRow("HorizontalStep"))
-			mstrColName(HOR) = General.GetColumnName(mlngColID(HOR))
-			mlngColDataType(HOR) = CStr(General.GetDataType(mlngBaseTableID, mlngColID(HOR)))
+			mstrColName(HOR) = GetColumnName(mlngColID(HOR))
+			mlngColDataType(HOR) = CStr(GetDataType(mlngBaseTableID, mlngColID(HOR)))
 			mstrFormat(HOR) = GetFormat(mlngColID(HOR))
 
 			mlngColID(VER) = CInt(objRow("VerticalColID"))
 			mdblMin(VER) = Val(objRow("VerticalStart"))
 			mdblMax(VER) = Val(objRow("VerticalStop"))
 			mdblStep(VER) = Val(objRow("VerticalStep"))
-			mstrColName(VER) = General.GetColumnName(mlngColID(VER))
-			mlngColDataType(VER) = CStr(General.GetDataType(mlngBaseTableID, mlngColID(VER)))
+			mstrColName(VER) = GetColumnName(mlngColID(VER))
+			mlngColDataType(VER) = CStr(GetDataType(mlngBaseTableID, mlngColID(VER)))
 			mstrFormat(VER) = GetFormat(mlngColID(VER))
 
 			mlngColID(PGB) = CInt(objRow("PageBreakColID"))
 			mblnPageBreak = (mlngColID(PGB) > 0)
 			If mblnPageBreak Then
-				mstrColName(PGB) = General.GetColumnName(mlngColID(PGB))
-				mlngColDataType(PGB) = CStr(General.GetDataType(mlngBaseTableID, mlngColID(PGB)))
+				mstrColName(PGB) = GetColumnName(mlngColID(PGB))
+				mlngColDataType(PGB) = CStr(GetDataType(mlngBaseTableID, mlngColID(PGB)))
 				mstrFormat(PGB) = GetFormat(mlngColID(PGB))
 				mdblMin(PGB) = Val(objRow("PageBreakStart"))
 				mdblMax(PGB) = Val(objRow("PageBreakStop"))
@@ -991,10 +991,10 @@ LocalErr:
 
 									mstrSQLJoin = mstrSQLJoin & vbNewLine & " LEFT OUTER JOIN " & sSource & " ON " & mstrSQLFrom & ".ID = " & sSource & ".ID"
 
-									sWhereIDs = sWhereIDs & IIf(sWhereIDs <> vbNullString, " OR ", vbNullString).ToString() & mstrSQLFrom & ".ID IN (SELECT ID FROM " & sSource & ")"
+									sWhereIDs = sWhereIDs & IIf(sWhereIDs <> vbNullString, " OR ", vbNullString) & mstrSQLFrom & ".ID IN (SELECT ID FROM " & sSource & ")"
 
 									'If mstrPicklistFilter <> vbNullString Then
-									strSelectedRecords = strSelectedRecords & IIf(strSelectedRecords <> vbNullString, " OR ", vbNullString).ToString() & "(" & IIf(mstrPicklistFilter <> vbNullString, sSource & ".ID IN (" & mstrPicklistFilter & ") AND ", vbNullString).ToString() & sSource & ".ID > 0)"
+									strSelectedRecords = strSelectedRecords & IIf(strSelectedRecords <> vbNullString, " OR ", vbNullString) & "(" & IIf(mstrPicklistFilter <> vbNullString, sSource & ".ID IN (" & mstrPicklistFilter & ") AND ", vbNullString) & sSource & ".ID > 0)"
 									'End If
 
 								End If
@@ -2039,13 +2039,13 @@ LocalErr:
 		End If
 
 		mlngColID(HOR) = lngHorColID
-		mstrColName(HOR) = General.GetColumnName(lngHorColID)
-		mlngColDataType(HOR) = CStr(General.GetDataType(mlngBaseTableID, lngHorColID))
+		mstrColName(HOR) = GetColumnName(lngHorColID)
+		mlngColDataType(HOR) = CStr(GetDataType(mlngBaseTableID, lngHorColID))
 		mstrFormat(HOR) = GetFormat(mlngColID(HOR))
 
 		mlngColID(VER) = lngVerColID
-		mstrColName(VER) = General.GetColumnName(lngVerColID)
-		mlngColDataType(VER) = CStr(General.GetDataType(mlngBaseTableID, lngVerColID))
+		mstrColName(VER) = GetColumnName(lngVerColID)
+		mlngColDataType(VER) = CStr(GetDataType(mlngBaseTableID, lngVerColID))
 		mstrFormat(VER) = GetFormat(mlngColID(VER))
 
 		mlngIntersectionDecimals = 2
