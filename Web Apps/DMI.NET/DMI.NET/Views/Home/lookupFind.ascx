@@ -45,7 +45,7 @@
 				autoOpen: true,
 				modal: true,
 				width: 750,
-				height: 800,
+				height: 600,
 				close: function() {
 					CancelLookup();
 				}
@@ -424,7 +424,7 @@
 					</table>
 				</div>
 				<%End If 'if fIsLookupTable then%>
-				<div id="lookupFindGridRow" style="height: <%If fIsLookupTable Then%>60%<%Else%>55%<%End If%>; margin-bottom: 150px;">
+				<div id="lookupFindGridRow" style="height: <%If fIsLookupTable Then%>55%<%Else%>55%<%End If%>; margin-bottom: 99px;">
 					<table class="outline" style="width: 100%;" id="ssOleDBGrid"></table>
 					<div id="ssOLEDBPager"></div>					
 				</div>
