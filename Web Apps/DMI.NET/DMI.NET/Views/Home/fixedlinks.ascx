@@ -35,47 +35,33 @@
 			}
 		});
 		
+		//Search dashboard functionality
 		$("#searchDashboardString").keyup(function (event) {
-			//Dashboard search functionality - tiles only.
-			var searchString = $('#searchDashboardString').val();			
-			if (searchString.length == 0) {
-				$('.pendingworkflowlinkcontent li').css('opacity', '1');
-				$('.dropdownlinkcontent li').css('opacity', '1');
-				$('.hypertextlinkcontent li').css('opacity', '1');
-				$('.buttonlinkcontent li').css('opacity', '1');
-			} else {
-				$('.pendingworkflowlinkcontent li').css('opacity', '.1');
-				$('.dropdownlinkcontent li').css('opacity', '.1');
-				$('.hypertextlinkcontent li').css('opacity', '.1');
-				$('.buttonlinkcontent li').css('opacity', '.1');
-				$("span:MyCaseInsensitiveContains('" + searchString + "')").parent('li').css('opacity', '1');
-				$("a:MyCaseInsensitiveContains('" + searchString + "')").parent('li').css('opacity', '1');
-			}
+			filterDashboard();
 		});
-
-		
-		//To handle close button click
-		$("#searchDashboardString").mouseleave(function (event) {		
-			
-			//Dashboard search functionality - tiles only.
-			var searchString = $('#searchDashboardString').val();			
-			if (searchString.length == 0) {
-				$('.pendingworkflowlinkcontent li').css('opacity', '1');
-				$('.dropdownlinkcontent li').css('opacity', '1');
-				$('.hypertextlinkcontent li').css('opacity', '1');
-				$('.buttonlinkcontent li').css('opacity', '1');
-			} else {
-				$('.pendingworkflowlinkcontent li').css('opacity', '.1');
-				$('.dropdownlinkcontent li').css('opacity', '.1');
-				$('.hypertextlinkcontent li').css('opacity', '.1');
-				$('.buttonlinkcontent li').css('opacity', '.1');
-				$("span:MyCaseInsensitiveContains('" + searchString + "')").parent('li').css('opacity', '1');
-				$("a:MyCaseInsensitiveContains('" + searchString + "')").parent('li').css('opacity', '1');
-			}
-		});
+		$("#searchDashboardString").mouseup(function (event) {
+			setTimeout('filterDashboard();', 100);
+		});		
 
 	});
-	
+
+	function filterDashboard() {
+		//Dashboard search functionality - tiles only.
+		var searchString = $('#searchDashboardString').val();
+		if (searchString.length == 0) {
+			$('.pendingworkflowlinkcontent li').removeClass('dimmed');
+			$('.dropdownlinkcontent li').removeClass('dimmed');
+			$('.hypertextlinkcontent li').removeClass('dimmed');
+			$('.buttonlinkcontent li').removeClass('dimmed');
+		} else {
+			$('.pendingworkflowlinkcontent li').addClass('dimmed');
+			$('.dropdownlinkcontent li').addClass('dimmed');
+			$('.hypertextlinkcontent li').addClass('dimmed');
+			$('.buttonlinkcontent li').addClass('dimmed');
+			$("span:MyCaseInsensitiveContains('" + searchString + "')").parent('li').removeClass('dimmed');
+			$("a:MyCaseInsensitiveContains('" + searchString + "')").parent('li').removeClass('dimmed');
+		}
+	}
 
 	function wrapTileIcons() {
 		if (window.currentLayout == "tiles") {

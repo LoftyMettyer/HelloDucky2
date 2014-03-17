@@ -373,16 +373,22 @@ select[disabled=""] {
 }
 
 
-.ui-state-disabled, .ui-widget-content .ui-state-disabled, .ui-widget-header .ui-state-disabled {
-	opacity: .65!important;
-	filter: Alpha(Opacity=65)!important;
+.ui-state-disabled:not(.dimmed), .ui-widget-content:not(.dimmed) .ui-state-disabled:not(.dimmed), .ui-widget-header:not(.dimmed) .ui-state-disabled:not(.dimmed) {
+	opacity: 1!important;
+	filter: Alpha(Opacity=100)!important;
 }
 
 
-.linkspagebuttontext.ui-state-disabled {
+.linkspagebuttontext.ui-state-disabled:not(.dimmed) {
 	opacity: 1!important;
 	filter: Alpha(Opacity=100)!important;	
 }
+
+.dimmed {
+	opacity: 0.1!important;
+	filter: Alpha(Opacity=10)!important;	
+}
+
 
 select.combodisabled
 {

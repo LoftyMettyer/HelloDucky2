@@ -449,11 +449,11 @@ li {list-style: none;}
 /*ABS Colour Scheme for tiles */
 .Colour1 {background-color: rgb(238, 175, 0);color: white;}				
 .Colour2 {background-color: rgb(0, 84, 159);color: white;}				
-.Colour3 {background-color: rgba(98, 164,211, 0.36);color: white;}
+.Colour3 {background-color: rgb(98, 164,211);color: white;}
 .Colour4 {background-color: rgb(93, 0, 74);color: white;}					
-.Colour5 {background-color: rgba(0, 144, 137, 0.36);color: white;}
+.Colour5 {background-color: rgb(0, 144, 137);color: white;}
 .Colour6 {background-color: rgb(0, 70,135);color: white;}					
-.Colour7 {background-color: rgba(132, 134, 135, 0.36);color: white;} 
+.Colour7 {background-color: rgb(132, 134, 135);color: white;} 
 .Colour8 {background-color: rgb(170, 1, 50);color: white;}				
 
 /*Sunnside Colour Scheme for tiles 
