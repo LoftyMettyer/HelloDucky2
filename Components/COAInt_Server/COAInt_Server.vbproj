@@ -104,6 +104,7 @@
   </ItemGroup>
   <ItemGroup>
     <Import Include="HR.Intranet.Server.Extensions" />
+    <Import Include="HR.Intranet.Server.ModuleSpecifics" />
     <Import Include="Microsoft.VisualBasic" />
     <Import Include="System" />
     <Import Include="System.Collections" />
@@ -253,23 +254,24 @@
     <Compile Include="Metadata\Relation.vb" />
     <Compile Include="Metadata\UserSetting.vb" />
     <Compile Include="Metadata\Table.vb" />
-    <Compile Include="modAbsenceSpecifics.vb">
+    <Compile Include="ModuleSpecifics\Consts.vb" />
+    <Compile Include="ModuleSpecifics\modAbsenceSpecifics.vb">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="modBankHolidaySpecifics.vb" />
+    <Compile Include="ModuleSpecifics\modBankHolidaySpecifics.vb" />
     <Compile Include="modIntranet.vb">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="modPermissions.vb">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="modPersonnelSpecifics.vb">
+    <Compile Include="ModuleSpecifics\modPersonnelSpecifics.vb">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="modSettings.vb">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="modTrainingBookingSpecifics.vb" />
+    <Compile Include="ModuleSpecifics\modTrainingBookingSpecifics.vb" />
     <Compile Include="AccessLog.vb">
       <SubType>Code</SubType>
     </Compile>
