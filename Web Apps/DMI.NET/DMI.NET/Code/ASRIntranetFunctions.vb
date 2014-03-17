@@ -376,7 +376,7 @@ Public Module ASRIntranetFunctions
 				End If
 			End If
 		Catch ex As Exception
-
+			Throw
 		End Try
 
 		Return ReturnValue
