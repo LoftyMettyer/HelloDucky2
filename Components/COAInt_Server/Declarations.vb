@@ -16,10 +16,5 @@ Module Declarations
 	Public gcolLinks As List(Of Link)
 	Public gcolNavigationLinks As List(Of Link)
 
-	Public Functions As ICollection(Of Metadata.Function)
-	Public Operators As ICollection(Of Metadata.Operator)
-
-	Public Modules As List(Of ModuleSetting)
-
 
 End Module

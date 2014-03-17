@@ -1,6 +1,7 @@
 ﻿Option Strict On
 Option Explicit On
 
+Imports System.Collections.Generic
 Imports HR.Intranet.Server.Enums
 Imports HR.Intranet.Server.Structures
 Imports System.Data.SqlClient
@@ -14,12 +15,17 @@ Namespace BaseClasses
 		Protected DB As New clsDataAccess
 		Protected AccessLog As AccessLog
 
+		Protected Functions As ICollection(Of Metadata.Function)
+		Protected Operators As ICollection(Of Metadata.Operator)
+
 		Public Sub New(Value As SessionInfo)
 			SessionInfo = Value
 			Login = Value.LoginInfo
 			DB = New clsDataAccess(Value.LoginInfo)
 			General = New clsGeneral(Value.LoginInfo)
 			AccessLog = New AccessLog(Value.LoginInfo)
+			Functions = Value.Functions
+			Operators = Value.Operators
 		End Sub
 
 		' keep a manual record of allocated IDs in case users in SYS MGR have created expressions but not yet saved changes

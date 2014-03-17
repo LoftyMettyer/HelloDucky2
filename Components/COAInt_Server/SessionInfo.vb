@@ -28,6 +28,11 @@ Public Class SessionInfo
 	Friend UserSettings As ICollection(Of UserSetting)
 	Friend SystemSettings As IList(Of UserSetting)
 
+	Private _modules As List(Of ModuleSetting)
+
+	Friend Functions As ICollection(Of Metadata.Function)
+	Friend Operators As ICollection(Of Metadata.Operator)
+
 	Public ReadOnly Property LoginInfo As LoginInfo
 		Get
 			Return _objLogin
@@ -39,7 +44,7 @@ Public Class SessionInfo
 	End Function
 
 	Public Function IsModuleEnabled(name As String) As Boolean
-		Return Modules.GetByKey(name).Enabled
+		Return _modules.GetByKey(name).Enabled
 	End Function
 
 	Public Function GetUserSetting(ByVal Section As String, ByVal Key As String, ByVal DefaultValue As Object) As Object
@@ -197,7 +202,7 @@ Public Class SessionInfo
 		SystemSettings = New List(Of UserSetting)
 		Functions = New Collection(Of Metadata.Function)
 		Operators = New Collection(Of Metadata.Operator)
-		Modules = New List(Of ModuleSetting)
+		_modules = New List(Of ModuleSetting)
 
 		Try
 
@@ -304,7 +309,7 @@ Public Class SessionInfo
 				Dim objModule = New ModuleSetting
 				objModule.ModuleKey = objRow("Name").ToString()
 				objModule.Enabled = CBool(objRow("Enabled"))
-				Modules.Add(objModule)
+				_modules.Add(objModule)
 			Next
 
 			For Each objRow As DataRow In objData.Tables(10).Rows
