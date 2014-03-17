@@ -410,7 +410,7 @@ Namespace ExClientCode
 						Dim flag As StyleFlag = New StyleFlag()
 
 						' Replicate style formats from ActiveX...
-						stlNumeric.Number = 0	' General style
+						stlNumeric.Number = 1	' Numeric style
 						stlNumeric.VerticalAlignment = TextAlignmentType.Top
 						stlNumeric.HorizontalAlignment = TextAlignmentType.Right
 						stlGeneral.Number = 49	' Text style		
@@ -424,8 +424,21 @@ Namespace ExClientCode
 							Select Case colColumns.Item(lngGridCol).DataType
 
 								Case SQLDataType.sqlNumeric, SQLDataType.sqlInteger
+
+									Dim numberAsString As String = strArray(lngGridCol, lngGridRow).ToString()
+									Dim indexOfDecimalPoint As Integer = numberAsString.IndexOf(".", System.StringComparison.Ordinal)
+									Dim numberOfDecimals As Integer = 0
+									If indexOfDecimalPoint > 0 Then numberOfDecimals = numberAsString.Substring(indexOfDecimalPoint + 1).Length
+
+									If numberOfDecimals > 0 Then
+										If numberOfDecimals > 100 Then numberOfDecimals = 100
+										stlNumeric.Custom = "0" & "." & New String("0", numberOfDecimals)
+									Else
+										stlNumeric.Custom = "@"
+									End If
+
 									.SetStyle(stlNumeric)
-									.PutValue(strArray(lngGridCol, lngGridRow))
+									.PutValue(NullSafeInteger(strArray(lngGridCol, lngGridRow)))
 								Case SQLDataType.sqlBoolean
 									.SetStyle(stlGeneral)
 									.PutValue(strArray(lngGridCol, lngGridRow))
@@ -1089,7 +1102,7 @@ LocalErr:
 		'****************************************************************
 
 		Function NullSafeInteger(ByVal arg As Object, _
-		Optional ByVal returnIfEmpty As Integer = 0) As String
+		Optional ByVal returnIfEmpty As Integer = 0) As Integer
 
 			Dim returnValue As Integer
 
