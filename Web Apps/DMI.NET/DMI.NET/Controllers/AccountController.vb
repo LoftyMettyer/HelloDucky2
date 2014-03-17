@@ -613,24 +613,24 @@ Namespace Controllers
 			Dim sMessage As String
 
 			' run the sp's through the object
-			Dim objResetPwd As New HR.Intranet.Server.clsResetPassword
+			Try
 
-			objResetPwd.Database = ApplicationSettings.LoginPage_Database
-			objResetPwd.ServerName = ApplicationSettings.LoginPage_Server
-			objResetPwd.Username = Request.Form("txtUserName")
 
-			' Force password change only if there are no other users logged in with the same name.
-			If Request.ServerVariables("HTTPS").ToLower <> "off" Then protocol = "https"
-			domainName = Request.ServerVariables("HTTP_HOST")
+				Dim objResetPwd As New HR.Intranet.Server.clsResetPassword
 
-			websiteURL = protocol & "://" & domainName & Url.Action("ResetPassword", "Account")	'Even though VS complains that it "Cannot resolve action 'ResetPassword'", it DOES resolve it!
-			sMessage = objResetPwd.GenerateLinkAndEmail(websiteURL, Now())
+				objResetPwd.Database = ApplicationSettings.LoginPage_Database
+				objResetPwd.ServerName = ApplicationSettings.LoginPage_Server
+				objResetPwd.Username = Request.Form("txtUserName")
 
-			ViewData("RedirectToURLMessage") = "Go back"
-			ViewData("RedirectToURL") = Url.Action("ForgotPassword", "Account")
+				' Force password change only if there are no other users logged in with the same name.
+				If Request.ServerVariables("HTTPS").ToLower <> "off" Then protocol = "https"
+				domainName = Request.ServerVariables("HTTP_HOST")
 
-			If Err.Number = 0 Then
-				objResetPwd = Nothing
+				websiteURL = protocol & "://" & domainName & Url.Action("ResetPassword", "Account")	'Even though VS complains that it "Cannot resolve action 'ResetPassword'", it DOES resolve it!
+				sMessage = objResetPwd.GenerateLinkAndEmail(websiteURL, Now())
+
+				ViewData("RedirectToURLMessage") = "Go back"
+				ViewData("RedirectToURL") = Url.Action("ForgotPassword", "Account")
 
 				' handle response from server...
 				If Trim(sMessage) = "" Then
@@ -642,9 +642,12 @@ Namespace Controllers
 					' failure message from dll...
 					ViewData("Message") = "You can not reset your password at this time.<br/><br/>" & sMessage
 				End If
-			Else
+
+			Catch ex As Exception
+				ViewData("RedirectToURLMessage") = "OK"
 				ViewData("Message") = "You cannot reset your password at this time. <br/><br/>Intranet specifics have not been configured. <br/><br/>Please contact your system administrator."
-			End If
+
+			End Try
 
 			Return View()
 		End Function
