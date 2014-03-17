@@ -268,7 +268,7 @@ Friend Class clsExprExpression
 
 	End Sub
 
-	Public Sub New(ByVal Value As LoginInfo)
+	Public Sub New(ByVal Value As SessionInfo)
 
 		MyBase.New(Value)
 
@@ -341,7 +341,7 @@ ErrorTrap:
 		Dim objComponent As clsExprComponent
 
 		' Instantiate a component object.
-		objComponent = New clsExprComponent(Login)
+		objComponent = New clsExprComponent(SessionInfo)
 
 		' Initialse the new component's properties.
 		objComponent.ParentExpression = Me
@@ -580,6 +580,8 @@ ErrorTrap:
 		ReDim avValues(2, mcolComponents.Count())
 		For iLoop1 = 1 To mcolComponents.Count()
 			With mcolComponents.Item(iLoop1)
+				.SessionInfo = SessionInfo
+
 				' If the current component is an operator then read the operator id into the array.
 				'UPGRADE_WARNING: Couldn't resolve default property of object mcolComponents.Item(iLoop1).ComponentType. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 				If .ComponentType = ExpressionComponentTypes.giCOMPONENT_OPERATOR Then
@@ -615,6 +617,7 @@ ErrorTrap:
 			For iLoop1 = iMinOperatorPrecedence To iMaxOperatorPrecedence
 				For iLoop2 = 1 To mcolComponents.Count()
 					With mcolComponents.Item(iLoop2)
+						.SessionInfo = SessionInfo
 						'UPGRADE_WARNING: Couldn't resolve default property of object mcolComponents.Item(iLoop2).ComponentType. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 						If .ComponentType = ExpressionComponentTypes.giCOMPONENT_OPERATOR Then
 							'UPGRADE_WARNING: Couldn't resolve default property of object mcolComponents.Item(iLoop2).Component. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
@@ -1034,7 +1037,7 @@ ErrorTrap:
 
 				' Instantiate each function parameter expression.
 				' Instruct the function parameter expression to delete its components.
-				objExpr = New clsExprExpression(Login)
+				objExpr = New clsExprExpression(SessionInfo)
 				objExpr.ExpressionID = CInt(objRow("ExprID"))
 				fOK = objExpr.DeleteExistingComponents
 				'UPGRADE_NOTE: Object objExpr may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
@@ -1145,6 +1148,7 @@ ErrorTrap:
 			End If
 
 			With mcolComponents.Item(iLoop1)
+				.SessionInfo = SessionInfo
 				' If the current component is an operator then read the operator id into the array.
 				'UPGRADE_WARNING: Couldn't resolve default property of object mcolComponents.Item(iLoop1).ComponentType. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 				If .ComponentType = ExpressionComponentTypes.giCOMPONENT_OPERATOR Then
@@ -1164,6 +1168,7 @@ ErrorTrap:
 
 				'UPGRADE_WARNING: Couldn't resolve default property of object mcolComponents.Item(iLoop1).ComponentType. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 				If .ComponentType = ExpressionComponentTypes.giCOMPONENT_FUNCTION Then
+					.Component.SessionInfo = SessionInfo
 					' Validate the function.
 					' NB. This also determines the function's return type if not already known.
 					'UPGRADE_WARNING: Couldn't resolve default property of object mcolComponents.Item().Component. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
@@ -1201,6 +1206,7 @@ ErrorTrap:
 				End If
 
 				With mcolComponents.Item(iLoop2)
+					.SessionInfo = SessionInfo
 					'UPGRADE_WARNING: Couldn't resolve default property of object mcolComponents.Item(iLoop2).ComponentType. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 					If .ComponentType = ExpressionComponentTypes.giCOMPONENT_OPERATOR Then
 						'UPGRADE_WARNING: Couldn't resolve default property of object mcolComponents.Item(iLoop2).Component. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
@@ -1517,10 +1523,10 @@ ErrorTrap:
 					Exit For
 				End If
 
-				objComp = New clsExprComponent(Login)
+				objComp = New clsExprComponent(SessionInfo)
 				objComp.ComponentID = CInt(objRow("ComponentID"))
 
-				objExpr = New clsExprExpression(Login)
+				objExpr = New clsExprExpression(SessionInfo)
 				objExpr.ExpressionID = objComp.RootExpressionID
 				objExpr.ConstructExpression()
 				iValidationCode = objExpr.ValidateSQLCode(plngFixedExpressionID, psFixedSQLCode)
@@ -1617,7 +1623,7 @@ ErrorTrap:
 				For Each objRow As DataRow In dsExpression.Tables(1).Rows
 
 					' Instantiate a new component object.
-					objComponent = New clsExprComponent(Login)
+					objComponent = New clsExprComponent(SessionInfo)
 
 					With objComponent
 						' Initialise the new component's properties.

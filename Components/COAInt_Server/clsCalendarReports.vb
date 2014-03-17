@@ -425,7 +425,7 @@ Public Class CalendarReport
 
 	Public ReadOnly Property IncludeBankHolidays_Enabled() As Boolean
 		Get
-			If (Not mblnGroupByDescription) And (Not mblnDisableRegions) And ((PersonnelBase And (Len(Trim(gsPersonnelRegionColumnName)) > 0) And (glngBHolRegionID > 0)) Or (PersonnelBase And (Len(Trim(gsPersonnelHRegionColumnName)) > 0) And (glngBHolRegionID > 0)) Or (mlngRegion > 0)) Then
+			If (Not mblnGroupByDescription) And (Not mblnDisableRegions) And ((PersonnelBase And (Len(Trim(PersonnelModule.gsPersonnelRegionColumnName)) > 0) And (BankHolidayModule.glngBHolRegionID > 0)) Or (PersonnelBase And (Len(Trim(PersonnelModule.gsPersonnelHRegionColumnName)) > 0) And (BankHolidayModule.glngBHolRegionID > 0)) Or (mlngRegion > 0)) Then
 
 				IncludeBankHolidays_Enabled = True
 			Else
@@ -436,7 +436,7 @@ Public Class CalendarReport
 
 	Public ReadOnly Property IncludeWorkingDaysOnly_Enabled() As Boolean
 		Get
-			If (Not mblnGroupByDescription) And (Not mblnDisableWPs) And ((PersonnelBase And (Len(Trim(gsPersonnelWorkingPatternColumnName)) > 0)) Or (PersonnelBase And (Len(Trim(gsPersonnelHWorkingPatternColumnName)) > 0))) Then
+			If (Not mblnGroupByDescription) And (Not mblnDisableWPs) And ((PersonnelBase And (Len(Trim(PersonnelModule.gsPersonnelWorkingPatternColumnName)) > 0)) Or (PersonnelBase And (Len(Trim(PersonnelModule.gsPersonnelHWorkingPatternColumnName)) > 0))) Then
 
 				IncludeWorkingDaysOnly_Enabled = True
 			Else
@@ -465,7 +465,7 @@ Public Class CalendarReport
 
 	Public ReadOnly Property ShowBankHolidays_Enabled() As Boolean
 		Get
-			If (Not mblnGroupByDescription) And (Not mblnDisableRegions) And ((PersonnelBase And (Len(Trim(gsPersonnelRegionColumnName)) > 0) And (glngBHolRegionID > 0)) Or (PersonnelBase And (Len(Trim(gsPersonnelHRegionColumnName)) > 0) And (glngBHolRegionID > 0)) Or (mlngRegion > 0)) Then
+			If (Not mblnGroupByDescription) And (Not mblnDisableRegions) And ((PersonnelBase And (Len(Trim(PersonnelModule.gsPersonnelRegionColumnName)) > 0) And (BankHolidayModule.glngBHolRegionID > 0)) Or (PersonnelBase And (Len(Trim(PersonnelModule.gsPersonnelHRegionColumnName)) > 0) And (BankHolidayModule.glngBHolRegionID > 0)) Or (mlngRegion > 0)) Then
 				ShowBankHolidays_Enabled = True
 			Else
 				ShowBankHolidays_Enabled = False
@@ -535,7 +535,7 @@ Public Class CalendarReport
 
 	Public ReadOnly Property PersonnelBase() As Boolean
 		Get
-			PersonnelBase = (mlngCalendarReportsBaseTable = glngPersonnelTableID)
+			PersonnelBase = (mlngCalendarReportsBaseTable = PersonnelModule.glngPersonnelTableID)
 		End Get
 	End Property
 
@@ -805,9 +805,9 @@ Public Class CalendarReport
 				mintType_BaseDesc1 = 3
 				iDecimals = General.GetDecimalsSize(mlngDescription1)
 				mstrFormat_BaseDesc1 = "#,0" & IIf(iDecimals > 0, "." & New String("#", iDecimals), "")
-			ElseIf General.BitColumn("C", mlngCalendarReportsBaseTable, mlngDescription1) Then
+			ElseIf IsBitColumn("C", mlngCalendarReportsBaseTable, mlngDescription1) Then
 				mintType_BaseDesc1 = 2
-			ElseIf General.DateColumn("C", mlngCalendarReportsBaseTable, mlngDescription1) Then
+			ElseIf IsDateColumn("C", mlngCalendarReportsBaseTable, mlngDescription1) Then
 				mintType_BaseDesc1 = 1
 			Else
 				mintType_BaseDesc1 = 0
@@ -819,9 +819,9 @@ Public Class CalendarReport
 				mintType_BaseDesc2 = 3
 				iDecimals = General.GetDecimalsSize(mlngDescription2)
 				mstrFormat_BaseDesc2 = "#,0" & IIf(iDecimals > 0, "." & New String("#", iDecimals), "")
-			ElseIf General.BitColumn("C", mlngCalendarReportsBaseTable, mlngDescription2) Then
+			ElseIf IsBitColumn("C", mlngCalendarReportsBaseTable, mlngDescription2) Then
 				mintType_BaseDesc2 = 2
-			ElseIf General.DateColumn("C", mlngCalendarReportsBaseTable, mlngDescription2) Then
+			ElseIf IsDateColumn("C", mlngCalendarReportsBaseTable, mlngDescription2) Then
 				mintType_BaseDesc2 = 1
 			Else
 				mintType_BaseDesc2 = 0
@@ -829,9 +829,9 @@ Public Class CalendarReport
 		End If
 		'get the datatype/properties for the descexpr column
 		If (mlngDescriptionExpr > 0) Then
-			If General.BitColumn("X", mlngCalendarReportsBaseTable, mlngDescriptionExpr) Then
+			If IsBitColumn("X", mlngCalendarReportsBaseTable, mlngDescriptionExpr) Then
 				mintType_BaseDescExpr = 2
-			ElseIf General.DateColumn("X", mlngCalendarReportsBaseTable, mlngDescriptionExpr) Then
+			ElseIf IsDateColumn("X", mlngCalendarReportsBaseTable, mlngDescriptionExpr) Then
 				mintType_BaseDescExpr = 1
 			Else
 				mintType_BaseDescExpr = 0
@@ -1167,10 +1167,10 @@ ErrorTrap:
 						strFormat = "#,0" & IIf(iDecimals > 0, "." & New String("#", iDecimals), "")
 						'UPGRADE_WARNING: Couldn't resolve default property of object strBaseDescription1. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 						strBaseDescription1 = Format(objRow("Description1"), strFormat)
-					ElseIf General.BitColumn("C", mlngCalendarReportsBaseTable, mlngDescription1) Then
+					ElseIf IsBitColumn("C", mlngCalendarReportsBaseTable, mlngDescription1) Then
 						'UPGRADE_WARNING: Couldn't resolve default property of object strBaseDescription1. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 						strBaseDescription1 = IIf(objRow("Description1"), "Y", "N")
-					ElseIf General.DateColumn("C", mlngCalendarReportsBaseTable, mlngDescription1) Then
+					ElseIf IsDateColumn("C", mlngCalendarReportsBaseTable, mlngDescription1) Then
 						'UPGRADE_WARNING: Couldn't resolve default property of object strBaseDescription1. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 						strBaseDescription1 = VB6.Format(objRow("Description1"), mstrClientDateFormat)
 					Else
@@ -1190,10 +1190,10 @@ ErrorTrap:
 						strFormat = "#,0" & IIf(iDecimals > 0, "." & New String("#", iDecimals), "")
 						'UPGRADE_WARNING: Couldn't resolve default property of object strBaseDescription2. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 						strBaseDescription2 = Format(objRow("Description2"), strFormat)
-					ElseIf General.BitColumn("C", mlngCalendarReportsBaseTable, mlngDescription2) Then
+					ElseIf IsBitColumn("C", mlngCalendarReportsBaseTable, mlngDescription2) Then
 						'UPGRADE_WARNING: Couldn't resolve default property of object strBaseDescription2. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 						strBaseDescription2 = IIf(objRow("Description2"), "Y", "N")
-					ElseIf General.DateColumn("C", mlngCalendarReportsBaseTable, mlngDescription1) Then
+					ElseIf IsDateColumn("C", mlngCalendarReportsBaseTable, mlngDescription1) Then
 						'UPGRADE_WARNING: Couldn't resolve default property of object strBaseDescription2. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 						strBaseDescription2 = VB6.Format(objRow("Description2"), mstrClientDateFormat)
 					Else
@@ -1208,9 +1208,9 @@ ErrorTrap:
 				' Get base description expression
 				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
 				If Not IsDBNull(objRow("DescriptionExpr")) Then
-					If General.BitColumn("X", mlngCalendarReportsBaseTable, mlngDescriptionExpr) Then
+					If IsBitColumn("X", mlngCalendarReportsBaseTable, mlngDescriptionExpr) Then
 						strBaseDescriptionExpr = IIf(objRow("DescriptionExpr"), "Y", "N")
-					ElseIf General.DateColumn("X", mlngCalendarReportsBaseTable, mlngDescriptionExpr) Then
+					ElseIf IsDateColumn("X", mlngCalendarReportsBaseTable, mlngDescriptionExpr) Then
 						strBaseDescriptionExpr = IIf(objRow("DescriptionExpr"), "Y", "N")
 					Else
 						strBaseDescriptionExpr = objRow("DescriptionExpr")
@@ -1383,7 +1383,7 @@ ErrorTrap:
 		Dim colBankHolidays As clsBankHolidays
 		Dim objBankHoliday As clsBankHoliday
 
-		If mblnPersonnelBase And (grtRegionType = RegionType.rtHistoricRegion) And (Not mblnGroupByDescription) And (mlngRegion < 1) Then
+		If mblnPersonnelBase And (PersonnelModule.grtRegionType = RegionType.rtHistoricRegion) And (Not mblnGroupByDescription) And (mlngRegion < 1) Then
 
 			'Need to get the current region from the previously populated.
 			'NB. cant get the region from the collection as the current region is required even
@@ -1403,7 +1403,7 @@ ErrorTrap:
 				End With
 			Next objBankHoliday
 
-		ElseIf ((mlngRegion > 0) Or (mblnPersonnelBase And (grtRegionType = RegionType.rtStaticRegion))) And (Not mblnGroupByDescription) Then
+		ElseIf ((mlngRegion > 0) Or (mblnPersonnelBase And (PersonnelModule.grtRegionType = RegionType.rtStaticRegion))) And (Not mblnGroupByDescription) Then
 
 			'Static Region Bank Holidays
 			colBankHolidays = mcolStaticBankHolidays.Item(CStr(plngBaseID))
@@ -1497,7 +1497,7 @@ ErrorTrap:
 		strWorkingPattern = "              " 'empty working pattern
 		intWeekDay = CStr(Weekday(pdtDate, FirstDayOfWeek.Sunday))
 
-		If mblnPersonnelBase And (modPersonnelSpecifics.gwptWorkingPatternType = WorkingPatternType.wptHistoricWPattern) And (Not mblnGroupByDescription) Then
+		If mblnPersonnelBase And (PersonnelModule.gwptWorkingPatternType = WorkingPatternType.wptHistoricWPattern) And (Not mblnGroupByDescription) Then
 
 			'Historic Working Pattern
 
@@ -1566,7 +1566,7 @@ ErrorTrap:
 				End With
 			Next objWorkingPattern
 
-		ElseIf mblnPersonnelBase And (modPersonnelSpecifics.gwptWorkingPatternType = WorkingPatternType.wptStaticWPattern) And (Not mblnGroupByDescription) Then
+		ElseIf mblnPersonnelBase And (PersonnelModule.gwptWorkingPatternType = WorkingPatternType.wptStaticWPattern) And (Not mblnGroupByDescription) Then
 
 			'Static Working Pattern
 
@@ -3018,9 +3018,6 @@ ErrorTrap:
 
 		' Purpose : Sets references to other classes and redimensions arrays
 		'           used for table usage information
-
-		ReadBankHolidayParameters()
-
 		Dim rstData As DataTable
 
 		Legend = New List(Of CalendarLegend)()
@@ -3459,10 +3456,10 @@ TidyUpAndExit:
 			If mlngRegion > 0 Then
 				mstrRegion = General.GetColumnName(rowDefinition("Region"))
 
-			ElseIf (mlngCalendarReportsBaseTable = glngPersonnelTableID) And (grtRegionType = RegionType.rtStaticRegion) Then
+			ElseIf (mlngCalendarReportsBaseTable = PersonnelModule.glngPersonnelTableID) And (PersonnelModule.grtRegionType = RegionType.rtStaticRegion) Then
 
-				mlngRegion = glngBHolRegionID
-				mstrRegion = gsBHolRegionColumnName
+				mlngRegion = BankHolidayModule.glngBHolRegionID
+				mstrRegion = BankHolidayModule.gsBHolRegionColumnName
 
 			Else
 				mstrRegion = vbNullString
@@ -3502,7 +3499,7 @@ TidyUpAndExit:
 					mdtStartDate = Today
 				Case CalendarDataType.Custom
 					'UPGRADE_WARNING: Couldn't resolve default property of object General.GetValueForRecordIndependantCalc(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					mdtStartDate = General.GetValueForRecordIndependantCalc(mlngStartDateExpr, mvarPrompts)
+					mdtStartDate = GetValueForRecordIndependantCalc(mlngStartDateExpr, mvarPrompts)
 			End Select
 
 			'END DATE
@@ -3513,7 +3510,7 @@ TidyUpAndExit:
 					mdtEndDate = Today
 				Case CalendarDataType.Custom
 					'UPGRADE_WARNING: Couldn't resolve default property of object General.GetValueForRecordIndependantCalc(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					mdtEndDate = CDate(General.GetValueForRecordIndependantCalc(mlngEndDateExpr, mvarPrompts))
+					mdtEndDate = CDate(GetValueForRecordIndependantCalc(mlngEndDateExpr, mvarPrompts))
 			End Select
 
 			If iStartDateType = CalendarDataType.Offset And iEndDateType = CalendarDataType.Offset Then
@@ -3588,7 +3585,7 @@ TidyUpAndExit:
 			mstrOutputEmailAttachAs = IIf(IsDBNull(rowDefinition("OutputEmailAttachAs")), vbNullString, rowDefinition("OutputEmailAttachAs"))
 			OutputFilename = rowDefinition("OutputFilename")
 
-			mblnPersonnelBase = (mlngCalendarReportsBaseTable = glngPersonnelTableID)
+			mblnPersonnelBase = (mlngCalendarReportsBaseTable = PersonnelModule.glngPersonnelTableID)
 
 			If mblnCustomReportsPrintFilterHeader And (mlngSingleRecordID < 1) Then
 				If (mlngCalendarReportsFilterID > 0) Then
@@ -3618,7 +3615,7 @@ TidyUpAndExit:
 
 
 			ElseIf mlngCalendarReportsFilterID > 0 Then
-				blnOK = General.FilteredIDs(mlngCalendarReportsFilterID, mstrFilteredIDs, mastrUDFsRequired, mvarPrompts)
+				blnOK = FilteredIDs(mlngCalendarReportsFilterID, mstrFilteredIDs, mastrUDFsRequired, mvarPrompts)
 
 				If blnOK Then
 					blnOK = General.UDFFunctions(mastrUDFsRequired, True)
@@ -3690,18 +3687,18 @@ Error_Trap:
 		blnRegionEnabled = False
 		blnWorkingPatternEnabled = False
 
-		If (fOK And mblnPersonnelBase And (grtRegionType = RegionType.rtHistoricRegion) And (Not mblnGroupByDescription) And (mlngRegion < 1)) Or (fOK And ((mlngRegion > 0) Or (mblnPersonnelBase And (modPersonnelSpecifics.grtRegionType = RegionType.rtStaticRegion))) And (Not mblnGroupByDescription)) Then
+		If (fOK And mblnPersonnelBase And (PersonnelModule.grtRegionType = RegionType.rtHistoricRegion) And (Not mblnGroupByDescription) And (mlngRegion < 1)) Or (fOK And ((mlngRegion > 0) Or (mblnPersonnelBase And (PersonnelModule.grtRegionType = RegionType.rtStaticRegion))) And (Not mblnGroupByDescription)) Then
 
 			blnRegionEnabled = CheckPermission_RegionInfo()
 		End If
 
 		If blnRegionEnabled Then
-			If fOK And mblnPersonnelBase And (grtRegionType = RegionType.rtHistoricRegion) And (Not mblnGroupByDescription) And (mlngRegion < 1) Then
+			If fOK And mblnPersonnelBase And (PersonnelModule.grtRegionType = RegionType.rtHistoricRegion) And (Not mblnGroupByDescription) And (mlngRegion < 1) Then
 
 				'get historical bank holidays
 				fOK = Get_HistoricBankHolidays()
 
-			ElseIf fOK And ((mlngRegion > 0) Or (mblnPersonnelBase And (grtRegionType = RegionType.rtStaticRegion))) And (Not mblnGroupByDescription) Then
+			ElseIf fOK And ((mlngRegion > 0) Or (mblnPersonnelBase And (PersonnelModule.grtRegionType = RegionType.rtStaticRegion))) And (Not mblnGroupByDescription) Then
 
 				'get static bank holidays collection
 				fOK = Get_StaticBankHolidays()
@@ -3717,17 +3714,17 @@ Error_Trap:
 		End If
 
 
-		If (fOK And mblnPersonnelBase And (gwptWorkingPatternType = WorkingPatternType.wptHistoricWPattern) And (Not mblnGroupByDescription)) Or (fOK And (mblnPersonnelBase And (gwptWorkingPatternType = WorkingPatternType.wptStaticWPattern) And (Not mblnGroupByDescription))) Then
+		If (fOK And mblnPersonnelBase And (PersonnelModule.gwptWorkingPatternType = WorkingPatternType.wptHistoricWPattern) And (Not mblnGroupByDescription)) Or (fOK And (mblnPersonnelBase And (PersonnelModule.gwptWorkingPatternType = WorkingPatternType.wptStaticWPattern) And (Not mblnGroupByDescription))) Then
 			blnWorkingPatternEnabled = CheckPermission_WPInfo()
 		End If
 
 		If blnWorkingPatternEnabled Then
-			If fOK And mblnPersonnelBase And (gwptWorkingPatternType = WorkingPatternType.wptHistoricWPattern) And (Not mblnGroupByDescription) Then
+			If fOK And mblnPersonnelBase And (PersonnelModule.gwptWorkingPatternType = WorkingPatternType.wptHistoricWPattern) And (Not mblnGroupByDescription) Then
 
 				'get historical working patterns
 				fOK = Get_HistoricWorkingPatterns()
 
-			ElseIf fOK And (mblnPersonnelBase And (gwptWorkingPatternType = WorkingPatternType.wptStaticWPattern) And (Not mblnGroupByDescription)) Then
+			ElseIf fOK And (mblnPersonnelBase And (PersonnelModule.gwptWorkingPatternType = WorkingPatternType.wptStaticWPattern) And (Not mblnGroupByDescription)) Then
 
 				'get static working patterns
 				fOK = Get_StaticWorkingPatterns()
@@ -3764,22 +3761,22 @@ Error_Trap:
 		ReDim avCareerRanges(4, 0)
 
 		strSQLCC = "SELECT " & vbNewLine _
-				& "     " & gsPersonnelHWorkingPatternTableRealSource & ".ID_" & mlngCalendarReportsBaseTable & " AS [BaseID]," & vbNewLine _
-				& "     " & gsPersonnelHWorkingPatternTableRealSource & "." & gsPersonnelHWorkingPatternDateColumnName & " AS [WP_Date], " & vbNewLine _
-				& "     " & gsPersonnelHWorkingPatternTableRealSource & "." & gsPersonnelHWorkingPatternColumnName & "	AS [WP_Pattern], " & vbNewLine _
-				& "     (SELECT COUNT(B.ID) FROM " & gsPersonnelHWorkingPatternTableRealSource & " B WHERE B.ID_" & mlngCalendarReportsBaseTable & " = " & gsPersonnelHWorkingPatternTableRealSource & ".ID_" & mlngCalendarReportsBaseTable & " AND B." & gsPersonnelHWorkingPatternDateColumnName & " IS NOT NULL) AS 'CareerChanges' " & vbNewLine _
-				& "FROM " & gsPersonnelHWorkingPatternTableRealSource & " " & vbNewLine
+				& "     " & PersonnelModule.gsPersonnelHWorkingPatternTableRealSource & ".ID_" & mlngCalendarReportsBaseTable & " AS [BaseID]," & vbNewLine _
+				& "     " & PersonnelModule.gsPersonnelHWorkingPatternTableRealSource & "." & PersonnelModule.gsPersonnelHWorkingPatternDateColumnName & " AS [WP_Date], " & vbNewLine _
+				& "     " & PersonnelModule.gsPersonnelHWorkingPatternTableRealSource & "." & PersonnelModule.gsPersonnelHWorkingPatternColumnName & "	AS [WP_Pattern], " & vbNewLine _
+				& "     (SELECT COUNT(B.ID) FROM " & PersonnelModule.gsPersonnelHWorkingPatternTableRealSource & " B WHERE B.ID_" & mlngCalendarReportsBaseTable & " = " & PersonnelModule.gsPersonnelHWorkingPatternTableRealSource & ".ID_" & mlngCalendarReportsBaseTable & " AND B." & PersonnelModule.gsPersonnelHWorkingPatternDateColumnName & " IS NOT NULL) AS 'CareerChanges' " & vbNewLine _
+				& "FROM " & PersonnelModule.gsPersonnelHWorkingPatternTableRealSource & " " & vbNewLine
 		If Len(Trim(mstrSQLIDs)) > 0 Then
 			strSQLCC = strSQLCC & "WHERE " & vbNewLine _
-					& "     " & gsPersonnelHWorkingPatternTableRealSource & ".ID_" & mlngCalendarReportsBaseTable & " IN (" & mstrSQLIDs & ") " & vbNewLine _
-					& " AND " & gsPersonnelHWorkingPatternTableRealSource & "." & gsPersonnelHWorkingPatternDateColumnName & " IS NOT NULL " & vbNewLine
+					& "     " & PersonnelModule.gsPersonnelHWorkingPatternTableRealSource & ".ID_" & mlngCalendarReportsBaseTable & " IN (" & mstrSQLIDs & ") " & vbNewLine _
+					& " AND " & PersonnelModule.gsPersonnelHWorkingPatternTableRealSource & "." & PersonnelModule.gsPersonnelHWorkingPatternDateColumnName & " IS NOT NULL " & vbNewLine
 		Else
 			strSQLCC = strSQLCC & "WHERE " & vbNewLine _
-					& "      " & gsPersonnelHWorkingPatternTableRealSource & "." & gsPersonnelHWorkingPatternDateColumnName & " IS NOT NULL " & vbNewLine
+					& "      " & PersonnelModule.gsPersonnelHWorkingPatternTableRealSource & "." & PersonnelModule.gsPersonnelHWorkingPatternDateColumnName & " IS NOT NULL " & vbNewLine
 		End If
 		strSQLCC = strSQLCC & "ORDER BY " _
-				& "     " & gsPersonnelHWorkingPatternTableRealSource & ".ID_" & mlngCalendarReportsBaseTable & ", " _
-				& "     " & gsPersonnelHWorkingPatternTableRealSource & "." & gsPersonnelHWorkingPatternDateColumnName & " "
+				& "     " & PersonnelModule.gsPersonnelHWorkingPatternTableRealSource & ".ID_" & mlngCalendarReportsBaseTable & ", " _
+				& "     " & PersonnelModule.gsPersonnelHWorkingPatternTableRealSource & "." & PersonnelModule.gsPersonnelHWorkingPatternDateColumnName & " "
 		rsCareerChange = DB.GetDataTable(strSQLCC)
 
 
@@ -3888,22 +3885,22 @@ ErrorTrap:
 		mstrBHolFormString = New StringBuilder()
 		mstrBHolFormString.Append("<FORM id=frmBHol name=frmBHol style=""visibility:hidden;display:none"">" & vbNewLine)
 
-		strSQLCC = "SELECT " & gsPersonnelHRegionTableRealSource & ".ID_" & mlngCalendarReportsBaseTable & "," _
-				& "     " & gsPersonnelHRegionTableRealSource & "." & gsPersonnelHRegionDateColumnName & ", " _
-				& "     " & gsPersonnelHRegionTableRealSource & "." & gsPersonnelHRegionColumnName & ", " _
-				& "     (SELECT COUNT(B.ID) FROM " & gsPersonnelHRegionTableRealSource & " B WHERE B.ID_" & mlngCalendarReportsBaseTable & " = " & gsPersonnelHRegionTableRealSource & ".ID_" & mlngCalendarReportsBaseTable & " AND B." & gsPersonnelHRegionDateColumnName & " IS NOT NULL) AS 'CareerChanges' " _
-				& " FROM " & gsPersonnelHRegionTableRealSource & " " & vbNewLine
+		strSQLCC = "SELECT " & PersonnelModule.gsPersonnelHRegionTableRealSource & ".ID_" & mlngCalendarReportsBaseTable & "," _
+				& "     " & PersonnelModule.gsPersonnelHRegionTableRealSource & "." & PersonnelModule.gsPersonnelHRegionDateColumnName & ", " _
+				& "     " & PersonnelModule.gsPersonnelHRegionTableRealSource & "." & PersonnelModule.gsPersonnelHRegionColumnName & ", " _
+				& "     (SELECT COUNT(B.ID) FROM " & PersonnelModule.gsPersonnelHRegionTableRealSource & " B WHERE B.ID_" & mlngCalendarReportsBaseTable & " = " & PersonnelModule.gsPersonnelHRegionTableRealSource & ".ID_" & mlngCalendarReportsBaseTable & " AND B." & PersonnelModule.gsPersonnelHRegionDateColumnName & " IS NOT NULL) AS 'CareerChanges' " _
+				& " FROM " & PersonnelModule.gsPersonnelHRegionTableRealSource & " " & vbNewLine
 
 		If Len(Trim(mstrSQLIDs)) > 0 Then
 			strSQLCC = strSQLCC & "WHERE " & vbNewLine _
-					& "     " & gsPersonnelHRegionTableRealSource & ".ID_" & mlngCalendarReportsBaseTable & " IN (" & mstrSQLIDs & ") " & vbNewLine _
-					& " AND " & gsPersonnelHRegionTableRealSource & "." & gsPersonnelHRegionDateColumnName & " IS NOT NULL " & vbNewLine
+					& "     " & PersonnelModule.gsPersonnelHRegionTableRealSource & ".ID_" & mlngCalendarReportsBaseTable & " IN (" & mstrSQLIDs & ") " & vbNewLine _
+					& " AND " & PersonnelModule.gsPersonnelHRegionTableRealSource & "." & PersonnelModule.gsPersonnelHRegionDateColumnName & " IS NOT NULL " & vbNewLine
 		Else
-			strSQLCC = strSQLCC & "WHERE " & gsPersonnelHRegionTableRealSource & "." & gsPersonnelHRegionDateColumnName & " IS NOT NULL " & vbNewLine
+			strSQLCC = strSQLCC & "WHERE " & PersonnelModule.gsPersonnelHRegionTableRealSource & "." & PersonnelModule.gsPersonnelHRegionDateColumnName & " IS NOT NULL " & vbNewLine
 		End If
 
-		strSQLCC = strSQLCC & "ORDER BY " & gsPersonnelHRegionTableRealSource & ".ID_" & mlngCalendarReportsBaseTable & ", " _
-				& "     " & gsPersonnelHRegionTableRealSource & "." & gsPersonnelHRegionDateColumnName & " "
+		strSQLCC = strSQLCC & "ORDER BY " & PersonnelModule.gsPersonnelHRegionTableRealSource & ".ID_" & mlngCalendarReportsBaseTable & ", " _
+				& "     " & PersonnelModule.gsPersonnelHRegionTableRealSource & "." & PersonnelModule.gsPersonnelHRegionDateColumnName & " "
 		rsCC = DB.GetDataTable(strSQLCC)
 
 		lngBaseRecordID = -1
@@ -3927,7 +3924,7 @@ ErrorTrap:
 						lngBaseRecordID = objRow("ID_" & CStr(mlngCalendarReportsBaseTable))
 						blnNewBaseRecord = True
 						lngBaseRowCount = lngBaseRowCount + 1
-						dtStartDate = objRow(gsPersonnelHRegionDateColumnName)
+						dtStartDate = objRow(PersonnelModule.gsPersonnelHRegionDateColumnName)
 
 						'UPGRADE_WARNING: Couldn't resolve default property of object mavCareerRanges(0, intNextIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 						mavCareerRanges(0, intNextIndex) = lngBaseRecordID 'BaseRecordID
@@ -3937,12 +3934,12 @@ ErrorTrap:
 						mavCareerRanges(2, intNextIndex) = ""	'End Date
 						'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
 						'UPGRADE_WARNING: Couldn't resolve default property of object mavCareerRanges(3, intNextIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						mavCareerRanges(3, intNextIndex) = IIf(IsDBNull(objRow(gsPersonnelHRegionColumnName)), "", objRow(gsPersonnelHRegionColumnName))	'Region
+						mavCareerRanges(3, intNextIndex) = IIf(IsDBNull(objRow(PersonnelModule.gsPersonnelHRegionColumnName)), "", objRow(PersonnelModule.gsPersonnelHRegionColumnName))	'Region
 						'UPGRADE_WARNING: Couldn't resolve default property of object mavCareerRanges(4, intNextIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 						mavCareerRanges(4, intNextIndex) = objRow("CareerChanges")	'Career Change Count
 
 					Else
-						dtStartDate = objRow(gsPersonnelHRegionDateColumnName)
+						dtStartDate = objRow(PersonnelModule.gsPersonnelHRegionDateColumnName)
 
 						dtEndDate = dtStartDate
 						'UPGRADE_WARNING: Couldn't resolve default property of object mavCareerRanges(2, intNextIndex - 1). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
@@ -3956,7 +3953,7 @@ ErrorTrap:
 						mavCareerRanges(2, intNextIndex) = ""	'End Date
 						'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
 						'UPGRADE_WARNING: Couldn't resolve default property of object mavCareerRanges(3, intNextIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						mavCareerRanges(3, intNextIndex) = IIf(IsDBNull(objRow(gsPersonnelHRegionColumnName)), "", objRow(gsPersonnelHRegionColumnName)) 'Region
+						mavCareerRanges(3, intNextIndex) = IIf(IsDBNull(objRow(PersonnelModule.gsPersonnelHRegionColumnName)), "", objRow(PersonnelModule.gsPersonnelHRegionColumnName)) 'Region
 						'UPGRADE_WARNING: Couldn't resolve default property of object mavCareerRanges(4, intNextIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 						mavCareerRanges(4, intNextIndex) = objRow("CareerChanges")	'Career Change Count
 
@@ -4051,20 +4048,20 @@ ErrorTrap:
 			strSQLSelect = vbNewLine & "SELECT  '" & mavCareerRanges(0, intCount) & "' AS 'ID' , " _
 			& "       " & mstrSQLSelect_RegInfoRegion & " AS 'Region', " _
 			& "       " & mstrSQLSelect_BankHolDate & " , " _
-			& "       " & mstrSQLSelect_BankHolDesc & " FROM " & gsBHolRegionTableName & " " & vbNewLine
+			& "       " & mstrSQLSelect_BankHolDesc & " FROM " & BankHolidayModule.gsBHolRegionTableName & " " & vbNewLine
 
 			For lngCount = 0 To UBound(mvarTableViews, 2) Step 1
 				'<REGIONAL CODE>
 				'UPGRADE_WARNING: Couldn't resolve default property of object mvarTableViews(0, lngCount). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				If mvarTableViews(0, lngCount) = glngBHolRegionTableID Then
+				If mvarTableViews(0, lngCount) = BankHolidayModule.glngBHolRegionTableID Then
 					'UPGRADE_WARNING: Couldn't resolve default property of object mvarTableViews(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 					strSQLSelect = strSQLSelect & "           LEFT OUTER JOIN " & mvarTableViews(3, lngCount) & vbNewLine _
-							& "           ON  " & gsBHolRegionTableName & ".ID = " & mvarTableViews(3, lngCount) & ".ID" & vbNewLine
+							& "           ON  " & BankHolidayModule.gsBHolRegionTableName & ".ID = " & mvarTableViews(3, lngCount) & ".ID" & vbNewLine
 				End If
 			Next lngCount
 
-			strSQLSelect = strSQLSelect & "           INNER JOIN " & gsBHolTableRealSource & vbNewLine _
-					& "           ON  " & gsBHolRegionTableName & ".ID = " & gsBHolTableRealSource & ".ID_" & glngBHolRegionTableID & vbNewLine
+			strSQLSelect = strSQLSelect & "           INNER JOIN " & BankHolidayModule.gsBHolTableRealSource & vbNewLine _
+					& "           ON  " & BankHolidayModule.gsBHolRegionTableName & ".ID = " & BankHolidayModule.gsBHolTableRealSource & ".ID_" & BankHolidayModule.glngBHolRegionTableID & vbNewLine
 
 			If intBHolCount > 1 Then
 				strSQLDateRegion = strSQLDateRegion & " OR " & vbNewLine
@@ -4074,16 +4071,16 @@ ErrorTrap:
 			fFinalCareerChange = (intBHolCount = CShort(mavCareerRanges(4, intCount)))
 
 			If fFinalCareerChange Then
-				strSQLDateRegion = strSQLDateRegion & "((" & gsBHolTableRealSource & "." & gsBHolDateColumnName & " >= CONVERT(datetime, '" & VB6.Format(mavCareerRanges(1, intCount), "MM/dd/yyyy") & "')) " & vbNewLine _
-						& " AND (" & gsBHolTableRealSource & "." & gsBHolDateColumnName & " >= '" & VB6.Format(mdtStartDate, "MM/dd/yyyy") & "') " & vbNewLine _
-						& " AND (" & gsBHolTableRealSource & "." & gsBHolDateColumnName & " <= '" & VB6.Format(mdtEndDate, "MM/dd/yyyy") & "') " & vbNewLine _
+				strSQLDateRegion = strSQLDateRegion & "((" & BankHolidayModule.gsBHolTableRealSource & "." & BankHolidayModule.gsBHolDateColumnName & " >= CONVERT(datetime, '" & VB6.Format(mavCareerRanges(1, intCount), "MM/dd/yyyy") & "')) " & vbNewLine _
+						& " AND (" & BankHolidayModule.gsBHolTableRealSource & "." & BankHolidayModule.gsBHolDateColumnName & " >= '" & VB6.Format(mdtStartDate, "MM/dd/yyyy") & "') " & vbNewLine _
+						& " AND (" & BankHolidayModule.gsBHolTableRealSource & "." & BankHolidayModule.gsBHolDateColumnName & " <= '" & VB6.Format(mdtEndDate, "MM/dd/yyyy") & "') " & vbNewLine _
 						& " AND " & vbNewLine _
 						& "(" & mstrSQLSelect_RegInfoRegion & " = '" & mavCareerRanges(3, intCount) & "') " & vbNewLine _
 						& ")) " & vbNewLine
 			Else
-				strSQLDateRegion = strSQLDateRegion & "((" & gsBHolTableRealSource & "." & gsBHolDateColumnName & " >= CONVERT(datetime, '" & VB6.Format(mavCareerRanges(1, intCount), "MM/dd/yyyy") & "') " & vbNewLine & " AND (" & gsBHolTableRealSource & "." & gsBHolDateColumnName & " < CONVERT(datetime, '" & VB6.Format(mavCareerRanges(1, intCount + 1), "MM/dd/yyyy") & "'))) " & vbNewLine _
-						& " AND (" & gsBHolTableRealSource & "." & gsBHolDateColumnName & " >= '" & VB6.Format(mdtStartDate, "MM/dd/yyyy") & "') " & vbNewLine _
-						& " AND (" & gsBHolTableRealSource & "." & gsBHolDateColumnName & " <= '" & VB6.Format(mdtEndDate, "MM/dd/yyyy") & "') " & vbNewLine _
+				strSQLDateRegion = strSQLDateRegion & "((" & BankHolidayModule.gsBHolTableRealSource & "." & BankHolidayModule.gsBHolDateColumnName & " >= CONVERT(datetime, '" & VB6.Format(mavCareerRanges(1, intCount), "MM/dd/yyyy") & "') " & vbNewLine & " AND (" & BankHolidayModule.gsBHolTableRealSource & "." & BankHolidayModule.gsBHolDateColumnName & " < CONVERT(datetime, '" & VB6.Format(mavCareerRanges(1, intCount + 1), "MM/dd/yyyy") & "'))) " & vbNewLine _
+						& " AND (" & BankHolidayModule.gsBHolTableRealSource & "." & BankHolidayModule.gsBHolDateColumnName & " >= '" & VB6.Format(mdtStartDate, "MM/dd/yyyy") & "') " & vbNewLine _
+						& " AND (" & BankHolidayModule.gsBHolTableRealSource & "." & BankHolidayModule.gsBHolDateColumnName & " <= '" & VB6.Format(mdtEndDate, "MM/dd/yyyy") & "') " & vbNewLine _
 						& " AND (" & mstrSQLSelect_RegInfoRegion & " = '" & mavCareerRanges(3, intCount) & "')) " & vbNewLine
 			End If
 
@@ -4140,12 +4137,12 @@ ErrorTrap:
 							End If
 
 							'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-							colBankHolidays.Add(IIf(IsDBNull(objRow("Region")), "", objRow("Region")), IIf(IsDBNull(objRow(gsBHolDescriptionColumnName)), "", objRow(gsBHolDescriptionColumnName)), IIf(IsDBNull(objRow(gsBHolDateColumnName)), "", objRow(gsBHolDateColumnName)))
+							colBankHolidays.Add(IIf(IsDBNull(objRow("Region")), "", objRow("Region")), IIf(IsDBNull(objRow(BankHolidayModule.gsBHolDescriptionColumnName)), "", objRow(BankHolidayModule.gsBHolDescriptionColumnName)), IIf(IsDBNull(objRow(BankHolidayModule.gsBHolDateColumnName)), "", objRow(BankHolidayModule.gsBHolDateColumnName)))
 
 							intRecordBHol = intRecordBHol + 1
 
 							'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-							INPUT_STRING = IIf(IsDBNull(objRow(gsBHolDateColumnName)), "", VB6.Format(objRow(gsBHolDateColumnName), mstrClientDateFormat)) & "_"
+							INPUT_STRING = IIf(IsDBNull(objRow(BankHolidayModule.gsBHolDateColumnName)), "", VB6.Format(objRow(BankHolidayModule.gsBHolDateColumnName), mstrClientDateFormat)) & "_"
 							'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
 							INPUT_STRING = INPUT_STRING & IIf(IsDBNull(objRow("Region")), "", objRow("Region"))
 
@@ -4226,7 +4223,7 @@ ErrorTrap:
 		If mlngRegion > 0 Then
 			strSQLAllBHols = strSQLAllBHols & "      FROM " & mstrCalendarReportsBaseTableName & vbNewLine
 		Else
-			strSQLAllBHols = strSQLAllBHols & "      FROM " & gsPersonnelTableName & vbNewLine
+			strSQLAllBHols = strSQLAllBHols & "      FROM " & PersonnelModule.gsPersonnelTableName & vbNewLine
 		End If
 
 		For lngCount = 0 To UBound(mvarTableViews, 2) Step 1
@@ -4243,7 +4240,7 @@ ErrorTrap:
 				If mvarTableViews(0, lngCount) = mlngCalendarReportsBaseTable Then
 					'UPGRADE_WARNING: Couldn't resolve default property of object mvarTableViews(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 					strSQLAllBHols = strSQLAllBHols & "           LEFT OUTER JOIN " & mvarTableViews(3, lngCount) & vbNewLine _
-							& "           ON  " & gsPersonnelTableName & ".ID = " & mvarTableViews(3, lngCount) & ".ID" & vbNewLine
+							& "           ON  " & PersonnelModule.gsPersonnelTableName & ".ID = " & mvarTableViews(3, lngCount) & ".ID" & vbNewLine
 				End If
 			End If
 		Next lngCount
@@ -4253,26 +4250,26 @@ ErrorTrap:
 		End If
 
 		strSQLAllBHols = strSQLAllBHols & String.Format(" ) AS [Base] INNER JOIN (SELECT DISTINCT {0}.ID AS [ID], {1} AS [Region], {2}, {3} FROM {0}" _
-			, gsBHolRegionTableName, mstrSQLSelect_RegInfoRegion, mstrSQLSelect_BankHolDate, mstrSQLSelect_BankHolDesc)
+			, BankHolidayModule.gsBHolRegionTableName, mstrSQLSelect_RegInfoRegion, mstrSQLSelect_BankHolDate, mstrSQLSelect_BankHolDesc)
 
 		For lngCount = 0 To UBound(mvarTableViews, 2) Step 1
 			'<REGIONAL CODE>
 			'UPGRADE_WARNING: Couldn't resolve default property of object mvarTableViews(0, lngCount). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			If mvarTableViews(0, lngCount) = glngBHolRegionTableID Then
+			If mvarTableViews(0, lngCount) = BankHolidayModule.glngBHolRegionTableID Then
 				'UPGRADE_WARNING: Couldn't resolve default property of object mvarTableViews(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				strSQLAllBHols = strSQLAllBHols & "           LEFT OUTER JOIN " & mvarTableViews(3, lngCount) & " ON " & gsBHolRegionTableName & ".ID = " & mvarTableViews(3, lngCount) & ".ID" & vbNewLine
+				strSQLAllBHols = strSQLAllBHols & "           LEFT OUTER JOIN " & mvarTableViews(3, lngCount) & " ON " & BankHolidayModule.gsBHolRegionTableName & ".ID = " & mvarTableViews(3, lngCount) & ".ID" & vbNewLine
 			End If
 		Next lngCount
 
-		strSQLAllBHols = strSQLAllBHols & "           INNER JOIN " & gsBHolTableRealSource & vbNewLine _
-			& "           ON  " & gsBHolRegionTableName & ".ID = " & gsBHolTableRealSource & ".ID_" & glngBHolRegionTableID & vbNewLine
+		strSQLAllBHols = strSQLAllBHols & "           INNER JOIN " & BankHolidayModule.gsBHolTableRealSource & vbNewLine _
+			& "           ON  " & BankHolidayModule.gsBHolRegionTableName & ".ID = " & BankHolidayModule.gsBHolTableRealSource & ".ID_" & BankHolidayModule.glngBHolRegionTableID & vbNewLine
 
 		If Len(Trim(mstrSQLIDs)) > 0 Then
-			strSQLAllBHols = strSQLAllBHols & "     WHERE (" & gsBHolTableRealSource & "." & gsBHolDateColumnName & " >= '" & VB6.Format(mdtStartDate, "MM/dd/yyyy") & "') " & vbNewLine _
-					& "         AND (" & gsBHolTableRealSource & "." & gsBHolDateColumnName & " <= '" & VB6.Format(mdtEndDate, "MM/dd/yyyy") & "') " & vbNewLine
+			strSQLAllBHols = strSQLAllBHols & "     WHERE (" & BankHolidayModule.gsBHolTableRealSource & "." & BankHolidayModule.gsBHolDateColumnName & " >= '" & VB6.Format(mdtStartDate, "MM/dd/yyyy") & "') " & vbNewLine _
+					& "         AND (" & BankHolidayModule.gsBHolTableRealSource & "." & BankHolidayModule.gsBHolDateColumnName & " <= '" & VB6.Format(mdtEndDate, "MM/dd/yyyy") & "') " & vbNewLine
 		Else
-			strSQLAllBHols = strSQLAllBHols & "     WHERE (" & gsBHolTableRealSource & "." & gsBHolDateColumnName & " >= '" & VB6.Format(mdtStartDate, "MM/dd/yyyy") & "') " & vbNewLine _
-					& "         AND (" & gsBHolTableRealSource & "." & gsBHolDateColumnName & " <= '" & VB6.Format(mdtEndDate, "MM/dd/yyyy") & "') " & vbNewLine
+			strSQLAllBHols = strSQLAllBHols & "     WHERE (" & BankHolidayModule.gsBHolTableRealSource & "." & BankHolidayModule.gsBHolDateColumnName & " >= '" & VB6.Format(mdtStartDate, "MM/dd/yyyy") & "') " & vbNewLine _
+					& "         AND (" & BankHolidayModule.gsBHolTableRealSource & "." & BankHolidayModule.gsBHolDateColumnName & " <= '" & VB6.Format(mdtEndDate, "MM/dd/yyyy") & "') " & vbNewLine
 		End If
 
 		strSQLAllBHols = strSQLAllBHols & "    ) AS [RegionInfo] ON [Base].Region = [RegionInfo].Region ORDER BY [Base].ID "
@@ -4315,10 +4312,10 @@ ErrorTrap:
 					intBHolCount = intBHolCount + 1
 
 					'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-					colBankHolidays.Add(IIf(IsDBNull(objRow("Region")), "", objRow("Region")), IIf(IsDBNull(objRow(gsBHolDescriptionColumnName)), "", objRow(gsBHolDescriptionColumnName)), IIf(IsDBNull(objRow(gsBHolDateColumnName)), "", objRow(gsBHolDateColumnName)))
+					colBankHolidays.Add(IIf(IsDBNull(objRow("Region")), "", objRow("Region")), IIf(IsDBNull(objRow(BankHolidayModule.gsBHolDescriptionColumnName)), "", objRow(BankHolidayModule.gsBHolDescriptionColumnName)), IIf(IsDBNull(objRow(BankHolidayModule.gsBHolDateColumnName)), "", objRow(BankHolidayModule.gsBHolDateColumnName)))
 
 					'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-					INPUT_STRING = IIf(IsDBNull(objRow(gsBHolDateColumnName)), "", VB6.Format(objRow(gsBHolDateColumnName), mstrClientDateFormat)) & "_"
+					INPUT_STRING = IIf(IsDBNull(objRow(BankHolidayModule.gsBHolDateColumnName)), "", VB6.Format(objRow(BankHolidayModule.gsBHolDateColumnName), mstrClientDateFormat)) & "_"
 					'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
 					INPUT_STRING = INPUT_STRING & IIf(IsDBNull(objRow("Region")), "", objRow("Region"))
 					mstrBHolFormString.Append(String.Format("<input name=txtBHol_{0}_{1} id=txtBHol_{0}_{1} value=""{2}"">", objRow("ID"), intBHolCount, Replace(INPUT_STRING, """", "&quot;")))
@@ -4415,12 +4412,12 @@ ErrorTrap:
 					'lngBaseRecordID = .Fields(mstrBaseIDColumn).Value
 
 					INPUT_STRING = vbNullString
-					INPUT_STRING = INPUT_STRING & objRow(gsPersonnelWorkingPatternColumnName)
+					INPUT_STRING = INPUT_STRING & objRow(PersonnelModule.gsPersonnelWorkingPatternColumnName)
 
 					mstrWPFormString = mstrWPFormString & vbTab & "<INPUT NAME=txtWP_" & lngBaseRecordID & " ID=txtBHol_" & lngBaseRecordID & " VALUE=""" & Replace(INPUT_STRING, """", "&quot;") & """>" & vbNewLine
 
 					'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-					colWorkingPatterns.Add(CStr(colWorkingPatterns.Count), CStr(lngBaseRecordID), , , , , , , , , , , , , , , , , , , , , , , , , , , , , , IIf(IsDBNull(objRow(gsPersonnelWorkingPatternColumnName)), "              ", objRow(gsPersonnelWorkingPatternColumnName)))
+					colWorkingPatterns.Add(CStr(colWorkingPatterns.Count), CStr(lngBaseRecordID), , , , , , , , , , , , , , , , , , , , , , , , , , , , , , IIf(IsDBNull(objRow(PersonnelModule.gsPersonnelWorkingPatternColumnName)), "              ", objRow(PersonnelModule.gsPersonnelWorkingPatternColumnName)))
 
 					blnNewBaseRecord = False
 
@@ -4472,7 +4469,7 @@ ErrorTrap:
 		'           Bank Holidays Table - Descripiton Column
 		'...Bank Holiday module setup information.
 		'If any are blank then we need to allow the report to run, but disable the Bank Holiday Display Options.
-		If gsBHolRegionTableName = "" Or gsBHolRegionColumnName = "" Or gsBHolTableName = "" Or gsBHolDateColumnName = "" Or gsBHolDescriptionColumnName = "" Then
+		If BankHolidayModule.gsBHolRegionTableName = "" Or BankHolidayModule.gsBHolRegionColumnName = "" Or BankHolidayModule.gsBHolTableName = "" Or BankHolidayModule.gsBHolDateColumnName = "" Or BankHolidayModule.gsBHolDescriptionColumnName = "" Then
 
 			GoTo DisableRegions
 		End If
@@ -4483,8 +4480,8 @@ ErrorTrap:
 		'           Career Change Region - Historic Region Effective Date Column
 		'...Personnel - Career Change module setup information.
 		'If any are blank then we need to allow the report to run, but disable the Bank Holiday Display Options.
-		If gsPersonnelRegionColumnName = "" Then
-			If gsPersonnelHRegionTableName = "" Or gsPersonnelHRegionColumnName = "" Or gsPersonnelHRegionDateColumnName = "" Then
+		If PersonnelModule.gsPersonnelRegionColumnName = "" Then
+			If PersonnelModule.gsPersonnelHRegionTableName = "" Or PersonnelModule.gsPersonnelHRegionColumnName = "" Or PersonnelModule.gsPersonnelHRegionDateColumnName = "" Then
 
 				GoTo DisableRegions
 			End If
@@ -4501,7 +4498,7 @@ ErrorTrap:
 		'Bank Holiday Region Table - Region Column
 		'///////////////////////////////////////////////
 		'\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
-		If CheckPermission_Columns(glngBHolRegionTableID, gsBHolRegionTableName, gsBHolRegionColumnName, strTableColumn) Then
+		If CheckPermission_Columns(BankHolidayModule.glngBHolRegionTableID, BankHolidayModule.gsBHolRegionTableName, BankHolidayModule.gsBHolRegionColumnName, strTableColumn) Then
 			mstrSQLSelect_RegInfoRegion = strTableColumn
 			strTableColumn = vbNullString
 		Else
@@ -4515,7 +4512,7 @@ ErrorTrap:
 		'Bank Holidays Table - Date Column
 		'///////////////////////////////////////////////
 		'\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
-		If CheckPermission_Columns(glngBHolTableID, gsBHolTableName, gsBHolDateColumnName, strTableColumn) Then
+		If CheckPermission_Columns(BankHolidayModule.glngBHolTableID, BankHolidayModule.gsBHolTableName, BankHolidayModule.gsBHolDateColumnName, strTableColumn) Then
 			mstrSQLSelect_BankHolDate = strTableColumn
 			strTableColumn = vbNullString
 		Else
@@ -4529,7 +4526,7 @@ ErrorTrap:
 		'Bank Holidays Table - Descripiton Column
 		'///////////////////////////////////////////////
 		'\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
-		If CheckPermission_Columns(glngBHolTableID, gsBHolTableName, gsBHolDescriptionColumnName, strTableColumn) Then
+		If CheckPermission_Columns(BankHolidayModule.glngBHolTableID, BankHolidayModule.gsBHolTableName, BankHolidayModule.gsBHolDescriptionColumnName, strTableColumn) Then
 			mstrSQLSelect_BankHolDesc = strTableColumn
 			strTableColumn = vbNullString
 		Else
@@ -4560,12 +4557,12 @@ ErrorTrap:
 
 		Else
 			'Check Career Change Region access
-			If gsPersonnelRegionColumnName <> "" Then
+			If PersonnelModule.gsPersonnelRegionColumnName <> "" Then
 				'Personnel Table
 				'Career Change Region - Static Region Column
 				'///////////////////////////////////////////////
 				'\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
-				If CheckPermission_Columns(glngPersonnelTableID, gsPersonnelTableName, gsPersonnelRegionColumnName, strTableColumn) Then
+				If CheckPermission_Columns(PersonnelModule.glngPersonnelTableID, PersonnelModule.gsPersonnelTableName, PersonnelModule.gsPersonnelRegionColumnName, strTableColumn) Then
 					mstrSQLSelect_PersonnelStaticRegion = strTableColumn
 					strTableColumn = vbNullString
 				Else
@@ -4579,7 +4576,7 @@ ErrorTrap:
 				'Career Change Region - Historic Region Column
 				'///////////////////////////////////////////////
 				'\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
-				If CheckPermission_Columns(glngPersonnelHRegionTableID, gsPersonnelHRegionTableName, gsPersonnelHRegionColumnName, strTableColumn) Then
+				If CheckPermission_Columns(PersonnelModule.glngPersonnelHRegionTableID, PersonnelModule.gsPersonnelHRegionTableName, PersonnelModule.gsPersonnelHRegionColumnName, strTableColumn) Then
 					strTableColumn = vbNullString
 				Else
 					GoTo DisableRegions
@@ -4591,7 +4588,7 @@ ErrorTrap:
 				'Career Change Region - Historic Region Effective Date Column
 				'///////////////////////////////////////////////
 				'\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
-				If CheckPermission_Columns(glngPersonnelHRegionTableID, gsPersonnelHRegionTableName, gsPersonnelHRegionDateColumnName, strTableColumn) Then
+				If CheckPermission_Columns(PersonnelModule.glngPersonnelHRegionTableID, PersonnelModule.gsPersonnelHRegionTableName, PersonnelModule.gsPersonnelHRegionDateColumnName, strTableColumn) Then
 					strTableColumn = vbNullString
 				Else
 					GoTo DisableRegions
@@ -4791,8 +4788,8 @@ DisableRegions:
 		'           Career Change Working Pattern - Historic Working Pattern Effective Date Column
 		'...Personnel - Career Change module setup information.
 		'If any are blank then we need to allow the report to run, but disable the Working Dys Display Option.
-		If gsPersonnelWorkingPatternColumnName = "" Then
-			If gsPersonnelHWorkingPatternTableName = "" Or gsPersonnelHWorkingPatternColumnName = "" Or gsPersonnelHWorkingPatternDateColumnName = "" Then
+		If PersonnelModule.gsPersonnelWorkingPatternColumnName = "" Then
+			If PersonnelModule.gsPersonnelHWorkingPatternTableName = "" Or PersonnelModule.gsPersonnelHWorkingPatternColumnName = "" Or PersonnelModule.gsPersonnelHWorkingPatternDateColumnName = "" Then
 
 				GoTo DisableWPs
 			End If
@@ -4804,11 +4801,11 @@ DisableRegions:
 		'****************************************************************************
 
 		'Check Career Change Working Pattern access
-		If gsPersonnelWorkingPatternColumnName <> "" Then
+		If PersonnelModule.gsPersonnelWorkingPatternColumnName <> "" Then
 			'Career Change Working Pattern - Static Working Pattern Column
 			'///////////////////////////////////////////////
 			'\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
-			If CheckPermission_Columns(glngPersonnelTableID, gsPersonnelTableName, gsPersonnelWorkingPatternColumnName, strTableColumn) Then
+			If CheckPermission_Columns(PersonnelModule.glngPersonnelTableID, PersonnelModule.gsPersonnelTableName, PersonnelModule.gsPersonnelWorkingPatternColumnName, strTableColumn) Then
 				strTableColumn = vbNullString
 			Else
 				GoTo DisableWPs
@@ -4818,21 +4815,21 @@ DisableRegions:
 
 		Else
 			'Career Change Working Pattern - Historic Working Pattern Table
-			objColumn = GetColumnPrivileges(gsPersonnelHWorkingPatternTableName)
+			objColumn = GetColumnPrivileges(PersonnelModule.gsPersonnelHWorkingPatternTableName)
 
 			'Career Change Working Pattern - Historic Working Pattern Column
-			pblnColumnOK = objColumn.IsValid(gsPersonnelHWorkingPatternColumnName)
+			pblnColumnOK = objColumn.IsValid(PersonnelModule.gsPersonnelHWorkingPatternColumnName)
 			If pblnColumnOK Then
-				pblnColumnOK = objColumn.Item(gsPersonnelHWorkingPatternColumnName).AllowSelect
+				pblnColumnOK = objColumn.Item(PersonnelModule.gsPersonnelHWorkingPatternColumnName).AllowSelect
 			End If
 			If pblnColumnOK = False Then
 				GoTo DisableWPs
 			End If
 
 			'Career Change Working Pattern - Historic Working Pattern Effective Date Column
-			pblnColumnOK = objColumn.IsValid(gsPersonnelHWorkingPatternDateColumnName)
+			pblnColumnOK = objColumn.IsValid(PersonnelModule.gsPersonnelHWorkingPatternDateColumnName)
 			If pblnColumnOK Then
-				pblnColumnOK = objColumn.Item(gsPersonnelHWorkingPatternDateColumnName).AllowSelect
+				pblnColumnOK = objColumn.Item(PersonnelModule.gsPersonnelHWorkingPatternDateColumnName).AllowSelect
 			End If
 			If pblnColumnOK = False Then
 				GoTo DisableWPs
@@ -5486,8 +5483,8 @@ Error_Trap:
 		mstrSQLCreateTable = mstrSQLCreateTable & "[?ID_" & mstrCalendarReportsBaseTableName & "] [varchar] (255) NULL, "
 
 		'Add the static Working Pattern column if required.
-		If (mlngCalendarReportsBaseTable = glngPersonnelTableID) And (gwptWorkingPatternType = WorkingPatternType.wptStaticWPattern) And (Not mblnGroupByDescription) Then
-			If CheckColumnPermissions(mlngCalendarReportsBaseTable, mstrCalendarReportsBaseTableName, gsPersonnelWorkingPatternColumnName, strTableColumn) Then
+		If (mlngCalendarReportsBaseTable = PersonnelModule.glngPersonnelTableID) And (PersonnelModule.gwptWorkingPatternType = WorkingPatternType.wptStaticWPattern) And (Not mblnGroupByDescription) Then
+			If CheckColumnPermissions(mlngCalendarReportsBaseTable, mstrCalendarReportsBaseTableName, PersonnelModule.gsPersonnelWorkingPatternColumnName, strTableColumn) Then
 				strColList = strColList & "CONVERT(varchar," & strTableColumn & ") AS 'Working_Pattern', " & vbNewLine
 				strBaseColList = strBaseColList & "CONVERT(varchar," & strTableColumn & ") AS 'Working_Pattern', " & vbNewLine
 				strTableColumn = vbNullString
@@ -5746,7 +5743,7 @@ GenerateSQLSelect_ERROR:
 						If mblnHasEventFilterIDs Then
 							blnOK = True
 						Else
-							blnOK = General.FilteredIDs((objEvent.FilterID), strFilterIDs, mastrUDFsRequired, mvarPrompts)
+							blnOK = FilteredIDs((objEvent.FilterID), strFilterIDs, mastrUDFsRequired, mvarPrompts)
 							mblnHasEventFilterIDs = blnOK
 							mstrEventFilterIDs = strFilterIDs
 						End If
@@ -5912,7 +5909,7 @@ GenerateSQLJoin_ERROR:
 			mstrSQLBaseDateClause = mstrSQLBaseDateClause & " AND (" & mstrSQLBaseStartDateColumn & " IS NOT NULL)"
 
 			If objEvent.FilterID > 0 Then
-				blnOK = General.FilteredIDs(objEvent.FilterID, strFilterIDs, mastrUDFsRequired, mvarPrompts)
+				blnOK = FilteredIDs(objEvent.FilterID, strFilterIDs, mastrUDFsRequired, mvarPrompts)
 
 				If blnOK Then
 					mstrSQLWhere = mstrSQLWhere & IIf(Len(mstrSQLWhere) > 0, " AND ", " WHERE ") & mstrBaseTableRealSource & ".ID IN (" & strFilterIDs & ")"
@@ -6232,5 +6229,50 @@ ClearUp_ERROR:
 		Return strTempRecordDesc
 
 	End Function
+
+#Region "FROM clsGeneral"
+
+	Private Function GetValueForRecordIndependantCalc(ByRef lngExprID As Integer, Optional ByRef pvarPrompts As Object = Nothing) As Object
+
+		Dim objExpr As clsExprExpression
+		Dim rsTemp As DataTable
+		Dim strSQL As String
+		Dim fOK As Boolean
+		Dim lngViews(,) As Integer
+
+		On Error GoTo LocalErr
+
+		'UPGRADE_WARNING: Couldn't resolve default property of object GetValueForRecordIndependantCalc. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+		GetValueForRecordIndependantCalc = vbNullString
+
+		objExpr = New clsExprExpression(SessionInfo)
+		With objExpr
+			' Initialise the filter expression object.
+			fOK = .Initialise(0, lngExprID, ExpressionTypes.giEXPR_RECORDINDEPENDANTCALC, ExpressionValueTypes.giEXPRVALUE_UNDEFINED)
+
+			If fOK Then
+				fOK = objExpr.RuntimeCalculationCode(lngViews, strSQL, Nothing, True, False, pvarPrompts)
+			End If
+
+			If fOK Then
+				rsTemp = DB.GetDataTable("SELECT " & strSQL)
+				If rsTemp.Rows.Count > 0 Then
+					'UPGRADE_WARNING: Couldn't resolve default property of object GetValueForRecordIndependantCalc. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+					Return rsTemp.Rows(0)(0)
+				End If
+			End If
+
+		End With
+		'UPGRADE_NOTE: Object objExpr may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
+		objExpr = Nothing
+
+
+		Exit Function
+
+LocalErr:
+
+	End Function
+
+#End Region
 
 End Class

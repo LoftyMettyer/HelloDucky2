@@ -5,7 +5,7 @@ Imports HR.Intranet.Server.Metadata
 
 Namespace ModuleSpecifics
 
-	Module modAbsenceSpecifics
+	Friend Class modAbsenceSpecifics
 
 		' Module parameters.
 		Public gfAbsenceEnabled As Boolean
@@ -127,20 +127,6 @@ Namespace ModuleSpecifics
 			Else
 				gsAbsenceDurationColumnName = ""
 			End If
-
-			'  mvar_lngAbsenceWorkingPatternID = Val(GetModuleParameter(gsMODULEKEY_ABSENCE, gsPARAMETERKEY_ABSENCEWORKINGPATTERN))
-			'  If mvar_lngAbsenceWorkingPatternID > 0 Then
-			'    gsAbsenceWorkingPatternColumnName = datGeneral.GetColumnName(mvar_lngAbsenceWorkingPatternID)
-			'  Else
-			'    gsAbsenceWorkingPatternColumnName = ""
-			'  End If
-
-			'  mvar_lngAbsenceRegionID = Val(GetModuleParameter(gsMODULEKEY_ABSENCE, gsPARAMETERKEY_ABSENCEREGION))
-			'  If mvar_lngAbsenceRegionID > 0 Then
-			'    gsAbsenceRegionColumnName = datGeneral.GetColumnName(mvar_lngAbsenceRegionID)
-			'  Else
-			'    gsAbsenceRegionColumnName = ""
-			'  End If
 
 			mvar_lngAbsenceTypeTypeID = Val(GetModuleParameter(gsMODULEKEY_ABSENCE, gsPARAMETERKEY_ABSENCETYPETYPE))
 			If mvar_lngAbsenceTypeTypeID > 0 Then
@@ -482,6 +468,6 @@ Namespace ModuleSpecifics
 			CheckPermission_Absence = pblnOK
 
 		End Function
-	End Module
+	End Class
 
 End Namespace

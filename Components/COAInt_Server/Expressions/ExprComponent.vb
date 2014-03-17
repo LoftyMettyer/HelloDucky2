@@ -19,7 +19,7 @@ Friend Class clsExprComponent
 	' Definition for expanded/unexpanded status of the component
 	Private mbExpanded As Boolean
 
-	Public Sub New(ByVal Value As LoginInfo)
+	Public Sub New(ByVal Value As SessionInfo)
 		MyBase.New(Value)
 	End Sub
 
@@ -111,34 +111,34 @@ ErrorTrap:
 				Select Case miComponentType
 
 					Case ExpressionComponentTypes.giCOMPONENT_FIELD
-						mvComponent = New clsExprField(Login)
+						mvComponent = New clsExprField(SessionInfo)
 
 					Case ExpressionComponentTypes.giCOMPONENT_FUNCTION
-						mvComponent = New clsExprFunction(Login)
+						mvComponent = New clsExprFunction(SessionInfo)
 
 					Case ExpressionComponentTypes.giCOMPONENT_CALCULATION
-						mvComponent = New clsExprCalculation(Login)
+						mvComponent = New clsExprCalculation(SessionInfo)
 
 					Case ExpressionComponentTypes.giCOMPONENT_VALUE
-						mvComponent = New clsExprValue(Login)
+						mvComponent = New clsExprValue(SessionInfo)
 
 					Case ExpressionComponentTypes.giCOMPONENT_OPERATOR
-						mvComponent = New clsExprOperator(Login)
+						mvComponent = New clsExprOperator(SessionInfo)
 
 					Case ExpressionComponentTypes.giCOMPONENT_TABLEVALUE
-						mvComponent = New clsExprTableLookup(Login)
+						mvComponent = New clsExprTableLookup(SessionInfo)
 
 					Case ExpressionComponentTypes.giCOMPONENT_PROMPTEDVALUE
-						mvComponent = New clsExprPromptedValue(Login)
+						mvComponent = New clsExprPromptedValue(SessionInfo)
 
 					Case ExpressionComponentTypes.giCOMPONENT_CUSTOMCALC
 						' Not required.
 
 					Case ExpressionComponentTypes.giCOMPONENT_EXPRESSION
-						mvComponent = New clsExprExpression(Login)
+						mvComponent = New clsExprExpression(SessionInfo)
 
 					Case ExpressionComponentTypes.giCOMPONENT_FILTER
-						mvComponent = New clsExprFilter(Login)
+						mvComponent = New clsExprFilter(SessionInfo)
 
 				End Select
 
@@ -299,7 +299,7 @@ ErrorTrap:
 		On Error GoTo ErrorTrap
 
 		Dim fOK As Boolean
-		Dim objCopyComponent As New clsExprComponent(Login)
+		Dim objCopyComponent As New clsExprComponent(SessionInfo)
 
 		' Copy the component's basic properties.
 		With objCopyComponent
@@ -496,7 +496,7 @@ ErrorTrap:
 				Else
 					' If the parent expression is not a top-level expression then
 					' find the parent expression's parent expression. Confused yet ?
-					objComp = New clsExprComponent(Login)
+					objComp = New clsExprComponent(SessionInfo)
 					objComp.ComponentID = CInt(objRow("ParentComponentID"))
 					lngRootExprID = objComp.RootExpressionID
 					'UPGRADE_NOTE: Object objComp may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'

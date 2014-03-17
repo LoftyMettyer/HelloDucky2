@@ -713,7 +713,7 @@ LocalErr:
 			End If
 
 			'Get list of IDs from Filter
-			fOK = General.FilteredIDs(lngFilterID, GetPicklistFilterSelect, mastrUDFsRequired, mvarPrompts)
+			fOK = FilteredIDs(lngFilterID, GetPicklistFilterSelect, mastrUDFsRequired, mvarPrompts)
 
 			If Not fOK Then
 				' Permission denied on something in the filter.
@@ -797,10 +797,10 @@ LocalErr:
 				lngMax = lngMax + 2
 				ReDim Preserve strColumn(2, lngMax)
 
-				strColumn(1, lngMax - 1) = gsPersonnelStartDateColumnName
+				strColumn(1, lngMax - 1) = PersonnelModule.gsPersonnelStartDateColumnName
 				strColumn(2, lngMax - 1) = "StartDate"
 
-				strColumn(1, lngMax) = gsPersonnelLeavingDateColumnName
+				strColumn(1, lngMax) = PersonnelModule.gsPersonnelLeavingDateColumnName
 				strColumn(2, lngMax) = "LeavingDate"
 			End If
 
@@ -808,25 +808,25 @@ LocalErr:
 				lngMax = lngMax + 7
 				ReDim Preserve strColumn(2, lngMax)
 
-				strColumn(1, lngMax) = gsAbsenceDurationColumnName
+				strColumn(1, lngMax) = AbsenceModule.gsAbsenceDurationColumnName
 				strColumn(2, lngMax) = "Value"
 
-				strColumn(1, lngMax - 4) = gsAbsenceStartDateColumnName
+				strColumn(1, lngMax - 4) = AbsenceModule.gsAbsenceStartDateColumnName
 				strColumn(2, lngMax - 4) = "Start_Date"
 
-				strColumn(1, lngMax - 3) = gsAbsenceStartSessionColumnName
+				strColumn(1, lngMax - 3) = AbsenceModule.gsAbsenceStartSessionColumnName
 				strColumn(2, lngMax - 3) = "Start_Session"
 
-				strColumn(1, lngMax - 2) = gsAbsenceEndDateColumnName
+				strColumn(1, lngMax - 2) = AbsenceModule.gsAbsenceEndDateColumnName
 				strColumn(2, lngMax - 2) = "End_Date"
 
-				strColumn(1, lngMax - 1) = gsAbsenceEndSessionColumnName
+				strColumn(1, lngMax - 1) = AbsenceModule.gsAbsenceEndSessionColumnName
 				strColumn(2, lngMax - 1) = "End_Session"
 
-				strColumn(1, lngMax - 5) = "ID_" & Trim(Str(glngPersonnelTableID))
+				strColumn(1, lngMax - 5) = "ID_" & Trim(Str(PersonnelModule.glngPersonnelTableID))
 				strColumn(2, lngMax - 5) = "Personnel_ID"
 
-				strColumn(1, lngMax - 6) = gsAbsenceDurationColumnName ' Used to hold the day number (1=Mon, 2=Tues etc.)
+				strColumn(1, lngMax - 6) = AbsenceModule.gsAbsenceDurationColumnName ' Used to hold the day number (1=Mon, 2=Tues etc.)
 				strColumn(2, lngMax - 6) = "Day_Number"
 
 
@@ -933,7 +933,7 @@ LocalErr:
 				If strSelectedRecords = vbNullString And mstrPicklistFilter <> vbNullString Then
 
 					If mlngCrossTabType = Enums.CrossTabType.cttAbsenceBreakdown Then
-						strSelectedRecords = mstrSQLFrom & ".ID_" & Trim(Str(glngPersonnelTableID)) & " IN (" & mstrPicklistFilter & ")"
+						strSelectedRecords = mstrSQLFrom & ".ID_" & Trim(Str(PersonnelModule.glngPersonnelTableID)) & " IN (" & mstrPicklistFilter & ")"
 					Else
 						strSelectedRecords = mstrSQLFrom & ".ID IN (" & mstrPicklistFilter & ")"
 					End If
@@ -1044,11 +1044,11 @@ LocalErr:
 		Next
 
 		If mlngCrossTabType = Enums.CrossTabType.cttAbsenceBreakdown And Not msAbsenceBreakdownTypes = vbNullString Then
-			mstrSQLWhere = mstrSQLWhere & IIf(mstrSQLWhere <> vbNullString, " AND ", " WHERE ") & "(UPPER(" & gsAbsenceTypeColumnName & ") IN " & msAbsenceBreakdownTypes & ")"
+			mstrSQLWhere = mstrSQLWhere & IIf(mstrSQLWhere <> vbNullString, " AND ", " WHERE ") & "(UPPER(" & AbsenceModule.gsAbsenceTypeColumnName & ") IN " & msAbsenceBreakdownTypes & ")"
 		End If
 
 		If mlngCrossTabType = Enums.CrossTabType.cttAbsenceBreakdown Then
-			mstrSQLWhere = mstrSQLWhere & IIf(mstrSQLWhere <> vbNullString, " AND ", " WHERE ") & "( " & gsAbsenceStartDateColumnName & " <= CONVERT(datetime, '" & mstrReportEndDate & "'))" & "And (" & gsAbsenceEndDateColumnName & " >= CONVERT(datetime, '" & mstrReportStartDate & "') OR " & gsAbsenceEndDateColumnName & " IS NULL)"
+			mstrSQLWhere = mstrSQLWhere & IIf(mstrSQLWhere <> vbNullString, " AND ", " WHERE ") & "( " & AbsenceModule.gsAbsenceStartDateColumnName & " <= CONVERT(datetime, '" & mstrReportEndDate & "'))" & "And (" & AbsenceModule.gsAbsenceEndDateColumnName & " >= CONVERT(datetime, '" & mstrReportStartDate & "') OR " & AbsenceModule.gsAbsenceEndDateColumnName & " IS NULL)"
 
 		End If
 
@@ -1974,9 +1974,6 @@ LocalErr:
 		Dim strIncludedTypes As String
 
 		ReDim mastrUDFsRequired(0)
-
-		' Read the module parameters
-		ReadAbsenceParameters()
 
 		' Define this cross tab as an absence breakdown
 		mlngCrossTabType = Enums.CrossTabType.cttAbsenceBreakdown

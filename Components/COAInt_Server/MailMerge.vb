@@ -445,7 +445,7 @@ Public Class MailMerge
 			End If
 
 			'Get list of IDs from Filter
-			fOK = General.FilteredIDs(mlngDefFilterID, GetPicklistFilterSelect, mastrUDFsRequired, mvarPrompts)
+			fOK = FilteredIDs(mlngDefFilterID, GetPicklistFilterSelect, mastrUDFsRequired, mvarPrompts)
 
 			If Not fOK Then
 				' Permission denied on something in the filter.

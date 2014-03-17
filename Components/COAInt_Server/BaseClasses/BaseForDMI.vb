@@ -10,6 +10,9 @@ Namespace BaseClasses
 	Public Class BaseForDMI
 
 		Protected RegionalSettings As RegionalSettings
+		Friend AbsenceModule As modAbsenceSpecifics
+		Friend BankHolidayModule As modBankHolidaySpecifics
+		Friend PersonnelModule As modPersonnelSpecifics
 
 		Public DB As clsDataAccess
 		Protected General As clsGeneral
@@ -35,6 +38,9 @@ Namespace BaseClasses
 				dataAccess = New clsDataAccess(_sessionInfo.LoginInfo)
 
 				RegionalSettings = value.RegionalSettings
+				AbsenceModule = value.AbsenceModule
+				BankHolidayModule = value.BankHolidayModule
+				PersonnelModule = value.PersonnelModule
 
 			End Set
 			Get
@@ -43,7 +49,7 @@ Namespace BaseClasses
 		End Property
 
 		Friend Function NewExpression() As clsExprExpression
-			Return New clsExprExpression(_login)
+			Return New clsExprExpression(_sessionInfo)
 		End Function
 
 #Region "FROM modExpression"
@@ -330,6 +336,26 @@ ErrorTrap:
 
 		Public Function GetModuleParameter(psModuleKey As String, psParameterKey As String) As String
 			Return ModuleSettings.GetSetting(psModuleKey, psParameterKey).ParameterValue
+		End Function
+
+		Protected Function FilteredIDs(plngExprID As Integer, ByRef psIDSQL As String, ByRef psUDFs() As String, Optional paPrompts As Object = Nothing) As Boolean
+			' Return a string describing the record IDs from the given table
+			' that satisfy the given criteria.
+			Dim fOK As Boolean
+			Dim objExpr As clsExprExpression = New clsExprExpression(_sessionInfo)
+
+			With objExpr
+				' Initialise the filter expression object.
+				fOK = .Initialise(0, plngExprID, ExpressionTypes.giEXPR_RUNTIMEFILTER, ExpressionValueTypes.giEXPRVALUE_LOGIC)
+
+				If fOK Then
+					fOK = objExpr.RuntimeFilterCode(psIDSQL, True, psUDFs, False, paPrompts)
+				End If
+
+			End With
+
+			Return fOK
+
 		End Function
 
 #End Region

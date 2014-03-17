@@ -890,7 +890,7 @@
 		Dim iCharIndex As Integer
 		
 		' Get the server DLL to test the expression definition
-		Dim objExpression = New HR.Intranet.Server.Expression(objSessionInfo.LoginInfo)
+		Dim objExpression = New Expression(objSessionInfo)
 				
 		' Pass required info to the DLL			
 		Do While Len(sParam1) > 0

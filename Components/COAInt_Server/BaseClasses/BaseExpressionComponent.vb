@@ -7,17 +7,19 @@ Imports System.Data.SqlClient
 
 Namespace BaseClasses
 	Public Class BaseExpressionComponent
+		Inherits BaseForDMI
 
 		Protected ReadOnly Login As LoginInfo
 		Protected General As New clsGeneral
 		Protected DB As New clsDataAccess
 		Protected AccessLog As AccessLog
 
-		Public Sub New(ByVal Value As LoginInfo)
-			Login = Value
-			DB = New clsDataAccess(Login)
-			General = New clsGeneral(Login)
-			AccessLog = New AccessLog(Login)
+		Public Sub New(Value As SessionInfo)
+			SessionInfo = Value
+			Login = Value.LoginInfo
+			DB = New clsDataAccess(Value.LoginInfo)
+			General = New clsGeneral(Value.LoginInfo)
+			AccessLog = New AccessLog(Value.LoginInfo)
 		End Sub
 
 		' keep a manual record of allocated IDs in case users in SYS MGR have created expressions but not yet saved changes

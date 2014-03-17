@@ -26,15 +26,11 @@ Public Class clsTodaysAbsence
 		Dim objTableView As TablePrivilege
 		Dim pblnOK As Boolean
 
-		' Get the absence table name and Personnel Records ID and name from Module Setup
-		ReadAbsenceParameters()
-
 		Try
-
 
 			' Check the user has permission to read the absence table.
 			For Each objTableView In gcoTablePrivileges.Collection
-				If (objTableView.TableID = glngAbsenceTableID) And (objTableView.AllowSelect) Then
+				If (objTableView.TableID = AbsenceModule.glngAbsenceTableID) And (objTableView.AllowSelect) Then
 					pblnOK = True
 					Exit For
 				End If
@@ -52,9 +48,9 @@ Public Class clsTodaysAbsence
 
 			' Build the Personnel Select string
 			If pblnOK Then pblnOK = GenerateSQLSelect()
-			If pblnOK Then pblnOK = GenerateSQLFrom(gsPersonnelTableName)
-			If pblnOK Then pblnOK = GenerateSQLJoin(glngPersonnelTableID)
-			If pblnOK Then pblnOK = GenerateSQLWhere(glngPersonnelTableID, plngEmployeeID, RecordID)
+			If pblnOK Then pblnOK = GenerateSQLFrom(PersonnelModule.gsPersonnelTableName)
+			If pblnOK Then pblnOK = GenerateSQLJoin(PersonnelModule.glngPersonnelTableID)
+			If pblnOK Then pblnOK = GenerateSQLWhere(PersonnelModule.glngPersonnelTableID, plngEmployeeID, RecordID)
 			If pblnOK Then pblnOK = MergeSQLStrings()
 
 		Catch ex As Exception
@@ -94,7 +90,7 @@ Public Class clsTodaysAbsence
 		' Check the user has permission to read the base table.
 		pblnOK = False
 		For Each objTableView In gcoTablePrivileges.Collection
-			If (objTableView.TableID = glngPersonnelTableID) And (objTableView.AllowSelect) Then
+			If (objTableView.TableID = PersonnelModule.glngPersonnelTableID) And (objTableView.AllowSelect) Then
 				pblnOK = True
 				Exit For
 			End If
@@ -117,15 +113,15 @@ Public Class clsTodaysAbsence
 		ReDim mlngTableViews(2, 0)
 
 		' Load the temp variables
-		plngTempTableID = glngPersonnelTableID
-		pstrTempTableName = gsPersonnelTableName
+		plngTempTableID = PersonnelModule.glngPersonnelTableID
+		pstrTempTableName = PersonnelModule.gsPersonnelTableName
 
 		' Fault HRPRO-1362 - changed "forename surname" to "surname, forename"
 		For pintNextColLoop = 1 To 2
 			If pintNextColLoop = 1 Then
-				pstrTempColumnName = gsPersonnelSurnameColumnName
+				pstrTempColumnName = PersonnelModule.gsPersonnelSurnameColumnName
 			ElseIf pintNextColLoop = 2 Then
-				pstrTempColumnName = gsPersonnelForenameColumnName
+				pstrTempColumnName = PersonnelModule.gsPersonnelForenameColumnName
 			End If
 
 			' Check permission on that column
@@ -144,7 +140,7 @@ Public Class clsTodaysAbsence
 
 				' If the table isnt the base table (or its realsource) then
 				' Check if it has already been added to the array. If not, add it.
-				If plngTempTableID <> glngPersonnelTableID Then
+				If plngTempTableID <> PersonnelModule.glngPersonnelTableID Then
 					pblnFound = False
 					For pintNextIndex = 1 To UBound(mlngTableViews, 2)
 						If mlngTableViews(1, pintNextIndex) = 0 And mlngTableViews(2, pintNextIndex) = plngTempTableID Then
@@ -167,7 +163,7 @@ Public Class clsTodaysAbsence
 
 				Dim mstrViews(0) As Object
 				For Each mobjTableView In gcoTablePrivileges.Collection
-					If (Not mobjTableView.IsTable) And (mobjTableView.TableID = glngPersonnelTableID) And (mobjTableView.AllowSelect) Then
+					If (Not mobjTableView.IsTable) And (mobjTableView.TableID = PersonnelModule.glngPersonnelTableID) And (mobjTableView.AllowSelect) Then
 
 						pstrSource = mobjTableView.ViewName
 						mstrRealSource = gcoTablePrivileges.Item(pstrSource).RealSource
@@ -299,7 +295,7 @@ GenerateSQLSelect_ERROR:
 		Next pintLoop
 
 		' Append the absence table
-		mstrSQLJoin = mstrSQLJoin & " JOIN " & mstrAbsenceRealSource & " ON " & mstrAbsenceRealSource & ".ID_" & CStr(glngPersonnelTableID) & " = " & mstrBaseTableRealSource & ".ID"
+		mstrSQLJoin = mstrSQLJoin & " JOIN " & mstrAbsenceRealSource & " ON " & mstrAbsenceRealSource & ".ID_" & CStr(PersonnelModule.glngPersonnelTableID) & " = " & mstrBaseTableRealSource & ".ID"
 
 		Return True
 
@@ -335,12 +331,12 @@ GenerateSQLJoin_ERROR:
 
 		' Get today's absences...
 		If strCurrentSession = "PM" Then
-			pstrSQL = " (DATEDIFF(d, " & mstrAbsenceRealSource & "." & gsAbsenceStartDateColumnName & ", GETDATE()) > 0" & " OR (DATEDIFF(d, " & mstrAbsenceRealSource & "." & gsAbsenceStartDateColumnName & ", GETDATE()) = 0))" & " AND ((DATEDIFF(d," & mstrAbsenceRealSource & "." & gsAbsenceEndDateColumnName & ", GETDATE()) < 0 OR " & mstrAbsenceRealSource & "." & gsAbsenceEndDateColumnName & " IS NULL)" & " OR (DATEDIFF(d," & mstrAbsenceRealSource & "." & gsAbsenceEndDateColumnName & ", GETDATE()) = 0 AND (" & mstrAbsenceRealSource & "." & gsAbsenceEndSessionColumnName & " = 'PM')))"
+			pstrSQL = " (DATEDIFF(d, " & mstrAbsenceRealSource & "." & AbsenceModule.gsAbsenceStartDateColumnName & ", GETDATE()) > 0" & " OR (DATEDIFF(d, " & mstrAbsenceRealSource & "." & AbsenceModule.gsAbsenceStartDateColumnName & ", GETDATE()) = 0))" & " AND ((DATEDIFF(d," & mstrAbsenceRealSource & "." & AbsenceModule.gsAbsenceEndDateColumnName & ", GETDATE()) < 0 OR " & mstrAbsenceRealSource & "." & AbsenceModule.gsAbsenceEndDateColumnName & " IS NULL)" & " OR (DATEDIFF(d," & mstrAbsenceRealSource & "." & AbsenceModule.gsAbsenceEndDateColumnName & ", GETDATE()) = 0 AND (" & mstrAbsenceRealSource & "." & AbsenceModule.gsAbsenceEndSessionColumnName & " = 'PM')))"
 		ElseIf strCurrentSession = "AM" Then
-			pstrSQL = " (DATEDIFF(d," & mstrAbsenceRealSource & "." & gsAbsenceStartDateColumnName & ", GETDATE()) > 0" & " OR (DATEDIFF(d, " & mstrAbsenceRealSource & "." & gsAbsenceStartDateColumnName & ", GETDATE()) = 0 AND (" & mstrAbsenceRealSource & "." & gsAbsenceStartSessionColumnName & "='AM')))" & " AND ((DATEDIFF(d, " & mstrAbsenceRealSource & "." & gsAbsenceEndDateColumnName & ", GETDATE()) < 0 OR " & mstrAbsenceRealSource & "." & gsAbsenceEndDateColumnName & " IS NULL)" & " OR (DATEDIFF(d, " & mstrAbsenceRealSource & "." & gsAbsenceEndDateColumnName & ", GETDATE()) = 0))"
+			pstrSQL = " (DATEDIFF(d," & mstrAbsenceRealSource & "." & AbsenceModule.gsAbsenceStartDateColumnName & ", GETDATE()) > 0" & " OR (DATEDIFF(d, " & mstrAbsenceRealSource & "." & AbsenceModule.gsAbsenceStartDateColumnName & ", GETDATE()) = 0 AND (" & mstrAbsenceRealSource & "." & AbsenceModule.gsAbsenceStartSessionColumnName & "='AM')))" & " AND ((DATEDIFF(d, " & mstrAbsenceRealSource & "." & AbsenceModule.gsAbsenceEndDateColumnName & ", GETDATE()) < 0 OR " & mstrAbsenceRealSource & "." & AbsenceModule.gsAbsenceEndDateColumnName & " IS NULL)" & " OR (DATEDIFF(d, " & mstrAbsenceRealSource & "." & AbsenceModule.gsAbsenceEndDateColumnName & ", GETDATE()) = 0))"
 		Else
 			' Lunch! Any absence that spans today.
-			pstrSQL = " DATEDIFF(d," & mstrAbsenceRealSource & "." & gsAbsenceStartDateColumnName & ", GETDATE()) >= 0" & " AND (DATEDIFF(d, " & mstrAbsenceRealSource & "." & gsAbsenceEndDateColumnName & ", GETDATE()) <= 0 OR " & mstrAbsenceRealSource & "." & gsAbsenceEndDateColumnName & " IS NULL)"
+			pstrSQL = " DATEDIFF(d," & mstrAbsenceRealSource & "." & AbsenceModule.gsAbsenceStartDateColumnName & ", GETDATE()) >= 0" & " AND (DATEDIFF(d, " & mstrAbsenceRealSource & "." & AbsenceModule.gsAbsenceEndDateColumnName & ", GETDATE()) <= 0 OR " & mstrAbsenceRealSource & "." & AbsenceModule.gsAbsenceEndDateColumnName & " IS NULL)"
 		End If
 
 		mstrSQLWhere = mstrSQLWhere & pstrSQL

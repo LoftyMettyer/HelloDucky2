@@ -151,7 +151,7 @@ ErrorTrap:
 
 		ReDim mastrUDFsRequired(0)
 
-		blnOK = General.FilteredIDs(plngExprID, sIDSQL, mastrUDFsRequired, avPrompts)
+		blnOK = FilteredIDs(plngExprID, sIDSQL, mastrUDFsRequired, avPrompts)
 
 		Return sIDSQL
 

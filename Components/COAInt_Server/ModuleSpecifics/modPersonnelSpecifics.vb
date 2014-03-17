@@ -6,14 +6,12 @@ Imports HR.Intranet.Server.Metadata
 
 Namespace ModuleSpecifics
 
-	Module modPersonnelSpecifics
+	Friend Class modPersonnelSpecifics
 
 		' Module parameters.
 		Public gfPersonnelEnabled As Boolean
 		Public grtRegionType As RegionType
 		Public gwptWorkingPatternType As WorkingPatternType
-
-
 
 		Public glngPersonnelTableID As Integer
 		Public gsPersonnelTableName As String
@@ -83,8 +81,6 @@ Namespace ModuleSpecifics
 			datGeneral = Nothing
 
 		End Function
-
-
 
 
 		Public Sub ReadPersonnelParameters()
@@ -383,5 +379,5 @@ Namespace ModuleSpecifics
 			ValidatePersonnelParameters = fValid
 
 		End Function
-	End Module
+	End Class
 End Namespace

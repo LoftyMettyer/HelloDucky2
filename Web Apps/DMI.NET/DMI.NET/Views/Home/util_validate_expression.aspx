@@ -584,7 +584,7 @@
 		
 	If Request.Form("validatePass") = 2 Then
 		' Get the server DLL to validate the expression definition
-		objExpression = New HR.Intranet.Server.Expression(objSessionInfo.LoginInfo)
+		objExpression = New Expression(objSessionInfo)
 			
 		If Request.Form("validateUtilType") = 11 Then
 			iExprType = 11
@@ -647,7 +647,7 @@
 			' If so, check if it can be.
 
 			If Request.Form("validateUtilID") > 0 Then
-				objExpression = New Expression(objSessionInfo.LoginInfo)
+				objExpression = New Expression(objSessionInfo)
 
 				iOriginalReturnType = objExpression.ExistingExpressionReturnType(CLng(Request.Form("validateUtilID")))
 				objExpression = Nothing

@@ -16,7 +16,7 @@ Friend Class clsExprCalculation
 	' Class handling variables.
 	Private mobjBaseComponent As clsExprComponent
 
-	Public Sub New(ByVal Value As LoginInfo)
+	Public Sub New(ByVal Value As SessionInfo)
 		MyBase.New(Value)
 	End Sub
 
@@ -56,8 +56,7 @@ ErrorTrap:
 			psRuntimeCode = psFixedSQLCode
 		Else
 			' Instantiate the calculation expression.
-			objCalc = New clsExprExpression(Login)
-
+			objCalc = New clsExprExpression(SessionInfo)
 			With objCalc
 				' Construct the calculation expression.
 				.ExpressionID = mlngCalculationID
@@ -104,7 +103,7 @@ ErrorTrap:
 		' and edit the copy. If the changes are confirmed then the copy
 		' replaces the original. If the changes are cancelled then the
 		' copy is discarded.
-		Dim objCalcCopy As New clsExprCalculation(Login)
+		Dim objCalcCopy As New clsExprCalculation(SessionInfo)
 
 		' Copy the component's basic properties.
 		objCalcCopy.CalculationID = mlngCalculationID
@@ -130,8 +129,7 @@ ErrorTrap:
 			Dim objCalc As clsExprExpression
 
 			' Instantiate the calculation expression.
-			objCalc = New clsExprExpression(Login)
-
+			objCalc = New clsExprExpression(SessionInfo)
 			With objCalc
 				' Construct the calculation expression.
 				.ExpressionID = mlngCalculationID

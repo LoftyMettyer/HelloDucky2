@@ -191,7 +191,7 @@
 	end if
 		
 	' Get the server DLL to test the expression definition
-	objExpression = New Expression(objSessionInfo.LoginInfo)
+	objExpression = New Expression(objSessionInfo)
 	
 	if fok then 
 		if Request.form("type") = 11 then

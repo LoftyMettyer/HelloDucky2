@@ -9,7 +9,7 @@ Imports HR.Intranet.Server.Structures
 Friend Class clsExprField
 	Inherits BaseExpressionComponent
 
-	Public Sub New(ByVal Value As LoginInfo)
+	Public Sub New(ByVal Value As SessionInfo)
 		MyBase.New(Value)
 		miFieldPassType = FieldPassTypes.giPASSBY_VALUE
 	End Sub
@@ -114,7 +114,7 @@ ErrorTrap:
 		' and edit the copy. If the changes are confirmed then the copy
 		' replaces the original. If the changes are cancelled then the
 		' copy is discarded.
-		Dim objFieldCopy As New clsExprField(Login)
+		Dim objFieldCopy As New clsExprField(SessionInfo)
 
 		' Copy the component's basic properties.
 		With objFieldCopy
@@ -841,7 +841,7 @@ ErrorTrap:
 							If mlngSelFilterID = plngFixedExprID Then
 								sFilterCode = psFixedSQLCode
 							Else
-								objFilterExpr = New clsExprExpression(Login)
+								objFilterExpr = New clsExprExpression(SessionInfo)
 								objFilterExpr.ExpressionID = mlngSelFilterID
 								objFilterExpr.ConstructExpression()
 								fOK = objFilterExpr.RuntimeFilterCode(sFilterCode, pfApplyPermissions, psUDFs, pfValidating, pavPromptedValues, plngFixedExprID, psFixedSQLCode)

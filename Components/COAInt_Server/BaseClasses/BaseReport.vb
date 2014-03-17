@@ -94,5 +94,45 @@ Namespace BaseClasses
 
 		End Function
 
+#Region "FROM clsGeneral"
+
+		Protected Function IsDateColumn(strType As String, lngTableID As Integer, lngColumnID As Integer) As Boolean
+
+			Select Case strType
+				Case "C" 'Column
+					Return (Columns.GetById(lngColumnID).DataType = SQLDataType.sqlDate)
+
+				Case Else	'Calculation
+					Dim objCalcExpr = New clsExprExpression(SessionInfo)
+					objCalcExpr.Initialise(lngTableID, lngColumnID, ExpressionTypes.giEXPR_RUNTIMECALCULATION, ExpressionValueTypes.giEXPRVALUE_UNDEFINED)
+					objCalcExpr.ConstructExpression()
+					objCalcExpr.ValidateExpression(True)
+
+					Return (objCalcExpr.ReturnType = ExpressionValueTypes.giEXPRVALUE_DATE)
+
+			End Select
+
+		End Function
+
+		Protected Function IsBitColumn(strType As String, lngTableID As Integer, lngColumnID As Integer) As Boolean
+
+			Select Case strType
+				Case "C" 'Column
+					Return (Columns.GetById(lngColumnID).DataType = SQLDataType.sqlBoolean)
+
+				Case Else	'Calculation
+					Dim objCalcExpr = New clsExprExpression(SessionInfo)
+					objCalcExpr.Initialise(lngTableID, lngColumnID, ExpressionTypes.giEXPR_RUNTIMECALCULATION, ExpressionValueTypes.giEXPRVALUE_UNDEFINED)
+					objCalcExpr.ConstructExpression()
+					objCalcExpr.ValidateExpression(True)
+
+					Return (objCalcExpr.ReturnType = ExpressionValueTypes.giEXPRVALUE_LOGIC)
+
+			End Select
+
+		End Function
+
+#End Region
+
 	End Class
 End Namespace

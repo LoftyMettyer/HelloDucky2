@@ -18,7 +18,7 @@ Friend Class clsExprValue
 	' Class handling variables.
 	Private mobjBaseComponent As clsExprComponent
 
-	Public Sub New(ByVal Value As LoginInfo)
+	Public Sub New(ByVal Value As SessionInfo)
 		MyBase.New(Value)
 	End Sub
 
@@ -116,7 +116,7 @@ ErrorTrap:
 		' and edit the copy. If the changes are confirmed then the copy
 		' replaces the original. If the changes are cancelled then the
 		' copy is discarded.
-		Dim objValueCopy As New clsExprValue(Login)
+		Dim objValueCopy As New clsExprValue(SessionInfo)
 
 		' Copy the component's basic properties.
 		With objValueCopy

@@ -94,71 +94,11 @@ Public Class clsGeneral
 
 	End Function
 
-	Public Function FilteredIDs(plngExprID As Integer, ByRef psIDSQL As String, ByRef psUDFs() As String, Optional paPrompts As Object = Nothing) As Boolean
-		' Return a string describing the record IDs from the given table
-		' that satisfy the given criteria.
-		Dim fOK As Boolean
-		Dim objExpr As clsExprExpression = New clsExprExpression(_login)
-
-		With objExpr
-			' Initialise the filter expression object.
-			fOK = .Initialise(0, plngExprID, ExpressionTypes.giEXPR_RUNTIMEFILTER, ExpressionValueTypes.giEXPRVALUE_LOGIC)
-
-			If fOK Then
-				fOK = objExpr.RuntimeFilterCode(psIDSQL, True, psUDFs, False, paPrompts)
-			End If
-
-		End With
-
-		Return fOK
-
-	End Function
-
 	Public Sub New()
 		MyBase.New()
 		DB = New clsDataAccess
 	End Sub
 
-	Public Function GetValueForRecordIndependantCalc(ByRef lngExprID As Integer, Optional ByRef pvarPrompts As Object = Nothing) As Object
-
-		Dim objExpr As clsExprExpression
-		Dim rsTemp As DataTable
-		Dim strSQL As String
-		Dim fOK As Boolean
-		Dim lngViews(,) As Integer
-
-		On Error GoTo LocalErr
-
-		'UPGRADE_WARNING: Couldn't resolve default property of object GetValueForRecordIndependantCalc. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		GetValueForRecordIndependantCalc = vbNullString
-
-		objExpr = New clsExprExpression(_login)
-		With objExpr
-			' Initialise the filter expression object.
-			fOK = .Initialise(0, lngExprID, ExpressionTypes.giEXPR_RECORDINDEPENDANTCALC, ExpressionValueTypes.giEXPRVALUE_UNDEFINED)
-
-			If fOK Then
-				fOK = objExpr.RuntimeCalculationCode(lngViews, strSQL, Nothing, True, False, pvarPrompts)
-			End If
-
-			If fOK Then
-				rsTemp = DB.GetDataTable("SELECT " & strSQL)
-				If rsTemp.Rows.Count > 0 Then
-					'UPGRADE_WARNING: Couldn't resolve default property of object GetValueForRecordIndependantCalc. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					Return rsTemp.Rows(0)(0)
-				End If
-			End If
-
-		End With
-		'UPGRADE_NOTE: Object objExpr may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		objExpr = Nothing
-
-
-		Exit Function
-
-LocalErr:
-
-	End Function
 
 	Friend Function GetReadOnlyRecords(sSQL As String) As DataTable
 		Return DB.GetDataTable(sSQL)
@@ -304,51 +244,10 @@ LocalErr:
 		Return Relations.IsRelation(lTestTableID, lBaseTableID)
 	End Function
 
-	Public Function DateColumn(strType As String, lngTableID As Integer, lngColumnID As Integer) As Boolean
 
-		Select Case strType
-			Case "C" 'Column
-				DateColumn = (Columns.GetById(lngColumnID).DataType = SQLDataType.sqlDate)
-
-			Case Else	'Calculation
-
-				Dim objCalcExpr As clsExprExpression
-				objCalcExpr = New clsExprExpression(_login)
-				objCalcExpr.Initialise(lngTableID, lngColumnID, ExpressionTypes.giEXPR_RUNTIMECALCULATION, ExpressionValueTypes.giEXPRVALUE_UNDEFINED)
-				objCalcExpr.ConstructExpression()
-				objCalcExpr.ValidateExpression(True)
-
-				DateColumn = (objCalcExpr.ReturnType = ExpressionValueTypes.giEXPRVALUE_DATE)
-				'UPGRADE_NOTE: Object objCalcExpr may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-				objCalcExpr = Nothing
-
-		End Select
-
-	End Function
 
 	Public Function GetColumnDataType(plngColumnID As Integer) As SQLDataType
 		Return Columns.GetById(plngColumnID).DataType
-	End Function
-
-	Public Function BitColumn(strType As String, lngTableID As Integer, lngColumnID As Integer) As Boolean
-
-		'RH20000713
-		Dim objCalcExpr As clsExprExpression
-
-		Select Case strType
-			Case "C" 'Column
-				BitColumn = (Columns.GetById(lngColumnID).DataType = SQLDataType.sqlBoolean)
-
-			Case Else	'Calculation
-				objCalcExpr = New clsExprExpression(_login)
-				objCalcExpr.Initialise(lngTableID, lngColumnID, ExpressionTypes.giEXPR_RUNTIMECALCULATION, ExpressionValueTypes.giEXPRVALUE_UNDEFINED)
-				objCalcExpr.ConstructExpression()
-				objCalcExpr.ValidateExpression(True)
-
-				BitColumn = (objCalcExpr.ReturnType = ExpressionValueTypes.giEXPRVALUE_LOGIC)
-
-		End Select
-
 	End Function
 
 	Public Function GetColumnTableName(plngColumnID As Integer) As String

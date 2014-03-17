@@ -5,7 +5,7 @@ Imports HR.Intranet.Server.Metadata
 
 Namespace ModuleSpecifics
 
-	Module modBankHolidaySpecifics
+	Friend Class modBankHolidaySpecifics
 
 		Public gfBankHolidaysEnabled As Boolean
 
@@ -106,72 +106,6 @@ ReadParametersERROR:
 
 		Public Function ValidateBankHolidayParameters() As Boolean
 
-			' RH 01/12/00
-			' There is no real need for this, because Bank Holidays should
-			' be an optional thing, ie, the calcs/calendar should still
-			' function even if bank hols are not set up.
-
-			'  On Error GoTo ValidateERROR
-			'
-			'  ' Validate the configuration of the Bank Holiday parameters
-			'  Dim fValid As Boolean
-			'
-			'  ' Default to true
-			'  fValid = True
-			'
-			'  ' Now check the bank holiday module setup
-			'
-			'  If fValid Then
-			'    fValid = (glngBHolTableID > 0)
-			'    If Not fValid Then
-			'      MsgBox "Bank Holidays are not properly configured." & vbNewLine & _
-			''         "The Bank Holiday table is not defined.", vbOKOnly, App.ProductName
-			'    End If
-			'  End If
-			'
-			'  If fValid Then
-			'    fValid = (glngBholRegionTableID > 0)
-			'    If Not fValid Then
-			'      MsgBox "Bank Holidays are not properly configured." & vbNewLine & _
-			''         "The Bank Holiday Region table is not defined.", vbOKOnly, App.ProductName
-			'    End If
-			'  End If
-			'
-			'  If fValid Then
-			'    fValid = (glngBHolRegionID > 0)
-			'    If Not fValid Then
-			'      MsgBox "Bank Holidays are not properly configured." & vbNewLine & _
-			''         "The Bank Holiday Region column is not defined.", vbOKOnly, App.ProductName
-			'    End If
-			'  End If
-			'
-			'  If fValid Then
-			'    fValid = (glngBHolDateID > 0)
-			'    If Not fValid Then
-			'      MsgBox "Bank Holidays are not properly configured." & vbNewLine & _
-			''         "The Bank Holiday Date column is not defined.", vbOKOnly, App.ProductName
-			'    End If
-			'  End If
-			'
-			'  If fValid Then
-			'    fValid = (glngBHolDescriptionID > 0)
-			'    If Not fValid Then
-			'      MsgBox "Bank Holidays are not properly configured." & vbNewLine & _
-			''         "The Bank Holiday Description column is not defined.", vbOKOnly, App.ProductName
-			'    End If
-			'  End If
-			'
-			'ResumePoint:
-			'
-			'  ValidateBankHolidayParameters = fValid
-			'
-			'ValidateERROR:
-			'
-			'  MsgBox "Error whilst validating Bank Holiday parameters." & vbNewLine & _
-			''         Err.Description, vbExclamation + vbOKOnly, App.Title
-			'  fValid = False
-			'  Resume ResumePoint
-
 		End Function
-	End Module
+	End Class
 End Namespace

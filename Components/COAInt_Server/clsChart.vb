@@ -589,7 +589,7 @@ GenerateSQLOrderBy_ERROR:
 
 		If lngFilterID > 0 Then
 
-			blnOK = General.FilteredIDs(lngFilterID, strFilterIDs, mastrUDFsRequired)
+			blnOK = FilteredIDs(lngFilterID, strFilterIDs, mastrUDFsRequired)
 
 			If blnOK Then
 				mstrSQLWhere = mstrSQLWhere & IIf(Len(mstrSQLWhere) > 0, " AND ", " WHERE ").ToString() & mstrSQLFrom & ".ID IN (" & strFilterIDs & ")"

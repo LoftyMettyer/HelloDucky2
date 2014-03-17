@@ -275,10 +275,10 @@ ErrorTrap:
 						strTempTableName = gcoTablePrivileges.Item(mobjBaseComponent.ParentExpression.BaseTableName).RealSource
 					End If
 
-					If mobjBaseComponent.ParentExpression.BaseTableID = glngPersonnelTableID Then
+					If mobjBaseComponent.ParentExpression.BaseTableID = PersonnelModule.glngPersonnelTableID Then
 						strTempTableID = "ID"
 					Else
-						strTempTableID = "ID_" & Trim(Str(glngPersonnelTableID))
+						strTempTableID = "ID_" & Trim(Str(PersonnelModule.glngPersonnelTableID))
 					End If
 
 					sCode = "(dbo.udf_ASRFn_AbsenceDuration(" & sParamCode1 & "," & sParamCode2 & "," & sParamCode3 & "," & sParamCode4 & "," & strTempTableName & "." & strTempTableID & "))"
@@ -478,10 +478,10 @@ ErrorTrap:
 						strTempTableName = gcoTablePrivileges.Item(mobjBaseComponent.ParentExpression.BaseTableName).RealSource
 					End If
 
-					If mobjBaseComponent.ParentExpression.BaseTableID = glngPersonnelTableID Then
+					If mobjBaseComponent.ParentExpression.BaseTableID = PersonnelModule.glngPersonnelTableID Then
 						strTempTableID = "ID"
 					Else
-						strTempTableID = "ID_" & Trim(Str(glngPersonnelTableID))
+						strTempTableID = "ID_" & Trim(Str(PersonnelModule.glngPersonnelTableID))
 					End If
 
 					sCode = "(dbo.udf_ASRFn_WorkingDaysBetweenTwoDates(" & sParamCode1 & "," & sParamCode2 & "," & strTempTableName & "." & strTempTableID & "))"
@@ -494,10 +494,10 @@ ErrorTrap:
 						strTempTableName = gcoTablePrivileges.Item(mobjBaseComponent.ParentExpression.BaseTableName).RealSource
 					End If
 
-					If mobjBaseComponent.ParentExpression.BaseTableID = glngPersonnelTableID Then
+					If mobjBaseComponent.ParentExpression.BaseTableID = PersonnelModule.glngPersonnelTableID Then
 						strTempTableID = "ID"
 					Else
-						strTempTableID = "ID_" & Trim(Str(glngPersonnelTableID))
+						strTempTableID = "ID_" & Trim(Str(PersonnelModule.glngPersonnelTableID))
 					End If
 
 					sCode = "(dbo.udf_ASRFn_AbsenceBetweenTwoDates(" & sParamCode1 & "," & sParamCode2 & "," & sParamCode3 & "," & strTempTableName & "." & strTempTableID & "," & "convert(datetime,'" & VB6.Format(Now, "MM/dd/yyyy") & "')" & "))"
@@ -620,8 +620,8 @@ ErrorTrap:
 					'Case 64 'MATERNITY EXPECTED RETURN DATE
 
 				Case 65	' Is Post Subordinate Of
-					'If (Len(gsHierarchyTableName) > 0) Then
-					'  Set objBaseTable = gcoTablePrivileges.FindTableID(glngHierarchyTableID)
+					'If (Len(PersonnelModule.gsHierarchyTableName) > 0) Then
+					'  Set objBaseTable = gcoTablePrivileges.FindTableID(PersonnelModule.glngHierarchyTableID)
 					'  sCode = "CASE WHEN dbo.udf_ASRFn_IsPostSubordinateOf(" & sParamCode1 & ", " & objBaseTable.RealSource & ".id) = 1 THEN 1 ELSE 0 END"
 					'  Set objBaseTable = Nothing
 					'Else
@@ -629,8 +629,8 @@ ErrorTrap:
 					'End If
 
 				Case 66	' Is Post Subordinate Of User
-					If (Len(gsHierarchyTableName) > 0) Then
-						objBaseTable = gcoTablePrivileges.FindTableID(glngHierarchyTableID)
+					If (Len(PersonnelModule.gsHierarchyTableName) > 0) Then
+						objBaseTable = gcoTablePrivileges.FindTableID(PersonnelModule.glngHierarchyTableID)
 						sCode = "CASE WHEN " & objBaseTable.RealSource & ".id IN (SELECT id FROM dbo.udf_ASRFn_IsPostSubordinateOfUser()) THEN 1 ELSE 0 END"
 						'UPGRADE_NOTE: Object objBaseTable may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 						objBaseTable = Nothing
@@ -639,8 +639,8 @@ ErrorTrap:
 					End If
 
 				Case 67	' Is Personnel Subordinate Of
-					'If (Len(gsPersonnelTableName) > 0) Then
-					'  Set objBaseTable = gcoTablePrivileges.FindTableID(glngPersonnelTableID)
+					'If (Len(PersonnelModule.gsPersonnelTableName) > 0) Then
+					'  Set objBaseTable = gcoTablePrivileges.FindTableID(PersonnelModule.glngPersonnelTableID)
 					'  sCode = "CASE WHEN dbo.udf_ASRFn_IsPersonnelSubordinateOf(" & sParamCode1 & ", " & objBaseTable.RealSource & ".id," & sParamCode2 & ") = 1 THEN 1 ELSE 0 END"
 					'  Set objBaseTable = Nothing
 					'Else
@@ -648,8 +648,8 @@ ErrorTrap:
 					'End If
 
 				Case 68	' Is Personnel Subordinate Of User
-					If (Len(gsPersonnelTableName) > 0) Then
-						objBaseTable = gcoTablePrivileges.FindTableID(glngPersonnelTableID)
+					If (Len(PersonnelModule.gsPersonnelTableName) > 0) Then
+						objBaseTable = gcoTablePrivileges.FindTableID(PersonnelModule.glngPersonnelTableID)
 						sCode = "CASE WHEN " & objBaseTable.RealSource & ".id IN (SELECT id FROM dbo.udf_ASRFn_IsPersonnelSubordinateOfUser()) THEN 1 ELSE 0 END"
 						'UPGRADE_NOTE: Object objBaseTable may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 						objBaseTable = Nothing
@@ -658,8 +658,8 @@ ErrorTrap:
 					End If
 
 				Case 69	'Has Post Subordinate
-					'If (Len(gsHierarchyTableName) > 0) Then
-					'  Set objBaseTable = gcoTablePrivileges.FindTableID(glngHierarchyTableID)
+					'If (Len(PersonnelModule.gsHierarchyTableName) > 0) Then
+					'  Set objBaseTable = gcoTablePrivileges.FindTableID(PersonnelModule.glngHierarchyTableID)
 					'  sCode = "CASE WHEN dbo.udf_ASRFn_HasPostSubordinate(" & sParamCode1 & ", " & objBaseTable.RealSource & ".id) = 1 THEN 1 ELSE 0 END"
 					'  Set objBaseTable = Nothing
 					'Else
@@ -667,8 +667,8 @@ ErrorTrap:
 					'End If
 
 				Case 70	'Has Post Subordinate User
-					If (Len(gsHierarchyTableName) > 0) Then
-						objBaseTable = gcoTablePrivileges.FindTableID(glngHierarchyTableID)
+					If (Len(PersonnelModule.gsHierarchyTableName) > 0) Then
+						objBaseTable = gcoTablePrivileges.FindTableID(PersonnelModule.glngHierarchyTableID)
 						sCode = "CASE WHEN " & objBaseTable.RealSource & ".id IN (SELECT id FROM dbo.udf_ASRFn_HasPostSubordinateUser()) THEN 1 ELSE 0 END"
 						'UPGRADE_NOTE: Object objBaseTable may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 						objBaseTable = Nothing
@@ -677,8 +677,8 @@ ErrorTrap:
 					End If
 
 				Case 71	'Has Personnel Subordinate
-					'If (Len(gsPersonnelTableName) > 0) Then
-					'  Set objBaseTable = gcoTablePrivileges.FindTableID(glngPersonnelTableID)
+					'If (Len(PersonnelModule.gsPersonnelTableName) > 0) Then
+					'  Set objBaseTable = gcoTablePrivileges.FindTableID(PersonnelModule.glngPersonnelTableID)
 					'  sCode = "CASE WHEN dbo.udf_ASRFn_HasPersonnelSubordinate(" & sParamCode1 & ", " & objBaseTable.RealSource & ".id," & sParamCode2 & ") = 1 THEN 1 ELSE 0 END"
 					'  Set objBaseTable = Nothing
 					'Else
@@ -686,8 +686,8 @@ ErrorTrap:
 					'End If
 
 				Case 72	'Has Personnel Subordinate User
-					If (Len(gsPersonnelTableName) > 0) Then
-						objBaseTable = gcoTablePrivileges.FindTableID(glngPersonnelTableID)
+					If (Len(PersonnelModule.gsPersonnelTableName) > 0) Then
+						objBaseTable = gcoTablePrivileges.FindTableID(PersonnelModule.glngPersonnelTableID)
 						sCode = "CASE WHEN " & objBaseTable.RealSource & ".id IN (SELECT id FROM dbo.udf_ASRFn_HasPersonnelSubordinateUser()) THEN 1 ELSE 0 END"
 						'UPGRADE_NOTE: Object objBaseTable may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 						objBaseTable = Nothing
@@ -702,10 +702,10 @@ ErrorTrap:
 						strTempTableName = gcoTablePrivileges.Item(mobjBaseComponent.ParentExpression.BaseTableName).RealSource
 					End If
 
-					If mobjBaseComponent.ParentExpression.BaseTableID = glngPersonnelTableID Then
+					If mobjBaseComponent.ParentExpression.BaseTableID = PersonnelModule.glngPersonnelTableID Then
 						strTempTableID = "ID"
 					Else
-						strTempTableID = "ID_" & Trim(Str(glngPersonnelTableID))
+						strTempTableID = "ID_" & Trim(Str(PersonnelModule.glngPersonnelTableID))
 					End If
 
 					sCode = "(dbo.udf_ASRFn_BradfordFactor(" & sParamCode1 & "," & sParamCode2 & "," & sParamCode3 & "," & strTempTableName & "." & strTempTableID & "))"
@@ -874,7 +874,7 @@ ErrorTrap:
 		' and edit the copy. If the changes are confirmed then the copy
 		' replaces the original. If the changes are cancelled then the
 		' copy is discarded.
-		Dim objFunctionCopy As New clsExprFunction(Login)
+		Dim objFunctionCopy As New clsExprFunction(SessionInfo)
 
 		' Copy the component's basic properties.
 		' ie. the function id, not its parameters, etc.
@@ -933,6 +933,7 @@ ErrorTrap:
 				' as it may be changeable. The evaluated return type will be determined when the
 				' sub-expression is validated.
 				objSubExpression.ReturnType = Functions.GetById(mlngFunctionID).Parameters.GetByIndex(iLoop - 1).ParameterType
+				objSubExpression.SessionInfo = SessionInfo
 
 				iValidationCode = .ValidateExpression(False)
 
@@ -1031,7 +1032,7 @@ ErrorTrap:
 		' Get the standard function parameter definitions.
 		For Each objParameter In Functions.GetById(mlngFunctionID).Parameters
 
-			mcolParameters.Add(New clsExprComponent(Login))
+			mcolParameters.Add(New clsExprComponent(SessionInfo))
 			With mcolParameters.Item(mcolParameters.Count())
 				'UPGRADE_WARNING: Couldn't resolve default property of object mcolParameters.Item().ComponentType. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 				.ComponentType = ExpressionComponentTypes.giCOMPONENT_EXPRESSION
@@ -1059,7 +1060,7 @@ ErrorTrap:
 			For Each objRow As DataRow In rsParameters.Rows
 
 				' Instantiate a new component object.
-				objNewParameter = New clsExprComponent(Login)
+				objNewParameter = New clsExprComponent(SessionInfo)
 
 				' Construct the hierarchy of objects that define the parameter.
 				objNewParameter.ComponentType = ExpressionComponentTypes.giCOMPONENT_EXPRESSION
@@ -1121,7 +1122,7 @@ ErrorTrap:
 
 	End Sub
 
-	Public Sub New(ByVal Value As LoginInfo)
+	Public Sub New(ByVal Value As SessionInfo)
 		MyBase.New(Value)
 		mcolParameters = New Collection
 	End Sub

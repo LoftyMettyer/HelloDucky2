@@ -287,8 +287,10 @@ Namespace Controllers
 
 				' User is allowed into OpenHR, now populate some metadata
 				objServerSession.RegionalSettings = Platform.GetRegionalSettings
+
 				objDatabase.SessionInfo = objServerSession
 				objServerSession.Initialise()
+				objServerSession.ReadModuleParameters()
 
 
 				objDataAccess = New clsDataAccess(objServerSession.LoginInfo)

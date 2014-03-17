@@ -155,7 +155,7 @@ Public Class AbsenceCalendar
 				mdCalendarEndDate = DateTime.FromOADate(DateAdd(Microsoft.VisualBasic.DateInterval.Year, 1, mdCalendarStartDate).ToOADate - DateTime.FromOADate(0.5).ToOADate)
 
 			Else
-				mdCalendarStartDate = DateSerial(Year(mdCalendarStartDate), giAbsenceCalStartMonth, 1)
+				mdCalendarStartDate = DateSerial(Year(mdCalendarStartDate), AbsenceModule.giAbsenceCalStartMonth, 1)
 				mdCalendarEndDate = DateTime.FromOADate(DateAdd(Microsoft.VisualBasic.DateInterval.Year, 1, mdCalendarStartDate).ToOADate - DateTime.FromOADate(0.5).ToOADate)
 
 			End If
@@ -228,7 +228,7 @@ Public Class AbsenceCalendar
 			' Are the weekends to be shown (if parameter is empty read the default DB value)
 			'UPGRADE_WARNING: IsEmpty was upgraded to IsNothing and has a new behavior. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="9B7D5ADD-D8FE-4819-A36C-6DEDAF088CC7"'
 			'UPGRADE_WARNING: Couldn't resolve default property of object vValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			mbDisplay_ShowWeekends = IIf(Value = "highlighted", True, IIf(IsNothing(Value), gfAbsenceCalWeekendShading, False))
+			mbDisplay_ShowWeekends = IIf(Value = "highlighted", True, IIf(IsNothing(Value), AbsenceModule.gfAbsenceCalWeekendShading, False))
 		End Set
 	End Property
 
@@ -237,7 +237,7 @@ Public Class AbsenceCalendar
 			' Are the captions to be shown (if parameter is empty read the default DB value)
 			'UPGRADE_WARNING: IsEmpty was upgraded to IsNothing and has a new behavior. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="9B7D5ADD-D8FE-4819-A36C-6DEDAF088CC7"'
 			'UPGRADE_WARNING: Couldn't resolve default property of object vValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			mbDisplay_ShowCaptions = IIf(Value = "show", True, IIf(IsNothing(Value), gfAbsenceCalShowCaptions, False))
+			mbDisplay_ShowCaptions = IIf(Value = "show", True, IIf(IsNothing(Value), AbsenceModule.gfAbsenceCalShowCaptions, False))
 		End Set
 	End Property
 
@@ -246,7 +246,7 @@ Public Class AbsenceCalendar
 			' Are the bank holidays to be shown (if parameter is empty read the default DB value)
 			'UPGRADE_WARNING: IsEmpty was upgraded to IsNothing and has a new behavior. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="9B7D5ADD-D8FE-4819-A36C-6DEDAF088CC7"'
 			'UPGRADE_WARNING: Couldn't resolve default property of object vValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			mbDisplay_ShowBankHolidays = IIf(Value = "highlighted", True, IIf(IsNothing(Value), gfAbsenceCalBHolShading, False))
+			mbDisplay_ShowBankHolidays = IIf(Value = "highlighted", True, IIf(IsNothing(Value), AbsenceModule.gfAbsenceCalBHolShading, False))
 		End Set
 	End Property
 
@@ -255,7 +255,7 @@ Public Class AbsenceCalendar
 			' Are the bank holidays to be included (if parameter is empty read the default DB value)
 			'UPGRADE_WARNING: IsEmpty was upgraded to IsNothing and has a new behavior. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="9B7D5ADD-D8FE-4819-A36C-6DEDAF088CC7"'
 			'UPGRADE_WARNING: Couldn't resolve default property of object vValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			mbDisplay_IncludeBankHolidays = IIf(Value = "included", True, IIf(IsNothing(Value), gfAbsenceCalBHolInclude, False))
+			mbDisplay_IncludeBankHolidays = IIf(Value = "included", True, IIf(IsNothing(Value), AbsenceModule.gfAbsenceCalBHolInclude, False))
 		End Set
 	End Property
 
@@ -264,7 +264,7 @@ Public Class AbsenceCalendar
 			' Are the working days only to be shown (if parameter is empty read the default DB value)
 			'UPGRADE_WARNING: IsEmpty was upgraded to IsNothing and has a new behavior. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="9B7D5ADD-D8FE-4819-A36C-6DEDAF088CC7"'
 			'UPGRADE_WARNING: Couldn't resolve default property of object vValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			mbDisplay_IncludeWorkingDaysOnly = IIf(Value = "included", True, IIf(IsNothing(Value), gfAbsenceCalIncludeWorkingDaysOnly, False))
+			mbDisplay_IncludeWorkingDaysOnly = IIf(Value = "included", True, IIf(IsNothing(Value), AbsenceModule.gfAbsenceCalIncludeWorkingDaysOnly, False))
 		End Set
 	End Property
 
@@ -313,7 +313,7 @@ Public Class AbsenceCalendar
 		Dim strHtml As String
 
 		'UPGRADE_WARNING: Couldn't resolve default property of object piStartMonth. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		piStartMonth = If(IsNumeric(piStartMonth), piStartMonth, giAbsenceCalStartMonth)
+		piStartMonth = If(IsNumeric(piStartMonth), piStartMonth, AbsenceModule.giAbsenceCalStartMonth)
 
 		'strHTML = "<SELECT id=cboStartMonth style=""HEIGHT: 22px; WIDTH: 150px"" onchange=""return cboStartMonth_onchange()"">" & vbNewLine
 		strHtml = "<SELECT id=cboStartMonth onchange=""return cboStartMonth_onchange()"">" & vbNewLine
@@ -528,10 +528,10 @@ Public Class AbsenceCalendar
 		sSQL = sSQL & mstrSQLSelect_AbsenceEndSession & " as 'EndSession', " & vbNewLine & mstrSQLSelect_AbsenceType & " as 'Type', " & vbNewLine & mstrSQLSelect_AbsenceTypeCalCode & " as 'CalendarCode', " & vbNewLine & mstrSQLSelect_AbsenceTypeCode & " as 'Code', " & vbNewLine & mstrSQLSelect_AbsenceReason & " as 'Reason', " & vbNewLine & mstrSQLSelect_AbsenceDuration & " as 'Duration' " & vbNewLine
 
 		sSQL = sSQL & "FROM " & mstrAbsenceTableRealSource & vbNewLine
-		sSQL = sSQL & "           INNER JOIN " & gsAbsenceTypeTableName & vbNewLine
-		sSQL = sSQL & "           ON " & mstrAbsenceTableRealSource & "." & gsAbsenceTypeColumnName & " = " & gsAbsenceTypeTableName & "." & gsAbsenceTypeTypeColumnName & vbNewLine
+		sSQL = sSQL & "           INNER JOIN " & AbsenceModule.gsAbsenceTypeTableName & vbNewLine
+		sSQL = sSQL & "           ON " & mstrAbsenceTableRealSource & "." & AbsenceModule.gsAbsenceTypeColumnName & " = " & AbsenceModule.gsAbsenceTypeTableName & "." & AbsenceModule.gsAbsenceTypeTypeColumnName & vbNewLine
 
-		sSQL = sSQL & "WHERE " & mstrAbsenceTableRealSource & "." & "ID_" & glngPersonnelTableID & " = " & mlngPersonnelRecordID & vbNewLine
+		sSQL = sSQL & "WHERE " & mstrAbsenceTableRealSource & "." & "ID_" & PersonnelModule.glngPersonnelTableID & " = " & mlngPersonnelRecordID & vbNewLine
 		sSQL = sSQL & " AND (" & mstrSQLSelect_AbsenceStartDate & " IS NOT NULL) " & vbNewLine
 		sSQL = sSQL & "ORDER BY 'StartDate' ASC"
 
@@ -556,9 +556,6 @@ GetAbsenceRecordSet_ERROR:
 		fOK = True
 
 		' Read the necessary settings for the calendar to work
-		ReadAbsenceParameters()
-		ReadBankHolidayParameters()
-
 		mbColourKeyLoaded = False
 
 		' Check the Module Setup and Data Permissions for the Absence Calendar Specific columns
@@ -592,7 +589,7 @@ GetAbsenceRecordSet_ERROR:
 		LoadColourKey()
 
 		' Default start and end dates
-		mdCalendarStartDate = DateSerial(Year(Now), giAbsenceCalStartMonth, 1)
+		mdCalendarStartDate = DateSerial(Year(Now), AbsenceModule.giAbsenceCalStartMonth, 1)
 		mdCalendarEndDate = DateTime.FromOADate(DateAdd(Microsoft.VisualBasic.DateInterval.Year, 1, mdCalendarStartDate).ToOADate - DateTime.FromOADate(0.5).ToOADate)
 
 	End Sub
@@ -612,7 +609,7 @@ GetAbsenceRecordSet_ERROR:
 		Dim intCounter As Integer
 		Dim strHexColour As String
 
-		strColourKeySQL = "SELECT DISTINCT " & gsAbsenceTypeTypeColumnName & " AS Type, " & gsAbsenceTypeCalCodeColumnName & " AS CalCode," & gsAbsenceTypeCodeColumnName & " AS TypeCode" & " FROM " & gsAbsenceTypeTableName & " ORDER BY " & gsAbsenceTypeTypeColumnName
+		strColourKeySQL = "SELECT DISTINCT " & AbsenceModule.gsAbsenceTypeTypeColumnName & " AS Type, " & AbsenceModule.gsAbsenceTypeCalCodeColumnName & " AS CalCode," & AbsenceModule.gsAbsenceTypeCodeColumnName & " AS TypeCode" & " FROM " & AbsenceModule.gsAbsenceTypeTableName & " ORDER BY " & AbsenceModule.gsAbsenceTypeTypeColumnName
 		rstColourKey = DB.GetDataTable(strColourKeySQL)
 
 		If rstColourKey.Rows.Count = 0 Then
@@ -898,18 +895,18 @@ errLoadColourKey:
 			sSQL = vbNullString
 			sSQL = sSQL & "SELECT " & mstrSQLSelect_PersonnelStartDate & " AS 'StartDate', " & vbNewLine
 			sSQL = sSQL & "      " & mstrSQLSelect_PersonnelLeavingDate & " AS 'LeavingDate' " & vbNewLine
-			sSQL = sSQL & "FROM " & gsPersonnelTableName & vbNewLine
+			sSQL = sSQL & "FROM " & PersonnelModule.gsPersonnelTableName & vbNewLine
 			For lngCount = 0 To UBound(mvarTableViews, 2) Step 1
 				'<Personnel CODE>
 				'UPGRADE_WARNING: Couldn't resolve default property of object mvarTableViews(0, lngCount). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				If mvarTableViews(0, lngCount) = glngPersonnelTableID Then
+				If mvarTableViews(0, lngCount) = PersonnelModule.glngPersonnelTableID Then
 					'UPGRADE_WARNING: Couldn't resolve default property of object mvarTableViews(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 					sSQL = sSQL & "     LEFT OUTER JOIN " & mvarTableViews(3, lngCount) & vbNewLine
 					'UPGRADE_WARNING: Couldn't resolve default property of object mvarTableViews(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					sSQL = sSQL & "     ON  " & gsPersonnelTableName & ".ID = " & mvarTableViews(3, lngCount) & ".ID" & vbNewLine
+					sSQL = sSQL & "     ON  " & PersonnelModule.gsPersonnelTableName & ".ID = " & mvarTableViews(3, lngCount) & ".ID" & vbNewLine
 				End If
 			Next lngCount
-			sSQL = sSQL & "WHERE " & gsPersonnelTableName & "." & "ID = " & mlngPersonnelRecordID
+			sSQL = sSQL & "WHERE " & PersonnelModule.gsPersonnelTableName & "." & "ID = " & mlngPersonnelRecordID
 
 			' Get the start and leaving date
 			prstPersonnelData = DB.GetDataTable(sSQL)
@@ -926,25 +923,25 @@ errLoadColourKey:
 
 		If Not mblnDisableRegions Then
 			' Get the employees current region
-			If grtRegionType = RegionType.rtStaticRegion Then
+			If PersonnelModule.grtRegionType = RegionType.rtStaticRegion Then
 				' Its a static region, get it from personnel
 				sSQL = "SELECT " & mstrSQLSelect_PersonnelStaticRegion & "  AS 'Region'  " & vbNewLine
-				sSQL = sSQL & "FROM " & gsPersonnelTableName & vbNewLine
+				sSQL = sSQL & "FROM " & PersonnelModule.gsPersonnelTableName & vbNewLine
 				For lngCount = 0 To UBound(mvarTableViews, 2) Step 1
 					'<Personnel CODE>
 					'UPGRADE_WARNING: Couldn't resolve default property of object mvarTableViews(0, lngCount). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					If mvarTableViews(0, lngCount) = glngPersonnelTableID Then
+					If mvarTableViews(0, lngCount) = PersonnelModule.glngPersonnelTableID Then
 						'UPGRADE_WARNING: Couldn't resolve default property of object mvarTableViews(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 						sSQL = sSQL & "     LEFT OUTER JOIN " & mvarTableViews(3, lngCount) & vbNewLine
 						'UPGRADE_WARNING: Couldn't resolve default property of object mvarTableViews(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						sSQL = sSQL & "     ON  " & gsPersonnelTableName & ".ID = " & mvarTableViews(3, lngCount) & ".ID" & vbNewLine
+						sSQL = sSQL & "     ON  " & PersonnelModule.gsPersonnelTableName & ".ID = " & mvarTableViews(3, lngCount) & ".ID" & vbNewLine
 					End If
 				Next lngCount
-				sSQL = sSQL & "WHERE " & gsPersonnelTableName & "." & "ID = " & mlngPersonnelRecordID
+				sSQL = sSQL & "WHERE " & PersonnelModule.gsPersonnelTableName & "." & "ID = " & mlngPersonnelRecordID
 				prstPersonnelData = DB.GetDataTable(sSQL)
 			Else
 				' Its a historic region, so get topmost from the history
-				prstPersonnelData = DB.GetDataTable("SELECT TOP 1 " & gsPersonnelHRegionTableRealSource & "." & gsPersonnelHRegionColumnName & " AS 'Region' " & "FROM " & gsPersonnelHRegionTableRealSource & " " & "WHERE " & gsPersonnelHRegionTableRealSource & "." & "ID_" & glngPersonnelTableID & " = " & mlngPersonnelRecordID & " ORDER BY " & gsPersonnelHRegionDateColumnName & " DESC")
+				prstPersonnelData = DB.GetDataTable("SELECT TOP 1 " & PersonnelModule.gsPersonnelHRegionTableRealSource & "." & PersonnelModule.gsPersonnelHRegionColumnName & " AS 'Region' " & "FROM " & PersonnelModule.gsPersonnelHRegionTableRealSource & " " & "WHERE " & PersonnelModule.gsPersonnelHRegionTableRealSource & "." & "ID_" & PersonnelModule.glngPersonnelTableID & " = " & mlngPersonnelRecordID & " ORDER BY " & PersonnelModule.gsPersonnelHRegionDateColumnName & " DESC")
 			End If
 
 			If prstPersonnelData.Rows.Count > 0 Then
@@ -960,28 +957,28 @@ errLoadColourKey:
 
 		If Not mblnDisableWPs Then
 			' Get the employees current working pattern
-			If modPersonnelSpecifics.gwptWorkingPatternType = WorkingPatternType.wptStaticWPattern Then
+			If PersonnelModule.gwptWorkingPatternType = WorkingPatternType.wptStaticWPattern Then
 				' Its a static working pattern, get it from personnel
 				sSQL = vbNullString
 				sSQL = sSQL & "SELECT " & mstrSQLSelect_PersonnelStaticWP & "  AS 'WP'  " & vbNewLine
-				sSQL = sSQL & "FROM " & gsPersonnelTableName & vbNewLine
+				sSQL = sSQL & "FROM " & PersonnelModule.gsPersonnelTableName & vbNewLine
 				For lngCount = 0 To UBound(mvarTableViews, 2) Step 1
 					'<Personnel CODE>
 					'UPGRADE_WARNING: Couldn't resolve default property of object mvarTableViews(0, lngCount). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					If mvarTableViews(0, lngCount) = glngPersonnelTableID Then
+					If mvarTableViews(0, lngCount) = PersonnelModule.glngPersonnelTableID Then
 						'UPGRADE_WARNING: Couldn't resolve default property of object mvarTableViews(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 						sSQL = sSQL & "     LEFT OUTER JOIN " & mvarTableViews(3, lngCount) & vbNewLine
 						'UPGRADE_WARNING: Couldn't resolve default property of object mvarTableViews(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						sSQL = sSQL & "     ON  " & gsPersonnelTableName & ".ID = " & mvarTableViews(3, lngCount) & ".ID" & vbNewLine
+						sSQL = sSQL & "     ON  " & PersonnelModule.gsPersonnelTableName & ".ID = " & mvarTableViews(3, lngCount) & ".ID" & vbNewLine
 					End If
 				Next lngCount
-				sSQL = sSQL & "WHERE " & gsPersonnelTableName & "." & "ID = " & mlngPersonnelRecordID
+				sSQL = sSQL & "WHERE " & PersonnelModule.gsPersonnelTableName & "." & "ID = " & mlngPersonnelRecordID
 				prstPersonnelData = DB.GetDataTable(sSQL)
 
 			Else
 				' Its a historic working pattern, so get topmost from the history
-				prstPersonnelData = DB.GetDataTable("SELECT TOP 1 " & gsPersonnelHWorkingPatternTableRealSource & "." & gsPersonnelHWorkingPatternColumnName & " AS 'WP' " & "FROM " & gsPersonnelHWorkingPatternTableRealSource & " " & "WHERE " & gsPersonnelHWorkingPatternTableRealSource & "." & "ID_" & glngPersonnelTableID & " = " & mlngPersonnelRecordID & "AND " & gsPersonnelHWorkingPatternTableRealSource & "." & gsPersonnelHWorkingPatternDateColumnName & " <= '" _
-																									& Replace(VB6.Format(Now, "MM/dd/yy"), CultureInfo.CurrentCulture.DateTimeFormat.DateSeparator, "/") & "' " & "ORDER BY " & gsPersonnelHWorkingPatternDateColumnName & " DESC")
+				prstPersonnelData = DB.GetDataTable("SELECT TOP 1 " & PersonnelModule.gsPersonnelHWorkingPatternTableRealSource & "." & PersonnelModule.gsPersonnelHWorkingPatternColumnName & " AS 'WP' " & "FROM " & PersonnelModule.gsPersonnelHWorkingPatternTableRealSource & " " & "WHERE " & PersonnelModule.gsPersonnelHWorkingPatternTableRealSource & "." & "ID_" & PersonnelModule.glngPersonnelTableID & " = " & mlngPersonnelRecordID & "AND " & PersonnelModule.gsPersonnelHWorkingPatternTableRealSource & "." & PersonnelModule.gsPersonnelHWorkingPatternDateColumnName & " <= '" _
+																									& Replace(VB6.Format(Now, "MM/dd/yy"), CultureInfo.CurrentCulture.DateTimeFormat.DateSeparator, "/") & "' " & "ORDER BY " & PersonnelModule.gsPersonnelHWorkingPatternDateColumnName & " DESC")
 			End If
 
 			If prstPersonnelData.Rows.Count > 0 Then
@@ -1524,10 +1521,10 @@ Error_FillCalBoxes:
 
 		If Not mblnDisableWPs Then
 			' If we are using historic WPattern, ensure we use the right WPattern for each day of absence
-			If gwptWorkingPatternType = WorkingPatternType.wptHistoricWPattern Then
+			If PersonnelModule.gwptWorkingPatternType = WorkingPatternType.wptHistoricWPattern Then
 
 				' Get the wpattern for the start of the absence period
-				rstHistoricWPatterns = DB.GetDataTable("SELECT TOP 1 " & gsPersonnelHWorkingPatternTableRealSource & "." & gsPersonnelHWorkingPatternDateColumnName & " AS 'Date', " & gsPersonnelHWorkingPatternTableRealSource & "." & gsPersonnelHWorkingPatternColumnName & " AS 'WP' " & "FROM " & gsPersonnelHWorkingPatternTableRealSource & " " & "WHERE " & gsPersonnelHWorkingPatternTableRealSource & "." & "ID_" & glngPersonnelTableID & " = " & mlngPersonnelRecordID & " " & "AND " & gsPersonnelHWorkingPatternTableRealSource & "." & gsPersonnelHWorkingPatternDateColumnName & " <= '" & VB6.Format(mdCalendarStartDate, "MM/dd/yyyy") & "' " & "ORDER BY " & gsPersonnelHWorkingPatternDateColumnName & " DESC")
+				rstHistoricWPatterns = DB.GetDataTable("SELECT TOP 1 " & PersonnelModule.gsPersonnelHWorkingPatternTableRealSource & "." & PersonnelModule.gsPersonnelHWorkingPatternDateColumnName & " AS 'Date', " & PersonnelModule.gsPersonnelHWorkingPatternTableRealSource & "." & PersonnelModule.gsPersonnelHWorkingPatternColumnName & " AS 'WP' " & "FROM " & PersonnelModule.gsPersonnelHWorkingPatternTableRealSource & " " & "WHERE " & PersonnelModule.gsPersonnelHWorkingPatternTableRealSource & "." & "ID_" & PersonnelModule.glngPersonnelTableID & " = " & mlngPersonnelRecordID & " " & "AND " & PersonnelModule.gsPersonnelHWorkingPatternTableRealSource & "." & PersonnelModule.gsPersonnelHWorkingPatternDateColumnName & " <= '" & VB6.Format(mdCalendarStartDate, "MM/dd/yyyy") & "' " & "ORDER BY " & PersonnelModule.gsPersonnelHWorkingPatternDateColumnName & " DESC")
 
 				If rstHistoricWPatterns.Rows.Count > 0 Then
 
@@ -1543,7 +1540,7 @@ Error_FillCalBoxes:
 				End If
 
 				' Now get the rest of the working patterns
-				Dim sSQLWorkingPatterns As String = String.Format("SELECT " & gsPersonnelHWorkingPatternTableRealSource & "." & gsPersonnelHWorkingPatternDateColumnName & " AS 'Date', " & gsPersonnelHWorkingPatternTableRealSource & "." & gsPersonnelHWorkingPatternColumnName & " AS 'WP' " & "FROM " & gsPersonnelHWorkingPatternTableRealSource & " " & "WHERE " & gsPersonnelHWorkingPatternTableRealSource & "." & "ID_" & glngPersonnelTableID & " = " & mlngPersonnelRecordID & " " & "AND " & gsPersonnelHWorkingPatternTableRealSource & "." & gsPersonnelHWorkingPatternDateColumnName & " > '" & VB6.Format(mdCalendarStartDate, "MM/dd/yyyy") & "' " & "ORDER BY " & gsPersonnelHWorkingPatternDateColumnName & " ASC")
+				Dim sSQLWorkingPatterns As String = String.Format("SELECT " & PersonnelModule.gsPersonnelHWorkingPatternTableRealSource & "." & PersonnelModule.gsPersonnelHWorkingPatternDateColumnName & " AS 'Date', " & PersonnelModule.gsPersonnelHWorkingPatternTableRealSource & "." & PersonnelModule.gsPersonnelHWorkingPatternColumnName & " AS 'WP' " & "FROM " & PersonnelModule.gsPersonnelHWorkingPatternTableRealSource & " " & "WHERE " & PersonnelModule.gsPersonnelHWorkingPatternTableRealSource & "." & "ID_" & PersonnelModule.glngPersonnelTableID & " = " & mlngPersonnelRecordID & " " & "AND " & PersonnelModule.gsPersonnelHWorkingPatternTableRealSource & "." & PersonnelModule.gsPersonnelHWorkingPatternDateColumnName & " > '" & VB6.Format(mdCalendarStartDate, "MM/dd/yyyy") & "' " & "ORDER BY " & PersonnelModule.gsPersonnelHWorkingPatternDateColumnName & " ASC")
 				rstHistoricWPatterns = DB.GetDataTable(sSQLWorkingPatterns)
 
 				If rstHistoricWPatterns.Rows.Count > 0 Then
@@ -1579,18 +1576,18 @@ Error_FillCalBoxes:
 				' Its a static working pattern, get it from personnel
 				sSQL = vbNullString
 				sSQL = sSQL & "SELECT " & mstrSQLSelect_PersonnelStaticWP & "  AS 'WP'  " & vbNewLine
-				sSQL = sSQL & "FROM " & gsPersonnelTableName & vbNewLine
+				sSQL = sSQL & "FROM " & PersonnelModule.gsPersonnelTableName & vbNewLine
 				For lngCount = 0 To UBound(mvarTableViews, 2) Step 1
 					'<Personnel CODE>
 					'UPGRADE_WARNING: Couldn't resolve default property of object mvarTableViews(0, lngCount). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					If mvarTableViews(0, lngCount) = glngPersonnelTableID Then
+					If mvarTableViews(0, lngCount) = PersonnelModule.glngPersonnelTableID Then
 						'UPGRADE_WARNING: Couldn't resolve default property of object mvarTableViews(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 						sSQL = sSQL & "     LEFT OUTER JOIN " & mvarTableViews(3, lngCount) & vbNewLine
 						'UPGRADE_WARNING: Couldn't resolve default property of object mvarTableViews(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						sSQL = sSQL & "     ON  " & gsPersonnelTableName & ".ID = " & mvarTableViews(3, lngCount) & ".ID" & vbNewLine
+						sSQL = sSQL & "     ON  " & PersonnelModule.gsPersonnelTableName & ".ID = " & mvarTableViews(3, lngCount) & ".ID" & vbNewLine
 					End If
 				Next lngCount
-				sSQL = sSQL & "WHERE " & gsPersonnelTableName & "." & "ID = " & mlngPersonnelRecordID
+				sSQL = sSQL & "WHERE " & PersonnelModule.gsPersonnelTableName & "." & "ID = " & mlngPersonnelRecordID
 
 				rstHistoricWPatterns = DB.GetDataTable(sSQL)
 
@@ -1629,10 +1626,10 @@ Error_FillCalBoxes:
 
 		If Not mblnDisableRegions Then
 			' If we are using historic region, find the region change dates
-			If grtRegionType = RegionType.rtHistoricRegion Then
+			If PersonnelModule.grtRegionType = RegionType.rtHistoricRegion Then
 
 				' Get the first region for this employee within this calendar year
-				rstBankHolRegion = DB.GetDataTable("SELECT TOP 1 " & gsPersonnelHRegionTableRealSource & "." & gsPersonnelHRegionDateColumnName & " AS 'Date', " & gsPersonnelHRegionTableRealSource & "." & gsPersonnelHRegionColumnName & " AS 'Region' " & "FROM " & gsPersonnelHRegionTableRealSource & " " & "WHERE " & gsPersonnelHRegionTableRealSource & "." & "ID_" & glngPersonnelTableID & " = " & mlngPersonnelRecordID & " " & "AND " & gsPersonnelHRegionTableRealSource & "." & gsPersonnelHRegionDateColumnName & " <= '" & VB6.Format(mdCalendarStartDate, "MM/dd/yyyy") & "' " & "ORDER BY " & gsPersonnelHRegionDateColumnName & " DESC")
+				rstBankHolRegion = DB.GetDataTable("SELECT TOP 1 " & PersonnelModule.gsPersonnelHRegionTableRealSource & "." & PersonnelModule.gsPersonnelHRegionDateColumnName & " AS 'Date', " & PersonnelModule.gsPersonnelHRegionTableRealSource & "." & PersonnelModule.gsPersonnelHRegionColumnName & " AS 'Region' " & "FROM " & PersonnelModule.gsPersonnelHRegionTableRealSource & " " & "WHERE " & PersonnelModule.gsPersonnelHRegionTableRealSource & "." & "ID_" & PersonnelModule.glngPersonnelTableID & " = " & mlngPersonnelRecordID & " " & "AND " & PersonnelModule.gsPersonnelHRegionTableRealSource & "." & PersonnelModule.gsPersonnelHRegionDateColumnName & " <= '" & VB6.Format(mdCalendarStartDate, "MM/dd/yyyy") & "' " & "ORDER BY " & PersonnelModule.gsPersonnelHRegionDateColumnName & " DESC")
 
 				' Was there a region at the start of the calendar
 				If rstBankHolRegion.Rows.Count = 0 Then
@@ -1643,7 +1640,7 @@ Error_FillCalBoxes:
 				End If
 
 				' Get the second region for this employee within this calendar year
-				rstBankHolRegion = DB.GetDataTable("SELECT TOP 1 " & gsPersonnelHRegionTableRealSource & "." & gsPersonnelHRegionDateColumnName & " AS 'Date', " & gsPersonnelHRegionTableRealSource & "." & gsPersonnelHRegionColumnName & " AS 'Region' " & "FROM " & gsPersonnelHRegionTableRealSource & " " & "WHERE " & gsPersonnelHRegionTableRealSource & "." & "ID_" & glngPersonnelTableID & " = " & mlngPersonnelRecordID & " " & "AND " & gsPersonnelHRegionTableRealSource & "." & gsPersonnelHRegionDateColumnName & " > '" & VB6.Format(mdCalendarStartDate, "MM/dd/yyyy") & "' " & "ORDER BY " & gsPersonnelHRegionDateColumnName & " ASC")
+				rstBankHolRegion = DB.GetDataTable("SELECT TOP 1 " & PersonnelModule.gsPersonnelHRegionTableRealSource & "." & PersonnelModule.gsPersonnelHRegionDateColumnName & " AS 'Date', " & PersonnelModule.gsPersonnelHRegionTableRealSource & "." & PersonnelModule.gsPersonnelHRegionColumnName & " AS 'Region' " & "FROM " & PersonnelModule.gsPersonnelHRegionTableRealSource & " " & "WHERE " & PersonnelModule.gsPersonnelHRegionTableRealSource & "." & "ID_" & PersonnelModule.glngPersonnelTableID & " = " & mlngPersonnelRecordID & " " & "AND " & PersonnelModule.gsPersonnelHRegionTableRealSource & "." & PersonnelModule.gsPersonnelHRegionDateColumnName & " > '" & VB6.Format(mdCalendarStartDate, "MM/dd/yyyy") & "' " & "ORDER BY " & PersonnelModule.gsPersonnelHRegionDateColumnName & " ASC")
 
 				' Was there a region at the start of the calendar
 				If rstBankHolRegion.Rows.Count = 0 Then
@@ -1664,7 +1661,7 @@ Error_FillCalBoxes:
 
 						'JDM - 11/09/01 - Fault 2820 - Bank hols not showing for year starting with working pattern.
 						' Find the employees region for this date
-						rstBankHolRegion = DB.GetDataTable("SELECT TOP 1 " & gsPersonnelHRegionTableRealSource & "." & gsPersonnelHRegionDateColumnName & " AS 'Date', " & gsPersonnelHRegionTableRealSource & "." & gsPersonnelHRegionColumnName & " AS 'Region' " & "FROM " & gsPersonnelHRegionTableRealSource & " " & "WHERE " & gsPersonnelHRegionTableRealSource & "." & "ID_" & glngPersonnelTableID & " = " & mlngPersonnelRecordID & " " & "AND " & gsPersonnelHRegionTableRealSource & "." & gsPersonnelHRegionDateColumnName & " >= '" & VB6.Format(dtmNextChangeDate, "MM/dd/yyyy") & "' " & "ORDER BY " & gsPersonnelHRegionDateColumnName & " ASC")
+						rstBankHolRegion = DB.GetDataTable("SELECT TOP 1 " & PersonnelModule.gsPersonnelHRegionTableRealSource & "." & PersonnelModule.gsPersonnelHRegionDateColumnName & " AS 'Date', " & PersonnelModule.gsPersonnelHRegionTableRealSource & "." & PersonnelModule.gsPersonnelHRegionColumnName & " AS 'Region' " & "FROM " & PersonnelModule.gsPersonnelHRegionTableRealSource & " " & "WHERE " & PersonnelModule.gsPersonnelHRegionTableRealSource & "." & "ID_" & PersonnelModule.glngPersonnelTableID & " = " & mlngPersonnelRecordID & " " & "AND " & PersonnelModule.gsPersonnelHRegionTableRealSource & "." & PersonnelModule.gsPersonnelHRegionDateColumnName & " >= '" & VB6.Format(dtmNextChangeDate, "MM/dd/yyyy") & "' " & "ORDER BY " & PersonnelModule.gsPersonnelHRegionDateColumnName & " ASC")
 
 						If rstBankHolRegion.Rows.Count = 0 Then
 
@@ -1677,7 +1674,7 @@ Error_FillCalBoxes:
 							bNewRegionFound = True
 
 							' Now get the next change date
-							rstBankHolRegion = DB.GetDataTable("SELECT TOP 1 " & gsPersonnelHRegionTableRealSource & "." & gsPersonnelHRegionDateColumnName & " AS 'Date', " & gsPersonnelHRegionTableRealSource & "." & gsPersonnelHRegionColumnName & " AS 'Region' " & "FROM " & gsPersonnelHRegionTableRealSource & " " & "WHERE " & gsPersonnelHRegionTableRealSource & "." & "ID_" & glngPersonnelTableID & " = " & mlngPersonnelRecordID & " " & "AND " & gsPersonnelHRegionTableRealSource & "." & gsPersonnelHRegionDateColumnName & " > '" & VB6.Format(rstBankHolRegion.Rows(0)("Date"), "MM/dd/yyyy") & "' " & "ORDER BY " & gsPersonnelHRegionDateColumnName & " ASC")
+							rstBankHolRegion = DB.GetDataTable("SELECT TOP 1 " & PersonnelModule.gsPersonnelHRegionTableRealSource & "." & PersonnelModule.gsPersonnelHRegionDateColumnName & " AS 'Date', " & PersonnelModule.gsPersonnelHRegionTableRealSource & "." & PersonnelModule.gsPersonnelHRegionColumnName & " AS 'Region' " & "FROM " & PersonnelModule.gsPersonnelHRegionTableRealSource & " " & "WHERE " & PersonnelModule.gsPersonnelHRegionTableRealSource & "." & "ID_" & PersonnelModule.glngPersonnelTableID & " = " & mlngPersonnelRecordID & " " & "AND " & PersonnelModule.gsPersonnelHRegionTableRealSource & "." & PersonnelModule.gsPersonnelHRegionDateColumnName & " > '" & VB6.Format(rstBankHolRegion.Rows(0)("Date"), "MM/dd/yyyy") & "' " & "ORDER BY " & PersonnelModule.gsPersonnelHRegionDateColumnName & " ASC")
 							If rstBankHolRegion.Rows.Count = 0 Then
 								dtmNextChangeDate = CDate("31/12/9999")
 							Else
@@ -1697,32 +1694,32 @@ Error_FillCalBoxes:
 					' If current region has changed
 					If bNewRegionFound Then
 
-						If gfBankHolidaysEnabled Then
+						If BankHolidayModule.gfBankHolidaysEnabled Then
 
 							' Get bank holidays for this region
 							' DONE
 							sSQL = vbNullString
-							sSQL = sSQL & "SELECT " & gsBHolTableRealSource & "." & gsBHolDateColumnName & " AS 'Date' " & vbNewLine
-							sSQL = sSQL & "FROM " & gsBHolTableRealSource & " " & vbNewLine
+							sSQL = sSQL & "SELECT " & BankHolidayModule.gsBHolTableRealSource & "." & BankHolidayModule.gsBHolDateColumnName & " AS 'Date' " & vbNewLine
+							sSQL = sSQL & "FROM " & BankHolidayModule.gsBHolTableRealSource & " " & vbNewLine
 
-							sSQL = sSQL & "WHERE " & gsBHolTableRealSource & ".ID_" & glngBHolRegionTableID & " = " & vbNewLine
-							sSQL = sSQL & "        (SELECT " & gsBHolRegionTableName & ".ID " & vbNewLine
-							sSQL = sSQL & "         FROM " & gsBHolRegionTableName & vbNewLine
+							sSQL = sSQL & "WHERE " & BankHolidayModule.gsBHolTableRealSource & ".ID_" & BankHolidayModule.glngBHolRegionTableID & " = " & vbNewLine
+							sSQL = sSQL & "        (SELECT " & BankHolidayModule.gsBHolRegionTableName & ".ID " & vbNewLine
+							sSQL = sSQL & "         FROM " & BankHolidayModule.gsBHolRegionTableName & vbNewLine
 							For lngCount = 0 To UBound(mvarTableViews, 2) Step 1
 								'<REGIONAL CODE>
 								'UPGRADE_WARNING: Couldn't resolve default property of object mvarTableViews(0, lngCount). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-								If mvarTableViews(0, lngCount) = glngBHolRegionTableID Then
+								If mvarTableViews(0, lngCount) = BankHolidayModule.glngBHolRegionTableID Then
 									'UPGRADE_WARNING: Couldn't resolve default property of object mvarTableViews(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 									sSQL = sSQL & "           LEFT OUTER JOIN " & mvarTableViews(3, lngCount) & vbNewLine
 									'UPGRADE_WARNING: Couldn't resolve default property of object mvarTableViews(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-									sSQL = sSQL & "           ON  " & gsBHolRegionTableName & ".ID = " & mvarTableViews(3, lngCount) & ".ID" & vbNewLine
+									sSQL = sSQL & "           ON  " & BankHolidayModule.gsBHolRegionTableName & ".ID = " & mvarTableViews(3, lngCount) & ".ID" & vbNewLine
 								End If
 							Next lngCount
 							sSQL = sSQL & "         WHERE " & mstrSQLSelect_RegInfoRegion & " = '" & strRegionAtCurrentDate & "') " & vbNewLine
 
-							sSQL = sSQL & " AND " & gsBHolTableRealSource & "." & gsBHolDateColumnName & " >= '" & Replace(VB6.Format(dtmCurrentDate, "MM/dd/yyyy"), CultureInfo.CurrentCulture.DateTimeFormat.DateSeparator, "/") & "' " & vbNewLine
-							sSQL = sSQL & " AND " & gsBHolTableRealSource & "." & gsBHolDateColumnName & " <= '" & Replace(VB6.Format(DateTime.FromOADate(dtmNextChangeDate.ToOADate - 1), "MM/dd/yyyy"), CultureInfo.CurrentCulture.DateTimeFormat.DateSeparator, "/") & "' " & vbNewLine
-							sSQL = sSQL & "ORDER BY " & gsBHolDateColumnName & " ASC"
+							sSQL = sSQL & " AND " & BankHolidayModule.gsBHolTableRealSource & "." & BankHolidayModule.gsBHolDateColumnName & " >= '" & Replace(VB6.Format(dtmCurrentDate, "MM/dd/yyyy"), CultureInfo.CurrentCulture.DateTimeFormat.DateSeparator, "/") & "' " & vbNewLine
+							sSQL = sSQL & " AND " & BankHolidayModule.gsBHolTableRealSource & "." & BankHolidayModule.gsBHolDateColumnName & " <= '" & Replace(VB6.Format(DateTime.FromOADate(dtmNextChangeDate.ToOADate - 1), "MM/dd/yyyy"), CultureInfo.CurrentCulture.DateTimeFormat.DateSeparator, "/") & "' " & vbNewLine
+							sSQL = sSQL & "ORDER BY " & BankHolidayModule.gsBHolDateColumnName & " ASC"
 							rstBankHolRegion = DB.GetDataTable(sSQL)
 
 							' Cycle through the recordset checking for the current day
@@ -1749,29 +1746,29 @@ Error_FillCalBoxes:
 
 			Else
 
-				If gfBankHolidaysEnabled Then
+				If BankHolidayModule.gfBankHolidaysEnabled Then
 
 					' We are using a static region so just use the employees current region
 					strRegionAtCurrentDate = mstrRegion
 					' DONE
 					sSQL = vbNullString
-					sSQL = sSQL & "SELECT " & gsBHolTableRealSource & "." & gsBHolDateColumnName & " AS 'Date' " & vbNewLine
-					sSQL = sSQL & "FROM " & gsBHolTableRealSource & " " & vbNewLine
-					sSQL = sSQL & "WHERE " & gsBHolTableRealSource & ".ID_" & glngBHolRegionTableID & " = " & vbNewLine
-					sSQL = sSQL & "        (SELECT " & gsBHolRegionTableName & ".ID " & vbNewLine
-					sSQL = sSQL & "         FROM " & gsBHolRegionTableName & vbNewLine
+					sSQL = sSQL & "SELECT " & BankHolidayModule.gsBHolTableRealSource & "." & BankHolidayModule.gsBHolDateColumnName & " AS 'Date' " & vbNewLine
+					sSQL = sSQL & "FROM " & BankHolidayModule.gsBHolTableRealSource & " " & vbNewLine
+					sSQL = sSQL & "WHERE " & BankHolidayModule.gsBHolTableRealSource & ".ID_" & BankHolidayModule.glngBHolRegionTableID & " = " & vbNewLine
+					sSQL = sSQL & "        (SELECT " & BankHolidayModule.gsBHolRegionTableName & ".ID " & vbNewLine
+					sSQL = sSQL & "         FROM " & BankHolidayModule.gsBHolRegionTableName & vbNewLine
 					For lngCount = 0 To UBound(mvarTableViews, 2) Step 1
 						'<REGIONAL CODE>
 						'UPGRADE_WARNING: Couldn't resolve default property of object mvarTableViews(0, lngCount). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						If mvarTableViews(0, lngCount) = glngBHolRegionTableID Then
+						If mvarTableViews(0, lngCount) = BankHolidayModule.glngBHolRegionTableID Then
 							'UPGRADE_WARNING: Couldn't resolve default property of object mvarTableViews(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 							sSQL = sSQL & "           LEFT OUTER JOIN " & mvarTableViews(3, lngCount) & vbNewLine
 							'UPGRADE_WARNING: Couldn't resolve default property of object mvarTableViews(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-							sSQL = sSQL & "           ON  " & gsBHolRegionTableName & ".ID = " & mvarTableViews(3, lngCount) & ".ID" & vbNewLine
+							sSQL = sSQL & "           ON  " & BankHolidayModule.gsBHolRegionTableName & ".ID = " & mvarTableViews(3, lngCount) & ".ID" & vbNewLine
 						End If
 					Next lngCount
 					sSQL = sSQL & "         WHERE " & mstrSQLSelect_RegInfoRegion & " = '" & strRegionAtCurrentDate & "') " & vbNewLine
-					sSQL = sSQL & "ORDER BY " & gsBHolDateColumnName & " ASC" & vbNewLine
+					sSQL = sSQL & "ORDER BY " & BankHolidayModule.gsBHolDateColumnName & " ASC" & vbNewLine
 
 					rstBankHolRegion = DB.GetDataTable(sSQL)
 
@@ -1815,7 +1812,7 @@ Error_FillCalBoxes:
 		'           Bank Holidays Table - Descripiton Column
 		'...Bank Holiday module setup information.
 		'If any are blank then we need to allow the report to run, but disable the Bank Holiday Display Options.
-		If gsBHolRegionTableName = "" Or gsBHolRegionColumnName = "" Or gsBHolTableName = "" Or gsBHolDateColumnName = "" Or gsBHolDescriptionColumnName = "" Then
+		If BankHolidayModule.gsBHolRegionTableName = "" Or BankHolidayModule.gsBHolRegionColumnName = "" Or BankHolidayModule.gsBHolTableName = "" Or BankHolidayModule.gsBHolDateColumnName = "" Or BankHolidayModule.gsBHolDescriptionColumnName = "" Then
 
 			GoTo DisableRegions
 		End If
@@ -1826,8 +1823,8 @@ Error_FillCalBoxes:
 		'           Career Change Region - Historic Region Effective Date Column
 		'...Personnel - Career Change module setup information.
 		'If any are blank then we need to allow the report to run, but disable the Bank Holiday Display Options.
-		If gsPersonnelRegionColumnName = "" Then
-			If gsPersonnelHRegionTableName = "" Or gsPersonnelHRegionColumnName = "" Or gsPersonnelHRegionDateColumnName = "" Then
+		If PersonnelModule.gsPersonnelRegionColumnName = "" Then
+			If PersonnelModule.gsPersonnelHRegionTableName = "" Or PersonnelModule.gsPersonnelHRegionColumnName = "" Or PersonnelModule.gsPersonnelHRegionDateColumnName = "" Then
 
 				GoTo DisableRegions
 			End If
@@ -1844,7 +1841,7 @@ Error_FillCalBoxes:
 		'Bank Holiday Region Table - Region Column
 		'///////////////////////////////////////////////
 		'\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
-		If CheckPermission_Columns(glngBHolRegionTableID, gsBHolRegionTableName, gsBHolRegionColumnName, strTableColumn) Then
+		If CheckPermission_Columns(BankHolidayModule.glngBHolRegionTableID, BankHolidayModule.gsBHolRegionTableName, BankHolidayModule.gsBHolRegionColumnName, strTableColumn) Then
 			mstrSQLSelect_RegInfoRegion = strTableColumn
 			strTableColumn = vbNullString
 		Else
@@ -1858,7 +1855,7 @@ Error_FillCalBoxes:
 		'Bank Holidays Table - Date Column
 		'///////////////////////////////////////////////
 		'\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
-		If CheckPermission_Columns(glngBHolTableID, gsBHolTableName, gsBHolDateColumnName, strTableColumn) Then
+		If CheckPermission_Columns(BankHolidayModule.glngBHolTableID, BankHolidayModule.gsBHolTableName, BankHolidayModule.gsBHolDateColumnName, strTableColumn) Then
 			strTableColumn = vbNullString
 		Else
 			GoTo DisableRegions
@@ -1871,7 +1868,7 @@ Error_FillCalBoxes:
 		'Bank Holidays Table - Descripiton Column
 		'///////////////////////////////////////////////
 		'\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
-		If CheckPermission_Columns(glngBHolTableID, gsBHolTableName, gsBHolDescriptionColumnName, strTableColumn) Then
+		If CheckPermission_Columns(BankHolidayModule.glngBHolTableID, BankHolidayModule.gsBHolTableName, BankHolidayModule.gsBHolDescriptionColumnName, strTableColumn) Then
 			strTableColumn = vbNullString
 		Else
 			GoTo DisableRegions
@@ -1888,12 +1885,12 @@ Error_FillCalBoxes:
 		' Personnel Career Change Region module setup information          *
 		'*******************************************************************
 		'Check Career Change Region access
-		If gsPersonnelRegionColumnName <> "" Then
+		If PersonnelModule.gsPersonnelRegionColumnName <> "" Then
 			'Personnel Table
 			'Career Change Region - Static Region Column
 			'///////////////////////////////////////////////
 			'\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
-			If CheckPermission_Columns(glngPersonnelTableID, gsPersonnelTableName, gsPersonnelRegionColumnName, strTableColumn) Then
+			If CheckPermission_Columns(PersonnelModule.glngPersonnelTableID, PersonnelModule.gsPersonnelTableName, PersonnelModule.gsPersonnelRegionColumnName, strTableColumn) Then
 				mstrSQLSelect_PersonnelStaticRegion = strTableColumn
 				strTableColumn = vbNullString
 			Else
@@ -1907,7 +1904,7 @@ Error_FillCalBoxes:
 			'Career Change Region - Historic Region Column
 			'///////////////////////////////////////////////
 			'\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
-			If CheckPermission_Columns(glngPersonnelHRegionTableID, gsPersonnelHRegionTableName, gsPersonnelHRegionColumnName, strTableColumn) Then
+			If CheckPermission_Columns(PersonnelModule.glngPersonnelHRegionTableID, PersonnelModule.gsPersonnelHRegionTableName, PersonnelModule.gsPersonnelHRegionColumnName, strTableColumn) Then
 				strTableColumn = vbNullString
 			Else
 				GoTo DisableRegions
@@ -1919,7 +1916,7 @@ Error_FillCalBoxes:
 			'Career Change Region - Historic Region Effective Date Column
 			'///////////////////////////////////////////////
 			'\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
-			If CheckPermission_Columns(glngPersonnelHRegionTableID, gsPersonnelHRegionTableName, gsPersonnelHRegionDateColumnName, strTableColumn) Then
+			If CheckPermission_Columns(PersonnelModule.glngPersonnelHRegionTableID, PersonnelModule.gsPersonnelHRegionTableName, PersonnelModule.gsPersonnelHRegionDateColumnName, strTableColumn) Then
 				strTableColumn = vbNullString
 			Else
 				GoTo DisableRegions
@@ -1952,8 +1949,8 @@ DisableRegions:
 		'           Career Change Working Pattern - Historic Working Pattern Effective Date Column
 		'...Personnel - Career Change module setup information.
 		'If any are blank then we need to allow the report to run, but disable the Working Dys Display Option.
-		If gsPersonnelWorkingPatternColumnName = "" Then
-			If gsPersonnelHWorkingPatternTableName = "" Or gsPersonnelHWorkingPatternColumnName = "" Or gsPersonnelHWorkingPatternDateColumnName = "" Then
+		If PersonnelModule.gsPersonnelWorkingPatternColumnName = "" Then
+			If PersonnelModule.gsPersonnelHWorkingPatternTableName = "" Or PersonnelModule.gsPersonnelHWorkingPatternColumnName = "" Or PersonnelModule.gsPersonnelHWorkingPatternDateColumnName = "" Then
 
 				GoTo DisableWPs
 			End If
@@ -1964,11 +1961,11 @@ DisableRegions:
 		' Now check the permissions on the Working Pattern module setup information *
 		'****************************************************************************
 		'Check Career Change Working Pattern access
-		If gsPersonnelWorkingPatternColumnName <> "" Then
+		If PersonnelModule.gsPersonnelWorkingPatternColumnName <> "" Then
 			'Career Change Working Pattern - Static Working Pattern Column
 			'///////////////////////////////////////////////
 			'\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
-			If CheckPermission_Columns(glngPersonnelTableID, gsPersonnelTableName, gsPersonnelWorkingPatternColumnName, strTableColumn) Then
+			If CheckPermission_Columns(PersonnelModule.glngPersonnelTableID, PersonnelModule.gsPersonnelTableName, PersonnelModule.gsPersonnelWorkingPatternColumnName, strTableColumn) Then
 				mstrSQLSelect_PersonnelStaticWP = strTableColumn
 				strTableColumn = vbNullString
 			Else
@@ -1979,21 +1976,21 @@ DisableRegions:
 
 		Else
 			'Career Change Working Pattern - Historic Working Pattern Table
-			objColumn = GetColumnPrivileges(gsPersonnelHWorkingPatternTableName)
+			objColumn = GetColumnPrivileges(PersonnelModule.gsPersonnelHWorkingPatternTableName)
 
 			'Career Change Working Pattern - Historic Working Pattern Column
-			pblnColumnOK = objColumn.IsValid(gsPersonnelHWorkingPatternColumnName)
+			pblnColumnOK = objColumn.IsValid(PersonnelModule.gsPersonnelHWorkingPatternColumnName)
 			If pblnColumnOK Then
-				pblnColumnOK = objColumn.Item(gsPersonnelHWorkingPatternColumnName).AllowSelect
+				pblnColumnOK = objColumn.Item(PersonnelModule.gsPersonnelHWorkingPatternColumnName).AllowSelect
 			End If
 			If pblnColumnOK = False Then
 				GoTo DisableWPs
 			End If
 
 			'Career Change Working Pattern - Historic Working Pattern Effective Date Column
-			pblnColumnOK = objColumn.IsValid(gsPersonnelHWorkingPatternDateColumnName)
+			pblnColumnOK = objColumn.IsValid(PersonnelModule.gsPersonnelHWorkingPatternDateColumnName)
 			If pblnColumnOK Then
-				pblnColumnOK = objColumn.Item(gsPersonnelHWorkingPatternDateColumnName).AllowSelect
+				pblnColumnOK = objColumn.Item(PersonnelModule.gsPersonnelHWorkingPatternDateColumnName).AllowSelect
 			End If
 			If pblnColumnOK = False Then
 				GoTo DisableWPs
@@ -2042,28 +2039,28 @@ DisableWPs:
 		'          Absence Table - Absence Duration Column
 		'...Absence module setup information.
 		'If any are blank then we need to fail the Absence Calendar report.
-		If gsAbsenceTableName = "" Then
+		If AbsenceModule.gsAbsenceTableName = "" Then
 			strModulePermErrorMSG = strModulePermErrorMSG & "The 'Absence Table' in the Absence module setup must be defined." & vbNewLine
 		End If
-		If gsAbsenceStartDateColumnName = "" Then
+		If AbsenceModule.gsAbsenceStartDateColumnName = "" Then
 			strModulePermErrorMSG = strModulePermErrorMSG & "The 'Start Date Column' in the Absence module setup must be defined." & vbNewLine
 		End If
-		If gsAbsenceStartSessionColumnName = "" Then
+		If AbsenceModule.gsAbsenceStartSessionColumnName = "" Then
 			strModulePermErrorMSG = strModulePermErrorMSG & "The 'Start Session Column' in the Absence module setup must be defined." & vbNewLine
 		End If
-		If gsAbsenceEndDateColumnName = "" Then
+		If AbsenceModule.gsAbsenceEndDateColumnName = "" Then
 			strModulePermErrorMSG = strModulePermErrorMSG & "The 'End Date Column' in the Absence module setup must be defined." & vbNewLine
 		End If
-		If gsAbsenceEndSessionColumnName = "" Then
+		If AbsenceModule.gsAbsenceEndSessionColumnName = "" Then
 			strModulePermErrorMSG = strModulePermErrorMSG & "The 'End Session Column' in the Absence module setup must be defined." & vbNewLine
 		End If
-		If gsAbsenceTypeColumnName = "" Then
+		If AbsenceModule.gsAbsenceTypeColumnName = "" Then
 			strModulePermErrorMSG = strModulePermErrorMSG & "The 'Absence Type Column' in the Absence module setup must be defined." & vbNewLine
 		End If
-		If gsAbsenceReasonColumnName = "" Then
+		If AbsenceModule.gsAbsenceReasonColumnName = "" Then
 			strModulePermErrorMSG = strModulePermErrorMSG & "The 'Absence Reason Column' in the Absence module setup must be defined." & vbNewLine
 		End If
-		If gsAbsenceDurationColumnName = "" Then
+		If AbsenceModule.gsAbsenceDurationColumnName = "" Then
 			strModulePermErrorMSG = strModulePermErrorMSG & "The 'Absence Duration Column' in the Absence module setup must be defined." & vbNewLine
 		End If
 
@@ -2074,16 +2071,16 @@ DisableWPs:
 		'          Absence Type Table - Calendar Code Column
 		'...Absence module setup information.
 		'If any are blank then we need to fail the Absence Calendar report.
-		If gsAbsenceTypeTableName = "" Then
+		If AbsenceModule.gsAbsenceTypeTableName = "" Then
 			strModulePermErrorMSG = strModulePermErrorMSG & "The 'Absence Type Table' in the Absence module setup must be defined." & vbNewLine
 		End If
-		If gsAbsenceTypeTypeColumnName = "" Then
+		If AbsenceModule.gsAbsenceTypeTypeColumnName = "" Then
 			strModulePermErrorMSG = strModulePermErrorMSG & "The 'Absence Type Column' in the Absence module setup must be defined." & vbNewLine
 		End If
-		If gsAbsenceTypeCodeColumnName = "" Then
+		If AbsenceModule.gsAbsenceTypeCodeColumnName = "" Then
 			strModulePermErrorMSG = strModulePermErrorMSG & "The 'Absence Code Column' in the Absence module setup must be defined." & vbNewLine
 		End If
-		If gsAbsenceTypeCalCodeColumnName = "" Then
+		If AbsenceModule.gsAbsenceTypeCalCodeColumnName = "" Then
 			strModulePermErrorMSG = strModulePermErrorMSG & "The 'Calendar Code Column' in the Absence module setup must be defined." & vbNewLine
 		End If
 
@@ -2093,13 +2090,13 @@ DisableWPs:
 		'          Personnel Table - Leaving Date Column
 		'...Personnel module setup information.
 		'If any are blank then we need to fail the Absence Calendar report.
-		If gsPersonnelTableName = "" Then
+		If PersonnelModule.gsPersonnelTableName = "" Then
 			strModulePermErrorMSG = strModulePermErrorMSG & "The 'Personnel Table' in the Personnel module setup must be defined." & vbNewLine
 		End If
-		If gsPersonnelStartDateColumnName = "" Then
+		If PersonnelModule.gsPersonnelStartDateColumnName = "" Then
 			strModulePermErrorMSG = strModulePermErrorMSG & "The 'Start Date Column' in the Personnel module setup must be defined." & vbNewLine
 		End If
-		If gsPersonnelLeavingDateColumnName = "" Then
+		If PersonnelModule.gsPersonnelLeavingDateColumnName = "" Then
 			strModulePermErrorMSG = strModulePermErrorMSG & "The 'Leaving Date Column' in the Personnel module setup must be defined." & vbNewLine
 		End If
 
@@ -2129,7 +2126,7 @@ DisableWPs:
 		'Absence Table - Start Date Column
 		'///////////////////////////////////////////////
 		'\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
-		If CheckPermission_Columns(glngAbsenceTableID, gsAbsenceTableName, gsAbsenceStartDateColumnName, strTableColumn) Then
+		If CheckPermission_Columns(AbsenceModule.glngAbsenceTableID, AbsenceModule.gsAbsenceTableName, AbsenceModule.gsAbsenceStartDateColumnName, strTableColumn) Then
 			mstrSQLSelect_AbsenceStartDate = strTableColumn
 			strTableColumn = vbNullString
 		Else
@@ -2141,7 +2138,7 @@ DisableWPs:
 		'Absence Table - Start Session Column
 		'///////////////////////////////////////////////
 		'\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
-		If CheckPermission_Columns(glngAbsenceTableID, gsAbsenceTableName, gsAbsenceStartSessionColumnName, strTableColumn) Then
+		If CheckPermission_Columns(AbsenceModule.glngAbsenceTableID, AbsenceModule.gsAbsenceTableName, AbsenceModule.gsAbsenceStartSessionColumnName, strTableColumn) Then
 			mstrSQLSelect_AbsenceStartSession = strTableColumn
 			strTableColumn = vbNullString
 		Else
@@ -2153,7 +2150,7 @@ DisableWPs:
 		'Absence Table - End Date Column
 		'///////////////////////////////////////////////
 		'\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
-		If CheckPermission_Columns(glngAbsenceTableID, gsAbsenceTableName, gsAbsenceEndDateColumnName, strTableColumn) Then
+		If CheckPermission_Columns(AbsenceModule.glngAbsenceTableID, AbsenceModule.gsAbsenceTableName, AbsenceModule.gsAbsenceEndDateColumnName, strTableColumn) Then
 			mstrSQLSelect_AbsenceEndDate = strTableColumn
 			strTableColumn = vbNullString
 		Else
@@ -2165,7 +2162,7 @@ DisableWPs:
 		'Absence Table - End Session Column
 		'///////////////////////////////////////////////
 		'\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
-		If CheckPermission_Columns(glngAbsenceTableID, gsAbsenceTableName, gsAbsenceEndSessionColumnName, strTableColumn) Then
+		If CheckPermission_Columns(AbsenceModule.glngAbsenceTableID, AbsenceModule.gsAbsenceTableName, AbsenceModule.gsAbsenceEndSessionColumnName, strTableColumn) Then
 			mstrSQLSelect_AbsenceEndSession = strTableColumn
 			strTableColumn = vbNullString
 		Else
@@ -2177,7 +2174,7 @@ DisableWPs:
 		'Absence Table - Absence Type Column
 		'///////////////////////////////////////////////
 		'\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
-		If CheckPermission_Columns(glngAbsenceTableID, gsAbsenceTableName, gsAbsenceTypeColumnName, strTableColumn) Then
+		If CheckPermission_Columns(AbsenceModule.glngAbsenceTableID, AbsenceModule.gsAbsenceTableName, AbsenceModule.gsAbsenceTypeColumnName, strTableColumn) Then
 			mstrSQLSelect_AbsenceType = strTableColumn
 			strTableColumn = vbNullString
 		Else
@@ -2189,7 +2186,7 @@ DisableWPs:
 		'Absence Table - Absence Reason Column
 		'///////////////////////////////////////////////
 		'\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
-		If CheckPermission_Columns(glngAbsenceTableID, gsAbsenceTableName, gsAbsenceReasonColumnName, strTableColumn) Then
+		If CheckPermission_Columns(AbsenceModule.glngAbsenceTableID, AbsenceModule.gsAbsenceTableName, AbsenceModule.gsAbsenceReasonColumnName, strTableColumn) Then
 			mstrSQLSelect_AbsenceReason = strTableColumn
 			strTableColumn = vbNullString
 		Else
@@ -2201,7 +2198,7 @@ DisableWPs:
 		'Absence Table - Absence Duration Column
 		'///////////////////////////////////////////////
 		'\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
-		If CheckPermission_Columns(glngAbsenceTableID, gsAbsenceTableName, gsAbsenceDurationColumnName, strTableColumn) Then
+		If CheckPermission_Columns(AbsenceModule.glngAbsenceTableID, AbsenceModule.gsAbsenceTableName, AbsenceModule.gsAbsenceDurationColumnName, strTableColumn) Then
 			mstrSQLSelect_AbsenceDuration = strTableColumn
 			strTableColumn = vbNullString
 		Else
@@ -2215,7 +2212,7 @@ DisableWPs:
 		'Absence Type Table - Absence Type Column
 		'///////////////////////////////////////////////
 		'\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
-		If CheckPermission_Columns(glngAbsenceTypeTableID, gsAbsenceTypeTableName, gsAbsenceTypeTypeColumnName, strTableColumn) Then
+		If CheckPermission_Columns(AbsenceModule.glngAbsenceTypeTableID, AbsenceModule.gsAbsenceTypeTableName, AbsenceModule.gsAbsenceTypeTypeColumnName, strTableColumn) Then
 			strTableColumn = vbNullString
 		Else
 			strModulePermErrorMSG = strModulePermErrorMSG & "Permission Denied on 'Absence Type Table - Absence Type Column'" & vbNewLine
@@ -2226,7 +2223,7 @@ DisableWPs:
 		'Absence Type Table - Absence Code Column
 		'///////////////////////////////////////////////
 		'\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
-		If CheckPermission_Columns(glngAbsenceTypeTableID, gsAbsenceTypeTableName, gsAbsenceTypeCodeColumnName, strTableColumn) Then
+		If CheckPermission_Columns(AbsenceModule.glngAbsenceTypeTableID, AbsenceModule.gsAbsenceTypeTableName, AbsenceModule.gsAbsenceTypeCodeColumnName, strTableColumn) Then
 			mstrSQLSelect_AbsenceTypeCode = strTableColumn
 			strTableColumn = vbNullString
 		Else
@@ -2238,7 +2235,7 @@ DisableWPs:
 		'Absence Type Table - Calendar Code Column
 		'///////////////////////////////////////////////
 		'\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
-		If CheckPermission_Columns(glngAbsenceTypeTableID, gsAbsenceTypeTableName, gsAbsenceTypeCalCodeColumnName, strTableColumn) Then
+		If CheckPermission_Columns(AbsenceModule.glngAbsenceTypeTableID, AbsenceModule.gsAbsenceTypeTableName, AbsenceModule.gsAbsenceTypeCalCodeColumnName, strTableColumn) Then
 			mstrSQLSelect_AbsenceTypeCalCode = strTableColumn
 			strTableColumn = vbNullString
 		Else
@@ -2252,7 +2249,7 @@ DisableWPs:
 		'Personnel Table - Start Date Column
 		'///////////////////////////////////////////////
 		'\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
-		If CheckPermission_Columns(glngPersonnelTableID, gsPersonnelTableName, gsPersonnelStartDateColumnName, strTableColumn) Then
+		If CheckPermission_Columns(PersonnelModule.glngPersonnelTableID, PersonnelModule.gsPersonnelTableName, PersonnelModule.gsPersonnelStartDateColumnName, strTableColumn) Then
 			mstrSQLSelect_PersonnelStartDate = strTableColumn
 			strTableColumn = vbNullString
 		Else
@@ -2264,7 +2261,7 @@ DisableWPs:
 		'Personnel Table - Leaving Date Column
 		'///////////////////////////////////////////////
 		'\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
-		If CheckPermission_Columns(glngPersonnelTableID, gsPersonnelTableName, gsPersonnelLeavingDateColumnName, strTableColumn) Then
+		If CheckPermission_Columns(PersonnelModule.glngPersonnelTableID, PersonnelModule.gsPersonnelTableName, PersonnelModule.gsPersonnelLeavingDateColumnName, strTableColumn) Then
 			mstrSQLSelect_PersonnelLeavingDate = strTableColumn
 			strTableColumn = vbNullString
 		Else
@@ -2337,7 +2334,7 @@ FailReport:
 			strTable = mstrRealSource
 			strColumn = strTempColumnName
 
-			If (plngTableID = glngAbsenceTableID) And (mstrAbsenceTableRealSource = vbNullString) Then
+			If (plngTableID = AbsenceModule.glngAbsenceTableID) And (mstrAbsenceTableRealSource = vbNullString) Then
 				mstrAbsenceTableRealSource = strTable
 			End If
 

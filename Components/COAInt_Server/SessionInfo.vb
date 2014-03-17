@@ -15,6 +15,9 @@ Public Class SessionInfo
 	Public Permissions As ICollection(Of Permission)
 
 	Public RegionalSettings As RegionalSettings
+	Friend AbsenceModule As modAbsenceSpecifics
+	Friend BankHolidayModule As modBankHolidaySpecifics
+	Friend PersonnelModule As modPersonnelSpecifics
 
 	Public ReadOnly Property LoginInfo As LoginInfo
 		Get
@@ -122,9 +125,19 @@ Public Class SessionInfo
 		PopulateMetadata(_objLogin)
 		SetupTablesCollection()
 
-		ReadPersonnelParameters()
-
 		ActiveConnections = 1
+	End Sub
+
+	Public Sub ReadModuleParameters()
+
+		AbsenceModule = New modAbsenceSpecifics
+		BankHolidayModule = New modBankHolidaySpecifics()
+		PersonnelModule = New modPersonnelSpecifics()
+
+		AbsenceModule.ReadAbsenceParameters()
+		BankHolidayModule.ReadBankHolidayParameters()
+		PersonnelModule.ReadPersonnelParameters()
+
 	End Sub
 
 	Public Sub TrackUser(IsLogin As Boolean)

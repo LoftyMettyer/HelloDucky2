@@ -16,7 +16,7 @@ Friend Class clsExprFilter
 	' Class handling variables.
 	Private mobjBaseComponent As clsExprComponent
 
-	Public Sub New(ByVal Value As LoginInfo)
+	Public Sub New(ByVal Value As SessionInfo)
 		MyBase.New(Value)
 	End Sub
 
@@ -31,7 +31,7 @@ Friend Class clsExprFilter
 		Dim bOK As Boolean
 
 		' Instantiate and generate the runtime for the filter expression.
-		objFilter = New clsExprExpression(Login)
+		objFilter = New clsExprExpression(SessionInfo)
 		With objFilter
 			.ExpressionID = mlngFilterID
 			.ConstructExpression()
@@ -85,7 +85,7 @@ ErrorTrap:
 		' and edit the copy. If the changes are confirmed then the copy
 		' replaces the original. If the changes are cancelled then the
 		' copy is discarded.
-		Dim objFilterCopy As New clsExprFilter(Login)
+		Dim objFilterCopy As New clsExprFilter(SessionInfo)
 
 		' Copy the component's basic properties.
 		objFilterCopy.FilterID = mlngFilterID
@@ -110,7 +110,7 @@ ErrorTrap:
 			Dim objFilter As clsExprExpression
 
 			' Instantiate the filter expression.
-			objFilter = New clsExprExpression(Login)
+			objFilter = New clsExprExpression(SessionInfo)
 
 			With objFilter
 				' Construct the filter expression.

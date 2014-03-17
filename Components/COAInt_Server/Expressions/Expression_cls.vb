@@ -17,7 +17,7 @@ Public Class Expression
 	Private mvarPrompts(,) As Object
 	Private mastrUDFsRequired() As String
 
-	Public Sub New(ByVal Value As LoginInfo)
+	Public Sub New(ByVal Value As SessionInfo)
 		MyBase.New(Value)
 	End Sub
 
@@ -263,7 +263,7 @@ ErrorTrap:
 			'UPGRADE_NOTE: Object mobjBaseExpr may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 			mobjBaseExpr = Nothing
 		End If
-		mobjBaseExpr = New clsExprExpression(Login)
+		mobjBaseExpr = New clsExprExpression(SessionInfo)
 		mobjBaseExpr.Initialise(mlngBaseTableID, mlngExpressionID, miType, miReturnType)
 		mobjBaseExpr.ExpandedNode = True
 
@@ -669,7 +669,7 @@ ErrorTrap:
 		Dim objExpression As clsExprExpression
 
 		' Instantiate the calculation expression.
-		objExpression = New clsExprExpression(Login)
+		objExpression = New clsExprExpression(SessionInfo)
 
 		With objExpression
 			' Construct the calculation expression.

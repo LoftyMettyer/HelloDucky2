@@ -3495,7 +3495,6 @@ Namespace Controllers
 		End Function
 
 #End Region
-
 #Region "Expression Builder"
 
 		Function util_def_expression() As ActionResult
@@ -3506,15 +3505,12 @@ Namespace Controllers
 		Function util_def_expression_Submit()
 
 
-			Dim objExpression As HR.Intranet.Server.Expression
+			Dim objExpression As Expression
 			Dim iExprType As Integer
 			Dim iReturnType As Integer
 			Dim sUtilType As String
 			Dim sUtilType2 As String
 			Dim fok As Boolean
-			Dim cmdMakeHidden
-			Dim prmUtilType
-			Dim prmUtilID
 
 			On Error Resume Next
 
@@ -3523,7 +3519,7 @@ Namespace Controllers
 			Dim objDataAccess As clsDataAccess = CType(Session("DatabaseAccess"), clsDataAccess)
 
 			Dim objContext = CType(Session("SessionContext"), SessionInfo)
-			objExpression = New Expression(objContext.LoginInfo)
+			objExpression = New Expression(objContext)
 
 			If Request.Form("txtSend_type") = 11 Then
 				iExprType = 11

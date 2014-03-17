@@ -768,8 +768,8 @@ GetCustomReportDefinition_ERROR:
 					'UPGRADE_NOTE: Object objExpr may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 					objExpr = Nothing
 
-					objReportItemDetail.IsDateColumn = General.DateColumn(objRow("Type"), lngTableID, objRow("ColExprID"))
-					objReportItemDetail.IsBitColumn = General.BitColumn(objRow("Type"), lngTableID, objRow("ColExprID"))
+					objReportItemDetail.IsDateColumn = IsDateColumn(objRow("Type"), lngTableID, objRow("ColExprID"))
+					objReportItemDetail.IsBitColumn = IsBitColumn(objRow("Type"), lngTableID, objRow("ColExprID"))
 
 				End If
 
@@ -1874,7 +1874,7 @@ Error_Trap:
 						' is the child filtered ?
 
 						If lngTempFilterID > 0 Then
-							blnOK = General.FilteredIDs(lngTempFilterID, strFilterIDs, mastrUDFsRequired, mvarPrompts)
+							blnOK = FilteredIDs(lngTempFilterID, strFilterIDs, mastrUDFsRequired, mvarPrompts)
 
 							If blnOK Then
 								sChildJoinCode = sChildJoinCode & " AND " & objChildTable.RealSource & ".ID IN (" & strFilterIDs & ")"
@@ -2143,7 +2143,7 @@ DoChildOrderString_ERROR:
 
 			mstrSQLWhere = mstrSQLWhere & IIf(Len(mstrSQLWhere) > 0, " AND ", " WHERE ") & mstrBaseTableRealSource & ".ID_" & mlngCustomReportsParent1Table & " IN (" & pstrParent1PickListIDs & ") "
 		ElseIf mlngCustomReportsParent1FilterID > 0 Then
-			blnOK = General.FilteredIDs(mlngCustomReportsParent1FilterID, strFilterIDs, mastrUDFsRequired, mvarPrompts)
+			blnOK = FilteredIDs(mlngCustomReportsParent1FilterID, strFilterIDs, mastrUDFsRequired, mvarPrompts)
 
 			If blnOK Then
 				mstrSQLWhere = mstrSQLWhere & IIf(Len(mstrSQLWhere) > 0, " AND ", " WHERE ") & mstrBaseTableRealSource & ".ID_" & mlngCustomReportsParent1Table & " IN (" & strFilterIDs & ") "
@@ -2169,7 +2169,7 @@ DoChildOrderString_ERROR:
 
 			mstrSQLWhere = mstrSQLWhere & IIf(Len(mstrSQLWhere) > 0, " AND ", " WHERE ") & mstrBaseTableRealSource & ".ID_" & mlngCustomReportsParent2Table & " IN (" & pstrParent2PickListIDs & ") "
 		ElseIf mlngCustomReportsParent2FilterID > 0 Then
-			blnOK = General.FilteredIDs(mlngCustomReportsParent2FilterID, strFilterIDs, mastrUDFsRequired, mvarPrompts)
+			blnOK = FilteredIDs(mlngCustomReportsParent2FilterID, strFilterIDs, mastrUDFsRequired, mvarPrompts)
 
 			If blnOK Then
 				mstrSQLWhere = mstrSQLWhere & IIf(Len(mstrSQLWhere) > 0, " AND ", " WHERE ") & mstrBaseTableRealSource & ".ID_" & mlngCustomReportsParent2Table & " IN (" & strFilterIDs & ") "
@@ -2205,7 +2205,7 @@ DoChildOrderString_ERROR:
 
 		ElseIf mlngCustomReportsFilterID > 0 Then
 
-			blnOK = General.FilteredIDs(mlngCustomReportsFilterID, strFilterIDs, mastrUDFsRequired, mvarPrompts)
+			blnOK = FilteredIDs(mlngCustomReportsFilterID, strFilterIDs, mastrUDFsRequired, mvarPrompts)
 
 			If blnOK Then
 				mstrSQLWhere = mstrSQLWhere & IIf(Len(mstrSQLWhere) > 0, " AND ", " WHERE ") & mstrSQLFrom & ".ID IN (" & strFilterIDs & ")"
@@ -3439,7 +3439,7 @@ CheckRecordSet_ERROR:
 
 			mintPageBreakRowIndex += 1
 
-			End If
+		End If
 
 	End Sub
 
@@ -4426,8 +4426,8 @@ GenerateSQLBradford_ERROR:
 				objReportItem.TableID = lngTableID
 				objReportItem.TableName = GetTableName(lngTableID)
 				objReportItem.ColumnName = General.GetColumnName(objReportItem.ID)
-				objReportItem.IsDateColumn = General.DateColumn("C", lngTableID, lngColumnID)	'??? - check these out 22/03/01
-				objReportItem.IsBitColumn = General.BitColumn("C", lngTableID, lngColumnID)
+				objReportItem.IsDateColumn = IsDateColumn("C", lngTableID, lngColumnID)	'??? - check these out 22/03/01
+				objReportItem.IsBitColumn = IsBitColumn("C", lngTableID, lngColumnID)
 				objReportItem.Use1000Separator = General.DoesColumnUseSeparators(lngColumnID)	'Does this column use 1000 separators?
 
 				'Adjust the size of the field if digit separator is used
