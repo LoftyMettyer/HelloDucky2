@@ -5,5 +5,6 @@
 		Average = 2
 		Total = 3
 		GrandSummary = 4
+		PageBreak = 5
 	End Enum
 End Namespace

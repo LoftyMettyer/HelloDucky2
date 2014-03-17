@@ -2714,10 +2714,10 @@ CheckRecordSet_ERROR:
 
 
 				If mblnPageBreak Then
-					NEW_AddToArray_Data(RowType.Data, "*")
+					NEW_AddToArray_Data(RowType.PageBreak, "*")
 
 					mintPageBreakRowIndex = mintPageBreakRowIndex + 1
-					AddPageBreakValue(mintPageBreakRowIndex - 1, sBreakValue)
+					AddPageBreakValue(mintPageBreakRowIndex + 1, sBreakValue)
 				End If
 				mblnPageBreak = False
 				sBreakValue = vbNullString
@@ -2908,7 +2908,7 @@ CheckRecordSet_ERROR:
 
 			If mblnPageBreak Then
 				mintPageBreakRowIndex = mintPageBreakRowIndex + 1
-				AddPageBreakValue(mintPageBreakRowIndex - 1, sBreakValue)
+				AddPageBreakValue(mintPageBreakRowIndex + 1, sBreakValue)
 			End If
 			sBreakValue = vbNullString
 
@@ -2917,7 +2917,7 @@ CheckRecordSet_ERROR:
 				PopulateGrid_DoGrandSummary()
 
 				If mblnPageBreak And mblnDoesHaveGrandSummary Then
-					AddPageBreakValue(mintPageBreakRowIndex - 1, sBreakValue)
+					AddPageBreakValue(mintPageBreakRowIndex + 1, sBreakValue)
 					mintPageBreakRowIndex = mintPageBreakRowIndex + 1
 				End If
 
@@ -3982,6 +3982,8 @@ Check_ERROR:
 		Select Case RowType
 			Case RowType.Data
 				iColumn = 2
+			Case RowType.PageBreak
+				iColumn = 1
 			Case Else
 				iColumn = 1
 				mblnReportHasSummaryInfo = True
