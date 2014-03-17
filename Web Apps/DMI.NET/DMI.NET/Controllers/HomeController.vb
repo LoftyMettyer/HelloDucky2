@@ -2193,7 +2193,14 @@ Namespace Controllers
 
 							If showLabels Then
 								MultiAxisChart.ChartAreas("Default").AxisX.Interval = 1	'Show all X axis legends (labels?)
-								MultiAxisChart.AlignDataPointsByAxisLabel()
+								Try
+									'The "AlignDataPointsByAxisLabel" method below, "Aligns data points along the X axis using their axis labels. Applicable when multiple series are indexed and their X-values are strings."
+									'according to MSDN (http://msdn.microsoft.com/en-us/library/system.web.ui.datavisualization.charting.chart.aligndatapointsbyaxislabel(v=vs.100).aspx)
+									'Instead of checking that all series are indexed and their X-values are strings, I decided to put a Try-Catch and be done with it
+									MultiAxisChart.AlignDataPointsByAxisLabel()
+								Catch ex As Exception
+
+								End Try
 							End If
 
 							'Make all the datapoints semi-transparent							
