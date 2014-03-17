@@ -73,8 +73,6 @@
 		});
 
 	$(document).ready(function () {
-
-			OpenHR.CheckForMessages();
 		
 				$("#fixedlinksframe").show();
 				$("#FixedLinksContent").fadeIn("slow");

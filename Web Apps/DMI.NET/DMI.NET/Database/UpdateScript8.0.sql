@@ -102,6 +102,10 @@ CREATE TABLE ASRSysCurrentLogins(
 
 GO
 
+IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[sp_ASRSendMessage]') AND xtype in (N'P'))
+	DROP PROCEDURE [dbo].[sp_ASRSendMessage]
+GO
+
 IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spASRDatabaseStatus]') AND xtype in (N'P'))
 	DROP PROCEDURE [dbo].[spASRDatabaseStatus]
 GO
@@ -124,10 +128,6 @@ GO
 
 IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spASRIntCopyRecordPostSave]') AND xtype in (N'P'))
 	DROP PROCEDURE [dbo].[spASRIntCopyRecordPostSave]
-GO
-
-IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spASRGetCurrentUsersFromMaster]') AND xtype in (N'P'))
-	DROP PROCEDURE [dbo].[spASRGetCurrentUsersFromMaster]
 GO
 
 IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spASRTrackSession]') AND xtype in (N'P'))
@@ -714,6 +714,100 @@ BEGIN
 				)  
 				AND [permitted] = 1))
 END
+GO
+
+
+CREATE PROCEDURE [dbo].[sp_ASRSendMessage] 
+(
+	@psMessage	varchar(MAX),
+	@psSPIDS	varchar(MAX)
+)
+AS
+BEGIN
+	DECLARE @iDBid		integer,
+		@iSPid			integer,
+		@iUid			integer,
+		@sLoginName		varchar(256),
+		@dtLoginTime	datetime, 
+		@sCurrentUser	varchar(256),
+		@sCurrentApp	varchar(256),
+		@Realspid		integer;
+
+		DECLARE @currentDate	datetime = GETDATE();
+
+	CREATE TABLE #tblCurrentUsers				
+		(
+			hostname varchar(256)
+			,loginame varchar(256)
+			,program_name varchar(256)
+			,hostprocess varchar(20)
+			,sid binary(86)
+			,login_time datetime
+			,spid int
+			,uid smallint);
+			
+	INSERT INTO #tblCurrentUsers
+		EXEC spASRGetCurrentUsers;
+
+	--Need to get spid of parent process
+	SELECT @Realspid = a.spid
+	FROM #tblCurrentUsers a
+	FULL OUTER JOIN #tblCurrentUsers b
+		ON a.hostname = b.hostname
+		AND a.hostprocess = b.hostprocess
+		AND a.spid <> b.spid
+	WHERE b.spid = @@Spid;
+
+	--If there is no parent spid then use current spid
+	IF @Realspid is null SET @Realspid = @@spid;
+
+	/* Get the process information for the current user. */
+	SELECT @iDBid = db_id(), 
+		@sCurrentUser = loginame,
+		@sCurrentApp = program_name
+	FROM #tblCurrentUsers
+	WHERE spid = @@Spid;
+
+	/* Get a cursor of the other logged in users. */
+	DECLARE logins_cursor CURSOR LOCAL FAST_FORWARD FOR 
+		SELECT DISTINCT spid, loginame, uid, login_time
+		FROM #tblCurrentUsers
+		WHERE (spid <> @@spid and spid <> @Realspid)
+		AND (@psSPIDS = '' OR charindex(' '+convert(varchar,spid)+' ', @psSPIDS)>0);
+
+	OPEN logins_cursor;
+	FETCH NEXT FROM logins_cursor INTO @iSPid, @sLoginName, @iUid, @dtLoginTime;
+	WHILE (@@fetch_status = 0)
+	BEGIN
+		/* Create a message record for each user. */
+		INSERT INTO ASRSysMessages 
+			(loginname, [message], loginTime, [dbid], [uid], spid, messageTime, messageFrom, messageSource) 
+			VALUES(@sLoginName, @psMessage, @dtLoginTime, @iDBid, @iUid, @iSPid, @currentDate, @sCurrentUser, @sCurrentApp);
+
+		FETCH NEXT FROM logins_cursor INTO @iSPid, @sLoginName, @iUid, @dtLoginTime;
+	END
+	CLOSE logins_cursor;
+	DEALLOCATE logins_cursor;
+
+	IF OBJECT_ID('tempdb..#tblCurrentUsers', N'U') IS NOT NULL
+		DROP TABLE #tblCurrentUsers;
+
+	-- Send message to all the web connections
+	MERGE INTO ASRSysMessages AS Target
+		USING (SELECT username, loginTime
+			FROM ASRSysCurrentLogins) AS SOURCE (LoginName, loginTime)
+	ON target.loginName = source.LoginName AND target.loginTime = source.loginTime
+	WHEN MATCHED THEN
+		UPDATE SET message = @psMessage
+	WHEN NOT MATCHED BY TARGET THEN
+		INSERT (LoginName, message, loginTime, messageTime, messageFrom, messageSource)
+		VALUES (LoginName, @psMessage, loginTime, @currentDate, @sCurrentUser, @sCurrentApp)
+	WHEN NOT MATCHED BY SOURCE THEN
+		DELETE;
+
+
+END
+
 GO
 
 
@@ -85419,58 +85513,6 @@ BEGIN
 			VALUES (@LoginTime, @sUserGroup, @sUserName, LOWER(HOST_NAME()), 'Intranet', 'Log Out');
 
 	END
-
-END
-
-
-GO
-CREATE PROCEDURE [dbo].[spASRGetCurrentUsersFromMaster]
-AS
-BEGIN
-
-   SET NOCOUNT ON;
-
-   DECLARE @login_time datetime;
-
-	DECLARE @processes TABLE (
-		[hostname]		nvarchar(128),
-		[loginame]		nvarchar(128),
-		program_name	nvarchar(128),
-		host_process_id	integer,
-		security_id		varbinary(85),
-		login_time		datetime,
-		spid			smallint,
-		uid				integer)
-
-   SELECT TOP 1 @login_time = l.Lock_Time
-   FROM ASRSysLock l
-		INNER JOIN sys.dm_exec_sessions es on es.session_id = l.spid
-         AND es.login_time = l.Login_Time
-   WHERE L.Priority < 3
-   ORDER BY l.Priority;
-
-   SET @login_time = ISNULL(@login_time, GETDATE());
-
-	-- Fat Clients
-   INSERT @processes
-	SELECT es.host_name, es.login_name, es.program_name, es.host_process_id
-        , es.security_id, es.login_time, es.session_id, 0
-   FROM sys.dm_exec_sessions es
-   WHERE es.program_name LIKE 'OpenHR%'
-     AND es.program_name NOT LIKE 'OpenHR Web%'
-     AND es.program_name NOT LIKE 'OpenHR Workflow%'
-     AND es.program_name NOT LIKE 'OpenHR Mobile%'
-     AND es.program_name NOT LIKE 'OpenHR Outlook%'
-     AND es.program_name NOT LIKE 'System Framework Assembly%'
-     AND es.program_name NOT LIKE 'OpenHR Intranet Embedding%'
-     AND (es.login_Time < @login_time)
-
-	-- Thin clients
-   INSERT @processes
-	SELECT clientmachine, username, 'OpenHR Web', '', userSID, loginTime, 999, 0
-         FROM ASRSysCurrentLogins
-
-	SELECT * FROM @processes ORDER BY loginame;
 
 END
 

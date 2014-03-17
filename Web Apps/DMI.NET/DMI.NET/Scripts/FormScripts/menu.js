@@ -291,71 +291,8 @@ function menu_abMainMenu_DataReady() {
 	}
 }
 
-
-//function menu_abMainMenu_PreCustomizeMenu(pfCancel) {
-//DON'T KEEP
-
-//Called when user right-clicks menu.
-//	// Do not let the user modify the layout.
-//	ASRIntranetFunctions.MessageBox("The menu cannot be customized. Errors will occur if you attempt to customize it. Click anywhere in your browser to remove the dummy customisation menu."); 
-//}
-
-//function menu_abMainMenuComboSelChange(pTool) {
-
-//TODO - toolbar functionality
-
-//	var sCurrentWorkPage;
-//	var sLocateValue;
-
-//	if (pTool.Name == "mnutoolLocateRecordsLogic") {
-//		sCurrentWorkPage = currentWorkPage();
-//		sLocateValue = pTool.Text;
-
-//		if (sCurrentWorkPage == "FIND") {
-//			reloadFindPage("LOCATE", sLocateValue);
-//		}
-//		if (sCurrentWorkPage == "LINKFIND") {
-//			reloadLinkPage("LOCATE", sLocateValue);
-//		}
-//		if (sCurrentWorkPage == "LOOKUPFIND") {
-//			reloadLookupPage("LOCATE", sLocateValue);
-//		}
-//		if (sCurrentWorkPage == "TBTRANSFERCOURSEFIND") {
-//			reloadTransferCoursePage("LOCATE", sLocateValue);
-//		}
-//		if (sCurrentWorkPage == "TBBOOKCOURSEFIND") {
-//			reloadBookCoursePage("LOCATE", sLocateValue);
-//		}
-//		if (sCurrentWorkPage == "TBTRANSFERBOOKINGFIND") {
-//			reloadTransferBookingPage("LOCATE", sLocateValue);
-//		}
-//		if (sCurrentWorkPage == "TBADDFROMWAITINGLISTFIND") {
-//			reloadAddFromWaitingListPage("LOCATE", sLocateValue);
-//		}
-//	}
-//}
-
-//function menu_abMainMenu_BandOpen(pBand) {
-//DON'T KEEP - Don't think we need this any more.
-
-//	// Refresh the opened menu band (if required). 
-//	if (pBand.name == "mnubandDatabase") {
-//		// Insert menu items for each of the tables that the user is permitted to see.
-//		refreshDatabaseMenu();
-//		refreshQuickEntryMenu();
-//		refreshTableScreensMenu();
-//	}
-//}
-
-//function menu_abMainMenu_PreSysMenu(pBand) {
-//DON'T KEEP - NO NEED TO INITIALISE.
-//	if (pBand.Name == "SysCustomize") {
-//		pBand.Tools.RemoveAll();
-//	}
-//}
-
 function menu_abMainMenu_Click(pTool) {
-	
+
 	//Reset the idle timeout.
 	window.clearTimeout(window.timeoutHandle);
 	window.timeoutHandle = window.setTimeout('OpenHR.SessionTimeout();', window.timeoutMs);
@@ -363,7 +300,8 @@ function menu_abMainMenu_Click(pTool) {
 
 	//reject disabled icon clicks
 	if ($("#" + pTool).hasClass("disabled")) return false;
-	menu_MenuClick(pTool);	
+	menu_MenuClick(pTool);
+	return true;
 }
 
 
@@ -400,6 +338,7 @@ function menu_MenuClick(sTool) {
 	//added for non-IE compatibility
 	var frmMenuInfo = document.getElementById("frmMenuInfo");
 
+	OpenHR.CheckForMessages();
 
 	sToolName = sTool;
 	sCurrentWorkPage = OpenHR.currentWorkPage();

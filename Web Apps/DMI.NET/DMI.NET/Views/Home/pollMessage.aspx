@@ -33,14 +33,11 @@
 
 	function pollmessage_ok() {
 		$("#divPollMessage").dialog("close");
-		setTimeout(function () { OpenHR.CheckForMessages(); }, 30000);
 		return false;
 	}
 
 	<%	If Model.Body.Length > 0 Then%>
 		$("#divPollMessage").dialog("open");
-	<% Else %>
-		setTimeout(function () { OpenHR.CheckForMessages(); }, 30000);
 	<% end if %>
 
 	$("#divPollMessage").dialog('option', 'title', '<%=Model.Caption%>' );

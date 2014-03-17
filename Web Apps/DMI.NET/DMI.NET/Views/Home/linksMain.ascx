@@ -1474,7 +1474,6 @@
 
 		$("#fixedlinksframe").show();
 		
-		OpenHR.CheckForMessages();
 		showDefaultRibbon();
 
 		//Hide DMI button for non-IE browsers					

@@ -14,6 +14,8 @@ BEGIN
 		@sCurrentApp	varchar(256),
 		@Realspid		integer;
 
+		DECLARE @currentDate	datetime = GETDATE();
+
 	CREATE TABLE #tblCurrentUsers				
 		(
 			hostname varchar(256)
@@ -61,7 +63,7 @@ BEGIN
 		/* Create a message record for each user. */
 		INSERT INTO ASRSysMessages 
 			(loginname, [message], loginTime, [dbid], [uid], spid, messageTime, messageFrom, messageSource) 
-			VALUES(@sLoginName, @psMessage, @dtLoginTime, @iDBid, @iUid, @iSPid, getdate(), @sCurrentUser, @sCurrentApp);
+			VALUES(@sLoginName, @psMessage, @dtLoginTime, @iDBid, @iUid, @iSPid, @currentDate, @sCurrentUser, @sCurrentApp);
 
 		FETCH NEXT FROM logins_cursor INTO @iSPid, @sLoginName, @iUid, @dtLoginTime;
 	END
@@ -70,5 +72,19 @@ BEGIN
 
 	IF OBJECT_ID('tempdb..#tblCurrentUsers', N'U') IS NOT NULL
 		DROP TABLE #tblCurrentUsers;
+
+	-- Send message to all the web connections
+	MERGE INTO ASRSysMessages AS Target
+		USING (SELECT username, loginTime
+			FROM ASRSysCurrentLogins) AS SOURCE (LoginName, loginTime)
+	ON target.loginName = source.LoginName AND target.loginTime = source.loginTime
+	WHEN MATCHED THEN
+		UPDATE SET message = @psMessage
+	WHEN NOT MATCHED BY TARGET THEN
+		INSERT (LoginName, message, loginTime, messageTime, messageFrom, messageSource)
+		VALUES (LoginName, @psMessage, loginTime, @currentDate, @sCurrentUser, @sCurrentApp)
+	WHEN NOT MATCHED BY SOURCE THEN
+		DELETE;
+
 
 END
