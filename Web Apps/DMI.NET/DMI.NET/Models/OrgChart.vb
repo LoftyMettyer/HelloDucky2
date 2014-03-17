@@ -108,6 +108,16 @@ Namespace Models
 				End If
 
 
+			Catch ex As SqlException
+
+				Select Case ex.Number
+					Case 217
+						sErrorDescription = "There is a circular reference in your reporting structure."
+					Case Else
+						sErrorDescription = "Error generating Organisation Chart." & vbCrLf & ex.Message
+
+				End Select
+				HttpContext.Current.Session("ErrorText") = sErrorDescription
 
 			Catch ex As Exception
 				sErrorDescription = "Error generating Organisation Chart." & vbCrLf & ex.Message
