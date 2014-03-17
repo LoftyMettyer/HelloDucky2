@@ -16,6 +16,7 @@ function bookmarksCount() {
 
 function moveFirst() {
 	$("#findGridTable").jqGrid('setSelection', 1);
+	menu_refreshMenu();
 }
 
 function find_window_onload() {
@@ -156,6 +157,9 @@ function find_window_onload() {
 						menu_editRecord();
 					},
 					loadComplete: function () {
+						moveFirst();
+					},
+					afterSearch: function() {
 						moveFirst();
 					}
 				});

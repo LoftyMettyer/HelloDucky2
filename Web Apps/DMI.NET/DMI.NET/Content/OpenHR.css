@@ -983,3 +983,6 @@ input[type=button].Embed, input[type=button].Link {
 input[type=button].Embedded, input[type=button].Linked {
 	background-image: url('../Content/images/OLEIcons/file_down_64.png');
 }
+.ui-search-toolbar input::-ms-clear {
+	display: none;
+}

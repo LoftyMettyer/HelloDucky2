@@ -292,7 +292,7 @@ function menu_abMainMenu_DataReady() {
 }
 
 function menu_abMainMenu_Click(pTool) {
-
+	
 	//Reset the idle timeout.
 	window.clearTimeout(window.timeoutHandle);
 	window.timeoutHandle = window.setTimeout('OpenHR.SessionTimeout();', window.timeoutMs);
@@ -300,7 +300,7 @@ function menu_abMainMenu_Click(pTool) {
 
 	//reject disabled icon clicks
 	if ($("#" + pTool).hasClass("disabled")) return false;
-	menu_MenuClick(pTool);
+	menu_MenuClick(pTool);	
 	return true;
 }
 
@@ -1796,6 +1796,7 @@ function menu_refreshMenu() {
 			menu_setVisibleMenuItem("mnutoolBackRecordFind", !menu_isSSIMode());
 			menu_toolbarEnableItem("mnutoolBackRecordFind", (parseInt(frmFind.txtCurrentRecordID.value) > 0));
 
+			menu_toolbarEnableItem("mnutoolAccessLinksFind", (menu_isSSIMode() && (lngRecordID > 0)));
 			menu_setVisibletoolbarGroupById("mnuSectionRecordFindNavigate", !(menu_isSSIMode() && ($("#mnutoolAccessLinksFind").hasClass("hidden"))));
 
 			if (menu_isSSIMode()) {
