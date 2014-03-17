@@ -29,11 +29,6 @@ body
 
 #workframeset
 {
-	/*
-	background: url("../../../Content/images/Default Background.jpg") no-repeat center center fixed;
-	background: url("../../../Content/images/TilesBackground.jpg") no-repeat center center fixed;
-	background: url("../../../Content/images/ABSYellowGradient_64colors.png") no-repeat center center fixed;
-	background: url("../../../Content/images/ABSLittleLessBrightTilesBackground.png") no-repeat center center fixed;*/
 	background: url(../../images/ABSLogo/TilesWatermark.png) no-repeat center center fixed;
 	
 	bottom: 40px;
