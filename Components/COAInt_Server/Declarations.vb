@@ -10,11 +10,7 @@ Module Declarations
   Public gsActualLogin As String
   Public gsUserGroup As String
 
-	Public gcoTablePrivileges As ICollection(Of TablePrivilege)
-
-	Public gcolColumnPrivilegesCollection As Collection
 	Public gcolLinks As List(Of Link)
 	Public gcolNavigationLinks As List(Of Link)
-
 
 End Module

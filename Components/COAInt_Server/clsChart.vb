@@ -610,16 +610,6 @@ GenerateSQLWhere_ERROR:
 
 	End Function
 
-	Public Sub resetGlobals()
-
-		' reset the Global variables as they interfere with other users.
-		'UPGRADE_NOTE: Object gcoTablePrivileges may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		gcoTablePrivileges = Nothing
-		'UPGRADE_NOTE: Object gcolColumnPrivilegesCollection may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		gcolColumnPrivilegesCollection = Nothing
-
-	End Sub
-
 	Public Shadows Property SessionInfo As SessionInfo Implements IChart.SessionInfo
 		Set(value As SessionInfo)
 			MyBase.SessionInfo = value

@@ -154,7 +154,7 @@ Namespace ModuleSpecifics
 				gsPersonnelHRegionTableName = _tables.GetById(mvar_lngPersonnelHRegionTableID).Name
 
 				' Get the realsource into a variable too
-				objTable = gcoTablePrivileges.FindTableID(mvar_lngPersonnelHRegionTableID)
+				objTable = _tablePrivileges.FindTableID(mvar_lngPersonnelHRegionTableID)
 				gsPersonnelHRegionTableRealSource = objTable.RealSource
 				grtRegionType = RegionType.rtHistoricRegion
 			Else
@@ -194,7 +194,7 @@ Namespace ModuleSpecifics
 				gsPersonnelHWorkingPatternTableName = _tables.GetById(mvar_lngPersonnelHWorkingPatternTableID).Name
 
 				' Get the realsource into a variable too
-				objTable = gcoTablePrivileges.FindTableID(mvar_lngPersonnelHWorkingPatternTableID)
+				objTable = _tablePrivileges.FindTableID(mvar_lngPersonnelHWorkingPatternTableID)
 				gsPersonnelHWorkingPatternTableRealSource = objTable.RealSource
 				gwptWorkingPatternType = WorkingPatternType.wptHistoricWPattern
 			Else

@@ -8,7 +8,7 @@ Imports HR.Intranet.Server.Metadata
 
 Namespace BaseClasses
 
-	Public Class BaseForDMI
+	Public MustInherit Class BaseForDMI
 
 		Protected RegionalSettings As RegionalSettings
 		Friend AbsenceModule As modAbsenceSpecifics
@@ -65,6 +65,24 @@ Namespace BaseClasses
 		Friend Function NewExpression() As clsExprExpression
 			Return New clsExprExpression(_sessionInfo)
 		End Function
+
+#Region "FROM Declarations"
+
+		Public ReadOnly Property gcoTablePrivileges As ICollection(Of TablePrivilege)
+			<DebuggerStepThrough()> _
+			Get
+				Return _sessionInfo.gcoTablePrivileges
+			End Get
+		End Property
+
+		Public ReadOnly Property gcolColumnPrivilegesCollection As Collection
+			<DebuggerStepThrough()> _
+				 Get
+				Return _sessionInfo.gcolColumnPrivilegesCollection
+			End Get
+		End Property
+
+#End Region
 
 #Region "FROM modExpression"
 
@@ -425,43 +443,24 @@ ErrorTrap:
 
 #Region "FROM modPermissions"
 
-		Friend Function GetColumnPrivileges(ByRef psTableViewName As String) As CColumnPrivileges
-			' Return the column privileges collection for the given table.
-			On Error GoTo ErrorTrap
+		Friend Function GetColumnPrivileges(psTableViewName As String) As CColumnPrivileges
 
-			Dim fOK As Boolean
 			Dim iLoop As Integer
 			Dim objColumnPrivileges As CColumnPrivileges
 
-			fOK = True
+			Try
+				' If the given table/view's column privilege collection has already been read then simply return it.
+				For iLoop = 1 To gcolColumnPrivilegesCollection.Count()
+					If UCase(gcolColumnPrivilegesCollection.Item(iLoop).Tag) = UCase(psTableViewName) Then
+						Return gcolColumnPrivilegesCollection.Item(iLoop)
+					End If
+				Next iLoop
 
-			' Instantiate  the Column Privileges collection if it does not already exist.
-			If gcolColumnPrivilegesCollection Is Nothing Then
-				gcolColumnPrivilegesCollection = New Collection
-			End If
+				Return objColumnPrivileges
 
-			' If the given table/view's column privilege collection has already been
-			' read then simply return it.
-			For iLoop = 1 To gcolColumnPrivilegesCollection.Count()
-				'UPGRADE_WARNING: Couldn't resolve default property of object gcolColumnPrivilegesCollection().Tag. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				If UCase(gcolColumnPrivilegesCollection.Item(iLoop).Tag) = UCase(psTableViewName) Then
-					Return gcolColumnPrivilegesCollection.Item(iLoop)
-				End If
-			Next iLoop
-
-TidyUpAndExit:
-			If fOK Then
-				GetColumnPrivileges = objColumnPrivileges
-			Else
-				'UPGRADE_NOTE: Object GetColumnPrivileges may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-				GetColumnPrivileges = Nothing
-			End If
-			Exit Function
-
-ErrorTrap:
-			'NO MSGBOX ON THE SERVER ! - MsgBox Err.Description & " - GetColumnPrivileges"
-			fOK = False
-			Resume TidyUpAndExit
+			Catch ex As Exception
+				Return Nothing
+			End Try
 
 		End Function
 

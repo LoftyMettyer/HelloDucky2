@@ -13,6 +13,7 @@ Namespace BaseClasses
 		Protected _columns As ICollection(Of Column)
 		Protected _moduleSettings As ICollection(Of ModuleSetting)
 		Protected _systemSettings As IList(Of UserSetting)
+		Protected _tablePrivileges As ICollection(Of TablePrivilege)
 
 		Public Sub New(value As SessionInfo)
 			_objLogin = value.LoginInfo
@@ -20,6 +21,7 @@ Namespace BaseClasses
 			_columns = value.Columns
 			_moduleSettings = value.ModuleSettings
 			_systemSettings = value.SystemSettings
+			_tablePrivileges = value.gcoTablePrivileges
 		End Sub
 
 		Friend Function GetModuleParameter(psModuleKey As String, psParameterKey As String) As String

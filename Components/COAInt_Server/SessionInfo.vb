@@ -33,6 +33,9 @@ Public Class SessionInfo
 	Friend Functions As ICollection(Of Metadata.Function)
 	Friend Operators As ICollection(Of Metadata.Operator)
 
+	Friend gcoTablePrivileges As ICollection(Of TablePrivilege)
+	Friend gcolColumnPrivilegesCollection As Collection
+
 	Public ReadOnly Property LoginInfo As LoginInfo
 		Get
 			Return _objLogin
@@ -567,7 +570,6 @@ Public Class SessionInfo
 		End If
 
 	End Sub
-
 
 #End Region
 

@@ -104,9 +104,6 @@ Namespace Controllers
 			Dim objChart = New HR.Intranet.Server.clsChart
 			objChart.SessionInfo = CType(Session("SessionContext"), SessionInfo)
 
-			' reset the globals
-			objChart.resetGlobals()
-
 			Dim mrstDBValueData As DataTable
 
 			mrstDBValueData = objChart.GetChartData(iChartTableID, iChartColumnID, iChartFilterID, iChartAggregateType,

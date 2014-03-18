@@ -4,7 +4,7 @@ Option Explicit On
 Imports HR.Intranet.Server.Enums
 
 Namespace Metadata
-	Friend Class TablePrivilege
+	Public Class TablePrivilege
 		Friend Property AllowSelect() As Boolean
 		Friend Property AllowUpdate() As Boolean
 		Friend Property AllowInsert() As Boolean
