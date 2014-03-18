@@ -470,7 +470,7 @@ ErrorTrap:
 
 		Public Function GetUserSetting(strSection As String, strKey As String, varDefault As Object) As Object
 
-			Dim objSetting = _userSettings.GetUserSetting(strSection.ToLower(), strKey.ToLower())
+			Dim objSetting = _userSettings.GetUserSetting(strSection, strKey)
 			If objSetting Is Nothing Then
 				Return varDefault
 			Else

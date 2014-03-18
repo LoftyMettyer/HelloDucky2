@@ -748,7 +748,7 @@ LocalErr:
 														 , blnSettingLandscape As Boolean, blnEmailSystemPermission As Boolean)
 
 		gstrSettingWordTemplate = strSettingWordTemplate
-		gstrSettingExcelTemplate = strSettingExcelTemplate
+		gstrSettingExcelTemplate = ""	'strSettingExcelTemplate
 		gblnSettingExcelGridlines = blnSettingExcelGridlines
 		gblnSettingExcelHeaders = blnSettingExcelHeaders
 		gblnSettingExcelOmitSpacerRow = blnSettingExcelOmitSpacerRow

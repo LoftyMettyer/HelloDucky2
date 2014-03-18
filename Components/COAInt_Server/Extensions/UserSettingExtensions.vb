@@ -10,7 +10,7 @@ Namespace Extensions
 
 		<Extension()>
 	 Public Function GetUserSetting(Of T As UserSetting)(ByVal items As ICollection(Of T), ByVal section As String, ByVal Key As String) As T
-			Return items.FirstOrDefault(Function(item) item.Section = section And item.Key = Key)
+			Return items.FirstOrDefault(Function(item) item.Section.ToLower() = section.ToLower() And item.Key.ToLower() = Key.ToLower())
 		End Function
 
 		<Extension()>

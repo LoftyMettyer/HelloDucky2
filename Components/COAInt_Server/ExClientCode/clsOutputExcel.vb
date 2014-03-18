@@ -870,7 +870,7 @@ LocalErr:
 				End If
 
 				rangeStyle.Font.IsBold = objStyle.Bold
-				rangeStyle.Font.Underline = objStyle.Underline
+				If objStyle.Underline Then rangeStyle.Font.Underline = FontUnderlineType.Single
 				rangeStyle.Font.Color = ColorTranslator.FromWin32(objStyle.ForeCol)
 
 				'Don't do the backcol nor gridlines for the title...
