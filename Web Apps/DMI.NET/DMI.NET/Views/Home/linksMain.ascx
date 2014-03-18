@@ -218,8 +218,7 @@
 						tileCount += 1
 					Next
 								
-					Dim objNavigation = New HR.Intranet.Server.clsNavigationLinks
-					objNavigation.SessionInfo = CType(Session("SessionContext"), SessionInfo)
+					Dim objNavigation = CType(Session("NavigationLinks"), clsNavigationLinks)
 								
 					' Get the navigation hypertext links.
 							
@@ -1035,14 +1034,8 @@
 
 				tileCount += 1
 			Next
-
-			'objNavigation = New HR.Intranet.Server.clsNavigationLinks
-			'objNavigation.SessionInfo = CType(Session("SessionContext"), SessionInfo)
 								
 			' Get the navigation hypertext links.
-							
-			'Dim sDestination As String
-							
 			For Each objNavLink In objNavigation.GetNavigationLinks(False, LinkType.Button)
 	
 				Dim sLinkText As New StringBuilder

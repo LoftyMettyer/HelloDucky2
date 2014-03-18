@@ -51,8 +51,7 @@
 		<table style="width: 100%; outline-style: none; border-style: none; border-width: 0; position: absolute; padding: 0; margin: 0 0 0 6px;">
 			<% 
 				' Get the Documents collection
-				Dim objNavigation = New HR.Intranet.Server.clsNavigationLinks
-				objNavigation.SessionInfo = CType(Session("SessionContext"), SessionInfo)
+				Dim objNavigation = CType(Session("NavigationLinks"), clsNavigationLinks)
 
 				Dim iCount As Integer = 0
 												

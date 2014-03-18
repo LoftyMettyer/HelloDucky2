@@ -10,11 +10,14 @@ Imports System.Data.SqlClient
 Public Class clsNavigationLinks
 	Inherits BaseForDMI
 
+	Private _colLinks As List(Of Link)
+	Private _colNavigationLinks As List(Of Link)
+
 	Private mlngSSITableID As Integer
 	Private mlngSSIViewID As Integer
 
 	Public WriteOnly Property SSITableID() As Integer
-		Set(ByVal Value As Integer)
+		Set(Value As Integer)
 
 			If Value <> mlngSSITableID Then
 				ClearLinks()
@@ -25,7 +28,7 @@ Public Class clsNavigationLinks
 	End Property
 
 	Public WriteOnly Property SSIViewID() As Integer
-		Set(ByVal Value As Integer)
+		Set(Value As Integer)
 
 			If Value <> mlngSSIViewID Then
 				ClearLinks()
@@ -37,22 +40,16 @@ Public Class clsNavigationLinks
 
 	Public Sub ClearLinks()
 
-		'UPGRADE_NOTE: Object gcolLinks may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		gcolLinks = Nothing
-		'UPGRADE_NOTE: Object gcolNavigationLinks may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		gcolNavigationLinks = Nothing
+		_colLinks = Nothing
+		_colNavigationLinks = Nothing
 
 	End Sub
 
 	' Loads all of the links and documents for this user session
 	Public Sub LoadLinks()
 
-		If Not gcolLinks Is Nothing Then
-			Exit Sub
-		End If
-
 		Dim objLink As Link
-		gcolLinks = New List(Of Link)
+		_colLinks = New List(Of Link)
 
 		Dim prmTableID = New SqlParameter("plngTableID", SqlDbType.Int)
 		Dim prmViewID = New SqlParameter("plngViewID", SqlDbType.Int)
@@ -169,7 +166,7 @@ Public Class clsNavigationLinks
 				objLink.Chart_ColourID = IIf(IsDBNull(objRow("Chart_ColourID")), 0, objRow("Chart_ColourID"))
 				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
 				objLink.Chart_ShowPercentages = IIf(IsDBNull(objRow("Chart_ShowPercentages")), False, objRow("Chart_ShowPercentages"))
-				gcolLinks.Add(objLink)
+				_colLinks.Add(objLink)
 			Next
 
 		End Using
@@ -180,11 +177,7 @@ Public Class clsNavigationLinks
 
 		Dim objLink As Link
 
-		If Not gcolNavigationLinks Is Nothing Then
-			Exit Sub
-		End If
-
-		gcolNavigationLinks = New List(Of Link)
+		_colNavigationLinks = New List(Of Link)
 
 		Dim prmTableID = New SqlParameter("plngTableID", SqlDbType.Int)
 		Dim prmViewID = New SqlParameter("plngViewID", SqlDbType.Int)
@@ -206,27 +199,27 @@ Public Class clsNavigationLinks
 				objLink.PrimarySequence = CShort(objRow("PrimarySequence"))
 				objLink.SecondarySequence = CShort(objRow("SecondarySequence"))
 				objLink.FindPage = CShort(objRow("FindPage"))
-				gcolNavigationLinks.Add(objLink)
+				_colNavigationLinks.Add(objLink)
 
 			Next
 		End Using
 
 	End Sub
 
-	Public Function GetNavigationLinks(ByVal pbShowFindPages As Boolean, ByVal piLinkType As LinkType) As List(Of Link)
-		Return gcolNavigationLinks.FindAll(Function(n) (n.FindPage = pbShowFindPages Or pbShowFindPages) And n.LinkType = piLinkType)
+	Public Function GetNavigationLinks(pbShowFindPages As Boolean, piLinkType As LinkType) As List(Of Link)
+		Return _colNavigationLinks.FindAll(Function(n) (n.FindPage = pbShowFindPages Or pbShowFindPages) And n.LinkType = piLinkType)
 	End Function
 
-	Public Function NavigationLinks(ByVal pbShowFindPages As Boolean) As List(Of Link)
-		Return gcolNavigationLinks
+	Public Function NavigationLinks(pbShowFindPages As Boolean) As List(Of Link)
+		Return _colNavigationLinks
 	End Function
 
-	Public Function GetLinks(ByVal piLinkType As LinkType) As List(Of Link)
-		Return gcolLinks.FindAll(Function(n) n.LinkType = piLinkType)
+	Public Function GetLinks(piLinkType As LinkType) As List(Of Link)
+		Return _colLinks.FindAll(Function(n) n.LinkType = piLinkType)
 	End Function
 
 	Public Function GetAllLinks() As List(Of Link)
-		Return gcolLinks
+		Return _colLinks
 	End Function
 
 End Class
