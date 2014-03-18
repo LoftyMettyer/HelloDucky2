@@ -8,9 +8,11 @@ Imports System.Data.SqlClient
 Public Class clsEventLog
 
 	Private ReadOnly DB As New clsDataAccess
+	Private ReadOnly _username As String
 
-	Public Sub New(ByVal LoginInfo As LoginInfo)
-		DB = New clsDataAccess(LoginInfo)
+	Public Sub New(value As LoginInfo)
+		DB = New clsDataAccess(value)
+		_username = StrConv(value.Username, VbStrConv.ProperCase)
 	End Sub
 
 	Private mlngEventLogID As Integer
@@ -38,7 +40,7 @@ Public Class clsEventLog
 			prmName.Value = strName
 
 			Dim prmUserName = New SqlParameter("psUserName", SqlDbType.VarChar, 50)
-			prmUserName.Value = StrConv(gsUsername, VbStrConv.ProperCase)
+			prmUserName.Value = _username
 
 			Dim prmBatchName = New SqlParameter("psBatchName", SqlDbType.VarChar, 50)
 			prmBatchName.Value = ""

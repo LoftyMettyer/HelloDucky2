@@ -3096,7 +3096,7 @@ ExecuteSQL_ERROR:
 		ReDim avDateRanges(6, 0)
 
 		sSQL = "SELECT [BaseID], [Description1], [Description2], [DescriptionExpr], [StartDate], [StartSession], [EndDate], [EndSession] " _
-			& "FROM [" & gsUsername & "].[" & mstrTempTableName & "] " & mstrSQLOrderBy & vbNewLine
+			& "FROM [" & _login.Username & "].[" & mstrTempTableName & "] " & mstrSQLOrderBy & vbNewLine
 		rsMultiple = DB.GetDataTable(sSQL)
 
 		If Not rsMultiple Is Nothing Then
@@ -3294,7 +3294,7 @@ TidyUpAndExit:
 			Dim rowDefinition = .Rows(0)
 
 			'JPD 20040729 Fault 8972 & Fault 8990
-			If LCase(rowDefinition("Username").ToString()) <> LCase(gsUsername) And CurrentUserAccess(UtilityType.utlCalendarReport, mlngCalendarReportID) = ACCESS_HIDDEN Then
+			If LCase(rowDefinition("Username").ToString()) <> LCase(_login.Username) And CurrentUserAccess(UtilityType.utlCalendarReport, mlngCalendarReportID) = ACCESS_HIDDEN Then
 				GetCalendarReportDefinition = False
 				mstrErrorString = "Report has been made hidden by another user."
 				Exit Function

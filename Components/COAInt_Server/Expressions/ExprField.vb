@@ -1001,7 +1001,7 @@ ErrorTrap:
 								End Select
 
 								' Create the udf code for this field
-								mstrUDFRuntimeCode = "CREATE FUNCTION [" & gsUsername & "].udf_ASRSys_" & Trim(Str(mobjBaseComponent.ComponentID)) & "(@PersonnelID float)" & vbNewLine & "RETURNS " & strUDFReturnType & vbNewLine & "AS" & vbNewLine & "BEGIN" & vbNewLine & "   DECLARE @Result " & strUDFReturnType & vbNewLine & "   DECLARE GetRecord CURSOR SCROLL FOR "
+								mstrUDFRuntimeCode = "CREATE FUNCTION [" & Login.Username & "].udf_ASRSys_" & Trim(Str(mobjBaseComponent.ComponentID)) & "(@PersonnelID float)" & vbNewLine & "RETURNS " & strUDFReturnType & vbNewLine & "AS" & vbNewLine & "BEGIN" & vbNewLine & "   DECLARE @Result " & strUDFReturnType & vbNewLine & "   DECLARE GetRecord CURSOR SCROLL FOR "
 
 								If Not pfApplyPermissions Then
 									mstrUDFRuntimeCode = mstrUDFRuntimeCode & "SELECT " & objBaseTable.TableName & "." & objBaseColumn.ColumnName & vbNewLine & "FROM " & objBaseTable.TableName & vbNewLine
@@ -1072,7 +1072,7 @@ ErrorTrap:
 								' Finish off udf code
 								mstrUDFRuntimeCode = mstrUDFRuntimeCode & "OPEN GetRecord" & vbNewLine & "FETCH ABSOLUTE " & Trim(Str(mlngSelectionLine)) & " FROM GetRecord INTO @Result" & vbNewLine & "CLOSE GetRecord" & vbNewLine & "DEALLOCATE GetRecord" & vbNewLine & "RETURN @Result" & vbNewLine & "END"
 
-								sCode = sCode & " [" & gsUsername & "].udf_ASRSys_" & Trim(Str(mobjBaseComponent.ComponentID)) & "(" & mobjBaseComponent.ParentExpression.BaseTableName & ".id)"
+								sCode = sCode & " [" & Login.Username & "].udf_ASRSys_" & Trim(Str(mobjBaseComponent.ComponentID)) & "(" & mobjBaseComponent.ParentExpression.BaseTableName & ".id)"
 
 								fOK = True
 

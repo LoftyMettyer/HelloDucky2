@@ -216,7 +216,7 @@ Public Class clsGeneral
 						strFunctionName = FUNCTIONPREFIX & strFunctionNumber
 
 						'Drop existing function (could exist if the expression is used more than once in a report)
-						strDropCode = "IF EXISTS" & " (SELECT *" & "   FROM sysobjects" & "   WHERE id = object_id('[" & Replace(gsUsername, "'", "''") & "]." & strFunctionName & "')" & "     AND sysstat & 0xf = 0)" & " DROP FUNCTION [" & gsUsername & "]." & strFunctionName
+						strDropCode = "IF EXISTS" & " (SELECT *" & "   FROM sysobjects" & "   WHERE id = object_id('[" & Replace(_login.Username, "'", "''") & "]." & strFunctionName & "')" & "     AND sysstat & 0xf = 0)" & " DROP FUNCTION [" & _login.Username & "]." & strFunctionName
 						DB.ExecuteSql(strDropCode)
 
 						' Create the new function

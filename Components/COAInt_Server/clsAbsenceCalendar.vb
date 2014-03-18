@@ -192,12 +192,6 @@ Public Class AbsenceCalendar
 		End Set
 	End Property
 
-	Public WriteOnly Property Username() As String
-		Set(ByVal value As String)
-			gsUsername = value
-		End Set
-	End Property
-
 	Public WriteOnly Property ClientDateFormat() As String
 		Set(ByVal value As String)
 			' Clients date format passed in from the asp page
@@ -912,10 +906,14 @@ errLoadColourKey:
 			prstPersonnelData = DB.GetDataTable(sSQL)
 
 			If prstPersonnelData.Rows.Count > 0 Then
-				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-				mdStartDate = IIf(IsDBNull(prstPersonnelData.Rows(0)("StartDate")), mdStartDate, DateToString(prstPersonnelData.Rows(0)("StartDate"), RegionalSettings))
-				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-				mdLeavingDate = IIf(IsDBNull(prstPersonnelData.Rows(0)("LeavingDate")), mdLeavingDate, DateToString(prstPersonnelData.Rows(0)("LeavingDate"), RegionalSettings))
+				If Not IsDBNull(prstPersonnelData.Rows(0)("StartDate")) Then
+					mdStartDate = DateToString(prstPersonnelData.Rows(0)("StartDate"), RegionalSettings)
+				End If
+
+				If Not IsDBNull(prstPersonnelData.Rows(0)("LeavingDate")) Then
+					mdLeavingDate = DateToString(prstPersonnelData.Rows(0)("LeavingDate"), RegionalSettings)
+				End If
+
 			End If
 		Else
 			GoTo PersonnelERROR

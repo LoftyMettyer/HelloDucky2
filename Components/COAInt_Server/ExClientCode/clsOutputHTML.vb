@@ -718,7 +718,7 @@ LocalErr:
 		'    End If
 		'
 		'  Else
-		mstrHTMLOutput = mstrHTMLOutput & "</CENTER><BR><HR>" & vbCrLf & "Created on " & VB6.Format(Now, DateFormat & " hh:nn") & " by " & gsUserName & vbCrLf & "</FONT></BODY></HTML>"
+		mstrHTMLOutput = mstrHTMLOutput & "</CENTER><BR><HR>" & vbCrLf & "Created on " & VB6.Format(Now, DateFormat() & " hh:nn") & " by " & UserName & vbCrLf & "</FONT></BODY></HTML>"
 		'  End If
 
 		If mblnSave Then

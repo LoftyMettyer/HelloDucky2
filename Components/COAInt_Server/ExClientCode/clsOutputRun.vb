@@ -13,7 +13,7 @@ Imports HR.Intranet.Server.Metadata
 Public Class clsOutputRun
 	Inherits BaseForDMI
 
-	Private mobjOutputType As Object ' IOutputFile
+	Private mobjOutputType As Object
 	Private mcolStyles As Collection
 	Private mcolMerges As Collection
 	Private mcolColumns As List(Of Column)
@@ -680,6 +680,7 @@ LocalErr:
 
 		End Select
 
+		mobjOutputType.UserName = _login.Username
 
 		'UPGRADE_WARNING: Couldn't resolve default property of object mobjOutputType.Parent. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 		'UPGRADE_WARNING: Couldn't resolve default property of object Me. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'

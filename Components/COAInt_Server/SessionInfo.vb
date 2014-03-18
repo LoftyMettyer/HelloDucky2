@@ -369,7 +369,6 @@ Public Class SessionInfo
 		dsPermissions = objDataAccess.GetDataSet("spASRIntSetupTablesCollection")
 
 		Dim objSecurityRow = dsPermissions.Tables(SecurityTable).Rows(0)
-		gsUsername = objSecurityRow("UserName").ToString()
 		fSysSecManager = CBool(objSecurityRow("IsSysSecMgr"))
 
 		' Initialise the collection with items for each TABLE in the system.

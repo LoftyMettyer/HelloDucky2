@@ -141,7 +141,7 @@ Public Class clsDiary
 				mdtSelectedDate = rowSingleRecord("EventDate")
 
 				strOwner = LCase(Trim(rowSingleRecord("UserName").ToString()))
-				strUser = LCase(gsUsername)
+				strUser = LCase(_login.Username)
 				strAccess = rowSingleRecord("Access").ToString()
 				mlngColumnID = CShort(rowSingleRecord("ColumnID"))
 
@@ -234,7 +234,7 @@ Public Class clsDiary
 
 		Dim strManualEvents As String
 
-		strManualEvents = "ColumnID = 0 AND (UserName = '" & gsUsername & "'" & IIf(mblnFilterOnlyMine, ")", " OR Access <> 'HD')")
+		strManualEvents = "ColumnID = 0 AND (UserName = '" & _login.Username & "'" & IIf(mblnFilterOnlyMine, ")", " OR Access <> 'HD')")
 
 		Select Case FilterEventType
 			Case 0 'All Manual and System events
@@ -422,11 +422,11 @@ Public Class clsDiary
 
 		Select Case FilterEventType
 			Case 0
-				FilterText = FilterText & "System Events and Manual Events" & IIf(mblnFilterOnlyMine, " where owner is '" & gsUsername & "'", "")
+				FilterText = FilterText & "System Events and Manual Events" & IIf(mblnFilterOnlyMine, " where owner is '" & _login.Username & "'", "")
 			Case 1
 				FilterText = FilterText & "System Diary Events"
 			Case 2
-				FilterText = FilterText & "Manual Diary Events" & IIf(mblnFilterOnlyMine, " where owner is '" & gsUsername & "'", "")
+				FilterText = FilterText & "Manual Diary Events" & IIf(mblnFilterOnlyMine, " where owner is '" & _login.Username & "'", "")
 		End Select
 
 	End Function

@@ -117,7 +117,7 @@
     <Compile Include="BaseClasses\BaseExpressionComponent.vb" />
     <Compile Include="BaseClasses\BaseForDMI.vb" />
     <Compile Include="BaseClasses\BaseModuleSpecific.vb" />
-    <Compile Include="BaseClasses\BaseOutput.vb" />
+    <Compile Include="BaseClasses\BaseOutputFormat.vb" />
     <Compile Include="BaseClasses\BaseReport.vb" />
     <Compile Include="clsAbsenceCalendar.vb" />
     <Compile Include="clsBankHoliday.vb" />
@@ -163,9 +163,6 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="DataAccess.vb">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Declarations.vb">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Enums\CalendarDataType.vb" />

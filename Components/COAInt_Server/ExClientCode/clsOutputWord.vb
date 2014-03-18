@@ -731,7 +731,7 @@ LocalErr:
 				'.Selection.Fields.Add .Selection.Range, Type:=wdFieldDate,
 				'Selection.Fields.Add Range:=Selection.Range, Type:=wdFieldEmpty, Text:=
 				.Selection.Fields.Add(Range:=.Selection.Range, Type:=Microsoft.Office.Interop.Word.WdFieldType.wdFieldDate, Text:="CREATEDATE \@ ""dd/MM/yyyy at hh:mm"" ", PreserveFormatting:=True)
-				.Selection.TypeText(Text:=" by " & gsUsername)
+				.Selection.TypeText(Text:=" by " & UserName)
 				.Selection.MoveRight(Unit:=Microsoft.Office.Interop.Word.WdUnits.wdCell)
 
 				.Selection.ParagraphFormat.Alignment = Microsoft.Office.Interop.Word.WdParagraphAlignment.wdAlignParagraphRight

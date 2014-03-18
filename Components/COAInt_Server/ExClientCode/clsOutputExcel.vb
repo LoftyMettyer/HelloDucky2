@@ -1092,7 +1092,7 @@ LocalErr:
 			If _mstrXlTemplate = vbNullString Then
 				With objObject.PageSetup
 					' .LeftFooter = "Created on &D at &T by " & gsUsername
-					.SetFooter(0, "Created on &D at &T by " & gsUsername)
+					.SetFooter(0, "Created on &D at &T by " & UserName)
 					' .RightFooter = "Page &P"
 					.SetFooter(2, "Page &P")
 					.Orientation = IIf(_mblnXlLandscape, PageOrientationType.Landscape, PageOrientationType.Portrait)

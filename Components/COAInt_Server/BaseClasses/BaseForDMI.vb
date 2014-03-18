@@ -36,8 +36,6 @@ Namespace BaseClasses
 				_sessionInfo = value
 				_login = _sessionInfo.LoginInfo
 
-				gsUsername = _sessionInfo.LoginInfo.Username
-
 				DB = New clsDataAccess(_sessionInfo.LoginInfo)
 				General = New clsGeneral(_sessionInfo.LoginInfo)
 				Logs = New clsEventLog(_sessionInfo.LoginInfo)
@@ -150,7 +148,7 @@ Namespace BaseClasses
 			If rsTemp.Rows.Count = 0 Then
 				IsSelectionValid = "The " & strType & " used in this definition has been deleted by another user"
 
-			ElseIf LCase(Trim(rsTemp.Rows(0)("Username").ToString())) <> LCase(Trim(gsUsername)) And rsTemp.Rows(0)("Access").ToString() = "HD" Then
+			ElseIf LCase(Trim(rsTemp.Rows(0)("Username").ToString())) <> LCase(Trim(_login.Username)) And rsTemp.Rows(0)("Access").ToString() = "HD" Then
 				'JPD 20040706 Fault 8781
 				If Not CurrentUserIsSysSecMgr() Then
 					IsSelectionValid = "The " & strType & " used in this definition has been " & "hidden by another user"
@@ -210,7 +208,7 @@ Namespace BaseClasses
 						iResult = RecordSelectionValidityCodes.REC_SEL_VALID_DELETED
 					Else
 						If (rstemp.Rows(0)("Access").ToString() = ACCESS_HIDDEN) Then
-							If (LCase(Trim(rstemp.Rows(0)("Username").ToString())) = LCase(Trim(gsUsername))) Then
+							If (LCase(Trim(rstemp.Rows(0)("Username").ToString())) = LCase(Trim(_login.Username))) Then
 								' Picklist is hidden by the current user.
 								iResult = RecordSelectionValidityCodes.REC_SEL_VALID_HIDDENBYUSER
 							Else
@@ -257,7 +255,7 @@ Namespace BaseClasses
 					iResult = RecordSelectionValidityCodes.REC_SEL_VALID_DELETED
 				Else
 					If (rstemp.Rows(0)("Access").ToString() = ACCESS_HIDDEN) Or General.HasHiddenComponents(CInt(plngID)) Then
-						If (LCase(Trim(rstemp.Rows(0)("Username").ToString())) = LCase(Trim(gsUsername))) Then
+						If (LCase(Trim(rstemp.Rows(0)("Username").ToString())) = LCase(Trim(_login.Username))) Then
 							' Filter is hidden by the current user.
 							iResult = RecordSelectionValidityCodes.REC_SEL_VALID_HIDDENBYUSER
 						Else
@@ -335,7 +333,7 @@ ErrorTrap:
 					iResult = RecordSelectionValidityCodes.REC_SEL_VALID_DELETED
 				Else
 					If (rstemp.Rows(0)("Access").ToString() = ACCESS_HIDDEN) Or General.HasHiddenComponents(CInt(plngID)) Then
-						If (LCase(Trim(rstemp.Rows(0)("Username").ToString())) = LCase(Trim(gsUsername))) Then
+						If (LCase(Trim(rstemp.Rows(0)("Username").ToString())) = LCase(Trim(_login.Username))) Then
 							' Calculation is hidden by the current user.
 							iResult = RecordSelectionValidityCodes.REC_SEL_VALID_HIDDENBYUSER
 						Else

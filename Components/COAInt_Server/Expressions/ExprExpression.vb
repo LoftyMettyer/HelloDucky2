@@ -1674,7 +1674,7 @@ ErrorTrap:
 
 		msExpressionName = ""
 		mlngParentComponentID = 0
-		msOwner = gsUsername
+		msOwner = Login.Username
 		msAccess = "RW"
 		msDescription = ""
 		mlngTimeStamp = 0
