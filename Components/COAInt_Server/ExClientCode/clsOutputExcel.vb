@@ -81,7 +81,7 @@ Namespace ExClientCode
 			_mblnXlAutoFitCols = gblnSettingAutoFitCols
 			_mblnXlLandscape = gblnSettingLandscape
 
-			_mlngDataStartRow = glngSettingDataRow - 1
+			_mlngDataStartRow = glngSettingDataRow
 			_mlngDataStartCol = glngSettingDataCol
 
 			_mblnSizeColumnsIndependently = False
