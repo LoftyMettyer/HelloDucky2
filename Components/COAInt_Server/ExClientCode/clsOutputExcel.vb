@@ -425,20 +425,28 @@ Namespace ExClientCode
 
 								Case SQLDataType.sqlNumeric, SQLDataType.sqlInteger
 
-									Dim numberAsString As String = strArray(lngGridCol, lngGridRow).ToString()
-									Dim indexOfDecimalPoint As Integer = numberAsString.IndexOf(".", System.StringComparison.Ordinal)
-									Dim numberOfDecimals As Integer = 0
-									If indexOfDecimalPoint > 0 Then numberOfDecimals = numberAsString.Substring(indexOfDecimalPoint + 1).Length
-
-									If numberOfDecimals > 0 Then
-										If numberOfDecimals > 100 Then numberOfDecimals = 100
-										stlNumeric.Custom = "0" & "." & New String("0", numberOfDecimals)
+									If lngGridRow = 0 Then
+										' header, so leave as a string
+										.SetStyle(stlGeneral)
+										.PutValue(strArray(lngGridCol, lngGridRow))
 									Else
-										stlNumeric.Custom = "@"
-									End If
+										' format as a number
+										Dim numberAsString As String = strArray(lngGridCol, lngGridRow).ToString()
+										Dim indexOfDecimalPoint As Integer = numberAsString.IndexOf(".", System.StringComparison.Ordinal)
+										Dim numberOfDecimals As Integer = 0
+										If indexOfDecimalPoint > 0 Then numberOfDecimals = numberAsString.Substring(indexOfDecimalPoint + 1).Length
 
-									.SetStyle(stlNumeric)
-									.PutValue(NullSafeInteger(strArray(lngGridCol, lngGridRow)))
+										If numberOfDecimals > 0 Then
+											If numberOfDecimals > 100 Then numberOfDecimals = 100
+											stlNumeric.Custom = "0" & "." & New String("0", numberOfDecimals)
+										Else
+											stlNumeric.Custom = "@"
+										End If
+
+										.SetStyle(stlNumeric)
+										.PutValue(NullSafeInteger(strArray(lngGridCol, lngGridRow)))
+
+									End If
 								Case SQLDataType.sqlBoolean
 									.SetStyle(stlGeneral)
 									.PutValue(strArray(lngGridCol, lngGridRow))
