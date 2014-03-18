@@ -501,6 +501,9 @@
 					sColumnValue = sColumnValue.Replace(vbNewLine, "<br/>")
 
 					colData.Append(String.Format("'{0}':'{1}',", sColumnName, sColumnValue))
+				Else
+					' add the group with next column anyway (for grouping etc)
+					colData.Append(String.Format("'{0}':'{1}',", objReport.mrstCustomReportsOutput.Columns(iColIndex + 1).ColumnName, objRow.Item(iColIndex + 1).ToString()))
 				End If
 			Next
 
