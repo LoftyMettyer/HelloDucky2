@@ -62,15 +62,11 @@
 			closeclick();
 		});
 		
-		<%If _StepCount = 0 And Session("fromMenu") = 0 Then%>
-		//no pending steps, and this is called from login, so show default page
-		menu_loadPage('_default');
-		<%Else%>
 		<%If _StepCount = 0 Then%>
 		//disable run button if no steps pending
 		menu_toolbarEnableItem("mnutoolRunWFPendingStepsFind", false);
 		<%End If%>
-
+		
 		$('#tblMessage').removeClass('hidden');
 		showDefaultRibbon();
 		$("#toolbarWFPendingStepsFind").parent().show();
@@ -78,12 +74,9 @@
 
 		var newGridHeight = $("#findGridRow").height() - 50;
 		$("#PendingStepsTable").jqGrid('setGridHeight', newGridHeight, true);
-		<%End If%>
 		
-
 		$("#optionframe").hide();
 		$("#workframe").show();
-
 	}
 </script>
 
@@ -259,7 +252,11 @@
 		Else
 			Dim sMessage As String
 			If _WorkflowGood = True Then
-				sMessage = "No Pending Workflow Steps"
+				If Session("fromMenu") = 1 Then
+					sMessage = "No Pending Workflow Steps"
+				Else
+					sMessage = ""
+				End If
 			Else
 				sMessage = "Error getting the pending workflow steps"
 			End If
