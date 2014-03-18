@@ -370,10 +370,7 @@ Public Class SessionInfo
 
 		Dim objSecurityRow = dsPermissions.Tables(SecurityTable).Rows(0)
 		gsUsername = objSecurityRow("UserName").ToString()
-		gsActualLogin = objSecurityRow("ActualLogin").ToString()
-		gsUserGroup = objSecurityRow("UserGroup").ToString()
 		fSysSecManager = CBool(objSecurityRow("IsSysSecMgr"))
-
 
 		' Initialise the collection with items for each TABLE in the system.
 		For Each objTable In Tables
@@ -418,7 +415,7 @@ Public Class SessionInfo
 				objTableView.AllowInsert = True
 			Next
 
-			sSQL = "SELECT tableid, childViewID FROM ASRSysChildViews2 WHERE role = '" & Replace(gsUserGroup, "'", "''") & "'"
+			sSQL = "SELECT tableid, childViewID FROM ASRSysChildViews2 WHERE role = '" & Replace(LoginInfo.UserGroup, "'", "''") & "'"
 			dtInfo = objDataAccess.GetDataTable(sSQL, CommandType.Text)
 
 			For Each objRow As DataRow In dtInfo.Rows
@@ -426,7 +423,7 @@ Public Class SessionInfo
 				objTableView = gcoTablePrivileges.GetItemByTableId(lngTableId)
 
 				If objTableView.TableType = TableTypes.tabChild Then
-					objTableView.RealSource = Left("ASRSysCV" & Trim(objRow("childViewID").ToString) & "#" & Replace(objTableView.TableName, " ", "_") & "#" & Replace(gsUserGroup, " ", "_"), 255)
+					objTableView.RealSource = Left("ASRSysCV" & Trim(objRow("childViewID").ToString) & "#" & Replace(objTableView.TableName, " ", "_") & "#" & Replace(LoginInfo.UserGroup, " ", "_"), 255)
 				Else
 					objTableView.RealSource = CStr(IIf(objTableView.IsTable, objTableView.TableName, objTableView.ViewName))
 
@@ -437,7 +434,7 @@ Public Class SessionInfo
 		Else
 			' If the user is NOT a 'system manager' or 'security manager'
 			' read the table permissions from the server.
-			sSQL = "exec spASRIntAllTablePermissions '" & Replace(gsActualLogin, "'", "''") & "'"
+			sSQL = "exec spASRIntAllTablePermissions '" & Replace(LoginInfo.Username, "'", "''") & "'"
 
 			dtInfo = objDataAccess.GetDataTable(sSQL, CommandType.Text)
 

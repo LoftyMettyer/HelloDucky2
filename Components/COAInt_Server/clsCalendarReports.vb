@@ -3294,7 +3294,7 @@ TidyUpAndExit:
 			Dim rowDefinition = .Rows(0)
 
 			'JPD 20040729 Fault 8972 & Fault 8990
-			If LCase(rowDefinition("Username").ToString()) <> LCase(gsUsername) And General.CurrentUserAccess(UtilityType.utlCalendarReport, mlngCalendarReportID) = ACCESS_HIDDEN Then
+			If LCase(rowDefinition("Username").ToString()) <> LCase(gsUsername) And CurrentUserAccess(UtilityType.utlCalendarReport, mlngCalendarReportID) = ACCESS_HIDDEN Then
 				GetCalendarReportDefinition = False
 				mstrErrorString = "Report has been made hidden by another user."
 				Exit Function

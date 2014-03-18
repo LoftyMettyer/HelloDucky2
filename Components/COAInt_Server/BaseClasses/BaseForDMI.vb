@@ -482,6 +482,120 @@ ErrorTrap:
 
 #End Region
 
+#Region "From modUtilityAccess"
+
+		Protected Function CurrentUserAccess(piUtilityType As UtilityType, plngID As Integer) As String
+
+			' Return the access code (RW/RO/HD) of the current user's access
+			' on the given utility.
+			Dim sAccessCode As String
+			Dim sSQL As String
+			Dim sDefaultAccess As String
+			Dim rsAccess As DataTable
+			Dim sTableName As String
+			Dim sAccessTableName As String
+			Dim sIDColumnName As String
+
+			sTableName = ""
+			sAccessTableName = ""
+
+			If plngID > 0 Then
+				sDefaultAccess = ACCESS_HIDDEN
+			Else
+				sDefaultAccess = ACCESS_HIDDEN
+			End If
+
+			' Construct the SQL code to get the current user's access settings for the given utility.
+			' NB. System and Security Manager users automatically have Read/Write access.
+			Select Case piUtilityType
+				Case UtilityType.utlBatchJob
+					sTableName = "ASRSysBatchJobName"
+					sAccessTableName = "ASRSysBatchJobAccess"
+					sIDColumnName = "ID"
+
+				Case UtilityType.utlCalendarReport
+					sTableName = "ASRSysCalendarReports"
+					sAccessTableName = "ASRSysCalendarReportAccess"
+					sIDColumnName = "ID"
+
+				Case UtilityType.utlCrossTab
+					sTableName = "ASRSysCrossTab"
+					sAccessTableName = "ASRSysCrossTabAccess"
+					sIDColumnName = "CrossTabID"
+
+				Case UtilityType.utlCustomReport
+					sTableName = "ASRSysCustomReportsName"
+					sAccessTableName = "ASRSysCustomReportAccess"
+					sIDColumnName = "ID"
+
+				Case UtilityType.utlDataTransfer
+					sTableName = "ASRSysDataTransferName"
+					sAccessTableName = "ASRSysDataTransferAccess"
+					sIDColumnName = "DataTransferID"
+
+				Case UtilityType.utlExport
+					sTableName = "ASRSysExportName"
+					sAccessTableName = "ASRSysExportAccess"
+					sIDColumnName = "ID"
+
+				Case UtilityType.UtlGlobalAdd, UtilityType.utlGlobalDelete, UtilityType.utlGlobalUpdate
+					sTableName = "ASRSysGlobalFunctions"
+					sAccessTableName = "ASRSysGlobalAccess"
+					sIDColumnName = "functionID"
+
+				Case UtilityType.utlImport
+					sTableName = "ASRSysImportName"
+					sAccessTableName = "ASRSysImportAccess"
+					sIDColumnName = "ID"
+
+				Case UtilityType.utlLabel, UtilityType.utlMailMerge
+					sTableName = "ASRSysMailMergeName"
+					sAccessTableName = "ASRSysMailMergeAccess"
+					sIDColumnName = "mailMergeID"
+
+				Case UtilityType.utlRecordProfile
+					sTableName = "ASRSysRecordProfileName"
+					sAccessTableName = "ASRSysRecordProfileAccess"
+					sIDColumnName = "recordProfileID"
+
+				Case UtilityType.utlMatchReport, UtilityType.utlSuccession, UtilityType.utlCareer
+					sTableName = "ASRSysMatchReportName"
+					sAccessTableName = "ASRSysMatchReportAccess"
+					sIDColumnName = "matchReportID"
+
+			End Select
+
+			Try
+
+				If Len(sAccessTableName) > 0 Then
+					sSQL = "SELECT  CASE WHEN (SELECT count(*) FROM ASRSysGroupPermissions INNER JOIN ASRSysPermissionItems ON (ASRSysGroupPermissions.itemID  = ASRSysPermissionItems.itemID" & "        AND (ASRSysPermissionItems.itemKey = 'SYSTEMMANAGER'" & "        OR ASRSysPermissionItems.itemKey = 'SECURITYMANAGER'))" & "      INNER JOIN ASRSysPermissionCategories ON (ASRSysPermissionItems.categoryID = ASRSysPermissionCategories.categoryID" & "        AND ASRSysPermissionCategories.categoryKey = 'MODULEACCESS')" & "      WHERE b.Name = ASRSysGroupPermissions.groupname" & "        AND ASRSysGroupPermissions.permitted = 1) > 0 THEN '" & ACCESS_READWRITE & "'" & "    WHEN " & sTableName & ".userName = system_user THEN '" & ACCESS_READWRITE & "'" & "    ELSE" & "      CASE" & "        WHEN " & sAccessTableName & ".access IS null THEN '" & sDefaultAccess & "'" & "        ELSE " & sAccessTableName & ".access" & "      END" & "  END AS Access" & " FROM sysusers b" & " INNER JOIN sysusers a ON b.uid = a.gid" & " LEFT OUTER JOIN " & sAccessTableName & " ON (b.name = " & sAccessTableName & ".groupName" & "   AND " & sAccessTableName & ".id = " & CStr(plngID) & ")" & " INNER JOIN " & sTableName & " ON " & sAccessTableName & ".ID = " & sTableName & "." & sIDColumnName & " WHERE b.name = '" & _login.UserGroup & "'"
+
+
+					rsAccess = DB.GetDataTable(sSQL)
+					With rsAccess
+						If .Rows.Count = 0 Then
+							sAccessCode = sDefaultAccess
+						Else
+							sAccessCode = .Rows(0)("Access").ToString()
+						End If
+
+					End With
+				Else
+					sAccessCode = ACCESS_UNKNOWN
+				End If
+
+				Return sAccessCode
+
+			Catch ex As Exception
+				Return sDefaultAccess
+
+			End Try
+
+		End Function
+
+
+#End Region
+
 
 	End Class
 End Namespace

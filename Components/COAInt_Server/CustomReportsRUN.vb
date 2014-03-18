@@ -581,7 +581,7 @@ AddTempTableToSQL_ERROR:
 			Dim rowData = rsDefinition.Rows(0)
 
 			' RH 29/05/01 - Dont run if its been made hidden by another user.
-			If LCase(rowData("Username").ToString()) <> LCase(gsUsername) And General.CurrentUserAccess(UtilityType.utlCustomReport, mlngCustomReportID) = ACCESS_HIDDEN Then
+			If LCase(rowData("Username").ToString()) <> LCase(gsUsername) And CurrentUserAccess(UtilityType.utlCustomReport, mlngCustomReportID) = ACCESS_HIDDEN Then
 				GetCustomReportDefinition = False
 				mstrErrorString = "Report has been made hidden by another user."
 				Exit Function

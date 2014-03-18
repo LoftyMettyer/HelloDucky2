@@ -251,7 +251,7 @@ Public Class Menu
 			" WHERE ASRSysTables.tableType = {1}" & _
 			" AND ((ASRSysScreens.ssIntranet IS null) OR (ASRSysScreens.ssIntranet = 0)) AND ((ASRSysScreens.quickEntry IS null)" & _
 			" OR (ASRSysScreens.quickEntry = 0))" & _
-			" ORDER BY ASRSysTables.tableName DESC", gsUserGroup, Trim(Str(TableTypes.tabLookup)))
+			" ORDER BY ASRSysTables.tableName DESC", _login.UserGroup, Trim(Str(TableTypes.tabLookup)))
 
 		rsTableScreens = DB.GetDataTable(sSQL, CommandType.Text)
 		For Each objRow As DataRow In rsTableScreens.Rows
