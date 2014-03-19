@@ -253,6 +253,7 @@ function goUtility(sUtilityType, sUtilityID, sUtilityName, sUtilityBaseTable) {
 			$('#optionframe').show();
 					
 		} else {
+			
 			//Not a workflow!
 			$('#SSILinksFrame').fadeOut();
 			$('#SSILinksFrame').promise().done(function () {
@@ -286,8 +287,14 @@ function goDropLink(sLinkInfo) {
 			goURL(sLinkInfo, sNewWindow, true);
 			break;
 		case "2":
+
 			// Utility link
-			goUtility(sLinkInfo);
+			var iIndex1 = sLinkInfo.indexOf("_");
+			var iIndex2 = sLinkInfo.indexOf("_", sLinkInfo.indexOf("_") + 1);
+			var sUtilityType = sLinkInfo.substring(0, iIndex1);
+			var sUtilityID = sLinkInfo.substring(iIndex1 + 1, iIndex2);
+
+			goUtility(sUtilityType, sUtilityID, "");
 			break;
 		case "4":
 			// Mulitple record find page

@@ -169,7 +169,7 @@ Namespace Code
 				doc.MailMerge.Execute(MergeData)
 				MergeDocument = New MemoryStream
 
-				If DirectToPrinter Then
+				If DirectToPrinter And PrinterName.Length > 0 Then
 					doc.Print(PrinterName)
 				Else
 					doc.Save(MergeDocument, SaveFormat.Docx)
