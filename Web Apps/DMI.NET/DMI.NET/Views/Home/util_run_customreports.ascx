@@ -356,6 +356,11 @@
 		Dim bFooter As Boolean = False
 		Dim sSortString As String = ""
 		Dim iColIndex As Integer = 0
+		Dim sGroupCollapse As String = "false"
+		
+		If objReport.mblnCustomReportsSummaryReport = True Then
+			sGroupCollapse = "true"
+		End If
 		
 		' Configure COLUMNS Model for jqGrid
 		For Each objRow As DataRow In objReport.mrstCustomReportsDetails.Rows
@@ -444,13 +449,13 @@
 		
 		Next
 	
-		If bGrouping Then
+		If bGrouping Then			
 			sGroupingParams = ",grouping: true," & _
 		"groupingView : {groupField : [" & sGroupFieldList & "]," & _
 		"groupColumnShow : [" & sGroupColumnShowList & "]," & _
 		"groupText : [" & sGroupTextList & "]," & _
 		"groupOrder: [" & sGroupOrder & "]," & _
-		"groupCollapse : false," & _
+		"groupCollapse : " & sGroupCollapse & "," & _
 		"groupSummary : [true]," & _
 		"showSummaryOnHide: true," & _
 		"groupDataSorted: false}"
@@ -681,6 +686,9 @@ End If
 		$('#gview_grdReport tr.jqgrow td').css('vertical-align', 'top'); //float text to top, in case of multi-line cells
 		$('#gview_grdReport .s-ico span').css('display', 'none'); //hide the sort order icons - they don't tie in to the dataview model.
 		$('#gview_grdReport tr.footrow td').css('vertical-align', 'top'); //float text to top, in case of multi-line footers
+		<%if objReport.mblnCustomReportsSummaryReport Then%>
+		$('#gview_grdReport .tree-wrap-ltr').css('display', 'none');	//hide the expand/retract node for summary reports.
+		<%End If%>
 	}
 
 	if (menu_isSSIMode()) $('#gbox_grdReport').css('margin', '0 auto'); //center the report in self-service screen.	

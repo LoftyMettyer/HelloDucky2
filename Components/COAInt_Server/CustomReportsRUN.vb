@@ -27,7 +27,7 @@ Public Class Report
 	Private mlngCustomReportsParent1FilterID As Integer
 	Private mlngCustomReportsParent2Table As Integer
 	Private mlngCustomReportsParent2FilterID As Integer
-	Private mblnCustomReportsSummaryReport As Boolean
+	Public mblnCustomReportsSummaryReport As Boolean
 	Private mblnIgnoreZerosInAggregates As Boolean
 	Private mblnCustomReportsPrintFilterHeader As Boolean
 
