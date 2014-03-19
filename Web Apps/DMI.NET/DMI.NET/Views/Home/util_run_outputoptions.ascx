@@ -36,7 +36,6 @@
 				}
 			}
 		}
-
 		if (frmExport.txtSave.value.toLowerCase() == "false") {
 			frmOutputDef.chkDestination2.checked = false;
 		} else {
@@ -91,7 +90,6 @@
 	}
 
 	function outputOptionsRefreshControls() {
-		
 		var frmOutputDef = OpenHR.getForm("outputoptions", "frmOutputDef");
 		var optOutputFormat0 = document.getElementById('optOutputFormat0');
 		var optOutputFormat1 = document.getElementById('optOutputFormat1');
@@ -331,7 +329,6 @@
 					txtFilename.value = '';
 					button_disable(cmdFilename, true);
 				}
-				
 				//enable-disable email options
 				checkbox_disable(chkDestination3, false);
 				if (chkDestination3.checked == true) {
@@ -510,15 +507,15 @@
 			return;
 		}
 
-		if ((frmOutputDef.txtFilename.value == "")
-				&& (frmOutputDef.cmdFilename.disabled == false)) {
+		if ((frmOutputDef.chkDestination2.checked)
+				&& (frmOutputDef.txtFilename.value == "") ) {
 			OpenHR.messageBox("You must enter a file name", 48, "Output Options");
 			window.focus();
 			return;
 		}
 
-		if ((frmOutputDef.txtEmailGroup.value == "")
-				&& (frmOutputDef.cmdEmailGroup.disabled == false)) {
+		if ((frmOutputDef.chkDestination3.checked)
+				&& (frmOutputDef.txtEmailGroup.value == "")) {
 			OpenHR.messageBox("You must select an email group", 48, "Output Options");
 			window.focus();
 			return;
@@ -531,6 +528,9 @@
 			return;
 		}
 
+		// If no export format is chosen, default to 'Preview on screen', i.e. direct to Excel.
+		frmOutputDef.chkDestination1.checked = !(frmOutputDef.chkDestination2.checked || frmOutputDef.chkDestination3.checked);
+		
 		window.ShowWaitFrame("Outputting...");
 
 		//  The doExport function is where it all continues
