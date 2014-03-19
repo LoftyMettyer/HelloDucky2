@@ -370,7 +370,8 @@
 			Dim sFooterText As String = ""
 			Dim isVisibleString As String = ""
 			Dim cellAttributes As String = ""
-			Dim summaryType As String = ""
+			Dim jsSummaryType As New StringBuilder
+			Dim jsSummaryFormatter As String = ""
 			Dim alignment As String = ""
 			
 			colNamesArray.Append(String.Format("{0}'{1}'", IIf(colNamesArray.Length > 0, ",", ""), sColumnHeading))
@@ -401,33 +402,75 @@
 		
 			' Count, Sum, Average functions.
 			Dim decimalPlaces As Integer = NullSafeInteger(objRow.Item("dp"))
-
+		
 			If CBool(objRow.Item("Avge")) Then
-				summaryType = ", summaryType: ""avg"", summaryTpl: ""Sub Average: {0}"""
+				jsSummaryFormatter = String.Format("'Sub Average: ' + cellval.totalAvge.toFixed({0})", decimalPlaces)
 				jsFooterFunction &= String.Format("var avge_{0} = Number({1}).toFixed({2});", sCodeSafeColumnHeading, objReport.mrstCustomReportsOutput.Compute("Avg([" & sColumnHeading & "])", ""), decimalPlaces)
 				sFooterText = String.Format("'Average: ' + avge_{0}", sCodeSafeColumnHeading)
 			End If
 			If CBool(objRow.Item("Cnt")) Then
-				summaryType = ", summaryType: ""count"", summaryTpl: ""Sub Count: {0}"""
+				jsSummaryFormatter &= String.Format("{0}'Sub Count: ' + cellval.totalCount", IIf(jsSummaryFormatter.Length > 0, " + '<br/>' + ", ""))
 				jsFooterFunction &= String.Format("var cnt_{1} = {0};", objReport.mrstCustomReportsOutput.Compute("Count([" & sColumnHeading & "])", ""), sCodeSafeColumnHeading)
 				sFooterText &= String.Format("{0}'Count: ' + cnt_{1}", IIf(sFooterText.Length > 0, "+ '<br/>' + ", ""), sCodeSafeColumnHeading)
 			End If
 			If CBool(objRow.Item("Tot")) Then
-				summaryType = ", summaryType: ""sum"", summaryTpl: ""Sub Total: {0}"""
+				jsSummaryFormatter &= String.Format("{0}'Sub Total: ' + cellval.totalSum.toFixed({1})", IIf(jsSummaryFormatter.Length > 0, " + '<br/>' + ", ""), decimalPlaces)
 				jsFooterFunction &= String.Format("var sum_{0} = Number({1}).toFixed({2});", sCodeSafeColumnHeading, objReport.mrstCustomReportsOutput.Compute("Sum([" & sColumnHeading & "])", ""), decimalPlaces)
 				sFooterText &= String.Format("{0}'Total: ' + sum_{1}", IIf(sFooterText.Length > 0, "+ '<br/>' + ", ""), sCodeSafeColumnHeading)
 			End If
 		
-			If CBool(objRow.Item("IsNumeric")) And Not CBool(objRow.Item("GroupWithNextColumn")) Then alignment = ", align: ""right"", sorttype: ""integer"", formatter: ""number"", formatoptions:{ thousandsSeparator: """", defaultValue: """", decimalPlaces: " & decimalPlaces & "}"
+			If jsSummaryFormatter.Length > 0 Then
+				jsSummaryFormatter = ", formatter: function (cellval, opts, rwdat, act) {if (opts.rowId === '') {return '<span>' + " & jsSummaryFormatter & " + '</span>';} else {return $.fn.fmatter("
+				
+				If CBool(objRow.Item("IsNumeric")) Then
+					jsSummaryFormatter &= "'number', cellval, opts, rwdat, act);}},"
+				ElseIf objReport.mrstCustomReportsOutput.Columns(iColIndex).DataType = System.Type.GetType("System.DateTime") Then
+					jsSummaryFormatter &= "'date', cellval, opts, rwdat, act);}},"
+				ElseIf objReport.mrstCustomReportsOutput.Columns(iColIndex).DataType = System.Type.GetType("System.Boolean") Then
+					jsSummaryFormatter &= "'checkbox', cellval, opts, rwdat, act);}},"
+				Else
+					jsSummaryFormatter &= "'string', cellval, opts, rwdat, act);}},"
+				End If
+
+				' append functions for the footer.
+				jsSummaryType.Append("summaryType: function (val, name, record) {")
+				jsSummaryType.Append("if (typeof (val) === 'string') {")
+				jsSummaryType.Append("val = {totalCount: 0, totalSum: 0, totalAvge: 0};")
+				jsSummaryType.Append("}")
+				jsSummaryType.Append("val.totalCount += 1;")
+				jsSummaryType.Append("if(record[name] > 0) {")
+				jsSummaryType.Append("val.totalSum += parseFloat((record[name]||0));")
+				jsSummaryType.Append("val.totalAvge = val.totalSum / val.totalCount;")
+				jsSummaryType.Append("}")
+				jsSummaryType.Append("return val;")
+				jsSummaryType.Append("}")
+				
+				
+			End If
+			
+			If CBool(objRow.Item("IsNumeric")) And Not CBool(objRow.Item("GroupWithNextColumn")) Then
+				If jsSummaryFormatter.Length = 0 Then
+					alignment = ", formatter: ""number"""
+				End If
+				alignment &= ", formatoptions:{ thousandsSeparator: """", defaultValue: """", decimalPlaces: " & decimalPlaces & "}"
+				alignment &= ", align: ""right"", sorttype: ""integer"""
+			End If
 					
 			' This is a Date Column - format as such
 			If objReport.mrstCustomReportsOutput.Columns(iColIndex).DataType = System.Type.GetType("System.DateTime") Then
-				alignment = ", align: ""left"", sorttype: ""date"", formatter: ""date"", formatoptions: {srcformat: ""d/m/Y"", newformat: ""d/m/Y""}"
+				If jsSummaryFormatter.Length = 0 Then
+					alignment = ", formatter: ""date"""
+				End If
+				alignment &= ", formatoptions: {srcformat: ""d/m/Y"", newformat: ""d/m/Y""}"
+				alignment &= ", align: ""left"", sorttype: ""date"""
 			End If
 		
 			' This is a Logic Column - format as such
 			If objReport.mrstCustomReportsOutput.Columns(iColIndex).DataType = System.Type.GetType("System.Boolean") Then
-				alignment = ", align: ""center"", formatter: ""checkbox"""
+				If jsSummaryFormatter.Length = 0 Then
+					alignment = ", formatter: ""checkbox"""
+				End If
+				alignment &= ", align: ""center"""
 			End If
 
 			' Footer row required?
@@ -435,7 +478,7 @@
 			If sFooterText.Length > 0 Then jsFooterFunction &= String.Format("jQuery('#grdReport').jqGrid('footerData', 'set', {{ '{0}': {1} }}, false);", sColumnHeading, sFooterText)
 			
 			' add column info to the colModel array.
-			colModelArray.Append(String.Format("{{name:'{0}',index:'{0}', width: 100{1}{2}{3}{4}}},", sColumnHeading, isVisibleString, cellAttributes, summaryType, alignment))
+			colModelArray.Append(String.Format("{{name:'{0}',index:'{0}', width: 100{1}{2}{3}{4}{5}}},", sColumnHeading, isVisibleString, cellAttributes, jsSummaryFormatter, jsSummaryType.ToString(), alignment))
 		
 			' set Group With Next flag.
 			bGroupWithNext = CBool(objRow.Item("GroupWithNextColumn"))
@@ -449,7 +492,7 @@
 		
 		Next
 	
-		If bGrouping Then			
+		If bGrouping Then
 			sGroupingParams = ",grouping: true," & _
 		"groupingView : {groupField : [" & sGroupFieldList & "]," & _
 		"groupColumnShow : [" & sGroupColumnShowList & "]," & _
@@ -471,7 +514,7 @@
 		' Now for the DATA for jqGrid...
 		Dim colData As New StringBuilder
 	
-		Dim dv As DataView = objReport.mrstCustomReportsOutput.DefaultView		
+		Dim dv As DataView = objReport.mrstCustomReportsOutput.DefaultView
 		
 		' No multi-column grouping in current version of jqGrid, so sort on dataview
 		If sSortString.Length > 0 Then dv.Sort = sSortString
@@ -635,7 +678,7 @@ End If
 	var ShrinkToFit = false;
 	var gridWidth;
 	var gridHeight;
-	
+
 	//Get count of visible columns
 	var iVisibleCount = 0;
 	for (var iArrayPos = 0; iArrayPos < g_colModelArray.length; iArrayPos++) {
@@ -647,7 +690,7 @@ End If
 		try {
 			gridWidth = $('#reportworkframe').width();
 			gridHeight = $('#reportworkframe').height() - 100;
-		} catch(e) {
+		} catch (e) {
 			gridWidth = 'auto';
 			gridHeight = 'auto';
 		}
@@ -658,7 +701,7 @@ End If
 		gridWidth = 770;
 		gridHeight = 390;
 	}
-	
+
 
 
 	jQuery("#grdReport").jqGrid({
@@ -670,8 +713,8 @@ End If
 		colModel: g_colModelArray,
 		data: g_colData,
 		ignoreCase: true,
-		rowNum: 200000		
-			<%=sGroupingParams%>,
+		rowNum: 200000
+		<%=sGroupingParams%>,
 		loadComplete: function () {
 			<%=jsFooterFunction%>;
 			<%=jsSrvFunction.ToString()%>;
@@ -686,15 +729,15 @@ End If
 		$('#gview_grdReport tr.jqgrow td').css('vertical-align', 'top'); //float text to top, in case of multi-line cells
 		$('#gview_grdReport .s-ico span').css('display', 'none'); //hide the sort order icons - they don't tie in to the dataview model.
 		$('#gview_grdReport tr.footrow td').css('vertical-align', 'top'); //float text to top, in case of multi-line footers
-		<%if objReport.mblnCustomReportsSummaryReport Then%>
+		<%If objReport.mblnCustomReportsSummaryReport Then%>
 		$('#gview_grdReport .tree-wrap-ltr').css('display', 'none');	//hide the expand/retract node for summary reports.
 		<%End If%>
 	}
 
 	if (menu_isSSIMode()) $('#gbox_grdReport').css('margin', '0 auto'); //center the report in self-service screen.	
-	
 
-	<%end if%>
+
+	<%End If%>
 	
 </script>
 
