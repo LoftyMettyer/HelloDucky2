@@ -1126,6 +1126,7 @@
 <div class="dropdownlinks">
 	<ul class="dropdownlinkseparatorframe" id="dropdownlinkseparatorframe_<%=iSeparatorNum %>">
 		<li class="dropdownlink-displaytype">
+			<%If (Model.NavigationLinks.FindAll(Function(n) n.LinkType = LinkType.DropDown).Count + objNavigation.GetNavigationLinks(False, LinkType.DropDown).Count) > 0 Then%>
 			<p class="dropdownlinkseparator">Dropdown links:</p>
 			<div class="gridster dropdownlinkcontent" id="gridster_DropdownLinks">
 				<ul class="DropDownListMenu">
@@ -1272,6 +1273,7 @@
 				</ul>
 				<a class="DropLinkGoText" style="text-decoration: none; margin-left: 10px;" href="#" onclick="goDropLink()">Go...</a>
 			</div>
+		  <%End If%>
 		</li>
 
 	</ul>
