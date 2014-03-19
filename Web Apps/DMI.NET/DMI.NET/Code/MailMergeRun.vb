@@ -76,12 +76,21 @@ Namespace Code
 
 			Try
 
+				Dim objTemplate = CType(HttpContext.Current.Session("MailMerge_Template"), Stream)
+
+				If objTemplate Is Nothing Then
+					Errors.Add("No template file selected")
+					Return False
+				End If
+
+				objTemplate.Position = 0
+
 				mailClient = New Aspose.Email.Mail.SmtpClient(ApplicationSettings.SMTP_Host, ApplicationSettings.SMTP_Port)
 
 				objOptions.MessageFormat = MessageFormat.Mht
 
 				For Each objRow As DataRow In MergeData.Rows
-					doc = New Document(TemplateName)
+					doc = New Document(objTemplate)
 					doc.MailMerge.Execute(objRow)
 					objStream = New MemoryStream()
 
