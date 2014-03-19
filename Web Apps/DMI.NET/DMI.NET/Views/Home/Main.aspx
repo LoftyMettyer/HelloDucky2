@@ -111,20 +111,11 @@
 						
 
 						//final resize of the dashboard - for tiles, ensure width is sufficient
-						if (window.currentLayout == 'tiles') {
-							var pwfswidth = Number($('.pendingworkflowsframe').css('width').replace('px', ''));
-							var hlwidth = Number(document.querySelector('.hypertextlinks').offsetWidth);
-							var buttonwidth = Number($('.linkspagebutton').css('width').replace('px', ''));
-							if ((pwfswidth > 0) && (hlwidth > 0) && (buttonwidth > 0)) {
-								var requiredWidth = pwfswidth + hlwidth + buttonwidth + 300 + 300;								
-								requiredWidth += 'px';								
-								$('.tileContent').css('width', requiredWidth);
-							}
-						}
+						resizeTileContent();	//site.master function.
 
 					},
 					error: function (req, status, errorObj) {
-						debugger;
+						
 					}
 				});
 			} else {

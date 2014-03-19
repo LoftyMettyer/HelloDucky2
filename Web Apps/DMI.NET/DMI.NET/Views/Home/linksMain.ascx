@@ -1188,8 +1188,8 @@
 								iColNum += 1
 								iRowNum = 1%>
 					<script type="text/javascript">
-						$("#dropdownlinksseparatorframe<%=iSeparatorNum %>").removeClass("cols<%=iColNum-1 %>");
-						$("#dropdownlinksseparatorframe<%=iSeparatorNum %>").addClass("cols<%=iColNum %>");
+						$("#dropdownlinkseparatorframe_<%=iSeparatorNum %>").removeClass("cols<%=iColNum-1 %>");
+						$("#dropdownlinkseparatorframe_<%=iSeparatorNum %>").addClass("cols<%=iColNum %>");
 					</script>
 					<%End If%>
 					<li class="dropdownlinktext <%=sTileColourClass%>" data-col="<%=iColNum %>" data-row="<%=iRowNum %>" data-sizex="1"
@@ -1249,8 +1249,8 @@
 							iRowNum = 1
 						%>
 						<script type="text/javascript">
-							$("#dropdownlinksseparatorframe_<%=iSeparatorNum %>").removeClass("cols<%=iColNum-1 %>");
-							$("#dropdownlinksseparatorframe_<%=iSeparatorNum %>").addClass("cols<%=iColNum %>");
+							$("#dropdownlinkseparatorframe_<%=iSeparatorNum %>").removeClass("cols<%=iColNum-1 %>");
+							$("#dropdownlinkseparatorframe_<%=iSeparatorNum %>").addClass("cols<%=iColNum %>");
 						</script>
 						<%End If%>
 					<li class="dropdownlinktext Colour4" data-col="<%=iColNum %>" data-row="<%=iRowNum %>" data-sizex="1"
