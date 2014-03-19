@@ -50,7 +50,7 @@
 					CancelLookup();
 				}
 			});
-
+		
 			// Set focus onto one of the form controls. 
 			// NB. This needs to be done before making any reference to the grid
 			frmLookupFindForm.cmdCancel.focus();
@@ -278,6 +278,8 @@
 	function ssOleDBGrid_dblClick() {
 		SelectLookup();
 	}
+	
+	$("#ssOleDBGrid").jqGrid('setGridHeight', $("#lookupFindGridRow").height() - 50);
 </script>
 
 <script src="<%: Url.LatestContent("~/Scripts/ctl_SetStyles.js")%>" type="text/javascript"></script>
@@ -314,7 +316,7 @@
 										<td height="10">
 											<table width="100%" class="invisible" cellspacing="0" cellpadding="0">
 												<tr>
-													<td width="5%">View : </td>
+													<td style="width: 5%;white-space: nowrap">View : </td>
 													<td width="20%">
 														<select id="selectView" name="selectView" class="combo" style="HEIGHT: 22px; WIDTH: 200px">
 															<%
@@ -373,8 +375,7 @@
 													</td>
 													<td  width="5%">
 													</td>
-													<td style="text-align: right; width:5%">Order :
-													</td>
+													<td style="width: 5%;white-space: nowrap">Order : </td>
 													<td width="5%">
 													</td>
 													<td width="20%">
@@ -424,34 +425,17 @@
 					</table>
 				</div>
 				<%End If 'if fIsLookupTable then%>
-				<div id="lookupFindGridRow" style="height: <%If fIsLookupTable Then%>55%<%Else%>55%<%End If%>; margin-bottom: 99px;">
-					<table class="outline" style="width: 100%;" id="ssOleDBGrid"></table>
-					<div id="ssOLEDBPager"></div>					
+				<div id="lookupFindGridRow">
+					<table class="outline" style="width: 100%" id="ssOleDBGrid"></table>
+					<div id="ssOLEDBPager" style=""></div>
 				</div>
-				<div id="row3">
-					<table width="100%" class="invisible" cellspacing="0" cellpadding="0">
-						<tr>
-							<td colspan="6"></td>
-						</tr>
-						<tr>
-							<td></td>
-							<td width="10">
-								<input id="cmdSelectLookup" name="cmdSelectLookup" type="button" value="Select" style="WIDTH: 75px" width="75" class="btn"
-									onclick="SelectLookup()" />
-							</td>
-							<td width="40"></td>
-							<td width="10">
-								<input id="cmdClearLookup" name="cmdClearLookup" type="button" value="Clear" style="WIDTH: 75px" width="75" class="btn"
-									onclick="ClearLookup()" />
-							</td>
-							<td width="40"></td>
-							<td width="10">
-								<input id="cmdCancel" name="cmdCancel" type="button" value="Cancel" style="WIDTH: 75px" width="75" class="btn"
-									onclick="CancelLookup()" />
-							</td>
-						</tr>
-					</table>
+
+				<div id="row3" style="text-align: right; padding-top: 20px;">
+					<input id="cmdSelectLookup" name="cmdSelectLookup" type="button" value="Select" style="WIDTH: 75px" class="btn" onclick="SelectLookup()" />
+					<input id="cmdClearLookup" name="cmdClearLookup" type="button" value="Clear" style="WIDTH: 75px" class="btn" onclick="ClearLookup()" />
+					<input id="cmdCancel" name="cmdCancel" type="button" value="Cancel" style="WIDTH: 75px" class="btn" onclick="CancelLookup()" />
 				</div>
+
 			</div>
 		</div>
 
