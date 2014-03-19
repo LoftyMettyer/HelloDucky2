@@ -310,14 +310,23 @@
 		trDetails2.style.display = sDisplay;
 	}
 	
-	function updateViews(isKeyboardVisible) {		
-		$('.header-banner').toggle();
-		$('.ui-widget-header').toggle();
-		$('.loginframetheme img').toggle();
-		$('.loginframetheme img').toggle();
-		$('.verticalpadding200').toggle();
-		$('.loginframetheme img').toggle();		
-	}	
+	function updateViews(isKeyboardVisible) {
+		if (isKeyboardVisible) {
+			$('.header-banner').hide();
+			$('.ui-widget-header').hide();
+			$('.loginframetheme img').hide();
+			$('.loginframetheme img').hide();
+			$('.verticalpadding200').hide();
+			$('.loginframetheme img').hide();
+		} else {
+			$('.header-banner').show();
+			$('.ui-widget-header').show();
+			$('.loginframetheme img').show();
+			$('.loginframetheme img').show();
+			$('.verticalpadding200').show();
+			$('.loginframetheme img').show();
+		}
+	}
 
 	function toggleChromeIfAndroid() {
 		var is_keyboard = false;
