@@ -523,11 +523,12 @@
 			colData.Append("{")
 			
 			bGroupWithNext = False
+
 			Dim sColumnValue As String = ""
-			Dim sColumnName As String = ""
+			Dim sColumnName As String = ""		
 			
 			For iColIndex = 0 To objRow.ItemArray.Count() - 1
-				Dim objThisColumn As ReportDetailItem = objReport.DisplayColumns(iColIndex)
+				Dim objThisColumn As ReportDetailItem = objReport.DisplayColumns(iColIndex)								
 				
 				If Not bGroupWithNext Then
 					sColumnValue = objRow.Item(iColIndex).ToString()
@@ -535,7 +536,13 @@
 				Else
 					' add next col too.
 					If objRow.Item(iColIndex).ToString().Length > 0 Then
-						sColumnValue &= vbNewLine & objRow.Item(iColIndex).ToString()
+						If objReport.mrstCustomReportsOutput.Columns(iColIndex).DataType = Type.GetType("System.DateTime") And objRow.Item(iColIndex).ToString().Length > 0 Then
+							' convert date to string, remove the timestamp.
+							Dim dtDate As DateTime = CType(objRow.Item(iColIndex), Date)
+							sColumnValue &= vbNewLine & dtDate.ToShortDateString()
+						Else
+							sColumnValue &= vbNewLine & objRow.Item(iColIndex).ToString()
+						End If
 					End If
 				End If
 
