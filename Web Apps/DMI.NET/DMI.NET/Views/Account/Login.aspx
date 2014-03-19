@@ -52,7 +52,7 @@
 	Session("server") = ""
 	
 	Session("showLoginDetails") = Request.QueryString("Details")
-	Session("isMobileDevice") = Platform.IsMobileDevice()
+	Session("isMobileDevice") = (Platform.IsMobileDevice() = True)
 	
 	
 	'TODO
@@ -310,7 +310,7 @@
 		trDetails2.style.display = sDisplay;
 	}
 	
-	function updateViews(isKeyboardVisible) {
+	function updateViews(isKeyboardVisible) {		
 		if (isKeyboardVisible) {
 			$('.header-banner').hide();
 			$('.ui-widget-header').hide();
@@ -326,7 +326,7 @@
 			$('.verticalpadding200').show();
 			$('.loginframetheme img').show();
 		}
-	}
+	}	
 
 	function toggleChromeIfAndroid() {
 		var is_keyboard = false;

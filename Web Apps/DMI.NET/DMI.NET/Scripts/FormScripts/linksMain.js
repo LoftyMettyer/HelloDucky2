@@ -229,11 +229,13 @@ function goScreen(psScreenInfo) {
 	//window.frames("linksworkframe").location.replace(sDestination);
 }
 
-function goUtility(sUtilityType, sUtilityID, sUtilityName, sUtilityBaseTable) {
-
+function goUtility(sUtilityType, sUtilityID, sUtilityName, sUtilityBaseTable) {	
 	if (!dragged) {
-		//menu_disableMenu();
-
+		//menu_disableMenu();		
+		if ((window.isMobileBrowser) && (sUtilityType == "9")) {
+			//No mailmerges for mobiles - see JIRA 3969
+			return false;
+		}
 
 		if (sUtilityType == "25") {
 			// Workflow

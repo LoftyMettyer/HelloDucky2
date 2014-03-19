@@ -1662,6 +1662,8 @@
 			minWidth: 300
 		});		
 	}
+	//set up window variable for ismobilebrowser.
+	window.isMobileBrowser = '<%=Session("isMobileDevice").ToString().ToLower()%>';
 	
 </script>
 

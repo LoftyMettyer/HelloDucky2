@@ -264,14 +264,14 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 	<script type="text/javascript">		
-		if ((screen.width < 768) || (screen.height < 748)) {			
-			viewport = document.querySelector("meta[name=viewport]");
-			viewport.setAttribute('content', 'width=460;');
-			window.isMobileBrowser = true;		
-		}
-		else {
-			window.isMobileBrowser = false;
-		}
+		//if ((screen.width < 768) || (screen.height < 748)) {			
+		//	viewport = document.querySelector("meta[name=viewport]");
+		//	viewport.setAttribute('content', 'width=460;');
+		//	window.isMobileBrowser = true;		
+		//}
+		//else {
+		//	window.isMobileBrowser = false;
+		//}
 		
 		function getCookie(cName) {
 			var i, x, y, arrCookies = document.cookie.split(";");
