@@ -13,9 +13,11 @@
 	}
 
 	function sessionTimeout() {
+
 		var frmMessage = OpenHR.getForm("divPollMessage", "frmPollMessage");
 
 		if (frmMessage != undefined) {
+			frmMessage.action = "TimedOut";
 			frmMessage.txtIsSessionTiemout = true;
 			OpenHR.submitForm(frmMessage, "divPollMessage");
 		}

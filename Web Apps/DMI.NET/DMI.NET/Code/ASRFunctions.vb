@@ -12,7 +12,7 @@ Public Module ASRFunctions
 		Dim objSession As SessionInfo = CType(HttpContext.Current.Session("SessionContext"), SessionInfo)
 
 		Try
-			objSession.TrackUser(False)
+			objSession.TrackUser(TrackType.LogOff)
 
 		Catch ex As Exception
 			Throw

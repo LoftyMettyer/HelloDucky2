@@ -1,6 +1,7 @@
 ﻿Imports System.IO
 Imports System.Drawing
 Imports DMI.NET.Code
+Imports HR.Intranet.Server.Enums
 Imports HR.Intranet.Server
 Imports System.Data.SqlClient
 Imports System.Reflection
@@ -280,7 +281,7 @@ Namespace Controllers
 				End If
 
 				' Track and audit that we've logged in
-				objServerSession.TrackUser(True)
+				objServerSession.TrackUser(TrackType.login)
 
 				' User is allowed into OpenHR, now populate some metadata
 				objServerSession.RegionalSettings = Platform.GetRegionalSettings
@@ -519,7 +520,7 @@ Namespace Controllers
 
 			Try
 				Dim objServerSession As SessionInfo = Session("sessionContext")
-				objServerSession.TrackUser(False)
+				objServerSession.TrackUser(TrackType.LogOff)
 
 				Session("avPrimaryMenuInfo") = Nothing
 				Session("avSubMenuInfo") = Nothing
@@ -528,6 +529,7 @@ Namespace Controllers
 				Session("avTableHistoryMenuInfo") = Nothing
 
 				objServerSession.ActiveConnections -= 1
+				Session("sessionContext") = Nothing
 
 			Catch ex As Exception
 

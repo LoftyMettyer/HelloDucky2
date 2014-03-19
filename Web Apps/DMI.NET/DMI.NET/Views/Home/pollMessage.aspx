@@ -26,8 +26,8 @@
 
 <script type="text/javascript">
 	
-	function pollMessage_logout() {
-		menu_logoffIntranet();
+	function pollmessage_logout() {
+		window.location.href = "Main";
 		return false;
 	}
 
@@ -40,7 +40,7 @@
 		$("#divPollMessage").dialog("open");
 	<% end if %>
 
-	$("#divPollMessage").dialog('option', 'title', '<%=Model.Caption%>' );
+	$("#divPollMessage").dialog({ dialogClass: 'no-close' }, 'option', 'title', '<%=Model.Caption%>' );
 
 </script>
 

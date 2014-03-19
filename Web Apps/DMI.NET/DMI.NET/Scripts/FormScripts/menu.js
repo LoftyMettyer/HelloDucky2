@@ -292,7 +292,7 @@ function menu_abMainMenu_DataReady() {
 }
 
 function menu_abMainMenu_Click(pTool) {
-	
+
 	//Reset the idle timeout.
 	window.clearTimeout(window.timeoutHandle);
 	window.timeoutHandle = window.setTimeout('OpenHR.SessionTimeout();', window.timeoutMs);
@@ -306,6 +306,9 @@ function menu_abMainMenu_Click(pTool) {
 
 
 function menu_MenuClick(sTool) {
+
+	window.clearTimeout(window.timeoutHandle);
+	window.timeoutHandle = window.setTimeout('OpenHR.SessionTimeout();', window.timeoutMs);
 
 	//ignore clicks from 'fixed links' which have no 'id'.
 	if (!sTool) return false;
@@ -3377,15 +3380,6 @@ function menu_pausecomp(millis) {
 	//		}
 	//	}
 }
-
-function menu_sessionTimeout() {
-
-
-
-	window.location.href = window.ROOT + "Home/sessionTimeout";
-
-}
-
 
 	function menu_logoffIntranet() {
 	//	if (saveChanges("LOGOFF", true, false) != 2) { // 2 = vbCancel

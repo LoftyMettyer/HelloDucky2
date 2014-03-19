@@ -986,3 +986,5 @@ input[type=button].Embedded, input[type=button].Linked {
 .ui-search-toolbar input::-ms-clear {
 	display: none;
 }
+
+.no-close .ui-dialog-titlebar-close {display: none }

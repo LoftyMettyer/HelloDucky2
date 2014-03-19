@@ -2253,6 +2253,36 @@ Namespace Controllers
 
 		End Function
 
+		Function TimedOut() As ActionResult
+
+			Dim objMessageModel As New PollMessageModel With { _
+				.Body = "Your session has timed out. You will need to login again to continue", _
+				.IsTimedOut = True}
+
+			Try
+				Session("ErrorText") = Nothing
+
+				Dim objServerSession As SessionInfo = Session("sessionContext")
+				objServerSession.TrackUser(TrackType.Timedout)
+
+				Session("avPrimaryMenuInfo") = Nothing
+				Session("avSubMenuInfo") = Nothing
+				Session("avQuickEntryMenuInfo") = Nothing
+				Session("avTableMenuInfo") = Nothing
+				Session("avTableHistoryMenuInfo") = Nothing
+
+				objServerSession.ActiveConnections -= 1
+				Session("sessionContext") = Nothing
+
+			Catch ex As Exception
+				Throw
+
+			End Try
+
+			Return PartialView("pollMessage", objMessageModel)
+
+		End Function
+
 		Function pollMessage() As ActionResult
 
 			Dim objMessageModel As New PollMessageModel With {.Body = ""}

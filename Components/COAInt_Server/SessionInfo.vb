@@ -157,10 +157,11 @@ Public Class SessionInfo
 
 	End Sub
 
-	Public Sub TrackUser(IsLogin As Boolean)
+	Public Sub TrackUser(Action As TrackType)
 
 		Dim objDataAccess As New clsDataAccess(_objLogin)
 		Dim sMachineName As String
+		Dim bIsLogin As Boolean
 
 		Try
 			Dim objUserMachine = Net.Dns.GetHostEntry(HttpContext.Current.Request.UserHostName)
@@ -174,8 +175,10 @@ Public Class SessionInfo
 		Try
 			Dim prmLoginTime = New SqlParameter("LoginTime", SqlDbType.DateTime) With {.Direction = ParameterDirection.Output}
 
+			bIsLogin = (Action = TrackType.Login)
+
 			objDataAccess.ExecuteSP("spASRTrackSession" _
-					, New SqlParameter("LoggingIn", SqlDbType.Bit) With {.Value = IsLogin} _
+					, New SqlParameter("LoggingIn", SqlDbType.Bit) With {.Value = bIsLogin} _
 					, New SqlParameter("Application", SqlDbType.VarChar, 255) With {.Value = "OpenHR Web"} _
 					, New SqlParameter("ClientMachine", SqlDbType.VarChar, 255) With {.Value = sMachineName} _
 					, prmLoginTime)
@@ -570,3 +573,4 @@ Public Class SessionInfo
 #End Region
 
 End Class
+
