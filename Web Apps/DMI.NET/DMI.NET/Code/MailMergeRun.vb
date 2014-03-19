@@ -48,6 +48,10 @@ Namespace Code
 			If TypeOf (args.FieldValue) Is DateTime Then
 				Dim sLocaleFormat = HttpContext.Current.Session("LocaleDateFormat").ToString()
 				args.Text = String.Format("{0}", CDate(args.FieldValue).ToString(sLocaleFormat))
+			ElseIf TypeOf (args.FieldValue) Is Boolean Then
+				args.Text = IIf(CBool(args.FieldValue), "Y", "N").ToString()
+
+
 			End If
 
 		End Sub

@@ -531,7 +531,7 @@ LocalErr:
 								Exit Function
 
 							Else
-								SQLAddCalculation(CInt(objRow("ColExpID")), objRow("Table").ToString() & objRow("Name").ToString().ToString.Replace(" ", "_"))
+								SQLAddCalculation(CInt(objRow("ColExpID")), objRow("Table").ToString() & objRow("Name").ToString().ToString.Replace(" ", "_"), CInt(objRow("Size")), CInt(objRow("Decimals")))
 
 							End If
 
@@ -780,7 +780,7 @@ LocalErr:
 
 	End Sub
 
-	Private Sub SQLAddCalculation(lngExpID As Integer, strColCode As String)
+	Private Sub SQLAddCalculation(lngExpID As Integer, strColCode As String, Size As Integer, Decimals As Integer)
 
 		Dim lngCalcViews(,) As Integer
 		Dim objCalcExpr As clsExprExpression
@@ -800,18 +800,17 @@ LocalErr:
 		End If
 
 		If fOK = False Then
-			'mstrStatusMessage = "You do not have permission to run a calculation contained in this mail merge."
 			mstrStatusMessage = "You do not have permission to use the '" & Trim(objCalcExpr.Name) & "' calculation."
-			'UPGRADE_NOTE: Object objCalcExpr may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-			objCalcExpr = Nothing
 			Exit Sub
 		End If
-		'UPGRADE_NOTE: Object objCalcExpr may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		objCalcExpr = Nothing
 
-
-		mstrSQLSelect = mstrSQLSelect & IIf(mstrSQLSelect <> vbNullString, ", ", vbNullString) & String.Format("{0} AS [{1}]", sCalcCode, strColCode)
-
+		If objCalcExpr.ReturnType = ExpressionValueTypes.giEXPRVALUE_NUMERIC And (Decimals > 0 Or Size > 0) Then
+			mstrSQLSelect = mstrSQLSelect & IIf(mstrSQLSelect <> vbNullString, ", ", vbNullString) & String.Format("CAST({0} AS DECIMAL({2},{3})) AS [{1}]", sCalcCode, strColCode, Size, Decimals)
+		ElseIf objCalcExpr.ReturnType = ExpressionValueTypes.giEXPRVALUE_CHARACTER And Size > 0 Then
+			mstrSQLSelect = mstrSQLSelect & IIf(mstrSQLSelect <> vbNullString, ", ", vbNullString) & String.Format("SUBSTRING({0},1,{2}) AS [{1}]", sCalcCode, strColCode, Size)
+		Else
+			mstrSQLSelect = mstrSQLSelect & IIf(mstrSQLSelect <> vbNullString, ", ", vbNullString) & String.Format("{0} AS [{1}]", sCalcCode, strColCode)
+		End If
 
 
 		' Add the required views to the JOIN code.
