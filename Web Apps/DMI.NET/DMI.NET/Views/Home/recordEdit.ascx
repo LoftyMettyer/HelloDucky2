@@ -191,7 +191,8 @@
 									min: minvalue,
 									max: maxvalue,
 									step: increment,
-									disabled: disabledflag
+									disabled: disabledflag,
+									spin: function (event, ui) { enableSaveButton(); }
 								}).on('input', function () {
 									var val = this.value,
 										$this = $(this),
