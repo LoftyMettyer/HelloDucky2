@@ -15,7 +15,7 @@
 <script type="text/javascript">
 	function emptyoption_onload() {		
 		var fNoAction;
-		var sCurrentWorkFramePage = $("#workframe").attr("data-framesource").replace(".asp", ""); //OpenHR.currentWorkPage();
+		var sCurrentWorkFramePage = $("#workframe").attr("data-framesource"); //OpenHR.currentWorkPage();
 		var frmMenu = OpenHR.getForm("menuframe", "frmMenuInfo");
 
 		// Do nothing if the menu controls are not yet instantiated.

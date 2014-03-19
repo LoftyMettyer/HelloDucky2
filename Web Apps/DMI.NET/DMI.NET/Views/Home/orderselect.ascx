@@ -167,7 +167,7 @@
 
 
 	function currentWorkFramePage() {
-		var sCurrentPage = $("#workframe").attr("data-framesource").replace(".asp", "");
+		var sCurrentPage = $("#workframe").attr("data-framesource");
 		return (sCurrentPage);
 	}
 

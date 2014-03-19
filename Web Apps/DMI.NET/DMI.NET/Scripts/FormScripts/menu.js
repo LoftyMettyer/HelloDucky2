@@ -292,7 +292,7 @@ function menu_abMainMenu_DataReady() {
 }
 
 function menu_abMainMenu_Click(pTool) {
-
+	
 	//Reset the idle timeout.
 	window.clearTimeout(window.timeoutHandle);
 	window.timeoutHandle = window.setTimeout('OpenHR.SessionTimeout();', window.timeoutMs);
@@ -4168,10 +4168,10 @@ function menu_loadSelectOrderFilter(psType) {
 
 	if (!($("#workframe").css('display') == 'none')) {
 	//Work frame is in view.
-	sCurrentPage = $("#workframe").attr("data-framesource").replace(".asp", "");
+		sCurrentPage = $("#workframe").attr("data-framesource");
 } else {
 	//Option frame is in view.
-	sCurrentPage = $("#optionframe").attr("data-framesource").replace(".asp", "");
+		sCurrentPage = $("#optionframe").attr("data-framesource");
 }
 
 	sCurrentPage = sCurrentPage.toUpperCase();

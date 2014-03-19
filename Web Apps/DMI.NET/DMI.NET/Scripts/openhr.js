@@ -381,10 +381,10 @@
 			var sCurrentPage;
 			if (!($("#workframe").css('display') == 'none')) {
 				//Work frame is in view.
-				sCurrentPage = $("#workframe").attr("data-framesource").replace(".asp", "");
+				sCurrentPage = $("#workframe").attr("data-framesource");
 			} else {
 				//Option frame is in view.
-				sCurrentPage = $("#optionframe").attr("data-framesource").replace(".asp", "");
+				sCurrentPage = $("#optionframe").attr("data-framesource");
 			}
 
 			sCurrentPage = sCurrentPage.toUpperCase();

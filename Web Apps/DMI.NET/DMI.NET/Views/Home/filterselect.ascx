@@ -1053,7 +1053,7 @@
 	function currentWorkFramePage() {
 		// Return the current page in the workframeset.
 
-		var sCurrentPage = $("#workframe").attr("data-framesource").replace(".asp", "");
+		var sCurrentPage = $("#workframe").attr("data-framesource");
 
 		//var sCols = window.parent.document.all.item("workframeset").cols;
 

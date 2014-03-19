@@ -818,7 +818,7 @@ Namespace Controllers
 			Session("optionAction") = ""
 
 			' Go to the requested page.
-			Return RedirectToAction(Request.Form("txtGotoPage").Replace(".asp", ""))
+			Return RedirectToAction(Request.Form("txtGotoPage"))
 
 		End Function
 
