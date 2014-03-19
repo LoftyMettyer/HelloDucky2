@@ -72,6 +72,9 @@
 
 <script type="text/javascript">
 
+
+
+
 	function raiseError(sErrorDesc, fok, fcancelled) {
 		var frmError = document.getElementById("frmError");
 		frmError.txtUtilTypeDesc.value = window.frames("top").frmPopup.txtUtilTypeDesc.value;
@@ -124,7 +127,8 @@
 		$("#cmdCancel").removeClass('ui-state-focus');
 		$("#cmdCancel").button({ disabled: true });
 		$("#cmdOutput").show();
-		$("#cmdOutput").button({ disabled: false });
+		var isMobileDevice = ('<%=Session("isMobileDevice")%>' == 'True');
+		$("#cmdOutput").prop('disabled', isMobileDevice );
 
 		if (menu_isSSIMode() == true) {
 			$("#cmdClose").hide();  // Don't show the Close button in SSI
@@ -316,6 +320,9 @@ End If
 		$("#cmdCancel").hide();
 	}
 
+
+	var isMobileDevice = ('<%=Session("isMobileDevice")%>' == 'True');
+	$('#cmdOutput').prop('disabled', isMobileDevice);
 
 	$(".popup").dialog("option", "position", ['center', 'center']); //Center popup in screen
 
