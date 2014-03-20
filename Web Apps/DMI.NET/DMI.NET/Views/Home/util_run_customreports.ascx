@@ -355,6 +355,7 @@
 		Dim sGroupTextList As String = ""
 		Dim bFooter As Boolean = False
 		Dim sSortString As String = ""
+		Dim arrSortString(objReport.mrstCustomReportsDetails.Rows.Count - 1) As String
 		Dim iColIndex As Integer = 0
 		Dim sGroupCollapse As String = "false"
 		
@@ -485,13 +486,19 @@
 		
 			' Build sortOrder string for dataview when binding the DATA below..
 			If objRow.Item("SortOrder").ToString().ToUpper() = "ASC" Or objRow.Item("SortOrder").ToString().ToUpper() = "DESC" Then
-				sSortString &= String.Format("{0}{1} {2}", IIf(sSortString.Length > 0, ", ", ""), sColumnHeading, objRow.Item("SortOrder"))
+				Dim iArrayIndex As Integer = CType(objRow.Item("SortOrderSequence"), Integer)
+				arrSortString(iArrayIndex) = String.Format("{0}{1} {2}", IIf(sSortString.Length > 0, ", ", ""), sColumnHeading, objRow.Item("SortOrder"))
 			End If
 			
 			iColIndex += 1
 		
 		Next
-	
+		
+		' build sort string from the ordered array.
+		For Each sortString As String In arrSortString
+			If Not sortString Is Nothing Then sSortString &= String.Format("{0}{1}", IIf(sSortString.Length > 0, ", ", ""), sortString)
+		Next
+		
 		If bGrouping Then
 			sGroupingParams = ",grouping: true," & _
 		"groupingView : {groupField : [" & sGroupFieldList & "]," & _
@@ -525,10 +532,10 @@
 			bGroupWithNext = False
 
 			Dim sColumnValue As String = ""
-			Dim sColumnName As String = ""		
+			Dim sColumnName As String = ""
 			
 			For iColIndex = 0 To objRow.ItemArray.Count() - 1
-				Dim objThisColumn As ReportDetailItem = objReport.DisplayColumns(iColIndex)								
+				Dim objThisColumn As ReportDetailItem = objReport.DisplayColumns(iColIndex)
 				
 				If Not bGroupWithNext Then
 					sColumnValue = objRow.Item(iColIndex).ToString()
