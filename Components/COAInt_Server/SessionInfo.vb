@@ -135,14 +135,21 @@ Public Class SessionInfo
 
 	Public Sub Initialise()
 
-		Tables = Nothing
-		gcoTablePrivileges = Nothing
-		gcolColumnPrivilegesCollection = Nothing
+		Try
+			Tables = Nothing
+			gcoTablePrivileges = Nothing
+			gcolColumnPrivilegesCollection = Nothing
 
-		PopulateMetadata(_objLogin)
-		SetupTablesCollection()
+			PopulateMetadata(_objLogin)
+			SetupTablesCollection()
 
-		ActiveConnections = 1
+			ActiveConnections = 1
+
+		Catch ex As Exception
+			Throw
+
+		End Try
+
 	End Sub
 
 	Public Sub ReadModuleParameters()
