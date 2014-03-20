@@ -78,7 +78,11 @@ Namespace Code
 			Dim objErrorLog As New clsEventLog(CType(context.Session("SessionContext"), SessionInfo).LoginInfo)
 			Dim objDatabase As Database = CType(context.Session("DatabaseFunctions"), Database)
 
+
 			Try
+
+				Dim objWordLicense As New License
+				objWordLicense.SetLicense("Aspose.Words.lic")
 
 				Dim objTemplate = CType(HttpContext.Current.Session("MailMerge_Template"), Stream)
 
@@ -167,6 +171,9 @@ Namespace Code
 		Public Function ExecuteMailMerge(DirectToPrinter As Boolean) As Boolean
 
 			Try
+
+				Dim objWordLicense As New License
+				objWordLicense.SetLicense("Aspose.Words.lic")
 
 				Dim objTemplate = CType(HttpContext.Current.Session("MailMerge_Template"), Stream)
 

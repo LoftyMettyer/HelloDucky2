@@ -1091,6 +1091,8 @@
     <Content Include="Content\fonts\font-awesome\fontawesome-webfont.ttf" />
     <Content Include="Content\fonts\font-awesome\FontAwesome.otf" />
     <Content Include="Database\UpdateScript8.0.sql" />
+    <EmbeddedResource Include="Content\License\Aspose.Cells.lic" />
+    <EmbeddedResource Include="Content\License\Aspose.Words.lic" />
     <None Include="My Project\PublishProfiles\Alpha demo.pubxml" />
     <None Include="My Project\PublishProfiles\Arcade Server %28Vimal%29.pubxml" />
     <None Include="My Project\PublishProfiles\Azure OpenHR NPG.pubxml" />

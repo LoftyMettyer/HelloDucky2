@@ -229,6 +229,9 @@ Namespace ExClientCode
 		Private Sub GetWorkBook(ByRef strWorkbook As String, ByRef strWorksheet As String)
 			Dim lngCount As Integer
 
+			Dim objCellsLicense As New License
+			objCellsLicense.SetLicense("Aspose.Cells.lic")
+
 			If _mblnApplyStyles And _mstrXlTemplate <> "" And Dir(_mstrXlTemplate) <> "" Then
 				If Not IsFileCompatibleWithExcelVersion(_mstrXlTemplate, OfficeVersion) Then
 					_mstrErrorMessage = "Your User Configuration Output Options are set to use a template file which is not compatible with your version of Microsoft Office."

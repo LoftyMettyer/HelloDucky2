@@ -55,6 +55,9 @@ Namespace Code
 			Dim iRangeLength As Integer
 			Dim iLastRangeEnd As Integer
 
+			Dim objCellsLicense As New License
+			objCellsLicense.SetLicense("Aspose.Cells.lic")
+
 			' Why, oh why, does it create a useless first worksheet?
 			objDocument.Worksheets.RemoveAt("Sheet1")
 

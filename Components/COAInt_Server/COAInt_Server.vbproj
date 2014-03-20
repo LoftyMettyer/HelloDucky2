@@ -327,6 +327,10 @@
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="License\Aspose.Cells.lic" />
+    <EmbeddedResource Include="License\Aspose.Words.lic" />
+  </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.VisualBasic.targets" />
   <PropertyGroup>
     <PreBuildEvent>
