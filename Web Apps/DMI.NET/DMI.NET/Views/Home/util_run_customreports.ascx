@@ -487,6 +487,7 @@
 			' Build sortOrder string for dataview when binding the DATA below..
 			If objRow.Item("SortOrder").ToString().ToUpper() = "ASC" Or objRow.Item("SortOrder").ToString().ToUpper() = "DESC" Then
 				Dim iArrayIndex As Integer = CType(objRow.Item("SortOrderSequence"), Integer)
+				If iArrayIndex > 0 Then iArrayIndex -= 1
 				arrSortString(iArrayIndex) = String.Format("{0}{1} {2}", IIf(sSortString.Length > 0, ", ", ""), sColumnHeading, objRow.Item("SortOrder"))
 			End If
 			
