@@ -1132,7 +1132,7 @@ Private Function CreateSP_GetCurrentUsersFromMaster() As Boolean
     "        , p.sid, p.login_time, p.spid, p.uid" & vbNewLine & _
     "   FROM     master..sysprocesses p" & vbNewLine & _
     "   WHERE    p.program_name LIKE 'OpenHR%'" & vbNewLine & _
-    "     AND    p.program_name NOT LIKE 'OpenHR Web'" & vbNewLine & _
+    "     AND    p.program_name NOT LIKE 'OpenHR Web%'" & vbNewLine & _
     "     AND    p.program_name NOT LIKE 'OpenHR Workflow%'" & vbNewLine & _
     "     AND    p.program_name NOT LIKE 'OpenHR Mobile%'" & vbNewLine & _
     "     AND    p.program_name NOT LIKE 'OpenHR Outlook%'" & vbNewLine & _
