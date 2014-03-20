@@ -776,6 +776,7 @@ End If
 	<input type="hidden" id="txtFileName" name="txtFileName" value="<%=objReport.OutputFilename%>">
 	<input type="hidden" id="txtEmailGroupID" name="txtEmailGroupID" value="">
 	<input type="hidden" id="txtUtilType" name="txtUtilType" value="<%=session("utilType")%>">
+	<input type="hidden" id="txtUtilID" name="txtUtilID" value="<%=Session("utilID")%>">
 
 	<iframe name="submit-iframe" style="display: none;"></iframe>
 

@@ -2427,43 +2427,17 @@ Namespace Controllers
 		<HttpPost()>
 		Function util_run_promptedvalues_submit(TemplateFile As HttpPostedFileBase) As ActionResult
 
-			'		Try
-
-			'For Each ob As HttpPostedFile In Request.Files
-
-			'	Dim helloducky = ob
-
-			'Next
-
-
-			'	Dim blah = CType(Request.Form("TemplateFile"), HttpPostedFile)
-
-			'	If Not TemplateFile Is Nothing Then
-			'		' Read input stream from request
-			'		Dim Buffer = New Byte(TemplateFile.InputStream.Length - 1) {}
-			'		Dim offset As Integer = 0
-			'		Dim cnt As Integer = 0
-			'		While (InlineAssignHelper(cnt, TemplateFile.InputStream.Read(Buffer, offset, 10))) > 0
-			'			offset += cnt
-			'		End While
-
-			'		Session("MailMerge_Template") = New MemoryStream(Buffer)
-
-			'	End If
-
-			'Catch ex As Exception
-			'	Session("ErrorTitle") = "File upload"
-			'	Session("ErrorText") = "You could not upload the template file because of the following error:<p>" & FormatError(ex.Message)
-			'End Try
+			Session("utiltype") = Request.Form("utiltype")
+			Session("utilid") = Request.Form("utilid")
+			Session("utilname") = Request.Form("utilname")
+			Session("action") = Request.Form("action")
 
 			Return View("util_run")
 		End Function
 
 		<ValidateInput(False)>
 		Function util_run() As ActionResult
-
 			Session("MailMerge_Template") = Nothing
-
 			Return PartialView()
 		End Function
 
@@ -2479,6 +2453,7 @@ Namespace Controllers
 		Public Function util_run_crosstab_downloadoutput() As FilePathResult
 
 			Dim lngFormat As OutputFormats = Request("txtFormat")
+			Dim sUtilID As String = Request("txtUtilID")
 			Dim blnScreen As Boolean = False
 			Dim blnPrinter As Boolean = Request("txtPrinter")
 			Dim strPrinterName As String = Request("txtPrinterName")
@@ -2496,7 +2471,7 @@ Namespace Controllers
 			Dim lngLoopMax As Long
 
 			Dim objDataAccess As clsDataAccess = CType(Session("DatabaseAccess"), clsDataAccess)
-			Dim objCrossTab As CrossTab = CType(Session("objCrossTab" & Session("UtilID")), CrossTab)
+			Dim objCrossTab As CrossTab = CType(Session("objCrossTab" & sUtilID), CrossTab)
 
 			Dim ClientDLL As New HR.Intranet.Server.clsOutputRun
 			ClientDLL.SessionInfo = CType(Session("SessionContext"), SessionInfo)
@@ -2774,6 +2749,7 @@ Namespace Controllers
 
 			'Session("CT_Mode") = Request("txtMode")
 			Session("OutputOptions_Format") = Request("txtFormat")
+
 			Session("OutputOptions_Screen") = False	' Request("txtScreen")
 			Session("OutputOptions_Printer") = Request("txtPrinter")
 			Session("OutputOptions_PrinterName") = Request("txtPrinterName")

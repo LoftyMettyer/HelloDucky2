@@ -29,10 +29,7 @@
 	' UtilName    - <the name of the utility>
 	' UtilID      - <the id of the utility>
 	' Action      - run/delete
-	Session("utiltype") = Request.Form("utiltype")
-	Session("utilid") = Request.Form("utilid")
-	Session("utilname") = Request.Form("utilname")
-	Session("action") = Request.Form("action")
+
 	' Write the prompted values from the calling form into a session variable.
 	' NB. The prompts are written into an array and this array is written to a 
 	' session variables with the name 'Prompts_<util type>_<util id>.

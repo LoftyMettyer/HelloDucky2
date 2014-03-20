@@ -283,7 +283,7 @@ Public Class Report
 
 	Public ReadOnly Property ReportHasSummaryInfo() As Boolean
 		Get
-			Return mblnReportHasSummaryInfo
+			Return mblnReportHasSummaryInfo And Not mbIsBradfordIndexReport
 		End Get
 	End Property
 

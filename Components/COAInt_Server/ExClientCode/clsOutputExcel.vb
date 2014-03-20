@@ -400,7 +400,7 @@ Namespace ExClientCode
 			lngExcelRow = _mlngDataCurrentRow
 
 			For lngGridRow = 0 To UBound(strArray, 2)
-				For lngGridCol = 0 To colColumns.Count - 1
+				For lngGridCol = 0 To UBound(strArray, 1)
 
 					With _mxlWorkSheet.Cells(lngExcelRow + lngGridRow - 1, lngExcelCol + lngGridCol - 1)
 
@@ -443,30 +443,35 @@ Namespace ExClientCode
 											stlNumeric.Custom = "@"
 										End If
 
-										.SetStyle(stlNumeric)
-										.PutValue(NullSafeInteger(strArray(lngGridCol, lngGridRow)))
+										If IsNumeric(strArray(lngGridCol, lngGridRow)) Then
+											.SetStyle(stlNumeric)
+											.PutValue(NullSafeInteger(strArray(lngGridCol, lngGridRow)))
+										Else
+											.SetStyle(stlGeneral)
+											.PutValue(strArray(lngGridCol, lngGridRow))
+										End If
 
 									End If
 								Case SQLDataType.sqlBoolean
-									.SetStyle(stlGeneral)
-									.PutValue(strArray(lngGridCol, lngGridRow))
+										.SetStyle(stlGeneral)
+										.PutValue(strArray(lngGridCol, lngGridRow))
 								Case SQLDataType.sqlUnknown
-									'Leave it alone! (Required for percentages on Standard Reports)
-									.SetStyle(stlGeneral)
-									.PutValue(strArray(lngGridCol, lngGridRow))
+										'Leave it alone! (Required for percentages on Standard Reports)
+										.SetStyle(stlGeneral)
+										.PutValue(strArray(lngGridCol, lngGridRow))
 								Case SQLDataType.sqlDate
-									.SetStyle(stlDate)
-									'MH20050104 Fault 9695 & 9696
-									'Adding ;@ to the end formats it as "short date" so excel will look at the
-									'regional settings when opening the workbook rather than force it to always
-									'be in the format of the user who created the workbook.
-									.PutValue(strArray(lngGridCol, lngGridRow))
+										.SetStyle(stlDate)
+										'MH20050104 Fault 9695 & 9696
+										'Adding ;@ to the end formats it as "short date" so excel will look at the
+										'regional settings when opening the workbook rather than force it to always
+										'be in the format of the user who created the workbook.
+										.PutValue(strArray(lngGridCol, lngGridRow))
 								Case Else
-									Dim strValue As String = strArray(lngGridCol, lngGridRow).TrimEnd()
-									' If lngGridRow = 0 Then strValue = strValue.Replace("_", " ")
-									If InStr(strValue, vbNewLine) > 0 Then stlGeneral.IsTextWrapped = True
-									.SetStyle(stlGeneral)
-									.PutValue(strArray(lngGridCol, lngGridRow).Replace(vbNewLine, Microsoft.VisualBasic.Constants.vbLf))
+										Dim strValue As String = strArray(lngGridCol, lngGridRow).TrimEnd()
+										' If lngGridRow = 0 Then strValue = strValue.Replace("_", " ")
+										If InStr(strValue, vbNewLine) > 0 Then stlGeneral.IsTextWrapped = True
+										.SetStyle(stlGeneral)
+										.PutValue(strArray(lngGridCol, lngGridRow).Replace(vbNewLine, Microsoft.VisualBasic.Constants.vbLf))
 							End Select
 						End If
 
