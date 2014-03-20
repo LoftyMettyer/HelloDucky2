@@ -149,14 +149,12 @@
         $('input[name^="txt"]').on("input", function () { enableSaveButton(this); });
         $('select[name^="cbo"]').on("change", function () { enableSaveButton(); });
         $('input[name^="chk"]').on("change", function () { enableSaveButton(); });
-
         $("#optionframe").hide();
         $("#workframe").show();
     }
 
     function enableSaveButton() {
-
-        if (definitionChanged()) menu_toolbarEnableItem('mnutoolSaveAdminConfig', true);
+    	        if (definitionChanged()) menu_toolbarEnableItem('mnutoolSaveAdminConfig', true);
     }
     
     
@@ -466,10 +464,12 @@
     }
 
     function restoreDefaults() {
+    	
         var answer;
-
+        
         answer = OpenHR.messageBox("Are you sure you want to restore all default settings?", 36);
         if (answer == 6) {
+        		
             setComboValue("PARENT", 3);
             setComboValue("HISTORY", 3);
             setComboValue("LOOKUP", 3);
@@ -506,7 +506,8 @@
             //frmConfiguration.chkWarn_GlobalAdd.checked = true;
             //frmConfiguration.chkWarn_GlobalDelete.checked = true;
             //frmConfiguration.chkWarn_GlobalUpdate.checked = true;
-            //frmConfiguration.chkWarn_Import.checked = true;
+        	//frmConfiguration.chkWarn_Import.checked = true;
+            enableSaveButton();
         }
     }
 
