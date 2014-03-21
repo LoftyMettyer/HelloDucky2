@@ -42,7 +42,7 @@
 		<table class="aligncenter" style="border: 1px solid; background-color: #ccc">
 			<tr style='font-family: Verdana; font-size: x-small'>
 				<td>
-					<input type="button" value="Redraw chart" onclick="loadChart();" /></td>
+					<%--<input type="button" value="Redraw chart" onclick="loadChart();" /></td>--%>  
 				<td>Chart Type:
 				<select id='popout_selChartType' onchange='loadChart()'>
 					<option value="0" <%=IIf(Model.chartType = 0, "selected", "")%>>3D Bar</option>
