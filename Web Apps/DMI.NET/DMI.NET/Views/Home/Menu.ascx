@@ -4,7 +4,6 @@
 <%@ Import Namespace="HR.Intranet.Server.Structures" %>
 
 <%
-	On Error Resume Next
 	
 	Dim sErrorDescription As String
 	Dim avPrimaryMenuInfo As List(Of MenuInfo)
