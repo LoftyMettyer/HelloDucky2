@@ -361,77 +361,11 @@ Namespace Controllers
 			Session("SupportWebpage") = rowSettings("SupportWebpage")
 			Session("DesktopColour") = rowSettings("DesktopColour")
 
-
-
-			'MH 07/07/2004: Moved from default.asp so background stuff only gets called on
-			'login and not every time you go back to default.asp (as per request from JPD).
-
-			Dim sTempPath As String, sBGImage As String = "", intBGPos As Short = 2, strRepeat As String, strBGPos As String
-
-			Dim objUtilities = New Utilities
-			objUtilities.SessionInfo = CType(Session("SessionContext"), SessionInfo)
-
-			sTempPath = Server.MapPath("~/pictures")
-			sBGImage = objUtilities.GetBackgroundPicture(CStr(sTempPath))
-			intBGPos = objUtilities.GetBackgroundPosition
-
-			objUtilities.OfficeInitialise(CInt(Session("WordVer")), CInt(Session("ExcelVer")))
-			Session("WordFormats") = objUtilities.OfficeGetCommonDialogFormatsWord
-			Session("ExcelFormats") = objUtilities.OfficeGetCommonDialogFormatsExcel
-			Session("WordFormatDefaultIndex") = objUtilities.OfficeGetDefaultIndexWord
-			Session("ExcelFormatDefaultIndex") = objUtilities.OfficeGetDefaultIndexExcel
-			Session("OfficeSaveAsValues") = objUtilities.OfficeGetSaveAsValues
-
-			objUtilities = Nothing
-
-			Select Case intBGPos
-				Case 0
-					'Top Left
-					strRepeat = "no-repeat"
-					strBGPos = "top left"
-
-				Case 1
-					'Top Right
-					strRepeat = "no-repeat"
-					strBGPos = "top right"
-
-				Case 2
-					'Centre
-					strRepeat = "no-repeat"
-					strBGPos = "center"
-
-				Case 3
-					'Left Tile
-					strRepeat = "repeat-y"
-					strBGPos = "left"
-
-				Case 4
-					'Right Tile
-					strRepeat = "repeat-y"
-					strBGPos = "right"
-
-				Case 5
-					'Top Tile
-					strRepeat = "repeat-x"
-					strBGPos = "top"
-
-				Case 6
-					'Bottom Tile
-					strRepeat = "repeat-x"
-					strBGPos = "bottom"
-
-				Case 7
-					'Tile
-					strRepeat = "repeat"
-					strBGPos = "center"
-
-				Case Else
-					'Centre
-					strRepeat = "no-repeat"
-					strBGPos = "center"
-
-			End Select
-
+			Session("WordFormats") = "Word Document (*.docx)|*.docx"
+			Session("ExcelFormats") = "Excel Workbook (*.xlsx)|*.xlsx|Web Page (*.html)|*.html"
+			Session("WordFormatDefaultIndex") = 1
+			Session("ExcelFormatDefaultIndex") = 1
+			Session("OfficeSaveAsValues") = ""
 
 			Dim lngSSIWelcomeColumnID = CLng(objDatabase.GetModuleParameter("MODULE_PERSONNEL", "Param_FieldsSSIWelcome"))
 			If lngSSIWelcomeColumnID <= 0 Then lngSSIWelcomeColumnID = 0
