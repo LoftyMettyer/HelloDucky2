@@ -345,13 +345,6 @@ function menu_MenuClick(sTool) {
 
 	sToolName = sTool;
 	sCurrentWorkPage = OpenHR.currentWorkPage();
-	//	
-	//	frmRefresh = window.parent.frames("refreshframe").document.forms("frmRefresh");
-	//	frmRefresh.submit();
-
-	frmRefresh = OpenHR.getForm("refresh", "frmRefresh");
-	OpenHR.submitForm(frmRefresh);
-
 
 	//Remapping of menu click ID's for menu refactor.
 
