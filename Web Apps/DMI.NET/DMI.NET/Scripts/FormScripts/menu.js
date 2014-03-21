@@ -3502,7 +3502,7 @@ function menu_pausecomp(millis) {
 	
 	if (sCurrentWorkPage == "RECORDEDIT") {
 		if (menu_saveChanges("COPY", true, false) == 0) { // 2 = vbCancel
-			OpenHR.modalPrompt("You have made changes. Click 'OK' to discard your changes and copy the original record, or 'Cancel' to continue editing.", 1, "Confirm").then(function (answer) {
+			OpenHR.modalPrompt("You have unsaved changes. Click 'OK' to copy these changes, or 'Cancel' to continue editing.", 1, "Confirm").then(function (answer) {
 				if (answer == 1) { // OK - Ignore changes
 					copy_RecordEdit();
 					return false;
