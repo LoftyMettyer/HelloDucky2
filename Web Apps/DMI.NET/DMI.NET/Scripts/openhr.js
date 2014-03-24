@@ -30,7 +30,7 @@
 		//redirect if specified...
 		if (html.Redirect.length > 0) {
 			//alert("redirecting to " + html.Redirect);
-			window.location(html.Redirect);
+			window.location.href = html.Redirect;
 		}
 
 	}
