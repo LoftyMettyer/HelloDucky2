@@ -231,8 +231,8 @@ function goScreen(psScreenInfo) {
 
 function goUtility(sUtilityType, sUtilityID, sUtilityName, sUtilityBaseTable) {	
 	if (!dragged) {
-		//menu_disableMenu();		
-		if ((window.isMobileBrowser) && (sUtilityType == "9")) {
+
+		if ((window.isMobileBrowser == "true") && (sUtilityType == "9")) {
 			//No mailmerges for mobiles - see JIRA 3969
 			return false;
 		}
@@ -271,6 +271,7 @@ function goUtility(sUtilityType, sUtilityID, sUtilityName, sUtilityBaseTable) {
 }
 
 function goDropLink(sLinkInfo) {
+
 	if (sLinkInfo == undefined) {
 		sLinkInfo = $('.DropdownlistSelect').val();				
 	}
@@ -295,8 +296,9 @@ function goDropLink(sLinkInfo) {
 			var iIndex2 = sLinkInfo.indexOf("_", sLinkInfo.indexOf("_") + 1);
 			var sUtilityType = sLinkInfo.substring(0, iIndex1);
 			var sUtilityID = sLinkInfo.substring(iIndex1 + 1, iIndex2);
+			var sUtilityName = $('.DropdownlistSelect option:selected').text();
 
-			goUtility(sUtilityType, sUtilityID, "");
+			goUtility(sUtilityType, sUtilityID, sUtilityName);
 			break;
 		case "4":
 			// Mulitple record find page
