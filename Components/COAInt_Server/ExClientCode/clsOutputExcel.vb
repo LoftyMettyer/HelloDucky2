@@ -408,6 +408,7 @@ Namespace ExClientCode
 					With _mxlWorkSheet.Cells(lngExcelRow + lngGridRow - 1, lngExcelCol + lngGridCol - 1)
 
 						Dim stlNumeric As Style = .GetStyle()
+						Dim stlDecimal As Style = .GetStyle()
 						Dim stlGeneral As Style = .GetStyle()
 						Dim stlDate As Style = .GetStyle()
 						Dim flag As StyleFlag = New StyleFlag()
@@ -416,6 +417,9 @@ Namespace ExClientCode
 						stlNumeric.Number = 1	' Numeric style
 						stlNumeric.VerticalAlignment = TextAlignmentType.Top
 						stlNumeric.HorizontalAlignment = TextAlignmentType.Right
+						stlDecimal.Number = 2	' Numeric style
+						stlDecimal.VerticalAlignment = TextAlignmentType.Top
+						stlDecimal.HorizontalAlignment = TextAlignmentType.Right
 						stlGeneral.Number = 49	' Text style		
 						stlGeneral.VerticalAlignment = TextAlignmentType.Top
 						stlGeneral.HorizontalAlignment = TextAlignmentType.Left
@@ -426,7 +430,17 @@ Namespace ExClientCode
 						If Not strArray(lngGridCol, lngGridRow) Is Nothing Then
 							Select Case colColumns.Item(lngGridCol).DataType
 
-								Case SQLDataType.sqlNumeric, SQLDataType.sqlInteger
+								Case SQLDataType.sqlInteger
+
+									If lngGridRow = 0 Then
+										.SetStyle(stlGeneral)
+										.PutValue(strArray(lngGridCol, lngGridRow))
+									Else
+										.SetStyle(stlNumeric)
+										.PutValue(NullSafeInteger(strArray(lngGridCol, lngGridRow)))
+									End If
+
+								Case SQLDataType.sqlNumeric
 
 									If lngGridRow = 0 Then
 										' header, so leave as a string
@@ -448,7 +462,7 @@ Namespace ExClientCode
 
 										If IsNumeric(strArray(lngGridCol, lngGridRow)) Then
 											.SetStyle(stlNumeric)
-											.PutValue(NullSafeInteger(strArray(lngGridCol, lngGridRow)))
+											.PutValue(strArray(lngGridCol, lngGridRow))
 										Else
 											.SetStyle(stlGeneral)
 											.PutValue(strArray(lngGridCol, lngGridRow))
@@ -456,25 +470,25 @@ Namespace ExClientCode
 
 									End If
 								Case SQLDataType.sqlBoolean
-										.SetStyle(stlGeneral)
-										.PutValue(strArray(lngGridCol, lngGridRow))
+									.SetStyle(stlGeneral)
+									.PutValue(strArray(lngGridCol, lngGridRow))
 								Case SQLDataType.sqlUnknown
-										'Leave it alone! (Required for percentages on Standard Reports)
-										.SetStyle(stlGeneral)
-										.PutValue(strArray(lngGridCol, lngGridRow))
+									'Leave it alone! (Required for percentages on Standard Reports)
+									.SetStyle(stlGeneral)
+									.PutValue(strArray(lngGridCol, lngGridRow))
 								Case SQLDataType.sqlDate
-										.SetStyle(stlDate)
-										'MH20050104 Fault 9695 & 9696
-										'Adding ;@ to the end formats it as "short date" so excel will look at the
-										'regional settings when opening the workbook rather than force it to always
-										'be in the format of the user who created the workbook.
-										.PutValue(strArray(lngGridCol, lngGridRow))
+									.SetStyle(stlDate)
+									'MH20050104 Fault 9695 & 9696
+									'Adding ;@ to the end formats it as "short date" so excel will look at the
+									'regional settings when opening the workbook rather than force it to always
+									'be in the format of the user who created the workbook.
+									.PutValue(strArray(lngGridCol, lngGridRow))
 								Case Else
-										Dim strValue As String = strArray(lngGridCol, lngGridRow).TrimEnd()
-										' If lngGridRow = 0 Then strValue = strValue.Replace("_", " ")
-										If InStr(strValue, vbNewLine) > 0 Then stlGeneral.IsTextWrapped = True
-										.SetStyle(stlGeneral)
-										.PutValue(strArray(lngGridCol, lngGridRow).Replace(vbNewLine, Microsoft.VisualBasic.Constants.vbLf))
+									Dim strValue As String = strArray(lngGridCol, lngGridRow).TrimEnd()
+									' If lngGridRow = 0 Then strValue = strValue.Replace("_", " ")
+									If InStr(strValue, vbNewLine) > 0 Then stlGeneral.IsTextWrapped = True
+									.SetStyle(stlGeneral)
+									.PutValue(strArray(lngGridCol, lngGridRow).Replace(vbNewLine, Microsoft.VisualBasic.Constants.vbLf))
 							End Select
 						End If
 
