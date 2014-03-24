@@ -9,8 +9,6 @@ Public Class clsResetPassword
 	Private ReadOnly _db As clsDataAccess
 	Private ReadOnly _objLogin As New LoginInfo
 
-
-
 	Public Sub New()
 
 		MyBase.New()
@@ -45,7 +43,7 @@ Public Class clsResetPassword
 
 			_db.ExecuteSP("spadmin_resetpassword", _
 					New SqlParameter("psWebsiteURL", SqlDbType.VarChar, 255) With {.Value = WebsiteURL}, _
-					New SqlParameter("psUserName", SqlDbType.VarChar, 255) With {.Value = _objLogin.Username}, _
+					New SqlParameter("psUserName", SqlDbType.VarChar, 255) With {.Value = Username}, _
 					New SqlParameter("psEncryptedLink", SqlDbType.VarChar, -1) With {.Value = sEncryptedString}, _
 					prmMessage)
 

@@ -553,7 +553,7 @@ Namespace Controllers
 				objResetPwd.Username = Request.Form("txtUserName")
 
 				' Force password change only if there are no other users logged in with the same name.
-				If Request.ServerVariables("HTTPS").ToLower <> "off" Then protocol = "https"
+				If Request.ServerVariables("HTTPS").ToLower = "on" Then protocol = "https"
 				domainName = Request.ServerVariables("HTTP_HOST")
 
 				websiteURL = protocol & "://" & domainName & Url.Action("ResetPassword", "Account")	'Even though VS complains that it "Cannot resolve action 'ResetPassword'", it DOES resolve it!

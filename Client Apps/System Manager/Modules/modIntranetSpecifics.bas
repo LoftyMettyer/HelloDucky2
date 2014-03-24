@@ -549,7 +549,7 @@ Private Function CreateSP_ResetPassword() As Boolean
     "        0," & vbNewLine & _
     "        'How to reset your OpenHR Web password');" & vbNewLine & vbNewLine
     
-  sProcSQL = sProcSQL & "      EXEC [dbo].[spASREmailImmediate] 'OpenHR Mobile';" & vbNewLine & _
+  sProcSQL = sProcSQL & "      EXEC [dbo].[spASREmailImmediate] 'OpenHR Web';" & vbNewLine & _
     "    END;" & vbNewLine & _
     "  END;" & vbNewLine & _
     "END;"

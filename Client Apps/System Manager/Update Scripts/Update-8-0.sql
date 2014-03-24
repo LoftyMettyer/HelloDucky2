@@ -152,6 +152,17 @@ PRINT 'Step - Ensure the required permissions are granted'
 	GRANT EXEC ON spadmin_commitresetpassword TO [openhr2iis]
 
 
+/* ------------------------------------------------------- */
+PRINT 'Step - Remove hotfix for resetting passwords '
+/* ------------------------------------------------------- */
+
+DECLARE @DeleteJobID uniqueidentifier;
+SELECT @DeleteJobID = [job_id] FROM msdb.dbo.sysjobs WHERE name = 'OpenHR Password Resets'
+IF NOT @DeleteJobID IS NULL
+	EXEC msdb.dbo.sp_delete_job @job_id=@DeleteJobID, @delete_unused_schedule=1
+
+
+
 /* ------------------------------------------------------------- */
 /* Update the database version flag in the ASRSysSettings table. */
 /* Dont Set the flag to refresh the stored procedures            */
