@@ -295,7 +295,7 @@
 		If Left(objPermission.CategoryKey, 9) = "CROSSTABS" And objPermission.IsPermitted Then iCrossTabsGranted = 1
 		If Left(objPermission.CategoryKey, 15) = "CALENDARREPORTS" And objPermission.IsPermitted Then iCalendarReportsGranted = 1
 		If Left(objPermission.CategoryKey, 9) = "MAILMERGE" And objPermission.IsPermitted Then iMailMergeGranted = 1
-		If objPermission.CategoryKey = "WORKFLOW_RUN" And objPermission.IsPermitted Then iWorkflowGranted = 1
+		If Left(objPermission.CategoryKey, 8) = "WORKFLOW" And objPermission.IsPermitted Then iWorkflowGranted = 1
 		If Left(objPermission.CategoryKey, 12) = "CALCULATIONS" And objPermission.IsPermitted Then iCalculationsGranted = 1
 		If Left(objPermission.CategoryKey, 7) = "FILTERS" And objPermission.IsPermitted Then iFiltersGranted = 1
 		If Left(objPermission.CategoryKey, 9) = "PICKLISTS" And objPermission.IsPermitted Then iPicklistsGranted = 1
