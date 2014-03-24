@@ -47,8 +47,19 @@ Public Class MvcApplication
 		Session("TimeoutSecs") = (Session.Timeout * 60) - 20
 		Server.ScriptTimeout = 1000
 
-		Session("database") = Request.QueryString("database")
-		Session("server") = Request.QueryString("server")
+		If String.IsNullOrEmpty(Request.QueryString("database")) Then
+			Session("database") = ApplicationSettings.LoginPage_Database
+		Else
+			Session("database") = Request.QueryString("database")
+		End If
+
+		If String.IsNullOrEmpty(Session("server")) Then
+			Session("server") = ApplicationSettings.LoginPage_Server
+		Else
+			Session("server") = Request.QueryString("server")
+		End If
+
+
 		Session("username") = Request.QueryString("username")
 		If Request.QueryString("username") = "" Then
 			Session("username") = Request.QueryString("user")

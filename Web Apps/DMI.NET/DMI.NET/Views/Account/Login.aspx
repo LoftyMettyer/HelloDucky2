@@ -3,35 +3,40 @@
 <%@ Import Namespace="DMI.NET.Code" %>
 
 <script runat="server">
-		Private _txtDatabaseValue As String = "" 'To set the value of the txtDatabase input tag
-		Private _txtServerValue As String = "" 'To set the value of the txtServer input tag
+	Private _txtDatabaseValue As String = Session("database").ToString()	'To set the value of the txtDatabase input tag
+	Private _txtServerValue As String = Session("server").ToString()	'To set the value of the txtServer input tag
 		
 		Private Sub Page_Load(sender As Object, e As System.EventArgs) Handles Me.Load
 				'If no query string is present, hide the "Details" button and the Database and Server labels and input box controls
-				If Request.QueryString.Count = 0 Then
-						btnToggleDetailsDiv.Attributes.Add("style", "display: none")
-						DatabaseTextLabelDiv.Attributes.Add("style", "display: none")
-						DatabaseTextValueDiv.Attributes.Add("style", "display: none")
-						ServerTextLabelDiv.Attributes.Add("style", "display: none")
-						ServerTextValueDiv.Attributes.Add("style", "display: none")
-				Else 'Override database or server if a value is provided in the querystring
-						If Not String.IsNullOrEmpty(Request.QueryString("database")) Then
-								_txtDatabaseValue = Server.HtmlDecode(Request.QueryString("database"))
-						End If
-						If Not String.IsNullOrEmpty(Request.QueryString("server")) Then
-								_txtServerValue = Server.HtmlDecode(Request.QueryString("server"))
-						End If
-				End If
+		If Request.QueryString.Count = 0 And
+			(Session("server") = ApplicationSettings.LoginPage_Server _
+				Or Session("database") = ApplicationSettings.LoginPage_Database) Then
+			
+			btnToggleDetailsDiv.Attributes.Add("style", "display: none")
+			DatabaseTextLabelDiv.Attributes.Add("style", "display: none")
+			DatabaseTextValueDiv.Attributes.Add("style", "display: none")
+			ServerTextLabelDiv.Attributes.Add("style", "display: none")
+			ServerTextValueDiv.Attributes.Add("style", "display: none")
+						
+		Else 'Override database or server if a value is provided in the querystring
+			If Not String.IsNullOrEmpty(Request.QueryString("database")) Then
+				_txtDatabaseValue = Server.HtmlDecode(Request.QueryString("database"))
+			End If
+			If Not String.IsNullOrEmpty(Request.QueryString("server")) Then
+				_txtServerValue = Server.HtmlDecode(Request.QueryString("server"))
+			End If
+		End If
 
-				'If no override values were provided in the querystring, use default values from web.config
-				If String.IsNullOrEmpty(_txtDatabaseValue) Then
-						_txtDatabaseValue = ApplicationSettings.LoginPage_Database
-				End If
-				If String.IsNullOrEmpty(_txtServerValue) Then
-						_txtServerValue = ApplicationSettings.LoginPage_Server
-				End If
-		End Sub
+		'If no override values were provided in the querystring, use default values from web.config
+		If String.IsNullOrEmpty(_txtDatabaseValue) Then
+			_txtDatabaseValue = ApplicationSettings.LoginPage_Database
+		End If
+		If String.IsNullOrEmpty(_txtServerValue) Then
+			_txtServerValue = ApplicationSettings.LoginPage_Server
+		End If
+	End Sub
 </script>
+
 
 <asp:Content ID="Content1" ContentPlaceHolderID="TitleContent" runat="server">
 		<%= GetPageTitle("Login") %>    
@@ -130,14 +135,14 @@
 			'	Response.Write("    }" & vbCrLf)
 		End If
 
-		If Request.ServerVariables("LOGON_USER") <> "" Then
+		If Platform.IsWindowsAuthenicatedEnabled() Then
 			If Request.QueryString("WindowsAuthentication") <> "" Then
 				Response.Write("    frmLoginForm.chkWindowsAuthentication.value = """ & CleanStringForJavaScript(Request.QueryString("WindowsAuthentication")) & """;" & vbCrLf)
 			ElseIf Session("WindowsAuthentication") <> "" Then
 				Response.Write("    frmLoginForm.chkWindowsAuthentication.value = """ & CleanStringForJavaScript(Session("WindowsAuthentication")) & """;" & vbCrLf)
 			Else
 				Response.Write("    sWindowsAuthentication = getCookie('Intranet_WindowsAuthentication');" & vbCrLf)
-				Response.Write("    if (sWindowsAuthentication == ""True"" && sWindowsAuthentication != null && sWindowsAuthentication != ""undefined"") {" & vbCrLf)
+				Response.Write("    if (sWindowsAuthentication == ""true"" && sWindowsAuthentication != null && sWindowsAuthentication != ""undefined"") {" & vbCrLf)
 				Response.Write("      frmLoginForm.chkWindowsAuthentication.checked = ""1"";" & vbCrLf)
 				Response.Write("      ToggleWindowsAuthentication();" & vbCrLf)
 				Response.Write("    }" & vbCrLf)
