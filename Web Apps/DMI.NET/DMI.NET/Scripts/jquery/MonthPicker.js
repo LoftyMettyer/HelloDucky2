@@ -219,8 +219,10 @@
 					var month = parseInt($(this).data('month'), 10);
 					if (comparisonFunction(month)) {
 						$(this).removeClass('ui-state-disabled');
+						$(this).addClass('ui-state-default');
 					} else {
 						$(this).addClass('ui-state-disabled');
+						$(this).removeClass('ui-state-default');
 					}
 				});
 			};

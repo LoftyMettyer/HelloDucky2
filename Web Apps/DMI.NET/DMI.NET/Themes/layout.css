@@ -1,7 +1,4 @@
-﻿p, body, td { font-family: Tahoma, Arial, Sans-Serif; font-size: 10pt; }
-body { padding: 0px; margin: 0px; background-color: #ffffff; }
-a { color: #1155a3; }
-
+﻿
 /* COMMON */
 .hidden { display: none; }
 .padded { padding: 10px; }
@@ -158,4 +155,3 @@ a { color: #1155a3; }
 }
 
 #container {background: url('layout/main.png') 0 0 repeat-x; padding-top: 20px; }
-
