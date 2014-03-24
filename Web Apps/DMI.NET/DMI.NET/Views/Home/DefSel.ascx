@@ -349,9 +349,6 @@ Session("fromMenu") = 0
         var IsDeletePermitted = ($("#grantdelete")[0].value > 0);
         var IsRunPermitted = ($("#grantrun")[0].value > 0);
 
-
-
-
         switch ('<%=Session("defseltype")%>') {
 		    case '0':  // "BatchJobs"
 		        break;
@@ -438,7 +435,7 @@ Session("fromMenu") = 0
 		        menu_toolbarEnableItem("mnutoolPropertiesUtilitiesFind", fHasRows && fFromMenu);
 		        menu_setVisibleMenuItem("mnutoolPropertiesUtilitiesFind", true);
 
-		        menu_toolbarEnableItem("mnutoolRunUtilitiesFind", fHasRows);
+		        menu_toolbarEnableItem("mnutoolRunUtilitiesFind", fHasRows && IsRunPermitted && fFromMenu);
  		    		//only display the 'close' button for defsel when called from rec edit...
 		        menu_setVisibleMenuItem('mnutoolCloseUtilitiesFind', !fFromMenu);
 		        menu_toolbarEnableItem('mnutoolCloseUtilitiesFind', !fFromMenu);
