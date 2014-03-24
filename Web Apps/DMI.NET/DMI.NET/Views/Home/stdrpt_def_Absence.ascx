@@ -754,7 +754,7 @@
 															<label
 																tabindex="-1"
 																for="optOutputFormat1"
-																class="radio">
+																class="radio ui-state-error-text">
 																CSV File
 															</label>
 														</td>
@@ -776,7 +776,7 @@
 															<label
 																tabindex="-1"
 																for="optOutputFormat2"
-																class="radio">
+																class="radio ui-state-error-text">
 																HTML Document
 															</label>
 														</td>
@@ -795,7 +795,7 @@
 															<label
 																tabindex="-1"
 																for="optOutputFormat3"
-																class="radio">
+																class="radio ui-state-error-text">
 																Word Document
 															</label>
 														</td>
@@ -973,7 +973,7 @@
 														<td style="width: 5px">&nbsp;</td>
 														<td style="width: 5px">&nbsp;</td>
 														<td style="width: 5px">&nbsp;</td>
-														<td style="white-space: nowrap">If existing file :</td>
+														<td style="white-space: nowrap" class="ui-state-error-text">If existing file :</td>
 														<td style="width: 80%; text-align: right">
 															<select style="width: 100%" id="cboSaveExisting" name="cboSaveExisting" class="combo"></select>
 														</td>
@@ -1042,6 +1042,9 @@
 								<td style="width: 5px">&nbsp;</td>
 							</tr>
 						</table>
+					<tr height="20">
+						<td colspan="5" class="ui-state-error-text">&nbsp;Note: In OpenHR Web Output Format is restricted to Excel. Existing files will be overwritten.</td>
+					</tr>
 					</td>
 				</tr>
 			</table>

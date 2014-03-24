@@ -1378,7 +1378,7 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 																					<label
 																						tabindex="-1"
 																						for="optOutputFormat2"
-																						class="radio">
+																						class="radio ui-state-error-text">
 																						HTML Document
 																					</label>
 																				</td>
@@ -1397,7 +1397,7 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 																					<label
 																						tabindex="-1"
 																						for="optOutputFormat3"
-																						class="radio">
+																						class="radio ui-state-error-text">
 																						Word Document
 																					</label>
 																				</td>
@@ -1576,7 +1576,7 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 																				<td></td>
 																				<td></td>
 																				<td></td>
-																				<td align="left" nowrap>If existing file :</td>
+																				<td align="left" nowrap class="ui-state-error-text">If existing file :</td>
 
 																				<td style="white-space: nowrap">
 																					<select id="cboSaveExisting" name="cboSaveExisting"
@@ -1663,6 +1663,9 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 													</tr>
 												</table>
 											</td>
+										<tr height="20">
+											<td colspan="5" class="ui-state-error-text">Note: In OpenHR Web Output Format is restricted to Excel. Existing files will be overwritten.</td>
+										</tr>
 										</tr>
 									</table>
 								</div>
