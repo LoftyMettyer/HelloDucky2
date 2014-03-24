@@ -1521,14 +1521,19 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 																						onclick="changeTab5Control();" />
 																					<label
 																						for="chkDestination1"
-																						class="checkbox checkboxdisabled"
+																						class="checkbox checkboxdisabled "
+																						tabindex="-1">
+																					</label>
+																					<label
+																						for="chkDestination1"
+																						class="ui-state-error-text"
 																						tabindex="-1">
 																						Send to printer 
 																					</label>
 																				</td>
 																				<td width="30" nowrap>&nbsp;</td>
 																				<td style="width: 15%">&nbsp;</td>
-																				<td style="width: 25%; text-align: left; white-space: nowrap">Printer location : </td>
+																				<td style="width: 25%; text-align: left; white-space: nowrap" class="ui-state-error-text">Printer location : </td>
 																				<td style="width: 100%">
 																					<select id="cboPrinterName" name="cboPrinterName" class="combo"
 																						style="width: 100%"
@@ -1664,7 +1669,7 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 												</table>
 											</td>
 										<tr height="20">
-											<td colspan="5" class="ui-state-error-text">Note: In OpenHR Web Output Format is restricted to Excel. Existing files will be overwritten.</td>
+											<td colspan="5" class="ui-state-error-text">Note: In OpenHR Web Output Format is restricted to Excel. Existing files will be overwritten. Send to Printer is not supported.</td>
 										</tr>
 										</tr>
 									</table>

@@ -263,7 +263,9 @@
 
 		<div id="divReportButtons" style="margin: 5px 20px 0 25px; visibility: hidden">
 			<div style="float: right;">
-				<input class="btn" type="button" id="cmdPrint" name="cmdPrint" value="<%=sPrintButtonLabel%>" onclick="outputOptionsPrintClick()" />
+				<%If (Session("utiltype") = "2") Or (Session("utiltype") = "16") Then%> 
+					<input class="btn" type="button" id="cmdPrint" name="cmdPrint" value="<%=sPrintButtonLabel%>" onclick="outputOptionsPrintClick()" />
+				<%End If%>
 				<input class="btn" type="button" id="cmdOK" name="cmdOK" value="Export" onclick="outputOptionsOKClick()" />
 				<input class="btn" type="button" id="cmdOutput" name="cmdOutput" value="Output" onclick="ExportDataPrompt();" />
 				<input class="btn" type="button" id="cmdCancel" name="cmdCancel" value="Preview" onclick="ShowDataFrame();" />

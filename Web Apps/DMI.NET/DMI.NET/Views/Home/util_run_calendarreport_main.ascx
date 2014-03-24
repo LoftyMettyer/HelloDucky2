@@ -88,7 +88,7 @@
 			End If
 		End If
 		
-		blnShowCalendar = (objCalendar.OutputPreview Or (objCalendar.OutputFormat = 0 And objCalendar.OutputScreen))
+		blnShowCalendar = (objCalendar.OutputPreview Or (objCalendar.OutputFormat = 0 And objCalendar.OutputScreen) Or objCalendar.OutputPrinter)
 		
 		Session("objCalendar" & Session("UtilID")) = objCalendar
 
