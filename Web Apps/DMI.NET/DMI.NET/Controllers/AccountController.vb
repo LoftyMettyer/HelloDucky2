@@ -236,6 +236,7 @@ Namespace Controllers
 
 				' Has the password expired? Cannot log in until they've successfully changed it.
 				If objLogin.MustChangePassword Then
+					Session("sessionChangePassword") = objLogin
 					Return RedirectToAction("ForcedPasswordChange", "Account")
 				End If
 
@@ -477,8 +478,6 @@ Namespace Controllers
 		<HttpPost()>
 		Function ForcedPasswordChange_Submit(value As FormCollection) As ActionResult
 
-			Dim objDataAccess As clsDataAccess = CType(Session("DatabaseAccess"), clsDataAccess)
-
 			Dim fSubmitPasswordChange = (Len(Request.Form("txtGotoPage")) = 0)
 
 			If fSubmitPasswordChange Then
@@ -487,23 +486,19 @@ Namespace Controllers
 				Dim sNewPassword = Request.Form("txtPassword1")
 
 				Try
-					objDataAccess.Login.Password = Request.Form("txtCurrentPassword")
-					clsDataAccess.ChangePassword(objDataAccess.Login, sNewPassword)
-					objDataAccess.Login.Password = sNewPassword
+					Dim objLogin = CType(Session("sessionChangePassword"), LoginInfo)
+
+					objLogin.Password = Request.Form("txtCurrentPassword")
+					clsDataAccess.ChangePassword(objLogin, sNewPassword)
+					objLogin.Password = sNewPassword
 
 					Session("MessageTitle") = "Change Password Page"
 					Session("MessageText") = "Password changed successfully. You may now login."
-					Return RedirectToAction("Loginmessage", "Account")
+					Return RedirectToAction("LoginMessage", "Account")
 
 				Catch ex As SqlException
 					Session("ErrorTitle") = "Change Password Page"
-
-					Dim iOccurs = ex.Message.IndexOf("Changed database context", 0)
-					Dim sMessage As String = ex.Message
-					If iOccurs > 0 Then
-						sMessage = ex.Message.Substring(0, iOccurs)
-					End If
-					Session("ErrorText") = sMessage
+					Session("ErrorText") = GetPasswordChangeFailReason(ex)
 					Return RedirectToAction("ForcedPasswordChange", "Account")
 
 				Catch ex As Exception
