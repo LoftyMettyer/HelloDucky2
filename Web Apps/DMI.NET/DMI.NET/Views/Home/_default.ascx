@@ -58,7 +58,7 @@
 				}
 				else
 				{
-					if ($('#txtWorkflowOutOfOffice').val() == 1)
+					if ($('#txtWorkflowOutOfOffice').val() != 0) //txtWorkflowOutOfOffice contains "-1" when True (not "1") and "0" when False
 					{
 						var sMsg = "Workflow Out of Office is currently on.\nWould you like to turn it off";
 					
@@ -138,7 +138,7 @@
 			<td>
 				<table class="outline" cellspacing="0" cellpadding="0" align="center">
 					<tr>
-						<td height="100" width="50%" align="middle">Loading menu...
+						<td height="100" width="50%">Loading menu...
 						</td>
 					</tr>
 				</table>
