@@ -5438,8 +5438,8 @@ Namespace Controllers
 					Dim objDatabase As Database = CType(Session("DatabaseFunctions"), Database)
 					Session("timestamp") = objDatabase.GetRecordTimestamp(CleanNumeric(Session("optionRecordID")), Session("realSource"))
 
-					'Update the ID badge picture in Session only if the user that is being edited is the same as the logged in user
-					If CInt(Session("PreviousRecordID")) = CInt(Session("LoggedInUserRecordID")) Then
+					'Update the ID badge picture in Session only if the user that is being edited is the same as the logged in user and we are embeding a photo
+					If CInt(Session("PreviousRecordID")) = CInt(Session("LoggedInUserRecordID")) And Session("optionIsPhoto") = True Then
 						If Session("optionFileValue") = "" Then
 							Session("SelfServicePhotograph_Src") = Url.Content("~/Content/images/anonymous.png")
 						Else
