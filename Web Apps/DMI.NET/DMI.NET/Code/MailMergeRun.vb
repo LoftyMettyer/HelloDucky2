@@ -4,6 +4,7 @@ Option Explicit On
 Imports Aspose.Words
 Imports System.IO
 Imports Aspose.Email.Mail
+Imports System.Web.Configuration
 Imports HR.Intranet.Server
 Imports Aspose.Words.Reporting
 Imports HR.Intranet.Server.Metadata
@@ -93,7 +94,7 @@ Namespace Code
 
 				objTemplate.Position = 0
 
-				mailClient = New Aspose.Email.Mail.SmtpClient(ApplicationSettings.SMTP_Host, ApplicationSettings.SMTP_Port)
+				mailClient = New SmtpClient(WebConfigurationManager.OpenWebConfiguration(HttpContext.Current.Request.ApplicationPath))
 
 				objOptions.MessageFormat = MessageFormat.Mht
 

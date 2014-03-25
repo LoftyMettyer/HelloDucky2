@@ -1098,6 +1098,7 @@
     <None Include="My Project\PublishProfiles\Azure OpenHR NPG.pubxml" />
     <None Include="My Project\PublishProfiles\Chestertons.pubxml" />
     <None Include="My Project\PublishProfiles\Default On 10.14.1.201.pubxml" />
+    <None Include="My Project\PublishProfiles\DEVSRVR01.company.local.pubxml" />
     <None Include="My Project\PublishProfiles\HarpDev02.pubxml" />
     <None Include="My Project\PublishProfiles\HarpQA05.pubxml" />
     <None Include="My Project\PublishProfiles\Kennedys.pubxml" />
