@@ -32,7 +32,7 @@ function find_window_onload() {
 		fOk = false;
 
 		if (menu_isSSIMode()) {
-			raiseWarning("Warning", sErrMsg);
+			OpenHR.messageBox(sErrMsg);
 			loadPartialView("linksMain", "Home", "workframe", null);
 		} else {
 			OpenHR.messageBox(sErrMsg);

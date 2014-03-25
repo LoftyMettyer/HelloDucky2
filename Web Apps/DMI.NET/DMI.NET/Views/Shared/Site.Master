@@ -244,17 +244,6 @@
 
 		});
 		
-		function closeWarning() {
-			$("#warningDialog").dialog("close");
-		}
-
-		function raiseWarning(sTitle, sErrorDesc) {
-			$(".popup").dialog("close");
-			$("#warningDialogTitle").text(sTitle);
-			$("#warningDialogContentText").html(sErrorDesc);
-			$("#warningDialog").dialog("open");
-		}
-
 		function updateProgressMsg() {
 			$('.progressMessage span').text($('#txtProgressMessage').val());
 		}
@@ -272,7 +261,7 @@
 		//else {
 		//	window.isMobileBrowser = false;
 		//}
-
+		
 		//Reset the session timeout everytime the user clicks the mouse
 		$(window).on('click', function() {
 			window.clearTimeout(window.timeoutHandle);
@@ -422,19 +411,6 @@
 		</div>
 		<div id="errorDialogContent">
 			<p id="errorDialogContentText"></p>
-		</div>
-	</div>
-	
-	<div id="warningDialog" title="OpenHR Web">
-		<div id="warningDialogTitleContent">
-			<i class="icon-exclamation-sign" style="font-size: 50px; color: dodgerblue; float: left"></i> 
-			<h1 style="position:relative; margin-left: 55px;" id="warningDialogTitle"></h1>
-		</div>
-		<div id="warningDialogContent">
-			<p id="warningDialogContentText"></p>			
-		</div>
-		<div class="centered">
-			<input class="btn" type="button" value="OK" onclick="closeWarning();"/>
 		</div>
 	</div>
 	

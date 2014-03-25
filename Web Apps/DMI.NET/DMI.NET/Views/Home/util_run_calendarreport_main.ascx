@@ -170,8 +170,9 @@ Response.Write("<input type=hidden id=txtTitle name=txtTitle value=""" & Replace
 	If Len(objCalendar.ErrorString) > 0 Then
 		sErrorMessage = HttpUtility.JavaScriptStringEncode(objCalendar.ErrorString)
 		
-		Response.Write(String.Format("raiseWarning(""{0}"", ""{1}"");", objCalendar.Name, sErrorMessage))
-
+		Response.Write("$('.popup').dialog('close');")
+		Response.Write(String.Format("OpenHR.modalPrompt(""{0}"",2,""{1}"");", sErrorMessage, objCalendar.Name))
+																 
 	ElseIf fok And blnShowCalendar Then
 			%>
 	if (!menu_isSSIMode()){
