@@ -78,5 +78,10 @@ Namespace Code
 				Return ConfigurationManager.AppSettings("MailMerge_From")
 			End Get
 		End Property
+		Public Shared ReadOnly Property SessionTimeOutInMinutes As String
+			Get
+				Return ConfigurationManager.AppSettings("SessionTimeOutInMinutes")
+			End Get
+		End Property
 	End Class
 End Namespace
