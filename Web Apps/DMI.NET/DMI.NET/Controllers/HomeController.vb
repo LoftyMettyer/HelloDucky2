@@ -2256,7 +2256,7 @@ Namespace Controllers
 		Function TimedOut() As ActionResult
 
 			Dim objMessageModel As New PollMessageModel With { _
-				.Body = "Your session has timed out. You will need to login again to continue", _
+				.Body = "Your session has timed out. You will need to login again.", _
 				.IsTimedOut = True}
 
 			Try

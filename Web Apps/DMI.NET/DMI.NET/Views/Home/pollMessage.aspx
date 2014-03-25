@@ -1,24 +1,22 @@
 ﻿<%@ Page Language="VB" Inherits="System.Web.Mvc.ViewPage (Of DMI.NET.Models.PollMessageModel)" %>
 
-<div class="centered">
+<div class="left">
 	<form id="frmPollMessage" action="pollMessage">
 
-		<div style="height:80%">		
+		<div style="height:80%">
+			<br/>		
 		<%: Html.DisplayFor(Function(m) m.Body)%>
 		</div>
 		
-		<div class="centered" style="position: absolute; bottom:0; width:90%">
-		<%
-
-			If Model.IsTimedOut Then%>
-			<input type="button" value="OK" onclick="pollmessage_logout();"/>
-			<%		
-			Else%>
-				<input type="button" value="OK" onclick="pollmessage_ok();"/>
-			<%End If%>
-	
-		</div>
-
+		<div class="ui-dialog-buttonpane ui-widget-content ui-helper-clearfix">
+			<div class="ui-dialog-buttonset">
+				<%If Model.IsTimedOut Then%>
+					<input type="button" value="OK" onclick="pollmessage_logout();"/>
+				<%Else%>
+					<input type="button" value="OK" onclick="pollmessage_ok();"/>
+				<%End If%>
+			</div>
+		</div>			
 		<input type="hidden" id="txtIsSessionTiemout"/>
 
 	</form>

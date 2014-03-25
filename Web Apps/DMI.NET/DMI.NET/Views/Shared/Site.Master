@@ -114,10 +114,11 @@
 			});
 
 			$("#divPollMessage").dialog({
+				title: 'OpenHR Web',
 				autoOpen: false,
 				modal: true,
 				width: 350,
-				height: 300,
+				height: 'auto',
 				resizable: false
 			});
 			
