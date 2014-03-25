@@ -3,6 +3,7 @@
 <%@ Import Namespace="HR.Intranet.Server" %>
 <%@ Import Namespace="System.Data.SqlClient" %>
 <%@ Import Namespace="System.Data" %>
+<%@ Import Namespace="HR.Intranet.Server.Structures" %>
 
 <%	
 	If Len(Session("recordID")) = 0 Then
@@ -695,11 +696,7 @@
 			Dim prmOrderId = New SqlParameter("piOrderID", SqlDbType.Int) With {.Value = CleanNumeric(Session("orderID"))}
 
 
-			
-			Dim fOk = True
-			Dim sErrMsg = ""
-			Dim oleColumnData As New List(Of Object)
-
+			Dim oleColumnData As New List(Of OLEValue)
 
 			Try
 
@@ -717,7 +714,11 @@
 
 							' Is column a embedded/linked OLE								
 							If rstRecord.Columns(iloop).DataType.ToString().ToLower = "system.byte[]" Then
-								oleColumnData.Add(rstRecord.Columns(iloop).ColumnName)
+								Dim objColumnOLE As New OLEValue With {
+									.ColumnID = CInt(rstRecord.Columns(iloop).ColumnName), _
+									.Value = CType(objRow(iloop), Byte())}
+								oleColumnData.Add(objColumnOLE)
+								
 							Else
 								Response.Write("<input type='hidden' id='txtData_" & rstRecord.Columns(iloop).ColumnName & "' name='txtData_" & rstRecord.Columns(iloop).ColumnName & "' value='" & Html.Encode(objRow(iloop).ToString()) & "'>" & vbCrLf)
 							End If
@@ -725,48 +726,33 @@
 					Next
 				Next
 
+
+				Response.Write("<input type='hidden' id='txtOriginalRecID' name='txtOriginalRecID' value='" & Session("recordID") & "'>" & vbCrLf)
+				Response.Write("<input type='hidden' id='txtNewRecID' name='txtNewRecID' value='" & prmRecordId.Value.ToString() & "'>" & vbCrLf)
+			
+				' Loop through each of the OLE (Documents and photos and render)
+				For Each item As OLEValue In oleColumnData
+				
+					If item.Value Is Nothing Then
+						Response.Write("<input type='hidden' id='txtData_" & item.ColumnID & "' name='txtData_" & item.ColumnID & "' value=''>" & vbCrLf)
+					Else
+
+						item.ExtractProperties()
+				
+						If objSessionInfo.IsPhotoDataType(item.ColumnID) Then
+					
+							Response.Write("<input type='hidden' id='txtData_" & item.ColumnID & "' data-Img='" & item.ConvertPhotoToBase64() & "' name='txtData_" & item.ColumnID & "' value='" & item.FileName & "'>" & vbCrLf)
+						Else
+							Response.Write("<input type='hidden' id='txtData_" & item.ColumnID & "' name='txtData_" & item.ColumnID & "' data-filesize='" & item.DocumentSize & "' data-filecreatedate='" & item.FileCreateDate & "' data-filemodifydate='" & item.FileModifyDate & "' value='" & item.FileName & "'>" & vbCrLf)
+						End If
+					End If
+				
+				Next
+
 			Catch ex As Exception
 				sErrorDescription = "Unable to retrieve the required record." & vbCrLf & ex.Message
 
 			End Try
-
-			
-
-			' NB. IMPORTANT ADO NOTE.
-			' When calling a stored procedure which returns a recordset AND has output parameters
-			' you need to close the recordset and Dim it to nothing before using the output parameters. 
-
-			Response.Write("<input type='hidden' id='txtOriginalRecID' name='txtOriginalRecID' value='" & Session("recordID") & "'>" & vbCrLf)
-			Response.Write("<input type='hidden' id='txtNewRecID' name='txtNewRecID' value='" & prmRecordId.Value.ToString() & "'>" & vbCrLf)
-			
-			' Loop through the OLE columns that have data in them
-			Dim objOle As HR.Intranet.Server.Ole = Session("OLEObject")
-			objOle.CleanupOleFiles()
-			
-			' TODO: reckon this means one ole per record???			
-			For Each item As Object In oleColumnData
-				Dim strDisplayValue = objOle.GetPropertiesFromStream(prmRecordId.Value.ToString(), item, Session("realSource"))
-				
-				If strDisplayValue = "" Then
-					Response.Write("<input type='hidden' id='txtData_" & item & "' name='txtData_" & item & "' value=''>" & vbCrLf)
-				Else
-				
-					' extract file size, and dates first...
-					Dim aDisplayValues = Split(strDisplayValue.ToString(), vbTab)
-					'Added to handle exception
-				
-					If (aDisplayValues(4) = "True") Then
-						' Photo.					
-						Response.Write("<input type='hidden' id='txtData_" & item & "' data-Img='" & objOle.ExtractPhotoToBase64(prmRecordId.Value.ToString(), item, Session("realSource")) & "' name='txtData_" & item & "' value='" & aDisplayValues(0) & "'>" & vbCrLf)
-					Else
-						Response.Write("<input type='hidden' id='txtData_" & item & "' name='txtData_" & item & "' data-filesize='" & aDisplayValues(1) & "' data-filecreatedate='" & aDisplayValues(2) & "' data-filemodifydate='" & aDisplayValues(3) & "' value='" & aDisplayValues(0) & "'>" & vbCrLf)
-					End If
-				End If
-				
-			Next
-			
-			Session("OLEObject") = objOle
-			objOle = Nothing
 
 
 			If Len(sErrorDescription) = 0 Then

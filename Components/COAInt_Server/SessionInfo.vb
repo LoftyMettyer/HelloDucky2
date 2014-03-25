@@ -21,7 +21,7 @@ Public Class SessionInfo
 	Friend PersonnelModule As modPersonnelSpecifics
 
 	Friend Tables As ICollection(Of Table)
-	Friend Columns As ICollection(Of Column)
+	public Columns As ICollection(Of Column)
 	Friend Relations As List(Of Relation)
 
 	Friend ModuleSettings As ICollection(Of ModuleSetting)
@@ -48,6 +48,10 @@ Public Class SessionInfo
 
 	Public Function IsModuleEnabled(name As String) As Boolean
 		Return _modules.GetByKey(name).Enabled
+	End Function
+
+	Public Function IsPhotoDataType(lngColumnID As Integer) As Boolean
+		Return Columns.GetById(lngColumnID).DataType = SQLDataType.sqlVarBinary
 	End Function
 
 	Public Function GetUserSetting(ByVal Section As String, ByVal Key As String, ByVal DefaultValue As Object) As Object

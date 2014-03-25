@@ -756,7 +756,7 @@ BEGIN
 		convert(varchar(MAX), case when ASRSysColumns.multiline IS null then '' else ASRSysColumns.multiline end) + char(9) +
 		convert(varchar(MAX), case when ASRSysColumns.alignment IS null then '' else ASRSysColumns.alignment end) + char(9) +
 		convert(varchar(MAX), case when ASRSysColumns.dfltValueExprID IS null then '' else ASRSysColumns.dfltValueExprID end) + char(9) +
-		convert(varchar(MAX), case when isnull(ASRSysColumns.readOnly,0) = 1 then 1 else 0 end) + char(9) +
+		convert(varchar(MAX), case when isnull(ASRSysColumns.readOnly,0) = 1 then 1 else CASE WHEN ASRSysColumns.tableid = @iScreenTableID THEN 0 ELSE 1 END end) + char(9) +
 		convert(varchar(MAX), case when ASRSysColumns.statusBarMessage IS null then '' else ASRSysColumns.statusBarMessage end) + char(9) +
 		convert(varchar(MAX), case when ASRSysColumns.linkTableID IS null then '' else ASRSysColumns.linkTableID end) + char(9) +
 		convert(varchar(MAX), case when ASRSysColumns.linkOrderID IS null then '' else ASRSysColumns.linkOrderID end) + char(9) +
