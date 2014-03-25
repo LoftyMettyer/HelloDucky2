@@ -1117,7 +1117,12 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 																						for="chkIncludeBHols"
 																						class="checkbox"
 																						tabindex="-1">
-																						Include Bank Holidays 
+																					</label>
+																					<label
+																						for="chkIncludeBHols"
+																						class="ui-state-error-text"
+																						tabindex="-1">
+																						Include Bank Holidays *
 																					</label>
 																				</td>
 																				<td width="5">&nbsp;</td>
@@ -1132,9 +1137,14 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 																						onclick="changeTab3Control();" />
 																					<label
 																						for="chkIncludeWorkingDaysOnly"
-																						class="checkbox checkboxdisabled"
+																						class="checkbox"
 																						tabindex="-1">
-																						Working Days Only 
+																					</label>
+																					<label
+																						for="chkIncludeWorkingDaysOnly"
+																						class="ui-state-error-text"
+																						tabindex="-1">
+																						Working Days Only *
 																					</label>
 																				</td>
 																				<td width="5">&nbsp;</td>
@@ -1149,9 +1159,14 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 																						onclick="changeTab3Control();" />
 																					<label
 																						for="chkShadeBHols"
-																						class="checkbox checkboxdisabled"
+																						class="checkbox"
 																						tabindex="-1">
-																						Show Bank Holidays 
+																					</label>
+																					<label
+																						for="chkShadeBHols"
+																						class="ui-state-error-text"
+																						tabindex="-1">
+																						Show Bank Holidays *
 																					</label>
 																				</td>
 																				<td width="5">&nbsp;</td>
@@ -1166,11 +1181,16 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 																						onclick="changeTab3Control();" />
 																					<label
 																						for="chkCaptions"
-																						class="checkbox checkboxdisabled"
+																						class="checkbox"
 																						tabindex="-1">
-																						Show Calendar Captions
 																					</label>
-																				</td>
+																					<label
+																						for="chkCaptions"
+																						class="ui-state-error-text"
+																						tabindex="-1">
+																						Show Calendar Captions *
+																					</label>
+																			</td>
 																				<td width="5">&nbsp;</td>
 																			</tr>
 																			<tr height="2">
@@ -1207,8 +1227,16 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 																				</td>
 																				<td width="5">&nbsp;</td>
 																			</tr>
+																			<tr>
+																				<td colspan="7">&nbsp;</td>
+																			</tr>
+																			<tr>
+																				<td colspan="7">&nbsp;</td>
+																			</tr>
 																			<tr height="2">
-																				<td colspan="7"></td>
+																				<td colspan="7">
+																					<label class="ui-state-error-text">* Not supported in OpenHR 8.0 Web</label>
+																				</td>
 																			</tr>
 																		</table>
 																	</td>
