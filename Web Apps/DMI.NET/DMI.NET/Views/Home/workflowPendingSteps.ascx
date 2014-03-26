@@ -15,29 +15,26 @@
 			colNames: ['Name', 'URL'],
 			colModel: [
 				{ name: 'Name' },
-				{ name: 'URL', hidden: true}
+				{ name: 'URL', hidden: true }
 			],
 			multiselect: true,
 			onSelectRow: function (rowID) {
 				refreshControls();
 			},
-			onSelectAll: function(rowID) {
+			onSelectAll: function (rowID) {
 				refreshControls();
 			},
-			ondblClickRow: function(rowID) {
+			ondblClickRow: function (rowID) {
 			},
 			cmTemplate: { sortable: false },
 			rowNum: 1000   //TODO set this to blocksize...
 		});
-		
 		//Select the first row
-		//JIRA 3356 - don't set top row, and disable run button.
-		//$("#PendingStepsTable").jqGrid('setSelection', 1);		
 		refreshControls();
 
 		//On clicking "Refresh",
-		$("#mnutoolRefreshWFPendingStepsFind").click(function() {
-			setrefresh();	
+		$("#mnutoolRefreshWFPendingStepsFind").click(function () {
+			setrefresh();
 		});
 
 		//On clicking "Run", open window with the selected item's URL
@@ -45,26 +42,32 @@
 			var selectedRows = $("#PendingStepsTable [aria-selected='true']"); //Get the selected row			
 			for (var i = 0; i < selectedRows.length; i++) {
 				try {
-					var url = selectedRows[i].children[2].innerHTML;					
+					var url = selectedRows[i].children[2].innerHTML;
 					spawnWindow(url, '_blank', screen.availWidth, screen.availHeight, 'yes');
 				}
-				catch(e) {}
-			}		
+				catch (e) { }
+			}
 		});
-		
+
 		//On clicking "Close" generic closeclck in general.js
 		$("#mnutoolCloseWFPendingStepsFind").hide(function () {
 			// We're hiding this for now but I'm leaving it's 
 			//click code below in case we need it in the future
 		});
-			
-		$("#mnutoolCloseWFPendingStepsFind").click(function() {
+
+		$("#mnutoolCloseWFPendingStepsFind").click(function () {
 			closeclick();
 		});
-		
+
 		<%If _StepCount = 0 Then%>
-		//disable run button if no steps pending
-		menu_toolbarEnableItem("mnutoolRunWFPendingStepsFind", false);
+			//disable run button if no steps pending
+			menu_toolbarEnableItem("mnutoolRunWFPendingStepsFind", false);
+		<%End If%>
+		
+		 <%If _StepCount = 0 And Session("fromMenu") = 0 Then%>
+			if (!menu_isSSIMode()) {
+				//Maybe some code here that could fade out the workflow pending steps back to a blank home screen
+			}
 		<%End If%>
 		
 		$('#tblMessage').removeClass('hidden');
@@ -252,11 +255,7 @@
 		Else
 			Dim sMessage As String
 			If _WorkflowGood = True Then
-				If Session("fromMenu") = 1 Then
-					sMessage = "No Pending Workflow Steps"
-				Else
-					sMessage = ""
-				End If
+				sMessage = "No Pending Workflow Steps"
 			Else
 				sMessage = "Error getting the pending workflow steps"
 			End If
