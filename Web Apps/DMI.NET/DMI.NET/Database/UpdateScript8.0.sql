@@ -83915,6 +83915,7 @@ CREATE PROCEDURE dbo.[spASRIntCopyRecordPostSave] (
 	@tableID		integer,
 	@FromRecordID	integer,
 	@ToRecordID		integer)
+WITH EXECUTE AS OWNER
 AS
 BEGIN
 	DECLARE @nvarCommand nvarchar(MAX) = '',

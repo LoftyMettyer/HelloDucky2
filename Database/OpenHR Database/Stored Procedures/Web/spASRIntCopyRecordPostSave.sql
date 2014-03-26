@@ -2,6 +2,7 @@
 	@tableID		integer,
 	@FromRecordID	integer,
 	@ToRecordID		integer)
+WITH EXECUTE AS OWNER
 AS
 BEGIN
 	DECLARE @nvarCommand nvarchar(MAX) = '',
@@ -20,8 +21,8 @@ BEGIN
 
 	IF LEN(@updateFields) > 0
 	BEGIN
-		SET @nvarCommand = 'UPDATE ' + @tableName + ' SET ' + @updateFields 
-			+ ' FROM (SELECT ' + @readFields + ' FROM ' + @tableName + ' WHERE ID = ' + convert(varchar(10), @FromRecordID)
+		SET @nvarCommand = 'UPDATE ' + @tablename + ' SET ' + @updateFields 
+			+ ' FROM (SELECT ' + @readFields + ' FROM ' + @tablename + ' WHERE ID = ' + convert(varchar(10), @FromRecordID)
 			+ ') newdata WHERE ID = ' + convert(varchar(10), @ToRecordID);
 
 		EXECUTE sp_executeSQL @nvarCommand;
