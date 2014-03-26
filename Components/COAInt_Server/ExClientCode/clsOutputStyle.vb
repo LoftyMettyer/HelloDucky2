@@ -1,4 +1,4 @@
-﻿Option Strict Off
+﻿Option Strict On
 Option Explicit On
 Friend Class clsOutputStyle
 
@@ -16,6 +16,11 @@ Friend Class clsOutputStyle
 	Private mlngBackCol97 As Integer 'Colour Index for Word 97
 	Private mlngForeCol97 As Integer 'Colour Index for Word 97
 
+	Public ReadOnly Property Font As Font
+		Get
+			Return New Font("Calibri", 11)
+		End Get
+	End Property
 
 	Public Property StartCol() As Integer
 		Get

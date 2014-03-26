@@ -449,7 +449,7 @@ Namespace ExClientCode
 									Else
 										' format as a number
 										Dim numberAsString As String = strArray(lngGridCol, lngGridRow).ToString()
-										Dim indexOfDecimalPoint As Integer = numberAsString.IndexOf(".", System.StringComparison.Ordinal)
+										Dim indexOfDecimalPoint As Integer = numberAsString.IndexOf(".", StringComparison.Ordinal)
 										Dim numberOfDecimals As Integer = 0
 										If indexOfDecimalPoint > 0 Then numberOfDecimals = numberAsString.Substring(indexOfDecimalPoint + 1).Length
 
@@ -832,7 +832,7 @@ LocalErr:
 						Dim totalRows = (objStyle.EndRow + lngRow) - (objStyle.StartRow + lngRow - 1)
 						Dim totalCols = (objStyle.EndCol + lngCol) - (objStyle.StartCol + lngCol - 1)
 
-						objRange = _mxlWorkSheet.Cells.CreateRange(objStyle.StartRow + (lngRow - 1), objStyle.StartCol + lngCol - 1, totalRows, totalCols)
+						objRange = _mxlWorkSheet.Cells.CreateRange(objStyle.StartRow + lngRow, objStyle.StartCol + lngCol - 1, totalRows, totalCols)
 						ApplyStyleToRange(objRange, objStyle)
 					End If
 				End If
@@ -878,55 +878,55 @@ LocalErr:
 
 		Private Sub ApplyStyleToRange(ByRef objRange As Range, ByRef objStyle As clsOutputStyle)
 
-			On Error GoTo LocalErr
+			Try
 
-			Dim rangeStyle As Style = _mxlWorkBook.Styles(_mxlWorkBook.Styles.Add())
-			rangeStyle.Name = objStyle.Name
+				Dim rangeStyle As Style = _mxlWorkBook.Styles(_mxlWorkBook.Styles.Add())
+				rangeStyle.Name = objStyle.Name
 
-			With objRange
+				With objRange
 
-				If objStyle.CenterText Then
-					rangeStyle.HorizontalAlignment = TextAlignmentType.Center
-				Else
-					rangeStyle.HorizontalAlignment = TextAlignmentType.Left
-				End If
-
-				rangeStyle.Font.IsBold = objStyle.Bold
-				If objStyle.Underline Then rangeStyle.Font.Underline = FontUnderlineType.Single
-				rangeStyle.Font.Color = ColorTranslator.FromWin32(objStyle.ForeCol)
-
-				'Don't do the backcol nor gridlines for the title...
-				If objStyle.Name <> "Title" Then
-					' We use foregroundColor for the background...
-					rangeStyle.ForegroundColor = ColorTranslator.FromWin32(objStyle.BackCol)
-					rangeStyle.Pattern = BackgroundType.Solid
-
-					On Error Resume Next
-
-					If objStyle.Gridlines Then
-						.SetOutlineBorders(CellBorderType.Thin, Color.Black)
-						rangeStyle.Borders(BorderType.LeftBorder).Color = Color.Black
-						rangeStyle.Borders(BorderType.LeftBorder).LineStyle = CellBorderType.Thin
-						rangeStyle.Borders(BorderType.RightBorder).Color = Color.Black
-						rangeStyle.Borders(BorderType.RightBorder).LineStyle = CellBorderType.Thin
-						rangeStyle.Borders(BorderType.TopBorder).Color = Color.Black
-						rangeStyle.Borders(BorderType.TopBorder).LineStyle = CellBorderType.Thin
-						rangeStyle.Borders(BorderType.BottomBorder).Color = Color.Black
-						rangeStyle.Borders(BorderType.BottomBorder).LineStyle = CellBorderType.Thin
+					If objStyle.CenterText Then
+						rangeStyle.HorizontalAlignment = TextAlignmentType.Center
 					Else
-						.SetOutlineBorders(CellBorderType.None, Color.Transparent)
+						rangeStyle.HorizontalAlignment = TextAlignmentType.Left
 					End If
 
-				End If
+					rangeStyle.Font.Name = objStyle.Font.Name
+					rangeStyle.Font.Size = objStyle.Font.Size
+					rangeStyle.Font.IsBold = objStyle.Bold
+					If objStyle.Underline Then rangeStyle.Font.Underline = FontUnderlineType.Single
+					rangeStyle.Font.Color = ColorTranslator.FromWin32(objStyle.ForeCol)
 
-				objRange.SetStyle(rangeStyle)
+					'Don't do the backcol nor gridlines for the title...
+					If objStyle.Name <> "Title" Then
+						' We use foregroundColor for the background...
+						rangeStyle.ForegroundColor = ColorTranslator.FromWin32(objStyle.BackCol)
+						rangeStyle.Pattern = BackgroundType.Solid
 
-			End With
+						If objStyle.Gridlines Then
+							.SetOutlineBorders(CellBorderType.Thin, Color.Black)
+							rangeStyle.Borders(BorderType.LeftBorder).Color = Color.Black
+							rangeStyle.Borders(BorderType.LeftBorder).LineStyle = CellBorderType.Thin
+							rangeStyle.Borders(BorderType.RightBorder).Color = Color.Black
+							rangeStyle.Borders(BorderType.RightBorder).LineStyle = CellBorderType.Thin
+							rangeStyle.Borders(BorderType.TopBorder).Color = Color.Black
+							rangeStyle.Borders(BorderType.TopBorder).LineStyle = CellBorderType.Thin
+							rangeStyle.Borders(BorderType.BottomBorder).Color = Color.Black
+							rangeStyle.Borders(BorderType.BottomBorder).LineStyle = CellBorderType.Thin
+						Else
+							.SetOutlineBorders(CellBorderType.None, Color.Transparent)
+						End If
 
-			Exit Sub
+					End If
 
-LocalErr:
-			_mstrErrorMessage = Err.Description
+					objRange.SetStyle(rangeStyle)
+
+				End With
+
+			Catch ex As Exception
+				_mstrErrorMessage = ex.Message
+
+			End Try
 
 		End Sub
 
