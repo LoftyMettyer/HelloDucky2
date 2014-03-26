@@ -1240,9 +1240,13 @@ Namespace Controllers
 
 								End If
 
-							Catch ex As Exception
+							Catch ex As SqlException
+								If ex.Number.Equals(50000) Then
+									sErrorMsg = Trim(Mid(ex.Message, 1, (InStr(ex.Message, "The transaction ended in the trigger")) - 1))
+								Else
+									sErrorMsg = sErrorMsg & FormatError(ex.Message)
+								End If
 
-								sErrorMsg = sErrorMsg & FormatError(ex.Message)
 								fOk = False
 
 								Dim sRecDescExists = ""
