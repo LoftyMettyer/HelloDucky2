@@ -44,7 +44,12 @@ Public Class MvcApplication
 
 		'If the user isn't requesting the Login form, redirect them there.
 		Session("version") = My.Application.Info.Version.Major & "." & My.Application.Info.Version.Minor & "." & My.Application.Info.Version.Build
-		Session("TimeoutSecs") = (CInt(ApplicationSettings.SessionTimeOutInMinutes) * 60) - 20
+		If ApplicationSettings.SessionTimeOutInMinutes Is Nothing Then
+			Session("TimeoutSecs") = (20 * 60) - 20 'No timeout setting, set to 20 minutes
+		Else
+			Session("TimeoutSecs") = (CInt(ApplicationSettings.SessionTimeOutInMinutes) * 60) - 20
+		End If
+
 		Server.ScriptTimeout = 1000
 
 		If String.IsNullOrEmpty(Request.QueryString("database")) Then
