@@ -312,7 +312,7 @@ Namespace ExClientCode
 			_mstrDefTitle = strDefTitle
 
 			If _mblnPivotTable Then
-				GetWorksheet("Data " & strSheetName)
+				GetWorksheet("Data_" & strSheetName)
 			Else
 				GetWorksheet(strSheetName)
 			End If
@@ -362,38 +362,6 @@ Namespace ExClientCode
 			'Disable the numbers stored as text option
 			opt.SetErrorCheck(ErrorCheckType.TextNumber, False)
 
-			If _mblnChart Then	' Excel chart?
-				ApplyStyle(UBound(strArray, 1), UBound(strArray, 2), colStyles)
-				ApplyCellOptions(UBound(strArray, 1), colStyles, True)
-
-				CreateChart(_mlngDataCurrentRow + UBound(strArray, 2), _mlngDataStartCol + UBound(strArray, 1), colStyles)
-				ApplyCellOptions(UBound(strArray, 1), colStyles, False)
-
-				'Delete superfluous rows and cols if setup in User Config reports section
-				If _mblnXlExcelOmitLeftCol Then _mxlWorkSheet.Cells.DeleteColumn(0)
-				If _mblnXlExcelOmitTopRow Then _mxlWorkSheet.Cells.DeleteRows(0, 1)
-
-			ElseIf _mblnPivotTable Then
-
-				If UBound(strArray, 1) < 1 Then
-					_mstrErrorMessage = "Unable to create a pivot table for a single column of data."
-				Else
-					ApplyStyle(UBound(strArray, 1), UBound(strArray, 2), colStyles)
-
-					CreatePivotTable(_mlngDataCurrentRow + UBound(strArray, 2), _mlngDataStartCol + UBound(strArray, 1), strArray(0, 0), strArray(1, 0), strArray(UBound(strArray), 0), colStyles, colColumns)
-				End If
-
-			Else
-				If _mblnApplyStyles Then
-					ApplyStyle(UBound(strArray, 1), UBound(strArray, 2), colStyles)
-					ApplyMerges(colMerges)
-				End If
-				ApplyCellOptions(UBound(strArray, 1), colStyles, True)
-
-				'Delete superfluous rows and cols if setup in User Config reports section
-				If _mblnXlExcelOmitLeftCol Then _mxlWorkSheet.Cells.DeleteColumn(0)
-				If _mblnXlExcelOmitTopRow Then _mxlWorkSheet.Cells.DeleteRows(0, 1)
-			End If
 
 			' PrepareRows sets the datatype for each column. 
 			' JIRA HRPRO-3963 calling PrepareRows overwrites all required formatting options.
@@ -460,12 +428,9 @@ Namespace ExClientCode
 											stlNumeric.Custom = "@"
 										End If
 
+										.SetStyle(stlNumeric)
 										If IsNumeric(strArray(lngGridCol, lngGridRow)) Then
-											.SetStyle(stlNumeric)
-											.PutValue(strArray(lngGridCol, lngGridRow))
-										Else
-											.SetStyle(stlGeneral)
-											.PutValue(strArray(lngGridCol, lngGridRow))
+											.PutValue(CDbl(strArray(lngGridCol, lngGridRow)))
 										End If
 
 									End If
@@ -501,6 +466,39 @@ Namespace ExClientCode
 				Next
 			Next
 
+			If _mblnChart Then	' Excel chart?
+				ApplyStyle(UBound(strArray, 1), UBound(strArray, 2), colStyles)
+				ApplyCellOptions(UBound(strArray, 1), colStyles, True)
+
+				CreateChart(_mlngDataCurrentRow + UBound(strArray, 2), _mlngDataStartCol + UBound(strArray, 1), colStyles)
+				ApplyCellOptions(UBound(strArray, 1), colStyles, False)
+
+				'Delete superfluous rows and cols if setup in User Config reports section
+				If _mblnXlExcelOmitLeftCol Then _mxlWorkSheet.Cells.DeleteColumn(0)
+				If _mblnXlExcelOmitTopRow Then _mxlWorkSheet.Cells.DeleteRows(0, 1)
+
+			ElseIf _mblnPivotTable Then
+
+				If UBound(strArray, 1) < 1 Then
+					_mstrErrorMessage = "Unable to create a pivot table for a single column of data."
+				Else
+					ApplyStyle(UBound(strArray, 1), UBound(strArray, 2), colStyles)
+
+					CreatePivotTable(_mlngDataCurrentRow + UBound(strArray, 2), _mlngDataStartCol + UBound(strArray, 1), strArray(0, 0), strArray(1, 0), strArray(UBound(strArray), 0), colStyles, colColumns)
+				End If
+			Else
+				If _mblnApplyStyles Then
+					ApplyStyle(UBound(strArray, 1), UBound(strArray, 2), colStyles)
+					ApplyMerges(colMerges)
+				End If
+				ApplyCellOptions(UBound(strArray, 1), colStyles, True)
+
+				'Delete superfluous rows and cols if setup in User Config reports section
+				If _mblnXlExcelOmitLeftCol Then _mxlWorkSheet.Cells.DeleteColumn(0)
+				If _mblnXlExcelOmitTopRow Then _mxlWorkSheet.Cells.DeleteRows(0, 1)
+			End If
+
+
 			If _mblnXlAutoFitCols Then
 				_mxlWorkSheet.AutoFitColumns()
 			End If
@@ -509,72 +507,48 @@ Namespace ExClientCode
 
 		End Sub
 
-		Private Sub CreateChart(ByRef lngMaxRows As Integer, ByRef lngMaxCols As Integer, ByRef colStyles As Collection)
+		Private Sub CreateChart(lngMaxRows As Integer, lngMaxCols As Integer, colStyles As Collection)
 			Dim strSheetName As String
 
-			On Error GoTo LocalErr
+			Try
 
-			strSheetName = _mxlWorkSheet.Name & " Chart"
-			Dim mxlChartWorkSheet = _mxlWorkBook.Worksheets(_mxlWorkBook.Worksheets.Add())
-			mxlChartWorkSheet.Name = strSheetName
-			mxlChartWorkSheet.MoveTo(0)
+				strSheetName = _mxlWorkSheet.Name & " Chart"
+				Dim mxlChartWorkSheet = _mxlWorkBook.Worksheets(_mxlWorkBook.Worksheets.Add())
+				mxlChartWorkSheet.Name = strSheetName
+				mxlChartWorkSheet.MoveTo(0)
 
-			Dim chartIndex As Integer = mxlChartWorkSheet.Charts.Add(Charts.ChartType.Bar, 0, 0, 30, 20)
-			Dim xlChart As Charts.Chart = mxlChartWorkSheet.Charts(chartIndex)	'	 Microsoft.Office.Interop.Excel.Chart
-			Dim xlData As Range		' Microsoft.Office.Interop.Excel.Range
-			Dim xlCategories As Range
+				Dim chartIndex As Integer = mxlChartWorkSheet.Charts.Add(ChartType.Bar, 0, 0, 30, 20)
+				Dim xlChart As Chart = mxlChartWorkSheet.Charts(chartIndex)
+				Dim xlData As Range
+				Dim xlCategories As Range
 
-			Dim dataFirstRow As Integer = _mlngDataCurrentRow
-			Dim dataFirstCol As Integer = _mlngDataStartCol - 1
-			Dim dataRowCount As Integer = lngMaxRows - _mlngDataCurrentRow
-			Dim dataColumnCount As Integer = lngMaxCols - _mlngDataStartCol
+				Dim dataFirstRow As Integer = _mlngDataCurrentRow
+				Dim dataFirstCol As Integer = _mlngDataStartCol - 1
+				Dim dataRowCount As Integer = lngMaxRows - _mlngDataCurrentRow
+				Dim dataColumnCount As Integer = lngMaxCols - _mlngDataStartCol
 
-			' xlData = mxlWorkSheet.Range(mxlWorkSheet.Cells._Default(mlngDataCurrentRow, mlngDataStartCol), mxlWorkSheet.Cells._Default(lngMaxRows, lngMaxCols))
-			xlCategories = _mxlWorkSheet.Cells.CreateRange(dataFirstRow, dataFirstCol, dataRowCount, 1)
-			xlCategories.Name = "xlCategories"
-			xlData = _mxlWorkSheet.Cells.CreateRange(dataFirstRow, dataFirstCol + dataColumnCount, dataRowCount, 1)
-			xlData.Name = "xlData"
+				xlCategories = _mxlWorkSheet.Cells.CreateRange(dataFirstRow, dataFirstCol, dataRowCount, 1)
+				xlCategories.Name = "xlCategories"
+				xlData = _mxlWorkSheet.Cells.CreateRange(dataFirstRow, dataFirstCol + dataColumnCount, dataRowCount, 1)
+				xlData.Name = "xlData"
 
-			' xlChart = mxlApp.Charts.Add(After:=mxlWorkSheet)
+				With xlChart
+					.Type = ChartType.Column3DClustered
+					.NSeries.Add("=xlData", True)
+					.NSeries.CategoryData = "=xlCategories"
 
-			With xlChart
-				'.ChartType = Microsoft.Office.Interop.Excel.XlChartType.xl3DColumnClustered
-				.Type = ChartType.Column3DClustered
-				' .SetSourceData(Source:=xlData, PlotBy:=Microsoft.Office.Interop.Excel.XlRowCol.xlColumns)
-				.NSeries.Add("=xlData", True)
-				.NSeries.CategoryData = "=xlCategories"
-				' .Location(Where:=Microsoft.Office.Interop.Excel.XlChartLocation.xlLocationAsNewSheet)
+					.Title.Text = _mstrDefTitle
+					.Title.IsVisible = True
+					.Title.Font.IsBold = True
+					.Title.Font.Size = 12
+					If colStyles.Item("Title").Underline Then .Title.Font.Underline = FontUnderlineType.Single
+					.Title.Font.Color = ColorTranslator.FromWin32(colStyles.Item("Title").ForeCol)
+				End With
 
-				'.ChartTitle.Caption = mstrDefTitle
-				.Title.Text = _mstrDefTitle
-				'.HasTitle = True
-				.Title.IsVisible = True
-				'MH20061204 Fault 11230
-				'.ChartTitle.Characters.Text = mstrDefTitle
-				'.ChartTitle.Text = mstrDefTitle
-				'UPGRADE_WARNING: Couldn't resolve default property of object colStyles().Bold. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				'.ChartTitle.Font.Bold = colStyles.Item("Title").Bold
-				.Title.Font.IsBold = True
-				'.ChartTitle.Font.Size = 12
-				.Title.Font.Size = 12
-				'MH20050113 Fault 9376
-				'UPGRADE_WARNING: Couldn't resolve default property of object colStyles().Underline. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				'.ChartTitle.Font.Underline = colStyles.Item("Title").Underline
-				.Title.Font.Underline = colStyles.Item("Title").Underline
-				'UPGRADE_WARNING: Couldn't resolve default property of object colStyles().ForeCol. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				'.ChartTitle.Font.Color = colStyles.Item("Title").ForeCol
-				.Title.Font.Color = ColorTranslator.FromWin32(colStyles.Item("Title").ForeCol)
-			End With
+			Catch ex As Exception
+				_mstrErrorMessage = ex.Message
 
-			' SetSheetName((mxlWorkBook.ActiveChart), strSheetName)
-			' SetSheetName(_mxlWorkSheet, strSheetName)
-			'If mxlFirstSheet Is Nothing Then
-			'	mxlFirstSheet = mxlWorkBook.ActiveChart
-			'End If
-			Exit Sub
-
-LocalErr:
-			_mstrErrorMessage = Err.Description
+			End Try
 
 		End Sub
 
@@ -593,12 +567,8 @@ LocalErr:
 			With pivotTables(index)
 				.AddFieldToArea(PivotFieldType.Row, 1)
 				.AddFieldToArea(PivotFieldType.Column, 0)
-
-				If lngMaxCols > 3 Then
-					.AddFieldToArea(PivotFieldType.Data, 2)
-				Else
-					.AddFieldToArea(PivotFieldType.Data, 1)
-				End If
+				.AddFieldToArea(PivotFieldType.Data, pivotTables(index).BaseFields.Count - 1)
+				.DataFields(0).Function = ConsolidationFunction.Sum
 
 				.RowGrand = True
 				.ColumnGrand = True
@@ -612,126 +582,56 @@ LocalErr:
 				.PivotTableStyleType = PivotTableStyleType.PivotTableStyleMedium9
 				.ShowPivotStyleRowHeader = True
 				.ShowPivotStyleColumnHeader = True
+				.DisplayNullString = True
 
 			End With
 
 			pivotSheet.AutoFitColumns()
 
-			' Save the file
-			'_mxlWorkBook.Save("c:\temp\pivotTable_test.xls")
+		End Sub
+
+		Private Sub ApplyCellOptions(ByRef lngColCount As Integer, ByRef colStyles As Collection, ByRef blnGridLines As Boolean)
+
+			Dim objRange As Range
+
+			Try
+
+				If _mblnApplyStyles Then
+					If blnGridLines Then
+						_mxlWorkSheet.IsGridlinesVisible = _mblnXlExcelGridlines
+						_mxlWorkSheet.IsRowColumnHeadersVisible = _mblnXlExcelHeaders
+					End If
+
+					With colStyles.Item("Title")
+						.StartCol = glngSettingTitleCol
+						.StartRow = IIf(_mlngAppendStartRow > 0, _mlngAppendStartRow, glngSettingTitleRow)
+						.EndCol = .StartCol
+						.EndRow = .StartRow
+					End With
+
+					'Put title in after autofit...
+					If colStyles.Item("Title").StartCol <> 0 And colStyles.Item("Title").StartRow <> 0 Then
+						_mxlWorkSheet.Cells(colStyles.Item("Title").StartRow - 1, colStyles.Item("Title").StartCol - 1).Value = _mstrDefTitle
+						objRange = _mxlWorkSheet.Cells.CreateRange(colStyles.Item("Title").StartRow - 1, colStyles.Item("Title").StartCol - 1, 1, 1)
+						ApplyStyleToRange(objRange, colStyles.Item("Title"))
+					End If
+				End If
+
+			Catch ex As Exception
+				_mstrErrorMessage = ex.Message
+			End Try
 
 		End Sub
 
 
-		'		Private Sub PrepareRows(lngRowCount As Integer, ByRef colColumns As List(Of Metadata.Column), ByRef colStyles As Collection)
+		Private Sub ApplyStyle(lngNumCols As Integer, lngNumRows As Integer, ByRef colStyles As Collection)
 
-		'			Dim objColumn As Metadata.Column
-		'			Dim lngCount As Integer = 0
+			Dim objStyle As clsOutputStyle
+			Dim objRange As Range
+			Dim lngCol As Integer = _mlngDataStartCol
+			Dim lngRow As Integer = _mlngDataCurrentRow
 
-		'			On Error GoTo LocalErr
-
-		'			With _mxlWorkSheet
-
-		'				'If _mlngHeaderRows > 0 Then
-		'				'	' Define style for header row and apply it.
-		'				'	Dim stlHeaderRow As Style = _mxlWorkBook.Styles(_mxlWorkBook.Styles.Add())
-		'				'	stlHeaderRow.Custom = "@"
-		'				'	Dim range As Range = _mxlWorkSheet.Cells.CreateRange(_mlngDataCurrentRow - 1, _mlngDataStartCol - 1, _mlngHeaderRows, colColumns.Count())
-		'				'	'Name the range.
-		'				'	range.Name = "HeaderRange"
-		'				'	range.SetStyle(stlHeaderRow)
-		'				'End If
-
-		'				Dim stlColumnStyleTmp As Style = _mxlWorkBook.Styles(_mxlWorkBook.Styles.Add())
-
-		'				For Each objColumn In colColumns
-
-		'					Dim columnRange As Range = _mxlWorkSheet.Cells.CreateRange(_mlngDataCurrentRow + _mlngHeaderRows - 1, _mlngDataStartCol - 1 + lngCount, _mlngDataCurrentRow + lngRowCount, 1)
-		'					Select Case objColumn.DataType
-		'						Case SQLDataType.sqlNumeric, SQLDataType.sqlInteger
-		'							If objColumn.Decimals > 0 Then
-		'								If objColumn.Decimals > 100 Then objColumn.Decimals = 100
-		'								' .NumberFormat = IIf(objColumn.ThousandSeparator, "#,##0", "0") & IIf(objColumn.DecPlaces, "." & New String("0", objColumn.DecPlaces), "")
-		'								stlColumnStyleTmp.Custom = IIf(objColumn.Use1000Separator, "#,##0", "0") & IIf(objColumn.Decimals, "." & New String("0", objColumn.Decimals), "")
-		'								' 								stlColumnStyleTmp.Number = 4
-		'							Else
-		'								stlColumnStyleTmp.Custom = "@"
-		'							End If
-		'						Case SQLDataType.sqlBoolean
-		'							' .HorizontalAlignment = TextAlignmentType.Center
-		'							stlColumnStyleTmp.Custom = "@"
-		'						Case SQLDataType.sqlUnknown
-		'							'Leave it alone! (Required for percentages on Standard Reports)
-		'							stlColumnStyleTmp.Custom = "@"
-		'						Case SQLDataType.sqlDate
-		'							'MH20050104 Fault 9695 & 9696
-		'							'Adding ;@ to the end formats it as "short date" so excel will look at the
-		'							'regional settings when opening the workbook rather than force it to always
-		'							'be in the format of the user who created the workbook.
-		'							stlColumnStyleTmp.Custom = DateFormat() & ";@"
-		'						Case Else
-		'							stlColumnStyleTmp.Custom = "@"
-		'					End Select
-
-		'					' Apply style.
-		'					'columnRange.SetStyle(stlColumnStyleTmp)
-
-		'				Next
-
-		'			End With
-
-		'			Exit Sub
-
-		'LocalErr:
-		'			_mstrErrorMessage = Err.Description
-
-		'		End Sub
-
-
-		Private Sub ApplyCellOptions(ByRef lngColCount As Integer, ByRef colStyles As Collection, ByRef blnGridLines As Boolean)
-
-			Dim objRange As Range	' Microsoft.Office.Interop.Excel.Range
-			Dim lngCount As Integer
-
-			Dim lngMaxWidth As Double
-			Dim lngTitleColWidth As Double
-			Dim lngTitleSize As Double
-
-			On Error GoTo LocalErr
-
-			If _mblnXlAutoFitCols Then
-				' mxlWorkSheet.Range(mxlWorkSheet.Cells._Default(mlngDataCurrentRow, mlngDataStartCol), mxlWorkSheet.Cells._Default(mlngDataCurrentRow, mlngDataStartCol + lngColCount)).EntireColumn.AutoFit()
-				'_mxlWorkSheet.AutoFitColumns()
-
-				' TODO: NOt required?
-				'If Not mblnSizeColumnsIndependently Then
-				'	lngMaxWidth = 0
-				'	For lngCount = mlngDataStartCol + mlngHeaderCols To mlngDataStartCol + lngColCount
-				'		'UPGRADE_WARNING: Couldn't resolve default property of object mxlWorkSheet.Columns(lngCount).ColumnWidth. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				'		If lngMaxWidth < mxlWorkSheet.Columns._Default(lngCount).ColumnWidth Then
-				'			'UPGRADE_WARNING: Couldn't resolve default property of object mxlWorkSheet.Columns().ColumnWidth. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				'			lngMaxWidth = mxlWorkSheet.Columns._Default(lngCount).ColumnWidth
-				'		End If
-				'	Next
-
-				'	For lngCount = mlngDataStartCol + mlngHeaderCols To mlngDataStartCol + lngColCount
-				'		'UPGRADE_WARNING: Couldn't resolve default property of object mxlWorkSheet.Columns().ColumnWidth. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				'		mxlWorkSheet.Columns._Default(lngCount).ColumnWidth = lngMaxWidth
-				'	Next
-				'End If
-
-			End If
-
-
-			If _mblnApplyStyles Then
-				If blnGridLines Then
-					'With mxlApp.ActiveWindow
-					'.DisplayGridlines = mblnXLExcelGridlines
-					_mxlWorkSheet.IsGridlinesVisible = _mblnXlExcelGridlines
-					' .DisplayHeadings = mblnXLExcelHeaders
-					_mxlWorkSheet.IsRowColumnHeadersVisible = _mblnXlExcelHeaders
-					'End With
-				End If
+			Try
 
 				With colStyles.Item("Title")
 					.StartCol = glngSettingTitleCol
@@ -740,108 +640,44 @@ LocalErr:
 					.EndRow = .StartRow
 				End With
 
-				'Put title in after autofit...
-				If colStyles.Item("Title").StartCol <> 0 And colStyles.Item("Title").StartRow <> 0 Then
-					_mxlWorkSheet.Cells(colStyles.Item("Title").StartRow - 1, colStyles.Item("Title").StartCol - 1).Value = _mstrDefTitle
-					objRange = _mxlWorkSheet.Cells.CreateRange(colStyles.Item("Title").StartRow - 1, colStyles.Item("Title").StartCol - 1, 1, 1)
-					ApplyStyleToRange(objRange, colStyles.Item("Title"))
-					' objRange = mxlWorkSheet.Cells._Default(colStyles.Item("Title").StartRow, colStyles.Item("Title").StartCol)
-					' ApplyStyleToRange(objRange, colStyles.Item("Title"))
-
-					'MH20020807 Fault 6562
-					'Merge cells for the title column so that if you append to the file
-					'then the title is not taken into account during column sizing.
-					' TODO: 
-					'With mxlWorkSheet.Columns._Default(colStyles.Item("Title").StartCol)
-					'	lngTitleColWidth = .ColumnWidth
-					'	lngMaxWidth = .Width
-					'	.AutoFit()
-					'	lngTitleSize = .Width
-
-					'	lngCount = colStyles.Item("Title").StartCol
-					'	Do
-					'		lngCount = lngCount + 1
-					'		lngMaxWidth = lngMaxWidth + mxlWorkSheet.Columns._Default(lngCount).Width
-					'	Loop While lngMaxWidth < lngTitleSize
-
-					'	With mxlWorkSheet
-					'		.Range(.Cells._Default(objRange.Row, objRange.Column), .Cells._Default(objRange.Row, lngCount)).Merge()
-					'	End With
-					'	.ColumnWidth = lngTitleColWidth
-					'End With
-					'NHRD09072012 Jira HRPRO-2308
-					'      'Delete superfluous rows and cols if setup in User Config reports section
-					'      If mblnXLExcelOmitLeftCol Then mxlWorkSheet.Range("A:A").Delete
-					'      If mblnXLExcelOmitTopRow Then mxlWorkSheet.Range("1:1").Delete
-				End If
-			End If
-
-			Exit Sub
-
-LocalErr:
-			_mstrErrorMessage = Err.Description
-
-		End Sub
-
-
-		Private Sub ApplyStyle(ByRef lngNumCols As Integer, ByRef lngNumRows As Integer, ByRef colStyles As Collection)
-
-			Dim objStyle As clsOutputStyle
-			Dim objRange As Range
-			Dim lngCol As Integer
-			Dim lngRow As Integer
-
-			On Error GoTo LocalErr
-
-			lngCol = _mlngDataStartCol
-			lngRow = _mlngDataCurrentRow
-
-			With colStyles.Item("Title")
-				.StartCol = glngSettingTitleCol
-				.StartRow = IIf(_mlngAppendStartRow > 0, _mlngAppendStartRow, glngSettingTitleRow)
-				.EndCol = .StartCol
-				.EndRow = .StartRow
-			End With
-
-			With colStyles.Item("Heading")
-				.StartCol = 0
-				.StartRow = 0
-				.EndCol = lngNumCols
-				.EndRow = _mlngHeaderRows - 1
-			End With
-
-			If _mlngHeaderCols > 0 Then
-				With colStyles.Item("HeadingCols")
+				With colStyles.Item("Heading")
 					.StartCol = 0
 					.StartRow = 0
-					.EndCol = _mlngHeaderCols - 1
+					.EndCol = lngNumCols
+					.EndRow = _mlngHeaderRows - 1
+				End With
+
+				If _mlngHeaderCols > 0 Then
+					With colStyles.Item("HeadingCols")
+						.StartCol = 0
+						.StartRow = 0
+						.EndCol = _mlngHeaderCols - 1
+						.EndRow = lngNumRows
+					End With
+				End If
+
+				With colStyles.Item("Data")
+					.StartCol = _mlngHeaderCols
+					.StartRow = _mlngHeaderRows
+					.EndCol = lngNumCols
 					.EndRow = lngNumRows
 				End With
-			End If
 
-			With colStyles.Item("Data")
-				.StartCol = _mlngHeaderCols
-				.StartRow = _mlngHeaderRows
-				.EndCol = lngNumCols
-				.EndRow = lngNumRows
-			End With
+				For Each objStyle In colStyles
+					If objStyle.Name <> "Title" Then
+						If objStyle.StartRow + lngRow > 0 And objStyle.StartCol + lngCol > 0 Then
+							Dim totalRows = (objStyle.EndRow + lngRow) - (objStyle.StartRow + lngRow - 1)
+							Dim totalCols = (objStyle.EndCol + lngCol) - (objStyle.StartCol + lngCol - 1)
 
-			For Each objStyle In colStyles
-				If objStyle.Name <> "Title" Then
-					If objStyle.StartRow + lngRow > 0 And objStyle.StartCol + lngCol > 0 Then
-						Dim totalRows = (objStyle.EndRow + lngRow) - (objStyle.StartRow + lngRow - 1)
-						Dim totalCols = (objStyle.EndCol + lngCol) - (objStyle.StartCol + lngCol - 1)
-
-						objRange = _mxlWorkSheet.Cells.CreateRange(objStyle.StartRow + lngRow, objStyle.StartCol + lngCol - 1, totalRows, totalCols)
-						ApplyStyleToRange(objRange, objStyle)
+							objRange = _mxlWorkSheet.Cells.CreateRange(objStyle.StartRow + (lngRow - 1), objStyle.StartCol + lngCol - 1, totalRows, totalCols)
+							ApplyStyleToRange(objRange, objStyle)
+						End If
 					End If
-				End If
-			Next objStyle
+				Next objStyle
 
-			Exit Sub
-
-LocalErr:
-			_mstrErrorMessage = Err.Description
+			Catch ex As Exception
+				_mstrErrorMessage = ex.Message
+			End Try
 
 		End Sub
 
@@ -876,7 +712,7 @@ LocalErr:
 		End Sub
 
 
-		Private Sub ApplyStyleToRange(ByRef objRange As Range, ByRef objStyle As clsOutputStyle)
+		Private Sub ApplyStyleToRange(ByRef objRange As Range, objStyle As clsOutputStyle)
 
 			Try
 
