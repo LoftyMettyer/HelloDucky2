@@ -37,17 +37,20 @@
 		if (fOK == true) {
 			setGridFont(frmLookupFindForm.ssOleDBGrid);
 			// Expand the option frame and hide the work frame.
-			//window.parent.document.all.item("workframeset").cols = "0, *";	
 			$("#optionframe").attr("data-framesource", "LOOKUPFIND");
-			//$("#workframe").hide();
-			//$("#optionframe").show();
 			$("#optionframe").dialog({
 				autoOpen: true,
 				modal: true,
 				width: 750,
 				height: 600,
-				close: function() {
+				close: function () {
 					CancelLookup();
+				},
+				open: function (event, ui) {
+					$("#ssOleDBGrid").jqGrid('setGridWidth', $("#optionframe").width());
+				},
+				resize: function () { //resize the grid to the height of its container.		
+					$("#ssOleDBGrid").jqGrid('setGridWidth', $("#optionframe").width()-20);
 				}
 			});
 		
@@ -316,22 +319,18 @@
 										<td height="10">
 											<table width="100%" class="invisible" cellspacing="0" cellpadding="0">
 												<tr>
-													<td style="width: 5%;white-space: nowrap">View : </td>
-													<td width="20%">
+													<td style="white-space: nowrap">View : </td>
+													<td style="width: 205px">
 														<select id="selectView" name="selectView" class="combo" style="HEIGHT: 22px; WIDTH: 200px">
-															<%
-
-																' Get the view records.
+															<%' Get the view records.
 																If (Len(sErrorDescription) = 0) And (Len(sFailureDescription) = 0) Then
-
 																	Try
-
 																		Dim prmDfltOrderID As New SqlParameter("plngDfltOrderID", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
 																		Dim rstViewRecords = objDataAccess.GetDataTable("spASRIntGetLookupViews", CommandType.StoredProcedure _
 																			, New SqlParameter("plngTableID", SqlDbType.Int) With {.Value = lngLookupTableID} _
 																			, prmDfltOrderID _
 																			, New SqlParameter("plngColumnID", SqlDbType.Int) With {.Value = CleanNumeric(Session("optionColumnID"))})
-																				
+
 																		For Each objRow As DataRow In rstViewRecords.Rows
 																			Response.Write("						<option value=" & objRow(0))
 																			If objRow(0) = CLng(Session("optionLinkViewID")) Then
@@ -359,33 +358,28 @@
 															%>
 														</select>
 													</td>
-																						
-													<td width="10%" id="tdTViewHelp" name="tdTViewHelp" onclick="doViewHelp()" style="white-space: nowrap; text-align:center;" >
-															
+
+													<td id="tdTViewHelp" name="tdTViewHelp" onclick="doViewHelp()" style="white-space: nowrap; text-align: center;">
 														<img id="imgTViewHelp" name="imgTViewHelp" alt="help"
-														     src="<%=Url.Content("~/Content/images/Help32.png")%>"
-														     
-														     title="What happens if I change the view?" style="width:17px; height:17px; border:0; cursor: pointer"/>
-															
+															src="<%=Url.Content("~/Content/images/Help32.png")%>"
+															title="What happens if I change the view?" style="width: 17px; height: 17px; border: 0; cursor: pointer" />
 													</td>
-													<td  width="5%"></td>
-													<td width="5%">
+													<td ></td>
+													<td >
 														<input type="button" value="Go" class="btn" id="btnGoView" name="btnGoView"
 															onclick="goView()" />
 													</td>
-													<td  width="5%">
-													</td>
-													<td style="width: 5%;white-space: nowrap">Order : </td>
-													<td width="5%">
-													</td>
-													<td width="20%">
+													<td ></td>
+													<td style="white-space: nowrap">Order : </td>
+													<td ></td>
+													<td style="width: 205px">
 														<select id="selectOrder" name="selectOrder" class="combo" style="HEIGHT: 22px; WIDTH: 200px">
 															<%
 																
 																' Get the order records.																
 																If (Len(sErrorDescription) = 0) And (Len(sFailureDescription) = 0) Then
 
-																	Dim rstOrderRecords = objDatabase.GetTableOrders(lngLookupTableID, 0)																
+																	Dim rstOrderRecords = objDatabase.GetTableOrders(lngLookupTableID, 0)
 																	For Each objRow As DataRow In rstOrderRecords.Rows
 																		Response.Write("						<option value=" & objRow(1))
 																		If objRow(1) = CInt(Session("optionOrderID")) Then
@@ -398,20 +392,20 @@
 															%>
 														</select>
 													</td>
-																			
-													<td width="10%" id="tdTOrderHelp" name="tdTOrderHelp" onclick="doOrderHelp()" style="white-space: nowrap; text-align:center;"  >
-															
+
+													<td id="tdTOrderHelp" name="tdTOrderHelp" onclick="doOrderHelp()" style="white-space: nowrap; text-align: center;">
 														<img id="imgTOrderHelp" name="imgTOrderHelp" alt="help"
-														     src="<%=Url.Content("~/Content/images/Help32.png")%>"														     
-														     title="What happens if I change the order?" style="width:17px; height:17px; border:0; cursor: pointer"/>
-														
+															src="<%=Url.Content("~/Content/images/Help32.png")%>"
+															title="What happens if I change the order?" style="width: 17px; height: 17px; border: 0; cursor: pointer" />
 													</td>
-													<td  width="5%"></td>
-													<td width="10%">
+													<td ></td>
+													<td >
 														<input type="button" value="Go" class="btn" id="btnGoOrder" name="btnGoOrder"
 															onclick="goOrder()" />
 													</td>
 												</tr>
+												
+
 											</table>
 										</td>
 										<td height="10">&nbsp;&nbsp;</td>
@@ -430,7 +424,7 @@
 					<div id="ssOLEDBPager" style=""></div>
 				</div>
 
-				<div id="row3" style="text-align: right; padding-top: 20px;">
+				<div id="row3" style="text-align: center; padding: 20px 20px 0 0;">
 					<input id="cmdSelectLookup" name="cmdSelectLookup" type="button" value="Select" style="WIDTH: 75px" class="btn" onclick="SelectLookup()" />
 					<input id="cmdClearLookup" name="cmdClearLookup" type="button" value="Clear" style="WIDTH: 75px" class="btn" onclick="ClearLookup()" />
 					<input id="cmdCancel" name="cmdCancel" type="button" value="Cancel" style="WIDTH: 75px" class="btn" onclick="CancelLookup()" />
