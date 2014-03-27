@@ -47,21 +47,21 @@
 	<title>OpenHR Intranet</title>
 	<script src="<%: Url.LatestContent("~/bundles/jQuery")%>" type="text/javascript"></script>
 	<script src="<%: Url.LatestContent("~/bundles/jQueryUI7")%>" type="text/javascript"></script>
+	<script src="<%: Url.LatestContent("~/bundles/Microsoft")%>" type="text/javascript"></script>
 	<script src="<%: Url.LatestContent("~/bundles/OpenHR_General")%>" type="text/javascript"></script>
+
+	<link id="DMIthemeLink" href="<%: Url.LatestContent("~/Content/themes/" & Session("ui-admin-theme").ToString() & "/jquery-ui.min.css")%>" rel="stylesheet" type="text/css" />
 	<script id="officebarscript" src="<%: Url.LatestContent("~/Scripts/officebar/jquery.officebar.js")%>" type="text/javascript"></script>
+
+	<script src="<%: Url.LatestContent("~/Scripts/ctl_SetStyles.js")%>" type="text/javascript"></script>
 	<link href="<%: Url.LatestContent("~/Content/OpenHR.css")%>" rel="stylesheet" type="text/css" />
 	<link href="<%: Url.LatestContent("~/Content/Site.css")%>" rel="stylesheet" type="text/css" />
 	<link href="<%: Url.LatestContent("~/Content/OpenHR.css")%>" rel="stylesheet" type="text/css" />
-	<link id="DMIthemeLink" href="<%: Url.LatestContent("~/Content/themes/" & Session("ui-admin-theme").ToString() & "/jquery-ui.min.css")%>" rel="stylesheet" type="text/css" />
 	<link href="<%= Url.LatestContent("~/Content/general_enclosed_foundicons.css")%>" rel="stylesheet" type="text/css" />
 	<link href="<%= Url.LatestContent("~/Content/font-awesome.css")%>" rel="stylesheet" type="text/css" />
-	<link href="<%= Url.LatestContent("~/Content/fonts/SSI80v194934/style.css")%>" rel="stylesheet" />
-	<style type="text/css">
-		.auto-style1
-		{
-			width: 307px;
-		}
-  </style>
+
+	<%--jQuery Grid Stylesheet--%>
+	<link href="<%: Url.LatestContent("~/Content/ui.jqgrid.css")%>" rel="stylesheet" type="text/css" />
 
 	<script type="text/javascript">
 		window.onload = function () {
@@ -114,27 +114,6 @@
 					break;
 				}
 			}
-
-			var iResizeBy, iNewWidth, iNewHeight;
-
-			// Resize the popup.
-			iResizeBy = (bdyMain.scrollWidth - bdyMain.clientWidth);
-			if (bdyMain.offsetWidth + iResizeBy > screen.width) {
-				window.dialogWidth = new String(screen.width) + "px";
-			} else {
-				iNewWidth = new Number(window.dialogWidth.substr(0, window.dialogWidth.length - 2));
-				iNewWidth = iNewWidth + iResizeBy;
-				window.dialogWidth = new String(iNewWidth) + "px";
-			}
-
-			iResizeBy = bdyMain.scrollHeight - bdyMain.clientHeight;
-			if (bdyMain.offsetHeight + iResizeBy > screen.height) {
-				window.dialogHeight = new String(screen.height) + "px";
-			} else {
-				iNewHeight = new Number(window.dialogHeight.substr(0, window.dialogHeight.length - 2));
-				iNewHeight = iNewHeight + iResizeBy;
-				window.dialogHeight = new String(iNewHeight) + "px";
-			}
 		};
 
 		function setForm() {
@@ -156,59 +135,25 @@
 		<input type="hidden" id="txtSelectedUserName" name="txtSelectedUserName">
 	</form>
 
-	<table align="center" class="outline" cellpadding="5" cellspacing="0" width="100%" height="100%">
-		<tr>
-			<td>
-				<table width="100%" height="100%" class="invisible" cellspacing="0" cellpadding="0">
-					<tr height="10">
-						<td colspan="3" align="center" height="10">
-							<h3>Email Groups</h3>
-						</td>
-					</tr>
-					<tr>
-						<td width="20"></td>
-						<td>
-							<%=GetEmailSelection()%>
-						</td>
-						<td width="20"></td>
-					</tr>
-					<tr height="10">
-						<td height="10" colspan="3">&nbsp;</td>
-					</tr>
-					<tr height="10">
-						<td width="20"></td>
-						<td height="10">
-							<table width="100%" class="invisible" cellspacing="0" cellpadding="0">
-								<tr>
-									<td>&nbsp;</td>
-									<td width="10">
-										<input id="cmdok" type="button" value="OK" name="cmdok" 
-											style="width: 80px"
-											class="button ui-button ui-widget ui-state-default ui-widget-content ui-corner-tl ui-corner-br" 
-										/>
-									</td>
-									<td width="10">&nbsp;</td>
-									<td width="10">
-										<input id="cmdnone" type="button" value="None" name="cmdnone"
-											style="width: 80px"
-											class="button ui-button ui-widget ui-state-default ui-widget-content ui-corner-tl ui-corner-br" 
-											onclick="frmPopup.txtSelectedID.value = 0; frmPopup.txtSelectedName.value = ''; frmPopup.txtSelectedAccess.value = ''; frmPopup.txtSelectedUserName.value = ''; setForm();" />
-									</td>
-									<td width="10">&nbsp;</td>
-									<td width="10">
-										<input id="cmdcancel" type="button" value="Cancel" name="cmdcancel" 
-											style="width: 80px"
-											class="button ui-button ui-widget ui-state-default ui-widget-content ui-corner-tl ui-corner-br" 
-											onclick="self.close();" />
-									</td>
-								</tr>
-							</table>
-						</td>
-					</tr>
-				</table>
-			</td>
-		</tr>
-	</table>
+	<div style="text-align: center">
+		<h3>Email Groups</h3>
+ 	</div>
+	<div style="margin-left: 15px;">
+		<%=GetEmailSelection()%>
+	</div>
+	<div style="margin-top: 10px; margin-right: 10px; float: right;">
+			<input id="cmdok" type="button" value="OK" name="cmdok" 
+					style="width: 80px"
+					class="button ui-button ui-widget ui-state-default ui-widget-content ui-corner-tl ui-corner-br" />
+			<input id="cmdnone" type="button" value="None" name="cmdnone"
+					style="width: 80px"
+					class="button ui-button ui-widget ui-state-default ui-widget-content ui-corner-tl ui-corner-br" 
+					onclick="frmPopup.txtSelectedID.value = 0; frmPopup.txtSelectedName.value = ''; frmPopup.txtSelectedAccess.value = ''; frmPopup.txtSelectedUserName.value = ''; setForm();" />
+			<input id="cmdcancel" type="button" value="Cancel" name="cmdcancel" 
+					style="width: 80px"
+					class="button ui-button ui-widget ui-state-default ui-widget-content ui-corner-tl ui-corner-br" 
+					onclick="self.close();" />
+	</div>
 
 	<form id="frmFromOpener" name="frmFromOpener" style="visibility: hidden; display: none">
 		<input type="hidden" id="calcEmailCurrentID" name="calcEmailCurrentID" value='<%= Request("emailSelCurrentID") %>'>
@@ -221,11 +166,15 @@
 <script type="text/javascript">
 	// Table to jQuery grid
 	tableToGrid("#EmailSelectionTable", {
-		onSelectRow: function (rowID) {
-		},
-		ondblClickRow: function (rowID) {
-		},
-		rowNum: 1000
+		colNames: ['EmailGroupIDHeader', 'Name'],
+		colModel: [
+			{ name: 'EmailGroupIDHeader', hidden: true },
+			{ name: 'NameHeader', sortable: true }
+		],
+		rowNum: 1000,   //TODO set this to blocksize...
+		height: 320,
+		width: (screen.width) / 3 + 5,
+		scrollerbar: true
 	});
 
 	//Hide the EmailGroup table header and its column

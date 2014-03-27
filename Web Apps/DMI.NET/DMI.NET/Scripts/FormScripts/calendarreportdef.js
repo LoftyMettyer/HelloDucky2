@@ -1415,7 +1415,7 @@ function selectEmailGroup() {
 
 	sURL = "util_emailSelection" +
 		"?EmailSelCurrentID=" + frmEmailSelection.EmailSelCurrentID.value;
-	openDialog(sURL, ((screen.width) / 3), (screen.height) / 3 - 20, "no", "no");
+	openDialog(sURL, (screen.width) / 3 + 40, (screen.height) / 2 - 50, "no", "no");
 }
 
 function eventFilterString() {

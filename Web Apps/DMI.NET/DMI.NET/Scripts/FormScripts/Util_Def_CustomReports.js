@@ -2011,7 +2011,7 @@
 
 		sUrl = "util_emailSelection" +
 			"?EmailSelCurrentID=" + frmEmailSelection.EmailSelCurrentID.value;
-		openDialog(sUrl, (screen.width) / 3, (screen.height) / 3.5, "yes", "yes");
+		openDialog(sUrl, (screen.width) / 3 + 40, (screen.height) / 2 - 50, "no", "no");
 	}
 
 	function selectRecordOption(psTable, psType) {
