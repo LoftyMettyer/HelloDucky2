@@ -7,19 +7,19 @@ Namespace Models
 	Public Class LoginViewModel
 
 		<Required(ErrorMessage:="The user name is not valid.")> _
-		<Display(Name:="User name")> _
+		<Display(Name:="User name :")> _
 	 Public Property UserName() As String
 
 		<DataType(DataType.Password)>
-		<Display(Name:="Password")>
+		<Display(Name:="Password :")>
 		Public Property Password As String
 
 		<Required(ErrorMessage:="The database is not valid.")> _
-		<Display(Name:="Database")>
+		<Display(Name:="Database :")>
 		Public Property Database As String
 
 		<Required(ErrorMessage:="The server is not valid.")> _
-		<Display(Name:="Server")>
+		<Display(Name:="Server :")>
 		Public Property Server As String
 
 		<Display(Name:="Use Windows Authentication")>
