@@ -980,7 +980,7 @@
 							mrstEventData = objTodaysEvents.GetTodaysAbsences(CleanNumeric(Session("TopLevelRecID")))
 							iRecNum = 0
 											
-							If Len(sErrorDescription) = 0 Then
+							If Len(sErrorDescription) = 0 And Not mrstEventData Is Nothing Then
 								If mrstEventData.Rows.Count > 0 Then
 									%>
 									<tr>
