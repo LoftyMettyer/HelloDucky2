@@ -197,6 +197,7 @@
 									
 										
 							Case ElementType.OrgChart
+								classIcon = "icon-sitemap"
 								sOnClick = "loadPartialView('OrgChart', 'home', 'workframe')"
 									
 						End Select
