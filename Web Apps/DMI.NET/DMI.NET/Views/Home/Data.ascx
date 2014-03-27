@@ -5,7 +5,7 @@
 <%@ Import Namespace="System.Data" %>
 <%@ Import Namespace="HR.Intranet.Server.Structures" %>
 
-<%	
+<%		
 	If Len(Session("recordID")) = 0 Then
 		Session("recordID") = 0
 	End If
@@ -76,8 +76,8 @@
 				var sAction = frmData.txtAction.value;
 				
 				if ((sAction == "LOAD")	
-					&& (frmData.txtOriginalRecID.value != frmData.txtNewRecID.value)
-					&& (frmData.txtOriginalRecID.value != 0))	{
+					&& (frmData.txtOriginalRecordID.value != frmData.txtNewRecID.value)
+					&& (frmData.txtOriginalRecordID.value != 0))	{
 
 					menu_refreshMenu();	
 					
@@ -582,9 +582,6 @@
 	
 	Dim lngRecordID As Long
 	
-	Const iRETRIES = 5
-	Dim iRetryCount = 0
-
 	Dim sErrorDescription = ""
 	Dim SPParameters() As SqlParameter
 	
@@ -677,7 +674,7 @@
 			End If
 			
 			lngRecordID = 0
-			Response.Write("<input type='hidden' id='txtOriginalRecID' name='txtOriginalRecID' value='0'>" & vbCrLf)
+			Response.Write("<input type='hidden' id='txtOriginalRecordID' name='txtOriginalRecordID' value='0'>" & vbCrLf)
 			Response.Write("<input type='hidden' id='txtNewRecID' name='txtNewRecID' value='0'>" & vbCrLf)
 		Else
 			
@@ -727,7 +724,7 @@
 				Next
 
 
-				Response.Write("<input type='hidden' id='txtOriginalRecID' name='txtOriginalRecID' value='" & Session("recordID") & "'>" & vbCrLf)
+				Response.Write("<input type='hidden' id='txtOriginalRecordID' name='txtOriginalRecordID' value='" & Session("recordID") & "'>" & vbCrLf)
 				Response.Write("<input type='hidden' id='txtNewRecID' name='txtNewRecID' value='" & prmRecordId.Value.ToString() & "'>" & vbCrLf)
 			
 				' Loop through each of the OLE (Documents and photos and render)
@@ -806,7 +803,7 @@
 				
 		Response.Write("<input type='hidden' id='txtRecordDescription' name='txtRecordDescription' value='" & Html.Encode(sRecDesc) & "'>" & vbCrLf)
 	Else
-		Response.Write("<input type='hidden' id='txtOriginalRecID' name='txtOriginalRecID' value='0'>" & vbCrLf)
+		Response.Write("<input type='hidden' id='txtOriginalRecordID' name='txtOriginalRecordID' value='0'>" & vbCrLf)
 		Response.Write("<input type='hidden' id='txtNewRecID' name='txtNewRecID' value='0'>" & vbCrLf)
 		Response.Write("<input type='hidden' id='txtRecordDescription' name='txtRecordDescription' value=''>" & vbCrLf)
 	End If

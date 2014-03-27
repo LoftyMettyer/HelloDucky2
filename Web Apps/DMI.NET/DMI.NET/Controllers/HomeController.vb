@@ -3965,8 +3965,20 @@ Namespace Controllers
 					Session("tableType") = CInt(prmTableType.Value)
 					Session("viewID") = Session("SSILinkViewID")
 
+					Select Case CInt(prmStartMode.Value)
+						Case RecEditStartType.NewRecord
+							Session("action") = "NEW"
+
+						Case RecEditStartType.FirstRecord
+							Session("action") = "LOAD"
+
+						Case RecEditStartType.FindWindow
+							Session("action") = ""
+
+					End Select
+
 				Catch ex As Exception
-					sErrorDescription = "Unable to get the link definition." & vbCrLf & FormatError(Err.Description)
+					sErrorDescription = "Unable to get the link definition." & vbCrLf & ex.Message
 
 				End Try
 
