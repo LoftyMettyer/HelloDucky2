@@ -226,7 +226,7 @@ Namespace ExClientCode
 
 		End Function
 
-		Private Sub GetWorkBook(ByRef strWorkbook As String, ByRef strWorksheet As String)
+		Private Sub GetWorkBook(strWorkbook As String, strWorksheet As String)
 			Dim lngCount As Integer
 
 			Dim objCellsLicense As New License
@@ -362,11 +362,6 @@ Namespace ExClientCode
 			'Disable the numbers stored as text option
 			opt.SetErrorCheck(ErrorCheckType.TextNumber, False)
 
-
-			' PrepareRows sets the datatype for each column. 
-			' JIRA HRPRO-3963 calling PrepareRows overwrites all required formatting options.
-			' PrepareRows(UBound(strArray, 2), colColumns, colStyles)
-
 			lngExcelCol = _mlngDataStartCol
 			lngExcelRow = _mlngDataCurrentRow
 
@@ -379,7 +374,6 @@ Namespace ExClientCode
 						Dim stlDecimal As Style = .GetStyle()
 						Dim stlGeneral As Style = .GetStyle()
 						Dim stlDate As Style = .GetStyle()
-						Dim flag As StyleFlag = New StyleFlag()
 
 						' Replicate style formats from ActiveX...
 						stlNumeric.Number = 1	' Numeric style
@@ -457,11 +451,6 @@ Namespace ExClientCode
 							End Select
 						End If
 
-						'MH20031113 Fault 7602
-						' .Value = IIf(Left(strArray(lngGridCol, lngGridRow), 1) = "'", "'", vbNullString) & strArray(lngGridCol, lngGridRow)
-						'If lngGridRow < mlngHeaderRows Then
-						'  .HorizontalAlignment = xlCenter
-						'End If
 					End With
 				Next
 			Next
@@ -485,6 +474,8 @@ Namespace ExClientCode
 					ApplyStyle(UBound(strArray, 1), UBound(strArray, 2), colStyles)
 
 					CreatePivotTable(_mlngDataCurrentRow + UBound(strArray, 2), _mlngDataStartCol + UBound(strArray, 1), strArray(0, 0), strArray(1, 0), strArray(UBound(strArray), 0), colStyles, colColumns)
+					_mxlWorkSheet.VisibilityType = VisibilityType.Hidden
+
 				End If
 			Else
 				If _mblnApplyStyles Then
@@ -522,7 +513,7 @@ Namespace ExClientCode
 				Dim xlData As Range
 				Dim xlCategories As Range
 
-				Dim dataFirstRow As Integer = _mlngDataCurrentRow
+				Dim dataFirstRow As Integer = _mlngDataCurrentRow - 2
 				Dim dataFirstCol As Integer = _mlngDataStartCol - 1
 				Dim dataRowCount As Integer = lngMaxRows - _mlngDataCurrentRow
 				Dim dataColumnCount As Integer = lngMaxCols - _mlngDataStartCol
@@ -534,8 +525,20 @@ Namespace ExClientCode
 
 				With xlChart
 					.Type = ChartType.Column3DClustered
+
 					.NSeries.Add("=xlData", True)
 					.NSeries.CategoryData = "=xlCategories"
+
+					'Dim iSeries As Integer = dataFirstCol + dataColumnCount + 1
+					'For Each objSeries In .NSeries
+					'	objSeries.Name = String.Format("={0}{1}", NumberToExcelColumn(iSeries), _mlngDataCurrentRow - 1)
+					'	iSeries += 1
+					'Next
+
+					.NSeries(0).Area.FillFormat.Type = Drawing.FillType.Solid
+					Dim cc As CellsColor = .NSeries(0).Area.FillFormat.SolidFill.CellsColor
+					cc.ThemeColor = New ThemeColor(ThemeColorType.Accent6, 0.6)
+					.NSeries(0).Area.FillFormat.SolidFill.CellsColor = cc
 
 					.Title.Text = _mstrDefTitle
 					.Title.IsVisible = True
@@ -543,6 +546,13 @@ Namespace ExClientCode
 					.Title.Font.Size = 12
 					If colStyles.Item("Title").Underline Then .Title.Font.Underline = FontUnderlineType.Single
 					.Title.Font.Color = ColorTranslator.FromWin32(colStyles.Item("Title").ForeCol)
+
+					.RightAngleAxes = False
+					.Perspective = 15
+					.Style = 2
+					.Calculate()
+
+
 				End With
 
 			Catch ex As Exception
@@ -583,6 +593,8 @@ Namespace ExClientCode
 				.ShowPivotStyleRowHeader = True
 				.ShowPivotStyleColumnHeader = True
 				.DisplayNullString = True
+
+				.CalculateData()
 
 			End With
 
@@ -689,25 +701,24 @@ Namespace ExClientCode
 			Dim lngCol As Integer
 			Dim lngRow As Integer
 
-			On Error GoTo LocalErr
+			Try
 
-			lngCol = _mlngDataStartCol
-			lngRow = _mlngDataCurrentRow
+				lngCol = _mlngDataStartCol
+				lngRow = _mlngDataCurrentRow
 
-			For Each objMerge In colMerges
-				If objMerge.StartRow + lngRow > 0 And objMerge.StartCol + lngCol > 0 Then
-					Dim totalRows = (objMerge.EndRow + lngRow) - objMerge.StartRow
-					Dim totalCols = (objMerge.EndCol + lngCol) - objMerge.StartCol
-					objRange = _mxlWorkSheet.Cells.CreateRange(objMerge.StartRow + lngRow - 1, objMerge.StartCol + lngCol - 1, totalRows, totalCols)
-					' objRange.VerticalAlignment = Microsoft.Office.Interop.Excel.Constants.xlTop
-					objRange.Merge()
-				End If
-			Next objMerge
+				For Each objMerge In colMerges
+					If objMerge.StartRow + lngRow > 0 And objMerge.StartCol + lngCol > 0 Then
+						Dim totalRows = (objMerge.EndRow + lngRow) - objMerge.StartRow
+						Dim totalCols = (objMerge.EndCol + lngCol) - objMerge.StartCol
+						objRange = _mxlWorkSheet.Cells.CreateRange(objMerge.StartRow + lngRow - 1, objMerge.StartCol + lngCol - 1, totalRows, totalCols)
+						objRange.Merge()
+					End If
+				Next objMerge
 
-			Exit Sub
+			Catch
+				_mstrErrorMessage = Err.Description
 
-LocalErr:
-			_mstrErrorMessage = Err.Description
+			End Try
 
 		End Sub
 
@@ -769,14 +780,6 @@ LocalErr:
 
 		Public Sub Complete()
 
-			'TODO: Dim objChart As Microsoft.Office.Interop.Excel.Chart
-			Dim objWorksheet As Worksheet		' Microsoft.Office.Interop.Excel.Worksheet
-			Dim strFormat As String
-			Dim strTempFile As String
-			Dim strExtension As String
-			Dim aryFileBits() As String
-
-			On Error GoTo LocalErr
 
 			If _mstrErrorMessage <> vbNullString Then
 				Exit Sub
@@ -785,29 +788,9 @@ LocalErr:
 			_mxlWorkBook.Worksheets.ActiveSheetIndex = 0
 
 			'SAVE
-			'If _mblnSave Then
-			' Always Save - we need the temporary file. 
 			_mstrErrorMessage = "Error saving file <" & _mstrFileName & ">"
 
-			' calculate the appropriate output type
-			'	aryFileBits = Split(_mstrFileName, ".")
-			'	strExtension = aryFileBits(UBound(aryFileBits))
-
 			_mxlWorkBook.Save(_mstrFileName, SaveAsFormat(DownloadExtension))
-
-			'Select Case UCase(strExtension)
-			'	Case "XLSX"
-			'		_mxlWorkBook.Save(_mstrFileName, SaveFormat.Xlsx)
-			'	Case "XLS"
-			'		_mxlWorkBook.Save(_mstrFileName, SaveFormat.Excel97To2003)
-			'	Case "HTML"
-			'		_mxlWorkBook.Save(_mstrFileName, SaveFormat.Html)
-			'	Case "PDF"
-			'		_mxlWorkBook.Save(_mstrFileName, SaveFormat.Pdf)
-			'	Case "CSV"
-			'		_mxlWorkBook.Save(_mstrFileName, SaveFormat.CSV)
-			'End Select
-			'End If
 
 			'EMAIL
 			If _mblnEmail Then
@@ -912,7 +895,7 @@ LocalErr:
 		End Function
 
 
-		Private Function SetSheetName(ByRef objObject As Worksheet, ByVal strSheetName As String) As Boolean
+		Private Function SetSheetName(ByRef objObject As Worksheet, strSheetName As String) As Boolean
 
 			Dim strNumber As String
 			Dim lngCount As Integer
@@ -931,7 +914,7 @@ LocalErr:
 			If objObject.Name <> strSheetName Then
 				lngCount = 1
 				Do
-					lngCount = lngCount + 1
+					lngCount += 1
 					Err.Clear()
 					strNumber = "(" & CStr(lngCount) & ")"
 					'		objObject.Name = Left(strSheetName, 31 - Len(strNumber)) & strNumber

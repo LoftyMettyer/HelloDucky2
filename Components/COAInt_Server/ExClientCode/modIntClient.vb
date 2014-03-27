@@ -33,17 +33,15 @@ Module modIntClient
 		wdFormatXPS = 18
 	End Enum
 	
-	Public Function IsFileCompatibleWithWordVersion(ByRef strFilename As String, ByRef intOfficeVersion As Short) As Object
-		'UPGRADE_WARNING: Couldn't resolve default property of object IsFileCompatibleWithWordVersion. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		IsFileCompatibleWithWordVersion = (GetOfficeSaveAsFormat(strFilename, intOfficeVersion, OfficeApp.oaWord) <> "")
+	Public Function IsFileCompatibleWithWordVersion(strFilename As String, intOfficeVersion As Short) As Boolean
+		Return (GetOfficeSaveAsFormat(strFilename, intOfficeVersion, OfficeApp.oaWord) <> "")
 	End Function
 
-	Public Function IsFileCompatibleWithExcelVersion(ByRef strFilename As String, ByRef intOfficeVersion As Short) As Object
-		'UPGRADE_WARNING: Couldn't resolve default property of object IsFileCompatibleWithExcelVersion. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		IsFileCompatibleWithExcelVersion = (GetOfficeSaveAsFormat(strFilename, intOfficeVersion, OfficeApp.oaExcel) <> "")
+	Public Function IsFileCompatibleWithExcelVersion(strFilename As String, intOfficeVersion As Short) As Boolean
+		Return (GetOfficeSaveAsFormat(strFilename, intOfficeVersion, OfficeApp.oaExcel) <> "")
 	End Function
 
-	Public Function GetOfficeSaveAsFormat(ByRef strFilename As String, ByRef intOfficeVersion As Short, ByRef app As OfficeApp) As String
+	Public Function GetOfficeSaveAsFormat(strFilename As String, intOfficeVersion As Short, app As OfficeApp) As String
 
 		Dim strOutput As String
 		Dim strExtension As String
@@ -90,28 +88,5 @@ LocalErr:
 		GetOfficeSaveAsFormat = ""
 
 	End Function
-
-	'Public Function GetSaveAsFormat2(ByRef strFilename As String, ByRef strSaveAsValues As String) As String
-
-	'	Dim strArray() As String
-	'	Dim intIndex As Short
-	'	Dim strExtension As String
-	'	Dim strResult As String
-
-
-	'	strExtension = LCase(Mid(strFilename, InStrRev(strFilename, ".") + 1))
-	'	strArray = Split(strSaveAsValues, "|")
-
-	'	strResult = ""
-	'	For intIndex = 0 To UBound(strArray) - 1 'Step 2
-	'		If LCase(strArray(intIndex)) = strExtension Then
-	'			strResult = strArray(intIndex + 1)
-	'			Exit For
-	'		End If
-	'	Next
-
-	'	GetSaveAsFormat2 = strResult
-
-	'End Function
 
 End Module
