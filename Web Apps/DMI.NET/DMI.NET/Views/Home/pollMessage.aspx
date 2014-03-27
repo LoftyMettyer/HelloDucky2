@@ -17,7 +17,7 @@
 				<%End If%>
 			</div>
 		</div>			
-		<input type="hidden" id="txtIsSessionTiemout"/>
+		<input type="hidden" id="txtIsSessionTimeout"/>
 
 	</form>
 </div>

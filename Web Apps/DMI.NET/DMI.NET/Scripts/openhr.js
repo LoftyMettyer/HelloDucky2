@@ -4,22 +4,25 @@
 	"use strict";
 
 	function checkForMessages() {
+		
 		var frmMessage = OpenHR.getForm("divPollMessage", "frmPollMessage");
 
-		if (frmMessage != undefined) {
-			frmMessage.txtIsSessionTiemout = false;
+		try {
+			$('#txtIsSessionTimeout').val('false');
 			OpenHR.submitForm(frmMessage, "divPollMessage");
-		}		
+		} catch(e) {
+		}
 	}
 
 	function sessionTimeout() {
 
 		var frmMessage = OpenHR.getForm("divPollMessage", "frmPollMessage");
 
-		if (frmMessage != undefined) {
+		try {
+			$('#txtIsSessionTimeout').val('true');
 			frmMessage.action = "TimedOut";
-			frmMessage.txtIsSessionTiemout = true;
 			OpenHR.submitForm(frmMessage, "divPollMessage");
+		} catch (e) {
 		}
 	}
 
