@@ -101,7 +101,21 @@ function find_window_onload() {
 										colMode.push({ name: sColumnName, edittype: "numeric", sorttype: 'integer', formatter: 'numeric', formatoptions: { disabled: true }, align: 'right', width: 100 });
 										break;
 									case "datetime": //Date - 135
-										colMode.push({ name: sColumnName, edittype: "date", sorttype: 'date', formatter: 'date', formatoptions: { srcformat: 'd/m/Y', newformat: 'd/m/Y', disabled: true }, align: 'left', width: 100 });
+										colMode.push({
+											name: sColumnName, edittype: "date",
+											sorttype: function(cellValue) { //Sort function that deals correctly with empty dates
+												if (Date.parse(cellValue)) {
+													var d = cellValue.split("/");
+													return new Date(d[2].toString() + "-" + d[1].toString() + "-" + d[0].toString());
+												} else {
+													return new Date("1901-01-01");
+												}
+											},
+											formatter: 'date',
+											formatoptions: { srcformat: 'd/m/Y', newformat: 'd/m/Y', disabled: true },
+											align: 'left',
+											width: 100
+										});
 										break;
 									default:
 										colMode.push({ name: sColumnName, width: 100 });
@@ -111,7 +125,7 @@ function find_window_onload() {
 					}
 				}
 			}
-
+			
 			// Add the grid records.
 			fRecordAdded = false;
 			iCount = 0;
