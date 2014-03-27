@@ -140,6 +140,13 @@
 		$("#reportframe").show();
 		$("#reportworkframe").show();
 
+		if ($('#txtNoRecs').val() == "1") {
+			$("#cmdPrint").hide();
+			$("#cmdOutput").hide();
+			$("#cmdCancel").hide();
+		}
+
+
 	}
 
 	function outputOptionsPrintClick() {
@@ -313,12 +320,7 @@ Else
 End If
 	%>
 
-	if ($('#txtNoRecs').val() == "1") {
-		$("#cmdPrint").hide();
-		$("#cmdOutput").hide();
-		$("#cmdCancel").hide();
-	}
-
+	
 
 	var isMobileDevice = ('<%=Session("isMobileDevice")%>' == 'True');
 	$('#cmdOutput').prop('disabled', isMobileDevice);
