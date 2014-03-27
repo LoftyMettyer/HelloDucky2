@@ -1594,7 +1594,7 @@
 
 
 		//display view details
-		$('.ViewDescription p').text('<%=Session("ViewDescription").ToString()%>');
+		$('.ViewDescription p').html('<%=Html.Encode(Session("ViewDescription").ToString())%>');
 
 		$('header').show();
 
