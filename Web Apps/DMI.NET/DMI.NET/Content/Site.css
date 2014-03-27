@@ -23,13 +23,18 @@ body
     margin: 0px;
 }
 
-header,
+header { display: none;}
+
 footer,
 nav,
 section {
     display: block;
 }
 
+.divLogin {
+	position: absolute;
+	top: 44px;left: 0;right: 0;bottom: 0;
+}
 #frmLoginForm { height: 100%;}
 
 

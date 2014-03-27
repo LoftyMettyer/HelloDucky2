@@ -1438,8 +1438,7 @@
 		<%Html.RenderPartial("~/Views/Shared/gotoWork.ascx")%>
 </form>
 
-<script type="text/javascript">
-
+<script type="text/javascript">	
 	function setupTiles() {
 
 		$('.gridster').each(function () {
@@ -1596,6 +1595,8 @@
 
 		//display view details
 		$('.ViewDescription p').text('<%=Session("ViewDescription").ToString()%>');
+
+		$('header').show();
 
 	});
 

@@ -15,7 +15,7 @@
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
 
 <script type="text/javascript">
-
+	
 	function handleAjaxError(html) {
 
 		//handle error
@@ -24,9 +24,9 @@
 		window.location.href = "<%=Url.Action("Login", "Account")%>";
 	}
 
+	
 
-	$(function () {               
-
+	$(function () {		
 			var SelfServiceUserType = '<%=ViewBag.SSIMode%>';
 
 			if (SelfServiceUserType == 'True') {
@@ -72,79 +72,79 @@
 			}
 		});
 
-	$(document).ready(function () {
-		
-				$("#fixedlinksframe").show();
-				$("#FixedLinksContent").fadeIn("slow");
+	$(document).ready(function() {
 
-				$(".popup").dialog({
-						overflow: false,
-						autoOpen: false,
-						modal: true,
-						height: 550,
-						width: 800
-				});		
+		$("#fixedlinksframe").show();
+		$("#FixedLinksContent").fadeIn("slow");
 
-			//load menu for dmi, or linksmain for ssi
-			var SelfServiceUserType = '<%=ViewBag.SSIMode%>';
+		$(".popup").dialog({
+			overflow: false,
+			autoOpen: false,
+			modal: true,
+			height: 550,
+			width: 800
+		});
 
-			if (SelfServiceUserType == 'True') {
-				
-				$.ajax({
-					url: 'linksMain',
-					dataType: 'html',
-					type: 'POST',
-					data: { psScreenInfo: '<%=session("SingleRecordTableID")%>!<%=session("SingleRecordViewID")%>_0' },
-					success: function (html) {
-						try {
-							var jsonResponse = $.parseJSON(html);
-							if (jsonResponse.ErrorMessage.length > 0) {
-								handleAjaxError(jsonResponse);
-								return false;
-							}
-						} catch(e) {
+		//load menu for dmi, or linksmain for ssi
+		var SelfServiceUserType = '<%=ViewBag.SSIMode%>';
+
+		if (SelfServiceUserType == 'True') {
+
+			$.ajax({
+				url: 'linksMain',
+				dataType: 'html',
+				type: 'POST',
+				data: { psScreenInfo: '<%=session("SingleRecordTableID")%>!<%=session("SingleRecordViewID")%>_0' },
+				success: function(html) {
+					try {
+						var jsonResponse = $.parseJSON(html);
+						if (jsonResponse.ErrorMessage.length > 0) {
+							handleAjaxError(jsonResponse);
+							return false;
 						}
-
-
-						//$("#workframe").hide();
-						$("#workframe").html(html).show();
-						
-
-						//final resize of the dashboard - for tiles, ensure width is sufficient
-						resizeTileContent();	//site.master function.
-
-					},
-					error: function (req, status, errorObj) {
-						
+					} catch(e) {
 					}
-				});
-			} else {
-				$("#menuframe").fadeIn("slow");
-				$(".accordion").accordion("resize");
-				$('#officebar .button').addClass('ui-state-default');
 
-				$('#officebar .button').hover(
-					function () { if (!$(this).hasClass("disabled")) $(this).addClass('ui-state-hover'); },
-					function () { if (!$(this).hasClass("disabled")) $(this).removeClass('ui-state-hover'); }
-				);
 
-			}
+					//$("#workframe").hide();
+					$("#workframe").html(html).show();
+
+
+					//final resize of the dashboard - for tiles, ensure width is sufficient
+					resizeTileContent(); //site.master function.
+
+				},
+				error: function(req, status, errorObj) {
+
+				}
+			});
+		} else {
+			$("#menuframe").fadeIn("slow");
+			$(".accordion").accordion("resize");
+			$('#officebar .button').addClass('ui-state-default');
+
+			$('#officebar .button').hover(
+				function() { if (!$(this).hasClass("disabled")) $(this).addClass('ui-state-hover'); },
+				function() { if (!$(this).hasClass("disabled")) $(this).removeClass('ui-state-hover'); }
+			);
+
+		}
 
 		//Timeout functionality
 		try {
 			window.timeoutMs = (Number('<%=Session("TimeoutSecs")%>') * 1000);
-			}
-		catch (e) {
+		} catch(e) {
 			//default to 20 minutes.
 			window.timeoutMs = 1200000;
 		}
 
 		window.timeoutHandle = window.setTimeout('OpenHR.SessionTimeout();', window.timeoutMs);
 
-		});
 
+		$('header').show();
 
-
+	});
+	
 </script>
 
 

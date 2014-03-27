@@ -25,6 +25,73 @@ div.COAwallpapered
 	overflow: auto;
 }
 
+.loginTitleBar {
+	width: 100%;
+	margin: 0 auto;
+	margin-bottom: 20px;
+	height: 46px;
+	position: relative;
+	border-right-style: none!important;
+	border-left-style: none!important;	
+}
+
+.loginTitleBar img {
+	position: absolute;
+	right: 8px;
+	top: 8px;
+	cursor: pointer;
+}
+
+.loginframetheme {
+	border-radius: 20px 0 20px 0;
+	width: 440px;
+}
+
+.loginframe { position: relative;width: 450px;margin: 0 auto;}
+									
+.logintext {
+	font-family: Verdana;
+	color: #333366;
+	font-size: 8pt;
+	font-weight: normal;
+	font-style: normal;
+}
+
+.loginframeImage {
+	display: block;
+	margin: 10px auto;
+	width: 410px;
+}
+
+.loginframeField {
+	margin: 10px auto;	
+	width: 340px;
+}
+
+.loginframeField label {
+	display: inline-block;
+	width: 120px;
+}
+
+.loginframeField input {
+	display: inline-block;
+	width: 200px;
+}
+
+.loginframeFieldWA {
+	margin: 10px auto;	
+	width: 340px;
+}
+
+.loginframeFieldWA input {
+	margin-left: 0!important;
+	display: inline-block;
+}
+
+.loginframeFieldWA label {
+	display: inline-block;
+}
+
 .footer-banner {	
 	position: absolute; 
 	bottom: 0; 

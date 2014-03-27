@@ -45,7 +45,7 @@ Public Class MvcApplication
 		'If the user isn't requesting the Login form, redirect them there.
 		Session("version") = My.Application.Info.Version.Major & "." & My.Application.Info.Version.Minor & "." & My.Application.Info.Version.Build
 		If ApplicationSettings.SessionTimeOutInMinutes Is Nothing Then
-			Session("TimeoutSecs") = (20 * 60) - 20 'No timeout setting, set to 20 minutes
+			Session("TimeoutSecs") = (20 * 60) - 20	'No timeout setting, set to 20 minutes
 		Else
 			Session("TimeoutSecs") = (CInt(ApplicationSettings.SessionTimeOutInMinutes) * 60) - 20
 		End If
@@ -58,7 +58,7 @@ Public Class MvcApplication
 			Session("database") = Request.QueryString("database")
 		End If
 
-		If String.IsNullOrEmpty(Session("server")) Then
+		If String.IsNullOrEmpty(Request.QueryString("server")) Then
 			Session("server") = ApplicationSettings.LoginPage_Server
 		Else
 			Session("server") = Request.QueryString("server")
@@ -156,11 +156,11 @@ Public Class MvcApplication
 				Session("Config-banner-graphic-right-width") = newImageWidth
 			Catch ex As Exception
 				Session("LogoFile") = VirtualPathUtility.ToAbsolute("~/Content/Images/ABSLogo/TopRightBannerImage.png")
-				Session("Config-banner-graphic-right-width") = "600"
+				Session("Config-banner-graphic-right-width") = "300"
 			End Try
 		Else
 			Session("LogoFile") = VirtualPathUtility.ToAbsolute("~/Content/Images/ABSLogo/TopRightBannerImage.png")
-			Session("Config-banner-graphic-right-width") = "600"
+			Session("Config-banner-graphic-right-width") = "300"
 		End If
 
 	End Sub

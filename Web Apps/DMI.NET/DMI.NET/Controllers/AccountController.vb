@@ -6,6 +6,7 @@ Imports HR.Intranet.Server
 Imports System.Data.SqlClient
 Imports System.Reflection
 Imports HR.Intranet.Server.Structures
+Imports DMI.NET.Models
 
 Namespace Controllers
 	Public Class AccountController
@@ -25,7 +26,7 @@ Namespace Controllers
 
 			'If isWidgetLogin Then
 			If (Session("databaseConnection")) Is Nothing Then
-				Login(values, isWidgetLogin, widgetUser, widgetPassword, widgetDatabase, widgetServer)
+				'Login(values, isWidgetLogin, widgetUser, widgetPassword, widgetDatabase, widgetServer)
 			End If
 
 			If Not (Session("databaseConnection")) Is Nothing Then
@@ -137,6 +138,7 @@ Namespace Controllers
 			Return sText
 		End Function
 
+		' GET: /Account/Login
 		Function Login() As ActionResult
 
 			Dim objServerSession As HR.Intranet.Server.SessionInfo = Session("sessionContext")
@@ -151,17 +153,57 @@ Namespace Controllers
 				End If
 			End If
 
-			Return View()
+			Session("action") = ""
+			Session("selectSQL") = ""
+			Session("filterSQL") = ""
+			Session("filterDef") = ""
+			Session("optionAction") = ""
+			' Session("server") = ""
+
+			Session("showLoginDetails") = Request.QueryString("Details")
+			Session("isMobileDevice") = (Platform.IsMobileDevice() = True)
+
+			'TODO??
+			' Clear out any session objects.
+			'For Each sessitem in Session.Contents
+			'	If TypeOf Session.Contents(sessitem) Is Object Then
+			'		Session.Contents(sessitem) = Nothing
+			'		Session.Contents(sessitem) = ""
+			'		Session.Contents.Remove(sessitem)
+			'	End If
+			'Next 
+
+			Session("dfltTempMenuFilePath") = "<NONE>"
+
+			Return View(New LoginViewModel())
+
 		End Function
 
 		<HttpPost()>
-		Function Login(values As FormCollection, Optional isWidgetLogin As Boolean = False,
+		Function Login(loginviewmodel As LoginViewModel, Optional isWidgetLogin As Boolean = False,
 					Optional widgetUser As String = "",
 					Optional widgetPassword As String = "",
 					Optional widgetDatabase As String = "",
 					Optional widgetServer As String = "") As ActionResult
 
 			'On Error Resume Next
+
+			If Not ModelState.IsValid Then
+				loginviewmodel.SetDetails = True
+				Return View(loginviewmodel)
+			End If
+
+			If loginviewmodel.UserName.ToLower() = "sa" Then
+				ModelState.AddModelError("Username", "The System Administrator cannot use the OpenHR Web module.")
+				loginviewmodel.SetDetails = True
+				Return View(loginviewmodel)
+			End If
+
+			If loginviewmodel.Database.Contains("'") Then
+				ModelState.AddModelError("Database", "The database name contains an apostrophe.")
+				loginviewmodel.SetDetails = True
+				Return View(loginviewmodel)
+			End If
 
 			'Dim sReferringPage
 			Dim sUserName As String
@@ -179,11 +221,11 @@ Namespace Controllers
 
 			If Not isWidgetLogin Then
 				' Read the User Name and Password from the Login form.
-				sUserName = Request.Form("txtUserNameCopy")
-				sPassword = Request.Form("txtPassword")
-				sDatabaseName = Request.Form("txtDatabase")
-				sServerName = Request.Form("txtServer")
-				If Request.Form("chkWindowsAuthentication") = "on" Then
+				sUserName = loginviewmodel.UserName
+				sPassword = loginviewmodel.Password
+				sDatabaseName = loginviewmodel.Database
+				sServerName = loginviewmodel.Server
+				If loginviewmodel.WindowsAuthentication Then
 					bWindowsAuthentication = True
 				End If
 				sLocaleDateFormat = Request.Form("txtLocaleDateFormat")
@@ -282,7 +324,7 @@ Namespace Controllers
 				End If
 
 				' Track and audit that we've logged in
-				objServerSession.TrackUser(TrackType.login)
+				objServerSession.TrackUser(TrackType.Login)
 
 				' User is allowed into OpenHR, now populate some metadata
 				objServerSession.RegionalSettings = Platform.GetRegionalSettings
@@ -425,11 +467,11 @@ Namespace Controllers
 			Dim cookie = New HttpCookie("Login")
 			cookie.Expires = DateTime.Now.AddYears(1)
 			cookie.HttpOnly = True
-			cookie("User") = Request.Form("txtUserNameCopy")
+			cookie("User") = loginviewmodel.UserName
 			'dont save or retrieve these anymore HRPRO-3030 / 3031
 			'cookie("Database") = Request.Form("txtDatabase")
 			'cookie("Server") = Request.Form("txtServer")
-			cookie("WindowsAuthentication") = Request.Form("chkWindowsAuthentication")
+			cookie("WindowsAuthentication") = loginviewmodel.WindowsAuthentication
 			Response.Cookies.Add(cookie)
 
 			If Session("AdminRequiresIE") = "TRUE" And Session("MSBrowser") <> True Then
