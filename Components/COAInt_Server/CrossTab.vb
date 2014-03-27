@@ -1629,9 +1629,7 @@ LocalErr:
 
 	Private Function FormatCell(dblCellValue As Double, Optional lngHOR As Integer = 0) As String
 
-		Dim strMask As String
-
-		FormatCell = ""
+		Dim strMask As String = ""
 
 		Try
 
@@ -1674,10 +1672,9 @@ LocalErr:
 
 				End If
 
-				If strMask <> vbNullString Then
-					Return VB6.Format(dblCellValue, strMask)
-				End If
-
+				Return dblCellValue.ToString(strMask)
+			Else
+				Return ""
 			End If
 
 
@@ -1687,7 +1684,6 @@ LocalErr:
 			Return ""
 
 		End Try
-
 
 	End Function
 
