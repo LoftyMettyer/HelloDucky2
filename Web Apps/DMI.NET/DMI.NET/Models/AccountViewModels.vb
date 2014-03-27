@@ -51,9 +51,11 @@ Namespace Models
 			Else 'Override database or server if a value is provided in the querystring
 				If Not String.IsNullOrEmpty(Current.Request.QueryString("database")) Then
 					Database = Current.Server.HtmlDecode(Current.Request.QueryString("database"))
+					Current.Session("database") = Database
 				End If
 				If Not String.IsNullOrEmpty(Current.Request.QueryString("server")) Then
 					Server = Current.Server.HtmlDecode(Current.Request.QueryString("server"))
+					Current.Session("server") = Server
 				End If
 			End If
 
