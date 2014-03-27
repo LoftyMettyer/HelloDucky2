@@ -25,7 +25,8 @@ Namespace Models
 		<Display(Name:="Use Windows Authentication")>
 		Public Property WindowsAuthentication As Boolean
 
-		Public Property SetDetails() As Boolean
+		Public Property SetDetails As Boolean
+
 
 		Public Sub New()
 
@@ -43,7 +44,6 @@ Namespace Models
 				Server = ApplicationSettings.LoginPage_Server
 
 				If Current.Session("server") <> Server Or Current.Session("database") <> Database Then
-					SetDetails = True
 					Database = Current.Session("database")
 					Server = Current.Session("server")
 				End If

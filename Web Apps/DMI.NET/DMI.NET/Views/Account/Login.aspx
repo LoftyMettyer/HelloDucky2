@@ -47,7 +47,7 @@
 		</div>
 		<%End If%>
 		
-		<div id="divDetails">
+		<div id="divDetails" style="display: none;">
 			<div class="loginframeField">
 				<%=Html.LabelFor(Function(loginviewmodel) loginviewmodel.Database)%>
 				<%=Html.TextBoxFor(Function(loginviewmodel) loginviewmodel.Database, New With {.id = "txtDatabase", .onkeypress = "CheckKeyPressed(event)"})%>
@@ -55,14 +55,14 @@
 			</div>
 			<div class="loginframeField">
 				<%=Html.LabelFor(Function(loginviewmodel) loginviewmodel.Server)%>
-				<%=Html.EditorFor(Function(loginviewmodel) loginviewmodel.Server, New With {.id = "txtServer", .onkeypress="CheckKeyPressed(event)"})%>
+				<%=Html.TextBoxFor(Function(loginviewmodel) loginviewmodel.Server, New With {.id = "txtServer", .onkeypress = "CheckKeyPressed(event)"})%>
 				<%=Html.ValidationMessageFor(Function(loginviewmodel) loginviewmodel.Server)%>
 			</div>
 		</div>
 	
 		<div class="centered">
 			<input type="button" id="submitLoginDetails" name="submitLoginDetails" class="ui-button" onclick="SubmitLoginDetails()" value="Login" />
-			<input type="button" id="btnToggleDetailsDiv" name="details" class="ui-button hidden" value="Details" />
+			<input type="button" id="btnToggleDetailsDiv" name="details" class="ui-button <%=IIf(Model.SetDetails, "", "hidden")%>" value="Details >>" />
 		</div>
 		<%End If%>
 	
@@ -87,7 +87,6 @@
 	<script type="text/javascript">
 		
 		$(document).ready(function () {
-			setDetailsDisplay(<%=Model.SetDetails.ToString().ToLower()%>);
 			if (!window.isMobileBrowser) {
 				if ('<%=Model.UserName%>'.length > 0) $('#txtPassword').focus();
 				if ('<%=Model.UserName%>'.length == 0) $('#txtUser').focus();
