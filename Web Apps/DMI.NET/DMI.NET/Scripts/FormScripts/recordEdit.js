@@ -193,9 +193,7 @@ function insertUpdateDef() {
 		//only process column controls. (not labels, frames etc...)
 		if ((objScreenControl.ColumnID > 0) && ((objScreenControl.ControlType !== 256) && (objScreenControl.ControlType !== Math.pow(2, 14)))) {
 
-
 			fDoControl = objScreenControl.UpdateGranted;
-			fDoControl = true;
 
 			if (fDoControl) {
 				if ((objScreenControl.ControlType == 64) && (objScreenControl.Multiline)) {	//tdbtextctl.tdbtext
