@@ -168,6 +168,7 @@ function insertUpdateDef() {
 
 	$('input[id^="txtRecEditControl_"]').each(function (index) {
 
+
 		uniqueIdentifier += 1;
 		
 		var objScreenControl = getScreenControl_Collection($(this).val()); //the properties for the screen element
@@ -192,7 +193,9 @@ function insertUpdateDef() {
 		//only process column controls. (not labels, frames etc...)
 		if ((objScreenControl.ColumnID > 0) && ((objScreenControl.ControlType !== 256) && (objScreenControl.ControlType !== Math.pow(2, 14)))) {
 
+
 			fDoControl = objScreenControl.UpdateGranted;
+			fDoControl = true;
 
 			if (fDoControl) {
 				if ((objScreenControl.ControlType == 64) && (objScreenControl.Multiline)) {	//tdbtextctl.tdbtext
@@ -294,6 +297,9 @@ function insertUpdateDef() {
 					}
 
 					else if ((objScreenControl.ControlType == 64) && (objScreenControl.Multiline == false) && (objScreenControl.Mask.length > 0)) {
+
+
+
 						//TDBMask6Ctl.TDBMask Then
 						//	Character field from a masked textbox (CHAR type column). Save the text from the control.
 						if ($(objControl).val() == 0) {
@@ -433,19 +439,20 @@ function insertUpdateDef() {
 						//	'JPD 20040714 Fault 8333
 						//	'ElseIf TypeOf objControl Is GTMaskDate.GTMaskDate Then
 					else if ((objScreenControl.ControlType == 64) && (objScreenControl.DataType == 11)) {
-						//TypeOf objControl Is TDBDate6Ctl.TDBDate Then
-						//	' Date field from a date control (DATETIME type column). Save the value from the control formatted as 'mm/dd/yyyy' for SQL.
-						if (ConvertData($(objControl).val(), objScreenControl.DataType) == null) {
-							asColumnsToAdd[1] = "null";
-							asColumnsToAdd[3] = "null";
-						} else {
+						////TypeOf objControl Is TDBDate6Ctl.TDBDate Then
+						////	' Date field from a date control (DATETIME type column). Save the value from the control formatted as 'mm/dd/yyyy' for SQL.
+						//if (ConvertData($(objControl).val(), objScreenControl.DataType) == null) {
+						//	asColumnsToAdd[1] = "null";
+						//	asColumnsToAdd[3] = "null";
+						//} else {
+
 							//	asColumns(2, iNextIndex) = "'" & Replace(Format(ConvertData(objControl.Text, mobjScreenControls.Item(sTag).DataType), "mm/dd/yyyy"), msLocaleDateSeparator, "/") & "'"
 							asColumnsToAdd[1] = "'" + OpenHR.convertLocaleDateToSQL($(objControl).val()) + "'";
 							//	'JPD 20051121 Fault 10583
 							//	'asColumns(4, iNextIndex) = Replace(Format(ConvertData(objControl.Text, mobjScreenControls.Item(sTag).DataType), "mm/dd/yyyy"), msLocaleDateSeparator, "/")
 							//	asColumns(4, iNextIndex) = Replace(Replace(Format(ConvertData(objControl.Text, mobjScreenControls.Item(sTag).DataType), "mm/dd/yyyy"), msLocaleDateSeparator, "/"), vbTab, " ")
 							asColumnsToAdd[3] = OpenHR.convertLocaleDateToSQL($(objControl).val()).split("\t").join(" ");
-						}
+			//			}
 					}
 
 					else if (objScreenControl.ControlType == 4096) { //Working Pattern Field (CHAR type column, len 14).

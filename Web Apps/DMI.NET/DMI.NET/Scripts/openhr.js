@@ -419,6 +419,7 @@
 			}
 				},
 		convertLocaleDateToSQL = function (psDateString) {
+
 			/* Convert the given date string (in locale format) into 
 						SQL format (mm/dd/yyyy). */
 			var sDateFormat;
@@ -433,7 +434,7 @@
 			var sValue;
 			var iLoop;
 
-			if (!isValidDate(psDateString)) return "";
+			if (!isValidDate(psDateString)) return "null";
 
 			sDateFormat = OpenHR.LocaleDateFormat();
 
