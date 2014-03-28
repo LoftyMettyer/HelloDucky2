@@ -390,7 +390,10 @@
 				sCurrentPage = $("#optionframe").attr("data-framesource");
 			}
 
-			sCurrentPage = sCurrentPage.toUpperCase();
+			try {
+				sCurrentPage = sCurrentPage.toUpperCase();
+			} catch(e) {}
+
 			return sCurrentPage;
 		},
 		mmwordCreateTemplateFile = function (psTemplatePath) {

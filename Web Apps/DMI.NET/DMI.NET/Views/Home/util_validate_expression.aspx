@@ -102,10 +102,12 @@
 						if (iIndex >= 0) {
 								sCurrentPage = sCurrentPage.substr(0, iIndex);
 						}
-	
-						sCurrentPage = sCurrentPage.toUpperCase();
 
-						if (sCurrentPage == "UTIL_DEF_EXPRESSION") {
+					try {
+						sCurrentPage = sCurrentPage.toUpperCase();
+					} catch(e) {}
+					
+					if (sCurrentPage == "UTIL_DEF_EXPRESSION") {
 								window.dialogArguments.OpenHR.reEnableControls();
 						}
 				}

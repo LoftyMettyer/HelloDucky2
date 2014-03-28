@@ -811,8 +811,11 @@ Session("fromMenu") = 0
     function defsel_currentWorkFramePage() {
 
         var sCurrentPage = $("#workframe").attr("data-framesource");
-
-        return (sCurrentPage.toUpperCase());
+	    if (sCurrentPage != "") {
+		    return (sCurrentPage.toUpperCase());
+	    } else {
+		    return "";
+	    }
     }
 
 </script>

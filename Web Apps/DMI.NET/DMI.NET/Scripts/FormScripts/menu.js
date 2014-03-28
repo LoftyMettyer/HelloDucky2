@@ -4168,8 +4168,11 @@ function menu_loadSelectOrderFilter(psType) {
 		sCurrentPage = $("#optionframe").attr("data-framesource");
 }
 
-	sCurrentPage = sCurrentPage.toUpperCase();
-	return sCurrentPage;
+		try {
+			sCurrentPage = sCurrentPage.toUpperCase();
+		} catch (e) { }
+
+		return sCurrentPage;
 	
 //	var sCurrentPage = $("#workframe").attr("data-framesource");
 
