@@ -23,7 +23,7 @@
 			</tr>
 			<tr>
 				<td style="text-align: center" > 
-					<h2 style="text-align: center;">Forgot passsword</h2>
+					<h2 style="text-align: center;">Forgot password</h2>
 					<p style="text-align: center;">
 						<%=ViewData("Message")%>
 					</p>
