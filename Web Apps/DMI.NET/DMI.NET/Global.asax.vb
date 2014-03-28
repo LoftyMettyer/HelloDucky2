@@ -47,7 +47,11 @@ Public Class MvcApplication
 		If ApplicationSettings.SessionTimeOutInMinutes Is Nothing Then
 			Session("TimeoutSecs") = (20 * 60) - 20	'No timeout setting, set to 20 minutes
 		Else
-			Session("TimeoutSecs") = (CInt(ApplicationSettings.SessionTimeOutInMinutes) * 60) - 20
+			Session("TimeoutSecs") = (NullSafeInteger(ApplicationSettings.SessionTimeOutInMinutes) * 60) - 20
+		End If
+
+		If Session("TimeoutSecs") <= 0 Then
+			Session("TimeoutSecs") = (20 * 60) - 20	'Invalid timeout, set to 20 minutes
 		End If
 
 		Server.ScriptTimeout = 1000
