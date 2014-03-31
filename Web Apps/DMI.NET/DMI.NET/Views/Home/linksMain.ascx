@@ -1597,6 +1597,10 @@
 		//display view details
 		$('.ViewDescription p').html('<%=Html.Encode(Session("ViewDescription").ToString())%>');
 
+		if (window.currentLayout == "tiles") {
+			$('header').css('background-image', 'none').css('background-color', 'none');			
+		}
+
 		$('header').show();
 
 	});

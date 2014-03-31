@@ -65,7 +65,8 @@
 	<script type="text/javascript">
 
 		window.SSIMode = '<%=ViewBag.SSIMode%>';
-		
+		window.isMobileDevice = '<%=Session("isMobileDevice")%>';
+
 		document.title = 'OpenHR 8.0';
 		
 		$(document).ready(function () {

@@ -1167,31 +1167,91 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
 
 
 			break;
-		case 32: //ctlSpinner
-			var spinnerContainer = document.createElement('div');
-			applyLocation(spinnerContainer, controlItemArray, true);
-			spinnerContainer.style.padding = "0 0 0 0";
+		case 32: //ctlSpinner		
+			if (window.isMobileDevice == "True") {				
+				spinner = document.createElement('input');			
+				spinner.className = "number";
+				
+				applyLocation(spinner, controlItemArray, true);
+				spinner.style.padding = "0 0 0 0";
+				spinner.id = controlID;
 
-			var spinner = spinnerContainer.appendChild(document.createElement("input"));						
-			spinner.className = "spinner";
-			spinner.id = controlID;
-			spinner.style.fontFamily = controlItemArray[11];
-			spinner.style.fontSize = controlItemArray[12] + 'pt';
-			spinner.style.width = (Number((controlItemArray[7]) / 15)) + "px";
-			spinner.style.margin = "0px";
-			spinner.setAttribute("data-columnID", columnID);
-			spinner.setAttribute('data-controlType', controlItemArray[3]);
-			spinner.setAttribute("data-control-key", key);
-			spinner.setAttribute('data-minval', controlItemArray[29]);
-			spinner.setAttribute('data-maxval', controlItemArray[30]);
-			spinner.setAttribute('data-increment', controlItemArray[31]);
+				spinner.style.fontFamily = controlItemArray[11];
+				spinner.style.fontSize = controlItemArray[12] + 'pt';
+				spinner.style.width = (Number((controlItemArray[7]) / 15)) + "px";
+				spinner.style.margin = "0px";
+				spinner.setAttribute("data-columnID", columnID);
+				spinner.setAttribute('data-controlType', controlItemArray[3]);
+				spinner.setAttribute("data-control-key", key);
+				
+				//Add some attributes used by the autoNumeric plugin we are using to validate numeric text boxes
+				var x; //For the loop below
+				var value = "";
 
-			if (tabIndex > 0) spinner.tabindex = tabIndex;
-			//if (!fControlEnabled) spinnerContainer.disabled = true;
-			if (!fControlEnabled) spinner.setAttribute('data-disabled', 'true');
+				spinner.setAttribute("data-a-sep", ''); //No thousand separator
+				spinner.setAttribute('data-m-dec', '0'); //Decimal places
 
-			//Add control to relevant tab, create if required.                
-			addControl(iPageNo, spinnerContainer);
+				//Size of field includes decimals but not the decimal point; For example if Size=6 and Decimals=2 the maximum value to be allowed is 9999.99
+				spinner.setAttribute('data-v-min', '-2147483647'); //This is -Int32.MaxValue
+				spinner.setAttribute('data-v-max', '2147483647'); //This is Int32.MaxValue
+				
+				//Alignment; this is not used by the plugin so we'll add it as a CSS style
+				if (controlItemArray[38] == "0") {
+					$(textbox).css('text-align', 'left');
+				} else if (controlItemArray[38] == "1") {
+					$(textbox).css('text-align', 'right');
+				} else {
+					$(textbox).css('text-align', 'center');
+				}
+
+				//Blank if zero; set the value of the attribute data-blankIfZeroValue for this textbox depending on its blankIfZero setting and its decimal places
+				if (controlItemArray[36] == "1") { //Blank if zero
+					spinner.setAttribute("data-blankIfZeroValue", "");
+				} else {
+					var decimalPlaces = Number(controlItemArray[26]);
+					if (decimalPlaces == 0) {
+						spinner.setAttribute("data-blankIfZeroValue", "0");
+					} else {
+						value = "0.";
+						for (x = decimalPlaces; x--;) value += "0";
+						spinner.setAttribute("data-blankIfZeroValue", value);
+					}
+				}
+
+				if (tabIndex > 0) spinner.tabindex = tabIndex;
+				//if (!fControlEnabled) spinnerContainer.disabled = true;
+				if (!fControlEnabled) spinner.setAttribute('data-disabled', 'true');
+
+				//Add control to relevant tab, create if required.                
+				addControl(iPageNo, spinner);
+				
+
+			} else {
+				var spinnerContainer = document.createElement('div');
+				applyLocation(spinnerContainer, controlItemArray, true);
+				spinnerContainer.style.padding = "0 0 0 0";
+
+				var spinner = spinnerContainer.appendChild(document.createElement("input"));
+				spinner.className = "spinner";
+				spinner.id = controlID;
+				spinner.style.fontFamily = controlItemArray[11];
+				spinner.style.fontSize = controlItemArray[12] + 'pt';
+				spinner.style.width = (Number((controlItemArray[7]) / 15)) + "px";
+				spinner.style.margin = "0px";
+				spinner.setAttribute("data-columnID", columnID);
+				spinner.setAttribute('data-controlType', controlItemArray[3]);
+				spinner.setAttribute("data-control-key", key);
+				spinner.setAttribute('data-minval', controlItemArray[29]);
+				spinner.setAttribute('data-maxval', controlItemArray[30]);
+				spinner.setAttribute('data-increment', controlItemArray[31]);
+
+				if (tabIndex > 0) spinner.tabindex = tabIndex;
+				//if (!fControlEnabled) spinnerContainer.disabled = true;
+				if (!fControlEnabled) spinner.setAttribute('data-disabled', 'true');
+
+				//Add control to relevant tab, create if required.                
+				addControl(iPageNo, spinnerContainer);
+			}
 			break;
 		case 64: //ctlText
 			var textbox;
@@ -1210,8 +1270,8 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
 
 
 					//Add some attributes used by the autoNumeric plugin we are using to validate numeric text boxes
-					var x; //For the loop below
-					var value = "";
+					//var x; //For the loop below
+					value = "";
 					
 					textbox.setAttribute("data-a-dec", $('#txtRecEditControlNumberDecimalSeparator').val()); //Decimal separator
 					if (Number(controlItemArray[52]) != 0) { //Use 1000 separator?
@@ -1254,7 +1314,7 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
 					if (controlItemArray[36] == "1") { //Blank if zero
 						textbox.setAttribute("data-blankIfZeroValue", "");
 					} else {
-						var decimalPlaces = Number(controlItemArray[26]);
+						decimalPlaces = Number(controlItemArray[26]);
 						if (decimalPlaces == 0) {
 							textbox.setAttribute("data-blankIfZeroValue", "0");
 						} else {
