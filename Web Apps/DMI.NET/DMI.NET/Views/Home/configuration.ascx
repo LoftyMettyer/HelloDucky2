@@ -222,14 +222,13 @@
     }
 
     function saveConfiguration() {
-
         var chkControl;
         var txtControl;
         var sType;
         var frmConfiguration = OpenHR.getForm("workframe", "frmConfiguration");
         // Validate the find window block size.
-        if (validateFindBlockSize == false) {
-            return (false);
+        if (validateFindBlockSize() == false) {
+            return false;
         }
 
         frmConfiguration.txtPrimaryStartMode.value = frmConfiguration.cboPrimaryTableDisplay.options(frmConfiguration.cboPrimaryTableDisplay.options.selectedIndex).value;
