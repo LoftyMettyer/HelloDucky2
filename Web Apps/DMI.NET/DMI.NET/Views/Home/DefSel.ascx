@@ -809,13 +809,13 @@ Session("fromMenu") = 0
 
 
     function defsel_currentWorkFramePage() {
+    	var sCurrentPage = $("#workframe").attr("data-framesource");
+    	try
+    	{
+    		sCurrentPage = sCurrentPage.toUpperCase();
+    	} catch (e) { }
 
-        var sCurrentPage = $("#workframe").attr("data-framesource");
-	    if (sCurrentPage != "") {
-		    return (sCurrentPage.toUpperCase());
-	    } else {
-		    return "";
-	    }
+    	return sCurrentPage;
     }
 
 </script>
