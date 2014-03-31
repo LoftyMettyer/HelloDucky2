@@ -210,9 +210,8 @@
 			' which will have created the sub-menu, so just add it to the sub-menu.
 			sBand = "mnuhistorysubband_" & CleanStringForJavaScript(objHistoryScreen.childTableName)
 			Response.Write("    menu_insertMenuItem(""" & sBand & """, objFileToolCaption.replace(""&&"", ""&""), objFileToolID);" & vbCrLf & vbCrLf)
-			
 		Else
-			If (iNextChildTableID = objHistoryScreen.childTableID) Then
+			If (iNextChildTableID = objHistoryScreen.childTableID And iLoop > 0) Then 'Added iLoop condition because the first item retrieved (in this case Working Patterns) wasn't being properly added to the menu
 				' The current screen is for the same table as the next screen to be added
 				' but is for a different table to the last screen added to the menu
 				' so create a sub-menu, and add this screen to the sub-menu.
