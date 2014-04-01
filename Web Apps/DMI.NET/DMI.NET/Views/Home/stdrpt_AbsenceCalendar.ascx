@@ -157,16 +157,22 @@
 				$("#toolbarRecord").click();
 			}
 
-		// Prints the screen
-		function PrintGrid() {			
+		function PrintGrid() {
+
+			var divToPrint = document.all.item('optionframe').innerHTML;
+			var newWin = window.open("", "_blank", 'toolbar=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=1, height=1, visible=none', "");
+						
+			newWin.document.write("<link href=\"" + window.ROOT + "Content/OpenHR.css" + "\" rel=\"stylesheet\" />");
+			newWin.document.write("<link href=\"" + window.ROOT + "Content/table.css" + "\" rel=\"stylesheet\" />");
+
 			var headstr = "<html><head><title></title></head><body>";
 			var footstr = "</body>";
-			var newstr = document.all.item('optionframe').innerHTML;
-			var oldstr = document.body.innerHTML;
-			document.body.innerHTML = headstr + newstr + footstr;
-			window.print();
-			document.body.innerHTML = oldstr;
-			return false;
+
+			newWin.document.write(headstr + divToPrint + footstr);
+			newWin.document.close();
+			newWin.focus();
+			newWin.print();
+			newWin.close();
 		}
 
 </script>
@@ -279,18 +285,10 @@ if objAbsenceCalendar.ReportFailed = false then
 										<!-- OK/Print Buttons -->
 										<td colspan=2 align=right>
 				            <input id="cmdPrint" name="cmdPrint" type="button" value="Print" style="HEIGHT: 25px; WIDTH: 80px" class="btn"
-												onclick="PrintGrid()" 
-																onmouseover="try{button_onMouseOver(this);}catch(e){}" 
-																onmouseout="try{button_onMouseOut(this);}catch(e){}"
-																onfocus="try{button_onFocus(this);}catch(e){}"
-																onblur="try{button_onBlur(this);}catch(e){}" />
+												onclick="PrintGrid()" />
 														&nbsp; 
 										<input id="cmdOK" name="cmdOK" type="button" value="Back" style="HEIGHT: 25px; WIDTH: 80px" class="btn"
-												onclick="absence_calendar_OKClick()" 
-																onmouseover="try{button_onMouseOver(this);}catch(e){}" 
-																onmouseout="try{button_onMouseOut(this);}catch(e){}"
-																onfocus="try{button_onFocus(this);}catch(e){}"
-																onblur="try{button_onBlur(this);}catch(e){}" />
+												onclick="absence_calendar_OKClick()" />
 												</td>
 								</TR>
 							</TABLE>
