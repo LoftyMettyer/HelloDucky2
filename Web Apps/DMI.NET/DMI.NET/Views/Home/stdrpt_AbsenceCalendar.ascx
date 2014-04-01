@@ -1,5 +1,4 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
-<%@ Import Namespace="DMI.NET" %>
 <%@ Import Namespace="HR.Intranet.Server" %>
 
 <script type="text/javascript">
@@ -7,6 +6,14 @@
 		function stdrpt_AbsenceCalendar_window_onload() {
 
 			$("#optionframe").attr("data-framesource", "STDRPT_ABSENCECALENDAR");
+
+			$("#DisplayAbsenceCalendarEventDetail").dialog({
+				autoOpen: false,
+				modal: true,
+				width: 450,
+				height: 323,
+				resizable: false
+			});
 
 				var fOK;
 				fOK = true;
@@ -94,50 +101,26 @@
 				}
 		}
 
-		function openDialog(pDestination, pWidth, pHeight)
-		{
-				dlgwinprops = "center:yes;" +
-						"dialogHeight:" + pHeight + "px;" +
-						"dialogWidth:" + pWidth + "px;" +
-						"help:no;" +
-						"resizable:yes;" +
-						"scroll:yes;" +
-						"status:no;";
-				window.showModalDialog(pDestination, self, dlgwinprops);
-		}
+		function ShowDetails(pdStartDate, pstrStartSession, pdEndDate, pstrEndSession, intDuration, strType, strTypeCode, strCalCode, strReason, strRegion, strWorkingPattern) {
 
-		function ShowDetails(pdStartDate, pstrStartSession, pdEndDate, pstrEndSession, intDuration, strType, strTypeCode, strCalCode, strReason, strRegion, strWorkingPattern) 
-		{
-				var sURL;
+			var frmAbsenceDetails = OpenHR.getForm("divAbsenceCalendarEventDetail", "frmAbsenceDetails");
 
-				// Populate the form with the day's details
-				frmAbsenceDetails.txtStartDate.value = pdStartDate;
-				frmAbsenceDetails.txtStartSession.value = pstrStartSession;
-				frmAbsenceDetails.txtEndDate.value = pdEndDate;
-				frmAbsenceDetails.txtEndSession.value = pstrEndSession;
-				frmAbsenceDetails.txtDuration.value = intDuration;
-				frmAbsenceDetails.txtType.value = strType;
-				frmAbsenceDetails.txtTypeCode.value = strTypeCode;
-				frmAbsenceDetails.txtCalCode.value = strCalCode;
-				frmAbsenceDetails.txtReason.value = strReason;
-				frmAbsenceDetails.txtRegion.value = strRegion;
-				frmAbsenceDetails.txtWorkingPattern.value = strWorkingPattern;
+			frmAbsenceDetails.txtStartDate.value = pdStartDate;
+			frmAbsenceDetails.txtStartSession.value = pstrStartSession;
+			frmAbsenceDetails.txtEndDate.value = pdEndDate;
+			frmAbsenceDetails.txtEndSession.value = pstrEndSession;
+			frmAbsenceDetails.txtDuration.value = intDuration;
+			frmAbsenceDetails.txtType.value = strType;
+			frmAbsenceDetails.txtTypeCode.value = strTypeCode;
+			frmAbsenceDetails.txtCalCode.value = strCalCode;
+			frmAbsenceDetails.txtReason.value = strReason;
+			frmAbsenceDetails.txtRegion.value = strRegion;
+			frmAbsenceDetails.txtWorkingPattern.value = strWorkingPattern;
+
+			OpenHR.submitForm(frmAbsenceDetails, "DisplayAbsenceCalendarEventDetail");
+			$("#DisplayAbsenceCalendarEventDetail").dialog("open");
+			$("#DisplayAbsenceCalendarEventDetail").dialog("option", "position", ['center', 'center']);
 	
-				sURL = "stdrpt_AbsenceCalendar_Details" +
-						"?txtStartDate=" + frmAbsenceDetails.txtStartDate.value +
-						"&txtStartSession=" + escape(frmAbsenceDetails.txtStartSession.value) +
-						"&txtEndDate=" + frmAbsenceDetails.txtEndDate.value +
-						"&txtEndSession=" + escape(frmAbsenceDetails.txtEndSession.value) +
-						"&txtDuration=" + frmAbsenceDetails.txtDuration.value +
-						"&txtType=" + escape(frmAbsenceDetails.txtType.value) +
-						"&txtTypeCode=" + escape(frmAbsenceDetails.txtTypeCode.value) +
-						"&txtCalCode=" + escape(frmAbsenceDetails.txtCalCode.value) +
-						"&txtReason=" + escape(frmAbsenceDetails.txtReason.value) +
-						"&txtDisableRegions=" + escape(frmChangeDetails.txtDisableRegions.value) +
-						"&txtRegion=" + escape(frmAbsenceDetails.txtRegion.value) +
-						"&txtDisableWPs=" + escape(frmChangeDetails.txtDisableWPs.value) +
-						"&txtWorkingPattern=" + escape(frmAbsenceDetails.txtWorkingPattern.value);
-				openDialog(sURL, 350,300);
 		}
 
 		// Returns to the recordedit screen
@@ -328,20 +311,23 @@ end if
 <form action="emptyoption" method="post" id="frmRecordEdit" name="frmRecordEdit">
 </form>
 
-<form action="stdrpt_AbsenceCalendar_Details" target="ShowDetails" method="post" id="frmAbsenceDetails" name="frmAbsenceDetails">
-		<input type="hidden" id="txtStartDate" name="txtStartDate">
-		<input type="hidden" id="txtStartSession" name="txtStartSession">
-		<input type="hidden" id="txtEndDate" name="txtEndDate">
-		<input type="hidden" id="txtEndSession" name="txtEndSession">
-		<input type="hidden" id="txtDuration" name="txtDuration">
-		<input type="hidden" id="txtType" name="txtType">
-		<input type="hidden" id="txtTypeCode" name="txtTypeCode">
-		<input type="hidden" id="txtCalCode" name="txtcalCode">
-		<input type="hidden" id="txtReason" name="txtReason">
-		<input type="hidden" id="txtRegion" name="txtRegion">
-		<input type="hidden" id="txtWorkingPattern" name="txtWorkingPattern">
-</form>
+<div id="divAbsenceCalendarEventDetail">
+	<form id="frmAbsenceDetails" name="frmAbsenceDetails" action="stdrpt_AbsenceCalendar_Details" method="post" style="visibility: hidden; display: none">
+			<input type="hidden" id="txtStartDate" name="txtStartDate">
+			<input type="hidden" id="txtStartSession" name="txtStartSession">
+			<input type="hidden" id="txtEndDate" name="txtEndDate">
+			<input type="hidden" id="txtEndSession" name="txtEndSession">
+			<input type="hidden" id="txtDuration" name="txtDuration">
+			<input type="hidden" id="txtType" name="txtType">
+			<input type="hidden" id="txtTypeCode" name="txtTypeCode">
+			<input type="hidden" id="txtCalCode" name="txtcalCode">
+			<input type="hidden" id="txtReason" name="txtReason">
+			<input type="hidden" id="txtRegion" name="txtRegion">
+			<input type="hidden" id="txtWorkingPattern" name="txtWorkingPattern">
+	</form>
+</div>
 
+<div id="DisplayAbsenceCalendarEventDetail"></div>
 
 <% 
 	' Cleanup code

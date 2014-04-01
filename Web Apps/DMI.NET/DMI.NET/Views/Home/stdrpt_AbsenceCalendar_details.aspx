@@ -1,46 +1,4 @@
 ﻿<%@ Page Language="VB" Inherits="System.Web.Mvc.ViewPage" %>
-<%@Import namespace="DMI.NET" %>
-<!DOCTYPE html>
-
-<html>
-<head id="Head1" runat="server">
-		<title>Absence Details</title>
-		
-		<link href="<%: Url.LatestContent("~/Content/OpenHR.css")%>" rel="stylesheet" type="text/css" />
-
-		<script type="text/javascript">
-				function absenceCalendar_details_window_onload() {
-
-						var iResizeBy;
-						var iNewWidth;
-						var iNewHeight;
-
-						self.focus();
-
-						// Resize the grid to show all prompted values.
-						iResizeBy = frmDetails.offsetParent.scrollWidth - frmDetails.offsetParent.clientWidth;
-						if (frmDetails.offsetParent.offsetWidth + iResizeBy > screen.width) {
-								window.dialogWidth = new String(screen.width) + "px";
-						} else {
-								iNewWidth = new Number(window.dialogWidth.substr(0, window.dialogWidth.length - 2));
-								iNewWidth = iNewWidth + iResizeBy;
-								window.dialogWidth = new String(iNewWidth) + "px";
-						}
-
-						iResizeBy = frmDetails.offsetParent.scrollHeight - frmDetails.offsetParent.clientHeight;
-						if (frmDetails.offsetParent.offsetHeight + iResizeBy > screen.height) {
-								window.dialogHeight = new String(screen.height) + "px";
-						} else {
-								iNewHeight = new Number(window.dialogHeight.substr(0, window.dialogHeight.length - 2));
-								iNewHeight = iNewHeight + iResizeBy;
-								window.dialogHeight = new String(iNewHeight) + "px";
-						}
-				}
-
-		</script>
-
-</head>
-<body>
 
 		<form id="frmDetails" name="frmDetails">
 				<table class="outline" cellpadding="0" cellspacing="7" width="100%">
@@ -96,25 +54,20 @@
 								</td>
 						</tr>
 						<% End If%>
-
-	<tr>
-		<td colspan="2">
-		<input id="cmdOK" name="cmdOK" class="btn" type="button" value="OK" style="HEIGHT: 24px; WIDTH: 89px" 
-				onclick="self.close()"	
-						onmouseover="try{button_onMouseOver(this);}catch(e){}" 
-						onmouseout="try{button_onMouseOut(this);}catch(e){}"
-						onfocus="try{button_onFocus(this);}catch(e){}"
-						onblur="try{button_onBlur(this);}catch(e){}" />
-		</td>
-	</tr>
+	
 	</table>
 </form>
 
-		<script type="text/javascript">
-				absenceCalendar_details_window_onload();
-		</script>
+<div style="text-align: center; padding-top: 20px">
+	<input id="cmdOK" type="button" value="OK" class="btn" name="cmdOK" onclick="closeAbsenceDetails();" />
+</div>
 
-</body>
-	
+<script type="text/javascript">
 
-</html>
+	function closeAbsenceDetails() {
+		$("#DisplayAbsenceCalendarEventDetail").dialog("close");
+	}
+
+	$("#DisplayAbsenceCalendarEventDetail").dialog('option', 'title', 'Absence Details');
+
+</script>
