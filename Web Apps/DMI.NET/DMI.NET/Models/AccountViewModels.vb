@@ -31,7 +31,10 @@ Namespace Models
 		Public Sub New()
 
 			' -- SHOW 'DETAILS' BOXES? --
-			If Current.Request.QueryString("Details") <> "" Or Current.Request.QueryString("database") <> "" Or Current.Request.QueryString("server") <> "" Then
+			If Current.Request.QueryString("Details") <> "" Or _
+				Current.Request.QueryString("database") <> "" Or _
+				Current.Request.QueryString("server") <> "" Or _
+				Current.Request.QueryString.ToString() = "%3f" Then	' %3f = ?? to show details button.
 				SetDetails = True
 			Else
 				SetDetails = False
