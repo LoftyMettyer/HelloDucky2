@@ -224,9 +224,8 @@ Session("fromMenu") = 0
     }
 
     function defsel_window_onload() {
-      
-        var frmDefSel = document.getElementById('frmDefSel');
-
+    		var frmDefSel = document.getElementById('frmDefSel');
+    	
         // Expand the option frame and hide the work frame.
         if (frmDefSel.txtSingleRecordID.value > 0) {
             $("#optionframe").attr("data-framesource", "DEFSEL");
@@ -818,6 +817,7 @@ Session("fromMenu") = 0
     	return sCurrentPage;
     }
 
+   
 </script>
 
 <div id="defsel" data-framesource="defsel" style="display: block; height:100%">
@@ -1088,7 +1088,7 @@ Session("fromMenu") = 0
 
 																		<tr>
 																				<td height="70">
-																						<textarea cols="20" class="disabled" style="WIDTH: 100%;" name="txtDescription" rows="4" readonly="readonly" tabindex="-1">
+																						<textarea cols="20" class="disabled" style="WIDTH: 100%;" name="txtDescription" rows="4"  tabindex="-1" disabled="disabled" >
 									</textarea>
 																				</td>
 																		</tr>
