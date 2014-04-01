@@ -4888,8 +4888,13 @@ function menu_loadSelectOrderFilter(psType) {
 }
 
 	if (itemId == "mnutoolHistory") {
-	$(".accordion").accordion("resize");
-}
+		//In some instances the accordion has not been completely initialized so the following JQuery UI exception is thrown:
+		//"cannot call methods on accordion prior to initialization; attempted to call method 'resize'"
+		//so I'm try-catching the statement
+		try {
+			$(".accordion").accordion("resize");
+		} catch(e) {}
+	}
 }
 
 	function frmMenuInfo(newCaption) {
