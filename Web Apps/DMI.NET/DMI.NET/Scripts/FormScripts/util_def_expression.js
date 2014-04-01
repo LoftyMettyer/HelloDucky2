@@ -1948,7 +1948,7 @@ function submitDefinition() {
 
 	var sURL = "util_dialog_expression" + "?action=validate";
 
-	openDialog(sURL, 500, 170);
+	openDialog(sURL, 600, 230);
 
 	reEnableControls();
 	return true;
