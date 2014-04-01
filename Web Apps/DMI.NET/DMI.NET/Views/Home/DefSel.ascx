@@ -89,6 +89,10 @@ Session("fromMenu") = 0
 				End If
 			End If
 		End If
+	Else
+		If Len(Session("tableID")) > 0 Then
+			Session("utilTableID") = Session("tableID")
+		End If		
 	End If
 	
 	If CStr(Session("optionDefSelType")) <> "" Then
@@ -434,7 +438,7 @@ Session("fromMenu") = 0
 		        menu_toolbarEnableItem("mnutoolPropertiesUtilitiesFind", fHasRows && fFromMenu);
 		        menu_setVisibleMenuItem("mnutoolPropertiesUtilitiesFind", true);
 
-		        menu_toolbarEnableItem("mnutoolRunUtilitiesFind", fHasRows && IsRunPermitted && fFromMenu);
+		        menu_toolbarEnableItem("mnutoolRunUtilitiesFind", fHasRows && IsRunPermitted);
  		    		//only display the 'close' button for defsel when called from rec edit...
 		        menu_setVisibleMenuItem('mnutoolCloseUtilitiesFind', !fFromMenu);
 		        menu_toolbarEnableItem('mnutoolCloseUtilitiesFind', !fFromMenu);
