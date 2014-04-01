@@ -91,7 +91,7 @@ function InitialiseWindow() {
 	window.iCurrentMessageState = 'none';
 
 	try {
-		if (navigator.userAgent.indexOf("MSIE") > 0) {
+		if ("ActiveXObject" in window) {			
 			var iDefHeight, iDefWidth, iResizeByHeight, iResizeByWidth;
 			iDefHeight = jQuery('#pnlInputDiv').height();
 			iDefWidth = jQuery('#pnlInputDiv').width();
