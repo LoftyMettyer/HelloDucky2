@@ -3048,9 +3048,10 @@ Namespace Controllers
 
 						Next
 
+						ClientDLL.DataArray()
+
 					End If
 
-					ClientDLL.DataArray()
 				End If
 
 			End If
