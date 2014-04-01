@@ -702,8 +702,7 @@ End If
 	for (var iArrayPos = 0; iArrayPos < g_colModelArray.length; iArrayPos++) {
 		if (g_colModelArray[iArrayPos].hidden !== true) iVisibleCount++;
 	}
-
-
+	
 	if (menu_isSSIMode()) {
 		try {
 			gridWidth = $('#reportworkframe').width();
@@ -719,9 +718,7 @@ End If
 		gridWidth = 770;
 		gridHeight = 390;
 	}
-
-
-
+	
 	jQuery("#grdReport").jqGrid({
 		datatype: "local",
 		shrinkToFit: ShrinkToFit,
@@ -742,19 +739,15 @@ End If
 
 	function stylejqGrid() {
 		//jqGrid style overrides
-		//hide caption	
-		$("#gview_grdReport > .ui-jqgrid-titlebar").hide(); //no title bar; this is in the dialog title
 		$('#gview_grdReport tr.jqgrow td').css('vertical-align', 'top'); //float text to top, in case of multi-line cells
-		$('#gview_grdReport .s-ico span').css('display', 'none'); //hide the sort order icons - they don't tie in to the dataview model.
 		$('#gview_grdReport tr.footrow td').css('vertical-align', 'top'); //float text to top, in case of multi-line footers
-		<%If objReport.mblnCustomReportsSummaryReport Then%>
-		$('#gview_grdReport .tree-wrap-ltr').css('display', 'none');	//hide the expand/retract node for summary reports.
-		<%End If%>
+		$("#gview_grdReport > .ui-jqgrid-titlebar").text("<%=objReport.ReportCaption%>"); //Activate title bar for the grid as this will then go naturally into the print functionality.
+		$("#gview_grdReport > .ui-jqgrid-titlebar").height("20px"); //no title bar; this is in the dialog title
+		$("#gview_grdReport .ui-jqgrid-titlebar").show();
 	}
 
 	if (menu_isSSIMode()) $('#gbox_grdReport').css('margin', '0 auto'); //center the report in self-service screen.	
-
-
+	
 	<%End If%>
 	
 </script>

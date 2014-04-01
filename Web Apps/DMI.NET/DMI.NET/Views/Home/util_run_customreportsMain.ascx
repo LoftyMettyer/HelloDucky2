@@ -24,7 +24,7 @@
 </form>
 
 <script type="text/javascript">
-	$(".popup").dialog('option', 'title', $("#txtDefn_Name").val());
+	$(".popup").dialog('option', 'title', "Report Details");
 	//The next line was overriding the report title	
 	if(menu_isSSIMode()) $("#PageDivTitle").html($("#txtDefn_Name").val());
 	ShowCustomReport();

@@ -68,10 +68,6 @@
 %>
 
 <script type="text/javascript">
-
-
-
-
 	function raiseError(sErrorDesc, fok, fcancelled) {
 		var frmError = document.getElementById("frmError");
 		frmError.txtUtilTypeDesc.value = window.frames("top").frmPopup.txtUtilTypeDesc.value;
@@ -118,14 +114,13 @@
 	}
 
 	function ShowDataFrame() {
-
 		$("#cmdOK").hide();
 		//$("#cmdCancel").hide();
 		$("#cmdCancel").removeClass('ui-state-focus');
 		$("#cmdCancel").button({ disabled: true });
 		$("#cmdOutput").show();
 		var isMobileDevice = ('<%=Session("isMobileDevice")%>' == 'True');
-		$("#cmdOutput").prop('disabled', isMobileDevice );
+		$("#cmdOutput").prop('disabled', isMobileDevice);
 
 		if (menu_isSSIMode() == true) {
 			$("#cmdClose").hide();  // Don't show the Close button in SSI
@@ -145,8 +140,6 @@
 			$("#cmdOutput").hide();
 			$("#cmdCancel").hide();
 		}
-
-
 	}
 
 	function outputOptionsPrintClick() {
@@ -175,25 +168,18 @@
 		newWin.print();
 		newWin.close();
 	}
-
-
+	
 	function ExportDataPrompt() {
-
 		//var frmExportData = OpenHR.getForm("reportworkframe", "frmExportData");
 		//OpenHR.submitForm(frmExportData, "outputoptions");
-		
 		$("#reportworkframe").hide();
 		$("#reportbreakdownframe").hide();
 		$("#outputoptions").show();
-		
 		$("#cmdOK").show();
 		$("#cmdCancel").show();
 		$("#cmdCancel").button({ disabled: false });
 		$("#cmdOutput").hide();
-
 	}
-
-
 </script>
 
 <form id="frmError" name="frmError" action="util_run_error" method="post">
@@ -235,7 +221,6 @@
 		</div>
 
 		<div id="main" data-framesource="util_run" style="height: 80%; margin: 0 0 0 0;">
-
 			<%   
 				Dim sPrintButtonLabel As String = "Print"
 				If Session("utiltype") = "1" Then
@@ -268,7 +253,7 @@
 			%>
 		</div>
 
-		<div id="divReportButtons" style="margin: 5px 20px 0 25px; visibility: hidden">
+		<div id="divReportButtons" style="margin: 25px 0 0 0; visibility: hidden">
 			<div style="float: right;">
 				<%If (Session("utiltype") = "2") Or (Session("utiltype") = "16") Then%> 
 					<input class="btn" type="button" id="cmdPrint" name="cmdPrint" value="<%=sPrintButtonLabel%>" onclick="outputOptionsPrintClick()" />
@@ -283,10 +268,7 @@
 	</div>
 </div>
 
-
-
 <script type="text/javascript">
-
 	<%
 	If Session("utiltype") = "17" Then
 		If Session("CalendarReports_FailedOrNoRecords") = True Then	'We need a smaller popup window because the report failed or has no records
@@ -302,10 +284,7 @@ ElseIf Session("utiltype") = "16" Then
 	' bradford factor
 	%>
 	$(".popup").dialog({ width: 850, height: 720, resizable: true });
-	<%
-Else
-	%>
-		
+	<%Else%>
 	$(".popup").dialog({
 		width: 810,
 		height: 720,
@@ -319,16 +298,10 @@ Else
 	<%
 End If
 	%>
-
 	
-
 	var isMobileDevice = ('<%=Session("isMobileDevice")%>' == 'True');
 	$('#cmdOutput').prop('disabled', isMobileDevice);
-
 	$(".popup").dialog("option", "position", ['center', 'center']); //Center popup in screen
-
-	//$('.popup').css({ top: '50%', left: '50%', margin: '-' + ($('.popup').height() / 2) + 'px 0 0 -' + ($('.popup').width() / 2) + 'px' });
-
 	$('.popup').bind('dialogclose', function () {
 		closeclick();
 	});
