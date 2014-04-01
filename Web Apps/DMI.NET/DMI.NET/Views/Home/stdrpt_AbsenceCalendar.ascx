@@ -6,6 +6,8 @@
 
 		function stdrpt_AbsenceCalendar_window_onload() {
 
+			$("#optionframe").attr("data-framesource", "STDRPT_ABSENCECALENDAR");
+
 				var fOK;
 				fOK = true;
 
@@ -32,11 +34,6 @@
 				showDefaultRibbon();
 				$("#toolbarHome").click();
 
-				// Disable the menu
-				//menu_disableMenu();
-
-				// Force this combo to be displayed.
-				//cboStartMonth.style.visibility = "visible";
 		}
 
 		function cboStartMonth_onchange() 
@@ -145,16 +142,17 @@
 
 		// Returns to the recordedit screen
 		function absence_calendar_OKClick() {
+			
+			refreshData();
 
-				refreshData();
+			menu_disableMenu();
 
-				menu_disableMenu();
+			$("#optionframe").hide();
+			$("#workframe").show();
+			OpenHR.submitForm(frmRecordEdit);
+			menu_refreshMenu();
+			$("#toolbarRecord").click();
 
-				$("#optionframe").hide();
-				$("#workframe").show();
-				OpenHR.submitForm(frmRecordEdit);
-				menu_refreshMenu();
-				$("#toolbarRecord").click();
 			}
 
 		function PrintGrid() {
@@ -322,7 +320,7 @@ end if
 		<input type="hidden" id="txtDisableWPs" name="txtDisableWPs" value="<%Response.Write(objAbsenceCalendar.DisableWPs)%>">
 </form>
 
-<form action="stdrpt_AbsenceCalendar_submit" method="post" id="frmGotoOption" name="frmGotoOption" style="visibility: hidden; display: none">
+<form action="emptyoption_submit" method="post" id="frmGotoOption" name="frmGotoOption" style="visibility: hidden; display: none">
 		<%Html.RenderPartial("~/Views/Shared/gotoOption.ascx")%>
 </form>
 
