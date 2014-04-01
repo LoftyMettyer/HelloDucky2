@@ -324,6 +324,8 @@ end if
 			<input type="hidden" id="txtReason" name="txtReason">
 			<input type="hidden" id="txtRegion" name="txtRegion">
 			<input type="hidden" id="txtWorkingPattern" name="txtWorkingPattern">
+			<input type="hidden" id="txtDisableRegions" name="txtDisableRegions" value="<%Response.Write(objAbsenceCalendar.DisableRegions)%>">
+			<input type="hidden" id="txtDisableWPs" name="txtDisableWPs" value="<%Response.Write(objAbsenceCalendar.DisableWPs)%>">
 	</form>
 </div>
 
