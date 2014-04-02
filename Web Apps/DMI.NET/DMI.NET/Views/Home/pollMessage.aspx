@@ -25,7 +25,8 @@
 <script type="text/javascript">
 	
 	function pollmessage_logout() {
-		window.location.href = "Main";
+		window.onbeforeunload = null;
+		try { window.location.href = "Main"; } catch (e) { }
 		return false;
 	}
 
