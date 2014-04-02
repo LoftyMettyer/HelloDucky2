@@ -90,23 +90,23 @@ Namespace Models
 							photoSource = "../Content/images/anonymous.png"
 						End If
 
+						Dim sAbsenceReasonClass As String = ""
+						If Not IsDBNull(objRow(9)) Then sAbsenceReasonClass = "REASON#" & objRow(9) & "#"
 
 						orgCharts.Add(New OrgChart() With {
 								.EmployeeID = CInt(objRow(0)),
-								.EmployeeForenames = objRow(1).ToString(),
-								.EmployeeSurname = objRow(2).ToString(),
-								.EmployeeStaffNo = objRow(3).ToString(),
-								.LineManagerStaffNo = objRow(4).ToString(),
-								.EmployeeJobTitle = objRow(5).ToString(),
+								.EmployeeForenames = HttpUtility.HtmlEncode(objRow(1).ToString()),
+								.EmployeeSurname = HttpUtility.HtmlEncode(objRow(2).ToString()),
+								.EmployeeStaffNo = HttpUtility.HtmlEncode(objRow(3).ToString()),
+								.LineManagerStaffNo = HttpUtility.HtmlEncode(objRow(4).ToString()),
+								.EmployeeJobTitle = HttpUtility.HtmlEncode(objRow(5).ToString()),
 								.HierarchyLevel = CInt(objRow(6)),
 								.PhotoPath = photoSource,
-								.AbsenceTypeClass = objRow(8).ToString() & additionalClasses & " " &
-																 objRow(9).ToString() & " " &
-																 objRow(10).ToString() & " "})
-
+								.AbsenceTypeClass = HttpUtility.HtmlEncode(objRow(8).ToString()) & HttpUtility.HtmlEncode(additionalClasses) & " " &
+																 HttpUtility.HtmlEncode(sAbsenceReasonClass) & " " &
+																 HttpUtility.HtmlEncode(objRow(10).ToString()) & " "})
 					Next
 				End If
-
 
 			Catch ex As SqlException
 

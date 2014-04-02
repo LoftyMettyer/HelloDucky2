@@ -54,19 +54,35 @@
 
 				setTimeout('centreMe()', 500);
 
+			//Set up tool tip for absentees...
+				$("div[class*='REASON']").each(function () {
+					try {
+						var classString = $(this).attr('class');
+
+						if (OpenHR.nullsafeString(classString).length > 0) {
+							var absReason = classString.substr(classString.indexOf('#') + 1);
+							absReason = absReason.substr(0, absReason.indexOf('#'));
+
+							$(this).attr('title', absReason);
+						}
+					}
+					catch(e) {}
+				});
+
 				$("#optionframe").hide();
 				$("#workframe").show();
 			}
 	});
 
-		function centreMe() {
+	function centreMe() {
+		try {
 			var myNodePos = $('.node.ui-state-active').offset().left;
 			var workframeWidth = $('#workframeset').width();
 			var scrollLeftNewPos = myNodePos - workframeWidth + 380 + 48;
 
 			$('#workframeset').animate({ scrollLeft: scrollLeftNewPos }, 2000);
-
-		}
+		} catch(e) {}
+	}
 
 
 

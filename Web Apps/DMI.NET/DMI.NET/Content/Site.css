@@ -45,6 +45,10 @@ section {
 	/*overflow: auto;*/
 	}
 
+.DMI #workframeset {
+	overflow: auto;
+}
+
 #workframe { /*height: 100%;*/}
 
 /* Styles for basic forms

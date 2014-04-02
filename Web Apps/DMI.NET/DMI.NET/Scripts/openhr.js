@@ -645,6 +645,19 @@
 		newWin.focus();
 		newWin.print();
 		newWin.close();
+	},
+	nullsafeString = function(arg) {
+		var returnvalue = "";
+		if ((arg == undefined) || (arg == "") || arg.length <= 0) {
+			return returnvalue;
+		} else {			
+			try {
+				returnvalue = String(arg);
+			} catch(e) {
+				return returnvalue;
+			}
+		}
+		return returnvalue;
 	};
 
 	window.OpenHR = {
@@ -683,7 +696,8 @@
 		GetFileExtension: getFileExtension,
 		CheckForMessages: checkForMessages,
 		SessionTimeout: sessionTimeout,
-		printDiv: printDiv
+		printDiv: printDiv,
+		nullsafeString: nullsafeString
 	};
 
 })(window, jQuery);
