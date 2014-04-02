@@ -227,64 +227,33 @@
 	' Output Options
 	Select Case objSettings.GetSystemSetting(strReportType, "Format", 0)
 		Case "0"
-			Response.Write("frmAbsenceDefinition.optOutputFormat0.checked = 1;" & vbCrLf)
+			Response.Write("frmAbsenceDefinition.optDefOutputFormat0.checked = 1;" & vbCrLf)
 		Case "1"
-			Response.Write("frmAbsenceDefinition.optOutputFormat1.checked = 1;" & vbCrLf)
+			Response.Write("frmAbsenceDefinition.optDefOutputFormat1.checked = 1;" & vbCrLf)
 		Case "2"
-			Response.Write("frmAbsenceDefinition.optOutputFormat2.checked = 1;" & vbCrLf)
+			Response.Write("frmAbsenceDefinition.optDefOutputFormat2.checked = 1;" & vbCrLf)
 		Case "3"
-			Response.Write("frmAbsenceDefinition.optOutputFormat3.checked = 1;" & vbCrLf)
+			Response.Write("frmAbsenceDefinition.optDefOutputFormat3.checked = 1;" & vbCrLf)
 		Case "4"
-			Response.Write("frmAbsenceDefinition.optOutputFormat4.checked = 1;" & vbCrLf)
+			Response.Write("frmAbsenceDefinition.optDefOutputFormat4.checked = 1;" & vbCrLf)
 		Case "5"
-			Response.Write("frmAbsenceDefinition.optOutputFormat5.checked = 1;" & vbCrLf)
+			Response.Write("frmAbsenceDefinition.optDefOutputFormat5.checked = 1;" & vbCrLf)
 		Case "6"
 			'MH20031211 Fault 7787
 			'If Bradford then disallow Pivot (make it worksheet instead)
 			If Session("StandardReport_Type") = UtilityType.utlBradfordFactor Then
-				Response.Write("frmAbsenceDefinition.optOutputFormat4.checked = 1;" & vbCrLf)
+				Response.Write("frmAbsenceDefinition.optDefOutputFormat4.checked = 1;" & vbCrLf)
 			Else
-				Response.Write("frmAbsenceDefinition.optOutputFormat6.checked = 1;" & vbCrLf)
+				Response.Write("frmAbsenceDefinition.optDefOutputFormat6.checked = 1;" & vbCrLf)
 			End If
 		Case Else
 			' Charts and pivot not in Intranet yet
-			Response.Write("frmAbsenceDefinition.optOutputFormat0.checked = 1" & vbCrLf)
+			Response.Write("frmAbsenceDefinition.optDefOutputFormat0.checked = 1" & vbCrLf)
 	End Select
 	
 	Response.Write("frmAbsenceDefinition.chkPreview.checked = " & CleanStringForJavaScript(objSettings.GetSystemSetting(strReportType, "Preview", 0)) & ";" & vbCrLf)
-	Response.Write("frmAbsenceDefinition.chkDestination0.checked = " & CleanStringForJavaScript(objSettings.GetSystemSetting(strReportType, "Screen", 1)) & ";" & vbCrLf)
 
-	Response.Write("frmAbsenceDefinition.chkDestination1.checked = " & CleanStringForJavaScript(objSettings.GetSystemSetting(strReportType, "Printer", 0)) & ";" & vbCrLf)
-
-	Response.Write("strPrinterName = '" & CleanStringForJavaScript(objSettings.GetSystemSetting(strReportType, "PrinterName", "")) & "';" & vbCrLf)
-
-	'Set the printer as defined in Report Configuration in DAT.
-	'Response.Write "frmAbsenceDefinition.cboPrinterName.value = " & """" & objSettings.GetSystemSetting(strReportType, "PrinterName", "") & """" & ";" & vbcrlf
-	Response.Write("for (var i=0; i<frmAbsenceDefinition.cboPrinterName.options.length; i++)" & vbCrLf)
-	Response.Write("	{" & vbCrLf)
-	Response.Write("	if (frmAbsenceDefinition.cboPrinterName.options[i].innerText.toLowerCase() == strPrinterName.toLowerCase())" & vbCrLf)
-	Response.Write("		{" & vbCrLf)
-	Response.Write("		frmAbsenceDefinition.cboPrinterName.selectedIndex = i; " & vbCrLf)
-	Response.Write("		}" & vbCrLf)
-	Response.Write("	}" & vbCrLf)
-
-	'MH20040311
-	Response.Write("if (frmAbsenceDefinition.chkDestination1.checked == true) " & vbCrLf)
-	Response.Write("	{" & vbCrLf)
-	Response.Write("	if (strPrinterName != """") " & vbCrLf)
-	Response.Write("		{" & vbCrLf) '
-	Response.Write("		if (frmAbsenceDefinition.cboPrinterName.options[frmAbsenceDefinition.cboPrinterName.selectedIndex].innerText != strPrinterName) " & vbCrLf)
-	Response.Write("			{" & vbCrLf)
-	Response.Write("			window.parent.frames(""menuframe"").ASRIntranetFunctions.MessageBox(""This definition is set to output to printer ""+strPrinterName+"" which is not set up on your PC."");" & vbCrLf)
-	Response.Write("			var oOption = document.createElement(""OPTION"");" & vbCrLf)
-	Response.Write("			frmAbsenceDefinition.cboPrinterName.options.add(oOption);" & vbCrLf)
-	Response.Write("			oOption.innerText = strPrinterName;" & vbCrLf)
-	Response.Write("			oOption.value = frmAbsenceDefinition.cboPrinterName.options.length-1;" & vbCrLf)
-	Response.Write("			frmAbsenceDefinition.cboPrinterName.selectedIndex = oOption.value;" & vbCrLf)
-	Response.Write("			}" & vbCrLf)
-	Response.Write("		}" & vbCrLf)
-	Response.Write("	}" & vbCrLf)
-	
+	Response.Write("strPrinterName = '';" & vbCrLf)
 	Response.Write("frmAbsenceDefinition.chkDestination2.checked = " & CleanStringForJavaScript(objSettings.GetSystemSetting(strReportType, "Save", 0)) & ";" & vbCrLf)
 	Response.Write("frmAbsenceDefinition.txtFilename.value = " & """" & CleanStringForJavaScript(objSettings.GetSystemSetting(strReportType, "FileName", "")) & """" & ";" & vbCrLf)
 
@@ -306,7 +275,6 @@
 			Response.Write("frmAbsenceDefinition.cboSaveExisting.selectedIndex = 4;" & vbCrLf)
 	End Select
 
-	'Response.Write "frmAbsenceDefinition.cboSaveExisting.value = " & """" & strSaveExisting & """"  & ";" & vbcrlf
 	Response.Write("frmAbsenceDefinition.chkDestination3.checked = " & CleanStringForJavaScript(objSettings.GetSystemSetting(strReportType, "Email", 0)) & ";" & vbCrLf)
 	Response.Write("frmAbsenceDefinition.txtEmailGroup.value = " & """" & CleanStringForJavaScript(objSettings.GetEmailGroupName(objSettings.GetSystemSetting(strReportType, "EmailAddr", "0"))) & """" & ";" & vbCrLf)
 	Response.Write("frmAbsenceDefinition.txtEmailGroupID.value = " & """" & CleanStringForJavaScript(objSettings.GetSystemSetting(strReportType, "EmailAddr", "")) & """" & ";" & vbCrLf)
@@ -717,14 +685,14 @@
 													<tr style="height: 20px">
 														<td style="width: 5px">&nbsp;</td>
 														<td style="text-align: left; width: 15px">
-															<input type="radio" name="optOutputFormat" id="optOutputFormat0" value="0"
+															<input type="radio" name="optDefOutputFormat" id="optDefOutputFormat0" value="0"
 																style="width: 20px"
 																onclick="formatAbsenceClick(0);" />
 														</td>
 														<td style="text-align: left; white-space: nowrap">
 															<label
 																tabindex="-1"
-																for="optOutputFormat0"
+																for="optDefOutputFormat0"
 																class="radio">
 																Data Only
 															</label>
@@ -736,7 +704,7 @@
 														'Don't allow CSV for Bradford
 														If Session("StandardReport_Type") = UtilityType.utlBradfordFactor Then
 													%>
-													<input type="hidden" style="width: 20px" name="optOutputFormat" id="optOutputFormat1" value="1"
+													<input type="hidden" style="width: 20px" name="optDefOutputFormat" id="optDefOutputFormat1" value="1"
 														onclick="formatAbsenceClick(1);" />
 													<%
 													Else
@@ -747,13 +715,13 @@
 													<tr style="height: 20px">
 														<td style="width: 5px">&nbsp;</td>
 														<td style="text-align: left; width: 15px">
-															<input type="radio" style="width: 20px" name="optOutputFormat" id="optOutputFormat1" value="1"
+															<input type="radio" style="width: 20px" name="optDefOutputFormat" id="optDefOutputFormat1" value="1"
 																onclick="formatAbsenceClick(1);" />
 														</td>
 														<td style="text-align: left; white-space: nowrap">
 															<label
 																tabindex="-1"
-																for="optOutputFormat1"
+																for="optDefOutputFormat1"
 																class="radio ui-state-error-text">
 																CSV File
 															</label>
@@ -769,13 +737,13 @@
 													<tr style="height: 20px">
 														<td style="width: 5px">&nbsp;</td>
 														<td style="text-align: left; width: 15px">
-															<input type="radio" style="width: 20px" name="optOutputFormat" id="optOutputFormat2" value="2"
+															<input type="radio" style="width: 20px" name="optDefOutputFormat" id="optDefOutputFormat2" value="2"
 																onclick="formatAbsenceClick(2);" />
 														</td>
 														<td style="text-align: left; white-space: nowrap">
 															<label
 																tabindex="-1"
-																for="optOutputFormat2"
+																for="optDefOutputFormat2"
 																class="radio ui-state-error-text">
 																HTML Document
 															</label>
@@ -788,13 +756,13 @@
 													<tr style="height: 20px">
 														<td style="width: 5px">&nbsp;</td>
 														<td style="text-align: left; width: 15px">
-															<input type="radio" style="width: 20px" name="optOutputFormat" id="optOutputFormat3" value="3"
+															<input type="radio" style="width: 20px" name="optDefOutputFormat" id="optDefOutputFormat3" value="3"
 																onclick="	formatAbsenceClick(3);" />
 														</td>
 														<td style="text-align: left; white-space: nowrap">
 															<label
 																tabindex="-1"
-																for="optOutputFormat3"
+																for="optDefOutputFormat3"
 																class="radio ui-state-error-text">
 																Word Document
 															</label>
@@ -807,13 +775,13 @@
 													<tr style="height: 20px">
 														<td style="width: 5px">&nbsp;</td>
 														<td style="text-align: left; width: 15px">
-															<input type="radio" style="width: 20px" name="optOutputFormat" id="optOutputFormat4" value="4"
+															<input type="radio" style="width: 20px" name="optDefOutputFormat" id="optDefOutputFormat4" value="4"
 																onclick="	formatAbsenceClick(4);" />
 														</td>
 														<td style="text-align: left; white-space: nowrap">
 															<label
 																tabindex="-1"
-																for="optOutputFormat4"
+																for="optDefOutputFormat4"
 																class="radio">
 																Excel Worksheet
 															</label>
@@ -827,13 +795,13 @@
 													<tr style="height: 5px">
 														<td style="width: 5px">&nbsp;</td>
 														<td style="text-align: left; width: 15px">
-															<input type="radio" style="width: 20px" name="optOutputFormat" id="optOutputFormat5" value="5"
+															<input type="radio" style="width: 20px" name="optDefOutputFormat" id="optDefOutputFormat5" value="5"
 																onclick="formatAbsenceClick(5);" />
 														</td>
 														<td>
 															<label
 																tabindex="-1"
-																for="optOutputFormat5"
+																for="optDefOutputFormat5"
 																class="radio">
 																Excel Chart
 															</label>
@@ -845,7 +813,7 @@
 														'Don't allow Pivot for Bradford
 														If Session("StandardReport_Type") = UtilityType.utlBradfordFactor Then
 													%>
-													<input type="hidden" style="width: 20px" name="optOutputFormat" id="optOutputFormat6" value="6"
+													<input type="hidden" style="width: 20px" name="optDefOutputFormat" id="optDefOutputFormat6" value="6"
 														onclick="formatAbsenceClick(6);" />
 													<%
 													Else
@@ -856,13 +824,13 @@
 													<tr style="height: 5px">
 														<td style="width: 5px">&nbsp;</td>
 														<td style="text-align: left; width: 15px">
-															<input type="radio" style="width: 20px" name="optOutputFormat" id="optOutputFormat6" value="6"
+															<input type="radio" style="width: 20px" name="optDefOutputFormat" id="optDefOutputFormat6" value="6"
 																onclick="formatAbsenceClick(6);" />
 														</td>
 														<td>
 															<label
 																tabindex="-1"
-																for="optOutputFormat6"
+																for="optDefOutputFormat6"
 																class="radio">
 																Excel Pivot Table
 															</label>
@@ -901,46 +869,7 @@
 														</td>
 														<td></td>
 													</tr>
-
-													<tr style="height: 20px">
-														<td style="width: 5px;padding-top: 5px">&nbsp;</td>
-														<td style="text-align: left; white-space: nowrap" colspan="6">
-															<input name="chkDestination0" id="chkDestination0" type="checkbox" disabled="disabled" tabindex="0"
-																onclick="absenceBreakdownRefreshTab3Controls();" />
-															<label
-																for="chkDestination0"
-																class="checkbox"
-																tabindex="-1">
-																Display output on screen
-															</label>
-														</td>
-														<td style="width: 5px">&nbsp;</td>
-													</tr>
 													
-													<tr style="height: 20px">
-														<td style="width: 5px;padding-top: 5px">&nbsp;</td>
-														<td style="text-align: left; white-space: nowrap">
-															<input name="chkDestination1" id="chkDestination1" type="checkbox" disabled="disabled" tabindex="0"
-																onclick="absenceBreakdownRefreshTab3Controls();" />
-															<label
-																for="chkDestination1"
-																class="checkbox"
-																tabindex="-1">
-																Send to printer
-															</label>
-														</td>
-														<td style="width: 15px">&nbsp;</td>
-														<td style="width: 20%"></td>
-														<td style="width: 5px"></td>
-														<td style="text-align: left; white-space: nowrap">Printer location : </td>
-
-														<td>
-															<select id="cboPrinterName" name="cboPrinterName" class="combo" style="width: 100%;">
-															</select>
-														</td>
-														<td></td>
-													</tr>
-
 													<tr style="height: 20px">
 														<td style="width: 5px">&nbsp;</td>
 														<td style="text-align: left; white-space: nowrap; width: 150px">

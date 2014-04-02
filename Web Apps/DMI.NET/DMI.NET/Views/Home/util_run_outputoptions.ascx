@@ -90,6 +90,7 @@
 	}
 
 	function outputOptionsRefreshControls() {
+
 		var frmOutputDef = OpenHR.getForm("outputoptions", "frmOutputDef");
 		var optOutputFormat0 = document.getElementById('optOutputFormat0');
 		var optOutputFormat1 = document.getElementById('optOutputFormat1');

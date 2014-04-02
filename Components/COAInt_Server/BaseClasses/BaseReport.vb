@@ -3,6 +3,7 @@ Option Explicit On
 
 Imports HR.Intranet.Server.Enums
 Imports System.IO
+Imports System.Text.RegularExpressions
 
 Namespace BaseClasses
 	Public Class BaseReport
@@ -69,13 +70,15 @@ Namespace BaseClasses
 
 				Select Case _outputFormat
 					Case OutputFormats.fmtExcelGraph, OutputFormats.fmtExcelPivotTable, OutputFormats.fmtExcelWorksheet
-						Return Path.GetFileNameWithoutExtension(sName) & DefaultFileExtension(_outputFormat)
+						sName = Path.GetFileNameWithoutExtension(sName) & DefaultFileExtension(_outputFormat)
 
 					Case Else
-						Return Path.GetFileNameWithoutExtension(sName) & DefaultFileExtension(OutputFormat)
+						sName = Path.GetFileNameWithoutExtension(sName) & DefaultFileExtension(OutputFormat)
 
 				End Select
 
+				Dim separators As Char() = New Char() {"\"c, "/"c, ":"c, "*"c, "?"c, ">"c, "<"c, "|"c, ControlChars.Quote}
+				Return sName.ReplaceMultiple(separators, "")
 
 			End Get
 		End Property

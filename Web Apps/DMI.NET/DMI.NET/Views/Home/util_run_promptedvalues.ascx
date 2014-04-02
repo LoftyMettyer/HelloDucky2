@@ -124,11 +124,8 @@
 
 				Session("stdReport_OutputPreview") = Request.Form("txtSend_OutputPreview")
 				Session("stdReport_OutputFormat") = Request.Form("txtSend_OutputFormat")
-				Session("stdReport_OutputScreen") = Request.Form("txtSend_OutputScreen")
-				Session("stdReport_OutputPrinter") = Request.Form("txtSend_OutputPrinter")
-				Session("stdReport_OutputPrinterName") = Request.Form("txtSend_OutputPrinterName")
 				Session("stdReport_OutputSave") = Request.Form("txtSend_OutputSave")
-				Session("stdReport_OutputSaveExisting") = Request.Form("txtSend_OutputSaveExisting")
+				Session("stdReport_OutputSaveExisting") = 0
 				Session("stdReport_OutputEmail") = Request.Form("txtSend_OutputEmail")
 				Session("stdReport_OutputEmailAddr") = Request.Form("txtSend_OutputEmailAddr")
 				Session("stdReport_OutputEmailSubject") = Request.Form("txtSend_OutputEmailSubject")

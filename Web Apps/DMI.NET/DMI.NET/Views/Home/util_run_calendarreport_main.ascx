@@ -102,13 +102,9 @@
 		
 	Session("CalRepUtilID") = Request.Form("utilid")
 		
-	If blnShowCalendar Then
-		Response.Write("<input type='hidden' id=txtPreview name=txtPreview value=1>" & vbCrLf)
-	Else
-		Response.Write("<input type='hidden' id=txtPreview name=txtPreview value=0>" & vbCrLf)
-	End If
+	Response.Write("<input type='hidden' id=txtPreview name=txtPreview value=" & blnShowCalendar & ">" & vbCrLf)
 		
-	If blnShowCalendar And Not fNoRecords Then
+	If Not fNoRecords Then
 %>
 
 <div id="reportworkframe" data-framesource="util_run_calendarreport_data" style="display: inline-block; width: 100%">
@@ -129,6 +125,8 @@ End If
 Response.Write("<input type=hidden id=txtTitle name=txtTitle value=""" & Replace(objCalendar.Name, """", "&quot;") & """>" & vbCrLf)
 
 %>
+
+<input type='hidden' id="txtNoRecs" name="txtNoRecs" value="<%=objCalendar.NoRecords%>">
 
 <form id="frmOriginalDefinition" style="visibility: hidden; display: none">
 	<%

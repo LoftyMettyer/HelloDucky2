@@ -19,7 +19,6 @@
 	Session("EmailGroupID") = 0
 	Session("OutputOptions_Format") = 0
 	Session("OutputOptions_Screen") = "true"
-	Session("OutputOptions_Printer") = "false"
 	Session("OutputOptions_Save") = "false"
 	Session("OutputOptions_SaveExisting") = 0
 		
@@ -135,7 +134,7 @@
 		$("#reportframe").show();
 		$("#reportworkframe").show();
 
-		if ($('#txtNoRecs').val() == "1") {
+		if ($('#txtNoRecs').val() == "True") {
 			$("#cmdPrint").hide();
 			$("#cmdOutput").hide();
 			$("#cmdCancel").hide();
@@ -255,7 +254,7 @@
 
 		<div id="divReportButtons" style="margin: 25px 0 0 0; visibility: hidden">
 			<div style="float: right;">
-				<%If (Session("utiltype") = "2") Or (Session("utiltype") = "16") Then%> 
+				<%If (Session("utiltype") = "2") Then%> 
 					<input class="btn" type="button" id="cmdPrint" name="cmdPrint" value="<%=sPrintButtonLabel%>" onclick="outputOptionsPrintClick()" />
 				<%End If%>
 				<input class="btn" type="button" id="cmdOK" name="cmdOK" value="Export" onclick="outputOptionsOKClick()" />
@@ -318,7 +317,7 @@ End If
 	ShowDataFrame();
 
 	if ($("#txtPreview")[0].value == "False") {
-		if ($('#txtNoRecs').val() == "0") {
+		if ($('#txtNoRecs').val() == "False") {
 			var frmGetDataForm = OpenHR.getForm("reportworkframe", "frmExportData");
 			frmGetDataForm.submit();
 			closeclick();

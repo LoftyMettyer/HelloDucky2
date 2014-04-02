@@ -1,6 +1,5 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
 <%@ Import Namespace="DMI.NET" %>
-<%@ Import Namespace="HR.Intranet.Server.Enums" %>
 <%@ Import Namespace="HR.Intranet.Server" %>
 <%@ Import Namespace="HR.Intranet.Server.Structures" %>
 <%@ Import Namespace="System.Data" %>
@@ -177,9 +176,7 @@
 		' Default output options
 		bOutputPreview = Session("stdReport_OutputPreview")
 		lngOutputFormat = Session("stdReport_OutputFormat")
-		pblnOutputScreen = Session("stdReport_OutputScreen")
-		pblnOutputPrinter = Session("stdReport_OutputPrinter")
-		pstrOutputPrinterName = Session("stdReport_OutputPrinterName")
+		pblnOutputScreen = False
 		pblnOutputSave = Session("stdReport_OutputSave")
 		'plngOutputSaveExisting = session("stdReport_OutputSaveExisting")
 		pblnOutputEmail = Session("stdReport_OutputEmail")
@@ -605,7 +602,6 @@
 	Response.Write("      </div>")
 	Response.Write("</form>" & vbCrLf)
 		
-	Response.Write("<input type='hidden' id=txtNoRecs name=txtNoRecs value=0>" & vbCrLf)
 	Response.Write("<input type=hidden id=txtSuccessFlag name=txtSuccessFlag value=2>" & vbCrLf)
 Else%>
 
@@ -662,12 +658,12 @@ Else%>
 	</table>
 </form>
 
-<input type='hidden' id="txtNoRecs" name="txtNoRecs" value="1">
 <input type="hidden" id="txtSuccessFlag" name="txtSuccessFlag" value="3">
 <%
 End If
 %>
 
+<input type='hidden' id="txtNoRecs" name="txtNoRecs" value="<%=objReport.NoRecords%>">
 
 <form id="frmOriginalDefinition" style="visibility: hidden; display: none">
 	<%

@@ -21,7 +21,6 @@ function stdrpt_def_absence_window_onload() {
 
     menu_refreshMenu();
 
-    populatePrinters();
     SetReportDefaults();
     display_Absence_Page(1);
     absenceBreakdownRefreshTab3Controls();
@@ -37,50 +36,6 @@ function stdrpt_def_absence_window_onload() {
 		}
 	}
 
-function populatePrinters()
-{
-    //with (frmAbsenceDefinition.cboPrinterName)
-    //{
-
-    //    strCurrentPrinter = '';
-    //    if (selectedIndex > 0) 
-    //    {
-    //        strCurrentPrinter = options[selectedIndex].innerText;
-    //    }
-
-    //    length = 0;
-    //    var oOption = document.createElement("OPTION");
-    //    options.add(oOption);
-    //    oOption.innerText = "<Default Printer>";
-    //    oOption.value = 0;
-
-    //    for (iLoop=0; iLoop<window.parent.frames("menuframe").ASRIntranetFunctions.PrinterCount(); iLoop++)  
-    //    {
-    //        var oOption = document.createElement("OPTION");
-    //        options.add(oOption);
-    //        oOption.innerText = window.parent.frames("menuframe").ASRIntranetFunctions.PrinterName(iLoop);
-    //        oOption.value = iLoop+1;
-
-    //        if (oOption.innerText == strCurrentPrinter) 
-    //        {
-    //            selectedIndex = iLoop+1
-    //        }
-    //    }
-
-    //    if (strCurrentPrinter != '') 
-    //    {
-    //        if (frmAbsenceDefinition.cboPrinterName.options(frmAbsenceDefinition.cboPrinterName.selectedIndex).innerText != strCurrentPrinter) 
-    //        {
-    //            var oOption = document.createElement("OPTION");
-    //            frmAbsenceDefinition.cboPrinterName.options.add(oOption);
-    //            oOption.innerText = strCurrentPrinter;
-    //            oOption.value = frmAbsenceDefinition.cboPrinterName.options.length-1;
-    //            selectedIndex = oOption.value;
-    //        }
-    //    }
-    //}	
-}
-
 function formatAbsenceClick(index) {
 
 	var frmAbsenceDefinition = $('#frmAbsenceDefinition')[0];
@@ -89,8 +44,6 @@ function formatAbsenceClick(index) {
 	checkbox_disable(frmAbsenceDefinition.chkPreview, ((index == 0) || (fViewing == true)));
 	frmAbsenceDefinition.chkPreview.checked = (index != 0);
 
-	frmAbsenceDefinition.chkDestination0.checked = false;
-	frmAbsenceDefinition.chkDestination1.checked = false;
 	frmAbsenceDefinition.chkDestination2.checked = false;
 	frmAbsenceDefinition.chkDestination3.checked = false;
 
@@ -99,10 +52,6 @@ function formatAbsenceClick(index) {
 		frmAbsenceDefinition.cboSaveExisting.length = 0;
 		frmAbsenceDefinition.txtFilename.value = '';
 	}
-	else {
-		frmAbsenceDefinition.chkDestination0.checked = true;
-	}
-
 	absenceBreakdownRefreshTab3Controls();
 }
 
@@ -371,28 +320,12 @@ function absence_okClick() {
     }
 
     frmPostDefinition.txtSend_OutputFormat.value = 0;
-    if (frmAbsenceDefinition.optOutputFormat1.checked) frmPostDefinition.txtSend_OutputFormat.value = 1;
-    if (frmAbsenceDefinition.optOutputFormat2.checked) frmPostDefinition.txtSend_OutputFormat.value = 2;
-    if (frmAbsenceDefinition.optOutputFormat3.checked) frmPostDefinition.txtSend_OutputFormat.value = 3;
-    if (frmAbsenceDefinition.optOutputFormat4.checked) frmPostDefinition.txtSend_OutputFormat.value = 4;
-    if (frmAbsenceDefinition.optOutputFormat5.checked) frmPostDefinition.txtSend_OutputFormat.value = 5;
-    if (frmAbsenceDefinition.optOutputFormat6.checked) frmPostDefinition.txtSend_OutputFormat.value = 6;
-
-    if (frmAbsenceDefinition.chkDestination0.checked == true) {
-    	frmPostDefinition.txtSend_OutputScreen.value = 1;
-    }
-    else {
-    	frmPostDefinition.txtSend_OutputScreen.value = 0;
-    }
-
-    if (frmAbsenceDefinition.chkDestination1.checked == true) {
-    	frmPostDefinition.txtSend_OutputPrinter.value = 1;
-    	frmPostDefinition.txtSend_OutputPrinterName.value = frmAbsenceDefinition.cboPrinterName.options[frmAbsenceDefinition.cboPrinterName.selectedIndex].innerText;
-    }
-    else {
-    	frmPostDefinition.txtSend_OutputPrinter.value = 0;
-    	frmPostDefinition.txtSend_OutputPrinterName.value = '';
-    }
+    if (frmAbsenceDefinition.optDefOutputFormat1.checked) frmPostDefinition.txtSend_OutputFormat.value = 1;
+    if (frmAbsenceDefinition.optDefOutputFormat2.checked) frmPostDefinition.txtSend_OutputFormat.value = 2;
+    if (frmAbsenceDefinition.optDefOutputFormat3.checked) frmPostDefinition.txtSend_OutputFormat.value = 3;
+    if (frmAbsenceDefinition.optDefOutputFormat4.checked) frmPostDefinition.txtSend_OutputFormat.value = 4;
+    if (frmAbsenceDefinition.optDefOutputFormat5.checked) frmPostDefinition.txtSend_OutputFormat.value = 5;
+    if (frmAbsenceDefinition.optDefOutputFormat6.checked) frmPostDefinition.txtSend_OutputFormat.value = 6;
 
     if (frmAbsenceDefinition.chkDestination2.checked == true) {
     	frmPostDefinition.txtSend_OutputSave.value = 1;
@@ -637,28 +570,12 @@ function absenceBreakdownRefreshTab3Controls() {
 
     with (frmAbsenceDefinition)
     {
-        if (optOutputFormat0.checked == true)		//Data Only
+        if (optDefOutputFormat0.checked == true)		//Data Only
         {
             //disable preview opitons
             chkPreview.checked = false;
             checkbox_disable(chkPreview, true);
-			
-            //enable display on screen options
-            checkbox_disable(chkDestination0, (fViewing == true));
-			
-            //enable-disable printer options
-            checkbox_disable(chkDestination1, (fViewing == true));
-            if (chkDestination1.checked == true)
-            {
-                populatePrinters();
-                combo_disable(cboPrinterName, (fViewing == true));
-            }
-            else
-            {
-                cboPrinterName.length = 0;
-                combo_disable(cboPrinterName, true);
-            }
-			
+								
             //disable save options
 	        chkDestination2.checked = false;
             checkbox_disable(chkDestination2, true);
@@ -679,21 +596,11 @@ function absenceBreakdownRefreshTab3Controls() {
             text_disable(txtEmailAttachAs, true);
 
         }
-        else if (optOutputFormat1.checked == true)   //CSV File
+        else if (optDefOutputFormat1.checked == true)   //CSV File
         {
             //enable preview opitons
             checkbox_disable(chkPreview, (fViewing == true));
-			
-            //disable display on screen options
-            chkDestination0.checked = false;
-            checkbox_disable(chkDestination0, (fViewing == true));
-			
-            //disable printer options
-            chkDestination1.checked = false;
-            checkbox_disable(chkDestination1, true);
-            cboPrinterName.length = 0;
-            combo_disable(cboPrinterName, true);
-						
+									
             //enable-disable save options
             checkbox_disable(chkDestination2, false);
             if (chkDestination2.checked == true)
@@ -730,20 +637,11 @@ function absenceBreakdownRefreshTab3Controls() {
                 text_disable(txtEmailAttachAs, true);
             }
         }
-        else if (optOutputFormat2.checked == true)		//HTML Document
+        else if (optDefOutputFormat2.checked == true)		//HTML Document
         {
             //enable preview opitons
             checkbox_disable(chkPreview, (fViewing == true));
-			
-            //disable display on screen options
-            checkbox_disable(chkDestination0, (fViewing == true));
-			
-            //disable printer options
-            chkDestination1.checked = false;
-            checkbox_disable(chkDestination1, true);
-            cboPrinterName.length = 0;
-            combo_disable(cboPrinterName, true);
-						
+								
             //enable-disable save options
             checkbox_disable(chkDestination2, false);
             if (chkDestination2.checked == true)
@@ -780,27 +678,11 @@ function absenceBreakdownRefreshTab3Controls() {
                 text_disable(txtEmailAttachAs, true);
             }
         }
-        else if (optOutputFormat3.checked == true)		//Word Document
+        else if (optDefOutputFormat3.checked == true)		//Word Document
         {
             //enable preview opitons
             checkbox_disable(chkPreview, (fViewing == true));
-			
-            //enable display on screen options
-            checkbox_disable(chkDestination0, (fViewing == true));
-			
-            //enable-disable printer options
-            checkbox_disable(chkDestination1, (fViewing == true));	
-            if (chkDestination1.checked == true)
-            {
-                populatePrinters();
-                combo_disable(cboPrinterName,  (fViewing == true));
-            }
-            else
-            {
-                cboPrinterName.length = 0;
-                combo_disable(cboPrinterName,  true);
-            }
-										
+					
             //enable-disable save options
             checkbox_disable(chkDestination2, false);
             if (chkDestination2.checked == true)
@@ -837,29 +719,13 @@ function absenceBreakdownRefreshTab3Controls() {
                 text_disable(txtEmailAttachAs, true);
             }
         }
-        else if ((optOutputFormat4.checked == true) ||		//Excel Worksheet
-                 (optOutputFormat5.checked == true) ||
-                 (optOutputFormat6.checked == true))
+        else if ((optDefOutputFormat4.checked == true) ||		//Excel Worksheet
+                 (optDefOutputFormat5.checked == true) ||
+                 (optDefOutputFormat6.checked == true))
         {
             //enable preview opitons
             checkbox_disable(chkPreview, (fViewing == true));
-			
-            //enable display on screen options
-            checkbox_disable(chkDestination0, (fViewing == true));
-			
-            //enable-disable printer options
-            checkbox_disable(chkDestination1, (fViewing == true));
-            if (chkDestination1.checked == true)
-            {
-                populatePrinters();
-                combo_disable(cboPrinterName, (fViewing == true));
-            }
-            else
-            {
-                cboPrinterName.length = 0;
-                combo_disable(cboPrinterName, true);
-            }
-										
+						
             //enable-disable save options
             checkbox_disable(chkDestination2, false);
             if (chkDestination2.checked == true)
@@ -896,16 +762,15 @@ function absenceBreakdownRefreshTab3Controls() {
                 text_disable(txtEmailAttachAs, true);
             }
         }
-            /*else if (optOutputFormat5.checked == true)		//Excel Chart
+            /*else if (optDefOutputFormat5.checked == true)		//Excel Chart
                 {
                 }
-            else if (optOutputFormat6.checked == true)		//Excel Pivot Table
+            else if (optDefOutputFormat6.checked == true)		//Excel Pivot Table
                 {
                 }*/
         else
         {
-            optOutputFormat0.checked = true;
-            chkDestination0.checked=true;
+            optDefOutputFormat0.checked = true;
             absenceBreakdownRefreshTab3Controls();
         }
 		
@@ -943,17 +808,17 @@ function saveFile()
     window.dialog.DialogTitle = "Output Document";
     window.dialog.Flags = 2621444;
 
-    if (frmAbsenceDefinition.optOutputFormat1.checked == true) {
+    if (frmAbsenceDefinition.optDefOutputFormat1.checked == true) {
         //CSV
         window.dialog.Filter = "Comma Separated Values (*.csv)|*.csv";
     }
 
-    else if (frmAbsenceDefinition.optOutputFormat2.checked == true) {
+    else if (frmAbsenceDefinition.optDefOutputFormat2.checked == true) {
         //HTML
         window.dialog.Filter = "HTML Document (*.htm)|*.htm";
     }
 
-    else if (frmAbsenceDefinition.optOutputFormat3.checked == true) {
+    else if (frmAbsenceDefinition.optDefOutputFormat3.checked == true) {
         //WORD
         //dialog.Filter = "Word Document (*.doc)|*.doc";
         window.dialog.Filter = frmAbsenceDefinition.txtWordFormats.value;

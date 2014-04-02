@@ -15,7 +15,7 @@
 		
 	bBradfordFactor = (Session("utiltype") = "16")
 
-	Dim objReport As HR.Intranet.Server.Report
+	Dim objReport As Report
 	
 	If Session("utiltype") = "" Or _
 		 Session("utilname") = "" Or _
@@ -91,7 +91,6 @@
 		Response.End()
 	End If
 
-	Dim icount As Integer
 	Dim fok As Boolean
 	Dim fNotCancelled As Boolean
 
@@ -120,10 +119,7 @@
 	Dim bOutputPreview As Boolean
 	Dim lngOutputFormat As Long
 	Dim pblnOutputScreen As Boolean
-	Dim pblnOutputPrinter As Boolean
-	Dim pstrOutputPrinterName As String
 	Dim pblnOutputSave As Boolean
-	Dim plngOutputSaveExisting As Long
 	Dim pblnOutputEmail As Boolean
 	Dim plngOutputEmailID As Long
 	Dim pstrOutputEmailName As String
@@ -148,6 +144,11 @@
 	objReport.ClientDateFormat = Session("LocaleDateFormat")
 	objReport.LocalDecimalSeparator = Session("LocaleDecimalSeparator")
 
+	objReport.Name = "Bradford Factor"
+	objReport.OutputFormat = Session("stdReport_OutputFormat")
+	objReport.OutputPreview = Session("stdReport_OutputPreview")
+	objReport.OutputFilename = Session("stdReport_OutputFilename")
+	
 	If fok And bBradfordFactor Then
 		dtStartDate = ConvertLocaleDateToSQL(Session("stdReport_StartDate"))
 		dtEndDate = ConvertLocaleDateToSQL(Session("stdReport_EndDate"))
@@ -176,19 +177,16 @@
 		pbDisplayBradfordDetail = Session("stdReport_DisplayBradfordDetail")
 
 		' Default output options
-		bOutputPreview = Session("stdReport_OutputPreview")
+		bOutputPreview = objReport.OutputPreview
 		lngOutputFormat = Session("stdReport_OutputFormat")
-		pblnOutputScreen = Session("stdReport_OutputScreen")
-		pblnOutputPrinter = Session("stdReport_OutputPrinter")
-		pstrOutputPrinterName = Session("stdReport_OutputPrinterName")
+		pblnOutputScreen = False
 		pblnOutputSave = Session("stdReport_OutputSave")
-		'plngOutputSaveExisting = session("stdReport_OutputSaveExisting")
 		pblnOutputEmail = Session("stdReport_OutputEmail")
 		plngOutputEmailID = Session("stdReport_OutputEmailAddr")
 		pstrOutputEmailName = Session("stdReport_OutputEmailName")
 		pstrOutputEmailSubject = Session("stdReport_OutputEmailSubject")
 		pstrOutputEmailAttachAs = Session("stdReport_OutputEmailAttachAs")
-		pstrOutputFilename = Session("stdReport_OutputFilename")
+		pstrOutputFilename = objReport.OutputFilename
 	End If
 
 	If fok And Not bBradfordFactor Then
@@ -401,7 +399,6 @@
 	Response.Write("			</table>" & vbCrLf)
 	Response.Write("      </div>")
 	Response.Write("</form>" & vbCrLf)
-	Response.Write("<input type='hidden' id=txtNoRecs name=txtNoRecs value=0>" & vbCrLf)
 	Response.Write("<input type=hidden id=txtSuccessFlag name=txtSuccessFlag value=2>" & vbCrLf)
 Else%>
 <form name="frmPopup" id="frmPopup">
@@ -454,12 +451,12 @@ Else%>
 	</table>
 </form>
 
-<input type='hidden' id="txtNoRecs" name="txtNoRecs" value="1">
 <input type="hidden" id="txtSuccessFlag" name="txtSuccessFlag" value="3">
 <%
 End If
 %>
 
+<input type='hidden' id="txtNoRecs" name="txtNoRecs" value="<%=objReport.NoRecords%>">
 
 <form id="frmOriginalDefinition" style="visibility: hidden; display: none">
 	<%
@@ -540,21 +537,21 @@ End If
 </script>
 
 <form action="util_run_customreport_downloadoutput" method="post" id="frmExportData" name="frmExportData" target="submit-iframe">
-	<input type="hidden" id="txtPreview" name="txtPreview" value="<%=objReport.OutputPreview%>">
-	<input type="hidden" id="txtFormat" name="txtFormat" value="<%=objReport.OutputFormat%>">
-	<input type="hidden" id="txtScreen" name="txtScreen" value="<%=objReport.OutputScreen%>">
-	<input type="hidden" id="txtPrinter" name="txtPrinter" value="<%=objReport.OutputPrinter%>">
-	<input type="hidden" id="txtPrinterName" name="txtPrinterName" value="<%=objReport.OutputPrinterName%>">
-	<input type="hidden" id="txtSave" name="txtSave" value="<%=objReport.OutputSave%>">
-	<input type="hidden" id="txtSaveExisting" name="txtSaveExisting" value="<%=objReport.OutputSaveExisting%>">
-	<input type="hidden" id="txtEmail" name="txtEmail" value="<%=objReport.OutputEmail%>">
-	<input type="hidden" id="txtEmailAddr" name="txtEmailAddr" value="<%=objReport.OutputEmailID%>">
-	<input type="hidden" id="txtEmailAddrName" name="txtEmailAddrName" value="<%=objReport.OutputEmailGroupName%>">
-	<input type="hidden" id="txtEmailSubject" name="txtEmailSubject" value="<%=objReport.OutputEmailSubject%>">
-	<input type="hidden" id="txtEmailAttachAs" name="txtEmailAttachAs" value="<%=objReport.OutputEmailAttachAs%>">
+	<input type="hidden" id="txtPreview" name="txtPreview" value="<%=bOutputPreview%>">
+	<input type="hidden" id="txtFormat" name="txtFormat" value="<%=lngOutputFormat%>">
+	<input type="hidden" id="txtScreen" name="txtScreen" value="<%=pblnOutputScreen%>">
+	<input type="hidden" id="txtPrinter" name="txtPrinter" value="">
+	<input type="hidden" id="txtPrinterName" name="txtPrinterName" value="">
+	<input type="hidden" id="txtSave" name="txtSave" value="<%=pblnOutputSave%>">
+	<input type="hidden" id="txtSaveExisting" name="txtSaveExisting" value="0">
+	<input type="hidden" id="txtEmail" name="txtEmail" value="<%=pblnOutputEmail%>">
+	<input type="hidden" id="txtEmailAddr" name="txtEmailAddr" value="<%=plngOutputEmailID%>">
+	<input type="hidden" id="txtEmailAddrName" name="txtEmailAddrName" value="<%=plngOutputEmailID%>">
+	<input type="hidden" id="txtEmailSubject" name="txtEmailSubject" value="<%=pstrOutputEmailSubject%>">
+	<input type="hidden" id="txtEmailAttachAs" name="txtEmailAttachAs" value="<%=pstrOutputEmailAttachAs%>">
 	<input type="hidden" id="txtEmailGroupAddr" name="txtEmailGroupAddr" value="">
-	<input type="hidden" id="txtFileName" name="txtFileName" value="<%=objReport.OutputFilename%>">
-	<input type="hidden" id="txtEmailGroupID" name="txtEmailGroupID" value="">
+	<input type="hidden" id="txtFileName" name="txtFileName" value="<%=pstrOutputFilename%>">
+	<input type="hidden" id="txtEmailGroupID" name="txtEmailGroupID" value="0">
 	<input type="hidden" id="txtUtilType" name="txtUtilType" value="<%=session("utilType")%>">
 	<input type="hidden" id="txtUtilID" name="txtUtilID" value="<%=Session("utilID")%>">
 

@@ -2454,13 +2454,12 @@ Namespace Controllers
 			Return PartialView()
 		End Function
 
+		<ValidateInput(False)>
 		Public Function util_run_crosstab_downloadoutput() As FilePathResult
 
 			Dim lngFormat As OutputFormats = Request("txtFormat")
 			Dim sUtilID As String = Request("txtUtilID")
 			Dim blnScreen As Boolean = False
-			Dim blnPrinter As Boolean = Request("txtPrinter")
-			Dim strPrinterName As String = Request("txtPrinterName")
 			Dim blnSave As Boolean = Request("txtSave")
 			Dim lngSaveExisting As Long = Request("txtSaveExisting")
 			Dim blnEmail As Boolean = Request("txtEmail")
@@ -2531,8 +2530,6 @@ Namespace Controllers
 			If Not objCrossTab.OutputPreview Then
 				lngFormat = objCrossTab.OutputFormat
 				blnScreen = objCrossTab.OutputScreen
-				blnPrinter = objCrossTab.OutputPrinter
-				strPrinterName = objCrossTab.OutputPrinterName
 				blnSave = objCrossTab.OutputSave
 				lngSaveExisting = objCrossTab.OutputSaveExisting
 				blnEmail = objCrossTab.OutputEmail
@@ -2550,7 +2547,7 @@ Namespace Controllers
 
 			strDownloadExtension = Path.GetExtension(strDownloadFileName)
 
-			Dim fOK = ClientDLL.SetOptions(False, lngFormat, False, False, strPrinterName, True, lngSaveExisting _
+			Dim fOK = ClientDLL.SetOptions(False, lngFormat, False, False, "", True, lngSaveExisting _
 				, blnEmail, lngEmailGroupID, strEmailSubject, strEmailAttachAs, strDownloadExtension)
 
 			If fOK Then
@@ -2748,15 +2745,13 @@ Namespace Controllers
 
 		End Function
 
-
+		<ValidateInput(False)>
 		Public Function util_run_customreport_downloadoutput() As FilePathResult
 
 			'Session("CT_Mode") = Request("txtMode")
 			Session("OutputOptions_Format") = Request("txtFormat")
 
 			Session("OutputOptions_Screen") = False	' Request("txtScreen")
-			Session("OutputOptions_Printer") = Request("txtPrinter")
-			Session("OutputOptions_PrinterName") = Request("txtPrinterName")
 			Session("OutputOptions_Save") = Request("txtSave")
 			Session("OutputOptions_SaveExisting") = Request("txtSaveExisting")
 			Session("OutputOptions_Email") = Request("txtEmail")
@@ -2898,7 +2893,7 @@ Namespace Controllers
 
 			Else
 
-				fOK = ClientDLL.SetOptions(False, lngFormat, Session("OutputOptions_Screen"), Session("OutputOptions_Printer") _
+				fOK = ClientDLL.SetOptions(False, lngFormat, Session("OutputOptions_Screen"), False _
 				, Session("OutputOptions_PrinterName"), True, Session("OutputOptions_SaveExisting") _
 				, Session("OutputOptions_Email"), Session("OutputOptions_EmailGroupID"), Session("OutputOptions_EmailSubject") _
 				, Session("OutputOptions_EmailAttachAs"), strDownloadExtension)
@@ -2925,9 +2920,7 @@ Namespace Controllers
 			ClientDLL.ArrayDim(UBound(arrayVisibleColumns, 2), 0)
 
 			If lngFormat = 0 Then	'Session("OutputOptions_Format") = 0 Then
-				If Session("OutputOptions_Printer") = True Then
-					ClientDLL.SetPrinter()
-				End If
+
 			Else
 				ClientDLL.HeaderRows = 1
 				If ClientDLL.GetFile() = True Then
@@ -3119,6 +3112,7 @@ Namespace Controllers
 
 		End Function
 
+		<ValidateInput(False)>
 		Function util_run_calendarreport_download() As FileStreamResult
 
 			Dim objCalendar = CType(Session("objCalendar" & Session("UtilID")), CalendarReport)
@@ -4851,8 +4845,6 @@ Namespace Controllers
 			Session("CT_Mode") = Request("txtMode")
 			Session("OutputOptions_Format") = Request("txtFormat")
 			Session("OutputOptions_Screen") = Request("txtScreen")
-			Session("OutputOptions_Printer") = Request("txtPrinter")
-			Session("OutputOptions_PrinterName") = Request("txtPrinterName")
 			Session("OutputOptions_Save") = Request("txtSave")
 			Session("OutputOptions_SaveExisting") = Request("txtSaveExisting")
 			Session("OutputOptions_Email") = Request("txtEmail")

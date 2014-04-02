@@ -21,9 +21,7 @@
 		Dim bOutputPreview As Boolean
 	Dim lngOutputFormat As Integer
 		Dim pblnOutputScreen As Boolean
-		Dim pblnOutputPrinter As Boolean
-		Dim pstrOutputPrinterName As String
-		Dim pblnOutputSave As Boolean
+	Dim pblnOutputSave As Boolean
 		Dim plngOutputSaveExisting As Long
 		Dim pblnOutputEmail As Boolean
 		Dim plngOutputEmailID As Long
@@ -42,7 +40,14 @@
 	Dim lngReasonColID As Integer
 	Dim lngDurationColID As Integer
 	Dim iParameterValue As Integer
+	Dim objCrossTab As CrossTab
 	
+	' Create the reference to the DLL (Report Class)
+	objCrossTab = New CrossTab()
+	objCrossTab.SessionInfo = CType(Session("SessionContext"), SessionInfo)
+
+	Session("objCrossTab" & Session("utilid")) = Nothing
+
 	' Get variables for Absence Breakdown / Bradford Factor
 	dtStartDate = convertLocaleDateToSQL(session("stdReport_StartDate"))
 	dtEndDate = convertLocaleDateToSQL(session("stdReport_EndDate"))
@@ -53,18 +58,21 @@
 	bPrintFilterPickList = session("stdReport_PrintFilterPicklistHeader")
 
 	' Default output options
-	bOutputPreview = session("stdReport_OutputPreview")
-	lngOutputFormat = session("stdReport_OutputFormat")
-	pblnOutputScreen = session("stdReport_OutputScreen")
-	pblnOutputPrinter = session("stdReport_OutputPrinter")
-	pstrOutputPrinterName = session("stdReport_OutputPrinterName")
-	pblnOutputSave = session("stdReport_OutputSave")
+	objCrossTab.Name = "Absence Breakdown"
+	objCrossTab.OutputFormat = Session("stdReport_OutputFormat")
+	objCrossTab.OutputPreview = Session("stdReport_OutputPreview")
+	objCrossTab.OutputFilename = Session("stdReport_OutputFilename")
+	
+	bOutputPreview = objCrossTab.OutputPreview
+	lngOutputFormat = objCrossTab.OutputFormat
+	pblnOutputScreen = False
+	pblnOutputSave = Session("stdReport_OutputSave")
 	plngOutputSaveExisting = session("stdReport_OutputSaveExisting")
 	pblnOutputEmail = session("stdReport_OutputEmail")
 	plngOutputEmailID = session("stdReport_OutputEmailAddr")
 	pstrOutputEmailSubject = session("stdReport_OutputEmailSubject")
 	pstrOutputEmailAttachAs = session("stdReport_OutputEmailAttachAs")
-	pstrOutputFilename = session("stdReport_OutputFilename")
+	pstrOutputFilename = objCrossTab.OutputFilename
 	
 	iParameterValue = CInt(objDatabase.GetModuleParameter("MODULE_ABSENCE", "Param_FieldStartSession"))		
 	lngHorColID = iParameterValue
@@ -82,8 +90,7 @@
 
 
 		Dim fok As Boolean
-		Dim objCrossTab As HR.Intranet.Server.CrossTab
-		Dim fNotCancelled As Boolean
+	Dim fNotCancelled As Boolean
 		Dim lngEventLogID As Long
 		Dim blnNoDefinition As Boolean
 
@@ -107,12 +114,6 @@
 				Response.Write("Action = " & Session("action") & "<BR>")
 				Response.End()
 	end if
-
-	' Create the reference to the DLL (Report Class)
-	objCrossTab = New CrossTab()
-	objCrossTab.SessionInfo = CType(Session("SessionContext"), SessionInfo)
-
-	Session("objCrossTab" & Session("utilid")) = Nothing
 
 	' Pass required info to the DLL
 	objCrossTab.CrossTabID = Session("utilid")
@@ -248,25 +249,25 @@ if fModuleOK then
 				<%Html.RenderPartial("~/views/home/util_run_crosstabs.ascx")%>
 
 			<form action="util_run_crosstab_downloadoutput" method="post" id="frmExportData" name="frmExportData" target="submit-iframe">
-				<input type="hidden" id="txtPreview" name="txtPreview" value="<%=objCrossTab.OutputPreview%>">	
-				<input type="hidden" id="txtFormat" name="txtFormat" value="<%=objCrossTab.OutputFormat%>">
-				<input type="hidden" id="txtScreen" name="txtScreen" value="<%=objCrossTab.OutputScreen%>">
-				<input type="hidden" id="txtPrinter" name="txtPrinter" value="<%=objCrossTab.OutputPrinter%>">
-				<input type="hidden" id="txtPrinterName" name="txtPrinterName" value="<%=objCrossTab.OutputPrinterName%>">
-				<input type="hidden" id="txtSave" name="txtSave" value="<%=objCrossTab.OutputSave%>">
-				<input type="hidden" id="txtSaveExisting" name="txtSaveExisting" value="<%=objCrossTab.OutputSaveExisting%>">
-				<input type="hidden" id="txtEmail" name="txtEmail" value="<%=objCrossTab.OutputEmail%>">
-				<input type="hidden" id="txtEmailAddr" name="txtEmailAddr" value="<%=objCrossTab.OutputEmailID%>">
-				<input type="hidden" id="txtEmailAddrName" name="txtEmailAddrName" value="<%=objCrossTab.OutputEmailGroupName%>">
-				<input type="hidden" id="txtEmailSubject" name="txtEmailSubject" value="<%=objCrossTab.OutputEmailSubject%>">
-				<input type="hidden" id="txtEmailAttachAs" name="txtEmailAttachAs" value="<%=objCrossTab.OutputEmailAttachAs%>">
+				<input type="hidden" id="txtPreview" name="txtPreview" value="<%=bOutputPreview%>">	
+				<input type="hidden" id="txtFormat" name="txtFormat" value="<%=lngOutputFormat%>">
+				<input type="hidden" id="txtScreen" name="txtScreen" value="<%=pblnOutputScreen%>">
+				<input type="hidden" id="txtPrinter" name="txtPrinter" value="">
+				<input type="hidden" id="txtPrinterName" name="txtPrinterName" value="">
+				<input type="hidden" id="txtSave" name="txtSave" value="<%=pblnOutputSave%>">
+				<input type="hidden" id="txtSaveExisting" name="txtSaveExisting" value="<%=plngOutputSaveExisting%>">
+				<input type="hidden" id="txtEmail" name="txtEmail" value="<%=pblnOutputEmail%>">
+				<input type="hidden" id="txtEmailAddr" name="txtEmailAddr" value="<%=plngOutputEmailID%>">
+				<input type="hidden" id="txtEmailAddrName" name="txtEmailAddrName" value="<%=plngOutputEmailID%>">
+				<input type="hidden" id="txtEmailSubject" name="txtEmailSubject" value="<%=pstrOutputEmailSubject%>">
+				<input type="hidden" id="txtEmailAttachAs" name="txtEmailAttachAs" value="<%=pstrOutputEmailAttachAs%>">
 				<input type="hidden" id="txtEmailGroupAddr" name="txtEmailGroupAddr" value="">
 				<input type="hidden" id="txtEmailGroupID" name="txtEmailGroupID" value="0">
-				<input type="hidden" id="txtFileName" name="txtFileName" value="<%=objCrossTab.OutputFilename%>">
+				<input type="hidden" id="txtFileName" name="txtFileName" value="<%=pstrOutputFilename%>">
 				<input type="hidden" id="txtUtilType" name="txtUtilType" value="<%=session("utilType")%>">
 				<input type="hidden" id="txtUtilID" name="txtUtilID" value="<%=Session("utilID")%>">
 			</form>
-	
+
 			<iframe name="submit-iframe" style="display: none;"></iframe>
 		</div>
 
@@ -335,6 +336,8 @@ else
 <%
 end if
 %>
+
+<input type='hidden' id="txtNoRecs" name="txtNoRecs" value="<%=objCrossTab.NoRecords%>">
 
 
 <script type="text/javascript">

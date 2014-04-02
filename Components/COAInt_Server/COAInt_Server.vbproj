@@ -143,6 +143,7 @@
     <Compile Include="Extensions\ModuleSettingExtensions.vb" />
     <Compile Include="Extensions\PermissionExtension.vb" />
     <Compile Include="Extensions\RelationExtension.vb" />
+    <Compile Include="Extensions\StringExtensions.vb" />
     <Compile Include="Extensions\TablePrivilegeExtensions.vb" />
     <Compile Include="Extensions\UserSettingExtensions.vb" />
     <Compile Include="Interfaces\IChart.vb" />

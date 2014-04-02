@@ -6,7 +6,7 @@
 
 <%
 	Dim fok As Boolean
-	Dim objCrossTab As HR.Intranet.Server.CrossTab
+	Dim objCrossTab As CrossTab
 	Dim fNotCancelled As Boolean
 	Dim lngEventLogID As Long
 	Dim aPrompts As Object
@@ -120,8 +120,8 @@
 	}
 </script>
 
-
 <input type='hidden' id="txtLoadCount" name="txtLoadCount" value="0">
+<input type='hidden' id="txtNoRecs" name="txtNoRecs" value="<%=objCrossTab.NoRecords%>">
 
 <div id="reportworkframe" data-framesource="util_run_crosstabs" style="display: block">
 	<%Html.RenderPartial("~/views/home/util_run_crosstabs.ascx")%>
