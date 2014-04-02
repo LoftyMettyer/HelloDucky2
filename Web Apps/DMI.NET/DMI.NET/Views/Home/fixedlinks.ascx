@@ -116,10 +116,10 @@
 									</a>
 							</div>
 							<div id="mnutoolFixedOpenHR" class="button">
-								<a href="<%: Url.Action("Main", "Home", New With {.SSIMode = vbFalse})%>" rel="table" title="OpenHR">
+								<a href="<%: Url.Action("Main", "Home", New With {.SSIMode = vbFalse})%>" rel="table" title="OpenHR Web">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/abssmall.png") %>" alt="" />
 									<i class="icon-group"></i>
-									<h6>OpenHR</h6>
+									<h6>OpenHR<br />Web</h6>
 								</a>
 							</div>
 						</li>
