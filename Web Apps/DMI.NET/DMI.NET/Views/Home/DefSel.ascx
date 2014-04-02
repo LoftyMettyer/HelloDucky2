@@ -1293,6 +1293,10 @@ Session("fromMenu") = 0
 		<%Html.RenderPartial("~/Views/Shared/gotoWork.ascx")%>
 	</form>
 
+	<form action="emptyoption_Submit" method="post" id="frmGotoOption" name="frmGotoOption" style="visibility: hidden; display: none">
+		<%Html.RenderPartial("~/Views/Shared/gotoOption.ascx")%>
+	</form>
+
 </div>
 
 <script type="text/javascript">
