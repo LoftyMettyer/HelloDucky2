@@ -2174,14 +2174,8 @@ function menu_refreshMenu() {
 	menu_setVisibleMenuItem("mnutoolBulkBookingRecordFind", fBulkBookingVisible);
 	menu_toolbarEnableItem("mnutoolBulkBookingRecordFind", fBulkBookingEnabled);
 	menu_setVisibletoolbarGroupById("mnuSectionRecordFindTrainingBooking", fBulkBookingVisible || fAddFromWaitingListVisible || fTransferBookingVisible || fCancelBookingVisible);
-	
 
 	fCanSeeLookupTableMenu = true;
-	//		if (txtSysPerm_MENU_VIEWLOOKUPTABLES != null) {
-	//			if (txtSysPerm_MENU_VIEWLOOKUPTABLES.value == 0) {
-	//				fCanSeeLookupTableMenu = false;
-	//			}
-	//		}
 	try {
 		if ($("#txtSysPerm_MENU_VIEWLOOKUPTABLES").val() == 0) {
 			fCanSeeLookupTableMenu = false;
@@ -2201,17 +2195,6 @@ function menu_refreshMenu() {
 	menu_enableMenuItem("mnutoolCrossTabs", $("#txtCrossTabsGranted").val());
 	menu_enableMenuItem("mnutoolCalendarReports", $("#txtCalendarReportsGranted").val());
 	menu_enableMenuItem("mnutoolMailMerge", $("#txtMailMergeGranted").val());
-	//abMainMenu.Tools("mnutoolWorkflow").visible = (frmMenuInfo.txtWFEnabled.value.toUpperCase() == "TRUE");
-	//abMainMenu.Tools("mnutoolWorkflow").enabled = (txtWorkflowGranted.value == "True");
-	//		abMainMenu.Tools("mnutoolWorkflowPopup").visible = (frmMenuInfo.txtWFEnabled.value.toUpperCase() == "TRUE");
-	//		abMainMenu.Tools("mnutoolWorkflowPopup").enabled = true;
-		//		abMainMenu.Tools("mnutoolWorkflowPendingSteps").visible = (frmMenuInfo.txtWFEnabled.value.toUpperCase() == "TRUE");
-		//		abMainMenu.Tools("mnutoolWorkflowPendingSteps").enabled = true;
-		//		abMainMenu.Tools("mnutoolWorkflowOutOfOffice").visible = (frmMenuInfo.txtWFOutOfOfficeEnabled.value.toUpperCase() == "TRUE");
-		//		abMainMenu.Tools("mnutoolWorkflowOutOfOffice").enabled = (frmMenuInfo.txtWFOutOfOfficeEnabled.value.toUpperCase() == "TRUE");
-		//		abMainMenu.Tools("mnutoolCalculations").enabled = (txtCalculationsGranted.value == "True");
-		//		abMainMenu.Tools("mnutoolFilters").enabled = (txtFiltersGranted.value == "True");
-		//		abMainMenu.Tools("mnutoolPicklists").enabled = (txtPicklistsGranted.value == "True");
 		
 	menu_setVisibleMenuItem("mnutoolTableScreens", fCanSeeLookupTableMenu);
 
@@ -2234,7 +2217,9 @@ function menu_refreshMenu() {
 	menu_enableMenuItem("mnutoolCalculations", $("#txtCalculationsGranted").val());
 	menu_enableMenuItem("mnutoolFilters", $("#txtFiltersGranted").val());
 	menu_enableMenuItem("mnutoolPicklists", $("#txtPicklistsGranted").val());
-
+	menu_enableMenuItem("mnutoolEventLog", $("#txtEventLogGranted").val());
+	menu_enableMenuItem("mnutoolNewUser", $("#txtNewUserGranted").val());
+	menu_enableMenuItem("mnutoolQuickEntry", $("#txtQuickAccessGranted").val());
 
 	try {
 		

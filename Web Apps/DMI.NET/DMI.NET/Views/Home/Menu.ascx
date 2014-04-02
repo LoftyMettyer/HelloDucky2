@@ -101,24 +101,17 @@
 	' Create the sub-routine to populate the quick entry menu.
 	' ------------------------------------------------------------------------------
 	Response.Write("function refreshQuickEntryMenu() {" & vbCrLf)
-	Response.Write("  var objFileTool;" & vbCrLf)
-	Response.Write("  var lngQuickEntryCount;" & vbCrLf & vbCrLf)
-	Response.Write("  var frmMenuInfo = document.getElementById('frmMenuInfo');" & vbCrLf)
-	Response.Write("  frmMenuInfo.txtDoneQuickEntryMenu.value = 1;" & vbCrLf & vbCrLf)
-	
+		
 	If Session("avQuickEntryMenuInfo") Is Nothing Then
 		avQuickEntryMenuInfo = objMenu.GetQuickEntryScreens
 		Session("avQuickEntryMenuInfo") = avQuickEntryMenuInfo
 	Else
 		avQuickEntryMenuInfo = Session("avQuickEntryMenuInfo")
 	End If
-	
+
 	For Each objMenuItem In avQuickEntryMenuInfo
 		Response.Write("  menu_insertMenuItem('mnubandQuickEntry', '" & CleanStringForJavaScript(Replace(objMenuItem.TableName, "_", " ")) & "..." & "', 'QE_" & CleanStringForJavaScript(objMenuItem.TableID) & "_0_" & CleanStringForJavaScript(objMenuItem.TableScreenID) & "');" & vbCrLf)
 	Next
-	
-	Response.Write("  if (lngQuickEntryCount == 0) {" & vbCrLf)
-	Response.Write("  }" & vbCrLf)
 
 	' Sort the items.
 	Response.Write("	menu_sortULMenuItems('mnubandQuickEntry');")
@@ -211,7 +204,7 @@
 			sBand = "mnuhistorysubband_" & CleanStringForJavaScript(objHistoryScreen.childTableName)
 			Response.Write("    menu_insertMenuItem(""" & sBand & """, objFileToolCaption.replace(""&&"", ""&""), objFileToolID);" & vbCrLf & vbCrLf)
 		Else
-			If (iNextChildTableID = objHistoryScreen.childTableID And iLoop > 0) Then 'Added iLoop condition because the first item retrieved (in this case Working Patterns) wasn't being properly added to the menu
+			If (iNextChildTableID = objHistoryScreen.childTableID And iLoop > 0) Then	'Added iLoop condition because the first item retrieved (in this case Working Patterns) wasn't being properly added to the menu
 				' The current screen is for the same table as the next screen to be added
 				' but is for a different table to the last screen added to the menu
 				' so create a sub-menu, and add this screen to the sub-menu.
@@ -284,6 +277,8 @@
 	Dim iFiltersGranted As Integer = 0
 	Dim iPicklistsGranted As Integer = 0
 	Dim iNewUserGranted As Integer = 0
+	Dim iEventLogGranted As Integer = 0
+	
 	Dim sKey As String
 		
 	For Each objPermission In objSessionContext.Permissions
@@ -299,6 +294,7 @@
 		If Left(objPermission.CategoryKey, 7) = "FILTERS" And objPermission.IsPermitted Then iFiltersGranted = 1
 		If Left(objPermission.CategoryKey, 9) = "PICKLISTS" And objPermission.IsPermitted Then iPicklistsGranted = 1
 		If objSessionContext.LoginInfo.IsSystemOrSecurityAdmin Then iNewUserGranted = 1
+		If Left(objPermission.CategoryKey, 8) = "EVENTLOG" And objPermission.IsPermitted Then iEventLogGranted = 1
 			
 	Next
 	
@@ -314,7 +310,9 @@
 	Response.Write("<input type='hidden' id=txtFiltersGranted name=txtFiltersGranted value=" & iFiltersGranted & ">")
 	Response.Write("<input type='hidden' id=txtPicklistsGranted name=txtPicklistsGranted value=" & iPicklistsGranted & ">")
 	Response.Write("<input type='hidden' id=txtNewUserGranted name=txtNewUserGranted value=" & iNewUserGranted & ">")
-
+	Response.Write("<input type='hidden' id=txtEventLogGranted name=txtEventLogGranted value=" & iEventLogGranted & ">")
+	Response.Write("<input type='hidden' id=txtQuickAccessGranted name=txtQuickAccessGranted value=" & IIf(avQuickEntryMenuInfo.Count > 0, "1", "0").ToString & ">")
+		
 	Response.Write("<input type='hidden' id=txtErrorDescription name=txtErrorDescription value=""" & sErrorDescription & """>")
 %>
 
