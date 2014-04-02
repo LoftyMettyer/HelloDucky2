@@ -40,7 +40,7 @@
 
 					//If hierarchy level = 0 add to root (#org), otherwise append to previous manager's staff_number
 					var parentNode = hierarchyLevel == "0" ? 'org' : lineManagerStaffNo;
-					$('#' + parentNode).append('<li class="' + absenceTypeClass + '">' + employeeJobTitle + '<img style="width: 48px; height: 48px;" src="' + photoPath + '"/><p>' + employeeForenames + ' ' + employeeSurname + '</p><ul id="' + employeeStaffNo + '"></li>');
+					$('#' + parentNode).append('<li class="' + absenceTypeClass + '"><div class="jobTitle">' + employeeJobTitle + '</div><img style="width: 48px; height: 48px;" src="' + photoPath + '"/><p>' + employeeForenames + ' ' + employeeSurname + '</p><ul id="' + employeeStaffNo + '"></li>');
 				});
 
 				//Add a class to collapse all peer trees.

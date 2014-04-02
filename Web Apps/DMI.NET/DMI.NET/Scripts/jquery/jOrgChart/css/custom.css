@@ -87,14 +87,18 @@ a:hover{
 	/*color 				: white;*/	
 	-moz-border-radius 	: 8px;
 	line-height: 1;
-	box-shadow: 5px 5px gray;
+	/*box-shadow: 5px 5px gray;*/
 }
 	.node p{
 		margin: 0;
 		font-family 	: tahoma;
 		font-size 		: 10px;
 		line-height 	: 11px;
-		padding 		: 2px;
+		padding 		: 2px;		
+	}
+
+	.node div.jobTitle {
+		min-height: 1em;
 	}
 
 	.node img {
