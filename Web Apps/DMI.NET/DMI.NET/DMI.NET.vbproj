@@ -174,39 +174,11 @@
     <Content Include="Content\fonts\font-awesome\fontawesome-webfont.svg" />
     <Content Include="Content\fonts\SSI80v194934\style.css" />
     <Content Include="Content\images\ABSLogo\OpenHRLogo1024x768.png" />
-    <Content Include="Content\images\ABSLogo\OpenHRLogo114.png" />
-    <Content Include="Content\images\ABSLogo\OpenHRLogo144.png" />
-    <Content Include="Content\images\ABSLogo\OpenHRLogo1496x2048.png" />
-    <Content Include="Content\images\ABSLogo\OpenHRLogo1536x2008.png" />
-    <Content Include="Content\images\ABSLogo\OpenHRLogo320x460.png" />
-    <Content Include="Content\images\ABSLogo\OpenHRLogo57.png" />
-    <Content Include="Content\images\ABSLogo\OpenHRLogo640x1096.png" />
-    <Content Include="Content\images\ABSLogo\OpenHRLogo640x920.png" />
-    <Content Include="Content\images\ABSLogo\OpenHRLogo72.png" />
-    <Content Include="Content\images\ABSLogo\OpenHRLogo748x1024.png" />
-    <Content Include="Content\images\ABSLogo\OpenHRLogo768x1004.png" />
-    <Content Include="Content\images\ABSLogo\smallswirlsgreyscale.png" />
-    <Content Include="Content\images\ABSLogo\swirls.png" />
-    <Content Include="Content\images\ABSLogo\swirlsgreyscale.png" />
-    <Content Include="Content\images\ABSLogo\swirlsgreyscaleopacity.png" />
     <Content Include="Content\images\ABSLogo\TilesWatermark.png" />
     <Content Include="Content\images\ABSLogo\TopRightBannerImage.png" />
     <Content Include="Content\images\ajax-loader.gif" />
     <Content Include="Content\images\anonymous.png" />
-    <Content Include="Content\images\CalendarReports\First_Disabled.gif" />
-    <Content Include="Content\images\CalendarReports\First_Enabled.gif" />
-    <Content Include="Content\images\CalendarReports\Last_Disabled.gif" />
-    <Content Include="Content\images\CalendarReports\Last_Enabled.gif" />
-    <Content Include="Content\images\CalendarReports\Next_Disabled.gif" />
-    <Content Include="Content\images\CalendarReports\Next_Enabled.gif" />
-    <Content Include="Content\images\CalendarReports\Previous_Disabled.gif" />
-    <Content Include="Content\images\CalendarReports\Previous_Enabled.gif" />
-    <Content Include="Content\images\CalendarReports\Today_Disabled.gif" />
-    <Content Include="Content\images\CalendarReports\Today_Enabled.gif" />
-    <Content Include="Content\images\chartdata.gif" />
-    <Content Include="Content\images\ChartGraph.gif" />
     <Content Include="Content\images\Chart_Popout.png" />
-    <Content Include="Content\images\dropdown_icon.gif" />
     <Content Include="Content\images\OLEIcons\file_down_64.png" />
     <Content Include="Content\images\OLEIcons\folder_64.png" />
     <Content Include="Content\images\OpenHR_Icon.ico" />
@@ -220,6 +192,7 @@
     <Content Include="Content\jquery.mCustomScrollbar.min.css">
       <DependentUpon>jquery.mCustomScrollbar.css</DependentUpon>
     </Content>
+    <Content Include="Content\Menu\folder_closed.png" />
     <Content Include="Content\spectrum.css" />
     <Content Include="Content\table.css" />
     <Content Include="Content\themes\activeX\images\animated-overlay.gif" />
@@ -1104,7 +1077,6 @@
     <None Include="My Project\PublishProfiles\HarpQA05.pubxml" />
     <None Include="My Project\PublishProfiles\Kennedys.pubxml" />
     <None Include="My Project\PublishProfiles\Local DMIPublished.pubxml" />
-    <Content Include="Content\images\ajax-loader-progress.gif" />
     <Content Include="misc\exprmenu.htm" />
     <None Include="My Project\PublishProfiles\QASRVR01 - OpenHR.pubxml.user" />
     <None Include="My Project\PublishProfiles\QASRVR01 - OpenHRRanorex.pubxml.user" />
@@ -1180,25 +1152,13 @@
     <Content Include="Content\fonts\general_enclosed_foundicons.svg" />
     <Content Include="Content\general_enclosed_foundicons.css" />
     <Content Include="Content\images\abssmall.png" />
-    <Content Include="Content\images\extlink.png" />
-    <Content Include="Content\images\extlink2.png" />
-    <Content Include="Content\images\extlink3.png" />
-    <Content Include="Content\images\extlink4.png" />
     <Content Include="Content\images\spinnerBig.gif" />
-    <Content Include="Content\images\ABSLogo\OpenHRLogo.png" />
-    <Content Include="Content\images\arrow-left-white.png" />
-    <Content Include="Content\images\arrow-right-white.png" />
-    <Content Include="Content\images\back_48.png" />
-    <Content Include="Content\images\DMIBackground.gif" />
     <Content Include="Content\images\Expand.png" />
     <Content Include="Content\images\Help32.png" />
-    <Content Include="Content\images\next_48.png" />
-    <Content Include="Content\images\ABSLogo\OpenHRLogo2.png" />
     <Content Include="Content\images\Retract.png" />
     <Content Include="Content\DashboardStyles\layouts\wireframe.css">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="Content\images\spinner04.gif" />
     <Content Include="Content\images\ui-bg_diagonals-thick_18_b81900_40x40.png" />
     <Content Include="Content\images\ui-bg_diagonals-thick_20_666666_40x40.png" />
     <Content Include="Content\images\ui-bg_flat_10_000000_40x100.png" />
@@ -1359,7 +1319,6 @@
     <Content Include="Scripts\officebar\images\button4_over.png" />
     <Content Include="Scripts\officebar\images\button5.gif" />
     <Content Include="Scripts\officebar\images\button5_over.gif" />
-    <Content Include="Scripts\officebar\images\button_over - Copy.png" />
     <Content Include="Scripts\officebar\images\button_over.png" />
     <Content Include="Scripts\officebar\images\dropdown.png" />
     <Content Include="Scripts\officebar\images\panel_left.gif" />
@@ -1379,7 +1338,6 @@
     <Content Include="Scripts\jquery\jsTree\theme\classic\style.css" />
     <Content Include="Scripts\jquery\jsTree\theme\classic\throbber.gif" />
     <Content Include="Content\Menu\ActiveNode.png" />
-    <Content Include="Content\Menu\folder_closed.png" />
     <Content Include="Content\Menu\InactiveNode.png" />
     <Content Include="Content\Menu\node_closed.png" />
     <Content Include="Content\Menu\node_expanded.png" />
