@@ -939,7 +939,7 @@
 					
 					sAddString = sAddString & Replace(objRow("EventInfo").ToString(), """", "&quot;")
 					
-					Response.Write("<input type='hidden' id='txtAddString_" & lngRowCount & "' name='txtAddString_" & lngRowCount & "' value='" & sAddString & "'>" & vbCrLf)
+					Response.Write("<input type='hidden' id='txtAddString_" & lngRowCount & "' name='txtAddString_" & lngRowCount & "' value='" & sAddString.Replace("'", "&#39") & "'>" & vbCrLf)
 
 					lngRowCount += 1
 
