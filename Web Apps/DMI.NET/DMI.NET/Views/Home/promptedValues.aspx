@@ -180,13 +180,13 @@
 				var frmPromptedValues = document.getElementById("frmPromptedValues");
 			
 				var sMaskCtlName = "promptMask_" + pctlPrompt.name.substring(9, pctlPrompt.name.length);
-				sMaskCtlName = sMaskCtlName.toUpperCase();
+				// sMaskCtlName = sMaskCtlName.toUpperCase();
 
 				var fFound = false;		
 				var controlCollection = frmPromptedValues.elements;
 				if (controlCollection!=null) {
 					for (var i=0; i<controlCollection.length; i++)  {
-						if (controlCollection.item(i).name.toUpperCase() == sMaskCtlName) {
+						if (controlCollection.item(i).name == sMaskCtlName) {
 							fFound = true;
 							break;
 						}
