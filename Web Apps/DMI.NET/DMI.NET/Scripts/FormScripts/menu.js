@@ -4051,7 +4051,6 @@ function menu_loadSelectOrderFilter(psType) {
 			OpenHR.modalPrompt("You have made changes. Click 'OK' to discard your changes, or 'Cancel' to continue editing.", 1, "Confirm").then(function (answer) {
 				if (answer == 1) { // OK - Ignore changes
 					orderfilter_RecordEdit();
-					menu_refreshMenu();
 					return false;
 				} else {
 					menu_refreshMenu();
