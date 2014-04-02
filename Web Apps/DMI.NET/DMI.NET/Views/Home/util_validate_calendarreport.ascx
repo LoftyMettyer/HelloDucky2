@@ -4,64 +4,26 @@
 <%@ Import Namespace="System.Data.SqlClient" %>
 <%@ Import Namespace="System.Data" %>
 
-<link href="<%:Url.LatestContent("~/Content/OpenHR.css")%>" rel="stylesheet" type="text/css" />
-<script src="<%:Url.LatestContent("~/Scripts/jquery/jquery-1.8.3.js")%>" type="text/javascript"></script>
-<script src="<%:Url.LatestContent("~/Scripts/openhr.js")%>" type="text/javascript"></script>
-<script src="<%:Url.LatestContent("~/Scripts/ctl_SetFont.js")%>" type="text/javascript"></script>
-<script src="<%:Url.LatestContent("~/Scripts/ctl_SetStyles.js")%>" type="text/javascript"></script>
-<script src="<%:Url.LatestContent("~/Scripts/jquery/jquery-ui-1.9.2.custom.js")%>" type="text/javascript"></script>
-<script src="<%:Url.LatestContent("~/Scripts/jquery/jquery.cookie.js")%>" type="text/javascript"></script>
-<script src="<%:Url.LatestContent("~/Scripts/FormScripts/menu.js")%>" type="text/javascript"></script>
-<script src="<%:Url.LatestContent("~/Scripts/jquery/jquery.ui.touch-punch.min.js")%>" type="text/javascript"></script>
-<script src="<%:Url.LatestContent("~/Scripts/jquery/jsTree/jquery.jstree.js")%>" type="text/javascript"></script>
-<script id="officebarscript" src="<%: Url.LatestContent("~/Scripts/officebar/jquery.officebar.js")%>" type="text/javascript"></script>
+		<script src="<%: Url.LatestContent("~/bundles/jQuery")%>" type="text/javascript"></script>
+		<script src="<%: Url.LatestContent("~/bundles/jQueryUI7")%>" type="text/javascript"></script>
+
+		<link href="<%: Url.LatestContent("~/Content/OpenHR.css")%>" rel="stylesheet" type="text/css" />
+		<link href="<%: Url.LatestContent("~/Content/Site.css")%>" rel="stylesheet" type="text/css" />
+		<link href="<%: Url.LatestContent("~/Content/OpenHR.css")%>" rel="stylesheet" type="text/css" />
+		<link id="DMIthemeLink" href="<%: Url.LatestContent("~/Content/themes/" & Session("ui-admin-theme").ToString() & "/jquery-ui.min.css")%>" rel="stylesheet" type="text/css" />
+		<link href="<%= Url.LatestContent("~/Content/font-awesome.css")%>" rel="stylesheet" type="text/css" />
+	
 
 	<script type="text/javascript">
 		function util_validate_calendarreport_window_onload() {
-			//// Hide the 'please wait' message.
-			//window.trPleaseWait1.style.visibility = 'hidden';
-			//window.trPleaseWait1.style.display = 'none';
-			//window.trPleaseWait2.style.visibility = 'hidden';
-			//window.trPleaseWait2.style.display = 'none';
-			//window.trPleaseWait3.style.visibility = 'hidden';
-			//window.trPleaseWait3.style.display = 'none';
-			//window.trPleaseWait4.style.visibility = 'hidden';
-			//window.trPleaseWait4.style.display = 'none';
-			//window.trPleaseWait5.style.visibility = 'hidden';
-			//window.trPleaseWait5.style.display = 'none';
 
-			//// Resize the grid to show all prompted values.
-			//var iResizeBy = bdyMain.scrollWidth - bdyMain.clientWidth;
-			//if (bdyMain.offsetWidth + iResizeBy > screen.width) {
-			//	window.dialogWidth = new String(screen.width) + "px";
-			//} else {
-			//	var iNewWidth = new Number(window.dialogWidth.substr(0, window.dialogWidth.length - 2));
-			//	iNewWidth = iNewWidth + iResizeBy;
-			//	window.dialogWidth = new String(iNewWidth) + "px";
-			//}
-
-			//iResizeBy = bdyMain.scrollHeight - bdyMain.clientHeight;
-			//if (bdyMain.offsetHeight + iResizeBy > screen.height) {
-			//	window.dialogHeight = new String(screen.height) + "px";
-			//} else {
-			//	var iNewHeight = new Number(window.dialogHeight.substr(0, window.dialogHeight.length - 2));
-			//	iNewHeight = iNewHeight + iResizeBy;
-			//	window.dialogHeight = new String(iNewHeight) + "px";
-			//}
-
-			//var iNewLeft = (screen.width - bdyMain.offsetWidth) / 2;
-			//var iNewTop = (screen.height - bdyMain.offsetHeight) / 2;
-			//window.dialogLeft = new String(iNewLeft) + "px";
-			//window.dialogTop = new String(iNewTop) + "px";
+			$("#trPleaseWait1").hide();
+			$("#trPleaseWait2").hide();
+			$("#trPleaseWait3").hide();
+			$("#trPleaseWait4").hide();
+			$("#trPleaseWait5").hide();
 
 			if (txtErrorCode.value == 0) {
-				////OpenHR.getElementById("frmSend").submit();
-				//var frmSubmit = window.dialogArguments.document.getElementById('frmSend');
-				////window.dialogArguments.OpenHR(frmSubmit);
-				//OpenHR.submitForm(frmSubmit, null, false);
-				////window.dialogArguments.document.getElementById('frmSend').submit();
-				//self.close();
-				//return;
 
 				var frmSend = window.dialogArguments.OpenHR.getForm("workframe", "frmSend");
 				window.dialogArguments.OpenHR.submitForm(frmSend);
@@ -367,9 +329,15 @@
 	</div>
 
 	<script type="text/javascript">
+		
+		$(function () {
+			$("input[type=submit], input[type=button], button").button();
+			$("input").addClass("ui-widget ui-corner-all");
+			$("input").removeClass("text");
+			$("input[type=submit], input[type=button], button").removeClass("ui-corner-all");
+			$("input[type=submit], input[type=button], button").addClass("ui-corner-tl ui-corner-br");
+		});
+		
 		util_validate_calendarreport_window_onload();
 	</script>
 
-
-<%--</body>
-</html>--%>

@@ -4,8 +4,29 @@
 <%@ Import Namespace="System.Data" %>
 <%@ Import Namespace="HR.Intranet.Server" %>
 
+<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>OpenHR Intranet</title>
+		<script src="<%: Url.LatestContent("~/bundles/jQuery")%>" type="text/javascript"></script>
+		<script src="<%: Url.LatestContent("~/bundles/jQueryUI7")%>" type="text/javascript"></script>
+
+		<link href="<%: Url.LatestContent("~/Content/OpenHR.css")%>" rel="stylesheet" type="text/css" />
+		<link href="<%: Url.LatestContent("~/Content/Site.css")%>" rel="stylesheet" type="text/css" />
+		<link href="<%: Url.LatestContent("~/Content/OpenHR.css")%>" rel="stylesheet" type="text/css" />
+		<link id="DMIthemeLink" href="<%: Url.LatestContent("~/Content/themes/" & Session("ui-admin-theme").ToString() & "/jquery-ui.min.css")%>" rel="stylesheet" type="text/css" />
+		<link href="<%= Url.LatestContent("~/Content/font-awesome.css")%>" rel="stylesheet" type="text/css" />
+	
+
 <script type="text/javascript">
 	function util_validate_mailmerge_window_onload() {
+
+		$("#trPleaseWait1").hide();
+		$("#trPleaseWait2").hide();
+		$("#trPleaseWait3").hide();
+		$("#trPleaseWait4").hide();
+		$("#trPleaseWait5").hide();
 
 		if (txtErrorCode.value == 0) {
 			var frmSend = window.dialogArguments.OpenHR.getForm("workframe", "frmSend");
@@ -47,6 +68,9 @@
 	}
 </script>
 
+		</head>
+
+	<body>
 <div onload="return window_onload()" id="bdyMain" leftmargin="20" topmargin="20" bottommargin="20" rightmargin="5">
 	<table align="center" class="outline" cellpadding="5" cellspacing="0">
 		<tr>
@@ -133,7 +157,7 @@
 							Response.Write("			  <tr> " & vbCrLf)
 							Response.Write("					<td width=20></td>" & vbCrLf)
 							Response.Write("			    <td align=center colspan=3> " & vbCrLf)
-							Response.Write("    				    <input TYPE=button VALUE=Close class=""btn"" NAME=Cancel style=""WIDTH: 80px"" width=80 id=Cancel" & vbCrLf)
+							Response.Write("    				    <input type='button' class='btn' VALUE=Close NAME=Cancel style=""WIDTH: 80px"" width=80 id=Cancel" & vbCrLf)
 							Response.Write("    				        OnClick=""self.close()""/>" & vbCrLf)
 							Response.Write("			    </td>" & vbCrLf)
 							Response.Write("					<td width=20></td>" & vbCrLf)
@@ -160,12 +184,12 @@
 								Response.Write("			  <tr> " & vbCrLf)
 								Response.Write("					<td width=20></td>" & vbCrLf)
 								Response.Write("			    <td align=right> " & vbCrLf)
-								Response.Write("    				    <input TYPE=button VALUE=Yes class=""btn"" NAME=btnYes style=""WIDTH: 80px"" width=80 id=btnYes" & vbCrLf)
+								Response.Write("    				    <input type=button VALUE=Yes class=""btn"" NAME=btnYes style=""WIDTH: 80px"" width=80 id=btnYes" & vbCrLf)
 								Response.Write("    				        OnClick=""createNew()""/>" & vbCrLf)
 								Response.Write("			    </td>" & vbCrLf)
 								Response.Write("					<td width=20></td>" & vbCrLf)
 								Response.Write("			    <td align=left> " & vbCrLf)
-								Response.Write("    				    <input TYPE=button VALUE=No class=""btn"" NAME=btnNo style=""WIDTH: 80px"" width=80 id=btnNo" & vbCrLf)
+								Response.Write("    				    <input type=button VALUE=No class=""btn"" NAME=btnNo style=""WIDTH: 80px"" width=80 id=btnNo" & vbCrLf)
 								Response.Write("    				        OnClick=""self.close()""/>" & vbCrLf)
 								Response.Write("			    </td>" & vbCrLf)
 								Response.Write("					<td width=20></td>" & vbCrLf)
@@ -193,12 +217,12 @@
 									Response.Write("			  <tr> " & vbCrLf)
 									Response.Write("					<td width=20></td>" & vbCrLf)
 									Response.Write("			    <td align=right> " & vbCrLf)
-									Response.Write("    				    <input TYPE=button VALUE=Yes class=""btn"" NAME=btnYes style=""WIDTH: 80px"" width=80 id=btnYes" & vbCrLf)
+									Response.Write("    				    <input type=button VALUE=Yes class=""btn"" NAME=btnYes style=""WIDTH: 80px"" width=80 id=btnYes" & vbCrLf)
 									Response.Write("    				        OnClick=""overwrite()""/>" & vbCrLf)
 									Response.Write("			    </td>" & vbCrLf)
 									Response.Write("					<td width=20></td>" & vbCrLf)
 									Response.Write("			    <td align=left> " & vbCrLf)
-									Response.Write("    				    <input TYPE=button VALUE=No class=""btn"" NAME=btnNo style=""WIDTH: 80px"" width=80 id=btnNo" & vbCrLf)
+									Response.Write("    				    <input type=button VALUE=No class=""btn"" NAME=btnNo style=""WIDTH: 80px"" width=80 id=btnNo" & vbCrLf)
 									Response.Write("    				        OnClick=""self.close()"" />" & vbCrLf)
 									Response.Write("			    </td>" & vbCrLf)
 									Response.Write("					<td width=20></td>" & vbCrLf)
@@ -248,8 +272,21 @@
 			</td>
 		</tr>
 	</table>
+	
 </div>
+	
+	</body>
+</html>
 
 <script type="text/javascript">
+
+	$(function () {
+		$("input[type=submit], input[type=button], button").button();
+		$("input").addClass("ui-widget ui-corner-all");
+		$("input").removeClass("text");
+		$("input[type=submit], input[type=button], button").removeClass("ui-corner-all");
+		$("input[type=submit], input[type=button], button").addClass("ui-corner-tl ui-corner-br");
+	});
+
 	util_validate_mailmerge_window_onload();
 </script>
