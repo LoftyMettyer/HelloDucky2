@@ -7,7 +7,17 @@
 <link href="<%: Url.LatestContent("~/Content/OpenHR.css")%>" rel="stylesheet" type="text/css" />
 
 <script src="<%: Url.LatestContent("~/bundles/jQuery")%>" type="text/javascript"></script>
+<script src="<%: Url.LatestContent("~/bundles/jQueryUI7")%>" type="text/javascript"></script>
+
 <script src="<%: Url.LatestContent("~/bundles/OpenHR_General")%>" type="text/javascript"></script>
+
+<link href="<%: Url.LatestContent("~/Content/OpenHR.css")%>" rel="stylesheet" type="text/css" />
+<link href="<%: Url.LatestContent("~/Content/Site.css")%>" rel="stylesheet" type="text/css" />
+<link href="<%: Url.LatestContent("~/Content/OpenHR.css")%>" rel="stylesheet" type="text/css" />
+<link id="DMIthemeLink" href="<%: Url.LatestContent("~/Content/themes/" & Session("ui-admin-theme").ToString() & "/jquery-ui.min.css")%>" rel="stylesheet" type="text/css" />
+<link href="<%= Url.LatestContent("~/Content/font-awesome.css")%>" rel="stylesheet" type="text/css" />
+	
+
 
 <!DOCTYPE html>
 <html>
@@ -293,44 +303,6 @@
 
 				function validate_window_onload() {
 
-						//// Hide the 'please wait' message.
-						//trPleaseWait1.style.visibility='hidden';
-						//trPleaseWait1.style.display='none';
-						//trPleaseWait2.style.visibility='hidden';
-						//trPleaseWait2.style.display='none';
-						//trPleaseWait3.style.visibility='hidden';
-						//trPleaseWait3.style.display='none';
-						//trPleaseWait4.style.visibility='hidden';
-						//trPleaseWait4.style.display='none';
-						//trPleaseWait5.style.visibility='hidden';
-						//trPleaseWait5.style.display='none';
-
-						//// Resize the grid to show all prompted values.
-						//iResizeBy = bdyMain.scrollWidth	- bdyMain.clientWidth;
-						//if (bdyMain.offsetWidth + iResizeBy > screen.width) {
-						//    window.dialogWidth = new String(screen.width) + "px";
-						//}
-						//else {
-						//    iNewWidth = new Number(window.dialogWidth.substr(0, window.dialogWidth.length-2));
-						//    iNewWidth = iNewWidth + iResizeBy;
-						//    window.dialogWidth = new String(iNewWidth) + "px";
-						//}
-
-						//iResizeBy = bdyMain.scrollHeight	- bdyMain.clientHeight;
-						//if (bdyMain.offsetHeight + iResizeBy > screen.height) {
-						//    window.dialogHeight = new String(screen.height) + "px";
-						//}
-						//else {
-						//    iNewHeight = new Number(window.dialogHeight.substr(0, window.dialogHeight.length-2));
-						//    iNewHeight = iNewHeight + iResizeBy;
-						//    window.dialogHeight = new String(iNewHeight) + "px";
-						//}
-
-						//iNewLeft = (screen.width - bdyMain.offsetWidth) / 2;
-						//iNewTop = (screen.height - bdyMain.offsetHeight) / 2;
-						//window.dialogLeft = new String(iNewLeft) + "px";
-						//window.dialogTop = new String(iNewTop) + "px";
-
 						if (txtErrorCode.value == 0) {
 								var frmSubmit = window.dialogArguments.document.getElementById('frmSend');
 								//window.dialogArguments.OpenHR(frmSubmit);
@@ -403,7 +375,15 @@
 
 
 <script type="text/javascript">    
-		validate_window_onload();
+	$(function () {
+		$("input[type=submit], input[type=button], button").button();
+		$("input").addClass("ui-widget ui-corner-all");
+		$("input").removeClass("text");
+		$("input[type=submit], input[type=button], button").removeClass("ui-corner-all");
+		$("input[type=submit], input[type=button], button").addClass("ui-corner-tl ui-corner-br");
+	});
+
+	validate_window_onload();
 </script>
 
 
