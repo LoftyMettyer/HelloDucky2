@@ -72,9 +72,10 @@ function refreshControls() {
 	button_disable(frmDefinition.cmdOK, ((frmUseful.txtChanged.value == 0) ||
 			(fViewing == true) ||
 			(frmDefinition.ssOleDBGrid.Rows == 0)));
+
+
 	menu_toolbarEnableItem('mnutoolSaveReport', (!((frmUseful.txtChanged.value == 0) ||
-			(fViewing == true) ||
-			(frmDefinition.ssOleDBGrid.Rows == 0))));
+			(fViewing == true))));
 
 
 	// Get menu.asp to refresh the menu.

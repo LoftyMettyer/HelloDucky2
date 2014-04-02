@@ -28,7 +28,7 @@
 												<td width="10">Name :</td>
 												<td width="5">&nbsp;</td>
 												<td>
-													<input id="txtName" name="txtName" class="text" maxlength="50" style="WIDTH: 100%" onchange="changeName()">
+													<input id="txtName" name="txtName" class="text" maxlength="50" style="WIDTH: 100%" onkeyup="changeName()">
 												</td>
 												<td width="20">&nbsp;</td>
 												<td width="10">Owner :</td>
