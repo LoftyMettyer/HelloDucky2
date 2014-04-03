@@ -8,6 +8,8 @@
 
 		var fOK = true;
 
+		showDefaultRibbon();
+		
 		var sErrMsg = document.getElementById("txtErrorDescription").value;
 
 		if (sErrMsg.length > 0) {
