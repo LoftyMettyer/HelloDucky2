@@ -62,6 +62,9 @@
 	font-weight: bold;
 }
 
+tr.spaceUnder > td {
+  padding-bottom: 1.65em;
+}
 
 .outline {
 	border-spacing: 0px;

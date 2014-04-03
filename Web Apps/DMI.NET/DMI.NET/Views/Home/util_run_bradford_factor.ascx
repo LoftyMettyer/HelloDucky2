@@ -502,7 +502,10 @@ End If
 
 					If e.Row.Cells(0).Text = HR.Intranet.Server.Enums.RowType.GrandSummary Then
 						e.Row.CssClass = "grandsummaryrow"
-					
+						
+					ElseIf e.Row.Cells(0).Text = HR.Intranet.Server.Enums.RowType.BradfordCalculation Then
+						e.Row.CssClass = "spaceUnder summarytablerow"
+										
 					ElseIf Not e.Row.Cells(0).Text = HR.Intranet.Server.Enums.RowType.Data Then
 						e.Row.CssClass = "summarytablerow"
 						

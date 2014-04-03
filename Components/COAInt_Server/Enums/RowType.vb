@@ -6,5 +6,6 @@
 		Total = 3
 		GrandSummary = 4
 		PageBreak = 5
+		BradfordCalculation = 6
 	End Enum
 End Namespace

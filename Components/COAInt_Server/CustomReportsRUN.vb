@@ -3434,7 +3434,7 @@ CheckRecordSet_ERROR:
 				aryTotalAddString(12) = CStr(CDbl(aryTotalAddString(12)) * (miAmountOfRecords * miAmountOfRecords))
 				aryTotalAddString(13) = CStr(CDbl(aryTotalAddString(13)) * (miAmountOfRecords * miAmountOfRecords))
 			End If
-			NEW_AddToArray_Data(RowType.Total, aryTotalAddString)
+			NEW_AddToArray_Data(RowType.BradfordCalculation, aryTotalAddString)
 
 			mintPageBreakRowIndex += 1
 
