@@ -109,6 +109,10 @@
 		var txtEmailSubject = document.getElementById('txtEmailSubject');
 		var txtEmailAttachAs = document.getElementById('txtEmailAttachAs');
 		var txtEmailGroup = document.getElementById('txtEmailGroup');
+		var cboPrinterName = document.getElementById('cboPrinterName');
+		var cboSaveExisting = document.getElementById('cboSaveExisting');
+		var txtEmailGroupID = document.getElementById('txtEmailGroupID');
+		var cmdEmailGroup = document.getElementById('cmdEmailGroup');
 
 		var cmdFilename = document.getElementById('cmdFilename');
 
@@ -333,8 +337,8 @@
 				//enable-disable email options
 				checkbox_disable(chkDestination3, false);
 				if (chkDestination3.checked == true) {
-					text_disable(txtEmailGroup, false);
-					$('#frmOutputDef #txtEmailGroup').removeClass('ui-state-disabled');
+					//text_disable(txtEmailGroup, false);
+					//$('#frmOutputDef #txtEmailGroup').removeClass('ui-state-disabled');
 					$('#frmOutputDef #lblEmailGroup').removeClass('ui-state-disabled');
 					$('#frmOutputDef #cmdEmailGroup').removeClass('ui-state-disabled');
 					text_disable(txtEmailSubject, false);
@@ -346,11 +350,11 @@
 					$('#frmOutputDef #lblEmailAttachAs').removeClass('ui-state-disabled');
 				}
 				else {
-					text_disable(txtEmailGroup, true);
+					//text_disable(txtEmailGroup, true);
 					$('#frmOutputDef #txtEmailGroup').val('');
 					$('#frmOutputDef #txtEmailGroupID').val(0);
 					button_disable(cmdEmailGroup, true);
-					$('#frmOutputDef #txtEmailGroup').addClass('ui-state-disabled');
+					//$('#frmOutputDef #txtEmailGroup').addClass('ui-state-disabled');
 					$('#frmOutputDef #lblEmailGroup').addClass('ui-state-disabled');
 					$('#frmOutputDef #cmdEmailGroup').addClass('ui-state-disabled');
 					text_disable(txtEmailSubject, true);
@@ -470,18 +474,29 @@
 	}
 
 	function selectEmailGroup() {
-		var sURL;
-
+		var sUrl;		
 		var frmOutputDef = OpenHR.getForm("outputoptions", "frmOutputDef");
 		frmEmailSelection.EmailSelCurrentID.value = frmOutputDef.txtEmailGroupID.value;
 
-		sURL = "util_emailSelection" +
+		sUrl = "util_emailSelection" +
 				"?EmailSelCurrentID=" + frmEmailSelection.EmailSelCurrentID.value;
-		openDialog(sURL, (screen.width) / 3 + 40, (screen.height) / 2 - 50, "no", "no");
+		openDialog(sUrl, (screen.width) / 3 + 40, (screen.height) / 2 - 50, "no", "no");
 	}
 
-	function outputOptionsOKClick() {
 
+	function openDialog(pDestination, pWidth, pHeight, psResizable, psScroll) {
+		var dlgwinprops = "center:yes;" +
+				"dialogHeight:" + pHeight + "px;" +
+				"dialogWidth:" + pWidth + "px;" +
+				"help:no;" +
+				"resizable:" + psResizable + ";" +
+				"scroll:" + psScroll + ";" +
+				"status:no;";
+		window.showModalDialog(pDestination, self, dlgwinprops);
+	}
+
+
+	function outputOptionsOKClick() {		
 		var frmOutputDef = OpenHR.getForm("outputoptions", "frmOutputDef");
 
 		if ((frmOutputDef.chkDestination0.checked == false) &&
