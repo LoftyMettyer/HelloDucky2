@@ -1,5 +1,5 @@
 VERSION 5.00
-Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
+Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "tabctl32.ocx"
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
 Begin VB.Form frmSSIntranetSetup 
    BorderStyle     =   3  'Fixed Dialog
@@ -6096,9 +6096,7 @@ Private Function GeneratePreviewHTML(ByVal strTmpFolder As String) As String
             "</head>" & vbCrLf & _
             "<body style='margin: 0px; padding: 0px; background-color: white;'>" & vbCrLf & _
             "<table width='100%' height='100%' border='0' cellspacing='0' cellpadding='0'>" & vbCrLf & _
-            "  <tr bgcolor='#b0b2f5'><td colspan='3' height='6' style='text-align:right'></td></tr>" & vbCrLf & _
             "  <tr style='height: 39px;'><td width='40' valign='top' style='height: 39px;'>" & vbCrLf & _
-            "<img src='" & strTmpFolder & "/TopLeft.bmp' alt='Corner Top' />" & vbCrLf & _
             "</td></tr>"
   Print #intFileNo, strHTML
   
@@ -6131,20 +6129,23 @@ Private Function GeneratePreviewHTML(ByVal strTmpFolder As String) As String
             Print #intFileNo, "<tr height='24'>"
             Print #intFileNo, "  <td nowrap='nowrap'>"
             Print #intFileNo, "    <font face='Verdana' color='#333366' style='font-size: 10pt'>"
-            Print #intFileNo, Trim(.Columns("Prompt").CellText(varBookMark))
+            Print #intFileNo, Replace(Trim(.Columns("Prompt").CellText(varBookMark)), "...", "") & " "
             Print #intFileNo, "    </font>"
-            Print #intFileNo, "  </td>"
-'            Print #intFileNo, "  <td width='20'></td>"
-          If Len(Trim(.Columns("Prompt").CellText(varBookMark))) > 0 Then
-            Print #intFileNo, "  <td align='center'  style='background-position:center;background-repeat:no-repeat;width:200px;white-space:nowrap' nowrap='nowrap' width='200px'"
-          Else
-            Print #intFileNo, "  <td align='center'  style='background-position:center;background-repeat:no-repeat;white-space:nowrap' nowrap='nowrap' width='200px'"
-          End If
-            Print #intFileNo, "background='" & strTmpFolder & "/button.bmp'>"
             Print #intFileNo, " <font face='Verdana' color='#333366' style='font-size: 10pt'>"
             Print #intFileNo, Trim(.Columns("ButtonText").CellText(varBookMark))
             Print #intFileNo, "    </font>"
             Print #intFileNo, "  </td>"
+
+'          If Len(Trim(.Columns("Prompt").CellText(varBookMark))) > 0 Then
+'            Print #intFileNo, "  <td align='center'  style='background-position:center;background-repeat:no-repeat;width:200px;white-space:nowrap' nowrap='nowrap' width='200px'"
+'          Else
+'            Print #intFileNo, "  <td align='center'  style='background-position:center;background-repeat:no-repeat;white-space:nowrap' nowrap='nowrap' width='200px'"
+'          End If
+'            Print #intFileNo, "background='" & strTmpFolder & "/button.bmp'>"
+'            Print #intFileNo, " <font face='Verdana' color='#333366' style='font-size: 10pt'>"
+'            Print #intFileNo, Trim(.Columns("ButtonText").CellText(varBookMark))
+'            Print #intFileNo, "    </font>"
+'            Print #intFileNo, "  </td>"
             Print #intFileNo, "</tr>"
             
           Case "1"  ' Separator
@@ -6247,7 +6248,6 @@ Private Function GeneratePreviewHTML(ByVal strTmpFolder As String) As String
   
   ' Bottom of the document
   strHTML = "<tr ><td valign='bottom'>" & vbCrLf & _
-      "<img src='" & strTmpFolder & "/BottLeft.bmp'/>" & _
       "</td></tr>" & _
       "<tr bgcolor='#b0b2f5'><td colspan='3' height='6'></td></tr>" & vbCrLf
   Print #intFileNo, strHTML
