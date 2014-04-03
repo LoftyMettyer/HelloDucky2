@@ -61,8 +61,10 @@
 	}
 
 </script>
-
-<img width="32" height="32" src="/openhr/Content/images/help32.png" onclick="HelpAbout();" style="float: right; margin-top: 52px; margin-right: -13px;" alt="">
+<div class="divLogin">
+<div class="ui-dialog-titlebar ui-widget-header loginTitleBar">
+		<img alt="about OpenHR" title="About OpenHR Web" src="<%= Url.Content("~/Content/images/help32.png")%>" />
+	</div>
 
 <div <%=Session("BodyTag")%> style="width: 98%; position: absolute; top: 170px;">
 	<%Html.BeginForm("ForgotPassword_Submit", "Account", FormMethod.Post, New With {.id = "frmforgotPasswordForm"})%>
@@ -104,6 +106,7 @@
 		</table>
 	<%Html.EndForm()%>
 </div>
+	</div>
 <script type="text/javascript">
 	$(document).ready(function() {
 		$("#MessageBox").dialog({
@@ -113,6 +116,11 @@
 			height: 'auto',
 			width: 'auto'
 		});
+	});
+	
+	//Set up button click events
+	$('.loginTitleBar img').click(function () {
+		$("#About").dialog("open");
 	});
 </script>
 
