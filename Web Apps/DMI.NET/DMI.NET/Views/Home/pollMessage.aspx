@@ -36,10 +36,20 @@
 	}
 
 	<%	If Model.Body.Length > 0 Then%>
-		$("#divPollMessage").dialog("open");
+	
+	// If Any ActiveX controls are in the workframeset, move the dailog to the very top of the screen to avoid it being hidden behind the ActiveX
+	if ($('#workframeset object').length > 0) {
+		$("#divPollMessage").dialog('option', 'position', 'top');
+	} else {
+		$("#divPollMessage").dialog('option', 'position', 'center');
+	}
+
+	$("#divPollMessage").dialog('option', 'title', '<%=Model.Caption%>');
+	$("#divPollMessage").dialog('open');
+	
 	<% end if %>
 
-	$("#divPollMessage").dialog({ dialogClass: 'no-close' }, 'option', 'title', '<%=Model.Caption%>' );
+
 
 </script>
 

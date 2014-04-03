@@ -120,7 +120,8 @@
 				modal: true,
 				width: 350,
 				height: 'auto',
-				resizable: false
+				resizable: false,
+				dialogClass: 'no-close'
 			});
 			
 			$("#dialog-confirm").dialog({
