@@ -2292,6 +2292,7 @@ function SSTree1_dblClick() {
 function SSTree1_keyPress(piKeyAscii) {
 
 	var sDefinition;
+	var frmShortcutKeys = document.getElementById('frmShortcutKeys');
 	var shortcutCollection = frmShortcutKeys.elements;
 	var sTypeControl;
 	var sControlName;
@@ -2317,13 +2318,13 @@ function SSTree1_keyPress(piKeyAscii) {
 					sDefinition = "0	0	" + frmShortcutKeys.elements.item("txtShortcutType_" + iIndex).value +
 							"								";
 
-					if (frmShortcutKeys.all.item("txtShortcutType_" + iIndex).value == 2) {
+					if (frmShortcutKeys.childNodes.item("txtShortcutType_" + iIndex).value == 2) {
 						sDefinition = sDefinition + frmShortcutKeys.elements.item("txtShortcutID_" + iIndex).value;
 					}
 
 					sDefinition = sDefinition + "		";
 
-					if (frmShortcutKeys.all.item("txtShortcutType_" + iIndex).value == 5) {
+					if (frmShortcutKeys.childNodes.item("txtShortcutType_" + iIndex).value == 5) {
 						sDefinition = sDefinition + frmShortcutKeys.elements.item("txtShortcutID_" + iIndex).value;
 					}
 
@@ -2338,7 +2339,7 @@ function SSTree1_keyPress(piKeyAscii) {
 					else {
 						sRelativeKey = frmDefinition.SSTree1.SelectedItem.Parent.Key;
 					}
-					setComponent(sDefinition, "ADDEXPRCOMPONENT", sRelativeKey, frmShortcutKeys.all.item("txtShortcutParams_" + iIndex).value);
+					setComponent(sDefinition, "ADDEXPRCOMPONENT", sRelativeKey, frmShortcutKeys.childNodes.item("txtShortcutParams_" + iIndex).value);
 					return;
 				}
 			}

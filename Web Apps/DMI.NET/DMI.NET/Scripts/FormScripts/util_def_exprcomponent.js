@@ -2734,13 +2734,15 @@ function ssOleDBGridFilters_KeyPress(iKeyAscii) {
 }
 		
 function ssOleDBGridFilters_rowcolchange() {
-		var sDesc;
+	var sDesc;
+	var frmFilters = document.getElementById('frmFilters');
 
-		var filterCollection = frmFilters.elements;
-		sDesc = "txtFilterDesc_" + (frmMainForm.ssOleDBGridFilters.AddItemRowIndex(frmMainForm.ssOleDBGridFilters.Bookmark) + 1);
-		frmMainForm.txtFilterDescription.value = frmFilters.all.item(sDesc).value;
+	var filterCollection = frmFilters.elements;
+	sDesc = "txtFilterDesc_" + (frmMainForm.ssOleDBGridFilters.AddItemRowIndex(frmMainForm.ssOleDBGridFilters.Bookmark) + 1);
+	//frmMainForm.txtFilterDescription.value = frmFilters.all.item(sDesc).value;
+	frmMainForm.txtFilterDescription.value = frmFilters.childNodes.item(sDesc).value;
 
-		button_disable(frmMainForm.cmdOK, (frmMainForm.ssOleDBGridFilters.SelBookmarks.Count == 0));
+	button_disable(frmMainForm.cmdOK, (frmMainForm.ssOleDBGridFilters.SelBookmarks.Count == 0));
 }
 
 function ssOleDBGridFilters_dblClick() {
@@ -2754,10 +2756,11 @@ function ssOleDBGridCalculations_KeyPress(iKeyAscii) {
 function ssOleDBGridCalculations_rowcolchange() {
 
 		var sDesc;
-
+	var frmCalcs = document.getElementById('frmCalcs');
 		var calcCollection = frmCalcs.elements;
 		sDesc = "txtCalcDesc_" + (frmMainForm.ssOleDBGridCalculations.AddItemRowIndex(frmMainForm.ssOleDBGridCalculations.Bookmark) + 1);
-		frmMainForm.txtCalcDescription.value = frmCalcs.all.item(sDesc).value;
+	//frmMainForm.txtCalcDescription.value = frmCalcs.all.item(sDesc).value;
+		frmMainForm.txtCalcDescription.value = frmCalcs.childNodes.item(sDesc).value;
 
 		button_disable(frmMainForm.cmdOK, (frmMainForm.ssOleDBGridCalculations.SelBookmarks.Count == 0));
 }
