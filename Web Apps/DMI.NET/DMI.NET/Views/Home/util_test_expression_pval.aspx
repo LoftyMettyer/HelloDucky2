@@ -22,7 +22,7 @@
 
 <html>
 <head runat="server">
-		<title>OpenHR Intranet</title>
+		<title>OpenHR</title>
 
 		<script type="text/javascript" >
 

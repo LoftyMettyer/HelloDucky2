@@ -51,8 +51,8 @@
 	});
 
 	if ($("#txtErrorDescription").val().length > 0) {
-		//ASRIntranetFunctions.MessageBox(window.txtErrorDescription.value, 0, "OpenHR Intranet"); // 0 = vbOKonly
-		OpenHR.messageBox(window.txtErrorDescription.value, 0, "OpenHR Intranet"); // 0 = vbOKonly
+		//ASRIntranetFunctions.MessageBox(window.txtErrorDescription.value, 0, "OpenHR"); // 0 = vbOKonly
+		OpenHR.messageBox(window.txtErrorDescription.value, 0, "OpenHR"); // 0 = vbOKonly
 		window.parent.location.replace("login");
 	}
 	else {
@@ -62,7 +62,7 @@
 		//TODO check for existence of menu control/page I guess.
 		//		if (abMainMenu == null) {
 		//			// The menu control was not loaded properly.
-		//			ASRIntranetFunctions.MessageBox("Menu control not loaded.", 0, "OpenHR Intranet"); // 0 = vbOKOnly
+		//			ASRIntranetFunctions.MessageBox("Menu control not loaded.", 0, "OpenHR"); // 0 = vbOKOnly
 		//			window.parent.location.replace("login.asp");
 		//		}
 		//		else {
@@ -895,7 +895,7 @@ function menu_MenuClick(sTool) {
 
 		// Course Booking
 	if (sToolName == "mnutoolCancelCourseRecord") {
-			if (OpenHR.messageBox("Are you sure you want to cancel this course?", 36, "OpenHR Intranet") == 6) { // 36 = vbQuestion + vbYesNo, 6 = vbYes
+			if (OpenHR.messageBox("Are you sure you want to cancel this course?", 36, "OpenHR") == 6) { // 36 = vbQuestion + vbYesNo, 6 = vbYes
 					if (menu_saveChanges("CANCELCOURSE", true, false) != 2) { // 2 = vbCancel
 							menu_cancelCourse(); // HC: TODO - Tab and buttons needs to be enabled
 					}

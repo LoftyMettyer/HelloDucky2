@@ -23,7 +23,7 @@
 	<link href="<%= Url.LatestContent("~/Content/fonts/SSI80v194934/style.css")%>" rel="stylesheet" />
 	
 
-	<title>OpenHR Intranet</title>
+	<title>OpenHR</title>
 </head>
 <body>
 	<div id="calendarframeset" name="calendarframeset">

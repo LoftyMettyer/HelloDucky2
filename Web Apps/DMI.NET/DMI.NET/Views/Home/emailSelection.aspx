@@ -7,7 +7,7 @@
 
 <html>
 <head runat="server">
-	<title>Event Log Selection - OpenHR Intranet</title>
+	<title>Event Log Selection - OpenHR</title>
 	<script src="<%: Url.LatestContent("~/bundles/jQuery")%>" type="text/javascript"></script>
 	<script src="<%: Url.LatestContent("~/bundles/OpenHR_General")%>" type="text/javascript"></script>
 	<script src="<%: Url.LatestContent("~/bundles/OpenHR_ActiveX")%>" type="text/javascript"></script>

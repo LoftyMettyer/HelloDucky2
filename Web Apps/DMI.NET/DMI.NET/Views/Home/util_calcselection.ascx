@@ -6,7 +6,7 @@
 <%@ Import Namespace="HR.Intranet.Server" %>
 
 <head>
-	<title>OpenHR Intranet</title>
+	<title>OpenHR</title>
 	<script src="<%: Url.LatestContent("~/bundles/OpenHR_ActiveX")%>" type="text/javascript"></script>
 	<script src="<%: Url.LatestContent("~/bundles/jQuery")%>" type="text/javascript"></script>
 	<script src="<%: Url.LatestContent("~/bundles/jQueryUI7")%>" type="text/javascript"></script>

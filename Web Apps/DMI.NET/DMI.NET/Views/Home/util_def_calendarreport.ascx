@@ -1988,7 +1988,7 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 			Catch ex As Exception
 				sErrMsg = CType(("'" & Session("utilname") & "' report definition could not be read." & vbCrLf) & FormatError(Err.Description), String)
 				Session("confirmtext") = sErrMsg
-				Session("confirmtitle") = "OpenHR Intranet"
+				Session("confirmtitle") = "OpenHR"
 				Session("followpage") = "defsel"
 				Session("reaction") = "CALENDARREPORTS"
 				Response.Clear()

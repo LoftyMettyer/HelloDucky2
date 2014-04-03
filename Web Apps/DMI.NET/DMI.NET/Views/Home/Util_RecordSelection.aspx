@@ -58,7 +58,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>OpenHR Intranet</title>
+	<title>OpenHR</title>
 	<%--External script resources--%>
 	<script src="<%: Url.LatestContent("~/bundles/jQuery")%>" type="text/javascript"></script>
 	<script src="<%: Url.LatestContent("~/bundles/jQueryUI7")%>" type="text/javascript"></script>

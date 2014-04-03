@@ -104,7 +104,7 @@
 			
 				If Len(sCheckStatus) > 0 Then
 					Session("confirmtext") = sCheckStatus
-					Session("confirmtitle") = "OpenHR Intranet"
+					Session("confirmtitle") = "OpenHR"
 					Session("followpage") = "defsel"
 					Response.Redirect("confirmok")
 				End If		

@@ -8,7 +8,7 @@
 
 <html>
 <head>
-	<title>OpenHR Intranet</title>
+	<title>OpenHR</title>
 
 	<link href="<%: Url.LatestContent("~/Content/OpenHR.css")%>" rel="stylesheet" type="text/css" />
 	<link href="<%: Url.LatestContent("~/Content/Site.css")%>" rel="stylesheet" type="text/css" />

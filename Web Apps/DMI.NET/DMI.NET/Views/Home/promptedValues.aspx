@@ -19,7 +19,7 @@
 	<script src="<%: Url.LatestContent("~/bundles/OpenHR_General")%>" type="text/javascript"></script>
 	<link href="<%: Url.LatestContent("~/Content/OpenHR.css")%>" rel="stylesheet" type="text/css" />
 
-	<title>OpenHR Intranet</title>
+	<title>OpenHR</title>
 
 	<script type="text/javascript">
 		function promptedValues_onload() {			

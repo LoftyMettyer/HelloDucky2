@@ -783,7 +783,7 @@ LocalErr:
 		'JPD 20091007 Fault HRPRO-31, HRPRO-33, HRPRO-34
 		' New SHDocVw.InternetExplorer sometimes gets a handle on the existing SSI/DMI browser instance.
 		' If this happens, do it again toensure you get a fresh instance.
-		If IE.DocumentTitle = "OpenHR Self-service Intranet" Or IE.DocumentTitle = "OpenHR Intranet" Then
+		If IE.DocumentTitle = "OpenHR" Then
 
 			IE = New System.Windows.Forms.WebBrowser
 		End If

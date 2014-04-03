@@ -466,7 +466,7 @@
 	
 			If Len(sErrMsg) > 0 Then
 				Session("confirmtext") = sErrMsg
-				Session("confirmtitle") = "OpenHR Intranet"
+				Session("confirmtitle") = "OpenHR"
 				Session("followpage") = "defsel"
 				Session("reaction") = sReaction
 				Response.Clear()

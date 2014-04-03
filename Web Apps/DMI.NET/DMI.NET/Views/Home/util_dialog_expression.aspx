@@ -5,7 +5,7 @@
 
 <html>
 <head runat="server">
-		<title>OpenHR Intranet</title>
+		<title>OpenHR</title>
 
 		<link href="<%: Url.LatestContent("~/Content/OpenHR.css")%>" rel="stylesheet" type="text/css" />
 

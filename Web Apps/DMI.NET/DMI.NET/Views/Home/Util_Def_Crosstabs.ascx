@@ -218,7 +218,7 @@
 				Catch ex As Exception
 					sErrMsg = "'" & Session("utilname") & "' cross tab definition could not be read." & vbCrLf & FormatError(ex.Message)
 					Session("confirmtext") = sErrMsg
-					Session("confirmtitle") = "OpenHR Intranet"
+					Session("confirmtitle") = "OpenHR"
 					Session("followpage") = "defsel"
 					Session("reaction") = "CROSSTABS"
 					Response.Clear()

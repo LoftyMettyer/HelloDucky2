@@ -22,7 +22,7 @@
 	<link href="<%= Url.LatestContent("~/Content/font-awesome.css")%>" rel="stylesheet" type="text/css" />
 	<link href="<%= Url.LatestContent("~/Content/fonts/SSI80v194934/style.css")%>" rel="stylesheet" />
 
-	<title>OpenHR Intranet</title>
+	<title>OpenHR</title>
 
 	<script type="text/javascript">
 		function defselproperties_window_onload() {

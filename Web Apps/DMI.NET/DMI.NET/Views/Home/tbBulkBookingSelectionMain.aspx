@@ -12,7 +12,7 @@
 <html>
 <head>
 		
-	<title>OpenHR Intranet</title>
+	<title>OpenHR</title>
 	<script src="<%: Url.LatestContent("~/bundles/jQuery")%>" type="text/javascript"></script>
 	<script src="<%: Url.LatestContent("~/bundles/jQueryUI7")%>" type="text/javascript"></script>
 	<script src="<%: Url.LatestContent("~/bundles/OpenHR_General")%>" type="text/javascript"></script>
@@ -38,7 +38,7 @@
 
 	<meta name="GENERATOR" content="Microsoft Visual Studio 6.0">
 	<meta http-equiv="refresh" content="<%=session("TimeoutSecs")%>;URL=dialogtimeout">
-	<title>OpenHR Intranet</title>
+	<title>OpenHR</title>
 	<object classid="clsid:5220cb21-c88d-11cf-b347-00aa00a28331"
 		id="Microsoft_Licensed_Class_Manager_1_0"
 		viewastext>

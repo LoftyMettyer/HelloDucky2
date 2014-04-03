@@ -755,7 +755,7 @@ function validateSave() {
 
 		if ((!fLinked) && (fHasParents)) {
 			fValid = false;
-			OpenHR.messageBox("Unable to save record, a link must be made with the parent table.", vbExclamation + vbOKOnly, "OpenHR Intranet");
+			OpenHR.messageBox("Unable to save record, a link must be made with the parent table.", vbExclamation + vbOKOnly, "OpenHR");
 		}
 	}
 
