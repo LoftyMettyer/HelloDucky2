@@ -737,15 +737,17 @@ End If
 		//jqGrid style overrides
 		$('#gview_grdReport tr.jqgrow td').css('vertical-align', 'top'); //float text to top, in case of multi-line cells
 		$('#gview_grdReport tr.footrow td').css('vertical-align', 'top'); //float text to top, in case of multi-line footers
+		$('#gview_grdReport .s-ico span').css('display', 'none'); //hide the sort order icons - they don't tie in to the dataview model.
 		$("#gview_grdReport > .ui-jqgrid-titlebar").text("<%=objReport.ReportCaption%>"); //Activate title bar for the grid as this will then go naturally into the print functionality.
 		$("#gview_grdReport > .ui-jqgrid-titlebar").height("20px"); //no title bar; this is in the dialog title
 		$("#gview_grdReport .ui-jqgrid-titlebar").show();
+		
+		<%If objReport.mblnCustomReportsSummaryReport Then%>
+			$('#gview_grdReport .tree-wrap-ltr').css('display', 'none');	//hide the expand/retract node for summary reports.
+		<%End If%>
 	}
-
-	if (menu_isSSIMode()) $('#gbox_grdReport').css('margin', '0 auto'); //center the report in self-service screen.	
-	
 	<%End If%>
-	
+	if (menu_isSSIMode()) $('#gbox_grdReport').css('margin', '0 auto'); //center the report in self-service screen.	
 </script>
 
 <form action="util_run_customreport_downloadoutput" method="post" id="frmExportData" name="frmExportData" target="submit-iframe">
