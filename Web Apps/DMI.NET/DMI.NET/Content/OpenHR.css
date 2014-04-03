@@ -764,7 +764,16 @@ header {
 			margin-right: 10px;
 		}
 
-.verticalpadding200 { height: 20%;}
+.verticalpadding200 {
+	height: 150px;
+	display: none;
+}
+
+@media screen and (min-height: 700px) {
+	.verticalpadding200 {
+		display: block;
+	}
+}
 
 .accordion h3 {
 	margin: 0px;

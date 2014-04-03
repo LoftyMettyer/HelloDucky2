@@ -12,6 +12,8 @@
 	<div class="ui-dialog-titlebar ui-widget-header loginTitleBar">
 		<img alt="about OpenHR" title="About OpenHR Web" src="<%= Url.Content("~/Content/images/help32.png")%>" />
 	</div>
+	
+	<div class="verticalpadding200"></div>
 						
 	<div class="ui-widget-content ui-corner-tl ui-corner-br loginframe">
 
