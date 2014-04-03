@@ -140,38 +140,34 @@ Namespace Controllers
 
 		' GET: /Account/Login
 		Function Login() As ActionResult
+			Try
 
-			Dim objServerSession As HR.Intranet.Server.SessionInfo = Session("sessionContext")
+				Dim objServerSession As HR.Intranet.Server.SessionInfo = Session("sessionContext")
 
-			Session("ErrorText") = Nothing
+				Session("ErrorText") = Nothing
 
-			' Are we already logged in on the session?
-			If Not objServerSession Is Nothing Then
-				If objServerSession.ActiveConnections > 0 Then
-					objServerSession.ActiveConnections += 1
-					Return RedirectToAction("Main", "Home", New With {.SSIMode = ViewBag.SSIMode})
+				' Are we already logged in on the session?
+				If Not objServerSession Is Nothing Then
+					If objServerSession.ActiveConnections > 0 Then
+						objServerSession.ActiveConnections += 1
+						Return RedirectToAction("Main", "Home", New With {.SSIMode = ViewBag.SSIMode})
+					End If
 				End If
-			End If
 
-			Session("action") = ""
-			Session("selectSQL") = ""
-			Session("filterSQL") = ""
-			Session("filterDef") = ""
-			Session("optionAction") = ""
-			' Session("server") = ""
+				Session("action") = ""
+				Session("selectSQL") = ""
+				Session("filterSQL") = ""
+				Session("filterDef") = ""
+				Session("optionAction") = ""
+				' Session("server") = ""
 
-			Session("showLoginDetails") = Request.QueryString("Details")
-			Session("isMobileDevice") = (Platform.IsMobileDevice() = True)
+				Session("showLoginDetails") = Request.QueryString("Details")
+				Session("isMobileDevice") = (Platform.IsMobileDevice() = True)
 
-			'TODO??
-			' Clear out any session objects.
-			'For Each sessitem in Session.Contents
-			'	If TypeOf Session.Contents(sessitem) Is Object Then
-			'		Session.Contents(sessitem) = Nothing
-			'		Session.Contents(sessitem) = ""
-			'		Session.Contents.Remove(sessitem)
-			'	End If
-			'Next 
+			Catch ex As Exception
+				Session("ErrorText") = FormatError(ex.Message)
+				Return RedirectToAction("Loginerror")
+			End Try
 
 			Session("dfltTempMenuFilePath") = "<NONE>"
 
