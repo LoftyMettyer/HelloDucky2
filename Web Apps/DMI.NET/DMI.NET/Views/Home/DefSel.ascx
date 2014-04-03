@@ -11,6 +11,7 @@
 	Dim SelectedTableID As String = Request.Form("SelectedTableID")
 	Dim fGotId As Boolean
 	Dim sTemp As String
+	Dim iBaseTableID As Integer
 
 	Dim objSession As SessionInfo = CType(Session("sessionContext"), SessionInfo)
 	Dim objDataAccess As New clsDataAccess(objSession.LoginInfo)
@@ -67,32 +68,26 @@ Session("fromMenu") = 0
 
 	If Session("singleRecordID") < 1 Then
 		If Not String.IsNullOrEmpty(Request.Form("txtTableID")) Then
-			Session("utilTableID") = Request.Form("txtTableID")
+			iBaseTableID = Request.Form("txtTableID")
 		Else
 
 			If Len(Session("tableID")) > 0 Then
 				If CLng(Session("tableID")) > 0 Then
-					Session("utilTableID") = Session("tableID")
+					iBaseTableID = Session("tableID")
 					fGotId = True
 				End If
 			End If
 
 			If fGotId = False Then
 				If (Session("singleRecordID") > 0) Then
-					Session("utilTableID") = Session("Personnel_EmpTableID")
-				Else
-					If (Session("Personnel_EmpTableID") > 0) Then
-						Session("utilTableID") = Session("Personnel_EmpTableID")
-					Else
-						Session("utilTableID") = 0
-					End If
+					iBaseTableID = Session("Personnel_EmpTableID")
 				End If
 			End If
 		End If
 	Else
 		If Len(Session("tableID")) > 0 Then
-			Session("utilTableID") = Session("tableID")
-		End If		
+			iBaseTableID = Session("tableID")
+		End If
 	End If
 	
 	If CStr(Session("optionDefSelType")) <> "" Then
@@ -104,7 +99,7 @@ Session("fromMenu") = 0
 	If Session("singleRecordID") = 0 Then
 		If CStr(Session("optionTableID")) <> "" Then
 			If Session("optionTableID") > 0 Then
-				Session("utilTableID") = Session("optionTableID")
+				iBaseTableID = Session("optionTableID")
 			End If
 		End If
 		Session("tableID") = Session("utilTableID")
@@ -113,16 +108,8 @@ Session("fromMenu") = 0
 	Session("optionDefSelType") = ""
 	Session("optionTableID") = ""
 	
-	If CStr(Session("utilTableID")) = "" Then
-		Session("utilTableID") = 0
-	End If
-
-	If (Session("defseltype") <> UtilityType.utlPicklist) And (Session("defseltype") <> UtilityType.utlFilter) And (Session("defseltype") <> UtilityType.utlCalculation) Then
-		If Session("singleRecordID") < 1 Then
-			Session("utilTableID") = 0
-		End If
-	Else
-		Session("utilTableID") = Session("Personnel_EmpTableID")
+	If (Session("defseltype") = UtilityType.utlPicklist) Or (Session("defseltype") = UtilityType.utlFilter) Or (Session("defseltype") = UtilityType.utlCalculation) Then
+		iBaseTableID = CInt(Session("utilTableID"))
 	End If
 %>
 
@@ -937,47 +924,36 @@ Session("fromMenu") = 0
 																				<td width="10">&nbsp;
 																				</td>
 																				<td width="175">
-																						<select id="selectTable" name="selectTable" class="combo" style="height: 22px; width: 200px" onchange="javascript:$('#SelectedTableID').val(($('#selectTable').val()));" >
+																						<select id="selectTable" name="selectTable" class="combo" style="height: 22px; width: 200px" >
 																								<%
-																										On Error Resume Next
 	
+																									Try
 
-																									If (Len(sErrorDescription) = 0) Then
-																																																			
-																										Err.Clear()
-																										Dim rstTableRecords = objDataAccess.GetDataTable("sp_ASRIntGetTables", CommandType.StoredProcedure)
-
-																										If (Err.Number <> 0) Then
-																											sErrorDescription = "The table records could not be retrieved." & vbCrLf & FormatError(Err.Description)
-																										End If
-
-																										If (Len(sErrorDescription) = 0) Then
-																											For Each objRow In rstTableRecords.Rows
+																										For Each objTable In objSession.Tables
 																												
-																												Response.Write("						<option value=" & objRow(0))
-																												If SelectedTableID Is Nothing Or SelectedTableID = "" Then
-																													If objRow(0) = CLng(Session("utilTableID")) Then
-																														Response.Write(" SELECTED")
-																													End If
-																												Else
-																													If objRow(0) = CLng(SelectedTableID) Then
-																														Response.Write(" SELECTED")
-																													End If
+																											Response.Write("						<option value=" & objTable.ID)
+																											If SelectedTableID Is Nothing Or SelectedTableID = "" Then
+																												If objTable.ID = iBaseTableID Then
+																													Response.Write(" SELECTED")
 																												End If
+																											Else
+																												If objTable.ID = CLng(SelectedTableID) Then
+																													Response.Write(" SELECTED")
+																												End If
+																											End If
 
-																												Response.Write(">" & Replace(CStr(objRow(1)), "_", " ") & "</option>" & vbCrLf)
+																											Response.Write(">" & Replace(objTable.Name, "_", " ") & "</option>" & vbCrLf)
 
-																											Next
-					
-																										End If
+																										Next
+				
+																									Catch ex As Exception
+																										sErrorDescription = "The table records could not be retrieved." & vbCrLf & ex.Message
 
-																									End If
+																									End Try
 																								%>
 																						</select>
 																				</td>
-																				<td width="10">
-																						<input type="button" value="Go" id="btnGoTable" name="btnGoTable" class="btn" onclick="ToggleCheck();" />
-																				</td>
+
 																				<td>&nbsp;
 																				</td>
 																		</tr>
@@ -1000,31 +976,27 @@ Session("fromMenu") = 0
 																							If Len(sErrorDescription) = 0 Then
 																																															
 																								' Get the records.
-																								Dim prmType = New SqlParameter("intType", SqlDbType.Int)
-																								prmType.Direction = ParameterDirection.Input
-																								prmType.Value = CleanNumeric(Session("defseltype"))
+																								Try
+																																																	
+																									Dim prmType = New SqlParameter("intType", SqlDbType.Int)
+																									prmType.Direction = ParameterDirection.Input
+																									prmType.Value = CleanNumeric(Session("defseltype"))
 																																															
-																								Dim prmOnlyMine = New SqlParameter("blnOnlyMine", SqlDbType.Bit)
-																								prmOnlyMine.Direction = ParameterDirection.Input
-																								prmOnlyMine.Value = CleanBoolean(Session("OnlyMine"))
+																									Dim prmOnlyMine = New SqlParameter("blnOnlyMine", SqlDbType.Bit)
+																									prmOnlyMine.Direction = ParameterDirection.Input
+																									prmOnlyMine.Value = CleanBoolean(Session("OnlyMine"))
 
-																								Dim prmTableId = New SqlParameter("intTableID", SqlDbType.Int)
-																								prmTableId.Direction = ParameterDirection.Input
+																									Dim prmTableId = New SqlParameter("intTableID", SqlDbType.Int)
+																									prmTableId.Direction = ParameterDirection.Input
 																							
-																								If CleanNumeric(Request.Form("SelectedTableID")) = 0 Then
-																									prmTableId.Value = CleanNumeric(Session("utilTableID"))
-																								Else
-																									prmTableId.Value = CleanNumeric(Request.Form("SelectedTableID"))
-																								End If
+																									If CleanNumeric(Request.Form("SelectedTableID")) = 0 Then
+																										prmTableId.Value = iBaseTableID
+																									Else
+																										prmTableId.Value = CleanNumeric(Request.Form("SelectedTableID"))
+																									End If
 
-																								Err.Clear()
-																								Dim rstDefSelRecords = objDataAccess.GetDataTable("sp_ASRIntPopulateDefSel", CommandType.StoredProcedure, prmType, prmOnlyMine, prmTableId)
-																																													
-																								If (Err.Number <> 0) Then
-																									sErrorDescription = "The Defsel records could not be retrieved." & vbCrLf & FormatError(Err.Description)
-																								End If
-																									 
-																								If Len(sErrorDescription) = 0 Then
+																									Dim rstDefSelRecords = objDataAccess.GetDataTable("sp_ASRIntPopulateDefSel", CommandType.StoredProcedure, prmType, prmOnlyMine, prmTableId)
+																																												
 																									' Instantiate and initialise the grid. 
 																									Response.Write("<table class='outline' style='width : 100%; ' id='DefSelRecords'>" & vbCrLf)
 																									Response.Write("<tr class='header'>" & vbCrLf)
@@ -1071,15 +1043,18 @@ Session("fromMenu") = 0
 																										Next
 
 																										Response.Write("</tr>")
-																										lngRowCount = lngRowCount + 1
+																										lngRowCount += 1
 																
 																									Next
 
 																									Response.Write("</table>")
 						
 																									Response.Write("<input type='hidden' value='" & lngRowCount & "' id='DefSelRecordsCount'>")	'Store the number of records so we can use it later
-																								End If
-							
+																									
+																								Catch ex As Exception
+																									sErrorDescription = "The Defsel records could not be retrieved." & vbCrLf & ex.Message
+																								End Try
+
 																							End If
 																						%>
 	 
@@ -1250,7 +1225,7 @@ Session("fromMenu") = 0
 				<input type="hidden" id="utilid" name="utilid" value='<%=Session("utilid")%>'>
 				<input type="hidden" id="utilname" name="utilname">
 				<input type="hidden" id="action" name="action">
-				<input type="hidden" id="txtTableID" name="txtTableID" value='<%=session("utilTableID")%>'>
+				<input type="hidden" id="txtTableID" name="txtTableID" value='<%=iBaseTableID%>'>
 				<input type="hidden" id="txtSingleRecordID" name="txtSingleRecordID" value='<%=session("singleRecordID")%>'>
 </div>
 		</form>
@@ -1272,7 +1247,7 @@ Session("fromMenu") = 0
 
 		<form action="defsel" method="post" id="frmOnlyMine" name="frmOnlyMine" style="visibility: hidden; display: none">
 				<input type="hidden" id="OnlyMine" name="OnlyMine" value='<%=Session("OnlyMine")%>'>
-				<input type="hidden" id="txtTableID" name="txtTableID" value='<%=Session("utilTableID")%>'>
+				<input type="hidden" id="txtTableID" name="txtTableID" value='<%=iBaseTableID%>'>
 				<input type="hidden" id="SelectedTableID" name="SelectedTableID">
 		</form>
 
@@ -1315,6 +1290,13 @@ Session("fromMenu") = 0
 				$("#DefSelRecords").jqGrid('setSelection', id);
 		}
 		catch(e) {}
+	});
+
+	$(function () {
+		$("#selectTable").change(function () {
+			$('#SelectedTableID').val(($('#selectTable').val()));
+			ToggleCheck();
+		});
 	});
 		
 </script>

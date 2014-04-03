@@ -409,6 +409,7 @@ Namespace Controllers
 			Session("WordFormatDefaultIndex") = 1
 			Session("ExcelFormatDefaultIndex") = 1
 			Session("OfficeSaveAsValues") = ""
+			Session("utilTableID") = Session("Personnel_EmpTableID")
 
 			Dim lngSSIWelcomeColumnID = CLng(objDatabase.GetModuleParameter("MODULE_PERSONNEL", "Param_FieldsSSIWelcome"))
 			If lngSSIWelcomeColumnID <= 0 Then lngSSIWelcomeColumnID = 0

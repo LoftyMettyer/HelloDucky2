@@ -880,7 +880,10 @@ Namespace Controllers
 
 		<HttpPost()>
 		Function DefSel(value As FormCollection)
+
+			Session("utilTableID") = CInt(Request.Form("txtTableID"))
 			Return View()
+
 		End Function
 
 		<HttpPost()>

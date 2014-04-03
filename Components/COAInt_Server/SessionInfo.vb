@@ -20,7 +20,7 @@ Public Class SessionInfo
 	Friend BankHolidayModule As modBankHolidaySpecifics
 	Friend PersonnelModule As modPersonnelSpecifics
 
-	Friend Tables As ICollection(Of Table)
+	Public Tables As ICollection(Of Table)
 	public Columns As ICollection(Of Column)
 	Friend Relations As List(Of Relation)
 

@@ -218,14 +218,9 @@ IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[sp_ASRIntG
 	DROP PROCEDURE [dbo].[sp_ASRIntGetTrainingBookingParameters]
 GO
 
-IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[sp_ASRIntGetUserGroup]') AND type in (N'P', N'PC'))
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[sp_ASRIntGetUserGroup]') AND type in (N'P', N'PC'))
 	DROP PROCEDURE [dbo].[sp_ASRIntGetUserGroup]
 GO
-
-IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[spASRIntGetUserGroup]') AND type in (N'P', N'PC'))
-	DROP PROCEDURE [dbo].[spASRIntGetUserGroup]
-GO
-
 
 CREATE PROCEDURE dbo.spASRDatabaseStatus (
 	@message	nvarchar(MAX) OUTPUT)
@@ -879,10 +874,6 @@ GO
 
 /****** Object:  StoredProcedure [dbo].[sp_ASRIntGetTablesInfo]    Script Date: 23/07/2013 11:18:30 ******/
 DROP PROCEDURE [dbo].[sp_ASRIntGetTablesInfo]
-GO
-
-/****** Object:  StoredProcedure [dbo].[sp_ASRIntGetTables]    Script Date: 23/07/2013 11:18:30 ******/
-DROP PROCEDURE [dbo].[sp_ASRIntGetTables]
 GO
 
 /****** Object:  StoredProcedure [dbo].[sp_ASRIntGetTableOrders]    Script Date: 23/07/2013 11:18:30 ******/
@@ -14906,24 +14897,6 @@ BEGIN
 			AND ASRSysOrders.[type] = 1
 		ORDER BY name;
 	END
-END
-GO
-
-/****** Object:  StoredProcedure [dbo].[sp_ASRIntGetTables]    Script Date: 23/07/2013 11:18:30 ******/
-SET ANSI_NULLS ON
-GO
-
-SET QUOTED_IDENTIFIER ON
-GO
-
-CREATE PROCEDURE [dbo].[sp_ASRIntGetTables] AS
-BEGIN
-
-	SET NOCOUNT ON;
-
-	SELECT tableID, tableName
-		FROM [dbo].[ASRSysTables]
-		ORDER BY tableName;
 END
 GO
 
@@ -41255,10 +41228,6 @@ GO
 DROP PROCEDURE [dbo].[sp_ASRIntGetTableScreensMenu]
 GO
 
-/****** Object:  StoredProcedure [dbo].[sp_ASRIntGetTables]    Script Date: 13/09/2013 08:59:32 ******/
-DROP PROCEDURE [dbo].[sp_ASRIntGetTables]
-GO
-
 /****** Object:  StoredProcedure [dbo].[sp_ASRIntGetTableOrders]    Script Date: 13/09/2013 08:59:32 ******/
 DROP PROCEDURE [dbo].[sp_ASRIntGetTableOrders]
 GO
@@ -64568,26 +64537,6 @@ END
 
 GO
 
-/****** Object:  StoredProcedure [dbo].[sp_ASRIntGetTables]    Script Date: 13/09/2013 08:59:34 ******/
-SET ANSI_NULLS ON
-GO
-
-SET QUOTED_IDENTIFIER ON
-GO
-
-
-CREATE PROCEDURE [dbo].[sp_ASRIntGetTables] AS
-BEGIN
-
-	SET NOCOUNT ON;
-
-	SELECT tableID, tableName
-		FROM [dbo].[ASRSysTables]
-		ORDER BY tableName;
-END
-
-GO
-
 /****** Object:  StoredProcedure [dbo].[sp_ASRIntGetTableScreensMenu]    Script Date: 13/09/2013 08:59:34 ******/
 SET ANSI_NULLS ON
 GO
@@ -77450,6 +77399,10 @@ GO
 
 IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[sp_ASRIntCheckPolls]') AND xtype in (N'P'))
 	DROP PROCEDURE [dbo].[sp_ASRIntCheckPolls]
+GO
+
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[sp_ASRIntGetTables]') AND type in (N'P'))
+	DROP PROCEDURE [dbo].[sp_ASRIntGetTables]
 GO
 
 
