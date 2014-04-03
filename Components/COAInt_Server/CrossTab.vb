@@ -2127,7 +2127,7 @@ LocalErr:
 
 		Dim sReturnValue As String
 
-		sReturnValue = Left(Trim(sHeading), 100)
+		sReturnValue = sHeading
 		'sReturnValue = Replace(sReturnValue, vbTab, "")
 		sReturnValue = Replace(sReturnValue, Chr(10), "")
 		sReturnValue = Replace(sReturnValue, Chr(13), "")

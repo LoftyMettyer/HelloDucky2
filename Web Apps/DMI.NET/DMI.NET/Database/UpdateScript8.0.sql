@@ -528,7 +528,7 @@ BEGIN
 		execute sp_ASR_AbsenceBreakdown_Calculate @pfDuration OUTPUT, @pdblMon OUTPUT, @pdblTue OUTPUT, @pdblWed OUTPUT, @pdblThu OUTPUT, @pdblFri OUTPUT, @pdblSat OUTPUT, @pdblSun OUTPUT, @pdTempStartDate, @pcTempStartSession, @pdTempEndDate, @pcTempEndSession, @piParentID
 
 		/* Strip out dodgy characters */
-		set @pcRecordDescription = replace(@pcRecordDescription,'''','')
+		set @pcRecordDescription = replace(@pcRecordDescription,'''','''''')
 		set @pcType = replace(@pcType,'''','')
 
 		/* Add Mondays records */
