@@ -325,18 +325,6 @@
 				abMainMenu.Refresh();
 			}
 			catch(e) {}			
-				
-			// Adjust the framset dimensions to suit the size of the menu.
-			/*lngMenuHeight = abMainMenu.Bands("mnubandMainToolBar").height;
-			sTemp = new String(lngMenuHeight);
-			if(frmUseful.txtIEVersion.value >= 5.5) 
-			{
-				window.parent.document.all.item("mainframeset").rows = "*, " + sTemp;
-			}
-			else 
-			{
-				window.parent.document.all.item("mainframeset").rows = "*, 0";
-			}*/
 		}
 	}
 

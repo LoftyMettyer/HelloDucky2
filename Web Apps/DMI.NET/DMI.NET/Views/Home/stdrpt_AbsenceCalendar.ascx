@@ -140,7 +140,7 @@
 
 		function PrintGrid() {
 
-			var divToPrint = document.all.item('optionframe').innerHTML;
+			var divToPrint = document.childNodes.item('optionframe').innerHTML;
 			var newWin = window.open("", "_blank", 'toolbar=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=1, height=1, visible=none', "");
 						
 			newWin.document.write("<link href=\"" + window.ROOT + "Content/OpenHR.css" + "\" rel=\"stylesheet\" />");
