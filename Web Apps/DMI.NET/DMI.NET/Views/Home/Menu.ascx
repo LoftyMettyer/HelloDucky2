@@ -418,6 +418,12 @@
 		if (accordionFontSize != ""){
 			$(".accordion").css("font-size", accordionFontSize);
 		}
+
+		//add tooltips for all context menu items.
+		$('.ContextMenu-content .ui-menu-item').each(function() {
+			$(this).attr('title', $(this).text().trim());
+		});
+
 	}
 
 	$(document).ready(function() {

@@ -5,6 +5,7 @@ BODY
 {    
 		/*COLOR: black;*/
 	color: #2e6e9e;
+	bottom: 0!important;
 
 		/*FONT-FAMILY: Verdana, Tahoma, 'MS Sans Serif';*/
 }
@@ -505,22 +506,22 @@ table.calendarcell
 
 
 #menuframe {
-	/*height: 100%;*/
+	position: absolute;
+	top: 170px;
+	width: 350px;
+	bottom: 0;
+	left: 0;
 	
 }
 
 
 .ContextMenu-panel {
-		 /*padding:20px;*/
-		 width: 350px;	       
-	/*border-right: 1px;
-	border-right-color: #29216d;*/
-	 /*background: white;*/
-	/*border-right-style: solid;*/
+		 /*width: 350px;	       
 		 position:absolute;
 		 top:170px;
 		 bottom: 0px;
-		 left:0px;
+		 left:0px;*/
+		 height: 100%;
 		 z-index: 99;
 		 opacity: 1;
 		 /*overflow-y: auto;*/

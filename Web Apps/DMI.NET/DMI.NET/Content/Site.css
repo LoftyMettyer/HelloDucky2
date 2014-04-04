@@ -25,6 +25,8 @@ body
 
 header { display: none;}
 
+#Microsoft_Licensed_Class_Manager_1_0 { display: none;}
+
 footer,
 nav,
 section {
@@ -48,6 +50,8 @@ section {
 .DMI #workframeset {
 	overflow: auto;
 }
+
+.DMI #menuframe {display: block;}
 
 #workframe { /*height: 100%;*/}
 
