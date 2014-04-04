@@ -4828,7 +4828,7 @@ function menu_loadSelectOrderFilter(psType) {
 } else {
 	$("#" + itemId + " a:first").attr("disabled", "disabled");
 	$("#" + itemId + " a:first").css({
-	fontWeight: "lighter",
+	color: "lightgrey",
 	cursor: "default"
 });
 }
