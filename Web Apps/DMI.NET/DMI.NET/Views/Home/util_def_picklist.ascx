@@ -447,9 +447,10 @@
 					sErrMsg = "'" & Session("utilname") & "' " & prmErrMsg.Value
 				Else
 				
-					Response.Write("<input type='hidden' id='txtDefn_Name' name='txtDefn_Name' value='" & Replace(prmName.Value.ToString(), """", "&quot;") & "'>" & vbCrLf)
-					Response.Write("<input type='hidden' id='txtDefn_Owner' name='txtDefn_Owner' value='" & Replace(prmOwner.Value.ToString(), """", "&quot;") & "'>" & vbCrLf)
-					Response.Write("<input type='hidden' id='txtDefn_Description' name='txtDefn_Description' value='" & Replace(prmDescription.Value.ToString(), """", "&quot;") & "'>" & vbCrLf)
+					'Response.Write("<input type='hidden' id='txtDefn_Name' name='txtDefn_Name' value='" & Replace(prmName.Value.ToString(), """", "&quot;") & "'>" & vbCrLf)
+					Response.Write("<input type='hidden' id=txtDefn_Name name=txtDefn_Name value=""" & Replace(prmName.Value.ToString(), """", "&quot;") & """>" & vbCrLf)
+					Response.Write("<input type='hidden' id='txtDefn_Owner' name='txtDefn_Owner' value=""" & Replace(prmOwner.Value.ToString(), """", "&quot;") & """>" & vbCrLf)
+					Response.Write("<input type='hidden' id='txtDefn_Description' name='txtDefn_Description' value=""" & Replace(prmDescription.Value.ToString(), """", "&quot;") & """>" & vbCrLf)
 					Response.Write("<input type='hidden' id='txtDefn_Access' name='txtDefn_Access' value='" & prmAccess.Value & "'>" & vbCrLf)
 					Response.Write("<input type='hidden' id='txtDefn_Timestamp' name='txtDefn_Timestamp' value='" & prmTimestamp.Value & "'>" & vbCrLf)
 				End If
