@@ -305,7 +305,6 @@ function menu_abMainMenu_Click(pTool) {
 	return true;
 }
 
-
 function menu_MenuClick(sTool) {
 
 	window.clearTimeout(window.timeoutHandle);
@@ -351,7 +350,21 @@ function menu_MenuClick(sTool) {
 
 	// Fixed Links ---------------------------------------------------------------------------------------------------
 
-	if (sToolName == "mnutoolFixedSelfService") { // This already has an href target defined in fixedlinks. No action here
+	if (sToolName == "mnutoolFixedSelfService") { 
+		hasChanged = menu_saveChanges(sToolName, true, false);
+		if (hasChanged == 0) { // Prompt for navigation
+
+			OpenHR.modalPrompt("You have made changes. Click 'OK' to discard your changes, or 'Cancel' to continue editing.", 1, "Confirm").then(function (answer) {
+				if (answer == 1) { // OK
+					window.location.href = "Main?SSIMode=True";
+					return false;
+				} else {
+					return false;
+				}
+			});
+		} else {
+			window.location.href = "Main?SSIMode=True";
+		}
 		return false;
 	}
 
@@ -359,7 +372,21 @@ function menu_MenuClick(sTool) {
 		return false;
 	}
 
-	if (sToolName == "mnutoolFixedOpenHR") { // This already has an href target defined in fixedlinks. No action here
+	if (sToolName == "mnutoolFixedOpenHR") { 
+		hasChanged = menu_saveChanges(sToolName, true, false);
+		if (hasChanged == 0) { // Prompt for navigation
+
+			OpenHR.modalPrompt("You have made changes. Click 'OK' to discard your changes, or 'Cancel' to continue editing.", 1, "Confirm").then(function (answer) {
+				if (answer == 1) { // OK
+					window.location.href = "Main?SSIMode=False";
+					return false;
+				} else {
+					return false;
+				}
+			});
+		} else {
+			window.location.href = "Main?SSIMode=False";
+		}
 		return false;
 	}
 

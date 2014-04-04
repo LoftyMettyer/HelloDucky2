@@ -109,14 +109,16 @@
 					<ul>
 						<li><span>&nbsp;   </span><%-- Fixed Links value removed By mayank to avoide duplicasy--%>
 							<div id="mnutoolFixedSelfService" class="button">
-									<a href="<%: Url.Action("Main", "Home", New With {.SSIMode = vbTrue})%>" rel="table" title="Self-service">
+								<a href="#" rel="table" title="Self Service">
+<%--									<a href="<%: Url.Action("Main", "Home", New With {.SSIMode = vbTrue})%>" rel="table" title="Self-service">--%>
 								<img src="<%: Url.Content("~/Scripts/officebar/winkit/abssmall.png")%>" alt="" />
 									<i class="icon-user"></i>
 										<h6>Self-service</h6>
 									</a>
 							</div>
 							<div id="mnutoolFixedOpenHR" class="button">
-								<a href="<%: Url.Action("Main", "Home", New With {.SSIMode = vbFalse})%>" rel="table" title="OpenHR Web">
+								<a href="#" rel="table" title="OpenHR Web">
+								<%--<a href="<%: Url.Action("Main", "Home", New With {.SSIMode = vbFalse})%>" rel="table" title="OpenHR Web">--%>
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/abssmall.png") %>" alt="" />
 									<i class="icon-group"></i>
 									<h6>OpenHR<br />Web</h6>
