@@ -3386,10 +3386,10 @@ CheckRecordSet_ERROR:
 			End If
 
 			If Not mblnCustomReportsSummaryReport Then
-				If fHasAverage Or fHasCount Or fHasTotal Then
-					NEW_AddToArray_Data(RowType.Data, "")
-					mintPageBreakRowIndex = mintPageBreakRowIndex + 1
-				End If
+				'If fHasAverage Or fHasCount Or fHasTotal Then
+				NEW_AddToArray_Data(RowType.Data, "")
+				mintPageBreakRowIndex = mintPageBreakRowIndex + 1
+				'End If
 			End If
 
 		Else

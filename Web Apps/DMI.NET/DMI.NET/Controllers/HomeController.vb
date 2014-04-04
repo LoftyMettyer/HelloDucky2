@@ -3000,7 +3000,7 @@ Namespace Controllers
 								ClientDLL.ArrayReDim()
 
 								For lngCount = 0 To UBound(arrayVisibleColumns, 2)
-									ClientDLL.ArrayAddTo(lngCol, lngActualRow, objRow.Item(lngCount + 1).ToString())
+									ClientDLL.ArrayAddTo(lngCol, lngActualRow, objRow.Item(lngCount + 2).ToString())
 									lngCol += 1
 								Next
 
