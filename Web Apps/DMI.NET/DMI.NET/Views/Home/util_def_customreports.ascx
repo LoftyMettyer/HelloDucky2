@@ -1217,7 +1217,7 @@
 																				</td>
 																				<td width="30" nowrap>&nbsp;</td>
 																				<td style="width: 15%">&nbsp;</td>
-																				<td style="width: 25%; text-align: left; white-space: nowrap">Printer location : </td>
+																				<td style="width: 25%; text-align: left; white-space: nowrap" class="ui-state-error-text">Printer location : </td>
 																				<td style="width: 100%">
 																					<select id="cboPrinterName" name="cboPrinterName" class="combo"
 																						style="width: 100%"

@@ -88,11 +88,10 @@ function util_def_mailmerge_window_onload() {
 					$('#cmdCancel').hide();
 
 
-					//Check that the specified printer exists on this client machine.
+					// Check that the specified printer exists on this client machine.
 					if ((frmDefinition.optDestination0.checked == true) && (frmUseful.txtAction.value.toUpperCase() != "NEW")) {
 							if (frmOriginalDefinition.txtDefn_OutputPrinterName.value != "") {
 									if (frmDefinition.cboPrinterName.options(frmDefinition.cboPrinterName.options.selectedIndex).text != frmOriginalDefinition.txtDefn_OutputPrinterName.value) {
-											OpenHR.messageBox("This definition is set to output to printer " + frmOriginalDefinition.txtDefn_OutputPrinterName.value + " which is not set up on your PC.");
 											oOption = document.createElement("OPTION");
 											frmDefinition.cboPrinterName.options.add(oOption);
 											oOption.innerText = frmOriginalDefinition.txtDefn_OutputPrinterName.value;
@@ -3690,16 +3689,69 @@ function chkSave_Click() {
 				frmDefinition.txtSaveFile.value = "";
 		}
 }
-function chkOutputPrinter_Click() {
-		var blnDisabled;
 
-		blnDisabled = (frmDefinition.chkOutputPrinter.checked == false);
-		combo_disable(frmDefinition.cboPrinterName, blnDisabled);
-		text_disable(frmDefinition.txtSaveFile, true);
+function populatePrinters() {
 
-		if (blnDisabled == true) {
-				frmDefinition.cboPrinterName.selectedIndex = 0;
+	var strCurrentPrinter = '';
+	if (frmDefinition.cboPrinterName.selectedIndex > 0) {
+		strCurrentPrinter = frmDefinition.cboPrinterName.options[frmDefinition.cboPrinterName.selectedIndex].innerText;
+	}
+
+	frmDefinition.cboPrinterName.length = 0;
+	var oOption = document.createElement("OPTION");
+	frmDefinition.cboPrinterName.options.add(oOption);
+	oOption.innerText = "<Default Printer>";
+	oOption.value = 0;
+
+	for (var iLoop = 0; iLoop < OpenHR.PrinterCount() ; iLoop++) {
+
+		oOption = document.createElement("OPTION");
+		frmDefinition.cboPrinterName.options.add(oOption);
+		oOption.innerText = OpenHR.PrinterName(iLoop);
+		oOption.value = iLoop + 1;
+
+		if (oOption.innerText == strCurrentPrinter) {
+			frmDefinition.cboPrinterName.selectedIndex = iLoop + 1;
 		}
+	}
+	
+	if (strCurrentPrinter != '') {
+		if (frmDefinition.cboPrinterName.options(frmDefinition.cboPrinterName.selectedIndex).innerText != strCurrentPrinter) {
+			oOption = document.createElement("OPTION");
+			frmDefinition.cboPrinterName.options.add(oOption);
+			oOption.innerText = strCurrentPrinter;
+			oOption.value = frmDefinition.cboPrinterName.options.length - 1;
+			frmDefinition.cboPrinterName.selectedIndex = oOption.value;
+		}
+	}
+}
+
+function chkOutputPrinter_Click() {
+
+	text_disable(frmDefinition.txtSaveFile, true);
+
+	if (frmDefinition.chkOutputPrinter.checked == true) {
+		populatePrinters();
+		combo_disable(frmDefinition.cboPrinterName, true);  // Always disable
+	}
+	else {
+		frmDefinition.cboPrinterName.length = 0;
+		combo_disable(frmDefinition.cboPrinterName, true);  // Always disable
+	}
+
+	//var blnDisabled;
+
+	//blnDisabled = (frmDefinition.chkOutputPrinter.checked == false);
+	
+		//combo_disable(frmDefinition.cboPrinterName, true); // Always disable
+		//text_disable(frmDefinition.txtSaveFile, true);
+
+		//if (frmDefinition.chkOutputPrinter.checked == false) {
+		//	frmDefinition.cboPrinterName.selectedIndex = -1;
+		//}
+		//if (blnDisabled == true) {
+		//		frmDefinition.cboPrinterName.selectedIndex = 0;
+		//}
 }
 function AccessCode(psDescription) {
 	if (psDescription == "Read / Write") {

@@ -858,7 +858,7 @@ function refreshTab3Controls()
 						if (chkDestination1.checked == true)
 						{
 								populatePrinters();
-								combo_disable(cboPrinterName, (fViewing == true));
+								combo_disable(cboPrinterName, true);  // Always disable
 						}
 						else
 						{
@@ -1001,7 +1001,7 @@ function refreshTab3Controls()
 						if (chkDestination1.checked == true)
 						{
 								populatePrinters();
-								combo_disable(cboPrinterName, (fViewing == true));
+								combo_disable(cboPrinterName, true);  // Always disable
 						}
 						else
 						{
@@ -1061,7 +1061,7 @@ function refreshTab3Controls()
 						if (chkDestination1.checked == true)
 						{
 								populatePrinters();
-								combo_disable(cboPrinterName, (fViewing == true));
+								combo_disable(cboPrinterName, true);  // Always disable
 						}
 						else
 						{
@@ -2100,7 +2100,6 @@ function loadDefinition()
 		if (frmDefinition.chkDestination1.checked == true) {
 				if (frmOriginalDefinition.txtDefn_OutputPrinterName.value != "") {
 						if (frmDefinition.cboPrinterName.options(frmDefinition.cboPrinterName.selectedIndex).innerText != frmOriginalDefinition.txtDefn_OutputPrinterName.value) {
-								OpenHR.messageBox("This definition is set to output to printer "+frmOriginalDefinition.txtDefn_OutputPrinterName.value+" which is not set up on your PC.");
 								var oOption = document.createElement("OPTION");
 								frmDefinition.cboPrinterName.options.add(oOption);
 								oOption.innerText = frmOriginalDefinition.txtDefn_OutputPrinterName.value;
@@ -2131,31 +2130,16 @@ function populatePrinters()
 
 		with (frmDefinition.cboPrinterName)
 		{
-
 				strCurrentPrinter = '';
 				if (selectedIndex > 0) {
 						strCurrentPrinter = options[selectedIndex].innerText;
 				}
-
 
 				length = 0;
 				var oOption = document.createElement("OPTION");
 				options.add(oOption);
 				oOption.innerText = "<Default Printer>";
 				oOption.value = 0;
-
-				//TODO Do this printer loop when we redo asrintrnetFunctions
-				//for (iLoop=0; iLoop<window.parent.frames("menuframe").ASRIntranetFunctions.PrinterCount(); iLoop++)  {
-
-				//    var oOption = document.createElement("OPTION");
-				//    options.add(oOption);
-				//    oOption.innerText = window.parent.frames("menuframe").ASRIntranetFunctions.PrinterName(iLoop);
-				//    oOption.value = iLoop+1;
-
-				//    if (oOption.innerText == strCurrentPrinter) {
-				//        selectedIndex = iLoop+1;
-				//    }
-				//}
 
 				if (strCurrentPrinter != '') {
 						if (frmDefinition.cboPrinterName.options(frmDefinition.cboPrinterName.selectedIndex).innerText != strCurrentPrinter) {

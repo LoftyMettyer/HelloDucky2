@@ -105,7 +105,6 @@ function util_def_calendarreport_window_onload() {
 		if (frmDefinition.chkDestination1.checked == true) {
 			if (frmOriginalDefinition.txtDefn_OutputPrinterName.value != "") {
 				if (frmDefinition.cboPrinterName.options(frmDefinition.cboPrinterName.selectedIndex).innerText != frmOriginalDefinition.txtDefn_OutputPrinterName.value) {
-					OpenHR.messageBox("This definition is set to output to printer " + frmOriginalDefinition.txtDefn_OutputPrinterName.value + " which is not set up on your PC.");
 					var oOption = document.createElement("OPTION");
 					frmDefinition.cboPrinterName.options.add(oOption);
 					oOption.innerText = frmOriginalDefinition.txtDefn_OutputPrinterName.value;
@@ -908,7 +907,7 @@ function refreshTab5Controls() {
 			checkbox_disable(chkDestination1, (fViewing == true));
 			if (chkDestination1.checked == true) {
 				populatePrinters();
-				combo_disable(cboPrinterName, (fViewing == true));
+				combo_disable(cboPrinterName, true); // Always disable
 			} else {
 				cboPrinterName.length = 0;
 				combo_disable(cboPrinterName, true);
@@ -1046,7 +1045,7 @@ function refreshTab5Controls() {
 			checkbox_disable(chkDestination1, (fViewing == true));
 			if (chkDestination1.checked == true) {
 				populatePrinters();
-				combo_disable(cboPrinterName, (fViewing == true));
+				combo_disable(cboPrinterName, true);  // Always disable
 			} else {
 				cboPrinterName.length = 0;
 				combo_disable(cboPrinterName, true);
@@ -1095,7 +1094,7 @@ function refreshTab5Controls() {
 			checkbox_disable(chkDestination1, (fViewing == true));
 			if (chkDestination1.checked == true) {
 				populatePrinters();
-				combo_disable(cboPrinterName, (fViewing == true));
+				combo_disable(cboPrinterName, true);
 			} else {
 				cboPrinterName.length = 0;
 				combo_disable(cboPrinterName, true);

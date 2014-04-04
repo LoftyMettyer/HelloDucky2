@@ -734,7 +734,7 @@
 																							Send to printer</label>
 																					</td>
 																					<%--<td>&nbsp;</td>--%>
-																					<td class="text" style="white-space: nowrap; text-align: left;width: 120px;">Printer location : </td>
+																					<td class="ui-state-error-text" style="white-space: nowrap; text-align: left;width: 120px;">Printer location : </td>
 																					<td style="width: 350px">
 																						<select
 																							style="width: 100%"
