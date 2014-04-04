@@ -1353,7 +1353,7 @@
 		</div>
 	</div>
 
-<div id="documentDisplay">
+<div id="documentDisplay" class="ui-widget-content">
 	<div id="divResize">
 		<img id="splitToggle" src="" alt="Show Document Display"
 			onclick="setDocumentDisplayVisible();" />
