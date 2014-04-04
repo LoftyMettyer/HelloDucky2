@@ -62,6 +62,11 @@
 
 	<%--jQuery Grid Stylesheet--%>
 	<link href="<%: Url.LatestContent("~/Content/ui.jqgrid.css")%>" rel="stylesheet" type="text/css" />
+	
+	<%--Placeholders for theme and layout--%>
+	<link id="layoutLink" href="" rel="stylesheet" type="text/css" />
+	<link id="themeLink" href="" rel="stylesheet" type="text/css" />
+	<link id="WireframethemeLink" href="" rel="stylesheet" type="text/css" />
 
 	<script type="text/javascript">
 		window.onload = function () {
@@ -96,8 +101,8 @@
 					break;
 				case "tiles":
 					$("link[id=layoutLink]").attr({ href: "<%:Url.LatestContent("~/Content/DashboardStyles/layouts/tiles.css")%>" });
-					$("link[id=SSIthemeLink]").attr({ href: "<%:Url.LatestContent("~/Content/themes/jMetro/jquery-ui.min.css")%>" });
-					$("link[id=DMIthemeLink]").attr({ href: "<%:Url.LatestContent("~/Content/themes/jMetro/jquery-ui.min.css")%>" });
+					$("link[id=SSIthemeLink]").attr({ href: "<%:Url.LatestContent("~/Content/themes/start/jquery-ui.min.css")%>" });
+					$("link[id=DMIthemeLink]").attr({ href: "<%:Url.LatestContent("~/Content/themes/start/jquery-ui.min.css")%>" });
 					break;
 				}
 
@@ -127,7 +132,7 @@
 	</script>
 </head>
 
-<body id="bdyMain" name="bdyMain" <%=session("BodyColour")%> leftmargin="20" topmargin="20" bottommargin="20" rightmargin="20">
+<body id="bdyMain" name="bdyMain" <%=session("BodyColour")%> leftmargin="20" topmargin="20" bottommargin="20" rightmargin="20" style="overflow: hidden">
 	<form id="frmPopup" name="frmPopup" onsubmit="return setForm();" style="visibility: hidden; display: none">
 		<input type="hidden" id="txtSelectedID" name="txtSelectedID">
 		<input type="hidden" id="txtSelectedName" name="txtSelectedName">
@@ -137,7 +142,7 @@
 
 	<div style="text-align: center">
 		<h3>Email Groups</h3>
- 	</div>
+	</div>
 	<div style="margin-left: 15px;">
 		<%=GetEmailSelection()%>
 	</div>
