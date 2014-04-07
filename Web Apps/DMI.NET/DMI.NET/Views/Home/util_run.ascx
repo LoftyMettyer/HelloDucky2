@@ -219,7 +219,7 @@
 			</span>
 		</div>
 
-		<div id="main" data-framesource="util_run" style="height: 80%; margin: 0 0 0 0;">
+		<div id="main" data-framesource="util_run" style="height: 80%; margin: 0 0 0 0;overflow: auto;">
 			<%   
 				Dim sPrintButtonLabel As String = "Print"
 				If Session("utiltype") = "1" Then

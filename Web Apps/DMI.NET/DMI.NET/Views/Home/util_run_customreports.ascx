@@ -1,8 +1,8 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
 <%@ Import Namespace="DMI.NET" %>
+<%@ Import Namespace="HR.Intranet.Server.Enums" %>
 <%@ Import Namespace="HR.Intranet.Server" %>
 <%@ Import Namespace="HR.Intranet.Server.Structures" %>
-<%@ Import Namespace="System.Data" %>
 
 <script src="<%: Url.LatestContent("~/bundles/utilities_customreports")%>" type="text/javascript"></script>
 
@@ -10,7 +10,7 @@
 	Dim bBradfordFactor As Boolean
 	Dim mstrCaption As String
 	Dim sErrMsg As String
-		
+	
 	bBradfordFactor = (Session("utiltype") = "16")
 
 	Dim objReport As HR.Intranet.Server.Report
@@ -295,8 +295,6 @@
 		If fok Then fok = fNotCancelled
 	End If
 		
-	
-	' this only needed for report output now.
 	If fok Then
 
 		If fok Then
@@ -315,11 +313,11 @@
 
 	Session("CustomReport") = objReport
 	
+	gridReportData.DataSource = objReport.datCustomReportOutput
+	gridReportData.DataBind()
+		
 	Dim fNoRecords As Boolean
-	Dim sGroupingParams As String = ""
-	Dim jsFooterFunction As String = ""
-	Dim jsSrvFunction As New StringBuilder
-
+		
 	fNoRecords = objReport.NoRecords
 
 	If fok Then
@@ -338,275 +336,78 @@
 			End If
 		End If
 	End If
-
-	
-	If fok Then
-		
-		Dim colNamesArray As New StringBuilder
-		Dim colModelArray As New StringBuilder
-		Dim bGroupWithNext As Boolean
-		Dim bGrouping As Boolean = False
-		Dim sGroupFieldList As String = ""
-		Dim sGroupOrder As String = ""
-		Dim sGroupColumnShowList As String = ""
-		Dim sGroupTextList As String = ""
-		Dim bFooter As Boolean = False
-		Dim sSortString As String = ""
-		Dim arrSortString(objReport.mrstCustomReportsDetails.Rows.Count - 1) As String
-		Dim iColIndex As Integer = 0
-		Dim sGroupCollapse As String = "false"
-		
-		If objReport.mblnCustomReportsSummaryReport = True Then
-			sGroupCollapse = "true"
-		End If
-		
-		' Configure COLUMNS Model for jqGrid
-		For Each objRow As DataRow In objReport.mrstCustomReportsDetails.Rows
-			
-			Dim sColumnHeading As String = objReport.mrstCustomReportsOutput.Columns(iColIndex).ColumnName	' displayname
-			Dim sCodeSafeColumnHeading As String = objRow.Item("columnname").ToString()
-			Dim sFooterText As String = ""
-			Dim isVisibleString As String = ""
-			Dim cellAttributes As String = ""
-			Dim jsSummaryType As New StringBuilder
-			Dim jsSummaryFormatter As String = ""
-			Dim alignment As String = ""
-			
-			colNamesArray.Append(String.Format("{0}'{1}'", IIf(colNamesArray.Length > 0, ",", ""), sColumnHeading))
-		
-			' Report Configuration Options	
-			' keep here; we use the groupwithnext flag.
-			If CBool(objRow.Item("Boc")) Or CBool(objRow.Item("Poc")) Or CBool(objRow.Item("Voc")) Then
-				bGrouping = True
-				sGroupFieldList &= String.Format("{0}'{1}'", IIf(sGroupFieldList.Length > 0, ", ", ""), sColumnHeading)
-				sGroupColumnShowList &= String.Format("{0}{1}", IIf(sGroupColumnShowList.Length > 0, ", ", ""), (bGroupWithNext = False).ToString().ToLower())
-				sGroupTextList &= String.Format("{0}'{{0}}'", IIf(sGroupTextList.Length > 0, ", ", ""))
-				sGroupOrder &= String.Format("{0}'{1}'", IIf(sGroupOrder.Length > 0, ", ", ""), objRow.Item("SortOrder").ToString().Trim().ToLower())
-			End If
-			
-			' Suppress repeated values
-			If CBool(objRow.Item("Srv")) Then
-				jsSrvFunction.Append("var lastValue = $('#grdReport tr:first td:nth-child(" & iColIndex + 1.ToString() & ")').text();")
-				jsSrvFunction.Append("$('#grdReport tr td:nth-child(" & iColIndex + 1.ToString() & ")').each(function () {")
-				jsSrvFunction.Append("if($(this).text() == lastValue) {")
-				jsSrvFunction.Append("	$(this).text('');")
-				jsSrvFunction.Append("}")
-				jsSrvFunction.Append("else {lastValue = $(this).text();}")
-				jsSrvFunction.Append("});")
-			End If
-		
-			If objRow.Item("Hidden") Or bGroupWithNext Then isVisibleString = ", hidden: true"
-			If CBool(objRow.Item("GroupWithNextColumn")) Then cellAttributes = ", cellattr: function (rowId, tv, rawObject, cm, rdata) {return 'style=""white-space: normal;""';}"
-		
-			' Count, Sum, Average functions.
-			Dim decimalPlaces As Integer = NullSafeInteger(objRow.Item("dp"))
-		
-			If CBool(objRow.Item("Avge")) Then
-				jsSummaryFormatter = String.Format("'Sub Average: ' + cellval.totalAvge.toFixed({0})", decimalPlaces)
-				jsFooterFunction &= String.Format("var avge_{0} = Number({1}).toFixed({2});", sCodeSafeColumnHeading, objReport.mrstCustomReportsOutput.Compute("Avg([" & sColumnHeading & "])", ""), decimalPlaces)
-				sFooterText = String.Format("'Average: ' + avge_{0}", sCodeSafeColumnHeading)
-			End If
-			If CBool(objRow.Item("Cnt")) Then
-				jsSummaryFormatter &= String.Format("{0}'Sub Count: ' + cellval.totalCount", IIf(jsSummaryFormatter.Length > 0, " + '<br/>' + ", ""))
-				jsFooterFunction &= String.Format("var cnt_{1} = {0};", objReport.mrstCustomReportsOutput.Compute("Count([" & sColumnHeading & "])", ""), sCodeSafeColumnHeading)
-				sFooterText &= String.Format("{0}'Count: ' + cnt_{1}", IIf(sFooterText.Length > 0, "+ '<br/>' + ", ""), sCodeSafeColumnHeading)
-			End If
-			If CBool(objRow.Item("Tot")) Then
-				jsSummaryFormatter &= String.Format("{0}'Sub Total: ' + cellval.totalSum.toFixed({1})", IIf(jsSummaryFormatter.Length > 0, " + '<br/>' + ", ""), decimalPlaces)
-				jsFooterFunction &= String.Format("var sum_{0} = Number({1}).toFixed({2});", sCodeSafeColumnHeading, objReport.mrstCustomReportsOutput.Compute("Sum([" & sColumnHeading & "])", ""), decimalPlaces)
-				sFooterText &= String.Format("{0}'Total: ' + sum_{1}", IIf(sFooterText.Length > 0, "+ '<br/>' + ", ""), sCodeSafeColumnHeading)
-			End If
-		
-			If jsSummaryFormatter.Length > 0 Then
-				jsSummaryFormatter = ", formatter: function (cellval, opts, rwdat, act) {if (opts.rowId === '') {return '<span>' + " & jsSummaryFormatter & " + '</span>';} else {return $.fn.fmatter("
-				
-				If CBool(objRow.Item("IsNumeric")) Then
-					jsSummaryFormatter &= "'number', cellval, opts, rwdat, act);}},"
-				ElseIf objReport.mrstCustomReportsOutput.Columns(iColIndex).DataType = System.Type.GetType("System.DateTime") Then
-					jsSummaryFormatter &= "'date', cellval, opts, rwdat, act);}},"
-				ElseIf objReport.mrstCustomReportsOutput.Columns(iColIndex).DataType = System.Type.GetType("System.Boolean") Then
-					jsSummaryFormatter &= "'checkbox', cellval, opts, rwdat, act);}},"
-				Else
-					jsSummaryFormatter &= "'string', cellval, opts, rwdat, act);}},"
-				End If
-
-				' append functions for the footer.
-				jsSummaryType.Append("summaryType: function (val, name, record) {")
-				jsSummaryType.Append("if (typeof (val) === 'string') {")
-				jsSummaryType.Append("val = {totalCount: 0, totalSum: 0, totalAvge: 0};")
-				jsSummaryType.Append("}")
-				jsSummaryType.Append("if (record[name] !== '') val.totalCount += 1;")
-				jsSummaryType.Append("if(record[name] >= 0) {")
-				jsSummaryType.Append("val.totalSum += parseFloat((record[name]||0));")
-				jsSummaryType.Append("val.totalAvge = val.totalSum / val.totalCount;")
-				jsSummaryType.Append("}")
-				jsSummaryType.Append("return val;")
-				jsSummaryType.Append("}")
-				
-				
-			End If
-			
-			If CBool(objRow.Item("IsNumeric")) And Not CBool(objRow.Item("GroupWithNextColumn")) Then
-				If jsSummaryFormatter.Length = 0 Then
-					alignment = ", formatter: ""number"""
-				End If
-				alignment &= ", formatoptions:{ thousandsSeparator: """", defaultValue: """", decimalPlaces: " & decimalPlaces & "}"
-				alignment &= ", align: ""right"", sorttype: ""integer"""
-			End If
-					
-			' This is a Date Column - format as such
-			If objReport.mrstCustomReportsOutput.Columns(iColIndex).DataType = System.Type.GetType("System.DateTime") Then
-				If jsSummaryFormatter.Length = 0 Then
-					alignment = ", formatter: ""date"""
-				End If
-				alignment &= ", formatoptions: {srcformat: ""d/m/Y"", newformat: ""d/m/Y""}"
-				alignment &= ", align: ""left"", sorttype: ""date"""
-			End If
-		
-			' This is a Logic Column - format as such
-			If objReport.mrstCustomReportsOutput.Columns(iColIndex).DataType = System.Type.GetType("System.Boolean") Then
-				If jsSummaryFormatter.Length = 0 Then
-					alignment = ", formatter: ""checkbox"""
-				End If
-				alignment &= ", align: ""center"""
-			End If
-
-			' Footer row required?
-			If bFooter = False Then bFooter = CBool(objRow.Item("Avge")) Or CBool(objRow.Item("Cnt")) Or CBool(objRow.Item("Tot"))
-			If sFooterText.Length > 0 Then jsFooterFunction &= String.Format("jQuery('#grdReport').jqGrid('footerData', 'set', {{ '{0}': {1} }}, false);", sColumnHeading, sFooterText)
-			
-			' add column info to the colModel array.
-			colModelArray.Append(String.Format("{{name:'{0}',index:'{0}', width: 100{1}{2}{3}{4}{5}}},", sColumnHeading, isVisibleString, cellAttributes, jsSummaryFormatter, jsSummaryType.ToString(), alignment))
-		
-			' set Group With Next flag.
-			bGroupWithNext = CBool(objRow.Item("GroupWithNextColumn"))
-		
-			' Build sortOrder string for dataview when binding the DATA below..
-			If objRow.Item("SortOrder").ToString().ToUpper() = "ASC" Or objRow.Item("SortOrder").ToString().ToUpper() = "DESC" Then
-				Dim iArrayIndex As Integer = CType(objRow.Item("SortOrderSequence"), Integer)
-				If iArrayIndex > 0 Then iArrayIndex -= 1
-				arrSortString(iArrayIndex) = String.Format("{0}{1} {2}", IIf(sSortString.Length > 0, ", ", ""), sColumnHeading, objRow.Item("SortOrder"))
-			End If
-			
-			iColIndex += 1
-		
-		Next
-		
-		' build sort string from the ordered array.
-		For Each sortString As String In arrSortString
-			If Not sortString Is Nothing Then sSortString &= String.Format("{0}{1}", IIf(sSortString.Length > 0, ", ", ""), sortString)
-		Next
-		
-		If bGrouping Then
-			sGroupingParams = ",grouping: true," & _
-		"groupingView : {groupField : [" & sGroupFieldList & "]," & _
-		"groupColumnShow : [" & sGroupColumnShowList & "]," & _
-		"groupText : [" & sGroupTextList & "]," & _
-		"groupOrder: [" & sGroupOrder & "]," & _
-		"groupCollapse : " & sGroupCollapse & "," & _
-		"groupSummary : [true]," & _
-		"showSummaryOnHide: true," & _
-		"groupDataSorted: false}"
-		End If
-		
-		If bFooter = True Then
-			sGroupingParams = ",footerrow: true, userDataOnFooter: true" & sGroupingParams
-		End If
-	
-		' trailing comma removal
-		colModelArray.Remove(colModelArray.Length - 1, 1)
-	
-		' Now for the DATA for jqGrid...
-		Dim colData As New StringBuilder
-	
-		Dim dv As DataView = objReport.mrstCustomReportsOutput.DefaultView
-		
-		' No multi-column grouping in current version of jqGrid, so sort on dataview
-		If sSortString.Length > 0 Then dv.Sort = sSortString
-		
-		For Each objRow As DataRow In dv.ToTable().Rows		' objReport.mrstCustomReportsOutput.Rows
-			colData.Append("{")
-			
-			bGroupWithNext = False
-
-			Dim sColumnValue As String = ""
-			Dim sColumnName As String = ""
-			
-			For iColIndex = 0 To objRow.ItemArray.Count() - 1
-				Dim objThisColumn As ReportDetailItem = objReport.DisplayColumns(iColIndex)
-				
-				If Not bGroupWithNext Then
-					sColumnValue = objRow.Item(iColIndex).ToString()
-					sColumnName = objReport.mrstCustomReportsOutput.Columns(iColIndex).ColumnName
-				Else
-					' add next col too.
-					If objRow.Item(iColIndex).ToString().Length > 0 Then
-						If objReport.mrstCustomReportsOutput.Columns(iColIndex).DataType = Type.GetType("System.DateTime") And objRow.Item(iColIndex).ToString().Length > 0 Then
-							' convert date to string, remove the timestamp.
-							Dim dtDate As DateTime = CType(objRow.Item(iColIndex), Date)
-							sColumnValue &= vbNewLine & dtDate.ToShortDateString()
-						Else
-							sColumnValue &= vbNewLine & objRow.Item(iColIndex).ToString()
-						End If
-					End If
-				End If
-
-				bGroupWithNext = objThisColumn.GroupWithNextColumn
-				
-				' Bug JIRA#3767 - convert to proper case if grouping; jQGrid grouping is case sensitive ('fixed' in v4.6 I believe, but too much for v8.0?)
-				If bGrouping Then sColumnValue = StrConv(sColumnValue, VbStrConv.ProperCase)
-				
-				If Not bGroupWithNext Then
-					sColumnValue = Html.Encode(sColumnValue)
-					sColumnValue = sColumnValue.Replace(vbNewLine, "<br/>")
-
-					colData.Append(String.Format("'{0}':'{1}',", sColumnName, sColumnValue))
-				Else
-					' add the group with next column anyway (for grouping etc)
-					Dim sNextColumnValue As String = objRow.Item(iColIndex + 1).ToString()
-					sNextColumnValue = Html.Encode(sNextColumnValue)
-					sNextColumnValue = sNextColumnValue.Replace(vbNewLine, "<br/>")
-					colData.Append(String.Format("'{0}':'{1}',", objReport.mrstCustomReportsOutput.Columns(iColIndex + 1).ColumnName, sNextColumnValue))
-				End If
-			Next
-
-			' trailing comma removal
-			colData.Remove(colData.Length - 1, 1)
-			colData.Append("},")
-		Next
-		' trailing comma removal
-		colData.Remove(colData.Length - 1, 1)
-
-	
-		' output to javascript variables.
-		Dim cs As ClientScriptManager = Page.ClientScript
-		cs.RegisterArrayDeclaration("g_colNamesArray", colNamesArray.ToString())
-		cs.RegisterArrayDeclaration("g_colModelArray", colModelArray.ToString())
-		cs.RegisterArrayDeclaration("g_colData", colData.ToString())
-	End If
 	
 	If fok Then
 		objReport.ClearUp()
 	End If
 
+		
 	If fok Then
 		Response.Write("<form name=frmOutput id=frmOutput method=post>" & vbCrLf)
 		Response.Write("<div>")
-		Response.Write("<table id='grdReport'></table>" & vbCrLf)
-	
+		Response.Write("			<table name=tblGrid id=tblGrid height=100% width=100% class=""invisible"" cellspacing=0 cellpadding=0>" & vbCrLf)
+		Response.Write("				<tr>" & vbCrLf)
+		' Response.Write("					<td class=""reportgraphic""></td>" & vbCrLf)
+		Response.Write("					<td ALIGN=center colspan=10 NAME='tdOutputMSG' ID='tdOutputMSG'>" & vbCrLf)
+			
 			
 %>
+
 <form id="formReportData" runat="server">
+	<asp:GridView ID="gridReportData" runat="server"
+		AllowPaging="False"
+		GridLines="None"
+		CssClass="visibletablecolumn"
+		ClientIDMode="Static">
+		<Columns>
+			<asp:BoundField DataField="rowtype" ItemStyle-CssClass="hiddentablecolumn" HeaderText="" />
+		</Columns>
+	</asp:GridView>
 </form>
-<%		
+
+
+<%
+
+
+	Response.Write("					</td>" & vbCrLf)
+	Response.Write("					<td width=20></td>" & vbCrLf)
+	Response.Write("				</tr>" & vbCrLf)
+	Response.Write("				<tr>" & vbCrLf)
+	Response.Write("					<td colspan=12 height=10></td>" & vbCrLf)
+	Response.Write("				</tr>" & vbCrLf)
+
+	Response.Write("				<tr height=25>" & vbCrLf)
+	Response.Write("					<td width=20></td>" & vbCrLf)
+	Response.Write("					<td colspan=8>" & vbCrLf)
+	Response.Write("            <div>")
+	Response.Write("						<table WIDTH=""100%"" class=""invisible"" CELLSPACING=0 CELLPADDING=0>" & vbCrLf)
+	Response.Write("							<tr>" & vbCrLf)
+	Response.Write("								<td>" & vbCrLf)
+	Response.Write("								</td>" & vbCrLf)
+	Response.Write("								<td>&nbsp;</td>" & vbCrLf)
+	Response.Write("								<td width=20>" & vbCrLf)
+	Response.Write("								</td>" & vbCrLf)
+	Response.Write("							</tr>" & vbCrLf)
+	Response.Write("						</table>" & vbCrLf)
+	Response.Write("</div>")
+	Response.Write("					</td>" & vbCrLf)
+	Response.Write("					<td width=10></td>" & vbCrLf)
+	Response.Write("					<td width=80> " & vbCrLf)
+	Response.Write("					</td>" & vbCrLf)
+	Response.Write("					<td width=20></td>" & vbCrLf)
+	Response.Write("				</tr>" & vbCrLf)
+	Response.Write("				<tr>" & vbCrLf)
+	Response.Write("					<td colspan=12 height=10></td>" & vbCrLf)
+	Response.Write("				</tr>" & vbCrLf)
+	Response.Write("			</table>" & vbCrLf)
 	Response.Write("      </div>")
 	Response.Write("</form>" & vbCrLf)
 		
+	Response.Write("<input type='hidden' id=txtNoRecs name=txtNoRecs value=0>" & vbCrLf)
 	Response.Write("<input type=hidden id=txtSuccessFlag name=txtSuccessFlag value=2>" & vbCrLf)
 Else%>
 
 <form name="frmPopup" id="frmPopup">
-
 	<table align="center" class="outline" cellpadding="5" cellspacing="0">
 		<tr>
 			<td>
@@ -643,7 +444,7 @@ Else%>
 					<tr>
 						<td colspan="3" height="10">&nbsp;</td>
 					</tr>
-					<%--<tr>
+				<%--	<tr>
 						<td colspan="3" height="10" align="center">
 							<input type="button" id="cmdClose" name="cmdClose" value="Close" style="WIDTH: 80px" width="80" class="btn"
 								onclick="closeclick();" />
@@ -683,71 +484,65 @@ End If
 	<input type="hidden" id="txtOptionsCopies" name="txtOptionsCopies">
 </form>
 
+<script runat="server">
 
+	Protected Sub gridReportData_DataBound(sender As Object, e As EventArgs) Handles gridReportData.DataBound
+	End Sub
+			
+	Protected Sub gridReportData_RowDataBound(sender As Object, e As GridViewRowEventArgs) Handles gridReportData.RowDataBound
 
-<script type="text/javascript">
+		Dim objReport As Report = CType(Session("CustomReport"), Report)
+		Dim objThisColumn As ReportDetailItem
+		Dim bGroupWithNext As Boolean
+				
+		If e.Row.RowType = DataControlRowType.Header Or e.Row.RowType = DataControlRowType.Footer Then
+			e.Row.CssClass = "header ui-state-default ui-th-column ui-th-ltr"			
+					
+			For iCount = 2 To objReport.datCustomReportOutput.Columns.Count - 1
+				objThisColumn = objReport.DisplayColumns(iCount - 2)
 
-	<%If fok = True Then%>
-	//Shrink to fit, or set to 100px per column?
-	var ShrinkToFit = false;
-	var gridWidth;
-	var gridHeight;
+				e.Row.Cells(iCount).Visible = Not objThisColumn.IsHidden And Not bGroupWithNext
+				bGroupWithNext = objThisColumn.GroupWithNextColumn
 
-	//Get count of visible columns
-	var iVisibleCount = 0;
-	for (var iArrayPos = 0; iArrayPos < g_colModelArray.length; iArrayPos++) {
-		if (g_colModelArray[iArrayPos].hidden !== true) iVisibleCount++;
-	}
-	
-	if (menu_isSSIMode()) {
-		try {
-			gridWidth = $('#reportworkframe').width();
-			gridHeight = $('#reportworkframe').height() - 100;
-		} catch (e) {
-			gridWidth = 'auto';
-			gridHeight = 'auto';
-		}
-		ShrinkToFit = true;
-	} else {
-		//DMI options.
-		if (iVisibleCount < 8) ShrinkToFit = true;
-		gridWidth = 770;
-		gridHeight = 390;
-	}
-	
-	jQuery("#grdReport").jqGrid({
-		datatype: "local",
-		shrinkToFit: ShrinkToFit,
-		width: gridWidth,
-		height: gridHeight,
-		colNames: g_colNamesArray,
-		colModel: g_colModelArray,
-		data: g_colData,
-		ignoreCase: true,
-		rowNum: 200000
-		<%=sGroupingParams%>,
-		loadComplete: function () {
-			<%=jsFooterFunction%>;
-			<%=jsSrvFunction.ToString()%>;
-			stylejqGrid();
-		}
-	});
+			Next
+					
+		Else
 
-	function stylejqGrid() {
-		//jqGrid style overrides
-		$('#gview_grdReport tr.jqgrow td').css('vertical-align', 'top'); //float text to top, in case of multi-line cells
-		$('#gview_grdReport tr.footrow td').css('vertical-align', 'top'); //float text to top, in case of multi-line footers
-		$('#gview_grdReport .s-ico span').css('display', 'none'); //hide the sort order icons - they don't tie in to the dataview model.
-		$("#gview_grdReport > .ui-jqgrid-titlebar").text("<%=objReport.ReportCaption%>"); //Activate title bar for the grid as this will then go naturally into the print functionality.
-		$("#gview_grdReport > .ui-jqgrid-titlebar").height("20px"); //no title bar; this is in the dialog title
-		$("#gview_grdReport .ui-jqgrid-titlebar").show();
-		
-		<%If objReport.mblnCustomReportsSummaryReport Then%>
-			$('#gview_grdReport .tree-wrap-ltr').css('display', 'none');	//hide the expand/retract node for summary reports.
-		<%End If%>
-	}
-	if (menu_isSSIMode()) $('#gbox_grdReport').css('margin', '0 auto'); //center the report in self-service screen.	
-	<%End If%>
+			If e.Row.Cells(0).Text = HR.Intranet.Server.Enums.RowType.GrandSummary Then
+				e.Row.CssClass = "grandsummaryrow"
+					
+			ElseIf Not e.Row.Cells(0).Text = HR.Intranet.Server.Enums.RowType.Data Then
+				e.Row.CssClass = "summarytablerow"
+			Else
+				e.Row.CssClass = "ui-widget-content jqgrow ui-row-ltr"
+			End If
+					
+		End If
+							
+		e.Row.Cells(0).Visible = False
+				
+		If Not objReport.HasSummaryColumns Then
+			e.Row.Cells(1).Visible = False
+		End If
+
+		For iCount = 2 To objReport.datCustomReportOutput.Columns.Count - 1
+						
+			objThisColumn = objReport.DisplayColumns(iCount - 2)
+					
+			If objThisColumn.IsNumeric Then
+				e.Row.Cells(iCount).HorizontalAlign = HorizontalAlign.Right
+			Else
+				e.Row.Cells(iCount).HorizontalAlign = HorizontalAlign.Left
+			End If
+
+			If Session("utiltype") = UtilityType.utlBradfordFactor Then
+				e.Row.Cells(iCount).Visible = Not objThisColumn.IsHidden
+			End If
+			
+		Next
+				
+	End Sub
+			
 </script>
 
 <form action="util_run_customreport_downloadoutput" method="post" id="frmExportData" name="frmExportData" target="submit-iframe">
