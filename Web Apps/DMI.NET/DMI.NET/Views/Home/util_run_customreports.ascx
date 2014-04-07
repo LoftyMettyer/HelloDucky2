@@ -745,8 +745,9 @@ End If
 		<%If objReport.mblnCustomReportsSummaryReport Then%>
 			$('#gview_grdReport .tree-wrap-ltr').css('display', 'none');	//hide the expand/retract node for summary reports.
 		<%End If%>
-	}
 	<%End If%>
+	}
+
 	if (menu_isSSIMode()) $('#gbox_grdReport').css('margin', '0 auto'); //center the report in self-service screen.	
 </script>
 
