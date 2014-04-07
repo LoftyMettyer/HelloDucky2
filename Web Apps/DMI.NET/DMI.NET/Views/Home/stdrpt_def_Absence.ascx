@@ -932,7 +932,7 @@
 														</td>
 														<td style="width: 5px;padding-left: 2px">
 															<input id="cmdEmailGroup" name="cmdEmailGroup" class="btn" type="button" value="..."
-																onclick="selectEmailGroup();" />
+																onclick="selectAbsenceEmailGroup();" />
 														</td>
 													</tr>
 													

@@ -191,9 +191,10 @@
 		//Get the selected value (ID) and name and assign them to the input tags that will be used by setForm() to set the values in the parent window
 		var emailSelectedId = $("#EmailSelectionTable .ui-state-highlight [aria-describedby=EmailSelectionTable_EmailGroupIDHeader]").html();
 		var emailSelectedName = $("#EmailSelectionTable .ui-state-highlight [aria-describedby=EmailSelectionTable_NameHeader]").text();
-		//debugger;
 		$("#txtSelectedID").val(emailSelectedId);
 		$("#txtSelectedName").val(emailSelectedName);
+
+		$("#txtEmailGroupID").val(emailSelectedId);	
 
 		setForm();
 	});

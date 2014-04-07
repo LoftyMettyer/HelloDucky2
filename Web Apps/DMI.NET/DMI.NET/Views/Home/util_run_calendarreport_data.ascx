@@ -5,7 +5,6 @@
 
 <%@ Import Namespace="System.Data.SqlClient" %>
 <%@ Import Namespace="HR.Intranet.Server" %>
-<%@ Import Namespace="System.Drawing" %>
 
 <link href="<%: Url.LatestContent("~/Themes/scheduler_white.css")%>" rel="stylesheet" type="text/css" />
 <link href="<%: Url.LatestContent("~/Themes/calendar_white.css")%>" rel="stylesheet" type="text/css" />
@@ -19,8 +18,6 @@
 
 <script type="text/javascript">
 
-	$("#divReportButtons").css("visibility", "visible");
-	
 	if ($("#chkShowWeekends")[0].checked == true) {
 		toggleWeekends();
 	}
@@ -65,14 +62,6 @@
 		frmGetDataForm.txtMonth.value = d.getMonth() + 1;
 		frmGetDataForm.txtYear.value = d.getFullYear();
 		OpenHR.submitForm(frmGetDataForm);
-		return true;
-	}
-
-	function ExportData(strMode) {
-
-		var frmExport = OpenHR.getForm("reportworkframe", "frmExportData");
-		frmExport.submit();
-
 		return true;
 	}
 
@@ -233,8 +222,6 @@
 		<input type="hidden" id="txtVisibleEndDate" name="txtVisibleEndDate">
 		<input type="hidden" id="txtMode" name="txtMode">
 		<input type="hidden" id="txtLoadCount" name="txtLoadCount" value="0">
-		<input type="hidden" id="txtEmailGroupID" name="txtEmailGroupID" value="<%=Session("EmailGroupID").ToString()%>">		
-
 		<input type="hidden" name="txtIncludeBankHolidays" id="txtIncludeBankHolidays" value="<%=Session("CALREP_IncludeBankHolidays").ToString()%>">
 		<input type="hidden" name="txtIncludeWorkingDaysOnly" id="txtIncludeWorkingDaysOnly" value="<%=Session("CALREP_IncludeWorkingDaysOnly").ToString()%>">
 		<input type="hidden" name="txtShowBankHolidays" id="txtShowBankHolidays" value="<%=Session("CALREP_ShowBankHolidays").ToString()%>">
@@ -293,7 +280,7 @@
 %>
 </form>
 
-<form action="util_run_calendarreport_download" method="post" id="frmExportData" name="frmExportData">
+<form action="util_run_calendarreport_download" method="post" id="frmExportData" name="frmExportData" target="submit-iframe">
 	<input type="hidden" id="txtPreview" name="txtPreview" value="<%=objCalendar.OutputPreview%>">
 	<input type="hidden" id="txtFormat" name="txtFormat" value="<%=objCalendar.OutputFormat%>">
 	<input type="hidden" id="txtScreen" name="txtScreen" value="<%=objCalendar.OutputScreen%>">
@@ -306,10 +293,12 @@
 	<input type="hidden" id="txtEmailAddrName" name="txtEmailAddrName" value="<%=Replace(objCalendar.OutputEmailGroupName, """", "&quot;")%>">
 	<input type="hidden" id="txtEmailSubject" name="txtEmailSubject" value="<%=Replace(objCalendar.OutputEmailSubject, """", "&quot;")%>">
 	<input type="hidden" id="txtEmailAttachAs" name="txtEmailAttachAs" value="<%=Replace(objCalendar.OutputEmailAttachAs, """", "&quot;")%>">
-	<input type="hidden" id="txtEmailGroupID" name="txtEmailGroupID" value="<%=Session("EmailGroupID").ToString()%>">
+	<input type="hidden" id="txtEmailGroupID" name="txtEmailGroupID" value="<%=objCalendar.OutputEmailID%>">
 	<input type="hidden" id="txtFileName" name="txtFileName" value="<%=objCalendar.OutputFilename%>">
 	<input type="hidden" id="txtUtilType" name="txtUtilType" value="<%=session("utilType")%>">
 	<input type="hidden" id="txtUtilID" name="txtUtilID" value="<%=Session("utilID")%>">
+
+	<iframe name="submit-iframe" style="display: none;"></iframe>
 </form>
 
 <form id="frmOriginalDefinition" style="visibility: hidden; display: none">

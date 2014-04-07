@@ -22,10 +22,3 @@
 		<input type="hidden" id="cancelled" name="cancelled" value="">
 		<input type="hidden" id="statusmessage" name="statusmessage" value="">
 </form>
-
-<script type="text/javascript">
-	$(".popup").dialog('option', 'title', "Report Details");
-	//The next line was overriding the report title	
-	if(menu_isSSIMode()) $("#PageDivTitle").html($("#txtDefn_Name").val());
-	ShowCustomReport();
-</script>

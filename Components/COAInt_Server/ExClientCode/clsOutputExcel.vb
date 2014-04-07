@@ -777,75 +777,27 @@ Namespace ExClientCode
 
 		End Sub
 
-
 		Public Sub Complete()
 
+			Try
 
-			If _mstrErrorMessage <> vbNullString Then
-				Exit Sub
-			End If
-
-			_mxlWorkBook.Worksheets.ActiveSheetIndex = 0
-
-			'SAVE
-			_mstrErrorMessage = "Error saving file <" & _mstrFileName & ">"
-
-			_mxlWorkBook.Save(_mstrFileName, SaveAsFormat(DownloadExtension))
-
-			'EMAIL
-			If _mblnEmail Then
-				_mstrErrorMessage = "Error sending email"
-				_mobjParent.SendEmail(_mstrFileName)
-			End If
-
-			'PRINTER
-			Dim strCurrentPrinter As String
-			If _mblnPrinter Then
-				_mstrErrorMessage = "Error printing"
-
-				If _mblnChart Then
-					' TODO: Charts
-					'For Each objChart In mxlWorkBook.Charts
-					'	objChart.PrintOut(, , , , mstrPrinterName)
-					'Next objChart
-				Else
-					' TODO: 
-					'For Each objWorksheet In mxlWorkBook.Worksheets
-					'	If objWorksheet.Visible = Microsoft.Office.Interop.Excel.XlSheetVisibility.xlSheetVisible Then
-					'		objWorksheet.PrintOut(, , , , mstrPrinterName)
-					'	End If
-					'Next objWorksheet
+				If _mstrErrorMessage <> vbNullString Then
+					Exit Sub
 				End If
 
-			End If
+				_mxlWorkBook.Worksheets.ActiveSheetIndex = 0
 
+				'SAVE
+				_mstrErrorMessage = "Error saving file <" & _mstrFileName & ">"
+				_mxlWorkBook.Save(_mstrFileName, SaveAsFormat(DownloadExtension))
+				_mstrErrorMessage = vbNullString
 
-			'SCREEN
-			' TODO: Stream it out!
-			'If mblnScreen Then
-			'	mstrErrorMessage = "Error displaying Excel"
-			'	mxlApp.DisplayAlerts = True
-			'	mxlApp.WindowState = Microsoft.Office.Interop.Excel.XlWindowState.xlMaximized
-			'	mxlApp.Visible = True
-			'	mxlWorkBook.Activate()
-			'	mxlWorkBook = Nothing
-			'	mxlApp = Nothing 'Stops Excel quitting...
-			'Else
-			'	mxlWorkBook.Saved = True
-			'	mxlWorkBook.Close()
-			'	mxlApp.Quit()
-			'End If
+				ClearUp()
 
-			_mstrErrorMessage = vbNullString
+			Catch ex As Exception
+				_mstrErrorMessage = _mstrErrorMessage & IIf(Err.Description <> vbNullString, vbCrLf & " (" & Err.Description & ")", vbNullString).ToString()
 
-TidyAndExit:
-			ClearUp()
-
-			Exit Sub
-
-LocalErr:
-			_mstrErrorMessage = _mstrErrorMessage & IIf(Err.Description <> vbNullString, vbCrLf & " (" & Err.Description & ")", vbNullString).ToString()
-			Resume TidyAndExit
+			End Try
 
 		End Sub
 

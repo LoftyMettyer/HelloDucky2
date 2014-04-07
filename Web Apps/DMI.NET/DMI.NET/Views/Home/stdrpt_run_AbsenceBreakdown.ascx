@@ -24,7 +24,7 @@
 	Dim pblnOutputSave As Boolean
 		Dim plngOutputSaveExisting As Long
 		Dim pblnOutputEmail As Boolean
-		Dim plngOutputEmailID As Long
+	Dim plngOutputEmailID As Integer
 		Dim pstrOutputEmailName As String
 		Dim pstrOutputEmailSubject As String
 		Dim pstrOutputEmailAttachAs As String
@@ -124,96 +124,99 @@
 	blnNoDefinition = true
 
 	Dim aPrompts
-		Dim fModuleOk As Boolean
-		
-	aPrompts = Session("Prompts_" & session("utiltype") & "_" & session("utilid"))
+	Dim fModuleOk As Boolean
 
-	fModuleOK = true
-	if lngStartDateColID = 0 or _
-		lngStartSessionColID = 0 or _
-		lngEndDateColID = 0 or _
-		lngEndSessionColID = 0 or _
-		lngTypeColID = 0 or _
-		lngReasonColID = 0 or _
-		lngDurationColID = 0 then
-		
-		fok = false
-		fModuleOK = false
-	end if
-
-	if fok then 
-		fok = objCrossTab.SetPromptedValues(aPrompts)
-		fNotCancelled = Response.IsClientConnected 
-		if fok then fok = fNotCancelled
-	end if
-
-	if fok then
-		fok = objCrossTab.SetAbsenceBreakDownDisplayOptions(bPrintFilterPickList)
-		fNotCancelled = Response.IsClientConnected 
-		if fok then fok = fNotCancelled
-	end if
-
-	if fok then
-		fok = objCrossTab.SetAbsenceBreakDownDisplayOptions(bPrintFilterPickList)
-		fNotCancelled = Response.IsClientConnected 
-		if fok then fok = fNotCancelled
-	end if
-
-	if fok then
-		fok = objCrossTab.AbsenceBreakdownRetreiveDefinition(dtStartDate, dtEndDate, lngHorColID, lngVerColID, lngPicklistID, lngFilterID, lngPersonnelID, strAbsenceTypes)
-		fNotCancelled = Response.IsClientConnected 
-		if fok then fok = fNotCancelled
-	end if
-
-	if fok then
-		blnNoDefinition = false
-		lngEventLogID = objCrossTab.EventLogAddHeader
-		fok = (lngEventLogID > 0)
-		fNotCancelled = Response.IsClientConnected 
-		if fok then fok = fNotCancelled
-	end if
-
-	if fok then
-		fok = objCrossTab.UDFFunctions(true)
-		fNotCancelled = Response.IsClientConnected 
-		if fok then fok = fNotCancelled
-	end if
+	Dim strEmailGroupName As String = ""
+	If plngOutputEmailID > 0 Then strEmailGroupName = objCrossTab.GetEmailGroupName(plngOutputEmailID)
 	
-	if fok then
-		fok = objCrossTab.CreateTempTable
-		fNotCancelled = Response.IsClientConnected 
-		if fok then fok = fNotCancelled
-	end if
+		aPrompts = Session("Prompts_" & Session("utiltype") & "_" & Session("utilid"))
 
-	if fok then
-		fok = objCrossTab.UDFFunctions(false)
-		fNotCancelled = Response.IsClientConnected 
-		if fok then fok = fNotCancelled
-	end if
+		fModuleOk = True
+		If lngStartDateColID = 0 Or _
+			lngStartSessionColID = 0 Or _
+			lngEndDateColID = 0 Or _
+			lngEndSessionColID = 0 Or _
+			lngTypeColID = 0 Or _
+			lngReasonColID = 0 Or _
+			lngDurationColID = 0 Then
+		
+			fok = False
+			fModuleOk = False
+		End If
 
-	if fok then 
-		fok = objCrossTab.AbsenceBreakdownRunStoredProcedure
-		fNotCancelled = Response.IsClientConnected 
-		if fok then fok = fNotCancelled
-	end if
+		If fok Then
+			fok = objCrossTab.SetPromptedValues(aPrompts)
+			fNotCancelled = Response.IsClientConnected
+			If fok Then fok = fNotCancelled
+		End If
 
-	if fok then
-		fok = objCrossTab.AbsenceBreakdownGetHeadingsAndSearches
-		fNotCancelled = Response.IsClientConnected 
-		if fok then fok = fNotCancelled
-	end if
+		If fok Then
+			fok = objCrossTab.SetAbsenceBreakDownDisplayOptions(bPrintFilterPickList)
+			fNotCancelled = Response.IsClientConnected
+			If fok Then fok = fNotCancelled
+		End If
 
-	if fok then
-		fok = objCrossTab.BuildTypeArray
-		fNotCancelled = Response.IsClientConnected 
-		if fok then fok = fNotCancelled
-	end if
+		If fok Then
+			fok = objCrossTab.SetAbsenceBreakDownDisplayOptions(bPrintFilterPickList)
+			fNotCancelled = Response.IsClientConnected
+			If fok Then fok = fNotCancelled
+		End If
 
-	if fok then
-		fok = objCrossTab.AbsenceBreakdownBuildDataArrays
-		fNotCancelled = Response.IsClientConnected 
-		if fok then fok = fNotCancelled
-	end if
+		If fok Then
+			fok = objCrossTab.AbsenceBreakdownRetreiveDefinition(dtStartDate, dtEndDate, lngHorColID, lngVerColID, lngPicklistID, lngFilterID, lngPersonnelID, strAbsenceTypes)
+			fNotCancelled = Response.IsClientConnected
+			If fok Then fok = fNotCancelled
+		End If
+
+		If fok Then
+			blnNoDefinition = False
+			lngEventLogID = objCrossTab.EventLogAddHeader
+			fok = (lngEventLogID > 0)
+			fNotCancelled = Response.IsClientConnected
+			If fok Then fok = fNotCancelled
+		End If
+
+		If fok Then
+			fok = objCrossTab.UDFFunctions(True)
+			fNotCancelled = Response.IsClientConnected
+			If fok Then fok = fNotCancelled
+		End If
+	
+		If fok Then
+			fok = objCrossTab.CreateTempTable
+			fNotCancelled = Response.IsClientConnected
+			If fok Then fok = fNotCancelled
+		End If
+
+		If fok Then
+			fok = objCrossTab.UDFFunctions(False)
+			fNotCancelled = Response.IsClientConnected
+			If fok Then fok = fNotCancelled
+		End If
+
+		If fok Then
+			fok = objCrossTab.AbsenceBreakdownRunStoredProcedure
+			fNotCancelled = Response.IsClientConnected
+			If fok Then fok = fNotCancelled
+		End If
+
+		If fok Then
+			fok = objCrossTab.AbsenceBreakdownGetHeadingsAndSearches
+			fNotCancelled = Response.IsClientConnected
+			If fok Then fok = fNotCancelled
+		End If
+
+		If fok Then
+			fok = objCrossTab.BuildTypeArray
+			fNotCancelled = Response.IsClientConnected
+			If fok Then fok = fNotCancelled
+		End If
+
+		If fok Then
+			fok = objCrossTab.AbsenceBreakdownBuildDataArrays
+			fNotCancelled = Response.IsClientConnected
+			If fok Then fok = fNotCancelled
+		End If
 
 		Session("objCrossTab" & Session("utilid")) = objCrossTab
 
@@ -228,7 +231,7 @@
 		Response.Write("  if (iCount > 0) {	" & vbCrLf)
 		Response.Write("    var frmGetData = OpenHR.getForm(""reportdataframe"",""frmGetReportData"");" & vbCrLf)
 		Response.Write("    frmGetData.txtUtilID.value = """ & Session("utilid") & """;" & vbCrLf)
-	Response.Write("    getCrossTabData(""LOAD"",0,0,0,0,0,0);" & vbCrLf & vbCrLf)
+		Response.Write("    getCrossTabData(""LOAD"",0,0,0,0,0,0);" & vbCrLf & vbCrLf)
 		Response.Write("  }" & vbCrLf & vbCrLf)
 
 		Response.Write("}" & vbCrLf)
@@ -258,14 +261,15 @@ if fModuleOK then
 				<input type="hidden" id="txtSaveExisting" name="txtSaveExisting" value="<%=plngOutputSaveExisting%>">
 				<input type="hidden" id="txtEmail" name="txtEmail" value="<%=pblnOutputEmail%>">
 				<input type="hidden" id="txtEmailAddr" name="txtEmailAddr" value="<%=plngOutputEmailID%>">
-				<input type="hidden" id="txtEmailAddrName" name="txtEmailAddrName" value="<%=plngOutputEmailID%>">
+				<input type="hidden" id="txtEmailAddrName" name="txtEmailAddrName" value="<%=strEmailGroupName%>">
 				<input type="hidden" id="txtEmailSubject" name="txtEmailSubject" value="<%=pstrOutputEmailSubject%>">
 				<input type="hidden" id="txtEmailAttachAs" name="txtEmailAttachAs" value="<%=pstrOutputEmailAttachAs%>">
 				<input type="hidden" id="txtEmailGroupAddr" name="txtEmailGroupAddr" value="">
-				<input type="hidden" id="txtEmailGroupID" name="txtEmailGroupID" value="0">
+				<input type="hidden" id="txtEmailGroupID" name="txtEmailGroupID" value="<%=plngOutputEmailID%>">
 				<input type="hidden" id="txtFileName" name="txtFileName" value="<%=pstrOutputFilename%>">
 				<input type="hidden" id="txtUtilType" name="txtUtilType" value="<%=session("utilType")%>">
 				<input type="hidden" id="txtUtilID" name="txtUtilID" value="<%=Session("utilID")%>">
+				<input type="hidden" id="txtMode" name="txtMode">
 			</form>
 
 			<iframe name="submit-iframe" style="display: none;"></iframe>
@@ -338,7 +342,6 @@ end if
 %>
 
 <input type='hidden' id="txtNoRecs" name="txtNoRecs" value="<%=objCrossTab.NoRecords%>">
-
 
 <script type="text/javascript">
 

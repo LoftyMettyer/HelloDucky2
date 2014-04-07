@@ -476,6 +476,8 @@
 	function selectEmailGroup() {
 		var sUrl;		
 		var frmOutputDef = OpenHR.getForm("outputoptions", "frmOutputDef");
+		var frmEmailSelection = $("#frmEmailSelection")[0];
+
 		frmEmailSelection.EmailSelCurrentID.value = frmOutputDef.txtEmailGroupID.value;
 
 		sUrl = "util_emailSelection" +
@@ -497,6 +499,7 @@
 
 
 	function outputOptionsOKClick() {		
+
 		var frmOutputDef = OpenHR.getForm("outputoptions", "frmOutputDef");
 
 		if ((frmOutputDef.chkDestination0.checked == false) &&
@@ -546,15 +549,12 @@
 
 		// If no export format is chosen, default to 'Preview on screen', i.e. direct to Excel.
 		frmOutputDef.chkDestination1.checked = !(frmOutputDef.chkDestination2.checked || frmOutputDef.chkDestination3.checked);
-		
-		window.ShowWaitFrame("Outputting...");
 
-		//  The doExport function is where it all continues
-		window.setTimeout('doExport()', 1000);
+		doExport();
 	}
 
 	function doExport() {
-		
+
 		//Send the values back to the calling form...
 		var frmOutputDef = OpenHR.getForm("outputoptions", "frmOutputDef");
 		var frmExportData = OpenHR.getForm("main", "frmExportData");
@@ -596,27 +596,14 @@
 		frmExportData.txtEmailAttachAs.value = frmOutputDef.txtEmailAttachAs.value;
 		frmExportData.txtFileName.value = frmOutputDef.txtFilename.value;
 
-		var frmGetDataForm = OpenHR.getForm("reportworkframe", "frmExportData");
-
-		if (frmOutputDef.txtEmailGroupID.value > 0) {
-			if (frmOutputDef.txtUtilType.value == 17) {
-				frmGetDataForm.txtEmailGroupID.value = frmOutputDef.txtEmailGroupID.value;
-				ExportData("OUTPUTRUN");
-			}
-			else {
-				frmGetDataForm.txtMode.value = "EMAILGROUP";
-				frmGetDataForm.txtEmailGroupID.value = frmOutputDef.txtEmailGroupID.value;
-				frmGetDataForm.submit();
-			}
+		if (frmExportData.txtEmailGroupID.value > 0) {
+			frmExportData.submit();
 		}
 		else {
-			frmGetDataForm.txtEmailGroupID.value = 0;
-			frmGetDataForm.submit();
+			frmExportData.txtEmailGroupID.value = 0;
+			frmExportData.submit();
 		}
 
-		if (frmOutputDef.txtUtilType.value == 2) {
-			ShowDataFrame();
-		}
 	}
 
 	function saveFile() {

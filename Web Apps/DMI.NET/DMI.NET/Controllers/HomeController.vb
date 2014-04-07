@@ -2457,13 +2457,12 @@ Namespace Controllers
 			Return PartialView()
 		End Function
 
-		<ValidateInput(False)>
 		Public Function util_run_crosstab_downloadoutput() As FilePathResult
 
-			Dim lngFormat As OutputFormats = Request("txtFormat")
+			Dim lngOutputFormat As OutputFormats = Request("txtFormat")
+			Dim bPreview As Boolean = Request("txtPreview")
 			Dim sUtilID As String = Request("txtUtilID")
-			Dim blnScreen As Boolean = False
-			Dim blnSave As Boolean = Request("txtSave")
+			Dim blnSavetoFile As Boolean = Request("txtSave")
 			Dim lngSaveExisting As Long = Request("txtSaveExisting")
 			Dim blnEmail As Boolean = Request("txtEmail")
 			Dim lngEmailGroupID As Integer = Request("txtEmailGroupID")
@@ -2472,6 +2471,7 @@ Namespace Controllers
 			Dim strDownloadFileName As String = Request("txtFilename")
 			Dim strDownloadExtension As String
 			Dim strInterSectionType As String
+			Dim sEmailAddresses As String
 
 			Dim lngLoopMin As Long
 			Dim lngLoopMax As Long
@@ -2530,10 +2530,9 @@ Namespace Controllers
 			ClientDLL.HeaderCols = 1
 
 			'Set Options
-			If Not objCrossTab.OutputPreview Then
-				lngFormat = objCrossTab.OutputFormat
-				blnScreen = objCrossTab.OutputScreen
-				blnSave = objCrossTab.OutputSave
+			If Not bPreview And objCrossTab.CrossTabType = CrossTabType.cttNormal Then
+				lngOutputFormat = objCrossTab.OutputFormat
+				blnSavetoFile = objCrossTab.OutputSave
 				lngSaveExisting = objCrossTab.OutputSaveExisting
 				blnEmail = objCrossTab.OutputEmail
 				lngEmailGroupID = objCrossTab.OutputEmailID
@@ -2543,21 +2542,21 @@ Namespace Controllers
 			End If
 
 			If strDownloadFileName.Length = 0 Then
-				objCrossTab.OutputFormat = lngFormat
+				objCrossTab.OutputFormat = lngOutputFormat
 				objCrossTab.OutputFilename = ""
 				strDownloadFileName = objCrossTab.DownloadFileName
 			End If
 
 			strDownloadExtension = Path.GetExtension(strDownloadFileName)
 
-			Dim fOK = ClientDLL.SetOptions(False, lngFormat, False, False, "", True, lngSaveExisting _
+			Dim fOK = ClientDLL.SetOptions(False, lngOutputFormat, False, False, "", True, lngSaveExisting _
 				, blnEmail, lngEmailGroupID, strEmailSubject, strEmailAttachAs, strDownloadExtension)
 
 			If fOK Then
 				If ClientDLL.GetFile() Then
-					If lngFormat = OutputFormats.fmtDataOnly Then
+					If lngOutputFormat = OutputFormats.fmtDataOnly Then
 
-					ElseIf lngFormat = OutputFormats.fmtExcelPivotTable Then
+					ElseIf lngOutputFormat = OutputFormats.fmtExcelPivotTable Then
 
 						'Response.Write("  ClientDLL.PivotSuppressBlanks = (window.chkSuppressZeros.checked == true);" & vbCrLf)
 						'Response.Write("  ClientDLL.PivotDataFunction = window.cboIntersectionType.options[window.cboIntersectionType.selectedIndex].text;" & vbCrLf)
@@ -2583,7 +2582,7 @@ Namespace Controllers
 
 						strSQL = "SELECT HOR as 'Horizontal', VER as 'Vertical'" & IIf(objCrossTab.PageBreakColumn, ", PGB as 'Page Break'", vbNullString) & ", RecDesc as 'Record Description'" & IIf(objCrossTab.IntersectionColumn, ", Ins as 'Intersection'", vbNullString) & IIf(objCrossTab.CrossTabType = CrossTabType.cttAbsenceBreakdown, ", Value as 'Duration'", vbNullString) & " FROM " & objCrossTab.mstrTempTableName
 
-						If lngFormat = CrossTabType.cttAbsenceBreakdown Then
+						If lngOutputFormat = CrossTabType.cttAbsenceBreakdown Then
 							strSQL = strSQL & " WHERE NOT HOR IN ('Total','Count','Average')"
 
 						ElseIf objCrossTab.PageBreakColumn Then
@@ -2731,8 +2730,17 @@ Namespace Controllers
 				End If
 			End If
 
-			' Only send output if not email
-			If Not (objCrossTab.OutputEmail And objCrossTab.OutputEmailID > 0) Then
+
+			' Email the generated file
+			If blnEmail And lngEmailGroupID > 0 Then
+				sEmailAddresses = GetEmailAddressesForGroup(lngEmailGroupID)
+
+				Dim objDocument As New FileStream(ClientDLL.GeneratedFile, FileMode.Open)
+				SendMailWithAttachment(strEmailSubject, objDocument, sEmailAddresses, strEmailAttachAs)
+			End If
+
+			' Return the generated file
+			If blnSavetoFile Or (Not blnSavetoFile And Not blnEmail) Then
 				If IO.File.Exists(ClientDLL.GeneratedFile) Then
 					Try
 						Response.ClearContent()
@@ -2748,27 +2756,21 @@ Namespace Controllers
 
 		End Function
 
-		<ValidateInput(False)>
 		Public Function util_run_customreport_downloadoutput() As FilePathResult
 
-			'Session("CT_Mode") = Request("txtMode")
-			Session("OutputOptions_Format") = Request("txtFormat")
+			Dim lngOutputFormat = CType(Request("txtFormat"), OutputFormats)
+			Dim bPreview As Boolean = Request("txtPreview")
+			Dim blnSavetoFile As Boolean = Request("txtSave")
+			Dim blnEmail As Boolean = Request("txtEmail")
+			Dim lngEmailGroupID As Integer = Request("txtEmailGroupID")
+			Dim strEmailSubject As String = Request("txtEmailSubject")
+			Dim strEmailAttachAs As String = Request("txtEmailAttachAs")
+			Dim strDownloadFileName As String = Request("txtFilename")
 
-			Session("OutputOptions_Screen") = False	' Request("txtScreen")
-			Session("OutputOptions_Save") = Request("txtSave")
-			Session("OutputOptions_SaveExisting") = Request("txtSaveExisting")
-			Session("OutputOptions_Email") = Request("txtEmail")
-			Session("OutputOptions_EmailGroupID") = Request("txtEmailGroupID")
-			Session("OutputOptions_EmailGroup") = Request("txtEmailGroup")
-			Session("OutputOptions_EmailSubject") = Request("txtEmailSubject")
-			Session("OutputOptions_EmailAttachAs") = Request("txtEmailAttachAs")
-			Session("OutputOptions_Filename") = Request("txtFilename")
-			Session("utiltype") = Request.Form("txtUtilType")
-
-			Dim objReport As HR.Intranet.Server.Report = Session("CustomReport")
-			Dim ClientDLL As New HR.Intranet.Server.clsOutputRun
+			Dim objReport As Report = Session("CustomReport")
+			Dim ClientDLL As New clsOutputRun
 			ClientDLL.SessionInfo = CType(Session("SessionContext"), SessionInfo)
-			Dim objUser As New HR.Intranet.Server.clsSettings
+			Dim objUser As New clsSettings
 			objUser.SessionInfo = CType(Session("SessionContext"), SessionInfo)
 
 			Dim objDataAccess As clsDataAccess = CType(Session("DatabaseAccess"), clsDataAccess)
@@ -2819,89 +2821,35 @@ Namespace Controllers
 				, CBool(objUser.GetUserSetting("Output", "ExcelOmitSpacerCol", False)) _
 				, CBool(objUser.GetUserSetting("Output", "AutoFitCols", True)) _
 				, CBool(objUser.GetUserSetting("Output", "Landscape", True)) _
-				, False) 'emailnotimplementedyet
-
-
-			Dim lngFormat As OutputFormats
-			Dim blnScreen As Boolean
-			Dim blnPrinter As Boolean
-			Dim strPrinterName As String
-			Dim blnSave As Boolean
-			Dim lngSaveExisting As Long
-			Dim blnEmail As Boolean
-			Dim lngEmailGroupID As Long
-			Dim strEmailSubject As String
-			Dim strEmailAttachAs As String
-			'	Dim strFileName As String
+				, False)
 
 			Dim arrayColumnsDefinition() As String
 			Dim arrayPageBreakValues
 			Dim arrayVisibleColumns
 			Dim sEmailAddresses As String = ""
-			Dim sErrorDescription As String = ""
-
-			Dim strDownloadFileName As String = objReport.DownloadFileName
 			Dim strDownloadExtension As String
 
 			'Set Options
-			If objReport.OutputPreview Then
-				lngFormat = NullSafeInteger(Session("OutputOptions_Format"))
-				blnScreen = False
-				blnPrinter = False
-				strPrinterName = ""
-				blnSave = False
-				lngSaveExisting = False
-				blnEmail = Session("OutputOptions_Email")
-				lngEmailGroupID = CLng(Session("OutputOptions_EmailGroupID"))
-				strEmailSubject = Session("OutputOptions_EmailSubject")
-				strEmailAttachAs = Session("OutputOptions_EmailAttachAs")
-				strDownloadFileName = Request("txtFilename")
-			Else
-				lngFormat = objReport.OutputFormat
-				blnScreen = objReport.OutputScreen
-				blnPrinter = objReport.OutputPrinter
-				strPrinterName = objReport.OutputPrinterName
-				blnSave = objReport.OutputSave
-				lngSaveExisting = objReport.OutputSaveExisting
+			If Not bPreview And Not objReport.IsBradfordReport Then
+				blnSavetoFile = objReport.OutputSave
+				lngOutputFormat = objReport.OutputFormat
 				blnEmail = objReport.OutputEmail
 				lngEmailGroupID = CLng(objReport.OutputEmailID)
 				strEmailSubject = objReport.OutputEmailSubject
 				strEmailAttachAs = objReport.OutputEmailAttachAs
+				strDownloadFileName = objReport.DownloadFileName
 			End If
 
 			If strDownloadFileName.Length = 0 Then
+				objReport.OutputFormat = lngOutputFormat
+				objReport.OutputFilename = ""
 				strDownloadFileName = objReport.DownloadFileName
 			End If
 
 			strDownloadExtension = Path.GetExtension(strDownloadFileName)
 
-			If (objReport.OutputEmail) And (objReport.OutputEmailID > 0) Then
+			fOK = ClientDLL.SetOptions(False, lngOutputFormat, False, False, "", True, False, False, 0, "", "", strDownloadExtension)
 
-				Try
-					Dim rstEmailAddr = objDataAccess.GetDataTable("spASRIntGetEmailGroupAddresses", CommandType.StoredProcedure _
-								, New SqlParameter("EmailGroupID", SqlDbType.Int) With {.Value = CleanNumeric(lngEmailGroupID)})
-
-					If Not rstEmailAddr Is Nothing Then
-						For Each objRow In rstEmailAddr.Rows
-							sEmailAddresses = sEmailAddresses & objRow(0) & ";"
-						Next
-					End If
-
-				Catch ex As Exception
-					sErrorDescription = "Error getting the email addresses for group." & vbCrLf & FormatError(ex.Message)
-				End Try
-
-				fOK = ClientDLL.SetOptions(False, lngFormat, blnScreen, blnPrinter, strPrinterName, blnSave, lngSaveExisting, blnEmail, sEmailAddresses _
-					, strEmailSubject, strEmailAttachAs, strDownloadExtension)
-
-			Else
-
-				fOK = ClientDLL.SetOptions(False, lngFormat, Session("OutputOptions_Screen"), False _
-				, Session("OutputOptions_PrinterName"), True, Session("OutputOptions_SaveExisting") _
-				, Session("OutputOptions_Email"), Session("OutputOptions_EmailGroupID"), Session("OutputOptions_EmailSubject") _
-				, Session("OutputOptions_EmailAttachAs"), strDownloadExtension)
-
-			End If
 
 			arrayColumnsDefinition = objReport.OutputArray_Columns
 			arrayPageBreakValues = objReport.OutputArray_PageBreakValues
@@ -2922,7 +2870,7 @@ Namespace Controllers
 
 			ClientDLL.ArrayDim(UBound(arrayVisibleColumns, 2), 0)
 
-			If lngFormat = 0 Then	'Session("OutputOptions_Format") = 0 Then
+			If lngOutputFormat = OutputFormats.fmtDataOnly Then
 
 			Else
 				ClientDLL.HeaderRows = 1
@@ -3054,9 +3002,16 @@ Namespace Controllers
 
 			ClientDLL.Complete()
 
-			' Only send output if not email
-			If Not (objReport.OutputEmail And objReport.OutputEmailID > 0) Then
+			' Email the generated file
+			If blnEmail And lngEmailGroupID > 0 Then
+				sEmailAddresses = GetEmailAddressesForGroup(lngEmailGroupID)
 
+				Dim objDocument As New FileStream(ClientDLL.GeneratedFile, FileMode.Open)
+				SendMailWithAttachment(strEmailSubject, objDocument, sEmailAddresses, strEmailAttachAs)
+			End If
+
+			' Download the file
+			If blnSavetoFile Or (Not blnSavetoFile And Not blnEmail) Then
 				If IO.File.Exists(ClientDLL.GeneratedFile) Then
 					Try
 						Response.ClearContent()
@@ -3115,39 +3070,64 @@ Namespace Controllers
 
 		End Function
 
-		<ValidateInput(False)>
 		Function util_run_calendarreport_download() As FileStreamResult
 
 			Dim objCalendar = CType(Session("objCalendar" & Session("UtilID")), CalendarReport)
-			Dim strDownloadFileName As String = objCalendar.DownloadFileName
+			Dim sEmailAddresses As String
+
+			Dim blnSavetoFile As Boolean = Request("txtSave")
+			Dim bPreview As Boolean = Request("txtPreview")
+			Dim blnEmail As Boolean = Request("txtEmail")
+			Dim lngEmailGroupID As Integer = Request("txtEmailGroupID")
+			Dim strEmailSubject As String = Request("txtEmailSubject")
+			Dim strEmailAttachAs As String = Request("txtEmailAttachAs")
+			Dim strDownloadFileName As String = Request("txtFilename")
 
 			Dim objOutput As New CalendarOutput
 			objOutput.ReportData = objCalendar.Events
 			objOutput.Calendar = objCalendar
 
-			If objCalendar.OutputPreview Then
-				strDownloadFileName = Request("txtFilename")
+			If Not bPreview Then
+				blnEmail = objCalendar.OutputEmail
+				lngEmailGroupID = objCalendar.OutputEmailID
+				strEmailSubject = objCalendar.OutputEmailSubject
+				strEmailAttachAs = objCalendar.OutputEmailAttachAs
+				strDownloadFileName = objCalendar.DownloadFileName
 			End If
 
 			If strDownloadFileName.Length = 0 Then
+				objCalendar.OutputFormat = OutputFormats.fmtExcelWorksheet
+				objCalendar.OutputFilename = ""
 				strDownloadFileName = objCalendar.DownloadFileName
 			End If
 
 			objOutput.DownloadFileName = strDownloadFileName
 			objOutput.Generate(objCalendar.OutputFormat)
 
-			If IO.File.Exists(objOutput.GeneratedFile) Then
-				Try
-					Response.ClearContent()
-					Response.AddHeader("Content-Disposition", "attachment; filename=" + strDownloadFileName)
-					Response.TransmitFile(objOutput.GeneratedFile)
-					Response.Flush()
-				Catch ex As Exception
-				Finally
-					IO.File.Delete(objOutput.GeneratedFile)
-				End Try
+			If blnEmail And lngEmailGroupID > 0 Then
+				sEmailAddresses = GetEmailAddressesForGroup(lngEmailGroupID)
+
+				Dim objDocument As New FileStream(objOutput.GeneratedFile, FileMode.Open)
+				SendMailWithAttachment(strEmailSubject, objDocument, sEmailAddresses, strEmailAttachAs)
+
 			End If
 
+			objOutput.DownloadFileName = strDownloadFileName
+			objOutput.Generate(objCalendar.OutputFormat)
+
+			If blnSavetoFile Or (Not blnSavetoFile And Not blnEmail) Then
+				If IO.File.Exists(objOutput.GeneratedFile) Then
+					Try
+						Response.ClearContent()
+						Response.AddHeader("Content-Disposition", "attachment; filename=" + strDownloadFileName)
+						Response.TransmitFile(objOutput.GeneratedFile)
+						Response.Flush()
+					Catch ex As Exception
+					Finally
+						IO.File.Delete(objOutput.GeneratedFile)
+					End Try
+				End If
+			End If
 
 		End Function
 

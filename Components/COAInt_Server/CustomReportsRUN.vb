@@ -163,6 +163,12 @@ Public Class Report
 
 	End Sub
 
+	Public ReadOnly Property IsBradfordReport() As Boolean
+		Get
+			Return mbIsBradfordIndexReport
+		End Get
+	End Property
+
 	Public ReadOnly Property HasSummaryColumns() As Boolean
 		Get
 			Return mblnReportHasSummaryInfo And Not mbIsBradfordIndexReport

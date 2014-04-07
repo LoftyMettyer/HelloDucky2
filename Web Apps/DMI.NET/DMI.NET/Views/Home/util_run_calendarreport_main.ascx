@@ -122,8 +122,6 @@ Else
 	Session("CalendarReports_FailedOrNoRecords") = True
 End If
 
-Response.Write("<input type=hidden id=txtTitle name=txtTitle value=""" & Replace(objCalendar.Name, """", "&quot;") & """>" & vbCrLf)
-
 %>
 
 <input type='hidden' id="txtNoRecs" name="txtNoRecs" value="<%=objCalendar.NoRecords%>">
@@ -147,19 +145,9 @@ Response.Write("<input type=hidden id=txtTitle name=txtTitle value=""" & Replace
 	<input type="hidden" id="txtCalRep_UtilID" name="txtCalRep_UtilID" value="<%Session("UtilID").ToString()%>">
 </form>
 
-<form action="util_run_calendarreport_download" method="post" id="frmCalendarOutput" name="frmCalendarOutput">
-</form>
 
 
 <script type="text/javascript">
-	
-	$("#reportframe").show();
-
-	$("#PageDivTitle").html($("#txtTitle").val());
-	//$(".popup").dialog('option', 'title', "Calendar Reports"); //Reports now have a title, so the window title here should be the generic one
-	$(".popup").dialog('option', 'title', $("#txtTitle").val()); //Reports now have a title, so the window title here should be the generic one
-	$("#top").hide();
-	$("#calendarframeset").show();
 
 	<%
 	Dim sErrorMessage As String
@@ -170,23 +158,12 @@ Response.Write("<input type=hidden id=txtTitle name=txtTitle value=""" & Replace
 		
 		Response.Write("$('.popup').dialog('close');")
 		Response.Write(String.Format("OpenHR.modalPrompt(""{0}"",2,""{1}"");", sErrorMessage, objCalendar.Name))
-																 
-	ElseIf fok And blnShowCalendar Then
-			%>
-	if (!menu_isSSIMode()){
-		$(".popup").dialog("open");
-	}
-			<%
-ElseIf Not blnShowCalendar Then
-				%>
-	document.getElementById("frmCalendarOutput").submit();
-	$(".popup").dialog('option', 'title', "");
-	$(".popup").dialog("close");
-
+													 
+	%>
 	if (menu_isSSIMode()) {
 		loadPartialView("linksMain", "Home", "workframe", null);
 	}
-			<%
+	<%
 End If
  %>
 

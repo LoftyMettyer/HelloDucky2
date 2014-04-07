@@ -7,6 +7,8 @@ Imports HR.Intranet.Server.Enums
 Imports HR.Intranet.Server
 Imports System.Data.SqlClient
 Imports DayPilot.Web.Ui
+Imports System.Net.Mail
+Imports System.Net.Mime
 
 Public Module ASRIntranetFunctions
 
@@ -381,5 +383,62 @@ Public Module ASRIntranetFunctions
 
 		Return ReturnValue
 	End Function
+
+	Friend Function GetEmailAddressesForGroup(groupID As Integer) As String
+
+		Dim objDataAccess As clsDataAccess = CType(HttpContext.Current.Session("DatabaseAccess"), clsDataAccess)
+		Dim sEmailAddresses As String = ""
+
+		Try
+			Dim rstEmailAddr = objDataAccess.GetDataTable("spASRIntGetEmailGroupAddresses", CommandType.StoredProcedure _
+						, New SqlParameter("EmailGroupID", SqlDbType.Int) With {.Value = groupID})
+
+			If Not rstEmailAddr Is Nothing Then
+				sEmailAddresses = rstEmailAddr.Rows.Cast(Of DataRow)().Aggregate(sEmailAddresses, Function(current, objRow) current & (objRow(0).ToString & ";"))
+			End If
+
+		Catch ex As Exception
+			sEmailAddresses = String.Format("Error getting the email addresses for group.({0})", ex.Message)
+		End Try
+
+		Return sEmailAddresses
+
+	End Function
+
+	' The following example sends a binary file as an e-mail attachment.
+	Friend Sub SendMailWithAttachment(sSubject As String, objAttachment As Stream, recipientList As String, mstrEmailAttachAs As String)
+
+		Dim message As New MailMessage()
+		message.Subject = IIf(sSubject.Length = 0, "OpenHR Report", sSubject).ToString()
+		message.Body = "Your report is attached."
+
+		Try
+
+			If recipientList.Contains(";") = True Then
+
+				Dim aRecipientList = Split(recipientList, ";")
+
+				For iLoop = 0 To UBound(aRecipientList) - 1
+					message.To.Add(aRecipientList(iLoop))
+				Next
+			Else
+				message.To.Add(recipientList)
+			End If
+
+			Dim data As New Attachment(objAttachment, New ContentType(MediaTypeNames.Application.Octet))
+			Dim disposition As ContentDisposition = data.ContentDisposition
+			disposition.FileName = mstrEmailAttachAs
+			message.Attachments.Add(data)
+
+			Dim client As New SmtpClient()
+
+			client.Send(message)
+			data.Dispose()
+
+		Catch ex As Exception
+			Throw
+		End Try
+
+	End Sub
 
 End Module

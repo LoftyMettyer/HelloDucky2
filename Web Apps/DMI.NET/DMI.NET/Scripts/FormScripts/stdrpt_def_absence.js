@@ -55,7 +55,7 @@ function formatAbsenceClick(index) {
 	absenceBreakdownRefreshTab3Controls();
 }
 
-function selectEmailGroup() {
+function selectAbsenceEmailGroup() {
 	var frmAbsenceDefinition = $('#frmAbsenceDefinition')[0];
 	var sURL;
 

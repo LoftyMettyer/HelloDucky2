@@ -1,15 +1,4 @@
 ﻿
-function ShowCustomReport() {
-
-	var i;
-	var sControlName;
-
-	$("#divReportButtons").css("visibility", "visible");
-	$("#top").hide();
-	$("#reportworkframe").show();
-
-}
-
 function openDialog(pDestination, pWidth, pHeight, psResizable, psScroll) {
 		dlgwinprops = "center:yes;" +
 				"dialogHeight:" + pHeight + "px;" +

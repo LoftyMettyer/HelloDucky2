@@ -1,5 +1,6 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
 <%@ Import Namespace="DMI.NET" %>
+<%@ Import Namespace="HR.Intranet.Server.Enums" %>
 <%@ Import Namespace="HR.Intranet.Server" %>
 
 <script src="<%: Url.LatestContent("~/Scripts/ctl_SetFont.js")%>" type="text/javascript"></script>
@@ -268,23 +269,25 @@
 </div>
 
 <script type="text/javascript">
-	<%
-	If Session("utiltype") = "17" Then
-		If Session("CalendarReports_FailedOrNoRecords") = True Then	'We need a smaller popup window because the report failed or has no records
-	%>
-	$(".popup").dialog({ width: 750, height: 400, resizable: true });
-	<%Else%>
-	$(".popup").dialog({ width: 1100, height: 720, resizable: true });
-	<%End If%>
+
+	var isMobileDevice = ('<%=Session("isMobileDevice")%>' == 'True');
+
+	if ($("#txtPreview").val() == "True") {
+		
+		<%If Session("utiltype") = UtilityType.utlCalendarReport Then%>
+		$(".popup").dialog({
+			width: 1100, height: 720, resizable: true
+		});
 	$('#main').css('overflow', 'auto');
-	<%
-	Session.Remove("CalendarReports_FailedOrNoRecords")
-ElseIf Session("utiltype") = "16" Then
-	' bradford factor
-	%>
-	$(".popup").dialog({ width: 850, height: 720, resizable: true });
+
+		<%ElseIf Session("utiltype") = UtilityType.utlBradfordFactor Then%>
+			$(".popup").dialog({
+				width: 850, height: 720, resizable: true
+			});
+
 	<%Else%>
 	$(".popup").dialog({
+			title: "",
 		width: 810,
 		height: 720,
 		resizable: true,
@@ -294,13 +297,12 @@ ElseIf Session("utiltype") = "16" Then
 			$('#grdReport').setGridWidth($('#main').width());
 		}
 	});
-	<%
-End If
-	%>
+		<%End If%>
+
 	
-	var isMobileDevice = ('<%=Session("isMobileDevice")%>' == 'True');
 	$('#cmdOutput').prop('disabled', isMobileDevice);
 	$(".popup").dialog("option", "position", ['center', 'center']); //Center popup in screen
+
 	$('.popup').bind('dialogclose', function () {
 		closeclick();
 	});
@@ -309,18 +311,19 @@ End If
 		$('#main').css('marginTop', '30px'); //.css('borderTop', '1px solid rgb(206, 206, 206)');
 	}
 
+		$("#PageDivTitle").html($("#txtDefn_Name").val());
+		$(".popup").dialog('option', 'title', $("#txtDefn_Name").val());
+		
 	$("#outputoptions").hide();
 	$("#reportworkframe").show();
+		$("#divReportButtons").css("visibility", "visible");
+		ShowDataFrame();
 
-	menu_refreshMenu();
+	} else {
 
-	ShowDataFrame();
-
-	if ($("#txtPreview")[0].value == "False") {
 		if ($('#txtNoRecs').val() == "False") {
-			var frmGetDataForm = OpenHR.getForm("reportworkframe", "frmExportData");
-			frmGetDataForm.submit();
 			closeclick();
+			doExport();
 		}
 	}
 	

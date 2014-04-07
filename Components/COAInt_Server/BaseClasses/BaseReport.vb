@@ -147,7 +147,7 @@ Namespace BaseClasses
 
 #Region "FROM modIntranet"
 
-		Friend Function GetEmailGroupName(lngGroupID As Integer) As String
+		Public Function GetEmailGroupName(lngGroupID As Integer) As String
 
 			Dim rsTemp As DataTable
 			Dim strSQL As String

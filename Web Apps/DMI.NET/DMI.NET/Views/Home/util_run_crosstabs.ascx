@@ -5,8 +5,6 @@
 
 <script type="text/javascript">
 	$("#top").hide();
-	$(".popup").dialog('option', 'title', $("#txtDefn_Name").val());
-	//$(".popup").height("470px");
 
 	$(window).bind('resize', function () {
 		$("#ssOutputGrid").setGridWidth($('#main').width(), true);

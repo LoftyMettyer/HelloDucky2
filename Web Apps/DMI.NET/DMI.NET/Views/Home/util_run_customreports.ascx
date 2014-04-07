@@ -10,7 +10,7 @@
 	Dim bBradfordFactor As Boolean
 	Dim mstrCaption As String
 	Dim sErrMsg As String
-	
+		
 	bBradfordFactor = (Session("utiltype") = "16")
 
 	Dim objReport As HR.Intranet.Server.Report
@@ -317,7 +317,7 @@
 	gridReportData.DataBind()
 		
 	Dim fNoRecords As Boolean
-		
+
 	fNoRecords = objReport.NoRecords
 
 	If fok Then
@@ -336,11 +336,11 @@
 			End If
 		End If
 	End If
-	
+
 	If fok Then
 		objReport.ClearUp()
-	End If
-
+			End If
+		
 		
 	If fok Then
 		Response.Write("<form name=frmOutput id=frmOutput method=post>" & vbCrLf)
@@ -349,7 +349,7 @@
 		Response.Write("				<tr>" & vbCrLf)
 		' Response.Write("					<td class=""reportgraphic""></td>" & vbCrLf)
 		Response.Write("					<td ALIGN=center colspan=10 NAME='tdOutputMSG' ID='tdOutputMSG'>" & vbCrLf)
-			
+	
 			
 %>
 
@@ -366,7 +366,7 @@
 </form>
 
 
-<%
+<%		
 
 
 	Response.Write("					</td>" & vbCrLf)
@@ -402,8 +402,7 @@
 	Response.Write("			</table>" & vbCrLf)
 	Response.Write("      </div>")
 	Response.Write("</form>" & vbCrLf)
-		
-	Response.Write("<input type='hidden' id=txtNoRecs name=txtNoRecs value=0>" & vbCrLf)
+	
 	Response.Write("<input type=hidden id=txtSuccessFlag name=txtSuccessFlag value=2>" & vbCrLf)
 Else%>
 
@@ -488,13 +487,13 @@ End If
 
 	Protected Sub gridReportData_DataBound(sender As Object, e As EventArgs) Handles gridReportData.DataBound
 	End Sub
-			
+
 	Protected Sub gridReportData_RowDataBound(sender As Object, e As GridViewRowEventArgs) Handles gridReportData.RowDataBound
 
 		Dim objReport As Report = CType(Session("CustomReport"), Report)
 		Dim objThisColumn As ReportDetailItem
 		Dim bGroupWithNext As Boolean
-				
+
 		If e.Row.RowType = DataControlRowType.Header Or e.Row.RowType = DataControlRowType.Footer Then
 			e.Row.CssClass = "header ui-state-default ui-th-column ui-th-ltr"			
 					
@@ -534,15 +533,15 @@ End If
 			Else
 				e.Row.Cells(iCount).HorizontalAlign = HorizontalAlign.Left
 			End If
-
+	
 			If Session("utiltype") = UtilityType.utlBradfordFactor Then
 				e.Row.Cells(iCount).Visible = Not objThisColumn.IsHidden
 			End If
-			
+	
 		Next
-				
+
 	End Sub
-			
+		
 </script>
 
 <form action="util_run_customreport_downloadoutput" method="post" id="frmExportData" name="frmExportData" target="submit-iframe">
@@ -560,7 +559,7 @@ End If
 	<input type="hidden" id="txtEmailAttachAs" name="txtEmailAttachAs" value="<%=objReport.OutputEmailAttachAs%>">
 	<input type="hidden" id="txtEmailGroupAddr" name="txtEmailGroupAddr" value="">
 	<input type="hidden" id="txtFileName" name="txtFileName" value="<%=objReport.OutputFilename%>">
-	<input type="hidden" id="txtEmailGroupID" name="txtEmailGroupID" value="">
+	<input type="hidden" id="txtEmailGroupID" name="txtEmailGroupID" value="<%=objReport.OutputEmailID%>">
 	<input type="hidden" id="txtUtilType" name="txtUtilType" value="<%=session("utilType")%>">
 	<input type="hidden" id="txtUtilID" name="txtUtilID" value="<%=Session("utilID")%>">
 

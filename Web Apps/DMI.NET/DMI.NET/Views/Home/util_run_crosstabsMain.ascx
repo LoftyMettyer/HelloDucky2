@@ -140,7 +140,7 @@
 		<input type="hidden" id="txtEmailSubject" name="txtEmailSubject" value="<%=objCrossTab.OutputEmailSubject%>">
 		<input type="hidden" id="txtEmailAttachAs" name="txtEmailAttachAs" value="<%=objCrossTab.OutputEmailAttachAs%>">
 		<input type="hidden" id="txtEmailGroupAddr" name="txtEmailGroupAddr" value="">
-		<input type="hidden" id="txtEmailGroupID" name="txtEmailGroupID" value="0">
+		<input type="hidden" id="txtEmailGroupID" name="txtEmailGroupID" value="<%=objCrossTab.OutputEmailID%>">
 		<input type="hidden" id="txtFileName" name="txtFileName" value="<%=objCrossTab.OutputFilename%>">
 		<input type="hidden" id="txtUtilType" name="txtUtilType" value="<%=session("utilType")%>">
 		<input type="hidden" id="txtUtilID" name="txtUtilID" value="<%=Session("utilID")%>">

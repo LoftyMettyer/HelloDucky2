@@ -188,6 +188,7 @@
 
 					if (asyncFlag == true) {
 						$(".popup").dialog("open");
+						$(".popup").dialog('option', 'title', '');
 					}
 
 					//OK

@@ -121,7 +121,7 @@
 	             	 Dim pblnOutputScreen As Boolean
 	             	 Dim pblnOutputSave As Boolean
 	             	 Dim pblnOutputEmail As Boolean
-	             	 Dim plngOutputEmailID As Long
+	Dim plngOutputEmailID As Integer
 	             	 Dim pstrOutputEmailName As String
 	             	 Dim pstrOutputEmailSubject As String
 	             	 Dim pstrOutputEmailAttachAs As String
@@ -189,6 +189,11 @@
 		pstrOutputFilename = objReport.OutputFilename
 	             	 End If
 
+	
+	Dim strEmailGroupName As String = ""
+	If plngOutputEmailID > 0 Then strEmailGroupName = objReport.GetEmailGroupName(plngOutputEmailID)
+
+	
 	             	 If fok And Not bBradfordFactor Then
 	             		 fok = objReport.GetCustomReportDefinition
 		Session("utilname") = objReport.Name
@@ -549,14 +554,15 @@ End If
 	<input type="hidden" id="txtSaveExisting" name="txtSaveExisting" value="0">
 	<input type="hidden" id="txtEmail" name="txtEmail" value="<%=pblnOutputEmail%>">
 	<input type="hidden" id="txtEmailAddr" name="txtEmailAddr" value="<%=plngOutputEmailID%>">
-	<input type="hidden" id="txtEmailAddrName" name="txtEmailAddrName" value="<%=plngOutputEmailID%>">
+	<input type="hidden" id="txtEmailAddrName" name="txtEmailAddrName" value="<%=strEmailGroupName%>">
 	<input type="hidden" id="txtEmailSubject" name="txtEmailSubject" value="<%=pstrOutputEmailSubject%>">
 	<input type="hidden" id="txtEmailAttachAs" name="txtEmailAttachAs" value="<%=pstrOutputEmailAttachAs%>">
 	<input type="hidden" id="txtEmailGroupAddr" name="txtEmailGroupAddr" value="">
 	<input type="hidden" id="txtFileName" name="txtFileName" value="<%=pstrOutputFilename%>">
-	<input type="hidden" id="txtEmailGroupID" name="txtEmailGroupID" value="0">
+	<input type="hidden" id="txtEmailGroupID" name="txtEmailGroupID" value=<%=plngOutputEmailID%>>
 	<input type="hidden" id="txtUtilType" name="txtUtilType" value="<%=session("utilType")%>">
 	<input type="hidden" id="txtUtilID" name="txtUtilID" value="<%=Session("utilID")%>">
+	<input type="hidden" id="txtMode" name="txtMode">
 	
 	<iframe name="submit-iframe" style="display: none;"></iframe>
 

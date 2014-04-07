@@ -25,7 +25,6 @@
 	Response.Write("    $(""#reportbreakdownframe"").hide();" & vbCrLf)
 	Response.Write("    $(""#outputoptions"").hide();" & vbCrLf)
 	Response.Write("    $(""#reportworkframe"").show();" & vbCrLf)
-	Response.Write("    $(""#divReportButtons"").css(""visibility"", ""visible"");" & vbCrLf)
 
 	Response.Write("    frmOriginalDefinition = OpenHR.getForm(""reportworkframe"",""frmOriginalDefinition"");" & vbCrLf)
 	Response.Write("    frmExportData = OpenHR.getForm(""reportworkframe"",""frmExportData"");" & vbCrLf)
