@@ -220,7 +220,7 @@
 			</span>
 		</div>
 
-		<div id="main" data-framesource="util_run" style="height: 80%; margin: 0 0 0 0;overflow: auto;">
+		<div id="main" data-framesource="util_run" style="height: 80%; margin: 0 0 0 0;overflow: auto; visibility: hidden">
 			<%   
 				Dim sPrintButtonLabel As String = "Print"
 				If Session("utiltype") = "1" Then
@@ -307,7 +307,7 @@
 		closeclick();
 	});
 
-	if (menu_isSSIMode() == false) {
+	if (menu_isSSIMode() == false) {		
 		$('#main').css('marginTop', '30px'); //.css('borderTop', '1px solid rgb(206, 206, 206)');
 	}
 
@@ -316,14 +316,21 @@
 		
 	$("#outputoptions").hide();
 	$("#reportworkframe").show();
-		$("#divReportButtons").css("visibility", "visible");
+	$("#divReportButtons").css("visibility", "visible");
+	$("#main").css("visibility", "visible");
 		ShowDataFrame();
 
 	} else {
 
 		if ($('#txtNoRecs').val() == "False") {
-			closeclick();
 			doExport();
+
+			if (menu_isSSIMode()) {
+				loadPartialView("linksMain", "Home", "workframe", null);
+			} else {
+				closeclick();
+			}
+			
 		}
 	}
 	
