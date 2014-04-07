@@ -893,7 +893,6 @@ Namespace Controllers
 			Session("utilid") = Request.Form("utilid")
 			Session("utilname") = Request.Form("utilname")
 			Session("action") = Request.Form("action")
-			Session("utiltableid") = Request.Form("txtTableID")
 
 			' Now examine what we are doing and redirect as appropriate
 			If (Session("action") = "new") Or _
