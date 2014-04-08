@@ -854,7 +854,7 @@ LocalErr:
 		rsCrossTabData = DB.GetDataTable(strSQL)
 
 		If rsCrossTabData.Rows.Count = 0 Then
-			mstrStatusMessage = "No records meet selection criteria"
+			mstrStatusMessage = "No records meet the selection criteria"
 			mblnNoRecords = True
 			Logs.AddDetailEntry("Completed successfully. " & mstrStatusMessage)
 			Logs.ChangeHeaderStatus(EventLog_Status.elsSuccessful)
@@ -1823,7 +1823,7 @@ LocalErr:
 		rsCrossTabDataLocal = DB.GetDataTable("Select * From " & mstrTempTableName)
 
 		If rsCrossTabDataLocal.Rows.Count = 0 Then
-			mstrStatusMessage = "No records meet selection criteria"
+			mstrStatusMessage = "No records meet the selection criteria"
 			mblnNoRecords = True
 			fOK = False
 		End If

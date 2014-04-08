@@ -286,7 +286,7 @@ Public Class MailMerge
 			mrsMergeData = DB.GetDataTable(strSQL)
 
 			If mrsMergeData.Rows.Count = 0 Then
-				mstrStatusMessage = "No records meet selection criteria"
+				mstrStatusMessage = "No records meet the selection criteria"
 				mblnNoRecords = True
 				fOK = False
 			Else

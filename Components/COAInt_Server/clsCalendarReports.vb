@@ -3038,7 +3038,7 @@ ErrorTrap:
 
 		If mrsCalendarReportsOutput.Rows.Count = 0 Then
 			ExecuteSql = False
-			mstrErrorString = "No records meet selection criteria."
+			mstrErrorString = "No records meet the selection criteria."
 			mblnNoRecords = True
 			Logs.ChangeHeaderStatus(EventLog_Status.elsSuccessful)
 			Logs.AddDetailEntry(mstrErrorString)
@@ -3052,7 +3052,7 @@ ErrorTrap:
 
 		If mrsCalendarBaseInfo.Rows.Count = 0 Then
 			ExecuteSql = False
-			mstrErrorString = "No records meet selection criteria."
+			mstrErrorString = "No records meet the selection criteria."
 			mblnNoRecords = True
 			Logs.ChangeHeaderStatus(EventLog_Status.elsSuccessful)
 			Logs.AddDetailEntry(mstrErrorString)
