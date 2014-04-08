@@ -48,9 +48,9 @@ Namespace Code
 
 
 				If (ConfigurationManager.AppSettings("UI_Self_Service_Layout").ToUpper() = "Winkit".ToUpper() Or ConfigurationManager.AppSettings("UI_Self_Service_Layout").ToUpper() = "Wireframe".ToUpper() Or ConfigurationManager.AppSettings("UI_Self_Service_Layout").ToUpper() = "Tiles".ToUpper()) Then
-					Return ConfigurationManager.AppSettings("UI_Self_Service_Layout")
+					Return ConfigurationManager.AppSettings("UI_Self_Service_Layout").ToLower()
 				Else
-					Return "Winkit"
+					Return "winkit"
 				End If
 
 			End Get
