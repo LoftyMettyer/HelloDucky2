@@ -6,7 +6,6 @@ Imports System.Collections.Generic
 Imports HR.Intranet.Server.BaseClasses
 Imports HR.Intranet.Server.Enums
 Imports Aspose.Cells
-Imports System.Collections.ObjectModel
 Imports Aspose.Cells.Pivot
 
 Namespace ExClientCode
@@ -417,12 +416,12 @@ Namespace ExClientCode
 
 										If numberOfDecimals > 0 Then
 											If numberOfDecimals > 100 Then numberOfDecimals = 100
-											stlNumeric.Custom = "0" & "." & New String("0", numberOfDecimals)
+											stlDecimal.Custom = "0" & "." & New String("0", numberOfDecimals)
 										Else
-											stlNumeric.Custom = "@"
+											stlDecimal.Custom = "@"
 										End If
 
-										.SetStyle(stlNumeric)
+										.SetStyle(stlDecimal)
 										If IsNumeric(strArray(lngGridCol, lngGridRow)) Then
 											.PutValue(CDbl(strArray(lngGridCol, lngGridRow)))
 										End If
@@ -457,10 +456,10 @@ Namespace ExClientCode
 
 			If _mblnChart Then	' Excel chart?
 				ApplyStyle(UBound(strArray, 1), UBound(strArray, 2), colStyles)
-				ApplyCellOptions(UBound(strArray, 1), colStyles, True)
+				ApplyCellOptions(_mxlWorkSheet, colStyles, True)
 
 				CreateChart(_mlngDataCurrentRow + UBound(strArray, 2), _mlngDataStartCol + UBound(strArray, 1), colStyles)
-				ApplyCellOptions(UBound(strArray, 1), colStyles, False)
+				ApplyCellOptions(_mxlWorkSheet, colStyles, False)
 
 				'Delete superfluous rows and cols if setup in User Config reports section
 				If _mblnXlExcelOmitLeftCol Then _mxlWorkSheet.Cells.DeleteColumn(0)
@@ -471,10 +470,10 @@ Namespace ExClientCode
 				If UBound(strArray, 1) < 1 Then
 					_mstrErrorMessage = "Unable to create a pivot table for a single column of data."
 				Else
-					ApplyStyle(UBound(strArray, 1), UBound(strArray, 2), colStyles)
 
-					CreatePivotTable(_mlngDataCurrentRow + UBound(strArray, 2), _mlngDataStartCol + UBound(strArray, 1), strArray(0, 0), strArray(1, 0), strArray(UBound(strArray), 0), colStyles, colColumns)
+					Dim pivotSheet = CreatePivotTable(_mlngDataCurrentRow + UBound(strArray, 2), _mlngDataStartCol + UBound(strArray, 1), colColumns, colStyles)
 					_mxlWorkSheet.VisibilityType = VisibilityType.Hidden
+					ApplyCellOptions(pivotSheet, colStyles, True)
 
 				End If
 			Else
@@ -482,7 +481,7 @@ Namespace ExClientCode
 					ApplyStyle(UBound(strArray, 1), UBound(strArray, 2), colStyles)
 					ApplyMerges(colMerges)
 				End If
-				ApplyCellOptions(UBound(strArray, 1), colStyles, True)
+				ApplyCellOptions(_mxlWorkSheet, colStyles, True)
 
 				'Delete superfluous rows and cols if setup in User Config reports section
 				If _mblnXlExcelOmitLeftCol Then _mxlWorkSheet.Cells.DeleteColumn(0)
@@ -562,47 +561,72 @@ Namespace ExClientCode
 
 		End Sub
 
-		Private Sub CreatePivotTable(lngMaxRows As Integer, lngMaxCols As Integer, strHor As String, strVer As String, strInt As String _
-																 , colStyles As Collection, colColumns As List(Of Metadata.Column))
+		Private Function CreatePivotTable(lngMaxRows As Integer, lngMaxCols As Integer, colColumns As List(Of Metadata.Column), colStyles As Collection) As Worksheet
 
 			Dim pivotSheet As Worksheet = _mxlWorkBook.Worksheets(_mxlWorkBook.Worksheets.Add())
-
 			pivotSheet.Name = "PivotTable"
 
-			Dim pivotTables As PivotTableCollection = pivotSheet.PivotTables
+			Try
 
-			Dim sRange = String.Format("={0}!{1}:{2}{3}", _mxlWorkBook.Worksheets(0).Name, _mxlWorkBook.Worksheets(0).Cells.FirstCell.Name, NumberToExcelColumn(lngMaxCols), lngMaxRows)
-			Dim index As Integer = pivotTables.Add(sRange, "B2", "PivotTable1")
+				Dim pivotTables As PivotTableCollection = pivotSheet.PivotTables
 
-			With pivotTables(index)
-				.AddFieldToArea(PivotFieldType.Row, 1)
-				.AddFieldToArea(PivotFieldType.Column, 0)
-				.AddFieldToArea(PivotFieldType.Data, pivotTables(index).BaseFields.Count - 1)
-				.DataFields(0).Function = ConsolidationFunction.Sum
+				Dim sRange = String.Format("={0}!{1}:{2}{3}", _mxlWorkBook.Worksheets(0).Name, _mxlWorkBook.Worksheets(0).Cells.FirstCell.Name, NumberToExcelColumn(lngMaxCols), lngMaxRows)
+				Dim index As Integer = pivotTables.Add(sRange, "B4", "PivotTable1")
 
-				.RowGrand = True
-				.ColumnGrand = True
-				.IsAutoFormat = True
+				With pivotTables(index)
+					.AddFieldToArea(PivotFieldType.Row, 1)
+					.AddFieldToArea(PivotFieldType.Column, 0)
+					.AddFieldToArea(PivotFieldType.Data, pivotTables(index).BaseFields.Count - 1)
+					.DataFields(0).Function = ConsolidationFunction.Sum
 
-				.AutoFormatType = PivotTableAutoFormatType.Classic
-				.PageFieldOrder = PrintOrderType.DownThenOver
+					.IsAutoFormat = False
+					.AutoFormatType = PivotTableAutoFormatType.None
+					.PivotTableStyleType = PivotTableStyleType.None
+					.PreserveFormatting = True
 
-				.RowFields(0).IsAscendSort = True
-				.ColumnFields(0).IsAscendSort = True
-				.PivotTableStyleType = PivotTableStyleType.PivotTableStyleMedium9
-				.ShowPivotStyleRowHeader = True
-				.ShowPivotStyleColumnHeader = True
-				.DisplayNullString = True
+					.RowGrand = True
+					.ColumnGrand = True
+					.PageFieldOrder = PrintOrderType.DownThenOver
+					.RowFields(0).IsAscendSort = True
+					.ColumnFields(0).IsAscendSort = True
+					.ShowPivotStyleRowHeader = True
+					.ShowPivotStyleColumnHeader = True
+					.DisplayNullString = True
+					.CalculateData()
+					.RefreshDataOnOpeningFile = False
 
-				.CalculateData()
+					ApplyStyleToRange(.RowRange.ToRange(pivotSheet), colStyles("Heading"))
+					ApplyStyleToRange(.ColumnRange.ToRange(pivotSheet), colStyles("Heading"))
+					ApplyStyleToRange(.DataBodyRange.ToRange(pivotSheet), colStyles("Data"))
 
-			End With
+					Dim stlDecimal = pivotSheet.Cells(.DataBodyRange.StartRow, .DataBodyRange.StartColumn).GetStyle()
+					stlDecimal.Number = 2
 
-			pivotSheet.AutoFitColumns()
+					Dim objColumn = colColumns(colColumns.Count - 1)
+					If objColumn.Decimals > 0 Then
+						stlDecimal.Custom = "0" & "." & New String("0", objColumn.Decimals)
+					Else
+						stlDecimal.Custom = "@"
+					End If
 
-		End Sub
+					.DataBodyRange.ToRange(pivotSheet).SetStyle(stlDecimal)					
 
-		Private Sub ApplyCellOptions(ByRef lngColCount As Integer, ByRef colStyles As Collection, ByRef blnGridLines As Boolean)
+				End With
+
+				pivotSheet.AutoFitColumns()
+
+
+			Catch ex As Exception
+				_mstrErrorMessage = ex.Message
+				Throw
+
+			End Try
+
+			Return pivotSheet
+
+		End Function
+
+		Private Sub ApplyCellOptions(worksheet As Worksheet, ByRef colStyles As Collection, blnGridLines As Boolean)
 
 			Dim objRange As Range
 
@@ -610,8 +634,8 @@ Namespace ExClientCode
 
 				If _mblnApplyStyles Then
 					If blnGridLines Then
-						_mxlWorkSheet.IsGridlinesVisible = _mblnXlExcelGridlines
-						_mxlWorkSheet.IsRowColumnHeadersVisible = _mblnXlExcelHeaders
+						worksheet.IsGridlinesVisible = _mblnXlExcelGridlines
+						worksheet.IsRowColumnHeadersVisible = _mblnXlExcelHeaders
 					End If
 
 					With colStyles.Item("Title")
@@ -623,8 +647,8 @@ Namespace ExClientCode
 
 					'Put title in after autofit...
 					If colStyles.Item("Title").StartCol <> 0 And colStyles.Item("Title").StartRow <> 0 Then
-						_mxlWorkSheet.Cells(colStyles.Item("Title").StartRow - 1, colStyles.Item("Title").StartCol - 1).Value = _mstrDefTitle
-						objRange = _mxlWorkSheet.Cells.CreateRange(colStyles.Item("Title").StartRow - 1, colStyles.Item("Title").StartCol - 1, 1, 1)
+						worksheet.Cells(colStyles.Item("Title").StartRow - 1, colStyles.Item("Title").StartCol - 1).Value = _mstrDefTitle
+						objRange = worksheet.Cells.CreateRange(colStyles.Item("Title").StartRow - 1, colStyles.Item("Title").StartCol - 1, 1, 1)
 						ApplyStyleToRange(objRange, colStyles.Item("Title"))
 					End If
 				End If
@@ -721,7 +745,6 @@ Namespace ExClientCode
 			End Try
 
 		End Sub
-
 
 		Private Sub ApplyStyleToRange(ByRef objRange As Range, objStyle As clsOutputStyle)
 

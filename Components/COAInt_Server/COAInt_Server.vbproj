@@ -140,6 +140,7 @@
     <Compile Include="Enums\RelationType.vb" />
     <Compile Include="Enums\TrackType.vb" />
     <Compile Include="Extensions\BaseExtensions.vb" />
+    <Compile Include="Extensions\CellAreaExtensions.vb" />
     <Compile Include="Extensions\ModuleSettingExtensions.vb" />
     <Compile Include="Extensions\PermissionExtension.vb" />
     <Compile Include="Extensions\RelationExtension.vb" />
