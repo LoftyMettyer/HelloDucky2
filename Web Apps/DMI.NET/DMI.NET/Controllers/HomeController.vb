@@ -11,6 +11,8 @@ Imports HR.Intranet.Server.Enums
 Imports HR.Intranet.Server
 Imports DMI.NET.Models
 Imports System.Data.SqlClient
+Imports System.Net.Mail
+Imports System.Net.Mime
 
 
 Namespace Controllers
@@ -2348,6 +2350,74 @@ Namespace Controllers
 
 		Function EventLogSelection() As ActionResult
 			Return View()
+		End Function
+
+		Function SendEmail() As ActionResult
+
+			Dim emailTo As String = Request.Form("To")
+			Dim emailCC As String = Request.Form("CC")
+			Dim emailBCC As String = Request.Form("BCC")
+			Dim emailSubject As String = Request.Form("Subject")
+			Dim emailBody As String = Request.Form("Body")
+			Dim returnMessage As String
+
+			Dim message As New MailMessage()
+			message.Subject = emailSubject
+			message.Body = emailBody
+
+			Try
+
+				If Not emailTo = "" Then
+					If emailTo.Contains(";") = True Then
+
+						Dim aRecipientList = Split(emailTo, ";")
+
+						For iLoop = 0 To UBound(aRecipientList) - 1
+							message.To.Add(aRecipientList(iLoop))
+						Next
+					Else
+						message.To.Add(emailTo)
+					End If
+				End If
+
+				If Not emailCC = "" Then
+					If emailCC.Contains(";") = True Then
+
+						Dim aRecipientList = Split(emailCC, ";")
+
+						For iLoop = 0 To UBound(aRecipientList) - 1
+							message.CC.Add(aRecipientList(iLoop))
+						Next
+					Else
+						message.CC.Add(emailCC)
+					End If
+				End If
+
+				If Not emailBCC = "" Then
+					If emailBCC.Contains(";") = True Then
+
+						Dim aRecipientList = Split(emailBCC, ";")
+
+						For iLoop = 0 To UBound(aRecipientList) - 1
+							message.Bcc.Add(aRecipientList(iLoop))
+						Next
+					Else
+						message.Bcc.Add(emailBCC)
+					End If
+				End If
+
+				Dim client As New SmtpClient()
+
+				client.Send(message)
+
+				returnMessage = "Email sent successfully"
+
+			Catch ex As Exception
+				returnMessage = ex.Message
+			End Try
+
+			Return Content(returnMessage)
+
 		End Function
 
 #End Region

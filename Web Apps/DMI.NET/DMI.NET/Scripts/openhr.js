@@ -379,7 +379,26 @@
 			return true;
 		},
 		sendMail = function (sTo, sSubject, sBody, sCC, sBCC) {
-			//TODO
+			
+			$.ajax({
+				type: "POST",
+				url: "SendEmail",
+				data: { 'to': sTo, 'cc': sCC, 'bcc': sBCC, 'subject': sSubject, 'body': sBody },
+				dataType: "text",
+				success: function (html) {
+					alert("Email sent successfully");
+				},
+				error: function (req, status, errorObj) {
+					if (!(errorObj == "" || req.responseText == "")) {
+						$("#errorDialogTitle").text(errorObj);
+						$("#errorDialogContentText").html(req.responseText);
+						$("#errorDialog").dialog("open");
+					}
+				}
+
+			});
+
+
 		},
 		currentWorkPage = function () {
 			var sCurrentPage;

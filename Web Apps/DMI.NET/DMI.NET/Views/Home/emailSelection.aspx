@@ -9,6 +9,7 @@
 <head runat="server">
 	<title>Event Log Selection - OpenHR</title>
 	<script src="<%: Url.LatestContent("~/bundles/jQuery")%>" type="text/javascript"></script>
+	<script src="<%: Url.LatestContent("~/bundles/jQueryUI7")%>" type="text/javascript"></script>
 	<script src="<%: Url.LatestContent("~/bundles/OpenHR_General")%>" type="text/javascript"></script>
 	<script src="<%: Url.LatestContent("~/bundles/OpenHR_ActiveX")%>" type="text/javascript"></script>
 	
@@ -29,9 +30,6 @@
 
 	<%--jQuery Grid Stylesheet--%>
 	<link href="<%: Url.LatestContent("~/Content/ui.jqgrid.css")%>" rel="stylesheet" type="text/css" />
-
-
-	
 
 </head>
 <body>
@@ -430,16 +428,12 @@
 			Dim sAddline As String
 			Dim sEmailAddresses As String
 			Dim iLoop As Integer
-	
-			iLoop = 0
-			sAddline = vbNullString
-			sEmailAddresses = vbNullString
-			
+				
 			Dim rsEmail = objDataAccess.GetFromSP("spASRIntGetEventLogEmails")
 
 			For Each objOuterRow As DataRow In rsEmail.Rows
 				
-				i = i + 1
+				i += 1
 				sEmailAddresses = vbNullString
 				sAddline = "0" & vbTab & "0" & vbTab & "0" & vbTab
 				sAddline = sAddline & objOuterRow("Name").ToString() & vbTab
@@ -457,7 +451,7 @@
 						If Not rstEmailAddr Is Nothing Then
 							For Each objRow In rstEmailAddr.Rows
 									
-								If iLoop > 1 Then
+								If iLoop > 0 Then
 									sEmailAddresses = sEmailAddresses & ";"
 								End If
 									
@@ -543,7 +537,7 @@
 							iDetailCount = 0
 						End If
 				
-						iDetailCount = iDetailCount + 1
+						iDetailCount += 1
 				
 						If objRow("count") > 0 Then
 							If (Not IsDBNull(objRow("Notes"))) And (Len(objRow("Notes")) > 0) Then
@@ -576,7 +570,7 @@
 				%>
 	</form>
 
-<script type="text/javascript">
+	<script type="text/javascript">
 	
 	function emailSelection_window_onload() {
 
@@ -611,17 +605,16 @@
 	}
 
 	function emailEvent() {
-		var bOK = false;
+
 		var sTo = getEmailList(0);
 		var sCC = getEmailList(1);
 		var sBCC = getEmailList(2);
 		var sSubject = getSubject();
 		var sBody = getBody();
-
-		bOK = OpenHR.sendMail(sTo, sSubject, sBody, sCC, sBCC);
-
+		window.dialogArguments.OpenHR.sendMail(sTo, sSubject, sBody, sCC, sBCC);
 		self.close();
-		return bOK;
+
+		return true;
 	}
 
 	function getEmailList(iSendType) {
@@ -660,7 +653,6 @@
 	<script type="text/javascript">
 		setTimeout("emailSelection_window_onload()", 100);
 	</script>
-
 
 </body>
 </html>
