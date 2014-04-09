@@ -5,7 +5,7 @@ var util_def_exprcomponent_frmOriginalDefinition = OpenHR.getForm("optionframe",
 var frmFieldRec = OpenHR.getForm("workframe", "frmFieldRec");
 
 		function util_def_exprcomponent_onload() {
-				
+			
 				var fOK;
 				var sUDFFunction_Visibility;
 				var sUDFFunction_Display;
@@ -470,7 +470,7 @@ function field_refreshTable() {
 		var sTableID;
 		var sRelated;
 		var sIsChild;
-		var tableCollection = frmTables.elements;
+		var tableCollection = $("#frmExprTables")[0].elements;
 		var sDefaultTableID;
 		var i;
 		var iIndex;
@@ -603,7 +603,7 @@ function field_refreshColumn() {
 }
 
 function field_refreshChildFrame() {
-		var tableCollection = frmTables.elements;
+	var tableCollection = $("#frmExprTables")[0].elements;
 		var i;
 		var fIsChild;
 	
@@ -981,7 +981,7 @@ function lookupValue_refreshTable() {
 		var sTableName;
 		var sTableID;
 		var sType;
-		var tableCollection = frmTables.elements;
+		var tableCollection = $("#frmExprTables")[0].elements;
 		var sDefaultTableID;
 		var i;
 		var iIndex;
@@ -1270,7 +1270,7 @@ function pVal_refreshTable() {
 		var sTableName;
 		var sTableID;
 		var sType;
-		var tableCollection = frmTables.elements;
+		var tableCollection = $("#frmExprTables")[0].elements;
 		var sDefaultTableID;
 		var i;
 		var iIndex;
@@ -1859,7 +1859,7 @@ function component_OKClick()
 		var iIndex;
 		var iDataType;
 		var fIsChild = false;
-		var tableCollection = frmTables.elements;
+		var tableCollection = $("#frmExprTables")[0].elements;
 		var sFunctionParameters;
 		var colFunctionParameters = frmFunctionParameters.elements;
 

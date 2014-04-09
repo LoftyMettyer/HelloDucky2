@@ -1587,7 +1587,7 @@
 	%>
 </form>
 
-<form id="frmTables" name="frmTables">
+<form id="frmExprTables" name="frmExprTables">
 	<%
 
 		Dim iCount As Integer
@@ -1605,7 +1605,7 @@
 				Next
 				
 			Catch ex As Exception
-				sErrMsg = "Error reading component tables." & vbCrLf & FormatError(Err.Description)
+				sErrMsg = "Error reading component tables." & vbCrLf & FormatError(ex.Message)
 
 			End Try
 		End If
