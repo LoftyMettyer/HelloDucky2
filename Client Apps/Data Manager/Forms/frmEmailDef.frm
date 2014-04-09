@@ -315,7 +315,7 @@ Private Function CheckForUsage() As Boolean
   CheckForUsage = True
   
   Set frmProp = New frmDefProp
-  frmProp.CheckForUseage "EMAIL ADDRESS", mlngSelectedID
+  frmProp.CheckForUseage UtilityType.utlEmailAddress, mlngSelectedID
 
   With frmProp.List1
     If .List(0) <> "<None>" And _
