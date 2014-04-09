@@ -4823,15 +4823,15 @@ function menu_loadSelectOrderFilter(psType) {
 }
 
 	function menu_enableMenuItem(itemId, fNewSetting) {
-	if (fNewSetting == "True" || fNewSetting == true || fNewSetting == 1) {
-	$("#" + itemId + " a:first").removeAttr("disabled");
-} else {
-	$("#" + itemId + " a:first").attr("disabled", "disabled");
-	$("#" + itemId + " a:first").css({
-	color: "lightgrey",
-	cursor: "default"
-});
-}
+		if (fNewSetting == "True" || fNewSetting == true || fNewSetting == 1) {
+			$("#" + itemId + " a:first").removeAttr("disabled");
+		} else {
+			$("#" + itemId + " a:first").attr("disabled", "disabled");
+			$("#" + itemId + " a:first").css({ cursor: "default" });
+			if ($("#" + itemId + " a:first").hasClass("ui-menu-item")) { //Apply lightgrey color to disabled items on the context mennu only, not on the ribbon
+				$("#" + itemId + " a:first").css({ color: "lightgrey" });
+			}
+		}
 }
 
 	function menu_toolbarEnableItem(itemId, fNewSetting) {
