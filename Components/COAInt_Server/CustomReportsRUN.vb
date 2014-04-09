@@ -3484,6 +3484,8 @@ CheckRecordSet_ERROR:
 
 		For Each objReportItem In ColumnDetails
 
+			If objReportItem.IsHidden Then Continue For
+
 			iLoop += 1
 
 			'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(4, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
@@ -3566,6 +3568,8 @@ CheckRecordSet_ERROR:
 			Dim rowData As DataRow = rsTemp.Rows(0)
 
 			For Each objReportItem In ColumnDetails
+
+				If objReportItem.IsHidden Then Continue For
 
 				iLoop += 1
 
