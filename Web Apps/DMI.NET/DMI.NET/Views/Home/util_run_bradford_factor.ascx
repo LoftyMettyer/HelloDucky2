@@ -68,16 +68,16 @@
 						Response.Write("			  <tr>" & vbCrLf)
 						Response.Write("			    <td colspan=3 height=10>&nbsp;</td>" & vbCrLf)
 						Response.Write("			  </tr>" & vbCrLf)
-						Response.Write("			  <tr> " & vbCrLf)
-						Response.Write("			    <td colspan=3 height=10 align=center> " & vbCrLf)
-		Response.Write("						<input type=button id=cmdClose name=cmdClose value=Close style=""WIDTH: 80px"" width=80 class=""btn""" & vbCrLf)		'1
-						Response.Write("                      onclick=""closeclick();""" & vbCrLf)
-						Response.Write("                      onmouseover=""try{button_onMouseOver(this);}catch(e){}""" & vbCrLf)
-						Response.Write("                      onmouseout=""try{button_onMouseOut(this);}catch(e){}""" & vbCrLf)
-						Response.Write("                      onfocus=""try{button_onFocus(this);}catch(e){}""" & vbCrLf)
-						Response.Write("                      onblur=""try{button_onBlur(this);}catch(e){}"" />" & vbCrLf)
-						Response.Write("			    </td>" & vbCrLf)
-						Response.Write("			  </tr>" & vbCrLf)
+		'				Response.Write("			  <tr> " & vbCrLf)
+		'				Response.Write("			    <td colspan=3 height=10 align=center> " & vbCrLf)
+		'Response.Write("						<input type=button id=cmdClose name=cmdClose value=Close style=""WIDTH: 80px"" width=80 class=""btn""" & vbCrLf)		'1
+		'				Response.Write("                      onclick=""closeclick();""" & vbCrLf)
+		'				Response.Write("                      onmouseover=""try{button_onMouseOver(this);}catch(e){}""" & vbCrLf)
+		'				Response.Write("                      onmouseout=""try{button_onMouseOut(this);}catch(e){}""" & vbCrLf)
+		'				Response.Write("                      onfocus=""try{button_onFocus(this);}catch(e){}""" & vbCrLf)
+		'				Response.Write("                      onblur=""try{button_onBlur(this);}catch(e){}"" />" & vbCrLf)
+		'				Response.Write("			    </td>" & vbCrLf)
+		'				Response.Write("			  </tr>" & vbCrLf)
 						Response.Write("			  <tr> " & vbCrLf)
 						Response.Write("			    <td colspan=3 height=10></td>" & vbCrLf)
 						Response.Write("			  </tr>" & vbCrLf)
@@ -441,12 +441,12 @@
 						<tr>
 						<td colspan="3" height="10">&nbsp;</td>
 						</tr>
-						<tr> 
+						<%--<tr> 
 							<td colspan=3 height=10 align=center>
 														<input type="button" id="cmdClose" name="cmdClose" value="Close" style="WIDTH: 80px" width="80" class="btn"
 																onclick="closeclick();" />
 												</td>
-						</tr>
+						</tr>--%>
 						<tr> 
 						<td colspan="3" height="10"></td>
 						</tr>

@@ -134,11 +134,12 @@
 		$("#optionsframeset").show();
 		$("#reportframe").show();
 		$("#reportworkframe").show();
-
+		
 		if ($('#txtNoRecs').val() == "True") {
 			$("#cmdPrint").hide();
 			$("#cmdOutput").hide();
 			$("#cmdCancel").hide();
+			$("#reportworkframe").css("height", "74px");			
 		}
 	}
 
