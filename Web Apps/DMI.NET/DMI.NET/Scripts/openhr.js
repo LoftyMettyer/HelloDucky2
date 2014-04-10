@@ -14,18 +14,6 @@
 		}
 	}
 
-	function sessionTimeout() {
-
-		var frmMessage = OpenHR.getForm("divPollMessage", "frmPollMessage");
-
-		try {
-			$('#txtIsSessionTimeout').val('true');
-			frmMessage.action = "TimedOut";
-			OpenHR.submitForm(frmMessage, "divPollMessage");
-		} catch (e) {
-		}
-	}
-
 	function handleAjaxError(html) {
 		//handle error
 		messageBox(html.ErrorMessage.replace("<p>", "\n\n"), 48, html.ErrorTitle);
@@ -678,6 +666,15 @@
 			}
 		}
 		return returnvalue;
+	},
+	sessionTimeout = function() {
+		var frmMessage = OpenHR.getForm("divPollMessage", "frmPollMessage");
+		try {
+			$('#txtIsSessionTimeout').val('true');
+			frmMessage.action = "TimedOut";
+			OpenHR.submitForm(frmMessage, "divPollMessage");
+		} catch (e) {
+		}
 	};
 
 	window.OpenHR = {

@@ -415,17 +415,12 @@
 		function enableSaveButton() {
 			if ($("#ctlRecordEdit #changed").val() == "false") {
 				$("#ctlRecordEdit #changed").val("true");
-				menu_toolbarEnableItem("mnutoolSaveRecord", true);
-				window.onbeforeunload = warning;
+				menu_toolbarEnableItem("mnutoolSaveRecord", true);				
 			}
+			window.onbeforeunload = warning;
 		}
 		
 		function warning() {
-			setTimeout(function () {
-				//alert('thanks for staying!');
-				window.clearTimeout(window.timeoutHandle);
-				window.timeoutHandle = window.setTimeout('OpenHR.SessionTimeout();', window.timeoutMs);
-			}, 1000);
 			return "You will lose your changes if you do not save before leaving this page.\n\nWhat do you want to do?";
 		}
 		

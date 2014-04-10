@@ -130,16 +130,6 @@
 
 		}
 
-		//Timeout functionality
-		try {
-			window.timeoutMs = (Number('<%=Session("TimeoutSecs")%>') * 1000);
-		} catch(e) {
-			//default to 20 minutes.
-			window.timeoutMs = 1200000;
-		}
-
-		window.timeoutHandle = window.setTimeout('OpenHR.SessionTimeout();', window.timeoutMs);
-
 
 		$('header').show();
 		var doit;

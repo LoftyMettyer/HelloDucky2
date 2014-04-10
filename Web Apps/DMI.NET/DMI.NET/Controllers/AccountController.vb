@@ -162,8 +162,6 @@ Namespace Controllers
 				' Session("server") = ""
 
 				Session("showLoginDetails") = Request.QueryString("Details")
-				Session("isMobileDevice") = (Platform.IsMobileDevice() = True)
-
 			Catch ex As Exception
 				Session("ErrorText") = FormatError(ex.Message)
 				Return RedirectToAction("Loginerror")
@@ -254,6 +252,8 @@ Namespace Controllers
 			Session("LocaleDateSeparator") = sLocaleDateSeparator
 			Session("LocaleDecimalSeparator") = sLocaleDecimalSeparator
 			Session("LocaleThousandSeparator") = sLocaleThousandSeparator
+
+			Session("isMobileDevice") = (Platform.IsMobileDevice() = True)
 
 			' Store the username, for use in forcedchangepassword.
 			Session("Username") = LCase(sUserName)

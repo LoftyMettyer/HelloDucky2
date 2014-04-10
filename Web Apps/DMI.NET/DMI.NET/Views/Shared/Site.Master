@@ -267,7 +267,7 @@
 
 		//Reset the session timeout everytime the user clicks the mouse
 		$(window).on('click', function() {
-			if (!($('#frmLoginForm'))) { //Don't reset the timeout if we are in the Login screen
+			if ($('#frmLoginForm').length == 0) { //Don't reset the timeout if we are in the Login screen
 			window.clearTimeout(window.timeoutHandle);
 			window.timeoutHandle = window.setTimeout('OpenHR.SessionTimeout(1);', (Number('<%=Session("TimeoutSecs")%>') * 1000));
 			window.onbeforeunload = null;
