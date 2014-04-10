@@ -47,7 +47,7 @@
 	$("#workframeset").hide();
 	$("#reportframe").show();
 
-	picklistSelectionData_window_onload();
+	//picklistSelectionData_window_onload();
 	picklistSelection_window_onload();
 	picklistSelection_addhandlers();
 

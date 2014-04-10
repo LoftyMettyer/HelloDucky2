@@ -549,7 +549,8 @@
 										' Logic
 										Response.Write("        <input type=hidden id=prompt_3_" & rowPromptedValues("componentID").value & " name=prompt_3_" & rowPromptedValues("componentID").value & " value=" & sDefaultValue & ">" & vbCrLf)
 									Else
-										Response.Write("        <input type=hidden id=prompt_1_" & rowPromptedValues("componentID").value & " name=prompt_1_" & rowPromptedValues("componentID").value & " value=""" & Replace(sDefaultValue, """", "&quot;") & """>" & vbCrLf)
+										'Response.Write("        <input type=hidden id=prompt_1_" & rowPromptedValues("componentID").value & " name=prompt_1_" & rowPromptedValues("componentID").value & " value=""" & Replace(sDefaultValue, """", "&quot;") & """>" & vbCrLf)
+										Response.Write("        <input type=hidden id=prompt_1_" & rowPromptedValues("componentID").ToString & " name=prompt_1_" & rowPromptedValues("componentID").ToString & " value=""" & Replace(sDefaultValue, """", "&quot;") & """>" & vbCrLf)
 									End If
 								End If
 				

@@ -21,8 +21,7 @@
 				catch (e) {
 				}
 			}
-
-			window.parent.close();
+			//window.parent.close();
 		}
 
 	</script>

@@ -96,9 +96,7 @@
 	}
 
 	function makeSelection() {
-
 		var frmUseful = document.getElementById("frmpicklistSelectionUseful");
-
 		if (frmUseful.txtSelectionType.value.toUpperCase() == "FILTER") {
 			try {
 				var frmParentUseful = OpenHR.getForm("workframe", "frmUseful");
@@ -106,11 +104,9 @@
 			}
 			catch (e) {
 			}
-
 			// Go to the prompted values form to get any required prompts. 
 			frmPrompt.filterID.value = selectedRecordID();
 			OpenHR.showInReportFrame(frmPrompt);
-
 		}
 		else {
 			if (frmUseful.txtSelectionType.value.toUpperCase() == "PICKLIST") {
@@ -497,7 +493,7 @@
 
 									' Instantiate and initialise the grid. 
 							%>
-							<object classid="clsid:4A4AA697-3E6F-11D2-822F-00104B9E07A1" id="ssOleDBGridSelRecords" name="ssOleDBGridSelRecords" codebase="cabs/COAInt_Grid.cab#version=3,1,3,6" style="LEFT: 0px; TOP: 0px; WIDTH: 100%; HEIGHT: 400px">
+							<object classid="clsid:4A4AA697-3E6F-11D2-822F-00104B9E07A1" id="ssOleDBGridSelRecords" name="ssOleDBGridSelRecords" codebase="cabs/COAInt_Grid.cab#version=3,1,3,6" style="LEFT: 0px; TOP: 0px; WIDTH: 100%; HEIGHT: 300px">
 								<param name="ScrollBars" value="4">
 								<param name="_Version" value="196616">
 								<param name="DataMode" value="2">
@@ -731,7 +727,7 @@
 								</tr>
 								<tr>
 									<td style="height: 260px;vertical-align: top">
-										<object classid="clsid:4A4AA697-3E6F-11D2-822F-00104B9E07A1" id="ssOleDBGridSelRecords" name="ssOleDBGridSelRecords" codebase="cabs/COAInt_Grid.cab#version=3,1,3,6" style="LEFT: 0px; TOP: 0px; WIDTH: 100%; HEIGHT: 100%">
+										<object classid="clsid:4A4AA697-3E6F-11D2-822F-00104B9E07A1" id="ssOleDBGridSelRecords" name="ssOleDBGridSelRecords" codebase="cabs/COAInt_Grid.cab#version=3,1,3,6" style="LEFT: 0px; TOP: 0px; WIDTH: 100%; HEIGHT: 300px">
 											<param name="ScrollBars" value="4">
 											<param name="_Version" value="196617">
 											<param name="DataMode" value="2">
@@ -830,7 +826,7 @@
 								<tr>
 									<td>&nbsp;</td>
 									<td width="10">
-										<input id="cmdOK" type="button" value="OK" name="cmdOK" class="btn" style="WIDTH: 80px" width="80"
+										<input id="cmdOK" type="button" value="OK" name="cmdOK" class="btn" style="WIDTH: 80px"
 											onclick="makeSelection()" />
 									</td>
 									<td width="10">&nbsp;</td>
