@@ -2958,18 +2958,18 @@ Namespace Controllers
 
 						ClientDLL.ArrayDim(UBound(arrayVisibleColumns, 2), 0)
 						lngActualRow = 0
-						lngRow = 1
+						lngRow = 0
 
 						For Each objRow As DataRow In objReport.datCustomReportOutput.Rows
 
 							lngRow += 1
 							lngActualRow += 1
-							If lngActualRow = objReport.datCustomReportOutput.Rows.Count Then
+							If lngRow = objReport.datCustomReportOutput.Rows.Count Then
 
 								If objReport.ReportHasSummaryInfo Then
 									sBreakValue = "Grand Totals"
 								Else
-									sBreakValue = arrayPageBreakValues(lngActualRow)
+									sBreakValue = arrayPageBreakValues(lngRow)
 								End If
 
 								If (lngActualRow > 0) Then
@@ -3025,7 +3025,7 @@ Namespace Controllers
 
 								ClientDLL.ArrayReDim()
 
-								For lngCount = 0 To UBound(arrayVisibleColumns, 2)
+								For lngCount = 1 To UBound(arrayVisibleColumns, 2) + 1
 									ClientDLL.ArrayAddTo(lngCol, lngActualRow, objRow.Item(lngCount + 1).ToString())
 									lngCol += 1
 								Next
@@ -3042,7 +3042,7 @@ Namespace Controllers
 						Else
 							ClientDLL.ArrayDim(UBound(arrayVisibleColumns, 2), objReport.datCustomReportOutput.Rows.Count + 1)
 						End If
-						
+
 						If bBradfordFactor = True Then
 							ClientDLL.PageTitles = False
 							ClientDLL.AddPage("Bradford Factor", "Bradford Factor")

@@ -7,6 +7,7 @@ Imports HR.Intranet.Server.BaseClasses
 Imports HR.Intranet.Server.Enums
 Imports Aspose.Cells
 Imports Aspose.Cells.Pivot
+Imports System.Linq
 
 Namespace ExClientCode
 
@@ -857,6 +858,7 @@ Namespace ExClientCode
 			_mxlWorkSheet = Nothing
 			_mxlWorkBook = Nothing
 		End Sub
+
 		Protected Overrides Sub Finalize()
 			Class_Terminate_Renamed()
 			MyBase.Finalize()
@@ -871,79 +873,77 @@ Namespace ExClientCode
 
 		End Sub
 
-
-		Private Function FormatSheetName(ByRef strSheetName As String) As String
-
-			Dim strInvalidChars As String
-			Dim lngCount As Integer
+		Private Shared Function FormatSheetName(strSheetName As String) As String
 
 			If Left(strSheetName, 1) = "'" Then
 				strSheetName = " " & strSheetName
 			End If
 
-			strInvalidChars = "\/*:[]?,"
-			For lngCount = 1 To Len(strInvalidChars)
-				strSheetName = Replace(strSheetName, Mid(strInvalidChars, lngCount, 1), " ")
-			Next
+			Dim separators As Char() = New Char() {"\"c, "/"c, "*"c, ":"c, "["c, "]"c, "?"c, ","c, ControlChars.Quote}
+			strSheetName.ReplaceMultiple(separators, "")
 
 			Do While InStr(strSheetName, "  ") > 0
 				strSheetName = Replace(strSheetName, "  ", " ")
 			Loop
 
-			FormatSheetName = Left(Trim(strSheetName), 31)
+			Return strSheetName
 
 		End Function
 
+		Private Function GetSheetName(desiredName As String) As String
 
-		Private Function SetSheetName(ByRef objObject As Worksheet, strSheetName As String) As Boolean
+			Dim bNameOK As Boolean = False
+			Dim iCount As Integer = 0
+			Dim sSheetName As String = desiredName
 
-			Dim strNumber As String
-			Dim lngCount As Integer
+			If sSheetName = "" Then sSheetName = "Sheet"
+			sSheetName = Left(Trim(sSheetName), 31)
 
-			strSheetName = FormatSheetName(strSheetName)
+			Do While Not bNameOK
 
-			On Error Resume Next
-			Err.Clear()
-			If strSheetName <> vbNullString Then
-				'Sheet may already exist so add sequential number
-				objObject.Name = strSheetName
-			Else
-				strSheetName = "Sheet"
-			End If
+				If Not _mxlWorkBook.Worksheets.Any(Function(oSheet) oSheet.Name = sSheetName) Then
+					bNameOK = True
+				Else
 
-			If objObject.Name <> strSheetName Then
-				lngCount = 1
-				Do
-					lngCount += 1
-					Err.Clear()
-					strNumber = "(" & CStr(lngCount) & ")"
-					'		objObject.Name = Left(strSheetName, 31 - Len(strNumber)) & strNumber
-					If lngCount > 256 Then
-						_mstrErrorMessage = "Error naming sheet"
-						Exit Function
-					End If
-				Loop While Err.Number > 0
-			End If
+					iCount += 1
 
+					sSheetName = If(sSheetName.Length <= 25, sSheetName, sSheetName.Substring(0, 25))
+					sSheetName = String.Format("{0} {1}", sSheetName, iCount)
+				End If
+			Loop
 
-			On Error Resume Next
-			'MH20031117 Fault 7628
-			' NOTE: No templates in intranet
-			'If _mxlTemplateSheet Is Nothing Then
-			If _mstrXlTemplate = vbNullString Then
-				With objObject.PageSetup
-					' .LeftFooter = "Created on &D at &T by " & gsUsername
-					.SetFooter(0, "Created on &D at &T by " & UserName)
-					' .RightFooter = "Page &P"
-					.SetFooter(2, "Page &P")
-					.Orientation = IIf(_mblnXlLandscape, PageOrientationType.Landscape, PageOrientationType.Portrait)
-					' .DisplayPageBreaks = False
-				End With
-			End If
-
-			SetSheetName = True
+			Return sSheetName
 
 		End Function
+
+		Private Sub SetSheetName(ByRef objObject As Worksheet, strSheetName As String)
+
+			Try
+
+				strSheetName = FormatSheetName(strSheetName)
+
+				If _mxlWorkBook.Worksheets.Count < 100 Then
+					objObject.Name = GetSheetName(strSheetName)
+				End If
+
+				If _mstrXlTemplate = vbNullString Then
+					With objObject.PageSetup
+						' .LeftFooter = "Created on &D at &T by " & gsUsername
+						.SetFooter(0, "Created on &D at &T by " & UserName)
+						' .RightFooter = "Page &P"
+						.SetFooter(2, "Page &P")
+						.Orientation = IIf(_mblnXlLandscape, PageOrientationType.Landscape, PageOrientationType.Portrait)
+						' .DisplayPageBreaks = False
+					End With
+				End If
+
+
+			Catch ex As Exception
+				Throw
+
+			End Try
+
+		End Sub
 
 
 		'****************************************************************

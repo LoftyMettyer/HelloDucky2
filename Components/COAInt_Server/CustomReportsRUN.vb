@@ -82,7 +82,7 @@ Public Class Report
 	Private mvarGroupWith(,) As Object
 
 	'Array used to store the 'POC' values when outputting.
-	Private mvarPageBreak() As Object
+	Private mvarPageBreak() As String
 	Private mblnPageBreak As Boolean
 	Private mintPageBreakRowIndex As Integer
 
@@ -311,9 +311,9 @@ Public Class Report
 		End Get
 	End Property
 
-	Public ReadOnly Property OutputArray_PageBreakValues() As Object
+	Public ReadOnly Property OutputArray_PageBreakValues() As String()
 		Get
-			Return VB6.CopyArray(mvarPageBreak)
+			Return mvarPageBreak
 		End Get
 	End Property
 
@@ -2721,8 +2721,8 @@ CheckRecordSet_ERROR:
 				If mblnPageBreak Then
 					NEW_AddToArray_Data(RowType.PageBreak, "*")
 
-					mintPageBreakRowIndex = mintPageBreakRowIndex + 1
-					AddPageBreakValue(mintPageBreakRowIndex + 1, sBreakValue)
+					mintPageBreakRowIndex += 1
+					AddPageBreakValue(mintPageBreakRowIndex, sBreakValue)
 				End If
 				mblnPageBreak = False
 				sBreakValue = vbNullString
@@ -2846,7 +2846,7 @@ CheckRecordSet_ERROR:
 						Return False
 
 					Else
-						mintPageBreakRowIndex = mintPageBreakRowIndex + 1
+						mintPageBreakRowIndex += 1
 
 						If blnHasGroupWithNext Then
 							strGroupString = vbNullString
@@ -2854,7 +2854,7 @@ CheckRecordSet_ERROR:
 								'UPGRADE_WARNING: Couldn't resolve default property of object mvarGroupWith(0, intGroupCount). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 								strGroupString = strGroupString & vbNewLine & mvarGroupWith(0, intGroupCount)
 
-								mintPageBreakRowIndex = mintPageBreakRowIndex + 1
+								mintPageBreakRowIndex += 1
 							Next intGroupCount
 
 							AddToArray_Data(strGroupString, RowType.Data)
@@ -2912,8 +2912,8 @@ CheckRecordSet_ERROR:
 
 
 			If mblnPageBreak Then
-				mintPageBreakRowIndex = mintPageBreakRowIndex + 1
-				AddPageBreakValue(mintPageBreakRowIndex + 1, sBreakValue)
+				mintPageBreakRowIndex += 1
+				AddPageBreakValue(mintPageBreakRowIndex, sBreakValue)
 			End If
 			sBreakValue = vbNullString
 
@@ -2922,8 +2922,8 @@ CheckRecordSet_ERROR:
 				PopulateGrid_DoGrandSummary()
 
 				If mblnPageBreak And mblnDoesHaveGrandSummary Then
-					AddPageBreakValue(mintPageBreakRowIndex + 1, sBreakValue)
-					mintPageBreakRowIndex = mintPageBreakRowIndex + 1
+					AddPageBreakValue(mintPageBreakRowIndex, sBreakValue)
+					mintPageBreakRowIndex += 1
 				End If
 
 			End If
@@ -2945,12 +2945,10 @@ CheckRecordSet_ERROR:
 
 	End Function
 
-	Private Sub AddPageBreakValue(pintRowIndex As Integer, pvarValue As Object)
+	Private Sub AddPageBreakValue(pintRowIndex As Integer, psValue As String)
 
 		ReDim Preserve mvarPageBreak(pintRowIndex)
-		'UPGRADE_WARNING: Couldn't resolve default property of object pvarValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		'UPGRADE_WARNING: Couldn't resolve default property of object mvarPageBreak(pintRowIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		mvarPageBreak(pintRowIndex) = pvarValue
+		mvarPageBreak(pintRowIndex) = psValue
 
 	End Sub
 
@@ -3378,23 +3376,23 @@ CheckRecordSet_ERROR:
 
 			If fHasAverage Then
 				NEW_AddToArray_Data(RowType.Average, aryAverageAddString)
-				mintPageBreakRowIndex = mintPageBreakRowIndex + 1
+				mintPageBreakRowIndex += 1
 			End If
 
 			If fHasCount Then
 				NEW_AddToArray_Data(RowType.Count, aryCountAddString)
-				mintPageBreakRowIndex = mintPageBreakRowIndex + 1
+				mintPageBreakRowIndex += 1
 			End If
 
 			If fHasTotal Then
 				NEW_AddToArray_Data(RowType.Total, aryTotalAddString)
-				mintPageBreakRowIndex = mintPageBreakRowIndex + 1
+				mintPageBreakRowIndex += 1
 			End If
 
 			If Not mblnCustomReportsSummaryReport Then
 				'If fHasAverage Or fHasCount Or fHasTotal Then
 				NEW_AddToArray_Data(RowType.Data, "")
-				mintPageBreakRowIndex = mintPageBreakRowIndex + 1
+				mintPageBreakRowIndex += 1
 				'End If
 			End If
 
@@ -3647,19 +3645,19 @@ CheckRecordSet_ERROR:
 		If fHasAverage Then
 			mblnReportHasSummaryInfo = True
 			NEW_AddToArray_Data(RowType.GrandSummary, aryAverageAddString)
-			mintPageBreakRowIndex = mintPageBreakRowIndex + 1
+			mintPageBreakRowIndex += 1
 		End If
 
 		If fHasCount Then
 			mblnReportHasSummaryInfo = True
 			NEW_AddToArray_Data(RowType.GrandSummary, aryCountAddString)
-			mintPageBreakRowIndex = mintPageBreakRowIndex + 1
+			mintPageBreakRowIndex += 1
 		End If
 
 		If fHasTotal Then
 			mblnReportHasSummaryInfo = True
 			NEW_AddToArray_Data(RowType.GrandSummary, aryTotalAddString)
-			mintPageBreakRowIndex = mintPageBreakRowIndex + 1
+			mintPageBreakRowIndex += 1
 		End If
 
 		Exit Sub

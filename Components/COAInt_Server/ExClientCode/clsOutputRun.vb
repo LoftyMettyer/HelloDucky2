@@ -810,18 +810,17 @@ LocalErr:
 
 	End Sub
 
-	Public Function ArrayDim(lngCol As Integer, lngRow As Integer) As Boolean
+	Public Sub ArrayDim(lngCol As Integer, lngRow As Integer)
 		ReDim mstrArray(lngCol, lngRow)
-	End Function
+	End Sub
 
-	Public Function ArrayReDim() As Boolean
+	Public Sub ArrayReDim()
 		ReDim Preserve mstrArray(UBound(mstrArray, 1), UBound(mstrArray, 2) + 1)
-	End Function
+	End Sub
 
-	Public Function ArrayAddTo(lngCol As Integer, lngRow As Integer, strInput As Object) As Boolean
-		'UPGRADE_WARNING: Couldn't resolve default property of object strInput. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+	Public Sub ArrayAddTo(lngCol As Integer, lngRow As Integer, strInput As String)
 		mstrArray(lngCol, lngRow) = strInput
-	End Function
+	End Sub
 
 	Public Function KillFile(strFilename As String) As Boolean
 
