@@ -681,7 +681,7 @@ Session("fromMenu") = 0
             var answer = OpenHR.messageBox("Delete this definition. Are you sure ?", 36, "Confirmation");
 
             if (answer == 6) {
-                document.frmDefSel.action.value = "delete";
+                frmDefSel.action.value = "delete";
                 OpenHR.submitForm(frmDefSel);
             }
         }
@@ -722,11 +722,12 @@ Session("fromMenu") = 0
     }
 
     function setnew() {
-        if (!$("#mnutoolNewUtil").hasClass("disabled")) {
-            OpenHR.showPopup("Loading form...");
-            document.frmDefSel.action.value = "new";
-            OpenHR.submitForm(document.frmDefSel);
-        }
+    	if (!$("#mnutoolNewUtil").hasClass("disabled")) {
+    		var frmDefSel = document.getElementById('frmDefSel');
+    		OpenHR.showPopup("Loading form...");
+    		frmDefSel.action.value = "new";
+    		OpenHR.submitForm(frmDefSel);
+    	}
     }
 
     function setcopy() {
@@ -747,11 +748,11 @@ Session("fromMenu") = 0
             OpenHR.showPopup("Loading definition...");
 
             if (frmDefSel.cmdEdit.value == "Edit") {
-                document.frmDefSel.action.value = "edit";
-                OpenHR.submitForm(document.frmDefSel);
+                frmDefSel.action.value = "edit";
+                OpenHR.submitForm(frmDefSel);
             } else {
-                document.frmDefSel.action.value = "view";
-                OpenHR.submitForm(document.frmDefSel);
+                frmDefSel.action.value = "view";
+                OpenHR.submitForm(frmDefSel);
             }
         }
     }
