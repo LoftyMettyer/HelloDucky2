@@ -512,14 +512,30 @@ Namespace ExClientCode
 				Dim xlData As Range
 				Dim xlCategories As Range
 
-				Dim dataFirstRow As Integer = _mlngDataCurrentRow - 2
-				Dim dataFirstCol As Integer = _mlngDataStartCol - 1
-				Dim dataRowCount As Integer = lngMaxRows - _mlngDataCurrentRow
-				Dim dataColumnCount As Integer = lngMaxCols - _mlngDataStartCol
+				Const colTitleRowCount As Integer = 1
+				Dim summaryInfoColCount As Integer = 0
 
-				xlCategories = _mxlWorkSheet.Cells.CreateRange(dataFirstRow, dataFirstCol, dataRowCount, 1)
-				xlCategories.Name = "xlCategories"
-				xlData = _mxlWorkSheet.Cells.CreateRange(dataFirstRow, dataFirstCol + dataColumnCount, dataRowCount, 1)
+				' Compute summary columns.
+				If _mxlWorkSheet.Cells(_mlngDataCurrentRow - 1, _mlngDataStartCol - 1).Value = "Summary Info" Then summaryInfoColCount = 1
+
+				Dim dataFirstRow As Integer = _mlngDataCurrentRow
+				Dim dataFirstCol As Integer = (_mlngDataStartCol - 1) + summaryInfoColCount
+				Dim dataRowCount As Integer = lngMaxRows - _mlngDataCurrentRow + colTitleRowCount
+				Dim dataColumnCount As Integer = (lngMaxCols - dataFirstCol) + summaryInfoColCount
+
+				If dataColumnCount <= dataFirstCol Then
+					' only one column in the report. Can't trim the values.
+					xlCategories = _mxlWorkSheet.Cells.CreateRange(dataFirstRow, dataFirstCol, dataRowCount - 1, 1)
+					xlCategories.Name = "xlCategories"
+
+				Else
+					xlCategories = _mxlWorkSheet.Cells.CreateRange(dataFirstRow, dataFirstCol, dataRowCount - 1, dataColumnCount - dataFirstCol)
+					xlCategories.Name = "xlCategories"
+
+				End If
+
+
+				xlData = _mxlWorkSheet.Cells.CreateRange(dataFirstRow, dataColumnCount, dataRowCount - 1, 1)
 				xlData.Name = "xlData"
 
 				With xlChart
@@ -527,6 +543,15 @@ Namespace ExClientCode
 
 					.NSeries.Add("=xlData", True)
 					.NSeries.CategoryData = "=xlCategories"
+
+					' Legend text
+					Try
+						Dim sLegendText As String = _mxlWorkSheet.Cells(dataFirstRow - 1, dataColumnCount).Value
+						.NSeries(0).Name = sLegendText
+					Catch ex As Exception
+
+					End Try
+
 
 					'Dim iSeries As Integer = dataFirstCol + dataColumnCount + 1
 					'For Each objSeries In .NSeries
@@ -609,7 +634,7 @@ Namespace ExClientCode
 						stlDecimal.Custom = "@"
 					End If
 
-					.DataBodyRange.ToRange(pivotSheet).SetStyle(stlDecimal)					
+					.DataBodyRange.ToRange(pivotSheet).SetStyle(stlDecimal)
 
 				End With
 

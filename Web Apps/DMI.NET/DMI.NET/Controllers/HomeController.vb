@@ -2845,7 +2845,6 @@ Namespace Controllers
 			Dim strEmailSubject As String = Request("txtEmailSubject")
 			Dim strEmailAttachAs As String = Request("txtEmailAttachAs")
 			Dim strDownloadFileName As String = Request("txtFilename")
-
 			Dim objReport As Report = Session("CustomReport")
 			Dim ClientDLL As New clsOutputRun
 			ClientDLL.SessionInfo = CType(Session("SessionContext"), SessionInfo)
@@ -3020,14 +3019,14 @@ Namespace Controllers
 								ClientDLL.ResetColumns()
 								ClientDLL.ResetStyles()
 
-							ElseIf Not objRow(0).ToString() = "*" Then
+							ElseIf Not objRow(1).ToString() = "*" Then
 								blnBreakCheck = False
 								lngCol = 0
 
 								ClientDLL.ArrayReDim()
 
 								For lngCount = 0 To UBound(arrayVisibleColumns, 2)
-									ClientDLL.ArrayAddTo(lngCol, lngActualRow, objRow.Item(lngCount + 2).ToString())
+									ClientDLL.ArrayAddTo(lngCol, lngActualRow, objRow.Item(lngCount + 1).ToString())
 									lngCol += 1
 								Next
 
@@ -3037,8 +3036,13 @@ Namespace Controllers
 
 					Else ' no page break
 
-						ClientDLL.ArrayDim(UBound(arrayVisibleColumns, 2), objReport.datCustomReportOutput.Rows.Count + 1)
-
+						If lngOutputFormat = OutputFormats.fmtExcelGraph Then
+							Dim trueRowCount As Integer = (From row In objReport.datCustomReportOutput.AsEnumerable() Where row(0).ToString() = "0" Where String.Join("", row.ItemArray) <> "0").Count()
+							ClientDLL.ArrayDim(UBound(arrayVisibleColumns, 2), trueRowCount)
+						Else
+							ClientDLL.ArrayDim(UBound(arrayVisibleColumns, 2), objReport.datCustomReportOutput.Rows.Count + 1)
+						End If
+						
 						If bBradfordFactor = True Then
 							ClientDLL.PageTitles = False
 							ClientDLL.AddPage("Bradford Factor", "Bradford Factor")
@@ -3058,6 +3062,14 @@ Namespace Controllers
 
 						lngRow = 1
 						For Each objRow As DataRow In objReport.datCustomReportOutput.Rows
+
+							If lngOutputFormat = OutputFormats.fmtExcelGraph Then
+								' Ignore non-data rows.
+								If objRow(0).ToString() <> "0" Then Continue For
+
+								' Ignore empty data rows
+								If String.Join("", objRow.ItemArray) = "0" Then Continue For
+							End If
 
 							For iCountColumns = 1 To UBound(arrayVisibleColumns, 2) + 1
 								If objReport.ReportHasSummaryInfo Then
