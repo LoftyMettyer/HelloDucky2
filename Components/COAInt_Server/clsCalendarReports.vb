@@ -1914,12 +1914,6 @@ ErrorTrap:
 
 	End Function
 
-	Public Sub SetLastRun()
-
-		AccessLog.UtilUpdateLastRun(UtilityType.utlCalendarReport, mlngCalendarReportID)
-
-	End Sub
-
 	Private Sub SetOutputStyles()
 
 		Dim intBaseRowCount As Integer
@@ -3010,8 +3004,6 @@ ErrorTrap:
 		mcolHistoricWorkingPatterns = Nothing
 		'UPGRADE_NOTE: Object mcolStaticWorkingPatterns may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 		mcolStaticWorkingPatterns = Nothing
-
-		ClearUp()
 
 	End Sub
 
@@ -5878,97 +5870,20 @@ GenerateSQLWhere_ERROR:
 
 	End Function
 
-	Private Function ClearUp() As Boolean
+	Public Function ClearUp() As Boolean
 
-		' Purpose : To clear all variables/recordsets/references and drops temptable
-		' Input   : None
-		' Output  : True/False success
+		Try
+			AccessLog.UtilUpdateLastRun(UtilityType.utlCalendarReport, mlngCalendarReportID)
 
-		' Definition variables
+			' Delete the temptable if exists
+			General.DropUniqueSQLObject(mstrTempTableName, 3)
 
-		On Error GoTo ClearUp_ERROR
+			Return True
 
-		Name = vbNullString
-		mlngCalendarReportsBaseTable = 0
-		mstrCalendarReportsBaseTableName = vbNullString
-		mlngCalendarReportsPickListID = 0
-		mlngCalendarReportsFilterID = 0
+		Catch ex As Exception
+			Throw
 
-		mlngDescription1 = 0
-		mstrDescription1 = vbNullString
-		mlngDescription2 = 0
-		mstrDescription2 = vbNullString
-		mlngRegion = 0
-		mstrRegion = vbNullString
-		mblnGroupByDescription = False
-
-		mblnShowBankHolidays = False
-		mblnShowCaptions = False
-		mblnShowWeekends = False
-		mblnIncludeWorkingDaysOnly = False
-		mblnIncludeBankHolidays = False
-
-		'New Default Output Variables
-		OutputPreview = False
-		OutputFormat = OutputFormats.fmtDataOnly
-		OutputScreen = True
-		mblnOutputPrinter = False
-		mstrOutputPrinterName = vbNullString
-		mblnOutputSave = False
-		mlngOutputSaveExisting = 0
-		mblnOutputEmail = False
-		mlngOutputEmailID = 0
-		mstrOutputEmailName = vbNullString
-		mstrOutputEmailSubject = vbNullString
-		mstrOutputEmailAttachAs = vbNullString
-		OutputFilename = vbNullString
-
-		' Recordsets
-		'UPGRADE_NOTE: Object mrsCalendarReportsOutput may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		mrsCalendarReportsOutput = Nothing
-		'UPGRADE_NOTE: Object mrsCalendarBaseInfo may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		mrsCalendarBaseInfo = Nothing
-
-		' SQL strings
-		mstrSQLEvent = vbNullString
-		mstrSQLSelect = vbNullString
-		mstrSQLFrom = vbNullString
-		mstrSQLWhere = vbNullString
-		mstrSQLJoin = vbNullString
-		mstrSQLOrderBy = vbNullString
-		mstrSQL = vbNullString
-		mstrSQLBaseData = vbNullString
-		mstrSQLBaseDateClause = vbNullString
-		mstrSQLOrderList = vbNullString
-		mstrSQLIDs = vbNullString
-		mstrSQLDynamicLegendWhere = vbNullString
-		mintDynamicEventCount = 0
-
-		' Class references
-		'UPGRADE_NOTE: Object mcolEvents may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		mcolEvents = Nothing
-
-		' Arrays
-		ReDim mvarPrompts(1, 0)
-		ReDim mastrUDFsRequired(0)
-		ReDim mlngTableViews(2, 0)
-		ReDim mstrViews(0)
-		ReDim mvarTableViews(3, 0)
-
-		' Column Privilege arrays / collections / variables
-		mstrBaseTableRealSource = vbNullString
-		mstrRealSource = vbNullString
-		'UPGRADE_NOTE: Object mobjTableView may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		mobjTableView = Nothing
-		'UPGRADE_NOTE: Object mobjColumnPrivileges may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		mobjColumnPrivileges = Nothing
-
-		Return True
-
-ClearUp_ERROR:
-
-		mstrErrorString = "Error whilst clearing data." & vbNewLine & "(" & Err.Description & ")"
-		Return False
+		End Try
 
 	End Function
 

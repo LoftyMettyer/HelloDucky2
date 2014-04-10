@@ -102,6 +102,8 @@
 		If fok Then fok = fNotCancelled
 	End If
 
+	objCrossTab.ClearUp()
+	
 	Session("objCrossTab" & Session("UtilID")) = objCrossTab
 
 %>

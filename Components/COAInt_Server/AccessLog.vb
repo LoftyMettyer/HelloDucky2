@@ -8,25 +8,26 @@ Public Class AccessLog
 
 	Private ReadOnly DB As New clsDataAccess
 
-	Public Sub New(ByVal LoginInfo As LoginInfo)
+	Public Sub New(LoginInfo As LoginInfo)
 		DB = New clsDataAccess(LoginInfo)
 	End Sub
 
-	Public Sub UtilCreated(ByRef utlType As UtilityType, ByRef lngID As Integer)
+	Public Sub UtilCreated(utlType As UtilityType, lngID As Integer)
 		Dim strSQL As String
-		strSQL = "INSERT ASRSysUtilAccessLog (Type, UtilID, CreatedBy, CreatedDate, CreatedHost, SavedBy, SavedDate, SavedHost) VALUES '" & utlType & "', " & CStr(lngID) & ", " & " system_user, getdate(), host_name(), system_user, getdate(), host_name())"
+		strSQL = "INSERT ASRSysUtilAccessLog (Type, UtilID, CreatedBy, CreatedDate, CreatedHost, SavedBy, SavedDate, SavedHost) VALUES '" _
+			& utlType & "', " & CStr(lngID) & ", " & " system_user, getdate(), host_name(), system_user, getdate(), host_name())"
 		DB.ExecuteSql(strSQL)
 	End Sub
 
-	Public Sub UtilUpdateLastSaved(ByRef utlType As UtilityType, ByRef lngID As Integer)
+	Public Sub UtilUpdateLastSaved(utlType As UtilityType, lngID As Integer)
 		UpdateUserAndDate("Saved", utlType, lngID)
 	End Sub
 	
-	Public Sub UtilUpdateLastRun(ByRef utlType As UtilityType, ByRef lngID As Integer)
+	Public Sub UtilUpdateLastRun(utlType As UtilityType, lngID As Integer)
 		UpdateUserAndDate("Run", utlType, lngID)
 	End Sub
 
-	Private Sub UpdateUserAndDate(ByRef strMode As String, ByRef utlType As UtilityType, ByRef lngID As Integer)
+	Private Sub UpdateUserAndDate(strMode As String, utlType As UtilityType, lngID As Integer)
 
 		Dim rsTemp As DataTable
 		Dim strSQL As String

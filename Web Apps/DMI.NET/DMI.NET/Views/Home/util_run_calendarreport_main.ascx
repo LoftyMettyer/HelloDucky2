@@ -61,8 +61,6 @@
 			If fok Then fok = fNotCancelled
 		End If
 		
-		objCalendar.SetLastRun()
-
 		fNoRecords = objCalendar.NoRecords
 
 		' Convert data over to DataTables (remove step at later date when rest of code converted)
@@ -87,11 +85,12 @@
 				End If
 			End If
 		End If
-		
+
+		objCalendar.ClearUp()
+
 		blnShowCalendar = (objCalendar.OutputPreview Or (objCalendar.OutputFormat = 0 And objCalendar.OutputScreen) Or objCalendar.OutputPrinter)
 		
 		Session("objCalendar" & Session("UtilID")) = objCalendar
-
 				
 	End If
 

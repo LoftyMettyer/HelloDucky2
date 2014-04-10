@@ -218,6 +218,8 @@
 			If fok Then fok = fNotCancelled
 		End If
 
+	objCrossTab.ClearUp()
+	
 		Session("objCrossTab" & Session("utilid")) = objCrossTab
 
 		Response.Write("<script type=""text/javascript"">" & vbCrLf)
