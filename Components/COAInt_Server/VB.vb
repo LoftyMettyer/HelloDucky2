@@ -53,7 +53,7 @@ Public Class VB6
 			If IsDate(value) Then
 				theDate = Convert.ToDateTime(value)
 				Return theDate.ToString(style)
-			ElseIf style = "ddd" And value >= 1 And value <= 7 Then	'Day of week
+			ElseIf style = "ddd" AndAlso value >= 1 AndAlso value <= 7 Then	'Day of week
 				Return WeekdayName(value, False, firstDayOfWeek).Substring(0, 1)
 			End If
 
