@@ -1,8 +1,8 @@
 VERSION 5.00
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
 Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "comdlg32.ocx"
-Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "tabctl32.ocx"
-Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "coa_spinner.ocx"
+Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
+Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "COA_Spinner.ocx"
 Begin VB.Form frmExport 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Export Definition"
@@ -57,6 +57,7 @@ Begin VB.Form frmExport
       _Version        =   393216
       Style           =   1
       Tabs            =   6
+      Tab             =   5
       TabsPerRow      =   6
       TabHeight       =   520
       BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
@@ -70,27 +71,21 @@ Begin VB.Form frmExport
       EndProperty
       TabCaption(0)   =   "&Definition"
       TabPicture(0)   =   "frmExport.frx":000C
-      Tab(0).ControlEnabled=   -1  'True
-      Tab(0).Control(0)=   "fraBase"
-      Tab(0).Control(0).Enabled=   0   'False
-      Tab(0).Control(1)=   "fraInformation"
-      Tab(0).Control(1).Enabled=   0   'False
+      Tab(0).ControlEnabled=   0   'False
+      Tab(0).Control(0)=   "fraInformation"
+      Tab(0).Control(1)=   "fraBase"
       Tab(0).ControlCount=   2
       TabCaption(1)   =   "Related &Tables"
       TabPicture(1)   =   "frmExport.frx":0028
       Tab(1).ControlEnabled=   0   'False
       Tab(1).Control(0)=   "fraParent1"
-      Tab(1).Control(0).Enabled=   0   'False
       Tab(1).Control(1)=   "fraParent2"
-      Tab(1).Control(1).Enabled=   0   'False
       Tab(1).Control(2)=   "fraChild"
-      Tab(1).Control(2).Enabled=   0   'False
       Tab(1).ControlCount=   3
       TabCaption(2)   =   "Colu&mns"
       TabPicture(2)   =   "frmExport.frx":0044
       Tab(2).ControlEnabled=   0   'False
       Tab(2).Control(0)=   "fraColumns"
-      Tab(2).Control(0).Enabled=   0   'False
       Tab(2).ControlCount=   1
       TabCaption(3)   =   "&Sort Order"
       TabPicture(3)   =   "frmExport.frx":0060
@@ -105,15 +100,19 @@ Begin VB.Form frmExport
       Tab(4).ControlCount=   2
       TabCaption(5)   =   "O&utput"
       TabPicture(5)   =   "frmExport.frx":0098
-      Tab(5).ControlEnabled=   0   'False
-      Tab(5).Control(0)=   "fraOutputType"
-      Tab(5).Control(1)=   "fraOutputDestination"
-      Tab(5).Control(2)=   "fraCMGFile"
-      Tab(5).Control(3)=   "fraDelimFile"
+      Tab(5).ControlEnabled=   -1  'True
+      Tab(5).Control(0)=   "fraDelimFile"
+      Tab(5).Control(0).Enabled=   0   'False
+      Tab(5).Control(1)=   "fraCMGFile"
+      Tab(5).Control(1).Enabled=   0   'False
+      Tab(5).Control(2)=   "fraOutputDestination"
+      Tab(5).Control(2).Enabled=   0   'False
+      Tab(5).Control(3)=   "fraOutputType"
+      Tab(5).Control(3).Enabled=   0   'False
       Tab(5).ControlCount=   4
       Begin VB.Frame fraInformation 
          Height          =   2355
-         Left            =   150
+         Left            =   -74850
          TabIndex        =   118
          Top             =   400
          Width           =   9180
@@ -317,10 +316,19 @@ Begin VB.Form frmExport
       Begin VB.Frame fraOutputType 
          Caption         =   "Output Format :"
          Height          =   3135
-         Left            =   -74850
+         Left            =   150
          TabIndex        =   82
          Top             =   405
          Width           =   2400
+         Begin VB.OptionButton optOutputFormat 
+            Caption         =   "X&ML"
+            Height          =   195
+            Index           =   9
+            Left            =   200
+            TabIndex        =   124
+            Top             =   1600
+            Width           =   1200
+         End
          Begin VB.OptionButton optOutputFormat 
             Caption         =   "E&xcel Worksheet"
             Height          =   195
@@ -354,7 +362,7 @@ Begin VB.Form frmExport
             Index           =   8
             Left            =   200
             TabIndex        =   86
-            Top             =   1600
+            Top             =   2000
             Visible         =   0   'False
             Width           =   1200
          End
@@ -364,7 +372,7 @@ Begin VB.Form frmExport
             Index           =   99
             Left            =   200
             TabIndex        =   87
-            Top             =   2000
+            Top             =   2400
             Visible         =   0   'False
             Width           =   1200
          End
@@ -372,7 +380,7 @@ Begin VB.Form frmExport
       Begin VB.Frame fraOutputDestination 
          Caption         =   "Output Destination(s) :"
          Height          =   3135
-         Left            =   -72345
+         Left            =   2655
          TabIndex        =   88
          Top             =   405
          Width           =   6675
@@ -1441,7 +1449,7 @@ Begin VB.Form frmExport
       Begin VB.Frame fraBase 
          Caption         =   "Data :"
          Height          =   2115
-         Left            =   150
+         Left            =   -74850
          TabIndex        =   0
          Top             =   2850
          Width           =   9180
@@ -1544,7 +1552,7 @@ Begin VB.Form frmExport
       Begin VB.Frame fraCMGFile 
          Caption         =   "CMG Options :"
          Height          =   1410
-         Left            =   -74850
+         Left            =   150
          TabIndex        =   109
          Top             =   3580
          Width           =   9180
@@ -1592,7 +1600,7 @@ Begin VB.Form frmExport
       Begin VB.Frame fraDelimFile 
          Caption         =   "Delimited File Options :"
          Height          =   1410
-         Left            =   -74850
+         Left            =   150
          TabIndex        =   103
          Top             =   3570
          Width           =   9180
@@ -3490,7 +3498,7 @@ Private Sub cmdEditColumn_Click()
             
             If COAMsgBox("You have changed a column that is used in the export sort order." & vbCrLf & _
                       "Continuing will remove the old column from the sort order." & vbCrLf & _
-                      "Do you wish to continue ?", vbYesNo + vbQuestion, App.Title) = vbNo Then
+                      "Do you wish to continue ?", vbYesNo + vbQuestion, app.Title) = vbNo Then
               Exit Sub
             End If
             RemoveFromSortOrder lID
@@ -5157,7 +5165,7 @@ Private Function InsertExport(pstrSQL As String) As Long
               
     If Not fSavedOK Then
       COAMsgBox "The new record could not be created." & vbCrLf & vbCrLf & _
-        Err.Description, vbOKOnly + vbExclamation, App.ProductName
+        Err.Description, vbOKOnly + vbExclamation, app.ProductName
         InsertExport = 0
         Set cmADO = Nothing
         Exit Function

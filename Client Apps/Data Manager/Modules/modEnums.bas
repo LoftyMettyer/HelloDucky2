@@ -338,10 +338,11 @@ Public Enum OutputFormats
   fmtHTML = 2
   fmtWordDoc = 3
   fmtExcelWorksheet = 4
-  fmtExcelChart = 5
+  fmtExcelchart = 5
   fmtExcelPivotTable = 6
   fmtFixedLengthFile = 7
   fmtCMGFile = 8
+  fmtXML = 9
   fmtSQLTable = 99
 End Enum
 

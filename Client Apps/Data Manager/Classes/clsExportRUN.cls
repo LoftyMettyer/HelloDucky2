@@ -2164,9 +2164,11 @@ Private Function ExportData() As Boolean
     
   'Case fmtSQLTable
   '  ExportData = ExportData_SQLTable
-    
-   Case fmtCMGFile
-    ExportData = ExportData_CMGfile
+		Case fmtXML
+			ExportData = ExportData_XML
+  
+		Case fmtCMGFile
+			ExportData = ExportData_CMGfile
 
   Case Else
 
@@ -2505,6 +2507,89 @@ Private Function FormatNumeric(dValue As Double, iLen As Long, iDec As Long) As 
   End If
 
 End Function
+
+Public Function FormatXmlIndent(vDomOrString As Object, sResult As String) As Boolean
+	Dim oWriter As Object	' MSXML2.MXXMLWriter
+
+	On Error GoTo QH
+	oWriter = CreateObject("MSXML2.MXXMLWriter")
+	oWriter.omitXMLDeclaration = True
+	oWriter.Indent = True
+	With CreateObject("MSXML2.SAXXMLReader")
+		.contentHandler = oWriter
+		'--- keep CDATA elements
+		.PutProperty("http://xml.org/sax/properties/lexical-handler", oWriter)
+		.Parse vDomOrString
+	End With
+	sResult = oWriter.output
+	'--- success
+	FormatXmlIndent = True
+	Exit Function
+QH:
+End Function
+
+Private Function ExportData_XML() As Boolean
+
+  Dim pintFileNo As Integer
+  Dim bAppended As Boolean
+  Dim sExportText As String
+  Dim prstReadyToExport As Recordset
+  Set prstReadyToExport = mclsData.OpenRecordset("SELECT CAST((SELECT * FROM [" & mstrTempTableName & "] FOR XML PATH('Export')) AS VARCHAR(MAX)) AS XmlData", adOpenForwardOnly, adLockReadOnly)
+
+
+
+  If (prstReadyToExport.BOF And prstReadyToExport.EOF) Then
+    mstrErrorString = "No records to export."
+    mclsData.ExecuteSql ("IF EXISTS(SELECT Name FROM sysobjects WHERE name = '" & mstrTempTableName & "') " & _
+                         "DROP TABLE " & mstrTempTableName)
+    ExportData_XML = False
+    Exit Function
+  Else
+    prstReadyToExport.MoveFirst
+
+sExportText = prstReadyToExport(0).Value
+'sExportText = RecordsetToXMLString(prstReadyToExport)
+FormatXmlIndent "<OUTPUTFILE>" & sExportText & "</OUTPUTFILE>", sExportText
+
+
+    Select Case mlngOutputSaveExisting
+    Case 0  ' Overwrite
+      bAppended = False
+     ' Kill mstrOutputFileName
+      
+    Case 1  ' Do not overwrite (fail)
+      mstrErrorString = "File already exists."
+      ExportData_XML = False
+      Exit Function
+  
+    Case 2  ' Add sequential number to filename
+      mstrOutputFileName = GetSequentialNumberedFile(mstrOutputFileName)
+      bAppended = False
+    
+    Case 3  ' Append to Existing File
+      bAppended = True
+      
+    End Select
+
+    ' Open file for output.
+    pintFileNo = FreeFile
+  
+    If bAppended Then
+      Open mstrOutputFileName For Append As pintFileNo
+    Else
+      Open mstrOutputFileName For Output As pintFileNo
+    End If
+     
+    Print #pintFileNo, sExportText
+     
+    Close #pintFileNo
+
+  End If
+  
+  ExportData_XML = True
+
+End Function
+
 
 Private Function ExportData_CMGfile() As Boolean
 
