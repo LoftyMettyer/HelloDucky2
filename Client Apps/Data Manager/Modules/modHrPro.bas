@@ -667,7 +667,7 @@ TidyUpAndExit:
   
 ErrorTrap:
   COAMsgBox "Error checking if the database " & gsDatabaseName & " contains columns of the specified datatype." _
-          , vbExclamation + vbOKOnly, app.Title
+          , vbExclamation + vbOKOnly, app.title
   DBContains_DataType = False
   Resume TidyUpAndExit
   
@@ -1926,6 +1926,7 @@ Public Sub InitialiseModules()
   '' Do we have access to the CMG export module
   'gbCMGEnabled = datGeneral.IsCMGEnabled
   gbCMGEnabled = IsModuleEnabled(modCMG)
+  gbXMLExportEnabled = IsModuleEnabled(modXMLExport)
 
   ' Payroll Integration Module
   gbAccordEnabled = IsModuleEnabled(modAccord)
@@ -2801,7 +2802,7 @@ Public Sub UtilityDefAmended(psTable As String, _
   
 Amended_ERROR:
   
-  COAMsgBox "Error whilst checking if utility definition has been amended." & vbCrLf & vbCrLf & "(" & Err.Number & " - " & Err.Description & ")", vbExclamation + vbOKOnly, app.Title
+  COAMsgBox "Error whilst checking if utility definition has been amended." & vbCrLf & vbCrLf & "(" & Err.Number & " - " & Err.Description & ")", vbExclamation + vbOKOnly, app.title
   blnContinueSave = False
   
 End Sub
@@ -3530,7 +3531,7 @@ Public Function ValidateGTMaskDate(dtTemp As GTMaskDate.GTMaskDate) As Boolean
         'COAMsgBox sometimes causes run time error but DoEvents prevents this!
         DoEvents
 
-        COAMsgBox "You have entered an invalid date.", vbOKOnly + vbExclamation, app.Title
+        COAMsgBox "You have entered an invalid date.", vbOKOnly + vbExclamation, app.title
         .ForeColor = vbWindowText
         .DateValue = Null
         If .Visible And .Enabled Then
@@ -4375,7 +4376,7 @@ Public Sub DebugOutput(strWhere As String, strWhat As String)
 
 End Sub
 
-Public Sub UpdateUsage(ByRef lngType As UtilityType, ByRef lngUtilityID As Long, lngAction As EditOptions)
+Public Sub UpdateUsage(ByRef lngTYPE As UtilityType, ByRef lngUtilityID As Long, lngAction As EditOptions)
 
   Dim cmdUsage As New ADODB.Command
   Dim pmADO As ADODB.Parameter
@@ -4391,7 +4392,7 @@ Public Sub UpdateUsage(ByRef lngType As UtilityType, ByRef lngUtilityID As Long,
   
       Set pmADO = .CreateParameter("objecttype", adInteger, adParamInput, 50)
       .Parameters.Append pmADO
-      pmADO.Value = lngType
+      pmADO.Value = lngTYPE
   
       Set pmADO = .CreateParameter("objectid", adInteger, adParamInput, 50)
       .Parameters.Append pmADO
@@ -4415,21 +4416,21 @@ Public Function SaveObjectCategories(ByRef theCombo As ComboBox, UtilityType As 
 
   On Error GoTo ErrorTrap
 
-  Dim bOk As Boolean
+  Dim bOK As Boolean
   Dim iLoop As Integer
   Dim iSelectedID As Integer
   
-  bOk = True
+  bOK = True
   iSelectedID = GetComboItem(theCombo)
   
   gobjDataAccess.ExecuteSql "EXEC dbo.spsys_saveobjectcategories " & CStr(UtilityType) & ", " & CStr(UtilityID) & ", " & CStr(iSelectedID)
   
 TidyUpAndExit:
-  SaveObjectCategories = bOk
+  SaveObjectCategories = bOK
   Exit Function
   
 ErrorTrap:
-bOk = False
+bOK = False
   GoTo TidyUpAndExit
 
 End Function

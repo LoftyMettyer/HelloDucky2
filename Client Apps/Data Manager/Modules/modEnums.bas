@@ -274,6 +274,8 @@ Public Enum Module
   modAccord = 512
   modWorkflow = 1024
   modVersionOne = 2048
+  modFusion = 4096
+  modXMLExport = 8192
 End Enum
 
 

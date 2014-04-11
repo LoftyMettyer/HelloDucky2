@@ -1727,7 +1727,7 @@ Public Property Let FormPrint(ByVal bPrint As Boolean)
 End Property
 
 Public Property Get Changed() As Boolean
-  Changed = cmdOK.Enabled
+  Changed = cmdOk.Enabled
 End Property
 Private Sub ForceAccess(Optional pvAccess As Variant)
   Dim iLoop As Integer
@@ -1767,7 +1767,7 @@ End Sub
 
 
 Public Property Let Changed(ByVal pblnChanged As Boolean)
-  cmdOK.Enabled = pblnChanged
+  cmdOk.Enabled = pblnChanged
 End Property
 
 Public Property Get SelectedID() As Long
@@ -1793,6 +1793,7 @@ End Property
 Public Function Initialise(pblnNew As Boolean, pblnCopy As Boolean, Optional plngExportID As Long, Optional bPrint As Boolean) As Boolean
   
   CheckIfCMGEnabled
+  optOutputFormat(fmtXML).Enabled = gbXMLExportEnabled
   
   mblnLoading = True
  
@@ -3498,7 +3499,7 @@ Private Sub cmdEditColumn_Click()
             
             If COAMsgBox("You have changed a column that is used in the export sort order." & vbCrLf & _
                       "Continuing will remove the old column from the sort order." & vbCrLf & _
-                      "Do you wish to continue ?", vbYesNo + vbQuestion, app.Title) = vbNo Then
+                      "Do you wish to continue ?", vbYesNo + vbQuestion, app.title) = vbNo Then
               Exit Sub
             End If
             RemoveFromSortOrder lID

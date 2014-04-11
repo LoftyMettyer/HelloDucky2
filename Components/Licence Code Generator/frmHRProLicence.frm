@@ -626,6 +626,7 @@ Private Sub PopulateModules(lstTemp As ListBox)
     .AddItem "Version One Integration": .ItemData(.NewIndex) = lngBit: lngBit = lngBit * 2
     .AddItem "Mobile Interface": .ItemData(.NewIndex) = lngBit: lngBit = lngBit * 2
     .AddItem "Fusion Integration": .ItemData(.NewIndex) = lngBit: lngBit = lngBit * 2
+    .AddItem "XML Exports": .ItemData(.NewIndex) = lngBit: lngBit = lngBit * 2
   End With
 
 End Sub

@@ -372,6 +372,7 @@ Private Sub PopulateModules()
     .AddItem "Version One": .ItemData(.NewIndex) = lngBit: lngBit = lngBit * 2
     .AddItem "Mobile Interface": .ItemData(.NewIndex) = lngBit: lngBit = lngBit * 2
     .AddItem "Fusion Integration": .ItemData(.NewIndex) = lngBit: lngBit = lngBit * 2
+    .AddItem "XML Exports": .ItemData(.NewIndex) = lngBit: lngBit = lngBit * 2
     
     lngBit = lngBit * 2
   End With
