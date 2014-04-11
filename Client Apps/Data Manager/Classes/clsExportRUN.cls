@@ -2164,11 +2164,11 @@ Private Function ExportData() As Boolean
     
   'Case fmtSQLTable
   '  ExportData = ExportData_SQLTable
-		Case fmtXML
-			ExportData = ExportData_XML
+                Case fmtXML
+                        ExportData = ExportData_XML
   
-		Case fmtCMGFile
-			ExportData = ExportData_CMGfile
+                Case fmtCMGFile
+                        ExportData = ExportData_CMGfile
 
   Case Else
 
@@ -2508,24 +2508,20 @@ Private Function FormatNumeric(dValue As Double, iLen As Long, iDec As Long) As 
 
 End Function
 
-Public Function FormatXmlIndent(vDomOrString As Object, sResult As String) As Boolean
-	Dim oWriter As Object	' MSXML2.MXXMLWriter
-
-	On Error GoTo QH
-	oWriter = CreateObject("MSXML2.MXXMLWriter")
-	oWriter.omitXMLDeclaration = True
-	oWriter.Indent = True
-	With CreateObject("MSXML2.SAXXMLReader")
-		.contentHandler = oWriter
-		'--- keep CDATA elements
-		.PutProperty("http://xml.org/sax/properties/lexical-handler", oWriter)
-		.Parse vDomOrString
-	End With
-	sResult = oWriter.output
-	'--- success
-	FormatXmlIndent = True
-	Exit Function
-QH:
+Public Function PrettyPrintXml(xmlDoc)
+    Dim rdr, wrt
+    Set rdr = CreateObject("Msxml2.SAXXMLReader.3.0")
+    Set wrt = CreateObject("Msxml2.MXXMLWriter.3.0")
+    wrt.byteOrderMark = True
+    wrt.omitXMLDeclaration = True
+    wrt.Indent = True
+    Set rdr.contentHandler = wrt
+    Set rdr.dtdHandler = wrt
+    Set rdr.errorHandler = wrt
+    rdr.PutProperty "http://xml.org/sax/properties/lexical-handler", wrt
+    rdr.PutProperty "http://xml.org/sax/properties/declaration-handler", wrt
+    rdr.Parse xmlDoc
+    PrettyPrintXml = wrt.output
 End Function
 
 Private Function ExportData_XML() As Boolean
@@ -2534,7 +2530,7 @@ Private Function ExportData_XML() As Boolean
   Dim bAppended As Boolean
   Dim sExportText As String
   Dim prstReadyToExport As Recordset
-  Set prstReadyToExport = mclsData.OpenRecordset("SELECT CAST((SELECT * FROM [" & mstrTempTableName & "] FOR XML PATH('Export')) AS VARCHAR(MAX)) AS XmlData", adOpenForwardOnly, adLockReadOnly)
+  Set prstReadyToExport = mclsData.OpenRecordset("SELECT CAST((SELECT * FROM [" & mstrTempTableName & "] FOR XML PATH('" & mstrExportBaseTableName & "')) AS VARCHAR(MAX)) AS XmlData", adOpenForwardOnly, adLockReadOnly)
 
 
 
@@ -2548,8 +2544,7 @@ Private Function ExportData_XML() As Boolean
     prstReadyToExport.MoveFirst
 
 sExportText = prstReadyToExport(0).Value
-'sExportText = RecordsetToXMLString(prstReadyToExport)
-FormatXmlIndent "<OUTPUTFILE>" & sExportText & "</OUTPUTFILE>", sExportText
+sExportText = PrettyPrintXml("<OUTPUTFILE>" & sExportText & "</OUTPUTFILE>")
 
 
     Select Case mlngOutputSaveExisting
