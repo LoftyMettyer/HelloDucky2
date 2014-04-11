@@ -36,10 +36,10 @@
 					var txtFile = div.querySelector("#txtFile");
 					var txtFileValue = div.querySelector("#txtFileValue");
 					var txtResultCode = div.querySelector("#txtResultCode");
-					var txtPreReqFails = div.querySelector("#txtPreReqFails");
-					var txtUnAvailFails = div.querySelector("#txtUnAvailFails");
-					var txtOverlapFails = div.querySelector("#txtOverlapFails");
-					var txtOverBookFails = div.querySelector("#txtOverBookFails");
+					var txtPreReqFailsCount = div.querySelector("#txtPreReqFails");
+					var txtUnAvailFailsCount = div.querySelector("#txtUnAvailFails");
+					var txtOverlapFailsCount = div.querySelector("#txtOverlapFails");
+					var txtCourseOverbooked = div.querySelector("#txtOverBooked");
 					var txtLinkRecordID = div.querySelector("#txtLinkRecordID");
 					var txtErrorMessage = div.querySelector("#txtErrorMessage");
 				
@@ -197,84 +197,110 @@
 					//menu_refreshMenu();
 
 					var fTransferOK = true;
+					var messageOverlapSingular = "This delegate is already booked on a course that overlaps with the selected course. \n";
+					var messageOverlapPlural = "These delegates are already booked on a course that overlaps with the selected course. \n";
+					var messagePrerequisitesSingular = "The delegate has not met the pre-requisites for the course. \n";
+					var messagePrerequisitesPlural = "These delegates have not met the pre-requisites for the course. \n";
+					var messageUnavailableSingular = "This delegate is unavailable for the selected course. \n";
+					var messageUnavailablePlural = "These delegates are unavailable for the selected course. \n";
+					//var OverlapCode;
+					//var AvailabilityCode;
+					//var PreReqCode;
+					//var sOverBookFails;
+					//var sPreReqFails;
+					//var sUnAvailFails;
+					//var sOverlapFails;
+					var EmployeeName;
+					var ResultCode;
+					var ResultCodes = txtResultCode.value;
+					var CourseOverbooked = txtCourseOverbooked.value;
+					var EmployeesWithOverlapError = [];
+					var EmployeesWithOverlapWarning = [];
+					var EmployeesWithPreReqError = [];
+					var EmployeesWithPreReqWarning = [];
+					var EmployeesWithUnAvailError = [];
+					var EmployeesWithUnAvailWarning = [];
+					var j;
+					if (ResultCodes.length > 0) {
+						ResultCodes = ResultCodes.split("|");
 
-					iResultCode = txtResultCode.value;
-					if (iResultCode > 0) {
-						var iOverlapCode = iResultCode % 10;
-							var iResultCode = iResultCode - iOverlapCode;
-						iResultCode = iResultCode / 10;
-						var iAvailabilityCode = iResultCode % 10;
-						iResultCode = iResultCode - iAvailabilityCode;
-						iResultCode = iResultCode / 10;
-						var iPreReqCode = iResultCode % 10;
-						iResultCode = iResultCode - iPreReqCode;
-						iResultCode = iResultCode / 10;
-						var iOverbookCode = iResultCode;
+						//Loop over the results
+						for (j = 0; j <= ResultCodes.length - 1; j++) {
+							var EmployeeAndCode = ResultCodes[j].split("\\");
+							EmployeeName = EmployeeAndCode[0];
+							ResultCode = EmployeeAndCode[1];
 
+							if (ResultCode[2] == 1) {
+								EmployeesWithPreReqError.push(EmployeeName);
+							} else if (ResultCode[2] == 2) {
+								EmployeesWithPreReqWarning.push(EmployeeName);
+							}
+
+							if (ResultCode[0] == 1) {
+								EmployeesWithOverlapError.push(EmployeeName);
+							} else if (ResultCode[0] == 2) {
+								EmployeesWithOverlapWarning.push(EmployeeName);
+							}
+
+							if (ResultCode[1] == 1) {
+								EmployeesWithUnAvailError.push(EmployeeName);
+							} else if (ResultCode[1] == 2) {
+								EmployeesWithUnAvailWarning.push(EmployeeName);
+							}
+						}
+						
 						var sTransferErrorMsg = "";
-							var sTransferWarningMsg = "";
-							var sPreReqFails;
-							var sUnAvailFails;
-							var sOverlapFails;
-							var sOverBookFails;
-							if (txtAction.value == "SELECTBULKBOOKINGS") {
-							sPreReqFails = txtPreReqFails.value;
-							sUnAvailFails = txtUnAvailFails.value;
-							sOverlapFails = txtOverlapFails.value;
-							sOverBookFails = txtOverBookFails.value;
+						var sTransferWarningMsg = "";
 
-							/*	alert('These delegates have failed the following checks: \n' +
-									'\nCourse Prequisites - ' + sPreReqFails +
-									'\nUnavailable - ' + sUnAvailFails +
-									'\nOvelapping Course - ' + sOverlapFails);
-													
-									alert('iResultCode = ' + iResultCode + 
-									'\niPreReqCode = ' + iPreReqCode +
-									'\niOverlapCode = ' + iOverlapCode +
-									'\niAvailabilityCode = ' + iAvailabilityCode + 
-									'\niOverbookCode = ' + iOverbookCode); 
-							*/
-						} else {
-							sPreReqFails = "";
-							sUnAvailFails = "";
-							sOverlapFails = "";
-							sOverBookFails = "";
+						if (EmployeesWithPreReqError.length > 0) {
+							if (EmployeesWithPreReqError.length == 1) sTransferErrorMsg = sTransferErrorMsg + messagePrerequisitesSingular + "\n";
+							if (EmployeesWithPreReqError.length > 1) sTransferErrorMsg = sTransferErrorMsg + messagePrerequisitesPlural + "\n";
+							for (j = 0; j <= EmployeesWithPreReqError.length - 1; j++) {
+								sTransferErrorMsg += EmployeesWithPreReqError[j] + "\n";
+							}
+						}
+						if (EmployeesWithPreReqWarning.length > 0) {
+							if (EmployeesWithPreReqWarning.length == 1) sTransferWarningMsg = sTransferWarningMsg + messagePrerequisitesSingular + "\n";
+							if (EmployeesWithPreReqWarning.length > 1) sTransferWarningMsg = sTransferWarningMsg + messagePrerequisitesPlural + "\n";
+							for (j = 0; j <= EmployeesWithPreReqWarning.length - 1; j++) {
+								sTransferWarningMsg += EmployeesWithPreReqWarning[j] + "\n";
+							}
 						}
 
-						if (iOverlapCode == 1) {
-							if (sTransferErrorMsg.length > 0) sTransferErrorMsg = sTransferErrorMsg + "\n";
-							if (sOverlapFails.length == 0) sTransferErrorMsg = sTransferErrorMsg + "This delegate is already booked on a course that overlaps with the selected course. \n";
-							if (sOverlapFails.length > 0) sTransferErrorMsg = sTransferErrorMsg + "These delegates are already booked on a course that overlaps with the selected course. \n" + sOverlapFails + "\n";
-						} else if (iOverlapCode == 2) {
-							if (sTransferWarningMsg.length > 0) sTransferWarningMsg = sTransferWarningMsg + "\n";
-							if (sOverlapFails.length == 0) sTransferWarningMsg = sTransferWarningMsg + "This delegate is already booked on a course that overlaps with the selected course. \n";
-							if (sOverlapFails.length > 0) sTransferWarningMsg = sTransferWarningMsg + "These delegates are booked on a course that overlaps with the selected course. \n" + sOverlapFails + "\n";
+						if (EmployeesWithOverlapError.length > 0) {
+							if (EmployeesWithOverlapError.length == 1) sTransferErrorMsg = sTransferErrorMsg + messageOverlapSingular + "\n";
+							if (EmployeesWithOverlapError.length > 1) sTransferErrorMsg = sTransferErrorMsg + messageOverlapPlural + "\n";
+							for (j = 0; j <= EmployeesWithOverlapError.length - 1; j++) {
+								sTransferErrorMsg += EmployeesWithOverlapError[j] + "\n";
+							}
 						}
-
-						if (iPreReqCode == 1) {
-							if (sTransferErrorMsg.length > 0) sTransferErrorMsg = sTransferErrorMsg + "\n";
-							if (sPreReqFails.length == 0) sTransferErrorMsg = sTransferErrorMsg + "The delegate has not met the pre-requisites for the course. \n";
-							if (sPreReqFails.length > 0) sTransferErrorMsg = sTransferErrorMsg + "These delegates have not met the pre-requisites for the course: \n" + sPreReqFails + "\n";
-						} else if (iPreReqCode == 2) {
-							if (sTransferWarningMsg.length > 0) sTransferWarningMsg = sTransferWarningMsg + "\n";
-							if (sPreReqFails.length == 0) sTransferWarningMsg = sTransferWarningMsg + "The delegate has not met the pre-requisites for the course. \n";
-							if (sPreReqFails.length > 0) sTransferWarningMsg = sTransferWarningMsg + "These delegates have not met the pre-requisites for the course:  \n" + sPreReqFails + "\n";
+						if (EmployeesWithOverlapWarning.length > 0) {
+							if (EmployeesWithOverlapWarning.length == 1) sTransferWarningMsg = sTransferWarningMsg + messageOverlapSingular + "\n";
+							if (EmployeesWithOverlapWarning.length > 1) sTransferWarningMsg = sTransferWarningMsg + messageOverlapPlural + "\n";
+							for (j = 0; j <= EmployeesWithOverlapWarning.length - 1; j++) {
+								sTransferWarningMsg += EmployeesWithOverlapWarning[j] + "\n";
+							}
 						}
-
-						if (iAvailabilityCode == 1) {
-							if (sTransferErrorMsg.length > 0) sTransferErrorMsg = sTransferErrorMsg + "\n";
-							if (sUnAvailFails.length == 0) sTransferErrorMsg = sTransferErrorMsg + "This delegate is unavailable for the selected course. \n";
-							if (sUnAvailFails.length > 0) sTransferErrorMsg = sTransferErrorMsg + "These delegates are unavailable for the selected course. \n" + sUnAvailFails + "\n";
-						} else if (iAvailabilityCode == 2) {
-							if (sTransferWarningMsg.length > 0) sTransferWarningMsg = sTransferWarningMsg + "\n";
-							if (sUnAvailFails.length == 0) sTransferWarningMsg = sTransferWarningMsg + "This delegate is unavailable for the selected course. \n";
-							if (sUnAvailFails.length > 0) sTransferWarningMsg = sTransferWarningMsg + "These delegates are unavailable for the selected course. \n" + sUnAvailFails + "\n";
+						
+						if (EmployeesWithUnAvailError.length > 0) {
+							if (EmployeesWithUnAvailError.length == 1) sTransferErrorMsg = sTransferErrorMsg + messageUnavailableSingular + "\n";
+							if (EmployeesWithUnAvailError.length > 1) sTransferErrorMsg = sTransferErrorMsg + messageUnavailablePlural + "\n";
+							for (j = 0; j <= EmployeesWithUnAvailError.length - 1; j++) {
+								sTransferErrorMsg += EmployeesWithUnAvailError[j] + "\n";
+							}
 						}
-
-						if (iOverbookCode == 1) {
+						if (EmployeesWithUnAvailWarning.length > 0) {
+							if (EmployeesWithUnAvailWarning.length == 1) sTransferWarningMsg = sTransferWarningMsg + messageUnavailableSingular + "\n";
+							if (EmployeesWithUnAvailWarning.length > 1) sTransferWarningMsg = sTransferWarningMsg + messageUnavailablePlural + "\n";
+							for (j = 0; j <= EmployeesWithUnAvailWarning.length - 1; j++) {
+								sTransferWarningMsg += EmployeesWithUnAvailWarning[j] + "\n";
+							}
+						}
+						
+						if (CourseOverbooked == 1) {
 							if (sTransferErrorMsg.length > 0) sTransferErrorMsg = sTransferErrorMsg + "\n";
 							sTransferErrorMsg = sTransferErrorMsg + "The selected course is already fully booked.";
-						} else if (iOverbookCode == 2) {
+						} else if (CourseOverbooked == 2) {
 							if (sTransferWarningMsg.length > 0) sTransferWarningMsg = sTransferWarningMsg + "\n";
 							sTransferWarningMsg = sTransferWarningMsg + "The selected course is already fully booked.";
 						}
@@ -300,12 +326,12 @@
 							if ((txtAction.value == "SELECTBOOKCOURSE_2") ||
 									(txtAction.value == "SELECTTRANSFERBOOKING_1") ||
 									(txtAction.value == "SELECTADDFROMWAITINGLIST_2")) {
-								sTransferWarningMsg = sTransferWarningMsg + "\n\nDo you still want to make the booking ?";
+								sTransferWarningMsg = sTransferWarningMsg + "\nDo you still want to make the booking ?";
 							} else {
 								if (txtAction.value == "SELECTBULKBOOKINGS") {
-									sTransferWarningMsg = sTransferWarningMsg + "\n\nDo you still want to make the bookings ?";
+									sTransferWarningMsg = sTransferWarningMsg + "\nDo you still want to make the bookings ?";
 								} else {
-									sTransferWarningMsg = sTransferWarningMsg + "\n\nDo you still want to transfer the bookings ?";
+									sTransferWarningMsg = sTransferWarningMsg + "\nDo you still want to transfer the bookings ?";
 								}
 							}
 							var iResponse = OpenHR.messageBox(sTransferWarningMsg, 36); // 36 = vbYesNo + vbQuestion
@@ -411,7 +437,7 @@
 	Response.Write("<input type='hidden' id='txtPreReqFails' name='txtPreReqFails' value='" & Replace(Session("PreReqFails"), """", "&quot;") & "'>" & vbCrLf)
 	Response.Write("<input type='hidden' id='txtUnAvailFails' name='txtUnAvailFails' value='" & Replace(Session("UnAvailFails"), """", "&quot;") & "'>" & vbCrLf)
 	Response.Write("<input type='hidden' id='txtOverlapFails' name='txtOverlapFails' value='" & Replace(Session("OverlapFails"), """", "&quot;") & "'>" & vbCrLf)
-	Response.Write("<input type='hidden' id='txtOverBookFails' name='txtOverBookFails' value='" & Replace(Session("OverBookFails"), """", "&quot;") & "'>" & vbCrLf)
+	Response.Write("<input type='hidden' id='txtOverBooked' name='txtOverBooked' value='" & Replace(Session("Overbooked"), """", "&quot;") & "'>" & vbCrLf)
 	Response.Write("</div>" & vbCrLf)
 %>
 

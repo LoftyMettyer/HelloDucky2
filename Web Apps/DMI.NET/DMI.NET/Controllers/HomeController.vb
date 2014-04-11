@@ -4607,12 +4607,12 @@ Namespace Controllers
 
 			Dim objDataAccess As clsDataAccess = CType(Session("DatabaseAccess"), clsDataAccess)
 
-			Dim sErrorMsg = ""
-			Dim iTBResultCode = 0
-			Dim sPreReqFails = ""
-			Dim sUnAvailFails = ""
-			Dim sOverlapFails = ""
-			Dim sOverBookFails = ""
+			Dim sErrorMsg As String = ""
+			Dim sPreReqFailsCount As String = ""
+			Dim sUnAvailFailsCount As String = ""
+			Dim sOverlapFailsCount As String = ""
+			Dim sCourseOverbooked As String = ""
+			Dim sTBResults As String = ""
 
 			' Read the information from the calling form.
 			Dim sNextPage = Request.Form("txtGotoOptionPage")
@@ -4653,31 +4653,34 @@ Namespace Controllers
 				If Len(Session("optionLinkRecordID")) > 0 Then
 
 					Try
-
-						Dim prmResult = New SqlParameter("piResultCode", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
 						Dim prmErrorMsg = New SqlParameter("psErrorMessage", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
-						Dim prmPreRequisites = New SqlParameter("psWhoFailedPreReqCheck", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
-						Dim prmAvailability = New SqlParameter("psWhoFailedUnavailabilityCheck", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
-						Dim prmOverLapping = New SqlParameter("psWhoFailedOverlapCheck", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
-						Dim prmOverBooking = New SqlParameter("psWhoFailedOverbookingCheck", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
+						Dim prmPreRequisitesFailsCount = New SqlParameter("psPreReqCheckFailsCount", SqlDbType.Int, -1) With {.Direction = ParameterDirection.Output}
+						Dim prmAvailabilityFailsCount = New SqlParameter("psUnavailabilityCheckFailCount", SqlDbType.Int, -1) With {.Direction = ParameterDirection.Output}
+						Dim prmOverLappingFailsCount = New SqlParameter("psOverlapCheckFailCount", SqlDbType.Int, -1) With {.Direction = ParameterDirection.Output}
+						Dim prmCourseOverbooked = New SqlParameter("psCourseOverbooked", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
 
-						objDataAccess.ExecuteSP("sp_ASRIntValidateBulkBookings" _
+						Dim dt As DataTable = objDataAccess.GetDataTable("sp_ASRIntValidateBulkBookings", CommandType.StoredProcedure _
 							, New SqlParameter("piCourseRecordID", SqlDbType.Int) With {.Value = CleanNumeric(Session("optionRecordID"))} _
 							, New SqlParameter("psEmployeeRecordIDs", SqlDbType.VarChar, -1) With {.Value = Session("optionLinkRecordID")} _
 							, New SqlParameter("psBookingStatus", SqlDbType.VarChar, -1) With {.Value = Session("optionLookupValue")} _
-							, prmResult _
 							, prmErrorMsg _
-							, prmPreRequisites _
-							, prmAvailability _
-							, prmOverLapping _
-							, prmOverBooking)
+							, prmPreRequisitesFailsCount _
+							, prmAvailabilityFailsCount _
+							, prmOverLappingFailsCount _
+							, prmCourseOverbooked)
 
-						iTBResultCode = prmResult.Value
-						sPreReqFails = prmPreRequisites.Value.ToString()
-						sUnAvailFails = prmAvailability.Value.ToString()
-						sOverlapFails = prmOverLapping.Value.ToString()
-						sOverBookFails = prmOverBooking.Value.ToString()
+						sPreReqFailsCount = prmPreRequisitesFailsCount.Value.ToString()
+						sUnAvailFailsCount = prmAvailabilityFailsCount.Value.ToString()
+						sOverlapFailsCount = prmOverLappingFailsCount.Value.ToString()
+						sCourseOverbooked = prmCourseOverbooked.Value.ToString
 
+						'Loop over the returned records
+						For Each r As DataRow In dt.Rows
+							If r("ResultCode").ToString <> "000" Then	'Ignore records that have passed all checks
+								sTBResults = String.Concat(sTBResults, r("EmployeeName"), "\", r("ResultCode"), "|") 'The format is EmployeeName\ResultCode|EmployeeName\ResultCode...
+							End If
+						Next
+						sTBResults = sTBResults.TrimEnd("|") 'Trim the last separator
 					Catch ex As Exception
 						sErrorMsg = "Error validating training booking transfers." & vbCrLf & FormatError(ex.Message)
 					End Try
@@ -4686,12 +4689,12 @@ Namespace Controllers
 			End If
 
 			' Go to the requested page.
-			Session("TBResultCode") = iTBResultCode
+			Session("TBResultCode") = sTBResults
 			Session("errorMessage") = sErrorMsg
-			Session("PreReqFails") = sPreReqFails
-			Session("UnAvailFails") = sUnAvailFails
-			Session("OverlapFails") = sOverlapFails
-			Session("OverBookFails") = sOverBookFails
+			Session("PreReqFails") = sPreReqFailsCount
+			Session("UnAvailFails") = sUnAvailFailsCount
+			Session("OverlapFails") = sOverlapFailsCount
+			Session("Overbooked") = sCourseOverbooked
 
 			Return RedirectToAction(sNextPage)
 

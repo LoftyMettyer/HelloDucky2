@@ -996,7 +996,7 @@
 				Try
 					objDataAccess.ExecuteSP("sp_ASRIntMakeBulkBookings" _
 						, New SqlParameter("piCourseRecordID", SqlDbType.Int) With {.Value = CleanNumeric(Session("optionRecordID"))} _
-						, New SqlParameter("psEmployeeRecordIDs", SqlDbType.VarChar, -1) With {.Value = CleanNumeric(Session("optionLinkRecordID"))} _
+						, New SqlParameter("psEmployeeRecordIDs", SqlDbType.VarChar, -1) With {.Value = Session("optionLinkRecordID")} _
 						, New SqlParameter("psStatus", SqlDbType.VarChar, -1) With {.Value = Session("optionValue")})
 					
 					Session("optionAction") = "BULKBOOKINGSUCCESS"
