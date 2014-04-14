@@ -109,7 +109,7 @@ Begin VB.MDIForm frmMain
             Alignment       =   1
             Object.Width           =   1323
             MinWidth        =   1323
-            TextSave        =   "10:57"
+            TextSave        =   "17:16"
             Key             =   "pnlTIME"
          EndProperty
       EndProperty
@@ -316,7 +316,7 @@ Public Sub SetBackground(ByRef mbIsLoading As Boolean)
   picWork.AutoSize = False
   
   hMemDC = CreateCompatibleDC(picWork.hDC)
-  SelectObject hMemDC, pic.Handle
+  SelectObject hMemDC, pic.handle
 
   If WindowState <> vbMinimized Then
     picWork.BackColor = Me.BackColor
@@ -4656,7 +4656,7 @@ Private Sub PopulateRuntimeGenerics(utlType As UtilityType, lngID As Long)
   With rsTemp
     
     If Not .BOF And Not .EOF Then
-      gdUtilityRunDate = !RunDate
+      gdUtilityRunDate = IIf(IsNull(!RunDate), Now, !RunDate)
       glngUtilityRunID = lngID
     End If
 
