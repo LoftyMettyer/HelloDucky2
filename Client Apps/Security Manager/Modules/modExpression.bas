@@ -1421,6 +1421,20 @@ Public Function ValidateFunctionParameters(plngFunctionID As Variant, piResultTy
         (piParam3Type = giEXPRVALUE_CHARACTER)
       piResultType = giEXPRVALUE_NUMERIC
 
+    Case 78
+      fOK = True
+      piResultType = giEXPRVALUE_DATE
+      
+    Case 79
+      fOK = True
+      piResultType = giEXPRVALUE_NUMERIC
+
+    Case 80
+      fOK = (piParam1Type = giEXPRVALUE_NUMERIC) And _
+        (piParam2Type = giEXPRVALUE_NUMERIC) And _
+        (piParam3Type = giEXPRVALUE_NUMERIC)
+      piResultType = giEXPRVALUE_DATE
+      
     Case Else ' Unknown function
       fOK = False
       

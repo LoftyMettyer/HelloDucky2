@@ -26,7 +26,10 @@ Namespace BaseClasses
 			AccessLog = New AccessLog(Value.LoginInfo)
 			Functions = Value.Functions
 			Operators = Value.Operators
+			RunDate = Now
 		End Sub
+
+		Protected RunDate As DateTime
 
 		' keep a manual record of allocated IDs in case users in SYS MGR have created expressions but not yet saved changes
 		Protected Function GetUniqueID(strSetting As String, strTable As String, strColumn As String) As Integer

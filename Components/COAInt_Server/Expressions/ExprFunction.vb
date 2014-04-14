@@ -713,6 +713,15 @@ ErrorTrap:
 				Case 77	' Replace characters within a String
 					sCode = "REPLACE(" & sParamCode1 & ", " & sParamCode2 & ", " & sParamCode3 & ")"
 
+				Case 78	' Last run date time of current utility/report
+					sCode = String.Format("'{0}-{1}-{2} {3}:{4}:{5}'", RunDate.Year, RunDate.Month, RunDate.Day, RunDate.Hour, RunDate.Minute, RunDate.Second)
+
+				Case 79	' Current ID of the base record
+					sCode = "ID"
+
+				Case 80	' Convert date to string
+					sCode = "dbo.udfASRCreateDate(" & sParamCode1 & ", " & sParamCode2 & ", " & sParamCode3 & ")"
+
 				Case Else
 					fOK = False
 

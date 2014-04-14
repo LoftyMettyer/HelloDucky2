@@ -551,6 +551,20 @@ ErrorTrap:
 				fOK = (piParam1Type = ExpressionValueTypes.giEXPRVALUE_CHARACTER) And (piParam2Type = ExpressionValueTypes.giEXPRVALUE_CHARACTER) And (piParam3Type = ExpressionValueTypes.giEXPRVALUE_CHARACTER)
 				piResultType = ExpressionValueTypes.giEXPRVALUE_CHARACTER
 
+			Case 78
+				fOK = True
+				piResultType = ExpressionValueTypes.giEXPRVALUE_DATE
+
+			Case 79
+				fOK = True
+				piResultType = ExpressionValueTypes.giEXPRVALUE_NUMERIC
+
+			Case 80
+				fOK = (piParam1Type = ExpressionValueTypes.giEXPRVALUE_NUMERIC) And _
+					(piParam2Type = ExpressionValueTypes.giEXPRVALUE_NUMERIC) And _
+					(piParam3Type = ExpressionValueTypes.giEXPRVALUE_NUMERIC)
+				piResultType = ExpressionValueTypes.giEXPRVALUE_DATE
+
 			Case Else	' Unknown function
 				fOK = False
 		End Select

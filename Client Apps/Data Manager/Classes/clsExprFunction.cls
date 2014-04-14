@@ -56,7 +56,7 @@ TidyUpAndExit:
 
 ErrorTrap:
   COAMsgBox "Error checking for cyclic expressions.", _
-    vbOKOnly + vbExclamation, App.ProductName
+    vbOKOnly + vbExclamation, app.ProductName
   Err = False
   Resume TidyUpAndExit
     
@@ -933,6 +933,15 @@ Public Function RuntimeCode(psRuntimeCode As String, _
       Case 77 'Replace characters in a string
         sCode = "REPLACE(" & sParamCode1 & ", " & sParamCode2 & "," & sParamCode3 & ")"
       
+      Case 78 ' Last run date time of current utility
+        sCode = "'" & ConvertToSQLDate(gdUtilityRunDate) & "'"
+      
+      Case 79 ' Current ID of the base record
+        sCode = "ID"
+            
+      Case 80 ' Convert date to string
+        sCode = "dbo.udfASRCreateDate(" & sParamCode1 & ", " & sParamCode2 & ", " & sParamCode3 & ")"
+            
       Case Else
         fOK = False
         
@@ -2209,7 +2218,7 @@ TidyUpAndExit:
 
 ErrorTrap:
   COAMsgBox "Error checking for hidden components.", _
-    vbOKOnly + vbExclamation, App.ProductName
+    vbOKOnly + vbExclamation, app.ProductName
   Err = False
   Resume TidyUpAndExit
   
@@ -2398,4 +2407,8 @@ Public Function UDFCode(psRuntimeCode() As String, _
  
   UDFCode = fOK
   
+End Function
+
+Private Function ConvertToSQLDate(dDate As Date) As String
+  ConvertToSQLDate = Year(dDate) & "-" & Month(dDate) & "-" & Day(dDate) & " " & Hour(dDate) & ":" & Minute(dDate) & ":" & Second(dDate)
 End Function

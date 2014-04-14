@@ -741,6 +741,15 @@ Public Function RuntimeCode(psRuntimeCode As String, _
       Case 73 'Bradford Factor
         sCode = "(dbo.udf_ASRFn_BradfordFactor(" & sParamCode1 & "," & sParamCode2 _
             & "," & sParamCode3 & ",ID))"
+            
+      Case 78 ' Last run date time of current utility
+        sCode = "GETDATE()"
+      
+      Case 79 ' Current ID of the base record
+        sCode = "ID"
+      
+      Case 80 ' Convert date to string
+        sCode = "dbo.udfASRCreateDate(" & sParamCode1 & ", " & sParamCode2 & ", " & sParamCode3 & ")"
       
       Case Else
         fOK = False

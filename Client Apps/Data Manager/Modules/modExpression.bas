@@ -390,7 +390,7 @@ TidyUpAndExit:
   Exit Function
   
 ErrorTrap:
-  COAMsgBox "Error retrieving field value from database.", vbOKOnly + vbCritical, App.Title
+  COAMsgBox "Error retrieving field value from database.", vbOKOnly + vbCritical, app.title
   Resume TidyUpAndExit
     
 End Function
@@ -419,7 +419,7 @@ TidyUpAndExit:
   Exit Function
   
 ErrorTrap:
-  COAMsgBox "Error retrieving field value from database.", vbOKOnly + vbCritical, App.Title
+  COAMsgBox "Error retrieving field value from database.", vbOKOnly + vbCritical, app.title
   Resume TidyUpAndExit
     
 End Function
@@ -444,7 +444,7 @@ TidyUpAndExit:
   Exit Function
   
 ErrorTrap:
-  COAMsgBox "Error setting Expression Access.", vbOKOnly + vbCritical, App.Title
+  COAMsgBox "Error setting Expression Access.", vbOKOnly + vbCritical, app.title
   Resume TidyUpAndExit
   
 End Function
@@ -468,7 +468,7 @@ TidyUpAndExit:
 
 ErrorTrap:
   isOwnerOfParent = False
-  COAMsgBox "Error checking owner of expression.", vbOKOnly + vbExclamation, App.Title
+  COAMsgBox "Error checking owner of expression.", vbOKOnly + vbExclamation, app.title
   Resume TidyUpAndExit
   
 End Function
@@ -512,7 +512,7 @@ TidyUpAndExit:
 
 ErrorTrap:
   isOwnerOfComp = False
-  COAMsgBox "Error checking owner of component.", vbOKOnly + vbExclamation, App.Title
+  COAMsgBox "Error checking owner of component.", vbOKOnly + vbExclamation, app.title
   Resume TidyUpAndExit
   
 End Function
@@ -559,7 +559,7 @@ TidyUpAndExit:
 
 ErrorTrap:
   isCompHidden = True
-  COAMsgBox "Error checking access of component.", vbOKOnly + vbExclamation, App.Title
+  COAMsgBox "Error checking access of component.", vbOKOnly + vbExclamation, app.title
   Resume TidyUpAndExit
   
 End Function
@@ -613,7 +613,7 @@ TidyUpAndExit:
 
 ErrorTrap:
   isCompDeleted = True
-  COAMsgBox "Error checking if component has been deleted.", vbOKOnly + vbExclamation, App.Title
+  COAMsgBox "Error checking if component has been deleted.", vbOKOnly + vbExclamation, app.title
   Resume TidyUpAndExit
     
 End Function
@@ -641,7 +641,7 @@ Public Function ValidComponent(objComp As clsExprComponent, _
     'the current expression no longer exists.
     If bShowMessages Then
       COAMsgBox "The selected component has been deleted by another user. " _
-              , vbExclamation + vbOKOnly, App.Title
+              , vbExclamation + vbOKOnly, app.title
     End If
     ValidComponent = 3
     Exit Function
@@ -664,7 +664,7 @@ Public Function ValidComponent(objComp As clsExprComponent, _
           If bShowMessages Then
             COAMsgBox "The selected component is hidden, " & _
                     "the expression will now be made hidden." _
-                    , vbInformation + vbOKOnly, App.Title
+                    , vbInformation + vbOKOnly, app.title
           End If
           objComp.ParentExpression.Access = ACCESS_HIDDEN
           ValidComponent = 1
@@ -676,7 +676,7 @@ Public Function ValidComponent(objComp As clsExprComponent, _
         If bShowMessages Then
           COAMsgBox "The selected component is owned by another user and " & vbCrLf & _
                   "has been made hidden. " _
-                  , vbExclamation + vbOKOnly, App.Title
+                  , vbExclamation + vbOKOnly, app.title
         End If
         ValidComponent = 4
         Exit Function
@@ -686,7 +686,7 @@ Public Function ValidComponent(objComp As clsExprComponent, _
       If bShowMessages Then
         COAMsgBox "The selected component is hidden and cannot be added to " & _
                 "another user's expression." _
-                , vbExclamation + vbOKOnly, App.Title
+                , vbExclamation + vbOKOnly, app.title
       End If
       ValidComponent = 2
       Exit Function
@@ -699,7 +699,7 @@ TidyUpAndExit:
 
 ErrorTrap:
   ValidComponent = -1
-  COAMsgBox "Error checking validity of component.", vbOKOnly + vbExclamation, App.Title
+  COAMsgBox "Error checking validity of component.", vbOKOnly + vbExclamation, app.title
   Resume TidyUpAndExit
 
 End Function
@@ -777,7 +777,7 @@ Public Function ValidateExpr(objExpr As clsExprExpression, bShowMessages As Bool
     End Select
   
     If iValidationCode > 0 Then
-      COAMsgBox sMessage, vbExclamation + vbOKOnly, App.Title
+      COAMsgBox sMessage, vbExclamation + vbOKOnly, app.title
     End If
     
   End If
@@ -790,7 +790,7 @@ TidyUpAndExit:
 
 ErrorTrap:
   ValidateExpr = -1
-  COAMsgBox "Error checking validity of expression.", vbOKOnly + vbExclamation, App.Title
+  COAMsgBox "Error checking validity of expression.", vbOKOnly + vbExclamation, app.title
   Resume TidyUpAndExit
 
 End Function
@@ -822,7 +822,7 @@ TidyUpAndExit:
 
 ErrorTrap:
   RemoveUnowned_HDComps = False
-  COAMsgBox "Error removing hidden components.", vbOKOnly + vbExclamation, App.Title
+  COAMsgBox "Error removing hidden components.", vbOKOnly + vbExclamation, app.title
   Resume TidyUpAndExit
 
 End Function
@@ -1486,6 +1486,20 @@ Public Function ValidateFunctionParameters(plngFunctionID As Variant, piResultTy
         (piParam2Type = giEXPRVALUE_CHARACTER) And _
         (piParam3Type = giEXPRVALUE_CHARACTER)
       piResultType = giEXPRVALUE_CHARACTER
+      
+    Case 78
+      fOK = True
+      piResultType = giEXPRVALUE_DATE
+      
+    Case 79
+      fOK = True
+      piResultType = giEXPRVALUE_NUMERIC
+                
+    Case 80
+      fOK = (piParam1Type = giEXPRVALUE_NUMERIC) And _
+        (piParam2Type = giEXPRVALUE_NUMERIC) And _
+        (piParam3Type = giEXPRVALUE_NUMERIC)
+      piResultType = giEXPRVALUE_DATE
       
     Case Else ' Unknown function
       fOK = False

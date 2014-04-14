@@ -114,6 +114,9 @@ Public gbRecentDisplayDefSel As Boolean
 Public glngCurrentCategoryID As Long
 Public gbRememberDefSelID As Boolean
 
+Public gdUtilityRunDate As Date
+Public glngUtilityRunID As Long
+
 Public giWeekdayStart As VbDayOfWeek
 
 Public giWindowState As FormWindowStateConstants

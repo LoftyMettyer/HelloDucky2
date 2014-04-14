@@ -162,6 +162,47 @@ IF NOT @DeleteJobID IS NULL
 	EXEC msdb.dbo.sp_delete_job @job_id=@DeleteJobID, @delete_unused_schedule=1
 
 
+/* ------------------------------------------------------- */
+PRINT 'Step - New functions'
+/* ------------------------------------------------------- */
+IF NOT EXISTS(SELECT functionid FROM ASRSysFunctions WHERE functionID = 78)
+BEGIN
+	INSERT ASRSysFunctions (FunctionID, functionName, returnType, timeDependent, category, spName, nonStandard, runtime, UDF)
+		VALUES (78, 'Last Run Date', 4, 0, 'Date/Time', '',0, 1, 0);
+	INSERT ASRSysFunctions (FunctionID, functionName, returnType, timeDependent, category, spName, nonStandard, runtime, UDF)
+		VALUES (79, 'Base Record ID', 2, 0, 'General', '',0, 1, 0);
+	INSERT ASRSysFunctions (FunctionID, functionName, returnType, timeDependent, category, spName, nonStandard, runtime, UDF)
+		VALUES (80, 'Create Exact Date', 4, 0, 'Date/Time', '',0, 1, 0);
+	INSERT ASRSysFunctionParameters (functionID, parameterIndex, parameterType, parameterName)
+		VALUES (80, 1, 2, '<Day>');
+	INSERT ASRSysFunctionParameters (functionID, parameterIndex, parameterType, parameterName)
+		VALUES (80, 2, 2, '<Month>');
+	INSERT ASRSysFunctionParameters (functionID, parameterIndex, parameterType, parameterName)
+		VALUES (80, 3, 2, '<Year>');
+
+END
+
+	IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[udfASRCreateDate]') AND type in (N'FN'))
+		DROP FUNCTION [dbo].[udfASRCreateDate];
+
+	SELECT @NVarCommand = 'CREATE FUNCTION dbo.udfASRCreateDate(@day float, @month float, @year float)
+		RETURNS datetime
+		AS
+		BEGIN
+
+			DECLARE @date varchar(20);
+
+			IF @day = 0 OR @month = 0 OR @year = 0 RETURN NULL;
+			SET @date = CONVERT(varchar(2), @month) + ''/'' + CONVERT(varchar(2), @day) + ''/'' + CONVERT(varchar(4), @year);
+
+			IF ISDATE(@date) = 0
+				RETURN NULL;
+
+			RETURN @date;
+
+		END';
+		EXEC sp_executesql @NVarCommand;
+
 
 /* ------------------------------------------------------------- */
 /* Update the database version flag in the ASRSysSettings table. */
