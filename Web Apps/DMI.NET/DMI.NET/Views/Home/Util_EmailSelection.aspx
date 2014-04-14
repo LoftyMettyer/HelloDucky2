@@ -149,14 +149,14 @@
 	<div style="margin-top: 10px; margin-right: 10px; float: right;">
 			<input id="cmdok" type="button" value="OK" name="cmdok" 
 					style="width: 80px"
-					class="button ui-button ui-widget ui-state-default ui-widget-content ui-corner-tl ui-corner-br" />
+					class="button" />
 			<input id="cmdnone" type="button" value="None" name="cmdnone"
 					style="width: 80px"
-					class="button ui-button ui-widget ui-state-default ui-widget-content ui-corner-tl ui-corner-br" 
+					class="button" 
 					onclick="frmPopup.txtSelectedID.value = 0; frmPopup.txtSelectedName.value = ''; frmPopup.txtSelectedAccess.value = ''; frmPopup.txtSelectedUserName.value = ''; setForm();" />
 			<input id="cmdcancel" type="button" value="Cancel" name="cmdcancel" 
 					style="width: 80px"
-					class="button ui-button ui-widget ui-state-default ui-widget-content ui-corner-tl ui-corner-br" 
+					class="button" 
 					onclick="self.close();" />
 	</div>
 
@@ -182,6 +182,7 @@
 		scrollerbar: true
 	});
 
+	$(".button").button();
 	//Hide the EmailGroup table header and its column
 	$('.ui-jqgrid-htable tr th:nth-child(1)').hide();
 	$('#EmailSelectionTable tr td:nth-child(1)').hide();
