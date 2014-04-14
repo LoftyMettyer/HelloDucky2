@@ -623,7 +623,7 @@ Private Sub PopulateModules(lstTemp As ListBox)
     .AddItem "Quick Address": .ItemData(.NewIndex) = lngBit: lngBit = lngBit * 2
     .AddItem "Payroll (Shared Table)": .ItemData(.NewIndex) = lngBit: lngBit = lngBit * 2
     .AddItem "Workflow": .ItemData(.NewIndex) = lngBit: lngBit = lngBit * 2
-    .AddItem "Version One Integration": .ItemData(.NewIndex) = lngBit: lngBit = lngBit * 2
+    .AddItem "V1 Integration": .ItemData(.NewIndex) = lngBit: lngBit = lngBit * 2
     .AddItem "Mobile Interface": .ItemData(.NewIndex) = lngBit: lngBit = lngBit * 2
     .AddItem "Fusion Integration": .ItemData(.NewIndex) = lngBit: lngBit = lngBit * 2
     .AddItem "XML Exports": .ItemData(.NewIndex) = lngBit: lngBit = lngBit * 2
