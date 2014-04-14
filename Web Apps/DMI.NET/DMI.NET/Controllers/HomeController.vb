@@ -2822,9 +2822,12 @@ Namespace Controllers
 			If blnSavetoFile Or (Not blnSavetoFile And Not blnEmail) Then
 				If IO.File.Exists(ClientDLL.GeneratedFile) Then
 					Try
-						Response.ClearContent()
-						Response.AddHeader("Content-Disposition", "attachment; filename=" + strDownloadFileName)
-						Response.TransmitFile(ClientDLL.GeneratedFile)
+						Dim fileInfo As FileInfo = New FileInfo(ClientDLL.GeneratedFile)
+						Response.ContentType = "application/octet-stream"
+						Response.AddHeader("Content-Disposition", String.Format("attachment;filename=""{0}""", strDownloadFileName))
+						Response.AddHeader("Content-Length", fileInfo.Length.ToString())
+						Response.WriteFile(fileInfo.FullName)
+						Response.End()
 						Response.Flush()
 					Catch ex As Exception
 					Finally
@@ -3105,9 +3108,13 @@ Namespace Controllers
 			If blnSavetoFile Or (Not blnSavetoFile And Not blnEmail) Then
 				If IO.File.Exists(ClientDLL.GeneratedFile) Then
 					Try
-						Response.ClearContent()
-						Response.AddHeader("Content-Disposition", "attachment; filename=" + strDownloadFileName)
-						Response.TransmitFile(ClientDLL.GeneratedFile)
+
+						Dim fileInfo As FileInfo = New FileInfo(ClientDLL.GeneratedFile)
+						Response.ContentType = "application/octet-stream"
+						Response.AddHeader("Content-Disposition", String.Format("attachment;filename=""{0}""", strDownloadFileName))
+						Response.AddHeader("Content-Length", fileInfo.Length.ToString())
+						Response.WriteFile(fileInfo.FullName)
+						Response.End()
 						Response.Flush()
 					Catch ex As Exception
 					Finally
@@ -3209,9 +3216,12 @@ Namespace Controllers
 			If blnSavetoFile Or (Not blnSavetoFile And Not blnEmail) Then
 				If IO.File.Exists(objOutput.GeneratedFile) Then
 					Try
-						Response.ClearContent()
-						Response.AddHeader("Content-Disposition", "attachment; filename=" + strDownloadFileName)
-						Response.TransmitFile(objOutput.GeneratedFile)
+						Dim fileInfo As FileInfo = New FileInfo(objOutput.GeneratedFile)
+						Response.ContentType = "application/octet-stream"
+						Response.AddHeader("Content-Disposition", String.Format("attachment;filename=""{0}""", strDownloadFileName))
+						Response.AddHeader("Content-Length", fileInfo.Length.ToString())
+						Response.WriteFile(fileInfo.FullName)
+						Response.End()
 						Response.Flush()
 					Catch ex As Exception
 					Finally
@@ -5713,11 +5723,14 @@ Namespace Controllers
 				If serverpath.Substring(serverpath.Length - 1) <> "\" Then serverpath &= "\"
 
 				' TODO: add the file path!
-				Response.ContentType = "application/octet-stream"
-				Response.AppendHeader("Content-Disposition", "attachment; filename=" & filename)
 				Dim fullpath = serverpath & filename
-				Response.TransmitFile(fullpath)
+				Dim fileInfo As FileInfo = New FileInfo(fullpath)
+				Response.ContentType = "application/octet-stream"
+				Response.AddHeader("Content-Disposition", String.Format("attachment;filename=""{0}""", filename))
+				Response.AddHeader("Content-Length", fileInfo.Length.ToString())
+				Response.WriteFile(fileInfo.FullName)
 				Response.End()
+				Response.Flush()
 			End If
 
 		End Function
