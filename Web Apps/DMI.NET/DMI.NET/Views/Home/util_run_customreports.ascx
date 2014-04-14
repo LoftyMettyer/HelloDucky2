@@ -10,7 +10,7 @@
 	Dim bBradfordFactor As Boolean
 	Dim mstrCaption As String
 	Dim sErrMsg As String
-		
+	
 	bBradfordFactor = (Session("utiltype") = "16")
 
 	Dim objReport As HR.Intranet.Server.Report
@@ -488,21 +488,23 @@ End If
 	Protected Sub gridReportData_DataBound(sender As Object, e As EventArgs) Handles gridReportData.DataBound
 	End Sub
 
-	Protected Sub gridReportData_RowDataBound(sender As Object, e As GridViewRowEventArgs) Handles gridReportData.RowDataBound
-
+	Protected Sub gridReportData_RowDataBound(sender As Object, e As GridViewRowEventArgs) Handles gridReportData.RowDataBound		
+		
 		Dim objReport As Report = CType(Session("CustomReport"), Report)
 		Dim objThisColumn As ReportDetailItem
 		Dim bGroupWithNext As Boolean
 
 		If e.Row.RowType = DataControlRowType.Header Or e.Row.RowType = DataControlRowType.Footer Then
-			e.Row.CssClass = "header ui-state-default ui-th-column ui-th-ltr"			
-					
+			e.Row.CssClass = "header"
+			ReportColumnCount = 0
+			
 			For iCount = 2 To objReport.datCustomReportOutput.Columns.Count - 1
 				objThisColumn = objReport.DisplayColumns(iCount - 2)
 
 				e.Row.Cells(iCount).Visible = Not objThisColumn.IsHidden And Not bGroupWithNext
 				bGroupWithNext = objThisColumn.GroupWithNextColumn
 
+				If e.Row.Cells(iCount).Visible Then ReportColumnCount += 1
 			Next
 					
 		Else
@@ -513,7 +515,7 @@ End If
 			ElseIf Not e.Row.Cells(0).Text = HR.Intranet.Server.Enums.RowType.Data Then
 				e.Row.CssClass = "summarytablerow"
 			Else
-				e.Row.CssClass = "ui-widget-content jqgrow ui-row-ltr"
+				'e.Row.CssClass = "ui-widget-content jqgrow ui-row-ltr"
 			End If
 					
 		End If
@@ -536,12 +538,18 @@ End If
 	
 			If Session("utiltype") = UtilityType.utlBradfordFactor Then
 				e.Row.Cells(iCount).Visible = Not objThisColumn.IsHidden
+			Else
+				e.Row.Cells(iCount).Visible = Not (objThisColumn.IDColumnName.StartsWith("?"))
 			End If
-	
+			
 		Next
 
 	End Sub
 		
+	
+	Public Property ReportColumnCount() As Integer
+	
+	
 </script>
 
 <form action="util_run_customreport_downloadoutput" method="post" id="frmExportData" name="frmExportData" target="submit-iframe">
@@ -566,3 +574,59 @@ End If
 	<iframe name="submit-iframe" style="display: none;"></iframe>
 
 </form>
+
+<script type="text/javascript">
+	
+
+	//Shrink to fit, or set to 100px per column?
+	var ShrinkToFit = false;
+	var gridWidth;
+	var gridHeight;
+
+	//Get count of visible columns
+	if (menu_isSSIMode()) {
+		try {
+			gridWidth = $('#reportworkframe').width();
+			gridHeight = $('#reportworkframe').height() - 100;
+		} catch (e) {
+			gridWidth = 'auto';
+			gridHeight = 'auto';
+		}
+		ShrinkToFit = true;
+	} else {
+		//DMI options.
+		var iVisibleCount = Number("<%:ReportColumnCount%>");
+		if (iVisibleCount < 8) ShrinkToFit = true;
+		gridWidth = 770;
+		gridHeight = 390;
+	}
+
+	tableToGrid("#gridReportData", {
+		shrinkToFit: ShrinkToFit,
+		width: gridWidth,
+		height: gridHeight,
+		ignoreCase: true,
+		cmTemplate: { sortable: false },
+		rowNum: 200000,
+		loadComplete: function () {
+			stylejqGrid();
+		}
+	});
+
+
+
+	function stylejqGrid() {
+		//jqGrid style overrides
+		$('#gview_gridReportData tr.jqgrow td').css('vertical-align', 'top'); //float text to top, in case of multi-line cells
+		$('#gview_gridReportData tr.footrow td').css('vertical-align', 'top'); //float text to top, in case of multi-line footers
+		$('#gview_gridReportData .s-ico span').css('display', 'none'); //hide the sort order icons - they don't tie in to the dataview model.
+		$("#gview_gridReportData > .ui-jqgrid-titlebar").text("<%=objReport.ReportCaption%>"); //Activate title bar for the grid as this will then go naturally into the print functionality.
+		$("#gview_gridReportData > .ui-jqgrid-titlebar").height("20px"); //no title bar; this is in the dialog title
+		$("#gview_gridReportData .ui-jqgrid-titlebar").show();
+
+	}
+	if (menu_isSSIMode()) $('#gbox_gridReportData').css('margin', '0 auto'); //center the report in self-service screen.
+	
+
+</script>
+

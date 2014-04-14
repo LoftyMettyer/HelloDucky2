@@ -221,7 +221,7 @@
 			</span>
 		</div>
 
-		<div id="main" data-framesource="util_run" style="height: 80%; margin: 0 0 0 0;overflow: auto; visibility: hidden">
+		<div id="main" data-framesource="util_run" style="height: 80%; margin: 0 0 0 0; visibility: hidden">
 			<%   
 				Dim sPrintButtonLabel As String = "Print"
 				If Session("utiltype") = "1" Then
@@ -287,17 +287,24 @@
 			});
 
 	<%Else%>
-	$(".popup").dialog({
+		$(".popup").dialog({
 			title: "",
-		width: 810,
-		height: 720,
-		resizable: true,
-		resize: function (event, ui) {
+			width: 810,
+			height: 720,
+			resizable: true,
+			resize: function () {
+				var doit = 0;
+				clearTimeout(doit);
+				doit = setTimeout(resizeGrid, 100);
+			}
+		});
+
+		function resizeGrid() {
 			var newHeight = $('#main').height() * 0.8;
-			$('#grdReport').setGridHeight(newHeight);
-			$('#grdReport').setGridWidth($('#main').width());
+			$('#gridReportData').setGridHeight(newHeight);
+			$('#gridReportData').setGridWidth($('#main').width());
 		}
-	});
+
 		<%End If%>
 
 	

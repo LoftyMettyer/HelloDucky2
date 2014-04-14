@@ -364,7 +364,8 @@
 	<asp:GridView ID="gridReportData" runat="server" 	
 		AllowPaging="False"		 
 		GridLines="None"
-		CssClass="visibletablecolumn">
+		CssClass="visibletablecolumn"
+		ClientIDMode="Static">
 		<Columns>
 			<asp:BoundField DataField="rowtype" ItemStyle-CssClass="hiddentablecolumn" HeaderText="" />
 		</Columns>		
@@ -567,3 +568,8 @@ End If
 	<iframe name="submit-iframe" style="display: none;"></iframe>
 
 </form>
+
+
+<script type="text/javascript">
+	tableToGrid("#gridReportData");
+</script>
