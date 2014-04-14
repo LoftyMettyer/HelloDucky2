@@ -1,0 +1,9 @@
+SCC = This is a Source Code Control file
+
+[HR Pro Server.Net.sln]
+SCC_Aux_Path = "\\harpfile01.coa.local\departments$\Development and QA\Development\Confidential\SourceSafe\HR Pro Version 2"
+SCC_Project_Name = "$/SQL Server/Database Assembly", AXRAAAAA
+
+[HR Pro Server.Net.vbproj]
+SCC_Aux_Path = "\\harpfile01.coa.local\departments$\Development and QA\Development\Confidential\SourceSafe\HR Pro Version 2"
+SCC_Project_Name = "$/SQL Server/Database Assembly", AXRAAAAA
