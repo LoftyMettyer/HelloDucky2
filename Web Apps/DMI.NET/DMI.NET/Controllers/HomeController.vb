@@ -1729,7 +1729,6 @@ Namespace Controllers
 
 							chart1.ChartAreas.Add("ChartArea1")
 
-							chart1.ChartAreas("ChartArea1").BackColor = Color.FromArgb(64, 211, 211, 211)
 							chart1.ChartAreas("ChartArea1").BackSecondaryColor = Color.Transparent
 							chart1.ChartAreas("ChartArea1").ShadowColor = Color.Transparent
 
@@ -1755,7 +1754,7 @@ Namespace Controllers
 							End If
 
 
-							If chartType = 0 Or chartType = 2 Or chartType = 4 Or chartType = 6 Or chartType = 14 Then
+							If chartType = 0 Or chartType = 2 Or chartType = 4 Or chartType = 6 Then
 								' 3D Settings
 								chart1.ChartAreas("ChartArea1").Area3DStyle.Enable3D = True
 								chart1.ChartAreas("ChartArea1").Area3DStyle.Perspective = 10
@@ -1789,7 +1788,6 @@ Namespace Controllers
 									Else
 										chart1.Series("Default").ChartType = SeriesChartType.Column
 									End If
-
 								Case 2, 3
 									chart1.Series("Default").ChartType = SeriesChartType.Line
 								Case 4, 5
@@ -1798,7 +1796,6 @@ Namespace Controllers
 									Else
 										chart1.Series("Default").ChartType = SeriesChartType.Area
 									End If
-
 								Case 6, 7
 									chart1.Series("Default").ChartType = SeriesChartType.StepLine
 								Case 14
@@ -2092,54 +2089,6 @@ Namespace Controllers
 										' Add the series - ONLY if not already added.
 										MultiAxisChart.Series.Add(seriesName)
 
-										'Add a chart area for the series and set its properties
-										MultiAxisChart.ChartAreas.Add(seriesName)
-										MultiAxisChart.ChartAreas(seriesName).BackColor = Color.FromArgb(64, 211, 211, 211)
-										MultiAxisChart.ChartAreas(seriesName).BackSecondaryColor = Color.Transparent
-										MultiAxisChart.ChartAreas(seriesName).ShadowColor = Color.Transparent
-										MultiAxisChart.ChartAreas(seriesName).AxisY.LineColor = Color.FromArgb(64, 64, 64, 64)
-										MultiAxisChart.ChartAreas(seriesName).AxisY.MajorGrid.LineColor = Color.FromArgb(64, 64, 64, 64)
-										MultiAxisChart.ChartAreas(seriesName).AxisX.LineColor = Color.FromArgb(64, 64, 64, 64)
-										MultiAxisChart.ChartAreas(seriesName).AxisX.MajorGrid.LineColor = Color.FromArgb(64, 64, 64, 64)
-
-										MultiAxisChart.ChartAreas(seriesName).AxisX.LabelStyle.Enabled = showLabels
-										MultiAxisChart.ChartAreas(seriesName).AxisY.LabelStyle.Enabled = showLabels
-
-										' Gridlines
-										If dottedGrid = True Then
-											MultiAxisChart.ChartAreas(seriesName).AxisX.LineDashStyle = ChartDashStyle.Dot
-											MultiAxisChart.ChartAreas(seriesName).AxisY.LineDashStyle = ChartDashStyle.Dot
-											MultiAxisChart.ChartAreas(seriesName).AxisX.MajorGrid.LineDashStyle = ChartDashStyle.Dot
-											MultiAxisChart.ChartAreas(seriesName).AxisY.MajorGrid.LineDashStyle = ChartDashStyle.Dot
-										Else
-											MultiAxisChart.ChartAreas(seriesName).AxisX.LineDashStyle = ChartDashStyle.NotSet
-											MultiAxisChart.ChartAreas(seriesName).AxisY.LineDashStyle = ChartDashStyle.NotSet
-											MultiAxisChart.ChartAreas(seriesName).AxisX.MajorGrid.LineDashStyle = ChartDashStyle.NotSet
-											MultiAxisChart.ChartAreas(seriesName).AxisY.MajorGrid.LineDashStyle = ChartDashStyle.NotSet
-										End If
-
-										' 3D Settings
-										If chartType = 0 Or chartType = 2 Or chartType = 4 Or chartType = 6 Or chartType = 14 Then
-											MultiAxisChart.ChartAreas(seriesName).Area3DStyle.Enable3D = True
-											MultiAxisChart.ChartAreas(seriesName).Area3DStyle.Perspective = 10
-											MultiAxisChart.ChartAreas(seriesName).Area3DStyle.Inclination = RotateX
-											MultiAxisChart.ChartAreas(seriesName).Area3DStyle.Rotation = RotateY
-											MultiAxisChart.ChartAreas(seriesName).Area3DStyle.IsRightAngleAxes = False
-											MultiAxisChart.ChartAreas(seriesName).Area3DStyle.WallWidth = 0
-											MultiAxisChart.ChartAreas(seriesName).Area3DStyle.IsClustered = False
-										End If
-
-										'Add an annotation (legend) to the chart area
-										Dim chartLegend As New RectangleAnnotation
-										chartLegend.Text = seriesName
-										chartLegend.AxisX = MultiAxisChart.ChartAreas(seriesName).AxisX
-										chartLegend.AxisY = MultiAxisChart.ChartAreas(seriesName).AxisY
-										chartLegend.AnchorX = MultiAxisChart.ChartAreas(seriesName).Position.X
-										chartLegend.AnchorY = MultiAxisChart.ChartAreas(seriesName).Position.Y
-										MultiAxisChart.Annotations.Add(chartLegend)
-
-										MultiAxisChart.Series(MultiAxisChart.Series.Count - 1).ChartArea = seriesName	'Assign the series to the chart area
-
 										MultiAxisChart.Series(seriesName).IsVisibleInLegend = False
 
 										seriesNames &= "<" & seriesName & ">"
@@ -2161,7 +2110,6 @@ Namespace Controllers
 												Else
 													MultiAxisChart.Series(seriesName).ChartType = SeriesChartType.Column
 												End If
-
 											Case 2, 3
 												MultiAxisChart.Series(seriesName).ChartType = SeriesChartType.Line
 											Case 4, 5
@@ -2170,7 +2118,6 @@ Namespace Controllers
 												Else
 													MultiAxisChart.Series(seriesName).ChartType = SeriesChartType.Area
 												End If
-
 											Case 6, 7
 												MultiAxisChart.Series(seriesName).ChartType = SeriesChartType.StepLine
 											Case 14
@@ -2209,8 +2156,73 @@ Namespace Controllers
 								pointNum += 1
 							Next
 
+							'For 2D pie charts with more than one series we need to add a chart area for each series
+							Dim thisSeries As String
+							For Each s As Series In MultiAxisChart.Series
+								'Add a chart area for the series and set its properties
+								thisSeries = s.Name
+								If chartType = 14 And MultiAxisChart.Series.Count > 1 Then '2D pie
+									MultiAxisChart.ChartAreas.Add(thisSeries)
+								Else
+									thisSeries = "Default"
+									If MultiAxisChart.ChartAreas.Count = 0 Then
+										MultiAxisChart.ChartAreas.Add(thisSeries)
+									End If
+								End If
+
+								MultiAxisChart.ChartAreas(thisSeries).BackSecondaryColor = Color.Transparent
+								MultiAxisChart.ChartAreas(thisSeries).ShadowColor = Color.Transparent
+								MultiAxisChart.ChartAreas(thisSeries).AxisY.LineColor = Color.FromArgb(64, 64, 64, 64)
+								MultiAxisChart.ChartAreas(thisSeries).AxisY.MajorGrid.LineColor = Color.FromArgb(64, 64, 64, 64)
+								MultiAxisChart.ChartAreas(thisSeries).AxisX.LineColor = Color.FromArgb(64, 64, 64, 64)
+								MultiAxisChart.ChartAreas(thisSeries).AxisX.MajorGrid.LineColor = Color.FromArgb(64, 64, 64, 64)
+
+								MultiAxisChart.ChartAreas(thisSeries).AxisX.LabelStyle.Enabled = showLabels
+								MultiAxisChart.ChartAreas(thisSeries).AxisY.LabelStyle.Enabled = showLabels
+
+								' Gridlines
+								If dottedGrid = True Then
+									MultiAxisChart.ChartAreas(thisSeries).AxisX.LineDashStyle = ChartDashStyle.Dot
+									MultiAxisChart.ChartAreas(thisSeries).AxisY.LineDashStyle = ChartDashStyle.Dot
+									MultiAxisChart.ChartAreas(thisSeries).AxisX.MajorGrid.LineDashStyle = ChartDashStyle.Dot
+									MultiAxisChart.ChartAreas(thisSeries).AxisY.MajorGrid.LineDashStyle = ChartDashStyle.Dot
+								Else
+									MultiAxisChart.ChartAreas(thisSeries).AxisX.LineDashStyle = ChartDashStyle.NotSet
+									MultiAxisChart.ChartAreas(thisSeries).AxisY.LineDashStyle = ChartDashStyle.NotSet
+									MultiAxisChart.ChartAreas(thisSeries).AxisX.MajorGrid.LineDashStyle = ChartDashStyle.NotSet
+									MultiAxisChart.ChartAreas(thisSeries).AxisY.MajorGrid.LineDashStyle = ChartDashStyle.NotSet
+								End If
+
+								' 3D Settings
+								If chartType = 0 Or chartType = 2 Or chartType = 4 Or chartType = 6 Then
+									MultiAxisChart.ChartAreas(thisSeries).Area3DStyle.Enable3D = True
+									MultiAxisChart.ChartAreas(thisSeries).Area3DStyle.Perspective = 10
+									MultiAxisChart.ChartAreas(thisSeries).Area3DStyle.Inclination = RotateX
+									MultiAxisChart.ChartAreas(thisSeries).Area3DStyle.Rotation = RotateY
+									MultiAxisChart.ChartAreas(thisSeries).Area3DStyle.IsRightAngleAxes = False
+									MultiAxisChart.ChartAreas(thisSeries).Area3DStyle.WallWidth = 0
+									MultiAxisChart.ChartAreas(thisSeries).Area3DStyle.IsClustered = False
+								End If
+
+								If chartType = 14 And MultiAxisChart.Series.Count > 1 Then '2D pie
+									'Add an annotation (legend) to the chart area
+									Dim chartLegend As New RectangleAnnotation
+									chartLegend.Text = thisSeries
+									chartLegend.AxisX = MultiAxisChart.ChartAreas(thisSeries).AxisX
+									chartLegend.AxisY = MultiAxisChart.ChartAreas(thisSeries).AxisY
+									chartLegend.AnchorX = MultiAxisChart.ChartAreas(thisSeries).Position.X
+									chartLegend.AnchorY = MultiAxisChart.ChartAreas(thisSeries).Position.Y
+									MultiAxisChart.Annotations.Add(chartLegend)
+								End If
+
+								MultiAxisChart.Series(s.Name).ChartArea = thisSeries 'Assign the series to the chart area
+
+								If showLabels Then
+									MultiAxisChart.ChartAreas(thisSeries).AxisX.Interval = 1 'Show all X axis legends (labels?)
+								End If
+							Next
+
 							If showLabels Then
-								MultiAxisChart.ChartAreas(seriesName).AxisX.Interval = 1	'Show all X axis legends (labels?)
 								Try
 									'The "AlignDataPointsByAxisLabel" method below, "Aligns data points along the X axis using their axis labels. Applicable when multiple series are indexed and their X-values are strings."
 									'according to MSDN (http://msdn.microsoft.com/en-us/library/system.web.ui.datavisualization.charting.chart.aligndatapointsbyaxislabel(v=vs.100).aspx)
@@ -2229,6 +2241,8 @@ Namespace Controllers
 								Next
 							Next
 
+							'Helpful for debugging: save the chart data as XML
+							'MultiAxisChart.Serializer.Save(Server.MapPath("/") & "Chart.xml")
 							Using ms = New MemoryStream()
 								MultiAxisChart.SaveImage(ms, ChartImageFormat.Png)
 								ms.Seek(0, SeekOrigin.Begin)
