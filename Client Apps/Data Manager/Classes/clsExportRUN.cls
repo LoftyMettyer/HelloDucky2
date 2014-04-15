@@ -93,6 +93,7 @@ Private mstrSQLOrderBy As String
 Private mstrSQL As String
 
 Private mstrTransformFile As String
+Private mstrXMLDataNodeName As String
 
 ' Data access classes
 Private mclsData As clsDataAccess
@@ -617,11 +618,7 @@ Private Function GetExportDefinition() As Boolean
     'mstrExportOutputType = !outputtype
     'mstrExportOutputName = !outputname
     mblnExportQuotes = !Quotes
-    'mblnExportHeader = !header
-    mintExportHeader = !Header
-    mstrExportHeaderText = IIf(IsNull(!HeaderText), vbNullString, !HeaderText)
-    mintExportFooter = !Footer
-    mstrExportFooterText = IIf(IsNull(!FooterText), vbNullString, !FooterText)
+    
     mstrExportFileCode = IIf(IsNull(!CMGExportFileCode), "", !CMGExportFileCode)
     mlngCMGRecordIdentifier = IIf(IsNull(!CMGExportRecordID), 0, !CMGExportRecordID)
     mbUpdateAuditLog = IIf(IsNull(!CMGExportUpdateAudit), False, !CMGExportUpdateAudit)
@@ -648,6 +645,18 @@ Private Function GetExportDefinition() As Boolean
     mstrOutputEmailAttachAs = IIf(IsNull(!OutputEmailAttachAs), vbNullString, !OutputEmailAttachAs)
     'mlngOutputEmailFileFormat = !OutputEmailFileFormat
     mstrOutputFileName = !OutputFilename
+   
+    mintExportHeader = !Header
+    mstrExportHeaderText = IIf(IsNull(!HeaderText), vbNullString, !HeaderText)
+    mintExportFooter = !Footer
+    mstrExportFooterText = IIf(IsNull(!FooterText), vbNullString, !FooterText)
+    mstrXMLDataNodeName = IIf(IsNull(!XMLDataNodeName), vbNullString, !XMLDataNodeName)
+    
+    If mlngOutputFormat = fmtXML Then
+      mstrExportHeaderText = IIf(Len(mstrExportHeaderText) = 0, "<body>", !HeaderText)
+      mstrExportFooterText = IIf(Len(mstrExportFooterText) = 0, "</body>", !FooterText)
+      mstrXMLDataNodeName = IIf(Len(mstrExportFooterText) = 0, mstrExportBaseTableName, mstrXMLDataNodeName)
+    End If
    
 '    'If mstrExportOutputType = "S" Then
 '    If mlngOutputFormat = fmtSQLTable Then
@@ -2503,19 +2512,19 @@ Private Function FormatNumeric(dValue As Double, iLen As Long, iDec As Long) As 
 End Function
 
 Public Function PrettyPrintXml(xmlDoc)
-    Dim rdr, wrt
-    Set rdr = CreateObject("Msxml2.SAXXMLReader.3.0")
-    Set wrt = CreateObject("Msxml2.MXXMLWriter.3.0")
-    wrt.byteOrderMark = True
-    wrt.omitXMLDeclaration = True
-    wrt.Indent = True
-    Set rdr.contentHandler = wrt
-    Set rdr.dtdHandler = wrt
-    Set rdr.errorHandler = wrt
-    rdr.PutProperty "http://xml.org/sax/properties/lexical-handler", wrt
-    rdr.PutProperty "http://xml.org/sax/properties/declaration-handler", wrt
-    rdr.Parse xmlDoc
-    PrettyPrintXml = wrt.Output
+  Dim rdr, wrt
+  Set rdr = CreateObject("Msxml2.SAXXMLReader.3.0")
+  Set wrt = CreateObject("Msxml2.MXXMLWriter.3.0")
+  wrt.byteOrderMark = True
+  wrt.omitXMLDeclaration = False
+  wrt.Indent = True
+  Set rdr.contentHandler = wrt
+  Set rdr.dtdHandler = wrt
+  Set rdr.errorHandler = wrt
+  rdr.PutProperty "http://xml.org/sax/properties/lexical-handler", wrt
+  rdr.PutProperty "http://xml.org/sax/properties/declaration-handler", wrt
+  rdr.Parse xmlDoc
+  PrettyPrintXml = wrt.output
 End Function
 
 Private Function ExportData_XML() As Boolean
@@ -2528,7 +2537,7 @@ Private Function ExportData_XML() As Boolean
   Dim prstReadyToExport As Recordset
   Dim rstConverted As Recordset
   
-  Set prstReadyToExport = mclsData.OpenRecordset("SELECT CAST((SELECT * FROM [" & mstrTempTableName & "] FOR XML PATH('" & mstrExportBaseTableName & "')) AS VARCHAR(MAX)) AS XmlData", adOpenForwardOnly, adLockReadOnly)
+  Set prstReadyToExport = mclsData.OpenRecordset("SELECT CAST((SELECT * FROM [" & mstrTempTableName & "] FOR XML PATH('" & mstrXMLDataNodeName & "')) AS VARCHAR(MAX)) AS XmlData", adOpenForwardOnly, adLockReadOnly)
 
   If (prstReadyToExport.BOF And prstReadyToExport.EOF) Then
     mstrErrorString = "No records to export."
@@ -2540,14 +2549,14 @@ Private Function ExportData_XML() As Boolean
     prstReadyToExport.MoveFirst
 
     If Len(mstrTransformFile) > 0 Then
-      sExportText = ("<xmlexport>" & prstReadyToExport(0).Value & "</xmlexport>")
+      sExportText = (mstrExportHeaderText & prstReadyToExport(0).Value & mstrExportFooterText)
       sTransFormText = GetFileText(mstrTransformFile)
       sSQL = "SELECT convert(nvarchar(MAX), dbo.udfASRNetApplyXsltTransform(convert(xml,'" & Replace(sExportText, "'", "''") & "'), convert(xml,'" & Replace(sTransFormText, "'", "''") & "')))"
       Set rstConverted = mclsData.OpenRecordset(sSQL, adOpenForwardOnly, adLockReadOnly)
       sExportText = PrettyPrintXml(rstConverted(0).Value)
     Else
       sExportText = prstReadyToExport(0).Value
-      sExportText = PrettyPrintXml("<xmlexport>" & sExportText & "</xmlexport>")
+      sExportText = PrettyPrintXml(mstrExportHeaderText & sExportText & mstrExportFooterText)
     End If
 
 

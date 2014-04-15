@@ -57,6 +57,7 @@ Begin VB.Form frmExport
       _Version        =   393216
       Style           =   1
       Tabs            =   6
+      Tab             =   5
       TabsPerRow      =   6
       TabHeight       =   520
       BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
@@ -70,7 +71,7 @@ Begin VB.Form frmExport
       EndProperty
       TabCaption(0)   =   "&Definition"
       TabPicture(0)   =   "frmExport.frx":000C
-      Tab(0).ControlEnabled=   -1  'True
+      Tab(0).ControlEnabled=   0   'False
       Tab(0).Control(0)=   "fraBase"
       Tab(0).Control(0).Enabled=   0   'False
       Tab(0).Control(1)=   "fraInformation"
@@ -101,25 +102,38 @@ Begin VB.Form frmExport
       Tab(4).ControlCount=   2
       TabCaption(5)   =   "O&utput"
       TabPicture(5)   =   "frmExport.frx":0098
-      Tab(5).ControlEnabled=   0   'False
+      Tab(5).ControlEnabled=   -1  'True
       Tab(5).Control(0)=   "fraDelimFile"
+      Tab(5).Control(0).Enabled=   0   'False
       Tab(5).Control(1)=   "fraCMGFile"
+      Tab(5).Control(1).Enabled=   0   'False
       Tab(5).Control(2)=   "fraOutputDestination"
+      Tab(5).Control(2).Enabled=   0   'False
       Tab(5).Control(3)=   "fraOutputType"
+      Tab(5).Control(3).Enabled=   0   'False
       Tab(5).Control(4)=   "fraXML"
+      Tab(5).Control(4).Enabled=   0   'False
       Tab(5).ControlCount=   5
       Begin VB.Frame fraXML 
          Caption         =   "XML Options :"
          Height          =   1410
-         Left            =   -74850
+         Left            =   150
          TabIndex        =   125
          Top             =   3580
          Width           =   9180
+         Begin VB.TextBox txtXMLDataNodeName 
+            Height          =   315
+            Left            =   2280
+            MaxLength       =   50
+            TabIndex        =   131
+            Top             =   270
+            Width           =   4410
+         End
          Begin VB.CommandButton cmdTransformFileClear 
             Caption         =   "O"
             BeginProperty Font 
                Name            =   "Wingdings 2"
-               Size            =   20.25
+               Size            =   14.25
                Charset         =   2
                Weight          =   400
                Underline       =   0   'False
@@ -127,11 +141,11 @@ Begin VB.Form frmExport
                Strikethrough   =   0   'False
             EndProperty
             Height          =   315
-            Left            =   5460
+            Left            =   7020
             MaskColor       =   &H000000FF&
             TabIndex        =   129
             ToolTipText     =   "Clear Path"
-            Top             =   285
+            Top             =   680
             UseMaskColor    =   -1  'True
             Width           =   330
          End
@@ -139,9 +153,9 @@ Begin VB.Form frmExport
             Caption         =   "..."
             Enabled         =   0   'False
             Height          =   315
-            Left            =   5115
+            Left            =   6675
             TabIndex        =   128
-            Top             =   280
+            Top             =   680
             UseMaskColor    =   -1  'True
             Width           =   330
          End
@@ -155,21 +169,29 @@ Begin VB.Form frmExport
             TabIndex        =   127
             TabStop         =   0   'False
             Tag             =   "0"
-            Top             =   280
-            Width           =   2835
+            Top             =   680
+            Width           =   4395
+         End
+         Begin VB.Label lblXMLNodeName 
+            Caption         =   "Custom Node Name : "
+            Height          =   375
+            Left            =   240
+            TabIndex        =   130
+            Top             =   350
+            Width           =   1935
          End
          Begin VB.Label lblTransformFile 
             Caption         =   "Transformation File :"
             Height          =   255
             Left            =   240
             TabIndex        =   126
-            Top             =   360
+            Top             =   755
             Width           =   2055
          End
       End
       Begin VB.Frame fraInformation 
          Height          =   2355
-         Left            =   150
+         Left            =   -74850
          TabIndex        =   118
          Top             =   400
          Width           =   9180
@@ -373,7 +395,7 @@ Begin VB.Form frmExport
       Begin VB.Frame fraOutputType 
          Caption         =   "Output Format :"
          Height          =   3135
-         Left            =   -74850
+         Left            =   150
          TabIndex        =   82
          Top             =   405
          Width           =   2400
@@ -437,7 +459,7 @@ Begin VB.Form frmExport
       Begin VB.Frame fraOutputDestination 
          Caption         =   "Output Destination(s) :"
          Height          =   3135
-         Left            =   -72345
+         Left            =   2655
          TabIndex        =   88
          Top             =   405
          Width           =   6675
@@ -1506,7 +1528,7 @@ Begin VB.Form frmExport
       Begin VB.Frame fraBase 
          Caption         =   "Data :"
          Height          =   2115
-         Left            =   150
+         Left            =   -74850
          TabIndex        =   0
          Top             =   2850
          Width           =   9180
@@ -1609,7 +1631,7 @@ Begin VB.Form frmExport
       Begin VB.Frame fraCMGFile 
          Caption         =   "CMG Options :"
          Height          =   1410
-         Left            =   -74850
+         Left            =   150
          TabIndex        =   109
          Top             =   3580
          Width           =   9180
@@ -1657,7 +1679,7 @@ Begin VB.Form frmExport
       Begin VB.Frame fraDelimFile 
          Caption         =   "Delimited File Options :"
          Height          =   1410
-         Left            =   -74850
+         Left            =   150
          TabIndex        =   103
          Top             =   3570
          Width           =   9180
@@ -4892,7 +4914,8 @@ Private Function SaveDefinition() As Boolean
     
     ' Save the XML export options
     If optOutputFormat(fmtXML).Value = True Then
-      strSQL = strSQL & "TransformFile = '" & Replace(txtTransformFile.Text, "'", "''") & "',"
+      strSQL = strSQL & "TransformFile = '" & Replace(txtTransformFile.Text, "'", "''") & "'," _
+              & "XMLDataNodeName = '" & Replace(txtXMLDataNodeName.Text, "'", "''") & "',"
     End If
        
     strSQL = strSQL & "Quotes = " & IIf(Me.chkQuotes.Value, 1, 0) & "," & _
@@ -4941,7 +4964,7 @@ Private Function SaveDefinition() As Boolean
            "CMGExportFileCode, CMGExportUpdateAudit, CMGExportRecordID," & _
            "Parent1AllRecords, Parent1Picklist, Parent2AllRecords, Parent2Picklist, " & _
            "OmitHeader, ForceHeader, OutputFormat, OutputSave, " & _
-           "OutputSaveExisting, OutputEmail, OutputEmailAddr, OutputEmailSubject, OutputEmailAttachAs, OutputFilename, TransformFile) "
+           "OutputSaveExisting, OutputEmail, OutputEmailAddr, OutputEmailSubject, OutputEmailAttachAs, OutputFilename, TransformFile, XMLDataNodeName) "
            
            'AppendToFile,
 
@@ -5027,7 +5050,9 @@ Private Function SaveDefinition() As Boolean
 '          "'" & Replace(txtSQLTableName.Text, "'", "''") & "')"
 '    Else
       strSQL = strSQL & _
-          "'" & Replace(txtFilename.Text, "'", "''") & "','" & Replace(txtTransformFile.Text, "'", "''") & "')"
+          "'" & Replace(txtFilename.Text, "'", "''") & "','" & Replace(txtTransformFile.Text, "'", "''") & "'," & _
+          "'" & Replace(txtXMLDataNodeName.Text, "'", "''") & "')"
+          
 '    End If
 
     If IsRecordSelectionValid = False Then
@@ -5567,6 +5592,7 @@ Private Function RetrieveExportDetails(plngExportID As Long) As Boolean
   ' XML specifics
   If rsTemp!OutputFormat = fmtXML Then
     If Not IsNull(rsTemp!TransformFile) Then txtTransformFile.Text = rsTemp!TransformFile
+    If Not IsNull(rsTemp!XMLDataNodeName) Then txtXMLDataNodeName.Text = rsTemp!XMLDataNodeName
   End If
 
   ' Set Date Format
@@ -7256,3 +7282,6 @@ Private Sub cboCategory_Click()
   Changed = True
 End Sub
 
+Private Sub txtXMLDataNodeName_Change()
+  Changed = True
+End Sub
