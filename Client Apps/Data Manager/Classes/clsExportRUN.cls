@@ -2537,7 +2537,7 @@ Private Function ExportData_XML() As Boolean
   Dim prstReadyToExport As Recordset
   Dim rstConverted As Recordset
   
-  Set prstReadyToExport = mclsData.OpenRecordset("SELECT CAST((SELECT * FROM [" & mstrTempTableName & "] FOR XML PATH('" & mstrXMLDataNodeName & "')) AS VARCHAR(MAX)) AS XmlData", adOpenForwardOnly, adLockReadOnly)
+  Set prstReadyToExport = mclsData.OpenRecordset("SELECT CAST((SELECT * FROM [" & mstrTempTableName & "] FOR XML PATH('" & mstrXMLDataNodeName & "'), ELEMENTS XSINIL) AS VARCHAR(MAX)) AS XmlData", adOpenForwardOnly, adLockReadOnly)
 
   If (prstReadyToExport.BOF And prstReadyToExport.EOF) Then
     mstrErrorString = "No records to export."
