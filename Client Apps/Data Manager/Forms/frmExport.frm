@@ -72,17 +72,15 @@ Begin VB.Form frmExport
       TabCaption(0)   =   "&Definition"
       TabPicture(0)   =   "frmExport.frx":000C
       Tab(0).ControlEnabled=   0   'False
-      Tab(0).Control(0)=   "fraBase"
-      Tab(0).Control(0).Enabled=   0   'False
-      Tab(0).Control(1)=   "fraInformation"
-      Tab(0).Control(1).Enabled=   0   'False
+      Tab(0).Control(0)=   "fraInformation"
+      Tab(0).Control(1)=   "fraBase"
       Tab(0).ControlCount=   2
       TabCaption(1)   =   "Related &Tables"
       TabPicture(1)   =   "frmExport.frx":0028
       Tab(1).ControlEnabled=   0   'False
-      Tab(1).Control(0)=   "fraParent1"
+      Tab(1).Control(0)=   "fraChild"
       Tab(1).Control(1)=   "fraParent2"
-      Tab(1).Control(2)=   "fraChild"
+      Tab(1).Control(2)=   "fraParent1"
       Tab(1).ControlCount=   3
       TabCaption(2)   =   "Colu&mns"
       TabPicture(2)   =   "frmExport.frx":0044
@@ -97,8 +95,8 @@ Begin VB.Form frmExport
       TabCaption(4)   =   "O&ptions"
       TabPicture(4)   =   "frmExport.frx":007C
       Tab(4).ControlEnabled=   0   'False
-      Tab(4).Control(0)=   "fraDateOptions"
-      Tab(4).Control(1)=   "fraHeaderOptions"
+      Tab(4).Control(0)=   "fraHeaderOptions"
+      Tab(4).Control(1)=   "fraDateOptions"
       Tab(4).ControlCount=   2
       TabCaption(5)   =   "O&utput"
       TabPicture(5)   =   "frmExport.frx":0098
@@ -856,9 +854,9 @@ Begin VB.Form frmExport
             RecordSelectors =   0   'False
             Col.Count       =   11
             stylesets.count =   5
-            stylesets(0).Name=   "ssetSelected"
-            stylesets(0).ForeColor=   -2147483634
-            stylesets(0).BackColor=   -2147483635
+            stylesets(0).Name=   "ssetHeaderDisabled"
+            stylesets(0).ForeColor=   -2147483631
+            stylesets(0).BackColor=   -2147483633
             stylesets(0).HasFont=   -1  'True
             BeginProperty stylesets(0).Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
                Name            =   "Verdana"
@@ -870,9 +868,9 @@ Begin VB.Form frmExport
                Strikethrough   =   0   'False
             EndProperty
             stylesets(0).Picture=   "frmExport.frx":01BF
-            stylesets(1).Name=   "ssetHeaderDisabled"
-            stylesets(1).ForeColor=   -2147483631
-            stylesets(1).BackColor=   -2147483633
+            stylesets(1).Name=   "ssetSelected"
+            stylesets(1).ForeColor=   -2147483634
+            stylesets(1).BackColor=   -2147483635
             stylesets(1).HasFont=   -1  'True
             BeginProperty stylesets(1).Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
                Name            =   "Verdana"
@@ -1806,7 +1804,7 @@ Public Property Let FormPrint(ByVal bPrint As Boolean)
 End Property
 
 Public Property Get Changed() As Boolean
-  Changed = cmdOK.Enabled
+  Changed = cmdOk.Enabled
 End Property
 Private Sub ForceAccess(Optional pvAccess As Variant)
   Dim iLoop As Integer
@@ -1846,7 +1844,7 @@ End Sub
 
 
 Public Property Let Changed(ByVal pblnChanged As Boolean)
-  cmdOK.Enabled = pblnChanged
+  cmdOk.Enabled = pblnChanged
 End Property
 
 Public Property Get SelectedID() As Long
@@ -6829,6 +6827,12 @@ Public Sub PrintDef(lExportID As Long)
           .PrintNormal "Record Identifier : " & datGeneral.GetColumnName(rsTemp!CMGExportRecordID)
           .PrintNormal "Commit after run : " & IIf(rsTemp!CMGExportUpdateAudit, "True", "False")
           '.PrintNormal "Filename : " & txtFilename.Text
+        
+        Case fmtXML
+          .PrintNormal "Output Type : XML File"
+          .PrintNormal "XML Custom Node Name : " & IIf(rsTemp!XMLDataNodeName = "", "<None>", rsTemp!XMLDataNodeName)
+          .PrintNormal "XML Transformation File : " & IIf(rsTemp!TransformFile = "", "<None>", rsTemp!TransformFile)
+
         
         End Select
         
