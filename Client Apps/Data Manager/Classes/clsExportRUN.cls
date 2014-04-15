@@ -655,7 +655,7 @@ Private Function GetExportDefinition() As Boolean
     If mlngOutputFormat = fmtXML Then
       mstrExportHeaderText = IIf(Len(mstrExportHeaderText) = 0, "<body>", !HeaderText)
       mstrExportFooterText = IIf(Len(mstrExportFooterText) = 0, "</body>", !FooterText)
-      mstrXMLDataNodeName = IIf(Len(mstrExportFooterText) = 0, mstrExportBaseTableName, mstrXMLDataNodeName)
+      mstrXMLDataNodeName = IIf(Len(mstrXMLDataNodeName) = 0, mstrExportBaseTableName, mstrXMLDataNodeName)
     End If
    
 '    'If mstrExportOutputType = "S" Then
@@ -2524,7 +2524,7 @@ Public Function PrettyPrintXml(xmlDoc)
   rdr.PutProperty "http://xml.org/sax/properties/lexical-handler", wrt
   rdr.PutProperty "http://xml.org/sax/properties/declaration-handler", wrt
   rdr.Parse xmlDoc
-  PrettyPrintXml = wrt.output
+  PrettyPrintXml = wrt.Output
 End Function
 
 Private Function ExportData_XML() As Boolean
