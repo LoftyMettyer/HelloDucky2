@@ -57,7 +57,6 @@ Begin VB.Form frmExport
       _Version        =   393216
       Style           =   1
       Tabs            =   6
-      Tab             =   5
       TabsPerRow      =   6
       TabHeight       =   520
       BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
@@ -71,9 +70,11 @@ Begin VB.Form frmExport
       EndProperty
       TabCaption(0)   =   "&Definition"
       TabPicture(0)   =   "frmExport.frx":000C
-      Tab(0).ControlEnabled=   0   'False
-      Tab(0).Control(0)=   "fraInformation"
-      Tab(0).Control(1)=   "fraBase"
+      Tab(0).ControlEnabled=   -1  'True
+      Tab(0).Control(0)=   "fraBase"
+      Tab(0).Control(0).Enabled=   0   'False
+      Tab(0).Control(1)=   "fraInformation"
+      Tab(0).Control(1).Enabled=   0   'False
       Tab(0).ControlCount=   2
       TabCaption(1)   =   "Related &Tables"
       TabPicture(1)   =   "frmExport.frx":0028
@@ -95,24 +96,80 @@ Begin VB.Form frmExport
       TabCaption(4)   =   "O&ptions"
       TabPicture(4)   =   "frmExport.frx":007C
       Tab(4).ControlEnabled=   0   'False
-      Tab(4).Control(0)=   "fraHeaderOptions"
-      Tab(4).Control(1)=   "fraDateOptions"
+      Tab(4).Control(0)=   "fraDateOptions"
+      Tab(4).Control(1)=   "fraHeaderOptions"
       Tab(4).ControlCount=   2
       TabCaption(5)   =   "O&utput"
       TabPicture(5)   =   "frmExport.frx":0098
-      Tab(5).ControlEnabled=   -1  'True
+      Tab(5).ControlEnabled=   0   'False
       Tab(5).Control(0)=   "fraDelimFile"
-      Tab(5).Control(0).Enabled=   0   'False
       Tab(5).Control(1)=   "fraCMGFile"
-      Tab(5).Control(1).Enabled=   0   'False
       Tab(5).Control(2)=   "fraOutputDestination"
-      Tab(5).Control(2).Enabled=   0   'False
       Tab(5).Control(3)=   "fraOutputType"
-      Tab(5).Control(3).Enabled=   0   'False
-      Tab(5).ControlCount=   4
+      Tab(5).Control(4)=   "fraXML"
+      Tab(5).ControlCount=   5
+      Begin VB.Frame fraXML 
+         Caption         =   "XML Options :"
+         Height          =   1410
+         Left            =   -74850
+         TabIndex        =   125
+         Top             =   3580
+         Width           =   9180
+         Begin VB.CommandButton cmdTransformFileClear 
+            Caption         =   "O"
+            BeginProperty Font 
+               Name            =   "Wingdings 2"
+               Size            =   20.25
+               Charset         =   2
+               Weight          =   400
+               Underline       =   0   'False
+               Italic          =   0   'False
+               Strikethrough   =   0   'False
+            EndProperty
+            Height          =   315
+            Left            =   5460
+            MaskColor       =   &H000000FF&
+            TabIndex        =   129
+            ToolTipText     =   "Clear Path"
+            Top             =   285
+            UseMaskColor    =   -1  'True
+            Width           =   330
+         End
+         Begin VB.CommandButton cmdTransformFile 
+            Caption         =   "..."
+            Enabled         =   0   'False
+            Height          =   315
+            Left            =   5115
+            TabIndex        =   128
+            Top             =   280
+            UseMaskColor    =   -1  'True
+            Width           =   330
+         End
+         Begin VB.TextBox txtTransformFile 
+            BackColor       =   &H8000000F&
+            Enabled         =   0   'False
+            ForeColor       =   &H00000000&
+            Height          =   315
+            Left            =   2280
+            Locked          =   -1  'True
+            TabIndex        =   127
+            TabStop         =   0   'False
+            Tag             =   "0"
+            Top             =   280
+            Width           =   2835
+         End
+         Begin VB.Label lblTransformFile 
+            Caption         =   "Transformation File :"
+            Height          =   255
+            Left            =   240
+            TabIndex        =   126
+            Top             =   360
+            Width           =   2055
+         End
+      End
       Begin VB.Frame fraInformation 
          Height          =   2355
-         Left            =   -74850
+         Left            =   150
          TabIndex        =   118
          Top             =   400
          Width           =   9180
@@ -316,7 +373,7 @@ Begin VB.Form frmExport
       Begin VB.Frame fraOutputType 
          Caption         =   "Output Format :"
          Height          =   3135
-         Left            =   150
+         Left            =   -74850
          TabIndex        =   82
          Top             =   405
          Width           =   2400
@@ -380,7 +437,7 @@ Begin VB.Form frmExport
       Begin VB.Frame fraOutputDestination 
          Caption         =   "Output Destination(s) :"
          Height          =   3135
-         Left            =   2655
+         Left            =   -72345
          TabIndex        =   88
          Top             =   405
          Width           =   6675
@@ -777,9 +834,9 @@ Begin VB.Form frmExport
             RecordSelectors =   0   'False
             Col.Count       =   11
             stylesets.count =   5
-            stylesets(0).Name=   "ssetHeaderDisabled"
-            stylesets(0).ForeColor=   -2147483631
-            stylesets(0).BackColor=   -2147483633
+            stylesets(0).Name=   "ssetSelected"
+            stylesets(0).ForeColor=   -2147483634
+            stylesets(0).BackColor=   -2147483635
             stylesets(0).HasFont=   -1  'True
             BeginProperty stylesets(0).Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
                Name            =   "Verdana"
@@ -791,9 +848,9 @@ Begin VB.Form frmExport
                Strikethrough   =   0   'False
             EndProperty
             stylesets(0).Picture=   "frmExport.frx":01BF
-            stylesets(1).Name=   "ssetSelected"
-            stylesets(1).ForeColor=   -2147483634
-            stylesets(1).BackColor=   -2147483635
+            stylesets(1).Name=   "ssetHeaderDisabled"
+            stylesets(1).ForeColor=   -2147483631
+            stylesets(1).BackColor=   -2147483633
             stylesets(1).HasFont=   -1  'True
             BeginProperty stylesets(1).Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
                Name            =   "Verdana"
@@ -1449,7 +1506,7 @@ Begin VB.Form frmExport
       Begin VB.Frame fraBase 
          Caption         =   "Data :"
          Height          =   2115
-         Left            =   -74850
+         Left            =   150
          TabIndex        =   0
          Top             =   2850
          Width           =   9180
@@ -1552,7 +1609,7 @@ Begin VB.Form frmExport
       Begin VB.Frame fraCMGFile 
          Caption         =   "CMG Options :"
          Height          =   1410
-         Left            =   150
+         Left            =   -74850
          TabIndex        =   109
          Top             =   3580
          Width           =   9180
@@ -1600,7 +1657,7 @@ Begin VB.Form frmExport
       Begin VB.Frame fraDelimFile 
          Caption         =   "Delimited File Options :"
          Height          =   1410
-         Left            =   150
+         Left            =   -74850
          TabIndex        =   103
          Top             =   3570
          Width           =   9180
@@ -1727,7 +1784,7 @@ Public Property Let FormPrint(ByVal bPrint As Boolean)
 End Property
 
 Public Property Get Changed() As Boolean
-  Changed = cmdOk.Enabled
+  Changed = cmdOK.Enabled
 End Property
 Private Sub ForceAccess(Optional pvAccess As Variant)
   Dim iLoop As Integer
@@ -1767,7 +1824,7 @@ End Sub
 
 
 Public Property Let Changed(ByVal pblnChanged As Boolean)
-  cmdOk.Enabled = pblnChanged
+  cmdOK.Enabled = pblnChanged
 End Property
 
 Public Property Get SelectedID() As Long
@@ -2306,6 +2363,52 @@ Private Sub cmdAddAllColumns_Click()
   UpdateButtonStatus
   ForceDefinitionToBeHiddenIfNeeded
 
+End Sub
+
+Private Sub cmdTransformFile_Click()
+
+  Dim cd1 As CommonDialog
+  
+  On Local Error GoTo LocalErr
+  
+  Set cd1 = frmMain.CommonDialog1
+    
+  With cd1
+    .Filter = "XSLT File (*.xslt)|*.xslt"
+    .filename = txtTransformFile.Text
+    If txtTransformFile.Text = vbNullString Then
+      .InitDir = gsDocumentsPath
+    End If
+
+    .CancelError = True
+    .DialogTitle = "Transformation file name"
+    .Flags = cdlOFNExplorer + cdlOFNHideReadOnly + cdlOFNLongNames
+        
+    .ShowSave
+
+    If .filename <> vbNullString Then
+      If Len(.filename) > 255 Then
+        COAMsgBox "Path and file name must not exceed 255 characters in length", vbExclamation, Me.Caption
+      Else
+        txtTransformFile.Text = .filename    'activates the change event
+      End If
+    End If
+  End With
+
+  Changed = True
+
+Exit Sub
+
+LocalErr:
+  If Err.Number <> 32755 Then   '32755 = Cancel was selected.
+    COAMsgBox Err.Description, vbCritical
+  End If
+
+
+End Sub
+
+Private Sub cmdTransformFileClear_Click()
+  txtTransformFile.Text = vbNullString
 End Sub
 
 Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
@@ -4149,6 +4252,10 @@ Private Sub TextOptionsStatus(intFormat As Integer)
   fraCMGFile.Visible = (intFormat = fmtCMGFile)
   EnableFrame fraCMGFile, (intFormat = fmtCMGFile)
 
+  fraXML.Visible = (intFormat = fmtXML)
+  EnableFrame fraXML, (intFormat = fmtXML)
+  EnableControl txtTransformFile, False
+      
 '  If mblnEnableSQLTable Then
 '    'fraSQLTable.Top = IIf(gbCMGEnabled, 2000, 1600)
 '    fraSQLTable.Visible = (intFormat = fmtSQLTable)
@@ -4783,6 +4890,11 @@ Private Function SaveDefinition() As Boolean
         ",CMGExportRecordID = " & cboParentFields.ItemData(cboParentFields.ListIndex) & ","
     End If
     
+    ' Save the XML export options
+    If optOutputFormat(fmtXML).Value = True Then
+      strSQL = strSQL & "TransformFile = '" & Replace(txtTransformFile.Text, "'", "''") & "',"
+    End If
+       
     strSQL = strSQL & "Quotes = " & IIf(Me.chkQuotes.Value, 1, 0) & "," & _
                   "Header = " & cboHeaderOptions.ListIndex & "," & _
                   "HeaderText = '" & Replace(txtCustomHeader.Text, "'", "''") & "'," & _
@@ -4829,7 +4941,7 @@ Private Function SaveDefinition() As Boolean
            "CMGExportFileCode, CMGExportUpdateAudit, CMGExportRecordID," & _
            "Parent1AllRecords, Parent1Picklist, Parent2AllRecords, Parent2Picklist, " & _
            "OmitHeader, ForceHeader, OutputFormat, OutputSave, " & _
-           "OutputSaveExisting, OutputEmail, OutputEmailAddr, OutputEmailSubject, OutputEmailAttachAs, OutputFilename) "
+           "OutputSaveExisting, OutputEmail, OutputEmailAddr, OutputEmailSubject, OutputEmailAttachAs, OutputFilename, TransformFile) "
            
            'AppendToFile,
 
@@ -4915,7 +5027,7 @@ Private Function SaveDefinition() As Boolean
 '          "'" & Replace(txtSQLTableName.Text, "'", "''") & "')"
 '    Else
       strSQL = strSQL & _
-          "'" & Replace(txtFilename.Text, "'", "''") & "')"
+          "'" & Replace(txtFilename.Text, "'", "''") & "','" & Replace(txtTransformFile.Text, "'", "''") & "')"
 '    End If
 
     If IsRecordSelectionValid = False Then
@@ -5450,6 +5562,11 @@ Private Function RetrieveExportDetails(plngExportID As Long) As Boolean
   If rsTemp!OutputFormat = fmtCMGFile Then
     If Not IsNull(rsTemp!CMGExportFileCode) Then txtFileExportCode.Text = rsTemp!CMGExportFileCode
     If Not IsNull(rsTemp!CMGExportRecordID) And rsTemp!CMGExportRecordID > 0 Then SetComboText cboParentFields, datGeneral.GetColumnName(rsTemp!CMGExportRecordID)
+  End If
+
+  ' XML specifics
+  If rsTemp!OutputFormat = fmtXML Then
+    If Not IsNull(rsTemp!TransformFile) Then txtTransformFile.Text = rsTemp!TransformFile
   End If
 
   ' Set Date Format

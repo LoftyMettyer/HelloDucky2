@@ -92,6 +92,8 @@ Private mstrSQLWhere As String
 Private mstrSQLOrderBy As String
 Private mstrSQL As String
 
+Private mstrTransformFile As String
+
 ' Data access classes
 Private mclsData As clsDataAccess
 Private mclsGeneral As clsGeneral
@@ -664,6 +666,7 @@ Private Function GetExportDefinition() As Boolean
       Exit Function
     End If
 
+    mstrTransformFile = IIf(IsNull(!TransformFile), "", !TransformFile)
 
     mbDefinitionOwner = (LCase(Trim(gsUserName)) = LCase(Trim(!UserName)))
 
@@ -2156,25 +2159,16 @@ Private Function ExportData() As Boolean
   End If
 
   Select Case mlngOutputFormat
-  'Case "D"
-  '  ExportData = ExportData_Delimited
-    
-  'Case "F"
-  '  ExportData = ExportData_FixedLength
-    
-  'Case fmtSQLTable
-  '  ExportData = ExportData_SQLTable
-                Case fmtXML
-                        ExportData = ExportData_XML
-  
-                Case fmtCMGFile
-                        ExportData = ExportData_CMGfile
+    Case fmtXML
+      ExportData = ExportData_XML
 
-  Case Else
+    Case fmtCMGFile
+      ExportData = ExportData_CMGfile
 
-    If ReadDataIntoArray Then
-      ExportData = SendArrayToOutputOptions
-    End If
+    Case Else
+      If ReadDataIntoArray Then
+        ExportData = SendArrayToOutputOptions
+      End If
 
   End Select
 
@@ -2521,7 +2515,7 @@ Public Function PrettyPrintXml(xmlDoc)
     rdr.PutProperty "http://xml.org/sax/properties/lexical-handler", wrt
     rdr.PutProperty "http://xml.org/sax/properties/declaration-handler", wrt
     rdr.Parse xmlDoc
-    PrettyPrintXml = wrt.output
+    PrettyPrintXml = wrt.Output
 End Function
 
 Private Function ExportData_XML() As Boolean
@@ -2529,10 +2523,12 @@ Private Function ExportData_XML() As Boolean
   Dim pintFileNo As Integer
   Dim bAppended As Boolean
   Dim sExportText As String
+  Dim sTransFormText As String
+  Dim sSQL As String
   Dim prstReadyToExport As Recordset
+  Dim rstConverted As Recordset
+  
   Set prstReadyToExport = mclsData.OpenRecordset("SELECT CAST((SELECT * FROM [" & mstrTempTableName & "] FOR XML PATH('" & mstrExportBaseTableName & "')) AS VARCHAR(MAX)) AS XmlData", adOpenForwardOnly, adLockReadOnly)
-
-
 
   If (prstReadyToExport.BOF And prstReadyToExport.EOF) Then
     mstrErrorString = "No records to export."
@@ -2543,8 +2539,16 @@ Private Function ExportData_XML() As Boolean
   Else
     prstReadyToExport.MoveFirst
 
-sExportText = prstReadyToExport(0).Value
-sExportText = PrettyPrintXml("<OUTPUTFILE>" & sExportText & "</OUTPUTFILE>")
+    If Len(mstrTransformFile) > 0 Then
+      sExportText = ("<xmlexport>" & prstReadyToExport(0).Value & "</xmlexport>")
+      sTransFormText = GetFileText(mstrTransformFile)
+      sSQL = "SELECT convert(nvarchar(MAX), dbo.udfASRNetApplyXsltTransform(convert(xml,'" & Replace(sExportText, "'", "''") & "'), convert(xml,'" & Replace(sTransFormText, "'", "''") & "')))"
+      Set rstConverted = mclsData.OpenRecordset(sSQL, adOpenForwardOnly, adLockReadOnly)
+      sExportText = PrettyPrintXml(rstConverted(0).Value)
+    Else
+      sExportText = prstReadyToExport(0).Value
+      sExportText = PrettyPrintXml("<xmlexport>" & sExportText & "</xmlexport>")
+    End If
 
 
     Select Case mlngOutputSaveExisting
@@ -3515,4 +3519,10 @@ Private Sub SetLength(ByRef strInput As String, lngLength)
 
 End Sub
 
-
+Private Function GetFileText(ByVal filename As String) As String
+  Dim handle As Integer
+  handle = FreeFile
+  Open filename$ For Input As #handle
+  GetFileText = Input$(LOF(handle), handle)
+  Close #handle
+End Function

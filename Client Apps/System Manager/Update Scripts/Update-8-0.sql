@@ -204,6 +204,16 @@ END
 		EXEC sp_executesql @NVarCommand;
 
 
+/* ------------------------------------------------------- */
+PRINT 'Step - Export additions'
+/* ------------------------------------------------------- */
+
+	IF NOT EXISTS(SELECT id FROM syscolumns WHERE  id = OBJECT_ID('ASRSysExportName', 'U') AND name = 'TransformFile')
+		BEGIN
+			EXEC sp_executesql N'ALTER TABLE ASRSysExportName ADD TransformFile nvarchar(MAX) NULL;';
+		END
+
+
 /* ------------------------------------------------------------- */
 /* Update the database version flag in the ASRSysSettings table. */
 /* Dont Set the flag to refresh the stored procedures            */

@@ -117,6 +117,7 @@
     <Compile Include="AppCode\Workflow.vb" />
     <Compile Include="AppCode\SQLFunctions.vb" />
     <Compile Include="Properties\AssemblyInfo.vb" />
+    <Compile Include="AppCode\XSLTTransform.vb" />
   </ItemGroup>
   <ItemGroup>
     <Service Include="{B4F97281-0DBD-4835-9ED8-7DFB966E87FF}" />
