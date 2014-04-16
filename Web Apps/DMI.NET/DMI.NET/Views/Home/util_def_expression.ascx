@@ -446,22 +446,18 @@
 					, prmErrMsg _
 					, prmTimestamp)
 
-				iCount = 0
-				For Each objRow As DataRow In rstDefinition.Rows
-					Response.Write("<input type='hidden' id=txtDefn_" & objRow("type").ToString() & "_" & iCount & " name=txtDefn_" & objRow("type").ToString() & "_" & iCount & " value=""" & Replace(objRow("definition").ToString(), """", "&quot;") & """>" & vbCrLf)
-					iCount += 1
-				Next
-
 				If Len(prmErrMsg.Value.ToString()) > 0 Then
 					sErrMsg = "'" & Session("utilname") & "' " & prmErrMsg.Value.ToString()
+				Else
+					iCount = 0
+					For Each objRow As DataRow In rstDefinition.Rows
+						Response.Write("<input type='hidden' id=txtDefn_" & objRow("type").ToString() & "_" & iCount & " name=txtDefn_" & objRow("type").ToString() & "_" & iCount & " value=""" & Replace(objRow("definition").ToString(), """", "&quot;") & """>" & vbCrLf)
+						iCount += 1
+					Next
+					Response.Write("<input type='hidden' id=txtDefn_Timestamp name=txtDefn_Timestamp value=" & prmTimestamp.Value.ToString() & ">" & vbCrLf)
 				End If
-				
-				Response.Write("<input type='hidden' id=txtDefn_Timestamp name=txtDefn_Timestamp value=" & prmTimestamp.Value.ToString() & ">" & vbCrLf)
-				
-				
 			Catch ex As Exception
 				sErrMsg = "'" & Session("utilname") & "' " & sUtilTypeName & " definition could not be read." & vbCrLf & FormatError(ex.Message)
-				
 			End Try	
 	
 			If Len(sErrMsg) > 0 Then
