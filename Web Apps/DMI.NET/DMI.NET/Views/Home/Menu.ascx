@@ -386,7 +386,7 @@
 				<li id="mnutoolPasswordChange"><a href="#">Change Password...</a></li>
 				<li id="mnutoolNewUser"><a href="#">New User...</a></li>
 				<li id="mnutoolConfiguration"><a href="#">User Configuration...</a></li>
-				<li id="mnutoolPCConfiguration"><a href="#">PC Configuration...</a></li>
+				<li id="mnutoolPCConfiguration" class="hidden"><a href="#">PC Configuration...</a></li>
 			</ul>
 		</div>
 		<h3 id="mnutoolHelp">Help</h3>

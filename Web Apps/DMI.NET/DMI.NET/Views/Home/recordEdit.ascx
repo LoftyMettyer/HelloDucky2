@@ -524,11 +524,7 @@
 			if (fOK == true) {
 				// Server OLE
 				if (plngOleType == 1) {
-					//TODO: assume valid for now: fOK = window.parent.frames("menuframe").ASRIntranetFunctions.ValidateDir(frmRecordEditForm.txtOLEServerPath.value);
-					if (fOK == true)
-						menu_loadOLEPage(plngColumnID, psFile, plngOleType, plngMaxEmbedSize, pbIsReadOnly, isPhoto);
-					else
-						OpenHR.messageBox("Unable to edit server OLE fields as the OLE (Server) path is not valid.");
+					OpenHR.messageBox("This functionality is not available in 'OpenHR Web'");
 				}
 
 					// Local OLE
