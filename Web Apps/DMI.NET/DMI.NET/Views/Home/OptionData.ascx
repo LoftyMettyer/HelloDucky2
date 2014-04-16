@@ -397,7 +397,7 @@
 							
 						If rstFindRecords.Columns(iloop).DataType.ToString().ToLower() = "system.datetime" Then
 							' Field is a date so format as such.
-							sAddString = sAddString & ConvertSQLDateToLocale(objRow(iloop).ToString())
+							sAddString = sAddString & ConvertSQLDateToLocale(objRow(iloop))
 						ElseIf rstFindRecords.Columns(iloop).DataType.ToString().ToLower() = "system.decimal" Then
 							' Field is a numeric so format as such.
 							If Not IsDBNull(objRow(iloop)) Then
@@ -484,7 +484,8 @@
 							
 							If rstFindRecords.Columns(iloop).DataType.ToString().ToLower() = "system.datetime" Then
 								' Field is a date so format as such.
-								sAddString = sAddString & ConvertSQLDateToLocale(objRow(iloop).ToString())
+								'sAddString = sAddString & ConvertSQLDateToLocale(objRow(iloop).ToString())
+								sAddString = sAddString & ConvertSQLDateToLocale(objRow(iloop))
 							ElseIf rstFindRecords.Columns(iloop).DataType.ToString().ToLower() = "system.decimal" Then
 								' Field is a numeric so format as such.
 								If Not IsDBNull(objRow(iloop)) Then
