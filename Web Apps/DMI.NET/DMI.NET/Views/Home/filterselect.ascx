@@ -27,6 +27,20 @@
 		var iColumnType;
 		var sReqdControlName;
 		var sControlName;
+
+		$(".datepicker").datepicker({ dateFormat: 'dd/mm/yy' });
+		$(document).on('keydown', '.datepicker', function (event) {
+			var queryDate = new Date();
+			queryDate = $.datepicker.formatDate('dd/mm/yy', queryDate);
+
+			switch (event.keyCode) {
+				case 113:
+					$(this).val(queryDate);
+					$(this).datepicker('widget').hide('true');
+					break;
+			}
+		});
+
 		
 		var frmFilterForm = document.getElementById("frmFilterForm");
 
@@ -216,6 +230,7 @@
 
 <script type="text/javascript">
 	function SelectFilter() {
+
 		var frmFilterForm = document.getElementById("frmFilterForm");
 		var sRealSource;
 		var sColumnName;
@@ -630,6 +645,7 @@
 	}
 
 	function AddToList() {
+
 		var frmFilterForm = document.getElementById("frmFilterForm");
 		var fOK;
 		var iDataType;
@@ -812,7 +828,7 @@
 			if (iDataType == 11) {
 				// Date column.
 				// Ensure that the value entered is a date.
-				sValue = frmFilterForm.txtValue.value;
+				sValue = frmFilterForm.selectDate.value;
 
 				if (sValue.length == 0) {
 					sAddString = sAddString.concat(frmFilterForm.selectConditionDate.options[frmFilterForm.selectConditionDate.selectedIndex].text);
@@ -826,14 +842,13 @@
 				else {
 					// Convert the date to SQL format (use this as a validation check).
 					// An empty string is returned if the date is invalid.
-					sValue = OpenHR.convertLocaleDateToSQL(sValue);
-					if (sValue.length == 0) {
+					if (OpenHR.convertLocaleDateToSQL(sValue) == "null") {
 						fOK = false;
 						OpenHR.messageBox("Invalid date value entered.");
 						frmFilterForm.txtValue.focus();
 					}
 					else {
-						sValue = OpenHR.convertLocaleDateToSQL(sValue);
+//						sValue = OpenHR.convertLocaleDateToSQL(sValue);
 
 						sAddString = sAddString.concat(frmFilterForm.selectConditionDate.options[frmFilterForm.selectConditionDate.selectedIndex].text);
 						sAddString = sAddString.concat("	");
@@ -888,13 +903,45 @@
 			frmFilterForm.selectValue.style.top = "";
 			frmFilterForm.selectValue.style.left = "";
 
+			frmFilterForm.selectDate.style.width = "0px";
+			frmFilterForm.selectDate.style.visibility = "hidden";
+			frmFilterForm.selectDate.style.position = "absolute";
+			frmFilterForm.selectDate.style.top = 0;
+			frmFilterForm.selectDate.style.left = 0;
+
 			frmFilterForm.txtValue.style.width = "0px";
 			frmFilterForm.txtValue.style.visibility = "hidden";
 			frmFilterForm.txtValue.style.position = "absolute";
 			frmFilterForm.txtValue.style.top = 0;
 			frmFilterForm.txtValue.style.left = 0;
-		}
-		else {
+
+		} else if (piDataType == 11) {
+
+			frmFilterForm.txtConditionLogic.style.width = "0px";
+			frmFilterForm.txtConditionLogic.style.visibility = "hidden";
+			frmFilterForm.txtConditionLogic.style.position = "absolute";
+			frmFilterForm.txtConditionLogic.style.top = "0px";
+			frmFilterForm.txtConditionLogic.style.left = "0px";
+
+			frmFilterForm.selectValue.style.width = "0px";
+			frmFilterForm.selectValue.style.visibility = "hidden";
+			frmFilterForm.selectValue.style.position = "absolute";
+			frmFilterForm.selectValue.style.top = "0px";
+			frmFilterForm.selectValue.style.left = "0px";
+
+			frmFilterForm.selectDate.style.width = "175px";
+			frmFilterForm.selectDate.style.visibility = "";
+			frmFilterForm.selectDate.style.position = "";
+			frmFilterForm.selectDate.style.top = "";
+			frmFilterForm.selectDate.style.left = "";
+			
+			frmFilterForm.txtValue.style.width = "0px";
+			frmFilterForm.txtValue.style.visibility = "hidden";
+			frmFilterForm.txtValue.style.position = "absolute";
+			frmFilterForm.txtValue.style.top = 0;
+			frmFilterForm.txtValue.style.left = 0;
+
+		} else {
 			// Hide the logic operator control.
 			frmFilterForm.txtConditionLogic.style.width = "0px";
 			frmFilterForm.txtConditionLogic.style.visibility = "hidden";
@@ -907,6 +954,12 @@
 			frmFilterForm.selectValue.style.position = "absolute";
 			frmFilterForm.selectValue.style.top = "0px";
 			frmFilterForm.selectValue.style.left = "0px";
+
+			frmFilterForm.selectDate.style.width = "0px";
+			frmFilterForm.selectDate.style.visibility = "hidden";
+			frmFilterForm.selectDate.style.position = "absolute";
+			frmFilterForm.selectDate.style.top = 0;
+			frmFilterForm.selectDate.style.left = 0;
 
 			frmFilterForm.txtValue.style.width = "175px";
 			frmFilterForm.txtValue.style.visibility = "";
@@ -967,7 +1020,8 @@
 		}
 	}
 
-	function refreshOperatorCombo() {		
+	function refreshOperatorCombo() {
+
 		var fFound;
 		var sControlName;
 		var sReqdControlName;
@@ -1375,20 +1429,12 @@
 										</td>
 										<td width="10" height="10">
 											<input id="cmdRemove" name="cmdRemove" type="button" value="Remove" style="WIDTH: 100px" width="100" class="btn"
-												onclick="remove()"
-												onmouseover="try{button_onMouseOver(this);}catch(e){}"
-												onmouseout="try{button_onMouseOut(this);}catch(e){}"
-												onfocus="try{button_onFocus(this);}catch(e){}"
-												onblur="try{button_onBlur(this);}catch(e){}" />
+												onclick="remove()" />
 										</td>
 										<td width="10" height="10"></td>
 										<td width="10" height="10">
 											<input id="cmdRemoveAll" name="cmdRemoveAll" type="button" value="Remove All" style="WIDTH: 100px" width="100" class="btn"
-												onclick="removeAll()"
-												onmouseover="try{button_onMouseOver(this);}catch(e){}"
-												onmouseout="try{button_onMouseOut(this);}catch(e){}"
-												onfocus="try{button_onFocus(this);}catch(e){}"
-												onblur="try{button_onBlur(this);}catch(e){}" />
+												onclick="removeAll()" />
 										</td>
 									</tr>
 								</table>
@@ -1512,15 +1558,14 @@
 												<option value="0">False</option>
 											</select>
 											<input id="txtValue" name="txtValue" class="text" style="HEIGHT: 22px; LEFT: 0; POSITION: absolute; TOP: 0; VISIBILITY: hidden; WIDTH: 175px">
+									
+											<input id="selectDate" name="selectDate" type=text class="datepicker" style="HEIGHT: 22px; LEFT: 0; POSITION: absolute; TOP: 0; VISIBILITY: hidden; WIDTH: 175px" />
+
 										</td>
 										<td height="10"></td>
 										<td width="10" height="10">
 											<input id="cmdAddToList" name="cmdAddToList" class="btn" type="button" value="Add To List" style="WIDTH: 100px" width="100"
-												onclick="AddToList()"
-												onmouseover="try{button_onMouseOver(this);}catch(e){}"
-												onmouseout="try{button_onMouseOut(this);}catch(e){}"
-												onfocus="try{button_onFocus(this);}catch(e){}"
-												onblur="try{button_onBlur(this);}catch(e){}" />
+												onclick="AddToList()" />
 										</td>
 									</tr>
 
@@ -1538,20 +1583,12 @@
 										</td>
 										<td width="10" height="10">
 											<input id="cmdSelect" name="cmdSelect" class="btn" type="button" value="OK" style="WIDTH: 100px" width="100"
-												onclick="SelectFilter()"
-												onmouseover="try{button_onMouseOver(this);}catch(e){}"
-												onmouseout="try{button_onMouseOut(this);}catch(e){}"
-												onfocus="try{button_onFocus(this);}catch(e){}"
-												onblur="try{button_onBlur(this);}catch(e){}" />
+												onclick="SelectFilter()" />
 										</td>
 										<td width="10" height="10"></td>
 										<td width="10" height="10">
 											<input id="cmdCancel" name="cmdCancel" type="button" value="Cancel" style="WIDTH: 100px" width="100" class="btn"
-												onclick="CancelFilter()"
-												onmouseover="try{button_onMouseOver(this);}catch(e){}"
-												onmouseout="try{button_onMouseOut(this);}catch(e){}"
-												onfocus="try{button_onFocus(this);}catch(e){}"
-												onblur="try{button_onBlur(this);}catch(e){}" />
+												onclick="CancelFilter()" />
 										</td>
 									</tr>
 								</table>
