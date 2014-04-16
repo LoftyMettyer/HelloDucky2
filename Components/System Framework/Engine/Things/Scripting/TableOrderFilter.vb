@@ -160,25 +160,25 @@ Public Class TableOrderFilter
 
       If RowDetails.RowSelection = ColumnRowSelection.Specific Then
 
-        .Code = String.Format("CREATE FUNCTION dbo.[{0}]({1})" & vbNewLine & _
-           "RETURNS @results TABLE({2})" & vbNewLine & _
-           "AS" & vbNewLine & "BEGIN" & vbNewLine & _
-           "{9}" & vbNewLine & vbNewLine & _
-           "{10}" & vbNewLine & vbNewLine & _
-           "WITH base AS (" & vbNewLine & _
-           "    SELECT {3}, [rownumber] = ROW_NUMBER() OVER ({7})" & vbNewLine & _
-           "    FROM {4} base" & vbNewLine & _
-           "    {5}" & vbNewLine & _
-           "    {6})" & vbNewLine & _
-           "INSERT @Results SELECT {3}" & vbNewLine & _
-           "        FROM base" & vbNewLine & _
-           "        WHERE [rownumber] = {8};" & vbNewLine & _
-           "    RETURN;" & vbNewLine & _
-           "END" _
-          , Name, String.Join(", ", aryParameters.ToArray()) _
-          , String.Join(", ", aryReturnDefintion.ToArray()), String.Join(", ", aryColumnList.ToArray()) _
-          , Table.Name, String.Join(vbNewLine, aryJoins.ToArray()), .WhereCode, .OrderCode _
-          , RowDetails.RowNumber, .Declarations, .Prerequisites)
+				.Code = String.Format("CREATE FUNCTION dbo.[{0}]({1})" & vbNewLine & _
+					 "RETURNS @results TABLE({2})" & vbNewLine & _
+					 "AS" & vbNewLine & "BEGIN" & vbNewLine & _
+					 "{9}" & vbNewLine & vbNewLine & _
+					 "{10}" & vbNewLine & vbNewLine & _
+					 ";WITH base AS (" & vbNewLine & _
+					 "    SELECT {3}, [rownumber] = ROW_NUMBER() OVER ({7})" & vbNewLine & _
+					 "    FROM {4} base" & vbNewLine & _
+					 "    {5}" & vbNewLine & _
+					 "    {6})" & vbNewLine & _
+					 "INSERT @Results SELECT {3}" & vbNewLine & _
+					 "        FROM base" & vbNewLine & _
+					 "        WHERE [rownumber] = {8};" & vbNewLine & _
+					 "    RETURN;" & vbNewLine & _
+					 "END" _
+					, Name, String.Join(", ", aryParameters.ToArray()) _
+					, String.Join(", ", aryReturnDefintion.ToArray()), String.Join(", ", aryColumnList.ToArray()) _
+					, Table.Name, String.Join(vbNewLine, aryJoins.ToArray()), .WhereCode, .OrderCode _
+					, RowDetails.RowNumber, .Declarations, .Prerequisites)
 
       Else
         .Code = String.Format("CREATE FUNCTION dbo.[{0}]({1})" & vbNewLine & _
