@@ -1175,6 +1175,26 @@ function menu_MenuClick(sTool) {
 			return false;
 		}
 
+		if (sToolName == "mnutoolFirstEventLogFind") {
+			menu_moveRecord("MOVEFIRST");
+			return false;
+		}
+
+		if (sToolName == "mnutoolPreviousEventLogFind") {
+			menu_moveRecord("MOVEPREVIOUS");
+			return false;
+		}
+
+		if (sToolName == "mnutoolNextEventLogFind") {
+			menu_moveRecord("MOVENEXT");
+			return false;
+		}
+
+		if (sToolName == "mnutoolLastEventLogFind") {
+			menu_moveRecord("MOVELAST");
+			return false;
+		}
+	
 		// User Config and PC Config
 		if (sToolName == "mnutoolSaveAdminConfig") {
 			Configuration_okClick();
