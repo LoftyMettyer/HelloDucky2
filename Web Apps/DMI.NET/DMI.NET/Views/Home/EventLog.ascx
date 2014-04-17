@@ -141,7 +141,6 @@
 		menu_SetmnutoolRecordPositionCaption(sCaption);
 
 		//Enable/disable navigation controls based on certain conditions
-		if (sRecords <= 1000) { //TODO set this to blocksize...
 			if (iStartPosition == 1) { //Disable first and previous
 				menu_toolbarEnableItem("mnutoolFirstEventLogFind", false);
 				menu_toolbarEnableItem("mnutoolPreviousEventLogFind", false);
@@ -159,12 +158,6 @@
 				menu_toolbarEnableItem("mnutoolNextEventLogFind", true);
 				menu_toolbarEnableItem("mnutoolLastEventLogFind", true);
 			}
-		} else { //Disable all
-			menu_toolbarEnableItem("mnutoolFirstEventLogFind", false);
-			menu_toolbarEnableItem("mnutoolPreviousEventLogFind", false);
-			menu_toolbarEnableItem("mnutoolNextEventLogFind", false);
-			menu_toolbarEnableItem("mnutoolLastEventLogFind", false);
-		}
 
 		return true;
 	}
