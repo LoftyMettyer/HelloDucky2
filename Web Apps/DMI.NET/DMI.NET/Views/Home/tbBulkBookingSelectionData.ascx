@@ -28,8 +28,7 @@
 			if (sErrorMsg.length > 0) {
 				// We've got an error so don't update the record edit form.
 
-				// Get menu.asp to refresh the menu.
-				menu_refreshMenu();
+				// Get menu.asp to refresh the menu.				
 				OpenHR.messageBox(sErrorMsg);
 			}
 
