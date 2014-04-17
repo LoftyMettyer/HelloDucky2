@@ -29,14 +29,14 @@ function util_def_picklist_onload() {
 
 	try {
 		frmDefinition.txtName.focus();
-	} catch (e) {
+	} catch(e) {
 	}
 
 	refreshControls();
 	frmUseful.txtLoading.value = 'N';
 	try {
 		frmDefinition.txtName.focus();
-	} catch (e) {
+	} catch(e) {
 	}
 
 	// Get menu.asp to refresh the menu.
@@ -65,7 +65,7 @@ function refreshControls() {
 
 	button_disable(frmDefinition.cmdAdd, fAddDisabled);
 	button_disable(frmDefinition.cmdAddAll, fAddAllDisabled);
-	button_disable(frmDefinition.cmdFilteredAdd, false);
+	//button_disable(frmDefinition.cmdFilteredAdd, false);	
 	button_disable(frmDefinition.cmdRemove, fRemoveDisabled);
 	button_disable(frmDefinition.cmdRemoveAll, fRemoveAllDisabled);
 

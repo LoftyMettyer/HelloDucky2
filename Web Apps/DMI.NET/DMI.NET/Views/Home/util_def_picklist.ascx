@@ -349,7 +349,7 @@
 														</tr>
 														<tr height="10">
 															<td width="100">
-																<input type="button" id="cmdFilteredAdd" name="cmdFilteredAdd" class="btn" value="Filtered Add" style="WIDTH: 100%" onclick="filteredAddClick()" />
+																<input type="button" id="cmdFilteredAdd" disabled="disabled" name="cmdFilteredAdd" class="btn" value="Filtered Add" style="WIDTH: 100%" onclick="filteredAddClick()" />
 															</td>
 														</tr>
 														<tr height="10">
