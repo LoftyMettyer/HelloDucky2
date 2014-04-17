@@ -311,7 +311,7 @@
 	//var DMIthemeLink = document.createElement("link");
 	//DMIthemeLink.rel = "stylesheet";
 	//DMIthemeLink.type = "text/css";
-	//DMIthemeLink.href = pathToResources + "/Content/themes/redmond/jquery-ui.min.css";
+	//DMIthemeLink.href = pathToResources + "/Content/themes/redmond-segoe/jquery-ui.min.css";
 	//head.appendChild(DMIthemeLink);
 
 	function toggleGrid() {

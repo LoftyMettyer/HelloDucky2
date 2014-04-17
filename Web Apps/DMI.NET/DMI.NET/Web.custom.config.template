@@ -2,11 +2,11 @@
 	<add key="LoginPage_Database" value="" />
 	<add key="LoginPage_Server" value="" />
 
-	<add key="UI_Admin_Theme" value="redmond" />
+	<add key="UI_Admin_Theme" value="redmond-segoe" />
 	<add key="UI_Layout_Selectable" value="false" />
 	<add key="UI_Self_Service_Layout" value="winkit" />
-	<add key="UI_Wireframe_Theme" value="redmond" />
-	<add key="UI_Winkit_Theme" value="redmond" />
+	<add key="UI_Wireframe_Theme" value="redmond-segoe" />
+	<add key="UI_Winkit_Theme" value="redmond-segoe" />
 	<add key="UI_Tiles_Theme" value="start" />
 	
 	<add key="SessionTimeOutInMinutes" value="20" />

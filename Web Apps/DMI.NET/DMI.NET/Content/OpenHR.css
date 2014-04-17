@@ -441,18 +441,18 @@ select[disabled=""] {
 }
 
 
-.ui-state-disabled:not(.dimmed), .ui-widget-content:not(.dimmed) .ui-state-disabled:not(.dimmed), .ui-widget-header:not(.dimmed) .ui-state-disabled:not(.dimmed) {
+.DashContent li.ui-state-disabled:not(.dimmed), .DashContent li.ui-widget-content:not(.dimmed) .DashContent li.ui-state-disabled:not(.dimmed), .DashContent li.ui-widget-header:not(.dimmed) .DashContent li.ui-state-disabled:not(.dimmed) {
 	opacity: 1!important;
 	filter: Alpha(Opacity=100)!important;
 }
 
 
-.linkspagebuttontext.ui-state-disabled:not(.dimmed) {
+.linkspagebuttontext li.ui-state-disabled:not(.dimmed) {
 	opacity: 1!important;
 	filter: Alpha(Opacity=100)!important;	
 }
 
-.dimmed {
+.DashContent li.dimmed {
 	opacity: 0.1!important;
 	filter: Alpha(Opacity=10)!important;	
 }

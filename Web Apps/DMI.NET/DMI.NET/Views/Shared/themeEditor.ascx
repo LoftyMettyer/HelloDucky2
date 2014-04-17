@@ -149,7 +149,7 @@
 				<option value="pepper-grinder">Pepper-Grinder</option>
 				<option value="pink-pip">Pink-Pip</option>
 				<option value="redmond">Redmond</option>
-				<option value="redmond-verdana">Redmond-Verdana</option>
+				<option value="redmond-segoe">Redmond-Segoe</option>
 				<option value="smoothness">Smoothness</option>
 				<option value="south-street">South-Street</option>
 				<option value="start">Start</option>

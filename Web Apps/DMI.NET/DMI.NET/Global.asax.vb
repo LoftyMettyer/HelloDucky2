@@ -84,38 +84,38 @@ Public Class MvcApplication
 
 		' get the ADMIN (DMI) theme out of web config.
 		Session("ui-admin-theme") = ApplicationSettings.UI_Admin_Theme
-		If Session("ui-admin-theme") Is Nothing Or Len(Session("ui-admin-theme")) <= 0 Then Session("ui-admin-theme") = "redmond"
+		If Session("ui-admin-theme") Is Nothing Or Len(Session("ui-admin-theme")) <= 0 Then Session("ui-admin-theme") = "redmond-segoe"
 
-		' Check for a valid themename, then default to redmond if not valid.
+		' Check for a valid themename, then default to redmond-segoe if not valid.
 		If Not File.Exists(Server.MapPath("~/Content/themes/" & Session("ui-admin-theme").ToString() & "/jquery-ui.min.css")) Then
-			Session("ui-admin-theme") = "redmond"
+			Session("ui-admin-theme") = "redmond-segoe"
 		End If
 
 		' get the TILES theme out of web config.
 		Session("ui-tiles-theme") = ApplicationSettings.UI_Tiles_Theme
 		If Session("ui-tiles-theme") Is Nothing Or Len(Session("ui-tiles-theme")) <= 0 Then Session("ui-tiles-theme") = "start"
 
-		' Check for a valid themename, then default to redmond if not valid.
+		' Check for a valid themename, then default to start if not valid.
 		If Not File.Exists(Server.MapPath("~/Content/themes/" & Session("ui-tiles-theme").ToString() & "/jquery-ui.min.css")) Then
 			Session("ui-tiles-theme") = "start"
 		End If
 
 		' get the WIREFRAME theme out the web config.
 		Session("ui-wireframe-theme") = ApplicationSettings.UI_Wireframe_Theme
-		If Session("ui-wireframe-theme") Is Nothing Or Len(Session("ui-wireframe-theme")) <= 0 Then Session("ui-wireframe-theme") = "redmond"
+		If Session("ui-wireframe-theme") Is Nothing Or Len(Session("ui-wireframe-theme")) <= 0 Then Session("ui-wireframe-theme") = "redmond-segoe"
 
-		' Check for a valid themename, then default to redmond if not valid.
+		' Check for a valid themename, then default to redmond-segoe if not valid.
 		If Not File.Exists(Server.MapPath("~/Content/themes/" & Session("ui-wireframe-theme").ToString() & "/jquery-ui.min.css")) Then
-			Session("ui-wireframe-theme") = "redmond"
+			Session("ui-wireframe-theme") = "redmond-segoe"
 		End If
 
 		' get the WINKIT theme out the web config.
 		Session("ui-winkit-theme") = ApplicationSettings.UI_Winkit_Theme
-		If Session("ui-winkit-theme") Is Nothing Or Len(Session("ui-winkit-theme")) <= 0 Then Session("ui-winkit-theme") = "redmond"
+		If Session("ui-winkit-theme") Is Nothing Or Len(Session("ui-winkit-theme")) <= 0 Then Session("ui-winkit-theme") = "redmond-segoe"
 
-		' Check for a valid themename, then default to redmond if not valid.
+		' Check for a valid themename, then default to redmond-segoe if not valid.
 		If Not File.Exists(Server.MapPath("~/Content/themes/" & Session("ui-winkit-theme").ToString() & "/jquery-ui.min.css")) Then
-			Session("ui-winkit-theme") = "redmond"
+			Session("ui-winkit-theme") = "redmond-segoe"
 		End If
 
 		Session("Config-banner-colour") = ApplicationSettings.UI_Banner_Colour
