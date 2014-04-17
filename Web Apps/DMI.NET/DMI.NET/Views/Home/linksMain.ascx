@@ -1603,6 +1603,9 @@
 
 		$('header').show();
 
+		//Check for messages from server
+		OpenHR.CheckForMessages();
+
 	});
 
 </script>
