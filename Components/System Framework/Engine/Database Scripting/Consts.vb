@@ -11,8 +11,8 @@ Namespace ScriptDB
     Public Const MaskUdf As String = "udfmask_"
     Public Const CalculationUdf As String = "udfcalc_"
     Public Const Index As String = "idx_"
-    Public Const SysTriggerTransaction As String = "tbsys_intransactiontrigger"
-  End Class
+		Public Const SysTriggerTransaction As String = "#intransactiontrigger"
+	End Class
 
 End Namespace
 
