@@ -922,7 +922,7 @@ Namespace ExClientCode
 
 				strSheetName = FormatSheetName(strSheetName)
 
-				If _mxlWorkBook.Worksheets.Count < 100 Then
+				If _mxlWorkBook.Worksheets.Count < 255 Then
 					objObject.Name = GetSheetName(strSheetName)
 				End If
 
