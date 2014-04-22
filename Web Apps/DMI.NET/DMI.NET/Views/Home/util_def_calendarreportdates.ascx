@@ -13,6 +13,8 @@
 		frmPopup.txtFirstLoad_Lookup.value = 1;
 		frmPopup.txtHaveSetLookupValues.value = 0;
 
+		$(".button").button();
+
 		button_disable(frmPopup.cmdCancel, true);
 		button_disable(frmPopup.cmdOK, true);
 
@@ -46,8 +48,7 @@
 		frmPopup.txtLoading.value = 0;
 		//$('table').attr("border", "black solid 1px");
 	}
-
-
+	
 	function validateEventInfo() {
 		var frmPopup = document.getElementById("frmPopup");
 		var sEventName = new String(trim(frmPopup.txtEventName.value));
@@ -464,13 +465,31 @@
 	}
 </script>
 
+
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Event Log Selection - OpenHR</title>
+	<script src="<%: Url.LatestContent("~/bundles/jQuery")%>" type="text/javascript"></script>
+	<script src="<%: Url.LatestContent("~/bundles/jQueryUI7")%>" type="text/javascript"></script>
+	<script src="<%: Url.LatestContent("~/bundles/OpenHR_General")%>" type="text/javascript"></script>
+	<script id="officebarscript" src="<%: Url.LatestContent("~/Scripts/officebar/jquery.officebar.js")%>" type="text/javascript"></script>
+	<link href="<%: Url.LatestContent("~/Content/OpenHR.css")%>" rel="stylesheet" type="text/css" />
+	<link href="<%: Url.LatestContent("~/Content/Site.css")%>" rel="stylesheet" type="text/css" />
+	<%--<link href="<%: Url.LatestContent("~/Content/OpenHR.css")%>" rel="stylesheet" type="text/css" />--%>
+	<link id="DMIthemeLink" href="<%: Url.LatestContent("~/Content/themes/" & Session("ui-admin-theme").ToString() & "/jquery-ui.min.css")%>" rel="stylesheet" type="text/css" />
+	<link href="<%= Url.LatestContent("~/Content/general_enclosed_foundicons.css")%>" rel="stylesheet" type="text/css" />
+	<link href="<%= Url.LatestContent("~/Content/font-awesome.min.css")%>" rel="stylesheet" type="text/css" />
+	<link href="<%= Url.LatestContent("~/Content/fonts/SSI80v194934/style.css")%>" rel="stylesheet" />
+</head>
+<body>
 <div id="bdyMain" name="bdyMain" <%=session("BodyColour")%> leftmargin="20" topmargin="20" bottommargin="20" rightmargin="5">
 	<form id="frmPopup" name="frmPopup" onsubmit=" return setForm(); ">
 		<div style="width: 95%; padding: 20px">
 			<table class="outline"
 				style="border-spacing: 0; border-collapse: collapse; width: 97%; height: 100%" id="Event End">
-				<tr style="font-size: x-large">
-					<td style="text-align: center" colspan="6">Select Event Information</td>
+				<tr>
+					<td style="text-align: center" colspan="6"><h3>Event Information</h3></td>
 				</tr>
 				<tr style="font-weight: bold">
 					<td colspan="6">Event</td>
@@ -770,11 +789,11 @@
 
 		<div id="Buttons" class="invisible" style="width: 100%; text-align: center">
 			<input id="cmdOK" type="button" value="OK" name="cmdOK"
-				class="button ui-button ui-widget ui-state-default ui-widget-content ui-corner-tl ui-corner-br"
+				class="button"
 				style="width: 80px"
 				onclick=" setForm() "/>
 			<input id="cmdCancel" type="button" value="Cancel" name="cmdCancel"
-				class="button ui-button ui-widget ui-state-default ui-widget-content ui-corner-tl ui-corner-br"
+				class="button"
 				style="width: 80px"
 				onclick="self.close();" />
 		</div>
@@ -801,7 +820,8 @@
 		<input type="hidden" id="baseHidden" name="baseHidden" value='N'>
 	</form>
 </div>
-
+	</body>
+</html>
 <script type="text/javascript">
 	util_def_calendarreportdates_window_onload();
 </script>

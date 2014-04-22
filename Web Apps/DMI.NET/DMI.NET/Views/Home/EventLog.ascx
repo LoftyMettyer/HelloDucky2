@@ -374,7 +374,7 @@
 				"&txtEventBatchRunID=" + frmDetails.txtEventBatchRunID.value +
 				"&txtEmailPermission=" + escape(frmDetails.txtEmailPermission.value);
 
-		openDialog(sURL, 600, 280);
+		openDialog(sURL, 400, 200);
 
 	}
 

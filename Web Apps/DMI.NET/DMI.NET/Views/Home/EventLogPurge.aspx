@@ -9,21 +9,22 @@
 	<title>Event Log Selection - OpenHR</title>
 	<script src="<%: Url.LatestContent("~/bundles/jQuery")%>" type="text/javascript"></script>
 	<script src="<%: Url.LatestContent("~/bundles/jQueryUI7")%>" type="text/javascript"></script>
-		<script src="<%: Url.LatestContent("~/bundles/OpenHR_General")%>" type="text/javascript"></script>
-<script id="officebarscript" src="<%: Url.LatestContent("~/Scripts/officebar/jquery.officebar.js")%>" type="text/javascript"></script>
+	<script src="<%: Url.LatestContent("~/bundles/OpenHR_General")%>" type="text/javascript"></script>
+	<script id="officebarscript" src="<%: Url.LatestContent("~/Scripts/officebar/jquery.officebar.js")%>" type="text/javascript"></script>
 	<link href="<%: Url.LatestContent("~/Content/OpenHR.css")%>" rel="stylesheet" type="text/css" />
 	<link href="<%: Url.LatestContent("~/Content/Site.css")%>" rel="stylesheet" type="text/css" />
-	<link href="<%: Url.LatestContent("~/Content/OpenHR.css")%>" rel="stylesheet" type="text/css" />
+	<%--<link href="<%: Url.LatestContent("~/Content/OpenHR.css")%>" rel="stylesheet" type="text/css" />--%>
 	<link id="DMIthemeLink" href="<%: Url.LatestContent("~/Content/themes/" & Session("ui-admin-theme").ToString() & "/jquery-ui.min.css")%>" rel="stylesheet" type="text/css" />
 	<link href="<%= Url.LatestContent("~/Content/general_enclosed_foundicons.css")%>" rel="stylesheet" type="text/css" />
 	<link href="<%= Url.LatestContent("~/Content/font-awesome.min.css")%>" rel="stylesheet" type="text/css" />
 	<link href="<%= Url.LatestContent("~/Content/fonts/SSI80v194934/style.css")%>" rel="stylesheet" />
+
 	<style type="text/css">
 		.auto-style1
 		{
 			width: 307px;
 		}
-  </style>
+	</style>
 </head>
 
 	<script type="text/javascript">
@@ -31,7 +32,8 @@
 		function eventlogpurge_window_onload() {
 
 			self.focus();
-
+			$(".button").button();
+			
 			// Resize the grid to show all prompted values.
 			iResizeBy = frmEventPurge.offsetParent.scrollWidth - frmEventPurge.offsetParent.clientWidth;
 			if (frmEventPurge.offsetParent.offsetWidth + iResizeBy > screen.width) {
@@ -236,9 +238,7 @@
 	
 			rsPurgeInfo = Nothing
 		%>
-
-
-			<table style="text-align : center; padding: 5px; border-spacing: 0;  width: 30%;  height: 100%; margin-right: 0px;">
+		<table style="text-align : center; padding: 5px; border-spacing: 0;  width: 30%;  height: 100%; margin-right: 0px;">
 			<tr>
 				<td>
 						<table class="invisible" style="width: 30%;  height: 100%; padding: 0; border-spacing: 0;">
@@ -249,9 +249,8 @@
 							<td style="width:5px"></td>
 							<td class="auto-style1">
 								<table class="invisible" style="width: 86%;  height: 100%; padding: 0; border-spacing: 0;">
-									<tr style="height: 5px">
-										<td colspan="8" style="text-align: left">Purge Criteria : 
-										</td>
+									<tr>
+										<td style="text-align: center" colspan="8"><h3>Purge Criteria</h3></td>
 									</tr>
 									<tr style="height: 10px">
 										<td colspan="8"></td>
@@ -294,15 +293,15 @@
 												onchange="setRecordsNumeric();">
 										</td>
 										<td style="width:5px"></td>
-										<td style="width: 15px">
-											<input style="WIDTH: 15px" type="button" value="+" id="cmdPeriodUp" name="cmdPeriodUp" class="button ui-button ui-widget ui-state-default ui-widget-content ui-corner-tl ui-corner-br"
+										<td style="">
+											<input style="" type="button" value="+" id="cmdPeriodUp" name="cmdPeriodUp" class="button"
 												onclick="spinRecords(true);setRecordsNumeric();" />
 										</td>
-										<td style="width: 15px">
-											<input style="WIDTH: 15px" type="button" value="-" id="cmdPeriodDown" name="cmdPeriodDown" class="button ui-button ui-widget ui-state-default ui-widget-content ui-corner-tl ui-corner-br"
+										<td style="">
+											<input style="" type="button" value="-" id="cmdPeriodDown" name="cmdPeriodDown" class="button"
 												onclick="spinRecords(false);setRecordsNumeric();"/>
 										</td>
-										<td style="width: 10px">&nbsp;</td>
+										
 										<td>
 											<select name="cboPeriod" id="cboPeriod" class="combo ui-widget ui-widget-content ui-corner-tl ui-corner-bl">
 												<option name="Day" value="0">Day(s)
@@ -315,22 +314,6 @@
 									<tr style="height: 5px">
 										<td colspan="8"></td>
 									</tr>
-									<tr style="height: 5px; text-align: right">
-										<td style="text-align: right;  vertical-align: bottom" colspan="8">
-											<table class="invisible" style="border-spacing: 0; padding: 4px">
-												<tr>
-													<td style="width: 10px">
-														<input id="cmdOK" type="button" value="OK" name="cmdOk" style="WIDTH: 80px" class="button ui-button ui-widget ui-state-default ui-widget-content ui-corner-tl ui-corner-br"
-															onclick="okClick();"/>
-													</td>
-													<td style="width: 5px">
-														<input id="cmdCancel" type="button" value="Cancel" name="cmdCancel"  style="WIDTH: 80px" class="button ui-button ui-widget ui-state-default ui-widget-content ui-corner-tl ui-corner-br"
-															onclick="cancelClick();"/>
-													</td>
-												</tr>
-											</table>
-										</td>
-									</tr>
 								</table>
 							</td>
 						</tr>
@@ -339,6 +322,17 @@
 			</tr>
 		</table>
 	</form>
+
+		<div id="Buttons" class="invisible" style="width: 100%; text-align: center">
+			<input id="cmdOK" type="button" value="OK" name="cmdOK"
+				class="button"
+				style="width: 80px"
+				onclick=" okClick() " />
+			<input id="okClick" type="button" value="Cancel" name="cmdCancel"
+				class="button"
+				style="width: 80px"
+				onclick="cancelClick();" />
+		</div>
 
 </body>
 </html>
