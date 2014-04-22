@@ -15,6 +15,24 @@
     {
         "Entry"
         {
+        "MsmKey" = "8:_00E7412CEF6CD096E30B4794B4F5C4D7"
+        "OwnerKey" = "8:_8F9C4DA7A01643BC84613D7F8758514D"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_00E7412CEF6CD096E30B4794B4F5C4D7"
+        "OwnerKey" = "8:_49B1BA38015C58F49BDB46AD0A5404FF"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_49B1BA38015C58F49BDB46AD0A5404FF"
+        "OwnerKey" = "8:_8F9C4DA7A01643BC84613D7F8758514D"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_5A3EBDE1052BAD1A162FEE9DCF1BCCD1"
         "OwnerKey" = "8:_64A94834F18A48339DC3AC2694BA4D97"
         "MsmSig" = "8:_UNDEFINED"
@@ -39,8 +57,74 @@
         }
         "Entry"
         {
+        "MsmKey" = "8:_801012A9BF3221FE9DC817D12B89009A"
+        "OwnerKey" = "8:_8F9C4DA7A01643BC84613D7F8758514D"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
         "MsmKey" = "8:_8F9C4DA7A01643BC84613D7F8758514D"
         "OwnerKey" = "8:_UNDEFINED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_A0F45F34B8E0D3DF3CBFE46C6978C921"
+        "OwnerKey" = "8:_FE169EE628C835E4DDAAE68F2F4A713A"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_A0F45F34B8E0D3DF3CBFE46C6978C921"
+        "OwnerKey" = "8:_8F9C4DA7A01643BC84613D7F8758514D"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_A0F45F34B8E0D3DF3CBFE46C6978C921"
+        "OwnerKey" = "8:_BE98E242D2684AD8FF05CFA6608967ED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_B53511902C260E88CA01740A85546356"
+        "OwnerKey" = "8:_8F9C4DA7A01643BC84613D7F8758514D"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_BE98E242D2684AD8FF05CFA6608967ED"
+        "OwnerKey" = "8:_FE169EE628C835E4DDAAE68F2F4A713A"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_BE98E242D2684AD8FF05CFA6608967ED"
+        "OwnerKey" = "8:_49B1BA38015C58F49BDB46AD0A5404FF"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_BE98E242D2684AD8FF05CFA6608967ED"
+        "OwnerKey" = "8:_8F9C4DA7A01643BC84613D7F8758514D"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_BE98E242D2684AD8FF05CFA6608967ED"
+        "OwnerKey" = "8:_801012A9BF3221FE9DC817D12B89009A"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_FE169EE628C835E4DDAAE68F2F4A713A"
+        "OwnerKey" = "8:_8F9C4DA7A01643BC84613D7F8758514D"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_FE169EE628C835E4DDAAE68F2F4A713A"
+        "OwnerKey" = "8:_801012A9BF3221FE9DC817D12B89009A"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -53,6 +137,42 @@
         {
         "MsmKey" = "8:_UNDEFINED"
         "OwnerKey" = "8:_8F9C4DA7A01643BC84613D7F8758514D"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_49B1BA38015C58F49BDB46AD0A5404FF"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_00E7412CEF6CD096E30B4794B4F5C4D7"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_801012A9BF3221FE9DC817D12B89009A"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_FE169EE628C835E4DDAAE68F2F4A713A"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_BE98E242D2684AD8FF05CFA6608967ED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_A0F45F34B8E0D3DF3CBFE46C6978C921"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -166,6 +286,68 @@
         }
         "File"
         {
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_00E7412CEF6CD096E30B4794B4F5C4D7"
+            {
+            "AssemblyRegister" = "3:1"
+            "AssemblyIsInGAC" = "11:FALSE"
+            "AssemblyAsmDisplayName" = "8:log4net, Version=1.2.10.0, Culture=neutral, PublicKeyToken=1b44e1d426115821, processorArchitecture=MSIL"
+                "ScatterAssemblies"
+                {
+                    "_00E7412CEF6CD096E30B4794B4F5C4D7"
+                    {
+                    "Name" = "8:log4net.dll"
+                    "Attributes" = "3:512"
+                    }
+                }
+            "SourcePath" = "8:log4net.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_F8AA754A46FC40D489A47B32DBA1BFFB"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_49B1BA38015C58F49BDB46AD0A5404FF"
+            {
+            "AssemblyRegister" = "3:1"
+            "AssemblyIsInGAC" = "11:FALSE"
+            "AssemblyAsmDisplayName" = "8:NHibernate.JetDriver, Version=2.0.0.1001, Culture=neutral, processorArchitecture=MSIL"
+                "ScatterAssemblies"
+                {
+                    "_49B1BA38015C58F49BDB46AD0A5404FF"
+                    {
+                    "Name" = "8:NHibernate.JetDriver.dll"
+                    "Attributes" = "3:512"
+                    }
+                }
+            "SourcePath" = "8:NHibernate.JetDriver.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_F8AA754A46FC40D489A47B32DBA1BFFB"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
             "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_5A3EBDE1052BAD1A162FEE9DCF1BCCD1"
             {
             "SourcePath" = "8:SystemFramework.tlb"
@@ -237,6 +419,150 @@
             "IsDependency" = "11:FALSE"
             "IsolateTo" = "8:"
             }
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_801012A9BF3221FE9DC817D12B89009A"
+            {
+            "AssemblyRegister" = "3:1"
+            "AssemblyIsInGAC" = "11:FALSE"
+            "AssemblyAsmDisplayName" = "8:ConfOrm.Shop, Version=2.0.0.0, Culture=neutral, PublicKeyToken=90b38bd64c76a74a, processorArchitecture=MSIL"
+                "ScatterAssemblies"
+                {
+                    "_801012A9BF3221FE9DC817D12B89009A"
+                    {
+                    "Name" = "8:ConfOrm.Shop.dll"
+                    "Attributes" = "3:512"
+                    }
+                }
+            "SourcePath" = "8:ConfOrm.Shop.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_F8AA754A46FC40D489A47B32DBA1BFFB"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_A0F45F34B8E0D3DF3CBFE46C6978C921"
+            {
+            "AssemblyRegister" = "3:1"
+            "AssemblyIsInGAC" = "11:FALSE"
+            "AssemblyAsmDisplayName" = "8:Iesi.Collections, Version=1.0.1.0, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL"
+                "ScatterAssemblies"
+                {
+                    "_A0F45F34B8E0D3DF3CBFE46C6978C921"
+                    {
+                    "Name" = "8:Iesi.Collections.dll"
+                    "Attributes" = "3:512"
+                    }
+                }
+            "SourcePath" = "8:Iesi.Collections.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_F8AA754A46FC40D489A47B32DBA1BFFB"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
+            "{1FB2D0AE-D3B9-43D4-B9DD-F88EC61E35DE}:_B53511902C260E88CA01740A85546356"
+            {
+            "SourcePath" = "8:MobileDesigner.tlb"
+            "TargetName" = "8:MobileDesigner.tlb"
+            "Tag" = "8:"
+            "Folder" = "8:_F8AA754A46FC40D489A47B32DBA1BFFB"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:2"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_BE98E242D2684AD8FF05CFA6608967ED"
+            {
+            "AssemblyRegister" = "3:1"
+            "AssemblyIsInGAC" = "11:FALSE"
+            "AssemblyAsmDisplayName" = "8:NHibernate, Version=3.2.0.4000, Culture=neutral, PublicKeyToken=aa95f207798dfdb4, processorArchitecture=MSIL"
+                "ScatterAssemblies"
+                {
+                    "_BE98E242D2684AD8FF05CFA6608967ED"
+                    {
+                    "Name" = "8:NHibernate.dll"
+                    "Attributes" = "3:512"
+                    }
+                }
+            "SourcePath" = "8:NHibernate.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_F8AA754A46FC40D489A47B32DBA1BFFB"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
+            "{9F6F8455-1EF1-4B85-886A-4223BCC8E7F7}:_FE169EE628C835E4DDAAE68F2F4A713A"
+            {
+            "AssemblyRegister" = "3:1"
+            "AssemblyIsInGAC" = "11:FALSE"
+            "AssemblyAsmDisplayName" = "8:ConfOrm, Version=2.0.0.0, Culture=neutral, PublicKeyToken=ed8affdf01cbe4cf, processorArchitecture=MSIL"
+                "ScatterAssemblies"
+                {
+                    "_FE169EE628C835E4DDAAE68F2F4A713A"
+                    {
+                    "Name" = "8:ConfOrm.dll"
+                    "Attributes" = "3:512"
+                    }
+                }
+            "SourcePath" = "8:ConfOrm.dll"
+            "TargetName" = "8:"
+            "Tag" = "8:"
+            "Folder" = "8:_F8AA754A46FC40D489A47B32DBA1BFFB"
+            "Condition" = "8:"
+            "Transitive" = "11:FALSE"
+            "Vital" = "11:TRUE"
+            "ReadOnly" = "11:FALSE"
+            "Hidden" = "11:FALSE"
+            "System" = "11:FALSE"
+            "Permanent" = "11:FALSE"
+            "SharedLegacy" = "11:FALSE"
+            "PackageAs" = "3:1"
+            "Register" = "3:1"
+            "Exclude" = "11:FALSE"
+            "IsDependency" = "11:TRUE"
+            "IsolateTo" = "8:"
+            }
         }
         "FileType"
         {
@@ -278,7 +604,7 @@
             }
             "{3C67513D-01DD-4637-8A68-80971EB9504F}:_F8AA754A46FC40D489A47B32DBA1BFFB"
             {
-            "DefaultLocation" = "8:[ProgramFilesFolder]Advanced\\OpenHR v5.2"
+            "DefaultLocation" = "8:[ProgramFilesFolder]Advanced\\OpenHR 8.0"
             "Name" = "8:#1925"
             "AlwaysCreate" = "11:FALSE"
             "Condition" = "8:"
@@ -303,20 +629,20 @@
         "Product"
         {
         "Name" = "8:Microsoft Visual Studio"
-        "ProductName" = "8:OpenHR Framework v5.2"
-        "ProductCode" = "8:{ADEBF383-D737-4F61-9906-DBCED411A2D4}"
-        "PackageCode" = "8:{7A02627F-3385-4CED-AFFB-5EB87AC5B61E}"
-        "UpgradeCode" = "8:{416839EF-23B1-4660-A4AD-E908AB32842E}"
+        "ProductName" = "8:OpenHR Framework 8.0"
+        "ProductCode" = "8:{CFAE55D7-1872-4581-A70D-D7E2D6F0A8B3}"
+        "PackageCode" = "8:{91AF080F-A451-46AB-BFDF-76926C84936D}"
+        "UpgradeCode" = "8:{0BAD9B73-8744-4385-AC9D-C8A803D14E09}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:FALSE"
         "DetectNewerInstalledVersion" = "11:FALSE"
         "InstallAllUsers" = "11:TRUE"
-        "ProductVersion" = "8:5.2.2"
+        "ProductVersion" = "8:8.0.1"
         "Manufacturer" = "8:Advanced Business Software and Solutions Limited"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
-        "Title" = "8:OpenHR Framework v5.2"
+        "Title" = "8:OpenHR Framework 8.0"
         "Subject" = "8:"
         "ARPCONTACT" = "8:Advanced Business Software and Solutions Limited"
         "Keywords" = "8:"
