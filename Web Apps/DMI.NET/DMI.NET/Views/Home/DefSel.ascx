@@ -93,8 +93,6 @@ Session("fromMenu") = 0
 	If CStr(Session("optionDefSelType")) <> "" Then
 		Session("defseltype") = Session("optionDefSelType")
 	End If
-
-	Session("tableID") = Session("utilTableID")
 	
 	If Session("singleRecordID") = 0 Then
 		If CStr(Session("optionTableID")) <> "" Then
