@@ -47,11 +47,11 @@
 
 		cmdCancel.focus();
 
-		var ssOleDBGridSelRecords;
-		
 		if ((frmUseful.txtSelectionType.value.toUpperCase() == "FILTER") ||
 			(frmUseful.txtSelectionType.value.toUpperCase() == "PICKLIST")) {
-			ssOleDBGridSelRecords = document.getElementById("ssOleDBGridSelRecords");
+
+			var ssOleDBGridSelRecords = document.getElementById("ssOleDBGridSelRecords");
+			
 			setGridFont(ssOleDBGridSelRecords);
 
 			// Set focus onto one of the form controls. 
@@ -66,9 +66,16 @@
 
 			tbrefreshControls();
 		} else {
+
+			var ssOleDBGridSelRecords = document.getElementById("ssOleDBGridSelRecords");
+			var abMainMenu = document.getElementById("abMainMenu");			
 			
-			ssOleDBGridSelRecords = document.getElementById("ssOleDBGridSelRecords");
 			setGridFont(ssOleDBGridSelRecords);
+			setMenuFont(abMainMenu);
+			abMainMenu.Attach();
+			abMainMenu.DataPath = "<%= Url.Content("~/") %>" + "misc/mainmenu.htm";
+			
+			abMainMenu.RecalcLayout();
 
 			window.parent.dialogLeft = new String((screen.width - (9 * screen.width / 10)) / 2) + "px";
 			window.parent.dialogTop = new String((screen.height - (3 * screen.height / 4)) / 2) + "px";
@@ -248,6 +255,39 @@
 	}
 
 	function tbrefreshMenu() {
+
+		var abMainMenu = document.getElementById("abMainMenu");
+		if (abMainMenu.Bands.Count() > 0) 
+		{
+			enableMenu();
+
+			var frmData = OpenHR.getForm("dataframe", "frmData");
+				
+			for (var i=0; i< abMainMenu.tools.count(); i++) 
+			{
+				abMainMenu.tools(i).visible = false;
+			}				
+		
+			abMainMenu.Bands("mnuMainMenu").visible = false;
+			abMainMenu.Bands("mnubandMainToolBar").visible = true;
+
+			// Enable the record editing options as necessary.
+			abMainMenu.tools("mnutoolFirstRecord").visible = true;
+			abMainMenu.tools("mnutoolFirstRecord").enabled = (frmData.txtIsFirstPage.value != "True");
+			abMainMenu.tools("mnutoolPreviousRecord").visible = true;
+			abMainMenu.tools("mnutoolPreviousRecord").enabled = (frmData.txtIsFirstPage.value != "True");
+			abMainMenu.tools("mnutoolNextRecord").visible = true;
+			abMainMenu.tools("mnutoolNextRecord").enabled = (frmData.txtIsLastPage.value != "True");
+			abMainMenu.tools("mnutoolLastRecord").visible = true;
+			abMainMenu.tools("mnutoolLastRecord").enabled = (frmData.txtIsLastPage.value != "True");
+
+			abMainMenu.tools("mnutoolLocateRecordsCaption").visible = true;
+			abMainMenu.tools("mnutoolLocateRecords").visible = (frmData.txtFirstColumnType.value != "-7");
+			abMainMenu.Tools("mnutoolLocateRecordsLogic").CBList.Clear();
+			abMainMenu.Tools("mnutoolLocateRecordsLogic").CBList.AddItem("True");
+			abMainMenu.Tools("mnutoolLocateRecordsLogic").CBList.AddItem("False");
+			abMainMenu.tools("mnutoolLocateRecordsLogic").visible = (frmData.txtFirstColumnType.value == "-7");
+
 			var sCaption = "";
 			if (frmData.txtRecordCount.value > 0) 
 			{
@@ -266,6 +306,8 @@
 				sCaption = "No Records";
 			}
 
+			abMainMenu.tools("mnutoolRecordPosition").visible = true;
+			abMainMenu.Bands("mnubandMainToolBar").tools("mnutoolRecordPosition").caption = sCaption;
 			
 			try
 			{
@@ -276,8 +318,17 @@
 			}
 			catch(e) {}
 
+			try
+			{
+				abMainMenu.Attach();
+				abMainMenu.RecalcLayout();
+				abMainMenu.ResetHooks();
+				abMainMenu.Refresh();
+			}
+			catch(e) {}			
+		}
 	}
-	
+
 	function reloadPage(psAction, psLocateValue) {
 		var sConvertedValue;
 		var sDecimalSeparator;
@@ -405,12 +456,24 @@
 			refreshData(); // should be in scope (tbBulkBookingSelectionData)
 		}
 
+		// Clear the locate value from the menu.
+		abMainMenu.Tools("mnutoolLocateRecords").Text = "";
 	}
 
 	function disableMenu() {
+		for(iLoop = 0; iLoop < abMainMenu.Bands.Item("mnubandMainToolBar").Tools.Count(); iLoop ++) {
+			abMainMenu.Bands.Item("mnubandMainToolBar").tools.Item(iLoop).Enabled = false;
+		}
+
+		abMainMenu.RecalcLayout();
+		abMainMenu.ResetHooks();
+		abMainMenu.Refresh();
 	}
 
 	function enableMenu() {
+		for(iLoop = 0; iLoop < abMainMenu.Bands.Item("mnubandMainToolBar").Tools.Count(); iLoop ++) {
+			abMainMenu.Bands.Item("mnubandMainToolBar").tools.Item(iLoop).Enabled = true;
+		}
 	}
 
 	function convertLocaleDateToSQL(psDateString)
@@ -564,6 +627,12 @@
 
 <script type="text/javascript">
 	function tbBulkBookingSelection_addhandlers() {
+		OpenHR.addActiveXHandler("abMainMenu", "DataReady", "abMainMenu_DataReady()");
+		OpenHR.addActiveXHandler("abMainMenu", "PreCustomizeMenu", "abMainMenu_PreCustomizeMenu()");
+		OpenHR.addActiveXHandler("abMainMenu", "Click", "abMainMenu_Click(param1)");
+		OpenHR.addActiveXHandler("abMainMenu", "KeyDown", "abMainMenu_KeyDown()");
+		OpenHR.addActiveXHandler("abMainMenu", "ComboSelChange", "abMainMenu_ComboSelChange()");
+		OpenHR.addActiveXHandler("abMainMenu", "PreSysMenu", "abMainMenu_PreSysMenu()");
 		OpenHR.addActiveXHandler("ssOleDBGridSelRecords", "rowcolchange", "ssOleDBGridSelRecords_rowcolchange()");
 		OpenHR.addActiveXHandler("ssOleDBGridSelRecords", "dblClick", "ssOleDBGridSelRecords_dblClick()");
 		OpenHR.addActiveXHandler("ssOleDBGridSelRecords", "KeyPress", "ssOleDBGridSelRecords_KeyPress()");
@@ -571,7 +640,94 @@
 </script>
 
 <script type="text/javascript">
+	function abMainMenu_DataReady() {
+		var abMainMenu = document.getElementById("abMainMenu");
+		abMainMenu.DataPath = "";
+		abMainMenu.RecalcLayout();		
 
+		return false;
+
+		var sKey, sPath;
+		sKey = new String("tempmenufilepath_");
+		//sKey = sKey.concat(window.parent.window.dialogArguments.window.parent.frames("menuframe").document.forms("frmMenuInfo").txtDatabase.value);
+		//sPath = ASRIntranetFunctions.GetRegistrySetting("HR Pro", "DataPaths", sKey);
+		if (sPath == "") {
+			sPath = "c:\\";
+		}
+
+		if (sPath == "<NONE>") {
+			frmUseful.txtMenuSaved.value = 1;
+			abMainMenu.RecalcLayout();
+		} else {
+			if (sPath.substr(sPath.length - 1, 1) != "\\") {
+				sPath = sPath.concat("\\");
+			}
+
+			sPath = sPath.concat("tempmenu.asp");
+			if ((abMainMenu.Bands.Count() > 0) && (frmUseful.txtMenuSaved.value == 0)) {
+				try {
+					abMainMenu.save(sPath, "");
+				} catch(e) {
+					ASRIntranetFunctions.MessageBox("The specified temporary menu file path cannot be written to. The temporary menu file path will be cleared.");
+					sKey = new String("tempMenuFilePath_");
+					sKey = sKey.concat(window.parent.window.dialogArguments.window.parent.frames("menuframe").document.forms("frmMenuInfo").txtDatabase.value);
+					ASRIntranetFunctions.SaveRegistrySetting("HR Pro", "DataPaths", sKey, "<NONE>");
+				}
+
+				frmUseful.txtMenuSaved.value = 1;
+			} else {
+				if ((abMainMenu.Bands.Count() == 0) && (frmUseful.txtMenuSaved.value == 1)) {
+					abMainMenu.DataPath = sPath;
+					abMainMenu.RecalcLayout();
+					return;
+				}
+			}
+		}
+	}
+	function abMainMenu_PreCustomizeMenu(pfCancel) {
+		pfCancel = true;
+		OpenHR.messageBox("The menu cannot be customized. Errors will occur if you attempt to customize it. Click anywhere in your browser to remove the dummy customisation menu.");
+	}
+	function abMainMenu_Click(pTool) {
+		//alert(pTool.name);
+		switch (pTool.name) {
+			case "mnutoolFirstRecord":
+				reloadPage("MOVEFIRST", "");
+				break;
+			case "mnutoolPreviousRecord":
+				reloadPage("MOVEPREVIOUS", "");
+				break;
+			case "mnutoolNextRecord":
+				reloadPage("MOVENEXT", "");
+				break;
+			case "mnutoolLastRecord":
+				reloadPage("MOVELAST", "");
+				break;
+		}
+	}
+	function abMainMenu_KeyDown(piKeyCode, piShift) {
+		iIndex = abMainMenu.ActiveBand.CurrentTool;
+
+		if (abMainMenu.ActiveBand.Tools(iIndex).Name == "mnutoolLocateRecords") {
+			if (piKeyCode == 13) {
+				sLocateValue = abMainMenu.ActiveBand.Tools(iIndex).Text;
+
+				reloadPage("LOCATE", sLocateValue);
+			}
+		}
+	}
+	function abMainMenu_ComboSelChange(pTool) {
+		if (pTool.Name == "mnutoolLocateRecordsLogic") {
+			sLocateValue = pTool.Text;
+
+			reloadPage("LOCATE", sLocateValue);
+		}
+	}
+	function abMainMenu_PreSysMenu(pBand) {
+		if (pBand.Name == "SysCustomize") {
+			pBand.Tools.RemoveAll();
+		}
+	}
 	function ssOleDBGridSelRecords_rowcolchange() { tbrefreshControls(); }
 	function ssOleDBGridSelRecords_dblClick() {
 		// JPD20021031 Fault 4631
@@ -611,6 +767,11 @@
 <%
 	if (ucase(session("selectionType")) <> ucase("picklist")) and _
 		(ucase(session("selectionType")) <> ucase("filter")) then 
+		Response.Write("<OBJECT classid=""clsid:6976CB54-C39B-4181-B1DC-1A829068E2E7"" codebase=""cabs/COAInt_Client.cab#Version=1,0,0,5""" & vbCrLf)
+		Response.Write("	height=32 id=abMainMenu name=abMainMenu style=""LEFT: 0px; TOP: 0px"" width=100% VIEWASTEXT>" & vbCrLf)
+		Response.Write("	<PARAM NAME=""_ExtentX"" VALUE=""847"">" & vbCrLf)
+		Response.Write("	<PARAM NAME=""_ExtentY"" VALUE=""847"">" & vbCrLf)
+		Response.Write("</OBJECT>" & vbCrLf)
 		Response.Write("<table align=center class=""outline"" cellPadding=5 cellSpacing=0 width=100% height=""95%"">" & vbCrLf)
 	else
 		Response.Write("<table align=center class=""outline"" cellPadding=5 cellSpacing=0 width=100% height=""100%"">" & vbCrLf)

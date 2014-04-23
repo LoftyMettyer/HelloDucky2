@@ -116,7 +116,7 @@
 		var frmData = OpenHR.getForm("dataframe", "frmData");
 
 		sRecords = frmData.txtELTotalRecordCount.value;
-
+		
 		var iStartPosition = parseInt(frmData.txtELFirstRecPos.value);
 		var iEndPosition = iStartPosition - 1 + parseInt(frmData.txtELCurrentRecCount.value);
 		
@@ -138,9 +138,12 @@
 		
 		//TODO: We don't have a record position indicator yet on the ribbon for this form
 		
-		menu_SetmnutoolRecordPositionCaption(sCaption);
-
+		menu_SetmnutoolRecordPositionCaption(sCaption);		
 		//Enable/disable navigation controls based on certain conditions
+		
+		var elFindRecords = Number('<%:Session("findRecords")%>');
+		
+		if (elFindRecords <= Number(sRecords)) {
 			if (iStartPosition == 1) { //Disable first and previous
 				menu_toolbarEnableItem("mnutoolFirstEventLogFind", false);
 				menu_toolbarEnableItem("mnutoolPreviousEventLogFind", false);
@@ -158,6 +161,12 @@
 				menu_toolbarEnableItem("mnutoolNextEventLogFind", true);
 				menu_toolbarEnableItem("mnutoolLastEventLogFind", true);
 			}
+		} else { //Disable all
+			menu_toolbarEnableItem("mnutoolFirstEventLogFind", false);
+			menu_toolbarEnableItem("mnutoolPreviousEventLogFind", false);
+			menu_toolbarEnableItem("mnutoolNextEventLogFind", false);
+			menu_toolbarEnableItem("mnutoolLastEventLogFind", false);
+		}
 
 		return true;
 	}
