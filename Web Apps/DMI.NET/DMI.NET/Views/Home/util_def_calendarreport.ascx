@@ -7,8 +7,6 @@
 
 <script src="<%: Url.LatestContent("~/bundles/utilities_calendarreports")%>" type="text/javascript"></script>  
 
-<%Html.RenderPartial("Util_Def_CustomReports/dialog")%>
-
 <script type="text/javascript">
 function selectRecordOptionCalDef(psTable, psType) {
 	var sURL;
@@ -1598,7 +1596,7 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 																						class="text textdisabled" disabled="disabled" tabindex="-1">
 																				
 																					<input id="cmdFilename" name="cmdFilename" class="btn btndisabled" type="button" value='...' disabled="disabled"
-																						onclick="saveFile(); changeTab5Control();"style="width: 12%;"/>
+																						onclick="populateFileName(frmDefinition); changeTab5Control();"style="width: 12%;"/>
 																				</td>
                                                                                 <td></td>
 																				<td></td>
@@ -2226,6 +2224,10 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 
 	<input type='hidden' id="txtTicker" name="txtTicker" value="0">
 	<input type='hidden' id="txtLastKeyFind" name="txtLastKeyFind" value="">
+</div>
+
+<div style='height: 0;width:0; overflow:hidden;'>
+	<input id="cmdGetFilename" name="cmdGetFilename" type="file" />
 </div>
 
 <script type="text/javascript">

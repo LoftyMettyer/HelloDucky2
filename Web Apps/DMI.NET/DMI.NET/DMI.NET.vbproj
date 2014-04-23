@@ -1623,7 +1623,6 @@
     <Content Include="Scripts\jquery\jquery.validate.js" />
     <None Include="Scripts\modernizr-1.7.js" />
     <None Include="Scripts\modernizr-1.7.min.js" />
-    <Content Include="Views\Shared\Util_Def_CustomReports\dialog.ascx" />
     <Content Include="Views\Shared\Util_Def_CustomReports\grdColProps.ascx" />
     <Content Include="Views\Shared\Util_Def_CustomReports\ssHiddenGrid.ascx" />
     <Content Include="Views\Shared\Util_Def_CustomReports\ssMailMergeOleDBGridSortOrder.ascx" />

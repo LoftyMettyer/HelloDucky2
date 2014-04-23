@@ -7,8 +7,6 @@
 
 <script src="<%: Url.LatestContent("~/bundles/utilities_mailmerge")%>" type="text/javascript"></script>
 
-<%Html.RenderPartial("Util_Def_CustomReports/dialog")%>
-
 <%  
 	
 	Dim objSession As SessionInfo = CType(Session("sessionContext"), SessionInfo)
@@ -763,7 +761,7 @@
 																					</td>
 																					<td>
 																						<input type="button" value="..." id="cmdSaveFile" name="cmdSaveFile" class="btn"
-																							onclick="saveFile()"/>
+																							onclick="populateMailMergeFileName(); changeTab4Control();"/>
 																					</td>
 																					<td>
 																						<input type="button" value="Clear" id="cmdClearFile" name="cmdClearFile" class="btn"
@@ -1150,6 +1148,10 @@
 
 <input type="hidden" id="txtTicker" name="txtTicker" value="0">
 <input type="hidden" id="txtLastKeyFind" name="txtLastKeyFind" value="">
+</div>
+
+<div style='height: 0;width:0; overflow:hidden;'>
+	<input id="cmdGetFilename" name="cmdGetFilename" type="file" />
 </div>
 
 <script type="text/javascript">

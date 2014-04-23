@@ -801,64 +801,53 @@ function absenceBreakdownRefreshTab3Controls() {
 
 }
 
-function saveFile()
-{
-
-    window.dialog.CancelError = true;
-    window.dialog.DialogTitle = "Output Document";
-    window.dialog.Flags = 2621444;
-
-    if (frmAbsenceDefinition.optDefOutputFormat1.checked == true) {
-        //CSV
-        window.dialog.Filter = "Comma Separated Values (*.csv)|*.csv";
-    }
-
-    else if (frmAbsenceDefinition.optDefOutputFormat2.checked == true) {
-        //HTML
-        window.dialog.Filter = "HTML Document (*.htm)|*.htm";
-    }
-
-    else if (frmAbsenceDefinition.optDefOutputFormat3.checked == true) {
-        //WORD
-        //dialog.Filter = "Word Document (*.doc)|*.doc";
-        window.dialog.Filter = frmAbsenceDefinition.txtWordFormats.value;
-        window.dialog.FilterIndex = frmAbsenceDefinition.txtWordFormatDefaultIndex.value;
-    }
-
-    else {
-        //EXCEL
-        //dialog.Filter = "Excel Workbook (*.xls)|*.xls";
-        window.dialog.Filter = frmAbsenceDefinition.txtExcelFormats.value;
-        window.dialog.FilterIndex = frmAbsenceDefinition.txtExcelFormatDefaultIndex.value;
-    }
+function populateAbsenceFileName() {
 
 
+	var sFileName;
+	var dialog = document.getElementById("cmdGetFilename");
 
-    if (frmAbsenceDefinition.txtFilename.value.length == 0) {
-        var sKey = new String("documentspath_");
-        sKey = sKey.concat(frmAbsenceDefinition.txtDatabase.value);
-        var sPath = OpenHR.GetRegistrySetting("HR Pro", "DataPaths", sKey);
-        window.dialog.InitDir = sPath;
-    }
-    else {
-        window.dialog.FileName = frmAbsenceDefinition.txtFilename.value;
-    }
+	if (frmAbsenceDefinition.optDefOutputFormat1.checked == true) {
+		//CSV
+		dialog.accept = "test/csv";
+	}
+	else if (frmAbsenceDefinition.optDefOutputFormat2.checked == true) {
+		//HTML
+		dialog.accept = "text/html";
+	}
+
+	else if (frmAbsenceDefinition.optDefOutputFormat3.checked == true) {
+		//WORD
+		dialog.accept = "application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+	}
+
+	else {
+		//EXCEL
+		dialog.accept = "application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+	}
+
+	if (frmAbsenceDefinition.txtFilename.value.length != 0) {
+		dialog.value = frmAbsenceDefinition.txtFilename.value;
+	}
 
 
-    try {
-        window.dialog.ShowSave();
+	try {
+		dialog.click();
+		sFileName = dialog.value;
 
-        if (window.dialog.FileName.length > 256) {
-            OpenHR.messageBox("Path and file name must not exceed 256 characters in length");
-            return;
-        }
+		if (sFileName.length > 256) {
+			OpenHR.messageBox("Path and file name must not exceed 256 characters in length");
+			return;
+		}
 
-        frmAbsenceDefinition.txtFilename.value = window.dialog.FileName;
+		if (sFileName.length > 0) {
+			frmAbsenceDefinition.txtFilename.value = sFileName;
+		}
 
-    }
-    catch(e) {
-    }
-
+	}
+	catch (e) {
+	}
+	
 }
 
 function absencedef_convertLocaleDateToSQL(psDateString)

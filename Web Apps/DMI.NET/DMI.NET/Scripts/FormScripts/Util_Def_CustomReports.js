@@ -5499,63 +5499,6 @@
 		}
 	}
 
-	function saveFile() {
-		dialog.CancelError = true;
-		dialog.DialogTitle = "Output Document";
-		dialog.Flags = 2621444;
-
-		if (frmDefinition.optOutputFormat1.checked == true) {
-			//CSV
-			dialog.Filter = "Comma Separated Values (*.csv)|*.csv";
-		}
-
-		else if (frmDefinition.optOutputFormat2.checked == true) {
-			//HTML
-			dialog.Filter = "HTML Document (*.htm)|*.htm";
-		}
-
-		else if (frmDefinition.optOutputFormat3.checked == true) {
-			//WORD
-			dialog.Filter = frmDefinition.txtWordFormats.value;
-			dialog.FilterIndex = frmDefinition.txtWordFormatDefaultIndex.value;
-
-		}
-
-		else {
-			//EXCEL
-			dialog.Filter = frmDefinition.txtExcelFormats.value;
-			dialog.FilterIndex = frmDefinition.txtExcelFormatDefaultIndex.value;
-		}
-
-
-		if (frmDefinition.txtFilename.value.length == 0) {
-			sKey = new String("documentspath_");
-			sKey = sKey.concat(frmDefinition.txtDatabase.value);
-			sPath = OpenHR.GetRegistrySetting("HR Pro", "DataPaths", sKey);
-			dialog.InitDir = sPath;
-		}
-		else {
-			dialog.FileName = frmDefinition.txtFilename.value;
-		}
-
-
-		try {
-			dialog.ShowSave();
-
-			if (dialog.FileName.length > 256) {
-				OpenHR.messageBox("Path and file name must not exceed 256 characters in length");
-				return;
-			}
-
-			frmDefinition.txtFilename.value = dialog.FileName;
-
-		}
-		catch (e) {
-		}
-		refreshTab5Controls();
-
-	}
-
 	function selectedColumnParameter(psDefnString, psParameter) {
 		var iCharIndex;
 		var sDefn;

@@ -4,48 +4,10 @@
 <%@ Import Namespace="HR.Intranet.Server" %>
 <%@ Import Namespace="System.Data.SqlClient" %>
 <%@ Import Namespace="System.Data" %>
-<%@ Import Namespace="System.Diagnostics" %>
 
 <script src="<%: Url.LatestContent("~/Scripts/FormScripts/crosstabdef.js")%>" type="text/javascript"></script>
 
 <div <%=session("BodyTag")%>>
-
-<object classid="clsid:F9043C85-F6F2-101A-A3C9-08002B2F49FB"
-	id="dialog"
-	codebase="cabs/comdlg32.cab#Version=1,0,0,0"
-	style="LEFT: 0px; TOP: 0px"
-	viewastext>
-	<param name="_ExtentX" value="847">
-	<param name="_ExtentY" value="847">
-	<param name="_Version" value="393216">
-	<param name="CancelError" value="0">
-	<param name="Color" value="0">
-	<param name="Copies" value="1">
-	<param name="DefaultExt" value="">
-	<param name="DialogTitle" value="">
-	<param name="FileName" value="">
-	<param name="Filter" value="">
-	<param name="FilterIndex" value="0">
-	<param name="Flags" value="0">
-	<param name="FontBold" value="0">
-	<param name="FontItalic" value="0">
-	<param name="FontName" value="">
-	<param name="FontSize" value="8">
-	<param name="FontStrikeThru" value="0">
-	<param name="FontUnderLine" value="0">
-	<param name="FromPage" value="0">
-	<param name="HelpCommand" value="0">
-	<param name="HelpContext" value="0">
-	<param name="HelpFile" value="">
-	<param name="HelpKey" value="">
-	<param name="InitDir" value="">
-	<param name="Max" value="0">
-	<param name="Min" value="0">
-	<param name="MaxFileSize" value="260">
-	<param name="PrinterDefault" value="1">
-	<param name="ToPage" value="0">
-	<param name="Orientation" value="1">
-</object>
 
 <form id="frmTables" style="visibility: hidden; display: none">
 		<%
@@ -1002,13 +964,13 @@
 																				<td></td>
 																				<td></td>
 																				<td align="left" nowrap>File name : </td>
-																				<td>
+																				<td>																																								
 																					<input id="txtFilename" name="txtFilename"
 																						style="width: 85%;"
 																						class="text textdisabled" disabled="disabled" tabindex="-1">
-																				
+
 																					<input id="cmdFilename" name="cmdFilename" class="btn" type="button" value='...' disabled="disabled"
-																						onclick="saveFile(); changeTab3Control();" style="width: 12%;" />
+																						onclick="populateFileName(frmDefinition); changeTab3Control();" style="width: 12%;" />
 																				</td>
                                                                                 <td></td>
 																				<td></td>
@@ -1321,6 +1283,10 @@
 
 	<input type='hidden' id="txtTicker" name="txtTicker" value="0">
 	<input type='hidden' id="txtLastKeyFind" name="txtLastKeyFind" value="">
+</div>
+
+<div style='height: 0;width:0; overflow:hidden;'>
+	<input id="cmdGetFilename" name="cmdGetFilename" type="file" />
 </div>
 
 <script type="text/javascript">

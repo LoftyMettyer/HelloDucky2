@@ -892,7 +892,7 @@
 														</td>
 														<td style="width: 5px;padding-left: 2px">
 															<input id="cmdFilename" name="cmdFilename" class="btn" type="button" value="..."
-																onclick="saveFile();" />
+																onclick="populateAbsenceFileName(frmAbsenceDefinition);" />
 														</td>
 													</tr>
 
@@ -1060,6 +1060,10 @@
 	<input type="hidden" id="recSelCurrentID" name="recSelCurrentID" value='<%=Session("optionRecordID")%>'>
 	<input type="hidden" id="baseHidden" name="baseHidden" value="N">
 </form>
+
+<div style='height: 0;width:0; overflow:hidden;'>
+	<input id="cmdGetFilename" name="cmdGetFilename" type="file" />
+</div>
 
 <form action="default_submit" method="post" id="frmGoto" name="frmGoto" style="visibility: hidden; display: none">
 	<%Html.RenderPartial("~/Views/Shared/gotoWork.ascx")%>

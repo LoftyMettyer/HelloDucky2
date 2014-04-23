@@ -161,50 +161,29 @@ function refreshAvailableColumns() {
 				loadAvailableColumns();
 		}
 }
-function TemplateSelect() {
-	var sPath = "";
-	if (frmDefinition.txtTemplate.value.length == 0) {
-		var sKey = new String("documentspath_");
-		sKey = sKey.concat(OpenHR.getForm("menuframe", "frmMenuInfo").txtDatabase.value);
-		sPath = OpenHR.GetRegistrySetting("HR Pro", "DataPaths", sKey);
-		dialog.InitDir = sPath;
-	}
-	else {
-		dialog.FileName = frmDefinition.txtTemplate.value;
-		//sPath = new String(frmDefinition.txtTemplate.value);
-	}
 
-	dialog.CancelError = true;
-	dialog.DialogTitle = "Mail Merge Template";
-	dialog.Filter = "Word Template (*.dot;*.dotx;*.doc;*.docx)|*.dot;*.dotx;*.doc;*.docx";
-	dialog.Flags = 2621444;
+function TemplateSelect() {
+	
+	var sFileName;
+	var dialog = document.getElementById("cmdGetFilename");
+
+	dialog.accept = "application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.document";
 
 	try {
-		dialog.ShowOpen();
+		dialog.click();
+		sFileName = dialog.value;
+
+		if (sFileName.length > 256) {
+			OpenHR.messageBox("Path and file name must not exceed 256 characters in length");
+			return;
+		}
 	}
 	catch (e) {
 	}
-	if (dialog.FileName != "") {
-		//if (sPath.length > 0) {
-		if (OpenHR.ValidateFilePath(sPath) == false) {
-			{
-				var iResponse = OpenHR.messageBox("Template file does not exist.  Create it now?", 36);
-				if (iResponse == 6) {
-					frmDefinition.txtTemplate.value = dialog.FileName;
-					button_disable(frmDefinition.cmdTemplateClear, false);
 
-					try {
-						var sOfficeSaveAsValues = '<%=session("OfficeSaveAsValues")%>';
-						OpenHR.SaveAsValues = sOfficeSaveAsValues;
-						MM_WORD_CreateTemplateFile(dialog.FileName);
-					} catch (e) {
-					}
-				}
-			}
-		} else {
-			frmDefinition.txtTemplate.value = dialog.FileName;
-			button_disable(frmDefinition.cmdTemplateClear, false);
-		}
+	if (sFileName != "") {
+		frmDefinition.txtTemplate.value = sFileName;
+		button_disable(frmDefinition.cmdTemplateClear, false);
 	}
 
 	frmUseful.txtChanged.value = 1;
@@ -3176,28 +3155,33 @@ function loadSortDefinition() {
 				frmUseful.txtSortLoaded.value = 1;
 		}
 }
-function saveFile() {
-		window.dialog.CancelError = true;
-		window.dialog.FileName = frmDefinition.txtSaveFile.value;
-		window.dialog.DialogTitle = "Mail Merge Output Document";
-		window.dialog.Filter = frmDefinition.txtWordFormats.value;
-		window.dialog.FilterIndex = frmDefinition.txtWordFormatDefaultIndex.value;
-		window.dialog.Flags = 2621446;
 
-		try {
-				window.dialog.ShowSave();
-		} catch (e) {
+function populateMailMergeFileName() {
+	
+	var sFileName;
+	var dialog = document.getElementById("cmdGetFilename");
+
+	dialog.accept = "application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+
+	try {
+		dialog.click();
+		sFileName = dialog.value;
+
+		if (sFileName.length > 256) {
+			OpenHR.messageBox("Path and file name must not exceed 256 characters in length");
+			return;
 		}
 
-		if (window.dialog.FileName.length > 256) {
-				OpenHR.messageBox("Path and file name must not exceed 256 characters in length");
-				return;
+		if (sFileName.length > 0) {
+			frmDefinition.txtSaveFile.value = sFileName;
 		}
 
-		frmDefinition.txtSaveFile.value = window.dialog.FileName;
-		frmUseful.txtChanged.value = 1;
-		refreshTab4Controls();
+	}
+	catch (e) {
+	}		
+
 }
+
 function openDialog(pDestination, pWidth, pHeight, psResizable, psScroll) {
 		var dlgwinprops = "center:yes;" +
 				"dialogHeight:" + pHeight + "px;" +

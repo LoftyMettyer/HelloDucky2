@@ -7,8 +7,6 @@
 
 <script src="<%: Url.LatestContent("~/bundles/utilities_customreports")%>" type="text/javascript"></script>
 
-<%Html.RenderPartial("Util_Def_CustomReports/dialog")%>
-
 <div <%=session("BodyTag")%>>
 	<form id="frmDefinition" name="frmDefinition">
 
@@ -1250,7 +1248,7 @@
 																				</td>
 																				<td width="25">
 																					<input id="cmdFilename" name="cmdFilename" class="btn" type="button" value='...' disabled="disabled"
-																						onclick="saveFile(); changeTab5Control();" />
+																						onclick="populateFileName(frmDefinition); changeTab5Control();" />
 																				</td>
 																				<td></td>
 																			</tr>
@@ -1862,6 +1860,10 @@
 
 	<input type='hidden' id="txtTicker" name="txtTicker" value="0">
 	<input type='hidden' id="txtLastKeyFind" name="txtLastKeyFind" value="">
+
+	<div style='height: 0;width:0; overflow:hidden;'>
+		<input id="cmdGetFilename" name="cmdGetFilename" type="file" />
+	</div>
 
 	<%Html.RenderPartial("Util_Def_CustomReports/grdColProps")%>
 <%--</div>--%>
