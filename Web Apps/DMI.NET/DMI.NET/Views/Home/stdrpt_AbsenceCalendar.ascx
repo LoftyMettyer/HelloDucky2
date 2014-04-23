@@ -139,8 +139,7 @@
 			}
 
 		function PrintGrid() {
-
-			var divToPrint = document.childNodes.item('optionframe').innerHTML;
+			var divToPrint = $("#optionframe").html();
 			var newWin = window.open("", "_blank", 'toolbar=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=1, height=1, visible=none', "");
 						
 			newWin.document.write("<link href=\"" + window.ROOT + "Content/OpenHR.css" + "\" rel=\"stylesheet\" />");
@@ -150,6 +149,16 @@
 			var footstr = "</body>";
 
 			newWin.document.write(headstr + divToPrint + footstr);
+
+			//Hide buttons so they don't show in the printout
+			var elementToHide = newWin.document.getElementById("cmdPrint");
+			elementToHide.style.display = "none";
+			elementToHide = newWin.document.getElementById("cmdOK");
+			elementToHide.style.display = "none";
+			elementToHide = newWin.document.getElementById("cmdPreviousYear");
+			elementToHide.style.display = "none";
+			elementToHide = newWin.document.getElementById("cmdNextYear");
+			elementToHide.style.display = "none";
 			newWin.document.close();
 			newWin.focus();
 			newWin.print();
