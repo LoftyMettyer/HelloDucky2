@@ -1,5 +1,5 @@
 VERSION 5.00
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.Ocx"
+Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "COMCTL32.OCX"
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
 Begin VB.Form frmEmailQueue 
    Caption         =   "Email Queue"
@@ -775,14 +775,14 @@ Private Function RefreshGrid() As Boolean
   With cboTitle
     If .ListIndex > 0 Then
       strWhere = IIf(strWhere <> "", strWhere & " AND ", "") & _
-          "isnull(w.name+' (Workflow)', isnull(l.Title, CASE WHEN q.UserName = 'OpenHR Mobile' THEN q.Subject WHEN q.UserName = 'OpenHR Self-service Intranet' THEN q.Subject ELSE '' END)) = '" & Replace(.Text, "'", "''") & "'"
+          "isnull(w.name+' (Workflow)', isnull(l.Title, CASE WHEN q.UserName = 'OpenHR Mobile' THEN q.Subject WHEN q.UserName = 'OpenHR Web' THEN q.Subject ELSE '' END)) = '" & Replace(.Text, "'", "''") & "'"
     End If
   End With
   
   With cboRecDesc
     If .ListIndex > 0 Then
       strWhere = IIf(strWhere <> "", strWhere & " AND ", "") & _
-          "CASE WHEN q.UserName = 'OpenHR Self-service Intranet' THEN q.RepTo ELSE q.RecordDesc END = '" & Replace(.Text, "'", "''") & "'"
+          "CASE WHEN q.UserName = 'OpenHR Web' THEN q.RepTo ELSE q.RecordDesc END = '" & Replace(.Text, "'", "''") & "'"
                     
     End If
   End With
@@ -803,11 +803,9 @@ Private Function RefreshGrid() As Boolean
         "q.DateSent IS NOT NULL"
   End Select
 
-' ' CASE WHEN q.UserName = 'OpenHR Self-service Intranet' THEN q.RepTo ELSE isnull(q.RecordDesc,'') END as [RecDesc]     ,
-
   pstrSQL = _
-        "SELECT isnull(w.name+' (Workflow)',isnull(l.Title,CASE WHEN q.UserName = 'OpenHR Mobile' THEN q.Subject WHEN q.UserName = 'OpenHR Self-service Intranet' THEN q.Subject ELSE '' END)) as [QueueTitle]" & _
-        "     , CASE WHEN q.UserName = 'OpenHR Self-service Intranet' THEN q.RepTo ELSE isnull(q.RecordDesc,'') END as [RecDesc]" & _
+        "SELECT isnull(w.name+' (Workflow)',isnull(l.Title,CASE WHEN q.UserName = 'OpenHR Mobile' THEN q.Subject WHEN q.UserName = 'OpenHR Web' THEN q.Subject ELSE '' END)) as [QueueTitle]" & _
+        "     , CASE WHEN q.UserName = 'OpenHR Web' THEN q.RepTo ELSE isnull(q.RecordDesc,'') END as [RecDesc]" & _
         "     , isnull(t.TableName,'') as [TableName]" & _
         "     , case when q.WorkflowInstanceID > 0 or q.columnID IS NULL then '' else isnull(c.ColumnName,'<Multiple Columns>') end as [ColumnName]" & _
         "     , case when q.WorkflowInstanceID > 0 or q.columnID IS NULL then '' else isnull(q.ColumnValue,'<Multiple Values>') end as [ColumnValue]" & _
@@ -1092,7 +1090,7 @@ Private Sub PopulateCombos()
   Dim strSQL As String
   
 
-  strSQL = "SELECT DISTINCT isnull(w.name+' (Workflow)',isnull(l.Title,CASE WHEN q.UserName = 'OpenHR  Mobile' THEN q.Subject WHEN q.UserName = 'OpenHR Self-service Intranet' THEN q.Subject ELSE '' END)) " & _
+  strSQL = "SELECT DISTINCT isnull(w.name+' (Workflow)',isnull(l.Title,CASE WHEN q.UserName = 'OpenHR  Mobile' THEN q.Subject WHEN q.UserName = 'OpenHR Web' THEN q.Subject ELSE '' END)) " & _
         "FROM ASRSysEmailQueue q " & _
         "LEFT OUTER JOIN ASRSysEmailLinks l ON q.LinkID = l.LinkID " & _
         "LEFT OUTER JOIN ASRSysWorkflowInstances wi ON q.workflowInstanceID = wi.ID " & _
@@ -1101,7 +1099,7 @@ Private Sub PopulateCombos()
   PopulateCombo lblTitle, cboTitle, strSQL
   
   ' SELECT DISTINCT isnull(q.RecordDesc,'')
-  strSQL = "SELECT DISTINCT (CASE WHEN q.username =  'OpenHR Self-service Intranet' THEN q.RepTo ELSE isnull(q.RecordDesc,'') END) " & _
+  strSQL = "SELECT DISTINCT (CASE WHEN q.username =  'OpenHR Web' THEN q.RepTo ELSE isnull(q.RecordDesc,'') END) " & _
         "FROM ASRSysEmailQueue q " & _
         "ORDER BY 1"
   PopulateCombo lblRecDesc, cboRecDesc, strSQL
