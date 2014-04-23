@@ -1186,7 +1186,7 @@ function saveFile() {
 				sKey = new String("documentspath_");
 				sKey = sKey.concat(frmDefinition.txtDatabase.value);
 				//TODO
-				//sPath = window.parent.frames("menuframe").ASRIntranetFunctions.GetRegistrySetting("HR Pro", "DataPaths", sKey);
+				var sPath = OpenHR.GetRegistrySetting("HR Pro", "DataPaths", sKey);
 				dialog.InitDir = sPath;
 		}
 		else {
