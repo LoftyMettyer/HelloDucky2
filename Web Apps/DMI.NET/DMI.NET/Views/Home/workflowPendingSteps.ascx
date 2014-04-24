@@ -31,6 +31,12 @@
 		});
 		//Select the first row
 		refreshControls();
+		debugger;
+		if (window.currentLayout == "tiles") {
+			//Hide the Home and Find buttons on this screen. JIRA-4028
+			$('#toolbarHome').css('display', 'none');
+			$('#toolbarWFPendingStepsFind').css('display', 'none');
+		};
 
 		//On clicking "Refresh",
 		$("#mnutoolRefreshWFPendingStepsFind").click(function () {
