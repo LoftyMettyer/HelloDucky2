@@ -63,30 +63,30 @@
 			If CStr(Session("OnlyMine")) = "" Then Session("OnlyMine") = False
 		End If
 	End If
-	
-Session("fromMenu") = 0
 
-	If Session("singleRecordID") < 1 Then
-		If Not String.IsNullOrEmpty(Request.Form("txtTableID")) Then
-			iBaseTableID = Request.Form("txtTableID")
+	If Session("fromMenu") = 0 Then
+		If Session("singleRecordID") < 1 Then
+			If Not String.IsNullOrEmpty(Request.Form("txtTableID")) Then
+				iBaseTableID = Request.Form("txtTableID")
+			Else
+
+				If Len(Session("tableID")) > 0 Then
+					If CLng(Session("tableID")) > 0 Then
+						iBaseTableID = Session("tableID")
+						fGotId = True
+					End If
+				End If
+
+				If fGotId = False Then
+					If (Session("singleRecordID") > 0) Then
+						iBaseTableID = Session("Personnel_EmpTableID")
+					End If
+				End If
+			End If
 		Else
-
 			If Len(Session("tableID")) > 0 Then
-				If CLng(Session("tableID")) > 0 Then
-					iBaseTableID = Session("tableID")
-					fGotId = True
-				End If
+				iBaseTableID = Session("tableID")
 			End If
-
-			If fGotId = False Then
-				If (Session("singleRecordID") > 0) Then
-					iBaseTableID = Session("Personnel_EmpTableID")
-				End If
-			End If
-		End If
-	Else
-		If Len(Session("tableID")) > 0 Then
-			iBaseTableID = Session("tableID")
 		End If
 	End If
 	
