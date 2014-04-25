@@ -145,10 +145,16 @@
 
 	function outputOptionsPrintClick() {
 		//Creates a new window, copies the report grid to it, formats the grid and sends to print.
-		var divToPrint = document.getElementById('reportworkframe');
+
+		// Only custom reports have print functionality so I have selected in a bit closer here to make the report tidier re centering etc
+		// If this gets reinstated applpication wide you may need to isolate this call for 
+		// Custom Reports and reinstate the line commmented below //var divToPrint = document.getElementById('reportworkframe');
+		//var divToPrint = document.getElementById('reportworkframe');
+		var divToPrint = document.getElementById('gview_gridReportData');
+		
 		var ReportTitleFromTitleBar = $(".popup").dialog('option', 'title');
 		var newWin = window.open("", "_blank", 'toolbar=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=1, height=1, visible=none', "");
-
+		
 		newWin.document.write('<sty');
 		newWin.document.write('le>.ui-jqgrid-bdiv {height:auto!important;}');
 		newWin.document.write('body {font-family:verdana;}');
@@ -157,7 +163,7 @@
 		newWin.document.write('tr.jqgrow>td {border-bottom: 1px solid lightgray; padding-right: 5px;}');
 		newWin.document.write('</sty');
 		newWin.document.write('le>');
-		newWin.document.write("<h3>" + ReportTitleFromTitleBar + "</h3");
+		newWin.document.write("<h3>" + ReportTitleFromTitleBar + "</h3><br/>");
 		newWin.document.write(divToPrint.innerHTML);
 		newWin.document.write('<scri');
 		newWin.document.write('pt type="text/javascript">');
@@ -167,6 +173,7 @@
 		newWin.document.write("	}");
 		newWin.document.write('</scri');
 		newWin.document.write('pt>');
+		
 		newWin.document.close();
 		newWin.focus();
 		newWin.print();
