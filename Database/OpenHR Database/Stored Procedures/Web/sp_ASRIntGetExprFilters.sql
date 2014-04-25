@@ -8,9 +8,33 @@ BEGIN
 	SET NOCOUNT ON;
 
 	/* Return a recordset of the filter definitions. */
-	DECLARE @sUserName	sysname;
+	DECLARE	 @sUserName SYSNAME,
+			 @fSysSecMgr BIT,
+			 @sRoleName VARCHAR(255),
+			 @sActualUserName	VARCHAR(250),
+			 @iActualUserGroupID INTEGER
 
 	SET @sUserName = SYSTEM_USER;
+	
+	--Determine if user is an admin
+	EXEC [dbo].[spASRIntGetActualUserDetails]
+			@sActualUserName OUTPUT,
+			@sRoleName OUTPUT,
+			@iActualUserGroupID OUTPUT;
+
+	SELECT @fSysSecMgr = 
+			CASE
+				WHEN (SELECT count(*)
+					FROM ASRSysGroupPermissions
+					INNER JOIN ASRSysPermissionItems ON (ASRSysGroupPermissions.itemID  = ASRSysPermissionItems.itemID
+						AND (ASRSysPermissionItems.itemKey = 'SYSTEMMANAGER'
+						OR ASRSysPermissionItems.itemKey = 'SECURITYMANAGER'))
+					INNER JOIN ASRSysPermissionCategories ON (ASRSysPermissionItems.categoryID = ASRSysPermissionCategories.categoryID
+						AND ASRSysPermissionCategories.categoryKey = 'MODULEACCESS')
+					WHERE ASRSysGroupPermissions.groupname = @sRoleName
+						AND ASRSysGroupPermissions.permitted = 1) > 0 THEN 1
+				ELSE 0
+			END;
 
 	SELECT name + char(9) +
 		convert(varchar(255), exprID) + char(9) +
@@ -21,6 +45,6 @@ BEGIN
 		AND type = 11
 		AND TableID = @piBaseTableID
 		AND parentComponentID = 0
-		AND (Username = @sUserName OR access <> 'HD')
+		AND (Username = @sUserName OR access <> 'HD' OR @fSysSecMgr = 1)
 	ORDER BY name;
 END
