@@ -6,6 +6,12 @@
 
 <script src="<%: Url.LatestContent("~/bundles/utilities_picklists")%>" type="text/javascript"></script>
 
+<%--licence manager reference for activeX--%>
+<object classid="clsid:5220cb21-c88d-11cf-b347-00aa00a28331"
+	id="Microsoft_Licensed_Class_Manager_1_0"
+	viewastext>
+	<param name="LPKPath" value="<%: Url.Content("~/lpks/ssmain.lpk")%>">
+</object>
 
 <form id="frmDefinition">
 	<table align="center" class="outline" cellpadding="5" cellspacing="0" width="100%" height="100%">

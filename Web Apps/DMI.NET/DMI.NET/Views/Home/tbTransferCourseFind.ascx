@@ -4,6 +4,13 @@
 <%@ Import Namespace="System.Data" %>
 <%@ Import Namespace="System.Data.SqlClient" %>
 
+<%--licence manager reference for activeX--%>
+<object classid="clsid:5220cb21-c88d-11cf-b347-00aa00a28331"
+	id="Microsoft_Licensed_Class_Manager_1_0"
+	viewastext>
+	<param name="LPKPath" value="<%: Url.Content("~/lpks/ssmain.lpk")%>">
+</object>
+
 <script src="<%: Url.LatestContent("~/Scripts/ctl_SetFont.js")%>" type="text/javascript"></script>
 
 <script type="text/javascript">	
