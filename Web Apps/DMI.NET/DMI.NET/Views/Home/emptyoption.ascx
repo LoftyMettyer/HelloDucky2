@@ -433,7 +433,7 @@
 	Response.Write("<input type='hidden' id='txtValue' name='txtValue' value='" & Replace(Session("optionLookupValue"), """", "&quot;") & "'>" & vbCrLf)
 	Response.Write("<input type='hidden' id='txtFile' name='txtFile' value='" & Replace(Session("optionFile"), """", "&quot;") & "'>" & vbCrLf)
 	Response.Write("<input type='hidden' id='txtFileValue' name='txtFileValue' value='" & Replace(Session("optionFileValue"), """", "&quot;") & "'>" & vbCrLf)
-	Response.Write("<input type='hidden' id='txtResultCode' name='txtResultCode' value='" & Session("TBResultCode") & "'>" & vbCrLf)
+	Response.Write("<input type='hidden' id='txtResultCode' name='txtResultCode' value='" & Replace(Session("TBResultCode"), "'", "&#39;") & "'>" & vbCrLf)
 	Response.Write("<input type='hidden' id='txtPreReqFails' name='txtPreReqFails' value='" & Replace(Session("PreReqFails"), """", "&quot;") & "'>" & vbCrLf)
 	Response.Write("<input type='hidden' id='txtUnAvailFails' name='txtUnAvailFails' value='" & Replace(Session("UnAvailFails"), """", "&quot;") & "'>" & vbCrLf)
 	Response.Write("<input type='hidden' id='txtOverlapFails' name='txtOverlapFails' value='" & Replace(Session("OverlapFails"), """", "&quot;") & "'>" & vbCrLf)
