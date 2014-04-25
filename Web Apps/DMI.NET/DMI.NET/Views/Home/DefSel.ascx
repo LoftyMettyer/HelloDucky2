@@ -113,701 +113,721 @@
 
 <script type="text/javascript">
 
-    //var fFromMenu = false;
-    function ssOleDBGridDefSelRecords_dblClick() {
+		//var fFromMenu = false;
+		function ssOleDBGridDefSelRecords_dblClick() {
 
-        var frmDefSel = document.getElementById("frmDefSel");
+				var frmDefSel = document.getElementById("frmDefSel");
 
-        if ((frmDefSel.utiltype.value == 10) || (frmDefSel.utiltype.value == 11) || (frmDefSel.utiltype.value == 12)) {
-	        menu_MenuClick('mnutoolEditToolsFind');
+				if ((frmDefSel.utiltype.value == 10) || (frmDefSel.utiltype.value == 11) || (frmDefSel.utiltype.value == 12)) {
+					menu_MenuClick('mnutoolEditToolsFind');
 
-        }
-        else {
-            // DblClick triggers Run after prompting for confirmation. 
-            if (frmDefSel.cmdRun.disabled == true) {
-                return (false);
-            }
+				}
+				else {
+						// DblClick triggers Run after prompting for confirmation. 
+						if (frmDefSel.cmdRun.disabled == true) {
+								return (false);
+						}
 
-            var answer = 0;
+						var answer = 0;
 
-            if (frmDefSel.utiltype.value == 1) {
-                answer = OpenHR.messageBox("Are you sure you want to run the '" + $.trim(frmDefSel.utilname.value) + "' Cross Tab ?", 36, "Confirmation...");
-            }
+						if (frmDefSel.utiltype.value == 1) {
+								answer = OpenHR.messageBox("Are you sure you want to run the '" + $.trim(frmDefSel.utilname.value) + "' Cross Tab ?", 36, "Confirmation...");
+						}
 
-            if (frmDefSel.utiltype.value == 2) {
-                answer = OpenHR.messageBox("Are you sure you want to run the '" + $.trim(frmDefSel.utilname.value) + "' Custom Report ?", 36, "Confirmation...");
-            }
-            if (frmDefSel.utiltype.value == 9) {
-                answer = OpenHR.messageBox("Are you sure you want to run the '" + $.trim(frmDefSel.utilname.value) + "' Mail Merge ?", 36, "Confirmation...");
-            }
-            if (frmDefSel.utiltype.value == 17) {
-                answer = OpenHR.messageBox("Are you sure you want to run the '" + $.trim(frmDefSel.utilname.value) + "' Calendar Report ?", 36, "Confirmation...");
-            }
-            if (frmDefSel.utiltype.value == 25) {
-                answer = OpenHR.messageBox("Are you sure you want to run the '" + $.trim(frmDefSel.utilname.value) + "' Workflow ?", 36, "Confirmation...");
-            }
+						if (frmDefSel.utiltype.value == 2) {
+								answer = OpenHR.messageBox("Are you sure you want to run the '" + $.trim(frmDefSel.utilname.value) + "' Custom Report ?", 36, "Confirmation...");
+						}
+						if (frmDefSel.utiltype.value == 9) {
+								answer = OpenHR.messageBox("Are you sure you want to run the '" + $.trim(frmDefSel.utilname.value) + "' Mail Merge ?", 36, "Confirmation...");
+						}
+						if (frmDefSel.utiltype.value == 17) {
+								answer = OpenHR.messageBox("Are you sure you want to run the '" + $.trim(frmDefSel.utilname.value) + "' Calendar Report ?", 36, "Confirmation...");
+						}
+						if (frmDefSel.utiltype.value == 25) {
+								answer = OpenHR.messageBox("Are you sure you want to run the '" + $.trim(frmDefSel.utilname.value) + "' Workflow ?", 36, "Confirmation...");
+						}
 
-            if (answer == 6) {
-                setrun();
-            }
-        }
-        return false;
-    }
-
-    function ssOleDBGridDefSelRecords_rowcolchange() {
-        var frmDefSel = document.getElementById("frmDefSel");
-        var frmpermissions = document.getElementById("frmpermissions");
-
-        // Populate the textbox with the definitions description
-        frmDefSel.txtDescription.value = selectedRecordDetails("description");
-
-        // Populate the hidden fields with the selected utils information       
-        frmDefSel.utilid.value = $("#DefSelRecords").getGridParam('selrow');
-        frmDefSel.utilname.value = selectedRecordDetails("Name");
-
-        // Check for RO access and set EDIT/VIEW caption as appropriate
-        var username = selectedRecordDetails("Username");
-        var access = selectedRecordDetails("Access");
-
-        button_disable(frmDefSel.cmdRun, (frmpermissions.grantrun.value == 0));
-        button_disable(frmDefSel.cmdNew, (frmpermissions.grantnew.value == 0));
-        button_disable(frmDefSel.cmdCopy, (frmpermissions.grantnew.value == 0));
-        button_disable(frmDefSel.cmdEdit, (frmpermissions.grantedit.value == 0));
-
-        if (username != frmDefSel.txtusername.value) {
-            if (access == 'ro') {
-                frmDefSel.cmdEdit.value = 'View';
-                button_disable(frmDefSel.cmdDelete, true);
-            } else {
-                frmDefSel.cmdEdit.value = 'Edit';
-
-                if (frmpermissions.grantdelete.value == 1) {
-                    button_disable(frmDefSel.cmdDelete, false);
-                } else {
-                    button_disable(frmDefSel.cmdDelete, true);
-                }
-            }
-        } else {
-            frmDefSel.cmdEdit.value = 'Edit';
-
-            if (frmpermissions.grantdelete.value == 1) {
-                button_disable(frmDefSel.cmdDelete, false);
-            } else {
-                button_disable(frmDefSel.cmdDelete, true);
-            }
-        }
-        //fFromMenu = true;
-        refreshControls();
-    }
-
-    /* Return the value of a column selected in the find form. */
-    function selectedRecordDetails(columnName) {
-
-        var iRecordId;
-        var rowId;
-
-        rowId = $("#DefSelRecords").getGridParam('selrow');
-        iRecordId = $("#DefSelRecords").find("#" + rowId + " #" + columnName).val();
-
-        return (iRecordId);
-    }
-
-    function defsel_window_onload() {
-    		var frmDefSel = document.getElementById('frmDefSel');
-    	
-        // Expand the option frame and hide the work frame.
-        if (frmDefSel.txtSingleRecordID.value > 0) {
-            $("#optionframe").attr("data-framesource", "DEFSEL");
-            $("#workframe").hide();
-            $("#optionframe").show();
-        } else {
-            $("#workframe").attr("data-framesource", "DEFSEL");
-            $("#optionframe").hide();
-            $("#workframe").show();
-        }
-
-        tableToGrid("#DefSelRecords", {
-            onSelectRow: function (rowID) {
-                ssOleDBGridDefSelRecords_rowcolchange();
-            },
-            ondblClickRow: function (rowID) {
-                ssOleDBGridDefSelRecords_dblClick();
-            },
-            cmTemplate: {sortable:false},
-            ignoreCase: true,
-            rowNum: 1000    //TODO set this to blocksize...
-        });
-
-        $("#DefSelRecords").jqGrid('bindKeys', {
-            "onEnter": function (rowid) {
-                ssOleDBGridDefSelRecords_dblClick();
-            }
-        });
-
-        $("#findGridRow").height("60%");
-        $(window).bind('resize', function () {
-            $("#DefSelRecords").setGridWidth($('#findGridRow').width(), true);
-            $("#DefSelRecords").setGridHeight($("#findGridRow").height(), true);
-        }).trigger('resize');
-
-        $('#DefSelRecords').hideCol("description");
-        $('#DefSelRecords').hideCol("Username");
-        $('#DefSelRecords').hideCol("Access");
-        $('#DefSelRecords').hideCol("ID");
-
-        $("#DefSelRecords").setGridHeight($("#findGridRow").height());
-        $("#DefSelRecords").setGridWidth($("#findGridRow").width());
-
-        $("#DefSelRecords").closest('.ui-jqgrid-bdiv').width($("#DefSelRecords").closest('.ui-jqgrid-bdiv').width() + 1);
-
-        frmDefSel.cmdCancel.focus();
-
-        refreshControls();
-
-        //If the table is empty disable Copy, Edit, Delete and Properties buttons
-        if ($('#DefSelRecordsCount').val() == 0) {
-            menu_toolbarEnableItem("mnutoolCopyToolsFind", false);
-            menu_toolbarEnableItem("mnutoolEditToolsFind", false);
-            menu_toolbarEnableItem("mnutoolDeleteToolsFind", false);
-            menu_toolbarEnableItem("mnutoolPropertiesToolsFind", false);
-        }
-
-        if (rowCount() > 0) {
-
-            var fFromMenu = (Number(frmDefSel.txtSingleRecordID.value) <= 0);
-            var gotoID;
-
-            if (fFromMenu == true) {
-                gotoID = $("#lastSelectedID")[0].value;
-                if (Number(gotoID) == 0) gotoID = $("#DefSelRecords").getDataIDs()[0];
-            } else {
-                gotoID = $("#DefSelRecords").getDataIDs()[0];
-            }
-            $("#DefSelRecords").setSelection(gotoID);
-        }
-
-    }
-
-    function rowCount() {
-        return $("#DefSelRecords tr").length - 1;
-    }
-
-    function disableNonDefselTabs() {
-        $("#toolbarRecordFind").parent().hide();
-        $("#toolbarRecord").parent().hide();
-        $("#toolbarRecordAbsence").parent().hide();
-        $("#toolbarRecordQuickFind").parent().hide();
-        $("#toolbarRecordSortOrder").parent().hide();
-        $("#toolbarRecordFilter").parent().hide();
-        $("#toolbarRecordMailMerge").parent().hide();
-        //$("#toolbarReportFind").hide();
-        $("#toolbarReportNewEditCopy").parent().hide();
-        $("#toolbarReportRun").parent().hide();
-        //$("#toolbarUtilitiesFind").hide();
-        $("#toolbarUtilitiesNewEditCopy").parent().hide();
-        //$("#toolbarToolsFind").hide();
-        //$("#toolbarEventLogFind").hide();
-        $("#toolbarEventLogView").parent().hide();
-        //$("#toolbarWFPendingStepsFind").hide();
-        $("#toolbarAdminConfig").parent().hide();
-    }
-
-    function refreshControls() {
-        //show the Defsel-Find menu block.
-        //$("#mnuSectionUtilities").show();
-        frmDefSel = document.getElementById('frmDefSel');
-       
-
-        disableNonDefselTabs();
-
-        //reset utilities tab
-        menu_setVisibleMenuItem("mnutoolNewUtilitiesFind", true);
-        menu_setVisibleMenuItem("mnutoolCopyUtilitiesFind", true);
-        menu_setVisibleMenuItem("mnutoolEditUtilitiesFind", true);
-        menu_setVisibleMenuItem("mnutoolDeleteUtilitiesFind", true);
-        menu_setVisibleMenuItem("mnutoolPropertiesUtilitiesFind", true);
-        menu_setVisibleMenuItem("mnutoolRunUtilitiesFind", true);
-        var fFromMenu = (Number(frmDefSel.txtSingleRecordID.value) <= 0);
-        var fHasRows = (rowCount() > 0);
-
-
-        var IsNewPermitted = ($("#grantnew")[0].value > 0);
-        var IsEditPermitted = ($("#grantedit")[0].value > 0);
-        var IsViewPermitted = ($("#grantview")[0].value > 0);
-        var IsDeletePermitted = ($("#grantdelete")[0].value > 0);
-        var IsRunPermitted = ($("#grantrun")[0].value > 0);
-
-        switch ('<%=Session("defseltype")%>') {
-		    case '0':  // "BatchJobs"
-		        break;
-		    case '1':  // "CrossTabs"
-		        // Hide the remaining tabs
-		        $("#toolbarUtilitiesFind").parent().hide();
-		        $("#toolbarToolsFind").parent().hide();
-		        $("#toolbarEventLogFind").parent().hide();
-		        $("#toolbarWFPendingStepsFind").parent().hide();
-		        // Enable the buttons
-		        menu_toolbarEnableItem("mnutoolNewReportFind", IsNewPermitted && fFromMenu);
-		        menu_setVisibleMenuItem("mnutoolNewReportFind", true);
-		        menu_toolbarEnableItem("mnutoolCopyReportFind", fHasRows && IsNewPermitted && fFromMenu);
-		        menu_setVisibleMenuItem("mnutoolCopyReportFind", true);
-		        menu_toolbarEnableItem("mnutoolEditReportFind", fHasRows && (IsEditPermitted || IsViewPermitted) && fFromMenu);
-		        menu_setVisibleMenuItem("mnutoolEditReportFind", true);
-		        menu_toolbarEnableItem("mnutoolDeleteReportFind", fHasRows && IsDeletePermitted && fFromMenu);
-		        menu_setVisibleMenuItem("mnutoolDeleteReportFind", true);
-		        menu_toolbarEnableItem("mnutoolPropertiesReportFind", fHasRows && fFromMenu);
-		        menu_setVisibleMenuItem("mnutoolPropertiesReportFind", true);
-		        menu_toolbarEnableItem("mnutoolRunReportFind", fHasRows && IsRunPermitted && fFromMenu);
-		    		// Only display the 'close' button for defsel when called from rec edit...
-		        menu_setVisibleMenuItem('mnutoolCloseReportFind', !fFromMenu);
-		        menu_toolbarEnableItem('mnutoolCloseReportFind', !fFromMenu);
-		    		// Show and select the tab
-		        $("#toolbarReportFind").parent().show();
-		        $("#toolbarReportFind").click();
-		        break;
-		    case '2':  // "CustomReports"
-
-		        // Hide the remaining tabs
-		        $("#toolbarUtilitiesFind").parent().hide();
-		        $("#toolbarToolsFind").parent().hide();
-		        $("#toolbarEventLogFind").parent().hide();
-		        $("#toolbarWFPendingStepsFind").parent().hide();
-		    		// Enable the buttons
-						menu_toolbarEnableItem("mnutoolNewReportFind", IsNewPermitted && fFromMenu);
-		        menu_setVisibleMenuItem("mnutoolNewReportFind", true);
-		        menu_toolbarEnableItem("mnutoolCopyReportFind", fHasRows && IsNewPermitted && fFromMenu);
-		        menu_setVisibleMenuItem("mnutoolCopyReportFind", true);
-		        menu_toolbarEnableItem("mnutoolEditReportFind", fHasRows && (IsEditPermitted || IsViewPermitted) && fFromMenu);
-		        menu_setVisibleMenuItem("mnutoolEditReportFind", true);
-		        menu_toolbarEnableItem("mnutoolDeleteReportFind", fHasRows && IsDeletePermitted && fFromMenu);
-		        menu_setVisibleMenuItem("mnutoolDeleteReportFind", true);
-		        menu_toolbarEnableItem("mnutoolPropertiesReportFind", fHasRows && fFromMenu);
-		        menu_setVisibleMenuItem("mnutoolPropertiesReportFind", true);
-		        menu_toolbarEnableItem("mnutoolRunReportFind", fHasRows && IsRunPermitted && fFromMenu);
-		    		// Only display the 'close' button for defsel when called from rec edit...
-		        menu_setVisibleMenuItem('mnutoolCloseReportFind', !fFromMenu);
-		        menu_toolbarEnableItem('mnutoolCloseReportFind', !fFromMenu);
-		    		// Show and select the tab
-		        $("#toolbarReportFind").parent().show();
-		        $("#toolbarReportFind").click();
-		        break;
-		    case '3':  //sTemp = sTemp & "DataTransfer"
-		        break;
-		    case '4':  //sTemp = sTemp & "Export"
-		        break;
-		    case '5':  //sTemp = sTemp & "GlobalAdd"
-		        break;
-		    case '6':  //sTemp = sTemp & "GlobalDelete"
-		        break;
-		    case '7':  //sTemp = sTemp & "GlobalUpdate"
-		        break;
-		    case '8':  //sTemp = sTemp & "Import"
-		        break;
-		    case '9':  // "MailMerge"
-		        // Hide the remaining tabs
-		        $("#toolbarToolsFind").parent().hide();
-		        $("#toolbarReportFind").parent().hide();
-		        $("#toolbarEventLogFind").parent().hide();
-		        $("#toolbarWFPendingStepsFind").parent().hide();
-
-		        // Enable the buttons
-		        
-		        menu_toolbarEnableItem("mnutoolNewUtilitiesFind", IsNewPermitted && fFromMenu);
-		        menu_setVisibleMenuItem("mnutoolNewUtilitiesFind", true);
-		        menu_toolbarEnableItem("mnutoolCopyUtilitiesFind", fHasRows && IsNewPermitted && fFromMenu);
-		        menu_setVisibleMenuItem("mnutoolCopyUtilitiesFind", true);
-		        menu_toolbarEnableItem("mnutoolEditUtilitiesFind", fHasRows && (IsEditPermitted || IsViewPermitted) && fFromMenu);
-		        menu_setVisibleMenuItem("mnutoolEditUtilitiesFind", true);
-		        menu_toolbarEnableItem("mnutoolDeleteUtilitiesFind", fHasRows && IsDeletePermitted && fFromMenu);
-		        menu_setVisibleMenuItem("mnutoolDeleteUtilitiesFind", true);
-		        menu_toolbarEnableItem("mnutoolPropertiesUtilitiesFind", fHasRows && fFromMenu);
-		        menu_setVisibleMenuItem("mnutoolPropertiesUtilitiesFind", true);
-
-		        menu_toolbarEnableItem("mnutoolRunUtilitiesFind", fHasRows && IsRunPermitted);
- 		    		//only display the 'close' button for defsel when called from rec edit...
-		        menu_setVisibleMenuItem('mnutoolCloseUtilitiesFind', !fFromMenu);
-		        menu_toolbarEnableItem('mnutoolCloseUtilitiesFind', !fFromMenu);
-
-		        // Show and select the tab
-		        $("#toolbarUtilitiesFind").parent().show();
-		        $("#toolbarUtilitiesFind").click();
-		        break;
-
-		    case '10': // "Picklists"
-		        // Hide the remaining tabs
-		        $("#toolbarUtilitiesFind").parent().hide();
-		        $("#toolbarReportFind").parent().hide();
-		        $("#toolbarEventLogFind").parent().hide();
-		        $("#toolbarWFPendingStepsFind").parent().hide();
-		        // Enable the buttons
-		        menu_toolbarEnableItem("mnutoolNewToolsFind", IsNewPermitted);
-		        menu_toolbarEnableItem("mnutoolCopyToolsFind", true && IsNewPermitted && fFromMenu);
-		        menu_toolbarEnableItem("mnutoolEditToolsFind", true && (IsEditPermitted || IsViewPermitted) && fFromMenu);
-		        menu_toolbarEnableItem("mnutoolDeleteToolsFind", true && IsDeletePermitted && fFromMenu);
-		        menu_toolbarEnableItem("mnutoolPropertiesToolsFind", fFromMenu);
-		        menu_toolbarEnableItem("mnutoolRunToolsFind", false);
-		        menu_setVisibleMenuItem('mnutoolRunToolsFind', false);
-		        // Show and select the tab
-		        $("#toolbarToolsFind").parent().show();
-		        $("#toolbarToolsFind").click();
-		        break;
-		    case '11': // "Filters"
-		        // Hide the remaining tabs
-		        $("#toolbarUtilitiesFind").parent().hide();
-		        $("#toolbarReportFind").parent().hide();
-		        $("#toolbarEventLogFind").parent().hide();
-		        $("#toolbarWFPendingStepsFind").parent().hide();
-		        // Enable the buttons
-		        menu_toolbarEnableItem("mnutoolNewToolsFind", IsNewPermitted);
-		        menu_toolbarEnableItem("mnutoolCopyToolsFind", true && IsNewPermitted && fFromMenu);
-		        menu_toolbarEnableItem("mnutoolEditToolsFind", true && (IsEditPermitted || IsViewPermitted) && fFromMenu);
-		        menu_toolbarEnableItem("mnutoolDeleteToolsFind", true && IsDeletePermitted && fFromMenu);
-		        menu_toolbarEnableItem("mnutoolPropertiesToolsFind", fFromMenu);
-		        menu_toolbarEnableItem("mnutoolRunToolsFind", false);
-		        menu_setVisibleMenuItem('mnutoolRunToolsFind', false);
-		        // Show and select the tab
-		        $("#toolbarToolsFind").parent().show();
-		        $("#toolbarToolsFind").click();
-		        break;
-		    case '12': // "Calculations"
-		        // Hide the remaining tabs
-		        $("#toolbarUtilitiesFind").parent().hide();
-		        $("#toolbarReportFind").parent().hide();
-		        $("#toolbarEventLogFind").parent().hide();
-		        $("#toolbarWFPendingStepsFind").parent().hide();
-		        // Enable the buttons
-		        menu_toolbarEnableItem("mnutoolNewToolsFind", IsNewPermitted);
-		        menu_toolbarEnableItem("mnutoolCopyToolsFind", true && IsNewPermitted && fFromMenu);
-		        menu_toolbarEnableItem("mnutoolEditToolsFind", true && (IsEditPermitted || IsViewPermitted) && fFromMenu);
-		        menu_toolbarEnableItem("mnutoolDeleteToolsFind", true && IsDeletePermitted && fFromMenu);
-		        menu_toolbarEnableItem("mnutoolPropertiesToolsFind", fFromMenu);
-		        menu_toolbarEnableItem("mnutoolRunToolsFind", false);
-		        menu_setVisibleMenuItem('mnutoolRunToolsFind', false);
-		        // Show and select the tab
-		        $("#toolbarToolsFind").parent().show();
-		        $("#toolbarToolsFind").click();
-		        break;
-		    case '17': // "CalendarReports"
-		        // Hide the remaining tabs
-		        $("#toolbarUtilitiesFind").parent().hide();
-		        $("#toolbarToolsFind").parent().hide();
-		        $("#toolbarEventLogFind").parent().hide();
-		        $("#toolbarWFPendingStepsFind").parent().hide();
-		        // Enable the buttons
-		    		//fFromMenu = (Number(frmDefSel.txtSingleRecordID.value) <= 0);
-						menu_toolbarEnableItem("mnutoolNewReportFind", IsNewPermitted && fFromMenu);
-		        menu_setVisibleMenuItem("mnutoolNewReportFind", true);
-		        menu_toolbarEnableItem("mnutoolCopyReportFind", fHasRows && IsNewPermitted && fFromMenu);
-		        menu_setVisibleMenuItem("mnutoolCopyReportFind", true);
-		        menu_toolbarEnableItem("mnutoolEditReportFind", fHasRows && (IsEditPermitted || IsViewPermitted) && fFromMenu);
-		        menu_setVisibleMenuItem("mnutoolEditReportFind", true);
-		        menu_toolbarEnableItem("mnutoolDeleteReportFind", fHasRows && IsDeletePermitted && fFromMenu);
-		        menu_setVisibleMenuItem("mnutoolDeleteReportFind", true);
-		        menu_toolbarEnableItem("mnutoolPropertiesReportFind", fHasRows && fFromMenu);
-		        menu_setVisibleMenuItem("mnutoolPropertiesReportFind", true);
-
-		        menu_toolbarEnableItem("mnutoolRunReportFind", fHasRows && IsRunPermitted);
-		        //only display the 'close' button for defsel when called from rec edit...
-	        	menu_setVisibleMenuItem('mnutoolCloseReportFind', !fFromMenu);
-	        	menu_toolbarEnableItem('mnutoolCloseReportFind', !fFromMenu);
-
-		        // Show and select the tab
-		        $("#toolbarReportFind").parent().show();
-		        $("#toolbarReportFind").click();
-		        break;
-		    case '25': // "Workflow"
-		        // Hide the remaining tabs
-		        $("#toolbarToolsFind").parent().hide();
-		        $("#toolbarReportFind").parent().hide();
-		        $("#toolbarEventLogFind").parent().hide();
-		        $("#toolbarWFPendingStepsFind").parent().hide();
-		        // Enable the buttons
-		        menu_setVisibleMenuItem("mnutoolNewUtilitiesFind", IsNewPermitted);
-		        menu_setVisibleMenuItem("mnutoolCopyUtilitiesFind", false);
-		        menu_setVisibleMenuItem("mnutoolEditUtilitiesFind", false);
-		        menu_setVisibleMenuItem("mnutoolDeleteUtilitiesFind", false);
-		        menu_setVisibleMenuItem("mnutoolPropertiesUtilitiesFind", false);
-		        menu_toolbarEnableItem("mnutoolRunUtilitiesFind", fFromMenu);
-		        //only display the 'close' button for defsel when called from rec edit...
-		        if (Number(frmDefSel.txtSingleRecordID.value) > 0) {
-		            menu_setVisibleMenuItem('mnutoolCloseUtilitiesFind', true);
-		            menu_toolbarEnableItem('mnutoolCloseUtilitiesFind', true);
-		        }
-		        else {
-		            menu_setVisibleMenuItem('mnutoolCloseUtilitiesFind', false);
-		        }
-		        // Show and select the tab
-		        $("#toolbarUtilitiesFind").parent().show();
-		        $("#toolbarUtilitiesFind").click();
-		        break;
+						if (answer == 6) {
+								setrun();
+						}
+				}
+				return false;
 		}
-	    //menu_toolbarEnableItem("mnutoolNewReportFind", true);
-	    //menu_toolbarEnableItem("mnutoolCopyReportFind", true);
-	    //menu_toolbarEnableItem("mnutoolEditReportFind", true);
-	    //menu_toolbarEnableItem("mnutoolDeleteReportFind", true);
-	    //menu_toolbarEnableItem("mnutoolPropertiesReportFind", true);
-	    //menu_toolbarEnableItem("mnutoolRunReportFind", true);
-	    ////only display the 'close' button for defsel when called from rec edit...
-	    //if (Number(frmDefSel.txtSingleRecordID.value) > 0) {
-	    //    menu_setVisibleMenuItem('mnutoolCloseReportFind', true);
-	    //    menu_toolbarEnableItem('mnutoolCloseReportFind', true);
-	    //}
-	    //$("#toolbarReportFind").click();
+
+		function ssOleDBGridDefSelRecords_rowcolchange() {
+				var frmDefSel = document.getElementById("frmDefSel");
+				var frmpermissions = document.getElementById("frmpermissions");
+
+				// Populate the textbox with the definitions description
+				frmDefSel.txtDescription.value = selectedRecordDetails("description");
+
+				// Populate the hidden fields with the selected utils information       
+				frmDefSel.utilid.value = $("#DefSelRecords").getGridParam('selrow');
+				frmDefSel.utilname.value = selectedRecordDetails("Name");
+
+				// Check for RO access and set EDIT/VIEW caption as appropriate
+				var username = selectedRecordDetails("Username");
+				var access = selectedRecordDetails("Access");
+
+				button_disable(frmDefSel.cmdRun, (frmpermissions.grantrun.value == 0));
+				button_disable(frmDefSel.cmdNew, (frmpermissions.grantnew.value == 0));
+				button_disable(frmDefSel.cmdCopy, (frmpermissions.grantnew.value == 0));
+				button_disable(frmDefSel.cmdEdit, (frmpermissions.grantedit.value == 0));
+
+				if (username != frmDefSel.txtusername.value) {
+						if (access == 'ro') {
+								frmDefSel.cmdEdit.value = 'View';
+								button_disable(frmDefSel.cmdDelete, true);
+						} else {
+								frmDefSel.cmdEdit.value = 'Edit';
+
+								if (frmpermissions.grantdelete.value == 1) {
+										button_disable(frmDefSel.cmdDelete, false);
+								} else {
+										button_disable(frmDefSel.cmdDelete, true);
+								}
+						}
+				} else {
+						frmDefSel.cmdEdit.value = 'Edit';
+
+						if (frmpermissions.grantdelete.value == 1) {
+								button_disable(frmDefSel.cmdDelete, false);
+						} else {
+								button_disable(frmDefSel.cmdDelete, true);
+						}
+				}
+				//fFromMenu = true;
+				refreshControls();
+		}
+
+		/* Return the value of a column selected in the find form. */
+		function selectedRecordDetails(columnName) {
+
+				var iRecordId;
+				var rowId;
+
+				rowId = $("#DefSelRecords").getGridParam('selrow');
+				iRecordId = $("#DefSelRecords").find("#" + rowId + " #" + columnName).val();
+
+				return (iRecordId);
+		}
+
+		function defsel_window_onload() {
+				var frmDefSel = document.getElementById('frmDefSel');
+			
+				// Expand the option frame and hide the work frame.
+				if (frmDefSel.txtSingleRecordID.value > 0) {
+						$("#optionframe").attr("data-framesource", "DEFSEL");
+						$("#workframe").hide();
+						$("#optionframe").show();
+				} else {
+						$("#workframe").attr("data-framesource", "DEFSEL");
+						$("#optionframe").hide();
+						$("#workframe").show();
+				}
+
+				tableToGrid("#DefSelRecords", {
+						onSelectRow: function (rowID) {
+								ssOleDBGridDefSelRecords_rowcolchange();
+						},
+						ondblClickRow: function (rowID) {
+								ssOleDBGridDefSelRecords_dblClick();
+						},
+						cmTemplate: {sortable:false},
+						ignoreCase: true,
+						pager: $('#pager-coldata'),
+						rowList: [],        // disable page size dropdown
+						pgbuttons: false,     // disable page control like next, back button
+						pgtext: null,         // disable pager text like 'Page 0 of 10'
+						viewrecords: false,    // disable current view record text like 'View 1-10 of 100'            
+						rowNum: 1000    //TODO set this to blocksize...
+				});
+
+				$("#DefSelRecords").jqGrid('bindKeys', {
+						"onEnter": function (rowid) {
+								ssOleDBGridDefSelRecords_dblClick();
+						}
+				});
+
+			//search options.
+				$("#DefSelRecords").jqGrid('navGrid', '#pager-coldata', { del: false, add: false, edit: false, search: false });
+
+				$("#DefSelRecords").jqGrid('navButtonAdd', "#pager-coldata", {
+					caption: '',
+					buttonicon: 'ui-icon-search',
+					onClickButton: function () {
+						$("#DefSelRecords").jqGrid('filterToolbar', { stringResult: true, searchOnEnter: false, defaultSearch: 'cn' });
+					},
+					position: 'first',
+					title: '',
+					cursor: 'pointer'
+				});
+
+
+				$("#findGridRow").height("60%");
+				$(window).bind('resize', function () {
+						$("#DefSelRecords").setGridWidth($('#findGridRow').width(), true);
+						$("#DefSelRecords").setGridHeight($("#findGridRow").height(), true);
+				}).trigger('resize');
+
+				$('#DefSelRecords').hideCol("description");
+				$('#DefSelRecords').hideCol("Username");
+				$('#DefSelRecords').hideCol("Access");
+				$('#DefSelRecords').hideCol("ID");
+
+				$("#DefSelRecords").setGridHeight($("#findGridRow").height());
+				$("#DefSelRecords").setGridWidth($("#findGridRow").width());
+
+				$("#DefSelRecords").closest('.ui-jqgrid-bdiv').width($("#DefSelRecords").closest('.ui-jqgrid-bdiv').width() + 1);
+
+				frmDefSel.cmdCancel.focus();
+
+				refreshControls();
+
+				//If the table is empty disable Copy, Edit, Delete and Properties buttons
+				if ($('#DefSelRecordsCount').val() == 0) {
+						menu_toolbarEnableItem("mnutoolCopyToolsFind", false);
+						menu_toolbarEnableItem("mnutoolEditToolsFind", false);
+						menu_toolbarEnableItem("mnutoolDeleteToolsFind", false);
+						menu_toolbarEnableItem("mnutoolPropertiesToolsFind", false);
+				}
+
+				if (rowCount() > 0) {
+
+						var fFromMenu = (Number(frmDefSel.txtSingleRecordID.value) <= 0);
+						var gotoID;
+
+						if (fFromMenu == true) {
+								gotoID = $("#lastSelectedID")[0].value;
+								if (Number(gotoID) == 0) gotoID = $("#DefSelRecords").getDataIDs()[0];
+						} else {
+								gotoID = $("#DefSelRecords").getDataIDs()[0];
+						}
+						$("#DefSelRecords").setSelection(gotoID);
+				}
+
+		}
+
+		function rowCount() {
+				return $("#DefSelRecords tr").length - 1;
+		}
+
+		function disableNonDefselTabs() {
+				$("#toolbarRecordFind").parent().hide();
+				$("#toolbarRecord").parent().hide();
+				$("#toolbarRecordAbsence").parent().hide();
+				$("#toolbarRecordQuickFind").parent().hide();
+				$("#toolbarRecordSortOrder").parent().hide();
+				$("#toolbarRecordFilter").parent().hide();
+				$("#toolbarRecordMailMerge").parent().hide();
+				//$("#toolbarReportFind").hide();
+				$("#toolbarReportNewEditCopy").parent().hide();
+				$("#toolbarReportRun").parent().hide();
+				//$("#toolbarUtilitiesFind").hide();
+				$("#toolbarUtilitiesNewEditCopy").parent().hide();
+				//$("#toolbarToolsFind").hide();
+				//$("#toolbarEventLogFind").hide();
+				$("#toolbarEventLogView").parent().hide();
+				//$("#toolbarWFPendingStepsFind").hide();
+				$("#toolbarAdminConfig").parent().hide();
+		}
+
+		function refreshControls() {
+				//show the Defsel-Find menu block.
+				//$("#mnuSectionUtilities").show();
+				frmDefSel = document.getElementById('frmDefSel');
+			 
+
+				disableNonDefselTabs();
+
+				//reset utilities tab
+				menu_setVisibleMenuItem("mnutoolNewUtilitiesFind", true);
+				menu_setVisibleMenuItem("mnutoolCopyUtilitiesFind", true);
+				menu_setVisibleMenuItem("mnutoolEditUtilitiesFind", true);
+				menu_setVisibleMenuItem("mnutoolDeleteUtilitiesFind", true);
+				menu_setVisibleMenuItem("mnutoolPropertiesUtilitiesFind", true);
+				menu_setVisibleMenuItem("mnutoolRunUtilitiesFind", true);
+				var fFromMenu = (Number(frmDefSel.txtSingleRecordID.value) <= 0);
+				var fHasRows = (rowCount() > 0);
+
+
+				var IsNewPermitted = ($("#grantnew")[0].value > 0);
+				var IsEditPermitted = ($("#grantedit")[0].value > 0);
+				var IsViewPermitted = ($("#grantview")[0].value > 0);
+				var IsDeletePermitted = ($("#grantdelete")[0].value > 0);
+				var IsRunPermitted = ($("#grantrun")[0].value > 0);
+
+				switch ('<%=Session("defseltype")%>') {
+				case '0':  // "BatchJobs"
+						break;
+				case '1':  // "CrossTabs"
+						// Hide the remaining tabs
+						$("#toolbarUtilitiesFind").parent().hide();
+						$("#toolbarToolsFind").parent().hide();
+						$("#toolbarEventLogFind").parent().hide();
+						$("#toolbarWFPendingStepsFind").parent().hide();
+						// Enable the buttons
+						menu_toolbarEnableItem("mnutoolNewReportFind", IsNewPermitted && fFromMenu);
+						menu_setVisibleMenuItem("mnutoolNewReportFind", true);
+						menu_toolbarEnableItem("mnutoolCopyReportFind", fHasRows && IsNewPermitted && fFromMenu);
+						menu_setVisibleMenuItem("mnutoolCopyReportFind", true);
+						menu_toolbarEnableItem("mnutoolEditReportFind", fHasRows && (IsEditPermitted || IsViewPermitted) && fFromMenu);
+						menu_setVisibleMenuItem("mnutoolEditReportFind", true);
+						menu_toolbarEnableItem("mnutoolDeleteReportFind", fHasRows && IsDeletePermitted && fFromMenu);
+						menu_setVisibleMenuItem("mnutoolDeleteReportFind", true);
+						menu_toolbarEnableItem("mnutoolPropertiesReportFind", fHasRows && fFromMenu);
+						menu_setVisibleMenuItem("mnutoolPropertiesReportFind", true);
+						menu_toolbarEnableItem("mnutoolRunReportFind", fHasRows && IsRunPermitted && fFromMenu);
+						// Only display the 'close' button for defsel when called from rec edit...
+						menu_setVisibleMenuItem('mnutoolCloseReportFind', !fFromMenu);
+						menu_toolbarEnableItem('mnutoolCloseReportFind', !fFromMenu);
+						// Show and select the tab
+						$("#toolbarReportFind").parent().show();
+						$("#toolbarReportFind").click();
+						break;
+				case '2':  // "CustomReports"
+
+						// Hide the remaining tabs
+						$("#toolbarUtilitiesFind").parent().hide();
+						$("#toolbarToolsFind").parent().hide();
+						$("#toolbarEventLogFind").parent().hide();
+						$("#toolbarWFPendingStepsFind").parent().hide();
+						// Enable the buttons
+						menu_toolbarEnableItem("mnutoolNewReportFind", IsNewPermitted && fFromMenu);
+						menu_setVisibleMenuItem("mnutoolNewReportFind", true);
+						menu_toolbarEnableItem("mnutoolCopyReportFind", fHasRows && IsNewPermitted && fFromMenu);
+						menu_setVisibleMenuItem("mnutoolCopyReportFind", true);
+						menu_toolbarEnableItem("mnutoolEditReportFind", fHasRows && (IsEditPermitted || IsViewPermitted) && fFromMenu);
+						menu_setVisibleMenuItem("mnutoolEditReportFind", true);
+						menu_toolbarEnableItem("mnutoolDeleteReportFind", fHasRows && IsDeletePermitted && fFromMenu);
+						menu_setVisibleMenuItem("mnutoolDeleteReportFind", true);
+						menu_toolbarEnableItem("mnutoolPropertiesReportFind", fHasRows && fFromMenu);
+						menu_setVisibleMenuItem("mnutoolPropertiesReportFind", true);
+						menu_toolbarEnableItem("mnutoolRunReportFind", fHasRows && IsRunPermitted && fFromMenu);
+						// Only display the 'close' button for defsel when called from rec edit...
+						menu_setVisibleMenuItem('mnutoolCloseReportFind', !fFromMenu);
+						menu_toolbarEnableItem('mnutoolCloseReportFind', !fFromMenu);
+						// Show and select the tab
+						$("#toolbarReportFind").parent().show();
+						$("#toolbarReportFind").click();
+						break;
+				case '3':  //sTemp = sTemp & "DataTransfer"
+						break;
+				case '4':  //sTemp = sTemp & "Export"
+						break;
+				case '5':  //sTemp = sTemp & "GlobalAdd"
+						break;
+				case '6':  //sTemp = sTemp & "GlobalDelete"
+						break;
+				case '7':  //sTemp = sTemp & "GlobalUpdate"
+						break;
+				case '8':  //sTemp = sTemp & "Import"
+						break;
+				case '9':  // "MailMerge"
+						// Hide the remaining tabs
+						$("#toolbarToolsFind").parent().hide();
+						$("#toolbarReportFind").parent().hide();
+						$("#toolbarEventLogFind").parent().hide();
+						$("#toolbarWFPendingStepsFind").parent().hide();
+
+						// Enable the buttons
+						
+						menu_toolbarEnableItem("mnutoolNewUtilitiesFind", IsNewPermitted && fFromMenu);
+						menu_setVisibleMenuItem("mnutoolNewUtilitiesFind", true);
+						menu_toolbarEnableItem("mnutoolCopyUtilitiesFind", fHasRows && IsNewPermitted && fFromMenu);
+						menu_setVisibleMenuItem("mnutoolCopyUtilitiesFind", true);
+						menu_toolbarEnableItem("mnutoolEditUtilitiesFind", fHasRows && (IsEditPermitted || IsViewPermitted) && fFromMenu);
+						menu_setVisibleMenuItem("mnutoolEditUtilitiesFind", true);
+						menu_toolbarEnableItem("mnutoolDeleteUtilitiesFind", fHasRows && IsDeletePermitted && fFromMenu);
+						menu_setVisibleMenuItem("mnutoolDeleteUtilitiesFind", true);
+						menu_toolbarEnableItem("mnutoolPropertiesUtilitiesFind", fHasRows && fFromMenu);
+						menu_setVisibleMenuItem("mnutoolPropertiesUtilitiesFind", true);
+
+						menu_toolbarEnableItem("mnutoolRunUtilitiesFind", fHasRows && IsRunPermitted);
+						//only display the 'close' button for defsel when called from rec edit...
+						menu_setVisibleMenuItem('mnutoolCloseUtilitiesFind', !fFromMenu);
+						menu_toolbarEnableItem('mnutoolCloseUtilitiesFind', !fFromMenu);
+
+						// Show and select the tab
+						$("#toolbarUtilitiesFind").parent().show();
+						$("#toolbarUtilitiesFind").click();
+						break;
+
+				case '10': // "Picklists"
+						// Hide the remaining tabs
+						$("#toolbarUtilitiesFind").parent().hide();
+						$("#toolbarReportFind").parent().hide();
+						$("#toolbarEventLogFind").parent().hide();
+						$("#toolbarWFPendingStepsFind").parent().hide();
+						// Enable the buttons
+						menu_toolbarEnableItem("mnutoolNewToolsFind", IsNewPermitted);
+						menu_toolbarEnableItem("mnutoolCopyToolsFind", true && IsNewPermitted && fFromMenu);
+						menu_toolbarEnableItem("mnutoolEditToolsFind", true && (IsEditPermitted || IsViewPermitted) && fFromMenu);
+						menu_toolbarEnableItem("mnutoolDeleteToolsFind", true && IsDeletePermitted && fFromMenu);
+						menu_toolbarEnableItem("mnutoolPropertiesToolsFind", fFromMenu);
+						menu_toolbarEnableItem("mnutoolRunToolsFind", false);
+						menu_setVisibleMenuItem('mnutoolRunToolsFind', false);
+						// Show and select the tab
+						$("#toolbarToolsFind").parent().show();
+						$("#toolbarToolsFind").click();
+						break;
+				case '11': // "Filters"
+						// Hide the remaining tabs
+						$("#toolbarUtilitiesFind").parent().hide();
+						$("#toolbarReportFind").parent().hide();
+						$("#toolbarEventLogFind").parent().hide();
+						$("#toolbarWFPendingStepsFind").parent().hide();
+						// Enable the buttons
+						menu_toolbarEnableItem("mnutoolNewToolsFind", IsNewPermitted);
+						menu_toolbarEnableItem("mnutoolCopyToolsFind", true && IsNewPermitted && fFromMenu);
+						menu_toolbarEnableItem("mnutoolEditToolsFind", true && (IsEditPermitted || IsViewPermitted) && fFromMenu);
+						menu_toolbarEnableItem("mnutoolDeleteToolsFind", true && IsDeletePermitted && fFromMenu);
+						menu_toolbarEnableItem("mnutoolPropertiesToolsFind", fFromMenu);
+						menu_toolbarEnableItem("mnutoolRunToolsFind", false);
+						menu_setVisibleMenuItem('mnutoolRunToolsFind', false);
+						// Show and select the tab
+						$("#toolbarToolsFind").parent().show();
+						$("#toolbarToolsFind").click();
+						break;
+				case '12': // "Calculations"
+						// Hide the remaining tabs
+						$("#toolbarUtilitiesFind").parent().hide();
+						$("#toolbarReportFind").parent().hide();
+						$("#toolbarEventLogFind").parent().hide();
+						$("#toolbarWFPendingStepsFind").parent().hide();
+						// Enable the buttons
+						menu_toolbarEnableItem("mnutoolNewToolsFind", IsNewPermitted);
+						menu_toolbarEnableItem("mnutoolCopyToolsFind", true && IsNewPermitted && fFromMenu);
+						menu_toolbarEnableItem("mnutoolEditToolsFind", true && (IsEditPermitted || IsViewPermitted) && fFromMenu);
+						menu_toolbarEnableItem("mnutoolDeleteToolsFind", true && IsDeletePermitted && fFromMenu);
+						menu_toolbarEnableItem("mnutoolPropertiesToolsFind", fFromMenu);
+						menu_toolbarEnableItem("mnutoolRunToolsFind", false);
+						menu_setVisibleMenuItem('mnutoolRunToolsFind', false);
+						// Show and select the tab
+						$("#toolbarToolsFind").parent().show();
+						$("#toolbarToolsFind").click();
+						break;
+				case '17': // "CalendarReports"
+						// Hide the remaining tabs
+						$("#toolbarUtilitiesFind").parent().hide();
+						$("#toolbarToolsFind").parent().hide();
+						$("#toolbarEventLogFind").parent().hide();
+						$("#toolbarWFPendingStepsFind").parent().hide();
+						// Enable the buttons
+						//fFromMenu = (Number(frmDefSel.txtSingleRecordID.value) <= 0);
+						menu_toolbarEnableItem("mnutoolNewReportFind", IsNewPermitted && fFromMenu);
+						menu_setVisibleMenuItem("mnutoolNewReportFind", true);
+						menu_toolbarEnableItem("mnutoolCopyReportFind", fHasRows && IsNewPermitted && fFromMenu);
+						menu_setVisibleMenuItem("mnutoolCopyReportFind", true);
+						menu_toolbarEnableItem("mnutoolEditReportFind", fHasRows && (IsEditPermitted || IsViewPermitted) && fFromMenu);
+						menu_setVisibleMenuItem("mnutoolEditReportFind", true);
+						menu_toolbarEnableItem("mnutoolDeleteReportFind", fHasRows && IsDeletePermitted && fFromMenu);
+						menu_setVisibleMenuItem("mnutoolDeleteReportFind", true);
+						menu_toolbarEnableItem("mnutoolPropertiesReportFind", fHasRows && fFromMenu);
+						menu_setVisibleMenuItem("mnutoolPropertiesReportFind", true);
+
+						menu_toolbarEnableItem("mnutoolRunReportFind", fHasRows && IsRunPermitted);
+						//only display the 'close' button for defsel when called from rec edit...
+						menu_setVisibleMenuItem('mnutoolCloseReportFind', !fFromMenu);
+						menu_toolbarEnableItem('mnutoolCloseReportFind', !fFromMenu);
+
+						// Show and select the tab
+						$("#toolbarReportFind").parent().show();
+						$("#toolbarReportFind").click();
+						break;
+				case '25': // "Workflow"
+						// Hide the remaining tabs
+						$("#toolbarToolsFind").parent().hide();
+						$("#toolbarReportFind").parent().hide();
+						$("#toolbarEventLogFind").parent().hide();
+						$("#toolbarWFPendingStepsFind").parent().hide();
+						// Enable the buttons
+						menu_setVisibleMenuItem("mnutoolNewUtilitiesFind", IsNewPermitted);
+						menu_setVisibleMenuItem("mnutoolCopyUtilitiesFind", false);
+						menu_setVisibleMenuItem("mnutoolEditUtilitiesFind", false);
+						menu_setVisibleMenuItem("mnutoolDeleteUtilitiesFind", false);
+						menu_setVisibleMenuItem("mnutoolPropertiesUtilitiesFind", false);
+						menu_toolbarEnableItem("mnutoolRunUtilitiesFind", fFromMenu);
+						//only display the 'close' button for defsel when called from rec edit...
+						if (Number(frmDefSel.txtSingleRecordID.value) > 0) {
+								menu_setVisibleMenuItem('mnutoolCloseUtilitiesFind', true);
+								menu_toolbarEnableItem('mnutoolCloseUtilitiesFind', true);
+						}
+						else {
+								menu_setVisibleMenuItem('mnutoolCloseUtilitiesFind', false);
+						}
+						// Show and select the tab
+						$("#toolbarUtilitiesFind").parent().show();
+						$("#toolbarUtilitiesFind").click();
+						break;
+		}
+			//menu_toolbarEnableItem("mnutoolNewReportFind", true);
+			//menu_toolbarEnableItem("mnutoolCopyReportFind", true);
+			//menu_toolbarEnableItem("mnutoolEditReportFind", true);
+			//menu_toolbarEnableItem("mnutoolDeleteReportFind", true);
+			//menu_toolbarEnableItem("mnutoolPropertiesReportFind", true);
+			//menu_toolbarEnableItem("mnutoolRunReportFind", true);
+			////only display the 'close' button for defsel when called from rec edit...
+			//if (Number(frmDefSel.txtSingleRecordID.value) > 0) {
+			//    menu_setVisibleMenuItem('mnutoolCloseReportFind', true);
+			//    menu_toolbarEnableItem('mnutoolCloseReportFind', true);
+			//}
+			//$("#toolbarReportFind").click();
 
 		var fNoneSelected;
 		var frmpermissions = document.getElementById('frmpermissions');
 		var frmDefSel = document.getElementById('frmDefSel');
 
-	    //TODO - Check if anything selected
-	    //fNoneSelected = (frmDefSel.ssOleDBGridDefSelRecords.SelBookmarks.Count == 0);
+			//TODO - Check if anything selected
+			//fNoneSelected = (frmDefSel.ssOleDBGridDefSelRecords.SelBookmarks.Count == 0);
 
 		button_disable(frmDefSel.cmdEdit, (fNoneSelected ||
-        ((frmpermissions.grantedit.value == 0) && (frmpermissions.grantview.value == 0))));
+				((frmpermissions.grantedit.value == 0) && (frmpermissions.grantview.value == 0))));
 		button_disable(frmDefSel.cmdNew, (frmpermissions.grantnew.value == 0));
 		button_disable(frmDefSel.cmdCopy, (fNoneSelected || (frmpermissions.grantnew.value == 0)));
 		button_disable(frmDefSel.cmdDelete, (fNoneSelected ||
-        (frmpermissions.grantdelete.value == 0) ||
-        (frmDefSel.cmdEdit.value.toUpperCase() == "VIEW")));
+				(frmpermissions.grantdelete.value == 0) ||
+				(frmDefSel.cmdEdit.value.toUpperCase() == "VIEW")));
 
 		if (((frmpermissions.grantedit.value == 0) &&
-        (frmpermissions.grantview.value == 1)) ||
-        (frmDefSel.cmdEdit.value.toUpperCase() == "VIEW")) {
-		    frmDefSel.cmdEdit.value = "View";
-		    $('#mnutoolEditReportFind h6').text('View');
-		    $('#mnutoolEditReportFind a').attr('title', 'View');
+				(frmpermissions.grantview.value == 1)) ||
+				(frmDefSel.cmdEdit.value.toUpperCase() == "VIEW")) {
+				frmDefSel.cmdEdit.value = "View";
+				$('#mnutoolEditReportFind h6').text('View');
+				$('#mnutoolEditReportFind a').attr('title', 'View');
 		}
 		else {
-		    frmDefSel.cmdEdit.value = "Edit";
-		    $('#mnutoolEditReportFind h6').text('Edit');
-		    $('#mnutoolEditReportFind a').attr('title', 'Edit');
+				frmDefSel.cmdEdit.value = "Edit";
+				$('#mnutoolEditReportFind h6').text('Edit');
+				$('#mnutoolEditReportFind a').attr('title', 'Edit');
 		}
 
 		button_disable(frmDefSel.cmdProperties, (fNoneSelected ||
-        ((frmpermissions.grantnew.value == 0) &&
-        (frmpermissions.grantedit.value == 0) &&
-        (frmpermissions.grantview.value == 0) &&
-        (frmpermissions.grantdelete.value == 0) &&
-        (frmpermissions.grantrun.value == 0))));
+				((frmpermissions.grantnew.value == 0) &&
+				(frmpermissions.grantedit.value == 0) &&
+				(frmpermissions.grantview.value == 0) &&
+				(frmpermissions.grantdelete.value == 0) &&
+				(frmpermissions.grantrun.value == 0))));
 		button_disable(frmDefSel.cmdRun, (fNoneSelected || (frmpermissions.grantrun.value == 0)));
-    }
+		}
 
-    function showproperties() {
-        if (!$("#mnutoolPropertiesUtil").hasClass("disabled")) {
-            var sUrl;
-            var frmDefSel = document.getElementById('frmDefSel');
+		function showproperties() {
+				if (!$("#mnutoolPropertiesUtil").hasClass("disabled")) {
+						var sUrl;
+						var frmDefSel = document.getElementById('frmDefSel');
 
-            var frmProp = document.getElementById('frmProp');
-            frmProp.prop_id.value = $("#DefSelRecords").getGridParam('selrow');
-            frmProp.prop_name.value = selectedRecordDetails("Name");
-            frmProp.utiltype.value = frmDefSel.utiltype.value;
+						var frmProp = document.getElementById('frmProp');
+						frmProp.prop_id.value = $("#DefSelRecords").getGridParam('selrow');
+						frmProp.prop_name.value = selectedRecordDetails("Name");
+						frmProp.utiltype.value = frmDefSel.utiltype.value;
 
-            sUrl = "defselproperties" +
-                   "?prop_name=" + escape(frmProp.prop_name.value) +
-                   "&prop_id=" + frmProp.prop_id.value +
-                   "&utiltype=" + frmProp.utiltype.value;
-            openDialog(sUrl, 600, 350);
-        }
-    }
+						sUrl = "defselproperties" +
+									 "?prop_name=" + escape(frmProp.prop_name.value) +
+									 "&prop_id=" + frmProp.prop_id.value +
+									 "&utiltype=" + frmProp.utiltype.value;
+						openDialog(sUrl, 600, 350);
+				}
+		}
 
-    function pausecomp(millis) {
-        var date = new Date();
-        var curDate;
+		function pausecomp(millis) {
+				var date = new Date();
+				var curDate;
 
-        do {
-            curDate = new Date();
-        } while (curDate - date < millis);
-    }
+				do {
+						curDate = new Date();
+				} while (curDate - date < millis);
+		}
 
-    function NewWindow(mypage, myname, w, h, scroll) {
-        var winl = (screen.width - w) / 2;
-        var wint = (screen.height - h) / 2;
-        var winprops = 'height=' + h + ',width=' + w + ',top=' + wint + ',left=' + winl + ',scrollbars=' + scroll + ',resizable';
-        var win = window.open(mypage, myname, winprops);
+		function NewWindow(mypage, myname, w, h, scroll) {
+				var winl = (screen.width - w) / 2;
+				var wint = (screen.height - h) / 2;
+				var winprops = 'height=' + h + ',width=' + w + ',top=' + wint + ',left=' + winl + ',scrollbars=' + scroll + ',resizable';
+				var win = window.open(mypage, myname, winprops);
 
-        if (parseInt(navigator.appVersion) >= 4) {
-            // Delay fixes a problem with IE7 and Vista (don't know why though!)
-            pausecomp(300);
-            win.window.focus();
-        }
-    }
+				if (parseInt(navigator.appVersion) >= 4) {
+						// Delay fixes a problem with IE7 and Vista (don't know why though!)
+						pausecomp(300);
+						win.window.focus();
+				}
+		}
 
-    function ReturnNewWindow(mypage, myname, w, h, scroll) {
-        var winl = (screen.width - w) / 2;
-        var wint = (screen.height - h) / 2;
-        var winprops = 'height=' + h + ',width=' + w + ',top=' + wint + ',left=' + winl + ',scrollbars=' + scroll + ',resizable';
-        var win = window.open(mypage, myname, winprops);
+		function ReturnNewWindow(mypage, myname, w, h, scroll) {
+				var winl = (screen.width - w) / 2;
+				var wint = (screen.height - h) / 2;
+				var winprops = 'height=' + h + ',width=' + w + ',top=' + wint + ',left=' + winl + ',scrollbars=' + scroll + ',resizable';
+				var win = window.open(mypage, myname, winprops);
 
-        if (parseInt(navigator.appVersion) >= 4) {
-            // Delay fixes a problem with IE7 and Vista (don't know why though!)
-            pausecomp(300);
-            win.window.focus();
-        }
+				if (parseInt(navigator.appVersion) >= 4) {
+						// Delay fixes a problem with IE7 and Vista (don't know why though!)
+						pausecomp(300);
+						win.window.focus();
+				}
 
-        return win;
+				return win;
 
-    }
+		}
 
-    function openDialog(pDestination, pWidth, pHeight) {
-        var dlgwinprops = "center:yes;" +
-                "dialogHeight:" + pHeight + "px;" +
-                "dialogWidth:" + pWidth + "px;" +
-                "help:no;" +
-                "resizable:yes;" +
-                "scroll:yes;" +
-                "status:no;";
-        window.showModalDialog(pDestination, self, dlgwinprops);
-    }
+		function openDialog(pDestination, pWidth, pHeight) {
+				var dlgwinprops = "center:yes;" +
+								"dialogHeight:" + pHeight + "px;" +
+								"dialogWidth:" + pWidth + "px;" +
+								"help:no;" +
+								"resizable:yes;" +
+								"scroll:yes;" +
+								"status:no;";
+				window.showModalDialog(pDestination, self, dlgwinprops);
+		}
 
-    function ToggleCheck() {
+		function ToggleCheck() {
 
-        var frmOnlyMine = document.getElementById('frmOnlyMine');
-        var frmDefSel = document.getElementById('frmDefSel');
+				var frmOnlyMine = document.getElementById('frmOnlyMine');
+				var frmDefSel = document.getElementById('frmDefSel');
 
-        if ((frmDefSel.utiltype.value == 10) || (frmDefSel.utiltype.value == 11) || (frmDefSel.utiltype.value == 12)) {
-            frmOnlyMine.txtTableID.value = frmDefSel.selectTable.options[frmDefSel.selectTable.selectedIndex].value;
-            frmDefSel.txtTableID.value = frmOnlyMine.txtTableID.value;
-        }
+				if ((frmDefSel.utiltype.value == 10) || (frmDefSel.utiltype.value == 11) || (frmDefSel.utiltype.value == 12)) {
+						frmOnlyMine.txtTableID.value = frmDefSel.selectTable.options[frmDefSel.selectTable.selectedIndex].value;
+						frmDefSel.txtTableID.value = frmOnlyMine.txtTableID.value;
+				}
 
-        frmOnlyMine.OnlyMine.value = frmDefSel.checkbox.checked;
+				frmOnlyMine.OnlyMine.value = frmDefSel.checkbox.checked;
 
-        OpenHR.submitForm(frmOnlyMine);
-    }
+				OpenHR.submitForm(frmOnlyMine);
+		}
 
-    function setdelete() {
-        if (!$("#mnutoolDeleteUtil").hasClass("disabled")) {
-            var frmDefSel = document.getElementById('frmDefSel');
-            var answer = OpenHR.messageBox("Delete this definition. Are you sure ?", 36, "Confirmation");
+		function setdelete() {
+				if (!$("#mnutoolDeleteUtil").hasClass("disabled")) {
+						var frmDefSel = document.getElementById('frmDefSel');
+						var answer = OpenHR.messageBox("Delete this definition. Are you sure ?", 36, "Confirmation");
 
-            if (answer == 6) {
-                frmDefSel.action.value = "delete";
-                OpenHR.submitForm(frmDefSel);
-            }
-        }
-    }
+						if (answer == 6) {
+								frmDefSel.action.value = "delete";
+								OpenHR.submitForm(frmDefSel);
+						}
+				}
+		}
 
-    function setrun() {
-        if (!$("#mnutillRunUtil").hasClass("disabled")) {
-            var frmDefSel = document.getElementById('frmDefSel');
+		function setrun() {
+				if (!$("#mnutillRunUtil").hasClass("disabled")) {
+						var frmDefSel = document.getElementById('frmDefSel');
 
-            frmDefSel.action.value = "run";
+						frmDefSel.action.value = "run";
 
-            var sUtilId;
+						var sUtilId;
 
-            if (frmDefSel.utiltype.value == 25) {
-                // Workflow
-                var frmWorkflow = document.getElementById('frmWorkflow');
-                frmWorkflow.utiltype.value = frmDefSel.utiltype.value;
-                frmWorkflow.utilid.value = frmDefSel.utilid.value;
-                frmWorkflow.utilname.value = frmDefSel.utilname.value;
-                frmWorkflow.action.value = frmDefSel.action.value;
-                sUtilId = new String(frmDefSel.utilid.value);
+						if (frmDefSel.utiltype.value == 25) {
+								// Workflow
+								var frmWorkflow = document.getElementById('frmWorkflow');
+								frmWorkflow.utiltype.value = frmDefSel.utiltype.value;
+								frmWorkflow.utilid.value = frmDefSel.utilid.value;
+								frmWorkflow.utilname.value = frmDefSel.utilname.value;
+								frmWorkflow.action.value = frmDefSel.action.value;
+								sUtilId = new String(frmDefSel.utilid.value);
 
-                frmWorkflow.target = sUtilId;
-                //NewWindow('', sUtilId, '500', '200', 'yes');
-                OpenHR.submitForm(frmWorkflow, 'optionframe', false);
-            } else {
+								frmWorkflow.target = sUtilId;
+								//NewWindow('', sUtilId, '500', '200', 'yes');
+								OpenHR.submitForm(frmWorkflow, 'optionframe', false);
+						} else {
 
-                var frmPrompt = document.getElementById('frmPrompt');
+								var frmPrompt = document.getElementById('frmPrompt');
 
-                frmPrompt.utilid.value = frmDefSel.utilid.value;
-                frmPrompt.utilname.value = frmDefSel.utilname.value;
-                frmPrompt.action.value = frmDefSel.action.value;
+								frmPrompt.utilid.value = frmDefSel.utilid.value;
+								frmPrompt.utilname.value = frmDefSel.utilname.value;
+								frmPrompt.action.value = frmDefSel.action.value;
 
-                OpenHR.showInReportFrame(frmPrompt, false);
+								OpenHR.showInReportFrame(frmPrompt, false);
 
-            }
-        }
-    }
+						}
+				}
+		}
 
-    function setnew() {
-    	if (!$("#mnutoolNewUtil").hasClass("disabled")) {
-    		var frmDefSel = document.getElementById('frmDefSel');
-    		OpenHR.showPopup("Loading form...");
-    		frmDefSel.action.value = "new";
-    		OpenHR.submitForm(frmDefSel);
-    	}
-    }
+		function setnew() {
+			if (!$("#mnutoolNewUtil").hasClass("disabled")) {
+				var frmDefSel = document.getElementById('frmDefSel');
+				OpenHR.showPopup("Loading form...");
+				frmDefSel.action.value = "new";
+				OpenHR.submitForm(frmDefSel);
+			}
+		}
 
-    function setcopy() {
-        if (!$("#mnutoolCopyUtil").hasClass("disabled")) {
-            var frmDefSel = document.getElementById('frmDefSel');
+		function setcopy() {
+				if (!$("#mnutoolCopyUtil").hasClass("disabled")) {
+						var frmDefSel = document.getElementById('frmDefSel');
 
-            OpenHR.showPopup("Copying definition...");
-            frmDefSel.action.value = "copy";
-            OpenHR.submitForm(frmDefSel);
-        }
-    }
+						OpenHR.showPopup("Copying definition...");
+						frmDefSel.action.value = "copy";
+						OpenHR.submitForm(frmDefSel);
+				}
+		}
 
-    function setedit() {
+		function setedit() {
 
-        if (!$("#mnutoolEditUtil").hasClass("disabled")) {
-            var frmDefSel = document.getElementById('frmDefSel');
+				if (!$("#mnutoolEditUtil").hasClass("disabled")) {
+						var frmDefSel = document.getElementById('frmDefSel');
 
-            OpenHR.showPopup("Loading definition...");
+						OpenHR.showPopup("Loading definition...");
 
-            if (frmDefSel.cmdEdit.value == "Edit") {
-                frmDefSel.action.value = "edit";
-                OpenHR.submitForm(frmDefSel);
-            } else {
-                frmDefSel.action.value = "view";
-                OpenHR.submitForm(frmDefSel);
-            }
-        }
-    }
+						if (frmDefSel.cmdEdit.value == "Edit") {
+								frmDefSel.action.value = "edit";
+								OpenHR.submitForm(frmDefSel);
+						} else {
+								frmDefSel.action.value = "view";
+								OpenHR.submitForm(frmDefSel);
+						}
+				}
+		}
 
-    function setcancel() {
-        var frmDefSel = document.getElementById('frmDefSel');
-        if (frmDefSel.txtSingleRecordID.value > 0) {
-            var sWorkPage = defsel_currentWorkFramePage();
-            if (sWorkPage == "RECORDEDIT") {
-                refreshData(); //workframe
-            }
+		function setcancel() {
+				var frmDefSel = document.getElementById('frmDefSel');
+				if (frmDefSel.txtSingleRecordID.value > 0) {
+						var sWorkPage = defsel_currentWorkFramePage();
+						if (sWorkPage == "RECORDEDIT") {
+								refreshData(); //workframe
+						}
 
-            loadEmptyOption();
+						loadEmptyOption();
 
-            menu_disableMenu();
+						menu_disableMenu();
 
-            $("#optionframe").hide();
-            $("#workframe").show();
-            $("#toolbarRecord").show();
-            $("#toolbarRecord").click();
-	        
-            menu_refreshMenu();
-        }
-        else {
-            window.location.href = "_default";
-        }
-    }
-
-
-    function loadEmptyOption() {
-        $.ajax({
-            url: 'emptyoption',
-            type: "POST",
-            dataType: 'html',
-            async: true,
-            success: function (html) {
-                try {
-                    $('#optionframe').html('');
-                    $('#optionframe').html(html);
-                } catch (e) { }
-            }
-        });
-    }
+						$("#optionframe").hide();
+						$("#workframe").show();
+						$("#toolbarRecord").show();
+						$("#toolbarRecord").click();
+					
+						menu_refreshMenu();
+				}
+				else {
+						window.location.href = "_default";
+				}
+		}
 
 
+		function loadEmptyOption() {
+				$.ajax({
+						url: 'emptyoption',
+						type: "POST",
+						dataType: 'html',
+						async: true,
+						success: function (html) {
+								try {
+										$('#optionframe').html('');
+										$('#optionframe').html(html);
+								} catch (e) { }
+						}
+				});
+		}
 
-    function defsel_currentWorkFramePage() {
-    	var sCurrentPage = $("#workframe").attr("data-framesource");
-    	try
-    	{
-    		sCurrentPage = sCurrentPage.toUpperCase();
-    	} catch (e) { }
 
-    	return sCurrentPage;
-    }
 
-   
+		function defsel_currentWorkFramePage() {
+			var sCurrentPage = $("#workframe").attr("data-framesource");
+			try
+			{
+				sCurrentPage = sCurrentPage.toUpperCase();
+			} catch (e) { }
+
+			return sCurrentPage;
+		}
+
+	 
 </script>
 
 <div id="defsel" data-framesource="defsel" style="display: block; height:100%">
@@ -1047,7 +1067,7 @@
 																									Next
 
 																									Response.Write("</table>")
-						
+																									Response.Write("<div id='pager-coldata'></div>" & vbCrLf)
 																									Response.Write("<input type='hidden' value='" & lngRowCount & "' id='DefSelRecordsCount'>")	'Store the number of records so we can use it later
 																									
 																								Catch ex As Exception
@@ -1230,7 +1250,7 @@
 		</form>
 
 
-    <form name="frmPrompt" method="post" action="util_run_promptedValues" id="frmPrompt" style="visibility: hidden; display: none">
+		<form name="frmPrompt" method="post" action="util_run_promptedValues" id="frmPrompt" style="visibility: hidden; display: none">
 				<input type="hidden" id="utiltype" name="utiltype" value="<%=Session("defseltype")%>">
 				<input type="hidden" id="utilid" name="utilid" value='<%=Session("utilid")%>'>
 				<input type="hidden" id="utilname" name="utilname">
@@ -1274,7 +1294,7 @@
 </div>
 
 <script type="text/javascript">
-    defsel_window_onload();
+		defsel_window_onload();
 </script>
 
 
