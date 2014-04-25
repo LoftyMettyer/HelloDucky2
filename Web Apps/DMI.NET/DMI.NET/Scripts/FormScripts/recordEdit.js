@@ -1531,36 +1531,50 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
 
 			var table = fieldset.appendChild(document.createElement("table"));
 			var tr = table.appendChild(document.createElement("tr"));
+			
+			//Get local weekday names...
+			var weekDays = [];
+			var d = new Date();
+			var language = window.navigator.userLanguage || window.navigator.language;
+			var options = {
+				weekday: "long"
+			};
+			var daysofWeek = new Array("S", "M", "T", "W", "T", "F", "S");
 
-			for (i = 0; i <= 7; i++) {
+			while (d.getDay() > 0) {
+				d.setDate(d.getDate() + 1);
+			}
+			
+			var weekDayNumber = 0;
+			while (weekDays.length < 7) {
+				try {					
+					var dayofWeek = d.toLocaleDateString(language, options);
+					dayofWeek = dayofWeek.replace('\u200e', ''); //remove LTR marker for IE bug: bit.ly/1k9gMq3
+					dayofWeek = dayofWeek.toUpperCase().substr(0, 1);;
+
+					weekDays.push(dayofWeek);
+					d.setDate(d.getDate() + 1);
+				} catch(e) {
+					weekDays.push(daysofWeek[weekDayNumber]);
+					d.setDate(d.getDate() + 1);
+				}
+
+				weekDayNumber += 1;
+			}
+			
+			
+			for (var i = 0; i <= 7; i++) {
 				offsetLeft = (width / 10) * (i + 1);
 				var td = tr.appendChild(document.createElement("td"));
 				td.style.textAlign = "center";
 				var dayLink = td.appendChild(document.createElement("a"));
+				
 				switch (i) {
 				case 0:
 					dayLink.textContent = " ";
 					break;
-				case 1:
-					dayLink.textContent = "S";
-					break;
-				case 2:
-					dayLink.textContent = "M";
-					break;
-				case 3:
-					dayLink.textContent = "T";
-					break;
-				case 4:
-					dayLink.textContent = "W";
-					break;
-				case 5:
-					dayLink.textContent = "T";
-					break;
-				case 6:
-					dayLink.textContent = "F";
-					break;
-				case 7:
-					dayLink.textContent = "S";
+				default :
+					dayLink.textContent = weekDays[i - 1];
 					break;
 				}
 

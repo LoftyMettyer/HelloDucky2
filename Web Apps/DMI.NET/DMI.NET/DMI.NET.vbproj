@@ -1056,6 +1056,7 @@
     <Content Include="Content\themes\vader\jquery.ui.tabs.min.css" />
     <Content Include="Content\themes\vader\jquery.ui.theme.min.css" />
     <Content Include="Content\themes\vader\jquery.ui.tooltip.min.css" />
+    <Content Include="Scripts\jquery\jquery-ui-i18n.js" />
     <Content Include="lpks\ssmain.lpk">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

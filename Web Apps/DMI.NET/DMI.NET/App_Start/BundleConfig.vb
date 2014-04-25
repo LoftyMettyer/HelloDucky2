@@ -40,6 +40,7 @@ Namespace App_Start
 				"~/Scripts/jquery/jquery.ui.touch-punch.min.js",
 				"~/Scripts/jquery/jOrgChart/prettify.js",
 				"~/Scripts/jquery/jOrgChart/jquery.jOrgChart.js",
+				"~/Scripts/jquery/jquery-ui-i18n.js",
 				"~/Scripts/officebar/jquery.officebar.js"))
 
 			' OpenHR core
