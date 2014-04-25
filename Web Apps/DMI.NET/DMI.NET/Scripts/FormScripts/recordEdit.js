@@ -617,7 +617,7 @@ function ConvertData(pvData, pDataType) {
 				if ($.trim(pvData).length == 0) {
 					vReturnData = null;
 				} else {
-					vReturnData = Number(pvData.toString().split(window.LocaleThousandSeparator).join(""));
+					vReturnData = Number(pvData.toString().split(window.LocaleThousandSeparator).join("").split(window.LocaleDecimalSeparator).join("."));
 				}
 				break;
 			case 4:
@@ -626,7 +626,7 @@ function ConvertData(pvData, pDataType) {
 
 					vReturnData = null;
 				} else {
-					vReturnData = Number(pvData.toString().split(window.LocaleThousandSeparator).join(""));
+					vReturnData = Number(pvData.toString().split(window.LocaleThousandSeparator).join("").split(window.LocaleDecimalSeparator).join("."));
 				}
 				break;
 

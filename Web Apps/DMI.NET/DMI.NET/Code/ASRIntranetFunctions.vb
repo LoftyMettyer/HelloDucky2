@@ -12,6 +12,10 @@ Imports System.Net.Mime
 
 Public Module ASRIntranetFunctions
 
+	Function UserLocale() As String
+		Return Thread.CurrentThread.CurrentCulture.ToString()
+	End Function
+
 	Function LocaleDateFormat() As String
 		Return Thread.CurrentThread.CurrentCulture.DateTimeFormat.ShortDatePattern.ToLower()
 	End Function

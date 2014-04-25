@@ -74,10 +74,10 @@
 	</div>
 	
 	<input type="hidden" id="txtSetDetails" name="txtSetDetails" value="<%=Session("showLoginDetails")%>">
-	<input type="hidden" id="txtLocaleDateFormat" name="txtLocaleDateFormat">
-	<input type="hidden" id="txtLocaleDateSeparator" name="txtLocaleDateSeparator">
-	<input type="hidden" id="txtLocaleDecimalSeparator" name="txtLocaleDecimalSeparator">
-	<input type="hidden" id="txtLocaleThousandSeparator" name="txtLocaleThousandSeparator">
+	<input type="hidden" id="txtLocaleDateFormat" name="txtLocaleDateFormat" value="<%=LocaleDateFormat()%>">
+	<input type="hidden" id="txtLocaleDateSeparator" name="txtLocaleDateSeparator" value="<%=LocaleDateSeparator()%>">
+	<input type="hidden" id="txtLocaleDecimalSeparator" name="txtLocaleDecimalSeparator" value="<%=LocaleDecimalSeparator()%>">
+	<input type="hidden" id="txtLocaleThousandSeparator" name="txtLocaleThousandSeparator" value="<%=LocaleThousandSeparator()%>">
 	<input type="hidden" id="txtSystemUser" name="txtSystemUser" value="<%=replace(Request.ServerVariables("LOGON_USER"),"/","\")%>">
 	<input type="hidden" id="txtWordVer" name="txtWordVer" value="12">
 	<input type="hidden" id="txtExcelVer" name="txtExcelVer" value="12">

@@ -108,7 +108,13 @@
 							</td>
 						</tr>
 					<%End If%>
-
+						<tr>
+							<td style="vertical-align: top; text-align: left; white-space: nowrap; padding-right: 10px;">User Locale :
+							</td>
+							<td style="vertical-align: top; text-align: left; white-space: nowrap;">
+								<%:DMI.NET.ASRIntranetFunctions.UserLocale()%>
+							</td>
+						</tr>
 					<tr>
 						<td colspan="2" style="vertical-align: top; text-align: left; white-space: nowrap;">
 							<br />

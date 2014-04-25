@@ -254,7 +254,7 @@
 		// Create some regular expressions to be used when replacing characters 
 		// in the filter string later on.
 		sDecimalSeparator = "\\";
-		sDecimalSeparator = OpenHR.LocaleDecimalSeparator;
+		sDecimalSeparator = '<%:LocaleDecimalSeparator()%>';
 		var reDecimalSeparator = new RegExp(sDecimalSeparator, "gi");
 
 		reSpace = / /gi;
@@ -576,7 +576,7 @@
 					sFilterDef = sFilterDef.concat("	");
 					sFilterDef = sFilterDef.concat(iOperatorID);
 					sFilterDef = sFilterDef.concat("	");
-					sFilterDef = sFilterDef.concat(sValue);
+					sFilterDef = sFilterDef.concat(((iDataType == 2) || (iDataType == 4)) ? sFilterValue : sValue);
 					sFilterDef = sFilterDef.concat("	");
 				}
 			}
@@ -600,7 +600,7 @@
 			}
 		}
 		var frmGotoOption = document.getElementById("frmGotoOption");
-
+		
 		frmGotoOption.txtGotoOptionScreenID.value = frmFilterForm.txtOptionScreenID.value;
 		frmGotoOption.txtGotoOptionTableID.value = frmFilterForm.txtOptionTableID.value;
 		frmGotoOption.txtGotoOptionViewID.value = frmFilterForm.txtOptionViewID.value;
@@ -670,11 +670,11 @@
 		var fDecimalsFound;
 
 		sDecimalSeparator = "\\";
-		sDecimalSeparator = sDecimalSeparator.concat(OpenHR.LocaleDecimalSeparator);
+		sDecimalSeparator = sDecimalSeparator.concat('<%:LocaleDecimalSeparator()%>');
 		var reDecimalSeparator = new RegExp(sDecimalSeparator, "gi");
 
 		sThousandSeparator = "\\";
-		sThousandSeparator = sThousandSeparator.concat(OpenHR.LocaleThousandSeparator);
+		sThousandSeparator = sThousandSeparator.concat('<%:LocaleThousandSeparator()%>');
 		var reThousandSeparator = new RegExp(sThousandSeparator, "gi");
 
 		sPoint = "\\.";
@@ -758,7 +758,7 @@
 				sValue = sConvertedValue;
 
 				// Convert any decimal separators to '.'.
-				if (OpenHR.LocaleDecimalSeparator != ".") {
+				if ('<%:LocaleDecimalSeparator()%>' != ".") {
 					// Existing decimal points are invalid characters.
 					sConvertedValue = sConvertedValue.replace(rePoint, "A");
 					// Replace the locale decimal marker with the decimal point.

@@ -215,7 +215,7 @@
 											If Not IsDBNull(row(iloop)) Then
 												
 												Dim numberAsString As String = row(iloop).ToString()
-												Dim indexOfDecimalPoint As Integer = numberAsString.IndexOf(".", System.StringComparison.Ordinal)
+												Dim indexOfDecimalPoint As Integer = numberAsString.IndexOf(LocaleDecimalSeparator(), System.StringComparison.Ordinal)
 												Dim numberOfDecimals As Integer = 0
 												If indexOfDecimalPoint > 0 Then numberOfDecimals = numberAsString.Substring(indexOfDecimalPoint + 1).Length
 												
@@ -224,9 +224,9 @@
 												Else
 													sTemp = FormatNumber(row(iloop), numberOfDecimals, TriState.True, TriState.False, TriState.False)
 												End If
-												sTemp = Replace(sTemp, ".", "x")
-												sTemp = Replace(sTemp, ",", Session("LocaleThousandSeparator"))
-												sTemp = Replace(sTemp, "x", Session("LocaleDecimalSeparator"))
+												'sTemp = Replace(sTemp, ".", "x")
+												'sTemp = Replace(sTemp, ",", Session("LocaleThousandSeparator"))
+												'sTemp = Replace(sTemp, "x", Session("LocaleDecimalSeparator"))
 												sAddString = sAddString & sTemp
 											End If
 										Else
