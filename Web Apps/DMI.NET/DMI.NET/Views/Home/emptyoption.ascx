@@ -230,13 +230,13 @@
 							EmployeeName = EmployeeAndCode[0];
 							ResultCode = EmployeeAndCode[1];
 
-							if (ResultCode[2] == 1) {
+							if (ResultCode[0] == 1) {
 								EmployeesWithPreReqError.push(EmployeeName);
 							} else if (ResultCode[2] == 2) {
 								EmployeesWithPreReqWarning.push(EmployeeName);
 							}
 
-							if (ResultCode[0] == 1) {
+							if (ResultCode[2] == 1) {
 								EmployeesWithOverlapError.push(EmployeeName);
 							} else if (ResultCode[0] == 2) {
 								EmployeesWithOverlapWarning.push(EmployeeName);
