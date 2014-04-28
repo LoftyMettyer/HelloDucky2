@@ -951,7 +951,6 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
 			//span.style.textAlign = "left";
 			span.style.display = "block";
 			span.style.overflow = 'hidden';
-			debugger;
 			var checkbox = span.appendChild(document.createElement('input'));
 			checkbox.type = "checkbox";
 			checkbox.id = controlID;
