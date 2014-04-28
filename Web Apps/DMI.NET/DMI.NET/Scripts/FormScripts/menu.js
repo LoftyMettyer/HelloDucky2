@@ -4997,6 +4997,12 @@ function menu_loadSelectOrderFilter(psType) {
 	$("#mnutoolPositionRecordFind span").text(newCaption);
 }
 
+	function menu_SetmnutoolEventLogRecordPositionCaption(newCaption) {
+		//update the record position text.
+		$("#mnutoolRecordEventLog span").text(newCaption);
+		$("#mnutoolRecordEventLog span").text(newCaption);
+	}
+
 	function menu_SetmnutoolLocateRecordsText(newCaption) {
 	//update the locate record text.
 	$("#mnutoolLocateRecords input:text").val(newCaption);

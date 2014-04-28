@@ -144,7 +144,7 @@
 		
 		//TODO: We don't have a record position indicator yet on the ribbon for this form
 		
-		menu_SetmnutoolRecordPositionCaption(sCaption);		
+		menu_SetmnutoolEventLogRecordPositionCaption(sCaption);
 		//Enable/disable navigation controls based on certain conditions
 		
 		var elFindRecords = Number('<%:Session("findRecords")%>');

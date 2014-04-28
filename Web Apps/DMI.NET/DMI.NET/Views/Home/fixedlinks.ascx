@@ -961,7 +961,16 @@
 									<h6>Last</h6>
 								</a>
 							</div>
-						</li>
+						</li>						
+						<li id="mnuSectionPositionEventLog"><span>Record Position</span>
+							<div id="mnutoolRecordEventLog" class="textboxlist">
+								<ul>
+									<li>
+										<span>Record n of m [(filtered)]</span>
+									</li>
+								</ul>
+							</div>
+						</li>						
 					</ul>
 				</li>
 
