@@ -950,8 +950,8 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
 			//span.style.margin = "0px";
 			//span.style.textAlign = "left";
 			span.style.display = "block";
-			span.style.overflow = 'hidden';			
-
+			span.style.overflow = 'hidden';
+			debugger;
 			var checkbox = span.appendChild(document.createElement('input'));
 			checkbox.type = "checkbox";
 			checkbox.id = controlID;
@@ -1002,7 +1002,11 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
 			checkbox.setAttribute('data-controlType', controlItemArray[3]);
 			checkbox.setAttribute("data-control-tag", key);
 
-			if (!fControlEnabled) $(span).prop('disabled', true);
+			if (!fControlEnabled) {
+				$(span).prop('disabled', true);
+				$(checkbox).prop('disabled', true);
+				$(label).prop('disabled', true);
+			}
 
 			//Add control to relevant tab, create if required.                
 			addControl(iPageNo, span);
