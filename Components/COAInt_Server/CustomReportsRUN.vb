@@ -3130,9 +3130,11 @@ CheckRecordSet_ERROR:
 		aryTotalAddString = New ArrayList()
 		aryCountAddString = New ArrayList()
 
-		aryAverageAddString.Add("Sub Average")
-		aryCountAddString.Add("Sub Count")
-		aryTotalAddString.Add("Sub Total")
+		If Not mbIsBradfordIndexReport Then
+			aryAverageAddString.Add("Sub Average")
+			aryCountAddString.Add("Sub Count")
+			aryTotalAddString.Add("Sub Total")
+		End If
 
 		iLoop = 0
 		For Each objReportItem In ColumnDetails
@@ -3266,16 +3268,12 @@ CheckRecordSet_ERROR:
 						' Display the value ?
 						fDoValue = False
 						If (objReportItem.IsValueOnChange) Then
-
-							For Each objSort In colSortOrder
-								If objSort.ColExprID = objReportItem.ID Then
-									fDoValue = True	' (iLoop2 <= piSortIndex)
-									Exit For
-								End If
-							Next
+							If colSortOrder.Any(Function(objSort) objSort.ColExprID = objReportItem.ID) Then
+								fDoValue = True
+							End If
 						End If
 
-						If fDoValue Then
+						If fDoValue And bIsColumnVisible Then
 							aryAverageAddString.Add(PopulateGrid_FormatData(objReportItem, objReportItem.LastValue, False, True))
 						ElseIf bIsColumnVisible Then
 							aryAverageAddString.Add("")
@@ -3301,24 +3299,17 @@ CheckRecordSet_ERROR:
 						' Display the value ?
 						fDoValue = False
 						If (objReportItem.IsValueOnChange) Then
-							For Each objSort In colSortOrder
-								If objSort.ColExprID = objReportItem.ID Then
-									fDoValue = True	' (iLoop2 <= piSortIndex)
-									Exit For
-								End If
-							Next
+							If colSortOrder.Any(Function(objSort) objSort.ColExprID = objReportItem.ID) Then
+								fDoValue = True
+							End If
 						End If
 
-						If (mbIsBradfordIndexReport And mblnCustomReportsSummaryReport) And (mbBradfordCount) Then
-							fDoValue = True
-						End If
-
-						If fDoValue Then
+						If fDoValue And bIsColumnVisible Then
 							aryCountAddString.Add(PopulateGrid_FormatData(objReportItem, objReportItem.LastValue, False, True))
 						ElseIf bIsColumnVisible Then
 							aryCountAddString.Add("")
 						End If
-						'        End If
+
 					End If
 
 					If objReportItem.IsTotal Then
@@ -3343,21 +3334,12 @@ CheckRecordSet_ERROR:
 						' Display the value ?
 						fDoValue = False
 						If objReportItem.IsValueOnChange Then
-							For Each objSort In colSortOrder
-								If objSort.ColExprID = objReportItem.ID Then
-									fDoValue = True	' (iLoop2 <= piSortIndex)
-									Exit For
-								End If
-							Next
-						End If
-
-						If (mbIsBradfordIndexReport And mblnCustomReportsSummaryReport) Then
-							If Not mbBradfordCount Then
+							If colSortOrder.Any(Function(objSort) objSort.ColExprID = objReportItem.ID) Then
 								fDoValue = True
 							End If
 						End If
 
-						If fDoValue Then
+						If fDoValue And bIsColumnVisible Then
 							aryTotalAddString.Add(PopulateGrid_FormatData(objReportItem, objReportItem.LastValue, False, True))
 						ElseIf bIsColumnVisible Then
 							aryTotalAddString.Add("")
@@ -3396,13 +3378,15 @@ CheckRecordSet_ERROR:
 			End If
 
 			If Not mblnCustomReportsSummaryReport Then
-				'If fHasAverage Or fHasCount Or fHasTotal Then
 				NEW_AddToArray_Data(RowType.Data, "")
 				mintPageBreakRowIndex += 1
-				'End If
 			End If
 
 		Else
+
+			Dim iSummaryColumn As Integer = CInt(If(mbDisplayBradfordDetail, 9, 4))
+			Dim iDurationColumn As Integer = CInt(If(mbDisplayBradfordDetail, 11, 5))
+			Dim iIncludedDaysColumn As Integer = CInt(If(mbDisplayBradfordDetail, 12, 6))
 
 			' Build Bradford Total Summary
 			If mbDisplayBradfordDetail Then
@@ -3411,12 +3395,11 @@ CheckRecordSet_ERROR:
 				aryTotalAddString(2) = vbNullString
 				aryTotalAddString(3) = vbNullString
 				aryTotalAddString(4) = vbNullString
-				aryTotalAddString(5) = vbNullString
 			End If
 
 			' Add the summary lines
 			If mbBradfordCount Then
-				aryCountAddString(10) = "Instances"
+				aryCountAddString(iSummaryColumn) = "Instances"
 				NEW_AddToArray_Data(RowType.Count, aryCountAddString)
 				mintPageBreakRowIndex = mintPageBreakRowIndex + 1
 			End If
@@ -3426,21 +3409,21 @@ CheckRecordSet_ERROR:
 			aryTotalAddString(2) = vbNullString
 			aryTotalAddString(3) = vbNullString
 			aryTotalAddString(4) = vbNullString
-			aryTotalAddString(5) = vbNullString
 
 			If mbBradfordTotals Then
-				aryTotalAddString(10) = "Total"
+				aryTotalAddString(iSummaryColumn) = "Total"
 				NEW_AddToArray_Data(RowType.Total, aryTotalAddString)
 			End If
 
 			' Calculate Bradford index line
-			aryTotalAddString(10) = "Bradford Factor"
+			aryTotalAddString(iSummaryColumn) = "Bradford Factor"
+
 			If mbBradfordWorkings = True Then
-				aryTotalAddString(12) = CStr(Val(aryTotalAddString(12)) * (miAmountOfRecords * miAmountOfRecords)) & " (" & Str(miAmountOfRecords) & Chr(178) & " * " & aryTotalAddString(12) & ")"
-				aryTotalAddString(13) = CStr(Val(aryTotalAddString(13)) * (miAmountOfRecords * miAmountOfRecords)) & " (" & Str(miAmountOfRecords) & Chr(178) & " * " & aryTotalAddString(13) & ")"
+				aryTotalAddString(iDurationColumn) = CStr(Val(aryTotalAddString(iDurationColumn)) * (miAmountOfRecords * miAmountOfRecords)) & " (" & Str(miAmountOfRecords) & Chr(178) & " * " & aryTotalAddString(iDurationColumn) & ")"
+				aryTotalAddString(iIncludedDaysColumn) = CStr(Val(aryTotalAddString(iIncludedDaysColumn)) * (miAmountOfRecords * miAmountOfRecords)) & " (" & Str(miAmountOfRecords) & Chr(178) & " * " & aryTotalAddString(iIncludedDaysColumn) & ")"
 			Else
-				aryTotalAddString(12) = CStr(CDbl(aryTotalAddString(12)) * (miAmountOfRecords * miAmountOfRecords))
-				aryTotalAddString(13) = CStr(CDbl(aryTotalAddString(13)) * (miAmountOfRecords * miAmountOfRecords))
+				aryTotalAddString(iDurationColumn) = CStr(CDbl(aryTotalAddString(iDurationColumn)) * (miAmountOfRecords * miAmountOfRecords))
+				aryTotalAddString(iIncludedDaysColumn) = CStr(CDbl(aryTotalAddString(iIncludedDaysColumn)) * (miAmountOfRecords * miAmountOfRecords))
 			End If
 			NEW_AddToArray_Data(RowType.BradfordCalculation, aryTotalAddString)
 

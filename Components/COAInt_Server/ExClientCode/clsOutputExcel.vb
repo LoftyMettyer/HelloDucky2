@@ -422,9 +422,12 @@ Namespace ExClientCode
 											stlDecimal.Custom = "@"
 										End If
 
-										.SetStyle(stlDecimal)
 										If IsNumeric(strArray(lngGridCol, lngGridRow)) Then
+											.SetStyle(stlDecimal)
 											.PutValue(CDbl(strArray(lngGridCol, lngGridRow)))
+										Else
+											.SetStyle(stlGeneral)
+											.PutValue(strArray(lngGridCol, lngGridRow))
 										End If
 
 									End If

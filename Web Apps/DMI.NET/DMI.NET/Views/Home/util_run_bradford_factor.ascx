@@ -320,7 +320,7 @@
 
 	             	 Session("CustomReport") = objReport
 	
-	             	 gridReportData.DataSource = objReport.datCustomReportOutput
+	gridReportData.DataSource = objReport.ReportDataTable
 	             	 gridReportData.DataBind()
 		
 		Dim fNoRecords As Boolean
@@ -361,14 +361,14 @@
 %>
 
 <form id="formReportData" runat="server">
-	<asp:GridView ID="gridReportData" runat="server" 	
-		AllowPaging="False"		 
+	<asp:GridView ID="gridReportData" runat="server"
+		AllowPaging="False"
 		GridLines="None"
 		CssClass="visibletablecolumn"
 		ClientIDMode="Static">
 		<Columns>
-			<asp:BoundField DataField="rowtype" ItemStyle-CssClass="hiddentablecolumn" HeaderText="" />
-		</Columns>		
+			<asp:BoundField DataField="rowtype" HeaderText="rowType" />
+		</Columns>
 	</asp:GridView>
 </form>
 
@@ -442,12 +442,6 @@
 						<tr>
 						<td colspan="3" height="10">&nbsp;</td>
 						</tr>
-						<%--<tr> 
-							<td colspan=3 height=10 align=center>
-														<input type="button" id="cmdClose" name="cmdClose" value="Close" style="WIDTH: 80px" width="80" class="btn"
-																onclick="closeclick();" />
-												</td>
-						</tr>--%>
 						<tr> 
 						<td colspan="3" height="10"></td>
 						</tr>
@@ -484,64 +478,40 @@ End If
 
 		<script runat="server">
 
-			Protected Sub gridReportData_DataBound(sender As Object, e As EventArgs) Handles gridReportData.DataBound
-			End Sub
-			
 			Protected Sub gridReportData_RowDataBound(sender As Object, e As GridViewRowEventArgs) Handles gridReportData.RowDataBound
-
+		
 				Dim objReport As Report = CType(Session("CustomReport"), Report)
 				Dim objThisColumn As ReportDetailItem
-				Dim bGroupWithNext As Boolean
-				
+
 				If e.Row.RowType = DataControlRowType.Header Or e.Row.RowType = DataControlRowType.Footer Then
 					e.Row.CssClass = "header"
-					
-					For iCount = 2 To objReport.datCustomReportOutput.Columns.Count - 1
-						objThisColumn = objReport.DisplayColumns(iCount - 2)
-
-						e.Row.Cells(iCount).Visible = Not objThisColumn.IsHidden And Not bGroupWithNext
-						bGroupWithNext = objThisColumn.GroupWithNextColumn
-
-					Next
-					
+			
 				Else
 
 					If e.Row.Cells(0).Text = HR.Intranet.Server.Enums.RowType.GrandSummary Then
 						e.Row.CssClass = "grandsummaryrow"
-						
-					ElseIf e.Row.Cells(0).Text = HR.Intranet.Server.Enums.RowType.BradfordCalculation Then
-						e.Row.CssClass = "spaceUnder summarytablerow"
-										
+					
 					ElseIf Not e.Row.Cells(0).Text = HR.Intranet.Server.Enums.RowType.Data Then
 						e.Row.CssClass = "summarytablerow"
-						
-					End If
 					
-				End If
+					End If
 							
-				e.Row.Cells(0).Visible = False
-				
-				If Not objReport.HasSummaryColumns Then
-					e.Row.Cells(1).Visible = False
 				End If
 
-				For iCount = 2 To objReport.datCustomReportOutput.Columns.Count - 1
+				For iCount = 1 To objReport.ReportDataTable.Columns.Count - 1
 						
-					objThisColumn = objReport.DisplayColumns(iCount - 2)
+					objThisColumn = objReport.DisplayColumns(iCount)
 					
 					If objThisColumn.IsNumeric Then
 						e.Row.Cells(iCount).HorizontalAlign = HorizontalAlign.Right
 					Else
 						e.Row.Cells(iCount).HorizontalAlign = HorizontalAlign.Left
 					End If
-
-					If Session("utiltype") = UtilityType.utlBradfordFactor Then
-						e.Row.Cells(iCount).Visible = Not objThisColumn.IsHidden
-					End If
-					
+	
 				Next
-				
+
 			End Sub
+
 			
 		</script>
 		
@@ -571,5 +541,17 @@ End If
 
 
 <script type="text/javascript">
-	tableToGrid("#gridReportData");
+
+	tableToGrid("#gridReportData", {
+		shrinkToFit: true,
+		width: 'auto',
+		height: 'auto',
+		ignoreCase: true,
+		cmTemplate: { sortable: false },
+		rowNum: 200000,
+		loadComplete: function () {
+			$('#gridReportData').hideCol("rowType");
+		}
+	});
+
 </script>
