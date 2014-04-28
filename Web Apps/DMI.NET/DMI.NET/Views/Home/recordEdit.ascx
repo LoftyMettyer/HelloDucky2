@@ -368,12 +368,12 @@
 			});
 			
 			//Text area (Notes field, etc.)
-			$('textarea').on("keypress", function() {
+			$('textarea:not([readonly])').on("keypress", function () {
 				$("#ctlRecordEdit #changed").val("false");
 				enableSaveButton();
 			});
 
-			$('textarea').on("keyup", function () { //Keyup catches more keys than keypress (for example, Backspace)
+			$('textarea:not([readonly])').on("keyup", function () { //Keyup catches more keys than keypress (for example, Backspace)
 				$("#ctlRecordEdit #changed").val("false");
 				enableSaveButton();
 			});

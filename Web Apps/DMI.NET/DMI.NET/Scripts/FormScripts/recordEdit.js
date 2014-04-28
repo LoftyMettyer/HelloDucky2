@@ -1255,7 +1255,7 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
 			break;
 		case 64: //ctlText
 			var textbox;
-			if (Number(controlItemArray[37]) !== 0) {
+			if (Number(controlItemArray[37]) !== 0) {				
 				//Multi-line textbox
 				textbox = document.createElement('textarea'); //textbox.disabled = false;  //always enabled.
 			} else {
@@ -1374,6 +1374,10 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
 				} else {
 					$(textbox).css('text-align', 'center');
 				}
+				
+				//add readonly property for multiline textboxes if necessary
+				if (fReadOnly) $(textbox).attr('readonly', 'readonly').css('color', 'gray');
+
 			}
 
 			//Check if control should be disabled (read only or screen read only)
