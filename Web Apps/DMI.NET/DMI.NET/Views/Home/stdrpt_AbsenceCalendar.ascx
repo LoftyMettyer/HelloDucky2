@@ -274,10 +274,10 @@ if objAbsenceCalendar.ReportFailed = false then
 										<TR>
 										<!-- OK/Print Buttons -->
 										<td colspan=2 align=right>
-				            <input id="cmdPrint" name="cmdPrint" type="button" value="Print" style="HEIGHT: 25px; WIDTH: 80px" class="btn"
+				            <input id="cmdPrint" name="cmdPrint" type="button" value="Print" style="WIDTH: 80px" class="btn"
 												onclick="PrintGrid()" />
 														&nbsp; 
-										<input id="cmdOK" name="cmdOK" type="button" value="Back" style="HEIGHT: 25px; WIDTH: 80px" class="btn"
+										<input id="cmdOK" name="cmdOK" type="button" value="Back" style="WIDTH: 80px" class="btn"
 												onclick="absence_calendar_OKClick()" />
 												</td>
 								</TR>
