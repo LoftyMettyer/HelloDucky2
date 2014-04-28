@@ -2924,7 +2924,6 @@ Namespace Controllers
 				, CBool(objUser.GetUserSetting("Output", "Landscape", True)) _
 				, False)
 
-			Dim arrayColumnsDefinition() As String
 			Dim arrayPageBreakValues
 			Dim arrayVisibleColumns
 			Dim sEmailAddresses As String = ""
@@ -2951,11 +2950,8 @@ Namespace Controllers
 
 			fOK = ClientDLL.SetOptions(False, lngOutputFormat, False, False, "", True, False, False, 0, "", "", strDownloadExtension)
 
-
-			arrayColumnsDefinition = objReport.OutputArray_Columns
 			arrayPageBreakValues = objReport.OutputArray_PageBreakValues
 			arrayVisibleColumns = objReport.OutputArray_VisibleColumns
-
 
 			ClientDLL.SizeColumnsIndependently = True
 
@@ -2965,37 +2961,35 @@ Namespace Controllers
 			Dim sBreakValue As String
 			Dim blnBreakCheck As Boolean
 			Dim bIsCol1000 As Boolean
-			Dim lngActualRow As Integer
 			Dim lngCol As Integer
-			Dim lngRow As Integer
+
+			Dim lngDataPageRow As Integer
+			Dim lngDataRow As Integer
+			Dim iBreakCount As Integer
 
 			ClientDLL.ArrayDim(UBound(arrayVisibleColumns, 2), 0)
 
-			If lngOutputFormat = OutputFormats.fmtDataOnly Then
+			If Not lngOutputFormat = OutputFormats.fmtDataOnly Then
 
-			Else
 				ClientDLL.HeaderRows = 1
 				If ClientDLL.GetFile() = True Then
 
 					If objReport.ReportHasPageBreak Then
 
 						ClientDLL.ArrayDim(UBound(arrayVisibleColumns, 2), 0)
-						lngActualRow = 0
-						lngRow = 0
+						lngDataRow = 0
+						iBreakCount = 0
 
 						For Each objRow As DataRow In objReport.ReportDataTable.Rows
 
-							lngRow += 1
-							lngActualRow += 1
-							If lngRow = objReport.ReportDataTable.Rows.Count Then
+							lngDataRow += 1
+							lngDataPageRow += 1
+
+							If lngDataRow = objReport.ReportDataTable.Rows.Count Then
 
 								If objReport.ReportHasSummaryInfo Then
 									sBreakValue = "Grand Totals"
-								Else
-									sBreakValue = arrayPageBreakValues(lngRow)
-								End If
 
-								If (lngActualRow > 0) Then
 									If bBradfordFactor = True Then
 										ClientDLL.AddPage(objReport.ReportCaption, "Bradford Factor")
 									Else
@@ -3011,14 +3005,10 @@ Namespace Controllers
 									Next
 
 									ClientDLL.DataArray()
-									lngActualRow = 0
-									blnBreakCheck = True
-									sBreakValue = ""
-
 								End If
 
-							ElseIf objRow(1).ToString() = "*" And Not blnBreakCheck Then
-								sBreakValue = arrayPageBreakValues(lngRow)
+							ElseIf CInt(objRow(0)) = RowType.PageBreak And Not blnBreakCheck Then
+								sBreakValue = arrayPageBreakValues(iBreakCount)
 
 								If bBradfordFactor = True Then
 									ClientDLL.AddPage(objReport.ReportCaption, "Bradford Factor")
@@ -3037,19 +3027,21 @@ Namespace Controllers
 
 								ClientDLL.DataArray()
 								ClientDLL.ArrayDim(UBound(arrayVisibleColumns, 2), 0)
-								lngActualRow = 0
 								blnBreakCheck = True
 								ClientDLL.ResetColumns()
 								ClientDLL.ResetStyles()
+								lngDataPageRow = 0
 
-							ElseIf Not objRow(1).ToString() = "*" Then
+								iBreakCount += 1
+							Else
+
 								blnBreakCheck = False
 								lngCol = 0
 
 								ClientDLL.ArrayReDim()
 
-								For lngCount = 1 To UBound(arrayVisibleColumns, 2) + 1
-									ClientDLL.ArrayAddTo(lngCol, lngActualRow, objRow.Item(lngCount + 1).ToString())
+								For lngCount = 0 To UBound(arrayVisibleColumns, 2)
+									ClientDLL.ArrayAddTo(lngCol, lngDataPageRow, objRow.Item(lngCount + 1).ToString())
 									lngCol += 1
 								Next
 
@@ -3083,7 +3075,7 @@ Namespace Controllers
 						Next
 
 
-						lngRow = 1
+						lngDataRow = 1
 						For Each objRow As DataRow In objReport.ReportDataTable.Rows
 
 							If lngOutputFormat = OutputFormats.fmtExcelGraph Then
@@ -3095,10 +3087,10 @@ Namespace Controllers
 							End If
 
 							For iCountColumns = 1 To objReport.ReportDataTable.Columns.Count - 1
-								ClientDLL.ArrayAddTo(iCountColumns - 1, lngRow, objRow(iCountColumns).ToString())
+								ClientDLL.ArrayAddTo(iCountColumns - 1, lngDataRow, objRow(iCountColumns).ToString())
 							Next
 
-							lngRow += 1
+							lngDataRow += 1
 
 						Next
 

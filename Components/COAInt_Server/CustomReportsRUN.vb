@@ -75,16 +75,14 @@ Public Class Report
 	Private colSortOrder As List(Of ReportSortItem)
 	Public DisplayColumns As List(Of ReportDetailItem)
 
-	Dim mstrExcelFormats() As String
 	Dim mvarVisibleColumns(,) As Object
 
 	'Array used to store the 'GroupWithNextColumn' option strings.
 	Private mvarGroupWith(,) As Object
 
 	'Array used to store the 'POC' values when outputting.
-	Private mvarPageBreak() As String
+	Private mvarPageBreak As ArrayList
 	Private mblnPageBreak As Boolean
-	Private mintPageBreakRowIndex As Integer
 
 	' String to hold the temp table name
 	Private mstrTempTableName As String
@@ -98,7 +96,6 @@ Public Class Report
 	' Is this a Bradford Index Report
 	Private mbIsBradfordIndexReport As Boolean
 
-	Private mvarOutputArray_Columns() As String
 	Private mvarOutputArray_Data As ArrayList
 	Private mvarPrompts(,) As Object
 
@@ -316,32 +313,9 @@ Public Class Report
 		End Get
 	End Property
 
-	Public ReadOnly Property OutputArray_Columns() As String()
-		Get
-			Return mvarOutputArray_Columns
-		End Get
-	End Property
-
 	Public ReadOnly Property OutputArray_PageBreakValues() As String()
 		Get
-			Return mvarPageBreak
-		End Get
-	End Property
-
-	Public ReadOnly Property OutputArray_ExcelFormats() As Object
-		Get
-			Dim avTemp() As Object
-			Dim iLoop As Integer
-
-			ReDim avTemp(UBound(mstrExcelFormats))
-
-			For iLoop = LBound(mstrExcelFormats) To UBound(mstrExcelFormats)
-				'UPGRADE_WARNING: Couldn't resolve default property of object avTemp(iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				avTemp(iLoop) = mstrExcelFormats(iLoop)
-			Next iLoop
-
-			OutputArray_ExcelFormats = VB6.CopyArray(avTemp)
-
+			Return CType(mvarPageBreak.ToArray(GetType(String)), String())
 		End Get
 	End Property
 
@@ -508,12 +482,11 @@ ErrorTrap:
 
 		ReDim mlngTableViews(2, 0)
 		ReDim mstrViews(0)
-		ReDim mvarOutputArray_Columns(0)
 		mvarOutputArray_Data = New ArrayList()
 		ReDim mvarVisibleColumns(3, 0)
 
 		ReDim mvarGroupWith(1, 0)
-		ReDim mvarPageBreak(0)
+		mvarPageBreak = New ArrayList()
 
 		' By default this is not a Bradford Index Report
 		mbIsBradfordIndexReport = False
@@ -717,8 +690,6 @@ GetCustomReportDefinition_ERROR:
 
 			For Each objRow As DataRow In mrstCustomReportsDetails.Rows
 				objReportItemDetail = New ReportDetailItem
-
-				ReDim Preserve mstrExcelFormats(intTemp) 'MH20010307
 
 				'*************************************************************************
 				'Now we need to decide on what the heading needs to be because QA want to
@@ -2733,11 +2704,9 @@ CheckRecordSet_ERROR:
 
 
 				If mblnPageBreak Then
-					NEW_AddToArray_Data(RowType.PageBreak, "*")
-
-					mintPageBreakRowIndex += 1
-					AddPageBreakValue(mintPageBreakRowIndex, sBreakValue)
+					mvarPageBreak.Add(sBreakValue)
 				End If
+
 				mblnPageBreak = False
 				sBreakValue = vbNullString
 
@@ -2860,15 +2829,11 @@ CheckRecordSet_ERROR:
 						Return False
 
 					Else
-						mintPageBreakRowIndex += 1
-
 						If blnHasGroupWithNext Then
 							strGroupString = vbNullString
 							For intGroupCount = 0 To UBound(mvarGroupWith, 2) Step 1
 								'UPGRADE_WARNING: Couldn't resolve default property of object mvarGroupWith(0, intGroupCount). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 								strGroupString = strGroupString & vbNewLine & mvarGroupWith(0, intGroupCount)
-
-								mintPageBreakRowIndex += 1
 							Next intGroupCount
 
 							AddToArray_Data(strGroupString, RowType.Data)
@@ -2926,26 +2891,14 @@ CheckRecordSet_ERROR:
 
 
 			If mblnPageBreak Then
-				mintPageBreakRowIndex += 1
-				AddPageBreakValue(mintPageBreakRowIndex, sBreakValue)
+				mvarPageBreak.Add(sBreakValue)
 			End If
 			sBreakValue = vbNullString
 
 			' Now do the grand summary information
 			If Not mbIsBradfordIndexReport Then
 				PopulateGrid_DoGrandSummary()
-
-				If mblnPageBreak And mblnDoesHaveGrandSummary Then
-					AddPageBreakValue(mintPageBreakRowIndex, sBreakValue)
-					mintPageBreakRowIndex += 1
-				End If
-
 			End If
-
-			If Not NEW_AddToArray_Data(RowType.Data, Nothing) Then
-				Return False
-			End If
-
 
 		Catch ex As Exception
 			mstrErrorString = mstrErrorString & "LOADRECORDS_ERROR (In Dll) - Error in PopulateGrid_LoadRecords." & vbNewLine & ex.Message
@@ -2958,13 +2911,6 @@ CheckRecordSet_ERROR:
 		Return True
 
 	End Function
-
-	Private Sub AddPageBreakValue(pintRowIndex As Integer, psValue As String)
-
-		ReDim Preserve mvarPageBreak(pintRowIndex)
-		mvarPageBreak(pintRowIndex) = psValue
-
-	End Sub
 
 	Private Function PopulateGrid_FormatData(objReportItem As ReportDetailItem, vData As Object, mbSuppressRepeated As Boolean, pbNewBaseRecord As Boolean) As String
 		'Private Function PopulateGrid_FormatData(ByVal sfieldname As String, ByVal vData As Object, ByVal mbSuppressRepeated As Boolean, ByVal pbNewBaseRecord As Boolean) As Object
@@ -3364,22 +3310,18 @@ CheckRecordSet_ERROR:
 
 			If fHasAverage Then
 				NEW_AddToArray_Data(RowType.Average, aryAverageAddString)
-				mintPageBreakRowIndex += 1
 			End If
 
 			If fHasCount Then
 				NEW_AddToArray_Data(RowType.Count, aryCountAddString)
-				mintPageBreakRowIndex += 1
 			End If
 
 			If fHasTotal Then
 				NEW_AddToArray_Data(RowType.Total, aryTotalAddString)
-				mintPageBreakRowIndex += 1
 			End If
 
 			If Not mblnCustomReportsSummaryReport Then
-				NEW_AddToArray_Data(RowType.Data, "")
-				mintPageBreakRowIndex += 1
+				NEW_AddToArray_Data(RowType.PageBreak, "")
 			End If
 
 		Else
@@ -3401,7 +3343,6 @@ CheckRecordSet_ERROR:
 			If mbBradfordCount Then
 				aryCountAddString(iSummaryColumn) = "Instances"
 				NEW_AddToArray_Data(RowType.Count, aryCountAddString)
-				mintPageBreakRowIndex = mintPageBreakRowIndex + 1
 			End If
 
 			aryTotalAddString(0) = vbNullString
@@ -3425,9 +3366,9 @@ CheckRecordSet_ERROR:
 				aryTotalAddString(iDurationColumn) = CStr(CDbl(aryTotalAddString(iDurationColumn)) * (miAmountOfRecords * miAmountOfRecords))
 				aryTotalAddString(iIncludedDaysColumn) = CStr(CDbl(aryTotalAddString(iIncludedDaysColumn)) * (miAmountOfRecords * miAmountOfRecords))
 			End If
-			NEW_AddToArray_Data(RowType.BradfordCalculation, aryTotalAddString)
 
-			mintPageBreakRowIndex += 1
+			NEW_AddToArray_Data(RowType.BradfordCalculation, aryTotalAddString)
+			NEW_AddToArray_Data(RowType.PageBreak, "")
 
 		End If
 
@@ -3629,17 +3570,14 @@ CheckRecordSet_ERROR:
 
 			If fHasAverage Then
 				NEW_AddToArray_Data(RowType.GrandSummary, aryAverageAddString)
-				mintPageBreakRowIndex += 1
 			End If
 
 			If fHasCount Then
 				NEW_AddToArray_Data(RowType.GrandSummary, aryCountAddString)
-				mintPageBreakRowIndex += 1
 			End If
 
 			If fHasTotal Then
 				NEW_AddToArray_Data(RowType.GrandSummary, aryTotalAddString)
-				mintPageBreakRowIndex += 1
 			End If
 
 		Catch ex As Exception
@@ -4303,8 +4241,6 @@ GenerateSQLBradford_ERROR:
 
 				objReportItem = New ReportDetailItem
 
-				ReDim Preserve mstrExcelFormats(iCount)
-
 				lngColumnID = CInt(aStrRequiredFields(iCount, 1))
 				lngTableID = GetTableIDFromColumn(lngColumnID)
 
@@ -4457,8 +4393,6 @@ GenerateSQLBradford_ERROR:
 
 		' Force duration and included days to be numeric format in Excel
 		iCount = 11 - IIf(lbHideStaffNumber = True, 1, 0)
-		mstrExcelFormats(iCount) = "0.0"
-		mstrExcelFormats(iCount + 1) = "0.0"
 
 		Return True
 
