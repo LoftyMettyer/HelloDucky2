@@ -2699,7 +2699,7 @@ function menu_saveChanges(psAction, pfPrompt, pfTBOverride) {
 	function menu_loadFindPage() {
 	var frmWorkArea;
 	var frmRecEdit;
-	
+		
 	menu_ShowWait("Loading find records...");
 	menu_disableMenu();   // HC: Is this correct? It will only disable RecEdit buttons
 	
@@ -2715,10 +2715,11 @@ function menu_saveChanges(psAction, pfPrompt, pfTBOverride) {
 	frmWorkArea.txtGotoFirstRecPos.value = 1;
 	frmWorkArea.txtGotoCurrentRecCount.value = 0;
 
-	if (frmRecEdit.txtCurrentRecordID.value > 0) {
-	frmWorkArea.txtGotoLocateValue.value = frmRecEdit.txtCurrentRecordID.value;
-	frmWorkArea.txtAction.value = "LOCATEID";
-}	
+	//Fault HRPRO-4094.
+	//if (frmRecEdit.txtCurrentRecordID.value > 0) {
+	//	frmWorkArea.txtGotoLocateValue.value = frmRecEdit.txtCurrentRecordID.value;
+	//	frmWorkArea.txtAction.value = "LOCATEID";
+	//}
 
 	if (frmRecEdit.txtCurrentParentTableID.value > 0) {
 	frmWorkArea.txtGotoParentTableID.value = frmRecEdit.txtCurrentParentTableID.value;
