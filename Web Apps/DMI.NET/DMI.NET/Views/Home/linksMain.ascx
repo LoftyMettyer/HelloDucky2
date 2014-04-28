@@ -1468,6 +1468,10 @@
 	$(document).ready(function () {
 
 		$("#fixedlinksframe").show();
+
+		$("#workframe").attr("data-framesource", "linksmain");
+		$('#workframe').css('height', '100%');
+		//$('#SSILinksFrame').css('height', '100%');
 		
 		showDefaultRibbon();
 
@@ -1483,9 +1487,6 @@
 		}
 
 
-		$("#workframe").attr("data-framesource", "linksmain");
-		$('#workframe').css('height', '100%');
-		//$('#SSILinksFrame').css('height', '100%');
 
 		refreshPendingWorkflowTiles();
 

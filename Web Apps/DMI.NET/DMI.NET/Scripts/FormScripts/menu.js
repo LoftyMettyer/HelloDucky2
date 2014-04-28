@@ -1387,11 +1387,15 @@ function showDefaultRibbon() {
 	$("#toolbarWFPendingStepsFind").parent().hide();
 	$("#toolbarAdminConfig").parent().hide();
 
-	// Hide the Self-service or OpenHR button, as appropriate
+	// Hide the Self-service or OpenHR button, as appropriate	
 	if (menu_isSSIMode()) {
-			$("#mnutoolFixedSelfService").hide();
+		$("#mnutoolFixedSelfService").hide();
+		if ((OpenHR.currentWorkPage() == 'LINKSMAIN') && (window.currentLayout == 'tiles'))
+			$('#searchBox').show();
+		else
+			$('#searchBox').hide();
 	} else {
-			$("#mnutoolFixedOpenHR").hide();
+		$("#mnutoolFixedOpenHR").hide();
 	}
 }
 
