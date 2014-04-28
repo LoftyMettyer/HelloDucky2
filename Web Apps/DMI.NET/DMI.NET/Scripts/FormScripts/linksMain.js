@@ -145,20 +145,9 @@ function isEMail(psURL) {
 	return (pblnIsEMail);
 }
 
-function refreshSession() {
-	// Submit the refresh.asp to keep the session alive
-	try {
-		var frmRefresh = document.getElementById('frmRefresh');
-		OpenHR.submitForm(frmRefresh);
-	}
-	catch (e) { }
-}
-
 function relocateURL(psUrl, pfNewWindow) {
 
 	if (!dragged) {
-		// Submit the refresh.asp to keep the session alive
-		refreshSession();
 
 		//NPG20081102 Fault 12873
 		if (isEMail(psUrl) == 0) {
@@ -221,7 +210,6 @@ function goScreen(psScreenInfo) {
 	//reset drag value
 	dragged = 0;
 	// Submit the refresh.asp to keep the session alive
-	//refreshSession();
 	//psScreenInfo = escape(psScreenInfo);
 
 	//sDestination = "recordEditMain.asp?";

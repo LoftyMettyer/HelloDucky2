@@ -313,7 +313,7 @@
 
 	Session("CustomReport") = objReport
 	
-	gridReportData.DataSource = objReport.datCustomReportOutput
+	gridReportData.DataSource = objReport.ReportDataTable
 	gridReportData.DataBind()
 		
 	Dim fNoRecords As Boolean
@@ -360,7 +360,7 @@
 		CssClass="visibletablecolumn"
 		ClientIDMode="Static">
 		<Columns>
-			<asp:BoundField DataField="rowtype" ItemStyle-CssClass="hiddentablecolumn" HeaderText="" />
+			<asp:BoundField DataField="rowtype" HeaderText="rowType" />
 		</Columns>
 	</asp:GridView>
 </form>
@@ -485,28 +485,15 @@ End If
 
 <script runat="server">
 
-	Protected Sub gridReportData_DataBound(sender As Object, e As EventArgs) Handles gridReportData.DataBound
-	End Sub
-
 	Protected Sub gridReportData_RowDataBound(sender As Object, e As GridViewRowEventArgs) Handles gridReportData.RowDataBound		
 		
 		Dim objReport As Report = CType(Session("CustomReport"), Report)
 		Dim objThisColumn As ReportDetailItem
-		Dim bGroupWithNext As Boolean
 
 		If e.Row.RowType = DataControlRowType.Header Or e.Row.RowType = DataControlRowType.Footer Then
 			e.Row.CssClass = "header"
 			ReportColumnCount = 0
 			
-			For iCount = 2 To objReport.datCustomReportOutput.Columns.Count - 1
-				objThisColumn = objReport.DisplayColumns(iCount - 2)
-
-				e.Row.Cells(iCount).Visible = Not objThisColumn.IsHidden And Not bGroupWithNext
-				bGroupWithNext = objThisColumn.GroupWithNextColumn
-
-				If e.Row.Cells(iCount).Visible Then ReportColumnCount += 1
-			Next
-					
 		Else
 
 			If e.Row.Cells(0).Text = HR.Intranet.Server.Enums.RowType.GrandSummary Then
@@ -514,21 +501,14 @@ End If
 					
 			ElseIf Not e.Row.Cells(0).Text = HR.Intranet.Server.Enums.RowType.Data Then
 				e.Row.CssClass = "summarytablerow"
-			Else
-				'e.Row.CssClass = "ui-widget-content jqgrow ui-row-ltr"
-			End If
 					
 		End If
 							
-		e.Row.Cells(0).Visible = False
-				
-		If Not objReport.HasSummaryColumns Then
-			e.Row.Cells(1).Visible = False
 		End If
 
-		For iCount = 2 To objReport.datCustomReportOutput.Columns.Count - 1
+		For iCount = 1 To objReport.ReportDataTable.Columns.Count - 1
 						
-			objThisColumn = objReport.DisplayColumns(iCount - 2)
+			objThisColumn = objReport.DisplayColumns(iCount)
 					
 			If objThisColumn.IsNumeric Then
 				e.Row.Cells(iCount).HorizontalAlign = HorizontalAlign.Right
@@ -536,12 +516,6 @@ End If
 				e.Row.Cells(iCount).HorizontalAlign = HorizontalAlign.Left
 			End If
 	
-			If Session("utiltype") = UtilityType.utlBradfordFactor Then
-				e.Row.Cells(iCount).Visible = Not objThisColumn.IsHidden
-			Else
-				e.Row.Cells(iCount).Visible = Not (objThisColumn.IDColumnName.StartsWith("?"))
-			End If
-			
 		Next
 
 	End Sub
@@ -609,11 +583,12 @@ End If
 		cmTemplate: { sortable: false },
 		rowNum: 200000,
 		loadComplete: function () {
+			$('#gridReportData').hideCol("rowType");
 			stylejqGrid();
 		}
 	});
 
-
+	$('#gview_gridReportData td').css('white-space', 'pre-line');
 
 	function stylejqGrid() {
 		//jqGrid style overrides

@@ -146,19 +146,30 @@ Public Class Report
 	'Runnning report for single record only!
 	Private mlngSingleRecordID As Integer
 
-	Public datCustomReportOutput As DataTable
-
+	Public ReportDataTable As DataTable
 
 	Private Sub datCustomReportOutput_Start()
-		datCustomReportOutput = New DataTable()
+
+		ReportDataTable = New DataTable()
 		DisplayColumns = New List(Of ReportDetailItem)
 
-		datCustomReportOutput.Columns.Add("rowType", GetType(RowType))
-		datCustomReportOutput.Columns.Add("Summary Info", GetType(String))
+		Dim bGroupWithNext As Boolean = False
+
+		ReportDataTable.Columns.Add("rowType", GetType(RowType))
+		DisplayColumns.Add(New ReportDetailItem With {.IsHidden = True, .ColumnName = "rowType"})
+
+		If mblnReportHasSummaryInfo Then
+			DisplayColumns.Add(New ReportDetailItem With {.IsHidden = True, .ColumnName = "Summary Info"})
+			ReportDataTable.Columns.Add("Summary Info", GetType(String))
+		End If
 
 		For Each objItem In ColumnDetails
-			datCustomReportOutput.Columns.Add(objItem.IDColumnName, GetType(String))
-			DisplayColumns.Add(objItem)
+			If Not (objItem.IsHidden Or bGroupWithNext) Then
+				DisplayColumns.Add(objItem)
+				ReportDataTable.Columns.Add(objItem.IDColumnName, GetType(String))
+			End If
+			bGroupWithNext = objItem.GroupWithNextColumn
+
 		Next
 
 	End Sub
@@ -579,18 +590,16 @@ AddTempTableToSQL_ERROR:
 
 			' Dont run if its been deleted by another user.
 			If .Rows.Count = 0 Then
-				GetCustomReportDefinition = False
 				mstrErrorString = "Report has been deleted by another user."
-				Exit Function
+				Return False
 			End If
 
 			Dim rowData = rsDefinition.Rows(0)
 
 			' RH 29/05/01 - Dont run if its been made hidden by another user.
 			If LCase(rowData("Username").ToString()) <> LCase(_login.Username) And CurrentUserAccess(UtilityType.utlCustomReport, mlngCustomReportID) = ACCESS_HIDDEN Then
-				GetCustomReportDefinition = False
 				mstrErrorString = "Report has been made hidden by another user."
-				Exit Function
+				Return False
 			End If
 
 			Name = rowData("Name").ToString()
@@ -650,13 +659,12 @@ AddTempTableToSQL_ERROR:
 		miChildTablesCount = i
 
 		If Not IsRecordSelectionValid() Then
-			GetCustomReportDefinition = False
-			Exit Function
+			Return False
 		End If
 
-		GetCustomReportDefinition = True
 
 		Logs.AddHeader(EventLog_Type.eltCustomReport, Name)
+		Return True
 
 TidyAndExit:
 
@@ -698,14 +706,12 @@ GetCustomReportDefinition_ERROR:
 		Dim objExpr As clsExprExpression
 		With mrstCustomReportsDetails
 			If .Rows.Count = 0 Then
-				GetDetailsRecordsets = False
 				mstrErrorString = "No columns found in the specified Custom Report definition." & vbNewLine & "Please remove this definition and create a new one."
-				Exit Function
+				Return False
 			End If
 
 			If Not CheckCalcsStillExist() Then
-				GetDetailsRecordsets = False
-				Exit Function
+				Return False
 			End If
 
 
@@ -936,6 +942,14 @@ GetCustomReportDefinition_ERROR:
 
 		'******************************************************************************
 
+		' Calculate if we are going to need summary columns
+		For Each objItem In ColumnDetails
+			If objItem.IsAverage Or objItem.IsTotal Or objItem.IsCount Then
+				mblnReportHasSummaryInfo = True
+				Exit For
+			End If
+		Next
+
 		' Get those columns defined as a SortOrder and load into array
 
 		strTempSQL = "SELECT * FROM ASRSysCustomReportsDetails WHERE CustomReportID = " & mlngCustomReportID & " AND SortOrderSequence > 0 ORDER BY [SortOrderSequence]"
@@ -962,8 +976,8 @@ GetCustomReportDefinition_ERROR:
 		'UPGRADE_NOTE: Object prstCustomReportsSortOrder may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 		prstCustomReportsSortOrder = Nothing
 
-		GetDetailsRecordsets = True
-		Exit Function
+		Return True
+
 
 GetDetailsRecordsets_ERROR:
 
@@ -2821,7 +2835,7 @@ CheckRecordSet_ERROR:
 						' Group with next column
 						If (objNextItem.GroupWithNextColumn And (Not objNextItem.IsHidden)) Then
 							If Not vDisplayData = "" Then
-								sLastValue = sLastValue & vDisplayData & IIf(Not vDisplayData Is "\n", vbNewLine, "")	' & vbNewLine
+								sLastValue = sLastValue & vDisplayData & IIf(Not vDisplayData Is "\n", vbNewLine, "")	'& "<br></br>\n"
 							End If
 
 						Else
@@ -3036,7 +3050,6 @@ CheckRecordSet_ERROR:
 
 	Private Sub PopulateGrid_DoSummaryInfo(pavColumns As ICollection(Of ReportColumn), piColumnIndex As Integer, piSortIndex As Integer)
 
-
 		Dim fDoValue As Boolean
 		Dim iLoop As Integer
 		Dim sSQL As String
@@ -3055,7 +3068,7 @@ CheckRecordSet_ERROR:
 		Dim aryCountAddString As ArrayList
 
 		Dim miAmountOfRecords As Integer
-		Dim intColCounter As Integer = 1
+		Dim bIsColumnVisible As Boolean
 		Dim strAggrValue As String
 		Dim objLastItem As New ReportDetailItem
 		Dim objThisColumn As ReportColumn
@@ -3128,9 +3141,6 @@ CheckRecordSet_ERROR:
 
 				If objReportItem.IsAverage Then
 					' Average.
-					mblnReportHasSummaryInfo = True
-					'aryAverageAddString.Add("Sub Average")
-
 
 					If Not mbIsBradfordIndexReport Then
 						If objReportItem.IsReportChildTable Then
@@ -3159,9 +3169,6 @@ CheckRecordSet_ERROR:
 
 				If objReportItem.IsCount Then
 					' Count.
-					mblnReportHasSummaryInfo = True
-					'aryCountAddString.Add("Sub Count")
-
 					If Not mbIsBradfordIndexReport Then
 						If objReportItem.IsReportChildTable Then
 							sSQL = sSQL & ",(SELECT COUNT([?ID_" & objReportItem.TableName & "]) " & "FROM (SELECT DISTINCT [?ID_" & objReportItem.TableName & "], [" & objReportItem.IDColumnName & "] " & "FROM " & mstrTempTableName & " " & " " & sWhereCode & " "
@@ -3189,7 +3196,6 @@ CheckRecordSet_ERROR:
 				'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(6, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 				If objReportItem.IsTotal Then
 					' Total.
-					mblnReportHasSummaryInfo = True
 					sTotalBradfordAddString = "*total*" & vbTab & "Sub Total"
 
 					If Not mbIsBradfordIndexReport Then
@@ -3232,7 +3238,8 @@ CheckRecordSet_ERROR:
 
 			iLoop = 0
 			For Each objReportItem In ColumnDetails
-				intColCounter = intColCounter + 1
+
+				bIsColumnVisible = Not objReportItem.IsHidden And (Not objReportItem.GroupWithNextColumn) And (Not ColumnDetails.GetByIndex(iLoop).GroupWithNextColumn)
 
 				Dim rowData As DataRow = rsTemp.Rows(0)
 
@@ -3270,9 +3277,8 @@ CheckRecordSet_ERROR:
 
 						If fDoValue Then
 							aryAverageAddString.Add(PopulateGrid_FormatData(objReportItem, objReportItem.LastValue, False, True))
-						Else
+						ElseIf bIsColumnVisible Then
 							aryAverageAddString.Add("")
-
 						End If
 
 					End If
@@ -3309,7 +3315,7 @@ CheckRecordSet_ERROR:
 
 						If fDoValue Then
 							aryCountAddString.Add(PopulateGrid_FormatData(objReportItem, objReportItem.LastValue, False, True))
-						Else
+						ElseIf bIsColumnVisible Then
 							aryCountAddString.Add("")
 						End If
 						'        End If
@@ -3353,7 +3359,7 @@ CheckRecordSet_ERROR:
 
 						If fDoValue Then
 							aryTotalAddString.Add(PopulateGrid_FormatData(objReportItem, objReportItem.LastValue, False, True))
-						Else
+						ElseIf bIsColumnVisible Then
 							aryTotalAddString.Add("")
 						End If
 
@@ -3397,8 +3403,6 @@ CheckRecordSet_ERROR:
 			End If
 
 		Else
-
-			mblnReportHasSummaryInfo = True
 
 			' Build Bradford Total Summary
 			If mbDisplayBradfordDetail Then
@@ -3452,8 +3456,6 @@ CheckRecordSet_ERROR:
 		' Input   : None
 		' Output  : True/False
 
-		On Error GoTo PopulateGrid_DoGrandSummary_ERROR
-
 		Dim iLoop As Integer = 0
 		Dim rsTemp As DataTable
 
@@ -3466,6 +3468,7 @@ CheckRecordSet_ERROR:
 		Dim fHasAverage As Boolean
 		Dim fHasCount As Boolean
 		Dim fHasTotal As Boolean
+		Dim bIsColumnVisible As Boolean
 
 		Dim sSQL As String
 
@@ -3480,90 +3483,7 @@ CheckRecordSet_ERROR:
 		aryCountAddString.Add("Count")
 		aryTotalAddString.Add("Total")
 
-		For Each objReportItem In ColumnDetails
-
-			If objReportItem.IsHidden Then Continue For
-
-			iLoop += 1
-
-			'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(4, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			If objReportItem.IsAverage Then
-				' Average.
-
-				If objReportItem.IsReportChildTable Then
-					sSQL = sSQL & ",(SELECT AVG(convert(float, [" & objReportItem.IDColumnName & "])) FROM (SELECT DISTINCT [?ID_" & objReportItem.TableName & "], [" & objReportItem.IDColumnName & "] FROM " & mstrTempTableName & " "
-
-					If mblnIgnoreZerosInAggregates And objReportItem.IsNumeric Then
-						sSQL = sSQL & "WHERE ([" & objReportItem.IDColumnName & "] <> 0) "
-					End If
-
-					sSQL = sSQL & " ) AS [vt." & Str(iLoop) & "]) AS 'avg_" & Trim(Str(iLoop)) & "'"
-				Else
-					sSQL = sSQL & ",(SELECT AVG(convert(float, [" & objReportItem.IDColumnName & "])) FROM (SELECT DISTINCT [?ID], [" & objReportItem.IDColumnName & "] FROM " & mstrTempTableName & " "
-
-					If mblnIgnoreZerosInAggregates And objReportItem.IsNumeric Then
-						sSQL = sSQL & "WHERE ([" & objReportItem.IDColumnName & "] <> 0) "
-					End If
-
-					sSQL = sSQL & " ) AS [vt." & Str(iLoop) & "]) AS 'avg_" & Trim(Str(iLoop)) & "'"
-				End If
-
-			End If
-
-			If objReportItem.IsCount Then
-				' Count.
-
-				If objReportItem.IsReportChildTable Then
-					sSQL = sSQL & ",(SELECT COUNT([?ID_" & objReportItem.TableName & "]) FROM (SELECT DISTINCT [?ID_" & objReportItem.TableName & "], [" & objReportItem.IDColumnName & "] FROM " & mstrTempTableName & " "
-
-					If mblnIgnoreZerosInAggregates And objReportItem.IsNumeric Then
-						sSQL = sSQL & "WHERE ([" & objReportItem.IDColumnName & "] <> 0) "
-					End If
-
-					sSQL = sSQL & " ) AS [vt." & Str(iLoop) & "]) AS 'cnt_" & Trim(Str(iLoop)) & "'"
-				Else
-					sSQL = sSQL & ",(SELECT COUNT([?ID]) FROM (SELECT DISTINCT [?ID], [" & objReportItem.IDColumnName & "] FROM " & mstrTempTableName & " "
-
-					If mblnIgnoreZerosInAggregates And objReportItem.IsNumeric Then
-						sSQL = sSQL & "WHERE ([" & objReportItem.IDColumnName & "] <> 0) "
-					End If
-
-					sSQL = sSQL & " ) AS [vt." & Str(iLoop) & "]) AS 'cnt_" & Trim(Str(iLoop)) & "'"
-				End If
-
-			End If
-
-			If objReportItem.IsTotal Then
-				' Total.
-
-				If objReportItem.IsReportChildTable Then
-					sSQL = sSQL & ",(SELECT SUM([" & objReportItem.IDColumnName & "]) FROM (SELECT DISTINCT [?ID_" & objReportItem.TableName & "], [" & objReportItem.IDColumnName & "] FROM " & mstrTempTableName & " "
-
-					If mblnIgnoreZerosInAggregates And objReportItem.IsNumeric Then
-						sSQL = sSQL & "WHERE ([" & objReportItem.IDColumnName & "] <> 0) "
-					End If
-
-					sSQL = sSQL & " ) AS [vt." & Str(iLoop) & "]) AS 'ttl_" & Trim(Str(iLoop)) & "'"
-				Else
-					sSQL = sSQL & ",(SELECT SUM([" & objReportItem.IDColumnName & "]) FROM (SELECT DISTINCT [?ID], [" & objReportItem.IDColumnName & "] FROM " & mstrTempTableName & " "
-
-					If mblnIgnoreZerosInAggregates And objReportItem.IsNumeric Then
-						sSQL = sSQL & "WHERE ([" & objReportItem.IDColumnName & "] <> 0) "
-					End If
-
-					sSQL = sSQL & " ) AS [vt." & Str(iLoop) & "]) AS 'ttl_" & Trim(Str(iLoop)) & "'"
-				End If
-
-			End If
-
-		Next
-
-		iLoop = 0
-		If Len(sSQL) > 0 Then
-			sSQL = "SELECT " & Right(sSQL, Len(sSQL) - 1)
-
-			rsTemp = DB.GetDataTable(sSQL)
-			Dim rowData As DataRow = rsTemp.Rows(0)
+		Try
 
 			For Each objReportItem In ColumnDetails
 
@@ -3571,103 +3491,181 @@ CheckRecordSet_ERROR:
 
 				iLoop += 1
 
-				If iLoop > 0 Then objPrevious = ColumnDetails.GetByIndex(iLoop - 1) Else objPrevious = New ReportDetailItem
-
+				'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(4, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 				If objReportItem.IsAverage Then
 					' Average.
 
-					If Not objReportItem.IsHidden And (Not objReportItem.GroupWithNextColumn) And (Not objPrevious.GroupWithNextColumn) Then
-						fHasAverage = True
-					End If
+					If objReportItem.IsReportChildTable Then
+						sSQL = sSQL & ",(SELECT AVG(convert(float, [" & objReportItem.IDColumnName & "])) FROM (SELECT DISTINCT [?ID_" & objReportItem.TableName & "], [" & objReportItem.IDColumnName & "] FROM " & mstrTempTableName & " "
 
-					'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-					If IsDBNull(rowData("avg_" & Trim(Str(iLoop)))) Then
-						strAggrValue = "0"
+						If mblnIgnoreZerosInAggregates And objReportItem.IsNumeric Then
+							sSQL = sSQL & "WHERE ([" & objReportItem.IDColumnName & "] <> 0) "
+						End If
+
+						sSQL = sSQL & " ) AS [vt." & Str(iLoop) & "]) AS 'avg_" & Trim(Str(iLoop)) & "'"
 					Else
-						strAggrValue = FormatNumber(rowData("avg_" & iLoop.ToString), objReportItem.Decimals, , , objReportItem.Use1000Separator)
+						sSQL = sSQL & ",(SELECT AVG(convert(float, [" & objReportItem.IDColumnName & "])) FROM (SELECT DISTINCT [?ID], [" & objReportItem.IDColumnName & "] FROM " & mstrTempTableName & " "
+
+						If mblnIgnoreZerosInAggregates And objReportItem.IsNumeric Then
+							sSQL = sSQL & "WHERE ([" & objReportItem.IDColumnName & "] <> 0) "
+						End If
+
+						sSQL = sSQL & " ) AS [vt." & Str(iLoop) & "]) AS 'avg_" & Trim(Str(iLoop)) & "'"
 					End If
 
-					aryAverageAddString.Add(strAggrValue)
-					strAggrValue = vbNullString
-
-				Else
-					aryAverageAddString.Add("")
 				End If
-
 
 				If objReportItem.IsCount Then
 					' Count.
 
-					If Not objReportItem.IsHidden And (Not objReportItem.GroupWithNextColumn) And (Not objPrevious.GroupWithNextColumn) Then
-						fHasCount = True
+					If objReportItem.IsReportChildTable Then
+						sSQL = sSQL & ",(SELECT COUNT([?ID_" & objReportItem.TableName & "]) FROM (SELECT DISTINCT [?ID_" & objReportItem.TableName & "], [" & objReportItem.IDColumnName & "] FROM " & mstrTempTableName & " "
+
+						If mblnIgnoreZerosInAggregates And objReportItem.IsNumeric Then
+							sSQL = sSQL & "WHERE ([" & objReportItem.IDColumnName & "] <> 0) "
+						End If
+
+						sSQL = sSQL & " ) AS [vt." & Str(iLoop) & "]) AS 'cnt_" & Trim(Str(iLoop)) & "'"
+					Else
+						sSQL = sSQL & ",(SELECT COUNT([?ID]) FROM (SELECT DISTINCT [?ID], [" & objReportItem.IDColumnName & "] FROM " & mstrTempTableName & " "
+
+						If mblnIgnoreZerosInAggregates And objReportItem.IsNumeric Then
+							sSQL = sSQL & "WHERE ([" & objReportItem.IDColumnName & "] <> 0) "
+						End If
+
+						sSQL = sSQL & " ) AS [vt." & Str(iLoop) & "]) AS 'cnt_" & Trim(Str(iLoop)) & "'"
 					End If
 
-					'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-					aryCountAddString.Add(IIf(IsDBNull(rowData("cnt_" & Trim(Str(iLoop)))), "0", Format(rowData("cnt_" & Trim(Str(iLoop))), "0")))
-				Else
-					aryCountAddString.Add("")
 				End If
 
-				'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(6, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 				If objReportItem.IsTotal Then
 					' Total.
 
-					If Not objReportItem.IsHidden And (Not objReportItem.GroupWithNextColumn) And (Not objPrevious.GroupWithNextColumn) Then
-						fHasTotal = True
-					End If
+					If objReportItem.IsReportChildTable Then
+						sSQL = sSQL & ",(SELECT SUM([" & objReportItem.IDColumnName & "]) FROM (SELECT DISTINCT [?ID_" & objReportItem.TableName & "], [" & objReportItem.IDColumnName & "] FROM " & mstrTempTableName & " "
 
-					'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-					If IsDBNull(rowData("ttl_" & iLoop.ToString())) Then
-						strAggrValue = "0"
+						If mblnIgnoreZerosInAggregates And objReportItem.IsNumeric Then
+							sSQL = sSQL & "WHERE ([" & objReportItem.IDColumnName & "] <> 0) "
+						End If
+
+						sSQL = sSQL & " ) AS [vt." & Str(iLoop) & "]) AS 'ttl_" & Trim(Str(iLoop)) & "'"
 					Else
-						strAggrValue = FormatNumber(rowData("ttl_" & iLoop.ToString), objReportItem.Decimals, , , objReportItem.Use1000Separator)
+						sSQL = sSQL & ",(SELECT SUM([" & objReportItem.IDColumnName & "]) FROM (SELECT DISTINCT [?ID], [" & objReportItem.IDColumnName & "] FROM " & mstrTempTableName & " "
+
+						If mblnIgnoreZerosInAggregates And objReportItem.IsNumeric Then
+							sSQL = sSQL & "WHERE ([" & objReportItem.IDColumnName & "] <> 0) "
+						End If
+
+						sSQL = sSQL & " ) AS [vt." & Str(iLoop) & "]) AS 'ttl_" & Trim(Str(iLoop)) & "'"
 					End If
 
-					aryTotalAddString.Add(strAggrValue)
-					strAggrValue = vbNullString
-				Else
-					aryTotalAddString.Add("")
 				End If
 
 			Next
 
-			'UPGRADE_NOTE: Object rsTemp may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-			rsTemp = Nothing
-		End If
+			iLoop = 0
+			If Len(sSQL) > 0 Then
+				sSQL = "SELECT " & Right(sSQL, Len(sSQL) - 1)
 
-		mblnDoesHaveGrandSummary = (fHasAverage Or fHasCount Or fHasTotal)
+				rsTemp = DB.GetDataTable(sSQL)
+				Dim rowData As DataRow = rsTemp.Rows(0)
 
-		'Output the 4 lines of grand aggregates (blank,AVG,CNT,TTL)
-		If mblnDoesHaveGrandSummary Then
-			NEW_AddToArray_Data(RowType.Data, "")
-		End If
+				For Each objReportItem In ColumnDetails
 
-		If fHasAverage Then
-			mblnReportHasSummaryInfo = True
-			NEW_AddToArray_Data(RowType.GrandSummary, aryAverageAddString)
-			mintPageBreakRowIndex += 1
-		End If
+					bIsColumnVisible = Not objReportItem.IsHidden And (Not objReportItem.GroupWithNextColumn) And (Not ColumnDetails.GetByIndex(iLoop).GroupWithNextColumn)
 
-		If fHasCount Then
-			mblnReportHasSummaryInfo = True
-			NEW_AddToArray_Data(RowType.GrandSummary, aryCountAddString)
-			mintPageBreakRowIndex += 1
-		End If
+					iLoop += 1
 
-		If fHasTotal Then
-			mblnReportHasSummaryInfo = True
-			NEW_AddToArray_Data(RowType.GrandSummary, aryTotalAddString)
-			mintPageBreakRowIndex += 1
-		End If
+					If iLoop > 0 Then objPrevious = ColumnDetails.GetByIndex(iLoop - 1) Else objPrevious = New ReportDetailItem
 
-		Exit Sub
+					If objReportItem.IsAverage Then
+						' Average.
 
-PopulateGrid_DoGrandSummary_ERROR:
+						If Not objReportItem.IsHidden And (Not objReportItem.GroupWithNextColumn) And (Not objPrevious.GroupWithNextColumn) Then
+							fHasAverage = True
+						End If
 
-		'UPGRADE_NOTE: Object rsTemp may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		rsTemp = Nothing
-		mstrErrorString = "Error while calculating grand summary." & vbNewLine & "(" & Err.Description & ")"
-		Return
+						'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
+						If IsDBNull(rowData("avg_" & Trim(Str(iLoop)))) Then
+							strAggrValue = "0"
+						Else
+							strAggrValue = FormatNumber(rowData("avg_" & iLoop.ToString), objReportItem.Decimals, , , objReportItem.Use1000Separator)
+						End If
+
+						aryAverageAddString.Add(strAggrValue)
+						strAggrValue = vbNullString
+
+					ElseIf bIsColumnVisible Then
+						aryAverageAddString.Add("")
+					End If
+
+
+					If objReportItem.IsCount Then
+						' Count.
+
+						If Not objReportItem.IsHidden And (Not objReportItem.GroupWithNextColumn) And (Not objPrevious.GroupWithNextColumn) Then
+							fHasCount = True
+						End If
+
+						'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
+						aryCountAddString.Add(IIf(IsDBNull(rowData("cnt_" & Trim(Str(iLoop)))), "0", Format(rowData("cnt_" & Trim(Str(iLoop))), "0")))
+					ElseIf bIsColumnVisible Then
+						aryCountAddString.Add("")
+					End If
+
+					'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(6, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+					If objReportItem.IsTotal Then
+						' Total.
+
+						If Not objReportItem.IsHidden And (Not objReportItem.GroupWithNextColumn) And (Not objPrevious.GroupWithNextColumn) Then
+							fHasTotal = True
+						End If
+
+						'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
+						If IsDBNull(rowData("ttl_" & iLoop.ToString())) Then
+							strAggrValue = "0"
+						Else
+							strAggrValue = FormatNumber(rowData("ttl_" & iLoop.ToString), objReportItem.Decimals, , , objReportItem.Use1000Separator)
+						End If
+
+						aryTotalAddString.Add(strAggrValue)
+						strAggrValue = vbNullString
+					ElseIf bIsColumnVisible Then
+						aryTotalAddString.Add("")
+					End If
+
+				Next
+
+				'UPGRADE_NOTE: Object rsTemp may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
+				rsTemp = Nothing
+			End If
+
+			mblnDoesHaveGrandSummary = (fHasAverage Or fHasCount Or fHasTotal)
+
+			'Output the 4 lines of grand aggregates (blank,AVG,CNT,TTL)
+			If mblnDoesHaveGrandSummary Then
+				NEW_AddToArray_Data(RowType.Data, "")
+			End If
+
+			If fHasAverage Then
+				NEW_AddToArray_Data(RowType.GrandSummary, aryAverageAddString)
+				mintPageBreakRowIndex += 1
+			End If
+
+			If fHasCount Then
+				NEW_AddToArray_Data(RowType.GrandSummary, aryCountAddString)
+				mintPageBreakRowIndex += 1
+			End If
+
+			If fHasTotal Then
+				NEW_AddToArray_Data(RowType.GrandSummary, aryTotalAddString)
+				mintPageBreakRowIndex += 1
+			End If
+
+		Catch ex As Exception
+			mstrErrorString = "Error while calculating grand summary." & vbNewLine & "(" & ex.Message & ")"
+
+		End Try
 
 	End Sub
 
@@ -3983,17 +3981,16 @@ Check_ERROR:
 		Dim dr As DataRow
 		Dim iColumn As Integer
 
-		dr = datCustomReportOutput.Rows.Add()
+		dr = ReportDataTable.Rows.Add()
 		dr(0) = RowType
 
 		Select Case RowType
 			Case RowType.Data
-				iColumn = 2
+				iColumn = IIf(mblnReportHasSummaryInfo, 2, 1)
 			Case RowType.PageBreak
 				iColumn = 1
 			Case Else
 				iColumn = 1
-				mblnReportHasSummaryInfo = True
 		End Select
 
 		If Not data Is Nothing Then

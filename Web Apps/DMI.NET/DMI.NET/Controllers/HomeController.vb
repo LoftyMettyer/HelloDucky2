@@ -2977,11 +2977,11 @@ Namespace Controllers
 						lngActualRow = 0
 						lngRow = 0
 
-						For Each objRow As DataRow In objReport.datCustomReportOutput.Rows
+						For Each objRow As DataRow In objReport.ReportDataTable.Rows
 
 							lngRow += 1
 							lngActualRow += 1
-							If lngRow = objReport.datCustomReportOutput.Rows.Count Then
+							If lngRow = objReport.ReportDataTable.Rows.Count Then
 
 								If objReport.ReportHasSummaryInfo Then
 									sBreakValue = "Grand Totals"
@@ -3054,10 +3054,10 @@ Namespace Controllers
 					Else ' no page break
 
 						If lngOutputFormat = OutputFormats.fmtExcelGraph Then
-							Dim trueRowCount As Integer = (From row In objReport.datCustomReportOutput.AsEnumerable() Where row(0).ToString() = "0" Where String.Join("", row.ItemArray) <> "0").Count()
+							Dim trueRowCount As Integer = (From row In objReport.ReportDataTable.AsEnumerable() Where row(0).ToString() = "0" Where String.Join("", row.ItemArray) <> "0").Count()
 							ClientDLL.ArrayDim(UBound(arrayVisibleColumns, 2), trueRowCount)
 						Else
-							ClientDLL.ArrayDim(UBound(arrayVisibleColumns, 2), objReport.datCustomReportOutput.Rows.Count + 1)
+							ClientDLL.ArrayDim(UBound(arrayVisibleColumns, 2), objReport.ReportDataTable.Rows.Count + 1)
 						End If
 
 						If bBradfordFactor = True Then
@@ -3078,7 +3078,7 @@ Namespace Controllers
 
 
 						lngRow = 1
-						For Each objRow As DataRow In objReport.datCustomReportOutput.Rows
+						For Each objRow As DataRow In objReport.ReportDataTable.Rows
 
 							If lngOutputFormat = OutputFormats.fmtExcelGraph Then
 								' Ignore non-data rows.
@@ -3088,12 +3088,8 @@ Namespace Controllers
 								If String.Join("", objRow.ItemArray) = "0" Then Continue For
 							End If
 
-							For iCountColumns = 1 To UBound(arrayVisibleColumns, 2) + 1
-								If objReport.ReportHasSummaryInfo Then
-									ClientDLL.ArrayAddTo(iCountColumns - 1, lngRow, objRow(iCountColumns).ToString())
-								Else
-									ClientDLL.ArrayAddTo(iCountColumns - 1, lngRow, objRow(iCountColumns + 1).ToString())
-								End If
+							For iCountColumns = 1 To objReport.ReportDataTable.Columns.Count - 1
+								ClientDLL.ArrayAddTo(iCountColumns - 1, lngRow, objRow(iCountColumns).ToString())
 							Next
 
 							lngRow += 1

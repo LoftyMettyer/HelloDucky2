@@ -447,7 +447,7 @@ Namespace ExClientCode
 									' If lngGridRow = 0 Then strValue = strValue.Replace("_", " ")
 									If InStr(strValue, vbNewLine) > 0 Then stlGeneral.IsTextWrapped = True
 									.SetStyle(stlGeneral)
-									.PutValue(strArray(lngGridCol, lngGridRow).Replace(vbNewLine, Microsoft.VisualBasic.Constants.vbLf))
+									.PutValue(strArray(lngGridCol, lngGridRow))	'.Replace(vbNewLine, Microsoft.VisualBasic.Constants.vbLf))
 							End Select
 						End If
 
