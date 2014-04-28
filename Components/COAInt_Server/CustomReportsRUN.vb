@@ -3006,7 +3006,6 @@ CheckRecordSet_ERROR:
 		Dim sWhereCode As String = ""
 		Dim sFromCode As String
 
-		Dim sTotalBradfordAddString As String
 		Dim iLogicValue As Integer
 
 		Dim aryAverageAddString As ArrayList
@@ -3144,8 +3143,6 @@ CheckRecordSet_ERROR:
 				'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(6, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 				If objReportItem.IsTotal Then
 					' Total.
-					sTotalBradfordAddString = "*total*" & vbTab & "Sub Total"
-
 					If Not mbIsBradfordIndexReport Then
 						If objReportItem.IsReportChildTable Then
 							sSQL = sSQL & ",(SELECT SUM([" & objReportItem.IDColumnName & "]) " & "FROM (SELECT DISTINCT [?ID_" & objReportItem.TableName & "], [" & objReportItem.IDColumnName & "] FROM " & mstrTempTableName & " " & " " & sWhereCode & " "
@@ -3219,7 +3216,7 @@ CheckRecordSet_ERROR:
 							End If
 						End If
 
-						If fDoValue And bIsColumnVisible Then
+						If (fDoValue Or mbIsBradfordIndexReport) And bIsColumnVisible Then
 							aryAverageAddString.Add(PopulateGrid_FormatData(objReportItem, objReportItem.LastValue, False, True))
 						ElseIf bIsColumnVisible Then
 							aryAverageAddString.Add("")
@@ -3250,7 +3247,7 @@ CheckRecordSet_ERROR:
 							End If
 						End If
 
-						If fDoValue And bIsColumnVisible Then
+						If (fDoValue Or mbIsBradfordIndexReport) And bIsColumnVisible Then
 							aryCountAddString.Add(PopulateGrid_FormatData(objReportItem, objReportItem.LastValue, False, True))
 						ElseIf bIsColumnVisible Then
 							aryCountAddString.Add("")
@@ -3272,8 +3269,6 @@ CheckRecordSet_ERROR:
 						End If
 
 						aryTotalAddString.Add(strAggrValue)
-						sTotalBradfordAddString = sTotalBradfordAddString & strAggrValue & vbTab
-
 						strAggrValue = vbNullString
 
 					Else
@@ -3285,13 +3280,12 @@ CheckRecordSet_ERROR:
 							End If
 						End If
 
-						If fDoValue And bIsColumnVisible Then
+						If (fDoValue Or mbIsBradfordIndexReport) And bIsColumnVisible Then
 							aryTotalAddString.Add(PopulateGrid_FormatData(objReportItem, objReportItem.LastValue, False, True))
 						ElseIf bIsColumnVisible Then
 							aryTotalAddString.Add("")
 						End If
 
-						sTotalBradfordAddString = sTotalBradfordAddString & vbTab
 					End If
 				End If
 
@@ -3302,8 +3296,6 @@ CheckRecordSet_ERROR:
 			'UPGRADE_NOTE: Object rsTemp may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 			rsTemp = Nothing
 		End If
-
-		'Dim objUnknownItem As ReportDetailItem = ColumnDetails.GetByIndex(iColumnIndex)
 
 		' Do a different summary if we are a Bradford Index Report
 		If Not mbIsBradfordIndexReport Then
@@ -3343,17 +3335,21 @@ CheckRecordSet_ERROR:
 			If mbBradfordCount Then
 				aryCountAddString(iSummaryColumn) = "Instances"
 				NEW_AddToArray_Data(RowType.Count, aryCountAddString)
+				aryTotalAddString(0) = vbNullString
+				aryTotalAddString(1) = vbNullString
+				aryTotalAddString(2) = vbNullString
+				aryTotalAddString(3) = vbNullString
+				aryTotalAddString(4) = vbNullString
 			End If
-
-			aryTotalAddString(0) = vbNullString
-			aryTotalAddString(1) = vbNullString
-			aryTotalAddString(2) = vbNullString
-			aryTotalAddString(3) = vbNullString
-			aryTotalAddString(4) = vbNullString
 
 			If mbBradfordTotals Then
 				aryTotalAddString(iSummaryColumn) = "Total"
 				NEW_AddToArray_Data(RowType.Total, aryTotalAddString)
+				aryTotalAddString(0) = vbNullString
+				aryTotalAddString(1) = vbNullString
+				aryTotalAddString(2) = vbNullString
+				aryTotalAddString(3) = vbNullString
+				aryTotalAddString(4) = vbNullString
 			End If
 
 			' Calculate Bradford index line
@@ -3370,7 +3366,7 @@ CheckRecordSet_ERROR:
 			NEW_AddToArray_Data(RowType.BradfordCalculation, aryTotalAddString)
 			NEW_AddToArray_Data(RowType.PageBreak, "")
 
-		End If
+			End If
 
 	End Sub
 
