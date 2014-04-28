@@ -1189,7 +1189,13 @@ Namespace Controllers
 
 							Catch ex As SqlException
 								If ex.Number.Equals(50000) Then
-									sErrorMsg = Trim(Mid(ex.Message, 1, (InStr(ex.Message, "The transaction ended in the trigger")) - 1))
+									If ex.Message.IndexOf("The transaction ended in the trigger", System.StringComparison.Ordinal) > 0 Then										
+										sErrorMsg = Trim(Mid(ex.Message, 1, (InStr(ex.Message, "The transaction ended in the trigger")) - 1))
+									ElseIf ex.Message.IndexOf("Invalid object name", System.StringComparison.Ordinal) > 0 Then
+										sErrorMsg = Trim(Mid(ex.Message, 1, (InStr(ex.Message, "Invalid object name")) - 1))
+									Else
+										sErrorMsg = sErrorMsg & FormatError(ex.Message)
+									End If
 								Else
 									sErrorMsg = sErrorMsg & FormatError(ex.Message)
 								End If
