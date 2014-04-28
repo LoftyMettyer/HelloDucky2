@@ -3470,10 +3470,6 @@ CheckRecordSet_ERROR:
 
 			For Each objReportItem In ColumnDetails
 
-				If objReportItem.IsHidden Then Continue For
-
-				iLoop += 1
-
 				'UPGRADE_WARNING: Couldn't resolve default property of object mvarColDetails(4, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 				If objReportItem.IsAverage Then
 					' Average.
@@ -3544,6 +3540,8 @@ CheckRecordSet_ERROR:
 
 				End If
 
+				iLoop += 1
+
 			Next
 
 			iLoop = 0
@@ -3556,9 +3554,6 @@ CheckRecordSet_ERROR:
 				For Each objReportItem In ColumnDetails
 
 					bIsColumnVisible = Not objReportItem.IsHidden And (Not objReportItem.GroupWithNextColumn) And (Not ColumnDetails.GetByIndex(iLoop).GroupWithNextColumn)
-
-					iLoop += 1
-
 					If iLoop > 0 Then objPrevious = ColumnDetails.GetByIndex(iLoop - 1) Else objPrevious = New ReportDetailItem
 
 					If objReportItem.IsAverage Then
@@ -3616,6 +3611,8 @@ CheckRecordSet_ERROR:
 					ElseIf bIsColumnVisible Then
 						aryTotalAddString.Add("")
 					End If
+
+					iLoop += 1
 
 				Next
 

@@ -365,6 +365,10 @@ Namespace ExClientCode
 			lngExcelCol = _mlngDataStartCol
 			lngExcelRow = _mlngDataCurrentRow
 
+			If _mblnApplyStyles And Not (_mblnChart Or _mblnPivotTable) Then
+				ApplyStyle(UBound(strArray, 1), UBound(strArray, 2), colStyles)
+			End If
+
 			For lngGridRow = 0 To UBound(strArray, 2)
 				For lngGridCol = 0 To UBound(strArray, 1)
 
@@ -440,17 +444,13 @@ Namespace ExClientCode
 									.PutValue(strArray(lngGridCol, lngGridRow))
 								Case SQLDataType.sqlDate
 									.SetStyle(stlDate)
-									'MH20050104 Fault 9695 & 9696
-									'Adding ;@ to the end formats it as "short date" so excel will look at the
-									'regional settings when opening the workbook rather than force it to always
-									'be in the format of the user who created the workbook.
 									.PutValue(strArray(lngGridCol, lngGridRow))
 								Case Else
 									Dim strValue As String = strArray(lngGridCol, lngGridRow).TrimEnd()
-									' If lngGridRow = 0 Then strValue = strValue.Replace("_", " ")
+									If lngGridRow = 0 Then strValue = strValue.Replace("_", " ")
 									If InStr(strValue, vbNewLine) > 0 Then stlGeneral.IsTextWrapped = True
 									.SetStyle(stlGeneral)
-									.PutValue(strArray(lngGridCol, lngGridRow))	'.Replace(vbNewLine, Microsoft.VisualBasic.Constants.vbLf))
+									.PutValue(strValue.Replace(vbNewLine, Microsoft.VisualBasic.Constants.vbLf))
 							End Select
 						End If
 
@@ -482,7 +482,6 @@ Namespace ExClientCode
 				End If
 			Else
 				If _mblnApplyStyles Then
-					ApplyStyle(UBound(strArray, 1), UBound(strArray, 2), colStyles)
 					ApplyMerges(colMerges)
 				End If
 				ApplyCellOptions(_mxlWorkSheet, colStyles, True)
