@@ -111,7 +111,7 @@
 
 
 					//final resize of the dashboard - for tiles, ensure width is sufficient
-					resizeTileContent(); //site.master function.
+					resizeDashboard(); //site.master function.
 
 				},
 				error: function(req, status, errorObj) {

@@ -310,7 +310,8 @@
 	</div>
 
 	<%fFirstSeparator = True%>
-	<div class="linkspagebutton">
+	<div class="linkspagebutton">		
+		<div class="linkspagebuttonbox">
 		<div class="ButtonLinkColumn">
 			<%sOnClick = ""
 				Dim sLinkKey As String = ""
@@ -1120,7 +1121,8 @@
 		<%
 		End If
 		%>
-	</div>
+	</div>	
+	</div>    <%-- close linkspagebuttonbox div--%>
 </div>
 
 <%If Model.NumberOfLinks > 0 Then%>
@@ -1566,7 +1568,7 @@
 		}
 
 		// This replaces the big fat grey scrollbar with the nice thin dark one. (HRPRO-2952)
-		if ('<%=session("isMobileDevice")%>' != "True") {
+		if (('<%=session("isMobileDevice")%>' !== "True") && (window.currentLayout == 'tiles')) {
 			setTimeout('$(".DashContent").mCustomScrollbar({ horizontalScroll: true, theme:"dark-thin" });', 500);
 		} else {
 			$('.DashContent').attr('overflow', 'auto');

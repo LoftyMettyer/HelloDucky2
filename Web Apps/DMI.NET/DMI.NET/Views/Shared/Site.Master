@@ -364,7 +364,7 @@
 
 						if (action.toUpperCase().substr(0, 9) == "LINKSMAIN") {
 
-							resizeTileContent();
+							resizeDashboard();
 
 						}
 					} catch (e) {
@@ -382,9 +382,9 @@
 			});
 		}
 
-		function resizeTileContent() {
+		function resizeDashboard() {
 
-			//Resize the dashboard - for tiles, ensure width is sufficient
+			//Resize the dashboard - ensure width is sufficient
 			if (window.currentLayout == 'tiles') {
 				var pwfswidth = Number($('.pendingworkflowsframe').css('width').replace('px', ''));
 				var hlwidth = Number(document.querySelector('.hypertextlinks').offsetWidth);
@@ -398,6 +398,13 @@
 				
 				//reset search box...
 				$('#searchDashboardString').val('');
+
+			} else {
+				var width = 0;
+				$('.ButtonLinkColumn ').each(function () {
+					width += $(this).outerWidth(true);
+				});
+				$('.linkspagebuttonbox').css('width', width + 50);
 
 			}
 		}
