@@ -303,8 +303,9 @@
 
 <form id="frmOriginalDefinition" style="visibility: hidden; display: none">
 		<%
-				Dim sErrMsg As String = ""
-			Response.Write("	<input type='hidden' id=txtDefn_Name name=txtDefn_Name value=""" & Replace(Session("utilname"), """", "&quot;") & """>" & vbCrLf)
+			Dim sReportName = objCalendar.Name
+			Dim sErrMsg As String = ""
+			Response.Write("	<input type='hidden' id=txtDefn_Name name=txtDefn_Name value=""" & Replace(sReportName, """", "&quot;") & """>" & vbCrLf)
 			Response.Write("	<input type='hidden' id=txtDefn_ErrMsg name=txtDefn_ErrMsg value=""" & sErrMsg & """>" & vbCrLf)
 		%>
 		<input type="hidden" id="txtUserName" name="txtUserName" value="<%=session("username")%>">
