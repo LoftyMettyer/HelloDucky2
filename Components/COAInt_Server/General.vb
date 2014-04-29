@@ -173,6 +173,9 @@ Public Class clsGeneral
 	End Function
 
 	Public Function DropUniqueSQLObject(sSQLObjectName As String, iType As Short) As Boolean
+		If sSQLObjectName Is Nothing Then	'If there is no object to drop just return True
+			Return True
+		End If
 
 		Try
 
