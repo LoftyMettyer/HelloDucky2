@@ -183,20 +183,11 @@ Namespace ExClientCode
 
 		Public ReadOnly Property ErrorMessage() As String
 			Get
-				ErrorMessage = _mstrErrorMessage
+				Return _mstrErrorMessage
 			End Get
 		End Property
 
-		Private Function CreateExcelApplication() As Boolean
-			Return True
-		End Function
-
 		Public Function GetFile(ByRef objParent As clsOutputRun, ByRef colStyles As Collection) As Boolean
-
-			If Not CreateExcelApplication() Then
-				GetFile = False
-				Exit Function
-			End If
 
 			'Check if file already exists...
 			If Dir(_mstrFileName) <> vbNullString And _mstrFileName <> vbNullString Then
@@ -264,7 +255,6 @@ Namespace ExClientCode
 			End Select
 
 		End Sub
-
 
 		Private Sub GetWorksheet(ByRef strSheetName As String)
 

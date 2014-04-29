@@ -2874,8 +2874,6 @@ Namespace Controllers
 			Dim objUser As New clsSettings
 			objUser.SessionInfo = CType(Session("SessionContext"), SessionInfo)
 
-			Dim objDataAccess As clsDataAccess = CType(Session("DatabaseAccess"), clsDataAccess)
-
 			Dim fOK As Boolean
 			Dim bBradfordFactor As Boolean
 
@@ -2985,29 +2983,7 @@ Namespace Controllers
 							lngDataRow += 1
 							lngDataPageRow += 1
 
-							If lngDataRow = objReport.ReportDataTable.Rows.Count Then
-
-								If objReport.ReportHasSummaryInfo Then
-									sBreakValue = "Grand Totals"
-
-									If bBradfordFactor = True Then
-										ClientDLL.AddPage(objReport.ReportCaption, "Bradford Factor")
-									Else
-										ClientDLL.AddPage(objReport.ReportCaption, Replace(sBreakValue, "&&", "&"))
-									End If
-
-									For lngCol = 0 To UBound(arrayVisibleColumns, 2)
-										sColHeading = arrayVisibleColumns(0, lngCol)
-										iColDataType = arrayVisibleColumns(1, lngCol)
-										iColDecimals = arrayVisibleColumns(2, lngCol)
-										ClientDLL.AddColumn(sColHeading, iColDataType, iColDecimals, False)
-										ClientDLL.ArrayAddTo(lngCol, 0, sColHeading)
-									Next
-
-									ClientDLL.DataArray()
-								End If
-
-							ElseIf CInt(objRow(0)) = RowType.PageBreak And Not blnBreakCheck Then
+							If CInt(objRow(0)) = RowType.PageBreak And Not blnBreakCheck Then
 								sBreakValue = arrayPageBreakValues(iBreakCount)
 
 								If bBradfordFactor = True Then
@@ -3049,13 +3025,35 @@ Namespace Controllers
 
 						Next
 
+						If objReport.ReportHasSummaryInfo Then
+							sBreakValue = "Grand Totals"
+
+							If bBradfordFactor = True Then
+								ClientDLL.AddPage(objReport.ReportCaption, "Bradford Factor")
+							Else
+								ClientDLL.AddPage(objReport.ReportCaption, Replace(sBreakValue, "&&", "&"))
+							End If
+
+							For lngCol = 0 To UBound(arrayVisibleColumns, 2)
+								sColHeading = arrayVisibleColumns(0, lngCol)
+								iColDataType = arrayVisibleColumns(1, lngCol)
+								iColDecimals = arrayVisibleColumns(2, lngCol)
+								bIsCol1000 = arrayVisibleColumns(3, lngCol)
+								ClientDLL.AddColumn(sColHeading, iColDataType, iColDecimals, bIsCol1000)
+								ClientDLL.ArrayAddTo(lngCol, 0, sColHeading)
+							Next
+
+							ClientDLL.DataArray()
+						End If
+
+
 					Else ' no page break
 
 						If lngOutputFormat = OutputFormats.fmtExcelGraph Then
 							Dim trueRowCount As Integer = (From row In objReport.ReportDataTable.AsEnumerable() Where row(0).ToString() = "0" Where String.Join("", row.ItemArray) <> "0").Count()
 							ClientDLL.ArrayDim(UBound(arrayVisibleColumns, 2), trueRowCount)
 						Else
-							ClientDLL.ArrayDim(UBound(arrayVisibleColumns, 2), objReport.ReportDataTable.Rows.Count + 1)
+							ClientDLL.ArrayDim(UBound(arrayVisibleColumns, 2), objReport.ReportDataTable.Rows.Count)
 						End If
 
 						If bBradfordFactor = True Then

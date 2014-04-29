@@ -3559,11 +3559,7 @@ CheckRecordSet_ERROR:
 
 			mblnDoesHaveGrandSummary = (fHasAverage Or fHasCount Or fHasTotal)
 
-			'Output the 4 lines of grand aggregates (blank,AVG,CNT,TTL)
-			If mblnDoesHaveGrandSummary Then
-				NEW_AddToArray_Data(RowType.Data, "")
-			End If
-
+			'Output the grand aggregates (AVG,CNT,TTL)
 			If fHasAverage Then
 				NEW_AddToArray_Data(RowType.GrandSummary, aryAverageAddString)
 			End If
