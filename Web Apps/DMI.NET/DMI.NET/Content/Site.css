@@ -44,12 +44,8 @@ section {
 	left: 350px;
 	right: 0;
 	bottom: 0;
-	/*overflow: auto;*/
-	}
-
-.DMI #workframeset {
 	overflow: auto;
-}
+	}
 
 .DMI #menuframe {display: block;}
 
