@@ -1026,8 +1026,6 @@
 		<input type='hidden' id="txtOLEModifiedDate" name="txtOLEModifiedDate" value="<%=strDateModified%>">
 		<%Html.RenderPartial("~/Views/Shared/gotoOption.ascx")%>
 
-		<iframe name="submit-iframe" style="display: none;"></iframe>
-
 	</form>
 
 	<input type="file" id="fileAddFile" name="fileAddFile" style="height: 22px; position: absolute; top: 0; left: -9999em;">

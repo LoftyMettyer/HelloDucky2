@@ -274,7 +274,6 @@ if fModuleOK then
 				<input type="hidden" id="txtMode" name="txtMode">
 			</form>
 
-			<iframe name="submit-iframe" style="display: none;"></iframe>
 		</div>
 
 		<div id="reportdataframe" data-framesource="util_run_crosstabsData" style="display: none;" accesskey="">

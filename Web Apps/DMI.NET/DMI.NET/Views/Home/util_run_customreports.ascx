@@ -545,8 +545,6 @@ End If
 	<input type="hidden" id="txtUtilType" name="txtUtilType" value="<%=session("utilType")%>">
 	<input type="hidden" id="txtUtilID" name="txtUtilID" value="<%=Session("utilID")%>">
 
-	<iframe name="submit-iframe" style="display: none;"></iframe>
-
 </form>
 
 <script type="text/javascript">

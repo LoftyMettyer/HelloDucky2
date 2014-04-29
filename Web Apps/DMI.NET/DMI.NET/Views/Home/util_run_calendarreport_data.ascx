@@ -298,7 +298,6 @@
 	<input type="hidden" id="txtUtilType" name="txtUtilType" value="<%=session("utilType")%>">
 	<input type="hidden" id="txtUtilID" name="txtUtilID" value="<%=Session("utilID")%>">
 
-	<iframe name="submit-iframe" style="display: none;"></iframe>
 </form>
 
 <form id="frmOriginalDefinition" style="visibility: hidden; display: none">

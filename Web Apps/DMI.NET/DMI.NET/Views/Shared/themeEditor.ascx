@@ -176,7 +176,6 @@
 </form>
 <!-- /themeroller -->
 
-<iframe name="submit-iframe" style="display:none;"></iframe>
 <script type="text/javascript">
 		themeEditor_window_onload();
 

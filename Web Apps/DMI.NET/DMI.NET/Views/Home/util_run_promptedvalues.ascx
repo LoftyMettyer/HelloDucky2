@@ -342,8 +342,6 @@
 			</div>	
 		<% End If%>
 
-		<iframe name="submit-iframe" style="display: none;"></iframe>
-
 	</div>
 </div>
 
