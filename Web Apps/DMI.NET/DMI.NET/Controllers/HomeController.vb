@@ -1008,11 +1008,12 @@ Namespace Controllers
 		End Function
 
 		Function Data_Submit() As ActionResult
-
-			Dim sErrorMsg = ""
-			Dim fWarning = False
-			Dim fOk = False
-			Dim fTBOverride = False
+			Dim sErrorMsg As String = ""
+			Dim fWarning As Boolean = False
+			Dim fOk As Boolean = False
+			Dim fTBOverride As Boolean = False
+			Dim sTBResultCode As String = "000"	'Validation OK
+			Dim sCourseOverbooked As String = ""
 
 			Dim objSessionInfo = CType(Session("SessionContext"), SessionInfo)
 			Dim objDataAccess As clsDataAccess = CType(Session("DatabaseAccess"), clsDataAccess)
@@ -1041,34 +1042,30 @@ Namespace Controllers
 			If sAction = "SAVE" Then
 				Dim sTBErrorMsg = ""
 				Dim sTBWarningMsg = ""
-				Dim iTBResultCode = 0
 				Dim sCode = ""
 
 				If (Not fTBOverride) And (NullSafeInteger(lngTableID) = NullSafeInteger(Session("TB_TBTableID"))) Then
 					' Training Booking check.
-
 					Try
-
 						Dim prmResult = New SqlParameter("@piResultCode", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
+						Dim prmCourseOverbooked = New SqlParameter("@psCourseOverbooked", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
 
 						objDataAccess.ExecuteSP("sp_ASRIntValidateTrainingBooking" _
 							, prmResult _
 							, New SqlParameter("piEmpRecID", SqlDbType.Int) With {.Value = CleanNumeric(iTBEmployeeRecordID)} _
 							, New SqlParameter("piCourseRecID", SqlDbType.Int) With {.Value = CleanNumeric(iTBCourseRecordID)} _
 							, New SqlParameter("psBookingStatus", SqlDbType.VarChar, -1) With {.Value = sTBBookingStatusValue} _
-							, New SqlParameter("piTBRecID", SqlDbType.Int) With {.Value = CleanNumeric(lngRecordID)})
+							, New SqlParameter("piTBRecID", SqlDbType.Int) With {.Value = CleanNumeric(lngRecordID)} _
+							, prmCourseOverbooked)
 
-						iTBResultCode = prmResult.Value
-
+						sTBResultCode = prmResult.Value
+						sCourseOverbooked = prmCourseOverbooked.Value
 					Catch ex As Exception
 						sErrorMsg = "Error validating training booking." & vbCrLf & FormatError(ex.Message)
-
 					End Try
 
-
 					If Len(sErrorMsg) = 0 Then
-						If iTBResultCode > 0 Then
-							Dim sTBResultCode = CStr(iTBResultCode)
+						If CInt(sTBResultCode) > 0 Then
 							If Len(sTBResultCode) = 4 Then
 								' Get the overbooking check code.
 								sCode = Left(sTBResultCode, 1)
@@ -4396,9 +4393,10 @@ Namespace Controllers
 
 			Dim objDataAccess As clsDataAccess = CType(Session("DatabaseAccess"), clsDataAccess)
 
-			Dim sErrorMsg = ""
-			Dim iTBResultCode = 0
-			Dim sPreReqFails = ""
+			Dim sErrorMsg As String = ""
+			Dim sTBResultCode As String = "000"	'Validation OK
+			Dim sCourseOverbooked As String = ""
+			Dim sPreReqFails As String = ""
 
 			' Only process the form submission if the referring page was the default page.
 			' If it wasn't then redirect to the login page.
@@ -4458,36 +4456,35 @@ Namespace Controllers
 				If NullSafeInteger(Session("optionRecordID")) > 0 Then
 					If Len(sErrorMsg) = 0 Then
 						' Validate the booking.					
-						iTBResultCode = 0
-
 						Try
 
 							Dim prmResult = New SqlParameter("@piResultCode", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
+							Dim prmCourseOverbooked = New SqlParameter("@psCourseOverbooked", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
 
 							objDataAccess.ExecuteSP("sp_ASRIntValidateTrainingBooking" _
 								, prmResult _
 								, New SqlParameter("piEmpRecID", SqlDbType.Int) With {.Value = CleanNumeric(Session("optionLinkRecordID"))} _
 								, New SqlParameter("piCourseRecID", SqlDbType.Int) With {.Value = CleanNumeric(Session("optionRecordID"))} _
 								, New SqlParameter("psBookingStatus", SqlDbType.VarChar, -1) With {.Value = Session("optionLookupValue")} _
-								, New SqlParameter("piTBRecID", SqlDbType.Int) With {.Value = 0})
+								, New SqlParameter("piTBRecID", SqlDbType.Int) With {.Value = 0} _
+								, prmCourseOverbooked)
 
-							iTBResultCode = prmResult.Value
-
+							sTBResultCode = prmResult.Value
+							sCourseOverbooked = prmCourseOverbooked.Value
 						Catch ex As Exception
 							sErrorMsg = "Error validating training booking." & vbCrLf & FormatError(ex.Message)
-
 						End Try
-
 					End If
 				End If
 			End If
 
 			' Go to the requested page.
-			Session("TBResultCode") = iTBResultCode
+			Session("TBResultCode") = sTBResultCode
 			Session("errorMessage") = sErrorMsg
 			Session("PreReqFails") = sPreReqFails	' This will be a sp output in the future along the lines of Bulkbooking
-			Return RedirectToAction(sNextPage)
+			Session("Overbooked") = sCourseOverbooked
 
+			Return RedirectToAction(sNextPage)
 		End Function
 
 		Function tbStatusPrompt() As ActionResult
@@ -4503,8 +4500,9 @@ Namespace Controllers
 
 			Dim objDataAccess As clsDataAccess = CType(Session("DatabaseAccess"), clsDataAccess)
 
-			Dim sErrorMsg = ""
-			Dim iTBResultCode = 0
+			Dim sErrorMsg As String = ""
+			Dim sTBResultCode As String = "000"	'Validation OK
+			Dim sCourseOverbooked As String = ""
 
 			' Only process the form submission if the referring page was the default page.
 			' If it wasn't then redirect to the login page.
@@ -4583,35 +4581,33 @@ Namespace Controllers
 
 					If Len(sErrorMsg) = 0 Then
 						' Validate the booking.
-						iTBResultCode = 0
-
 						Try
-
-							Dim prmResult = New SqlParameter("@piResultCode", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
+							Dim prmResult = New SqlParameter("@piResultCode", SqlDbType.VarChar) With {.Direction = ParameterDirection.Output, .Size = 100}
+							Dim prmCourseOverbooked = New SqlParameter("@psCourseOverbooked", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
 
 							objDataAccess.ExecuteSP("sp_ASRIntValidateTrainingBooking" _
 								, prmResult _
 								, New SqlParameter("piEmpRecID", SqlDbType.Int) With {.Value = CleanNumeric(iEmpRecID)} _
 								, New SqlParameter("piCourseRecID", SqlDbType.Int) With {.Value = CleanNumeric(Session("optionLinkRecordID"))} _
 								, New SqlParameter("psBookingStatus", SqlDbType.VarChar, -1) With {.Value = Session("optionLookupValue")} _
-								, New SqlParameter("piTBRecID", SqlDbType.Int) With {.Value = 0})
+								, New SqlParameter("piTBRecID", SqlDbType.Int) With {.Value = 0} _
+								, prmCourseOverbooked)
 
-							iTBResultCode = prmResult.Value
-
+							sTBResultCode = prmResult.Value
+							sCourseOverbooked = prmCourseOverbooked.Value
 						Catch ex As Exception
 							sErrorMsg = "Error validating training booking." & vbCrLf & FormatError(ex.Message)
-
 						End Try
-
 					End If
 				End If
 			End If
 
 			' Go to the requested page.
-			Session("TBResultCode") = iTBResultCode
+			Session("TBResultCode") = sTBResultCode
 			Session("errorMessage") = sErrorMsg
-			Return RedirectToAction(sNextPage)
+			Session("Overbooked") = sCourseOverbooked
 
+			Return RedirectToAction(sNextPage)
 		End Function
 
 		Function tbBulkBooking() As ActionResult
@@ -4836,8 +4832,9 @@ Namespace Controllers
 
 			Dim objDataAccess As clsDataAccess = CType(Session("DatabaseAccess"), clsDataAccess)
 
-			Dim sErrorMsg = ""
-			Dim iTBResultCode = 0
+			Dim sErrorMsg As String = ""
+			Dim sTBResultCode As String = "000"	'Validation OK
+			Dim sCourseOverbooked As String = ""
 
 			' Read the information from the calling form.
 			Dim sNextPage = Request.Form("txtGotoOptionPage")
@@ -4877,10 +4874,8 @@ Namespace Controllers
 			If (sAction = "SELECTTRANSFERBOOKING_1") Then
 				If NullSafeInteger(Session("optionRecordID")) > 0 Then
 					' Get the employee record ID from the given Training Booking record.
-					Dim iEmpRecID = 0
-
+					Dim iEmpRecID As Integer = 0
 					Try
-
 						Dim prmEmployeeRecordID = New SqlParameter("piEmpRecordID", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
 
 						objDataAccess.ExecuteSP("sp_ASRIntGetEmpIDFromTBID" _
@@ -4901,35 +4896,33 @@ Namespace Controllers
 
 					If Len(sErrorMsg) = 0 Then
 						' Validate the booking.
-						iTBResultCode = 0
-
 						Try
-
 							Dim prmResult = New SqlParameter("@piResultCode", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
+							Dim prmCourseOverbooked = New SqlParameter("@psCourseOverbooked", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
 
 							objDataAccess.ExecuteSP("sp_ASRIntValidateTrainingBooking" _
 								, prmResult _
 								, New SqlParameter("piEmpRecID", SqlDbType.Int) With {.Value = CleanNumeric(iEmpRecID)} _
 								, New SqlParameter("piCourseRecID", SqlDbType.Int) With {.Value = CleanNumeric(Session("optionLinkRecordID"))} _
 								, New SqlParameter("psBookingStatus", SqlDbType.VarChar, -1) With {.Value = Session("optionLookupValue")} _
-								, New SqlParameter("piTBRecID", SqlDbType.Int) With {.Value = 0})
+								, New SqlParameter("piTBRecID", SqlDbType.Int) With {.Value = 0} _
+								, prmCourseOverbooked)
 
-							iTBResultCode = prmResult.Value
-
+							sTBResultCode = prmResult.Value
+							sCourseOverbooked = prmCourseOverbooked.Value
 						Catch ex As Exception
 							sErrorMsg = "Error validating training booking." & vbCrLf & FormatError(ex.Message)
-
 						End Try
-
 					End If
 				End If
 			End If
 
 			' Go to the requested page.
-			Session("TBResultCode") = iTBResultCode
+			Session("TBResultCode") = sTBResultCode
 			Session("errorMessage") = sErrorMsg
-			Return RedirectToAction(sNextPage)
+			Session("Overbooked") = sCourseOverbooked
 
+			Return RedirectToAction(sNextPage)
 		End Function
 
 		<ValidateInput(False)>

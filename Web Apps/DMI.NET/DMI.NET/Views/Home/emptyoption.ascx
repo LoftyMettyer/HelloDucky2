@@ -220,38 +220,61 @@
 					var EmployeesWithPreReqWarning = [];
 					var EmployeesWithUnAvailError = [];
 					var EmployeesWithUnAvailWarning = [];
-					var j;
-					if (ResultCodes.length > 0) {
-						ResultCodes = ResultCodes.split("|");
+					var j;					
+					var sTransferErrorMsg = "";
+					var sTransferWarningMsg = "";
 
-						//Loop over the results
-						for (j = 0; j <= ResultCodes.length - 1; j++) {
-							var EmployeeAndCode = ResultCodes[j].split("\\");
-							EmployeeName = EmployeeAndCode[0];
-							ResultCode = EmployeeAndCode[1];
+					debugger;
 
-							if (ResultCode[0] == 1) {
-								EmployeesWithPreReqError.push(EmployeeName);
-							} else if (ResultCode[2] == 2) {
-								EmployeesWithPreReqWarning.push(EmployeeName);
+
+					if (ResultCodes.length > 0 && ResultCodes != 0) {
+						if (ResultCodes.indexOf("|") != -1) { //For results returned by the stored procedure sp_ASRIntValidateBulkBookings
+							ResultCodes = ResultCodes.split("|");
+
+							//Loop over the results
+							for (j = 0; j <= ResultCodes.length - 1; j++) {
+								var EmployeeAndCode = ResultCodes[j].split("\\");
+								EmployeeName = EmployeeAndCode[0];
+								ResultCode = EmployeeAndCode[1];
+
+								if (ResultCode[0] == 1) {
+									EmployeesWithPreReqError.push(EmployeeName);
+								} else if (ResultCode[0] == 2) {
+									EmployeesWithPreReqWarning.push(EmployeeName);
+								}
+
+								if (ResultCode[2] == 1) {
+									EmployeesWithOverlapError.push(EmployeeName);
+								} else if (ResultCode[2] == 2) {
+									EmployeesWithOverlapWarning.push(EmployeeName);
+								}
+
+								if (ResultCode[1] == 1) {
+									EmployeesWithUnAvailError.push(EmployeeName);
+								} else if (ResultCode[1] == 2) {
+									EmployeesWithUnAvailWarning.push(EmployeeName);
+								}
+							}
+						} else { //For results returned by stored procedure sp_ASRIntValidateTrainingBooking
+							if (ResultCodes[0] == 1) {
+								sTransferErrorMsg = messagePrerequisitesSingular + "\n";
+							} else if (ResultCodes[0] == 2) {
+								sTransferWarningMsg = messagePrerequisitesSingular + "\n";
 							}
 
-							if (ResultCode[2] == 1) {
-								EmployeesWithOverlapError.push(EmployeeName);
-							} else if (ResultCode[0] == 2) {
-								EmployeesWithOverlapWarning.push(EmployeeName);
+							if (ResultCodes[2] == 1) {
+								sTransferErrorMsg = messageOverlapSingular + "\n";
+							} else if (ResultCodes[2] == 2) {
+								sTransferWarningMsg = messageOverlapSingular + "\n";
 							}
 
-							if (ResultCode[1] == 1) {
-								EmployeesWithUnAvailError.push(EmployeeName);
-							} else if (ResultCode[1] == 2) {
-								EmployeesWithUnAvailWarning.push(EmployeeName);
+							if (ResultCodes[1] == 1) {
+								sTransferErrorMsg = messageUnavailableSingular + "\n";
+							} else if (ResultCodes[1] == 2) {
+								sTransferWarningMsg = messageUnavailableSingular + "\n";
 							}
 						}
 						
-						var sTransferErrorMsg = "";
-						var sTransferWarningMsg = "";
-
 						if (EmployeesWithPreReqError.length > 0) {
 							if (EmployeesWithPreReqError.length == 1) sTransferErrorMsg = sTransferErrorMsg + messagePrerequisitesSingular + "\n";
 							if (EmployeesWithPreReqError.length > 1) sTransferErrorMsg = sTransferErrorMsg + messagePrerequisitesPlural + "\n";
