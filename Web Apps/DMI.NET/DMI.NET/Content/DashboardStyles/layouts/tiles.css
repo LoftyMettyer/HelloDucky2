@@ -143,6 +143,9 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f0f9ff', end
 	font-size: 46pt;
 }
 
+.linkspagebuttonseparator-bordercolour { border-bottom: none!important;}
+
+
 .pendingworkflowtext a {
 	/* Text shown in PWFS tile*/	
 	text-decoration: none; 

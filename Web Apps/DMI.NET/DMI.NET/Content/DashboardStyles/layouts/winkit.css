@@ -236,6 +236,8 @@ body
 	border: none;
 }
 
+.linkspagebuttonseparator-bordercolour { border-bottom: none!important;}
+
 .DBValueScroller  
 {
 	position: absolute;

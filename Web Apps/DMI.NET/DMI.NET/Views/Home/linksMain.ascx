@@ -318,10 +318,11 @@
 				sAppFilePath = ""
 				sAppParameters = ""
 				sNewWindow = "0"
+				Dim sTileBackColourStyle As String = ""
+				Dim sTileForeColourStyle As String = ""
 
 				For Each navlink In Model.NavigationLinks.FindAll(Function(n) n.LinkType = LinkType.Button)
-				
-					Dim sTileColourClass = "Colour" & CStr(CInt(Math.Ceiling(Rnd() * 7)))
+					Dim sTileColourClass As String = ""																			
 
 					If navlink.AppFilePath.Length > 0 Then
 						sAppFilePath = NullSafeString(navlink.AppFilePath).Replace("\", "\\")
@@ -363,10 +364,25 @@
 						iRowNum = 1
 						iColNum = 1
 						Dim sSeparatorColor = ""
-						If navlink.SeparatorColour <> "" And navlink.SeparatorColour <> "#FFFFFF" Then sSeparatorColor = "background-color: " & navlink.SeparatorColour & "!important;"
-						If fFirstSeparator Then
-							fFirstSeparator = False
-						Else
+						
+						If navlink.SeparatorColour <> "" And navlink.SeparatorColour <> "#FFFFFF" Then sSeparatorColor = "border-bottom: 2px solid " & navlink.SeparatorColour & ";"
+						
+						If Session("CurrentLayout").ToString() = DMIEnums.Layout.tiles.ToString() Then
+							If navlink.SeparatorColour <> "" And navlink.SeparatorColour <> "#FFFFFF" Then
+								sSeparatorColor = "border-bottom: 2px solid " & navlink.SeparatorColour & ";"
+								sTileBackColourStyle = "background-color: " & navlink.SeparatorColour & ";"
+								sTileForeColourStyle = "color: white;"
+							Else
+								sTileBackColourStyle = ""
+								sTileForeColourStyle = ""
+							End If
+							
+						End If
+						
+						
+							If fFirstSeparator Then
+								fFirstSeparator = False
+							Else
 			%>
 														</ul>
 		</div>
@@ -417,7 +433,15 @@
 						</script>
 						<%
 						End If
-														
+
+						
+						' if style not set...
+						If sTileBackColourStyle = "" Then
+							sTileColourClass = "Colour" & CStr(CInt(Math.Ceiling(Rnd() * 7)))
+						Else
+							sTileColourClass = ""
+						End If
+						
 						Select Case navlink.Element_Type
 
 							Case ElementType.ButtonLink
@@ -433,8 +457,8 @@
 									navlink.Text = navlink.Text.Substring(0, 30) + "..."
 								End If
 								%>
-						<li data-col="<%=iColNum %>" data-row="<%=iRowNum %>" data-sizex="1" data-sizey="1" class="linkspagebuttontext <%=sTileColourClass%>" onclick="<%=sOnclick%>">
-							<a class="linkspagebutton-displaytype linkspagebuttontext-alignment linkspagebutton-colourtheme" href="#"><span class="linkspageprompttext-font linkspageprompttext-colour linkspageprompttext-size linkspageprompttext-bold linkspageprompttext-italics"><%: navlink.Prompt.Replace("...", "") & " "%></span>
+						<li data-col="<%=iColNum %>" data-row="<%=iRowNum %>" data-sizex="1" data-sizey="1" style="<%:sTileBackColourStyle%><%:sTileForeColourStyle%>" class="linkspagebuttontext <%=sTileColourClass%>" onclick="<%=sOnclick%>">
+							<a style="<%:sTileForeColourStyle%>" class="linkspagebutton-displaytype linkspagebuttontext-alignment linkspagebutton-colourtheme" href="#"><span class="linkspageprompttext-font linkspageprompttext-colour linkspageprompttext-size linkspageprompttext-bold linkspageprompttext-italics"><%: navlink.Prompt.Replace("...", "") & " "%></span>
 								<span class="linkspagebuttontext-font linkspagebuttontext-colour linkspagebuttontext-size linkspagebuttontext-bold linkspagebuttontext-italics"><%: navlink.Text %></span></a>
 							<p class="linkspagebuttontileIcon"><i class="<%=sIconClass%>"></i></p>
 						</li>
@@ -487,8 +511,8 @@
 									
 						%>
 
-						<li data-col="<%=iColNum %>" data-row="<%=iRowNum %>" data-sizex="1" data-sizey="1" class="linkspagebuttontext ui-state-disabled <%=sTileColourClass%> displayonly">
-							<a href="#"><%If Session("CurrentLayout").ToString() <> DMIEnums.Layout.tiles.ToString() Then Response.Write(navlink.Text)%>
+						<li data-col="<%=iColNum %>" data-row="<%=iRowNum %>" data-sizex="1" data-sizey="1" style="<%:sTileBackColourStyle%>" class="linkspagebuttontext ui-state-disabled <%=sTileColourClass%> displayonly">
+							<a style="<%:sTileForeColourStyle%>" href="#"><%If Session("CurrentLayout").ToString() <> DMIEnums.Layout.tiles.ToString() Then Response.Write(navlink.Text)%>
 								<%
 									If navlink.UtilityID > 0 And navlink.DrillDownHidden = False Then
 										iHideableDrillDownIconID += 1
@@ -687,7 +711,7 @@
 								sText = "No pending workflow steps"								
 								sText = String.Format("{0} Pending workflow step{1}", _StepCount, IIf(_StepCount <> 1, "s", ""))
 								%>
-						<li data-col="<%=iColNum %>" data-row="<%=iRowNum %>" data-sizex="2" data-sizey="1" class="linkspagebuttontext <%=sTileColourClass%> displayonly pwfslink" onclick="relocateURL('WorkflowPendingSteps', 0)">
+						<li data-col="<%=iColNum %>" data-row="<%=iRowNum %>" data-sizex="2" data-sizey="1" style="<%:sTileBackColourStyle%><%:sTileForeColourStyle%>" class="linkspagebuttontext <%=sTileColourClass%> displayonly pwfslink" onclick="relocateURL('WorkflowPendingSteps', 0)">
 							<div class="pwfTile <%=sTileColourClass%>">
 								<p class="linkspagebuttontileIcon">
 									<i class="icon-inbox"></i>
@@ -695,10 +719,10 @@
 								</p>
 								<div class="widgetplaceholder generaltheme">
 									<div><i class="icon-inbox"></i></div>
-									<a class="linkspageprompttext-font linkspageprompttext-colour linkspageprompttext-size linkspageprompttext-bold linkspageprompttext-italics" href="#"><%=sText%></a>
+									<a style="<%:sTileForeColourStyle%>" class="linkspageprompttext-font linkspageprompttext-colour linkspageprompttext-size linkspageprompttext-bold linkspageprompttext-italics" href="#"><%=sText%></a>
 								</div>
 							</div>
-							<div class="pwfList <%=sTileColourClass%>" style="display: none;">
+							<div class="pwfList <%=sTileColourClass%>" style="display: none; <%:sTileBackColourStyle%><%:sTileForeColourStyle%>">
 								<p><span>Pending steps:</span></p>
 								<table></table>
 							</div>
@@ -825,7 +849,7 @@
 								If fFormattingApplies Then
 						%>
 						<li id="li_<%: navlink.id %>" data-col="<%=iColNum %>" data-row="<%=iRowNum %>" data-sizex="1"
-							data-sizey="1" class="linkspagebuttontext ui-state-disabled <%=sTileColourClass%> displayonly linkspagebuttontext-font linkspagebuttontext-colour linkspagebuttontext-size linkspagebuttontext-bold linkspagebuttontext-italics">
+							data-sizey="1" style="<%:sTileBackColourStyle%><%:sTileForeColourStyle%>" class="linkspagebuttontext ui-state-disabled <%=sTileColourClass%> displayonly linkspagebuttontext-font linkspagebuttontext-colour linkspagebuttontext-size linkspagebuttontext-bold linkspagebuttontext-italics">
 							<div class="DBValueScroller" id="marqueeDBV<%: navlink.id %>">
 								<p class="DBValue" style="color: <%=sCFForeColor%>; <%=sCFFontBold%>; <%=sCFFontItalic%>" id="DBV<%: navlink.id %>">
 									<%If fUseFormatting = True Then%>
@@ -835,7 +859,7 @@
 									<%End If%>
 								</p>
 							</div>
-							<a href="#">
+							<a style="<%:sTileForeColourStyle%>" href="#">
 								<p class="DBValueCaption" style="color: <%=sCFForeColor%>; <%=sCFFontBold%>; <%=sCFFontItalic%>">
 									<%sText = navlink.Text
 										If sText.Length > 30 Then
@@ -850,7 +874,7 @@
 
 						<%Else%>
 						<li id="li_<%: navlink.id %>" data-col="<%=iColNum %>" data-row="<%=iRowNum %>" data-sizex="1"
-							data-sizey="1" class="linkspagebuttontext ui-state-disabled <%=sTileColourClass%> displayonly linkspagebuttontext-font linkspagebuttontext-colour linkspagebuttontext-size linkspagebuttontext-bold linkspagebuttontext-italics">
+							data-sizey="1" style="<%:sTileBackColourStyle%><%:sTileForeColourStyle%>" class="linkspagebuttontext ui-state-disabled <%=sTileColourClass%> displayonly linkspagebuttontext-font linkspagebuttontext-colour linkspagebuttontext-size linkspagebuttontext-bold linkspagebuttontext-italics">
 							<div class="DBValueScroller" id="marqueeDBV<%: navlink.id %>">
 								<p class="DBValue" id="DBV<%: navlink.id %>">
 									<%If fUseFormatting = True Then%>
@@ -860,7 +884,7 @@
 									<%End If%>
 								</p>
 							</div>
-							<a href="#">
+							<a style="<%:sTileForeColourStyle%>" href="#">
 								<p class="DBValueCaption">
 									<%sText = navlink.Text
 										If sText.Length > 30 Then
@@ -879,21 +903,21 @@
 						<%iRowNum += 1
 
 						Case ElementType.TodaysEvents%>
-						<li data-col="<%=iColNum %>" data-row="<%=iRowNum %>" data-sizex="2" data-sizey="1" class="linkspagebuttontext <%=sTileColourClass%> displayonly TELink">
+						<li data-col="<%=iColNum %>" style="<%:sTileBackColourStyle%><%:sTileForeColourStyle%>" data-row="<%=iRowNum %>" data-sizex="2" data-sizey="1" class="linkspagebuttontext <%=sTileColourClass%> displayonly TELink">
 							<div class="TETile <%=sTileColourClass%>">
 								<p class="linkspagebuttontileIcon">
 									<i class="icon-calendar"></i>
 									<div class="TECount"></div>
 								</p>
 								<p>
-									<a href="#"><%=FormatDateTime(Now, vbLongDate)%></a>
+									<a style="<%:sTileForeColourStyle%>" href="#"><%=FormatDateTime(Now, vbLongDate)%></a>
 								</p>
 								<div class="widgetplaceholder generaltheme">
 									<div><i class="icon-calendar"></i></div>
-									<a href="#">Today's Events</a>
+									<a style="<%:sTileForeColourStyle%>" href="#">Today's Events</a>
 								</div>
 							</div>
-							<div class="TEList <%=sTileColourClass%>">
+							<div style="<%:sTileBackColourStyle%><%:sTileForeColourStyle%>" class="TEList <%=sTileColourClass%>">
 								<p><span>Today's Events:</span></p>
 								<table style="width: 100%;">
 									<%											
@@ -1017,16 +1041,16 @@
 							
 						Case ElementType.OrgChart
 							sOnClick = "loadPartialView('OrgChart', 'home', 'workframe')"%>
-						<li data-col="<%=iColNum %>" data-row="<%=iRowNum %>" data-sizex="1" data-sizey="1" class="linkspagebuttontext <%=sTileColourClass%>" onclick="<%=sOnclick%>">
-							<a href="#"><%: navlink.Text %></a>
+						<li data-col="<%=iColNum %>" data-row="<%=iRowNum %>" data-sizex="1" data-sizey="1" style="<%:sTileBackColourStyle%><%:sTileForeColourStyle%>" class="linkspagebuttontext <%=sTileColourClass%>" onclick="<%=sOnclick%>">
+							<a style="<%:sTileForeColourStyle%>" href="#"><%: navlink.Text %></a>
 							<p class="linkspagebuttontileIcon"><i class="icon-sitemap"></i></p>
 						</li>
 
 						<%
 						Case Else
 						%>
-						<li data-col="<%=iColNum %>" data-row="<%=iRowNum %>" data-sizex="1" data-sizey="1"
-							class="linkspagebuttontext <%=sTileColourClass%> displayonly"><a href="#">
+						<li data-col="<%=iColNum %>" data-row="<%=iRowNum %>" data-sizex="1" data-sizey="1" style="<%:sTileBackColourStyle%><%:sTileForeColourStyle%>"
+							class="linkspagebuttontext <%=sTileColourClass%> displayonly"><a style="<%:sTileForeColourStyle%>" href="#">
 								<%: navlink.Text %></a></li>
 						<%iRowNum += 1
 
