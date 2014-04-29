@@ -222,10 +222,7 @@
 					var EmployeesWithUnAvailWarning = [];
 					var j;					
 					var sTransferErrorMsg = "";
-					var sTransferWarningMsg = "";
-
-					debugger;
-
+					var sTransferWarningMsg = "";				
 
 					if (ResultCodes.length > 0 && ResultCodes != 0) {
 						if (ResultCodes.indexOf("|") != -1) { //For results returned by the stored procedure sp_ASRIntValidateBulkBookings
