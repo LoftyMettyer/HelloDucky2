@@ -257,7 +257,16 @@ SQLSelectVerticalID_ERROR:
 				pfNullFlag = True
 				piNull_ID = piCount
 			Else
-				pstrHorizontalIDColumn = Trim(objRow("HORIZONTAL_ID").ToString())
+
+				Dim dc As DataColumn = objRow.Table.Columns("HORIZONTAL_ID")
+
+				If dc.DataType Is GetType(Decimal) Then
+					pstrHorizontalIDColumn = ConvertNumberForSQL(objRow("HORIZONTAL_ID").ToString())
+					pstrHorizontalIDColumn = Trim(pstrHorizontalIDColumn)
+				Else
+					pstrHorizontalIDColumn = Trim(objRow("HORIZONTAL_ID").ToString())
+				End If
+				
 				pstrHorizontalIDColumn = Replace(pstrHorizontalIDColumn, "'", "''")
 
 				If GetColumnDataType(lngColumnID) = SQLDataType.sqlDate Then
