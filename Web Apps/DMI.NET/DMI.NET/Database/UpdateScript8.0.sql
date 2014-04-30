@@ -40879,10 +40879,6 @@ GO
 DROP PROCEDURE [dbo].[sp_ASRIntValidateTransfers]
 GO
 
-/****** Object:  StoredProcedure [dbo].[sp_ASRIntValidateTrainingBooking]    Script Date: 13/09/2013 08:59:32 ******/
-DROP PROCEDURE [dbo].[sp_ASRIntValidateTrainingBooking]
-GO
-
 /****** Object:  StoredProcedure [dbo].[sp_ASRIntValidateReport]    Script Date: 13/09/2013 08:59:32 ******/
 DROP PROCEDURE [dbo].[sp_ASRIntValidateReport]
 GO
@@ -76333,7 +76329,6 @@ SET QUOTED_IDENTIFIER ON
 GO
 
 
-CREATE PROCEDURE [dbo].[sp_ASRIntValidateTrainingBooking] (
 CREATE PROCEDURE [dbo].[sp_ASRIntValidateTrainingBooking] (
 	@piResultCode		varchar(MAX) OUTPUT,
 	@piEmpRecID		integer,
