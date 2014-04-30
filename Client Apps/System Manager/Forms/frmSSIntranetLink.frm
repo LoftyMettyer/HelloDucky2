@@ -1,9 +1,9 @@
 VERSION 5.00
-Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "comdlg32.ocx"
+Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "COMDLG32.OCX"
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
-Object = "{051CE3FC-5250-4486-9533-4E0723733DFA}#1.0#0"; "COA_ColourPicker.ocx"
-Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "COA_Spinner.ocx"
-Object = "{65E121D4-0C60-11D2-A9FC-0000F8754DA1}#2.0#0"; "MSCHRT20.OCX"
+Object = "{051CE3FC-5250-4486-9533-4E0723733DFA}#1.0#0"; "coa_colourpicker.ocx"
+Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "coa_spinner.ocx"
+Object = "{65E121D4-0C60-11D2-A9FC-0000F8754DA1}#2.0#0"; "mschrt20.ocx"
 Begin VB.Form frmSSIntranetLink 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Self-service Intranet Link"
@@ -30,171 +30,6 @@ Begin VB.Form frmSSIntranetLink
    ScaleWidth      =   9360
    ShowInTaskbar   =   0   'False
    StartUpPosition =   2  'CenterScreen
-   Begin VB.Frame fraLinkSeparator 
-      Caption         =   "Separator :"
-      Height          =   4170
-      Left            =   2880
-      TabIndex        =   57
-      Top             =   5250
-      Width           =   6300
-      Begin VB.CheckBox chkSeparatorUseFormatting 
-         Caption         =   "Use &formatting"
-         Height          =   195
-         Left            =   210
-         TabIndex        =   63
-         Top             =   1260
-         Width           =   1800
-      End
-      Begin VB.TextBox txtSeparatorColour 
-         BackColor       =   &H00FFFFFF&
-         Enabled         =   0   'False
-         Height          =   315
-         Left            =   2580
-         TabIndex        =   64
-         Top             =   1545
-         Width           =   1170
-      End
-      Begin VB.CommandButton cmdSeparatorColPick 
-         Caption         =   "..."
-         Height          =   315
-         Left            =   3765
-         TabIndex        =   65
-         ToolTipText     =   "Select Border Colour"
-         Top             =   1530
-         UseMaskColor    =   -1  'True
-         Width           =   315
-      End
-      Begin VB.CommandButton cmdIcon 
-         Caption         =   "..."
-         Height          =   315
-         Left            =   4830
-         TabIndex        =   60
-         ToolTipText     =   "Select Icon"
-         Top             =   315
-         Width           =   315
-      End
-      Begin VB.TextBox txtIcon 
-         Enabled         =   0   'False
-         Height          =   330
-         Left            =   1050
-         TabIndex        =   59
-         Top             =   300
-         Width           =   3765
-      End
-      Begin VB.CommandButton cmdIconClear 
-         Caption         =   "O"
-         BeginProperty Font 
-            Name            =   "Wingdings 2"
-            Size            =   20.25
-            Charset         =   2
-            Weight          =   400
-            Underline       =   0   'False
-            Italic          =   0   'False
-            Strikethrough   =   0   'False
-         EndProperty
-         Height          =   315
-         Left            =   5160
-         MaskColor       =   &H000000FF&
-         TabIndex        =   61
-         ToolTipText     =   "Clear Icon"
-         Top             =   315
-         UseMaskColor    =   -1  'True
-         Width           =   330
-      End
-      Begin VB.CheckBox chkNewColumn 
-         Caption         =   "Column &break"
-         Height          =   255
-         Left            =   1050
-         TabIndex        =   62
-         Top             =   690
-         Width           =   2040
-      End
-      Begin VB.Label lblDiaryWarning 
-         AutoSize        =   -1  'True
-         Caption         =   "lblDiaryWarningText"
-         ForeColor       =   &H000000FF&
-         Height          =   195
-         Left            =   300
-         TabIndex        =   136
-         Top             =   2655
-         Visible         =   0   'False
-         Width           =   5775
-         WordWrap        =   -1  'True
-      End
-      Begin VB.Label lblSeparatorColour 
-         AutoSize        =   -1  'True
-         Caption         =   "Separator border colour :"
-         Height          =   195
-         Left            =   210
-         TabIndex        =   126
-         Top             =   1575
-         Width           =   2205
-      End
-      Begin VB.Line Line4 
-         BorderColor     =   &H80000015&
-         X1              =   210
-         X2              =   6075
-         Y1              =   1080
-         Y2              =   1080
-      End
-      Begin VB.Label lblNoOptions 
-         AutoSize        =   -1  'True
-         Caption         =   "There are no configurable options for this link type."
-         Height          =   195
-         Left            =   285
-         TabIndex        =   84
-         Top             =   2190
-         Visible         =   0   'False
-         Width           =   4410
-      End
-      Begin VB.Label lblIcon 
-         Caption         =   "Icon :"
-         Height          =   195
-         Left            =   210
-         TabIndex        =   58
-         Top             =   345
-         Width           =   615
-      End
-      Begin VB.Image imgIcon 
-         Height          =   495
-         Left            =   5565
-         Stretch         =   -1  'True
-         Top             =   330
-         Width           =   510
-      End
-   End
-   Begin VB.Frame fraURLLink 
-      Caption         =   "URL :"
-      Height          =   1125
-      Left            =   2880
-      TabIndex        =   37
-      Top             =   4470
-      Width           =   6300
-      Begin VB.TextBox txtURL 
-         Height          =   315
-         Left            =   1575
-         MaxLength       =   500
-         TabIndex        =   39
-         Top             =   300
-         Width           =   4515
-      End
-      Begin VB.CheckBox chkNewWindow 
-         Caption         =   "D&isplay in new window"
-         Height          =   330
-         Left            =   1575
-         TabIndex        =   40
-         Top             =   690
-         Width           =   2685
-      End
-      Begin VB.Label lblURL 
-         Caption         =   "URL :"
-         Height          =   195
-         Left            =   195
-         TabIndex        =   38
-         Top             =   360
-         Width           =   570
-      End
-   End
    Begin VB.Frame fraChartLink 
       Caption         =   "Chart :"
       Height          =   6060
@@ -401,6 +236,409 @@ Begin VB.Form frmSSIntranetLink
          Width           =   1095
       End
    End
+   Begin VB.Frame fraLinkSeparator 
+      Caption         =   "Separator :"
+      Height          =   4170
+      Left            =   2880
+      TabIndex        =   57
+      Top             =   5250
+      Width           =   6300
+      Begin VB.CheckBox chkSeparatorUseFormatting 
+         Caption         =   "Use &formatting"
+         Height          =   195
+         Left            =   210
+         TabIndex        =   63
+         Top             =   1260
+         Width           =   1800
+      End
+      Begin VB.TextBox txtSeparatorColour 
+         BackColor       =   &H00FFFFFF&
+         Enabled         =   0   'False
+         Height          =   315
+         Left            =   2580
+         TabIndex        =   64
+         Top             =   1545
+         Width           =   1170
+      End
+      Begin VB.CommandButton cmdSeparatorColPick 
+         Caption         =   "..."
+         Height          =   315
+         Left            =   3765
+         TabIndex        =   65
+         ToolTipText     =   "Select Border Colour"
+         Top             =   1530
+         UseMaskColor    =   -1  'True
+         Width           =   315
+      End
+      Begin VB.CommandButton cmdIcon 
+         Caption         =   "..."
+         Height          =   315
+         Left            =   4830
+         TabIndex        =   60
+         ToolTipText     =   "Select Icon"
+         Top             =   315
+         Width           =   315
+      End
+      Begin VB.TextBox txtIcon 
+         Enabled         =   0   'False
+         Height          =   330
+         Left            =   1050
+         TabIndex        =   59
+         Top             =   300
+         Width           =   3765
+      End
+      Begin VB.CommandButton cmdIconClear 
+         Caption         =   "O"
+         BeginProperty Font 
+            Name            =   "Wingdings 2"
+            Size            =   20.25
+            Charset         =   2
+            Weight          =   400
+            Underline       =   0   'False
+            Italic          =   0   'False
+            Strikethrough   =   0   'False
+         EndProperty
+         Height          =   315
+         Left            =   5160
+         MaskColor       =   &H000000FF&
+         TabIndex        =   61
+         ToolTipText     =   "Clear Icon"
+         Top             =   315
+         UseMaskColor    =   -1  'True
+         Width           =   330
+      End
+      Begin VB.CheckBox chkNewColumn 
+         Caption         =   "Column &break"
+         Height          =   255
+         Left            =   1050
+         TabIndex        =   62
+         Top             =   690
+         Width           =   2040
+      End
+      Begin VB.Label lblDiaryWarning 
+         AutoSize        =   -1  'True
+         Caption         =   "lblDiaryWarningText"
+         ForeColor       =   &H000000FF&
+         Height          =   195
+         Left            =   300
+         TabIndex        =   136
+         Top             =   2655
+         Visible         =   0   'False
+         Width           =   5775
+         WordWrap        =   -1  'True
+      End
+      Begin VB.Label lblSeparatorColour 
+         AutoSize        =   -1  'True
+         Caption         =   "Separator border colour :"
+         Height          =   195
+         Left            =   210
+         TabIndex        =   126
+         Top             =   1575
+         Width           =   2205
+      End
+      Begin VB.Line Line4 
+         BorderColor     =   &H80000015&
+         X1              =   210
+         X2              =   6075
+         Y1              =   1080
+         Y2              =   1080
+      End
+      Begin VB.Label lblNoOptions 
+         AutoSize        =   -1  'True
+         Caption         =   "There are no configurable options for this link type."
+         Height          =   195
+         Left            =   285
+         TabIndex        =   84
+         Top             =   2190
+         Visible         =   0   'False
+         Width           =   4410
+      End
+      Begin VB.Label lblIcon 
+         Caption         =   "Icon :"
+         Height          =   195
+         Left            =   210
+         TabIndex        =   58
+         Top             =   345
+         Width           =   615
+      End
+      Begin VB.Image imgIcon 
+         Height          =   495
+         Left            =   5565
+         Stretch         =   -1  'True
+         Top             =   330
+         Width           =   510
+      End
+   End
+   Begin VB.Frame fraURLLink 
+      Caption         =   "URL :"
+      Height          =   1125
+      Left            =   2880
+      TabIndex        =   37
+      Top             =   4470
+      Width           =   6300
+      Begin VB.TextBox txtURL 
+         Height          =   315
+         Left            =   1575
+         MaxLength       =   500
+         TabIndex        =   39
+         Top             =   300
+         Width           =   4515
+      End
+      Begin VB.CheckBox chkNewWindow 
+         Caption         =   "D&isplay in new window"
+         Enabled         =   0   'False
+         Height          =   330
+         Left            =   1575
+         TabIndex        =   40
+         Top             =   690
+         Value           =   1  'Checked
+         Width           =   2685
+      End
+      Begin VB.Label lblURL 
+         Caption         =   "URL :"
+         Height          =   195
+         Left            =   195
+         TabIndex        =   38
+         Top             =   360
+         Width           =   570
+      End
+   End
+   Begin VB.Frame fraLink 
+      Caption         =   "Link :"
+      Height          =   1710
+      Left            =   150
+      TabIndex        =   0
+      Top             =   105
+      Width           =   9000
+      Begin VB.ComboBox cboTableView 
+         Height          =   315
+         ItemData        =   "frmSSIntranetLink.frx":2500
+         Left            =   1485
+         List            =   "frmSSIntranetLink.frx":2502
+         Sorted          =   -1  'True
+         Style           =   2  'Dropdown List
+         TabIndex        =   6
+         Top             =   1100
+         Width           =   3030
+      End
+      Begin VB.TextBox txtText 
+         Height          =   315
+         Left            =   1485
+         MaxLength       =   100
+         TabIndex        =   4
+         Top             =   700
+         Width           =   3030
+      End
+      Begin VB.TextBox txtPrompt 
+         Height          =   315
+         Left            =   1485
+         MaxLength       =   100
+         TabIndex        =   2
+         Top             =   300
+         Width           =   3030
+      End
+      Begin SSDataWidgets_B.SSDBGrid grdAccess 
+         Height          =   1230
+         Left            =   5595
+         TabIndex        =   8
+         Top             =   300
+         Width           =   3180
+         ScrollBars      =   2
+         _Version        =   196617
+         DataMode        =   2
+         RecordSelectors =   0   'False
+         Col.Count       =   2
+         stylesets.count =   2
+         stylesets(0).Name=   "SysSecMgr"
+         stylesets(0).ForeColor=   -2147483631
+         stylesets(0).BackColor=   -2147483633
+         stylesets(0).HasFont=   -1  'True
+         BeginProperty stylesets(0).Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
+            Name            =   "Verdana"
+            Size            =   8.25
+            Charset         =   0
+            Weight          =   400
+            Underline       =   0   'False
+            Italic          =   0   'False
+            Strikethrough   =   0   'False
+         EndProperty
+         stylesets(0).Picture=   "frmSSIntranetLink.frx":2504
+         stylesets(1).Name=   "ReadOnly"
+         stylesets(1).ForeColor=   -2147483631
+         stylesets(1).BackColor=   -2147483633
+         stylesets(1).HasFont=   -1  'True
+         BeginProperty stylesets(1).Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
+            Name            =   "Verdana"
+            Size            =   8.25
+            Charset         =   0
+            Weight          =   400
+            Underline       =   0   'False
+            Italic          =   0   'False
+            Strikethrough   =   0   'False
+         EndProperty
+         stylesets(1).Picture=   "frmSSIntranetLink.frx":2520
+         MultiLine       =   0   'False
+         AllowRowSizing  =   0   'False
+         AllowGroupSizing=   0   'False
+         AllowColumnSizing=   0   'False
+         AllowGroupMoving=   0   'False
+         AllowColumnMoving=   0
+         AllowGroupSwapping=   0   'False
+         AllowColumnSwapping=   0
+         AllowGroupShrinking=   0   'False
+         AllowColumnShrinking=   0   'False
+         AllowDragDrop   =   0   'False
+         SelectTypeCol   =   0
+         SelectTypeRow   =   0
+         BalloonHelp     =   0   'False
+         MaxSelectedRows =   0
+         ForeColorEven   =   0
+         BackColorEven   =   -2147483643
+         BackColorOdd    =   -2147483643
+         RowHeight       =   423
+         ExtraHeight     =   79
+         Columns.Count   =   2
+         Columns(0).Width=   3889
+         Columns(0).Caption=   "User Group"
+         Columns(0).Name =   "GroupName"
+         Columns(0).AllowSizing=   0   'False
+         Columns(0).DataField=   "Column 0"
+         Columns(0).DataType=   8
+         Columns(0).FieldLen=   256
+         Columns(0).Locked=   -1  'True
+         Columns(1).Width=   1244
+         Columns(1).Caption=   "Visible"
+         Columns(1).Name =   "Access"
+         Columns(1).CaptionAlignment=   2
+         Columns(1).AllowSizing=   0   'False
+         Columns(1).DataField=   "Column 1"
+         Columns(1).DataType=   11
+         Columns(1).FieldLen=   256
+         Columns(1).Style=   2
+         TabNavigation   =   1
+         _ExtentX        =   5609
+         _ExtentY        =   2170
+         _StockProps     =   79
+         BeginProperty PageFooterFont {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
+            Name            =   "MS Sans Serif"
+            Size            =   8.25
+            Charset         =   0
+            Weight          =   400
+            Underline       =   0   'False
+            Italic          =   0   'False
+            Strikethrough   =   0   'False
+         EndProperty
+         BeginProperty PageHeaderFont {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
+            Name            =   "MS Sans Serif"
+            Size            =   8.25
+            Charset         =   0
+            Weight          =   400
+            Underline       =   0   'False
+            Italic          =   0   'False
+            Strikethrough   =   0   'False
+         EndProperty
+      End
+      Begin VB.Label lblAccess 
+         AutoSize        =   -1  'True
+         BackStyle       =   0  'Transparent
+         Caption         =   "Visibility :"
+         Height          =   195
+         Left            =   4665
+         TabIndex        =   7
+         Top             =   360
+         Width           =   885
+      End
+      Begin VB.Label lblTableView 
+         Caption         =   "Table (View) :"
+         Height          =   195
+         Left            =   195
+         TabIndex        =   5
+         Top             =   1155
+         Width           =   1245
+      End
+      Begin VB.Label lblText 
+         Caption         =   "Text :"
+         Height          =   195
+         Left            =   200
+         TabIndex        =   3
+         Top             =   760
+         Width           =   615
+      End
+      Begin VB.Label lblPrompt 
+         Caption         =   "Prompt :"
+         Height          =   195
+         Left            =   195
+         TabIndex        =   1
+         Top             =   360
+         Width           =   840
+      End
+   End
+   Begin VB.Frame fraApplicationLink 
+      Caption         =   "Application :"
+      Height          =   2190
+      Left            =   2880
+      TabIndex        =   41
+      Top             =   3585
+      Width           =   6300
+      Begin VB.CommandButton cmdAppFilePathSel 
+         Caption         =   "..."
+         Enabled         =   0   'False
+         Height          =   315
+         Left            =   5760
+         TabIndex        =   44
+         ToolTipText     =   "Select File Path"
+         Top             =   300
+         UseMaskColor    =   -1  'True
+         Width           =   315
+      End
+      Begin VB.TextBox txtAppFilePath 
+         Enabled         =   0   'False
+         Height          =   315
+         Left            =   1575
+         MaxLength       =   500
+         TabIndex        =   43
+         Top             =   300
+         Width           =   4185
+      End
+      Begin VB.TextBox txtAppParameters 
+         Enabled         =   0   'False
+         Height          =   315
+         Left            =   1575
+         MaxLength       =   500
+         TabIndex        =   46
+         Top             =   700
+         Width           =   4515
+      End
+      Begin VB.Label lblApplicationLinksUnavailable 
+         AutoSize        =   -1  'True
+         Caption         =   "Application links are no longer supported. The parameters shown here are for information only."
+         ForeColor       =   &H000000FF&
+         Height          =   390
+         Left            =   195
+         TabIndex        =   137
+         Top             =   1155
+         Width           =   5775
+         WordWrap        =   -1  'True
+      End
+      Begin VB.Label lblAppFilePath 
+         AutoSize        =   -1  'True
+         Caption         =   "File Path :"
+         Height          =   195
+         Left            =   195
+         TabIndex        =   42
+         Top             =   360
+         Width           =   720
+      End
+      Begin VB.Label lblAppParameters 
+         AutoSize        =   -1  'True
+         Caption         =   "Parameters :"
+         Height          =   195
+         Left            =   195
+         TabIndex        =   45
+         Top             =   765
+         Width           =   930
+      End
+   End
    Begin VB.Frame fraDBValue 
       Caption         =   "Database Value :"
       Height          =   6060
@@ -553,9 +791,9 @@ Begin VB.Form frmSSIntranetLink
       Begin VB.ComboBox cboDBValCFStyle 
          Height          =   315
          Index           =   0
-         ItemData        =   "frmSSIntranetLink.frx":2500
+         ItemData        =   "frmSSIntranetLink.frx":253C
          Left            =   3660
-         List            =   "frmSSIntranetLink.frx":2502
+         List            =   "frmSSIntranetLink.frx":253E
          Style           =   2  'Dropdown List
          TabIndex        =   108
          Top             =   3915
@@ -916,6 +1154,7 @@ Begin VB.Form frmSSIntranetLink
       End
       Begin VB.OptionButton optLink 
          Caption         =   "&Application"
+         Enabled         =   0   'False
          Height          =   315
          Index           =   4
          Left            =   200
@@ -959,176 +1198,6 @@ Begin VB.Form frmSSIntranetLink
          TabIndex        =   11
          Top             =   650
          Width           =   2265
-      End
-   End
-   Begin VB.Frame fraLink 
-      Caption         =   "Link :"
-      Height          =   1710
-      Left            =   150
-      TabIndex        =   0
-      Top             =   105
-      Width           =   9000
-      Begin VB.ComboBox cboTableView 
-         Height          =   315
-         ItemData        =   "frmSSIntranetLink.frx":2504
-         Left            =   1485
-         List            =   "frmSSIntranetLink.frx":2506
-         Sorted          =   -1  'True
-         Style           =   2  'Dropdown List
-         TabIndex        =   6
-         Top             =   1100
-         Width           =   3030
-      End
-      Begin VB.TextBox txtText 
-         Height          =   315
-         Left            =   1485
-         MaxLength       =   100
-         TabIndex        =   4
-         Top             =   700
-         Width           =   3030
-      End
-      Begin VB.TextBox txtPrompt 
-         Height          =   315
-         Left            =   1485
-         MaxLength       =   100
-         TabIndex        =   2
-         Top             =   300
-         Width           =   3030
-      End
-      Begin SSDataWidgets_B.SSDBGrid grdAccess 
-         Height          =   1230
-         Left            =   5595
-         TabIndex        =   8
-         Top             =   300
-         Width           =   3180
-         ScrollBars      =   2
-         _Version        =   196617
-         DataMode        =   2
-         RecordSelectors =   0   'False
-         Col.Count       =   2
-         stylesets.count =   2
-         stylesets(0).Name=   "SysSecMgr"
-         stylesets(0).ForeColor=   -2147483631
-         stylesets(0).BackColor=   -2147483633
-         stylesets(0).HasFont=   -1  'True
-         BeginProperty stylesets(0).Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
-            Name            =   "Verdana"
-            Size            =   8.25
-            Charset         =   0
-            Weight          =   400
-            Underline       =   0   'False
-            Italic          =   0   'False
-            Strikethrough   =   0   'False
-         EndProperty
-         stylesets(0).Picture=   "frmSSIntranetLink.frx":2508
-         stylesets(1).Name=   "ReadOnly"
-         stylesets(1).ForeColor=   -2147483631
-         stylesets(1).BackColor=   -2147483633
-         stylesets(1).HasFont=   -1  'True
-         BeginProperty stylesets(1).Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
-            Name            =   "Verdana"
-            Size            =   8.25
-            Charset         =   0
-            Weight          =   400
-            Underline       =   0   'False
-            Italic          =   0   'False
-            Strikethrough   =   0   'False
-         EndProperty
-         stylesets(1).Picture=   "frmSSIntranetLink.frx":2524
-         MultiLine       =   0   'False
-         AllowRowSizing  =   0   'False
-         AllowGroupSizing=   0   'False
-         AllowColumnSizing=   0   'False
-         AllowGroupMoving=   0   'False
-         AllowColumnMoving=   0
-         AllowGroupSwapping=   0   'False
-         AllowColumnSwapping=   0
-         AllowGroupShrinking=   0   'False
-         AllowColumnShrinking=   0   'False
-         AllowDragDrop   =   0   'False
-         SelectTypeCol   =   0
-         SelectTypeRow   =   0
-         BalloonHelp     =   0   'False
-         MaxSelectedRows =   0
-         ForeColorEven   =   0
-         BackColorEven   =   -2147483643
-         BackColorOdd    =   -2147483643
-         RowHeight       =   423
-         ExtraHeight     =   79
-         Columns.Count   =   2
-         Columns(0).Width=   3889
-         Columns(0).Caption=   "User Group"
-         Columns(0).Name =   "GroupName"
-         Columns(0).AllowSizing=   0   'False
-         Columns(0).DataField=   "Column 0"
-         Columns(0).DataType=   8
-         Columns(0).FieldLen=   256
-         Columns(0).Locked=   -1  'True
-         Columns(1).Width=   1244
-         Columns(1).Caption=   "Visible"
-         Columns(1).Name =   "Access"
-         Columns(1).CaptionAlignment=   2
-         Columns(1).AllowSizing=   0   'False
-         Columns(1).DataField=   "Column 1"
-         Columns(1).DataType=   11
-         Columns(1).FieldLen=   256
-         Columns(1).Style=   2
-         TabNavigation   =   1
-         _ExtentX        =   5609
-         _ExtentY        =   2170
-         _StockProps     =   79
-         BeginProperty PageFooterFont {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
-            Name            =   "MS Sans Serif"
-            Size            =   8.25
-            Charset         =   0
-            Weight          =   400
-            Underline       =   0   'False
-            Italic          =   0   'False
-            Strikethrough   =   0   'False
-         EndProperty
-         BeginProperty PageHeaderFont {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
-            Name            =   "MS Sans Serif"
-            Size            =   8.25
-            Charset         =   0
-            Weight          =   400
-            Underline       =   0   'False
-            Italic          =   0   'False
-            Strikethrough   =   0   'False
-         EndProperty
-      End
-      Begin VB.Label lblAccess 
-         AutoSize        =   -1  'True
-         BackStyle       =   0  'Transparent
-         Caption         =   "Visibility :"
-         Height          =   195
-         Left            =   4665
-         TabIndex        =   7
-         Top             =   360
-         Width           =   885
-      End
-      Begin VB.Label lblTableView 
-         Caption         =   "Table (View) :"
-         Height          =   195
-         Left            =   195
-         TabIndex        =   5
-         Top             =   1155
-         Width           =   1245
-      End
-      Begin VB.Label lblText 
-         Caption         =   "Text :"
-         Height          =   195
-         Left            =   200
-         TabIndex        =   3
-         Top             =   760
-         Width           =   615
-      End
-      Begin VB.Label lblPrompt 
-         Caption         =   "Prompt :"
-         Height          =   195
-         Left            =   195
-         TabIndex        =   1
-         Top             =   360
-         Width           =   840
       End
    End
    Begin VB.Frame fraHRProUtilityLink 
@@ -1300,58 +1369,6 @@ Begin VB.Form frmSSIntranetLink
          TabIndex        =   48
          Top             =   360
          Width           =   1320
-      End
-   End
-   Begin VB.Frame fraApplicationLink 
-      Caption         =   "Application :"
-      Height          =   1245
-      Left            =   2880
-      TabIndex        =   41
-      Top             =   3585
-      Width           =   6300
-      Begin VB.CommandButton cmdAppFilePathSel 
-         Caption         =   "..."
-         Height          =   315
-         Left            =   5760
-         TabIndex        =   44
-         ToolTipText     =   "Select File Path"
-         Top             =   300
-         UseMaskColor    =   -1  'True
-         Width           =   315
-      End
-      Begin VB.TextBox txtAppFilePath 
-         Height          =   315
-         Left            =   1575
-         MaxLength       =   500
-         TabIndex        =   43
-         Top             =   300
-         Width           =   4185
-      End
-      Begin VB.TextBox txtAppParameters 
-         Height          =   315
-         Left            =   1575
-         MaxLength       =   500
-         TabIndex        =   46
-         Top             =   700
-         Width           =   4515
-      End
-      Begin VB.Label lblAppFilePath 
-         AutoSize        =   -1  'True
-         Caption         =   "File Path :"
-         Height          =   195
-         Left            =   195
-         TabIndex        =   42
-         Top             =   360
-         Width           =   720
-      End
-      Begin VB.Label lblAppParameters 
-         AutoSize        =   -1  'True
-         Caption         =   "Parameters :"
-         Height          =   195
-         Left            =   195
-         TabIndex        =   45
-         Top             =   765
-         Width           =   930
       End
    End
    Begin MSComDlg.CommonDialog CommonDialog1 
@@ -1604,7 +1621,7 @@ Private Sub SetChartTypes()
     .AddItem "2D Step"
     .ItemData(.NewIndex) = 7
         
-    .AddItem "2D Pie"
+    .AddItem "Pie"
     .ItemData(.NewIndex) = 14
         
 '   Leave 2d xy disabled, as it requires data to be in a 2-column format which isn't
@@ -2174,7 +2191,7 @@ Private Sub RefreshControls()
   txtURL.Enabled = optLink(SSINTLINKSCREEN_URL).value
   txtURL.BackColor = IIf(txtURL.Enabled, vbWindowBackground, vbButtonFace)
   lblURL.Enabled = txtURL.Enabled
-  chkNewWindow.Enabled = txtURL.Enabled
+  chkNewWindow.Enabled = False  'txtURL.Enabled
   ' 'NPG20080128 Fault 12873 - If Not txtURL.Enabled Then
   If Not txtURL.Enabled And Not optLink(SSINTLINKSCREEN_EMAIL).value Then
     txtURL.Text = ""
@@ -2194,16 +2211,16 @@ Private Sub RefreshControls()
   End If
 
   ' Disable the Application link controls as required.
-  txtAppFilePath.Enabled = optLink(SSINTLINKSCREEN_APPLICATION).value
+  txtAppFilePath.Enabled = False  'optLink(SSINTLINKSCREEN_APPLICATION).value
   txtAppFilePath.BackColor = IIf(txtAppFilePath.Enabled, vbWindowBackground, vbButtonFace)
-  lblAppFilePath.Enabled = txtAppFilePath.Enabled
-  txtAppParameters.Enabled = optLink(SSINTLINKSCREEN_APPLICATION).value
+  lblAppFilePath.Enabled = False  'txtAppFilePath.Enabled
+  txtAppParameters.Enabled = False  'optLink(SSINTLINKSCREEN_APPLICATION).value
   txtAppParameters.BackColor = IIf(txtAppFilePath.Enabled, vbWindowBackground, vbButtonFace)
-  lblAppParameters.Enabled = txtAppFilePath.Enabled
-  If Not txtAppFilePath.Enabled Then
-    txtAppFilePath.Text = ""
-    txtAppParameters.Text = ""
-  End If
+  lblAppParameters.Enabled = False  'txtAppFilePath.Enabled
+'  If Not txtAppFilePath.Enabled Then
+'    txtAppFilePath.Text = ""
+'    txtAppParameters.Text = ""
+'  End If
 
   ' Disable the Report Link controls as required.
   txtDocumentFilePath.Enabled = optLink(SSINTLINKSCREEN_DOCUMENT).value
@@ -2350,8 +2367,9 @@ Private Sub RefreshControls()
     lblIcon.Visible = True
     txtIcon.Visible = True
     cmdIcon.Visible = True
+    cmdIcon.Enabled = False
     cmdIconClear.Visible = True
-    cmdIconClear.Enabled = txtIcon.Text <> ""
+    cmdIconClear.Enabled = False  'txtIcon.Text <> ""
     imgIcon.Visible = True
     chkNewColumn.Visible = (miLinkType = SSINTLINK_BUTTON)
     lblNoOptions.Visible = False
@@ -4090,7 +4108,7 @@ Public Property Get NewWindow() As Boolean
 End Property
 
 Public Property Let NewWindow(ByVal pfNewValue As Boolean)
-  chkNewWindow.value = IIf(pfNewValue, vbChecked, vbUnchecked)
+  chkNewWindow.value = vbChecked  'IIf(pfNewValue, vbChecked, vbUnchecked)
 End Property
 
 Public Property Get HiddenGroups() As String
