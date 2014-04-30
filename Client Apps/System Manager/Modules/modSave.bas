@@ -160,6 +160,7 @@ Function SaveChanges(Optional pfRefreshDatabase As Boolean) As Boolean
     If fOK Then
       gobjProgress.ResetBar2
       OutputCurrentProcess "Initialising .NET System Framework"
+      gobjHRProEngine.Initialise
       gobjProgress.UpdateProgress False
       DoEvents
       
