@@ -1539,8 +1539,9 @@
 				combo_disable(cboSaveExisting, true);
 				cboSaveExisting.length = 0;
 				txtFilename.value = '';
-				//text_disable(txtFilename, true);
+				text_disable(txtFilename, true);
 				button_disable(cmdFilename, true);
+
 
 				//disable email options
 				chkDestination3.checked = false;
@@ -1572,17 +1573,17 @@
 				if (chkDestination2.checked == true) {
 					populateSaveExisting();
 					combo_disable(cboSaveExisting, (fViewing == true));
-					//text_disable(txtFilename, (fViewing == true));
 					button_disable(cmdFilename, (fViewing == true));
+					text_disable(txtFilename, (fViewing == true));
 				}
 				else {
 					cboSaveExisting.length = 0;
 					combo_disable(cboSaveExisting, true);
+					text_disable(txtFilename, true);
 					txtFilename.value = '';
-					//text_disable(txtFilename, true);
 					button_disable(cmdFilename, true);
 				}
-
+				
 				//enable-disable email options
 				checkbox_disable(chkDestination3, (fViewing == true));
 				if (chkDestination3.checked == true) {
@@ -1619,13 +1620,13 @@
 				if (chkDestination2.checked == true) {
 					populateSaveExisting();
 					combo_disable(cboSaveExisting, (fViewing == true));
-					//text_disable(txtFilename, (fViewing == true));
+					text_disable(txtFilename, (fViewing == true));
 					button_disable(cmdFilename, (fViewing == true));
 				}
 				else {
 					cboSaveExisting.length = 0;
 					combo_disable(cboSaveExisting, true);
-					//text_disable(txtFilename, true);
+					text_disable(txtFilename, true);
 					txtFilename.value = '';
 					button_disable(cmdFilename, true);
 				}
@@ -1671,13 +1672,13 @@
 				if (chkDestination2.checked == true) {
 					populateSaveExisting();
 					combo_disable(cboSaveExisting, (fViewing == true));
-					//text_disable(txtFilename, (fViewing == true));
+					text_disable(txtFilename, (fViewing == true));
 					button_disable(cmdFilename, (fViewing == true));
 				}
 				else {
 					cboSaveExisting.length = 0;
 					combo_disable(cboSaveExisting, true);
-					//text_disable(txtFilename, true);
+					text_disable(txtFilename, true);
 					txtFilename.value = '';
 					button_disable(cmdFilename, true);
 				}
@@ -1724,13 +1725,13 @@
 				if (chkDestination2.checked == true) {
 					populateSaveExisting();
 					combo_disable(cboSaveExisting, (fViewing == true));
-					//text_disable(txtFilename, (fViewing == true));
+					text_disable(txtFilename, (fViewing == true));
 					button_disable(cmdFilename, (fViewing == true));
 				}
 				else {
 					cboSaveExisting.length = 0;
 					combo_disable(cboSaveExisting, true);
-					//text_disable(txtFilename, true);
+					text_disable(txtFilename, true);
 					txtFilename.value = '';
 					button_disable(cmdFilename, true);
 				}
