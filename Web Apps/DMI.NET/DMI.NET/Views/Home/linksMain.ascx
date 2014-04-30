@@ -799,7 +799,7 @@
 								If fUseConditionalFormatting = True Then
 									For jnCount = 0 To 2
 										fDoFormatting = False
-										If sCFValue(jnCount) <> vbNullString Then
+										If sCFValue(jnCount) <> vbNullString And sText <> "No Data" And sText <> "No Access" Then 'objChart.GetChartData returns either "No Data" or "No Access" if there is a permission-denied problem
 											Select Case sCFOperator(jnCount)
 												Case "is equal to"
 													If CType(sText, Int32) = CType(sCFValue(jnCount), Int32) Then fDoFormatting = True
