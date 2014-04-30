@@ -45,14 +45,13 @@ Namespace Code
 		End Property
 		Public Shared ReadOnly Property UI_Self_Service_Layout As String
 			Get
-
-
-				If (ConfigurationManager.AppSettings("UI_Self_Service_Layout").ToUpper() = "Winkit".ToUpper() Or ConfigurationManager.AppSettings("UI_Self_Service_Layout").ToUpper() = "Wireframe".ToUpper() Or ConfigurationManager.AppSettings("UI_Self_Service_Layout").ToUpper() = "Tiles".ToUpper()) Then
+				If ConfigurationManager.AppSettings("UI_Self_Service_Layout") Is Nothing Then
+					Return "winkit"
+				ElseIf (ConfigurationManager.AppSettings("UI_Self_Service_Layout").ToUpper() = "WINKIT" Or ConfigurationManager.AppSettings("UI_Self_Service_Layout").ToUpper() = "WIREFRAME" Or ConfigurationManager.AppSettings("UI_Self_Service_Layout").ToUpper() = "TILES".ToUpper()) Then
 					Return ConfigurationManager.AppSettings("UI_Self_Service_Layout").ToLower()
 				Else
 					Return "winkit"
 				End If
-
 			End Get
 		End Property
 		Public Shared ReadOnly Property UI_Layout_Selectable As String 'Strictly speaking this property should return a Boolean, but since everything else is boolean, this is too.
