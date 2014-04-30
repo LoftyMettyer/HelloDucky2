@@ -182,6 +182,15 @@ BEGIN
 
 END
 
+	-- Parentheses
+	DELETE FROM tbstat_componentcode WHERE id IN (79, 80) AND isoperator = 0
+
+	INSERT [dbo].[tbstat_componentcode] ([id], [code], [datatype], [name], [isoperator], [operatortype], [casecount], [maketypesafe])
+		VALUES (79, '[ID]', 4, 'Base Record ID', 0, 0, 0, 0);
+	INSERT [dbo].[tbstat_componentcode] ([id], [code], [datatype], [name], [isoperator], [operatortype], [casecount], [maketypesafe])
+		VALUES (80, 'dbo.udfASRCreateDate({0}, {1}, {2})', 4, 'Create Exact Date', 0, 0, 0, 0);
+
+
 	IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[udfASRCreateDate]') AND type in (N'FN'))
 		DROP FUNCTION [dbo].[udfASRCreateDate];
 

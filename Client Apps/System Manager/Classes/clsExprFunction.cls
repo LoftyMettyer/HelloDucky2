@@ -554,6 +554,14 @@ Private Function ValidateFunctionParameters(plngFunctionID As Variant, piResultT
       fOK = (piParam1Type = giEXPRVALUE_CHARACTER)
       piResultType = giEXPRVALUE_CHARACTER
 
+    Case 79 ' Current ID of the base record
+      fOK = True
+      piResultType = giEXPRVALUE_NUMERIC
+
+    Case 80 ' Create exact date
+      fOK = True
+      piResultType = giEXPRVALUE_DATE
+
     Case Else ' Unknown function
       fOK = False
   End Select
