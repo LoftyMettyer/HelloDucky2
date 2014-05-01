@@ -1186,7 +1186,7 @@ Namespace Controllers
 
 							Catch ex As SqlException
 								If ex.Number.Equals(50000) Then
-									If ex.Message.IndexOf("The transaction ended in the trigger", System.StringComparison.Ordinal) > 0 Then										
+									If ex.Message.IndexOf("The transaction ended in the trigger", System.StringComparison.Ordinal) > 0 Then
 										sErrorMsg = Trim(Mid(ex.Message, 1, (InStr(ex.Message, "The transaction ended in the trigger")) - 1))
 									ElseIf ex.Message.IndexOf("Invalid object name", System.StringComparison.Ordinal) > 0 Then
 										sErrorMsg = Trim(Mid(ex.Message, 1, (InStr(ex.Message, "Invalid object name")) - 1))
@@ -2572,7 +2572,6 @@ Namespace Controllers
 			Dim lngLoopMin As Long
 			Dim lngLoopMax As Long
 
-			Dim objDataAccess As clsDataAccess = CType(Session("DatabaseAccess"), clsDataAccess)
 			Dim objCrossTab As CrossTab = CType(Session("objCrossTab" & sUtilID), CrossTab)
 
 			Dim ClientDLL As New HR.Intranet.Server.clsOutputRun
@@ -2654,20 +2653,18 @@ Namespace Controllers
 
 					ElseIf lngOutputFormat = OutputFormats.fmtExcelPivotTable Then
 
-						'Response.Write("  ClientDLL.PivotSuppressBlanks = (window.chkSuppressZeros.checked == true);" & vbCrLf)
-						'Response.Write("  ClientDLL.PivotDataFunction = window.cboIntersectionType.options[window.cboIntersectionType.selectedIndex].text;" & vbCrLf)
-
 						ClientDLL.AddColumn(" ", SQLDataType.sqlVarChar, 0, False)
 						For intCount = 0 To objCrossTab.ColumnHeadingUbound(0)
-							ClientDLL.AddColumn(objCrossTab.ColumnHeading(0, intCount), SQLDataType.sqlVarChar, objCrossTab.IntersectionDecimals, objCrossTab.Use1000Separator)
+							ClientDLL.AddColumn(objCrossTab.ColumnHeading(0, intCount), SQLDataType.sqlNumeric, objCrossTab.IntersectionDecimals, objCrossTab.Use1000Separator)
 						Next
 
-						'Response.Write("  ClientDLL.AddColumn(window.cboIntersectionType.options[window.cboIntersectionType.selectedIndex].text, 2, " & objCrossTab.IntersectionDecimals & "," & LCase(objCrossTab.Use1000Separator) & ");" & vbCrLf)
-						strInterSectionType = "TODO Intersection type"
-						ClientDLL.AddColumn(strInterSectionType, SQLDataType.sqlInteger, objCrossTab.IntersectionDecimals, objCrossTab.Use1000Separator)
+						If objCrossTab.CrossTabType = CrossTabType.cttAbsenceBreakdown Then
+							ClientDLL.IntersectionType = IntersectionType.Count
+						Else
+							ClientDLL.IntersectionType = CInt(Session("CT_IntersectionType"))
+						End If
 
-						Dim rsPivot As DataTable
-						Dim strSQL As String
+						ClientDLL.AddColumn(strInterSectionType, SQLDataType.sqlInteger, objCrossTab.IntersectionDecimals, objCrossTab.Use1000Separator)
 
 						Dim strOutput(,) As String
 						Dim strPageValue As String = ""
@@ -2675,33 +2672,17 @@ Namespace Controllers
 						Dim lngCol As Integer
 						Dim lngRow As Integer
 
-
-						strSQL = "SELECT HOR as 'Horizontal', VER as 'Vertical'" & IIf(objCrossTab.PageBreakColumn, ", PGB as 'Page Break'", vbNullString) & ", RecDesc as 'Record Description'" & IIf(objCrossTab.IntersectionColumn, ", Ins as 'Intersection'", vbNullString) & IIf(objCrossTab.CrossTabType = CrossTabType.cttAbsenceBreakdown, ", Value as 'Duration'", vbNullString) & " FROM " & objCrossTab.mstrTempTableName
-
-						If lngOutputFormat = CrossTabType.cttAbsenceBreakdown Then
-							strSQL = strSQL & " WHERE NOT HOR IN ('Total','Count','Average')"
-
-						ElseIf objCrossTab.PageBreakColumn Then
-							strSQL = strSQL & " ORDER BY PGB"
-						End If
-
-						rsPivot = objDataAccess.GetDataTable(strSQL)
-
-						'------------
-
-						With rsPivot
-
-							'			ReDim mstrOutputPivotArray(0)
+						With objCrossTab.PivotData
 
 							If Not objCrossTab.PageBreakColumn Then
 								lngRow = 1
-								ReDim strOutput(.Columns.Count, 0)
+								ReDim strOutput(.Columns.Count - 1, 0)
 								For lngCol = 0 To .Columns.Count - 1
-									strOutput(lngCol, 0) = rsPivot.Columns(lngCol).ColumnName
+									strOutput(lngCol, 0) = objCrossTab.PivotData.Columns(lngCol).ColumnName
 								Next
 							End If
 
-							For Each objRow As DataRow In rsPivot.Rows
+							For Each objRow As DataRow In objCrossTab.PivotData.Rows
 
 								If objCrossTab.PageBreakColumn Then
 									If strPageValue <> objRow("Page Break") Then
@@ -2733,7 +2714,7 @@ Namespace Controllers
 
 								End If
 
-								ReDim Preserve strOutput(.Columns.Count, lngRow)
+								ReDim Preserve strOutput(.Columns.Count - 1, lngRow)
 								For lngCol = 0 To .Columns.Count - 1
 
 									If lngCol < 2 Or (lngCol = 2 And objCrossTab.PageBreakColumn) Then
@@ -2755,7 +2736,7 @@ Namespace Controllers
 
 						ClientDLL.ArrayDim(UBound(strOutput, 1), UBound(strOutput, 2))
 						For lngCol = 0 To UBound(strOutput, 1)
-							For lngRow = 0 To UBound(strOutput, 2) - 1
+							For lngRow = 0 To UBound(strOutput, 2)
 								ClientDLL.ArrayAddTo(lngCol, lngRow, strOutput(lngCol, lngRow))
 							Next
 						Next
@@ -2765,26 +2746,14 @@ Namespace Controllers
 
 					Else
 
-
-						''MH20040219
-						'Response.Write("  var lngExcelDataType;")
-						'Response.Write("  if (window.chkPercentType.checked == true) {" & vbCrLf)
-						'Response.Write("    lngExcelDataType = 0;" & vbCrLf)		 'sqlNumeric
-						'Response.Write("  }" & vbCrLf)
-						'Response.Write("  else {" & vbCrLf)
-						'Response.Write("    lngExcelDataType = 2;" & vbCrLf)		 'sqlUnknown
-						'Response.Write("  }" & vbCrLf)
-
-						Dim lngExcelDataType = 0 '?????
-
 						ClientDLL.AddColumn(" ", 12, 0, False)
 						For intCount = 0 To objCrossTab.ColumnHeadingUbound(0)
-							ClientDLL.AddColumn(Left(objCrossTab.ColumnHeading(0, intCount), 255), lngExcelDataType, objCrossTab.IntersectionDecimals _
-								, LCase(objCrossTab.Use1000Separator))
+							ClientDLL.AddColumn(Left(objCrossTab.ColumnHeading(0, intCount), 255), 0, objCrossTab.IntersectionDecimals _
+							, LCase(objCrossTab.Use1000Separator))
 						Next
 
-						strInterSectionType = "TODO Intersection type"
-						ClientDLL.AddColumn(strInterSectionType, lngExcelDataType, objCrossTab.IntersectionDecimals, objCrossTab.Use1000Separator)
+						strInterSectionType = Session("CT_IntersectionType")
+						ClientDLL.AddColumn(strInterSectionType, 0, objCrossTab.IntersectionDecimals, objCrossTab.Use1000Separator)
 
 
 						If objCrossTab.PageBreakColumn = True Then
@@ -3048,7 +3017,7 @@ Namespace Controllers
 
 					Else ' no page break
 
-						If lngOutputFormat = OutputFormats.fmtExcelGraph And Not objReport.CustomReportsSummaryReport Then
+						If (lngOutputFormat = OutputFormats.fmtExcelGraph And Not objReport.CustomReportsSummaryReport) Or lngOutputFormat = OutputFormats.fmtExcelPivotTable Then
 							Dim trueRowCount As Integer = (From row In objReport.ReportDataTable.AsEnumerable() Where row(0).ToString() = "0" Where String.Join("", row.ItemArray) <> "0").Count()
 							ClientDLL.ArrayDim(UBound(arrayVisibleColumns, 2), trueRowCount)
 						Else

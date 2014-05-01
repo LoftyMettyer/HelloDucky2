@@ -48,7 +48,6 @@ Namespace ExClientCode
 
 		Private _mblnChart As Boolean
 		Private _mblnPivotTable As Boolean
-		'Private mstrIntersectionFormat As String
 
 		Private _mstrXlTemplate As String
 		Private _mblnXlExcelGridlines As Boolean
@@ -58,9 +57,11 @@ Namespace ExClientCode
 		Private _mblnXlAutoFitCols As Boolean
 		Private _mblnXlLandscape As Boolean
 
-		Private _mblnSummaryReport as Boolean
+		Private _mblnSummaryReport As Boolean
 
 		Const OfficeVersion As Integer = 12
+
+		Public IntersectionType As IntersectionType
 
 		Public Sub ClearUp()
 
@@ -310,7 +311,7 @@ Namespace ExClientCode
 
 		End Sub
 
-		Public Sub AddPage(ByRef strDefTitle As String, ByRef strSheetName As String, ByRef colStyles As Collection)
+		Public Sub AddPage(strDefTitle As String, strSheetName As String, ByRef colStyles As Collection)
 
 			_mstrDefTitle = strDefTitle
 
@@ -521,7 +522,7 @@ Namespace ExClientCode
 				Const colTitleRowCount As Integer = 1
 				Dim summaryInfoColCount As Integer = 0
 
-				' Compute summary columns.				
+				' Compute summary columns.
 				' summary report???
 				If _mxlWorkSheet.Cells(_mlngDataCurrentRow - 1, _mlngDataStartCol - 1).Value = "Summary Info" And Not SummaryReport Then summaryInfoColCount = 1
 
@@ -596,7 +597,7 @@ Namespace ExClientCode
 		Private Function CreatePivotTable(lngMaxRows As Integer, lngMaxCols As Integer, colColumns As List(Of Metadata.Column), colStyles As Collection) As Worksheet
 
 			Dim pivotSheet As Worksheet = _mxlWorkBook.Worksheets(_mxlWorkBook.Worksheets.Add())
-			pivotSheet.Name = "PivotTable"
+			pivotSheet.Name = _mxlWorkBook.Worksheets(0).Name.Replace("Data_", "")
 
 			Try
 
@@ -609,7 +610,23 @@ Namespace ExClientCode
 					.AddFieldToArea(PivotFieldType.Row, 1)
 					.AddFieldToArea(PivotFieldType.Column, 0)
 					.AddFieldToArea(PivotFieldType.Data, pivotTables(index).BaseFields.Count - 1)
-					.DataFields(0).Function = ConsolidationFunction.Sum
+
+					Select Case IntersectionType
+						Case IntersectionType.Average
+							.DataFields(0).Function = ConsolidationFunction.Average
+
+						Case IntersectionType.Minimum
+							.DataFields(0).Function = ConsolidationFunction.Min
+
+						Case IntersectionType.Maximum
+							.DataFields(0).Function = ConsolidationFunction.Max
+
+						Case IntersectionType.Count
+							.DataFields(0).Function = ConsolidationFunction.Count
+
+						Case Else
+							.DataFields(0).Function = ConsolidationFunction.Sum
+					End Select
 
 					.IsAutoFormat = False
 					.AutoFormatType = PivotTableAutoFormatType.None
@@ -621,6 +638,7 @@ Namespace ExClientCode
 					.PageFieldOrder = PrintOrderType.DownThenOver
 					.RowFields(0).IsAscendSort = True
 					.ColumnFields(0).IsAscendSort = True
+
 					.ShowPivotStyleRowHeader = True
 					.ShowPivotStyleColumnHeader = True
 					.DisplayNullString = True
@@ -636,7 +654,7 @@ Namespace ExClientCode
 
 					Dim objColumn = colColumns(colColumns.Count - 1)
 					If objColumn.Decimals > 0 Then
-						stlDecimal.Custom = "0" & "." & New String("0", objColumn.Decimals)
+						stlDecimal.Custom = "#,##0" & "." & New String("0", objColumn.Decimals)
 					Else
 						stlDecimal.Custom = "@"
 					End If

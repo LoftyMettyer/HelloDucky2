@@ -100,6 +100,8 @@ Public Class CrossTab
 	' Array holding the User Defined functions that are needed for this report
 	Private mastrUDFsRequired() As String
 
+	Public PivotData As DataTable
+
 	Public WriteOnly Property CustomReportID() As Integer
 		Set(ByVal Value As Integer)
 			mlngCrossTabID = Value
@@ -759,118 +761,118 @@ LocalErr:
 		Dim strSQL As String
 		Dim lngMax As Integer
 
-		On Error GoTo LocalErr
+		Try
 
-		lngMax = 2
-		ReDim strColumn(2, lngMax)
+			lngMax = 2
+			ReDim strColumn(2, lngMax)
 
-		strColumn(1, 0) = "ID"
-		strColumn(2, 0) = "ID"
+			strColumn(1, 0) = "ID"
+			strColumn(2, 0) = "ID"
 
-		strColumn(1, 1) = mstrColName(HOR)
-		strColumn(2, 1) = "Hor"
+			strColumn(1, 1) = mstrColName(HOR)
+			strColumn(2, 1) = "Hor"
 
-		strColumn(1, 2) = mstrColName(VER)
-		strColumn(2, 2) = "Ver"
+			strColumn(1, 2) = mstrColName(VER)
+			strColumn(2, 2) = "Ver"
 
-		If mblnPageBreak Then
-			lngMax = lngMax + 1
-			ReDim Preserve strColumn(2, lngMax)
-
-			strColumn(1, lngMax) = mstrColName(PGB)
-			strColumn(2, lngMax) = "Pgb"
-		End If
-
-		If mblnIntersection Then
-			lngMax = lngMax + 1
-			ReDim Preserve strColumn(2, lngMax)
-
-			strColumn(1, lngMax) = mstrColName(INS)
-			strColumn(2, lngMax) = "Ins"
-		End If
-
-		'MH20020321 Remmed out for INT
-		If mlngCrossTabType <> Enums.CrossTabType.cttNormal Then
-			If mlngCrossTabType <> Enums.CrossTabType.cttAbsenceBreakdown Then
-				lngMax = lngMax + 2
+			If mblnPageBreak Then
+				lngMax = lngMax + 1
 				ReDim Preserve strColumn(2, lngMax)
 
-				strColumn(1, lngMax - 1) = PersonnelModule.gsPersonnelStartDateColumnName
-				strColumn(2, lngMax - 1) = "StartDate"
-
-				strColumn(1, lngMax) = PersonnelModule.gsPersonnelLeavingDateColumnName
-				strColumn(2, lngMax) = "LeavingDate"
+				strColumn(1, lngMax) = mstrColName(PGB)
+				strColumn(2, lngMax) = "Pgb"
 			End If
 
-			If mlngCrossTabType = Enums.CrossTabType.cttAbsenceBreakdown Then
-				lngMax = lngMax + 7
+			If mblnIntersection Then
+				lngMax = lngMax + 1
 				ReDim Preserve strColumn(2, lngMax)
 
-				strColumn(1, lngMax) = AbsenceModule.gsAbsenceDurationColumnName
-				strColumn(2, lngMax) = "Value"
+				strColumn(1, lngMax) = mstrColName(INS)
+				strColumn(2, lngMax) = "Ins"
+			End If
 
-				strColumn(1, lngMax - 4) = AbsenceModule.gsAbsenceStartDateColumnName
-				strColumn(2, lngMax - 4) = "Start_Date"
+			'MH20020321 Remmed out for INT
+			If mlngCrossTabType <> Enums.CrossTabType.cttNormal Then
+				If mlngCrossTabType <> Enums.CrossTabType.cttAbsenceBreakdown Then
+					lngMax = lngMax + 2
+					ReDim Preserve strColumn(2, lngMax)
 
-				strColumn(1, lngMax - 3) = AbsenceModule.gsAbsenceStartSessionColumnName
-				strColumn(2, lngMax - 3) = "Start_Session"
+					strColumn(1, lngMax - 1) = PersonnelModule.gsPersonnelStartDateColumnName
+					strColumn(2, lngMax - 1) = "StartDate"
 
-				strColumn(1, lngMax - 2) = AbsenceModule.gsAbsenceEndDateColumnName
-				strColumn(2, lngMax - 2) = "End_Date"
+					strColumn(1, lngMax) = PersonnelModule.gsPersonnelLeavingDateColumnName
+					strColumn(2, lngMax) = "LeavingDate"
+				End If
 
-				strColumn(1, lngMax - 1) = AbsenceModule.gsAbsenceEndSessionColumnName
-				strColumn(2, lngMax - 1) = "End_Session"
+				If mlngCrossTabType = Enums.CrossTabType.cttAbsenceBreakdown Then
+					lngMax = lngMax + 7
+					ReDim Preserve strColumn(2, lngMax)
 
-				strColumn(1, lngMax - 5) = "ID_" & Trim(Str(PersonnelModule.glngPersonnelTableID))
-				strColumn(2, lngMax - 5) = "Personnel_ID"
+					strColumn(1, lngMax) = AbsenceModule.gsAbsenceDurationColumnName
+					strColumn(2, lngMax) = "Value"
 
-				strColumn(1, lngMax - 6) = AbsenceModule.gsAbsenceDurationColumnName ' Used to hold the day number (1=Mon, 2=Tues etc.)
-				strColumn(2, lngMax - 6) = "Day_Number"
+					strColumn(1, lngMax - 4) = AbsenceModule.gsAbsenceStartDateColumnName
+					strColumn(2, lngMax - 4) = "Start_Date"
 
+					strColumn(1, lngMax - 3) = AbsenceModule.gsAbsenceStartSessionColumnName
+					strColumn(2, lngMax - 3) = "Start_Session"
+
+					strColumn(1, lngMax - 2) = AbsenceModule.gsAbsenceEndDateColumnName
+					strColumn(2, lngMax - 2) = "End_Date"
+
+					strColumn(1, lngMax - 1) = AbsenceModule.gsAbsenceEndSessionColumnName
+					strColumn(2, lngMax - 1) = "End_Session"
+
+					strColumn(1, lngMax - 5) = "ID_" & Trim(Str(PersonnelModule.glngPersonnelTableID))
+					strColumn(2, lngMax - 5) = "Personnel_ID"
+
+					strColumn(1, lngMax - 6) = AbsenceModule.gsAbsenceDurationColumnName ' Used to hold the day number (1=Mon, 2=Tues etc.)
+					strColumn(2, lngMax - 6) = "Day_Number"
+
+
+				End If
 
 			End If
 
-		End If
+			fOK = True
+			Call GetSQL2(strColumn)
+			If fOK = False Then
+				Return False
+			End If
 
-		fOK = True
-		Call GetSQL2(strColumn)
-		If fOK = False Then
+			mstrTempTableName = General.UniqueSQLObjectName("ASRSysTempCrossTab", 3)
+			mstrSQLSelect = mstrSQLSelect & ", " & "space(255) as 'RecDesc' INTO " & mstrTempTableName
+
+			strSQL = "SELECT " & mstrSQLSelect & vbNewLine & " FROM " & mstrSQLFrom & vbNewLine & mstrSQLJoin & vbNewLine & mstrSQLWhere
+
+			'MH20010327 Seems that it might be moving on pass this line of code too
+			'quickly so I've tried returning the number of rows effected to make
+			'sure that it completes fully
+			DB.ExecuteSql(strSQL)
+
+			strSQL = "SELECT * FROM " & mstrTempTableName
+			rsCrossTabData = DB.GetDataTable(strSQL)
+
+			If rsCrossTabData.Rows.Count = 0 Then
+				mstrStatusMessage = "No records meet the selection criteria"
+				mblnNoRecords = True
+				Logs.AddDetailEntry("Completed successfully. " & mstrStatusMessage)
+				Logs.ChangeHeaderStatus(EventLog_Status.elsSuccessful)
+				fOK = False
+			End If
+
+			'Check if we might need record description...
+			'If mblnBatchMode = False And mlngRecordDescExprID > 0 Then
+			If fOK Then
+				DB.ExecuteSql("EXEC dbo.sp_ASRCrossTabsRecDescs '" & mstrTempTableName & "', " & CStr(mlngRecordDescExprID))
+			End If
+
+		Catch ex As Exception
+			mstrStatusMessage = ex.Message
 			Return False
-		End If
-
-		mstrTempTableName = General.UniqueSQLObjectName("ASRSysTempCrossTab", 3)
-		mstrSQLSelect = mstrSQLSelect & ", " & "space(255) as 'RecDesc' INTO " & mstrTempTableName
-
-		strSQL = "SELECT " & mstrSQLSelect & vbNewLine & " FROM " & mstrSQLFrom & vbNewLine & mstrSQLJoin & vbNewLine & mstrSQLWhere
-
-		'MH20010327 Seems that it might be moving on pass this line of code too
-		'quickly so I've tried returning the number of rows effected to make
-		'sure that it completes fully
-		DB.ExecuteSql(strSQL)
-
-		strSQL = "SELECT * FROM " & mstrTempTableName
-		rsCrossTabData = DB.GetDataTable(strSQL)
-
-		If rsCrossTabData.Rows.Count = 0 Then
-			mstrStatusMessage = "No records meet the selection criteria"
-			mblnNoRecords = True
-			Logs.AddDetailEntry("Completed successfully. " & mstrStatusMessage)
-			Logs.ChangeHeaderStatus(EventLog_Status.elsSuccessful)
-			fOK = False
-		End If
-
-		'Check if we might need record description...
-		'If mblnBatchMode = False And mlngRecordDescExprID > 0 Then
-		If fOK Then
-			DB.ExecuteSql("EXEC dbo.sp_ASRCrossTabsRecDescs '" & mstrTempTableName & "', " & CStr(mlngRecordDescExprID))
-		End If
+		End Try
 
 		Return fOK
-
-LocalErr:
-
-		mstrStatusMessage = Err.Description
-		Return False
 
 	End Function
 
@@ -2151,5 +2153,35 @@ LocalErr:
 		End Try
 
 	End Function
+
+	Public Function CreatePivotDataset() As Boolean
+
+		Dim strSQL As String
+
+		Try
+
+			strSQL = "SELECT HOR as 'Horizontal', VER as 'Vertical'" & IIf(PageBreakColumn, ", PGB as 'Page Break'", vbNullString) _
+				& ", RecDesc as 'Record Description'" & IIf(IntersectionColumn, ", Ins as 'Intersection'", vbNullString) _
+				& IIf(CrossTabType = CrossTabType.cttAbsenceBreakdown, ", Value as 'Duration'", vbNullString) _
+				& " FROM " & mstrTempTableName
+
+			If mlngCrossTabType = CrossTabType.cttAbsenceBreakdown Then
+				strSQL = strSQL & " WHERE [IsSummary] = 0"
+
+			ElseIf PageBreakColumn Then
+				strSQL = strSQL & " ORDER BY PGB"
+			End If
+
+			PivotData = DB.GetDataTable(strSQL)
+
+		Catch ex As Exception
+			Return False
+		End Try
+
+		Return True
+	End Function
+
+
+
 
 End Class

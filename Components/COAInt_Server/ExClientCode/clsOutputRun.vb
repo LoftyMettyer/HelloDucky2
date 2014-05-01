@@ -51,6 +51,8 @@ Public Class clsOutputRun
 
 	Public GeneratedFile As String
 
+	Public IntersectionType As IntersectionType = IntersectionType.Total
+
 	'UPGRADE_NOTE: Class_Initialize was upgraded to Class_Initialize_Renamed. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'
 	Private Sub Class_Initialize_Renamed()
 
@@ -480,6 +482,8 @@ LocalErr:
 		mobjOutputType.HeaderCols = mlngHeaderCols
 		'UPGRADE_WARNING: Couldn't resolve default property of object mobjOutputType.HeaderRows. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 		mobjOutputType.HeaderRows = mlngHeaderRows
+
+		mobjOutputType.IntersectionType = IntersectionType
 
 		'UPGRADE_WARNING: Couldn't resolve default property of object mobjOutputType.DataArray. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 		mobjOutputType.DataArray(mstrArray, mcolColumns, mcolStyles, mcolMerges)
