@@ -5,49 +5,6 @@
 <%@ Import Namespace="System.Data.SqlClient" %>
 <%@ Import Namespace="System.Data" %>
 
-<%--licence manager reference for activeX--%>
-<object classid="clsid:5220cb21-c88d-11cf-b347-00aa00a28331"
-	id="Microsoft_Licensed_Class_Manager_1_0"
-	viewastext>
-	<param name="LPKPath" value="<%: Url.Content("~/lpks/ssmain.lpk")%>">
-</object>
-
-<object classid="clsid:F9043C85-F6F2-101A-A3C9-08002B2F49FB"
-	id="dialog"
-	codebase="cabs/comdlg32.cab#Version=1,0,0,0"
-	style="LEFT: 0; TOP: 0">
-	<param name="_ExtentX" value="847">
-	<param name="_ExtentY" value="847">
-	<param name="_Version" value="393216">
-	<param name="CancelError" value="0">
-	<param name="Color" value="0">
-	<param name="Copies" value="1">
-	<param name="DefaultExt" value="">
-	<param name="DialogTitle" value="">
-	<param name="FileName" value="">
-	<param name="Filter" value="">
-	<param name="FilterIndex" value="0">
-	<param name="Flags" value="0">
-	<param name="FontBold" value="0">
-	<param name="FontItalic" value="0">
-	<param name="FontName" value="">
-	<param name="FontSize" value="8">
-	<param name="FontStrikeThru" value="0">
-	<param name="FontUnderLine" value="0">
-	<param name="FromPage" value="0">
-	<param name="HelpCommand" value="0">
-	<param name="HelpContext" value="0">
-	<param name="HelpFile" value="">
-	<param name="HelpKey" value="">
-	<param name="InitDir" value="">
-	<param name="Max" value="0">
-	<param name="Min" value="0">
-	<param name="MaxFileSize" value="260">
-	<param name="PrinterDefault" value="1">
-	<param name="ToPage" value="0">
-	<param name="Orientation" value="1">
-</object>
-
 <%="" %>
 
 <script src="<%: Url.LatestContent("~/bundles/utilities_standardreports")%>" type="text/javascript"></script>
@@ -282,8 +239,8 @@
 	End Select
 
 	Response.Write("frmAbsenceDefinition.chkDestination3.checked = " & CleanStringForJavaScript(objSettings.GetSystemSetting(strReportType, "Email", 0)) & ";" & vbCrLf)
-	Response.Write("frmAbsenceDefinition.txtEmailGroup.value = " & """" & CleanStringForJavaScript(objSettings.GetEmailGroupName(objSettings.GetSystemSetting(strReportType, "EmailAddr", "0"))) & """" & ";" & vbCrLf)
-	Response.Write("frmAbsenceDefinition.txtEmailGroupID.value = " & """" & CleanStringForJavaScript(objSettings.GetSystemSetting(strReportType, "EmailAddr", "")) & """" & ";" & vbCrLf)
+	Response.Write("frmAbsenceDefinition.txtAbsenceEmailGroup.value = " & """" & CleanStringForJavaScript(objSettings.GetEmailGroupName(objSettings.GetSystemSetting(strReportType, "EmailAddr", "0"))) & """" & ";" & vbCrLf)
+	Response.Write("frmAbsenceDefinition.txtAbsenceEmailGroupID.value = " & """" & CleanStringForJavaScript(objSettings.GetSystemSetting(strReportType, "EmailAddr", "")) & """" & ";" & vbCrLf)
 	Response.Write("frmAbsenceDefinition.txtEmailAttachAs.value = " & """" & CleanStringForJavaScript(objSettings.GetSystemSetting(strReportType, "EmailAttachAs", "")) & """" & ";" & vbCrLf)
 	Response.Write("frmAbsenceDefinition.txtEmailSubject.value = " & """" & CleanStringForJavaScript(objSettings.GetSystemSetting(strReportType, "EmailSubject", "")) & """" & ";" & vbCrLf)
 
@@ -900,6 +857,7 @@
 															<input id="cmdFilename" name="cmdFilename" class="btn" type="button" value="..."
 																onclick="populateAbsenceFileName(frmAbsenceDefinition);" />
 														</td>
+
 													</tr>
 
 												<tr>
@@ -933,8 +891,8 @@
 														<td></td>
 														<td>Email group :</td>
 														<td style="white-space: nowrap; width: 80%">
-															<input style="width: 100%;" id="txtEmailGroup" name="txtEmailGroup" class="text textdisabled" disabled="disabled">
-															<input id="txtEmailGroupID" name="txtEmailGroupID" type="hidden">
+															<input style="width: 100%;" id="txtAbsenceEmailGroup" name="txtAbsenceEmailGroup" class="text textdisabled" disabled="disabled">
+															<input id="txtAbsenceEmailGroupID" name="txtAbsenceEmailGroupID" type="hidden">
 														</td>
 														<td style="width: 5px;padding-left: 2px">
 															<input id="cmdEmailGroup" name="cmdEmailGroup" class="btn" type="button" value="..."
@@ -1055,7 +1013,7 @@
 	%>
 </form>
 
-<form id="frmEmailSelection" name="frmEmailSelection" target="emailSelection" action="util_emailSelection.asp" method="post" style="visibility: hidden; display: none">
+<form id="frmAbsenceEmailSelection" name="frmAbsenceEmailSelection" target="emailSelection" action="util_emailSelection" method="post" style="visibility: hidden; display: none">
 	<input type="hidden" id="EmailSelCurrentID" name="EmailSelCurrentID">
 </form>
 

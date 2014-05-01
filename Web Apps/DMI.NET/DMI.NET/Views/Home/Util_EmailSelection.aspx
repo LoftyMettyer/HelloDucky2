@@ -122,9 +122,17 @@
 
 		function setForm() {
 			var frmPopup = document.getElementById("frmPopup");
-			window.dialogArguments.document.getElementById('txtEmailGroup').value = frmPopup.txtSelectedName.value;
-			window.dialogArguments.document.getElementById('txtEmailGroupID').value = frmPopup.txtSelectedID.value;
+			
+			if (window.dialogArguments.document.getElementById('txtAbsenceEmailGroup') != null) {
+				window.dialogArguments.document.getElementById('txtAbsenceEmailGroup').value = frmPopup.txtSelectedName.value;
+				window.dialogArguments.document.getElementById('txtAbsenceEmailGroupID').value = frmPopup.txtSelectedID.value;
+			}
 
+			if (window.dialogArguments.document.getElementById('txtEmailGroup') != null) {
+				window.dialogArguments.document.getElementById('txtEmailGroup').value = frmPopup.txtSelectedName.value;
+				window.dialogArguments.document.getElementById('txtEmailGroupID').value = frmPopup.txtSelectedID.value;
+			}
+			
 			self.close();
 			return false;
 		}

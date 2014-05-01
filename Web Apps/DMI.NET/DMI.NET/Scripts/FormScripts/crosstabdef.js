@@ -842,8 +842,10 @@ function refreshTab3Controls()
 	
 		var fViewing = (frmUseful.txtAction.value.toUpperCase() == "VIEW");
 
-		with (frmDefinition)
-		{
+		with (frmDefinition) {
+			
+				text_disable(txtEmailGroup, true);
+			
 				if (optOutputFormat0.checked == true)		//Data Only
 				{
 						//disable preview opitons
@@ -877,8 +879,7 @@ function refreshTab3Controls()
 			
 						//disable email options
 						chkDestination3.checked = false;
-						checkbox_disable(chkDestination3, true);
-						text_disable(txtEmailGroup, true);
+						checkbox_disable(chkDestination3, true);			
 						txtEmailGroup.value = '';
 						txtEmailGroupID.value = 0;
 						button_disable(cmdEmailGroup, true);
@@ -922,14 +923,12 @@ function refreshTab3Controls()
 						checkbox_disable(chkDestination3, false);
 						if (chkDestination3.checked == true)
 						{
-								text_disable(txtEmailGroup, false);
 								text_disable(txtEmailSubject, false);
 								button_disable(cmdEmailGroup, false);
 								text_disable(txtEmailAttachAs, false);
 						}
 						else
 						{
-								text_disable(txtEmailGroup, true);
 								txtEmailGroup.value = '';
 								txtEmailGroupID.value = 0;
 								button_disable(cmdEmailGroup, true);
@@ -973,14 +972,12 @@ function refreshTab3Controls()
 						checkbox_disable(chkDestination3, false);
 						if (chkDestination3.checked == true)
 						{
-								text_disable(txtEmailGroup, false);
 								text_disable(txtEmailSubject, false);
 								button_disable(cmdEmailGroup, false);
 								text_disable(txtEmailAttachAs, false);
 						}
 						else
 						{
-								text_disable(txtEmailGroup, true);
 								txtEmailGroup.value = '';
 								txtEmailGroupID.value = 0;
 								button_disable(cmdEmailGroup, true);
@@ -1031,14 +1028,12 @@ function refreshTab3Controls()
 						checkbox_disable(chkDestination3, false);
 						if (chkDestination3.checked == true)
 						{
-								text_disable(txtEmailGroup, false);
 								text_disable(txtEmailSubject, false);
 								button_disable(cmdEmailGroup, false);
 								text_disable(txtEmailAttachAs, false);
 						}
 						else
 						{
-								text_disable(txtEmailGroup, true);
 								txtEmailGroup.value = '';
 								txtEmailGroupID.value = 0;
 								button_disable(cmdEmailGroup, true);
@@ -1091,14 +1086,12 @@ function refreshTab3Controls()
 						checkbox_disable(chkDestination3, false);
 						if (chkDestination3.checked == true)
 						{
-								text_disable(txtEmailGroup, false);
 								text_disable(txtEmailSubject, false);
 								button_disable(cmdEmailGroup, false);
 								text_disable(txtEmailAttachAs, false);
 						}
 						else
 						{
-								text_disable(txtEmailGroup, true);
 								txtEmailGroup.value = '';
 								txtEmailGroupID.value = 0;
 								button_disable(cmdEmailGroup, true);

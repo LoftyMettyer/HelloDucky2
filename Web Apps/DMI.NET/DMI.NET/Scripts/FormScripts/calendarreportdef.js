@@ -892,8 +892,11 @@ function refreshTab4Controls() {
 function refreshTab5Controls() {
 	var i;
 	var iCount;
-    var fViewing = (frmUseful.txtAction.value.toUpperCase() == "VIEW");
-	with (frmDefinition) {
+  var fViewing = (frmUseful.txtAction.value.toUpperCase() == "VIEW");
+  with (frmDefinition) {
+	    
+    text_disable(txtEmailGroup, true);
+	    
 		if (optOutputFormat0.checked == true)		//Data Only
 		{
 			//disable preview opitons
@@ -921,8 +924,7 @@ function refreshTab5Controls() {
 
 			//disable email options
 			chkDestination3.checked = false;
-			checkbox_disable(chkDestination3, true);
-			text_disable(txtEmailGroup, true);
+			checkbox_disable(chkDestination3, true);			
 			txtEmailGroup.value = '';
 			txtEmailGroupID.value = 0;
 			text_disable(txtEmailSubject, true);
@@ -1015,12 +1017,10 @@ function refreshTab5Controls() {
 			//enable-disable email options
 			checkbox_disable(chkDestination3, (fViewing == true));
 			if (chkDestination3.checked == true) {
-				text_disable(txtEmailGroup, (fViewing == true));
 				text_disable(txtEmailSubject, (fViewing == true));
 				button_disable(cmdEmailGroup, (fViewing == true));
 				text_disable(txtEmailAttachAs, (fViewing == true));
 			} else {
-				text_disable(txtEmailGroup, true);
 				txtEmailGroup.value = '';
 				txtEmailGroupID.value = 0;
 				text_disable(txtEmailSubject, true);
@@ -1064,12 +1064,10 @@ function refreshTab5Controls() {
 			//enable-disable email options
 			checkbox_disable(chkDestination3, (fViewing == true));
 			if (chkDestination3.checked == true) {
-				text_disable(txtEmailGroup, (fViewing == true));
 				text_disable(txtEmailSubject, (fViewing == true));
 				button_disable(cmdEmailGroup, (fViewing == true));
 				text_disable(txtEmailAttachAs, (fViewing == true));
 			} else {
-				text_disable(txtEmailGroup, true);
 				txtEmailGroup.value = '';
 				txtEmailGroupID.value = 0;
 				text_disable(txtEmailSubject, true);
@@ -1113,12 +1111,10 @@ function refreshTab5Controls() {
 			//enable-disable email options
 			checkbox_disable(chkDestination3, (fViewing == true));
 			if (chkDestination3.checked == true) {
-				text_disable(txtEmailGroup, (fViewing == true));
 				text_disable(txtEmailSubject, (fViewing == true));
 				button_disable(cmdEmailGroup, (fViewing == true));
 				text_disable(txtEmailAttachAs, (fViewing == true));
 			} else {
-				text_disable(txtEmailGroup, true);
 				txtEmailGroup.value = '';
 				txtEmailGroupID.value = 0;
 				text_disable(txtEmailSubject, true);

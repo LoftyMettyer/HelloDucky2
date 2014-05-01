@@ -57,12 +57,13 @@ function formatAbsenceClick(index) {
 
 function selectAbsenceEmailGroup() {
 	var frmAbsenceDefinition = $('#frmAbsenceDefinition')[0];
+	var frmAbsenceEmailSelection = $("#frmAbsenceEmailSelection")[0];
 	var sURL;
 
-	frmEmailSelection.EmailSelCurrentID.value = frmAbsenceDefinition.txtEmailGroupID.value;
+	frmAbsenceEmailSelection.EmailSelCurrentID.value = frmAbsenceDefinition.txtAbsenceEmailGroupID.value;
 
 	sURL = "util_emailSelection" +
-			"?EmailSelCurrentID=" + frmEmailSelection.EmailSelCurrentID.value;
+			"?EmailSelCurrentID=" + frmAbsenceEmailSelection.EmailSelCurrentID.value;
 	openDialog(sURL, (screen.width) / 3 + 40, (screen.height) / 2 - 50, "no", "no");
 }
 
@@ -338,7 +339,7 @@ function absence_okClick() {
 
     if (frmAbsenceDefinition.chkDestination3.checked == true) {
     	frmPostDefinition.txtSend_OutputEmail.value = 1;
-    	frmPostDefinition.txtSend_OutputEmailAddr.value = frmAbsenceDefinition.txtEmailGroupID.value;
+    	frmPostDefinition.txtSend_OutputEmailAddr.value = frmAbsenceDefinition.txtAbsenceEmailGroupID.value;
     	frmPostDefinition.txtSend_OutputEmailSubject.value = frmAbsenceDefinition.txtEmailSubject.value;
     	frmPostDefinition.txtSend_OutputEmailAttachAs.value = frmAbsenceDefinition.txtEmailAttachAs.value;
     }
@@ -570,6 +571,8 @@ function absenceBreakdownRefreshTab3Controls() {
 
     with (frmAbsenceDefinition)
     {
+    	text_disable(txtAbsenceEmailGroup, true);
+
         if (optDefOutputFormat0.checked == true)		//Data Only
         {
             //disable preview opitons
@@ -588,9 +591,8 @@ function absenceBreakdownRefreshTab3Controls() {
             //disable email options
             chkDestination3.checked = false;
             checkbox_disable(chkDestination3, true);
-            text_disable(txtEmailGroup, true);
-            txtEmailGroup.value = '';
-            txtEmailGroupID.value = 0;
+            txtAbsenceEmailGroup.value = '';
+            txtAbsenceEmailGroupID.value = 0;
             button_disable(cmdEmailGroup, true);
             text_disable(txtEmailSubject, true);
             text_disable(txtEmailAttachAs, true);
@@ -622,16 +624,14 @@ function absenceBreakdownRefreshTab3Controls() {
             checkbox_disable(chkDestination3, false);
             if (chkDestination3.checked == true)
             {
-                text_disable(txtEmailGroup, false);
                 text_disable(txtEmailSubject, false);
                 button_disable(cmdEmailGroup, false);
                 text_disable(txtEmailAttachAs, false);
             }
             else
             {
-                text_disable(txtEmailGroup, true);
-                txtEmailGroup.value = '';
-                txtEmailGroupID.value = 0;
+                txtAbsenceEmailGroup.value = '';
+                txtAbsenceEmailGroupID.value = 0;
                 button_disable(cmdEmailGroup, true);
                 text_disable(txtEmailSubject, true);
                 text_disable(txtEmailAttachAs, true);
@@ -663,16 +663,14 @@ function absenceBreakdownRefreshTab3Controls() {
             checkbox_disable(chkDestination3, false);
             if (chkDestination3.checked == true)
             {
-                text_disable(txtEmailGroup, false);
                 text_disable(txtEmailSubject, false);
                 button_disable(cmdEmailGroup, false);
                 text_disable(txtEmailAttachAs, false);
             }
             else
             {
-                text_disable(txtEmailGroup, true);
-                txtEmailGroup.value = '';
-                txtEmailGroupID.value = 0;
+                txtAbsenceEmailGroup.value = '';
+                txtAbsenceEmailGroupID.value = 0;
                 button_disable(cmdEmailGroup, true);
                 text_disable(txtEmailSubject, true);
                 text_disable(txtEmailAttachAs, true);
@@ -704,16 +702,14 @@ function absenceBreakdownRefreshTab3Controls() {
             checkbox_disable(chkDestination3, false);
             if (chkDestination3.checked == true)
             {
-                text_disable(txtEmailGroup, false);
                 text_disable(txtEmailSubject, false);
                 button_disable(cmdEmailGroup, false);
                 text_disable(txtEmailAttachAs, false);
             }
             else
             {
-                text_disable(txtEmailGroup, true);
-                txtEmailGroup.value = '';
-                txtEmailGroupID.value = 0;
+                txtAbsenceEmailGroup.value = '';
+                txtAbsenceEmailGroupID.value = 0;
                 button_disable(cmdEmailGroup, true);
                 text_disable(txtEmailSubject, true);
                 text_disable(txtEmailAttachAs, true);
@@ -747,16 +743,14 @@ function absenceBreakdownRefreshTab3Controls() {
             checkbox_disable(chkDestination3, false);
             if (chkDestination3.checked == true)
             {
-                text_disable(txtEmailGroup, false);
                 text_disable(txtEmailSubject, false);
                 button_disable(cmdEmailGroup, false);
                 text_disable(txtEmailAttachAs, false);
             }
             else
             {
-                text_disable(txtEmailGroup, true);
-                txtEmailGroup.value = '';
-                txtEmailGroupID.value = 0;
+                txtAbsenceEmailGroup.value = '';
+                txtAbsenceEmailGroupID.value = 0;
                 button_disable(cmdEmailGroup, true);
                 text_disable(txtEmailSubject, true);
                 text_disable(txtEmailAttachAs, true);

@@ -117,11 +117,12 @@
 		var cmdFilename = document.getElementById('cmdFilename');
 
 		with (frmOutputDef) {
+
+			text_disable(txtEmailGroup, true);
 			
 			if ((optOutputFormat0.checked == true) || (optOutputFormat1.checked == true) || (optOutputFormat2.checked == true) || (optOutputFormat3.checked == true)) {
 				optOutputFormat4.checked = true;
-			}
-		
+			}		
 
 			if (optOutputFormat0.checked == true)		//Data Only
 			{
@@ -153,7 +154,6 @@
 				//disable email options
 				chkDestination3.checked = false;
 				checkbox_disable(chkDestination3, true);
-				//text_disable(txtEmailGroup, true);
 				txtEmailGroup.value = '';
 				txtEmailGroupID.value = 0;
 				button_disable(cmdEmailGroup, true);
@@ -191,13 +191,11 @@
 				//enable-disable email options
 				checkbox_disable(chkDestination3, false);
 				if (chkDestination3.checked == true) {
-					//text_disable(txtEmailGroup, false);
 					text_disable(txtEmailSubject, false);
 					button_disable(cmdEmailGroup, false);
 					text_disable(txtEmailAttachAs, false);
 				}
 				else {
-					//text_disable(txtEmailGroup, true);
 					txtEmailGroup.value = '';
 					txtEmailGroupID.value = 0;
 					button_disable(cmdEmailGroup, true);
@@ -235,13 +233,11 @@
 				//enable-disable email options
 				checkbox_disable(chkDestination3, false);
 				if (chkDestination3.checked == true) {
-					//text_disable(txtEmailGroup, false);
 					text_disable(txtEmailSubject, false);
 					button_disable(cmdEmailGroup, false);
 					text_disable(txtEmailAttachAs, false);
 				}
 				else {
-					//text_disable(txtEmailGroup, true);
 					txtEmailGroup.value = '';
 					txtEmailGroupID.value = 0;
 					button_disable(cmdEmailGroup, true);
@@ -284,13 +280,11 @@
 				//enable-disable email options
 				checkbox_disable(chkDestination3, false);
 				if (chkDestination3.checked == true) {
-					//text_disable(txtEmailGroup, false);
 					text_disable(txtEmailSubject, false);
 					button_disable(cmdEmailGroup, false);
 					text_disable(txtEmailAttachAs, false);
 				}
 				else {
-					//text_disable(txtEmailGroup, true);
 					txtEmailGroup.value = '';
 					txtEmailGroupID.value = 0;
 					button_disable(cmdEmailGroup, true);
@@ -337,8 +331,6 @@
 				//enable-disable email options
 				checkbox_disable(chkDestination3, false);
 				if (chkDestination3.checked == true) {
-					//text_disable(txtEmailGroup, false);
-					//$('#frmOutputDef #txtEmailGroup').removeClass('ui-state-disabled');
 					$('#frmOutputDef #lblEmailGroup').removeClass('ui-state-disabled');
 					$('#frmOutputDef #cmdEmailGroup').removeClass('ui-state-disabled');
 					text_disable(txtEmailSubject, false);
