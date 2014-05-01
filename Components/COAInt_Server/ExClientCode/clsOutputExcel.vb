@@ -57,6 +57,9 @@ Namespace ExClientCode
 		Private _mblnXlExcelOmitLeftCol As Boolean
 		Private _mblnXlAutoFitCols As Boolean
 		Private _mblnXlLandscape As Boolean
+
+		Private _mblnSummaryReport as Boolean
+
 		Const OfficeVersion As Integer = 12
 
 		Public Sub ClearUp()
@@ -186,6 +189,16 @@ Namespace ExClientCode
 				Return _mstrErrorMessage
 			End Get
 		End Property
+
+		Public Property SummaryReport() As Boolean
+			Get
+				SummaryReport = _mblnSummaryReport
+			End Get
+			Set(ByVal value As Boolean)
+				_mblnSummaryReport = value
+			End Set
+		End Property
+
 
 		Public Function GetFile(ByRef objParent As clsOutputRun, ByRef colStyles As Collection) As Boolean
 
@@ -508,8 +521,9 @@ Namespace ExClientCode
 				Const colTitleRowCount As Integer = 1
 				Dim summaryInfoColCount As Integer = 0
 
-				' Compute summary columns.
-				If _mxlWorkSheet.Cells(_mlngDataCurrentRow - 1, _mlngDataStartCol - 1).Value = "Summary Info" Then summaryInfoColCount = 1
+				' Compute summary columns.				
+				' summary report???
+				If _mxlWorkSheet.Cells(_mlngDataCurrentRow - 1, _mlngDataStartCol - 1).Value = "Summary Info" And Not SummaryReport Then summaryInfoColCount = 1
 
 				Dim dataFirstRow As Integer = _mlngDataCurrentRow
 				Dim dataFirstCol As Integer = (_mlngDataStartCol - 1) + summaryInfoColCount

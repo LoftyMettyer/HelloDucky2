@@ -47,6 +47,8 @@ Public Class clsOutputRun
 	Private mblnIndicatorColumn As Boolean
 	Private mblnPageTitles As Boolean
 
+	Private mblnSummaryReport As Boolean
+
 	Public GeneratedFile As String
 
 	'UPGRADE_NOTE: Class_Initialize was upgraded to Class_Initialize_Renamed. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="A9E4979A-37FA-4718-9994-97DD76ED70A7"'
@@ -394,6 +396,12 @@ LocalErr:
 				End If
 			End If
 		End Get
+	End Property
+
+	Public WriteOnly Property SummaryReport() As Boolean
+		Set(ByVal Value As Boolean)
+			mobjOutputType.SummaryReport = Value
+		End Set
 	End Property
 
 	Public Property PageTitles() As Boolean

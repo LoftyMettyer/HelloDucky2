@@ -2950,6 +2950,8 @@ Namespace Controllers
 
 			ClientDLL.SizeColumnsIndependently = True
 
+			If lngOutputFormat = OutputFormats.fmtExcelGraph Then ClientDLL.SummaryReport = objReport.CustomReportsSummaryReport
+
 			Dim sColHeading As String
 			Dim iColDataType As Integer
 			Dim iColDecimals As Integer
@@ -3046,7 +3048,7 @@ Namespace Controllers
 
 					Else ' no page break
 
-						If lngOutputFormat = OutputFormats.fmtExcelGraph Then
+						If lngOutputFormat = OutputFormats.fmtExcelGraph And Not objReport.CustomReportsSummaryReport Then
 							Dim trueRowCount As Integer = (From row In objReport.ReportDataTable.AsEnumerable() Where row(0).ToString() = "0" Where String.Join("", row.ItemArray) <> "0").Count()
 							ClientDLL.ArrayDim(UBound(arrayVisibleColumns, 2), trueRowCount)
 						Else
@@ -3073,7 +3075,7 @@ Namespace Controllers
 						lngDataRow = 1
 						For Each objRow As DataRow In objReport.ReportDataTable.Rows
 
-							If lngOutputFormat = OutputFormats.fmtExcelGraph Then
+							If lngOutputFormat = OutputFormats.fmtExcelGraph And Not objReport.CustomReportsSummaryReport Then
 								' Ignore non-data rows.
 								If objRow(0).ToString() <> "0" Then Continue For
 
