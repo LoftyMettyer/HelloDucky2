@@ -3059,7 +3059,7 @@ CheckRecordSet_ERROR:
 								sWhereCode = sWhereCode & "([" & CStr(objReportItem.IDColumnName) & "] = " & iLogicValue & ")"
 							Else
 								' Numeric column.
-								sWhereCode = sWhereCode & "([" & CStr(objReportItem.IDColumnName) & "] = " & objThisColumn.LastValue & ")"
+								sWhereCode = sWhereCode & "([" & CStr(objReportItem.IDColumnName) & "] = " & ConvertNumberForSQL(objThisColumn.LastValue) & ")"
 							End If
 						End If
 					End If
