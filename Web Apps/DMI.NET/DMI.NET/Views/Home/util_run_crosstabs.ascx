@@ -4,6 +4,7 @@
 <%@ Import Namespace="HR.Intranet.Server" %>
 
 <script type="text/javascript">
+
 	$("#top").hide();
 
 	$(window).bind('resize', function () {
@@ -30,56 +31,17 @@
 		objCrossTab.EventLogChangeHeaderStatus(EventLog_Status.elsSuccessful)
 
 	Else
-		Response.Write("<form Name=frmPopup ID=frmPopup>" & vbCrLf)
-		Response.Write("<table align=center class=""outline="" cellPadding=5 cellSpacing=0>" & vbCrLf)
-		Response.Write("	<TR>" & vbCrLf)
-		Response.Write("		<TD>" & vbCrLf)
-		Response.Write("			<table class=""invisible"" cellspacing=0 cellpadding=0>" & vbCrLf)
-		Response.Write("			  <tr>" & vbCrLf)
-		Response.Write("			    <td colspan=3 height=10></td>" & vbCrLf)
-		Response.Write("			  </tr>" & vbCrLf)
-		Response.Write("			  <tr> " & vbCrLf)
-		Response.Write("			    <td width=20 height=10></td> " & vbCrLf)
-		Response.Write("			    <td align=center> " & vbCrLf)
-
+		
 		If objCrossTab.NoRecords Then
 			objCrossTab.EventLogChangeHeaderStatus(EventLog_Status.elsSuccessful)
 		Else
 			objCrossTab.EventLogChangeHeaderStatus(EventLog_Status.elsFailed)
 		End If
-
-		Response.Write("			    </td>" & vbCrLf)
-		Response.Write("			    <td width=20></td> " & vbCrLf)
-		Response.Write("			  </tr>" & vbCrLf)
-		Response.Write("			  <tr> " & vbCrLf)
-		Response.Write("			    <td width=20 height=10></td> " & vbCrLf)
-		Response.Write("			    <td align=center nowrap>" & objCrossTab.ErrorString & vbCrLf)
-		Response.Write("			    </td>" & vbCrLf)
-		Response.Write("			    <td width=20></td> " & vbCrLf)
-		Response.Write("			  </tr>" & vbCrLf)
-		Response.Write("			  <tr>" & vbCrLf)
-		Response.Write("			    <td colspan=3 height=10>&nbsp;</td>" & vbCrLf)
-		Response.Write("			  </tr>" & vbCrLf)
-		Response.Write("			  <tr> " & vbCrLf)
-		Response.Write("			    <td colspan=3 height=10 align=center> " & vbCrLf)
-		Response.Write("						<input type=button id=cmdClose name=cmdClose value=Close style=""WIDTH: 80px"" width=80px class=""btn""" & vbCrLf)
-		Response.Write("                      onclick=""closeclick();"""" />" & vbCrLf)
-		Response.Write("			    </td>" & vbCrLf)
-		Response.Write("			  </tr>" & vbCrLf)
-		Response.Write("			  <tr> " & vbCrLf)
-		Response.Write("			    <td colspan=3 height=10></td>" & vbCrLf)
-		Response.Write("			  </tr>" & vbCrLf)
-		Response.Write("			</table>" & vbCrLf)
-		Response.Write("		</td>" & vbCrLf)
-		Response.Write("	</tr>" & vbCrLf)
-		Response.Write("</table>" & vbCrLf)
-		Response.Write("</form>" & vbCrLf)
 		
 		If objCrossTab.ErrorString <> "" Then
 			objCrossTab.FailedMessage = objCrossTab.ErrorString
 		End If
 
-		Response.End()
 	End If
 %>
 
@@ -102,7 +64,7 @@ Session("utiltype = 16 		Bradford Factor
 Session("utiltype = 17 		Calendar Report--%>
 <br />
 
-<div>
+<div id="divCrossTabOptions">
 	<%--Not a Absence Breakdown so show all components--%>
 	<div id="CrossTabsIntersectionControls" style="float: left; width: 45%">
 		<div id="Div1" style="font-weight: bold;">Intersection</div>
@@ -189,16 +151,10 @@ Session("utiltype = 17 		Calendar Report--%>
 	</div>
 </div>
 
-<%--<%If CLng(Session("utiltype")) <> 15 Then%>
-
-<%Else%>
-<%--It is an Absence Breakdown so show only Intersection Type combo and suppress Zero components--%>
-<%-- %><input type="HIDDEN" id="HIDDEN1" name="txtIntersectionColumn" style="BACKGROUND-COLOR: threedface; width: 200px">
-<%End If%>--%>
-
 <form id="frmOriginalDefinition">
 	<%
 		Response.Write("	<input type='hidden' id='txtDefn_Name' name='txtDefn_Name' value='" & objCrossTab.CrossTabName.ToString() & "'>" & vbCrLf)
+		Response.Write("	<input type='hidden' id=txtDefn_ErrMsg name=txtDefn_ErrMsg value=""" & objCrossTab.ErrorString & """>" & vbCrLf)
 	%>
 	<input type="hidden" id="txtUserName" name="txtUserName" value="<%=session("username")%>">
 	<input type="hidden" id="txtDateFormat" name="txtDateFormat" value="<%=session("LocaleDateFormat")%>">

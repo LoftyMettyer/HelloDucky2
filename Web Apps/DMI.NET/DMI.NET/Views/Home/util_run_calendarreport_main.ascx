@@ -127,9 +127,8 @@ End If
 
 <form id="frmOriginalDefinition" style="visibility: hidden; display: none">
 	<%
-		Dim sErrMsg As String = ""
 		Response.Write("	<input type='hidden' id=txtDefn_Name name=txtDefn_Name value=""" & Replace(Session("utilname").ToString(), """", "&quot;") & """>" & vbCrLf)
-		Response.Write("	<input type='hidden' id=txtDefn_ErrMsg name=txtDefn_ErrMsg value=""" & sErrMsg & """>" & vbCrLf)
+		Response.Write("	<input type='hidden' id=txtDefn_ErrMsg name=txtDefn_ErrMsg value=""" & objCalendar.ErrorString & """>" & vbCrLf)
 	%>
 	<input type="hidden" id="txtUserName" name="txtUserName" value="<%Session("username").ToString()%>">
 	<input type="hidden" id="txtDateFormat" name="txtDateFormat" value="<%Session("LocaleDateFormat").ToString()%>">

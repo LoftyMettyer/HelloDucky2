@@ -20,11 +20,6 @@
 	Response.Write("  //" & Session("CT_Mode") & vbCrLf)
 	Response.Write("  function util_run_crosstabs_data_window_onload() {" & vbCrLf & vbCrLf)
 	Response.Write("    $(""#reportdataframe"").attr(""data-framesource"", ""UTIL_RUN_CROSSTABSDATA"");" & vbCrLf & vbCrLf)	
-	Response.Write("    $(""#reportframe"").show();" & vbCrLf)
-	Response.Write("    $(""#reportdataframe"").hide();" & vbCrLf)
-	Response.Write("    $(""#reportbreakdownframe"").hide();" & vbCrLf)
-	Response.Write("    $(""#outputoptions"").hide();" & vbCrLf)
-	Response.Write("    $(""#reportworkframe"").show();" & vbCrLf)
 
 	Response.Write("    frmOriginalDefinition = OpenHR.getForm(""reportworkframe"",""frmOriginalDefinition"");" & vbCrLf)
 	Response.Write("    frmExportData = OpenHR.getForm(""reportworkframe"",""frmExportData"");" & vbCrLf)

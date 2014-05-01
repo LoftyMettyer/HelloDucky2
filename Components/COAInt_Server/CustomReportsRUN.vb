@@ -1485,7 +1485,7 @@ Error_Trap:
 
 				'TM20020802 Fault 4273
 				If (.Rows.Count = 0) Then
-					mstrErrorString = "No records meet the selection criteria"
+					mstrErrorString = "No records meet the selection criteria."
 					CreateMutipleChildTempTable = False
 					Logs.AddDetailEntry("Completed successfully. " & mstrErrorString)
 					Logs.ChangeHeaderStatus(EventLog_Status.elsSuccessful)
@@ -2466,7 +2466,7 @@ GenerateSQLOrderBy_ERROR:
 
 		If mrstCustomReportsOutput.Rows.Count = 0 Then
 			CheckRecordSet = False
-			mstrErrorString = "No records meet the selection criteria"
+			mstrErrorString = "No records meet the selection criteria."
 			Logs.AddDetailEntry("Completed successfully. " & mstrErrorString)
 			Logs.ChangeHeaderStatus(EventLog_Status.elsSuccessful)
 			mblnNoRecords = True

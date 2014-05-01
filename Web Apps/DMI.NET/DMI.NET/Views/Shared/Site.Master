@@ -104,14 +104,6 @@
 				position: ['center', 100],
 			});
 
-			$("#warningDialog").dialog({
-				autoOpen: false,
-				modal: true,
-				width: 650,
-				height: "auto",
-				position: ['center', 100],
-			});
-
 			$("#CalendarEvent").dialog({
 				autoOpen: false,
 				modal: true,

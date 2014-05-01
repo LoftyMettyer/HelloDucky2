@@ -112,7 +112,7 @@
 	%>
 
 <form action="util_run_mailmerge_completed" method="post" id="frmMailMergeOutput" name="frmMailMergeOutput">
-	<input type="hidden" id="txtPreview" name="txtPreview" value="false">	
+	<input type="hidden" id="txtPreview" name="txtPreview" value="True">	
 	<input type="hidden" id="deftitle" name="deftitle" value="false">
 	<input type="hidden" id="fok" name="fok" value="false">
 	<input type="hidden" id="cancelled" name="cancelled" value="false">

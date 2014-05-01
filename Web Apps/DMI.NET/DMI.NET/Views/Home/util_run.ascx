@@ -114,6 +114,7 @@
 	}
 
 	function ShowDataFrame() {
+		
 		$("#cmdOK").hide();
 		//$("#cmdCancel").hide();
 		$("#cmdCancel").removeClass('ui-state-focus');
@@ -134,13 +135,7 @@
 		$("#optionsframeset").show();
 		$("#reportframe").show();
 		$("#reportworkframe").show();
-		
-		if ($('#txtNoRecs').val() == "True") {
-			$("#cmdPrint").hide();
-			$("#cmdOutput").hide();
-			$("#cmdCancel").hide();
-			$("#reportworkframe").css("height", "74px");			
-		}
+
 	}
 
 	function outputOptionsPrintClick() {
@@ -283,64 +278,74 @@
 
 	var isMobileDevice = ('<%=Session("isMobileDevice")%>' == 'True');
 
-	if ($("#txtPreview").val() == "True") {
-		
-		<%If Session("utiltype") = UtilityType.utlCalendarReport Then%>
-		$(".popup").dialog({
-			width: 1100, height: 720, resizable: true
-		});
-	$('#main').css('overflow', 'auto');
-
-		<%ElseIf Session("utiltype") = UtilityType.utlBradfordFactor Then%>
-			$(".popup").dialog({
-				width: 850, height: 720, resizable: true
-			});
-
-	<%Else%>
-		$(".popup").dialog({
-			title: "",
-			width: 810,
-			height: 720,
-			resizable: true,
-			resize: function () {
-				var doit = 0;
-				clearTimeout(doit);
-				doit = setTimeout(resizeGrid, 100);
-			}
-		});
-
-		function resizeGrid() {
-			var newHeight = $('#main').height() * 0.8;
-			$('#gridReportData').setGridHeight(newHeight);
-			$('#gridReportData').setGridWidth($('#main').width());
-		}
-
-		<%End If%>
-
-	
-	$('#cmdOutput').prop('disabled', isMobileDevice);
-	$(".popup").dialog("option", "position", ['center', 'center']); //Center popup in screen
-
-	$('.popup').bind('dialogclose', function () {
+	if ($('#txtNoRecs').val() == "True") {
+		OpenHR.modalPrompt($("#txtDefn_ErrMsg").val(), 2, $("#txtDefn_Name").val(), "");
 		closeclick();
-	});
-
-	if (menu_isSSIMode() == false) {		
-		$('#main').css('marginTop', '30px'); //.css('borderTop', '1px solid rgb(206, 206, 206)');
-	}
-
-		$("#PageDivTitle").html($("#txtDefn_Name").val());
-		$(".popup").dialog('option', 'title', $("#txtDefn_Name").val());
-		
-	$("#outputoptions").hide();
-	$("#reportworkframe").show();
-	$("#divReportButtons").css("visibility", "visible");
-	$("#main").css("visibility", "visible");
-		ShowDataFrame();
-
 	} else {
 
-		if ($('#txtNoRecs').val() == "False") {
+		if ($("#txtPreview").val() == "True") {
+
+			<%If Session("utiltype") = UtilityType.utlCalendarReport Then%>
+			$(".popup").dialog({
+				width: 1100,
+				height: 720,
+				resizable: true
+			});
+			$('#main').css('overflow', 'auto');
+
+			<%ElseIf Session("utiltype") = UtilityType.utlBradfordFactor Then%>
+			$(".popup").dialog({
+				width: 850,
+				height: 720,
+				resizable: true
+			});
+
+			<%Else%>
+			$(".popup").dialog({
+				title: "",
+				width: 810,
+				height: 720,
+				resizable: true,
+				resize: function() {
+					var doit = 0;
+					clearTimeout(doit);
+					doit = setTimeout(resizeGrid, 100);
+				}
+			});
+
+			function resizeGrid() {
+				var newHeight = $('#main').height() * 0.8;
+				$('#gridReportData').setGridHeight(newHeight);
+				$('#gridReportData').setGridWidth($('#main').width());
+			}
+
+			<%End If%>
+
+
+			$('#cmdOutput').prop('disabled', isMobileDevice);
+			$(".popup").dialog("option", "position", ['center', 'center']); //Center popup in screen
+
+			$('.popup').bind('dialogclose', function() {
+				closeclick();
+			});
+
+			if (menu_isSSIMode() == false) {
+				$('#main').css('marginTop', '30px'); //.css('borderTop', '1px solid rgb(206, 206, 206)');
+			}
+
+			$("#PageDivTitle").html($("#txtDefn_Name").val());
+			$(".popup").dialog('option', 'title', $("#txtDefn_Name").val());
+
+			$("#outputoptions").hide();
+			$("#reportworkframe").show();
+			$("#divReportButtons").css("visibility", "visible");
+			$("#divCrossTabOptions").css("visibility", "visible");
+
+			$("#main").css("visibility", "visible");
+			ShowDataFrame();
+
+		} else {
+
 			doExport();
 
 			if (menu_isSSIMode()) {
@@ -348,7 +353,6 @@
 			} else {
 				closeclick();
 			}
-			
 		}
 	}
 	

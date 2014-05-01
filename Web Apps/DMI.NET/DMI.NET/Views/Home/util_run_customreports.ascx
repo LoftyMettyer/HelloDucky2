@@ -1,6 +1,5 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
 <%@ Import Namespace="DMI.NET" %>
-<%@ Import Namespace="HR.Intranet.Server.Enums" %>
 <%@ Import Namespace="HR.Intranet.Server" %>
 <%@ Import Namespace="HR.Intranet.Server.Structures" %>
 
@@ -8,88 +7,11 @@
 
 <% 
 	Dim bBradfordFactor As Boolean
-	Dim mstrCaption As String
-	Dim sErrMsg As String
 	
 	bBradfordFactor = (Session("utiltype") = "16")
 
-	Dim objReport As HR.Intranet.Server.Report
+	Dim objReport As Report
 	
-	If Session("utiltype") = "" Or _
-		 Session("utilname") = "" Or _
-		 Session("utilid") = "" Or _
-		 Session("action") = "" Then
-
-		Response.Write("<table align=center class=""outline"" cellPadding=5 cellSpacing=0>" & vbCrLf)
-		Response.Write("	<tr>" & vbCrLf)
-		Response.Write("		<td>" & vbCrLf)
-		Response.Write("			<table class=""invisible"" cellspacing=0 cellpadding=0>" & vbCrLf)
-		Response.Write("			  <tr>" & vbCrLf)
-		Response.Write("			    <td colspan=3 height=10></td>" & vbCrLf)
-		Response.Write("			  </tr>" & vbCrLf)
-		Response.Write("			  <tr> " & vbCrLf)
-		Response.Write("			    <td colspan=3 align=center> " & vbCrLf)
-		Response.Write("						<H3>Error</H3>" & vbCrLf)
-		Response.Write("			    </td>" & vbCrLf)
-		Response.Write("			  </tr> " & vbCrLf)
-		Response.Write("			  <tr> " & vbCrLf)
-		Response.Write("			    <td width=20 height=10></td> " & vbCrLf)
-		Response.Write("			    <td> " & vbCrLf)
-		Response.Write("						<H4>Not all session variables found</H4>" & vbCrLf)
-		Response.Write("			    </td>" & vbCrLf)
-		Response.Write("			    <td width=20></td> " & vbCrLf)
-		Response.Write("			  </tr>" & vbCrLf)
-		Response.Write("			  <tr> " & vbCrLf)
-		Response.Write("			    <td width=20 height=10></td> " & vbCrLf)
-		Response.Write("			    <td>Type = " & Session("utiltype") & vbCrLf)
-		Response.Write("			    </td>" & vbCrLf)
-		Response.Write("			    <td width=20></td> " & vbCrLf)
-		Response.Write("			  </tr>" & vbCrLf)
-		Response.Write("			  <tr> " & vbCrLf)
-		Response.Write("			    <td width=20 height=10></td> " & vbCrLf)
-		Response.Write("			    <td>Utility Name = " & Session("utilname") & vbCrLf)
-		Response.Write("			    </td>" & vbCrLf)
-		Response.Write("			    <td width=20></td> " & vbCrLf)
-		Response.Write("			  </tr>" & vbCrLf)
-		Response.Write("			  <tr> " & vbCrLf)
-		Response.Write("			    <td width=20 height=10></td> " & vbCrLf)
-		Response.Write("			    <td>Utility ID = " & Session("utilid") & vbCrLf)
-		Response.Write("			    </td>" & vbCrLf)
-		Response.Write("			    <td width=20></td> " & vbCrLf)
-		Response.Write("			  </tr>" & vbCrLf)
-		Response.Write("			  <tr> " & vbCrLf)
-		Response.Write("			    <td width=20 height=10></td> " & vbCrLf)
-		Response.Write("			    <td>Action = " & Session("action") & vbCrLf)
-		Response.Write("			    </td>" & vbCrLf)
-		Response.Write("			    <td width=20></td> " & vbCrLf)
-		Response.Write("			  </tr>" & vbCrLf)
-		Response.Write("			  <tr>" & vbCrLf)
-		Response.Write("			    <td colspan=3 height=10>&nbsp;</td>" & vbCrLf)
-		Response.Write("			  </tr>" & vbCrLf)
-		Response.Write("			  <tr> " & vbCrLf)
-		Response.Write("			    <td colspan=3 height=10 align=center> " & vbCrLf)
-		Response.Write("						<input type=button id=cmdClose name=cmdClose value=Close style=""WIDTH: 80px"" width=80 class=""btn""" & vbCrLf)		'1
-		Response.Write("                      onclick=""closeclick();""" & vbCrLf)
-		Response.Write("                      onmouseover=""try{button_onMouseOver(this);}catch(e){}""" & vbCrLf)
-		Response.Write("                      onmouseout=""try{button_onMouseOut(this);}catch(e){}""" & vbCrLf)
-		Response.Write("                      onfocus=""try{button_onFocus(this);}catch(e){}""" & vbCrLf)
-		Response.Write("                      onblur=""try{button_onBlur(this);}catch(e){}"" />" & vbCrLf)
-		Response.Write("			    </td>" & vbCrLf)
-		Response.Write("			  </tr>" & vbCrLf)
-		Response.Write("			  <tr> " & vbCrLf)
-		Response.Write("			    <td colspan=3 height=10></td>" & vbCrLf)
-		Response.Write("			  </tr>" & vbCrLf)
-		Response.Write("			</table>" & vbCrLf)
-		Response.Write("		</td>" & vbCrLf)
-		Response.Write("	</tr>" & vbCrLf)
-		Response.Write("</table>" & vbCrLf)
-		Response.Write("<input type=hidden id=txtSuccessFlag name=txtSuccessFlag value=1>" & vbCrLf)
-		Response.Write("</BODY>" & vbCrLf)
-		
-		Response.End()
-	End If
-
-	Dim icount As Integer
 	Dim fok As Boolean
 	Dim fNotCancelled As Boolean
 
@@ -137,9 +59,8 @@
 	fNotCancelled = True
 
 	' Create the reference to the DLL (Report Class)
-	objReport = New HR.Intranet.Server.Report
+	objReport = New Report
 	objReport.SessionInfo = CType(Session("SessionContext"), SessionInfo)
-
 				
 	' Pass required info to the DLL			
 	objReport.CustomReportID = Session("utilid")
@@ -406,58 +327,6 @@
 	Response.Write("<input type=hidden id=txtSuccessFlag name=txtSuccessFlag value=2>" & vbCrLf)
 Else%>
 
-<form name="frmPopup" id="frmPopup">
-	<table align="center" class="outline" cellpadding="5" cellspacing="0">
-		<tr>
-			<td>
-				<table class="invisible" cellspacing="0" cellpadding="0">
-					<tr>
-						<td colspan="3" height="10"></td>
-					</tr>
-					<tr>
-						<td width="20" height="10"></td>
-						<td align="center">
-
-
-							<%	If bBradfordFactor = True Then
-									mstrCaption = "Bradford Factor"
-								Else
-									mstrCaption = "Custom Report '" & Session("utilname").ToString() & "'"
-								End If
-
-								If fNoRecords Then
-									Response.Write("						<H4>" & mstrCaption & " Completed successfully.</H4>" & vbCrLf)
-								Else
-									Response.Write("						<H4>" & mstrCaption & " Failed." & vbCrLf)
-								End If
-							%>
-						</td>
-						<td width="20"></td>
-					</tr>
-					<tr>
-						<td width="20" height="10"></td>
-						<td align="center" nowrap><%=objReport.ErrorString%>
-						</td>
-						<td width="20"></td>
-					</tr>
-					<tr>
-						<td colspan="3" height="10">&nbsp;</td>
-					</tr>
-				<%--	<tr>
-						<td colspan="3" height="10" align="center">
-							<input type="button" id="cmdClose" name="cmdClose" value="Close" style="WIDTH: 80px" width="80" class="btn"
-								onclick="closeclick();" />
-						</td>
-					</tr>--%>
-					<tr>
-						<td colspan="3" height="10"></td>
-					</tr>
-				</table>
-			</td>
-		</tr>
-	</table>
-</form>
-
 <input type="hidden" id="txtSuccessFlag" name="txtSuccessFlag" value="3">
 <%
 End If
@@ -468,7 +337,7 @@ End If
 <form id="frmOriginalDefinition" style="visibility: hidden; display: none">
 	<%
 		Response.Write("	<input type='hidden' id='txtDefn_Name' name='txtDefn_Name' value='" & objReport.ReportCaption.ToString() & "'>" & vbCrLf)
-		Response.Write("	<input type='hidden' id=txtDefn_ErrMsg name=txtDefn_ErrMsg value=""" & sErrMsg & """>" & vbCrLf)
+		Response.Write("	<input type='hidden' id=txtDefn_ErrMsg name=txtDefn_ErrMsg value=""" & objReport.ErrorString & """>" & vbCrLf)
 	%>
 	<input type="hidden" id="txtUserName" name="txtUserName" value="<%=Session("username").ToString()%>">
 	<input type="hidden" id="txtDateFormat" name="txtDateFormat" value="<%=Session("LocaleDateFormat").ToString()%>">

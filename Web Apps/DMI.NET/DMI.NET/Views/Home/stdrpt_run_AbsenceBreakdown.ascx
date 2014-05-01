@@ -230,8 +230,8 @@
 
 		Response.Write("<script type=""text/javascript"">" & vbCrLf)
 		Response.Write("function crosstab_loadAddRecords()" & vbCrLf)
-		Response.Write("{" & vbCrLf)
-		Response.Write("	var iCount;" & vbCrLf & vbCrLf)
+	Response.Write("{" & vbCrLf)
+	Response.Write("	var iCount;" & vbCrLf & vbCrLf)
 
 		Response.Write("	iCount = new Number(txtLoadCount.value);" & vbCrLf)
 		Response.Write("	txtLoadCount.value = iCount + 1;" & vbCrLf & vbCrLf)
@@ -353,9 +353,5 @@ end if
 <script type="text/javascript">
 
 	util_run_crosstabs_window_onload();
-
-	$("#reportframe").show();
-	$("#top").hide();
-	$("#reportworkframe").show();
 
 </script>

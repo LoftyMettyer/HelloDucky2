@@ -30,7 +30,6 @@
 		Response.Write("UtilName = " & Session("utilname") & "<BR>")
 		Response.Write("UtilID = " & Session("utilid") & "<BR>")
 		Response.Write("Action = " & Session("action") & "<BR>")
-		Response.End()
 	End If
 
 	' Create the reference to the DLL (Report Class)
