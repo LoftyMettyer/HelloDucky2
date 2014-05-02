@@ -1,5 +1,7 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
 
+<script src="<%:Url.Content("~/Scripts/jquery/jquery.cookie.js")%>"></script>
+
 <script type="text/javascript">
 	function output_setOptions() {
 
@@ -589,17 +591,50 @@
 		frmExportData.txtFileName.value = frmOutputDef.txtFilename.value;
 
 		if (frmExportData.txtEmailGroupID.value > 0) {
-			frmExportData.submit();
+			$(frmExportData).submit();
 		}
 		else {
 			frmExportData.txtEmailGroupID.value = 0;
-			frmExportData.submit();
+			$(frmExportData).submit();
 		}
 
 	}
 
 	function saveFile() {
 		return false;
+	}
+
+	$(document).ready(function () {
+		var frmExportData = OpenHR.getForm("main", "frmExportData");
+		$(frmExportData).submit(function () {
+			blockUIForDownload();
+		});
+	});
+
+	var fileDownloadCheckTimer;
+	function blockUIForDownload() {
+		var token = new Date().getTime(); //use the current timestamp as the token value		
+		$('#download_token_value_id').val(token);		
+		$("body").addClass("loading");
+		fileDownloadCheckTimer = window.setInterval(function () {
+			var cookieValue = $.cookie('fileDownloadToken');
+			if (cookieValue == token)
+				finishDownload();
+		}, 1000);
+	}
+
+	function finishDownload() {
+		window.clearInterval(fileDownloadCheckTimer);
+		$.removeCookie('fileDownloadToken'); //clears this cookie value
+		$("body").removeClass("loading");
+		
+		//check for errors.
+		var cookieDownloadErrors = $.cookie('fileDownloadErrors');
+		if (cookieDownloadErrors.length > 0) {
+			$("#errorDialogTitle").text('Error downloading file');
+			$("#errorDialogContentText").html(cookieDownloadErrors);
+			$("#errorDialog").dialog("open");
+		}
 	}
 
 </script>

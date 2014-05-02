@@ -2565,6 +2565,7 @@ Namespace Controllers
 			Dim strEmailSubject As String = Request("txtEmailSubject")
 			Dim strEmailAttachAs As String = Request("txtEmailAttachAs")
 			Dim strDownloadFileName As String = Request("txtFilename")
+			Dim downloadTokenValue As String = Request("download_token_value_id")
 			Dim strDownloadExtension As String
 			Dim strInterSectionType As String
 			Dim sEmailAddresses As String
@@ -2810,15 +2811,25 @@ Namespace Controllers
 					Try
 						Dim fileInfo As FileInfo = New FileInfo(ClientDLL.GeneratedFile)
 						Response.ContentType = "application/octet-stream"
+						Response.Clear()
+						Response.AppendCookie(New HttpCookie("fileDownloadToken", downloadTokenValue)) ' marks the download as complete on the client
+						Response.AppendCookie(New HttpCookie("fileDownloadErrors", vbNullString))	' Clear error message response cookie
 						Response.AddHeader("Content-Disposition", String.Format("attachment;filename=""{0}""", strDownloadFileName))
 						Response.AddHeader("Content-Length", fileInfo.Length.ToString())
 						Response.WriteFile(fileInfo.FullName)
-						Response.End()
+						'Response.End()
 						Response.Flush()
 					Catch ex As Exception
+						' error generated - return error
+						Response.AppendCookie(New HttpCookie("fileDownloadToken", downloadTokenValue)) ' marks the download as complete on the client		
+						Response.AppendCookie(New HttpCookie("fileDownloadErrors", ex.Message))	' marks the download as complete on the client		
 					Finally
 						IO.File.Delete(ClientDLL.GeneratedFile)
 					End Try
+				Else
+					' No file generated - return error
+					Response.AppendCookie(New HttpCookie("fileDownloadToken", downloadTokenValue)) ' marks the download as complete on the client		
+					Response.AppendCookie(New HttpCookie("fileDownloadErrors", "No output file was generated. Check your data."))	' marks the download as complete on the client
 				End If
 			End If
 
@@ -2834,6 +2845,8 @@ Namespace Controllers
 			Dim strEmailSubject As String = Request("txtEmailSubject")
 			Dim strEmailAttachAs As String = Request("txtEmailAttachAs")
 			Dim strDownloadFileName As String = Request("txtFilename")
+			Dim downloadTokenValue As String = Request("download_token_value_id")
+
 			Dim objReport As Report = Session("CustomReport")
 			Dim ClientDLL As New clsOutputRun
 			ClientDLL.SessionInfo = CType(Session("SessionContext"), SessionInfo)
@@ -3081,19 +3094,28 @@ Namespace Controllers
 			' Download the file
 			If blnSavetoFile Or (Not blnSavetoFile And Not blnEmail) Then
 				If IO.File.Exists(ClientDLL.GeneratedFile) Then
-					Try
-
+					Try						
 						Dim fileInfo As FileInfo = New FileInfo(ClientDLL.GeneratedFile)
 						Response.ContentType = "application/octet-stream"
+						Response.Clear()
+						Response.AppendCookie(New HttpCookie("fileDownloadToken", downloadTokenValue)) ' marks the download as complete on the client
+						Response.AppendCookie(New HttpCookie("fileDownloadErrors", vbNullString))	' Clear error message response cookie
 						Response.AddHeader("Content-Disposition", String.Format("attachment;filename=""{0}""", strDownloadFileName))
 						Response.AddHeader("Content-Length", fileInfo.Length.ToString())
 						Response.WriteFile(fileInfo.FullName)
-						Response.End()
+						'Response.End()
 						Response.Flush()
 					Catch ex As Exception
+						' error generated - return error
+						Response.AppendCookie(New HttpCookie("fileDownloadToken", downloadTokenValue)) ' marks the download as complete on the client		
+						Response.AppendCookie(New HttpCookie("fileDownloadErrors", ex.Message))	' marks the download as complete on the client		
 					Finally
 						IO.File.Delete(ClientDLL.GeneratedFile)
 					End Try
+				Else
+					' No file generated - return error
+					Response.AppendCookie(New HttpCookie("fileDownloadToken", downloadTokenValue)) ' marks the download as complete on the client		
+					Response.AppendCookie(New HttpCookie("fileDownloadErrors", "No output file was generated. Check your data."))	' marks the download as complete on the client		
 				End If
 			End If
 
@@ -3154,6 +3176,7 @@ Namespace Controllers
 			Dim strEmailSubject As String = Request("txtEmailSubject")
 			Dim strEmailAttachAs As String = Request("txtEmailAttachAs")
 			Dim strDownloadFileName As String = Request("txtFilename")
+			Dim downloadTokenValue As String = Request("download_token_value_id")
 
 			Dim objOutput As New CalendarOutput
 			objOutput.ReportData = objCalendar.Events
@@ -3192,15 +3215,25 @@ Namespace Controllers
 					Try
 						Dim fileInfo As FileInfo = New FileInfo(objOutput.GeneratedFile)
 						Response.ContentType = "application/octet-stream"
+						Response.Clear()
+						Response.AppendCookie(New HttpCookie("fileDownloadToken", downloadTokenValue)) ' marks the download as complete on the client
+						Response.AppendCookie(New HttpCookie("fileDownloadErrors", vbNullString))	' Clear error message response cookie
 						Response.AddHeader("Content-Disposition", String.Format("attachment;filename=""{0}""", strDownloadFileName))
 						Response.AddHeader("Content-Length", fileInfo.Length.ToString())
 						Response.WriteFile(fileInfo.FullName)
-						Response.End()
+						' Response.End()
 						Response.Flush()
 					Catch ex As Exception
+						' error generated - return error
+						Response.AppendCookie(New HttpCookie("fileDownloadToken", downloadTokenValue)) ' marks the download as complete on the client		
+						Response.AppendCookie(New HttpCookie("fileDownloadErrors", ex.Message))	' marks the download as complete on the client	
 					Finally
 						IO.File.Delete(objOutput.GeneratedFile)
 					End Try
+				Else
+					' No file generated - return error
+					Response.AppendCookie(New HttpCookie("fileDownloadToken", downloadTokenValue)) ' marks the download as complete on the client		
+					Response.AppendCookie(New HttpCookie("fileDownloadErrors", "No output file was generated. Check your data."))	' marks the download as complete on the client		
 				End If
 			End If
 

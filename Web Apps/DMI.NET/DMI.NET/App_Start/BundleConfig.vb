@@ -15,7 +15,7 @@ Namespace App_Start
 			' JQuery core
 			bundles.Add(New ScriptBundle("~/bundles/jQuery").Include(
 					"~/Scripts/jquery/jquery-{version}.js",
-					"~/Scripts/jquery/jquery-cookie.js",
+					"~/Scripts/jquery/jquery.cookie.js",
 					"~/Scripts/jquery/jquery-flip.js",
 					"~/Scripts/jquery/jquery-unobtrusive-ajax.js",
 					"~/Scripts/jquery/jquery-validate-vsdoc.js",

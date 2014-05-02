@@ -413,7 +413,7 @@ End If
 	<input type="hidden" id="txtEmailGroupID" name="txtEmailGroupID" value="<%=objReport.OutputEmailID%>">
 	<input type="hidden" id="txtUtilType" name="txtUtilType" value="<%=session("utilType")%>">
 	<input type="hidden" id="txtUtilID" name="txtUtilID" value="<%=Session("utilID")%>">
-
+	<input type="hidden" id="download_token_value_id" name="download_token_value_id"/>
 </form>
 
 <script type="text/javascript">

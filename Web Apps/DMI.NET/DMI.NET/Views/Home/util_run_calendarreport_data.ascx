@@ -297,7 +297,7 @@
 	<input type="hidden" id="txtFileName" name="txtFileName" value="<%=objCalendar.OutputFilename%>">
 	<input type="hidden" id="txtUtilType" name="txtUtilType" value="<%=session("utilType")%>">
 	<input type="hidden" id="txtUtilID" name="txtUtilID" value="<%=Session("utilID")%>">
-
+	<input type="hidden" id="download_token_value_id" name="download_token_value_id"/>
 </form>
 
 <form id="frmOriginalDefinition" style="visibility: hidden; display: none">
