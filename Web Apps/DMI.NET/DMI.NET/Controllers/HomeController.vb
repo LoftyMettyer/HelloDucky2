@@ -2802,7 +2802,14 @@ Namespace Controllers
 				sEmailAddresses = GetEmailAddressesForGroup(lngEmailGroupID)
 
 				Dim objDocument As New FileStream(ClientDLL.GeneratedFile, FileMode.Open)
-				SendMailWithAttachment(strEmailSubject, objDocument, sEmailAddresses, strEmailAttachAs)
+				Try
+					SendMailWithAttachment(strEmailSubject, objDocument, sEmailAddresses, strEmailAttachAs)
+				Catch ex As Exception
+					' error generated - return error
+					Response.AppendCookie(New HttpCookie("fileDownloadToken", downloadTokenValue)) ' marks the download as complete on the client		
+					Response.AppendCookie(New HttpCookie("fileDownloadErrors", ex.Message))	' marks the download as complete on the client		
+				End Try
+
 			End If
 
 			' Return the generated file
@@ -3088,7 +3095,13 @@ Namespace Controllers
 				sEmailAddresses = GetEmailAddressesForGroup(lngEmailGroupID)
 
 				Dim objDocument As New FileStream(ClientDLL.GeneratedFile, FileMode.Open)
-				SendMailWithAttachment(strEmailSubject, objDocument, sEmailAddresses, strEmailAttachAs)
+				Try
+					SendMailWithAttachment(strEmailSubject, objDocument, sEmailAddresses, strEmailAttachAs)
+				Catch ex As Exception
+					' error generated - return error
+					Response.AppendCookie(New HttpCookie("fileDownloadToken", downloadTokenValue)) ' marks the download as complete on the client		
+					Response.AppendCookie(New HttpCookie("fileDownloadErrors", ex.Message))	' marks the download as complete on the client		
+				End Try
 			End If
 
 			' Download the file
@@ -3203,7 +3216,13 @@ Namespace Controllers
 				sEmailAddresses = GetEmailAddressesForGroup(lngEmailGroupID)
 
 				Dim objDocument As New FileStream(objOutput.GeneratedFile, FileMode.Open)
-				SendMailWithAttachment(strEmailSubject, objDocument, sEmailAddresses, strEmailAttachAs)
+				Try
+					SendMailWithAttachment(strEmailSubject, objDocument, sEmailAddresses, strEmailAttachAs)
+				Catch ex As Exception
+					' error generated - return error
+					Response.AppendCookie(New HttpCookie("fileDownloadToken", downloadTokenValue)) ' marks the download as complete on the client		
+					Response.AppendCookie(New HttpCookie("fileDownloadErrors", ex.Message))	' marks the download as complete on the client		
+				End Try
 
 			End If
 

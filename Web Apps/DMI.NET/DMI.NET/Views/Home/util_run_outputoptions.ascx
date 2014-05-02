@@ -614,7 +614,9 @@
 	var fileDownloadCheckTimer;
 	function blockUIForDownload() {
 		var token = new Date().getTime(); //use the current timestamp as the token value		
-		$('#download_token_value_id').val(token);		
+		$('#download_token_value_id').val(token);
+		menu_ShowWait('Generating output...');
+		setTimeout('updateProgressMsg()', 50);
 		$("body").addClass("loading");
 		fileDownloadCheckTimer = window.setInterval(function () {
 			var cookieValue = $.cookie('fileDownloadToken');
@@ -625,13 +627,14 @@
 
 	function finishDownload() {
 		window.clearInterval(fileDownloadCheckTimer);
-		$.removeCookie('fileDownloadToken'); //clears this cookie value
+		$.removeCookie('fileDownloadToken'); //clears this cookie value		
 		$("body").removeClass("loading");
+		menu_ShowWait('Loading...');
 		
 		//check for errors.
 		var cookieDownloadErrors = $.cookie('fileDownloadErrors');
 		if (cookieDownloadErrors.length > 0) {
-			$("#errorDialogTitle").text('Error downloading file');
+			$("#errorDialogTitle").text('Error generating output');
 			$("#errorDialogContentText").html(cookieDownloadErrors);
 			$("#errorDialog").dialog("open");
 		}
