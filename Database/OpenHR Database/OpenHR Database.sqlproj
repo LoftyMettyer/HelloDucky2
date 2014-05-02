@@ -647,6 +647,7 @@
     <Build Include="Stored Procedures\System Manager\spASRDatabaseStatus.sql" />
     <Build Include="Stored Procedures\Auto Generated\spASRGetCurrentUsersFromMaster.sql" />
     <Build Include="User Defined Functions\udfASRCreateDate.sql" />
+    <Build Include="Stored Procedures\Web\spASRIntGetCrosstabReportData.sql" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Stored Procedures\Other\sp_ASR_Bradford_CalculateDurations.sql" />
