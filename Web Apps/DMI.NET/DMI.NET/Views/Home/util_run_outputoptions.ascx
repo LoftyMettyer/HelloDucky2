@@ -620,8 +620,13 @@
 		$("body").addClass("loading");
 		fileDownloadCheckTimer = window.setInterval(function () {
 			var cookieValue = $.cookie('fileDownloadToken');
-			if (cookieValue == token)
+			if (cookieValue == token) {
 				finishDownload();
+			} else {
+				$('#txtProgressMessage').val('Generating output...');
+				$("body").addClass("loading");  //Overlapping ajax calls may have closed the spinner.
+				updateProgressMsg();
+			}
 		}, 1000);
 	}
 
