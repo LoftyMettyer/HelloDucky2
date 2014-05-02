@@ -30,6 +30,40 @@ Begin VB.Form frmSSIntranetLink
    ScaleWidth      =   9360
    ShowInTaskbar   =   0   'False
    StartUpPosition =   2  'CenterScreen
+   Begin VB.Frame fraURLLink 
+      Caption         =   "URL :"
+      Height          =   1125
+      Left            =   2880
+      TabIndex        =   37
+      Top             =   4470
+      Width           =   6300
+      Begin VB.TextBox txtURL 
+         Height          =   315
+         Left            =   1575
+         MaxLength       =   500
+         TabIndex        =   39
+         Top             =   300
+         Width           =   4515
+      End
+      Begin VB.CheckBox chkNewWindow 
+         Caption         =   "D&isplay in new window"
+         Enabled         =   0   'False
+         Height          =   330
+         Left            =   1575
+         TabIndex        =   40
+         Top             =   690
+         Value           =   1  'Checked
+         Width           =   2685
+      End
+      Begin VB.Label lblURL 
+         Caption         =   "URL :"
+         Height          =   195
+         Left            =   195
+         TabIndex        =   38
+         Top             =   360
+         Width           =   570
+      End
+   End
    Begin VB.Frame fraChartLink 
       Caption         =   "Chart :"
       Height          =   6060
@@ -367,40 +401,6 @@ Begin VB.Form frmSSIntranetLink
          Stretch         =   -1  'True
          Top             =   330
          Width           =   510
-      End
-   End
-   Begin VB.Frame fraURLLink 
-      Caption         =   "URL :"
-      Height          =   1125
-      Left            =   2880
-      TabIndex        =   37
-      Top             =   4470
-      Width           =   6300
-      Begin VB.TextBox txtURL 
-         Height          =   315
-         Left            =   1575
-         MaxLength       =   500
-         TabIndex        =   39
-         Top             =   300
-         Width           =   4515
-      End
-      Begin VB.CheckBox chkNewWindow 
-         Caption         =   "D&isplay in new window"
-         Enabled         =   0   'False
-         Height          =   330
-         Left            =   1575
-         TabIndex        =   40
-         Top             =   690
-         Value           =   1  'Checked
-         Width           =   2685
-      End
-      Begin VB.Label lblURL 
-         Caption         =   "URL :"
-         Height          =   195
-         Left            =   195
-         TabIndex        =   38
-         Top             =   360
-         Width           =   570
       End
    End
    Begin VB.Frame fraLink 
@@ -2191,7 +2191,7 @@ Private Sub RefreshControls()
   txtURL.Enabled = optLink(SSINTLINKSCREEN_URL).value
   txtURL.BackColor = IIf(txtURL.Enabled, vbWindowBackground, vbButtonFace)
   lblURL.Enabled = txtURL.Enabled
-  chkNewWindow.Enabled = False  'txtURL.Enabled
+  chkNewWindow.Enabled = txtURL.Enabled
   ' 'NPG20080128 Fault 12873 - If Not txtURL.Enabled Then
   If Not txtURL.Enabled And Not optLink(SSINTLINKSCREEN_EMAIL).value Then
     txtURL.Text = ""
@@ -2429,7 +2429,7 @@ Private Sub RefreshControls()
   lblHRProUtilityMessage.Caption = sUtilityMessage
   
   ' Disable the OK button as required.
-  cmdOK.Enabled = mfChanged
+  cmdOk.Enabled = mfChanged
   
 
 End Sub
@@ -4108,7 +4108,7 @@ Public Property Get NewWindow() As Boolean
 End Property
 
 Public Property Let NewWindow(ByVal pfNewValue As Boolean)
-  chkNewWindow.value = vbChecked  'IIf(pfNewValue, vbChecked, vbUnchecked)
+  chkNewWindow.value = IIf(pfNewValue, vbChecked, vbUnchecked)
 End Property
 
 Public Property Get HiddenGroups() As String
