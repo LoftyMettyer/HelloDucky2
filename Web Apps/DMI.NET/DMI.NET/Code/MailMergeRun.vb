@@ -3,8 +3,7 @@ Option Explicit On
 
 Imports Aspose.Words
 Imports System.IO
-Imports Aspose.Email.Mail
-Imports System.Web.Configuration
+Imports System.Net.Mail
 Imports HR.Intranet.Server
 Imports Aspose.Words.Reporting
 Imports HR.Intranet.Server.Metadata
@@ -64,24 +63,19 @@ Namespace Code
 #End Region
 
 		Public Function ExecuteToEmail() As Boolean
-
 			Dim doc As Document
 
-			Dim mailClient As Aspose.Email.Mail.SmtpClient
-			Dim message As Aspose.Email.Mail.MailMessage
-			Dim attachment As Aspose.Email.Mail.Attachment
+			Dim mailClient As SmtpClient
+			Dim message As MailMessage
+			Dim attachment As Attachment
 			Dim strToEmail As String
 			Dim objStream As MemoryStream
-			Dim objOptions As New MailMessageLoadOptions
 
 			Dim context As HttpContext = HttpContext.Current
 
 			Dim objErrorLog As New clsEventLog(CType(context.Session("SessionContext"), SessionInfo).LoginInfo)
 			Dim objDatabase As Database = CType(context.Session("DatabaseFunctions"), Database)
-
-
 			Try
-
 				Dim objWordLicense As New License
 				objWordLicense.SetLicense("Aspose.Words.lic")
 
@@ -94,17 +88,17 @@ Namespace Code
 
 				objTemplate.Position = 0
 
-				mailClient = New SmtpClient(WebConfigurationManager.OpenWebConfiguration(HttpContext.Current.Request.ApplicationPath))
-
-				objOptions.MessageFormat = MessageFormat.Mht
+				mailClient = New SmtpClient
+				mailClient.Host = ApplicationSettings.SMTP_Host
+				mailClient.Port = ApplicationSettings.SMTP_Port
 
 				For Each objRow As DataRow In MergeData.Rows
 					doc = New Document(objTemplate)
 					doc.MailMerge.Execute(objRow)
 					objStream = New MemoryStream()
+					message = New MailMessage
 
 					If IsAttachment Then
-
 						' TODO - Support different output formats
 						'Select Case Path.GetExtension(AttachmentName).ToLower()
 						'	Case "pdf"
@@ -113,23 +107,20 @@ Namespace Code
 						doc.Save(objStream, SaveFormat.Docx)
 						'End Select
 
-						attachment = New Aspose.Email.Mail.Attachment(objStream, Path.GetFileName(AttachmentName))
-						message = New Aspose.Email.Mail.MailMessage
+						objStream.Seek(0, SeekOrigin.Begin) '"Rewind" the stream so it can be properly attached to the message; if it's no "rewinded" then the attachment is empty
+						attachment = New Attachment(objStream, Path.GetFileName(AttachmentName))
 						message.Attachments.Add(attachment)
-						message.Body = ""
-
 					Else
-
 						' TODO - Check that this is the correct format to handle images
-						doc.Save(objStream, SaveFormat.Mhtml)
-						objStream.Position = 0
-						message = MailMessage.Load(objStream, objOptions)
-						message.Attachments.Clear()
+						doc.Save(objStream, SaveFormat.Html)
 
+						message.Body = doc.ToString(Aspose.Words.SaveFormat.Html)
+						message.IsBodyHtml = True
+						message.Attachments.Clear()
 					End If
 
 					message.Subject = EmailSubject
-					message.From = New Aspose.Email.Mail.MailAddress(ApplicationSettings.MailMerge_From, "OpenHR")
+					message.From = New MailAddress(ApplicationSettings.MailMerge_From, "OpenHR")
 
 					' TODO - Alter this to read with initial dataset - would speed up performance
 					strToEmail = objDatabase.GetEmailAddress(CInt(objRow("ID")), EmailCalculationID)
@@ -140,29 +131,20 @@ Namespace Code
 
 						' TODO - send emails async - means passing the async flag through multiple previous pages - needs some work!
 						'mailClient.SendAsync(message, "OpenHR message")
-
 					Else
-
 						If objErrorLog.EventLogID = 0 Then
 							objErrorLog = New clsEventLog(CType(context.Session("SessionContext"), SessionInfo).LoginInfo)
 							objErrorLog.AddHeader(HR.Intranet.Server.Enums.EventLog_Type.eltMailMerge, Name)
 						End If
 
 						objErrorLog.AddDetailEntry("No email address found")
-
-
 					End If
-
 				Next
-
 			Catch ex As Exception
-
 				Errors.Add(String.Format("The following error occured when emailing your document" _
-							& "{0}{0}{1}{0}{0}Please check with your administrator for further details", "<br/>", ex.Message))
-
+							& "{0}{0}{1}{0}{0}{2}{0}{0}Please check with your administrator for further details", "<br/>", _
+							ex.Message, IIf(ex.InnerException Is Nothing, "", ex.InnerException.Message)))
 				Return False
-
-
 			End Try
 
 			Return True
