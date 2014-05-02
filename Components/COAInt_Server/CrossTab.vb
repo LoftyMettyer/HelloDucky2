@@ -1202,8 +1202,7 @@ LocalErr:
 
 			'Second element of range for those less than minimum value of range...
 			strHeading(1) = "< " & ConvertNumberForDisplay(VB6.Format(mdblMin(lngLoop), mstrFormat(lngLoop)))
-			'MH20010411 Fault 1978 Convert to int stops overflow error !
-			strSearch(1) = "Convert(float," & strColumnName & ") < " & ConvertNumberForSQL(CStr(mdblMin(lngLoop)))
+			strSearch(1) = strColumnName & " < " & ConvertNumberForSQL(CStr(mdblMin(lngLoop)))
 
 			dblUnit = GetSmallestUnit(lngLoop)
 
@@ -1219,20 +1218,16 @@ LocalErr:
 				ReDim Preserve strSearch(lngCount)
 				dblGroupMax = dblGroup + mdblStep(lngLoop) - dblUnit
 				strHeading(lngCount) = ConvertNumberForDisplay(VB6.Format(dblGroup, mstrFormat(lngLoop))) & IIf(dblGroupMax <> dblGroup, " - " & ConvertNumberForDisplay(Format(dblGroupMax, mstrFormat(lngLoop))), "")
-				'MH20010411 Fault 1978 Convert to int stops overflow error !
-				strSearch(lngCount) = "Convert(float," & strColumnName & ") BETWEEN " & ConvertNumberForSQL(CStr(dblGroup)) & " AND " & ConvertNumberForSQL(CStr(dblGroupMax))
-
-				lngCount = lngCount + 1
+				strSearch(lngCount) = String.Format("{0} > {1} AND {0} < {2}", strColumnName, ConvertNumberForSQL(CStr(dblGroup)), ConvertNumberForSQL(CStr(dblGroupMax)))
+				lngCount += 1
 			Next
 
 			ReDim Preserve strHeading(lngCount)
 			ReDim Preserve strSearch(lngCount)
 			'Last element of range for those more than maximum value of range...
 			strHeading(lngCount) = "> " & ConvertNumberForDisplay(VB6.Format(dblGroup - dblUnit, mstrFormat(lngLoop)))
-			'MH20010411 Fault 1978 Convert to int stops overflow error !
-			strSearch(lngCount) = "Convert(float," & strColumnName & ") > " & ConvertNumberForSQL(CStr(dblGroup - dblUnit))
+			strSearch(lngCount) = strColumnName & " > " & ConvertNumberForSQL(CStr(dblGroup - dblUnit))
 
-			lngCount = lngCount + 1
 		End If
 
 	End Sub
