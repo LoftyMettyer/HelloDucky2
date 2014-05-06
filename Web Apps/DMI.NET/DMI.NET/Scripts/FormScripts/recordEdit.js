@@ -353,6 +353,7 @@ function insertUpdateDef() {
 						//	Lookup field from a combo (unknown type column). Get the column type and save the appropraite value from the combo.
 						switch (objScreenControl.DataType) {
 
+
 							case 12:
 							case -1:
 								asColumnsToAdd[1] = "'" + $(objControl).val().split("'").join("''") + "'";
@@ -362,14 +363,11 @@ function insertUpdateDef() {
 								break;
 							case 4:
 							case 2:
-								if ($(objControl).val(), length > 0) {
-									asColumnsToAdd[1] = $(objControl).val();
-									//	'TM20070328 - Fault 12053
+								if ($(objControl).val().length > 0) {								
 									asColumnsToAdd[1] = ConvertData($(objControl).val(), objScreenControl.DataType);
-									//TODO: remove the next line and fetch value from 'somewhere'...
-									var msLocaleThousandSeparator = ",";
-									asColumnsToAdd[1] = ConvertNumberForSQL(asColumns(2, iNextIndex)).split(msLocaleThousandSeparator).join("");
-									asColumnsToAdd[3] = ConvertNumberForSQL(asColumns(2, iNextIndex)).split(msLocaleThousandSeparator).join("");
+									asColumnsToAdd[1] = ConvertNumberForSQL(asColumnsToAdd[1]);
+									asColumnsToAdd[3] = asColumnsToAdd[1];
+
 								} else {
 									asColumnsToAdd[1] = "null";
 									asColumnsToAdd[3] = "null";
@@ -578,8 +576,8 @@ function ConvertNumberForSQL(strInput) {
 	// Get a number in the correct format for a SQL string
 	// (e.g. on french systems replace decimal comma for a decimal point)
 	// TODO: return strInput.replace(msLocaleDecimalSeparator, ".");
-	return strInput;
 
+	return OpenHR.replaceAll(String(strInput),window.LocaleThousandSeparator, "");
 }
 
 
