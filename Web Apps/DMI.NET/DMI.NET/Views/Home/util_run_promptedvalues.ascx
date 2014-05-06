@@ -31,7 +31,7 @@
 		
 		frmPromptedValues.txtLocaleDateFormat.value = '<%:LocaleDateFormat() %>';
 		frmPromptedValues.txtLocaleDecimalSeparator.value = '<%:LocaleDecimalSeparator()%>';
-		frmPromptedValues.txtLocaleThousandSeparator.value = '<%:LocaleThousandSeparator()%>';
+		frmPromptedValues.txtLocaleThousandSeparator.value = '<%:Html.Raw(LocaleThousandSeparator())%>';
 
 		if (frmPromptedValues.RunInOptionFrame.value == "True") {
 			$("#optionframe").attr("data-framesource", "UTIL_RUN_PROMPTEDVALUES");
