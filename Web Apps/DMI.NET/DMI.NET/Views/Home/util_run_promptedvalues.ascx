@@ -9,6 +9,11 @@
 
 	function promptedvalues_window_onload() {
 
+		$('#frmPromptedValues').submit(function(e) {
+			e.preventDefault();
+			SubmitPrompts();
+		});
+
 		var frmPromptedValues = document.getElementById("frmPromptedValues");
 
 		$(".datepicker").datepicker({ dateFormat: 'dd/mm/yy' });
@@ -24,9 +29,9 @@
 			}
 		});
 		
-		frmPromptedValues.txtLocaleDateFormat.value = OpenHR.LocaleDateFormat;
-		frmPromptedValues.txtLocaleDecimalSeparator.value = OpenHR.LocaleDecimalSeparator;
-		frmPromptedValues.txtLocaleThousandSeparator.value = OpenHR.LocaleThousandSeparator;
+		frmPromptedValues.txtLocaleDateFormat.value = '<%:LocaleDateFormat() %>';
+		frmPromptedValues.txtLocaleDecimalSeparator.value = '<%:LocaleDecimalSeparator()%>';
+		frmPromptedValues.txtLocaleThousandSeparator.value = '<%:LocaleThousandSeparator()%>';
 
 		if (frmPromptedValues.RunInOptionFrame.value == "True") {
 			$("#optionframe").attr("data-framesource", "UTIL_RUN_PROMPTEDVALUES");
@@ -180,12 +185,12 @@
 
 						' Character Prompted Value
 						If objRow("ValueType") = 1 Then
-							Response.Write("        <input type=text class=""text"" id=prompt_1_" & objRow("componentID") & " name=prompt_1_" & objRow("componentID") & " value=""" & Replace(objRow("valuecharacter"), """", "&quot;") & """ maxlength=" & objRow("promptsize") & " style=""WIDTH: 100%"">" & vbCrLf)
-							Response.Write("        <input type=hidden id=promptMask_" & objRow("componentID") & " name=promptMask_" & objRow("componentID") & " value=""" & Replace(objRow("promptMask"), """", "&quot;") & """>" & vbCrLf)
+							Response.Write("        <input type=text class=""text"" id=prompt_1_" & objRow("componentID") & " name=prompt_1_" & objRow("componentID") & " value=""" & Replace(CType(objRow("valuecharacter"), String), """", "&quot;") & """ maxlength=" & objRow("promptsize") & " style=""WIDTH: 100%"">" & vbCrLf)
+							Response.Write("        <input type=hidden id=promptMask_" & objRow("componentID") & " name=promptMask_" & objRow("componentID") & " value=""" & Replace(CType(objRow("promptMask"), String), """", "&quot;") & """>" & vbCrLf)
 
 							' Numeric Prompted Value
 						ElseIf objRow("ValueType") = 2 Then
-							Response.Write("        <input type=text class=""text"" id=prompt_2_" & objRow("componentID") & " name=prompt_2_" & objRow("componentID") & " value=""" & Replace(objRow("valuenumeric"), ".", Session("LocaleDecimalSeparator")) & """ style=""WIDTH: 100%"">" & vbCrLf)
+							Response.Write("        <input type=text class=""text"" id=prompt_2_" & objRow("componentID") & " name=prompt_2_" & objRow("componentID") & " value=""" & Replace(CType(objRow("valuenumeric"), String), ".", CType(Session("LocaleDecimalSeparator"), String)) & """ style=""WIDTH: 100%"">" & vbCrLf)
 							Response.Write("        <input type=hidden id=promptSize_" & objRow("componentID") & " name=promptSize" & objRow("componentID") & " value=""" & objRow("promptSize") & """>" & vbCrLf)
 							Response.Write("        <input type=hidden id=promptDecs_" & objRow("componentID") & " name=promptDecs" & objRow("componentID") & " value=""" & objRow("promptDecimals") & """>" & vbCrLf)
 
@@ -242,7 +247,7 @@
 									Response.Write(">" & sOptionValue & "</OPTION>" & vbCrLf)
 								ElseIf rstLookupValues.Columns(0).DataType.Name.ToLower() = "decimal" Then
 									' Field is a numeric so format as such.
-									sOptionValue = Replace(objLookupRow(0), ".", Session("LocaleDecimalSeparator"))
+									sOptionValue = Replace(CType(objLookupRow(0), String), ".", CType(Session("LocaleDecimalSeparator"), String))
 									If (Not IsDBNull(objLookupRow(0))) And (Not IsDBNull(objRow("valuecharacter"))) Then
 										If FormatNumber(objLookupRow(0)) = FormatNumber(objRow("valuecharacter")) Then
 											Response.Write(" SELECTED")
@@ -284,7 +289,7 @@
 									Response.Write("        <input type=hidden id=prompt_4_" & objRow("componentID") & " name=prompt_4_" & objRow("componentID") & " value=" & ConvertSQLDateToLocale(sDefaultValue) & ">" & vbCrLf)
 
 								Case "decimal"
-									Response.Write("        <input type=hidden id=prompt_2_" & objRow("componentID") & " name=prompt_2_" & objRow("componentID") & " value=" & Replace(sDefaultValue, ".", Session("LocaleDecimalSeparator")) & ">" & vbCrLf)
+									Response.Write("        <input type=hidden id=prompt_2_" & objRow("componentID") & " name=prompt_2_" & objRow("componentID") & " value=" & Replace(sDefaultValue, ".", CType(Session("LocaleDecimalSeparator"), String)) & ">" & vbCrLf)
 									
 								Case "boolean"
 									Response.Write("        <input type=hidden id=prompt_3_" & objRow("componentID") & " name=prompt_3_" & objRow("componentID") & " value=" & sDefaultValue & ">" & vbCrLf)
@@ -302,12 +307,10 @@
 						Response.Write("				</tr>" & vbCrLf)
 
 					Next
-			
+					
+					Response.Write("</table>" & vbCrLf)
+					
 			%>
-							
-			</table>
-
-			
 
 	<%
 	End If
@@ -353,17 +356,18 @@
 	}
 	
 	function SubmitPrompts() {
-
+		var frmPromptedValues = document.getElementById('frmPromptedValues');
+		
 		// Validate the prompt values before submitting the form.
 		var controlCollection = frmPromptedValues.elements;
 		if (controlCollection != null) {
 			for (var i = 0; i < controlCollection.length; i++) {
-				sControlName = controlCollection.item(i).name;
-				sControlPrefix = sControlName.substr(0, 7);
+				var sControlName = controlCollection.item(i).name;
+				var sControlPrefix = sControlName.substr(0, 7);
 
 				if (sControlPrefix == "prompt_") {
 					// Get the control's data type.
-					iType = new Number(sControlName.substring(7, 8));
+					var iType = new Number(sControlName.substring(7, 8));
 					if ((iType == 1) || (iType == 2) || (iType == 4)) {
 						// Validate character, numeric and date prompts.
 						// Logic and lookup prompts do not need validation.
@@ -400,14 +404,10 @@
 		var fFound;
 		var sMaskCtlName;
 		var iIndex;
-
-		sDecimalSeparator = "\\";
-		sDecimalSeparator = sDecimalSeparator.concat(frmPromptedValues.txtLocaleDecimalSeparator.value);
-		var reDecimalSeparator = new RegExp(sDecimalSeparator, "gi");
-
-		sThousandSeparator = "\\";
-		sThousandSeparator = sThousandSeparator.concat(frmPromptedValues.txtLocaleThousandSeparator.value);
-		var reThousandSeparator = new RegExp(sThousandSeparator, "gi");
+		var frmPromptedValues = document.getElementById('frmPromptedValues');
+		
+		sDecimalSeparator = frmPromptedValues.txtLocaleDecimalSeparator.value;
+		sThousandSeparator = frmPromptedValues.txtLocaleThousandSeparator.value;
 
 		sPoint = "\\.";
 		var rePoint = new RegExp(sPoint, "gi");
@@ -427,15 +427,15 @@
 			// Convert the value from locale to UK settings for use with the isNaN funtion.
 			sConvertedValue = new String(sValue);
 			// Remove any thousand separators.
-			sConvertedValue = sConvertedValue.replace(reThousandSeparator, "");
+			sConvertedValue = OpenHR.replaceAll(sConvertedValue, sThousandSeparator, "");
 			pctlPrompt.value = sConvertedValue;
 
 			// Convert any decimal separators to '.'.
-			if (frmPromptedValues.txtLocaleDecimalSeparator.value != ".") {
+			if (sDecimalSeparator != ".") {
 				// Remove decimal points.
 				sConvertedValue = sConvertedValue.replace(rePoint, "A");
 				// replace the locale decimal marker with the decimal point.
-				sConvertedValue = sConvertedValue.replace(reDecimalSeparator, ".");
+				sConvertedValue = OpenHR.replaceAll(sConvertedValue, sDecimalSeparator, ".");
 			}
 
 			if (isNaN(sConvertedValue) == true) {
@@ -480,7 +480,7 @@
 			fFound = false;
 			var controlCollection = frmPromptedValues.elements;
 			if (controlCollection != null) {
-				for (i = 0; i < controlCollection.length; i++) {
+				for (var i = 0; i < controlCollection.length; i++) {
 					if (controlCollection.item(i).name.toUpperCase() == sMaskCtlName) {
 						fFound = true;
 						break;
@@ -489,12 +489,12 @@
 			}
 
 			if (fFound == true) {
-				sMask = frmPromptedValues.elements(sMaskCtlName).value;
+				var sMask = frmPromptedValues.elements(sMaskCtlName).value;
 				sValue = pctlPrompt.value;
 				// Need to get rid of the backslash characters that precede literals.
 				// But remember that two backslashes give a literal backslash that does not want
 				// to be got rid of.
-				sTemp = sMask.replace(reDoubleBackSlash, "a");
+				var sTemp = sMask.replace(reDoubleBackSlash, "a");
 				sTemp = sTemp.replace(reBackSlash, "");
 				if (sMask.length > 0) {
 					if (sTemp.length != sValue.length) {
@@ -502,10 +502,10 @@
 					}
 					else {
 						// Prompt values length matches mask length, so now check each character.
-						fFollowingBackslash = false;
+						var fFollowingBackslash = false;
 						iIndex = 0;
 						for (i = 0; i < sMask.length; i++) {
-							sValueChar = sValue.substring(iIndex, iIndex + 1);
+							var sValueChar = sValue.substring(iIndex, iIndex + 1);
 
 							if (fFollowingBackslash == false) {
 								switch (sMask.substring(i, i + 1)) {
@@ -515,7 +515,7 @@
 										fOK = false;
 									}
 									else {
-										iNumber = new Number(sValueChar);
+										var iNumber = new Number(sValueChar);
 										if (isNaN(iNumber) == false) {
 											fOK = true;
 										}
@@ -626,6 +626,7 @@
 		var sValue;
 		var iLoop;
 
+		var frmPromptedValues = document.getElementById('frmPromptedValues');
 		sDateFormat = frmPromptedValues.txtLocaleDateFormat.value;
 
 		sDays = "";
@@ -710,7 +711,7 @@
 		}
 
 		if (sYears.length == 2) {
-			iValue = parseInt(sYears);
+			var iValue = parseInt(sYears);
 			if (iValue < 30) {
 				sTempValue = "20";
 			}
@@ -758,22 +759,25 @@
 	}
 
 	function checkboxClick(piPromptID) {
-		sSource = "prompt_3_" + piPromptID;
-		sDest = "promptChk_" + piPromptID;
-
+		var sSource = "prompt_3_" + piPromptID;
+		var sDest = "promptChk_" + piPromptID;
+		var frmPromptedValues = document.getElementById('frmPromptedValues');
+		
 		frmPromptedValues.elements.item(sDest).value = frmPromptedValues.elements.item(sSource).checked;
 	}
 
 	function comboChange(piPromptID) {
-		sSource = "promptLookup_" + piPromptID;
-		ctlSource = frmPromptedValues.elements.item(sSource);
+		var frmPromptedValues = document.getElementById('frmPromptedValues');
+		
+		var sSource = "promptLookup_" + piPromptID;
+		var ctlSource = frmPromptedValues.elements.item(sSource);
 
 		var controlCollection = frmPromptedValues.elements;
 		if (controlCollection != null) {
-			for (i = 0; i < controlCollection.length; i++) {
-				sControlName = controlCollection.item(i).name;
-				sControlPrefix = sControlName.substr(0, 7);
-				sControlID = sControlName.substr(9, sControlName.length);
+			for (var i = 0; i < controlCollection.length; i++) {
+				var sControlName = controlCollection.item(i).name;
+				var sControlPrefix = sControlName.substr(0, 7);
+				var sControlID = sControlName.substr(9, sControlName.length);
 
 				if ((sControlPrefix == "prompt_") && (sControlID == piPromptID)) {
 					controlCollection.item(i).value = ctlSource.options[ctlSource.selectedIndex].text;
