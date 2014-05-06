@@ -675,6 +675,10 @@
 			OpenHR.submitForm(frmMessage, "divPollMessage");
 		} catch (e) {
 		}
+	},
+	replaceAll = function (string, searchValue, newValue) {
+		if ((searchValue.length == 0) || (string.length == 0)) return string;
+		return string.split(searchValue).join(newValue);
 	};
 
 	window.OpenHR = {
@@ -714,7 +718,8 @@
 		CheckForMessages: checkForMessages,
 		SessionTimeout: sessionTimeout,
 		printDiv: printDiv,
-		nullsafeString: nullsafeString
+		nullsafeString: nullsafeString,
+		replaceAll: replaceAll
 	};
 
 })(window, jQuery);

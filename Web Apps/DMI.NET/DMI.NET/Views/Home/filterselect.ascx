@@ -8,7 +8,7 @@
 	classid="clsid:5220cb21-c88d-11cf-b347-00aa00a28331"
 	id="Microsoft_Licensed_Class_Manager_1_0"
 	viewastext>
-	<param name="LPKPath" value="lpks/main.lpk">
+	<param name="LPKPath" value="<%:Url.Content("~/lpks/ssmain.lpk")%>">
 </object>
 
 <script type="text/javascript">
@@ -240,7 +240,6 @@
 		var sFilterSQL;
 		var sSubFilterSQL;
 		var iIndex;
-		var reSpace;
 		var iColumnID;
 		var iOperatorID;
 		var fOK;
@@ -253,14 +252,12 @@
 
 		// Create some regular expressions to be used when replacing characters 
 		// in the filter string later on.
-		sDecimalSeparator = "\\";
+		sDecimalSeparator = "";
 		sDecimalSeparator = '<%:LocaleDecimalSeparator()%>';
-		var reDecimalSeparator = new RegExp(sDecimalSeparator, "gi");
 
-		reSpace = / /gi;
-		var reApostrophe = new RegExp("\\'", "gi");
-		var reStar = new RegExp("\\*", "gi");
-		var reQuestion = new RegExp("\\?", "gi");
+		var sApostrophe = "'";
+		var sStar = "*";
+		var sQuestion = "?";
 
 		sFilterSQL = "";
 		sFilterDef = "";
@@ -275,7 +272,7 @@
 		for (iIndex = 1; iIndex <= frmFilterForm.ssOleDBGridFilterRecords.rows; iIndex++) {
 			// Get the column name & id and the value used in the filter operation.
 			sColumnName = frmFilterForm.ssOleDBGridFilterRecords.Columns(0).value;
-			sColumnName = sColumnName.replace(reSpace, "_");
+			sColumnName = OpenHR.replaceAll(sColumnName, " ", "_");
 			sColumnName = sRealSource.concat(sColumnName);
 
 			sValue = frmFilterForm.ssOleDBGridFilterRecords.Columns(2).value;
@@ -317,7 +314,7 @@
 				if ((iDataType == 2) || (iDataType == 4)) {
 					// Numeric/Integer column.
 					// Replace the locale decimal separator with '.' for SQL's benefit.
-					sFilterValue = sValue.replace(reDecimalSeparator, ".");
+					sFilterValue = OpenHR.replaceAll(sValue, sDecimalSeparator, ".");
 
 					if (iOperatorID == 1) {
 						// Equals.
@@ -495,9 +492,9 @@
 						}
 						else {
 							// Replace the standard * and ? characters with the SQL % and _ characters.
-							sModifiedFilterValue = sValue.replace(reApostrophe, "''");
-							sModifiedFilterValue = sModifiedFilterValue.replace(reStar, "%");
-							sModifiedFilterValue = sModifiedFilterValue.replace(reQuestion, "_");
+							sModifiedFilterValue = OpenHR.replaceAll(sValue, sApostrophe, "''");
+							sModifiedFilterValue = OpenHR.replaceAll(sModifiedFilterValue, sStar, "%");
+							sModifiedFilterValue = OpenHR.replaceAll(sModifiedFilterValue, sQuestion, "_");
 
 							sSubFilterSQL = sColumnName.concat(" LIKE '");
 							sSubFilterSQL = sSubFilterSQL.concat(sModifiedFilterValue);
@@ -514,9 +511,9 @@
 						}
 						else {
 							// Replace the standard * and ? characters with the SQL % and _ characters.
-							sModifiedFilterValue = sValue.replace(reApostrophe, "''");
-							sModifiedFilterValue = sModifiedFilterValue.replace(reStar, "%");
-							sModifiedFilterValue = sModifiedFilterValue.replace(reQuestion, "_");
+							sModifiedFilterValue = OpenHR.replaceAll(sValue, sApostrophe, "''");
+							sModifiedFilterValue = OpenHR.replaceAll(sModifiedFilterValue, sStar, "%");
+							sModifiedFilterValue = OpenHR.replaceAll(sModifiedFilterValue, sQuestion, "_");
 
 							sSubFilterSQL = sColumnName.concat(" NOT LIKE '");
 							sSubFilterSQL = sSubFilterSQL.concat(sModifiedFilterValue);
@@ -533,7 +530,7 @@
 						}
 						else {
 							// Replace the standard * and ? characters with the SQL % and _ characters.
-							sModifiedFilterValue = sValue.replace(reApostrophe, "''");
+							sModifiedFilterValue = OpenHR.replaceAll(sValue, sApostrophe, "''");
 
 							sSubFilterSQL = sColumnName.concat(" LIKE '%");
 							sSubFilterSQL = sSubFilterSQL.concat(sModifiedFilterValue);
@@ -550,7 +547,7 @@
 						}
 						else {
 							// Replace the standard * and ? characters with the SQL % and _ characters.
-							sModifiedFilterValue = sValue.replace(reApostrophe, "''");
+							sModifiedFilterValue = OpenHR.replaceAll(sValue, sApostrophe, "''");
 
 							sSubFilterSQL = sColumnName.concat(" NOT LIKE '%");
 							sSubFilterSQL = sSubFilterSQL.concat(sModifiedFilterValue);
@@ -669,16 +666,9 @@
 		var fSizeFound;
 		var fDecimalsFound;
 
-		sDecimalSeparator = "\\";
-		sDecimalSeparator = sDecimalSeparator.concat('<%:LocaleDecimalSeparator()%>');
-		var reDecimalSeparator = new RegExp(sDecimalSeparator, "gi");
-
-		sThousandSeparator = "\\";
-		sThousandSeparator = sThousandSeparator.concat('<%:LocaleThousandSeparator()%>');
-		var reThousandSeparator = new RegExp(sThousandSeparator, "gi");
-
-		sPoint = "\\.";
-		var rePoint = new RegExp(sPoint, "gi");
+		sDecimalSeparator = '<%:LocaleDecimalSeparator()%>';
+		sThousandSeparator = '<%:LocaleThousandSeparator()%>';		
+		sPoint = ".";
 
 		fOK = false;
 
@@ -754,15 +744,15 @@
 				// Convert the value from locale to UK settings for use with the isNaN funtion.
 				sConvertedValue = new String(sValue);
 				// Remove any thousand separators.
-				sConvertedValue = sConvertedValue.replace(reThousandSeparator, "");
+				sConvertedValue = OpenHR.replaceAll(sConvertedValue, sThousandSeparator, "");
 				sValue = sConvertedValue;
 
 				// Convert any decimal separators to '.'.
 				if ('<%:LocaleDecimalSeparator()%>' != ".") {
 					// Existing decimal points are invalid characters.
-					sConvertedValue = sConvertedValue.replace(rePoint, "A");
-					// Replace the locale decimal marker with the decimal point.
-					sConvertedValue = sConvertedValue.replace(reDecimalSeparator, ".");
+					sConvertedValue = OpenHR.replaceAll(sConvertedValue, sPoint, "A");
+					// Replace the locale decimal marker with the decimal point.										
+					sConvertedValue = OpenHR.replaceAll(sConvertedValue, sDecimalSeparator, ".");
 				}
 
 				if (isNaN(sConvertedValue) == true) {
