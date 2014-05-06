@@ -3531,7 +3531,7 @@ TidyUpAndExit:
 					End If
 
 					If rsIDs.Rows.Count = 0 Then
-						mstrErrorString = "The base table filter returned no records"
+						mstrErrorString = "The base table filter returned no records."
 						Logs.ChangeHeaderStatus(EventLog_Status.elsSuccessful)
 						Logs.AddDetailEntry(mstrErrorString)
 						mblnNoRecords = True
