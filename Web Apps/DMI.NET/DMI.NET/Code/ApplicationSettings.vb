@@ -64,21 +64,6 @@ Namespace Code
 				Return ConfigurationManager.AppSettings("AdminRequiresIE")
 			End Get
 		End Property
-		Public Shared ReadOnly Property SMTP_From As String
-			Get
-				Return ConfigurationManager.AppSettings("SMTP_From")
-			End Get
-		End Property
-		Public Shared ReadOnly Property SMTP_Host As String
-			Get
-				Return ConfigurationManager.AppSettings("SMTP_Host")
-			End Get
-		End Property
-		Public Shared ReadOnly Property SMTP_Port As Integer
-			Get
-				Return CInt(ConfigurationManager.AppSettings("SMTP_Port"))
-			End Get
-		End Property
 		Public Shared ReadOnly Property MailMerge_From As String
 			Get
 				Return ConfigurationManager.AppSettings("MailMerge_From")

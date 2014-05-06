@@ -14,9 +14,5 @@
 	<add key="UI_Banner_Colour" value="" />
 	<add key="UI_Banner_Justification" value="" />
 	<add key="AdminRequiresIE" value="true" />
-	<add key="SMTP_From" value="" />
-	<add key="SMTP_Host" value="" />
-	<!-- Default SMTP port is 25 -->
-	<add key="SMTP_Port" value="25" />
 	<add key="MailMerge_From" value="todo@company.com"/>
 </appSettings>
