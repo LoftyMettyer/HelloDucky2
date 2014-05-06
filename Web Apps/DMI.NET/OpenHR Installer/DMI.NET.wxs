@@ -3514,6 +3514,9 @@
                     <Component Id="cmp7373456242E6EB497F6A9BEF12EDE679" Guid="*">
                         <File Id="fil6D299BA485D7A53C3BDA299F567F4226" KeyPath="yes" Source="SourceDir\Scripts\jquery\jquery-ui-1.9.2.custom.js" />
                     </Component>
+                    <Component Id="cmp5DC04B114CEE419A4779B6DE4437D86E" Guid="*">
+                        <File Id="fil68653648A10463F849E94C015F2E52C8" KeyPath="yes" Source="SourceDir\Scripts\jquery\jquery-ui-i18n.js" />
+                    </Component>
                     <Component Id="cmp23C771E32F822F8104B93FD962AF817B" Guid="*">
                         <File Id="filD5AA05C36C6F85876D5CA944DF66C0CC" KeyPath="yes" Source="SourceDir\Scripts\jquery\jquery.cookie.js" />
                     </Component>
@@ -4506,9 +4509,6 @@
                         <File Id="fil738FF8AD811D71F27C1D717719074525" KeyPath="yes" Source="SourceDir\Views\Shared\_Banner.ascx" />
                     </Component>
                     <Directory Id="dir0F2F7AD5EE60C97ED958B6C878A34677" Name="Util_Def_CustomReports">
-                        <Component Id="cmp748E8019132CB05017DB3466A620553C" Guid="*">
-                            <File Id="fil0BCDEE05EC2335A7CF5B17FA6ABD196F" KeyPath="yes" Source="SourceDir\Views\Shared\Util_Def_CustomReports\dialog.ascx" />
-                        </Component>
                         <Component Id="cmp4CF3B3E20CB2085C91E2BBE5B44AC0CA" Guid="*">
                             <File Id="filBD2DA8E2770E1A5961A07FBB61D4FCD4" KeyPath="yes" Source="SourceDir\Views\Shared\Util_Def_CustomReports\grdaccess.ascx" />
                         </Component>
@@ -5659,6 +5659,7 @@
             <ComponentRef Id="cmp9CDB8C6A62B74BAC0E54BBBE13358F7D" />
             <ComponentRef Id="cmp8A185A36F728B24139E0877096A98F63" />
             <ComponentRef Id="cmp7373456242E6EB497F6A9BEF12EDE679" />
+            <ComponentRef Id="cmp5DC04B114CEE419A4779B6DE4437D86E" />
             <ComponentRef Id="cmp23C771E32F822F8104B93FD962AF817B" />
             <ComponentRef Id="cmpE782E0AD6DBD09F44EB15BC5A3AD379A" />
             <ComponentRef Id="cmp97A3B1185F6440CB633A84875303429F" />
@@ -5978,7 +5979,6 @@
             <ComponentRef Id="cmp34FC75B786E04B3A89A6F4ACEFC5A069" />
             <ComponentRef Id="cmpFDDE3D6D07FB231F25F7D52440073411" />
             <ComponentRef Id="cmp05C3916BD6B0E0E3B3CF947C9ED34DB4" />
-            <ComponentRef Id="cmp748E8019132CB05017DB3466A620553C" />
             <ComponentRef Id="cmp4CF3B3E20CB2085C91E2BBE5B44AC0CA" />
             <ComponentRef Id="cmpBB73318A16A367514171EC1D9B0204C2" />
             <ComponentRef Id="cmp9916C2233C74F59F206DB63D9D3A98D5" />

@@ -83667,7 +83667,7 @@ GO
 GRANT EXEC ON TYPE::[dbo].[DataPermissions] TO ASRSysGroup
 
 
-DECLARE @sVersion varchar(10) = '8.0.32'
+DECLARE @sVersion varchar(10) = '8.0.33'
 
 EXEC spsys_setsystemsetting 'database', 'version', '8.0';
 EXEC spsys_setsystemsetting 'intranet', 'version', @sVersion;
