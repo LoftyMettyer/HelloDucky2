@@ -2806,8 +2806,9 @@ Namespace Controllers
 					SendMailWithAttachment(strEmailSubject, objDocument, sEmailAddresses, strEmailAttachAs)
 				Catch ex As Exception
 					' error generated - return error
-					Response.AppendCookie(New HttpCookie("fileDownloadToken", downloadTokenValue)) ' marks the download as complete on the client		
 					Response.AppendCookie(New HttpCookie("fileDownloadErrors", ex.Message))	' marks the download as complete on the client		
+				Finally
+					Response.AppendCookie(New HttpCookie("fileDownloadToken", downloadTokenValue)) ' marks the download as complete on the client		
 				End Try
 
 			End If
@@ -3099,8 +3100,9 @@ Namespace Controllers
 					SendMailWithAttachment(strEmailSubject, objDocument, sEmailAddresses, strEmailAttachAs)
 				Catch ex As Exception
 					' error generated - return error
-					Response.AppendCookie(New HttpCookie("fileDownloadToken", downloadTokenValue)) ' marks the download as complete on the client		
 					Response.AppendCookie(New HttpCookie("fileDownloadErrors", ex.Message))	' marks the download as complete on the client		
+				Finally
+					Response.AppendCookie(New HttpCookie("fileDownloadToken", downloadTokenValue)) ' marks the download as complete on the client		
 				End Try
 			End If
 
@@ -3130,6 +3132,8 @@ Namespace Controllers
 					Response.AppendCookie(New HttpCookie("fileDownloadToken", downloadTokenValue)) ' marks the download as complete on the client		
 					Response.AppendCookie(New HttpCookie("fileDownloadErrors", "No output file was generated. Check your data."))	' marks the download as complete on the client		
 				End If
+			Else
+				Response.AppendCookie(New HttpCookie("fileDownloadToken", downloadTokenValue)) ' marks the download as complete on the client		
 			End If
 
 		End Function
@@ -3220,8 +3224,9 @@ Namespace Controllers
 					SendMailWithAttachment(strEmailSubject, objDocument, sEmailAddresses, strEmailAttachAs)
 				Catch ex As Exception
 					' error generated - return error
-					Response.AppendCookie(New HttpCookie("fileDownloadToken", downloadTokenValue)) ' marks the download as complete on the client		
 					Response.AppendCookie(New HttpCookie("fileDownloadErrors", ex.Message))	' marks the download as complete on the client		
+				Finally
+					Response.AppendCookie(New HttpCookie("fileDownloadToken", downloadTokenValue)) ' marks the download as complete on the client		
 				End Try
 
 			End If
