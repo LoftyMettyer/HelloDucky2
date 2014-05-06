@@ -88,9 +88,7 @@ Namespace Code
 
 				objTemplate.Position = 0
 
-				mailClient = New SmtpClient
-				mailClient.Host = ApplicationSettings.SMTP_Host
-				mailClient.Port = ApplicationSettings.SMTP_Port
+				mailClient = New SmtpClient	'Take SMTP settings from Web.config (i.e. SMTP settings defined for the website in IIS)
 
 				For Each objRow As DataRow In MergeData.Rows
 					doc = New Document(objTemplate)
