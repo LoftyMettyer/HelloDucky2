@@ -2804,6 +2804,7 @@ Namespace Controllers
 				Dim objDocument As New FileStream(ClientDLL.GeneratedFile, FileMode.Open)
 				Try
 					SendMailWithAttachment(strEmailSubject, objDocument, sEmailAddresses, strEmailAttachAs)
+					Response.AppendCookie(New HttpCookie("fileDownloadErrors", "Email sent successfully."))	' Send completion message	
 				Catch ex As Exception
 					' error generated - return error
 					Response.AppendCookie(New HttpCookie("fileDownloadErrors", ex.Message))	' marks the download as complete on the client		
@@ -3098,6 +3099,7 @@ Namespace Controllers
 				Dim objDocument As New FileStream(ClientDLL.GeneratedFile, FileMode.Open)
 				Try
 					SendMailWithAttachment(strEmailSubject, objDocument, sEmailAddresses, strEmailAttachAs)
+					Response.AppendCookie(New HttpCookie("fileDownloadErrors", "Email sent successfully."))	' Send completion message	
 				Catch ex As Exception
 					' error generated - return error
 					Response.AppendCookie(New HttpCookie("fileDownloadErrors", ex.Message))	' marks the download as complete on the client		
@@ -3109,7 +3111,7 @@ Namespace Controllers
 			' Download the file
 			If blnSavetoFile Or (Not blnSavetoFile And Not blnEmail) Then
 				If IO.File.Exists(ClientDLL.GeneratedFile) Then
-					Try						
+					Try
 						Dim fileInfo As FileInfo = New FileInfo(ClientDLL.GeneratedFile)
 						Response.ContentType = "application/octet-stream"
 						Response.Clear()
@@ -3222,6 +3224,7 @@ Namespace Controllers
 				Dim objDocument As New FileStream(objOutput.GeneratedFile, FileMode.Open)
 				Try
 					SendMailWithAttachment(strEmailSubject, objDocument, sEmailAddresses, strEmailAttachAs)
+					Response.AppendCookie(New HttpCookie("fileDownloadErrors", "Email sent successfully."))	' Send completion message	
 				Catch ex As Exception
 					' error generated - return error
 					Response.AppendCookie(New HttpCookie("fileDownloadErrors", ex.Message))	' marks the download as complete on the client		

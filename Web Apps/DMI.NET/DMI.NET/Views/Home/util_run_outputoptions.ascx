@@ -638,10 +638,8 @@
 		
 		//check for errors.
 		var cookieDownloadErrors = $.cookie('fileDownloadErrors');
-		if (cookieDownloadErrors.length > 0) {
-			$("#errorDialogTitle").text('Error generating output');
-			$("#errorDialogContentText").html(cookieDownloadErrors);
-			$("#errorDialog").dialog("open");
+		if (cookieDownloadErrors.length > 0) {			
+			alert(cookieDownloadErrors);			
 		}
 	}
 
