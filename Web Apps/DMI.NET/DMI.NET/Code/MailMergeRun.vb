@@ -118,7 +118,6 @@ Namespace Code
 					End If
 
 					message.Subject = EmailSubject
-					message.From = New MailAddress(ApplicationSettings.MailMerge_From, "OpenHR")
 
 					' TODO - Alter this to read with initial dataset - would speed up performance
 					strToEmail = objDatabase.GetEmailAddress(CInt(objRow("ID")), EmailCalculationID)

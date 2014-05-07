@@ -14,5 +14,4 @@
 	<add key="UI_Banner_Colour" value="" />
 	<add key="UI_Banner_Justification" value="" />
 	<add key="AdminRequiresIE" value="true" />
-	<add key="MailMerge_From" value="todo@company.com"/>
 </appSettings>

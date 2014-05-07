@@ -64,11 +64,6 @@ Namespace Code
 				Return ConfigurationManager.AppSettings("AdminRequiresIE")
 			End Get
 		End Property
-		Public Shared ReadOnly Property MailMerge_From As String
-			Get
-				Return ConfigurationManager.AppSettings("MailMerge_From")
-			End Get
-		End Property
 		Public Shared ReadOnly Property SessionTimeOutInMinutes As String
 			Get
 				Return ConfigurationManager.AppSettings("SessionTimeOutInMinutes")
