@@ -111,6 +111,9 @@ Namespace Models
 			Catch ex As SqlException
 
 				Select Case ex.Number
+					Case 2812
+						sErrorDescription = "The required setup for your organisation chart has not been completed."
+
 					Case 217
 						sErrorDescription = "There is a circular reference in your reporting structure."
 					Case Else
