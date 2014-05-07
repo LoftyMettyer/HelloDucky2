@@ -116,7 +116,11 @@
 					}
 				}
 						
-				return false;	
+				if (menu_isSSIMode()) {
+					setTimeout(function() { // Delay load of linksmain partial view
+						loadPartialView("linksMain", "Home", "workframe", null);
+					}, 100);
+				}
 			}
 		}
 		else {
