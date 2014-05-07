@@ -146,6 +146,9 @@
 			var splitFunc = 'resizedw(' + getCookie('Intranet_MenuWidth') + ')';
 			setTimeout(splitFunc, 50);
 		}
+
+		resetTimeout(); //Site.master function.
+
 	});
 	
 
