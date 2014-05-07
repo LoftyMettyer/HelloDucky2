@@ -392,16 +392,23 @@
 
 		}
 	
-		function GoBack() {
-			
+		function GoBack() {			
 			var hasChanged = menu_saveChanges("", true, false);
+
+			var linksMainParams = '';
+			linksMainParams += $('#txtRecEditTableID').val();
+			linksMainParams += '!';
+			linksMainParams += $('#txtRecEditViewID').val();
+			linksMainParams += '_';
+			linksMainParams += $('#txtCurrentRecordID').val();
+			
 			if (hasChanged == 6) { // 6 = No Change
-				loadPartialView("linksMain", "Home", "workframe", null);
+				loadPartialView("linksMain", "Home", "workframe", linksMainParams);
 				return false;
 			} else if (hasChanged == 0) { // 0 = Changed, allow prompted navigation.
 				OpenHR.modalPrompt("You have made changes. Click 'OK' to discard your changes, or 'Cancel' to continue editing.", 1, "Confirm").then(function (answer) {
 					if (answer == 1) { // OK
-						loadPartialView("linksMain", "Home", "workframe", null);
+						loadPartialView("linksMain", "Home", "workframe", linksMainParams);
 						return false;
 					} else {
 						return false;
