@@ -990,20 +990,12 @@ GO
 DROP PROCEDURE [dbo].[sp_ASRIntGetExprFunctionParameters]
 GO
 
-/****** Object:  StoredProcedure [dbo].[sp_ASRIntGetExprFilters]    Script Date: 23/07/2013 11:18:30 ******/
-DROP PROCEDURE [dbo].[sp_ASRIntGetExprFilters]
-GO
-
 /****** Object:  StoredProcedure [dbo].[sp_ASRIntGetExpressionDefinition]    Script Date: 23/07/2013 11:18:30 ******/
 DROP PROCEDURE [dbo].[sp_ASRIntGetExpressionDefinition]
 GO
 
 /****** Object:  StoredProcedure [dbo].[sp_ASRIntGetExprColumns]    Script Date: 23/07/2013 11:18:30 ******/
 DROP PROCEDURE [dbo].[sp_ASRIntGetExprColumns]
-GO
-
-/****** Object:  StoredProcedure [dbo].[sp_ASRIntGetExprCalcs]    Script Date: 23/07/2013 11:18:30 ******/
-DROP PROCEDURE [dbo].[sp_ASRIntGetExprCalcs]
 GO
 
 /****** Object:  StoredProcedure [dbo].[sp_ASRIntGetEmpIDFromTBID]    Script Date: 23/07/2013 11:18:30 ******/
@@ -7636,41 +7628,6 @@ BEGIN
 END
 GO
 
-/****** Object:  StoredProcedure [dbo].[sp_ASRIntGetExprCalcs]    Script Date: 23/07/2013 11:18:30 ******/
-SET ANSI_NULLS ON
-GO
-
-SET QUOTED_IDENTIFIER ON
-GO
-
-CREATE PROCEDURE [dbo].[sp_ASRIntGetExprCalcs] (
-	@piCurrentExprID	integer,
-	@piBaseTableID		integer
-)
-AS
-BEGIN
-
-	SET NOCOUNT ON;
-
-	/* Return a recordset of the calc definitions. */
-	DECLARE @sUserName	sysname;
-
-	SET @sUserName = SYSTEM_USER;
-
-	SELECT name + char(9) +
-		convert(varchar(255), exprID) + char(9) +
-		userName AS [definitionString],
-		[description]
-	FROM [dbo].[ASRSysExpressions]
-	WHERE exprID <> @piCurrentExprID
-		AND type = 10
-		AND tableID = @piBaseTableID
-		AND parentComponentID = 0
-		AND (Username = @sUserName OR access <> 'HD')
-	ORDER BY name;
-END
-GO
-
 /****** Object:  StoredProcedure [dbo].[sp_ASRIntGetExprColumns]    Script Date: 23/07/2013 11:18:30 ******/
 SET ANSI_NULLS ON
 GO
@@ -7996,41 +7953,6 @@ BEGIN
 	ORDER BY [id]';
 	
 	EXECUTE sp_EXecuteSQL @sExecString;
-END
-GO
-
-/****** Object:  StoredProcedure [dbo].[sp_ASRIntGetExprFilters]    Script Date: 23/07/2013 11:18:30 ******/
-SET ANSI_NULLS ON
-GO
-
-SET QUOTED_IDENTIFIER ON
-GO
-
-CREATE PROCEDURE [dbo].[sp_ASRIntGetExprFilters] (
-	@piCurrentExprID	integer,
-	@piBaseTableID		integer
-)
-AS
-BEGIN
-
-	SET NOCOUNT ON;
-
-	/* Return a recordset of the filter definitions. */
-	DECLARE @sUserName	sysname;
-
-	SET @sUserName = SYSTEM_USER;
-
-	SELECT name + char(9) +
-		convert(varchar(255), exprID) + char(9) +
-		userName AS [definitionString],
-		[description]
-	FROM [dbo].[ASRSysExpressions]
-	WHERE exprID <> @piCurrentExprID
-		AND type = 11
-		AND tableID = @piBaseTableID
-		AND parentComponentID = 0
-		AND (Username = @sUserName OR access <> 'HD')
-	ORDER BY name;
 END
 GO
 
@@ -53346,20 +53268,45 @@ BEGIN
 	SET NOCOUNT ON;
 
 	/* Return a recordset of the calc definitions. */
-	DECLARE @sUserName	sysname;
+	DECLARE	 @sUserName SYSNAME,
+			 @fSysSecMgr BIT,
+			 @sRoleName VARCHAR(255),
+			 @sActualUserName	VARCHAR(250),
+			 @iActualUserGroupID INTEGER
 
 	SET @sUserName = SYSTEM_USER;
+	
+	--Determine if user is an admin
+	EXEC [dbo].[spASRIntGetActualUserDetails]
+			@sActualUserName OUTPUT,
+			@sRoleName OUTPUT,
+			@iActualUserGroupID OUTPUT;
 
-	SELECT name + char(9) +
+	SELECT @fSysSecMgr = 
+			CASE
+				WHEN (SELECT count(*)
+					FROM ASRSysGroupPermissions
+					INNER JOIN ASRSysPermissionItems ON (ASRSysGroupPermissions.itemID  = ASRSysPermissionItems.itemID
+						AND (ASRSysPermissionItems.itemKey = 'SYSTEMMANAGER'
+						OR ASRSysPermissionItems.itemKey = 'SECURITYMANAGER'))
+					INNER JOIN ASRSysPermissionCategories ON (ASRSysPermissionItems.categoryID = ASRSysPermissionCategories.categoryID
+						AND ASRSysPermissionCategories.categoryKey = 'MODULEACCESS')
+					WHERE ASRSysGroupPermissions.groupname = @sRoleName
+						AND ASRSysGroupPermissions.permitted = 1) > 0 THEN 1
+				ELSE 0
+			END;
+
+
+	SELECT Name + char(9) +
 		convert(varchar(255), exprID) + char(9) +
 		userName AS [definitionString],
-		[description]
+		[Description]
 	FROM [dbo].[ASRSysExpressions]
-	WHERE exprID <> @piCurrentExprID
-		AND type = 10
-		AND tableID = @piBaseTableID
+	WHERE ExprID <> @piCurrentExprID
+		AND Type = 10
+		AND TableID = @piBaseTableID
 		AND parentComponentID = 0
-		AND (Username = @sUserName OR access <> 'HD')
+		AND (Username = @sUserName OR access <> 'HD' OR @fSysSecMgr = 1)
 	ORDER BY name;
 END
 
@@ -53688,9 +53635,33 @@ BEGIN
 	SET NOCOUNT ON;
 
 	/* Return a recordset of the filter definitions. */
-	DECLARE @sUserName	sysname;
+	DECLARE	 @sUserName SYSNAME,
+			 @fSysSecMgr BIT,
+			 @sRoleName VARCHAR(255),
+			 @sActualUserName	VARCHAR(250),
+			 @iActualUserGroupID INTEGER
 
 	SET @sUserName = SYSTEM_USER;
+	
+	--Determine if user is an admin
+	EXEC [dbo].[spASRIntGetActualUserDetails]
+			@sActualUserName OUTPUT,
+			@sRoleName OUTPUT,
+			@iActualUserGroupID OUTPUT;
+
+	SELECT @fSysSecMgr = 
+			CASE
+				WHEN (SELECT count(*)
+					FROM ASRSysGroupPermissions
+					INNER JOIN ASRSysPermissionItems ON (ASRSysGroupPermissions.itemID  = ASRSysPermissionItems.itemID
+						AND (ASRSysPermissionItems.itemKey = 'SYSTEMMANAGER'
+						OR ASRSysPermissionItems.itemKey = 'SECURITYMANAGER'))
+					INNER JOIN ASRSysPermissionCategories ON (ASRSysPermissionItems.categoryID = ASRSysPermissionCategories.categoryID
+						AND ASRSysPermissionCategories.categoryKey = 'MODULEACCESS')
+					WHERE ASRSysGroupPermissions.groupname = @sRoleName
+						AND ASRSysGroupPermissions.permitted = 1) > 0 THEN 1
+				ELSE 0
+			END;
 
 	SELECT name + char(9) +
 		convert(varchar(255), exprID) + char(9) +
@@ -53699,9 +53670,9 @@ BEGIN
 	FROM [dbo].[ASRSysExpressions]
 	WHERE exprID <> @piCurrentExprID
 		AND type = 11
-		AND tableID = @piBaseTableID
+		AND TableID = @piBaseTableID
 		AND parentComponentID = 0
-		AND (Username = @sUserName OR access <> 'HD')
+		AND (Username = @sUserName OR access <> 'HD' OR @fSysSecMgr = 1)
 	ORDER BY name;
 END
 
