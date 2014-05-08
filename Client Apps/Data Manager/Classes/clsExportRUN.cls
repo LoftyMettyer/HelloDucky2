@@ -653,8 +653,7 @@ Private Function GetExportDefinition() As Boolean
     mstrXMLDataNodeName = IIf(IsNull(!XMLDataNodeName), vbNullString, !XMLDataNodeName)
     
     If mlngOutputFormat = fmtXML Then
-      mstrExportHeaderText = IIf(Len(mstrExportHeaderText) = 0, "<body>", !HeaderText)
-      mstrExportFooterText = IIf(Len(mstrExportFooterText) = 0, "</body>", !FooterText)
+      mstrExportHeaderText = IIf(Len(mstrExportHeaderText) = 0, "root", mstrExportHeaderText)
       mstrXMLDataNodeName = IIf(Len(mstrXMLDataNodeName) = 0, mstrExportBaseTableName, mstrXMLDataNodeName)
     End If
    
@@ -2537,7 +2536,7 @@ Private Function ExportData_XML() As Boolean
   Dim prstReadyToExport As Recordset
   Dim rstConverted As Recordset
   
-  Set prstReadyToExport = mclsData.OpenRecordset("SELECT CAST((SELECT * FROM [" & mstrTempTableName & "] FOR XML PATH('" & mstrXMLDataNodeName & "'), ELEMENTS XSINIL) AS VARCHAR(MAX)) AS XmlData", adOpenForwardOnly, adLockReadOnly)
+  Set prstReadyToExport = mclsData.OpenRecordset("SELECT CAST((SELECT * FROM [" & mstrTempTableName & "] FOR XML PATH('" & mstrXMLDataNodeName & "'), ROOT('" & mstrExportHeaderText & "'), ELEMENTS XSINIL) AS VARCHAR(MAX)) AS XmlData", adOpenForwardOnly, adLockReadOnly)
 
   If (prstReadyToExport.BOF And prstReadyToExport.EOF) Then
     mstrErrorString = "No records to export."
@@ -2556,7 +2555,7 @@ Private Function ExportData_XML() As Boolean
       sExportText = PrettyPrintXml(rstConverted(0).Value)
     Else
       sExportText = prstReadyToExport(0).Value
-      sExportText = PrettyPrintXml(mstrExportHeaderText & sExportText & mstrExportFooterText)
+      sExportText = PrettyPrintXml(sExportText)
     End If
 
 

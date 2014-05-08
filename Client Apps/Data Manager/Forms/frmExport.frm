@@ -57,7 +57,7 @@ Begin VB.Form frmExport
       _Version        =   393216
       Style           =   1
       Tabs            =   6
-      Tab             =   2
+      Tab             =   4
       TabsPerRow      =   6
       TabHeight       =   520
       BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
@@ -72,21 +72,20 @@ Begin VB.Form frmExport
       TabCaption(0)   =   "&Definition"
       TabPicture(0)   =   "frmExport.frx":000C
       Tab(0).ControlEnabled=   0   'False
-      Tab(0).Control(0)=   "fraBase"
-      Tab(0).Control(1)=   "fraInformation"
+      Tab(0).Control(0)=   "fraInformation"
+      Tab(0).Control(1)=   "fraBase"
       Tab(0).ControlCount=   2
       TabCaption(1)   =   "Related &Tables"
       TabPicture(1)   =   "frmExport.frx":0028
       Tab(1).ControlEnabled=   0   'False
-      Tab(1).Control(0)=   "fraParent1"
+      Tab(1).Control(0)=   "fraChild"
       Tab(1).Control(1)=   "fraParent2"
-      Tab(1).Control(2)=   "fraChild"
+      Tab(1).Control(2)=   "fraParent1"
       Tab(1).ControlCount=   3
       TabCaption(2)   =   "Colu&mns"
       TabPicture(2)   =   "frmExport.frx":0044
-      Tab(2).ControlEnabled=   -1  'True
+      Tab(2).ControlEnabled=   0   'False
       Tab(2).Control(0)=   "fraColumns"
-      Tab(2).Control(0).Enabled=   0   'False
       Tab(2).ControlCount=   1
       TabCaption(3)   =   "&Sort Order"
       TabPicture(3)   =   "frmExport.frx":0060
@@ -95,18 +94,20 @@ Begin VB.Form frmExport
       Tab(3).ControlCount=   1
       TabCaption(4)   =   "O&ptions"
       TabPicture(4)   =   "frmExport.frx":007C
-      Tab(4).ControlEnabled=   0   'False
+      Tab(4).ControlEnabled=   -1  'True
       Tab(4).Control(0)=   "fraDateOptions"
+      Tab(4).Control(0).Enabled=   0   'False
       Tab(4).Control(1)=   "fraHeaderOptions"
+      Tab(4).Control(1).Enabled=   0   'False
       Tab(4).ControlCount=   2
       TabCaption(5)   =   "O&utput"
       TabPicture(5)   =   "frmExport.frx":0098
       Tab(5).ControlEnabled=   0   'False
-      Tab(5).Control(0)=   "fraDelimFile"
-      Tab(5).Control(1)=   "fraCMGFile"
+      Tab(5).Control(0)=   "fraXML"
+      Tab(5).Control(1)=   "fraOutputType"
       Tab(5).Control(2)=   "fraOutputDestination"
-      Tab(5).Control(3)=   "fraOutputType"
-      Tab(5).Control(4)=   "fraXML"
+      Tab(5).Control(3)=   "fraCMGFile"
+      Tab(5).Control(4)=   "fraDelimFile"
       Tab(5).ControlCount=   5
       Begin VB.Frame fraXML 
          Caption         =   "XML Options :"
@@ -610,7 +611,7 @@ Begin VB.Form frmExport
       Begin VB.Frame fraHeaderOptions 
          Caption         =   "Header && Footer :"
          Height          =   2085
-         Left            =   -74850
+         Left            =   150
          TabIndex        =   64
          Top             =   405
          Width           =   9180
@@ -673,7 +674,7 @@ Begin VB.Form frmExport
             Left            =   195
             TabIndex        =   69
             Top             =   1155
-            Width           =   915
+            Width           =   1170
          End
          Begin VB.Label lblHeaderLine 
             AutoSize        =   -1  'True
@@ -682,7 +683,7 @@ Begin VB.Form frmExport
             Left            =   195
             TabIndex        =   65
             Top             =   360
-            Width           =   960
+            Width           =   1230
          End
          Begin VB.Label Label1 
             AutoSize        =   -1  'True
@@ -690,23 +691,23 @@ Begin VB.Form frmExport
             Height          =   195
             Left            =   195
             TabIndex        =   67
-            Top             =   760
-            Width           =   1215
+            Top             =   765
+            Width           =   1485
          End
-         Begin VB.Label Label2 
+         Begin VB.Label lblCustomFooter 
             AutoSize        =   -1  'True
             Caption         =   "Custom Footer :"
             Height          =   195
             Left            =   195
             TabIndex        =   71
             Top             =   1560
-            Width           =   1170
+            Width           =   1425
          End
       End
       Begin VB.Frame fraDateOptions 
          Caption         =   "Date Format :"
          Height          =   2450
-         Left            =   -74850
+         Left            =   150
          TabIndex        =   75
          Top             =   2520
          Width           =   9180
@@ -774,7 +775,7 @@ Begin VB.Form frmExport
       Begin VB.Frame fraColumns 
          Caption         =   "Columns :"
          Height          =   4560
-         Left            =   150
+         Left            =   -74850
          TabIndex        =   47
          Top             =   405
          Width           =   9180
@@ -850,9 +851,9 @@ Begin VB.Form frmExport
             RecordSelectors =   0   'False
             Col.Count       =   11
             stylesets.count =   5
-            stylesets(0).Name=   "ssetSelected"
-            stylesets(0).ForeColor=   -2147483634
-            stylesets(0).BackColor=   -2147483635
+            stylesets(0).Name=   "ssetHeaderDisabled"
+            stylesets(0).ForeColor=   -2147483631
+            stylesets(0).BackColor=   -2147483633
             stylesets(0).HasFont=   -1  'True
             BeginProperty stylesets(0).Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
                Name            =   "Verdana"
@@ -864,9 +865,9 @@ Begin VB.Form frmExport
                Strikethrough   =   0   'False
             EndProperty
             stylesets(0).Picture=   "frmExport.frx":01BF
-            stylesets(1).Name=   "ssetHeaderDisabled"
-            stylesets(1).ForeColor=   -2147483631
-            stylesets(1).BackColor=   -2147483633
+            stylesets(1).Name=   "ssetSelected"
+            stylesets(1).ForeColor=   -2147483634
+            stylesets(1).BackColor=   -2147483635
             stylesets(1).HasFont=   -1  'True
             BeginProperty stylesets(1).Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
                Name            =   "Verdana"
@@ -1800,7 +1801,7 @@ Public Property Let FormPrint(ByVal bPrint As Boolean)
 End Property
 
 Public Property Get Changed() As Boolean
-  Changed = cmdOk.Enabled
+  Changed = cmdOK.Enabled
 End Property
 Private Sub ForceAccess(Optional pvAccess As Variant)
   Dim iLoop As Integer
@@ -1840,7 +1841,7 @@ End Sub
 
 
 Public Property Let Changed(ByVal pblnChanged As Boolean)
-  cmdOk.Enabled = pblnChanged
+  cmdOK.Enabled = pblnChanged
 End Property
 
 Public Property Get SelectedID() As Long
@@ -2391,7 +2392,7 @@ Private Sub cmdTransformFile_Click()
     
   With cd1
     .Filter = "XSLT File (*.xslt)|*.xslt"
-    .FileName = txtTransformFile.Text
+    .filename = txtTransformFile.Text
     If txtTransformFile.Text = vbNullString Then
       .InitDir = gsDocumentsPath
     End If
@@ -2402,11 +2403,11 @@ Private Sub cmdTransformFile_Click()
         
     .ShowSave
 
-    If .FileName <> vbNullString Then
-      If Len(.FileName) > 255 Then
+    If .filename <> vbNullString Then
+      If Len(.filename) > 255 Then
         COAMsgBox "Path and file name must not exceed 255 characters in length", vbExclamation, Me.Caption
       Else
-        txtTransformFile.Text = .FileName    'activates the change event
+        txtTransformFile.Text = .filename    'activates the change event
       End If
     End If
   End With
@@ -2573,8 +2574,8 @@ End Sub
 Private Sub cboHeaderOptions_Click()
   With txtCustomHeader
     .Text = vbNullString
-    .Enabled = (cboHeaderOptions.ListIndex = 2) 'Visible if custom header selected
-    .BackColor = IIf(cboHeaderOptions.ListIndex = 2, vbWindowBackground, vbButtonFace)
+    .Enabled = (cboHeaderOptions.ListIndex = 2)   'Visible if custom header selected
+    .BackColor = IIf(.Enabled, vbWindowBackground, vbButtonFace)
   End With
   CheckIfOmitHeaderEnabled
   Changed = True
@@ -4286,8 +4287,23 @@ Private Sub TextOptionsStatus(intFormat As Integer)
   EnableFrame fraXML, (intFormat = fmtXML)
   EnableControl txtTransformFile, False
       
-  EnableFrame fraHeaderOptions, (intFormat <> fmtXML)
+  If intFormat = fmtXML Then
+    EnableControl lblHeaderLine, False
+    EnableControl cboHeaderOptions, False
+    cboHeaderOptions.ListIndex = 2
+    EnableControl txtCustomHeader, True
+    EnableControl lblFooterLine, False
+    EnableControl cboFooterOptions, False
+    EnableControl lblCustomFooter, False
+    EnableControl txtCustomFooter, False
+    EnableControl chkOmitHeader, False
+    EnableControl chkForceHeader, False
+  Else
+    EnableFrame fraHeaderOptions, True
+  End If
+  
   EnableFrame fraDateOptions, (intFormat <> fmtXML)
+  
 
 End Sub
 
