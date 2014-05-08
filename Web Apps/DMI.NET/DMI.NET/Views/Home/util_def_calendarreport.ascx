@@ -1702,7 +1702,7 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 												</table>
 											</td>
 										<tr height="20">
-											<td colspan="5" class="ui-state-error-text">Note: In OpenHR Web Output Format is restricted to Excel. Existing files will be overwritten. Send to Printer is not supported.</td>
+											<td colspan="5" class="ui-state-error-text">Note: Options marked in red are unavailable in OpenHR Web.</td>
 										</tr>
 										</tr>
 									</table>

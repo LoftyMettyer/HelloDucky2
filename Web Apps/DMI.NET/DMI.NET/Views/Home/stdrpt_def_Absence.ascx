@@ -936,7 +936,7 @@
 							</tr>
 						</table>
 					<tr height="20">
-						<td colspan="5" class="ui-state-error-text">&nbsp;Note: In OpenHR Web Output Format is restricted to Excel. Existing files will be overwritten.</td>
+						<td colspan="5" class="ui-state-error-text">&nbsp;Note: Options marked in red are unavailable in OpenHR Web.</td>
 					</tr>
 					</td>
 				</tr>
