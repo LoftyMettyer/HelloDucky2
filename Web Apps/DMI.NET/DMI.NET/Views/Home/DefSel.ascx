@@ -948,7 +948,7 @@
 	
 																									Try
 
-																										For Each objTable In objSession.Tables
+																										For Each objTable In objSession.Tables.OrderBy(Function(t) t.Name) 'Order by table name
 																												
 																											Response.Write("						<option value=" & objTable.ID)
 																											If SelectedTableID Is Nothing Or SelectedTableID = "" Then
