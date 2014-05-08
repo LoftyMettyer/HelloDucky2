@@ -1476,8 +1476,8 @@
 		//add mousewheel scrollability to the main content window
 		if ('<%=session("isMobileDevice")%>' != "True") {
 		$(".DashContent").mousewheel(function (event, delta) {
-			this.scrollLeft -= (delta * 30);
-			event.preventDefault();
+			//this.scrollLeft -= (delta * 30);
+			//event.preventDefault();
 		});
 	} else {
 		$('.DashContent').css('overflow-x', 'auto');
@@ -1593,7 +1593,7 @@
 
 		// This replaces the big fat grey scrollbar with the nice thin dark one. (HRPRO-2952)
 		if (('<%=session("isMobileDevice")%>' !== "True") && (window.currentLayout == 'tiles')) {
-			setTimeout('$(".DashContent").mCustomScrollbar({ horizontalScroll: true, theme:"dark-thin" });', 500);
+			setTimeout('$(".DashContent").mCustomScrollbar({ horizontalScroll: true, theme:"dark-thin", autoHideScrollbar: true, scrollInertia: 150 });', 500);
 		} else {
 			$('.DashContent').attr('overflow', 'auto');
 		}
