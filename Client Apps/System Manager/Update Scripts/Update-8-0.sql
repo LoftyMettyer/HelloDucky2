@@ -165,14 +165,23 @@ IF NOT @DeleteJobID IS NULL
 /* ------------------------------------------------------- */
 PRINT 'Step - New functions'
 /* ------------------------------------------------------- */
-IF NOT EXISTS(SELECT functionid FROM ASRSysFunctions WHERE functionID = 78)
-BEGIN
-	INSERT ASRSysFunctions (FunctionID, functionName, returnType, timeDependent, category, spName, nonStandard, runtime, UDF)
-		VALUES (78, 'Last Run Date', 4, 0, 'Date/Time', '',0, 1, 0);
-	INSERT ASRSysFunctions (FunctionID, functionName, returnType, timeDependent, category, spName, nonStandard, runtime, UDF)
-		VALUES (79, 'Base Record ID', 2, 0, 'General', '',0, 1, 0);
-	INSERT ASRSysFunctions (FunctionID, functionName, returnType, timeDependent, category, spName, nonStandard, runtime, UDF)
-		VALUES (80, 'Create Exact Date', 4, 0, 'Date/Time', '',0, 1, 0);
+
+	IF NOT EXISTS(SELECT id FROM syscolumns WHERE  id = OBJECT_ID('ASRSysFunctions', 'U') AND name = 'ExcludeFromSysMgr')
+	BEGIN
+		EXEC sp_executesql N'ALTER TABLE ASRSysFunctions ADD ExcludeFromSysMgr bit NULL;';
+		EXEC sp_executesql N'UPDATE ASRSysFunctions SET ExcludeFromSysMgr = 0;';
+
+	END
+
+	DELETE FROM ASRSysFunctions WHERE functionID IN (78, 79, 80)
+	DELETE FROM ASRSysFunctionParameters WHERE functionID IN (78, 79, 80)
+
+	EXEC sp_executesql N'INSERT ASRSysFunctions (FunctionID, functionName, returnType, timeDependent, category, spName, nonStandard, runtime, UDF, ExcludeFromSysMgr)
+		VALUES (78, ''Last Run Date'', 4, 0, ''Date/Time'', '''',0, 1, 0, 1);'
+	EXEC sp_executesql N'INSERT ASRSysFunctions (FunctionID, functionName, returnType, timeDependent, category, spName, nonStandard, runtime, UDF, ExcludeFromSysMgr)
+		VALUES (79, ''Base Record ID'', 2, 0, ''General'', '''',0, 1, 0, 0);'
+	EXEC sp_executesql N'INSERT ASRSysFunctions (FunctionID, functionName, returnType, timeDependent, category, spName, nonStandard, runtime, UDF, ExcludeFromSysMgr)
+		VALUES (80, ''Create Exact Date'', 4, 0, ''Date/Time'', '''',0, 1, 0, 0);'
 	INSERT ASRSysFunctionParameters (functionID, parameterIndex, parameterType, parameterName)
 		VALUES (80, 1, 2, '<Day>');
 	INSERT ASRSysFunctionParameters (functionID, parameterIndex, parameterType, parameterName)
@@ -180,7 +189,6 @@ BEGIN
 	INSERT ASRSysFunctionParameters (functionID, parameterIndex, parameterType, parameterName)
 		VALUES (80, 3, 2, '<Year>');
 
-END
 
 	-- Parentheses
 	DELETE FROM tbstat_componentcode WHERE id IN (79, 80) AND isoperator = 0

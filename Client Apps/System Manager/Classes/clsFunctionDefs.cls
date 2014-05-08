@@ -168,7 +168,7 @@ Public Function Initialise()
   
   If Initialised Then Exit Function
   
-  rsFunctions.Open "ASRSysFunctions", gADOCon, adOpenDynamic, adLockReadOnly, adCmdTableDirect
+  rsFunctions.Open "SELECT * FROM ASRSysFunctions WHERE ExcludeFromSysMgr = 0", gADOCon, adOpenDynamic, adLockReadOnly
 
   With rsFunctions
     Do While Not .EOF
