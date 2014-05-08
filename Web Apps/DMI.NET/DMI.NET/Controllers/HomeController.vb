@@ -2749,12 +2749,12 @@ Namespace Controllers
 
 						ClientDLL.AddColumn(" ", 12, 0, False)
 						For intCount = 0 To objCrossTab.ColumnHeadingUbound(0)
-							ClientDLL.AddColumn(Left(objCrossTab.ColumnHeading(0, intCount), 255), 0, objCrossTab.IntersectionDecimals _
+							ClientDLL.AddColumn(Left(objCrossTab.ColumnHeading(0, intCount), 255), SQLDataType.sqlNumeric, objCrossTab.IntersectionDecimals _
 							, LCase(objCrossTab.Use1000Separator))
 						Next
 
 						strInterSectionType = Session("CT_IntersectionType")
-						ClientDLL.AddColumn(strInterSectionType, 0, objCrossTab.IntersectionDecimals, objCrossTab.Use1000Separator)
+						ClientDLL.AddColumn(strInterSectionType, SQLDataType.sqlNumeric, objCrossTab.IntersectionDecimals, objCrossTab.Use1000Separator)
 
 
 						If objCrossTab.PageBreakColumn = True Then
@@ -2941,7 +2941,7 @@ Namespace Controllers
 
 			ClientDLL.SizeColumnsIndependently = True
 
-			If lngOutputFormat = OutputFormats.fmtExcelGraph Then ClientDLL.SummaryReport = objReport.CustomReportsSummaryReport
+			If lngOutputFormat = OutputFormats.fmtExcelGraph Then ClientDLL.SummaryReport = objReport.CustomReportsSummaryReport Or objReport.IsBradfordReport
 
 			Dim sColHeading As String
 			Dim iColDataType As Integer

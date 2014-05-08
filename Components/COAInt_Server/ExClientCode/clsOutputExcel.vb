@@ -3,6 +3,7 @@ Option Explicit On
 
 Imports Aspose.Cells.Charts
 Imports System.Collections.Generic
+Imports Aspose.Cells.Drawing
 Imports HR.Intranet.Server.BaseClasses
 Imports HR.Intranet.Server.Enums
 Imports Aspose.Cells
@@ -62,6 +63,8 @@ Namespace ExClientCode
 		Const OfficeVersion As Integer = 12
 
 		Public IntersectionType As IntersectionType
+
+		Private _mcolColumns As List(Of Metadata.Column)
 
 		Public Sub ClearUp()
 
@@ -350,6 +353,8 @@ Namespace ExClientCode
 			Dim lngExcelCol As Integer
 			Dim lngExcelRow As Integer
 
+			_mcolColumns = colColumns
+
 			If _mstrErrorMessage <> vbNullString Then
 				Exit Sub
 			End If
@@ -466,7 +471,7 @@ Namespace ExClientCode
 				ApplyStyle(UBound(strArray, 1), UBound(strArray, 2), colStyles)
 				ApplyCellOptions(_mxlWorkSheet, colStyles, True)
 
-				CreateChart(_mlngDataCurrentRow + UBound(strArray, 2), _mlngDataStartCol + UBound(strArray, 1), colStyles)
+				CreateChart(UBound(strArray, 2), UBound(strArray, 1), colStyles)
 				ApplyCellOptions(_mxlWorkSheet, colStyles, False)
 
 				'Delete superfluous rows and cols if setup in User Config reports section
@@ -514,63 +519,58 @@ Namespace ExClientCode
 				mxlChartWorkSheet.Name = strSheetName
 				mxlChartWorkSheet.MoveTo(0)
 
-				Dim chartIndex As Integer = mxlChartWorkSheet.Charts.Add(ChartType.Bar, 0, 0, 30, 20)
+				Dim chartIndex As Integer = mxlChartWorkSheet.Charts.Add(ChartType.Column3DClustered, 0, 0, 30, 20)
 				Dim xlChart As Chart = mxlChartWorkSheet.Charts(chartIndex)
 				Dim xlData As Range
 				Dim xlCategories As Range
 
 				Const colTitleRowCount As Integer = 1
-				Dim summaryInfoColCount As Integer = 0
 
-				' Compute summary columns.
-				' summary report???
-				If _mxlWorkSheet.Cells(_mlngDataCurrentRow - 1, _mlngDataStartCol - 1).Value = "Summary Info" And Not SummaryReport Then summaryInfoColCount = 1
+				_mlngDataCurrentRow -= 1
 
 				Dim dataFirstRow As Integer = _mlngDataCurrentRow
-				Dim dataFirstCol As Integer = (_mlngDataStartCol - 1) + summaryInfoColCount
-				Dim dataRowCount As Integer = lngMaxRows - _mlngDataCurrentRow + colTitleRowCount
-				Dim dataColumnCount As Integer = (lngMaxCols - dataFirstCol) + summaryInfoColCount
+				Dim dataFirstCol As Integer = _mlngDataStartCol - 1
+				Dim dataRowCount As Integer = lngMaxRows + colTitleRowCount
+				Dim dataColumnCount As Integer = IIf(lngMaxCols < 1, 1, lngMaxCols)
 
-				If dataColumnCount <= dataFirstCol Then
-					' only one column in the report. Can't trim the values.
-					xlCategories = _mxlWorkSheet.Cells.CreateRange(dataFirstRow, dataFirstCol, dataRowCount - 1, 1)
-					xlCategories.Name = "xlCategories"
+				If SummaryReport Then
+
+					' some logic to add right most numeric columns
+					Dim bNumericFound As Boolean = False
+
+					dataFirstCol = 0
+					For Each objColumn In _mcolColumns
+						If objColumn.DataType = SQLDataType.sqlNumeric Or objColumn.DataType = SQLDataType.sqlInteger Then
+							bNumericFound = True
+							Exit For
+						End If
+
+						dataFirstCol += 1
+					Next
+
+					xlCategories = _mxlWorkSheet.Cells.CreateRange(dataFirstRow + 1, 1, dataRowCount - 1, dataFirstCol)
+					xlData = _mxlWorkSheet.Cells.CreateRange(dataFirstRow + 1, dataFirstCol + 1, dataRowCount - 1, IIf(bNumericFound, _mcolColumns.Count() - dataFirstCol, 1))
+
 
 				Else
-					xlCategories = _mxlWorkSheet.Cells.CreateRange(dataFirstRow, dataFirstCol, dataRowCount - 1, dataColumnCount - dataFirstCol)
-					xlCategories.Name = "xlCategories"
-
+					xlCategories = _mxlWorkSheet.Cells.CreateRange(dataFirstRow + 1, dataFirstCol, dataRowCount - 1, 1)
+					xlData = _mxlWorkSheet.Cells.CreateRange(dataFirstRow + 1, dataFirstCol + 1, dataRowCount - 1, dataColumnCount)
 				End If
 
-
-				xlData = _mxlWorkSheet.Cells.CreateRange(dataFirstRow, dataColumnCount, dataRowCount - 1, 1)
+				xlCategories.Name = "xlCategories"
 				xlData.Name = "xlData"
 
 				With xlChart
-					.Type = ChartType.Column3DClustered
 
 					.NSeries.Add("=xlData", True)
 					.NSeries.CategoryData = "=xlCategories"
 
-					' Legend text
-					Try
-						Dim sLegendText As String = _mxlWorkSheet.Cells(dataFirstRow - 1, dataColumnCount).Value
-						.NSeries(0).Name = sLegendText
-					Catch ex As Exception
-
-					End Try
-
-
-					'Dim iSeries As Integer = dataFirstCol + dataColumnCount + 1
-					'For Each objSeries In .NSeries
-					'	objSeries.Name = String.Format("={0}{1}", NumberToExcelColumn(iSeries), _mlngDataCurrentRow - 1)
-					'	iSeries += 1
-					'Next
-
-					.NSeries(0).Area.FillFormat.Type = Drawing.FillType.Solid
-					Dim cc As CellsColor = .NSeries(0).Area.FillFormat.SolidFill.CellsColor
-					cc.ThemeColor = New ThemeColor(ThemeColorType.Accent6, 0.6)
-					.NSeries(0).Area.FillFormat.SolidFill.CellsColor = cc
+					Dim iSeries As Integer = dataFirstCol + 2
+					For Each objSeries In .NSeries
+						FormatSeries(iSeries, objSeries)
+						objSeries.Name = String.Format("={0}!{1}{2}", _mxlWorkSheet.Name, NumberToExcelColumn(iSeries), dataFirstRow + 1)
+						iSeries += 1
+					Next
 
 					.Title.Text = _mstrDefTitle
 					.Title.IsVisible = True
@@ -581,9 +581,15 @@ Namespace ExClientCode
 
 					.RightAngleAxes = False
 					.Perspective = 15
-					.Style = 2
+
+					.PlotArea.Area.ForegroundColor = Color.White
+					.ChartArea.Area.ForegroundColor = Color.White
+					.Walls.ForegroundColor = Color.White
+
 					.Calculate()
 
+					.PlotArea.Border.IsVisible = False
+					.ChartArea.Border.IsVisible = False
 
 				End With
 
@@ -593,6 +599,26 @@ Namespace ExClientCode
 			End Try
 
 		End Sub
+
+		Private Sub FormatSeries(iNumber As Integer, ByRef objSeries As Series)
+
+			objSeries.Shadow = True
+			objSeries.Smooth = True
+
+			Dim spPr As ShapePropertyCollection = objSeries.ShapeProperties
+			Dim fmt3d As Format3D = spPr.Format3D
+			Dim bevel As Bevel = fmt3d.TopBevel
+
+			bevel.Type = BevelPresetType.Circle
+			bevel.Height = 2
+			bevel.Width = 5
+
+			fmt3d.SurfaceMaterialType = PresetMaterialType.WarmMatte
+			fmt3d.SurfaceLightingType = LightRigType.ThreePoint
+			fmt3d.LightingAngle = 20
+
+		End Sub
+
 
 		Private Function CreatePivotTable(lngMaxRows As Integer, lngMaxCols As Integer, colColumns As List(Of Metadata.Column), colStyles As Collection) As Worksheet
 
