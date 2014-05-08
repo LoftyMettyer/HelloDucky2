@@ -57,7 +57,7 @@ Begin VB.Form frmExport
       _Version        =   393216
       Style           =   1
       Tabs            =   6
-      Tab             =   5
+      Tab             =   2
       TabsPerRow      =   6
       TabHeight       =   520
       BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
@@ -72,20 +72,21 @@ Begin VB.Form frmExport
       TabCaption(0)   =   "&Definition"
       TabPicture(0)   =   "frmExport.frx":000C
       Tab(0).ControlEnabled=   0   'False
-      Tab(0).Control(0)=   "fraInformation"
-      Tab(0).Control(1)=   "fraBase"
+      Tab(0).Control(0)=   "fraBase"
+      Tab(0).Control(1)=   "fraInformation"
       Tab(0).ControlCount=   2
       TabCaption(1)   =   "Related &Tables"
       TabPicture(1)   =   "frmExport.frx":0028
       Tab(1).ControlEnabled=   0   'False
-      Tab(1).Control(0)=   "fraChild"
+      Tab(1).Control(0)=   "fraParent1"
       Tab(1).Control(1)=   "fraParent2"
-      Tab(1).Control(2)=   "fraParent1"
+      Tab(1).Control(2)=   "fraChild"
       Tab(1).ControlCount=   3
       TabCaption(2)   =   "Colu&mns"
       TabPicture(2)   =   "frmExport.frx":0044
-      Tab(2).ControlEnabled=   0   'False
+      Tab(2).ControlEnabled=   -1  'True
       Tab(2).Control(0)=   "fraColumns"
+      Tab(2).Control(0).Enabled=   0   'False
       Tab(2).ControlCount=   1
       TabCaption(3)   =   "&Sort Order"
       TabPicture(3)   =   "frmExport.frx":0060
@@ -95,27 +96,22 @@ Begin VB.Form frmExport
       TabCaption(4)   =   "O&ptions"
       TabPicture(4)   =   "frmExport.frx":007C
       Tab(4).ControlEnabled=   0   'False
-      Tab(4).Control(0)=   "fraHeaderOptions"
-      Tab(4).Control(1)=   "fraDateOptions"
+      Tab(4).Control(0)=   "fraDateOptions"
+      Tab(4).Control(1)=   "fraHeaderOptions"
       Tab(4).ControlCount=   2
       TabCaption(5)   =   "O&utput"
       TabPicture(5)   =   "frmExport.frx":0098
-      Tab(5).ControlEnabled=   -1  'True
+      Tab(5).ControlEnabled=   0   'False
       Tab(5).Control(0)=   "fraDelimFile"
-      Tab(5).Control(0).Enabled=   0   'False
       Tab(5).Control(1)=   "fraCMGFile"
-      Tab(5).Control(1).Enabled=   0   'False
       Tab(5).Control(2)=   "fraOutputDestination"
-      Tab(5).Control(2).Enabled=   0   'False
       Tab(5).Control(3)=   "fraOutputType"
-      Tab(5).Control(3).Enabled=   0   'False
       Tab(5).Control(4)=   "fraXML"
-      Tab(5).Control(4).Enabled=   0   'False
       Tab(5).ControlCount=   5
       Begin VB.Frame fraXML 
          Caption         =   "XML Options :"
          Height          =   1410
-         Left            =   150
+         Left            =   -74850
          TabIndex        =   125
          Top             =   3580
          Width           =   9180
@@ -393,7 +389,7 @@ Begin VB.Form frmExport
       Begin VB.Frame fraOutputType 
          Caption         =   "Output Format :"
          Height          =   3135
-         Left            =   150
+         Left            =   -74850
          TabIndex        =   82
          Top             =   405
          Width           =   2400
@@ -457,7 +453,7 @@ Begin VB.Form frmExport
       Begin VB.Frame fraOutputDestination 
          Caption         =   "Output Destination(s) :"
          Height          =   3135
-         Left            =   2655
+         Left            =   -72345
          TabIndex        =   88
          Top             =   405
          Width           =   6675
@@ -778,7 +774,7 @@ Begin VB.Form frmExport
       Begin VB.Frame fraColumns 
          Caption         =   "Columns :"
          Height          =   4560
-         Left            =   -74850
+         Left            =   150
          TabIndex        =   47
          Top             =   405
          Width           =   9180
@@ -854,9 +850,9 @@ Begin VB.Form frmExport
             RecordSelectors =   0   'False
             Col.Count       =   11
             stylesets.count =   5
-            stylesets(0).Name=   "ssetHeaderDisabled"
-            stylesets(0).ForeColor=   -2147483631
-            stylesets(0).BackColor=   -2147483633
+            stylesets(0).Name=   "ssetSelected"
+            stylesets(0).ForeColor=   -2147483634
+            stylesets(0).BackColor=   -2147483635
             stylesets(0).HasFont=   -1  'True
             BeginProperty stylesets(0).Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
                Name            =   "Verdana"
@@ -868,9 +864,9 @@ Begin VB.Form frmExport
                Strikethrough   =   0   'False
             EndProperty
             stylesets(0).Picture=   "frmExport.frx":01BF
-            stylesets(1).Name=   "ssetSelected"
-            stylesets(1).ForeColor=   -2147483634
-            stylesets(1).BackColor=   -2147483635
+            stylesets(1).Name=   "ssetHeaderDisabled"
+            stylesets(1).ForeColor=   -2147483631
+            stylesets(1).BackColor=   -2147483633
             stylesets(1).HasFont=   -1  'True
             BeginProperty stylesets(1).Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
                Name            =   "Verdana"
@@ -1629,7 +1625,7 @@ Begin VB.Form frmExport
       Begin VB.Frame fraCMGFile 
          Caption         =   "CMG Options :"
          Height          =   1410
-         Left            =   150
+         Left            =   -74850
          TabIndex        =   109
          Top             =   3580
          Width           =   9180
@@ -1677,7 +1673,7 @@ Begin VB.Form frmExport
       Begin VB.Frame fraDelimFile 
          Caption         =   "Delimited File Options :"
          Height          =   1410
-         Left            =   150
+         Left            =   -74850
          TabIndex        =   103
          Top             =   3570
          Width           =   9180
@@ -2395,7 +2391,7 @@ Private Sub cmdTransformFile_Click()
     
   With cd1
     .Filter = "XSLT File (*.xslt)|*.xslt"
-    .filename = txtTransformFile.Text
+    .FileName = txtTransformFile.Text
     If txtTransformFile.Text = vbNullString Then
       .InitDir = gsDocumentsPath
     End If
@@ -2406,11 +2402,11 @@ Private Sub cmdTransformFile_Click()
         
     .ShowSave
 
-    If .filename <> vbNullString Then
-      If Len(.filename) > 255 Then
+    If .FileName <> vbNullString Then
+      If Len(.FileName) > 255 Then
         COAMsgBox "Path and file name must not exceed 255 characters in length", vbExclamation, Me.Caption
       Else
-        txtTransformFile.Text = .filename    'activates the change event
+        txtTransformFile.Text = .FileName    'activates the change event
       End If
     End If
   End With
@@ -2923,6 +2919,8 @@ Private Sub optOutputFormat_Click(Index As Integer)
   TextOptionsStatus Index
   ShowRelevantColumns
   
+  cmdAddAllColumns.Enabled = (Index <> fmtXML)
+  
   'Select Case Index
   'Case fmtCSV
   '  TextOptionsStatus "D"
@@ -3381,11 +3379,17 @@ Private Sub cmdNewColumn_Click()
   
   With pfrmColumnEdit
     
+    .IsXML = optOutputFormat(fmtXML).Value
+    
     .Initialise True, "", 0, 0, , , , Me, , , False, False, False
     
     'Initialise the edit column form for CMG options
     If optOutputFormat(fmtCMGFile).Value And mbCMGExportFieldCode Then
       .SetCMGOptions ("")
+    End If
+    
+    If optOutputFormat(fmtXML).Value Then
+      .SetXMLOptions
     End If
     
     .SetConvertCaseOptions (0)
@@ -3508,11 +3512,17 @@ Private Sub cmdEditColumn_Click()
       
     plngRow = .AddItemRowIndex(.Bookmark)
     
+    pfrmColumnEdit.IsXML = optOutputFormat(fmtXML).Value
+
     ' Pass in CMG Codes
     If optOutputFormat(fmtCMGFile).Value = True And mbCMGExportFieldCode Then
       pfrmColumnEdit.SetCMGOptions (Trim(.Columns("CMG Code").Value))
     End If
       
+    If optOutputFormat(fmtXML).Value Then
+      pfrmColumnEdit.SetXMLOptions
+    End If
+    
     Select Case .Columns("Type").Text
       
       Case "C":
@@ -4276,13 +4286,8 @@ Private Sub TextOptionsStatus(intFormat As Integer)
   EnableFrame fraXML, (intFormat = fmtXML)
   EnableControl txtTransformFile, False
       
-'  If mblnEnableSQLTable Then
-'    'fraSQLTable.Top = IIf(gbCMGEnabled, 2000, 1600)
-'    fraSQLTable.Visible = (intFormat = fmtSQLTable)
-'    fraOutputFilename.Visible = (intFormat <> fmtSQLTable)
-'    EnableFrame fraHeaderOptions, (intFormat <> fmtSQLTable)
-'    EnableFrame fraDateOptions, (intFormat <> fmtSQLTable)
-'  End If
+  EnableFrame fraHeaderOptions, (intFormat <> fmtXML)
+  EnableFrame fraDateOptions, (intFormat <> fmtXML)
 
 End Sub
 
@@ -7185,6 +7190,7 @@ Private Sub ShowRelevantColumns()
     grdColumns.Columns(4).Visible = False
     grdColumns.Columns(5).Visible = mbCMGExportFieldCode
     grdColumns.Columns(6).Visible = True
+    grdColumns.Columns(8).Visible = False
     
     'TM20011012 Fault 2197
     'Set the width of all the visible columns.
@@ -7192,11 +7198,21 @@ Private Sub ShowRelevantColumns()
     grdColumns.Columns(5).Width = lng_LengthCOLUMNWIDTH
     grdColumns.Columns(6).Width = lng_AuditCOLUMNWIDTH
     
+  ElseIf optOutputFormat(fmtXML).Value Then
+    grdColumns.Columns(4).Visible = False
+    grdColumns.Columns(5).Visible = False
+    grdColumns.Columns(6).Visible = False
+    grdColumns.Columns(7).Visible = False
+    grdColumns.Columns(8).Visible = True
+    
+    grdColumns.Columns(8).Width = lng_LengthCOLUMNWIDTH + lng_DecimalCOLUMNWIDTH
+    
   Else
     grdColumns.Columns(7).Visible = True
     grdColumns.Columns(4).Visible = True
     grdColumns.Columns(5).Visible = False
     grdColumns.Columns(6).Visible = False
+    grdColumns.Columns(8).Visible = False
     
     'TM20011012 Fault 2197
     'Set the width of all the visible columns.

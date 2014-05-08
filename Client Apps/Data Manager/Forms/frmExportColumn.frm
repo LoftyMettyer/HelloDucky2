@@ -20,6 +20,7 @@ Begin VB.Form frmExportColumns
    Icon            =   "frmExportColumn.frx":0000
    KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
+   LockControls    =   -1  'True
    MaxButton       =   0   'False
    MinButton       =   0   'False
    ScaleHeight     =   4410
@@ -72,7 +73,7 @@ Begin VB.Form frmExportColumns
       End
       Begin COASpinner.COA_Spinner txtLength 
          Height          =   300
-         Left            =   1635
+         Left            =   1650
          TabIndex        =   24
          Top             =   705
          Width           =   1410
@@ -381,6 +382,16 @@ Private mblnNew As Boolean
 Private mblnAddAll As Boolean
 Private mlngEditingColumnID As Long
 
+Private mbIsXML As Boolean
+
+Public Property Get IsXML() As Boolean
+  IsXML = mbIsXML
+End Property
+
+Public Property Let IsXML(ByVal bValue As Boolean)
+  mbIsXML = bValue
+End Property
+
 Private Function RefreshControls() As Boolean
   
   Dim objExpr As New clsExprExpression
@@ -422,9 +433,9 @@ Private Function RefreshControls() As Boolean
       bShowDecimals = (iTemp = sqlNumeric)
       
       'NPG20071212 Fault 12867
-      cboConvCase.Enabled = (iTemp = sqlVarChar Or iTemp = sqlBoolean)
-      cboConvCase.BackColor = IIf((iTemp = sqlVarChar Or iTemp = sqlBoolean), vbWindowBackground, vbButtonFace)
-      cboConvCase.ForeColor = IIf((iTemp = sqlVarChar Or iTemp = sqlBoolean), vbWindowText, vbGrayText)
+      cboConvCase.Enabled = (iTemp = sqlVarChar Or iTemp = sqlBoolean) And Not mbIsXML
+      cboConvCase.BackColor = IIf(cboConvCase.Enabled, vbWindowBackground, vbButtonFace)
+      cboConvCase.ForeColor = IIf(cboConvCase.Enabled, vbWindowText, vbGrayText)
 
     Else
       cboFromColumn.Enabled = False
@@ -433,7 +444,12 @@ Private Function RefreshControls() As Boolean
     End If
 
     bEnableLength = True
-    txtHeading.Text = cboFromTable.Text & "." & cboFromColumn.Text
+    
+    If mbIsXML Then
+      txtHeading.Text = cboFromColumn.Text
+    Else
+      txtHeading.Text = cboFromTable.Text & "." & cboFromColumn.Text
+    End If
 
   ElseIf optCalculation.Value Then
 
@@ -504,21 +520,20 @@ Private Function RefreshControls() As Boolean
 
   End If
   
-  txtLength.Enabled = bEnableLength
-  txtLength.BackColor = IIf(bEnableLength, vbWindowBackground, vbButtonFace)
-  lblLength.Enabled = bEnableLength
+  txtLength.Enabled = bEnableLength And Not mbIsXML
+  txtLength.BackColor = IIf(txtLength.Enabled, vbWindowBackground, vbButtonFace)
+  lblLength.Enabled = txtLength.Enabled
   
-  spnDec.Enabled = bShowDecimals
-  spnDec.Enabled = bShowDecimals
-  spnDec.BackColor = IIf(bShowDecimals, vbWindowBackground, vbButtonFace)
-  lblProp_Decimals.Enabled = bShowDecimals
+  spnDec.Enabled = bShowDecimals And Not mbIsXML
+  spnDec.BackColor = IIf(spnDec.Enabled, vbWindowBackground, vbButtonFace)
+  lblProp_Decimals.Enabled = spnDec.Enabled
 
   fraField.Visible = (optTable.Value = True)
   fraCalculation.Visible = (optCalculation.Value = True)
   fraFreeText.Visible = (optText.Value = True)
   fraOther.Visible = (optOther.Value = True)
 
-  lblConvCase.Enabled = cboConvCase.Enabled
+  lblConvCase.Enabled = cboConvCase.Enabled And Not mbIsXML
 
   Screen.MousePointer = vbDefault
 
@@ -533,7 +548,6 @@ End Function
   Optional sFromTable As String, Optional sFromColumn As String, Optional iLength As Long, _
   Optional frmParentForm As frmExport, Optional iDecimals As Long, Optional strHeading As String, _
   Optional bAddAll As Boolean)
-
 
 Public Sub Initialise(bNew As Boolean, sType As String, lFromTableID As Long, lFromColumnID As Long, _
   Optional sFromTable As String, Optional sFromColumn As String, Optional iLength As Long, _
@@ -779,7 +793,11 @@ Private Sub cboFromTable_Click()
     End If
   
     'MH20030120
-    txtHeading.Text = cboFromTable.Text & "." & cboFromColumn.Text
+    If mbIsXML Then
+      txtHeading.Text = cboFromColumn.Text
+    Else
+      txtHeading.Text = cboFromTable.Text & "." & cboFromColumn.Text
+    End If
   End If
 
   Screen.MousePointer = vbDefault
@@ -948,7 +966,7 @@ Private Sub cmdOK_Click()
     'Check can still see calculation
     strErrorMsg = IsCalcValid(txtCalculation.Tag)
     If strErrorMsg <> vbNullString Then
-      COAMsgBox strErrorMsg, vbExclamation, App.Title
+      COAMsgBox strErrorMsg, vbExclamation, app.title
       txtCalculation.Text = vbNullString
       txtCalculation.Tag = 0
       Exit Sub
@@ -1303,6 +1321,14 @@ Public Function GetColumnDecimals(lColumnID As Long) As Long
   Set rsColumns = Nothing
     
 End Function
+
+Public Sub SetXMLOptions()
+
+  optCalculation.Enabled = False
+  optText.Enabled = False
+  optOther.Enabled = False
+
+End Sub
 
 Public Sub SetCMGOptions(ByVal sDefaultCMGCode As String)
   
