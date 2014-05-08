@@ -1240,7 +1240,7 @@ function openDialogCalEvent(pDestination, pWidth, pHeight, psResizable, psScroll
 																			</tr>
 																			<tr height="2">
 																				<td colspan="7">
-																					<label class="ui-state-error-text">* Not supported in OpenHR 8.0 Web</label>
+																					<label class="ui-state-error-text">* Not supported in OpenHR Web</label>
 																				</td>
 																			</tr>
 																		</table>
