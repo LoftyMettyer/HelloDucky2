@@ -5,7 +5,7 @@
 
 <script src="<%: Url.LatestContent("~/bundles/utilities_customreports")%>" type="text/javascript"></script>
 <script type="text/javascript">
-	$('#main').css('overflow', 'auto');
+	//$('#main').css('overflow', 'auto');
 </script>
 <% 
 	Dim bBradfordFactor As Boolean
@@ -421,16 +421,55 @@ End If
 
 <script type="text/javascript">
 
+	//Shrink to fit, or set to 100px per column?
+	var ShrinkToFit = false;
+	var gridWidth;
+	var gridHeight;
+
+	//Get count of visible columns
+	if (menu_isSSIMode()) {
+		try {
+			gridWidth = $('#reportworkframe').width();
+			gridHeight = $('#reportworkframe').height() - 100;
+		} catch (e) {
+			gridWidth = 'auto';
+			gridHeight = 'auto';
+		}
+		ShrinkToFit = true;
+	} else {
+		//DMI options.
+		var iVisibleCount = 13;
+		if (iVisibleCount < 8) ShrinkToFit = true;
+		gridWidth = 770;
+		gridHeight = 390;
+	}
+
+
 	tableToGrid("#gridReportData", {
-		shrinkToFit: true,
-		width: 'auto',
-		height: 'auto',
+		shrinkToFit: ShrinkToFit,
+		width: gridWidth,
+		height: gridHeight,
 		ignoreCase: true,
 		cmTemplate: { sortable: false },
 		rowNum: 200000,
 		loadComplete: function () {
 			$('#gridReportData').hideCol("rowType");
+			stylejqGrid();
 		}
 	});
+
+	$('#gview_gridReportData td').css('white-space', 'pre-line');
+
+	function stylejqGrid() {
+		//jqGrid style overrides
+		$('#gview_gridReportData tr.jqgrow td').css('vertical-align', 'top'); //float text to top, in case of multi-line cells
+		$('#gview_gridReportData tr.footrow td').css('vertical-align', 'top'); //float text to top, in case of multi-line footers
+		$('#gview_gridReportData .s-ico span').css('display', 'none'); //hide the sort order icons - they don't tie in to the dataview model.
+		//$("#gview_gridReportData > .ui-jqgrid-titlebar").text("<%=objReport.ReportCaption%>"); //Activate title bar for the grid as this will then go naturally into the print functionality.
+		//$("#gview_gridReportData > .ui-jqgrid-titlebar").height("20px"); //no title bar; this is in the dialog title
+		//$("#gview_gridReportData .ui-jqgrid-titlebar").show();
+
+	}
+	if (menu_isSSIMode()) $('#gbox_gridReportData').css('margin', '0 auto'); //center the report in self-service screen.
 
 </script>

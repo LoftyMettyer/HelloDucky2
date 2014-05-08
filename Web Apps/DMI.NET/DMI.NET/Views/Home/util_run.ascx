@@ -297,7 +297,12 @@
 			$(".popup").dialog({
 				width: 850,
 				height: 720,
-				resizable: true
+				resizable: true,
+				resize: function () {
+					var doit = 0;
+					clearTimeout(doit);
+					doit = setTimeout(resizeGrid, 100);
+				}
 			});
 
 			<%Else%>
@@ -313,14 +318,15 @@
 				}
 			});
 
+			
+
+			<%End If%>
+
 			function resizeGrid() {
 				var newHeight = $('#main').height() * 0.8;
 				$('#gridReportData').setGridHeight(newHeight);
 				$('#gridReportData').setGridWidth($('#main').width());
 			}
-
-			<%End If%>
-
 
 			$('#cmdOutput').prop('disabled', isMobileDevice);
 			$(".popup").dialog("option", "position", ['center', 'center']); //Center popup in screen
