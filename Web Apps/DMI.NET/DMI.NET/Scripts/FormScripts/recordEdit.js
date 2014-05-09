@@ -328,7 +328,7 @@ function insertUpdateDef() {
 					}
 
 					else if ((objScreenControl.ControlType == 64) &&
-						((objScreenControl.DataType == 2) || (objScreenControl.DataType == 4))) {
+						((objScreenControl.DataType == 2) || (objScreenControl.DataType == 4))) {						
 						//TDBNumber6Ctl.TDBNumber Then
 						//	Integer or Numeric field from a numeric textbox (INT or NUM type column). Save the value from the control.
 						if (ConvertData($(objControl).val(), objScreenControl.DataType) == null) {
@@ -577,7 +577,7 @@ function ConvertNumberForSQL(strInput) {
 	// (e.g. on french systems replace decimal comma for a decimal point)
 	// TODO: return strInput.replace(msLocaleDecimalSeparator, ".");
 
-	return OpenHR.replaceAll(String(strInput),window.LocaleThousandSeparator, "");
+	return OpenHR.replaceAll(String(strInput),window.LocaleDecimalSeparator, ".");
 }
 
 
