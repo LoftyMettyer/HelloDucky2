@@ -3066,7 +3066,7 @@ Namespace Controllers
 						lngDataRow = 1
 						For Each objRow As DataRow In objReport.ReportDataTable.Rows
 
-							If lngOutputFormat = OutputFormats.fmtExcelGraph And Not objReport.CustomReportsSummaryReport Then
+							If (lngOutputFormat = OutputFormats.fmtExcelGraph And Not objReport.CustomReportsSummaryReport) Or lngOutputFormat = OutputFormats.fmtExcelPivotTable Then
 								' Ignore non-data rows.
 								If objRow(0).ToString() <> "0" Then Continue For
 
