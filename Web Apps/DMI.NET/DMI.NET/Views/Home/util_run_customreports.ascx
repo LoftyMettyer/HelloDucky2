@@ -268,10 +268,7 @@
 		Response.Write("<div>")
 		Response.Write("			<table name=tblGrid id=tblGrid height=100% width=100% class=""invisible"" cellspacing=0 cellpadding=0>" & vbCrLf)
 		Response.Write("				<tr>" & vbCrLf)
-		' Response.Write("					<td class=""reportgraphic""></td>" & vbCrLf)
-		Response.Write("					<td ALIGN=center colspan=10 NAME='tdOutputMSG' ID='tdOutputMSG'>" & vbCrLf)
-	
-			
+		Response.Write("					<td ALIGN=center colspan=12 NAME='tdOutputMSG' ID='tdOutputMSG'>" & vbCrLf)
 %>
 
 <form id="formReportData" runat="server">
@@ -286,12 +283,8 @@
 	</asp:GridView>
 </form>
 
-
 <%		
-
-
 	Response.Write("					</td>" & vbCrLf)
-	Response.Write("					<td width=20></td>" & vbCrLf)
 	Response.Write("				</tr>" & vbCrLf)
 	Response.Write("				<tr>" & vbCrLf)
 	Response.Write("					<td colspan=12 height=10></td>" & vbCrLf)
@@ -419,13 +412,16 @@ End If
 </form>
 
 <script type="text/javascript">
-	
-
 	//Shrink to fit, or set to 100px per column?
-	var ShrinkToFit = false;
+	var ShrinkToFit = true;
 	var gridWidth;
 	var gridHeight;
-
+	// first get the size from the window
+	// if that didn't work, get it from the body
+	var size = {
+		MakeWidth: $('#divUtilRunForm').width(),
+		MakeHeight: $('#reportworkframe').height()
+	};
 	//Get count of visible columns
 	if (menu_isSSIMode()) {
 		try {
@@ -440,8 +436,8 @@ End If
 		//DMI options.
 		var iVisibleCount = Number("<%:ReportColumnCount%>");
 		if (iVisibleCount < 8) ShrinkToFit = true;
-		gridWidth = 770;
-		gridHeight = 390;
+		gridWidth = (size.MakeWidth);
+		gridHeight = (size.MakeHeight);
 	}
 
 	var newFormat = OpenHR.getLocaleDateString();
@@ -474,7 +470,8 @@ End If
 			Response.Write(String.Format("{0}{{name:'", IIf(iColCount > 0, ", ", "")) & sColumnName & "'}")
 		End If
 		iColCount += 1
-	Next%>
+	Next
+	%>
 			],
 			cmTemplate: { sortable: false },
 			rowNum: 200000,
@@ -492,14 +489,8 @@ End If
 			$('#gview_gridReportData tr.jqgrow td').css('vertical-align', 'top'); //float text to top, in case of multi-line cells
 			$('#gview_gridReportData tr.footrow td').css('vertical-align', 'top'); //float text to top, in case of multi-line footers
 			$('#gview_gridReportData .s-ico span').css('display', 'none'); //hide the sort order icons - they don't tie in to the dataview model.
-			//$("#gview_gridReportData > .ui-jqgrid-titlebar").text("<%=objReport.ReportCaption%>"); //Activate title bar for the grid as this will then go naturally into the print functionality.
-			//$("#gview_gridReportData > .ui-jqgrid-titlebar").height("20px"); //no title bar; this is in the dialog title
-			//$("#gview_gridReportData .ui-jqgrid-titlebar").show();
-
 		}
 		
 	if (menu_isSSIMode()) $('#gbox_gridReportData').css('margin', '0 auto'); //center the report in self-service screen.
-	
-
 </script>
 

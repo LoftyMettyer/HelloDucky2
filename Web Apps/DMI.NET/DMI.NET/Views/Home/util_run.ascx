@@ -258,9 +258,7 @@
 				End If
 			%>
 		</div>
-
-		<div id="divReportButtons" style="margin: 25px 0 0 0; visibility: hidden">
-			<div style="float: right;">
+		<div id="divReportButtons" style="margin: 30px 50px 0 0; visibility: hidden; padding-top: 20px; float: right">
 				<%If (Session("utiltype") = "2") Then%> 
 					<input class="btn" type="button" id="cmdPrint" name="cmdPrint" value="<%=sPrintButtonLabel%>" onclick="outputOptionsPrintClick()" />
 				<%End If%>
@@ -270,13 +268,17 @@
 				<input class="btn" type="button" id="cmdClose" name="cmdClose" value="Close" onclick="closeclick();" />
 			</div>
 		</div>
-
 	</div>
-</div>
 
 <script type="text/javascript">
 
 	var isMobileDevice = ('<%=Session("isMobileDevice")%>' == 'True');
+	// first get the size from the window
+	// if that didn't work, get it from the body
+	var size = {
+		width: window.innerWidth || document.body.clientWidth,
+		height: window.innerHeight || document.body.clientHeight
+	};
 
 	if ($('#txtNoRecs').val() == "True") {
 		OpenHR.modalPrompt($("#txtDefn_ErrMsg").val(), 2, $("#txtDefn_Name").val(), "");
@@ -295,21 +297,18 @@
 
 			<%ElseIf Session("utiltype") = UtilityType.utlBradfordFactor Then%>
 			$(".popup").dialog({
-				width: 850,
-				height: 720,
-				resizable: true,
-				resize: function () {
-					var doit = 0;
-					clearTimeout(doit);
-					doit = setTimeout(resizeGrid, 100);
-				}
+				width: size.width - 200, //if you want a bigger screen then reduce the subtracted figure
+				height: size.height - 200, 
+				resizable: false
 			});
 
+			$('#main').css('overflow', 'hidden');
+			
 			<%Else%>
 			$(".popup").dialog({
 				title: "",
-				width: 810,
-				height: 720,
+				width: size.width - 200,
+				height: size.height - 200,
 				resizable: true,
 				resize: function() {
 					var doit = 0;
@@ -318,19 +317,18 @@
 				}
 			});
 
-			
-
 			<%End If%>
 
 			function resizeGrid() {
-				var newHeight = $('#main').height() * 0.8;
+				var newHeight = $('#reportworkframe').height();
+				var newWidth = window.innerWidth || document.body.clientWidth;
 				$('#gridReportData').setGridHeight(newHeight);
-				$('#gridReportData').setGridWidth($('#main').width());
+				$('#gridReportData').setGridWidth($('#reportframeset').width() * 0.95);
 			}
+			
 
 			$('#cmdOutput').prop('disabled', isMobileDevice);
 			$(".popup").dialog("option", "position", ['center', 'center']); //Center popup in screen
-
 			$('.popup').bind('dialogclose', function() {
 				closeclick();
 			});
@@ -341,8 +339,8 @@
 
 			$("#PageDivTitle").html($("#txtDefn_Name").val());
 			$(".popup").dialog('option', 'title', $("#txtDefn_Name").val());
-
 			$("#outputoptions").hide();
+			resizeGrid();
 			$("#reportworkframe").show();
 			$("#divReportButtons").css("visibility", "visible");
 			$("#divCrossTabOptions").css("visibility", "visible");
