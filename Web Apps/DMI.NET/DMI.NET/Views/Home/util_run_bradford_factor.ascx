@@ -280,7 +280,7 @@
 		Response.Write("				</tr>" & vbCrLf)
 		Response.Write("				<tr style='height:10px;'></tr>" & vbCrLf)
 		Response.Write("				<tr>" & vbCrLf)
-		Response.Write("					<td ALIGN=center colspan=12 NAME='tdOutputMSG' ID='tdOutputMSG'>" & vbCrLf)
+		Response.Write("					<td ALIGN=center colspan=10 NAME='tdOutputMSG' ID='tdOutputMSG'>" & vbCrLf)
 %>
 
 <form id="formReportData" runat="server">
@@ -297,7 +297,7 @@
 
 <%
 				Response.Write("					</td>" & vbCrLf)
-	'Response.Write("					<td width=20></td>" & vbCrLf)
+				Response.Write("					<td width=20></td>" & vbCrLf)
 				Response.Write("				</tr>" & vbCrLf)
 				Response.Write("				<tr>" & vbCrLf)
 				Response.Write("					<td colspan=12 height=10></td>" & vbCrLf)
@@ -420,13 +420,9 @@ End If
 
 
 <script type="text/javascript">
-	var size = {
-		MakeWidth: $('#divUtilRunForm').width(),
-		MakeHeight: $('#reportworkframe').height()
-	};
 
 	//Shrink to fit, or set to 100px per column?
-	var ShrinkToFit = true;
+	var ShrinkToFit = false;
 	var gridWidth;
 	var gridHeight;
 
@@ -444,8 +440,8 @@ End If
 		//DMI options.
 		var iVisibleCount = 13;
 		if (iVisibleCount < 8) ShrinkToFit = true;
-		gridWidth = size.MakeWidth ;//was 770;
-		gridHeight = size.MakeHeight; //wwas 390;
+		gridWidth = 770;
+		gridHeight = 390;
 	}
 
 
@@ -463,13 +459,6 @@ End If
 		}
 	});
 
-	function resizeGrid() {
-		var newHeight = $('#reportworkframe').height();
-		var newWidth = window.innerWidth || document.body.clientWidth;
-		$('#gridReportData').setGridHeight(newHeight - 100);
-		$('#gridReportData').setGridWidth($('#reportframeset').width() * 0.95);
-	}
-
 	$('#gview_gridReportData td').css('white-space', 'pre-line');
 
 	function stylejqGrid() {
@@ -477,6 +466,11 @@ End If
 		$('#gview_gridReportData tr.jqgrow td').css('vertical-align', 'top'); //float text to top, in case of multi-line cells
 		$('#gview_gridReportData tr.footrow td').css('vertical-align', 'top'); //float text to top, in case of multi-line footers
 		$('#gview_gridReportData .s-ico span').css('display', 'none'); //hide the sort order icons - they don't tie in to the dataview model.
-	};
-	
+		//$("#gview_gridReportData > .ui-jqgrid-titlebar").text("<%=objReport.ReportCaption%>"); //Activate title bar for the grid as this will then go naturally into the print functionality.
+		//$("#gview_gridReportData > .ui-jqgrid-titlebar").height("20px"); //no title bar; this is in the dialog title
+		//$("#gview_gridReportData .ui-jqgrid-titlebar").show();
+
+	}
+	if (menu_isSSIMode()) $('#gbox_gridReportData').css('margin', '0 auto'); //center the report in self-service screen.
+
 </script>

@@ -281,7 +281,7 @@
 		'Must be the first time this asp is called...
 		Response.Write(" crosstab_loadAddRecords();" & vbCrLf)
 	Else
-		Response.Write("	$('#ssOutputGrid').jqGrid({data: colData, datatype: 'local', colNames: colNames, height: $('#main').height() * 0.8, colModel: colMode, width: $('#main').width() * 0.99" & vbCrLf)
+		Response.Write("	$('#ssOutputGrid').jqGrid({data: colData, datatype: 'local', colNames: colNames, colModel: colMode, autowidth: true" & vbCrLf)
 		Response.Write("    , rowNum:1000000")
 		Response.Write("	  , ondblClickRow: function (rowId, iRow, iCol, e) {" & vbCrLf)
 		Response.Write("	    	  if (iCol == 0) { return; } // Ignore double click on first column" & vbCrLf)
