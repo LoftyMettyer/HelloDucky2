@@ -260,8 +260,9 @@
 
 	If fok Then
 		objReport.ClearUp()
-			End If
+	End If
 		
+	ReportColumnCount = objReport.DisplayColumns.Count
 		
 	If fok Then
 		Response.Write("<form name=frmOutput id=frmOutput method=post>" & vbCrLf)
@@ -353,8 +354,7 @@ End If
 		Dim objThisColumn As ReportDetailItem
 
 		If e.Row.RowType = DataControlRowType.Header Or e.Row.RowType = DataControlRowType.Footer Then
-			e.Row.CssClass = "header"
-			ReportColumnCount = 0
+			e.Row.CssClass = "header"			
 			For iCount = 1 To objReport.ReportDataTable.Columns.Count - 1
 				e.Row.Cells(iCount).Text = e.Row.Cells(iCount).Text.Replace(" ", "_")
 			Next
@@ -413,7 +413,7 @@ End If
 
 <script type="text/javascript">
 	//Shrink to fit, or set to 100px per column?
-	var ShrinkToFit = true;
+	var ShrinkToFit = false;
 	var gridWidth;
 	var gridHeight;
 	// first get the size from the window
@@ -434,8 +434,9 @@ End If
 		ShrinkToFit = true;
 	} else {
 		//DMI options.
+		
 		var iVisibleCount = Number("<%:ReportColumnCount%>");
-		if (iVisibleCount < 8) ShrinkToFit = true;
+		if ((iVisibleCount *100) < size.MakeWidth) ShrinkToFit = true;
 		gridWidth = (size.MakeWidth);
 		gridHeight = (size.MakeHeight);
 	}
@@ -462,12 +463,13 @@ End If
 	iColCount = 0
 	For Each objItem In objReport.DisplayColumns
 		Dim sColumnName = objReport.ReportDataTable.Columns(iColCount).ColumnName.Replace(" ", "_")
+		Dim iColumnWidth As Integer = 100
 		If objItem.IsNumeric Then
-			Response.Write(String.Format("{0}{{name:'", IIf(iColCount > 0, ", ", "")) & sColumnName & "',align:'right'}")
+			Response.Write(String.Format("{0}{{name:'", IIf(iColCount > 0, ", ", "")) & sColumnName & "',align:'right', width: '" & iColumnWidth.ToString() & "'}")
 		ElseIf objItem.IsDateColumn Then			
-			Response.Write(String.Format("{0}{{name:'", IIf(iColCount > 0, ", ", "")) & sColumnName & "', edittype: 'date', align: 'center',  formatter: 'date', formatoptions: { srcformat: srcFormat, newformat: newFormat, disabled: true }}")
+			Response.Write(String.Format("{0}{{name:'", IIf(iColCount > 0, ", ", "")) & sColumnName & "', edittype: 'date', align: 'center',  formatter: 'date', formatoptions: { srcformat: srcFormat, newformat: newFormat, disabled: true, width: '" & iColumnWidth.ToString() & "' }}")
 		Else
-			Response.Write(String.Format("{0}{{name:'", IIf(iColCount > 0, ", ", "")) & sColumnName & "'}")
+			Response.Write(String.Format("{0}{{name:'", IIf(iColCount > 0, ", ", "")) & sColumnName & "', width: '" & iColumnWidth.ToString() & "'}")
 		End If
 		iColCount += 1
 	Next
