@@ -540,7 +540,7 @@ Namespace ExClientCode
 
 					dataFirstCol = 0
 					For Each objColumn In _mcolColumns
-						If objColumn.DataType = SQLDataType.sqlNumeric Or objColumn.DataType = SQLDataType.sqlInteger Then
+						If (objColumn.DataType = SQLDataType.sqlNumeric Or objColumn.DataType = SQLDataType.sqlInteger) And dataFirstCol > 0 Then
 							bNumericFound = True
 							Exit For
 						End If
