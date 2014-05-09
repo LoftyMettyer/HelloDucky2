@@ -4693,4 +4693,3 @@ Public Function ContainsInvalidXML(ByVal NodeText, AllowForwardSlash As Boolean)
   
 End Function
 
-

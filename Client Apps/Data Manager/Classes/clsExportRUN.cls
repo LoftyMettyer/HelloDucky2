@@ -63,6 +63,7 @@ Private mblnHeader As Boolean
 Private mblnFooter As Boolean
 Private mbForceHeader As Boolean                    ' Always force header if no records found
 Private mbOmitHeader As Boolean                     ' Omit header if appending to file
+Private mbAuditChangesOnly As Boolean
 
 Private mlngOutputFormat As Long
 Private mblnOutputSave As Boolean
@@ -91,6 +92,7 @@ Private mstrSQLJoin As String
 Private mstrSQLWhere As String
 Private mstrSQLOrderBy As String
 Private mstrSQL As String
+Private mstrOnlyChangesFilter As String
 
 Private mstrTransformFile As String
 Private mstrXMLDataNodeName As String
@@ -123,6 +125,7 @@ Private mblnNoRecords As Boolean
 Private mstrExportFileCode As String
 Private mlngCMGRecordIdentifier As Long
 Private mbUpdateAuditLog As Boolean
+Private mdLastSuccessfulOutput As Date
 
 Private Enum CMGFields
   NewValue = 0    ' "NewValue"
@@ -431,6 +434,9 @@ Public Function RunExport() As Boolean
     gobjEventLog.ChangeHeaderStatus elsSuccessful, mlngExportRecordCount, 0
     mstrErrorString = "Completed successfully." & vbCrLf & mlngExportRecordCount & " record(s) exported."
   
+    mstrSQL = "UPDATE ASRSysExportName SET LastSuccessfulOutput = convert(datetime,'" & Now & "') WHERE ID = " & mlngExportID
+    mclsData.ExecuteSql mstrSQL
+  
   ElseIf mblnUserCancelled Then
     gobjEventLog.ChangeHeaderStatus elsCancelled, mlSuccessfulRecords, 0
     mstrErrorString = "Cancelled by user." & vbCrLf & mlSuccessfulRecords & " record(s) exported."
@@ -645,6 +651,7 @@ Private Function GetExportDefinition() As Boolean
     mstrOutputEmailAttachAs = IIf(IsNull(!OutputEmailAttachAs), vbNullString, !OutputEmailAttachAs)
     'mlngOutputEmailFileFormat = !OutputEmailFileFormat
     mstrOutputFileName = !OutputFilename
+    mdLastSuccessfulOutput = IIf(IsNull(!LastSuccessfulOutput), "00:00:00", !LastSuccessfulOutput)
    
     mintExportHeader = !Header
     mstrExportHeaderText = IIf(IsNull(!HeaderText), vbNullString, !HeaderText)
@@ -677,6 +684,7 @@ Private Function GetExportDefinition() As Boolean
     mstrTransformFile = IIf(IsNull(!TransformFile), "", !TransformFile)
 
     mbDefinitionOwner = (LCase(Trim(gsUserName)) = LCase(Trim(!UserName)))
+    mbAuditChangesOnly = IIf(IsNull(!AuditChangesOnly), False, !AuditChangesOnly)
 
     If Not IsRecordSelectionValid Then
       GetExportDefinition = False
@@ -1102,6 +1110,12 @@ Private Function GenerateSQLSelect() As Boolean
             mlngTableViews(1, pintNextIndex) = 0
             mlngTableViews(2, pintNextIndex) = plngTempTableID
           End If
+        End If
+                
+        ' Optional filter for only auditted changes
+        If mdLastSuccessfulOutput <> "00:00:00" Then
+          mstrOnlyChangesFilter = mstrOnlyChangesFilter + IIf(Len(mstrOnlyChangesFilter) > 0, " OR ", "") _
+            & " dbo.udfsys_FieldChangedSinceLastExport(" & mvarColDetails(3, pintLoop) & ", convert(datetime,'" & mdLastSuccessfulOutput & "'), " & mstrRealSource & ".[id]) = 1"
         End If
         
       Else
@@ -1919,6 +1933,11 @@ Private Function GenerateSQLWhere() As Boolean
   End If
       
   Set prstTemp = Nothing
+
+  ' Audit changes only
+  If Len(mstrOnlyChangesFilter) > 0 And mbAuditChangesOnly And mlngOutputFormat = fmtXML Then
+    mstrSQLWhere = mstrSQLWhere & IIf(Len(mstrSQLWhere) > 0, " AND ", " WHERE ") & "(" & mstrOnlyChangesFilter & ")"
+  End If
 
   GenerateSQLWhere = True
   Exit Function

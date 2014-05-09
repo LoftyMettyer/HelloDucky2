@@ -57,7 +57,7 @@ Begin VB.Form frmExport
       _Version        =   393216
       Style           =   1
       Tabs            =   6
-      Tab             =   5
+      Tab             =   2
       TabsPerRow      =   6
       TabHeight       =   520
       BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
@@ -84,8 +84,9 @@ Begin VB.Form frmExport
       Tab(1).ControlCount=   3
       TabCaption(2)   =   "Colu&mns"
       TabPicture(2)   =   "frmExport.frx":0044
-      Tab(2).ControlEnabled=   0   'False
+      Tab(2).ControlEnabled=   -1  'True
       Tab(2).Control(0)=   "fraColumns"
+      Tab(2).Control(0).Enabled=   0   'False
       Tab(2).ControlCount=   1
       TabCaption(3)   =   "&Sort Order"
       TabPicture(3)   =   "frmExport.frx":0060
@@ -100,32 +101,35 @@ Begin VB.Form frmExport
       Tab(4).ControlCount=   2
       TabCaption(5)   =   "O&utput"
       TabPicture(5)   =   "frmExport.frx":0098
-      Tab(5).ControlEnabled=   -1  'True
-      Tab(5).Control(0)=   "fraDelimFile"
-      Tab(5).Control(0).Enabled=   0   'False
-      Tab(5).Control(1)=   "fraCMGFile"
-      Tab(5).Control(1).Enabled=   0   'False
+      Tab(5).ControlEnabled=   0   'False
+      Tab(5).Control(0)=   "fraXML"
+      Tab(5).Control(1)=   "fraOutputType"
       Tab(5).Control(2)=   "fraOutputDestination"
-      Tab(5).Control(2).Enabled=   0   'False
-      Tab(5).Control(3)=   "fraOutputType"
-      Tab(5).Control(3).Enabled=   0   'False
-      Tab(5).Control(4)=   "fraXML"
-      Tab(5).Control(4).Enabled=   0   'False
+      Tab(5).Control(3)=   "fraCMGFile"
+      Tab(5).Control(4)=   "fraDelimFile"
       Tab(5).ControlCount=   5
       Begin VB.Frame fraXML 
          Caption         =   "XML Options :"
          Height          =   1410
-         Left            =   150
+         Left            =   -74850
          TabIndex        =   125
          Top             =   3580
          Width           =   9180
+         Begin VB.CheckBox chkAuditChangesOnly 
+            Caption         =   "Only &Include Audited Changes"
+            Height          =   210
+            Left            =   5940
+            TabIndex        =   132
+            Top             =   360
+            Width           =   3030
+         End
          Begin VB.TextBox txtXMLDataNodeName 
             Height          =   315
-            Left            =   2280
+            Left            =   2115
             MaxLength       =   50
             TabIndex        =   131
-            Top             =   270
-            Width           =   4410
+            Top             =   315
+            Width           =   3000
          End
          Begin VB.CommandButton cmdTransformFileClear 
             Caption         =   "O"
@@ -139,11 +143,11 @@ Begin VB.Form frmExport
                Strikethrough   =   0   'False
             EndProperty
             Height          =   315
-            Left            =   7020
+            Left            =   5460
             MaskColor       =   &H000000FF&
             TabIndex        =   129
             ToolTipText     =   "Clear Path"
-            Top             =   680
+            Top             =   750
             UseMaskColor    =   -1  'True
             Width           =   330
          End
@@ -151,9 +155,9 @@ Begin VB.Form frmExport
             Caption         =   "..."
             Enabled         =   0   'False
             Height          =   315
-            Left            =   6675
+            Left            =   5115
             TabIndex        =   128
-            Top             =   680
+            Top             =   750
             UseMaskColor    =   -1  'True
             Width           =   330
          End
@@ -162,29 +166,29 @@ Begin VB.Form frmExport
             Enabled         =   0   'False
             ForeColor       =   &H00000000&
             Height          =   315
-            Left            =   2280
+            Left            =   2115
             Locked          =   -1  'True
             TabIndex        =   127
             TabStop         =   0   'False
             Tag             =   "0"
-            Top             =   680
-            Width           =   4395
+            Top             =   750
+            Width           =   3000
          End
          Begin VB.Label lblXMLNodeName 
             Caption         =   "Custom Node Name : "
-            Height          =   375
-            Left            =   240
+            Height          =   285
+            Left            =   225
             TabIndex        =   130
-            Top             =   350
-            Width           =   1935
+            Top             =   390
+            Width           =   1845
          End
          Begin VB.Label lblTransformFile 
             Caption         =   "Transformation File :"
             Height          =   255
-            Left            =   240
+            Left            =   225
             TabIndex        =   126
-            Top             =   755
-            Width           =   2055
+            Top             =   825
+            Width           =   1815
          End
       End
       Begin VB.Frame fraInformation 
@@ -393,7 +397,7 @@ Begin VB.Form frmExport
       Begin VB.Frame fraOutputType 
          Caption         =   "Output Format :"
          Height          =   3135
-         Left            =   150
+         Left            =   -74850
          TabIndex        =   82
          Top             =   405
          Width           =   2400
@@ -457,7 +461,7 @@ Begin VB.Form frmExport
       Begin VB.Frame fraOutputDestination 
          Caption         =   "Output Destination(s) :"
          Height          =   3135
-         Left            =   2655
+         Left            =   -72345
          TabIndex        =   88
          Top             =   405
          Width           =   6675
@@ -778,7 +782,7 @@ Begin VB.Form frmExport
       Begin VB.Frame fraColumns 
          Caption         =   "Columns :"
          Height          =   4560
-         Left            =   -74850
+         Left            =   150
          TabIndex        =   47
          Top             =   405
          Width           =   9180
@@ -1629,7 +1633,7 @@ Begin VB.Form frmExport
       Begin VB.Frame fraCMGFile 
          Caption         =   "CMG Options :"
          Height          =   1410
-         Left            =   150
+         Left            =   -74850
          TabIndex        =   109
          Top             =   3580
          Width           =   9180
@@ -1677,7 +1681,7 @@ Begin VB.Form frmExport
       Begin VB.Frame fraDelimFile 
          Caption         =   "Delimited File Options :"
          Height          =   1410
-         Left            =   150
+         Left            =   -74850
          TabIndex        =   103
          Top             =   3570
          Width           =   9180
@@ -1786,7 +1790,7 @@ Private Const lng_CMGCodeCOLUMNWIDTH = 1050
 Private Const lng_AuditCOLUMNWIDTH = 1050
 Private Const lng_DecimalCOLUMNWIDTH = 1050
 Private Const lng_LengthCOLUMNWIDTH = 1050
-Private Const lng_DataCOLUMNWIDTH = 5045.236
+Private lng_DataCOLUMNWIDTH As Double
 Private Const lng_GRIDROWHEIGHT = 239
 Private Const lng_SCROLLBARWIDTH = 240
 Private Const lng_SortCOLUMNWIDTH = 5890
@@ -1804,7 +1808,7 @@ Public Property Let FormPrint(ByVal bPrint As Boolean)
 End Property
 
 Public Property Get Changed() As Boolean
-  Changed = cmdOK.Enabled
+  Changed = cmdOk.Enabled
 End Property
 Private Sub ForceAccess(Optional pvAccess As Variant)
   Dim iLoop As Integer
@@ -1844,7 +1848,7 @@ End Sub
 
 
 Public Property Let Changed(ByVal pblnChanged As Boolean)
-  cmdOK.Enabled = pblnChanged
+  cmdOk.Enabled = pblnChanged
 End Property
 
 Public Property Get SelectedID() As Long
@@ -2290,6 +2294,10 @@ Private Sub cboDelimiter_Click()
       End If
     Changed = True
   End With
+End Sub
+
+Private Sub chkAuditChangesOnly_Click()
+  Changed = True
 End Sub
 
 Private Sub cmdAddAllColumns_Click()
@@ -2765,6 +2773,8 @@ Private Sub Form_Load()
   mobjOutputDef.PopulateCombos False, True, True
 
   grdAccess.RowHeight = 239
+
+  lng_DataCOLUMNWIDTH = 5045.236
 
 End Sub
 
@@ -4967,10 +4977,9 @@ Private Function SaveDefinition() As Boolean
                   "DateFormat = '" & cboDateFormat.Text & "'," & _
                   "DateSeparator = '" & cboDateSeparator.Text & "'," & _
                   "DateYearDigits = '" & cboDateYearDigits.Text & "'," & _
+                  "AuditChangesOnly = " & IIf(chkAuditChangesOnly.Value = vbChecked, "1", "0") & ", " & _
                   "OmitHeader = " & IIf(chkOmitHeader.Value, 1, 0) & "," & _
                   "ForceHeader = " & IIf(chkForceHeader.Value, 1, 0) & ","
-
-                  '"AppendToFile = " & IIf(Me.chkAppendToFile.Value, 1, 0) & "," & _
 
     strSQL = strSQL & _
                   "Parent1AllRecords = " & IIf(optParent1AllRecords.Value, 1, 0) & "," & _
@@ -5004,7 +5013,7 @@ Private Function SaveDefinition() As Boolean
            "DateFormat, DateSeparator, DateYearDigits, UserName," & _
            "CMGExportFileCode, CMGExportUpdateAudit, CMGExportRecordID," & _
            "Parent1AllRecords, Parent1Picklist, Parent2AllRecords, Parent2Picklist, " & _
-           "OmitHeader, ForceHeader, OutputFormat, OutputSave, " & _
+           "AuditChangesOnly, OmitHeader, ForceHeader, OutputFormat, OutputSave, " & _
            "OutputSaveExisting, OutputEmail, OutputEmailAddr, OutputEmailSubject, OutputEmailAttachAs, OutputFilename, TransformFile, XMLDataNodeName) "
            
            'AppendToFile,
@@ -5049,7 +5058,7 @@ Private Function SaveDefinition() As Boolean
     strSQL = strSQL & ", '" & cboDateFormat.Text & "'"
     strSQL = strSQL & ", '" & cboDateSeparator.Text & "'"
     strSQL = strSQL & ", '" & cboDateYearDigits.Text & "'"
-    
+            
     strSQL = strSQL & ", '" & datGeneral.UserNameForSQL & "'"
     
     ' Save the CMG export options
@@ -5065,6 +5074,7 @@ Private Function SaveDefinition() As Boolean
   
     ' Header and append options
     'strSQL = strSQL & IIf(chkAppendToFile.Value = vbChecked, "1", "0") & ","
+    strSQL = strSQL & IIf(chkAuditChangesOnly.Value = vbChecked, "1", "0") & ", "
     strSQL = strSQL & IIf(chkOmitHeader.Value = vbChecked, "1", "0") & ","
     strSQL = strSQL & IIf(chkForceHeader.Value = vbChecked, "1", "0") & ","
     
@@ -5518,7 +5528,7 @@ Private Function RetrieveExportDetails(plngExportID As Long) As Boolean
   
   ' Set Child Max Records
   spnMaxRecords.Value = rsTemp!ChildMaxRecords
-  
+      
   ' Header / append options
   'chkAppendToFile.Value = IIf(rsTemp!AppendToFile = True, vbChecked, vbUnchecked)
   chkForceHeader.Value = IIf(rsTemp!ForceHeader = True, vbChecked, vbUnchecked)
@@ -5635,6 +5645,8 @@ Private Function RetrieveExportDetails(plngExportID As Long) As Boolean
     If Not IsNull(rsTemp!TransformFile) Then txtTransformFile.Text = rsTemp!TransformFile
     If Not IsNull(rsTemp!XMLDataNodeName) Then txtXMLDataNodeName.Text = rsTemp!XMLDataNodeName
   End If
+
+  chkAuditChangesOnly.Value = IIf(rsTemp!AuditChangesOnly = True, vbChecked, vbUnchecked)
 
   ' Set Date Format
   SetComboText cboDateFormat, rsTemp!DateFormat
@@ -7224,6 +7236,8 @@ Private Sub ShowRelevantColumns()
 
 'Display the appropraite columns for the selected output type
   If optOutputFormat(fmtCMGFile).Value Then
+    lng_DataCOLUMNWIDTH = 5045.236
+
     grdColumns.Columns(7).Visible = False
     grdColumns.Columns(4).Visible = False
     grdColumns.Columns(5).Visible = mbCMGExportFieldCode
@@ -7239,13 +7253,19 @@ Private Sub ShowRelevantColumns()
   ElseIf optOutputFormat(fmtXML).Value Then
     grdColumns.Columns(4).Visible = False
     grdColumns.Columns(5).Visible = False
-    grdColumns.Columns(6).Visible = False
+    grdColumns.Columns(6).Visible = True
     grdColumns.Columns(7).Visible = False
     grdColumns.Columns(8).Visible = True
     
-    grdColumns.Columns(8).Width = lng_LengthCOLUMNWIDTH + lng_DecimalCOLUMNWIDTH
+    lng_DataCOLUMNWIDTH = 3045.236
+    
+    grdColumns.Columns(3).Width = lng_DataCOLUMNWIDTH
+    grdColumns.Columns(6).Width = lng_AuditCOLUMNWIDTH
+    grdColumns.Columns(8).Width = (lng_LengthCOLUMNWIDTH + lng_DecimalCOLUMNWIDTH) + lng_AuditCOLUMNWIDTH
     
   Else
+    lng_DataCOLUMNWIDTH = 5045.236
+  
     grdColumns.Columns(7).Visible = True
     grdColumns.Columns(4).Visible = True
     grdColumns.Columns(5).Visible = False

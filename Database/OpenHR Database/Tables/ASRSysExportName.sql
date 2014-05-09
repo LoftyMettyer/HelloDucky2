@@ -44,5 +44,9 @@
 	[OutputEmailSubject] [varchar](255) NULL,
 	[OutputFilename] [varchar](255) NULL,
 	[OutputEmailAttachAs] [varchar](255) NULL,
-	[OtherDelimiter] [varchar](1) NULL
+	[OtherDelimiter] [varchar](1) NULL, 
+    [TransformFile] NVARCHAR(MAX) NULL, 
+    [XMLDataNodeName] NVARCHAR(50) NULL, 
+    [LastSuccessfulOutput] DATETIME NULL, 
+    [AuditChangesOnly] BIT NULL
 ) ON [PRIMARY]

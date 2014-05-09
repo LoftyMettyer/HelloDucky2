@@ -221,6 +221,33 @@ PRINT 'Step - New functions'
 		EXEC sp_executesql @NVarCommand;
 
 
+	IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[udfsys_FieldChangedSinceLastExport]') AND type in (N'FN'))
+		DROP FUNCTION [dbo].[udfsys_FieldChangedSinceLastExport];
+
+	SELECT @NVarCommand = 'CREATE FUNCTION [dbo].[udfsys_FieldChangedSinceLastExport](
+		@columnID	integer,
+		@FromDate	datetime,
+		@recordID	integer
+	)
+	RETURNS bit
+	AS
+	BEGIN
+
+		DECLARE @result	bit = 0;
+		
+		SELECT @result = CASE WHEN
+				EXISTS(SELECT [DateTimeStamp] FROM dbo.[ASRSysAuditTrail]
+					WHERE [ColumnID] = @columnid
+					AND @recordID = [RecordID] 
+					AND [DateTimeStamp] >= @FromDate)
+				THEN 1 ELSE 0 END;
+
+		RETURN @result;
+	END';
+	EXEC sp_executesql @NVarCommand;
+
+
+
 /* ------------------------------------------------------- */
 PRINT 'Step - Export additions'
 /* ------------------------------------------------------- */
@@ -230,6 +257,12 @@ PRINT 'Step - Export additions'
 
 	IF NOT EXISTS(SELECT id FROM syscolumns WHERE  id = OBJECT_ID('ASRSysExportName', 'U') AND name = 'XMLDataNodeName')
 		EXEC sp_executesql N'ALTER TABLE ASRSysExportName ADD XMLDataNodeName nvarchar(50) NULL;';
+
+	IF NOT EXISTS(SELECT id FROM syscolumns WHERE  id = OBJECT_ID('ASRSysExportName', 'U') AND name = 'LastSuccessfulOutput')
+		EXEC sp_executesql N'ALTER TABLE ASRSysExportName ADD LastSuccessfulOutput datetime NULL;';
+		
+	IF NOT EXISTS(SELECT id FROM syscolumns WHERE  id = OBJECT_ID('ASRSysExportName', 'U') AND name = 'AuditChangesOnly')
+		EXEC sp_executesql N'ALTER TABLE ASRSysExportName ADD AuditChangesOnly bit NULL;';
 
 
 /* ------------------------------------------------------------- */
