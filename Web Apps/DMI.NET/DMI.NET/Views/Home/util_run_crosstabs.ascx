@@ -80,27 +80,7 @@ Session("utiltype = 17 		Calendar Report--%>
 		<div>
 			<select id="cboIntersectionType" name="cboIntersectionType" class="combo" style="WIDTH: 205px" onchange="UpdateGrid()"></select>
 		</div>
-	</div>
-	<div id="PageControls" style="float: left">
-		<div id="txtWordVer" style="font-weight: bold;">Page</div>
-
-		<div id="CrossTabPage" name="CrossTabPage">
-			<div style="width: 80px; float: left">
-				<label>Column :</label>
-			</div>
-			<div>
-				<input id="txtPageColumn" name="txtPageColumn" style="WIDTH: 200px;" class="text textdisabled" disabled="disabled">
-			</div>
-
-			<div style="width: 80px; float: left">
-				<label>Value :</label>
-			</div>
-			<div>
-				<select id="cboPage" name="cboPage" class="combo" style="WIDTH: 205px" onchange="UpdateGrid()"></select>
-			</div>
-		</div>
-	</div>
-	<div id="CrossTabCheckBoxes" style="float: left; margin-left: 80px; padding-top: 10px">
+		<div id="CrossTabCheckBoxes" style="float: left; margin-left: 80px; padding-top: 10px">
 		<input type="checkbox" id="chkSuppressZeros" name="chkSuppressZeros" value="checkbox"
 			onclick="UpdateGrid()" />
 		<label
@@ -149,6 +129,29 @@ Session("utiltype = 17 		Calendar Report--%>
 			%>
 		</label>
 	</div>
+	</div>
+		
+	<div id="PageControls" style="float: left">
+		
+
+		<div id="CrossTabPage" name="CrossTabPage">
+			<div id="txtWordVer" style="font-weight: bold;">Page</div>
+			<div style="width: 80px; float: left">
+				<label>Column :</label>
+			</div>
+			<div>
+				<input id="txtPageColumn" name="txtPageColumn" style="WIDTH: 200px;" class="text textdisabled" disabled="disabled">
+			</div>
+
+			<div style="width: 80px; float: left">
+				<label>Value :</label>
+			</div>
+			<div>
+				<select id="cboPage" name="cboPage" class="combo" style="WIDTH: 205px" onchange="UpdateGrid()"></select>
+			</div>
+		</div>
+	</div>
+
 </div>
 
 <form id="frmOriginalDefinition">
