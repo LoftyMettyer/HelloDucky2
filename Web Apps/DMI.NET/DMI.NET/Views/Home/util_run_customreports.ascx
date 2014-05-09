@@ -362,7 +362,9 @@ End If
 		If e.Row.RowType = DataControlRowType.Header Or e.Row.RowType = DataControlRowType.Footer Then
 			e.Row.CssClass = "header"
 			ReportColumnCount = 0
-			
+			For iCount = 1 To objReport.ReportDataTable.Columns.Count - 1
+				e.Row.Cells(iCount).Text = e.Row.Cells(iCount).Text.Replace(" ", "_")
+			Next
 		Else
 
 			If e.Row.Cells(0).Text = HR.Intranet.Server.Enums.RowType.GrandSummary Then
@@ -442,31 +444,59 @@ End If
 		gridHeight = 390;
 	}
 
-	tableToGrid("#gridReportData", {
-		shrinkToFit: ShrinkToFit,
-		width: gridWidth,
-		height: gridHeight,
-		ignoreCase: true,
-		cmTemplate: { sortable: false },
-		rowNum: 200000,
-		loadComplete: function () {
-			$('#gridReportData').hideCol("rowType");
-			stylejqGrid();
+	var newFormat = OpenHR.getLocaleDateString();
+	var srcFormat = 'd/m/Y'; //newFormat;
+	if (newFormat.toLowerCase().indexOf('y.m.d') >= 0) srcFormat = 'd/m/Y';
+	
+		tableToGrid("#gridReportData", {
+			shrinkToFit: ShrinkToFit,
+			width: gridWidth,
+			height: gridHeight,
+			ignoreCase: true,
+			colNames: [
+				<%Dim iColCount As Integer = 0
+	For Each objItem In objReport.DisplayColumns
+		Dim sColumnName = objReport.ReportDataTable.Columns(iColCount).ColumnName
+		Response.Write(String.Format("{0}'{1}'", IIf(iColCount > 0, ", ", ""), sColumnName))
+		iColCount += 1
+	Next%>
+			],
+			colModel: [
+				<%
+	iColCount = 0
+	For Each objItem In objReport.DisplayColumns
+		Dim sColumnName = objReport.ReportDataTable.Columns(iColCount).ColumnName.Replace(" ", "_")
+		If objItem.IsNumeric Then
+			Response.Write(String.Format("{0}{{name:'", IIf(iColCount > 0, ", ", "")) & sColumnName & "',align:'right'}")
+		ElseIf objItem.IsDateColumn Then			
+			Response.Write(String.Format("{0}{{name:'", IIf(iColCount > 0, ", ", "")) & sColumnName & "', edittype: 'date', align: 'center',  formatter: 'date', formatoptions: { srcformat: srcFormat, newformat: newFormat, disabled: true }}")
+		Else
+			Response.Write(String.Format("{0}{{name:'", IIf(iColCount > 0, ", ", "")) & sColumnName & "'}")
+		End If
+		iColCount += 1
+	Next%>
+			],
+			cmTemplate: { sortable: false },
+			rowNum: 200000,
+			loadComplete: function() {
+				$('#gridReportData').hideCol("rowType");
+				stylejqGrid();
+			}
+		});
+	
+		$('#gview_gridReportData td').css('white-space', 'pre-line');
+
+		function stylejqGrid() {
+			//jqGrid style overrides
+			$('#gview_gridReportData tr.jqgrow td').css('vertical-align', 'top'); //float text to top, in case of multi-line cells
+			$('#gview_gridReportData tr.footrow td').css('vertical-align', 'top'); //float text to top, in case of multi-line footers
+			$('#gview_gridReportData .s-ico span').css('display', 'none'); //hide the sort order icons - they don't tie in to the dataview model.
+			//$("#gview_gridReportData > .ui-jqgrid-titlebar").text("<%=objReport.ReportCaption%>"); //Activate title bar for the grid as this will then go naturally into the print functionality.
+			//$("#gview_gridReportData > .ui-jqgrid-titlebar").height("20px"); //no title bar; this is in the dialog title
+			//$("#gview_gridReportData .ui-jqgrid-titlebar").show();
+
 		}
-	});
-
-	$('#gview_gridReportData td').css('white-space', 'pre-line');
-
-	function stylejqGrid() {
-		//jqGrid style overrides
-		$('#gview_gridReportData tr.jqgrow td').css('vertical-align', 'top'); //float text to top, in case of multi-line cells
-		$('#gview_gridReportData tr.footrow td').css('vertical-align', 'top'); //float text to top, in case of multi-line footers
-		$('#gview_gridReportData .s-ico span').css('display', 'none'); //hide the sort order icons - they don't tie in to the dataview model.
-		//$("#gview_gridReportData > .ui-jqgrid-titlebar").text("<%=objReport.ReportCaption%>"); //Activate title bar for the grid as this will then go naturally into the print functionality.
-		//$("#gview_gridReportData > .ui-jqgrid-titlebar").height("20px"); //no title bar; this is in the dialog title
-		//$("#gview_gridReportData .ui-jqgrid-titlebar").show();
-
-	}
+		
 	if (menu_isSSIMode()) $('#gbox_gridReportData').css('margin', '0 auto'); //center the report in self-service screen.
 	
 

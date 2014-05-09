@@ -74,6 +74,10 @@ function find_window_onload() {
 			}
 			sAction = frmFindForm.txtGotoAction.value; // Refresh the link find grid with the data if required.
 
+			var newFormat = OpenHR.getLocaleDateString();
+			var srcFormat = newFormat;
+			if (newFormat.toLowerCase().indexOf('y.m.d') >= 0) srcFormat = 'd/m/Y';
+			
 			dataCollection = frmFindForm.elements; // Configure the grid columns.
 			colMode = [];
 			colNames = [];
@@ -112,7 +116,7 @@ function find_window_onload() {
 												}
 											},
 											formatter: 'date',
-											formatoptions: { srcformat: 'd/m/Y', newformat: 'd/m/Y', disabled: true },
+											formatoptions: { srcformat: srcFormat, newformat: newFormat, disabled: true },
 											align: 'left',
 											width: 100
 										});

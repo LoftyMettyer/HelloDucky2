@@ -315,6 +315,7 @@
 		window.LocaleDecimalSeparator = "<%=LocaleDecimalSeparator%>";
 		window.LocaleDateFormat = "<%=LocaleDateFormat%>";
 		window.LocaleDateSeparator = "<%=LocaleDateSeparator%>";
+		window.UserLocale = "<%:UserLocale()%>";
 
 		function loadPartialView(action, controller, targetDiv, params) {
 			$.ajax({
