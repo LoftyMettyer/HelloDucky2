@@ -7,6 +7,14 @@
 
 <script src="<%: Url.LatestContent("~/Scripts/FormScripts/crosstabdef.js")%>" type="text/javascript"></script>
 
+
+<%--licence manager reference for activeX--%>
+<object classid="clsid:5220cb21-c88d-11cf-b347-00aa00a28331"
+	id="Microsoft_Licensed_Class_Manager_1_0"
+	viewastext>
+	<param name="LPKPath" value="<%: Url.Content("~/lpks/ssmain.lpk")%>">
+</object>
+
 <div <%=session("BodyTag")%>>
 
 <form id="frmTables" style="visibility: hidden; display: none">
