@@ -412,37 +412,39 @@ Public Module ASRIntranetFunctions
 	' The following example sends a binary file as an e-mail attachment.
 	Friend Sub SendMailWithAttachment(sSubject As String, objAttachment As Stream, recipientList As String, mstrEmailAttachAs As String)
 
-		Dim message As New MailMessage()
-		message.Subject = IIf(sSubject.Length = 0, "OpenHR Report", sSubject).ToString()
-		message.Body = "Your report is attached."
+		Using message As New MailMessage()
 
-		Try
+			message.Subject = IIf(sSubject.Length = 0, "OpenHR Report", sSubject).ToString()
+			message.Body = "Your report is attached."
 
-			If recipientList.Contains(";") = True Then
+			Try
 
-				Dim aRecipientList = Split(recipientList, ";")
+				If recipientList.Contains(";") = True Then
 
-				For iLoop = 0 To UBound(aRecipientList) - 1
-					message.To.Add(aRecipientList(iLoop))
-				Next
-			Else
-				message.To.Add(recipientList)
-			End If
+					Dim aRecipientList = Split(recipientList, ";")
 
-			Dim data As New Attachment(objAttachment, New ContentType(MediaTypeNames.Application.Octet))
-			Dim disposition As ContentDisposition = data.ContentDisposition
-			disposition.FileName = mstrEmailAttachAs
-			message.Attachments.Add(data)
+					For iLoop = 0 To UBound(aRecipientList) - 1
+						message.To.Add(aRecipientList(iLoop))
+					Next
+				Else
+					message.To.Add(recipientList)
+				End If
 
-			Dim client As New SmtpClient()
+				Dim data As New Attachment(objAttachment, New ContentType(MediaTypeNames.Application.Octet))
+				Dim disposition As ContentDisposition = data.ContentDisposition
+				disposition.FileName = mstrEmailAttachAs
+				message.Attachments.Add(data)
 
-			client.Send(message)
-			data.Dispose()
+				Dim client As New SmtpClient()
 
-		Catch ex As Exception
-			Throw
-		End Try
+				client.Send(message)
+				data.Dispose()
 
+			Catch ex As Exception
+				Throw
+			End Try
+
+		End Using
 	End Sub
 
 End Module
