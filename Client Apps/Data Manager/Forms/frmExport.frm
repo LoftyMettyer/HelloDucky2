@@ -57,7 +57,7 @@ Begin VB.Form frmExport
       _Version        =   393216
       Style           =   1
       Tabs            =   6
-      Tab             =   4
+      Tab             =   5
       TabsPerRow      =   6
       TabHeight       =   520
       BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
@@ -94,25 +94,28 @@ Begin VB.Form frmExport
       Tab(3).ControlCount=   1
       TabCaption(4)   =   "O&ptions"
       TabPicture(4)   =   "frmExport.frx":007C
-      Tab(4).ControlEnabled=   -1  'True
-      Tab(4).Control(0)=   "fraDateOptions"
-      Tab(4).Control(0).Enabled=   0   'False
-      Tab(4).Control(1)=   "fraHeaderOptions"
-      Tab(4).Control(1).Enabled=   0   'False
+      Tab(4).ControlEnabled=   0   'False
+      Tab(4).Control(0)=   "fraHeaderOptions"
+      Tab(4).Control(1)=   "fraDateOptions"
       Tab(4).ControlCount=   2
       TabCaption(5)   =   "O&utput"
       TabPicture(5)   =   "frmExport.frx":0098
-      Tab(5).ControlEnabled=   0   'False
-      Tab(5).Control(0)=   "fraXML"
-      Tab(5).Control(1)=   "fraOutputType"
+      Tab(5).ControlEnabled=   -1  'True
+      Tab(5).Control(0)=   "fraDelimFile"
+      Tab(5).Control(0).Enabled=   0   'False
+      Tab(5).Control(1)=   "fraCMGFile"
+      Tab(5).Control(1).Enabled=   0   'False
       Tab(5).Control(2)=   "fraOutputDestination"
-      Tab(5).Control(3)=   "fraCMGFile"
-      Tab(5).Control(4)=   "fraDelimFile"
+      Tab(5).Control(2).Enabled=   0   'False
+      Tab(5).Control(3)=   "fraOutputType"
+      Tab(5).Control(3).Enabled=   0   'False
+      Tab(5).Control(4)=   "fraXML"
+      Tab(5).Control(4).Enabled=   0   'False
       Tab(5).ControlCount=   5
       Begin VB.Frame fraXML 
          Caption         =   "XML Options :"
          Height          =   1410
-         Left            =   -74850
+         Left            =   150
          TabIndex        =   125
          Top             =   3580
          Width           =   9180
@@ -390,7 +393,7 @@ Begin VB.Form frmExport
       Begin VB.Frame fraOutputType 
          Caption         =   "Output Format :"
          Height          =   3135
-         Left            =   -74850
+         Left            =   150
          TabIndex        =   82
          Top             =   405
          Width           =   2400
@@ -454,7 +457,7 @@ Begin VB.Form frmExport
       Begin VB.Frame fraOutputDestination 
          Caption         =   "Output Destination(s) :"
          Height          =   3135
-         Left            =   -72345
+         Left            =   2655
          TabIndex        =   88
          Top             =   405
          Width           =   6675
@@ -611,7 +614,7 @@ Begin VB.Form frmExport
       Begin VB.Frame fraHeaderOptions 
          Caption         =   "Header && Footer :"
          Height          =   2085
-         Left            =   150
+         Left            =   -74850
          TabIndex        =   64
          Top             =   405
          Width           =   9180
@@ -707,7 +710,7 @@ Begin VB.Form frmExport
       Begin VB.Frame fraDateOptions 
          Caption         =   "Date Format :"
          Height          =   2450
-         Left            =   150
+         Left            =   -74850
          TabIndex        =   75
          Top             =   2520
          Width           =   9180
@@ -1626,7 +1629,7 @@ Begin VB.Form frmExport
       Begin VB.Frame fraCMGFile 
          Caption         =   "CMG Options :"
          Height          =   1410
-         Left            =   -74850
+         Left            =   150
          TabIndex        =   109
          Top             =   3580
          Width           =   9180
@@ -1674,7 +1677,7 @@ Begin VB.Form frmExport
       Begin VB.Frame fraDelimFile 
          Caption         =   "Delimited File Options :"
          Height          =   1410
-         Left            =   -74850
+         Left            =   150
          TabIndex        =   103
          Top             =   3570
          Width           =   9180
@@ -4597,6 +4600,25 @@ Private Function ValidateDefinition() As Boolean
       ValidateDefinition = False
       Exit Function
     End If
+  End If
+  
+  
+  ' XML specific validation
+  If optOutputFormat(fmtXML) Then
+    If ContainsInvalidXML(txtCustomHeader.Text, False) Then
+      COAMsgBox "The XML custom header cannot contain spaces or any of the following characters: ~/\;?$&%@^=*+()|""'`{}[]<>"
+      SSTab1.Tab = 4
+      ValidateDefinition = False
+      Exit Function
+    End If
+    
+    If ContainsInvalidXML(txtXMLDataNodeName.Text, False) Then
+      COAMsgBox "The XML custom node name cannot contain spaces or any of the following characters: ~/\;?$&%@^=*+()|""'`{}[]<>"
+      SSTab1.Tab = 5
+      ValidateDefinition = False
+      Exit Function
+    End If
+
   End If
   
   ' Check that at least 1 column has been defined as the export order

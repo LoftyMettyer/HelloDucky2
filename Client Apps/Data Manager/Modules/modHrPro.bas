@@ -1612,7 +1612,7 @@ Public Function ReadPicture(ByRef PictureObject As Object, ByRef PictureField As
 '            Set PictureObject.Icon = LoadPicture(strTempName)
             
             PictureObject.picIcon = LoadPicture(strTempName, vbLPSmall, vbLPColor)
-            SendMessageLong PictureObject.hWnd, WM_SETICON, ICON_SMALL, PictureObject.picIcon.Picture.Handle
+            SendMessageLong PictureObject.hWnd, WM_SETICON, ICON_SMALL, PictureObject.picIcon.Picture.handle
             
         Else
             Set PictureObject.Picture = LoadPicture(strTempName)
@@ -4655,3 +4655,42 @@ Public Function GetBatchJobType(ByVal Utility As UtilityType) As String
 
 
 End Function
+
+Public Function ContainsInvalidXML(ByVal NodeText, AllowForwardSlash As Boolean) As Boolean
+
+  Dim bOK As Boolean
+
+  bOK = True
+  If InStr(1, NodeText, " ") > 0 Then bOK = False
+  If InStr(1, NodeText, ":") > 0 Then bOK = False
+  If InStr(1, NodeText, "~") > 0 Then bOK = False
+  If InStr(1, NodeText, "\") > 0 Then bOK = False
+  If InStr(1, NodeText, "/") > 0 Then bOK = AllowForwardSlash
+  If InStr(1, NodeText, ";") > 0 Then bOK = False
+  If InStr(1, NodeText, "?") > 0 Then bOK = False
+  If InStr(1, NodeText, "$") > 0 Then bOK = False
+  If InStr(1, NodeText, "&") > 0 Then bOK = False
+  If InStr(1, NodeText, "%") > 0 Then bOK = False
+  If InStr(1, NodeText, "@") > 0 Then bOK = False
+  If InStr(1, NodeText, "^") > 0 Then bOK = False
+  If InStr(1, NodeText, "=") > 0 Then bOK = False
+  If InStr(1, NodeText, "*") > 0 Then bOK = False
+  If InStr(1, NodeText, "+") > 0 Then bOK = False
+  If InStr(1, NodeText, "(") > 0 Then bOK = False
+  If InStr(1, NodeText, Chr(34)) > 0 Then bOK = False
+  If InStr(1, NodeText, ")") > 0 Then bOK = False
+  If InStr(1, NodeText, "|") > 0 Then bOK = False
+  If InStr(1, NodeText, "'") > 0 Then bOK = False
+  If InStr(1, NodeText, "`") > 0 Then bOK = False
+  If InStr(1, NodeText, "{") > 0 Then bOK = False
+  If InStr(1, NodeText, "}") > 0 Then bOK = False
+  If InStr(1, NodeText, "[") > 0 Then bOK = False
+  If InStr(1, NodeText, "]") > 0 Then bOK = False
+  If InStr(1, NodeText, "<") > 0 Then bOK = False
+  If InStr(1, NodeText, ">") > 0 Then bOK = False
+
+  ContainsInvalidXML = Not bOK
+  
+End Function
+
+

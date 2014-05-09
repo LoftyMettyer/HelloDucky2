@@ -945,6 +945,7 @@ Private Sub cmdOK_Click()
   Dim strErrorMsg As String
   Dim blnFixedLength As Boolean
   Dim blnCarriageReturn As Boolean
+  Dim bInvalidChars As Boolean
   
   blnFixedLength = (mfrmForm.optOutputFormat(fmtFixedLengthFile).Value = True)
   
@@ -982,6 +983,13 @@ Private Sub cmdOK_Click()
       Exit Sub
     End If
     Set prstTemp = Nothing
+  End If
+
+  If mbIsXML Then
+    If ContainsInvalidXML(txtHeading.Text, True) Then
+      COAMsgBox "The XML node heading cannot contain spaces or any of the following characters: ~\;?$&%@^=*+()|""'`{}[]<>"
+      Exit Sub
+    End If
   End If
 
   If optText Then
@@ -1351,7 +1359,7 @@ Public Sub SetCMGOptions(ByVal sDefaultCMGCode As String)
   'NPG20080617 Suggestion S000816
   ' Expand the size of the form and show the Suppress Nulls check box for CMG exports
   Me.Height = 5325
-  cmdOK.Top = 4350
+  cmdOk.Top = 4350
   cmdCancel.Top = 4350
   fraType.Height = 4020
   fraProperties.Height = 2775
