@@ -2822,7 +2822,7 @@ Namespace Controllers
 						Response.ContentType = "application/octet-stream"
 						Response.Clear()
 						Response.AppendCookie(New HttpCookie("fileDownloadToken", downloadTokenValue)) ' marks the download as complete on the client
-						Response.AppendCookie(New HttpCookie("fileDownloadErrors", vbNullString))	' Clear error message response cookie
+						If Not blnEmail Then Response.AppendCookie(New HttpCookie("fileDownloadErrors", vbNullString)) ' Clear error message response cookie
 						Response.AddHeader("Content-Disposition", String.Format("attachment;filename=""{0}""", strDownloadFileName))
 						Response.AddHeader("Content-Length", fileInfo.Length.ToString())
 						Response.WriteFile(fileInfo.FullName)
@@ -3116,7 +3116,7 @@ Namespace Controllers
 						Response.ContentType = "application/octet-stream"
 						Response.Clear()
 						Response.AppendCookie(New HttpCookie("fileDownloadToken", downloadTokenValue)) ' marks the download as complete on the client
-						Response.AppendCookie(New HttpCookie("fileDownloadErrors", vbNullString))	' Clear error message response cookie
+						If Not blnEmail Then Response.AppendCookie(New HttpCookie("fileDownloadErrors", vbNullString)) ' Clear error message response cookie
 						Response.AddHeader("Content-Disposition", String.Format("attachment;filename=""{0}""", strDownloadFileName))
 						Response.AddHeader("Content-Length", fileInfo.Length.ToString())
 						Response.WriteFile(fileInfo.FullName)
@@ -3244,7 +3244,7 @@ Namespace Controllers
 						Response.ContentType = "application/octet-stream"
 						Response.Clear()
 						Response.AppendCookie(New HttpCookie("fileDownloadToken", downloadTokenValue)) ' marks the download as complete on the client
-						Response.AppendCookie(New HttpCookie("fileDownloadErrors", vbNullString))	' Clear error message response cookie
+						If Not blnEmail Then Response.AppendCookie(New HttpCookie("fileDownloadErrors", vbNullString)) ' Clear error message response cookie
 						Response.AddHeader("Content-Disposition", String.Format("attachment;filename=""{0}""", strDownloadFileName))
 						Response.AddHeader("Content-Length", fileInfo.Length.ToString())
 						Response.WriteFile(fileInfo.FullName)
