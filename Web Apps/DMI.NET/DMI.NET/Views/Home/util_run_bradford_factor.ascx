@@ -446,7 +446,7 @@ End If
 
 
 	tableToGrid("#gridReportData", {
-		shrinkToFit: ShrinkToFit,
+		shrinkToFit: true,
 		width: gridWidth,
 		height: gridHeight,
 		ignoreCase: true,
@@ -455,6 +455,7 @@ End If
 		loadComplete: function () {
 			$('#gridReportData').hideCol("rowType");
 			stylejqGrid();
+			$('#gridReportData').setGridWidth($('#main').width());
 		}
 	});
 

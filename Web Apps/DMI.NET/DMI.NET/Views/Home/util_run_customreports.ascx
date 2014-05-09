@@ -478,9 +478,10 @@ End If
 			],
 			cmTemplate: { sortable: false },
 			rowNum: 200000,
-			loadComplete: function() {
+			loadComplete: function () {				
 				$('#gridReportData').hideCol("rowType");
 				stylejqGrid();
+				$('#gridReportData').setGridWidth($('#main').width());
 			}
 		});
 	
