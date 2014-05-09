@@ -11,6 +11,9 @@
             <Component Id="cmpFB33635B7D7AF5906B5DFB25D7E4F343" Guid="*">
                 <File Id="fil0AB648957C4B57849C7F7229ADDD83F2" KeyPath="yes" Source="SourceDir\Web.config" />
             </Component>
+            <Component Id="cmp2935FCA0A9D8858C3B1B38AFB80A6D26" Guid="*">
+                <File Id="filFB01604ADF7F8BC8E0CDF26E77EE9F4C" KeyPath="yes" Source="SourceDir\Web.config.diagnostics" />
+            </Component>
             <Component Id="cmpED123C699A0F53DF2F986B06978AF0CF" Guid="*">
                 <File Id="fil2DB1A42ED3C87EEF0CB1D67A17A0BAF2" KeyPath="yes" Source="SourceDir\Web.custom.config.template" />
             </Component>
@@ -33,8 +36,8 @@
                 <Component Id="cmp2530B8FBE234E15C0B13889033DE8E28" Guid="*">
                     <File Id="filFBA339DE723337531A3D1177EC81A4A9" KeyPath="yes" Source="SourceDir\bin\DMI.NET.dll" />
                 </Component>
-                <Component Id="cmpB20E79993FF91609D93C6541449A6BF5" Guid="*">
-                    <File Id="fil008FC3B87F5C76EA5F56A7EDBE91AC33" KeyPath="yes" Source="SourceDir\bin\DMI.NET.xml" />
+                <Component Id="cmp10FA60423FCAC54DCF6B6B7D2150784B" Guid="*">
+                    <File Id="fil6C0E761DB246FA512166123D417782CC" KeyPath="yes" Source="SourceDir\bin\Elmah.dll" />
                 </Component>
                 <Component Id="cmp4694065D67E87E6FC07799089F4CF157" Guid="*">
                     <File Id="fil1705838E4BA562F81356911BCACC6982" KeyPath="yes" Source="SourceDir\bin\HR.Intranet.Server.dll" />
@@ -63,32 +66,9 @@
                 <Component Id="cmpFC1F31B00D2B9E90825341706D7B5C63" Guid="*">
                     <File Id="filC4F818B533E46901A67113A6A6F62900" KeyPath="yes" Source="SourceDir\bin\System.Web.WebPages.Razor.dll" />
                 </Component>
-                <Component Id="cmp1EA404F1B4EA27D634D656B82A9D6FCD" Guid="*">
-                    <File Id="fil9AF033730837BAB806A2C2DD0328CA7E" KeyPath="yes" Source="SourceDir\bin\Web.custom.config.template" />
-                </Component>
                 <Component Id="cmp1D6184B64F3F1969AF56912F31422062" Guid="*">
                     <File Id="fil4738D99EE8C94A9F1F6B77A9CEC21B43" KeyPath="yes" Source="SourceDir\bin\WebGrease.dll" />
                 </Component>
-                <Directory Id="dir0A3FAE4D022CAC7F9C557F171B706BB1" Name="Content">
-                    <Directory Id="dirB534004567E5548036131826061FA672" Name="DashboardStyles">
-                        <Directory Id="dir299CEF67EB154CA7641FA71F59317AF9" Name="layouts">
-                            <Component Id="cmp8510D7A715EBC2C3561B2473214E652E" Guid="*">
-                                <File Id="filDBFB1C2C466711B0661EA914734346FC" KeyPath="yes" Source="SourceDir\bin\Content\DashboardStyles\layouts\tiles.css" />
-                            </Component>
-                            <Component Id="cmp5039BE9CACE657C7F3DA2C7B95AA1855" Guid="*">
-                                <File Id="filAD7ADF307B58D8382AEDF621CCB391D0" KeyPath="yes" Source="SourceDir\bin\Content\DashboardStyles\layouts\winkit.css" />
-                            </Component>
-                            <Component Id="cmp5FB6444B8D7F0ECE41E19F4305E40BD4" Guid="*">
-                                <File Id="fil3BF2325715918639CB12ECA97DCA27CF" KeyPath="yes" Source="SourceDir\bin\Content\DashboardStyles\layouts\wireframe.css" />
-                            </Component>
-                        </Directory>
-                    </Directory>
-                </Directory>
-                <Directory Id="dirD72F19617B8D6C9DA54AE7ADA4259359" Name="lpks">
-                    <Component Id="cmp904725CB8C81AC54498D3A30E949EBB3" Guid="*">
-                        <File Id="filB1E211081C7209CD6B504E2932C65D02" KeyPath="yes" Source="SourceDir\bin\lpks\ssmain.lpk" />
-                    </Component>
-                </Directory>
             </Directory>
             <Directory Id="dir3B24C977B030062216D87253D9E23E51" Name="Content">
                 <Component Id="cmp9C79B61AA4F32A319E8772E3755573EF" Guid="*">
@@ -4552,6 +4532,7 @@
             <ComponentRef Id="cmp93645FCD1A13835D0DFCD156CF2C6C64" />
             <ComponentRef Id="cmpFED9CE4C040C6D017106CB6B92C2F157" />
             <ComponentRef Id="cmpFB33635B7D7AF5906B5DFB25D7E4F343" />
+            <ComponentRef Id="cmp2935FCA0A9D8858C3B1B38AFB80A6D26" />
             <ComponentRef Id="cmpED123C699A0F53DF2F986B06978AF0CF" />
             <ComponentRef Id="cmpA426106E50E83F038FBE746C1E09504B" />
             <ComponentRef Id="cmp4620207BA46725D23ED359B68B7D53B2" />
@@ -4559,7 +4540,7 @@
             <ComponentRef Id="cmp9B3431215CA40ADB3D4192D5BFE1BBF8" />
             <ComponentRef Id="cmp2A46E0D12BEA4E31EA4C33088D9781E8" />
             <ComponentRef Id="cmp2530B8FBE234E15C0B13889033DE8E28" />
-            <ComponentRef Id="cmpB20E79993FF91609D93C6541449A6BF5" />
+            <ComponentRef Id="cmp10FA60423FCAC54DCF6B6B7D2150784B" />
             <ComponentRef Id="cmp4694065D67E87E6FC07799089F4CF157" />
             <ComponentRef Id="cmp48B5CE506D86BF39F5848F1D62F6CFAE" />
             <ComponentRef Id="cmp703C2CA9CED6F3E7FDFB80ED8CC8013B" />
@@ -4569,12 +4550,7 @@
             <ComponentRef Id="cmpB52A1BBF5DED33C834CCF11A935BFDE4" />
             <ComponentRef Id="cmp88F8A681B67CF6A2591F23432807E568" />
             <ComponentRef Id="cmpFC1F31B00D2B9E90825341706D7B5C63" />
-            <ComponentRef Id="cmp1EA404F1B4EA27D634D656B82A9D6FCD" />
             <ComponentRef Id="cmp1D6184B64F3F1969AF56912F31422062" />
-            <ComponentRef Id="cmp8510D7A715EBC2C3561B2473214E652E" />
-            <ComponentRef Id="cmp5039BE9CACE657C7F3DA2C7B95AA1855" />
-            <ComponentRef Id="cmp5FB6444B8D7F0ECE41E19F4305E40BD4" />
-            <ComponentRef Id="cmp904725CB8C81AC54498D3A30E949EBB3" />
             <ComponentRef Id="cmp9C79B61AA4F32A319E8772E3755573EF" />
             <ComponentRef Id="cmp9902ACDE38C111E7EAEBA6C9F56C2770" />
             <ComponentRef Id="cmpA7B9259C762B127CB855D52E051EF2E4" />
