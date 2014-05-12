@@ -1471,7 +1471,7 @@ LocalErr:
 						Case Else
 
 							'UPGRADE_WARNING: Couldn't resolve default property of object mvarHeadings()(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-							If LCase(mvarHeadings(Index)(lngCount)) = LCase(HttpUtility.HtmlEncode(strValue)) Then
+							If LCase(mvarHeadings(Index)(lngCount)).ToString().Trim() = LCase(HttpUtility.HtmlEncode(strValue)) Then
 								'UPGRADE_WARNING: Couldn't resolve default property of object GetGroupNumber. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 								Return lngCount
 							End If
@@ -1840,8 +1840,6 @@ LocalErr:
 			Return False
 		End If
 
-		rsCrossTabData = DB.GetDataTable("SELECT * FROM " & mstrTempTableName)
-
 		For Each objRow As DataRow In rsCrossTabData.Rows
 
 			'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
@@ -1888,36 +1886,35 @@ LocalErr:
 		Dim strSearch() As String
 		Dim lngLoop As Integer
 
+		Try
 
-		On Error GoTo LocalErr
+			For lngLoop = 0 To 2
 
-		For lngLoop = 0 To 2
+				ReDim strHeading(0)
+				ReDim strSearch(0)
 
-			ReDim strHeading(0)
-			ReDim strSearch(0)
+				If lngLoop = 2 And mblnPageBreak = False Then
+					'When no page break field is specified
+					strHeading(0) = "<None>"
+				Else
+					GetHeadingsAndSearchesForColumns(lngLoop, strHeading, strSearch)
+				End If
 
-			If lngLoop = 2 And mblnPageBreak = False Then
-				'When no page break field is specified
-				strHeading(0) = "<None>"
-			Else
-				GetHeadingsAndSearchesForColumns(lngLoop, strHeading, strSearch)
-			End If
+				'Store each array in an array of variants (an array in an array!)
+				'UPGRADE_WARNING: Couldn't resolve default property of object mvarHeadings(lngLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+				mvarHeadings(lngLoop) = VB6.CopyArray(strHeading)
+				'UPGRADE_WARNING: Couldn't resolve default property of object mvarSearches(lngLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+				mvarSearches(lngLoop) = VB6.CopyArray(strSearch)
 
+			Next
 
-			'Store each array in an array of variants (an array in an array!)
-			'UPGRADE_WARNING: Couldn't resolve default property of object mvarHeadings(lngLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			mvarHeadings(lngLoop) = VB6.CopyArray(strHeading)
-			'UPGRADE_WARNING: Couldn't resolve default property of object mvarSearches(lngLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			mvarSearches(lngLoop) = VB6.CopyArray(strSearch)
+		Catch ex As Exception
+			mstrStatusMessage = "Error building headings and search arrays"
+			Return False
 
-		Next
+		End Try
 
-		AbsenceBreakdownGetHeadingsAndSearches = True
-		Exit Function
-
-LocalErr:
-		mstrStatusMessage = "Error building headings and search arrays"
-		AbsenceBreakdownGetHeadingsAndSearches = False
+		Return True
 
 	End Function
 
