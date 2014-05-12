@@ -117,7 +117,7 @@
 		ELSE
 			SET @FrameworkPath = 'C:\Windows\Microsoft.NET\Framework\v2.0.50727\System.DirectoryServices.DLL'
 
-		IF @iSQLVersion = 11
+		IF @iSQLVersion = 11 OR @iSQLVersion = 12
 			IF @bIs64Bit = 1
 				SET @FrameworkPath = 'C:\Windows\Microsoft.NET\Framework64\v4.0.30319\System.DirectoryServices.DLL'
 			ELSE

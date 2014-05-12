@@ -25,6 +25,9 @@ Public Function SetDatabaseCompatability() As Boolean
     Case 11
       sSQL = "ALTER DATABASE [" & gsDatabaseName & "] SET COMPATIBILITY_LEVEL=110"
       gADOCon.Execute sSQL, -1, adExecuteNoRecords
+    Case 12
+      sSQL = "ALTER DATABASE [" & gsDatabaseName & "] SET COMPATIBILITY_LEVEL=120"
+      gADOCon.Execute sSQL, -1, adExecuteNoRecords
     Case Else
       GoTo LocalErr
   End Select
