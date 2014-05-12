@@ -1,0 +1,26 @@
+﻿
+
+
+@{
+    ViewBag.Title = "Home Page";
+    
+
+
+}
+
+<div class="jumbotron">
+    <h1>
+        <img src="~/Content/Images/adv-head-logo.png" />        
+    </h1>
+
+</div>
+
+<div class="row">
+    @if (Request.IsAuthenticated) {
+
+    <div>
+        <h1>Your openhr id is @ViewBag.OpenHRID</h1>
+    </div>
+    }
+
+</div>
