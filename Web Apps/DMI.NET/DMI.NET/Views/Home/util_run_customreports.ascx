@@ -261,9 +261,7 @@
 	If fok Then
 		objReport.ClearUp()
 	End If
-		
-	ReportColumnCount = objReport.DisplayColumns.Count
-		
+				
 	If fok Then
 		Response.Write("<form name=frmOutput id=frmOutput method=post>" & vbCrLf)
 		Response.Write("<div>")
@@ -351,7 +349,6 @@ End If
 	Protected Sub gridReportData_RowDataBound(sender As Object, e As GridViewRowEventArgs) Handles gridReportData.RowDataBound		
 		
 		Dim objReport As Report = CType(Session("CustomReport"), Report)
-		Dim objThisColumn As ReportDetailItem
 
 		If e.Row.RowType = DataControlRowType.Header Or e.Row.RowType = DataControlRowType.Footer Then
 			e.Row.CssClass = "header"			
@@ -370,23 +367,7 @@ End If
 							
 		End If
 
-		For iCount = 1 To objReport.ReportDataTable.Columns.Count - 1
-						
-			objThisColumn = objReport.DisplayColumns(iCount)
-					
-			If objThisColumn.IsNumeric Then
-				e.Row.Cells(iCount).HorizontalAlign = HorizontalAlign.Right
-			Else
-				e.Row.Cells(iCount).HorizontalAlign = HorizontalAlign.Left
-			End If
-	
-		Next
-
-	End Sub
-		
-	
-	Public Property ReportColumnCount() As Integer
-	
+	End Sub	
 	
 </script>
 
@@ -435,7 +416,7 @@ End If
 	} else {
 		//DMI options.
 		
-		var iVisibleCount = Number("<%:ReportColumnCount%>");
+		var iVisibleCount = Number("<%:objReport.DisplayColumns.Count%>");
 		if ((iVisibleCount *100) < size.MakeWidth) ShrinkToFit = true;
 		gridWidth = (size.MakeWidth);
 		gridHeight = (size.MakeHeight);

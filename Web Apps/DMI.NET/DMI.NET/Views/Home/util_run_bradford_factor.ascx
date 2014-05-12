@@ -276,10 +276,6 @@
 		Response.Write("<div>")
 		Response.Write("			<table name=tblGrid id=tblGrid height=100% width=100% class=""invisible"" cellspacing=0 cellpadding=0>" & vbCrLf)
 		Response.Write("				<tr>" & vbCrLf)
-		Response.Write("					<td colspan=12 style='height:10px; font-weight: bold;'>" & objReport.ReportCaption & "</td>" & vbCrLf)
-		Response.Write("				</tr>" & vbCrLf)
-		Response.Write("				<tr style='height:10px;'></tr>" & vbCrLf)
-		Response.Write("				<tr>" & vbCrLf)
 		Response.Write("					<td ALIGN=center colspan=12 NAME='tdOutputMSG' ID='tdOutputMSG'>" & vbCrLf)
 %>
 
@@ -296,38 +292,39 @@
 </form>
 
 <%
-				Response.Write("					</td>" & vbCrLf)
-	'Response.Write("					<td width=20></td>" & vbCrLf)
-				Response.Write("				</tr>" & vbCrLf)
-				Response.Write("				<tr>" & vbCrLf)
-				Response.Write("					<td colspan=12 height=10></td>" & vbCrLf)
-				Response.Write("				</tr>" & vbCrLf)
-				Response.Write("				<tr height=25>" & vbCrLf)
-				Response.Write("					<td width=20></td>" & vbCrLf)
-				Response.Write("					<td colspan=8>" & vbCrLf)
+	Response.Write("					</td>" & vbCrLf)
+	Response.Write("				</tr>" & vbCrLf)
+	Response.Write("				<tr>" & vbCrLf)
+	Response.Write("					<td colspan=12 height=10></td>" & vbCrLf)
+	Response.Write("				</tr>" & vbCrLf)
+
+	Response.Write("				<tr height=25>" & vbCrLf)
+	Response.Write("					<td width=20></td>" & vbCrLf)
+	Response.Write("					<td colspan=8>" & vbCrLf)
 	Response.Write("            <div>")
 	Response.Write("						<table WIDTH=""100%"" class=""invisible"" CELLSPACING=0 CELLPADDING=0>" & vbCrLf)
 	Response.Write("							<tr>" & vbCrLf)
 	Response.Write("								<td>" & vbCrLf)
 	Response.Write("								</td>" & vbCrLf)
 	Response.Write("								<td>&nbsp;</td>" & vbCrLf)
-				Response.Write("								<td width=20>" & vbCrLf)
+	Response.Write("								<td width=20>" & vbCrLf)
 	Response.Write("								</td>" & vbCrLf)
-				Response.Write("							</tr>" & vbCrLf)
+	Response.Write("							</tr>" & vbCrLf)
 	Response.Write("						</table>" & vbCrLf)
 	Response.Write("</div>")
-				Response.Write("					</td>" & vbCrLf)
-				Response.Write("					<td width=10></td>" & vbCrLf)
-				Response.Write("					<td width=80> " & vbCrLf)
 	Response.Write("					</td>" & vbCrLf)
-				Response.Write("					<td width=20></td>" & vbCrLf)
-				Response.Write("				</tr>" & vbCrLf)
-				Response.Write("				<tr>" & vbCrLf)
-				Response.Write("					<td colspan=12 height=10></td>" & vbCrLf)
-				Response.Write("				</tr>" & vbCrLf)
+	Response.Write("					<td width=10></td>" & vbCrLf)
+	Response.Write("					<td width=80> " & vbCrLf)
+	Response.Write("					</td>" & vbCrLf)
+	Response.Write("					<td width=20></td>" & vbCrLf)
+	Response.Write("				</tr>" & vbCrLf)
+	Response.Write("				<tr>" & vbCrLf)
+	Response.Write("					<td colspan=12 height=10></td>" & vbCrLf)
+	Response.Write("				</tr>" & vbCrLf)
 	Response.Write("			</table>" & vbCrLf)
 	Response.Write("      </div>")
 	Response.Write("</form>" & vbCrLf)
+
 				Response.Write("<input type=hidden id=txtSuccessFlag name=txtSuccessFlag value=2>" & vbCrLf)
 Else%>
 
@@ -444,13 +441,13 @@ End If
 		//DMI options.
 		var iVisibleCount = 13;
 		if (iVisibleCount < 8) ShrinkToFit = true;
-		gridWidth = size.MakeWidth ;//was 770;
-		gridHeight = size.MakeHeight; //wwas 390;
+		gridWidth = size.MakeWidth;
+		gridHeight = size.MakeHeight;
 	}
 
 
 	tableToGrid("#gridReportData", {
-		shrinkToFit: true,
+		shrinkToFit: ShrinkToFit,
 		width: gridWidth,
 		height: gridHeight,
 		ignoreCase: true,
@@ -462,13 +459,6 @@ End If
 			$('#gridReportData').setGridWidth($('#main').width());
 		}
 	});
-
-	function resizeGrid() {
-		var newHeight = $('#reportworkframe').height();
-		var newWidth = window.innerWidth || document.body.clientWidth;
-		$('#gridReportData').setGridHeight(newHeight - 100);
-		$('#gridReportData').setGridWidth($('#reportframeset').width() * 0.95);
-	}
 
 	$('#gview_gridReportData td').css('white-space', 'pre-line');
 

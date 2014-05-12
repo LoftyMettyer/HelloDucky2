@@ -2466,6 +2466,7 @@ GenerateSQLOrderBy_ERROR:
 
 		If mrstCustomReportsOutput.Rows.Count = 0 Then
 			CheckRecordSet = False
+			DisplayColumns = New List(Of ReportDetailItem)
 			mstrErrorString = "No records meet the selection criteria."
 			Logs.AddDetailEntry("Completed successfully. " & mstrErrorString)
 			Logs.ChangeHeaderStatus(EventLog_Status.elsSuccessful)

@@ -294,15 +294,6 @@
 				resizable: true
 			});
 			$('#main').css('overflow', 'auto');
-
-			<%ElseIf Session("utiltype") = UtilityType.utlBradfordFactor Then%>
-			$(".popup").dialog({
-				width: size.width - 200, //if you want a bigger screen then reduce the subtracted figure
-				height: size.height - 200, 
-				resizable: false
-			});
-
-			$('#main').css('overflow', 'hidden');
 			
 			<%Else%>
 			$(".popup").dialog({
@@ -340,7 +331,11 @@
 			$("#PageDivTitle").html($("#txtDefn_Name").val());
 			$(".popup").dialog('option', 'title', $("#txtDefn_Name").val());
 			$("#outputoptions").hide();
-			resizeGrid();
+
+			if (menu_isSSIMode() == false) {
+				resizeGrid();
+			}
+			
 			$("#reportworkframe").show();
 			$("#divReportButtons").css("visibility", "visible");
 			$("#divCrossTabOptions").css("visibility", "visible");
