@@ -32,7 +32,7 @@ namespace ABS_Self_Service
             //   appId: "",
             //   appSecret: "");
 
-            //app.UseGoogleAuthentication();
+            app.UseGoogleAuthentication();
         }
     }
 }

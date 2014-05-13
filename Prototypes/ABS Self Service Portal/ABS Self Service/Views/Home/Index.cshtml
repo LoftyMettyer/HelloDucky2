@@ -1,26 +1,34 @@
-﻿
+﻿<style>
+    .widget {
+        height: 300px;
+        width: 250px;
+    }
 
+        .widget iframe {
+        height: 80%;
+        width: 100%;
+        }
+</style>
 
-@{
-    ViewBag.Title = "Home Page";
-    
-
-
-}
-
-<div class="jumbotron">
-    <h1>
-        <img src="~/Content/Images/adv-head-logo.png" />        
-    </h1>
-
-</div>
 
 <div class="row">
     @if (Request.IsAuthenticated) {
-
     <div>
-        <h1>Your openhr id is @ViewBag.OpenHRID</h1>
+        Your openhr id is @ViewBag.OpenHRID        
     </div>
-    }
+    }   
 
+    <div class="widget">
+        <h3 class="ui-widget-header">Widget</h3>
+        @*<iframe id="widget1" src="http://localhost:47079/index.html"></iframe>*@
+    </div>
+  
 </div>
+
+@section scripts
+{
+    <script>
+        
+    </script>
+}
+
