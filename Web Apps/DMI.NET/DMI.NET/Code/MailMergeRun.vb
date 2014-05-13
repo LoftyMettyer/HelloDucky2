@@ -86,6 +86,19 @@ Namespace Code
 					Return False
 				End If
 
+				'Check that we have a From field defined in IIS
+				message = New MailMessage
+				If message.From Is Nothing Then
+					Errors.Add("No 'From' Email address has been defined in IIS")
+					Return False
+				End If
+
+				'Check that the From address is a valid email address
+				If Not GeneralUtilities.IsValidEmailAddress(message.From.Address) Then
+					Errors.Add("The 'From' Email address defined in IIS is not a valid email address")
+					Return False
+				End If
+
 				objTemplate.Position = 0
 
 				mailClient = New SmtpClient	'Take SMTP settings from Web.config (i.e. SMTP settings defined for the website in IIS)
