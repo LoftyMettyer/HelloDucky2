@@ -20,6 +20,11 @@ namespace ABS_Self_Service.Controllers
                 var manager = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(new ApplicationDbContext()));
                 var currentUser = manager.FindById(currentUserId);
                 ViewBag.OpenHRID = currentUser.OpenHRID;
+
+                //get some widgets
+                widgetsModel m = new widgetsModel();
+                var model = m.LoadModel(Server.MapPath("~/Config/PortalConfig.xml"));
+                return View(model);
             }
 
             return View();
