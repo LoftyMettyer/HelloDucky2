@@ -355,6 +355,7 @@ Public Function RunExport() As Boolean
   On Error GoTo RunExport_ERROR
   
   Dim fOK As Boolean
+  Dim sToday As String
   
   mstrErrorString = vbNullString
   mblnNoRecords = False
@@ -434,7 +435,8 @@ Public Function RunExport() As Boolean
     gobjEventLog.ChangeHeaderStatus elsSuccessful, mlngExportRecordCount, 0
     mstrErrorString = "Completed successfully." & vbCrLf & mlngExportRecordCount & " record(s) exported."
   
-    mstrSQL = "UPDATE ASRSysExportName SET LastSuccessfulOutput = convert(datetime,'" & Now & "') WHERE ID = " & mlngExportID
+    sToday = "convert(datetime, '" & Replace(Format(Now, "MM/dd/yyyy hh:mm:ss"), UI.GetSystemDateSeparator, "/") & "')"
+    mstrSQL = "UPDATE ASRSysExportName SET LastSuccessfulOutput = " & sToday & " WHERE ID = " & mlngExportID
     mclsData.ExecuteSql mstrSQL
   
   ElseIf mblnUserCancelled Then
@@ -3546,10 +3548,10 @@ Private Sub SetLength(ByRef strInput As String, lngLength)
 
 End Sub
 
-Private Function GetFileText(ByVal filename As String) As String
-  Dim handle As Integer
-  handle = FreeFile
-  Open filename$ For Input As #handle
-  GetFileText = Input$(LOF(handle), handle)
-  Close #handle
+Private Function GetFileText(ByVal FileName As String) As String
+  Dim Handle As Integer
+  Handle = FreeFile
+  Open FileName$ For Input As #Handle
+  GetFileText = Input$(LOF(Handle), Handle)
+  Close #Handle
 End Function
