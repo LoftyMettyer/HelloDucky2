@@ -1135,7 +1135,7 @@ LocalErr:
 
 			strWhereEmpty = strColumnName & " IS NULL"
 			If mlngColDataType(lngLoop) <> CStr(SQLDataType.sqlNumeric) And mlngColDataType(lngLoop) <> CStr(SQLDataType.sqlInteger) And mlngColDataType(lngLoop) <> CStr(SQLDataType.sqlBoolean) Then
-				strWhereEmpty = strWhereEmpty & " OR RTrim(" & strColumnName & ") = ''"
+				strWhereEmpty = strWhereEmpty & " OR Trim(" & strColumnName & ") = ''"
 			End If
 
 			' Don't put in empty clauses if we're running an absence breakdown
