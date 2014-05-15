@@ -2686,7 +2686,7 @@ Namespace Controllers
 							For Each objRow As DataRow In objCrossTab.PivotData.Rows
 
 								If objCrossTab.PageBreakColumn Then
-									If strPageValue <> objRow("Page Break") Then
+									If strPageValue <> objRow("Page Break").ToString() Then
 
 										If strPageValue <> vbNullString Then
 
@@ -2706,7 +2706,7 @@ Namespace Controllers
 										lngRow = 1
 										ReDim strOutput(.Columns.Count - 1, 0)
 										For lngCol = 0 To .Columns.Count - 1
-											strOutput(lngCol, 0) = objRow(lngCol).ColumnName
+											strOutput(lngCol, 0) = .Columns(lngCol).ColumnName
 										Next
 
 									End If

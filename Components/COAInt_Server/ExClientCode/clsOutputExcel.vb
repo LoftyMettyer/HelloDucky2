@@ -484,7 +484,7 @@ Namespace ExClientCode
 					_mstrErrorMessage = "Unable to create a pivot table for a single column of data."
 				Else
 
-					Dim pivotSheet = CreatePivotTable(_mlngDataCurrentRow + UBound(strArray, 2), _mlngDataStartCol + UBound(strArray, 1), colColumns, colStyles)
+					Dim pivotSheet = CreatePivotTable(_mxlWorkSheet, _mlngDataCurrentRow + UBound(strArray, 2), _mlngDataStartCol + UBound(strArray, 1), colColumns, colStyles)
 					_mxlWorkSheet.VisibilityType = VisibilityType.Hidden
 					ApplyCellOptions(pivotSheet, colStyles, True)
 
@@ -620,16 +620,16 @@ Namespace ExClientCode
 		End Sub
 
 
-		Private Function CreatePivotTable(lngMaxRows As Integer, lngMaxCols As Integer, colColumns As List(Of Metadata.Column), colStyles As Collection) As Worksheet
+		Private Function CreatePivotTable(ByRef objDataSheet As Worksheet, lngMaxRows As Integer, lngMaxCols As Integer, colColumns As List(Of Metadata.Column), colStyles As Collection) As Worksheet
 
 			Dim pivotSheet As Worksheet = _mxlWorkBook.Worksheets(_mxlWorkBook.Worksheets.Add())
-			pivotSheet.Name = _mxlWorkBook.Worksheets(0).Name.Replace("Data_", "")
+			pivotSheet.Name = objDataSheet.Name.Replace("Data_", "")
 
 			Try
 
 				Dim pivotTables As PivotTableCollection = pivotSheet.PivotTables
 
-				Dim sRange = String.Format("={0}!{1}:{2}{3}", _mxlWorkBook.Worksheets(0).Name, _mxlWorkBook.Worksheets(0).Cells.FirstCell.Name, NumberToExcelColumn(lngMaxCols), lngMaxRows)
+				Dim sRange = String.Format("={0}!{1}:{2}{3}", objDataSheet.Name, objDataSheet.Cells.FirstCell.Name, NumberToExcelColumn(lngMaxCols), lngMaxRows)
 				Dim index As Integer = pivotTables.Add(sRange, "B4", "PivotTable1")
 
 				With pivotTables(index)
