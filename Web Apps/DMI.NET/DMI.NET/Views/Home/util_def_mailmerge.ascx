@@ -671,7 +671,7 @@
 																				<td style="white-space: nowrap">
 																					<label tabindex="-1"
 																						for="optDestination2"
-																						class="radio">
+																						class="radio ui-state-error-text">
 																						Document Management</label>
 																				</td>
 																				<td width="5">&nbsp;</td>
@@ -825,6 +825,9 @@
 												</table>
 											</td>
 											<td width="20">&nbsp;&nbsp;&nbsp;</td>
+										</tr>
+										<tr height="20">
+											<td colspan="5" class="ui-state-error-text">Note: Options marked in red are unavailable in OpenHR Web.</td>
 										</tr>
 									</table>
 								</div>
