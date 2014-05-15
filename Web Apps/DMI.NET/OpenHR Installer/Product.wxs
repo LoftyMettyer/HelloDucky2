@@ -65,24 +65,27 @@
 				<!-- Include web content. -->
 				<ComponentGroupRef Id="DMI.NET_Project" />
 
-				<!-- Perform changes in the web.custom.config.template file. -->
-				<ComponentRef Id="WebCustomConfigCmp" />
+				<!-- Perform changes in the custom.config.template file. -->
+				<ComponentRef Id="CustomConfigOperations" />
 
+				<!-- Perform changes in the smtp.config.template file. -->
+				<ComponentRef Id="SMTPConfigOperations" />
+				
 			</Feature>
 		</Feature>
 
 		<DirectoryRef Id="INSTALLLOCATION">
-			<!-- Component handling the web.config -->
-			<Component Id="WebCustomConfigCmp" Guid="">
-				<!-- Copy web.config to website folder. -->
-				<File Id="WebCustomConfigFile" KeyPath="yes" Source="$(var.publishDir)\Web.custom.config.template" Vital="yes" />
-				<!-- Modify Web.custom.config.template with the setting entered by the user during installation -->
-				<util:XmlFile Id="ModifyServerSetting"
+			<!-- Component handling the custom.config.template -->
+			<Component Id="CustomConfigOperations" Guid="">
+				<!-- Copy custom.config.template to website folder. -->
+				<File Id="CustomConfigFile" KeyPath="yes" Source="$(var.publishDir)\custom.config.template" Vital="yes" />
+				<!-- Modify custom.config.template with the setting entered by the user during installation -->
+				<util:XmlFile Id="ModifySQLServerSetting"
 										 Action="setValue"
 										 Permanent="yes"
 										 ElementPath="/appSettings/add[\[]@key='LoginPage_Server'[\]]"
 										 Name="value"
-										 File="[#WebCustomConfigFile]"
+										 File="[#CustomConfigFile]"
 										 Value="[SERVER_STRING]"
 										 SelectionLanguage="XSLPattern"
 										 Sequence="1" />
@@ -91,10 +94,40 @@
 										 Permanent="yes"
 										 ElementPath="/appSettings/add[\[]@key='LoginPage_Database'[\]]"
 										 Name="value"
-										 File="[#WebCustomConfigFile]"
+										 File="[#CustomConfigFile]"
 										 Value="[DATABASE_STRING]"
 										 SelectionLanguage="XSLPattern"
 										 Sequence="1" />
+			</Component>
+			<!-- Component handling the smtp.config.template -->
+			<Component Id="SMTPConfigOperations" Guid="">
+				<!-- Copy smtp.config.template to website folder. -->
+				<File Id="SMTPConfigFile" KeyPath="yes" Source="$(var.publishDir)\smtp.config.template" Vital="yes" />
+				<!-- Modify smtp.config.template with the setting entered by the user during installation -->
+				<util:XmlFile Id="ModifySMTPEmailFromSetting"
+										 Action="setValue"
+										 Permanent="yes"
+										 ElementPath="/smtp/@from"
+										 File="[#SMTPConfigFile]"
+										 Value="[EMAIL_FROM_STRING]"
+										 SelectionLanguage="XSLPattern"
+										 Sequence="1" />
+				<util:XmlFile Id="ModifySMTPServerSetting"
+										 Action="setValue"
+										 Permanent="yes"
+										 ElementPath="/smtp/network/@host"
+										 File="[#SMTPConfigFile]"
+										 Value="[SMTP_SERVER_STRING]"
+										 SelectionLanguage="XSLPattern"
+										 Sequence="2" />
+				 <util:XmlFile Id="ModifySMPTPortSetting"
+										 Action="setValue"
+										 Permanent="yes"
+										 ElementPath="/smtp/network/@port"
+										 File="[#SMTPConfigFile]"
+										 Value="[SMTP_PORT_STRING]"
+										 SelectionLanguage="XSLPattern"
+										 Sequence="3" />
 			</Component>
 		</DirectoryRef>
 

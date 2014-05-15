@@ -2,20 +2,23 @@
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
     <Fragment>
         <DirectoryRef Id="INSTALLLOCATION">
+            <Component Id="cmp487891B97E3D3A2B911BD334B2FFB895" Guid="*">
+                <File Id="fil7E6F1C7FE3929222289535B30BE43EEC" KeyPath="yes" Source="SourceDir\custom.config.template" />
+            </Component>
             <Component Id="cmp93645FCD1A13835D0DFCD156CF2C6C64" Guid="*">
                 <File Id="fil00A150C9AD477E1EE4E8CA4503876DA9" KeyPath="yes" Source="SourceDir\Global.asax" />
             </Component>
             <Component Id="cmpFED9CE4C040C6D017106CB6B92C2F157" Guid="*">
                 <File Id="fil43F031812C2D8647225696DDDF358FCA" KeyPath="yes" Source="SourceDir\packages.config" />
             </Component>
+            <Component Id="cmpD738CADEC8D5F151B57D54C78C3547E3" Guid="*">
+                <File Id="filB0C880E9DE61573CF60B0F6D3030229D" KeyPath="yes" Source="SourceDir\smtp.config.template" />
+            </Component>
             <Component Id="cmpFB33635B7D7AF5906B5DFB25D7E4F343" Guid="*">
                 <File Id="fil0AB648957C4B57849C7F7229ADDD83F2" KeyPath="yes" Source="SourceDir\Web.config" />
             </Component>
             <Component Id="cmp2935FCA0A9D8858C3B1B38AFB80A6D26" Guid="*">
                 <File Id="filFB01604ADF7F8BC8E0CDF26E77EE9F4C" KeyPath="yes" Source="SourceDir\Web.config.diagnostics" />
-            </Component>
-            <Component Id="cmpED123C699A0F53DF2F986B06978AF0CF" Guid="*">
-                <File Id="fil2DB1A42ED3C87EEF0CB1D67A17A0BAF2" KeyPath="yes" Source="SourceDir\Web.custom.config.template" />
             </Component>
             <Directory Id="dirBD8892FBCC64DA5924D7F747259B8B87" Name="bin">
                 <Component Id="cmpA426106E50E83F038FBE746C1E09504B" Guid="*">
@@ -4529,11 +4532,12 @@
     </Fragment>
     <Fragment>
         <ComponentGroup Id="DMI.NET_Project">
+            <ComponentRef Id="cmp487891B97E3D3A2B911BD334B2FFB895" />
             <ComponentRef Id="cmp93645FCD1A13835D0DFCD156CF2C6C64" />
             <ComponentRef Id="cmpFED9CE4C040C6D017106CB6B92C2F157" />
+            <ComponentRef Id="cmpD738CADEC8D5F151B57D54C78C3547E3" />
             <ComponentRef Id="cmpFB33635B7D7AF5906B5DFB25D7E4F343" />
             <ComponentRef Id="cmp2935FCA0A9D8858C3B1B38AFB80A6D26" />
-            <ComponentRef Id="cmpED123C699A0F53DF2F986B06978AF0CF" />
             <ComponentRef Id="cmpA426106E50E83F038FBE746C1E09504B" />
             <ComponentRef Id="cmp4620207BA46725D23ED359B68B7D53B2" />
             <ComponentRef Id="cmp43218C46D6D9CC279C2AE9844DE86A15" />

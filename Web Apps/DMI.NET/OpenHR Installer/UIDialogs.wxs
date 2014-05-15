@@ -2,61 +2,70 @@
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
 	<Fragment>
 		<UI>
-			<Dialog Id="IisSetupDlg" Width="370" Height="270" Title="IIS Settings - [ProductName]" NoMinimize="yes">
+			<Dialog Id="IisSetupDlg" Width="370" Height="300" Title="IIS Settings - [ProductName]" NoMinimize="yes">
 				<!-- Virtual Dir prompt -->
-				<Control Id="VirtualDirLabel" Type="Text" X="45" Y="73" Width="100" Height="15" TabSkip="no" Text="&amp;Virtual Directory:" />
-				<Control Id="VirtualDirEdit" Type="Edit" X="45" Y="85" Width="220" Height="18" Property="VIRTUAL_DIR_VAL" Text="{80}" />
+				<Control Id="VirtualDirLabel" Type="Text" X="45" Y="55" Width="100" Height="15" TabSkip="no" Text="&amp;Virtual Directory:" />
+				<Control Id="VirtualDirEdit" Type="Edit" X="45" Y="70" Width="220" Height="18" Property="VIRTUAL_DIR_VAL" Text="{80}" />
 				<!-- Back and next buttons -->
-				<Control Id="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Text="&amp;Back">
+				<Control Id="Back" Type="PushButton" X="180" Y="273" Width="56" Height="17" Text="&amp;Back">
 					<Publish Event="NewDialog" Value="WelcomeDlg">1</Publish>
 				</Control>
-				<Control Id="Next" Type="PushButton" X="236" Y="243" Width="56" Height="17" Default="yes" Text="&amp;Next">
-					<Publish Event="NewDialog" Value="ServerAndDatabaseStringDlg">
+				<Control Id="Next" Type="PushButton" X="236" Y="273" Width="56" Height="17" Default="yes" Text="&amp;Next">
+					<Publish Event="NewDialog" Value="ApplicationSettingsDlg">
 						<!--if settings are correct, allow next dialog-->
 						<![CDATA[VIRTUAL_DIR_VAL <> ""]]>
 					</Publish>
 				</Control>
-				<Control Id="Cancel" Type="PushButton" X="304" Y="243" Width="56" Height="17" Cancel="yes" Text="Cancel">
+				<Control Id="Cancel" Type="PushButton" X="304" Y="273" Width="56" Height="17" Cancel="yes" Text="Cancel">
 					<Publish Event="SpawnDialog" Value="CancelDlg">1</Publish>
 				</Control>
 				<Control Id="BannerBitmap" Type="Bitmap" X="0" Y="0" Width="370" Height="44" TabSkip="no" Text="WixUI_Bmp_Banner" />
 				<Control Id="Description" Type="Text" X="25" Y="23" Width="280" Height="15" Transparent="yes" NoPrefix="yes">
 					<Text>Please enter IIS Configuration</Text>
 				</Control>
-				<Control Id="BottomLine" Type="Line" X="0" Y="234" Width="370" Height="0" />
+				<Control Id="BottomLine" Type="Line" X="0" Y="264" Width="370" Height="0" />
 				<Control Id="Title" Type="Text" X="15" Y="6" Width="200" Height="15" Transparent="yes" NoPrefix="yes">
 					<Text>{\WixUI_Font_Title}IIS Settings</Text>
 				</Control>
 				<Control Id="BannerLine" Type="Line" X="0" Y="44" Width="370" Height="0" />
 			</Dialog>
 
-			<Dialog Id="ServerAndDatabaseStringDlg" Width="370" Height="270" Title="Server and Database Settings - [ProductName]" NoMinimize="yes">
-				<!-- Server String -->
-				<Control Id="ServerStringLabel" Type="Text" X="45" Y="73" Width="100" Height="15" TabSkip="no" Text="&amp;Server:" />
-				<Control Id="ServerStringEdit" Type="Edit" X="45" Y="95" Width="220" Height="18" Property="SERVER_STRING" Text="{200}" />
-				<!-- Database String -->
-				<Control Id="DatabaseStringLabel" Type="Text" X="45" Y="143" Width="100" Height="15" TabSkip="no" Text="&amp;Database:" />
-				<Control Id="DatabaseStringEdit" Type="Edit" X="45" Y="165" Width="220" Height="18" Property="DATABASE_STRING" Text="{200}" />
+			<Dialog Id="ApplicationSettingsDlg" Width="370" Height="300" Title="Application Settings - [ProductName]" NoMinimize="yes">
+				<!-- Server -->
+				<Control Id="ServerLabel" Type="Text" X="45" Y="55" Width="100" Height="15" TabSkip="no" Text="&amp;SQL Server:" />
+				<Control Id="ServerField" Type="Edit" X="45" Y="70" Width="220" Height="18" Property="SERVER_STRING" Text="{200}" />
+				<!-- Database -->
+				<Control Id="DatabaseLabel" Type="Text" X="45" Y="95" Width="100" Height="15" TabSkip="no" Text="&amp;Database:" />
+				<Control Id="DatabaseField" Type="Edit" X="45" Y="110" Width="220" Height="18" Property="DATABASE_STRING" Text="{200}" />
+				<!-- SMTP "Email from" -->
+				<Control Id="SMTPEmailFromLabel" Type="Text" X="45" Y="135" Width="100" Height="15" TabSkip="no" Text="&amp;Email address:" />
+				<Control Id="SMTPEmailFromField" Type="Edit" X="45" Y="150" Width="220" Height="18" Property="EMAIL_FROM_STRING" Text="{200}" />
+				<!-- SMTP server -->
+				<Control Id="SMTPServerLabel" Type="Text" X="45" Y="175" Width="100" Height="15" TabSkip="no" Text="S&amp;MTP server:" />
+				<Control Id="SMTPServerField" Type="Edit" X="45" Y="190" Width="220" Height="18" Property="SMTP_SERVER_STRING" Text="{200}" />
+				<!-- SMTP port -->
+				<Control Id="SMTPPortLabel" Type="Text" X="45" Y="215" Width="100" Height="15" TabSkip="no" Text="SMTP &amp;port:" />
+				<Control Id="SMTPPortField" Type="Edit" X="45" Y="230" Width="35" Height="18" Property="SMTP_PORT_STRING" Text="{200}" />
 				<!-- Back button -->
-				<Control Id="Back" Type="PushButton" X="180" Y="243" Width="56" Height="17" Text="&amp;Back">
+				<Control Id="Back" Type="PushButton" X="180" Y="273" Width="56" Height="17" Text="&amp;Back">
 					<Publish Event="NewDialog" Value="IisSetupDlg">1</Publish>
 				</Control>
-				<Control Id="Next" Type="PushButton" X="236" Y="243" Width="56" Height="17" Default="yes" Text="&amp;Next">
+				<Control Id="Next" Type="PushButton" X="236" Y="273" Width="56" Height="17" Default="yes" Text="&amp;Next">
 					<Publish Event="NewDialog" Value="CustomizeDlg">
-						<!--if settings are correct, allow next dialog-->
-						<![CDATA[SERVER_STRING <> "" and DATABASE_STRING <> ""]]>
+						<!--Check if all settings have values-->
+						<![CDATA[SERVER_STRING <> "" and DATABASE_STRING <> "" and SMTP_SERVER_STRING <> "" and SMTP_PORT_STRING <> "" and EMAIL_FROM_STRING <> ""]]>
 					</Publish>
 				</Control>
-				<Control Id="Cancel" Type="PushButton" X="304" Y="243" Width="56" Height="17" Cancel="yes" Text="Cancel">
+				<Control Id="Cancel" Type="PushButton" X="304" Y="273" Width="56" Height="17" Cancel="yes" Text="Cancel">
 					<Publish Event="SpawnDialog" Value="CancelDlg">1</Publish>
 				</Control>
 				<Control Id="BannerBitmap" Type="Bitmap" X="0" Y="0" Width="370" Height="44" TabSkip="no" Text="WixUI_Bmp_Banner" />
 				<Control Id="Description" Type="Text" X="25" Y="23" Width="280" Height="15" Transparent="yes" NoPrefix="yes">
-					<Text>Please enter database configuration</Text>
+					<Text>Please enter application settings</Text>
 				</Control>
-				<Control Id="BottomLine" Type="Line" X="0" Y="234" Width="370" Height="0" />
+				<Control Id="BottomLine" Type="Line" X="0" Y="264" Width="370" Height="0" />
 				<Control Id="Title" Type="Text" X="15" Y="6" Width="200" Height="15" Transparent="yes" NoPrefix="yes">
-					<Text>{\WixUI_Font_Title}Database Settings</Text>
+					<Text>{\WixUI_Font_Title}Application Settings</Text>
 				</Control>
 				<Control Id="BannerLine" Type="Line" X="0" Y="44" Width="370" Height="0" />
 			</Dialog>

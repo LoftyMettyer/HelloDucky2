@@ -7,6 +7,11 @@
 	<Property Id="POOL_NAME" Value="OpenHR_Pool" />
 
 	<!-- Server and database -->
-	<Property Id="SERVER_STRING" Value="Server" />
+	<Property Id="SERVER_STRING" Value="SQLServer" />
 	<Property Id="DATABASE_STRING" Value="Database" />
+
+	<!-- SMTP server, port and "Email from" -->
+	<Property Id="SMTP_SERVER_STRING" Value="SMTPServer.com" />
+	<Property Id="SMTP_PORT_STRING" Value="25" />
+	<Property Id="EMAIL_FROM_STRING" Value="someone@domain.com" />
 </Include>

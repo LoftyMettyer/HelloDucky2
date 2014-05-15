@@ -1,0 +1,3 @@
+﻿<smtp from="someone@domain.com">
+	<network host="SMTPServer.com" port="25" />
+</smtp>
