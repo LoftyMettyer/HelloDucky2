@@ -2,6 +2,8 @@
 <%@ Import Namespace="HR.Intranet.Server.Enums" %>
 <%@ Import Namespace="HR.Intranet.Server" %>
 
+<script src="<%:Url.Content("~/Scripts/jquery/jquery.cookie.js")%>"></script>
+
 <%
 	
 	Dim fok As Boolean = True
@@ -122,6 +124,7 @@
 	<input type="hidden" id="failcount" name="failcount" value="false">
 	<input type="hidden" id="norecords" name="norecords" value="false">
 	<input type="hidden" id="nodefinition" name="nodefinition" value="false">
+	<input type="hidden" id="download_token_value_id" name="download_token_value_id"/>
 </form>
 
 <script type="text/javascript">
@@ -155,7 +158,48 @@
 	%>
 
 	<%	If bDownloadFile And blnSuccess Then%>
-	document.getElementById("frmMailMergeOutput").submit();
+
+	var fileDownloadCheckTimer;
+	function blockUIForDownload() {
+		
+		var token = new Date().getTime(); //use the current timestamp as the token value		
+		$('#download_token_value_id').val(token);
+		menu_ShowWait('Generating output...');
+		setTimeout('updateProgressMsg()', 50);
+		$("body").addClass("loading");
+		fileDownloadCheckTimer = window.setInterval(function () {
+			var cookieValue = $.cookie('fileDownloadToken');
+			if (cookieValue == token) {
+				finishDownload();
+			} else {
+				$('#txtProgressMessage').val('Generating output...');
+				$("body").addClass("loading");  //Overlapping ajax calls may have closed the spinner.
+				updateProgressMsg();
+			}
+		}, 1000);
+	}
+
+	function finishDownload() {
+		window.clearInterval(fileDownloadCheckTimer);
+		$.removeCookie('fileDownloadToken'); //clears this cookie value		
+		$("body").removeClass("loading");
+		menu_ShowWait('Loading...');
+
+		//check for errors.
+		var cookieDownloadErrors = $.cookie('fileDownloadErrors');
+		if (cookieDownloadErrors.length > 0) {
+			alert(cookieDownloadErrors);
+		}
+	}
+
+
+
+	var frmMailMergeOutput = document.getElementById("frmMailMergeOutput");
+	$(frmMailMergeOutput).submit(function () {
+		blockUIForDownload();
+	});
+
+	$(frmMailMergeOutput).submit();
 	<% End If %>
 	
 	$(".popup").dialog('option', 'title', "");
@@ -164,5 +208,7 @@
 	if (menu_isSSIMode()) {
 		loadPartialView("linksMain", "Home", "workframe", null);
 	}
+
+
 
 </script>

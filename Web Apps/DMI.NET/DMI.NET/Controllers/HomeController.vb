@@ -4791,10 +4791,25 @@ Namespace Controllers
 
 		Public Function util_run_mailmerge_completed() As FileStreamResult
 
-			Dim objMergeDocument As Code.MailMergeRun = Session("MailMerge_CompletedDocument")
+			Dim downloadTokenValue As String = Request("download_token_value_id")
 
-			Return File(objMergeDocument.MergeDocument, "application/vnd.openxmlformats-officedocument.wordprocessingml.document" _
-				, Path.GetFileName(objMergeDocument.OutputFileName))
+			Try
+
+				Dim objMergeDocument As Code.MailMergeRun = Session("MailMerge_CompletedDocument")
+
+				Response.AppendCookie(New HttpCookie("fileDownloadToken", downloadTokenValue)) ' marks the download as complete on the client		
+				Response.AppendCookie(New HttpCookie("fileDownloadErrors", "Mailmerge completed successfully."))	' Send completion message	
+
+				Return File(objMergeDocument.MergeDocument, "application/vnd.openxmlformats-officedocument.wordprocessingml.document" _
+					, Path.GetFileName(objMergeDocument.OutputFileName))
+
+			Catch ex As Exception
+				' error generated - return error
+				Response.AppendCookie(New HttpCookie("fileDownloadToken", downloadTokenValue)) ' marks the download as complete on the client		
+				Response.AppendCookie(New HttpCookie("fileDownloadErrors", ex.Message))	' marks the download as complete on the client		
+			Finally
+				Response.AppendCookie(New HttpCookie("fileDownloadToken", downloadTokenValue)) ' marks the download as complete on the client	
+			End Try
 
 		End Function
 
