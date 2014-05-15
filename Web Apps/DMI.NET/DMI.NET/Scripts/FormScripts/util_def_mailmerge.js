@@ -2138,6 +2138,7 @@ function selectDocType() {
 		openDialog(sURL, (screen.width) / 3, (screen.height) / 2, "yes", "yes");
 }
 function fileClear() {
+	return;
 		frmDefinition.txtSaveFile.value = "";
 		frmUseful.txtChanged.value = 1;
 		refreshTab4Controls();
@@ -3664,9 +3665,9 @@ function chkSave_Click() {
 		var blnDisabled;
 
 		blnDisabled = (frmDefinition.chkSave.checked == false);
-		text_disable(frmDefinition.txtSaveFile, true);
+		text_disable(frmDefinition.txtSaveFile, blnDisabled);
 		button_disable(frmDefinition.cmdSaveFile, blnDisabled);
-		button_disable(frmDefinition.cmdClearFile, blnDisabled);
+		//button_disable(frmDefinition.cmdClearFile, blnDisabled);
 		//checkbox_disable(frmDefinition.chkOutputScreen, blnDisabled);
 
 		if (blnDisabled == true) {

@@ -771,10 +771,6 @@
 																						<input type="button" value="..." id="cmdSaveFile" name="cmdSaveFile" class="btn"
 																							onclick="populateMailMergeFileName(); changeTab4Control();"/>
 																					</td>
-																					<td>
-																						<input type="button" value="Clear" id="cmdClearFile" name="cmdClearFile" class="btn"
-																							onclick="fileClear()"/>
-																					</td>
 																					<td>&nbsp;</td>
 																				</tr>
 
