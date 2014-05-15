@@ -571,6 +571,9 @@ function insertUpdateDef() {
 
 }
 
+function ConvertSQLNumberToLocale(strInput) {
+	return OpenHR.replaceAll(String(strInput), ".", window.LocaleDecimalSeparator);
+}
 
 function ConvertNumberForSQL(strInput) {
 	// Get a number in the correct format for a SQL string
@@ -765,6 +768,15 @@ function getScreenControl_Collection(screenControlValue) {
 
 	var controlItemArray = screenControlValue.split("\t");
 
+	var defaultValue = function () {
+		//if this is a decimal number, convert it to locale
+		if (Number(controlItemArray[26]) > 0) {
+			return ConvertSQLNumberToLocale(controlItemArray[24]);
+		} else {
+			return controlItemArray[24];
+		}
+	};
+
 	var screenControls = {
 		PageNo: Number(controlItemArray[0]),
 		TableID: Number(controlItemArray[1]),
@@ -790,7 +802,7 @@ function getScreenControl_Collection(screenControlValue) {
 		ColumnName: controlItemArray[21],
 		ColumnType: Number(controlItemArray[22]),
 		DataType: Number(controlItemArray[23]),
-		DefaultValue: controlItemArray[24],
+		DefaultValue: defaultValue(),
 		Size: Number(controlItemArray[25]),
 		Decimals: Number(controlItemArray[26]),
 		LookupTableID: Number(controlItemArray[27]),
@@ -1536,38 +1548,26 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
 
 			var table = fieldset.appendChild(document.createElement("table"));
 			var tr = table.appendChild(document.createElement("tr"));
-			
 			//Get local weekday names...
 			var weekDays = [];
-			var d = new Date();
-			var language = window.navigator.userLanguage || window.navigator.language;
-			var options = {
-				weekday: "long"
-			};
-			var daysofWeek = new Array("S", "M", "T", "W", "T", "F", "S");
-
-			while (d.getDay() > 0) {
-				d.setDate(d.getDate() + 1);
-			}
 			
-			var weekDayNumber = 0;
-			while (weekDays.length < 7) {
-				try {					
-					var dayofWeek = d.toLocaleDateString(language, options);
-					dayofWeek = dayofWeek.replace('\u200e', ''); //remove LTR marker for IE bug: bit.ly/1k9gMq3
-					dayofWeek = dayofWeek.toUpperCase().substr(0, 1);;
+			//steal the weekday names from the datepicker library.
+			var userLocale;
+			if ($.datepicker.regional[window.UserLocale]) {
+				userLocale = window.UserLocale;
+			}
+			else if ($.datepicker.regional[window.UserLocale.substr(0, 2)]) {
+				userLocale = window.UserLocale.substr(0, 2);
+			}
 
-					weekDays.push(dayofWeek);
-					d.setDate(d.getDate() + 1);
-				} catch(e) {
-					weekDays.push(daysofWeek[weekDayNumber]);
-					d.setDate(d.getDate() + 1);
+			if (userLocale !== undefined) {
+				for (var iDayName = 0; iDayName < 7; iDayName++) {
+					weekDays.push($.datepicker.regional[userLocale].dayNames[iDayName].substr(0, 1));
 				}
-
-				weekDayNumber += 1;
+			} else {
+				weekDays = new Array("S", "M", "T", "W", "T", "F", "S");
 			}
-			
-			
+
 			for (var i = 0; i <= 7; i++) {
 				offsetLeft = (width / 10) * (i + 1);
 				var td = tr.appendChild(document.createElement("td"));
@@ -2013,7 +2013,7 @@ function recEdit_setData(columnID, value) {
 					fIsIDColumn = true;
 				}
 		}
-
+		
 		if (!fIsIDColumn) {
 			if ((value != null) && (value != undefined))
 				updateControl(Number(columnID), value);
