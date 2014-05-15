@@ -433,7 +433,11 @@
 		
 	function addActiveXHandlers() {
 		$("#ctlRecordEdit").find("[data-columntype='lookup']").click(function () {
-			ctlRecordEdit_LookupClick(this);	//TODO: add the parameters here....
+			ctlRecordEdit_LookupClick(this);	
+		});
+
+		$("#ctlRecordEdit").find("[data-columntype='lookup']").mousedown(function (e) {			
+			e.preventDefault(); //Kill the dropdown.
 		});
 
 		$("#ctlRecordEdit").find("[data-controlType='1024']").click(function() {
@@ -469,7 +473,8 @@
 
 		function ctlRecordEdit_LookupClick(objLookup) {
 				// A lookup button has been pressed in the recEdit control,
-			// so open the lookup page.    	
+			// so open the lookup page. 					
+
 			var plngColumnID = $(objLookup).attr("data-columnID");
 			var plngLookupColumnID = $(objLookup).attr("data-LookupColumnID");
 			var psLookupValue = $(objLookup).val();
