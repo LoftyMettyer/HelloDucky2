@@ -3021,6 +3021,7 @@ CheckRecordSet_ERROR:
 
 		Dim objReportItem As ReportDetailItem
 		Dim objSortItem As ReportSortItem
+		Dim iCount As Integer
 
 		strAggrValue = vbNullString
 
@@ -3323,34 +3324,30 @@ CheckRecordSet_ERROR:
 			Dim iDurationColumn As Integer = CInt(If(mbDisplayBradfordDetail, 11, 5))
 			Dim iIncludedDaysColumn As Integer = CInt(If(mbDisplayBradfordDetail, 12, 6))
 
-			' Build Bradford Total Summary
 			If mbDisplayBradfordDetail Then
-				aryTotalAddString(0) = vbNullString
-				aryTotalAddString(1) = vbNullString
-				aryTotalAddString(2) = vbNullString
-				aryTotalAddString(3) = vbNullString
-				aryTotalAddString(4) = vbNullString
+				For iCount = 0 To iSummaryColumn
+					aryCountAddString(iCount) = vbNullString
+					aryTotalAddString(iCount) = vbNullString
+				Next
 			End If
 
 			' Add the summary lines
 			If mbBradfordCount Then
 				aryCountAddString(iSummaryColumn) = "Instances"
 				NEW_AddToArray_Data(RowType.Count, aryCountAddString)
-				aryTotalAddString(0) = vbNullString
-				aryTotalAddString(1) = vbNullString
-				aryTotalAddString(2) = vbNullString
-				aryTotalAddString(3) = vbNullString
-				aryTotalAddString(4) = vbNullString
+				For iCount = 0 To iSummaryColumn
+					aryCountAddString(iCount) = vbNullString
+					aryTotalAddString(iCount) = vbNullString
+				Next
 			End If
 
 			If mbBradfordTotals Then
 				aryTotalAddString(iSummaryColumn) = "Total"
 				NEW_AddToArray_Data(RowType.Total, aryTotalAddString)
-				aryTotalAddString(0) = vbNullString
-				aryTotalAddString(1) = vbNullString
-				aryTotalAddString(2) = vbNullString
-				aryTotalAddString(3) = vbNullString
-				aryTotalAddString(4) = vbNullString
+				For iCount = 0 To iSummaryColumn
+					aryCountAddString(iCount) = vbNullString
+					aryTotalAddString(iCount) = vbNullString
+				Next
 			End If
 
 			' Calculate Bradford index line
