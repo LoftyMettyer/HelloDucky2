@@ -819,7 +819,7 @@ function absencedef_convertLocaleDateToSQL(psDateString)
 		var sValue;
 		var iLoop;
 
-	sDateFormat = window.LocaleDateFormat;
+	sDateFormat = window.LocaleDateFormat();
 
 		sDays="";
 		sMonths="";
