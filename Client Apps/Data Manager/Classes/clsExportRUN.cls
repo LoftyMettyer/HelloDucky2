@@ -2535,6 +2535,7 @@ Public Function PrettyPrintXml(xmlDoc)
   Dim rdr, wrt
   Set rdr = CreateObject("Msxml2.SAXXMLReader.3.0")
   Set wrt = CreateObject("Msxml2.MXXMLWriter.3.0")
+  wrt.standalone = False
   wrt.byteOrderMark = True
   wrt.omitXMLDeclaration = False
   wrt.Indent = True
@@ -2544,7 +2545,11 @@ Public Function PrettyPrintXml(xmlDoc)
   rdr.PutProperty "http://xml.org/sax/properties/lexical-handler", wrt
   rdr.PutProperty "http://xml.org/sax/properties/declaration-handler", wrt
   rdr.Parse xmlDoc
-  PrettyPrintXml = wrt.Output
+  
+  Dim sRemoveHeader As String
+  sRemoveHeader = "standalone=""no"""
+  PrettyPrintXml = Replace(wrt.Output, sRemoveHeader, "")
+  
 End Function
 
 Private Function ExportData_XML() As Boolean
