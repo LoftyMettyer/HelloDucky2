@@ -104,12 +104,12 @@
 				<!-- Copy smtp.config.template to website folder. -->
 				<File Id="SMTPConfigFile" KeyPath="yes" Source="$(var.publishDir)\smtp.config.template" Vital="yes" />
 				<!-- Modify smtp.config.template with the setting entered by the user during installation -->
-				<util:XmlFile Id="ModifySMTPEmailFromSetting"
+				<util:XmlFile Id="ModifySMTPEmailAddressSetting"
 										 Action="setValue"
 										 Permanent="yes"
 										 ElementPath="/smtp/@from"
 										 File="[#SMTPConfigFile]"
-										 Value="[EMAIL_FROM_STRING]"
+										 Value="[SMTP_EMAIL_ADDRESS_STRING]"
 										 SelectionLanguage="XSLPattern"
 										 Sequence="1" />
 				<util:XmlFile Id="ModifySMTPServerSetting"
