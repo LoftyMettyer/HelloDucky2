@@ -243,7 +243,12 @@ function menu_abMainMenu_DataReady() {
 			wfOutOfOffice = "FALSE";
 		}
 		
-		if ("TRUE" == wfOutOfOffice) {
+		if (("TRUE" == wfOutOfOffice) && (menu_isSSIMode())) {
+			//SSI Out of Office. (DMI uses pending steps which we don't)
+			menu_WorkflowOutOfOffice();
+		}
+
+		if (("TRUE" == wfOutOfOffice) && (!menu_isSSIMode())) {
 			var sMsg = "Workflow Out of Office is currently on.\nWould you like to turn it off";
 
 			var iWF_RecordCount;
@@ -277,15 +282,14 @@ function menu_abMainMenu_DataReady() {
 			}
 		}
 
-		//frmWorkArea = window.parent.frames("workframe").document.forms("frmGoto");
-		var frmWorkArea = document.getElementById("frmGoto");
-		try {
-			frmWorkArea.txtReset.value = iReset;
-		} catch (e) { }
-		
 		//Load Pending workflow steps if not in SSI mode.
 		// NHRD JIRA 3365 - f you can find a way to get the workflow STEPCOUNT here then the jira could be 100% fixed.
 		if (!menu_isSSIMode()) {
+			//frmWorkArea = window.parent.frames("workframe").document.forms("frmGoto");
+			var frmWorkArea = document.getElementById("frmGoto");
+			try {
+				frmWorkArea.txtReset.value = iReset;
+			} catch (e) { }
 			//short timeout, IE9 (maybe others) aren't loading the frmGoto partial view quick enough...
 			setTimeout('menu_autoLoadPage("workflowPendingSteps", true)', 100);
 		}
