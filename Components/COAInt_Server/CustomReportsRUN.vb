@@ -112,8 +112,8 @@ Public Class Report
 
 	Private mbUseSequence As Boolean
 
-	Private mstrBradfordStartDate As String
-	Private mstrBradfordEndDate As String
+	Private mdBradfordStartDate As DateTime?
+	Private mdBradfordEndDate As DateTime?
 
 	'Variables to hold Bradford Factor display/include options
 	Private mbBradfordSRV As Boolean
@@ -1646,7 +1646,7 @@ Error_Trap:
 									'TM20030124 Fault 4974
 									'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
 									If Not IsDBNull(objRow(iFields)) Then
-										sVALUES = sVALUES & "'" & VB6.Format(objRow(iFields), "MM/dd/yyyy") & "',"
+										sVALUES = sVALUES & "'" & VB6.Format(objRow(iFields), SQLDateFormat) & "',"
 									Else
 										sVALUES = sVALUES & "NULL,"
 									End If
@@ -3051,7 +3051,7 @@ CheckRecordSet_ERROR:
 
 						If objReportItem.IsDateColumn Then
 							' Date column.
-							sWhereCode = sWhereCode & "([" & CStr(objReportItem.IDColumnName) & "] = '" & VB6.Format(objThisColumn.LastValue, "MM/dd/yyyy") & "')"
+							sWhereCode = sWhereCode & "([" & CStr(objReportItem.IDColumnName) & "] = '" & VB6.Format(objThisColumn.LastValue, SQLDateFormat) & "')"
 						Else
 
 							If objReportItem.IsBitColumn Then
@@ -4048,16 +4048,16 @@ GenerateSQLBradford_ERROR:
 
 			' Merge the absence records if the continuous field is defined.
 			If Not CInt(GetModuleParameter(gsMODULEKEY_ABSENCE, gsPARAMETERKEY_ABSENCECONTINUOUS)) = 0 Then
-				sSQL = "EXECUTE sp_ASR_Bradford_MergeAbsences '" & mstrBradfordStartDate & "','" & mstrBradfordEndDate & "','" & mstrTempTableName & "'"
+				sSQL = "EXECUTE sp_ASR_Bradford_MergeAbsences '" & CDate(mdBradfordStartDate).ToString(SQLDateFormat) & "','" & CDate(mdBradfordEndDate).ToString(SQLDateFormat) & "','" & mstrTempTableName & "'"
 				DB.ExecuteSql(sSQL)
 			End If
 
 			' Delete unwanted absences from the table.
-			sSQL = "EXECUTE sp_ASR_Bradford_DeleteAbsences '" & mstrBradfordStartDate & "','" & mstrBradfordEndDate & "'," + IIf(mbOmitBeforeStart, "1,", "0,") + IIf(mbOmitAfterEnd, "1,'", "0,'") + mstrTempTableName + "'"
+			sSQL = "EXECUTE sp_ASR_Bradford_DeleteAbsences '" & CDate(mdBradfordStartDate).ToString(SQLDateFormat) & "','" & CDate(mdBradfordEndDate).ToString(SQLDateFormat) & "'," + IIf(mbOmitBeforeStart, "1,", "0,") + IIf(mbOmitAfterEnd, "1,'", "0,'") + mstrTempTableName + "'"
 			DB.ExecuteSql(sSQL)
 
 			' Calculate the included durations for the absences.
-			sSQL = "EXECUTE sp_ASR_Bradford_CalculateDurations '" & mstrBradfordStartDate & "','" & mstrBradfordEndDate & "','" & mstrTempTableName & "'"
+			sSQL = "EXECUTE sp_ASR_Bradford_CalculateDurations '" & CDate(mdBradfordStartDate).ToString(SQLDateFormat) & "','" & CDate(mdBradfordEndDate).ToString(SQLDateFormat) & "','" & mstrTempTableName & "'"
 			DB.ExecuteSql(sSQL)
 
 			' Remove absences that are below the required Bradford Factor
@@ -4077,7 +4077,7 @@ GenerateSQLBradford_ERROR:
 	End Function
 
 	' Dates are in SQL (American format)
-	Public Function GetBradfordReportDefinition(pstrAbsenceFrom As String, pstrAbsenceTo As String) As Boolean
+	Public Function GetBradfordReportDefinition(pdtAbsenceFrom As Date, pdtAbsenceTo As Date) As Boolean
 
 		' Purpose : This function retrieves the basic definition details
 		'           and stores it in module level variables
@@ -4087,14 +4087,10 @@ GenerateSQLBradford_ERROR:
 			mbIsBradfordIndexReport = True
 
 			' Dates coming in are in American format (if they're not we have a problem)
-			mstrBradfordStartDate = pstrAbsenceFrom
-			mstrBradfordEndDate = pstrAbsenceTo
+			mdBradfordStartDate = pdtAbsenceFrom
+			mdBradfordEndDate = pdtAbsenceTo
 
-			'JPD 20041214 - ensure no injection can take place.
-			mstrBradfordStartDate = Replace(mstrBradfordStartDate, "'", "''")
-			mstrBradfordEndDate = Replace(mstrBradfordEndDate, "'", "''")
-
-			If DateDiff(DateInterval.Day, ConvertSQLDateToLocale(pstrAbsenceFrom), ConvertSQLDateToLocale(pstrAbsenceTo)) < 0 Then
+			If DateDiff(DateInterval.Day, pdtAbsenceFrom, pdtAbsenceTo) < 0 Then
 				mstrErrorString = "The report end date is before the report start date."
 				Logs.AddDetailEntry(mstrErrorString)
 				Logs.ChangeHeaderStatus(EventLog_Status.elsFailed)
@@ -4103,7 +4099,7 @@ GenerateSQLBradford_ERROR:
 
 
 			'Set the grid header with no picklist/filter information
-			Name = "Bradford Factor Report (" & ConvertSQLDateToLocale(mstrBradfordStartDate) & " - " & ConvertSQLDateToLocale(mstrBradfordEndDate) & ")"
+			Name = "Bradford Factor Report (" & CDate(mdBradfordStartDate).ToString(LocaleDateFormat) & " - " & CDate(mdBradfordEndDate).ToString(LocaleDateFormat) & ")"
 
 			mlngCustomReportsBaseTable = Val(GetModuleParameter(gsMODULEKEY_PERSONNEL, gsPARAMETERKEY_PERSONNELTABLE))
 			mstrCustomReportsBaseTableName = GetTableName(mlngCustomReportsBaseTable)
@@ -4441,51 +4437,6 @@ GetBradfordRecordSet_ERROR:
 		mlngMinBradfordAmount = plngMinBradfordAmount
 
 		Return True
-
-	End Function
-
-	Private Function ConvertSQLDateToLocale(psSQLDate As String) As Date
-		' Convert the given date string (mm/dd/yyyy) into the locale format.
-		' NB. This function assumes a sensible locale format is used.
-		Dim fDaysDone As Boolean
-		Dim fMonthsDone As Boolean
-		Dim fYearsDone As Boolean
-		Dim iLoop As Short
-		Dim sFormattedDate As String
-
-		sFormattedDate = ""
-
-		' Get the locale's date format.
-		fDaysDone = False
-		fMonthsDone = False
-		fYearsDone = False
-
-		For iLoop = 1 To Len(mstrClientDateFormat)
-			Select Case UCase(Mid(mstrClientDateFormat, iLoop, 1))
-				Case "D"
-					If Not fDaysDone Then
-						sFormattedDate = sFormattedDate & Mid(psSQLDate, 4, 2)
-						fDaysDone = True
-					End If
-
-				Case "M"
-					If Not fMonthsDone Then
-						sFormattedDate = sFormattedDate & Mid(psSQLDate, 1, 2)
-						fMonthsDone = True
-					End If
-
-				Case "Y"
-					If Not fYearsDone Then
-						sFormattedDate = sFormattedDate & Mid(psSQLDate, 7, 4)
-						fYearsDone = True
-					End If
-
-				Case Else
-					sFormattedDate = sFormattedDate & Mid(mstrClientDateFormat, iLoop, 1)
-			End Select
-		Next iLoop
-
-		Return sFormattedDate
 
 	End Function
 

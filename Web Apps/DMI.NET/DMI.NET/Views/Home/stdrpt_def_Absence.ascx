@@ -335,14 +335,14 @@
 														<td style="width: 100px">Start Date :
 														</td>
 														<td>
-															<input id="txtDateFrom" class="text" name="txtDateFrom" onblur="validateDate(this);">
+															<input class="datepicker" id="txtDateFrom" name="txtDateFrom">
 														</td>
 													</tr>
 													<tr>
 														<td style="width: 100px">End Date :
 														</td>
 														<td>
-															<input id="txtDateTo" class="text" name="txtDateTo" onblur="validateDate(this);">
+															<input class="datepicker"  id="txtDateTo" name="txtDateTo">
 														</td>
 													</tr>
 												</table>
@@ -1064,4 +1064,19 @@
 	$("#toolbarReportFind").parent().show();
 	$("#toolbarReportFind").click();
 	
+
+	$(".datepicker").datepicker();
+	$(document).on('keydown', '.datepicker', function (event) {
+		var queryDate = new Date();
+		queryDate = $.datepicker.formatDate('dd/mm/yy', queryDate);
+
+		switch (event.keyCode) {
+			case 113:
+				$(this).val(queryDate);
+				$(this).datepicker('widget').hide('true');
+				break;
+		}
+	});
+
+
 </script>

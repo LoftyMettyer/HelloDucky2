@@ -594,6 +594,18 @@ ErrorTrap:
 
 #End Region
 
+		Public ReadOnly Property LocaleDateFormat As String
+			Get
+				Return RegionalSettings.DateFormat.ShortDatePattern
+			End Get
+		End Property
+
+		Protected ReadOnly Property SQLDateFormat As String
+			Get
+				Return "MM/dd/yyyy"
+			End Get
+		End Property
+
 
 	End Class
 End Namespace

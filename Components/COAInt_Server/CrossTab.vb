@@ -32,8 +32,8 @@ Public Class CrossTab
 	Private mblnIntersection As Boolean
 	Private mblnPageBreak As Boolean
 	Private mblnShowAllPagesTogether As Boolean
-	Private mstrReportStartDate As String
-	Private mstrReportEndDate As String
+	Private mdReportStartDate As DateTime?
+	Private mdReportEndDate As DateTime?
 
 	Private mblnShowPercentage As Boolean
 	Private mblnPercentageofPage As Boolean
@@ -97,8 +97,6 @@ Public Class CrossTab
 	Private msAbsenceBreakdownTypes As String
 
 	Private mvarPrompts(,) As Object
-	Private mstrClientDateFormat As String
-	Private mstrLocalDecimalSeparator As String
 
 	' Array holding the User Defined functions that are needed for this report
 	Private mastrUDFsRequired() As String
@@ -114,18 +112,6 @@ Public Class CrossTab
 	Public WriteOnly Property FailedMessage() As String
 		Set(ByVal value As String)
 			Logs.AddDetailEntry(value)
-		End Set
-	End Property
-
-	Public WriteOnly Property ClientDateFormat() As String
-		Set(ByVal value As String)
-			mstrClientDateFormat = value
-		End Set
-	End Property
-
-	Public WriteOnly Property LocalDecimalSeparator() As String
-		Set(ByVal value As String)
-			mstrLocalDecimalSeparator = value
 		End Set
 	End Property
 
@@ -210,7 +196,7 @@ Public Class CrossTab
 			Dim strOutput As String = Name
 
 			If mlngCrossTabType = Enums.CrossTabType.cttAbsenceBreakdown Then
-				strOutput = strOutput & " (" & ConvertSQLDateToLocale(mstrReportStartDate) & " -> " & ConvertSQLDateToLocale(mstrReportEndDate) & ")"
+				strOutput &= String.Format(" ({0} -> {1})", CDate(mdReportStartDate).ToString(LocaleDateFormat), CDate(mdReportEndDate).ToString(LocaleDateFormat))
 			End If
 
 			If mblnChkPicklistFilter Then
@@ -764,15 +750,7 @@ LocalErr:
 		Dim strSQL As String
 		Dim lngMax As Integer
 		Dim bIsAbsenceBreakdown As Boolean = mlngCrossTabType = Enums.CrossTabType.cttAbsenceBreakdown
-		Dim dStartDate As DateTime?
-		Dim dEndDate As DateTime?
-
 		Try
-
-			If bIsAbsenceBreakdown Then
-				dStartDate = DateTime.ParseExact(mstrReportStartDate, "MM/dd/yyyy", CultureInfo.InvariantCulture)
-				dEndDate = DateTime.ParseExact(mstrReportEndDate, "MM/dd/yyyy", CultureInfo.InvariantCulture)
-			End If
 
 			lngMax = 2
 			ReDim strColumn(2, lngMax)
@@ -865,14 +843,14 @@ LocalErr:
 				, New SqlParameter("@tablename", SqlDbType.Char, 30) With {.Value = mstrTempTableName} _
 				, New SqlParameter("@recordDescid", SqlDbType.Int) With {.Value = mlngRecordDescExprID} _
 				, New SqlParameter("@isAbsenceBreakdown", SqlDbType.Int) With {.Value = bIsAbsenceBreakdown} _
-				, New SqlParameter("@startDate", SqlDbType.DateTime) With {.IsNullable = True, .Value = dStartDate} _
-				, New SqlParameter("@endDate", SqlDbType.DateTime) With {.IsNullable = True, .Value = dEndDate})
+				, New SqlParameter("@startDate", SqlDbType.DateTime) With {.IsNullable = True, .Value = mdReportStartDate} _
+				, New SqlParameter("@endDate", SqlDbType.DateTime) With {.IsNullable = True, .Value = mdReportEndDate})
 
 			If rsCrossTabData.Rows.Count = 0 Then
 				mstrStatusMessage = "No records meet the selection criteria."
-				mblnNoRecords = True
 				Logs.AddDetailEntry("Completed successfully. " & mstrStatusMessage)
 				Logs.ChangeHeaderStatus(EventLog_Status.elsSuccessful)
+				mblnNoRecords = True
 				fOK = False
 			End If
 
@@ -1057,8 +1035,9 @@ LocalErr:
 		End If
 
 		If mlngCrossTabType = Enums.CrossTabType.cttAbsenceBreakdown Then
-			mstrSQLWhere = mstrSQLWhere & IIf(mstrSQLWhere <> vbNullString, " AND ", " WHERE ") & "( " & AbsenceModule.gsAbsenceStartDateColumnName & " <= CONVERT(datetime, '" & mstrReportEndDate & "'))" & "And (" & AbsenceModule.gsAbsenceEndDateColumnName & " >= CONVERT(datetime, '" & mstrReportStartDate & "') OR " & AbsenceModule.gsAbsenceEndDateColumnName & " IS NULL)"
-
+			Dim sReportStartDate As String = CDate(mdReportStartDate).ToString(SQLDateFormat)
+			Dim sReportEndDate As String = CDate(mdReportEndDate).ToString(SQLDateFormat)
+			mstrSQLWhere &= IIf(mstrSQLWhere <> vbNullString, " AND ", " WHERE ") & "( " & AbsenceModule.gsAbsenceStartDateColumnName & " <= CONVERT(datetime, '" & sReportEndDate & "'))" & "And (" & AbsenceModule.gsAbsenceEndDateColumnName & " >= CONVERT(datetime, '" & sReportStartDate & "') OR " & AbsenceModule.gsAbsenceEndDateColumnName & " IS NULL)"
 		End If
 
 		If strSelectedRecords <> vbNullString Then
@@ -1168,8 +1147,8 @@ LocalErr:
 
 					Select Case mlngColDataType(lngLoop)
 						Case CStr(SQLDataType.sqlDate)
-							strHeading(lngCount) = VB6.Format(objRow(0), mstrClientDateFormat)
-							strSearch(lngCount) = strColumnName & " = '" & VB6.Format(objRow(0), "MM/dd/yyyy") & "'"
+							strHeading(lngCount) = VB6.Format(objRow(0), LocaleDateFormat)
+							strSearch(lngCount) = strColumnName & " = '" & CDate(objRow(0)).ToString(LocaleDateFormat) & "'"
 
 						Case CStr(SQLDataType.sqlBoolean)
 							strHeading(lngCount) = IIf(objRow(0), "True", "False")
@@ -1438,8 +1417,10 @@ LocalErr:
 					Select Case mlngColDataType(Index)
 						Case CStr(SQLDataType.sqlDate)
 
-							If mvarHeadings(Index)(lngCount) = VB6.Format(strValue, mstrClientDateFormat) Then
-								Return lngCount
+							If Not strValue Is Nothing Then
+								If mvarHeadings(Index)(lngCount) = CDate(strValue).ToString(LocaleDateFormat) Then
+									Return lngCount
+								End If
 							End If
 
 						Case CStr(SQLDataType.sqlNumeric), CStr(SQLDataType.sqlInteger)
@@ -1505,6 +1486,8 @@ LocalErr:
 			Return 0
 
 		End Try
+
+		Return 0
 
 	End Function
 
@@ -1750,7 +1733,7 @@ LocalErr:
 					If IsDBNull(objRow("Start_Date")) Then
 						strOutput = strOutput & vbTab
 					Else
-						strOutput = strOutput & VB6.Format(objRow("Start_Date"), mstrClientDateFormat) & vbTab
+						strOutput = strOutput & CDate(objRow("Start_Date")).ToString(LocaleDateFormat) & vbTab
 					End If
 
 					' Add absence end date
@@ -1758,7 +1741,7 @@ LocalErr:
 					If IsDBNull(objRow("End_Date")) Then
 						strOutput = strOutput & vbTab
 					Else
-						strOutput = strOutput & VB6.Format(objRow("End_Date"), mstrClientDateFormat) & vbTab
+						strOutput = strOutput & CDate(objRow("End_Date")).ToString(LocaleDateFormat) & vbTab
 					End If
 
 					' Add occurences
@@ -1918,7 +1901,7 @@ LocalErr:
 
 	End Function
 
-	Public Function AbsenceBreakdownRetreiveDefinition(pdtStartDate As Object, pdtEndDate As Object, plngHorColID As Long, plngVerColID As Long _
+	Public Function AbsenceBreakdownRetreiveDefinition(pdtStartDate As DateTime, pdtEndDate As DateTime, plngHorColID As Long, plngVerColID As Long _
 																										 , plngPicklistID As Integer, plngFilterID As Integer, plngPersonnelID As Integer, pstrIncludedTypes As String) As Boolean
 
 		Dim lngHorColID As Integer
@@ -1932,6 +1915,9 @@ LocalErr:
 
 		' Define this cross tab as an absence breakdown
 		mlngCrossTabType = Enums.CrossTabType.cttAbsenceBreakdown
+
+		mdReportStartDate = pdtStartDate
+		mdReportEndDate = pdtEndDate
 
 		' Initialse the ok variable
 		fOK = True
@@ -1953,21 +1939,8 @@ LocalErr:
 
 		Name = "Absence Breakdown"
 
-		' Dates coming in are always in SQL (American) format
-		'UPGRADE_WARNING: Couldn't resolve default property of object pdtStartDate. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		mstrReportStartDate = pdtStartDate
-		'UPGRADE_WARNING: Couldn't resolve default property of object pdtEndDate. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		mstrReportEndDate = pdtEndDate
-
-		'JPD 20041214 - ensure no injection can take place.
-		mstrReportStartDate = Replace(mstrReportStartDate, "'", "''")
-		mstrReportEndDate = Replace(mstrReportEndDate, "'", "''")
-
 		'MH20040129 Fault 7857
-		'UPGRADE_WARNING: Couldn't resolve default property of object pdtEndDate. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		'UPGRADE_WARNING: Couldn't resolve default property of object pdtStartDate. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		'UPGRADE_WARNING: DateDiff behavior may be different. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6B38EC3F-686D-4B2E-B5A5-9E8E7A762E32"'
-		If DateDiff(Microsoft.VisualBasic.DateInterval.Day, General.ConvertSQLDateToSystemFormat(CStr(pdtStartDate)), General.ConvertSQLDateToSystemFormat(CStr(pdtEndDate))) < 0 Then
+		If DateDiff(DateInterval.Day, pdtStartDate, pdtEndDate) < 0 Then
 			mstrStatusMessage = "The report end date is before the report start date."
 			fOK = False
 			Exit Function
@@ -2016,51 +1989,6 @@ LocalErr:
 		' Set Report Display Options
 		mblnChkPicklistFilter = pbShowBasePicklistFilter
 		Return True
-
-	End Function
-
-	Private Function ConvertSQLDateToLocale(ByRef psSQLDate As String) As String
-		' Convert the given date string (mm/dd/yyyy) into the locale format.
-		' NB. This function assumes a sensible locale format is used.
-		Dim fDaysDone As Boolean
-		Dim fMonthsDone As Boolean
-		Dim fYearsDone As Boolean
-		Dim iLoop As Short
-		Dim sFormattedDate As String
-
-		sFormattedDate = ""
-
-		' Get the locale's date format.
-		fDaysDone = False
-		fMonthsDone = False
-		fYearsDone = False
-
-		For iLoop = 1 To Len(mstrClientDateFormat)
-			Select Case UCase(Mid(mstrClientDateFormat, iLoop, 1))
-				Case "D"
-					If Not fDaysDone Then
-						sFormattedDate = sFormattedDate & Mid(psSQLDate, 4, 2)
-						fDaysDone = True
-					End If
-
-				Case "M"
-					If Not fMonthsDone Then
-						sFormattedDate = sFormattedDate & Mid(psSQLDate, 1, 2)
-						fMonthsDone = True
-					End If
-
-				Case "Y"
-					If Not fYearsDone Then
-						sFormattedDate = sFormattedDate & Mid(psSQLDate, 7, 4)
-						fYearsDone = True
-					End If
-
-				Case Else
-					sFormattedDate = sFormattedDate & Mid(mstrClientDateFormat, iLoop, 1)
-			End Select
-		Next iLoop
-
-		ConvertSQLDateToLocale = sFormattedDate
 
 	End Function
 

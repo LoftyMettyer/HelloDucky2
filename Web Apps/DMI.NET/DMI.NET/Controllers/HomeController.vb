@@ -2445,6 +2445,7 @@ Namespace Controllers
 
 #End Region
 
+
 #Region "Running Reports"
 
 		Function util_run_crosstabsMain() As ActionResult
@@ -2692,7 +2693,15 @@ Namespace Controllers
 							For Each objRow As DataRow In objCrossTab.PivotData.Rows
 
 								If objCrossTab.PageBreakColumn Then
-									If strPageValue <> objRow("Page Break").ToString() Then
+
+									Dim sPageBreak As String
+									If IsDate(objRow("Page Break")) Then
+										sPageBreak = CDate(objRow("Page Break")).ToString(objCrossTab.LocaleDateFormat)
+									Else
+										sPageBreak = objRow("Page Break").ToString()
+									End If
+
+									If strPageValue <> sPageBreak Then
 
 										If strPageValue <> vbNullString Then
 
@@ -2707,7 +2716,12 @@ Namespace Controllers
 											ClientDLL.DataArray()
 
 										End If
-										strPageValue = objRow("Page Break").ToString()
+
+										If IsDate(objRow("Page Break")) Then
+											strPageValue = CDate(objRow("Page Break")).ToString(objCrossTab.LocaleDateFormat)
+										Else
+											strPageValue = objRow("Page Break").ToString()
+										End If
 
 										lngRow = 1
 										ReDim strOutput(.Columns.Count - 1, 0)

@@ -40,8 +40,6 @@
 
 	' Pass required info to the DLL
 	objCrossTab.CrossTabID = Session("utilid")
-	objCrossTab.ClientDateFormat = Session("LocaleDateFormat")
-	objCrossTab.LocalDecimalSeparator = Session("LocaleDecimalSeparator")
 
 	fok = True
 

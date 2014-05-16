@@ -1,6 +1,7 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
 <%@ Import Namespace="HR.Intranet.Server" %>
 <%@ Import Namespace="DMI.NET" %>
+<%@ Import Namespace="System.Globalization" %>
 
 <script src="<%: Url.LatestContent("~/bundles/OpenHR_General")%>" type="text/javascript"></script>
 <script src="<%: Url.LatestContent("~/bundles/utilities_crosstabs")%>" type="text/javascript"></script>
@@ -9,8 +10,8 @@
 
 	Dim objDatabase As Database = CType(Session("DatabaseFunctions"), Database)
 
-	Dim dtStartDate
-	Dim dtEndDate
+	Dim dtStartDate As Date
+	Dim dtEndDate As Date
 	Dim strAbsenceTypes As String
 	Dim lngFilterID As Long
 	Dim lngPicklistID As Long
@@ -49,8 +50,9 @@
 	Session("objCrossTab" & Session("utilid")) = Nothing
 
 	' Get variables for Absence Breakdown / Bradford Factor
-	dtStartDate = convertLocaleDateToSQL(session("stdReport_StartDate"))
-	dtEndDate = convertLocaleDateToSQL(session("stdReport_EndDate"))
+	dtStartDate = DateTime.ParseExact(Session("stdReport_StartDate").ToString(), "MM/dd/yyyy", CultureInfo.InvariantCulture)
+	dtEndDate = DateTime.ParseExact(Session("stdReport_EndDate").ToString(), "MM/dd/yyyy", CultureInfo.InvariantCulture)
+	
 	strAbsenceTypes = session("stdReport_AbsenceTypes")
 	lngFilterID = session("stdReport_FilterID")
 	lngPicklistID = session("stdReport_PicklistID")
@@ -117,8 +119,6 @@
 
 	' Pass required info to the DLL
 	objCrossTab.CrossTabID = Session("utilid")
-	objCrossTab.ClientDateFormat = session("localedateformat")
-	objCrossTab.LocalDecimalSeparator = session("LocaleDecimalSeparator")
 
 	fok = true
 	blnNoDefinition = true
@@ -143,7 +143,7 @@
 			fok = False
 			fModuleOk = False
 		End If
-
+	
 		If fok Then
 			fok = objCrossTab.SetPromptedValues(aPrompts)
 			fNotCancelled = Response.IsClientConnected
@@ -162,43 +162,43 @@
 			If fok Then fok = fNotCancelled
 		End If
 
-		If fok Then
-			fok = objCrossTab.AbsenceBreakdownRetreiveDefinition(dtStartDate, dtEndDate, lngHorColID, lngVerColID, lngPicklistID, lngFilterID, lngPersonnelID, strAbsenceTypes)
-			fNotCancelled = Response.IsClientConnected
-			If fok Then fok = fNotCancelled
-		End If
+	If fok Then
+		fok = objCrossTab.AbsenceBreakdownRetreiveDefinition(dtStartDate, dtEndDate, lngHorColID, lngVerColID, lngPicklistID, lngFilterID, lngPersonnelID, strAbsenceTypes)
+		fNotCancelled = Response.IsClientConnected
+		If fok Then fok = fNotCancelled
+	End If
 
-		If fok Then
-			blnNoDefinition = False
-			lngEventLogID = objCrossTab.EventLogAddHeader
-			fok = (lngEventLogID > 0)
-			fNotCancelled = Response.IsClientConnected
-			If fok Then fok = fNotCancelled
-		End If
+	If fok Then
+		blnNoDefinition = False
+		lngEventLogID = objCrossTab.EventLogAddHeader
+		fok = (lngEventLogID > 0)
+		fNotCancelled = Response.IsClientConnected
+		If fok Then fok = fNotCancelled
+	End If
 
-		If fok Then
-			fok = objCrossTab.UDFFunctions(True)
-			fNotCancelled = Response.IsClientConnected
-			If fok Then fok = fNotCancelled
-		End If
+	If fok Then
+		fok = objCrossTab.UDFFunctions(True)
+		fNotCancelled = Response.IsClientConnected
+		If fok Then fok = fNotCancelled
+	End If
 	
-		If fok Then
-			fok = objCrossTab.CreateTempTable
-			fNotCancelled = Response.IsClientConnected
-			If fok Then fok = fNotCancelled
-		End If
+	If fok Then
+		fok = objCrossTab.CreateTempTable
+		fNotCancelled = Response.IsClientConnected
+		If fok Then fok = fNotCancelled
+	End If
 
-		If fok Then
-			fok = objCrossTab.UDFFunctions(False)
-			fNotCancelled = Response.IsClientConnected
-			If fok Then fok = fNotCancelled
-		End If
+	If fok Then
+		fok = objCrossTab.UDFFunctions(False)
+		fNotCancelled = Response.IsClientConnected
+		If fok Then fok = fNotCancelled
+	End If
 
-		If fok Then
-			fok = objCrossTab.AbsenceBreakdownRunStoredProcedure
-			fNotCancelled = Response.IsClientConnected
-			If fok Then fok = fNotCancelled
-		End If
+	If fok Then
+		fok = objCrossTab.AbsenceBreakdownRunStoredProcedure
+		fNotCancelled = Response.IsClientConnected
+		If fok Then fok = fNotCancelled
+	End If
 
 	If fok Then
 		fok = objCrossTab.CreatePivotDataset
@@ -206,45 +206,45 @@
 		If fok Then fok = fNotCancelled
 	End If
 	
-		If fok Then
-			fok = objCrossTab.AbsenceBreakdownGetHeadingsAndSearches
-			fNotCancelled = Response.IsClientConnected
-			If fok Then fok = fNotCancelled
-		End If
+	If fok Then
+		fok = objCrossTab.AbsenceBreakdownGetHeadingsAndSearches
+		fNotCancelled = Response.IsClientConnected
+		If fok Then fok = fNotCancelled
+	End If
 
-		If fok Then
-			fok = objCrossTab.BuildTypeArray
-			fNotCancelled = Response.IsClientConnected
-			If fok Then fok = fNotCancelled
-		End If
+	If fok Then
+		fok = objCrossTab.BuildTypeArray
+		fNotCancelled = Response.IsClientConnected
+		If fok Then fok = fNotCancelled
+	End If
 
-		If fok Then
-			fok = objCrossTab.AbsenceBreakdownBuildDataArrays
-			fNotCancelled = Response.IsClientConnected
-			If fok Then fok = fNotCancelled
-		End If
+	If fok Then
+		fok = objCrossTab.AbsenceBreakdownBuildDataArrays
+		fNotCancelled = Response.IsClientConnected
+		If fok Then fok = fNotCancelled
+	End If
 
 	objCrossTab.ClearUp()
 	
-		Session("objCrossTab" & Session("utilid")) = objCrossTab
+	Session("objCrossTab" & Session("utilid")) = objCrossTab
 
-		Response.Write("<script type=""text/javascript"">" & vbCrLf)
-		Response.Write("function crosstab_loadAddRecords()" & vbCrLf)
+	Response.Write("<script type=""text/javascript"">" & vbCrLf)
+	Response.Write("function crosstab_loadAddRecords()" & vbCrLf)
 	Response.Write("{" & vbCrLf)
 	Response.Write("	var iCount;" & vbCrLf & vbCrLf)
 
-		Response.Write("	iCount = new Number(txtLoadCount.value);" & vbCrLf)
-		Response.Write("	txtLoadCount.value = iCount + 1;" & vbCrLf & vbCrLf)
+	Response.Write("	iCount = new Number(txtLoadCount.value);" & vbCrLf)
+	Response.Write("	txtLoadCount.value = iCount + 1;" & vbCrLf & vbCrLf)
 
-		Response.Write("  if (iCount > 0) {	" & vbCrLf)
-		Response.Write("    var frmGetData = OpenHR.getForm(""reportdataframe"",""frmGetReportData"");" & vbCrLf)
-		Response.Write("    frmGetData.txtUtilID.value = """ & Session("utilid") & """;" & vbCrLf)
-		Response.Write("    getCrossTabData(""LOAD"",0,0,0,0,0,0);" & vbCrLf & vbCrLf)
-		Response.Write("  }" & vbCrLf & vbCrLf)
+	Response.Write("  if (iCount > 0) {	" & vbCrLf)
+	Response.Write("    var frmGetData = OpenHR.getForm(""reportdataframe"",""frmGetReportData"");" & vbCrLf)
+	Response.Write("    frmGetData.txtUtilID.value = """ & Session("utilid") & """;" & vbCrLf)
+	Response.Write("    getCrossTabData(""LOAD"",0,0,0,0,0,0);" & vbCrLf & vbCrLf)
+	Response.Write("  }" & vbCrLf & vbCrLf)
 
-		Response.Write("}" & vbCrLf)
+	Response.Write("}" & vbCrLf)
 
-		Response.Write("</script>" & vbCrLf)
+	Response.Write("</script>" & vbCrLf)
 
 %>
 

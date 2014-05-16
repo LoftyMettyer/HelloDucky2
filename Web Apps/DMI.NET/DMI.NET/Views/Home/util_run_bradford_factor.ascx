@@ -1,5 +1,6 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
 <%@ Import Namespace="DMI.NET" %>
+<%@ Import Namespace="System.Globalization" %>
 <%@ Import Namespace="HR.Intranet.Server" %>
 <%@ Import Namespace="HR.Intranet.Server.Structures" %>
 
@@ -17,8 +18,8 @@
 	Dim fok As Boolean
 	Dim fNotCancelled As Boolean
 
-			Dim dtStartDate As String
-			Dim dtEndDate As String
+	Dim dtStartDate As Date
+	Dim dtEndDate As Date
 				Dim strAbsenceTypes As String = ""
 				Dim lngFilterID As Long
 				Dim lngPicklistID As Long
@@ -72,9 +73,10 @@
 	objReport.OutputPreview = Session("stdReport_OutputPreview")
 	objReport.OutputFilename = Session("stdReport_OutputFilename")
 	
-	             	 If fok And bBradfordFactor Then
-		dtStartDate = ConvertLocaleDateToSQL(Session("stdReport_StartDate"))
-		dtEndDate = ConvertLocaleDateToSQL(Session("stdReport_EndDate"))
+	If fok And bBradfordFactor Then
+		
+		dtStartDate = DateTime.ParseExact(Session("stdReport_StartDate").ToString(), "MM/dd/yyyy", CultureInfo.InvariantCulture)
+		dtEndDate = DateTime.ParseExact(Session("stdReport_EndDate").ToString(), "MM/dd/yyyy", CultureInfo.InvariantCulture)
 						
 		strAbsenceTypes = Session("stdReport_AbsenceTypes")
 		lngFilterID = Session("stdReport_FilterID")
@@ -96,10 +98,10 @@
 		bPrintFilterPickList = Session("stdReport_PrintFilterPicklistHeader")
 
 		bMinBradford = Session("stdReport_MinimumBradfordFactor")
-	             		 lngMinBradfordAmount = CLng(Session("stdReport_MinimumBradfordFactorAmount"))
+		lngMinBradfordAmount = CLng(Session("stdReport_MinimumBradfordFactorAmount"))
 		pbDisplayBradfordDetail = Session("stdReport_DisplayBradfordDetail")
 
-	             		 ' Default output options
+		' Default output options
 		bOutputPreview = objReport.OutputPreview
 		lngOutputFormat = Session("stdReport_OutputFormat")
 		pblnOutputScreen = False
@@ -110,7 +112,7 @@
 		pstrOutputEmailSubject = Session("stdReport_OutputEmailSubject")
 		pstrOutputEmailAttachAs = Session("stdReport_OutputEmailAttachAs")
 		pstrOutputFilename = objReport.OutputFilename
-	             	 End If
+	End If
 
 	
 	Dim strEmailGroupName As String = ""
