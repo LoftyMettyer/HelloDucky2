@@ -66,7 +66,7 @@ Namespace Code
 		End Property
 		Public Shared ReadOnly Property SessionTimeOutInMinutes As String
 			Get
-				Return ConfigurationManager.AppSettings("SessionTimeOutInMinutes")
+				Return HttpContext.Current.Session.Timeout.ToString()
 			End Get
 		End Property
 	End Class
