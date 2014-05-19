@@ -1122,6 +1122,14 @@
 			if (window.currentLayout == "tiles") $('#userDropdownmenu ul ul').css('top', topPos).css('height', userMenuHeight);			
 		});
 
+		if ('<%=UCase(Session("ui-layout-selectable").ToString())%>' == 'FALSE') {
+			//This is a tablet or phone format - So make the Dashboard information smaller
+			$('.ViewDescription p').css({
+				'font-size': '1em',
+				'margin-bottom': '10px'
+			});
+		}
+		
 		$('#userDropdownmenu').hover(function() {
 			//On hover in, do nothing
 		}, function() {
