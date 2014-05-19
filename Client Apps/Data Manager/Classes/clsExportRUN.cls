@@ -1117,7 +1117,7 @@ Private Function GenerateSQLSelect() As Boolean
         ' Optional filter for only auditted changes
         If mdLastSuccessfulOutput <> "00:00:00" Then
           mstrOnlyChangesFilter = mstrOnlyChangesFilter + IIf(Len(mstrOnlyChangesFilter) > 0, " OR ", "") _
-            & " dbo.udfsys_FieldChangedSinceLastExport(" & mvarColDetails(3, pintLoop) & ", convert(datetime,'" & mdLastSuccessfulOutput & "'), " & mstrRealSource & ".[id]) = 1"
+            & " dbo.udfsys_FieldChangedSinceLastExport(" & mvarColDetails(3, pintLoop) & ", '" & Format(mdLastSuccessfulOutput, "MM/dd/yyyy hh:mm:ss") & "', " & mstrRealSource & ".[id]) = 1"
         End If
         
       Else
