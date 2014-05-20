@@ -393,14 +393,19 @@
 	}
 
 	function GoBack() {
+		
 		var hasChanged = menu_saveChanges("", true, false);
-
-		var linksMainParams = '';
-		linksMainParams += $('#txtRecEditTableID').val();
-		linksMainParams += '!';
-		linksMainParams += $('#txtRecEditViewID').val();
-		linksMainParams += '_';
-		linksMainParams += $('#txtCurrentRecordID').val();
+		var linksMainParams;
+		if (Number($('#txtRecEditViewID').val()) > 0) {
+			linksMainParams = '';
+			linksMainParams += $('#txtRecEditTableID').val();
+			linksMainParams += '!';
+			linksMainParams += $('#txtRecEditViewID').val();
+			linksMainParams += '_';
+			linksMainParams += $('#txtCurrentRecordID').val();
+		} else {
+			linksMainParams = null;
+		}
 
 		if (hasChanged == 6) { // 6 = No Change
 			loadPartialView("linksMain", "Home", "workframe", linksMainParams);
