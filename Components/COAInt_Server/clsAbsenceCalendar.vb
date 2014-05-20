@@ -1193,7 +1193,7 @@ PersonnelERROR:
 					'UPGRADE_WARNING: Couldn't resolve default property of object mavWorkingPatternChanges(0, miWorkingPatternArray). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 					mdtmWorkingPatternDate = mavWorkingPatternChanges(0, miWorkingPatternArray)
 				Else
-					mdtmWorkingPatternDate = CDate("31/12/9999")
+					mdtmWorkingPatternDate = DateTime.Parse("31/12/9999", CultureInfo.GetCultureInfo("en-GB")).ToShortDateString()
 				End If
 
 			End If
@@ -1620,6 +1620,8 @@ Error_FillCalBoxes:
 		Dim sSQL As String
 		Dim lngCount As Integer
 
+		Dim dtDummyDate As Date = DateTime.Parse("31/12/9999", CultureInfo.GetCultureInfo("en-GB")).ToShortDateString()
+
 		bNewRegionFound = False
 
 		If Not mblnDisableRegions Then
@@ -1642,7 +1644,8 @@ Error_FillCalBoxes:
 
 				' Was there a region at the start of the calendar
 				If rstBankHolRegion.Rows.Count = 0 Then
-					dtmNextChangeDate = CDate("31/12/9999")
+					dtmNextChangeDate = dtDummyDate
+					' dtmNextChangeDate = dtDummyDate
 				Else
 					dtmNextChangeDate = CDate(rstBankHolRegion.Rows(0)("Date"))
 				End If
@@ -1654,7 +1657,7 @@ Error_FillCalBoxes:
 					dtmCurrentDate = GetCalDay(intCount)
 
 					' Only refer to the region table if the current date is a region change date
-					If (dtmCurrentDate >= dtmNextChangeDate) And (dtmCurrentDate <> CDate("31/12/9999")) Then
+					If (dtmCurrentDate >= dtmNextChangeDate) And (dtmCurrentDate <> dtDummyDate) Then
 
 
 						'JDM - 11/09/01 - Fault 2820 - Bank hols not showing for year starting with working pattern.
@@ -1664,7 +1667,7 @@ Error_FillCalBoxes:
 						If rstBankHolRegion.Rows.Count = 0 Then
 
 							' No regions found for this user
-							dtmNextChangeDate = CDate("31/12/9999")
+							dtmNextChangeDate = dtDummyDate
 
 						Else
 
@@ -1674,7 +1677,7 @@ Error_FillCalBoxes:
 							' Now get the next change date
 							rstBankHolRegion = DB.GetDataTable("SELECT TOP 1 " & PersonnelModule.gsPersonnelHRegionTableRealSource & "." & PersonnelModule.gsPersonnelHRegionDateColumnName & " AS 'Date', " & PersonnelModule.gsPersonnelHRegionTableRealSource & "." & PersonnelModule.gsPersonnelHRegionColumnName & " AS 'Region' " & "FROM " & PersonnelModule.gsPersonnelHRegionTableRealSource & " " & "WHERE " & PersonnelModule.gsPersonnelHRegionTableRealSource & "." & "ID_" & PersonnelModule.glngPersonnelTableID & " = " & mlngPersonnelRecordID & " " & "AND " & PersonnelModule.gsPersonnelHRegionTableRealSource & "." & PersonnelModule.gsPersonnelHRegionDateColumnName & " > '" & VB6.Format(rstBankHolRegion.Rows(0)("Date"), "MM/dd/yyyy") & "' " & "ORDER BY " & PersonnelModule.gsPersonnelHRegionDateColumnName & " ASC")
 							If rstBankHolRegion.Rows.Count = 0 Then
-								dtmNextChangeDate = CDate("31/12/9999")
+								dtmNextChangeDate = dtDummyDate
 							Else
 								dtmNextChangeDate = CDate(rstBankHolRegion.Rows(0)("Date"))
 							End If
