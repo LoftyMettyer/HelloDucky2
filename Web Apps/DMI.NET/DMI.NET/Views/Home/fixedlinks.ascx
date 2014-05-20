@@ -1121,8 +1121,8 @@
 			var topPos = (userMenuHeight + 26) * -1;			
 			if (window.currentLayout == "tiles") $('#userDropdownmenu ul ul').css('top', topPos).css('height', userMenuHeight);			
 		});
-
-		if ('<%=UCase(Session("ui-layout-selectable").ToString())%>' == 'FALSE') {
+		
+		if (window.isMobileDevice == "True") {
 			//This is a tablet or phone format - So make the Dashboard information smaller
 			$('.ViewDescription p').css({
 				'font-size': '1em',
