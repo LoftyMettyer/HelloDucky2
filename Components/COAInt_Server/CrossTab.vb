@@ -826,6 +826,7 @@ LocalErr:
 			fOK = True
 			Call GetSQL2(strColumn)
 			If fOK = False Then
+				mblnNoRecords = True
 				Return False
 			End If
 

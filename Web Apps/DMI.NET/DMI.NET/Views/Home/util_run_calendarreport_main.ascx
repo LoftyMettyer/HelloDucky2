@@ -142,29 +142,3 @@ End If
 	<input type="hidden" id="txtOptionsCopies" name="txtOptionsCopies">
 	<input type="hidden" id="txtCalRep_UtilID" name="txtCalRep_UtilID" value="<%Session("UtilID").ToString()%>">
 </form>
-
-
-
-<script type="text/javascript">
-
-	<%
-	Dim sErrorMessage As String
-	
-	' Errors during the merge
-	If Len(objCalendar.ErrorString) > 0 Then
-		sErrorMessage = HttpUtility.JavaScriptStringEncode(objCalendar.ErrorString)
-		
-		Response.Write("$('.popup').dialog('close');")
-		Response.Write(String.Format("OpenHR.modalPrompt(""{0}"",2,""{1}"");", sErrorMessage, objCalendar.Name))
-													 
-	%>
-	if (menu_isSSIMode()) {
-		loadPartialView("linksMain", "Home", "workframe", null);
-	}
-	<%
-End If
- %>
-
-
-
-</script>

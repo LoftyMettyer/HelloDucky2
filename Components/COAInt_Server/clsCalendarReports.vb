@@ -4933,8 +4933,8 @@ Error_Trap:
 						If fOK Then fOK = GenerateSQLEvent(objEvent.Key, strDynamicKey, strDynamicName)
 
 						If Not fOK Then
-							GenerateSQL = False
-							Exit Function
+							mblnNoRecords = True
+							Return False
 						End If
 
 						fOK = InsertIntoTempTable(mstrSQLEvent)

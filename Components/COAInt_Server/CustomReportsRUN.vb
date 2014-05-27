@@ -148,7 +148,6 @@ Public Class Report
 	Private Sub datCustomReportOutput_Start()
 
 		ReportDataTable = New DataTable()
-		DisplayColumns = New List(Of ReportDetailItem)
 
 		Dim bGroupWithNext As Boolean = False
 
@@ -491,6 +490,7 @@ ErrorTrap:
 		' By default this is not a Bradford Index Report
 		mbIsBradfordIndexReport = False
 		ColumnDetails = New List(Of ReportDetailItem)()
+		DisplayColumns = New List(Of ReportDetailItem)
 
 	End Sub
 
@@ -532,6 +532,7 @@ AddTempTableToSQL_ERROR:
 			DB.ExecuteSql(mstrSQL)
 
 		Catch ex As Exception
+			mblnNoRecords = True
 			mstrErrorString = "Error executing SQL statement." & vbNewLine & ex.Message
 			Logs.AddDetailEntry(mstrErrorString)
 			Logs.ChangeHeaderStatus(EventLog_Status.elsFailed)
@@ -989,9 +990,10 @@ GetDetailsRecordsets_ERROR:
 		If fOK Then fOK = GenerateSQLOrderBy()
 
 		If fOK Then
-			GenerateSQL = True
+			Return True
 		Else
-			GenerateSQL = False
+			mblnNoRecords = True
+			Return False
 		End If
 
 	End Function
@@ -2466,7 +2468,6 @@ GenerateSQLOrderBy_ERROR:
 
 		If mrstCustomReportsOutput.Rows.Count = 0 Then
 			CheckRecordSet = False
-			DisplayColumns = New List(Of ReportDetailItem)
 			mstrErrorString = "No records meet the selection criteria."
 			Logs.AddDetailEntry("Completed successfully. " & mstrErrorString)
 			Logs.ChangeHeaderStatus(EventLog_Status.elsSuccessful)
