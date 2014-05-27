@@ -283,6 +283,11 @@
 	if ($('#txtNoRecs').val() == "True") {
 		OpenHR.modalPrompt($("#txtDefn_ErrMsg").val(), 2, $("#txtDefn_Name").val(), "");
 		closeclick();
+		
+		if (menu_isSSIMode()) {
+			loadPartialView("linksMain", "Home", "workframe", null);
+		}
+
 	} else {
 
 		if ($("#txtPreview").val() == "True") {
