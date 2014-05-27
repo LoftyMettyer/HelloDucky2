@@ -2603,7 +2603,7 @@ Namespace Controllers
 			ClientDLL.SettingLocations(CInt(objUser.GetUserSetting("Output", "TitleCol", 3)) _
 				, CInt(objUser.GetUserSetting("Output", "TitleRow", 2)) _
 				, CInt(objUser.GetUserSetting("Output", "DataCol", 2)) _
-				, CInt(objUser.GetUserSetting("Output", "DataRow", 4)))
+				, 4)
 
 			ClientDLL.SettingTitle(CBool(objUser.GetUserSetting("Output", "TitleGridLines", False)) _
 				, CBool(objUser.GetUserSetting("Output", "TitleBold", True)) _
@@ -2892,7 +2892,7 @@ Namespace Controllers
 			ClientDLL.SettingLocations(CInt(objUser.GetUserSetting("Output", "TitleCol", 3)) _
 				, CInt(objUser.GetUserSetting("Output", "TitleRow", 2)) _
 				, CInt(objUser.GetUserSetting("Output", "DataCol", 2)) _
-				, CInt(objUser.GetUserSetting("Output", "DataRow", 4)))
+				, 4)
 
 			ClientDLL.SettingTitle(CBool(objUser.GetUserSetting("Output", "TitleGridLines", False)) _
 				, CBool(objUser.GetUserSetting("Output", "TitleBold", True)) _

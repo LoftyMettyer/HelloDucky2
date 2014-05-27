@@ -374,7 +374,7 @@ Namespace ExClientCode
 			lngExcelCol = _mlngDataStartCol
 			lngExcelRow = _mlngDataCurrentRow
 
-			If _mblnApplyStyles And Not (_mblnChart Or _mblnPivotTable) Then
+			If _mblnApplyStyles And Not (_mblnPivotTable) Then
 				ApplyStyle(UBound(strArray, 1), UBound(strArray, 2), colStyles)
 			End If
 
@@ -387,17 +387,26 @@ Namespace ExClientCode
 						Dim stlDecimal As Style = .GetStyle()
 						Dim stlGeneral As Style = .GetStyle()
 						Dim stlDate As Style = .GetStyle()
+						Dim stlPercentage As Style = .GetStyle()
 
 						' Replicate style formats from ActiveX...
 						stlNumeric.Number = 1	' Numeric style
 						stlNumeric.VerticalAlignment = TextAlignmentType.Top
 						stlNumeric.HorizontalAlignment = TextAlignmentType.Right
+
 						stlDecimal.Number = 2	' Numeric style
 						stlDecimal.VerticalAlignment = TextAlignmentType.Top
 						stlDecimal.HorizontalAlignment = TextAlignmentType.Right
+
+						stlPercentage.Number = 10	' Percentage style
+						stlPercentage.Custom = "0.00%"
+						stlPercentage.VerticalAlignment = TextAlignmentType.Top
+						stlPercentage.HorizontalAlignment = TextAlignmentType.Right
+
 						stlGeneral.Number = 49	' Text style		
 						stlGeneral.VerticalAlignment = TextAlignmentType.Top
 						stlGeneral.HorizontalAlignment = TextAlignmentType.Left
+
 						stlDate.Number = 49	' Text style
 						stlDate.VerticalAlignment = TextAlignmentType.Top
 						stlDate.HorizontalAlignment = TextAlignmentType.Right
@@ -435,13 +444,24 @@ Namespace ExClientCode
 											stlDecimal.Custom = "@"
 										End If
 
-										If IsNumeric(strArray(lngGridCol, lngGridRow)) Then
-											.SetStyle(stlDecimal)
-											.PutValue(CDbl(strArray(lngGridCol, lngGridRow)))
+
+										Dim dblNumber As Double
+										If numberAsString.Contains("%") Then
+
+											dblNumber = CDbl(numberAsString.Replace("%", "")) / 100
+											.SetStyle(stlPercentage)
+											.PutValue(dblNumber)
+
 										Else
-											.SetStyle(stlGeneral)
-											.PutValue(strArray(lngGridCol, lngGridRow))
+											If IsNumeric(strArray(lngGridCol, lngGridRow)) Then
+												.SetStyle(stlDecimal)
+												.PutValue(CDbl(strArray(lngGridCol, lngGridRow)))
+											Else
+												.SetStyle(stlGeneral)
+												.PutValue(strArray(lngGridCol, lngGridRow))
+											End If
 										End If
+
 
 									End If
 								Case SQLDataType.sqlBoolean
@@ -468,10 +488,8 @@ Namespace ExClientCode
 			Next
 
 			If _mblnChart Then	' Excel chart?
-				ApplyStyle(UBound(strArray, 1), UBound(strArray, 2), colStyles)
 				ApplyCellOptions(_mxlWorkSheet, colStyles, True)
-
-				CreateChart(UBound(strArray, 2), UBound(strArray, 1), colStyles)
+				CreateChart(_mxlWorkSheet, UBound(strArray, 2), UBound(strArray, 1), colStyles)
 				ApplyCellOptions(_mxlWorkSheet, colStyles, False)
 
 				'Delete superfluous rows and cols if setup in User Config reports section
@@ -505,19 +523,19 @@ Namespace ExClientCode
 				_mxlWorkSheet.AutoFitColumns()
 			End If
 
-			_mlngDataCurrentRow = _mlngDataCurrentRow + UBound(strArray, 2) + IIf(_mblnApplyStyles, 2, 1)
+			_mlngDataCurrentRow += UBound(strArray, 2) + IIf(_mblnApplyStyles, 2, 1)
 
 		End Sub
 
-		Private Sub CreateChart(lngMaxRows As Integer, lngMaxCols As Integer, colStyles As Collection)
+		Private Sub CreateChart(ByRef objDataSheet As Worksheet, lngMaxRows As Integer, lngMaxCols As Integer, colStyles As Collection)
+
 			Dim strSheetName As String
 
 			Try
 
-				strSheetName = _mxlWorkSheet.Name & " Chart"
-				Dim mxlChartWorkSheet = _mxlWorkBook.Worksheets(_mxlWorkBook.Worksheets.Add())
-				mxlChartWorkSheet.Name = strSheetName
-				mxlChartWorkSheet.MoveTo(0)
+				strSheetName = GetSheetName(objDataSheet.Name.Replace("Data_", "") & " chart")
+
+				Dim mxlChartWorkSheet = _mxlWorkBook.Worksheets.Insert(objDataSheet.Index, SheetType.Chart, strSheetName)
 
 				Dim chartIndex As Integer = mxlChartWorkSheet.Charts.Add(ChartType.Column3DClustered, 0, 0, 30, 20)
 				Dim xlChart As Chart = mxlChartWorkSheet.Charts(chartIndex)
@@ -885,6 +903,7 @@ Namespace ExClientCode
 				End If
 
 				_mxlWorkBook.Worksheets.ActiveSheetIndex = 0
+				_mxlWorkBook.Settings.FirstVisibleTab = 0
 
 				'SAVE
 				_mstrErrorMessage = "Error saving file <" & _mstrFileName & ">"
@@ -931,6 +950,7 @@ Namespace ExClientCode
 
 			Dim separators As Char() = New Char() {"\"c, "/"c, "*"c, ":"c, "["c, "]"c, "?"c, ","c, ControlChars.Quote}
 			strSheetName.ReplaceMultiple(separators, "")
+			strSheetName = strSheetName.Replace("&amp;", "&")
 
 			Do While InStr(strSheetName, "  ") > 0
 				strSheetName = Replace(strSheetName, "  ", " ")
