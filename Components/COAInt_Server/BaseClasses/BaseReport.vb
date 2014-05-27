@@ -63,10 +63,13 @@ Namespace BaseClasses
 		Public ReadOnly Property DownloadFileName As String
 			Get
 				Dim sName As String = _outputFilename
+				Dim separators As Char() = New Char() {"\"c, "/"c, ":"c, "*"c, "?"c, ">"c, "<"c, "|"c, ControlChars.Quote}
 
 				If _outputFilename = "" Then
 					sName = Name
 				End If
+
+				sName = sName.ReplaceMultiple(separators, "")
 
 				Select Case _outputFormat
 					Case OutputFormats.fmtExcelGraph, OutputFormats.fmtExcelPivotTable, OutputFormats.fmtExcelWorksheet
@@ -77,8 +80,7 @@ Namespace BaseClasses
 
 				End Select
 
-				Dim separators As Char() = New Char() {"\"c, "/"c, ":"c, "*"c, "?"c, ">"c, "<"c, "|"c, ControlChars.Quote}
-				Return sName.ReplaceMultiple(separators, "")
+				Return sName
 
 			End Get
 		End Property
