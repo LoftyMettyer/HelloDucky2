@@ -177,12 +177,21 @@
 					}
 					else {	
 						sCourseTitle = new String(frmData.txtTBCourseTitle.value);
-						
 						if ((frmData.txtNumberOfBookings.value > 0) && (sCourseTitle.length > 0)) {
 							/* Ask the user if they want to transfer the bookings. */
 							menu_refreshMenu();		  
-							//iResult = OpenHR.messageBox("Transfer bookings to another course ?", 35); // 35 = yesNoCancel + question
-							OpenHR.modalPrompt("Transfer bookings to another course ?", 35, '', cancelBookingResponse);
+							OpenHR.modalPrompt("Transfer bookings to another course ?", 4, '').then(function (answer) {
+								var frmData1 = document.getElementById("frmData");
+								var sCourseTitle1 = new String(frmData1.txtTBCourseTitle.value);
+
+								if (answer == 6) { // Yes
+									// Display the course selection page.
+									menu_loadTransferCoursePage(sCourseTitle1);
+								}
+								if (answer == 7) { // No.
+									menu_transferCourse(0, true);
+								}
+							});
 
 							//We've now opened the modalPrompt, so execution stops here. modalPrompt will redirect to the applicable function: cancelBookingResponse
 
@@ -508,25 +517,6 @@
 	}
 		}
 
-
-	function cancelBookingResponse(iResult) {
-		
-		var frmData = document.getElementById("frmData");
-		var sCourseTitle = new String(frmData.txtTBCourseTitle.value);
-
-		if (iResult == 6) {
-			// Yes
-			// Display the course selection page.
-			menu_loadTransferCoursePage(sCourseTitle);
-		}
-		if (iResult == 7) {
-			// No.
-			menu_transferCourse(0, true);
-		}
-		if (iResult == 2) {
-			// Cancel.
-		}
-	}
 
 	function data_refreshData() {		
 		var f = document.getElementById("frmGetData");

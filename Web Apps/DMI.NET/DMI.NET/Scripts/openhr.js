@@ -90,9 +90,10 @@
 
 		modalPrompt = function (prompt, buttons, title, followOnFunctionName) {
 			var defer = $.Deferred();
+			var dialogButtons;
 			switch (buttons) {
 			case 1:
-				var dialogButtons = {
+				dialogButtons = {
 					"OK": function() {
 						defer.resolve(1);
 						$(this).dialog("close");
@@ -106,7 +107,7 @@
 				};
 				break;
 			case 3:
-				var dialogButtons = {
+				dialogButtons = {
 					"Yes": function() {
 						defer.resolve(6);
 						$(this).dialog("close");
@@ -124,8 +125,22 @@
 					}
 				};
 				break;
+				case 4:
+					dialogButtons = {
+						"Yes": function() {
+							defer.resolve(6);
+							$(this).dialog("close");
+							if (followOnFunctionName) followOnFunctionName(6);
+						},
+						"No": function() {
+							defer.resolve(7);
+							$(this).dialog("close");
+							if (followOnFunctionName) followOnFunctionName(7);
+						}
+					};
+					break;
 			default:
-				var dialogButtons = {
+				dialogButtons = {
 					"OK": function() {
 						defer.resolve(1);
 						$(this).dialog("close");

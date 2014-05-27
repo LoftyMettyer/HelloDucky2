@@ -920,12 +920,17 @@ function menu_MenuClick(sTool) {
 
 		// Course Booking
 	if (sToolName == "mnutoolCancelCourseRecord") {
-			if (OpenHR.messageBox("Are you sure you want to cancel this course?", 36, "OpenHR") == 6) { // 36 = vbQuestion + vbYesNo, 6 = vbYes
-					if (menu_saveChanges("CANCELCOURSE", true, false) != 2) { // 2 = vbCancel
-							menu_cancelCourse(); // HC: TODO - Tab and buttons needs to be enabled
-					}
+		OpenHR.modalPrompt("Are you sure you want to cancel this course?", 4, "Confirm").then(function(answer) {
+			if (answer == 6) { // Yes
+				if (menu_saveChanges("CANCELCOURSE", true, false) != 2) { // 2 = vbCancel
+					menu_cancelCourse(); // HC: TODO - Tab and buttons needs to be enabled
+				}
+				return false;
 			}
-			return;
+			return false;
+
+		});
+		return false;
 	}
 
 		// Reports Menu -------------------------------------------------------------------------------------------------------------------
