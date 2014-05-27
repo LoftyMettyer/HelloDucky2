@@ -169,7 +169,9 @@ Namespace Controllers
 
 			Session("dfltTempMenuFilePath") = "<NONE>"
 
-			Return View(New LoginViewModel())
+			Dim objLoginView As New LoginViewModel
+			objLoginView.ReadFromCookie()
+			Return View(objLoginView)
 
 		End Function
 
@@ -184,18 +186,21 @@ Namespace Controllers
 
 			If Not ModelState.IsValid Then
 				loginviewmodel.SetDetails = True
+				loginviewmodel.ReadFromCookie()
 				Return View(loginviewmodel)
 			End If
 
 			If loginviewmodel.UserName.ToLower() = "sa" Then
 				ModelState.AddModelError("Username", "The System Administrator cannot use the OpenHR Web module.")
 				loginviewmodel.SetDetails = True
+				loginviewmodel.ReadFromCookie()
 				Return View(loginviewmodel)
 			End If
 
 			If loginviewmodel.Database.Contains("'") Then
 				ModelState.AddModelError("Database", "The database name contains an apostrophe.")
 				loginviewmodel.SetDetails = True
+				loginviewmodel.ReadFromCookie()
 				Return View(loginviewmodel)
 			End If
 

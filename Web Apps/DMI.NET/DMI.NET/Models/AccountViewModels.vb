@@ -27,8 +27,7 @@ Namespace Models
 
 		Public Property SetDetails As Boolean
 
-
-		Public Sub New()
+		Public Sub ReadFromCookie()
 
 			' -- SHOW 'DETAILS' BOXES? --
 			If Current.Request.QueryString("Details") <> "" Or _
@@ -63,29 +62,14 @@ Namespace Models
 			End If
 
 			' -- USER NAME --
-			UserName = Current.Request.QueryString("username")
-
 			If Current.Request.QueryString("user") <> "" Then
 				UserName = CleanStringForJavaScript(Current.Request.QueryString("user").ToString())
 			ElseIf Current.Request.QueryString("username") <> "" Then
 				UserName = CleanStringForJavaScript(Current.Request.QueryString("username").ToString())
-			ElseIf Current.Session("username") <> "" Then
-				UserName = CleanStringForJavaScript(Current.Session("username").ToString())
 			Else
 				If Not Current.Request.Cookies("Login") Is Nothing Then
 					UserName = Current.Server.HtmlEncode(Current.Request.Cookies("Login")("User"))
 					WindowsAuthentication = (Current.Request.Cookies("Login")("WindowsAuthentication").ToUpper() = "TRUE")
-				End If
-			End If
-
-			' -- SHOW WINDOWS AUTHENTICATION? --
-			If Current.Request.ServerVariables("LOGON_USER") <> "" Then
-				If Current.Request.QueryString("WindowsAuthentication") <> "" Then
-					WindowsAuthentication = (CleanStringForJavaScript(Current.Request.QueryString("WindowsAuthentication")).ToUpper() = "TRUE")
-				ElseIf Current.Session("WindowsAuthentication") <> "" Then ' BUG does this session variable ever get set?
-					WindowsAuthentication = (CleanStringForJavaScript(Current.Session("WindowsAuthentication")).ToUpper() = "TRUE")
-				Else
-					WindowsAuthentication = True
 				End If
 			End If
 

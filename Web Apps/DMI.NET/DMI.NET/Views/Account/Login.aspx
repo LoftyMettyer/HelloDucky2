@@ -41,7 +41,7 @@
 			<%=Html.ValidationMessageFor(Function(loginviewmodel) loginviewmodel.Password)%>
 		</div>
 		
-		<%If Platform.IsWindowsSupported() And Platform.IsWindowsAuthenicatedEnabled() Then%>
+		<%If Platform.IsWindowsAuthenicatedEnabled() Then%>
 		<div class="loginframeFieldWA">
 			<%=Html.CheckBoxFor(Function(loginviewmodel) loginviewmodel.WindowsAuthentication, New With {.id = "chkWindowsAuthentication", .onclick = "ToggleWindowsAuthentication()"})%>
 			<%=Html.LabelFor(Function(loginviewmodel) loginviewmodel.WindowsAuthentication)%>
