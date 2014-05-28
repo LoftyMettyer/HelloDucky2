@@ -3,6 +3,24 @@
 (function (window, $) {
 	"use strict";
 
+	function setDatepickerLanguage() {
+
+		var language = window.navigator.userLanguage || window.navigator.language;
+
+		if ($($.datepicker.regional[language]).length > 0) {
+			//language found - use it.
+			$.datepicker.setDefaults($.datepicker.regional[language]);
+		} else {
+			if ($($.datepicker.regional[language.substr(0, 2)]).length > 0) {
+				//language found using code only - use it.
+				$.datepicker.setDefaults($.datepicker.regional[language.substr(0, 2)]);
+			} else {
+				//english.
+				$.datepicker.setDefaults($.datepicker.regional["en-GB"]);
+			}
+		}
+	}
+
 	function checkForMessages() {
 		
 		var frmMessage = OpenHR.getForm("divPollMessage", "frmPollMessage");
@@ -432,6 +450,7 @@
 			return true;
 		},
 		localeDateFormat = function () {
+
 			//TODO - Get the proper regional settings
 				return "dd/MM/yyyy";
 		},
@@ -954,7 +973,8 @@ getLocaleDateString = function () {
 		printDiv: printDiv,
 		nullsafeString: nullsafeString,
 		replaceAll: replaceAll,
-		getLocaleDateString: getLocaleDateString
+		getLocaleDateString: getLocaleDateString,
+		setDatepickerLanguage: setDatepickerLanguage,
 	};
 
 })(window, jQuery);

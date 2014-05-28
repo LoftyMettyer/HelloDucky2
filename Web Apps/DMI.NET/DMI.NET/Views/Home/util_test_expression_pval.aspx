@@ -28,6 +28,8 @@
 
 		function util_test_expression_pval_onload() {
 
+			window.parent.OpenHR.setDatepickerLanguage();
+
 			$(".datepicker").datepicker({ dateFormat: 'dd/mm/yy' });
 			$(document).on('keydown', '.datepicker', function (event) {
 				var queryDate = new Date();

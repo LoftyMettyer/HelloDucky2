@@ -61,29 +61,10 @@
 		window.isMobileDevice = '<%=Session("isMobileDevice")%>';
 
 		document.title = 'OpenHR 8.0';
-
-		function setDatepickerLanguage() {
-			
-			var language = window.navigator.userLanguage || window.navigator.language;
-			
-			if ($($.datepicker.regional[language]).length > 0) {
-				//language found - use it.
-				$.datepicker.setDefaults($.datepicker.regional[language]);
-			} else {
-				if ($($.datepicker.regional[language.substr(0, 2)]).length > 0) {
-					//language found using code only - use it.
-					$.datepicker.setDefaults($.datepicker.regional[language.substr(0, 2)]);
-				} else {
-					//english.
-					$.datepicker.setDefaults($.datepicker.regional["en-GB"]);
-				}
-			}			
-		}
 	
-
 		$(document).ready(function () {
 
-			setDatepickerLanguage();
+			OpenHR.setDatepickerLanguage();
 
 			if (!(window.jQuery.ui)) {
 				//no jQuery! so quit out - compatibility mode(?) should be a message on login.aspx...
