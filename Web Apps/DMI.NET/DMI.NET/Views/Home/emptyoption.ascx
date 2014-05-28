@@ -225,7 +225,7 @@
 					var sTransferWarningMsg = "";				
 
 					if (ResultCodes.length > 0 && ResultCodes != 0) {
-						if (ResultCodes.indexOf("|") != -1) { //For results returned by the stored procedure sp_ASRIntValidateBulkBookings
+						if (ResultCodes.indexOf("|") != -1) { // Multiple ResultCodes returned, we need to parse them (Results come from sp_ASRIntValidateBulkBookings)
 							ResultCodes = ResultCodes.split("|");
 
 							//Loop over the results
@@ -252,7 +252,8 @@
 									EmployeesWithUnAvailWarning.push(EmployeeName);
 								}
 							}
-						} else { //For results returned by stored procedure sp_ASRIntValidateTrainingBooking
+						} else { // Single ResultCode returned, we need to parse it (Results come from sp_ASRIntValidateBulkBookings)
+							ResultCodes = ResultCodes.split("\\")[1];
 							if (ResultCodes[0] == 1) {
 								sTransferErrorMsg = messagePrerequisitesSingular + "\n";
 							} else if (ResultCodes[0] == 2) {
@@ -271,8 +272,17 @@
 								sTransferWarningMsg = messageUnavailableSingular + "\n";
 							}
 						}
-						
-						if (EmployeesWithPreReqError.length > 0) {
+					}
+
+					if (CourseOverbooked == 1) {
+						if (sTransferErrorMsg.length > 0) sTransferErrorMsg = sTransferErrorMsg + "\n";
+						sTransferErrorMsg = sTransferErrorMsg + "The selected course is already fully booked.";
+					} else if (CourseOverbooked == 2) {
+						if (sTransferWarningMsg.length > 0) sTransferWarningMsg = sTransferWarningMsg + "\n";
+						sTransferWarningMsg = sTransferWarningMsg + "The selected course is already fully booked.";
+					}
+
+					if (EmployeesWithPreReqError.length > 0) {
 							if (EmployeesWithPreReqError.length == 1) sTransferErrorMsg = sTransferErrorMsg + messagePrerequisitesSingular + "\n";
 							if (EmployeesWithPreReqError.length > 1) sTransferErrorMsg = sTransferErrorMsg + messagePrerequisitesPlural + "\n";
 							for (j = 0; j <= EmployeesWithPreReqError.length - 1; j++) {
@@ -316,14 +326,6 @@
 								sTransferWarningMsg += EmployeesWithUnAvailWarning[j] + "\n";
 							}
 						}
-						
-						if (CourseOverbooked == 1) {
-							if (sTransferErrorMsg.length > 0) sTransferErrorMsg = sTransferErrorMsg + "\n";
-							sTransferErrorMsg = sTransferErrorMsg + "The selected course is already fully booked.";
-						} else if (CourseOverbooked == 2) {
-							if (sTransferWarningMsg.length > 0) sTransferWarningMsg = sTransferWarningMsg + "\n";
-							sTransferWarningMsg = sTransferWarningMsg + "The selected course is already fully booked.";
-						}
 
 						if (sTransferErrorMsg.length > 0) {
 							/* Error - not over-ridable. */
@@ -360,7 +362,7 @@
 								fTransferOK = false;
 							}
 						}
-					}
+					
 						var optionDataForm;
 						if (txtAction.value == "SELECTBOOKCOURSE_2") {
 						if (fTransferOK == true) {
