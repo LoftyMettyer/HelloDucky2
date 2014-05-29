@@ -200,7 +200,6 @@
     <Build Include="Stored Procedures\Web\spASRIntGetCalendarReportColumns.sql" />
     <Build Include="Stored Procedures\Web\spASRIntGetCalendarReportDefinition.sql" />
     <Build Include="Stored Procedures\Web\spASRIntGetCalendarReportOrder.sql" />
-    <Build Include="Stored Procedures\Web\spASRIntGetChartData.sql" />
     <Build Include="Stored Procedures\Web\spASRIntGetColumnsFromTablesAndViews.sql" />
     <Build Include="Stored Procedures\Web\spASRIntGetDefaultOrder.sql" />
     <Build Include="Stored Procedures\Web\spASRIntGetDocumentManagementTypes.sql" />
