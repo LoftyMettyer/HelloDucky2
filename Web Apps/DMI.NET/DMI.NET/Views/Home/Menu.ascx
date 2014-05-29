@@ -277,12 +277,11 @@
 	Dim iFiltersGranted As Integer = 0
 	Dim iPicklistsGranted As Integer = 0
 	Dim iNewUserGranted As Integer = 0
-	Dim iEventLogGranted As Integer = 0
+	Dim iEventLogGranted As Integer = 1	'As agreed with Phil, the Event Log menu should be available to anyone; the Event Log screen itself contains the logic that takes into account the user's permissions
 	
 	Dim sKey As String
 		
 	For Each objPermission In objSessionContext.Permissions
-
 		sKey = String.Format("txtSysPerm_{0}_{1}", objPermission.CategoryKey, objPermission.Key)
 		Response.Write("<input type='hidden' id=" & sKey & " name=" & sKey & " value=""" & IIf(objPermission.IsPermitted, "1", "0") & """>" & vbCrLf)
 		If Left(objPermission.CategoryKey, 13) = "CUSTOMREPORTS" And objPermission.IsPermitted Then iCustomReportsGranted = 1
@@ -295,7 +294,6 @@
 		If Left(objPermission.CategoryKey, 9) = "PICKLISTS" And objPermission.IsPermitted Then iPicklistsGranted = 1
 		If objSessionContext.LoginInfo.IsSystemOrSecurityAdmin Then iNewUserGranted = 1
 		If Left(objPermission.CategoryKey, 8) = "EVENTLOG" And objPermission.IsPermitted Then iEventLogGranted = 1
-			
 	Next
 	
 	Dim bAbsenceEnabled = objSessionContext.IsModuleEnabled("ABSENCE")
