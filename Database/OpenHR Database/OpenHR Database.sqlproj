@@ -102,7 +102,6 @@
     <Build Include="Stored Procedures\Web\sp_ASRIntGetAvailableLogins.sql" />
     <Build Include="Stored Procedures\Web\sp_ASRIntGetBookCourseRecords.sql" />
     <Build Include="Stored Procedures\Web\sp_ASRIntGetBulkBookingRecords.sql" />
-    <Build Include="Stored Procedures\Web\sp_ASRIntGetCalendarReportColumns.sql" />
     <Build Include="Stored Procedures\Web\sp_ASRIntGetColumns.sql" />
     <Build Include="Stored Procedures\Web\sp_ASRIntGetCrossTabDefinition.sql" />
     <Build Include="Stored Procedures\Web\sp_ASRIntGetCrossTabTablesInfo.sql" />
@@ -127,7 +126,6 @@
     <Build Include="Stored Procedures\Web\sp_ASRIntGetLinkFindRecords.sql" />
     <Build Include="Stored Procedures\Web\sp_ASRIntGetLinkParentValues.sql" />
     <Build Include="Stored Procedures\Web\sp_ASRIntGetLinkViews.sql" />
-    <Build Include="Stored Procedures\Web\sp_ASRIntGetLookupFindRecords.sql" />
     <Build Include="Stored Procedures\Web\sp_ASRIntGetLookupValues.sql" />
     <Build Include="Stored Procedures\Web\sp_ASRIntGetMailMergeDefinition.sql" />
     <Build Include="Stored Procedures\Web\sp_ASRIntGetModuleParameter.sql" />
@@ -211,7 +209,6 @@
     <Build Include="Stored Procedures\Web\spASRIntGetEventLogEmails.sql" />
     <Build Include="Stored Procedures\Web\spASRIntGetEventLogPurgeDetails.sql" />
     <Build Include="Stored Procedures\Web\spASRIntGetEventLogRecords.sql" />
-    <Build Include="Stored Procedures\Web\spASRIntGetLicenceInfo.sql" />
     <Build Include="Stored Procedures\Web\spASRIntGetLinkInfo.sql" />
     <Build Include="Stored Procedures\Web\spASRIntGetLinks.sql" />
     <Build Include="Stored Procedures\Web\spASRIntGetLookupFilterValue.sql" />
