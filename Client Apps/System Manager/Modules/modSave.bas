@@ -161,6 +161,7 @@ Function SaveChanges(Optional pfRefreshDatabase As Boolean) As Boolean
       gobjProgress.ResetBar2
       OutputCurrentProcess "Initialising .NET System Framework"
       gobjHRProEngine.Initialise
+      gobjHRProEngine.Options.VersionUpgraded = gfRefreshStoredProcedures
       gobjProgress.UpdateProgress False
       DoEvents
       
