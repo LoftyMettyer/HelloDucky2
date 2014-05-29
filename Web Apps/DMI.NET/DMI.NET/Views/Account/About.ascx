@@ -112,7 +112,7 @@
 							<td style="vertical-align: top; text-align: left; white-space: nowrap; padding-right: 10px;">User Locale :
 							</td>
 							<td style="vertical-align: top; text-align: left; white-space: nowrap;">
-								<%:DMI.NET.ASRIntranetFunctions.UserLocale()%>
+								<span id="spnAbout_LocaleCultureName"></span>
 							</td>
 						</tr>
 					<tr>
@@ -227,4 +227,6 @@
 </form></body>
 </html>
 
-
+<script type="text/javascript">
+	$("#spnAbout_LocaleCultureName")[0].innerHTML = window.UserLocale;
+</script>

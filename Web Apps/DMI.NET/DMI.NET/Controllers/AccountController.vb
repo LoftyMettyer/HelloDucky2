@@ -209,8 +209,8 @@ Namespace Controllers
 			Dim sPassword As String
 			Dim sDatabaseName As String
 			Dim sServerName As String
-			Dim sLocaleDateFormat As String
-			Dim sLocaleDateSeparator As String
+			Dim sLocaleCultureName As String = "en-GB"
+
 			Dim sLocaleDecimalSeparator As String
 			Dim sLocaleThousandSeparator As String
 			Dim fForcePasswordChange As Boolean
@@ -227,8 +227,8 @@ Namespace Controllers
 				If loginviewmodel.WindowsAuthentication Then
 					bWindowsAuthentication = True
 				End If
-				sLocaleDateFormat = Request.Form("txtLocaleDateFormat")
-				sLocaleDateSeparator = Request.Form("txtLocaleDateSeparator")
+
+				sLocaleCultureName = Request.Form("txtLocaleCulture")
 
 				sLocaleDecimalSeparator = Request.Form("txtLocaleDecimalSeparator")
 				sLocaleThousandSeparator = Request.Form("txtLocaleThousandSeparator")
@@ -243,8 +243,6 @@ Namespace Controllers
 				sServerName = ".\sql2012"
 				' widgetServer
 				bWindowsAuthentication = False
-				sLocaleDateFormat = "ddmmYYYY"
-				sLocaleDateSeparator = "/"
 
 				sLocaleDecimalSeparator = "."
 				sLocaleThousandSeparator = ","
@@ -252,11 +250,6 @@ Namespace Controllers
 				Session("WordVer") = "12"
 				Session("ExcelVer") = "12"
 			End If
-
-			Session("LocaleDateFormat") = sLocaleDateFormat
-			Session("LocaleDateSeparator") = sLocaleDateSeparator
-			Session("LocaleDecimalSeparator") = sLocaleDecimalSeparator
-			Session("LocaleThousandSeparator") = sLocaleThousandSeparator
 
 			Session("isMobileDevice") = (Platform.IsMobileDevice() = True)
 
@@ -328,9 +321,14 @@ Namespace Controllers
 				objServerSession.TrackUser(TrackType.Login)
 
 				' User is allowed into OpenHR, now populate some metadata
-				objServerSession.RegionalSettings = Platform.GetRegionalSettings
+				objServerSession.RegionalSettings = Platform.PopulateRegionalSettings(sLocaleCultureName)
 				objServerSession.Initialise()
 				objServerSession.ReadModuleParameters()
+
+				Session("LocaleDateFormat") = objServerSession.RegionalSettings.DateFormat.ShortDatePattern
+
+				Session("LocaleDecimalSeparator") = sLocaleDecimalSeparator
+				Session("LocaleThousandSeparator") = sLocaleThousandSeparator
 
 				objDataAccess = New clsDataAccess(objServerSession.LoginInfo)
 				Session("DatabaseFunctions") = objDatabase

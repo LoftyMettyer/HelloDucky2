@@ -375,11 +375,7 @@ function insertUpdateDef() {
 								break;
 							case 11:
 								if ($(objControl).val().length > 0) {
-									//asColumnsToAdd[1] = "'" + Replace(Format(ConvertData(objControl.Text, mobjScreenControls.Item(sTag).DataType), "mm/dd/yyyy"), msLocaleDateSeparator, "/") & "'"
 									asColumnsToAdd[1] = "'" + OpenHR.convertLocaleDateToSQL($(objControl).val()) + "'";
-									//	'JPD 20051121 Fault 10583
-									//	'asColumns(4, iNextIndex) = Replace(Format(ConvertData(objControl.Text, mobjScreenControls.Item(sTag).DataType), "mm/dd/yyyy"), msLocaleDateSeparator, "/")
-									// asColumns(4, iNextIndex) = Replace(Replace(Format(ConvertData(objControl.Text, mobjScreenControls.Item(sTag).DataType), "mm/dd/yyyy"), msLocaleDateSeparator, "/"), vbTab, " ")
 									asColumnsToAdd[4] = OpenHR.convertLocaleDateToSQL($(objControl).val()).split("\t").join(" ");
 								} else {
 									asColumnsToAdd[1] = "null";
@@ -442,11 +438,7 @@ function insertUpdateDef() {
 						//	asColumnsToAdd[3] = "null";
 						//} else {
 
-							//	asColumns(2, iNextIndex) = "'" & Replace(Format(ConvertData(objControl.Text, mobjScreenControls.Item(sTag).DataType), "mm/dd/yyyy"), msLocaleDateSeparator, "/") & "'"
 							asColumnsToAdd[1] = "'" + OpenHR.convertLocaleDateToSQL($(objControl).val()) + "'";
-							//	'JPD 20051121 Fault 10583
-							//	'asColumns(4, iNextIndex) = Replace(Format(ConvertData(objControl.Text, mobjScreenControls.Item(sTag).DataType), "mm/dd/yyyy"), msLocaleDateSeparator, "/")
-							//	asColumns(4, iNextIndex) = Replace(Replace(Format(ConvertData(objControl.Text, mobjScreenControls.Item(sTag).DataType), "mm/dd/yyyy"), msLocaleDateSeparator, "/"), vbTab, " ")
 							asColumnsToAdd[3] = OpenHR.convertLocaleDateToSQL($(objControl).val()).split("\t").join(" ");
 			//			}
 					}

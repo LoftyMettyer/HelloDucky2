@@ -26,7 +26,10 @@
 
 	
 
-	$(function () {		
+	$(function () {
+
+		window.LocaleDateFormat = '<%=Session("LocaleDateFormat")%>';
+
 			var SelfServiceUserType = '<%=ViewBag.SSIMode%>';
 
 			if (SelfServiceUserType == 'True') {

@@ -41,7 +41,10 @@ function optiondata_onload() {
 		var colDataArray;
 		var obj;
 		var iCount2;
-		if (sCurrentWorkPage == "LINKFIND") {			
+
+		var dateFormat = OpenHR.getLocaleDateString();
+
+		if (sCurrentWorkPage == "LINKFIND") {
 
 			sErrorMsg = frmOptionData.txtErrorMessage.value;
 			if (sErrorMsg.length > 0) {
@@ -84,7 +87,7 @@ function optiondata_onload() {
 										colMode.push({ name: sColumnName, edittype: "numeric", sorttype: 'integer', formatter: 'numeric', formatoptions: { disabled: true }, align: 'right', width: 100 });
 										break;
 									case "datetime": //Date - 135
-										colMode.push({ name: sColumnName, edittype: "date",sorttype: 'date', formatter: 'date', formatoptions: { srcformat: 'd/m/Y', newformat: 'd/m/Y', disabled: true }, align: 'left', width: 100 });
+										colMode.push({ name: sColumnName, edittype: "date", sorttype: 'date', formatter: 'date', formatoptions: { srcformat: dateFormat, newformat: dateFormat, disabled: true }, align: 'left', width: 100 });
 										break;
 									default:
 										colMode.push({ name: sColumnName, width: 100 });
@@ -219,7 +222,7 @@ function optiondata_onload() {
 										colMode.push({ name: sColumnName, edittype: "numeric", sorttype: 'integer', formatter: 'numeric', formatoptions: { disabled: true }, align: 'right', width: 100 });
 										break;
 									case "datetime": //Date - 135
-										colMode.push({ name: sColumnName, edittype: "date",sorttype: 'date', formatter: 'date', formatoptions: { srcformat: 'd/m/Y', newformat: 'd/m/Y', disabled: true }, align: 'left', width: 100 });
+										colMode.push({ name: sColumnName, edittype: "date", sorttype: 'date', formatter: 'date', formatoptions: { srcformat: dateFormat, newformat: dateFormat, disabled: true }, align: 'left', width: 100 });
 										break;
 									default:
 										colMode.push({ name: sColumnName, width: 100 });								

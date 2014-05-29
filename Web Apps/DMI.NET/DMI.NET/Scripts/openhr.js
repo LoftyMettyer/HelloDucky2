@@ -5,9 +5,13 @@
 
 	function setDatepickerLanguage() {
 
-		var language = window.navigator.userLanguage || window.navigator.language;
+		var language = window.UserLocale || window.dialogArguments.window.UserLocale;
 
-		if ($($.datepicker.regional[language]).length > 0) {
+		// No regional setting for US - assumed as the default.
+		if (language == "en-US") {
+			$.datepicker.setDefaults($.datepicker.regional[""]);
+		}
+		else if ($($.datepicker.regional[language]).length > 0) {
 			//language found - use it.
 			$.datepicker.setDefaults($.datepicker.regional[language]);
 		} else {
@@ -19,6 +23,7 @@
 				$.datepicker.setDefaults($.datepicker.regional["en-GB"]);
 			}
 		}
+
 	}
 
 	function checkForMessages() {
@@ -375,10 +380,6 @@
 			//TODO
 			return ",";
 		},
-		localeDateSeparator = function () {
-			//TODO
-			return "/";
-		},
 		printerCount = function () {
 			//TODO
 		},
@@ -441,29 +442,248 @@
 			//TODO
 			return true;
 		},
-		isValidDate = function (d) {
 
-			//TODO - Get the proper regional settings
-			if (Date.parseExact(d, "d/M/yyyy") == null) {
+		isValidDate = function (d) {
+			
+			var localeFormat = window.LocaleDateFormat || window.dialogArguments.window.LocaleDateFormat;
+
+			if (Date.parseExact(d, localeFormat) == null) {
 				return false;
 			}
 			return true;
 		},
-		localeDateFormat = function () {
 
-			//TODO - Get the proper regional settings
-				return "dd/MM/yyyy";
-		},
-				convertSqlDateToLocale = function (z) {
-			//TODO - Get the proper regional settings
+	localeDateFormat = function () {
+
+		var formats = {
+			"ar-SA" : "dd/MM/yy",
+			"bg-BG" : "dd.M.yyyy",
+			"ca-ES" : "dd/MM/yyyy",
+			"zh-TW" : "yyyy/M/d",
+			"cs-CZ" : "d.M.yyyy",
+			"da-DK" : "dd-MM-yyyy",
+			"de-DE" : "dd.MM.yyyy",
+			"el-GR" : "d/M/yyyy",
+			"en-US" : "M/d/yyyy",
+			"fi-FI" : "d.M.yyyy",
+			"fr-FR" : "dd/MM/yyyy",
+			"he-IL" : "dd/MM/yyyy",
+			"hu-HU" : "yyyy. MM. dd.",
+			"is-IS" : "d.M.yyyy",
+			"it-IT" : "dd/MM/yyyy",
+			"ja-JP" : "yyyy/MM/dd",
+			"ko-KR" : "yyyy-MM-dd",
+			"nl-NL" : "d-M-yyyy",
+			"nb-NO" : "dd.MM.yyyy",
+			"pl-PL" : "yyyy-MM-dd",
+			"pt-BR" : "d/M/yyyy",
+			"ro-RO" : "dd.MM.yyyy",
+			"ru-RU" : "dd.MM.yyyy",
+			"hr-HR" : "d.M.yyyy",
+			"sk-SK" : "d. M. yyyy",
+			"sq-AL" : "yyyy-MM-dd",
+			"sv-SE" : "yyyy-MM-dd",
+			"th-TH" : "d/M/yyyy",
+			"tr-TR" : "dd.MM.yyyy",
+			"ur-PK" : "dd/MM/yyyy",
+			"id-ID" : "dd/MM/yyyy",
+			"uk-UA" : "dd.MM.yyyy",
+			"be-BY" : "dd.MM.yyyy",
+			"sl-SI" : "d.M.yyyy",
+			"et-EE" : "d.MM.yyyy",
+			"lv-LV" : "yyyy.MM.dd.",
+			"lt-LT" : "yyyy.MM.dd",
+			"fa-IR" : "MM/dd/yyyy",
+			"vi-VN" : "dd/MM/yyyy",
+			"hy-AM" : "dd.MM.yyyy",
+			"az-Latn-AZ" : "dd.MM.yyyy",
+			"eu-ES" : "yyyy/MM/dd",
+			"mk-MK" : "dd.MM.yyyy",
+			"af-ZA" : "yyyy/MM/dd",
+			"ka-GE" : "dd.MM.yyyy",
+			"fo-FO" : "dd-MM-yyyy",
+			"hi-IN" : "dd-MM-yyyy",
+			"ms-MY" : "dd/MM/yyyy",
+			"kk-KZ" : "dd.MM.yyyy",
+			"ky-KG" : "dd.MM.yy",
+			"sw-KE" : "M/d/yyyy",
+			"uz-Latn-UZ" : "dd/MM yyyy",
+			"tt-RU" : "dd.MM.yyyy",
+			"pa-IN" : "dd-MM-yy",
+			"gu-IN" : "dd-MM-yy",
+			"ta-IN" : "dd-MM-yyyy",
+			"te-IN" : "dd-MM-yy",
+			"kn-IN" : "dd-MM-yy",
+			"mr-IN" : "dd-MM-yyyy",
+			"sa-IN" : "dd-MM-yyyy",
+			"mn-MN" : "yy.MM.dd",
+			"gl-ES" : "dd/MM/yy",
+			"kok-IN" : "dd-MM-yyyy",
+			"syr-SY" : "dd/MM/yyyy",
+			"dv-MV" : "dd/MM/yy",
+			"ar-IQ" : "dd/MM/yyyy",
+			"zh-CN" : "yyyy/M/d",
+			"de-CH" : "dd.MM.yyyy",
+			"en-GB" : "dd/MM/yyyy",
+			"es-MX" : "dd/MM/yyyy",
+			"fr-BE" : "d/MM/yyyy",
+			"it-CH" : "dd.MM.yyyy",
+			"nl-BE" : "d/MM/yyyy",
+			"nn-NO" : "dd.MM.yyyy",
+			"pt-PT" : "dd-MM-yyyy",
+			"sr-Latn-CS" : "d.M.yyyy",
+			"sv-FI" : "d.M.yyyy",
+			"az-Cyrl-AZ" : "dd.MM.yyyy",
+			"ms-BN" : "dd/MM/yyyy",
+			"uz-Cyrl-UZ" : "dd.MM.yyyy",
+			"ar-EG" : "dd/MM/yyyy",
+			"zh-HK" : "d/M/yyyy",
+			"de-AT" : "dd.MM.yyyy",
+			"en-AU" : "d/MM/yyyy",
+			"es-ES" : "dd/MM/yyyy",
+			"fr-CA" : "yyyy-MM-dd",
+			"sr-Cyrl-CS" : "d.M.yyyy",
+			"ar-LY" : "dd/MM/yyyy",
+			"zh-SG" : "d/M/yyyy",
+			"de-LU" : "dd.MM.yyyy",
+			"en-CA" : "dd/MM/yyyy",
+			"es-GT" : "dd/MM/yyyy",
+			"fr-CH" : "dd.MM.yyyy",
+			"ar-DZ" : "dd-MM-yyyy",
+			"zh-MO" : "d/M/yyyy",
+			"de-LI" : "dd.MM.yyyy",
+			"en-NZ" : "d/MM/yyyy",
+			"es-CR" : "dd/MM/yyyy",
+			"fr-LU" : "dd/MM/yyyy",
+			"ar-MA" : "dd-MM-yyyy",
+			"en-IE" : "dd/MM/yyyy",
+			"es-PA" : "MM/dd/yyyy",
+			"fr-MC" : "dd/MM/yyyy",
+			"ar-TN" : "dd-MM-yyyy",
+			"en-ZA" : "yyyy/MM/dd",
+			"es-DO" : "dd/MM/yyyy",
+			"ar-OM" : "dd/MM/yyyy",
+			"en-JM" : "dd/MM/yyyy",
+			"es-VE" : "dd/MM/yyyy",
+			"ar-YE" : "dd/MM/yyyy",
+			"en-029" : "MM/dd/yyyy",
+			"es-CO" : "dd/MM/yyyy",
+			"ar-SY" : "dd/MM/yyyy",
+			"en-BZ" : "dd/MM/yyyy",
+			"es-PE" : "dd/MM/yyyy",
+			"ar-JO" : "dd/MM/yyyy",
+			"en-TT" : "dd/MM/yyyy",
+			"es-AR" : "dd/MM/yyyy",
+			"ar-LB" : "dd/MM/yyyy",
+			"en-ZW" : "M/d/yyyy",
+			"es-EC" : "dd/MM/yyyy",
+			"ar-KW" : "dd/MM/yyyy",
+			"en-PH" : "M/d/yyyy",
+			"es-CL" : "dd-MM-yyyy",
+			"ar-AE" : "dd/MM/yyyy",
+			"es-UY" : "dd/MM/yyyy",
+			"ar-BH" : "dd/MM/yyyy",
+			"es-PY" : "dd/MM/yyyy",
+			"ar-QA" : "dd/MM/yyyy",
+			"es-BO" : "dd/MM/yyyy",
+			"es-SV" : "dd/MM/yyyy",
+			"es-HN" : "dd/MM/yyyy",
+			"es-NI" : "dd/MM/yyyy",
+			"es-PR" : "dd/MM/yyyy",
+			"am-ET" : "d/M/yyyy",
+			"tzm-Latn-DZ" : "dd-MM-yyyy",
+			"iu-Latn-CA" : "d/MM/yyyy",
+			"sma-NO" : "dd.MM.yyyy",
+			"mn-Mong-CN" : "yyyy/M/d",
+			"gd-GB" : "dd/MM/yyyy",
+			"en-MY" : "d/M/yyyy",
+			"prs-AF" : "dd/MM/yy",
+			"bn-BD" : "dd-MM-yy",
+			"wo-SN" : "dd/MM/yyyy",
+			"rw-RW" : "M/d/yyyy",
+			"qut-GT" : "dd/MM/yyyy",
+			"sah-RU" : "MM.dd.yyyy",
+			"gsw-FR" : "dd/MM/yyyy",
+			"co-FR" : "dd/MM/yyyy",
+			"oc-FR" : "dd/MM/yyyy",
+			"mi-NZ" : "dd/MM/yyyy",
+			"ga-IE" : "dd/MM/yyyy",
+			"se-SE" : "yyyy-MM-dd",
+			"br-FR" : "dd/MM/yyyy",
+			"smn-FI" : "d.M.yyyy",
+			"moh-CA" : "M/d/yyyy",
+			"arn-CL" : "dd-MM-yyyy",
+			"ii-CN" : "yyyy/M/d",
+			"dsb-DE" : "d. M. yyyy",
+			"ig-NG" : "d/M/yyyy",
+			"kl-GL" : "dd-MM-yyyy",
+			"lb-LU" : "dd/MM/yyyy",
+			"ba-RU" : "dd.MM.yy",
+			"nso-ZA" : "yyyy/MM/dd",
+			"quz-BO" : "dd/MM/yyyy",
+			"yo-NG" : "d/M/yyyy",
+			"ha-Latn-NG" : "d/M/yyyy",
+			"fil-PH" : "M/d/yyyy",
+			"ps-AF" : "dd/MM/yy",
+			"fy-NL" : "d-M-yyyy",
+			"ne-NP" : "M/d/yyyy",
+			"se-NO" : "dd.MM.yyyy",
+			"iu-Cans-CA" : "d/M/yyyy",
+			"sr-Latn-RS" : "d.M.yyyy",
+			"si-LK" : "yyyy-MM-dd",
+			"sr-Cyrl-RS" : "d.M.yyyy",
+			"lo-LA" : "dd/MM/yyyy",
+			"km-KH" : "yyyy-MM-dd",
+			"cy-GB" : "dd/MM/yyyy",
+			"bo-CN" : "yyyy/M/d",
+			"sms-FI" : "d.M.yyyy",
+			"as-IN" : "dd-MM-yyyy",
+			"ml-IN" : "dd-MM-yy",
+			"en-IN" : "dd-MM-yyyy",
+			"or-IN" : "dd-MM-yy",
+			"bn-IN" : "dd-MM-yy",
+			"tk-TM" : "dd.MM.yy",
+			"bs-Latn-BA" : "d.M.yyyy",
+			"mt-MT" : "dd/MM/yyyy",
+			"sr-Cyrl-ME" : "d.M.yyyy",
+			"se-FI" : "d.M.yyyy",
+			"zu-ZA" : "yyyy/MM/dd",
+			"xh-ZA" : "yyyy/MM/dd",
+			"tn-ZA" : "yyyy/MM/dd",
+			"hsb-DE" : "d. M. yyyy",
+			"bs-Cyrl-BA" : "d.M.yyyy",
+			"tg-Cyrl-TJ" : "dd.MM.yy",
+			"sr-Latn-BA" : "d.M.yyyy",
+			"smj-NO" : "dd.MM.yyyy",
+			"rm-CH" : "dd/MM/yyyy",
+			"smj-SE" : "yyyy-MM-dd",
+			"quz-EC" : "dd/MM/yyyy",
+			"quz-PE" : "dd/MM/yyyy",
+			"hr-BA" : "d.M.yyyy.",
+			"sr-Latn-ME" : "d.M.yyyy",
+			"sma-SE" : "yyyy-MM-dd",
+			"en-SG" : "d/M/yyyy",
+			"ug-CN" : "yyyy-M-d",
+			"sr-Cyrl-BA" : "d.M.yyyy",
+			"es-US" : "M/d/yyyy"
+		};
+
+		var language = window.UserLocale || window.dialogArguments.window.UserLocale;
+		return formats[language] || 'dd/MM/yyyy';
+
+	} ,
+
+		convertSqlDateToLocale = function (z) {
+
 			var convertDate = Date.parseExact(z, "M/d/yyyy");
 			if (convertDate != null) {
-						return convertDate.toString(OpenHR.LocaleDateFormat());
+				return convertDate.toString(window.LocaleDateFormat);
 			} else {
 				return "";
 			}
-				},
-		convertLocaleDateToSQL = function (psDateString) {
+		},
+
+		convertLocaleDateToSQL = function(psDateString) {
 
 			/* Convert the given date string (in locale format) into 
 						SQL format (mm/dd/yyyy). */
@@ -479,9 +699,16 @@
 			var sValue;
 			var iLoop;
 
-			if (!isValidDate(psDateString)) return "null";
+			//TODO - This is not good, as it will mean the server will return a "Conversion failed when converting date and/or time from character string" if the user puts in
+			// garbage data. Our problem is that at present there is no validation of the record before its is sent. Checking validtity of dates
+			// is something that the old ActivbeX control used to do. This is just to get things running.
+			if (psDateString == "") return "null";
 
-			sDateFormat = OpenHR.LocaleDateFormat();
+			if (!isValidDate(psDateString)) {
+			return psDateString;
+		}
+	
+			sDateFormat = window.LocaleDateFormat || window.dialogArguments.window.LocaleDateFormat;
 
 			sDays = "";
 			sMonths = "";
@@ -714,225 +941,12 @@
 		if ((searchValue.length == 0) || (string.length == 0)) return string;
 		return string.split(searchValue).join(newValue);
 	},
-getLocaleDateString = function () {
+		
+	getLocaleDateString = function () {
 
-	var formats = {
-		"af-ZA": "Y/m/d",
-		"am-ET": "d/m/Y",
-		"ar-AE": "d/m/Y",
-		"ar-BH": "d/m/Y",
-		"ar-DZ": "d-m-Y",
-		"ar-EG": "d/m/Y",
-		"ar-IQ": "d/m/Y",
-		"ar-JO": "d/m/Y",
-		"ar-KW": "d/m/Y",
-		"ar-LB": "d/m/Y",
-		"ar-LY": "d/m/Y",
-		"ar-MA": "d-m-Y",
-		"arn-CL": "d-m-Y",
-		"ar-OM": "d/m/Y",
-		"ar-QA": "d/m/Y",
-		"ar-SA": "d/m/Y",
-		"ar-SY": "d/m/Y",
-		"ar-TN": "d-m-Y",
-		"ar-YE": "d/m/Y",
-		"as-IN": "d-m-Y",
-		"az-Cyrl-AZ": "d.m.Y",
-		"az-Latn-AZ": "d.m.Y",
-		"ba-RU": "d.m.Y",
-		"be-BY": "d.m.Y",
-		"bg-BG": "d.m.Y",
-		"bn-BD": "d-m-Y",
-		"bn-IN": "d-m-Y",
-		"bo-CN": "Y/m/d",
-		"br-FR": "d/m/Y",
-		"bs-Cyrl-BA": "d.m.Y",
-		"bs-Latn-BA": "d.m.Y",
-		"ca-ES": "d/m/Y",
-		"co-FR": "d/m/Y",
-		"cs-CZ": "d.m.Y",
-		"cy-GB": "d/m/Y",
-		"da-DK": "d-m-Y",
-		"de-AT": "d.m.Y",
-		"de-CH": "d.m.Y",
-		"de-DE": "d.m.Y",
-		"de-LI": "d.m.Y",
-		"de-LU": "d.m.Y",
-		"dsb-DE": "d. m. Y",
-		"dv-MV": "d/m/Y",
-		"el-GR": "d/m/Y",
-		"en-029": "m/d/Y",
-		"en-AU": "d/m/Y",
-		"en-BZ": "d/m/Y",
-		"en-CA": "d/m/Y",
-		"en-GB": "d/m/Y",
-		"en-IE": "d/m/Y",
-		"en-IN": "d-m-Y",
-		"en-JM": "d/m/Y",
-		"en-MY": "d/m/Y",
-		"en-NZ": "d/m/Y",
-		"en-PH": "m/d/Y",
-		"en-SG": "d/m/Y",
-		"en-TT": "d/m/Y",
-		"en-US": "m/d/Y",
-		"en-ZA": "Y/m/d",
-		"en-ZW": "m/d/Y",
-		"es-AR": "d/m/Y",
-		"es-BO": "d/m/Y",
-		"es-CL": "d-m-Y",
-		"es-CO": "d/m/Y",
-		"es-CR": "d/m/Y",
-		"es-DO": "d/m/Y",
-		"es-EC": "d/m/Y",
-		"es-ES": "d/m/Y",
-		"es-GT": "d/m/Y",
-		"es-HN": "d/m/Y",
-		"es-MX": "d/m/Y",
-		"es-NI": "d/m/Y",
-		"es-PA": "m/d/Y",
-		"es-PE": "d/m/Y",
-		"es-PR": "d/m/Y",
-		"es-PY": "d/m/Y",
-		"es-SV": "d/m/Y",
-		"es-US": "m/d/Y",
-		"es-UY": "d/m/Y",
-		"es-VE": "d/m/Y",
-		"et-EE": "d.m.Y",
-		"eu-ES": "Y/m/d",
-		"fa-IR": "m/d/Y",
-		"fi-FI": "d.m.Y",
-		"fil-PH": "m/d/Y",
-		"fo-FO": "d-m-Y",
-		"fr-BE": "d/m/Y",
-		"fr-CA": "Y-m-d",
-		"fr-CH": "d.m.Y",
-		"fr-FR": "d/m/Y",
-		"fr-LU": "d/m/Y",
-		"fr-MC": "d/m/Y",
-		"fy-NL": "d-m-Y",
-		"ga-IE": "d/m/Y",
-		"gd-GB": "d/m/Y",
-		"gl-ES": "d/m/Y",
-		"gsw-FR": "d/m/Y",
-		"gu-IN": "d-m-Y",
-		"ha-Latn-NG": "d/m/Y",
-		"he-IL": "d/m/Y",
-		"hi-IN": "d-m-Y",
-		"hr-BA": "d.m.Y.",
-		"hr-HR": "d.m.Y",
-		"hsb-DE": "d. m. Y",
-		"hu-HU": "Y. m. d.",
-		"hy-AM": "d.m.Y",
-		"id-ID": "d/m/Y",
-		"ig-NG": "d/m/Y",
-		"ii-CN": "Y/m/d",
-		"is-IS": "d.m.Y",
-		"it-CH": "d.m.Y",
-		"it-IT": "d/m/Y",
-		"iu-Cans-CA": "d/m/Y",
-		"iu-Latn-CA": "d/m/Y",
-		"ja-JP": "Y/m/d",
-		"ka-GE": "d.m.Y",
-		"kk-KZ": "d.m.Y",
-		"kl-GL": "d-m-Y",
-		"km-KH": "Y-m-d",
-		"kn-IN": "d-m-Y",
-		"kok-IN": "d-m-Y",
-		"ko-KR": "Y-m-d",
-		"ky-KG": "d.m.Y",
-		"lb-LU": "d/m/Y",
-		"lo-LA": "d/m/Y",
-		"lt-LT": "Y.m.d",
-		"lv-LV": "Y.m.d.",
-		"mi-NZ": "d/m/Y",
-		"mk-MK": "d.m.Y",
-		"ml-IN": "d-m-Y",
-		"mn-MN": "Y.m.d",
-		"mn-Mong-CN": "Y/m/d",
-		"moh-CA": "m/d/Y",
-		"mr-IN": "d-m-Y",
-		"ms-BN": "d/m/Y",
-		"ms-MY": "d/m/Y",
-		"mt-MT": "d/m/Y",
-		"nb-NO": "d.m.Y",
-		"ne-NP": "m/d/Y",
-		"nl-BE": "d/m/Y",
-		"nl-NL": "d-m-Y",
-		"nn-NO": "d.m.Y",
-		"nso-ZA": "Y/m/d",
-		"oc-FR": "d/m/Y",
-		"or-IN": "d-m-Y",
-		"pa-IN": "d-m-Y",
-		"pl-PL": "Y-m-d",
-		"prs-AF": "d/m/Y",
-		"ps-AF": "d/m/Y",
-		"pt-BR": "d/m/Y",
-		"pt-PT": "d-m-Y",
-		"qut-GT": "d/m/Y",
-		"quz-BO": "d/m/Y",
-		"quz-EC": "d/m/Y",
-		"quz-PE": "d/m/Y",
-		"rm-CH": "d/m/Y",
-		"ro-RO": "d.m.Y",
-		"ru-RU": "d.m.Y",
-		"rw-RW": "m/d/Y",
-		"sah-RU": "m.d.Y",
-		"sa-IN": "d-m-Y",
-		"se-FI": "d.m.Y",
-		"se-NO": "d.m.Y",
-		"se-SE": "Y-m-d",
-		"si-LK": "Y-m-d",
-		"sk-SK": "d. m. Y",
-		"sl-SI": "d.m.Y",
-		"sma-NO": "d.m.Y",
-		"sma-SE": "Y-m-d",
-		"smj-NO": "d.m.Y",
-		"smj-SE": "Y-m-d",
-		"smn-FI": "d.m.Y",
-		"sms-FI": "d.m.Y",
-		"sq-AL": "Y-m-d",
-		"sr-Cyrl-BA": "d.m.Y",
-		"sr-Cyrl-CS": "d.m.Y",
-		"sr-Cyrl-ME": "d.m.Y",
-		"sr-Cyrl-RS": "d.m.Y",
-		"sr-Latn-BA": "d.m.Y",
-		"sr-Latn-CS": "d.m.Y",
-		"sr-Latn-ME": "d.m.Y",
-		"sr-Latn-RS": "d.m.Y",
-		"sv-FI": "d.m.Y",
-		"sv-SE": "Y-m-d",
-		"sw-KE": "m/d/Y",
-		"syr-SY": "d/m/Y",
-		"ta-IN": "d-m-Y",
-		"te-IN": "d-m-Y",
-		"tg-Cyrl-TJ": "d.m.Y",
-		"th-TH": "d/m/Y",
-		"tk-TM": "d.m.Y",
-		"tn-ZA": "Y/m/d",
-		"tr-TR": "d.m.Y",
-		"tt-RU": "d.m.Y",
-		"tzm-Latn-DZ": "d-m-Y",
-		"ug-CN": "Y-m-d",
-		"uk-UA": "d.m.Y",
-		"ur-PK": "d/m/Y",
-		"uz-Cyrl-UZ": "d.m.Y",
-		"uz-Latn-UZ": "d/m Y",
-		"vi-VN": "d/m/Y",
-		"wo-SN": "d/m/Y",
-		"xh-ZA": "Y/m/d",
-		"yo-NG": "d/m/Y",
-		"zh-CN": "Y/m/d",
-		"zh-HK": "d/m/Y",
-		"zh-MO": "d/m/Y",
-		"zh-SG": "d/m/Y",
-		"zh-TW": "Y/m/d",
-		"zu-ZA": "Y/m/d"
+		var res = window.LocaleDateFormat.replace("dd", "d").replace("MM", "m").replace("M", "m").replace("yyyy", "Y");
+		return res;
 	};
-
-	//return formats[navigator.language] || 'dd/MM/yyyy';
-	return formats[window.UserLocale] || 'dd/MM/yyyy';
-
-};
 
 	window.OpenHR = {
 		version: version,
@@ -948,7 +962,6 @@ getLocaleDateString = function () {
 		refreshMenu: refreshMenu,
 		disableMenu: disableMenu,
 		LocaleDateFormat: localeDateFormat,
-		LocaleDateSeparator: localeDateSeparator,
 		LocaleDecimalSeparator: localeDecimalSeparator,
 		LocaleThousandSeparator: localeThousandSeparator,
 		ConvertSQLDateToLocale: convertSqlDateToLocale,
@@ -975,6 +988,7 @@ getLocaleDateString = function () {
 		replaceAll: replaceAll,
 		getLocaleDateString: getLocaleDateString,
 		setDatepickerLanguage: setDatepickerLanguage,
+		IsValidDate: isValidDate
 	};
 
 })(window, jQuery);

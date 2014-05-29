@@ -3,22 +3,17 @@ Imports System.Drawing
 Imports System.IO
 Imports System.Drawing.Imaging
 Imports System.Data.OleDb
+Imports System.Globalization
 Imports HR.Intranet.Server.Enums
 Imports HR.Intranet.Server
 Imports System.Data.SqlClient
 Imports DayPilot.Web.Ui
 Imports System.Net.Mail
 Imports System.Net.Mime
+Imports HR.Intranet.Server.Structures
 
 Public Module ASRIntranetFunctions
 
-	Function UserLocale() As String
-		Return Thread.CurrentThread.CurrentCulture.ToString()
-	End Function
-
-	Function LocaleDateFormat() As String
-		Return Thread.CurrentThread.CurrentCulture.DateTimeFormat.ShortDatePattern.ToLower()
-	End Function
 
 	Function LocaleDecimalSeparator() As String
 		Return Thread.CurrentThread.CurrentCulture.NumberFormat.NumberDecimalSeparator
@@ -26,10 +21,6 @@ Public Module ASRIntranetFunctions
 
 	Function LocaleThousandSeparator() As String
 		Return Thread.CurrentThread.CurrentCulture.NumberFormat.NumberGroupSeparator
-	End Function
-
-	Function LocaleDateSeparator() As String
-		Return Thread.CurrentThread.CurrentCulture.DateTimeFormat.DateSeparator
 	End Function
 
 	'****************************************************************

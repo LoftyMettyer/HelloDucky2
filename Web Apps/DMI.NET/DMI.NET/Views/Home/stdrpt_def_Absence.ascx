@@ -1064,17 +1064,23 @@
 	$("#toolbarReportFind").parent().show();
 	$("#toolbarReportFind").click();
 	
-
 	$(".datepicker").datepicker();
+
 	$(document).on('keydown', '.datepicker', function (event) {
-		var queryDate = new Date();
-		queryDate = $.datepicker.formatDate('dd/mm/yy', queryDate);
+		var queryDate = $.datepicker.formatDate(window.LocaleDateFormat.replace("yyyy", "yy").replace("M", "m"), new Date());
 
 		switch (event.keyCode) {
 			case 113:
 				$(this).val(queryDate);
 				$(this).datepicker('widget').hide('true');
 				break;
+		}
+	});
+
+	$(document).on('blur', '.datepicker', function (sender) {
+		if (OpenHR.IsValidDate(sender.target.value) == false && sender.target.value != "") {
+			OpenHR.modalMessage("Invalid date value entered");
+			$(sender.target.id).focus();
 		}
 	});
 

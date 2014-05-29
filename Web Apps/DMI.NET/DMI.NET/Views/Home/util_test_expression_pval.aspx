@@ -29,11 +29,10 @@
 		function util_test_expression_pval_onload() {
 
 			window.parent.OpenHR.setDatepickerLanguage();
-
-			$(".datepicker").datepicker({ dateFormat: 'dd/mm/yy' });
+	
+			$(".datepicker").datepicker();
 			$(document).on('keydown', '.datepicker', function (event) {
-				var queryDate = new Date();
-				queryDate = $.datepicker.formatDate('dd/mm/yy', queryDate);
+				var queryDate = $.datepicker.formatDate(window.dialogArguments.window.LocaleDateFormat.replace("yyyy", "yy").replace("M", "m"), new Date());
 
 				switch (event.keyCode) {
 					case 113:
@@ -120,6 +119,7 @@
 
 		function ValidatePrompt(pctlPrompt, piDataType)
 		{
+
 				// Validate the given prompt value.
 				var fOK;
 				var reBackSlash = new RegExp("\\\\", "gi");
@@ -174,29 +174,13 @@
 				}
 		
 				if ((fOK == true) && (piDataType == 4)) {
-						// Date column.
-						// Ensure that the value entered is a date.
-						var sValue = pctlPrompt.value;
-			
-						if (sValue.length == 0) {
-								fOK = false;
-						}
-						else {
-								// Convert the date to SQL format (use this as a validation check).
-								// An empty string is returned if the date is invalid.
-								sValue = OpenHR.convertLocaleDateToSQL(sValue);
-								if (sValue.length == 0) {
-										fOK = false;
-								}
-								else {
-										pctlPrompt.value = OpenHR.ConvertSQLDateToLocale(sValue);
-								}
-						}
-			
-						if (fOK == false) {
-								OpenHR.messageBox("Invalid date value entered.");
-								pctlPrompt.focus();
-						}	
+
+					fOK = OpenHR.IsValidDate(pctlPrompt.value);
+
+					if (fOK == false) {
+						OpenHR.messageBox("Invalid date value entered.");
+					}
+
 				}
 	
 				if ((fOK == true) && (piDataType == 1)) {
@@ -702,6 +686,7 @@
 											 
 							' Date Prompted Value
 						ElseIf rowPromptedValues1("ValueType") = 4 Then
+														
 							Response.Write("        <input type='text' class='text' id='prompt_4_C" & rowPromptedValues1("componentID").ToString & "' name='prompt_4_C" & rowPromptedValues1("componentID").ToString & "' value='")
 							Select Case rowPromptedValues1("promptDateType")
 								Case 0

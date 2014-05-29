@@ -13,9 +13,16 @@
 		}
 	})();
 
+	$(document).on('blur', '.datepicker', function (sender) {
+		if (OpenHR.IsValidDate(sender.target.value) == false && sender.target.value != "") {
+			OpenHR.modalMessage("Invalid date value entered");
+			$(sender.target.id).focus();
+		}
+	});
+
 	$(document).on('keydown', '.datepicker', function (event) {
-		var queryDate = new Date();
-		queryDate = $.datepicker.formatDate('dd/mm/yy', queryDate);
+
+		var queryDate = $.datepicker.formatDate(window.LocaleDateFormat.replace("yyyy", "yy").replace("M", "m"), new Date());
 
 		switch (event.keyCode) {
 			case 113:    // F2 insert todays date
@@ -173,11 +180,7 @@
 			//jQuery Functionality:
 			if (fOK == true) {
 				//add datepicker functionality.
-				$(".datepicker").datepicker({ dateFormat: 'dd/mm/yy' });
-				//$(".datepicker").datepicker({
-				//	dateFormat: Date,
-				//	_keyEvent: true
-				//});
+				$(".datepicker").datepicker();
 
 				//add spinner functionality
 				$('.spinner').each(function () {

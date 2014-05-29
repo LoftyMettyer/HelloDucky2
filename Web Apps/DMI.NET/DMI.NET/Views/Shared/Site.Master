@@ -291,12 +291,13 @@
 		//set up ROOT variable for use in external JS files.
 		window.ROOT = '<%= Url.Content("~/") %>';
 
+		var language = window.navigator.userLanguage || window.navigator.language;
+		
 		//Set locale-related global variables
+		window.UserLocale = language;
 		window.LocaleThousandSeparator = "<%=LocaleThousandSeparator%>";
 		window.LocaleDecimalSeparator = "<%=LocaleDecimalSeparator%>";
-		window.LocaleDateFormat = "<%=LocaleDateFormat%>";
-		window.LocaleDateSeparator = "<%=LocaleDateSeparator%>";
-		window.UserLocale = "<%:UserLocale()%>";
+
 
 		function loadPartialView(action, controller, targetDiv, params) {
 			$.ajax({

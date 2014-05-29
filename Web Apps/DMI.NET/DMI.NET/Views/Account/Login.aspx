@@ -74,8 +74,9 @@
 	</div>
 	
 	<input type="hidden" id="txtSetDetails" name="txtSetDetails" value="<%=Session("showLoginDetails")%>">
-	<input type="hidden" id="txtLocaleDateFormat" name="txtLocaleDateFormat" value="<%=LocaleDateFormat()%>">
-	<input type="hidden" id="txtLocaleDateSeparator" name="txtLocaleDateSeparator" value="<%=LocaleDateSeparator()%>">
+	
+	<input type="hidden" id="txtLocaleCulture" name="txtLocaleCulture" value="">
+
 	<input type="hidden" id="txtLocaleDecimalSeparator" name="txtLocaleDecimalSeparator" value="<%=LocaleDecimalSeparator()%>">
 	<input type="hidden" id="txtLocaleThousandSeparator" name="txtLocaleThousandSeparator" value="<%: Html.Raw(LocaleThousandSeparator())%>">
 	<input type="hidden" id="txtSystemUser" name="txtSystemUser" value="<%=replace(Request.ServerVariables("LOGON_USER"),"/","\")%>">
@@ -117,11 +118,11 @@
 	function SubmitLoginDetails() {
 		/* Try to login to the OpenHR database. */
 		var frmLoginForm = document.getElementById('frmLoginForm');
+
+		frmLoginForm.txtLocaleCulture.value = window.UserLocale;
 	
-			frmLoginForm.txtLocaleDateFormat.value = OpenHR.LocaleDateFormat();
 			frmLoginForm.txtLocaleDecimalSeparator.value = OpenHR.LocaleDecimalSeparator();
 			frmLoginForm.txtLocaleThousandSeparator.value = OpenHR.LocaleThousandSeparator();
-			frmLoginForm.txtLocaleDateSeparator.value = OpenHR.LocaleDateSeparator();			
 
 			frmLoginForm.submit();			
 	}

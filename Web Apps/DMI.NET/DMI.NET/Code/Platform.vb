@@ -1,6 +1,7 @@
 ﻿' Mobiles. Fix as tiles display.
 Imports System.Globalization
 Imports HR.Intranet.Server.Structures
+Imports System.Threading
 
 Namespace Code
 	Public Class Platform
@@ -40,12 +41,11 @@ Namespace Code
 
 		End Function
 
-		Public Shared Function GetRegionalSettings() As RegionalSettings
+		Public Shared Function PopulateRegionalSettings(CultureName As String) As RegionalSettings
 
-			Dim objCulture = CultureInfo.CreateSpecificCulture(HttpContext.Current.Request.UserLanguages(0))
+			Dim objCulture = CultureInfo.CreateSpecificCulture(CultureName)
 			Dim objSettings As New RegionalSettings
-			objSettings.DateFormat = objCulture.DateTimeFormat
-			objSettings.DateSeparator = "/"
+			objSettings.Culture = objCulture
 
 			Return objSettings
 

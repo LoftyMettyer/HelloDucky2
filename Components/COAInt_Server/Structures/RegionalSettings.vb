@@ -2,7 +2,19 @@
 
 Namespace Structures
 	Public Structure RegionalSettings
-		Public DateFormat As DateTimeFormatInfo
-		Public DateSeparator As String
+		Public Culture As CultureInfo
+
+		Public ReadOnly Property DateFormat As DateTimeFormatInfo
+			Get
+				Return Culture.DateTimeFormat
+			End Get
+		End Property
+
+		Public ReadOnly Property DateSeparator As String
+			Get
+				Return "/"
+			End Get
+		End Property
+
 	End Structure
 End Namespace

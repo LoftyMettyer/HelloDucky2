@@ -67,82 +67,15 @@
 	objReport.ClientDateFormat = Session("LocaleDateFormat")
 	objReport.LocalDecimalSeparator = Session("LocaleDecimalSeparator")
 
-	If fok And bBradfordFactor Then
-		dtStartDate = ConvertLocaleDateToSQL(Session("stdReport_StartDate"))
-		dtEndDate = ConvertLocaleDateToSQL(Session("stdReport_EndDate"))
-						
-		strAbsenceTypes = Session("stdReport_AbsenceTypes")
-		lngFilterID = Session("stdReport_FilterID")
-		lngPicklistID = Session("stdReport_PicklistID")
-		lngPersonnelID = Session("optionRecordID")
-
-		bBradford_SRV = Session("stdReport_Bradford_SRV")
-		bBradford_ShowDurations = Session("stdReport_Bradford_ShowDurations")
-		bBradford_ShowInstances = Session("stdReport_Bradford_ShowInstances")
-		bBradford_ShowFormula = Session("stdReport_Bradford_ShowFormula")
-		bBradford_OmitBeforeStart = Session("stdReport_Bradford_OmitBeforeStart")
-		bBradford_OmitAfterEnd = Session("stdReport_Bradford_OmitAfterEnd")
-		bBradford_txtOrderBy1 = Session("stdReport_Bradford_txtOrderBy1")
-		lngBradford_txtOrderBy1ID = CLng(Session("stdReport_Bradford_txtOrderBy1ID"))
-		bBradford_txtOrderBy1Asc = Session("stdReport_Bradford_txtOrderBy1Asc")
-		bBradford_txtOrderBy2 = Session("stdReport_Bradford_txtOrderBy2")
-		lngBradford_txtOrderBy2ID = CLng(Session("stdReport_Bradford_txtOrderBy2ID"))
-		bBradford_txtOrderBy2Asc = Session("stdReport_Bradford_txtOrderBy2Asc")
-		bPrintFilterPickList = Session("stdReport_PrintFilterPicklistHeader")
-
-		bMinBradford = Session("stdReport_MinimumBradfordFactor")
-		lngMinBradfordAmount = CLng(Session("stdReport_MinimumBradfordFactorAmount"))
-		pbDisplayBradfordDetail = Session("stdReport_DisplayBradfordDetail")
-
-		' Default output options
-		bOutputPreview = Session("stdReport_OutputPreview")
-		lngOutputFormat = Session("stdReport_OutputFormat")
-		pblnOutputScreen = False
-		pblnOutputSave = Session("stdReport_OutputSave")
-		'plngOutputSaveExisting = session("stdReport_OutputSaveExisting")
-		pblnOutputEmail = Session("stdReport_OutputEmail")
-		plngOutputEmailID = Session("stdReport_OutputEmailAddr")
-		pstrOutputEmailName = Session("stdReport_OutputEmailName")
-		pstrOutputEmailSubject = Session("stdReport_OutputEmailSubject")
-		pstrOutputEmailAttachAs = Session("stdReport_OutputEmailAttachAs")
-		pstrOutputFilename = Session("stdReport_OutputFilename")
-	End If
-
-	If fok And Not bBradfordFactor Then
+	If fok Then
 		fok = objReport.GetCustomReportDefinition
 		Session("utilname") = objReport.Name
 		fNotCancelled = Response.IsClientConnected
 		If fok Then fok = fNotCancelled
 	End If
 
-	If fok And Not bBradfordFactor Then
+	If fok Then
 		fok = objReport.GetDetailsRecordsets
-		fNotCancelled = Response.IsClientConnected
-		If fok Then fok = fNotCancelled
-	End If
-
-	If fok And bBradfordFactor Then
-		fok = objReport.SetBradfordDisplayOptions(bBradford_SRV, bBradford_ShowDurations, bBradford_ShowInstances, bBradford_ShowFormula, bPrintFilterPickList, pbDisplayBradfordDetail)
-
-		If lngPersonnelID = 0 Then
-			fok = objReport.SetBradfordOrders(bBradford_txtOrderBy1, bBradford_txtOrderBy2, bBradford_txtOrderBy1Asc, bBradford_txtOrderBy2Asc, lngBradford_txtOrderBy1ID, lngBradford_txtOrderBy2ID)
-		Else
-			fok = objReport.SetBradfordOrders("None", "None", False, False, 0, 0)
-		End If
-
-		fok = objReport.SetBradfordIncludeOptions(bBradford_OmitBeforeStart, bBradford_OmitAfterEnd, lngPersonnelID, lngFilterID, lngPicklistID, bMinBradford, lngMinBradfordAmount)
-		fNotCancelled = Response.IsClientConnected
-		If fok Then fok = fNotCancelled
-	End If
-
-	If fok And bBradfordFactor Then
-		fok = objReport.GetBradfordReportDefinition(dtStartDate, dtEndDate)
-		fNotCancelled = Response.IsClientConnected
-		If fok Then fok = fNotCancelled
-	End If
-
-	If fok And bBradfordFactor Then
-		fok = objReport.GetBradfordRecordSet
 		fNotCancelled = Response.IsClientConnected
 		If fok Then fok = fNotCancelled
 	End If
@@ -158,12 +91,6 @@
 
 	If fok Then
 		fok = objReport.GenerateSQL
-		fNotCancelled = Response.IsClientConnected
-		If fok Then fok = fNotCancelled
-	End If
-
-	If fok And bBradfordFactor Then
-		fok = objReport.GenerateSQLBradford(strAbsenceTypes)
 		fNotCancelled = Response.IsClientConnected
 		If fok Then fok = fNotCancelled
 	End If
@@ -194,12 +121,6 @@
 
 	If fok Then
 		fok = objReport.UDFFunctions(False)
-		fNotCancelled = Response.IsClientConnected
-		If fok Then fok = fNotCancelled
-	End If
-
-	If fok And bBradfordFactor Then
-		fok = objReport.CalculateBradfordFactors()
 		fNotCancelled = Response.IsClientConnected
 		If fok Then fok = fNotCancelled
 	End If
@@ -422,10 +343,9 @@ End If
 		gridHeight = (size.MakeHeight);
 	}
 
-	var newFormat = OpenHR.getLocaleDateString();
-	var srcFormat = 'd/m/Y'; //newFormat;
-	if (newFormat.toLowerCase().indexOf('y.m.d') >= 0) srcFormat = 'd/m/Y';
-	
+		var newFormat = OpenHR.getLocaleDateString();
+		var srcFormat = newFormat;
+
 		tableToGrid("#gridReportData", {
 			shrinkToFit: ShrinkToFit,
 			width: gridWidth,

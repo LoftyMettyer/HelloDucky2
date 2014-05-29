@@ -15,11 +15,10 @@
 		});
 
 		var frmPromptedValues = document.getElementById("frmPromptedValues");
+		$(".datepicker").datepicker();
 
-		$(".datepicker").datepicker({ dateFormat: 'dd/mm/yy' });
 		$(document).on('keydown', '.datepicker', function (event) {
-			var queryDate = new Date();
-			queryDate = $.datepicker.formatDate('dd/mm/yy', queryDate);
+			var queryDate = $.datepicker.formatDate(window.LocaleDateFormat.replace("yyyy", "yy").replace("M", "m"), new Date());
 
 			switch (event.keyCode) {
 				case 113:
@@ -28,8 +27,14 @@
 					break;
 			}
 		});
+
+		$(document).on('blur', '.datepicker', function (sender) {
+			if (OpenHR.IsValidDate(sender.target.value) == false && sender.target.value != "") {
+				OpenHR.modalMessage("Invalid date value entered");
+				$(sender.target.id).focus();
+			}
+		});
 		
-		frmPromptedValues.txtLocaleDateFormat.value = '<%:LocaleDateFormat() %>';
 		frmPromptedValues.txtLocaleDecimalSeparator.value = '<%:LocaleDecimalSeparator()%>';
 		frmPromptedValues.txtLocaleThousandSeparator.value = '<%:Html.Raw(LocaleThousandSeparator())%>';
 
@@ -445,26 +450,8 @@
 		}
 
 		if ((fOK == true) && (piDataType == 4)) {
-			// Date column.
-			// Ensure that the value entered is a date.
-			sValue = pctlPrompt.value;
 
-			if (sValue.length == 0) {
-				fOK = false;
-			}
-			else {
-				// Convert the date to SQL format (use this as a validation check).
-				// An empty string is returned if the date is invalid.
-				//sValue = OpenHR.convertLocaleDateToSQL(sValue);
-				sValue = localconvertLocaleDateToSQL(sValue);
-
-				if (sValue.length == 0) {
-					fOK = false;
-				}
-				else {
-					pctlPrompt.value = OpenHR.ConvertSQLDateToLocale(sValue);
-				}
-			}
+			fOK = OpenHR.IsValidDate(pctlPrompt.value);
 
 			if (fOK == false) {
 				sMessage = "Invalid date value entered.";

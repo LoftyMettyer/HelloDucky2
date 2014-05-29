@@ -1,4 +1,5 @@
 ﻿Imports System.Reflection
+Imports System.Globalization
 
 Public Module svrCleanup
 
@@ -119,74 +120,29 @@ Public Module svrCleanup
     End If
   End Function
 
-  Function ConvertSQLDateToLocale(psDate As String) As String
-    Dim sLocaleFormat As String
-    Dim iIndex As Integer
-
-    If Len(psDate) > 0 Then
-      sLocaleFormat = HttpContext.Current.Session("LocaleDateFormat")
-
-      iIndex = InStr(sLocaleFormat, "dd")
-      If iIndex > 0 Then
-        sLocaleFormat = Left(sLocaleFormat, iIndex - 1) & _
-            Mid(psDate, 4, 2) & Mid(sLocaleFormat, iIndex + 2)
-      End If
-
-      iIndex = InStr(sLocaleFormat, "MM")
-      If iIndex > 0 Then
-        sLocaleFormat = Left(sLocaleFormat, iIndex - 1) & _
-            Left(psDate, 2) & Mid(sLocaleFormat, iIndex + 2)
-      End If
-
-      iIndex = InStr(sLocaleFormat, "yyyy")
-      If iIndex > 0 Then
-        sLocaleFormat = Left(sLocaleFormat, iIndex - 1) & _
-            Mid(psDate, 7, 4) & Mid(sLocaleFormat, iIndex + 4)
-      End If
-
-      ConvertSQLDateToLocale = sLocaleFormat
-    Else
-      ConvertSQLDateToLocale = ""
-    End If
-  End Function
-
   Function ConvertSQLDateToLocale(pobjDate As Object) As String
 
     If IsDate(pobjDate) Then
-      Return pobjDate.ToShortDateString()
-    End If
+			'	Return pobjDate.ToShortDateString()
+			Return CDate(pobjDate).ToString(HttpContext.Current.Session("sessionContext").RegionalSettings.DateFormat.shortDatePattern)
+		End If
 
     Return ""
 
   End Function
 
   Function ConvertLocaleDateToSQL(psDate As String) As String
-    Dim sLocaleFormat As String
-		Dim sSQLFormat As String = ""
-    Dim iIndex As Integer
 
-    If Len(psDate) > 0 Then
-      sLocaleFormat = HttpContext.Current.Session("LocaleDateFormat")
+		Dim objCulture As CultureInfo = HttpContext.Current.Session("sessionContext").RegionalSettings.Culture
 
-      iIndex = InStr(sLocaleFormat, "MM")
-      If iIndex > 0 Then
-        sSQLFormat = Mid(psDate, iIndex, 2) & "/"
-      End If
+		Try
+			Return DateTime.Parse(psDate, objCulture).ToString("MM/dd/yyyy", CultureInfo.CreateSpecificCulture("en-US"))
 
-      iIndex = InStr(sLocaleFormat, "dd")
-      If iIndex > 0 Then
-        sSQLFormat = sSQLFormat & Mid(psDate, iIndex, 2) & "/"
-      End If
+		Catch ex As Exception
+			Return ""
 
-      iIndex = InStr(sLocaleFormat, "yyyy")
-      If iIndex > 0 Then
-        sSQLFormat = sSQLFormat & Mid(psDate, iIndex, 4)
-      End If
+		End Try
 
-      ConvertLocaleDateToSQL = sSQLFormat
-    Else
-      ConvertLocaleDateToSQL = ""
-    End If
   End Function
 
   Function ConvertSqlDateToTime(psDate) As String

@@ -28,10 +28,9 @@
 		var sReqdControlName;
 		var sControlName;
 
-		$(".datepicker").datepicker({ dateFormat: 'dd/mm/yy' });
+		$(".datepicker").datepicker();
 		$(document).on('keydown', '.datepicker', function (event) {
-			var queryDate = new Date();
-			queryDate = $.datepicker.formatDate('dd/mm/yy', queryDate);
+			var queryDate = $.datepicker.formatDate(window.LocaleDateFormat.replace("yyyy", "yy").replace("M", "m"), new Date());
 
 			switch (event.keyCode) {
 				case 113:
