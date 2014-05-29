@@ -4812,7 +4812,7 @@ Namespace Controllers
 				Dim objMergeDocument As Code.MailMergeRun = Session("MailMerge_CompletedDocument")
 
 				Response.AppendCookie(New HttpCookie("fileDownloadToken", downloadTokenValue)) ' marks the download as complete on the client		
-				Response.AppendCookie(New HttpCookie("fileDownloadErrors", "Mailmerge completed successfully."))	' Send completion message	
+				Response.AppendCookie(New HttpCookie("fileDownloadErrors", "Mail merge completed successfully."))	' Send completion message	
 
 				Return File(objMergeDocument.MergeDocument, "application/vnd.openxmlformats-officedocument.wordprocessingml.document" _
 					, Path.GetFileName(objMergeDocument.OutputFileName))
