@@ -28,7 +28,9 @@
 
 	$(function () {
 
-		window.LocaleDateFormat = '<%=Session("LocaleDateFormat")%>';
+		<% 
+	Response.Write("window.LocaleDateFormat = """ & Session("LocaleDateFormat") & """;")
+		%>
 
 			var SelfServiceUserType = '<%=ViewBag.SSIMode%>';
 
