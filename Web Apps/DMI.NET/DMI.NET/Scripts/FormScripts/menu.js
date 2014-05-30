@@ -2195,14 +2195,9 @@ function menu_refreshMenu() {
 		menu_enableMenuItem("mnutoolConfiguration", false);
 	}
 
-	//TODO	
-	//<%
-	//	if session("WinAuth") then
-	//%>	
-	//		abMainMenu.Tools("mnutoolPasswordChange").enabled = false;
-	//<%
-	//	end if
-	//%>		
+	var bChangePassword = ($("#txtIsWindowsLogon")[0].value == "False");
+	menu_setVisibleMenuItem("mnutoolPasswordChange", bChangePassword);
+	menu_setVisibleMenuItem("mnutoolFixedPasswordChange", bChangePassword);
 
 	menu_setVisibleMenuItem("mnutoolAbsenceBreakdownRecord", fStdRptAbsenceBreakdownVisible);
 	menu_toolbarEnableItem("mnutoolAbsenceBreakdownRecord", fStdRptAbsenceBreakdownEnabled);

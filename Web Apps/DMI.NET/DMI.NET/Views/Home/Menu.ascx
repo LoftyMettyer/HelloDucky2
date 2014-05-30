@@ -457,6 +457,7 @@
 	<input type="hidden" id="txtIsDMIUser" name="txtIsDMIUser" value=<%= objSessionContext.LoginInfo.IsDMIUser%>>
 	<input type="hidden" id="txtIsDMISingle" name="txtIsDMISingle" value=<%= objSessionContext.LoginInfo.IsDMISingle%>>
 	<input type="hidden" id="txtIsSSIUser" name="txtIsSSIUser" value='<%= IIf(objSessionContext.LoginInfo.IsSSIUser, "1", "0")%>'>
+	<input type="hidden" id="txtIsWindowsLogon" name="txtIsWindowsLogon" value=<%= objSessionContext.LoginInfo.TrustedConnection%>>
 
 	<input type="hidden" id="txtPersonnel_EmpTableID" name="txtPersonnel_EmpTableID" value='<%=session("Personnel_EmpTableID")%>'>
 
