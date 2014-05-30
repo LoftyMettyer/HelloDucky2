@@ -4,6 +4,7 @@ Option Explicit On
 Imports HR.Intranet.Server.Enums
 Imports System.IO
 Imports System.Text.RegularExpressions
+Imports System.Text.RegularExpressions.Regex
 
 Namespace BaseClasses
 	Public Class BaseReport
@@ -62,25 +63,30 @@ Namespace BaseClasses
 
 		Public ReadOnly Property DownloadFileName As String
 			Get
-				Dim sName As String = _outputFilename
-				Dim separators As Char() = New Char() {"\"c, "/"c, ":"c, "*"c, "?"c, ">"c, "<"c, "|"c, ControlChars.Quote}
+				Dim cleanedPathOrFileName As String
+				Dim potentiallyIllegalFileName As String = _outputFilename
+				Dim regexSearch As String
+				Dim r As Regex
+
+				regexSearch = New String(Path.GetInvalidFileNameChars()) + New String(Path.GetInvalidPathChars())
+				r = New Regex(String.Format("[{0}]", Regex.Escape(regexSearch)))
 
 				If _outputFilename = "" Then
-					sName = Name
+					potentiallyIllegalFileName = Name
 				End If
 
-				sName = sName.ReplaceMultiple(separators, "")
+				cleanedPathOrFileName = r.Replace(potentiallyIllegalFileName, "")
 
 				Select Case _outputFormat
 					Case OutputFormats.fmtExcelGraph, OutputFormats.fmtExcelPivotTable, OutputFormats.fmtExcelWorksheet
-						sName = Path.GetFileNameWithoutExtension(sName) & DefaultFileExtension(_outputFormat)
+						cleanedPathOrFileName = Path.GetFileNameWithoutExtension(cleanedPathOrFileName) & DefaultFileExtension(_outputFormat)
 
 					Case Else
-						sName = Path.GetFileNameWithoutExtension(sName) & DefaultFileExtension(OutputFormat)
+						cleanedPathOrFileName = Path.GetFileNameWithoutExtension(cleanedPathOrFileName) & DefaultFileExtension(OutputFormat)
 
 				End Select
 
-				Return sName
+				Return cleanedPathOrFileName
 
 			End Get
 		End Property
