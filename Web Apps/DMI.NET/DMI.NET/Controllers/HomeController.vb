@@ -2316,7 +2316,6 @@ Namespace Controllers
 				Session("sessionContext") = Nothing
 
 			Catch ex As Exception
-				Throw
 
 			End Try
 
