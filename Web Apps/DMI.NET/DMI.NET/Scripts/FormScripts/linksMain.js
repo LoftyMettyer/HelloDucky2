@@ -185,7 +185,19 @@ function goURL(psUrl, pfNewWindow, pfExternal) {
 		$('.DashContent').hide();
 		$('#workflowDisplay').show();
 		$('#externalContentFrame').attr('src', psUrl);
+		$('#externalContentFrame').css("height", "90%");
 		$('#workflowDisplay .pageTitle').text(psUrl);
+
+		if (window.currentLayout == "tiles") { //Tiles need some tweaking of the HTML/CSS
+			$('.DashContent').show();
+			$('.hypertextlinks').hide();
+			$('.linkspagebutton').hide();
+			$('.dropdownlinks').hide();
+			$('.pendingworkflowlinks').hide();
+			$('#workflowDisplay').css("position", "fixed");
+			$('#externalContentFrame').css("height", "77%");
+		}
+
 		return false;
 	}
 
