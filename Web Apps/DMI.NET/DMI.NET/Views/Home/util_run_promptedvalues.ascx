@@ -338,7 +338,7 @@
 		
 		<%If bAddUploadTemplate Then%>
 			<form name="frmTemplateFile" id="frmTemplateFile" method="post" enctype="multipart/form-data" action="util_run_uploadtemplate" target="submit-iframe">
-				Template File: <input type="file" id="TemplateFile" name="TemplateFile" onchange="SubmitTemplate();" />
+				Template File: <input style="width: 500px" type="file" id="TemplateFile" name="TemplateFile" onchange="SubmitTemplate();" />
 			</form>		
 		<%End If%>
 		
