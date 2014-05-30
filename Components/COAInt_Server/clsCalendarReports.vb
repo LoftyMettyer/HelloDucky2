@@ -4955,6 +4955,7 @@ Error_Trap:
 					If fOK Then fOK = GenerateSQLEvent(objEvent.Key, objEvent.Key, objEvent.Name)
 
 					If Not fOK Then
+						mblnNoRecords = True
 						Return False
 					End If
 
