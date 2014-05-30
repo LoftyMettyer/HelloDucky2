@@ -3287,9 +3287,9 @@ TidyUpAndExit:
 
 			'JPD 20040729 Fault 8972 & Fault 8990
 			If LCase(rowDefinition("Username").ToString()) <> LCase(_login.Username) And CurrentUserAccess(UtilityType.utlCalendarReport, mlngCalendarReportID) = ACCESS_HIDDEN Then
-				GetCalendarReportDefinition = False
 				mstrErrorString = "Report has been made hidden by another user."
-				Exit Function
+				mblnNoRecords = True
+				Return False
 			End If
 
 			Name = rowDefinition("Name").ToString
@@ -3310,9 +3310,9 @@ TidyUpAndExit:
 			'UPGRADE_NOTE: Object objTableView may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 			objTableView = Nothing
 			If Not pblnOK Then
-				GetCalendarReportDefinition = False
 				mstrErrorString = "You do not have permission to read the base table" & vbNewLine & "either directly or through any views."
-				GoTo TidyUpAndExit
+				mblnNoRecords = True
+				Return False
 			End If
 
 			mlngCalendarReportsPickListID = CInt(rowDefinition("picklist"))
@@ -3463,8 +3463,8 @@ TidyUpAndExit:
 
 			If mdtStartDate > mdtEndDate Then
 				mstrErrorString = "The report end date is before the report start date."
-				GetCalendarReportDefinition = False
-				GoTo TidyUpAndExit
+				mblnNoRecords = True
+				Return False
 			End If
 
 			'************************************************
@@ -3549,6 +3549,7 @@ TidyUpAndExit:
 					mstrErrorString = "You do not have permission to use the '" & General.GetFilterName(mlngCalendarReportsFilterID) & "' filter."
 					Logs.ChangeHeaderStatus(EventLog_Status.elsSuccessful)
 					Logs.AddDetailEntry(mstrErrorString)
+					mblnNoRecords = True
 					Return False
 				End If
 
@@ -3571,7 +3572,8 @@ TidyUpAndExit:
 		Exit Function
 
 Error_Trap:
-		'  DebugMSG "*************  ERROR : " & Err.Number & ":" & Err.Description & " *******************", False
+
+		mblnNoRecords = True
 		GetCalendarReportDefinition = False
 		mstrErrorString = "Error whilst reading the Calendar Report definition." & vbNewLine & Err.Description
 		Resume TidyUpAndExit
