@@ -45,13 +45,13 @@ Public Class MvcApplication
 		'If the user isn't requesting the Login form, redirect them there.
 		Session("version") = My.Application.Info.Version.Major & "." & My.Application.Info.Version.Minor & "." & My.Application.Info.Version.Build
 		If ApplicationSettings.SessionTimeOutInMinutes Is Nothing Then
-			Session("TimeoutSecs") = (20 * 60) - 20	'No timeout setting, set to 20 minutes
+			Session("TimeoutSecs") = (20 * 60) - 60	'No timeout setting, set to 20 minutes
 		Else
-			Session("TimeoutSecs") = (NullSafeInteger(ApplicationSettings.SessionTimeOutInMinutes) * 60) - 20
+			Session("TimeoutSecs") = (NullSafeInteger(ApplicationSettings.SessionTimeOutInMinutes) * 60) - 60
 		End If
 
 		If Session("TimeoutSecs") <= 0 Then
-			Session("TimeoutSecs") = (20 * 60) - 20	'Invalid timeout, set to 20 minutes
+			Session("TimeoutSecs") = (20 * 60) - 60	'Invalid timeout, set to 20 minutes
 		End If
 
 		Server.ScriptTimeout = 1000
