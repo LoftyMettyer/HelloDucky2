@@ -151,9 +151,17 @@ Namespace Code
 					End If
 				Next
 			Catch ex As Exception
+
+				Dim errMessage As String
+				If ex.InnerException Is Nothing Then
+					errMessage = ""
+				Else
+					errMessage = ex.InnerException.Message
+				End If
+
 				Errors.Add(String.Format("The following error occured when emailing your document" _
-							& "{0}{0}{1}{0}{0}{2}{0}{0}Please check with your administrator for further details", "<br/>", _
-							ex.Message, IIf(ex.InnerException Is Nothing, "", ex.InnerException.Message)))
+					& "{0}{0}{1}{0}{0}{2}{0}Please check with your administrator for further details", "<br/>", _
+					ex.Message, errMessage))
 				Return False
 			End Try
 
