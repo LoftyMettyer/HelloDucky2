@@ -63,30 +63,28 @@ Namespace BaseClasses
 
 		Public ReadOnly Property DownloadFileName As String
 			Get
-				Dim cleanedPathOrFileName As String
-				Dim potentiallyIllegalFileName As String = _outputFilename
-				Dim regexSearch As String
-				Dim r As Regex
+                Dim cleanFileName As String = _outputFilename
+                Dim fileFromDefinitionName As String = ""
+                Dim regexSearch As String
+                Dim r As Regex
 
-				regexSearch = New String(Path.GetInvalidFileNameChars()) + New String(Path.GetInvalidPathChars())
-				r = New Regex(String.Format("[{0}]", Regex.Escape(regexSearch)))
+                If _outputFilename = "" Then
+                    regexSearch = New String(Path.GetInvalidFileNameChars()) + New String(Path.GetInvalidPathChars())
+                    r = New Regex(String.Format("[{0}]", Regex.Escape(regexSearch)))
+                    fileFromDefinitionName = Name
+                    cleanFileName = r.Replace(fileFromDefinitionName, "")
+                End If
 
-				If _outputFilename = "" Then
-					potentiallyIllegalFileName = Name
-				End If
+                Select Case _outputFormat
+                    Case OutputFormats.fmtExcelGraph, OutputFormats.fmtExcelPivotTable, OutputFormats.fmtExcelWorksheet
+                        cleanFileName = Path.GetFileNameWithoutExtension(cleanFileName) & DefaultFileExtension(_outputFormat)
 
-				cleanedPathOrFileName = r.Replace(potentiallyIllegalFileName, "")
+                    Case Else
+                        cleanFileName = Path.GetFileNameWithoutExtension(cleanFileName) & DefaultFileExtension(OutputFormat)
 
-				Select Case _outputFormat
-					Case OutputFormats.fmtExcelGraph, OutputFormats.fmtExcelPivotTable, OutputFormats.fmtExcelWorksheet
-						cleanedPathOrFileName = Path.GetFileNameWithoutExtension(cleanedPathOrFileName) & DefaultFileExtension(_outputFormat)
+                End Select
 
-					Case Else
-						cleanedPathOrFileName = Path.GetFileNameWithoutExtension(cleanedPathOrFileName) & DefaultFileExtension(OutputFormat)
-
-				End Select
-
-				Return cleanedPathOrFileName
+                Return cleanFileName
 
 			End Get
 		End Property

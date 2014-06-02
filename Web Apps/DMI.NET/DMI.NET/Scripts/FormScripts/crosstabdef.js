@@ -1319,9 +1319,7 @@ function okClick()
 	 menu_disableMenu();
 	
 		var sAttachmentName = new String(frmDefinition.txtEmailAttachAs.value);
-		if ((sAttachmentName.indexOf("/") != -1) || 
-	    (sAttachmentName.indexOf("\\") != -1) ||
-	    (sAttachmentName.indexOf(":") != -1) ||
+		if ((sAttachmentName.indexOf("/") != -1) ||
         (sAttachmentName.indexOf("?") != -1) ||
         (sAttachmentName.indexOf(String.fromCharCode(34)) != -1) ||
         (sAttachmentName.indexOf("<") != -1) ||
@@ -1338,14 +1336,12 @@ function okClick()
         (sAttachmentName.indexOf("+") != -1) ||
 	    (sAttachmentName.indexOf("'") != -1) ||
 	    (sAttachmentName.indexOf("*") != -1)) {
-		    OpenHR.messageBox("The email attachment file name can not contain any of the following characters:\n/ : ? " + String.fromCharCode(34) + " < > | \\ * @ ~ [] {} # ' + ¬",48,"Cross Tabs");
+		    OpenHR.messageBox("The email attachment file name can not contain any of the following characters:\n/ ? " + String.fromCharCode(34) + " < > | * @ ~ [] {} # ' + ¬",48,"Cross Tabs");
 				return;
 		}
 
 		sAttachmentName = new String(frmDefinition.txtFilename.value);
 		if ((sAttachmentName.indexOf("/") != -1) ||
-	    (sAttachmentName.indexOf("\\") != -1) ||
-	    (sAttachmentName.indexOf(":") != -1) ||
         (sAttachmentName.indexOf("?") != -1) ||
         (sAttachmentName.indexOf(String.fromCharCode(34)) != -1) ||
         (sAttachmentName.indexOf("<") != -1) ||
@@ -1362,7 +1358,7 @@ function okClick()
         (sAttachmentName.indexOf("+") != -1) ||
 	    (sAttachmentName.indexOf("'") != -1) ||
 	    (sAttachmentName.indexOf("*") != -1)) {
-		    OpenHR.messageBox("The Save To file name can not contain any of the following characters:\n/ : ? " + String.fromCharCode(34) + " < > | \\ * @ ~ [] {} # ' + ¬", 48, "Cross Tabs");
+		    OpenHR.messageBox("The Save To file name can not contain any of the following characters:\n/ ? " + String.fromCharCode(34) + " < > | * @ ~ [] {} # ' + ¬", 48, "Cross Tabs");
 		    return;
 		}
 

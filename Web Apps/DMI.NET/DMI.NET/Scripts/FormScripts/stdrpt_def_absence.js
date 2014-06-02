@@ -273,8 +273,6 @@ function absence_okClick() {
 
 		var sAttachmentName = new String(frmAbsenceDefinition.txtEmailAttachAs.value);
 		if ((sAttachmentName.indexOf("/") != -1) ||
-	    (sAttachmentName.indexOf("\\") != -1) ||
-	    (sAttachmentName.indexOf(":") != -1) ||
         (sAttachmentName.indexOf("?") != -1) ||
         (sAttachmentName.indexOf(String.fromCharCode(34)) != -1) ||
         (sAttachmentName.indexOf("<") != -1) ||
@@ -291,14 +289,12 @@ function absence_okClick() {
         (sAttachmentName.indexOf("+") != -1) ||
 	    (sAttachmentName.indexOf("'") != -1) ||
 	    (sAttachmentName.indexOf("*") != -1)) {
-		    OpenHR.messageBox("The email attachment file name can not contain any of the following characters:\n/ : ? " + String.fromCharCode(34) + " < > | \\ * @ ~ [] {} # ' + ¬", 48, "Output Options");
+		    OpenHR.messageBox("The email attachment file name can not contain any of the following characters:\n/ ? " + String.fromCharCode(34) + " < > | * @ ~ [] {} # ' + ¬", 48, "Output Options");
 		    return;
 		}
 
 		sAttachmentName = new String(frmAbsenceDefinition.txtFilename.value);
 		if ((sAttachmentName.indexOf("/") != -1) ||
-	    (sAttachmentName.indexOf("\\") != -1) ||
-	    (sAttachmentName.indexOf(":") != -1) ||
         (sAttachmentName.indexOf("?") != -1) ||
         (sAttachmentName.indexOf(String.fromCharCode(34)) != -1) ||
         (sAttachmentName.indexOf("<") != -1) ||
@@ -315,10 +311,9 @@ function absence_okClick() {
         (sAttachmentName.indexOf("+") != -1) ||
 	    (sAttachmentName.indexOf("'") != -1) ||
 	    (sAttachmentName.indexOf("*") != -1)) {
-		    OpenHR.messageBox("The Save To file name can not contain any of the following characters:\n/ : ? " + String.fromCharCode(34) + " < > | \\ * @ ~ [] {} # ' + ¬", 48, "Output Options");
+		    OpenHR.messageBox("The Save To file name can not contain any of the following characters:\n/ ? " + String.fromCharCode(34) + " < > | * @ ~ [] {} # ' + ¬", 48, "Output Options");
 		    return;
 		}
-    s
 
 		if (frmAbsenceDefinition.chkPreview.checked == true) {
 			frmPostDefinition.txtSend_OutputPreview.value = 1;
