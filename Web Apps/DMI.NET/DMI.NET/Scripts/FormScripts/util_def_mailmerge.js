@@ -2735,8 +2735,6 @@ function validateTab4() {
 		if (sErrMsg == "") {
 		    sAttachmentName = new String(frmDefinition.txtSaveFile.value);
 		    if ((sAttachmentName.indexOf("/") != -1) ||
-                
-                (sAttachmentName.indexOf(":") != -1) ||
                 (sAttachmentName.indexOf("?") != -1) ||
                 (sAttachmentName.indexOf(String.fromCharCode(34)) != -1) ||
                 (sAttachmentName.indexOf("<") != -1) ||
