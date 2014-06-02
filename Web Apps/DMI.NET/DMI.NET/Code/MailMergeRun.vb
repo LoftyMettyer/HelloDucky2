@@ -159,8 +159,8 @@ Namespace Code
 					errMessage = ex.InnerException.Message
 				End If
 
-				Errors.Add(String.Format("The following error occured when emailing your document" _
-					& "{0}{0}{1}{0}{0}{2}{0}Please check with your administrator for further details", "<br/>", _
+				Errors.Add(String.Format("The following error occured when emailing your document:" _
+					& "{0}{0}{1}{0}{0}{2}{0}{0}Please check with your administrator for further details.", "<br/>", _
 					ex.Message, errMessage))
 				Return False
 			End Try

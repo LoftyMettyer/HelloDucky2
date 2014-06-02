@@ -13,6 +13,7 @@ Imports DMI.NET.Models
 Imports System.Data.SqlClient
 Imports System.Net.Mail
 Imports System.Net.Mime
+Imports System.Net
 
 
 Namespace Controllers
@@ -2435,7 +2436,20 @@ Namespace Controllers
 				returnMessage = "Email sent successfully"
 
 			Catch ex As Exception
-				returnMessage = ex.Message
+				' error generated - return error
+				Dim errMessage As String
+				If ex.InnerException Is Nothing Then
+					errMessage = ""
+				Else
+					errMessage = ex.InnerException.Message
+				End If
+
+				Dim strErrors = String.Format("The following error occured when emailing your document:" _
+					& "{0}{0}{1}{0}{0}{2}{0}{0}Please check with your administrator for further details.", "<br/>", _
+					ex.Message, errMessage)
+
+				Response.StatusCode = HttpStatusCode.InternalServerError
+				returnMessage = strErrors
 			End Try
 
 			Return Content(returnMessage)
@@ -2826,7 +2840,18 @@ Namespace Controllers
 					Response.AppendCookie(New HttpCookie("fileDownloadErrors", "Email sent successfully."))	' Send completion message	
 				Catch ex As Exception
 					' error generated - return error
-					Response.AppendCookie(New HttpCookie("fileDownloadErrors", ex.Message))	' marks the download as complete on the client		
+					Dim errMessage As String
+					If ex.InnerException Is Nothing Then
+						errMessage = ""
+					Else
+						errMessage = ex.InnerException.Message
+					End If
+
+					Dim strErrors = String.Format("The following error occured when emailing your document:" _
+						& "{0}{0}{1}{0}{0}{2}{0}{0}Please check with your administrator for further details.", "<br/>", _
+						ex.Message, errMessage)
+
+					Response.AppendCookie(New HttpCookie("fileDownloadErrors", strErrors))	' marks the download as complete on the client		
 				Finally
 					Response.AppendCookie(New HttpCookie("fileDownloadToken", downloadTokenValue)) ' marks the download as complete on the client		
 				End Try
@@ -3121,7 +3146,18 @@ Namespace Controllers
 					Response.AppendCookie(New HttpCookie("fileDownloadErrors", "Email sent successfully."))	' Send completion message	
 				Catch ex As Exception
 					' error generated - return error
-					Response.AppendCookie(New HttpCookie("fileDownloadErrors", ex.Message))	' marks the download as complete on the client		
+					Dim errMessage As String
+					If ex.InnerException Is Nothing Then
+						errMessage = ""
+					Else
+						errMessage = ex.InnerException.Message
+					End If
+
+					Dim strErrors = String.Format("The following error occured when emailing your document:" _
+						& "{0}{0}{1}{0}{0}{2}{0}{0}Please check with your administrator for further details.", "<br/>", _
+						ex.Message, errMessage)
+
+					Response.AppendCookie(New HttpCookie("fileDownloadErrors", strErrors))	' marks the download as complete on the client		
 				Finally
 					Response.AppendCookie(New HttpCookie("fileDownloadToken", downloadTokenValue)) ' marks the download as complete on the client		
 				End Try
@@ -3246,7 +3282,18 @@ Namespace Controllers
 					Response.AppendCookie(New HttpCookie("fileDownloadErrors", "Email sent successfully."))	' Send completion message	
 				Catch ex As Exception
 					' error generated - return error
-					Response.AppendCookie(New HttpCookie("fileDownloadErrors", ex.Message))	' marks the download as complete on the client		
+					Dim errMessage As String
+					If ex.InnerException Is Nothing Then
+						errMessage = ""
+					Else
+						errMessage = ex.InnerException.Message
+					End If
+
+					Dim strErrors = String.Format("The following error occured when emailing your document:" _
+						& "{0}{0}{1}{0}{0}{2}{0}{0}Please check with your administrator for further details.", "<br/>", _
+						ex.Message, errMessage)
+
+					Response.AppendCookie(New HttpCookie("fileDownloadErrors", strErrors))	' marks the download as complete on the client		
 				Finally
 					Response.AppendCookie(New HttpCookie("fileDownloadToken", downloadTokenValue)) ' marks the download as complete on the client		
 				End Try

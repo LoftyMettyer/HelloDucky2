@@ -639,7 +639,7 @@
 		//check for errors.
 		var cookieDownloadErrors = $.cookie('fileDownloadErrors');
 		if (cookieDownloadErrors.length > 0) {			
-			alert(cookieDownloadErrors);			
+			OpenHR.modalPrompt(cookieDownloadErrors, 2, "Output Options");
 		}
 	}
 

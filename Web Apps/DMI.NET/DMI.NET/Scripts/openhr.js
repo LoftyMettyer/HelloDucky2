@@ -411,10 +411,14 @@
 					alert("Email sent successfully");
 				},
 				error: function (req, status, errorObj) {
+
 					if (!(errorObj == "" || req.responseText == "")) {
-						$("#errorDialogTitle").text(errorObj);
-						$("#errorDialogContentText").html(req.responseText);
-						$("#errorDialog").dialog("open");
+
+						OpenHR.modalPrompt(req.responseText, 2, "Event Log");
+
+						//$("#errorDialogTitle").text(errorObj);
+						//$("#errorDialogContentText").html(req.responseText);
+						//$("#errorDialog").dialog("open");
 					}
 				}
 
