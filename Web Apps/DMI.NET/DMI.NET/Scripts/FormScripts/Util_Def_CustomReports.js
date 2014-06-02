@@ -2198,24 +2198,58 @@
 	}
 
 	function okClick() {
-		OpenHR.disableMenu();
+	    OpenHR.disableMenu();
 
-		sAttachmentName = new String(frmDefinition.txtEmailAttachAs.value);
-		if ((sAttachmentName.indexOf("/") != -1) ||
-			(sAttachmentName.indexOf(":") != -1) ||
-				(sAttachmentName.indexOf("?") != -1) ||
-					(sAttachmentName.indexOf(String.fromCharCode(34)) != -1) ||
-						(sAttachmentName.indexOf("<") != -1) ||
-							(sAttachmentName.indexOf(">") != -1) ||
-								(sAttachmentName.indexOf("|") != -1) ||
-									(sAttachmentName.indexOf("\\") != -1) ||
-										(sAttachmentName.indexOf("*") != -1)) {
-			OpenHR.messageBox("The attachment file name can not contain any of the following characters:\n/ : ? " + String.fromCharCode(34) + " < > | \\ *", 48, "Custom Reports");
-			return;
-		}
+	    var sAttachmentName = new String(frmDefinition.txtEmailAttachAs.value);
+	    if ((sAttachmentName.indexOf("/") != -1) ||
+	    (sAttachmentName.indexOf("\\") != -1) ||
+	    (sAttachmentName.indexOf(":") != -1) ||
+        (sAttachmentName.indexOf("?") != -1) ||
+        (sAttachmentName.indexOf(String.fromCharCode(34)) != -1) ||
+        (sAttachmentName.indexOf("<") != -1) ||
+        (sAttachmentName.indexOf(">") != -1) ||
+        (sAttachmentName.indexOf("|") != -1) ||
+        (sAttachmentName.indexOf("@") != -1) ||
+        (sAttachmentName.indexOf("~") != -1) ||
+        (sAttachmentName.indexOf("}") != -1) ||
+        (sAttachmentName.indexOf("{") != -1) ||
+        (sAttachmentName.indexOf("[") != -1) ||
+        (sAttachmentName.indexOf("]") != -1) ||
+        (sAttachmentName.indexOf("#") != -1) ||
+        (sAttachmentName.indexOf(";") != -1) ||
+        (sAttachmentName.indexOf("+") != -1) ||
+	    (sAttachmentName.indexOf("'") != -1) ||
+	    (sAttachmentName.indexOf("*") != -1)) {
+	        OpenHR.messageBox("The email attachment file name can not contain any of the following characters:\n/ : ? " + String.fromCharCode(34) + " < > | \\ * @ ~ [] {} # ' + ¬", 48, "Custom Reports");
+	        return;
+	    }
 
-		frmSend.txtSend_reaction.value = "CUSTOMREPORTS";
-		submitDefinition();
+	    sAttachmentName = new String(frmDefinition.txtFilename.value);
+	    if ((sAttachmentName.indexOf("/") != -1) ||
+	    (sAttachmentName.indexOf("\\") != -1) ||
+	    (sAttachmentName.indexOf(":") != -1) ||
+        (sAttachmentName.indexOf("?") != -1) ||
+        (sAttachmentName.indexOf(String.fromCharCode(34)) != -1) ||
+        (sAttachmentName.indexOf("<") != -1) ||
+        (sAttachmentName.indexOf(">") != -1) ||
+        (sAttachmentName.indexOf("|") != -1) ||
+        (sAttachmentName.indexOf("@") != -1) ||
+        (sAttachmentName.indexOf("~") != -1) ||
+        (sAttachmentName.indexOf("}") != -1) ||
+        (sAttachmentName.indexOf("{") != -1) ||
+        (sAttachmentName.indexOf("[") != -1) ||
+        (sAttachmentName.indexOf("]") != -1) ||
+        (sAttachmentName.indexOf("#") != -1) ||
+        (sAttachmentName.indexOf(";") != -1) ||
+        (sAttachmentName.indexOf("+") != -1) ||
+	    (sAttachmentName.indexOf("'") != -1) ||
+	    (sAttachmentName.indexOf("*") != -1)) {
+	        OpenHR.messageBox("The Save To file name can not contain any of the following characters:\n/ : ? " + String.fromCharCode(34) + " < > | \\ * @ ~ [] {} # ' + ¬", 48, "Custom Reports");
+	        return;
+	    }
+	    
+	    frmSend.txtSend_reaction.value = "CUSTOMREPORTS";
+	    submitDefinition();
 	}
 
 	function saveChanges(psAction, pfPrompt, pfTBOverride) {

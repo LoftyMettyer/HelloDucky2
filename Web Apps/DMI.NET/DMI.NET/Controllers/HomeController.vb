@@ -2957,7 +2957,7 @@ Namespace Controllers
 			Dim arrayPageBreakValues
 			Dim arrayVisibleColumns
 			Dim sEmailAddresses As String = ""
-			Dim strDownloadExtension As String
+            Dim strDownloadExtension As String = ""
 
 			'Set Options
 			If Not bPreview And Not objReport.IsBradfordReport Then

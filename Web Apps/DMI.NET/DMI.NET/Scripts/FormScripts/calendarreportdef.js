@@ -2299,6 +2299,52 @@ function validateTab5() {
 		sErrMsg = "You must enter an email attachment file name.";
 	}
 
+	var sAttachmentName = new String(frmDefinition.txtEmailAttachAs.value);
+	if ((sAttachmentName.indexOf("/") != -1) ||
+    (sAttachmentName.indexOf("\\") != -1) ||
+    (sAttachmentName.indexOf(":") != -1) ||
+    (sAttachmentName.indexOf("?") != -1) ||
+    (sAttachmentName.indexOf(String.fromCharCode(34)) != -1) ||
+    (sAttachmentName.indexOf("<") != -1) ||
+    (sAttachmentName.indexOf(">") != -1) ||
+    (sAttachmentName.indexOf("|") != -1) ||
+    (sAttachmentName.indexOf("@") != -1) ||
+    (sAttachmentName.indexOf("~") != -1) ||
+    (sAttachmentName.indexOf("}") != -1) ||
+    (sAttachmentName.indexOf("{") != -1) ||
+    (sAttachmentName.indexOf("[") != -1) ||
+    (sAttachmentName.indexOf("]") != -1) ||
+    (sAttachmentName.indexOf("#") != -1) ||
+    (sAttachmentName.indexOf(";") != -1) ||
+    (sAttachmentName.indexOf("+") != -1) ||
+    (sAttachmentName.indexOf("'") != -1) ||
+    (sAttachmentName.indexOf("*") != -1)) {
+	    sErrMsg = "The email attachment file name can not contain any of the following characters:\n/ : ? " + String.fromCharCode(34) + " < > | \\ * @ ~ [] {} # ' + ¬";
+	}
+
+	sAttachmentName = new String(frmDefinition.txtFilename.value);
+	if ((sAttachmentName.indexOf("/") != -1) ||
+    (sAttachmentName.indexOf("\\") != -1) ||
+    (sAttachmentName.indexOf(":") != -1) ||
+    (sAttachmentName.indexOf("?") != -1) ||
+    (sAttachmentName.indexOf(String.fromCharCode(34)) != -1) ||
+    (sAttachmentName.indexOf("<") != -1) ||
+    (sAttachmentName.indexOf(">") != -1) ||
+    (sAttachmentName.indexOf("|") != -1) ||
+    (sAttachmentName.indexOf("@") != -1) ||
+    (sAttachmentName.indexOf("~") != -1) ||
+    (sAttachmentName.indexOf("}") != -1) ||
+    (sAttachmentName.indexOf("{") != -1) ||
+    (sAttachmentName.indexOf("[") != -1) ||
+    (sAttachmentName.indexOf("]") != -1) ||
+    (sAttachmentName.indexOf("#") != -1) ||
+    (sAttachmentName.indexOf(";") != -1) ||
+    (sAttachmentName.indexOf("+") != -1) ||
+    (sAttachmentName.indexOf("'") != -1) ||
+    (sAttachmentName.indexOf("*") != -1)) {
+	    sErrMsg = "The Save To file name can not contain any of the following characters:\n/ : ? " + String.fromCharCode(34) + " < > | \\ * @ ~ [] {} # ' + ¬";
+	}
+
 	if (frmDefinition.chkDestination3.checked &&
 		(frmDefinition.optOutputFormat3.checked || frmDefinition.optOutputFormat4.checked || frmDefinition.optOutputFormat5.checked || frmDefinition.optOutputFormat6.checked) &&
 		frmDefinition.txtEmailAttachAs.value.match(/.html$/)) {

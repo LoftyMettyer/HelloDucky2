@@ -262,13 +262,63 @@ function absence_okClick() {
 		frmPostDefinition.txtMinimumBradfordFactor.value = frmAbsenceDefinition.chkMinimumBradfordFactor.checked;
 		frmPostDefinition.txtMinimumBradfordFactorAmount.value = frmAbsenceDefinition.txtMinimumBradfordFactor.value;
 		frmPostDefinition.txtDisplayBradfordDetail.value = frmAbsenceDefinition.chkShowAbsenceDetails.checked;
-	
+    
 	// Validate the output options
 		if (fOK == true) {
 			if (validateAbsenceTab3() == false) {
 				return;
 			}
 		}
+
+
+		var sAttachmentName = new String(frmAbsenceDefinition.txtEmailAttachAs.value);
+		if ((sAttachmentName.indexOf("/") != -1) ||
+	    (sAttachmentName.indexOf("\\") != -1) ||
+	    (sAttachmentName.indexOf(":") != -1) ||
+        (sAttachmentName.indexOf("?") != -1) ||
+        (sAttachmentName.indexOf(String.fromCharCode(34)) != -1) ||
+        (sAttachmentName.indexOf("<") != -1) ||
+        (sAttachmentName.indexOf(">") != -1) ||
+        (sAttachmentName.indexOf("|") != -1) ||
+        (sAttachmentName.indexOf("@") != -1) ||
+        (sAttachmentName.indexOf("~") != -1) ||
+        (sAttachmentName.indexOf("}") != -1) ||
+        (sAttachmentName.indexOf("{") != -1) ||
+        (sAttachmentName.indexOf("[") != -1) ||
+        (sAttachmentName.indexOf("]") != -1) ||
+        (sAttachmentName.indexOf("#") != -1) ||
+        (sAttachmentName.indexOf(";") != -1) ||
+        (sAttachmentName.indexOf("+") != -1) ||
+	    (sAttachmentName.indexOf("'") != -1) ||
+	    (sAttachmentName.indexOf("*") != -1)) {
+		    OpenHR.messageBox("The email attachment file name can not contain any of the following characters:\n/ : ? " + String.fromCharCode(34) + " < > | \\ * @ ~ [] {} # ' + ¬", 48, "Output Options");
+		    return;
+		}
+
+		sAttachmentName = new String(frmAbsenceDefinition.txtFilename.value);
+		if ((sAttachmentName.indexOf("/") != -1) ||
+	    (sAttachmentName.indexOf("\\") != -1) ||
+	    (sAttachmentName.indexOf(":") != -1) ||
+        (sAttachmentName.indexOf("?") != -1) ||
+        (sAttachmentName.indexOf(String.fromCharCode(34)) != -1) ||
+        (sAttachmentName.indexOf("<") != -1) ||
+        (sAttachmentName.indexOf(">") != -1) ||
+        (sAttachmentName.indexOf("|") != -1) ||
+        (sAttachmentName.indexOf("@") != -1) ||
+        (sAttachmentName.indexOf("~") != -1) ||
+        (sAttachmentName.indexOf("}") != -1) ||
+        (sAttachmentName.indexOf("{") != -1) ||
+        (sAttachmentName.indexOf("[") != -1) ||
+        (sAttachmentName.indexOf("]") != -1) ||
+        (sAttachmentName.indexOf("#") != -1) ||
+        (sAttachmentName.indexOf(";") != -1) ||
+        (sAttachmentName.indexOf("+") != -1) ||
+	    (sAttachmentName.indexOf("'") != -1) ||
+	    (sAttachmentName.indexOf("*") != -1)) {
+		    OpenHR.messageBox("The Save To file name can not contain any of the following characters:\n/ : ? " + String.fromCharCode(34) + " < > | \\ * @ ~ [] {} # ' + ¬", 48, "Output Options");
+		    return;
+		}
+    s
 
 		if (frmAbsenceDefinition.chkPreview.checked == true) {
 			frmPostDefinition.txtSend_OutputPreview.value = 1;
