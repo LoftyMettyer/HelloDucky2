@@ -535,7 +535,7 @@
 		var plngOleType = Number($(clickObj).attr('data-OleType'));
 		var psFile = $(clickObj).attr('data-fileName');
 		var plngMaxEmbedSize = $(clickObj).attr('data-maxEmbedSize');
-		var pbIsReadOnly = $(clickObj).is(':disabled');
+		var pbIsReadOnly = $(clickObj).attr('data-readOnly');
 		var frmMenuInfo = document.getElementById('frmMenuInfo');
 		var isPhoto = ($(clickObj).attr('data-controlType') == '1024');
 

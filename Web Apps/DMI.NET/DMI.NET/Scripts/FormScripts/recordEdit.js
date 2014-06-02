@@ -865,10 +865,10 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
 	var fParentTableControl = false;
 	var fControlEnabled = true;
 	var fReadOnly = false;
-
+	
 	//Permissions. From activeX recordDMI.formatscreen function.
 	if ($("#txtRecEditTableID").val() == controlItemArray[1]) {
-		if (controlItemArray[2] > 0) { }
+		if (controlItemArray[2] > 0) { }		
 		fSelectOK = (Number(controlItemArray[47]) != 0);
 		fParentTableControl = false;
 
@@ -880,14 +880,14 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
 		if (fControlEnabled) {
 			if ((controlType == 64) && (Number(controlItemArray[23]) == 11)) {
 				//Date Control
-				fControlEnabled = (Number(controlItemArray[48] != 0));  // UpdateGranted property
+				fControlEnabled = (Number(controlItemArray[48]) !== 0);  // UpdateGranted property
 			}
 			else if (controlType == 2048) {
 				//CommandButton
 				fControlEnabled = false;
 			}
 			else {
-				fControlEnabled = (Number(controlItemArray[48] != 0));  // UpdateGranted property
+				fControlEnabled = (Number(controlItemArray[48]) !== 0);  // UpdateGranted property
 
 				if ((controlType == 64) && (Number(controlItemArray[37]) != 0) && ((Number(controlItemArray[23]) == 12) || (Number(controlItemArray[23]) == -1))) {
 					//if multiline text and (sqlVarchar or sqllongvarchar)
@@ -1077,6 +1077,7 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
 
 			break;
 		case 8: //ctlOle
+
 			button = document.createElement('input');
 			button.type = "button";
 			button.id = controlID;			
@@ -1087,6 +1088,7 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
 			button.setAttribute("data-control-key", key);
 			button.setAttribute('data-OleType', controlItemArray[55]); // == 2 ? 3 : controlItemArray[55]);
 			button.setAttribute('data-maxEmbedSize', controlItemArray[57]);
+			button.setAttribute('data-readOnly', (!(fControlEnabled)));
 			button.style.overflow = 'hidden';
 			button.style.fontWeight = 'normal';
 			button.style.fontSize = '10px';
@@ -2168,7 +2170,7 @@ function updateControl(lngColumnID, value) {
 
 						$(this).val(strOLEType);
 						$(this).attr('title', tooltipText);
-						$(this).attr('data-fileName', filename);
+						$(this).attr('data-fileName', filename);						
 						$(this).removeClass("Embed Embedded Link Linked");
 						$(this).addClass(strOLEType);
 
