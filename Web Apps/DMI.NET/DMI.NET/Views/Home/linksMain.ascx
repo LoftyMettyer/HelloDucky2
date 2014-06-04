@@ -29,21 +29,15 @@
 	Dim _StepCount As Integer = 0
 	Dim _WorkflowGood As Boolean = True
 
-	Err.Clear()
-
 	Dim objSession As SessionInfo = CType(Session("SessionContext"), SessionInfo)
 	Dim objDataAccess As New clsDataAccess(objSession.LoginInfo)
 	
 	'Get the pendings workflow steps from the database
-	Dim prmUser As New SqlParameter("psKeyParameter", SqlDbType.VarChar, 255)
-	prmUser.Value = Session("username")
-	
-	Dim _rstDefSelRecords = objDataAccess.GetDataTable("spASRSysMobileCheckPendingWorkflowSteps", CommandType.StoredProcedure, prmUser)
+	Try
 		
-	If (Err.Number <> 0) Then
-		' Workflow not licensed or configured. Go to default page.
-		_WorkflowGood = False
-	Else
+		Dim prmUser As New SqlParameter("psKeyParameter", SqlDbType.VarChar, 255) With {.Value = Session("username")}		
+		Dim _rstDefSelRecords = objDataAccess.GetDataTable("spASRSysMobileCheckPendingWorkflowSteps", CommandType.StoredProcedure, prmUser)
+		
 		With _PendingWorkflowStepsHTMLTable
 			.Append("<table id=""PendingStepsTable_Dash"">")
 			.Append("<tr>")
@@ -66,9 +60,15 @@
 		Next
 						
 		_PendingWorkflowStepsHTMLTable.Append("</table>")
-						
-	End If
 				
+		
+	Catch ex As Exception
+		_WorkflowGood = False
+		
+		
+	End Try
+
+		
 %>
 
 <div id="" class="DashContent" style="display: block;">
