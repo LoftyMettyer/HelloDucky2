@@ -35,8 +35,7 @@
 	'Get the pendings workflow steps from the database
 	Try
 		
-		Dim prmUser As New SqlParameter("psKeyParameter", SqlDbType.VarChar, 255) With {.Value = Session("username")}		
-		Dim _rstDefSelRecords = objDataAccess.GetDataTable("spASRSysMobileCheckPendingWorkflowSteps", CommandType.StoredProcedure, prmUser)
+		Dim _rstDefSelRecords = objDataAccess.GetDataTable("spASRIntCheckPendingWorkflowSteps", CommandType.StoredProcedure)
 		
 		With _PendingWorkflowStepsHTMLTable
 			.Append("<table id=""PendingStepsTable_Dash"">")

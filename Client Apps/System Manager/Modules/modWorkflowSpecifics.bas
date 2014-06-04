@@ -1118,7 +1118,7 @@ Public Function CloneWorkflow(plngWorkflowID As Long, _
   
     recWorkflowEdit!ID = lngWorkflowID
     recWorkflowEdit!Changed = False
-    recWorkflowEdit!new = True
+    recWorkflowEdit!New = True
     recWorkflowEdit!Deleted = False
     recWorkflowEdit!Name = sWorkflowName
     recWorkflowEdit!Description = rsWorkflow.Fields("Description")
@@ -1487,7 +1487,7 @@ Public Function CloneWorkflow(plngWorkflowID As Long, _
         recWorkflowElementItemEdit!HeadFontItalic = .Fields("HeadFontItalic")
         recWorkflowElementItemEdit!HeadFontStrikeThru = .Fields("HeadFontStrikeThru")
         recWorkflowElementItemEdit!HeadFontUnderline = .Fields("HeadFontUnderline")
-        recWorkflowElementItemEdit!Headlines = .Fields("Headlines")
+        recWorkflowElementItemEdit!HeadLines = .Fields("Headlines")
 
         lngTempNewID = IIf(IsNull(.Fields("TableID")), 0, .Fields("TableID"))
         If lngTempNewID > 0 Then
@@ -2501,11 +2501,13 @@ Private Function CreateSP_IntranetCheckPendingSteps() As Boolean
     "        @sParam1  varchar(MAX)," & vbNewLine & _
     "        @sServerName sysname," & vbNewLine & _
     "        @sDBName  sysname," & vbNewLine & _
+    "        @sWorkflowName varchar(MAX)," & vbNewLine & _
     "        @sSQLVersion  int;"
     
   sProcSQL = sProcSQL & vbNewLine & _
     "    DECLARE @steps TABLE" & vbNewLine & _
     "    (" & vbNewLine & _
+    "        [name] varchar(MAX)," & vbNewLine & _
     "        [description] varchar(MAX)," & vbNewLine & _
     "        [URL] varChar(MAX)," & vbNewLine & _
     "        [instanceID] integer," & vbNewLine & _
@@ -2558,7 +2560,8 @@ Private Function CreateSP_IntranetCheckPendingSteps() As Boolean
     "            SELECT ASRSysWorkflowInstanceSteps.instanceID," & vbNewLine & _
     "                ASRSysWorkflowInstanceSteps.elementID," & vbNewLine & _
     "                ASRSysWorkflowInstanceSteps.ID," & vbNewLine & _
-    "                ASRSysWorkflows.name + ' - ' + ASRSysWorkflowElements.caption AS [description]" & vbNewLine & _
+    "                ASRSysWorkflows.name + ' - ' + ASRSysWorkflowElements.caption AS [description], " & vbNewLine & _
+    "                ASRSysWorkflows.name" & vbNewLine & _
     "            FROM ASRSysWorkflowInstanceSteps" & vbNewLine & _
     "            INNER JOIN ASRSysWorkflowElements ON ASRSysWorkflowInstanceSteps.elementID = ASRSysWorkflowElements.ID" & vbNewLine & _
     "            INNER JOIN ASRSysWorkflows ON ASRSysWorkflowElements.workflowID = ASRSysWorkflows.ID" & vbNewLine & _
@@ -2584,7 +2587,7 @@ Private Function CreateSP_IntranetCheckPendingSteps() As Boolean
     
   sProcSQL = sProcSQL & vbNewLine & vbNewLine & _
     "        OPEN steps_cursor" & vbNewLine & _
-    "        FETCH NEXT FROM steps_cursor INTO @iInstanceID, @iElementID, @iInstanceStepID, @sDescription" & vbNewLine & _
+    "        FETCH NEXT FROM steps_cursor INTO @iInstanceID, @iElementID, @iInstanceStepID, @sDescription, @sWorkflowName" & vbNewLine & _
     "        WHILE (@@fetch_status = 0)" & vbNewLine & _
     "        BEGIN" & vbNewLine & _
     "            SET @sQueryString = ''" & vbNewLine & vbNewLine & _
@@ -2609,10 +2612,10 @@ Private Function CreateSP_IntranetCheckPendingSteps() As Boolean
     "                BEGIN" & vbNewLine & _
     "                    SET @sDescription = @sCalcDescription" & vbNewLine & _
     "                END" & vbNewLine & vbNewLine & _
-    "                INSERT INTO @steps ([description], [url], [instanceID], [elementID], [instanceStepID])" & vbNewLine & _
-    "                VALUES (@sDescription, @sURL + '/?' + @sQueryString, @iInstanceID, @iElementID, @iInstanceStepID)" & vbNewLine & _
+    "                INSERT INTO @steps ([description], [url], [instanceID], [elementID], [instanceStepID], [name])" & vbNewLine & _
+    "                VALUES (@sDescription, @sURL + '/?' + @sQueryString, @iInstanceID, @iElementID, @iInstanceStepID, @sWorkflowName)" & vbNewLine & _
     "            END" & vbNewLine & _
-    "            FETCH NEXT FROM steps_cursor INTO @iInstanceID, @iElementID, @iInstanceStepID, @sDescription" & vbNewLine & _
+    "            FETCH NEXT FROM steps_cursor INTO @iInstanceID, @iElementID, @iInstanceStepID, @sDescription, @sWorkflowName" & vbNewLine & _
     "        END" & vbNewLine & _
     "        CLOSE steps_cursor" & vbNewLine & _
     "        DEALLOCATE steps_cursor" & vbNewLine & vbNewLine & _
