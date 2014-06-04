@@ -978,7 +978,7 @@
 
 	Response.Write("<input type='hidden' id='txtNumberOfBookings' name='txtNumberOfBookings' value='" & Session("numberOfBookings") & "'>" & vbCrLf)
 	Response.Write("<input type='hidden' id='txtTBErrorMessage' name='txtTBErrorMessage' value='" & Session("tbErrorMessage") & "'>" & vbCrLf)
-	Response.Write("<input type='hidden' id='txtTBCourseTitle' name='txtTBCourseTitle' value='" & Session("tbCourseTitle") & "'>" & vbCrLf)
+	Response.Write("<input type='hidden' id='txtTBCourseTitle' name='txtTBCourseTitle' value=""" & Session("tbCourseTitle") & """>" & vbCrLf)
 	Response.Write("<input type='hidden' id='txtErrorDescription' name='txtErrorDescription' value='" & sErrorDescription & "'>" & vbCrLf)
 
 %>
