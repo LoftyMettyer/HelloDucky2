@@ -151,11 +151,11 @@
 		' No data in result set
 		If objMailMerge.NoRecords Then
 			sErrorMessage = "Completed successfully, however there were no records that meet the selection criteria. No document has been produced."
-            Response.Write(String.Format("OpenHR.modalPrompt(""{0}"",2,""{1}"");", sErrorMessage, objMailMerge.DefName))
-        Else
-            sErrorMessage = "Email sent successfully."
-            Response.Write(String.Format("OpenHR.modalPrompt(""{0}"",2,""{1}"");", sErrorMessage, objMailMerge.DefName))
-        End If
+			Response.Write(String.Format("OpenHR.modalPrompt(""{0}"",2,""{1}"");", sErrorMessage, objMailMerge.DefName))
+		Else
+			sErrorMessage = "Mail merge completed successfully."
+			Response.Write(String.Format("OpenHR.modalPrompt(""{0}"",2,""{1}"");", sErrorMessage, objMailMerge.DefName))
+		End If
         
 		
 	End If
@@ -187,13 +187,7 @@
 		window.clearInterval(fileDownloadCheckTimer);
 		$.removeCookie('fileDownloadToken'); //clears this cookie value		
 		$("body").removeClass("loading");
-		menu_ShowWait('Loading...');
-
-		//check for errors.
-		var cookieDownloadErrors = $.cookie('fileDownloadErrors');
-		if (cookieDownloadErrors.length > 0) {
-			alert(cookieDownloadErrors);
-		}
+		menu_ShowWait('Loading...');		
 	}
 
 

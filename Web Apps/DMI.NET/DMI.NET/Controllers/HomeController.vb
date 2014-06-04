@@ -2384,11 +2384,10 @@ Namespace Controllers
 			Dim emailBody As String = Request.Form("Body")
 			Dim returnMessage As String
 
-			Dim message As New MailMessage()
-			message.Subject = emailSubject
-			message.Body = emailBody
-
 			Try
+				Dim message As New MailMessage()
+				message.Subject = emailSubject
+				message.Body = emailBody
 
 				If Not emailTo = "" Then
 					If emailTo.Contains(";") = True Then
@@ -2957,7 +2956,7 @@ Namespace Controllers
 			Dim arrayPageBreakValues
 			Dim arrayVisibleColumns
 			Dim sEmailAddresses As String = ""
-            Dim strDownloadExtension As String = ""
+			Dim strDownloadExtension As String = ""
 
 			'Set Options
 			If Not bPreview And Not objReport.IsBradfordReport Then
