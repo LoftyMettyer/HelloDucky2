@@ -276,10 +276,10 @@
 
 					if (CourseOverbooked == 1) {
 						if (sTransferErrorMsg.length > 0) sTransferErrorMsg = sTransferErrorMsg + "\n";
-						sTransferErrorMsg = sTransferErrorMsg + "The selected course is already fully booked.";
+						sTransferErrorMsg = sTransferErrorMsg + "The number of delegates selected would exceed the maximum number allowed on the course";
 					} else if (CourseOverbooked == 2) {
 						if (sTransferWarningMsg.length > 0) sTransferWarningMsg = sTransferWarningMsg + "\n";
-						sTransferWarningMsg = sTransferWarningMsg + "The selected course is already fully booked.";
+						sTransferWarningMsg = sTransferWarningMsg + "The number of delegates selected would exceed the maximum number allowed on the course";
 					}
 
 					if (EmployeesWithPreReqError.length > 0) {
@@ -430,6 +430,8 @@
 					menu_refreshMenu(); //A second call to menu_RefreshMenu fixes the problem reported in the notes by Craig in Jira http://tcjira01:8080/browse/HRPRO-3140; don't ask me why it fixes it, it just does!
 				}
 				
+				menu_refreshMenu();
+
 				if (sCurrentWorkFramePage == "RECORDEDIT") {
 					//display any errors that may have occurred:
 					if (txtErrorMessage.value.length > 0) alert(txtErrorMessage.value);
