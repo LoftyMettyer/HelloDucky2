@@ -276,10 +276,10 @@
 
 					if (CourseOverbooked == 1) {
 						if (sTransferErrorMsg.length > 0) sTransferErrorMsg = sTransferErrorMsg + "\n";
-						sTransferErrorMsg = sTransferErrorMsg + "The number of delegates selected would exceed the maximum number allowed on the course";
+						sTransferErrorMsg = sTransferErrorMsg + "The number of delegates selected would exceed the maximum number allowed on the course.";
 					} else if (CourseOverbooked == 2) {
 						if (sTransferWarningMsg.length > 0) sTransferWarningMsg = sTransferWarningMsg + "\n";
-						sTransferWarningMsg = sTransferWarningMsg + "The number of delegates selected would exceed the maximum number allowed on the course";
+						sTransferWarningMsg = sTransferWarningMsg + "The number of delegates selected would exceed the maximum number allowed on the course.";
 					}
 
 					if (EmployeesWithPreReqError.length > 0) {
