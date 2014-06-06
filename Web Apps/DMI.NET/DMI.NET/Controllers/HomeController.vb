@@ -1836,13 +1836,13 @@ Namespace Controllers
 									End If
 
 									If showLabels Then
-										chart1.Series("Default").Points.Add(New DataPoint() With {.AxisLabel = objRow(0), .YValues = New Double() {objRow(1)}, .Color = pointBackColor})
+										chart1.Series("Default").Points.Add(New DataPoint() With {.AxisLabel = objRow(0).ToString(), .YValues = New Double() {objRow(1)}, .Color = pointBackColor})
 									Else
 										chart1.Series("Default").Points.Add(New DataPoint() With {.Label = " ", .YValues = New Double() {objRow(1)}, .Color = pointBackColor})
 									End If
 
 									If showLegend = True Then
-										chart1.Legends("Default").CustomItems.Add(New LegendItem(objRow(0), pointBackColor, ""))
+										chart1.Legends("Default").CustomItems.Add(New LegendItem(objRow(0).ToString(), pointBackColor, ""))
 									End If
 								End If
 
