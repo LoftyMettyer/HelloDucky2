@@ -1411,8 +1411,7 @@ function showDefaultRibbon() {
 	}
 }
 
-function menu_refreshMenu() {
-
+function menu_refreshMenu() {	
 		// Refresh the menu.
 		var lngRecordID;
 	var sCaption;
@@ -1588,6 +1587,13 @@ function menu_refreshMenu() {
 
 		showDefaultRibbon();
 		$("#toolbarRecord").parent().show();
+
+		menu_setVisibletoolbarGroupById('mnuSectionRecordFind', true);
+		menu_setVisibletoolbarGroupById('mnuSectionRecordOrder', true);
+		menu_setVisibletoolbarGroupById('mnuSectionRecordReports', true);
+		menu_setVisibletoolbarGroupById('mnuSectionRecordMailmerge', true);
+
+
 
 		//abMainMenu.Bands("mnubandMainToolBar").visible = true;
 		menu_setVisibleMenuItem("mnutoolRecord", false);
@@ -1980,27 +1986,27 @@ function menu_refreshMenu() {
 				
 				// Enable the record editing options as necessary.
 				menu_setVisibleMenuItem("mnutoolNewRecord", false);
-				menu_enableMenuItem("mnutoolNewRecord", false);
+				menu_toolbarEnableItem("mnutoolNewRecord", false);
 				menu_setVisibleMenuItem("mnutoolCopyRecord", false);
-				menu_enableMenuItem("mnutoolCopyRecord", false);
+				menu_toolbarEnableItem("mnutoolCopyRecord", false);
 				menu_setVisibleMenuItem("mnutoolEditRecord", false);
-				menu_enableMenuItem("mnutoolEditRecord", false);
+				menu_toolbarEnableItem("mnutoolEditRecord", false);
 				menu_setVisibleMenuItem("mnutoolSaveRecord", false);
 				menu_setVisibleMenuItem("mnutoolDeleteRecord", false);
-				menu_enableMenuItem("mnutoolDeleteRecord", false);
+				menu_toolbarEnableItem("mnutoolDeleteRecord", false);
 				menu_setVisibleMenuItem("mnutoolParentRecord", false);
-				menu_enableMenuItem("mnutoolParentRecord", false);
-				menu_setVisibleMenuItem("mnutoolBack", false);
-				menu_enableMenuItem("mnutoolBack", false);
+				menu_toolbarEnableItem("mnutoolParentRecord", false);
+				menu_setVisibleMenuItem("mnutoolBackRecord", false);
+				menu_toolbarEnableItem("mnutoolBackRecord", false);
 
 				menu_setVisibleMenuItem("mnutoolFirstRecord", true);
-				menu_enableMenuItem("mnutoolFirstRecord", (frmOption.txtIsFirstPage.value.toUpperCase() == "FALSE"));
+				menu_toolbarEnableItem("mnutoolFirstRecord", (frmOption.txtIsFirstPage.value.toUpperCase() == "FALSE"));
 				menu_setVisibleMenuItem("mnutoolPreviousRecord", true);
-				menu_enableMenuItem("mnutoolPreviousRecord", (frmOption.txtIsFirstPage.value.toUpperCase() == "FALSE"));
+				menu_toolbarEnableItem("mnutoolPreviousRecord", (frmOption.txtIsFirstPage.value.toUpperCase() == "FALSE"));
 				menu_setVisibleMenuItem("mnutoolNextRecord", true);
-				menu_enableMenuItem("mnutoolNextRecord", (frmOption.txtIsLastPage.value.toUpperCase() == "FALSE"));
+				menu_toolbarEnableItem("mnutoolNextRecord", (frmOption.txtIsLastPage.value.toUpperCase() == "FALSE"));
 				menu_setVisibleMenuItem("mnutoolLastRecord", true);
-				menu_enableMenuItem("mnutoolLastRecord", (frmOption.txtIsLastPage.value.toUpperCase() == "FALSE"));
+				menu_toolbarEnableItem("mnutoolLastRecord", (frmOption.txtIsLastPage.value.toUpperCase() == "FALSE"));
 
 				menu_setVisibleMenuItem("mnutoolLocateRecordsCaption", true);
 				menu_setVisibleMenuItem("mnutoolLocateRecords", (parseInt(frmOption.txtFirstColumnType.value) != -7));
@@ -2016,8 +2022,8 @@ function menu_refreshMenu() {
 				menu_setVisibleMenuItem("mnutoolQuickFind", false);
 				menu_setVisibleMenuItem("mnutoolOrder", false);
 				menu_setVisibleMenuItem("mnutoolFilter", false);
-				menu_setVisibleMenuItem("mnutoolClearFilter", false);
-				menu_enableMenuItem("mnutoolClearFilter", false);
+				menu_setVisibleMenuItem("mnutoolClearFilterRecord", false);
+				menu_toolbarEnableItem("mnutoolClearFilterRecord", false);
 				menu_setVisibleMenuItem("mnutoolPrint", false);
 
 				if (frmOption.txtRecordCount.value > 0) {
@@ -2882,9 +2888,12 @@ function menu_saveChanges(psAction, pfPrompt, pfTBOverride) {
 	var frmRecEditArea;
 	var frmOptionArea;
 
-	menu_ShowWait("Loading matching course records...");
-	menu_disableMenu(); // HC: Is this correct? It will only disable RecEdit buttons
-
+	menu_ShowWait("Loading matching course records...");		
+	menu_disableMenu();
+	menu_setVisibletoolbarGroupById('mnuSectionRecordFind', false);
+	menu_setVisibletoolbarGroupById('mnuSectionRecordOrder', false);
+	menu_setVisibletoolbarGroupById('mnuSectionRecordReports', false);
+	menu_setVisibletoolbarGroupById('mnuSectionRecordMailmerge', false);
 	
 	frmRecEditArea = OpenHR.getForm("workframe", "frmRecordEditForm");
 	frmOptionArea = OpenHR.getForm("optionframe", "frmGotoOption");
@@ -4868,33 +4877,25 @@ function menu_loadSelectOrderFilter(psType) {
 	var currSrc = $("#" + itemId + " img:first").attr("src");
 
 	if (fNewSetting == "True" || fNewSetting == true || fNewSetting == 1) {
-	//apply disable icon
-	if (currSrc.indexOf("HOVER") <= 0) {
-	$("#" + itemId + " img:first").attr("src", currSrc.replace("DIS.png", "HOVER.png"));
-	$("#" + itemId).removeClass("disabled");
-	$("#" + itemId + " a").removeClass("disabled");
-	$("#" + itemId + " a h6").removeClass("disabled");
-	//$('#' + itemId + " a h6").addClass('ui-state-default');
-	$('#' + itemId + " a h6").removeClass('ui-state-disabled');
-	$('#' + itemId).prop('disabled', true);		
-	//$("#" + itemId).removeClass("ui-state-disabled");
-			//$("#" + itemId + " a").removeClass("ui-state-disabled");
-			//$("#" + itemId + " a h6").removeClass("ui-state-disabled");
-}
-} else {
-	//apply disable icon
-	if (currSrc.indexOf("DIS") <= 0) {
-	$("#" + itemId + " img:first").attr("src", currSrc.replace("HOVER.png", "DIS.png"));
-	$("#" + itemId).addClass("disabled");
-	$("#" + itemId + " a").addClass("disabled");
-	$("#" + itemId + " a h6").addClass("disabled");
-	//$('#' + itemId + " a h6").removeClass('ui-state-default');
-	$('#' + itemId + " a h6").addClass('ui-state-disabled');
-			//$("#" + itemId + " a").addClass("ui-state-disabled");
-			//$("#" + itemId + " a h6").addClass("ui-state-disabled");
+		//apply enable icon
+		if (currSrc.indexOf("HOVER") <= 0) {
+			$("#" + itemId + " img:first").attr("src", currSrc.replace("DIS.png", "HOVER.png"));
+			$("#" + itemId).removeClass("disabled");
+			$("#" + itemId + " a").removeClass("disabled");
+			$("#" + itemId + " a h6").removeClass("disabled");
+			$('#' + itemId + " a h6").removeClass('ui-state-disabled');
+		}
+	} else {
+		//apply disable icon
+		if (currSrc.indexOf("DIS") <= 0) {
+			$("#" + itemId + " img:first").attr("src", currSrc.replace("HOVER.png", "DIS.png"));
+			$("#" + itemId).addClass("disabled");
+			$("#" + itemId + " a").addClass("disabled");
+			$("#" + itemId + " a h6").addClass("disabled");
+			$('#' + itemId + " a h6").addClass('ui-state-disabled');
 
-}
-}
+		}
+	}
 }
 
 

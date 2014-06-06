@@ -19,8 +19,6 @@
 		var frmMenu = OpenHR.getForm("menuframe", "frmMenuInfo");
 
 		// Do nothing if the menu controls are not yet instantiated.
-		
-
 		if (frmMenu != null) {
 			if (OpenHR.currentWorkPage() != "DEFAULT") {
 				fNoAction = true;				
@@ -197,92 +195,95 @@
 					//menu_refreshMenu();
 
 					var fTransferOK = true;
-					var messageOverlapSingular = "This delegate is already booked on a course that overlaps with the selected course. \n";
-					var messageOverlapPlural = "These delegates are already booked on a course that overlaps with the selected course. \n";
-					var messagePrerequisitesSingular = "The delegate has not met the pre-requisites for the course. \n";
-					var messagePrerequisitesPlural = "These delegates have not met the pre-requisites for the course. \n";
-					var messageUnavailableSingular = "This delegate is unavailable for the selected course. \n";
-					var messageUnavailablePlural = "These delegates are unavailable for the selected course. \n";
-					//var OverlapCode;
-					//var AvailabilityCode;
-					//var PreReqCode;
-					//var sOverBookFails;
-					//var sPreReqFails;
-					//var sUnAvailFails;
-					//var sOverlapFails;
-					var EmployeeName;
-					var ResultCode;
-					var ResultCodes = txtResultCode.value;
-					var CourseOverbooked = txtCourseOverbooked.value;
-					var EmployeesWithOverlapError = [];
-					var EmployeesWithOverlapWarning = [];
-					var EmployeesWithPreReqError = [];
-					var EmployeesWithPreReqWarning = [];
-					var EmployeesWithUnAvailError = [];
-					var EmployeesWithUnAvailWarning = [];
-					var j;					
-					var sTransferErrorMsg = "";
-					var sTransferWarningMsg = "";				
 
-					if (ResultCodes.length > 0 && ResultCodes != 0) {
-						if (ResultCodes.indexOf("|") != -1) { // Multiple ResultCodes returned, we need to parse them (Results come from sp_ASRIntValidateBulkBookings)
-							ResultCodes = ResultCodes.split("|");
+					if (txtResultCode.value.indexOf("\\") > 0) {
+						// -------------  Results come from sp_ASRIntValidateBulkBookings, NOT sp_ASRIntValidateTransfers --------------
+						var messageOverlapSingular = "This delegate is already booked on a course that overlaps with the selected course. \n";
+						var messageOverlapPlural = "These delegates are already booked on a course that overlaps with the selected course. \n";
+						var messagePrerequisitesSingular = "The delegate has not met the pre-requisites for the course. \n";
+						var messagePrerequisitesPlural = "These delegates have not met the pre-requisites for the course. \n";
+						var messageUnavailableSingular = "This delegate is unavailable for the selected course. \n";
+						var messageUnavailablePlural = "These delegates are unavailable for the selected course. \n";
+						//var OverlapCode;
+						//var AvailabilityCode;
+						//var PreReqCode;
+						//var sOverBookFails;
+						//var sPreReqFails;
+						//var sUnAvailFails;
+						//var sOverlapFails;
+						var EmployeeName;
+						var ResultCode;
+						var ResultCodes = txtResultCode.value;
+						var CourseOverbooked = txtCourseOverbooked.value;
+						var EmployeesWithOverlapError = [];
+						var EmployeesWithOverlapWarning = [];
+						var EmployeesWithPreReqError = [];
+						var EmployeesWithPreReqWarning = [];
+						var EmployeesWithUnAvailError = [];
+						var EmployeesWithUnAvailWarning = [];
+						var j;
+						var sTransferErrorMsg = "";
+						var sTransferWarningMsg = "";
 
-							//Loop over the results
-							for (j = 0; j <= ResultCodes.length - 1; j++) {
-								var EmployeeAndCode = ResultCodes[j].split("\\");
-								EmployeeName = EmployeeAndCode[0];
-								ResultCode = EmployeeAndCode[1];
+						if (ResultCodes.length > 0 && ResultCodes != 0) {
+							if (ResultCodes.indexOf("|") != -1) { // Multiple ResultCodes returned, we need to parse them (Results come from sp_ASRIntValidateBulkBookings)
+								ResultCodes = ResultCodes.split("|");
 
-								if (ResultCode[0] == 1) {
-									EmployeesWithPreReqError.push(EmployeeName);
-								} else if (ResultCode[0] == 2) {
-									EmployeesWithPreReqWarning.push(EmployeeName);
+								//Loop over the results
+								for (j = 0; j <= ResultCodes.length - 1; j++) {
+									var EmployeeAndCode = ResultCodes[j].split("\\");
+									EmployeeName = EmployeeAndCode[0];
+									ResultCode = EmployeeAndCode[1];
+
+									if (ResultCode[0] == 1) {
+										EmployeesWithPreReqError.push(EmployeeName);
+									} else if (ResultCode[0] == 2) {
+										EmployeesWithPreReqWarning.push(EmployeeName);
+									}
+
+									if (ResultCode[2] == 1) {
+										EmployeesWithOverlapError.push(EmployeeName);
+									} else if (ResultCode[2] == 2) {
+										EmployeesWithOverlapWarning.push(EmployeeName);
+									}
+
+									if (ResultCode[1] == 1) {
+										EmployeesWithUnAvailError.push(EmployeeName);
+									} else if (ResultCode[1] == 2) {
+										EmployeesWithUnAvailWarning.push(EmployeeName);
+									}
+								}
+							} else { // Single ResultCode returned, we need to parse it 														
+								ResultCodes = ResultCodes.split("\\")[1];
+								if (ResultCodes[0] == 1) {
+									sTransferErrorMsg = messagePrerequisitesSingular + "\n";
+								} else if (ResultCodes[0] == 2) {
+									sTransferWarningMsg = messagePrerequisitesSingular + "\n";
 								}
 
-								if (ResultCode[2] == 1) {
-									EmployeesWithOverlapError.push(EmployeeName);
-								} else if (ResultCode[2] == 2) {
-									EmployeesWithOverlapWarning.push(EmployeeName);
+								if (ResultCodes[2] == 1) {
+									sTransferErrorMsg = messageOverlapSingular + "\n";
+								} else if (ResultCodes[2] == 2) {
+									sTransferWarningMsg = messageOverlapSingular + "\n";
 								}
 
-								if (ResultCode[1] == 1) {
-									EmployeesWithUnAvailError.push(EmployeeName);
-								} else if (ResultCode[1] == 2) {
-									EmployeesWithUnAvailWarning.push(EmployeeName);
+								if (ResultCodes[1] == 1) {
+									sTransferErrorMsg = messageUnavailableSingular + "\n";
+								} else if (ResultCodes[1] == 2) {
+									sTransferWarningMsg = messageUnavailableSingular + "\n";
 								}
-							}
-						} else { // Single ResultCode returned, we need to parse it (Results come from sp_ASRIntValidateBulkBookings)
-							ResultCodes = ResultCodes.split("\\")[1];
-							if (ResultCodes[0] == 1) {
-								sTransferErrorMsg = messagePrerequisitesSingular + "\n";
-							} else if (ResultCodes[0] == 2) {
-								sTransferWarningMsg = messagePrerequisitesSingular + "\n";
-							}
-
-							if (ResultCodes[2] == 1) {
-								sTransferErrorMsg = messageOverlapSingular + "\n";
-							} else if (ResultCodes[2] == 2) {
-								sTransferWarningMsg = messageOverlapSingular + "\n";
-							}
-
-							if (ResultCodes[1] == 1) {
-								sTransferErrorMsg = messageUnavailableSingular + "\n";
-							} else if (ResultCodes[1] == 2) {
-								sTransferWarningMsg = messageUnavailableSingular + "\n";
 							}
 						}
-					}
 
-					if (CourseOverbooked == 1) {
-						if (sTransferErrorMsg.length > 0) sTransferErrorMsg = sTransferErrorMsg + "\n";
-						sTransferErrorMsg = sTransferErrorMsg + "The number of delegates selected would exceed the maximum number allowed on the course.";
-					} else if (CourseOverbooked == 2) {
-						if (sTransferWarningMsg.length > 0) sTransferWarningMsg = sTransferWarningMsg + "\n";
-						sTransferWarningMsg = sTransferWarningMsg + "The number of delegates selected would exceed the maximum number allowed on the course.";
-					}
+						if (CourseOverbooked == 1) {
+							if (sTransferErrorMsg.length > 0) sTransferErrorMsg = sTransferErrorMsg + "\n";
+							sTransferErrorMsg = sTransferErrorMsg + "The number of delegates selected would exceed the maximum number allowed on the course.";
+						} else if (CourseOverbooked == 2) {
+							if (sTransferWarningMsg.length > 0) sTransferWarningMsg = sTransferWarningMsg + "\n";
+							sTransferWarningMsg = sTransferWarningMsg + "The number of delegates selected would exceed the maximum number allowed on the course.";
+						}
 
-					if (EmployeesWithPreReqError.length > 0) {
+						if (EmployeesWithPreReqError.length > 0) {
 							if (EmployeesWithPreReqError.length == 1) sTransferErrorMsg = sTransferErrorMsg + messagePrerequisitesSingular + "\n";
 							if (EmployeesWithPreReqError.length > 1) sTransferErrorMsg = sTransferErrorMsg + messagePrerequisitesPlural + "\n";
 							for (j = 0; j <= EmployeesWithPreReqError.length - 1; j++) {
@@ -311,7 +312,7 @@
 								sTransferWarningMsg += EmployeesWithOverlapWarning[j] + "\n";
 							}
 						}
-						
+
 						if (EmployeesWithUnAvailError.length > 0) {
 							if (EmployeesWithUnAvailError.length == 1) sTransferErrorMsg = sTransferErrorMsg + messageUnavailableSingular + "\n";
 							if (EmployeesWithUnAvailError.length > 1) sTransferErrorMsg = sTransferErrorMsg + messageUnavailablePlural + "\n";
@@ -326,8 +327,76 @@
 								sTransferWarningMsg += EmployeesWithUnAvailWarning[j] + "\n";
 							}
 						}
+						//-------------------------------------------------
 
-						if (sTransferErrorMsg.length > 0) {
+					} else {
+						// -------------  Results come from sp_ASRIntValidateTransfers, NOT sp_ASRIntValidateBulkBookings --------------
+						
+						var iResultCode = txtResultCode.value;
+						//if (iResultCode > 0) {
+						var iOverlapCode = iResultCode % 10;
+						iResultCode = iResultCode - iOverlapCode;
+						iResultCode = iResultCode / 10;
+						var iAvailabilityCode = iResultCode % 10;
+						iResultCode = iResultCode - iAvailabilityCode;
+						iResultCode = iResultCode / 10;
+						var iPreReqCode = iResultCode % 10;
+						iResultCode = iResultCode - iPreReqCode;
+						iResultCode = iResultCode / 10;
+						var iOverbookCode = iResultCode;
+
+						sTransferErrorMsg = "";
+						sTransferWarningMsg = "";
+
+						var sPreReqFails = "";
+						var sUnAvailFails = "";
+						var sOverlapFails = "";
+						
+						if (iOverlapCode == 1) {
+							if (sTransferErrorMsg.length > 0) sTransferErrorMsg = sTransferErrorMsg + "\n";
+							if (sOverlapFails.length == 0) sTransferErrorMsg = sTransferErrorMsg + "This delegate is already booked on a course that overlaps with the selected course. \n";
+							if (sOverlapFails.length > 0) sTransferErrorMsg = sTransferErrorMsg + "These delegates are already booked on a course that overlaps with the selected course. \n" + sOverlapFails + "\n";
+						}
+						else if (iOverlapCode == 2) {
+							if (sTransferWarningMsg.length > 0) sTransferWarningMsg = sTransferWarningMsg + "\n";
+							if (sOverlapFails.length == 0) sTransferWarningMsg = sTransferWarningMsg + "This delegate is already booked on a course that overlaps with the selected course. \n";
+							if (sOverlapFails.length > 0) sTransferWarningMsg = sTransferWarningMsg + "These delegates are booked on a course that overlaps with the selected course. \n" + sOverlapFails + "\n";
+						}
+
+						if (iPreReqCode == 1) {
+							if (sTransferErrorMsg.length > 0) sTransferErrorMsg = sTransferErrorMsg + "\n";
+							if (sPreReqFails.length == 0) sTransferErrorMsg = sTransferErrorMsg + "The delegate has not met the pre-requisites for the course. \n";
+							if (sPreReqFails.length > 0) sTransferErrorMsg = sTransferErrorMsg + "These delegates have not met the pre-requisites for the course: \n" + sPreReqFails + "\n";
+						}
+						else if (iPreReqCode == 2) {
+							if (sTransferWarningMsg.length > 0) sTransferWarningMsg = sTransferWarningMsg + "\n";
+							if (sPreReqFails.length == 0) sTransferWarningMsg = sTransferWarningMsg + "The delegate has not met the pre-requisites for the course. \n";
+							if (sPreReqFails.length > 0) sTransferWarningMsg = sTransferWarningMsg + "These delegates have not met the pre-requisites for the course:  \n" + sPreReqFails + "\n";
+						}
+
+						if (iAvailabilityCode == 1) {
+							if (sTransferErrorMsg.length > 0) sTransferErrorMsg = sTransferErrorMsg + "\n";
+							if (sUnAvailFails.length == 0) sTransferErrorMsg = sTransferErrorMsg + "This delegate is unavailable for the selected course. \n";
+							if (sUnAvailFails.length > 0) sTransferErrorMsg = sTransferErrorMsg + "These delegates are unavailable for the selected course. \n" + sUnAvailFails + "\n";
+						}
+						else if (iAvailabilityCode == 2) {
+							if (sTransferWarningMsg.length > 0) sTransferWarningMsg = sTransferWarningMsg + "\n";
+							if (sUnAvailFails.length == 0) sTransferWarningMsg = sTransferWarningMsg + "This delegate is unavailable for the selected course. \n";
+							if (sUnAvailFails.length > 0) sTransferWarningMsg = sTransferWarningMsg + "These delegates are unavailable for the selected course. \n" + sUnAvailFails + "\n";
+						}
+
+						if (iOverbookCode == 1) {
+							if (sTransferErrorMsg.length > 0) sTransferErrorMsg = sTransferErrorMsg + "\n";
+							sTransferErrorMsg = sTransferErrorMsg + "The selected course is already fully booked.";
+						}
+						else if (iOverbookCode == 2) {
+							if (sTransferWarningMsg.length > 0) sTransferWarningMsg = sTransferWarningMsg + "\n";
+							sTransferWarningMsg = sTransferWarningMsg + "The selected course is already fully booked.";
+						}
+
+					}
+
+					if (sTransferErrorMsg.length > 0) {
 							/* Error - not over-ridable. */
 							if ((txtAction.value == "SELECTBOOKCOURSE_2") ||
 									(txtAction.value == "SELECTTRANSFERBOOKING_1") ||

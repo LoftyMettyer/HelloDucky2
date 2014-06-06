@@ -408,7 +408,7 @@
 				<TR>
 					<td></td>
 					<TD>
-						<OBJECT classid="clsid:4A4AA697-3E6F-11D2-822F-00104B9E07A1" id=ssOleDBGridRecords name=ssOleDBGridRecords  codebase="cabs/COAInt_Grid.cab#version=3,1,3,6" style="LEFT: 0px; TOP: 0px; WIDTH:100%; HEIGHT:100%">
+						<OBJECT classid="clsid:4A4AA697-3E6F-11D2-822F-00104B9E07A1" id=ssOleDBGridRecords name=ssOleDBGridRecords  codebase="cabs/COAInt_Grid.cab#version=3,1,3,6" style="LEFT: 0px; TOP: 0px; WIDTH:100%; HEIGHT:400px;">
 							<PARAM NAME="ScrollBars" VALUE="4">
 							<PARAM NAME="_Version" VALUE="196617">
 							<PARAM NAME="DataMode" VALUE="2">							
