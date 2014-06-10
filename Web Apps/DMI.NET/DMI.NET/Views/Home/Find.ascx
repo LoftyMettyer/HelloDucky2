@@ -147,6 +147,23 @@
 						Dim prmTotalRecCount As New SqlParameter("@piTotalRecCount", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
 						Dim prmFirstRecPos As New SqlParameter("@piFirstRecPos", SqlDbType.Int) With {.Direction = ParameterDirection.InputOutput, .Value = CleanNumeric(Session("firstRecPos"))}
 						
+						Dim LocaleDateFormat = Session("LocaleDateFormat").ToString.ToLower
+						If LocaleDateFormat.IndexOf("dd") < 0 Then
+							If LocaleDateFormat.IndexOf("d") >= 0 Then
+								LocaleDateFormat = LocaleDateFormat.Replace("d", "dd")
+							End If
+						End If
+						If LocaleDateFormat.IndexOf("mm") < 0 Then
+							If LocaleDateFormat.IndexOf("m") >= 0 Then
+								LocaleDateFormat = LocaleDateFormat.Replace("m", "mm")
+							End If
+						End If
+						If LocaleDateFormat.IndexOf("yyyy") < 0 Then
+							If LocaleDateFormat.IndexOf("yy") >= 0 Then
+								LocaleDateFormat = LocaleDateFormat.Replace("yy", "yyyy")
+							End If
+						End If
+						
 						SPParameters = New SqlParameter() { _
 							prmError, _
 							prmSomeSelectable, _
@@ -172,7 +189,7 @@
 							prmFirstRecPos, _
 							New SqlParameter("@piCurrentRecCount", SqlDbType.Int) With {.Value = CleanNumeric(Session("currentRecCount"))}, _
 							New SqlParameter("@psDecimalSeparator", SqlDbType.VarChar, 255) With {.Value = Session("LocaleDecimalSeparator")}, _
-							New SqlParameter("@psLocaleDateFormat", SqlDbType.VarChar, 255) With {.Value = Session("LocaleDateFormat")} _
+							New SqlParameter("@psLocaleDateFormat", SqlDbType.VarChar, 255) With {.Value = LocaleDateFormat} _
 						}
 
 						Try
