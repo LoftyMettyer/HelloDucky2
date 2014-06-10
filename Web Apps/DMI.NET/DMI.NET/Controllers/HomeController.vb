@@ -2375,6 +2375,7 @@ Namespace Controllers
 			Return View()
 		End Function
 
+		<AcceptVerbs(HttpVerbs.Post), ValidateInput(False)> _
 		Function SendEmail() As ActionResult
 
 			Dim emailTo As String = Request.Form("To")

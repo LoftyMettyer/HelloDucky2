@@ -414,11 +414,7 @@
 
 					if (!(errorObj == "" || req.responseText == "")) {
 
-						OpenHR.modalPrompt(req.responseText, 2, "Event Log");
-
-						//$("#errorDialogTitle").text(errorObj);
-						//$("#errorDialogContentText").html(req.responseText);
-						//$("#errorDialog").dialog("open");
+						alert(replaceAll(req.responseText, '<br/>', '\n'));
 					}
 				}
 
