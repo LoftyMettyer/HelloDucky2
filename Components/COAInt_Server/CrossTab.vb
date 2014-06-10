@@ -1,7 +1,6 @@
 Option Strict Off
 Option Explicit On
 
-Imports System.Globalization
 Imports HR.Intranet.Server.BaseClasses
 Imports HR.Intranet.Server.Enums
 Imports HR.Intranet.Server.Metadata
@@ -496,8 +495,6 @@ ErrorTrap:
 
 	Public Function RetreiveDefinition() As Boolean
 
-		On Error GoTo LocalErr
-
 		Dim rsCrossTabDefinition As DataTable
 		Dim strSQL As String
 
@@ -508,116 +505,118 @@ ErrorTrap:
 
 		strSQL = "SELECT ASRSysCrossTab.*, 'TableName' = ASRSysTables.TableName, 'RecordDescExprID' = ASRSysTables.RecordDescExprID, 'IntersectionColName' = ASRSysColumns.ColumnName, " & "'IntersectionDecimals' = ASRSysColumns.Decimals " & "FROM ASRSysCrossTab " & "JOIN ASRSysTables ON ASRSysCrossTab.TableID = ASRSysTables.TableID " & "LEFT OUTER JOIN ASRSysColumns ON ASRSysCrossTab.IntersectionColID = ASRSysColumns.ColumnID " & "WHERE CrossTabID = " & CStr(mlngCrossTabID)
 
-		rsCrossTabDefinition = DB.GetDataTable(strSQL)
-		If rsCrossTabDefinition.Rows.Count = 0 Then
-			'UPGRADE_NOTE: Object rsCrossTabDefinition may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-			rsCrossTabDefinition = Nothing
-			mstrStatusMessage = "This definition has been deleted by another user"
-			RetreiveDefinition = False
-			Exit Function
-		End If
+		Try
 
-		Dim objRow = rsCrossTabDefinition.Rows(0)
-		With rsCrossTabDefinition
-
-			If LCase(CType(objRow("Username"), String)) <> LCase(_login.Username) And CurrentUserAccess(UtilityType.utlCrossTab, mlngCrossTabID) = ACCESS_HIDDEN Then
+			rsCrossTabDefinition = DB.GetDataTable(strSQL)
+			If rsCrossTabDefinition.Rows.Count = 0 Then
 				'UPGRADE_NOTE: Object rsCrossTabDefinition may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
 				rsCrossTabDefinition = Nothing
-				mstrStatusMessage = "This definition has been made hidden by another user."
+				mstrStatusMessage = "This definition has been deleted by another user"
 				RetreiveDefinition = False
 				Exit Function
 			End If
 
-			mlngBaseTableID = CInt(objRow("TableID"))
-			mstrBaseTable = objRow("TableName").ToString()
-			mlngRecordDescExprID = CInt(objRow("RecordDescExprID"))
-			Name = objRow("Name").ToString()
-			mblnChkPicklistFilter = CBool(objRow("PrintFilterHeader"))
+			Dim objRow = rsCrossTabDefinition.Rows(0)
+			With rsCrossTabDefinition
 
-			mblnShowPercentage = CBool(objRow("Percentage"))
-			mblnPercentageofPage = CBool(objRow("PercentageOfPage"))
-			mblnSuppressZeros = CBool(objRow("SuppressZeros"))
-			mbUse1000Separator = CBool(objRow("ThousandSeparators"))
-
-			OutputPreview = CBool(objRow("OutputPreview"))
-			OutputFormat = CType(objRow("OutputFormat"), OutputFormats)
-			mblnOutputScreen = CBool(objRow("OutputScreen"))
-			mblnOutputPrinter = CBool(objRow("OutputPrinter"))
-			mstrOutputPrinterName = objRow("OutputPrinterName").ToString()
-			mblnOutputSave = CBool(objRow("OutputSave"))
-			mlngOutputSaveExisting = CInt(objRow("OutputSaveExisting"))
-			mblnOutputEmail = CBool(objRow("OutputEmail"))
-			mlngOutputEmailID = CInt(objRow("OutputEmailAddr"))
-			mstrOutputEmailName = GetEmailGroupName(CInt(objRow("OutputEmailAddr")))
-			mstrOutputEmailSubject = objRow("OutputEmailSubject").ToString()
-			'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-			mstrOutputEmailAttachAs = IIf(IsDBNull(objRow("OutputEmailAttachAs")), vbNullString, objRow("OutputEmailAttachAs"))
-			OutputFilename = objRow("OutputFilename").ToString()
-
-			mlngColID(HOR) = CInt(objRow("HorizontalColID"))
-			mdblMin(HOR) = Val(objRow("HorizontalStart"))
-			mdblMax(HOR) = Val(objRow("HorizontalStop"))
-			mdblStep(HOR) = Val(objRow("HorizontalStep"))
-			mstrColName(HOR) = GetColumnName(mlngColID(HOR))
-			mlngColDataType(HOR) = CStr(GetDataType(mlngBaseTableID, mlngColID(HOR)))
-			mstrFormat(HOR) = GetFormat(mlngColID(HOR))
-
-			mlngColID(VER) = CInt(objRow("VerticalColID"))
-			mdblMin(VER) = Val(objRow("VerticalStart"))
-			mdblMax(VER) = Val(objRow("VerticalStop"))
-			mdblStep(VER) = Val(objRow("VerticalStep"))
-			mstrColName(VER) = GetColumnName(mlngColID(VER))
-			mlngColDataType(VER) = CStr(GetDataType(mlngBaseTableID, mlngColID(VER)))
-			mstrFormat(VER) = GetFormat(mlngColID(VER))
-
-			mlngColID(PGB) = CInt(objRow("PageBreakColID"))
-			mblnPageBreak = (mlngColID(PGB) > 0)
-			If mblnPageBreak Then
-				mstrColName(PGB) = GetColumnName(mlngColID(PGB))
-				mlngColDataType(PGB) = CStr(GetDataType(mlngBaseTableID, mlngColID(PGB)))
-				mstrFormat(PGB) = GetFormat(mlngColID(PGB))
-				mdblMin(PGB) = Val(objRow("PageBreakStart"))
-				mdblMax(PGB) = Val(objRow("PageBreakStop"))
-				mdblStep(PGB) = Val(objRow("PageBreakStep"))
-			End If
-
-			mblnIntersection = (CInt(objRow("IntersectionColID")) > 0)
-			If mblnIntersection Then
-				mlngType = CInt(objRow("IntersectionType"))
-				mlngColID(INS) = CInt(objRow("IntersectionColID"))
-				mstrColName(INS) = objRow("IntersectionColName").ToString()
-				mlngIntersectionDecimals = CInt(objRow("IntersectionDecimals"))
-				mstrIntersectionMask = New String("#", 20) & "0"
-				If CInt(objRow("IntersectionDecimals")) > 0 Then
-					mstrIntersectionMask = mstrIntersectionMask & "." & New String("0", CInt(objRow("IntersectionDecimals")))
+				If LCase(CType(objRow("Username"), String)) <> LCase(_login.Username) And CurrentUserAccess(UtilityType.utlCrossTab, mlngCrossTabID) = ACCESS_HIDDEN Then
+					'UPGRADE_NOTE: Object rsCrossTabDefinition may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
+					rsCrossTabDefinition = Nothing
+					mstrStatusMessage = "This definition has been made hidden by another user."
+					RetreiveDefinition = False
+					Exit Function
 				End If
-			Else
-				mlngType = 0
-			End If
 
-			fOK = IsRecordSelectionValid(CInt(objRow("PickListID")), CInt(objRow("FilterID")))
-			If fOK = False Then
-				Exit Function
-			End If
+				mlngBaseTableID = CInt(objRow("TableID"))
+				mstrBaseTable = objRow("TableName").ToString()
+				mlngRecordDescExprID = CInt(objRow("RecordDescExprID"))
+				Name = objRow("Name").ToString()
+				mblnChkPicklistFilter = CBool(objRow("PrintFilterHeader"))
 
-			mstrPicklistFilter = GetPicklistFilterSelect(CInt(objRow("PickListID")), CInt(objRow("FilterID")))
-			If fOK = False Then
-				Exit Function
-			End If
+				mblnShowPercentage = CBool(objRow("Percentage"))
+				mblnPercentageofPage = CBool(objRow("PercentageOfPage"))
+				mblnSuppressZeros = CBool(objRow("SuppressZeros"))
+				mbUse1000Separator = CBool(objRow("ThousandSeparators"))
 
-		End With
+				OutputPreview = CBool(objRow("OutputPreview"))
+				OutputFormat = CType(objRow("OutputFormat"), OutputFormats)
+				mblnOutputScreen = CBool(objRow("OutputScreen"))
+				mblnOutputPrinter = CBool(objRow("OutputPrinter"))
+				mstrOutputPrinterName = objRow("OutputPrinterName").ToString()
+				mblnOutputSave = CBool(objRow("OutputSave"))
+				mlngOutputSaveExisting = CInt(objRow("OutputSaveExisting"))
+				mblnOutputEmail = CBool(objRow("OutputEmail"))
+				mlngOutputEmailID = CInt(objRow("OutputEmailAddr"))
+				mstrOutputEmailName = GetEmailGroupName(CInt(objRow("OutputEmailAddr")))
+				mstrOutputEmailSubject = objRow("OutputEmailSubject").ToString()
+				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
+				mstrOutputEmailAttachAs = IIf(IsDBNull(objRow("OutputEmailAttachAs")), vbNullString, objRow("OutputEmailAttachAs"))
+				OutputFilename = objRow("OutputFilename").ToString()
 
-TidyAndExit:
-		RetreiveDefinition = fOK
-		'UPGRADE_NOTE: Object rsCrossTabDefinition may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		rsCrossTabDefinition = Nothing
+				mlngColID(HOR) = CInt(objRow("HorizontalColID"))
+				mdblMin(HOR) = Val(objRow("HorizontalStart"))
+				mdblMax(HOR) = Val(objRow("HorizontalStop"))
+				mdblStep(HOR) = Val(objRow("HorizontalStep"))
+				mstrColName(HOR) = GetColumnName(mlngColID(HOR))
+				mlngColDataType(HOR) = CStr(GetDataType(mlngBaseTableID, mlngColID(HOR)))
+				mstrFormat(HOR) = GetFormat(mlngColID(HOR))
 
-		Exit Function
+				mlngColID(VER) = CInt(objRow("VerticalColID"))
+				mdblMin(VER) = Val(objRow("VerticalStart"))
+				mdblMax(VER) = Val(objRow("VerticalStop"))
+				mdblStep(VER) = Val(objRow("VerticalStep"))
+				mstrColName(VER) = GetColumnName(mlngColID(VER))
+				mlngColDataType(VER) = CStr(GetDataType(mlngBaseTableID, mlngColID(VER)))
+				mstrFormat(VER) = GetFormat(mlngColID(VER))
 
-LocalErr:
-		mstrStatusMessage = "Error reading Cross Tab definition"
-		fOK = False
-		Resume TidyAndExit
+				mlngColID(PGB) = CInt(objRow("PageBreakColID"))
+				mblnPageBreak = (mlngColID(PGB) > 0)
+				If mblnPageBreak Then
+					mstrColName(PGB) = GetColumnName(mlngColID(PGB))
+					mlngColDataType(PGB) = CStr(GetDataType(mlngBaseTableID, mlngColID(PGB)))
+					mstrFormat(PGB) = GetFormat(mlngColID(PGB))
+					mdblMin(PGB) = Val(objRow("PageBreakStart"))
+					mdblMax(PGB) = Val(objRow("PageBreakStop"))
+					mdblStep(PGB) = Val(objRow("PageBreakStep"))
+				End If
+
+				mblnIntersection = (CInt(objRow("IntersectionColID")) > 0)
+				If mblnIntersection Then
+					mlngType = CInt(objRow("IntersectionType"))
+					mlngColID(INS) = CInt(objRow("IntersectionColID"))
+					mstrColName(INS) = objRow("IntersectionColName").ToString()
+					mlngIntersectionDecimals = CInt(objRow("IntersectionDecimals"))
+					mstrIntersectionMask = New String("#", 20) & "0"
+					If CInt(objRow("IntersectionDecimals")) > 0 Then
+						mstrIntersectionMask = mstrIntersectionMask & "." & New String("0", CInt(objRow("IntersectionDecimals")))
+					End If
+				Else
+					mlngType = 0
+				End If
+
+				fOK = IsRecordSelectionValid(CInt(objRow("PickListID")), CInt(objRow("FilterID")))
+				If fOK = False Then
+					mblnNoRecords = True
+					Exit Function
+				End If
+
+				mstrPicklistFilter = GetPicklistFilterSelect(CInt(objRow("PickListID")), CInt(objRow("FilterID")))
+				If fOK = False Then
+					mblnNoRecords = True
+					Exit Function
+				End If
+
+			End With
+
+
+		Catch ex As Exception
+			mstrStatusMessage = "Error reading Cross Tab definition"
+			mblnNoRecords = True
+			fOK = False
+
+		End Try
+
+		Return fOK
 
 	End Function
 
@@ -1944,6 +1943,7 @@ LocalErr:
 		If DateDiff(DateInterval.Day, pdtStartDate, pdtEndDate) < 0 Then
 			mstrStatusMessage = "The report end date is before the report start date."
 			fOK = False
+			mblnNoRecords = True
 			Exit Function
 		End If
 
@@ -1964,6 +1964,7 @@ LocalErr:
 		End If
 
 		If fOK = False Then
+			mblnNoRecords = True
 			Exit Function
 		End If
 
