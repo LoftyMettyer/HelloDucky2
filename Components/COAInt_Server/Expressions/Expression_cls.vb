@@ -427,14 +427,12 @@ ErrorTrap:
 							' Date coming through in SQL Server mm/dd/yyyy format.
 							' Need to convert it to a date value.
 							sValueDate = sParameter
-							If Len(sParameter) > 0 Then
-								sMonth = Left(sValueDate, 2)
-								sDay = Mid(sValueDate, 4, 2)
-								sYear = Mid(sValueDate, 7)
-								dtValueDate = DateSerial(CInt(sYear), CInt(sMonth), CInt(sDay))
-							Else
-								dtValueDate = dtdummydate
-							End If
+              If Len(sParameter) > 0 And sParameter <> "null" Then
+                sMonth = Left(sValueDate, 2)
+                sDay = Mid(sValueDate, 4, 2)
+                sYear = Mid(sValueDate, 7)
+                dtValueDate = DateSerial(CInt(sYear), CInt(sMonth), CInt(sDay))
+              End If
 						Case 20
 							sPromptDescription = sParameter
 						Case 21

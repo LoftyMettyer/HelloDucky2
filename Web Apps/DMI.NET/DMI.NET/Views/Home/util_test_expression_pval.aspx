@@ -1,4 +1,6 @@
 ﻿<%@ Page Language="VB" Inherits="System.Web.Mvc.ViewPage"%>
+
+<%@ Import Namespace="System.Globalization" %>
 <%@ Import Namespace="DMI.NET" %>
 <%@ Import Namespace="HR.Intranet.Server" %>
 <%@ Import Namespace="System.Data.SqlClient" %>
@@ -28,7 +30,7 @@
 
 		function util_test_expression_pval_onload() {
 
-			window.parent.OpenHR.setDatepickerLanguage();
+		    window.parent.OpenHR.setDatepickerLanguage();
 	
 			$(".datepicker").datepicker();
 			$(document).on('keydown', '.datepicker', function (event) {
@@ -358,7 +360,7 @@
 	Dim sValueCharacter As String
 	Dim dblValueNumeric As Double
 	Dim fValueLogic As Boolean
-	Dim dtValueDate As String
+    Dim dtValueDate As Date
 	Dim iPromptDateType As Integer
 	Dim iCharIndex As Integer
 	Dim iParameterIndex As Integer
@@ -422,190 +424,192 @@
 						dblValueNumeric = IIf(Left(sPrompts, iCharIndex - 1) = "", 0, Left(sPrompts, iCharIndex - 1))
 					Case 11
 						fValueLogic = IIf(Left(sPrompts, iCharIndex - 1) = "", False, Left(sPrompts, iCharIndex - 1))
-					Case 12
-						dtValueDate = Left(sPrompts, iCharIndex - 1)
-					Case 13
-						iParameterIndex = 0
-						iPromptDateType = IIf(Left(sPrompts, iCharIndex - 1) = "", 0, Left(sPrompts, iCharIndex - 1))
+                    Case 12
+                        sTemp = Left(sPrompts, iCharIndex - 1)
+                        If sTemp = "null" Or sTemp = "12/30/1899" Then
+                            dtValueDate = Nothing
+                        Else
+                            dtValueDate = DateTime.Parse(Left(sPrompts, iCharIndex - 1), CultureInfo.CreateSpecificCulture("en-US"))
+                        End If
+                    Case 13
+                        iParameterIndex = 0
+                        iPromptDateType = IIf(Left(sPrompts, iCharIndex - 1) = "", 0, Left(sPrompts, iCharIndex - 1))
 						
-						' Got all of the required prompt paramters, so display it.
-						iPromptCount = iPromptCount + 1
-						Response.Write("    <tr>" & vbCrLf)
-						Response.Write("      <td width='20'></td>" & vbCrLf)
-						Response.Write("      <td>" & vbCrLf)
+                        ' Got all of the required prompt paramters, so display it.
+                        iPromptCount = iPromptCount + 1
+                        Response.Write("    <tr>" & vbCrLf)
+                        Response.Write("      <td width='20'></td>" & vbCrLf)
+                        Response.Write("      <td>" & vbCrLf)
 						
-						If iValueType = 3 Then
-							Response.Write("      <label " & vbCrLf)
-							Response.Write("      for='prompt_3_" & sNodeKey & "'" & vbCrLf)
-							Response.Write("      class='checkbox'" & vbCrLf)
-							Response.Write("      tabindex='0' >" & vbCrLf)
-						End If
+                        If iValueType = 3 Then
+                            Response.Write("      <label " & vbCrLf)
+                            Response.Write("      for='prompt_3_" & sNodeKey & "'" & vbCrLf)
+                            Response.Write("      class='checkbox'" & vbCrLf)
+                            Response.Write("      tabindex='0' >" & vbCrLf)
+                        End If
 						
-						Response.Write("      " & sPromptDescription & vbCrLf)
+                        Response.Write("      " & sPromptDescription & vbCrLf)
 
-						If iValueType = 3 Then
-							Response.Write("</label>" & vbCrLf)
-						End If
+                        If iValueType = 3 Then
+                            Response.Write("</label>" & vbCrLf)
+                        End If
 						
-						Response.Write("      </td>" & vbCrLf)
-						Response.Write("      <td width='20'></td>" & vbCrLf)
-						Response.Write("      <td width='200'>" & vbCrLf)
+                        Response.Write("      </td>" & vbCrLf)
+                        Response.Write("      <td width='20'></td>" & vbCrLf)
+                        Response.Write("      <td width='200'>" & vbCrLf)
 
-						' Character Prompted Value
-						If iValueType = "1" Then
-							Response.Write("        <input type='text' class='text' id='prompt_1_" & sNodeKey & "' name='prompt_1_" & sNodeKey & "' value='" & Replace(sValueCharacter, """", "&quot;") & "' maxlength='" & iPromptSize & "' style='width: 100%'>" & vbCrLf)
-							Response.Write("        <input type='hidden' id='PROMPTMASK_" & sNodeKey & "' name='PROMPTMASK_" & sNodeKey & "' value='" & Replace(sPromptMask, """", "&quot;") & "'>" & vbCrLf)
+                        ' Character Prompted Value
+                        If iValueType = "1" Then
+                            Response.Write("        <input type='text' class='text' id='prompt_1_" & sNodeKey & "' name='prompt_1_" & sNodeKey & "' value='" & Replace(sValueCharacter, """", "&quot;") & "' maxlength='" & iPromptSize & "' style='width: 100%'>" & vbCrLf)
+                            Response.Write("        <input type='hidden' id='PROMPTMASK_" & sNodeKey & "' name='PROMPTMASK_" & sNodeKey & "' value='" & Replace(sPromptMask, """", "&quot;") & "'>" & vbCrLf)
 
-							' Numeric Prompted Value
-						ElseIf iValueType = 2 Then
-							Response.Write("        <input type='text' class='text' id='prompt_2_" & sNodeKey & "' name='prompt_2_" & sNodeKey & "' value='" & Replace(dblValueNumeric, ".", Session("LocaleDecimalSeparator")) & "' style='width: 100%'>" & vbCrLf)
-							Response.Write("        <input type='hidden' id='promptSize_" & sNodeKey & "' name='promptSize_" & sNodeKey & "' value='" & iPromptSize & "'>" & vbCrLf)
-							Response.Write("        <input type='hidden' id='promptDecs_" & sNodeKey & "' name='promptDecs_" & sNodeKey & "' value='" & iPromptDecimals & "'>" & vbCrLf)
+                            ' Numeric Prompted Value
+                        ElseIf iValueType = 2 Then
+                            Response.Write("        <input type='text' class='text' id='prompt_2_" & sNodeKey & "' name='prompt_2_" & sNodeKey & "' value='" & Replace(dblValueNumeric, ".", Session("LocaleDecimalSeparator")) & "' style='width: 100%'>" & vbCrLf)
+                            Response.Write("        <input type='hidden' id='promptSize_" & sNodeKey & "' name='promptSize_" & sNodeKey & "' value='" & iPromptSize & "'>" & vbCrLf)
+                            Response.Write("        <input type='hidden' id='promptDecs_" & sNodeKey & "' name='promptDecs_" & sNodeKey & "' value='" & iPromptDecimals & "'>" & vbCrLf)
 
-							' Logic Prompted Value
-						ElseIf iValueType = 3 Then
-							Response.Write("        <input type='checkbox' id='prompt_3_" & sNodeKey & "' name='prompt_3_" & sNodeKey & "'" & vbCrLf)
-							Response.Write("            onclick=""checkboxClick('" & sNodeKey & "')""" & vbCrLf)
-							If fValueLogic Then
-								Response.Write(" checked/>" & vbCrLf)
-							Else
-								Response.Write("/>" & vbCrLf)
-							End If
+                            ' Logic Prompted Value
+                        ElseIf iValueType = 3 Then
+                            Response.Write("        <input type='checkbox' id='prompt_3_" & sNodeKey & "' name='prompt_3_" & sNodeKey & "'" & vbCrLf)
+                            Response.Write("            onclick=""checkboxClick('" & sNodeKey & "')""" & vbCrLf)
+                            If fValueLogic Then
+                                Response.Write(" checked/>" & vbCrLf)
+                            Else
+                                Response.Write("/>" & vbCrLf)
+                            End If
 							
-							Response.Write("        <input type='hidden' id='promptChk_" & sNodeKey & "' name='promptChk_" & sNodeKey & "' value='")
-							If fValueLogic Then
-								Response.Write("TRUE'>" & vbCrLf)
-							Else
-								Response.Write("FALSE'>" & vbCrLf)
-							End If
+                            Response.Write("        <input type='hidden' id='promptChk_" & sNodeKey & "' name='promptChk_" & sNodeKey & "' value='")
+                            If fValueLogic Then
+                                Response.Write("TRUE'>" & vbCrLf)
+                            Else
+                                Response.Write("FALSE'>" & vbCrLf)
+                            End If
 							 
-							' Date Prompted Value
-						ElseIf iValueType = 4 Then
-							Response.Write("        <input type='text' class='datepicker' id='prompt_4_" & sNodeKey & "' name='prompt_4_" & sNodeKey & "' value='")
-							Select Case iPromptDateType
-								Case 0
-									' Explicit value
-									If (dtValueDate <> "12/30/1899") Then
-										Response.Write(convertSQLDateToLocale(dtValueDate))
-									End If
-								Case 1
-									' Current date
-									sTemp = convertDateToSQLDate(Date.Now)
-									Response.Write(convertSQLDateToLocale(sTemp))
-								Case 2
-									' Start of current month
-									iDay = (Day(Date.Now) * -1) + 1
-									dtDate = DateAdd("d", iDay, Date.Now)
-									sTemp = convertDateToSQLDate(dtDate)
-									Response.Write(convertSQLDateToLocale(sTemp))
-								Case 3
-									' End of current month
-									iDay = (Day(Date.Now) * -1) + 1
-									dtDate = DateAdd("d", iDay, Date.Now)
-									dtDate = DateAdd("m", 1, dtDate)
-									dtDate = DateAdd("d", -1, dtDate)
-									sTemp = convertDateToSQLDate(dtDate)
-									Response.Write(convertSQLDateToLocale(sTemp))
-								Case 4
-									' Start of current year
-									iDay = (Day(Date.Now) * -1) + 1
-									iMonth = (Month(Date.Now) * -1) + 1
-									dtDate = DateAdd("d", iDay, Date.Now)
-									dtDate = DateAdd("m", iMonth, dtDate)
-									sTemp = convertDateToSQLDate(dtDate)
-									Response.Write(convertSQLDateToLocale(sTemp))
-								Case 5
-									' End of current year
-									iDay = (Day(Date.Now) * -1) + 1
-									iMonth = (Month(Date.Now) * -1) + 1
-									dtDate = DateAdd("d", iDay, Date.Now)
-									dtDate = DateAdd("m", iMonth, dtDate)
-									dtDate = DateAdd("yyyy", 1, dtDate)
-									dtDate = DateAdd("d", -1, dtDate)
-									sTemp = convertDateToSQLDate(dtDate)
-									Response.Write(convertSQLDateToLocale(sTemp))
-							End Select
-							Response.Write("' style='width: 100%'>" & vbCrLf)
+                            ' Date Prompted Value
+                        ElseIf iValueType = 4 Then
+                            Response.Write("        <input type='text' class='datepicker' id='prompt_4_" & sNodeKey & "' name='prompt_4_" & sNodeKey & "' value='")
+                                                        
+                            Select Case iPromptDateType
+                                Case 0
+                                    ' Explicit value
+                                    If Not dtValueDate = Nothing Then
+                                        Response.Write(ConvertSQLDateToLocale(dtValueDate))
+                                    End If
+                                    
+                                Case 1
+                                    ' Current date
+                                    Response.Write(ConvertSQLDateToLocale(Date.Now))
+                                Case 2
+                                    ' Start of current month
+                                    iDay = (Day(Date.Now) * -1) + 1
+                                    dtDate = DateAdd("d", iDay, Date.Now)
+                                    Response.Write(ConvertSQLDateToLocale(dtDate))
+                                Case 3
+                                    ' End of current month
+                                    iDay = (Day(Date.Now) * -1) + 1
+                                    dtDate = DateAdd("d", iDay, Date.Now)
+                                    dtDate = DateAdd("m", 1, dtDate)
+                                    dtDate = DateAdd("d", -1, dtDate)
+                                    Response.Write(ConvertSQLDateToLocale(dtDate))
+                                Case 4
+                                    ' Start of current year
+                                    iDay = (Day(Date.Now) * -1) + 1
+                                    iMonth = (Month(Date.Now) * -1) + 1
+                                    dtDate = DateAdd("d", iDay, Date.Now)
+                                    dtDate = DateAdd("m", iMonth, dtDate)
+                                    Response.Write(ConvertSQLDateToLocale(dtDate))
+                                Case 5
+                                    ' End of current year
+                                    iDay = (Day(Date.Now) * -1) + 1
+                                    iMonth = (Month(Date.Now) * -1) + 1
+                                    dtDate = DateAdd("d", iDay, Date.Now)
+                                    dtDate = DateAdd("m", iMonth, dtDate)
+                                    dtDate = DateAdd("yyyy", 1, dtDate)
+                                    dtDate = DateAdd("d", -1, dtDate)
+                                    Response.Write(ConvertSQLDateToLocale(dtDate))
+                            End Select
+                            Response.Write("' style='width: 100%'>" & vbCrLf)
 
-							' Lookup Prompted Value
-						ElseIf iValueType = 5 Then
-							Response.Write("        <select id='promptLookup_" & sNodeKey & "' class='combo' name='promptLookup_" & sNodeKey & "' style='width: 100%' onchange=""comboChange('" & sNodeKey & "')"">" & vbCrLf)
+                            ' Lookup Prompted Value
+                        ElseIf iValueType = 5 Then
+                            Response.Write("        <select id='promptLookup_" & sNodeKey & "' class='combo' name='promptLookup_" & sNodeKey & "' style='width: 100%' onchange=""comboChange('" & sNodeKey & "')"">" & vbCrLf)
 
-							fDefaultFound = False
-							fFirstValueDone = False
-							sFirstValue = ""
+                            fDefaultFound = False
+                            fFirstValueDone = False
+                            sFirstValue = ""
 
-							' Get the lookup values.
-							rstLookupValues = ASRIntranetFunctions.GetLookupValues(CInt(CleanNumeric(lngColumnID)))
-							For Each rowLookupValues In rstLookupValues.Rows
-								Response.Write("          <option")
+                            ' Get the lookup values.
+                            rstLookupValues = ASRIntranetFunctions.GetLookupValues(CInt(CleanNumeric(lngColumnID)))
+                            For Each rowLookupValues In rstLookupValues.Rows
+                                Response.Write("          <option")
 
-								If Not fFirstValueDone Then
-									sFirstValue = rowLookupValues(0).ToString
-									fFirstValueDone = True
-								End If
+                                If Not fFirstValueDone Then
+                                    sFirstValue = rowLookupValues(0).ToString
+                                    fFirstValueDone = True
+                                End If
 								
-								If rstLookupValues.Columns(0).DataType = GetType(System.DateTime) Then
-									' Field is a date so format as such.
-									sOptionValue = convertSQLDateToLocale2(rowLookupValues(0).ToString)
-									If sOptionValue = ConvertSQLDateToLocale(sValueCharacter) Then
-										Response.Write(" selected")
-										fDefaultFound = True
-									End If
-									Response.Write(">" & sOptionValue & "</option>" & vbCrLf)
-								ElseIf GeneralUtilities.IsDataColumnDecimal(rstLookupValues.Columns(0)) Then
-									' Field is a numeric so format as such.
-									sOptionValue = Replace(rowLookupValues(0).ToString, ".", Session("LocaleDecimalSeparator"))
-									If (Not IsDBNull(rowLookupValues(0).ToString)) And (Not IsDBNull(sValueCharacter)) Then
-										If FormatNumber(rowLookupValues(0).ToString) = FormatNumber(sValueCharacter) Then
-											Response.Write(" selected")
-											fDefaultFound = True
-										End If
-									End If
-									Response.Write(">" & sOptionValue & "</option>" & vbCrLf)
-								ElseIf rstLookupValues.Columns(0).DataType = GetType(System.Boolean) Then
-									' Field is a logic so format as such.
-									sOptionValue = rowLookupValues(0).ToString
-									If sOptionValue = sValueCharacter Then
-										Response.Write(" selected")
-										fDefaultFound = True
-									End If
-									Response.Write(">" & sOptionValue & "</option>" & vbCrLf)
-								Else
-									sOptionValue = RTrim(rowLookupValues(0).ToString)
-									If sOptionValue = sValueCharacter Then
-										Response.Write(" selected")
-										fDefaultFound = True
-									End If
-									Response.Write(">" & sOptionValue & "</option>" & vbCrLf)
-								End If
-							Next
+                                If rstLookupValues.Columns(0).DataType = GetType(System.DateTime) Then
+                                    ' Field is a date so format as such.
+                                    sOptionValue = ConvertSQLDateToLocale(rowLookupValues(0).ToString)
+                                    If sOptionValue = ConvertSQLDateToLocale(sValueCharacter) Then
+                                        Response.Write(" selected")
+                                        fDefaultFound = True
+                                    End If
+                                    Response.Write(">" & sOptionValue & "</option>" & vbCrLf)
+                                ElseIf GeneralUtilities.IsDataColumnDecimal(rstLookupValues.Columns(0)) Then
+                                    ' Field is a numeric so format as such.
+                                    sOptionValue = Replace(rowLookupValues(0).ToString, ".", Session("LocaleDecimalSeparator"))
+                                    If (Not IsDBNull(rowLookupValues(0).ToString)) And (Not IsDBNull(sValueCharacter)) Then
+                                        If FormatNumber(rowLookupValues(0).ToString) = FormatNumber(sValueCharacter) Then
+                                            Response.Write(" selected")
+                                            fDefaultFound = True
+                                        End If
+                                    End If
+                                    Response.Write(">" & sOptionValue & "</option>" & vbCrLf)
+                                ElseIf rstLookupValues.Columns(0).DataType = GetType(System.Boolean) Then
+                                    ' Field is a logic so format as such.
+                                    sOptionValue = rowLookupValues(0).ToString
+                                    If sOptionValue = sValueCharacter Then
+                                        Response.Write(" selected")
+                                        fDefaultFound = True
+                                    End If
+                                    Response.Write(">" & sOptionValue & "</option>" & vbCrLf)
+                                Else
+                                    sOptionValue = RTrim(rowLookupValues(0).ToString)
+                                    If sOptionValue = sValueCharacter Then
+                                        Response.Write(" selected")
+                                        fDefaultFound = True
+                                    End If
+                                    Response.Write(">" & sOptionValue & "</option>" & vbCrLf)
+                                End If
+                            Next
 
-							Response.Write("        </select>" & vbCrLf)
+                            Response.Write("        </select>" & vbCrLf)
 
-							If fDefaultFound Then
-								sDefaultValue = sValueCharacter
-							Else
-								sDefaultValue = sFirstValue
-							End If
+                            If fDefaultFound Then
+                                sDefaultValue = sValueCharacter
+                            Else
+                                sDefaultValue = sFirstValue
+                            End If
 
-							If rstLookupValues.Columns(0).DataType = GetType(System.DateTime) Then
-								' Date.
-								Response.Write("        <input type='hidden' id='prompt_4_" & sNodeKey & "' name='prompt_4_" & sNodeKey & "' value='" & ConvertSQLDateToLocale(sDefaultValue) & "'>" & vbCrLf)
-							ElseIf GeneralUtilities.IsDataColumnDecimal(rstLookupValues.Columns(0)) Then
-								' Numeric
-								Response.Write("        <input type='hidden' id='prompt_2_" & sNodeKey & "' name='prompt_2_" & sNodeKey & "' value='" & Replace(sDefaultValue, ".", Session("LocaleDecimalSeparator")) & "'>" & vbCrLf)
-							ElseIf rstLookupValues.Columns(0).DataType = GetType(System.Boolean) Then
-								' Logic
-								Response.Write("        <input type='hidden' id='prompt_3_" & sNodeKey & "' name='prompt_3_" & sNodeKey & "' value='" & sDefaultValue & "'>" & vbCrLf)
-							Else
-								Response.Write("        <input type='hidden' id='prompt_1_" & sNodeKey & "' name='prompt_1_" & sNodeKey & "' value='" & Replace(sDefaultValue, """", "&quot;") & "'>" & vbCrLf)
-							End If
-						End If
-						Response.Write("					</td>" & vbCrLf)
-						Response.Write("					<td width='20' height='10'></td>" & vbCrLf)
-						Response.Write("				</tr>" & vbCrLf)
-				End Select
+                            If rstLookupValues.Columns(0).DataType = GetType(System.DateTime) Then
+                                ' Date.
+                                Response.Write("        <input type='hidden' id='prompt_4_" & sNodeKey & "' name='prompt_4_" & sNodeKey & "' value='" & ConvertSQLDateToLocale(sDefaultValue) & "'>" & vbCrLf)
+                            ElseIf GeneralUtilities.IsDataColumnDecimal(rstLookupValues.Columns(0)) Then
+                                ' Numeric
+                                Response.Write("        <input type='hidden' id='prompt_2_" & sNodeKey & "' name='prompt_2_" & sNodeKey & "' value='" & Replace(sDefaultValue, ".", Session("LocaleDecimalSeparator")) & "'>" & vbCrLf)
+                            ElseIf rstLookupValues.Columns(0).DataType = GetType(System.Boolean) Then
+                                ' Logic
+                                Response.Write("        <input type='hidden' id='prompt_3_" & sNodeKey & "' name='prompt_3_" & sNodeKey & "' value='" & sDefaultValue & "'>" & vbCrLf)
+                            Else
+                                Response.Write("        <input type='hidden' id='prompt_1_" & sNodeKey & "' name='prompt_1_" & sNodeKey & "' value='" & Replace(sDefaultValue, """", "&quot;") & "'>" & vbCrLf)
+                            End If
+                        End If
+                        Response.Write("					</td>" & vbCrLf)
+                        Response.Write("					<td width='20' height='10'></td>" & vbCrLf)
+                        Response.Write("				</tr>" & vbCrLf)
+                End Select
 
 				sPrompts = Mid(sPrompts, iCharIndex + 1)
 			End If
@@ -693,31 +697,31 @@
 									If Not IsDBNull(rowPromptedValues1("valuedate").ToString) Then
 										If (CStr(rowPromptedValues1("valuedate").ToString) <> "00:00:00") And _
 												(CStr(rowPromptedValues1("valuedate").ToString) <> "12:00:00 AM") Then
-											Response.Write(convertSQLDateToLocale2(rowPromptedValues1("valuedate").ToString))
+                                            Response.Write(ConvertSQLDateToLocale(rowPromptedValues1("valuedate").ToString))
 										End If
 									End If
 								Case 1
 									' Current date
-									Response.Write(convertSQLDateToLocale2(Date.Now))
+                                    Response.Write(ConvertSQLDateToLocale(Date.Now))
 								Case 2
 									' Start of current month
 									iDay = (Day(Date.Now) * -1) + 1
 									dtDate = DateAdd("d", iDay, Date.Now)
-									Response.Write(convertSQLDateToLocale2(dtDate))
+                                    Response.Write(ConvertSQLDateToLocale(dtDate))
 								Case 3
 									' End of current month
 									iDay = (Day(Date.Now) * -1) + 1
 									dtDate = DateAdd("d", iDay, Date.Now)
 									dtDate = DateAdd("m", 1, dtDate)
 									dtDate = DateAdd("d", -1, dtDate)
-									Response.Write(convertSQLDateToLocale2(dtDate))
+                                    Response.Write(ConvertSQLDateToLocale(dtDate))
 								Case 4
 									' Start of current year
 									iDay = (Day(Date.Now) * -1) + 1
 									iMonth = (Month(Date.Now) * -1) + 1
 									dtDate = DateAdd("d", iDay, Date.Now)
 									dtDate = DateAdd("m", iMonth, dtDate)
-									Response.Write(convertSQLDateToLocale2(dtDate))
+                                    Response.Write(ConvertSQLDateToLocale(dtDate))
 								Case 5
 									' End of current year
 									iDay = (Day(Date.Now) * -1) + 1
@@ -726,7 +730,7 @@
 									dtDate = DateAdd("m", iMonth, dtDate)
 									dtDate = DateAdd("yyyy", 1, dtDate)
 									dtDate = DateAdd("d", -1, dtDate)
-									Response.Write(convertSQLDateToLocale2(dtDate))
+                                    Response.Write(ConvertSQLDateToLocale(dtDate))
 							End Select
 							Response.Write("' style='width: 100%'>" & vbCrLf)
 
@@ -751,11 +755,11 @@
 
 								If rstLookupValues.Columns(0).DataType = GetType(System.DateTime) Then
 									' Field is a date so format as such.
-									sOptionValue = convertSQLDateToLocale2(rowLookupValues(0).ToString)
-									If sOptionValue = convertSQLDateToLocale2(rowPromptedValues1("valuecharacter").ToString) Then
-										Response.Write(" selected")
-										fDefaultFound = True
-									End If
+                                    sOptionValue = ConvertSQLDateToLocale(rowLookupValues(0).ToString)
+                                    If sOptionValue = ConvertSQLDateToLocale(rowPromptedValues1("valuecharacter").ToString) Then
+                                        Response.Write(" selected")
+                                        fDefaultFound = True
+                                    End If
 									Response.Write(">" & sOptionValue & "</option>" & vbCrLf)
 								ElseIf GeneralUtilities.IsDataColumnDecimal(rstLookupValues.Columns(0)) Then
 									' Field is a numeric so format as such.
@@ -868,191 +872,128 @@
 
 <script runat="server" language="vb">
 
-	Function promptParameter(psDefnString As String, psParameter As String) As String
-		Dim iCharIndex As Integer
-		Dim sDefn As String
+    Function promptParameter(psDefnString As String, psParameter As String) As String
+        
+        Dim iCharIndex As Integer
+        Dim sDefn As String
 	
-		sDefn = psDefnString
+        sDefn = psDefnString
 
-		iCharIndex = InStr(sDefn, "	")
-		If iCharIndex >= 0 Then
-			If psParameter = "NODEKEY" Then
-				promptParameter = Left(sDefn, iCharIndex - 1)
-				Exit Function
-			End If
+        iCharIndex = InStr(sDefn, "	")
+        If iCharIndex >= 0 Then
+            If psParameter = "NODEKEY" Then
+                promptParameter = Left(sDefn, iCharIndex - 1)
+                Exit Function
+            End If
 		
-			sDefn = Mid(sDefn, iCharIndex + 1)
-			iCharIndex = InStr(sDefn, "	")
-			If iCharIndex >= 0 Then
-				If psParameter = "PROMPTDESCRIPTION" Then
-					promptParameter = Left(sDefn, iCharIndex - 1)
-					Exit Function
-				End If
+            sDefn = Mid(sDefn, iCharIndex + 1)
+            iCharIndex = InStr(sDefn, "	")
+            If iCharIndex >= 0 Then
+                If psParameter = "PROMPTDESCRIPTION" Then
+                    promptParameter = Left(sDefn, iCharIndex - 1)
+                    Exit Function
+                End If
 			
-				sDefn = Mid(sDefn, iCharIndex + 1)
-				iCharIndex = InStr(sDefn, "	")
-				If iCharIndex >= 0 Then
-					If psParameter = "VALUETYPE" Then
-						promptParameter = Left(sDefn, iCharIndex - 1)
-						Exit Function
-					End If
+                sDefn = Mid(sDefn, iCharIndex + 1)
+                iCharIndex = InStr(sDefn, "	")
+                If iCharIndex >= 0 Then
+                    If psParameter = "VALUETYPE" Then
+                        promptParameter = Left(sDefn, iCharIndex - 1)
+                        Exit Function
+                    End If
 				
-					sDefn = Mid(sDefn, iCharIndex + 1)
-					iCharIndex = InStr(sDefn, "	")
-					If iCharIndex >= 0 Then
-						If psParameter = "PROMPTSIZE" Then
-							promptParameter = Left(sDefn, iCharIndex - 1)
-							Exit Function
-						End If
+                    sDefn = Mid(sDefn, iCharIndex + 1)
+                    iCharIndex = InStr(sDefn, "	")
+                    If iCharIndex >= 0 Then
+                        If psParameter = "PROMPTSIZE" Then
+                            promptParameter = Left(sDefn, iCharIndex - 1)
+                            Exit Function
+                        End If
 					
-						sDefn = Mid(sDefn, iCharIndex + 1)
-						iCharIndex = InStr(sDefn, "	")
-						If iCharIndex >= 0 Then
-							If psParameter = "PROMPTDECIMALS" Then
-								promptParameter = Left(sDefn, iCharIndex - 1)
-								Exit Function
-							End If
+                        sDefn = Mid(sDefn, iCharIndex + 1)
+                        iCharIndex = InStr(sDefn, "	")
+                        If iCharIndex >= 0 Then
+                            If psParameter = "PROMPTDECIMALS" Then
+                                promptParameter = Left(sDefn, iCharIndex - 1)
+                                Exit Function
+                            End If
 						
-							sDefn = Mid(sDefn, iCharIndex + 1)
-							iCharIndex = InStr(sDefn, "	")
-							If iCharIndex >= 0 Then
-								If psParameter = "PROMPTMASK" Then
-									promptParameter = Left(sDefn, iCharIndex - 1)
-									Exit Function
-								End If
+                            sDefn = Mid(sDefn, iCharIndex + 1)
+                            iCharIndex = InStr(sDefn, "	")
+                            If iCharIndex >= 0 Then
+                                If psParameter = "PROMPTMASK" Then
+                                    promptParameter = Left(sDefn, iCharIndex - 1)
+                                    Exit Function
+                                End If
 							
-								sDefn = Mid(sDefn, iCharIndex + 1)
-								iCharIndex = InStr(sDefn, "	")
-								If iCharIndex >= 0 Then
-									If psParameter = "FIELDTABLEID" Then
-										promptParameter = Left(sDefn, iCharIndex - 1)
-										Exit Function
-									End If
+                                sDefn = Mid(sDefn, iCharIndex + 1)
+                                iCharIndex = InStr(sDefn, "	")
+                                If iCharIndex >= 0 Then
+                                    If psParameter = "FIELDTABLEID" Then
+                                        promptParameter = Left(sDefn, iCharIndex - 1)
+                                        Exit Function
+                                    End If
 								
-									sDefn = Mid(sDefn, iCharIndex + 1)
-									iCharIndex = InStr(sDefn, "	")
-									If iCharIndex >= 0 Then
-										If psParameter = "FIELDCOLUMNID" Then
-											promptParameter = Left(sDefn, iCharIndex - 1)
-											Exit Function
-										End If
+                                    sDefn = Mid(sDefn, iCharIndex + 1)
+                                    iCharIndex = InStr(sDefn, "	")
+                                    If iCharIndex >= 0 Then
+                                        If psParameter = "FIELDCOLUMNID" Then
+                                            promptParameter = Left(sDefn, iCharIndex - 1)
+                                            Exit Function
+                                        End If
 									
-										sDefn = Mid(sDefn, iCharIndex + 1)
-										iCharIndex = InStr(sDefn, "	")
-										If iCharIndex >= 0 Then
-											If psParameter = "VALUECHARACTER" Then
-												promptParameter = Left(sDefn, iCharIndex - 1)
-												Exit Function
-											End If
+                                        sDefn = Mid(sDefn, iCharIndex + 1)
+                                        iCharIndex = InStr(sDefn, "	")
+                                        If iCharIndex >= 0 Then
+                                            If psParameter = "VALUECHARACTER" Then
+                                                promptParameter = Left(sDefn, iCharIndex - 1)
+                                                Exit Function
+                                            End If
 										
-											sDefn = Mid(sDefn, iCharIndex + 1)
-											iCharIndex = InStr(sDefn, "	")
-											If iCharIndex >= 0 Then
-												If psParameter = "VALUENUMERIC" Then
-													promptParameter = Left(sDefn, iCharIndex - 1)
-													Exit Function
-												End If
+                                            sDefn = Mid(sDefn, iCharIndex + 1)
+                                            iCharIndex = InStr(sDefn, "	")
+                                            If iCharIndex >= 0 Then
+                                                If psParameter = "VALUENUMERIC" Then
+                                                    promptParameter = Left(sDefn, iCharIndex - 1)
+                                                    Exit Function
+                                                End If
 											
-												sDefn = Mid(sDefn, iCharIndex + 1)
-												iCharIndex = InStr(sDefn, "	")
-												If iCharIndex >= 0 Then
-													If psParameter = "VALUELOGIC" Then
-														promptParameter = Left(sDefn, iCharIndex - 1)
-														Exit Function
-													End If
+                                                sDefn = Mid(sDefn, iCharIndex + 1)
+                                                iCharIndex = InStr(sDefn, "	")
+                                                If iCharIndex >= 0 Then
+                                                    If psParameter = "VALUELOGIC" Then
+                                                        promptParameter = Left(sDefn, iCharIndex - 1)
+                                                        Exit Function
+                                                    End If
 												
-													sDefn = Mid(sDefn, iCharIndex + 1)
-													iCharIndex = InStr(sDefn, "	")
-													If iCharIndex >= 0 Then
-														If psParameter = "VALUEDATE" Then
-															promptParameter = Left(sDefn, iCharIndex - 1)
-															Exit Function
-														End If
+                                                    sDefn = Mid(sDefn, iCharIndex + 1)
+                                                    iCharIndex = InStr(sDefn, "	")
+                                                    If iCharIndex >= 0 Then
+                                                        If psParameter = "VALUEDATE" Then
+                                                            promptParameter = Left(sDefn, iCharIndex - 1)
+                                                            Exit Function
+                                                        End If
 													
-														sDefn = Mid(sDefn, iCharIndex + 1)
-														If psParameter = "PROMPTDATETYPE" Then
-															promptParameter = Left(sDefn, iCharIndex - 1)
-															Exit Function
-														End If
-													End If
-												End If
-											End If
-										End If
-									End If
-								End If
-							End If
-						End If
-					End If
-				End If
-			End If
-		End If
+                                                        sDefn = Mid(sDefn, iCharIndex + 1)
+                                                        If psParameter = "PROMPTDATETYPE" Then
+                                                            promptParameter = Left(sDefn, iCharIndex - 1)
+                                                            Exit Function
+                                                        End If
+                                                    End If
+                                                End If
+                                            End If
+                                        End If
+                                    End If
+                                End If
+                            End If
+                        End If
+                    End If
+                End If
+            End If
+        End If
 	
-		promptParameter = ""
-	End Function
-
-	Function convertDateToSQLDate(pdtDate) As String
-		Dim iDays As Integer
-		Dim iMonths As Integer
-		Dim iYears As Integer
-		Dim sResult As String
-	
-		sResult = ""
-		iDays = Day(pdtDate)
-		iMonths = Month(pdtDate)
-		iYears = Year(pdtDate)
-
-		If iMonths < 10 Then
-			sResult = "0"
-		End If
-		sResult = sResult & iMonths & "/"
-	
-		If iDays < 10 Then
-			sResult = sResult & "0"
-		End If
-		sResult = sResult & iDays & "/" & iYears
-	
-		convertDateToSQLDate = sResult
-	End Function
+        promptParameter = ""
+    End Function
 
 
-	Function convertSQLDateToLocale2(psDate As String) As String
-		Dim sLocaleFormat As String
-		Dim iIndex As Integer
-
-		If Len(psDate) > 0 Then
-			sLocaleFormat = Session("LocaleDateFormat")
-		
-			iIndex = InStr(sLocaleFormat, "dd")
-			If iIndex > 0 Then
-				If Day(psDate) < 10 Then
-					sLocaleFormat = Left(sLocaleFormat, iIndex - 1) & _
-						"0" & Day(psDate) & Mid(sLocaleFormat, iIndex + 2)
-				Else
-					sLocaleFormat = Left(sLocaleFormat, iIndex - 1) & _
-						Day(psDate) & Mid(sLocaleFormat, iIndex + 2)
-				End If
-			End If
-		
-			iIndex = InStr(sLocaleFormat, "mm")
-			If iIndex > 0 Then
-				If Month(psDate) < 10 Then
-					sLocaleFormat = Left(sLocaleFormat, iIndex - 1) & _
-						"0" & Month(psDate) & Mid(sLocaleFormat, iIndex + 2)
-				Else
-					sLocaleFormat = Left(sLocaleFormat, iIndex - 1) & _
-						Month(psDate) & Mid(sLocaleFormat, iIndex + 2)
-				End If
-			End If
-		
-			iIndex = InStr(sLocaleFormat, "yyyy")
-			If iIndex > 0 Then
-				sLocaleFormat = Left(sLocaleFormat, iIndex - 1) & _
-					Year(psDate) & Mid(sLocaleFormat, iIndex + 4)
-			End If
-
-			convertSQLDateToLocale2 = sLocaleFormat
-		Else
-			convertSQLDateToLocale2 = ""
-		End If
-	End Function
 </script>
