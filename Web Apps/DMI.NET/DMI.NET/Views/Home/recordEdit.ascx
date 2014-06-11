@@ -22,11 +22,9 @@
 
 	$(document).on('keydown', '.datepicker', function (event) {
 
-		var queryDate = $.datepicker.formatDate(window.LocaleDateFormat.replace("yyyy", "yy").replace(/M/g, "m"), new Date());
-
 		switch (event.keyCode) {
 			case 113:    // F2 insert todays date
-				$(this).val(queryDate);
+			    $(this).datepicker("setDate", new Date())
 				$(this).datepicker('widget').hide('true');
 				break;
 			case 37:    // LEFT --> -1 day

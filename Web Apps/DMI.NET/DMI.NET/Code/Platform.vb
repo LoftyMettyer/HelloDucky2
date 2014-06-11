@@ -51,5 +51,30 @@ Namespace Code
 
 		End Function
 
-	End Class
+        ' The stored procedures in SQL are expecting locale date formats to be passed in lowercase and double characters, i.e. mm/dd/yyyy or dd/mm/yyyy.        ' American format return as M/d/yyyy (other languages may get awkward too).        ' Ideally dates should be passed up to SQL either ready formatted or in native date objects, however that would involve changes to some pretty core parts        ' of the stored procs, so I've wrapped up the following areas to do a kind of fettling with the dateformat before sending to SQL.
+        Public Shared Function LocaleDateFormatForSQL() As String
+
+            Dim LocaleDateFormat As String = HttpContext.Current.Session("LocaleDateFormat").ToString.ToLower
+            If LocaleDateFormat.IndexOf("dd") < 0 Then
+                If LocaleDateFormat.IndexOf("d") >= 0 Then
+                    LocaleDateFormat = LocaleDateFormat.Replace("d", "dd")
+                End If
+            End If
+            If LocaleDateFormat.IndexOf("mm") < 0 Then
+                If LocaleDateFormat.IndexOf("m") >= 0 Then
+                    LocaleDateFormat = LocaleDateFormat.Replace("m", "mm")
+                End If
+            End If
+            If LocaleDateFormat.IndexOf("yyyy") < 0 Then
+                If LocaleDateFormat.IndexOf("yy") >= 0 Then
+                    LocaleDateFormat = LocaleDateFormat.Replace("yy", "yyyy")
+                End If
+            End If
+
+            Return LocaleDateFormat
+
+        End Function
+
+
+    End Class
 End Namespace

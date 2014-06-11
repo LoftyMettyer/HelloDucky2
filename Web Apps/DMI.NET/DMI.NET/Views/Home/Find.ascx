@@ -1,4 +1,5 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
+<%@ Import Namespace="DMI.NET.Code" %>
 <%@ Import Namespace="DMI.NET" %>
 <%@ Import Namespace="HR.Intranet.Server" %>
 <%@ Import Namespace="System.Data.SqlClient" %>
@@ -146,51 +147,34 @@
 						Dim prmColumnDecimals As New SqlParameter("@piColumnDecimals", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
 						Dim prmTotalRecCount As New SqlParameter("@piTotalRecCount", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
 						Dim prmFirstRecPos As New SqlParameter("@piFirstRecPos", SqlDbType.Int) With {.Direction = ParameterDirection.InputOutput, .Value = CleanNumeric(Session("firstRecPos"))}
-						
-						Dim LocaleDateFormat = Session("LocaleDateFormat").ToString.ToLower
-						If LocaleDateFormat.IndexOf("dd") < 0 Then
-							If LocaleDateFormat.IndexOf("d") >= 0 Then
-								LocaleDateFormat = LocaleDateFormat.Replace("d", "dd")
-							End If
-						End If
-						If LocaleDateFormat.IndexOf("mm") < 0 Then
-							If LocaleDateFormat.IndexOf("m") >= 0 Then
-								LocaleDateFormat = LocaleDateFormat.Replace("m", "mm")
-							End If
-						End If
-						If LocaleDateFormat.IndexOf("yyyy") < 0 Then
-							If LocaleDateFormat.IndexOf("yy") >= 0 Then
-								LocaleDateFormat = LocaleDateFormat.Replace("yy", "yyyy")
-							End If
-						End If
-						
-						SPParameters = New SqlParameter() { _
-							prmError, _
-							prmSomeSelectable, _
-							prmSomeNotSelectable, _
-							prmRealSource, _
-							prmInsertGranted, _
-							prmDeleteGranted, _
-							New SqlParameter("@piTableID", SqlDbType.Int) With {.Value = CleanNumeric(Session("tableID"))}, _
-							New SqlParameter("@piViewID", SqlDbType.Int) With {.Value = CleanNumeric(Session("viewID"))}, _
-							New SqlParameter("@piOrderID ", SqlDbType.Int) With {.Value = CleanNumeric(Session("orderID"))}, _
-							New SqlParameter("@piParentTableID", SqlDbType.Int) With {.Value = CleanNumeric(Session("parentTableID"))}, _
-							New SqlParameter("@piParentRecordID", SqlDbType.Int) With {.Value = CleanNumeric(Session("parentRecordID"))}, _
-							New SqlParameter("@psFilterDef", SqlDbType.VarChar, -1) With {.Value = Session("filterDef")}, _
-							New SqlParameter("@piRecordsRequired", SqlDbType.Int) With {.Value = iNumberOfRecords}, _
-							prmIsFirstPage, _
-							prmIsLastPage, _
-							New SqlParameter("@psLocateValue", SqlDbType.VarChar, -1) With {.Value = Session("locateValue")}, _
-							prmColumnType, _
-							prmColumnSize, _
-							prmColumnDecimals, _
-							New SqlParameter("@psAction", SqlDbType.VarChar) With {.Value = Session("action"), .Size = 255}, _
-							prmTotalRecCount, _
-							prmFirstRecPos, _
-							New SqlParameter("@piCurrentRecCount", SqlDbType.Int) With {.Value = CleanNumeric(Session("currentRecCount"))}, _
-							New SqlParameter("@psDecimalSeparator", SqlDbType.VarChar, 255) With {.Value = Session("LocaleDecimalSeparator")}, _
-							New SqlParameter("@psLocaleDateFormat", SqlDbType.VarChar, 255) With {.Value = LocaleDateFormat} _
-						}
+												
+				        SPParameters = New SqlParameter() { _
+				            prmError, _
+				            prmSomeSelectable, _
+				            prmSomeNotSelectable, _
+				            prmRealSource, _
+				            prmInsertGranted, _
+				            prmDeleteGranted, _
+				            New SqlParameter("@piTableID", SqlDbType.Int) With {.Value = CleanNumeric(Session("tableID"))}, _
+				            New SqlParameter("@piViewID", SqlDbType.Int) With {.Value = CleanNumeric(Session("viewID"))}, _
+				            New SqlParameter("@piOrderID ", SqlDbType.Int) With {.Value = CleanNumeric(Session("orderID"))}, _
+				            New SqlParameter("@piParentTableID", SqlDbType.Int) With {.Value = CleanNumeric(Session("parentTableID"))}, _
+				            New SqlParameter("@piParentRecordID", SqlDbType.Int) With {.Value = CleanNumeric(Session("parentRecordID"))}, _
+				            New SqlParameter("@psFilterDef", SqlDbType.VarChar, -1) With {.Value = Session("filterDef")}, _
+				            New SqlParameter("@piRecordsRequired", SqlDbType.Int) With {.Value = iNumberOfRecords}, _
+				            prmIsFirstPage, _
+				            prmIsLastPage, _
+				            New SqlParameter("@psLocateValue", SqlDbType.VarChar, -1) With {.Value = Session("locateValue")}, _
+				            prmColumnType, _
+				            prmColumnSize, _
+				            prmColumnDecimals, _
+				            New SqlParameter("@psAction", SqlDbType.VarChar) With {.Value = Session("action"), .Size = 255}, _
+				            prmTotalRecCount, _
+				            prmFirstRecPos, _
+				            New SqlParameter("@piCurrentRecCount", SqlDbType.Int) With {.Value = CleanNumeric(Session("currentRecCount"))}, _
+				            New SqlParameter("@psDecimalSeparator", SqlDbType.VarChar, 255) With {.Value = Session("LocaleDecimalSeparator")}, _
+				            New SqlParameter("@psLocaleDateFormat", SqlDbType.VarChar, 255) With {.Value = Platform.LocaleDateFormatForSQL()} _
+				        }
 
 						Try
 							resultDataSet = objDataAccess.GetDataSet("sp_ASRIntGetFindRecords3", SPParameters)

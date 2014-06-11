@@ -1,4 +1,5 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
+<%@ Import Namespace="DMI.NET.Code" %>
 <%@ Import Namespace="DMI.NET" %>
 <%@ Import Namespace="HR.Intranet.Server" %>
 <%@ Import Namespace="System.Data.SqlClient" %>
@@ -594,16 +595,16 @@
 		
 			Try
 							
-				Dim rstRecord = objDataAccess.GetDataTable("sp_ASRIntCalcDefaults", CommandType.StoredProcedure _
-					, prmRecordCount _
-					, New SqlParameter("psFromDef", SqlDbType.VarChar, -1) With {.Value = Session("fromDef")} _
-					, New SqlParameter("psFilterDef", SqlDbType.VarChar, -1) With {.Value = Session("filterDef")} _
-					, New SqlParameter("piTableID", SqlDbType.Int) With {.Value = CleanNumeric(Session("tableID"))} _
-					, New SqlParameter("piParentTableID", SqlDbType.Int) With {.Value = CleanNumeric(Session("parentTableID"))} _
-					, New SqlParameter("piParentRecordID", SqlDbType.Int) With {.Value = CleanNumeric(Session("parentRecordID"))} _
-					, New SqlParameter("psDefaultCalcColumns", SqlDbType.VarChar, -1) With {.Value = Session("defaultCalcColumns")} _
-					, New SqlParameter("psDecimalSeparator", SqlDbType.VarChar, 255) With {.Value = Session("LocaleDecimalSeparator")} _
-					, New SqlParameter("psLocaleDateFormat", SqlDbType.VarChar, 255) With {.Value = Session("LocaleDateFormat")})
+                Dim rstRecord = objDataAccess.GetDataTable("sp_ASRIntCalcDefaults", CommandType.StoredProcedure _
+                    , prmRecordCount _
+                    , New SqlParameter("psFromDef", SqlDbType.VarChar, -1) With {.Value = Session("fromDef")} _
+                    , New SqlParameter("psFilterDef", SqlDbType.VarChar, -1) With {.Value = Session("filterDef")} _
+                    , New SqlParameter("piTableID", SqlDbType.Int) With {.Value = CleanNumeric(Session("tableID"))} _
+                    , New SqlParameter("piParentTableID", SqlDbType.Int) With {.Value = CleanNumeric(Session("parentTableID"))} _
+                    , New SqlParameter("piParentRecordID", SqlDbType.Int) With {.Value = CleanNumeric(Session("parentRecordID"))} _
+                    , New SqlParameter("psDefaultCalcColumns", SqlDbType.VarChar, -1) With {.Value = Session("defaultCalcColumns")} _
+                    , New SqlParameter("psDecimalSeparator", SqlDbType.VarChar, 255) With {.Value = Session("LocaleDecimalSeparator")} _
+                    , New SqlParameter("psLocaleDateFormat", SqlDbType.VarChar, 255) With {.Value = Platform.LocaleDateFormatForSQL()})
 		
 				If Not rstRecord Is Nothing Then
 					If rstRecord.Rows.Count > 0 Then
@@ -677,7 +678,7 @@
 			Dim prmParentTableId = New SqlParameter("piParentTableID", SqlDbType.Int) With {.Value = CleanNumeric(Session("parentTableID"))}
 			Dim prmParentRecordId = New SqlParameter("piParentRecordID", SqlDbType.Int) With {.Value = CleanNumeric(Session("parentRecordID"))}
 			Dim prmDecSeparator = New SqlParameter("psDecimalSeparator", SqlDbType.VarChar, 100) With {.Value = Session("LocaleDecimalSeparator")}
-			Dim prmDateFormat = New SqlParameter("psLocaleDateFormat", SqlDbType.VarChar, 100) With {.Value = Session("LocaleDateFormat")}
+            Dim prmDateFormat = New SqlParameter("psLocaleDateFormat", SqlDbType.VarChar, 100) With {.Value = Platform.LocaleDateFormatForSQL()}
 			Dim prmScreenId = New SqlParameter("piScreenID", SqlDbType.Int) With {.Value = CleanNumeric(Session("screenID"))}
 			Dim prmViewId = New SqlParameter("piViewID", SqlDbType.Int) With {.Value = CleanNumeric(Session("viewID"))}
 			Dim prmOrderId = New SqlParameter("piOrderID", SqlDbType.Int) With {.Value = CleanNumeric(Session("orderID"))}

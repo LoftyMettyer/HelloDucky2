@@ -32,11 +32,10 @@
 	
 			$(".datepicker").datepicker();
 			$(document).on('keydown', '.datepicker', function (event) {
-				var queryDate = $.datepicker.formatDate(window.dialogArguments.window.LocaleDateFormat.replace("yyyy", "yy").replace("M", "m"), new Date());
 
 				switch (event.keyCode) {
 					case 113:
-						$(this).val(queryDate);
+					    $(this).datepicker("setDate", new Date())
 						$(this).datepicker('widget').hide('true');
 						break;
 				}

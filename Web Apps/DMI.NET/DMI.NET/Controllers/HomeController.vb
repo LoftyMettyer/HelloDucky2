@@ -2375,86 +2375,86 @@ Namespace Controllers
 			Return View()
 		End Function
 
-		<AcceptVerbs(HttpVerbs.Post), ValidateInput(False)> _
-		Function SendEmail() As ActionResult
+        <AcceptVerbs(HttpVerbs.Post), ValidateInput(False)> _
+        Function SendEmail() As ActionResult
 
-			Dim emailTo As String = Request.Form("To")
-			Dim emailCC As String = Request.Form("CC")
-			Dim emailBCC As String = Request.Form("BCC")
-			Dim emailSubject As String = Request.Form("Subject")
-			Dim emailBody As String = Request.Form("Body")
-			Dim returnMessage As String
+            Dim emailTo As String = Request.Form("To")
+            Dim emailCC As String = Request.Form("CC")
+            Dim emailBCC As String = Request.Form("BCC")
+            Dim emailSubject As String = Request.Form("Subject")
+            Dim emailBody As String = Request.Form("Body")
+            Dim returnMessage As String
 
-			Try
-				Dim message As New MailMessage()
-				message.Subject = emailSubject
-				message.Body = emailBody
+            Try
+                Dim message As New MailMessage()
+                message.Subject = emailSubject
+                message.Body = emailBody
 
-				If Not emailTo = "" Then
-					If emailTo.Contains(";") = True Then
+                If Not emailTo = "" Then
+                    If emailTo.Contains(";") = True Then
 
-						Dim aRecipientList = Split(emailTo, ";")
+                        Dim aRecipientList = Split(emailTo, ";")
 
-						For iLoop = 0 To UBound(aRecipientList) - 1
-							message.To.Add(aRecipientList(iLoop))
-						Next
-					Else
-						message.To.Add(emailTo)
-					End If
-				End If
+                        For iLoop = 0 To UBound(aRecipientList) - 1
+                            message.To.Add(aRecipientList(iLoop))
+                        Next
+                    Else
+                        message.To.Add(emailTo)
+                    End If
+                End If
 
-				If Not emailCC = "" Then
-					If emailCC.Contains(";") = True Then
+                If Not emailCC = "" Then
+                    If emailCC.Contains(";") = True Then
 
-						Dim aRecipientList = Split(emailCC, ";")
+                        Dim aRecipientList = Split(emailCC, ";")
 
-						For iLoop = 0 To UBound(aRecipientList) - 1
-							message.CC.Add(aRecipientList(iLoop))
-						Next
-					Else
-						message.CC.Add(emailCC)
-					End If
-				End If
+                        For iLoop = 0 To UBound(aRecipientList) - 1
+                            message.CC.Add(aRecipientList(iLoop))
+                        Next
+                    Else
+                        message.CC.Add(emailCC)
+                    End If
+                End If
 
-				If Not emailBCC = "" Then
-					If emailBCC.Contains(";") = True Then
+                If Not emailBCC = "" Then
+                    If emailBCC.Contains(";") = True Then
 
-						Dim aRecipientList = Split(emailBCC, ";")
+                        Dim aRecipientList = Split(emailBCC, ";")
 
-						For iLoop = 0 To UBound(aRecipientList) - 1
-							message.Bcc.Add(aRecipientList(iLoop))
-						Next
-					Else
-						message.Bcc.Add(emailBCC)
-					End If
-				End If
+                        For iLoop = 0 To UBound(aRecipientList) - 1
+                            message.Bcc.Add(aRecipientList(iLoop))
+                        Next
+                    Else
+                        message.Bcc.Add(emailBCC)
+                    End If
+                End If
 
-				Dim client As New SmtpClient()
+                Dim client As New SmtpClient()
 
-				client.Send(message)
+                client.Send(message)
 
-				returnMessage = "Email sent successfully"
+                returnMessage = "Email sent successfully"
 
-			Catch ex As Exception
-				' error generated - return error
-				Dim errMessage As String
-				If ex.InnerException Is Nothing Then
-					errMessage = ""
-				Else
-					errMessage = ex.InnerException.Message
-				End If
+            Catch ex As Exception
+                ' error generated - return error
+                Dim errMessage As String
+                If ex.InnerException Is Nothing Then
+                    errMessage = ""
+                Else
+                    errMessage = ex.InnerException.Message
+                End If
 
-				Dim strErrors = String.Format("The following error occured when emailing your document:" _
-					& "{0}{0}{1}{0}{0}{2}{0}{0}Please check with your administrator for further details.", "<br/>", _
-					ex.Message, errMessage)
+                Dim strErrors = String.Format("The following error occured when emailing your document:" _
+                    & "{0}{0}{1}{0}{0}{2}{0}{0}Please check with your administrator for further details.", "<br/>", _
+                    ex.Message, errMessage)
 
-				Response.StatusCode = HttpStatusCode.InternalServerError
-				returnMessage = strErrors
-			End Try
+                Response.StatusCode = HttpStatusCode.InternalServerError
+                returnMessage = strErrors
+            End Try
 
-			Return Content(returnMessage)
+            Return Content(returnMessage)
 
-		End Function
+        End Function
 
 #End Region
 
@@ -3895,15 +3895,15 @@ Namespace Controllers
 
 				Try
 
-					objDataAccess.ExecuteSP("spASRIntGetQuickFindRecord" _
-						, New SqlParameter("@plngTableID", SqlDbType.Int) With {.Value = CleanNumeric(Session("optionTableID"))} _
-						, New SqlParameter("@plngViewID", SqlDbType.Int) With {.Value = CleanNumeric(Session("optionViewID"))} _
-						, New SqlParameter("@plngColumnID", SqlDbType.Int) With {.Value = CleanNumeric(Session("optionColumnID"))} _
-						, New SqlParameter("@psValue", SqlDbType.VarChar, -1) With {.Value = sValue} _
-						, New SqlParameter("@psFilterDef", SqlDbType.VarChar, -1) With {.Value = sFilterDef} _
-						, prmResult _
-						, New SqlParameter("@psDecimalSeparator", SqlDbType.VarChar, 100) With {.Value = Session("LocaleDecimalSeparator")} _
-						, New SqlParameter("@psLocaleDateFormat", SqlDbType.VarChar, 100) With {.Value = Session("LocaleDateFormat")})
+                    objDataAccess.ExecuteSP("spASRIntGetQuickFindRecord" _
+                        , New SqlParameter("@plngTableID", SqlDbType.Int) With {.Value = CleanNumeric(Session("optionTableID"))} _
+                        , New SqlParameter("@plngViewID", SqlDbType.Int) With {.Value = CleanNumeric(Session("optionViewID"))} _
+                        , New SqlParameter("@plngColumnID", SqlDbType.Int) With {.Value = CleanNumeric(Session("optionColumnID"))} _
+                        , New SqlParameter("@psValue", SqlDbType.VarChar, -1) With {.Value = sValue} _
+                        , New SqlParameter("@psFilterDef", SqlDbType.VarChar, -1) With {.Value = sFilterDef} _
+                        , prmResult _
+                        , New SqlParameter("@psDecimalSeparator", SqlDbType.VarChar, 100) With {.Value = Session("LocaleDecimalSeparator")} _
+                        , New SqlParameter("@psLocaleDateFormat", SqlDbType.VarChar, 100) With {.Value = Platform.LocaleDateFormatForSQL()})
 
 					If (CInt(prmResult.Value) = 0) Then
 						sErrorMsg = "No records match the criteria."
