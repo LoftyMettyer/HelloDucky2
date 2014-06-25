@@ -45,9 +45,6 @@
                 <Component Id="cmp4694065D67E87E6FC07799089F4CF157" Guid="*">
                     <File Id="fil1705838E4BA562F81356911BCACC6982" KeyPath="yes" Source="SourceDir\bin\HR.Intranet.Server.dll" />
                 </Component>
-                <Component Id="cmp48B5CE506D86BF39F5848F1D62F6CFAE" Guid="*">
-                    <File Id="fil4A13ABF803EECCA5885EFAE4997322B4" KeyPath="yes" Source="SourceDir\bin\Microsoft.Web.Infrastructure.dll" />
-                </Component>
                 <Component Id="cmp703C2CA9CED6F3E7FDFB80ED8CC8013B" Guid="*">
                     <File Id="filB0554C99199765789F311022C5041355" KeyPath="yes" Source="SourceDir\bin\System.Web.Helpers.dll" />
                 </Component>
@@ -4546,7 +4543,6 @@
             <ComponentRef Id="cmp2530B8FBE234E15C0B13889033DE8E28" />
             <ComponentRef Id="cmp10FA60423FCAC54DCF6B6B7D2150784B" />
             <ComponentRef Id="cmp4694065D67E87E6FC07799089F4CF157" />
-            <ComponentRef Id="cmp48B5CE506D86BF39F5848F1D62F6CFAE" />
             <ComponentRef Id="cmp703C2CA9CED6F3E7FDFB80ED8CC8013B" />
             <ComponentRef Id="cmp5FFDB77ADD8BE767FEDFE1EB9C1D96AA" />
             <ComponentRef Id="cmp6A31FB8007844E13E98BD2057F458827" />

@@ -11,31 +11,31 @@
 	
 	<appSettings configSource="custom.config" />
 
-	<system.web>
-		<customErrors mode="Off" />
-		<compilation defaultLanguage="vb" targetFramework="4.0" batch="false">
-			<assemblies>
-				<add assembly="System.Web.Abstractions, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31BF3856AD364E35" />
-				<add assembly="System.Web.Helpers, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31BF3856AD364E35" />
-				<add assembly="System.Web.Routing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31BF3856AD364E35" />
-				<add assembly="System.Web.Mvc, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31BF3856AD364E35" />
-				<add assembly="System.Web.WebPages, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31BF3856AD364E35" />
-			</assemblies>
-		</compilation>
-		<httpRuntime requestValidationMode="2.0" />
-		<pages>
-			<namespaces>
-				<add namespace="System.Web.Helpers" />
-				<add namespace="System.Web.Mvc" />
-				<add namespace="System.Web.Mvc.Ajax" />
-				<add namespace="System.Web.Mvc.Html" />
-				<add namespace="System.Web.Routing" />
-				<add namespace="System.Web.WebPages" />
-			</namespaces>
-		</pages>
-		<authentication mode="Windows" />
-		<identity impersonate="true" />
-		<globalization culture="auto" uiCulture="auto" enableClientBasedCulture="true" />
+  <system.web>
+    <customErrors mode="Off" />
+    <compilation debug="true" defaultLanguage="vb" targetFramework="4.5.1" batch="false">
+      <assemblies>
+        <add assembly="System.Web.Abstractions, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31BF3856AD364E35" />
+        <add assembly="System.Web.Helpers, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31BF3856AD364E35" />
+        <add assembly="System.Web.Routing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31BF3856AD364E35" />
+        <add assembly="System.Web.Mvc, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31BF3856AD364E35" />
+        <add assembly="System.Web.WebPages, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31BF3856AD364E35" />
+      </assemblies>
+    </compilation>
+    <httpRuntime requestValidationMode="2.0" />
+    <pages controlRenderingCompatibilityVersion="4.0">
+      <namespaces>
+        <add namespace="System.Web.Helpers" />
+        <add namespace="System.Web.Mvc" />
+        <add namespace="System.Web.Mvc.Ajax" />
+        <add namespace="System.Web.Mvc.Html" />
+        <add namespace="System.Web.Routing" />
+        <add namespace="System.Web.WebPages" />
+      </namespaces>
+    </pages>
+    <authentication mode="Windows" />
+    <identity impersonate="true" />
+    <globalization culture="auto" uiCulture="auto" enableClientBasedCulture="true" />
 	<httpModules>
 		<add name="ErrorLog" type="Elmah.ErrorLogModule, Elmah" />
 	</httpModules>
@@ -48,18 +48,26 @@
 		<add name="ErrorMail" type="Elmah.ErrorMailModule, Elmah" preCondition="managedHandler" />
 		</modules>
 	</system.webServer>
-	<runtime>
-		<assemblyBinding xmlns="urn:schemas-microsoft-com:asm.v1">
-			<dependentAssembly>
-				<assemblyIdentity name="System.Web.Mvc" publicKeyToken="31bf3856ad364e35" />
-				<bindingRedirect oldVersion="1.0.0.0-2.0.0.0" newVersion="3.0.0.0" />
-			</dependentAssembly>
-			<dependentAssembly>
-				<assemblyIdentity name="WebGrease" publicKeyToken="31bf3856ad364e35" culture="neutral" />
-				<bindingRedirect oldVersion="0.0.0.0-1.3.0.0" newVersion="1.3.0.0" />
-			</dependentAssembly>
-		</assemblyBinding>
-	</runtime>
+  <runtime>
+    <assemblyBinding xmlns="urn:schemas-microsoft-com:asm.v1">
+      <dependentAssembly>
+        <assemblyIdentity name="WebGrease" publicKeyToken="31bf3856ad364e35" culture="neutral" />
+        <bindingRedirect oldVersion="0.0.0.0-1.3.0.0" newVersion="1.3.0.0" />
+      </dependentAssembly>
+      <dependentAssembly>
+        <assemblyIdentity name="System.Web.Helpers" publicKeyToken="31bf3856ad364e35" />
+        <bindingRedirect oldVersion="1.0.0.0-3.0.0.0" newVersion="3.0.0.0" />
+      </dependentAssembly>
+      <dependentAssembly>
+        <assemblyIdentity name="System.Web.WebPages" publicKeyToken="31bf3856ad364e35" />
+        <bindingRedirect oldVersion="1.0.0.0-3.0.0.0" newVersion="3.0.0.0" />
+      </dependentAssembly>
+      <dependentAssembly>
+        <assemblyIdentity name="System.Web.Mvc" publicKeyToken="31bf3856ad364e35" />
+        <bindingRedirect oldVersion="1.0.0.0-5.1.0.0" newVersion="5.1.0.0" />
+      </dependentAssembly>
+    </assemblyBinding>
+  </runtime>
 	<elmah>
 		<security allowRemoteAccess="true" />
 	</elmah>
@@ -81,9 +89,9 @@
 			</handlers>
 		</system.webServer>
 	</location>
-	<system.net>
-		<mailSettings>
-			<smtp configSource="smtp.config" />
-		</mailSettings>
-	</system.net>
+  <system.net>
+    <mailSettings>
+      <smtp configSource="smtp.config" />
+    </mailSettings>
+  </system.net>
 </configuration>
