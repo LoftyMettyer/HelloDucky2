@@ -25,7 +25,8 @@
 					this.hideDropDown(menu.object); }
 			},
 
-			showSplitMenu: function(triggerButton) {
+			showSplitMenu: function (triggerButton) {
+				
 				var me = $(triggerButton).parent();
 				var menu = me.data("officebar.menu");
 				if(!menu) { return; }
@@ -38,6 +39,11 @@
 				if(options.onBeforeShowSplitMenu) {
 					(options.onBeforeShowSplitMenu)(eventInfo); }
 
+				//recalculate position...(didn't work by default as the menu is hidden)
+				var meOffSet = me.offset();
+				menu.css('top', '106px');
+				menu.css('left', meOffSet.left);
+				
 				menu.show();
 				$(object).data("officebar.activeMenu", {object: menu, type: 0});
 
@@ -219,7 +225,7 @@
 					.addClass("buttonsplitmenu")
 					.css({top: pos.top, left: pos.left, display: "none"})
 					.appendTo(object)
-					.bind("click", function(e) {
+					.bind("click", function (e) {						
 						if($(e.target).parent().hasClass("resize")) return;
 							(officeBarClass.hideSplitMenu)(this);
 					})

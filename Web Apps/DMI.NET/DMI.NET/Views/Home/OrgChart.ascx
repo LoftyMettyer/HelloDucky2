@@ -20,7 +20,7 @@
 		// Common logic to show desired ribbon and menu
 		$("#workframe").attr("data-framesource", "ORGCHART");
 		showDefaultRibbon();
-		$("#toolbarHome").click();
+		menu_refreshMenu();
 
 		if ('<%=Model.any()%>' == 'False') {
 				$('#noData').show();
@@ -40,7 +40,14 @@
 
 					//If hierarchy level = 0 add to root (#org), otherwise append to previous manager's staff_number
 					var parentNode = hierarchyLevel == "0" ? 'org' : lineManagerStaffNo;
-					$('#' + parentNode).append('<li class="' + absenceTypeClass + '"><div class="jobTitle">' + employeeJobTitle + '</div><img style="width: 48px; height: 48px;" src="' + photoPath + '"/><p>' + employeeForenames + ' ' + employeeSurname + '</p><ul id="' + employeeStaffNo + '"></li>');
+					var nodeHTML = '<li class="' + absenceTypeClass + '">';	//this is converted to a div at runtime
+					nodeHTML += '<input type="checkbox" checked="checked" class="printSelect"/>';
+					nodeHTML += '<div class="jobTitle">' + employeeJobTitle + '</div>';
+					nodeHTML += '<img style="width: 48px; height: 48px;" src="' + photoPath + '"/>';
+					nodeHTML += '<p>' + employeeForenames + ' ' + employeeSurname + '</p>';
+					nodeHTML += '<ul id="' + employeeStaffNo + '">';
+					nodeHTML += '</li>';
+					$('#' + parentNode).append(nodeHTML);
 				});
 
 				//Add a class to collapse all peer trees.
@@ -71,7 +78,21 @@
 
 				$("#optionframe").hide();
 				$("#workframe").show();
-			}
+		}
+		
+		// Kill checkbox bubbling
+		$('.printSelect').click(function () { printSelectClick(this); });
+
+
+
+		//Set up print options on ribbon
+		$('.mnuBtnPrintOrgChart').click(function() { printOrgChart(true); });	// print all nodes
+		$('.mnuBtnPrintOrgChartSelected').click(function () { printOrgChart(false); }); // print selected nodes
+
+		$('.mnuBtnSelectOrgChart').click(function () {
+			//Enable org chart nodes to be selected for printing.
+			$('.printSelect').toggle();
+		});
 	});
 
 	function centreMe() {
@@ -82,6 +103,97 @@
 
 			$('#workframeset').animate({ scrollLeft: scrollLeftNewPos }, 2000);
 		} catch(e) {}
+	}
+
+
+	function printSelectClick(clickObj) {
+
+		var fChecked = $(clickObj).prop('checked');
+
+		$(clickObj).parent().parent().parent().nextAll("tr").find(".printSelect").prop('checked', fChecked);
+		if (fChecked) {
+			$(clickObj).closest('table').addClass('print');
+		} else {
+			$(clickObj).parent('table').removeClass('print');
+		}
+		
+		event.stopPropagation(); // Don't expand the node
+
+	}
+
+	function printOrgChart(fPrintAll) {
+		
+		
+
+		var divToPrint;
+		var untickedItemsCount = $('.printSelect:not(:checked)').length;
+
+		//Creates a new window, copies the required html content to it and send it to printer.
+		var newWin = window.open("", "_blank", 'toolbar=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=1, height=1, visible=none', "");
+		newWin.document.write('<link href="../Scripts/jquery/jOrgChart/css/jquery.jOrgChart.css" rel="stylesheet" />');
+		newWin.document.write('<link href="../Scripts/jquery/jOrgChart/css/custom.css" rel="stylesheet" />');
+		newWin.document.write('<link href="../Scripts/jquery/jOrgChart/css/prettify.css" rel="stylesheet" />');
+		newWin.document.write('<link href="../Content/themes/redmond-segoe/jquery-ui.min.css" rel="stylesheet" />');
+		newWin.document.write('<sty');
+		newWin.document.write('le>');
+		newWin.document.write('body {font-family: "Segoe UI", Verdana; }');
+		newWin.document.write('h2 {page-break-before: always;}');	//adds page breaks as required.
+		newWin.document.write('</sty');
+		newWin.document.write('le>');
+		newWin.document.write('<h1 style="width: 400px;">Organisation Chart</h1>');
+
+		$('.printSelect').hide();	//hide the selection tickboxes.
+
+		if ((untickedItemsCount > 0) && (fPrintAll !== true)) {
+			//Send only selected items to printer. 
+			// This is different to normal print - it includes page breaks, and expands hidden, selected nodes.
+			var pageNo = 1;
+
+			$('.print').each(function () {
+				//First expand all contracted nodes.
+				var $tr = $(this).find('tr:first');
+				if ($tr.hasClass('contracted')) {
+					$tr.removeClass('contracted').addClass('expanded');
+					$tr.nextAll("tr").show();
+					$tr.nextAll("tr").css('visibility', '');
+				}
+
+				$(this).parent().attr('id', 'currentlyPrinting');	//get a handle on the parent table.
+
+				newWin.document.write('<div class="orgChart" id="chart">');
+				newWin.document.write('<div class="jOrgChart">');
+				newWin.document.write('<table border="0">');
+				if (pageNo > 1) newWin.document.write('<h2 style="width: 400px;">Organisation Chart</h2>');
+
+				divToPrint = document.getElementById('currentlyPrinting');
+				newWin.document.write(divToPrint.innerHTML);
+
+				newWin.document.write('</table>');
+				newWin.document.write('</div>');
+				newWin.document.write('</div>');
+
+				$(this).parent().attr('id', ''); // remove handle for the next branch
+
+				pageNo += 1;
+			});
+
+			$('.printSelect').show();	// redisplay checkboxes.
+
+		} else {			
+			//print all - just grab the whole div.
+			divToPrint = document.getElementById('chart');
+			newWin.document.write(divToPrint.innerHTML);
+		}
+
+		newWin.document.write('<scri');
+		newWin.document.write('pt type="text/javascript">');
+		newWin.document.write('</scri');
+		newWin.document.write('pt>');
+		newWin.document.close();
+		newWin.focus();
+		newWin.print();
+		newWin.close();
+
 	}
 
 
@@ -112,8 +224,7 @@
 		<a href='javascript:loadPartialView("linksMain", "Home", "workframe", null);' title='Back'>
 			<i class='pageTitleIcon icon-circle-arrow-left'></i>
 		</a>
-		<span style="margin-left: 40px; margin-right: 20px" class="pageTitle" id="RecordEdit_PageTitle">Organisation Chart
-		</span>
+		<span style="margin-left: 40px; margin-right: 20px" class="pageTitle" id="RecordEdit_PageTitle">Organisation Chart</span>
 	</div>
 
 	<div id="chart" class="orgChart"></div>

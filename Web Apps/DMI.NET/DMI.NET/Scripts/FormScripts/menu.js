@@ -1235,6 +1235,22 @@ function menu_MenuClick(sTool) {
 		}
 		return false;
 	}
+	
+	if (sTool == 'mnutoolOrgChartExpand') {
+		//Expand all nodes.
+		$('.contracted').each(function() {
+			$(this).css('cursor', 'n-resize');
+			$(this).removeClass('contracted').addClass('expanded');
+			$(this).nextAll("tr").find(".node").show("blind");
+			$(this).nextAll("tr").css('visibility', '');
+			$(this).nextAll('tr').css('display', '');
+			// Update the <li> appropriately so that if the tree redraws collapsed/non-collapsed nodes
+			// maintain their appearance
+			$(this).removeClass('collapsed');
+		});
+
+		return false;
+	}
 
 	// Has the user clicked on a parent node?
 				if ($("#" + sTool).is(".jstree-closed, .jstree-open")) {
@@ -1382,6 +1398,7 @@ function showDefaultRibbon() {
 	$("#toolbarRecordFind").parent().hide();
 	$("#toolbarRecord").parent().hide();
 	$("#toolbarRecordAbsence").parent().hide();
+	$("#toolbarOrgChart").parent().hide();
 	$("#toolbarRecordQuickFind").parent().hide();
 	$("#toolbarRecordSortOrder").parent().hide();
 	$("#toolbarRecordFilter").parent().hide();
@@ -1411,7 +1428,7 @@ function showDefaultRibbon() {
 	}
 }
 
-function menu_refreshMenu() {	
+function menu_refreshMenu() {
 		// Refresh the menu.
 		var lngRecordID;
 	var sCaption;
@@ -2159,9 +2176,14 @@ function menu_refreshMenu() {
 							}
 							else {
 								if ((sCurrentWorkPage == "PCCONFIGURATION") ||
-										(sCurrentWorkPage == "CONFIGURATION")) {
-										// handled in configuration.configuration_window_onload()
-										menu_toolbarEnableItem('mnutoolSaveAdminConfig', !definitionChanged());
+									(sCurrentWorkPage == "CONFIGURATION")) {
+									// handled in configuration.configuration_window_onload()
+									menu_toolbarEnableItem('mnutoolSaveAdminConfig', !definitionChanged());
+								} else {
+									if (sCurrentWorkPage == "ORGCHART") {
+										$("#toolbarOrgChart").parent().show();
+										$("#toolbarOrgChart").click();
+									}
 								}
 						}
 					}

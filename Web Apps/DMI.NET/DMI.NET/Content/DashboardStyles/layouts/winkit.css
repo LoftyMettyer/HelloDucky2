@@ -485,7 +485,7 @@ div.officetab li span {
 /* === BUTTON SPLIT MENU === */
 div.buttonsplitmenu {
 	position: absolute;
-	/*background: #FFFFFF url(../../../Scripts/officebar/images/popup_left.png) repeat-y scroll left top;*/
+	background: #FFFFFF url(../../../Scripts/officebar/images/popup_left.png) repeat-y scroll left top;
 	border: 1px solid #868686;
 	z-Index: 2000;
 	width: auto;
@@ -495,11 +495,10 @@ div.buttonsplitmenu {
 div.buttonsplitmenu ul {
 	padding: 0;
 	margin: 0;
-	/*color: #15428B;*/
-	/*background: transparent;*/
+	color: #15428B;
+	background: transparent;
 	height: auto;
 	width: auto;
-	/* width: 200px; /* TODO */
 }
 
 div.buttonsplitmenu ul li {
@@ -515,7 +514,7 @@ div.buttonsplitmenu li.separator {
 }
 
 div.buttonsplitmenu li.menutitle {
-	/*background-color: #DAE6EE;*/
+	background-color: #DAE6EE;
 	border-bottom: 1px solid #C5C5C5;
 	font-weight: bold;
 	padding-left: 2px;
@@ -541,7 +540,7 @@ div.buttonsplitmenu  ul li a {
 }
 
 div.buttonsplitmenu ul li a:hover {
-	/*background: transparent url(../../../Scripts/officebar/images/button3_over.png) no-repeat scroll top right;*/
+	background: transparent url(../../../Scripts/officebar/images/button3_over.png) no-repeat scroll top right;
 }
 
 div.buttonsplitmenu  ul li a span {
@@ -550,7 +549,9 @@ div.buttonsplitmenu  ul li a span {
 	margin-right: 8px;
 	display: inline-block;
 	height: 30px;
-	line-height: 30px;
+	color: black!important;
+	font-weight: normal!important;
+	/*line-height: 30px;*/
 }
 
 div.buttonsplitmenu ul li.separator a {
@@ -558,25 +559,25 @@ div.buttonsplitmenu ul li.separator a {
 }
 
 div.buttonsplitmenu ul li:hover{
-	/*background: transparent url(../../../Scripts/officebar/images/button4_over.png) no-repeat scroll 1px 1px;*/
+	background: transparent url(../../../Scripts/officebar/images/button4_over.png) no-repeat scroll 1px 1px;
 }
 
 div.buttonsplitmenu ul li.menutitle:hover {
-	/*background: #DAE6EE none;*/
+	background: #DAE6EE none;
 }
 
 div.buttonsplitmenu ul li.resize {
 	margin: 0;
 	padding: 0;
 	border-top: 1px solid #C5C5C5;
-	/*background: #DAE6EE url(../../../Scripts/officebar/images/resize_bg.png) repeat-x scroll top right;*/
+	background: #DAE6EE url(../../../Scripts/officebar/images/resize_bg.png) repeat-x scroll top right;
 	height: 10px;
 	line-height: 10px;
 	font-size: 1px;
 }
 
 div.buttonsplitmenu ul li.resize span {
-	/*background: transparent url(../../../Scripts/officebar/images/resize.gif) no-repeat scroll top right;*/
+	background: transparent url(../../../Scripts/officebar/images/resize.gif) no-repeat scroll top right;
 	height: 10px;
 	width: 10px;
 	display: block;
@@ -734,7 +735,7 @@ div.officetab li div.button a img {
 	}
 
 div.officetab li div.split a span {
-	/*background: transparent url(../../../Scripts/officebar/images/dropdown.png) no-repeat scroll 22px 20px;*/
+	background: transparent url(../../../Scripts/officebar/images/dropdown.png) no-repeat scroll 18px 15px;
 	padding-bottom: 7px;
 	margin: 1px 2px 0 2px;
 	border-top: 1px solid transparent;

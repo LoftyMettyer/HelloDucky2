@@ -1065,3 +1065,12 @@ input[type=button].Embedded, input[type=button].Linked {
 }
 
 .no-close .ui-dialog-titlebar-close {display: none }
+
+/* Org Chart */
+.printSelect {
+	display: none;
+	position: absolute;
+	top: 2px;
+	right: 2px;
+	cursor: default;
+}

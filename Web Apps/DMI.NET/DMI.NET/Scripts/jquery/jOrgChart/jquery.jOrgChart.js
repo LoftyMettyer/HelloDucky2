@@ -130,7 +130,8 @@
 		$node.data("tree-node", nodeCount);
 		$nodeDiv = $("<div>").addClass("node")
 																		 .data("tree-node", nodeCount)
-																		 .append($nodeContent);
+																		 .append($nodeContent)
+																		 .css('position', 'relative');
 
 		// Expand and contract nodes
 		if ($childNodes.length > 0) {

@@ -9,6 +9,17 @@
 %>
 <script type="text/javascript">
 	$(document).ready(function () {
+		
+		//Org Chart Print button is split only for winkit mode.
+		if (window.currentLayout == "winkit") {
+			//winkit has a split button
+			$('.mnuBtnPrintOrgChart').parent().addClass("button split");
+		} else {
+			$('.mnuBtnPrintOrgChart').parent().addClass("button");
+		}
+
+
+
 		$(".officebar").officebar({});
 
 		$("#officebar .button").addClass("ui-corner-all");
@@ -42,6 +53,38 @@
 		$("#searchDashboardString").mouseup(function (event) {
 			setTimeout('filterDashboard();', 100);
 		});		
+
+
+		menu_setVisibleMenuItem("userDropdownmenu_Layout", menu_isSSIMode()); //Set visibility of Layout menu
+		menu_setVisibleMenuItem("mnutoolFixedSelfService", '<%=objSessionContext.LoginInfo.IsSSIUser%>');
+		menu_setVisibleMenuItem("mnutoolFixedOpenHR", '<%=objSessionContext.LoginInfo.IsDMISingle Or objSessionContext.LoginInfo.IsDMIUser%>');
+
+		$("#userDropdownmenu a").on("click", function () {
+			$("#userDropdownmenu ul").css("visibility", "visible");
+			$("#userDropdownmenu ul li").css("visibility", "visible");
+			var userMenuHeight = Number($('#userDropdownmenu ul ul').height());
+			var topPos = (userMenuHeight + 26) * -1;
+			if (window.currentLayout == "tiles") $('#userDropdownmenu ul ul').css('top', topPos).css('height', userMenuHeight);
+		});
+
+		if (window.isMobileDevice == "True") {
+			//This is a tablet or phone format - So make the Dashboard information smaller
+			$('.ViewDescription p').css({
+				'font-size': '1em',
+				'margin-bottom': '10px'
+			});
+		}
+
+		$('#userDropdownmenu').hover(function () {
+			//On hover in, do nothing
+		}, function () {
+			//On hover out, hide the menu
+			$("#userDropdownmenu ul").css("visibility", "hidden");
+			$("#userDropdownmenu li").css("visibility", "hidden");
+		});
+
+		$("#userDropdownmenu_Items").menu();
+
 
 	});
 
@@ -768,7 +811,7 @@
 							</div>
 						</li>						
 					</ul>
-				</li>
+				</li>									
 
 								<%-- Utilities Find --%>
 								<li class="ui-corner-top"><a id="toolbarUtilitiesFind" href="#" rel="Utilities_Find">Find</a>
@@ -898,8 +941,41 @@
 						</li>						
 					</ul>
 				</li>
+				
 
-								<%-- EventLog Find--%>
+				<%-- Org Chart--%>
+				<li class="ui-corner-top"><a id="toolbarOrgChart" href="#" rel="Find">Organisation Chart</a>
+					<ul>
+						<li><span>Output</span>
+							<div>
+								<a class="mnuBtnPrintOrgChart" href="#" rel="paste">
+									<img src="<%: Url.Content("~/Scripts/officebar/winkit/printer64HOVER.png")%>" alt="" /><span>
+									<i class="icon-print"></i>
+									<h6>Print</h6></span>
+								</a>
+								<div style="display: none;">
+									<ul>
+										<li class="menutitle">Print options</li>
+										<li><a class="mnuBtnPrintOrgChart" href="#">Print all nodes</a></li>
+										<li class="separator"><a class="mnuBtnSelectOrgChart" href="#">Select nodes to print</a></li>
+										<li><a class="mnuBtnPrintOrgChartSelected" href="#">Print selected nodes</a></li>
+									</ul>
+								</div>
+							</div>
+						</li>
+						<li><span>Interact</span>
+							<div id="mnutoolOrgChartExpand" class="button">
+								<a href="#" rel="table" title="View">
+									<img src="<%: Url.Content("~/Scripts/officebar/winkit/add64HOVER.png")%>" alt="" />
+									<i class="icon-plus"></i>
+									<h6>Expand All Nodes</h6>
+								</a>
+							</div>
+						</li>
+					</ul>
+				</li>
+				
+				<%-- EventLog Find--%>
 				<li class="ui-corner-top"><a id="toolbarEventLogFind" href="#" rel="Find">Find</a>
 					<ul>
 						<li><span>Edit</span>											
@@ -1107,298 +1183,3 @@
 		</ul>
 	</div>
 </div>
-<script>
-	$(document).ready(function() {
-		menu_setVisibleMenuItem("userDropdownmenu_Layout", menu_isSSIMode()); //Set visibility of Layout menu
-		menu_setVisibleMenuItem("mnutoolFixedSelfService", '<%=objSessionContext.LoginInfo.IsSSIUser%>');
-		menu_setVisibleMenuItem("mnutoolFixedOpenHR", '<%=objSessionContext.LoginInfo.IsDMISingle Or objSessionContext.LoginInfo.IsDMIUser%>');
-
-		$("#userDropdownmenu a").on("click", function ()
-		{
-			$("#userDropdownmenu ul").css("visibility", "visible");
-			$("#userDropdownmenu ul li").css("visibility", "visible");
-			var userMenuHeight = Number($('#userDropdownmenu ul ul').height());
-			var topPos = (userMenuHeight + 26) * -1;			
-			if (window.currentLayout == "tiles") $('#userDropdownmenu ul ul').css('top', topPos).css('height', userMenuHeight);			
-		});
-		
-		if (window.isMobileDevice == "True") {
-			//This is a tablet or phone format - So make the Dashboard information smaller
-			$('.ViewDescription p').css({
-				'font-size': '1em',
-				'margin-bottom': '10px'
-			});
-		}
-		
-		$('#userDropdownmenu').hover(function() {
-			//On hover in, do nothing
-		}, function() {
-			//On hover out, hide the menu
-			$("#userDropdownmenu ul").css("visibility", "hidden");
-			$("#userDropdownmenu li").css("visibility", "hidden");
-		});
-
-		$("#userDropdownmenu_Items").menu();
-	});
-</script>
-
-<%--<				<li class="ui-state-default ui-corner-top"><a id="toolbarRecord" href="#" rel="home">Record</a>
-					<ul>
-						<li id="mnuEdit"><span>Edit</span>
-
-							<div id="mnutoolNewRecord" class="button">
-								<a href="#" rel="table" title="New Record">
-									<img src="<%: Url.Content("~/Scripts/officebar/winkit/add64HOVER.png")%>" alt="" />
-									<i class="icon-plus"></i>
-									<h6>Add</h6>
-							</a></div>
-							<div id="mnutoolCopyRecord" class="button">
-								<a href="#" rel="table" title="Copy Record">
-									<img src="<%: Url.Content("~/Scripts/officebar/winkit/copy64HOVER.png")%>"
-										alt="" />
-									<i class="icon-copy"></i>
-									<h6>Copy</h6></a>
-							</div>
-							<div id="mnutoolEditRecord" class="button">
-								<a href="#" rel="table" title="Edit Record">
-									<img src="<%: Url.Content("~/Scripts/officebar/winkit/Edit64HOVER.png") %>" alt="" />
-									<i class="icon-pencil"></i>
-									<h6>Edit</h6></a>
-							</div>
-							<div id="mnutoolSaveRecord" class="button">
-								<a href="#" rel="table" title="Save">
-									<img src="<%: Url.Content("~/Scripts/officebar/winkit/diskette64HOVER.png") %>" alt="" />
-									<i class="icon-save"></i>
-									<h6>Save</h6></a>
-							</div>
-							<div id="mnutoolDeleteRecord" class="button">
-								<a href="#" rel="table" title="Delete Record">
-									<img src="<%: Url.Content("~/Scripts/officebar/winkit/delete64HOVER.png") %>" alt="" />
-									<i class="icon-remove"></i>
-									<h6>Delete</h6></a>
-							</div>
-						</li>
-						<li id="mnuNavigate"><span>Navigate</span>
-							<div id="mnutoolParentRecord" class="button">
-								<a href="#" rel="table" title="Return to parent record">
-									<img src="<%: Url.Content("~/Scripts/officebar/winkit/upblack64HOVER.png") %>" alt="" />
-									<i class="icon-arrow-up"></i>
-									<h6>Parent</h6></a>
-							</div>
-							<div id="mnutoolBack" class="button">
-								<a href="#" rel="table" title="Return to record editing">
-									<img src="<%: Url.Content("~/Scripts/officebar/winkit/BackRecord64HOVER.png") %>" alt="" />
-									<i class="icon-arrow-left"></i>
-									<h6>Back</h6></a>
-							</div>
-
-							<div id="mnutoolFirstRecord" class="button">
-								<a href="#" rel="table" title="First Record">
-									<img src="<%: Url.Content("~/Scripts/officebar/winkit/first64HOVER.png") %>" alt="" />
-									<i class="icon-step-backward"></i>
-									<h6>First</h6></a>
-							</div>
-							<div id="mnutoolPreviousRecord" class="button">
-								<a href="#" rel="table" title="Previous Record">
-									<img src="<%: Url.Content("~/Scripts/officebar/winkit/back64HOVER.png") %>" alt="" />
-									<i class="icon-backward"></i>
-									<h6>Previous</h6></a>
-							</div>
-							<div id="mnutoolNextRecord" class="button">
-								<a href="#" rel="table" title="Next Record">
-									<img src="<%: Url.Content("~/Scripts/officebar/winkit/next64HOVER.png") %>" alt="" />
-									<i class="icon-forward"></i>
-									<h6>Next</h6></a>
-							</div>
-							<div id="mnutoolLastRecord" class="button">
-								<a href="#" rel="table" title="Last Record">
-									<img src="<%: Url.Content("~/Scripts/officebar/winkit/last64HOVER.png") %>" alt="" />
-									<i class="icon-step-forward"></i>
-									<h6>Last</h6></a>
-							</div>
-						</li>
-
-						<li id="mnuLocateRecord"><span>Locate Record</span>
-							<div id="mnutoolLocateRecords" class="textboxlist">
-								<ul><li>Go To<input type="text" /></li></ul>
-							</div>
-						</li>
-
-						<li id="mnuFind"><span>Find</span>
-							<div id="mnutoolFind" class="button">
-								<a href="#" rel="table" title="Find">
-									<img src="<%: Url.Content("~/Scripts/officebar/winkit/Find64HOVER.png") %>" alt="" />
-									<i class="icon-search"></i>
-									<h6>Find</h6></a>
-							</div>
-							<div id="mnutoolQuickFind" class="button">
-								<a href="#" rel="table" title="Quick Find">
-									<img src="<%: Url.Content("~/Scripts/officebar/winkit/QuickFind64HOVER.png") %>"
-										alt="" />
-									<i class="icon-check-empty"></i>
-									<h6>Quick Find</h6></a>
-							</div>
-						</li>
-						<li id="mnuOrder"><span>Order</span>
-							<div id="mnutoolOrder" class="button" title="Change Order">
-								<a href="#" rel="table">
-									<img src="<%: Url.Content("~/Scripts/officebar/winkit/sort64HOVER.png") %>" alt="" />
-									<i class="icon-sort"></i>
-									<h6>Sort</h6></a>
-							</div>
-							<div id="mnutoolFilter" class="button" title="Filter">
-								<a href="#" rel="table">
-									<img src="<%: Url.Content("~/Scripts/officebar/winkit/Filtering64HOVER.png") %>" alt="" />
-									<i class="icon-filter"></i>
-									<h6>Filter</h6></a>
-							</div>
-							<div id="mnutoolClearFilter" class="button" title="Clear Filter">
-								<a href="#" rel="table">
-									<img src="<%: Url.Content("~/Scripts/officebar/winkit/FilteringDelete64HOVER.png") %>"
-										alt="" />
-									<i class="icon-filter" style="color: gray"></i>
-									<h6>Clear Filter</h6></a>
-							</div>
-							<div id="mnutoolPrint" class="button" title="Print">
-								<a href="#" rel="table">
-									<img src="<%: Url.Content("~/Scripts/officebar/winkit/printer64HOVER.png") %>" alt="" />
-									<i class="icon-print"></i>
-									<h6>Printer</h6></a>
-							</div>
-						</li>
-						<li id="mnuReports"><span>Reports</span>
-							<div id="mnutoolCalendarReportsRec" class="button">
-								<a href="#" rel="table" title="Calendar Reports">
-									<img src="<%: Url.Content("~/Scripts/officebar/winkit/CalendarReports64HOVER.png") %>"
-										alt="" />
-									<i class="icon-print"></i><h6>Calendar<br />Reports</h6></a>
-							</div>
-							<div id="mnutoolStdRpt_BreakdownREC" class="button">
-								<a href="#" rel="table" title="Absence Breakdown">
-									<img src="<%: Url.Content("~/Scripts/officebar/winkit/AbsenceBreakdown64HOVER.png") %>"
-										alt="" /><i class="icon-print"></i><h6>Absence<br />Breakdown</h6></a>
-							</div>
-							<div id="mnutoolStdRpt_AbsenceCalendar" class="button">
-								<a href="#" rel="table" title="Absence Calendar">
-									<img src="<%: Url.Content("~/Scripts/officebar/winkit/AbsenceCalendar64HOVER.png") %>"
-										alt="" /><i class="icon-print"></i><h6>Absence<br />Calendar</h6></a>
-							</div>
-							<div id="mnutoolStdRpt_BradfordREC" class="button">
-								<a href="#" rel="table" title="Bradford Factor">
-									<img src="<%: Url.Content("~/Scripts/officebar/winkit/BradfordFactor64HOVER.png") %>"
-										alt="" /><i class="icon-print"></i><h6>Bradford<br />Factor</h6></a>
-							</div>
-							<div id="mnutoolMailMergeRec" class="button">
-								<a href="#" rel="table" title="Mail Merge">
-									<img src="<%: Url.Content("~/Scripts/officebar/winkit/MailMerge64HOVER.png") %>"
-										alt="" /><i class="icon-print"></i><h6>Mail<br/>Merge</h6></a>
-							</div>
-						</li>
-						<li><span>Training Booking</span>
-							<div id="mnutoolBulkBooking" class="button">
-								<a href="#" rel="table" title="Bulk Booking">
-									<img src="<%: Url.Content("~/Scripts/officebar/winkit/BulkBooking64HOVER.png")%>"
-										alt="" /><i class="icon-print"></i><h6>Bulk<br />Booking</h6></a>
-							</div>
-							<div id="mnutoolAddFromWaitingList" class="button">
-								<a href="#" rel="table" title="Add from Waiting List">
-									<img src="<%: Url.Content("~/Scripts/officebar/winkit/AddFromWaitingList64HOVER.png")%>"
-										alt="" /><i class="icon-print"></i><h6>Add from<br />Waiting List</h6></a>
-							</div>
-							<div id="mnutoolTransferBooking" class="button">
-								<a href="#" rel="table" title="Transfer Booking">
-									<img src="<%: Url.Content("~/Scripts/officebar/winkit/TransferBooking64HOVER.png") %>"
-										alt="" /><i class="icon-print"></i><h6>Transfer<br />Booking</h6></a>
-							</div>
-							<div id="mnutoolCancelBooking" class="button">
-								<a href="#" rel="table" title="Cancel Booking">
-									<img src="<%: Url.Content("~/Scripts/officebar/winkit/CancelBooking64HOVER.png") %>"
-										alt="" /><i class="icon-print"></i><h6>Cancel<br />Booking</h6></a>
-							</div>
-						</li>
-						<li><span>Course Booking</span>
-							<div id="mnutoolBookCourse" class="button">
-								<a href="#" rel="table" title="Book Course">
-									<img src="<%: Url.Content("~/Scripts/officebar/winkit/BookCourse64HOVER.png") %>"
-										alt="" /><i class="icon-print"></i><h6>Book<br />Course</h6></a>
-							</div>
-							<div id="mnutoolCancelCourse" class="button">
-								<a href="#" rel="table" title="Cancel Course">
-									<img src="<%: Url.Content("~/Scripts/officebar/winkit/CancelCourse64HOVER.png") %>"
-										alt="" /><i class="icon-print"></i><h6>Cancel<br />Course</h6></a>
-							</div>
-						</li>
-						<li style="display: none;"><span>Workflow</span>
-							<div id="mnutoolWorkflow" class="button">
-								<a href="#" rel="table" title="Workflow">
-									<img src="<%: Url.Content("~/Scripts/officebar/winkit/Workflow64HOVER.png") %>"
-										alt="" /><i class="icon-print"></i><h6>Launch<br />Workflow</h6></a>
-							</div>
-							<div id="mnutoolWorkflowPendingSteps" class="button">
-								<a href="#" rel="table" title="Pending Workflow Steps">
-									<img src="<%: Url.Content("~/Scripts/officebar/winkit/PendingSteps64HOVER.png") %>" alt="" /><i class="icon-print"></i><h6>Pending<br />Workflow Steps</h6></a>
-							</div>
-						</li>
-						<li><span>Record Position</span>
-							<div id="mnutoolRecordPosition" class="textboxlist">
-								<ul>
-									<li>
-										<span>Record n of m [(filtered)]</span>
-									</li>
-								</ul>
-							</div>
-						</li>
-					</ul>
-				</li>
-				<li class="ui-state-default ui-corner-top"><a id="toolbarUtilities" href="#" rel="utilites">Utilities</a>
-					<ul>
-						<li id="mnuSectionUtilities"><span>Utilities</span>
-							<div id="mnutoolNewUtil" class="button">
-								<a href="javascript:setnew();" rel="table" title="Create new...">
-									<img src="<%: Url.Content("~/Scripts/officebar/winkit/add64HOVER.png")%>"
-										alt="" /><i class="icon-plus"></i><h6>New</h6></a>
-							</div>
-					
-							<div id="mnutoolEditUtil" class="button">
-								<a href="javascript:setedit();" rel="table" title="Edit...">
-									<img src="<%: Url.Content("~/Scripts/officebar/winkit/Edit64HOVER.png") %>" alt="" />
-								<i class="icon-pencil"></i>
-								<h6>Edit</h6></a>
-							</div>
-							<div id="mnutoolCopyUtil" class="button">
-								<a href="javascript:setcopy();" rel="table" title="Copy...">
-									<img src="<%: Url.Content("~/Scripts/officebar/winkit/copy64HOVER.png")%>" alt="" />
-								<i class="icon-copy"></i>
-								<h6>Copy</h6></a>
-							</div>
-							<div id="mnutoolDeleteUtil" class="button">
-								<a href="javascript:setdelete();" rel="table" title="Delete...">
-									<img src="<%: Url.Content("~/Scripts/officebar/winkit/delete64HOVER.png") %>" alt="" />
-								<i class="icon-save"></i>
-								<h6>Delete</h6></a>
-							</div>
-							<div id="mnutoolPrintUtil" class="button">
-								<a href="#" rel="table" title="Print...">
-									<img src="<%: Url.Content("~/Scripts/officebar/winkit/printer64HOVER.png") %>" alt="" />
-								<i class="icon-print"></i>
-								<h6>Print</h6></a>
-							</div>
-							<div id="mnutoolPropertiesUtil" class="button">
-								<a href="javascript:showproperties();" rel="table" title="Properties...">
-									<img src="<%: Url.Content("~/Scripts/officebar/winkit/configuration64HOVER.png")%>" alt="" />								
-								<h6>Properties</h6></a>
-							</div>
-							<div id="mnutillRunUtil" class="button">
-								<a href="javascript:setrun();" rel="table" title="Run...">
-									<img src="<%: Url.Content("~/Scripts/officebar/winkit/Run64HOVER.png")%>" alt="" />
-								<h6>Run</h6></a>
-							</div>
-							<div id="mnuutilCancelUtil" class="button">
-								<a href="javascript:setcancel();" rel="table" title="Close...">
-									<img src="<%: Url.Content("~/Scripts/officebar/winkit/close64HOVER.png")%>" alt="" />
-								<h6>Close</h6></a>
-							</div>
-						</li>						
-					</ul>
-				</li>
---%>
