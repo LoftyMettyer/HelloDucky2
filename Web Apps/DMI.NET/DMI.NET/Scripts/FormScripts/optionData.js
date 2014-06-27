@@ -1,12 +1,13 @@
 ﻿
 function optiondata_onload() {
-	
+
 	var frmOptionData = document.getElementById("frmOptionData");
 
 	var sFatalErrorMsg = frmOptionData.txtErrorDescription.value;
 	if (sFatalErrorMsg.length > 0) {
 		//window.parent.frames("menuframe").ASRIntranetFunctions.MessageBox(sFatalErrorMsg);
 		//window.parent.location.replace("login.asp");
+		$('#FindGridRow').css('border', '1px solid silver');
 	} else {
 		// Do nothing if the menu controls are not yet instantiated.
 		var sCurrentWorkPage = OpenHR.currentWorkPage();
@@ -360,11 +361,16 @@ function optiondata_onload() {
 				}
 			}
 			sAction = frmOptionData.txtOptionAction.value; // Refresh the link find grid with the data if required.
-			grdFind = OpenHR.getForm("optionframe", "frmtbFindForm").ssOleDBGridRecords;
-			grdFind.redraw = false;
-			grdFind.removeAll();
-			grdFind.columns.removeAll();
+
+			//need this as this grid won't accept live changes :/		
+			$("#ssOleDBGridRecords").jqGrid('GridUnload');
+
+			//jqGrid_removeAll('ssOleDBGridRecords');	// clear the grid
+			
 			dataCollection = frmOptionData.elements; // Configure the grid columns.
+			colMode = [];
+			colNames = [];
+
 			if (dataCollection != null) {
 				for (i = 0; i < dataCollection.length; i++) {
 					sControlName = dataCollection.item(i).name;
@@ -378,23 +384,24 @@ function optiondata_onload() {
 							sColumnName = sColDef.substr(0, iIndex);
 							sColumnType = sColDef.substr(iIndex + 1);
 
-							grdFind.columns.add(grdFind.columns.count);
-							grdFind.columns.item(grdFind.columns.count - 1).name = sColumnName;
-							grdFind.columns.item(grdFind.columns.count - 1).caption = sColumnName;
+							colNames.push(sColumnName);
 
 							if (sColumnName == "ID") {
-								grdFind.columns.item(grdFind.columns.count - 1).Visible = false;
-							}
-
-							if ((sColumnType == "131") || (sColumnType == "3")) {
-								grdFind.columns.item(grdFind.columns.count - 1).Alignment = 1;
+								colMode.push({ name: sColumnName, hidden: true });
 							} else {
-								grdFind.columns.item(grdFind.columns.count - 1).Alignment = 0;
-							}
-							if (sColumnType == 11) {
-								grdFind.columns.item(grdFind.columns.count - 1).Style = 2;
-							} else {
-								grdFind.columns.item(grdFind.columns.count - 1).Style = 0;
+								switch (sColumnType) {
+									case "boolean": // "11":
+										colMode.push({ name: sColumnName, edittype: "checkbox", formatter: 'checkbox', formatoptions: { disabled: true }, align: 'center', width: 100 });
+										break;
+									case "decimal":
+										colMode.push({ name: sColumnName, edittype: "numeric", sorttype: 'integer', formatter: 'numeric', formatoptions: { disabled: true }, align: 'right', width: 100 });
+										break;
+									case "datetime": //Date - 135
+										colMode.push({ name: sColumnName, edittype: "date", sorttype: 'date', formatter: 'date', formatoptions: { srcformat: dateFormat, newformat: dateFormat, disabled: true }, align: 'left', width: 100 });
+										break;
+									default:
+										colMode.push({ name: sColumnName, width: 100 });
+								}
 							}
 						}
 					}
@@ -405,25 +412,64 @@ function optiondata_onload() {
 			fRecordAdded = false;
 			iCount = 0;
 			if (dataCollection != null) {
+
+				colData = [];
 				for (i = 0; i < dataCollection.length; i++) {
+
 					sControlName = dataCollection.item(i).name;
 					sControlName = sControlName.substr(0, 14);
 					if (sControlName == "txtOptionData_") {
-						grdFind.addItem(dataCollection.item(i).value);
+						colDataArray = dataCollection.item(i).value.split("\t");
+						obj = {};
+						for (iCount2 = 0; iCount2 < colNames.length; iCount2++) {
+							//loop through columns and add each one to the 'obj' object
+							obj[colNames[iCount2]] = colDataArray[iCount2];
+						}
+						//add the 'obj' object to the 'colData' array
+						colData.push(obj);
+
 						fRecordAdded = true;
 						iCount = iCount + 1;
 					}
 				}
+
+
+				//create the column layout:
+				var shrinkToFit = false;
+				if (colMode.length < 8) shrinkToFit = true;
+
+				$("#ssOleDBGridRecords").jqGrid({
+					data: colData,
+					datatype: "local",
+					colNames: colNames,
+					colModel: colMode,
+					rowNum: 1000,
+					autowidth: true,
+					shrinktofit: shrinkToFit,
+					onSelectRow: function () {
+						tbrefreshControls();
+					},
+					ondblClickRow: function () {
+						tbSelect();
+					}
+				});
+
+
+				$("#ssOleDBGridRecords").jqGrid('bindKeys', {
+					"onEnter": function () {
+						tbSelect();
+					}
+				});
+
+				//resize the grid to the height of its container.
+				$("#ssOleDBGridRecords").jqGrid('setGridHeight', $("#FindGridRow").height());
+
 			}
-
-			grdFind.redraw = true;
-
+		
 			frmOptionData.txtRecordCount.value = iCount;
 
-			// Select the top record.
 			if (fRecordAdded == true) {
-				grdFind.MoveFirst();
-				grdFind.SelBookmarks.Add(grdFind.Bookmark);
+				locateRecord(OpenHR.getForm("optionframe", "frmtbFindForm").txtOptionRecordID.value, true); //should be in scope!
 			}
 
 			tbrefreshControls();
@@ -592,4 +638,10 @@ function optiondata_onload() {
 function refreshOptionData() {
 	var frmGetOptionData = document.getElementById("frmGetOptionData");
 	OpenHR.submitForm(frmGetOptionData);
+}
+
+
+function jqGrid_removeAll(jqGridID) {
+	//remove all rows from the jqGrid.
+	$('#' + jqGridID).jqGrid('clearGridData');
 }
