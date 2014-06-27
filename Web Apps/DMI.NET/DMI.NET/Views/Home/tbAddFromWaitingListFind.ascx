@@ -7,13 +7,6 @@
 <%Dim sErrorDescription = ""
 	Dim sFailureDescription = ""%>
 
-<%--licence manager reference for activeX--%>
-<object classid="clsid:5220cb21-c88d-11cf-b347-00aa00a28331"
-	id="Microsoft_Licensed_Class_Manager_1_0"
-	viewastext>
-	<param name="LPKPath" value="<%: Url.Content("~/lpks/ssmain.lpk")%>">
-</object>
-
 <script type="text/javascript">
 	
 	function tbAddFromWaitingListFind_onload() {		
@@ -34,7 +27,7 @@
 			if (sErrMsg.length > 0) {
 				fOK = false;
 				OpenHR.messageBox(sErrMsg);
-				Cancel();
+				tbCancel();
 			}
 		}
 
@@ -42,7 +35,7 @@
 			if (frmtbFindForm.selectView.length == 0) {
 				fOK = false;
 				OpenHR.messageBox("You do not have permission to read the course table.");
-				Cancel();
+				tbCancel();
 			}
 		}
 
@@ -50,12 +43,11 @@
 			if (frmtbFindForm.selectOrder.length == 0) {
 				fOK = false;
 				OpenHR.messageBox("You do not have permission to use any of the course table orders.");
-				Cancel();
+				tbCancel();
 			}
 		}
 
 		if (fOK == true) {
-			setGridFont(frmtbFindForm.ssOleDBGridRecords);
 
 			// Expand the option frame and hide the work frame.
 			//window.parent.document.all.item("workframeset").cols = "0, *";	
@@ -90,7 +82,7 @@
 
 <script type="text/javascript">
 
-	function Select() {		
+	function tbSelect() {		
 		var frmGotoOption = document.getElementById("frmGotoOption");
 		var frmtbFindForm = document.getElementById("frmtbFindForm");
 
@@ -100,12 +92,14 @@
 
 		frmGotoOption.txtGotoOptionAction.value = "SELECTADDFROMWAITINGLIST_1";
 		frmGotoOption.txtGotoOptionRecordID.value = frmtbFindForm.txtOptionRecordID.value;
-		frmGotoOption.txtGotoOptionLinkRecordID.value = ssselectedRecordID();
+		var selRowId = $("#ssOleDBGridRecords").jqGrid('getGridParam', 'selrow');
+		var recordID = $("#ssOleDBGridRecords").jqGrid('getCell', selRowId, 'ID');
+		frmGotoOption.txtGotoOptionLinkRecordID.value = recordID;	// ssselectedRecordID();
 		frmGotoOption.txtGotoOptionPage.value = "emptyoption";
 		OpenHR.submitForm(frmGotoOption);
 	}
 
-	function Cancel() {
+	function tbCancel() {
 		var frmGotoOption = document.getElementById("frmGotoOption");
 
 		//window.parent.frames("workframe").document.forms("frmtbFindForm").ssOleDBGridFindRecords.style.visibility = "visible";
@@ -119,44 +113,12 @@
 		OpenHR.submitForm(frmGotoOption);
 	}
 
-	/* Return the ID of the record selected in the find form. */
-	function ssselectedRecordID() {
-		var iRecordID;
-		var iIndex;
-		var iIDColumnIndex;
-		var sColumnName;
-
-		iRecordID = 0;
-		iIDColumnIndex = 0;
-		var frmtbFindForm = document.getElementById("frmtbFindForm");
-		if (frmtbFindForm.ssOleDBGridRecords.SelBookmarks.Count > 0) {
-			for (iIndex = 0; iIndex < frmtbFindForm.ssOleDBGridRecords.Cols; iIndex++) {
-				sColumnName = frmtbFindForm.ssOleDBGridRecords.Columns(iIndex).Name;
-				if (sColumnName.toUpperCase() == "ID") {
-					iIDColumnIndex = iIndex;
-					break;
-				}
-			}
-
-			iRecordID = frmtbFindForm.ssOleDBGridRecords.Columns(iIDColumnIndex).Value;
-		}
-
-		return (iRecordID);
-	}
-
 	function tbrefreshControls() {
 		var frmtbFindForm = document.getElementById("frmtbFindForm");
-		if (frmtbFindForm.ssOleDBGridRecords.rows > 0) {
-			if (frmtbFindForm.ssOleDBGridRecords.SelBookmarks.Count > 0) {
-				button_disable(frmtbFindForm.cmdSelect, false);
-			}
-			else {
-				button_disable(frmtbFindForm.cmdSelect, true);
-			}
-		}
-		else {
-			button_disable(frmtbFindForm.cmdSelect, true);
-		}
+
+		var selRowId = $("#ssOleDBGridRecords").jqGrid('getGridParam', 'selrow');
+
+		button_disable(frmtbFindForm.cmdSelect, (selRowId == null));
 
 		if (frmtbFindForm.selectOrder.length <= 1) {
 			combo_disable(frmtbFindForm.selectOrder, true);
@@ -214,84 +176,6 @@
 		var frmtbFindForm = document.getElementById("frmtbFindForm");
 		return frmtbFindForm.selectView.options[frmtbFindForm.selectView.selectedIndex].value;
 	}
-
-	function locateRecord(psFileName) {
-		var fFound;
-
-		fFound = false;
-		var frmtbFindForm = document.getElementById("frmtbFindForm");
-		frmtbFindForm.ssOleDBGridRecords.redraw = false;
-
-		frmtbFindForm.ssOleDBGridRecords.MoveLast();
-		frmtbFindForm.ssOleDBGridRecords.MoveFirst();
-
-		for (var iIndex = 1; iIndex <= frmtbFindForm.ssOleDBGridRecords.rows; iIndex++) {
-			var sGridValue = new String(frmtbFindForm.ssOleDBGridRecords.Columns(0).value);
-			sGridValue = sGridValue.substr(0, psFileName.length).toUpperCase();
-			if (sGridValue == psFileName.toUpperCase()) {
-				frmtbFindForm.ssOleDBGridRecords.SelBookmarks.Add(frmtbFindForm.ssOleDBGridRecords.Bookmark);
-				fFound = true;
-				break;
-			}
-
-			if (iIndex < frmtbFindForm.ssOleDBGridRecords.rows) {
-				frmtbFindForm.ssOleDBGridRecords.MoveNext();
-			}
-			else {
-				break;
-			}
-		}
-
-		if ((fFound == false) && (frmtbFindForm.ssOleDBGridRecords.rows > 0)) {
-			// Select the top row.
-			frmtbFindForm.ssOleDBGridRecords.MoveFirst();
-			frmtbFindForm.ssOleDBGridRecords.SelBookmarks.Add(frmtbFindForm.ssOleDBGridRecords.Bookmark);
-		}
-
-		frmtbFindForm.ssOleDBGridRecords.redraw = true;
-	}
-
-
-	function tbAddFromWaitingListFind_addhandlers() {
-		OpenHR.addActiveXHandler("ssOleDBGridRecords", "dblClick", "ssOleDBGridRecords_dblClick()");
-		OpenHR.addActiveXHandler("ssOleDBGridRecords", "click", "ssOleDBGridRecords_click()");
-		OpenHR.addActiveXHandler("ssOleDBGridRecords", "KeyPress", "ssOleDBGridRecords_KeyPress()");
-	}
-
-	function ssOleDBGridRecords_dblClick() {
-		Select();
-	}
-
-	function ssOleDBGridRecords_click() {
-		tbrefreshControls();
-	}
-
-	function ssOleDBGridRecords_KeyPress(iKeyAscii) {
-		var iLastTick;
-		var sFind;
-
-		if ((iKeyAscii >= 32) && (iKeyAscii <= 255)) {
-			var dtTicker = new Date();
-			var iThisTick = new Number(dtTicker.getTime());
-			if ($("#txtLastKeyFind").val().length > 0) {
-				iLastTick = new Number($("#txtTicker").val());
-			} else {
-				iLastTick = new Number("0");
-			}
-
-			if (iThisTick > (iLastTick + 1500)) {
-				sFind = String.fromCharCode(iKeyAscii);
-			} else {
-				sFind = txtLastKeyFind.value + String.fromCharCode(iKeyAscii);
-			}
-			//TODO: Confirm this works
-			$("#txtTicker").val(iThisTick);
-			$("#txtLastKeyFind").val(sFind);
-
-			locateRecord(sFind);
-		}
-	}
-
 
 </script>
 
@@ -403,86 +287,9 @@
 						<tr>
 							<td></td>
 							<td>
-								<object classid="clsid:4A4AA697-3E6F-11D2-822F-00104B9E07A1" id="ssOleDBGridRecords" name="ssOleDBGridRecords" codebase="cabs/COAInt_Grid.cab#version=3,1,3,6" style="LEFT: 0px; TOP: 0px; WIDTH: 100%; HEIGHT: 400px">
-									<param name="ScrollBars" value="4">
-									<param name="_Version" value="196617">
-									<param name="DataMode" value="2">
-
-									<param name="Cols" value="0">
-									<param name="Rows" value="0">
-									<param name="BorderStyle" value="1">
-									<param name="RecordSelectors" value="0">
-									<param name="GroupHeaders" value="0">
-									<param name="ColumnHeaders" value="-1">
-									<param name="GroupHeadLines" value="1">
-									<param name="HeadLines" value="1">
-									<param name="FieldDelimiter" value="(None)">
-									<param name="FieldSeparator" value="(Tab)">
-									<param name="Col.Count" value="0">
-									<param name="stylesets.count" value="0">
-									<param name="TagVariant" value="EMPTY">
-									<param name="UseGroups" value="0">
-									<param name="HeadFont3D" value="0">
-									<param name="Font3D" value="0">
-									<param name="DividerType" value="3">
-									<param name="DividerStyle" value="1">
-									<param name="DefColWidth" value="0">
-									<param name="BeveColorScheme" value="2">
-									<param name="BevelColorFrame" value="-2147483642">
-									<param name="BevelColorHighlight" value="-2147483628">
-									<param name="BevelColorShadow" value="-2147483632">
-									<param name="BevelColorFace" value="-2147483633">
-									<param name="CheckBox3D" value="-1">
-									<param name="AllowAddNew" value="0">
-									<param name="AllowDelete" value="0">
-									<param name="AllowUpdate" value="0">
-									<param name="MultiLine" value="-1">
-									<param name="ActiveCellStyleSet" value="">
-									<param name="RowSelectionStyle" value="0">
-									<param name="AllowRowSizing" value="0">
-									<param name="AllowGroupSizing" value="0">
-									<param name="AllowColumnSizing" value="-1">
-									<param name="AllowGroupMoving" value="0">
-									<param name="AllowColumnMoving" value="0">
-									<param name="AllowGroupSwapping" value="0">
-									<param name="AllowColumnSwapping" value="0">
-									<param name="AllowGroupShrinking" value="0">
-									<param name="AllowColumnShrinking" value="0">
-									<param name="AllowDragDrop" value="0">
-									<param name="UseExactRowCount" value="-1">
-									<param name="SelectTypeCol" value="0">
-									<param name="SelectTypeRow" value="1">
-									<param name="SelectByCell" value="-1">
-									<param name="BalloonHelp" value="0">
-									<param name="RowNavigation" value="1">
-									<param name="CellNavigation" value="0">
-									<param name="MaxSelectedRows" value="1">
-									<param name="HeadStyleSet" value="">
-									<param name="StyleSet" value="">
-									<param name="ForeColorEven" value="0">
-									<param name="ForeColorOdd" value="0">
-									<param name="BackColorEven" value="16777215">
-									<param name="BackColorOdd" value="16777215">
-									<param name="Levels" value="1">
-									<param name="RowHeight" value="503">
-									<param name="ExtraHeight" value="0">
-									<param name="ActiveRowStyleSet" value="">
-									<param name="CaptionAlignment" value="2">
-									<param name="SplitterPos" value="0">
-									<param name="SplitterVisible" value="0">
-									<param name="Columns.Count" value="0">
-									<param name="UseDefaults" value="-1">
-									<param name="TabNavigation" value="1">
-									<param name="_ExtentX" value="17330">
-									<param name="_ExtentY" value="1323">
-									<param name="_StockProps" value="79">
-									<param name="Caption" value="">
-									<param name="ForeColor" value="0">
-									<param name="BackColor" value="16777215">
-									<param name="Enabled" value="-1">
-									<param name="DataMember" value="">
-									<param name="Row.Count" value="0">
-								</object>
+								<div id="FindGridRow" style="height: 400px; margin-bottom: 50px;">
+									<table id="ssOleDBGridRecords" name="ssOleDBGridRecords" style="width: 100%"></table>
+								</div>
 							</td>
 							<td></td>
 						</tr>
@@ -500,7 +307,7 @@
 										<td></td>
 										<td width="10">
 											<input id="cmdSelect" name="cmdSelect" type="button" value="Select" style="WIDTH: 75px" width="75" class="btn"
-												onclick="Select()"
+												onclick="tbSelect()"
 												onmouseover="try{button_onMouseOver(this);}catch(e){}"
 												onmouseout="try{button_onMouseOut(this);}catch(e){}"
 												onfocus="try{button_onFocus(this);}catch(e){}"
@@ -509,7 +316,7 @@
 										<td width="40"></td>
 										<td width="10">
 											<input id="cmdCancel" name="cmdCancel" type="button" value="Cancel" style="WIDTH: 75px" width="75" class="btn"
-												onclick="Cancel()"
+												onclick="tbCancel()"
 												onmouseover="try{button_onMouseOver(this);}catch(e){}"
 												onmouseout="try{button_onMouseOut(this);}catch(e){}"
 												onfocus="try{button_onFocus(this);}catch(e){}"
@@ -548,7 +355,6 @@
 </div>
 
 <script type="text/javascript">
-	tbAddFromWaitingListFind_addhandlers();
 	tbAddFromWaitingListFind_onload();
 </script>
 
