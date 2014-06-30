@@ -484,36 +484,111 @@ function optiondata_onload() {
 
 			sAction = frmOptionData.txtOptionAction.value;
 
-			// Refresh the link find grid with the data if required.
-			grdFind = OpenHR.getForm("optionframe", "frmBulkBooking").ssOleDBGridFindRecords;
-			grdFind.redraw = false;
-			grdFind.removeAll();
+			//need this as this grid won't accept live changes :/		
+			$("#ssOleDBGridFindRecords").jqGrid('GridUnload');
 
 			dataCollection = frmOptionData.elements;
+
+			// new bit for colmodel
+			colMode = [];
+			colNames = [];
+			
+			if (dataCollection != null) {
+				for (i = 0; i < dataCollection.length; i++) {
+					sControlName = dataCollection.item(i).name;
+					sControlName = sControlName.substr(0, 16);
+					if (sControlName == "txtOptionColDef_") {
+						// Get the column name and type from the control.
+						sColDef = dataCollection.item(i).value;
+
+						iIndex = sColDef.indexOf("	");
+						if (iIndex >= 0) {
+							sColumnName = sColDef.substr(0, iIndex);
+							sColumnType = sColDef.substr(iIndex + 1);
+
+							colNames.push(sColumnName);
+
+							if (sColumnName.toUpperCase() == "ID") {
+								colMode.push({ name: sColumnName, hidden: true });
+							} else {
+								switch (sColumnType) {
+									case "boolean": // "11":
+										colMode.push({ name: sColumnName, edittype: "checkbox", formatter: 'checkbox', formatoptions: { disabled: true }, align: 'center', width: 100 });
+										break;
+									case "decimal":
+										colMode.push({ name: sColumnName, edittype: "numeric", sorttype: 'integer', formatter: 'numeric', formatoptions: { disabled: true }, align: 'right', width: 100 });
+										break;
+									case "datetime": //Date - 135
+										colMode.push({ name: sColumnName, edittype: "date", sorttype: 'date', formatter: 'date', formatoptions: { srcformat: dateFormat, newformat: dateFormat, disabled: true }, align: 'left', width: 100 });
+										break;
+									default:
+										colMode.push({ name: sColumnName, width: 100 });
+								}
+							}
+						}
+					}
+				}
+			}
+			//
 
 			// Add the grid records.
 			fRecordAdded = false;
 			iCount = 0;
 
 			if (dataCollection != null) {
+
+				colData = [];
 				for (i = 0; i < dataCollection.length; i++) {
 					sControlName = dataCollection.item(i).name;
 					sControlName = sControlName.substr(0, 14);
 
 					if (sControlName == "txtOptionData_") {
-						grdFind.addItem(dataCollection.item(i).value);
+						colDataArray = dataCollection.item(i).value.split("\t");
+						obj = {};
+						for (iCount2 = 0; iCount2 < colNames.length; iCount2++) {
+							//loop through columns and add each one to the 'obj' object
+							obj[colNames[iCount2]] = colDataArray[iCount2];
+						}
+						//add the 'obj' object to the 'colData' array
+						colData.push(obj);
+
 						fRecordAdded = true;
 						iCount = iCount + 1;
 					}
 				}
-			}
 
-			grdFind.redraw = true;
+				//create the column layout:
+				var shrinkToFit = false;
+				if (colMode.length < 8) shrinkToFit = true;				
+
+				$("#ssOleDBGridFindRecords").jqGrid({
+					multiselect: true,
+					data: colData,
+					datatype: 'local',
+					colNames: colNames,
+					colModel: colMode,
+					rowNum: 1000,
+					autowidth: true,
+					shrinktofit: shrinkToFit,
+					onSelectRow: function () {
+						tbrefreshControls();
+					},
+					editurl: 'clientArray',
+					afterShowForm: function ($form) {
+						$("#dData", $form.parent()).click();
+					},
+					beforeSelectRow: handleMultiSelect // handle multi select
+				}).jqGrid('hideCol', 'cb');
+
+				//resize the grid to the height of its container.
+				$("#ssOleDBGridFindRecords").jqGrid('setGridHeight', $("#FindGridRow").height());
+
+			}			
+
 
 			// Select the top record.
 			if (fRecordAdded == true) {
-				grdFind.MoveFirst();
-				grdFind.SelBookmarks.Add(grdFind.Bookmark);
+				moveFirst();
 			}
 
 			tbrefreshControls();
@@ -645,3 +720,43 @@ function jqGrid_removeAll(jqGridID) {
 	//remove all rows from the jqGrid.
 	$('#' + jqGridID).jqGrid('clearGridData');
 }
+
+
+// handle jqGrid multiselect => thanks to solution from Byron Cobb on http://goo.gl/UvGku
+var handleMultiSelect = function (rowid, e) {
+	var grid = $(this);
+	if (!e.ctrlKey && !e.shiftKey) {
+		grid.jqGrid('resetSelection');
+	}
+	else if (e.shiftKey) {
+		var initialRowSelect = grid.jqGrid('getGridParam', 'selrow');		
+		grid.jqGrid('resetSelection');
+
+		var CurrentSelectIndex = grid.jqGrid('getInd', rowid);
+		var InitialSelectIndex = grid.jqGrid('getInd', initialRowSelect);
+		var startID = "";
+		var endID = "";
+		if (CurrentSelectIndex > InitialSelectIndex) {
+			startID = initialRowSelect;
+			endID = rowid;
+		}
+		else {
+			startID = rowid;
+			endID = initialRowSelect;
+		}
+		var shouldSelectRow = false;
+
+		$.each(grid.getDataIDs(), function (_, id) {
+			if ((shouldSelectRow = id == startID || shouldSelectRow)) {
+				grid.jqGrid('setSelection', id, false);
+			}
+			return id != endID;
+
+		});
+
+		//last selected row too
+		grid.jqGrid('setSelection', endID, false);
+
+	}
+	return true;
+};

@@ -1,244 +1,164 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
-<%@ Import namespace="DMI.NET" %>
+<%@ Import Namespace="DMI.NET" %>
 <%@ Import Namespace="HR.Intranet.Server" %>
 <%@ Import Namespace="System.Data.SqlClient" %>
 <%@ Import Namespace="System.Data" %>
 
-	<script src="<%: Url.LatestContent("~/Scripts/ctl_SetFont.js")%>" type="text/javascript"></script>
-	<script src="<%: Url.LatestContent("~/bundles/jQuery")%>" type="text/javascript"></script>
-	<script src="<%: Url.LatestContent("~/bundles/jQueryUI7")%>" type="text/javascript"></script>
-
-<%--licence manager reference for activeX--%>
-<object classid="clsid:5220cb21-c88d-11cf-b347-00aa00a28331"
-	id="Microsoft_Licensed_Class_Manager_1_0"
-	viewastext>
-	<param name="LPKPath" value="<%: Url.Content("~/lpks/ssmain.lpk")%>">
-</object>
-
 <script type="text/javascript">
-	function tbBulkBooking_onload() {		
+	function tbBulkBooking_onload() {
 		var frmBulkBooking = document.getElementById("frmBulkBooking");
 
-		setGridFont(frmBulkBooking.ssOleDBGridFindRecords);
-		
 		$("#optionframe").attr("data-framesource", "TBBULKBOOKING");
 		$("#workframe").hide();
 		$("#optionframe").show();
-		
+
 		frmBulkBooking.cmdCancel.focus();
 
-		//TODO: window.parent.frames("workframe").document.forms("frmFindForm").ssOleDBGridFindRecords.style.visibility = "hidden";
-
 		tbrefreshControls();
-		menu_refreshMenu();
+		menu_refreshMenu();		
 	}
 
-	function ok()
-	{  
+	function ok() {
 		var sSelectedIDs = "";
 		var frmBulkBooking = document.getElementById("frmBulkBooking");
-		
-		frmBulkBooking.ssOleDBGridFindRecords.redraw = false;
-		frmBulkBooking.ssOleDBGridFindRecords.MoveFirst();
-		for (var iIndex = 1; iIndex <= frmBulkBooking.ssOleDBGridFindRecords.rows; iIndex++) {	
-			var sGridValue = new String(frmBulkBooking.ssOleDBGridFindRecords.Columns("ID").value);
 
-			if (sSelectedIDs.length > 0) {
-				sSelectedIDs = sSelectedIDs + ",";
-			}
+		sSelectedIDs = $('#ssOleDBGridFindRecords').getDataIDs().join(",");
 
-			sSelectedIDs = sSelectedIDs + sGridValue;
-
-			if (iIndex < frmBulkBooking.ssOleDBGridFindRecords.rows) {
-				frmBulkBooking.ssOleDBGridFindRecords.MoveNext();
-			}
-			else {
-				break;
-			}
-		}
-		frmBulkBooking.ssOleDBGridFindRecords.redraw = true;
-		//TODO: window.parent.frames("workframe").document.forms("frmFindForm").ssOleDBGridFindRecords.style.visibility = "visible";
-		
 		var frmGotoOption = document.getElementById("frmGotoOption");
 
 		frmGotoOption.txtGotoOptionAction.value = "SELECTBULKBOOKINGS";
 		frmGotoOption.txtGotoOptionRecordID.value = $("#txtOptionRecordID").val();
 		frmGotoOption.txtGotoOptionLinkRecordID.value = sSelectedIDs;
-		<%
-		if session("TB_TBStatusPExists") then
-%>
+		<%If Session("TB_TBStatusPExists") Then%>
 		frmGotoOption.txtGotoOptionLookupValue.value = frmBulkBooking.selStatus.options[frmBulkBooking.selStatus.selectedIndex].value;
-		<%
-		else
-%>
+		<%Else%>
 		frmGotoOption.txtGotoOptionLookupValue.value = "B";
-		<%
-		end if 
-%>
+		<%End If%>
 
 		frmGotoOption.txtGotoOptionPage.value = "emptyoption";
 		OpenHR.submitForm(frmGotoOption);
 	}
 
-	function cancel()
-	{  		
-		//$("#optionframe").attr("data-framesource", "TBBULKBOOKING");
+	function cancel() {
 		$("#optionframe").hide();
 		$("#workframe").show();
-		
 
 		var frmGotoOption = document.getElementById("frmGotoOption");
-	
+
 		frmGotoOption.txtGotoOptionAction.value = "CANCEL";
 		frmGotoOption.txtGotoOptionLinkRecordID.value = 0;
 		frmGotoOption.txtGotoOptionPage.value = "emptyoption";
 		OpenHR.submitForm(frmGotoOption);
 	}
 
-	function locateRecord(psFileName) {
-		var fFound;
-		var frmBulkBooking = document.getElementById("frmBulkBooking");
-	
-		fFound = false;
-	
-		frmBulkBooking.ssOleDBGridFindRecords.redraw = false;
 
-		frmBulkBooking.ssOleDBGridFindRecords.MoveLast();
-		frmBulkBooking.ssOleDBGridFindRecords.MoveFirst();
-
-		for (var iIndex = 1; iIndex <= frmBulkBooking.ssOleDBGridFindRecords.rows; iIndex++) {	
-			var sGridValue = new String(frmBulkBooking.ssOleDBGridFindRecords.Columns(0).value);
-			sGridValue = sGridValue.substr(0, psFileName.length).toUpperCase();
-			if (sGridValue == psFileName.toUpperCase()) {
-				frmBulkBooking.ssOleDBGridFindRecords.SelBookmarks.Add(frmBulkBooking.ssOleDBGridFindRecords.Bookmark);
-				fFound = true;
-				break;
-			}
-
-			if (iIndex < frmBulkBooking.ssOleDBGridFindRecords.rows) {
-				frmBulkBooking.ssOleDBGridFindRecords.MoveNext();
-			}
-			else {
-				break;
-			}
-		}
-
-		if ((fFound == false) && (frmBulkBooking.ssOleDBGridFindRecords.rows > 0)) {
-			// Select the top row.
-			frmBulkBooking.ssOleDBGridFindRecords.MoveFirst();
-			frmBulkBooking.ssOleDBGridFindRecords.SelBookmarks.Add(frmBulkBooking.ssOleDBGridFindRecords.Bookmark);
-		}
-
-		frmBulkBooking.ssOleDBGridFindRecords.redraw = true;
-	}
-
-	function tbrefreshControls()
-	{
+	function tbrefreshControls() {
 		var fNoneSelected;
 		var frmBulkBooking = document.getElementById("frmBulkBooking");
-	
-		fNoneSelected = (frmBulkBooking.ssOleDBGridFindRecords.SelBookmarks.Count == 0);
+
+		var selRowId = $("#ssOleDBGridFindRecords").jqGrid('getGridParam', 'selrow');
+
+		fNoneSelected = (selRowId == null || selRowId == 'undefined');
+		fGridHasRows = ($('#ssOleDBGridFindRecords tr').length > 0);
 
 		button_disable(frmBulkBooking.cmdRemove, fNoneSelected);
 		button_disable(frmBulkBooking.cmdRemoveAll, fNoneSelected);
-		button_disable(frmBulkBooking.cmdOK, fNoneSelected);
+		button_disable(frmBulkBooking.cmdOK, !fGridHasRows);
+
+		$('#FindGridRow').css('border', (fGridHasRows ? 'none' : '1px solid silver'));
 	}
 
-	function add()
-	{	
+	function add() {
 		var sURL;
 		var frmBookingSelection = document.getElementById("frmBookingSelection");
-	
+
 		frmBookingSelection.selectionType.value = "ALL";
 
 		sURL = "tbBulkBookingSelectionMain" +
 			"?selectionType=" + frmBookingSelection.selectionType.value;
-		openDialog(sURL, (screen.width)/3,(screen.height)/2);
+		openDialog(sURL, (screen.width) / 3, (screen.height) / 2);
 	}
 
-	function filteredAdd()
-	{	
+	function filteredAdd() {
 		var sURL;
 		var frmBookingSelection = document.getElementById("frmBookingSelection");
-		
+
 		frmBookingSelection.selectionType.value = "FILTER";
-	
+
 		sURL = "tbBulkBookingSelectionMain" +
 			"?selectionType=" + frmBookingSelection.selectionType.value;
-		openDialog(sURL, (screen.width)/3,(screen.height)/2);
+		openDialog(sURL, (screen.width) / 3, (screen.height) / 2);
 	}
 
-	function addPicklist()
-	{	
+	function addPicklist() {
 		var sURL;
 		var frmBookingSelection = document.getElementById("frmBookingSelection");
 		frmBookingSelection.selectionType.value = "PICKLIST";
 
 		sURL = "tbBulkBookingSelectionMain" +
 			"?selectionType=" + frmBookingSelection.selectionType.value;
-		openDialog(sURL, (screen.width)/3,(screen.height)/2);
+		openDialog(sURL, (screen.width) / 3, (screen.height) / 2);
 	}
 
-	function remove()
-	{	
-		var frmBulkBooking = document.getElementById("frmBulkBooking");
-		var iRowIndex;
-	
-		var iCount = frmBulkBooking.ssOleDBGridFindRecords.selbookmarks.Count();		
-		for (var i=iCount-1; i >= 0; i--) {
-			frmBulkBooking.ssOleDBGridFindRecords.bookmark = frmBulkBooking.ssOleDBGridFindRecords.selbookmarks(i);
-			iRowIndex = frmBulkBooking.ssOleDBGridFindRecords.AddItemRowIndex(frmBulkBooking.ssOleDBGridFindRecords.Bookmark);
-				
-			if ((frmBulkBooking.ssOleDBGridFindRecords.Rows == 1) && (iRowIndex == 0)) {
-				frmBulkBooking.ssOleDBGridFindRecords.RemoveAll();
-			}
-			else {
-				frmBulkBooking.ssOleDBGridFindRecords.RemoveItem(iRowIndex);
-			}
-		}
+	function remove() {
 
-		// Select the top row if there is one.
-		if (frmBulkBooking.ssOleDBGridFindRecords.rows > 0) {
-			frmBulkBooking.ssOleDBGridFindRecords.MoveFirst();
-			frmBulkBooking.ssOleDBGridFindRecords.SelBookmarks.Add(frmBulkBooking.ssOleDBGridFindRecords.Bookmark);
-		}
-	
+		var grid = $("#ssOleDBGridFindRecords")
+		var myDelOptions = {
+			// because I use "local" data I don't want to send the changes
+			// to the server so I use "processing:true" setting and delete
+			// the row manually in onclickSubmit
+			onclickSubmit: function (options) {
+				var grid_id = $.jgrid.jqID(grid[0].id),
+						grid_p = grid[0].p,
+						newPage = grid_p.page,
+						rowids = grid_p.multiselect ? grid_p.selarrrow : [grid_p.selrow];
+
+				// reset the value of processing option which could be modified
+				options.processing = true;
+
+				// delete the row
+				$.each(rowids, function () {
+					grid.delRowData(this);
+				});
+				$.jgrid.hideModal("#delmod" + grid_id,
+													{
+														gb: "#gbox_" + grid_id,
+														jqm: options.jqModal, onClose: options.onClose
+													});
+
+				if (grid_p.lastpage > 1) {// on the multipage grid reload the grid
+					if (grid_p.reccount === 0 && newPage === grid_p.lastpage) {
+						// if after deliting there are no rows on the current page
+						// which is the last page of the grid
+						newPage--; // go to the previous page
+					}
+					// reload grid to make the row from the next page visable.
+					grid.trigger("reloadGrid", [{ page: newPage }]);
+				}
+
+				return true;
+			},
+			processing: true
+		};
+
+		grid.jqGrid('delGridRow', grid.jqGrid('getGridParam', 'selarrrow'), myDelOptions);
+
+		moveFirst();
 		tbrefreshControls();
 	}
 
-	function removeAll()
-	{	
-		var frmBulkBooking = document.getElementById("frmBulkBooking");
-		frmBulkBooking.ssOleDBGridFindRecords.removeAll();
+	function removeAll() {
+		$('#ssOleDBGridFindRecords').jqGrid('clearGridData');		
 		tbrefreshControls();
 	}
 
 	function makeSelection(psType, piID, psPrompts) {
-
 		/* Get the current selected delegate IDs. */
 		var frmBulkBooking = document.getElementById("frmBulkBooking");
 		var sSelectedIDs = "";
-		frmBulkBooking.ssOleDBGridFindRecords.redraw = false;
-		if (frmBulkBooking.ssOleDBGridFindRecords.rows > 0) {
-			frmBulkBooking.ssOleDBGridFindRecords.MoveFirst();
-		}
 		var sRecordID;
-		for (var iIndex = 1; iIndex <= frmBulkBooking.ssOleDBGridFindRecords.rows; iIndex++) {	
-			sRecordID = new String(frmBulkBooking.ssOleDBGridFindRecords.Columns("ID").Value);
 
-			if (sSelectedIDs.length > 0) {
-				sSelectedIDs = sSelectedIDs + ",";
-			}
-			sSelectedIDs = sSelectedIDs + sRecordID;
-			
-			if (iIndex < frmBulkBooking.ssOleDBGridFindRecords.rows) {
-				frmBulkBooking.ssOleDBGridFindRecords.MoveNext();
-			}
-			else {
-				break;
-			}
-		}
-		frmBulkBooking.ssOleDBGridFindRecords.redraw = true;
+		sSelectedIDs = $('#ssOleDBGridFindRecords').getDataIDs().join(",");
 
 		if ((psType == "ALL") && (psPrompts.length > 0)) {
 			if (sSelectedIDs.length > 0) {
@@ -259,8 +179,18 @@
 		refreshOptionData(); //should be in scope.
 	}
 
-	function openDialog(pDestination, pWidth, pHeight)
-	{
+	function moveFirst() {
+		$('#ssOleDBGridFindRecords').jqGrid('setSelection', 1);
+		menu_refreshMenu();
+	}
+
+	function bookmarksCount() {
+		var selRowIds = $('#ssOleDBGridFindRecords').jqGrid('getGridParam', 'selarrrow');
+		return selRowIds.length;
+	}
+
+
+	function openDialog(pDestination, pWidth, pHeight) {
 		var dlgwinprops = "center:yes;" +
 			"dialogHeight:" + pHeight + "px;" +
 			"dialogWidth:" + pWidth + "px;" +
@@ -270,366 +200,174 @@
 			"status:no;";
 		window.showModalDialog(pDestination, self, dlgwinprops);
 	}
-	
-	function tbBulkBooking_addhandlers() {
-		OpenHR.addActiveXHandler("ssOleDBGridRecords", "KeyPress", "ssOleDBGridRecords_KeyPress()");
-		OpenHR.addActiveXHandler("ssOleDBGridRecords", "RowColChange", "ssOleDBGridRecords_RowColChange()");
-	}
 
-	function ssOleDBGridRecords_KeyPress(iKeyAscii) {
-		if ((iKeyAscii >= 32) && (iKeyAscii <= 255)) {
-			var iLastTick;
-			var sFind;
-			var dtTicker = new Date();
-			var iThisTick = new Number(dtTicker.getTime());
-			if ($("#txtLastKeyFind").val().length > 0) {
-				iLastTick = new Number($("#txtTicker").val());
-			} else {
-				iLastTick = new Number("0");
-			}
 
-			if (iThisTick > (iLastTick + 1500)) {
-				sFind = String.fromCharCode(iKeyAscii);
-			} else {
-				sFind = $("#txtLastKeyFind").val() + String.fromCharCode(iKeyAscii);
-			}
-
-			$("#txtTicker").val(iThisTick);
-			$("#txtLastKeyFind").val(sFind);
-
-			var frmBulkBooking = document.getElementById("frmBulkBooking");
-			frmBulkBooking.ssOleDBGridFindRecords.SelBookmarks.RemoveAll();
-
-			locateRecord(sFind, false);
-		}
-	}
-
-	function ssOleDBGridRecords_RowColChange() {
-		tbrefreshControls();
-	}
-	
 </script>
 
 <script src="<%: Url.LatestContent("~/Scripts/ctl_SetStyles.js")%>" type="text/javascript"></script>
 
 <div <%=session("BodyTag")%>>
-<form name="frmBulkBooking" action="tbBulkBooking_Submit" method="post" id="frmBulkBooking" style="TEXT-ALIGN: center">
+	<form name="frmBulkBooking" action="tbBulkBooking_Submit" method="post" id="frmBulkBooking" style="text-align: center">
 
-<table align=center class="outline" cellPadding=5 cellSpacing=0 width=100% height=100%>
-	<TR>
-		<TD>
-			<TABLE WIDTH="100%" height="100%" class="invisible" CELLSPACING=0 CELLPADDING=0>
-				<TR>
-					<TD align=center height=10 colspan=5>
-						<h3 align="left" class="pageTitle">Bulk Booking</h3>
-					</td>
-				</tr>
+		<table align="center" class="outline" cellpadding="5" cellspacing="0" width="100%" height="100%">
+			<tr>
+				<td>
+					<table width="100%" height="100%" class="invisible" cellspacing="0" cellpadding="0">
+						<tr>
+							<td align="center" height="10" colspan="5">
+								<h3 align="left" class="pageTitle">Bulk Booking</h3>
+							</td>
+						</tr>
 
-<%
-	Dim objDataAccess As clsDataAccess = CType(Session("DatabaseAccess"), clsDataAccess)
-	Dim sErrorDescription = ""
+						<%
+							Dim objDataAccess As clsDataAccess = CType(Session("DatabaseAccess"), clsDataAccess)
+							Dim sErrorDescription = ""
 	
-	if session("TB_TBStatusPExists") then
-		Response.Write("				<TR height=10>" & vbCrLf)
-		Response.Write("					<TD width=20></TD>" & vbCrLf)
-		Response.Write("					<TD colspan=3>" & vbCrLf)
-		Response.Write("						<TABLE WIDTH=""100%"" class=""invisible"" CELLSPACING=0 CELLPADDING=0>" & vbCrLf)
-		Response.Write("							<TR height=10>" & vbCrLf)
-		Response.Write("								<TD  nowrap>Booking Status :</TD>" & vbCrLf)
-		Response.Write("								<TD width=20>&nbsp;</TD>" & vbCrLf)
-		Response.Write("								<TD>" & vbCrLf)
-		Response.Write("									<SELECT id=selStatus name=selStatus class=""combo"">" & vbCrLf)
-		Response.Write("										<OPTION value=B selected>Booked</OPTION>" & vbCrLf)
-		Response.Write("										<OPTION value=P>Provisional</OPTION></SELECT>" & vbCrLf)
-		Response.Write("								</TD>" & vbCrLf)
-		Response.Write("								<TD style='width: 100%;'></TD>" & vbCrLf)
-		Response.Write("								<TD ></TD>" & vbCrLf)
-		Response.Write("							</TR>" & vbCrLf)
-		Response.Write("						</TABLE>" & vbCrLf)
-		Response.Write("					</TD>" & vbCrLf)
-		Response.Write("					<TD width=20></TD>" & vbCrLf)
-		Response.Write("				</TR>" & vbCrLf)
-		Response.Write("				<TR>" & vbCrLf)
-		Response.Write("				  <td height=10 colspan=5></td>" & vbCrLf)
-		Response.Write("				</TR>" & vbCrLf)
-	end if
-%>		
-	
-				<tr> 
-					<td rowspan=13 width="20">&nbsp;&nbsp;&nbsp;&nbsp;</td>    
-					<td rowspan=13 width=100%>
-<%
+							If Session("TB_TBStatusPExists") Then
+								Response.Write("				<TR height=10>" & vbCrLf)
+								Response.Write("					<TD width=20></TD>" & vbCrLf)
+								Response.Write("					<TD colspan=3>" & vbCrLf)
+								Response.Write("						<TABLE WIDTH=""100%"" class=""invisible"" CELLSPACING=0 CELLPADDING=0>" & vbCrLf)
+								Response.Write("							<TR height=10>" & vbCrLf)
+								Response.Write("								<TD  nowrap>Booking Status :</TD>" & vbCrLf)
+								Response.Write("								<TD width=20>&nbsp;</TD>" & vbCrLf)
+								Response.Write("								<TD>" & vbCrLf)
+								Response.Write("									<SELECT id=selStatus name=selStatus class=""combo"">" & vbCrLf)
+								Response.Write("										<OPTION value=B selected>Booked</OPTION>" & vbCrLf)
+								Response.Write("										<OPTION value=P>Provisional</OPTION></SELECT>" & vbCrLf)
+								Response.Write("								</TD>" & vbCrLf)
+								Response.Write("								<TD style='width: 100%;'></TD>" & vbCrLf)
+								Response.Write("								<TD ></TD>" & vbCrLf)
+								Response.Write("							</TR>" & vbCrLf)
+								Response.Write("						</TABLE>" & vbCrLf)
+								Response.Write("					</TD>" & vbCrLf)
+								Response.Write("					<TD width=20></TD>" & vbCrLf)
+								Response.Write("				</TR>" & vbCrLf)
+								Response.Write("				<TR>" & vbCrLf)
+								Response.Write("				  <td height=10 colspan=5></td>" & vbCrLf)
+								Response.Write("				</TR>" & vbCrLf)
+							End If
+						%>
+
+						<tr>
+							<td rowspan="13" width="20">&nbsp;&nbsp;&nbsp;&nbsp;</td>
+							<td rowspan="13" width="100%">
+								<%Try
+										Dim prmErrorMsg As New SqlParameter("psErrorMsg", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
+										Dim prm1000SepCols As New SqlParameter("ps1000SeparatorCols", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
+
+										Dim rstFindRecords = objDataAccess.GetFromSP("sp_ASRIntGetTBEmployeeColumns" _
+														, prmErrorMsg _
+														, prm1000SepCols)
+										Response.Write("<INPUT type='hidden' id=txt1000SepCols name=txt1000SepCols value=""" & prm1000SepCols.Value & """>" & vbCrLf)
 		
-	Try
-		Dim prmErrorMsg As New SqlParameter("psErrorMsg", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
-		Dim prm1000SepCols As New SqlParameter("ps1000SeparatorCols", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
+									Catch ex As Exception
+										sErrorDescription = "The Employee table find columns could not be retrieved." & vbCrLf & FormatError(ex.Message)
+											End Try%>
+								<div id="FindGridRow" style="height: 400px; margin-bottom: 50px;">
+									<table id="ssOleDBGridFindRecords" name="ssOleDBGridFindRecords" style="width: 100%"></table>
+								</div>
+							</td>
+							<td rowspan="13" width="20">&nbsp;&nbsp;&nbsp;&nbsp;</td>
+							<td width="100" height="10">
+								<input type="button" id="cmdAdd" name="cmdAdd" value="Add" style="width: 100%" class="btn"
+									onclick="add()" />
+							</td>
+							<td rowspan="13" width="20">&nbsp;&nbsp;&nbsp;&nbsp;</td>
+						</tr>
 
-		Dim rstFindRecords = objDataAccess.GetFromSP("sp_ASRIntGetTBEmployeeColumns" _
-						, prmErrorMsg _
-						, prm1000SepCols)
+						<tr>
+							<td height="10"></td>
+						</tr>
 
-		Response.Write("<OBJECT classid=""clsid:4A4AA697-3E6F-11D2-822F-00104B9E07A1"" id=ssOleDBGridFindRecords name=ssOleDBGridFindRecords  codebase=""cabs/COAInt_Grid.cab#version=3,1,3,6"" style=""LEFT: 0px; TOP: 0px; WIDTH:100%; HEIGHT:400px;"">" & vbCrLf)
-		Response.Write("	<PARAM NAME=""ScrollBars"" VALUE=""4"">" & vbCrLf)
-		Response.Write("	<PARAM NAME=""_Version"" VALUE=""196617"">" & vbCrLf)
-		Response.Write("	<PARAM NAME=""DataMode"" VALUE=""2"">" & vbCrLf)
-		Response.Write("	<PARAM NAME=""Cols"" VALUE=""0"">" & vbCrLf)
-		Response.Write("	<PARAM NAME=""Rows"" VALUE=""0"">" & vbCrLf)
-		Response.Write("	<PARAM NAME=""BorderStyle"" VALUE=""1"">" & vbCrLf)
-		Response.Write("	<PARAM NAME=""RecordSelectors"" VALUE=""0"">" & vbCrLf)
-		Response.Write("	<PARAM NAME=""GroupHeaders"" VALUE=""0"">" & vbCrLf)
-		Response.Write("	<PARAM NAME=""ColumnHeaders"" VALUE=""-1"">" & vbCrLf)
-		Response.Write("	<PARAM NAME=""GroupHeadLines"" VALUE=""1"">" & vbCrLf)
-		Response.Write("	<PARAM NAME=""HeadLines"" VALUE=""1"">" & vbCrLf)
-		Response.Write("	<PARAM NAME=""FieldDelimiter"" VALUE=""(None)"">" & vbCrLf)
-		Response.Write("	<PARAM NAME=""FieldSeparator"" VALUE=""(Tab)"">" & vbCrLf)
-		Response.Write("	<PARAM NAME=""Row.Count"" VALUE=""0"">" & vbCrLf)
-		Response.Write("	<PARAM NAME=""stylesets.count"" VALUE=""0"">" & vbCrLf)
-		Response.Write("	<PARAM NAME=""TagVariant"" VALUE=""EMPTY"">" & vbCrLf)
-		Response.Write("	<PARAM NAME=""UseGroups"" VALUE=""0"">" & vbCrLf)
-		Response.Write("	<PARAM NAME=""HeadFont3D"" VALUE=""0"">" & vbCrLf)
-		Response.Write("	<PARAM NAME=""Font3D"" VALUE=""0"">" & vbCrLf)
-		Response.Write("	<PARAM NAME=""DividerType"" VALUE=""3"">" & vbCrLf)
-		Response.Write("	<PARAM NAME=""DividerStyle"" VALUE=""1"">" & vbCrLf)
-		Response.Write("	<PARAM NAME=""DefColWidth"" VALUE=""0"">" & vbCrLf)
-		Response.Write("	<PARAM NAME=""BeveColorScheme"" VALUE=""2"">" & vbCrLf)
-		Response.Write("	<PARAM NAME=""BevelColorFrame"" VALUE=""-2147483642"">" & vbCrLf)
-		Response.Write("	<PARAM NAME=""BevelColorHighlight"" VALUE=""-2147483628"">" & vbCrLf)
-		Response.Write("	<PARAM NAME=""BevelColorShadow"" VALUE=""-2147483632"">" & vbCrLf)
-		Response.Write("	<PARAM NAME=""BevelColorFace"" VALUE=""-2147483633"">" & vbCrLf)
-		Response.Write("	<PARAM NAME=""CheckBox3D"" VALUE=""-1"">" & vbCrLf)
-		Response.Write("	<PARAM NAME=""AllowAddNew"" VALUE=""0"">" & vbCrLf)
-		Response.Write("	<PARAM NAME=""AllowDelete"" VALUE=""0"">" & vbCrLf)
-		Response.Write("	<PARAM NAME=""AllowUpdate"" VALUE=""0"">" & vbCrLf)
-		Response.Write("	<PARAM NAME=""MultiLine"" VALUE=""0"">" & vbCrLf)
-		Response.Write("	<PARAM NAME=""ActiveCellStyleSet"" VALUE="""">" & vbCrLf)
-		Response.Write("	<PARAM NAME=""RowSelectionStyle"" VALUE=""0"">" & vbCrLf)
-		Response.Write("	<PARAM NAME=""AllowRowSizing"" VALUE=""0"">" & vbCrLf)
-		Response.Write("	<PARAM NAME=""AllowGroupSizing"" VALUE=""0"">" & vbCrLf)
-		Response.Write("	<PARAM NAME=""AllowColumnSizing"" VALUE=""-1"">" & vbCrLf)
-		Response.Write("	<PARAM NAME=""AllowGroupMoving"" VALUE=""0"">" & vbCrLf)
-		Response.Write("	<PARAM NAME=""AllowColumnMoving"" VALUE=""0"">" & vbCrLf)
-		Response.Write("	<PARAM NAME=""AllowGroupSwapping"" VALUE=""0"">" & vbCrLf)
-		Response.Write("	<PARAM NAME=""AllowColumnSwapping"" VALUE=""0"">" & vbCrLf)
-		Response.Write("	<PARAM NAME=""AllowGroupShrinking"" VALUE=""0"">" & vbCrLf)
-		Response.Write("	<PARAM NAME=""AllowColumnShrinking"" VALUE=""0"">" & vbCrLf)
-		Response.Write("	<PARAM NAME=""AllowDragDrop"" VALUE=""0"">" & vbCrLf)
-		Response.Write("	<PARAM NAME=""UseExactRowCount"" VALUE=""-1"">" & vbCrLf)
-		Response.Write("	<PARAM NAME=""SelectTypeCol"" VALUE=""0"">" & vbCrLf)
-		Response.Write("	<PARAM NAME=""SelectTypeRow"" VALUE=""3"">" & vbCrLf)
-		Response.Write("	<PARAM NAME=""SelectByCell"" VALUE=""-1"">" & vbCrLf)
-		Response.Write("	<PARAM NAME=""BalloonHelp"" VALUE=""0"">" & vbCrLf)
-		Response.Write("	<PARAM NAME=""RowNavigation"" VALUE=""1"">" & vbCrLf)
-		Response.Write("	<PARAM NAME=""CellNavigation"" VALUE=""0"">" & vbCrLf)
-		Response.Write("	<PARAM NAME=""MaxSelectedRows"" VALUE=""0"">" & vbCrLf)
-		Response.Write("	<PARAM NAME=""HeadStyleSet"" VALUE="""">" & vbCrLf)
-		Response.Write("	<PARAM NAME=""StyleSet"" VALUE="""">" & vbCrLf)
-		Response.Write("	<PARAM NAME=""ForeColorEven"" VALUE=""0"">" & vbCrLf)
-		Response.Write("	<PARAM NAME=""ForeColorOdd"" VALUE=""0"">" & vbCrLf)
-		Response.Write("	<PARAM NAME=""BackColorEven"" VALUE=""16777215"">" & vbCrLf)
-		Response.Write("	<PARAM NAME=""BackColorOdd"" VALUE=""16777215"">" & vbCrLf)
-		Response.Write("	<PARAM NAME=""Levels"" VALUE=""1"">" & vbCrLf)
-		Response.Write("	<PARAM NAME=""RowHeight"" VALUE=""503"">" & vbCrLf)
-		Response.Write("	<PARAM NAME=""ExtraHeight"" VALUE=""0"">" & vbCrLf)
-		Response.Write("	<PARAM NAME=""ActiveRowStyleSet"" VALUE="""">" & vbCrLf)
-		Response.Write("	<PARAM NAME=""CaptionAlignment"" VALUE=""2"">" & vbCrLf)
-		Response.Write("	<PARAM NAME=""SplitterPos"" VALUE=""0"">" & vbCrLf)
-		Response.Write("	<PARAM NAME=""SplitterVisible"" VALUE=""0"">" & vbCrLf)
+						<tr>
+							<td height="10">
+								<input type="button" name="cmdAddFilter" id="cmdAddFilter" value="Filtered Add" style="width: 100%; text-align: center" class="btn"
+									onclick="filteredAdd()" />
+							</td>
+						</tr>
 
-		Dim lngColCount = 0
+						<tr>
+							<td height="10"></td>
+						</tr>
 
-		For Each objRow As DataRow In rstFindRecords.Rows
-			
-			Response.Write("	<PARAM NAME=""Columns(" & lngColCount & ").Width"" VALUE=""3200"">" & vbCrLf)
-	
-			If objRow("columnName").ToString() = "ID" Then
-				Response.Write("	<PARAM NAME=""Columns(" & lngColCount & ").Visible"" VALUE=""0"">" & vbCrLf)
-			Else
-				Response.Write("	<PARAM NAME=""Columns(" & lngColCount & ").Visible"" VALUE=""-1"">" & vbCrLf)
-			End If
-	
-			Response.Write("	<PARAM NAME=""Columns(" & lngColCount & ").Columns.Count"" VALUE=""1"">" & vbCrLf)
-			Response.Write("	<PARAM NAME=""Columns(" & lngColCount & ").Caption"" VALUE=""" & Replace(objRow("columnName").ToString(), "_", " ") & """>" & vbCrLf)
-			Response.Write("	<PARAM NAME=""Columns(" & lngColCount & ").Name"" VALUE=""" & objRow("columnName").ToString() & """>" & vbCrLf)
-				
-			If (CInt(objRow("dataType")) = 131) Or (CInt(objRow("dataType")) = 3) Then
-				Response.Write("	<PARAM NAME=""Columns(" & lngColCount & ").Alignment"" VALUE=""1"">" & vbCrLf)
-			Else
-				Response.Write("	<PARAM NAME=""Columns(" & lngColCount & ").Alignment"" VALUE=""0"">" & vbCrLf)
-			End If
-			Response.Write("	<PARAM NAME=""Columns(" & lngColCount & ").CaptionAlignment"" VALUE=""3"">" & vbCrLf)
-			Response.Write("	<PARAM NAME=""Columns(" & lngColCount & ").Bound"" VALUE=""0"">" & vbCrLf)
-			Response.Write("	<PARAM NAME=""Columns(" & lngColCount & ").AllowSizing"" VALUE=""1"">" & vbCrLf)
-			Response.Write("	<PARAM NAME=""Columns(" & lngColCount & ").DataField"" VALUE=""Column " & lngColCount & """>" & vbCrLf)
-			Response.Write("	<PARAM NAME=""Columns(" & lngColCount & ").DataType"" VALUE=""8"">" & vbCrLf)
-			Response.Write("	<PARAM NAME=""Columns(" & lngColCount & ").Level"" VALUE=""0"">" & vbCrLf)
-			Response.Write("	<PARAM NAME=""Columns(" & lngColCount & ").NumberFormat"" VALUE="""">" & vbCrLf)
-			Response.Write("	<PARAM NAME=""Columns(" & lngColCount & ").Case"" VALUE=""0"">" & vbCrLf)
-			Response.Write("	<PARAM NAME=""Columns(" & lngColCount & ").FieldLen"" VALUE=""4096"">" & vbCrLf)
-			Response.Write("	<PARAM NAME=""Columns(" & lngColCount & ").VertScrollBar"" VALUE=""0"">" & vbCrLf)
-			Response.Write("	<PARAM NAME=""Columns(" & lngColCount & ").Locked"" VALUE=""0"">" & vbCrLf)
-				
-			If CInt(objRow("dataType")) = -7 Then
-				' Find column is a logic column.
-				Response.Write("	<PARAM NAME=""Columns(" & lngColCount & ").Style"" VALUE=""2"">" & vbCrLf)
-			Else
-				Response.Write("	<PARAM NAME=""Columns(" & lngColCount & ").Style"" VALUE=""0"">" & vbCrLf)
-			End If
+						<tr>
+							<td height="10">
+								<input type="button" name="cmdAddPicklist" id="cmdAddPicklist" value="Picklist Add" style="width: 100%; text-align: center" class="btn"
+									onclick="addPicklist()" />
+							</td>
+						</tr>
 
-			Response.Write("	<PARAM NAME=""Columns(" & lngColCount & ").ButtonsAlways"" VALUE=""0"">" & vbCrLf)
-			Response.Write("	<PARAM NAME=""Columns(" & lngColCount & ").RowCount"" VALUE=""0"">" & vbCrLf)
-			Response.Write("	<PARAM NAME=""Columns(" & lngColCount & ").ColCount"" VALUE=""1"">" & vbCrLf)
-			Response.Write("	<PARAM NAME=""Columns(" & lngColCount & ").HasHeadForeColor"" VALUE=""0"">" & vbCrLf)
-			Response.Write("	<PARAM NAME=""Columns(" & lngColCount & ").HasHeadBackColor"" VALUE=""0"">" & vbCrLf)
-			Response.Write("	<PARAM NAME=""Columns(" & lngColCount & ").HasForeColor"" VALUE=""0"">" & vbCrLf)
-			Response.Write("	<PARAM NAME=""Columns(" & lngColCount & ").HasBackColor"" VALUE=""0"">" & vbCrLf)
-			Response.Write("	<PARAM NAME=""Columns(" & lngColCount & ").HeadForeColor"" VALUE=""0"">" & vbCrLf)
-			Response.Write("	<PARAM NAME=""Columns(" & lngColCount & ").HeadBackColor"" VALUE=""0"">" & vbCrLf)
-			Response.Write("	<PARAM NAME=""Columns(" & lngColCount & ").ForeColor"" VALUE=""0"">" & vbCrLf)
-			Response.Write("	<PARAM NAME=""Columns(" & lngColCount & ").BackColor"" VALUE=""0"">" & vbCrLf)
-			Response.Write("	<PARAM NAME=""Columns(" & lngColCount & ").HeadStyleSet"" VALUE="""">" & vbCrLf)
-			Response.Write("	<PARAM NAME=""Columns(" & lngColCount & ").StyleSet"" VALUE="""">" & vbCrLf)
-			Response.Write("	<PARAM NAME=""Columns(" & lngColCount & ").Nullable"" VALUE=""1"">" & vbCrLf)
-			Response.Write("	<PARAM NAME=""Columns(" & lngColCount & ").Mask"" VALUE="""">" & vbCrLf)
-			Response.Write("	<PARAM NAME=""Columns(" & lngColCount & ").PromptInclude"" VALUE=""0"">" & vbCrLf)
-			Response.Write("	<PARAM NAME=""Columns(" & lngColCount & ").ClipMode"" VALUE=""0"">" & vbCrLf)
-			Response.Write("	<PARAM NAME=""Columns(" & lngColCount & ").PromptChar"" VALUE=""95"">" & vbCrLf)
+						<tr>
+							<td height="10"></td>
+						</tr>
 
-			lngColCount += 1
-		Next
-		
-		Response.Write("	<PARAM NAME=""Columns.Count"" VALUE=""" & lngColCount & """>" & vbCrLf)
-		Response.Write("	<PARAM NAME=""Col.Count"" VALUE=""" & lngColCount & """>" & vbCrLf)
+						<tr>
+							<td height="10">
+								<input type="button" id="cmdRemove" name="cmdRemove" value="Remove" style="width: 100%" class="btn"
+									onclick="remove()" />
+							</td>
+						</tr>
 
-		Response.Write("	<PARAM NAME=""UseDefaults"" VALUE=""-1"">" & vbCrLf)
-		Response.Write("	<PARAM NAME=""TabNavigation"" VALUE=""1"">" & vbCrLf)
-		Response.Write("	<PARAM NAME=""_ExtentX"" VALUE=""17330"">" & vbCrLf)
-		Response.Write("	<PARAM NAME=""_ExtentY"" VALUE=""1323"">" & vbCrLf)
-		Response.Write("	<PARAM NAME=""_StockProps"" VALUE=""79"">" & vbCrLf)
-		Response.Write("	<PARAM NAME=""Caption"" VALUE="""">" & vbCrLf)
-		Response.Write("	<PARAM NAME=""ForeColor"" VALUE=""0"">" & vbCrLf)
-		Response.Write("	<PARAM NAME=""BackColor"" VALUE=""16777215"">" & vbCrLf)
-		Response.Write("	<PARAM NAME=""Enabled"" VALUE=""-1"">" & vbCrLf)
-		Response.Write("	<PARAM NAME=""DataMember"" VALUE="""">" & vbCrLf)
+						<tr>
+							<td height="10"></td>
+						</tr>
 
-		Response.Write("</OBJECT>" & vbCrLf)
+						<tr>
+							<td height="10">
+								<input type="button" id="cmdRemoveAll" name="cmdRemoveAll" value="Remove All" style="width: 100%" class="btn"
+									onclick="removeAll()" />
+							</td>
+						</tr>
 
-		If Len(prmErrorMsg.Value) > 0 Then
-			Session("ErrorTitle") = "Bulk Booking Page"
-			Session("ErrorText") = prmErrorMsg.Value
-			Response.Clear()
-			Response.Redirect("error.asp")
-		Else
-			Response.Write("<INPUT type='hidden' id=txt1000SepCols name=txt1000SepCols value=""" & prm1000SepCols.Value & """>" & vbCrLf)
-		End If
-		
-	Catch ex As Exception
-		sErrorDescription = "The Employee table find columns could not be retrieved." & vbCrLf & FormatError(ex.Message)
-		
-	End Try
+						<tr>
+							<td></td>
+						</tr>
 
-%>
-					</td>
-					<td rowspan=13 width="20">&nbsp;&nbsp;&nbsp;&nbsp;</td>    
-					<TD width=100 height=10>
-						<input type="button" id=cmdAdd name=cmdAdd value="Add" style="WIDTH: 100%" class="btn"  
-								onclick="add()" />
-					</TD>
-					<td rowspan=13 width="20">&nbsp;&nbsp;&nbsp;&nbsp;</td>    
-				</tr>
-		
-				<TR>
-					<TD height=10></TD>
-				</TR>
-		
-				<TR>
-					<TD height=10>
-						<input type="button" name=cmdAddFilter id=cmdAddFilter value="Filtered Add" style="WIDTH: 100%; text-align:center"class="btn"
-								onclick="filteredAdd()" />
-					</TD>
-				</TR>
-		
-				<TR>
-					<TD height=10></TD>
-				</TR>
-		
-				<TR>
-					<TD height=10>
-						<input type="button" name=cmdAddPicklist id=cmdAddPicklist value="Picklist Add" style="WIDTH: 100%; text-align:center"  class="btn"
-								onclick="addPicklist()" />
-					</TD>
-				</TR>
-		
-				<TR>
-					<TD height=10></TD>
-				</TR>
+						<tr>
+							<td height="10">
+								<input type="button" name="cmdOK" value="OK" style="width: 100%" id="cmdOK" class="btn"
+									onclick="ok()" />
+							</td>
+						</tr>
 
-				<TR>
-					<TD height=10>
-						<input type="button" name=cmdRemove value="Remove" style="WIDTH: 100%"  class="btn"
-								onclick="remove()" />
-					</TD>
-				</TR>
+						<tr>
+							<td height="10"></td>
+						</tr>
 
-				<TR>
-					<TD height=10></TD>
-				</TR>
+						<tr>
+							<td height="10">
+								<input type="button" name="cmdCancel" value="Cancel" style="width: 100%" class="btn"
+									onclick="cancel()" />
+							</td>
+						</tr>
 
-				<TR>
-					<TD height=10>
-						<input type="button" name=cmdRemoveAll value="Remove All" style="WIDTH: 100%"  class="btn"
-								onclick="removeAll()" />
-					</TD>
-				</TR>
+						<tr>
+							<td height="10" colspan="5"></td>
+						</tr>
+					</table>
+				</td>
+			</tr>
+		</table>
+	</form>
 
-				<TR>
-					<TD></TD>
-				</TR>
+	<input type='hidden' id="txtTicker" name="txtTicker" value="0">
+	<input type='hidden' id="txtLastKeyFind" name="txtLastKeyFind">
 
-				<TR>
-					<TD height=10>
-						<input type="button" name=cmdOK value="OK" style="WIDTH: 100%"  id=cmdOK class="btn"
-								onclick="ok()" />
-					</TD>
-				</TR>
-
-				<TR>
-					<TD height=10></TD>
-				</TR>
-
-				<TR>
-					<TD height=10>
-						<input type="button" name="cmdCancel" value="Cancel" style="WIDTH: 100%" class="btn"
-								onclick="cancel()" />
-					</TD>
-				</TR>     
-
-				<TR>
-					<TD height=10 colspan=5></td>
-				</tr>
-			</table>
-		</td>
-	</tr>
-</table>
-</form>
-
-<INPUT type='hidden' id=txtTicker name=txtTicker value=0>
-<INPUT type='hidden' id=txtLastKeyFind name=txtLastKeyFind >
-
-<INPUT type='hidden' id=txtSelectionID name=txtSelectionID value=0>
-<INPUT type='hidden' id=txtOptionRecordID name=txtOptionRecordID value=<%=session("optionRecordID")%>>
+	<input type='hidden' id="txtSelectionID" name="txtSelectionID" value="0">
+	<input type='hidden' id="txtOptionRecordID" name="txtOptionRecordID" value='<%=session("optionRecordID")%>'>
 
 
-<FORM action="tbBulkBooking_Submit" method="post" id="frmGotoOption" name="frmGotoOption" style="visibility:hidden;display:none">
-<%Html.RenderPartial("~/Views/Shared/gotoOption.ascx")%>
-</FORM>
+	<form action="tbBulkBooking_Submit" method="post" id="frmGotoOption" name="frmGotoOption" style="visibility: hidden; display: none">
+		<%Html.RenderPartial("~/Views/Shared/gotoOption.ascx")%>
+	</form>
 
-<FORM id="frmBookingSelection" name="frmBookingSelection" target="tbBulkBookingSelection" action="tbBulkBookingSelectionMain" method="post" style="visibility:hidden;display:none">
-	<INPUT type="hidden" id="selectionType" name="selectionType">
-</FORM>
+	<form id="frmBookingSelection" name="frmBookingSelection" target="tbBulkBookingSelection" action="tbBulkBookingSelectionMain" method="post" style="visibility: hidden; display: none">
+		<input type="hidden" id="selectionType" name="selectionType">
+	</form>
 
 </div>
 
 <script type="text/javascript">
-	tbBulkBooking_addhandlers();
 	tbBulkBooking_onload();
 </script>
