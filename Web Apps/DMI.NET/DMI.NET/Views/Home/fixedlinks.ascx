@@ -1008,7 +1008,7 @@
 								</a>
 							</div>
 						</li>
-						<li><span>Navigate</span>
+						<li id="mnuSectionNavigateRecords"><span>Navigate</span>
 							<div id="mnutoolFirstEventLogFind" class="button">
 								<a href="#" rel="table" title="First Record">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/first64HOVER.png") %>" alt="" />
@@ -1038,7 +1038,7 @@
 								</a>
 							</div>
 						</li>						
-						<li id="mnuSectionPositionEventLog"><span>Record Position</span>
+						<li id="mnuSectionPositionEventLog"><span>Record Count</span>
 							<div id="mnutoolRecordEventLog" class="textboxlist">
 								<ul>
 									<li>

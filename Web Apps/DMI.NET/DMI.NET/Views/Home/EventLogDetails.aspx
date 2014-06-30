@@ -39,7 +39,7 @@
 
 	<div>
 
-		<%Html.RenderPartial("~/Views/Shared/ctl_ASRIntranetPrintFunctions.ascx")%>
+	<div id="popout_Wrapper">
 
 		<form id="frmEventDetails" name="frmEventDetails">
 
@@ -307,7 +307,7 @@
 																			
 																		</td>
 																		<td width="5">
-																			<input id="cmdPrint"  type="button" class="button ui-button ui-widget ui-state-default ui-widget-content ui-corner-tl ui-corner-br" value="Print..." name="cmdPrint" style="width: 80px" onclick="printEvent(true);" />
+																			<input id="cmdPrint"  type="button" class="button ui-button ui-widget ui-state-default ui-widget-content ui-corner-tl ui-corner-br" value="Print..." name="cmdPrint" style="width: 80px" onclick="printEvent();" />
 																		</td>
 																		<td width="5">
 																			<input id="cmdOK" type="button" class="button ui-button ui-widget ui-state-default ui-widget-content ui-corner-tl ui-corner-br" value="Close" name="cmdOK" style="width: 80px" onclick="okClick();" />
@@ -332,6 +332,7 @@
 
 		</form>
 
+		</div>
 		<form id="frmUseful" name="frmUseful" style="visibility: hidden; display: none">
 			<input type="hidden" id="txtUserName" name="txtUserName" value="<%=session("username")%>">
 			<%
@@ -444,102 +445,16 @@
 				openDialog(sURL, 500, 400);
 			}
 
-			function printEvent(pfToPrinter) {
-				var fOK = true;
-				var sErrorString = new String("");
-				var objPrinter = ASRIntranetPrintFunctions;
-				var iDetailCount;
-
-				if (pfToPrinter == true) {
-					if (objPrinter.IsOK == false) {
-						return;
-					}
-				}
-
-				// OK so far.
-				if (pfToPrinter == true) {
-					fOK = objPrinter.PrintStart(false, frmUseful.txtUserName.value);
-				}
-
-				if (fOK == true) {
-
-					if (pfToPrinter == true) {
-						//print selected event information
-						objPrinter.PrintHeader("Event Log : " + document.getElementById('tdName').innerText);
-						objPrinter.PrintNonBold("Mode :	" + document.getElementById('tdMode').innerText);
-						objPrinter.PrintNormal("");
-						objPrinter.PrintNonBold("Start Time :	" + document.getElementById('tdStartTime').innerText);
-						objPrinter.PrintNonBold("End Time :	" + document.getElementById('tdEndTime').innerText);
-						objPrinter.PrintNonBold("End Time :	" + document.getElementById('tdDuration').innerText);
-						objPrinter.PrintNormal("");
-						objPrinter.PrintNonBold("Type :	" + document.getElementById('tdType').innerText);
-						objPrinter.PrintNonBold("Status :	" + document.getElementById('tdStatus').innerText);
-						objPrinter.PrintNonBold("User name :	" + document.getElementById('tdUser').innerText);
-						objPrinter.PrintNormal("");
-					}
-
-					if (pfToPrinter == true && (frmEventDetails.txtEventBatch.value == 1)) {
-						//print batch job information
-						objPrinter.PrintNonBold("Batch Job Name :	" + document.getElementById('tdBatchJobName').innerText);
-						objPrinter.PrintNormal("");
-						objPrinter.PrintNormal("All Jobs in Batch :");
-						objPrinter.PrintNormal("");
-
-						for (var iCount = 0; iCount < frmEventDetails.cboOtherJobs.options.length; iCount++) {
-							objPrinter.PrintNonBold(frmEventDetails.cboOtherJobs.options[iCount].text);
-						}
-					}
-
-					if (pfToPrinter == true) {
-						//print records summary information			
-						objPrinter.PrintNormal("");
-						objPrinter.PrintNonBold("Records Successful :	" + document.getElementById('tdSuccessCount').innerText);
-						objPrinter.PrintNonBold("Records Failed :	" + document.getElementById('tdFailCount').innerText);
-					}
-
-					if (pfToPrinter == true) {
-						//print selected event details
-						objPrinter.PrintNormal("");
-						objPrinter.PrintBold("Details : ");
-						objPrinter.PrintNormal("");
-
-						if ($("#cboOtherJobs").length > 0) {
-							iDetailCount = $('[id^="' + "row_" + $("#cboOtherJobs")[0].value + '" ]').length;
-						} else {
-							iDetailCount = $("#ssOleDBGridEventLogDetails tr").length;
-						}
-
-						if (iDetailCount < 1) {
-							objPrinter.PrintNonBold("There are no details for this event log entry");
-						}
-						else {
-
-							var a;
-							var rows;
-
-							if ($("#cboOtherJobs").length > 0) {
-								rows = $('[id^="' + "row_" + $("#cboOtherJobs")[0].value + '" ]');
-							} else {
-								rows = $("#ssOleDBGridEventLogDetails tr");
-							}
-
-							for (a = 1; a < rows.length; a++) {
-								objPrinter.PrintBold("*** Log entry " + a + " of " + iDetailCount + " ***");
-
-								sErrorString = rows[a].cells[1].innerText;
-
-								objPrinter.PrintNonBold(sErrorString);
-								objPrinter.PrintNormal("");
-
-							}
-						}
-					}
-
-					if (pfToPrinter == true) {
-						objPrinter.PrintEnd();
-						objPrinter.PrintConfirm("Event Log Details", "Event Log Details");
-					}
-				}
+			function printEvent() {
+				//Hide the buttons before printing...
+				$("#cmdEmail").hide();
+				$("#cmdPrint").hide();
+				$("#cmdOK").hide();
+				OpenHR.printDiv("popout_Wrapper");
+				//... and show them again
+				$("#cmdEmail").show();
+				$("#cmdPrint").show();
+				$("#cmdOK").show();
 			}
 
 			function populateEventInfo() {

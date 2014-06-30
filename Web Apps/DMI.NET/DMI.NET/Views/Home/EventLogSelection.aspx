@@ -6,6 +6,7 @@
 <head>
 	<title>Event Log Selection - OpenHR</title>
 	<script src="<%: Url.LatestContent("~/bundles/jQuery")%>" type="text/javascript"></script>
+	<script src="<%: Url.LatestContent("~/bundles/jQueryUI7")%>" type="text/javascript"></script>
 	<script src="<%: Url.LatestContent("~/bundles/OpenHR_General")%>" type="text/javascript"></script>
 	<link href="<%: Url.LatestContent("~/Content/OpenHR.css")%>" rel="stylesheet" type="text/css" />
 
@@ -38,42 +39,32 @@
 
 			var frmOpenerDelete = window.dialogArguments.OpenHR.getForm("workframe", "frmDelete");
 			var frmOpenerLog = window.dialogArguments.OpenHR.getForm("workframe", "frmLog");
+			var LogEvents = window.dialogArguments.OpenHR.getForm("workframe", "LogEvents");
 
 			sEventIDs = '';
 
-			if (frmEventSelection.optSelection1.checked == true) {
+			if (frmEventSelection.optSelection1.checked == true) { //Only the currently highlighted row(s)
 				frmOpenerDelete.txtDeleteSel.value = 0;
 
-				frmOpenerLog.ssOleDBGridEventLog.Redraw = false;
-
-				for (var i = 0; i < frmOpenerLog.ssOleDBGridEventLog.selbookmarks.count; i++) {
-					sEventIDs = sEventIDs + frmOpenerLog.ssOleDBGridEventLog.Columns("ID").cellvalue(frmOpenerLog.ssOleDBGridEventLog.selbookmarks(i)) + ',';
+				var eventID;
+				var selectedRows = $(LogEvents).jqGrid('getGridParam', 'selarrrow');
+				for (var i = 0; i <= selectedRows.length - 1; i++) {
+					var rowData = $(LogEvents).getRowData(selectedRows[i]);
+					eventID = rowData["ID"];
+					sEventIDs = sEventIDs + eventID + ",";
 				}
 
 				sEventIDs = sEventIDs.substr(0, sEventIDs.length - 1);
-
-				frmOpenerLog.ssOleDBGridEventLog.Redraw = true;
-			}
-
-
-			else if (frmEventSelection.optSelection2.checked == true) {
+			} else if (frmEventSelection.optSelection2.checked == true) { //All entries currently displayed
 				frmOpenerDelete.txtDeleteSel.value = 1;
 
-				frmOpenerLog.ssOleDBGridEventLog.Redraw = false;
-
-				frmOpenerLog.ssOleDBGridEventLog.MoveFirst();
-
-				for (var i = 0; i < frmOpenerLog.ssOleDBGridEventLog.Rows; i++) {
-					sEventIDs = sEventIDs + frmOpenerLog.ssOleDBGridEventLog.Columns("ID").cellvalue(frmOpenerLog.ssOleDBGridEventLog.AddItemBookmark(i)) + ',';
+				var allRows = $(LogEvents).jqGrid('getGridParam', 'data');
+				for (var i = 0; i <= allRows.length - 1; i++) {
+					sEventIDs = sEventIDs + allRows[i]["ID"] + ",";
 				}
 
 				sEventIDs = sEventIDs.substr(0, sEventIDs.length - 1);
-
-				frmOpenerLog.ssOleDBGridEventLog.Redraw = true;
-			}
-
-
-			else if (frmEventSelection.optSelection3.checked == true) {
+			} else if (frmEventSelection.optSelection3.checked == true) { //All entries (that the current user has permission to see)
 				frmOpenerDelete.txtDeleteSel.value = 2;
 			}
 			

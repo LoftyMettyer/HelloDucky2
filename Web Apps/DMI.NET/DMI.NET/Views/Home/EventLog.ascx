@@ -48,20 +48,10 @@
 
 %>
 
-<%--licence manager reference for activeX--%>
-<object classid="clsid:5220cb21-c88d-11cf-b347-00aa00a28331"
-	id="Microsoft_Licensed_Class_Manager_1_0"
-	viewastext>
-	<param name="LPKPath" value="<%: Url.Content("~/lpks/ssmain.lpk")%>">
-</object>
-
 <script type="text/javascript">
 
 	function eventLog_window_onload() {
-
 		$("#workframe").attr("data-framesource", "EVENTLOG");
-
-		setGridFont(frmLog.ssOleDBGridEventLog);
 
 		var fOK;
 		fOK = true;
@@ -127,12 +117,7 @@
 		var iEndPosition = iStartPosition - 1 + parseInt(frmData.txtELCurrentRecCount.value);
 		
 		if (sRecords > 0) {
-			sCaption = "Records " +
-					iStartPosition +
-					" to " +
-					iEndPosition +
-					" of " +
-					sRecords;
+			sCaption = "Record(s): " + sRecords;
 		}
 		else {
 			sCaption = "No Records";
@@ -192,39 +177,109 @@
 
 		var frmLog = OpenHR.getForm("workframe", "frmLog");
 		
-		if (dataCollection != null) {
-			frmLog.ssOleDBGridEventLog.focus();
-			frmLog.ssOleDBGridEventLog.Redraw = false;
-			if (frmLog.ssOleDBGridEventLog.Rows > 0) {
-				frmLog.ssOleDBGridEventLog.RemoveAll();
-			}
+		//Clear the log table
+		$("#LogEvents").jqGrid('GridUnload');
 
-			for (i = 0; i < dataCollection.length; i++) {
+		var colNames = ['ID', 'Start Time', 'End Time', 'Duration', 'Type', 'Name', 'Status', 'Mode', 'User name'];
+		var colData = [];
+		var obj;
 
-				if (i == iPollCounter) {
-					//TODO
-					//frmRefresh.submit();
-					iPollCounter = iPollCounter + iPollPeriod;
+		//Get the data from the hidden inputs
+		$("input[id^='txtAddString_']").each(function () {
+			obj = {};
+			var splitValue = this.value.split("\t");
+			//We can't use a forEach loop becasue we want to ignore some of the values, so we'll use a 'traditional' loop
+			for (i = 0; i <= 8; i++) {
+				obj[colNames[i]] = splitValue[i];
+			};
+			colData.push(obj);
+		});
+
+		$("#LogEvents").jqGrid({
+			colNames: colNames,
+			datatype: 'local',
+			data: colData,
+			colModel: [
+				{ name: 'ID', hidden: true },
+				{ name: 'Start Time' },
+				{ name: 'End Time' },
+				{ name: 'Duration' },
+				{ name: 'Type' },
+				{ name: 'Name' },
+				{ name: 'Status' },
+				{ name: 'Mode' },
+				{ name: 'User name' }
+			],
+			multiselect: true,
+			loadComplete: function () {
+				moveFirst();
+			},
+			onSelectRow: function (rowID) { //Enalbe ribbon
+				//menu_toolbarEnableItem("mnutoolViewEventLogFind", true);
+				//menu_toolbarEnableItem("mnutoolPurgeEventLogFind", true);
+				//menu_toolbarEnableItem("mnutoolEmailEventLogFind", true);
+				//menu_toolbarEnableItem("mnutoolDeleteEventLogFind", true);
+			},
+			ondblClickRow: function (rowID) {
+				EventLog_viewEvent();
+			},
+			cmTemplate: { sortable: true },
+			pager: $('#pager-coldata'),
+			ignoreCase: true,
+			shrinkToFit: false,
+			rowNum: 1000,
+			beforeSelectRow: function (rowid, e) { // handle jqGrid multiselect => thanks to solution from Byron Cobb on http://goo.gl/UvGku
+				if (!e.ctrlKey && !e.shiftKey) {
+					$("#LogEvents").jqGrid('resetSelection');
+				} else if (e.shiftKey) {
+					var initialRowSelect = $("#LogEvents").jqGrid('getGridParam', 'selrow');
+					$("#LogEvents").jqGrid('resetSelection');
+
+					var CurrentSelectIndex = $("#LogEvents").jqGrid('getInd', rowid);
+					var InitialSelectIndex = $("#LogEvents").jqGrid('getInd', initialRowSelect);
+					var startID = "";
+					var endID = "";
+					if (CurrentSelectIndex > InitialSelectIndex) {
+						startID = initialRowSelect;
+						endID = rowid;
+					}
+					else {
+						startID = rowid;
+						endID = initialRowSelect;
+					}
+
+					var shouldSelectRow = false;
+					$.each($("#LogEvents").getDataIDs(), function (_, id) {
+						if ((shouldSelectRow = id == startID || shouldSelectRow)) {
+							$("#LogEvents").jqGrid('setSelection', id, false);
+						}
+						return id != endID;
+					});
 				}
-
-				sControlName = dataCollection.item(i).name;
-				sControlPrefix = sControlName.substr(0, 13);
-
-				if (sControlPrefix == "txtAddString_") {
-					frmLog.ssOleDBGridEventLog.AddItem(dataCollection.item(i).value);
-				}
+				return true;
 			}
+		}).jqGrid('hideCol', 'cb');
 
-			frmLog.ssOleDBGridEventLog.Redraw = true;
-			//TODO
-			//frmRefresh.submit();
+		//search options.
+		$("#LogEvents").jqGrid('navGrid', '#pager-coldata', { del: false, add: false, edit: false, search: false });
 
-			if (frmLog.ssOleDBGridEventLog.Rows > 0) {
-				frmLog.ssOleDBGridEventLog.SelBookmarks.RemoveAll();
-				frmLog.ssOleDBGridEventLog.MoveFirst();
-				frmLog.ssOleDBGridEventLog.SelBookmarks.Add(frmLog.ssOleDBGridEventLog.Bookmark);
-			}
-		}
+		$("#LogEvents").jqGrid('navButtonAdd', "#pager-coldata", {
+			caption: '',
+			buttonicon: 'ui-icon-search',
+			onClickButton: function () {
+				$("#LogEvents").jqGrid('filterToolbar', { stringResult: true, searchOnEnter: false });
+			},
+			position: 'first',
+			title: '',
+			cursor: 'pointer'
+		});
+
+		$("#LogEvents").jqGrid('setGridHeight', $("#gridContainer").height());
+
+		//menu_toolbarEnableItem("mnutoolViewEventLogFind", false);
+		//menu_toolbarEnableItem("mnutoolPurgeEventLogFind", false);
+		//menu_toolbarEnableItem("mnutoolEmailEventLogFind", false);
+		//menu_toolbarEnableItem("mnutoolDeleteEventLogFind", false);
 
 		frmLog.cboUsername.style.color = 'black';
 		frmLog.cboType.style.color = 'black';
@@ -237,14 +292,16 @@
 		// Get menu to refresh the menu.
 		menu_refreshMenu();
 
-		EventLog_refreshButtons();
-
 		refreshStatusBar();
 
 		if (frmPurge.txtShowPurgeMSG.value == 1) {
 			OpenHR.messageBox("Purge completed.", 64, "Event Log");
 			frmPurge.txtShowPurgeMSG.value = 0;
 		}
+	}
+
+	function moveFirst() {
+		$("#LogEvents").jqGrid('setSelection', 1);
 	}
 
 	function filterSQL() {
@@ -291,59 +348,49 @@
 		frmGetDataForm.txtELOrderColumn.value = frmLog.txtELOrderColumn.value;
 		frmGetDataForm.txtELOrderOrder.value = frmLog.txtELOrderOrder.value;
 
-		EventLog_refreshButtons();
 		OpenHR.submitForm(frmGetDataForm);
-
 	}
 
 	function EventLog_viewEvent() {
 		var sURL;
+		//Get the row ID
+		var rowID = $("#LogEvents").jqGrid('getGridParam', 'selrow')
 
-		
-		if (frmLog.ssOleDBGridEventLog.Rows > 0 && frmLog.ssOleDBGridEventLog.SelBookmarks.Count == 1) {
-			frmDetails.txtEventID.value = frmLog.ssOleDBGridEventLog.Columns(0).text;
-
-			frmDetails.txtEventName.value = frmLog.ssOleDBGridEventLog.Columns(5).text;
-			frmDetails.txtEventMode.value = frmLog.ssOleDBGridEventLog.Columns(7).text;
-
-			frmDetails.txtEventStartTime.value = frmLog.ssOleDBGridEventLog.Columns(1).text;
-			frmDetails.txtEventEndTime.value = frmLog.ssOleDBGridEventLog.Columns(2).text;
-			frmDetails.txtEventDuration.value = frmLog.ssOleDBGridEventLog.Columns(3).text;
-
-			frmDetails.txtEventType.value = frmLog.ssOleDBGridEventLog.Columns(4).text;
-			frmDetails.txtEventStatus.value = frmLog.ssOleDBGridEventLog.Columns(6).text;
-			frmDetails.txtEventUser.value = frmLog.ssOleDBGridEventLog.Columns(8).text;
-
-			frmDetails.txtEventSuccessCount.value = frmLog.ssOleDBGridEventLog.Columns(12).text;
-			frmDetails.txtEventFailCount.value = frmLog.ssOleDBGridEventLog.Columns(13).text;
-
-			frmDetails.txtEventBatchName.value = frmLog.ssOleDBGridEventLog.Columns("BatchName").text;
-			frmDetails.txtEventBatchJobID.value = frmLog.ssOleDBGridEventLog.Columns("BatchJobID").text;
-			frmDetails.txtEventBatchRunID.value = frmLog.ssOleDBGridEventLog.Columns("BatchRunID").text;
-
-			frmDetails.txtEmailPermission.value = frmLog.txtELEmailPermission.value;
-
-			sURL = "eventLogDetails" +
-					"?txtEventID=" + frmDetails.txtEventID.value +
-					"&txtEventName=" + escape(frmDetails.txtEventName.value) +
-					"&txtEventMode=" + escape(frmDetails.txtEventMode.value) +
-					"&txtEventStartTime=" + frmDetails.txtEventStartTime.value +
-					"&txtEventEndTime=" + frmDetails.txtEventEndTime.value +
-					"&txtEventDuration=" + frmDetails.txtEventDuration.value +
-					"&txtEventType=" + escape(frmDetails.txtEventType.value) +
-					"&txtEventStatus=" + escape(frmDetails.txtEventStatus.value) +
-					"&txtEventUser=" + escape(frmDetails.txtEventUser.value) +
-					"&txtEventSuccessCount=" + frmDetails.txtEventSuccessCount.value +
-					"&txtEventFailCount=" + frmDetails.txtEventFailCount.value +
-					"&txtEventBatchName=" + escape(frmDetails.txtEventBatchName.value) +
-					"&txtEventBatchJobID=" + frmDetails.txtEventBatchJobID.value +
-					"&txtEventBatchRunID=" + frmDetails.txtEventBatchRunID.value +
-					"&txtEmailPermission=" + escape(frmDetails.txtEmailPermission.value);
-
-			openDialog(sURL, 900, 770);
+		if (rowID == null) { //No row selected
+			return;
 		}
+		//Get the row data
+		var rowData = $("#LogEvents").getRowData(rowID);
 
-		EventLog_refreshButtons();
+		frmDetails.txtEventID.value = rowData["ID"];
+		frmDetails.txtEventName.value = rowData["Name"];
+		frmDetails.txtEventMode.value = rowData["Mode"];
+		frmDetails.txtEventStartTime.value = rowData["Start Time"];
+		frmDetails.txtEventEndTime.value = rowData["End Time"];
+		frmDetails.txtEventDuration.value = rowData["Duration"];
+		frmDetails.txtEventType.value = rowData["Type"];
+		frmDetails.txtEventStatus.value = rowData["Status"];
+		frmDetails.txtEventUser.value = rowData["User name"];
+		frmDetails.txtEmailPermission.value = frmLog.txtELEmailPermission.value;
+
+		sURL = "eventLogDetails" +
+				"?txtEventID=" + frmDetails.txtEventID.value +
+				"&txtEventName=" + escape(frmDetails.txtEventName.value) +
+				"&txtEventMode=" + escape(frmDetails.txtEventMode.value) +
+				"&txtEventStartTime=" + frmDetails.txtEventStartTime.value +
+				"&txtEventEndTime=" + frmDetails.txtEventEndTime.value +
+				"&txtEventDuration=" + frmDetails.txtEventDuration.value +
+				"&txtEventType=" + escape(frmDetails.txtEventType.value) +
+				"&txtEventStatus=" + escape(frmDetails.txtEventStatus.value) +
+				"&txtEventUser=" + escape(frmDetails.txtEventUser.value) +
+				"&txtEventSuccessCount=" + frmDetails.txtEventSuccessCount.value +
+				"&txtEventFailCount=" + frmDetails.txtEventFailCount.value +
+				"&txtEventBatchName=" + escape(frmDetails.txtEventBatchName.value) +
+				"&txtEventBatchJobID=" + frmDetails.txtEventBatchJobID.value +
+				"&txtEventBatchRunID=" + frmDetails.txtEventBatchRunID.value +
+				"&txtEmailPermission=" + escape(frmDetails.txtEmailPermission.value);
+
+		openDialog(sURL, 900, 770);
 	}
 
 	function EventLog_deleteEvent() {
@@ -389,7 +436,7 @@
 				"&txtEventBatchRunID=" + frmDetails.txtEventBatchRunID.value +
 				"&txtEmailPermission=" + escape(frmDetails.txtEmailPermission.value);
 
-		openDialog(sURL, 400, 200);
+		openDialog(sURL, 500, 220);
 
 	}
 
@@ -398,10 +445,12 @@
 		var sEventList = new String("");
 		var sURL;
 
-		//populate the txtSelectedIDs list
-		for (var i = 0; i < frmLog.ssOleDBGridEventLog.SelBookmarks.Count; i++) {
-			eventID = frmLog.ssOleDBGridEventLog.Columns("ID").CellText(frmLog.ssOleDBGridEventLog.SelBookmarks(i));
+		var selectedRows = $("#LogEvents").jqGrid('getGridParam', 'selarrrow');
 
+		//populate the txtSelectedIDs list
+		for (var i = 0; i <= selectedRows.length-1; i++) {
+			var rowData = $("#LogEvents").getRowData(selectedRows[i]);
+			eventID = rowData["ID"];
 			sEventList = sEventList + eventID + ",";
 		}
 
@@ -414,16 +463,6 @@
 				"&txtEmailOrderOrder=" + frmLog.txtELOrderOrder.value;
 
 		openDialog(sURL, 500, 400);
-	}
-
-	function EventLog_refreshButtons() {
-
-		var frmLog = OpenHR.getForm("workframe", "frmLog");
-		menu_toolbarEnableItem("mnutoolViewEventLogFind", (frmLog.ssOleDBGridEventLog.Rows > 0));
-		menu_toolbarEnableItem("mnutoolPurgeEventLogFind", (frmLog.txtELPurgePermission.value == "1"));
-		menu_toolbarEnableItem("mnutoolDeleteEventLogFind", ((frmLog.ssOleDBGridEventLog.Rows > 0) && (frmLog.txtELDeletePermission.value == "1")));
-		menu_toolbarEnableItem("mnutoolEmailEventLogFind", ((frmLog.ssOleDBGridEventLog.SelBookmarks.Count > 0) && (frmLog.txtELEmailPermission.value == "1")));
-
 	}
 
 	function refreshUsers() {
@@ -485,8 +524,6 @@
 			oOption.selected = true;
 		}
 
-		EventLog_refreshButtons();
-
 		refreshGrid();
 	}
 
@@ -504,41 +541,6 @@
 
 </script>
 
-<object classid="clsid:F9043C85-F6F2-101A-A3C9-08002B2F49FB"
-	id="dialog"
-	codebase="cabs/comdlg32.cab#Version=1,0,0,0"
-	style="LEFT: 0px; TOP: 0px">
-	<param name="_ExtentX" value="847">
-	<param name="_ExtentY" value="847">
-	<param name="_Version" value="393216">
-	<param name="CancelError" value="0">
-	<param name="Color" value="0">
-	<param name="Copies" value="1">
-	<param name="DefaultExt" value="">
-	<param name="DialogTitle" value="bob">
-	<param name="FileName" value="">
-	<param name="Filter" value="">
-	<param name="FilterIndex" value="0">
-	<param name="Flags" value="0">
-	<param name="FontBold" value="0">
-	<param name="FontItalic" value="0">
-	<param name="FontName" value="">
-	<param name="FontSize" value="8">
-	<param name="FontStrikeThru" value="0">
-	<param name="FontUnderLine" value="0">
-	<param name="FromPage" value="0">
-	<param name="HelpCommand" value="0">
-	<param name="HelpContext" value="0">
-	<param name="HelpFile" value="">
-	<param name="HelpKey" value="">
-	<param name="InitDir" value="">
-	<param name="Max" value="0">
-	<param name="Min" value="0">
-	<param name="MaxFileSize" value="260">
-	<param name="PrinterDefault" value="1">
-	<param name="ToPage" value="0">
-	<param name="Orientation" value="1">
-</object>
 
 <form id="frmLog">
 	<table align="center" cellpadding="5" cellspacing="0" width="100%" height="100%">
@@ -561,14 +563,13 @@
 												</td>
 											</tr>
 											<tr height="10">
-												<td width="82" nowrap>User name : 
+												<td width="82">User name: 
 												</td>
 												<td>
 													<select id="cboUsername" name="cboUsername" class="combo" style="WIDTH: 100%" onchange="refreshGrid();">
 													</select>
 												</td>
-												<td width="25">Type : 
-												</td>
+												<td width="25">Type:</td>
 												<td>
 													<select id="cboType" name="cboType" class="combo" style="WIDTH: 100%" onchange="refreshGrid();">
 
@@ -710,7 +711,7 @@
 														%>
 													</select>
 												</td>
-												<td width="25">Mode : 
+												<td width="25">Mode: 
 												</td>
 												<td>
 													<select id="cboMode" name="cboMode" class="combo" style="WIDTH: 100%" onchange="refreshGrid();">
@@ -735,7 +736,7 @@
 														%>
 													</select>
 												</td>
-												<td width="25">Status : 
+												<td width="25">Status: 
 												</td>
 												<td>
 													<select id="cboStatus" name="cboStatus" class="combo" style="width: 100%" onchange="refreshGrid();">
@@ -785,217 +786,6 @@
 													</select>
 												</td>
 											</tr>
-											<tr height="5">
-												<td colspan="8"></td>
-											</tr>
-											<tr>
-												<td colspan="8">
-													<%
-
-														Dim avColumnDef(13, 4)
-	
-														avColumnDef(0, 0) = "ID"			 'name
-														avColumnDef(0, 1) = "ID"			 'caption
-														avColumnDef(0, 2) = "1600"		 'width
-														avColumnDef(0, 3) = "0"				 'visible
-	
-														avColumnDef(1, 0) = "DateTime" 'name
-														avColumnDef(1, 1) = "Start Time"	 'caption
-														avColumnDef(1, 2) = "3300"				 'width
-														avColumnDef(1, 3) = "-1"					 'visible
-
-														avColumnDef(2, 0) = "EndTime"	 'name
-														avColumnDef(2, 1) = "End Time" 'caption
-														avColumnDef(2, 2) = "3300"		 'width
-														avColumnDef(2, 3) = "-1"			 'visible
-	
-														avColumnDef(3, 0) = "Duration" 'name
-														avColumnDef(3, 1) = "Duration" 'caption
-														avColumnDef(3, 2) = "1750"		 'width
-														avColumnDef(3, 3) = "-1"			 'visible
-
-														avColumnDef(4, 0) = "Type"	 'name
-														avColumnDef(4, 1) = "Type"	 'caption
-														avColumnDef(4, 2) = "3250"	 'width
-														avColumnDef(4, 3) = "-1"		 'visible
-
-														avColumnDef(5, 0) = "Name"	 'name
-														avColumnDef(5, 1) = "Name"	 'caption
-														avColumnDef(5, 2) = "5500"	 'width
-														avColumnDef(5, 3) = "-1"		 'visible
-
-														avColumnDef(6, 0) = "Status"	 'name
-														avColumnDef(6, 1) = "Status"	 'caption
-														avColumnDef(6, 2) = "2100"		 'width
-														avColumnDef(6, 3) = "-1"			 'visible
-
-														avColumnDef(7, 0) = "Mode"		 'name
-														avColumnDef(7, 1) = "Mode"		 'caption
-														avColumnDef(7, 2) = "1500"		 'width
-														avColumnDef(7, 3) = "-1"			 'visible
-
-														avColumnDef(8, 0) = "Username"	 'name
-														avColumnDef(8, 1) = "User name"	 'caption
-														avColumnDef(8, 2) = "2500"			 'width
-														avColumnDef(8, 3) = "-1"				 'visible
-
-														avColumnDef(9, 0) = "BatchJobID" 'name
-														avColumnDef(9, 1) = "BatchJobID" 'caption
-														avColumnDef(9, 2) = "1800"			 'width
-														avColumnDef(9, 3) = "0"					 'visible
-	
-														avColumnDef(10, 0) = "BatchRunID"	 'name
-														avColumnDef(10, 1) = "BatchRunID"	 'caption
-														avColumnDef(10, 2) = "1800"				 'width
-														avColumnDef(10, 3) = "0"					 'visible
-
-														avColumnDef(11, 0) = "BatchName"	 'name
-														avColumnDef(11, 1) = "Batch Name"	 'caption
-														avColumnDef(11, 2) = "1800"				 'width
-														avColumnDef(11, 3) = "0"					 'visible
-	
-														avColumnDef(12, 0) = "SuccessCount"	 'name
-														avColumnDef(12, 1) = "SuccessCount"	 'caption
-														avColumnDef(12, 2) = "1800"					 'width
-														avColumnDef(12, 3) = "0"						 'visible
-	
-														avColumnDef(13, 0) = "FailCount"	 'name
-														avColumnDef(13, 1) = "FailCount"	 'caption
-														avColumnDef(13, 2) = "1800"				 'width
-														avColumnDef(13, 3) = "0"					 'visible
-		
-														Response.Write("											<OBJECT classid=clsid:4A4AA697-3E6F-11D2-822F-00104B9E07A1" & vbCrLf)
-														Response.Write("													 codebase=""cabs/COAInt_Grid.cab#version=3,1,3,6""" & vbCrLf)
-														'Response.Write("													height=""100%""" & vbCrLf)
-														Response.Write("													id=ssOleDBGridEventLog" & vbCrLf)
-														Response.Write("													name=ssOleDBGridEventLog" & vbCrLf)
-														Response.Write("													style=""HEIGHT: 400px; VISIBILITY: visible; WIDTH: 100%""" & vbCrLf)
-														'Response.Write("													width=""100%"">" & vbCrLf)
-														Response.Write("												<PARAM NAME=""ScrollBars"" VALUE=""3"">" & vbCrLf)
-														Response.Write("												<PARAM NAME=""_Version"" VALUE=""196617"">" & vbCrLf)
-														Response.Write("												<PARAM NAME=""DataMode"" VALUE=""2"">" & vbCrLf)
-														Response.Write("												<PARAM NAME=""Cols"" VALUE=""0"">" & vbCrLf)
-														Response.Write("												<PARAM NAME=""Rows"" VALUE=""0"">" & vbCrLf)
-														Response.Write("												<PARAM NAME=""BorderStyle"" VALUE=""1"">" & vbCrLf)
-														Response.Write("												<PARAM NAME=""RecordSelectors"" VALUE=""0"">" & vbCrLf)
-														Response.Write("												<PARAM NAME=""GroupHeaders"" VALUE=""-1"">" & vbCrLf)
-														Response.Write("												<PARAM NAME=""ColumnHeaders"" VALUE=""-1"">" & vbCrLf)
-														Response.Write("												<PARAM NAME=""GroupHeadLines"" VALUE=""1"">" & vbCrLf)
-														Response.Write("												<PARAM NAME=""HeadLines"" VALUE=""1"">" & vbCrLf)
-														Response.Write("												<PARAM NAME=""FieldDelimiter"" VALUE=""(None)"">" & vbCrLf)
-														Response.Write("												<PARAM NAME=""FieldSeparator"" VALUE=""(Tab)"">" & vbCrLf)
-														Response.Write("												<PARAM NAME=""Row.Count"" VALUE=""0"">" & vbCrLf)
-														Response.Write("												<PARAM NAME=""Col.Count"" VALUE=""1"">" & vbCrLf)
-														Response.Write("												<PARAM NAME=""stylesets.count"" VALUE=""0"">" & vbCrLf)
-														Response.Write("												<PARAM NAME=""TagVariant"" VALUE=""EMPTY"">" & vbCrLf)
-														Response.Write("												<PARAM NAME=""UseGroups"" VALUE=""0"">" & vbCrLf)
-														Response.Write("												<PARAM NAME=""HeadFont3D"" VALUE=""0"">" & vbCrLf)
-														Response.Write("												<PARAM NAME=""Font3D"" VALUE=""0"">" & vbCrLf)
-														Response.Write("												<PARAM NAME=""DividerType"" VALUE=""3"">" & vbCrLf)
-														Response.Write("												<PARAM NAME=""DividerStyle"" VALUE=""1"">" & vbCrLf)
-														Response.Write("												<PARAM NAME=""DefColWidth"" VALUE=""0"">" & vbCrLf)
-														Response.Write("												<PARAM NAME=""BeveColorScheme"" VALUE=""2"">" & vbCrLf)
-														Response.Write("												<PARAM NAME=""BevelColorFrame"" VALUE=""0"">" & vbCrLf)
-														Response.Write("												<PARAM NAME=""BevelColorHighlight"" VALUE=""0"">" & vbCrLf)
-														Response.Write("												<PARAM NAME=""BevelColorShadow"" VALUE=""0"">" & vbCrLf)
-														Response.Write("												<PARAM NAME=""BevelColorFace"" VALUE=""0"">" & vbCrLf)
-														Response.Write("												<PARAM NAME=""CheckBox3D"" VALUE=""-1"">" & vbCrLf)
-														Response.Write("												<PARAM NAME=""AllowAddNew"" VALUE=""0"">" & vbCrLf)
-														Response.Write("												<PARAM NAME=""AllowDelete"" VALUE=""0"">" & vbCrLf)
-														Response.Write("												<PARAM NAME=""AllowUpdate"" VALUE=""0"">" & vbCrLf)
-														Response.Write("												<PARAM NAME=""MultiLine"" VALUE=""0"">" & vbCrLf)
-														Response.Write("												<PARAM NAME=""ActiveCellStyleSet"" VALUE="""">" & vbCrLf)
-														Response.Write("												<PARAM NAME=""RowSelectionStyle"" VALUE=""0"">" & vbCrLf)
-														Response.Write("												<PARAM NAME=""AllowRowSizing"" VALUE=""0"">" & vbCrLf)
-														Response.Write("												<PARAM NAME=""AllowGroupSizing"" VALUE=""0"">" & vbCrLf)
-														Response.Write("												<PARAM NAME=""AllowColumnSizing"" VALUE=""-1"">" & vbCrLf)
-														Response.Write("												<PARAM NAME=""AllowGroupMoving"" VALUE=""0"">" & vbCrLf)
-														Response.Write("												<PARAM NAME=""AllowColumnMoving"" VALUE=""0"">" & vbCrLf)
-														Response.Write("												<PARAM NAME=""AllowGroupSwapping"" VALUE=""0"">" & vbCrLf)
-														Response.Write("												<PARAM NAME=""AllowColumnSwapping"" VALUE=""0"">" & vbCrLf)
-														Response.Write("												<PARAM NAME=""AllowGroupShrinking"" VALUE=""0"">" & vbCrLf)
-														Response.Write("												<PARAM NAME=""AllowColumnShrinking"" VALUE=""0"">" & vbCrLf)
-														Response.Write("												<PARAM NAME=""AllowDragDrop"" VALUE=""0"">" & vbCrLf)
-														Response.Write("												<PARAM NAME=""UseExactRowCount"" VALUE=""-1"">" & vbCrLf)
-														Response.Write("												<PARAM NAME=""SelectTypeCol"" VALUE=""0"">" & vbCrLf)
-														Response.Write("												<PARAM NAME=""SelectTypeRow"" VALUE=""3"">" & vbCrLf)
-														Response.Write("												<PARAM NAME=""SelectByCell"" VALUE=""-1"">" & vbCrLf)
-														Response.Write("												<PARAM NAME=""BalloonHelp"" VALUE=""0"">" & vbCrLf)
-														Response.Write("												<PARAM NAME=""RowNavigation"" VALUE=""2"">" & vbCrLf)
-														Response.Write("												<PARAM NAME=""CellNavigation"" VALUE=""0"">" & vbCrLf)
-														Response.Write("												<PARAM NAME=""MaxSelectedRows"" VALUE=""0"">" & vbCrLf)
-														Response.Write("												<PARAM NAME=""HeadStyleSet"" VALUE="""">" & vbCrLf)
-														Response.Write("												<PARAM NAME=""StyleSet"" VALUE="""">" & vbCrLf)
-														Response.Write("												<PARAM NAME=""ForeColorEven"" VALUE=""0"">" & vbCrLf)
-														Response.Write("												<PARAM NAME=""ForeColorOdd"" VALUE=""0"">" & vbCrLf)
-														Response.Write("												<PARAM NAME=""BackColorEven"" VALUE=""0"">" & vbCrLf)
-														Response.Write("												<PARAM NAME=""BackColorOdd"" VALUE=""0"">" & vbCrLf)
-														Response.Write("												<PARAM NAME=""Levels"" VALUE=""1"">" & vbCrLf)
-														Response.Write("												<PARAM NAME=""RowHeight"" VALUE=""503"">" & vbCrLf)
-														Response.Write("												<PARAM NAME=""ExtraHeight"" VALUE=""0"">" & vbCrLf)
-														Response.Write("												<PARAM NAME=""ActiveRowStyleSet"" VALUE="""">" & vbCrLf)
-														Response.Write("												<PARAM NAME=""CaptionAlignment"" VALUE=""2"">" & vbCrLf)
-														Response.Write("												<PARAM NAME=""SplitterPos"" VALUE=""0"">" & vbCrLf)
-														Response.Write("												<PARAM NAME=""SplitterVisible"" VALUE=""0"">" & vbCrLf)
-														Response.Write("												<PARAM NAME=""Columns.Count"" VALUE=""" & (UBound(avColumnDef) + 1) & """>" & vbCrLf)
-	
-														For i = 0 To UBound(avColumnDef) Step 1
-															Response.Write("												<!--" & avColumnDef(i, 0) & "-->  " & vbCrLf)
-															Response.Write("												<PARAM NAME=""Columns(" & i & ").Width"" VALUE=""" & avColumnDef(i, 2) & """>" & vbCrLf)
-															Response.Write("												<PARAM NAME=""Columns(" & i & ").Visible"" VALUE=""" & avColumnDef(i, 3) & """>" & vbCrLf)
-															Response.Write("												<PARAM NAME=""Columns(" & i & ").Columns.Count"" VALUE=""1"">" & vbCrLf)
-															Response.Write("												<PARAM NAME=""Columns(" & i & ").Caption"" VALUE=""" & avColumnDef(i, 1) & """>" & vbCrLf)
-															Response.Write("												<PARAM NAME=""Columns(" & i & ").Name"" VALUE=""" & avColumnDef(i, 0) & """>" & vbCrLf)
-															Response.Write("												<PARAM NAME=""Columns(" & i & ").Alignment"" VALUE=""0"">" & vbCrLf)
-															Response.Write("												<PARAM NAME=""Columns(" & i & ").CaptionAlignment"" VALUE=""3"">" & vbCrLf)
-															Response.Write("												<PARAM NAME=""Columns(" & i & ").Bound"" VALUE=""0"">" & vbCrLf)
-															Response.Write("												<PARAM NAME=""Columns(" & i & ").AllowSizing"" VALUE=""1"">" & vbCrLf)
-															Response.Write("												<PARAM NAME=""Columns(" & i & ").DataField"" VALUE=""Column " & i & """>" & vbCrLf)
-															Response.Write("												<PARAM NAME=""Columns(" & i & ").DataType"" VALUE=""8"">" & vbCrLf)
-															Response.Write("												<PARAM NAME=""Columns(" & i & ").Level"" VALUE=""0"">" & vbCrLf)
-															Response.Write("												<PARAM NAME=""Columns(" & i & ").NumberFormat"" VALUE="""">" & vbCrLf)
-															Response.Write("												<PARAM NAME=""Columns(" & i & ").Case"" VALUE=""0"">" & vbCrLf)
-															Response.Write("												<PARAM NAME=""Columns(" & i & ").FieldLen"" VALUE=""256"">" & vbCrLf)
-															Response.Write("												<PARAM NAME=""Columns(" & i & ").VertScrollBar"" VALUE=""0"">" & vbCrLf)
-															Response.Write("												<PARAM NAME=""Columns(" & i & ").Locked"" VALUE=""0"">" & vbCrLf)
-															Response.Write("												<PARAM NAME=""Columns(" & i & ").Style"" VALUE=""0"">" & vbCrLf)
-															Response.Write("												<PARAM NAME=""Columns(" & i & ").ButtonsAlways"" VALUE=""0"">" & vbCrLf)
-															Response.Write("												<PARAM NAME=""Columns(" & i & ").RowCount"" VALUE=""0"">" & vbCrLf)
-															Response.Write("												<PARAM NAME=""Columns(" & i & ").ColCount"" VALUE=""1"">" & vbCrLf)
-															Response.Write("												<PARAM NAME=""Columns(" & i & ").HasHeadForeColor"" VALUE=""0"">" & vbCrLf)
-															Response.Write("												<PARAM NAME=""Columns(" & i & ").HasHeadBackColor"" VALUE=""0"">" & vbCrLf)
-															Response.Write("												<PARAM NAME=""Columns(" & i & ").HasForeColor"" VALUE=""0"">" & vbCrLf)
-															Response.Write("												<PARAM NAME=""Columns(" & i & ").HasBackColor"" VALUE=""0"">" & vbCrLf)
-															Response.Write("												<PARAM NAME=""Columns(" & i & ").HeadForeColor"" VALUE=""0"">" & vbCrLf)
-															Response.Write("												<PARAM NAME=""Columns(" & i & ").HeadBackColor"" VALUE=""0"">" & vbCrLf)
-															Response.Write("												<PARAM NAME=""Columns(" & i & ").ForeColor"" VALUE=""0"">" & vbCrLf)
-															Response.Write("												<PARAM NAME=""Columns(" & i & ").BackColor"" VALUE=""0"">" & vbCrLf)
-															Response.Write("												<PARAM NAME=""Columns(" & i & ").HeadStyleSet"" VALUE="""">" & vbCrLf)
-															Response.Write("												<PARAM NAME=""Columns(" & i & ").StyleSet"" VALUE="""">" & vbCrLf)
-															Response.Write("												<PARAM NAME=""Columns(" & i & ").Nullable"" VALUE=""1"">" & vbCrLf)
-															Response.Write("												<PARAM NAME=""Columns(" & i & ").Mask"" VALUE="""">" & vbCrLf)
-															Response.Write("												<PARAM NAME=""Columns(" & i & ").PromptInclude"" VALUE=""0"">" & vbCrLf)
-															Response.Write("												<PARAM NAME=""Columns(" & i & ").ClipMode"" VALUE=""0"">" & vbCrLf)
-															Response.Write("												<PARAM NAME=""Columns(" & i & ").PromptChar"" VALUE=""95"">" & vbCrLf)
-														Next
-		
-														Response.Write("												<PARAM NAME=""UseDefaults"" VALUE=""-1"">" & vbCrLf)
-														Response.Write("												<PARAM NAME=""TabNavigation"" VALUE=""1"">" & vbCrLf)
-														Response.Write("												<PARAM NAME=""BatchUpdate"" VALUE=""0"">" & vbCrLf)
-														Response.Write("												<PARAM NAME=""_ExtentX"" VALUE=""11298"">" & vbCrLf)
-														Response.Write("												<PARAM NAME=""_ExtentY"" VALUE=""3969"">" & vbCrLf)
-														Response.Write("												<PARAM NAME=""_StockProps"" VALUE=""79"">" & vbCrLf)
-														Response.Write("												<PARAM NAME=""Caption"" VALUE="""">" & vbCrLf)
-														Response.Write("												<PARAM NAME=""ForeColor"" VALUE=""0"">" & vbCrLf)
-														Response.Write("												<PARAM NAME=""BackColor"" VALUE=""0"">" & vbCrLf)
-														Response.Write("												<PARAM NAME=""Enabled"" VALUE=""-1"">" & vbCrLf)
-														Response.Write("												<PARAM NAME=""DataMember"" VALUE="""">" & vbCrLf)
-
-														Response.Write("												<PARAM NAME=""Row.Count"" VALUE=""0"">" & vbCrLf)
-														Response.Write("											</OBJECT>" & vbCrLf)
-													%>											
-												</td>
-											</tr>
 										</table>
 									</td>
 									<td width="80">
@@ -1040,21 +830,9 @@
 						</td>
 						<td width="5"></td>
 					</tr>
-					<tr height="8">
-						<td width="5"></td>
-						<tr colspan="1">
-							<table width="100%" class="invisible" cellspacing="0" cellpadding="1">
-								<tr>
-									<td name="sbEventLog" id="sbEventLog">&nbsp
-									</td>
-						</tr>
-				</table>
-			</tr>
-			<td width="5"></td>
-		</tr>
 	</table>
 	</tr> 
-</TABLE>
+</table>
 
 		<input type='hidden' id="txtELDeletePermission" name="txtELDeletePermission">
 	<input type='hidden' id="txtELViewAllPermission" name="txtELViewAllPermission">
@@ -1066,6 +844,11 @@
 	<input type='hidden' id="txtELLoaded" name="txtELLoaded" value="0">
 	<input type="hidden" id="txtCurrUserFilter" name="txtCurrUserFilter" value='<%=Session("CurrentUsername")%>'>
 </form>
+
+<div id="gridContainer" style="height: 450px">
+	<table id='LogEvents'></table>
+	<div id='pager-coldata'></div>
+</div>
 
 <form action="default_Submit" method="post" id="frmGoto" name="frmGoto">
 	<%Html.RenderPartial("~/Views/Shared/gotoWork.ascx")%>
@@ -1154,84 +937,5 @@
 <input type='hidden' id="txtLastKeyFind" name="txtLastKeyFind" value="">
 
 <script type="text/javascript">
-
-	function eventlog_addActiveXHandlers() {
-		OpenHR.addActiveXHandler("ssOleDBGridEventLog", "DblClick", "ssOleDBGridEventLog_dblclick()");
-		OpenHR.addActiveXHandler("ssOleDBGridEventLog", "rowcolchange", "ssOleDBGridEventLog_rowcolchange()");
-		OpenHR.addActiveXHandler("ssOleDBGridEventLog", "Click", "ssOleDBGridEventLog_click()");
-		OpenHR.addActiveXHandler("ssOleDBGridEventLog", "HeadClick", "ssOleDBGridEventLog_headclick()");
-	}
-
-	function ssOleDBGridEventLog_dblclick() {
-		if ((frmLog.ssOleDBGridEventLog.Rows > 0) && (frmLog.ssOleDBGridEventLog.SelBookmarks.Count == 1)) {
-			EventLog_viewEvent();
-		}
-	}
-
-	function ssOleDBGridEventLog_rowcolchange() {
-
-		menu_enableMenuItem("mnutoolViewEventLogFind", frmLog.ssOleDBGridEventLog.SelBookmarks.Count == 1);
-
-
-	}
-
-	function ssOleDBGridEventLog_click() {
-
-		menu_enableMenuItem("mnutoolViewEventLogFind",
-												(!(frmLog.ssOleDBGridEventLog.SelBookmarks.Count > 1) || (frmLog.ssOleDBGridEventLog.Rows == 0)));
-
-	}
-
-	function ssOleDBGridEventLog_headclick() {
-
-		var ColIndex = arguments[0];
-
-		//Set the sort criteria depending on the column header clicked and refresh the grid
-		if (ColIndex == 1) {
-			frmLog.txtELOrderColumn.value = 'DateTime';
-		}
-		else if (ColIndex == 2) {
-			frmLog.txtELOrderColumn.value = 'EndTime';
-		}
-		else if (ColIndex == 3) {
-			frmLog.txtELOrderColumn.value = 'Duration';
-		}
-		else if (ColIndex == 4) {
-			frmLog.txtELOrderColumn.value = 'Type';
-		}
-		else if (ColIndex == 5) {
-			frmLog.txtELOrderColumn.value = 'Name';
-		}
-		else if (ColIndex == 6) {
-			frmLog.txtELOrderColumn.value = 'Status';
-		}
-		else if (ColIndex == 7) {
-			frmLog.txtELOrderColumn.value = 'Mode';
-		}
-		else if (ColIndex == 8) {
-			frmLog.txtELOrderColumn.value = 'Username';
-		}
-		else {
-			frmLog.txtELOrderColumn.value = 'DateTime';
-		}
-
-		if (ColIndex == frmLog.txtELSortColumnIndex.value) {
-			if (frmLog.txtELOrderOrder.value == 'ASC') {
-				frmLog.txtELOrderOrder.value = 'DESC';
-			}
-			else {
-				frmLog.txtELOrderOrder.value = 'ASC';
-			}
-		}
-		else {
-			frmLog.txtELOrderOrder.value = 'ASC';
-		}
-
-		frmLog.txtELSortColumnIndex.value = ColIndex;
-
-		refreshGrid();
-	}
-
 	eventLog_window_onload();
-	eventlog_addActiveXHandlers();
 </script>

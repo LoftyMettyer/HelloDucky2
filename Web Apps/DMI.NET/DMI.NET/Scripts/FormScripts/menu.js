@@ -1127,6 +1127,7 @@ function menu_MenuClick(sTool) {
 	// Event Log
 	
 		if (sToolName == "mnutoolEventLog") {
+			menu_setVisibletoolbarGroupById("mnuSectionNavigateRecords", false) //Hide the navigate section of the ribbon
 			hasChanged = menu_saveChanges("EVENTLOG", true, false);
 			if (hasChanged == 6) { // 6 = No Change
 				menu_loadPage("eventLog");
