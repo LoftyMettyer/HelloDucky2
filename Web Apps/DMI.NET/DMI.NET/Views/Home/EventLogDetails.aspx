@@ -442,7 +442,7 @@
 					"&txtFromMain=" + frmEmail.txtFromMain.value +
 					"&txtBatchInfo=" + escape(frmEmail.txtBatchInfo.value) +
 					"&txtBatchy=" + frmEmail.txtBatchy.value;
-				openDialog(sURL, 500, 400);
+				openDialog(sURL, (screen.width) / 3 + 40, (screen.height) / 2 - 100, "no", "no");
 			}
 
 			function printEvent() {

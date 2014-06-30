@@ -462,7 +462,7 @@
 				"&txtEmailOrderColumn=" + frmLog.txtELOrderColumn.value +
 				"&txtEmailOrderOrder=" + frmLog.txtELOrderOrder.value;
 
-		openDialog(sURL, 500, 400);
+		openDialog(sURL, (screen.width) / 3 + 40, (screen.height) / 2 - 100, "no", "no");
 	}
 
 	function refreshUsers() {
