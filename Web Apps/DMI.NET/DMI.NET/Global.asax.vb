@@ -15,27 +15,11 @@ Public Class MvcApplication
 		filters.Add(New HandleErrorAttribute())
 	End Sub
 
-	Shared Sub RegisterRoutes(ByVal routes As RouteCollection)
-		routes.IgnoreRoute("{resource}.axd/{*pathInfo}")
-
-		' MapRoute takes the following parameters, in order:
-		' (1) Route name
-		' (2) URL with parameters
-		' (3) Parameter defaults
-		routes.MapRoute( _
-			"Default", _
-			"{controller}/{action}/{id}", _
-			New With {.controller = "Account", .action = "Login", .id = UrlParameter.Optional} _
-		)
-
-	End Sub
-
 	Protected Sub Application_Start()
 		AreaRegistration.RegisterAllAreas()
 
 		RegisterGlobalFilters(GlobalFilters.Filters)
-		RegisterRoutes(RouteTable.Routes)
-
+		RouteConfig.RegisterRoutes(RouteTable.Routes)
 		BundleConfig.RegisterBundles(BundleTable.Bundles)
 
 	End Sub

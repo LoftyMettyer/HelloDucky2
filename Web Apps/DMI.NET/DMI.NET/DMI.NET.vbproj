@@ -157,6 +157,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\BundleConfig.vb" />
+    <Compile Include="App_Start\RouteConfig.vb" />
     <Compile Include="Code\ApplicationSettings.vb" />
     <Compile Include="Code\ASRFunctions.vb" />
     <Compile Include="Code\ASRIntranetFunctions.vb" />
@@ -167,6 +168,7 @@
     <Compile Include="Code\svrCleanup.vb" />
     <Compile Include="Controllers\AccountController.vb" />
     <Compile Include="Controllers\HomeController.vb" />
+    <Compile Include="Controllers\ReportsController.vb" />
     <Compile Include="Controllers\SessionLessController.vb" />
     <Compile Include="Enums\Layout.vb" />
     <Compile Include="Global.asax.vb">
@@ -1577,11 +1579,11 @@
     <Content Include="Views\Home\tbTransferBookingFind.ascx" />
     <Content Include="Views\Home\tbTransferCourseFind.ascx" />
     <Content Include="Views\Home\util_calcselection.ascx" />
-    <Content Include="Views\Home\util_def_calendarreport.ascx" />
+    <Content Include="Views\Reports\Util_Def_calendarreport.ascx" />
     <Content Include="Views\Home\util_def_calendarreportdates.ascx" />
     <Content Include="Views\Home\util_def_calendarreportdates_data.ascx" />
     <Content Include="Views\Home\util_def_calendarreportdates_main.aspx" />
-    <Content Include="Views\Home\util_def_mailmerge.ascx" />
+    <Content Include="Views\Reports\Util_Def_mailmerge.ascx" />
     <Content Include="Views\Home\util_run_calendarreport_breakdown.ascx" />
     <Content Include="Views\Home\util_run_mailmerge.ascx" />
     <Content Include="Views\Home\util_run_outputoptions.ascx" />
@@ -1599,8 +1601,8 @@
     <Content Include="Views\Home\quickfind.ascx" />
     <Content Include="Views\Home\recordEdit.ascx" />
     <Content Include="Views\Home\Util_CustomReportChilds.aspx" />
-    <Content Include="Views\Home\Util_Def_Crosstabs.ascx" />
-    <Content Include="Views\Home\Util_Def_CustomReports.ascx" />
+    <Content Include="Views\Reports\Util_Def_Crosstabs.ascx" />
+    <Content Include="Views\Reports\Util_Def_CustomReports.ascx" />
     <Content Include="Views\Home\util_def_exprcomponent.ascx" />
     <Content Include="Views\Home\util_def_expression.ascx" />
     <Content Include="Views\Home\util_def_picklist.ascx" />

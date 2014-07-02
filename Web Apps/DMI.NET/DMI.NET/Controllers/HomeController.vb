@@ -904,11 +904,11 @@ Namespace Controllers
 			 (Session("action") = "copy") Then
 				Select Case Session("utiltype")
 					Case 1 ' CROSS TABS
-						Return RedirectToAction("util_def_crosstabs")
+						Return RedirectToAction("util_def_crosstabs", "reports")
 					Case 2 ' CUSTOM REPORTS
-						Return RedirectToAction("util_def_customreports")
+						Return RedirectToAction("util_def_customreports", "reports")
 					Case 9 ' MAIL MERGE
-						Return RedirectToAction("util_def_mailmerge")
+						Return RedirectToAction("util_def_mailmerge", "reports")
 					Case 10	' PICKLISTS
 						Return RedirectToAction("util_def_picklist")
 					Case 11	' FILTERS
@@ -916,7 +916,7 @@ Namespace Controllers
 					Case 12	' CALCULATIONS
 						Return RedirectToAction("util_def_expression")
 					Case 17	' CALENDAR REPORTS
-						Return RedirectToAction("util_def_calendarreport")
+						Return RedirectToAction("util_def_calendarreport", "reports")
 						'Case 25	' WORKFLOW 
 						'Return RedirectToAction("util_run_workflow")
 				End Select
@@ -946,14 +946,6 @@ Namespace Controllers
 		End Function
 
 		Function DefSelProperties() As ActionResult
-			Return View()
-		End Function
-
-		Function Util_Def_CustomReports() As ActionResult
-			Return View()
-		End Function
-
-		Function util_def_crosstabs() As ActionResult
 			Return View()
 		End Function
 
@@ -3541,10 +3533,6 @@ Namespace Controllers
 			Return View()
 		End Function
 
-		Public Function util_def_calendarreport() As ActionResult
-			Return View()
-		End Function
-
 		<ValidateInput(False)>
 		Function util_def_customreports_submit()
 
@@ -4326,10 +4314,6 @@ Namespace Controllers
 #End Region
 
 #Region "Utilities"
-		Function util_def_mailmerge() As ActionResult
-			'Throw New NotImplementedException()
-			Return View()
-		End Function
 
 		<HttpPost(), ValidateInput(False)>
 		Function util_def_mailmerge_submit()
