@@ -37,15 +37,16 @@
 			// Refresh the link find grid with the data if required.
 			var grdLinkFind = document.getElementById("ssOleDBGridSelRecords");
 
-			grdLinkFind.redraw = false;
-			grdLinkFind.removeAll();
-			grdLinkFind.columns.removeAll();
+			//need this as this grid won't accept live changes :/		
+			$(grdLinkFind).jqGrid('GridUnload');
 
 			var dataCollection = frmData.elements;
 			var sControlName;
 			var sColumnName;
 			var iColumnType;
 			var iCount;
+			var colMode = [];
+			var colNames = [];
 
 			// Configure the grid columns.
 			if (dataCollection != null) {
@@ -61,23 +62,28 @@
 							sColumnName = sColDef.substr(0, iIndex);
 							sColumnType = sColDef.substr(iIndex + 1);
 
-							grdLinkFind.columns.add(grdLinkFind.columns.count);
-							grdLinkFind.columns.item(grdLinkFind.columns.count - 1).name = sColumnName;
-							grdLinkFind.columns.item(grdLinkFind.columns.count - 1).caption = sColumnName;
+							colNames.push(sColumnName);							
 
 							if (sColumnName == "ID") {
-								grdLinkFind.columns.item(grdLinkFind.columns.count - 1).Visible = false;
+								colMode.push({ name: sColumnName, hidden: true });
 							}
-
-							if ((sColumnType == "131") || (sColumnType == "3")) {
-								grdLinkFind.columns.item(grdLinkFind.columns.count - 1).Alignment = 1;
-							} else {
-								grdLinkFind.columns.item(grdLinkFind.columns.count - 1).Alignment = 0;
-							}
-							if (sColumnType == 11) {
-								grdLinkFind.columns.item(grdLinkFind.columns.count - 1).Style = 2;
-							} else {
-								grdLinkFind.columns.item(grdLinkFind.columns.count - 1).Style = 0;
+							else {
+								switch (sColumnType) {
+									case "11":	//Boolean
+										colMode.push({ name: sColumnName, edittype: "checkbox", formatter: 'checkbox', formatoptions: { disabled: true }, align: 'center', width: 100 });
+										break;
+									case "131":	//integer
+										colMode.push({ name: sColumnName, edittype: "numeric", sorttype: 'integer', formatter: 'numeric', formatoptions: { disabled: true }, align: 'right', width: 100 });
+										break;
+									case "3":	//numeric
+										colMode.push({ name: sColumnName, edittype: "numeric", sorttype: 'integer', formatter: 'numeric', formatoptions: { disabled: true }, align: 'right', width: 100 });
+										break;
+									case "135": //Date
+										colMode.push({ name: sColumnName, edittype: "date", sorttype: 'date', formatter: 'date', formatoptions: { srcformat: dateFormat, newformat: dateFormat, disabled: true }, align: 'left', width: 100 });
+										break;
+									default:	//text
+										colMode.push({ name: sColumnName, width: 100 });
+								}
 							}
 						}
 					}
@@ -88,26 +94,109 @@
 			var sAddString;
 			iCount = 0;
 			if (dataCollection != null) {
+				var colData = [];
+
 				for (var i = 0; i < dataCollection.length; i++) {
 					sControlName = dataCollection.item(i).name;
 					sControlName = sControlName.substr(0, 8);
 					if (sControlName == "txtData_") {
-						grdLinkFind.addItem(dataCollection.item(i).value);
+
+						colDataArray = dataCollection.item(i).value.split("\t");
+						obj = {};
+						for (iCount2 = 0; iCount2 < colNames.length; iCount2++) {
+							//loop through columns and add each one to the 'obj' object
+							obj[colNames[iCount2]] = colDataArray[iCount2];
+						}
+						//add the 'obj' object to the 'colData' array
+						colData.push(obj);
+						
 						fRecordAdded = true;
 						iCount = iCount + 1;
 					}
 				}
+
+				//create the column layout:
+				var shrinkToFit = false;
+				if (colMode.length < 8) shrinkToFit = true;
+
+				$("#ssOleDBGridSelRecords").jqGrid({
+					data: colData,
+					datatype: "local",
+					colNames: colNames,
+					colModel: colMode,
+					height: 400,
+					rowNum: 1000,
+					multiselect: true,
+					autowidth: true,
+					shrinktofit: shrinkToFit,
+					beforeSelectRow: handleMultiSelect, // handle multi select
+					onSelectRow: function () {
+						ssOleDBGridSelRecords_rowcolchange();
+					},
+					rowNum: 500,
+					pager: $('#ssOLEDBPager'),
+					ondblClickRow: function () {
+						ssOleDBGridSelRecords_dblClick();
+					}
+				}).jqGrid('hideCol', 'cb');
+
+
+				$("#ssOleDBGridSelRecords").jqGrid('bindKeys', {
+					"onEnter": function () {
+						ssOleDBGridSelRecords_dblClick();
+					}
+				});
+
+				//resize the grid to the height of its container.
+				$("#ssOleDBGridSelRecords").jqGrid('setGridHeight', $("#findGridRow").height());
+
 			}
-			grdLinkFind.redraw = true;
 
 			frmData.txtRecordCount.value = iCount;
 
 			tbrefreshControls();
-
-			// Get menu.asp to refresh the menu.
-			tbrefreshMenu();
 		}
 	}
+
+
+	// handle jqGrid multiselect => thanks to solution from Byron Cobb on http://goo.gl/UvGku
+	var handleMultiSelect = function (rowid, e) {
+		var grid = $(this);
+		if (!e.ctrlKey && !e.shiftKey) {
+			grid.jqGrid('resetSelection');
+		}
+		else if (e.shiftKey) {
+			var initialRowSelect = grid.jqGrid('getGridParam', 'selrow');
+			grid.jqGrid('resetSelection');
+
+			var CurrentSelectIndex = grid.jqGrid('getInd', rowid);
+			var InitialSelectIndex = grid.jqGrid('getInd', initialRowSelect);
+			var startID = "";
+			var endID = "";
+			if (CurrentSelectIndex > InitialSelectIndex) {
+				startID = initialRowSelect;
+				endID = rowid;
+			}
+			else {
+				startID = rowid;
+				endID = initialRowSelect;
+			}
+			var shouldSelectRow = false;
+
+			$.each(grid.getDataIDs(), function (_, id) {
+				if ((shouldSelectRow = id == startID || shouldSelectRow)) {
+					grid.jqGrid('setSelection', id, false);
+				}
+				return id != endID;
+
+			});
+
+			//last selected row too
+			grid.jqGrid('setSelection', endID, false);
+
+		}
+		return true;
+	};
 </script>
 
 <script type="text/javascript">

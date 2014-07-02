@@ -59,10 +59,10 @@
 		var selRowId = $("#ssOleDBGridFindRecords").jqGrid('getGridParam', 'selrow');
 
 		fNoneSelected = (selRowId == null || selRowId == 'undefined');
-		fGridHasRows = ($('#ssOleDBGridFindRecords tr').length > 0);
-
+		fGridHasRows = ($("#ssOleDBGridFindRecords").jqGrid('getGridParam', 'records') > 0);
+	
 		button_disable(frmBulkBooking.cmdRemove, fNoneSelected);
-		button_disable(frmBulkBooking.cmdRemoveAll, fNoneSelected);
+		button_disable(frmBulkBooking.cmdRemoveAll, !fGridHasRows);
 		button_disable(frmBulkBooking.cmdOK, !fGridHasRows);
 
 		$('#FindGridRow').css('border', (fGridHasRows ? 'none' : '1px solid silver'));
@@ -176,7 +176,7 @@
 		optionDataForm.txtOptionValue.value = sSelectedIDs;
 		optionDataForm.txtOptionPromptSQL.value = psPrompts;
 		optionDataForm.txtOption1000SepCols.value = frmBulkBooking.txt1000SepCols.value;
-		refreshOptionData(); //should be in scope.
+		refreshOptionData(); //should be in scope.		
 	}
 
 	function moveFirst() {

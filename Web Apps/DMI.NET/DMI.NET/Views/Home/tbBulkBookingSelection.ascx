@@ -10,13 +10,6 @@
 	Dim sFailureDescription = ""
 %>
 
-<%--licence manager reference for activeX--%>
-<object classid="clsid:5220cb21-c88d-11cf-b347-00aa00a28331"
-	id="Microsoft_Licensed_Class_Manager_1_0"
-	viewastext>
-	<param name="LPKPath" value="<%: Url.Content("~/lpks/ssmain.lpk")%>">
-</object>
-
 <script src="<%: Url.LatestContent("~/Scripts/ctl_SetFont.js")%>" type="text/javascript"></script>
 
 <script type="text/javascript">
@@ -24,6 +17,8 @@
 	function tbBulkBookingSelection_onload() {		
 		var fOK = true;
 		var frmUseful = document.getElementById("frmUseful");
+
+		$('input[type=button]').button();	//jquery style the buttons.
 
 		if ((frmUseful.txtSelectionType.value.toUpperCase() != "FILTER") &&
 			(frmUseful.txtSelectionType.value.toUpperCase() != "PICKLIST")) {
@@ -58,32 +53,31 @@
 		if ((frmUseful.txtSelectionType.value.toUpperCase() == "FILTER") ||
 			(frmUseful.txtSelectionType.value.toUpperCase() == "PICKLIST")) {
 
-			var ssOleDBGridSelRecords = document.getElementById("ssOleDBGridSelRecords");
-			
-			setGridFont(ssOleDBGridSelRecords);
+			var gridTop = $('#findGridRow').offset().top;
+			var gridBottom = $('#trButtons').offset().top;
+			var gridWidth = $('body').outerWidth() - 50;
+			var gridHeight = gridBottom - gridTop - 30; //30px for the new table header.
 
-			// Set focus onto one of the form controls. 
-			// NB. This needs to be done before making any reference to the grid
-			ssOleDBGridSelRecords.focus();
-
-			if (ssOleDBGridSelRecords.rows > 0) {
-				// Select the top row.
-				ssOleDBGridSelRecords.MoveFirst();
-				ssOleDBGridSelRecords.SelBookmarks.Add(ssOleDBGridSelRecords.Bookmark);
-			}
+			var SelectionType = frmUseful.txtSelectionType.value;
+			tableToGrid("#ssOleDBGridSelRecords", {
+				width: gridWidth,
+				height: gridHeight,
+				onSelectRow: function (id) {
+					tbrefreshControls();
+				},
+				ondblClickRow: function () {
+					ssOleDBGridSelRecords_dblClick();
+				},
+				colNames: [SelectionType],
+				colModel: [
+						{ name: 'name', label: SelectionType, index: 'name', sortable: false }
+				]
+			});
 
 			tbrefreshControls();
 		} else {
 
 			var ssOleDBGridSelRecords = document.getElementById("ssOleDBGridSelRecords");
-			var abMainMenu = document.getElementById("abMainMenu");			
-			
-			setGridFont(ssOleDBGridSelRecords);
-			setMenuFont(abMainMenu);
-			abMainMenu.Attach();
-			abMainMenu.DataPath = "<%= Url.Content("~/") %>" + "misc/mainmenu.htm";
-			
-			abMainMenu.RecalcLayout();
 
 			window.parent.dialogLeft = new String((screen.width - (9 * screen.width / 10)) / 2) + "px";
 			window.parent.dialogTop = new String((screen.height - (3 * screen.height / 4)) / 2) + "px";
@@ -104,7 +98,8 @@
 	{
 		var fNoneSelected;
 
-		fNoneSelected = (ssOleDBGridSelRecords.SelBookmarks.Count == 0);
+		var selRowId = $("#ssOleDBGridSelRecords").jqGrid('getGridParam', 'selrow');
+		fNoneSelected = (selRowId == null || selRowId == 'undefined');
 
 		button_disable(cmdOK, fNoneSelected);
 
@@ -130,35 +125,32 @@
 		var frmUseful = document.getElementById("frmUseful");
 		var frmPrompt = document.getElementById("frmPrompt");
 		var ssOleDBGridSelRecords = document.getElementById("ssOleDBGridSelRecords");
-		
+				
 		if (frmUseful.txtSelectionType.value.toUpperCase() == "FILTER") {
 			// Go to the prompted values form to get any required prompts. 
-			frmPrompt.filterID.value = selectedRecordID();
+			frmPrompt.filterID.value = selectedRecordID();			
 			OpenHR.submitForm(frmPrompt);
 		}
 		else {
 			if (frmUseful.txtSelectionType.value.toUpperCase() == "PICKLIST") {
 				try {
-						window.dialogArguments.makeSelection(frmUseful.txtSelectionType.value, selectedRecordID(), "");
+					window.dialogArguments.makeSelection(frmUseful.txtSelectionType.value, selectedRecordID(), "");
 				}
 				catch (e) {
 				}
 			}
 			else {
+
+				var sSelectedRows = $('#ssOleDBGridSelRecords').jqGrid('getGridParam', 'selarrrow');
+
 				var sSelectedIDs = "";
-			
-				ssOleDBGridSelRecords.redraw = false;
-				for (var iIndex = 0; iIndex < ssOleDBGridSelRecords.selbookmarks.Count(); iIndex++) {	
-					ssOleDBGridSelRecords.bookmark = ssOleDBGridSelRecords.selbookmarks(iIndex);
-
-					var sRecordID = ssOleDBGridSelRecords.Columns("ID").Value;
-
+				for (var iIndex = 0; iIndex < sSelectedRows.length ; iIndex++) {
+					var sRecordID = $("#ssOleDBGridSelRecords").jqGrid('getCell', sSelectedRows[iIndex], 'ID');
 					if (sSelectedIDs.length > 0) {
 						sSelectedIDs = sSelectedIDs + ",";
 					}
-					sSelectedIDs = sSelectedIDs + sRecordID;				
+					sSelectedIDs = sSelectedIDs + sRecordID;
 				}
-				ssOleDBGridSelRecords.redraw = true;
 
 				try {
 					window.dialogArguments.makeSelection(frmUseful.txtSelectionType.value, 0, sSelectedIDs);
@@ -173,13 +165,7 @@
 
 	/* Return the ID of the record selected in the find form. */
 	function selectedRecordID() {
-		var iRecordID;
-
-		iRecordID = 0;
-	
-		if (ssOleDBGridSelRecords.SelBookmarks.Count > 0) {   
-			iRecordID = ssOleDBGridSelRecords.Columns("ID").Value;
-		}
+		var iRecordID = $("#ssOleDBGridSelRecords").jqGrid('getGridParam', 'selrow');
 
 		return(iRecordID);
 	}
@@ -260,81 +246,6 @@
 
 	function selectedViewID() {
 		return selectView.options[selectView.selectedIndex].value;
-	}
-
-	function tbrefreshMenu() {
-
-		var abMainMenu = document.getElementById("abMainMenu");
-		if (abMainMenu.Bands.Count() > 0) 
-		{
-			enableMenu();
-
-			var frmData = OpenHR.getForm("dataframe", "frmData");
-				
-			for (var i=0; i< abMainMenu.tools.count(); i++) 
-			{
-				abMainMenu.tools(i).visible = false;
-			}				
-		
-			abMainMenu.Bands("mnuMainMenu").visible = false;
-			abMainMenu.Bands("mnubandMainToolBar").visible = true;
-
-			// Enable the record editing options as necessary.
-			abMainMenu.tools("mnutoolFirstRecord").visible = true;
-			abMainMenu.tools("mnutoolFirstRecord").enabled = (frmData.txtIsFirstPage.value != "True");
-			abMainMenu.tools("mnutoolPreviousRecord").visible = true;
-			abMainMenu.tools("mnutoolPreviousRecord").enabled = (frmData.txtIsFirstPage.value != "True");
-			abMainMenu.tools("mnutoolNextRecord").visible = true;
-			abMainMenu.tools("mnutoolNextRecord").enabled = (frmData.txtIsLastPage.value != "True");
-			abMainMenu.tools("mnutoolLastRecord").visible = true;
-			abMainMenu.tools("mnutoolLastRecord").enabled = (frmData.txtIsLastPage.value != "True");
-
-			abMainMenu.tools("mnutoolLocateRecordsCaption").visible = true;
-			abMainMenu.tools("mnutoolLocateRecords").visible = (frmData.txtFirstColumnType.value != "-7");
-			abMainMenu.Tools("mnutoolLocateRecordsLogic").CBList.Clear();
-			abMainMenu.Tools("mnutoolLocateRecordsLogic").CBList.AddItem("True");
-			abMainMenu.Tools("mnutoolLocateRecordsLogic").CBList.AddItem("False");
-			abMainMenu.tools("mnutoolLocateRecordsLogic").visible = (frmData.txtFirstColumnType.value == "-7");
-
-			var sCaption = "";
-			if (frmData.txtRecordCount.value > 0) 
-			{
-				var iStartPosition = new Number(frmData.txtFirstRecPos.value);
-				var iEndPosition = new Number(frmData.txtRecordCount.value);
-				iEndPosition = iStartPosition - 1 + iEndPosition;
-				sCaption = "Records " +
-					iStartPosition + 
-					" to " +
-					iEndPosition +
-					" of " +
-					frmData.txtTotalRecordCount.value;
-			}
-			else 
-			{
-				sCaption = "No Records";
-			}
-
-			abMainMenu.tools("mnutoolRecordPosition").visible = true;
-			abMainMenu.Bands("mnubandMainToolBar").tools("mnutoolRecordPosition").caption = sCaption;
-			
-			try
-			{
-				window.resizeBy(1,1);	
-				window.resizeBy(-1,-1);	
-				window.resizeBy(1,1);	
-				window.resizeBy(-1,-1);	
-			}
-			catch(e) {}
-
-			try
-			{
-				abMainMenu.Attach();
-				abMainMenu.RecalcLayout();
-				abMainMenu.ResetHooks();
-				abMainMenu.Refresh();
-			}
-			catch(e) {}			
-		}
 	}
 
 	function reloadPage(psAction, psLocateValue) {
@@ -464,24 +375,6 @@
 			refreshData(); // should be in scope (tbBulkBookingSelectionData)
 		}
 
-		// Clear the locate value from the menu.
-		abMainMenu.Tools("mnutoolLocateRecords").Text = "";
-	}
-
-	function disableMenu() {
-		for(iLoop = 0; iLoop < abMainMenu.Bands.Item("mnubandMainToolBar").Tools.Count(); iLoop ++) {
-			abMainMenu.Bands.Item("mnubandMainToolBar").tools.Item(iLoop).Enabled = false;
-		}
-
-		abMainMenu.RecalcLayout();
-		abMainMenu.ResetHooks();
-		abMainMenu.Refresh();
-	}
-
-	function enableMenu() {
-		for(iLoop = 0; iLoop < abMainMenu.Bands.Item("mnubandMainToolBar").Tools.Count(); iLoop ++) {
-			abMainMenu.Bands.Item("mnubandMainToolBar").tools.Item(iLoop).Enabled = true;
-		}
 	}
 
 	function convertLocaleDateToSQL(psDateString)
@@ -632,161 +525,23 @@
 	}
 </script>
 
-
 <script type="text/javascript">
-	function tbBulkBookingSelection_addhandlers() {
-		OpenHR.addActiveXHandler("abMainMenu", "DataReady", "abMainMenu_DataReady()");
-		OpenHR.addActiveXHandler("abMainMenu", "PreCustomizeMenu", "abMainMenu_PreCustomizeMenu()");
-		OpenHR.addActiveXHandler("abMainMenu", "Click", "abMainMenu_Click(param1)");
-		OpenHR.addActiveXHandler("abMainMenu", "KeyDown", "abMainMenu_KeyDown()");
-		OpenHR.addActiveXHandler("abMainMenu", "ComboSelChange", "abMainMenu_ComboSelChange()");
-		OpenHR.addActiveXHandler("abMainMenu", "PreSysMenu", "abMainMenu_PreSysMenu()");
-		OpenHR.addActiveXHandler("ssOleDBGridSelRecords", "rowcolchange", "ssOleDBGridSelRecords_rowcolchange()");
-		OpenHR.addActiveXHandler("ssOleDBGridSelRecords", "dblClick", "ssOleDBGridSelRecords_dblClick()");
-		OpenHR.addActiveXHandler("ssOleDBGridSelRecords", "KeyPress", "ssOleDBGridSelRecords_KeyPress()");
+
+	function ssOleDBGridSelRecords_rowcolchange() {
+		tbrefreshControls();
 	}
-</script>
 
-<script type="text/javascript">
-	function abMainMenu_DataReady() {
-		var abMainMenu = document.getElementById("abMainMenu");
-		abMainMenu.DataPath = "";
-		abMainMenu.RecalcLayout();		
-
-		return false;
-
-		var sKey, sPath;
-		sKey = new String("tempmenufilepath_");
-		//sKey = sKey.concat(window.parent.window.dialogArguments.window.parent.frames("menuframe").document.forms("frmMenuInfo").txtDatabase.value);
-		//sPath = ASRIntranetFunctions.GetRegistrySetting("HR Pro", "DataPaths", sKey);
-		if (sPath == "") {
-			sPath = "c:\\";
-		}
-
-		if (sPath == "<NONE>") {
-			frmUseful.txtMenuSaved.value = 1;
-			abMainMenu.RecalcLayout();
-		} else {
-			if (sPath.substr(sPath.length - 1, 1) != "\\") {
-				sPath = sPath.concat("\\");
-			}
-
-			sPath = sPath.concat("tempmenu.asp");
-			if ((abMainMenu.Bands.Count() > 0) && (frmUseful.txtMenuSaved.value == 0)) {
-				try {
-					abMainMenu.save(sPath, "");
-				} catch(e) {
-					ASRIntranetFunctions.MessageBox("The specified temporary menu file path cannot be written to. The temporary menu file path will be cleared.");
-					sKey = new String("tempMenuFilePath_");
-					sKey = sKey.concat(window.parent.window.dialogArguments.window.parent.frames("menuframe").document.forms("frmMenuInfo").txtDatabase.value);
-					ASRIntranetFunctions.SaveRegistrySetting("HR Pro", "DataPaths", sKey, "<NONE>");
-				}
-
-				frmUseful.txtMenuSaved.value = 1;
-			} else {
-				if ((abMainMenu.Bands.Count() == 0) && (frmUseful.txtMenuSaved.value == 1)) {
-					abMainMenu.DataPath = sPath;
-					abMainMenu.RecalcLayout();
-					return;
-				}
-			}
-		}
-	}
-	function abMainMenu_PreCustomizeMenu(pfCancel) {
-		pfCancel = true;
-		OpenHR.messageBox("The menu cannot be customized. Errors will occur if you attempt to customize it. Click anywhere in your browser to remove the dummy customisation menu.");
-	}
-	function abMainMenu_Click(pTool) {
-		//alert(pTool.name);
-		switch (pTool.name) {
-			case "mnutoolFirstRecord":
-				reloadPage("MOVEFIRST", "");
-				break;
-			case "mnutoolPreviousRecord":
-				reloadPage("MOVEPREVIOUS", "");
-				break;
-			case "mnutoolNextRecord":
-				reloadPage("MOVENEXT", "");
-				break;
-			case "mnutoolLastRecord":
-				reloadPage("MOVELAST", "");
-				break;
-		}
-	}
-	function abMainMenu_KeyDown(piKeyCode, piShift) {
-		iIndex = abMainMenu.ActiveBand.CurrentTool;
-
-		if (abMainMenu.ActiveBand.Tools(iIndex).Name == "mnutoolLocateRecords") {
-			if (piKeyCode == 13) {
-				sLocateValue = abMainMenu.ActiveBand.Tools(iIndex).Text;
-
-				reloadPage("LOCATE", sLocateValue);
-			}
-		}
-	}
-	function abMainMenu_ComboSelChange(pTool) {
-		if (pTool.Name == "mnutoolLocateRecordsLogic") {
-			sLocateValue = pTool.Text;
-
-			reloadPage("LOCATE", sLocateValue);
-		}
-	}
-	function abMainMenu_PreSysMenu(pBand) {
-		if (pBand.Name == "SysCustomize") {
-			pBand.Tools.RemoveAll();
-		}
-	}
-	function ssOleDBGridSelRecords_rowcolchange() { tbrefreshControls(); }
 	function ssOleDBGridSelRecords_dblClick() {
-		// JPD20021031 Fault 4631
 		Selection_makeSelection();
 	}
-	function ssOleDBGridSelRecords_KeyPress(iKeyAscii) {
-		if ((iKeyAscii >= 32) && (iKeyAscii <= 255)) {
-			var dtTicker = new Date();
-			var iThisTick = new Number(dtTicker.getTime());
-			if (txtLastKeyFind.value.length > 0) {
-				var iLastTick = new Number(txtTicker.value);
-			}
-			else {
-				var iLastTick = new Number("0");
-			}
 
-			if (iThisTick > (iLastTick + 1500)) {
-				var sFind = String.fromCharCode(iKeyAscii);
-			}
-			else {
-				var sFind = txtLastKeyFind.value + String.fromCharCode(iKeyAscii);
-			}
-
-			txtTicker.value = iThisTick;
-			txtLastKeyFind.value = sFind;
-
-			locateRecord(sFind);
-		}
-	}
 </script>
-
 
 <script src="<%: Url.LatestContent("~/Scripts/ctl_SetStyles.js")%>" type="text/javascript"></script>
 
 <div leftmargin=20 topmargin=20 bottommargin=20 rightmargin=5>
 
-<%
-	if (ucase(session("selectionType")) <> ucase("picklist")) and _
-		(ucase(session("selectionType")) <> ucase("filter")) then 
-		Response.Write("<OBJECT classid=""clsid:6976CB54-C39B-4181-B1DC-1A829068E2E7"" codebase=""cabs/COAInt_Client.cab#Version=1,0,0,5""" & vbCrLf)
-		Response.Write("	height=32 id=abMainMenu name=abMainMenu style=""LEFT: 0px; TOP: 0px"" width=100% VIEWASTEXT>" & vbCrLf)
-		Response.Write("	<PARAM NAME=""_ExtentX"" VALUE=""847"">" & vbCrLf)
-		Response.Write("	<PARAM NAME=""_ExtentY"" VALUE=""847"">" & vbCrLf)
-		Response.Write("</OBJECT>" & vbCrLf)
-		Response.Write("<table align=center class=""outline"" cellPadding=5 cellSpacing=0 width=100% height=""95%"">" & vbCrLf)
-	else
-		Response.Write("<table align=center class=""outline"" cellPadding=5 cellSpacing=0 width=100% height=""100%"">" & vbCrLf)
-	end if
-%>
-
-
+<table align=center class="outline" cellPadding=5 cellSpacing=0 width=100% height="100%">
 	<tr>
 		<td>
 			<table align="center" class="invisible" cellspacing="0" cellpadding="0" width="100%" height="100%">
@@ -840,145 +595,50 @@
 
 		End If
 
-
-		' Instantiate and initialise the grid. 
-		Response.Write("					<OBJECT classid=""clsid:4A4AA697-3E6F-11D2-822F-00104B9E07A1"" id=ssOleDBGridSelRecords name=ssOleDBGridSelRecords codebase=""cabs/COAInt_Grid.cab#version=3,1,3,6"" style=""LEFT: 0px; TOP: 0px; WIDTH:100%; HEIGHT:400px;"">" & vbCrLf)
-		Response.Write("						<PARAM NAME=""ScrollBars"" VALUE=""4"">" & vbCrLf)
-		Response.Write("						<PARAM NAME=""_Version"" VALUE=""196616"">" & vbCrLf)
-		Response.Write("						<PARAM NAME=""DataMode"" VALUE=""2"">" & vbCrLf)
-		Response.Write("						<PARAM NAME=""Cols"" VALUE=""0"">" & vbCrLf)
-		Response.Write("						<PARAM NAME=""Rows"" VALUE=""0"">" & vbCrLf)
-		Response.Write("						<PARAM NAME=""BorderStyle"" VALUE=""1"">" & vbCrLf)
-		Response.Write("						<PARAM NAME=""RecordSelectors"" VALUE=""0"">" & vbCrLf)
-		Response.Write("						<PARAM NAME=""GroupHeaders"" VALUE=""0"">" & vbCrLf)
-		Response.Write("						<PARAM NAME=""ColumnHeaders"" VALUE=""0"">" & vbCrLf)
-		Response.Write("						<PARAM NAME=""GroupHeadLines"" VALUE=""0"">" & vbCrLf)
-		Response.Write("						<PARAM NAME=""HeadLines"" VALUE=""0"">" & vbCrLf)
-		Response.Write("						<PARAM NAME=""FieldDelimiter"" VALUE=""(None)"">" & vbCrLf)
-		Response.Write("						<PARAM NAME=""FieldSeparator"" VALUE=""(Tab)"">" & vbCrLf)
-		Response.Write("						<PARAM NAME=""Col.Count"" VALUE=""" & rstSelRecords.Columns.Count & """>" & vbCrLf)
-		Response.Write("						<PARAM NAME=""stylesets.count"" VALUE=""0"">" & vbCrLf)
-		Response.Write("						<PARAM NAME=""TagVariant"" VALUE=""EMPTY"">" & vbCrLf)
-		Response.Write("						<PARAM NAME=""UseGroups"" VALUE=""0"">" & vbCrLf)
-		Response.Write("						<PARAM NAME=""HeadFont3D"" VALUE=""0"">" & vbCrLf)
-		Response.Write("						<PARAM NAME=""Font3D"" VALUE=""0"">" & vbCrLf)
-		Response.Write("						<PARAM NAME=""DividerType"" VALUE=""3"">" & vbCrLf)
-		Response.Write("						<PARAM NAME=""DividerStyle"" VALUE=""1"">" & vbCrLf)
-		Response.Write("						<PARAM NAME=""DefColWidth"" VALUE=""0"">" & vbCrLf)
-		Response.Write("						<PARAM NAME=""BeveColorScheme"" VALUE=""2"">" & vbCrLf)
-		Response.Write("						<PARAM NAME=""BevelColorFrame"" VALUE=""-2147483642"">" & vbCrLf)
-		Response.Write("						<PARAM NAME=""BevelColorHighlight"" VALUE=""-2147483628"">" & vbCrLf)
-		Response.Write("						<PARAM NAME=""BevelColorShadow"" VALUE=""-2147483632"">" & vbCrLf)
-		Response.Write("						<PARAM NAME=""BevelColorFace"" VALUE=""-2147483633"">" & vbCrLf)
-		Response.Write("						<PARAM NAME=""CheckBox3D"" VALUE=""-1"">" & vbCrLf)
-		Response.Write("						<PARAM NAME=""AllowAddNew"" VALUE=""0"">" & vbCrLf)
-		Response.Write("						<PARAM NAME=""AllowDelete"" VALUE=""0"">" & vbCrLf)
-		Response.Write("						<PARAM NAME=""AllowUpdate"" VALUE=""0"">" & vbCrLf)
-		Response.Write("						<PARAM NAME=""MultiLine"" VALUE=""0"">" & vbCrLf)
-		Response.Write("						<PARAM NAME=""ActiveCellStyleSet"" VALUE="""">" & vbCrLf)
-		Response.Write("						<PARAM NAME=""RowSelectionStyle"" VALUE=""0"">" & vbCrLf)
-		Response.Write("						<PARAM NAME=""AllowRowSizing"" VALUE=""0"">" & vbCrLf)
-		Response.Write("						<PARAM NAME=""AllowGroupSizing"" VALUE=""0"">" & vbCrLf)
-		Response.Write("						<PARAM NAME=""AllowColumnSizing"" VALUE=""0"">" & vbCrLf)
-		Response.Write("						<PARAM NAME=""AllowGroupMoving"" VALUE=""0"">" & vbCrLf)
-		Response.Write("						<PARAM NAME=""AllowColumnMoving"" VALUE=""0"">" & vbCrLf)
-		Response.Write("						<PARAM NAME=""AllowGroupSwapping"" VALUE=""0"">" & vbCrLf)
-		Response.Write("						<PARAM NAME=""AllowColumnSwapping"" VALUE=""0"">" & vbCrLf)
-		Response.Write("						<PARAM NAME=""AllowGroupShrinking"" VALUE=""0"">" & vbCrLf)
-		Response.Write("						<PARAM NAME=""AllowColumnShrinking"" VALUE=""0"">" & vbCrLf)
-		Response.Write("						<PARAM NAME=""AllowDragDrop"" VALUE=""0"">" & vbCrLf)
-		Response.Write("						<PARAM NAME=""UseExactRowCount"" VALUE=""-1"">" & vbCrLf)
-		Response.Write("						<PARAM NAME=""SelectTypeCol"" VALUE=""0"">" & vbCrLf)
-		Response.Write("						<PARAM NAME=""SelectTypeRow"" VALUE=""1"">" & vbCrLf)
-		Response.Write("						<PARAM NAME=""SelectByCell"" VALUE=""-1"">" & vbCrLf)
-		Response.Write("						<PARAM NAME=""BalloonHelp"" VALUE=""0"">" & vbCrLf)
-		Response.Write("						<PARAM NAME=""RowNavigation"" VALUE=""1"">" & vbCrLf)
-		Response.Write("						<PARAM NAME=""CellNavigation"" VALUE=""0"">" & vbCrLf)
-		Response.Write("						<PARAM NAME=""MaxSelectedRows"" VALUE=""1"">" & vbCrLf)
-		Response.Write("						<PARAM NAME=""HeadStyleSet"" VALUE="""">" & vbCrLf)
-		Response.Write("						<PARAM NAME=""StyleSet"" VALUE="""">" & vbCrLf)
-		Response.Write("						<PARAM NAME=""ForeColorEven"" VALUE=""0"">" & vbCrLf)
-		Response.Write("						<PARAM NAME=""ForeColorOdd"" VALUE=""0"">" & vbCrLf)
-		Response.Write("						<PARAM NAME=""BackColorEven"" VALUE=""16777215"">" & vbCrLf)
-		Response.Write("						<PARAM NAME=""BackColorOdd"" VALUE=""16777215"">" & vbCrLf)
-		Response.Write("						<PARAM NAME=""Levels"" VALUE=""1"">" & vbCrLf)
-		Response.Write("						<PARAM NAME=""RowHeight"" VALUE=""503"">" & vbCrLf)
-		Response.Write("						<PARAM NAME=""ExtraHeight"" VALUE=""0"">" & vbCrLf)
-		Response.Write("						<PARAM NAME=""ActiveRowStyleSet"" VALUE="""">" & vbCrLf)
-		Response.Write("						<PARAM NAME=""CaptionAlignment"" VALUE=""2"">" & vbCrLf)
-		Response.Write("						<PARAM NAME=""SplitterPos"" VALUE=""0"">" & vbCrLf)
-		Response.Write("						<PARAM NAME=""SplitterVisible"" VALUE=""0"">" & vbCrLf)
-		Response.Write("						<PARAM NAME=""Columns.Count"" VALUE=""" & rstSelRecords.Columns.Count & """>" & vbCrLf)
-
+		' Create a table for jqGrid to convert. 		
+		Response.Write("<div id='findGridRow' style='height: 400px;'>" & vbCrLf)
+		Response.Write("<table id='ssOleDBGridSelRecords'>" & vbCrLf)
+		Response.Write("<thead>" & vbCrLf)
+		Response.Write("<tr>" & vbCrLf)			
 		For iLoop = 0 To (rstSelRecords.Columns.Count - 1)
 			If rstSelRecords.Columns(iLoop).ColumnName <> "name" Then
-				Response.Write("						<PARAM NAME=""Columns(" & iLoop & ").Width"" VALUE=""0"">" & vbCrLf)
-				Response.Write("						<PARAM NAME=""Columns(" & iLoop & ").Visible"" VALUE=""0"">" & vbCrLf)
+				Response.Write("<th></th>" & vbCrLf)	' id column - don't populate, but leave as a column
 			Else
-				Response.Write("						<PARAM NAME=""Columns(" & iLoop & ").Width"" VALUE=""100000"">" & vbCrLf)
-				Response.Write("						<PARAM NAME=""Columns(" & iLoop & ").Visible"" VALUE=""-1"">" & vbCrLf)
+				Response.Write("<th id='" & rstSelRecords.Columns(iLoop).ColumnName & "'>" & Replace(rstSelRecords.Columns(iLoop).ColumnName, "_", " ") & "</th>" & vbCrLf)
 			End If
-								
-			Response.Write("						<PARAM NAME=""Columns(" & iLoop & ").Columns.Count"" VALUE=""1"">" & vbCrLf)
-			Response.Write("						<PARAM NAME=""Columns(" & iLoop & ").Caption"" VALUE=""" & Replace(rstSelRecords.Columns(iLoop).ColumnName, "_", " ") & """>" & vbCrLf)
-			Response.Write("						<PARAM NAME=""Columns(" & iLoop & ").Name"" VALUE=""" & rstSelRecords.Columns(iLoop).ColumnName & """>" & vbCrLf)
-			Response.Write("						<PARAM NAME=""Columns(" & iLoop & ").Alignment"" VALUE=""0"">" & vbCrLf)
-			Response.Write("						<PARAM NAME=""Columns(" & iLoop & ").CaptionAlignment"" VALUE=""3"">" & vbCrLf)
-			Response.Write("						<PARAM NAME=""Columns(" & iLoop & ").Bound"" VALUE=""0"">" & vbCrLf)
-			Response.Write("						<PARAM NAME=""Columns(" & iLoop & ").AllowSizing"" VALUE=""1"">" & vbCrLf)
-			Response.Write("						<PARAM NAME=""Columns(" & iLoop & ").DataField"" VALUE=""Column " & iLoop & """>" & vbCrLf)
-			Response.Write("						<PARAM NAME=""Columns(" & iLoop & ").DataType"" VALUE=""8"">" & vbCrLf)
-			Response.Write("						<PARAM NAME=""Columns(" & iLoop & ").Level"" VALUE=""0"">" & vbCrLf)
-			Response.Write("						<PARAM NAME=""Columns(" & iLoop & ").NumberFormat"" VALUE="""">" & vbCrLf)
-			Response.Write("						<PARAM NAME=""Columns(" & iLoop & ").Case"" VALUE=""0"">" & vbCrLf)
-			Response.Write("						<PARAM NAME=""Columns(" & iLoop & ").FieldLen"" VALUE=""4096"">" & vbCrLf)
-			Response.Write("						<PARAM NAME=""Columns(" & iLoop & ").VertScrollBar"" VALUE=""0"">" & vbCrLf)
-			Response.Write("						<PARAM NAME=""Columns(" & iLoop & ").Locked"" VALUE=""0"">" & vbCrLf)
-			Response.Write("						<PARAM NAME=""Columns(" & iLoop & ").Style"" VALUE=""0"">" & vbCrLf)
-			Response.Write("						<PARAM NAME=""Columns(" & iLoop & ").ButtonsAlways"" VALUE=""0"">" & vbCrLf)
-			Response.Write("						<PARAM NAME=""Columns(" & iLoop & ").RowCount"" VALUE=""0"">" & vbCrLf)
-			Response.Write("						<PARAM NAME=""Columns(" & iLoop & ").ColCount"" VALUE=""1"">" & vbCrLf)
-			Response.Write("						<PARAM NAME=""Columns(" & iLoop & ").HasHeadForeColor"" VALUE=""0"">" & vbCrLf)
-			Response.Write("						<PARAM NAME=""Columns(" & iLoop & ").HasHeadBackColor"" VALUE=""0"">" & vbCrLf)
-			Response.Write("						<PARAM NAME=""Columns(" & iLoop & ").HasForeColor"" VALUE=""0"">" & vbCrLf)
-			Response.Write("						<PARAM NAME=""Columns(" & iLoop & ").HasBackColor"" VALUE=""0"">" & vbCrLf)
-			Response.Write("						<PARAM NAME=""Columns(" & iLoop & ").HeadForeColor"" VALUE=""0"">" & vbCrLf)
-			Response.Write("						<PARAM NAME=""Columns(" & iLoop & ").HeadBackColor"" VALUE=""0"">" & vbCrLf)
-			Response.Write("						<PARAM NAME=""Columns(" & iLoop & ").ForeColor"" VALUE=""0"">" & vbCrLf)
-			Response.Write("						<PARAM NAME=""Columns(" & iLoop & ").BackColor"" VALUE=""0"">" & vbCrLf)
-			Response.Write("						<PARAM NAME=""Columns(" & iLoop & ").HeadStyleSet"" VALUE="""">" & vbCrLf)
-			Response.Write("						<PARAM NAME=""Columns(" & iLoop & ").StyleSet"" VALUE="""">" & vbCrLf)
-			Response.Write("						<PARAM NAME=""Columns(" & iLoop & ").Nullable"" VALUE=""1"">" & vbCrLf)
-			Response.Write("						<PARAM NAME=""Columns(" & iLoop & ").Mask"" VALUE="""">" & vbCrLf)
-			Response.Write("						<PARAM NAME=""Columns(" & iLoop & ").PromptInclude"" VALUE=""0"">" & vbCrLf)
-			Response.Write("						<PARAM NAME=""Columns(" & iLoop & ").ClipMode"" VALUE=""0"">" & vbCrLf)
-			Response.Write("						<PARAM NAME=""Columns(" & iLoop & ").PromptChar"" VALUE=""95"">" & vbCrLf)
-		Next
-
-		Response.Write("						<PARAM NAME=""UseDefaults"" VALUE=""-1"">" & vbCrLf)
-		Response.Write("						<PARAM NAME=""TabNavigation"" VALUE=""1"">" & vbCrLf)
-		Response.Write("						<PARAM NAME=""_ExtentX"" VALUE=""17330"">" & vbCrLf)
-		Response.Write("						<PARAM NAME=""_ExtentY"" VALUE=""1323"">" & vbCrLf)
-		Response.Write("						<PARAM NAME=""_StockProps"" VALUE=""79"">" & vbCrLf)
-		Response.Write("						<PARAM NAME=""Caption"" VALUE="""">" & vbCrLf)
-		Response.Write("						<PARAM NAME=""ForeColor"" VALUE=""0"">" & vbCrLf)
-		Response.Write("						<PARAM NAME=""BackColor"" VALUE=""16777215"">" & vbCrLf)
-		Response.Write("						<PARAM NAME=""Enabled"" VALUE=""-1"">" & vbCrLf)
-		Response.Write("						<PARAM NAME=""DataMember"" VALUE="""">" & vbCrLf)
-								
+		Next				
+		Response.Write("</tr>" & vbCrLf)
+		Response.Write("</thead>" & vbCrLf)
+									
 		Dim lngRowCount = 0
 		
+		Response.Write("<tbody>" & vbCrLf)
 		For Each objRow As DataRow In rstSelRecords.Rows
+			Dim sID As String = ""
+			Dim sRowString As String = ""
+			
 			For iLoop = 0 To (rstSelRecords.Columns.Count - 1)
-				Response.Write("						<PARAM NAME=""Row(" & lngRowCount & ").Col(" & iLoop & ")"" VALUE=""" & Replace(Replace(objRow(iLoop).ToString(), "_", " "), """", "&quot;") & """>" & vbCrLf)
+				
+				Dim sColumnValue As String = Replace(Replace(objRow(iLoop).ToString(), "_", " "), """", "&quot;")
+				
+				If rstSelRecords.Columns(iLoop).ColumnName <> "name" Then
+					' ID column; store value
+					sID = sColumnValue
+					sRowString &= String.Format("<td><input type='radio' name='sel' value='{0}'/></td>", sColumnValue)
+				Else
+					sRowString &= String.Format("<td>{0}</td>", sColumnValue)
+				End If
+				
 			Next
+			
+			Response.Write(String.Format("<tr id={0}>{1}<tr>", sID, sRowString) & vbCrLf)
+			
 			lngRowCount += 1
 		Next
-
-		Response.Write("						<PARAM NAME=""Row.Count"" VALUE=""" & lngRowCount & """>" & vbCrLf)
-		Response.Write("					</OBJECT>" & vbCrLf)
-	
-		
+		Response.Write("</tbody>" & vbCrLf)
+		Response.Write("</table>" & vbCrLf)
+		Response.Write("</div>" & vbCrLf)
+				
 	Else
 		' Select individual employee records.
 %>
@@ -1071,86 +731,11 @@
 								<td height=10>&nbsp;</td>
 							</tr>
 							<TR>
-								<TD>
-									<OBJECT classid="clsid:4A4AA697-3E6F-11D2-822F-00104B9E07A1" id=ssOleDBGridSelRecords name=ssOleDBGridSelRecords codebase="cabs/COAInt_Grid.cab#version=3,1,3,6" style="LEFT: 0px; TOP: 0px; WIDTH:100%; HEIGHT:400px;">
-										<PARAM NAME="ScrollBars" VALUE="4">
-										<PARAM NAME="_Version" VALUE="196617">
-										<PARAM NAME="DataMode" VALUE="2">
-										<PARAM NAME="Cols" VALUE="0">
-										<PARAM NAME="Rows" VALUE="0">
-										<PARAM NAME="BorderStyle" VALUE="1">
-										<PARAM NAME="RecordSelectors" VALUE="0">
-										<PARAM NAME="GroupHeaders" VALUE="0">
-										<PARAM NAME="ColumnHeaders" VALUE="-1">
-										<PARAM NAME="GroupHeadLines" VALUE="1">
-										<PARAM NAME="HeadLines" VALUE="1">
-										<PARAM NAME="FieldDelimiter" VALUE="(None)">
-										<PARAM NAME="FieldSeparator" VALUE="(Tab)">
-										<PARAM NAME="Col.Count" VALUE="0">
-										<PARAM NAME="stylesets.count" VALUE="0">
-										<PARAM NAME="TagVariant" VALUE="EMPTY">
-										<PARAM NAME="UseGroups" VALUE="0">
-										<PARAM NAME="HeadFont3D" VALUE="0">
-										<PARAM NAME="Font3D" VALUE="0">
-										<PARAM NAME="DividerType" VALUE="3">
-										<PARAM NAME="DividerStyle" VALUE="1">
-										<PARAM NAME="DefColWidth" VALUE="0">
-										<PARAM NAME="BeveColorScheme" VALUE="2">
-										<PARAM NAME="BevelColorFrame" VALUE="-2147483642">
-										<PARAM NAME="BevelColorHighlight" VALUE="-2147483628">
-										<PARAM NAME="BevelColorShadow" VALUE="-2147483632">
-										<PARAM NAME="BevelColorFace" VALUE="-2147483633">
-										<PARAM NAME="CheckBox3D" VALUE="-1">
-										<PARAM NAME="AllowAddNew" VALUE="0">
-										<PARAM NAME="AllowDelete" VALUE="0">
-										<PARAM NAME="AllowUpdate" VALUE="0">
-										<PARAM NAME="MultiLine" VALUE="0">
-										<PARAM NAME="ActiveCellStyleSet" VALUE="">
-										<PARAM NAME="RowSelectionStyle" VALUE="0">
-										<PARAM NAME="AllowRowSizing" VALUE="0">
-										<PARAM NAME="AllowGroupSizing" VALUE="0">
-										<PARAM NAME="AllowColumnSizing" VALUE="-1">
-										<PARAM NAME="AllowGroupMoving" VALUE="0">
-										<PARAM NAME="AllowColumnMoving" VALUE="0">
-										<PARAM NAME="AllowGroupSwapping" VALUE="0">
-										<PARAM NAME="AllowColumnSwapping" VALUE="0">
-										<PARAM NAME="AllowGroupShrinking" VALUE="0">
-										<PARAM NAME="AllowColumnShrinking" VALUE="0">
-										<PARAM NAME="AllowDragDrop" VALUE="0">
-										<PARAM NAME="UseExactRowCount" VALUE="-1">
-										<PARAM NAME="SelectTypeCol" VALUE="0">
-										<PARAM NAME="SelectTypeRow" VALUE="3">
-										<PARAM NAME="SelectByCell" VALUE="-1">
-										<PARAM NAME="BalloonHelp" VALUE="0">
-										<PARAM NAME="RowNavigation" VALUE="1">
-										<PARAM NAME="CellNavigation" VALUE="0">
-										<PARAM NAME="MaxSelectedRows" VALUE="0">
-										<PARAM NAME="HeadStyleSet" VALUE="">
-										<PARAM NAME="StyleSet" VALUE="">
-										<PARAM NAME="ForeColorEven" VALUE="0">
-										<PARAM NAME="ForeColorOdd" VALUE="0">
-										<PARAM NAME="BackColorEven" VALUE="16777215">
-										<PARAM NAME="BackColorOdd" VALUE="16777215">
-										<PARAM NAME="Levels" VALUE="1">
-										<PARAM NAME="RowHeight" VALUE="503">
-										<PARAM NAME="ExtraHeight" VALUE="0">
-										<PARAM NAME="ActiveRowStyleSet" VALUE="">
-										<PARAM NAME="CaptionAlignment" VALUE="2">
-										<PARAM NAME="SplitterPos" VALUE="0">
-										<PARAM NAME="SplitterVisible" VALUE="0">
-										<PARAM NAME="Columns.Count" VALUE="0">
-										<PARAM NAME="UseDefaults" VALUE="-1">
-										<PARAM NAME="TabNavigation" VALUE="1">
-										<PARAM NAME="_ExtentX" VALUE="17330">
-										<PARAM NAME="_ExtentY" VALUE="1323">
-										<PARAM NAME="_StockProps" VALUE="79">
-										<PARAM NAME="Caption" VALUE="">
-										<PARAM NAME="ForeColor" VALUE="0">
-										<PARAM NAME="BackColor" VALUE="16777215">
-										<PARAM NAME="Enabled" VALUE="-1">
-										<PARAM NAME="DataMember" VALUE="">
-										<PARAM NAME="Row.Count" VALUE="0">
-									</OBJECT>
+								<td>
+									<div id="FindGridRow" style="height: 400px; margin-bottom: 50px;">
+										<table id="ssOleDBGridSelRecords" name="ssOleDBGridSelRecords" style="width: 100%"></table>
+										<div id="ssOLEDBPager" style=""></div>
+									</div>
 								</TD>
 							</TR>
 						</TABLE>
@@ -1162,7 +747,7 @@
 					</td>
 					<td width=20></td>
 				</tr>
-				<tr height=10>
+				<tr id="trButtons" height=10>
 					<td height=10 colspan=3>&nbsp;</td>
 				</tr>
 				<tr height=10>
@@ -1206,6 +791,5 @@
 </div>
 
 <script type="text/javascript">
-	tbBulkBookingSelection_addhandlers();
 	tbBulkBookingSelection_onload();	
 </script>
