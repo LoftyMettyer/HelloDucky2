@@ -1,4 +1,4 @@
-CREATE PROCEDURE [dbo].[sp_ASRIntGetMailMergeDefinition] (	
+CREATE PROCEDURE [dbo].[spASRIntGetMailMergeDefinition] (	
 			@piReportID 			integer, 	
 			@psCurrentUser			varchar(255),		
 			@psAction				varchar(255),
@@ -140,59 +140,54 @@ CREATE PROCEDURE [dbo].[sp_ASRIntGetMailMergeDefinition] (
 				BEGIN		
 					SET @pfFilterHidden = 1;		
 				END		
-			END		
-			/* Get the definition recordset. */		
-			SELECT 'COLUMN' AS [definitionType],		
-				'N' AS [hidden],		
-				convert(varchar(100), ASRSysMailMergeColumns.[type]) + char(9) +		
-				convert(varchar(255), ASRSysColumns.tableID) + char(9) +		
-				convert(varchar(255), ASRSysMailMergeColumns.columnID) + char(9) +		
-				convert(varchar(255), ASRSysTables.tableName + '.' + ASRSysColumns.columnName) + char(9) +		
-				convert(varchar(100), ASRSysMailMergeColumns.size) + char(9) +		
-				convert(varchar(100), ASRSysMailMergeColumns.decimals) + char(9) +		
-				'N' + char(9) +		
-				CASE WHEN ASRSysColumns.DataType = 2 or ASRSysColumns.DataType = 4 THEN '1' ELSE '0' END AS [definitionString],		
-				ASRSysMailMergeColumns.SortOrderSequence AS [sequence],		
-				ASRSysMailMergeColumns.type		
+			END
+
+			-- Columns
+			SELECT ASRSysMailMergeColumns.[type],
+				ASRSysColumns.tableID,
+				ASRSysMailMergeColumns.columnID,
+				ASRSysColumns.columnName AS [name], 
+				ASRSysTables.tableName + '.' + ASRSysColumns.columnName AS [heading],
+				ASRSysColumns.DataType,
+				ASRSysMailMergeColumns.size,
+				ASRSysMailMergeColumns.decimals,
+				CASE WHEN ASRSysColumns.DataType = 2 or ASRSysColumns.DataType = 4 THEN '1' ELSE '0' END AS [isnumeric],		
+				ASRSysMailMergeColumns.SortOrderSequence AS [sequence]
 			FROM ASRSysMailMergeColumns		
 			INNER JOIN ASRSysColumns ON ASRSysMailMergeColumns.columnID = ASRSysColumns.columnId		
 			INNER JOIN ASRSysTables ON ASRSysColumns.tableID = ASRSysTables.tableID		
 			WHERE ASRSysMailMergeColumns.MailMergeID = @piReportID		
 				AND ASRSysMailMergeColumns.type = 'C'		
-			UNION		
-			SELECT 'COLUMN' AS [definitionType],		
-				CASE WHEN ASRSysExpressions.access = 'HD' THEN 'Y' ELSE 'N' END AS [hidden],		
-				convert(varchar(255), ASRSysMailMergeColumns.[type]) + char(9) +		
-				convert(varchar(255), ASRSysExpressions.tableID) + char(9) +		
-				convert(varchar(255), ASRSysMailMergeColumns.columnID) + char(9) +		
-				convert(varchar(MAX), '<Calc> ' + replace(ASRSysExpressions.name, '_', ' ')) + char(9) +		
-				convert(varchar(100), ASRSysMailMergeColumns.size) + char(9) +		
-				convert(varchar(100), ASRSysMailMergeColumns.decimals) + char(9) +		
-				CASE WHEN ASRSysExpressions.access = 'HD' THEN 'Y' ELSE 'N' END + char(9) +		
-				'0'  AS [definitionString],		
-				ASRSysMailMergeColumns.SortOrderSequence AS [sequence],		
-				ASRSysMailMergeColumns.type		
+
+			-- Expressions
+			SELECT CASE WHEN ASRSysExpressions.access = 'HD' THEN 1 ELSE 0 END AS [ishidden],		
+				ASRSysMailMergeColumns.[type],
+				ASRSysExpressions.tableID,
+				ASRSysMailMergeColumns.columnID,
+				ASRSysExpressions.name AS [name],
+				convert(varchar(MAX), '<Calc> ' + replace(ASRSysExpressions.name, '_', ' ')) AS [heading],
+				ASRSysMailMergeColumns.size,
+				ASRSysMailMergeColumns.decimals,
+				ASRSysMailMergeColumns.SortOrderSequence AS [sequence]
 			FROM ASRSysMailMergeColumns		
 			INNER JOIN ASRSysExpressions ON ASRSysMailMergeColumns.columnID = ASRSysExpressions.exprID		
 			WHERE ASRSysMailMergeColumns.MailMergeID = @piReportID		
 				AND ASRSysMailMergeColumns.type <> 'C'		
 				AND ((ASRSysExpressions.username = @psReportOwner)	OR (ASRSysExpressions.access <> 'HD'))		
-			UNION		
-			SELECT 'ORDER' AS [definitionType],		
-				'N' AS [hidden],		
-				convert(varchar(255), ASRSysMailMergeColumns.columnID) + char(9) +		
-				convert(varchar(MAX), ASRSysTables.tableName + '.' + ASRSysColumns.columnName) + char(9) +		
-				convert(varchar(255), ASRSysMailMergeColumns.sortOrder) + char(9) +		
-				convert(varchar(255), ASRSysTables.tableID) AS [definitionString],		
-				ASRSysMailMergeColumns.sortOrderSequence AS [sequence],		
-				ASRSysMailMergeColumns.type		
+
+			-- Orders
+			SELECT ASRSysMailMergeColumns.columnID,
+				convert(varchar(MAX), ASRSysTables.tableName + '.' + ASRSysColumns.columnName) AS [columnname],
+				ASRSysMailMergeColumns.sortOrder,
+				ASRSysTables.tableID,
+				ASRSysMailMergeColumns.sortOrderSequence AS [sequence]
 			FROM ASRSysMailMergeColumns		
 			INNER JOIN ASRSysColumns ON ASRSysMailMergeColumns.columnid = ASRSysColumns.columnId		
 			INNER JOIN ASRSysTables ON ASRSysColumns.tableID = ASRSysTables.tableID		
 			WHERE ASRSysMailMergeColumns.MailMergeID = @piReportID		
-				AND ASRSysMailMergeColumns.type = 'C'		
 				AND ASRSysMailMergeColumns.sortOrderSequence > 0		
-			ORDER BY [definitionType], ASRSysMailMergeColumns.type, [sequence] ASC;		
+			ORDER BY ASRSysMailMergeColumns.type, [sequence] ASC;
+
 			IF @fSysSecMgr = 0 		
 			BEGIN		
 				SELECT @iCount = COUNT(ASRSysMailMergeColumns.ID)		

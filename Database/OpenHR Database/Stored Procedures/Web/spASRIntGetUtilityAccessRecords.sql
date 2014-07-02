@@ -64,7 +64,7 @@ BEGIN
 			SET @sDefaultAccess = 'HD';
 		END
 		
-		SET @sSQL = 'SELECT sysusers.name + char(9) +
+		SET @sSQL = 'SELECT sysusers.name ,
 				CASE WHEN	
 					CASE
 						WHEN (SELECT count(*)
@@ -92,7 +92,7 @@ BEGIN
 		END
 
 		SET @sSQL = @sSQL + 
-			' END = ''RW'' THEN ''Read / Write''
+			' END = ''RW'' THEN ''RW''
 			 WHEN	CASE
 				WHEN (SELECT count(*)
 					FROM ASRSysGroupPermissions
@@ -119,9 +119,9 @@ BEGIN
 		END
 
 		SET @sSQL = @sSQL + 
-			' END = ''RO'' THEN ''Read Only''
-			ELSE ''Hidden'' 
-			END + char(9) +
+			' END = ''RO'' THEN ''RO''
+			ELSE ''HD'' 
+			END AS [access] ,
 			CASE
 				WHEN (SELECT count(*)
 					FROM ASRSysGroupPermissions
@@ -134,7 +134,7 @@ BEGIN
 						AND ASRSysGroupPermissions.permitted = 1) > 0 THEN ''1''
 				ELSE
 					''0''
-			END AS [accessDefinition]
+			END AS [isOwner]
 			FROM sysusers
 			LEFT OUTER JOIN ' + @sAccessTable + ' ON (sysusers.name = ' + @sAccessTable + '.groupName
 				AND ' + @sAccessTable + '.id = ' + convert(nvarchar(100), @piID) + ')
@@ -143,6 +143,7 @@ BEGIN
 			ORDER BY sysusers.name';
 
 			EXEC sp_executesql @sSQL;
+
 	END
 
 END

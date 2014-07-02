@@ -595,7 +595,8 @@ function menu_MenuClick(sTool) {
 	//--------------------------CUSTOM REPORT NEW/EDIT/COPY-------------------------------//
 	if (sToolName == 'mnutoolSaveReport') {
 		try {
-			$("#cmdOK").click();
+			var frmSubmit = $("#frmReportDefintion");
+			OpenHR.submitForm(frmSubmit);
 		} catch (e) {
 		} finally {
 			return false;
@@ -2542,13 +2543,24 @@ function menu_saveChanges(psAction, pfPrompt, pfTBOverride) {
 			iResult = 6;
 		}
 	}
-	else if ((sCurrentPage == "UTIL_DEF_CUSTOMREPORTS") ||  // Done
-		(sCurrentPage == "UTIL_DEF_MAILMERGE") ||  // Done
-		(sCurrentPage == "UTIL_DEF_CALENDARREPORT") || // Done
-		(sCurrentPage == "UTIL_DEF_PICKLIST") ||
+
+	else if ((sCurrentPage == "UTIL_DEF_CUSTOMREPORTS") ||
+					(sCurrentPage == "UTIL_DEF_CROSSTABS") ||
+					(sCurrentPage == "UTIL_DEF_CALENDARREPORT") ||
+					(sCurrentPage == "UTIL_DEF_MAILMERGE")) {
+		if ($("#ctl_DefinitionChanged").val() == "True") {
+			var frmSubmit = $("#frmReportDefintion");
+			OpenHR.submitForm(frmSubmit);
+		}
+
+		else {
+			iResult = 6;
+		}
+	}
+
+	else if ((sCurrentPage == "UTIL_DEF_PICKLIST") ||
 		(sCurrentPage == "UTIL_DEF_EXPRESSION") ||
 		(sCurrentPage == "UTIL_DEF_EXPRCOMPONENT") ||
-		(sCurrentPage == "UTIL_DEF_CROSSTABS") ||  // Done
 		(sCurrentPage == "CONFIGURATION") ||
 		(sCurrentPage == "PCCONFIGURATION")) {
 

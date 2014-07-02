@@ -351,4 +351,13 @@ Public Class clsDataAccess
 
 	End Sub
 
+	Public ReadOnly Property Connection As SqlConnection
+		Get
+
+			Dim strConn As String = GetConnectionString(_objLogin)
+			Return New SqlConnection(strConn)
+
+		End Get
+	End Property
+
 End Class

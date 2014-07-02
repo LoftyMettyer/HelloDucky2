@@ -904,9 +904,9 @@ Namespace Controllers
 			 (Session("action") = "copy") Then
 				Select Case Session("utiltype")
 					Case 1 ' CROSS TABS
-						Return RedirectToAction("util_def_crosstabs", "reports")
+						Return RedirectToAction("util_def_crosstab", "reports")
 					Case 2 ' CUSTOM REPORTS
-						Return RedirectToAction("util_def_customreports", "reports")
+						Return RedirectToAction("util_def_customreport", "reports")
 					Case 9 ' MAIL MERGE
 						Return RedirectToAction("util_def_mailmerge", "reports")
 					Case 10	' PICKLISTS

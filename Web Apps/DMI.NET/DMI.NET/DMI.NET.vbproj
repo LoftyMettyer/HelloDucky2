@@ -85,18 +85,14 @@
     <Reference Include="System.Web.Extensions.Design" />
     <Reference Include="System.Web.Helpers, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.1.2\lib\net45\System.Web.Helpers.dll</HintPath>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.0\lib\net45\System.Web.Helpers.dll</HintPath>
     </Reference>
-    <Reference Include="System.Web.Mvc, Version=5.1.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+    <Reference Include="System.Web.Mvc, Version=5.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Microsoft.AspNet.Mvc.5.1.2\lib\net45\System.Web.Mvc.dll</HintPath>
+      <HintPath>..\packages\Microsoft.AspNet.Mvc.5.2.0\lib\net45\System.Web.Mvc.dll</HintPath>
     </Reference>
     <Reference Include="System.Web.Optimization">
       <HintPath>..\packages\Microsoft.AspNet.Web.Optimization.1.0.0\lib\net40\System.Web.Optimization.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Web.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Microsoft.AspNet.Razor.3.1.2\lib\net45\System.Web.Razor.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -106,18 +102,22 @@
     <Reference Include="System.Web.ApplicationServices" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Web.Abstractions" />
+    <Reference Include="System.Web.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.AspNet.Razor.3.2.0\lib\net45\System.Web.Razor.dll</HintPath>
+    </Reference>
     <Reference Include="System.Web.Routing" />
     <Reference Include="System.Web.WebPages, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.1.2\lib\net45\System.Web.WebPages.dll</HintPath>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.0\lib\net45\System.Web.WebPages.dll</HintPath>
     </Reference>
     <Reference Include="System.Web.WebPages.Deployment, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.1.2\lib\net45\System.Web.WebPages.Deployment.dll</HintPath>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.0\lib\net45\System.Web.WebPages.Deployment.dll</HintPath>
     </Reference>
     <Reference Include="System.Web.WebPages.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.1.2\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.0\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
     </Reference>
     <Reference Include="System.Xml" />
     <Reference Include="System.Configuration" />
@@ -158,6 +158,12 @@
   <ItemGroup>
     <Compile Include="App_Start\BundleConfig.vb" />
     <Compile Include="App_Start\RouteConfig.vb" />
+    <Compile Include="Classes\CalendarEventDetail.vb" />
+    <Compile Include="Classes\GroupAccess.vb" />
+    <Compile Include="Classes\ReportChildTables.vb" />
+    <Compile Include="Classes\ReportColumnItem.vb" />
+    <Compile Include="Classes\ReportRelatedTable.vb" />
+    <Compile Include="Classes\ReportSortItem.vb" />
     <Compile Include="Code\ApplicationSettings.vb" />
     <Compile Include="Code\ASRFunctions.vb" />
     <Compile Include="Code\ASRIntranetFunctions.vb" />
@@ -170,14 +176,30 @@
     <Compile Include="Controllers\HomeController.vb" />
     <Compile Include="Controllers\ReportsController.vb" />
     <Compile Include="Controllers\SessionLessController.vb" />
+    <Compile Include="Enums\ExistingFile.vb" />
     <Compile Include="Enums\Layout.vb" />
+    <Compile Include="Enums\RecordSelectionType.vb" />
     <Compile Include="Global.asax.vb">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\AccessGrid.vb" />
+    <Compile Include="Helpers\AvailableReportColumns.vb" />
+    <Compile Include="Helpers\ColumnDropdown.vb" />
+    <Compile Include="Helpers\EnumDropdown.vb" />
+    <Compile Include="Helpers\SelectedReportColumns.vb" />
+    <Compile Include="Helpers\SortOrderGrid.vb" />
+    <Compile Include="Helpers\TableFor.vb" />
     <Compile Include="Models\AccountViewModels.vb" />
+    <Compile Include="Models\CalendarReportModel.vb" />
+    <Compile Include="Models\CrossTabModel.vb" />
+    <Compile Include="Models\CustomReportModel.vb" />
+    <Compile Include="Models\MailMergeModel.vb" />
     <Compile Include="Models\OrgChart.vb" />
     <Compile Include="Models\CalendarEvent.vb" />
     <Compile Include="Models\PopoutChartModel.vb" />
+    <Compile Include="Models\ReportBaseModel.vb" />
+    <Compile Include="Models\ReportColumnsModel.vb" />
+    <Compile Include="Models\ReportOutputModel.vb" />
     <Compile Include="My Project\AssemblyInfo.vb" />
     <Compile Include="My Project\Application.Designer.vb">
       <AutoGen>True</AutoGen>
@@ -194,6 +216,7 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
     <Compile Include="Models\PollMessageModel.vb" />
+    <Compile Include="Repository\ReportRepository.vb" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="My Project\Resources.resx">
@@ -1090,6 +1113,7 @@
     <Content Include="Content\themes\vader\jquery.ui.tabs.min.css" />
     <Content Include="Content\themes\vader\jquery.ui.theme.min.css" />
     <Content Include="Content\themes\vader\jquery.ui.tooltip.min.css" />
+    <Content Include="Database\UpdateScript8.1.sql" />
     <Content Include="Scripts\jquery\jquery-ui-i18n.js" />
     <Content Include="lpks\ssmain.lpk" />
     <Content Include="Content\fonts\SSI80v194934\SSI80v1.woff" />
@@ -1579,11 +1603,9 @@
     <Content Include="Views\Home\tbTransferBookingFind.ascx" />
     <Content Include="Views\Home\tbTransferCourseFind.ascx" />
     <Content Include="Views\Home\util_calcselection.ascx" />
-    <Content Include="Views\Reports\Util_Def_calendarreport.ascx" />
     <Content Include="Views\Home\util_def_calendarreportdates.ascx" />
     <Content Include="Views\Home\util_def_calendarreportdates_data.ascx" />
     <Content Include="Views\Home\util_def_calendarreportdates_main.aspx" />
-    <Content Include="Views\Reports\Util_Def_mailmerge.ascx" />
     <Content Include="Views\Home\util_run_calendarreport_breakdown.ascx" />
     <Content Include="Views\Home\util_run_mailmerge.ascx" />
     <Content Include="Views\Home\util_run_outputoptions.ascx" />
@@ -1601,8 +1623,6 @@
     <Content Include="Views\Home\quickfind.ascx" />
     <Content Include="Views\Home\recordEdit.ascx" />
     <Content Include="Views\Home\Util_CustomReportChilds.aspx" />
-    <Content Include="Views\Reports\Util_Def_Crosstabs.ascx" />
-    <Content Include="Views\Reports\Util_Def_CustomReports.ascx" />
     <Content Include="Views\Home\util_def_exprcomponent.ascx" />
     <Content Include="Views\Home\util_def_expression.ascx" />
     <Content Include="Views\Home\util_def_picklist.ascx" />
@@ -1636,6 +1656,20 @@
     <Content Include="Views\Shared\Util_Def_CustomReports\grdaccess.ascx" />
     <Content Include="Views\Shared\gotoWork.ascx" />
     <Content Include="Views\Shared\Site.Master" />
+    <Content Include="Views\Reports\ChildTableSelection.vbhtml" />
+    <Content Include="Views\Reports\ColumnSelection.vbhtml" />
+    <Content Include="Views\Reports\CrossTabsColumnSelection.vbhtml" />
+    <Content Include="Views\Reports\Definition.vbhtml" />
+    <Content Include="Views\Reports\EventDetails.vbhtml" />
+    <Content Include="Views\Reports\MergeOutput.vbhtml" />
+    <Content Include="Views\Reports\Output.vbhtml" />
+    <Content Include="Views\Reports\RelatedTables.vbhtml" />
+    <Content Include="Views\Reports\ReportDetails.vbhtml" />
+    <Content Include="Views\Reports\SortOrder.vbhtml" />
+    <Content Include="Views\Reports\Util_Def_CalendarReport.vbhtml" />
+    <Content Include="Views\Reports\Util_Def_CrossTab.vbhtml" />
+    <Content Include="Views\Reports\Util_Def_CustomReport.vbhtml" />
+    <Content Include="Views\Reports\Util_Def_MailMerge.vbhtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Global.asax" />

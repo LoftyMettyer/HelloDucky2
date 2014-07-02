@@ -127,7 +127,7 @@
     <Build Include="Stored Procedures\Web\sp_ASRIntGetLinkParentValues.sql" />
     <Build Include="Stored Procedures\Web\sp_ASRIntGetLinkViews.sql" />
     <Build Include="Stored Procedures\Web\sp_ASRIntGetLookupValues.sql" />
-    <Build Include="Stored Procedures\Web\sp_ASRIntGetMailMergeDefinition.sql" />
+    <Build Include="Stored Procedures\Web\spASRIntGetMailMergeDefinition.sql" />
     <Build Include="Stored Procedures\Web\sp_ASRIntGetModuleParameter.sql" />
     <Build Include="Stored Procedures\Web\sp_ASRIntGetOrders.sql" />
     <Build Include="Stored Procedures\Web\sp_ASRIntGetOrderSQL.sql" />
