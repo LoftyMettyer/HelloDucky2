@@ -59,7 +59,7 @@ End Code
 
     @Html.CheckBox("Output.SendAsEmail", Model.SendAsEmail) Send As email
 		<input type="text" id="txtEmailGroup" disabled />
-		<input type="hidden" id="txtEmailGroupID" name="Output.EmailGroupID" />
+		@Html.HiddenFor(Function(m) m.EmailGroupID, New With {.id = "txtEmailGroupID", .name = "Output.EmailGroupID"}))
 
 		<input type="button" class="ui-state-disabled" id="cmdEmailGroup" name="cmdEmailGroup" value="..." style="padding-top: 0;" onclick="selectEmailGroup()" />
 		<br />

@@ -1346,7 +1346,6 @@
     <Content Include="Content\ui.jqgrid.css" />
     <Content Include="Scripts\FormScripts\recordEdit.js" />
     <Content Include="Scripts\FormScripts\Util_Def_CustomReports.js" />
-    <Content Include="Scripts\FormScripts\crosstabdef.js" />
     <Content Include="Scripts\FormScripts\util_def_exprcomponent.js" />
     <Content Include="Scripts\FormScripts\util_def_expression.js" />
     <Content Include="Scripts\FormScripts\calendarreportdef.js" />

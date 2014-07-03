@@ -60,43 +60,28 @@ End Code
 
 	<input type="hidden" id="ctl_DefinitionChanged" name="HasChanged" value="False" />
 
+	<input type="hidden" id="baseHidden" name="baseHidden">
+	<input type="hidden" id="p1Hidden" name="p1Hidden">
+	<input type="hidden" id="p2Hidden" name="p2Hidden">
+
 </div>
-
-
-
-
-<div id="oldstuffTOREMOVE">
-  <form id="frmRecordSelection" name="frmRecordSelection" target="recordSelection" action="util_recordSelection" method="post" style="visibility: hidden; display: none">
-    <input type="hidden" id="recSelType" name="recSelType">
-    <input type="hidden" id="recSelTableID" name="recSelTableID">
-    <input type="hidden" id="recSelCurrentID" name="recSelCurrentID">
-    <input type="hidden" id="recSelTable" name="recSelTable">
-    <input type="hidden" id="recSelDefOwner" name="recSelDefOwner">
-    <input type="hidden" id="recSelDefType" name="recSelDefType">
-  </form>
-
-  <input type="hidden" id="baseHidden" name="baseHidden"> 
-  <input type="hidden" id="p1Hidden" name="p1Hidden">
-  <input type="hidden" id="p2Hidden" name="p2Hidden">
 
 
   <form id="frmCustomReportChilds" name="frmCustomReportChilds" target="childselection" action="util_customreportchilds" method="post" style="visibility: hidden; display: none">
-    <input type="hidden" id="childTableID" name="childTableID">
-    <input type="hidden" id="childTable" name="childTable">
-    <input type="hidden" id="childFilterID" name="childFilterID">
-    <input type="hidden" id="childFilter" name="childFilter">
-    <input type="hidden" id="childOrderID" name="childOrderID">
-    <input type="hidden" id="childOrder" name="childOrder">
-    <input type="hidden" id="childRecords" name="childRecords">
-    <input type="hidden" id="childrenString" name="childrenString">
-    <input type="hidden" id="childrenNames" name="childrenNames">
-    <input type="hidden" id="selectedChildString" name="selectedChildString">
-    <input type="hidden" id="childAction" name="childAction" value="NEW">
-    <input type="hidden" id="childMax" name="childMax" value="5">
-  </form>
+	<input type="hidden" id="childTableID" name="childTableID">
+	<input type="hidden" id="childTable" name="childTable">
+	<input type="hidden" id="childFilterID" name="childFilterID">
+	<input type="hidden" id="childFilter" name="childFilter">
+	<input type="hidden" id="childOrderID" name="childOrderID">
+	<input type="hidden" id="childOrder" name="childOrder">
+	<input type="hidden" id="childRecords" name="childRecords">
+	<input type="hidden" id="childrenString" name="childrenString">
+	<input type="hidden" id="childrenNames" name="childrenNames">
+	<input type="hidden" id="selectedChildString" name="selectedChildString">
+	<input type="hidden" id="childAction" name="childAction" value="NEW">
+	<input type="hidden" id="childMax" name="childMax" value="5">
+</form>
 
-
-</div>
 
 <script type="text/javascript">
 
@@ -127,12 +112,11 @@ End Code
 
   function selectRecordOption(psTable, psType) {
 
-    var sURL;
-    var frmRecordSelection = $("#frmRecordSelection")[0];
+  	var sURL;										 
+  	var frmRecordSelection = $("#frmRecordSelection")[0];
     var iCurrentID;
 
     if (psTable == 'base') {
-  //    iTableID = $("baseTable").val();
 
     	var e = $("#BaseTableID")[0];
       var iTableID = e.options[e.selectedIndex].value;
@@ -165,41 +149,29 @@ End Code
       }
     }
 
-    frmRecordSelection.recSelTable.value = psTable;
-    frmRecordSelection.recSelType.value = psType;
-    frmRecordSelection.recSelTableID.value = iTableID;
-   // frmRecordSelection.recSelCurrentID.value = iCurrentID;
-
     var strDefOwner = $("#owner").val();
     var strCurrentUser = $("#owner").val();
+    var isOwner;
 
     strDefOwner = strDefOwner.toLowerCase();
     strCurrentUser = strCurrentUser.toLowerCase();
 
     if (strDefOwner == strCurrentUser) {
-      frmRecordSelection.recSelDefOwner.value = '1';
+    	isOwner = '1';
     }
     else {
-      frmRecordSelection.recSelDefOwner.value = '0';
+    	isOwner = '0';
     }
-    frmRecordSelection.recSelDefType.value = "Custom Reports";
 
     sURL = "util_recordSelection" +
 			"?recSelType=" + psType +
 				"&recSelTableID=" + iTableID +
 					"&recSelCurrentID=" + iCurrentID +
 						"&recSelTable=" + psTable +
-							"&recSelDefOwner=" + escape(frmRecordSelection.recSelDefOwner.value) +
-								"&recSelDefType=" + escape(frmRecordSelection.recSelDefType.value);
+							"&recSelDefOwner=" + isOwner +
+								"&recSelDefType=" + escape("Selection");
     openDialog(sURL, (screen.width) / 3 + 40, (screen.height) / 2, "no", "no");
 
-    //frmUseful.txtChanged.value = 1;
-    //if (psTable == 'base') {
-    //  refreshTab1Controls();
-    //}
-    //else {
-    //  refreshTab2Controls();
-    //}
   }
 
 

@@ -458,7 +458,6 @@ Namespace Repository
 				' REPLACE WITH dapper!!!!
 				Dim sSQL = String.Format("SELECT * FROM ASRSysCrossTab WHERE CrossTabID = {0}", ID)
 				Dim dtDefinition As DataTable = objDataAccess.GetDataTable(sSQL, CommandType.Text)
-
 				PopulateDefintion(objModel, dtDefinition)
 				objModel.GroupAccess = GetUtilityAccess(UtilityType.utlCrossTab, ID, bIsCopy)
 
