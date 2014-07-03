@@ -20,7 +20,6 @@ Namespace Models
 		<DisplayName("Description :"), DisplayFormat(ConvertEmptyStringToNull:=False)> _
 		Public Property Description As String
 
-		'Public Property BaseTable As Integer
 		Public Property GroupAccess As New Collection(Of GroupAccess)
 		Public Property SelectionType As RecordSelectionType
 		Public Property FilterID As Integer
@@ -35,7 +34,7 @@ Namespace Models
 
 		Public Property SortOrderColumns As New Collection(Of ReportSortItem)
 
-		'		Public Property HasChanged As Boolean
+		Public Property JobsToHide As New Collection(Of Integer)
 
 	End Class
 End Namespace

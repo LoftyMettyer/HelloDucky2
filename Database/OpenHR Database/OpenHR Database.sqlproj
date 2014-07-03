@@ -103,7 +103,7 @@
     <Build Include="Stored Procedures\Web\sp_ASRIntGetBookCourseRecords.sql" />
     <Build Include="Stored Procedures\Web\sp_ASRIntGetBulkBookingRecords.sql" />
     <Build Include="Stored Procedures\Web\sp_ASRIntGetColumns.sql" />
-    <Build Include="Stored Procedures\Web\sp_ASRIntGetCrossTabDefinition.sql" />
+    <Build Include="Stored Procedures\Web\spASRIntGetCrossTabDefinition.sql" />
     <Build Include="Stored Procedures\Web\sp_ASRIntGetCrossTabTablesInfo.sql" />
     <Build Include="Stored Procedures\Web\sp_ASRIntGetDefaultOrderColumns.sql" />
     <Build Include="Stored Procedures\Web\sp_ASRIntGetEmailAddresses.sql" />
@@ -136,9 +136,8 @@
     <Build Include="Stored Procedures\Web\sp_ASRIntGetRecord.sql" />
     <Build Include="Stored Procedures\Web\sp_ASRIntGetRecordDescription.sql" />
     <Build Include="Stored Procedures\Web\sp_ASRIntGetRecordEditInfo.sql" />
-    <Build Include="Stored Procedures\Web\sp_ASRIntGetReportChilds.sql" />
     <Build Include="Stored Procedures\Web\sp_ASRIntGetReportColumns.sql" />
-    <Build Include="Stored Procedures\Web\sp_ASRIntGetReportDefinition.sql" />
+    <Build Include="Stored Procedures\Web\spASRIntGetCustomReportDefinition.sql" />
     <Build Include="Stored Procedures\Web\sp_ASRIntGetRootExpressionIDs.sql" />
     <Build Include="Stored Procedures\Web\sp_ASRIntGetScreenControls.sql" />
     <Build Include="Stored Procedures\Web\sp_ASRIntGetScreenControlsString2.sql" />
@@ -197,7 +196,6 @@
     <Build Include="Stored Procedures\Web\spASRIntGetCalendarColours.sql" />
     <Build Include="Stored Procedures\Web\spASRIntGetCalendarReportColumns.sql" />
     <Build Include="Stored Procedures\Web\spASRIntGetCalendarReportDefinition.sql" />
-    <Build Include="Stored Procedures\Web\spASRIntGetCalendarReportOrder.sql" />
     <Build Include="Stored Procedures\Web\spASRIntGetColumnsFromTablesAndViews.sql" />
     <Build Include="Stored Procedures\Web\spASRIntGetDefaultOrder.sql" />
     <Build Include="Stored Procedures\Web\spASRIntGetDocumentManagementTypes.sql" />

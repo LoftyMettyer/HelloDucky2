@@ -46,8 +46,8 @@ Namespace Helpers
         Dim sID As String = String.Format("{0}_{1}__{2}", name, rownumber, [property].Name)
 
         Select Case [property].Name.ToLower
-          Case "columnname", "order", "columnid"
-            sb.AppendFormat(vbTab & vbTab & "<td><input name='{0}' id='{1}' value='{2}'/></td>" & vbLf, sName, sID, [property].GetValue(obj, Nothing))
+					Case "name", "order", "columnid", "tableid"
+						sb.AppendFormat(vbTab & vbTab & "<td><input name='{0}' id='{1}' value='{2}'/></td>" & vbLf, sName, sID, [property].GetValue(obj, Nothing))
 
           Case Else
             If [property].GetValue(obj, Nothing) = True Then

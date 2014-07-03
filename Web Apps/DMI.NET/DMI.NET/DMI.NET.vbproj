@@ -163,6 +163,7 @@
     <Compile Include="Classes\ReportChildTables.vb" />
     <Compile Include="Classes\ReportColumnItem.vb" />
     <Compile Include="Classes\ReportRelatedTable.vb" />
+    <Compile Include="Classes\ReportRepetition.vb" />
     <Compile Include="Classes\ReportSortItem.vb" />
     <Compile Include="Code\ApplicationSettings.vb" />
     <Compile Include="Code\ASRFunctions.vb" />

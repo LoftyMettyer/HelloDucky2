@@ -11,10 +11,11 @@ End Code
 
   <br/>
 
-  <div style="float:left">
+  <div>
     Parent Table 1
     <input type="hidden" id="txtParent1ID" name="Parent1.ID" value="@Model.Parent1.ID" />
     <input type="text" disabled="disabled" id="txtParent1Name" value="@Model.Parent1.Name" />
+		<br/>
     <label>
 			@Html.RadioButton("Parent1.SelectionType", 0, Model.Parent1.SelectionType = Enums.RecordSelectionType.AllRecords)
 			All Records
@@ -23,8 +24,8 @@ End Code
     <label>
 			@Html.RadioButton("Parent1.SelectionType", 1, Model.Parent1.SelectionType = Enums.RecordSelectionType.Picklist)
 			Picklist
-      <input type="text" id="txtParent1PicklistID" name="Parent1.PicklistID" value="@Model.Parent1.PicklistID" />
-      <input id="txtParent1Picklist" name="txtParent1Picklist" class="text textdisabled" disabled="disabled">
+      <input type="hidden" id="txtParent1PicklistID" name="Parent1.PicklistID" value="@Model.Parent1.PicklistID" />
+			<input id="txtParent1Picklist" name="txtParent1Picklist" class="text textdisabled" disabled="disabled" value="@Model.Parent1.PicklistName">
       <input id="cmdParent1Picklist" name="cmdParent1Picklist" type="button" value="..."
              onclick="selectRecordOption('p1', 'picklist')" />
     </label>
@@ -32,19 +33,21 @@ End Code
     <label>
 			@Html.RadioButton("Parent1.SelectionType", 2, Model.Parent1.SelectionType = Enums.RecordSelectionType.Filter)
 			Filter
-      <input type="text" id="txtParent1FilterID" name="Parent1.FilterID" value="@Model.Parent1.FilterID" />
-      <input id="txtParent1Filter" name="txtParent1Filter" class="text textdisabled" disabled="disabled">
+			<input type="hidden" id="txtParent1FilterID" name="Parent1.FilterID" value="@Model.Parent1.FilterID" />
+			<input id="txtParent1Filter" name="txtParent1Filter" class="text textdisabled" disabled="disabled" value="@Model.Parent1.FilterName">
       <input id="cmdParent1Filter" name="cmdParent1Filter" type="button" value="..."
              onclick="selectRecordOption('p1', 'filter')" />
     </label>
 
   </div>
 
-  <div style="float:right">
+	<br />
+
+  <div>
     Parent Table 2
     <input type="hidden" id="txtParent2ID" name="Parent2.ID" value="@Model.Parent2.ID" />
     <input type="text" disabled="disabled" id="txtParent2Name" value="@Model.Parent2.Name" />
-
+		<br />
     <label>
 			@Html.RadioButton("Parent2.SelectionType", 0, Model.Parent2.SelectionType = Enums.RecordSelectionType.AllRecords)
       All Records
@@ -53,8 +56,8 @@ End Code
     <label>
 			@Html.RadioButton("Parent2.SelectionType", 1, Model.Parent2.SelectionType = Enums.RecordSelectionType.Picklist)
 			Picklist
-      <input type="text" id="txtParent2PicklistID" name="Parent2.PicklistID" value="@Model.Parent2.PicklistID" />
-      <input id="txtParent2Picklist" name="txtParent2Picklist" class="text textdisabled" disabled="disabled">
+			<input type="hidden" id="txtParent2PicklistID" name="Parent2.PicklistID" value="@Model.Parent2.PicklistID" />
+			<input id="txtParent2Picklist" name="txtParent2Picklist" class="text textdisabled" disabled="disabled" value="@Model.Parent2.PicklistName">
       <input id="cmdParent2Picklist" name="cmdParent2Picklist" type="button" value="..."
              onclick="selectRecordOption('p2', 'picklist')" />
     </label>
@@ -62,8 +65,8 @@ End Code
     <label>
 			@Html.RadioButton("Parent2.SelectionType", 0, Model.Parent2.SelectionType = Enums.RecordSelectionType.Filter)
 			Filter
-      <input type="text" id="txtParent2FilterID" name="Parent2.FilterID" value="@Model.Parent2.FilterID" />
-      <input id="txtParent2Filter" name="txtParent2Filter" class="text textdisabled" disabled="disabled">
+			<input type="hidden" id="txtParent2FilterID" name="Parent2.FilterID" value="@Model.Parent2.FilterID" />
+			<input id="txtParent2Filter" name="txtParent2Filter" class="text textdisabled" disabled="disabled" value="@Model.Parent2.FilterName">
       <input id="cmdParent2Filter" name="cmdParent2Filter" type="button" value="..."
              onclick="selectRecordOption('p2', 'filter')" />
     </label>

@@ -19,7 +19,7 @@ Namespace Models
 		Public Property Columns As New ReportColumnsModel
 
 		<DisplayName("Template"), DisplayFormat(ConvertEmptyStringToNull:=False)>
-		Public Property TemplateName As String
+		Public Property TemplateFileName As String
 
 		<DisplayName("Pause before merge")>
 		Public Property PauseBeforeMerge As Boolean
@@ -41,19 +41,17 @@ Namespace Models
 		<DisplayFormat(ConvertEmptyStringToNull:=False)> _
 		Public Property Filename As String
 
-		Public Property SendAsEmail As Boolean
-
 		<DisplayName("Email Address")>
 		Public Property EmailGroupID As Integer
 
 		<DisplayFormat(ConvertEmptyStringToNull:=False)> _
-		Public Property Subject As String
+		Public Property EmailSubject As String
 
 		<DisplayName("Send As Attachment")>
-		Public Property SendAsAttachment As Boolean
+		Public Property EmailAsAttachment As Boolean
 
 		<DisplayName("Attach As"), DisplayFormat(ConvertEmptyStringToNull:=False)>
-		Public Property AttachAs As String
+		Public Property EmailAttachmentName As String
 
 	End Class
 

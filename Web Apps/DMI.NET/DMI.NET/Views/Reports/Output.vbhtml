@@ -57,15 +57,15 @@ End Code
 		If existing file : @Html.EnumDropDownListFor(Function(m) m.SaveExisting)
 		<br/>
 
-    @Html.CheckBox("Output.SendAsEmail", Model.SendAsEmail) Send As email
-		<input type="text" id="txtEmailGroup" disabled />
+    @Html.CheckBox("Output.SendToEmail", Model.SendToEmail) Send As email
+		<input type="text" id="txtEmailGroup" disabled value="@Model.EmailGroupName" />
 		@Html.HiddenFor(Function(m) m.EmailGroupID, New With {.id = "txtEmailGroupID", .name = "Output.EmailGroupID"}))
 
 		<input type="button" class="ui-state-disabled" id="cmdEmailGroup" name="cmdEmailGroup" value="..." style="padding-top: 0;" onclick="selectEmailGroup()" />
 		<br />
 		Email Subject: @Html.TextBox("Output.EmailSubject", Model.EmailSubject)
 		<br/>
-    Attach As: @Html.TextBox("Output.EmailAttachAs", Model.EmailAttachAs)
+    Attach As: @Html.TextBox("Output.EmailAttachmentName", Model.EmailAttachmentName)
 
   </div>
 

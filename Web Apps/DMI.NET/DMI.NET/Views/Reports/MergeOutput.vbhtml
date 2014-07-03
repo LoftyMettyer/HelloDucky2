@@ -22,8 +22,8 @@ End Code
 	Options:
 	<br/>
 
-	@Html.LabelFor(Function(m) m.TemplateName)
-	@Html.TextBox("TemplateName", Model.TemplateName)
+	@Html.LabelFor(Function(m) m.TemplateFileName)
+	@Html.TextBox("TemplateFileName", Model.TemplateFileName)
 	<input type="button" class="ui-state-disabled" id="cmdEmailGroup" name="cmdTemplate" value="..." style="padding-top: 0;" />
 
 	@Html.CheckBoxFor(Function(m) m.PauseBeforeMerge)
@@ -81,17 +81,17 @@ End Code
 		@Html.LabelFor(Function(m) m.EmailGroupID)
 		@Html.TextBox("EmailGroupID", Model.EmailGroupID)
 		<br />
-		@Html.LabelFor(Function(m) m.Subject)
-		@Html.TextBox("Subject", Model.Subject)
+		@Html.LabelFor(Function(m) m.EmailSubject)
+		@Html.TextBox("EmailSubject", Model.EmailSubject)
 
 		<br />
 
-		@Html.LabelFor(Function(m) m.SendAsAttachment)
-		@Html.CheckBoxFor(Function(m) m.SendAsAttachment)
+		@Html.LabelFor(Function(m) m.EmailAsAttachment)
+		@Html.CheckBoxFor(Function(m) m.EmailAsAttachment)
 		<br />
 
-		@Html.LabelFor(Function(m) m.AttachAs)
-		@Html.TextBox("AttachAs", Model.AttachAs)
+		@Html.LabelFor(Function(m) m.EmailAttachmentName)
+		@Html.TextBox("EmailAttachmentName", Model.EmailAttachmentName)
 
 	</div>
 

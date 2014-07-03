@@ -23,7 +23,8 @@ Namespace Models
 		Public Property Filename As String
 		Public Property SaveExisting As ExistingFile
 		Public Property EmailGroupID As Integer
-		Public Property SendAsEmail As Boolean
+		Public Property SendToEmail As Boolean
+		Public Property EmailGroupName As String
 
 		<DisplayFormat(ConvertEmptyStringToNull:=False)> _
 		Public Property EmailAddress As String
@@ -32,7 +33,7 @@ Namespace Models
 		Public Property EmailSubject As String
 
 		<DisplayFormat(ConvertEmptyStringToNull:=False)> _
-		Public Property EmailAttachAs As String
+		Public Property EmailAttachmentName As String
 
 	End Class
 

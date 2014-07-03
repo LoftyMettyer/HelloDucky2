@@ -1,86 +1,68 @@
-CREATE PROCEDURE [dbo].[sp_ASRIntGetReportDefinition] (
+CREATE PROCEDURE [dbo].[spASRIntGetCustomReportDefinition] (
 	@piReportID 				integer, 
 	@psCurrentUser				varchar(255),
-	@psAction					varchar(255),
-	@psErrorMsg					varchar(MAX)	OUTPUT,
-	@psReportName				varchar(255)	OUTPUT,
-	@psReportOwner				varchar(255)	OUTPUT,
-	@psReportDesc				varchar(MAX)	OUTPUT,
-	@piBaseTableID				integer			OUTPUT,
-	@pfAllRecords				bit				OUTPUT,
-	@piPicklistID				integer			OUTPUT,
-	@psPicklistName				varchar(255)	OUTPUT,
-	@pfPicklistHidden			bit				OUTPUT,
-	@piFilterID					integer			OUTPUT,
-	@psFilterName				varchar(255)	OUTPUT,
-	@pfFilterHidden				bit				OUTPUT,
-	@piParent1TableID			integer			OUTPUT,
-	@psParent1Name				varchar(255)	OUTPUT,
-	@piParent1FilterID			integer			OUTPUT,
-	@psParent1FilterName		varchar(255)	OUTPUT,
-	@pfParent1FilterHidden		bit				OUTPUT,
-	@piParent2TableID			integer			OUTPUT,
-	@psParent2Name				varchar(255)	OUTPUT,
-	@piParent2FilterID			integer			OUTPUT,
-	@psParent2FilterName		varchar(255)	OUTPUT,
-	@pfParent2FilterHidden		bit				OUTPUT,
-	@pfSummary					bit				OUTPUT,
-	@pfPrintFilterHeader		bit				OUTPUT,
-	@pfOutputPreview			bit				OUTPUT,
-	@piOutputFormat				integer			OUTPUT,
-	@pfOutputScreen				bit				OUTPUT,
-	@pfOutputPrinter			bit				OUTPUT,
-	@psOutputPrinterName		varchar(MAX)	OUTPUT,
-	@pfOutputSave				bit				OUTPUT,
-	@piOutputSaveExisting		integer			OUTPUT,
-	@pfOutputEmail				bit				OUTPUT,
-	@piOutputEmailAddr			integer			OUTPUT,
-	@psOutputEmailName			varchar(MAX)	OUTPUT,
-	@psOutputEmailSubject		varchar(MAX)	OUTPUT,
-	@psOutputEmailAttachAs		varchar(MAX)	OUTPUT,
-	@psOutputFilename			varchar(MAX)	OUTPUT,
-	@piTimestamp				integer			OUTPUT,
-	@pfParent1AllRecords		bit				OUTPUT,
-	@piParent1PicklistID		integer			OUTPUT,
-	@psParent1PicklistName		varchar(255)	OUTPUT,
-	@pfParent1PicklistHidden	bit				OUTPUT,
-	@pfParent2AllRecords		bit				OUTPUT,
-	@piParent2PicklistID		integer			OUTPUT,
-	@psParent2PicklistName		varchar(255)	OUTPUT,
-	@pfParent2PicklistHidden	bit				OUTPUT,
-	@psInfoMsg					varchar(MAX)	OUTPUT,
-	@pfIgnoreZeros				bit				OUTPUT
-)
+	@psAction					varchar(255))
 AS
 BEGIN
 
 	SET NOCOUNT ON;
 
-	DECLARE	@iCount			integer,
-			@sTempHidden		varchar(8000),
-			@sAccess				varchar(8000),
-			@sTempUsername	varchar(8000),
+	DECLARE	@iCount				integer,
+			@sTempHidden		varchar(MAX),
+			@sAccess			varchar(MAX),
+			@sTempUsername		varchar(MAX),
 			@fSysSecMgr			bit;
 
-	SET @psErrorMsg = '';
-	SET @psPicklistName = '';
-	SET @pfPicklistHidden = 0;
-	SET @psFilterName = '';
-	SET @pfFilterHidden = 0;
-	SET @psParent1Name = '';
-	SET @psParent1FilterName = '';
-	SET @pfParent1FilterHidden = 0;
-	SET @psParent2Name = '';
-	SET @psParent2FilterName = '';
-	SET @pfParent2FilterHidden = 0;
-	SET @psParent1PicklistName = '';
-	SET @pfParent1PicklistHidden = 0;
-	SET @psParent2PicklistName = '';
-	SET @pfParent2PicklistHidden = 0;
-	SET @psInfoMsg = '';
-	SET @psOutputEmailName = '';
+	DECLARE @psErrorMsg				varchar(MAX) = '',
+		@psReportName				varchar(255) = '',
+		@psReportOwner				varchar(255) = '',
+		@psReportDesc				varchar(MAX) = '',
+		@piBaseTableID				integer = 0,
+		@pfAllRecords				bit			,
+		@piPicklistID				integer = 0,
+		@psPicklistName				varchar(255) = '',
+		@pfPicklistHidden			bit			,
+		@piFilterID					integer = 0,
+		@psFilterName				varchar(255) = '',
+		@pfFilterHidden				bit			,
+		@piParent1TableID			integer = 0,
+		@psParent1Name				varchar(255) = '',
+		@piParent1FilterID			integer = 0,
+		@psParent1FilterName		varchar(255) = '',
+		@pfParent1FilterHidden		bit			,
+		@piParent2TableID			integer = 0,
+		@psParent2Name				varchar(255) = '',
+		@piParent2FilterID			integer = 0,
+		@psParent2FilterName		varchar(255) = '',
+		@pfParent2FilterHidden		bit,
+		@pfSummary					bit,
+		@pfPrintFilterHeader		bit,
+		@pfOutputPreview			bit,
+		@piOutputFormat				integer = 0,
+		@pfOutputScreen				bit,
+		@pfOutputPrinter			bit,
+		@psOutputPrinterName		varchar(MAX) = '',
+		@pfOutputSave				bit,
+		@piOutputSaveExisting		integer = 0,
+		@pfOutputEmail				bit,
+		@piOutputEmailAddr			integer = 0,
+		@psOutputEmailName			varchar(MAX) = '',
+		@psOutputEmailSubject		varchar(MAX) = '',
+		@psOutputEmailAttachAs		varchar(MAX) = '',
+		@psOutputFilename			varchar(MAX) = '',
+		@piTimestamp				integer = 0,
+		@pfParent1AllRecords		bit,
+		@piParent1PicklistID		integer,
+		@psParent1PicklistName		varchar(255) = '',
+		@pfParent1PicklistHidden	bit,
+		@pfParent2AllRecords		bit,
+		@piParent2PicklistID		integer,
+		@psParent2PicklistName		varchar(255) = '',
+		@pfParent2PicklistHidden	bit,
+		@psInfoMsg					varchar(MAX) = '',
+		@pfIgnoreZeros				bit;
 
-	exec [dbo].[spASRIntSysSecMgr] @fSysSecMgr OUTPUT;
+	EXEC [dbo].[spASRIntSysSecMgr] @fSysSecMgr OUTPUT;
 	
 	/* Check the report exists. */
 	SELECT @iCount = COUNT(*)
@@ -403,133 +385,97 @@ BEGIN
 		SET @psOutputEmailName = '';
 	END
 
-	/* Get the definition recordset. */
-	SELECT 'COLUMN' AS [definitionType],
-		'N' AS [hidden],
-		convert(varchar(255), ASRSysCustomReportsDetails.type) + char(9) +
-		convert(varchar(255), ASRSysColumns.tableID) + char(9) +
-		convert(varchar(255), ASRSysCustomReportsDetails.colExprID) + char(9) +
-		convert(varchar(MAX), ASRSysTables.tableName + '.' + ASRSysColumns.columnName) + char(9) +
-		convert(varchar(100), ASRSysCustomReportsDetails.size) + char(9) +
-		convert(varchar(100), ASRSysCustomReportsDetails.dp) + char(9) +
-		'N' + char(9) +
-		CASE 
-			WHEN ASRSysCustomReportsDetails.isNumeric = 0 THEN '0' 
-			ELSE '1' 
-		END + char(9) +
-		convert(varchar(8000), ASRSysCustomReportsDetails.heading) + char(9) +
-		CASE 
-			WHEN ASRSysCustomReportsDetails.avge = 0 THEN '0' 
-			ELSE '1' 
-		END + char(9) +
-		CASE
-			WHEN ASRSysCustomReportsDetails.cnt = 0 THEN '0' 
-			ELSE '1' 
-		END + char(9) +
-		CASE 
-			WHEN ASRSysCustomReportsDetails.tot = 0 THEN '0' 
-			ELSE '1' 
-		END + char(9) +
-		CASE 
-			WHEN ASRSysCustomReportsDetails.Hidden = 0 THEN '0' 
-			ELSE '1' 
-		END + char(9) +
-		CASE 
-			WHEN ASRSysCustomReportsDetails.GroupWithNextColumn = 0 THEN '0' 
-			ELSE '1' 
-		END AS [definitionString],
+
+	-- Definition
+	SELECT @psReportName AS name, @psReportDesc AS [Description], @piBaseTableID AS baseTableID, @psReportOwner AS [Owner],
+		CASE WHEN @pfAllRecords = 1 THEN 0 ELSE CASE WHEN ISNULL(@piPicklistID, 0) > 0 THEN 1 ELSE 2 END END AS [SelectionType],
+		@piPicklistID AS PicklistID, @piFilterID AS FilterID,
+		@psPicklistName AS PicklistName, @psFilterName AS FilterName,
+		CASE WHEN @piParent1FilterID > 0 THEN 2 ELSE CASE WHEN @piParent1PicklistID > 0 THEN 1 ELSE 0 END END AS [Parent1SelectionType],
+		@piParent1TableID AS parent1ID, @psParent1Name AS Parent1Name, @piParent1FilterID AS parent1FilterID, @piParent1PicklistID AS Parent1PicklistID,
+		@psParent1FilterName AS Parent1FilterName, @psParent1PicklistName AS Parent1PicklistName, @piParent2PicklistID AS Parent2PicklistID,
+		CASE WHEN @piParent2FilterID > 0 THEN 2 ELSE CASE WHEN @piParent2PicklistID > 0 THEN 1 ELSE 0 END END AS [Parent2SelectionType],
+		@piParent2TableID AS parent2ID, @psParent2Name AS Parent2Name, @piParent2FilterID AS parent2FilterID, 
+		@psParent2FilterName AS Parent2FilterName, @psParent2PicklistName AS Parent2PicklistName,
+		@pfSummary AS summary,@pfPrintFilterHeader AS printFilterHeader,
+		@pfOutputPreview AS IsPreview, @piOutputFormat AS [Format], @pfOutputScreen AS ToScreen, @pfOutputPrinter AS ToPrinter,
+		@psOutputPrinterName AS PrinterName, @pfOutputSave AS SaveToFile, @piOutputSaveExisting AS SaveExisting,
+		@pfOutputEmail AS SendToEmail, @piOutputEmailAddr AS EmailGroupID, @piOutputEmailAddr AS EmailGroupName,
+		@psOutputEmailSubject AS EmailSubject, @psOutputEmailAttachAs AS EmailAttachmentName,
+		@psOutputFilename AS [Filename], @piTimestamp AS [timestamp],
+		@pfParent1AllRecords AS parent1AllRecords, @piParent1PicklistID AS parent1Picklist,
+		@pfParent2AllRecords AS parent2AllRecords,@piParent2PicklistID AS parent2Picklist,
+		@pfIgnoreZeros AS IgnoreZeros;
+
+	-- Get the definition columns
+	SELECT 'N' AS [AccessHidden],
+		ASRSysCustomReportsDetails.type,
+		ASRSysColumns.tableID,
+		ASRSysCustomReportsDetails.colExprID AS [id],
+		convert(varchar(MAX), ASRSysTables.tableName + '.' + ASRSysColumns.columnName) AS [Name],
+		ASRSysCustomReportsDetails.size AS [size],
+		ASRSysCustomReportsDetails.dp AS [decimals],
+		ISNULL(ASRSysCustomReportsDetails.[isNumeric], 0) AS [IsNumeric],
+		ASRSysCustomReportsDetails.heading AS Heading,
+		ISNULL(ASRSysCustomReportsDetails.avge, 0) AS IsAverage,
+		ISNULL(ASRSysCustomReportsDetails.cnt, 0) AS IsCount,
+		ISNULL(ASRSysCustomReportsDetails.tot, 0) AS IsTotal,
+		ISNULL(ASRSysCustomReportsDetails.Hidden, 0) AS IsHidden,
+		ISNULL(ASRSysCustomReportsDetails.GroupWithNextColumn, 0) AS IsGroupWithNext,
 		ASRSysCustomReportsDetails.sequence AS [sequence]
 	FROM ASRSysCustomReportsDetails 
-	INNER JOIN ASRSysColumns ON ASRSysCustomReportsDetails.colExprID = ASRSysColumns.columnId
-	INNER JOIN ASRSysTables ON ASRSysColumns.tableID = ASRSysTables.tableID
+		INNER JOIN ASRSysColumns ON ASRSysCustomReportsDetails.colExprID = ASRSysColumns.columnId
+		INNER JOIN ASRSysTables ON ASRSysColumns.tableID = ASRSysTables.tableID
 	WHERE ASRSysCustomReportsDetails.customReportID = @piReportID
 		AND ASRSysCustomReportsDetails.type = 'C'
 	UNION
-	SELECT 'COLUMN' AS [definitionType],
-		CASE 
+	SELECT CASE 
 			WHEN ASRSysExpressions.access = 'HD' THEN 'Y'
 			ELSE 'N'
-		END AS [hidden],
-		convert(varchar(255), ASRSysCustomReportsDetails.type) + char(9) +
-		convert(varchar(255), ASRSysExpressions.tableID) + char(9) +
-		convert(varchar(255), ASRSysCustomReportsDetails.colExprID) + char(9) +
-		convert(varchar(MAX), '<' + ASRSysTables.TableName  + ' Calc> ' + replace(ASRSysExpressions.name, '_', ' ')) + char(9) +
-		convert(varchar(100), ASRSysCustomReportsDetails.size) + char(9) +
-		convert(varchar(100), ASRSysCustomReportsDetails.dp) + char(9) +
-		CASE
-			WHEN ASRSysExpressions.access = 'HD' THEN 'Y'
-			ELSE 'N'
-		END + char(9) +
-		CASE
-			WHEN ASRSysCustomReportsDetails.isNumeric = 0 THEN '0' 
-			ELSE '1' 
-		END + char(9) +
-		convert(varchar(8000), ASRSysCustomReportsDetails.heading) + char(9) +
-
-		CASE
-			WHEN ASRSysCustomReportsDetails.avge = 0 THEN '0' 
-			ELSE '1' 
-		END + char(9) +
-		CASE 
-			when ASRSysCustomReportsDetails.cnt = 0 THEN '0' 
-			ELSE '1' 
-		END + char(9) +
-		CASE 
-			WHEN ASRSysCustomReportsDetails.tot = 0 THEN '0' 
-			ELSE '1' 
-		END + char(9) +
-		CASE 
-			WHEN ASRSysCustomReportsDetails.Hidden = 0 THEN '0' 
-			ELSE '1' 
-		END + char(9) +
-		CASE 
-			WHEN ASRSysCustomReportsDetails.GroupWithNextColumn = 0 THEN '0' 
-			ELSE '1' 
-		END AS [definitionString],
+		END,
+		ASRSysCustomReportsDetails.type,
+		ASRSysExpressions.tableID,
+		ASRSysCustomReportsDetails.colExprID,
+		ASRSysTables.TableName  + ' Calc> ' + replace(ASRSysExpressions.name, '_', ' ') AS [Heading],
+		ASRSysCustomReportsDetails.size,
+		ASRSysCustomReportsDetails.dp,
+		ISNULL(ASRSysCustomReportsDetails.[isNumeric], 0) AS [IsNumeric],
+		ASRSysCustomReportsDetails.heading,
+		ISNULL(ASRSysCustomReportsDetails.avge, 0) AS IsAverage,
+		ISNULL(ASRSysCustomReportsDetails.cnt, 0) AS IsCount,
+		ISNULL(ASRSysCustomReportsDetails.tot, 0) AS IsTotal,
+		ISNULL(ASRSysCustomReportsDetails.Hidden, 0) AS IsHidden,
+		ISNULL(ASRSysCustomReportsDetails.GroupWithNextColumn, 0) AS IsGroupWithNext,
 		ASRSysCustomReportsDetails.sequence AS [sequence]
 	FROM ASRSysCustomReportsDetails
 		INNER JOIN ASRSysExpressions ON ASRSysCustomReportsDetails.colExprID = ASRSysExpressions.exprID
 		INNER JOIN ASRSysTables ON ASRSysExpressions.tableID = ASRSysTables.tableID
 	WHERE ASRSysCustomReportsDetails.customReportID = @piReportID
 		AND ASRSysCustomReportsDetails.type <> 'C'
-	UNION
-	SELECT 'ORDER' AS [definitionType],
-		'N' AS [hidden],
-		convert(varchar(255), ASRSysCustomReportsDetails.colExprID) + char(9) +
-		convert(varchar(MAX), ASRSysTables.tableName + '.' + ASRSysColumns.columnName) + char(9) +
-		convert(varchar(255), ASRSysCustomReportsDetails.sortOrder) + char(9) +
-		CASE
-			WHEN ASRSysCustomReportsDetails.boc = 0 THEN '' 
-			ELSE '-1' 
-		END + char(9) +
-		CASE
-			WHEN ASRSysCustomReportsDetails.poc = 0 THEN '' 
-			ELSE '-1' 
-		END + char(9) +
-		CASE
-			WHEN ASRSysCustomReportsDetails.voc = 0 THEN '' 
-			ELSE '-1' 
-		END + char(9) +
-		CASE 
-			WHEN ASRSysCustomReportsDetails.srv = 0 THEN '' 
-			ELSE '-1' 
-		END  + char(9) +
-		convert(varchar(255), ASRSysTables.tableID) AS [definitionString],
-		ASRSysCustomReportsDetails.sortOrderSequence AS [sequence]
+
+	-- Orders
+	SELECT ASRSysCustomReportsDetails.colExprID AS [ID],
+		convert(varchar(MAX), ASRSysTables.tableName + '.' + ASRSysColumns.columnName) as [Name],
+		ASRSysCustomReportsDetails.SortOrderSequence AS [Sequence],
+		ISNULL(ASRSysCustomReportsDetails.boc, 0) AS [BreakOnChange],
+		ISNULL(ASRSysCustomReportsDetails.boc, 0) AS [PageOnChange],
+		ISNULL(ASRSysCustomReportsDetails.boc, 0) AS [ValueOnChange],
+		ISNULL(ASRSysCustomReportsDetails.boc, 0) AS [SuppressRepeated],
+		ASRSysCustomReportsDetails.sortOrder AS [Order],
+		ASRSysTables.tableID
 	FROM ASRSysCustomReportsDetails
 	INNER JOIN ASRSysColumns ON ASRSysCustomReportsDetails.colExprID = ASRSysColumns.columnId
 	INNER JOIN ASRSysTables ON ASRSysColumns.tableID = ASRSysTables.tableID
 	WHERE ASRSysCustomReportsDetails.customReportID = @piReportID
 		AND ASRSysCustomReportsDetails.type = 'C'
 		AND ASRSysCustomReportsDetails.sortOrderSequence > 0
-	UNION
-	SELECT 'REPETITION' AS [definitionType],
-		'N' AS [hidden],
-		'C' + convert(varchar(255), ASRSysCustomReportsDetails.colExprID) + char(9) +
-		convert(varchar(MAX), ASRSysTables.tableName + '.' + ASRSysColumns.columnName) + char(9) +
-		convert(varchar(MAX), ASRSysCustomReportsDetails.repetition)  + char(9) +
-		convert(varchar(255), ASRSysTables.tableID) + char(9) +
-		convert(varchar(255), ASRSysCustomReportsDetails.Hidden) AS [definitionString],
+
+	SELECT 'N' AS [hidden],
+		'C' + convert(varchar(255), ASRSysCustomReportsDetails.colExprID),
+		convert(varchar(MAX), ASRSysTables.tableName + '.' + ASRSysColumns.columnName),
+		convert(varchar(MAX), ASRSysCustomReportsDetails.repetition),
+		convert(varchar(255), ASRSysTables.tableID),
+		convert(varchar(255), ASRSysCustomReportsDetails.Hidden),
 		ASRSysCustomReportsDetails.sequence AS [sequence]
 	FROM ASRSysCustomReportsDetails
 		INNER JOIN ASRSysColumns ON ASRSysCustomReportsDetails.colExprID = ASRSysColumns.columnId
@@ -538,16 +484,15 @@ BEGIN
 		AND ASRSysCustomReportsDetails.type = 'C'
 		AND ASRSysCustomReportsDetails.repetition >= 0
 	UNION
-	SELECT 'REPETITION' AS [definitionType],
-		CASE 
+	SELECT CASE 
 			WHEN ASRSysExpressions.access = 'HD' THEN 'Y'
 			ELSE 'N'
 		END AS [hidden],
-		'E' + convert(varchar(8000), ASRSysCustomReportsDetails.colExprID) + char(9) +
-		'<' + ASRSysTables.TableName + ' Calc> ' + convert(varchar(MAX), ASRSysExpressions.Name) + char(9) +
-		convert(varchar(100), ASRSysCustomReportsDetails.repetition)  + char(9) +
-		convert(varchar(255), ASRSysExpressions.tableID) + char(9) +
-		convert(varchar(255), ASRSysCustomReportsDetails.Hidden) AS [definitionString],
+		'E' + convert(varchar(8000), ASRSysCustomReportsDetails.colExprID),
+		'<' + ASRSysTables.TableName + ' Calc> ' + convert(varchar(MAX), ASRSysExpressions.Name),
+		convert(varchar(100), ASRSysCustomReportsDetails.repetition),
+		convert(varchar(255), ASRSysExpressions.tableID),
+		convert(varchar(255), ASRSysCustomReportsDetails.Hidden),
 		ASRSysCustomReportsDetails.sequence AS [sequence]
 	FROM ASRSysCustomReportsDetails
 		INNER JOIN ASRSysExpressions ON ASRSysCustomReportsDetails.colExprID = ASRSysExpressions.ExprID
@@ -556,5 +501,26 @@ BEGIN
 		AND ASRSysCustomReportsDetails.type = 'E'
 		AND ASRSysCustomReportsDetails.repetition >= 0
 	ORDER BY [sequence] ASC;
+
+	-- Return the child table information
+	SELECT  C.ChildTable AS [TableID],
+		T.TableName AS [TableName],
+		CASE WHEN (X.Access <> 'HD') OR (X.userName = system_user) THEN isnull(X.ExprID, 0) ELSE 0 END AS [FilterID],
+		CASE WHEN (X.Access <> 'HD') OR (X.userName = system_user) THEN isnull(X.Name, '') ELSE '' END AS [FilterName],
+		isnull(O.OrderID, 0) AS [OrderID],
+	  ISNULL(O.Name, '') AS [OrderName],
+	  C.ChildMaxRecords AS [Records], 
+		CASE WHEN (X.Access = 'HD') AND (X.userName = system_user) THEN 'Y' ELSE 'N' END AS [FilterHidden],
+		CASE WHEN isnull(O.OrderID, 0) <> isnull(C.ChildOrder,0) THEN 'Y' ELSE 'N' END AS [OrderDeleted],
+		CASE WHEN isnull(X.ExprID, 0) <> isnull(C.ChildFilter,0) THEN 'Y' ELSE 'N' END AS [FilterDeleted],
+		CASE WHEN (X.Access = 'HD') AND (X.userName <> system_user) THEN 'Y' ELSE 'N' END AS [FilterHiddenByOther]
+	FROM [dbo].[ASRSysCustomReportsChildDetails] C 
+	INNER JOIN [dbo].[ASRSysTables] T ON C.ChildTable = T.TableID 
+		LEFT OUTER JOIN [dbo].[ASRSysExpressions] X ON C.ChildFilter = X.ExprID 
+		LEFT OUTER JOIN [dbo].[ASRSysOrders] O ON C.ChildOrder = O.OrderID
+	WHERE C.CustomReportID = @piReportID
+	ORDER BY T.TableName;
 	
 END
+
+

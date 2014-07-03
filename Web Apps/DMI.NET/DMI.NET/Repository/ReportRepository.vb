@@ -29,56 +29,6 @@ Namespace Repository
 
 			Dim objModel As New CustomReportModel
 
-			Dim prmErrMsg = New SqlParameter("psErrorMsg", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
-			Dim prmName = New SqlParameter("psReportName", SqlDbType.VarChar, 255) With {.Direction = ParameterDirection.Output}
-			Dim prmOwner = New SqlParameter("psReportOwner", SqlDbType.VarChar, 255) With {.Direction = ParameterDirection.Output}
-			Dim prmDescription = New SqlParameter("psReportDesc", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
-			Dim prmBaseTableID = New SqlParameter("piBaseTableID", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
-			Dim prmAllRecords = New SqlParameter("pfAllRecords", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
-			Dim prmPicklistID = New SqlParameter("piPicklistID", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
-			Dim prmPicklistName = New SqlParameter("psPicklistName", SqlDbType.VarChar, 255) With {.Direction = ParameterDirection.Output}
-			Dim prmPicklistHidden = New SqlParameter("pfPicklistHidden", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
-			Dim prmFilterID = New SqlParameter("piFilterID", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
-			Dim prmFilterName = New SqlParameter("psFilterName", SqlDbType.VarChar, 255) With {.Direction = ParameterDirection.Output}
-			Dim prmFilterHidden = New SqlParameter("pfFilterHidden", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
-			Dim prmParent1TableID = New SqlParameter("piParent1TableID", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
-			Dim prmParent1TableName = New SqlParameter("psParent1Name", SqlDbType.VarChar, 255) With {.Direction = ParameterDirection.Output}
-			Dim prmParent1FilterID = New SqlParameter("piParent1FilterID", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
-			Dim prmParent1FilterName = New SqlParameter("psParent1FilterName", SqlDbType.VarChar, 255) With {.Direction = ParameterDirection.Output}
-			Dim prmParent1FilterHidden = New SqlParameter("pfParent1FilterHidden", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
-			Dim prmParent2TableID = New SqlParameter("piParent2TableID", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
-			Dim prmParent2TableName = New SqlParameter("psParent2Name", SqlDbType.VarChar, 255) With {.Direction = ParameterDirection.Output}
-			Dim prmParent2FilterID = New SqlParameter("piParent2FilterID", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
-			Dim prmParent2FilterName = New SqlParameter("psParent2FilterName", SqlDbType.VarChar, 255) With {.Direction = ParameterDirection.Output}
-			Dim prmParent2FilterHidden = New SqlParameter("pfParent2FilterHidden", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
-
-			Dim prmSummary = New SqlParameter("pfSummary", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
-			Dim prmPrintFilterHeader = New SqlParameter("pfPrintFilterHeader", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
-			Dim prmOutputPreview = New SqlParameter("pfOutputPreview", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
-			Dim prmOutputFormat = New SqlParameter("piOutputFormat", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
-			Dim prmOutputScreen = New SqlParameter("pfOutputScreen", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
-			Dim prmOutputPrinter = New SqlParameter("pfOutputPrinter", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
-			Dim prmOutputPrinterName = New SqlParameter("psOutputPrinterName", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
-			Dim prmOutputSave = New SqlParameter("pfOutputSave", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
-			Dim prmOutputSaveExisting = New SqlParameter("piOutputSaveExisting", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
-			Dim prmOutputEmail = New SqlParameter("pfOutputEmail", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
-			Dim prmOutputEmailAddr = New SqlParameter("piOutputEmailAddr", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
-			Dim prmOutputEmailName = New SqlParameter("psOutputEmailName", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
-			Dim prmOutputEmailSubject = New SqlParameter("psOutputEmailSubject", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
-			Dim prmOutputEmailAttachAs = New SqlParameter("psOutputEmailAttachAs", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
-			Dim prmOutputFilename = New SqlParameter("psOutputFilename", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
-			Dim prmTimestamp = New SqlParameter("piTimestamp", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
-			Dim prmParent1AllRecords = New SqlParameter("pfParent1AllRecords", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
-			Dim prmParent1PicklistID = New SqlParameter("piParent1PicklistID", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
-			Dim prmParent1PicklistName = New SqlParameter("psParent1PicklistName", SqlDbType.VarChar, 255) With {.Direction = ParameterDirection.Output}
-			Dim prmParent1PicklistHidden = New SqlParameter("pfParent1PicklistHidden", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
-			Dim prmParent2AllRecords = New SqlParameter("pfParent2AllRecords", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
-			Dim prmParent2PicklistID = New SqlParameter("piParent2PicklistID", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
-			Dim prmParent2PicklistName = New SqlParameter("psParent2PicklistName", SqlDbType.VarChar, 255) With {.Direction = ParameterDirection.Output}
-			Dim prmParent2PicklistHidden = New SqlParameter("pfParent2PicklistHidden", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
-			Dim prmInfo = New SqlParameter("psInfoMsg", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
-			Dim prmIgnoreZeros = New SqlParameter("pfIgnoreZeros", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
-
 			Try
 
 				'' TODO -- tidy these up.
@@ -86,108 +36,76 @@ Namespace Repository
 				Dim sUserName = HttpContext.Current.Session("username")
 
 				'' TODO - tidy up this proc to return a dataset instead of millions of bloody parameters!
-				Dim rstDefinition As DataSet = objDataAccess.GetDataSet("sp_ASRIntGetReportDefinition" _
+				Dim dsDefinition As DataSet = objDataAccess.GetDataSet("spASRIntGetCustomReportDefinition" _
 					, New SqlParameter("piReportID", SqlDbType.Int) With {.Value = CInt(ID)} _
 					, New SqlParameter("psCurrentUser", SqlDbType.VarChar, 255) With {.Value = sUserName} _
-					, New SqlParameter("psAction", SqlDbType.VarChar, 255) With {.Value = lngAction} _
-					, prmErrMsg, prmName, prmOwner, prmDescription, prmBaseTableID, prmAllRecords, prmPicklistID, prmPicklistName, prmPicklistHidden _
-					, prmFilterID, prmFilterName, prmFilterHidden _
-					, prmParent1TableID, prmParent1TableName, prmParent1FilterID, prmParent1FilterName, prmParent1FilterHidden _
-					, prmParent2TableID, prmParent2TableName, prmParent2FilterID, prmParent2FilterName, prmParent2FilterHidden _
-					, prmSummary, prmPrintFilterHeader, prmOutputPreview, prmOutputFormat, prmOutputScreen, prmOutputPrinter, prmOutputPrinterName _
-					, prmOutputSave, prmOutputSaveExisting _
-					, prmOutputEmail, prmOutputEmailAddr, prmOutputEmailName, prmOutputEmailSubject, prmOutputEmailAttachAs _
-					, prmOutputFilename, prmTimestamp, prmParent1AllRecords, prmParent1PicklistID, prmParent1PicklistName, prmParent1PicklistHidden _
-					, prmParent2AllRecords, prmParent2PicklistID, prmParent2PicklistName, prmParent2PicklistHidden _
-					, prmInfo, prmIgnoreZeros)
-
-				'	 Use Dapper!
+					, New SqlParameter("psAction", SqlDbType.VarChar, 255) With {.Value = lngAction})
 				'	
+				PopulateDefintion(objModel, dsDefinition.Tables(0))
 
-				'PopulateDefintion(objModel, rstDefinition.Tables(1))
-				objModel.BaseTableID = CInt(prmBaseTableID.Value)
 				objModel.BaseTables = GetTables()
-
-				objModel.Name = prmName.Value.ToString
-				objModel.Description = prmDescription.Value.ToString
-				objModel.Owner = prmOwner.ToString
-				objModel.FilterID = CInt(prmFilterID.Value)
-				objModel.PicklistID = CInt(prmPicklistID.Value)
-
-				Select Case CBool(prmAllRecords.Value)
-					Case True
-						objModel.SelectionType = RecordSelectionType.AllRecords
-					Case Else
-						If objModel.FilterID > 0 Then
-							objModel.SelectionType = RecordSelectionType.Filter
-						Else
-							objModel.SelectionType = RecordSelectionType.Picklist
-						End If
-
-				End Select
 
 				objModel.GroupAccess = GetUtilityAccess(UtilityType.utlCustomReport, ID, bIsCopy)
 
-				objModel.Parent1.ID = CInt(prmParent1TableID.Value)
-				objModel.Parent1.Name = prmParent1TableName.Value.ToString
-				objModel.Parent1.FilterID = CInt(prmParent1FilterID.Value)
-				objModel.Parent1.PicklistID = CInt(prmParent1PicklistID.Value)
+				If dsDefinition.Tables(0).Rows.Count = 1 Then
 
-				objModel.Parent2.ID = CInt(prmParent2TableID.Value)
-				objModel.Parent2.Name = prmParent2TableName.Value.ToString
-				objModel.Parent2.FilterID = CInt(prmParent2FilterID.Value)
-				objModel.Parent2.PicklistID = CInt(prmParent2PicklistID.Value)
+					Dim row As DataRow = dsDefinition.Tables(0).Rows(0)
 
-				' '' TODO - Load columns tab (needs dynamic based on table selection)
-				'objModel.Columns.Available = GetColumnsForTable(objModel.BaseTableID)
+					objModel.Parent1.ID = CInt(row("Parent1ID"))
+					objModel.Parent1.SelectionType = CType(row("Parent1SelectionType"), RecordSelectionType)
+					objModel.Parent1.Name = row("Parent1Name").ToString
+					objModel.Parent1.PicklistID = CInt(row("Parent1PicklistID"))
+					objModel.Parent1.PicklistName = row("Parent1FilterName").ToString
+					objModel.Parent1.FilterID = CInt(row("Parent1FilterID"))
+					objModel.Parent1.FilterName = row("Parent1FilterName").ToString
+
+					objModel.Parent2.ID = CInt(row("Parent2ID"))
+					objModel.Parent2.SelectionType = CType(row("Parent2SelectionType"), RecordSelectionType)
+					objModel.Parent2.Name = row("Parent2Name").ToString
+					objModel.Parent2.PicklistID = CInt(row("Parent2PicklistID"))
+					objModel.Parent2.PicklistName = row("Parent2FilterName").ToString
+					objModel.Parent2.FilterID = CInt(row("Parent2FilterID"))
+					objModel.Parent2.FilterName = row("Parent2FilterName").ToString
+
+				End If
+
 				objModel.Columns.BaseTableID = objModel.BaseTableID
 
 				'' todo replace with dapper
 				objModel.Columns.Selected = New Collection(Of ReportColumnItem)
-				Dim rstChildColumns = objDataAccess.GetDataTable("SELECT * FROM ASRSysCustomReportsDetails WHERE CustomReportID = " & ID, CommandType.Text)
-				For Each objRow As System.Data.DataRow In rstChildColumns.Rows
+
+				For Each objRow As System.Data.DataRow In dsDefinition.Tables(1).Rows
 					Dim objItem As New ReportColumnItem() With {
 						.CustomReportId = ID,
 						.Heading = objRow("Heading").ToString,
-						.id = CInt(objRow("ColExprID")),
-						.Name = "TODO-lookup columnid-" & objRow("ColExprID").ToString,
+						.id = CInt(objRow("id")),
+						.Name = objRow("Name").ToString,
 						.Sequence = CInt(objRow("Sequence")),
-						.Size = CInt(objRow("size")),
-						.Decimals = CInt(objRow("dp")),
-						.IsAverage = CBool(objRow("avge")),
-						.IsCount = CBool(objRow("cnt")),
-						.IsTotal = CBool(objRow("tot")),
-						.IsHidden = CBool(objRow("hidden")),
-						.IsGroupWithNext = CBool(objRow("groupwithnextcolumn"))}
+						.Size = CInt(objRow("Size")),
+						.Decimals = CInt(objRow("Decimals")),
+						.IsAverage = CBool(objRow("IsAverage")),
+						.IsCount = CBool(objRow("IsCount")),
+						.IsTotal = CBool(objRow("IsTotal")),
+						.IsHidden = CBool(objRow("IsHidden")),
+						.IsGroupWithNext = CBool(objRow("IsGroupWithNext"))}
 					objModel.Columns.Selected.Add(objItem)
-
-					If CInt(objRow("SortOrderSequence")) > 0 Then
-						Dim objSortItem As New ReportSortItem() With {
-							.ColumnID = CInt(objRow("colexprid")),
-							.BreakOnChange = CBool(objRow("BOC")),
-							.ValueOnChange = CBool(objRow("VOC")),
-							.PageOnChange = CBool(objRow("POC")),
-							.Sequence = CInt(objRow("SortOrderSequence")),
-							.Order = objRow("sortorder").ToString,
-							.SuppressRepeated = CBool(objRow("repetition"))}
-						objModel.SortOrderColumns.Add(objSortItem)
-					End If
 
 				Next
 
-				objModel.Output.Format = CType(prmOutputFormat.Value, OutputFormats)
-				objModel.Output.SendAsEmail = CBool(prmOutputEmail.Value)
-				objModel.Output.EmailAttachAs = prmOutputEmailAttachAs.Value.ToString
+				' add
+				'Repetition()
 
-				Dim rstChildTables = objDataAccess.GetDataTable("sp_ASRIntGetReportChilds", CommandType.StoredProcedure _
-					, New SqlParameter("piReportID", SqlDbType.Int) With {.Value = ID})
+				PopulateSortOrder(objModel, dsDefinition.Tables(2))
 
-				' TODO - replace with dapper
-				For Each objRow As DataRow In rstChildTables.Rows
+				' Output Tab
+				PopulateOutput(objModel.Output, dsDefinition.Tables(0))
+
+				' Populate the child tables
+				For Each objRow As DataRow In dsDefinition.Tables(4).Rows
 					objModel.ChildTables.Add(New ReportChildTables() With {
-									.TableName = objRow("table").ToString,
-									.FilterName = objRow("filter").ToString,
-									.OrderName = objRow("order").ToString,
+									.TableName = objRow("tablename").ToString,
+									.FilterName = objRow("filtername").ToString,
+									.OrderName = objRow("ordername").ToString,
 									.TableID = CInt(objRow("tableid")),
 									.FilterID = CInt(objRow("filterid")),
 									.OrderID = CInt(objRow("orderid")),
@@ -209,57 +127,21 @@ Namespace Repository
 
 		End Function
 
-		' TODO
 		Public Function LoadMailMerge(ID As Integer, bIsCopy As Boolean, Action As String) As MailMergeModel
 
 			Dim objModel As New MailMergeModel
 			Dim objItem As ReportColumnItem
-			Dim objSort As ReportSortItem
 
-			Dim prmErrMsg = New SqlParameter("psErrorMsg", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
-			Dim prmName = New SqlParameter("psReportName", SqlDbType.VarChar, 255) With {.Direction = ParameterDirection.Output}
-			Dim prmOwner = New SqlParameter("psReportOwner", SqlDbType.VarChar, 255) With {.Direction = ParameterDirection.Output}
-			Dim prmDescription = New SqlParameter("psReportDesc", SqlDbType.VarChar, 255) With {.Direction = ParameterDirection.Output}
-			Dim prmBaseTableID = New SqlParameter("piBaseTableID", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
-			Dim prmSelection = New SqlParameter("piSelection", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
-			Dim prmPicklistID = New SqlParameter("piPicklistID", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
-			Dim prmPicklistName = New SqlParameter("psPicklistName", SqlDbType.VarChar, 255) With {.Direction = ParameterDirection.Output}
-			Dim prmPicklistHidden = New SqlParameter("pfPicklistHidden", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
-			Dim prmFilterID = New SqlParameter("piFilterID", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
-			Dim prmFilterName = New SqlParameter("psFilterName", SqlDbType.VarChar, 255) With {.Direction = ParameterDirection.Output}
-			Dim prmFilterHidden = New SqlParameter("pfFilterHidden", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
-			Dim prmOutputFormat = New SqlParameter("piOutputFormat", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
-			Dim prmOutputSave = New SqlParameter("pfOutputSave", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
-			Dim prmOutputFileName = New SqlParameter("psOutputFileName", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
-			Dim prmEmailAddrID = New SqlParameter("piEmailAddrID", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
-			Dim prmEmailSubject = New SqlParameter("psEmailSubject", SqlDbType.VarChar, 255) With {.Direction = ParameterDirection.Output}
-			Dim prmTemplateFileName = New SqlParameter("psTemplateFileName", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
-			Dim prmOutputScreen = New SqlParameter("pfOutputScreen", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
-			Dim prmEmailAsAttachment = New SqlParameter("pfEmailAsAttachment", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
-			Dim prmEmailAttachmentName = New SqlParameter("psEmailAttachmentName", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
-			Dim prmSuppressBlanks = New SqlParameter("pfSuppressBlanks", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
-			Dim prmPauseBeforeMerge = New SqlParameter("pfPauseBeforeMerge", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
-			Dim prmOutputPrinter = New SqlParameter("pfOutputPrinter", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
-			Dim prmOutputPrinterName = New SqlParameter("psOutputPrinterName", SqlDbType.VarChar, 255) With {.Direction = ParameterDirection.Output}
-			Dim prmDocumentMapID = New SqlParameter("piDocumentMapID", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
-			Dim prmManualDocManHeader = New SqlParameter("pfManualDocManHeader", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
-			Dim prmTimestamp = New SqlParameter("piTimestamp", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
-			Dim prmWarningMsg = New SqlParameter("psWarningMsg", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
-
-			Dim rstDefinition = objDataAccess.GetDataSet("spASRIntGetMailMergeDefinition" _
+			Dim dsDefinition = objDataAccess.GetDataSet("spASRIntGetMailMergeDefinition" _
 				, New SqlParameter("@piReportID", SqlDbType.Int) With {.Value = ID} _
 				, New SqlParameter("@psCurrentUser", SqlDbType.VarChar, 255) With {.Value = _Username} _
-				, New SqlParameter("@psAction", SqlDbType.VarChar, 255) With {.Value = Action} _
-				, prmErrMsg, prmName, prmOwner, prmDescription, prmBaseTableID _
-				, prmSelection, prmPicklistID, prmPicklistName, prmPicklistHidden _
-				, prmFilterID, prmFilterName, prmFilterHidden _
-				, prmOutputFormat, prmOutputSave, prmOutputFileName, prmEmailAddrID, prmEmailSubject _
-				, prmTemplateFileName, prmOutputScreen, prmEmailAsAttachment, prmEmailAttachmentName, prmSuppressBlanks _
-				, prmPauseBeforeMerge, prmOutputPrinter, prmOutputPrinterName _
-				, prmDocumentMapID, prmManualDocManHeader, prmTimestamp, prmWarningMsg)
+				, New SqlParameter("@psAction", SqlDbType.VarChar, 255) With {.Value = Action})
+
+			PopulateDefintion(objModel, dsDefinition.Tables(0))
+			objModel.GroupAccess = GetUtilityAccess(UtilityType.utlMailMerge, ID, bIsCopy)
 
 			' Columns
-			For Each objRow As DataRow In rstDefinition.Tables(0).Rows
+			For Each objRow As DataRow In dsDefinition.Tables(1).Rows
 				objItem = New ReportColumnItem
 				objItem.IsExpression = False
 				objItem.IsHidden = False
@@ -273,7 +155,7 @@ Namespace Repository
 			Next
 
 			' Eexpressions
-			For Each objRow As DataRow In rstDefinition.Tables(1).Rows
+			For Each objRow As DataRow In dsDefinition.Tables(2).Rows
 				objItem = New ReportColumnItem
 				objItem.IsExpression = True
 				objItem.IsHidden = CBool(objRow("ishidden"))
@@ -287,46 +169,28 @@ Namespace Repository
 			Next
 
 			' Orders (expressions)
-			For Each objRow As DataRow In rstDefinition.Tables(2).Rows
-				objSort = New ReportSortItem
-				objSort.TableID = CInt(objRow("tableid"))
-				objSort.ColumnID = CInt(objRow("columnId"))
-				objSort.ColumnName = objRow("columnname").ToString
-				objSort.Order = objRow("sortorder").ToString
-				objSort.Sequence = CInt(objRow("sequence"))
-				objModel.SortOrderColumns.Add(objSort)
-			Next
+			PopulateSortOrder(objModel, dsDefinition.Tables(3))
 
-			Dim sSQL = String.Format("SELECT * FROM ASRSysMailMergeName WHERE MailMergeID = {0}", ID)
-			Dim dtDefinition As DataTable = objDataAccess.GetDataTable(sSQL, CommandType.Text)
-
-			objModel.FilterName = prmFilterName.Value.ToString
-			objModel.PicklistName = prmPicklistName.Value.ToString
-
-			PopulateDefintion(objModel, dtDefinition)
-			objModel.GroupAccess = GetUtilityAccess(UtilityType.utlMailMerge, ID, bIsCopy)
-
-			'objModel.Columns.Available = GetColumnsForTable(objModel.BaseTableID)
 			objModel.Columns.BaseTableID = objModel.BaseTableID
 
-			If dtDefinition.Rows.Count = 1 Then
+			If dsDefinition.Tables(0).Rows.Count = 1 Then
 
-				Dim row As DataRow = dtDefinition.Rows(0)
+				Dim row As DataRow = dsDefinition.Tables(0).Rows(0)
 
-				objModel.TemplateName = row("TemplateFileName").ToString()
-				objModel.OutputFormat = CType(row("OutputFormat"), MailMergeOutputTypes)
-				objModel.SendToPrinter = CBool(row("OutputPrinter"))
-				objModel.PrinterName = row("OutputPrinterName").ToString()
-				objModel.SaveTofile = CBool(row("OutputSave"))
-				objModel.Filename = row("OutputFileName").ToString
-				objModel.SendAsEmail = (objModel.OutputFormat = 1)
-				objModel.EmailGroupID = CInt(row("EmailAddrID"))
-				objModel.Subject = row("EmailSubject").ToString()
-				objModel.SendAsAttachment = CBool(row("EmailAsAttachment"))
-				objModel.AttachAs = row("EmailAttachmentName").ToString()
+				objModel.TemplateFileName = row("TemplateFileName").ToString()
+				objModel.OutputFormat = CType(row("Format"), MailMergeOutputTypes)
+				objModel.DisplayOutputOnScreen = CBool(row("DisplayOutputOnScreen"))
+				objModel.SendToPrinter = CBool(row("SendToPrinter"))
+				objModel.PrinterName = row("PrinterName").ToString()
+				objModel.SaveTofile = CBool(row("SaveTofile"))
+				objModel.Filename = row("FileName").ToString
+				objModel.EmailGroupID = CInt(row("EmailGroupID"))
+				objModel.EmailSubject = row("EmailSubject").ToString()
+				objModel.EmailAsAttachment = CBool(row("EmailAsAttachment"))
+				objModel.EmailAttachmentName = row("EmailAttachmentName").ToString()
 
-				objModel.SuppressBlankLines = CBool(prmSuppressBlanks.Value)
-				objModel.PauseBeforeMerge = CBool(prmPauseBeforeMerge.Value)
+				objModel.SuppressBlankLines = CBool(row("SuppressBlankLines"))
+				objModel.PauseBeforeMerge = CBool(row("PauseBeforeMerge"))
 
 			End If
 
@@ -387,111 +251,51 @@ Namespace Repository
 		End Function
 
 
-		' TODO
 		Public Function LoadCrossTab(ID As Integer, bIsCopy As Boolean, Action As String) As CrossTabModel
 
 			Dim objModel As New CrossTabModel
 
 			Try
 
-				Dim prmErrMsg = New SqlParameter("psErrorMsg", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
-				Dim prmName = New SqlParameter("psReportName", SqlDbType.VarChar, 255) With {.Direction = ParameterDirection.Output}
-				Dim prmOwner = New SqlParameter("psReportOwner", SqlDbType.VarChar, 255) With {.Direction = ParameterDirection.Output}
-				Dim prmDescription = New SqlParameter("psReportDesc", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
-				Dim prmBaseTableID = New SqlParameter("piBaseTableID", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
-				Dim prmAllRecords = New SqlParameter("pfAllRecords", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
-				Dim prmPicklistID = New SqlParameter("piPicklistID", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
-				Dim prmPicklistName = New SqlParameter("psPicklistName", SqlDbType.VarChar, 255) With {.Direction = ParameterDirection.Output}
-				Dim prmPicklistHidden = New SqlParameter("pfPicklistHidden", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
-				Dim prmFilterID = New SqlParameter("piFilterID", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
-				Dim prmFilterName = New SqlParameter("psFilterName", SqlDbType.VarChar, 255) With {.Direction = ParameterDirection.Output}
-				Dim prmFilterHidden = New SqlParameter("pfFilterHidden", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
-				Dim prmPrintFilter = New SqlParameter("pfPrintFilterHeader", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
-				Dim prmHColID = New SqlParameter("HColID", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
-				Dim prmHStart = New SqlParameter("HStart", SqlDbType.VarChar, 20) With {.Direction = ParameterDirection.Output}
-				Dim prmHStop = New SqlParameter("HStop", SqlDbType.VarChar, 20) With {.Direction = ParameterDirection.Output}
-				Dim prmHStep = New SqlParameter("HStep", SqlDbType.VarChar, 20) With {.Direction = ParameterDirection.Output}
-				Dim prmVColID = New SqlParameter("VColID", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
-				Dim prmVStart = New SqlParameter("VStart", SqlDbType.VarChar, 20) With {.Direction = ParameterDirection.Output}
-				Dim prmVStop = New SqlParameter("VStop", SqlDbType.VarChar, 20) With {.Direction = ParameterDirection.Output}
-				Dim prmVStep = New SqlParameter("VStep", SqlDbType.VarChar, 20) With {.Direction = ParameterDirection.Output}
-				Dim prmPColID = New SqlParameter("PColID", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
-				Dim prmPStart = New SqlParameter("PStart", SqlDbType.VarChar, 20) With {.Direction = ParameterDirection.Output}
-				Dim prmPStop = New SqlParameter("PStop", SqlDbType.VarChar, 20) With {.Direction = ParameterDirection.Output}
-				Dim prmPStep = New SqlParameter("PStep", SqlDbType.VarChar, 20) With {.Direction = ParameterDirection.Output}
-				Dim prmIType = New SqlParameter("IType", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
-				Dim prmIColID = New SqlParameter("IColID", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
-				Dim prmPercentage = New SqlParameter("Percentage", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
-				Dim prmPerPage = New SqlParameter("PerPage", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
-				Dim prmSuppress = New SqlParameter("Suppress", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
-				Dim prmThousand = New SqlParameter("Thousand", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
-				Dim prmOutputPreview = New SqlParameter("pfOutputPreview", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
-				Dim prmOutputFormat = New SqlParameter("piOutputFormat", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
-				Dim prmOutputScreen = New SqlParameter("pfOutputScreen", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
-				Dim prmOutputPrinter = New SqlParameter("pfOutputPrinter", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
-				Dim prmOutputPrinterName = New SqlParameter("psOutputPrinterName", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
-				Dim prmOutputSave = New SqlParameter("pfOutputSave", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
-				Dim prmOutputSaveExisting = New SqlParameter("piOutputSaveExisting", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
-				Dim prmOutputEmail = New SqlParameter("pfOutputEmail", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
-				Dim prmOutputEmailAddr = New SqlParameter("piOutputEmailAddr", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
-				Dim prmOutputEmailAddrName = New SqlParameter("psOutputEmailName", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
-				Dim prmOutputEmailSubject = New SqlParameter("psOutputEmailSubject", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
-				Dim prmOutputEmailAttachAs = New SqlParameter("psOutputEmailAttachAs", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
-				Dim prmOutputFilename = New SqlParameter("psOutputFilename", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
-				Dim prmTimestamp = New SqlParameter("piTimestamp", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
-
-				objDataAccess.GetFromSP("sp_ASRIntGetCrossTabDefinition", _
+				Dim dtDefinition = objDataAccess.GetFromSP("spASRIntGetCrossTabDefinition", _
 						New SqlParameter("piReportID", SqlDbType.Int) With {.Value = ID}, _
 						New SqlParameter("psCurrentUser", SqlDbType.VarChar, 255) With {.Value = _Username}, _
-						New SqlParameter("psAction", SqlDbType.VarChar, 255) With {.Value = Action}, _
-						prmErrMsg, prmName, prmOwner, prmDescription, prmBaseTableID, _
-						prmAllRecords, prmPicklistID, prmPicklistName, prmPicklistHidden, prmFilterID, prmFilterName, prmFilterHidden, _
-						prmPrintFilter, prmHColID, prmHStart, prmHStop, prmHStep, prmVColID, prmVStart, prmVStop, prmVStep, prmPColID, _
-						prmPStart, prmPStop, prmPStep, prmIType, prmIColID, prmPercentage, prmPerPage, prmSuppress, prmThousand, _
-						prmOutputPreview, prmOutputFormat, prmOutputScreen, prmOutputPrinter, prmOutputPrinterName, prmOutputSave, prmOutputSaveExisting, _
-						prmOutputEmail, prmOutputEmailAddr, prmOutputEmailAddrName, prmOutputEmailSubject, prmOutputEmailAttachAs, prmOutputFilename, prmTimestamp)
+						New SqlParameter("psAction", SqlDbType.VarChar, 255) With {.Value = Action})
 
-				objModel.FilterName = prmFilterName.Value.ToString
-				objModel.PicklistName = prmPicklistName.Value.ToString
-
-				' Definition tab
-				' REPLACE WITH dapper!!!!
-				Dim sSQL = String.Format("SELECT * FROM ASRSysCrossTab WHERE CrossTabID = {0}", ID)
-				Dim dtDefinition As DataTable = objDataAccess.GetDataTable(sSQL, CommandType.Text)
 				PopulateDefintion(objModel, dtDefinition)
+
+				If dtDefinition.Rows.Count = 1 Then
+					Dim objRow As DataRow = dtDefinition.Rows(0)
+
+					objModel.HorizontalID = CInt(objRow("HorizontalID"))
+					objModel.HorizontalStart = CInt(objRow("HorizontalStart"))
+					objModel.HorizontalStop = CInt(objRow("HorizontalStop"))
+					objModel.HorizontalIncrement = CInt(objRow("HorizontalIncrement"))
+
+					objModel.VerticalID = CInt(objRow("VerticalID"))
+					objModel.VerticalStart = CInt(objRow("VerticalStart"))
+					objModel.VerticalStop = CInt(objRow("VerticalStop"))
+					objModel.VerticalIncrement = CInt(objRow("VerticalIncrement"))
+
+					objModel.PageBreakID = CInt(objRow("PageBreakID"))
+					objModel.PageBreakStart = CInt(objRow("PageBreakStart"))
+					objModel.PageBreakStop = CInt(objRow("PageBreakStop"))
+					objModel.PageBreakIncrement = CInt(objRow("PageBreakIncrement"))
+
+					objModel.IntersectionID = CInt(objRow("IntersectionID"))
+					objModel.IntersectionType = CType(objRow("IntersectionType"), IntersectionType)
+					objModel.PercentageOfType = CBool(objRow("PercentageOfType"))
+					objModel.PercentageOfPage = CBool(objRow("PercentageOfPage"))
+					objModel.SuppressZeros = CBool(objRow("SuppressZeros"))
+					objModel.UseThousandSeparators = CBool(objRow("UseThousandSeparators"))
+
+				End If
+
 				objModel.GroupAccess = GetUtilityAccess(UtilityType.utlCrossTab, ID, bIsCopy)
 
 				' Columns tab
 				' '' TODO - Load columns tab (needs dynamic based on table selection)
 				objModel.AvailableColumns = GetColumnsForTable(objModel.BaseTableID)
-
-				If dtDefinition.Rows.Count = 1 Then
-
-					Dim row As DataRow = dtDefinition.Rows(0)
-
-					objModel.HorizontalID = CInt(row("HorizontalColID"))
-					objModel.HorizontalStart = CInt(row("HorizontalStart"))
-					objModel.HorizontalStop = CInt(row("HorizontalStop"))
-					objModel.HorizontalIncrement = CInt(row("HorizontalStep"))
-
-					objModel.VerticalID = CInt(row("VerticalColID"))
-					objModel.VerticalStart = CInt(row("VerticalStart"))
-					objModel.VerticalStop = CInt(row("VerticalStop"))
-					objModel.VerticalIncrement = CInt(row("VerticalStep"))
-
-					objModel.PageBreakID = CInt(row("PageBreakColID"))
-					objModel.PageBreakStart = CInt(row("PageBreakStart"))
-					objModel.PageBreakStop = CInt(row("PageBreakStop"))
-					objModel.PageBreakIncrement = CInt(row("PageBreakStep"))
-
-					objModel.IntersectionID = CInt(row("IntersectionColID"))
-					objModel.IntersectionType = CType(row("IntersectionType"), IntersectionType)
-					objModel.PercentageOfType = CBool(row("Percentage"))
-					objModel.PercentageOfPage = CBool(row("PercentageofPage"))
-					objModel.SuppressZeros = CBool(row("SuppressZeros"))
-					objModel.UseThousandSeparators = CBool(row("ThousandSeparators"))
-
-				End If
 
 				' Output Tab
 				PopulateOutput(objModel.Output, dtDefinition)
@@ -514,12 +318,90 @@ Namespace Repository
 		Public Function LoadCalendarReport(ID As Integer, bIsCopy As Boolean, Action As String) As CalendarReportModel
 
 			Dim objModel As New CalendarReportModel
+			Dim objEvent As CalendarEventDetail
 
-			objModel.Name = "calrep TODO"
+			Dim dsDefinition = objDataAccess.GetDataSet("spASRIntGetCalendarReportDefinition", _
+					New SqlParameter("@piCalendarReportID", SqlDbType.Int) With {.Value = ID}, _
+					New SqlParameter("psCurrentUser", SqlDbType.VarChar, 255) With {.Value = _Username}, _
+					New SqlParameter("psAction", SqlDbType.VarChar, 255) With {.Value = Action})
 
-			Dim con = objDataAccess.Connection
+			PopulateDefintion(objModel, dsDefinition.Tables(0))
+			If dsDefinition.Tables(0).Rows.Count = 1 Then
 
-			'objModel.Events = con.Query(Of CalendarEventDetail)("SELECT * FROM ASRSysCalendarReportEvents")
+				Dim row As DataRow = dsDefinition.Tables(0).Rows(0)
+
+				objModel.Description1Id = CInt(row("Description1Id"))
+				objModel.Description2Id = CInt(row("Description2Id"))
+				objModel.Description3Id = CInt(row("Description3Id"))
+				objModel.Description3Name = row("Description3Name").ToString
+
+				objModel.RegionID = CInt(row("RegionID"))
+				objModel.GroupByDescription = CBool(row("GroupByDescription"))
+				objModel.Separator = row("Separator").ToString
+
+				objModel.StartType = CType(row("StartType"), CalendarDataType)
+				objModel.StartFixedDate = CDate(row("StartFixedDate"))
+				objModel.StartOffset = CInt(row("StartOffset"))
+				objModel.StartOffsetPeriod = CType(row("StartOffsetPeriod"), DatePeriod)
+				objModel.StartCustomId = CInt(row("StartCustomId"))
+				objModel.StartCustomName = row("StartCustomName").ToString
+
+				objModel.EndType = CType(row("EndType"), CalendarDataType)
+				objModel.EndFixedDate = CDate(row("EndFixedDate"))
+				objModel.EndOffset = CInt(row("EndOffset"))
+				objModel.EndOffsetPeriod = CType(row("EndOffsetPeriod"), DatePeriod)
+				objModel.EndCustomId = CInt(row("EndCustomId"))
+				objModel.EndCustomName = row("EndCustomName").ToString
+
+				objModel.IncludeBankHolidays = CBool(row("IncludeBankHolidays"))
+				objModel.WorkingDaysOnly = CBool(row("WorkingDaysOnly"))
+				objModel.ShowBankHolidays = CBool(row("ShowBankHolidays"))
+				objModel.ShowCaptions = CBool(row("ShowCaptions"))
+				objModel.ShowWeekends = CBool(row("ShowWeekends"))
+				objModel.StartOnCurrentMonth = CBool(row("StartOnCurrentMonth"))
+
+			End If
+
+
+			' Replace with Automapper?
+			For Each objRow As DataRow In dsDefinition.Tables(1).Rows
+				objEvent = New CalendarEventDetail
+
+				objEvent.ID = CInt(objRow("ID"))
+				objEvent.Name = objRow("Name").ToString
+				objEvent.EventKey = objRow("EventKey").ToString
+				objEvent.CalendarReportID = ID
+				objEvent.TableID = CInt(objRow("TableID"))
+				objEvent.FilterID = CInt(objRow("FilterID"))
+				objEvent.FilterName = objRow("FilterName").ToString
+				objEvent.EventStartDateID = CInt(objRow("EventStartDateID"))
+				objEvent.EventStartSessionID = CInt(objRow("EventStartSessionID"))
+				objEvent.EventStartSessionName = objRow("EventStartSessionName").ToString
+				objEvent.EventEndDateID = CInt(objRow("EventEndDateID"))
+				objEvent.EventEndDateName = objRow("EventEndDateName").ToString
+				objEvent.EventEndSessionID = CInt(objRow("EventEndSessionID"))
+				objEvent.EventDurationName = objRow("EventDurationName").ToString
+				objEvent.EventEndSessionName = objRow("EventEndSessionName").ToString
+				objEvent.EventDurationID = CInt(objRow("EventDurationID"))
+				objEvent.LegendType = objRow("LegendType").ToString
+				objEvent.LegendTypeName = objRow("LegendTypeName").ToString
+				objEvent.LegendCharacter = objRow("LegendCharacter").ToString
+				objEvent.LegendLookupTableID = CInt(objRow("LegendLookupTableID"))
+				objEvent.LegendLookupColumnID = CInt(objRow("LegendLookupColumnID"))
+				objEvent.LegendLookupCodeID = CInt(objRow("LegendLookupCodeID"))
+				objEvent.LegendEventColumnID = CInt(objRow("LegendEventColumnID"))
+				objEvent.EventDesc1ColumnID = CInt(objRow("EventDesc1ColumnID"))
+				objEvent.EventDesc1ColumnName = objRow("EventDesc1ColumnName").ToString
+				objEvent.EventDesc2ColumnID = CInt(objRow("EventDesc2ColumnID"))
+				objEvent.EventDesc2ColumnName = objRow("EventDesc2ColumnName").ToString
+				objEvent.FilterHidden = objRow("FilterHidden").ToString
+
+				objModel.Events.Add(objEvent)
+
+			Next
+
+			PopulateSortOrder(objModel, dsDefinition.Tables(2))
+
 			objModel.GroupAccess = GetUtilityAccess(UtilityType.utlCalendarReport, ID, bIsCopy)
 
 			If bIsCopy Then
@@ -527,7 +409,6 @@ Namespace Repository
 			Else
 				objModel.ID = ID
 			End If
-
 
 			Return objModel
 
@@ -555,12 +436,12 @@ Namespace Repository
 				, New SqlParameter("@pfOutputSave", SqlDbType.Bit) With {.Value = True} _
 				, New SqlParameter("@psOutputFilename", SqlDbType.VarChar, -1) With {.Value = objModel.Filename} _
 				, New SqlParameter("@piEmailAddrID", SqlDbType.Int) With {.Value = objModel.EmailGroupID} _
-				, New SqlParameter("@psEmailSubject", SqlDbType.VarChar, -1) With {.Value = objModel.Subject} _
-				, New SqlParameter("@psTemplateFileName", SqlDbType.VarChar, -1) With {.Value = objModel.TemplateName} _
+				, New SqlParameter("@psEmailSubject", SqlDbType.VarChar, -1) With {.Value = objModel.EmailSubject} _
+				, New SqlParameter("@psTemplateFileName", SqlDbType.VarChar, -1) With {.Value = objModel.TemplateFileName} _
 				, New SqlParameter("@pfOutputScreen", SqlDbType.Bit) With {.Value = objModel.DisplayOutputOnScreen} _
-				, New SqlParameter("@psUserName", SqlDbType.VarChar, 255) With {.Value = _Username} _
-				, New SqlParameter("@pfEmailAsAttachment", SqlDbType.Bit) With {.Value = objModel.SendAsAttachment} _
-				, New SqlParameter("@psEmailAttachmentName", SqlDbType.VarChar, -1) With {.Value = objModel.AttachAs} _
+				, New SqlParameter("@psUserName", SqlDbType.VarChar, 255) With {.Value = objModel.Owner} _
+				, New SqlParameter("@pfEmailAsAttachment", SqlDbType.Bit) With {.Value = objModel.EmailAsAttachment} _
+				, New SqlParameter("@psEmailAttachmentName", SqlDbType.VarChar, -1) With {.Value = objModel.EmailAttachmentName} _
 				, New SqlParameter("@pfSuppressBlanks", SqlDbType.Bit) With {.Value = objModel.SuppressBlankLines} _
 				, New SqlParameter("@pfPauseBeforeMerge", SqlDbType.Bit) With {.Value = objModel.PauseBeforeMerge} _
 				, New SqlParameter("@pfOutputPrinter", SqlDbType.Bit) With {.Value = objModel.SendToPrinter} _
@@ -587,12 +468,10 @@ Namespace Repository
 
 				Dim prmID = New SqlParameter("piId", SqlDbType.Int) With {.Direction = ParameterDirection.InputOutput, .Value = objModel.ID}
 
-				' TODO old access stuff - needs updating
-				Dim psAccess As String = ""	' Request.Form("txtSend_access")}
+				Dim sAccess As String = UtilityAccessAsString(objModel.GroupAccess)
+
 				Dim psJobsToHide As String = ""	' Request.Form("txtSend_jobsToHide")
 				Dim psJobsToHideGroups As String = ""	' Request.Form("txtSend_jobsToHideGroups")}
-
-				psAccess = UtilityAccessAsString(objModel.GroupAccess)
 
 				objDataAccess.ExecuteSP("sp_ASRIntSaveCrossTab", _
 						New SqlParameter("psName", SqlDbType.VarChar, 255) With {.Value = objModel.Name}, _
@@ -602,7 +481,7 @@ Namespace Repository
 						New SqlParameter("piPicklistID", SqlDbType.Int) With {.Value = objModel.PicklistID}, _
 						New SqlParameter("piFilterID", SqlDbType.Int) With {.Value = objModel.FilterID}, _
 						New SqlParameter("pfPrintFilter", SqlDbType.Bit) With {.Value = objModel.DisplayTitleInReportHeader}, _
-						New SqlParameter("psUserName", SqlDbType.VarChar, 255) With {.Value = _Username}, _
+						New SqlParameter("psUserName", SqlDbType.VarChar, 255) With {.Value = objModel.Owner}, _
 						New SqlParameter("piHColID", SqlDbType.Int) With {.Value = objModel.HorizontalID}, _
 						New SqlParameter("psHStart", SqlDbType.VarChar, 100) With {.Value = objModel.HorizontalStart}, _
 						New SqlParameter("psHStop", SqlDbType.VarChar, 100) With {.Value = objModel.HorizontalStop}, _
@@ -628,12 +507,12 @@ Namespace Repository
 						New SqlParameter("psOutputPrinterName", SqlDbType.VarChar, -1) With {.Value = objModel.Output.PrinterName}, _
 						New SqlParameter("pfOutputSave", SqlDbType.Bit) With {.Value = objModel.Output.SaveToFile}, _
 						New SqlParameter("piOutputSaveExisting", SqlDbType.Int) With {.Value = objModel.Output.SaveExisting}, _
-						New SqlParameter("pfOutputEmail", SqlDbType.Bit) With {.Value = objModel.Output.SendAsEmail}, _
+						New SqlParameter("pfOutputEmail", SqlDbType.Bit) With {.Value = objModel.Output.SendToEmail}, _
 						New SqlParameter("piOutputEmailAddr", SqlDbType.Int) With {.Value = objModel.Output.EmailGroupID}, _
 						New SqlParameter("psOutputEmailSubject", SqlDbType.VarChar, -1) With {.Value = objModel.Output.EmailSubject}, _
-						New SqlParameter("psOutputEmailAttachAs", SqlDbType.VarChar, -1) With {.Value = objModel.Output.EmailAttachAs}, _
+						New SqlParameter("psOutputEmailAttachAs", SqlDbType.VarChar, -1) With {.Value = objModel.Output.EmailAttachmentName}, _
 						New SqlParameter("psOutputFilename", SqlDbType.VarChar, -1) With {.Value = objModel.Output.Filename}, _
-						New SqlParameter("psAccess", SqlDbType.VarChar, -1) With {.Value = psAccess}, _
+						New SqlParameter("psAccess", SqlDbType.VarChar, -1) With {.Value = sAccess}, _
 						New SqlParameter("psJobsToHide", SqlDbType.VarChar, -1) With {.Value = psJobsToHide}, _
 						New SqlParameter("psJobsToHideGroups", SqlDbType.VarChar, -1) With {.Value = psJobsToHideGroups}, _
 						prmID)
@@ -648,38 +527,85 @@ Namespace Repository
 
 		Public Function SaveReportDefinition(objModel As CustomReportModel) As Boolean
 
-			' save it
+			Return True ' TODO
 
-			' HACK ALERT! Do this properly!!!
 			Try
 
-				Dim sSQL As String = String.Format("UPDATE ASRSysCustomReportsName SET Name = '{1}', OutputEmailAttachAs = '{2}' WHERE ID = {0}" _
-																			, objModel.ID, objModel.Name, objModel.Output.EmailAttachAs)
-				objDataAccess.ExecuteSql(sSQL)
+				Dim prmID = New SqlParameter("piId", SqlDbType.Int) With {.Direction = ParameterDirection.InputOutput, .Value = objModel.ID}
 
-				sSQL = String.Format("DELETE ASRSysCustomReportsChildDetails WHERE CustomReportID = {0}", objModel.ID)
-				objDataAccess.ExecuteSql(sSQL)
+				Dim sAccess As String = UtilityAccessAsString(objModel.GroupAccess)
+				Dim sJobsToHide = JobsToHideAsString(objModel.JobsToHide)
+				Dim sJobsToHideGroups As String = "" ' TODO?
+				Dim sColumns = ReportColumnsAsString(objModel.Columns.Selected, objModel.SortOrderColumns)
+				Dim sChildren As String = ReportChildTablesAsString(objModel.ChildTables)
 
-				For Each objChild In objModel.ChildTables
-					sSQL = String.Format("INSERT ASRSysCustomReportsChildDetails (CustomReportID, ChildTable, ChildFilter, ChildMaxRecords, ChildOrder) VALUES ({0}, {1}, {2}, {3}, {4})", _
-															objModel.ID, objChild.TableID, objChild.FilterID, objChild.Records, objChild.OrderID)
-					objDataAccess.ExecuteSql(sSQL)
-				Next
+				objDataAccess.ExecuteSP("sp_ASRIntSaveCustomReport", _
+						New SqlParameter("psName", SqlDbType.VarChar, 255) With {.Value = objModel.Name}, _
+						New SqlParameter("psDescription", SqlDbType.VarChar, -1) With {.Value = objModel.Description}, _
+						New SqlParameter("piBaseTableID", SqlDbType.Int) With {.Value = objModel.BaseTableID}, _
+						New SqlParameter("pfAllRecords", SqlDbType.Bit) With {.Value = (objModel.PicklistID = 0 And objModel.FilterID = 0)}, _
+						New SqlParameter("piPicklistID", SqlDbType.Int) With {.Value = objModel.PicklistID}, _
+						New SqlParameter("piFilterID", SqlDbType.Int) With {.Value = objModel.FilterID}, _
+						New SqlParameter("piParent1TableID", SqlDbType.Int) With {.Value = objModel.Parent1.ID}, _
+						New SqlParameter("piParent1FilterID", SqlDbType.Int) With {.Value = objModel.Parent1.FilterID}, _
+						New SqlParameter("piParent2TableID", SqlDbType.Int) With {.Value = objModel.Parent2.ID}, _
+						New SqlParameter("piParent2FilterID", SqlDbType.Int) With {.Value = objModel.Parent2.FilterID}, _
+						New SqlParameter("pfSummary", SqlDbType.Bit) With {.Value = objModel.IsSummary}, _
+						New SqlParameter("pfPrintFilterHeader", SqlDbType.Bit) With {.Value = objModel.DisplayTitleInReportHeader}, _
+						New SqlParameter("psUserName", SqlDbType.VarChar, 255) With {.Value = objModel.Owner}, _
+						New SqlParameter("pfOutputPreview", SqlDbType.Bit) With {.Value = objModel.Output.IsPreview}, _
+						New SqlParameter("piOutputFormat", SqlDbType.Int) With {.Value = objModel.Output.Format}, _
+						New SqlParameter("pfOutputScreen", SqlDbType.Bit) With {.Value = objModel.Output.ToScreen}, _
+						New SqlParameter("pfOutputPrinter", SqlDbType.Bit) With {.Value = objModel.Output.ToPrinter}, _
+						New SqlParameter("psOutputPrinterName", SqlDbType.VarChar, -1) With {.Value = objModel.Output.PrinterName}, _
+						New SqlParameter("pfOutputSave", SqlDbType.Bit) With {.Value = objModel.Output.SaveToFile}, _
+						New SqlParameter("piOutputSaveExisting", SqlDbType.Int) With {.Value = objModel.Output.SaveExisting}, _
+						New SqlParameter("pfOutputEmail", SqlDbType.Bit) With {.Value = objModel.Output.SendToEmail}, _
+						New SqlParameter("piOutputEmailAddr", SqlDbType.Int) With {.Value = objModel.Output.EmailGroupID}, _
+						New SqlParameter("psOutputEmailSubject", SqlDbType.VarChar, -1) With {.Value = objModel.Output.EmailSubject}, _
+						New SqlParameter("psOutputEmailAttachAs", SqlDbType.VarChar, -1) With {.Value = objModel.Output.EmailAttachmentName}, _
+						New SqlParameter("psOutputFilename", SqlDbType.VarChar, -1) With {.Value = objModel.Output.Filename}, _
+						New SqlParameter("pfParent1AllRecords", SqlDbType.Bit) With {.Value = (objModel.Parent1.PicklistID = 0 And objModel.Parent1.FilterID = 0)}, _
+						New SqlParameter("piParent1Picklist", SqlDbType.Int) With {.Value = objModel.Parent1.PicklistID}, _
+						New SqlParameter("pfParent2AllRecords", SqlDbType.Bit) With {.Value = (objModel.Parent2.PicklistID = 0 And objModel.Parent2.FilterID = 0)}, _
+						New SqlParameter("piParent2Picklist", SqlDbType.Int) With {.Value = objModel.Parent2.PicklistID}, _
+						New SqlParameter("psAccess", SqlDbType.VarChar, -1) With {.Value = sAccess}, _
+						New SqlParameter("psJobsToHide", SqlDbType.VarChar, -1) With {.Value = sJobsToHide}, _
+						New SqlParameter("psJobsToHideGroups", SqlDbType.VarChar, -1) With {.Value = sJobsToHideGroups}, _
+						New SqlParameter("psColumns", SqlDbType.VarChar, -1) With {.Value = sColumns}, _
+						New SqlParameter("psColumns2", SqlDbType.VarChar, -1) With {.Value = ""}, _
+						New SqlParameter("psChildString", SqlDbType.VarChar, -1) With {.Value = sChildren}, _
+						prmID,
+						New SqlParameter("pfIgnoreZeros", SqlDbType.Bit) With {.Value = objModel.IgnoreZerosForAggregates})
 
 
-				sSQL = String.Format("DELETE ASRSysCustomReportAccess WHERE ID = {0}", objModel.ID)
-				objDataAccess.ExecuteSql(sSQL)
+				'Dim sSQL As String = String.Format("UPDATE ASRSysCustomReportsName SET Name = '{1}', OutputEmailAttachAs = '{2}' WHERE ID = {0}" _
+				'															, objModel.ID, objModel.Name, objModel.Output.EmailAttachmentName)
+				'objDataAccess.ExecuteSql(sSQL)
 
-				For Each objChild In objModel.GroupAccess
-					sSQL = String.Format("INSERT ASRSysCustomReportAccess (id, groupname, access) VALUES ({0}, '{1}', '{2}')", _
-															objModel.ID, objChild.Name, objChild.Access)
-					objDataAccess.ExecuteSql(sSQL)
-				Next
+				'sSQL = String.Format("DELETE ASRSysCustomReportsChildDetails WHERE CustomReportID = {0}", objModel.ID)
+				'objDataAccess.ExecuteSql(sSQL)
 
+				'For Each objChild In objModel.ChildTables
+				'	sSQL = String.Format("INSERT ASRSysCustomReportsChildDetails (CustomReportID, ChildTable, ChildFilter, ChildMaxRecords, ChildOrder) VALUES ({0}, {1}, {2}, {3}, {4})", _
+				'											objModel.ID, objChild.TableID, objChild.FilterID, objChild.Records, objChild.OrderID)
+				'	objDataAccess.ExecuteSql(sSQL)
+				'Next
+
+
+				'sSQL = String.Format("DELETE ASRSysCustomReportAccess WHERE ID = {0}", objModel.ID)
+				'objDataAccess.ExecuteSql(sSQL)
+
+				'For Each objChild In objModel.GroupAccess
+				'	sSQL = String.Format("INSERT ASRSysCustomReportAccess (id, groupname, access) VALUES ({0}, '{1}', '{2}')", _
+				'											objModel.ID, objChild.Name, objChild.Access)
+				'	objDataAccess.ExecuteSql(sSQL)
+				'Next
 
 
 
 			Catch ex As Exception
+				Throw
 
 			End Try
 
@@ -688,6 +614,78 @@ Namespace Repository
 		End Function
 
 		Public Function SaveReportDefinition(objModel As CalendarReportModel) As Boolean
+
+			Return True	' TODO
+
+			Try
+
+				Dim prmID = New SqlParameter("piId", SqlDbType.Int) With {.Direction = ParameterDirection.InputOutput, .Value = objModel.ID}
+
+				Dim sAccess = UtilityAccessAsString(objModel.GroupAccess)
+				Dim sJobsToHide = JobsToHideAsString(objModel.JobsToHide)
+				Dim sJobsToHideGroups As String = "" ' TODO?
+				Dim sEvents As String = "" 'TODO
+				Dim sReportOrder As String = ""	'TODO
+				Dim bAllRecords As Boolean
+
+				' Calendar reports don't save the selection type - instead they have a boolean allrecords flag
+				If objModel.PicklistID = 0 And objModel.FilterID = 0 Then bAllRecords = True
+
+				objDataAccess.ExecuteSP("spASRIntSaveCalendarReport", _
+				New SqlParameter("psName", SqlDbType.VarChar, 255) With {.Value = objModel.Name}, _
+					New SqlParameter("psDescription", SqlDbType.VarChar, -1) With {.Value = objModel.Description}, _
+					New SqlParameter("piBaseTable", SqlDbType.Int) With {.Value = objModel.BaseTableID}, _
+					New SqlParameter("pfAllRecords", SqlDbType.Bit) With {.Value = bAllRecords}, _
+					New SqlParameter("piPicklist", SqlDbType.Int) With {.Value = objModel.PicklistID}, _
+					New SqlParameter("piFilter", SqlDbType.Int) With {.Value = objModel.FilterID}, _
+					New SqlParameter("pfPrintFilterHeader", SqlDbType.Bit) With {.Value = objModel.DisplayTitleInReportHeader}, _
+					New SqlParameter("psUserName", SqlDbType.VarChar, 255) With {.Value = objModel.Owner}, _
+					New SqlParameter("piDescription1", SqlDbType.Int) With {.Value = objModel.Description1Id}, _
+					New SqlParameter("piDescription2", SqlDbType.Int) With {.Value = objModel.Description2Id}, _
+					New SqlParameter("piDescriptionExpr", SqlDbType.Int) With {.Value = objModel.Description3Id}, _
+					New SqlParameter("piRegion", SqlDbType.Int) With {.Value = objModel.RegionID}, _
+					New SqlParameter("pfGroupByDesc", SqlDbType.Bit) With {.Value = objModel.GroupByDescription}, _
+					New SqlParameter("psDescSeparator", SqlDbType.VarChar, 100) With {.Value = objModel.Separator}, _
+					New SqlParameter("piStartType", SqlDbType.Int) With {.Value = objModel.StartType}, _
+					New SqlParameter("psFixedStart", SqlDbType.VarChar) With {.Value = objModel.StartFixedDate}, _
+					New SqlParameter("piStartFrequency", SqlDbType.Int) With {.Value = objModel.StartOffsetPeriod}, _
+					New SqlParameter("piStartPeriod", SqlDbType.Int) With {.Value = objModel.StartOffsetPeriod}, _
+					New SqlParameter("piStartDateExpr", SqlDbType.Int) With {.Value = objModel.StartCustomId}, _
+					New SqlParameter("piEndType", SqlDbType.Int) With {.Value = objModel.EndType}, _
+					New SqlParameter("psFixedEnd", SqlDbType.VarChar) With {.Value = objModel.EndFixedDate}, _
+					New SqlParameter("piEndFrequency", SqlDbType.Int) With {.Value = objModel.EndOffset}, _
+					New SqlParameter("piEndPeriod", SqlDbType.Int) With {.Value = objModel.EndOffsetPeriod}, _
+					New SqlParameter("piEndDateExpr", SqlDbType.Int) With {.Value = objModel.EndCustomId}, _
+					New SqlParameter("pfShowBankHols", SqlDbType.Bit) With {.Value = objModel.ShowBankHolidays}, _
+					New SqlParameter("pfShowCaptions", SqlDbType.Bit) With {.Value = objModel.ShowCaptions}, _
+					New SqlParameter("pfShowWeekends", SqlDbType.Bit) With {.Value = objModel.ShowWeekends}, _
+					New SqlParameter("pfStartOnCurrentMonth", SqlDbType.Bit) With {.Value = objModel.StartOnCurrentMonth}, _
+					New SqlParameter("pfIncludeWorkdays", SqlDbType.Bit) With {.Value = objModel.WorkingDaysOnly}, _
+					New SqlParameter("pfIncludeBankHols", SqlDbType.Bit) With {.Value = objModel.IncludeBankHolidays}, _
+					New SqlParameter("pfOutputPreview", SqlDbType.Bit) With {.Value = objModel.Output.IsPreview}, _
+					New SqlParameter("piOutputFormat", SqlDbType.Int) With {.Value = objModel.Output.Format}, _
+					New SqlParameter("pfOutputScreen", SqlDbType.Bit) With {.Value = objModel.Output.ToScreen}, _
+					New SqlParameter("pfOutputPrinter", SqlDbType.Bit) With {.Value = objModel.Output.ToPrinter}, _
+					New SqlParameter("psOutputPrinterName", SqlDbType.VarChar, -1) With {.Value = objModel.Output.PrinterName}, _
+					New SqlParameter("pfOutputSave", SqlDbType.Bit) With {.Value = objModel.Output.SaveToFile}, _
+					New SqlParameter("piOutputSaveExisting", SqlDbType.Int) With {.Value = objModel.Output.SaveExisting}, _
+					New SqlParameter("pfOutputEmail", SqlDbType.Bit) With {.Value = objModel.Output.SendToEmail}, _
+					New SqlParameter("piOutputEmailAddr", SqlDbType.Int) With {.Value = objModel.Output.EmailGroupID}, _
+					New SqlParameter("psOutputEmailSubject", SqlDbType.VarChar, -1) With {.Value = objModel.Output.EmailSubject}, _
+					New SqlParameter("psOutputEmailAttachAs", SqlDbType.VarChar, -1) With {.Value = objModel.Output.EmailAttachmentName}, _
+					New SqlParameter("psOutputFilename", SqlDbType.VarChar, -1) With {.Value = objModel.Output.Filename}, _
+					New SqlParameter("psAccess", SqlDbType.VarChar, -1) With {.Value = sAccess}, _
+					New SqlParameter("psJobsToHide", SqlDbType.VarChar, -1) With {.Value = sJobsToHide}, _
+					New SqlParameter("psJobsToHideGroups", SqlDbType.VarChar, -1) With {.Value = sJobsToHideGroups}, _
+					New SqlParameter("psEvents", SqlDbType.VarChar, -1) With {.Value = sEvents}, _
+					New SqlParameter("psEvents2", SqlDbType.VarChar, -1) With {.Value = ""}, _
+					New SqlParameter("psOrderString", SqlDbType.VarChar, -1) With {.Value = sReportOrder}, _
+					prmID)
+
+			Catch
+				Throw
+
+			End Try
 
 			Return True
 		End Function
@@ -727,6 +725,22 @@ Namespace Repository
 
 		' Old style update of the column selection stuff
 		' could be dapperised, but the rest of our stored procs need updating too as everything has different column names and the IDs are not currently returned.
+		Private Function ReportChildTablesAsString(objSortColumns As Collection(Of ReportChildTables)) As String
+
+			Dim sOrderString As String = ""
+
+			For Each objItem In objSortColumns
+				sOrderString += String.Format("{0}||{1}||{2}||{3}**" _
+													, objItem.TableID, objItem.FilterID, objItem.OrderID, objItem.Records)
+			Next
+
+			Return sOrderString
+
+		End Function
+
+
+		' Old style update of the column selection stuff
+		' could be dapperised, but the rest of our stored procs need updating too as everything has different column names and the IDs are not currently returned.
 		Private Function ReportColumnsAsString(objColumns As Collection(Of ReportColumnItem), objSortColumns As Collection(Of ReportSortItem)) As String
 
 			Dim sColumns As String = ""
@@ -735,10 +749,10 @@ Namespace Repository
 			Dim iCount As Integer = 1
 			For Each objItem In objColumns
 
-				' this could be improvbe with some linq or whatever! No panic because the whole function could be tidied up
+				' this could be improve with some linq or whatever! No panic because the whole function could be tidied up
 				sOrderString = "||0||"
 				For Each objSortItem In objSortColumns
-					If objSortItem.ColumnID = objItem.id Then
+					If objSortItem.ID = objItem.id Then
 						sOrderString = "||1||" & objSortItem.Order & "||"
 					End If
 				Next
@@ -763,6 +777,11 @@ Namespace Repository
 
 			Return sAccess
 
+		End Function
+
+		' TODO - Sometimes we may need to hide dependant objects
+		Private Function JobsToHideAsString(objJobs As Collection(Of Integer)) As String
+			Return ""
 		End Function
 
 		Private Function GetTables() As Collection(Of SelectListItem)
@@ -829,23 +848,21 @@ Namespace Repository
 
 					Dim row As DataRow = data.Rows(0)
 
-					' Lets get dapper in here!
-					If data.Columns.Contains("TableID") Then
-						outputModel.BaseTableID = CInt(row("TableID"))
-					Else
-						outputModel.BaseTableID = CInt(row("BaseTable"))
-					End If
+					outputModel.BaseTableID = CInt(row("BaseTableID"))
 
 					outputModel.Name = row("name").ToString
 					outputModel.Description = row("description").ToString
-					outputModel.Owner = row("username").ToString
+					outputModel.Owner = row("owner").ToString
+
 					outputModel.FilterID = CInt(row("FilterID"))
+					outputModel.FilterName = row("filtername").ToString
 					outputModel.PicklistID = CInt(row("PicklistID"))
+					outputModel.PicklistName = row("picklistname").ToString
 
 					'TODO - tidy up with proc pulling back values - probably using dapper
 					' Crappy hack as custom reports and calendar reports use a boolean in allrecords, mail merge and cross tabs store the selection type. Rubbish!
-					If data.Columns.Contains("Selection") Then
-						outputModel.SelectionType = CType(row("Selection"), RecordSelectionType)
+					If data.Columns.Contains("SelectionType") Then
+						outputModel.SelectionType = CType(row("SelectionType"), RecordSelectionType)
 					Else
 						Dim bAllRecs As Boolean = CBool(row("AllRecords"))
 						If bAllRecs Then
@@ -877,6 +894,40 @@ Namespace Repository
 
 		End Sub
 
+		Private Sub PopulateSortOrder(outputModel As ReportBaseModel, data As DataTable)
+
+			Dim objSort As ReportSortItem
+
+			For Each objRow As DataRow In data.Rows
+				objSort = New ReportSortItem
+				objSort.TableID = CInt(objRow("tableid"))
+				objSort.ID = CInt(objRow("Id"))
+				objSort.Name = objRow("name").ToString
+				objSort.Order = objRow("order").ToString
+				objSort.Sequence = CInt(objRow("sequence"))
+
+				If data.Columns.Contains("PageOnChange") Then
+					objSort.PageOnChange = CBool(objRow("PageOnChange"))
+				End If
+
+				If data.Columns.Contains("ValueOnChange") Then
+					objSort.PageOnChange = CBool(objRow("ValueOnChange"))
+				End If
+
+				If data.Columns.Contains("BreakOnChange") Then
+					objSort.PageOnChange = CBool(objRow("BreakOnChange"))
+				End If
+
+				If data.Columns.Contains("SuppressRepeated") Then
+					objSort.PageOnChange = CBool(objRow("SuppressRepeated"))
+				End If
+
+				outputModel.SortOrderColumns.Add(objSort)
+			Next
+
+		End Sub
+
+
 
 		' can be done with dapper?
 		Private Sub PopulateOutput(outputModel As ReportOutputModel, data As DataTable)
@@ -887,19 +938,19 @@ Namespace Repository
 
 					Dim row As DataRow = data.Rows(0)
 
-					outputModel.IsPreview = CBool(row("OutputPreview"))
-					outputModel.Format = CType(row("OutputFormat"), OutputFormats)
-					outputModel.ToScreen = CBool(row("OutputScreen"))
-					outputModel.ToPrinter = CBool(row("OutputPrinter"))
-					outputModel.PrinterName = row("OutputPrinterName").ToString()
-					outputModel.SaveToFile = CBool(row("OutputSave"))
-					outputModel.Filename = row("OutputFileName").ToString
-					outputModel.SaveExisting = CType(row("OutputSaveExisting"), ExistingFile)
-					outputModel.SendAsEmail = CBool(row("OutputEmail"))
-					outputModel.EmailGroupID = CInt(row("OutputEmailAddr"))
-					'objModel.Output.EmailAddress = GetEmailGroupName(CInt(objRow("OutputEmailAddr")))
-					outputModel.EmailSubject = row("OutputEmailSubject").ToString()
-					outputModel.EmailAttachAs = row("OutputEmailAttachAs").ToString()
+					outputModel.IsPreview = CBool(row("IsPreview"))
+					outputModel.Format = CType(row("Format"), OutputFormats)
+					outputModel.ToScreen = CBool(row("ToScreen"))
+					outputModel.ToPrinter = CBool(row("ToPrinter"))
+					outputModel.PrinterName = row("PrinterName").ToString()
+					outputModel.SaveToFile = CBool(row("SaveToFile"))
+					outputModel.Filename = row("FileName").ToString
+					outputModel.SaveExisting = CType(row("SaveExisting"), ExistingFile)
+					outputModel.SendToEmail = CBool(row("SendToEmail"))
+					outputModel.EmailGroupID = CInt(row("EmailGroupID"))
+					outputModel.EmailGroupName = row("EmailGroupName").ToString
+					outputModel.EmailSubject = row("EmailSubject").ToString()
+					outputModel.EmailAttachmentName = row("EmailAttachmentName").ToString()
 
 				End If
 

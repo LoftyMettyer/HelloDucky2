@@ -17,23 +17,26 @@ Namespace Models
 		Public Property Description1Id As Integer
 		Public Property Description2Id As Integer
 		Public Property Description3Id As Integer
+		Public Property Description3Name As String
 		Public Property RegionID As Integer
 		Public Property GroupByDescription As Boolean
 		Public Property Separator As String
 
-		Public Property Events As IEnumerable(Of CalendarEventDetail)
+		Public Property Events As New Collection(Of CalendarEventDetail)
 
 		Public Property StartType As CalendarDataType
-		Public Property StartDate As DateTime
+		Public Property StartFixedDate As DateTime
 		Public Property StartOffset As Integer
 		Public Property StartOffsetPeriod As DatePeriod
 		Public Property StartCustomId As Integer
+		Public Property StartCustomName As String
 
 		Public Property EndType As CalendarDataType
-		Public Property EndDate As DateTime
+		Public Property EndFixedDate As DateTime
 		Public Property EndOffset As Integer
 		Public Property EndOffsetPeriod As DatePeriod
 		Public Property EndCustomId As Integer
+		Public Property EndCustomName As String
 
 		<DisplayName("Include Bank Holidays")> _
 		Public Property IncludeBankHolidays As Boolean
@@ -44,8 +47,8 @@ Namespace Models
 		<DisplayName("Show Bank Holidays")> _
 		Public Property ShowBankHolidays As Boolean
 
-		<DisplayName("Show Calendar Options")> _
-		Public Property ShowCalendarOptions As Boolean
+		<DisplayName("Show Calendar Captions")> _
+		Public Property ShowCaptions As Boolean
 
 		<DisplayName("Show Weekends")> _
 		Public Property ShowWeekends As Boolean

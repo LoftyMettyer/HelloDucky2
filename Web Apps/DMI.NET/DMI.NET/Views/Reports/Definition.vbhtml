@@ -16,7 +16,9 @@ End Code
   </div>
 
   <div class="right">
-    Owner: @Html.TextBox("owner", Model.Owner, New With {.disabled = "disabled"})
+		<div class="editor-field-greyed-out">
+			Owner: @Html.TextBox("owner", Model.Owner, New With {.readonly = "true"})
+		</div>
     <br />
     Access : @Html.Raw(Html.AccessGrid("GroupAccess", Model.GroupAccess, Nothing))
   </div>

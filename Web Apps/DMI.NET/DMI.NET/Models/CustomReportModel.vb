@@ -20,6 +20,8 @@ Namespace Models
 		Public Property Parent1 As New ReportRelatedTable
 		Public Property Parent2 As New ReportRelatedTable
 
+		Public Property Repetition As New Collection(Of ReportRepetition)
+
 		Public Property IsSummary As Boolean
 		Public Property IgnoreZerosForAggregates As Boolean
 

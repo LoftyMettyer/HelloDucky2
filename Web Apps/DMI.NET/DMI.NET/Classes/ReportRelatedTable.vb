@@ -11,7 +11,9 @@ Namespace Classes
     Public Property Name As String
     Public Property SelectionType As RecordSelectionType
     Public Property FilterID As Integer
-    Public Property PicklistID As Integer
+		Public Property PicklistID As Integer
+		Public Property FilterName As String
+		Public Property PicklistName As String
 
   End Class
 End Namespace

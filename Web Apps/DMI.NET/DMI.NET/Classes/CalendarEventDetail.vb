@@ -6,30 +6,6 @@ Imports System.ComponentModel
 Namespace Classses
 	Public Class CalendarEventDetail
 
-		'Public Property EventId As Integer
-		'Public Property TableId As Integer
-		'Public Property FilterId As Integer
-		'Public Property StartDateId As Integer
-		'Public Property StartSessionId As Integer
-		'Public Property EndDateId As Integer
-		'Public Property EndSessionId As Integer
-		'Public Property DurationId As Integer
-		'Public Property KeyId As Integer
-		'Public Property Description1Id As Integer
-		'Public Property Description2Id As Integer
-
-		'Public Property EventName As String
-		'Public Property TableName As String
-		'Public Property FilterName As String
-		'Public Property StartDateName As String
-		'Public Property StartSessionName As String
-		'Public Property EndDateName As String
-		'Public Property EndSessionName As String
-		'Public Property DurationName As String
-		'Public Property KeyName As String
-		'Public Property Description1Name As String
-		'Public Property Description2Name As String
-
 		<Browsable(False)>
 		Public Property ID As Integer
 		Public Property EventKey As String
@@ -49,8 +25,26 @@ Namespace Classses
 		Public Property LegendLookupColumnID As Integer
 		Public Property LegendLookupCodeID As Integer
 		Public Property LegendEventColumnID As Integer
+
+		<Browsable(False)>
 		Public Property EventDesc1ColumnID As Integer
+
+		<Browsable(False)>
 		Public Property EventDesc2ColumnID As Integer
+
+		Public Property FilterHidden As String
+
+		' For display purposes in grids
+		Public Property FilterName As String
+		Public Property EventStartSessionName As String
+		Public Property EventEndDateName As String
+		Public Property EventEndSessionName As String
+		Public Property EventDurationName As String
+		Public Property LegendTypeName As String
+		Public Property EventDesc1ColumnName As String
+		Public Property EventDesc2ColumnName As String
 
 	End Class
 End Namespace
+
+

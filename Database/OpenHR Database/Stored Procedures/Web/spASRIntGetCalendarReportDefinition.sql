@@ -1,68 +1,67 @@
-CREATE PROCEDURE spASRIntGetCalendarReportDefinition 
-	(
+CREATE PROCEDURE spASRIntGetCalendarReportDefinition (
 	@piCalendarReportID 		integer, 
 	@psCurrentUser				varchar(255),
-	@psAction					varchar(255),
-	@psErrorMsg					varchar(MAX)	OUTPUT,
-	@psCalendarReportName		varchar(255)	OUTPUT,
-	@psCalendarReportOwner		varchar(255)	OUTPUT,
-	@psCalendarReportDesc		varchar(MAX)	OUTPUT,
-	@piBaseTableID				integer			OUTPUT,
-	@pfAllRecords				bit				OUTPUT,
-	@piPicklistID				integer			OUTPUT,
-	@psPicklistName				varchar(255)	OUTPUT,
-	@pfPicklistHidden			bit				OUTPUT,
-	@piFilterID					integer			OUTPUT,
-	@psFilterName				varchar(255)	OUTPUT,
-	@pfFilterHidden				bit				OUTPUT,
-	@pfPrintFilterHeader		bit				OUTPUT,
-	@piDesc1ID					integer			OUTPUT,
-	@piDesc2ID					integer			OUTPUT,
-	@piDescExprID				integer			OUTPUT,
-	@psDescExprName				varchar(255)	OUTPUT,
-	@pfDescCalcHidden			bit				OUTPUT,
-	@piRegionID					integer			OUTPUT,
-	@pfGroupByDesc				bit				OUTPUT,
-	@pfDescSeparator			varchar(255)	OUTPUT,	
-	@piStartType				integer			OUTPUT,
-	@pdFixedStart				datetime		OUTPUT,
-	@piStartFrequency			integer			OUTPUT,
-	@piStartPeriod				integer			OUTPUT,
-	@piCustomStartID			integer			OUTPUT,
-	@psCustomStartName			varchar(MAX)	OUTPUT,
-	@pfStartDateCalcHidden		bit				OUTPUT,
-	@piEndType					integer			OUTPUT,
-	@pdFixedEnd					datetime		OUTPUT,
-	@piEndFrequency				integer			OUTPUT,
-	@piEndPeriod				integer			OUTPUT,
-	@piCustomEndID				integer			OUTPUT,
-	@psCustomEndName			varchar(MAX)	OUTPUT,
-	@pfEndDateCalcHidden		bit				OUTPUT,
-	@pfShadeBHols				bit				OUTPUT,
-	@pfShowCaptions				bit				OUTPUT,
-	@pfShadeWeekends			bit				OUTPUT,
-	@pfStartOnCurrentMonth		bit				OUTPUT,
-	@pfIncludeWorkingDaysOnly	bit				OUTPUT,
-	@pfIncludeBHols				bit				OUTPUT,
-	@pfOutputPreview			bit				OUTPUT,
-	@piOutputFormat				integer			OUTPUT,
-	@pfOutputScreen				bit				OUTPUT,
-	@pfOutputPrinter			bit				OUTPUT,
-	@psOutputPrinterName		varchar(MAX)	OUTPUT,
-	@pfOutputSave				bit				OUTPUT,
-	@piOutputSaveExisting		integer			OUTPUT,
-	@pfOutputEmail				bit				OUTPUT,
-	@piOutputEmailAddr			integer			OUTPUT,
-	@psOutputEmailName			varchar(MAX)	OUTPUT,
-	@psOutputEmailSubject		varchar(MAX)	OUTPUT,
-	@psOutputEmailAttachAs		varchar(MAX)	OUTPUT,
-	@psOutputFilename			varchar(MAX)	OUTPUT,	
- 	@piTimestamp				integer			OUTPUT
-	)
+	@psAction					varchar(255))
 AS
 BEGIN
 
 	SET NOCOUNT ON;
+
+	DECLARE @psErrorMsg					varchar(MAX) = '',
+		@psReportName		varchar(255) = '',
+		@psReportOwner		varchar(255) = '',
+		@psReportDesc		varchar(MAX) = '',
+		@piBaseTableID				integer,
+		@pfAllRecords				bit,
+		@piPicklistID				integer,
+		@psPicklistName				varchar(255) = '',
+		@pfPicklistHidden			bit,
+		@piFilterID					integer,
+		@psFilterName				varchar(255) = '',
+		@pfFilterHidden				bit,
+		@pfPrintFilterHeader		bit,
+		@piDesc1ID					integer,
+		@piDesc2ID					integer,
+		@piDescExprID				integer,
+		@psDescExprName				varchar(255) = '',
+		@pfDescCalcHidden			bit,
+		@piRegionID					integer,
+		@pfGroupByDesc				bit,
+		@pfDescSeparator			varchar(255) = '',	
+		@piStartType				integer,
+		@pdFixedStart				datetime,
+		@piStartFrequency			integer,
+		@piStartPeriod				integer,
+		@piCustomStartID			integer,
+		@psCustomStartName			varchar(MAX) = '',
+		@pfStartDateCalcHidden		bit,
+		@piEndType					integer,
+		@pdFixedEnd					datetime,
+		@piEndFrequency				integer,
+		@piEndPeriod				integer,
+		@piCustomEndID				integer,
+		@psCustomEndName			varchar(MAX) = '',
+		@pfEndDateCalcHidden		bit,
+		@pfShadeBHols				bit,
+		@pfShowCaptions				bit,
+		@pfShadeWeekends			bit,
+		@pfStartOnCurrentMonth		bit,
+		@pfIncludeWorkingDaysOnly	bit,
+		@pfIncludeBHols				bit,
+		@pfOutputPreview			bit,
+		@piOutputFormat				integer,
+		@pfOutputScreen				bit,
+		@pfOutputPrinter			bit,
+		@psOutputPrinterName		varchar(MAX) = '',
+		@pfOutputSave				bit,
+		@piOutputSaveExisting		integer		,
+		@pfOutputEmail				bit,
+		@piOutputEmailAddr			integer,
+		@psOutputEmailName			varchar(MAX) = '',
+		@psOutputEmailSubject		varchar(MAX) = '',
+		@psOutputEmailAttachAs		varchar(MAX) = '',
+		@psOutputFilename			varchar(MAX) = '',	
+ 		@piTimestamp				integer;
 
 	DECLARE	@iCount			integer,
 			@sTempHidden	varchar(10),
@@ -88,9 +87,9 @@ BEGIN
 		RETURN;
 	END
 
-	SELECT	@psCalendarReportName = name,
-					@psCalendarReportOwner = userName,
-					@psCalendarReportDesc = description,
+	SELECT	@psReportName = name,
+					@psReportOwner = userName,
+					@psReportDesc = description,
 					@piBaseTableID = baseTable,
 					@pfAllRecords = allRecords,
 					@piPicklistID = picklist,
@@ -140,13 +139,13 @@ BEGIN
 		@piCalendarReportID,
 		@sAccess OUTPUT;
 
-	IF (@sAccess = 'HD') AND (@psCalendarReportOwner <> @psCurrentUser) 
+	IF (@sAccess = 'HD') AND (@psReportOwner <> @psCurrentUser) 
 	BEGIN
 		SET @psErrorMsg = 'calendar report has been made hidden by another user.';
 		RETURN;
 	END
 
-	IF (@psAction <> 'view') AND (@psAction <> 'copy') AND (@sAccess = 'RO') AND (@psCalendarReportOwner <> @psCurrentUser) 
+	IF (@psAction <> 'view') AND (@psAction <> 'copy') AND (@sAccess = 'RO') AND (@psReportOwner <> @psCurrentUser) 
 	BEGIN
 		SET @psErrorMsg = 'calendar report has been made read only by another user.';
 		RETURN;
@@ -176,8 +175,8 @@ BEGIN
 
 	IF @psAction = 'copy' 
 	BEGIN
-		SET @psCalendarReportName = left('copy of ' + @psCalendarReportName, 50);
-		SET @psCalendarReportOwner = @psCurrentUser;
+		SET @psReportName = left('copy of ' + @psReportName, 50);
+		SET @psReportOwner = @psCurrentUser;
 	END
 
 	IF @piPicklistID > 0 
@@ -259,49 +258,65 @@ BEGIN
 		SET @psOutputEmailName = '';
 	END
 
-	/* Get the calendar events definition recordset. */
+
+	-- Definition
+	SELECT @psReportName AS name, @psReportDesc AS [Description], @piBaseTableID AS baseTableID, @psReportOwner AS [Owner],
+		CASE WHEN @pfAllRecords = 1 THEN 0 ELSE CASE WHEN ISNULL(@piPicklistID, 0) > 0 THEN 1 ELSE 2 END END AS [SelectionType],
+		@piPicklistID AS PicklistID, @piFilterID AS FilterID,
+		@psPicklistName AS PicklistName, @psFilterName AS FilterName,@pfPrintFilterHeader AS printFilterHeader,
+		@piDesc1ID AS Description1ID, @piDesc2ID AS Description2ID, @piDescExprID AS Description3ID, @psDescExprName AS Description3Name,
+		@piRegionID AS RegionID, @pfGroupByDesc AS GroupByDescription, @pfDescSeparator AS Separator,		
+		@piStartType AS StartType, @pdFixedStart AS StartFixedDate, @piStartFrequency AS StartOffset, @piStartPeriod AS StartOffsetPeriod, @piCustomStartID AS StartCustomID, @psCustomStartName AS StartCustomName,
+		@piEndType AS EndType, @pdFixedEnd AS EndFixedDate,	@piEndFrequency AS EndOffset, @piEndPeriod AS EndOffsetPeriod, @piCustomEndID AS EndCustomID,  @psCustomStartName AS EndCustomName,
+		@pfShadeBHols AS ShowBankHolidays, @pfShowCaptions AS ShowCaptions,	@pfShadeWeekends AS ShowWeekends, @pfStartOnCurrentMonth AS StartOnCurrentMonth,
+		@pfIncludeWorkingDaysOnly AS WorkingDaysOnly, @pfIncludeBHols AS IncludeBankHolidays,
+		@pfOutputPreview AS IsPreview, @piOutputFormat AS [Format], @pfOutputScreen AS ToScreen, @pfOutputPrinter AS ToPrinter,
+		@psOutputPrinterName AS PrinterName, @pfOutputSave AS SaveToFile, @piOutputSaveExisting AS SaveExisting,
+		@pfOutputEmail AS SendToEmail, @piOutputEmailAddr AS EmailGroupID, @piOutputEmailAddr AS EmailGroupName,
+		@psOutputEmailSubject AS EmailSubject, @psOutputEmailAttachAs AS EmailAttachmentName,
+		@psOutputFilename AS [Filename], @piTimestamp AS [timestamp];
+
+	-- Calendar events definition recordset
 	SELECT 
-			ASRSysCalendarReportEvents.Name + char(9) + 
-			CONVERT(varchar,ASRSysCalendarReportEvents.TableID) + char(9) +
-			(SELECT ISNULL(ASRSysTables.TableName,'') FROM ASRSysTables WHERE ASRSysTables.TableID = ASRSysCalendarReportEvents.TableID) + char(9) +
-			CONVERT(varchar,ASRSysCalendarReportEvents.FilterID) + char(9) +
+			ID, Name, TableID,
+			(SELECT ISNULL(ASRSysTables.TableName,'') FROM ASRSysTables WHERE ASRSysTables.TableID = ASRSysCalendarReportEvents.TableID),
+			FilterID,
 			CASE 
 				WHEN ASRSysCalendarReportEvents.FilterID > 0 THEN
 					(SELECT ISNULL(ASRSysExpressions.Name,'') FROM ASRSysExpressions WHERE ASRSysExpressions.ExprID = ASRSysCalendarReportEvents.FilterID) 
 				ELSE
 					''
-			END + char(9) +
-			CONVERT(varchar,ASRSysCalendarReportEvents.EventStartDateID) + char(9) +
-			(SELECT ISNULL(ASRSysColumns.ColumnName,'') FROM ASRSysColumns WHERE ASRSysColumns.ColumnID = ASRSysCalendarReportEvents.EventStartDateID) + char(9) +
-			
-			CONVERT(varchar,ASRSysCalendarReportEvents.EventStartSessionID) + char(9) + 
+			END AS FilterName,
+			EventStartDateID,
+			(SELECT ISNULL(ASRSysColumns.ColumnName,'') FROM ASRSysColumns WHERE ASRSysColumns.ColumnID = ASRSysCalendarReportEvents.EventStartDateID),			
+			EventStartSessionID,
 			CASE 
-				WHEN ASRSysCalendarReportEvents.EventStartSessionID > 0 THEN
+				WHEN EventStartSessionID > 0 THEN
 					(SELECT ISNULL(ASRSysColumns.ColumnName,'') FROM ASRSysColumns WHERE ASRSysColumns.ColumnID = ASRSysCalendarReportEvents.EventStartSessionID)
 				ELSE
 					''
-			END + char(9) +
-			CONVERT(varchar,ASRSysCalendarReportEvents.EventEndDateID) + char(9) +
+			END AS EventStartSessionName,
+			EventEndDateID,
 			CASE 
-				WHEN ASRSysCalendarReportEvents.EventEndDateID > 0 THEN
+				WHEN EventEndDateID > 0 THEN
 					(SELECT ISNULL(ASRSysColumns.ColumnName,'') FROM ASRSysColumns WHERE ASRSysColumns.ColumnID = ASRSysCalendarReportEvents.EventEndDateID)
 				ELSE ''
-			END + char(9) +
-			CONVERT(varchar,ASRSysCalendarReportEvents.EventEndSessionID) + char(9) + 
+			END AS EventEndDateName,
+			ASRSysCalendarReportEvents.EventEndSessionID, 
 			CASE 
 				WHEN ASRSysCalendarReportEvents.EventEndSessionID > 0 THEN
 					(SELECT ISNULL(ASRSysColumns.ColumnName,'') FROM ASRSysColumns WHERE ASRSysColumns.ColumnID = ASRSysCalendarReportEvents.EventEndSessionID)
 				ELSE
 					''
-			END + char(9) +
-			CONVERT(varchar,ASRSysCalendarReportEvents.EventDurationID) + char(9) + 
+			END AS EventEndSessionName,
+			EventDurationID,
 			CASE 
 				WHEN ASRSysCalendarReportEvents.EventDurationID > 0 THEN
 					(SELECT ISNULL(ASRSysColumns.ColumnName,'') FROM ASRSysColumns WHERE ASRSysColumns.ColumnID = ASRSysCalendarReportEvents.EventDurationID)
 				ELSE 
 					''
-			END + char(9) +
-			CONVERT(varchar,ASRSysCalendarReportEvents.LegendType) + char(9) +
+			END AS EventDurationName,
+			LegendType, LegendCharacter,
 			CASE 
 				WHEN ASRSysCalendarReportEvents.LegendType = 1 THEN
 					(SELECT ISNULL(ASRSysTables.TableName,'') FROM ASRSysTables WHERE ASRSysTables.TableID = ASRSysCalendarReportEvents.LegendLookupTableID) + 
@@ -309,12 +324,8 @@ BEGIN
 					(SELECT ISNULL(ASRSysColumns.ColumnName,'') FROM ASRSysColumns WHERE ASRSysColumns.ColumnID = ASRSysCalendarReportEvents.LegendLookupCodeID)
 				ELSE
 					ASRSysCalendarReportEvents.LegendCharacter
-			END + char(9) +
-			CONVERT(varchar,ASRSysCalendarReportEvents.LegendLookupTableID) + char(9) +
-			CONVERT(varchar,ASRSysCalendarReportEvents.LegendLookupColumnID) + char(9) +
-			CONVERT(varchar,ASRSysCalendarReportEvents.LegendLookupCodeID) + char(9) +
-			CONVERT(varchar,ASRSysCalendarReportEvents.LegendEventColumnID) + char(9) +
-			CONVERT(varchar,ASRSysCalendarReportEvents.EventDesc1ColumnID) + char(9) +
+			END LegendTypeName,
+			LegendLookupTableID, LegendLookupColumnID, LegendLookupCodeID, LegendEventColumnID, EventDesc1ColumnID,
 			CASE 
 				WHEN ASRSysCalendarReportEvents.EventDesc1ColumnID > 0 THEN
 					(SELECT ISNULL(ASRSysTables.TableName,'') FROM ASRSysTables WHERE ASRSysTables.TableID = ((SELECT ISNULL(ASRSysColumns.TableID,0) FROM ASRSysColumns WHERE ASRSysColumns.ColumnID = ASRSysCalendarReportEvents.EventDesc1ColumnID))) + 
@@ -322,32 +333,36 @@ BEGIN
 					(SELECT ISNULL(ASRSysColumns.ColumnName,'') FROM ASRSysColumns WHERE ASRSysColumns.ColumnID = ASRSysCalendarReportEvents.EventDesc1ColumnID)
 				ELSE
 					''
-			END + char(9) +
-			CONVERT(varchar,ASRSysCalendarReportEvents.EventDesc2ColumnID) + char(9) +
+			END AS EventDesc1ColumnName,
+			EventDesc2ColumnID,
 			CASE
-				WHEN ASRSysCalendarReportEvents.EventDesc2ColumnID > 0 THEN
+				WHEN EventDesc2ColumnID > 0 THEN
 					(SELECT ISNULL(ASRSysTables.TableName,'') FROM ASRSysTables WHERE ASRSysTables.TableID IN ((SELECT ISNULL(ASRSysColumns.TableID,0) FROM ASRSysColumns WHERE ASRSysColumns.ColumnID = ASRSysCalendarReportEvents.EventDesc2ColumnID))) + 
 					'.' + 
 					(SELECT ISNULL(ASRSysColumns.ColumnName,'') FROM ASRSysColumns WHERE ASRSysColumns.ColumnID = ASRSysCalendarReportEvents.EventDesc2ColumnID)
 				ELSE
 					''
-	 		END + char(9) +
-			ASRSysCalendarReportEvents.EventKey	 + char(9) +
+	 		END AS EventDesc2ColumnName,
+			EventKey,
 			CASE 
 				WHEN ASRSysCalendarReportEvents.FilterID > 0 THEN
 			  		(SELECT CASE WHEN ASRSysExpressions.Access = 'HD' THEN 'Y' ELSE 'N' END FROM ASRSysExpressions WHERE ASRSysExpressions.ExprID = ASRSysCalendarReportEvents.FilterID) 
 				ELSE
 					'N'
-			END	
-			AS [DefinitionString],
-		
-			CASE 
-				WHEN ASRSysCalendarReportEvents.FilterID > 0 THEN
-			  		(SELECT CASE WHEN ASRSysExpressions.Access = 'HD' THEN 'Y' ELSE 'N' END FROM ASRSysExpressions WHERE ASRSysExpressions.ExprID = ASRSysCalendarReportEvents.FilterID) 
-				ELSE
-					'N'
-			END AS [FilterHidden]
+			END AS FilterHidden
 	FROM ASRSysCalendarReportEvents
-	WHERE ASRSysCalendarReportEvents.CalendarReportID = @piCalendarReportID
-	ORDER BY ASRSysCalendarReportEvents.ID;
+	WHERE CalendarReportID = @piCalendarReportID
+	ORDER BY ID;
+
+	-- Orders
+	SELECT 
+		ColumnID AS Id, TableID, 
+		(SELECT ISNULL(ASRSysTables.TableName,'') FROM ASRSysTables WHERE ASRSysTables.TableID = ASRSysCalendarReportOrder.TableID) + '.' +
+		(SELECT ISNULL(ASRSysColumns.ColumnName,'') FROM ASRSysColumns WHERE ASRSysColumns.ColumnID = ASRSysCalendarReportOrder.ColumnID) AS [Name],
+		OrderSequence AS [Sequence],
+		OrderType AS [Order]
+	FROM [dbo].[ASRSysCalendarReportOrder]
+	WHERE calendarReportID = @piCalendarReportID
+	ORDER BY OrderSequence;
+
 END
