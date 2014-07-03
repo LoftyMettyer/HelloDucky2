@@ -30,14 +30,7 @@ Namespace Helpers
 
 			Dim builder As New TagBuilder("table")
 			builder.MergeAttributes(attributes)
-
-			'			builder.MergeAttribute("id", name)
-			builder.MergeAttribute("id", "ColumnsSelected")
-
 			builder.MergeAttribute("name", name)
-
-
-
 
 			builder.InnerHtml = sb.ToString()
 			Return builder.ToString(TagRenderMode.Normal)
