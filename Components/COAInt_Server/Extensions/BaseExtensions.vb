@@ -10,7 +10,14 @@ Namespace Extensions
 
 		<Extension()>
 		Public Function GetById(Of T As Base)(ByVal items As ICollection(Of T), ByVal id As Integer) As T
-			Return items.FirstOrDefault(Function(item) item.ID = id)
+
+			Try
+				Return items.FirstOrDefault(Function(item) item.ID = id)
+
+			Catch ex As Exception
+				Throw
+			End Try
+
 		End Function
 
 		<Extension()>

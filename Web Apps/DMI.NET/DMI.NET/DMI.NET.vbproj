@@ -159,6 +159,7 @@
     <Compile Include="App_Start\BundleConfig.vb" />
     <Compile Include="App_Start\DataAnnotationConfig.vb" />
     <Compile Include="App_Start\RouteConfig.vb" />
+    <Compile Include="AttributeExtensions\ExcludeCharAttribute.vb" />
     <Compile Include="AttributeExtensions\NonZeroIfAttribute.vb" />
     <Compile Include="AttributeExtensions\RequiredIfAttribute.vb" />
     <Compile Include="Classes\CalendarEventDetail.vb" />
@@ -189,6 +190,7 @@
     <Compile Include="Helpers\AccessGrid.vb" />
     <Compile Include="Helpers\AvailableReportColumns.vb" />
     <Compile Include="Helpers\ColumnDropdown.vb" />
+    <Compile Include="Helpers\DisabledIf.vb" />
     <Compile Include="Helpers\EnumDropdown.vb" />
     <Compile Include="Helpers\SelectedReportColumns.vb" />
     <Compile Include="Helpers\SortOrderGrid.vb" />
@@ -1118,6 +1120,7 @@
     <Content Include="Content\themes\vader\jquery.ui.theme.min.css" />
     <Content Include="Content\themes\vader\jquery.ui.tooltip.min.css" />
     <Content Include="Database\UpdateScript8.1.sql" />
+    <Content Include="Scripts\jquery\jquery.numeric.js" />
     <Content Include="Scripts\jquery\jquery-ui-i18n.js" />
     <Content Include="lpks\ssmain.lpk" />
     <Content Include="Content\fonts\SSI80v194934\SSI80v1.woff" />

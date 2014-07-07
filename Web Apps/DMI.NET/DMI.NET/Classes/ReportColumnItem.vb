@@ -2,6 +2,7 @@
 Option Explicit On
 
 Imports HR.Intranet.Server.Enums
+Imports DMI.NET.AttributeExtensions
 
 Namespace Classes
 	Public Class ReportColumnItem
@@ -11,7 +12,10 @@ Namespace Classes
 		Public Property Name As String
 		Public Property CustomReportId As Integer
 		Public Property Sequence As Integer
+
+		<ExcludeChar("/,.!@#$%")>
 		Public Property Heading As String
+
 		Public Property DataType As SQLDataType
 		Public Property Size As Long
 		Public Property Decimals As Integer

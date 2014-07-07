@@ -11,7 +11,7 @@ End Code
 <br/>
 <div>
   <div style="float:left">
-    Output Format:
+		Output Formats :
 		<br/>
 		@Html.RadioButton("Output.Format", 0, Model.Format = OutputFormats.fmtDataOnly)
 		Data Only
@@ -45,20 +45,28 @@ End Code
   <div style="float:right">
     Output Destinations :
 		<br/>
-    @Html.CheckBox("Output.IsPreview", Model.IsPreview) Preview on screen
+
+    @Html.CheckBox("Output.IsPreview", Model.IsPreview)
+		@Html.LabelFor(Function(m) m.IsPreview)
 		<br />
-		@Html.CheckBox("Output.ToScreen", Model.ToScreen) Display output on screen
+
+		@Html.CheckBox("Output.ToScreen", Model.ToScreen)
+		@Html.LabelFor(Function(m) m.ToScreen)
 		<br />
-		@Html.CheckBox("Output.ToPrinter", Model.ToPrinter) Send to printer
+
+		@Html.CheckBox("Output.ToPrinter", Model.ToPrinter)
+		@Html.LabelFor(Function(m) m.ToPrinter)
 		@Html.TextBox("Output.PrinterName", Model.PrinterName)
 		<br />
 
 		@Html.CheckBox("Output.SaveToFile", Model.SaveToFile)
+		@Html.LabelFor(Function(m) m.SaveToFile)
 
+		@Html.LabelFor(Function(m) m.Filename)
+		@Html.TextBox("Output.Filename", Model.Filename)
 
-		File Name: @Html.TextBox("Output.Filename", Model.Filename)
-
-		If existing file : @Html.EnumDropDownListFor(Function(m) m.SaveExisting)
+		@Html.LabelFor(Function(m) m.SaveExisting)
+		@Html.EnumDropDownListFor(Function(m) m.SaveExisting)
 		<br/>
 
 		@Html.CheckBoxFor(Function(m) m.SendToEmail, New With {Key .Name = "Output.SendToEmail"})
@@ -84,6 +92,8 @@ End Code
 		<br />
 		@Html.ValidationMessage("Output.EmailAttachmentName")
 		<br />
+		@Html.ValidationMessage("Output.FileName")
+		<br/>
 
   </div>
 

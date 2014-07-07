@@ -24,12 +24,16 @@ Namespace Controllers
 			Dim iReportID As Integer = CInt(Session("utilid"))
 			Dim sAction = Session("action").ToString
 
-			Select Case Session("action").ToString
-				Case "new"
+			Select Case Session("action").ToString.ToUpper
+				Case "NEW"
 					objModel = objReportRepository.NewCustomReport()
 
-				Case "copy"
+				Case "COPY"
 					objModel = objReportRepository.LoadCustomReport(iReportID, True, sAction)
+
+				Case "VIEW"
+					objModel = objReportRepository.LoadCustomReport(iReportID, False, sAction)
+					objModel.IsReadOnly = True
 
 				Case Else
 					objModel = objReportRepository.LoadCustomReport(iReportID, False, sAction)
@@ -62,12 +66,16 @@ Namespace Controllers
 
 			Dim objModel As New MailMergeModel
 
-			Select Case Session("action").ToString
-				Case "new"
+			Select Case Session("action").ToString.ToUpper
+				Case "NEW"
 					objModel = objReportRepository.NewMailMerge()
 
-				Case "copy"
+				Case "COPY"
 					objModel = objReportRepository.LoadMailMerge(iReportID, True, sAction)
+
+				Case "VIEW"
+					objModel = objReportRepository.LoadMailMerge(iReportID, False, sAction)
+					objModel.IsReadOnly = True
 
 				Case Else
 					objModel = objReportRepository.LoadMailMerge(iReportID, False, sAction)
@@ -99,12 +107,16 @@ Namespace Controllers
 			Dim iReportID As Integer = CInt(Session("utilid"))
 			Dim sAction = Session("action").ToString
 
-			Select Case Session("action").ToString
-				Case "new"
+			Select Case Session("action").ToString.ToUpper
+				Case "NEW"
 					objModel = objReportRepository.NewCrossTab()
 
-				Case "copy"
+				Case "COPY"
 					objModel = objReportRepository.LoadCrossTab(iReportID, True, sAction)
+
+				Case "VIEW"
+					objModel = objReportRepository.LoadCrossTab(iReportID, False, sAction)
+					objModel.IsReadOnly = True
 
 				Case Else
 					objModel = objReportRepository.LoadCrossTab(iReportID, False, sAction)
@@ -123,6 +135,9 @@ Namespace Controllers
 				Session("reaction") = "CROSSTABS"
 				Return RedirectToAction("confirmok", "home")
 			Else
+				objModel.BaseTables = objReportRepository.GetTables()
+				objModel.AvailableColumns = objReportRepository.GetColumnsForTable(objModel.BaseTableID)
+
 				Return View(objModel)
 			End If
 
@@ -135,12 +150,16 @@ Namespace Controllers
 			Dim iReportID As Integer = CInt(Session("utilid"))
 			Dim sAction = Session("action").ToString
 
-			Select Case Session("action").ToString
-				Case "new"
+			Select Case Session("action").ToString.ToUpper
+				Case "NEW"
 					objModel = objReportRepository.NewCalendarReport()
 
-				Case "copy"
+				Case "COPY"
 					objModel = objReportRepository.LoadCalendarReport(iReportID, True, sAction)
+
+				Case "VIEW"
+					objModel = objReportRepository.LoadCalendarReport(iReportID, False, sAction)
+					objModel.IsReadOnly = True
 
 				Case Else
 					objModel = objReportRepository.LoadCalendarReport(iReportID, False, sAction)

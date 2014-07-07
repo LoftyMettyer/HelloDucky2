@@ -11,6 +11,8 @@ Imports DMI.NET.AttributeExtensions
 Namespace Models
 	Public Class ReportBaseModel
 
+		Public Property IsReadOnly As Boolean
+
 		Public Property ID As Integer
 		Public Property Owner As String
 
@@ -41,6 +43,7 @@ Namespace Models
 
 		Public Property BaseTables As New Collection(Of SelectListItem)
 
+		<DisplayName("Display Title In Report Header")>
 		Public Property DisplayTitleInReportHeader As Boolean
 
 		Public Property SortOrderColumns As New Collection(Of ReportSortItem)

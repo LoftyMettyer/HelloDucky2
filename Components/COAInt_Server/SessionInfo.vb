@@ -63,6 +63,23 @@ Public Class SessionInfo
 
 	End Function
 
+	Public Function GetColumn(ColumnID As Integer) As Column
+
+		Try
+			If ColumnID > 0 Then
+				Return Columns.GetById(ColumnID)
+			Else
+				Return New Column
+			End If
+
+		Catch ex As Exception
+			Return New Column
+
+		End Try
+
+	End Function
+
+
 	Public Function SessionLogin(UserName As String, sPassword As String, sDatabaseName As String, sServerName As String, bWindowsAuthentication As Boolean) As LoginInfo
 
 		Dim objRow As DataRow

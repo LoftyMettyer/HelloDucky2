@@ -264,16 +264,19 @@ Namespace Repository
 					Dim objRow As DataRow = dtDefinition.Rows(0)
 
 					objModel.HorizontalID = CInt(objRow("HorizontalID"))
+					objModel.HorizontalDataType = objSessionInfo.GetColumn(objModel.HorizontalID).DataType
 					objModel.HorizontalStart = CInt(objRow("HorizontalStart"))
 					objModel.HorizontalStop = CInt(objRow("HorizontalStop"))
 					objModel.HorizontalIncrement = CInt(objRow("HorizontalIncrement"))
 
 					objModel.VerticalID = CInt(objRow("VerticalID"))
+					objModel.VerticalDataType = objSessionInfo.GetColumn(objModel.VerticalID).DataType
 					objModel.VerticalStart = CInt(objRow("VerticalStart"))
 					objModel.VerticalStop = CInt(objRow("VerticalStop"))
 					objModel.VerticalIncrement = CInt(objRow("VerticalIncrement"))
 
 					objModel.PageBreakID = CInt(objRow("PageBreakID"))
+					objModel.PageBreakDataType = objSessionInfo.GetColumn(objModel.PageBreakID).DataType
 					objModel.PageBreakStart = CInt(objRow("PageBreakStart"))
 					objModel.PageBreakStop = CInt(objRow("PageBreakStop"))
 					objModel.PageBreakIncrement = CInt(objRow("PageBreakIncrement"))
@@ -855,24 +858,7 @@ Namespace Repository
 					outputModel.PicklistID = CInt(row("PicklistID"))
 					outputModel.PicklistName = row("picklistname").ToString
 
-					'TODO - tidy up with proc pulling back values - probably using dapper
-					' Crappy hack as custom reports and calendar reports use a boolean in allrecords, mail merge and cross tabs store the selection type. Rubbish!
-					If data.Columns.Contains("SelectionType") Then
-						outputModel.SelectionType = CType(row("SelectionType"), RecordSelectionType)
-					Else
-						Dim bAllRecs As Boolean = CBool(row("AllRecords"))
-						If bAllRecs Then
-							outputModel.SelectionType = RecordSelectionType.AllRecords
-						Else
-							If outputModel.FilterID > 0 Then
-								outputModel.SelectionType = RecordSelectionType.Filter
-							Else
-								outputModel.SelectionType = RecordSelectionType.Picklist
-							End If
-
-						End If
-
-					End If
+					outputModel.SelectionType = CType(row("SelectionType"), RecordSelectionType)
 
 					If data.Columns.Contains("PrintFilterHeader") Then
 						outputModel.DisplayTitleInReportHeader = CBool(row("PrintFilterHeader"))

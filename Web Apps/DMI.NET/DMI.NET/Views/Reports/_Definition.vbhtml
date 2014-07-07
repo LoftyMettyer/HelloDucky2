@@ -57,7 +57,11 @@
             onclick="selectRecordOption('base', 'filter')" />
 		<br />
 
-    @Html.CheckBox("DisplayTitleInReportHeader", Model.DisplayTitleInReportHeader) Display Title In Report Header
+    @Html.CheckBoxFor(Function(m) m.DisplayTitleInReportHeader)
+		@Html.LabelFor(Function(m) m.DisplayTitleInReportHeader)
+
+		<br/>
+
 		@Html.ValidationMessageFor(Function(m) m.PicklistID)
 		@Html.ValidationMessageFor(Function(m) m.FilterID)
 
@@ -154,8 +158,8 @@
       }
     }
 
-    var strDefOwner = $("#owner").val();
-    var strCurrentUser = $("#owner").val();
+    var strDefOwner = $("#Owner").val();
+    var strCurrentUser = $("#Owner").val();
     var isOwner;
 
     strDefOwner = strDefOwner.toLowerCase();

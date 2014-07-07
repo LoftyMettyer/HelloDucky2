@@ -33,7 +33,8 @@ End Code
 <div>
 
 	@Using (Html.BeginForm("util_def_crosstab", "Reports", FormMethod.Post, New With {.id = "frmReportDefintion", .name = "frmReportDefintion"}))
-	 
+
+ 		@Html.HiddenFor(Function(m) m.IsReadOnly)
 		@Html.HiddenFor(Function(m) m.ID)
 
 		@<div id="tabs">
@@ -78,6 +79,12 @@ End Code
 
 	$(function () {
 		$("#tabs").tabs();
+		$('input[type=number]').numeric();
+
+		if ($("#IsReadOnly").val() == "True") {
+			$("#frmReportDefintion :input").prop("disabled", true);
+		}	
+
 	});
 
 	$("#workframe").attr("data-framesource", "UTIL_DEF_CROSSTABS");

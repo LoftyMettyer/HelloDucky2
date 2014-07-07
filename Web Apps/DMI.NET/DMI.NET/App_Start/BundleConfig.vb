@@ -36,6 +36,7 @@ Namespace App_Start
 				"~/Scripts/jquery/jquery.marquee.js",
 				"~/Scripts/jquery/jquery.maskedinput.js",
 				"~/Scripts/jquery/jquery.mousewheel.js",
+				"~/Scripts/jquery/jquery.numeric.js",
 				"~/Scripts/jquery/jquery.rightClick.js",
 				"~/Scripts/jquery/jquery.ui.touch-punch.min.js",
 				"~/Scripts/jquery/jOrgChart/prettify.js",

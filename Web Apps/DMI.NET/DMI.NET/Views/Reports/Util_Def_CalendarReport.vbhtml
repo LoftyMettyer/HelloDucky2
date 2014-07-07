@@ -91,6 +91,12 @@ End Code
 
 	$(function () {
 		$("#tabs").tabs();
+		$('input[type=number]').numeric();
+
+		if ($("#IsReadOnly").val() == "True") {
+			$("#frmReportDefintion :input").prop("disabled", true);
+		}
+
 	});
 
 
