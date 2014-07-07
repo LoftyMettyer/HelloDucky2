@@ -7,16 +7,23 @@ Imports HR.Intranet.Server.Metadata
 Imports DMI.NET.Classes
 Imports HR.Intranet.Server.Enums
 Imports System.ComponentModel.DataAnnotations
+Imports System.ComponentModel
+Imports DMI.NET.AttributeExtensions
 
 Namespace Models
 
 	Public Class CrossTabModel
 		Inherits ReportBaseModel
 
+		<Required>
 		Public Property HorizontalID As Integer
+
 		Public Property HorizontalStart As Integer
+
 		Public Property HorizontalStop As Integer
 		Public Property HorizontalIncrement As Integer
+
+		<Required>
 		Public Property VerticalID As Integer
 		Public Property VerticalStart As Integer
 		Public Property VerticalStop As Integer

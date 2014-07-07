@@ -6,13 +6,16 @@ Imports System.Collections.ObjectModel
 Imports System.ComponentModel
 Imports DMI.NET.Enums
 Imports System.ComponentModel.DataAnnotations
+Imports DMI.NET.AttributeExtensions
 
 Namespace Models
 	Public Class ReportBaseModel
 
 		Public Property ID As Integer
-		Public Property BaseTableID As Integer
 		Public Property Owner As String
+
+		<Required(ErrorMessage:="A base table must be selected.")>
+		Public Property BaseTableID As Integer
 
 		<Required(ErrorMessage:="Name is required.")>
 		<MaxLength(50, ErrorMessage:="Name cannot be longer than 50 characters.")>
@@ -26,7 +29,11 @@ Namespace Models
 
 		Public Property GroupAccess As New Collection(Of GroupAccess)
 		Public Property SelectionType As RecordSelectionType
+
+		<NonZeroIf("SelectionType", RecordSelectionType.Filter, ErrorMessage:="No filter selected for base table.")> _
 		Public Property FilterID As Integer
+
+		<NonZeroIf("SelectionType", RecordSelectionType.Picklist, ErrorMessage:="No picklist selected for base table.")>
 		Public Property PicklistID As Integer
 
 		Public Property FilterName As String

@@ -4,6 +4,7 @@
 
 @Code
 	Layout = Nothing
+	Html.EnableClientValidation()
 End Code
 
 <style>
@@ -71,7 +72,6 @@ End Code
 		End Code
 	</form>
 
-
 </div>
 
 <script type="text/javascript">
@@ -79,12 +79,6 @@ End Code
 	$(function () {
 		$("#tabs").tabs();
 	});
-
-
-	function submitForm() {
-		var frmSubmit = $("#frmReportDefintion");
-		OpenHR.submitForm(frmSubmit);
-	}
 
 	$("#workframe").attr("data-framesource", "UTIL_DEF_CROSSTABS");
 

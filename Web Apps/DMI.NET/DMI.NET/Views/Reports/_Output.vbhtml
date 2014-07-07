@@ -1,6 +1,11 @@
 ﻿@Imports DMI.NET
 @Imports DMI.NET.Helpers
 @Imports HR.Intranet.Server.Enums
+
+@code
+	ViewBag.CustomPrefix = "Output."
+End Code
+
 @Inherits System.Web.Mvc.WebViewPage(Of Models.ReportOutputModel)
 
 <br/>
@@ -49,26 +54,38 @@
 		<br />
 
 		@Html.CheckBox("Output.SaveToFile", Model.SaveToFile)
+
+
 		File Name: @Html.TextBox("Output.Filename", Model.Filename)
+
 		If existing file : @Html.EnumDropDownListFor(Function(m) m.SaveExisting)
 		<br/>
 
-    @Html.CheckBox("Output.SendToEmail", Model.SendToEmail) Send As email
-		<input type="text" id="txtEmailGroup" disabled value="@Model.EmailGroupName" />
-		@Html.HiddenFor(Function(m) m.EmailGroupID, New With {.id = "txtEmailGroupID", .name = "Output.EmailGroupID"}))
+		@Html.CheckBoxFor(Function(m) m.SendToEmail, New With {Key .Name = "Output.SendToEmail"})
+		@Html.LabelFor(Function(m) m.SendToEmail)
 
+		<input type="text" id="txtEmailGroup" name="Output.EmailGroupName" disabled value="@Model.EmailGroupName" />
+
+		@Html.HiddenFor(Function(m) m.EmailGroupID, New With {.id = "txtEmailGroupID", Key .Name = "Output.EmailGroupID"})
 		<input type="button" class="ui-state-disabled" id="cmdEmailGroup" name="cmdEmailGroup" value="..." style="padding-top: 0;" onclick="selectEmailGroup()" />
 		<br />
-		Email Subject: @Html.TextBox("Output.EmailSubject", Model.EmailSubject)
+
+		@Html.LabelFor(Function(m) m.EmailSubject)
+		@Html.TextBoxFor(Function(m) m.EmailSubject, New With {Key .Name = "Output.EmailSubject"})
 		<br/>
-    Attach As: @Html.TextBox("Output.EmailAttachmentName", Model.EmailAttachmentName)
+
+		@Html.LabelFor(Function(m) m.EmailAttachmentName)
+    @Html.TextBoxFor(Function(m) m.EmailAttachmentName, New With {Key .Name = "Output.EmailAttachmentName"})
+		<br/>
+
+		@Html.ValidationMessage("Output.EmailGroupID")
+		<br/>
+		@Html.ValidationMessage("Output.EmailSubject")
+		<br />
+		@Html.ValidationMessage("Output.EmailAttachmentName")
+		<br />
 
   </div>
-
-
-
-
-
 
 </div>
 

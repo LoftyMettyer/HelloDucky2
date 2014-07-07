@@ -21,6 +21,7 @@ Public Class MvcApplication
 		RegisterGlobalFilters(GlobalFilters.Filters)
 		RouteConfig.RegisterRoutes(RouteTable.Routes)
 		BundleConfig.RegisterBundles(BundleTable.Bundles)
+		DataAnnotationConfig.RegisterDataAnnotations()
 
 	End Sub
 

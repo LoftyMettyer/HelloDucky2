@@ -157,7 +157,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App_Start\BundleConfig.vb" />
+    <Compile Include="App_Start\DataAnnotationConfig.vb" />
     <Compile Include="App_Start\RouteConfig.vb" />
+    <Compile Include="AttributeExtensions\NonZeroIfAttribute.vb" />
+    <Compile Include="AttributeExtensions\RequiredIfAttribute.vb" />
     <Compile Include="Classes\CalendarEventDetail.vb" />
     <Compile Include="Classes\GroupAccess.vb" />
     <Compile Include="Classes\ReportChildTables.vb" />

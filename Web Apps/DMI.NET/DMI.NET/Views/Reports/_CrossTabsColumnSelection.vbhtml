@@ -11,6 +11,11 @@ Headings &amp; Breaks
 	@Html.TextBox("HorizontalStop", Model.HorizontalStop)
 	@Html.TextBox("HorizontalIncrement", Model.HorizontalIncrement)
 
+	@Html.ValidationMessageFor(Function(m) m.HorizontalStart)
+	@Html.ValidationMessageFor(Function(m) m.HorizontalStop)
+	@Html.ValidationMessageFor(Function(m) m.HorizontalIncrement)
+
+
 	<br />
 	Vertical :@Html.ColumnDropdown("VerticalID", Model.VerticalID, Model.AvailableColumns, "selectCrossTabColumn(event, 'Vertical');")
 	@Html.TextBox("VerticalStart", Model.VerticalStart)

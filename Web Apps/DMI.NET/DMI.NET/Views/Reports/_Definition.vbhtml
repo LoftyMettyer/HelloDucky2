@@ -55,9 +55,11 @@
     <input id="txtBaseFilter" class="text textdisabled" disabled="disabled" value="@Model.FilterName">
     <input id="cmdBaseFilter" name="cmdBaseFilter" type="button" value="..."
             onclick="selectRecordOption('base', 'filter')" />
-
 		<br />
+
     @Html.CheckBox("DisplayTitleInReportHeader", Model.DisplayTitleInReportHeader) Display Title In Report Header
+		@Html.ValidationMessageFor(Function(m) m.PicklistID)
+		@Html.ValidationMessageFor(Function(m) m.FilterID)
 
   </div>
 
