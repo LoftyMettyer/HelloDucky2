@@ -4,10 +4,6 @@
 
 @Inherits System.Web.Mvc.WebViewPage(Of Models.MailMergeModel)
 
-@Code
-	Layout = Nothing
-End Code
-
 <style>
 	.mergeoutput {
 		/*display: none;*/
@@ -91,7 +87,10 @@ End Code
 		<br />
 
 		@Html.LabelFor(Function(m) m.EmailAttachmentName)
-		@Html.TextBox("EmailAttachmentName", Model.EmailAttachmentName)
+		@Html.EditorFor(Function(m) m.EmailAttachmentName)
+		@Html.ValidationMessageFor(Function(m) m.EmailAttachmentName)
+
+
 
 	</div>
 

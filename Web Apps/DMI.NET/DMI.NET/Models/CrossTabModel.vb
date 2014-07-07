@@ -6,6 +6,7 @@ Imports HR.Intranet.Server
 Imports HR.Intranet.Server.Metadata
 Imports DMI.NET.Classes
 Imports HR.Intranet.Server.Enums
+Imports System.ComponentModel.DataAnnotations
 
 Namespace Models
 

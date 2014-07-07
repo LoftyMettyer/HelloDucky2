@@ -55,6 +55,7 @@ Namespace Helpers
 			Dim sb As New StringBuilder
 
 			sb.AppendLine(String.Format("<input type='hidden' name='{0}[{1}].id' value='{2}' /></br/>", name, rownumber, objItem.id))
+			sb.AppendLine(String.Format("<input type='hidden' name='{0}[{1}].Name' value='{2}' /></br/>", name, rownumber, objItem.Name))
 			sb.AppendLine(String.Format("<input type='hidden' name='{0}[{1}].DataType' value='{2}' /></br/>", name, rownumber, objItem.DataType))
 
 			sb.AppendLine(String.Format("Heading: <input type='text' name='{0}[{1}].Heading' value='{2}' /></br/>", name, rownumber, objItem.Heading))
@@ -83,8 +84,7 @@ Namespace Helpers
 
 			'	Select Case [property].Name.ToLower
 			'	Case "columnname", "order", "columnid"
-			sb.AppendFormat("<td name='{0}[{1}].id'>{2}</td>", name, rownumber, objItem.id)
-			sb.AppendFormat("<td name='{0}[{1}].Name'>{2}</td>", name, rownumber, objItem.Name)
+			sb.AppendFormat("<td>{0}</td><td>{1}</td>", objItem.id, objItem.Name)
 
 			'Case Else
 			'	If [property].GetValue(obj, Nothing) = True Then

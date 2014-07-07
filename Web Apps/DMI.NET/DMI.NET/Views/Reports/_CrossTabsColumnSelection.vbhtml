@@ -2,10 +2,6 @@
 @Imports DMI.NET.Helpers
 @Inherits System.Web.Mvc.WebViewPage(Of Models.CrossTabModel)
 
-@Code
-	Layout = Nothing
-End Code
-
 <div>
 Headings &amp; Breaks
 	<br/>

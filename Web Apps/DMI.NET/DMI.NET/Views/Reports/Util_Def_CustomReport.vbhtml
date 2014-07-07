@@ -2,6 +2,9 @@
 @Imports DMI.NET.Helpers
 @Inherits System.Web.Mvc.WebViewPage(Of Models.CustomReportModel)
 
+@Code
+	Layout = Nothing
+End Code
 
 <style>
   .wrapper {
@@ -28,7 +31,7 @@
 
 <div>
 
-@Using (Html.BeginForm("util_def_customreports_submit", "Reports", FormMethod.Get, New With {.id = "frmReportDefintion", .name = "frmReportDefintion",
+@Using (Html.BeginForm("util_def_customreport", "Reports", FormMethod.Post, New With {.id = "frmReportDefintion", .name = "frmReportDefintion",
 																																								.defaultbutton = "submitCustomReport"}))
 
   @Html.HiddenFor(Function(m) m.ID)
@@ -45,7 +48,7 @@
 
         <div id="tabs-1">
           @Code                        
-						Html.RenderPartial("Definition", Model)
+						Html.RenderPartial("_Definition", Model)
           End Code
 
 
@@ -62,25 +65,25 @@
 
         <div id="tabs-2">
           @Code
-						Html.RenderPartial("RelatedTables", Model)
+						Html.RenderPartial("_RelatedTables", Model)
           End Code
         </div>
 
         <div id="report_definition_tab_columns">
           @Code
-						Html.RenderPartial("ColumnSelection", Model.Columns)
+						Html.RenderPartial("_ColumnSelection", Model.Columns)
           End Code
         </div>
 
      <div id="report_definition_tab_order">
         @Code
-					Html.RenderPartial("SortOrder", Model)
+					Html.RenderPartial("_SortOrder", Model)
         End Code
      </div>
 
      <div id="report_definition_tab_output">
        @Code
-			 	 Html.RenderPartial("Output", Model.Output)
+			 	 Html.RenderPartial("_Output", Model.Output)
        End Code
      </div>
 

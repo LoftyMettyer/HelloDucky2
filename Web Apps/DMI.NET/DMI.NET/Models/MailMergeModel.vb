@@ -50,7 +50,9 @@ Namespace Models
 		<DisplayName("Send As Attachment")>
 		Public Property EmailAsAttachment As Boolean
 
-		<DisplayName("Attach As"), DisplayFormat(ConvertEmptyStringToNull:=False)>
+		<Required(ErrorMessage:="Name is required.")> _
+		<MaxLength(5, ErrorMessage:="Name cannot be longer than 5 characters.")> _
+		<DisplayName("Attach As")>
 		Public Property EmailAttachmentName As String
 
 	End Class

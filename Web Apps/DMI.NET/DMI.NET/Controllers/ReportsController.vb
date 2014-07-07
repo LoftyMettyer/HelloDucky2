@@ -17,8 +17,8 @@ Namespace Controllers
 
 		Dim objReportRepository As New Repository.ReportRepository
 
-
-		Function Util_Def_CustomReport() As ActionResult
+		<HttpGet>
+		Function util_def_customreport() As ActionResult
 
 			Dim objModel As CustomReportModel
 			Dim iReportID As Integer = CInt(Session("utilid"))
@@ -40,7 +40,22 @@ Namespace Controllers
 
 		End Function
 
-		Function Util_Def_MailMerge() As ActionResult
+		<HttpPost, ValidateInput(False)>
+	 Function util_def_customreport(objModel As CustomReportModel) As ActionResult
+
+			If ModelState.IsValid Then
+				objReportRepository.SaveReportDefinition(objModel)
+				Session("reaction") = "CUSTOMREPORTS"
+				Return RedirectToAction("confirmok", "home")
+			Else
+				objModel.BaseTables = objReportRepository.GetTables()
+				Return View(objModel)
+			End If
+
+		End Function
+
+		<HttpGet>
+		Function util_def_mailmerge() As ActionResult
 
 			Dim iReportID As Integer = CInt(Session("utilid"))
 			Dim sAction = Session("action").ToString
@@ -63,7 +78,22 @@ Namespace Controllers
 
 		End Function
 
-		Function Util_Def_CrossTab() As ActionResult
+		<HttpPost, ValidateInput(False)>
+	 Function util_def_mailmerge(objModel As MailMergeModel) As ActionResult
+
+			If ModelState.IsValid Then
+				objReportRepository.SaveReportDefinition(objModel)
+				Session("reaction") = "MAILMERGE"
+				Return RedirectToAction("confirmok", "home")
+			Else
+				objModel.BaseTables = objReportRepository.GetTables()
+				Return View(objModel)
+			End If
+
+		End Function
+
+		<HttpGet>
+		Function util_def_crosstab() As ActionResult
 
 			Dim objModel As CrossTabModel
 			Dim iReportID As Integer = CInt(Session("utilid"))
@@ -85,7 +115,21 @@ Namespace Controllers
 
 		End Function
 
-		Function Util_Def_CalendarReport() As ActionResult
+		<HttpPost, ValidateInput(False)>
+		Function util_def_crosstab(objModel As CrossTabModel) As ActionResult
+
+			If ModelState.IsValid Then
+				objReportRepository.SaveReportDefinition(objModel)
+				Session("reaction") = "CROSSTABS"
+				Return RedirectToAction("confirmok", "home")
+			Else
+				Return View(objModel)
+			End If
+
+		End Function
+
+		<HttpGet>
+		Function util_def_calendarreport() As ActionResult
 
 			Dim objModel As CalendarReportModel
 			Dim iReportID As Integer = CInt(Session("utilid"))
@@ -107,42 +151,17 @@ Namespace Controllers
 
 		End Function
 
-		<ValidateInput(False)>
-	 Function util_def_customreports_submit(objModel As CustomReportModel) As ActionResult
+		<HttpPost, ValidateInput(False)>
+		Function util_def_calendarreport(objModel As CalendarReportModel) As ActionResult
 
-			objReportRepository.SaveReportDefinition(objModel)
-
-			Session("reaction") = "CUSTOMREPORTS"
-			Return RedirectToAction("confirmok", "home")
-
-		End Function
-
-		<ValidateInput(False)>
-	 Function util_def_mailmerge_submit(objModel As MailMergeModel) As ActionResult
-
-			objReportRepository.SaveReportDefinition(objModel)
-
-			Session("reaction") = "MAILMERGE"
-			Return RedirectToAction("confirmok", "home")
-
-		End Function
-
-		Function util_def_crosstabs_submit(objModel As CrossTabModel) As ActionResult
-
-			objReportRepository.SaveReportDefinition(objModel)
-
-			Session("reaction") = "CROSSTABS"
-			Return RedirectToAction("confirmok", "home")
-
-		End Function
-
-		'<HttpPost()>
-		Function util_def_calendarreports_submit(objModel As CalendarReportModel) As ActionResult
-
-			objReportRepository.SaveReportDefinition(objModel)
-
-			Session("reaction") = "CALENDARREPORTS"
-			Return RedirectToAction("confirmok", "home")
+			If ModelState.IsValid Then
+				objReportRepository.SaveReportDefinition(objModel)
+				Session("reaction") = "CALENDARREPORTS"
+				Return RedirectToAction("confirmok", "home")
+			Else
+				objModel.BaseTables = objReportRepository.GetTables()
+				Return View(objModel)
+			End If
 
 		End Function
 
@@ -156,8 +175,6 @@ Namespace Controllers
 			Return Json(results, JsonRequestBehavior.AllowGet)
 
 		End Function
-
-
 
 	End Class
 

@@ -3,10 +3,6 @@
 @Imports HR.Intranet.Server.Enums
 @Inherits System.Web.Mvc.WebViewPage(Of Models.CalendarReportModel)
 
-@Code
-	Layout = Nothing
-End Code
-
 <div class="left">
 	Start Date:
 	<br />

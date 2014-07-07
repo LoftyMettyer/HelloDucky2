@@ -3,10 +3,6 @@
 @Imports HR.Intranet.Server.Enums
 @Inherits System.Web.Mvc.WebViewPage(Of Models.ReportOutputModel)
 
-@Code
-  Layout = Nothing
-End Code
-
 <br/>
 <div>
   <div style="float:left">

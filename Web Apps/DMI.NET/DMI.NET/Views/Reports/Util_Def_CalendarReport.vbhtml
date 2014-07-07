@@ -2,6 +2,9 @@
 @Imports DMI.NET.Helpers
 @Inherits System.Web.Mvc.WebViewPage(Of Models.CalendarReportModel)
 
+@Code
+	Layout = Nothing
+End Code
 
 <style>
 	.wrapper {
@@ -27,7 +30,7 @@
 
 <div>
 
-	@Using (Html.BeginForm("util_def_calendarreports_submit", "Reports", FormMethod.Get, New With {.id = "frmReportDefintion", .name = "frmReportDefintion"}))
+	@Using (Html.BeginForm("util_def_calendarreport", "Reports", FormMethod.Post, New With {.id = "frmReportDefintion", .name = "frmReportDefintion"}))
 
 		@Html.HiddenFor(Function(m) m.ID)
 
@@ -43,31 +46,31 @@
 
 			<div id="tabs-1">
 				@Code
-				Html.RenderPartial("Definition", Model)
+				Html.RenderPartial("_Definition", Model)
 				End Code
 			</div>
 
 		 	<div id="report_definition_tab_eventdetails">
 		 		@Code
-			 Html.RenderPartial("EventDetails", Model)
+			 Html.RenderPartial("_EventDetails", Model)
 			 	End Code
 			 </div>
 
 		 	<div id="report_definition_tab_reportdetails">
 		 		@Code
-			 Html.RenderPartial("ReportDetails", Model)
+			 Html.RenderPartial("_ReportDetails", Model)
 		 	End Code
 		 </div>
 
 		 	<div id="report_definition_tab_order">
 		 	@Code
-			Html.RenderPartial("SortOrder", Model)
+			Html.RenderPartial("_SortOrder", Model)
 		 End Code
 		 </div>
 
 			<div id="report_definition_tab_output">
 				@Code
-				Html.RenderPartial("Output", Model.Output)
+				Html.RenderPartial("_Output", Model.Output)
 				End Code
 			</div>
 

@@ -14,10 +14,14 @@ Namespace Models
 		Public Property BaseTableID As Integer
 		Public Property Owner As String
 
-		<DisplayFormat(ConvertEmptyStringToNull:=False)> _
+		<Required(ErrorMessage:="Name is required.")>
+		<MaxLength(50, ErrorMessage:="Name cannot be longer than 50 characters.")>
+		<DisplayName("Name :")>
 		Public Property Name As String
 
-		<DisplayName("Description :"), DisplayFormat(ConvertEmptyStringToNull:=False)> _
+		<MaxLength(255, ErrorMessage:="Description cannot be longer than 255 characters.")>
+		<DisplayName("Description :")>
+		<DisplayFormat(ConvertEmptyStringToNull:=False)>
 		Public Property Description As String
 
 		Public Property GroupAccess As New Collection(Of GroupAccess)

@@ -2,11 +2,6 @@
 @Imports DMI.NET.Helpers
 @Inherits System.Web.Mvc.WebViewPage(Of Models.ReportBaseModel)
 
-@Code
-  Layout = Nothing
-End Code
-
-
 @Html.SortOrderGrid("SortOrderColumns", Model.SortOrderColumns, Nothing)
 
 <input type="button" id="btnSortOrderAdd" value="Add" onclick="sortAdd();" />

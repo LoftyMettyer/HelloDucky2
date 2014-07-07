@@ -3,21 +3,22 @@
 @Imports DMI.NET.Enums
 @Inherits System.Web.Mvc.WebViewPage(Of Models.ReportBaseModel)
 
-@Code
-  Layout = Nothing
-End Code
-
 <div class="inner">
   <div class="left">
-    Name: @Html.TextBox("name", Model.Name)
+		@Html.LabelFor(Function(m) m.Name)
+    @Html.TextBoxFor(Function(m) m.Name)
+		@Html.ValidationMessageFor(Function(m) m.Name)
+
     <br />
 		@Html.LabelFor(Function(m) m.Description)
     @Html.TextBox("description", Model.Description)
+		@Html.ValidationMessageFor(Function(m) m.Description)
+
   </div>
 
   <div class="right">
 		<div class="editor-field-greyed-out">
-			Owner: @Html.TextBox("owner", Model.Owner, New With {.readonly = "true"})
+			Owner: @Html.TextBoxFor(Function(m) m.Owner, New With {.readonly = "true"})
 		</div>
     <br />
     Access : @Html.Raw(Html.AccessGrid("GroupAccess", Model.GroupAccess, Nothing))

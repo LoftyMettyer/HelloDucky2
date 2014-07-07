@@ -21,10 +21,7 @@ Namespace Repository
 		Private objDataAccess As clsDataAccess = CType(HttpContext.Current.Session("DatabaseAccess"), clsDataAccess)
 
 		Private _Username As String = HttpContext.Current.Session("username").ToString
-		'		Private _Action As String = HttpContext.Current.Session("action").ToString
 
-
-		'  Public Property BaseTable As Table
 		Public Function LoadCustomReport(ID As Integer, bIsCopy As Boolean, Action As String) As CustomReportModel
 
 			Dim objModel As New CustomReportModel
@@ -249,7 +246,6 @@ Namespace Repository
 			Return objModel
 
 		End Function
-
 
 		Public Function LoadCrossTab(ID As Integer, bIsCopy As Boolean, Action As String) As CrossTabModel
 
@@ -784,7 +780,7 @@ Namespace Repository
 			Return ""
 		End Function
 
-		Private Function GetTables() As Collection(Of SelectListItem)
+		Public Function GetTables() As Collection(Of SelectListItem)
 
 			Dim objSessionInfo = CType(HttpContext.Current.Session("SessionContext"), SessionInfo)
 			Dim objItems As New Collection(Of SelectListItem)

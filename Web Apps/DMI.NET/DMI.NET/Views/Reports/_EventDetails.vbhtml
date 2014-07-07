@@ -2,10 +2,6 @@
 @Imports DMI.NET.Helpers
 @Inherits System.Web.Mvc.WebViewPage(Of Models.CalendarReportModel)
 
-@Code
-	Layout = Nothing
-End Code
-
 <div class="left">
 	@Html.TableFor("Events", Model.Events, Nothing)
 </div>

@@ -37,6 +37,8 @@
 	@Html.SelectedReportColumns("Columns.Selected", Model.Selected, Nothing)
 </div>
 
+<input type="hidden" name="Columns.BaseTableID" value="@Model.BaseTableID" />
+
 
   <script type="text/javascript">
 
