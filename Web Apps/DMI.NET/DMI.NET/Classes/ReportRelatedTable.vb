@@ -2,18 +2,30 @@
 Option Explicit On
 
 Imports DMI.NET.Enums
+Imports DMI.NET.AttributeExtensions
 
 Namespace Classes
 
-  Public Class ReportRelatedTable
+	Public Class ReportRelatedTable
 
-    Public Property ID As Integer
-    Public Property Name As String
-    Public Property SelectionType As RecordSelectionType
-    Public Property FilterID As Integer
+		Public Property ID As Integer
+		Public Property Name As String
+		Public Property SelectionType As RecordSelectionType
+
+		<NonZeroIf("SelectionType", RecordSelectionType.Filter, ErrorMessage:="No filter on selected table.")> _
+		Public Property FilterID As Integer
+
+		<NonZeroIf("SelectionType", RecordSelectionType.Picklist, ErrorMessage:="No picklist on selected table.")> _
 		Public Property PicklistID As Integer
+
 		Public Property FilterName As String
 		Public Property PicklistName As String
 
-  End Class
+		Public ReadOnly Property Visibility As String
+			Get
+				Return (If(ID < 1, "disabled", ""))
+			End Get
+		End Property
+
+	End Class
 End Namespace

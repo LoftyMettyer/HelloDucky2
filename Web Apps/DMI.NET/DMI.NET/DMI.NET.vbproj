@@ -189,6 +189,7 @@
     </Compile>
     <Compile Include="Helpers\AccessGrid.vb" />
     <Compile Include="Helpers\AvailableReportColumns.vb" />
+    <Compile Include="Helpers\ButtonHelper.vb" />
     <Compile Include="Helpers\ColumnDropdown.vb" />
     <Compile Include="Helpers\DisabledIf.vb" />
     <Compile Include="Helpers\EnumDropdown.vb" />

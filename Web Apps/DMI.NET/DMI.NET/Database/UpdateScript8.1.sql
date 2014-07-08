@@ -384,7 +384,7 @@ BEGIN
 			@psReportOwner			varchar(255) = '',
 			@psReportDesc			varchar(MAX) = '',
 			@piBaseTableID			integer = 0,
-			@pfAllRecords			bit,
+			@piSelection			integer = 0,
 			@piPicklistID			integer = 0,
 			@psPicklistName			varchar(255) = '',
 			@pfPicklistHidden		bit,
@@ -442,7 +442,7 @@ BEGIN
 	END
 
 	SELECT @psReportName = name, @psReportDesc	 = description, @psReportOwner = userName,
-		@piBaseTableID = TableID, @pfAllRecords = Selection, @piPicklistID = PicklistID,
+		@piBaseTableID = TableID, @piSelection = Selection, @piPicklistID = PicklistID,
 		@piFilterID = FilterID,	@pfPrintFilterHeader = PrintFilterHeader, @psReportOwner = userName,
 		@HColID = HorizontalColID, @HStart = HorizontalStart, @HStop = HorizontalStop, @HStep = HorizontalStep,
 		@VColID = VerticalColID, @VStart = VerticalStart, @VStop = VerticalStop, @VStep = VerticalStep,
@@ -515,7 +515,7 @@ BEGIN
 	END
 
 	SELECT @psErrorMsg AS ErrorMsg, @psReportName AS Name, @psReportOwner AS [Owner], @psReportDesc AS [Description]
-		, @piBaseTableID AS [BaseTableID], @pfAllRecords AS SelectionType
+		, @piBaseTableID AS [BaseTableID], @piSelection AS SelectionType
 		, @piPicklistID AS PicklistID, @psPicklistName AS PicklistName, @pfPicklistHidden AS [IsPicklistHidden]
 		, @piFilterID AS FilterID, @psFilterName AS [FilterName], @pfFilterHidden AS [IsFilterHidden]
 		, @pfPrintFilterHeader AS [PrintFilterHeader]

@@ -1,80 +1,85 @@
 ﻿@Imports DMI.NET
-@Imports Helpers
+@Imports DMI.NET.Helpers
 @Imports DMI.NET.Enums
 @Inherits System.Web.Mvc.WebViewPage(Of Models.ReportBaseModel)
 
-<div class="inner">
-  <div class="left">
-		@Html.LabelFor(Function(m) m.Name)
-    @Html.TextBoxFor(Function(m) m.Name)
-		@Html.ValidationMessageFor(Function(m) m.Name)
+<fieldset>
 
-    <br />
-		@Html.LabelFor(Function(m) m.Description)
-    @Html.TextBox("description", Model.Description)
-		@Html.ValidationMessageFor(Function(m) m.Description)
+	<div class="inner">
+		<div class="left">
 
-  </div>
+			@Html.LabelFor(Function(m) m.Name)
+			@Html.TextBoxFor(Function(m) m.Name)
+			@Html.ValidationMessageFor(Function(m) m.Name)
 
-  <div class="right">
-		<div class="editor-field-greyed-out">
-			Owner: @Html.TextBoxFor(Function(m) m.Owner, New With {.readonly = "true"})
+			<br />
+			@Html.LabelFor(Function(m) m.Description)
+			@Html.TextBox("description", Model.Description)
+			@Html.ValidationMessageFor(Function(m) m.Description)
+
 		</div>
-    <br />
-    Access : @Html.Raw(Html.AccessGrid("GroupAccess", Model.GroupAccess, Nothing))
-  </div>
-</div>
 
-<div class="inner">
+		<div class="right">
+			<div class="editor-field-greyed-out">
+				Owner: @Html.TextBoxFor(Function(m) m.Owner, New With {.readonly = "true"})
+			</div>
+			<br />
+			Access : @Html.Raw(Html.AccessGrid("GroupAccess", Model.GroupAccess, Nothing))
+		</div>
+	</div>
 
-  <br />
-  <br />
-  <br />
+</fieldset>
 
-  <div class="left">
-@*    @Html.TextBox("BaseTableID", Model.BaseTableID)*@
-    Base Table : @Html.DropDownList("BaseTableID", Model.BaseTables)
-  </div>
+<fieldset>
+	<legend>Data :</legend>
+	<br />
 
-  <div class="right">
+	<div class="inner">
 
-    Records :
-		<br />
-		@Html.RadioButton("selectiontype", 0, Model.SelectionType = RecordSelectionType.AllRecords) All Records
-		 <br />
-   
-		@Html.RadioButton("selectiontype", 1, Model.SelectionType = RecordSelectionType.Picklist) Picklist
-    <input type="hidden" id="txtBasePicklistID" name="picklistID" value="@Model.PicklistID" />
-		<input id="txtBasePicklist" class="text textdisabled" disabled="disabled" value="@Model.PicklistName">
-    <input id="cmdBasePicklist" name="cmdBasePicklist" type="button" value="..."
-            onclick="selectRecordOption('base', 'picklist')" />
-		<br />
+		<div class="left">
+			Base Table : @Html.DropDownList("BaseTableID", Model.BaseTables)
+		</div>
 
-		@Html.RadioButton("selectiontype", 2, Model.SelectionType = RecordSelectionType.Filter) Filter
-    <input type="hidden" id="txtBaseFilterID" name="filterID" value="@Model.FilterID" />
-    <input id="txtBaseFilter" class="text textdisabled" disabled="disabled" value="@Model.FilterName">
-    <input id="cmdBaseFilter" name="cmdBaseFilter" type="button" value="..."
-            onclick="selectRecordOption('base', 'filter')" />
-		<br />
+		<div class="right">
 
-    @Html.CheckBoxFor(Function(m) m.DisplayTitleInReportHeader)
-		@Html.LabelFor(Function(m) m.DisplayTitleInReportHeader)
+			Records :
+			<br />
+			@Html.RadioButton("selectiontype", RecordSelectionType.AllRecords, Model.SelectionType = RecordSelectionType.AllRecords, New With {.onclick = "changeRecordOption('Base','all')"})
+			All Records
+			<br />
 
-		<br/>
+			@Html.RadioButton("selectiontype", RecordSelectionType.Picklist, Model.SelectionType = RecordSelectionType.Picklist, New With {.onclick = "changeRecordOption('Base','picklist')"})
+			Picklist
+			<input type="hidden" id="txtBasePicklistID" name="picklistID" value="@Model.PicklistID" />
+			@Html.TextBoxFor(Function(m) m.PicklistName, New With {.id = "txtBasePicklist", .readonly = "true"})
+			@Html.EllipseButton("cmdBasePicklist", "selectRecordOption('base', 'picklist')", Model.SelectionType = RecordSelectionType.Picklist)
+			<br />
 
-		@Html.ValidationMessageFor(Function(m) m.PicklistID)
-		@Html.ValidationMessageFor(Function(m) m.FilterID)
+			@Html.RadioButton("selectiontype", RecordSelectionType.Filter, Model.SelectionType = RecordSelectionType.Filter, New With {.onclick = "changeRecordOption('Base','filter')"})
+			Filter
+			<input type="hidden" id="txtBaseFilterID" name="filterID" value="@Model.FilterID" />
+			@Html.TextBoxFor(Function(m) m.FilterName, New With {.id = "txtBaseFilter", .readonly = "true"})
+			@Html.EllipseButton("cmdBaseFilter", "selectRecordOption('base', 'filter')", Model.SelectionType = RecordSelectionType.Filter)
+			<br />
 
-  </div>
+			@Html.CheckBoxFor(Function(m) m.DisplayTitleInReportHeader)
+			@Html.LabelFor(Function(m) m.DisplayTitleInReportHeader)
+			<br />
 
-	<input type="hidden" id="ctl_DefinitionChanged" name="HasChanged" value="False" />
+			@Html.ValidationMessageFor(Function(m) m.PicklistID)
+			@Html.ValidationMessageFor(Function(m) m.FilterID)
 
-	<input type="hidden" id="baseHidden" name="baseHidden">
-	<input type="hidden" id="p1Hidden" name="p1Hidden">
-	<input type="hidden" id="p2Hidden" name="p2Hidden">
+		</div>
 
-</div>
+		<input type="hidden" id="ctl_DefinitionChanged" name="HasChanged" value="False" />
 
+		<input type="hidden" id="baseHidden" name="baseHidden">
+		<input type="hidden" id="p1Hidden" name="p1Hidden">
+		<input type="hidden" id="p2Hidden" name="p2Hidden">
+
+	</div>
+
+</fieldset>
 
   <form id="frmCustomReportChilds" name="frmCustomReportChilds" target="childselection" action="util_customreportchilds" method="post" style="visibility: hidden; display: none">
 	<input type="hidden" id="childTableID" name="childTableID">
@@ -99,9 +104,6 @@
 		// tighten up these input selectors
 		$("#frmReportDefintion :input").on("change", function () { enableSaveButton(this); });
 
-	//	$('input[name^="txt"]').on("change", function () { enableSaveButton(this); });
-		//$('select[name^="cbo"]').on("change", function () { enableSaveButton(); });
-		//$('input[name^="chk"]').on("change", function () { enableSaveButton(); });
 
 	});
 
@@ -118,6 +120,42 @@
 		window.onbeforeunload = warning;
 	}
 
+	function changeRecordOption(psTable, psType) {
+
+		if (psType == "all") {
+			button_disable($("#cmd" + psTable + "Picklist")[0], true);
+			button_disable($("#cmd" + psTable + "Filter")[0], true);
+			$("#txt" + psTable + "Filter").val("");
+			$("#txt" + psTable + "Picklist").val("");
+			$("#txt" + psTable + "PicklistID").val(0);
+			$("#txt" + psTable + "FilterID").val(0);
+		}
+
+		if (psType == "picklist") {
+			button_disable($("#cmd" + psTable + "Picklist")[0], false)
+			button_disable($("#cmd" + psTable + "Filter")[0], true)
+			$("#txt" + psTable + "Filter").val("");
+			$("#txt" + psTable + "FilterID").val(0);
+
+			if ($("#txt" + psTable + "PicklistID").val() == 0) {
+				$("#txt" + psTable + "Picklist").val("<None>");
+			}
+
+		}
+
+		if (psType == "filter") {
+			button_disable($("#cmd" + psTable + "Picklist")[0], true)
+			button_disable($("#cmd" + psTable + "Filter")[0], false)
+			$("#txt" + psTable + "Picklist").val("");
+			$("#txt" + psTable + "PicklistID").val(0);
+	
+			if ($("#txt" + psTable + "FilterID").val() == 0) {
+				$("#txt" + psTable + "Filter").val("<None>");
+			}
+
+		}
+
+	}
 
   function selectRecordOption(psTable, psType) {
 
@@ -131,7 +169,7 @@
       var iTableID = e.options[e.selectedIndex].value;
 
       if (psType == 'picklist') {
-        iCurrentID = $("#txtBasePicklistID").val();
+      	iCurrentID = $("#txtBasePicklistID").val();
       }
       else {
         iCurrentID = $("#txtBaseFilterID").val();

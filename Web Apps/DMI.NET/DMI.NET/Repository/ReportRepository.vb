@@ -52,7 +52,7 @@ Namespace Repository
 					objModel.Parent1.SelectionType = CType(row("Parent1SelectionType"), RecordSelectionType)
 					objModel.Parent1.Name = row("Parent1Name").ToString
 					objModel.Parent1.PicklistID = CInt(row("Parent1PicklistID"))
-					objModel.Parent1.PicklistName = row("Parent1FilterName").ToString
+					objModel.Parent1.PicklistName = row("Parent1PicklistName").ToString
 					objModel.Parent1.FilterID = CInt(row("Parent1FilterID"))
 					objModel.Parent1.FilterName = row("Parent1FilterName").ToString
 
@@ -60,7 +60,7 @@ Namespace Repository
 					objModel.Parent2.SelectionType = CType(row("Parent2SelectionType"), RecordSelectionType)
 					objModel.Parent2.Name = row("Parent2Name").ToString
 					objModel.Parent2.PicklistID = CInt(row("Parent2PicklistID"))
-					objModel.Parent2.PicklistName = row("Parent2FilterName").ToString
+					objModel.Parent2.PicklistName = row("Parent2PicklistName").ToString
 					objModel.Parent2.FilterID = CInt(row("Parent2FilterID"))
 					objModel.Parent2.FilterName = row("Parent2FilterName").ToString
 

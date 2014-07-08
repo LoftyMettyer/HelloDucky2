@@ -64,7 +64,7 @@ Public Module MVCExtensions
           sb.AppendFormat(vbTab & vbTab & dropDown & vbLf)
 
         Case Else
-          sb.AppendFormat(vbTab & vbTab & "<td><input name='{0}' id='{1}' value='{2}'/></td>" & vbLf, sName, sID, [property].GetValue(obj, Nothing))
+					sb.AppendFormat(vbTab & vbTab & "<td><input name='{0}' id='{1}' value='{2}' readonly='true'/></td>" & vbLf, sName, sID, [property].GetValue(obj, Nothing))
 
       End Select
 

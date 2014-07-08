@@ -26,6 +26,15 @@ End Code
     width: 50%;
     float: left;
   }
+
+	input[readonly="true"] {
+		background-color: #F2F2F2 !important;
+		color: #826D82;
+		border-color: #ddd;
+		pointer-events: none;
+		cursor: default;
+	}
+
 </style>
 
 
@@ -40,9 +49,9 @@ End Code
 
         <ul>
             <li><a href="#tabs-1">Definition</a></li>
-            <li><a href="#tabs-2">Tables</a></li>
+            <li><a href="#tabs-2">Related Tables</a></li>
             <li><a href="#report_definition_tab_columns">Columns</a></li>
-            <li><a href="#report_definition_tab_order">Order</a></li>
+            <li><a href="#report_definition_tab_order">Sort Order</a></li>
             <li><a href="#report_definition_tab_output">Output</a></li>
         </ul>
 

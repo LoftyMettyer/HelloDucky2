@@ -1,98 +1,87 @@
 ﻿@Imports DMI.NET
 @Imports DMI.NET.Helpers
+@Imports DMI.NET.Enums
 @Inherits System.Web.Mvc.WebViewPage(Of Models.CustomReportModel)
+
 
 <div id="divReportParents">
 
-  <br/>
+	<fieldset @Model.Parent1.Visibility>
+		<legend>Parent 1 :</legend>
 
-  <div>
-    Parent Table 1
-    <input type="hidden" id="txtParent1ID" name="Parent1.ID" value="@Model.Parent1.ID" />
-    <input type="text" disabled="disabled" id="txtParent1Name" value="@Model.Parent1.Name" />
-		<br/>
-    <label>
-			@Html.RadioButton("Parent1.SelectionType", 0, Model.Parent1.SelectionType = Enums.RecordSelectionType.AllRecords)
-			All Records
-    </label>
-    <br />
-    <label>
-			@Html.RadioButton("Parent1.SelectionType", 1, Model.Parent1.SelectionType = Enums.RecordSelectionType.Picklist)
-			Picklist
-      <input type="hidden" id="txtParent1PicklistID" name="Parent1.PicklistID" value="@Model.Parent1.PicklistID" />
-			<input id="txtParent1Picklist" name="txtParent1Picklist" class="text textdisabled" disabled="disabled" value="@Model.Parent1.PicklistName">
-      <input id="cmdParent1Picklist" name="cmdParent1Picklist" type="button" value="..."
-             onclick="selectRecordOption('p1', 'picklist')" />
-    </label>
-    <br />
-    <label>
-			@Html.RadioButton("Parent1.SelectionType", 2, Model.Parent1.SelectionType = Enums.RecordSelectionType.Filter)
-			Filter
-			<input type="hidden" id="txtParent1FilterID" name="Parent1.FilterID" value="@Model.Parent1.FilterID" />
-			<input id="txtParent1Filter" name="txtParent1Filter" class="text textdisabled" disabled="disabled" value="@Model.Parent1.FilterName">
-      <input id="cmdParent1Filter" name="cmdParent1Filter" type="button" value="..."
-             onclick="selectRecordOption('p1', 'filter')" />
-    </label>
-
-  </div>
-
-	<br />
-
-  <div>
-    Parent Table 2
-    <input type="hidden" id="txtParent2ID" name="Parent2.ID" value="@Model.Parent2.ID" />
-    <input type="text" disabled="disabled" id="txtParent2Name" value="@Model.Parent2.Name" />
+		<input type="hidden" id="txtParent1ID" name="Parent1.ID" value="@Model.Parent1.ID" />
+		Table:
+		@Html.TextBoxFor(Function(m) m.Parent1.Name, New With {.readonly = "true"})
 		<br />
-    <label>
-			@Html.RadioButton("Parent2.SelectionType", 0, Model.Parent2.SelectionType = Enums.RecordSelectionType.AllRecords)
-      All Records
-    </label>
-    <br />
-    <label>
-			@Html.RadioButton("Parent2.SelectionType", 1, Model.Parent2.SelectionType = Enums.RecordSelectionType.Picklist)
-			Picklist
-			<input type="hidden" id="txtParent2PicklistID" name="Parent2.PicklistID" value="@Model.Parent2.PicklistID" />
-			<input id="txtParent2Picklist" name="txtParent2Picklist" class="text textdisabled" disabled="disabled" value="@Model.Parent2.PicklistName">
-      <input id="cmdParent2Picklist" name="cmdParent2Picklist" type="button" value="..."
-             onclick="selectRecordOption('p2', 'picklist')" />
-    </label>
-    <br />
-    <label>
-			@Html.RadioButton("Parent2.SelectionType", 0, Model.Parent2.SelectionType = Enums.RecordSelectionType.Filter)
-			Filter
-			<input type="hidden" id="txtParent2FilterID" name="Parent2.FilterID" value="@Model.Parent2.FilterID" />
-			<input id="txtParent2Filter" name="txtParent2Filter" class="text textdisabled" disabled="disabled" value="@Model.Parent2.FilterName">
-      <input id="cmdParent2Filter" name="cmdParent2Filter" type="button" value="..."
-             onclick="selectRecordOption('p2', 'filter')" />
-    </label>
+		@Html.RadioButton("Parent1.Selectiontype", RecordSelectionType.AllRecords, Model.Parent1.SelectionType = RecordSelectionType.AllRecords, New With {.onclick = "changeRecordOption('Parent1','all')"})
+		All Records
+		<br />
 
-  </div>
+		@Html.RadioButton("Parent1.SelectionType", RecordSelectionType.Picklist, Model.Parent1.SelectionType = RecordSelectionType.Picklist, New With {.onclick = "changeRecordOption('Parent1','picklist')"})
+		Picklist
+		<input type="hidden" id="txtParent1PicklistID" name="Parent1.PicklistID" value="@Model.Parent1.PicklistID" />
+		@Html.TextBoxFor(Function(m) m.Parent1.PicklistName, New With {.id = "txtParent1Picklist", .readonly = "true"})
+		@Html.EllipseButton("cmdParent1Picklist", "selectRecordOption('p1', 'picklist')", Model.Parent1.SelectionType = RecordSelectionType.Picklist)
+		@Html.ValidationMessageFor(Function(m) m.Parent1.PicklistID)
+		<br />
 
-  <br />
+		@Html.RadioButton("Parent1.SelectionType", RecordSelectionType.Filter, Model.Parent1.SelectionType = RecordSelectionType.Filter, New With {.onclick = "changeRecordOption('Parent1','filter')"})
+		Filter
+		<input type="hidden" id="txtParent1FilterID" name="Parent1.FilterID" value="@Model.Parent1.FilterID" />
+		@Html.TextBoxFor(Function(m) m.Parent1.FilterName, New With {.id = "txtParent1Filter", .readonly = "true"})
+		@Html.EllipseButton("cmdParent1Filter", "selectRecordOption('p1', 'filter')", Model.Parent1.SelectionType = RecordSelectionType.Filter)
+		@Html.ValidationMessageFor(Function(m) m.Parent1.FilterID)
+
+	</fieldset>
+
+	<fieldset @Model.Parent2.Visibility>
+		<legend>Parent 2 :</legend>
+
+		<input type="hidden" id="txtParent2ID" name="Parent2.ID" value="@Model.Parent2.ID" />
+		@Html.TextBoxFor(Function(m) m.Parent2.Name, New With {.readonly = "true"})
+		<br />
+		@Html.RadioButton("Parent2.Selectiontype", RecordSelectionType.AllRecords, Model.Parent2.SelectionType = RecordSelectionType.AllRecords, New With {.onclick = "changeRecordOption('Parent2','all')"})
+		All Records
+		<br />
+		@Html.RadioButton("Parent2.SelectionType", RecordSelectionType.Picklist, Model.Parent2.SelectionType = RecordSelectionType.Picklist, New With {.onclick = "changeRecordOption('Parent2','picklist')"})
+		Picklist
+		<input type="hidden" id="txtParent2PicklistID" name="Parent2.PicklistID" value="@Model.Parent2.PicklistID" />
+		@Html.TextBoxFor(Function(m) m.Parent2.PicklistName, New With {.id = "txtParent2Picklist", .readonly = "true"})
+		@Html.EllipseButton("cmdParent2Picklist", "selectRecordOption('p2', 'picklist')", Model.Parent2.SelectionType = RecordSelectionType.Picklist)
+		@Html.ValidationMessageFor(Function(m) m.Parent2.PicklistID)
+		<br />
+
+		@Html.RadioButton("Parent2.SelectionType", RecordSelectionType.Filter, Model.Parent2.SelectionType = RecordSelectionType.Filter, New With {.onclick = "changeRecordOption('Parent2','filter')"})
+		Filter
+		<input type="hidden" id="txtParent2FilterID" name="Parent2.FilterID" value="@Model.Parent2.FilterID" />
+		@Html.TextBoxFor(Function(m) m.Parent2.FilterName, New With {.id = "txtParent2Filter", .readonly = "true"})
+		@Html.EllipseButton("cmdParent2Filter", "selectRecordOption('p2', 'filter')", Model.Parent2.SelectionType = RecordSelectionType.Filter)
+		@Html.ValidationMessageFor(Function(m) m.Parent2.FilterID)
+
+	</fieldset>
 
 </div>
 
 <br/>
 
-<br/>
+<fieldset>
+	<legend>Child Tables :</legend>
 
-Child Tables :
-<div>
   <div class="left">
     @Html.TableFor("ChildTables", Model.ChildTables, Nothing)
   </div>
 
   <div class="right">
-    <input type="button" id="btnChildAdd" value="Add Child Tabel" />
+		<input type="button" id="btnChildAdd" value="Add..." onclick="addChildTable();" />
     <br/>
-    <input type="button" id="btnChildEdit" value="Edit" />
+    <input type="button" id="btnChildEdit" value="Edit..." />
     <br />
     <input type="button" id="btnChildRemove" value="Remove" />
     <br />
     <input type="button" id="btnChildRemoveAll" value="Remove All" onclick="removeAllChildTables();" />
   </div>
 
-</div>
+</fieldset>
 
 
 <script type="text/javascript">
@@ -164,10 +153,6 @@ Child Tables :
 
   function editChildTable(rowID) {
     alert(rowID);
-  }
-
-  function removeAllChildTables() {
-    alert("TODO remove child table");
   }
 
   function removeAllChildTables() {

@@ -27,6 +27,15 @@ End Code
 		width: 50%;
 		float: left;
 	}
+
+	input[readonly="true"] {
+		background-color: #F2F2F2 !important;
+		color: #826D82;
+		border-color: #ddd;
+		pointer-events: none;
+		cursor: default;
+	}
+
 </style>
 
 
