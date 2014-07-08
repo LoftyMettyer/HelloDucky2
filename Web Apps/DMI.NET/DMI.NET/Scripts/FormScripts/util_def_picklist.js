@@ -7,8 +7,6 @@ function util_def_picklist_onload() {
 
 	$("#workframe").attr("data-framesource", "UTIL_DEF_PICKLIST");
 
-	setGridFont(frmDefinition.ssOleDBGrid);
-
 	// Expand the work frame and hide the option frame.
 	//            window.parent.document.all.item("workframeset").cols = "*, 0";
 
@@ -33,6 +31,7 @@ function util_def_picklist_onload() {
 	}
 
 	refreshControls();
+
 	frmUseful.txtLoading.value = 'N';
 	try {
 		frmDefinition.txtName.focus();
@@ -43,8 +42,6 @@ function util_def_picklist_onload() {
 	menu_refreshMenu();
 	$('#cmdOK').hide();
 	$('#cmdCancel').hide();
-
-
 }
 
 function refreshControls() {
@@ -60,8 +57,8 @@ function refreshControls() {
 
 	var fAddDisabled = fViewing;
 	var fAddAllDisabled = fViewing;
-	var fRemoveDisabled = ((frmDefinition.ssOleDBGrid.SelBookmarks.Count == 0) || (fViewing == true));
-	var fRemoveAllDisabled = ((frmDefinition.ssOleDBGrid.Rows == 0) || (fViewing == true));
+	var fRemoveDisabled =  (fViewing == true);
+	var fRemoveAllDisabled =  (fViewing == true);
 
 	button_disable(frmDefinition.cmdAdd, fAddDisabled);
 	button_disable(frmDefinition.cmdAddAll, fAddAllDisabled);
@@ -69,21 +66,15 @@ function refreshControls() {
 	button_disable(frmDefinition.cmdRemove, fRemoveDisabled);
 	button_disable(frmDefinition.cmdRemoveAll, fRemoveAllDisabled);
 
-	button_disable(frmDefinition.cmdOK, ((frmUseful.txtChanged.value == 0) ||
-			(fViewing == true) ||
-			(frmDefinition.ssOleDBGrid.Rows == 0)));
-
-
-	menu_toolbarEnableItem('mnutoolSaveReport', (!((frmUseful.txtChanged.value == 0) ||
-			(fViewing == true))));
-
-
+	button_disable(frmDefinition.cmdOK, ((frmUseful.txtChanged.value == 0) || (fViewing == true)));
+	
+	menu_toolbarEnableItem('mnutoolSaveReport', (!((frmUseful.txtChanged.value == 0) || (fViewing == true))));
+	
 	// Get menu.asp to refresh the menu.
 	menu_refreshMenu();
 }
 
 function submitDefinition() {
-	
 	if (validate() == false) { menu_refreshMenu(); return; }
 	if (populateSendForm() == false) { menu_refreshMenu(); return; }
 
@@ -107,52 +98,21 @@ function submitDefinition() {
 }
 
 function addClick() {
-	
-	var vBM;
-
 	/* Get the current selected delegate IDs. */
-	var sSelectedIDs1 = new String("0");
 
-	frmDefinition.ssOleDBGrid.redraw = false;
-	if (frmDefinition.ssOleDBGrid.rows > 0) {
-		frmDefinition.ssOleDBGrid.MoveFirst();
-	}
 
-	for (var iIndex = 1; iIndex <= frmDefinition.ssOleDBGrid.rows; iIndex++) {
-		vBM = frmDefinition.ssOleDBGrid.AddItemBookmark(iIndex);
+	picklistdef_moveFirst();
 
-		var sRecordID = new String(frmDefinition.ssOleDBGrid.Columns("ID").CellValue(vBM));
-
-		sSelectedIDs1 = sSelectedIDs1 + "," + sRecordID;
-
-	}
-	frmDefinition.ssOleDBGrid.redraw = true;
+	var sSelectedIDs1 = $('#ssOleDBGrid').getDataIDs().join(",");
 
 	var frmSend = OpenHR.getForm("workframe", "frmPicklistSelection");
 	frmSend.selectionAction = "add";
 	frmSend.selectionType.value = "ALL";
 	frmSend.selectedIDs1.value = sSelectedIDs1;
 
-	$("#workframeset").hide();
+	$("#workframeset").show();
+
 	OpenHR.showInReportFrame(frmSend);
-
-}
-
-function openWindow(mypage, myname, w, h, scroll) {
-	var winl = (screen.width - w) / 2;
-	var wint = (screen.height - h) / 2;
-	var winprops;
-
-	if (scroll == 'no') {
-		winprops = 'height=' + h + ',width=' + w + ',top=' + wint + ',left=' + winl + ',scrollbars=' + scroll + ',resize=no';
-	}
-	else {
-		winprops = 'height=' + h + ',width=' + w + ',top=' + wint + ',left=' + winl + ',scrollbars=' + scroll + ',resizable';
-	}
-
-	var win = window.open(mypage, myname, winprops);
-	if (win.opener == null) win.opener = self;
-	if (parseInt(navigator.appVersion) >= 4) win.window.focus();
 }
 
 function addAllClick() {
@@ -161,23 +121,12 @@ function addAllClick() {
 }
 
 function filteredAddClick() {
-
-	var vBM;
-
 	/* Get the current selected delegate IDs. */
 	var sSelectedIDs1 = new String("0");
 
-	frmDefinition.ssOleDBGrid.redraw = false;
-	if (frmDefinition.ssOleDBGrid.rows > 0) {
-		frmDefinition.ssOleDBGrid.MoveFirst();
-	}
+	picklistdef_moveFirst();
 
-	for (var iIndex = 1; iIndex <= frmDefinition.ssOleDBGrid.rows; iIndex++) {
-		vBM = frmDefinition.ssOleDBGrid.AddItemBookmark(iIndex);
-		var sRecordID = new String(frmDefinition.ssOleDBGrid.Columns("ID").CellValue(vBM));
-		sSelectedIDs1 = sSelectedIDs1 + "," + sRecordID;
-	}
-	frmDefinition.ssOleDBGrid.redraw = true;
+	sSelectedIDs1 = $('#ssOleDBGrid').getDataIDs().join(",");
 
 	var frmSend = OpenHR.getForm("workframe", "frmPicklistSelection");
 	frmSend.selectionAction = "add";
@@ -185,52 +134,82 @@ function filteredAddClick() {
 	frmSend.selectedIDs1.value = sSelectedIDs1;
 
 	OpenHR.showInReportFrame(frmSend);
-
 }
 
 function removeClick() {
-
-	var i;
-
-	// Do nothing of the Add button is disabled (read-only mode).
-	if (frmUseful.txtAction.value.toUpperCase() == "VIEW") return;
-
-	var iCount = frmDefinition.ssOleDBGrid.selbookmarks.Count();
-	for (i = iCount - 1; i >= 0; i--) {
-		frmDefinition.ssOleDBGrid.bookmark = frmDefinition.ssOleDBGrid.selbookmarks(i);
-		var iRowIndex = frmDefinition.ssOleDBGrid.AddItemRowIndex(frmDefinition.ssOleDBGrid.Bookmark);
-
-		if ((frmDefinition.ssOleDBGrid.Rows == 1) && (iRowIndex == 0)) {
-			frmDefinition.ssOleDBGrid.RemoveAll();
-		}
-		else {
-			frmDefinition.ssOleDBGrid.RemoveItem(iRowIndex);
-		}
+	if ($("#ssOleDBGrid").getGridParam('reccount') == 0) {
+		return;
 	}
 
-	frmUseful.txtChanged.value = 1;
+	// Do nothing if the Add button is disabled (read-only mode).
+	if (frmUseful.txtAction.value.toUpperCase() == "VIEW") return;
 
-	//Display the number of records
-	$('#RecordCountDIV').html(frmDefinition.ssOleDBGrid.Rows.toString() + " Record(s)");
+	var grid = $("#ssOleDBGrid");
+	var myDelOptions = {
+		// because I use "local" data I don't want to send the changes
+		// to the server so I use "processing:true" setting and delete
+		// the row manually in onclickSubmit
+		onclickSubmit: function (options) {
+			var grid_id = $.jgrid.jqID(grid[0].id),
+					grid_p = grid[0].p,
+					newPage = grid_p.page,
+					rowids = grid_p.multiselect ? grid_p.selarrrow : [grid_p.selrow];
+
+			// reset the value of processing option which could be modified
+			options.processing = true;
+
+			// delete the row
+			$.each(rowids, function () {
+				grid.delRowData(this);
+			});
+			$.jgrid.hideModal("#delmod" + grid_id,
+												{
+													gb: "#gbox_" + grid_id,
+													jqm: options.jqModal, onClose: options.onClose
+												});
+
+			if (grid_p.lastpage > 1) {// on the multipage grid reload the grid
+				if (grid_p.reccount === 0 && newPage === grid_p.lastpage) {
+					// if after deliting there are no rows on the current page
+					// which is the last page of the grid
+					newPage--; // go to the previous page
+				}
+				// reload grid to make the row from the next page visable.
+				grid.trigger("reloadGrid", [{ page: newPage }]);
+			}
+
+			//Display the number of records
+			$('#RecordCountDIV').html($("#ssOleDBGrid").getGridParam('reccount') + " Record(s)");
+
+			return true;
+		},
+		processing: true
+	};
+
+	grid.jqGrid('delGridRow', grid.jqGrid('getGridParam', 'selarrrow'), myDelOptions);
+	
+	frmUseful.txtChanged.value = 1;
 
 	refreshControls();
 }
 
 function removeAllClick() {
+	if ($("#ssOleDBGrid").getGridParam('reccount') == 0) {
+		return;
+	}
+
 	var iAnswer = OpenHR.messageBox("Remove all records from the picklist. \n Are you sure ?", 36, "Confirmation");
 	if (iAnswer == 7) {
 		// cancel 
 		return;
 	}
 
-	frmDefinition.ssOleDBGrid.redraw = false;
-	frmDefinition.ssOleDBGrid.RemoveAll();
-	frmDefinition.ssOleDBGrid.redraw = true;
+	$("#ssOleDBGrid").jqGrid('clearGridData');
 
 	frmUseful.txtChanged.value = 1;
 
 	//Display the number of records
-	$('#RecordCountDIV').html(frmDefinition.ssOleDBGrid.Rows.toString() + " Record(s)");
+	$('#RecordCountDIV').html($("#ssOleDBGrid").getGridParam('reccount') + " Record(s)");
 
 	refreshControls();
 }
@@ -257,37 +236,32 @@ function okClick() {
 }
 
 function picklistdef_makeSelection(psType, piID, psPrompts) {
-
-	$(".popup").dialog("close");
+//	$(".popup").dialog("close"); //TODO: Close the window after the user makes a selection
 	$("#workframeset").show();
 
 	/* Get the current selected delegate IDs. */
-	var sSelectedIDs = "0";
-	var iIndex;
-	var sRecordID;
+	var sSelectedIDs = "";
 
 	if (psType != "ALLRECORDS") {
-		frmDefinition.ssOleDBGrid.redraw = false;
-		if (frmDefinition.ssOleDBGrid.rows > 0) {
-			frmDefinition.ssOleDBGrid.MoveFirst();
-		}
-		for (iIndex = 1; iIndex <= frmDefinition.ssOleDBGrid.rows; iIndex++) {
-			sRecordID = new String(frmDefinition.ssOleDBGrid.Columns("ID").Value);
-
-			sSelectedIDs = sSelectedIDs + "," + sRecordID;
-
-			if (iIndex < frmDefinition.ssOleDBGrid.rows) {
-				frmDefinition.ssOleDBGrid.MoveNext();
-			}
-			else {
-				break;
+		picklistdef_moveFirst();
+		var sSelectedRows = $('#ssOleDBGrid').jqGrid('getGridParam', 'selarrrow');
+		if(sSelectedRows != undefined) {
+			for (var iIndex = 0; iIndex < sSelectedRows.length; iIndex++) {
+				var sRecordID = $("#ssOleDBGrid").jqGrid('getCell', sSelectedRows[iIndex], 'ID');
+				if (sSelectedIDs.length > 0) {
+					sSelectedIDs = sSelectedIDs + ",";
+				}
+				sSelectedIDs = sSelectedIDs + sRecordID;
 			}
 		}
-		frmDefinition.ssOleDBGrid.redraw = true;
 	}
 
 	if ((psType == "ALL") && (psPrompts.length > 0)) {
-		sSelectedIDs = sSelectedIDs + "," + psPrompts;
+		if (sSelectedIDs == "") {
+			sSelectedIDs = psPrompts;
+		} else {
+			sSelectedIDs = sSelectedIDs + "," + psPrompts;
+		}
 	}
 
 	// Get the optionData.asp to get the required records.
@@ -374,8 +348,8 @@ function validate() {
 		return (false);
 	}
 
-	// Check thet picklist list does have some records.      
-	if (frmDefinition.ssOleDBGrid.rows == 0) {
+	// Check the picklist list does have some records.      
+	if ($("#ssOleDBGrid").getGridParam('reccount') == 0) {
 		OpenHR.messageBox("Picklists must contain at least one record.");
 		return (false);
 	}
@@ -414,17 +388,7 @@ function populateSendForm() {
 	}
 
 	// Now go through the records grid
-	var sColumns = '';
-
-	frmDefinition.ssOleDBGrid.Redraw = false;
-	frmDefinition.ssOleDBGrid.movefirst();
-
-	for (i = 0; i < frmDefinition.ssOleDBGrid.rows; i++) {
-		sColumns = sColumns + frmDefinition.ssOleDBGrid.columns("ID").text + ',';
-
-		frmDefinition.ssOleDBGrid.movenext();
-	}
-	frmDefinition.ssOleDBGrid.Redraw = true;
+	var sColumns = $("#ssOleDBGrid").getDataIDs().join(",");
 
 	frmSend.txtSend_columns.value = sColumns.substr(0, 8000);
 	frmSend.txtSend_columns2.value = sColumns.substr(8000, 8000);
@@ -468,13 +432,17 @@ function loadDefinition() {
 	//makeSelection("ALL", 0, frmOriginalDefinition.txtSelectedRecords.value);
 	picklistdef_makeSelection("PICKLIST", frmUseful.txtUtilID.value, '');
 
-	frmDefinition.ssOleDBGrid.MoveFirst();
-	frmDefinition.ssOleDBGrid.FirstRow = frmDefinition.ssOleDBGrid.Bookmark;
+	picklistdef_moveFirst();
 
 	// If its read only, disable everything.
 	if (frmUseful.txtAction.value.toUpperCase() == "VIEW") {
 		disableAll();
 	}
+}
+
+function picklistdef_moveFirst() {
+	$('#ssOleDBGrid').jqGrid('setSelection', 1);
+	menu_refreshMenu();
 }
 
 function disableAll() {
@@ -509,45 +477,6 @@ function disableAll() {
 	}
 }
 
-function locateRecord(psSearchFor) {
-	var fFound;
-	var iIndex;
-
-	fFound = false;
-
-	frmDefinition.ssOleDBGrid.redraw = false;
-
-	frmDefinition.ssOleDBGrid.MoveLast();
-	frmDefinition.ssOleDBGrid.MoveFirst();
-
-	frmDefinition.ssOleDBGrid.SelBookmarks.removeall();
-
-	for (iIndex = 1; iIndex <= frmDefinition.ssOleDBGrid.rows; iIndex++) {
-		var sGridValue = new String(frmDefinition.ssOleDBGrid.Columns(0).value);
-		sGridValue = sGridValue.substr(0, psSearchFor.length).toUpperCase();
-		if (sGridValue == psSearchFor.toUpperCase()) {
-			frmDefinition.ssOleDBGrid.SelBookmarks.Add(frmDefinition.ssOleDBGrid.Bookmark);
-			fFound = true;
-			break;
-		}
-
-		if (iIndex < frmDefinition.ssOleDBGrid.rows) {
-			frmDefinition.ssOleDBGrid.MoveNext();
-		}
-		else {
-			break;
-		}
-	}
-
-	if ((fFound == false) && (frmDefinition.ssOleDBGrid.rows > 0)) {
-		// Select the top row.
-		frmDefinition.ssOleDBGrid.MoveFirst();
-		frmDefinition.ssOleDBGrid.SelBookmarks.Add(frmDefinition.ssOleDBGrid.Bookmark);
-	}
-
-	frmDefinition.ssOleDBGrid.redraw = true;
-}
-
 function changeName() {
 	frmUseful.txtChanged.value = 1;
 	refreshControls();
@@ -560,51 +489,6 @@ function changeDescription() {
 
 function changeAccess() {
 	frmUseful.txtChanged.value = 1;
-	refreshControls();
-}
-
-
-	function util_def_addhandlers() {
-		OpenHR.addActiveXHandler("ssOleDBGrid", "KeyPress", "ssOleDBGrid_KeyPress()");
-		OpenHR.addActiveXHandler("ssOleDBGrid", "SelChange", "ssOleDBGrid_SelChange()");
-	}
-
-function ssOleDBGrid_rowColChange() {
-	refreshControls();
-}
-
-function ssOleDBGrid_KeyPress(iKeyAscii) {
-
-	var iLastTick;
-	var sFind;
-	var txtLastKeyFind = $("#txtLastKeyFind")[0];
-	var txtTicker = $("#txtTicker")[0];
-
-	if ((iKeyAscii >= 32) && (iKeyAscii <= 255)) {
-		var dtTicker = new Date();
-		var iThisTick = new Number(dtTicker.getTime());
-		if (txtLastKeyFind.value.length > 0) {
-			iLastTick = new Number(txtTicker.value);
-		}
-		else {
-			iLastTick = new Number("0");
-		}
-
-		if (iThisTick > (iLastTick + 1500)) {
-			sFind = String.fromCharCode(iKeyAscii);
-		}
-		else {
-			sFind = txtLastKeyFind.value + String.fromCharCode(iKeyAscii);
-		}
-
-		txtTicker.value = iThisTick;
-		txtLastKeyFind.value = sFind;
-
-		locateRecord(sFind);
-	}
-}
-
-function ssOleDBGrid_SelChange() {
 	refreshControls();
 }
 

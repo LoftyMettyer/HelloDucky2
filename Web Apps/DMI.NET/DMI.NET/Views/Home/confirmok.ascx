@@ -9,7 +9,12 @@
             return;
         }
 
-        var sAction = txtReaction.value;
+        var sAction;
+        if (txtReaction.length > 1) {
+        	sAction = txtReaction[0].value;
+        } else {
+        	sAction = txtReaction.value;
+        }
 
         if (sAction == "LOGOFF") {
             menu_logoffIntranet();

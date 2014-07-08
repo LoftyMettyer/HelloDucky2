@@ -3939,7 +3939,7 @@ Namespace Controllers
 					New SqlParameter("psDescription", SqlDbType.VarChar, -1) With {.Value = Request.Form("txtSend_description")}, _
 					New SqlParameter("psAccess", SqlDbType.VarChar, -1) With {.Value = Request.Form("txtSend_access")}, _
 					New SqlParameter("psUserName", SqlDbType.VarChar, 255) With {.Value = Request.Form("txtSend_userName")}, _
-					New SqlParameter("psColumns", SqlDbType.VarChar, -1) With {.Value = Request.Form("txtSend_columns")}, _
+					New SqlParameter("psColumns", SqlDbType.VarChar, -1) With {.Value = Request.Form("txtSend_columns") & ","}, _
 					New SqlParameter("psColumns2", SqlDbType.VarChar, -1) With {.Value = Request.Form("txtSend_columns2")}, _
 					prmID, _
 					New SqlParameter("piTableID", SqlDbType.Int) With {.Value = CleanNumeric(Request.Form("txtSend_tableID"))})
@@ -3947,7 +3947,7 @@ Namespace Controllers
 				Session("confirmtext") = "Picklist has been saved successfully"
 				Session("confirmtitle") = "Picklists"
 				Session("followpage") = "defsel"
-				Session("reaction") = Request.Form("txtSend_reaction")
+				Session("reaction") = "PICKLISTS"
 				Session("utilid") = prmID.Value
 
 			Catch ex As Exception

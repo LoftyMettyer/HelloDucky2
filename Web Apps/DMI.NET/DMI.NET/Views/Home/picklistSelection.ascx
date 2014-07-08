@@ -5,12 +5,13 @@
 <%@ Import Namespace="System.Data.SqlClient" %>
 
 <%--licence manager reference for activeX--%>
-<object classid="clsid:5220cb21-c88d-11cf-b347-00aa00a28331"
-	id="Microsoft_Licensed_Class_Manager_1_0"
-	viewastext>
-	<param name="LPKPath" value="<%: Url.Content("~/lpks/ssmain.lpk")%>">
-</object>
 
+<%
+	Dim jqGridTable As String = String.Concat(
+					"<div id='ssOleDBGridSelRecordsDiv' style='height: 400px; margin-bottom: 50px; width: 75%;'>",
+						"<table id='ssOleDBGridSelRecords' style='width: 100%'></table>",
+					"</div>")
+%>
 <form id="frmpicklistSelectionUseful" name="frmpicklistSelectionUseful" style="visibility: hidden; display: none">
 	<input type='hidden' id="txtSelectionType" name="txtSelectionType" value='<%=session("selectionType")%>'>
 	<input type='hidden' id="txtTableID" name="txtTableID" value='<%=session("selectionTableID")%>'>
@@ -19,7 +20,6 @@
 
 <script type="text/javascript">
 	function picklistSelection_window_onload() {
-
 		$("#picklistworkframe").attr("data-framesource", "PICKLISTSELECTION");
 
 		var fOK = true;
@@ -50,27 +50,12 @@
 			}
 		}
 
-		cmdCancel.focus();
-
 		if ((frmUseful.txtSelectionType.value.toUpperCase() == "FILTER") ||
 				(frmUseful.txtSelectionType.value.toUpperCase() == "PICKLIST")) {
-			setGridFont(ssOleDBGridSelRecords);
-
-			// Set focus onto one of the form controls. 
-			// NB. This needs to be done before making any reference to the grid
-			ssOleDBGridSelRecords.focus();
-
-			if (ssOleDBGridSelRecords.rows > 0) {
-				// Select the top row.
-				ssOleDBGridSelRecords.MoveFirst();
-				ssOleDBGridSelRecords.SelBookmarks.Add(ssOleDBGridSelRecords.Bookmark);
-			}
 
 			picklistSelection_refreshControls();
 		}
 		else {
-			setGridFont(ssOleDBGridSelRecords);
-
 			txtTableID.value = frmUseful.txtTableID.value;
 			txtViewID.value = selectView.options[selectView.selectedIndex].value;
 			txtOrderID.value = selectOrder.options[selectOrder.selectedIndex].value;
@@ -80,12 +65,6 @@
 	}
 
 	function picklistSelection_refreshControls() {
-		var fNoneSelected;
-
-		fNoneSelected = (ssOleDBGridSelRecords.SelBookmarks.Count == 0);
-
-		button_disable(cmdOK, fNoneSelected);
-
 		if ((frmpicklistSelectionUseful.txtSelectionType.value.toUpperCase() != "FILTER") &&
 				(frmpicklistSelectionUseful.txtSelectionType.value.toUpperCase() != "PICKLIST")) {
 
@@ -123,23 +102,21 @@
 				}
 			}
 			else {
-				sSelectedIDs = "";
-
-				ssOleDBGridSelRecords.Redraw = false;
-				for (iIndex = 0; iIndex < ssOleDBGridSelRecords.selbookmarks.Count() ; iIndex++) {
-					ssOleDBGridSelRecords.bookmark = ssOleDBGridSelRecords.selbookmarks(iIndex);
-
-					sRecordID = ssOleDBGridSelRecords.Columns("id").Value;
-
+				var sSelectedIDs = "";
+				var sSelectedRows = $('#ssOleDBGridSelRecords').jqGrid('getGridParam', 'selarrrow');
+				for (var iIndex = 0; iIndex < sSelectedRows.length; iIndex++) {
+					var sRecordID = $("#ssOleDBGridSelRecords").jqGrid('getCell', sSelectedRows[iIndex], 'ID');
 					if (sSelectedIDs.length > 0) {
 						sSelectedIDs = sSelectedIDs + ",";
 					}
 					sSelectedIDs = sSelectedIDs + sRecordID;
 				}
-				ssOleDBGridSelRecords.Redraw = true;
+
+				if (sSelectedIDs == "")
+					return;
 
 				try {
-					var frmParentUseful = OpenHR.getForm("workframe", "frmUseful");
+					frmParentUseful = OpenHR.getForm("workframe", "frmUseful");
 					frmParentUseful.txtChanged.value = 1;
 
 					picklistdef_makeSelection(frmUseful.txtSelectionType.value, 0, sSelectedIDs);
@@ -163,46 +140,7 @@
 		return (iRecordID);
 	}
 
-	function locateRecord(psSearchFor) {
-		var fFound;
-
-		fFound = false;
-
-		ssOleDBGridSelRecords.Redraw = false;
-
-		ssOleDBGridSelRecords.MoveLast();
-		ssOleDBGridSelRecords.MoveFirst();
-
-		ssOleDBGridSelRecords.SelBookmarks.removeall();
-
-		for (iIndex = 1; iIndex <= ssOleDBGridSelRecords.rows; iIndex++) {
-			var sGridValue = new String(ssOleDBGridSelRecords.Columns(0).value);
-			sGridValue = sGridValue.substr(0, psSearchFor.length).toUpperCase();
-			if (sGridValue == psSearchFor.toUpperCase()) {
-				ssOleDBGridSelRecords.SelBookmarks.Add(ssOleDBGridSelRecords.Bookmark);
-				fFound = true;
-				break;
-			}
-
-			if (iIndex < ssOleDBGridSelRecords.rows) {
-				ssOleDBGridSelRecords.MoveNext();
-			}
-			else {
-				break;
-			}
-		}
-
-		if ((fFound == false) && (ssOleDBGridSelRecords.rows > 0)) {
-			// Select the top row.
-			ssOleDBGridSelRecords.MoveFirst();
-			ssOleDBGridSelRecords.SelBookmarks.Add(ssOleDBGridSelRecords.Bookmark);
-		}
-
-		ssOleDBGridSelRecords.Redraw = true;
-	}
-
 	function goView() {
-
 		// Get the picklistSelectionData.asp to get the find records.
 		var dataForm = OpenHR.getForm("picklistdataframe", "frmPicklistGetData");
 		dataForm.txtTableID.value = frmpicklistSelectionUseful.txtTableID.value;
@@ -381,48 +319,6 @@
 		}
 	}
 
-	function picklistSelection_addhandlers() {
-		OpenHR.addActiveXHandler("ssOleDBGridSelRecords", "RowColChange", "ssOleDBGridSelRecords_RowColChange()");
-		OpenHR.addActiveXHandler("ssOleDBGridSelRecords", "DblClick", "ssOleDBGridSelRecords_DblClick()");
-		OpenHR.addActiveXHandler("ssOleDBGridSelRecords", "KeyPress", "ssOleDBGridSelRecords_KeyPress()");
-	}
-
-	function ssOleDBGridSelRecords_RowColChange() {
-		picklistSelection_refreshControls();
-	}
-
-	function ssOleDBGridSelRecords_DblClick() {
-
-		if (frmpicklistSelectionUseful.txtSelectionType.value != "ALL") {
-			makeSelection();
-		}
-	}
-
-	function ssOleDBGridSelRecords_KeyPress(iKeyAscii) {
-
-		if ((iKeyAscii >= 32) && (iKeyAscii <= 255)) {
-			var dtTicker = new Date();
-			var iThisTick = new Number(dtTicker.getTime());
-			if (txtLastKeyFind.value.length > 0) {
-				var iLastTick = new Number(txtTicker.value);
-			}
-			else {
-				var iLastTick = new Number("0");
-			}
-
-			if (iThisTick > (iLastTick + 1500)) {
-				var sFind = String.fromCharCode(iKeyAscii);
-			}
-			else {
-				var sFind = txtLastKeyFind.value + String.fromCharCode(iKeyAscii);
-			}
-
-			txtTicker.value = iThisTick;
-			txtLastKeyFind.value = sFind;
-
-			locateRecord(sFind);
-		}
-	}
 
 </script>
 
@@ -499,148 +395,7 @@
 
 									' Instantiate and initialise the grid. 
 							%>
-							<object classid="clsid:4A4AA697-3E6F-11D2-822F-00104B9E07A1" id="ssOleDBGridSelRecords" name="ssOleDBGridSelRecords" codebase="cabs/COAInt_Grid.cab#version=3,1,3,6" style="LEFT: 0px; TOP: 0px; WIDTH: 100%; HEIGHT: 300px">
-								<param name="ScrollBars" value="4">
-								<param name="_Version" value="196616">
-								<param name="DataMode" value="2">
-								<param name="Cols" value="0">
-								<param name="Rows" value="0">
-								<param name="BorderStyle" value="1">
-								<param name="RecordSelectors" value="0">
-								<param name="GroupHeaders" value="0">
-								<param name="ColumnHeaders" value="0">
-								<param name="GroupHeadLines" value="0">
-								<param name="HeadLines" value="0">
-								<param name="FieldDelimiter" value="(None)">
-								<param name="FieldSeparator" value="(Tab)">
-								<param name="Col.Count" value="<%=rstSelRecords.Columns.Count%>">
-								<param name="stylesets.count" value="0">
-								<param name="TagVariant" value="EMPTY">
-								<param name="UseGroups" value="0">
-								<param name="HeadFont3D" value="0">
-								<param name="Font3D" value="0">
-								<param name="DividerType" value="3">
-								<param name="DividerStyle" value="1">
-								<param name="DefColWidth" value="0">
-								<param name="BeveColorScheme" value="2">
-								<param name="BevelColorFrame" value="-2147483642">
-								<param name="BevelColorHighlight" value="-2147483628">
-								<param name="BevelColorShadow" value="-2147483632">
-								<param name="BevelColorFace" value="-2147483633">
-								<param name="CheckBox3D" value="-1">
-								<param name="AllowAddNew" value="0">
-								<param name="AllowDelete" value="0">
-								<param name="AllowUpdate" value="0">
-								<param name="MultiLine" value="0">
-								<param name="ActiveCellStyleSet" value="">
-								<param name="RowSelectionStyle" value="0">
-								<param name="AllowRowSizing" value="0">
-								<param name="AllowGroupSizing" value="0">
-								<param name="AllowColumnSizing" value="0">
-								<param name="AllowGroupMoving" value="0">
-								<param name="AllowColumnMoving" value="0">
-								<param name="AllowGroupSwapping" value="0">
-								<param name="AllowColumnSwapping" value="0">
-								<param name="AllowGroupShrinking" value="0">
-								<param name="AllowColumnShrinking" value="0">
-								<param name="AllowDragDrop" value="0">
-								<param name="UseExactRowCount" value="-1">
-								<param name="SelectTypeCol" value="0">
-								<param name="SelectTypeRow" value="1">
-								<param name="SelectByCell" value="-1">
-								<param name="BalloonHelp" value="0">
-								<param name="RowNavigation" value="1">
-								<param name="CellNavigation" value="0">
-								<param name="MaxSelectedRows" value="1">
-								<param name="HeadStyleSet" value="">
-								<param name="StyleSet" value="">
-								<param name="ForeColorEven" value="0">
-								<param name="ForeColorOdd" value="0">
-								<param name="BackColorEven" value="16777215">
-								<param name="BackColorOdd" value="16777215">
-								<param name="Levels" value="1">
-								<param name="RowHeight" value="503">
-								<param name="ExtraHeight" value="0">
-								<param name="ActiveRowStyleSet" value="">
-								<param name="CaptionAlignment" value="2">
-								<param name="SplitterPos" value="0">
-								<param name="SplitterVisible" value="0">
-								<param name="Columns.Count" value="<%=rstSelRecords.Columns.Count%>">
-								<%
-									For iLoop = 0 To (rstSelRecords.Columns.Count - 1)
-										If rstSelRecords.Columns(iLoop).ColumnName <> "name" Then
-								%>
-								<param name="Columns(<%=iLoop%>).Width" value="0">
-								<param name="Columns(<%=iLoop%>).Visible" value="0">
-								<% 
-								Else
-								%>
-								<param name="Columns(<%=iLoop%>).Width" value="100000">
-								<param name="Columns(<%=iLoop%>).Visible" value="-1">
-								<%
-								End If
-								%>
-								<param name="Columns(<%=iLoop%>).Columns.Count" value="1">
-								<param name="Columns(<%=iLoop%>).Caption" value="<%=Replace(rstSelRecords.Columns(iLoop).ColumnName, "_", "> ")%>">
-								<param name="Columns(<%=iLoop%>).Name" value="<%=rstSelRecords.Columns(iLoop).ColumnName%>">
-								<param name="Columns(<%=iLoop%>).Alignment" value="0">
-								<param name="Columns(<%=iLoop%>).CaptionAlignment" value="3">
-								<param name="Columns(<%=iLoop%>).Bound" value="0">
-								<param name="Columns(<%=iLoop%>).AllowSizing" value="1">
-								<param name="Columns(<%=iLoop%>).DataField" value="Column <%=iLoop%>">
-								<param name="Columns(<%=iLoop%>).DataType" value="8">
-								<param name="Columns(<%=iLoop%>).Level" value="0">
-								<param name="Columns(<%=iLoop%>).NumberFormat" value="">
-								<param name="Columns(<%=iLoop%>).Case" value="0">
-								<param name="Columns(<%=iLoop%>).FieldLen" value="4096">
-								<param name="Columns(<%=iLoop%>).VertScrollBar" value="0">
-								<param name="Columns(<%=iLoop%>).Locked" value="0">
-								<param name="Columns(<%=iLoop%>).Style" value="0">
-								<param name="Columns(<%=iLoop%>).ButtonsAlways" value="0">
-								<param name="Columns(<%=iLoop%>).RowCount" value="0">
-								<param name="Columns(<%=iLoop%>).ColCount" value="1">
-								<param name="Columns(<%=iLoop%>).HasHeadForeColor" value="0">
-								<param name="Columns(<%=iLoop%>).HasHeadBackColor" value="0">
-								<param name="Columns(<%=iLoop%>).HasForeColor" value="0">
-								<param name="Columns(<%=iLoop%>).HasBackColor" value="0">
-								<param name="Columns(<%=iLoop%>).HeadForeColor" value="0">
-								<param name="Columns(<%=iLoop%>).HeadBackColor" value="0">
-								<param name="Columns(<%=iLoop%>).ForeColor" value="0">
-								<param name="Columns(<%=iLoop%>).BackColor" value="0">
-								<param name="Columns(<%=iLoop%>).HeadStyleSet" value="">
-								<param name="Columns(<%=iLoop%>).StyleSet" value="">
-								<param name="Columns(<%=iLoop%>).Nullable" value="1">
-								<param name="Columns(<%=iLoop%>).Mask" value="">
-								<param name="Columns(<%=iLoop%>).PromptInclude" value="0">
-								<param name="Columns(<%=iLoop%>).ClipMode" value="0">
-								<param name="Columns(<%=iLoop%>).PromptChar" value="95">
-								<%
-								Next
-								%>
-								<param name="UseDefaults" value="-1">
-								<param name="TabNavigation" value="1">
-								<param name="_ExtentX" value="17330">
-								<param name="_ExtentY" value="1323">
-								<param name="_StockProps" value="79">
-								<param name="Caption" value="">
-								<param name="ForeColor" value="0">
-								<param name="BackColor" value="16777215">
-								<param name="Enabled" value="-1">
-								<param name="DataMember" value="">
-								<% 
-									lngRowCount = 0
-									For Each objRow As DataRow In rstSelRecords.Rows
-
-
-										For iLoop = 0 To (rstSelRecords.Columns.Count - 1)
-								%>
-								<param name="Row(<%=lngRowCount%>).Col(<%=iLoop%>)" value="<%=Replace(objRow(iLoop).ToString(), "_", " ")%>">
-								<%
-								Next
-								lngRowCount += 1
-								Next%>
-								<param name="Row.Count" value="<%=lngRowCount%>">
-							</object>
+							<%= jqGridTable%>
 							<%	
 
 		
@@ -733,85 +488,7 @@
 								</tr>
 								<tr>
 									<td style="height: 260px;vertical-align: top">
-										<object classid="clsid:4A4AA697-3E6F-11D2-822F-00104B9E07A1" id="ssOleDBGridSelRecords" name="ssOleDBGridSelRecords" codebase="cabs/COAInt_Grid.cab#version=3,1,3,6" style="LEFT: 0px; TOP: 0px; WIDTH: 100%; HEIGHT: 300px">
-											<param name="ScrollBars" value="4">
-											<param name="_Version" value="196617">
-											<param name="DataMode" value="2">
-											<param name="Cols" value="0">
-											<param name="Rows" value="0">
-											<param name="BorderStyle" value="1">
-											<param name="RecordSelectors" value="0">
-											<param name="GroupHeaders" value="0">
-											<param name="ColumnHeaders" value="-1">
-											<param name="GroupHeadLines" value="1">
-											<param name="HeadLines" value="1">
-											<param name="FieldDelimiter" value="(None)">
-											<param name="FieldSeparator" value="(Tab)">
-											<param name="Col.Count" value="0">
-											<param name="stylesets.count" value="0">
-											<param name="TagVariant" value="EMPTY">
-											<param name="UseGroups" value="0">
-											<param name="HeadFont3D" value="0">
-											<param name="Font3D" value="0">
-											<param name="DividerType" value="3">
-											<param name="DividerStyle" value="1">
-											<param name="DefColWidth" value="0">
-											<param name="BeveColorScheme" value="2">
-											<param name="BevelColorFrame" value="-2147483642">
-											<param name="BevelColorHighlight" value="-2147483628">
-											<param name="BevelColorShadow" value="-2147483632">
-											<param name="BevelColorFace" value="-2147483633">
-											<param name="CheckBox3D" value="-1">
-											<param name="AllowAddNew" value="0">
-											<param name="AllowDelete" value="0">
-											<param name="AllowUpdate" value="0">
-											<param name="MultiLine" value="0">
-											<param name="ActiveCellStyleSet" value="">
-											<param name="RowSelectionStyle" value="0">
-											<param name="AllowRowSizing" value="0">
-											<param name="AllowGroupSizing" value="0">
-											<param name="AllowColumnSizing" value="-1">
-											<param name="AllowGroupMoving" value="0">
-											<param name="AllowColumnMoving" value="0">
-											<param name="AllowGroupSwapping" value="0">
-											<param name="AllowColumnSwapping" value="0">
-											<param name="AllowGroupShrinking" value="0">
-											<param name="AllowColumnShrinking" value="0">
-											<param name="AllowDragDrop" value="0">
-											<param name="UseExactRowCount" value="-1">
-											<param name="SelectTypeCol" value="0">
-											<param name="SelectTypeRow" value="3">
-											<param name="SelectByCell" value="-1">
-											<param name="BalloonHelp" value="0">
-											<param name="RowNavigation" value="1">
-											<param name="CellNavigation" value="0">
-											<param name="MaxSelectedRows" value="0">
-											<param name="HeadStyleSet" value="">
-											<param name="StyleSet" value="">
-											<param name="ForeColorEven" value="0">
-											<param name="ForeColorOdd" value="0">
-											<param name="BackColorEven" value="16777215">
-											<param name="BackColorOdd" value="16777215">
-											<param name="Levels" value="1">
-											<param name="RowHeight" value="503">
-											<param name="ExtraHeight" value="0">
-											<param name="ActiveRowStyleSet" value="">
-											<param name="CaptionAlignment" value="2">
-											<param name="SplitterPos" value="0">
-											<param name="SplitterVisible" value="0">
-											<param name="Columns.Count" value="0">
-											<param name="UseDefaults" value="-1">
-											<param name="TabNavigation" value="1">
-											<param name="_ExtentX" value="17330">
-											<param name="_ExtentY" value="1323">
-											<param name="_StockProps" value="79">
-											<param name="Caption" value="">
-											<param name="ForeColor" value="0">
-											<param name="BackColor" value="16777215">
-											<param name="Enabled" value="-1">
-											<param name="DataMember" value="">
-											<param name="Row.Count" value="0">
-										</object>
+										<%= jqGridTable%>
 									</td>
 								</tr>
 							</table>

@@ -9,7 +9,7 @@
 	function picklistSelectionData_window_onload() {
 
 		$("#picklistdataframe").attr("data-framesource", "PICKLISTSELECTIONDATA");
-		$("#workframeset").hide();
+		//$("#workframeset").hide();
 		$("#reportframe").show();
 
 		if (frmSelectDataUseful.txtLoading.value == "True") {
@@ -31,18 +31,18 @@
 				OpenHR.messageBox(sErrorMsg);
 			}
 
-			// Refresh the link find grid with the data if required.
-			var ssOleDBGridSelRecords = document.getElementById("ssOleDBGridSelRecords");
-			ssOleDBGridSelRecords.Redraw = false;
-
-			//ssOleDBGridSelRecords.removeAll();
-			ssOleDBGridSelRecords.Columns.RemoveAll();
-
+			$("#ssOleDBGridSelRecords").jqGrid('GridUnload');
+	
 			var dataCollection = frmPicklistData.elements;
 			var sControlName;
 			var sColumnName;
 			var iColumnType;
 			var iCount;
+			var colData;
+			var dateFormat = OpenHR.getLocaleDateString();
+
+			colMode = [];
+			colNames = [];
 
 			// Configure the grid columns.
 			if (dataCollection != null) {
@@ -56,25 +56,25 @@
 						iIndex = sColDef.indexOf("	");
 						if (iIndex >= 0) {
 							sColumnName = sColDef.substr(0, iIndex);
-							sColumnType = sColDef.substr(iIndex + 1);
-
-							ssOleDBGridSelRecords.Columns.Add(ssOleDBGridSelRecords.Columns.Count);
-							ssOleDBGridSelRecords.Columns.Item(ssOleDBGridSelRecords.Columns.Count - 1).Name = sColumnName;
-							ssOleDBGridSelRecords.Columns.Item(ssOleDBGridSelRecords.Columns.Count - 1).Caption = sColumnName;
+							sColumnType = sColDef.substr(iIndex + 1).replace('System.', "").toLowerCase();
+							colNames.push(sColumnName);
 
 							if (sColumnName == "ID") {
-								ssOleDBGridSelRecords.Columns.Item(ssOleDBGridSelRecords.Columns.Count - 1).Visible = false;
-							}
-
-							if ((sColumnType == "131") || (sColumnType == "3")) {
-								ssOleDBGridSelRecords.Columns.Item(ssOleDBGridSelRecords.Columns.Count - 1).Alignment = 1;
+								colMode.push({ name: sColumnName, hidden: true });
 							} else {
-								ssOleDBGridSelRecords.Columns.Item(ssOleDBGridSelRecords.Columns.Count - 1).Alignment = 0;
-							}
-							if (sColumnType == 11) {
-								ssOleDBGridSelRecords.Columns.Item(ssOleDBGridSelRecords.Columns.Count - 1).Style = 2;
-							} else {
-								ssOleDBGridSelRecords.Columns.Item(ssOleDBGridSelRecords.Columns.Count - 1).Style = 0;
+								switch (sColumnType) {
+									case "boolean": // "11":
+										colMode.push({ name: sColumnName, edittype: "checkbox", formatter: 'checkbox', formatoptions: { disabled: true }, align: 'center', width: 100 });
+										break;
+									case "decimal":
+										colMode.push({ name: sColumnName, edittype: "numeric", sorttype: 'integer', formatter: 'numeric', formatoptions: { disabled: true }, align: 'right', width: 100 });
+										break;
+									case "datetime": //Date - 135
+										colMode.push({ name: sColumnName, edittype: "date", sorttype: 'date', formatter: 'date', formatoptions: { srcformat: dateFormat, newformat: dateFormat, disabled: true }, align: 'left', width: 100 });
+										break;
+									default:
+										colMode.push({ name: sColumnName, width: 100 });
+								}
 							}
 						}
 					}
@@ -85,17 +85,59 @@
 			var sAddString;
 			iCount = 0;
 			if (dataCollection != null) {
+				colData = [];
 				for (i = 0; i < dataCollection.length; i++) {
 					sControlName = dataCollection.item(i).name;
 					sControlName = sControlName.substr(0, 8);
 					if (sControlName == "txtData_") {
-						ssOleDBGridSelRecords.addItem(dataCollection.item(i).value);
+						colDataArray = dataCollection.item(i).value.split("\t");
+						obj = {};
+						for (iCount2 = 0; iCount2 < colNames.length; iCount2++) {
+							//loop through columns and add each one to the 'obj' object
+							obj[colNames[iCount2]] = colDataArray[iCount2];
+						}
+						//add the 'obj' object to the 'colData' array
+						colData.push(obj);
+
 						fRecordAdded = true;
 						iCount = iCount + 1;
 					}
 				}
 			}
-			ssOleDBGridSelRecords.Redraw = true;
+
+			if (colData.length > 0) { //If we have data to display, display it
+				//create the column layout:
+				var shrinkToFit = false;
+				if (colMode.length < 8) shrinkToFit = true;
+
+				$("#ssOleDBGridSelRecords").jqGrid({
+					multiselect: true,
+					data: colData,
+					datatype: 'local',
+					colNames: colNames,
+					colModel: colMode,
+					rowNum: 1000,
+					autowidth: true,
+					shrinktofit: shrinkToFit,
+					onSelectRow: function () { },
+					ondblClickRow: function (rowID) {
+						makeSelection();
+					},
+					editurl: 'clientArray',
+					afterShowForm: function ($form) {
+						$("#dData", $form.parent()).click();
+					},
+					beforeSelectRow: handleMultiSelect // handle multi select
+				}).jqGrid('hideCol', 'cb');
+
+				//resize the grid to the height of its container.
+				$("#ssOleDBGridSelRecords").jqGrid('setGridHeight', $("#ssOleDBGridSelRecordsDiv").height());
+
+				// Select the top record.
+				if (fRecordAdded == true) {
+					moveFirst();
+				}
+			}
 
 			frmPicklistData.txtRecordCount.value = iCount;
 
@@ -105,7 +147,6 @@
 	}
 
 	function picklist_refreshData() {
-
 		OpenHR.submitForm(frmPicklistGetData);
 	}
 

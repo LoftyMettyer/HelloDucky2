@@ -596,7 +596,11 @@ function menu_MenuClick(sTool) {
 	if (sToolName == 'mnutoolSaveReport') {
 		try {
 			var frmSubmit = $("#frmReportDefintion");
+			if (frmSubmit.length == 0) {
+				okClick(); //Should be in scope	
+			} else {
 			OpenHR.submitForm(frmSubmit);
+			}
 		} catch (e) {
 		} finally {
 			return false;

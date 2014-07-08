@@ -599,27 +599,106 @@ function optiondata_onload() {
 
 		if (sCurrentWorkPage == "UTIL_DEF_PICKLIST") {
 			sAction = frmOptionData.txtOptionAction.value; // Refresh the link find grid with the data if required.
-			grdFind = OpenHR.getForm("workframe", "frmDefinition").ssOleDBGrid;
-			grdFind.redraw = false;
-			grdFind.removeAll();
+
+			$("#ssOleDBGrid").jqGrid('GridUnload');
+
 			dataCollection = frmOptionData.elements; // Add the grid records.
 			fRecordAdded = false;
 			iCount = 0;
 
+			// new bit for colmodel
+			colMode = [];
+			colNames = [];
+
 			if (dataCollection != null) {
+				for (i = 0; i < dataCollection.length; i++) {
+					sControlName = dataCollection.item(i).name;
+					sControlName = sControlName.substr(0, 16);
+
+					if (sControlName == "txtOptionColDef_") {
+						// Get the column name and type from the control.
+						sColDef = dataCollection.item(i).value;
+
+						iIndex = sColDef.indexOf("	");
+						if (iIndex >= 0) {
+							sColumnName = sColDef.substr(0, iIndex);
+							sColumnType = sColDef.substr(iIndex + 1);
+
+							colNames.push(sColumnName);
+
+							if (sColumnName.toUpperCase() == "ID") {
+								colMode.push({ name: sColumnName, hidden: true });
+							} else {
+								switch (sColumnType) {
+									case "boolean": // "11":
+										colMode.push({ name: sColumnName, edittype: "checkbox", formatter: 'checkbox', formatoptions: { disabled: true }, align: 'center', width: 100 });
+										break;
+									case "decimal":
+										colMode.push({ name: sColumnName, edittype: "numeric", sorttype: 'integer', formatter: 'numeric', formatoptions: { disabled: true }, align: 'right', width: 100 });
+										break;
+									case "datetime": //Date - 135
+										colMode.push({ name: sColumnName, edittype: "date", sorttype: 'date', formatter: 'date', formatoptions: { srcformat: dateFormat, newformat: dateFormat, disabled: true }, align: 'left', width: 100 });
+										break;
+									default:
+										colMode.push({ name: sColumnName, width: 100 });
+								}
+							}
+						}
+					}
+				}
+			}
+
+			if (dataCollection != null) {
+				colData = [];
 				for (i = 0; i < dataCollection.length; i++) {
 					sControlName = dataCollection.item(i).name;
 					sControlName = sControlName.substr(0, 14);
 
 					if (sControlName == "txtOptionData_") {
-						grdFind.addItem(dataCollection.item(i).value);
+						colDataArray = dataCollection.item(i).value.split("\t");
+						obj = {};
+						for (iCount2 = 0; iCount2 < colNames.length; iCount2++) {
+							//loop through columns and add each one to the 'obj' object
+							obj[colNames[iCount2]] = colDataArray[iCount2];
+						}
+						//add the 'obj' object to the 'colData' array
+						colData.push(obj);
+
 						fRecordAdded = true;
 						iCount = iCount + 1;
 					}
 				}
 			}
 
-			grdFind.redraw = true;
+			//create the column layout:
+			var shrinkToFit = false;
+			if (colMode.length < 8) shrinkToFit = true;
+
+			$("#ssOleDBGrid").jqGrid({
+				multiselect: true,
+				data: colData,
+				datatype: 'local',
+				colNames: colNames,
+				colModel: colMode,
+				rowNum: 1000,
+				autowidth: true,
+				//width: $('#PickListGrid').width(),
+				shrinktofit: shrinkToFit,
+				onSelectRow: function () { },
+				editurl: 'clientArray',
+				afterShowForm: function ($form) {
+					$("#dData", $form.parent()).click();
+				},
+				beforeSelectRow: handleMultiSelect // handle multi select
+			}).jqGrid('hideCol', 'cb');
+
+			//resize the grid to the height of its container.
+			$("#ssOleDBGrid").jqGrid('setGridHeight', $("#PickListGrid").height());
+
+			// Select the top record.
+			if (fRecordAdded == true) {
+				moveFirst();
+			}
 
 			//Display the number of records
 			$('#RecordCountDIV').html(iCount.toString() + " Record(s)");
@@ -642,8 +721,7 @@ function optiondata_onload() {
 
 			// Select the top record.
 			if (fRecordAdded == true) {
-				grdFind.MoveFirst();
-				grdFind.SelBookmarks.Add(grdFind.Bookmark);
+				moveFirst();
 			}
 
 			refreshControls();

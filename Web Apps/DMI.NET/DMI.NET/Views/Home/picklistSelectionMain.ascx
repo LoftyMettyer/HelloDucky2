@@ -43,13 +43,10 @@
 
 
 <script type="text/javascript">
-
-	$("#workframeset").hide();
+	//$("#workframeset").hide();
 	$("#reportframe").show();
 
-	//picklistSelectionData_window_onload();
 	picklistSelection_window_onload();
-	picklistSelection_addhandlers();
 
 	$('.popup').bind('dialogclose', function (event) {
 		closeclick();
@@ -57,6 +54,4 @@
 		$("#workframeset").show();
 		$("#workframe").show();
 	});
-
-
 </script>

@@ -934,6 +934,12 @@
 
 					objUtilities.UDFFunctions(False)
 			
+					'Output the column definitions; this needs to be done even if the recordset doesn't contain any data so jqGrid ill show and empty grid with column names
+					For iloop = 0 To (rstFindRecords.Columns.Count - 1)
+						sColDef = Replace(rstFindRecords.Columns(iloop).ColumnName, "_", " ") & "	" & rstFindRecords.Columns(iloop).DataType.ToString.Replace("System.", "")
+						Response.Write("<INPUT type='hidden' id=txtOptionColDef_" & iloop & " name=txtOptionColDef_" & iloop & " value=""" & sColDef & """>" & vbCrLf)
+					Next
+					
 					iCount = 0
 					For Each objRow As DataRow In rstFindRecords.Rows
 						sAddString = ""
@@ -943,16 +949,11 @@
 							If iloop > 0 Then
 								sAddString = sAddString & "	"
 							End If
-							
-							If iCount = 0 Then
-								sColDef = Replace(rstFindRecords.Columns(iloop).ColumnName, "_", " ") & "	" & rstFindRecords.Columns(iloop).DataType.ToString.Replace("System.", "")
-								Response.Write("<INPUT type='hidden' id=txtOptionColDef_" & iloop & " name=txtOptionColDef_" & iloop & " value=""" & sColDef & """>" & vbCrLf)
-							End If
 
 							Dim numberAsString As String = objRow(iloop).ToString()
 							Dim indexOfDecimalPoint As Integer = numberAsString.IndexOf(".", StringComparison.Ordinal)
 							Dim numberOfDecimals As Integer = 0
-							If indexOfDecimalPoint > 0 Then numberOfDecimals = numberAsString.Substring(indexOfDecimalPoint + 1).Length									
+							If indexOfDecimalPoint > 0 Then numberOfDecimals = numberAsString.Substring(indexOfDecimalPoint + 1).Length
 							
 							If rstFindRecords.Columns(0).DataType = GetType(DateTime) Then
 								' Field is a date so format as such.
