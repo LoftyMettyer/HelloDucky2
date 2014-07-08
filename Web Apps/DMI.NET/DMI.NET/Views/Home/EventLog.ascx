@@ -354,7 +354,7 @@
 	function EventLog_viewEvent() {
 		var sURL;
 		//Get the row ID
-		var rowID = $("#LogEvents").jqGrid('getGridParam', 'selrow')
+		var rowID = $("#LogEvents").jqGrid('getGridParam', 'selrow');
 
 		if (rowID == null) { //No row selected
 			return;
