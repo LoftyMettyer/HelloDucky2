@@ -40,8 +40,6 @@ Namespace Repository
 				'	
 				PopulateDefintion(objModel, dsDefinition.Tables(0))
 
-				objModel.BaseTables = GetTables()
-
 				objModel.GroupAccess = GetUtilityAccess(UtilityType.utlCustomReport, ID, bIsCopy)
 
 				If dsDefinition.Tables(0).Rows.Count = 1 Then
@@ -70,6 +68,7 @@ Namespace Repository
 
 				'' todo replace with dapper
 				objModel.Columns.Selected = New Collection(Of ReportColumnItem)
+				objModel.Columns.AvailableTables = GetTables()
 
 				For Each objRow As System.Data.DataRow In dsDefinition.Tables(1).Rows
 					Dim objItem As New ReportColumnItem() With {
@@ -208,7 +207,6 @@ Namespace Repository
 			Dim objModel As New CrossTabModel
 
 			objModel.GroupAccess = GetUtilityAccess(UtilityType.utlCrossTab, 0, False)
-			objModel.BaseTables = GetTables()
 
 			Return objModel
 
@@ -219,7 +217,6 @@ Namespace Repository
 			Dim objModel As New CalendarReportModel
 
 			objModel.GroupAccess = GetUtilityAccess(UtilityType.utlCalendarReport, 0, False)
-			objModel.BaseTables = GetTables()
 
 			Return objModel
 
@@ -230,7 +227,6 @@ Namespace Repository
 			Dim objModel As New CustomReportModel
 
 			objModel.GroupAccess = GetUtilityAccess(UtilityType.utlCustomReport, 0, False)
-			objModel.BaseTables = GetTables()
 
 			Return objModel
 
@@ -241,7 +237,6 @@ Namespace Repository
 			Dim objModel As New MailMergeModel
 
 			objModel.GroupAccess = GetUtilityAccess(UtilityType.utlMailMerge, 0, False)
-			objModel.BaseTables = GetTables()
 
 			Return objModel
 
@@ -783,13 +778,13 @@ Namespace Repository
 			Return ""
 		End Function
 
-		Public Function GetTables() As Collection(Of SelectListItem)
+		Public Function GetTables() As List(Of ReportTableItem)
 
 			Dim objSessionInfo = CType(HttpContext.Current.Session("SessionContext"), SessionInfo)
-			Dim objItems As New Collection(Of SelectListItem)
+			Dim objItems As New List(Of ReportTableItem)
 
-			For Each objTable In objSessionInfo.Tables
-				Dim objItem As New SelectListItem() With {.Value = CStr(objTable.ID), .Text = objTable.Name}
+			For Each objTable In objSessionInfo.Tables.OrderBy(Function(n) n.Name)
+				Dim objItem As New ReportTableItem() With {.id = objTable.ID, .Name = objTable.Name}
 				objItems.Add(objItem)
 			Next
 
@@ -865,9 +860,6 @@ Namespace Repository
 					End If
 
 				End If
-
-				' Load the base tables
-				outputModel.BaseTables = GetTables()
 
 			Catch ex As Exception
 				Throw

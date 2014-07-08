@@ -37,7 +37,8 @@
 	<div class="inner">
 
 		<div class="left">
-			Base Table : @Html.DropDownList("BaseTableID", Model.BaseTables)
+			Base Table :
+			<select name="BaseTableID" id="BaseTableID" onchange="changeReportBaseTable(event.target);"></select>
 		</div>
 
 		<div class="right">
@@ -99,10 +100,34 @@
 
 <script type="text/javascript">
 
+	function getBaseTableList() {
+		$.ajax({
+			url: '@Url.Action("GetBaseTables", "Reports")',
+			type:'GET',
+			dataType: 'json',
+			success: function( json ) {
+				$.each(json, function (i, table) {
+					var optionHtml = '<option value=' + table.id + '>' + table.Name + '</option>'
+					$('#BaseTableID').append(optionHtml);
+				});
+
+//				$("#BaseTableID option[value='@Model.BaseTableID']").attr("selected", "selected");
+				$('#BaseTableID').val("@Model.BaseTableID");
+
+
+			}
+		});
+	}
+
+
 	$(function () {
 
 		// tighten up these input selectors
 		$("#frmReportDefintion :input").on("change", function () { enableSaveButton(this); });
+		getBaseTableList();
+		//debugger;
+		//$('#BaseTableID').val("@Model.BaseTableID");
+		//$("#BaseTableID option[value='@Model.BaseTableID']").attr("selected", "selected");
 
 
 	});
@@ -221,7 +246,14 @@
 
   }
 
+  function changeReportBaseTable(target) {
 
+  	var selectedID = target.options[target.selectedIndex].value;
+
+  	// Warn user
+		// Reload the available columns
+
+  }
 
 </script>
 

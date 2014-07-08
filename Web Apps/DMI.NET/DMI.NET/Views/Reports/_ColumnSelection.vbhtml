@@ -1,5 +1,6 @@
 ﻿@Imports DMI.NET
 @Imports DMI.NET.Helpers
+@Imports DMI.NET.Enums
 @Inherits System.Web.Mvc.WebViewPage(Of Models.ReportColumnsModel)
 
 <style>
@@ -14,8 +15,20 @@
 @*Look at replacing with proper jqgrid with a subgrid*@
 @*http://trirand.com/blog/jqgrid/jqgrid.html*@
 
+
 <div id="columnsAvailable" style="float:left">
-@*	@Html.AvailableReportColumns("AvailableColumns", Model.Available, Nothing)*@
+
+	Columns / Calculations Available :
+	<br/>
+	@Html.TableDropdown("SelectedTableID", Model.SelectedTableID, Model.AvailableTables, "changeAvailableReportTable(event);")
+
+	<br />
+	@Html.RadioButton("columnSelectiontype", ColumnSelectionType.Columns, True, New With {.onclick = "toggleColumnsCalculations('column')"})
+	Columns
+	@Html.RadioButton("columnSelectiontype", ColumnSelectionType.Calculations, True, New With {.onclick = "toggleColumnsCalculations('calc')"})
+	Calculations
+	<br/>
+
 	<table id="AvailableColumns" class="scroll" cellpadding="0" cellspacing="0"></table>
 </div>
 
@@ -51,11 +64,23 @@
 		}
 
 		function addAllColumnsToSelected() {
+			//TODO
 		}
 
-		function removeSelectedColumn() {}
+		function changeAvailableReportTable(event) {
 
-		function removeAllSelectedColumns() { }
+			// Warn user
+			// Reload the available columns
+
+		}
+
+		function removeSelectedColumn() {
+			//TODO
+		}
+
+		function removeAllSelectedColumns() {
+			//TODO
+		}
 
     function columndefinition_rowcolchange() {
 
@@ -83,16 +108,6 @@
     		cmTemplate: { sortable: false },
     		rowNum: 1000
     	});
-
-    	//tableToGrid("#AvailableColumns", {
-    	//	colNames: ['id', 'Name'],
-    	//	colModel: [
-		//			{ name: 'id', hidden: true },
-		//			{ name: 'Name', sortable: false }
-    	//	],
-    	//	cmTemplate: { sortable: false },
-    	//	rowNum: 1000
-    	//});   	
 
     	jQuery(document).ready(function () {
     		jQuery("#AvailableColumns").jqGrid({

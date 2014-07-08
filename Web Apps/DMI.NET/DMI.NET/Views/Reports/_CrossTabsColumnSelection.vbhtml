@@ -8,6 +8,7 @@ Headings &amp; Breaks
 	<br/>
 
 	Horizontal :  @Html.ColumnDropdown("HorizontalID", Model.HorizontalID, Model.AvailableColumns, "refreshCrossTabColumn(event.target, 'Horizontal');")
+	@Html.ValidationMessageFor(Function(m) m.HorizontalID)
 
 	@Html.Hidden("HorizontalDataType", CInt(Model.HorizontalDataType))
 	@Html.EditorFor(Function(m) m.HorizontalStart)
@@ -16,6 +17,8 @@ Headings &amp; Breaks
 
 	<br />
 	Vertical :@Html.ColumnDropdown("VerticalID", Model.VerticalID, Model.AvailableColumns, "refreshCrossTabColumn(event.target, 'Vertical');")
+	@Html.ValidationMessageFor(Function(m) m.VerticalID)
+
 	@Html.Hidden("VerticalDataType", CInt(Model.VerticalDataType))
 	@Html.EditorFor(Function(m) m.VerticalStart)
 	@Html.EditorFor(Function(m) m.VerticalStop)

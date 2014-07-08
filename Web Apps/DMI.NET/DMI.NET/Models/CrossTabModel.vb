@@ -15,7 +15,7 @@ Namespace Models
 	Public Class CrossTabModel
 		Inherits ReportBaseModel
 
-		<Required>
+		<Range(1, Integer.MaxValue, ErrorMessage:="Horizontal column not selected")>
 		Public Property HorizontalID As Integer
 		Public Property HorizontalStart As Integer
 		Public Property HorizontalStop As Integer
@@ -24,8 +24,9 @@ Namespace Models
 		<HiddenInput>
 		Public Property HorizontalDataType As SQLDataType
 
-		<Required>
+		<Range(1, Integer.MaxValue, ErrorMessage:="Vertical column not selected")>
 		Public Property VerticalID As Integer
+
 		Public Property VerticalStart As Integer
 		Public Property VerticalStop As Integer
 		Public Property VerticalIncrement As Integer

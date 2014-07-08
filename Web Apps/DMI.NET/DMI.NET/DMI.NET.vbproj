@@ -169,6 +169,7 @@
     <Compile Include="Classes\ReportRelatedTable.vb" />
     <Compile Include="Classes\ReportRepetition.vb" />
     <Compile Include="Classes\ReportSortItem.vb" />
+    <Compile Include="Classes\ReportTableItem.vb" />
     <Compile Include="Code\ApplicationSettings.vb" />
     <Compile Include="Code\ASRFunctions.vb" />
     <Compile Include="Code\ASRIntranetFunctions.vb" />
@@ -181,6 +182,7 @@
     <Compile Include="Controllers\HomeController.vb" />
     <Compile Include="Controllers\ReportsController.vb" />
     <Compile Include="Controllers\SessionLessController.vb" />
+    <Compile Include="Enums\ColumnSelectionType.vb" />
     <Compile Include="Enums\ExistingFile.vb" />
     <Compile Include="Enums\Layout.vb" />
     <Compile Include="Enums\RecordSelectionType.vb" />
@@ -190,7 +192,7 @@
     <Compile Include="Helpers\AccessGrid.vb" />
     <Compile Include="Helpers\AvailableReportColumns.vb" />
     <Compile Include="Helpers\ButtonHelper.vb" />
-    <Compile Include="Helpers\ColumnDropdown.vb" />
+    <Compile Include="Helpers\DropdownHelper.vb" />
     <Compile Include="Helpers\DisabledIf.vb" />
     <Compile Include="Helpers\EnumDropdown.vb" />
     <Compile Include="Helpers\SelectedReportColumns.vb" />

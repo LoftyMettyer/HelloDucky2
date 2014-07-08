@@ -187,13 +187,20 @@ Namespace Controllers
 		<HttpGet>
 		Function GetAvailableColumns(baseTableID As Integer) As JsonResult
 
-			'Dim blah = objReportRepository.getModel(1)
-
 			Dim objColumns = objReportRepository.GetColumnsForTable(baseTableID)
 			Dim results = New With {.total = 1, .page = 1, .records = 1, .rows = objColumns}
 			Return Json(results, JsonRequestBehavior.AllowGet)
 
 		End Function
+
+		<HttpGet>
+		Function GetBaseTables() As JsonResult
+
+			Dim objTables = objReportRepository.GetTables()
+			Return Json(objTables, JsonRequestBehavior.AllowGet)
+
+		End Function
+
 
 	End Class
 

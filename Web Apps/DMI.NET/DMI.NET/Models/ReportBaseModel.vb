@@ -41,7 +41,7 @@ Namespace Models
 		Public Property FilterName As String
 		Public Property PicklistName As String
 
-		Public Property BaseTables As New Collection(Of SelectListItem)
+		Public Property BaseTables As New List(Of ReportTableItem)
 
 		<DisplayName("Display Title In Report Header")>
 		Public Property DisplayTitleInReportHeader As Boolean
