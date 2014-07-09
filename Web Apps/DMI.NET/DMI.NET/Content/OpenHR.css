@@ -1074,3 +1074,36 @@ input[type=button].Embedded, input[type=button].Linked {
 	right: 2px;
 	cursor: default;
 }
+
+#frmGotoOption {
+	visibility: hidden;
+	display: none;
+}
+
+.optiondatagridpage .floatleft {
+	float: left;
+}
+
+.optiondatagridpage .floatright {
+	float: right;
+}
+
+.optiondatagridpage .clearboth {
+	clear: both;
+}
+
+
+.formField {
+	margin: 10px auto;	
+	width: 340px;
+}
+
+.formField label {
+	display: inline-block;
+	width: 120px;
+}
+
+.formField input {
+	display: inline-block;
+	width: 195px;
+}

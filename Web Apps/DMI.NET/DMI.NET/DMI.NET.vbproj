@@ -226,6 +226,7 @@
     </Compile>
     <Compile Include="Models\PollMessageModel.vb" />
     <Compile Include="Repository\ReportRepository.vb" />
+    <Compile Include="ViewModels\Home\OptionDataGridViewModel.vb" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="My Project\Resources.resx">
@@ -1124,6 +1125,7 @@
     <Content Include="Content\themes\vader\jquery.ui.tooltip.min.css" />
     <Content Include="Database\UpdateScript8.1.sql" />
     <Content Include="Scripts\jquery\jquery.numeric.js" />
+    <Content Include="Scripts\FormScripts\OptionDataGrid.js" />
     <Content Include="Scripts\jquery\jquery-ui-i18n.js" />
     <Content Include="lpks\ssmain.lpk" />
     <Content Include="Content\fonts\SSI80v194934\SSI80v1.woff" />
@@ -1602,15 +1604,11 @@
     <Content Include="Views\Home\stdrpt_AbsenceCalendar.ascx" />
     <Content Include="Views\Home\stdrpt_AbsenceCalendar_details.aspx" />
     <Content Include="Views\Home\stdrpt_run_AbsenceBreakdown.ascx" />
-    <Content Include="Views\Home\tbAddFromWaitingListFind.ascx" />
-    <Content Include="Views\Home\tbBookCourseFind.ascx" />
     <Content Include="Views\Home\tbBulkBooking.ascx" />
     <Content Include="Views\Home\tbBulkBookingSelection.ascx" />
     <Content Include="Views\Home\tbBulkBookingSelectionData.ascx" />
     <Content Include="Views\Home\tbBulkBookingSelectionMain.aspx" />
     <Content Include="Views\Home\tbStatusPrompt.ascx" />
-    <Content Include="Views\Home\tbTransferBookingFind.ascx" />
-    <Content Include="Views\Home\tbTransferCourseFind.ascx" />
     <Content Include="Views\Home\util_calcselection.ascx" />
     <Content Include="Views\Home\util_def_calendarreportdates.ascx" />
     <Content Include="Views\Home\util_def_calendarreportdates_data.ascx" />
@@ -1679,6 +1677,7 @@
     <Content Include="Views\Reports\Util_Def_CrossTab.vbhtml" />
     <Content Include="Views\Reports\Util_Def_CustomReport.vbhtml" />
     <Content Include="Views\Reports\Util_Def_MailMerge.vbhtml" />
+    <Content Include="Views\Home\OptionDataGrid.vbhtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Global.asax" />
@@ -1720,7 +1719,6 @@
     <Content Include="Views\Shared\Error.aspx" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="ViewModels\" />
     <Folder Include="Views\Home\pictures\" />
   </ItemGroup>
   <ItemGroup>

@@ -99,6 +99,10 @@ Namespace App_Start
 			bundles.Add(New Bundle("~/bundles/OpenHR_ActiveX").Include(
 				"~/Scripts/ctl_SetFont.js"))
 
+			' OptionData grid bundle
+			bundles.Add(New ScriptBundle("~/bundles/optiondatagrid").Include(
+										 "~/Scripts/FormScripts/OptiondataGrid.js"))
+
 #If DEBUG Then
 
 			For Each bundle As Bundle In BundleTable.Bundles

@@ -469,7 +469,7 @@ function optiondata_onload() {
 			frmOptionData.txtRecordCount.value = iCount;
 
 			if (fRecordAdded == true) {
-				locateRecord(OpenHR.getForm("optionframe", "frmtbFindForm").txtOptionRecordID.value, true); //should be in scope!
+				locateRecord($('#RecordID').val(), true); //should be in scope!
 			}
 
 			tbrefreshControls();
