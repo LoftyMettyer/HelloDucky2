@@ -1991,12 +1991,32 @@ function menu_refreshMenu() {
 					(frmMenuInfo.txtTB_TBStatusColumnUpdate.value.toUpperCase() == "TRUE"));
 		}
 		else {
-			if ((sCurrentWorkPage == "LINKFIND") ||
-					(sCurrentWorkPage == "LOOKUPFIND") ||
-					(sCurrentWorkPage == "TBTRANSFERCOURSEFIND") ||
+			if ((sCurrentWorkPage == "TBTRANSFERCOURSEFIND") ||
 					(sCurrentWorkPage == "TBBOOKCOURSEFIND") ||
 					(sCurrentWorkPage == "TBTRANSFERBOOKINGFIND") ||
 					(sCurrentWorkPage == "TBADDFROMWAITINGLISTFIND")) {
+				menu_disableFindMenu();
+				var frmOptionData = document.getElementById('frmOptionData');
+				if (frmOptionData.txtRecordCount.value > 0) {
+					iStartPosition = parseInt(frmOptionData.txtFirstRecPos.value);
+					iEndPosition = iStartPosition - 1 + parseInt(frmOptionData.txtRecordCount.value);
+					sCaption = "Records " +
+							iStartPosition +
+							" to " +
+							iEndPosition +
+							" of " +
+							frmOptionData.txtTotalRecordCount.value;
+				}
+				else {
+					sCaption = "No Records";
+				}
+				menu_setVisibleMenuItem("mnutoolRecordPosition", true);
+				menu_SetmnutoolRecordPositionCaption(sCaption);
+				$("#mnutoolHistory").hide();
+
+			}
+			else if ((sCurrentWorkPage == "LINKFIND") ||
+								(sCurrentWorkPage == "LOOKUPFIND")) {
 
 				// TODO: This does not work yet.
 				
@@ -2258,7 +2278,13 @@ function menu_refreshMenu() {
 	menu_toolbarEnableItem("mnutoolCancelBookingRecordFind", fCancelBookingEnabled);
 	menu_setVisibleMenuItem("mnutoolBulkBookingRecordFind", fBulkBookingVisible);
 	menu_toolbarEnableItem("mnutoolBulkBookingRecordFind", fBulkBookingEnabled);
-	menu_setVisibletoolbarGroupById("mnuSectionRecordFindTrainingBooking", fBulkBookingVisible || fAddFromWaitingListVisible || fTransferBookingVisible || fCancelBookingVisible);
+
+	fCurrentlyInBookingAction = ((sCurrentWorkPage == "TBTRANSFERCOURSEFIND") ||
+					(sCurrentWorkPage == "TBBOOKCOURSEFIND") ||
+					(sCurrentWorkPage == "TBTRANSFERBOOKINGFIND") ||
+					(sCurrentWorkPage == "TBADDFROMWAITINGLISTFIND"))
+
+	menu_setVisibletoolbarGroupById("mnuSectionRecordFindTrainingBooking", (fBulkBookingVisible || fAddFromWaitingListVisible || fTransferBookingVisible || fCancelBookingVisible) && (!fCurrentlyInBookingAction));	
 
 	fCanSeeLookupTableMenu = true;
 	try {
