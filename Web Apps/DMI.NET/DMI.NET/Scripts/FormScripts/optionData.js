@@ -354,10 +354,10 @@ function optiondata_onload() {
 				sErrorMsg = frmOptionData.txtErrorMessage2.value;
 				if (sErrorMsg.length > 0) {
 					// We've got an error.
-					Cancel(); //should be in scope!
+					$('#cmdCancel').click(); //should be in scope!
 					//window.parent.frames("menuframe").ASRIntranetFunctions.ClosePopup();
 					OpenHR.messageBox(sErrorMsg);
-					return;
+					return false;
 				}
 			}
 			sAction = frmOptionData.txtOptionAction.value; // Refresh the link find grid with the data if required.
