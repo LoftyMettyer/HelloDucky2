@@ -4471,7 +4471,7 @@ function menu_loadSelectOrderFilter(psType) {
 	
 	if (lngRecordID > 0) {
 	menu_ShowWait("Loading matching employees...");
-	menu_disableMenu();
+	menu_disableFindMenu();
 
 	frmOptionArea = OpenHR.getForm("optionframe", "frmGotoOption");
 
