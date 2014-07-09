@@ -49,7 +49,9 @@
 
 	function Cancel()
 	{  
-		//TODO: window.parent.frames("workframe").document.forms("frmFindForm").ssOleDBGridFindRecords.style.visibility = "visible";
+		$("#optionframe").hide();
+		$("#workframe").show();
+
 		var frmGotoOption = document.getElementById("frmGotoOption");
 		
 		frmGotoOption.txtGotoOptionAction.value = "CANCEL";
