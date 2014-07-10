@@ -1,10 +1,12 @@
-﻿Option Explicit On
-Option Strict On
+﻿Option Strict On
+Option Explicit On
 
 Namespace Classes
 	Public Class ReportSortItem
+		Implements IJsonSerialize
+
 		Public Property TableID As Integer
-		Public Property ID As Integer
+		Public Property ID As Integer Implements IJsonSerialize.ID
 		Public Property Name As String
 		Public Property Order As String
 		Public Property Sequence As Integer

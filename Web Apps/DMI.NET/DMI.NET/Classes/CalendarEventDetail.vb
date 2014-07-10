@@ -5,9 +5,10 @@ Imports System.ComponentModel
 
 Namespace Classses
 	Public Class CalendarEventDetail
+		Implements IJsonSerialize
 
 		<Browsable(False)>
-		Public Property ID As Integer
+		Public Property ID As Integer Implements IJsonSerialize.ID
 		Public Property EventKey As String
 
 		Public Property CalendarReportID As Integer

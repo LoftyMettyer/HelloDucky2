@@ -1,9 +1,12 @@
 ﻿@Imports DMI.NET
 @Imports DMI.NET.Helpers
+@Imports DMI.NET.Code.Extensions
 @Inherits System.Web.Mvc.WebViewPage(Of Models.CalendarReportModel)
 
 <div class="left">
+
 	@Html.TableFor("Events", Model.Events, Nothing)
+	<table id="CalendarEvents"></table>
 </div>
 
 <div class="right">
@@ -17,6 +20,36 @@
 </div>
 
 <script type="text/javascript">
+
+	$(function () {
+		attachCalendarEventsGrid();
+	})
+
+	function	attachCalendarEventsGrid() {
+	
+		jQuery("#SortOrderColumns").jqGrid({
+
+			datatype: 'jsonstring',
+			datastr: '@Model.Events.ToJsonResult',
+			mtype: 'GET',
+			jsonReader: {
+				root: "rows", //array containing actual data
+				page: "page", //current page
+				total: "total", //total pages for the query
+				records: "records", //total number of records
+				repeatitems: false,
+				id: "id" //index of the column with the PK in it
+			},
+			colNames: ['EventKey', 'Name'],
+			colModel: [
+									{ name: 'EventKey', width: 50, key: true },
+									{ name: 'Name', index: 'Name', width: 300 }],
+			viewrecords: true,
+			width: 400,
+			sortname: 'Name',
+			sortorder: "desc"
+		});
+	}
 
 	function eventAdd() {
 		var sURL;

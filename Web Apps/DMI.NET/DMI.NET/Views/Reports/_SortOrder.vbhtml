@@ -1,11 +1,14 @@
 ﻿@Imports DMI.NET
 @Imports DMI.NET.Helpers
 @Imports HR.Intranet.Server.Enums
+@Imports DMI.NET.Code.Extensions
 @Inherits System.Web.Mvc.WebViewPage(Of Models.ReportBaseModel)
 
 <fieldset>
 	<legend>Sort Order :</legend>
-	@Html.SortOrderGrid("SortOrderColumns", Model.SortOrderColumns, Nothing)
+	@*@Html.SortOrderGrid("SortOrderColumns", Model.SortOrderColumns, Nothing)*@
+
+	<table id="SortOrderColumns"></table>
 
 	<input type="button" id="btnSortOrderAdd" value="Add" onclick="sortAdd();" />
 	<input type="button" id="btnSortOrderEdit" value="Edit" />
@@ -42,13 +45,48 @@
 	<fieldset>
 		@code
 			If Model.ReportType = UtilityType.utlCustomReport Then
-
-			@Html.SortOrderGrid("Repetition", Model.Repetition, Nothing)
+				@Html.SortOrderGrid("Repetition", Model.Repetition, Nothing)
 			End If
 		End Code
 	</fieldset>
 
 	<script type="text/javascript">
+
+		$(function () {
+			attachGrid();
+		})
+
+		function attachGrid() {
+
+			jQuery("#SortOrderColumns").jqGrid({
+
+				datatype: 'jsonstring',
+				datastr: '@Model.SortOrderColumns.ToJsonResult',
+				mtype: 'GET',
+				jsonReader: {
+					root: "rows", //array containing actual data
+					page: "page", //current page
+					total: "total", //total pages for the query
+					records: "records", //total number of records
+					repeatitems: false,
+					id: "id" //index of the column with the PK in it
+				},
+				colNames: ['TableID', 'ID', 'Name', 'Sequence', 'SuppressRepeated'],
+				colModel: [
+										{ name: 'TableID', width: 50, key: true },
+										{ name: 'ID', width: 1, hidden: true, key: true },
+										{ name: 'Name', index: 'Name', width: 300 },
+										{ name: 'Sequence', index: 'Sequence', width: 150 },
+										{
+											name: 'SuppressRepeated', index: 'SuppressRepeated', width: 120,
+											formatter: "checkbox", align: "center"
+										}],
+				viewrecords: true,
+				width: 400,
+				sortname: 'Name',
+				sortorder: "desc"
+			});
+		}
 
 		$("#sortOrderPopup").dialog({
 			autoOpen: false,

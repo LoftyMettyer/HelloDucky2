@@ -6,8 +6,9 @@ Imports DMI.NET.AttributeExtensions
 
 Namespace Classes
 	Public Class ReportTableItem
+		Implements IJsonSerialize
 
-		Public Property id As Integer
+		Public Property [id] As Integer Implements IJsonSerialize.ID
 		Public Property Name As String
 
 	End Class

@@ -6,8 +6,9 @@ Imports DMI.NET.AttributeExtensions
 
 Namespace Classes
 	Public Class ReportColumnItem
+		Implements IJsonSerialize
 
-		Public Property id As Integer
+		Public Property ID As Integer Implements IJsonSerialize.ID
 		Public Property IsExpression As Boolean
 		Public Property Name As String
 		Public Property CustomReportId As Integer
@@ -24,6 +25,7 @@ Namespace Classes
 		Public Property IsTotal As Boolean
 		Public Property IsHidden As Boolean
 		Public Property IsGroupWithNext As Boolean
+
 
 	End Class
 End Namespace

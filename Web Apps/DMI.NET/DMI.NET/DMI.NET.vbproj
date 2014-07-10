@@ -129,6 +129,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Import Include="DMI.NET.Code.Extensions" />
+    <Import Include="DMI.NET.Code.Interfaces" />
     <Import Include="Microsoft.VisualBasic" />
     <Import Include="System" />
     <Import Include="System.Collections" />
@@ -174,6 +176,8 @@
     <Compile Include="Code\ASRFunctions.vb" />
     <Compile Include="Code\ASRIntranetFunctions.vb" />
     <Compile Include="Code\CalendarOutput.vb" />
+    <Compile Include="Code\Interfaces\IJsonSerialize.vb" />
+    <Compile Include="Models\Extensions\ReportSortItemExtensions.vb" />
     <Compile Include="Code\GeneralUtilities.vb" />
     <Compile Include="Code\MailMergeRun.vb" />
     <Compile Include="Code\Platform.vb" />

@@ -8,6 +8,7 @@ Imports DMI.NET.Enums
 Imports System.ComponentModel.DataAnnotations
 Imports DMI.NET.AttributeExtensions
 Imports HR.Intranet.Server.Enums
+Imports System.Web.Script.Serialization
 
 Namespace Models
 	Public MustInherit Class ReportBaseModel
@@ -52,6 +53,9 @@ Namespace Models
 		Public Property Repetition As New Collection(Of ReportRepetition)
 
 		Public Property JobsToHide As New Collection(Of Integer)
+
+
+
 
 	End Class
 End Namespace
