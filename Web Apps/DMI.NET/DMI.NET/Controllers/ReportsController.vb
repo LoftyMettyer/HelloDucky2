@@ -9,13 +9,30 @@ Imports HR.Intranet.Server.Metadata
 Imports System.Collections.ObjectModel
 Imports DMI.NET.Models
 Imports DMI.NET.Classes
+Imports DMI.NET.Repository
 
 Namespace Controllers
 
 	Public Class ReportsController
 		Inherits Controller
 
-		Dim objReportRepository As New Repository.ReportRepository
+		Private objReportRepository As ReportRepository
+
+		Public Sub New()
+			objReportRepository = New ReportRepository
+		End Sub
+
+		' TODO (code beautification) - Replace with some kind of dependency injection (structuremap maybe?)
+		Protected Overrides Sub Initialize(requestContext As RequestContext)
+			MyBase.Initialize(requestContext)
+
+			If requestContext.HttpContext.Session("reportrepository") Is Nothing Then
+				requestContext.HttpContext.Session("reportrepository") = objReportRepository
+			Else
+				objReportRepository = CType(requestContext.HttpContext.Session("reportrepository"), ReportRepository)
+			End If
+
+		End Sub
 
 		<HttpGet>
 		Function util_def_customreport() As ActionResult

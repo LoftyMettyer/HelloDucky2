@@ -15,12 +15,23 @@ Imports DMI.NET.Classses
 Namespace Repository
 	Public Class ReportRepository
 
-		Private _reports As New Collection(Of ReportBaseModel)
+		Private _customreports As New Collection(Of CustomReportModel)
+		Private _crosstabs As New Collection(Of CrossTabModel)
+		Private _calendarreports As New Collection(Of CalendarReportModel)
+		Private _mailmerges As New Collection(Of MailMergeModel)
 
-		Private objSessionInfo As SessionInfo = CType(HttpContext.Current.Session("SessionContext"), SessionInfo)
-		Private objDataAccess As clsDataAccess = CType(HttpContext.Current.Session("DatabaseAccess"), clsDataAccess)
+		Private _objSessionInfo As SessionInfo
+		Private _objDataAccess As clsDataAccess
+		Private _username As String
 
-		Private _Username As String = HttpContext.Current.Session("username").ToString
+		Public Sub New()
+
+			MyBase.New()
+			_objSessionInfo = CType(HttpContext.Current.Session("SessionContext"), SessionInfo)
+			_objDataAccess = CType(HttpContext.Current.Session("DatabaseAccess"), clsDataAccess)
+			_username = HttpContext.Current.Session("username").ToString
+
+		End Sub
 
 		Public Function LoadCustomReport(ID As Integer, bIsCopy As Boolean, Action As String) As CustomReportModel
 
@@ -33,7 +44,7 @@ Namespace Repository
 				Dim sUserName = HttpContext.Current.Session("username")
 
 				'' TODO - tidy up this proc to return a dataset instead of millions of bloody parameters!
-				Dim dsDefinition As DataSet = objDataAccess.GetDataSet("spASRIntGetCustomReportDefinition" _
+				Dim dsDefinition As DataSet = _objDataAccess.GetDataSet("spASRIntGetCustomReportDefinition" _
 					, New SqlParameter("piReportID", SqlDbType.Int) With {.Value = CInt(ID)} _
 					, New SqlParameter("psCurrentUser", SqlDbType.VarChar, 255) With {.Value = sUserName} _
 					, New SqlParameter("psAction", SqlDbType.VarChar, 255) With {.Value = lngAction})
@@ -70,7 +81,7 @@ Namespace Repository
 				objModel.Columns.Selected = New Collection(Of ReportColumnItem)
 				objModel.Columns.AvailableTables = GetTables()
 
-				For Each objRow As System.Data.DataRow In dsDefinition.Tables(1).Rows
+				For Each objRow As DataRow In dsDefinition.Tables(1).Rows
 					Dim objItem As New ReportColumnItem() With {
 						.CustomReportId = ID,
 						.Heading = objRow("Heading").ToString,
@@ -88,12 +99,17 @@ Namespace Repository
 
 				Next
 
-				' add
-				'Repetition()
+				' Repetition
+				For Each objRow As DataRow In dsDefinition.Tables(3).Rows
+					Dim objRepeatItem As New ReportRepetition() With {
+							.ID = CInt(objRow("id")),
+							.Name = objRow("Name").ToString,
+							.IsExpression = CBool(objRow("IsExpression")),
+							.IsRepeated = CBool(objRow("IsRepeated"))}
+					objModel.Repetition.Add(objRepeatItem)
+				Next
 
 				PopulateSortOrder(objModel, dsDefinition.Tables(2))
-
-				' Output Tab
 				PopulateOutput(objModel.Output, dsDefinition.Tables(0))
 
 				' Populate the child tables
@@ -114,6 +130,8 @@ Namespace Repository
 					objModel.ID = ID
 				End If
 
+				_customreports.Add(objModel)
+
 			Catch ex As Exception
 				Throw
 
@@ -128,9 +146,9 @@ Namespace Repository
 			Dim objModel As New MailMergeModel
 			Dim objItem As ReportColumnItem
 
-			Dim dsDefinition = objDataAccess.GetDataSet("spASRIntGetMailMergeDefinition" _
+			Dim dsDefinition = _objDataAccess.GetDataSet("spASRIntGetMailMergeDefinition" _
 				, New SqlParameter("@piReportID", SqlDbType.Int) With {.Value = ID} _
-				, New SqlParameter("@psCurrentUser", SqlDbType.VarChar, 255) With {.Value = _Username} _
+				, New SqlParameter("@psCurrentUser", SqlDbType.VarChar, 255) With {.Value = _username} _
 				, New SqlParameter("@psAction", SqlDbType.VarChar, 255) With {.Value = Action})
 
 			PopulateDefintion(objModel, dsDefinition.Tables(0))
@@ -196,7 +214,7 @@ Namespace Repository
 				objModel.ID = ID
 			End If
 
-			_reports.Add(objModel)
+			_mailmerges.Add(objModel)
 
 			Return objModel
 
@@ -248,9 +266,9 @@ Namespace Repository
 
 			Try
 
-				Dim dtDefinition = objDataAccess.GetFromSP("spASRIntGetCrossTabDefinition", _
+				Dim dtDefinition = _objDataAccess.GetFromSP("spASRIntGetCrossTabDefinition", _
 						New SqlParameter("piReportID", SqlDbType.Int) With {.Value = ID}, _
-						New SqlParameter("psCurrentUser", SqlDbType.VarChar, 255) With {.Value = _Username}, _
+						New SqlParameter("psCurrentUser", SqlDbType.VarChar, 255) With {.Value = _username}, _
 						New SqlParameter("psAction", SqlDbType.VarChar, 255) With {.Value = Action})
 
 				PopulateDefintion(objModel, dtDefinition)
@@ -259,19 +277,19 @@ Namespace Repository
 					Dim objRow As DataRow = dtDefinition.Rows(0)
 
 					objModel.HorizontalID = CInt(objRow("HorizontalID"))
-					objModel.HorizontalDataType = objSessionInfo.GetColumn(objModel.HorizontalID).DataType
+					objModel.HorizontalDataType = _objSessionInfo.GetColumn(objModel.HorizontalID).DataType
 					objModel.HorizontalStart = CInt(objRow("HorizontalStart"))
 					objModel.HorizontalStop = CInt(objRow("HorizontalStop"))
 					objModel.HorizontalIncrement = CInt(objRow("HorizontalIncrement"))
 
 					objModel.VerticalID = CInt(objRow("VerticalID"))
-					objModel.VerticalDataType = objSessionInfo.GetColumn(objModel.VerticalID).DataType
+					objModel.VerticalDataType = _objSessionInfo.GetColumn(objModel.VerticalID).DataType
 					objModel.VerticalStart = CInt(objRow("VerticalStart"))
 					objModel.VerticalStop = CInt(objRow("VerticalStop"))
 					objModel.VerticalIncrement = CInt(objRow("VerticalIncrement"))
 
 					objModel.PageBreakID = CInt(objRow("PageBreakID"))
-					objModel.PageBreakDataType = objSessionInfo.GetColumn(objModel.PageBreakID).DataType
+					objModel.PageBreakDataType = _objSessionInfo.GetColumn(objModel.PageBreakID).DataType
 					objModel.PageBreakStart = CInt(objRow("PageBreakStart"))
 					objModel.PageBreakStop = CInt(objRow("PageBreakStop"))
 					objModel.PageBreakIncrement = CInt(objRow("PageBreakIncrement"))
@@ -314,9 +332,9 @@ Namespace Repository
 			Dim objModel As New CalendarReportModel
 			Dim objEvent As CalendarEventDetail
 
-			Dim dsDefinition = objDataAccess.GetDataSet("spASRIntGetCalendarReportDefinition", _
+			Dim dsDefinition = _objDataAccess.GetDataSet("spASRIntGetCalendarReportDefinition", _
 					New SqlParameter("@piCalendarReportID", SqlDbType.Int) With {.Value = ID}, _
-					New SqlParameter("psCurrentUser", SqlDbType.VarChar, 255) With {.Value = _Username}, _
+					New SqlParameter("psCurrentUser", SqlDbType.VarChar, 255) With {.Value = _username}, _
 					New SqlParameter("psAction", SqlDbType.VarChar, 255) With {.Value = Action})
 
 			PopulateDefintion(objModel, dsDefinition.Tables(0))
@@ -419,7 +437,7 @@ Namespace Repository
 			Dim sAccess = UtilityAccessAsString(objModel.GroupAccess)
 			Dim sColumns = ReportColumnsAsString(objModel.Columns.Selected, objModel.SortOrderColumns)
 
-			objDataAccess.ExecuteSP("sp_ASRIntSaveMailMerge" _
+			_objDataAccess.ExecuteSP("sp_ASRIntSaveMailMerge" _
 				, New SqlParameter("@psName", SqlDbType.VarChar, 255) With {.Value = objModel.Name} _
 				, New SqlParameter("@psDescription", SqlDbType.VarChar, -1) With {.Value = objModel.Description} _
 				, New SqlParameter("@piTableID", SqlDbType.Int) With {.Value = objModel.BaseTableID} _
@@ -449,8 +467,7 @@ Namespace Repository
 				, New SqlParameter("@psColumns2", SqlDbType.VarChar, -1) With {.Value = ""} _
 			, prmID)
 
-
-			_reports.Remove(objModel)
+			_mailmerges.Remove(objModel)
 
 			Return True
 
@@ -467,7 +484,7 @@ Namespace Repository
 				Dim psJobsToHide As String = ""	' Request.Form("txtSend_jobsToHide")
 				Dim psJobsToHideGroups As String = ""	' Request.Form("txtSend_jobsToHideGroups")}
 
-				objDataAccess.ExecuteSP("sp_ASRIntSaveCrossTab", _
+				_objDataAccess.ExecuteSP("sp_ASRIntSaveCrossTab", _
 						New SqlParameter("psName", SqlDbType.VarChar, 255) With {.Value = objModel.Name}, _
 						New SqlParameter("psDescription", SqlDbType.VarChar, -1) With {.Value = objModel.Description}, _
 						New SqlParameter("piTableID", SqlDbType.Int) With {.Value = objModel.BaseTableID}, _
@@ -521,7 +538,10 @@ Namespace Repository
 
 		Public Function SaveReportDefinition(objModel As CustomReportModel) As Boolean
 
-			Return True ' TODO
+			_customreports.Remove(objModel.ID)
+
+			Return True	' TODO
+
 
 			Try
 
@@ -533,7 +553,7 @@ Namespace Repository
 				Dim sColumns = ReportColumnsAsString(objModel.Columns.Selected, objModel.SortOrderColumns)
 				Dim sChildren As String = ReportChildTablesAsString(objModel.ChildTables)
 
-				objDataAccess.ExecuteSP("sp_ASRIntSaveCustomReport", _
+				_objDataAccess.ExecuteSP("sp_ASRIntSaveCustomReport", _
 						New SqlParameter("psName", SqlDbType.VarChar, 255) With {.Value = objModel.Name}, _
 						New SqlParameter("psDescription", SqlDbType.VarChar, -1) With {.Value = objModel.Description}, _
 						New SqlParameter("piBaseTableID", SqlDbType.Int) With {.Value = objModel.BaseTableID}, _
@@ -625,7 +645,7 @@ Namespace Repository
 				' Calendar reports don't save the selection type - instead they have a boolean allrecords flag
 				If objModel.PicklistID = 0 And objModel.FilterID = 0 Then bAllRecords = True
 
-				objDataAccess.ExecuteSP("spASRIntSaveCalendarReport", _
+				_objDataAccess.ExecuteSP("spASRIntSaveCalendarReport", _
 				New SqlParameter("psName", SqlDbType.VarChar, 255) With {.Value = objModel.Name}, _
 					New SqlParameter("psDescription", SqlDbType.VarChar, -1) With {.Value = objModel.Description}, _
 					New SqlParameter("piBaseTable", SqlDbType.Int) With {.Value = objModel.BaseTableID}, _
@@ -696,7 +716,7 @@ Namespace Repository
 				'objModel.GroupAccess = GetUtilityAccess(UtilityType.utlCalendarReport, ID, bIsCopy)
 
 
-				Dim rstAccessInfo As DataTable = objDataAccess.GetDataTable("spASRIntGetUtilityAccessRecords", CommandType.StoredProcedure _
+				Dim rstAccessInfo As DataTable = _objDataAccess.GetDataTable("spASRIntGetUtilityAccessRecords", CommandType.StoredProcedure _
 					, New SqlParameter("piUtilityType", SqlDbType.Int) With {.Value = CInt(utilType)} _
 					, New SqlParameter("piID", SqlDbType.Int) With {.Value = ID} _
 					, New SqlParameter("piFromCopy", SqlDbType.Int) With {.Value = IsCopy})

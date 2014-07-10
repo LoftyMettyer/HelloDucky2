@@ -15,6 +15,12 @@ Namespace Models
 	Public Class CrossTabModel
 		Inherits ReportBaseModel
 
+		Public Overrides ReadOnly Property ReportType As UtilityType
+			Get
+				Return UtilityType.utlCrossTab
+			End Get
+		End Property
+
 		<Range(1, Integer.MaxValue, ErrorMessage:="Horizontal column not selected")>
 		Public Property HorizontalID As Integer
 		Public Property HorizontalStart As Integer

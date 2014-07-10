@@ -6,5 +6,6 @@ Namespace Classes
 		Public Property ID As Integer
 		Public Property Name As String
 		Public Property IsRepeated As Boolean
+		Public Property IsExpression As Boolean
 	End Class
 End Namespace

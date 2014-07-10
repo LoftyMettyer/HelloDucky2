@@ -40,6 +40,13 @@ End Code
 
 <div>
 
+	@*<input type="button" onclick="submitThisTab();" value="Definition" />
+	<input type="button" onclick="submitThisTab();" value="Related Tables" />
+	<input type="button" onclick="submitThisTab();" value="Columns" />
+	<input type="button" onclick="submitThisTab();" value="Sort Order" />
+	<input type="button" onclick="submitThisTab();" value="Output" />*@
+
+
 @Using (Html.BeginForm("util_def_customreport", "Reports", FormMethod.Post, New With {.id = "frmReportDefintion", .name = "frmReportDefintion",
 																																								.defaultbutton = "submitCustomReport"}))
 

@@ -202,6 +202,7 @@
     <Compile Include="Models\CalendarReportModel.vb" />
     <Compile Include="Models\CrossTabModel.vb" />
     <Compile Include="Models\CustomReportModel.vb" />
+    <Compile Include="Models\Extensions\ReportBaseModelExtensions.vb" />
     <Compile Include="Models\MailMergeModel.vb" />
     <Compile Include="Models\OrgChart.vb" />
     <Compile Include="Models\CalendarEvent.vb" />

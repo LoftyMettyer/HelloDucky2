@@ -15,6 +15,12 @@ Namespace Models
 	Public Class MailMergeModel
 		Inherits ReportBaseModel
 
+		Public Overrides ReadOnly Property ReportType As UtilityType
+			Get
+				Return UtilityType.utlMailMerge
+			End Get
+		End Property
+
 		'Public Property Definition As DefinitionViewModel
 		Public Property Columns As New ReportColumnsModel
 

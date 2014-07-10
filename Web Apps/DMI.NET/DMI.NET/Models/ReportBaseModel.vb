@@ -7,11 +7,13 @@ Imports System.ComponentModel
 Imports DMI.NET.Enums
 Imports System.ComponentModel.DataAnnotations
 Imports DMI.NET.AttributeExtensions
+Imports HR.Intranet.Server.Enums
 
 Namespace Models
-	Public Class ReportBaseModel
+	Public MustInherit Class ReportBaseModel
 
 		Public Property IsReadOnly As Boolean
+		Public MustOverride ReadOnly Property ReportType As UtilityType
 
 		Public Property ID As Integer
 		Public Property Owner As String
@@ -47,6 +49,7 @@ Namespace Models
 		Public Property DisplayTitleInReportHeader As Boolean
 
 		Public Property SortOrderColumns As New Collection(Of ReportSortItem)
+		Public Property Repetition As New Collection(Of ReportRepetition)
 
 		Public Property JobsToHide As New Collection(Of Integer)
 

@@ -1013,11 +1013,10 @@ BEGIN
 		AND ASRSysCustomReportsDetails.sortOrderSequence > 0
 
 	SELECT 'N' AS [hidden],
-		'C' + convert(varchar(255), ASRSysCustomReportsDetails.colExprID),
-		convert(varchar(MAX), ASRSysTables.tableName + '.' + ASRSysColumns.columnName),
-		convert(varchar(MAX), ASRSysCustomReportsDetails.repetition),
-		convert(varchar(255), ASRSysTables.tableID),
-		convert(varchar(255), ASRSysCustomReportsDetails.Hidden),
+		0 AS IsExpression,
+		ASRSysCustomReportsDetails.colExprID	AS [ID],
+		ASRSysTables.tableName + '.' + ASRSysColumns.columnName AS [Name],
+		ASRSysCustomReportsDetails.repetition AS IsRepeated,
 		ASRSysCustomReportsDetails.sequence AS [sequence]
 	FROM ASRSysCustomReportsDetails
 		INNER JOIN ASRSysColumns ON ASRSysCustomReportsDetails.colExprID = ASRSysColumns.columnId
@@ -1030,11 +1029,10 @@ BEGIN
 			WHEN ASRSysExpressions.access = 'HD' THEN 'Y'
 			ELSE 'N'
 		END AS [hidden],
-		'E' + convert(varchar(8000), ASRSysCustomReportsDetails.colExprID),
-		'<' + ASRSysTables.TableName + ' Calc> ' + convert(varchar(MAX), ASRSysExpressions.Name),
-		convert(varchar(100), ASRSysCustomReportsDetails.repetition),
-		convert(varchar(255), ASRSysExpressions.tableID),
-		convert(varchar(255), ASRSysCustomReportsDetails.Hidden),
+		1 AS IsExpression,
+		ASRSysCustomReportsDetails.colExprID AS [id],
+		'<' + ASRSysTables.TableName + ' Calc> ' + convert(varchar(MAX), ASRSysExpressions.Name) AS Name,
+		ASRSysCustomReportsDetails.repetition  AS IsRepeated,
 		ASRSysCustomReportsDetails.sequence AS [sequence]
 	FROM ASRSysCustomReportsDetails
 		INNER JOIN ASRSysExpressions ON ASRSysCustomReportsDetails.colExprID = ASRSysExpressions.ExprID

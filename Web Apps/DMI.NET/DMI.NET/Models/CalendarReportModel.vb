@@ -14,6 +14,12 @@ Namespace Models
 	Public Class CalendarReportModel
 		Inherits ReportBaseModel
 
+		Public Overrides ReadOnly Property ReportType As UtilityType
+			Get
+				Return UtilityType.utlCalendarReport
+			End Get
+		End Property
+
 		Public Property Description1Id As Integer
 		Public Property Description2Id As Integer
 		Public Property Description3Id As Integer
