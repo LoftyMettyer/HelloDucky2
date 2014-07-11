@@ -134,7 +134,7 @@ function optiondata_onload() {
 					colModel: colMode,
 					rowNum: 1000,
 					autowidth: true,
-					shrinktofit: shrinkToFit,
+					shrinkToFit: shrinkToFit,
 					onSelectRow: function () {
 						linkFind_refreshControls();
 					},
@@ -445,7 +445,7 @@ function optiondata_onload() {
 					colModel: colMode,
 					rowNum: 1000,
 					autowidth: true,
-					shrinktofit: shrinkToFit,
+					shrinkToFit: shrinkToFit,
 					onSelectRow: function () {
 						tbrefreshControls();
 					},
@@ -569,7 +569,7 @@ function optiondata_onload() {
 					colModel: colMode,
 					rowNum: 1000,
 					autowidth: true,
-					shrinktofit: shrinkToFit,
+					shrinkToFit: shrinkToFit,
 					onSelectRow: function () {
 						tbrefreshControls();
 					},
@@ -599,8 +599,6 @@ function optiondata_onload() {
 
 		if (sCurrentWorkPage == "UTIL_DEF_PICKLIST") {
 			sAction = frmOptionData.txtOptionAction.value; // Refresh the link find grid with the data if required.
-
-			$("#ssOleDBGrid").jqGrid('GridUnload');
 
 			dataCollection = frmOptionData.elements; // Add the grid records.
 			fRecordAdded = false;
@@ -670,38 +668,47 @@ function optiondata_onload() {
 				}
 			}
 
-			//create the column layout:
-			var shrinkToFit = false;
-			if (colMode.length < 8) shrinkToFit = true;
 
-			$("#ssOleDBGrid").jqGrid({
-				multiselect: true,
-				data: colData,
-				datatype: 'local',
-				colNames: colNames,
-				colModel: colMode,
-				rowNum: 1000,
-				autowidth: true,
-				//width: $('#PickListGrid').width(),
-				shrinktofit: shrinkToFit,
-				onSelectRow: function () { },
-				editurl: 'clientArray',
-				afterShowForm: function ($form) {
-					$("#dData", $form.parent()).click();
-				},
-				beforeSelectRow: handleMultiSelect // handle multi select
-			}).jqGrid('hideCol', 'cb');
 
-			//resize the grid to the height of its container.
-			$("#ssOleDBGrid").jqGrid('setGridHeight', $("#PickListGrid").height());
+			//Determine if the grid already exists...
+			if ($("#ssOleDBGrid").getGridParam("reccount") == undefined) { //It doesn't exist, create it
 
-			// Select the top record.
-			if (fRecordAdded == true) {
-				moveFirst();
+				var shrinkToFit = false;
+				if (colMode.length < 8) shrinkToFit = true;
+
+				$("#ssOleDBGrid").jqGrid({
+					multiselect: true,
+					data: colData,
+					datatype: 'local',
+					colNames: colNames,
+					colModel: colMode,
+					rowNum: 1000,
+					autowidth: true,
+					shrinkToFit: shrinkToFit,
+					onSelectRow: function() {},
+					editurl: 'clientArray',
+					afterShowForm: function($form) {
+						$("#dData", $form.parent()).click();
+					},
+					beforeSelectRow: handleMultiSelect // handle multi select
+				}).jqGrid('hideCol', 'cb');
+
+				//resize the grid to the height of its container.
+				$("#ssOleDBGrid").jqGrid('setGridHeight', $("#PickListGrid").height());
+				$("#ssOleDBGrid").jqGrid('setGridWidth', $("#PickListGrid").width() - 65);
+
+				// Select the top record.
+				if (fRecordAdded == true) {
+					moveFirst();
+				}
+			} else { // The grid exists, add rows to it
+				for (var j = 0; j <= colData.length - 1; j++) {
+					$("#ssOleDBGrid").addRowData(colData[j].id, colData[j], 'last');
+				}
 			}
 
 			//Display the number of records
-			$('#RecordCountDIV').html(iCount.toString() + " Record(s)");
+			$('#RecordCountDIV').html($("#ssOleDBGrid").getGridParam('reccount') + " Record(s)");
 
 			if (frmOptionData.txtExpectedCount.value > iCount) {
 				if (iCount == 0) {

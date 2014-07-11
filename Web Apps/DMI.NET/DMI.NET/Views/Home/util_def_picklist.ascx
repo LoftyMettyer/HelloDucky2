@@ -186,7 +186,7 @@
 																	End Try
 
 																%>
-																<div id="PickListGrid" style="height: 400px; margin-bottom: 50px; width: 75%;">
+																<div id="PickListGrid" style="height: 400px; margin-bottom: 50px; width: 90%;">
 																	<table id="ssOleDBGrid" style="width: 100%"></table>
 																</div>
 															</td>

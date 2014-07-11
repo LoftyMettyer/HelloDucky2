@@ -118,7 +118,7 @@
 					colModel: colMode,
 					rowNum: 1000,
 					autowidth: true,
-					shrinktofit: shrinkToFit,
+					shrinkToFit: shrinkToFit,
 					onSelectRow: function () { },
 					ondblClickRow: function (rowID) {
 						makeSelection();
@@ -132,6 +132,7 @@
 
 				//resize the grid to the height of its container.
 				$("#ssOleDBGridSelRecords").jqGrid('setGridHeight', $("#ssOleDBGridSelRecordsDiv").height());
+				$("#ssOleDBGridSelRecords").jqGrid('setGridWidth', $("#ssOleDBGridSelRecordsDiv").width());
 
 				// Select the top record.
 				if (fRecordAdded == true) {

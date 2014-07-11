@@ -128,7 +128,7 @@
 					rowNum: 1000,
 					multiselect: true,
 					autowidth: true,
-					shrinktofit: shrinkToFit,
+					shrinkToFit: shrinkToFit,
 					beforeSelectRow: handleMultiSelect, // handle multi select
 					onSelectRow: function () {
 						ssOleDBGridSelRecords_rowcolchange();

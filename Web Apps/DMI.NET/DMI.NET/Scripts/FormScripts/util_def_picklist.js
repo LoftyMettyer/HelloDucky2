@@ -99,8 +99,6 @@ function submitDefinition() {
 
 function addClick() {
 	/* Get the current selected delegate IDs. */
-
-
 	picklistdef_moveFirst();
 
 	var sSelectedIDs1 = $('#ssOleDBGrid').getDataIDs().join(",");
@@ -116,6 +114,9 @@ function addClick() {
 }
 
 function addAllClick() {
+	$("#ssOleDBGrid").jqGrid('GridUnload'); //Clear the grid
+	$('#RecordCountDIV').html(''); //Clear the "Records" label
+
 	frmUseful.txtChanged.value = 1;
 	picklistdef_makeSelection("ALLRECORDS", 0, "");
 }
