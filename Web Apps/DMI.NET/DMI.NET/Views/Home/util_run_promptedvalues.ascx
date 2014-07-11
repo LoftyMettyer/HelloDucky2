@@ -1,4 +1,5 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
+<%@ Import Namespace="HR.Intranet.Server.Enums" %>
 <%@ Import Namespace="DMI.NET" %>
 <%@ Import Namespace="HR.Intranet.Server" %>
 <%@ Import Namespace="System.Data" %>
@@ -151,7 +152,7 @@
 
 				Dim iValueType As Integer
 	
-				Dim bAddUploadTemplate As Boolean = (CType(Session("utiltype"), Enums.UtilityType) = Enums.UtilityType.utlMailMerge)
+				Dim bAddUploadTemplate As Boolean = (CType(Session("utiltype"), UtilityType) = UtilityType.utlMailMerge)
 				Dim iPromptCount = CInt(IIf(bAddUploadTemplate, 1, 0))
 				
 				rstPromptedValue = objDatabaseAccess.GetDataTable("sp_ASRIntGetUtilityPromptedValues", CommandType.StoredProcedure, _
