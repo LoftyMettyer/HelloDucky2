@@ -36,17 +36,19 @@
     <authentication mode="Windows" />
     <identity impersonate="true" />
     <globalization culture="auto" uiCulture="auto" enableClientBasedCulture="true" />
-	<httpModules>
-		<add name="ErrorLog" type="Elmah.ErrorLogModule, Elmah" />
-	</httpModules>
+		<httpModules>
+			<add name="ErrorLog" type="Elmah.ErrorLogModule, Elmah" />
+			<add name="ErrorMail" type="Elmah.ErrorMailModule, Elmah" />
+			<add name="ErrorFilter" type="Elmah.ErrorFilterModule, Elmah" />
+		</httpModules>
 	</system.web>
 	<system.webServer>
 		<validation validateIntegratedModeConfiguration="false" />
 		<modules runAllManagedModulesForAllRequests="true">
-		<add name="ErrorLog" type="Elmah.ErrorLogModule, Elmah" preCondition="managedHandler" />
-		<add name="ErrorFilter" type="Elmah.ErrorFilterModule, Elmah" preCondition="managedHandler" />
-		<add name="ErrorMail" type="Elmah.ErrorMailModule, Elmah" preCondition="managedHandler" />
-		</modules>
+			<add name="ErrorLog" type="Elmah.ErrorLogModule, Elmah" preCondition="managedHandler" />
+			<add name="ErrorMail" type="Elmah.ErrorMailModule, Elmah" preCondition="managedHandler" />
+			<add name="ErrorFilter" type="Elmah.ErrorFilterModule, Elmah" preCondition="managedHandler" />
+		</modules>	
 	</system.webServer>
   <runtime>
     <assemblyBinding xmlns="urn:schemas-microsoft-com:asm.v1">
@@ -69,27 +71,35 @@
     </assemblyBinding>
   </runtime>
 	<elmah>
-		<security allowRemoteAccess="true" />
+		<!--
+        See http://code.google.com/p/elmah/wiki/SecuringErrorLogPages for 
+        more information on remote access and securing ELMAH.
+    -->
+		<security allowRemoteAccess="false" />
 	</elmah>
-	<location path="elmah.axd">
+	<location path="elmah.axd" inheritInChildApplications="false">
 		<system.web>
 			<httpHandlers>
-				<add verb="POST,GET,HEAD"
-						 path="elmah.axd"
-						 type="Elmah.ErrorLogPageFactory, Elmah" />
+				<add verb="POST,GET,HEAD" path="elmah.axd" type="Elmah.ErrorLogPageFactory, Elmah" />
 			</httpHandlers>
+			<!-- 
+        See http://code.google.com/p/elmah/wiki/SecuringErrorLogPages for 
+        more information on using ASP.NET authorization securing ELMAH.
+
+      <authorization>
+        <allow roles="admin" />
+        <deny users="*" />  
+      </authorization>
+      -->
 		</system.web>
 		<system.webServer>
 			<handlers>
-				<add name="ELMAH"
-						 verb="POST,GET,HEAD"
-						 path="elmah.axd"
-						 type="Elmah.ErrorLogPageFactory, Elmah"
-						 preCondition="integratedMode" />
+				<add name="ELMAH" verb="POST,GET,HEAD" path="elmah.axd" type="Elmah.ErrorLogPageFactory, Elmah" preCondition="integratedMode" />
 			</handlers>
 		</system.webServer>
 	</location>
-  <system.net>
+	
+	<system.net>
     <mailSettings>
       <smtp configSource="smtp.config" />
     </mailSettings>
