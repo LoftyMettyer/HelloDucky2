@@ -1092,6 +1092,9 @@ input[type=button].Embedded, input[type=button].Linked {
 	clear: both;
 }
 
+.optiondatagridpage footer {
+	text-align: right;
+}
 
 .formField {
 	margin: 10px auto;	
