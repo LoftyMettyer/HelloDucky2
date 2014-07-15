@@ -6,7 +6,7 @@ var frmUseful = OpenHR.getForm("workframe", "frmUseful");
 function util_def_picklist_onload() {
 
 	$("#workframe").attr("data-framesource", "UTIL_DEF_PICKLIST");
-
+	
 	// Expand the work frame and hide the option frame.
 	//            window.parent.document.all.item("workframeset").cols = "*, 0";
 
@@ -237,7 +237,7 @@ function okClick() {
 }
 
 function picklistdef_makeSelection(psType, piID, psPrompts) {
-//	$(".popup").dialog("close"); //TODO: Close the window after the user makes a selection
+
 	$("#workframeset").show();
 
 	/* Get the current selected delegate IDs. */
@@ -264,6 +264,9 @@ function picklistdef_makeSelection(psType, piID, psPrompts) {
 			sSelectedIDs = sSelectedIDs + "," + psPrompts;
 		}
 	}
+
+	//Close the popup now that we have read the selected IDs.
+	if ($(".popup").dialog("isOpen")) $(".popup").dialog("close");
 
 	// Get the optionData.asp to get the required records.
 	var optionDataForm = OpenHR.getForm("optiondataframe", "frmGetOptionData");

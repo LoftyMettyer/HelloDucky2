@@ -5,7 +5,7 @@
 <%@ Import Namespace="System.Data.SqlClient" %>
 
 <script src="<%: Url.LatestContent("~/bundles/utilities_picklists")%>" type="text/javascript"></script>
-<script src="<%: Url.LatestContent("~/bundles/jQueryUI7")%>" type="text/javascript"></script>
+
 
 <%--licence manager reference for activeX--%>
 
