@@ -1096,6 +1096,10 @@ input[type=button].Embedded, input[type=button].Linked {
 	text-align: right;
 }
 
+	.optiondatagridpage footer .ui-button {
+		margin-top: 10px;
+	}
+
 .formField {
 	margin: 10px auto;	
 	width: 340px;
@@ -1106,20 +1110,75 @@ input[type=button].Embedded, input[type=button].Linked {
 	width: 120px;
 }
 
-.formField input {
+.formField input, .formField select {
 	display: inline-block;
 	width: 195px;
 }
 
-.relatedtables .stretchyfill {
+.formTextArea {
+	margin: 10px auto;
+	width: 500px;
+}
+
+	.formTextArea label {
+		vertical-align: top;
+		display: inline-block;
+		width: 120px;
+}
+
+	.formTextArea textarea {
+		display: inline-block;
+		width: 345px;
+	}
+
+.formOptionGroup {
+	margin: 10px auto;
+	width: 340px;
+}
+
+	.formOptionGroup > label {
+		vertical-align: top;
+	display: inline-block;
+		width: 120px;
+	}
+
+	.formOptionGroup > div {
+	width: 195px;
+		display: inline-block;
+	}
+
+		.formOptionGroup > div label {
+			display: table-row;
+		}
+
+.floatleft {	
+	float: left;
+}
+
+.floatright {
+	float: right;
+}
+
+.clearboth {
+	clear:both;
+}
+
+
+.stretchyfill {
 	display: table-cell;
 	width: 100%;	
 }
 
-.relatedtables .stretchyfixed {	
+.stretchyfixed {	
 	display: table-cell;
 	min-width: 160px;
 	vertical-align: top;
+}
+
+#frmDefinition .ui-button {
+	margin-left: 20px;
+	width: 140px;
+	margin-bottom: 10px;
 }
 
 .stretchyfixed .ui-button {

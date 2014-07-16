@@ -240,30 +240,38 @@ function picklistdef_makeSelection(psType, piID, psPrompts) {
 
 	$("#workframeset").show();
 
-	/* Get the current selected delegate IDs. */
-	var sSelectedIDs = "";
 
-	if (psType != "ALLRECORDS") {
-		picklistdef_moveFirst();
-		var sSelectedRows = $('#ssOleDBGrid').jqGrid('getGridParam', 'selarrrow');
-		if(sSelectedRows != undefined) {
-			for (var iIndex = 0; iIndex < sSelectedRows.length; iIndex++) {
-				var sRecordID = $("#ssOleDBGrid").jqGrid('getCell', sSelectedRows[iIndex], 'ID');
-				if (sSelectedIDs.length > 0) {
-					sSelectedIDs = sSelectedIDs + ",";
-				}
-				sSelectedIDs = sSelectedIDs + sRecordID;
-			}
-		}
-	}
+	//NPG: I've remmed this. We only use the 'ALL' mode currently, until filtered add is reintroduced,
+	//		 therefore the selected ID's are always passed in via the psPrompts variable.
+	//		 This code wasn't working properly anyway: calling picklistdef_moveFirst() resets the selection!
 
-	if ((psType == "ALL") && (psPrompts.length > 0)) {
-		if (sSelectedIDs == "") {
-			sSelectedIDs = psPrompts;
-		} else {
-			sSelectedIDs = sSelectedIDs + "," + psPrompts;
-		}
-	}
+	///* Get the current selected delegate IDs. */
+	//var sSelectedIDs = "";
+	
+	//if (psType != "ALLRECORDS") {
+	//	picklistdef_moveFirst();
+	//	var sSelectedRows = $('#ssOleDBGrid').jqGrid('getGridParam', 'selarrrow');
+	//	if(sSelectedRows != undefined) {
+	//		for (var iIndex = 0; iIndex < sSelectedRows.length; iIndex++) {
+	//			var sRecordID = $("#ssOleDBGrid").jqGrid('getCell', sSelectedRows[iIndex], 'ID');
+	//			if (sSelectedIDs.length > 0) {
+	//				sSelectedIDs = sSelectedIDs + ",";
+	//			}
+	//			sSelectedIDs = sSelectedIDs + sRecordID;
+	//		}
+	//	}
+	//}
+
+	//if ((psType == "ALL") && (psPrompts.length > 0)) {
+	//	if (sSelectedIDs == "") {
+	//		sSelectedIDs = psPrompts;
+	//	} else {
+	//		sSelectedIDs = sSelectedIDs + "," + psPrompts;
+	//	}
+	//}
+	
+	//NPG: added this line to replace above remmed out code.
+	var sSelectedIDs = psPrompts;
 
 	//Close the popup now that we have read the selected IDs.
 	if ($(".popup").dialog("isOpen")) $(".popup").dialog("close");

@@ -130,8 +130,15 @@
 					beforeSelectRow: handleMultiSelect // handle multi select
 				}).jqGrid('hideCol', 'cb');
 
-				//resize the grid to the height of its container.
-				$("#ssOleDBGridSelRecords").jqGrid('setGridHeight', $("#ssOleDBGridSelRecordsDiv").height());
+				//resize the grid to the height of its container.		
+				var workPageHeight = $('.optiondatagridpage').outerHeight(true);
+				var pageTitleHeight = $('.optiondatagridpage h3').outerHeight(true);
+				var dropdownHeight = $('.optiondatagridpage .floatleft').outerHeight(true);
+				var footerheight = $('.optiondatagridpage footer').outerHeight(true);
+
+				var newGridHeight = workPageHeight - pageTitleHeight - dropdownHeight - footerheight;
+
+				$("#ssOleDBGridSelRecords").jqGrid('setGridHeight', newGridHeight);
 				$("#ssOleDBGridSelRecords").jqGrid('setGridWidth', $("#ssOleDBGridSelRecordsDiv").width());
 
 				// Select the top record.

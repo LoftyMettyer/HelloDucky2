@@ -10,265 +10,102 @@
 <%--licence manager reference for activeX--%>
 
 <form id="frmDefinition">
-	<table align="center" class="outline" cellpadding="5" cellspacing="0" width="100%" height="100%">
-		<tr>
-			<td>
-				<table width="100%" height="100%" class="invisible" cellspacing="0" cellpadding="0">
-					<tr>
-						<td width="10"></td>
-						<td>
-							<table width="100%" height="100%" class="invisible" cellspacing="0" cellpadding="5">
-								<tr valign="top">
-									<td>
-										<table width="100%" height="100%" class="invisible" cellspacing="0" cellpadding="0">
-											<tr>
-												<td colspan="9" height="5"></td>
-											</tr>
+	<div class="absolutefull">
 
-											<tr height="10">
-												<td width="5">&nbsp;</td>
-												<td width="10">Name :</td>
-												<td width="5">&nbsp;</td>
-												<td>
-													<input id="txtName" name="txtName" class="text" maxlength="50" style="WIDTH: 100%" onkeyup="changeName()">
-												</td>
-												<td width="20">&nbsp;</td>
-												<td width="10">Owner :</td>
-												<td width="5">&nbsp;</td>
-												<td width="40%">
-													<input id="txtOwner" name="txtOwner" class="text textdisabled" style="WIDTH: 100%" disabled="disabled" tabindex="-1">
-												</td>
-												<td width="5">&nbsp;</td>
-											</tr>
+		<div style="display: block;">
+			<div class="formField floatleft">
+				<label>Name :</label>
+				<input id="txtName" name="txtName" class="text" maxlength="50" onkeyup="changeName()">
+			</div>
+			<div class="formField floatright">
+				<label>Owner :</label>
+				<input id="txtOwner" name="txtOwner" class="text textdisabled" disabled="disabled" tabindex="-1">
+			</div>
 
-											<tr>
-												<td colspan="9" height="5"></td>
-											</tr>
+			<div class="formTextArea clearboth floatleft">
+				<label>Description :</label>
+				<textarea id="txtDescription" name="txtDescription" class="textarea" wrap="VIRTUAL" maxlength="255"	onkeyup="changeDescription()"></textarea>
+			</div>
 
-											<tr height="10">
-												<td width="5">&nbsp;</td>
-												<td width="10" nowrap>Description :</td>
-												<td width="5">&nbsp;</td>
-												<td width="40%" rowspan="5">
-													<textarea id="txtDescription" name="txtDescription" class="textarea" style="HEIGHT: 99%; WIDTH: 100%" wrap="VIRTUAL" height="0" maxlength="255"
-														onkeyup="changeDescription()">
-												</textarea>
-												</td>
-												<td width="20" nowrap>&nbsp;</td>
-												<td width="10">Access :</td>
-												<td width="5">&nbsp;</td>
-												<td width="40%">
-													<table border="0" cellspacing="0" cellpadding="0" width="100%">
-														<tr>
-															<td width="5">
-																<input checked id="optAccessRW" name="optAccess" type="radio"
-																	onclick="changeAccess()" />
-															</td>
-															<td width="5">&nbsp;</td>
-															<td width="30">
-																<label tabindex="-1" for="optAccessRW" class="radio">
-																	Read/Write
-																</label>
-															</td>
-															<td>&nbsp;</td>
-														</tr>
-													</table>
-												</td>
-												<td width="5">&nbsp;</td>
-											</tr>
+			<div class="formOptionGroup floatright">
+				<label>Access :</label>
+				<div>
+					<label>
+						<input id="optAccessRW" name="optAccess" type="radio" onclick="changeAccess()" checked />
+						Read/Write</label>
+					<label>
+						<input id="optAccessRO" name="optAccess" type="radio" onclick="changeAccess()" />
+						Read Only</label>
+					<label>
+						<input id="optAccessHD" name="optAccess" type="radio" onclick="changeAccess()" />
+						Hidden</label>
+				</div>
+			</div>
+		</div>
 
-											<tr>
-												<td colspan="8" height="5"></td>
-											</tr>
+		<div class="clearboth"><hr /></div>
 
-											<tr height="10">
-												<td width="5">&nbsp;</td>
+		<div class="gridwithbuttons clearboth">
 
-												<td width="10">&nbsp;</td>
-												<td width="5">&nbsp;</td>
+			<div class="stretchyfill">
+				<%																																	
+					' Get the employee find columns.
+					Dim objDataAccess As clsDataAccess = CType(Session("DatabaseAccess"), clsDataAccess)
 
-												<td width="20" nowrap>&nbsp;</td>
+					Dim sErrorDescription As String
 
-												<td width="10">&nbsp;</td>
-												<td width="5">&nbsp;</td>
-												<td width="40%">
-													<table class="invisible" cellspacing="0" cellpadding="0" width="100%">
-														<tr>
-															<td width="5">
-																<input id="optAccessRO" name="optAccess" type="radio" onclick="changeAccess()" />
-															</td>
-															<td width="5">&nbsp;</td>
-															<td width="80" nowrap>
-																<label tabindex="-1" for="optAccessRO" class="radio">
-																	Read Only
-																</label>
-															</td>
-															<td>&nbsp;</td>
-														</tr>
-													</table>
-												</td>
-												<td width="5">&nbsp;</td>
-											</tr>
+					Try
+						Dim prmErrMsg = New SqlParameter("psErrorMsg", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
+						Dim prm1000SepCols = New SqlParameter("ps1000SeparatorCols", SqlDbType.VarChar, 8000) With {.Direction = ParameterDirection.Output}
 
-											<tr>
-												<td colspan="8" height="5"></td>
-											</tr>
-
-											<tr height="10">
-												<td width="5">&nbsp;</td>
-												<td width="10">&nbsp;</td>
-												<td width="5">&nbsp;</td>
-												<td width="20" nowrap>&nbsp;</td>
-												<td width="10">&nbsp;</td>
-												<td width="5">&nbsp;</td>
-												<td width="40%">
-													<table class="invisible" cellspacing="0" cellpadding="0" width="100%">
-														<tr>
-															<td width="5">
-																<input id="optAccessHD" name="optAccess" type="radio" onclick="changeAccess()" />
-															</td>
-															<td width="5">&nbsp;</td>
-															<td width="60" nowrap>
-																<label tabindex="-1" for="optAccessHD" class="radio">
-																	Hidden
-																</label>
-															</td>
-															<td>&nbsp;</td>
-														</tr>
-													</table>
-												</td>
-												<td width="5">&nbsp;</td>
-											</tr>
-
-											<tr>
-												<td colspan="9">
-													<table width="100%" height="100%" class="invisible" cellspacing="0" cellpadding="0">
-														<tr>
-															<td colspan="3" height="30">
-																<hr>
-															</td>
-														</tr>
-														<tr height="10">
-															<td rowspan="14">
-																<%
-																																	
-																	' Get the employee find columns.
-																	Dim objDataAccess As clsDataAccess = CType(Session("DatabaseAccess"), clsDataAccess)
-
-																	Dim sErrorDescription As String
-																	Dim lngColCount As Long															
-
-																	Try
-																		Dim prmErrMsg = New SqlParameter("psErrorMsg", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
-																		Dim prm1000SepCols = New SqlParameter("ps1000SeparatorCols", SqlDbType.VarChar, 8000) With {.Direction = ParameterDirection.Output}
-
-																		Dim rstFindRecords = objDataAccess.GetFromSP("sp_ASRIntGetDefaultOrderColumns" _
-																				, New SqlParameter("piTableID", SqlDbType.Int) With {.Value = CleanNumeric(Session("utiltableid"))} _
-																				, prmErrMsg, prm1000SepCols)
+						Dim rstFindRecords = objDataAccess.GetFromSP("sp_ASRIntGetDefaultOrderColumns" _
+								, New SqlParameter("piTableID", SqlDbType.Int) With {.Value = CleanNumeric(Session("utiltableid"))} _
+								, prmErrMsg, prm1000SepCols)
 																		
-
-																		
-																		If Len(prmErrMsg.Value) > 0 Then
-																			Session("ErrorTitle") = "Picklist Definition Page"
-																			Session("ErrorText") = prmErrMsg.Value
-																			Response.Clear()
+						If Len(prmErrMsg.Value) > 0 Then
+							Session("ErrorTitle") = "Picklist Definition Page"
+							Session("ErrorText") = prmErrMsg.Value
+							Response.Clear()
 			
-																			'Response.Redirect("error.asp")
-																			Response.Redirect("FormError")
+							Response.Redirect("FormError")
 			
-																		Else
-																			Response.Write("<INPUT type='hidden' id=txt1000SepCols name=txt1000SepCols value=""" & prm1000SepCols.Value & """>" & vbCrLf)
-																		End If
+						Else
+							Response.Write("<INPUT type='hidden' id=txt1000SepCols name=txt1000SepCols value=""" & prm1000SepCols.Value & """>" & vbCrLf)
+						End If
 
-																	Catch ex As Exception
-																		sErrorDescription = "The find columns could not be retrieved." & vbCrLf & FormatError(ex.Message)
+					Catch ex As Exception
+						sErrorDescription = "The find columns could not be retrieved." & vbCrLf & FormatError(ex.Message)
 
-																	End Try
+					End Try
 
-																%>
-																<div id="PickListGrid" style="height: 400px; margin-bottom: 50px; width: 90%;">
-																	<table id="ssOleDBGrid" style="width: 100%"></table>
-																</div>
-															</td>
-															<td rowspan="14" width="10">&nbsp;</td>
-															<td width="100">
-																<input type="button" id="cmdAdd" name="cmdAdd" class="btn" value="Add" style="WIDTH: 100%" onclick="addClick()" />
-															</td>
-														</tr>
-														<tr height="10">
-															<td></td>
-														</tr>
-														<tr height="10">
-															<td width="100">
-																<input type="button" id="cmdAddAll" name="cmdAddAll" class="btn" value="Add All" style="WIDTH: 100%" onclick="addAllClick()" />
-															</td>
-														</tr>
-														<tr height="10">
-															<td></td>
-														</tr>
-														<tr height="10">
-															<td width="100">
-																<input type="button" id="cmdFilteredAdd" disabled="disabled" name="cmdFilteredAdd" class="btn" value="Filtered Add" style="WIDTH: 100%" onclick="filteredAddClick()" />
-															</td>
-														</tr>
-														<tr height="10">
-															<td></td>
-														</tr>
-														<tr height="10">
-															<td width="100">
-																<input type="button" id="cmdRemove" name="cmdRemove" class="btn" value="Remove" style="WIDTH: 100%" onclick="removeClick()" />
-															</td>
-														</tr>
-														<tr height="10">
-															<td></td>
-														</tr>
-														<tr height="10">
-															<td width="100">
-																<input type="button" id="cmdRemoveAll" name="cmdRemoveAll" class="btn" value="Remove All" style="WIDTH: 100%" onclick="removeAllClick()" />
-															</td>
-														</tr>
-														<tr height="10">
-															<td></td>
-														</tr>
-														<tr>
-															<td></td>
-														</tr>
-														<tr height="10">
-															<td width="100">
-																<input type="button" id="cmdOK" name="cmdOK" class="btn" value="OK" style="WIDTH: 100%" onclick="okClick()" />
-															</td>
-														</tr>
-														<tr height="10">
-															<td></td>
-														</tr>
-														<tr height="10">
-															<td width="100">
-																<input type="button" id="cmdCancel" name="cmdCancel" class="btn" value="Cancel" style="WIDTH: 100%" onclick="cancelClick()" />
-															</td>
-														</tr>
-													</table>
-													<div id="RecordCountDIV"></div>
-												</td>
-											</tr>
+				%>
+				<div id="PickListGrid" style="height: 400px;">
+					<table id="ssOleDBGrid"></table>
+				</div>
+			</div>
 
-											<tr height="5">
-												<td colspan="9" height="5"></td>
-											</tr>
-										</table>
-									</td>
-								</tr>
-							</table>
-						</td>
-						<td width="10"></td>
-					</tr>
+			<div class="stretchyfixed">
+				<input type="button" id="cmdAdd" name="cmdAdd" class="btn" value="Add" onclick="addClick()" />
+				<br />
+				<input type="button" id="cmdAddAll" name="cmdAddAll" class="btn" value="Add All" onclick="addAllClick()" />
+				<br />
+				<input type="button" id="cmdFilteredAdd" disabled="disabled" name="cmdFilteredAdd" class="btn" value="Filtered Add" onclick="filteredAddClick()" />
+				<br />
+				<input type="button" id="cmdRemove" name="cmdRemove" class="btn" value="Remove" onclick="removeClick()" />
+				<br />
+				<input type="button" id="cmdRemoveAll" name="cmdRemoveAll" class="btn" value="Remove All" onclick="removeAllClick()" />
+				<br />
+				<input type="button" id="cmdOK" name="cmdOK" class="btn" value="OK" onclick="okClick()" />
+				<br />
+				<input type="button" id="cmdCancel" name="cmdCancel" class="btn" value="Cancel" onclick="cancelClick()" />
+			</div>
 
-					<tr height="5">
-						<td colspan="3"></td>
-					</tr>
-				</table>
-			</td>
-		</tr>
-	</table>
+		</div>
+
+		<div id="RecordCountDIV"></div>
+
+
+		</div>
 </form>
 
 <form action="default_Submit" method="post" id="frmGoto" name="frmGoto" style="visibility: hidden; display: none">

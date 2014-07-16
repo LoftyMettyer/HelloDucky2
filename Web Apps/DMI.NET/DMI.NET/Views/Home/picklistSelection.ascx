@@ -4,14 +4,6 @@
 <%@ Import Namespace="HR.Intranet.Server" %>
 <%@ Import Namespace="System.Data.SqlClient" %>
 
-<%--licence manager reference for activeX--%>
-
-<%
-	Dim jqGridTable As String = String.Concat(
-					"<div id='ssOleDBGridSelRecordsDiv' style='height: 400px; margin-bottom: 50px; width: 75%;'>",
-						"<table id='ssOleDBGridSelRecords' style='width: 100%'></table>",
-					"</div>")
-%>
 <form id="frmpicklistSelectionUseful" name="frmpicklistSelectionUseful" style="visibility: hidden; display: none">
 	<input type='hidden' id="txtSelectionType" name="txtSelectionType" value='<%=session("selectionType")%>'>
 	<input type='hidden' id="txtTableID" name="txtTableID" value='<%=session("selectionTableID")%>'>
@@ -81,6 +73,7 @@
 	}
 
 	function makeSelection() {
+		
 		var frmUseful = document.getElementById("frmpicklistSelectionUseful");
 		if (frmUseful.txtSelectionType.value.toUpperCase() == "FILTER") {
 			try {
@@ -318,216 +311,140 @@
 			return sTempValue;
 		}
 	}
-
-
 </script>
 
+<div class="absolutefull optiondatagridpage">
+	<div>
+		<h3><span class="pageTitle">
+			<%
+				Select Case UCase(Session("selectionType"))
+					Case UCase("picklist")
+						Response.Write("Select Picklist")
+					Case UCase("filter")
+						Response.Write("Select Filter")
+					Case Else
+						Response.Write("Select Records")
+				End Select
+			%></span></h3>
 
-<%
-	If (UCase(Session("selectionType")) <> UCase("picklist")) And (UCase(Session("selectionType")) <> UCase("filter")) Then
-%>
 
-<table align="center" class="outline" cellpadding="5" cellspacing="0" width="100%" height="95%">
-	<%
-	Else
-	%>
-	<table align="center" class="outline" cellpadding="5" cellspacing="0" width="100%" height="100%">
 		<%
-		End If
-		%>
-		<tr>
-			<td>
-				<table class="invisible" style="text-align: center; border-spacing: 0; border: thick; padding: 0; width:100%; height:100%">
-					<tr height="10">
-						<td colspan="3" align="center" height="10">
-							<h3 align="center">
-								<% 
-									If UCase(Session("selectionType")) = UCase("picklist") Then
-								%>	
-									Select Picklist
-								<%
-								Else
-									If UCase(Session("selectionType")) = UCase("filter") Then
-										%>
-											Select Filter
-										<%
-									Else
-										%>		
-											Select Records
-										<%
-									End If
-							End If%>
-							</h3>
-						</td>
-					</tr>
-					<tr>
-						<td width="20"></td>
-						<td>
-							<%
-								Dim objDatabase As Database = CType(Session("DatabaseFunctions"), Database)
-								Dim objDataAccess As clsDataAccess = CType(Session("DatabaseAccess"), clsDataAccess)
-								
-								Dim rstSelRecords As DataTable
-								Dim sErrorDescription As String
-								Dim lngRowCount As Long
-								Dim sFailureDescription As String
+			Dim objDatabase As Database = CType(Session("DatabaseFunctions"), Database)
+			Dim objDataAccess As clsDataAccess = CType(Session("DatabaseAccess"), clsDataAccess)
+			Dim rstSelRecords As DataTable
+			Dim sErrorDescription As String
+			Dim sFailureDescription As String
 																		
-								Session("optionLinkViewID") = 0
-								Session("optionLinkOrderID") = 0
+			Session("optionLinkViewID") = 0
+			Session("optionLinkOrderID") = 0
 	
-								sErrorDescription = ""
+			sErrorDescription = ""
 
-								If (UCase(Session("selectionType")) = UCase("picklist")) Or _
-										(UCase(Session("selectionType")) = UCase("filter")) Then
+			If (UCase(Session("selectionType")) = UCase("picklist")) Or _
+					(UCase(Session("selectionType")) = UCase("filter")) Then
 
-									If UCase(Session("selectionType")) = UCase("picklist") Then
-										rstSelRecords = objDataAccess.GetFromSP("spASRIntGetAvailablePicklists" _
-											, New SqlParameter("plngTableID", SqlDbType.Int) With {.Value = CleanNumeric(Session("selectionTableID"))} _
-											, New SqlParameter("psUserName", SqlDbType.VarChar, 255) With {.Value = Session("username")})
+				If UCase(Session("selectionType")) = UCase("picklist") Then
+					rstSelRecords = objDataAccess.GetFromSP("spASRIntGetAvailablePicklists" _
+						, New SqlParameter("plngTableID", SqlDbType.Int) With {.Value = CleanNumeric(Session("selectionTableID"))} _
+						, New SqlParameter("psUserName", SqlDbType.VarChar, 255) With {.Value = Session("username")})
 
-									Else
+				Else
 
-										rstSelRecords = objDataAccess.GetFromSP("spASRIntGetAvailableFilters" _
-											, New SqlParameter("plngTableID", SqlDbType.Int) With {.Value = CleanNumeric(Session("selectionTableID"))} _
-											, New SqlParameter("psUserName", SqlDbType.VarChar, 255) With {.Value = Session("username")})
+					rstSelRecords = objDataAccess.GetFromSP("spASRIntGetAvailableFilters" _
+						, New SqlParameter("plngTableID", SqlDbType.Int) With {.Value = CleanNumeric(Session("selectionTableID"))} _
+						, New SqlParameter("psUserName", SqlDbType.VarChar, 255) With {.Value = Session("username")})
 
-									End If
+				End If
 
-									' Instantiate and initialise the grid. 
-							%>
-							<%= jqGridTable%>
-							<%	
-
-		
-							Else
-								' Select individual employee records.
-							%>
-							<table width="100%" height="100%" class="invisible" cellspacing="0" cellpadding="0">
-								<tr height="10">
-									<td height="10">
-										<table width="100%" height="10" class="invisible" cellspacing="0" cellpadding="0">
-											<tr height="10">
-												<td width="40" height="10">View :
-												</td>
-												<td width="10" height="10">&nbsp;
-												</td>
-												<td width="175" height="10">
-													<select id="selectView" name="selectView" class="combo" style="width: 200px">
-														<%
-															If Len(sErrorDescription) = 0 Then
+				' Instantiate and initialise the grid. 
+		%>
+		<div id='ssOleDBGridSelRecordsDiv' style='height: 400px; margin-bottom: 50px; width: 75%;'>
+			<table id='ssOleDBGridSelRecords' style='width: 100%'></table>
+		</div>
+		<%	
+		Else
+			' Select individual employee records.
+		%>
+		<div style="display: block;">
+			<div class="formField floatleft">
+				<label>View :</label>
+				<select id="selectView" name="selectView" class="combo" onchange="goView()">
+					<%
+						If Len(sErrorDescription) = 0 Then
 																
-																Dim prmDfltOrderID As New SqlParameter("@plngDfltOrderID", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
-																Dim rstViewRecords = objDatabase.DB.GetDataTable("sp_ASRIntGetLinkViews", CommandType.StoredProcedure _
-																		, New SqlParameter("plngTableID", SqlDbType.Int) With {.Value = CInt(CleanNumeric(Session("selectionTableID")))} _
-																		, prmDfltOrderID)
+							Dim prmDfltOrderID As New SqlParameter("@plngDfltOrderID", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
+							Dim rstViewRecords = objDatabase.DB.GetDataTable("sp_ASRIntGetLinkViews", CommandType.StoredProcedure _
+									, New SqlParameter("plngTableID", SqlDbType.Int) With {.Value = CInt(CleanNumeric(Session("selectionTableID")))} _
+									, prmDfltOrderID)
 
-																If (rstViewRecords.Rows.Count = 0) Then
-																	sFailureDescription = "You do not have permission to read the Employee table."
-																End If
-																
-																For Each objRow As DataRow In rstViewRecords.Rows
-																	Response.Write("						<option value=" & objRow(0))
-																	If CInt(objRow(0)) = CInt(Session("optionLinkViewID")) Then
-																		Response.Write(" SELECTED")
-																	End If
-
-																	If objRow(0) = 0 Then
-																		Response.Write(">" & Replace(objRow(1).ToString(), "_", " ") & "</option>" & vbCrLf)
-																	Else
-																		Response.Write(">'" & Replace(objRow(1).ToString, "_", " ") & "' view</option>" & vbCrLf)
-																	End If
-																
-																Next
-
-																If Session("optionLinkOrderID") <= 0 Then
-																	Session("optionLinkOrderID") = prmDfltOrderID.Value
-																End If
-																	
-															End If
-																														%>
-													</select>
-												</td>
-												<td width="10" height="10">
-													<input type="button" value="Go" id="btnGoView" name="btnGoView" class="btn"
-														onclick="goView()" />
-												</td>
-												<td height="10">&nbsp;
-												</td>
-												<td width="40" height="10">Order :
-												</td>
-												<td width="10" height="10">&nbsp;
-												</td>
-												<td width="175" height="10">
-													<select id="selectOrder" name="selectOrder" class="combo" style="width: 200px">
-														<%
-															If Len(sErrorDescription) = 0 Then
-																
-																Dim rstTableOrderRecords = objDatabase.GetTableOrders(CInt(Session("selectionTableID")), 0)
-																For Each objRow As DataRow In rstTableOrderRecords.Rows
-																	Response.Write("						<option value=" & objRow(1))
-																	If objRow(1) = CInt(Session("optionLinkOrderID")) Then
-																		Response.Write(" SELECTED")
-																	End If
-																	Response.Write(">" & Replace(objRow(0).ToString(), "_", " ") & "</option>" & vbCrLf)
-																Next
-															
-												End If
-														%>
-													</select>
-												</td>
-												<td width="10" height="10">
-													<input type="button" value="Go" id="btnGoOrder" name="btnGoOrder" class="btn"
-														onclick="goOrder()" />
-												</td>
-											</tr>
-										</table>
-									</td>
-								</tr>
-								<tr height="10">
-									<td height="10">&nbsp;</td>
-								</tr>
-								<tr>
-									<td style="height: 260px;vertical-align: top">
-										<%= jqGridTable%>
-									</td>
-								</tr>
-							</table>
-							<%	
+							If (rstViewRecords.Rows.Count = 0) Then
+								sFailureDescription = "You do not have permission to read the Employee table."
 							End If
-							%>
-							<input type='hidden' id="txtpicklistSelectionErrorDescription" name="txtpicklistSelectionErrorDescription" value="<%=sErrorDescription%>">
-						</td>
-						<td width="20"></td>
-					</tr>
-					<tr height="10">
-						<td height="10" colspan="3">&nbsp;</td>
-					</tr>
-					<tr height="10">
-						<td width="20"></td>
-						<td height="10">
-							<table width="100%" class="invisible" cellspacing="0" cellpadding="0">
-								<tr>
-									<td>&nbsp;</td>
-									<td width="10">
-										<input id="cmdOK" type="button" value="OK" name="cmdOK" class="btn" style="WIDTH: 80px"
-											onclick="makeSelection()" />
-									</td>
-									<td width="10">&nbsp;</td>
-									<td width="10">
-										<input id="cmdCancel" type="button" value="Cancel" class="btn" name="cmdCancel" style="WIDTH: 80px" width="80"
-											onclick="closeclick();" />
-									</td>
-								</tr>
-							</table>
-						</td>
-						<td width="20"></td>
-					</tr>
-				</table>
-			</td>
-		</tr>
-	</table>
-</table>
+																
+							For Each objRow As DataRow In rstViewRecords.Rows
+								Response.Write("						<option value=" & objRow(0))
+								If CInt(objRow(0)) = CInt(Session("optionLinkViewID")) Then
+									Response.Write(" SELECTED")
+								End If
 
+								If objRow(0) = 0 Then
+									Response.Write(">" & Replace(objRow(1).ToString(), "_", " ") & "</option>" & vbCrLf)
+								Else
+									Response.Write(">'" & Replace(objRow(1).ToString, "_", " ") & "' view</option>" & vbCrLf)
+								End If
+																
+							Next
+
+							If Session("optionLinkOrderID") <= 0 Then
+								Session("optionLinkOrderID") = prmDfltOrderID.Value
+							End If
+																	
+						End If
+					%>
+				</select>
+			</div>
+
+			<div class="formField floatright">
+				<label>Order :</label>
+				<select id="selectOrder" name="selectOrder" class="combo" onchange="goOrder()">
+					<%
+						If Len(sErrorDescription) = 0 Then
+																
+							Dim rstTableOrderRecords = objDatabase.GetTableOrders(CInt(Session("selectionTableID")), 0)
+							For Each objRow As DataRow In rstTableOrderRecords.Rows
+								Response.Write("						<option value=" & objRow(1))
+								If objRow(1) = CInt(Session("optionLinkOrderID")) Then
+									Response.Write(" SELECTED")
+								End If
+								Response.Write(">" & Replace(objRow(0).ToString(), "_", " ") & "</option>" & vbCrLf)
+							Next
+															
+						End If
+					%>
+				</select>
+			</div>
+
+		</div>
+	</div>
+
+	<main>
+	<div class="clearboth">
+		<div id='ssOleDBGridSelRecordsDiv'>
+			<table id='ssOleDBGridSelRecords'></table>
+		</div>
+	</div>
+	</main>
+	<%	
+	End If
+	%>
+	<input type='hidden' id="txtpicklistSelectionErrorDescription" name="txtpicklistSelectionErrorDescription" value="<%=sErrorDescription%>">
+
+	<footer>
+		<input id="cmdOK" type="button" value="OK" name="cmdOK" class="btn" style="width: 80px" onclick="makeSelection()" />
+		<input id="cmdCancel" type="button" value="Cancel" class="btn" name="cmdCancel" style="width: 80px" onclick="closeclick();" />
+	</footer>
+
+</div>
 
 <input type='hidden' id="txtTicker" name="txtTicker" value="0">
 <input type='hidden' id="txtLastKeyFind" name="txtLastKeyFind" value="">
