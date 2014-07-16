@@ -70,6 +70,9 @@ Namespace Models
 
 		Public Property Output As New ReportOutputModel
 
+		Public Overrides Sub SetBaseTable(TableID As Integer)
+		End Sub
+
 	End Class
 
 End Namespace

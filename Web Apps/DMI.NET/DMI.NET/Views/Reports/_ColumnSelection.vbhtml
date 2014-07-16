@@ -15,12 +15,11 @@
 @*Look at replacing with proper jqgrid with a subgrid*@
 @*http://trirand.com/blog/jqgrid/jqgrid.html*@
 
-
 <div id="columnsAvailable" style="float:left">
 
 	Columns / Calculations Available :
 	<br/>
-	@Html.TableDropdown("SelectedTableID", Model.SelectedTableID, Model.AvailableTables, "changeAvailableReportTable(event);")
+	<select name="SelectedTableID" id="SelectedTableID"></select>
 
 	<br />
 	@Html.RadioButton("columnSelectiontype", ColumnSelectionType.Columns, True, New With {.onclick = "toggleColumnsCalculations('column')"})
@@ -78,9 +77,6 @@
 			//TODO
 		}
 
-		function removeAllSelectedColumns() {
-			//TODO
-		}
 
     function columndefinition_rowcolchange() {
 
@@ -111,7 +107,7 @@
 
     	jQuery(document).ready(function () {
     		jQuery("#AvailableColumns").jqGrid({
-    			url: '@Url.Action("GetAvailableColumns", "Reports", New With {.baseTableID = Model.BaseTableID})',
+    			url: '@Url.Action("GetAvailableColumns?tableID=", "Reports")' + $("#SelectedTableID").val(),
     			datatype: 'json',
     			mtype: 'GET',
     			jsonReader: {

@@ -3,16 +3,16 @@ Option Explicit On
 
 Imports System.ComponentModel
 Imports System.Collections.ObjectModel
+Imports DMI.NET.Classes
 
-Namespace Classes
+Namespace ViewModels.Reports
 
-	Public Class ReportChildTables
+	Public Class ChildTableViewModel
 		Implements IJsonSerialize
 
 		<HiddenInput>
-		Public Property ID As Integer Implements IJsonSerialize.ID
+		Public Property ReportID As Integer Implements IJsonSerialize.ID
 
-		Public Property ReportID As Integer
 		Public Property TableID As Integer
 		Public Property FilterID As Integer
 		Public Property OrderID As Integer

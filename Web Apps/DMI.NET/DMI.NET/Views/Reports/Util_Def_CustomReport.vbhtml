@@ -123,23 +123,9 @@ End Code
   </form>
 
 	<div id="eventdetail">
-
-
 	</div>
-
-
-
-
-
+	
 </div>
-
-@*<form action="Reports/AddChildTable?ReportID=300" method="get" id="frmGetChildTable" name="frmGetChildTable" style="visibility: hidden; display: none">
-	<input type="text" name="ReportID" value="200" />
-	</form>*@
-
-	@Using (Html.BeginForm("AddChildTable", "Reports", FormMethod.Get, New With {.id = "frmGetChildTable"}))
-		@Html.TextBoxFor(Function(m) m.ID)
-	End Using
 
 
 	<script type="text/javascript">
@@ -209,20 +195,6 @@ End Code
 
 		})
 
-		function getAvailableTablesForReport() {
-			$.ajax({
-				url: '@Url.Action("GetAvailableTablesForReport", "Reports", New With {.ID = Model.ID})',
-				type: 'GET',
-				dataType: 'json',
-				success: function (json) {
-					$.each(json, function (i, table) {
-						var optionHtml = '<option value=' + table.id + '>' + table.Name + '</option>'
-						$('#txtChildTableID').append(optionHtml);
-					});
-
-				}
-			});
-		}
 
 
 	</script>

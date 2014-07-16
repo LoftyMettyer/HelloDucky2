@@ -177,9 +177,11 @@
     <Compile Include="AttributeExtensions\ExcludeCharAttribute.vb" />
     <Compile Include="AttributeExtensions\NonZeroIfAttribute.vb" />
     <Compile Include="AttributeExtensions\RequiredIfAttribute.vb" />
+    <Compile Include="Code\Interfaces\IDataAccess.vb" />
+    <Compile Include="Code\Interfaces\IReport.vb" />
     <Compile Include="ViewModels\Reports\CalendarEventDetailViewModel.vb" />
     <Compile Include="Classes\GroupAccess.vb" />
-    <Compile Include="Classes\ReportChildTables.vb" />
+    <Compile Include="ViewModels\Reports\ChildTableViewModel.vb" />
     <Compile Include="Classes\ReportColumnItem.vb" />
     <Compile Include="Classes\ReportRelatedTable.vb" />
     <Compile Include="Classes\ReportRepetition.vb" />
@@ -1701,7 +1703,6 @@
     <Content Include="Views\Reports\Util_Def_MailMerge.vbhtml" />
     <Content Include="Views\Home\OptionDataGrid.vbhtml" />
     <Content Include="Views\Reports\EditorTemplates\ReportChildTable.vbhtml" />
-    <Compile Include="ViewModels\Reports\ReportChildTableViewModel.vb" />
     <Content Include="Views\Reports\EditorTemplates\CalendarEventDetail.vbhtml" />
   </ItemGroup>
   <ItemGroup>

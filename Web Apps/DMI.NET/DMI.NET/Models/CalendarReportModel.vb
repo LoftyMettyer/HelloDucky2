@@ -7,7 +7,6 @@ Imports HR.Intranet.Server.Metadata
 Imports DMI.NET.Classes
 Imports HR.Intranet.Server.Enums
 Imports System.ComponentModel
-Imports DMI.NET.Classses
 Imports DMI.NET.ViewModels
 
 Namespace Models
@@ -64,6 +63,9 @@ Namespace Models
 		Public Property StartOnCurrentMonth As Boolean
 
 		Public Property Output As New ReportOutputModel
+
+		Public Overrides Sub SetBaseTable(TableID As Integer)
+		End Sub
 
 	End Class
 End Namespace

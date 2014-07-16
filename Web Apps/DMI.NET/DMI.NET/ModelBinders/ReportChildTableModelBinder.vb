@@ -3,6 +3,7 @@ Imports System.Web.Mvc
 Imports System.IO
 Imports System.Web.Script.Serialization
 Imports DMI.NET.Classes
+Imports DMI.NET.ViewModels.Reports
 
 Public Class ReportChildTableModelBinder
 	Implements IModelBinder
@@ -26,7 +27,7 @@ Public Class ReportChildTableModelBinder
 			Return (Nothing)
 		End If
 
-		Dim tweet = New JavaScriptSerializer().Deserialize(Of ReportChildTables)(bodyText)
+		Dim tweet = New JavaScriptSerializer().Deserialize(Of ChildTableViewModel)(bodyText)
 
 		Return (tweet)
 	End Function

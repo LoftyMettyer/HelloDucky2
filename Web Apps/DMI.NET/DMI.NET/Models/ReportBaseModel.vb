@@ -9,9 +9,12 @@ Imports System.ComponentModel.DataAnnotations
 Imports DMI.NET.AttributeExtensions
 Imports HR.Intranet.Server.Enums
 Imports System.Web.Script.Serialization
+Imports HR.Intranet.Server
 
 Namespace Models
 	Public MustInherit Class ReportBaseModel
+		Implements IDataAccess
+		Implements IReport
 
 		Public Property IsReadOnly As Boolean
 		Public MustOverride ReadOnly Property ReportType As UtilityType
@@ -20,7 +23,7 @@ Namespace Models
 		Public Property Owner As String
 
 		<Required(ErrorMessage:="A base table must be selected.")>
-		Public Property BaseTableID As Integer
+		Public Property BaseTableID As Integer Implements IReport.BaseTableID
 
 		<Required(ErrorMessage:="Name is required.")>
 		<MaxLength(50, ErrorMessage:="Name cannot be longer than 50 characters.")>
@@ -54,8 +57,11 @@ Namespace Models
 
 		Public Property JobsToHide As New Collection(Of Integer)
 
+		Public Property SessionContext As SessionInfo Implements IDataAccess.SessionContext
 
+		Public Property SessionInfo As SessionInfo Implements IReport.SessionInfo
 
+		Public MustOverride Sub SetBaseTable(BaseTableID As Integer) Implements IReport.SetBaseTable
 
 	End Class
 End Namespace

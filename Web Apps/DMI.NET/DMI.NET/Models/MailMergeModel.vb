@@ -61,6 +61,9 @@ Namespace Models
 		<DisplayName("Attach As")>
 		Public Property EmailAttachmentName As String
 
+		Public Overrides Sub SetBaseTable(TableID As Integer)
+		End Sub
+
 	End Class
 
 End Namespace

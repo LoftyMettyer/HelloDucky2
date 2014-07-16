@@ -24,9 +24,9 @@ Namespace Models
 
 		Public Property Columns As New ReportColumnsModel
 
-		Public Property AvailableTables As New Collection(Of ReportChildTables)
+		Public Property AvailableTables As New Collection(Of ChildTableViewModel)
 
-		Public Property ChildTables As New Collection(Of ReportChildTables)
+		Public Property ChildTables As New Collection(Of ChildTableViewModel)
 		Public Property ChildTablesString As String
 
 		Public Property Parent1 As New ReportRelatedTable
@@ -42,6 +42,44 @@ Namespace Models
 		Public Property p2Hidden As Boolean
 		Public Property childHidden As Boolean
 
+		Public Overrides Sub SetBaseTable(TableID As Integer)
+
+			ChildTables = New Collection(Of ChildTableViewModel)
+			BaseTableID = TableID
+			SelectionType = Enums.RecordSelectionType.AllRecords
+			Columns.Selected = New Collection(Of ReportColumnItem)
+			SortOrderColumns = New Collection(Of ReportSortItem)
+			Repetition = New Collection(Of ReportRepetition)
+
+			Dim objParents = SessionInfo.Relations.Where(Function(m) m.ChildID = TableID)
+
+			Parent1.SelectionType = Enums.RecordSelectionType.AllRecords
+			Parent1.PicklistID = 0
+			Parent1.PicklistName = ""
+			Parent1.FilterID = 0
+			Parent1.FilterName = ""
+
+			Parent2.SelectionType = Enums.RecordSelectionType.AllRecords
+			Parent2.PicklistID = 0
+			Parent2.PicklistName = ""
+			Parent2.FilterID = 0
+			Parent2.FilterName = ""
+
+			If objParents.Count > 0 Then
+				With objParents(0)
+					Parent1.ID = .ParentID
+					Parent1.Name = SessionInfo.Tables.Where(Function(m) m.ID = .ParentID).FirstOrDefault.Name
+				End With
+			End If
+
+			If objParents.Count > 1 Then
+				With objParents(1)
+					Parent2.ID = .ParentID
+					Parent2.Name = SessionInfo.Tables.Where(Function(m) m.ID = .ParentID).FirstOrDefault.Name
+				End With
+			End If
+
+		End Sub
 
 	End Class
 

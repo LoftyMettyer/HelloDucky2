@@ -17,7 +17,7 @@
 		@Html.EditorFor(Function(model) model.Name)
 		<br />
 		@Html.LabelFor(Function(model) model.TableID)
-		@Html.TableDropdown("CalendarEventTableID", Model.TableID, Model.AvailableTables, "changeEventTable(event);")
+		@Html.TableDropdown("CalendarEventTableID", "CalendarEventTableID", Model.TableID, Model.AvailableTables, "changeEventTable(event);")
 		<br/>
 		<input type="hidden" id="txtEventFilterID" name="FilterID" value="@Model.FilterID" />
 		@Html.TextBoxFor(Function(m) m.FilterName, New With {.id = "txtEventFilter", .readonly = "true"})
@@ -182,6 +182,9 @@ End Code
 
 		//// Update client
 		//var su = jQuery("#ChildTables").jqGrid('addRowData', 99, datarow);
+
+
+
 
 		// Post to server
 		var frmSubmit = $("#frmPostCalendarEvent");

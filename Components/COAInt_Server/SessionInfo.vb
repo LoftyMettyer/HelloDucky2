@@ -79,6 +79,21 @@ Public Class SessionInfo
 
 	End Function
 
+	Public Function GetTable(TableID As Integer) As Table
+
+		Try
+			If TableID > 0 Then
+				Return Tables.GetById(TableID)
+			Else
+				Return New Table
+			End If
+
+		Catch ex As Exception
+			Return New Table
+
+		End Try
+
+	End Function
 
 	Public Function SessionLogin(UserName As String, sPassword As String, sDatabaseName As String, sServerName As String, bWindowsAuthentication As Boolean) As LoginInfo
 

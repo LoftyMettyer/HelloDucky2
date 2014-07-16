@@ -258,12 +258,19 @@
 
 		},
 
-		postForm = function (url, data) {
+				//postForm = function (form) {
+
+				//	var url = form.attr("action"),
+				//		data = form.serialize();
+
+
+		postData = function (url, jsonData) {
 
 			$.ajax({
 				url: url,
 				type: "POST",
-				data: data,
+				async: true,
+				data: jsonData,
 
 				success: function (html) {
 					try {
@@ -355,6 +362,9 @@
 
 			},
 			error: function (req, status, errorObj) {
+
+				debugger;
+
 				//alert("OpenHR.submitForm ajax call to '" + url + "' failed with '" + errorObj + "'.");
 
 				//Sometimes (when?) an error is thrown with both errorObj and/or req.Response being empty; in this case don't show the empty error window
@@ -369,15 +379,22 @@
 	},
 
 
-	submitForm = function (form, targetWin, asyncFlag, jsonData) {
+	submitForm = function (form, targetWin, asyncFlag, jsonData, action) {
 
 		var $form = $(form),
 			$frame = $form.closest("div[data-framesource]").first(),
-			url = $form.attr("action"),
 			target = $form.attr("target"),
 			method = $form.attr("method");
 
 		var data;
+		var url;
+
+		if (action == undefined) {
+			url = $form.attr("action");
+		}	else {
+			url = action;
+		}
+
 
 		if (jsonData == undefined) {
 			data = $form.serialize();
@@ -1078,7 +1095,7 @@
 		showPopup: showPopup,
 		getFrame: getFrame,
 		getForm: getForm,
-		postForm: postForm,
+		postData: postData,
 		submitForm: submitForm,
 		showInReportFrame: showInReportFrame,
 		addActiveXHandler: addActiveXHandler,

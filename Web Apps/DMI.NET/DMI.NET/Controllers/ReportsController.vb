@@ -14,6 +14,7 @@ Imports System.Web.Script.Serialization
 Imports Newtonsoft.Json
 Imports DMI.NET.Classses
 Imports DMI.NET.ViewModels
+Imports DMI.NET.ViewModels.Reports
 
 Namespace Controllers
 
@@ -68,12 +69,12 @@ Namespace Controllers
 		<HttpPost, ValidateInput(False)>
 	 Function util_def_customreport(objModel As CustomReportModel) As ActionResult
 
+
 			' Um... this doesn't work, but you get the gist.... It does now! :-)
 			Dim deserializer = New JavaScriptSerializer()
-			Dim uploadedChildTables = deserializer.Deserialize(Of Collection(Of ReportChildTables))(objModel.ChildTablesString)
+			Dim uploadedChildTables = deserializer.Deserialize(Of Collection(Of ChildTableViewModel))(objModel.ChildTablesString)
 
-			objModel.ChildTables = deserializer.Deserialize(Of Collection(Of ReportChildTables))(objModel.ChildTablesString)
-
+			objModel.ChildTables = deserializer.Deserialize(Of Collection(Of ChildTableViewModel))(objModel.ChildTablesString)
 
 			If ModelState.IsValid Then
 				objReportRepository.SaveReportDefinition(objModel)
@@ -213,94 +214,13 @@ Namespace Controllers
 		End Function
 
 		<HttpGet>
-		Function GetAvailableColumns(baseTableID As Integer) As JsonResult
+		Function GetAvailableColumns(tableID As Integer) As JsonResult
 
-			Dim objColumns = objReportRepository.GetColumnsForTable(baseTableID)
+			Dim objColumns = objReportRepository.GetColumnsForTable(tableID)
 			Dim results = New With {.total = 1, .page = 1, .records = 1, .rows = objColumns}
 			Return Json(results, JsonRequestBehavior.AllowGet)
 
 		End Function
-
-		<HttpGet>
-		Function GetBaseTables() As JsonResult
-
-			Dim objTables = objReportRepository.GetTables()
-			Return Json(objTables, JsonRequestBehavior.AllowGet)
-
-		End Function
-
-		'<HttpGet>
-		'Function getChildTable(objSelectedChildren As Collection(Of ReportChildTables)) As ActionResult
-		'	 Pass in currently selected items and subtract?
-		'	Dim objModel As New ReportChildTables
-		'	Return View("_ChildTableSelection", objModel)
-		'End Function
-
-		'<HttpGet>
-		'Function getChildTable(objModel As ReportChildTables) As ActionResult
-		'	Return View("_ChildTableSelection", objModel)
-		'End Function
-
-		'		Function AddChildTable(ID As String) As ActionResult
-
-		<HttpGet>
-		Function AddChildTable(ID As Integer) As ActionResult
-
-			'ID is the id of the custom reprot
-			Dim objReport = objReportRepository.RetrieveReport(ID)
-
-			Dim objAvailable As New Collection(Of ReportChildTables)
-
-
-
-			For Each obj As Object In objReportRepository.GetTables()
-
-			Next
-
-
-			Dim objModel As New ReportChildTables
-			objModel.ReportID = ID
-			'	objModel.
-
-
-			Return PartialView("EditorTemplates\ReportChildTable", objModel)
-
-
-		End Function
-
-		<HttpPost>
-		Function EditChildTable(objModel As ReportChildTables) As ActionResult
-
-			Dim objReport = objReportRepository.RetrieveReport(objModel.ReportID)
-
-			objModel.AvailableTables = objReportRepository.GetTables()
-
-			Return PartialView("EditorTemplates\ReportChildTable", objModel)
-		End Function
-
-		<HttpPost>
-		Sub PostChildTable(objModel As ReportChildTables)
-
-			Try
-
-				If ModelState.IsValid Then
-
-					Dim objReport = objReportRepository.RetrieveReport(objModel.ReportID)
-					Dim original = objReport.ChildTables.Where(Function(m) m.TableID = objModel.TableID).First
-
-					If Not original Is Nothing Then
-						objReport.ChildTables.Remove(original)
-					End If
-
-					objReport.ChildTables.Add(objModel)
-
-				End If
-
-			Catch ex As Exception
-
-			End Try
-
-		End Sub
 
 		<HttpGet>
 		Function GetAvailableTablesForReport(ID As Integer) As JsonResult
@@ -315,6 +235,77 @@ Namespace Controllers
 
 		End Function
 
+
+		<HttpGet>
+		Function GetBaseTables() As JsonResult
+
+			Dim objTables = objReportRepository.GetTables()
+			Return Json(objTables, JsonRequestBehavior.AllowGet)
+
+		End Function
+
+
+		'<HttpGet>
+		'Function getChildTable(objModel As ReportChildTables) As ActionResult
+		'	Return View("_ChildTableSelection", objModel)
+		'End Function
+
+		'		Function AddChildTable(ID As String) As ActionResult
+
+		<HttpPost>
+		Function AddChildTable(ReportID As Integer) As ActionResult
+
+			Dim objReport = objReportRepository.RetrieveReport(ReportID)
+
+			Dim objModel As New ChildTableViewModel
+			objModel.AvailableTables = objReportRepository.GetChildTables(objReport.BaseTableID)
+
+			For Each objTable In objReport.ChildTables
+				objModel.AvailableTables.RemoveAll(Function(m) m.id = objTable.TableID)
+			Next
+
+			objModel.ReportID = ReportID
+
+
+			Return PartialView("EditorTemplates\ReportChildTable", objModel)
+
+
+		End Function
+
+		<HttpPost>
+		Function EditChildTable(objModel As ChildTableViewModel) As ActionResult
+
+			Dim objReport = objReportRepository.RetrieveReport(objModel.ReportID)
+
+			objModel.AvailableTables = objReportRepository.GetTables()
+
+			Return PartialView("EditorTemplates\ReportChildTable", objModel)
+		End Function
+
+		<HttpPost>
+		Sub PostChildTable(objModel As ChildTableViewModel)
+
+			Try
+
+				If ModelState.IsValid Then
+
+					Dim objReport = objReportRepository.RetrieveReport(objModel.ReportID)
+					Dim original = objReport.ChildTables.Where(Function(m) m.TableID = objModel.TableID).FirstOrDefault
+
+					If Not original Is Nothing Then
+						objReport.ChildTables.Remove(original)
+					End If
+
+					objReport.ChildTables.Add(objModel)
+
+				End If
+
+			Catch ex As Exception
+				Throw
+
+			End Try
+
+		End Sub
 
 		<HttpPost>
 		Function EditCalendarEvent(objModel As CalendarEventDetailViewModel) As ActionResult
@@ -339,7 +330,22 @@ Namespace Controllers
 
 		End Sub
 
+		<HttpGet>
+		Function GetAllTablesInReport(reportID As Integer) As JsonResult
 
+			Dim objItems = objReportRepository.GetAllTablesInReport(reportID)
+			Return Json(objItems, JsonRequestBehavior.AllowGet)
+
+		End Function
+
+		<HttpPost, ValidateInput(False)>
+	 Function ChangeBaseTable(objModel As CustomReportModel) As ActionResult
+
+			objReportRepository.SetBaseTable(objModel)
+			ModelState.Clear()
+			Return View("UTIL_DEF_CUSTOMREPORT", objModel)
+
+		End Function
 
 	End Class
 

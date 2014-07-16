@@ -41,7 +41,7 @@ Namespace Helpers
 		End Function
 
 		<Extension()> _
-		Public Function TableDropdown(helper As HtmlHelper, name As String, bindValue As Integer, items As IEnumerable(Of ReportTableItem), onChangeEvent As String) As MvcHtmlString
+		Public Function TableDropdown(helper As HtmlHelper, name As String, id As String, bindValue As Integer, items As IEnumerable(Of ReportTableItem), onChangeEvent As String) As MvcHtmlString
 			If items Is Nothing OrElse items.Count = 0 OrElse String.IsNullOrEmpty(name) Then
 				Return MvcHtmlString.Empty
 			End If
@@ -49,7 +49,7 @@ Namespace Helpers
 			Dim content As New StringBuilder
 			Dim builder As New TagBuilder("select")
 			builder.MergeAttribute("name", name)
-			builder.MergeAttribute("id", name)
+			builder.MergeAttribute("id", id)
 			builder.MergeAttribute("onchange", onChangeEvent)
 
 			For Each item In items

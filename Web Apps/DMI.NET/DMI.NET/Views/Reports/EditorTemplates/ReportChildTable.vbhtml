@@ -1,14 +1,14 @@
-﻿@Imports DMI.NET.Classes
+﻿@Imports DMI.NET.ViewModels.Reports
 @Imports DMI.NET.Helpers
-@Inherits System.Web.Mvc.WebViewPage(Of ReportChildTables)
+@Inherits System.Web.Mvc.WebViewPage(Of ChildTableViewModel)
 
 <fieldset>
 	@Using (Html.BeginForm("PostChildTable", "Reports", FormMethod.Post, New With {.id = "frmPostChildTable"}))
 
- 		@Html.HiddenFor(Function(m) m.ID)
+ 		@Html.HiddenFor(Function(m) m.ReportID)
 
 	 	@Html.LabelFor(Function(m) m.TableID) 
-	 	@Html.TableDropdown("TableID", Model.TableID, Model.AvailableTables, Nothing)
+	 	@Html.TableDropdown("TableID", "ChildTableID", Model.TableID, Model.AvailableTables, Nothing)
 	 
 		@<br/>
 		@Html.HiddenFor(Function(m) m.FilterID, New With {.id = "txtChildFilterID"})
@@ -34,24 +34,28 @@
 		function postThisChildTable() {
 
 			var datarow = {
-				TableID: $("#TableID").val(),
+				ReportID: '@Model.ReportID',
+				TableID: $("#ChildTableID").val(),
 				FilterID: $("#txtChildFilterID").val(),
 				OrderID: $("#txtChildFieldOrderID").val(),
-				TableName: $("#txtChildTableID").val(),
+				TableName: $("#ChildTableID option:selected").text(),
 				FilterName: $("#txtChildFilter").val(),
 				OrderName: $("#txtChildOrder").val(),
 				Records: $("#txtChildRecords").val()
 			};
 
 			// Update client
-			var su = jQuery("#ChildTables").jqGrid('addRowData', 99, datarow);
+			$('#ChildTables').jqGrid('delRowData', $("#ChildTableID").val())
+			var su = jQuery("#ChildTables").jqGrid('addRowData', $("#ChildTableID").val(), datarow);
+
+			// Update available tables
+			loadRelatedTables();
 
 			// Post to server
-			var frmSubmit = $("#frmPostChildTable");
-			OpenHR.postForm(frmSubmit);
+			OpenHR.postData("Reports/PostChildTable", datarow)
 
-			$("#divPopupGetChildTable").dialog("close");
-			$("#divPopupGetChildTable").empty();
+			$("#divPopupReportDefinition").dialog("close");
+			$("#divPopupReportDefinition").empty();
 
 		}
 

@@ -12,6 +12,7 @@ Imports Dapper
 Imports DMI.NET.Enums
 Imports DMI.NET.Classses
 Imports DMI.NET.ViewModels
+Imports DMI.NET.ViewModels.Reports
 
 Namespace Repository
 	Public Class ReportRepository
@@ -37,8 +38,13 @@ Namespace Repository
 		Public Function LoadCustomReport(ID As Integer, bIsCopy As Boolean, Action As String) As CustomReportModel
 
 			Dim objModel As New CustomReportModel
-
 			Try
+
+				If bIsCopy Then
+					objModel.ID = 0
+				Else
+					objModel.ID = ID
+				End If
 
 				'' TODO -- tidy these up.
 				Dim lngAction = HttpContext.Current.Session("action")
@@ -115,8 +121,8 @@ Namespace Repository
 
 				' Populate the child tables
 				For Each objRow As DataRow In dsDefinition.Tables(4).Rows
-					objModel.ChildTables.Add(New ReportChildTables() With {
-									.ID = 0,
+					objModel.ChildTables.Add(New ChildTableViewModel() With {
+									.ReportID = objModel.ID,
 									.TableName = objRow("tablename").ToString,
 									.FilterName = objRow("filtername").ToString,
 									.OrderName = objRow("ordername").ToString,
@@ -125,12 +131,6 @@ Namespace Repository
 									.OrderID = CInt(objRow("orderid")),
 									.Records = CInt(objRow("Records"))})
 				Next
-
-				If bIsCopy Then
-					objModel.ID = 0
-				Else
-					objModel.ID = ID
-				End If
 
 				_customreports.Add(objModel)
 
@@ -152,6 +152,12 @@ Namespace Repository
 				, New SqlParameter("@piReportID", SqlDbType.Int) With {.Value = ID} _
 				, New SqlParameter("@psCurrentUser", SqlDbType.VarChar, 255) With {.Value = _username} _
 				, New SqlParameter("@psAction", SqlDbType.VarChar, 255) With {.Value = Action})
+
+			If bIsCopy Then
+				objModel.ID = 0
+			Else
+				objModel.ID = ID
+			End If
 
 			PopulateDefintion(objModel, dsDefinition.Tables(0))
 			objModel.GroupAccess = GetUtilityAccess(UtilityType.utlMailMerge, ID, bIsCopy)
@@ -210,12 +216,6 @@ Namespace Repository
 
 			End If
 
-			If bIsCopy Then
-				objModel.ID = 0
-			Else
-				objModel.ID = ID
-			End If
-
 			_mailmerges.Add(objModel)
 
 			Return objModel
@@ -268,6 +268,12 @@ Namespace Repository
 
 			Try
 
+				If bIsCopy Then
+					objModel.ID = 0
+				Else
+					objModel.ID = ID
+				End If
+
 				Dim dtDefinition = _objDataAccess.GetFromSP("spASRIntGetCrossTabDefinition", _
 						New SqlParameter("piReportID", SqlDbType.Int) With {.Value = ID}, _
 						New SqlParameter("psCurrentUser", SqlDbType.VarChar, 255) With {.Value = _username}, _
@@ -319,12 +325,6 @@ Namespace Repository
 
 			End Try
 
-			If bIsCopy Then
-				objModel.ID = 0
-			Else
-				objModel.ID = ID
-			End If
-
 			Return objModel
 
 		End Function
@@ -333,6 +333,12 @@ Namespace Repository
 
 			Dim objModel As New CalendarReportModel
 			Dim objEvent As CalendarEventDetailViewModel
+
+			If bIsCopy Then
+				objModel.ID = 0
+			Else
+				objModel.ID = ID
+			End If
 
 			Dim dsDefinition = _objDataAccess.GetDataSet("spASRIntGetCalendarReportDefinition", _
 					New SqlParameter("@piCalendarReportID", SqlDbType.Int) With {.Value = ID}, _
@@ -417,12 +423,6 @@ Namespace Repository
 			PopulateSortOrder(objModel, dsDefinition.Tables(2))
 
 			objModel.GroupAccess = GetUtilityAccess(UtilityType.utlCalendarReport, ID, bIsCopy)
-
-			If bIsCopy Then
-				objModel.ID = 0
-			Else
-				objModel.ID = ID
-			End If
 
 			Return objModel
 
@@ -741,7 +741,7 @@ Namespace Repository
 
 		' Old style update of the column selection stuff
 		' could be dapperised, but the rest of our stored procs need updating too as everything has different column names and the IDs are not currently returned.
-		Private Function ReportChildTablesAsString(objSortColumns As Collection(Of ReportChildTables)) As String
+		Private Function ReportChildTablesAsString(objSortColumns As Collection(Of ChildTableViewModel)) As String
 
 			Dim sOrderString As String = ""
 
@@ -820,15 +820,14 @@ Namespace Repository
 			Dim objItems As New List(Of ReportTableItem)
 
 			For Each objRelation In objSessionInfo.Relations.Where(Function(n) n.ParentID = BaseTableID)
-				Dim blah = objSessionInfo.Tables(objRelation.ChildID)
-				Dim objItem As New ReportTableItem() With {.id = objRelation.ChildID, .Name = blah.Name}
+				Dim objTable = objSessionInfo.Tables.Where(Function(m) m.ID = objRelation.ChildID).FirstOrDefault
+				Dim objItem As New ReportTableItem() With {.id = objRelation.ChildID, .Name = objTable.Name}
 				objItems.Add(objItem)
 			Next
 
 			Return objItems
 
 		End Function
-
 
 		Public Function GetColumnsForTable(id As Integer) As List(Of ReportColumnItem)
 
@@ -869,7 +868,6 @@ Namespace Repository
 			Return objReturnData
 
 		End Function
-
 
 		' can be done with dapper?
 		Private Sub PopulateDefintion(outputModel As ReportBaseModel, data As DataTable)
@@ -939,8 +937,6 @@ Namespace Repository
 
 		End Sub
 
-
-
 		' can be done with dapper?
 		Private Sub PopulateOutput(outputModel As ReportOutputModel, data As DataTable)
 
@@ -973,11 +969,10 @@ Namespace Repository
 
 		End Sub
 
-
 		Public Function RetrieveReport(id As Integer) As CustomReportModel
 
 			Try
-				Return _customreports.Item(id)
+				Return _customreports.Where(Function(m) m.ID = id).FirstOrDefault
 
 			Catch ex As Exception
 				Return New CustomReportModel
@@ -997,6 +992,64 @@ Namespace Repository
 			End Try
 
 		End Function
+
+		Public Function GetRelatedTables(TableID As Integer, AddSelf As Boolean) As List(Of ReportTableItem)
+
+			Dim objSessionInfo = CType(HttpContext.Current.Session("SessionContext"), SessionInfo)
+			Dim objItems As New List(Of ReportTableItem)
+			Dim objTable As Table
+
+			For Each relation In objSessionInfo.Relations.Where(Function(m) m.ChildID = TableID)
+				objTable = objSessionInfo.Tables.Where(Function(m) m.ID = relation.ParentID).FirstOrDefault
+				objItems.Add(New ReportTableItem() With {.id = objTable.ID, .Name = objTable.Name})
+			Next
+
+			For Each relation In objSessionInfo.Relations.Where(Function(m) m.ParentID = TableID)
+				objTable = objSessionInfo.Tables.Where(Function(m) m.ID = relation.ChildID).FirstOrDefault
+				objItems.Add(New ReportTableItem() With {.id = objTable.ID, .Name = objTable.Name})
+			Next
+
+			If AddSelf Then
+				objTable = objSessionInfo.Tables.Where(Function(m) m.ID = TableID).FirstOrDefault
+				objItems.Add(New ReportTableItem() With {.id = objTable.ID, .Name = objTable.Name})
+			End If
+
+			Return objItems
+
+		End Function
+
+		Function GetAllTablesInReport(reportID As Integer) As List(Of ReportTableItem)
+
+			Dim objReport = RetrieveReport(reportID)
+			Dim objItems As New List(Of ReportTableItem)
+
+			If objReport.Parent1.ID > 0 Then
+				objItems.Add(New ReportTableItem() With {.id = objReport.Parent1.ID, .Name = objReport.Parent1.Name})
+			End If
+
+			If objReport.Parent2.ID > 0 Then
+				objItems.Add(New ReportTableItem() With {.id = objReport.Parent2.ID, .Name = objReport.Parent2.Name})
+			End If
+
+			For Each objTable In objReport.ChildTables
+				objItems.Add(New ReportTableItem() With {.id = objTable.TableID, .Name = objTable.TableName})
+			Next
+
+			Dim objBaseTable = _objSessionInfo.Tables.Where(Function(m) m.ID = objReport.BaseTableID).FirstOrDefault
+			objItems.Add(New ReportTableItem() With {.id = objBaseTable.ID, .Name = objBaseTable.Name})
+
+			Return objItems
+
+		End Function
+
+		Sub SetBaseTable(objModel As IReport)
+
+			objModel.SessionInfo = _objSessionInfo
+
+			objModel.SetBaseTable(objModel.BaseTableID)
+
+		End Sub
+
 
 
 	End Class
