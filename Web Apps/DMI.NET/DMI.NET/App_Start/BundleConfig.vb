@@ -54,6 +54,7 @@ Namespace App_Start
 
 			' Custom Reports
 			bundles.Add(New ScriptBundle("~/bundles/utilities_customreports").Include(
+				"~/Scripts/FormScripts/ReportDefinition.js",
 				"~/Scripts/FormScripts/customreport.js",
 				"~/Scripts/FormScripts/util_def_customreports.js",
 				"~/Scripts/FormScripts/general.js"))

@@ -120,6 +120,13 @@
 				width: 'auto'
 			});
 
+			$('#divPopupReportDefinition').dialog({
+				autoOpen: false,
+				width: 660,
+				height: 590,
+				resizable: true,
+				modal: true
+			});
 
 			$(function () {
 				$("input[type=submit], input[type=button], button")
@@ -426,6 +433,7 @@
 	</div>
 	
 	<div id="CalendarEvent"></div>
+	<div id="divPopupReportDefinition" />
 
 	<div id="dialog-confirm" title="">
 		<p><span class="ui-icon ui-icon-help" style="float: left; margin: 0 7px 20px 0;"></span></p>
@@ -436,6 +444,7 @@
 	<div id="divPollMessage" style="display: block;">
 		<form id="frmPollMessage" action="pollMessage" />		
 	</div>
+
 
 	<iframe name="submit-iframe" style="display: none;"></iframe>
 

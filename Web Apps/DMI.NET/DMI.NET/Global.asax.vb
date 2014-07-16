@@ -4,6 +4,7 @@ Imports DMI.NET.App_Start
 Imports System.Drawing
 Imports HR.Intranet.Server
 Imports System.IO
+Imports DMI.NET.Classes
 
 ' Note: For instructions on enabling IIS6 or IIS7 classic mode, 
 ' visit http://go.microsoft.com/?LinkId=9394802
@@ -22,6 +23,10 @@ Public Class MvcApplication
 		RouteConfig.RegisterRoutes(RouteTable.Routes)
 		BundleConfig.RegisterBundles(BundleTable.Bundles)
 		DataAnnotationConfig.RegisterDataAnnotations()
+
+		'	ModelBinders.Binders.Add(GetType(ReportChildTables), New ReportChildTableModelBinder())
+
+		'ValueProviderFactories.Factories.Add(New JsonValueProviderFactory())
 
 	End Sub
 

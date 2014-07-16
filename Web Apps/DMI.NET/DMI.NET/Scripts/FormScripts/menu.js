@@ -595,6 +595,12 @@ function menu_MenuClick(sTool) {
 	//--------------------------CUSTOM REPORT NEW/EDIT/COPY-------------------------------//
 	if (sToolName == 'mnutoolSaveReport') {
 		try {
+			
+			var gridData = jQuery("#ChildTables").getRowData();
+			var postData = JSON.stringify(gridData);
+
+			$('#txtCTAAS').val(postData);
+
 			var frmSubmit = $("#frmReportDefintion");
 			if (frmSubmit.length == 0) {
 				okClick(); //Should be in scope	

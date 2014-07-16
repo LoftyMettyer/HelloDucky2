@@ -1,16 +1,15 @@
 ﻿Option Strict On
 Option Explicit On
 
-Imports System.ComponentModel
+Imports DMI.NET.Classes
 Imports System.Collections.ObjectModel
+Imports System.ComponentModel
 
-Namespace Classes
+Namespace ViewModels
 
-	Public Class ReportChildTables
-		Implements IJsonSerialize
+	Public Class ReportChildTableViewModel
 
-		<HiddenInput>
-		Public Property ID As Integer Implements IJsonSerialize.ID
+		Public Property AvailableTables As Collection(Of ReportTableItem)
 
 		Public Property ReportID As Integer
 		Public Property TableID As Integer
@@ -29,7 +28,6 @@ Namespace Classes
 		<DisplayName("Order :")>
 		Public Property OrderName As String
 
-		Public Property AvailableTables As New List(Of ReportTableItem)
 
 	End Class
 

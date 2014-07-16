@@ -8,6 +8,7 @@ Imports DMI.NET.Classes
 Imports HR.Intranet.Server.Enums
 Imports System.ComponentModel
 Imports DMI.NET.Classses
+Imports DMI.NET.ViewModels
 
 Namespace Models
 
@@ -28,7 +29,7 @@ Namespace Models
 		Public Property GroupByDescription As Boolean
 		Public Property Separator As String
 
-		Public Property Events As New Collection(Of CalendarEventDetail)
+		Public Property Events As New Collection(Of CalendarEventDetailViewModel)
 
 		Public Property StartType As CalendarDataType
 		Public Property StartFixedDate As DateTime

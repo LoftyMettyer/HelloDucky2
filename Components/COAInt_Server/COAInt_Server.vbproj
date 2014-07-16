@@ -135,6 +135,8 @@
     <Compile Include="clsMultiAxisChart.vb" />
     <Compile Include="Constants.vb" />
     <Compile Include="Database.vb" />
+    <Compile Include="Enums\CalendarEventEndType.vb" />
+    <Compile Include="Enums\CalendarLegendType.vb" />
     <Compile Include="Enums\ChartAggregateType.vb" />
     <Compile Include="Enums\IntersectionType.vb" />
     <Compile Include="Enums\PromptedDateType.vb" />

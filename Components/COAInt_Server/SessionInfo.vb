@@ -21,8 +21,8 @@ Public Class SessionInfo
 	Friend PersonnelModule As modPersonnelSpecifics
 
 	Public Tables As ICollection(Of Table)
-	public Columns As ICollection(Of Column)
-	Friend Relations As List(Of Relation)
+	Public Columns As ICollection(Of Column)
+	Public Relations As List(Of Relation)
 
 	Friend ModuleSettings As ICollection(Of ModuleSetting)
 	Friend UserSettings As ICollection(Of UserSetting)

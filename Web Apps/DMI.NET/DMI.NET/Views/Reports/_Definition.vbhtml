@@ -186,12 +186,14 @@
 
   	var sURL;										 
   	var frmRecordSelection = $("#frmRecordSelection")[0];
-    var iCurrentID;
+  	var iCurrentID;
+  	var iTableID;
+  	var dropTable;
 
     if (psTable == 'base') {
 
-    	var e = $("#BaseTableID")[0];
-      var iTableID = e.options[e.selectedIndex].value;
+    	dropTable = $("#BaseTableID")[0];
+    	iTableID = dropTable.options[dropTable.selectedIndex].value;
 
       if (psType == 'picklist') {
       	iCurrentID = $("#txtBasePicklistID").val();
@@ -220,6 +222,19 @@
         iCurrentID = $("#txtParent2FilterID").val();
       }
     }
+
+    if (psTable == 'child') {
+    	dropTable = $("#CalendarEventTableID")[0];
+    	iTableID = dropTable.options[dropTable.selectedIndex].value;
+    	iCurrentID = $("txtChildFilterID").val();
+    }
+
+    if (psTable == 'event') {
+    	dropTable = $("#CalendarEventTableID")[0];
+    	iTableID = dropTable.options[dropTable.selectedIndex].value;
+    	iCurrentID = $("#txtEventFilterID").val();
+    }
+
 
     var strDefOwner = $("#Owner").val();
     var strCurrentUser = $("#Owner").val();

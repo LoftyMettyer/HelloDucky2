@@ -177,7 +177,7 @@
     <Compile Include="AttributeExtensions\ExcludeCharAttribute.vb" />
     <Compile Include="AttributeExtensions\NonZeroIfAttribute.vb" />
     <Compile Include="AttributeExtensions\RequiredIfAttribute.vb" />
-    <Compile Include="Classes\CalendarEventDetail.vb" />
+    <Compile Include="ViewModels\Reports\CalendarEventDetailViewModel.vb" />
     <Compile Include="Classes\GroupAccess.vb" />
     <Compile Include="Classes\ReportChildTables.vb" />
     <Compile Include="Classes\ReportColumnItem.vb" />
@@ -190,6 +190,7 @@
     <Compile Include="Code\ASRIntranetFunctions.vb" />
     <Compile Include="Code\CalendarOutput.vb" />
     <Compile Include="Code\Interfaces\IJsonSerialize.vb" />
+    <Compile Include="ModelBinders\ReportChildTableModelBinder.vb" />
     <Compile Include="Models\Extensions\ReportSortItemExtensions.vb" />
     <Compile Include="Code\GeneralUtilities.vb" />
     <Compile Include="Code\MailMergeRun.vb" />
@@ -1142,6 +1143,7 @@
     <Content Include="Content\themes\vader\jquery.ui.theme.min.css" />
     <Content Include="Content\themes\vader\jquery.ui.tooltip.min.css" />
     <Content Include="Database\UpdateScript8.1.sql" />
+    <Content Include="Scripts\FormScripts\ReportDefinition.js" />
     <Content Include="Scripts\jquery\jquery.numeric.js" />
     <Content Include="Scripts\FormScripts\OptionDataGrid.js" />
     <Content Include="Scripts\jquery\jquery-ui-i18n.js" />
@@ -1698,6 +1700,9 @@
     <Content Include="Views\Reports\Util_Def_CustomReport.vbhtml" />
     <Content Include="Views\Reports\Util_Def_MailMerge.vbhtml" />
     <Content Include="Views\Home\OptionDataGrid.vbhtml" />
+    <Content Include="Views\Reports\EditorTemplates\ReportChildTable.vbhtml" />
+    <Compile Include="ViewModels\Reports\ReportChildTableViewModel.vb" />
+    <Content Include="Views\Reports\EditorTemplates\CalendarEventDetail.vbhtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Global.asax" />

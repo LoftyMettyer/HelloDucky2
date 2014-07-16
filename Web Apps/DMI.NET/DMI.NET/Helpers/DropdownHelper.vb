@@ -7,6 +7,7 @@ Imports System.Text
 Imports System.Web.Mvc
 Imports System.Runtime.CompilerServices
 Imports DMI.NET.Classes
+Imports HR.Intranet.Server
 
 Namespace Helpers
 	<HideModuleName> _
@@ -40,7 +41,7 @@ Namespace Helpers
 		End Function
 
 		<Extension()> _
-		Public Function TableDropdown(helper As HtmlHelper, name As String, bindValue As Integer, items As List(Of ReportTableItem), onChangeEvent As String) As MvcHtmlString
+		Public Function TableDropdown(helper As HtmlHelper, name As String, bindValue As Integer, items As IEnumerable(Of ReportTableItem), onChangeEvent As String) As MvcHtmlString
 			If items Is Nothing OrElse items.Count = 0 OrElse String.IsNullOrEmpty(name) Then
 				Return MvcHtmlString.Empty
 			End If
@@ -63,6 +64,32 @@ Namespace Helpers
 			Return MvcHtmlString.Create(builder.ToString())
 
 		End Function
+
+
+		<Extension()> _
+		Public Function ColumnDropdown2(helper As HtmlHelper, name As String, bindValue As Integer) As MvcHtmlString
+
+			Dim objSessionInfo = CType(HttpContext.Current.Session("SessionContext"), SessionInfo)
+
+			Dim content As New StringBuilder
+			Dim builder As New TagBuilder("select")
+			builder.MergeAttribute("name", name)
+			builder.MergeAttribute("id", name)
+
+			For Each item In objSessionInfo.Columns
+
+				content.AppendFormat("<option value={0} data-datatype={4} data-size={2} data-decimals={3} {5}>{1}</option>" _
+																, item.ID, item.Name, item.Size.ToString, item.Decimals.ToString _
+																, CInt(item.DataType), IIf(bindValue = item.ID, "selected", ""))
+
+			Next
+
+			builder.InnerHtml = content.ToString
+			Return MvcHtmlString.Create(builder.ToString())
+
+		End Function
+
+
 
 	End Module
 

@@ -10,6 +10,10 @@ Imports System.Collections.ObjectModel
 Imports DMI.NET.Models
 Imports DMI.NET.Classes
 Imports DMI.NET.Repository
+Imports System.Web.Script.Serialization
+Imports Newtonsoft.Json
+Imports DMI.NET.Classses
+Imports DMI.NET.ViewModels
 
 Namespace Controllers
 
@@ -63,6 +67,13 @@ Namespace Controllers
 
 		<HttpPost, ValidateInput(False)>
 	 Function util_def_customreport(objModel As CustomReportModel) As ActionResult
+
+			' Um... this doesn't work, but you get the gist.... It does now! :-)
+			Dim deserializer = New JavaScriptSerializer()
+			Dim uploadedChildTables = deserializer.Deserialize(Of Collection(Of ReportChildTables))(objModel.ChildTablesString)
+
+			objModel.ChildTables = deserializer.Deserialize(Of Collection(Of ReportChildTables))(objModel.ChildTablesString)
+
 
 			If ModelState.IsValid Then
 				objReportRepository.SaveReportDefinition(objModel)
@@ -217,6 +228,117 @@ Namespace Controllers
 			Return Json(objTables, JsonRequestBehavior.AllowGet)
 
 		End Function
+
+		'<HttpGet>
+		'Function getChildTable(objSelectedChildren As Collection(Of ReportChildTables)) As ActionResult
+		'	 Pass in currently selected items and subtract?
+		'	Dim objModel As New ReportChildTables
+		'	Return View("_ChildTableSelection", objModel)
+		'End Function
+
+		'<HttpGet>
+		'Function getChildTable(objModel As ReportChildTables) As ActionResult
+		'	Return View("_ChildTableSelection", objModel)
+		'End Function
+
+		'		Function AddChildTable(ID As String) As ActionResult
+
+		<HttpGet>
+		Function AddChildTable(ID As Integer) As ActionResult
+
+			'ID is the id of the custom reprot
+			Dim objReport = objReportRepository.RetrieveReport(ID)
+
+			Dim objAvailable As New Collection(Of ReportChildTables)
+
+
+
+			For Each obj As Object In objReportRepository.GetTables()
+
+			Next
+
+
+			Dim objModel As New ReportChildTables
+			objModel.ReportID = ID
+			'	objModel.
+
+
+			Return PartialView("EditorTemplates\ReportChildTable", objModel)
+
+
+		End Function
+
+		<HttpPost>
+		Function EditChildTable(objModel As ReportChildTables) As ActionResult
+
+			Dim objReport = objReportRepository.RetrieveReport(objModel.ReportID)
+
+			objModel.AvailableTables = objReportRepository.GetTables()
+
+			Return PartialView("EditorTemplates\ReportChildTable", objModel)
+		End Function
+
+		<HttpPost>
+		Sub PostChildTable(objModel As ReportChildTables)
+
+			Try
+
+				If ModelState.IsValid Then
+
+					Dim objReport = objReportRepository.RetrieveReport(objModel.ReportID)
+					Dim original = objReport.ChildTables.Where(Function(m) m.TableID = objModel.TableID).First
+
+					If Not original Is Nothing Then
+						objReport.ChildTables.Remove(original)
+					End If
+
+					objReport.ChildTables.Add(objModel)
+
+				End If
+
+			Catch ex As Exception
+
+			End Try
+
+		End Sub
+
+		<HttpGet>
+		Function GetAvailableTablesForReport(ID As Integer) As JsonResult
+
+			Dim objReport = objReportRepository.RetrieveReport(ID)
+
+			Dim objTables = objReportRepository.GetTables()
+
+			' subtract the currently selected ones
+
+			Return Json(objTables, JsonRequestBehavior.AllowGet)
+
+		End Function
+
+
+		<HttpPost>
+		Function EditCalendarEvent(objModel As CalendarEventDetailViewModel) As ActionResult
+
+			Dim objReport = objReportRepository.RetrieveReport(objModel.CalendarReportID)
+
+			Return PartialView("EditorTemplates\CalendarEventDetail", objModel)
+		End Function
+
+
+		<HttpPost>
+		Sub PostCalendarEvent(objModel As CalendarEventDetailViewModel)
+
+			Dim objReport = objReportRepository.RetrieveCalendarReport(objModel.CalendarReportID)
+			Dim original = objReport.Events.Where(Function(m) m.EventKey = objModel.EventKey).First
+
+			If Not original Is Nothing Then
+				objReport.Events.Remove(original)
+			End If
+
+			objReport.Events.Add(objModel)
+
+		End Sub
+
 
 
 	End Class

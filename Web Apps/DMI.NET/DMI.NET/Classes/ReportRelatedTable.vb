@@ -3,6 +3,7 @@ Option Explicit On
 
 Imports DMI.NET.Enums
 Imports DMI.NET.AttributeExtensions
+Imports HR.Intranet.Server.Enums
 
 Namespace Classes
 
@@ -21,6 +22,8 @@ Namespace Classes
 
 		Public Property FilterName As String
 		Public Property PicklistName As String
+
+		Public Property RelationType As RelationType
 
 		Public ReadOnly Property Visibility As String
 			Get

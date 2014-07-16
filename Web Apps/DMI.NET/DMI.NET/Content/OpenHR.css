@@ -1110,3 +1110,21 @@ input[type=button].Embedded, input[type=button].Linked {
 	display: inline-block;
 	width: 195px;
 }
+
+.relatedtables .stretchyfill {
+	display: table-cell;
+	width: 100%;	
+}
+
+.relatedtables .stretchyfixed {	
+	display: table-cell;
+	min-width: 160px;
+	vertical-align: top;
+}
+
+.stretchyfixed .ui-button {
+	margin-left: 20px;
+	width: 110px;
+	margin-bottom: 10px;
+
+}

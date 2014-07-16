@@ -11,6 +11,7 @@ Imports HR.Intranet.Server.Enums
 Imports Dapper
 Imports DMI.NET.Enums
 Imports DMI.NET.Classses
+Imports DMI.NET.ViewModels
 
 Namespace Repository
 	Public Class ReportRepository
@@ -85,7 +86,7 @@ Namespace Repository
 					Dim objItem As New ReportColumnItem() With {
 						.CustomReportId = ID,
 						.Heading = objRow("Heading").ToString,
-						.id = CInt(objRow("id")),
+						.ID = CInt(objRow("id")),
 						.Name = objRow("Name").ToString,
 						.Sequence = CInt(objRow("Sequence")),
 						.Size = CInt(objRow("Size")),
@@ -115,6 +116,7 @@ Namespace Repository
 				' Populate the child tables
 				For Each objRow As DataRow In dsDefinition.Tables(4).Rows
 					objModel.ChildTables.Add(New ReportChildTables() With {
+									.ID = 0,
 									.TableName = objRow("tablename").ToString,
 									.FilterName = objRow("filtername").ToString,
 									.OrderName = objRow("ordername").ToString,
@@ -159,7 +161,7 @@ Namespace Repository
 				objItem = New ReportColumnItem
 				objItem.IsExpression = False
 				objItem.IsHidden = False
-				objItem.id = CInt(objRow("columnId"))
+				objItem.ID = CInt(objRow("columnId"))
 				objItem.Name = objRow("name").ToString
 				objItem.Heading = objRow("heading").ToString
 				objItem.DataType = CType(objRow("datatype"), SQLDataType)
@@ -173,7 +175,7 @@ Namespace Repository
 				objItem = New ReportColumnItem
 				objItem.IsExpression = True
 				objItem.IsHidden = CBool(objRow("ishidden"))
-				objItem.id = CInt(objRow("columnId"))
+				objItem.ID = CInt(objRow("columnId"))
 				objItem.Name = objRow("name").ToString
 				objItem.Heading = objRow("heading").ToString
 				objItem.DataType = SQLDataType.sqlUnknown
@@ -330,7 +332,7 @@ Namespace Repository
 		Public Function LoadCalendarReport(ID As Integer, bIsCopy As Boolean, Action As String) As CalendarReportModel
 
 			Dim objModel As New CalendarReportModel
-			Dim objEvent As CalendarEventDetail
+			Dim objEvent As CalendarEventDetailViewModel
 
 			Dim dsDefinition = _objDataAccess.GetDataSet("spASRIntGetCalendarReportDefinition", _
 					New SqlParameter("@piCalendarReportID", SqlDbType.Int) With {.Value = ID}, _
@@ -377,7 +379,7 @@ Namespace Repository
 
 			' Replace with Automapper?
 			For Each objRow As DataRow In dsDefinition.Tables(1).Rows
-				objEvent = New CalendarEventDetail
+				objEvent = New CalendarEventDetailViewModel
 
 				objEvent.ID = CInt(objRow("ID"))
 				objEvent.Name = objRow("Name").ToString
@@ -395,7 +397,7 @@ Namespace Repository
 				objEvent.EventDurationName = objRow("EventDurationName").ToString
 				objEvent.EventEndSessionName = objRow("EventEndSessionName").ToString
 				objEvent.EventDurationID = CInt(objRow("EventDurationID"))
-				objEvent.LegendType = objRow("LegendType").ToString
+				objEvent.LegendType = CType(objRow("LegendType"), CalendarLegendType)
 				objEvent.LegendTypeName = objRow("LegendTypeName").ToString
 				objEvent.LegendCharacter = objRow("LegendCharacter").ToString
 				objEvent.LegendLookupTableID = CInt(objRow("LegendLookupTableID"))
@@ -766,13 +768,13 @@ Namespace Repository
 				' this could be improve with some linq or whatever! No panic because the whole function could be tidied up
 				sOrderString = "||0||"
 				For Each objSortItem In objSortColumns
-					If objSortItem.ID = objItem.id Then
+					If objSortItem.ID = objItem.ID Then
 						sOrderString = "||1||" & objSortItem.Order & "||"
 					End If
 				Next
 
 				sColumns += String.Format("{0}||{1}||{2}||{3}||{4}||{5}**" _
-																	, iCount, IIf(objItem.IsExpression, "E", "C"), objItem.id, objItem.Size, objItem.Decimals, sOrderString)
+																	, iCount, IIf(objItem.IsExpression, "E", "C"), objItem.ID, objItem.Size, objItem.Decimals, sOrderString)
 				iCount += 1
 			Next
 
@@ -812,6 +814,22 @@ Namespace Repository
 
 		End Function
 
+		Public Function GetChildTables(BaseTableID As Integer) As List(Of ReportTableItem)
+
+			Dim objSessionInfo = CType(HttpContext.Current.Session("SessionContext"), SessionInfo)
+			Dim objItems As New List(Of ReportTableItem)
+
+			For Each objRelation In objSessionInfo.Relations.Where(Function(n) n.ParentID = BaseTableID)
+				Dim blah = objSessionInfo.Tables(objRelation.ChildID)
+				Dim objItem As New ReportTableItem() With {.id = objRelation.ChildID, .Name = blah.Name}
+				objItems.Add(objItem)
+			Next
+
+			Return objItems
+
+		End Function
+
+
 		Public Function GetColumnsForTable(id As Integer) As List(Of ReportColumnItem)
 
 			Dim objSessionInfo = CType(HttpContext.Current.Session("SessionContext"), SessionInfo)
@@ -820,7 +838,7 @@ Namespace Repository
 			Try
 
 				Dim objToAdd As New ReportColumnItem With {
-							.id = 0,
+							.ID = 0,
 							.Name = "None",
 							.DataType = SQLDataType.sqlUnknown,
 							.Size = 0,
@@ -831,7 +849,7 @@ Namespace Repository
 					If objColumn.TableID = id And objColumn.Name <> "ID" Then
 
 						objToAdd = New ReportColumnItem With {
-							.id = objColumn.ID,
+							.ID = objColumn.ID,
 							.Name = objColumn.Name,
 							.Heading = objColumn.Name,
 							.DataType = objColumn.DataType,
@@ -956,14 +974,29 @@ Namespace Repository
 		End Sub
 
 
-		'Public Function getModel(id As Integer) As ReportBaseModel
+		Public Function RetrieveReport(id As Integer) As CustomReportModel
 
-		'	Return _reports.Item(id)
+			Try
+				Return _customreports.Item(id)
 
-		'End Function
+			Catch ex As Exception
+				Return New CustomReportModel
 
+			End Try
 
+		End Function
 
+		Public Function RetrieveCalendarReport(id As Integer) As CalendarReportModel
+
+			Try
+				Return _calendarreports.Item(id)
+
+			Catch ex As Exception
+				Return New CalendarReportModel
+
+			End Try
+
+		End Function
 
 
 	End Class

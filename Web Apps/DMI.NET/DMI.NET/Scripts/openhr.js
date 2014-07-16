@@ -257,12 +257,134 @@
 			return document.querySelector('#' + frameId + ' #' + formId);
 
 		},
-		submitForm = function (form, targetWin, asyncFlag) {
-			var $form = $(form),
-				$frame = $form.closest("div[data-framesource]").first(),
-				url = $form.attr("action"),
-				target = $form.attr("target"),
-				data = $form.serialize();
+
+		postForm = function (url, data) {
+
+			$.ajax({
+				url: url,
+				type: "POST",
+				data: data,
+
+				success: function (html) {
+					try {
+						var jsonResponse = $.parseJSON(html);
+						if (jsonResponse.ErrorMessage.length > 0) {
+							handleAjaxError(jsonResponse);
+							return false;
+						}
+					} catch (e) {
+					}
+
+					try {
+						if ((html.ErrorMessage != null) && (html.ErrorMessage != undefined) && (html.ErrorMessage != "undefined")) {
+							if (html.ErrorMessage.length > 0) {
+								//A handled error was returned. Display error message, then redirect accordingly...
+								handleAjaxError(html);
+								return false;
+							}
+						}
+					} catch (e) {
+						//alert("OpenHR.submitForm ajax call to '" + url + "' failed with '" + e.toString() + "'.");
+						$("#errorDialogTitle").text(e.toString);
+						$("#errorDialogContentText").html(e.responseText);
+						$("#errorDialog").dialog("open");
+					}
+					//clear the frame...
+
+				},
+				error: function (req, status, errorObj) {
+					if (!(errorObj == "" || req.responseText == "")) {
+						//alert("OpenHR.submitForm ajax call to '" + url + "' failed with '" + errorObj + "'.");
+						$("#errorDialogTitle").text(errorObj);
+						$("#errorDialogContentText").html(req.responseText);
+						$("#errorDialog").dialog("open");
+					}
+				}
+			});
+
+
+		},
+
+	openDialog = function (url, targetWin, jsonData) {
+
+		var $frame;
+
+		$.ajax({
+			url: url,
+			type: "POST",
+			data: JSON.stringify(jsonData),
+			contentType: "application/json;charset=utf-8",
+			async: true,
+			success: function (html) {
+
+				try {
+					if ((html.ErrorMessage != null) && (html.ErrorMessage != undefined) && (html.ErrorMessage != "undefined")) {
+						if (html.ErrorMessage.length > 0) {
+							//A handled error was returned. Display error message, then redirect accordingly...
+							handleAjaxError(html);
+							return false;
+						}
+					}
+				} catch (e) {
+					//alert("OpenHR.submitForm ajax call to '" + url + "' failed with '" + e.toString() + "'.");
+					$("#errorDialogTitle").text(e.toString);
+					$("#errorDialogContentText").html(e.responseText);
+					$("#errorDialog").dialog("open");
+				}
+				//clear the frame...
+
+				$frame = $("#" + targetWin);
+				$frame.html(html);
+				$frame.show();
+				$frame.dialog("open")
+
+				//jQuery styling
+				$(function () {
+					$("input[type=submit], input[type=button], button").button();
+					$("input").addClass("ui-widget ui-corner-all");
+					$("input").removeClass("text");
+
+					$("textarea").addClass("ui-widget ui-corner-tl ui-corner-bl");
+					$("textarea").removeClass("text");
+
+					$("select").addClass("ui-widget ui-corner-tl ui-corner-bl");
+					$("select").removeClass("text");
+					$("input[type=submit], input[type=button], button").removeClass("ui-corner-all");
+					$("input[type=submit], input[type=button], button").addClass("ui-corner-tl ui-corner-br");
+				});
+
+			},
+			error: function (req, status, errorObj) {
+				//alert("OpenHR.submitForm ajax call to '" + url + "' failed with '" + errorObj + "'.");
+
+				//Sometimes (when?) an error is thrown with both errorObj and/or req.Response being empty; in this case don't show the empty error window
+				if (!(errorObj == "" || req.responseText == "")) {
+					//alert("OpenHR.submitForm ajax call to '" + url + "' failed with '" + errorObj + "'.");
+					$("#errorDialogTitle").text(errorObj);
+					$("#errorDialogContentText").html(req.responseText);
+					$("#errorDialog").dialog("open");
+				}
+			}
+		});
+	},
+
+
+	submitForm = function (form, targetWin, asyncFlag, jsonData) {
+
+		var $form = $(form),
+			$frame = $form.closest("div[data-framesource]").first(),
+			url = $form.attr("action"),
+			target = $form.attr("target"),
+			method = $form.attr("method");
+
+		var data;
+
+		if (jsonData == undefined) {
+			data = $form.serialize();
+		}	else {
+			data = jsonData;
+		}
+	
 
 			if ((asyncFlag == undefined) || (asyncFlag.length == 0) || (asyncFlag == true)) {
 				asyncFlag = true;
@@ -272,7 +394,7 @@
 
 			$.ajax({
 				url: url,
-				type: "POST",
+				type: method,
 				dataType: 'html',
 				data: data,
 				async: asyncFlag,
@@ -956,6 +1078,7 @@
 		showPopup: showPopup,
 		getFrame: getFrame,
 		getForm: getForm,
+		postForm: postForm,
 		submitForm: submitForm,
 		showInReportFrame: showInReportFrame,
 		addActiveXHandler: addActiveXHandler,
@@ -988,7 +1111,8 @@
 		replaceAll: replaceAll,
 		getLocaleDateString: getLocaleDateString,
 		setDatepickerLanguage: setDatepickerLanguage,
-		IsValidDate: isValidDate
+		IsValidDate: isValidDate,
+		OpenDialog: openDialog
 	};
 
 })(window, jQuery);

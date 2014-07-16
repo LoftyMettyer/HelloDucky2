@@ -1,5 +1,6 @@
 ﻿@Imports DMI.NET
 @Imports DMI.NET.Helpers
+@Imports DMI.NET.Classes
 @Inherits System.Web.Mvc.WebViewPage(Of Models.CustomReportModel)
 
 @Code
@@ -105,19 +106,14 @@ End Code
 
   <div id="divEmailGroupSelection">
 
-
-
-
   </div>
-
-
-
     </div>
 
+  @Html.HiddenFor(Function(m) m.p1Hidden)
+  @Html.HiddenFor(Function(m) m.p2Hidden)
+  @Html.HiddenFor(Function(m) m.childHidden)
 
-  
-
-
+	
   End Using
 
   <form action="default_Submit" method="post" id="frmGoto" name="frmGoto" style="visibility: hidden; display: none">
@@ -126,69 +122,107 @@ End Code
     End Code
   </form>
 
-    
+	<div id="eventdetail">
+
+
+	</div>
+
+
+
+
+
 </div>
 
-<script type="text/javascript">
+@*<form action="Reports/AddChildTable?ReportID=300" method="get" id="frmGetChildTable" name="frmGetChildTable" style="visibility: hidden; display: none">
+	<input type="text" name="ReportID" value="200" />
+	</form>*@
 
-  $(function () {
-  	$("#tabs").tabs();
-  	$('input[type=number]').numeric();
-
-  	if ($("#IsReadOnly").val() == "True") {
-  		$("#frmReportDefintion :input").prop("disabled", true);
-  	}
-
-  });
+	@Using (Html.BeginForm("AddChildTable", "Reports", FormMethod.Get, New With {.id = "frmGetChildTable"}))
+		@Html.TextBoxFor(Function(m) m.ID)
+	End Using
 
 
-  function submitForm() {
+	<script type="text/javascript">
 
-  	var frmSubmit = $("#frmReportDefintion");
-    OpenHR.submitForm(frmSubmit);
+		$(function () {
+			$("#tabs").tabs();
+			$('input[type=number]').numeric();
 
-  }
+			if ($("#IsReadOnly").val() == "True") {
+				$("#frmReportDefintion :input").prop("disabled", true);
+			}
 
-    $("#workframe").attr("data-framesource", "UTIL_DEF_CUSTOMREPORTS");
+			$(function () {
 
-
-    $('#tabs').bind('tabsshow', function (event, ui) {
-
-      var tabPage;
-
-      if (ui.index == "0") {
-        tabPage = $("#frmCustomReportsTab1");
-      }
-      
-      if (ui.index == "1") {
-
-        tabPage = $("#frmCustomReportsTab2");
-
-        //  $.getJSON("Util_Def_CustomReports_getColumnInfo", function (data) {
-
-        //    var items = [];
-        //    $.each(data, function (key, val) {
-        // //     debugger;
-        //      items.push("<li id='" + val.TableName + "'>" + val + "</li>");
-        //    });
-
-        //    $("<ul/>", {
-        //      "class": "my-new-list",
-        //      html: items.join("")
-        //    }).appendTo("#showColumns");
-        //  });
-      }
-
-      if (ui.index == "2") {
-        tabPage = $("#frmCustomReportsTab3");
-      }
+			});
 
 
-      //})
-
-     //   OpenHR.submitForm(tabPage, "tabContent2");
-
-    })
 
 
-</script>
+		});
+
+
+		function submitForm() {
+
+			var frmSubmit = $("#frmReportDefintion");
+			OpenHR.submitForm(frmSubmit);
+
+		}
+
+		$("#workframe").attr("data-framesource", "UTIL_DEF_CUSTOMREPORTS");
+
+		$('#tabs').bind('tabsshow', function (event, ui) {
+
+			var tabPage;
+
+			if (ui.index == "0") {
+				tabPage = $("#frmCustomReportsTab1");
+			}
+
+			if (ui.index == "1") {
+
+				tabPage = $("#frmCustomReportsTab2");
+
+				//  $.getJSON("Util_Def_CustomReports_getColumnInfo", function (data) {
+
+				//    var items = [];
+				//    $.each(data, function (key, val) {
+				// //     debugger;
+				//      items.push("<li id='" + val.TableName + "'>" + val + "</li>");
+				//    });
+
+				//    $("<ul/>", {
+				//      "class": "my-new-list",
+				//      html: items.join("")
+				//    }).appendTo("#showColumns");
+				//  });
+			}
+
+			if (ui.index == "2") {
+				tabPage = $("#frmCustomReportsTab3");
+			}
+
+
+			//})
+
+			//   OpenHR.submitForm(tabPage, "tabContent2");
+
+		})
+
+		function getAvailableTablesForReport() {
+			$.ajax({
+				url: '@Url.Action("GetAvailableTablesForReport", "Reports", New With {.ID = Model.ID})',
+				type: 'GET',
+				dataType: 'json',
+				success: function (json) {
+					$.each(json, function (i, table) {
+						var optionHtml = '<option value=' + table.id + '>' + table.Name + '</option>'
+						$('#txtChildTableID').append(optionHtml);
+					});
+
+				}
+			});
+		}
+
+
+	</script>
