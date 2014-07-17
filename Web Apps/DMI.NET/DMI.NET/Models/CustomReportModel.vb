@@ -49,7 +49,7 @@ Namespace Models
 			Columns.DisplayTableSelection = True
 			SelectionType = Enums.RecordSelectionType.AllRecords
 			Columns.Selected = New Collection(Of ReportColumnItem)
-			SortOrderColumns = New Collection(Of ReportSortItem)
+			SortOrders = New Collection(Of SortOrderViewModel)
 			Repetition = New Collection(Of ReportRepetition)
 
 			Dim objParents = SessionInfo.Relations.Where(Function(m) m.ChildID = TableID)
@@ -85,6 +85,18 @@ Namespace Models
 			End If
 
 		End Sub
+
+		Public Overrides Function GetAvailableSortColumns() As IEnumerable(Of ReportColumnItem)
+
+			Dim objItems As New Collection(Of ReportColumnItem)
+
+			For Each objColumn In Columns.Selected
+				objItems.Add(objColumn)
+			Next
+
+			Return objItems
+
+		End Function
 
 	End Class
 

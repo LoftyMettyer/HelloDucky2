@@ -52,7 +52,10 @@ End Code
 																																								.defaultbutton = "submitCustomReport"}))
 
   @Html.HiddenFor(Function(m) m.ID)
-                     
+  @Html.HiddenFor(Function(m) m.p1Hidden)
+  @Html.HiddenFor(Function(m) m.p2Hidden)
+  @Html.HiddenFor(Function(m) m.childHidden)
+	
   @<div id="tabs">
 
         <ul>

@@ -17,7 +17,7 @@ Namespace Helpers
 		Private _objSessionInfo As SessionInfo = CType(HttpContext.Current.Session("SessionContext"), SessionInfo)
 
 		<Extension()> _
-		Public Function ColumnDropdown(helper As HtmlHelper, name As String, bindValue As Integer, items As List(Of ReportColumnItem), onChangeEvent As String) As MvcHtmlString
+		Public Function ColumnDropdown(helper As HtmlHelper, name As String, id As String, bindValue As Integer, items As IEnumerable(Of ReportColumnItem), onChangeEvent As String) As MvcHtmlString
 			If items Is Nothing OrElse items.Count = 0 OrElse String.IsNullOrEmpty(name) Then
 				Return MvcHtmlString.Empty
 			End If
@@ -25,7 +25,7 @@ Namespace Helpers
 			Dim content As New StringBuilder
 			Dim builder As New TagBuilder("select")
 			builder.MergeAttribute("name", name)
-			builder.MergeAttribute("id", name)
+			builder.MergeAttribute("id", id)
 			builder.MergeAttribute("onchange", onChangeEvent)
 
 			For Each item In items
@@ -68,7 +68,6 @@ Namespace Helpers
 
 		End Function
 
-
 		<Extension()> _
 		Public Function LookupTableDropdown(helper As HtmlHelper, name As String, id As String, bindValue As Integer) As MvcHtmlString
 
@@ -86,10 +85,6 @@ Namespace Helpers
 
 		End Function
 
-
-
-
-		' Dropdown to display all sibling columns
 		<Extension()> _
 		Public Function ColumnDropdown2(helper As HtmlHelper, name As String, bindValue As Integer, TableID As Integer, DataType As SQLDataType, AddNone As Boolean, LimitToLookups As Boolean) As MvcHtmlString
 

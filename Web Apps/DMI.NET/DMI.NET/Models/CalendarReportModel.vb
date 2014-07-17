@@ -13,6 +13,7 @@ Imports DMI.NET.AttributeExtensions
 Namespace Models
 
 	Public Class CalendarReportModel
+
 		Inherits ReportBaseModel
 
 		Public Overrides ReadOnly Property ReportType As UtilityType
@@ -66,6 +67,18 @@ Namespace Models
 
 		Public Overrides Sub SetBaseTable(TableID As Integer)
 		End Sub
+
+		Public Overrides Function GetAvailableSortColumns() As IEnumerable(Of ReportColumnItem)
+
+			Dim objItems As New Collection(Of ReportColumnItem)
+
+			For Each objColumn In SessionInfo.Columns.Where(Function(m) m.TableID = BaseTableID And m.IsVisible).OrderBy(Function(m) m.Name)
+				objItems.Add(New ReportColumnItem With {.ID = objColumn.ID, .Name = objColumn.Name})
+			Next
+
+			Return objItems
+
+		End Function
 
 	End Class
 End Namespace

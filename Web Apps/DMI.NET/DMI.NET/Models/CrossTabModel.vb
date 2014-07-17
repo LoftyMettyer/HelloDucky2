@@ -73,6 +73,10 @@ Namespace Models
 		Public Overrides Sub SetBaseTable(TableID As Integer)
 		End Sub
 
+		Public Overrides Function GetAvailableSortColumns() As IEnumerable(Of ReportColumnItem)
+			Return Nothing
+		End Function
+
 	End Class
 
 End Namespace

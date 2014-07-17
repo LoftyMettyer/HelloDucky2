@@ -10,6 +10,7 @@ Imports DMI.NET.AttributeExtensions
 Imports HR.Intranet.Server.Enums
 Imports System.Web.Script.Serialization
 Imports HR.Intranet.Server
+Imports DMI.NET.ViewModels.Reports
 
 Namespace Models
 	Public MustInherit Class ReportBaseModel
@@ -52,18 +53,18 @@ Namespace Models
 		<DisplayName("Display Title In Report Header")>
 		Public Property DisplayTitleInReportHeader As Boolean
 
-		Public Property SortOrderColumns As New Collection(Of ReportSortItem)
+		Public Property SortOrders As New Collection(Of SortOrderViewModel) Implements IReport.SortOrders
 		Public Property Repetition As New Collection(Of ReportRepetition)
 
-		Public Property SortOrderColumnsString As String
+		Public Property SortOrdersString As String
 
 		Public Property JobsToHide As New Collection(Of Integer)
 
 		Public Property SessionContext As SessionInfo Implements IDataAccess.SessionContext
 
 		Public Property SessionInfo As SessionInfo Implements IReport.SessionInfo
-
 		Public MustOverride Sub SetBaseTable(BaseTableID As Integer) Implements IReport.SetBaseTable
+		Public MustOverride Function GetAvailableSortColumns() As IEnumerable(Of ReportColumnItem) Implements IReport.GetAvailableSortColumns
 
 		<DisplayName("Description 1: ")>
 		Public Property Description1ID As Integer
@@ -79,6 +80,7 @@ Namespace Models
 
 		<DisplayFormat(ConvertEmptyStringToNull:=False)>
 		Public Property Separator As String
+
 
 	End Class
 End Namespace

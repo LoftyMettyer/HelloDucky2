@@ -606,7 +606,7 @@ function menu_MenuClick(sTool) {
 			$('#txtCEAAS').val(JSON.stringify(gridData));
 
 			// Sort Order columns
-			gridData = $("#SortOrderColumns").getRowData();
+			gridData = $("#SortOrders").getRowData();
 			$('#txtSOAAS').val(JSON.stringify(gridData));
 		
 			var frmSubmit = $("#frmReportDefintion");

@@ -179,6 +179,7 @@
     <Compile Include="AttributeExtensions\RequiredIfAttribute.vb" />
     <Compile Include="Code\Interfaces\IDataAccess.vb" />
     <Compile Include="Code\Interfaces\IReport.vb" />
+    <Compile Include="Code\Interfaces\IReportDetail.vb" />
     <Compile Include="Models\CalendarEvent.vb" />
     <Compile Include="ViewModels\Reports\CalendarEventDetailViewModel.vb" />
     <Compile Include="Classes\GroupAccess.vb" />
@@ -186,7 +187,7 @@
     <Compile Include="Classes\ReportColumnItem.vb" />
     <Compile Include="Classes\ReportRelatedTable.vb" />
     <Compile Include="Classes\ReportRepetition.vb" />
-    <Compile Include="Classes\ReportSortItem.vb" />
+    <Compile Include="ViewModels\Reports\SortOrderViewModel.vb" />
     <Compile Include="Classes\ReportTableItem.vb" />
     <Compile Include="Code\ApplicationSettings.vb" />
     <Compile Include="Code\ASRFunctions.vb" />
@@ -1703,6 +1704,7 @@
     <Content Include="Views\Home\OptionDataGrid.vbhtml" />
     <Content Include="Views\Reports\EditorTemplates\ReportChildTable.vbhtml" />
     <Content Include="Views\Reports\EditorTemplates\CalendarEventDetail.vbhtml" />
+    <Content Include="Views\Reports\EditorTemplates\SortOrder.vbhtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Global.asax" />

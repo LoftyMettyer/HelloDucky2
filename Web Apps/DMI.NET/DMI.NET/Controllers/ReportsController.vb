@@ -14,6 +14,7 @@ Imports System.Web.Script.Serialization
 Imports Newtonsoft.Json
 Imports DMI.NET.ViewModels
 Imports DMI.NET.ViewModels.Reports
+Imports HR.Intranet.Server.Enums
 
 Namespace Controllers
 
@@ -74,8 +75,8 @@ Namespace Controllers
 				objModel.ChildTables = deserializer.Deserialize(Of Collection(Of ChildTableViewModel))(objModel.ChildTablesString)
 			End If
 
-			If objModel.SortOrderColumnsString.Length > 0 Then
-				objModel.SortOrderColumns = deserializer.Deserialize(Of Collection(Of ReportSortItem))(objModel.SortOrderColumnsString)
+			If objModel.SortOrdersString.Length > 0 Then
+				objModel.SortOrders = deserializer.Deserialize(Of Collection(Of SortOrderViewModel))(objModel.SortOrdersString)
 			End If
 
 			If ModelState.IsValid Then
@@ -212,8 +213,8 @@ Namespace Controllers
 				objModel.Events = deserializer.Deserialize(Of Collection(Of CalendarEventDetailViewModel))(objModel.EventsString)
 			End If
 
-			If objModel.SortOrderColumnsString.Length > 0 Then
-				objModel.SortOrderColumns = deserializer.Deserialize(Of Collection(Of ReportSortItem))(objModel.SortOrderColumnsString)
+			If objModel.SortOrdersString.Length > 0 Then
+				objModel.SortOrders = deserializer.Deserialize(Of Collection(Of SortOrderViewModel))(objModel.SortOrdersString)
 			End If
 
 
@@ -242,7 +243,7 @@ Namespace Controllers
 		<HttpGet>
 		Function GetAvailableTablesForReport(ID As Integer) As JsonResult
 
-			Dim objReport = objReportRepository.RetrieveReport(ID)
+			Dim objReport = objReportRepository.RetrieveCustomReport(ID)
 
 			Dim objTables = objReportRepository.GetTables()
 
@@ -263,7 +264,7 @@ Namespace Controllers
 		<HttpPost>
 		Function AddChildTable(ReportID As Integer) As ActionResult
 
-			Dim objReport = objReportRepository.RetrieveReport(ReportID)
+			Dim objReport = objReportRepository.RetrieveCustomReport(ReportID)
 
 			Dim objModel As New ChildTableViewModel
 			objModel.AvailableTables = objReportRepository.GetChildTables(objReport.BaseTableID, False)
@@ -283,7 +284,7 @@ Namespace Controllers
 		<HttpPost>
 		Function EditChildTable(objModel As ChildTableViewModel) As ActionResult
 
-			Dim objReport = objReportRepository.RetrieveReport(objModel.ReportID)
+			Dim objReport = objReportRepository.RetrieveCustomReport(objModel.ReportID)
 
 			objModel.AvailableTables = objReportRepository.GetTables()
 
@@ -297,7 +298,7 @@ Namespace Controllers
 
 				If ModelState.IsValid Then
 
-					Dim objReport = objReportRepository.RetrieveReport(objModel.ReportID)
+					Dim objReport = objReportRepository.RetrieveCustomReport(objModel.ReportID)
 					Dim original = objReport.ChildTables.Where(Function(m) m.TableID = objModel.TableID).FirstOrDefault
 
 					If Not original Is Nothing Then
@@ -395,6 +396,67 @@ Namespace Controllers
 			Return View("UTIL_DEF_CUSTOMREPORT", objModel)
 
 		End Function
+
+
+
+		<HttpPost>
+		Function AddSortOrder(ReportID As Integer, ReportType As UtilityType) As ActionResult
+
+			Dim objModel As New SortOrderViewModel
+
+			objModel.ReportID = ReportID
+			objModel.ReportType = ReportType
+			
+			Dim objReport = objReportRepository.RetrieveParent(objModel)
+			objModel.ID = objReport.SortOrders.Count + 1	' TODO this may need some work if they start adding and deleting orders!
+
+			objModel.AvailableColumns = objReport.GetAvailableSortColumns()
+
+			ModelState.Clear()
+			Return PartialView("EditorTemplates\SortOrder", objModel)
+
+		End Function
+
+		<HttpPost>
+		Function EditSortOrder(objModel As SortOrderViewModel) As ActionResult
+
+			Dim objReport = objReportRepository.RetrieveParent(objModel)
+			objModel.AvailableColumns = objReport.GetAvailableSortColumns()
+
+			ModelState.Clear()
+			Return PartialView("EditorTemplates\SortOrder", objModel)
+		End Function
+
+		<HttpPost>
+		Sub PostSortOrder(objModel As SortOrderViewModel)
+
+			Dim objReport As IReport
+			objReport = objReportRepository.RetrieveParent(objModel)
+
+			Dim original = objReport.SortOrders.Where(Function(m) m.ID = objModel.ID).FirstOrDefault
+
+			If Not original Is Nothing Then
+				objReport.SortOrders.Remove(original)
+			End If
+
+			objReport.SortOrders.Add(objModel)
+
+		End Sub
+
+		<HttpPost>
+		Sub RemoveSortOrder(objModel As SortOrderViewModel)
+
+			Dim objReport As IReport
+			objReport = objReportRepository.RetrieveParent(objModel)
+
+			Dim original = objReport.SortOrders.Where(Function(m) m.ID = objModel.ID).FirstOrDefault
+
+			If Not original Is Nothing Then
+				objReport.SortOrders.Remove(original)
+			End If
+
+		End Sub
+
 
 	End Class
 

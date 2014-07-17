@@ -441,7 +441,7 @@ Namespace Repository
 			Dim psJobsToHideGroups As String = ""	' Request.Form("txtSend_jobsToHideGroups")}
 
 			Dim sAccess = UtilityAccessAsString(objModel.GroupAccess)
-			Dim sColumns = ReportColumnsAsString(objModel.Columns.Selected, objModel.SortOrderColumns)
+			Dim sColumns = ReportColumnsAsString(objModel.Columns.Selected, objModel.SortOrders)
 
 			_objDataAccess.ExecuteSP("sp_ASRIntSaveMailMerge" _
 				, New SqlParameter("@psName", SqlDbType.VarChar, 255) With {.Value = objModel.Name} _
@@ -553,7 +553,7 @@ Namespace Repository
 				Dim sAccess As String = UtilityAccessAsString(objModel.GroupAccess)
 				Dim sJobsToHide = JobsToHideAsString(objModel.JobsToHide)
 				Dim sJobsToHideGroups As String = "" ' TODO?
-				Dim sColumns = ReportColumnsAsString(objModel.Columns.Selected, objModel.SortOrderColumns)
+				Dim sColumns = ReportColumnsAsString(objModel.Columns.Selected, objModel.SortOrders)
 				Dim sChildren As String = ReportChildTablesAsString(objModel.ChildTables)
 
 				_objDataAccess.ExecuteSP("sp_ASRIntSaveCustomReport", _
@@ -617,7 +617,7 @@ Namespace Repository
 				Dim sJobsToHideGroups As String = "" ' TODO?
 				Dim sEvents As String = EventsAsString(objModel.Events)
 
-				Dim sReportOrder As String = SortOrderAsString(objModel.SortOrderColumns)
+				Dim sReportOrder As String = SortOrderAsString(objModel.SortOrders)
 				Dim bAllRecords As Boolean
 
 				' Calendar reports don't save the selection type - instead they have a boolean allrecords flag
@@ -733,7 +733,7 @@ Namespace Repository
 
 		' Old style update of the column selection stuff
 		' could be dapperised, but the rest of our stored procs need updating too as everything has different column names and the IDs are not currently returned.
-		Private Function ReportColumnsAsString(objColumns As Collection(Of ReportColumnItem), objSortColumns As Collection(Of ReportSortItem)) As String
+		Private Function ReportColumnsAsString(objColumns As Collection(Of ReportColumnItem), objSortColumns As Collection(Of SortOrderViewModel)) As String
 
 			Dim sColumns As String = ""
 			Dim sOrderString As String
@@ -745,7 +745,7 @@ Namespace Repository
 				sOrderString = "||0||"
 				For Each objSortItem In objSortColumns
 					If objSortItem.ID = objItem.ID Then
-						sOrderString = "||1||" & objSortItem.Order & "||"
+						sOrderString = "||1||" & IIf(objSortItem.Order = OrderType.Ascending, "ASC", "DESC").ToString & "||"
 					End If
 				Next
 
@@ -801,13 +801,13 @@ Namespace Repository
 		End Function
 
 		' Old style update of the events selection stuff
-		Public Function SortOrderAsString(objSortOrders As Collection(Of ReportSortItem)) As String
+		Public Function SortOrderAsString(objSortOrders As Collection(Of SortOrderViewModel)) As String
 
 			Dim sOrders As String = ""
 			Dim iCount As Integer = 1
 			For Each objItem In objSortOrders
 				iCount += 1
-				sOrders += String.Format("{0}||{1}||{2}||**", objItem.ID, iCount, objItem.Order)
+				sOrders += String.Format("{0}||{1}||{2}||**", objItem.ID, iCount, IIf(objItem.Order = OrderType.Ascending, "Asc", "Desc").ToString)
 			Next
 
 			Return sOrders
@@ -897,6 +897,8 @@ Namespace Repository
 
 			Try
 
+				outputModel.SessionInfo = _objSessionInfo
+
 				If data.Rows.Count = 1 Then
 
 					Dim row As DataRow = data.Rows(0)
@@ -929,14 +931,21 @@ Namespace Repository
 
 		Private Sub PopulateSortOrder(outputModel As ReportBaseModel, data As DataTable)
 
-			Dim objSort As ReportSortItem
+			Dim objSort As SortOrderViewModel
+			Dim iCount As Integer = 1
 
 			For Each objRow As DataRow In data.Rows
-				objSort = New ReportSortItem
+				objSort = New SortOrderViewModel
+
+				objSort.ReportID = outputModel.ID
+				objSort.ReportType = outputModel.ReportType
+
 				objSort.TableID = CInt(objRow("tableid"))
-				objSort.ID = CInt(objRow("Id"))
+				objSort.ID = iCount
+				objSort.ColumnID = CInt(objRow("Id"))
+
 				objSort.Name = objRow("name").ToString
-				objSort.Order = objRow("order").ToString
+				objSort.Order = CType(IIf(objRow("order").ToString.ToUpper = "ASC", OrderType.Ascending, OrderType.Descending), OrderType)
 				objSort.Sequence = CInt(objRow("sequence"))
 
 				If data.Columns.Contains("PageOnChange") Then
@@ -955,7 +964,8 @@ Namespace Repository
 					objSort.PageOnChange = CBool(objRow("SuppressRepeated"))
 				End If
 
-				outputModel.SortOrderColumns.Add(objSort)
+				outputModel.SortOrders.Add(objSort)
+				iCount += 1
 			Next
 
 		End Sub
@@ -992,7 +1002,7 @@ Namespace Repository
 
 		End Sub
 
-		Public Function RetrieveReport(id As Integer) As CustomReportModel
+		Public Function RetrieveCustomReport(id As Integer) As CustomReportModel
 
 			Try
 				Return _customreports.Where(Function(m) m.ID = id).FirstOrDefault
@@ -1015,6 +1025,34 @@ Namespace Repository
 			End Try
 
 		End Function
+
+		Public Function RetrieveParent(model As IReportDetail) As IReport
+
+			Try
+
+				Select Case model.ReportType
+					Case UtilityType.utlCalendarReport
+						Return _calendarreports.Where(Function(m) m.ID = model.ReportID).FirstOrDefault()
+
+					Case UtilityType.utlMailMerge
+						Return _mailmerges.Where(Function(m) m.ID = model.ReportID).FirstOrDefault()
+
+					Case UtilityType.utlCrossTab
+						Return _crosstabs.Where(Function(m) m.ID = model.ReportID).FirstOrDefault()
+
+					Case Else
+						Return _customreports.Where(Function(m) m.ID = model.ReportID).FirstOrDefault
+
+				End Select
+
+			Catch ex As Exception
+				Throw
+
+			End Try
+
+		End Function
+
+
 
 		Public Function GetRelatedTables(TableID As Integer, AddSelf As Boolean) As List(Of ReportTableItem)
 
@@ -1043,7 +1081,7 @@ Namespace Repository
 
 		Function GetAllTablesInReport(reportID As Integer) As List(Of ReportTableItem)
 
-			Dim objReport = RetrieveReport(reportID)
+			Dim objReport = RetrieveCustomReport(reportID)
 			Dim objItems As New List(Of ReportTableItem)
 
 			If objReport.Parent1.ID > 0 Then
@@ -1066,8 +1104,6 @@ Namespace Repository
 		End Function
 
 		Sub SetBaseTable(objModel As IReport)
-
-			objModel.SessionInfo = _objSessionInfo
 
 			objModel.SetBaseTable(objModel.BaseTableID)
 

@@ -7,7 +7,7 @@
 Headings &amp; Breaks
 	<br/>
 
-	Horizontal :  @Html.ColumnDropdown("HorizontalID", Model.HorizontalID, Model.AvailableColumns, "refreshCrossTabColumn(event.target, 'Horizontal');")
+	Horizontal :  @Html.ColumnDropdown("HorizontalID", "HorizontalID", Model.HorizontalID, Model.AvailableColumns, "refreshCrossTabColumn(event.target, 'Horizontal');")
 	@Html.ValidationMessageFor(Function(m) m.HorizontalID)
 
 	@Html.Hidden("HorizontalDataType", CInt(Model.HorizontalDataType))
@@ -16,7 +16,7 @@ Headings &amp; Breaks
 	@Html.EditorFor(Function(m) m.HorizontalIncrement)
 
 	<br />
-	Vertical :@Html.ColumnDropdown("VerticalID", Model.VerticalID, Model.AvailableColumns, "refreshCrossTabColumn(event.target, 'Vertical');")
+	Vertical :@Html.ColumnDropdown("VerticalID", "VerticalID", Model.VerticalID, Model.AvailableColumns, "refreshCrossTabColumn(event.target, 'Vertical');")
 	@Html.ValidationMessageFor(Function(m) m.VerticalID)
 
 	@Html.Hidden("VerticalDataType", CInt(Model.VerticalDataType))
@@ -25,7 +25,7 @@ Headings &amp; Breaks
 	@Html.EditorFor(Function(m) m.VerticalIncrement)
 
 	<br/>
-	Page Break :@Html.ColumnDropdown("PageBreakID", Model.PageBreakID, Model.AvailableColumns, "refreshCrossTabColumn(event.target, 'PageBreak');")
+	Page Break :@Html.ColumnDropdown("PageBreakID", "PageBreakID", Model.PageBreakID, Model.AvailableColumns, "refreshCrossTabColumn(event.target, 'PageBreak');")
 	@Html.Hidden("PageBreakDataType", CInt(Model.PageBreakDataType))
 	@Html.EditorFor(Function(m) m.PageBreakStart)
 	@Html.EditorFor(Function(m) m.PageBreakStop)
@@ -51,7 +51,7 @@ Headings &amp; Breaks
 	Intersection:
 	<br/>
 	Column :
-	@Html.ColumnDropdown("IntersectionID", Model.IntersectionID, Model.AvailableColumns, "")
+	@Html.ColumnDropdown("IntersectionID", "IntersectionID", Model.IntersectionID, Model.AvailableColumns, "")
 	<br/>
 	@Html.LabelFor(Function(m) m.IntersectionType)
 	@Html.EnumDropDownListFor(Function(m) m.IntersectionType)
