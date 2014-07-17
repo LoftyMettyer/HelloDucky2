@@ -45,6 +45,29 @@
 		if ((frmUseful.txtSelectionType.value.toUpperCase() == "FILTER") ||
 				(frmUseful.txtSelectionType.value.toUpperCase() == "PICKLIST")) {
 
+			//resize the grid to the height of its container.		
+			var workPageHeight = $('.optiondatagridpage').outerHeight(true);
+			var pageTitleHeight = $('.optiondatagridpage h3').outerHeight(true);			
+			var footerheight = $('.optiondatagridpage footer').outerHeight(true);
+			var marginHeadHeight = 50;
+			var newGridHeight = workPageHeight - pageTitleHeight - footerheight - marginHeadHeight;
+
+			var SelectionType = frmUseful.txtSelectionType.value;
+			tableToGrid("#ssOleDBGridSelRecords", {
+				height: newGridHeight,
+				autowidth: true,
+				onSelectRow: function (id) {
+					picklistSelection_refreshControls();
+				},
+				ondblClickRow: function () {
+					makeSelection();
+				},
+				colNames: [SelectionType],
+				colModel: [
+						{ name: 'name', label: SelectionType, index: 'name', sortable: false }
+				]
+			});
+
 			picklistSelection_refreshControls();
 		}
 		else {
@@ -78,13 +101,14 @@
 		if (frmUseful.txtSelectionType.value.toUpperCase() == "FILTER") {
 			try {
 				var frmParentUseful = OpenHR.getForm("workframe", "frmUseful");
+				var frmPrompt = document.getElementById("frmPrompt");
 				frmParentUseful.txtChanged.value = 1;
 			}
 			catch (e) {
 			}
 			// Go to the prompted values form to get any required prompts. 
 			frmPrompt.filterID.value = selectedRecordID();
-			OpenHR.showInReportFrame(frmPrompt);
+			OpenHR.submitForm(frmPrompt);
 		}
 		else {
 			if (frmUseful.txtSelectionType.value.toUpperCase() == "PICKLIST") {
@@ -122,13 +146,7 @@
 
 	/* Return the ID of the record selected in the find form. */
 	function selectedRecordID() {
-		var iRecordID;
-
-		iRecordID = 0;
-
-		if (ssOleDBGridSelRecords.SelBookmarks.Count > 0) {
-			iRecordID = ssOleDBGridSelRecords.Columns(0).Value;
-		}
+		var iRecordID = $("#ssOleDBGridSelRecords").jqGrid('getGridParam', 'selrow');
 
 		return (iRecordID);
 	}
@@ -357,11 +375,58 @@
 				End If
 
 				' Instantiate and initialise the grid. 
-		%>
-		<div id='ssOleDBGridSelRecordsDiv' style='height: 400px; margin-bottom: 50px; width: 75%;'>
-			<table id='ssOleDBGridSelRecords' style='width: 100%'></table>
-		</div>
-		<%	
+				
+				' Create a table for jqGrid to convert. 	
+				Response.Write("<main>" & vbCrLf)
+
+				Response.Write("<div id='findGridRow'>" & vbCrLf)
+				Response.Write("<div class='clearboth'>" & vbCrLf)
+				Response.Write("<div id='ssOleDBGridSelRecordsDiv'>" & vbCrLf)
+				Response.Write("<table id='ssOleDBGridSelRecords'>" & vbCrLf)
+				Response.Write("<thead>" & vbCrLf)
+				Response.Write("<tr>" & vbCrLf)
+				For iLoop = 0 To (rstSelRecords.Columns.Count - 1)
+					If rstSelRecords.Columns(iLoop).ColumnName <> "name" Then
+						Response.Write("<th></th>" & vbCrLf)	' id column - don't populate, but leave as a column
+					Else
+						Response.Write("<th id='" & rstSelRecords.Columns(iLoop).ColumnName & "'>" & Replace(rstSelRecords.Columns(iLoop).ColumnName, "_", " ") & "</th>" & vbCrLf)
+					End If
+				Next
+				Response.Write("</tr>" & vbCrLf)
+				Response.Write("</thead>" & vbCrLf)
+									
+				Dim lngRowCount = 0
+		
+				Response.Write("<tbody>" & vbCrLf)
+				For Each objRow As DataRow In rstSelRecords.Rows
+					Dim sID As String = ""
+					Dim sRowString As String = ""
+			
+					For iLoop = 0 To (rstSelRecords.Columns.Count - 1)
+				
+						Dim sColumnValue As String = Replace(Replace(objRow(iLoop).ToString(), "_", " "), """", "&quot;")
+				
+						If rstSelRecords.Columns(iLoop).ColumnName <> "name" Then
+							' ID column; store value
+							sID = sColumnValue
+							sRowString &= String.Format("<td><input type='radio' name='sel' value='{0}'/></td>", sColumnValue)
+						Else
+							sRowString &= String.Format("<td>{0}</td>", sColumnValue)
+						End If
+				
+					Next
+			
+					Response.Write(String.Format("<tr id={0}>{1}<tr>", sID, sRowString) & vbCrLf)
+			
+					lngRowCount += 1
+				Next
+				Response.Write("</tbody>" & vbCrLf)
+				Response.Write("</table>" & vbCrLf)
+				Response.Write("</div>" & vbCrLf)
+				Response.Write("</div>" & vbCrLf)
+				Response.Write("</div>" & vbCrLf)
+				Response.Write("</main>" & vbCrLf)
+				
 		Else
 			' Select individual employee records.
 		%>

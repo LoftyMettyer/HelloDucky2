@@ -1081,6 +1081,14 @@
 
 		var res = window.LocaleDateFormat.replace("dd", "d").replace("MM", "m").replace("M", "m").replace("yyyy", "Y");
 		return res;
+	},
+
+	parentExists = function ()
+	{
+		//function to detect if this form is displayed in a dialog or a jquery modal div.
+		//true = window.dialog.
+		var opener = window.dialogArguments;
+		return (opener == null)?false:true;
 	};
 
 	window.OpenHR = {
@@ -1125,7 +1133,8 @@
 		getLocaleDateString: getLocaleDateString,
 		setDatepickerLanguage: setDatepickerLanguage,
 		IsValidDate: isValidDate,
-		OpenDialog: openDialog
+		OpenDialog: openDialog,
+		parentExists: parentExists
 	};
 
 })(window, jQuery);

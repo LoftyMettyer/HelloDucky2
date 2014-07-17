@@ -604,6 +604,9 @@ function optiondata_onload() {
 			fRecordAdded = false;
 			iCount = 0;
 
+			//need this as this grid won't accept live changes :/		
+			$("#ssOleDBGrid").jqGrid('GridUnload');
+
 			// new bit for colmodel
 			colMode = [];
 			colNames = [];

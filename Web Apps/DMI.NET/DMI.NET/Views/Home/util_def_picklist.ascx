@@ -89,7 +89,7 @@
 				<br />
 				<input type="button" id="cmdAddAll" name="cmdAddAll" class="btn" value="Add All" onclick="addAllClick()" />
 				<br />
-				<input type="button" id="cmdFilteredAdd" disabled="disabled" name="cmdFilteredAdd" class="btn" value="Filtered Add" onclick="filteredAddClick()" />
+				<input type="button" id="cmdFilteredAdd" name="cmdFilteredAdd" class="btn" value="Filtered Add" onclick="filteredAddClick()" />
 				<br />
 				<input type="button" id="cmdRemove" name="cmdRemove" class="btn" value="Remove" onclick="removeClick()" />
 				<br />

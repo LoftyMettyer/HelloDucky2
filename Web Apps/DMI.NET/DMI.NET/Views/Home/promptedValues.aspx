@@ -14,8 +14,6 @@
 <html>
 <head>
 
-	<script src="<%: Url.LatestContent("~/bundles/jQuery")%>" type="text/javascript"></script>
-	<script src="<%: Url.LatestContent("~/bundles/jQueryUI7")%>" type="text/javascript"></script>
 	<script src="<%: Url.LatestContent("~/bundles/OpenHR_General")%>" type="text/javascript"></script>
 	<link href="<%: Url.LatestContent("~/Content/OpenHR.css")%>" rel="stylesheet" type="text/css" />
 
@@ -23,7 +21,7 @@
 
 	<script type="text/javascript">
 		function promptedValues_onload() {			
-
+			
 			var frmPromptedValues = document.getElementById("frmPromptedValues");
 		
 			if (frmPromptedValues.txtPromptCount.value == 0) {
@@ -44,20 +42,29 @@
 					}
 				}
 
-				// Resize the grid to show all prompted values.
-				var iResizeBy = frmPromptedValues.offsetParent.scrollHeight - frmPromptedValues.offsetParent.clientHeight;
-				if (frmPromptedValues.offsetParent.offsetHeight + iResizeBy > screen.height) {
-					window.parent.dialogHeight = new String(screen.height) + "px";
-				} else {
-					var iNewHeight = new Number(window.parent.dialogHeight.substr(0, window.parent.dialogHeight.length - 2));
-					iNewHeight = iNewHeight + iResizeBy;
-					window.parent.dialogHeight = new String(iNewHeight) + "px";
+
+				if(OpenHR.parentExists()) {
+					// Resize the grid to show all prompted values.
+					// dialog option
+					var iResizeBy = frmPromptedValues.offsetParent.scrollHeight - frmPromptedValues.offsetParent.clientHeight;
+					if (frmPromptedValues.offsetParent.offsetHeight + iResizeBy > screen.height) {
+						window.parent.dialogHeight = new String(screen.height) + "px";
+					} else {
+						var iNewHeight = new Number(window.parent.dialogHeight.substr(0, window.parent.dialogHeight.length - 2));
+						iNewHeight = iNewHeight + iResizeBy;
+						window.parent.dialogHeight = new String(iNewHeight) + "px";
+					}
+				}
+				else {
+					//jquery div option
+				
 				}
 			}
 		}
 	</script>
 
 	<script type="text/javascript">
+				
 		function SubmitPrompts() {
 			
 			// Validate the prompt values before submitting the form.
@@ -91,7 +98,13 @@
 
 		function CancelClick()
 		{
-			window.parent.self.close();
+			if(OpenHR.parentExists()) {
+				window.parent.self.close();
+			}
+			else {
+				//jquery div option
+				alert('click close');
+			}
 		}
 
 		function ValidatePrompt(pctlPrompt, piDataType)
