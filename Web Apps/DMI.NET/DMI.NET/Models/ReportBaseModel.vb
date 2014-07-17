@@ -55,6 +55,8 @@ Namespace Models
 		Public Property SortOrderColumns As New Collection(Of ReportSortItem)
 		Public Property Repetition As New Collection(Of ReportRepetition)
 
+		Public Property SortOrderColumnsString As String
+
 		Public Property JobsToHide As New Collection(Of Integer)
 
 		Public Property SessionContext As SessionInfo Implements IDataAccess.SessionContext
@@ -63,11 +65,19 @@ Namespace Models
 
 		Public MustOverride Sub SetBaseTable(BaseTableID As Integer) Implements IReport.SetBaseTable
 
+		<DisplayName("Description 1: ")>
 		Public Property Description1ID As Integer
+
+		<DisplayName("Description 2: ")>
 		Public Property Description2ID As Integer
+
+		<DisplayName("Description 3: ")>
 		Public Property Description3ID As Integer
+
 		Public Property RegionID As Integer
 		Public Property GroupByDescription As Boolean
+
+		<DisplayFormat(ConvertEmptyStringToNull:=False)>
 		Public Property Separator As String
 
 	End Class

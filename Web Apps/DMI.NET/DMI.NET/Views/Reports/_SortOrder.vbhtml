@@ -4,9 +4,10 @@
 @Imports DMI.NET.Code.Extensions
 @Inherits System.Web.Mvc.WebViewPage(Of Models.ReportBaseModel)
 
+@Html.HiddenFor(Function(m) m.SortOrderColumnsString, New With {.id = "txtSOAAS"})
+
 <fieldset>
 	<legend>Sort Order :</legend>
-	@*@Html.SortOrderGrid("SortOrderColumns", Model.SortOrderColumns, Nothing)*@
 
 	<table id="SortOrderColumns"></table>
 
@@ -69,7 +70,7 @@
 					total: "total", //total pages for the query
 					records: "records", //total number of records
 					repeatitems: false,
-					id: "id" //index of the column with the PK in it
+					id: "ID" //index of the column with the PK in it
 				},
 				colNames: ['TableID', 'ID', 'Name', 'Sequence', 'SuppressRepeated'],
 				colModel: [
@@ -79,7 +80,7 @@
 										{ name: 'Sequence', index: 'Sequence', width: 150 },
 										{
 											name: 'SuppressRepeated', index: 'SuppressRepeated', width: 120,
-											formatter: "checkbox", align: "center"
+											 align: "center"
 										}],
 				viewrecords: true,
 				width: 400,

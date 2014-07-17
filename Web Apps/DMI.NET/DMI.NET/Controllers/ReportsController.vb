@@ -12,7 +12,6 @@ Imports DMI.NET.Classes
 Imports DMI.NET.Repository
 Imports System.Web.Script.Serialization
 Imports Newtonsoft.Json
-Imports DMI.NET.Classses
 Imports DMI.NET.ViewModels
 Imports DMI.NET.ViewModels.Reports
 
@@ -73,6 +72,10 @@ Namespace Controllers
 
 			If objModel.ChildTablesString.Length > 0 Then
 				objModel.ChildTables = deserializer.Deserialize(Of Collection(Of ChildTableViewModel))(objModel.ChildTablesString)
+			End If
+
+			If objModel.SortOrderColumnsString.Length > 0 Then
+				objModel.SortOrderColumns = deserializer.Deserialize(Of Collection(Of ReportSortItem))(objModel.SortOrderColumnsString)
 			End If
 
 			If ModelState.IsValid Then
@@ -203,12 +206,25 @@ Namespace Controllers
 		<HttpPost, ValidateInput(False)>
 		Function util_def_calendarreport(objModel As CalendarReportModel) As ActionResult
 
+			Dim deserializer = New JavaScriptSerializer()
+
+			If objModel.EventsString.Length > 0 Then
+				objModel.Events = deserializer.Deserialize(Of Collection(Of CalendarEventDetailViewModel))(objModel.EventsString)
+			End If
+
+			If objModel.SortOrderColumnsString.Length > 0 Then
+				objModel.SortOrderColumns = deserializer.Deserialize(Of Collection(Of ReportSortItem))(objModel.SortOrderColumnsString)
+			End If
+
+
 			If ModelState.IsValid Then
 				objReportRepository.SaveReportDefinition(objModel)
 				Session("reaction") = "CALENDARREPORTS"
 				Return RedirectToAction("confirmok", "home")
 			Else
-				objModel.BaseTables = objReportRepository.GetTables()
+
+				Dim allErrors = ModelState.Values.SelectMany(Function(v) v.Errors)
+
 				Return View(objModel)
 			End If
 
@@ -236,7 +252,6 @@ Namespace Controllers
 
 		End Function
 
-
 		<HttpGet>
 		Function GetBaseTables() As JsonResult
 
@@ -245,21 +260,13 @@ Namespace Controllers
 
 		End Function
 
-
-		'<HttpGet>
-		'Function getChildTable(objModel As ReportChildTables) As ActionResult
-		'	Return View("_ChildTableSelection", objModel)
-		'End Function
-
-		'		Function AddChildTable(ID As String) As ActionResult
-
 		<HttpPost>
 		Function AddChildTable(ReportID As Integer) As ActionResult
 
 			Dim objReport = objReportRepository.RetrieveReport(ReportID)
 
 			Dim objModel As New ChildTableViewModel
-			objModel.AvailableTables = objReportRepository.GetChildTables(objReport.BaseTableID)
+			objModel.AvailableTables = objReportRepository.GetChildTables(objReport.BaseTableID, False)
 
 			For Each objTable In objReport.ChildTables
 				objModel.AvailableTables.RemoveAll(Function(m) m.id = objTable.TableID)
@@ -308,26 +315,67 @@ Namespace Controllers
 
 		End Sub
 
+
+		<HttpPost>
+		Function AddCalendarEvent(ReportID As Integer) As ActionResult
+
+			Dim objReport = objReportRepository.RetrieveCalendarReport(ReportID)
+
+			Dim objModel As New CalendarEventDetailViewModel
+
+			objModel.TableID = objReport.BaseTableID
+			objModel.CalendarReportID = ReportID
+			objModel.EventKey = String.Format("EV_{0}", objReport.Events.Count + 1)
+
+			ModelState.Clear()
+			Return PartialView("EditorTemplates\CalendarEventDetail", objModel)
+
+
+		End Function
+
 		<HttpPost>
 		Function EditCalendarEvent(objModel As CalendarEventDetailViewModel) As ActionResult
 
-			Dim objReport = objReportRepository.RetrieveReport(objModel.CalendarReportID)
+			Dim objReport = objReportRepository.RetrieveCalendarReport(objModel.CalendarReportID)
+			objModel.AvailableTables = objReportRepository.GetChildTables(objReport.BaseTableID, True)
 
+			ModelState.Clear()
 			Return PartialView("EditorTemplates\CalendarEventDetail", objModel)
 		End Function
-
 
 		<HttpPost>
 		Sub PostCalendarEvent(objModel As CalendarEventDetailViewModel)
 
 			Dim objReport = objReportRepository.RetrieveCalendarReport(objModel.CalendarReportID)
-			Dim original = objReport.Events.Where(Function(m) m.EventKey = objModel.EventKey).First
+			Dim original = objReport.Events.Where(Function(m) m.EventKey = objModel.EventKey).FirstOrDefault
 
 			If Not original Is Nothing Then
 				objReport.Events.Remove(original)
 			End If
 
 			objReport.Events.Add(objModel)
+
+		End Sub
+
+		<HttpPost, ValidateInput(False)>
+	 Function ChangeEventBaseTable(objModel As CalendarEventDetailViewModel) As ActionResult
+
+			objModel.ChangeBaseTable()
+
+			ModelState.Clear()
+			Return PartialView("EditorTemplates\CalendarEventDetail", objModel)
+
+		End Function
+
+		<HttpPost>
+		Sub RemoveCalendarEvent(objModel As CalendarEventDetailViewModel)
+
+			Dim objReport = objReportRepository.RetrieveCalendarReport(objModel.CalendarReportID)
+			Dim original = objReport.Events.Where(Function(m) m.EventKey = objModel.EventKey).FirstOrDefault
+
+			If Not original Is Nothing Then
+				objReport.Events.Remove(original)
+			End If
 
 		End Sub
 

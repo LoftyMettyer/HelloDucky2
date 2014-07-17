@@ -57,7 +57,21 @@ End Code
 				@Code
 				Html.RenderPartial("_Definition", Model)
 				End Code
-			</div>
+
+				@Html.LabelFor(Function(m) m.Description1ID)
+				@Html.TextBoxFor(Function(m) m.Description1ID)
+				<br/>
+				@Html.LabelFor(Function(m) m.Description2ID)
+				@Html.TextBoxFor(Function(m) m.Description2ID)
+				<br />
+				@Html.LabelFor(Function(m) m.Description2ID)
+				@Html.TextBoxFor(Function(m) m.Description3ID)
+
+				@Html.HiddenFor(Function(m) m.RegionID)
+				@Html.HiddenFor(Function(m) m.GroupByDescription)
+				@Html.HiddenFor(Function(m) m.Separator)
+
+		</div>
 
 		 	<div id="report_definition_tab_eventdetails">
 		 		@Code

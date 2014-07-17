@@ -279,7 +279,7 @@ BEGIN
 	-- Calendar events definition recordset
 	SELECT 
 			ID, Name, TableID,
-			(SELECT ISNULL(ASRSysTables.TableName,'') FROM ASRSysTables WHERE ASRSysTables.TableID = ASRSysCalendarReportEvents.TableID),
+			(SELECT ISNULL(ASRSysTables.TableName,'') FROM ASRSysTables WHERE ASRSysTables.TableID = ASRSysCalendarReportEvents.TableID) AS TableName,
 			FilterID,
 			CASE 
 				WHEN ASRSysCalendarReportEvents.FilterID > 0 THEN
@@ -288,7 +288,7 @@ BEGIN
 					''
 			END AS FilterName,
 			EventStartDateID,
-			(SELECT ISNULL(ASRSysColumns.ColumnName,'') FROM ASRSysColumns WHERE ASRSysColumns.ColumnID = ASRSysCalendarReportEvents.EventStartDateID),			
+			(SELECT ISNULL(ASRSysColumns.ColumnName,'') FROM ASRSysColumns WHERE ASRSysColumns.ColumnID = ASRSysCalendarReportEvents.EventStartDateID) AS EventStartDateName,			
 			EventStartSessionID,
 			CASE 
 				WHEN EventStartSessionID > 0 THEN
@@ -296,6 +296,7 @@ BEGIN
 				ELSE
 					''
 			END AS EventStartSessionName,
+			CASE WHEN ISNULL(EventDurationID, 0) > 0 THEN 2 ELSE CASE WHEN ISNULL(EventEndDateID, 0) > 0 THEN 1 ELSE 0 END END AS [EventEndType],
 			EventEndDateID,
 			CASE 
 				WHEN EventEndDateID > 0 THEN

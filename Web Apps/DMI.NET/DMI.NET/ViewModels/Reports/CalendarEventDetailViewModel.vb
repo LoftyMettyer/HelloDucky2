@@ -27,21 +27,33 @@ Namespace ViewModels
 		<DisplayName("Start Date :")>
 		Public Property EventStartDateID As Integer
 
-		<DisplayName("End Date :")>
+		<DisplayName("Start Session :")>
 		Public Property EventStartSessionID As Integer
 
 		Public Property EventEndType As CalendarEventEndType
 
+		<DisplayName("Date :")>
 		Public Property EventEndDateID As Integer
+
+		<DisplayName("Session :")>
 		Public Property EventEndSessionID As Integer
 		Public Property EventDurationID As Integer
 
 		Public Property LegendType As CalendarLegendType
+
+		<DisplayName("Character :")>
 		Public Property LegendCharacter As String
-		Public Property LegendLookupTableID As Integer
-		Public Property LegendLookupColumnID As Integer
-		Public Property LegendLookupCodeID As Integer
+
+		<DisplayName("Event Type :")>
 		Public Property LegendEventColumnID As Integer
+
+		<DisplayName("Table :")>
+		Public Property LegendLookupTableID As Integer
+
+		<DisplayName("Column :")>
+		Public Property LegendLookupColumnID As Integer
+		<DisplayName("Code :")>
+		Public Property LegendLookupCodeID As Integer
 
 		<DisplayName("Description 1 :")>
 		Public Property EventDesc1ColumnID As Integer
@@ -63,6 +75,14 @@ Namespace ViewModels
 
 		Public Property AvailableTables As List(Of ReportTableItem)
 
+
+		Public Sub ChangeBaseTable()
+
+			EventStartDateID = 0
+			EventDesc1ColumnID = 0
+			EventDesc2ColumnID = 0
+
+		End Sub
 
 	End Class
 End Namespace

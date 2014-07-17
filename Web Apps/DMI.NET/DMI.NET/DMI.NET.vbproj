@@ -179,6 +179,7 @@
     <Compile Include="AttributeExtensions\RequiredIfAttribute.vb" />
     <Compile Include="Code\Interfaces\IDataAccess.vb" />
     <Compile Include="Code\Interfaces\IReport.vb" />
+    <Compile Include="Models\CalendarEvent.vb" />
     <Compile Include="ViewModels\Reports\CalendarEventDetailViewModel.vb" />
     <Compile Include="Classes\GroupAccess.vb" />
     <Compile Include="ViewModels\Reports\ChildTableViewModel.vb" />
@@ -225,7 +226,6 @@
     <Compile Include="Models\Extensions\ReportBaseModelExtensions.vb" />
     <Compile Include="Models\MailMergeModel.vb" />
     <Compile Include="Models\OrgChart.vb" />
-    <Compile Include="Models\CalendarEvent.vb" />
     <Compile Include="Models\PopoutChartModel.vb" />
     <Compile Include="Models\ReportBaseModel.vb" />
     <Compile Include="ViewModels\Reports\ColumnsViewModel.vb" />
@@ -1687,7 +1687,6 @@
     <Content Include="Views\Shared\Util_Def_CustomReports\grdaccess.ascx" />
     <Content Include="Views\Shared\gotoWork.ascx" />
     <Content Include="Views\Shared\Site.Master" />
-    <Content Include="Views\Reports\_ChildTableSelection.vbhtml" />
     <Content Include="Views\Reports\_ColumnSelection.vbhtml" />
     <Content Include="Views\Reports\_CrossTabsColumnSelection.vbhtml" />
     <Content Include="Views\Reports\_Definition.vbhtml" />

@@ -20,7 +20,7 @@
 	<br />
 	@Html.RadioButton("StartType", CalendarDataType.Custom, Model.StartType = CalendarDataType.Custom)
 	Custom
-	<input type="hidden" name="StartCustomId" />
+	@Html.HiddenFor(Function(m) m.StartCustomId)
 	<input type="text" id="txtCustomStart" value="@Model.StartCustomName" disabled />
 	<input type="button" id="cmdCustomStart"  value="..." onclick="selectCalc('startDate', true)" />
 
@@ -45,7 +45,7 @@
 	<br />
 	@Html.RadioButton("EndType", CalendarDataType.Custom, Model.EndType = CalendarDataType.Custom)
 	Custom
-	<input type="hidden" name="EndCustomId" />
+	@Html.HiddenFor(Function(m) m.EndCustomId)
 	<input type="text" id="txtCustomEnd" value="@Model.EndCustomName" disabled />
 	<input type="button" id="cmdCustomEnd" value="..." onclick="selectCalc('endDate', true)" />
 

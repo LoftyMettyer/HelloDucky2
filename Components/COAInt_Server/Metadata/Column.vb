@@ -14,5 +14,11 @@ Namespace Metadata
 		Public Decimals As Integer
 		Public Use1000Separator As Boolean
 
+		Public ReadOnly Property IsVisible As Boolean
+			Get
+				Return Name <> "ID"
+			End Get
+		End Property
+
 	End Class
 End Namespace

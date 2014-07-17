@@ -232,7 +232,7 @@
     }
 
     if (psTable == 'event') {
-    	dropTable = $("#CalendarEventTableID")[0];
+    	dropTable = $("#EventTableID")[0];
     	iTableID = dropTable.options[dropTable.selectedIndex].value;
     	iCurrentID = $("#txtEventFilterID").val();
     }

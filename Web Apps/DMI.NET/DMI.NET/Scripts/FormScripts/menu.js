@@ -596,11 +596,19 @@ function menu_MenuClick(sTool) {
 	if (sToolName == 'mnutoolSaveReport') {
 		try {
 			
+			// Related Tables
 			var gridData = jQuery("#ChildTables").getRowData();
 			var postData = JSON.stringify(gridData);
-
 			$('#txtCTAAS').val(postData);
 
+			// Calendar Events
+			gridData = $("#CalendarEvents").getRowData();
+			$('#txtCEAAS').val(JSON.stringify(gridData));
+
+			// Sort Order columns
+			gridData = $("#SortOrderColumns").getRowData();
+			$('#txtSOAAS').val(JSON.stringify(gridData));
+		
 			var frmSubmit = $("#frmReportDefintion");
 			if (frmSubmit.length == 0) {
 				okClick(); //Should be in scope	

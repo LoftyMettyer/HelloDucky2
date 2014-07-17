@@ -8,6 +8,7 @@ Imports DMI.NET.Classes
 Imports HR.Intranet.Server.Enums
 Imports System.ComponentModel
 Imports DMI.NET.ViewModels
+Imports DMI.NET.AttributeExtensions
 
 Namespace Models
 
@@ -20,28 +21,27 @@ Namespace Models
 			End Get
 		End Property
 
-		Public Property Description1Id As Integer
-		Public Property Description2Id As Integer
-		Public Property Description3Id As Integer
 		Public Property Description3Name As String
-		Public Property RegionID As Integer
-		Public Property GroupByDescription As Boolean
-		Public Property Separator As String
 
 		Public Property Events As New Collection(Of CalendarEventDetailViewModel)
+		Public Property EventsString As String
 
 		Public Property StartType As CalendarDataType
 		Public Property StartFixedDate As DateTime
 		Public Property StartOffset As Integer
 		Public Property StartOffsetPeriod As DatePeriod
-		Public Property StartCustomId As Integer
+
+		<NonZeroIf("StartType", CalendarDataType.Custom, ErrorMessage:="No custom start date selected.")> _
+		Public Property StartCustomId As Integer = 0
 		Public Property StartCustomName As String
 
 		Public Property EndType As CalendarDataType
 		Public Property EndFixedDate As DateTime
 		Public Property EndOffset As Integer
 		Public Property EndOffsetPeriod As DatePeriod
-		Public Property EndCustomId As Integer
+
+		<NonZeroIf("EndType", CalendarDataType.Custom, ErrorMessage:="No custom end date selected.")> _
+		Public Property EndCustomId As Integer = 0
 		Public Property EndCustomName As String
 
 		<DisplayName("Include Bank Holidays")> _

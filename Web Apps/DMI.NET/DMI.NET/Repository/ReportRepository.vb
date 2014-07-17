@@ -398,6 +398,7 @@ Namespace Repository
 				objEvent.EventStartDateID = CInt(objRow("EventStartDateID"))
 				objEvent.EventStartSessionID = CInt(objRow("EventStartSessionID"))
 				objEvent.EventStartSessionName = objRow("EventStartSessionName").ToString
+				objEvent.EventEndType = CType(objRow("EventEndType"), CalendarEventEndType)
 				objEvent.EventEndDateID = CInt(objRow("EventEndDateID"))
 				objEvent.EventEndDateName = objRow("EventEndDateName").ToString
 				objEvent.EventEndSessionID = CInt(objRow("EventEndSessionID"))
@@ -424,6 +425,8 @@ Namespace Repository
 			PopulateSortOrder(objModel, dsDefinition.Tables(2))
 
 			objModel.GroupAccess = GetUtilityAccess(UtilityType.utlCalendarReport, ID, bIsCopy)
+
+			_calendarreports.Add(objModel)
 
 			Return objModel
 
@@ -603,7 +606,7 @@ Namespace Repository
 
 		Public Function SaveReportDefinition(objModel As CalendarReportModel) As Boolean
 
-			Return True	' TODO
+			_calendarreports.Remove(objModel.ID)
 
 			Try
 
@@ -612,8 +615,9 @@ Namespace Repository
 				Dim sAccess = UtilityAccessAsString(objModel.GroupAccess)
 				Dim sJobsToHide = JobsToHideAsString(objModel.JobsToHide)
 				Dim sJobsToHideGroups As String = "" ' TODO?
-				Dim sEvents As String = "" 'TODO
-				Dim sReportOrder As String = ""	'TODO
+				Dim sEvents As String = EventsAsString(objModel.Events)
+
+				Dim sReportOrder As String = SortOrderAsString(objModel.SortOrderColumns)
 				Dim bAllRecords As Boolean
 
 				' Calendar reports don't save the selection type - instead they have a boolean allrecords flag
@@ -628,9 +632,9 @@ Namespace Repository
 					New SqlParameter("piFilter", SqlDbType.Int) With {.Value = objModel.FilterID}, _
 					New SqlParameter("pfPrintFilterHeader", SqlDbType.Bit) With {.Value = objModel.DisplayTitleInReportHeader}, _
 					New SqlParameter("psUserName", SqlDbType.VarChar, 255) With {.Value = objModel.Owner}, _
-					New SqlParameter("piDescription1", SqlDbType.Int) With {.Value = objModel.Description1Id}, _
-					New SqlParameter("piDescription2", SqlDbType.Int) With {.Value = objModel.Description2Id}, _
-					New SqlParameter("piDescriptionExpr", SqlDbType.Int) With {.Value = objModel.Description3Id}, _
+					New SqlParameter("piDescription1", SqlDbType.Int) With {.Value = objModel.Description1ID}, _
+					New SqlParameter("piDescription2", SqlDbType.Int) With {.Value = objModel.Description2ID}, _
+					New SqlParameter("piDescriptionExpr", SqlDbType.Int) With {.Value = objModel.Description3ID}, _
 					New SqlParameter("piRegion", SqlDbType.Int) With {.Value = objModel.RegionID}, _
 					New SqlParameter("pfGroupByDesc", SqlDbType.Bit) With {.Value = objModel.GroupByDescription}, _
 					New SqlParameter("psDescSeparator", SqlDbType.VarChar, 100) With {.Value = objModel.Separator}, _
@@ -658,7 +662,7 @@ Namespace Repository
 					New SqlParameter("pfOutputSave", SqlDbType.Bit) With {.Value = objModel.Output.SaveToFile}, _
 					New SqlParameter("piOutputSaveExisting", SqlDbType.Int) With {.Value = objModel.Output.SaveExisting}, _
 					New SqlParameter("pfOutputEmail", SqlDbType.Bit) With {.Value = objModel.Output.SendToEmail}, _
-					New SqlParameter("piOutputEmailAddr", SqlDbType.Int) With {.Value = objModel.Output.EmailGroupID}, _
+					New SqlParameter("pfOutputEmailAddr", SqlDbType.Int) With {.Value = objModel.Output.EmailGroupID}, _
 					New SqlParameter("psOutputEmailSubject", SqlDbType.VarChar, -1) With {.Value = objModel.Output.EmailSubject}, _
 					New SqlParameter("psOutputEmailAttachAs", SqlDbType.VarChar, -1) With {.Value = objModel.Output.EmailAttachmentName}, _
 					New SqlParameter("psOutputFilename", SqlDbType.VarChar, -1) With {.Value = objModel.Output.Filename}, _
@@ -670,7 +674,7 @@ Namespace Repository
 					New SqlParameter("psOrderString", SqlDbType.VarChar, -1) With {.Value = sReportOrder}, _
 					prmID)
 
-			Catch
+			Catch ex As Exception
 				Throw
 
 			End Try
@@ -772,6 +776,45 @@ Namespace Repository
 			Return ""
 		End Function
 
+		' Old style update of the events selection stuff
+		Public Function EventsAsString(objEvents As Collection(Of CalendarEventDetailViewModel)) As String
+
+			Dim sEvents As String = ""
+			Dim sLegend As String
+
+			For Each objItem In objEvents
+				If objItem.LegendType = CalendarLegendType.LookupTable Then
+					sLegend = String.Format("1||||{0}||{1}||{2}||{3}" _
+																			, objItem.LegendLookupTableID, objItem.LegendLookupColumnID, objItem.LegendLookupCodeID, objItem.LegendEventColumnID)
+				Else
+					sLegend = String.Format("0||{0}||||||||", objItem.LegendCharacter)
+				End If
+
+				sEvents += String.Format("{0}||{1}||{2}||{3}||{4}||{5}||{6}||{7}||{8}||{9}||{10}||{11}||**" _
+																 , objItem.EventKey, objItem.Name, objItem.TableID, objItem.FilterID _
+																 , objItem.EventStartDateID, objItem.EventStartSessionID, objItem.EventEndDateID, objItem.EventEndSessionID _
+																 , objItem.EventDurationID, sLegend, objItem.EventDesc1ColumnID, objItem.EventDesc2ColumnID)
+			Next
+
+			Return sEvents
+
+		End Function
+
+		' Old style update of the events selection stuff
+		Public Function SortOrderAsString(objSortOrders As Collection(Of ReportSortItem)) As String
+
+			Dim sOrders As String = ""
+			Dim iCount As Integer = 1
+			For Each objItem In objSortOrders
+				iCount += 1
+				sOrders += String.Format("{0}||{1}||{2}||**", objItem.ID, iCount, objItem.Order)
+			Next
+
+			Return sOrders
+
+		End Function
+
+
 		Public Function GetTables() As List(Of ReportTableItem)
 
 			Dim objSessionInfo = CType(HttpContext.Current.Session("SessionContext"), SessionInfo)
@@ -786,16 +829,24 @@ Namespace Repository
 
 		End Function
 
-		Public Function GetChildTables(BaseTableID As Integer) As List(Of ReportTableItem)
+		Public Function GetChildTables(BaseTableID As Integer, IncludeSelf As Boolean) As List(Of ReportTableItem)
 
 			Dim objSessionInfo = CType(HttpContext.Current.Session("SessionContext"), SessionInfo)
 			Dim objItems As New List(Of ReportTableItem)
+			Dim objTable As Table
+			Dim objItem As ReportTableItem
 
 			For Each objRelation In objSessionInfo.Relations.Where(Function(n) n.ParentID = BaseTableID)
-				Dim objTable = objSessionInfo.Tables.Where(Function(m) m.ID = objRelation.ChildID).FirstOrDefault
-				Dim objItem As New ReportTableItem() With {.id = objRelation.ChildID, .Name = objTable.Name}
+				objTable = objSessionInfo.Tables.Where(Function(m) m.ID = objRelation.ChildID).FirstOrDefault
+				objItem = New ReportTableItem() With {.id = objRelation.ChildID, .Name = objTable.Name}
 				objItems.Add(objItem)
 			Next
+
+			If IncludeSelf Then
+				objTable = objSessionInfo.Tables.Where(Function(m) m.ID = BaseTableID).FirstOrDefault
+				objItem = New ReportTableItem() With {.id = objTable.ID, .Name = objTable.Name}
+				objItems.Add(objItem)
+			End If
 
 			Return objItems
 
@@ -956,7 +1007,7 @@ Namespace Repository
 		Public Function RetrieveCalendarReport(id As Integer) As CalendarReportModel
 
 			Try
-				Return _calendarreports.Item(id)
+				Return _calendarreports.Where(Function(m) m.ID = id).FirstOrDefault
 
 			Catch ex As Exception
 				Return New CalendarReportModel
