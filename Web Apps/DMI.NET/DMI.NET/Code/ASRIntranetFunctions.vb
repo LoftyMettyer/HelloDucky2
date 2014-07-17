@@ -11,9 +11,9 @@ Imports DayPilot.Web.Ui
 Imports System.Net.Mail
 Imports System.Net.Mime
 Imports HR.Intranet.Server.Structures
+Imports System.Runtime.CompilerServices
 
 Public Module ASRIntranetFunctions
-
 
 	Function LocaleDecimalSeparator() As String
 		Return Thread.CurrentThread.CurrentCulture.NumberFormat.NumberDecimalSeparator
@@ -101,7 +101,7 @@ Public Module ASRIntranetFunctions
 #End If
 	End Function
 
-	<System.Runtime.CompilerServices.Extension> _
+	<Extension> _
 	Public Function LatestContent(helper As UrlHelper, filename As String)
 		Return helper.Content(String.Format("{0}", GeneratePath(filename)))
 	End Function
@@ -149,7 +149,7 @@ Public Module ASRIntranetFunctions
 		Next
 		Return Nothing
 	End Function
-	
+
 	Public Function ConvertVb6ColourToArgb(systemColour As Integer) As System.Drawing.Color
 		Dim red As String
 		Dim green As String

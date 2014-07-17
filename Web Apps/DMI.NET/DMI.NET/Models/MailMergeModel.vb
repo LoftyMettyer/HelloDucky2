@@ -9,6 +9,7 @@ Imports DMI.NET.ViewModels
 Imports System.ComponentModel
 Imports System.ComponentModel.DataAnnotations
 Imports HR.Intranet.Server.Enums
+Imports DMI.NET.ViewModels.Reports
 
 Namespace Models
 
@@ -22,7 +23,7 @@ Namespace Models
 		End Property
 
 		'Public Property Definition As DefinitionViewModel
-		Public Property Columns As New ReportColumnsModel
+		Public Property Columns As New ColumnsViewModel
 
 		<DisplayName("Template"), DisplayFormat(ConvertEmptyStringToNull:=False)>
 		Public Property TemplateFileName As String

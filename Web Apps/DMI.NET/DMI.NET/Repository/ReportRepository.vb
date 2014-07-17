@@ -8,9 +8,7 @@ Imports HR.Intranet.Server.Metadata
 Imports System.Collections.ObjectModel
 Imports DMI.NET.Classes
 Imports HR.Intranet.Server.Enums
-Imports Dapper
 Imports DMI.NET.Enums
-Imports DMI.NET.Classses
 Imports DMI.NET.ViewModels
 Imports DMI.NET.ViewModels.Reports
 
@@ -83,6 +81,8 @@ Namespace Repository
 				End If
 
 				objModel.Columns.BaseTableID = objModel.BaseTableID
+				objModel.Columns.DisplayTableSelection = True
+				objModel.Columns.ReportID = objModel.ID
 
 				'' todo replace with dapper
 				objModel.Columns.Selected = New Collection(Of ReportColumnItem)
@@ -194,6 +194,7 @@ Namespace Repository
 			PopulateSortOrder(objModel, dsDefinition.Tables(3))
 
 			objModel.Columns.BaseTableID = objModel.BaseTableID
+			objModel.Columns.ReportID = objModel.ID
 
 			If dsDefinition.Tables(0).Rows.Count = 1 Then
 
@@ -542,9 +543,6 @@ Namespace Repository
 
 			_customreports.Remove(objModel.ID)
 
-			Return True	' TODO
-
-
 			Try
 
 				Dim prmID = New SqlParameter("piId", SqlDbType.Int) With {.Direction = ParameterDirection.InputOutput, .Value = objModel.ID}
@@ -593,32 +591,6 @@ Namespace Repository
 						New SqlParameter("psChildString", SqlDbType.VarChar, -1) With {.Value = sChildren}, _
 						prmID,
 						New SqlParameter("pfIgnoreZeros", SqlDbType.Bit) With {.Value = objModel.IgnoreZerosForAggregates})
-
-
-				'Dim sSQL As String = String.Format("UPDATE ASRSysCustomReportsName SET Name = '{1}', OutputEmailAttachAs = '{2}' WHERE ID = {0}" _
-				'															, objModel.ID, objModel.Name, objModel.Output.EmailAttachmentName)
-				'objDataAccess.ExecuteSql(sSQL)
-
-				'sSQL = String.Format("DELETE ASRSysCustomReportsChildDetails WHERE CustomReportID = {0}", objModel.ID)
-				'objDataAccess.ExecuteSql(sSQL)
-
-				'For Each objChild In objModel.ChildTables
-				'	sSQL = String.Format("INSERT ASRSysCustomReportsChildDetails (CustomReportID, ChildTable, ChildFilter, ChildMaxRecords, ChildOrder) VALUES ({0}, {1}, {2}, {3}, {4})", _
-				'											objModel.ID, objChild.TableID, objChild.FilterID, objChild.Records, objChild.OrderID)
-				'	objDataAccess.ExecuteSql(sSQL)
-				'Next
-
-
-				'sSQL = String.Format("DELETE ASRSysCustomReportAccess WHERE ID = {0}", objModel.ID)
-				'objDataAccess.ExecuteSql(sSQL)
-
-				'For Each objChild In objModel.GroupAccess
-				'	sSQL = String.Format("INSERT ASRSysCustomReportAccess (id, groupname, access) VALUES ({0}, '{1}', '{2}')", _
-				'											objModel.ID, objChild.Name, objChild.Access)
-				'	objDataAccess.ExecuteSql(sSQL)
-				'Next
-
-
 
 			Catch ex As Exception
 				Throw

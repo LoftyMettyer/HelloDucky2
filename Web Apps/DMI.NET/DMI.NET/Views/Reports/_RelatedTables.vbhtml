@@ -91,17 +91,6 @@
 
 <script type="text/javascript">
 
-
-	function toggle_visibility(id) {
-
-		var e = $("#Event_Detail_" + id)[0]
-		if (e.style.display == 'block')
-			e.style.display = 'none';
-		else
-			e.style.display = 'block';
-	}
-
-
 	function addChildTable() {
 		OpenHR.OpenDialog("Reports/AddChildTable", "divPopupReportDefinition", { ReportID: "@Model.ID" });
 	}
@@ -119,7 +108,7 @@
 
 	function removeChildTable() {
 		rowID = $('#ChildTables').jqGrid('getGridParam', 'selrow');
-		$('#ChildTables').jqGrid('delRowData', rowid)
+		$('#ChildTables').jqGrid('delRowData', rowID)
 
 
 
@@ -142,8 +131,8 @@
 			},
 			colNames: ['ReportID', 'TableID', 'FilterID', 'OrderID', 'Table', 'Filter', 'Order', 'Records'],
 			colModel: [
-				{ name: 'ReportID', index: 'reportID', sorttype: 'int', hidden: true },
-				{ name: 'TableID', index: 'TableID', width: 100, hidden: true },
+				{ name: 'ReportID', index: 'reportID', sorttype: 'int', hidden: false },
+				{ name: 'TableID', index: 'TableID', width: 100, hidden: false },
 				{ name: 'FilterID', index: 'FilterID', width: 100, hidden: true },
 				{ name: 'OrderID', index: 'OrderID', width: 100, hidden: true },
 				{ name: 'TableName', index: 'TableName', width: 100 },

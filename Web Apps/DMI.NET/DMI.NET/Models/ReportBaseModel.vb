@@ -63,5 +63,12 @@ Namespace Models
 
 		Public MustOverride Sub SetBaseTable(BaseTableID As Integer) Implements IReport.SetBaseTable
 
+		Public Property Description1ID As Integer
+		Public Property Description2ID As Integer
+		Public Property Description3ID As Integer
+		Public Property RegionID As Integer
+		Public Property GroupByDescription As Boolean
+		Public Property Separator As String
+
 	End Class
 End Namespace

@@ -4,10 +4,15 @@ Option Strict On
 Imports System.Collections.ObjectModel
 Imports DMI.NET.Classes
 Imports DMI.NET.Enums
+Imports HR.Intranet.Server.Enums
 
-Namespace Models
+Namespace ViewModels.Reports
 
-	Public Class ReportColumnsModel
+	Public Class ColumnsViewModel
+
+		Public Property ReportID As Integer
+
+		Public Property DisplayTableSelection As Boolean
 
 		Public Property BaseTableID As Integer
 		Public Property Selected As New Collection(Of ReportColumnItem)

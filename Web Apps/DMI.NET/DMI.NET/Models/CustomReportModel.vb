@@ -22,7 +22,7 @@ Namespace Models
 
 		Private _baseTable As Integer
 
-		Public Property Columns As New ReportColumnsModel
+		Public Property Columns As New ColumnsViewModel
 
 		Public Property AvailableTables As New Collection(Of ChildTableViewModel)
 
@@ -46,6 +46,7 @@ Namespace Models
 
 			ChildTables = New Collection(Of ChildTableViewModel)
 			BaseTableID = TableID
+			Columns.DisplayTableSelection = True
 			SelectionType = Enums.RecordSelectionType.AllRecords
 			Columns.Selected = New Collection(Of ReportColumnItem)
 			SortOrderColumns = New Collection(Of ReportSortItem)
@@ -53,12 +54,16 @@ Namespace Models
 
 			Dim objParents = SessionInfo.Relations.Where(Function(m) m.ChildID = TableID)
 
+			Parent1.ID = 0
+			Parent1.Name = ""
 			Parent1.SelectionType = Enums.RecordSelectionType.AllRecords
 			Parent1.PicklistID = 0
 			Parent1.PicklistName = ""
 			Parent1.FilterID = 0
 			Parent1.FilterName = ""
 
+			Parent2.ID = 0
+			Parent2.Name = ""
 			Parent2.SelectionType = Enums.RecordSelectionType.AllRecords
 			Parent2.PicklistID = 0
 			Parent2.PicklistName = ""

@@ -40,7 +40,7 @@
 
 		<div class="left">
 			Base Table :
-			<select name="BaseTableID" id="BaseTableID" onchange="request_changeReportBaseTable(event.target);"></select>
+			<select name="BaseTableID" id="BaseTableID" onchange="changeReportBaseTable(event.target);"></select>
 		</div>
 
 		<div class="right">
@@ -117,6 +117,8 @@
 
 				if ('@CInt(Model.ReportType)' == '2') {
 					loadRelatedTables();
+					$("#SelectedTableID").val("@Model.BaseTableID");
+					getAvailableTableColumnsCalcs();
 				}
 
 			}
@@ -129,10 +131,6 @@
 		// tighten up these input selectors
 		$("#frmReportDefintion :input").on("change", function () { enableSaveButton(this); });
 		getBaseTableList();
-		//debugger;
-		//$('#BaseTableID').val("@Model.BaseTableID");
-		//$("#BaseTableID option[value='@Model.BaseTableID']").attr("selected", "selected");
-
 
 	});
 
@@ -289,10 +287,12 @@
   		url: '@Url.Action("GetAllTablesInReport", "Reports", New With {.ReportID = Model.ID})',
   		dataType: "json",
   		success: function (json) {
+
   			$.each(json, function (i, table) {
   				var optionHtml = '<option value=' + table.id + '>' + table.Name + '</option>'
   				$('#SelectedTableID').append(optionHtml);
-  			})
+  			});
+
   		},
   		error: function () {
   			alert("error");
@@ -301,35 +301,19 @@
 
   }
 
-  function request_changeReportBaseTable(target) {
+  function changeReportBaseTable(target) {
 
-  	OpenHR.modalPrompt("Changing the base table will result in all table/column specific aspects of this report definition being cleared. Are you sure you wish to continue ?", 35, '', changeReportBaseTable);
-  	changeReportBaseTable(target)
-
+  	OpenHR.modalPrompt("Changing the base table will result in all table/column specific aspects of this report definition being cleared. <br/><br/> Are you sure you wish to continue ?", 4, "").then(function (answer) {
+  		if (answer == 6) { // Yes
+  			var frmSubmit = $("#frmReportDefintion");
+  			OpenHR.submitForm(frmSubmit, null, null, null, "Reports/ChangeBaseTable");
+  			return false;
+  		} else {
+  			return false;
+  		}
+  	});
   }
 
-	function changeReportBaseTable(target) {
-
-		var frmSubmit = $("#frmReportDefintion");
-		OpenHR.submitForm(frmSubmit, null, null, null, "Reports/ChangeBaseTable");
-
-		//var selectedID = target.options[target.selectedIndex].value;
-
-		//$.ajax({
-		//	type: "POST",
-		//	url: 'Reports/ChangeBaseTable?NewTableID=' + $('#BaseTableID').val() + "&&ReportID=" + $('#txtReportID').val(),
-		//	dataType: "json",
-		//	success: function (json) {
-		//		debugger;
-
-		//		loadRelatedTables();
-		//		removeAllChildTables();
-		//		removeAllSelectedColumns();
-		//	},
-
-		//})
-
-	}
 
 	function removeAllChildTables() {
 		$('#ChildTables').jqGrid('clearGridData')

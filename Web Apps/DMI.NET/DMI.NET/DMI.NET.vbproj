@@ -228,7 +228,7 @@
     <Compile Include="Models\CalendarEvent.vb" />
     <Compile Include="Models\PopoutChartModel.vb" />
     <Compile Include="Models\ReportBaseModel.vb" />
-    <Compile Include="Models\ReportColumnsModel.vb" />
+    <Compile Include="ViewModels\Reports\ColumnsViewModel.vb" />
     <Compile Include="Models\ReportOutputModel.vb" />
     <Compile Include="My Project\AssemblyInfo.vb" />
     <Compile Include="My Project\Application.Designer.vb">

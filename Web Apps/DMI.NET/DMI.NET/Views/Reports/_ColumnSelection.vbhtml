@@ -1,7 +1,9 @@
 ﻿@Imports DMI.NET
 @Imports DMI.NET.Helpers
 @Imports DMI.NET.Enums
-@Inherits System.Web.Mvc.WebViewPage(Of Models.ReportColumnsModel)
+@imports HR.Intranet.Server.Enums
+@Imports DMI.NET.ViewModels.Reports
+@Inherits System.Web.Mvc.WebViewPage(Of ColumnsViewModel)
 
 <style>
 
@@ -19,7 +21,12 @@
 
 	Columns / Calculations Available :
 	<br/>
-	<select name="SelectedTableID" id="SelectedTableID"></select>
+
+	@Code
+		If Model.DisplayTableSelection Then
+			@<select name="SelectedTableID" id="SelectedTableID" onclick="getAvailableTableColumnsCalcs();"></select>
+End If
+End Code
 
 	<br />
 	@Html.RadioButton("columnSelectiontype", ColumnSelectionType.Columns, True, New With {.onclick = "toggleColumnsCalculations('column')"})
@@ -32,7 +39,7 @@
 </div>
 
 <div style="float:left">
-	<input type="button" id="btnColumnAdd" value="Add" onclick="addColumnToSelected();" />
+	<input type="button" id="btnColumnAdd" value="Add" onclick="addColumnToSelected(0);" />
 	<br />
 	<input type="button" id="btnColumnAddAll" value="Add All" onclick="addAllColumnsToSelected();" />
 	<br />
@@ -54,9 +61,18 @@
 
   <script type="text/javascript">
 
-		function addColumnToSelected() {
-			var iRowID = $("#AvailableColumns").getGridParam('selrow') - 1;
-			alert(iRowID);
+		function toggleColumnsCalculations(type) {
+		}
+
+		function addColumnToSelected(rowID) {
+
+			if (rowID == 0) {
+				iRowID = $("#AvailableColumns").getGridParam('selrow');
+			}
+
+			var gridData = $('#AvailableColumns').getRowData(rowID);
+
+
 
 			$('#AvailableColumns').trigger('reloadGrid');
 
@@ -77,7 +93,6 @@
 			//TODO
 		}
 
-
     function columndefinition_rowcolchange() {
 
     	iRowID = $("#ColumnsSelected").getGridParam('selrow') - 1;
@@ -85,6 +100,41 @@
     	$("#columnproperty" + iRowID + "Breakdown").show();
 
     }
+
+    function getAvailableTableColumnsCalcs() {
+
+    	$("#AvailableColumns").jqGrid({
+    		url: 'Reports/GetColumnsForTable?TableID=' & $("#SelectedTableID").val(),
+    		datatype: 'json',
+    		mtype: 'GET',
+    		jsonReader: {
+    			root: "rows", //array containing actual data
+    			page: "page", //current page
+    			total: "total", //total pages for the query
+    			records: "records", //total number of records
+    			repeatitems: false,
+    			id: "id" //index of the column with the PK in it
+    		},
+    		colNames: ['id', 'Name'],
+    		colModel: [
+					{ name: 'id', index: 'id', hidden: true },
+					{ name: 'Name', index: 'Name', width: 40, sortable: false }],
+    		viewrecords: true,
+    		width: 400,
+    		sortname: 'Name',
+    		sortorder: "desc",
+    		ondblClickRow: function (rowid) {
+
+    			$(this).jqGrid('editGridRow', rowid);
+    			// move to selected
+
+    			addColumnToSelectedO(rowid)
+
+    		}
+    	});
+    	
+    }
+
 
 		// Initialise
     $(function () {
@@ -105,38 +155,10 @@
     		rowNum: 1000
     	});
 
-    	jQuery(document).ready(function () {
-    		jQuery("#AvailableColumns").jqGrid({
-    			url: '@Url.Action("GetAvailableColumns?tableID=", "Reports")' + $("#SelectedTableID").val(),
-    			datatype: 'json',
-    			mtype: 'GET',
-    			jsonReader: {
-    				root: "rows", //array containing actual data
-    				page: "page", //current page
-    				total: "total", //total pages for the query
-    				records: "records", //total number of records
-    				repeatitems: false,
-    				id: "id" //index of the column with the PK in it
-    			},
-    			colNames: ['id', 'Name'],
-    			colModel: [
-				{ name: 'id', index: 'id', hidden: true },
-				{ name: 'Name', index: 'Name', width: 40, sortable: false }
-    			],
-    			viewrecords: true,
-    			width: 400,
-    			sortname: 'Name',
-    			sortorder: "desc"
-    		});
-    	});
-
-
-
 
       $('#viewSelectedColumns').change(function () {
         var value = $(this).val();
 
-        debugger;
         showThisColumnProperties(value);
 
       });

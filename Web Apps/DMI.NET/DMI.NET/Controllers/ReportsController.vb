@@ -69,19 +69,20 @@ Namespace Controllers
 		<HttpPost, ValidateInput(False)>
 	 Function util_def_customreport(objModel As CustomReportModel) As ActionResult
 
-
-			' Um... this doesn't work, but you get the gist.... It does now! :-)
 			Dim deserializer = New JavaScriptSerializer()
-			Dim uploadedChildTables = deserializer.Deserialize(Of Collection(Of ChildTableViewModel))(objModel.ChildTablesString)
 
-			objModel.ChildTables = deserializer.Deserialize(Of Collection(Of ChildTableViewModel))(objModel.ChildTablesString)
+			If objModel.ChildTablesString.Length > 0 Then
+				objModel.ChildTables = deserializer.Deserialize(Of Collection(Of ChildTableViewModel))(objModel.ChildTablesString)
+			End If
 
 			If ModelState.IsValid Then
 				objReportRepository.SaveReportDefinition(objModel)
 				Session("reaction") = "CUSTOMREPORTS"
 				Return RedirectToAction("confirmok", "home")
 			Else
-				objModel.BaseTables = objReportRepository.GetTables()
+
+				Dim allErrors = ModelState.Values.SelectMany(Function(v) v.Errors)
+
 				Return View(objModel)
 			End If
 
@@ -214,10 +215,10 @@ Namespace Controllers
 		End Function
 
 		<HttpGet>
-		Function GetAvailableColumns(tableID As Integer) As JsonResult
+		Function GetColumnsForTable(TableID As Integer) As JsonResult
 
-			Dim objColumns = objReportRepository.GetColumnsForTable(tableID)
-			Dim results = New With {.total = 1, .page = 1, .records = 1, .rows = objColumns}
+			Dim objColumns = objReportRepository.GetColumnsForTable(TableID)
+			Dim results = New With {.total = 1, .page = 1, .records = 0, .rows = objColumns}
 			Return Json(results, JsonRequestBehavior.AllowGet)
 
 		End Function
