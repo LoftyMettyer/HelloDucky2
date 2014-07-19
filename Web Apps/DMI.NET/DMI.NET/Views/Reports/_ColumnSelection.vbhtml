@@ -22,11 +22,7 @@
 	Columns / Calculations Available :
 	<br/>
 
-	@Code
-		If Model.DisplayTableSelection Then
-			@<select name="SelectedTableID" id="SelectedTableID" onclick="getAvailableTableColumnsCalcs();"></select>
-End If
-End Code
+	<select name="SelectedTableID" id="SelectedTableID" onchange="getAvailableTableColumnsCalcs();"></select>
 
 	<br />
 	@Html.RadioButton("columnSelectiontype", ColumnSelectionType.Columns, True, New With {.onclick = "toggleColumnsCalculations('column')"})
@@ -71,22 +67,12 @@ End Code
 			}
 
 			var gridData = $('#AvailableColumns').getRowData(rowID);
-
-
-
 			$('#AvailableColumns').trigger('reloadGrid');
 
 		}
 
 		function addAllColumnsToSelected() {
 			//TODO
-		}
-
-		function changeAvailableReportTable(event) {
-
-			// Warn user
-			// Reload the available columns
-
 		}
 
 		function removeSelectedColumn() {
@@ -103,8 +89,10 @@ End Code
 
     function getAvailableTableColumnsCalcs() {
 
+    	$("#AvailableColumns").jqGrid('GridUnload');
+
     	$("#AvailableColumns").jqGrid({
-    		url: 'Reports/GetColumnsForTable?TableID=' & $("#SelectedTableID").val(),
+    		url: 'Reports/GetColumnsForTable?TableID=' + $("#SelectedTableID").val(),
     		datatype: 'json',
     		mtype: 'GET',
     		jsonReader: {
@@ -123,16 +111,21 @@ End Code
     		width: 400,
     		sortname: 'Name',
     		sortorder: "desc",
+    		rowNum: '',
     		ondblClickRow: function (rowid) {
 
     			$(this).jqGrid('editGridRow', rowid);
     			// move to selected
 
-    			addColumnToSelectedO(rowid)
+    			addColumnToSelected(rowid)
 
     		}
     	});
     	
+    	// TODO Loop through available removing any currently selected
+
+
+
     }
 
 

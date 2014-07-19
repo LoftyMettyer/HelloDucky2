@@ -15,7 +15,9 @@ Namespace Code.Interfaces
 
 		Sub SetBaseTable(BaseTableID As Integer)
 		Function GetAvailableSortColumns() As IEnumerable(Of ReportColumnItem)
+		Function GetAvailableTables() As IEnumerable(Of ReportTableItem)
 
 		Property SortOrders As Collection(Of SortOrderViewModel)
+
 	End Interface
 End Namespace

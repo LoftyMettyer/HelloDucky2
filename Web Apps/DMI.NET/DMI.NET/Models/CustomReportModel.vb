@@ -98,6 +98,36 @@ Namespace Models
 
 		End Function
 
+		Public Overrides Function GetAvailableTables() As IEnumerable(Of ReportTableItem)
+
+			Dim objItems As New Collection(Of ReportTableItem)
+			Dim objTable As Table
+
+			' Add base table
+			objTable = SessionInfo.Tables.Where(Function(m) m.ID = BaseTableID).FirstOrDefault
+			objItems.Add(New ReportTableItem With {.id = objTable.ID, .Name = objTable.Name})
+
+			' Add child tables
+			For Each objChild In ChildTables
+				objItems.Add(New ReportTableItem() With {.id = objChild.TableID, .Name = objChild.TableName})
+			Next
+
+			' Add parent tables
+			If Parent1.ID > 0 Then
+				objTable = SessionInfo.Tables.Where(Function(m) m.ID = Parent1.ID).FirstOrDefault
+				objItems.Add(New ReportTableItem With {.id = objTable.ID, .Name = objTable.Name})
+			End If
+
+			If Parent2.ID > 0 Then
+				objTable = SessionInfo.Tables.Where(Function(m) m.ID = Parent2.ID).FirstOrDefault
+				objItems.Add(New ReportTableItem With {.id = objTable.ID, .Name = objTable.Name})
+			End If
+
+			Return objItems.OrderBy(Function(m) m.Name)
+
+		End Function
+
+
 	End Class
 
 End Namespace

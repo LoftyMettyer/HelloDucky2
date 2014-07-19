@@ -8,6 +8,7 @@ Headings &amp; Breaks
 	<br/>
 
 	Horizontal :  @Html.ColumnDropdown("HorizontalID", "HorizontalID", Model.HorizontalID, Model.AvailableColumns, "refreshCrossTabColumn(event.target, 'Horizontal');")
+
 	@Html.ValidationMessageFor(Function(m) m.HorizontalID)
 
 	@Html.Hidden("HorizontalDataType", CInt(Model.HorizontalDataType))

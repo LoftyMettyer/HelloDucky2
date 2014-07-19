@@ -1,7 +1,8 @@
 ﻿@Imports DMI.NET
 @Imports DMI.NET.Helpers
 @Imports DMI.NET.Enums
-@Inherits System.Web.Mvc.WebViewPage(Of Models.ReportBaseModel)
+@Imports DMI.NET.Models
+@Inherits System.Web.Mvc.WebViewPage(Of ReportBaseModel)
 
 @Html.HiddenFor(Function(m) m.ID, New With {.id = "txtReportID"})
 
@@ -105,9 +106,9 @@
 	function getBaseTableList() {
 		$.ajax({
 			url: '@Url.Action("GetBaseTables", "Reports")',
-			type:'GET',
+			type: 'GET',
 			dataType: 'json',
-			success: function( json ) {
+			success: function (json) {
 				$.each(json, function (i, table) {
 					var optionHtml = '<option value=' + table.id + '>' + table.Name + '</option>'
 					$('#BaseTableID').append(optionHtml);
@@ -115,10 +116,8 @@
 
 				$('#BaseTableID').val("@Model.BaseTableID");
 
-				if ('@CInt(Model.ReportType)' == '2') {
-					loadRelatedTables();
-					$("#SelectedTableID").val("@Model.BaseTableID");
-					getAvailableTableColumnsCalcs();
+				if ('@CInt(Model.ReportType)' == '2' || '@CInt(Model.ReportType)' == '9') {
+					loadAvailableTablesForReport();
 				}
 
 			}
@@ -175,7 +174,7 @@
 			button_disable($("#cmd" + psTable + "Filter")[0], false)
 			$("#txt" + psTable + "Picklist").val("");
 			$("#txt" + psTable + "PicklistID").val(0);
-	
+
 			if ($("#txt" + psTable + "FilterID").val() == 0) {
 				$("#txt" + psTable + "Filter").val("<None>");
 			}
@@ -186,7 +185,7 @@
 
   function selectRecordOption(psTable, psType) {
 
-  	var sURL;										 
+  	var sURL;
   	var frmRecordSelection = $("#frmRecordSelection")[0];
   	var iCurrentID;
   	var iTableID;
@@ -264,55 +263,40 @@
   }
 
   function loadAvailableTablesForReport() {
+
   	$.ajax({
-  		url: '@Url.Action("GetAvailableTablesForReport", "Reports", New With {.ID = Model.ID})',
+  		url: '@Html.Raw(Url.Action("GetAllTablesInReport", "Reports", New With {.ReportID = Model.ID, .ReportType = CInt(Model.ReportType)}))',
   		type: 'GET',
   		dataType: 'json',
+  		cache: false,
   		success: function (json) {
-  			$.each(json, function (i, table) {
-  				var optionHtml = '<option value=' + table.id + '>' + table.Name + '</option>'
-  				$('#txtChildTableID').append(optionHtml);
-  			});
 
-  		}
-  	});
-  }
-
-  function loadRelatedTables() {
-
-  	$('#SelectedTableID')[0].options.length = 0;
-
-  	$.ajax({
-  		type: "GET",
-  		url: '@Url.Action("GetAllTablesInReport", "Reports", New With {.ReportID = Model.ID})',
-  		dataType: "json",
-  		success: function (json) {
+  			$('#SelectedTableID').empty()
 
   			$.each(json, function (i, table) {
   				var optionHtml = '<option value=' + table.id + '>' + table.Name + '</option>'
   				$('#SelectedTableID').append(optionHtml);
   			});
 
-  		},
-  		error: function () {
-  			alert("error");
-  		}
-  	}, 10000);
+  			$("#SelectedTableID").val($("#BaseTableID").val());
+  			getAvailableTableColumnsCalcs();
 
-  }
-
-  function changeReportBaseTable(target) {
-
-  	OpenHR.modalPrompt("Changing the base table will result in all table/column specific aspects of this report definition being cleared. <br/><br/> Are you sure you wish to continue ?", 4, "").then(function (answer) {
-  		if (answer == 6) { // Yes
-  			var frmSubmit = $("#frmReportDefintion");
-  			OpenHR.submitForm(frmSubmit, null, null, null, "Reports/ChangeBaseTable");
-  			return false;
-  		} else {
-  			return false;
   		}
   	});
   }
+
+	function changeReportBaseTable(target) {
+
+		OpenHR.modalPrompt("Changing the base table will result in all table/column specific aspects of this report definition being cleared. <br/><br/> Are you sure you wish to continue ?", 4, "").then(function (answer) {
+			if (answer == 6) { // Yes
+				var frmSubmit = $("#frmReportDefintion");
+				OpenHR.submitForm(frmSubmit, null, null, null, "Reports/ChangeBaseTable");
+				return false;
+			} else {
+				return false;
+			}
+		});
+	}
 
 
 	function removeAllChildTables() {

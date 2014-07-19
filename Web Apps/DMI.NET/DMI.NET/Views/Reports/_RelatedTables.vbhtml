@@ -92,7 +92,9 @@
 <script type="text/javascript">
 
 	function addChildTable() {
+
 		OpenHR.OpenDialog("Reports/AddChildTable", "divPopupReportDefinition", { ReportID: "@Model.ID" });
+
 	}
 
 	function editChildTable(rowID) {
@@ -109,9 +111,7 @@
 	function removeChildTable() {
 		rowID = $('#ChildTables').jqGrid('getGridParam', 'selrow');
 		$('#ChildTables').jqGrid('delRowData', rowID)
-
-
-
+		loadAvailableTablesForReport();
 	}
 
 		

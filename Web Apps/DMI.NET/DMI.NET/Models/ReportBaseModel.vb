@@ -48,7 +48,7 @@ Namespace Models
 		Public Property FilterName As String
 		Public Property PicklistName As String
 
-		Public Property BaseTables As New List(Of ReportTableItem)
+		'Public Property BaseTables As New List(Of ReportTableItem)
 
 		<DisplayName("Display Title In Report Header")>
 		Public Property DisplayTitleInReportHeader As Boolean
@@ -65,6 +65,16 @@ Namespace Models
 		Public Property SessionInfo As SessionInfo Implements IReport.SessionInfo
 		Public MustOverride Sub SetBaseTable(BaseTableID As Integer) Implements IReport.SetBaseTable
 		Public MustOverride Function GetAvailableSortColumns() As IEnumerable(Of ReportColumnItem) Implements IReport.GetAvailableSortColumns
+
+		Public Overridable Function GetAvailableTables() As IEnumerable(Of ReportTableItem) Implements IReport.GetAvailableTables
+
+			Dim objItems As New Collection(Of ReportTableItem)
+			Dim objBaseTable = SessionInfo.Tables.Where(Function(m) m.ID = BaseTableID).FirstOrDefault
+			objItems.Add(New ReportTableItem With {.id = objBaseTable.ID, .Name = objBaseTable.Name})
+			Return objItems
+
+		End Function
+
 
 		<DisplayName("Description 1: ")>
 		Public Property Description1ID As Integer

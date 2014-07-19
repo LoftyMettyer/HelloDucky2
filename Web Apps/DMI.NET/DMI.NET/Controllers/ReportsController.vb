@@ -128,7 +128,6 @@ Namespace Controllers
 				Session("reaction") = "MAILMERGE"
 				Return RedirectToAction("confirmok", "home")
 			Else
-				objModel.BaseTables = objReportRepository.GetTables()
 				Return View(objModel)
 			End If
 
@@ -169,7 +168,6 @@ Namespace Controllers
 				Session("reaction") = "CROSSTABS"
 				Return RedirectToAction("confirmok", "home")
 			Else
-				objModel.BaseTables = objReportRepository.GetTables()
 				objModel.AvailableColumns = objReportRepository.GetColumnsForTable(objModel.BaseTableID)
 
 				Return View(objModel)
@@ -237,19 +235,6 @@ Namespace Controllers
 			Dim objColumns = objReportRepository.GetColumnsForTable(TableID)
 			Dim results = New With {.total = 1, .page = 1, .records = 0, .rows = objColumns}
 			Return Json(results, JsonRequestBehavior.AllowGet)
-
-		End Function
-
-		<HttpGet>
-		Function GetAvailableTablesForReport(ID As Integer) As JsonResult
-
-			Dim objReport = objReportRepository.RetrieveCustomReport(ID)
-
-			Dim objTables = objReportRepository.GetTables()
-
-			' subtract the currently selected ones
-
-			Return Json(objTables, JsonRequestBehavior.AllowGet)
 
 		End Function
 
@@ -381,10 +366,10 @@ Namespace Controllers
 		End Sub
 
 		<HttpGet>
-		Function GetAllTablesInReport(reportID As Integer) As JsonResult
+		Function GetAllTablesInReport(reportID As Integer, reportType As UtilityType) As JsonResult
 
-			Dim objItems = objReportRepository.GetAllTablesInReport(reportID)
-			Return Json(objItems, JsonRequestBehavior.AllowGet)
+			Dim objReport = objReportRepository.RetrieveParent(reportID, reportType)
+			Return Json(objReport.GetAvailableTables(), JsonRequestBehavior.AllowGet)
 
 		End Function
 

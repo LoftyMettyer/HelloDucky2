@@ -857,29 +857,21 @@ Namespace Repository
 			Dim objSessionInfo = CType(HttpContext.Current.Session("SessionContext"), SessionInfo)
 			Dim objReturnData As New List(Of ReportColumnItem)
 
+			Dim objToAdd As New ReportColumnItem
+
 			Try
 
-				Dim objToAdd As New ReportColumnItem With {
-							.ID = 0,
-							.Name = "None",
-							.DataType = SQLDataType.sqlUnknown,
-							.Size = 0,
-							.Decimals = 0}
-				objReturnData.Add(objToAdd)
+				For Each objColumn In objSessionInfo.Columns.Where(Function(m) m.TableID = id And m.IsVisible).OrderBy(Function(n) n.Name)
 
-				For Each objColumn In objSessionInfo.Columns.OrderBy(Function(n) n.Name)
-					If objColumn.TableID = id And objColumn.Name <> "ID" Then
+					objToAdd = New ReportColumnItem With {
+						.ID = objColumn.ID,
+						.Name = objColumn.Name,
+						.Heading = objColumn.Name,
+						.DataType = objColumn.DataType,
+						.Size = objColumn.Size,
+						.Decimals = objColumn.Decimals}
 
-						objToAdd = New ReportColumnItem With {
-							.ID = objColumn.ID,
-							.Name = objColumn.Name,
-							.Heading = objColumn.Name,
-							.DataType = objColumn.DataType,
-							.Size = objColumn.Size,
-							.Decimals = objColumn.Decimals}
-
-						objReturnData.Add(objToAdd)
-					End If
+					objReturnData.Add(objToAdd)
 
 				Next
 
@@ -1026,58 +1018,36 @@ Namespace Repository
 
 		End Function
 
-		Public Function RetrieveParent(model As IReportDetail) As IReport
+		Public Function RetrieveParent(reportID As Integer, reportType As UtilityType) As IReport
 
 			Try
 
-				Select Case model.ReportType
+				Select Case reportType
 					Case UtilityType.utlCalendarReport
-						Return _calendarreports.Where(Function(m) m.ID = model.ReportID).FirstOrDefault()
+						Return _calendarreports.Where(Function(m) m.ID = reportID).FirstOrDefault()
 
 					Case UtilityType.utlMailMerge
-						Return _mailmerges.Where(Function(m) m.ID = model.ReportID).FirstOrDefault()
+						Return _mailmerges.Where(Function(m) m.ID = reportID).FirstOrDefault()
 
 					Case UtilityType.utlCrossTab
-						Return _crosstabs.Where(Function(m) m.ID = model.ReportID).FirstOrDefault()
+						Return _crosstabs.Where(Function(m) m.ID = reportID).FirstOrDefault()
 
 					Case Else
-						Return _customreports.Where(Function(m) m.ID = model.ReportID).FirstOrDefault
+						Return _customreports.Where(Function(m) m.ID = reportID).FirstOrDefault
 
 				End Select
 
 			Catch ex As Exception
 				Throw
-
 			End Try
 
 		End Function
 
-
-
-		Public Function GetRelatedTables(TableID As Integer, AddSelf As Boolean) As List(Of ReportTableItem)
-
-			Dim objSessionInfo = CType(HttpContext.Current.Session("SessionContext"), SessionInfo)
-			Dim objItems As New List(Of ReportTableItem)
-			Dim objTable As Table
-
-			For Each relation In objSessionInfo.Relations.Where(Function(m) m.ChildID = TableID)
-				objTable = objSessionInfo.Tables.Where(Function(m) m.ID = relation.ParentID).FirstOrDefault
-				objItems.Add(New ReportTableItem() With {.id = objTable.ID, .Name = objTable.Name})
-			Next
-
-			For Each relation In objSessionInfo.Relations.Where(Function(m) m.ParentID = TableID)
-				objTable = objSessionInfo.Tables.Where(Function(m) m.ID = relation.ChildID).FirstOrDefault
-				objItems.Add(New ReportTableItem() With {.id = objTable.ID, .Name = objTable.Name})
-			Next
-
-			If AddSelf Then
-				objTable = objSessionInfo.Tables.Where(Function(m) m.ID = TableID).FirstOrDefault
-				objItems.Add(New ReportTableItem() With {.id = objTable.ID, .Name = objTable.Name})
-			End If
-
-			Return objItems
-
+		Public Function RetrieveParent(model As IReportDetail) As IReport
+			Return RetrieveParent(model.ReportID, model.ReportType)
 		End Function
+
+
 
 		Function GetAllTablesInReport(reportID As Integer) As List(Of ReportTableItem)
 
@@ -1105,11 +1075,10 @@ Namespace Repository
 
 		Sub SetBaseTable(objModel As IReport)
 
+			objModel.SessionInfo = _objSessionInfo
 			objModel.SetBaseTable(objModel.BaseTableID)
 
 		End Sub
-
-
 
 	End Class
 End Namespace

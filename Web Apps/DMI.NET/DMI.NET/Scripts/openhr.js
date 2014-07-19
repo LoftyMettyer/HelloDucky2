@@ -258,13 +258,7 @@
 
 		},
 
-				//postForm = function (form) {
-
-				//	var url = form.attr("action"),
-				//		data = form.serialize();
-
-
-		postData = function (url, jsonData) {
+		postData = function (url, jsonData, followOnFunctionName) {
 
 			$.ajax({
 				url: url,
@@ -273,6 +267,7 @@
 				data: jsonData,
 
 				success: function (html) {
+
 					try {
 						var jsonResponse = $.parseJSON(html);
 						if (jsonResponse.ErrorMessage.length > 0) {
@@ -281,6 +276,8 @@
 						}
 					} catch (e) {
 					}
+
+					if (followOnFunctionName) followOnFunctionName()
 
 					try {
 						if ((html.ErrorMessage != null) && (html.ErrorMessage != undefined) && (html.ErrorMessage != "undefined")) {

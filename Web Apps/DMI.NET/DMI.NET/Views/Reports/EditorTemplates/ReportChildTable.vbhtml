@@ -48,11 +48,8 @@
 			$('#ChildTables').jqGrid('delRowData', $("#ChildTableID").val())
 			var su = jQuery("#ChildTables").jqGrid('addRowData', $("#ChildTableID").val(), datarow);
 
-			// Update available tables
-			loadRelatedTables();
-
 			// Post to server
-			OpenHR.postData("Reports/PostChildTable", datarow)
+			OpenHR.postData("Reports/PostChildTable", datarow, loadAvailableTablesForReport)
 
 			$("#divPopupReportDefinition").dialog("close");
 			$("#divPopupReportDefinition").empty();
