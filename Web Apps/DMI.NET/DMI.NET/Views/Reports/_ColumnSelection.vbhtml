@@ -10,7 +10,7 @@
 <style>
 
 	#columnsAvailable {
-		height: 500px;
+		height: 800px;
 		overflow: auto;
 	}
 
@@ -41,42 +41,61 @@
 	<br />
 	<input type="button" id="btnColumnAddAll" value="Add All" onclick="addAllColumnsToSelected();" />
 	<br />
-	<input type="button" id="btnColumnRemove" value="Remove" onclick="removeSelectedColumn();" />
 	<br />
-	<input type="button" id="btnColumnRemoveAll" value="Remove All" onclick="removeAllSelectedColumns();" />
+	<input type="button" id="btnColumnRemove" value="Remove" disabled onclick="removeSelectedColumn();" />
 	<br />
-	<input type="button" id="btnColumnMoveUp" value="Move Up" onclick="moveUpSelectedColumn();" />
+	<input type="button" id="btnColumnRemoveAll" value="Remove All" disabled onclick="removeAllSelectedColumns();" />
 	<br />
-	<input type="button" id="btnColumnMoveDown" value="Move Down" onclick="moveDownSelectedColumn();" />
+	<br />
+	<div class="customReportsOnly">
+		<input type="button" id="btnColumnMoveUp" value="Move Up" disabled onclick="moveSelectedColumn('up');" />
+		<br />
+		<input type="button" id="btnColumnMoveDown" value="Move Down" disabled onclick="moveSelectedColumn('down');" />
+	</div>
 </div>
 
 <div id="columnsSelected" style="float:left">
 	<table id="SelectedColumns" class="scroll" cellpadding="0" cellspacing="0"></table>
 	<br/>
 
-	<div id="columnsSelectedDrilldown">
-		Heading:
-		<input type='text' id="SelectedColumnHeading" onblur="updateColumnsSelectedGrid();" />
+	<div>
+		<div class="customReportsOnly">
+			<label for="SelectedColumnHeading">Heading:</label>
+			<input type='text' id="SelectedColumnHeading" onchange="updateColumnsSelectedGrid();" />
+		</div>
 		<br />
 
 		Size:
-		<input type='text' id="SelectedColumnSize" onblur="updateColumnsSelectedGrid();" />
-		Decimals:
-		<input type='text' id="SelectedColumnDecimals" onblur="updateColumnsSelectedGrid();" />
+		<input type='text' id="SelectedColumnSize" onchange="updateColumnsSelectedGrid();" />
+
+		<div class="decimalsOnly">
+			<label for="SelectedColumnDecimals">Decimals:</label>
+			<input type='text' id="SelectedColumnDecimals" onchange="updateColumnsSelectedGrid();" />
+		</div>
 		<br />
 
-		Average:
-		<input type='checkbox' id="SelectedColumnIsAverage" onblur="updateColumnsSelectedGrid();" />
-		Count:
-		<input type='checkbox' id="SelectedColumnIsCount" onblur="updateColumnsSelectedGrid();" />
-		Total:
-		<input type='checkbox' id="SelectedColumnIsTotal" onblur="updateColumnsSelectedGrid();" />
-		<br />
+		<div class="customReportsOnly">
+			<div class="numericOnly">
+				<label for="SelectedColumnIsAverage">Average:</label>
+				<input type="checkbox" id="SelectedColumnIsAverage" onchange="updateColumnsSelectedGrid();" />
 
-		Hidden:
-		<input type='checkbox' id="SelectedColumnIsHidden" onblur="updateColumnsSelectedGrid();" />
-		Group With Next:
-		<input type='checkbox' id="SelectedColumnIsGroupWithNext" onblur="updateColumnsSelectedGrid();" />
+				<label for="SelectedColumnIsCount">Count:</label>
+				<input type='checkbox' id="SelectedColumnIsCount" onchange="updateColumnsSelectedGrid();" />
+
+				<label for="SelectedColumnIsTotal">Total:</label>
+				<input type='checkbox' id="SelectedColumnIsTotal" onchange="updateColumnsSelectedGrid();" />
+			</div>
+			<br />
+
+			<label for="SelectedColumnIsHidden">Hidden:</label>
+			<input type='checkbox' id="SelectedColumnIsHidden" onchange="updateColumnsSelectedGrid();" />
+
+			<div class="numericOnly">
+				<label for="SelectedColumnIsGroupWithNext">Group With Next:</label>
+				<input type='checkbox' id="SelectedColumnIsGroupWithNext" onchange="updateColumnsSelectedGrid();" />
+			</div>
+
+		</div>
 	</div>
 
 </div>
@@ -86,13 +105,47 @@
 
   <script type="text/javascript">
 
-		function moveUpSelectedColumn() {
+	function moveSelectedColumn(direction) {
 
+		var selectedRow;
+
+		if ($('#SelectedColumns').getGridParam('selrow')) {
+			var ids = $('#SelectedColumns').getDataIDs();
+				var temp = 0;
+				var currRow = $('#SelectedColumns').getGridParam('selrow');
+				if (direction === 'up' && currRow > 1) {
+					var r1 = $('#SelectedColumns').getRowData(currRow - 1);
+					var r2 = $('#SelectedColumns').getRowData(currRow);
+					$('#SelectedColumns').delRowData(currRow - 1);
+					$('#SelectedColumns').delRowData(currRow);
+					temp = r1.Sequence;
+					r1.Sequence = r2.Sequence;
+					r2.Sequence = temp;
+					$('#SelectedColumns').addRowData(r1.Sequence, r1);
+					$('#SelectedColumns').addRowData(r2.Sequence, r2);
+					selectedRow = temp;
+				}
+				var recordCount = jQuery("#SelectedColumns").getGridParam("records");
+				if (direction === 'down' && currRow < recordCount) {
+					var r1 = $('#SelectedColumns').getRowData(currRow);
+					var r2 = $('#SelectedColumns').getRowData(parseInt(currRow) + 1);
+					$('#SelectedColumns').delRowData(currRow);
+					$('#SelectedColumns').delRowData(parseInt(currRow) + 1);
+					temp = r1.Sequence;
+					r1.Sequence = r2.Sequence;
+					r2.Sequence = temp;
+					$('#SelectedColumns').addRowData(r1.Sequence, r1);
+					$('#SelectedColumns').addRowData(r2.Sequence, r2);
+					selectedRow = r2.Sequence;
+					//  $('#list4').setGridParam({sortname:'id'}).trigger('reloadGrid');
+				}
+				// Sort the table   
+				$('#SelectedColumns').setGridParam({ sortname: 'Sequence' }).trigger('reloadGrid');
+				$('#SelectedColumns').jqGrid("setSelection", selectedRow);
+
+			}
 		}
 
-		function moveDownSelectedColumn() {
-
-		}
 
 		function toggleColumnsCalculations(type) {
 		}
@@ -115,6 +168,8 @@
 			datarow.IsGroupWithNext = false;
 	
 			$("#SelectedColumns").jqGrid('addRowData', datarow.ID, datarow);
+			$('#SelectedColumns').jqGrid("setSelection", rowID);
+
 			$("#AvailableColumns").jqGrid('delRowData', rowID);
 
 		}
@@ -180,7 +235,7 @@
     		width: 400,
     		sortname: 'Name',
     		sortorder: "desc",
-    		rowNum: '',
+    		rowNum: 10000,
     		ondblClickRow: function (rowid) {
     			addColumnToSelected(rowid);
     		}
@@ -220,15 +275,15 @@
     			total: "total", //total pages for the query
     			records: "records", //total number of records
     			repeatitems: false,
-    			id: "ID" //index of the column with the PK in it
+    			id: "Sequence" //index of the column with the PK in it
     		},
     		colNames: ['ID', 'IsExpression',	'Name',	'Sequence',	'Heading',	'DataType',
-    							'Size',	'Decimals',	'IsAverage',	'IsCount',	'IsTotal',	'IsHidden',	'IsGroupWithNext'],
+    							'Size', 'Decimals', 'IsAverage', 'IsCount', 'IsTotal', 'IsHidden', 'IsGroupWithNext'],
     		colModel: [
 					{ name: 'ID', index: 'ID', hidden: true },
 					{ name: 'IsExpression', index: 'IsExpression', hidden: true },
-					{ name: 'Name', index: 'Name' },
-					{ name: 'Sequence', index: 'Sequence', hidden: false },
+					{ name: 'Name', index: 'Name', sortable: false},
+					{ name: 'Sequence', index: 'Sequence', hidden: true },
 					{ name: 'Heading', index: 'Heading', hidden: true },
 					{ name: 'DataType', index: 'DataType', hidden: true },
 					{ name: 'Size', index: 'Size', hidden: true },
@@ -242,20 +297,45 @@
     		width: 400,
     		sortname: 'Sequence',
     		sortorder: "asc",
-    		rowNum: '',
+    		rowNum: 10000,
+    		beforeSelectRow: function(id) {
+    			updateColumnsSelectedGrid();
+    			return true;
+    		},
     		onSelectRow: function (id) {
 
     			var rowId = $("#SelectedColumns").jqGrid('getGridParam', 'selrow');
     			var dataRow = $("#SelectedColumns").getRowData(rowId)
+    			var allRows = $("#SelectedColumns")[0].rows;
+
+    			var isTopRow = (rowId == allRows[1].id);
+    			var isBottomRow = (rowId == allRows[allRows.length - 1].id);
+    			var isNumeric = (dataRow.DataType == '2' || dataRow.DataType == '4');
+
+    			$(".numericOnly :input").attr("disabled", !isNumeric);
+
+    			if (isNumeric) {
+    				$(".numericOnly").css("color", "#000000");
+    			} else {
+    				$(".numericOnly").css("color", "#A59393");
+    			}
+
 
     			$("#SelectedColumnHeading").val(dataRow.Heading);
+
     			$("#SelectedColumnSize").val(dataRow.Size);
     			$("#SelectedColumnDecimals").val(dataRow.Decimals);
-    			$('#SelectedColumnIsAverage').prop('checked', JSON.parse(dataRow.IsAverage))
-    			$('#SelectedColumnIsCount').prop('checked', JSON.parse(dataRow.IsCount))
-    			$('#SelectedColumnIsTotal').prop('checked', JSON.parse(dataRow.IsTotal))
-    			$('#SelectedColumnIsHidden').prop('checked', JSON.parse(dataRow.IsHidden))
-    			$('#SelectedColumnIsGroupWithNext').prop('checked', JSON.parse(dataRow.IsGroupWithNext))
+    			$('#SelectedColumnIsAverage').prop('checked', JSON.parse(dataRow.IsAverage));
+    			$('#SelectedColumnIsCount').prop('checked', JSON.parse(dataRow.IsCount));
+    			$('#SelectedColumnIsTotal').prop('checked', JSON.parse(dataRow.IsTotal));
+    			$('#SelectedColumnIsHidden').prop('checked', JSON.parse(dataRow.IsHidden));
+    			$('#SelectedColumnIsGroupWithNext').prop('checked', JSON.parse(dataRow.IsGroupWithNext));
+
+    			// Enable / Disable relevant buttons
+    			button_disable($("#btnColumnRemove")[0], false);
+    			button_disable($("#btnColumnRemoveAll")[0], false);
+    			button_disable($("#btnColumnMoveUp")[0], isTopRow);
+    			button_disable($("#btnColumnMoveDown")[0], isBottomRow);
 
     		},
     		gridComplete: function () {
@@ -266,14 +346,17 @@
     		}
     	});
 
+    	$("#SelectedColumns").jqGrid('sortableRows');
 
 
     }
 
-
-
 		// Initialise
     $(function () {
+
+    	if ('@Model.ReportType' == '@UtilityType.utlMailMerge') {
+    		$(".customReportsOnly").hide();
+    	}
 
     	attachGridToSelectedColumns();
 
