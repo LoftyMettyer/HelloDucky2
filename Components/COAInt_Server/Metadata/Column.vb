@@ -16,7 +16,7 @@ Namespace Metadata
 
 		Public ReadOnly Property IsVisible As Boolean
 			Get
-				Return Name <> "ID"
+				Return Name <> "ID" And Not Name.StartsWith("ID_")
 			End Get
 		End Property
 

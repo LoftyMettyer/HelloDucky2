@@ -11,7 +11,6 @@ Namespace Classes
 		Public Property ID As Integer Implements IJsonSerialize.ID
 		Public Property IsExpression As Boolean
 		Public Property Name As String
-		Public Property CustomReportId As Integer
 		Public Property Sequence As Integer
 
 		<ExcludeChar("/,.!@#$%")>
@@ -26,6 +25,11 @@ Namespace Classes
 		Public Property IsHidden As Boolean
 		Public Property IsGroupWithNext As Boolean
 
+		Public ReadOnly Property IsNumeric As Boolean
+			Get
+				Return DataType = SQLDataType.sqlInteger Or DataType = SQLDataType.sqlNumeric
+			End Get
+		End Property
 
 	End Class
 End Namespace

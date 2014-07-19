@@ -15,7 +15,6 @@ Namespace ViewModels.Reports
 		Public Property DisplayTableSelection As Boolean
 
 		Public Property BaseTableID As Integer
-		Public Property Selected As New Collection(Of ReportColumnItem)
 		Public Property SelectedTableID As Integer
 
 		Public Property AvailableTables As New List(Of ReportTableItem)

@@ -595,11 +595,15 @@ function menu_MenuClick(sTool) {
 	//--------------------------CUSTOM REPORT NEW/EDIT/COPY-------------------------------//
 	if (sToolName == 'mnutoolSaveReport') {
 		try {
-			
+
 			// Related Tables
 			var gridData = jQuery("#ChildTables").getRowData();
 			var postData = JSON.stringify(gridData);
 			$('#txtCTAAS').val(postData);
+
+			// Columns selected
+			gridData = $("#SelectedColumns").getRowData();
+			$('#txtCSAAS').val(JSON.stringify(gridData));
 
 			// Calendar Events
 			gridData = $("#CalendarEvents").getRowData();

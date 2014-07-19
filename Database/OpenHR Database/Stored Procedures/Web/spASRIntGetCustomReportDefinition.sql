@@ -409,14 +409,14 @@ BEGIN
 
 	-- Get the definition columns
 	SELECT 'N' AS [AccessHidden],
-		ASRSysCustomReportsDetails.type,
+		0 AS [IsExpression],
 		ASRSysColumns.tableID,
 		ASRSysCustomReportsDetails.colExprID AS [id],
 		convert(varchar(MAX), ASRSysTables.tableName + '.' + ASRSysColumns.columnName) AS [Name],
 		ASRSysCustomReportsDetails.size AS [size],
 		ASRSysCustomReportsDetails.dp AS [decimals],
-		ISNULL(ASRSysCustomReportsDetails.[isNumeric], 0) AS [IsNumeric],
 		ASRSysCustomReportsDetails.heading AS Heading,
+		ASRSysColumns.DataType,
 		ISNULL(ASRSysCustomReportsDetails.avge, 0) AS IsAverage,
 		ISNULL(ASRSysCustomReportsDetails.cnt, 0) AS IsCount,
 		ISNULL(ASRSysCustomReportsDetails.tot, 0) AS IsTotal,
@@ -433,14 +433,14 @@ BEGIN
 			WHEN ASRSysExpressions.access = 'HD' THEN 'Y'
 			ELSE 'N'
 		END,
-		ASRSysCustomReportsDetails.type,
+		1 AS [IsExpression],
 		ASRSysExpressions.tableID,
 		ASRSysCustomReportsDetails.colExprID,
 		ASRSysTables.TableName  + ' Calc> ' + replace(ASRSysExpressions.name, '_', ' ') AS [Heading],
 		ASRSysCustomReportsDetails.size,
 		ASRSysCustomReportsDetails.dp,
-		ISNULL(ASRSysCustomReportsDetails.[isNumeric], 0) AS [IsNumeric],
 		ASRSysCustomReportsDetails.heading,
+		0 AS [DataType],
 		ISNULL(ASRSysCustomReportsDetails.avge, 0) AS IsAverage,
 		ISNULL(ASRSysCustomReportsDetails.cnt, 0) AS IsCount,
 		ISNULL(ASRSysCustomReportsDetails.tot, 0) AS IsTotal,

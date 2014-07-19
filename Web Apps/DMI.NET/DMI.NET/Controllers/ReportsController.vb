@@ -71,6 +71,10 @@ Namespace Controllers
 
 			Dim deserializer = New JavaScriptSerializer()
 
+			If objModel.ColumnsAsString.Length > 0 Then
+				objModel.Columns = deserializer.Deserialize(Of List(Of ReportColumnItem))(objModel.ColumnsAsString)
+			End If
+
 			If objModel.ChildTablesString.Length > 0 Then
 				objModel.ChildTables = deserializer.Deserialize(Of Collection(Of ChildTableViewModel))(objModel.ChildTablesString)
 			End If
@@ -122,6 +126,12 @@ Namespace Controllers
 
 		<HttpPost, ValidateInput(False)>
 	 Function util_def_mailmerge(objModel As MailMergeModel) As ActionResult
+
+			Dim deserializer = New JavaScriptSerializer()
+
+			If objModel.ColumnsAsString.Length > 0 Then
+				objModel.Columns = deserializer.Deserialize(Of Collection(Of ReportColumnItem))(objModel.ColumnsAsString)
+			End If
 
 			If ModelState.IsValid Then
 				objReportRepository.SaveReportDefinition(objModel)

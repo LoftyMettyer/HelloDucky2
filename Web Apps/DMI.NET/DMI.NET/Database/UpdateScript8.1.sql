@@ -298,7 +298,9 @@ BEGIN
 	WHERE MailMergeID = @piReportID;		
 
 	-- Columns
-	SELECT ASRSysMailMergeColumns.[type],
+	SELECT ASRSysMailMergeColumns.ID,
+		0 AS [IsExpression],
+		0 AS [accesshidden],
 		ASRSysColumns.tableID,
 		ASRSysMailMergeColumns.columnID,
 		ASRSysColumns.columnName AS [name], 
@@ -306,23 +308,35 @@ BEGIN
 		ASRSysColumns.DataType,
 		ASRSysMailMergeColumns.size,
 		ASRSysMailMergeColumns.decimals,
-		CASE WHEN ASRSysColumns.DataType = 2 or ASRSysColumns.DataType = 4 THEN '1' ELSE '0' END AS [isnumeric],		
+		'' AS Heading,
+		0 AS IsAverage,
+		0 AS IsCount,
+		0 AS IsTotal,
+		0 AS IsHidden,
+		0 AS IsGroupWithNext,
 		ASRSysMailMergeColumns.SortOrderSequence AS [sequence]
 	FROM ASRSysMailMergeColumns		
 	INNER JOIN ASRSysColumns ON ASRSysMailMergeColumns.columnID = ASRSysColumns.columnId		
 	INNER JOIN ASRSysTables ON ASRSysColumns.tableID = ASRSysTables.tableID		
 	WHERE ASRSysMailMergeColumns.MailMergeID = @piReportID		
-		AND ASRSysMailMergeColumns.type = 'C'		
-
-	-- Expressions
-	SELECT CASE WHEN ASRSysExpressions.access = 'HD' THEN 1 ELSE 0 END AS [ishidden],		
-		ASRSysMailMergeColumns.[type],
+		AND ASRSysMailMergeColumns.type = 'C'
+	UNION
+	SELECT ASRSysMailMergeColumns.ID,
+		1 AS [IsExpression],
+		CASE WHEN ASRSysExpressions.access = 'HD' THEN 1 ELSE 0 END AS [accesshidden],		
 		ASRSysExpressions.tableID,
 		ASRSysMailMergeColumns.columnID,
 		ASRSysExpressions.name AS [name],
 		convert(varchar(MAX), '<Calc> ' + replace(ASRSysExpressions.name, '_', ' ')) AS [heading],
+		0 AS DataType,
 		ASRSysMailMergeColumns.size,
 		ASRSysMailMergeColumns.decimals,
+		'' AS Heading,
+		0 AS IsAverage,
+		0 AS IsCount,
+		0 AS IsTotal,
+		0 AS IsHidden,
+		0 AS IsGroupWithNext,
 		ASRSysMailMergeColumns.SortOrderSequence AS [sequence]
 	FROM ASRSysMailMergeColumns		
 	INNER JOIN ASRSysExpressions ON ASRSysMailMergeColumns.columnID = ASRSysExpressions.exprID		
@@ -951,14 +965,14 @@ BEGIN
 
 	-- Get the definition columns
 	SELECT 'N' AS [AccessHidden],
-		ASRSysCustomReportsDetails.type,
+		0 AS [IsExpression],
 		ASRSysColumns.tableID,
 		ASRSysCustomReportsDetails.colExprID AS [id],
 		convert(varchar(MAX), ASRSysTables.tableName + '.' + ASRSysColumns.columnName) AS [Name],
 		ASRSysCustomReportsDetails.size AS [size],
 		ASRSysCustomReportsDetails.dp AS [decimals],
-		ISNULL(ASRSysCustomReportsDetails.[isNumeric], 0) AS [IsNumeric],
 		ASRSysCustomReportsDetails.heading AS Heading,
+		ASRSysColumns.DataType,
 		ISNULL(ASRSysCustomReportsDetails.avge, 0) AS IsAverage,
 		ISNULL(ASRSysCustomReportsDetails.cnt, 0) AS IsCount,
 		ISNULL(ASRSysCustomReportsDetails.tot, 0) AS IsTotal,
@@ -975,14 +989,14 @@ BEGIN
 			WHEN ASRSysExpressions.access = 'HD' THEN 'Y'
 			ELSE 'N'
 		END,
-		ASRSysCustomReportsDetails.type,
+		1 AS [IsExpression],
 		ASRSysExpressions.tableID,
 		ASRSysCustomReportsDetails.colExprID,
 		ASRSysTables.TableName  + ' Calc> ' + replace(ASRSysExpressions.name, '_', ' ') AS [Heading],
 		ASRSysCustomReportsDetails.size,
 		ASRSysCustomReportsDetails.dp,
-		ISNULL(ASRSysCustomReportsDetails.[isNumeric], 0) AS [IsNumeric],
 		ASRSysCustomReportsDetails.heading,
+		0 AS [DataType],
 		ISNULL(ASRSysCustomReportsDetails.avge, 0) AS IsAverage,
 		ISNULL(ASRSysCustomReportsDetails.cnt, 0) AS IsCount,
 		ISNULL(ASRSysCustomReportsDetails.tot, 0) AS IsTotal,

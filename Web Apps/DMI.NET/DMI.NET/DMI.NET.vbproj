@@ -212,7 +212,6 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Helpers\AccessGrid.vb" />
-    <Compile Include="Helpers\AvailableReportColumns.vb" />
     <Compile Include="Helpers\ButtonHelper.vb" />
     <Compile Include="Helpers\DropdownHelper.vb" />
     <Compile Include="Helpers\DisabledIf.vb" />

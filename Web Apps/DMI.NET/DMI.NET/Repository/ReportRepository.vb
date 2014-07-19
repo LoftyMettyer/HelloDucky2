@@ -80,31 +80,8 @@ Namespace Repository
 
 				End If
 
-				objModel.Columns.BaseTableID = objModel.BaseTableID
-				objModel.Columns.DisplayTableSelection = True
-				objModel.Columns.ReportID = objModel.ID
-
-				'' todo replace with dapper
-				objModel.Columns.Selected = New Collection(Of ReportColumnItem)
-				objModel.Columns.AvailableTables = GetTables()
-
-				For Each objRow As DataRow In dsDefinition.Tables(1).Rows
-					Dim objItem As New ReportColumnItem() With {
-						.CustomReportId = ID,
-						.Heading = objRow("Heading").ToString,
-						.ID = CInt(objRow("id")),
-						.Name = objRow("Name").ToString,
-						.Sequence = CInt(objRow("Sequence")),
-						.Size = CInt(objRow("Size")),
-						.Decimals = CInt(objRow("Decimals")),
-						.IsAverage = CBool(objRow("IsAverage")),
-						.IsCount = CBool(objRow("IsCount")),
-						.IsTotal = CBool(objRow("IsTotal")),
-						.IsHidden = CBool(objRow("IsHidden")),
-						.IsGroupWithNext = CBool(objRow("IsGroupWithNext"))}
-					objModel.Columns.Selected.Add(objItem)
-
-				Next
+				' Selected columns
+				PopulateColumns(objModel, dsDefinition.Tables(1))
 
 				' Repetition
 				For Each objRow As DataRow In dsDefinition.Tables(3).Rows
@@ -162,39 +139,11 @@ Namespace Repository
 			PopulateDefintion(objModel, dsDefinition.Tables(0))
 			objModel.GroupAccess = GetUtilityAccess(UtilityType.utlMailMerge, ID, bIsCopy)
 
-			' Columns
-			For Each objRow As DataRow In dsDefinition.Tables(1).Rows
-				objItem = New ReportColumnItem
-				objItem.IsExpression = False
-				objItem.IsHidden = False
-				objItem.ID = CInt(objRow("columnId"))
-				objItem.Name = objRow("name").ToString
-				objItem.Heading = objRow("heading").ToString
-				objItem.DataType = CType(objRow("datatype"), SQLDataType)
-				objItem.Size = CInt(objRow("size"))
-				objItem.Decimals = CInt(objRow("decimals"))
-				objModel.Columns.Selected.Add(objItem)
-			Next
+			' Selected columns and expressions
+			PopulateColumns(objModel, dsDefinition.Tables(1))
 
-			' Eexpressions
-			For Each objRow As DataRow In dsDefinition.Tables(2).Rows
-				objItem = New ReportColumnItem
-				objItem.IsExpression = True
-				objItem.IsHidden = CBool(objRow("ishidden"))
-				objItem.ID = CInt(objRow("columnId"))
-				objItem.Name = objRow("name").ToString
-				objItem.Heading = objRow("heading").ToString
-				objItem.DataType = SQLDataType.sqlUnknown
-				objItem.Size = CInt(objRow("size"))
-				objItem.Decimals = CInt(objRow("decimals"))
-				objModel.Columns.Selected.Add(objItem)
-			Next
-
-			' Orders (expressions)
-			PopulateSortOrder(objModel, dsDefinition.Tables(3))
-
-			objModel.Columns.BaseTableID = objModel.BaseTableID
-			objModel.Columns.ReportID = objModel.ID
+			' Orders
+			PopulateSortOrder(objModel, dsDefinition.Tables(2))
 
 			If dsDefinition.Tables(0).Rows.Count = 1 Then
 
@@ -440,40 +389,47 @@ Namespace Repository
 			Dim psJobsToHide As String = ""	' Request.Form("txtSend_jobsToHide")
 			Dim psJobsToHideGroups As String = ""	' Request.Form("txtSend_jobsToHideGroups")}
 
-			Dim sAccess = UtilityAccessAsString(objModel.GroupAccess)
-			Dim sColumns = ReportColumnsAsString(objModel.Columns.Selected, objModel.SortOrders)
+			Try
 
-			_objDataAccess.ExecuteSP("sp_ASRIntSaveMailMerge" _
-				, New SqlParameter("@psName", SqlDbType.VarChar, 255) With {.Value = objModel.Name} _
-				, New SqlParameter("@psDescription", SqlDbType.VarChar, -1) With {.Value = objModel.Description} _
-				, New SqlParameter("@piTableID", SqlDbType.Int) With {.Value = objModel.BaseTableID} _
-				, New SqlParameter("@piSelection", SqlDbType.Int) With {.Value = objModel.SelectionType} _
-				, New SqlParameter("@piPicklistID", SqlDbType.Int) With {.Value = objModel.PicklistID} _
-				, New SqlParameter("@piFilterID", SqlDbType.Int) With {.Value = objModel.FilterID} _
-				, New SqlParameter("@piOutputFormat", SqlDbType.Int) With {.Value = objModel.OutputFormat} _
-				, New SqlParameter("@pfOutputSave", SqlDbType.Bit) With {.Value = True} _
-				, New SqlParameter("@psOutputFilename", SqlDbType.VarChar, -1) With {.Value = objModel.Filename} _
-				, New SqlParameter("@piEmailAddrID", SqlDbType.Int) With {.Value = objModel.EmailGroupID} _
-				, New SqlParameter("@psEmailSubject", SqlDbType.VarChar, -1) With {.Value = objModel.EmailSubject} _
-				, New SqlParameter("@psTemplateFileName", SqlDbType.VarChar, -1) With {.Value = objModel.TemplateFileName} _
-				, New SqlParameter("@pfOutputScreen", SqlDbType.Bit) With {.Value = objModel.DisplayOutputOnScreen} _
-				, New SqlParameter("@psUserName", SqlDbType.VarChar, 255) With {.Value = objModel.Owner} _
-				, New SqlParameter("@pfEmailAsAttachment", SqlDbType.Bit) With {.Value = objModel.EmailAsAttachment} _
-				, New SqlParameter("@psEmailAttachmentName", SqlDbType.VarChar, -1) With {.Value = objModel.EmailAttachmentName} _
-				, New SqlParameter("@pfSuppressBlanks", SqlDbType.Bit) With {.Value = objModel.SuppressBlankLines} _
-				, New SqlParameter("@pfPauseBeforeMerge", SqlDbType.Bit) With {.Value = objModel.PauseBeforeMerge} _
-				, New SqlParameter("@pfOutputPrinter", SqlDbType.Bit) With {.Value = objModel.SendToPrinter} _
-				, New SqlParameter("@psOutputPrinterName", SqlDbType.VarChar, 255) With {.Value = objModel.PrinterName} _
-				, New SqlParameter("@piDocumentMapID", SqlDbType.Int) With {.Value = 0} _
-				, New SqlParameter("@pfManualDocManHeader", SqlDbType.Bit) With {.Value = False} _
-				, New SqlParameter("@psAccess", SqlDbType.VarChar, -1) With {.Value = sAccess} _
-				, New SqlParameter("@psJobsToHide", SqlDbType.VarChar, -1) With {.Value = ""} _
-				, New SqlParameter("@psJobsToHideGroups", SqlDbType.VarChar, -1) With {.Value = ""} _
-				, New SqlParameter("@psColumns", SqlDbType.VarChar, -1) With {.Value = sColumns} _
-				, New SqlParameter("@psColumns2", SqlDbType.VarChar, -1) With {.Value = ""} _
-			, prmID)
+				Dim sAccess = UtilityAccessAsString(objModel.GroupAccess)
+				Dim sColumns = MailMergeColumnsAsString(objModel.Columns, objModel.SortOrders)
 
-			_mailmerges.Remove(objModel)
+				_objDataAccess.ExecuteSP("sp_ASRIntSaveMailMerge" _
+					, New SqlParameter("@psName", SqlDbType.VarChar, 255) With {.Value = objModel.Name} _
+					, New SqlParameter("@psDescription", SqlDbType.VarChar, -1) With {.Value = objModel.Description} _
+					, New SqlParameter("@piTableID", SqlDbType.Int) With {.Value = objModel.BaseTableID} _
+					, New SqlParameter("@piSelection", SqlDbType.Int) With {.Value = objModel.SelectionType} _
+					, New SqlParameter("@piPicklistID", SqlDbType.Int) With {.Value = objModel.PicklistID} _
+					, New SqlParameter("@piFilterID", SqlDbType.Int) With {.Value = objModel.FilterID} _
+					, New SqlParameter("@piOutputFormat", SqlDbType.Int) With {.Value = objModel.OutputFormat} _
+					, New SqlParameter("@pfOutputSave", SqlDbType.Bit) With {.Value = True} _
+					, New SqlParameter("@psOutputFilename", SqlDbType.VarChar, -1) With {.Value = objModel.Filename} _
+					, New SqlParameter("@piEmailAddrID", SqlDbType.Int) With {.Value = objModel.EmailGroupID} _
+					, New SqlParameter("@psEmailSubject", SqlDbType.VarChar, -1) With {.Value = objModel.EmailSubject} _
+					, New SqlParameter("@psTemplateFileName", SqlDbType.VarChar, -1) With {.Value = objModel.TemplateFileName} _
+					, New SqlParameter("@pfOutputScreen", SqlDbType.Bit) With {.Value = objModel.DisplayOutputOnScreen} _
+					, New SqlParameter("@psUserName", SqlDbType.VarChar, 255) With {.Value = objModel.Owner} _
+					, New SqlParameter("@pfEmailAsAttachment", SqlDbType.Bit) With {.Value = objModel.EmailAsAttachment} _
+					, New SqlParameter("@psEmailAttachmentName", SqlDbType.VarChar, -1) With {.Value = objModel.EmailAttachmentName} _
+					, New SqlParameter("@pfSuppressBlanks", SqlDbType.Bit) With {.Value = objModel.SuppressBlankLines} _
+					, New SqlParameter("@pfPauseBeforeMerge", SqlDbType.Bit) With {.Value = objModel.PauseBeforeMerge} _
+					, New SqlParameter("@pfOutputPrinter", SqlDbType.Bit) With {.Value = objModel.SendToPrinter} _
+					, New SqlParameter("@psOutputPrinterName", SqlDbType.VarChar, 255) With {.Value = objModel.PrinterName} _
+					, New SqlParameter("@piDocumentMapID", SqlDbType.Int) With {.Value = 0} _
+					, New SqlParameter("@pfManualDocManHeader", SqlDbType.Bit) With {.Value = False} _
+					, New SqlParameter("@psAccess", SqlDbType.VarChar, -1) With {.Value = sAccess} _
+					, New SqlParameter("@psJobsToHide", SqlDbType.VarChar, -1) With {.Value = ""} _
+					, New SqlParameter("@psJobsToHideGroups", SqlDbType.VarChar, -1) With {.Value = ""} _
+					, New SqlParameter("@psColumns", SqlDbType.VarChar, -1) With {.Value = sColumns} _
+					, New SqlParameter("@psColumns2", SqlDbType.VarChar, -1) With {.Value = ""} _
+				, prmID)
+
+				_mailmerges.Remove(objModel)
+
+			Catch ex As Exception
+				Throw
+
+			End Try
 
 			Return True
 
@@ -544,8 +500,6 @@ Namespace Repository
 
 		Public Function SaveReportDefinition(objModel As CustomReportModel) As Boolean
 
-			_customreports.Remove(objModel.ID)
-
 			Try
 
 				Dim prmID = New SqlParameter("piId", SqlDbType.Int) With {.Direction = ParameterDirection.InputOutput, .Value = objModel.ID}
@@ -553,7 +507,7 @@ Namespace Repository
 				Dim sAccess As String = UtilityAccessAsString(objModel.GroupAccess)
 				Dim sJobsToHide = JobsToHideAsString(objModel.JobsToHide)
 				Dim sJobsToHideGroups As String = "" ' TODO?
-				Dim sColumns = ReportColumnsAsString(objModel.Columns.Selected, objModel.SortOrders)
+				Dim sColumns = CustomReportColumnsAsString(objModel.Columns, objModel.SortOrders)
 				Dim sChildren As String = ReportChildTablesAsString(objModel.ChildTables)
 
 				_objDataAccess.ExecuteSP("sp_ASRIntSaveCustomReport", _
@@ -595,6 +549,8 @@ Namespace Repository
 						prmID,
 						New SqlParameter("pfIgnoreZeros", SqlDbType.Bit) With {.Value = objModel.IgnoreZerosForAggregates})
 
+				_customreports.Remove(objModel.ID)
+
 			Catch ex As Exception
 				Throw
 
@@ -605,8 +561,6 @@ Namespace Repository
 		End Function
 
 		Public Function SaveReportDefinition(objModel As CalendarReportModel) As Boolean
-
-			_calendarreports.Remove(objModel.ID)
 
 			Try
 
@@ -674,6 +628,8 @@ Namespace Repository
 					New SqlParameter("psOrderString", SqlDbType.VarChar, -1) With {.Value = sReportOrder}, _
 					prmID)
 
+				_calendarreports.Remove(objModel.ID)
+
 			Catch ex As Exception
 				Throw
 
@@ -733,7 +689,7 @@ Namespace Repository
 
 		' Old style update of the column selection stuff
 		' could be dapperised, but the rest of our stored procs need updating too as everything has different column names and the IDs are not currently returned.
-		Private Function ReportColumnsAsString(objColumns As Collection(Of ReportColumnItem), objSortColumns As Collection(Of SortOrderViewModel)) As String
+		Private Function MailMergeColumnsAsString(objColumns As Collection(Of ReportColumnItem), objSortColumns As Collection(Of SortOrderViewModel)) As String
 
 			Dim sColumns As String = ""
 			Dim sOrderString As String
@@ -744,19 +700,59 @@ Namespace Repository
 				' this could be improve with some linq or whatever! No panic because the whole function could be tidied up
 				sOrderString = "||0||"
 				For Each objSortItem In objSortColumns
-					If objSortItem.ID = objItem.ID Then
+					If objSortItem.ColumnID = objItem.ID Then
 						sOrderString = "||1||" & IIf(objSortItem.Order = OrderType.Ascending, "ASC", "DESC").ToString & "||"
 					End If
 				Next
 
 				sColumns += String.Format("{0}||{1}||{2}||{3}||{4}||{5}**" _
-																	, iCount, IIf(objItem.IsExpression, "E", "C"), objItem.ID, objItem.Size, objItem.Decimals, sOrderString)
+													, objItem.Sequence, IIf(objItem.IsExpression, "E", "C"), objItem.ID, objItem.Size, objItem.Decimals, sOrderString)
+
 				iCount += 1
 			Next
 
 			Return sColumns
 
 		End Function
+
+		' Old style update of the column selection stuff
+		' could be dapperised, but the rest of our stored procs need updating too as everything has different column names and the IDs are not currently returned.
+		Private Function CustomReportColumnsAsString(objColumns As IEnumerable(Of ReportColumnItem), objSortColumns As Collection(Of SortOrderViewModel)) As String
+
+			Dim sColumns As String = ""
+			Dim sOrderString As String
+
+			Dim iCount As Integer = 1
+			Dim iSortSequence As Integer
+			For Each objItem In objColumns
+
+				' this could be improve with some linq or whatever! No panic because the whole function could be tidied up
+				sOrderString = "||0||"
+				iSortSequence = 1
+				For Each objSortItem In objSortColumns
+					If objSortItem.ColumnID = objItem.ID Then
+						sOrderString = String.Format("{0}||{1}||{2}||{3}||{4}||{5}" _
+							, iSortSequence, IIf(objSortItem.Order = OrderType.Ascending, "ASC", "DESC").ToString _
+							, If(objSortItem.BreakOnChange, 1, 0), If(objSortItem.PageOnChange, 1, 0) _
+							, If(objSortItem.ValueOnChange, 1, 0), If(objSortItem.SuppressRepeated, 1, 0))
+
+						iSortSequence += 1
+						Exit For
+					End If
+				Next
+
+				sColumns += String.Format("{0}||{1}||{2}||{3}||{4}||{5}||{6}||{7}||{8}||{9}||{10}||{11}||{12}||{13}**" _
+													, iCount, IIf(objItem.IsExpression, "E", "C"), objItem.ID, objItem.Heading, objItem.Size, objItem.Decimals _
+													, If(objItem.IsNumeric, 1, 0), If(objItem.IsAverage, 1, 0), If(objItem.IsCount, 1, 0) _
+													, If(objItem.IsTotal, 1, 0), If(objItem.IsHidden, 1, 0), If(objItem.IsGroupWithNext, 1, 0) _
+													, sOrderString, "0")
+				iCount += 1
+			Next
+
+			Return sColumns
+
+		End Function
+
 
 		' Old style update of the utility access grid
 		' could be dapperised, but the rest of our stored procs need updating too as everything has different column names and the IDs are not currently returned.
@@ -986,6 +982,41 @@ Namespace Repository
 					outputModel.EmailAttachmentName = row("EmailAttachmentName").ToString()
 
 				End If
+
+			Catch ex As Exception
+				Throw
+
+			End Try
+
+		End Sub
+
+		' can be done with dapper?
+		Private Sub PopulateColumns(outputModel As ReportBaseModel, data As DataTable)
+
+			Try
+
+				outputModel.Columns = New List(Of ReportColumnItem)
+
+				For Each objRow As DataRow In data.Rows
+					Dim objItem As New ReportColumnItem() With {
+						.Heading = objRow("Heading").ToString,
+						.IsExpression = CBool(objRow("IsExpression")),
+						.ID = CInt(objRow("id")),
+						.Name = objRow("Name").ToString,
+						.DataType = CType(objRow("DataType"), SQLDataType),
+						.Sequence = CInt(objRow("Sequence")),
+						.Size = CInt(objRow("Size")),
+						.Decimals = CInt(objRow("Decimals")),
+						.IsAverage = CBool(objRow("IsAverage")),
+						.IsCount = CBool(objRow("IsCount")),
+						.IsTotal = CBool(objRow("IsTotal")),
+						.IsHidden = CBool(objRow("IsHidden")),
+						.IsGroupWithNext = CBool(objRow("IsGroupWithNext"))}
+					outputModel.Columns.Add(objItem)
+
+				Next
+
+				outputModel.Columns = outputModel.Columns.OrderBy(Function(x) x.Sequence).ToList()
 
 			Catch ex As Exception
 				Throw

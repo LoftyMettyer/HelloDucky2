@@ -22,8 +22,8 @@ Namespace Models
 			End Get
 		End Property
 
-		'Public Property Definition As DefinitionViewModel
-		Public Property Columns As New ColumnsViewModel
+		Public Property Columns As New Collection(Of ReportColumnItem)
+		Public Property ColumnsAsString As String
 
 		<DisplayName("Template"), DisplayFormat(ConvertEmptyStringToNull:=False)>
 		Public Property TemplateFileName As String
@@ -69,7 +69,7 @@ Namespace Models
 
 			Dim objItems As New Collection(Of ReportColumnItem)
 
-			For Each objColumn In Columns.Selected
+			For Each objColumn In Columns
 				objItems.Add(objColumn)
 			Next
 

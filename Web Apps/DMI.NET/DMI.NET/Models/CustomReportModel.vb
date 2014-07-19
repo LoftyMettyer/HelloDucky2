@@ -22,8 +22,6 @@ Namespace Models
 
 		Private _baseTable As Integer
 
-		Public Property Columns As New ColumnsViewModel
-
 		Public Property AvailableTables As New Collection(Of ChildTableViewModel)
 
 		Public Property ChildTables As New Collection(Of ChildTableViewModel)
@@ -46,9 +44,8 @@ Namespace Models
 
 			ChildTables = New Collection(Of ChildTableViewModel)
 			BaseTableID = TableID
-			Columns.DisplayTableSelection = True
 			SelectionType = Enums.RecordSelectionType.AllRecords
-			Columns.Selected = New Collection(Of ReportColumnItem)
+			Columns = New List(Of ReportColumnItem)
 			SortOrders = New Collection(Of SortOrderViewModel)
 			Repetition = New Collection(Of ReportRepetition)
 
@@ -90,7 +87,7 @@ Namespace Models
 
 			Dim objItems As New Collection(Of ReportColumnItem)
 
-			For Each objColumn In Columns.Selected
+			For Each objColumn In Columns
 				objItems.Add(objColumn)
 			Next
 

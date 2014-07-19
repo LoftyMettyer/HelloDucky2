@@ -91,7 +91,7 @@ End Code
 
         <div id="report_definition_tab_columns">
           @Code
-						Html.RenderPartial("_ColumnSelection", Model.Columns)
+						Html.RenderPartial("_ColumnSelection", Model)
           End Code
         </div>
 
