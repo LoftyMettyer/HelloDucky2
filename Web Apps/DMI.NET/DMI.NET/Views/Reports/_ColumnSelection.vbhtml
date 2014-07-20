@@ -27,9 +27,9 @@
 	<select name="SelectedTableID" id="SelectedTableID" onchange="getAvailableTableColumnsCalcs();"></select>
 
 	<br />
-	@Html.RadioButton("columnSelectiontype", ColumnSelectionType.Columns, True, New With {.onclick = "toggleColumnsCalculations('column')"})
+	@Html.RadioButton("columnSelectiontype", CInt(ColumnSelectionType.Columns), True, New With {.onclick = "toggleColumnsCalculations('column')"})
 	Columns
-	@Html.RadioButton("columnSelectiontype", ColumnSelectionType.Calculations, True, New With {.onclick = "toggleColumnsCalculations('calc')"})
+	@Html.RadioButton("columnSelectiontype", CInt(ColumnSelectionType.Calculations), False, New With {.onclick = "toggleColumnsCalculations('calc')"})
 	Calculations
 	<br/>
 
@@ -110,6 +110,7 @@
 		}
 
 		function toggleColumnsCalculations(type) {
+			getAvailableTableColumnsCalcs();
 		}
 
 		function addColumnToSelected(rowID) {
@@ -122,7 +123,6 @@
 	
 			datarow.ReportType = '@Model.ReportType';
 			datarow.ReportID = '@Model.ID';
-			datarow.IsExpression = false;
 			datarow.Heading = datarow.Name;
 			datarow.Sequence = $("#SelectedColumns").jqGrid('getGridParam', 'records') + 1;
 			datarow.IsAverage = false;
@@ -167,10 +167,19 @@
 
     function getAvailableTableColumnsCalcs() {
 
+    	var URL;
+
     	$("#AvailableColumns").jqGrid('GridUnload');
 
+    	if ($("#columnSelectiontype:checked").val() == 0) {
+				URL = 'Reports/GetColumnsForTable?TableID=' + $("#SelectedTableID").val();
+    	}
+    	else {
+				URL = 'Reports/GetCalculationsForTable?TableID=' + $("#SelectedTableID").val();
+			}
+
     	$("#AvailableColumns").jqGrid({
-    		url: 'Reports/GetColumnsForTable?TableID=' + $("#SelectedTableID").val(),
+    		url: URL,
     		datatype: 'json',
     		mtype: 'GET',
     		jsonReader: {
@@ -181,9 +190,10 @@
     			repeatitems: false,
     			id: "ID" //index of the column with the PK in it
     		},
-    		colNames: ['ID', 'Name', 'DataType', 'Size', 'Decimals'],
+    		colNames: ['ID', 'IsExpression', 'Name', 'DataType', 'Size', 'Decimals'],
     		colModel: [
 					{ name: 'ID', index: 'ID', hidden: true },
+					{ name: 'IsExpression', index: 'IsExpression3', hidden: true },
 					{ name: 'Name', index: 'Name', width: 40, sortable: false },
     			{ name: 'DataType', index: 'DataType', hidden: true },
 					{ name: 'Size', index: 'Size',  hidden: true },
@@ -238,7 +248,7 @@
     							'Size', 'Decimals', 'IsAverage', 'IsCount', 'IsTotal', 'IsHidden', 'IsGroupWithNext', 'ReportID', 'ReportType'],
     		colModel: [
 					{ name: 'ID', index: 'ID', hidden: true },
-					{ name: 'IsExpression', index: 'IsExpression', hidden: true },
+					{ name: 'IsExpression', index: 'IsExpression2', hidden: true},
 					{ name: 'Name', index: 'Name', sortable: false},
 					{ name: 'Sequence', index: 'Sequence', hidden: true },
 					{ name: 'Heading', index: 'Heading', hidden: true },

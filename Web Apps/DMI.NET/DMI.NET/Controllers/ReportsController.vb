@@ -192,6 +192,15 @@ Namespace Controllers
 		End Function
 
 		<HttpGet>
+		Function GetCalculationsForTable(TableID As Integer) As JsonResult
+
+			Dim objColumns = objReportRepository.GetCalculationsForTable(TableID)
+			Dim results = New With {.total = 1, .page = 1, .records = 0, .rows = objColumns}
+			Return Json(results, JsonRequestBehavior.AllowGet)
+
+		End Function
+
+		<HttpGet>
 		Function GetBaseTables() As JsonResult
 
 			Dim objTables = objReportRepository.GetTables()

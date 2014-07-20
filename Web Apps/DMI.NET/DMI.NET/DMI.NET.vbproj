@@ -1147,7 +1147,8 @@
     <Content Include="Content\themes\vader\jquery.ui.theme.min.css" />
     <Content Include="Content\themes\vader\jquery.ui.tooltip.min.css" />
     <Content Include="Database\UpdateScript8.1.sql" />
-    <Content Include="Scripts\FormScripts\ReportDefinition.js" />
+    <Content Include="Scripts\FormScripts\crosstab.js" />
+    <Content Include="Scripts\FormScripts\customreport.js" />
     <Content Include="Scripts\jquery\jquery.numeric.js" />
     <Content Include="Scripts\FormScripts\OptionDataGrid.js" />
     <Content Include="Scripts\jquery\jquery-ui-i18n.js" />
@@ -1182,7 +1183,6 @@
     <Content Include="Scripts\FormScripts\linksMain.js" />
     <Content Include="Scripts\FormScripts\optionData.js" />
     <Content Include="Scripts\FormScripts\stdrpt_def_absence.js" />
-    <Content Include="Scripts\FormScripts\util_def_mailmerge.js" />
     <Content Include="Scripts\FormScripts\util_def_picklist.js" />
     <None Include="My Project\PublishProfiles\Mark Edwynn machine.pubxml" />
     <None Include="My Project\PublishProfiles\QASRVR01 - OpenHR.pubxml" />
@@ -1381,10 +1381,8 @@
     <Content Include="Content\themes\jqueryui\minified\jquery.ui.tooltip.min.css" />
     <Content Include="Content\ui.jqgrid.css" />
     <Content Include="Scripts\FormScripts\recordEdit.js" />
-    <Content Include="Scripts\FormScripts\Util_Def_CustomReports.js" />
     <Content Include="Scripts\FormScripts\util_def_exprcomponent.js" />
     <Content Include="Scripts\FormScripts\util_def_expression.js" />
-    <Content Include="Scripts\FormScripts\calendarreportdef.js" />
     <Content Include="Scripts\jquery\jquery.maskedinput.js" />
     <Content Include="Scripts\jquery\jquery-1.8.3.js" />
     <Content Include="Scripts\jquery\jsTree\theme\apple\bg.jpg" />
@@ -1571,8 +1569,6 @@
     <Content Include="Scripts\officebar\winkit\Workflow64HOVER.png" />
     <Content Include="Scripts\officebar\winkit\Workflow64NORM.png" />
     <Content Include="Scripts\OpenHR.js" />
-    <Content Include="Scripts\FormScripts\crosstab.js" />
-    <Content Include="Scripts\FormScripts\customreport.js" />
     <Content Include="Scripts\FormScripts\general.js" />
     <Content Include="Scripts\widgetScripts\wdg_oHRHoliday.js" />
     <Content Include="Scripts\widgetScripts\external wdg_oHRDBV.js" />
@@ -1636,9 +1632,6 @@
     <Content Include="Views\Home\tbBulkBookingSelectionMain.aspx" />
     <Content Include="Views\Home\tbStatusPrompt.ascx" />
     <Content Include="Views\Home\util_calcselection.ascx" />
-    <Content Include="Views\Home\util_def_calendarreportdates.ascx" />
-    <Content Include="Views\Home\util_def_calendarreportdates_data.ascx" />
-    <Content Include="Views\Home\util_def_calendarreportdates_main.aspx" />
     <Content Include="Views\Home\util_run_calendarreport_breakdown.ascx" />
     <Content Include="Views\Home\util_run_mailmerge.ascx" />
     <Content Include="Views\Home\util_run_outputoptions.ascx" />

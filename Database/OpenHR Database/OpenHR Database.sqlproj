@@ -136,7 +136,6 @@
     <Build Include="Stored Procedures\Web\sp_ASRIntGetRecord.sql" />
     <Build Include="Stored Procedures\Web\sp_ASRIntGetRecordDescription.sql" />
     <Build Include="Stored Procedures\Web\sp_ASRIntGetRecordEditInfo.sql" />
-    <Build Include="Stored Procedures\Web\sp_ASRIntGetReportColumns.sql" />
     <Build Include="Stored Procedures\Web\spASRIntGetCustomReportDefinition.sql" />
     <Build Include="Stored Procedures\Web\sp_ASRIntGetRootExpressionIDs.sql" />
     <Build Include="Stored Procedures\Web\sp_ASRIntGetScreenControls.sql" />
@@ -194,7 +193,6 @@
     <Build Include="Stored Procedures\Web\spASRIntGetAvailableOrdersInfo.sql" />
     <Build Include="Stored Procedures\Web\spASRIntGetAvailablePicklists.sql" />
     <Build Include="Stored Procedures\Web\spASRIntGetCalendarColours.sql" />
-    <Build Include="Stored Procedures\Web\spASRIntGetCalendarReportColumns.sql" />
     <Build Include="Stored Procedures\Web\spASRIntGetCalendarReportDefinition.sql" />
     <Build Include="Stored Procedures\Web\spASRIntGetColumnsFromTablesAndViews.sql" />
     <Build Include="Stored Procedures\Web\spASRIntGetDefaultOrder.sql" />
@@ -643,6 +641,7 @@
     <Build Include="User Defined Functions\udfASRCreateDate.sql" />
     <Build Include="Stored Procedures\Web\spASRIntGetCrosstabReportData.sql" />
     <Build Include="User Defined Functions\udfsys_FieldChangedSinceLastExport.sql" />
+    <Build Include="Stored Procedures\Web\spASRGetCalculationsForTable.sql" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Stored Procedures\Other\sp_ASR_Bradford_CalculateDurations.sql" />

@@ -798,49 +798,8 @@
 		Response.Write("<input type='hidden' id='txtNewRecID' name='txtNewRecID' value='0'>" & vbCrLf)
 		Response.Write("<input type='hidden' id='txtRecordDescription' name='txtRecordDescription' value=''>" & vbCrLf)
 	End If
-
-	If Session("action") = "LOADREPORTCOLUMNS" Then
-
-		Try
-
-			Dim rstReportColumns = objDataAccess.GetDataTable("sp_ASRIntGetReportColumns", CommandType.StoredProcedure _
-					, New SqlParameter("piBaseTableID", SqlDbType.Int) With {.Value = CleanNumeric(Session("ReportBaseTableID"))} _
-					, New SqlParameter("piParentTable1ID", SqlDbType.Int) With {.Value = CleanNumeric(Session("ReportParent1TableID"))} _
-					, New SqlParameter("piParentTable2ID", SqlDbType.Int) With {.Value = CleanNumeric(Session("ReportParent2TableID"))} _
-					, New SqlParameter("piChildTableID", SqlDbType.VarChar, -1) With {.Value = CleanNumeric(Session("ReportChildTableID"))})
-
-			Dim iLoop = 1
-			For Each objRow As DataRow In rstReportColumns.Rows
-				Response.Write("<input type='hidden' id='txtRepCol_" & iLoop & "' name='txtRepCol_" & iLoop & "' value='" & Replace(objRow("columnDefn").ToString(), """", "&quot;") & "'>" & vbCrLf)
-				iLoop += 1
-			Next
-						
-		Catch ex As Exception
-			sErrorDescription = "Error getting the report columns." & vbCrLf & FormatError(ex.Message)
-
-		End Try
-		
 	
-	ElseIf Session("action") = "LOADCALENDARREPORTCOLUMNS" Then
-		
-		Try
-			
-			Dim rstReportColumns = objDataAccess.GetDataTable("spASRIntGetCalendarReportColumns", CommandType.StoredProcedure _
-					, New SqlParameter("piBaseTableID", SqlDbType.Int) With {.Value = CleanNumeric(Session("ReportBaseTableID"))} _
-					, New SqlParameter("piEventTableID", SqlDbType.Int) With {.Value = CleanNumeric(Session("ReportBaseTableID"))})
-
-			For Each objRow As DataRow In rstReportColumns.Rows
-				Response.Write("<input type='hidden' id='txtRepCol_" & objRow("columnid") & "' name='txtRepCol_" & objRow("columnid") & "' value='" & Replace(objRow("columnName"), """", "&quot;") & "'>" & vbCrLf)
-				Response.Write("<input type='hidden' id='txtRepColDataType_" & objRow("columnid") & "' name='txtRepColDataType_" & objRow("columnid") & "' value='" & Replace(objRow("datatype"), """", "&quot;") & "'>" & vbCrLf)
-			Next
-			
-		Catch ex As Exception
-			sErrorDescription = "Error getting the calendar report columns." & vbCrLf & FormatError(ex.Message)
-
-		End Try
-		
-		
-	ElseIf Session("action") = "LOADEMAILDEFINITIONS" Then
+	If Session("action") = "LOADEMAILDEFINITIONS" Then
 				
 		Try
 			

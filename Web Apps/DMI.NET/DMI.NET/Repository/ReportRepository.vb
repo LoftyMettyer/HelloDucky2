@@ -87,10 +87,12 @@ Namespace Repository
 						Dim objRepeatItem As New ReportRepetition() With {
 								.ID = CInt(objRow("id")),
 								.Name = objRow("Name").ToString,
-								.IsExpression = CBool(objRow("IsExpression")),
+								.IsExpression = False,
 								.IsRepeated = CBool(objRow("IsRepeated"))}
 						objModel.Repetition.Add(objRepeatItem)
 					Next
+
+					'.IsExpression = CBool(objRow("IsExpression")), // TODO
 
 					PopulateSortOrder(objModel, dsDefinition.Tables(2))
 					PopulateOutput(objModel.Output, dsDefinition.Tables(0))
@@ -858,6 +860,7 @@ Namespace Repository
 					objToAdd = New ReportColumnItem With {
 						.ID = objColumn.ID,
 						.Name = objColumn.Name,
+						.IsExpression = False,
 						.Heading = objColumn.Name,
 						.DataType = objColumn.DataType,
 						.Size = objColumn.Size,
@@ -875,6 +878,41 @@ Namespace Repository
 			Return objReturnData
 
 		End Function
+
+		' Improve with Dapper?
+		Public Function GetCalculationsForTable(tableId As Integer) As List(Of ReportColumnItem)
+
+			Dim objReturnData As New List(Of ReportColumnItem)
+
+			Try
+
+				Dim dtDefinition As DataTable = _objDataAccess.GetDataTable("spASRGetCalculationsForTable", CommandType.StoredProcedure _
+				, New SqlParameter("piTableID", SqlDbType.Int) With {.Value = tableId})
+
+				For Each objRow As DataRow In dtDefinition.Rows
+
+					Dim objToAdd = New ReportColumnItem With {
+						.ID = CInt(objRow("ID")),
+						.Name = objRow("Name").ToString,
+						.IsExpression = True,
+						.Heading = "",
+						.DataType = CType(objRow("DataType"), SQLDataType),
+						.Size = CInt(objRow("Size")),
+						.Decimals = CInt(objRow("Decimals"))}
+
+					objReturnData.Add(objToAdd)
+
+				Next
+
+			Catch ex As Exception
+				Throw
+
+			End Try
+
+			Return objReturnData
+
+		End Function
+
 
 		' can be done with dapper?
 		Private Sub PopulateDefintion(outputModel As ReportBaseModel, data As DataTable)

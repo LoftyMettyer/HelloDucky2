@@ -20,6 +20,13 @@ IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[sp_ASRIntG
 	DROP PROCEDURE [dbo].[sp_ASRIntGetReportChilds];
 GO
 
+IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spASRIntGetCalendarReportColumns]') AND xtype in (N'P'))
+	DROP PROCEDURE [dbo].[spASRIntGetCalendarReportColumns];
+GO
+
+IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[sp_ASRIntGetReportColumns]') AND xtype in (N'P'))
+	DROP PROCEDURE [dbo].[sp_ASRIntGetReportColumns];
+GO
 
 
 -- modified (chr(9) to be , AS [xxxx] so that columns come back in non string delimated format, also return types are noiw rw/ro/hd instead of readable text
@@ -1448,8 +1455,29 @@ BEGIN
 	ORDER BY OrderSequence;
 
 END
+GO
 
+IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spASRGetCalculationsForTable]') AND xtype in (N'P'))
+	DROP PROCEDURE [dbo].[spASRGetCalculationsForTable];
+GO
 
+CREATE PROCEDURE dbo.[spASRGetCalculationsForTable](@piTableID as integer)
+AS
+BEGIN
+
+	SET NOCOUNT ON;
+
+	SELECT ExprID AS ID,
+			Name,
+			0 AS DataType,
+			0 AS Size,
+			0 AS Decimals
+	 FROM ASRSysExpressions
+		WHERE type = 10 AND (returnType = 0 OR type = 10) AND parentComponentID = 0	AND TableID  = @piTableID
+		ORDER BY Name;
+
+END
+GO
 
 
 
