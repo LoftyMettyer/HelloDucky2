@@ -146,7 +146,6 @@
 			}
 		}
 
-
 		function toggleColumnsCalculations(type) {
 		}
 
@@ -158,6 +157,8 @@
 
 			var datarow = $("#AvailableColumns").getRowData(rowID);
 	
+			datarow.ReportType = '@Model.ReportType';
+			datarow.ReportID = '@Model.ID';
 			datarow.IsExpression = false;
 			datarow.Heading = datarow.Name;
 			datarow.Sequence = $("#SelectedColumns").jqGrid('getGridParam', 'records') + 1;
@@ -166,11 +167,14 @@
 			datarow.IsTotal = false;
 			datarow.IsHidden = false;
 			datarow.IsGroupWithNext = false;
-	
+
+			OpenHR.postData("Reports/AddReportColumn", datarow);
+
 			$("#SelectedColumns").jqGrid('addRowData', datarow.ID, datarow);
 			$('#SelectedColumns').jqGrid("setSelection", rowID);
 
 			$("#AvailableColumns").jqGrid('delRowData', rowID);
+			button_disable($("#btnSortOrderAdd")[0], false);
 
 		}
 
@@ -179,13 +183,9 @@
 			var rows = $("#AvailableColumns").jqGrid('getDataIDs');
 
 			for (var i = 0; i < rows.length; i++) {
-				debugger;
 				var datarow = $("#AvailableColumns").getRowData(rows[i]);
-		//		$("#SelectedColumns").jqGrid('addRowData', datarow.ID, datarow);
 				addColumnToSelected(datarow.ID);
 			}
-
-//			$("#SelectedColumns").jqGrid('clearGridData')
 
 		}
 
@@ -194,19 +194,13 @@
 			rowID = $("#SelectedColumns").getGridParam('selrow');
 			var datarow = $("#SelectedColumns").getRowData(rowID);
 
+			OpenHR.postData("Reports/RemoveReportColumn", datarow);
+
 			$("#AvailableColumns").jqGrid('addRowData', datarow.ID, datarow);
 			$("#AvailableColumns").jqGrid("sortGrid", "Name", true)
 			$("#SelectedColumns").jqGrid('delRowData', rowID);
 
 		}
-
-    function columndefinition_rowcolchange() {
-
-    	iRowID = $("#ColumnsSelected").getGridParam('selrow') - 1;
-    	$("[id^=columnproperty], [id$=Breakdown]").hide();
-    	$("#columnproperty" + iRowID + "Breakdown").show();
-
-    }
 
     function getAvailableTableColumnsCalcs() {
 
@@ -278,7 +272,7 @@
     			id: "Sequence" //index of the column with the PK in it
     		},
     		colNames: ['ID', 'IsExpression',	'Name',	'Sequence',	'Heading',	'DataType',
-    							'Size', 'Decimals', 'IsAverage', 'IsCount', 'IsTotal', 'IsHidden', 'IsGroupWithNext'],
+    							'Size', 'Decimals', 'IsAverage', 'IsCount', 'IsTotal', 'IsHidden', 'IsGroupWithNext', 'ReportID', 'ReportType'],
     		colModel: [
 					{ name: 'ID', index: 'ID', hidden: true },
 					{ name: 'IsExpression', index: 'IsExpression', hidden: true },
@@ -292,7 +286,9 @@
 					{ name: 'IsCount', index: 'IsCount', hidden: true },
 					{ name: 'IsTotal', index: 'IsTotal', hidden: true },
 					{ name: 'IsHidden', index: 'IsHidden', hidden: true },
-					{ name: 'IsGroupWithNext', index: 'IsGroupWithNext', hidden: true }],
+					{ name: 'IsGroupWithNext', index: 'IsGroupWithNext', hidden: true },
+    			{ name: 'ReportID', index: 'ReportID', hidden: true },
+					{ name: 'ReportType', index: 'ReportType', hidden: true }],
     		viewrecords: true,
     		width: 400,
     		sortname: 'Sequence',

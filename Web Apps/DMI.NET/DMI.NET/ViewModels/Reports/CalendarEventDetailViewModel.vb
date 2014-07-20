@@ -8,12 +8,14 @@ Imports HR.Intranet.Server.Enums
 Namespace ViewModels
 	Public Class CalendarEventDetailViewModel
 		Implements IJsonSerialize
+		Implements IReportDetail
+
+		Public Property ReportID As Integer Implements IReportDetail.ReportID
+		Public Property ReportType As UtilityType Implements IReportDetail.ReportType
 
 		<Browsable(False)>
 		Public Property ID As Integer Implements IJsonSerialize.ID
 		Public Property EventKey As String
-
-		Public Property CalendarReportID As Integer
 
 		<DisplayName("Name :")>
 		Public Property Name As String

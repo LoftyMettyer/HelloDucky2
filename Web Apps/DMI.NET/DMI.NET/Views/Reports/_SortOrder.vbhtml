@@ -14,12 +14,12 @@
 	</div>
 
 	<div class="stretchyfixed">
-		<input type="button" id="btnSortOrderAdd" value="Add" onclick="addSortOrder();" />
-		<input type="button" id="btnSortOrderEdit" value="Edit" onclick="editSortSorder(0);" />
-		<input type="button" id="btnSortOrderRemove" value="Remove" onclick="OpenHR.RemoveRowFromGrid(SortOrders, 'Reports/RemoveSortOrder')" />
-		<input type="button" id="btnSortOrderRemoveAll" value="Remove All" onclick="OpenHR.RemoveAllRowsFromGrid(SortOrders, 'Reports/RemoveSortOrder')" />
-		<input type="button" id="btnSortOrderMoveUp" value="Move Up" onclick="moveSortOrderUp()" />
-		<input type="button" id="btnSortOrderMoveDown" value="Move Down" onclick="moveSortOrderDown()" />
+		<input type="button" id="btnSortOrderAdd" value="Add" disabled onclick="addSortOrder();" />
+		<input type="button" id="btnSortOrderEdit" value="Edit" disabled onclick="editSortSorder(0);" />
+		<input type="button" id="btnSortOrderRemove" value="Remove" disabled onclick="OpenHR.RemoveRowFromGrid(SortOrders, 'Reports/RemoveSortOrder')" />
+		<input type="button" id="btnSortOrderRemoveAll" value="Remove All" disabled onclick="OpenHR.RemoveAllRowsFromGrid(SortOrders, 'Reports/RemoveSortOrder')" />
+		<input type="button" id="btnSortOrderMoveUp" value="Move Up" disabled onclick="moveSortOrderUp()" />
+		<input type="button" id="btnSortOrderMoveDown" value="Move Down" disabled onclick="moveSortOrderDown()" />
 	</div>
 
 </fieldset>
@@ -75,6 +75,29 @@
 				sortorder: "desc",
 				ondblClickRow: function (rowID) {
 					editSortSorder(rowID);
+				},
+				onSelectRow: function (id) {
+
+					var rowId = $(this).jqGrid('getGridParam', 'selrow');
+					var allRows = $(this)[0].rows;
+
+					var isTopRow = (rowId == allRows[1].id);
+					var isBottomRow = (rowId == allRows[allRows.length - 1].id);
+
+					// Enable / Disable relevant buttons
+					button_disable($("#btnSortOrderAdd")[0], false);
+					button_disable($("#btnSortOrderEdit")[0], false);
+					button_disable($("#btnSortOrderRemove")[0], false);
+					button_disable($("#btnSortOrderRemoveAll")[0], false);
+					button_disable($("#btnSortOrderMoveUp")[0], isTopRow);
+					button_disable($("#btnSortOrderMoveDown")[0], isBottomRow);
+
+				},
+				gridComplete: function () {
+					// Highlight top row
+					var ids = $(this).jqGrid("getDataIDs");
+					if (ids && ids.length > 0)
+						$(this).jqGrid("setSelection", ids[0]);
 				}
 			});
 		}

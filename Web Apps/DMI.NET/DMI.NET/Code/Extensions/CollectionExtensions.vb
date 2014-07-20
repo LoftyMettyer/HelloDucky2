@@ -9,7 +9,7 @@ Imports DMI.NET.Classes
 Namespace Code.Extensions
 
 	<HideModuleName>
-	Public Module ReportSortItemExtensions
+	Public Module CollectionExtensions
 
 		<Extension()>
 		Public Function ToJsonResult(Of T As IJsonSerialize)(ByVal items As ICollection(Of T)) As MvcHtmlString

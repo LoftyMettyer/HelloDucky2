@@ -22,9 +22,6 @@ Namespace Models
 			End Get
 		End Property
 
-		Public Property Columns As New Collection(Of ReportColumnItem)
-		Public Property ColumnsAsString As String
-
 		<DisplayName("Template"), DisplayFormat(ConvertEmptyStringToNull:=False)>
 		Public Property TemplateFileName As String
 

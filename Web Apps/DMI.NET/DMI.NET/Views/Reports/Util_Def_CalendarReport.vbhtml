@@ -120,6 +120,7 @@ End Code
 			$("#frmReportDefintion :input").prop("disabled", true);
 		}
 
+		button_disable($("#btnSortOrderAdd")[0], false);
 	});
 
 

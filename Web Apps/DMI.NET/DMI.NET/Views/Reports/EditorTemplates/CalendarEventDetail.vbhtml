@@ -9,8 +9,9 @@ End Code
 
 <div class="left">
 
+	@Html.HiddenFor(Function(model) model.ID, New With {.id = "CalendarEventID"})
 	@Html.HiddenFor(Function(model) model.EventKey, New With {.id = "EventKey"})
-	@Html.HiddenFor(Function(model) model.CalendarReportID)
+	@Html.HiddenFor(Function(model) model.ReportID)
 	@Html.HiddenFor(Function(model) model.FilterHidden)
 
 	<fieldset>
@@ -43,11 +44,11 @@ End Code
 	<fieldset>
 		<legend>Event End :</legend>
 
-		@Html.RadioButton("EventEndType", CalendarEventEndType.None, Model.EventEndType = CalendarEventEndType.None, New With {.onclick = "changeEventEndType('none')"})
+		@Html.RadioButton("EventEndType", CInt(CalendarEventEndType.None), Model.EventEndType = CalendarEventEndType.None, New With {.onclick = "changeEventEndType('none')"})
 		None
 		<br />
 
-		@Html.RadioButton("EventEndType", CalendarEventEndType.EndDate, Model.EventEndType = CalendarEventEndType.EndDate, New With {.onclick = "changeEventEndType('enddate')"})
+		@Html.RadioButton("EventEndType", CInt(CalendarEventEndType.EndDate), Model.EventEndType = CalendarEventEndType.EndDate, New With {.onclick = "changeEventEndType('enddate')"})
 		End Date
 		<br />
 		@Html.LabelFor(Function(model) model.EventEndDateID)
@@ -56,7 +57,7 @@ End Code
 		@Html.LabelFor(Function(model) model.EventEndSessionID)
 		@Html.ColumnDropdown2("EventEndSessionID", Model.EventEndSessionID, Model.TableID, SQLDataType.sqlVarChar, True, False)
 		<br/>
-		@Html.RadioButton("EventEndType", CalendarEventEndType.Duration, Model.EventEndType = CalendarEventEndType.Duration, New With {.onclick = "changeEventEndType('duration')"})
+		@Html.RadioButton("EventEndType", CInt(CalendarEventEndType.Duration), Model.EventEndType = CalendarEventEndType.Duration, New With {.onclick = "changeEventEndType('duration')"})
 		Duration
 		@Html.ColumnDropdown2("EventDurationID", Model.EventDurationID, Model.TableID, SQLDataType.sqlNumeric, True, False)
 	</fieldset>
@@ -68,12 +69,12 @@ End Code
 	<fieldset>
 		<legend>Key</legend>
 
-		@Html.RadioButton("LegendType", CalendarLegendType.Character, Model.LegendType = CalendarLegendType.Character, New With {.onclick = "changeEventLegendType('char')"})
+		@Html.RadioButton("LegendType", CInt(CalendarLegendType.Character), Model.LegendType = CalendarLegendType.Character, New With {.onclick = "changeEventLegendType('char')"})
 		@Html.DisplayNameFor(Function(model) model.LegendCharacter)
 		@Html.TextBoxFor(Function(model) model.LegendCharacter)
 		<br />
 
-		@Html.RadioButton("LegendType", CalendarLegendType.LookupTable, Model.LegendType = CalendarLegendType.LookupTable, New With {.onclick = "changeEventLegendType('lookup')"})
+		@Html.RadioButton("LegendType", CInt(CalendarLegendType.LookupTable), Model.LegendType = CalendarLegendType.LookupTable, New With {.onclick = "changeEventLegendType('lookup')"})
 		Lookup Table
 		<br />
 
@@ -172,13 +173,20 @@ End Code
 
 	function postThisCalendarEvent() {
 
+		var legendLookupColumnID = $("#LegendLookupColumnID").val()
+		if (legendLookupColumnID == null) { legendLookupColumnID = 0 }
+
+		var legendLookupCodeID = $("#LegendLookupCodeID").val()
+		if (legendLookupCodeID == null) { legendLookupCodeID = 0 }
+
 		var datarow = {
-			ID: $("#").val(),
+			ID: $("#CalendarEventID").val(),
 			EventKey: '@Model.EventKey',
-			CalendarReportID: '@Model.CalendarReportID',
+			ReportID: '@Model.ReportID',
+			ReportType: '@CInt(Model.ReportType)',
 			Name: $("#EventName").val(),
 			TableID: $("#EventTableID").val(),
-			FilterID: $("#EventFilterID").val(),
+			FilterID: $("#txtEventFilterID").val(),
 			EventEndType: $("#EventEndType").val(),
 			EventStartDateID: $("#EventStartDateID").val(),
 			EventStartSessionID: $("#EventStartSessionID").val(),
@@ -189,20 +197,20 @@ End Code
 			LegendType: $("#LegendType").val(),
 			LegendCharacter: $("#LegendCharacter").val(),
 			LegendLookupTableID: $("#LegendLookupTableID").val(),
-			LegendLookupColumnID: $("#LegendLookupColumnID").val(),
-			LegendLookupCodeID: $("#LegendLookupCodeID").val(),
+			LegendLookupColumnID: legendLookupColumnID,
+			LegendLookupCodeID: legendLookupCodeID,
 			LegendEventColumnID: $("#LegendEventColumnID").val(),
 			EventDesc1ColumnID: $("#EventDesc1ColumnID").val(),
 			EventDesc2ColumnID: $("#EventDesc2ColumnID").val(),
 			FilterHidden: $("#FilterHidden").val(),
-			FilterName: $("#FilterName").val(),
-			EventStartSessionName: $("#EventStartSessionName").val(),
-			EventEndDateName: $("#EventEndDateName").val(),
-			EventEndSessionName: $("#EventEndSessionName").val(),
-			EventDurationName: $("#EventDurationName").val(),
-			LegendTypeName: $("#LegendTypeName").val(),
-			EventDesc1ColumnName: $("#EventDesc1ColumnName").val(),
-			EventDesc2ColumnName: $("#EventDesc2ColumnName").val()
+			FilterName: $("#EventFilter").val(),
+			EventStartSessionName: $("#EventStartSessionID option:selected").text(),
+			EventEndDateName: $("#EventEndDateID option:selected").text(),
+			EventEndSessionName: $("#EventEndSessionID option:selected").text(),
+			EventDurationName: $("#EventDurationID option:selected").text(),
+			LegendTypeName: $("#LegendEventColumnID option:selected").text(),
+			EventDesc1ColumnName: $("#EventDesc1ColumnID option:selected").text(),
+			EventDesc2ColumnName: $("#EventDesc2ColumnID option:selected").text()
 		};
 
 		// Update client

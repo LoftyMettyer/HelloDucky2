@@ -12,11 +12,11 @@
 	<div class="stretchyfixed">
 		<input type="button" id="btnEventDetailsAdd" value="Add..." onclick="eventAdd();" />
 		<br />
-		<input type="button" id="btnEventDetailsEdit" value="Edit..." onclick="eventEdit(0);" />
+		<input type="button" id="btnEventDetailsEdit" value="Edit..." disabled onclick="eventEdit(0);" />
 		<br />
-		<input type="button" id="btnEventDetailsRemove" value="Remove" onclick="removeEvent()" />
+		<input type="button" id="btnEventDetailsRemove" value="Remove" disabled onclick="removeEvent()" />
 		<br />
-		<input type="button" id="btnEventDetailsRemoveAll" value="Remove All" onclick="removeAllEvents()" />
+		<input type="button" id="btnEventDetailsRemoveAll" value="Remove All" disabled onclick="removeAllEvents()" />
 	</div>
 
 	<div class="stretchyfill">
@@ -46,7 +46,7 @@
 				repeatitems: false,
 				id: "EventKey" //index of the column with the PK in it
 			},
-			colNames: ['ID', 'EventKey', 'CalendarReportID',
+			colNames: ['ID', 'EventKey', 'ReportID', 'ReportType',
 					'Name', 'TableID', 'FilterID', 'EventEndType', 'EventStartDateID', 'EventStartSessionID', 'EventEndDateID', 'EventEndSessionID', 'EventDurationID',
 					'LegendType', 'LegendCharacter', 'LegendLookupTableID', 'LegendLookupColumnID', 'LegendLookupCodeID', 'LegendEventColumnID',
 					'EventDesc1ColumnID', 'EventDesc2ColumnID', 'FilterHidden', 'FilterName',
@@ -56,7 +56,8 @@
 			colModel: [
 				{ name: 'ID', index: 'ID', sorttype: 'int', hidden: true },
 				{ name: 'EventKey', index: 'EventKey', sorttype: 'text', hidden: true },
-				{ name: 'CalendarReportID', index: 'CalendarReportID', sorttype: 'int', hidden: true },
+				{ name: 'ReportID', index: 'ReportID', sorttype: 'int', hidden: true },
+				{ name: 'ReportType', index: 'ReportType', hidden: true },
 				{ name: 'Name', index: 'Name', sorttype: 'text', hidden: false },
 				{ name: 'TableID', index: 'TableID', width: 100, hidden: true },
 				{ name: 'FilterID', index: 'FilterID', width: 100, hidden: true },
@@ -94,9 +95,22 @@
 			loadonce: true,
 			viewrecords: true,
 			sortorder: "desc",
-			editurl: 'server.php', // this is dummy existing url
 			ondblClickRow: function (rowID) {
 				eventEdit(rowID);
+			},
+			onSelectRow: function (id) {
+
+				// Enable / Disable relevant buttons
+				button_disable($("#btnEventDetailsEdit")[0], false);
+				button_disable($("#btnEventDetailsRemove")[0], false);
+				button_disable($("#btnEventDetailsRemoveAll")[0], false);
+
+			},
+			gridComplete: function () {
+				// Highlight top row
+				var ids = $(this).jqGrid("getDataIDs");
+				if (ids && ids.length > 0)
+					$(this).jqGrid("setSelection", ids[0]);
 			}
 		});
 		$("#Events").jqGrid('navGrid', '#pcrud', {});
@@ -122,12 +136,11 @@
 	function removeEvent() {
 
 		var rowID = $('#CalendarEvents').jqGrid('getGridParam', 'selrow');
-		var gridData = $("#CalendarEvents").getRowData(rowID);
+		var datarow = $("#CalendarEvents").getRowData(rowID);
 		OpenHR.postData("Reports/RemoveCalendarEvent", datarow)
 		$('#CalendarEvents').jqGrid('delRowData', rowID)
 
 	}
-
 
 	function removeAllEvents() {
 
@@ -139,13 +152,9 @@
 		var rows = grid.jqGrid('getDataIDs');
 
 		for (i = 0; i < rows.length; i++) {
-
 			var datarow = grid.jqGrid('getRowData', rows[i]);
 			OpenHR.postData("Reports/RemoveCalendarEvent", datarow)
-
-
 		}
-
 
 		$('#CalendarEvents').jqGrid('clearGridData')
 	}

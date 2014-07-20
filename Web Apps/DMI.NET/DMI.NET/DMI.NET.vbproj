@@ -177,9 +177,11 @@
     <Compile Include="AttributeExtensions\ExcludeCharAttribute.vb" />
     <Compile Include="AttributeExtensions\NonZeroIfAttribute.vb" />
     <Compile Include="AttributeExtensions\RequiredIfAttribute.vb" />
+    <Compile Include="Code\Conversions.vb" />
     <Compile Include="Code\Interfaces\IDataAccess.vb" />
     <Compile Include="Code\Interfaces\IReport.vb" />
     <Compile Include="Code\Interfaces\IReportDetail.vb" />
+    <Compile Include="Enums\UtilityActionType.vb" />
     <Compile Include="Models\CalendarEvent.vb" />
     <Compile Include="ViewModels\Reports\CalendarEventDetailViewModel.vb" />
     <Compile Include="Classes\GroupAccess.vb" />
@@ -195,7 +197,7 @@
     <Compile Include="Code\CalendarOutput.vb" />
     <Compile Include="Code\Interfaces\IJsonSerialize.vb" />
     <Compile Include="ModelBinders\ReportChildTableModelBinder.vb" />
-    <Compile Include="Models\Extensions\ReportSortItemExtensions.vb" />
+    <Compile Include="Code\Extensions\CollectionExtensions.vb" />
     <Compile Include="Code\GeneralUtilities.vb" />
     <Compile Include="Code\MailMergeRun.vb" />
     <Compile Include="Code\Platform.vb" />
@@ -223,7 +225,7 @@
     <Compile Include="Models\CalendarReportModel.vb" />
     <Compile Include="Models\CrossTabModel.vb" />
     <Compile Include="Models\CustomReportModel.vb" />
-    <Compile Include="Models\Extensions\ReportBaseModelExtensions.vb" />
+    <Compile Include="Code\Extensions\ReportBaseModelExtensions.vb" />
     <Compile Include="Models\MailMergeModel.vb" />
     <Compile Include="Models\OrgChart.vb" />
     <Compile Include="Models\PopoutChartModel.vb" />

@@ -15,6 +15,8 @@ Imports Newtonsoft.Json
 Imports DMI.NET.ViewModels
 Imports DMI.NET.ViewModels.Reports
 Imports HR.Intranet.Server.Enums
+Imports DMI.NET.Enums
+Imports DMI.NET.Code
 
 Namespace Controllers
 
@@ -42,25 +44,44 @@ Namespace Controllers
 		<HttpGet>
 		Function util_def_customreport() As ActionResult
 
-			Dim objModel As CustomReportModel
 			Dim iReportID As Integer = CInt(Session("utilid"))
-			Dim sAction = Session("action").ToString
+			Dim iAction = ActionToUtilityAction(Session("action").ToString)
+			Dim objModel = objReportRepository.LoadCustomReport(iReportID, iAction)
 
-			Select Case Session("action").ToString.ToUpper
-				Case "NEW"
-					objModel = objReportRepository.NewCustomReport()
+			Return View(objModel)
 
-				Case "COPY"
-					objModel = objReportRepository.LoadCustomReport(iReportID, True, sAction)
+		End Function
 
-				Case "VIEW"
-					objModel = objReportRepository.LoadCustomReport(iReportID, False, sAction)
-					objModel.IsReadOnly = True
+		<HttpGet>
+		Function util_def_mailmerge() As ActionResult
 
-				Case Else
-					objModel = objReportRepository.LoadCustomReport(iReportID, False, sAction)
+			Dim iReportID As Integer = CInt(Session("utilid"))
+			Dim iAction = ActionToUtilityAction(Session("action").ToString)
 
-			End Select
+			Dim objModel = objReportRepository.LoadMailMerge(iReportID, iAction)
+
+			Return View(objModel)
+
+		End Function
+
+		<HttpGet>
+		Function util_def_crosstab() As ActionResult
+
+			Dim iReportID As Integer = CInt(Session("utilid"))
+			Dim iAction = ActionToUtilityAction(Session("action").ToString)
+			Dim objModel = objReportRepository.LoadCrossTab(iReportID, iAction)
+
+			Return View(objModel)
+
+		End Function
+
+
+		<HttpGet>
+		Function util_def_calendarreport() As ActionResult
+
+			Dim iReportID As Integer = CInt(Session("utilid"))
+			Dim iAction = ActionToUtilityAction(Session("action").ToString)
+			Dim objModel = objReportRepository.LoadCalendarReport(iReportID, iAction)
 
 			Return View(objModel)
 
@@ -96,41 +117,17 @@ Namespace Controllers
 
 		End Function
 
-		<HttpGet>
-		Function util_def_mailmerge() As ActionResult
-
-			Dim iReportID As Integer = CInt(Session("utilid"))
-			Dim sAction = Session("action").ToString
-
-			Dim objModel As New MailMergeModel
-
-			Select Case Session("action").ToString.ToUpper
-				Case "NEW"
-					objModel = objReportRepository.NewMailMerge()
-
-				Case "COPY"
-					objModel = objReportRepository.LoadMailMerge(iReportID, True, sAction)
-
-				Case "VIEW"
-					objModel = objReportRepository.LoadMailMerge(iReportID, False, sAction)
-					objModel.IsReadOnly = True
-
-				Case Else
-					objModel = objReportRepository.LoadMailMerge(iReportID, False, sAction)
-
-			End Select
-
-			Return View(objModel)
-
-		End Function
-
 		<HttpPost, ValidateInput(False)>
 	 Function util_def_mailmerge(objModel As MailMergeModel) As ActionResult
 
 			Dim deserializer = New JavaScriptSerializer()
 
 			If objModel.ColumnsAsString.Length > 0 Then
-				objModel.Columns = deserializer.Deserialize(Of Collection(Of ReportColumnItem))(objModel.ColumnsAsString)
+				objModel.Columns = deserializer.Deserialize(Of List(Of ReportColumnItem))(objModel.ColumnsAsString)
+			End If
+
+			If objModel.SortOrdersString.Length > 0 Then
+				objModel.SortOrders = deserializer.Deserialize(Of Collection(Of SortOrderViewModel))(objModel.SortOrdersString)
 			End If
 
 			If ModelState.IsValid Then
@@ -140,33 +137,6 @@ Namespace Controllers
 			Else
 				Return View(objModel)
 			End If
-
-		End Function
-
-		<HttpGet>
-		Function util_def_crosstab() As ActionResult
-
-			Dim objModel As CrossTabModel
-			Dim iReportID As Integer = CInt(Session("utilid"))
-			Dim sAction = Session("action").ToString
-
-			Select Case Session("action").ToString.ToUpper
-				Case "NEW"
-					objModel = objReportRepository.NewCrossTab()
-
-				Case "COPY"
-					objModel = objReportRepository.LoadCrossTab(iReportID, True, sAction)
-
-				Case "VIEW"
-					objModel = objReportRepository.LoadCrossTab(iReportID, False, sAction)
-					objModel.IsReadOnly = True
-
-				Case Else
-					objModel = objReportRepository.LoadCrossTab(iReportID, False, sAction)
-
-			End Select
-
-			Return View(objModel)
 
 		End Function
 
@@ -182,33 +152,6 @@ Namespace Controllers
 
 				Return View(objModel)
 			End If
-
-		End Function
-
-		<HttpGet>
-		Function util_def_calendarreport() As ActionResult
-
-			Dim objModel As CalendarReportModel
-			Dim iReportID As Integer = CInt(Session("utilid"))
-			Dim sAction = Session("action").ToString
-
-			Select Case Session("action").ToString.ToUpper
-				Case "NEW"
-					objModel = objReportRepository.NewCalendarReport()
-
-				Case "COPY"
-					objModel = objReportRepository.LoadCalendarReport(iReportID, True, sAction)
-
-				Case "VIEW"
-					objModel = objReportRepository.LoadCalendarReport(iReportID, False, sAction)
-					objModel.IsReadOnly = True
-
-				Case Else
-					objModel = objReportRepository.LoadCalendarReport(iReportID, False, sAction)
-
-			End Select
-
-			Return View(objModel)
 
 		End Function
 
@@ -319,9 +262,11 @@ Namespace Controllers
 
 			Dim objModel As New CalendarEventDetailViewModel
 
+			objModel.ID = 0
 			objModel.TableID = objReport.BaseTableID
-			objModel.CalendarReportID = ReportID
+			objModel.ReportID = ReportID
 			objModel.EventKey = String.Format("EV_{0}", objReport.Events.Count + 1)
+			objModel.AvailableTables = objReportRepository.GetChildTables(objReport.BaseTableID, True)
 
 			ModelState.Clear()
 			Return PartialView("EditorTemplates\CalendarEventDetail", objModel)
@@ -332,7 +277,7 @@ Namespace Controllers
 		<HttpPost>
 		Function EditCalendarEvent(objModel As CalendarEventDetailViewModel) As ActionResult
 
-			Dim objReport = objReportRepository.RetrieveCalendarReport(objModel.CalendarReportID)
+			Dim objReport = objReportRepository.RetrieveCalendarReport(objModel.ReportID)
 			objModel.AvailableTables = objReportRepository.GetChildTables(objReport.BaseTableID, True)
 
 			ModelState.Clear()
@@ -342,7 +287,7 @@ Namespace Controllers
 		<HttpPost>
 		Sub PostCalendarEvent(objModel As CalendarEventDetailViewModel)
 
-			Dim objReport = objReportRepository.RetrieveCalendarReport(objModel.CalendarReportID)
+			Dim objReport = objReportRepository.RetrieveCalendarReport(objModel.ReportID)
 			Dim original = objReport.Events.Where(Function(m) m.EventKey = objModel.EventKey).FirstOrDefault
 
 			If Not original Is Nothing Then
@@ -366,7 +311,7 @@ Namespace Controllers
 		<HttpPost>
 		Sub RemoveCalendarEvent(objModel As CalendarEventDetailViewModel)
 
-			Dim objReport = objReportRepository.RetrieveCalendarReport(objModel.CalendarReportID)
+			Dim objReport = objReportRepository.RetrieveCalendarReport(objModel.ReportID)
 			Dim original = objReport.Events.Where(Function(m) m.EventKey = objModel.EventKey).FirstOrDefault
 
 			If Not original Is Nothing Then
@@ -401,7 +346,7 @@ Namespace Controllers
 
 			objModel.ReportID = ReportID
 			objModel.ReportType = ReportType
-			
+
 			Dim objReport = objReportRepository.RetrieveParent(objModel)
 			objModel.ID = objReport.SortOrders.Count + 1	' TODO this may need some work if they start adding and deleting orders!
 
@@ -452,6 +397,30 @@ Namespace Controllers
 
 		End Sub
 
+		<HttpPost>
+		Sub AddReportColumn(objModel As ReportColumnItem)
+
+			Dim objReport As ReportBaseModel
+			objReport = CType(objReportRepository.RetrieveParent(objModel), ReportBaseModel)
+
+			objReport.Columns.Add(objModel)
+
+		End Sub
+
+		<HttpPost>
+		Sub RemoveReportColumn(objModel As ReportColumnItem)
+
+			Dim objReport As ReportBaseModel
+			objReport = CType(objReportRepository.RetrieveParent(objModel), ReportBaseModel)
+
+			For Each objItem In objReport.Columns
+				If objItem.ID = objModel.ID Then
+					objReport.Columns.Remove(objItem)
+					Exit For
+				End If
+			Next
+
+		End Sub
 
 	End Class
 

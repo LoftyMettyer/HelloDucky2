@@ -7,6 +7,10 @@ Imports DMI.NET.AttributeExtensions
 Namespace Classes
 	Public Class ReportColumnItem
 		Implements IJsonSerialize
+		Implements IReportDetail
+
+		Public Property ReportID As Integer Implements IReportDetail.ReportID
+		Public Property ReportType As UtilityType Implements IReportDetail.ReportType
 
 		Public Property ID As Integer Implements IJsonSerialize.ID
 		Public Property IsExpression As Boolean

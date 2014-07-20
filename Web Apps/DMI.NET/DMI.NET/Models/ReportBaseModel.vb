@@ -20,7 +20,7 @@ Namespace Models
 		Public Property IsReadOnly As Boolean
 		Public MustOverride ReadOnly Property ReportType As UtilityType
 
-		Public Property ID As Integer
+		Public Property ID As Integer Implements IReport.ID
 		Public Property Owner As String
 
 		<Required(ErrorMessage:="A base table must be selected.")>
@@ -78,7 +78,6 @@ Namespace Models
 
 		End Function
 
-
 		<DisplayName("Description 1: ")>
 		Public Property Description1ID As Integer
 
@@ -93,6 +92,10 @@ Namespace Models
 
 		<DisplayFormat(ConvertEmptyStringToNull:=False)>
 		Public Property Separator As String
+
+		Public Sub Attach(ByRef session As SessionInfo)
+			SessionInfo = session
+		End Sub
 
 
 	End Class

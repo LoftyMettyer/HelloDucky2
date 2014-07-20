@@ -28,7 +28,7 @@ Namespace Models
 		Public Property EventsString As String
 
 		Public Property StartType As CalendarDataType
-		Public Property StartFixedDate As DateTime
+		Public Property StartFixedDate As DateTime?
 		Public Property StartOffset As Integer
 		Public Property StartOffsetPeriod As DatePeriod
 
@@ -37,7 +37,7 @@ Namespace Models
 		Public Property StartCustomName As String
 
 		Public Property EndType As CalendarDataType
-		Public Property EndFixedDate As DateTime
+		Public Property EndFixedDate As DateTime?
 		Public Property EndOffset As Integer
 		Public Property EndOffsetPeriod As DatePeriod
 

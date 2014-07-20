@@ -9,6 +9,8 @@ Imports DMI.NET.Classes
 Namespace Code.Interfaces
 	Public Interface IReport
 
+		Property ID As Integer
+
 		Property SessionInfo As SessionInfo
 
 		Property BaseTableID As Integer

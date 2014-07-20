@@ -11,6 +11,7 @@ Imports HR.Intranet.Server.Enums
 Imports DMI.NET.Enums
 Imports DMI.NET.ViewModels
 Imports DMI.NET.ViewModels.Reports
+Imports DMI.NET.Code.Extensions
 
 Namespace Repository
 	Public Class ReportRepository
@@ -23,6 +24,7 @@ Namespace Repository
 		Private _objSessionInfo As SessionInfo
 		Private _objDataAccess As clsDataAccess
 		Private _username As String
+		Private _defaultBaseTableID As Integer
 
 		Public Sub New()
 
@@ -30,85 +32,88 @@ Namespace Repository
 			_objSessionInfo = CType(HttpContext.Current.Session("SessionContext"), SessionInfo)
 			_objDataAccess = CType(HttpContext.Current.Session("DatabaseAccess"), clsDataAccess)
 			_username = HttpContext.Current.Session("username").ToString
+			_defaultBaseTableID = CInt(HttpContext.Current.Session("Personnel_EmpTableID"))
 
 		End Sub
 
-		Public Function LoadCustomReport(ID As Integer, bIsCopy As Boolean, Action As String) As CustomReportModel
+		Public Function LoadCustomReport(ID As Integer, action As UtilityActionType) As CustomReportModel
 
 			Dim objModel As New CustomReportModel
 			Try
 
-				If bIsCopy Then
-					objModel.ID = 0
+				objModel.Attach(_objSessionInfo)
+
+				If action = UtilityActionType.New Then
+					objModel.BaseTableID = _defaultBaseTableID
+					objModel.Owner = _username
 				Else
+
 					objModel.ID = ID
+
+					Dim dsDefinition As DataSet = _objDataAccess.GetDataSet("spASRIntGetCustomReportDefinition" _
+					, New SqlParameter("piReportID", SqlDbType.Int) With {.Value = objModel.ID} _
+					, New SqlParameter("psCurrentUser", SqlDbType.VarChar, 255) With {.Value = _username} _
+					, New SqlParameter("psAction", SqlDbType.VarChar, 255) With {.Value = action})
+
+					PopulateDefintion(objModel, dsDefinition.Tables(0))
+
+					If dsDefinition.Tables(0).Rows.Count = 1 Then
+
+						Dim row As DataRow = dsDefinition.Tables(0).Rows(0)
+
+						objModel.Parent1.ID = CInt(row("Parent1ID"))
+						objModel.Parent1.SelectionType = CType(row("Parent1SelectionType"), RecordSelectionType)
+						objModel.Parent1.Name = row("Parent1Name").ToString
+						objModel.Parent1.PicklistID = CInt(row("Parent1PicklistID"))
+						objModel.Parent1.PicklistName = row("Parent1PicklistName").ToString
+						objModel.Parent1.FilterID = CInt(row("Parent1FilterID"))
+						objModel.Parent1.FilterName = row("Parent1FilterName").ToString
+
+						objModel.Parent2.ID = CInt(row("Parent2ID"))
+						objModel.Parent2.SelectionType = CType(row("Parent2SelectionType"), RecordSelectionType)
+						objModel.Parent2.Name = row("Parent2Name").ToString
+						objModel.Parent2.PicklistID = CInt(row("Parent2PicklistID"))
+						objModel.Parent2.PicklistName = row("Parent2PicklistName").ToString
+						objModel.Parent2.FilterID = CInt(row("Parent2FilterID"))
+						objModel.Parent2.FilterName = row("Parent2FilterName").ToString
+
+					End If
+
+					' Selected columns
+					PopulateColumns(objModel, dsDefinition.Tables(1))
+
+					' Repetition
+					For Each objRow As DataRow In dsDefinition.Tables(3).Rows
+						Dim objRepeatItem As New ReportRepetition() With {
+								.ID = CInt(objRow("id")),
+								.Name = objRow("Name").ToString,
+								.IsExpression = CBool(objRow("IsExpression")),
+								.IsRepeated = CBool(objRow("IsRepeated"))}
+						objModel.Repetition.Add(objRepeatItem)
+					Next
+
+					PopulateSortOrder(objModel, dsDefinition.Tables(2))
+					PopulateOutput(objModel.Output, dsDefinition.Tables(0))
+
+					' Populate the child tables
+					For Each objRow As DataRow In dsDefinition.Tables(4).Rows
+						objModel.ChildTables.Add(New ChildTableViewModel() With {
+										.ReportID = objModel.ID,
+										.TableName = objRow("tablename").ToString,
+										.FilterName = objRow("filtername").ToString,
+										.OrderName = objRow("ordername").ToString,
+										.TableID = CInt(objRow("tableid")),
+										.FilterID = CInt(objRow("filterid")),
+										.OrderID = CInt(objRow("orderid")),
+										.Records = CInt(objRow("Records"))})
+					Next
+
 				End If
 
-				'' TODO -- tidy these up.
-				Dim lngAction = HttpContext.Current.Session("action")
-				Dim sUserName = HttpContext.Current.Session("username")
+				objModel.GroupAccess = GetUtilityAccess(UtilityType.utlCustomReport, objModel.ID, action)
+				objModel.IsReadOnly = (action = UtilityActionType.View)
 
-				'' TODO - tidy up this proc to return a dataset instead of millions of bloody parameters!
-				Dim dsDefinition As DataSet = _objDataAccess.GetDataSet("spASRIntGetCustomReportDefinition" _
-					, New SqlParameter("piReportID", SqlDbType.Int) With {.Value = CInt(ID)} _
-					, New SqlParameter("psCurrentUser", SqlDbType.VarChar, 255) With {.Value = sUserName} _
-					, New SqlParameter("psAction", SqlDbType.VarChar, 255) With {.Value = lngAction})
-				'	
-				PopulateDefintion(objModel, dsDefinition.Tables(0))
-
-				objModel.GroupAccess = GetUtilityAccess(UtilityType.utlCustomReport, ID, bIsCopy)
-
-				If dsDefinition.Tables(0).Rows.Count = 1 Then
-
-					Dim row As DataRow = dsDefinition.Tables(0).Rows(0)
-
-					objModel.Parent1.ID = CInt(row("Parent1ID"))
-					objModel.Parent1.SelectionType = CType(row("Parent1SelectionType"), RecordSelectionType)
-					objModel.Parent1.Name = row("Parent1Name").ToString
-					objModel.Parent1.PicklistID = CInt(row("Parent1PicklistID"))
-					objModel.Parent1.PicklistName = row("Parent1PicklistName").ToString
-					objModel.Parent1.FilterID = CInt(row("Parent1FilterID"))
-					objModel.Parent1.FilterName = row("Parent1FilterName").ToString
-
-					objModel.Parent2.ID = CInt(row("Parent2ID"))
-					objModel.Parent2.SelectionType = CType(row("Parent2SelectionType"), RecordSelectionType)
-					objModel.Parent2.Name = row("Parent2Name").ToString
-					objModel.Parent2.PicklistID = CInt(row("Parent2PicklistID"))
-					objModel.Parent2.PicklistName = row("Parent2PicklistName").ToString
-					objModel.Parent2.FilterID = CInt(row("Parent2FilterID"))
-					objModel.Parent2.FilterName = row("Parent2FilterName").ToString
-
-				End If
-
-				' Selected columns
-				PopulateColumns(objModel, dsDefinition.Tables(1))
-
-				' Repetition
-				For Each objRow As DataRow In dsDefinition.Tables(3).Rows
-					Dim objRepeatItem As New ReportRepetition() With {
-							.ID = CInt(objRow("id")),
-							.Name = objRow("Name").ToString,
-							.IsExpression = CBool(objRow("IsExpression")),
-							.IsRepeated = CBool(objRow("IsRepeated"))}
-					objModel.Repetition.Add(objRepeatItem)
-				Next
-
-				PopulateSortOrder(objModel, dsDefinition.Tables(2))
-				PopulateOutput(objModel.Output, dsDefinition.Tables(0))
-
-				' Populate the child tables
-				For Each objRow As DataRow In dsDefinition.Tables(4).Rows
-					objModel.ChildTables.Add(New ChildTableViewModel() With {
-									.ReportID = objModel.ID,
-									.TableName = objRow("tablename").ToString,
-									.FilterName = objRow("filtername").ToString,
-									.OrderName = objRow("ordername").ToString,
-									.TableID = CInt(objRow("tableid")),
-									.FilterID = CInt(objRow("filterid")),
-									.OrderID = CInt(objRow("orderid")),
-									.Records = CInt(objRow("Records"))})
-				Next
-
+				_customreports.Remove(objModel.ID)
 				_customreports.Add(objModel)
 
 			Catch ex As Exception
@@ -120,155 +125,62 @@ Namespace Repository
 
 		End Function
 
-		Public Function LoadMailMerge(ID As Integer, bIsCopy As Boolean, Action As String) As MailMergeModel
+		Public Function LoadMailMerge(ID As Integer, action As UtilityActionType) As MailMergeModel
 
 			Dim objModel As New MailMergeModel
-			Dim objItem As ReportColumnItem
-
-			Dim dsDefinition = _objDataAccess.GetDataSet("spASRIntGetMailMergeDefinition" _
-				, New SqlParameter("@piReportID", SqlDbType.Int) With {.Value = ID} _
-				, New SqlParameter("@psCurrentUser", SqlDbType.VarChar, 255) With {.Value = _username} _
-				, New SqlParameter("@psAction", SqlDbType.VarChar, 255) With {.Value = Action})
-
-			If bIsCopy Then
-				objModel.ID = 0
-			Else
-				objModel.ID = ID
-			End If
-
-			PopulateDefintion(objModel, dsDefinition.Tables(0))
-			objModel.GroupAccess = GetUtilityAccess(UtilityType.utlMailMerge, ID, bIsCopy)
-
-			' Selected columns and expressions
-			PopulateColumns(objModel, dsDefinition.Tables(1))
-
-			' Orders
-			PopulateSortOrder(objModel, dsDefinition.Tables(2))
-
-			If dsDefinition.Tables(0).Rows.Count = 1 Then
-
-				Dim row As DataRow = dsDefinition.Tables(0).Rows(0)
-
-				objModel.TemplateFileName = row("TemplateFileName").ToString()
-				objModel.OutputFormat = CType(row("Format"), MailMergeOutputTypes)
-				objModel.DisplayOutputOnScreen = CBool(row("DisplayOutputOnScreen"))
-				objModel.SendToPrinter = CBool(row("SendToPrinter"))
-				objModel.PrinterName = row("PrinterName").ToString()
-				objModel.SaveTofile = CBool(row("SaveTofile"))
-				objModel.Filename = row("FileName").ToString
-				objModel.EmailGroupID = CInt(row("EmailGroupID"))
-				objModel.EmailSubject = row("EmailSubject").ToString()
-				objModel.EmailAsAttachment = CBool(row("EmailAsAttachment"))
-				objModel.EmailAttachmentName = row("EmailAttachmentName").ToString()
-
-				objModel.SuppressBlankLines = CBool(row("SuppressBlankLines"))
-				objModel.PauseBeforeMerge = CBool(row("PauseBeforeMerge"))
-
-			End If
-
-			_mailmerges.Add(objModel)
-
-			Return objModel
-
-		End Function
-
-		Public Function NewCrossTab() As CrossTabModel
-
-			Dim objModel As New CrossTabModel
-
-			objModel.GroupAccess = GetUtilityAccess(UtilityType.utlCrossTab, 0, False)
-
-			Return objModel
-
-		End Function
-
-		Public Function NewCalendarReport() As CalendarReportModel
-
-			Dim objModel As New CalendarReportModel
-
-			objModel.GroupAccess = GetUtilityAccess(UtilityType.utlCalendarReport, 0, False)
-
-			Return objModel
-
-		End Function
-
-		Public Function NewCustomReport() As CustomReportModel
-
-			Dim objModel As New CustomReportModel
-
-			objModel.GroupAccess = GetUtilityAccess(UtilityType.utlCustomReport, 0, False)
-
-			Return objModel
-
-		End Function
-
-		Public Function NewMailMerge() As MailMergeModel
-
-			Dim objModel As New MailMergeModel
-
-			objModel.GroupAccess = GetUtilityAccess(UtilityType.utlMailMerge, 0, False)
-
-			Return objModel
-
-		End Function
-
-		Public Function LoadCrossTab(ID As Integer, bIsCopy As Boolean, Action As String) As CrossTabModel
-
-			Dim objModel As New CrossTabModel
 
 			Try
 
-				If bIsCopy Then
-					objModel.ID = 0
+				objModel.Attach(_objSessionInfo)
+
+				If action = UtilityActionType.New Then
+					objModel.BaseTableID = _defaultBaseTableID
+					objModel.Owner = _username
 				Else
+
 					objModel.ID = ID
-				End If
 
-				Dim dtDefinition = _objDataAccess.GetFromSP("spASRIntGetCrossTabDefinition", _
-						New SqlParameter("piReportID", SqlDbType.Int) With {.Value = ID}, _
-						New SqlParameter("psCurrentUser", SqlDbType.VarChar, 255) With {.Value = _username}, _
-						New SqlParameter("psAction", SqlDbType.VarChar, 255) With {.Value = Action})
+					Dim dsDefinition = _objDataAccess.GetDataSet("spASRIntGetMailMergeDefinition" _
+						, New SqlParameter("@piReportID", SqlDbType.Int) With {.Value = objModel.ID} _
+						, New SqlParameter("@psCurrentUser", SqlDbType.VarChar, 255) With {.Value = _username} _
+						, New SqlParameter("@psAction", SqlDbType.VarChar, 255) With {.Value = action})
 
-				PopulateDefintion(objModel, dtDefinition)
+					PopulateDefintion(objModel, dsDefinition.Tables(0))
 
-				If dtDefinition.Rows.Count = 1 Then
-					Dim objRow As DataRow = dtDefinition.Rows(0)
+					' Selected columns and expressions
+					PopulateColumns(objModel, dsDefinition.Tables(1))
 
-					objModel.HorizontalID = CInt(objRow("HorizontalID"))
-					objModel.HorizontalDataType = _objSessionInfo.GetColumn(objModel.HorizontalID).DataType
-					objModel.HorizontalStart = CInt(objRow("HorizontalStart"))
-					objModel.HorizontalStop = CInt(objRow("HorizontalStop"))
-					objModel.HorizontalIncrement = CInt(objRow("HorizontalIncrement"))
+					' Orders
+					PopulateSortOrder(objModel, dsDefinition.Tables(2))
 
-					objModel.VerticalID = CInt(objRow("VerticalID"))
-					objModel.VerticalDataType = _objSessionInfo.GetColumn(objModel.VerticalID).DataType
-					objModel.VerticalStart = CInt(objRow("VerticalStart"))
-					objModel.VerticalStop = CInt(objRow("VerticalStop"))
-					objModel.VerticalIncrement = CInt(objRow("VerticalIncrement"))
+					If dsDefinition.Tables(0).Rows.Count = 1 Then
 
-					objModel.PageBreakID = CInt(objRow("PageBreakID"))
-					objModel.PageBreakDataType = _objSessionInfo.GetColumn(objModel.PageBreakID).DataType
-					objModel.PageBreakStart = CInt(objRow("PageBreakStart"))
-					objModel.PageBreakStop = CInt(objRow("PageBreakStop"))
-					objModel.PageBreakIncrement = CInt(objRow("PageBreakIncrement"))
+						Dim row As DataRow = dsDefinition.Tables(0).Rows(0)
 
-					objModel.IntersectionID = CInt(objRow("IntersectionID"))
-					objModel.IntersectionType = CType(objRow("IntersectionType"), IntersectionType)
-					objModel.PercentageOfType = CBool(objRow("PercentageOfType"))
-					objModel.PercentageOfPage = CBool(objRow("PercentageOfPage"))
-					objModel.SuppressZeros = CBool(objRow("SuppressZeros"))
-					objModel.UseThousandSeparators = CBool(objRow("UseThousandSeparators"))
+						objModel.TemplateFileName = row("TemplateFileName").ToString()
+						objModel.OutputFormat = CType(row("Format"), MailMergeOutputTypes)
+						objModel.DisplayOutputOnScreen = CBool(row("DisplayOutputOnScreen"))
+						objModel.SendToPrinter = CBool(row("SendToPrinter"))
+						objModel.PrinterName = row("PrinterName").ToString()
+						objModel.SaveTofile = CBool(row("SaveTofile"))
+						objModel.Filename = row("FileName").ToString
+						objModel.EmailGroupID = CInt(row("EmailGroupID"))
+						objModel.EmailSubject = row("EmailSubject").ToString()
+						objModel.EmailAsAttachment = CBool(row("EmailAsAttachment"))
+						objModel.EmailAttachmentName = row("EmailAttachmentName").ToString()
+
+						objModel.SuppressBlankLines = CBool(row("SuppressBlankLines"))
+						objModel.PauseBeforeMerge = CBool(row("PauseBeforeMerge"))
+
+					End If
 
 				End If
 
-				objModel.GroupAccess = GetUtilityAccess(UtilityType.utlCrossTab, ID, bIsCopy)
+				objModel.GroupAccess = GetUtilityAccess(UtilityType.utlMailMerge, ID, action)
+				objModel.IsReadOnly = (action = UtilityActionType.View)
 
-				' Columns tab
-				' '' TODO - Load columns tab (needs dynamic based on table selection)
-				objModel.AvailableColumns = GetColumnsForTable(objModel.BaseTableID)
-
-				' Output Tab
-				PopulateOutput(objModel.Output, dtDefinition)
+				_mailmerges.Remove(objModel.ID)
+				_mailmerges.Add(objModel)
 
 			Catch ex As Exception
 				Throw
@@ -279,103 +191,187 @@ Namespace Repository
 
 		End Function
 
-		Public Function LoadCalendarReport(ID As Integer, bIsCopy As Boolean, Action As String) As CalendarReportModel
+		Public Function LoadCrossTab(ID As Integer, action As UtilityActionType) As CrossTabModel
+
+			Dim objModel As New CrossTabModel
+
+			Try
+				objModel.Attach(_objSessionInfo)
+
+				If action = UtilityActionType.New Then
+					objModel.BaseTableID = _defaultBaseTableID
+					objModel.Owner = _username
+				Else
+
+					objModel.ID = ID
+
+					Dim dtDefinition = _objDataAccess.GetFromSP("spASRIntGetCrossTabDefinition", _
+							New SqlParameter("piReportID", SqlDbType.Int) With {.Value = objModel.ID}, _
+							New SqlParameter("psCurrentUser", SqlDbType.VarChar, 255) With {.Value = _username}, _
+							New SqlParameter("psAction", SqlDbType.VarChar, 255) With {.Value = action})
+
+					PopulateDefintion(objModel, dtDefinition)
+
+					If dtDefinition.Rows.Count = 1 Then
+						Dim objRow As DataRow = dtDefinition.Rows(0)
+
+						objModel.HorizontalID = CInt(objRow("HorizontalID"))
+						objModel.HorizontalDataType = _objSessionInfo.GetColumn(objModel.HorizontalID).DataType
+						objModel.HorizontalStart = CInt(objRow("HorizontalStart"))
+						objModel.HorizontalStop = CInt(objRow("HorizontalStop"))
+						objModel.HorizontalIncrement = CInt(objRow("HorizontalIncrement"))
+
+						objModel.VerticalID = CInt(objRow("VerticalID"))
+						objModel.VerticalDataType = _objSessionInfo.GetColumn(objModel.VerticalID).DataType
+						objModel.VerticalStart = CInt(objRow("VerticalStart"))
+						objModel.VerticalStop = CInt(objRow("VerticalStop"))
+						objModel.VerticalIncrement = CInt(objRow("VerticalIncrement"))
+
+						objModel.PageBreakID = CInt(objRow("PageBreakID"))
+						objModel.PageBreakDataType = _objSessionInfo.GetColumn(objModel.PageBreakID).DataType
+						objModel.PageBreakStart = CInt(objRow("PageBreakStart"))
+						objModel.PageBreakStop = CInt(objRow("PageBreakStop"))
+						objModel.PageBreakIncrement = CInt(objRow("PageBreakIncrement"))
+
+						objModel.IntersectionID = CInt(objRow("IntersectionID"))
+						objModel.IntersectionType = CType(objRow("IntersectionType"), IntersectionType)
+						objModel.PercentageOfType = CBool(objRow("PercentageOfType"))
+						objModel.PercentageOfPage = CBool(objRow("PercentageOfPage"))
+						objModel.SuppressZeros = CBool(objRow("SuppressZeros"))
+						objModel.UseThousandSeparators = CBool(objRow("UseThousandSeparators"))
+
+					End If
+
+					' Output Tab
+					PopulateOutput(objModel.Output, dtDefinition)
+
+				End If
+
+				objModel.AvailableColumns = GetColumnsForTable(objModel.BaseTableID)
+				objModel.GroupAccess = GetUtilityAccess(UtilityType.utlCrossTab, ID, action)
+				objModel.IsReadOnly = (action = UtilityActionType.View)
+
+				_crosstabs.Remove(objModel.ID)
+				_crosstabs.Add(objModel)
+
+			Catch ex As Exception
+				Throw
+
+			End Try
+
+			Return objModel
+
+		End Function
+
+		Public Function LoadCalendarReport(ID As Integer, action As UtilityActionType) As CalendarReportModel
 
 			Dim objModel As New CalendarReportModel
 			Dim objEvent As CalendarEventDetailViewModel
 
-			If bIsCopy Then
-				objModel.ID = 0
-			Else
-				objModel.ID = ID
-			End If
+			Try
+				objModel.Attach(_objSessionInfo)
 
-			Dim dsDefinition = _objDataAccess.GetDataSet("spASRIntGetCalendarReportDefinition", _
-					New SqlParameter("@piCalendarReportID", SqlDbType.Int) With {.Value = ID}, _
-					New SqlParameter("psCurrentUser", SqlDbType.VarChar, 255) With {.Value = _username}, _
-					New SqlParameter("psAction", SqlDbType.VarChar, 255) With {.Value = Action})
+				If action = UtilityActionType.New Then
+					objModel.BaseTableID = _defaultBaseTableID
+					objModel.Owner = _username
+				Else
 
-			PopulateDefintion(objModel, dsDefinition.Tables(0))
-			If dsDefinition.Tables(0).Rows.Count = 1 Then
+					objModel.ID = ID
 
-				Dim row As DataRow = dsDefinition.Tables(0).Rows(0)
+					Dim dsDefinition = _objDataAccess.GetDataSet("spASRIntGetCalendarReportDefinition", _
+							New SqlParameter("@piCalendarReportID", SqlDbType.Int) With {.Value = objModel.ID}, _
+							New SqlParameter("psCurrentUser", SqlDbType.VarChar, 255) With {.Value = _username}, _
+							New SqlParameter("psAction", SqlDbType.VarChar, 255) With {.Value = action})
 
-				objModel.Description1Id = CInt(row("Description1Id"))
-				objModel.Description2Id = CInt(row("Description2Id"))
-				objModel.Description3Id = CInt(row("Description3Id"))
-				objModel.Description3Name = row("Description3Name").ToString
+					PopulateDefintion(objModel, dsDefinition.Tables(0))
+					If dsDefinition.Tables(0).Rows.Count = 1 Then
 
-				objModel.RegionID = CInt(row("RegionID"))
-				objModel.GroupByDescription = CBool(row("GroupByDescription"))
-				objModel.Separator = row("Separator").ToString
+						Dim row As DataRow = dsDefinition.Tables(0).Rows(0)
 
-				objModel.StartType = CType(row("StartType"), CalendarDataType)
-				objModel.StartFixedDate = CDate(row("StartFixedDate"))
-				objModel.StartOffset = CInt(row("StartOffset"))
-				objModel.StartOffsetPeriod = CType(row("StartOffsetPeriod"), DatePeriod)
-				objModel.StartCustomId = CInt(row("StartCustomId"))
-				objModel.StartCustomName = row("StartCustomName").ToString
+						objModel.Description1ID = CInt(row("Description1Id"))
+						objModel.Description2ID = CInt(row("Description2Id"))
+						objModel.Description3ID = CInt(row("Description3Id"))
+						objModel.Description3Name = row("Description3Name").ToString
 
-				objModel.EndType = CType(row("EndType"), CalendarDataType)
-				objModel.EndFixedDate = CDate(row("EndFixedDate"))
-				objModel.EndOffset = CInt(row("EndOffset"))
-				objModel.EndOffsetPeriod = CType(row("EndOffsetPeriod"), DatePeriod)
-				objModel.EndCustomId = CInt(row("EndCustomId"))
-				objModel.EndCustomName = row("EndCustomName").ToString
+						objModel.RegionID = CInt(row("RegionID"))
+						objModel.GroupByDescription = CBool(row("GroupByDescription"))
+						objModel.Separator = row("Separator").ToString
 
-				objModel.IncludeBankHolidays = CBool(row("IncludeBankHolidays"))
-				objModel.WorkingDaysOnly = CBool(row("WorkingDaysOnly"))
-				objModel.ShowBankHolidays = CBool(row("ShowBankHolidays"))
-				objModel.ShowCaptions = CBool(row("ShowCaptions"))
-				objModel.ShowWeekends = CBool(row("ShowWeekends"))
-				objModel.StartOnCurrentMonth = CBool(row("StartOnCurrentMonth"))
+						objModel.StartType = CType(row("StartType"), CalendarDataType)
+						objModel.StartFixedDate = CDate(row("StartFixedDate"))
+						objModel.StartOffset = CInt(row("StartOffset"))
+						objModel.StartOffsetPeriod = CType(row("StartOffsetPeriod"), DatePeriod)
+						objModel.StartCustomId = CInt(row("StartCustomId"))
+						objModel.StartCustomName = row("StartCustomName").ToString
 
-			End If
+						objModel.EndType = CType(row("EndType"), CalendarDataType)
+						objModel.EndFixedDate = CDate(row("EndFixedDate"))
+						objModel.EndOffset = CInt(row("EndOffset"))
+						objModel.EndOffsetPeriod = CType(row("EndOffsetPeriod"), DatePeriod)
+						objModel.EndCustomId = CInt(row("EndCustomId"))
+						objModel.EndCustomName = row("EndCustomName").ToString
+
+						objModel.IncludeBankHolidays = CBool(row("IncludeBankHolidays"))
+						objModel.WorkingDaysOnly = CBool(row("WorkingDaysOnly"))
+						objModel.ShowBankHolidays = CBool(row("ShowBankHolidays"))
+						objModel.ShowCaptions = CBool(row("ShowCaptions"))
+						objModel.ShowWeekends = CBool(row("ShowWeekends"))
+						objModel.StartOnCurrentMonth = CBool(row("StartOnCurrentMonth"))
+
+					End If
 
 
-			' Replace with Automapper?
-			For Each objRow As DataRow In dsDefinition.Tables(1).Rows
-				objEvent = New CalendarEventDetailViewModel
+					' Replace with Automapper?
+					For Each objRow As DataRow In dsDefinition.Tables(1).Rows
+						objEvent = New CalendarEventDetailViewModel
 
-				objEvent.ID = CInt(objRow("ID"))
-				objEvent.Name = objRow("Name").ToString
-				objEvent.EventKey = objRow("EventKey").ToString
-				objEvent.CalendarReportID = ID
-				objEvent.TableID = CInt(objRow("TableID"))
-				objEvent.FilterID = CInt(objRow("FilterID"))
-				objEvent.FilterName = objRow("FilterName").ToString
-				objEvent.EventStartDateID = CInt(objRow("EventStartDateID"))
-				objEvent.EventStartSessionID = CInt(objRow("EventStartSessionID"))
-				objEvent.EventStartSessionName = objRow("EventStartSessionName").ToString
-				objEvent.EventEndType = CType(objRow("EventEndType"), CalendarEventEndType)
-				objEvent.EventEndDateID = CInt(objRow("EventEndDateID"))
-				objEvent.EventEndDateName = objRow("EventEndDateName").ToString
-				objEvent.EventEndSessionID = CInt(objRow("EventEndSessionID"))
-				objEvent.EventDurationName = objRow("EventDurationName").ToString
-				objEvent.EventEndSessionName = objRow("EventEndSessionName").ToString
-				objEvent.EventDurationID = CInt(objRow("EventDurationID"))
-				objEvent.LegendType = CType(objRow("LegendType"), CalendarLegendType)
-				objEvent.LegendTypeName = objRow("LegendTypeName").ToString
-				objEvent.LegendCharacter = objRow("LegendCharacter").ToString
-				objEvent.LegendLookupTableID = CInt(objRow("LegendLookupTableID"))
-				objEvent.LegendLookupColumnID = CInt(objRow("LegendLookupColumnID"))
-				objEvent.LegendLookupCodeID = CInt(objRow("LegendLookupCodeID"))
-				objEvent.LegendEventColumnID = CInt(objRow("LegendEventColumnID"))
-				objEvent.EventDesc1ColumnID = CInt(objRow("EventDesc1ColumnID"))
-				objEvent.EventDesc1ColumnName = objRow("EventDesc1ColumnName").ToString
-				objEvent.EventDesc2ColumnID = CInt(objRow("EventDesc2ColumnID"))
-				objEvent.EventDesc2ColumnName = objRow("EventDesc2ColumnName").ToString
-				objEvent.FilterHidden = objRow("FilterHidden").ToString
+						objEvent.ID = CInt(objRow("ID"))
+						objEvent.Name = objRow("Name").ToString
+						objEvent.EventKey = objRow("EventKey").ToString
+						objEvent.ReportID = objModel.ID
+						objEvent.TableID = CInt(objRow("TableID"))
+						objEvent.FilterID = CInt(objRow("FilterID"))
+						objEvent.FilterName = objRow("FilterName").ToString
+						objEvent.EventStartDateID = CInt(objRow("EventStartDateID"))
+						objEvent.EventStartSessionID = CInt(objRow("EventStartSessionID"))
+						objEvent.EventStartSessionName = objRow("EventStartSessionName").ToString
+						objEvent.EventEndType = CType(objRow("EventEndType"), CalendarEventEndType)
+						objEvent.EventEndDateID = CInt(objRow("EventEndDateID"))
+						objEvent.EventEndDateName = objRow("EventEndDateName").ToString
+						objEvent.EventEndSessionID = CInt(objRow("EventEndSessionID"))
+						objEvent.EventDurationName = objRow("EventDurationName").ToString
+						objEvent.EventEndSessionName = objRow("EventEndSessionName").ToString
+						objEvent.EventDurationID = CInt(objRow("EventDurationID"))
+						objEvent.LegendType = CType(objRow("LegendType"), CalendarLegendType)
+						objEvent.LegendTypeName = objRow("LegendTypeName").ToString
+						objEvent.LegendCharacter = objRow("LegendCharacter").ToString
+						objEvent.LegendLookupTableID = CInt(objRow("LegendLookupTableID"))
+						objEvent.LegendLookupColumnID = CInt(objRow("LegendLookupColumnID"))
+						objEvent.LegendLookupCodeID = CInt(objRow("LegendLookupCodeID"))
+						objEvent.LegendEventColumnID = CInt(objRow("LegendEventColumnID"))
+						objEvent.EventDesc1ColumnID = CInt(objRow("EventDesc1ColumnID"))
+						objEvent.EventDesc1ColumnName = objRow("EventDesc1ColumnName").ToString
+						objEvent.EventDesc2ColumnID = CInt(objRow("EventDesc2ColumnID"))
+						objEvent.EventDesc2ColumnName = objRow("EventDesc2ColumnName").ToString
+						objEvent.FilterHidden = objRow("FilterHidden").ToString
 
-				objModel.Events.Add(objEvent)
+						objModel.Events.Add(objEvent)
 
-			Next
+					Next
 
-			PopulateSortOrder(objModel, dsDefinition.Tables(2))
+					PopulateSortOrder(objModel, dsDefinition.Tables(2))
 
-			objModel.GroupAccess = GetUtilityAccess(UtilityType.utlCalendarReport, ID, bIsCopy)
+				End If
 
-			_calendarreports.Add(objModel)
+				objModel.GroupAccess = GetUtilityAccess(UtilityType.utlCalendarReport, ID, action)
+				objModel.IsReadOnly = (action = UtilityActionType.View)
+
+				_calendarreports.Remove(objModel.ID)
+				_calendarreports.Add(objModel)
+
+			Catch ex As Exception
+
+			End Try
 
 			Return objModel
 
@@ -490,6 +486,8 @@ Namespace Repository
 						New SqlParameter("psJobsToHideGroups", SqlDbType.VarChar, -1) With {.Value = psJobsToHideGroups}, _
 						prmID)
 
+				_crosstabs.Remove(objModel.ID)
+
 			Catch
 				Throw
 
@@ -593,12 +591,12 @@ Namespace Repository
 					New SqlParameter("pfGroupByDesc", SqlDbType.Bit) With {.Value = objModel.GroupByDescription}, _
 					New SqlParameter("psDescSeparator", SqlDbType.VarChar, 100) With {.Value = objModel.Separator}, _
 					New SqlParameter("piStartType", SqlDbType.Int) With {.Value = objModel.StartType}, _
-					New SqlParameter("psFixedStart", SqlDbType.VarChar) With {.Value = objModel.StartFixedDate}, _
+					New SqlParameter("psFixedStart", SqlDbType.VarChar) With {.Value = If(objModel.StartFixedDate.HasValue, objModel.StartFixedDate.Value.ToString("yyyy-MM-dd hh:mm:ss"), "")}, _
 					New SqlParameter("piStartFrequency", SqlDbType.Int) With {.Value = objModel.StartOffsetPeriod}, _
 					New SqlParameter("piStartPeriod", SqlDbType.Int) With {.Value = objModel.StartOffsetPeriod}, _
 					New SqlParameter("piStartDateExpr", SqlDbType.Int) With {.Value = objModel.StartCustomId}, _
 					New SqlParameter("piEndType", SqlDbType.Int) With {.Value = objModel.EndType}, _
-					New SqlParameter("psFixedEnd", SqlDbType.VarChar) With {.Value = objModel.EndFixedDate}, _
+					New SqlParameter("psFixedEnd", SqlDbType.VarChar) With {.Value = If(objModel.EndFixedDate.HasValue, objModel.EndFixedDate.Value.ToString("yyyy-MM-dd hh:mm:ss"), "")}, _
 					New SqlParameter("piEndFrequency", SqlDbType.Int) With {.Value = objModel.EndOffset}, _
 					New SqlParameter("piEndPeriod", SqlDbType.Int) With {.Value = objModel.EndOffsetPeriod}, _
 					New SqlParameter("piEndDateExpr", SqlDbType.Int) With {.Value = objModel.EndCustomId}, _
@@ -638,22 +636,17 @@ Namespace Repository
 			Return True
 		End Function
 
-		Private Function GetUtilityAccess(utilType As UtilityType, ID As Integer, IsCopy As Boolean) As Collection(Of GroupAccess)
+		Private Function GetUtilityAccess(utilType As UtilityType, ID As Integer, action As UtilityActionType) As Collection(Of GroupAccess)
 
 			Dim objAccess As New Collection(Of GroupAccess)
+			Dim isCopy = (action = UtilityActionType.Copy)
 
 			Try
-
-				'Dim con = objDataAccess.Connection
-
-				'objAccess = con.Query(Of GroupAccess)("spASRIntGetUtilityAccessRecords")
-				'objModel.GroupAccess = GetUtilityAccess(UtilityType.utlCalendarReport, ID, bIsCopy)
-
 
 				Dim rstAccessInfo As DataTable = _objDataAccess.GetDataTable("spASRIntGetUtilityAccessRecords", CommandType.StoredProcedure _
 					, New SqlParameter("piUtilityType", SqlDbType.Int) With {.Value = CInt(utilType)} _
 					, New SqlParameter("piID", SqlDbType.Int) With {.Value = ID} _
-					, New SqlParameter("piFromCopy", SqlDbType.Int) With {.Value = IsCopy})
+					, New SqlParameter("piFromCopy", SqlDbType.Int) With {.Value = isCopy})
 
 				' TODO - replace with dapper
 				For Each objRow As DataRow In rstAccessInfo.Rows
@@ -689,24 +682,26 @@ Namespace Repository
 
 		' Old style update of the column selection stuff
 		' could be dapperised, but the rest of our stored procs need updating too as everything has different column names and the IDs are not currently returned.
-		Private Function MailMergeColumnsAsString(objColumns As Collection(Of ReportColumnItem), objSortColumns As Collection(Of SortOrderViewModel)) As String
+		Private Function MailMergeColumnsAsString(objColumns As IEnumerable(Of ReportColumnItem), objSortColumns As Collection(Of SortOrderViewModel)) As String
 
 			Dim sColumns As String = ""
 			Dim sOrderString As String
+			Dim iSortSequence As Integer = 1
 
 			Dim iCount As Integer = 1
 			For Each objItem In objColumns
 
 				' this could be improve with some linq or whatever! No panic because the whole function could be tidied up
-				sOrderString = "||0||"
+				sOrderString = "0||"
 				For Each objSortItem In objSortColumns
 					If objSortItem.ColumnID = objItem.ID Then
-						sOrderString = "||1||" & IIf(objSortItem.Order = OrderType.Ascending, "ASC", "DESC").ToString & "||"
+						sOrderString = String.Format("{0}||{1}||", iSortSequence, IIf(objSortItem.Order = OrderType.Ascending, "Asc", "Desc").ToString)
+						iSortSequence += 1
 					End If
 				Next
 
-				sColumns += String.Format("{0}||{1}||{2}||{3}||{4}||{5}**" _
-													, objItem.Sequence, IIf(objItem.IsExpression, "E", "C"), objItem.ID, objItem.Size, objItem.Decimals, sOrderString)
+				sColumns += String.Format("{0}||{1}||{2}||{3}||{4}||{5}||{6}**" _
+													, iCount, IIf(objItem.IsExpression, "E", "C"), objItem.ID, objItem.Size, objItem.Decimals, objItem.IsNumeric, sOrderString)
 
 				iCount += 1
 			Next
@@ -732,7 +727,7 @@ Namespace Repository
 				For Each objSortItem In objSortColumns
 					If objSortItem.ColumnID = objItem.ID Then
 						sOrderString = String.Format("{0}||{1}||{2}||{3}||{4}||{5}" _
-							, iSortSequence, IIf(objSortItem.Order = OrderType.Ascending, "ASC", "DESC").ToString _
+							, iSortSequence, IIf(objSortItem.Order = OrderType.Ascending, "Asc", "Desc").ToString _
 							, If(objSortItem.BreakOnChange, 1, 0), If(objSortItem.PageOnChange, 1, 0) _
 							, If(objSortItem.ValueOnChange, 1, 0), If(objSortItem.SuppressRepeated, 1, 0))
 
@@ -885,8 +880,6 @@ Namespace Repository
 
 			Try
 
-				outputModel.SessionInfo = _objSessionInfo
-
 				If data.Rows.Count = 1 Then
 
 					Dim row As DataRow = data.Rows(0)
@@ -999,6 +992,8 @@ Namespace Repository
 
 				For Each objRow As DataRow In data.Rows
 					Dim objItem As New ReportColumnItem() With {
+						.ReportType = outputModel.ReportType,
+						.ReportID = outputModel.ID,
 						.Heading = objRow("Heading").ToString,
 						.IsExpression = CBool(objRow("IsExpression")),
 						.ID = CInt(objRow("id")),
