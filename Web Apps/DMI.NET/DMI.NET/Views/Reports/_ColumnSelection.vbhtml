@@ -105,45 +105,8 @@
 
   <script type="text/javascript">
 
-	function moveSelectedColumn(direction) {
-
-		var selectedRow;
-
-		if ($('#SelectedColumns').getGridParam('selrow')) {
-			var ids = $('#SelectedColumns').getDataIDs();
-				var temp = 0;
-				var currRow = $('#SelectedColumns').getGridParam('selrow');
-				if (direction === 'up' && currRow > 1) {
-					var r1 = $('#SelectedColumns').getRowData(currRow - 1);
-					var r2 = $('#SelectedColumns').getRowData(currRow);
-					$('#SelectedColumns').delRowData(currRow - 1);
-					$('#SelectedColumns').delRowData(currRow);
-					temp = r1.Sequence;
-					r1.Sequence = r2.Sequence;
-					r2.Sequence = temp;
-					$('#SelectedColumns').addRowData(r1.Sequence, r1);
-					$('#SelectedColumns').addRowData(r2.Sequence, r2);
-					selectedRow = temp;
-				}
-				var recordCount = jQuery("#SelectedColumns").getGridParam("records");
-				if (direction === 'down' && currRow < recordCount) {
-					var r1 = $('#SelectedColumns').getRowData(currRow);
-					var r2 = $('#SelectedColumns').getRowData(parseInt(currRow) + 1);
-					$('#SelectedColumns').delRowData(currRow);
-					$('#SelectedColumns').delRowData(parseInt(currRow) + 1);
-					temp = r1.Sequence;
-					r1.Sequence = r2.Sequence;
-					r2.Sequence = temp;
-					$('#SelectedColumns').addRowData(r1.Sequence, r1);
-					$('#SelectedColumns').addRowData(r2.Sequence, r2);
-					selectedRow = r2.Sequence;
-					//  $('#list4').setGridParam({sortname:'id'}).trigger('reloadGrid');
-				}
-				// Sort the table   
-				$('#SelectedColumns').setGridParam({ sortname: 'Sequence' }).trigger('reloadGrid');
-				$('#SelectedColumns').jqGrid("setSelection", selectedRow);
-
-			}
+		function moveSelectedColumn(direction) {
+			OpenHR.MoveItemInGrid($("#SelectedColumns"), direction);
 		}
 
 		function toggleColumnsCalculations(type) {

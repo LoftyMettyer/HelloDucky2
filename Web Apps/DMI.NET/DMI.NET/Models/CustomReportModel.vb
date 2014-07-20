@@ -83,18 +83,6 @@ Namespace Models
 
 		End Sub
 
-		Public Overrides Function GetAvailableSortColumns() As IEnumerable(Of ReportColumnItem)
-
-			Dim objItems As New Collection(Of ReportColumnItem)
-
-			For Each objColumn In Columns
-				objItems.Add(objColumn)
-			Next
-
-			Return objItems
-
-		End Function
-
 		Public Overrides Function GetAvailableTables() As IEnumerable(Of ReportTableItem)
 
 			Dim objItems As New Collection(Of ReportTableItem)

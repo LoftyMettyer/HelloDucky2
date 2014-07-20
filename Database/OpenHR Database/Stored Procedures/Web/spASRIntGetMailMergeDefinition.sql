@@ -116,11 +116,10 @@ BEGIN
 	WHERE MailMergeID = @piReportID;		
 
 	-- Columns
-	SELECT ASRSysMailMergeColumns.ID,
+	SELECT ASRSysMailMergeColumns.ColumnID AS [ID],
 		0 AS [IsExpression],
 		0 AS [accesshidden],
 		ASRSysColumns.tableID,
-		ASRSysMailMergeColumns.columnID,
 		ASRSysColumns.columnName AS [name], 
 		ASRSysTables.tableName + '.' + ASRSysColumns.columnName AS [heading],
 		ASRSysColumns.DataType,
@@ -139,11 +138,10 @@ BEGIN
 	WHERE ASRSysMailMergeColumns.MailMergeID = @piReportID		
 		AND ASRSysMailMergeColumns.type = 'C'
 	UNION
-	SELECT ASRSysMailMergeColumns.ID,
+	SELECT ASRSysMailMergeColumns.columnID AS [ID],
 		1 AS [IsExpression],
 		CASE WHEN ASRSysExpressions.access = 'HD' THEN 1 ELSE 0 END AS [accesshidden],		
 		ASRSysExpressions.tableID,
-		ASRSysMailMergeColumns.columnID,
 		ASRSysExpressions.name AS [name],
 		convert(varchar(MAX), '<Calc> ' + replace(ASRSysExpressions.name, '_', ' ')) AS [heading],
 		0 AS DataType,

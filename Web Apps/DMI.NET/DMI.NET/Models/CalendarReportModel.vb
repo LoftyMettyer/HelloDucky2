@@ -9,6 +9,7 @@ Imports HR.Intranet.Server.Enums
 Imports System.ComponentModel
 Imports DMI.NET.ViewModels
 Imports DMI.NET.AttributeExtensions
+Imports DMI.NET.ViewModels.Reports
 
 Namespace Models
 
@@ -68,7 +69,7 @@ Namespace Models
 		Public Overrides Sub SetBaseTable(TableID As Integer)
 		End Sub
 
-		Public Overrides Function GetAvailableSortColumns() As IEnumerable(Of ReportColumnItem)
+		Public Overrides Function GetAvailableSortColumns(Self As SortOrderViewModel) As IEnumerable(Of ReportColumnItem)
 
 			Dim objItems As New Collection(Of ReportColumnItem)
 

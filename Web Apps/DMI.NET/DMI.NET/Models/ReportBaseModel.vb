@@ -67,7 +67,27 @@ Namespace Models
 
 		Public Property SessionInfo As SessionInfo Implements IReport.SessionInfo
 		Public MustOverride Sub SetBaseTable(BaseTableID As Integer) Implements IReport.SetBaseTable
-		Public MustOverride Function GetAvailableSortColumns() As IEnumerable(Of ReportColumnItem) Implements IReport.GetAvailableSortColumns
+
+		Public Overridable Function GetAvailableSortColumns(Self As SortOrderViewModel) As IEnumerable(Of ReportColumnItem) Implements IReport.GetAvailableSortColumns
+
+			Dim objItems As New Collection(Of ReportColumnItem)
+
+			' Add all columns that aren't already included in the sort collection
+			For Each objColumn In Columns
+				If SortOrders.Where(Function(m) m.ColumnID = objColumn.ID).Count = 0 Then
+					objItems.Add(objColumn)
+				End If
+			Next
+
+			' Add self to collection if not already there
+			If Self.ColumnID > 0 And objItems.Where(Function(m) m.ID = Self.ColumnID).Count = 0 Then
+				Dim objItem = Columns.Where(Function(m) m.ID = Self.ColumnID).FirstOrDefault
+				objItems.Add(objItem)
+			End If
+
+			Return objItems
+
+		End Function
 
 		Public Overridable Function GetAvailableTables() As IEnumerable(Of ReportTableItem) Implements IReport.GetAvailableTables
 
@@ -96,7 +116,6 @@ Namespace Models
 		Public Sub Attach(ByRef session As SessionInfo)
 			SessionInfo = session
 		End Sub
-
 
 	End Class
 End Namespace

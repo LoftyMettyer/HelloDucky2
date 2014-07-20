@@ -370,6 +370,7 @@ Namespace Repository
 				_calendarreports.Add(objModel)
 
 			Catch ex As Exception
+				Throw
 
 			End Try
 
@@ -913,41 +914,48 @@ Namespace Repository
 		Private Sub PopulateSortOrder(outputModel As ReportBaseModel, data As DataTable)
 
 			Dim objSort As SortOrderViewModel
-			Dim iCount As Integer = 1
+			Dim iSequence As Integer = 1
 
-			For Each objRow As DataRow In data.Rows
-				objSort = New SortOrderViewModel
+			Try
 
-				objSort.ReportID = outputModel.ID
-				objSort.ReportType = outputModel.ReportType
+				For Each objRow As DataRow In data.Rows
+					objSort = New SortOrderViewModel
 
-				objSort.TableID = CInt(objRow("tableid"))
-				objSort.ID = iCount
-				objSort.ColumnID = CInt(objRow("Id"))
+					objSort.ReportID = outputModel.ID
+					objSort.ReportType = outputModel.ReportType
 
-				objSort.Name = objRow("name").ToString
-				objSort.Order = CType(IIf(objRow("order").ToString.ToUpper = "ASC", OrderType.Ascending, OrderType.Descending), OrderType)
-				objSort.Sequence = CInt(objRow("sequence"))
+					objSort.TableID = CInt(objRow("tableid"))
+					objSort.ID = iSequence
+					objSort.ColumnID = CInt(objRow("Id"))
 
-				If data.Columns.Contains("PageOnChange") Then
-					objSort.PageOnChange = CBool(objRow("PageOnChange"))
-				End If
+					objSort.Name = objRow("name").ToString
+					objSort.Order = CType(IIf(objRow("order").ToString.ToUpper = "ASC", OrderType.Ascending, OrderType.Descending), OrderType)
+					objSort.Sequence = iSequence
 
-				If data.Columns.Contains("ValueOnChange") Then
-					objSort.PageOnChange = CBool(objRow("ValueOnChange"))
-				End If
+					If data.Columns.Contains("PageOnChange") Then
+						objSort.PageOnChange = CBool(objRow("PageOnChange"))
+					End If
 
-				If data.Columns.Contains("BreakOnChange") Then
-					objSort.PageOnChange = CBool(objRow("BreakOnChange"))
-				End If
+					If data.Columns.Contains("ValueOnChange") Then
+						objSort.ValueOnChange = CBool(objRow("ValueOnChange"))
+					End If
 
-				If data.Columns.Contains("SuppressRepeated") Then
-					objSort.PageOnChange = CBool(objRow("SuppressRepeated"))
-				End If
+					If data.Columns.Contains("BreakOnChange") Then
+						objSort.BreakOnChange = CBool(objRow("BreakOnChange"))
+					End If
 
-				outputModel.SortOrders.Add(objSort)
-				iCount += 1
-			Next
+					If data.Columns.Contains("SuppressRepeated") Then
+						objSort.SuppressRepeated = CBool(objRow("SuppressRepeated"))
+					End If
+
+					outputModel.SortOrders.Add(objSort)
+					iSequence += 1
+				Next
+
+			Catch ex As Exception
+				Throw
+
+			End Try
 
 		End Sub
 

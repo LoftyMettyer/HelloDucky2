@@ -11,6 +11,7 @@
 
 	<div class="stretchyfill">
 		<table id="SortOrders"></table>
+	
 	</div>
 
 	<div class="stretchyfixed">
@@ -18,8 +19,8 @@
 		<input type="button" id="btnSortOrderEdit" value="Edit" disabled onclick="editSortSorder(0);" />
 		<input type="button" id="btnSortOrderRemove" value="Remove" disabled onclick="OpenHR.RemoveRowFromGrid(SortOrders, 'Reports/RemoveSortOrder')" />
 		<input type="button" id="btnSortOrderRemoveAll" value="Remove All" disabled onclick="OpenHR.RemoveAllRowsFromGrid(SortOrders, 'Reports/RemoveSortOrder')" />
-		<input type="button" id="btnSortOrderMoveUp" value="Move Up" disabled onclick="moveSortOrderUp()" />
-		<input type="button" id="btnSortOrderMoveDown" value="Move Down" disabled onclick="moveSortOrderDown()" />
+		<input type="button" id="btnSortOrderMoveUp" value="Move Up" disabled onclick="moveSelectedOrder('up')" />
+		<input type="button" id="btnSortOrderMoveDown" value="Move Down" disabled onclick="moveSelectedOrder('down')" />
 	</div>
 
 </fieldset>
@@ -34,45 +35,49 @@
 
 	<script type="text/javascript">
 
-		$(function () {
-			attachGrid();
-		})
+	$(function () {
+		attachGrid();
+	})
 
-		function attachGrid() {
+	function attachGrid() {
 
-			$("#SortOrders").jqGrid({
+		$("#SortOrders").jqGrid({
 
-				datatype: 'jsonstring',
-				datastr: '@Model.SortOrders.ToJsonResult',
-				mtype: 'GET',
-				jsonReader: {
-					root: "rows", //array containing actual data
-					page: "page", //current page
-					total: "total", //total pages for the query
-					records: "records", //total number of records
-					repeatitems: false,
-					id: "ID"
-				},
-				colNames: ['ID','ReportID', 'ReportType', 'TableID', 'ColumnID', 'Name', 'Sequence', 'Order',
-										'BreakOnChange', 'PageOnChange', 'ValueOnChange', 'SuppressRepeated'],
-				colModel: [
-										{ name: 'ID', width: 50, key: true, hidden: false },
-										{ name: 'ReportID', width: 50, hidden: true },
-										{ name: 'ReportType', width: 50, hidden: true },
-										{ name: 'TableID', width: 50, hidden: true },
-										{ name: 'ColumnID', width: 50, key: true, hidden: false },
-										{ name: 'Name', index: 'Name', width: 600 },
-										{ name: 'Sequence', index: 'Sequence', width: 150 },
-										{ name: 'Order', index: 'Order', width: 150 },
-										{ name: 'BreakOnChange', index: 'BreakOnChange', width: 150 },
-										{ name: 'PageOnChange', index: 'PageOnChange', width: 150 },
-										{ name: 'ValueOnChange', index: 'ValueOnChange', width: 150 },
-										{ name: 'SuppressRepeated', index: 'SuppressRepeated', width: 120, align: "center" }
-				],
+			datatype: 'jsonstring',
+			datastr: '@Model.SortOrders.ToJsonResult',
+			mtype: 'GET',
+			jsonReader: {
+				root: "rows", //array containing actual data
+				page: "page", //current page
+				total: "total", //total pages for the query
+				records: "records", //total number of records
+				repeatitems: false,
+				id: "ID"
+			},
+			colNames: ['ID','ReportID', 'ReportType', 'TableID', 'ColumnID', 'Column Name', 'Sequence', 'Order',
+									'Break On Change', 'Page On Change', 'Value On Change', 'Suppress Repeated'],
+			colModel: [
+									{ name: 'ID', width: 50, key: true, hidden: true },
+									{ name: 'ReportID', width: 50, hidden: true },
+									{ name: 'ReportType', width: 50, hidden: true },
+									{ name: 'TableID', width: 50, hidden: true },
+									{ name: 'ColumnID', width: 50, key: true, hidden: true },
+									{ name: 'Name', index: 'Name', width: 500 },
+									{ name: 'Sequence', index: 'Sequence', width: 150, hidden: true },
+									{ name: 'Order', index: 'Order', width: 90, editable: true, formatter: "select", edittype: "select", editoptions: { value: "0:Ascending;1:Descending" } },
+									{	name: 'BreakOnChange', index: 'BreakOnChange', width: 120, align: "center", hidden: true,
+										editable: true, edittype: 'checkbox', editoptions: { value: "True:False" }, formatter: "checkbox", formatoptions: { disabled: false }},
+									{	name: 'PageOnChange', index: 'PageOnChange', width: 120, align: "center", hidden: true,
+										editable: true, edittype: 'checkbox', editoptions: { value: "True:False" }, formatter: "checkbox", formatoptions: { disabled: false }},
+									{ name: 'ValueOnChange', index: 'ValueOnChange', width: 120, align: "center", hidden: true,
+										editable: true, edittype: 'checkbox', editoptions: { value: "True:False" }, formatter: "checkbox", formatoptions: { disabled: false }},
+									{ name: 'SuppressRepeated', index: 'SuppressRepeated', width: 120, align: "center", hidden: true,
+										editable: true, edittype: 'checkbox', editoptions: { value: "True:False" }, formatter: "checkbox", formatoptions: { disabled: false }}
+			],
 				viewrecords: true,
 				width: 400,
 				sortname: 'Sequence',
-				sortorder: "desc",
+				sortorder: "asc",
 				ondblClickRow: function (rowID) {
 					editSortSorder(rowID);
 				},
@@ -93,33 +98,43 @@
 					button_disable($("#btnSortOrderMoveDown")[0], isBottomRow);
 
 				},
-				gridComplete: function () {
-					// Highlight top row
-					var ids = $(this).jqGrid("getDataIDs");
-					if (ids && ids.length > 0)
-						$(this).jqGrid("setSelection", ids[0]);
-				}
-			});
-		}
+				loadComplete: function (data) {
 
+					if ('@Model.ReportType' == '@UtilityType.utlCustomReport') {
+						$(this).showCol("BreakOnChange");
+						$(this).showCol("PageOnChange");
+						$(this).showCol("ValueOnChange");
+						$(this).showCol("SuppressRepeated");
+				}
+
+					//// Highlight top row
+					//var ids = $(this).jqGrid("getDataIDs");
+					//if (ids && ids.length > 0)
+					//	$(this).jqGrid("setSelection", ids[0]);
+				}
+		});
+
+	//	$("#SortOrders").jqGrid('sortableRows');
+
+	}
 
 		function addSortOrder() {
 			OpenHR.OpenDialog("Reports/AddSortOrder", "divPopupReportDefinition", { ReportID: "@Model.ID", ReportType: "@Model.ReportType"});
+	}
+
+	function editSortSorder(rowID) {
+
+		if (rowID == 0) {
+			rowID = $('#SortOrders').jqGrid('getGridParam', 'selrow');
 		}
 
-		function editSortSorder(rowID) {
+		var gridData = $("#SortOrders").getRowData(rowID);
+		OpenHR.OpenDialog("Reports/EditSortOrder", "divPopupReportDefinition", gridData);
 
-			if (rowID == 0) {
-				rowID = $('#SortOrders').jqGrid('getGridParam', 'selrow');
-			}
+	}
 
-			var gridData = $("#SortOrders").getRowData(rowID);
-			OpenHR.OpenDialog("Reports/EditSortOrder", "divPopupReportDefinition", gridData);
-
-		}
-
-	function moveSortOrderUp() {}
-
-	function moveSortOrderDown() {}
+	function moveSelectedOrder(direction) {
+		OpenHR.MoveItemInGrid($("#SortOrders"), direction);
+	}
 
 	</script>

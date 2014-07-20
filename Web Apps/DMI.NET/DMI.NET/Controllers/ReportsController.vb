@@ -337,8 +337,6 @@ Namespace Controllers
 
 		End Function
 
-
-
 		<HttpPost>
 		Function AddSortOrder(ReportID As Integer, ReportType As UtilityType) As ActionResult
 
@@ -348,9 +346,16 @@ Namespace Controllers
 			objModel.ReportType = ReportType
 
 			Dim objReport = objReportRepository.RetrieveParent(objModel)
-			objModel.ID = objReport.SortOrders.Count + 1	' TODO this may need some work if they start adding and deleting orders!
 
-			objModel.AvailableColumns = objReport.GetAvailableSortColumns()
+			If objReport.SortOrders.Count = 0 Then
+				objModel.ID = 1
+				objModel.Sequence = 1
+			Else
+				objModel.ID = objReport.SortOrders.Max(Function(m) m.ID) + 1
+				objModel.Sequence = objReport.SortOrders.Max(Function(m) m.Sequence) + 1
+			End If
+
+			objModel.AvailableColumns = objReport.GetAvailableSortColumns(objModel)
 
 			ModelState.Clear()
 			Return PartialView("EditorTemplates\SortOrder", objModel)
@@ -361,7 +366,7 @@ Namespace Controllers
 		Function EditSortOrder(objModel As SortOrderViewModel) As ActionResult
 
 			Dim objReport = objReportRepository.RetrieveParent(objModel)
-			objModel.AvailableColumns = objReport.GetAvailableSortColumns()
+			objModel.AvailableColumns = objReport.GetAvailableSortColumns(objModel)
 
 			ModelState.Clear()
 			Return PartialView("EditorTemplates\SortOrder", objModel)

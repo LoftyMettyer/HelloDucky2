@@ -298,11 +298,10 @@ BEGIN
 	WHERE MailMergeID = @piReportID;		
 
 	-- Columns
-	SELECT ASRSysMailMergeColumns.ID,
+	SELECT ASRSysMailMergeColumns.ColumnID AS [ID],
 		0 AS [IsExpression],
 		0 AS [accesshidden],
 		ASRSysColumns.tableID,
-		ASRSysMailMergeColumns.columnID,
 		ASRSysColumns.columnName AS [name], 
 		ASRSysTables.tableName + '.' + ASRSysColumns.columnName AS [heading],
 		ASRSysColumns.DataType,
@@ -321,11 +320,10 @@ BEGIN
 	WHERE ASRSysMailMergeColumns.MailMergeID = @piReportID		
 		AND ASRSysMailMergeColumns.type = 'C'
 	UNION
-	SELECT ASRSysMailMergeColumns.ID,
+	SELECT ASRSysMailMergeColumns.columnID AS [ID],
 		1 AS [IsExpression],
 		CASE WHEN ASRSysExpressions.access = 'HD' THEN 1 ELSE 0 END AS [accesshidden],		
 		ASRSysExpressions.tableID,
-		ASRSysMailMergeColumns.columnID,
 		ASRSysExpressions.name AS [name],
 		convert(varchar(MAX), '<Calc> ' + replace(ASRSysExpressions.name, '_', ' ')) AS [heading],
 		0 AS DataType,
@@ -1007,24 +1005,24 @@ BEGIN
 		INNER JOIN ASRSysExpressions ON ASRSysCustomReportsDetails.colExprID = ASRSysExpressions.exprID
 		INNER JOIN ASRSysTables ON ASRSysExpressions.tableID = ASRSysTables.tableID
 	WHERE ASRSysCustomReportsDetails.customReportID = @piReportID
-		AND ASRSysCustomReportsDetails.type <> 'C'
+		AND ASRSysCustomReportsDetails.type <> 'C';
 
 	-- Orders
-	SELECT ASRSysCustomReportsDetails.colExprID AS [ID],
+	SELECT cd.colExprID AS [ID],
 		convert(varchar(MAX), ASRSysTables.tableName + '.' + ASRSysColumns.columnName) as [Name],
-		ASRSysCustomReportsDetails.SortOrderSequence AS [Sequence],
-		ISNULL(ASRSysCustomReportsDetails.boc, 0) AS [BreakOnChange],
-		ISNULL(ASRSysCustomReportsDetails.boc, 0) AS [PageOnChange],
-		ISNULL(ASRSysCustomReportsDetails.boc, 0) AS [ValueOnChange],
-		ISNULL(ASRSysCustomReportsDetails.boc, 0) AS [SuppressRepeated],
-		ASRSysCustomReportsDetails.sortOrder AS [Order],
+		cd.SortOrderSequence AS [Sequence],
+		ISNULL(cd.boc, 0) AS [BreakOnChange],
+		ISNULL(cd.poc, 0) AS [PageOnChange],
+		ISNULL(cd.voc, 0) AS [ValueOnChange],
+		ISNULL(cd.srv, 0) AS [SuppressRepeated],
+		cd.sortOrder AS [Order],
 		ASRSysTables.tableID
-	FROM ASRSysCustomReportsDetails
-	INNER JOIN ASRSysColumns ON ASRSysCustomReportsDetails.colExprID = ASRSysColumns.columnId
+	FROM ASRSysCustomReportsDetails cd
+	INNER JOIN ASRSysColumns ON cd.colExprID = ASRSysColumns.columnId
 	INNER JOIN ASRSysTables ON ASRSysColumns.tableID = ASRSysTables.tableID
-	WHERE ASRSysCustomReportsDetails.customReportID = @piReportID
-		AND ASRSysCustomReportsDetails.type = 'C'
-		AND ASRSysCustomReportsDetails.sortOrderSequence > 0
+	WHERE cd.customReportID = @piReportID
+		AND cd.type = 'C'
+		AND cd.sortOrderSequence > 0;
 
 	SELECT 'N' AS [hidden],
 		0 AS IsExpression,
