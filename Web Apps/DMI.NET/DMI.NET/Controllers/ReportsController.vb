@@ -183,19 +183,26 @@ Namespace Controllers
 		End Function
 
 		<HttpGet>
-		Function GetColumnsForTable(TableID As Integer) As JsonResult
+		Function GetAvailableItemsForTable(TableID As Integer, reportID As Integer, reportType As UtilityType, selectionType As String) As JsonResult
 
-			Dim objColumns = objReportRepository.GetColumnsForTable(TableID)
-			Dim results = New With {.total = 1, .page = 1, .records = 0, .rows = objColumns}
-			Return Json(results, JsonRequestBehavior.AllowGet)
+			Dim objReport = objReportRepository.RetrieveParent(reportID, reportType)
+			Dim objAvailable As List(Of ReportColumnItem)
 
-		End Function
+			If selectionType = "C" Then
+				objAvailable = objReportRepository.GetColumnsForTable(TableID)
+				For Each objItem In objReport.Columns.Where(Function(m) Not m.IsExpression)
+					objAvailable.RemoveAll(Function(m) m.ID = objItem.ID)
+				Next
 
-		<HttpGet>
-		Function GetCalculationsForTable(TableID As Integer) As JsonResult
+			Else
+				objAvailable = objReportRepository.GetCalculationsForTable(TableID)
+				For Each objItem In objReport.Columns.Where(Function(m) m.IsExpression)
+					objAvailable.RemoveAll(Function(m) m.ID = objItem.ID)
+				Next
 
-			Dim objColumns = objReportRepository.GetCalculationsForTable(TableID)
-			Dim results = New With {.total = 1, .page = 1, .records = 0, .rows = objColumns}
+			End If
+
+			Dim results = New With {.total = 1, .page = 1, .records = 0, .rows = objAvailable}
 			Return Json(results, JsonRequestBehavior.AllowGet)
 
 		End Function

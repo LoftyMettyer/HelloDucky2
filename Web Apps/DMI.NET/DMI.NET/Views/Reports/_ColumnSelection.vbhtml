@@ -10,7 +10,7 @@
 <style>
 
 	#columnsAvailable {
-		height: 800px;
+		height: 500px;
 		overflow: auto;
 	}
 
@@ -22,7 +22,7 @@
 <div id="columnsAvailable" style="float:left">
 
 	Columns / Calculations Available :
-	<br/>
+	<br />
 
 	<select name="SelectedTableID" id="SelectedTableID" onchange="getAvailableTableColumnsCalcs();"></select>
 
@@ -31,7 +31,7 @@
 	Columns
 	@Html.RadioButton("columnSelectiontype", CInt(ColumnSelectionType.Calculations), False, New With {.onclick = "toggleColumnsCalculations('calc')"})
 	Calculations
-	<br/>
+	<br />
 
 	<table id="AvailableColumns" class="scroll" cellpadding="0" cellspacing="0"></table>
 </div>
@@ -56,7 +56,7 @@
 
 <div id="columnsSelected" style="float:left">
 	<table id="SelectedColumns" class="scroll" cellpadding="0" cellspacing="0"></table>
-	<br/>
+	<br />
 
 	<div>
 		<div class="customReportsOnly">
@@ -100,6 +100,7 @@
 
 </div>
 
+
 <input type="hidden" name="Columns.BaseTableID" value="@Model.BaseTableID" />
 
 
@@ -121,6 +122,7 @@
 
 			var datarow = $("#AvailableColumns").getRowData(rowID);
 	
+			datarow.Name = $("#SelectedTableID option:selected").text() + '.' + datarow.Name;
 			datarow.ReportType = '@Model.ReportType';
 			datarow.ReportID = '@Model.ID';
 			datarow.Heading = datarow.Name;
@@ -167,19 +169,19 @@
 
     function getAvailableTableColumnsCalcs() {
 
-    	var URL;
+    	var sType;
 
     	$("#AvailableColumns").jqGrid('GridUnload');
 
     	if ($("#columnSelectiontype:checked").val() == 0) {
-				URL = 'Reports/GetColumnsForTable?TableID=' + $("#SelectedTableID").val();
+    		sType = "C";
     	}
     	else {
-				URL = 'Reports/GetCalculationsForTable?TableID=' + $("#SelectedTableID").val();
+    		sType = "E";
 			}
 
     	$("#AvailableColumns").jqGrid({
-    		url: URL,
+    		url: 'Reports/GetAvailableItemsForTable?TableID=' + $("#SelectedTableID").val() + '&&ReportID=' + '@Model.ID' + '&&ReportType=' + '@Model.ReportType' + '&&selectionType=' + sType,
     		datatype: 'json',
     		mtype: 'GET',
     		jsonReader: {
@@ -188,7 +190,7 @@
     			total: "total", //total pages for the query
     			records: "records", //total number of records
     			repeatitems: false,
-    			id: "ID" //index of the column with the PK in it
+    			id: "ID"
     		},
     		colNames: ['ID', 'IsExpression', 'Name', 'DataType', 'Size', 'Decimals'],
     		colModel: [
@@ -208,8 +210,6 @@
     		}
     	});
     	
-    	// TODO Loop through available removing any currently selected
-
     }
 
     function updateColumnsSelectedGrid() {

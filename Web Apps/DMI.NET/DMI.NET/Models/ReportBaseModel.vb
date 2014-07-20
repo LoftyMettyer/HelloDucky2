@@ -53,7 +53,7 @@ Namespace Models
 		<DisplayName("Display Title In Report Header")>
 		Public Property DisplayTitleInReportHeader As Boolean
 
-		Public Property Columns As New List(Of ReportColumnItem)
+		Public Property Columns As New List(Of ReportColumnItem) Implements IReport.Columns
 		Public Property ColumnsAsString As String
 
 		Public Property SortOrders As New Collection(Of SortOrderViewModel) Implements IReport.SortOrders
