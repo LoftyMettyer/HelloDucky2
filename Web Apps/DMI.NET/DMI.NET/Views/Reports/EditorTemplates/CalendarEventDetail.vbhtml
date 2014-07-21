@@ -25,7 +25,7 @@ End Code
 
 		<br/>
 		<input type="hidden" id="txtEventFilterID" name="FilterID" value="@Model.FilterID" />
-		@Html.TextBoxFor(Function(m) m.FilterName, New With {.id = "EventFilter", .readonly = "true"})
+		@Html.TextBoxFor(Function(m) m.FilterName, New With {.id = "txtEventFilter", .readonly = "true"})
 		@Html.EllipseButton("cmdBasePicklist", "selectRecordOption('event', 'filter')", True)
 
 	</fieldset>
@@ -34,10 +34,10 @@ End Code
 		<legend>Event Start :</legend>
 
 		@Html.LabelFor(Function(model) model.EventStartDateID)
-		@Html.ColumnDropdown2("EventStartDateID", Model.EventStartDateID, Model.TableID, SQLDataType.sqlDate, False, False)
+		@Html.ColumnDropdown2(Model.EventStartDateID, Model.TableID, SQLDataType.sqlDate, False, False, New With {.name = "EventStartDateID"})
 		<br/>
 		@Html.LabelFor(Function(model) model.EventStartSessionID)
-		@Html.ColumnDropdown2("EventStartSessionID", Model.EventStartSessionID, Model.TableID, SQLDataType.sqlVarChar, True, False)
+		@Html.ColumnDropdown2(Model.EventStartSessionID, Model.TableID, SQLDataType.sqlVarChar, True, False, New With {.name = "EventStartSessionID"})
 
 	</fieldset>
 
@@ -52,14 +52,15 @@ End Code
 		End Date
 		<br />
 		@Html.LabelFor(Function(model) model.EventEndDateID)
-		@Html.ColumnDropdown2("EventEndDateID", Model.EventEndDateID, Model.TableID, SQLDataType.sqlDate, True, False)
+		@Html.ColumnDropdown2(Model.EventEndDateID, Model.TableID, SQLDataType.sqlDate, True, False, New With {.name = "EventEndDateID", .id = "EventEndDateID", .disabled = (Model.EventEndType = CalendarEventEndType.EndDate)})
+
 		<br />
 		@Html.LabelFor(Function(model) model.EventEndSessionID)
-		@Html.ColumnDropdown2("EventEndSessionID", Model.EventEndSessionID, Model.TableID, SQLDataType.sqlVarChar, True, False)
+		@Html.ColumnDropdown2(Model.EventEndSessionID, Model.TableID, SQLDataType.sqlVarChar, True, False, New With {.name = "EventEndSessionID", .id = "EventEndSessionID", .disabled = (Model.EventEndType = CalendarEventEndType.EndDate)})
 		<br/>
 		@Html.RadioButton("EventEndType", CInt(CalendarEventEndType.Duration), Model.EventEndType = CalendarEventEndType.Duration, New With {.onclick = "changeEventEndType('duration')"})
 		Duration
-		@Html.ColumnDropdown2("EventDurationID", Model.EventDurationID, Model.TableID, SQLDataType.sqlNumeric, True, False)
+		@Html.ColumnDropdown2(Model.EventDurationID, Model.TableID, SQLDataType.sqlNumeric, True, False, New With {.name = "EventDurationID", .id = "EventDurationID", .disabled = (Model.EventEndType = CalendarEventEndType.Duration)})
 	</fieldset>
 
 </div>
@@ -75,11 +76,11 @@ End Code
 		<br />
 
 		@Html.RadioButton("LegendType", CInt(CalendarLegendType.LookupTable), Model.LegendType = CalendarLegendType.LookupTable, New With {.onclick = "changeEventLegendType('lookup')"})
-		Lookup Table
+	Lookup Table
 		<br />
 
 		@Html.DisplayNameFor(Function(model) model.LegendEventColumnID)
-		@Html.ColumnDropdown2("LegendEventColumnID", Model.LegendEventColumnID, Model.TableID, SQLDataType.sqlVarChar, False, True)
+		@Html.ColumnDropdown2(Model.LegendEventColumnID, Model.TableID, SQLDataType.sqlVarChar, False, True, New With {.name = "LegendEventColumnID"})
 		<br/>
 		<br/>
 
@@ -88,10 +89,10 @@ End Code
 
 		<br />
 		@Html.DisplayNameFor(Function(model) model.LegendLookupColumnID)
-		@Html.ColumnDropdown2("LegendLookupColumnID", Model.LegendLookupColumnID, Model.LegendLookupTableID, SQLDataType.sqlVarChar, False, False)
+		@Html.ColumnDropdown2(Model.LegendLookupColumnID, Model.LegendLookupTableID, SQLDataType.sqlVarChar, False, False, New With {.name = "LegendLookupColumnID"})
 		<br />
 		@Html.DisplayNameFor(Function(model) model.LegendLookupCodeID)
-		@Html.ColumnDropdown2("LegendLookupCodeID", Model.LegendLookupCodeID, Model.LegendLookupTableID, SQLDataType.sqlVarChar, False, False)
+		@Html.ColumnDropdown2(Model.LegendLookupCodeID, Model.LegendLookupTableID, SQLDataType.sqlVarChar, False, False, New With {.name = "LegendLookupCodeID"})
 
 
 		<br />
@@ -101,10 +102,10 @@ End Code
 	<fieldset>
 		<legend>Event Description</legend>
 		@Html.DisplayNameFor(Function(model) model.EventDesc1ColumnID)
-		@Html.ColumnDropdown2("EventDesc1ColumnID", Model.EventDesc1ColumnID, Model.TableID, SQLDataType.sqlVarChar, True, False)
+		@Html.ColumnDropdown2(Model.EventDesc1ColumnID, Model.TableID, SQLDataType.sqlVarChar, True, False, New With {.name = "EventDesc1ColumnID"})
 		<br/>
 		@Html.DisplayNameFor(Function(model) model.EventDesc2ColumnID)
-		@Html.ColumnDropdown2("EventDesc2ColumnID", Model.EventDesc2ColumnID, Model.TableID, SQLDataType.sqlVarChar, True, False)
+		@Html.ColumnDropdown2(Model.EventDesc2ColumnID, Model.TableID, SQLDataType.sqlVarChar, True, False, New With {.name = "EventDesc2ColumnID"})
 
 </fieldset>
 
@@ -127,11 +128,11 @@ End Code
 
 		combo_disable("#EventEndDateID", true)
 		combo_disable("#EventEndSessionID", true)
-		combo_disable("#EventEndDurationID", true)
+		combo_disable("#EventDurationID", true)
 
 		switch (endType) {
 			case "duration":
-				combo_disable("#EventEndDurationID", false)
+				combo_disable("#EventDurationID", false)
 				break;
 			case "enddate":
 				combo_disable("#EventEndDateID", false)
@@ -142,23 +143,23 @@ End Code
 
 	function changeEventLegendType(type) {
 
-		combo_disable("#LegendEventColumnID", true)
-		combo_disable("#LegendLookupTableID", true)
-		combo_disable("#LegendLookupColumnID", true)
-		combo_disable("#LegendLookupCodeID", true)
-		text_disable("#LegendCharacter", true)
+		combo_disable("#LegendEventColumnID", true);
+		combo_disable("#LegendLookupTableID", true);
+		combo_disable("#LegendLookupColumnID", true);
+		combo_disable("#LegendLookupCodeID", true);
+		text_disable("#LegendCharacter", true);
 
 		switch (type) {
 			case "char":
-				text_disable("#LegendCharacter", false)
-
+				text_disable("#LegendCharacter", false);
 				break;
+
 			case "lookup":
-				combo_disable("#LegendEventColumnID", false)
-				combo_disable("#LegendLookupTableID", false)
-				combo_disable("#LegendLookupColumnID", false)
-				combo_disable("#LegendLookupCodeID", false)
-				break
+				combo_disable("#LegendEventColumnID", false);
+				combo_disable("#LegendLookupTableID", false);
+				combo_disable("#LegendLookupColumnID", false);
+				combo_disable("#LegendLookupCodeID", false);
+				break;
 		}
 
 	}
@@ -186,6 +187,7 @@ End Code
 			ReportType: '@CInt(Model.ReportType)',
 			Name: $("#EventName").val(),
 			TableID: $("#EventTableID").val(),
+			TableName: $("#EventTableID option:selected").text(),
 			FilterID: $("#txtEventFilterID").val(),
 			EventEndType: $("#EventEndType").val(),
 			EventStartDateID: $("#EventStartDateID").val(),
@@ -203,7 +205,8 @@ End Code
 			EventDesc1ColumnID: $("#EventDesc1ColumnID").val(),
 			EventDesc2ColumnID: $("#EventDesc2ColumnID").val(),
 			FilterHidden: $("#FilterHidden").val(),
-			FilterName: $("#EventFilter").val(),
+			FilterName: $("#txtEventFilter").val(),
+			EventStartDateName: $("#EventStartDateID option:selected").text(),
 			EventStartSessionName: $("#EventStartSessionID option:selected").text(),
 			EventEndDateName: $("#EventEndDateID option:selected").text(),
 			EventEndSessionName: $("#EventEndSessionID option:selected").text(),
@@ -218,7 +221,7 @@ End Code
 		var su = jQuery("#CalendarEvents").jqGrid('addRowData', '@Model.EventKey', datarow);
 
 		// Post to server
-		OpenHR.postData("Reports/PostCalendarEvent", datarow)
+				OpenHR.postData("Reports/PostCalendarEvent", datarow)
 
 		$("#divPopupReportDefinition").dialog("close");
 		$("#divPopupReportDefinition").empty();

@@ -86,14 +86,13 @@ Namespace Helpers
 		End Function
 
 		<Extension()> _
-		Public Function ColumnDropdown2(helper As HtmlHelper, name As String, bindValue As Integer, TableID As Integer, DataType As SQLDataType, AddNone As Boolean, LimitToLookups As Boolean) As MvcHtmlString
+		Public Function ColumnDropdown2(helper As HtmlHelper, bindValue As Integer, TableID As Integer, DataType As SQLDataType, AddNone As Boolean, LimitToLookups As Boolean, htmlAttributes As Object) As MvcHtmlString
 
+			Dim objAttributes = HtmlHelper.AnonymousObjectToHtmlAttributes(htmlAttributes)
 
 			Dim content As New StringBuilder
 			Dim builder As New TagBuilder("select")
-			builder.MergeAttribute("name", name)
-			builder.MergeAttribute("id", name)
-			builder.MergeAttribute("width", "100px")
+			builder.MergeAttributes(objAttributes)
 
 			If AddNone Then
 				content.AppendFormat("<option value=0 {0}>None</option>", IIf(bindValue = 0, "selected", ""))
@@ -112,8 +111,6 @@ Namespace Helpers
 			Return MvcHtmlString.Create(builder.ToString())
 
 		End Function
-
-
 
 	End Module
 

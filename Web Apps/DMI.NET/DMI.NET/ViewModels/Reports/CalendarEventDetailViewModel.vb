@@ -66,7 +66,9 @@ Namespace ViewModels
 		Public Property FilterHidden As String
 
 		' For display purposes in grids
+		Public Property TableName As String
 		Public Property FilterName As String
+		Public Property EventStartDateName As String
 		Public Property EventStartSessionName As String
 		Public Property EventEndDateName As String
 		Public Property EventEndSessionName As String
@@ -76,7 +78,6 @@ Namespace ViewModels
 		Public Property EventDesc2ColumnName As String
 
 		Public Property AvailableTables As List(Of ReportTableItem)
-
 
 		Public Sub ChangeBaseTable()
 

@@ -332,9 +332,11 @@ Namespace Repository
 						objEvent.EventKey = objRow("EventKey").ToString
 						objEvent.ReportID = objModel.ID
 						objEvent.TableID = CInt(objRow("TableID"))
+						objEvent.TableName = objRow("TableName").ToString
 						objEvent.FilterID = CInt(objRow("FilterID"))
 						objEvent.FilterName = objRow("FilterName").ToString
 						objEvent.EventStartDateID = CInt(objRow("EventStartDateID"))
+						objEvent.EventStartDateName = objRow("EventStartDateName").ToString
 						objEvent.EventStartSessionID = CInt(objRow("EventStartSessionID"))
 						objEvent.EventStartSessionName = objRow("EventStartSessionName").ToString
 						objEvent.EventEndType = CType(objRow("EventEndType"), CalendarEventEndType)
