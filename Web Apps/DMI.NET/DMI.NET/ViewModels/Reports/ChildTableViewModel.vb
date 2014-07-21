@@ -9,10 +9,13 @@ Namespace ViewModels.Reports
 
 	Public Class ChildTableViewModel
 		Implements IJsonSerialize
+		Implements IReportDetail
 
 		<HiddenInput>
-		Public Property ReportID As Integer Implements IJsonSerialize.ID
+		Public Property ReportID As Integer Implements IJsonSerialize.ID, IReportDetail.ReportID
+		Public Property ReportType As HR.Intranet.Server.Enums.UtilityType Implements IReportDetail.ReportType
 
+		<DisplayName("Table :")>
 		Public Property TableID As Integer
 		Public Property FilterID As Integer
 		Public Property OrderID As Integer

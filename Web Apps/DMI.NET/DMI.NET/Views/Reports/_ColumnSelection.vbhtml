@@ -317,7 +317,6 @@
 
     	$("#SelectedColumns").jqGrid('sortableRows');
 
-
     }
 
 		// Initialise
@@ -328,6 +327,10 @@
     	}
 
     	attachGridToSelectedColumns();
+
+    	// In built drag and drop - needs a bit of investigating as to how to change values on click and drag (also interferes with move/up/down?)
+    	//$("#SelectedColumns").jqGrid('gridDnD', { connectWith: '#AvailableColumns' });
+    	//$("#AvailableColumns").jqGrid('gridDnD', { connectWith: '#SelectedColumns' });
 
     });
 

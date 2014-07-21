@@ -97,7 +97,7 @@ Namespace Controllers
 			End If
 
 			If objModel.ChildTablesString.Length > 0 Then
-				objModel.ChildTables = deserializer.Deserialize(Of Collection(Of ChildTableViewModel))(objModel.ChildTablesString)
+				objModel.ChildTables = deserializer.Deserialize(Of List(Of ChildTableViewModel))(objModel.ChildTablesString)
 			End If
 
 			If objModel.SortOrdersString.Length > 0 Then
@@ -240,7 +240,7 @@ Namespace Controllers
 
 			Dim objReport = objReportRepository.RetrieveCustomReport(objModel.ReportID)
 
-			objModel.AvailableTables = objReportRepository.GetTables()
+			objModel.AvailableTables = objReportRepository.GetChildTables(objReport.BaseTableID, True)
 
 			Return PartialView("EditorTemplates\ReportChildTable", objModel)
 		End Function
@@ -250,18 +250,11 @@ Namespace Controllers
 
 			Try
 
-				If ModelState.IsValid Then
+				Dim objReport = CType(objReportRepository.RetrieveParent(objModel), CustomReportModel)
 
-					Dim objReport = objReportRepository.RetrieveCustomReport(objModel.ReportID)
-					Dim original = objReport.ChildTables.Where(Function(m) m.TableID = objModel.TableID).FirstOrDefault
-
-					If Not original Is Nothing Then
-						objReport.ChildTables.Remove(original)
-					End If
-
-					objReport.ChildTables.Add(objModel)
-
-				End If
+				' Remove original
+				objReport.ChildTables.RemoveAll(Function(m) m.TableID = objModel.TableID)
+				objReport.ChildTables.Add(objModel)
 
 			Catch ex As Exception
 				Throw
@@ -269,7 +262,6 @@ Namespace Controllers
 			End Try
 
 		End Sub
-
 
 		<HttpPost>
 		Function AddCalendarEvent(ReportID As Integer) As ActionResult

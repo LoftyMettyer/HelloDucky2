@@ -8,6 +8,10 @@
 
 <div id="divReportParents">
 
+	@Html.CheckBoxFor(Function(m) m.p1Hidden, New With {.Type = "hidden"})
+	@Html.CheckBoxFor(Function(m) m.p2Hidden, New With {.Type = "hidden"})
+	@Html.CheckBoxFor(Function(m) m.childHidden, New With {.Type = "hidden"})
+
 	<fieldset @Model.Parent1.Visibility>
 		<legend>Parent 1 :</legend>
 
@@ -78,11 +82,11 @@
 	<div class="stretchyfixed">
 		<input type="button" id="btnChildAdd" value="Add..." onclick="addChildTable();" />
 		<br/>
-		<input type="button" id="btnChildEdit" value="Edit..." onclick="editChildTable(0);" />
+		<input type="button" id="btnChildEdit" value="Edit..." disabled onclick="editChildTable(0);" />
 		<br />
-		<input type="button" id="btnChildRemove" value="Remove" onclick="removeChildTable();" />
+		<input type="button" id="btnChildRemove" value="Remove" disabled onclick="removeChildTable();" />
 		<br />
-		<input type="button" id="btnChildRemoveAll" value="Remove All" onclick="removeAllChildTables();" />				
+		<input type="button" id="btnChildRemoveAll" value="Remove All" disabled onclick="removeAllChildTables();" />				
 	</div>
 
 </fieldset>
@@ -113,8 +117,7 @@
 		$('#ChildTables').jqGrid('delRowData', rowID)
 		loadAvailableTablesForReport();
 	}
-
-		
+	
 	$(function () {
 
 		jQuery("#ChildTables").jqGrid({
@@ -129,10 +132,11 @@
 				repeatitems: false,
 				id: "TableID" //index of the column with the PK in it
 			},
-			colNames: ['ReportID', 'TableID', 'FilterID', 'OrderID', 'Table', 'Filter', 'Order', 'Records'],
+			colNames: ['ReportID', 'ReportType', 'TableID', 'FilterID', 'OrderID', 'Table', 'Filter', 'Order', 'Records'],
 			colModel: [
-				{ name: 'ReportID', index: 'reportID', sorttype: 'int', hidden: false },
-				{ name: 'TableID', index: 'TableID', width: 100, hidden: false },
+				{ name: 'ReportID', index: 'ReportID', sorttype: 'int', hidden: true },
+				{ name: 'ReportType', index: 'ReportType', sorttype: 'int', hidden: true },
+				{ name: 'TableID', index: 'TableID', width: 100, hidden: true },
 				{ name: 'FilterID', index: 'FilterID', width: 100, hidden: true },
 				{ name: 'OrderID', index: 'OrderID', width: 100, hidden: true },
 				{ name: 'TableName', index: 'TableName', width: 100 },
@@ -150,12 +154,34 @@
 			loadonce: true,
 			viewrecords: true,
 			sortorder: "desc",
-			editurl: 'server.php', // this is dummy existing url
 			ondblClickRow: function (rowID) {
 				editChildTable(rowID);
 			},
+			onSelectRow: function (id) {
+
+				button_disable($("#btnChildEdit")[0], false);
+				button_disable($("#btnChildRemove")[0], false);
+			},
+			gridComplete: function() {
+
+				var tablesSelected = $(this).getGridParam("reccount");
+				button_disable($("#btnChildAdd")[0], tablesSelected > 4);
+				button_disable($("#btnChildEdit")[0], true);
+				button_disable($("#btnChildRemove")[0], true);
+				button_disable($("#btnChildRemoveAll")[0], tablesSelected == 0);
+
+			},
+			loadComplete: function(json) {
+
+				// Highlight top row
+				var ids = $(this).jqGrid("getDataIDs");
+				if (ids && ids.length > 0)
+					$(this).jqGrid("setSelection", ids[0]);
+
+			}
+
 		});
-		jQuery("#ChildTables").jqGrid('navGrid', '#pcrud', {});
+		$("#ChildTables").jqGrid('navGrid', '#pcrud', {});
 
 	});
 

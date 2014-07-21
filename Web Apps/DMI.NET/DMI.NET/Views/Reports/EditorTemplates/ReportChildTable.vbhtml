@@ -18,29 +18,47 @@
 		@<br />
 		@Html.LabelFor(Function(m) m.OrderName)
 		@Html.HiddenFor(Function(m) m.OrderID, New With {.id = "txtChildFieldOrderID"})
-		@Html.TextBoxFor(Function(m) m.OrderName, New With {.id = "txtChildOrder", .readonly = "true"})
+		@Html.TextBoxFor(Function(m) m.OrderName, New With {.id = "txtFieldRecOrder", .readonly = "true"})
 		@Html.EllipseButton("cmdBaseFilter", "selectRecordOrder()", True)
 		@<br />
 		@Html.LabelFor(Function(m) m.Records)
 		@Html.TextBoxFor(Function(m) m.Records, New With {.id = "txtChildRecords"})
 		@<br />
 		@<input type="button" value="OK" onclick="postThisChildTable();" />
+		@<input type="button" value="Cancel" onclick="closeThisChildTable();" />
+
 		
 	End Using 
 </fieldset>
 
 <script>
 
+	function selectRecordOrder() {
+		var sURL;
+
+		sURL = "fieldRec" +
+				"?selectionType=" + "ORDER" +
+				"&txtTableID=" + $("#ChildTableID option:selected").val() +
+				"&selectedID=" + $("#txtChildFieldOrderID").val();
+		openDialog(sURL, (screen.width) / 3 + 40, (screen.height) / 2 - 30, "no", "no");
+	}
+
+	function closeThisChildTable() {
+		$("#divPopupReportDefinition").dialog("close");
+		$("#divPopupReportDefinition").empty();
+	}
+
 		function postThisChildTable() {
 
 			var datarow = {
 				ReportID: '@Model.ReportID',
+				ReportType: '@Model.ReportType',
 				TableID: $("#ChildTableID").val(),
 				FilterID: $("#txtChildFilterID").val(),
 				OrderID: $("#txtChildFieldOrderID").val(),
 				TableName: $("#ChildTableID option:selected").text(),
 				FilterName: $("#txtChildFilter").val(),
-				OrderName: $("#txtChildOrder").val(),
+				OrderName: $("#txtFieldRecOrder").val(),
 				Records: $("#txtChildRecords").val()
 			};
 

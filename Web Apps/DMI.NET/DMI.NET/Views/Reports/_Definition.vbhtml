@@ -78,8 +78,6 @@
 		<input type="hidden" id="ctl_DefinitionChanged" name="HasChanged" value="False" />
 
 		<input type="hidden" id="baseHidden" name="baseHidden">
-		<input type="hidden" id="p1Hidden" name="p1Hidden">
-		<input type="hidden" id="p2Hidden" name="p2Hidden">
 
 	</div>
 

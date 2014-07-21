@@ -669,7 +669,7 @@ Namespace Repository
 
 		' Old style update of the column selection stuff
 		' could be dapperised, but the rest of our stored procs need updating too as everything has different column names and the IDs are not currently returned.
-		Private Function ReportChildTablesAsString(objSortColumns As Collection(Of ChildTableViewModel)) As String
+		Private Function ReportChildTablesAsString(objSortColumns As List(Of ChildTableViewModel)) As String
 
 			Dim sOrderString As String = ""
 
@@ -819,7 +819,7 @@ Namespace Repository
 				objItems.Add(objItem)
 			Next
 
-			Return objItems
+			Return objItems.OrderBy(Function(m) m.Name).ToList
 
 		End Function
 
@@ -842,7 +842,7 @@ Namespace Repository
 				objItems.Add(objItem)
 			End If
 
-			Return objItems
+			Return objItems.OrderBy(Function(m) m.Name).ToList
 
 		End Function
 

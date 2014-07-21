@@ -38,24 +38,13 @@ End Code
 
 </style>
 
-
 <div>
-
-	@*<input type="button" onclick="submitThisTab();" value="Definition" />
-	<input type="button" onclick="submitThisTab();" value="Related Tables" />
-	<input type="button" onclick="submitThisTab();" value="Columns" />
-	<input type="button" onclick="submitThisTab();" value="Sort Order" />
-	<input type="button" onclick="submitThisTab();" value="Output" />*@
-
 
 @Using (Html.BeginForm("util_def_customreport", "Reports", FormMethod.Post, New With {.id = "frmReportDefintion", .name = "frmReportDefintion",
 																																								.defaultbutton = "submitCustomReport"}))
 
   @Html.HiddenFor(Function(m) m.ID)
-  @Html.HiddenFor(Function(m) m.p1Hidden)
-  @Html.HiddenFor(Function(m) m.p2Hidden)
-  @Html.HiddenFor(Function(m) m.childHidden)
-	
+
   @<div id="tabs">
 
         <ul>
@@ -111,11 +100,6 @@ End Code
 
   </div>
     </div>
-
-  @Html.HiddenFor(Function(m) m.p1Hidden)
-  @Html.HiddenFor(Function(m) m.p2Hidden)
-  @Html.HiddenFor(Function(m) m.childHidden)
-
 	
   End Using
 

@@ -24,7 +24,7 @@ Namespace Models
 
 		Public Property AvailableTables As New Collection(Of ChildTableViewModel)
 
-		Public Property ChildTables As New Collection(Of ChildTableViewModel)
+		Public Property ChildTables As New List(Of ChildTableViewModel)
 		Public Property ChildTablesString As String
 
 		Public Property Parent1 As New ReportRelatedTable
@@ -42,7 +42,7 @@ Namespace Models
 
 		Public Overrides Sub SetBaseTable(TableID As Integer)
 
-			ChildTables = New Collection(Of ChildTableViewModel)
+			ChildTables = New List(Of ChildTableViewModel)
 			BaseTableID = TableID
 			SelectionType = Enums.RecordSelectionType.AllRecords
 			Columns = New List(Of ReportColumnItem)
