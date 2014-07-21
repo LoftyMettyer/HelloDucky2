@@ -336,14 +336,19 @@ Namespace Controllers
 
 		End Function
 
-		<HttpPost, ValidateInput(False)>
-	 Function ChangeBaseTable(objModel As CustomReportModel) As ActionResult
+		<HttpPost>
+		Sub ChangeBaseTable(ReportID As Integer, ReportType As UtilityType, BaseTableID As Integer)
 
-			objReportRepository.SetBaseTable(objModel)
-			ModelState.Clear()
-			Return View("UTIL_DEF_CUSTOMREPORT", objModel)
+			Dim objDetail As New ReportColumnItem
+			objDetail.ReportID = ReportID
+			objDetail.ReportType = ReportType
 
-		End Function
+			Dim objReport = objReportRepository.RetrieveParent(objDetail)
+			objReport.BaseTableID = BaseTableID
+
+			objReport.SetBaseTable(BaseTableID)
+
+		End Sub
 
 		<HttpPost>
 		Function AddSortOrder(ReportID As Integer, ReportType As UtilityType) As ActionResult

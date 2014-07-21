@@ -40,8 +40,7 @@ End Code
 
 <div>
 
-@Using (Html.BeginForm("util_def_customreport", "Reports", FormMethod.Post, New With {.id = "frmReportDefintion", .name = "frmReportDefintion",
-																																								.defaultbutton = "submitCustomReport"}))
+@Using (Html.BeginForm("util_def_customreport", "Reports", FormMethod.Post, New With {.id = "frmReportDefintion", .name = "frmReportDefintion"}))
 
   @Html.HiddenFor(Function(m) m.ID)
 
@@ -134,13 +133,6 @@ End Code
 
 		});
 
-
-		function submitForm() {
-
-			var frmSubmit = $("#frmReportDefintion");
-			OpenHR.submitForm(frmSubmit);
-
-		}
 
 		$("#workframe").attr("data-framesource", "UTIL_DEF_CUSTOMREPORTS");
 

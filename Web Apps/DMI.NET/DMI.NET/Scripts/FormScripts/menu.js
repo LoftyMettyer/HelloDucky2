@@ -307,7 +307,6 @@ function menu_abMainMenu_Click(pTool) {
 
 function menu_MenuClick(sTool) {
 
-
 	//ignore clicks from 'fixed links' which have no 'id'.
 	if (!sTool) return false;
 	//new ribbon buttons for utils - ignore click.
@@ -596,29 +595,13 @@ function menu_MenuClick(sTool) {
 	if (sToolName == 'mnutoolSaveReport') {
 		try {
 
-			// Related Tables
-			var gridData = jQuery("#ChildTables").getRowData();
-			var postData = JSON.stringify(gridData);
-			$('#txtCTAAS').val(postData);
-
-			// Columns selected
-			gridData = $("#SelectedColumns").getRowData();
-			$('#txtCSAAS').val(JSON.stringify(gridData));
-
-			// Calendar Events
-			gridData = $("#CalendarEvents").getRowData();
-			$('#txtCEAAS').val(JSON.stringify(gridData));
-
-			// Sort Order columns
-			gridData = $("#SortOrders").getRowData();
-			$('#txtSOAAS').val(JSON.stringify(gridData));
-		
 			var frmSubmit = $("#frmReportDefintion");
 			if (frmSubmit.length == 0) {
 				okClick(); //Should be in scope	
 			} else {
-			OpenHR.submitForm(frmSubmit);
+				saveReportDefinition(false);
 			}
+
 		} catch (e) {
 		} finally {
 			return false;
@@ -627,7 +610,14 @@ function menu_MenuClick(sTool) {
 
 	if (sToolName == 'mnutoolCancelReport') {
 		try {
-			$("#cmdCancel").click();
+
+			var frmSubmit = $("#frmReportDefintion");
+			if (frmSubmit.length == 0) {
+				$("#cmdCancel").click(); //Should be in scope	
+			} else {
+				cancelReportDefinition()
+			}
+
 		} catch (e) {
 		} finally {
 			return false;
@@ -2596,15 +2586,9 @@ function menu_saveChanges(psAction, pfPrompt, pfTBOverride) {
 					(sCurrentPage == "UTIL_DEF_CROSSTABS") ||
 					(sCurrentPage == "UTIL_DEF_CALENDARREPORT") ||
 					(sCurrentPage == "UTIL_DEF_MAILMERGE")) {
-		if ($("#ctl_DefinitionChanged").val() == "True") {
-			var frmSubmit = $("#frmReportDefintion");
-			OpenHR.submitForm(frmSubmit);
-		}
 
-		else {
-			iResult = 6;
+		iResult = saveReportDefinition(true);
 		}
-	}
 
 	else if ((sCurrentPage == "UTIL_DEF_PICKLIST") ||
 		(sCurrentPage == "UTIL_DEF_EXPRESSION") ||

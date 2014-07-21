@@ -41,7 +41,7 @@
 
 		<div class="left">
 			Base Table :
-			<select name="BaseTableID" id="BaseTableID" onchange="changeReportBaseTable(event.target);"></select>
+			<select name="BaseTableID" id="BaseTableID" onchange="requestChangeReportBaseTable(event.target);"></select>
 		</div>
 
 		<div class="right">
@@ -75,29 +75,13 @@
 
 		</div>
 
-		<input type="hidden" id="ctl_DefinitionChanged" name="HasChanged" value="False" />
+		<input type="hidden" id="ctl_DefinitionChanged" name="HasChanged" value="false" />
 
 		<input type="hidden" id="baseHidden" name="baseHidden">
 
 	</div>
 
 </fieldset>
-
-  <form id="frmCustomReportChilds" name="frmCustomReportChilds" target="childselection" action="util_customreportchilds" method="post" style="visibility: hidden; display: none">
-	<input type="hidden" id="childTableID" name="childTableID">
-	<input type="hidden" id="childTable" name="childTable">
-	<input type="hidden" id="childFilterID" name="childFilterID">
-	<input type="hidden" id="childFilter" name="childFilter">
-	<input type="hidden" id="childOrderID" name="childOrderID">
-	<input type="hidden" id="childOrder" name="childOrder">
-	<input type="hidden" id="childRecords" name="childRecords">
-	<input type="hidden" id="childrenString" name="childrenString">
-	<input type="hidden" id="childrenNames" name="childrenNames">
-	<input type="hidden" id="selectedChildString" name="selectedChildString">
-	<input type="hidden" id="childAction" name="childAction" value="NEW">
-	<input type="hidden" id="childMax" name="childMax" value="5">
-</form>
-
 
 <script type="text/javascript">
 
@@ -120,28 +104,6 @@
 
 			}
 		});
-	}
-
-
-	$(function () {
-
-		// tighten up these input selectors
-		$("#frmReportDefintion :input").on("change", function () { enableSaveButton(this); });
-		getBaseTableList();
-
-	});
-
-	function warning() {
-		return "You will lose your changes if you do not save before leaving this page.\n\nWhat do you want to do?";
-	}
-
-	function enableSaveButton() {
-
-		if ($("#ctl_DefinitionChanged").val() == "False") {
-			$("#ctl_DefinitionChanged").val("True");
-			menu_toolbarEnableItem("mnutoolSaveRecord", true);
-		}
-		window.onbeforeunload = warning;
 	}
 
 	function changeRecordOption(psTable, psType) {
@@ -283,30 +245,136 @@
   	});
   }
 
-	function changeReportBaseTable(target) {
+	function requestChangeReportBaseTable(target) {
 
-		OpenHR.modalPrompt("Changing the base table will result in all table/column specific aspects of this report definition being cleared. <br/><br/> Are you sure you wish to continue ?", 4, "").then(function (answer) {
-			if (answer == 6) { // Yes
-				var frmSubmit = $("#frmReportDefintion");
-				OpenHR.submitForm(frmSubmit, null, null, null, "Reports/ChangeBaseTable");
-				return false;
-			} else {
-				return false;
-			}
-		});
+		var tableCount = $("#ChildTables").getGridParam("reccount");
+		var columnCount = $("#SelectedColumns").getGridParam("reccount");
+
+		if (tableCount > 0 || columnCount > 0) {
+			OpenHR.modalPrompt("Changing the base table will result in all table/column specific aspects of this report definition being cleared. <br/><br/> Are you sure you wish to continue ?", 4, "").then(function (answer) {
+				if (answer == 6) { // Yes
+					changeReportBaseTable();
+				}
+			});
+		}
+		else {
+			changeReportBaseTable();
+		}
+
 	}
 
+	function changeReportBaseTable() {
+
+		// Post base table change to server
+		var dataSend = {
+			ReportID: '@Model.ID',
+			ReportType: '@Model.ReportType',
+			BaseTableID: $("#BaseTableID option:selected").val()
+		};
+
+		OpenHR.postData("Reports/ChangeBaseTable", dataSend, changeReportBaseTableCompleted);
+
+		//		OpenHR.postData("Reports/ChangeBaseTable", dataSend, changeReportBaseTableCompleted)
+
+
+//		var frmSubmit = $("#reportDefinintionChangeBaseTable")[0];
+////		frmSubmit.action = "Reports/ChangeBaseTable";
+//		OpenHR.submitForm(frmSubmit);
+
+	}
+
+	function changeReportBaseTableCompleted() {
+		removeAllSelectedColumns();
+		getAvailableTableColumnsCalcs();
+		removeAllChildTables();
+		OpenHR.RemoveAllRowsFromGrid(SortOrders, 'Reports/RemoveSortOrder');
+		loadAvailableTablesForReport();
+	}
 
 	function removeAllChildTables() {
 		$('#ChildTables').jqGrid('clearGridData')
 	}
 
-
 	function removeAllSelectedColumns() {
-		//TODO
+		$('#SelectedColumns').jqGrid('clearGridData')
 
 	}
 
+	function enableSaveButton() {
+		$("#ctl_DefinitionChanged").val("true");
+	}
+
+	function saveReportDefinition(prompt) {
+
+		var bHasChanged = $("#ctl_DefinitionChanged").val();
+
+		if (prompt == true) {
+			if (bHasChanged == "true") {
+
+				OpenHR.modalPrompt("You have made changes. Click 'OK' to discard your changes, or 'Cancel' to continue editing.", 1, "Confirm").then(function (answer) {
+					if (answer == 1) {
+						submitReportDefinition();
+					}
+				});
+			}
+
+		} else {
+			submitReportDefinition()
+		}
+
+		return 0;
+
+	}
+
+	function submitReportDefinition() {
+
+		// Related Tables
+		var gridData = jQuery("#ChildTables").getRowData();
+		var postData = JSON.stringify(gridData);
+		$('#txtCTAAS').val(postData);
+
+		// Columns selected
+		gridData = $("#SelectedColumns").getRowData();
+		$('#txtCSAAS').val(JSON.stringify(gridData));
+
+		// Calendar Events
+		gridData = $("#CalendarEvents").getRowData();
+		$('#txtCEAAS').val(JSON.stringify(gridData));
+
+		// Sort Order columns
+		gridData = $("#SortOrders").getRowData();
+		$('#txtSOAAS').val(JSON.stringify(gridData));
+
+		var frmSubmit = $("#frmReportDefintion")[0];
+		OpenHR.submitForm(frmSubmit);
+
+	}
+
+	function cancelReportDefinition() {
+
+		var bHasChanged = $("#ctl_DefinitionChanged").val();
+
+		if (bHasChanged == "true") {
+			OpenHR.modalPrompt("You have made changes. Click 'OK' to discard your changes, or 'Cancel' to continue editing.", 1, "Confirm").then(function (answer) {
+				if (answer == 1) {  // OK
+					menu_loadDefSelPage('@CInt(Model.ReportType)', '@Model.ID', $("#BaseTableID option:selected").val(), true);
+					return 6;
+				}
+			}) }
+		else {
+			menu_loadDefSelPage('@CInt(Model.ReportType)', '@Model.ID', $("#BaseTableID option:selected").val(), true);
+		}
+
+		return false;
+	}
+
+	$(function () {
+
+		// tighten up these input selectors?
+		$("#frmReportDefintion :input").on("change", function () { enableSaveButton(this); });
+		getBaseTableList();
+
+	});
 
 </script>
 

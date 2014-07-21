@@ -156,14 +156,14 @@
 			sortorder: "desc",
 			ondblClickRow: function (rowID) {
 				editChildTable(rowID);
+
 			},
 			onSelectRow: function (id) {
-
 				button_disable($("#btnChildEdit")[0], false);
 				button_disable($("#btnChildRemove")[0], false);
+
 			},
 			gridComplete: function() {
-
 				var tablesSelected = $(this).getGridParam("reccount");
 				button_disable($("#btnChildAdd")[0], tablesSelected > 4);
 				button_disable($("#btnChildEdit")[0], true);
@@ -172,7 +172,6 @@
 
 			},
 			loadComplete: function(json) {
-
 				// Highlight top row
 				var ids = $(this).jqGrid("getDataIDs");
 				if (ids && ids.length > 0)

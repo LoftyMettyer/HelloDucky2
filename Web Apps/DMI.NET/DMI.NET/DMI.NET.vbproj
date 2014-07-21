@@ -1648,7 +1648,6 @@
     <Content Include="Views\Home\progress.ascx" />
     <Content Include="Views\Home\quickfind.ascx" />
     <Content Include="Views\Home\recordEdit.ascx" />
-    <Content Include="Views\Home\Util_CustomReportChilds.aspx" />
     <Content Include="Views\Home\util_def_exprcomponent.ascx" />
     <Content Include="Views\Home\util_def_expression.ascx" />
     <Content Include="Views\Home\util_def_picklist.ascx" />

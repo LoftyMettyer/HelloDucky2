@@ -1352,10 +1352,6 @@ Namespace Controllers
 			Return View()
 		End Function
 
-		Function Util_CustomReportChilds() As ActionResult
-			Return View()
-		End Function
-
 		Function Util_EmailSelection() As ActionResult
 			Return View()
 		End Function
