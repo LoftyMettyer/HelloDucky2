@@ -215,7 +215,7 @@
 					<table width="100%" height="100%" class="invisible" cellspacing="0" cellpadding="0">
 						<tr>
 							<td align="center" height="10" colspan="5">
-								<h3 align="left" class="pageTitle">Bulk Booking</h3>
+								<span style="margin-left: 10px; float: left;" class="pageTitle">Bulk Booking</span>
 							</td>
 						</tr>
 
