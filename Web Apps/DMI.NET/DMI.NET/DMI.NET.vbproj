@@ -230,7 +230,6 @@
     <Compile Include="Models\OrgChart.vb" />
     <Compile Include="Models\PopoutChartModel.vb" />
     <Compile Include="Models\ReportBaseModel.vb" />
-    <Compile Include="ViewModels\Reports\ColumnsViewModel.vb" />
     <Compile Include="Models\ReportOutputModel.vb" />
     <Compile Include="My Project\AssemblyInfo.vb" />
     <Compile Include="My Project\Application.Designer.vb">
@@ -1631,7 +1630,6 @@
     <Content Include="Views\Home\tbBulkBookingSelectionData.ascx" />
     <Content Include="Views\Home\tbBulkBookingSelectionMain.aspx" />
     <Content Include="Views\Home\tbStatusPrompt.ascx" />
-    <Content Include="Views\Home\util_calcselection.ascx" />
     <Content Include="Views\Home\util_run_calendarreport_breakdown.ascx" />
     <Content Include="Views\Home\util_run_mailmerge.ascx" />
     <Content Include="Views\Home\util_run_outputoptions.ascx" />

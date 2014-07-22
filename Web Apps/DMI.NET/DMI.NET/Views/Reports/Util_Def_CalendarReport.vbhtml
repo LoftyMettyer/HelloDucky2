@@ -35,6 +35,14 @@ End Code
 		cursor: default;
 	}
 
+	input[readonly="readonly"] {
+		background-color: #F2F2F2 !important;
+		color: #826D82;
+		border-color: #ddd;
+		pointer-events: none;
+		cursor: default;
+	}
+
 </style>
 
 <div>
@@ -108,6 +116,8 @@ End Code
 	</form>
 
 
+
+
 </div>
 
 <script type="text/javascript">
@@ -131,49 +141,5 @@ End Code
 
 	$("#workframe").attr("data-framesource", "UTIL_DEF_CALENDARREPORT");
 
-	function selectCalc(psCalcType, bRecordIndepend) {
-		var iTableID;
-		var iCurrentID;
-		var sURL;
-		var isOwner;
-
-		var frmDefinition = document.getElementById("frmDefinition");
-		var frmUseful = document.getElementById("frmUseful");
-		var frmCalcSelection = document.getElementById("frmCalcSelection");
-
-		if (psCalcType == 'baseDesc') {
-
-			var e = $("#BaseTable")[0];
-			iTableID = e.options[e.selectedIndex].value;			
-			iCurrentID = frmDefinition.txtDescExprID.value;
-		} else if (psCalcType == 'startDate') {
-			iTableID = 0;
-			iCurrentID = $("#StartCustomId").val()
-		} else if (psCalcType == 'endDate') {
-			iTableID = 0;
-			iCurrentID = $("#EndCustomId").val()
-		}
-
-		var strDefOwner = $("#owner").val().toLowerCase;
-		var strCurrentUser = $("#owner").val().toLowerCase;
-
-		if (strDefOwner == strCurrentUser) {			
-			isOwner = '1'
-		} else {
-			isOwner = '0';
-		}
-
-		sURL = "util_calcSelection" +
-			"?calcSelRecInd=" + bRecordIndepend +
-			"&calcSelType=" + escape(psCalcType) +
-			"&calcSelTableID=" + iTableID +
-			"&calcSelCurrentID=" + iCurrentID +
-			"&recSelDefOwner=" + isOwner +
-			"&destination=util_calcSelection";
-		openDialog(sURL, (screen.width) / 3, (screen.height) / 2 + 40, "no", "no");
-
-//		frmUseful.txtChanged.value = 1;
-
-	}
 
 </script>

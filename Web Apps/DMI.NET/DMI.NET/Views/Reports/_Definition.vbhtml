@@ -2,9 +2,11 @@
 @Imports DMI.NET.Helpers
 @Imports DMI.NET.Enums
 @Imports DMI.NET.Models
+@Imports HR.Intranet.Server.Enums
 @Inherits System.Web.Mvc.WebViewPage(Of ReportBaseModel)
 
 @Html.HiddenFor(Function(m) m.ID, New With {.id = "txtReportID"})
+@Html.HiddenFor(Function(m) m.ReportType, New With {.id = "txtReportType"})
 
 <fieldset>
 
@@ -274,21 +276,19 @@
 
 		OpenHR.postData("Reports/ChangeBaseTable", dataSend, changeReportBaseTableCompleted);
 
-		//		OpenHR.postData("Reports/ChangeBaseTable", dataSend, changeReportBaseTableCompleted)
-
-
-//		var frmSubmit = $("#reportDefinintionChangeBaseTable")[0];
-////		frmSubmit.action = "Reports/ChangeBaseTable";
-//		OpenHR.submitForm(frmSubmit);
-
 	}
 
 	function changeReportBaseTableCompleted() {
+
 		removeAllSelectedColumns();
-		getAvailableTableColumnsCalcs();
-		removeAllChildTables();
 		OpenHR.RemoveAllRowsFromGrid(SortOrders, 'Reports/RemoveSortOrder');
-		loadAvailableTablesForReport();
+
+		if ($("#ReportType").val() == '@CInt(UtilityType.utlCustomReport)') {
+			getAvailableTableColumnsCalcs();
+			removeAllChildTables();
+			loadAvailableTablesForReport();
+		}
+
 	}
 
 	function removeAllChildTables() {

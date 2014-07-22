@@ -1356,10 +1356,6 @@ Namespace Controllers
 			Return View()
 		End Function
 
-		Function Util_CalcSelection() As ActionResult
-			Return View()
-		End Function
-
 		Function Util_SortOrderSelection() As ActionResult
 			Return View()
 		End Function

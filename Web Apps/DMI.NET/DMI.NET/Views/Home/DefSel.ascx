@@ -742,7 +742,6 @@
 		function setnew() {
 			if (!$("#mnutoolNewUtil").hasClass("disabled")) {
 				var frmDefSel = document.getElementById('frmDefSel');
-				OpenHR.showPopup("Loading form...");
 				frmDefSel.action.value = "new";
 				OpenHR.submitForm(frmDefSel);
 			}
@@ -752,7 +751,6 @@
 				if (!$("#mnutoolCopyUtil").hasClass("disabled")) {
 						var frmDefSel = document.getElementById('frmDefSel');
 
-						OpenHR.showPopup("Copying definition...");
 						frmDefSel.action.value = "copy";
 						OpenHR.submitForm(frmDefSel);
 				}
@@ -762,8 +760,6 @@
 
 				if (!$("#mnutoolEditUtil").hasClass("disabled")) {
 						var frmDefSel = document.getElementById('frmDefSel');
-
-						OpenHR.showPopup("Loading definition...");
 
 						if (frmDefSel.cmdEdit.value == "Edit") {
 								frmDefSel.action.value = "edit";

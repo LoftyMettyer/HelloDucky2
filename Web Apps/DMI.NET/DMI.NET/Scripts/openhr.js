@@ -111,6 +111,89 @@
 
 		},
 
+		modalExpressionSelect = function (tableId, followOnFunctionName) {
+
+			var frame = $("#divExpressionSelection");
+
+			$("#ExpressionsAvailable").jqGrid('GridUnload');
+
+			$("#ExpressionsAvailable").jqGrid({
+				url: 'Reports/GetExpressionsForTable?TableID=' + tableId + '&&selectionType=' + "CALC",
+				datatype: 'json',
+				mtype: 'GET',
+				jsonReader: {
+					root: "rows", //array containing actual data
+					page: "page", //current page
+					total: "total", //total pages for the query
+					records: "records", //total number of records
+					repeatitems: false,
+					id: "ID"
+				},
+				colNames: ['ID', 'Name', 'Description'],
+				colModel: [
+					{ name: 'ID', index: 'ID', hidden: true },
+					{ name: 'Name', index: 'Name', width: 40, sortable: false },
+					{ name: 'Description', index: 'Description', hidden: true }],
+				viewrecords: true,
+				width: 600,
+				height: 400,
+				sortname: 'Name',
+				sortorder: "desc",
+				rowNum: 10000,
+				ondblClickRow: function (rowid) {
+					var gridData = $(this).getRowData(rowid);
+					followOnFunctionName(gridData.ID, gridData.Name);
+					frame.dialog("close");
+				},
+				loadComplete: function(json) {
+
+					$("#ExpressionSelectOK").click(function () {
+						var rowid = $('#ExpressionsAvailable').jqGrid('getGridParam', 'selrow');
+						var gridData = $("#ExpressionsAvailable").getRowData(rowid);
+						followOnFunctionName(gridData.ID, gridData.Name);
+						frame.dialog("close");
+
+					});
+
+					$("#ExpressionSelectCancel").click(function () {
+						frame.dialog("close");
+					});
+
+					$("#ExpressionSelectNone").click(function () {
+						followOnFunctionName(0, "");
+						frame.dialog("close");
+					});
+
+					
+
+				}
+
+			});
+
+			//$frame.html(html);
+			frame.show();
+			frame.dialog("open")
+
+
+			//jQuery styling
+			$(function () {
+				$("input[type=submit], input[type=button], button").button();
+				$("input").addClass("ui-widget ui-corner-all");
+				$("input").removeClass("text");
+
+				$("textarea").addClass("ui-widget ui-corner-tl ui-corner-bl");
+				$("textarea").removeClass("text");
+
+				$("select").addClass("ui-widget ui-corner-tl ui-corner-bl");
+				$("select").removeClass("text");
+				$("input[type=submit], input[type=button], button").removeClass("ui-corner-all");
+				$("input[type=submit], input[type=button], button").addClass("ui-corner-tl ui-corner-br");
+			});
+
+
+		},
+
+
 		modalPrompt = function (prompt, buttons, title, followOnFunctionName) {
 			var defer = $.Deferred();
 			var dialogButtons;
@@ -245,9 +328,7 @@
 				}
 			});
 		},
-		showPopup = function (prompt) {
 
-		},
 		getFrame = function (frameId) {
 			return document.frames[frameId];
 		},
@@ -1154,7 +1235,6 @@
 		messageBox: messageBox,
 		modalPrompt: modalPrompt,
 		modalMessage: modalMessage,
-		showPopup: showPopup,
 		getFrame: getFrame,
 		getForm: getForm,
 		postData: postData,
@@ -1195,6 +1275,7 @@
 		RemoveAllRowsFromGrid: removeAllRowsFromGrid,
 		MoveItemInGrid: moveItemInGrid,
 		OpenDialog: openDialog,
+		modalExpressionSelect: modalExpressionSelect,
 		parentExists: parentExists
 	};
 

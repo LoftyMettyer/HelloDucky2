@@ -128,6 +128,14 @@
 				modal: true
 			});
 
+			$('#divExpressionSelection').dialog({
+				autoOpen: false,
+				width: 660,
+				height: 590,
+				resizable: true,
+				modal: true
+			});
+
 			$(function () {
 				$("input[type=submit], input[type=button], button")
 					.button();
@@ -434,6 +442,14 @@
 	
 	<div id="CalendarEvent"></div>
 	<div id="divPopupReportDefinition" />
+
+	<div id="divExpressionSelection">
+		<table id="ExpressionsAvailable"></table>
+		<input type="button" id="ExpressionSelectOK" value="OK" />
+		<input type="button" id="ExpressionSelectNone" value="None" />
+		<input type="button" id="ExpressionSelectCancel" value="Cancel" />
+	</div>
+
 
 	<div id="dialog-confirm" title="">
 		<p><span class="ui-icon ui-icon-help" style="float: left; margin: 0 7px 20px 0;"></span></p>
