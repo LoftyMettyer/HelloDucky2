@@ -195,7 +195,7 @@
 			"dialogHeight:" + pHeight + "px;" +
 			"dialogWidth:" + pWidth + "px;" +
 			"help:no;" +
-			"resizable:yes;" +
+			"resizable:no;" +
 			"scroll:yes;" +
 			"status:no;";
 		window.showModalDialog(pDestination, self, dlgwinprops);
