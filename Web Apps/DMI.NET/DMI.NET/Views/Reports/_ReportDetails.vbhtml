@@ -161,9 +161,10 @@
 	function selectCustomStartDate() {
 
 		var tableID = $("#BaseTableID option:selected").val();
+		var currentID = $("#StartCustomId").val();
 
-		OpenHR.modalExpressionSelect(tableID, function (id, name) {
-			$("#StartCustomId").val(id)
+		OpenHR.modalExpressionSelect("CALC", tableID, currentID, function (id, name) {
+			$("#StartCustomId").val(id);
 			$("#txtCustomStart").val(name);
 		});
 
@@ -172,9 +173,10 @@
 	function selectCustomEndDate() {
 
 		var tableID = $("#BaseTableID option:selected").val();
+		var currentID = $("#EndCustomId").val();
 
-		OpenHR.modalExpressionSelect(tableID, function (id, name) {
-			$("#EndCustomId").val(id)
+		OpenHR.modalExpressionSelect("CALC", tableID, currentID, function (id, name) {
+			$("#EndCustomId").val(id);
 			$("#txtCustomEnd").val(name);
 		});
 

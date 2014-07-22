@@ -1348,10 +1348,6 @@ Namespace Controllers
 
 		End Function
 
-		Function Util_RecordSelection() As ActionResult
-			Return View()
-		End Function
-
 		Function Util_EmailSelection() As ActionResult
 			Return View()
 		End Function

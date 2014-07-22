@@ -111,14 +111,14 @@
 
 		},
 
-		modalExpressionSelect = function (tableId, followOnFunctionName) {
+		modalExpressionSelect = function (type, tableId, currentID, followOnFunctionName) {
 
 			var frame = $("#divExpressionSelection");
 
 			$("#ExpressionsAvailable").jqGrid('GridUnload');
 
 			$("#ExpressionsAvailable").jqGrid({
-				url: 'Reports/GetExpressionsForTable?TableID=' + tableId + '&&selectionType=' + "CALC",
+				url: 'Reports/GetExpressionsForTable?TableID=' + tableId + '&&selectionType=' + type,
 				datatype: 'json',
 				mtype: 'GET',
 				jsonReader: {

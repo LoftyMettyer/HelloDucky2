@@ -29,7 +29,7 @@
 		Picklist
 		<input type="hidden" id="txtParent1PicklistID" name="Parent1.PicklistID" value="@Model.Parent1.PicklistID" />
 		@Html.TextBoxFor(Function(m) m.Parent1.PicklistName, New With {.id = "txtParent1Picklist", .readonly = "true"})
-		@Html.EllipseButton("cmdParent1Picklist", "selectRecordOption('p1', 'picklist')", Model.Parent1.SelectionType = RecordSelectionType.Picklist)
+		@Html.EllipseButton("cmdParent1Picklist", "selectParent1Picklist()", Model.Parent1.SelectionType = RecordSelectionType.Picklist)
 		@Html.ValidationMessageFor(Function(m) m.Parent1.PicklistID)
 		<br />
 
@@ -37,7 +37,7 @@
 		Filter
 		<input type="hidden" id="txtParent1FilterID" name="Parent1.FilterID" value="@Model.Parent1.FilterID" />
 		@Html.TextBoxFor(Function(m) m.Parent1.FilterName, New With {.id = "txtParent1Filter", .readonly = "true"})
-		@Html.EllipseButton("cmdParent1Filter", "selectRecordOption('p1', 'filter')", Model.Parent1.SelectionType = RecordSelectionType.Filter)
+		@Html.EllipseButton("cmdParent1Filter", "selectParent1Filter()", Model.Parent1.SelectionType = RecordSelectionType.Filter)
 		@Html.ValidationMessageFor(Function(m) m.Parent1.FilterID)
 
 	</fieldset>
@@ -55,7 +55,7 @@
 		Picklist
 		<input type="hidden" id="txtParent2PicklistID" name="Parent2.PicklistID" value="@Model.Parent2.PicklistID" />
 		@Html.TextBoxFor(Function(m) m.Parent2.PicklistName, New With {.id = "txtParent2Picklist", .readonly = "true"})
-		@Html.EllipseButton("cmdParent2Picklist", "selectRecordOption('p2', 'picklist')", Model.Parent2.SelectionType = RecordSelectionType.Picklist)
+		@Html.EllipseButton("cmdParent2Picklist", "selectParent2Picklist()", Model.Parent2.SelectionType = RecordSelectionType.Picklist)
 		@Html.ValidationMessageFor(Function(m) m.Parent2.PicklistID)
 		<br />
 
@@ -63,7 +63,7 @@
 		Filter
 		<input type="hidden" id="txtParent2FilterID" name="Parent2.FilterID" value="@Model.Parent2.FilterID" />
 		@Html.TextBoxFor(Function(m) m.Parent2.FilterName, New With {.id = "txtParent2Filter", .readonly = "true"})
-		@Html.EllipseButton("cmdParent2Filter", "selectRecordOption('p2', 'filter')", Model.Parent2.SelectionType = RecordSelectionType.Filter)
+		@Html.EllipseButton("cmdParent2Filter", "selectParent2Filter()", Model.Parent2.SelectionType = RecordSelectionType.Filter)
 		@Html.ValidationMessageFor(Function(m) m.Parent2.FilterID)
 
 	</fieldset>
@@ -94,6 +94,55 @@
 
 
 <script type="text/javascript">
+
+	function selectParent1Picklist() {
+
+		var tableID = $("#txtParent1ID").val();
+		var currentID = $("#txtParent1PicklistID").val();
+
+		OpenHR.modalExpressionSelect("PICKLIST", tableID, currentID, function (id, name) {
+			$("#txtParent1PicklistID").val(id);
+			$("#txtParent1Picklist").val(name);
+		});
+
+	}
+
+	function selectParent2Picklist() {
+
+		var tableID = $("#txtParent2ID").val();
+		var currentID = $("#txtParent2PicklistID").val();
+
+		OpenHR.modalExpressionSelect("PICKLIST", tableID, currentID, function (id, name) {
+			$("#txtParent2PicklistID").val(id);
+			$("#txtParent2Picklist").val(name);
+		});
+
+	}
+
+	function selectParent1Filter() {
+
+		var tableID = $("#txtParent1ID").val();
+		var currentID = $("#txtParent1FilterID").val();
+
+		OpenHR.modalExpressionSelect("FILTER", tableID, currentID, function (id, name) {
+			$("#txtParent1FilterID").val(id);
+			$("#txtParent1Filter").val(name);
+		});
+
+	}
+
+	function selectParent2Filter() {
+
+		var tableID = $("#txtParent2ID").val();
+		var currentID = $("#txtParent2FilterID").val();
+
+		OpenHR.modalExpressionSelect("FILTER", tableID, currentID, function (id, name) {
+			$("#txtParent2FilterID").val(id);
+			$("#txtParent2Filter").val(name);
+		});
+
+	}
+
 
 	function addChildTable() {
 

@@ -443,30 +443,14 @@ Namespace Controllers
 		<HttpGet>
 		Function GetExpressionsForTable(TableID As Integer, SelectionType As String) As JsonResult
 
-			' CAN  WE USE spASRIntGetRecordSelection???
+			Dim objAvailable As List(Of ExpressionSelectionItem)
 
-			'			Dim objReport = objReportRepository.RetrieveParent(reportID, reportType)
-			Dim objAvailable As List(Of ReportColumnItem)
-
-			'If selectionType = "C" Then
-			'	objAvailable = objReportRepository.GetColumnsForTable(TableID)
-			'	For Each objItem In objReport.Columns.Where(Function(m) Not m.IsExpression)
-			'		objAvailable.RemoveAll(Function(m) m.ID = objItem.ID)
-			'	Next
-
-			'Else
-			objAvailable = objReportRepository.GetCalculationsForTable(TableID)
-			'For Each objItem In objReport.Columns.Where(Function(m) m.IsExpression)
-			'	objAvailable.RemoveAll(Function(m) m.ID = objItem.ID)
-			'Next
-
-			'	End If
+			objAvailable = objReportRepository.GetExpressionListForTable(SelectionType, TableID)
 
 			Dim results = New With {.total = 1, .page = 1, .records = 0, .rows = objAvailable}
 			Return Json(results, JsonRequestBehavior.AllowGet)
 
 		End Function
-
 
 	End Class
 

@@ -363,29 +363,29 @@ function absence_okClick() {
 		return;
 }
 
-function selectAbsenceRecordOption(psType) {
 
-	var frmPostDefinition = $('#frmPostDefinition')[0];
-	var frmRecordSelection = $('#frmRecordSelection')[0];
-	var iCurrentID;
+function selectAbsencePicklist() {
 
-	if (psType == 'picklist') {
-		iCurrentID = frmPostDefinition.txtBasePicklistID.value;
-	}
-	else {
-		iCurrentID = frmPostDefinition.txtBaseFilterID.value;
-	}
+	var tableID = $("#recSelTableID").val();
+	var currentID = $("#txtBasePicklistID").val();
 
-	frmRecordSelection.recSelType.value = psType;
-	frmRecordSelection.recSelTableID.value = frmPostDefinition.txtPersonnelTableID.value;
-	frmRecordSelection.recSelCurrentID.value = iCurrentID;
+	OpenHR.modalExpressionSelect("PICKLIST", tableID, currentID, function (id, name) {
+		$("#txtBasePicklistID").val(id);
+		$("#txtBasePicklist").val(name);
+	});
 
-	var sURL = "util_recordSelection" +
-			"?recSelType=" + escape(frmRecordSelection.recSelType.value) +
-			"&recSelTableID=" + escape(frmRecordSelection.recSelTableID.value) +
-			"&recSelCurrentID=" + escape(frmRecordSelection.recSelCurrentID.value) +
-			"&recSelTable=" + escape(frmRecordSelection.recSelTable.value);
-	openDialog(sURL, (screen.width) / 3 + 40, (screen.height) / 2, "no", "no");
+}
+
+function selectAbsenceFilter() {
+
+	var tableID = $("#recSelTableID").val();
+	var currentID = $("#txtBaseFilterID").val();
+
+	OpenHR.modalExpressionSelect("FILTER", tableID, currentID, function (id, name) {
+		$("#txtBaseFilterID").val(id);
+		$("#txtBaseFilter").val(name);
+	});
+
 }
 
 function changeRecordOptions(psType) {

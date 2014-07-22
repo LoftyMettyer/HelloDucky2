@@ -177,6 +177,7 @@
     <Compile Include="AttributeExtensions\ExcludeCharAttribute.vb" />
     <Compile Include="AttributeExtensions\NonZeroIfAttribute.vb" />
     <Compile Include="AttributeExtensions\RequiredIfAttribute.vb" />
+    <Compile Include="Classes\ExpressionSelection.vb" />
     <Compile Include="Code\Conversions.vb" />
     <Compile Include="Code\Interfaces\IDataAccess.vb" />
     <Compile Include="Code\Interfaces\IReport.vb" />
@@ -1652,7 +1653,6 @@
     <Content Include="Views\Home\util_delete.ascx" />
     <Content Include="Views\Home\util_dialog_expression.aspx" />
     <Content Include="Views\Home\Util_EmailSelection.aspx" />
-    <Content Include="Views\Home\Util_RecordSelection.aspx" />
     <Content Include="Views\Home\util_run.ascx" />
     <Content Include="Views\Home\util_run_calendarreport_data.ascx" />
     <Content Include="Views\Home\util_run_calendarreport_main.ascx" />

@@ -388,7 +388,7 @@
 																		</td>
 																		<td style="width: 15px">
 																			<input id="cmdBasePicklist" name="cmdBasePicklist" class="btn btndisabled" disabled="disabled" type="button" value="..."
-																				onclick="selectAbsenceRecordOption('picklist')" />
+																				onclick="selectAbsencePicklist()" />
 																		</td>
 																	</tr>
 																	<tr>
@@ -407,7 +407,7 @@
 																		</td>
 																		<td>
 																			<input id="cmdBaseFilter" name="cmdBaseFilter" class="btn btndisabled" disabled="disabled" type="button" value="..."
-																				onclick="selectAbsenceRecordOption('filter')" />
+																				onclick="selectAbsenceFilter()" />
 																		</td>
 																	</tr>
 																	<tr>
@@ -1017,10 +1017,10 @@
 	<input type="hidden" id="EmailSelCurrentID" name="EmailSelCurrentID">
 </form>
 
-<form id="frmRecordSelection" name="frmRecordSelection" target="recordSelection" action="util_recordSelection.asp" method="post" style="visibility: hidden; display: none">
+<form id="frmRecordSelection" name="frmRecordSelection" target="recordSelection" method="post" style="visibility: hidden; display: none">
 	<input type="hidden" id="recSelTable" name="recSelTable" value='base'>
 	<input type="hidden" id="recSelType" name="recSelType">
-	<input type="hidden" id="recSelTableID" name="recSelTableID">
+	<input type="hidden" id="recSelTableID" name="recSelTableID" value="<%=Session("Personnel_EmpTableID")%>">
 	<input type="hidden" id="recSelCurrentID" name="recSelCurrentID" value='<%=Session("optionRecordID")%>'>
 	<input type="hidden" id="baseHidden" name="baseHidden" value="N">
 </form>

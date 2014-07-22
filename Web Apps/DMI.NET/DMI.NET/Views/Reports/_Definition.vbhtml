@@ -58,14 +58,14 @@
 			Picklist
 			<input type="hidden" id="txtBasePicklistID" name="picklistID" value="@Model.PicklistID" />
 			@Html.TextBoxFor(Function(m) m.PicklistName, New With {.id = "txtBasePicklist", .readonly = "true"})
-			@Html.EllipseButton("cmdBasePicklist", "selectRecordOption('base', 'picklist')", Model.SelectionType = RecordSelectionType.Picklist)
+			@Html.EllipseButton("cmdBasePicklist", "selectBaseTablePicklist()", Model.SelectionType = RecordSelectionType.Picklist)
 			<br />
 
 			@Html.RadioButton("selectiontype", RecordSelectionType.Filter, Model.SelectionType = RecordSelectionType.Filter, New With {.onclick = "changeRecordOption('Base','filter')"})
 			Filter
 			<input type="hidden" id="txtBaseFilterID" name="filterID" value="@Model.FilterID" />
 			@Html.TextBoxFor(Function(m) m.FilterName, New With {.id = "txtBaseFilter", .readonly = "true"})
-			@Html.EllipseButton("cmdBaseFilter", "selectRecordOption('base', 'filter')", Model.SelectionType = RecordSelectionType.Filter)
+			@Html.EllipseButton("cmdBaseFilter", "selectBaseTableFilter()", Model.SelectionType = RecordSelectionType.Filter)
 			<br />
 
 			@Html.CheckBoxFor(Function(m) m.DisplayTitleInReportHeader)
@@ -145,84 +145,29 @@
 
 	}
 
-  function selectRecordOption(psTable, psType) {
+	function selectBaseTableFilter() {
 
-  	var sURL;
-  	var frmRecordSelection = $("#frmRecordSelection")[0];
-  	var iCurrentID;
-  	var iTableID;
-  	var dropTable;
+		var tableID = $("#BaseTableID option:selected").val();
+		var currentID = $("#txtBaseFilterID").val();
 
-    if (psTable == 'base') {
+		OpenHR.modalExpressionSelect("FILTER", tableID, currentID, function (id, name) {
+			$("#txtBaseFilterID").val(id);
+			$("#txtBaseFilter").val(name);
+		});
 
-    	dropTable = $("#BaseTableID")[0];
-    	iTableID = dropTable.options[dropTable.selectedIndex].value;
+	}
 
-      if (psType == 'picklist') {
-      	iCurrentID = $("#txtBasePicklistID").val();
-      }
-      else {
-        iCurrentID = $("#txtBaseFilterID").val();
-      }
-    }
-    if (psTable == 'p1') {
-      iTableID = $("#txtParent1ID").val();
+	function selectBaseTablePicklist() {
 
-      if (psType == 'picklist') {
-        iCurrentID = $("#txtParent1PicklistID").val();
-      }
-      else {
-        iCurrentID = $("#txtParent1FilterID").val();
-      }
-    }
-    if (psTable == 'p2') {
-      iTableID = $("#txtParent2ID").val();
+		var tableID = $("#BaseTableID option:selected").val();
+		var currentID = $("#txtBasePicklistID").val();
 
-      if (psType == 'picklist') {
-        iCurrentID = $("#txtParent2PicklistID").val();
-      }
-      else {
-        iCurrentID = $("#txtParent2FilterID").val();
-      }
-    }
+		OpenHR.modalExpressionSelect("PICKLIST", tableID, currentID, function (id, name) {
+			$("#txtBasePicklistID").val(id);
+			$("#txtBasePicklist").val(name);
+		});
 
-    if (psTable == 'child') {
-    	dropTable = $("#ChildTableID")[0];
-    	iTableID = dropTable.options[dropTable.selectedIndex].value;
-    	iCurrentID = $("txtChildFilterID").val();
-    }
-
-    if (psTable == 'event') {
-    	dropTable = $("#EventTableID")[0];
-    	iTableID = dropTable.options[dropTable.selectedIndex].value;
-    	iCurrentID = $("#txtEventFilterID").val();
-    }
-
-
-    var strDefOwner = $("#Owner").val();
-    var strCurrentUser = $("#Owner").val();
-    var isOwner;
-
-    strDefOwner = strDefOwner.toLowerCase();
-    strCurrentUser = strCurrentUser.toLowerCase();
-
-    if (strDefOwner == strCurrentUser) {
-    	isOwner = '1';
-    }
-    else {
-    	isOwner = '0';
-    }
-
-    sURL = "util_recordSelection" +
-			"?recSelType=" + psType +
-				"&recSelTableID=" + iTableID +
-					"&recSelCurrentID=" + iCurrentID +
-						"&recSelTable=" + psTable +
-							"&recSelDefOwner=" + isOwner +
-								"&recSelDefType=" + escape("Selection");
-    openDialog(sURL, (screen.width) / 3 + 40, (screen.height) / 2, "no", "no");
-
-  }
+	}
 
   function loadAvailableTablesForReport() {
 

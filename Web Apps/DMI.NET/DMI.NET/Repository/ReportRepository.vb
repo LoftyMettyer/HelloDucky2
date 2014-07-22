@@ -1154,5 +1154,39 @@ Namespace Repository
 
 		End Sub
 
+
+		Public Function GetExpressionListForTable(type As String, tableId As Integer) As List(Of ExpressionSelectionItem)
+
+			Dim objReturnData As New List(Of ExpressionSelectionItem)
+
+			Try
+
+				Dim dtDefinition As DataTable = _objDataAccess.GetDataTable("spASRIntGetRecordSelection", CommandType.StoredProcedure _
+				, New SqlParameter("@psType", SqlDbType.VarChar, 255) With {.Value = type} _
+				, New SqlParameter("@piTableID", SqlDbType.Int) With {.Value = tableId})
+
+				For Each objRow As DataRow In dtDefinition.Rows
+
+					Dim objToAdd = New ExpressionSelectionItem With {
+						.id = CInt(objRow("ID")),
+						.Name = objRow("Name").ToString,
+						.Description = objRow("Description").ToString,
+						.UserName = objRow("Username").ToString,
+						.Access = objRow("Access").ToString}
+
+					objReturnData.Add(objToAdd)
+
+				Next
+
+			Catch ex As Exception
+				Throw
+
+			End Try
+
+			Return objReturnData
+
+		End Function
+
+
 	End Class
 End Namespace
