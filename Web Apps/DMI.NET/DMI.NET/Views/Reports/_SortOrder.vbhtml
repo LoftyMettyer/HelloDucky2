@@ -25,14 +25,6 @@
 
 </fieldset>
 
-	<fieldset>
-		@code
-			If Model.ReportType = UtilityType.utlCustomReport Then
-				@Html.SortOrderGrid("Repetition", Model.Repetition, Nothing)
-			End If
-		End Code
-	</fieldset>
-
 	<script type="text/javascript">
 
 	$(function () {

@@ -13,6 +13,7 @@ Namespace Classes
 		Public Property ReportType As UtilityType Implements IReportDetail.ReportType
 
 		Public Property ID As Integer Implements IJsonSerialize.ID
+		Public Property TableID As Integer
 		Public Property IsExpression As Boolean
 		Public Property Name As String
 		Public Property Sequence As Integer
@@ -28,6 +29,7 @@ Namespace Classes
 		Public Property IsTotal As Boolean
 		Public Property IsHidden As Boolean
 		Public Property IsGroupWithNext As Boolean
+		Public Property IsRepeated As Boolean
 
 		Public ReadOnly Property IsNumeric As Boolean
 			Get

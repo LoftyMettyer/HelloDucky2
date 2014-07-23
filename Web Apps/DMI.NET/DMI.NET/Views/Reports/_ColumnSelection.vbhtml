@@ -85,6 +85,7 @@
 				<label for="SelectedColumnIsTotal">Total:</label>
 				<input type='checkbox' id="SelectedColumnIsTotal" onchange="updateColumnsSelectedGrid();" />
 			</div>
+
 			<br />
 
 			<label for="SelectedColumnIsHidden">Hidden:</label>
@@ -95,7 +96,12 @@
 				<input type='checkbox' id="SelectedColumnIsGroupWithNext" onchange="updateColumnsSelectedGrid();" />
 			</div>
 
-		</div>
+			<div class="baseTableOnly">
+				<label for="SelectedColumnIsRepeated">Repeat on child rows:</label>
+				<input type='checkbox' id="SelectedColumnIsRepeated" onchange="updateColumnsSelectedGrid();" />
+			</div>
+
+			</div>
 	</div>
 
 </div>
@@ -132,6 +138,8 @@
 			datarow.IsTotal = false;
 			datarow.IsHidden = false;
 			datarow.IsGroupWithNext = false;
+			datarow.IsRepeated = false;
+			datarow.TableID = $("#SelectedTableID option:selected").val();
 
 			OpenHR.postData("Reports/AddReportColumn", datarow);
 
@@ -225,7 +233,8 @@
     	dataRow.IsTotal = $("#SelectedColumnIsTotal").is(':checked');
     	dataRow.IsHidden = $("#SelectedColumnIsHidden").is(':checked');
     	dataRow.IsGroupWithNext = $("#SelectedColumnIsGroupWithNext").is(':checked');
-	
+    	dataRow.IsRepeated = $("#SelectedColumnIsRepeated").is(':checked');
+
     	$('#SelectedColumns').jqGrid('setRowData', rowId, dataRow);
 
     }
@@ -244,10 +253,11 @@
     			repeatitems: false,
     			id: "Sequence" //index of the column with the PK in it
     		},
-    		colNames: ['ID', 'IsExpression',	'Name',	'Sequence',	'Heading',	'DataType',
-    							'Size', 'Decimals', 'IsAverage', 'IsCount', 'IsTotal', 'IsHidden', 'IsGroupWithNext', 'ReportID', 'ReportType'],
+    		colNames: ['ID', 'TableID', 'IsExpression',	'Name',	'Sequence',	'Heading',	'DataType',
+    							'Size', 'Decimals', 'IsAverage', 'IsCount', 'IsTotal', 'IsHidden', 'IsGroupWithNext', 'IsRepeated', 'ReportID', 'ReportType'],
     		colModel: [
 					{ name: 'ID', index: 'ID', hidden: true },
+					{ name: 'TableID', index: 'TableID', hidden: true },
 					{ name: 'IsExpression', index: 'IsExpression2', hidden: true},
 					{ name: 'Name', index: 'Name', sortable: false},
 					{ name: 'Sequence', index: 'Sequence', hidden: true },
@@ -260,6 +270,7 @@
 					{ name: 'IsTotal', index: 'IsTotal', hidden: true },
 					{ name: 'IsHidden', index: 'IsHidden', hidden: true },
 					{ name: 'IsGroupWithNext', index: 'IsGroupWithNext', hidden: true },
+					{ name: 'IsRepeated', index: 'IsRepeated', hidden: true },
     			{ name: 'ReportID', index: 'ReportID', hidden: true },
 					{ name: 'ReportType', index: 'ReportType', hidden: true }],
     		viewrecords: true,
@@ -280,8 +291,11 @@
     			var isTopRow = (rowId == allRows[1].id);
     			var isBottomRow = (rowId == allRows[allRows.length - 1].id);
     			var isNumeric = (dataRow.DataType == '2' || dataRow.DataType == '4');
+    			var isBaseOrParentTableColumn = (dataRow.TableID == $("#BaseTableID").val()) || (dataRow.TableID == $("#txtParent1ID").val()) || (dataRow.TableID == $("#txtParent2ID").val());
+    			var isThereChildColumns = true;
 
     			$(".numericOnly :input").attr("disabled", !isNumeric);
+    			$(".baseTableOnly :input").attr("disabled", !isBaseOrParentTableColumn);
 
     			if (isNumeric) {
     				$(".numericOnly").css("color", "#000000");
@@ -289,6 +303,11 @@
     				$(".numericOnly").css("color", "#A59393");
     			}
 
+    			if (isBaseOrParentTableColumn && isThereChildColumns) {
+    				$(".baseTableOnly").css("color", "#000000");
+    			} else {
+    				$(".baseTableOnly").css("color", "#A59393");
+    			}
 
     			$("#SelectedColumnHeading").val(dataRow.Heading);
 
@@ -299,6 +318,7 @@
     			$('#SelectedColumnIsTotal').prop('checked', JSON.parse(dataRow.IsTotal));
     			$('#SelectedColumnIsHidden').prop('checked', JSON.parse(dataRow.IsHidden));
     			$('#SelectedColumnIsGroupWithNext').prop('checked', JSON.parse(dataRow.IsGroupWithNext));
+    			$('#SelectedColumnIsRepeated').prop('checked', JSON.parse(dataRow.IsRepeated));
 
     			// Enable / Disable relevant buttons
     			button_disable($("#btnColumnRemove")[0], false);
@@ -325,8 +345,6 @@
     	if ('@Model.ReportType' == '@UtilityType.utlMailMerge') {
     		$(".customReportsOnly").hide();
     	}
-
-    	attachGridToSelectedColumns();
 
     	// In built drag and drop - needs a bit of investigating as to how to change values on click and drag (also interferes with move/up/down?)
     	//$("#SelectedColumns").jqGrid('gridDnD', { connectWith: '#AvailableColumns' });

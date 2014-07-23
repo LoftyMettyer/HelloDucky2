@@ -104,6 +104,8 @@
 					loadAvailableTablesForReport();
 				}
 
+				attachGridToSelectedColumns();
+
 			}
 		});
 	}

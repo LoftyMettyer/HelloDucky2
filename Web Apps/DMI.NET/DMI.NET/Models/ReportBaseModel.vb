@@ -57,7 +57,6 @@ Namespace Models
 		Public Property ColumnsAsString As String
 
 		Public Property SortOrders As New Collection(Of SortOrderViewModel) Implements IReport.SortOrders
-		Public Property Repetition As New Collection(Of ReportRepetition)
 
 		Public Property SortOrdersString As String
 

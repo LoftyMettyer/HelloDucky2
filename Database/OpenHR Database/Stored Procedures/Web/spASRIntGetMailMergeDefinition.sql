@@ -131,6 +131,7 @@ BEGIN
 		0 AS IsTotal,
 		0 AS IsHidden,
 		0 AS IsGroupWithNext,
+		0 AS IsRepeated,
 		ASRSysMailMergeColumns.SortOrderSequence AS [sequence]
 	FROM ASRSysMailMergeColumns		
 	INNER JOIN ASRSysColumns ON ASRSysMailMergeColumns.columnID = ASRSysColumns.columnId		
@@ -153,6 +154,7 @@ BEGIN
 		0 AS IsTotal,
 		0 AS IsHidden,
 		0 AS IsGroupWithNext,
+		0 AS IsRepeated,
 		ASRSysMailMergeColumns.SortOrderSequence AS [sequence]
 	FROM ASRSysMailMergeColumns		
 	INNER JOIN ASRSysExpressions ON ASRSysMailMergeColumns.columnID = ASRSysExpressions.exprID		

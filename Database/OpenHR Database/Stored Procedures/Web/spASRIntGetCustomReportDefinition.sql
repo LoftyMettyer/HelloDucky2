@@ -411,23 +411,21 @@ BEGIN
 	SELECT 'N' AS [AccessHidden],
 		0 AS [IsExpression],
 		ASRSysColumns.tableID,
-		ASRSysCustomReportsDetails.colExprID AS [id],
+		cd.colExprID AS [id],
 		convert(varchar(MAX), ASRSysTables.tableName + '.' + ASRSysColumns.columnName) AS [Name],
-		ASRSysCustomReportsDetails.size AS [size],
-		ASRSysCustomReportsDetails.dp AS [decimals],
-		ASRSysCustomReportsDetails.heading AS Heading,
+		cd.size AS [size],
+		cd.dp AS [decimals],
+		cd.heading AS Heading,
 		ASRSysColumns.DataType,
-		ISNULL(ASRSysCustomReportsDetails.avge, 0) AS IsAverage,
-		ISNULL(ASRSysCustomReportsDetails.cnt, 0) AS IsCount,
-		ISNULL(ASRSysCustomReportsDetails.tot, 0) AS IsTotal,
-		ISNULL(ASRSysCustomReportsDetails.Hidden, 0) AS IsHidden,
-		ISNULL(ASRSysCustomReportsDetails.GroupWithNextColumn, 0) AS IsGroupWithNext,
-		ASRSysCustomReportsDetails.sequence AS [sequence]
-	FROM ASRSysCustomReportsDetails 
-		INNER JOIN ASRSysColumns ON ASRSysCustomReportsDetails.colExprID = ASRSysColumns.columnId
+		ISNULL(cd.avge, 0) AS IsAverage, ISNULL(cd.cnt, 0) AS IsCount, ISNULL(cd.tot, 0) AS IsTotal,
+		ISNULL(cd.Hidden, 0) AS IsHidden,	ISNULL(cd.GroupWithNextColumn, 0) AS IsGroupWithNext,
+		CASE cd.Repetition WHEN 1 THEN 1 ELSE 0 END AS IsRepeated,
+		cd.sequence AS [sequence]
+	FROM ASRSysCustomReportsDetails cd
+		INNER JOIN ASRSysColumns ON cd.colExprID = ASRSysColumns.columnId
 		INNER JOIN ASRSysTables ON ASRSysColumns.tableID = ASRSysTables.tableID
-	WHERE ASRSysCustomReportsDetails.customReportID = @piReportID
-		AND ASRSysCustomReportsDetails.type = 'C'
+	WHERE cd.customReportID = @piReportID
+		AND cd.type = 'C'
 	UNION
 	SELECT CASE 
 			WHEN ASRSysExpressions.access = 'HD' THEN 'Y'
@@ -435,23 +433,21 @@ BEGIN
 		END,
 		1 AS [IsExpression],
 		ASRSysExpressions.tableID,
-		ASRSysCustomReportsDetails.colExprID,
+		cd.colExprID,
 		ASRSysTables.TableName  + ' Calc> ' + replace(ASRSysExpressions.name, '_', ' ') AS [Heading],
-		ASRSysCustomReportsDetails.size,
-		ASRSysCustomReportsDetails.dp,
-		ASRSysCustomReportsDetails.heading,
+		cd.size,
+		cd.dp,
+		cd.heading,
 		0 AS [DataType],
-		ISNULL(ASRSysCustomReportsDetails.avge, 0) AS IsAverage,
-		ISNULL(ASRSysCustomReportsDetails.cnt, 0) AS IsCount,
-		ISNULL(ASRSysCustomReportsDetails.tot, 0) AS IsTotal,
-		ISNULL(ASRSysCustomReportsDetails.Hidden, 0) AS IsHidden,
-		ISNULL(ASRSysCustomReportsDetails.GroupWithNextColumn, 0) AS IsGroupWithNext,
-		ASRSysCustomReportsDetails.sequence AS [sequence]
-	FROM ASRSysCustomReportsDetails
-		INNER JOIN ASRSysExpressions ON ASRSysCustomReportsDetails.colExprID = ASRSysExpressions.exprID
+		ISNULL(cd.avge, 0) AS IsAverage, ISNULL(cd.cnt, 0) AS IsCount, ISNULL(cd.tot, 0) AS IsTotal,
+		ISNULL(cd.Hidden, 0) AS IsHidden,	ISNULL(cd.GroupWithNextColumn, 0) AS IsGroupWithNext,
+		CASE cd.Repetition WHEN 1 THEN 1 ELSE 0 END AS IsRepeated,
+		cd.sequence AS [sequence]
+	FROM ASRSysCustomReportsDetails cd
+		INNER JOIN ASRSysExpressions ON cd.colExprID = ASRSysExpressions.exprID
 		INNER JOIN ASRSysTables ON ASRSysExpressions.tableID = ASRSysTables.tableID
-	WHERE ASRSysCustomReportsDetails.customReportID = @piReportID
-		AND ASRSysCustomReportsDetails.type <> 'C';
+	WHERE cd.customReportID = @piReportID
+		AND cd.type <> 'C';
 
 	-- Orders
 	SELECT cd.colExprID AS [ID],
@@ -469,36 +465,6 @@ BEGIN
 	WHERE cd.customReportID = @piReportID
 		AND cd.type = 'C'
 		AND cd.sortOrderSequence > 0;
-
-	SELECT 'N' AS [hidden],
-		0 AS IsExpression,
-		ASRSysCustomReportsDetails.colExprID	AS [ID],
-		ASRSysTables.tableName + '.' + ASRSysColumns.columnName AS [Name],
-		ASRSysCustomReportsDetails.repetition AS IsRepeated,
-		ASRSysCustomReportsDetails.sequence AS [sequence]
-	FROM ASRSysCustomReportsDetails
-		INNER JOIN ASRSysColumns ON ASRSysCustomReportsDetails.colExprID = ASRSysColumns.columnId
-		INNER JOIN ASRSysTables ON ASRSysColumns.tableID = ASRSysTables.tableID
-	WHERE ASRSysCustomReportsDetails.customReportID = @piReportID
-		AND ASRSysCustomReportsDetails.type = 'C'
-		AND ASRSysCustomReportsDetails.repetition >= 0
-	UNION
-	SELECT CASE 
-			WHEN ASRSysExpressions.access = 'HD' THEN 'Y'
-			ELSE 'N'
-		END AS [hidden],
-		1 AS IsExpression,
-		ASRSysCustomReportsDetails.colExprID AS [id],
-		'<' + ASRSysTables.TableName + ' Calc> ' + convert(varchar(MAX), ASRSysExpressions.Name) AS Name,
-		ASRSysCustomReportsDetails.repetition  AS IsRepeated,
-		ASRSysCustomReportsDetails.sequence AS [sequence]
-	FROM ASRSysCustomReportsDetails
-		INNER JOIN ASRSysExpressions ON ASRSysCustomReportsDetails.colExprID = ASRSysExpressions.ExprID
-		INNER JOIN ASRSysTables ON ASRSysExpressions.tableID = ASRSysTables.tableID
-	WHERE ASRSysCustomReportsDetails.customReportID = @piReportID
-		AND ASRSysCustomReportsDetails.type = 'E'
-		AND ASRSysCustomReportsDetails.repetition >= 0
-	ORDER BY [sequence] ASC;
 
 	-- Return the child table information
 	SELECT  C.ChildTable AS [TableID],

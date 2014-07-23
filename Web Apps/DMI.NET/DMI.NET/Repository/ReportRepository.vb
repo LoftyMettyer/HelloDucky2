@@ -82,23 +82,11 @@ Namespace Repository
 					' Selected columns
 					PopulateColumns(objModel, dsDefinition.Tables(1))
 
-					' Repetition
-					For Each objRow As DataRow In dsDefinition.Tables(3).Rows
-						Dim objRepeatItem As New ReportRepetition() With {
-								.ID = CInt(objRow("id")),
-								.Name = objRow("Name").ToString,
-								.IsExpression = False,
-								.IsRepeated = CBool(objRow("IsRepeated"))}
-						objModel.Repetition.Add(objRepeatItem)
-					Next
-
-					'.IsExpression = CBool(objRow("IsExpression")), // TODO
-
 					PopulateSortOrder(objModel, dsDefinition.Tables(2))
 					PopulateOutput(objModel.Output, dsDefinition.Tables(0))
 
 					' Populate the child tables
-					For Each objRow As DataRow In dsDefinition.Tables(4).Rows
+					For Each objRow As DataRow In dsDefinition.Tables(3).Rows
 						objModel.ChildTables.Add(New ChildTableViewModel() With {
 										.ReportID = objModel.ID,
 										.TableName = objRow("tablename").ToString,
@@ -510,7 +498,7 @@ Namespace Repository
 				Dim sAccess As String = UtilityAccessAsString(objModel.GroupAccess)
 				Dim sJobsToHide = JobsToHideAsString(objModel.JobsToHide)
 				Dim sJobsToHideGroups As String = "" ' TODO?
-				Dim sColumns = CustomReportColumnsAsString(objModel.Columns, objModel.SortOrders)
+				Dim sColumns = CustomReportColumnsAsString(objModel.BaseTableID, objModel.Columns, objModel.SortOrders)
 				Dim sChildren As String = ReportChildTablesAsString(objModel.ChildTables)
 
 				_objDataAccess.ExecuteSP("sp_ASRIntSaveCustomReport", _
@@ -717,17 +705,19 @@ Namespace Repository
 
 		' Old style update of the column selection stuff
 		' could be dapperised, but the rest of our stored procs need updating too as everything has different column names and the IDs are not currently returned.
-		Private Function CustomReportColumnsAsString(objColumns As IEnumerable(Of ReportColumnItem), objSortColumns As Collection(Of SortOrderViewModel)) As String
+		Private Function CustomReportColumnsAsString(baseTableID As Integer, objColumns As IEnumerable(Of ReportColumnItem), objSortColumns As Collection(Of SortOrderViewModel)) As String
 
 			Dim sColumns As String = ""
 			Dim sOrderString As String
+			Dim iRepeated As Integer = 0
 
-			Dim iCount As Integer = 1
+			Dim iCount As Integer
 			Dim iSortSequence As Integer
 			For Each objItem In objColumns
 
 				' this could be improve with some linq or whatever! No panic because the whole function could be tidied up
-				sOrderString = "||0||"
+				sOrderString = "0||0||0||0||0||0"
+
 				iSortSequence = 1
 				For Each objSortItem In objSortColumns
 					If objSortItem.ColumnID = objItem.ID Then
@@ -741,11 +731,23 @@ Namespace Repository
 					End If
 				Next
 
+				iRepeated = -1
+				If objItem.IsRepeated Then
+					iRepeated = 1
+				Else
+					Dim objColumn = _objSessionInfo.Columns.Where(Function(m) m.ID = objItem.ID And m.TableID = baseTableID).FirstOrDefault
+					If Not objColumn Is Nothing Then
+						If objColumn.TableID = baseTableID Then
+							iRepeated = 0
+						End If
+					End If
+				End If
+
 				sColumns += String.Format("{0}||{1}||{2}||{3}||{4}||{5}||{6}||{7}||{8}||{9}||{10}||{11}||{12}||{13}**" _
 													, iCount, IIf(objItem.IsExpression, "E", "C"), objItem.ID, objItem.Heading, objItem.Size, objItem.Decimals _
 													, If(objItem.IsNumeric, 1, 0), If(objItem.IsAverage, 1, 0), If(objItem.IsCount, 1, 0) _
 													, If(objItem.IsTotal, 1, 0), If(objItem.IsHidden, 1, 0), If(objItem.IsGroupWithNext, 1, 0) _
-													, sOrderString, "0")
+													, sOrderString, iRepeated)
 				iCount += 1
 			Next
 
@@ -1046,6 +1048,7 @@ Namespace Repository
 						.IsExpression = CBool(objRow("IsExpression")),
 						.ID = CInt(objRow("id")),
 						.Name = objRow("Name").ToString,
+						.TableID = CInt(objRow("Tableid")),
 						.DataType = CType(objRow("DataType"), SQLDataType),
 						.Sequence = CInt(objRow("Sequence")),
 						.Size = CInt(objRow("Size")),
@@ -1054,7 +1057,8 @@ Namespace Repository
 						.IsCount = CBool(objRow("IsCount")),
 						.IsTotal = CBool(objRow("IsTotal")),
 						.IsHidden = CBool(objRow("IsHidden")),
-						.IsGroupWithNext = CBool(objRow("IsGroupWithNext"))}
+						.IsGroupWithNext = CBool(objRow("IsGroupWithNext")),
+						.IsRepeated = CBool(objRow("IsRepeated"))}
 					outputModel.Columns.Add(objItem)
 
 				Next

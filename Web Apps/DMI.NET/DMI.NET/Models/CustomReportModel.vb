@@ -47,7 +47,6 @@ Namespace Models
 			SelectionType = Enums.RecordSelectionType.AllRecords
 			Columns = New List(Of ReportColumnItem)
 			SortOrders = New Collection(Of SortOrderViewModel)
-			Repetition = New Collection(Of ReportRepetition)
 
 			Dim objParents = SessionInfo.Relations.Where(Function(m) m.ChildID = TableID)
 
