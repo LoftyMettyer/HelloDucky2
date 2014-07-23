@@ -7,25 +7,24 @@
 	Html.BeginForm("PostSortOrder", "Reports", FormMethod.Post, New With {.id = "frmPostSortOrder"})
 End Code
 
-<fieldset>
-
-	<legend>Sort Order</legend>
-
 	@Html.HiddenFor(Function(m) m.ID, New With {.id = "SortOrderID"})
 	@Html.HiddenFor(Function(m) m.ReportID)
 	@Html.HiddenFor(Function(m) m.ReportType)
 	@Html.HiddenFor(Function(m) m.TableID, New With {.id = "SortOrderTableID"})
 	@Html.HiddenFor(Function(m) m.Sequence, New With {.id = "SortOrderSequence"})
 
-	
+	@Html.LabelFor(Function(m) m.ColumnID)
 	@Html.ColumnDropdown("ColumnID", "SortOrderColumnID", Model.ColumnID, Model.AvailableColumns, "")
 	<br/>
+	<br />
+
 
 	@Html.RadioButton("Order", CInt(OrderType.Ascending), Model.Order = OrderType.Ascending, New With {.id = "SortOrderOrder"})
 	Ascending
 	<br/>
 	@Html.RadioButton("Order", CInt(OrderType.Descending), Model.Order = OrderType.Descending, New With {.id = "SortOrderOrder"})
 	Descending
+	<br />
 	<br />
 
 	<div class="customReportsOnly">
@@ -46,7 +45,8 @@ End Code
 		@Html.LabelFor(Function(m) m.SuppressRepeated)
 	</div>
 
-</fieldset>
+<br />
+<br />
 
 <input type="button" value="OK" onclick="postThisSortOrder();" />
 <input type="button" value="Cancel" onclick="closeThisSortOrder();" />

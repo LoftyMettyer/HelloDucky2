@@ -17,6 +17,7 @@ Namespace ViewModels.Reports
 		Public Property TableID As Integer
 		Public Property ID As Integer Implements IJsonSerialize.ID
 
+		<DisplayName("Column :")>
 		Public Property ColumnID As Integer
 
 		<DisplayName("Column :")>

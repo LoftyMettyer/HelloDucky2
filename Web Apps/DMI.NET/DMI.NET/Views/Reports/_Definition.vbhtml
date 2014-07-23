@@ -102,9 +102,8 @@
 
 				if ('@CInt(Model.ReportType)' == '2' || '@CInt(Model.ReportType)' == '9') {
 					loadAvailableTablesForReport();
+					attachGridToSelectedColumns();
 				}
-
-				attachGridToSelectedColumns();
 
 			}
 		});
@@ -263,6 +262,9 @@
 						submitReportDefinition();
 					}
 				});
+			}
+			else {
+				return 6;
 			}
 
 		} else {
