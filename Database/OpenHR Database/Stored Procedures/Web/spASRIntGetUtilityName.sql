@@ -17,6 +17,12 @@ BEGIN
 	SET @sTableName = '';
 	SET @psName = '<unknown>';
 
+	IF @piUtilityType IN (11, 12)  -- Calculations and filters
+	BEGIN
+		SET @sTableName = 'ASRSysExpressions';
+		SET @sIDColumnName = 'ExprID';
+  END
+
 	IF @piUtilityType = 0 /* Batch Job */
 	BEGIN
 		SET @sTableName = 'ASRSysBatchJobName';

@@ -93,7 +93,7 @@
     <Build Include="Stored Procedures\Web\sp_ASRIntCancelCourse.sql" />
     <Build Include="Stored Procedures\Web\sp_ASRIntCancelCoursePart2.sql" />
     <Build Include="Stored Procedures\Web\sp_ASRIntCheckCanMakeHidden.sql" />
-    <Build Include="Stored Procedures\Web\sp_ASRIntDefProperties.sql" />
+    <Build Include="Stored Procedures\Web\spASRIntDefProperties.sql" />
     <Build Include="Stored Procedures\Web\sp_ASRIntDefUsage.sql" />
     <Build Include="Stored Procedures\Web\sp_ASRIntDeleteUtility.sql" />
     <Build Include="Stored Procedures\Web\sp_ASRIntExpressionHasHiddenComponents.sql" />

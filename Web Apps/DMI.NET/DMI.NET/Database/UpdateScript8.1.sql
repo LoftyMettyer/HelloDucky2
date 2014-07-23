@@ -28,6 +28,11 @@ IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[sp_ASRIntG
 	DROP PROCEDURE [dbo].[sp_ASRIntGetReportColumns];
 GO
 
+IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[sp_ASRIntDefProperties]') AND xtype in (N'P'))
+	DROP PROCEDURE [dbo].[sp_ASRIntDefProperties];
+GO
+
+
 
 -- modified (chr(9) to be , AS [xxxx] so that columns come back in non string delimated format, also return types are noiw rw/ro/hd instead of readable text
 IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spASRIntGetUtilityAccessRecords]') AND xtype in (N'P'))
@@ -1447,7 +1452,6 @@ BEGIN
 END
 GO
 
-
 IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spASRIntGetRecordSelection]') AND xtype in (N'P'))
 	DROP PROCEDURE [dbo].[spASRIntGetRecordSelection];
 GO
@@ -1522,6 +1526,156 @@ BEGIN
 END
 GO
 
+IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spASRIntDefProperties]') AND xtype in (N'P'))
+	DROP PROCEDURE [dbo].[spASRIntDefProperties];
+GO
+
+CREATE PROCEDURE [dbo].[spASRIntDefProperties] (
+	@intType int, 
+	@intID int
+)
+AS
+BEGIN
+
+	SET NOCOUNT ON;
+
+	DECLARE @Name	nvarchar(255);
+
+	-- Definition details
+	EXEC [spASRIntGetUtilityName] @intType, @intID, @Name OUTPUT
+
+	SELECT @name AS Name;
+
+	-- Access details of object
+	SELECT convert(varchar, CreatedDate,103) + ' ' + convert(varchar, CreatedDate,108) as [CreatedDate], 
+		convert(varchar, SavedDate,103) + ' ' + convert(varchar, SavedDate,108) as [SavedDate], 
+		convert(varchar, RunDate,103) + ' ' + convert(varchar, RunDate,108) as [RunDate], 
+		Createdby, 
+		Savedby, 
+		Runby 
+	FROM [dbo].[ASRSysUtilAccessLog]
+	WHERE UtilID = @intID AND [Type] = @intType;
+
+	-- Get usage of this object
+	EXEC sp_ASRIntDefUsage @intType, @intID;
+
+END
+GO
+
+IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spASRIntGetUtilityName]') AND xtype in (N'P'))
+	DROP PROCEDURE [dbo].[spASRIntGetUtilityName];
+GO
+
+CREATE PROCEDURE [dbo].[spASRIntGetUtilityName] (
+	@piUtilityType	integer,
+	@plngID			integer,
+	@psName			varchar(255)	OUTPUT
+)
+AS
+BEGIN
+
+	SET NOCOUNT ON;
+
+	DECLARE 
+		@sTableName			sysname,
+		@sIDColumnName		sysname,
+		@sSQL				nvarchar(MAX),
+		@sParamDefinition	nvarchar(500);
+
+	SET @sTableName = '';
+	SET @psName = '<unknown>';
+
+	IF @piUtilityType IN (11, 12)  -- Calculations and filters
+	BEGIN
+		SET @sTableName = 'ASRSysExpressions';
+		SET @sIDColumnName = 'ExprID';
+  END
+
+	IF @piUtilityType = 0 /* Batch Job */
+	BEGIN
+		SET @sTableName = 'ASRSysBatchJobName';
+		SET @sIDColumnName = 'ID';
+    END
+
+	IF @piUtilityType = 17 /* Calendar Report */
+	BEGIN
+		SET @sTableName = 'ASRSysCalendarReports';
+		SET @sIDColumnName = 'ID';
+    END
+
+	IF @piUtilityType = 1 /* Cross Tab */
+	BEGIN
+		SET @sTableName = 'ASRSysCrossTab';
+		SET @sIDColumnName = 'CrossTabID';
+    END
+    
+	IF @piUtilityType = 2 /* Custom Report */
+	BEGIN
+		SET @sTableName = 'ASRSysCustomReportsName';
+		SET @sIDColumnName = 'ID';
+    END
+        
+	IF @piUtilityType = 3 /* Data Transfer */
+	BEGIN
+		SET @sTableName = 'ASRSysDataTransferName';
+		SET @sIDColumnName = 'DataTransferID';
+    END
+    
+	IF @piUtilityType = 4 /* Export */
+	BEGIN
+		SET @sTableName = 'ASRSysExportName';
+		SET @sIDColumnName = 'ID';
+    END
+    
+	IF (@piUtilityType = 5) OR (@piUtilityType = 6) OR (@piUtilityType = 7) /* Globals */
+	BEGIN
+		SET @sTableName = 'ASRSysGlobalFunctions';
+		SET @sIDColumnName = 'functionID';
+    END
+    
+	IF (@piUtilityType = 8) /* Import */
+	BEGIN
+		SET @sTableName = 'ASRSysImportName';
+		SET @sIDColumnName = 'ID';
+    END
+    
+	IF (@piUtilityType = 9) OR (@piUtilityType = 18) /* Label or Mail Merge */
+	BEGIN
+		SET @sTableName = 'ASRSysMailMergeName';
+		SET @sIDColumnName = 'mailMergeID';
+    END
+    
+	IF (@piUtilityType = 20) /* Record Profile */
+	BEGIN
+		SET @sTableName = 'ASRSysRecordProfileName';
+		SET @sIDColumnName = 'recordProfileID';
+    END
+    
+	IF (@piUtilityType = 14) OR (@piUtilityType = 23) OR (@piUtilityType = 24) /* Match Report, Succession, Career */
+	BEGIN
+		SET @sTableName = 'ASRSysMatchReportName';
+		SET @sIDColumnName = 'matchReportID';
+    END
+
+	IF (@piUtilityType = 25) /* Workflow */
+	BEGIN
+		SET @sTableName = 'ASRSysWorkflows';
+		SET @sIDColumnName = 'ID';
+	END
+      	
+	IF len(@sTableName) > 0
+	BEGIN
+		SET @sSQL = 'SELECT @sName = [' + @sTableName + '].[name]
+				FROM [' + @sTableName + ']
+				WHERE [' + @sTableName + '].[' + @sIDColumnName + '] = ' + convert(nvarchar(255), @plngID);
+
+		SET @sParamDefinition = N'@sName varchar(255) OUTPUT';
+		EXEC sp_executesql @sSQL, @sParamDefinition, @psName OUTPUT;
+	END
+
+	IF @psName IS null SET @psName = '<unknown>';
+END
+GO
 
 
 

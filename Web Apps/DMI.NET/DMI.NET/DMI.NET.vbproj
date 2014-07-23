@@ -183,7 +183,9 @@
     <Compile Include="Code\Interfaces\IReport.vb" />
     <Compile Include="Code\Interfaces\IReportDetail.vb" />
     <Compile Include="Enums\UtilityActionType.vb" />
+    <Compile Include="Helpers\LabelHelper.vb" />
     <Compile Include="Models\CalendarEvent.vb" />
+    <Compile Include="ViewModels\Home\DefinitionPropertiesViewModel.vb" />
     <Compile Include="ViewModels\Reports\CalendarEventDetailViewModel.vb" />
     <Compile Include="Classes\GroupAccess.vb" />
     <Compile Include="ViewModels\Reports\ChildTableViewModel.vb" />
@@ -1604,7 +1606,6 @@
     <Content Include="Views\Home\Data.ascx" />
     <Content Include="Views\Home\_default.ascx" />
     <Content Include="Views\Home\DefSel.ascx" />
-    <Content Include="Views\Home\DefSelProperties.aspx" />
     <Content Include="Views\Home\emailSelection.aspx" />
     <Content Include="Views\Home\emptyoption.ascx" />
     <Content Include="Views\Home\EventLog.ascx" />
@@ -1695,6 +1696,7 @@
     <Content Include="Views\Reports\EditorTemplates\ReportChildTable.vbhtml" />
     <Content Include="Views\Reports\EditorTemplates\CalendarEventDetail.vbhtml" />
     <Content Include="Views\Reports\EditorTemplates\SortOrder.vbhtml" />
+    <Content Include="Views\Home\DefinitionProperties.vbhtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Global.asax" />

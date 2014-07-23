@@ -612,21 +612,13 @@
 		}
 
 		function showproperties() {
-				if (!$("#mnutoolPropertiesUtil").hasClass("disabled")) {
-						var sUrl;
-						var frmDefSel = document.getElementById('frmDefSel');
+			if (!$("#mnutoolPropertiesUtil").hasClass("disabled")) {
 
-						var frmProp = document.getElementById('frmProp');
-						frmProp.prop_id.value = $("#DefSelRecords").getGridParam('selrow');
-						frmProp.prop_name.value = selectedRecordDetails("Name");
-						frmProp.utiltype.value = frmDefSel.utiltype.value;
+				var id = $("#DefSelRecords").getGridParam('selrow');
+				var type = $("#utiltype").val();
+				OpenHR.OpenDialog("DefinitionProperties", "divPopupReportDefinition", { ID: id, Type: type });
 
-						sUrl = "defselproperties" +
-									 "?prop_name=" + escape(frmProp.prop_name.value) +
-									 "&prop_id=" + frmProp.prop_id.value +
-									 "&utiltype=" + frmProp.utiltype.value;
-						openDialog(sUrl, 600, 350);
-				}
+			}
 		}
 
 		function pausecomp(millis) {
@@ -1265,13 +1257,6 @@
 				<input type="hidden" id="txtTableID" name="txtTableID" value='<%=iBaseTableID%>'>
 				<input type="hidden" id="SelectedTableID" name="SelectedTableID">
 		</form>
-
-		<form target="properties" action="defselproperties" method="post" id="frmProp" name="frmProp" style="visibility: hidden; display: none">
-				<input type="hidden" id="prop_name" name="prop_name">
-				<input type="hidden" id="prop_id" name="prop_id">
-				<input type="hidden" id="utiltype" name="utiltype">
-		</form>
-
 
 
 	<input type="hidden" id="txtTicker" name="txtTicker" value="0">
