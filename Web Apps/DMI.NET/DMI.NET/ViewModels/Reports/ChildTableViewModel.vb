@@ -12,7 +12,10 @@ Namespace ViewModels.Reports
 		Implements IReportDetail
 
 		<HiddenInput>
-		Public Property ReportID As Integer Implements IJsonSerialize.ID, IReportDetail.ReportID
+		Public Property ID As Integer Implements IJsonSerialize.ID
+
+		<HiddenInput>
+		Public Property ReportID As Integer Implements IReportDetail.ReportID
 		Public Property ReportType As HR.Intranet.Server.Enums.UtilityType Implements IReportDetail.ReportType
 
 		<DisplayName("Table :")>

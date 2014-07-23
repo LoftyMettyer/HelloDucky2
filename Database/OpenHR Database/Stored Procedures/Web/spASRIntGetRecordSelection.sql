@@ -21,6 +21,14 @@ BEGIN
 		ORDER BY [name];
 	END
 
+	IF UPPER(@psType) = 'ORDER'
+	BEGIN
+			SELECT orderid AS [ID], name, '' AS username, '' AS access , '' AS [Description]
+		FROM ASRSysOrders 
+		WHERE tableid = @piTableID AND type = 1 
+			ORDER BY [name];
+	END
+
 	IF UPPER(@psType) = 'FILTER'
 	BEGIN
 		SELECT exprid AS ID, name, username, access, [Description]

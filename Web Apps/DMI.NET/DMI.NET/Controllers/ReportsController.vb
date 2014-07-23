@@ -218,17 +218,16 @@ Namespace Controllers
 		<HttpPost>
 		Function AddChildTable(ReportID As Integer) As ActionResult
 
-			Dim objReport = objReportRepository.RetrieveCustomReport(ReportID)
+			Dim objModel As New ChildTableViewModel With {.ReportID = ReportID, .ReportType = UtilityType.utlCustomReport}
+			Dim objReport = CType(objReportRepository.RetrieveParent(objModel), CustomReportModel)
 
-			Dim objModel As New ChildTableViewModel
 			objModel.AvailableTables = objReportRepository.GetChildTables(objReport.BaseTableID, False)
 
 			For Each objTable In objReport.ChildTables
 				objModel.AvailableTables.RemoveAll(Function(m) m.id = objTable.TableID)
 			Next
 
-			objModel.ReportID = ReportID
-
+			objModel.ID = objReport.ChildTables.Count + 1
 
 			Return PartialView("EditorTemplates\ReportChildTable", objModel)
 
@@ -238,8 +237,7 @@ Namespace Controllers
 		<HttpPost>
 		Function EditChildTable(objModel As ChildTableViewModel) As ActionResult
 
-			Dim objReport = objReportRepository.RetrieveCustomReport(objModel.ReportID)
-
+			Dim objReport = objReportRepository.RetrieveParent(objModel)
 			objModel.AvailableTables = objReportRepository.GetChildTables(objReport.BaseTableID, True)
 
 			Return PartialView("EditorTemplates\ReportChildTable", objModel)

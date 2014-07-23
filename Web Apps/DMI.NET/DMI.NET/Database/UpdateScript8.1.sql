@@ -1054,7 +1054,7 @@ GO
 IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spASRIntGetCalendarReportDefinition]') AND xtype in (N'P'))
 	DROP PROCEDURE [dbo].[spASRIntGetCalendarReportDefinition];
 GO
-CREATE PROCEDURE spASRIntGetCalendarReportDefinition (
+CREATE PROCEDURE [dbo].spASRIntGetCalendarReportDefinition (
 	@piCalendarReportID 		integer, 
 	@psCurrentUser				varchar(255),
 	@psAction					varchar(255))
@@ -1473,6 +1473,14 @@ BEGIN
 		WHERE (tableid = @piTableID)
 			AND (@fSysSecMgr = 1 OR username = SYSTEM_USER OR Access <> 'HD')
 		ORDER BY [name];
+	END
+
+	IF UPPER(@psType) = 'ORDER'
+	BEGIN
+			SELECT orderid AS [ID], name, '' AS username, '' AS access , '' AS [Description]
+		FROM ASRSysOrders 
+		WHERE tableid = @piTableID AND type = 1 
+			ORDER BY [name];
 	END
 
 	IF UPPER(@psType) = 'FILTER'

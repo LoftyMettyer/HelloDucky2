@@ -179,10 +179,11 @@
 				total: "total", //total pages for the query
 				records: "records", //total number of records
 				repeatitems: false,
-				id: "TableID" //index of the column with the PK in it
+				id: "ID" //index of the column with the PK in it
 			},
-			colNames: ['ReportID', 'ReportType', 'TableID', 'FilterID', 'OrderID', 'Table', 'Filter', 'Order', 'Records'],
+			colNames: ['ID', 'ReportID', 'ReportType', 'TableID', 'FilterID', 'OrderID', 'Table', 'Filter', 'Order', 'Records'],
 			colModel: [
+				{ name: 'ID', index: 'ID', sorttype: 'int', hidden: true },
 				{ name: 'ReportID', index: 'ReportID', sorttype: 'int', hidden: true },
 				{ name: 'ReportType', index: 'ReportType', sorttype: 'int', hidden: true },
 				{ name: 'TableID', index: 'TableID', width: 100, hidden: true },
@@ -202,7 +203,7 @@
 			sortname: 'TableName',
 			loadonce: true,
 			viewrecords: true,
-			sortorder: "desc",
+			sortorder: "asc",
 			ondblClickRow: function (rowID) {
 				editChildTable(rowID);
 

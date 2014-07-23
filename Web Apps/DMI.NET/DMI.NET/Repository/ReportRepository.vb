@@ -86,8 +86,10 @@ Namespace Repository
 					PopulateOutput(objModel.Output, dsDefinition.Tables(0))
 
 					' Populate the child tables
+					Dim iChildIndex As Integer = 1
 					For Each objRow As DataRow In dsDefinition.Tables(3).Rows
 						objModel.ChildTables.Add(New ChildTableViewModel() With {
+										.ID = iChildIndex,
 										.ReportID = objModel.ID,
 										.TableName = objRow("tablename").ToString,
 										.FilterName = objRow("filtername").ToString,
@@ -96,6 +98,7 @@ Namespace Repository
 										.FilterID = CInt(objRow("filterid")),
 										.OrderID = CInt(objRow("orderid")),
 										.Records = CInt(objRow("Records"))})
+						iChildIndex += 1
 					Next
 
 				End If

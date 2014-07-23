@@ -8,13 +8,13 @@
  		@Html.HiddenFor(Function(m) m.ReportID)
 
 	 	@Html.LabelFor(Function(m) m.TableID) 
-	 	@Html.TableDropdown("TableID", "ChildTableID", Model.TableID, Model.AvailableTables, Nothing)
+	 	@Html.TableDropdown("TableID", "ChildTableID", Model.TableID, Model.AvailableTables, "changeChildTable();")
 	 
 		@<br/>
 		@Html.HiddenFor(Function(m) m.FilterID, New With {.id = "txtChildFilterID"})
 		@Html.LabelFor(Function(m) m.FilterName)
 		@Html.TextBoxFor(Function(m) m.FilterName, New With {.id = "txtChildFilter", .readonly = "true"})
-		@Html.EllipseButton("cmdBaseFilter", "selectRecordOption('child', 'filter')", True)
+		@Html.EllipseButton("cmdBaseFilter", "selectChildTableFilter()", True)
 		@<br />
 		@Html.LabelFor(Function(m) m.OrderName)
 		@Html.HiddenFor(Function(m) m.OrderID, New With {.id = "txtChildFieldOrderID"})
@@ -33,14 +33,36 @@
 
 <script>
 
-	function selectRecordOrder() {
-		var sURL;
+	function changeChildTable() {
+		$("#txtChildFilterID").val(0);
+		$("#txtChildFilter").val('');
+		$("#txtChildFieldOrderID").val(0);
+		$("#txtFieldRecOrder").val('');
+		$("#txtChildRecords").val(0);
+	}
 
-		sURL = "fieldRec" +
-				"?selectionType=" + "ORDER" +
-				"&txtTableID=" + $("#ChildTableID option:selected").val() +
-				"&selectedID=" + $("#txtChildFieldOrderID").val();
-		openDialog(sURL, (screen.width) / 3 + 40, (screen.height) / 2 - 30, "no", "no");
+	function selectChildTableFilter() {
+
+		var tableID = $("#ChildTableID option:selected").val();
+		var currentID = $("#txtChildFilterID").val();
+
+		OpenHR.modalExpressionSelect("FILTER", tableID, currentID, function (id, name) {
+			$("#txtChildFilterID").val(id);
+			$("#txtChildFilter").val(name);
+		});
+
+	}
+
+	function selectRecordOrder() {
+
+		var tableID = $("#ChildTableID option:selected").val();
+		var currentID = $("#txtChildFieldOrderID").val();
+
+		OpenHR.modalExpressionSelect("ORDER", tableID, currentID, function (id, name) {
+			$("#txtChildFieldOrderID").val(id);
+			$("#txtFieldRecOrder").val(name);
+		});
+
 	}
 
 	function closeThisChildTable() {
@@ -53,6 +75,7 @@
 			var datarow = {
 				ReportID: '@Model.ReportID',
 				ReportType: '@Model.ReportType',
+				ID: '@Model.ID',
 				TableID: $("#ChildTableID").val(),
 				FilterID: $("#txtChildFilterID").val(),
 				OrderID: $("#txtChildFieldOrderID").val(),
@@ -63,8 +86,11 @@
 			};
 
 			// Update client
-			$('#ChildTables').jqGrid('delRowData', $("#ChildTableID").val())
-			var su = jQuery("#ChildTables").jqGrid('addRowData', $("#ChildTableID").val(), datarow);
+			var grid = $('#ChildTables');
+			grid.jqGrid('delRowData', '@Model.ID');
+			grid.jqGrid('addRowData', '@Model.ID', datarow);
+			grid.setGridParam({ sortname: 'ID' }).trigger('reloadGrid');
+			grid.jqGrid("setSelection", '@Model.ID');
 
 			// Post to server
 			OpenHR.postData("Reports/PostChildTable", datarow, loadAvailableTablesForReport)
