@@ -504,6 +504,5 @@
 
 	menu_window_onload();
 	$("#contextmenu").fadeIn("slow");
-	$(".accordion").accordion("resize");
 
 </script>

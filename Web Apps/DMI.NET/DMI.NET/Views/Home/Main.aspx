@@ -125,7 +125,8 @@
 			});
 		} else {
 			$("#menuframe").fadeIn("slow");
-			$(".accordion").accordion("resize");
+			$(".accordion").accordion("refresh");
+
 			$('#officebar .button').addClass('ui-state-default');
 
 			$('#officebar .button').hover(

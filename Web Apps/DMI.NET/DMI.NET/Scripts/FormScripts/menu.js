@@ -12,13 +12,13 @@
 	window.menuErrorShown = false;
 
 	//add onclick to all the menuitems.
-	$("#contextmenu a").live('click', function (e) {
+	$(document).on("click", "#contextmenu a", function () {
 		var pTool = ($(this).closest("li").attr("id"));
 		menu_abMainMenu_Click(pTool);
 	});
 		
-		//add onclick to all ribbon items.
-	$(".officetab a").live('click', function (e) {
+	//add onclick to all ribbon items.
+	$(document).on("click", ".officetab a", function() {
 			var pTool = ($(this).closest("div").attr("id"));	    
 			menu_abMainMenu_Click(pTool);
 	});
@@ -34,6 +34,7 @@
 	
 	//Add accordion functionality to the context menu
 	$(".accordion").accordion({
+			autoHeight: 'content',
 			heightStyle: "fill",
 			icons: false
 	});
@@ -4995,7 +4996,8 @@ function menu_loadSelectOrderFilter(psType) {
 		//"cannot call methods on accordion prior to initialization; attempted to call method 'resize'"
 		//so I'm try-catching the statement
 		try {
-			$(".accordion").accordion("resize");
+			$(".accordion").accordion("refresh");
+
 		} catch(e) {}
 	}
 }

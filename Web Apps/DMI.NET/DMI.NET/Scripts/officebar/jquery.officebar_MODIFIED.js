@@ -5,6 +5,18 @@
  * GPL (GPL-LICENSE.txt) license.
  *
  */
+
+/* CUSTOM MODIFICATIONS
+Note: There is no ongoing support for this library therefore we must now maintain going forward. Below is a summary of our modifications in case we ever get a new library.
+
+
+$.browser.msie has neen deprecated in jQuery 1.9.0 - as this only affected bug quirks for IE7 it was safe(ish) to modify the code.
+jquery.com/upgrade-guide/1.9/#jquery-browser-removed
+
+
+*/
+
+
 ;(function($) {
 	// private function for debugging
 	$.buildOfficeBar = function(object, options) {
@@ -46,10 +58,6 @@
 				
 				menu.show();
 				$(object).data("officebar.activeMenu", {object: menu, type: 0});
-
-				//Fixes repaint bug in IE7
-				if($.browser.msie)
-					$("ul", object).css('display', 'none').css('display', 'block');
 
 				if(options.onAfterShowSplitMenu) {
 					(options.onAfterShowSplitMenu)(eventInfo); }
@@ -234,12 +242,6 @@
 				.end()
 			);
 
-			//IE fix for popup's: Fix width
-			if($.browser.msie)
-			{
-				var help = me.prev().data("officebar.menu");
-				help.css("width", help.width());
-			}
 			me.remove();
 		});
 
@@ -266,12 +268,6 @@
 					.end()
 				);
 
-			//IE fix for popup's: Fix width
-			if($.browser.msie)
-			{
-				var help = me.prev().data("officebar.menu");
-				help.css("width", help.width());
-			}
 			me.remove();
 		});
 

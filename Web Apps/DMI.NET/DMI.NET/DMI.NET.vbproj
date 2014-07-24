@@ -279,6 +279,8 @@
     <Content Include="Content\images\splitterRight.bmp" />
     <Content Include="Content\images\TopLeftBannerImage.png" />
     <Content Include="Content\images\Utilities.gif" />
+    <Content Include="Content\jquery.jqGrid\ellipsis-xbl.xml" />
+    <Content Include="Content\jquery.jqGrid\ui.jqgrid.css" />
     <Content Include="Content\jquery.mCustomScrollbar.css" />
     <Content Include="Content\jquery.mCustomScrollbar.min.css">
       <DependentUpon>jquery.mCustomScrollbar.css</DependentUpon>
@@ -1150,9 +1152,18 @@
     <Content Include="Database\UpdateScript8.1.sql" />
     <Content Include="Scripts\FormScripts\crosstab.js" />
     <Content Include="Scripts\FormScripts\customreport.js" />
+    <None Include="Scripts\jquery-1.9.1.intellisense.js" />
+    <Content Include="Scripts\jquery-1.9.1.js" />
+    <Content Include="Scripts\jquery-1.9.1.min.js" />
+    <Content Include="Scripts\jquery-ui-1.10.4.js" />
+    <Content Include="Scripts\jquery-ui-1.10.4.min.js" />
+    <Content Include="Scripts\jquery.jqGrid.js" />
+    <Content Include="Scripts\jquery.jqGrid.min.js" />
+    <None Include="Scripts\jquery.validate-vsdoc.js" />
+    <Content Include="Scripts\jquery.validate.js" />
+    <Content Include="Scripts\jquery.validate.min.js" />
     <Content Include="Scripts\jquery\jquery.numeric.js" />
     <Content Include="Scripts\FormScripts\OptionDataGrid.js" />
-    <Content Include="Scripts\jquery\jquery-ui-i18n.js" />
     <Content Include="lpks\ssmain.lpk" />
     <Content Include="Content\fonts\SSI80v194934\SSI80v1.woff" />
     <Content Include="Content\fonts\font-awesome\fontawesome-webfont.woff" />
@@ -1190,7 +1201,6 @@
     <None Include="My Project\PublishProfiles\QASRVR01 - OpenHRRanorex.pubxml" />
     <None Include="My Project\PublishProfiles\Stuart Jennings machine.pubxml" />
     <None Include="My Project\PublishProfiles\Westminster Kingsway.pubxml" />
-    <None Include="Scripts\jquery\jquery-1.8.3-vsdoc.js" />
     <Content Include="Scripts\jquery\grid.locale-en.js" />
     <Content Include="Scripts\jquery\jOrgChart\css\bootstrap.min.css" />
     <Content Include="Scripts\jquery\jOrgChart\css\custom.css" />
@@ -1201,13 +1211,11 @@
     <Content Include="Scripts\jquery\jOrgChart\jquery.jOrgChart.js" />
     <Content Include="Scripts\jquery\jOrgChart\prettify.js" />
     <Content Include="Scripts\jquery\jquery-debouncedresize.js" />
-    <Content Include="Scripts\jquery\jquery-ui-1.9.2.custom.js" />
-    <Content Include="Scripts\jquery\jquery.jqGrid.min.js" />
-    <Content Include="Scripts\jquery\jquery.jqGrid.src.js" />
     <Content Include="Scripts\jquery\jquery.mCustomScrollbar.min.js" />
     <Content Include="Scripts\autoNumeric-1.9.15.js" />
     <Content Include="Scripts\jquery\jquery.tablesorter.min.js" />
     <Content Include="Scripts\jquery\MonthPicker.js" />
+    <Content Include="Scripts\modernizr-2.7.2.js" />
     <Content Include="Views\Home\pollMessage.aspx" />
     <Content Include="Views\Home\util_run_bradford_factor.ascx" />
     <Content Include="Views\Home\_showChart.ascx" />
@@ -1385,7 +1393,6 @@
     <Content Include="Scripts\FormScripts\util_def_exprcomponent.js" />
     <Content Include="Scripts\FormScripts\util_def_expression.js" />
     <Content Include="Scripts\jquery\jquery.maskedinput.js" />
-    <Content Include="Scripts\jquery\jquery-1.8.3.js" />
     <Content Include="Scripts\jquery\jsTree\theme\apple\bg.jpg" />
     <Content Include="Scripts\jquery\jsTree\theme\apple\d.png" />
     <Content Include="Scripts\jquery\jsTree\theme\apple\dot_for_ie.gif" />
@@ -1410,7 +1417,7 @@
     <Content Include="Scripts\officebar\images\tab_left_over.gif" />
     <Content Include="Scripts\officebar\images\tab_right.gif" />
     <Content Include="Scripts\officebar\images\tab_right_over.gif" />
-    <Content Include="Scripts\officebar\jquery.officebar.js" />
+    <Content Include="Scripts\officebar\jquery.officebar_MODIFIED.js" />
     <Content Include="Scripts\officebar\jquery.ribbon.css" />
     <Content Include="Scripts\jquery\jsTree\theme\classic\d.gif" />
     <Content Include="Scripts\jquery\jsTree\theme\classic\d.png" />
@@ -1701,10 +1708,7 @@
   <ItemGroup>
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
-    <Content Include="Scripts\jquery\jquery.validate-vsdoc.js" />
-    <Content Include="Scripts\jquery\jquery.validate.js" />
-    <None Include="Scripts\modernizr-1.7.js" />
-    <None Include="Scripts\modernizr-1.7.min.js" />
+    <Content Include="Scripts\jquery-1.9.1.min.map" />
     <Content Include="Views\Shared\Util_Def_CustomReports\grdColProps.ascx" />
     <Content Include="Views\Shared\Util_Def_CustomReports\ssHiddenGrid.ascx" />
     <Content Include="Views\Shared\Util_Def_CustomReports\ssMailMergeOleDBGridSortOrder.ascx" />
@@ -1728,7 +1732,6 @@
       <DependentUpon>Web.config</DependentUpon>
     </Content>
     <Content Include="Scripts\jquery\jquery.unobtrusive-ajax.js" />
-    <Content Include="Scripts\jquery\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\Microsoft\MicrosoftAjax.js" />
     <Content Include="Scripts\Microsoft\MicrosoftMvcAjax.js" />
     <Content Include="Scripts\Microsoft\MicrosoftMvcValidation.js" />

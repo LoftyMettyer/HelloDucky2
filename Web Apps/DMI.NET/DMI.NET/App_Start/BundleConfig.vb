@@ -14,21 +14,21 @@ Namespace App_Start
 
 			' JQuery core
 			bundles.Add(New ScriptBundle("~/bundles/jQuery").Include(
-					"~/Scripts/jquery/jquery-{version}.js",
+					"~/Scripts/jquery-{version}.js",
 					"~/Scripts/jquery/jquery.cookie.js",
 					"~/Scripts/jquery/jquery-flip.js",
 					"~/Scripts/jquery/jquery-unobtrusive-ajax.js",
-					"~/Scripts/jquery/jquery-validate-vsdoc.js",
-					"~/Scripts/jquery/jquery-validate.js",
-					"~/Scripts/jquery/jquery-validate-unobtrusive.js",
+					"~/Scripts/jquery-validate-vsdoc.js",
+					"~/Scripts/jquery-validate.js",
+					"~/Scripts/jquery-validate-unobtrusive.js",
 					"~/Scripts/date.js"))
 
 
 			' JQuery UI
 			bundles.Add(New ScriptBundle("~/bundles/jQueryUI7").Include(
-				"~/Scripts/jquery/jquery-{version}.js",
-				"~/Scripts/jquery/jquery-ui-{version}.custom.js",
-				"~/Scripts/jquery/jquery.jqGrid.src.js",
+				"~/Scripts/jquery-{version}.js",
+				"~/Scripts/jquery-ui-{version}.js",
+				"~/Scripts/jquery.jqGrid.js",
 				"~/Scripts/jquery/grid.locale-en.js",
 				"~/Scripts/jquery/jsTree/jquery.jstree.js",
 				"~/Scripts/jquery/jquery.gridster.js",
@@ -41,8 +41,7 @@ Namespace App_Start
 				"~/Scripts/jquery/jquery.ui.touch-punch.min.js",
 				"~/Scripts/jquery/jOrgChart/prettify.js",
 				"~/Scripts/jquery/jOrgChart/jquery.jOrgChart.js",
-				"~/Scripts/jquery/jquery-ui-i18n.js",
-				"~/Scripts/officebar/jquery.officebar.js"))
+				"~/Scripts/officebar/jquery.officebar_MODIFIED.js"))
 
 			' OpenHR core
 			bundles.Add(New ScriptBundle("~/bundles/OpenHR_General").Include(
