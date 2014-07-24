@@ -40,6 +40,8 @@ Namespace Models
 
 		<DisplayFormat(ConvertEmptyStringToNull:=False)> _
 		Public Property PrinterName As String
+
+		<DisplayName("Save to file")>
 		Public Property SaveTofile As Boolean
 
 		<DisplayFormat(ConvertEmptyStringToNull:=False)> _
