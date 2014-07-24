@@ -427,7 +427,7 @@
 	<div id="CalendarEvent"></div>
 	<div id="divPopupReportDefinition"></div>
 
-	<div id="divExpressionSelection">
+	<div id="divExpressionSelection" style="display: none;">
 		<table id="ExpressionsAvailable"></table>
 		<input type="button" id="ExpressionSelectOK" value="OK" />
 		<input type="button" id="ExpressionSelectNone" value="None" />
