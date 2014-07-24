@@ -120,22 +120,6 @@
 				width: 'auto'
 			});
 
-			$('#divPopupReportDefinition').dialog({
-				autoOpen: false,
-				width: 660,
-				height: 590,
-				resizable: true,
-				modal: true
-			});
-
-			$('#divExpressionSelection').dialog({
-				autoOpen: false,
-				width: 660,
-				height: 590,
-				resizable: true,
-				modal: true
-			});
-
 			$(function () {
 				$("input[type=submit], input[type=button], button")
 					.button();
@@ -441,7 +425,7 @@
 	</div>
 	
 	<div id="CalendarEvent"></div>
-	<div id="divPopupReportDefinition" />
+	<div id="divPopupReportDefinition"></div>
 
 	<div id="divExpressionSelection">
 		<table id="ExpressionsAvailable"></table>
@@ -458,7 +442,7 @@
 	<div id="divthemeRoller" title=""></div>
 	
 	<div id="divPollMessage" style="display: block;">
-		<form id="frmPollMessage" action="pollMessage" />		
+		<form id="frmPollMessage" action="pollMessage"></form>
 	</div>
 
 

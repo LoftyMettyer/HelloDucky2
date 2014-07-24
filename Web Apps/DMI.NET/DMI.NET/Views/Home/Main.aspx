@@ -90,6 +90,24 @@
 			width: 800
 		});
 
+		$('#divPopupReportDefinition').dialog({
+			overflow: false,
+			autoOpen: false,
+			width: 660,
+			height: 590,
+			resizable: true,
+			modal: true
+		});
+
+		$('#divExpressionSelection').dialog({
+			overflow: false,
+			autoOpen: false,
+			width: 660,
+			height: 590,
+			resizable: true,
+			modal: true
+		});
+
 		//load menu for dmi, or linksmain for ssi
 		var SelfServiceUserType = '<%=ViewBag.SSIMode%>';
 

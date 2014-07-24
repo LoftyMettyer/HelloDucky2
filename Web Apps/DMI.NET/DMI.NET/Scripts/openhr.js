@@ -172,7 +172,7 @@
 
 			//$frame.html(html);
 			frame.show();
-			frame.dialog("open")
+			frame.dialog("open");
 
 
 			//jQuery styling
@@ -416,12 +416,11 @@
 					$("#errorDialogContentText").html(e.responseText);
 					$("#errorDialog").dialog("open");
 				}
-				//clear the frame...
 
 				$frame = $("#" + targetWin);
 				$frame.html(html);
 				$frame.show();
-				$frame.dialog("open")
+				$frame.dialog("open");
 
 				//jQuery styling
 				$(function () {
@@ -1158,8 +1157,8 @@
 	removeRowFromGrid = function (grid, url) {
 		var rowID = $(grid).jqGrid('getGridParam', 'selrow');
 		var datarow = $(grid).getRowData(rowID);
-		OpenHR.postData(url, datarow)
-		$(grid).jqGrid('delRowData', rowID)
+		OpenHR.postData(url, datarow);
+		$(grid).jqGrid('delRowData', rowID);
 	},
 
 	removeAllRowsFromGrid = function (grid, url) {
@@ -1167,18 +1166,16 @@
 		var rows = $(grid).jqGrid('getDataIDs');
 
 		for (var i = 0; i < rows.length; i++) {
-			var datarow = $(grid).getRowData(rows[i]);	
-			OpenHR.postData(url, datarow)
+			var datarow = $(grid).getRowData(rows[i]);
+			OpenHR.postData(url, datarow);
 		}
 
-		$(grid).jqGrid('clearGridData')
+		$(grid).jqGrid('clearGridData');
 	},
 
 	moveItemInGrid = function (grid, direction) {
 	
 		var selectedRow;
-
-		debugger;
 
 		if (grid.getGridParam('selrow')) {
 			var ids = grid.getDataIDs();
