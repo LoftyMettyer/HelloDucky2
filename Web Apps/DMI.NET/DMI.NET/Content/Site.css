@@ -56,16 +56,17 @@ section {
 
 fieldset 
 {
-		/*border:1px solid #ddd;*/
+		/*border:1px solid #ddd;
 		padding:0 1.4em 1.4em 1.4em;
-		margin:0 0 1.5em 0;
+		margin:0 0 1.5em 0;*/
 }
 
-legend 
+/*I made a bigger css section below for legend items this is too widerangind and makes things huge*/
+/*legend 
 {
 		font-size:1.2em;
 		font-weight: bold;
-}
+}*/
 
 textarea 
 {
@@ -112,7 +113,7 @@ textarea
 		display: none;
 }
 
-
+/*NHRD - Lofty has probably inclued these for expediency but */
 /* ------- Metro (or whatever it's called now) buttons etc */
 .dashButton 
 {
@@ -218,4 +219,191 @@ body.loading .modal {
 .display-field{
 	float: right;
 	width: 73%;
+}
+
+
+
+/*Reports CSS created by Lofty - i think these custom ones can be replaced by exisitng ones but willkeep these as a record for now
+	appended reports to each one for reference*/
+.legendCentred {
+	width: 100%;
+	text-align: center;
+}
+
+.fieldsetLegendCentred {
+	text-align: center;
+}
+
+.reportswrapper {
+	width: 100%;
+	overflow-x: auto;
+	overflow-y: hidden;
+}
+
+.reportsinner {
+	width: 100%;
+}
+
+.reportsleft {
+	width: 50%;
+	float: left;	
+}
+
+.reportsright {
+	width: 50%;
+	float: left;	
+}
+
+input[readonly="true"] {
+	background-color: #F2F2F2 !important;
+	color: #826D82;
+	border-color: #ddd;
+	pointer-events: none;
+	cursor: default;
+}
+
+.fontsmall {	font-size: small;}
+.fontsmaller {	font-size: smaller;}
+.fontx-small {	font-size: x-small;}
+.fontxx-small {	font-size: xx-small;}
+.fontlarge {	font-size: large;}
+.fontx-large {	font-size: x-large;}
+.fontsmalltitle {	font-size: small;	font-weight: bold;}
+
+.floatleft {	float:left;}
+.floatright {	float:right;}
+.vertaligntop {	vertical-align:top;}
+.alignleft {	text-align:left;}
+.displaynone {	display:none;}
+.overflowhidden {	overflow:hidden;}
+.hidden {	visibility:hidden;}
+
+.width100 {	width: 100%;}
+.width99 {	width: 99%;}
+.width90 {	width: 90%;}
+.width80 {	width: 80%;}
+.width70 {	width: 70%;}
+.width60 {	width: 60%;}
+.width50 {	width: 50%;}
+.width45 {	width: 45%;}
+.width35 {	width: 35%;}
+.width30 {	width: 30%;}
+.width25 {	width: 25%;}
+.width20 {	width: 20%;}
+.width10 {	width: 10%;}
+
+.height100{	height: 100%;}
+.height99 {	height: 99%;}
+.height90 {	height: 90%;}
+.height80 {	height: 80%;}
+.height70 {	height: 70%;}
+.height60 {	height: 60%;}
+.height50 {	height: 50%;}
+.height30 {	height: 30%;}
+.height25 {	height: 25%;}
+.height10 {	height: 10%;}
+
+#report_definition_tab_columns #columnbuttons {
+	width: 120px;
+	margin-top: 10px;
+	float: left;
+	height: 400px;
+	padding-top: 50px;
+}
+
+	#report_definition_tab_columns #columnbuttons button {
+		width: 200px;
+	}
+
+#colbtngrp1, #colbtngrp2, #colbtngrp3 {
+	margin-bottom: 50px;
+	width: 110px;
+}
+
+#SelectedTableID {
+	margin: 10px;
+}
+
+#columnsSelected, #columnsAvailable {
+	padding-top: 20px;
+	float: left;
+	height: 600px;
+}
+
+#columncalculations {
+	margin-top: 20px;
+}
+
+	#columncalculations legend {
+		width: 100%;
+		text-align: center;
+	}
+
+#report_definition_tab_columns #columnbuttons input[type=button] {
+	width: 120px;
+}
+
+#report_definition_tab_order #sortorderbuttons input[type=button] {
+	width: 120px;
+}
+
+#tabs-2 #sortorderbuttons input[type=button] {
+	width: 120px;
+}
+
+#report_definition_tab_eventdetails #eventbuttons input[type=button] {
+	width: 120px;
+}
+
+.display-label_emails {
+	width: 30%;
+	float: left;
+}
+
+.display-textbox-emails {
+	width: 69%;
+	float: left;
+}
+
+#AccessPermissions {
+	height: 300px;
+}
+
+.display-label_crosstabs {
+	width: 20%;
+	float: left;
+}
+
+.CrosstabColumnWidth {
+	width: 60%;
+	float: left;
+}
+
+.CrosstabIntersectionCheckBoxesWidth {
+	width: 20%;
+	float: left;
+}
+
+.CrosstabColumnWidthStartStopIncrement {
+	width: 10%;
+	float: left;
+}
+
+#HorizontalStart, #HorizontalStop, #HorizontalIncrement,
+#PageBreakStart, #PageBreakStop, #PageBreakIncrement,
+#VerticalStart, #VerticalStop, #VerticalIncrement {
+	width: 50px;
+}
+
+#crosstabstartlegend {
+	width: 100%;
+	text-align: center;
+}
+
+#EmailAttachmentName {
+	width: 100%;
+}
+
+#customreportschildtableheight {
+	height: 300px;
 }

@@ -39,7 +39,7 @@ Namespace Models
 		<ExcludeChar("\/:*?""<>|")>
 		Public Property Filename As String
 
-		<DisplayName("If existing file :")>
+		<DisplayName("If file exists:")>
 		Public Property SaveExisting As ExistingFile
 
 		<DisplayName("Send As email")>
@@ -54,7 +54,7 @@ Namespace Models
 		<DisplayFormat(ConvertEmptyStringToNull:=False)>
 		Public Property EmailAddress As String
 
-		<DisplayName("Email Subject :")>
+		<DisplayName("Subject :")>
 		<DisplayFormat(ConvertEmptyStringToNull:=False)>
 		Public Property EmailSubject As String
 

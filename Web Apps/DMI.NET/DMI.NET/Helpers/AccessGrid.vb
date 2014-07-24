@@ -18,7 +18,7 @@ Public Module MVCExtensions
 
 	Private Function BuildTable(name As String, items As IList(Of GroupAccess), attributes As IDictionary(Of String, Object)) As String
 		Dim sb As New StringBuilder()
-		BuildTableHeader(sb)
+		'BuildTableHeader(sb) Header row for the Access grid commented out for display experiments by NHRD.
 
 		Dim iRow As Integer = 0
 		For Each item In items

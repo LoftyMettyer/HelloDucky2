@@ -225,7 +225,6 @@
     <Compile Include="Helpers\DropdownHelper.vb" />
     <Compile Include="Helpers\DisabledIf.vb" />
     <Compile Include="Helpers\EnumDropdown.vb" />
-    <Compile Include="Helpers\SelectedReportColumns.vb" />
     <Compile Include="Helpers\TableFor.vb" />
     <Compile Include="Models\AccountViewModels.vb" />
     <Compile Include="Models\CalendarReportModel.vb" />

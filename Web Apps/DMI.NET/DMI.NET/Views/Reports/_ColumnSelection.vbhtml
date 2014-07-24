@@ -66,11 +66,11 @@
 		<br />
 
 		Size:
-		<input type='text' id="SelectedColumnSize" onchange="updateColumnsSelectedGrid();" />
+		<input type='text' id="SelectedColumnSize" class="spinner" onchange="updateColumnsSelectedGrid();" />
 
 		<div class="decimalsOnly">
 			<label for="SelectedColumnDecimals">Decimals:</label>
-			<input type='text' id="SelectedColumnDecimals" onchange="updateColumnsSelectedGrid();" />
+			<input type='text' id="SelectedColumnDecimals" class="spinner" onchange="updateColumnsSelectedGrid();"  />
 		</div>
 		<br />
 

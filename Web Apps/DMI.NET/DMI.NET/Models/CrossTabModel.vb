@@ -51,7 +51,7 @@ Namespace Models
 		Public Property IntersectionID As Integer
 
 		<Required>
-		<DisplayName("Type")>
+		<DisplayName("Type :")>
 		Public Property IntersectionType As IntersectionType
 
 		<DisplayName("Percentage of Type")>

@@ -35,7 +35,7 @@ Namespace Models
 		<DisplayName("Display output on screen")>
 		Public Property DisplayOutputOnScreen As Boolean
 
-		<DisplayName("Send to printa")>
+		<DisplayName("Send to printer")>
 		Public Property SendToPrinter As Boolean
 
 		<DisplayFormat(ConvertEmptyStringToNull:=False)> _
@@ -49,6 +49,7 @@ Namespace Models
 		Public Property EmailGroupID As Integer
 
 		<DisplayFormat(ConvertEmptyStringToNull:=False)> _
+		<DisplayName("Email Subject")>
 		Public Property EmailSubject As String
 
 		<DisplayName("Send As Attachment")>
