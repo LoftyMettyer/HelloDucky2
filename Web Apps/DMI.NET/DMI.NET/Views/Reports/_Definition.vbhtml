@@ -8,73 +8,66 @@
 @Html.HiddenFor(Function(m) m.ID, New With {.id = "txtReportID"})
 @Html.HiddenFor(Function(m) m.ReportType, New With {.id = "txtReportType"})
 
-<fieldset>
-
-	<div class="inner">
-		<div class="left">
-
+<fieldset class="floatleft width60">
+	<fieldset class="floatleft width90">
+		<legend class="fontsmalltitle">Description :</legend>
+		<div class="editor-field-greyed-out width100">
+			@Html.TextBoxFor(Function(m) m.Owner, New With {.readonly = "true", .class = "width70 floatright"})
+			<span style="float:left">Owner : </span>
+		</div>
+		<br />
+		<div class="width100">
 			@Html.LabelFor(Function(m) m.Name)
-			@Html.TextBoxFor(Function(m) m.Name)
+			@Html.TextBoxFor(Function(m) m.Name, New With {.class = "width70 floatright"})
 			@Html.ValidationMessageFor(Function(m) m.Name)
-
 			<br />
 			@Html.LabelFor(Function(m) m.Description)
-			@Html.TextBox("description", Model.Description)
+			@Html.TextArea("description", Model.Description, New With {.class = "width70 floatright"})
 			@Html.ValidationMessageFor(Function(m) m.Description)
-
 		</div>
-
-		<div class="right">
-			<div class="editor-field-greyed-out">
-				Owner: @Html.TextBoxFor(Function(m) m.Owner, New With {.readonly = "true"})
-			</div>
-			<br />
-			Access : @Html.Raw(Html.AccessGrid("GroupAccess", Model.GroupAccess, Nothing))
-		</div>
-	</div>
-
 </fieldset>
 
-<fieldset>
-	<legend>Data :</legend>
-	<br />
-
+	<fieldset id="DataRecordsPermissions" class="overflowhidden width90">
+		<legend class="fontsmalltitle">Data :</legend>
 	<div class="inner">
-
 		<div class="left">
 			Base Table :
-			<select name="BaseTableID" id="BaseTableID" onchange="requestChangeReportBaseTable(event.target);"></select>
+				<select class="width70 floatright" name="BaseTableID" id="BaseTableID" onchange="requestChangeReportBaseTable(event.target);"></select>
 		</div>
 
-		<div class="right">
-
-			Records :
+			<div>
 			<br />
-			@Html.RadioButton("selectiontype", RecordSelectionType.AllRecords, Model.SelectionType = RecordSelectionType.AllRecords, New With {.onclick = "changeRecordOption('Base','all')"})
-			All Records
-			<br />
+				<fieldset class="alignleft">
+					@Html.RadioButton("selectiontype", RecordSelectionType.AllRecords, Model.SelectionType = RecordSelectionType.AllRecords, New With {.onclick = "changeRecordOption('Base','all')", .style = "margin-bottom:10px"})All Records<br />
 
+					@*Picklist group*@
+					<div class="width20 floatleft">
 			@Html.RadioButton("selectiontype", RecordSelectionType.Picklist, Model.SelectionType = RecordSelectionType.Picklist, New With {.onclick = "changeRecordOption('Base','picklist')"})
-			Picklist
+						<span>Picklist</span>
+					</div>
 			<input type="hidden" id="txtBasePicklistID" name="picklistID" value="@Model.PicklistID" />
-			@Html.TextBoxFor(Function(m) m.PicklistName, New With {.id = "txtBasePicklist", .readonly = "true"})
-			@Html.EllipseButton("cmdBasePicklist", "selectBaseTablePicklist()", Model.SelectionType = RecordSelectionType.Picklist)
-			<br />
 
+					@Html.TextBoxFor(Function(m) m.PicklistName, New With {.id = "txtBasePicklist", .readonly = "true", .class = "width60"})
+					@Html.EllipseButton("cmdBasePicklist", "selectBaseTablePicklist()", Model.SelectionType = RecordSelectionType.Picklist)<br />
+
+					@*Filter group*@
+					<div class="width20 floatleft">
 			@Html.RadioButton("selectiontype", RecordSelectionType.Filter, Model.SelectionType = RecordSelectionType.Filter, New With {.onclick = "changeRecordOption('Base','filter')"})
-			Filter
+						<span>Filter</span>
+					</div>
+
 			<input type="hidden" id="txtBaseFilterID" name="filterID" value="@Model.FilterID" />
-			@Html.TextBoxFor(Function(m) m.FilterName, New With {.id = "txtBaseFilter", .readonly = "true"})
+			@Html.TextBoxFor(Function(m) m.FilterName, New With {.id = "txtBaseFilter", .readonly = "true", .class = "width60"})
 			@Html.EllipseButton("cmdBaseFilter", "selectBaseTableFilter()", Model.SelectionType = RecordSelectionType.Filter)
 			<br />
-
 			@Html.CheckBoxFor(Function(m) m.DisplayTitleInReportHeader)
 			@Html.LabelFor(Function(m) m.DisplayTitleInReportHeader)
 			<br />
 
 			@Html.ValidationMessageFor(Function(m) m.PicklistID)
 			@Html.ValidationMessageFor(Function(m) m.FilterID)
-
+				</fieldset>
+				<br />
 		</div>
 
 		<input type="hidden" id="ctl_DefinitionChanged" name="HasChanged" value="false" />
@@ -82,7 +75,12 @@
 		<input type="hidden" id="baseHidden" name="baseHidden">
 
 	</div>
+	</fieldset>
+</fieldset>
 
+<fieldset id="AccessPermissions" class="width35 overflowhidden">
+	<legend class="fontsmalltitle">Access :</legend>
+	@Html.Raw(Html.AccessGrid("GroupAccess", Model.GroupAccess, Nothing))
 </fieldset>
 
 <script type="text/javascript">
@@ -137,7 +135,7 @@
 			button_disable($("#cmd" + psTable + "Filter")[0], false)
 			$("#txt" + psTable + "Picklist").val("");
 			$("#txt" + psTable + "PicklistID").val(0);
-
+	
 			if ($("#txt" + psTable + "FilterID").val() == 0) {
 				$("#txt" + psTable + "Filter").val("<None>");
 			}
@@ -204,12 +202,12 @@
 					changeReportBaseTable();
 				}
 			});
-		}
-		else {
+      }
+      else {
 			changeReportBaseTable();
-		}
+      }
 
-	}
+    }
 
 	function changeReportBaseTable() {
 
@@ -222,7 +220,7 @@
 
 		OpenHR.postData("Reports/ChangeBaseTable", dataSend, changeReportBaseTableCompleted);
 
-	}
+      }
 
 	function changeReportBaseTableCompleted() {
 
@@ -233,22 +231,22 @@
 			getAvailableTableColumnsCalcs();
 			removeAllChildTables();
 			loadAvailableTablesForReport();
-		}
+      }
 
-	}
+    }
 
 	function removeAllChildTables() {
 		$('#ChildTables').jqGrid('clearGridData')
-	}
+      }
 
 	function removeAllSelectedColumns() {
 		$('#SelectedColumns').jqGrid('clearGridData')
 
-	}
+      }
 
 	function enableSaveButton() {
 		$("#ctl_DefinitionChanged").val("true");
-	}
+    }
 
 	function saveReportDefinition(prompt) {
 
@@ -262,8 +260,8 @@
 						submitReportDefinition();
 					}
 				});
-			}
-			else {
+    }
+    else {
 				return 6;
 			}
 
@@ -273,7 +271,7 @@
 
 		return 0;
 
-	}
+    }
 
 	function submitReportDefinition() {
 
@@ -297,7 +295,7 @@
 		var frmSubmit = $("#frmReportDefintion")[0];
 		OpenHR.submitForm(frmSubmit);
 
-	}
+  }
 
 	function cancelReportDefinition() {
 
@@ -315,7 +313,7 @@
 		}
 
 		return false;
-	}
+  }
 
 	$(function () {
 

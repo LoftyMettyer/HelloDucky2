@@ -7,37 +7,6 @@
 	Layout = Nothing
 End Code
 
-<style>
-  .wrapper {
-    width: 100%;
-    overflow-x: auto;
-    overflow-y: hidden;
-  }
-
-  .inner {
-    width: 100%;
-  }
-
-  .left {
-    width: 50%;
-    float: left;
-  }
-
-  .right {
-    width: 50%;
-    float: left;
-  }
-
-	input[readonly="true"] {
-		background-color: #F2F2F2 !important;
-		color: #826D82;
-		border-color: #ddd;
-		pointer-events: none;
-		cursor: default;
-	}
-
-</style>
-
 <div>
 
 @Using (Html.BeginForm("util_def_customreport", "Reports", FormMethod.Post, New With {.id = "frmReportDefintion", .name = "frmReportDefintion"}))

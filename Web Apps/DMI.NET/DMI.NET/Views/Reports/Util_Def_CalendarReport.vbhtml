@@ -6,45 +6,6 @@
 	Layout = Nothing
 End Code
 
-<style>
-	.wrapper {
-		width: 100%;
-		overflow-x: auto;
-		overflow-y: hidden;
-	}
-
-	.inner {
-		width: 100%;
-	}
-
-	.left {
-		width: 50%;
-		float: left;
-	}
-
-	.right {
-		width: 50%;
-		float: left;
-	}
-
-	input[readonly="true"] {
-		background-color: #F2F2F2 !important;
-		color: #826D82;
-		border-color: #ddd;
-		pointer-events: none;
-		cursor: default;
-	}
-
-	input[readonly="readonly"] {
-		background-color: #F2F2F2 !important;
-		color: #826D82;
-		border-color: #ddd;
-		pointer-events: none;
-		cursor: default;
-	}
-
-</style>
-
 <div>
 	@Using (Html.BeginForm("util_def_calendarreport", "Reports", FormMethod.Post, New With {.id = "frmReportDefintion", .name = "frmReportDefintion"}))
 		@Html.HiddenFor(Function(m) m.ID)
@@ -61,24 +22,24 @@ End Code
 			<div id="tabs-1">
  		<div class="width100">
 		 	<fieldset>
-		 		@Code
-		 		Html.RenderPartial("_Definition", Model)
-		 		End Code
+				@Code
+				Html.RenderPartial("_Definition", Model)
+				End Code
 
-		 		@Html.LabelFor(Function(m) m.Description1ID)
-		 		@Html.TextBoxFor(Function(m) m.Description1ID)
+				@Html.LabelFor(Function(m) m.Description1ID)
+				@Html.TextBoxFor(Function(m) m.Description1ID)
 		 		<br />
-		 		@Html.LabelFor(Function(m) m.Description2ID)
-		 		@Html.TextBoxFor(Function(m) m.Description2ID)
-		 		<br />
-		 		@Html.LabelFor(Function(m) m.Description2ID)
-		 		@Html.TextBoxFor(Function(m) m.Description3ID)
+				@Html.LabelFor(Function(m) m.Description2ID)
+				@Html.TextBoxFor(Function(m) m.Description2ID)
+				<br />
+				@Html.LabelFor(Function(m) m.Description2ID)
+				@Html.TextBoxFor(Function(m) m.Description3ID)
 
-		 		@Html.HiddenFor(Function(m) m.RegionID)
-		 		@Html.HiddenFor(Function(m) m.GroupByDescription)
-		 		@Html.HiddenFor(Function(m) m.Separator)
+				@Html.HiddenFor(Function(m) m.RegionID)
+				@Html.HiddenFor(Function(m) m.GroupByDescription)
+				@Html.HiddenFor(Function(m) m.Separator)
 		 	</fieldset>
-			</div>
+		</div>
 
 		 	<div id="report_definition_tab_eventdetails">
 		<fieldset>
@@ -114,6 +75,7 @@ End Code
 		</div>
 	End Using
 
+
 	<form action="default_Submit" method="post" id="frmGoto" name="frmGoto" style="visibility: hidden; display: none">
 		@Code
 			Html.RenderPartial("~/Views/Shared/gotoWork.ascx")
@@ -121,7 +83,7 @@ End Code
 	</form>
 </div>
 	End Using
-	</div>
+</div>
 <script type="text/javascript">
 
 	$(function () {
