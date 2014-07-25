@@ -7,47 +7,14 @@
 	Html.EnableClientValidation()
 End Code
 
-<style>
-	.wrapper {
-		width: 100%;
-		overflow-x: auto;
-		overflow-y: hidden;
-	}
-
-	.inner {
-		width: 100%;
-	}
-
-	.left {
-		width: 50%;
-		float: left;
-	}
-
-	.right {
-		width: 50%;
-		float: left;
-	}
-
-	input[readonly="true"] {
-		background-color: #F2F2F2 !important;
-		color: #826D82;
-		border-color: #ddd;
-		pointer-events: none;
-		cursor: default;
-	}
-
-</style>
-
-
 <div>
-
-	@Using (Html.BeginForm("util_def_crosstab", "Reports", FormMethod.Post, New With {.id = "frmReportDefintion", .name = "frmReportDefintion"}))
+	@Using (Html.BeginForm("util_def_crosstab", "Reports", FormMethod.Post, New With {.id = "frmReportDefintion", 
+																																									 .name = "frmReportDefintion"}))
 
  		@Html.HiddenFor(Function(m) m.IsReadOnly)
 		@Html.HiddenFor(Function(m) m.ID)
 
 		@<div id="tabs">
-
 			<ul>
 				<li><a href="#tabs-1">Definition</a></li>
 				<li><a href="#report_definition_tab_columns">Columns</a></li>
@@ -71,12 +38,11 @@ End Code
 				Html.RenderPartial("_Output", Model.Output)
 				End Code
 			</div>
-
 		</div>
 
 	End Using
 
-	<form action="default_Submit" method="post" id="frmGoto" name="frmGoto" style="visibility: hidden; display: none">
+	<form action="default_Submit" method="post" id="frmGoto" name="frmGoto" class="ui-helper-hidden">
 		@Code
 			Html.RenderPartial("~/Views/Shared/gotoWork.ascx")
 		End Code

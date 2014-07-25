@@ -43,9 +43,8 @@ End Code
 @Using (Html.BeginForm("util_def_customreport", "Reports", FormMethod.Post, New With {.id = "frmReportDefintion", .name = "frmReportDefintion"}))
 
   @Html.HiddenFor(Function(m) m.ID)
-
+                     
   @<div id="tabs">
-
         <ul>
             <li><a href="#tabs-1">Definition</a></li>
             <li><a href="#tabs-2">Related Tables</a></li>
@@ -55,20 +54,20 @@ End Code
         </ul>
 
         <div id="tabs-1">
+		<div class="width100">
           @Code                        
 						Html.RenderPartial("_Definition", Model)
           End Code
-
-
-					<div>
-						Report Options: (MOVED FROM Output tab (discuss))
-						<br/>
+			<fieldset class="width100">
+				<fieldset>
+					<legend class="fontsmalltitle">Report Options: (MOVED FROM Output tab (discuss))</legend>
 						@Html.CheckBox("IsSummary", Model.IsSummary)Summary Report
-						<br/>
+					<br />
 						@Html.CheckBox("IgnoreZerosForAggregates", Model.IgnoreZerosForAggregates)Ignore zeros when calculating aggregates
 
+				</fieldset>
+			</fieldset>
 					</div>
-
         </div>
 
         <div id="tabs-2">
@@ -95,11 +94,15 @@ End Code
        End Code
      </div>
 
-  <div id="divEmailGroupSelection">
+	<div id="divEmailGroupSelection">
 
-  </div>
+	</div>
     </div>
-	
+
+
+  
+
+
   End Using
 
   <form action="default_Submit" method="post" id="frmGoto" name="frmGoto" style="visibility: hidden; display: none">
@@ -114,19 +117,19 @@ End Code
 </div>
 
 
-	<script type="text/javascript">
+<script type="text/javascript">
 
-		$(function () {
-			$("#tabs").tabs();
-			$('input[type=number]').numeric();
+  $(function () {
+  	$("#tabs").tabs();
+  	$('input[type=number]').numeric();
 
-			if ($("#IsReadOnly").val() == "True") {
-				$("#frmReportDefintion :input").prop("disabled", true);
-			}
+  	if ($("#IsReadOnly").val() == "True") {
+  		$("#frmReportDefintion :input").prop("disabled", true);
+  	}
 
 			$(function () {
 
-			});
+  });
 
 
 
@@ -134,44 +137,23 @@ End Code
 		});
 
 
-		$("#workframe").attr("data-framesource", "UTIL_DEF_CUSTOMREPORTS");
+    $("#workframe").attr("data-framesource", "UTIL_DEF_CUSTOMREPORTS");
 
-		$('#tabs').bind('tabsshow', function (event, ui) {
+    $('#tabs').bind('tabsshow', function (event, ui) {
 
-			var tabPage;
+      var tabPage;
 
-			if (ui.index == "0") {
-				tabPage = $("#frmCustomReportsTab1");
-			}
+      if (ui.index == "0") {
+        tabPage = $("#frmCustomReportsTab1");
+      }
+      
+      if (ui.index == "1") {
+        tabPage = $("#frmCustomReportsTab2");
+      }
 
-			if (ui.index == "1") {
+      if (ui.index == "2") {
+        tabPage = $("#frmCustomReportsTab3");
+      }
+    })
 
-				tabPage = $("#frmCustomReportsTab2");
-
-				//  $.getJSON("Util_Def_CustomReports_getColumnInfo", function (data) {
-
-				//    var items = [];
-				//    $.each(data, function (key, val) {
-				// //     debugger;
-				//      items.push("<li id='" + val.TableName + "'>" + val + "</li>");
-				//    });
-
-				//    $("<ul/>", {
-				//      "class": "my-new-list",
-				//      html: items.join("")
-				//    }).appendTo("#showColumns");
-				//  });
-			}
-
-			if (ui.index == "2") {
-				tabPage = $("#frmCustomReportsTab3");
-			}
-
-
-			//})
-
-			//   OpenHR.submitForm(tabPage, "tabContent2");
-
-		})
-
-	</script>
+</script>

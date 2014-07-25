@@ -6,49 +6,19 @@
 	Layout = Nothing
 End Code
 
-<style>
-  .wrapper {
-    width: 100%;
-    overflow-x: auto;
-    overflow-y: hidden;
-  }
-
-  .inner {
-    width: 100%;
-  }
-
-  .left {
-    width: 50%;
-    float: left;
-  }
-
-  .right {
-    width: 50%;
-    float: left;
-  }
-
-	input[readonly="true"] {
-		background-color: #F2F2F2 !important;
-		color: #826D82;
-		border-color: #ddd;
-		pointer-events: none;
-		cursor: default;
-	}
-</style>
-
 <div>
 
-  @Using (Html.BeginForm("util_def_mailmerge", "Reports", FormMethod.Post, New With {.id = "frmReportDefintion", .name = "frmReportDefintion"}))
+  @Using (Html.BeginForm("util_def_mailmerge", "Reports", FormMethod.Post, New With {.id = "frmReportDefintion", 
+																																										.name = "frmReportDefintion"}))
 
     @Html.HiddenFor(Function(m) m.ID)
 
     @<div id="tabs">
-
       <ul>
-        <li><a href="#tabs-1">Definition</a></li>
+				<li><a href="#tabs-1">Definition</a></li>
         <li><a href="#report_definition_tab_columns">Columns</a></li>
         <li><a href="#report_definition_tab_order">Sort Order</a></li>
-        <li><a href="#report_definition_tab_output">Output</a></li>
+				<li><a href="#report_definition_tab_output">Output</a></li>
       </ul>
 
       <div id="tabs-1">
@@ -74,18 +44,14 @@ End Code
 				Html.RenderPartial("_MergeOutput", Model)
 				End Code
       </div>
-
     </div>
-
   End Using
 
-  <form action="default_Submit" method="post" id="frmGoto" name="frmGoto" style="visibility: hidden; display: none">
+  <form action="default_Submit" method="post" id="frmGoto" name="frmGoto"class="ui-helper-hidden">
     @Code
       Html.RenderPartial("~/Views/Shared/gotoWork.ascx")
     End Code
   </form>
-
-
 </div>
 
 <script type="text/javascript">
@@ -97,11 +63,7 @@ End Code
   	if ($("#IsReadOnly").val() == "True") {
   		$("#frmReportDefintion :input").prop("disabled", true);
   	}
-
   });
 
-
   $("#workframe").attr("data-framesource", "UTIL_DEF_MAILMERGE");
-
-
 </script>
