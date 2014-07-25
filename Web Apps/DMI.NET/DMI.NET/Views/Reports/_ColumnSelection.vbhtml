@@ -1,7 +1,6 @@
 ﻿@Imports DMI.NET
 @Imports DMI.NET.Helpers
-@Imports DMI.NET.Enums
-@imports HR.Intranet.Server.Enums
+@Imports HR.Intranet.Server.Enums
 @Imports DMI.NET.ViewModels.Reports
 @Imports DMI.NET.Code.Extensions
 @Imports DMI.NET.Models

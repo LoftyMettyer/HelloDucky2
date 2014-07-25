@@ -277,7 +277,7 @@ ErrorTrap:
 
 		End Function
 
-		Protected Function ValidateRecordSelection(ByRef piType As RecordSelectionTypes, ByRef plngID As Integer) As RecordSelectionValidityCodes
+		Protected Function ValidateRecordSelection(piType As RecordSelectionType, plngID As Integer) As RecordSelectionValidityCodes
 			' Return an integer code representing the validity of the record selection (picklist or filter).
 			' Return 0 if the record selection is OK.
 			' Return 1 if the record selection has been deleted by another user.
@@ -291,10 +291,11 @@ ErrorTrap:
 			iResult = RecordSelectionValidityCodes.REC_SEL_VALID_OK
 
 			Select Case piType
-				Case RecordSelectionTypes.REC_SEL_PICKLIST
+
+				Case RecordSelectionType.Picklist
 					iResult = ValidatePicklist(plngID)
 
-				Case RecordSelectionTypes.REC_SEL_FILTER
+				Case RecordSelectionType.Filter
 					iResult = ValidateFilter(plngID)
 			End Select
 

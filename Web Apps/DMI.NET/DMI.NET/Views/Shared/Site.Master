@@ -1,5 +1,6 @@
 ﻿<%@ Master Language="VB" Inherits="System.Web.Mvc.ViewMasterPage" %>
 <%@ Import Namespace="DMI.NET" %>
+<%@ Import Namespace="HR.Intranet.Server.Enums" %>
 
 <!DOCTYPE html>
 <html>
@@ -21,7 +22,7 @@
 			End If
 		End If
 		
-		Session("CurrentLayout") = DMIEnums.Layout.winkit
+		Session("CurrentLayout") = Layout.winkit
 		%>
 
 

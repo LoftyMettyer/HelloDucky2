@@ -1,8 +1,4 @@
-﻿Option Strict On
-Option Explicit On
-
-Namespace Enums
-
+﻿Namespace Enums
 	Public Enum UtilityActionType
 		[New] = 0
 		Edit = 1

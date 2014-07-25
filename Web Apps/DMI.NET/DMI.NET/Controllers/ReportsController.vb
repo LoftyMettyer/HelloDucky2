@@ -1,21 +1,14 @@
 ﻿Option Explicit On
 Option Strict On
 
-Imports System.Net.Mail
-Imports System.Net
-Imports HR.Intranet.Server
-Imports System.Data.SqlClient
-Imports HR.Intranet.Server.Metadata
 Imports System.Collections.ObjectModel
 Imports DMI.NET.Models
 Imports DMI.NET.Classes
 Imports DMI.NET.Repository
 Imports System.Web.Script.Serialization
-Imports Newtonsoft.Json
 Imports DMI.NET.ViewModels
 Imports DMI.NET.ViewModels.Reports
 Imports HR.Intranet.Server.Enums
-Imports DMI.NET.Enums
 Imports DMI.NET.Code
 
 Namespace Controllers

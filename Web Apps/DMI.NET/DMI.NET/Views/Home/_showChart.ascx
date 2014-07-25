@@ -166,7 +166,7 @@
 			</tr>
 			<script type="text/javascript">
 				// No data on this chart, adjust UI accordingly
-			<%If Session("CurrentLayout").ToString() <> DMIEnums.Layout.tiles.ToString() Then%>
+			<%If Session("CurrentLayout").ToString() <> Layout.tiles.ToString() Then%>
 				$("#WidgetPlaceHolder_popout").css('height', "40px"); //Reduce the size of the parent div ('widgetplaceholder')
 				$("#WidgetPlaceHolder_popout").children(0).css('border', 'none'); //Remove the border of the table
 				<%End If%>

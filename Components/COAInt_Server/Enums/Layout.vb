@@ -1,4 +1,4 @@
-﻿Namespace DMIEnums
+﻿Namespace Enums
 	Public Enum Layout
 		tiles
 		winkit

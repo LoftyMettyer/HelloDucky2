@@ -2,8 +2,6 @@
 Option Explicit On
 
 Imports HR.Intranet.Server.Enums
-Imports DMI.NET.Enums
-Imports DMI.NET.Classes
 Imports System.ComponentModel.DataAnnotations
 Imports DMI.NET.AttributeExtensions
 Imports System.ComponentModel

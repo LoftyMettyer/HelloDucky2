@@ -8,7 +8,6 @@
 <%@ Import Namespace="System.Data" %>
 <%@ Import Namespace="HR.Intranet.Server.Interfaces" %>
 <%@ Import Namespace="HR.Intranet.Server" %>
-<%@ Import Namespace="System.Data.SqlClient" %>
 
 <%-- For other devs: Do not remove below line. --%>
 <%="" %>
@@ -366,7 +365,7 @@
 						
 						If navlink.SeparatorColour <> "" And navlink.SeparatorColour <> "#FFFFFF" Then sSeparatorColor = "border-bottom: 2px solid " & navlink.SeparatorColour & ";"
 						
-						If Session("CurrentLayout").ToString() = DMIEnums.Layout.tiles.ToString() Then
+						If Session("CurrentLayout").ToString() = Layout.tiles.ToString() Then
 							If navlink.SeparatorColour <> "" And navlink.SeparatorColour <> "#FFFFFF" Then
 								sSeparatorColor = "border-bottom: 2px solid " & navlink.SeparatorColour & ";"
 								sTileBackColourStyle = "background-color: " & navlink.SeparatorColour & ";"
@@ -511,20 +510,20 @@
 						%>
 
 						<li data-col="<%=iColNum %>" data-row="<%=iRowNum %>" data-sizex="1" data-sizey="1" style="<%:sTileBackColourStyle%>" class="linkspagebuttontext ui-state-disabled <%=sTileColourClass%> displayonly">
-							<a style="<%:sTileForeColourStyle%>" href="#"><%If Session("CurrentLayout").ToString() <> DMIEnums.Layout.tiles.ToString() Then Response.Write(navlink.Text)%>
+							<a style="<%:sTileForeColourStyle%>" href="#"><%If Session("CurrentLayout").ToString() <> Layout.tiles.ToString() Then Response.Write(navlink.Text)%>
 								<%
 									If navlink.UtilityID > 0 And navlink.DrillDownHidden = False Then
 										iHideableDrillDownIconID += 1
 								%>
-								<img id="drillDownIcon<%=iHideableDrillDownIconID%>" src="<%:Url.Content("~/Content/images/Utilities.gif")%>" style="<%=IIf(Session("CurrentLayout").ToString() = DMIEnums.Layout.tiles.ToString(), "background: wheat;", "")%> float: right; cursor: pointer; width: 16px; height: 16px; vertical-align: bottom; margin-right: 5px" alt="Drilldown..." title="Drill down to data..."
+								<img id="drillDownIcon<%=iHideableDrillDownIconID%>" src="<%:Url.Content("~/Content/images/Utilities.gif")%>" style="<%=IIf(Session("CurrentLayout").ToString() = Layout.tiles.ToString(), "background: wheat;", "")%> float: right; cursor: pointer; width: 16px; height: 16px; vertical-align: bottom; margin-right: 5px" alt="Drilldown..." title="Drill down to data..."
 									onclick="<%=sOnClick %>" />
 								<%
 								End If
 								%>
-								<img id="popupIcon<%=iHideablePopupIconID%>" src="<%:Url.Content("~/Content/images/Chart_Popout.png")%>" style="<%=IIf(Session("CurrentLayout").ToString() = DMIEnums.Layout.tiles.ToString(), "background: wheat;", "")%> float: right; cursor: pointer; width: 16px; height: 16px; vertical-align: bottom;" alt="Popout chart..." title="View this chart in a new window"
+								<img id="popupIcon<%=iHideablePopupIconID%>" src="<%:Url.Content("~/Content/images/Chart_Popout.png")%>" style="<%=IIf(Session("CurrentLayout").ToString() = Layout.tiles.ToString(), "background: wheat;", "")%> float: right; cursor: pointer; width: 16px; height: 16px; vertical-align: bottom;" alt="Popout chart..." title="View this chart in a new window"
 									onclick="popoutchart('<%=fMultiAxis%>', '<%=navlink.Chart_ShowLegend%>', '<%=navlink.Chart_ShowGrid%>', '<%=navlink.Chart_ShowValues%>', '<%=navlink.Chart_StackSeries%>', '<%=navlink.Chart_ShowPercentages%>', '<%=iChart_Type%>', '<%=iChart_TableID%>', '<%=iChart_ColumnID%>', '<%=iChart_FilterID%>', '<%=iChart_AggregateType%>', '<%=CInt(iChart_ElementType)%>', '<%=iChart_TableID_2%>', '<%=iChart_ColumnID_2%>', '<%=iChart_TableID_3%>', '<%=iChart_ColumnID_3%>', '<%=iChart_SortOrderID%>', '<%=iChart_SortDirection%>', '<%=iChart_ColourID%>','<%=navlink.Text%>', '<%=Session("ui-admin-theme").ToString() %>')" />
 							</a>
-							<%If Not (navlink.InitialDisplayMode = 0 Or Session("CurrentLayout").ToString() = DMIEnums.Layout.tiles.ToString()) Then%>
+							<%If Not (navlink.InitialDisplayMode = 0 Or Session("CurrentLayout").ToString() = Layout.tiles.ToString()) Then%>
 							<p class="linkspagebuttontileIcon">
 								<i class="icon-bar-chart"></i>
 							</p>
@@ -537,7 +536,7 @@
 								Dim Width As Integer = 412
 								Dim ShowLegend As Boolean = navlink.Chart_ShowLegend
 								Dim ShowLabels As Boolean = True
-								If Session("CurrentLayout").ToString() = DMIEnums.Layout.tiles.ToString() Then
+								If Session("CurrentLayout").ToString() = Layout.tiles.ToString() Then
 									Height = 120 'Tile height
 									Width = 120	'Tile width
 									ShowLegend = False
@@ -548,7 +547,7 @@
 							<div class="widgetplaceholder chart">
 								<%If fMultiAxis Then%>
 								<div>
-									<img onerror="$('#popupIcon<%=iHideablePopupIconID - 1%>').hide(); $(this).parent().parent().css('height', '20px'); $(this).parent().parent().html('<%If Session("CurrentLayout").ToString() = DMIEnums.Layout.tiles.ToString() Then Response.Write("<p title=\'" & navlink.Text & "\' class=\'linkspagebuttontileIcon\'><i class=\'icon-bar-chart\'></i></p><p style=\'font-size: smaller; text-align: center\'>" & navlink.Text & "<br/><br/>(No records)</p>") Else Response.Write("No matching records")%>');" 
+									<img onerror="$('#popupIcon<%=iHideablePopupIconID - 1%>').hide(); $(this).parent().parent().css('height', '20px'); $(this).parent().parent().html('<%If Session("CurrentLayout").ToString() = Layout.tiles.ToString() Then Response.Write("<p title=\'" & navlink.Text & "\' class=\'linkspagebuttontileIcon\'><i class=\'icon-bar-chart\'></i></p><p style=\'font-size: smaller; text-align: center\'>" & navlink.Text & "<br/><br/>(No records)</p>") Else Response.Write("No matching records")%>');" 
 											 src="<%:Url.Action("GetMultiAxisChart", "Home", New With {.Height = Height, .Width = Width, .ShowLegend = ShowLegend, .DottedGrid = navlink.Chart_ShowGrid, .ShowValues = navlink.Chart_ShowValues, .Stack = navlink.Chart_StackSeries, .ShowPercent = navlink.Chart_ShowPercentages, .ChartType = iChart_Type, .TableID = iChart_TableID, .ColumnID = iChart_ColumnID, .FilterID = iChart_FilterID, .AggregateType = iChart_AggregateType, .ElementType = CInt(iChart_ElementType), .TableID_2 = iChart_TableID_2, .ColumnID_2 = iChart_ColumnID_2, .TableID_3 = iChart_TableID_3, .ColumnID_3 = iChart_ColumnID_3, .SortOrderID = iChart_SortOrderID, .SortDirection = iChart_SortDirection, .ColourID = iChart_ColourID, .ShowLabels = ShowLabels})%>"
 											 alt="Chart"
 											 title="<%:navlink.Text%>"
@@ -558,7 +557,7 @@
 								</div>
 								<%Else%>
 								<div>
-									<img onerror="$('#popupIcon<%=iHideablePopupIconID - 1%>').hide(); $(this).parent().parent().css('height', '20px'); $(this).parent().parent().html('<%If Session("CurrentLayout").ToString() = DMIEnums.Layout.tiles.ToString() Then Response.Write("<p title=\'" & navlink.Text & "\' class=\'linkspagebuttontileIcon\'><i class=\'icon-bar-chart\'></i></p><p style=\'font-size: smaller; text-align: center\'>" & navlink.Text & "<br/><br/>(No records)</p>") Else Response.Write("No matching records")%>');"
+									<img onerror="$('#popupIcon<%=iHideablePopupIconID - 1%>').hide(); $(this).parent().parent().css('height', '20px'); $(this).parent().parent().html('<%If Session("CurrentLayout").ToString() = Layout.tiles.ToString() Then Response.Write("<p title=\'" & navlink.Text & "\' class=\'linkspagebuttontileIcon\'><i class=\'icon-bar-chart\'></i></p><p style=\'font-size: smaller; text-align: center\'>" & navlink.Text & "<br/><br/>(No records)</p>") Else Response.Write("No matching records")%>');"
 											 src="<%:Url.Action("GetChart", "Home", New With {.Height = Height, .Width = Width, .ShowLegend = ShowLegend, .DottedGrid = navlink.Chart_ShowGrid, .ShowValues = navlink.Chart_ShowValues, .Stack = navlink.Chart_StackSeries, .ShowPercent = navlink.Chart_ShowPercentages, .ChartType = iChart_Type, .TableID = iChart_TableID, .ColumnID = iChart_ColumnID, .FilterID = iChart_FilterID, .AggregateType = iChart_AggregateType, .ElementType = CInt(iChart_ElementType), .SortOrderID = iChart_SortOrderID, .SortDirection = iChart_SortDirection, .ColourID = iChart_ColourID, .ShowLabels = ShowLabels})%>" 
 											 alt="Chart" 
 											 title="<%:navlink.Text%>"
@@ -678,7 +677,7 @@
 									<%
 								End If
 							Else
-									If Session("CurrentLayout").ToString() = DMIEnums.Layout.tiles.ToString() Then 'Put and icon in tile mode
+									If Session("CurrentLayout").ToString() = Layout.tiles.ToString() Then	'Put and icon in tile mode
 										Response.Write("<p title='" & navlink.Text & "' class='linkspagebuttontileIcon'><i class='icon-bar-chart'></i></p><p style='font-size: smaller; text-align: center'>(No records)</p>")
 									Else
 									%>
@@ -688,7 +687,7 @@
 									<%End If%>
 									<script type="text/javascript">
 										// No data on this chart, adjust UI accordingly
-										<%If Session("CurrentLayout").ToString() <> DMIEnums.Layout.tiles.ToString() Then%>
+										<%If Session("CurrentLayout").ToString() <> Layout.tiles.ToString() Then%>
 										$("#WidgetPlaceHolder<%=iRowNum%>").css('height', "40px"); //Reduce the size of the parent div ('widgetplaceholder')
 										$("#WidgetPlaceHolder<%=iRowNum%>").children(0).css('border', 'none'); //Remove the border of the table
 										<%End If%>
@@ -1310,7 +1309,7 @@
 
 
 
-<%If Session("CurrentLayout").ToString() = DMIEnums.Layout.tiles.ToString() Then%>
+<%If Session("CurrentLayout").ToString() = Layout.tiles.ToString() Then%>
 <%If Model.DocumentDisplayLinkCount > 0 Then%>
 <div class="docdisplaylinks">
 	<ul class="docdisplaylinkseparatorframe" id="docdisplaylinkseparatorframe_<%=iSeparatorNum %>">

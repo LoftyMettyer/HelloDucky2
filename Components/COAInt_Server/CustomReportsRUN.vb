@@ -3679,7 +3679,7 @@ CheckRecordSet_ERROR:
 		' Base Table First
 		If mlngSingleRecordID = 0 Then
 			If mlngCustomReportsFilterID > 0 Then
-				iResult = ValidateRecordSelection(RecordSelectionTypes.REC_SEL_FILTER, mlngCustomReportsFilterID)
+				iResult = ValidateRecordSelection(RecordSelectionType.Filter, mlngCustomReportsFilterID)
 				Select Case iResult
 					Case RecordSelectionValidityCodes.REC_SEL_VALID_DELETED
 						mstrErrorString = "The base table filter used in this definition has been deleted by another user."
@@ -3691,7 +3691,7 @@ CheckRecordSet_ERROR:
 						End If
 				End Select
 			ElseIf mlngCustomReportsPickListID > 0 Then
-				iResult = ValidateRecordSelection(RecordSelectionTypes.REC_SEL_PICKLIST, mlngCustomReportsPickListID)
+				iResult = ValidateRecordSelection(RecordSelectionType.Picklist, mlngCustomReportsPickListID)
 				Select Case iResult
 					Case RecordSelectionValidityCodes.REC_SEL_VALID_DELETED
 						mstrErrorString = "The base table picklist used in this definition has been deleted by another user."
@@ -3708,7 +3708,7 @@ CheckRecordSet_ERROR:
 		If Len(mstrErrorString) = 0 Then
 			' Parent 1 Table
 			If mlngCustomReportsParent1FilterID > 0 Then
-				iResult = ValidateRecordSelection(RecordSelectionTypes.REC_SEL_FILTER, mlngCustomReportsParent1FilterID)
+				iResult = ValidateRecordSelection(RecordSelectionType.Filter, mlngCustomReportsParent1FilterID)
 				Select Case iResult
 					Case RecordSelectionValidityCodes.REC_SEL_VALID_DELETED
 						mstrErrorString = "The first parent table filter used in this definition has been deleted by another user."
@@ -3720,7 +3720,7 @@ CheckRecordSet_ERROR:
 						End If
 				End Select
 			ElseIf mlngCustomReportsParent1PickListID > 0 Then
-				iResult = ValidateRecordSelection(RecordSelectionTypes.REC_SEL_PICKLIST, mlngCustomReportsParent1PickListID)
+				iResult = ValidateRecordSelection(RecordSelectionType.Picklist, mlngCustomReportsParent1PickListID)
 				Select Case iResult
 					Case RecordSelectionValidityCodes.REC_SEL_VALID_DELETED
 						mstrErrorString = "The first parent table picklist used in this definition has been deleted by another user."
@@ -3737,7 +3737,7 @@ CheckRecordSet_ERROR:
 		' Parent 2 Table
 		If Len(mstrErrorString) = 0 Then
 			If mlngCustomReportsParent2FilterID > 0 Then
-				iResult = ValidateRecordSelection(RecordSelectionTypes.REC_SEL_FILTER, mlngCustomReportsParent2FilterID)
+				iResult = ValidateRecordSelection(RecordSelectionType.Filter, mlngCustomReportsParent2FilterID)
 				Select Case iResult
 					Case RecordSelectionValidityCodes.REC_SEL_VALID_DELETED
 						mstrErrorString = "The second parent table filter used in this definition has been deleted by another user."
@@ -3749,7 +3749,7 @@ CheckRecordSet_ERROR:
 						End If
 				End Select
 			ElseIf mlngCustomReportsParent2PickListID > 0 Then
-				iResult = ValidateRecordSelection(RecordSelectionTypes.REC_SEL_PICKLIST, mlngCustomReportsParent2PickListID)
+				iResult = ValidateRecordSelection(RecordSelectionType.Picklist, mlngCustomReportsParent2PickListID)
 				Select Case iResult
 					Case RecordSelectionValidityCodes.REC_SEL_VALID_DELETED
 						mstrErrorString = "The second parent table picklist used in this definition has been deleted by another user."
@@ -3770,7 +3770,7 @@ CheckRecordSet_ERROR:
 					'UPGRADE_WARNING: Couldn't resolve default property of object mvarChildTables(1, i). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 					lngFilterID = mvarChildTables(1, i)
 					If lngFilterID > 0 Then
-						iResult = ValidateRecordSelection(RecordSelectionTypes.REC_SEL_FILTER, lngFilterID)
+						iResult = ValidateRecordSelection(RecordSelectionType.Filter, lngFilterID)
 						Select Case iResult
 							Case RecordSelectionValidityCodes.REC_SEL_VALID_DELETED
 								mstrErrorString = "The child table filter used in this definition has been deleted by another user."

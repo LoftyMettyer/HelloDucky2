@@ -138,12 +138,17 @@
     <Compile Include="Enums\CalendarEventEndType.vb" />
     <Compile Include="Enums\CalendarLegendType.vb" />
     <Compile Include="Enums\ChartAggregateType.vb" />
+    <Compile Include="Enums\ColumnSelectionType.vb" />
+    <Compile Include="Enums\ExistingFile.vb" />
     <Compile Include="Enums\IntersectionType.vb" />
+    <Compile Include="Enums\Layout.vb" />
     <Compile Include="Enums\OrderType.vb" />
     <Compile Include="Enums\PromptedDateType.vb" />
     <Compile Include="Enums\RecEditStartType.vb" />
+    <Compile Include="Enums\RecordSelectionType.vb" />
     <Compile Include="Enums\RelationType.vb" />
     <Compile Include="Enums\TrackType.vb" />
+    <Compile Include="Enums\UtilityActionType.vb" />
     <Compile Include="Extensions\BaseExtensions.vb" />
     <Compile Include="Extensions\CellAreaExtensions.vb" />
     <Compile Include="Extensions\ModuleSettingExtensions.vb" />
@@ -189,7 +194,6 @@
     <Compile Include="Enums\MailMergeOutputTypes.vb" />
     <Compile Include="Enums\LinkType.vb" />
     <Compile Include="Enums\OutputFormats.vb" />
-    <Compile Include="Enums\RecordSelectionTypes.vb" />
     <Compile Include="Enums\RecordSelectionValidityCodes.vb" />
     <Compile Include="Enums\RegionType.vb" />
     <Compile Include="Enums\RowType.vb" />

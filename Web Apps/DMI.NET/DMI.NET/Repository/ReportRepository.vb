@@ -8,7 +8,6 @@ Imports HR.Intranet.Server.Metadata
 Imports System.Collections.ObjectModel
 Imports DMI.NET.Classes
 Imports HR.Intranet.Server.Enums
-Imports DMI.NET.Enums
 Imports DMI.NET.ViewModels
 Imports DMI.NET.ViewModels.Reports
 Imports DMI.NET.Code.Extensions

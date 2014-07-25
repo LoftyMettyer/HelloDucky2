@@ -979,7 +979,7 @@ ErrorTrap:
 
 		' Filter
 		If mlngDefFilterID > 0 Then
-			iResult = ValidateRecordSelection(RecordSelectionTypes.REC_SEL_FILTER, mlngDefFilterID)
+			iResult = ValidateRecordSelection(RecordSelectionType.Filter, mlngDefFilterID)
 			Select Case iResult
 				Case RecordSelectionValidityCodes.REC_SEL_VALID_DELETED
 					mstrStatusMessage = "The base table filter used in this definition has been deleted by another user."
@@ -991,7 +991,7 @@ ErrorTrap:
 					End If
 			End Select
 		ElseIf mlngDefPickListID > 0 Then
-			iResult = ValidateRecordSelection(RecordSelectionTypes.REC_SEL_PICKLIST, mlngDefPickListID)
+			iResult = ValidateRecordSelection(RecordSelectionType.Picklist, mlngDefPickListID)
 			Select Case iResult
 				Case RecordSelectionValidityCodes.REC_SEL_VALID_DELETED
 					mstrStatusMessage = "The base table picklist used in this definition has been deleted by another user."

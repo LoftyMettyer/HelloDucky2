@@ -186,7 +186,6 @@
     <Compile Include="Code\Interfaces\IDataAccess.vb" />
     <Compile Include="Code\Interfaces\IReport.vb" />
     <Compile Include="Code\Interfaces\IReportDetail.vb" />
-    <Compile Include="Enums\UtilityActionType.vb" />
     <Compile Include="Helpers\LabelHelper.vb" />
     <Compile Include="Models\CalendarEvent.vb" />
     <Compile Include="ViewModels\Home\DefinitionPropertiesViewModel.vb" />
@@ -213,10 +212,6 @@
     <Compile Include="Controllers\HomeController.vb" />
     <Compile Include="Controllers\ReportsController.vb" />
     <Compile Include="Controllers\SessionLessController.vb" />
-    <Compile Include="Enums\ColumnSelectionType.vb" />
-    <Compile Include="Enums\ExistingFile.vb" />
-    <Compile Include="Enums\Layout.vb" />
-    <Compile Include="Enums\RecordSelectionType.vb" />
     <Compile Include="Global.asax.vb">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>

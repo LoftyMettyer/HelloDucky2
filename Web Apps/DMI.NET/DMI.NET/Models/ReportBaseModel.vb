@@ -4,11 +4,9 @@ Option Strict On
 Imports DMI.NET.Classes
 Imports System.Collections.ObjectModel
 Imports System.ComponentModel
-Imports DMI.NET.Enums
 Imports System.ComponentModel.DataAnnotations
 Imports DMI.NET.AttributeExtensions
 Imports HR.Intranet.Server.Enums
-Imports System.Web.Script.Serialization
 Imports HR.Intranet.Server
 Imports DMI.NET.ViewModels.Reports
 

@@ -5901,7 +5901,7 @@ GenerateSQLWhere_ERROR:
 
 		' Base Table First
 		If mlngCalendarReportsFilterID > 0 Then
-			iResult = ValidateRecordSelection(RecordSelectionTypes.REC_SEL_FILTER, mlngCalendarReportsFilterID)
+			iResult = ValidateRecordSelection(RecordSelectionType.Filter, mlngCalendarReportsFilterID)
 			Select Case iResult
 				Case RecordSelectionValidityCodes.REC_SEL_VALID_DELETED
 					mstrErrorString = "The base table filter used in this definition has been deleted by another user."
@@ -5913,7 +5913,7 @@ GenerateSQLWhere_ERROR:
 					End If
 			End Select
 		ElseIf mlngCalendarReportsPickListID > 0 Then
-			iResult = ValidateRecordSelection(RecordSelectionTypes.REC_SEL_PICKLIST, mlngCalendarReportsPickListID)
+			iResult = ValidateRecordSelection(RecordSelectionType.Picklist, mlngCalendarReportsPickListID)
 			Select Case iResult
 				Case RecordSelectionValidityCodes.REC_SEL_VALID_DELETED
 					mstrErrorString = "The base table picklist used in this definition has been deleted by another user."
@@ -5947,7 +5947,7 @@ GenerateSQLWhere_ERROR:
 		For Each objEvent In mcolEvents.Collection
 			lngFilterID = objEvent.FilterID
 			If lngFilterID > 0 Then
-				iResult = ValidateRecordSelection(RecordSelectionTypes.REC_SEL_FILTER, lngFilterID)
+				iResult = ValidateRecordSelection(RecordSelectionType.Filter, lngFilterID)
 				Select Case iResult
 					Case RecordSelectionValidityCodes.REC_SEL_VALID_DELETED
 						mstrErrorString = "An event table filter used in this definition has been deleted by another user."

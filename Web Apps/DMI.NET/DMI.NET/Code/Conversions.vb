@@ -1,7 +1,7 @@
 ﻿Option Strict On
 Option Explicit On
 
-Imports DMI.NET.Enums
+Imports HR.Intranet.Server.Enums
 
 Namespace Code
 
