@@ -2575,9 +2575,9 @@ Namespace Controllers
 
 			If fOK Then
 				If ClientDLL.GetFile() Then
-					If lngOutputFormat = OutputFormats.fmtDataOnly Then
+					If lngOutputFormat = OutputFormats.DataOnly Then
 
-					ElseIf lngOutputFormat = OutputFormats.fmtExcelPivotTable Then
+					ElseIf lngOutputFormat = OutputFormats.ExcelPivotTable Then
 
 						ClientDLL.AddColumn(" ", SQLDataType.sqlVarChar, 0, False)
 						For intCount = 0 To objCrossTab.ColumnHeadingUbound(0)
@@ -2890,7 +2890,7 @@ Namespace Controllers
 
 			ClientDLL.SizeColumnsIndependently = True
 
-			If lngOutputFormat = OutputFormats.fmtExcelGraph Then ClientDLL.SummaryReport = objReport.CustomReportsSummaryReport Or objReport.IsBradfordReport
+			If lngOutputFormat = OutputFormats.ExcelGraph Then ClientDLL.SummaryReport = objReport.CustomReportsSummaryReport Or objReport.IsBradfordReport
 
 			Dim sColHeading As String
 			Dim iColDataType As Integer
@@ -2906,7 +2906,7 @@ Namespace Controllers
 
 			ClientDLL.ArrayDim(UBound(arrayVisibleColumns, 2), 0)
 
-			If Not lngOutputFormat = OutputFormats.fmtDataOnly Then
+			If Not lngOutputFormat = OutputFormats.DataOnly Then
 
 				ClientDLL.HeaderRows = 1
 				If ClientDLL.GetFile() = True Then
@@ -2988,7 +2988,7 @@ Namespace Controllers
 
 					Else ' no page break
 
-						If (lngOutputFormat = OutputFormats.fmtExcelGraph And Not objReport.CustomReportsSummaryReport) Or lngOutputFormat = OutputFormats.fmtExcelPivotTable Then
+						If (lngOutputFormat = OutputFormats.ExcelGraph And Not objReport.CustomReportsSummaryReport) Or lngOutputFormat = OutputFormats.ExcelPivotTable Then
 							Dim trueRowCount As Integer = (From row In objReport.ReportDataTable.AsEnumerable() Where row(0).ToString() = "0" Where String.Join("", row.ItemArray) <> "0").Count()
 							ClientDLL.ArrayDim(UBound(arrayVisibleColumns, 2), trueRowCount)
 						Else
@@ -3015,7 +3015,7 @@ Namespace Controllers
 						lngDataRow = 1
 						For Each objRow As DataRow In objReport.ReportDataTable.Rows
 
-							If (lngOutputFormat = OutputFormats.fmtExcelGraph And Not objReport.CustomReportsSummaryReport) Or lngOutputFormat = OutputFormats.fmtExcelPivotTable Then
+							If (lngOutputFormat = OutputFormats.ExcelGraph And Not objReport.CustomReportsSummaryReport) Or lngOutputFormat = OutputFormats.ExcelPivotTable Then
 								' Ignore non-data rows.
 								If objRow(0).ToString() <> "0" Then Continue For
 
@@ -3170,7 +3170,7 @@ Namespace Controllers
 			End If
 
 			If strDownloadFileName.Length = 0 Then
-				objCalendar.OutputFormat = OutputFormats.fmtExcelWorksheet
+				objCalendar.OutputFormat = OutputFormats.ExcelWorksheet
 				objCalendar.OutputFilename = ""
 				strDownloadFileName = objCalendar.DownloadFileName
 			End If

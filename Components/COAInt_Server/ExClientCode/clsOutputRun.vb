@@ -651,38 +651,38 @@ LocalErr:
 
 		mlngFormat = lngFormat
 		Select Case mlngFormat
-			Case OutputFormats.fmtDataOnly
+			Case OutputFormats.DataOnly
 				mobjOutputType = New clsOutputGrid
 				GeneratedFile = Path.GetTempFileName.Replace(".tmp", ".txt")
 
-			Case OutputFormats.fmtCSV, OutputFormats.fmtFixedLengthFile
+			Case OutputFormats.CSV, OutputFormats.FixedLengthFile
 				mobjOutputType = New clsOutputCSV
 				CheckEmailAttachment("csv")
 				GeneratedFile = Path.GetTempFileName.Replace(".tmp", ".csv")
 
-			Case OutputFormats.fmtHTML
+			Case OutputFormats.HTML
 				mobjOutputType = New clsOutputHTML
 				CheckEmailAttachment("htm")
 				GeneratedFile = Path.GetTempFileName.Replace(".tmp", ".htm")
 
-			Case OutputFormats.fmtWordDoc
+			Case OutputFormats.WordDoc
 				mobjOutputType = New clsOutputWord
 				CheckEmailAttachment("doc")
 				GeneratedFile = Path.GetTempFileName.Replace(".tmp", ".doc")
 
-			Case OutputFormats.fmtExcelWorksheet
+			Case OutputFormats.ExcelWorksheet
 				mobjOutputType = New clsOutputExcel
 				CheckEmailAttachment("xls")
 				GeneratedFile = Path.GetTempFileName.Replace(".tmp", ".xlsx")
 
-			Case OutputFormats.fmtExcelGraph
+			Case OutputFormats.ExcelGraph
 				mobjOutputType = New clsOutputExcel
 				'UPGRADE_WARNING: Couldn't resolve default property of object mobjOutputType.Chart. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 				mobjOutputType.Chart = True
 				CheckEmailAttachment("xls")
 				GeneratedFile = Path.GetTempFileName.Replace(".tmp", ".xlsx")
 
-			Case OutputFormats.fmtExcelPivotTable
+			Case OutputFormats.ExcelPivotTable
 				mobjOutputType = New clsOutputExcel
 				'UPGRADE_WARNING: Couldn't resolve default property of object mobjOutputType.PivotTable. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 				mobjOutputType.PivotTable = True
@@ -711,7 +711,7 @@ LocalErr:
 		mobjOutputType.FileName = GeneratedFile
 		mobjOutputType.DownloadExtension = strDownloadExtension
 
-		mblnPrintData = (mlngFormat = OutputFormats.fmtDataOnly And blnPrinter)
+		mblnPrintData = (mlngFormat = OutputFormats.DataOnly And blnPrinter)
 
 		If strPrinterName = "<Default Printer>" Then
 			mstrPrinterName = Printer.PrinterName

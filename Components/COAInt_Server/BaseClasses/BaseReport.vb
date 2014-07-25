@@ -21,10 +21,10 @@ Namespace BaseClasses
 			Get
 
 				Select Case _outputFormat
-					Case OutputFormats.fmtExcelGraph, OutputFormats.fmtExcelPivotTable, OutputFormats.fmtExcelWorksheet
+					Case OutputFormats.ExcelGraph, OutputFormats.ExcelPivotTable, OutputFormats.ExcelWorksheet
 						Return _outputFormat
 					Case Else
-						Return OutputFormats.fmtExcelWorksheet
+						Return OutputFormats.ExcelWorksheet
 				End Select
 
 			End Get
@@ -38,7 +38,7 @@ Namespace BaseClasses
 
 		Public Property OutputPreview() As Boolean
 			Get
-				Return _outputPreview Or _outputFormat = OutputFormats.fmtDataOnly Or _outputFormat = OutputFormats.fmtWordDoc Or _outputFormat = OutputFormats.fmtHTML Or _outputFormat = OutputFormats.fmtCSV
+				Return _outputPreview Or _outputFormat = OutputFormats.DataOnly Or _outputFormat = OutputFormats.WordDoc Or _outputFormat = OutputFormats.HTML Or _outputFormat = OutputFormats.CSV
 			End Get
 
 			<DebuggerStepThrough()> _
@@ -63,28 +63,28 @@ Namespace BaseClasses
 
 		Public ReadOnly Property DownloadFileName As String
 			Get
-                Dim cleanFileName As String = _outputFilename
-                Dim fileFromDefinitionName As String = ""
-                Dim regexSearch As String
-                Dim r As Regex
+				Dim cleanFileName As String = _outputFilename
+				Dim fileFromDefinitionName As String = ""
+				Dim regexSearch As String
+				Dim r As Regex
 
-                If _outputFilename = "" Then
-                    regexSearch = New String(Path.GetInvalidFileNameChars()) + New String(Path.GetInvalidPathChars())
-                    r = New Regex(String.Format("[{0}]", Regex.Escape(regexSearch)))
-                    fileFromDefinitionName = Name
-                    cleanFileName = r.Replace(fileFromDefinitionName, "")
-                End If
+				If _outputFilename = "" Then
+					regexSearch = New String(Path.GetInvalidFileNameChars()) + New String(Path.GetInvalidPathChars())
+					r = New Regex(String.Format("[{0}]", Regex.Escape(regexSearch)))
+					fileFromDefinitionName = Name
+					cleanFileName = r.Replace(fileFromDefinitionName, "")
+				End If
 
-                Select Case _outputFormat
-                    Case OutputFormats.fmtExcelGraph, OutputFormats.fmtExcelPivotTable, OutputFormats.fmtExcelWorksheet
-                        cleanFileName = Path.GetFileNameWithoutExtension(cleanFileName) & DefaultFileExtension(_outputFormat)
+				Select Case _outputFormat
+					Case OutputFormats.ExcelGraph, OutputFormats.ExcelPivotTable, OutputFormats.ExcelWorksheet
+						cleanFileName = Path.GetFileNameWithoutExtension(cleanFileName) & DefaultFileExtension(_outputFormat)
 
-                    Case Else
-                        cleanFileName = Path.GetFileNameWithoutExtension(cleanFileName) & DefaultFileExtension(OutputFormat)
+					Case Else
+						cleanFileName = Path.GetFileNameWithoutExtension(cleanFileName) & DefaultFileExtension(OutputFormat)
 
-                End Select
+				End Select
 
-                Return cleanFileName
+				Return cleanFileName
 
 			End Get
 		End Property
@@ -92,9 +92,9 @@ Namespace BaseClasses
 		Private Function DefaultFileExtension(OutputType As OutputFormats) As String
 
 			Select Case OutputType
-				Case OutputFormats.fmtExcelGraph, OutputFormats.fmtExcelPivotTable, OutputFormats.fmtExcelWorksheet
+				Case OutputFormats.ExcelGraph, OutputFormats.ExcelPivotTable, OutputFormats.ExcelWorksheet
 					Return ".xlsx"
-				Case OutputFormats.fmtWordDoc
+				Case OutputFormats.WordDoc
 					Return ".docx"
 				Case Else
 					Return ".txt"

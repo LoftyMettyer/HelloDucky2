@@ -11,25 +11,25 @@ End Code
 <div>
 	<fieldset class="border0 width25 floatleft">
 		<legend class="fontsmalltitle">Output Formats</legend>
-		@Html.RadioButton("Output.Format", 0, Model.Format = OutputFormats.fmtDataOnly, New With {.onclick = "changeOutputType('data')"})
+		@Html.RadioButton("Output.Format", 0, Model.Format = OutputFormats.DataOnly, New With {.onclick = "changeOutputType('DataOnly')"})
 		Data Only
 		<br />
-		@Html.RadioButton("Output.Format", 1, Model.Format = OutputFormats.fmtCSV, New With {.onclick = "changeOutputType('csv')"})
+		@Html.RadioButton("Output.Format", 1, Model.Format = OutputFormats.CSV, New With {.onclick = "changeOutputType('CSV')"})
 		CSV File
 		<br />
-		@Html.RadioButton("Output.Format", 2, Model.Format = OutputFormats.fmtHTML, New With {.onclick = "changeOutputType('html')"})
+		@Html.RadioButton("Output.Format", 2, Model.Format = OutputFormats.HTML, New With {.onclick = "changeOutputType('HTML')"})
 		HTML Document		
 		<br />
-		@Html.RadioButton("Output.Format", 3, Model.Format = OutputFormats.fmtWordDoc, New With {.onclick = "changeOutputType('word')"})
+		@Html.RadioButton("Output.Format", 3, Model.Format = OutputFormats.WordDoc, New With {.onclick = "changeOutputType('WordDoc')"})
 		Word Document		
 		<br />
-		@Html.RadioButton("Output.Format", 4, Model.Format = OutputFormats.fmtExcelWorksheet, New With {.onclick = "changeOutputType('worksheet')"})
+		@Html.RadioButton("Output.Format", 4, Model.Format = OutputFormats.ExcelWorksheet, New With {.onclick = "changeOutputType('ExcelWorksheet')"})
 		Excel Worksheet		
 		<br />
-		@Html.RadioButton("Output.Format", 5, Model.Format = OutputFormats.fmtExcelGraph, New With {.onclick = "changeOutputType('graph')"})
+		@Html.RadioButton("Output.Format", 5, Model.Format = OutputFormats.ExcelGraph, New With {.onclick = "changeOutputType('ExcelGraph')"})
 		Excel Chart		
 		<br />
-		@Html.RadioButton("Output.Format", 6, Model.Format = OutputFormats.fmtExcelPivotTable, New With {.onclick = "changeOutputType('pivot')"})
+		@Html.RadioButton("Output.Format", 6, Model.Format = OutputFormats.ExcelPivotTable, New With {.onclick = "changeOutputType('ExcelPivotTable')"})
 		Excel Pivot Table
 	</fieldset>
 
@@ -112,25 +112,25 @@ End Code
 
 		switch (type) {
 
-			case "data":
+			case "DataOnly":
 				break;
 
-			case "csv":
+			case "CSV":
 				break;
 
-			case "html":
+			case "HTML":
 				break;
 
-			case "word":
+			case "WordDoc":
 				break;
 
-			case "worksheet":
+			case "ExcelWorksheet":
 				break;
 
-			case "graph":
+			case "ExcelGraph":
 				break;
 
-			case "pivot":
+			case "ExcelPivotTable":
 				break;
 
 		}
