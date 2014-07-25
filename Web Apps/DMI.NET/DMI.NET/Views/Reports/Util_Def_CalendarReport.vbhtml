@@ -11,79 +11,77 @@ End Code
 		@Html.HiddenFor(Function(m) m.ID)
 
 		@<div id="tabs">
-			<ul>
-				<li><a href="#tabs-1">Definition</a></li>
-				<li><a href="#report_definition_tab_eventdetails">Event Details</a></li>
-				<li><a href="#report_definition_tab_reportdetails">Report Details</a></li>
-				<li><a href="#report_definition_tab_order">Order</a></li>
-				<li><a href="#report_definition_tab_output">Output</a></li>
-			</ul>
+	<ul>
+		<li><a href="#tabs-1">Definition</a></li>
+		<li><a href="#report_definition_tab_eventdetails">Event Details</a></li>
+		<li><a href="#report_definition_tab_reportdetails">Report Details</a></li>
+		<li><a href="#report_definition_tab_order">Order</a></li>
+		<li><a href="#report_definition_tab_output">Output</a></li>
+	</ul>
 
-			<div id="tabs-1">
- 		<div class="width100">
-		 	<fieldset>
-				@Code
+	<div id="tabs-1" class="width100">
+		<fieldset>
+			@Code
 				Html.RenderPartial("_Definition", Model)
-				End Code
+			End Code
 
-				@Html.LabelFor(Function(m) m.Description1ID)
-				@Html.TextBoxFor(Function(m) m.Description1ID)
-		 		<br />
-				@Html.LabelFor(Function(m) m.Description2ID)
-				@Html.TextBoxFor(Function(m) m.Description2ID)
-				<br />
-				@Html.LabelFor(Function(m) m.Description2ID)
-				@Html.TextBoxFor(Function(m) m.Description3ID)
+			@Html.LabelFor(Function(m) m.Description1ID)
+			@Html.TextBoxFor(Function(m) m.Description1ID)
+			<br />
+			@Html.LabelFor(Function(m) m.Description2ID)
+			@Html.TextBoxFor(Function(m) m.Description2ID)
+			<br />
+			@Html.LabelFor(Function(m) m.Description2ID)
+			@Html.TextBoxFor(Function(m) m.Description3ID)
 
-				@Html.HiddenFor(Function(m) m.RegionID)
-				@Html.HiddenFor(Function(m) m.GroupByDescription)
-				@Html.HiddenFor(Function(m) m.Separator)
-		 	</fieldset>
-		</div>
+			@Html.HiddenFor(Function(m) m.RegionID)
+			@Html.HiddenFor(Function(m) m.GroupByDescription)
+			@Html.HiddenFor(Function(m) m.Separator)
+		</fieldset>
+	</div>
 
-		 	<div id="report_definition_tab_eventdetails">
+	<div id="report_definition_tab_eventdetails">
 		<fieldset>
-		 		@Code
+			@Code
 			 Html.RenderPartial("_EventDetails", Model)
-			 	End Code
+			End Code
 		</fieldset>
-			 </div>
+	</div>
 
-		 	<div id="report_definition_tab_reportdetails">
+	<div id="report_definition_tab_reportdetails">
 		<fieldset>
-		 		@Code
+			@Code
 			 Html.RenderPartial("_ReportDetails", Model)
-		 	End Code
+			End Code
 		</fieldset>
-		 </div>
+	</div>
 
-		 	<div id="report_definition_tab_order">
+	<div id="report_definition_tab_order">
 		<fieldset>
-		 	@Code
+			@Code
 			Html.RenderPartial("_SortOrder", Model)
-		 End Code
+			End Code
 		</fieldset>
-		 </div>
+	</div>
 
-			<div id="report_definition_tab_output">
+	<div id="report_definition_tab_output">
 		<fieldset>
-				@Code
+			@Code
 				Html.RenderPartial("_Output", Model.Output)
-				End Code
+			End Code
 		</fieldset>
-			</div>
-		</div>
+	</div>
+
+</div>
 	End Using
+</div>
 
-
-	<form action="default_Submit" method="post" id="frmGoto" name="frmGoto" style="visibility: hidden; display: none">
-		@Code
+<form action="default_Submit" method="post" id="frmGoto" name="frmGoto" style="visibility: hidden; display: none">
+	@Code
 			Html.RenderPartial("~/Views/Shared/gotoWork.ascx")
-		End Code
-	</form>
-</div>
-	End Using
-</div>
+	End Code
+</form>
+
 <script type="text/javascript">
 
 	$(function () {
