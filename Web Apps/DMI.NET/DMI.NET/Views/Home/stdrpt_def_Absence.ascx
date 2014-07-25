@@ -1013,19 +1013,9 @@
 	%>
 </form>
 
-<form id="frmAbsenceEmailSelection" name="frmAbsenceEmailSelection" target="emailSelection" action="util_emailSelection" method="post" style="visibility: hidden; display: none">
-	<input type="hidden" id="EmailSelCurrentID" name="EmailSelCurrentID">
-</form>
-
-<form id="frmRecordSelection" name="frmRecordSelection" target="recordSelection" method="post" style="visibility: hidden; display: none">
-	<input type="hidden" id="recSelTable" name="recSelTable" value='base'>
-	<input type="hidden" id="recSelType" name="recSelType">
+<div style='height: 0;width:0; overflow:hidden;'>
 	<input type="hidden" id="recSelTableID" name="recSelTableID" value="<%=Session("Personnel_EmpTableID")%>">
 	<input type="hidden" id="recSelCurrentID" name="recSelCurrentID" value='<%=Session("optionRecordID")%>'>
-	<input type="hidden" id="baseHidden" name="baseHidden" value="N">
-</form>
-
-<div style='height: 0;width:0; overflow:hidden;'>
 	<input id="cmdGetFilename" name="cmdGetFilename" type="file" />
 </div>
 

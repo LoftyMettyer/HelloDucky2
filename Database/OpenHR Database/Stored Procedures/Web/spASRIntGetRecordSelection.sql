@@ -11,7 +11,14 @@ BEGIN
 	DECLARE @fSysSecMgr	bit;
 
 	EXEC [dbo].[spASRIntSysSecMgr] @fSysSecMgr OUTPUT
-	
+
+	IF UPPER(@psType) = 'EMAIL'
+	BEGIN
+		SELECT emailGroupID AS [ID], name, userName, access , [Description]
+		FROM ASRSysEmailGroupName 
+		ORDER BY [name];
+	END
+
 	IF UPPER(@psType) = 'PICKLIST'
 	BEGIN
 		SELECT picklistid AS ID, name, username, access, [Description]

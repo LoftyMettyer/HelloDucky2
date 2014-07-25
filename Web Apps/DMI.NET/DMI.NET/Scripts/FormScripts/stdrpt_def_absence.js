@@ -56,15 +56,14 @@ function formatAbsenceClick(index) {
 }
 
 function selectAbsenceEmailGroup() {
-	var frmAbsenceDefinition = $('#frmAbsenceDefinition')[0];
-	var frmAbsenceEmailSelection = $("#frmAbsenceEmailSelection")[0];
-	var sURL;
 
-	frmAbsenceEmailSelection.EmailSelCurrentID.value = frmAbsenceDefinition.txtAbsenceEmailGroupID.value;
+	var currentID = $("#txtAbsenceEmailGroupID").val();
 
-	sURL = "util_emailSelection" +
-			"?EmailSelCurrentID=" + frmAbsenceEmailSelection.EmailSelCurrentID.value;
-	openDialog(sURL, (screen.width) / 3 + 40, (screen.height) / 2 - 50, "no", "no");
+	OpenHR.modalExpressionSelect("EMAIL", 0, currentID, function (id, name) {
+		$("#txtAbsenceEmailGroupID").val(id);
+		$("#txtAbsenceEmailGroup").val(name);
+	});
+
 }
 
 function validateNumeric(pobjNumericControl)

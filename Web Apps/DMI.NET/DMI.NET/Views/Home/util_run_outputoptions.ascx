@@ -467,30 +467,16 @@
 		}
 	}
 
-	function selectEmailGroup() {
-		var sUrl;		
-		var frmOutputDef = OpenHR.getForm("outputoptions", "frmOutputDef");
-		var frmEmailSelection = $("#frmEmailSelection")[0];
+	function selectOutputEmailGroup() {
 
-		frmEmailSelection.EmailSelCurrentID.value = frmOutputDef.txtEmailGroupID.value;
+		var currentID = $("#txtEmailGroupID").val();
 
-		sUrl = "util_emailSelection" +
-				"?EmailSelCurrentID=" + frmEmailSelection.EmailSelCurrentID.value;
-		openDialog(sUrl, (screen.width) / 3 + 40, (screen.height) / 2 - 50, "no", "no");
+		OpenHR.modalExpressionSelect("EMAIL", 0, currentID, function (id, name) {
+			$("#txtEmailGroupID").val(id);
+			$("#txtEmailGroup").val(name);
+		});
+
 	}
-
-
-	function openDialog(pDestination, pWidth, pHeight, psResizable, psScroll) {
-		var dlgwinprops = "center:yes;" +
-				"dialogHeight:" + pHeight + "px;" +
-				"dialogWidth:" + pWidth + "px;" +
-				"help:no;" +
-				"resizable:" + psResizable + ";" +
-				"scroll:" + psScroll + ";" +
-				"status:no;";
-		window.showModalDialog(pDestination, self, dlgwinprops);
-	}
-
 
 	function outputOptionsOKClick() {		
 
@@ -1019,7 +1005,7 @@
 													<input id="txtEmailGroupID" name="txtEmailGroupID" type="hidden">
 												</td>
 												<td width="25">
-													<input type="button" class="ui-state-disabled" id="cmdEmailGroup" name="cmdEmailGroup" value="..." style="WIDTH: 100%; padding-top: 0;" class="btn" onclick="selectEmailGroup()" />
+													<input type="button" class="ui-state-disabled" id="cmdEmailGroup" name="cmdEmailGroup" value="..." style="WIDTH: 100%; padding-top: 0;" class="btn" onclick="selectOutputEmailGroup()" />
 												</td>
 											</tr>
 										</table>
@@ -1079,11 +1065,6 @@
 	<input type="hidden" id="txtExcelFormatDefaultIndex" name="txtExcelFormatDefaultIndex" value="<%=Session("ExcelFormatDefaultIndex")%>">
 	<input type="hidden" id="txtOfficeSaveAsFormats" name="txtOfficeSaveAsFormats" value="<%=Session("OfficeSaveAsValues")%>">
 </form>
-
-<form id="frmEmailSelection" name="frmEmailSelection" target="emailSelection" action="util_emailSelection" method="post" style="visibility: hidden; display: none">
-	<input type="hidden" id="EmailSelCurrentID" name="EmailSelCurrentID">
-</form>
-
 
 <script type="text/javascript">
 	output_setOptions();

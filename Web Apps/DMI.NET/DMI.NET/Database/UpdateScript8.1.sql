@@ -32,6 +32,11 @@ IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[sp_ASRIntD
 	DROP PROCEDURE [dbo].[sp_ASRIntDefProperties];
 GO
 
+IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spASRIntGetEmailGroups]') AND xtype in (N'P'))
+	DROP PROCEDURE [dbo].[spASRIntGetEmailGroups];
+GO
+
+
 
 
 -- modified (chr(9) to be , AS [xxxx] so that columns come back in non string delimated format, also return types are noiw rw/ro/hd instead of readable text
@@ -1469,7 +1474,14 @@ BEGIN
 	DECLARE @fSysSecMgr	bit;
 
 	EXEC [dbo].[spASRIntSysSecMgr] @fSysSecMgr OUTPUT
-	
+
+	IF UPPER(@psType) = 'EMAIL'
+	BEGIN
+		SELECT emailGroupID AS [ID], name, userName, access , [Description]
+		FROM ASRSysEmailGroupName 
+		ORDER BY [name];
+	END
+
 	IF UPPER(@psType) = 'PICKLIST'
 	BEGIN
 		SELECT picklistid AS ID, name, username, access, [Description]

@@ -11,13 +11,26 @@ End Code
 <div>
 	<fieldset class="border0 width25 floatleft">
 		<legend class="fontsmalltitle">Output Formats</legend>
-		@Html.RadioButton("Output.Format", 0, Model.Format = OutputFormats.fmtDataOnly)		Data Only		<br />
-		@Html.RadioButton("Output.Format", 1, Model.Format = OutputFormats.fmtCSV)		CSV File		<br />
-		@Html.RadioButton("Output.Format", 2, Model.Format = OutputFormats.fmtHTML)		HTML Document		<br />
-		@Html.RadioButton("Output.Format", 3, Model.Format = OutputFormats.fmtWordDoc)		Word Document		<br />
-		@Html.RadioButton("Output.Format", 4, Model.Format = OutputFormats.fmtExcelWorksheet)		Excel Worksheet		<br />
-		@Html.RadioButton("Output.Format", 5, Model.Format = OutputFormats.fmtExcelGraph)		Excel Chart		<br />
-		@Html.RadioButton("Output.Format", 6, Model.Format = OutputFormats.fmtExcelPivotTable)		Excel Pivot Table
+		@Html.RadioButton("Output.Format", 0, Model.Format = OutputFormats.fmtDataOnly, New With {.onclick = "changeOutputType('data')"})
+		Data Only
+		<br />
+		@Html.RadioButton("Output.Format", 1, Model.Format = OutputFormats.fmtCSV, New With {.onclick = "changeOutputType('csv')"})
+		CSV File
+		<br />
+		@Html.RadioButton("Output.Format", 2, Model.Format = OutputFormats.fmtHTML, New With {.onclick = "changeOutputType('html')"})
+		HTML Document		
+		<br />
+		@Html.RadioButton("Output.Format", 3, Model.Format = OutputFormats.fmtWordDoc, New With {.onclick = "changeOutputType('word')"})
+		Word Document		
+		<br />
+		@Html.RadioButton("Output.Format", 4, Model.Format = OutputFormats.fmtExcelWorksheet, New With {.onclick = "changeOutputType('worksheet')"})
+		Excel Worksheet		
+		<br />
+		@Html.RadioButton("Output.Format", 5, Model.Format = OutputFormats.fmtExcelGraph, New With {.onclick = "changeOutputType('graph')"})
+		Excel Chart		
+		<br />
+		@Html.RadioButton("Output.Format", 6, Model.Format = OutputFormats.fmtExcelPivotTable, New With {.onclick = "changeOutputType('pivot')"})
+		Excel Pivot Table
 	</fieldset>
 
 	<fieldset id="outputdestinatonfieldset" class="border0 floatleft">
@@ -82,11 +95,47 @@ End Code
 </div>
 
 <script type="text/javascript">
+
 	function selectEmailGroup() {
-		var sUrl;
-		sUrl = "util_emailSelection" +
-						"?EmailSelCurrentID=" +
-							"13";
-		openDialog(sUrl, (screen.width) / 3 + 40, (screen.height) / 2 - 50, "no", "no");
+
+		var tableID = $("#BaseTableID option:selected").val();
+		var currentID = $("#txtEmailGroupID").val();
+
+		OpenHR.modalExpressionSelect("EMAIL", tableID, currentID, function (id, name) {
+			$("#txtEmailGroupID").val(id);
+			$("#txtEmailGroup").val(name);
+		});
+
 	}
+
+	function changeOutputType(type) {
+
+		switch (type) {
+
+			case "data":
+				break;
+
+			case "csv":
+				break;
+
+			case "html":
+				break;
+
+			case "word":
+				break;
+
+			case "worksheet":
+				break;
+
+			case "graph":
+				break;
+
+			case "pivot":
+				break;
+
+		}
+
+	}
+
+
 </script>

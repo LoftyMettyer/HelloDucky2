@@ -198,7 +198,6 @@
     <Build Include="Stored Procedures\Web\spASRIntGetDefaultOrder.sql" />
     <Build Include="Stored Procedures\Web\spASRIntGetDocumentManagementTypes.sql" />
     <Build Include="Stored Procedures\Web\spASRIntGetEmailGroupAddresses.sql" />
-    <Build Include="Stored Procedures\Web\spASRIntGetEmailGroups.sql" />
     <Build Include="Stored Procedures\Web\spASRIntGetEventLogBatchDetails.sql" />
     <Build Include="Stored Procedures\Web\spASRIntGetEventLogDetails.sql" />
     <Build Include="Stored Procedures\Web\spASRIntGetEventLogEmailInfo.sql" />
