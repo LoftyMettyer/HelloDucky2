@@ -106,7 +106,7 @@
     <Build Include="Stored Procedures\Web\spASRIntGetCrossTabDefinition.sql" />
     <Build Include="Stored Procedures\Web\sp_ASRIntGetCrossTabTablesInfo.sql" />
     <Build Include="Stored Procedures\Web\sp_ASRIntGetDefaultOrderColumns.sql" />
-    <Build Include="Stored Procedures\Web\sp_ASRIntGetEmailAddresses.sql" />
+    <Build Include="Stored Procedures\Web\spASRIntGetEmailAddresses.sql" />
     <Build Include="Stored Procedures\Web\sp_ASRIntGetEmpIDFromTBID.sql" />
     <Build Include="Stored Procedures\Web\sp_ASRIntGetEmpIDFromWLID.sql" />
     <Build Include="Stored Procedures\Web\sp_ASRIntGetExprCalcs.sql" />

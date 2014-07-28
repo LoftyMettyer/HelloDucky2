@@ -10,6 +10,8 @@ Namespace Models
 
 	Public Class ReportOutputModel
 
+		Public Property ReportType() As UtilityType
+
 		<Required>
 		<DisplayName("Output Format :")>
 		Public Property Format As OutputFormats
@@ -34,13 +36,13 @@ Namespace Models
 		<MaxLength(255, ErrorMessage:="File Name cannot be longer than 255 characters.")>
 		<DisplayName("File Name :")>
 		<DisplayFormat(ConvertEmptyStringToNull:=False)>
-		<ExcludeChar("\/:*?""<>|")>
+		<ExcludeChar("/*?""<>|")>
 		Public Property Filename As String
 
 		<DisplayName("If file exists:")>
 		Public Property SaveExisting As ExistingFile
 
-		<DisplayName("Send As email")>
+		<DisplayName("Send as email")>
 		Public Property SendToEmail As Boolean
 
 		<NonZeroIf("SendToEmail", True, ErrorMessage:="No email group selected.")>

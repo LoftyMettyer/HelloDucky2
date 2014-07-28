@@ -400,7 +400,7 @@ BEGIN
 		@pfSummary AS summary,@pfPrintFilterHeader AS printFilterHeader,
 		@pfOutputPreview AS IsPreview, @piOutputFormat AS [Format], @pfOutputScreen AS ToScreen, @pfOutputPrinter AS ToPrinter,
 		@psOutputPrinterName AS PrinterName, @pfOutputSave AS SaveToFile, @piOutputSaveExisting AS SaveExisting,
-		@pfOutputEmail AS SendToEmail, @piOutputEmailAddr AS EmailGroupID, @piOutputEmailAddr AS EmailGroupName,
+		@pfOutputEmail AS SendToEmail, @piOutputEmailAddr AS EmailGroupID, @psOutputEmailName AS EmailGroupName,
 		@psOutputEmailSubject AS EmailSubject, @psOutputEmailAttachAs AS EmailAttachmentName,
 		@psOutputFilename AS [Filename], @piTimestamp AS [timestamp],
 		@pfParent1AllRecords AS parent1AllRecords, @piParent1PicklistID AS parent1Picklist,

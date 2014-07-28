@@ -2,99 +2,144 @@
 @Imports DMI.NET.Helpers
 @Imports HR.Intranet.Server.Enums
 @code
-	ViewBag.CustomPrefix = "Output."
+	Html.EnableClientValidation()
 End Code
 
 @Inherits System.Web.Mvc.WebViewPage(Of Models.ReportOutputModel)
-
-<br />
 <div>
+
 	<fieldset class="border0 width25 floatleft">
 		<legend class="fontsmalltitle">Output Formats</legend>
-		@Html.RadioButton("Output.Format", 0, Model.Format = OutputFormats.DataOnly, New With {.onclick = "changeOutputType('DataOnly')"})
+		@Html.RadioButton("Output.Format", 0, Model.Format = OutputFormats.DataOnly, New With {.onchange = "changeOutputType('DataOnly')"})
 		Data Only
 		<br />
-		@Html.RadioButton("Output.Format", 1, Model.Format = OutputFormats.CSV, New With {.onclick = "changeOutputType('CSV')"})
-		CSV File
+
+		<div class="hideforcalendarreport">
+			@Html.RadioButton("Output.Format", 1, Model.Format = OutputFormats.CSV, New With {.onchange = "changeOutputType('CSV')"})
+			<span class="DataManagerOnly">CSV File</span>
+			<br />
+		</div>
+
+		@Html.RadioButton("Output.Format", 2, Model.Format = OutputFormats.HTML, New With {.onchange = "changeOutputType('HTML')"})
+		<span class="DataManagerOnly">HTML Document</span>
 		<br />
-		@Html.RadioButton("Output.Format", 2, Model.Format = OutputFormats.HTML, New With {.onclick = "changeOutputType('HTML')"})
-		HTML Document		
+
+		@Html.RadioButton("Output.Format", 3, Model.Format = OutputFormats.WordDoc, New With {.onchange = "changeOutputType('WordDoc')"})
+		<span class="DataManagerOnly">Word Document</span>
 		<br />
-		@Html.RadioButton("Output.Format", 3, Model.Format = OutputFormats.WordDoc, New With {.onclick = "changeOutputType('WordDoc')"})
-		Word Document		
+
+		@Html.RadioButton("Output.Format", 4, Model.Format = OutputFormats.ExcelWorksheet, New With {.onchange = "changeOutputType('ExcelWorksheet')"})
+		Excel Worksheet
 		<br />
-		@Html.RadioButton("Output.Format", 4, Model.Format = OutputFormats.ExcelWorksheet, New With {.onclick = "changeOutputType('ExcelWorksheet')"})
-		Excel Worksheet		
-		<br />
-		@Html.RadioButton("Output.Format", 5, Model.Format = OutputFormats.ExcelGraph, New With {.onclick = "changeOutputType('ExcelGraph')"})
-		Excel Chart		
-		<br />
-		@Html.RadioButton("Output.Format", 6, Model.Format = OutputFormats.ExcelPivotTable, New With {.onclick = "changeOutputType('ExcelPivotTable')"})
-		Excel Pivot Table
+
+		<div class="hideforcalendarreport">
+			@Html.RadioButton("Output.Format", 5, Model.Format = OutputFormats.ExcelGraph, New With {.onchange = "changeOutputType('ExcelGraph')"})
+			Excel Chart
+			<br />
+			@Html.RadioButton("Output.Format", 6, Model.Format = OutputFormats.ExcelPivotTable, New With {.onchange = "changeOutputType('ExcelPivotTable')"})
+			Excel Pivot Table
+		</div>
+
+		<br/>
+		<fieldset class="DataManagerOnly">
+			Note: Options marked in red are unavailable in OpenHR Web.
+		</fieldset>
+
 	</fieldset>
 
 	<fieldset id="outputdestinatonfieldset" class="border0 floatleft">
 		<legend class="fontsmalltitle">Output Destinations</legend>
-		@* Preview on Screen Section *@
-		<fieldset class="border0">
+
+		<fieldset class="border0 reportdefpreview">
 			<legend>
-				@Html.CheckBox("Output.IsPreview", Model.IsPreview)
+				@Html.CheckBoxFor(Function(m) m.IsPreview, New With {Key .Name = "Output.IsPreview"})
 				@Html.LabelFor(Function(m) m.IsPreview)
 			</legend>
 		</fieldset>
 
-		@* Display Output On Screen Section *@
-		<fieldset class="border0">
+		<fieldset class="border0 reportdefscreen">
 			<legend>
-				@Html.CheckBox("Output.ToScreen", Model.ToScreen)
+				@Html.CheckBoxFor(Function(m) m.ToScreen, New With {Key .Name = "Output.ToScreen"})
 				@Html.LabelFor(Function(m) m.ToScreen)
 			</legend>
 		</fieldset>
 
-		@* Send To Print Section *@
-		<fieldset class="border0">
+		<fieldset class="border0 reportdefprinter DataManagerOnly">
 			<legend>
-				@Html.CheckBox("Output.ToPrinter", Model.ToPrinter)
-				@Html.LabelFor(Function(m) m.ToPrinter)
+				@Html.CheckBoxFor(Function(m) m.ToPrinter, New With {Key .Name = "Output.ToPrinter"})
+				@Html.LabelFor(Function(m) m.ToPrinter, New With {.class = "DataManagerOnly"})
 			</legend>
-			@Html.TextBox("Output.PrinterName", Model.PrinterName, New With {.placeholder = "Default Printer", .class = "readonly width100"})
+			@Html.TextBoxFor(Function(m) m.PrinterName, New With {.Name = "Output.PrinterName", .placeholder = "Default Printer", .class = "DataManagerOnly width100", .readonly = "true"})
+
 		</fieldset>
 
-		@* Save To File Section *@
-		<fieldset class="border0">
+		<fieldset class="border0 reportdeffile">
 			<legend>
-				@Html.CheckBox("Output.SaveToFile", Model.SaveToFile)
-				@Html.LabelFor(Function(m) m.SaveToFile)
+				@Html.CheckBoxFor(Function(m) m.SaveToFile, New With {Key .Name = "Output.SaveToFile", .onclick = "setOutputToFile();", .class = "DataManagerOnly"})
+				@Html.LabelFor(Function(m) m.SaveToFile, New With {.class = "DataManagerOnly"})
 			</legend>
-			@Html.TextBox("Output.Filename", Model.Filename, New With {.placeholder = "File Name", .class = "readonly"})
-			@Html.LabelFor(Function(m) m.SaveExisting)
-			@Html.EnumDropDownListFor(Function(m) m.SaveExisting)
+			@Html.TextBoxFor(Function(m) m.Filename, New With {.Name = "Output.Filename", .placeholder = "File Name", .class = "width100", .readonly = "true"})
+
+			@Html.LabelFor(Function(m) m.SaveExisting, New With {.class = "DataManagerOnly"})
+			@Html.EnumDropDownListFor(Function(m) m.SaveExisting, New With {.class = "DataManagerOnly", .readonly="true"})
 		</fieldset>
 
-		@* Send To Email Section *@
-		<fieldset class="border0">
+		<fieldset class="border0 reportdefemail">
 			<legend>
-				@Html.CheckBoxFor(Function(m) m.SendToEmail, New With {Key .Name = "Output.SendToEmail"})
+				@Html.CheckBoxFor(Function(m) m.SendToEmail, New With {Key .Name = "Output.SendToEmail", .onclick = "setOutputToEmail();"})
 				@Html.LabelFor(Function(m) m.SendToEmail)
 			</legend>
-			<input type="button" class="ui-state-disabled width10" id="cmdEmailGroup" name="cmdEmailGroup" value="..." onclick="selectEmailGroup()" />
-			<input type="text" id="txtEmailGroup" name="Output.EmailGroupName" class="width80 floatright" disabled value="@Model.EmailGroupName" />
+			@Html.HiddenFor(Function(m) m.EmailGroupID, New With {.Name = "Output.EmailGroupID", .id = "txtEmailGroupID"})
+			@Html.TextBoxFor(Function(m) m.EmailGroupName, New With {.Name = "Output.EmailGroupName", .id = "txtEmailGroup", .readonly = "readonly", .class = "width80"})
+
+			<input type="button" class="width10" id="cmdEmailGroup" name="cmdEmailGroup" value="..." onclick="selectEmailGroup()" />
 			<br />
 			@Html.LabelFor(Function(m) m.EmailSubject, New With {.class = "display-label_emails"})
-			@Html.TextBoxFor(Function(m) m.EmailSubject, New With {Key .Name = "Output.EmailSubject", .class = "display-textbox-emails"})
+			@Html.TextBox("Output.EmailSubject", Model.EmailSubject, New With {.class = "display-textbox-emails"})
+
 			<br />
 			@Html.LabelFor(Function(m) m.EmailAttachmentName, New With {.class = "display-label_emails"})
-			@Html.TextBoxFor(Function(m) m.EmailAttachmentName, New With {Key .Name = "Output.EmailAttachmentName", .class = "display-textbox-emails"})
+			@Html.TextBoxFor(Function(m) m.EmailAttachmentName, New With {.Name = "Output.EmailAttachmentName", .class = "display-textbox-emails"})
+
+			<br/>
 			@Html.ValidationMessage("Output.EmailGroupID")		<br />
 			@Html.ValidationMessage("Output.EmailSubject")		<br />
 			@Html.ValidationMessage("Output.EmailAttachmentName")		<br />
 			@Html.ValidationMessage("Output.FileName")		<br />
-			@Html.HiddenFor(Function(m) m.EmailGroupID, New With {.id = "txtEmailGroupID", Key .Name = "Output.EmailGroupID"})
+
 		</fieldset>
 	</fieldset>
+
 </div>
 
 <script type="text/javascript">
+
+	function setOutputToFile() {
+
+		var bSelected = $("#SaveToFile").prop('checked');
+		$(".reportdeffile").children().attr("readonly", !bSelected);
+
+		if (!bSelected) {
+			$(".reportdeffile").children().val("");
+		}
+
+	}
+
+	function setOutputToEmail() {
+
+		var bSelected = $("#SendToEmail").prop('checked');
+
+		$(".reportdefemail").children().attr("readonly", !bSelected);
+		button_disable($("#cmdEmailGroup")[0], !bSelected);
+
+		if (!bSelected) {
+
+			$(".reportdefemail").children().val("");
+			$("#txtEmailGroupID").val(0);
+
+		}
+
+	}
 
 	function selectEmailGroup() {
 
@@ -108,34 +153,76 @@ End Code
 
 	}
 
-	function changeOutputType(type) {
+	function selectOutputType(type) {
+
+		$(".reportdefpreview").children().removeAttr("readonly");
+		$(".reportdefscreen").children().removeAttr("readonly");
+		$(".reportdeffile").children().attr("readonly", "readonly");
 
 		switch (type) {
 
 			case "DataOnly":
+				$(".reportdefpreview").children().attr("readonly", "readonly");
 				break;
 
 			case "CSV":
+				$(".reportdefscreen").children().attr("readonly", "readonly");
+				$(".reportdeffile").children().removeAttr("readonly");
 				break;
 
-			case "HTML":
+			case "HTML": case "WordDoc":
+				$(".reportdeffile").children().removeAttr("readonly");
+				$(".reportdefemail").children().removeAttr("readonly");
 				break;
 
-			case "WordDoc":
-				break;
-
-			case "ExcelWorksheet":
-				break;
-
-			case "ExcelGraph":
-				break;
-
-			case "ExcelPivotTable":
+			case "ExcelWorksheet": case "ExcelGraph": case "ExcelPivotTable":
+				$(".reportdeffile").children().removeAttr("readonly");
+				$(".reportdefemail").children().removeAttr("readonly");
 				break;
 
 		}
 
 	}
+
+	function changeOutputType(type) {
+
+		selectOutputType(type);
+
+		$("#IsPreview").prop('checked', true);
+		$("#ToScreen").prop('checked', true);
+		$("#ToPrinter").prop('checked', false);
+		$("#SaveToFile").prop('checked', false);
+		$("#SendToEmail").prop('checked', false);
+
+		setOutputToEmail();
+		setOutputToFile();
+
+		switch (type) {
+
+			case "DataOnly":
+				$("#IsPreview").prop('checked', false);
+				break;
+
+			case "CSV":
+				$("#ToScreen").prop('checked', false);
+				$("#SaveToFile").prop('checked', true);
+				break;
+
+			default:
+				break;
+		}
+
+	}
+
+	$(function () {
+		selectOutputType('@Model.Format');
+
+		if ('@Model.ReportType' == '@UtilityType.utlCalendarReport') {
+			$(".hideforcalendarreport").hide();
+		}
+
+	});
+
 
 
 </script>

@@ -36,6 +36,9 @@ IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spASRIntGe
 	DROP PROCEDURE [dbo].[spASRIntGetEmailGroups];
 GO
 
+IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[sp_ASRIntGetEmailAddresses]') AND xtype in (N'P'))
+	DROP PROCEDURE [dbo].[sp_ASRIntGetEmailAddresses];
+GO
 
 
 
@@ -973,7 +976,7 @@ BEGIN
 		@pfSummary AS summary,@pfPrintFilterHeader AS printFilterHeader,
 		@pfOutputPreview AS IsPreview, @piOutputFormat AS [Format], @pfOutputScreen AS ToScreen, @pfOutputPrinter AS ToPrinter,
 		@psOutputPrinterName AS PrinterName, @pfOutputSave AS SaveToFile, @piOutputSaveExisting AS SaveExisting,
-		@pfOutputEmail AS SendToEmail, @piOutputEmailAddr AS EmailGroupID, @piOutputEmailAddr AS EmailGroupName,
+		@pfOutputEmail AS SendToEmail, @piOutputEmailAddr AS EmailGroupID, @psOutputEmailName AS EmailGroupName,
 		@psOutputEmailSubject AS EmailSubject, @psOutputEmailAttachAs AS EmailAttachmentName,
 		@psOutputFilename AS [Filename], @piTimestamp AS [timestamp],
 		@pfParent1AllRecords AS parent1AllRecords, @piParent1PicklistID AS parent1Picklist,
@@ -1064,7 +1067,7 @@ GO
 IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spASRIntGetCalendarReportDefinition]') AND xtype in (N'P'))
 	DROP PROCEDURE [dbo].[spASRIntGetCalendarReportDefinition];
 GO
-CREATE PROCEDURE [dbo].spASRIntGetCalendarReportDefinition (
+CREATE PROCEDURE [dbo].[spASRIntGetCalendarReportDefinition] (
 	@piCalendarReportID 		integer, 
 	@psCurrentUser				varchar(255),
 	@psAction					varchar(255))
@@ -1338,7 +1341,7 @@ BEGIN
 		@pfIncludeWorkingDaysOnly AS WorkingDaysOnly, @pfIncludeBHols AS IncludeBankHolidays,
 		@pfOutputPreview AS IsPreview, @piOutputFormat AS [Format], @pfOutputScreen AS ToScreen, @pfOutputPrinter AS ToPrinter,
 		@psOutputPrinterName AS PrinterName, @pfOutputSave AS SaveToFile, @piOutputSaveExisting AS SaveExisting,
-		@pfOutputEmail AS SendToEmail, @piOutputEmailAddr AS EmailGroupID, @piOutputEmailAddr AS EmailGroupName,
+		@pfOutputEmail AS SendToEmail, @piOutputEmailAddr AS EmailGroupID, @psOutputEmailName AS EmailGroupName,
 		@psOutputEmailSubject AS EmailSubject, @psOutputEmailAttachAs AS EmailAttachmentName,
 		@psOutputFilename AS [Filename], @piTimestamp AS [timestamp];
 
@@ -1434,6 +1437,7 @@ BEGIN
 
 END
 GO
+
 
 IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spASRGetCalculationsForTable]') AND xtype in (N'P'))
 	DROP PROCEDURE [dbo].[spASRGetCalculationsForTable];
@@ -1686,6 +1690,25 @@ BEGIN
 	END
 
 	IF @psName IS null SET @psName = '<unknown>';
+END
+GO
+
+IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spASRIntGetEmailAddresses]') AND xtype in (N'P'))
+	DROP PROCEDURE [dbo].[spASRIntGetEmailAddresses];
+GO
+
+CREATE PROCEDURE [dbo].[spASRIntGetEmailAddresses]
+(@baseTableID int)
+AS
+BEGIN
+
+	SET NOCOUNT ON;
+
+	SELECT convert(char(10),e.emailid) AS [ID], e.name AS [Name]
+		FROM ASRSysEmailAddress e
+		WHERE e.tableid = @baseTableID OR e.tableid = 0
+		ORDER BY e.name;
+
 END
 GO
 

@@ -82,7 +82,7 @@ Namespace Repository
 					PopulateColumns(objModel, dsDefinition.Tables(1))
 
 					PopulateSortOrder(objModel, dsDefinition.Tables(2))
-					PopulateOutput(objModel.Output, dsDefinition.Tables(0))
+					PopulateOutput(objModel.ReportType, objModel.Output, dsDefinition.Tables(0))
 
 					' Populate the child tables
 					Dim iChildIndex As Integer = 1
@@ -154,7 +154,7 @@ Namespace Repository
 						objModel.DisplayOutputOnScreen = CBool(row("DisplayOutputOnScreen"))
 						objModel.SendToPrinter = CBool(row("SendToPrinter"))
 						objModel.PrinterName = row("PrinterName").ToString()
-						objModel.SaveTofile = CBool(row("SaveTofile"))
+						objModel.SaveToFile = CBool(row("SaveToFile"))
 						objModel.Filename = row("FileName").ToString
 						objModel.EmailGroupID = CInt(row("EmailGroupID"))
 						objModel.EmailSubject = row("EmailSubject").ToString()
@@ -167,6 +167,8 @@ Namespace Repository
 					End If
 
 				End If
+
+				objModel.AvailableEmails = GetAvailableEmails(objModel.BaseTableID)
 
 				objModel.GroupAccess = GetUtilityAccess(UtilityType.utlMailMerge, ID, action)
 				objModel.IsReadOnly = (action = UtilityActionType.View)
@@ -235,7 +237,7 @@ Namespace Repository
 					End If
 
 					' Output Tab
-					PopulateOutput(objModel.Output, dtDefinition)
+					PopulateOutput(objModel.ReportType, objModel.Output, dtDefinition)
 
 				End If
 
@@ -354,6 +356,7 @@ Namespace Repository
 					Next
 
 					PopulateSortOrder(objModel, dsDefinition.Tables(2))
+					PopulateOutput(objModel.ReportType, objModel.Output, dsDefinition.Tables(0))
 
 				End If
 
@@ -1004,7 +1007,7 @@ Namespace Repository
 		End Sub
 
 		' can be done with dapper?
-		Private Sub PopulateOutput(outputModel As ReportOutputModel, data As DataTable)
+		Private Sub PopulateOutput(ReportType As UtilityType, outputModel As ReportOutputModel, data As DataTable)
 
 			Try
 
@@ -1012,6 +1015,7 @@ Namespace Repository
 
 					Dim row As DataRow = data.Rows(0)
 
+					outputModel.ReportType = ReportType
 					outputModel.IsPreview = CBool(row("IsPreview"))
 					outputModel.Format = CType(row("Format"), OutputFormats)
 					outputModel.ToScreen = CBool(row("ToScreen"))
@@ -1190,6 +1194,21 @@ Namespace Repository
 			End Try
 
 			Return objReturnData
+
+		End Function
+
+
+		Public Function GetAvailableEmails(baseTableID As Integer) As Collection(Of ReportTableItem)
+
+			Dim rstReportColumns = _objDataAccess.GetDataTable("spASRIntGetEmailAddresses", CommandType.StoredProcedure _
+			, New SqlParameter("baseTableID", SqlDbType.Int) With {.Value = baseTableID})
+			Dim items = New Collection(Of ReportTableItem)()
+			For Each objRow As DataRow In rstReportColumns.Rows
+				Dim objItem As New ReportTableItem() With {.id = CInt(objRow("id")), .Name = objRow("Name").ToString}
+				items.Add(objItem)
+			Next
+
+			Return items
 
 		End Function
 

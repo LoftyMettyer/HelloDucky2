@@ -7,6 +7,7 @@ Imports System.Text
 Imports System.Web.Mvc
 Imports System.Runtime.CompilerServices
 Imports DMI.NET.Classes
+Imports System.Linq.Expressions
 Imports HR.Intranet.Server
 Imports HR.Intranet.Server.Enums
 
@@ -106,6 +107,29 @@ Namespace Helpers
 
 			Next
 
+
+			builder.InnerHtml = content.ToString
+			Return MvcHtmlString.Create(builder.ToString())
+
+		End Function
+
+		<Extension()> _
+		Public Function EmailGroupDropdown(helper As HtmlHelper, name As String, bindValue As Integer, items As IEnumerable(Of ReportTableItem)) As MvcHtmlString
+			If items Is Nothing OrElse items.Count = 0 OrElse String.IsNullOrEmpty(name) Then
+				Return MvcHtmlString.Empty
+			End If
+
+			Dim content As New StringBuilder
+			Dim builder As New TagBuilder("select")
+			builder.MergeAttribute("name", name)
+
+			For Each item In items
+				Dim iID As Integer = item.id
+
+				content.AppendFormat("<option value={0} {2}>{1}</option>" _
+																, iID.ToString(), item.Name, IIf(bindValue = iID, "selected", ""))
+
+			Next
 
 			builder.InnerHtml = content.ToString
 			Return MvcHtmlString.Create(builder.ToString())

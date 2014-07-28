@@ -495,10 +495,6 @@
 					{
 					loadExpressionTypes(); //workframe
 					}
-				else if (frmData.txtAction.value == "LOADEMAILDEFINITIONS") 
-					{
-					loadEmailDefs(); //workframe
-					}
 				else if (frmData.txtAction.value == "LOADEVENTLOG") 
 					{
 					loadEventLog(); //workframe
@@ -799,26 +795,7 @@
 		Response.Write("<input type='hidden' id='txtRecordDescription' name='txtRecordDescription' value=''>" & vbCrLf)
 	End If
 	
-	If Session("action") = "LOADEMAILDEFINITIONS" Then
-				
-		Try
-			
-			Dim rstReportColumns = objDataAccess.GetDataTable("sp_ASRIntGetEmailAddresses", CommandType.StoredProcedure _
-					, New SqlParameter("baseTableID", SqlDbType.Int) With {.Value = CleanNumeric(Session("ReportBaseTableID"))})
-
-			Dim iLoop = 1
-			For Each objRow As DataRow In rstReportColumns.Rows
-				Response.Write("<input type='hidden' id='txtEmail_" & iLoop & "' name='txtEmail_" & iLoop & "' value='" & Replace(objRow("columnDefn").ToString(), """", "&quot;") & "'>" & vbCrLf)
-				iLoop += 1
-			Next
-			
-		Catch ex As Exception
-			sErrorDescription = "Error getting the report columns." & vbCrLf & FormatError(ex.Message)
-
-		End Try
-	
-
-	ElseIf Session("action") = "GETEXPRESSIONRETURNTYPES" Then
+	If Session("action") = "GETEXPRESSIONRETURNTYPES" Then
 		Dim sParam1 As String = CStr(Session("Param1"))
 		Dim iCharIndex As Integer
 		

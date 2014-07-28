@@ -262,6 +262,14 @@ input[readonly="true"] {
 	cursor: default;
 }
 
+input[readonly="readonly"] {
+	background-color: #F2F2F2 !important;
+	color: #826D82;
+	border-color: #ddd;
+	pointer-events: none;
+	cursor: default;
+}
+
 .fontsmall {	font-size: small;}
 .fontsmaller {	font-size: smaller;}
 .fontx-small {	font-size: x-small;}
@@ -407,3 +415,8 @@ input[readonly="true"] {
 #customreportschildtableheight {
 	height: 300px;
 }
+
+.DataManagerOnly {
+	color: #ff0000;	
+}
+

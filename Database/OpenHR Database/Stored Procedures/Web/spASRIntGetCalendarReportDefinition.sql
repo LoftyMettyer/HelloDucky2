@@ -1,4 +1,4 @@
-CREATE PROCEDURE spASRIntGetCalendarReportDefinition (
+CREATE PROCEDURE [dbo].[spASRIntGetCalendarReportDefinition] (
 	@piCalendarReportID 		integer, 
 	@psCurrentUser				varchar(255),
 	@psAction					varchar(255))
@@ -272,7 +272,7 @@ BEGIN
 		@pfIncludeWorkingDaysOnly AS WorkingDaysOnly, @pfIncludeBHols AS IncludeBankHolidays,
 		@pfOutputPreview AS IsPreview, @piOutputFormat AS [Format], @pfOutputScreen AS ToScreen, @pfOutputPrinter AS ToPrinter,
 		@psOutputPrinterName AS PrinterName, @pfOutputSave AS SaveToFile, @piOutputSaveExisting AS SaveExisting,
-		@pfOutputEmail AS SendToEmail, @piOutputEmailAddr AS EmailGroupID, @piOutputEmailAddr AS EmailGroupName,
+		@pfOutputEmail AS SendToEmail, @piOutputEmailAddr AS EmailGroupID, @psOutputEmailName AS EmailGroupName,
 		@psOutputEmailSubject AS EmailSubject, @psOutputEmailAttachAs AS EmailAttachmentName,
 		@psOutputFilename AS [Filename], @piTimestamp AS [timestamp];
 

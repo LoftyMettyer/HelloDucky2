@@ -5,12 +5,15 @@
 
 @Code
 	Layout = Nothing
+	Html.EnableClientValidation(True)
 End Code
 
 <div>
-
-@Using (Html.BeginForm("util_def_customreport", "Reports", FormMethod.Post, New With {.id = "frmReportDefintion", .name = "frmReportDefintion"}))
-
+	@Code
+		Html.EnableClientValidation(True)
+	End Code
+	@Using (Html.BeginForm("util_def_customreport", "Reports", FormMethod.Post, New With {.id = "frmReportDefintion", .name = "frmReportDefintion"}))
+	
   @Html.HiddenFor(Function(m) m.ID)
                      
   @<div id="tabs">

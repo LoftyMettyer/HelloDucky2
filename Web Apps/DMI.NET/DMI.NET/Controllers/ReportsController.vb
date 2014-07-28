@@ -128,6 +128,7 @@ Namespace Controllers
 				Session("reaction") = "MAILMERGE"
 				Return RedirectToAction("confirmok", "home")
 			Else
+				objModel.AvailableEmails = objReportRepository.GetAvailableEmails(objModel.BaseTableID)
 				Return View(objModel)
 			End If
 

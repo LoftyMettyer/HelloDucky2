@@ -2,6 +2,7 @@
 Option Strict On
 
 Imports System.Collections.ObjectModel
+Imports DMI.NET.AttributeExtensions
 Imports HR.Intranet.Server
 Imports HR.Intranet.Server.Metadata
 Imports DMI.NET.Classes
@@ -42,12 +43,17 @@ Namespace Models
 		Public Property PrinterName As String
 
 		<DisplayName("Save to file")>
-		Public Property SaveTofile As Boolean
+		Public Property SaveToFile As Boolean
 
-		<DisplayFormat(ConvertEmptyStringToNull:=False)> _
+		<RequiredIf("SaveToFile", True, ErrorMessage:="No filename entered.")>
+		<MaxLength(255, ErrorMessage:="File Name cannot be longer than 255 characters.")>
+		<DisplayName("File Name :")>
+		<DisplayFormat(ConvertEmptyStringToNull:=False)>
+		<ExcludeChar("/*?""<>|")>
 		Public Property Filename As String
 
 		<DisplayName("Email Address")>
+		<NonZeroIf("OutputFormat", MailMergeOutputTypes.IndividualEmail, ErrorMessage:="No email group selected.")>
 		Public Property EmailGroupID As Integer
 
 		<DisplayFormat(ConvertEmptyStringToNull:=False)> _
@@ -58,12 +64,14 @@ Namespace Models
 		Public Property EmailAsAttachment As Boolean
 
 		<Required(ErrorMessage:="Name is required.")> _
-		<MaxLength(5, ErrorMessage:="Name cannot be longer than 5 characters.")> _
+		<MaxLength(255, ErrorMessage:="Name cannot be longer than 255 characters.")> _
 		<DisplayName("Attach As")>
 		Public Property EmailAttachmentName As String
 
 		Public Overrides Sub SetBaseTable(TableID As Integer)
 		End Sub
+
+		Public Property AvailableEmails As Collection(Of ReportTableItem)
 
 	End Class
 

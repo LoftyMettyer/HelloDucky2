@@ -22,22 +22,21 @@
 <fieldset class="width100">
 	<legend class="fontsmalltitle">Output Format:</legend>
 	<fieldset class="width30 floatleft">
-		@Html.RadioButton("OutputFormat", 0, Model.OutputFormat = MailMergeOutputTypes.WordDocument, New With {.onclick = "selectMergeOutput(0)"})
+		@Html.RadioButton("OutputFormat", 0, Model.OutputFormat = MailMergeOutputTypes.WordDocument, New With {.onclick = "selectMergeOutput('WordDocument')"})
 		Word Document
 		<br />
-		@Html.RadioButton("OutputFormat", 1, Model.OutputFormat = MailMergeOutputTypes.IndividualEmail, New With {.onclick = "selectMergeOutput(1)"})
+		@Html.RadioButton("OutputFormat", 1, Model.OutputFormat = MailMergeOutputTypes.IndividualEmail, New With {.onclick = "selectMergeOutput('IndividualEmail')"})
 		Individual Emails
 		<br />
-		@Html.RadioButton("OutputFormat", 2, Model.OutputFormat = MailMergeOutputTypes.DocumentManagement, New With {.onclick = "selectMergeOutput(2)"})
-		Document Management
+		@Html.RadioButton("OutputFormat", 2, Model.OutputFormat = MailMergeOutputTypes.DocumentManagement, New With {.onclick = "selectMergeOutput('DocumentManagement')"})
+		<span class="DataManagerOnly">Document Management</span>
 		<br />
-		<span style="color:red">Some code here to hide and show the relevant sections depending on Ouput format selected</span>
 	</fieldset>
 
-	<fieldset class="width60 floatleft">
+	<fieldset class="outputmerge_WordDocument width60 floatleft">
 		<fieldset>
 			<legend class="fontsmalltitle">Word Document:</legend>
-			@* Display Output on Screen *@
+
 			<fieldset class="border0">
 				<legend>
 					@Html.CheckBoxFor(Function(m) m.DisplayOutputOnScreen)
@@ -45,71 +44,109 @@
 				</legend>
 			</fieldset>
 
-			@* Send To Print Section *@
-			<fieldset class="border0" style="margin-bottom:10px">
+			<fieldset class="border0 DataManagerOnly" style="margin-bottom:10px">
 				<legend>
 					@Html.CheckBoxFor(Function(m) m.SendToPrinter)
 					@Html.LabelFor(Function(m) m.SendToPrinter)
 				</legend>
-				@Html.TextBox("PrinterName", Model.PrinterName, New With {.placeholder = "Default printer", .class = "readonly width100"})
+				@Html.TextBox("PrinterName", Model.PrinterName, New With {.placeholder = "Default printer", .class = "DataManagerOnly readonly width100"})
 			</fieldset>
 
-			@* Save To File Section *@
 			<fieldset class="border0" style="margin-bottom:10px">
 				<legend>
-					@Html.CheckBoxFor(Function(m) m.SaveTofile)
-					@Html.LabelFor(Function(m) m.SaveTofile)
+					@Html.CheckBoxFor(Function(m) m.SaveToFile, New With {.onclick = "setOutputToFile();"})
+					@Html.LabelFor(Function(m) m.SaveToFile)
 				</legend>
-				@Html.TextBox("Filename", Model.Filename, New With {.placeholder = "File Name", .class = "readonly width100"})
+				@Html.TextBoxFor(Function(m) m.Filename, New With {.placeholder = "File Name", .class = "outputfile width100"})
+				@Html.ValidationMessageFor(Function(m) m.Filename)
 			</fieldset>
-			@*</div>*@
-		</fieldset>
 
+		</fieldset>
+	</fieldset>
+
+	<fieldset class="outputmerge_IndividualEmail width60 floatleft">
+		<legend class="fontsmalltitle">Individual Emails:</legend>
 		<fieldset>
-			<legend class="fontsmalltitle">Individual Emails:</legend>
 			<fieldset>
-				<fieldset>
-					<div class="display-label_emails">
-						@Html.LabelFor(Function(m) m.EmailGroupID)
-					</div>
-					@Html.TextBox("EmailGroupID", Model.EmailGroupID, New With {.class = "display-textbox-emails"})
-				</fieldset>
+				<div class="display-label_emails">
+					@Html.LabelFor(Function(m) m.EmailGroupID)
+				</div>
+				@Html.EmailGroupDropdown("EmailGroupID", Model.EmailGroupID, Model.AvailableEmails)
 
-				<fieldset>
-					<div class="display-label_emails">
-						@Html.LabelFor(Function(m) m.EmailSubject)
-					</div>
-					@Html.TextBox("EmailSubject", Model.EmailSubject, New With {.class = "display-textbox-emails"})
-				</fieldset>
 			</fieldset>
 
-			<fieldset class="border0">
-				<legend>
-					@Html.CheckBoxFor(Function(m) m.EmailAsAttachment)
-					@Html.LabelFor(Function(m) m.EmailAsAttachment)
-				</legend>
-				@Html.EditorFor(Function(m) m.EmailAttachmentName)
-				<br />
-				@Html.ValidationMessageFor(Function(m) m.EmailAttachmentName)
+			<fieldset>
+				<div class="display-label_emails">
+					@Html.LabelFor(Function(m) m.EmailSubject)
+				</div>
+				@Html.TextBox("EmailSubject", Model.EmailSubject, New With {.class = "display-textbox-emails"})
 			</fieldset>
 		</fieldset>
 
-		<fieldset>
-			<legend class="fontsmalltitle">	Document Management :</legend>
-			<fieldset class="border0" style="margin-bottom:10px">
-				<legend>
-					@Html.CheckBoxFor(Function(m) m.DisplayOutputOnScreen)
-					@Html.LabelFor(Function(m) m.DisplayOutputOnScreen)
-				</legend>
-				@Html.TextBox("PrinterName", Model.PrinterName, New With {.placeholder = "Engine", .class = "width100"})
-			</fieldset>
+		<fieldset class="border0">
+			<legend>
+				@Html.CheckBoxFor(Function(m) m.EmailAsAttachment, New With {.onclick = "setOutputSendAsAttachment();"})
+				@Html.LabelFor(Function(m) m.EmailAsAttachment)
+			</legend>
+			@Html.EditorFor(Function(m) m.EmailAttachmentName)
+			<br />
+			@Html.ValidationMessageFor(Function(m) m.EmailAttachmentName)
+			<br/>
+			@Html.ValidationMessageFor(Function(m) m.EmailGroupID)
+
+		</fieldset>
+	</fieldset>
+
+	<fieldset class="outputmerge_DocumentManagement width60 floatleft">
+		<legend class="fontsmalltitle">	Document Management :</legend>
+		<fieldset class="border0 DataManagerOnly" style="margin-bottom:10px">
+			<legend>
+				@Html.CheckBoxFor(Function(m) m.DisplayOutputOnScreen)
+				@Html.LabelFor(Function(m) m.DisplayOutputOnScreen)
+			</legend>
+			@Html.TextBox("PrinterName", Model.PrinterName, New With {.placeholder = "Engine", .class = "width100"})
 		</fieldset>
 	</fieldset>
 </fieldset>
 
+<fieldset class="DataManagerOnly">
+	Note: Options marked in red are unavailable in OpenHR Web.
+</fieldset>
+
 <script type="text/javascript">
-	function selectMergeOutput(outputType) {
-		$("#divMergeOutput_").hide();
-		$("#divMergeOutput_" + outputType).show(500);
+
+	function setOutputToFile() {
+
+		var bSelected = $("#").val();
+		$(".outputfile").children().attr("readonly", !bSelected);
+
+		if (!bSelected) {
+			$(".outputfile").children().val("");
+		}
+
 	}
+
+	function setOutputSendAsAttachment() {
+
+		var bSelected = $("#").val();
+		$("#EmailAttachmentName").attr("readonly", !bSelected);
+
+		if (!bSelected) {
+			$("#EmailAttachmentName").val("");
+		}
+
+	}
+
+
+	function selectMergeOutput(outputType) {
+
+		$("[class^=outputmerge_]").hide();
+		$(".outputmerge_" + outputType).show(500);
+
+	}
+
+	$(function () {
+		selectMergeOutput('@Model.OutputFormat');
+	});
+
 </script>
