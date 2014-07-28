@@ -146,7 +146,6 @@
 
 	function removeAllEvents() {
 
-		debugger;
 		var i;
 
 		var data = {};
@@ -158,7 +157,7 @@
 			OpenHR.postData("Reports/RemoveCalendarEvent", datarow)
 		}
 
-		$('#CalendarEvents').jqGrid('clearGridData')
+		$('#CalendarEvents').jqGrid('clearGridData');
 	}
 
 

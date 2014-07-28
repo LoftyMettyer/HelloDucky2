@@ -2,6 +2,8 @@
 Option Strict On
 
 Imports System.Collections.ObjectModel
+Imports System.ComponentModel
+Imports System.ComponentModel.DataAnnotations
 Imports HR.Intranet.Server
 Imports HR.Intranet.Server.Metadata
 Imports DMI.NET.Classes
@@ -30,7 +32,10 @@ Namespace Models
 		Public Property Parent1 As New ReportRelatedTable
 		Public Property Parent2 As New ReportRelatedTable
 
+		<DisplayName("Summary Report")>
 		Public Property IsSummary As Boolean
+
+		<DisplayName("Ignore zeros when calculating aggregates")>
 		Public Property IgnoreZerosForAggregates As Boolean
 
 		Public Property Output As New ReportOutputModel

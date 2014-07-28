@@ -26,7 +26,7 @@ End Code
 		<br/>
 		<input type="hidden" id="txtEventFilterID" name="FilterID" value="@Model.FilterID" />
 		@Html.TextBoxFor(Function(m) m.FilterName, New With {.id = "txtEventFilter", .readonly = "true"})
-		@Html.EllipseButton("cmdBasePicklist", "selectRecordOption('event', 'filter')", True)
+		@Html.EllipseButton("cmdBasePicklist", "selectEventFilter()", True)
 
 	</fieldset>
 
@@ -123,6 +123,19 @@ End Code
 
 
 <script type="text/javascript">
+
+	function selectEventFilter() {
+
+		var tableID = $("#EventTableID option:selected").val();
+		var currentID = $("#txtEventFilterID").val();
+
+		OpenHR.modalExpressionSelect("FILTER", tableID, currentID, function (id, name) {
+			$("#txtEventFilterID").val(id);
+			$("#txtEventFilter").val(name);
+		});
+
+	}
+
 
 	function changeEventEndType(endType) {
 

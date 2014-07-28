@@ -67,6 +67,11 @@ Namespace Models
 		Public Property Output As New ReportOutputModel
 
 		Public Overrides Sub SetBaseTable(TableID As Integer)
+
+			SelectionType = RecordSelectionType.AllRecords
+			Events = New Collection(Of CalendarEventDetailViewModel)()
+			SortOrders = New Collection(Of SortOrderViewModel)
+
 		End Sub
 
 		Public Overrides Function GetAvailableSortColumns(Self As SortOrderViewModel) As IEnumerable(Of ReportColumnItem)

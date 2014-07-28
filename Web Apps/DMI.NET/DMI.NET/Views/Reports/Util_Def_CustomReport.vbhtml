@@ -25,22 +25,22 @@ End Code
             <li><a href="#report_definition_tab_output">Output</a></li>
         </ul>
 
-        <div id="tabs-1">
-		<div class="width100">
-          @Code                        
-						Html.RenderPartial("_Definition", Model)
-          End Code
-			<fieldset class="width100">
-				<fieldset>
-					<legend class="fontsmalltitle">Report Options: (MOVED FROM Output tab (discuss))</legend>
-						@Html.CheckBox("IsSummary", Model.IsSummary)Summary Report
-					<br />
-						@Html.CheckBox("IgnoreZerosForAggregates", Model.IgnoreZerosForAggregates)Ignore zeros when calculating aggregates
+	 	<div id="tabs-1">
+	 		@Code
+		 Html.RenderPartial("_Definition", Model)
+	 		End Code
 
-				</fieldset>
+			<fieldset class="width100">
+				<legend class="fontsmalltitle">Report Options:</legend>
+				@Html.CheckBoxFor(Function(m) m.IsSummary)
+				@Html.LabelFor(Function(m) m.IsSummary)
+				<br />
+				@Html.CheckBoxFor(Function(m) m.IgnoreZerosForAggregates)
+				@Html.LabelFor(Function(m) m.IgnoreZerosForAggregates)
 			</fieldset>
-					</div>
-        </div>
+
+		</div>
+
 
         <div id="tabs-2">
           @Code
@@ -66,14 +66,7 @@ End Code
        End Code
      </div>
 
-	<div id="divEmailGroupSelection">
-
-	</div>
     </div>
-
-
-  
-
 
   End Using
 
@@ -82,9 +75,6 @@ End Code
       Html.RenderPartial("~/Views/Shared/gotoWork.ascx")
     End Code
   </form>
-
-	<div id="eventdetail">
-	</div>
 	
 </div>
 

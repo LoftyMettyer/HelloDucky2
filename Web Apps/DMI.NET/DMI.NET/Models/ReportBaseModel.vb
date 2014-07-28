@@ -95,19 +95,23 @@ Namespace Models
 
 		End Function
 
-		<DisplayName("Description 1: ")>
+		<DisplayName("Description 1 : ")>
 		Public Property Description1ID As Integer
 
-		<DisplayName("Description 2: ")>
+		<DisplayName("Description 2 : ")>
 		Public Property Description2ID As Integer
 
-		<DisplayName("Description 3: ")>
+		<DisplayName("Description 3 : ")>
 		Public Property Description3ID As Integer
 
+		<DisplayName("Region : ")>
 		Public Property RegionID As Integer
+
+		<DisplayName("Group by Description : ")>
 		Public Property GroupByDescription As Boolean
 
 		<DisplayFormat(ConvertEmptyStringToNull:=False)>
+		<DisplayName("Separator : ")>
 		Public Property Separator As String
 
 		Public Sub Attach(ByRef session As SessionInfo)

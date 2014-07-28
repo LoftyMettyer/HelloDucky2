@@ -60,6 +60,9 @@ Namespace Repository
 
 						Dim row As DataRow = dsDefinition.Tables(0).Rows(0)
 
+						objModel.IsSummary = CBool(row("IsSummary"))
+						objModel.IgnoreZerosForAggregates = CBool(row("IgnoreZerosForAggregates"))
+
 						objModel.Parent1.ID = CInt(row("Parent1ID"))
 						objModel.Parent1.SelectionType = CType(row("Parent1SelectionType"), RecordSelectionType)
 						objModel.Parent1.Name = row("Parent1Name").ToString
@@ -290,6 +293,15 @@ Namespace Repository
 						objModel.RegionID = CInt(row("RegionID"))
 						objModel.GroupByDescription = CBool(row("GroupByDescription"))
 						objModel.Separator = row("Separator").ToString
+
+						Select Case row("Separator").ToString
+							Case ""
+								objModel.Separator = "None"
+							Case " "
+								objModel.Separator = "Space"
+							Case Else
+								objModel.Separator = row("Separator").ToString
+						End Select
 
 						objModel.StartType = CType(row("StartType"), CalendarDataType)
 						objModel.StartFixedDate = CDate(row("StartFixedDate"))
@@ -567,6 +579,16 @@ Namespace Repository
 				Dim sJobsToHideGroups As String = "" ' TODO?
 				Dim sEvents As String = EventsAsString(objModel.Events)
 
+				Dim sSeparator As String
+				Select Case objModel.Separator
+					Case "None"
+						sSeparator = ""
+					Case "Space"
+						sSeparator = " "
+					Case Else
+						sSeparator = objModel.Separator
+				End Select
+
 				Dim sReportOrder As String = SortOrderAsString(objModel.SortOrders)
 				Dim bAllRecords As Boolean
 
@@ -587,7 +609,7 @@ Namespace Repository
 					New SqlParameter("piDescriptionExpr", SqlDbType.Int) With {.Value = objModel.Description3ID}, _
 					New SqlParameter("piRegion", SqlDbType.Int) With {.Value = objModel.RegionID}, _
 					New SqlParameter("pfGroupByDesc", SqlDbType.Bit) With {.Value = objModel.GroupByDescription}, _
-					New SqlParameter("psDescSeparator", SqlDbType.VarChar, 100) With {.Value = objModel.Separator}, _
+					New SqlParameter("psDescSeparator", SqlDbType.VarChar, 100) With {.Value = sSeparator}, _
 					New SqlParameter("piStartType", SqlDbType.Int) With {.Value = objModel.StartType}, _
 					New SqlParameter("psFixedStart", SqlDbType.VarChar) With {.Value = If(objModel.StartFixedDate.HasValue, objModel.StartFixedDate.Value.ToString("yyyy-MM-dd hh:mm:ss"), "")}, _
 					New SqlParameter("piStartFrequency", SqlDbType.Int) With {.Value = objModel.StartOffsetPeriod}, _

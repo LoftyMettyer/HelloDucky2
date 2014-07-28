@@ -10,6 +10,7 @@ Imports DMI.NET.Classes
 Imports System.Linq.Expressions
 Imports HR.Intranet.Server
 Imports HR.Intranet.Server.Enums
+Imports HR.Intranet.Server.Metadata
 
 Namespace Helpers
 	<HideModuleName> _
@@ -99,7 +100,14 @@ Namespace Helpers
 				content.AppendFormat("<option value=0 {0}>None</option>", IIf(bindValue = 0, "selected", ""))
 			End If
 
-			For Each item In _objSessionInfo.Columns.Where(Function(m) m.TableID = TableID And m.IsVisible).OrderBy(Function(m) m.Name)
+			Dim objColumns As IEnumerable(Of Column)
+			If DataType = Nothing Then
+				objColumns = _objSessionInfo.Columns.Where(Function(m) m.TableID = TableID AndAlso m.IsVisible).OrderBy(Function(m) m.Name)
+			Else
+				objColumns = _objSessionInfo.Columns.Where(Function(m) m.TableID = TableID AndAlso m.IsVisible AndAlso m.DataType = DataType).OrderBy(Function(m) m.Name)
+			End If
+
+			For Each item In objColumns
 
 				content.AppendFormat("<option value={0} data-datatype={4} data-size={2} data-decimals={3} {5}>{1}</option>" _
 																, item.ID, item.Name, item.Size.ToString, item.Decimals.ToString _

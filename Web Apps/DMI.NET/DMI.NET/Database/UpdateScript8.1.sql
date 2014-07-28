@@ -973,7 +973,7 @@ BEGIN
 		CASE WHEN @piParent2FilterID > 0 THEN 2 ELSE CASE WHEN @piParent2PicklistID > 0 THEN 1 ELSE 0 END END AS [Parent2SelectionType],
 		@piParent2TableID AS parent2ID, @psParent2Name AS Parent2Name, @piParent2FilterID AS parent2FilterID, 
 		@psParent2FilterName AS Parent2FilterName, @psParent2PicklistName AS Parent2PicklistName,
-		@pfSummary AS summary,@pfPrintFilterHeader AS printFilterHeader,
+		@pfSummary AS IsSummary,@pfPrintFilterHeader AS printFilterHeader,
 		@pfOutputPreview AS IsPreview, @piOutputFormat AS [Format], @pfOutputScreen AS ToScreen, @pfOutputPrinter AS ToPrinter,
 		@psOutputPrinterName AS PrinterName, @pfOutputSave AS SaveToFile, @piOutputSaveExisting AS SaveExisting,
 		@pfOutputEmail AS SendToEmail, @piOutputEmailAddr AS EmailGroupID, @psOutputEmailName AS EmailGroupName,
@@ -981,7 +981,7 @@ BEGIN
 		@psOutputFilename AS [Filename], @piTimestamp AS [timestamp],
 		@pfParent1AllRecords AS parent1AllRecords, @piParent1PicklistID AS parent1Picklist,
 		@pfParent2AllRecords AS parent2AllRecords,@piParent2PicklistID AS parent2Picklist,
-		@pfIgnoreZeros AS IgnoreZeros;
+		@pfIgnoreZeros AS IgnoreZerosForAggregates;
 
 	-- Get the definition columns
 	SELECT 'N' AS [AccessHidden],
