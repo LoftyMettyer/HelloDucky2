@@ -5446,6 +5446,60 @@ Namespace Controllers
 
 		End Function
 
+
+		<HttpGet()>
+		Function GetDefinitionsForType(UtilityType As Integer, TableID As Integer, OnlyMine As Boolean) As JsonResult
+
+			Dim rstDefSelRecords As DataTable
+
+			' Get the records.
+			Try
+
+				Dim objDataAccess As clsDataAccess = CType(Session("DatabaseAccess"), clsDataAccess)
+
+				Dim prmType = New SqlParameter("intType", SqlDbType.Int)
+				prmType.Direction = ParameterDirection.Input
+				prmType.Value = UtilityType
+
+				Dim prmOnlyMine = New SqlParameter("blnOnlyMine", SqlDbType.Bit)
+				prmOnlyMine.Direction = ParameterDirection.Input
+				prmOnlyMine.Value = OnlyMine
+
+				Dim prmTableId = New SqlParameter("intTableID", SqlDbType.Int)
+				prmTableId.Direction = ParameterDirection.Input
+
+				If CleanNumeric(Request.Form("SelectedTableID")) = 0 Then
+					prmTableId.Value = TableID
+				Else
+					prmTableId.Value = CleanNumeric(Request.Form("SelectedTableID"))
+				End If
+
+				rstDefSelRecords = objDataAccess.GetDataTable("sp_ASRIntPopulateDefSel", CommandType.StoredProcedure, prmType, prmOnlyMine, prmTableId)
+
+				Dim serializer As New System.Web.Script.Serialization.JavaScriptSerializer()
+				Dim rows As New List(Of Dictionary(Of String, Object))()
+				Dim row As Dictionary(Of String, Object)
+				For Each dr As DataRow In rstDefSelRecords.Rows
+					row = New Dictionary(Of String, Object)()
+					For Each col As DataColumn In rstDefSelRecords.Columns
+						row.Add(col.ColumnName, dr(col))
+					Next
+					rows.Add(row)
+				Next
+
+
+
+
+				Dim results = New With {.total = 1, .page = 1, .records = 0, .rows = rows}
+				Return Json(results, JsonRequestBehavior.AllowGet)
+
+			Catch ex As Exception
+				Throw
+			End Try
+
+
+		End Function
+
 	End Class
 
 	Public Class ErrMsgJsonAjaxResponse

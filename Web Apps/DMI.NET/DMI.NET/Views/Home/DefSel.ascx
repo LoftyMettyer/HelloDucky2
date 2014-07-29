@@ -1,9 +1,6 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
-<%@ Import Namespace="DMI.NET" %>
 <%@ Import Namespace="HR.Intranet.Server.Enums" %>
 <%@ Import Namespace="HR.Intranet.Server" %>
-<%@ Import Namespace="System.Data" %>
-<%@ Import Namespace="System.Data.SqlClient" %>
 
 <%="" %>
 
@@ -14,7 +11,6 @@
 	Dim iBaseTableID As Integer
 
 	Dim objSession As SessionInfo = CType(Session("sessionContext"), SessionInfo)
-	Dim objDataAccess As New clsDataAccess(objSession.LoginInfo)
 	
 	Session("objCalendar" & Session("UtilID")) = Nothing
 	
@@ -155,63 +151,49 @@
 		}
 
 		function ssOleDBGridDefSelRecords_rowcolchange() {
-				var frmDefSel = document.getElementById("frmDefSel");
-				var frmpermissions = document.getElementById("frmpermissions");
+			var frmDefSel = document.getElementById("frmDefSel");
+			var frmpermissions = document.getElementById("frmpermissions");
 
-				// Populate the textbox with the definitions description
-				frmDefSel.txtDescription.value = selectedRecordDetails("description");
+			var rowId = $("#DefSelRecords").getGridParam('selrow');
+			var gridData = $("#DefSelRecords").getRowData(rowId);
 
-				// Populate the hidden fields with the selected utils information       
-				frmDefSel.utilid.value = $("#DefSelRecords").getGridParam('selrow');
-				frmDefSel.utilname.value = selectedRecordDetails("Name");
+			frmDefSel.txtDescription.value = gridData.description;
 
-				// Check for RO access and set EDIT/VIEW caption as appropriate
-				var username = selectedRecordDetails("Username");
-				var access = selectedRecordDetails("Access");
+			// Populate the hidden fields with the selected utils information       
+			frmDefSel.utilid.value = $("#DefSelRecords").getGridParam('selrow');
+			frmDefSel.utilname.value = gridData.Name;
 
-				button_disable(frmDefSel.cmdRun, (frmpermissions.grantrun.value == 0));
-				button_disable(frmDefSel.cmdNew, (frmpermissions.grantnew.value == 0));
-				button_disable(frmDefSel.cmdCopy, (frmpermissions.grantnew.value == 0));
-				button_disable(frmDefSel.cmdEdit, (frmpermissions.grantedit.value == 0));
+			button_disable(frmDefSel.cmdRun, (frmpermissions.grantrun.value == 0));
+			button_disable(frmDefSel.cmdNew, (frmpermissions.grantnew.value == 0));
+			button_disable(frmDefSel.cmdCopy, (frmpermissions.grantnew.value == 0));
+			button_disable(frmDefSel.cmdEdit, (frmpermissions.grantedit.value == 0));
 
-				if (username != frmDefSel.txtusername.value) {
-						if (access == 'ro') {
-								frmDefSel.cmdEdit.value = 'View';
-								button_disable(frmDefSel.cmdDelete, true);
-						} else {
-								frmDefSel.cmdEdit.value = 'Edit';
-
-								if (frmpermissions.grantdelete.value == 1) {
-										button_disable(frmDefSel.cmdDelete, false);
-								} else {
-										button_disable(frmDefSel.cmdDelete, true);
-								}
-						}
+			if (gridData.Username != frmDefSel.txtusername.value) {
+				if (gridData.Access == 'ro') {
+					frmDefSel.cmdEdit.value = 'View';
+					button_disable(frmDefSel.cmdDelete, true);
 				} else {
-						frmDefSel.cmdEdit.value = 'Edit';
+					frmDefSel.cmdEdit.value = 'Edit';
 
-						if (frmpermissions.grantdelete.value == 1) {
-								button_disable(frmDefSel.cmdDelete, false);
-						} else {
-								button_disable(frmDefSel.cmdDelete, true);
-						}
+					if (frmpermissions.grantdelete.value == 1) {
+						button_disable(frmDefSel.cmdDelete, false);
+					} else {
+						button_disable(frmDefSel.cmdDelete, true);
+					}
 				}
-				//fFromMenu = true;
-				refreshControls();
+			} else {
+				frmDefSel.cmdEdit.value = 'Edit';
+
+				if (frmpermissions.grantdelete.value == 1) {
+					button_disable(frmDefSel.cmdDelete, false);
+				} else {
+					button_disable(frmDefSel.cmdDelete, true);
+				}
+			}
+			//fFromMenu = true;
+			refreshControls();
 		}
-
-		/* Return the value of a column selected in the find form. */
-		function selectedRecordDetails(columnName) {
-
-				var iRecordId;
-				var rowId;
-
-				rowId = $("#DefSelRecords").getGridParam('selrow');
-				iRecordId = $("#DefSelRecords").find("#" + rowId + " #" + columnName).val();
-
-				return (iRecordId);
-		}
-
+	
 		function defsel_window_onload() {
 				var frmDefSel = document.getElementById('frmDefSel');
 			
@@ -226,27 +208,11 @@
 						$("#workframe").show();
 				}
 
-				tableToGrid("#DefSelRecords", {
-						onSelectRow: function (rowID) {
-								ssOleDBGridDefSelRecords_rowcolchange();
-						},
-						ondblClickRow: function (rowID) {
-								ssOleDBGridDefSelRecords_dblClick();
-						},
-						cmTemplate: {sortable:false},
-						ignoreCase: true,
-						pager: $('#pager-coldata'),
-						rowList: [],        // disable page size dropdown
-						pgbuttons: false,     // disable page control like next, back button
-						pgtext: null,         // disable pager text like 'Page 0 of 10'
-						viewrecords: false,    // disable current view record text like 'View 1-10 of 100'            
-						rowNum: 1000    //TODO set this to blocksize...
-				});
 
 				$("#DefSelRecords").jqGrid('bindKeys', {
-						"onEnter": function (rowid) {
-								ssOleDBGridDefSelRecords_dblClick();
-						}
+					"onEnter": function (rowid) {
+						ssOleDBGridDefSelRecords_dblClick();
+					}
 				});
 
 			//search options.
@@ -263,17 +229,11 @@
 					cursor: 'pointer'
 				});
 
-
 				$("#findGridRow").height("60%");
 				$(window).bind('resize', function () {
-						$("#DefSelRecords").setGridWidth($('#findGridRow').width(), true);
-						$("#DefSelRecords").setGridHeight($("#findGridRow").height(), true);
+					$("#DefSelRecords").setGridWidth($('#findGridRow').width(), true);
+					$("#DefSelRecords").setGridHeight($("#findGridRow").height(), true);
 				}).trigger('resize');
-
-				$('#DefSelRecords').hideCol("description");
-				$('#DefSelRecords').hideCol("Username");
-				$('#DefSelRecords').hideCol("Access");
-				$('#DefSelRecords').hideCol("ID");
 
 				$("#DefSelRecords").setGridHeight($("#findGridRow").height());
 				$("#DefSelRecords").setGridWidth($("#findGridRow").width());
@@ -303,13 +263,14 @@
 						} else {
 								gotoID = $("#DefSelRecords").getDataIDs()[0];
 						}
-						$("#DefSelRecords").setSelection(gotoID);
+						$("#DefSelRecords").jqGrid("setSelection", gotoID);
+
 				}
 
 		}
 
 		function rowCount() {
-				return $("#DefSelRecords tr").length - 1;
+			return $("#DefSelRecords").jqGrid('getGridParam', 'records');
 		}
 
 		function disableNonDefselTabs() {
@@ -975,96 +936,13 @@
 												%>
 
 												<tr>
+
 														<td width="100%">
 																<table height="100%" width="100%">
 																		<tr>
-																				<td width="100%">
-																						<%
-																							If Len(sErrorDescription) = 0 Then
-																																															
-																								' Get the records.
-																								Try
-																																																	
-																									Dim prmType = New SqlParameter("intType", SqlDbType.Int)
-																									prmType.Direction = ParameterDirection.Input
-																									prmType.Value = CleanNumeric(Session("defseltype"))
-																																															
-																									Dim prmOnlyMine = New SqlParameter("blnOnlyMine", SqlDbType.Bit)
-																									prmOnlyMine.Direction = ParameterDirection.Input
-																									prmOnlyMine.Value = CleanBoolean(Session("OnlyMine"))
-
-																									Dim prmTableId = New SqlParameter("intTableID", SqlDbType.Int)
-																									prmTableId.Direction = ParameterDirection.Input
-																							
-																									If CleanNumeric(Request.Form("SelectedTableID")) = 0 Then
-																										prmTableId.Value = iBaseTableID
-																									Else
-																										prmTableId.Value = CleanNumeric(Request.Form("SelectedTableID"))
-																									End If
-
-																									Dim rstDefSelRecords = objDataAccess.GetDataTable("sp_ASRIntPopulateDefSel", CommandType.StoredProcedure, prmType, prmOnlyMine, prmTableId)
-																																												
-																									' Instantiate and initialise the grid. 
-																									Response.Write("<table class='outline' style='width : 100%; ' id='DefSelRecords'>" & vbCrLf)
-																									Response.Write("<tr class='header'>" & vbCrLf)
-																									Response.Write("<th style='display: none;'>ID</th>")
-																									
-																									For iLoop = 0 To (rstDefSelRecords.Columns.Count - 1)
-								
-																										Dim headerStyle As New StringBuilder
-																										Dim headerCaption As String
-																																	
-																										If Not rstDefSelRecords.Columns(iLoop).ColumnName = "ID" Then
-																											headerStyle.Append("width: 373px; ")
-								
-																											If rstDefSelRecords.Columns(iLoop).ColumnName <> "Name" Then
-																												headerStyle.Append("display: none; ")
-																											End If
-
-																											headerCaption = Replace(rstDefSelRecords.Columns(iLoop).ColumnName.ToString(), "_", " ")
-																											headerStyle.Append("text-align: left; ")
-						
-																											Response.Write("<th style='" & headerStyle.ToString() & "'>" & headerCaption & "</th>")
-																										End If
-																									Next
-
-																									Response.Write("</tr>")
-						
-																									Dim lngRowCount = 0
-																									
-																									For Each objRow In rstDefSelRecords.Rows
-																										
-																										Dim sAddString = ""
-																										Dim iLoop As Integer = 0
-
-																										Dim IDRowNumber As Long = CLng(objRow("ID"))
-							
-																										Response.Write("<tr disabled='disabled' id='" & IDRowNumber & "'>")
-																										Response.Write("<td><input type='radio' id='sel' value='" & IDRowNumber & "'></td>")
-																																																			
-																										For iLoop = 0 To (rstDefSelRecords.Columns.Count - 1)
-																											If Not rstDefSelRecords.Columns(iLoop).ColumnName = "ID" Then
-																												sAddString = CleanStringForHTML(objRow(iLoop).ToString())
-																												Response.Write("<td class='findGridCell' id='col_" & iLoop.ToString() & "'>" & sAddString & "<input id='" & rstDefSelRecords.Columns(iLoop).ColumnName & "' type='hidden' value='" & sAddString & "'></td>")
-																											End If
-																										Next
-
-																										Response.Write("</tr>")
-																										lngRowCount += 1
-																
-																									Next
-
-																									Response.Write("</table>")
-																									Response.Write("<div id='pager-coldata'></div>" & vbCrLf)
-																									Response.Write("<input type='hidden' value='" & lngRowCount & "' id='DefSelRecordsCount'>")	'Store the number of records so we can use it later
-																									
-																								Catch ex As Exception
-																									sErrorDescription = "The Defsel records could not be retrieved." & vbCrLf & ex.Message
-																								End Try
-
-																							End If
-																						%>
-	 
+																				<td width="100%">																				
+																						<table id="DefSelRecords"></table>
+																						<div id='pager-coldata'></div>
 																				</td>
 																		</tr>
 
@@ -1274,10 +1152,6 @@
 
 </div>
 
-<script type="text/javascript">
-		defsel_window_onload();
-</script>
-
 
 <script>
 	$(".ui-jqgrid").keydown(function (event) {
@@ -1292,7 +1166,61 @@
 		catch(e) {}
 	});
 
+	function attachDefSelGrid() {
+
+		var onlyMine = frmOnlyMine.OnlyMine.value;
+
+	//	$("#DefSelRecords").jqGrid('GridUnload');
+
+		$("#DefSelRecords").jqGrid({
+			url: 'GetDefinitionsForType?UtilityType=' + <%=Session("defseltype")%> + '&&TableID=' + <%=iBaseTableID%> + '&&OnlyMine=' + onlyMine,
+			datatype: 'json',
+			mtype: 'GET',
+			jsonReader: {
+				root: "rows", //array containing actual data
+				page: "page", //current page
+				total: "total", //total pages for the query
+				records: "records", //total number of records
+				repeatitems: false,
+				id: "ID"
+			},
+			colNames: ['ID', 'Name', 'description', 'Username', 'Access' ],
+			colModel: [
+				{ name: 'ID', index: 'ID', hidden: true },
+				{ name: 'Name', index: 'Name', width: 40, sortable: false },
+				{ name: 'description', index: 'description', hidden: true },
+				{ name: 'Username', index: 'Username', hidden: true },
+				{ name: 'Access', index: 'Access', hidden: true }],
+			viewrecords: false,
+			width: 600,
+			sortname: 'Name',
+			sortorder: "desc",
+			rowNum: 10000,
+			cmTemplate: { sortable: false },
+			ignoreCase: true,
+			onSelectRow: function (rowID) {
+				ssOleDBGridDefSelRecords_rowcolchange();
+			},
+			ondblClickRow: function (rowID) {
+				ssOleDBGridDefSelRecords_dblClick();
+			},
+			loadComplete: function(json) {		
+				defsel_window_onload();
+			},
+			rowTotal: 50,
+			rowList: [],
+			pager: $('#pager-coldata'),
+			pgbuttons: false,
+			pgtext: null,
+			loadonce: true
+		});
+
+	}
+
 	$(function () {
+
+		attachDefSelGrid();
+
 		$("#selectTable").change(function () {
 			$('#SelectedTableID').val(($('#selectTable').val()));
 			ToggleCheck();
