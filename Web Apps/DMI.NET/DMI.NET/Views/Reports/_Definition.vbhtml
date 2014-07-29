@@ -228,7 +228,10 @@
 	function changeReportBaseTableCompleted() {
 
 		removeAllSelectedColumns();
-		OpenHR.RemoveAllRowsFromGrid(SortOrders, 'Reports/RemoveSortOrder');
+
+		if ($("#txtReportType").val() != '@UtilityType.utlCrossTab') {
+			OpenHR.RemoveAllRowsFromGrid(SortOrders, 'Reports/RemoveSortOrder');
+		}
 
 		if ($("#txtReportType").val() == '@UtilityType.utlCustomReport') {
 			getAvailableTableColumnsCalcs();

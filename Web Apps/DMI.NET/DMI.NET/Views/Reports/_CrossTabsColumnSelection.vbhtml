@@ -4,33 +4,56 @@
 @Inherits System.Web.Mvc.WebViewPage(Of Models.CrossTabModel)
 
 <div>
+	<fieldset>
+		<legend class="fontsmalltitle">
 Headings &amp; Breaks
-	<br/>
+		</legend>
 
-	Horizontal :  @Html.ColumnDropdown("HorizontalID", "HorizontalID", Model.HorizontalID, Model.AvailableColumns, "refreshCrossTabColumn(event.target, 'Horizontal');")
+		<fieldset class="CrosstabColumnWidth">
+			<legend>Column</legend>
 
-	@Html.ValidationMessageFor(Function(m) m.HorizontalID)
-
-	@Html.Hidden("HorizontalDataType", CInt(Model.HorizontalDataType))
-	@Html.EditorFor(Function(m) m.HorizontalStart)
-	@Html.EditorFor(Function(m) m.HorizontalStop)
-	@Html.EditorFor(Function(m) m.HorizontalIncrement)
-
+			<div class="display-label_crosstabs">
+				Horizontal :
+			</div>
+			@Html.ColumnDropdown2(Model.HorizontalID, Model.BaseTableID, SQLDataType.sqlUnknown, False, False, New With {.name = "HorizontalID", .id = "HorizontalID", .onchange = "refreshCrossTabColumn(event.target, 'Horizontal');"})
+			@Html.ValidationMessageFor(Function(m) m.HorizontalID)
+			@Html.Hidden("HorizontalDataType", CInt(Model.HorizontalDataType))
 	<br />
-	Vertical :@Html.ColumnDropdown("VerticalID", "VerticalID", Model.VerticalID, Model.AvailableColumns, "refreshCrossTabColumn(event.target, 'Vertical');")
-	@Html.ValidationMessageFor(Function(m) m.VerticalID)
+			<div class="display-label_crosstabs">
+				Vertical :
+			</div>
+			@Html.ColumnDropdown2(Model.VerticalID, Model.BaseTableID, SQLDataType.sqlUnknown, False, False, New With {.name = "VerticalID", .id = "VerticalID", .onchange = "refreshCrossTabColumn(event.target, 'Vertical');"})
+			@Html.ValidationMessageFor(Function(m) m.VerticalID)
+			@Html.Hidden("VerticalDataType", CInt(Model.VerticalDataType))
+			<br />
+			<div class="display-label_crosstabs">
+				Page Break :
+			</div>
+			@Html.ColumnDropdown2(Model.PageBreakID, Model.BaseTableID, SQLDataType.sqlUnknown, True, False, New With {.name = "PageBreakID", .id = "PageBreakID", .onchange = "refreshCrossTabColumn(event.target, 'PageBreak');"})
+			@Html.Hidden("PageBreakDataType", CInt(Model.PageBreakDataType))
 
-	@Html.Hidden("VerticalDataType", CInt(Model.VerticalDataType))
-	@Html.EditorFor(Function(m) m.VerticalStart)
-	@Html.EditorFor(Function(m) m.VerticalStop)
+		</fieldset>
+		<fieldset class="CrosstabColumnWidthStartStopIncrement aligncenter">
+			<legend class="aligncenter">Start</legend>
+			@Html.EditorFor(Function(m) m.HorizontalStart)
+			@Html.EditorFor(Function(m) m.VerticalStart)
+			@Html.EditorFor(Function(m) m.PageBreakStart)
+		</fieldset>
+
+		<fieldset class="CrosstabColumnWidthStartStopIncrement aligncenter">
+			<legend class="aligncenter">Stop</legend>
+			@Html.EditorFor(Function(m) m.HorizontalStop)
+			@Html.EditorFor(Function(m) m.VerticalStop)
+			@Html.EditorFor(Function(m) m.PageBreakStop)
+		</fieldset>
+
+		<fieldset class="CrosstabColumnWidthStartStopIncrement aligncenter">
+			<legend class="aligncenter">Increment</legend>
+			@Html.EditorFor(Function(m) m.HorizontalIncrement)
 	@Html.EditorFor(Function(m) m.VerticalIncrement)
-
-	<br/>
-	Page Break :@Html.ColumnDropdown("PageBreakID", "PageBreakID", Model.PageBreakID, Model.AvailableColumns, "refreshCrossTabColumn(event.target, 'PageBreak');")
-	@Html.Hidden("PageBreakDataType", CInt(Model.PageBreakDataType))
-	@Html.EditorFor(Function(m) m.PageBreakStart)
-	@Html.EditorFor(Function(m) m.PageBreakStop)
 	@Html.EditorFor(Function(m) m.PageBreakIncrement)
+		</fieldset>		
+	</fieldset>
 
 	<br/>
 	@Html.ValidationMessageFor(Function(m) m.HorizontalStart)
@@ -42,24 +65,25 @@ Headings &amp; Breaks
 	@Html.ValidationMessageFor(Function(m) m.PageBreakStart)
 	@Html.ValidationMessageFor(Function(m) m.PageBreakStop)
 	@Html.ValidationMessageFor(Function(m) m.PageBreakIncrement)
-
 </div>
 
 <br/>
 
-<div>
-
-	Intersection:
-	<br/>
+<fieldset>
+	<legend>Intersection</legend>
+	<fieldset class="CrosstabColumnWidth">
+		<div class="display-label_crosstabs">
 	Column :
-	@Html.ColumnDropdown("IntersectionID", "IntersectionID", Model.IntersectionID, Model.AvailableColumns, "")
-	<br/>
+		</div>
+		@Html.ColumnDropdown2(Model.IntersectionID, Model.BaseTableID, SQLDataType.sqlNumeric, True, False, New With {.name = "IntersectionID", .id = "IntersectionID", .onchange = "crossTabIntersectionType();"})
+		<br />
+		<div class="display-label_crosstabs">
 	@Html.LabelFor(Function(m) m.IntersectionType)
+		</div>
 	@Html.EnumDropDownListFor(Function(m) m.IntersectionType)
-	<br/>
+	</fieldset>
 
-Type :
-	<br/>
+	<fieldset class="display-label_crosstabs">
 		@Html.CheckBox("PercentageOfType", Model.PercentageOfType)
 		@Html.LabelFor(Function(m) m.PercentageOfType)
 		<br />
@@ -72,10 +96,17 @@ Type :
 		@Html.CheckBox("UseThousandSeparators", Model.UseThousandSeparators)
 		@Html.LabelFor(Function(m) m.UseThousandSeparators)
 		<br />
-
-</div>
+	</fieldset>
+</fieldset>
 
 <script type="text/javascript">
+
+	function crossTabIntersectionType() {
+		var dropDown = $("#IntersectionID")[0];
+		var iDataType = dropDown.options[dropDown.selectedIndex].attributes["data-datatype"].value;
+		combo_disable($("#IntersectionType"),  (iDataType == "0") )
+	}
+
 
 	function refreshCrossTabColumn(target, type) {
 
@@ -99,11 +130,11 @@ Type :
 
 			default:
 				$("#" + type + "Start").attr("disabled", "disabled");
-				$("#" + type + "Start").val("");
+				$("#" + type + "Start").val(0);
 				$("#" + type + "Stop").attr("disabled", "disabled");
-				$("#" + type + "Stop").val("");
+				$("#" + type + "Stop").val(0);
 				$("#" + type + "Increment").attr("disabled", "disabled");
-				$("#" + type + "Increment").val("");
+				$("#" + type + "Increment").val(0);
 
 		}
 
@@ -114,6 +145,7 @@ Type :
 		refreshCrossTabColumn($("#HorizontalID")[0], 'Horizontal');
 		refreshCrossTabColumn($("#VerticalID")[0], 'Vertical');
 		refreshCrossTabColumn($("#PageBreakID")[0], 'PageBreak');
+		crossTabIntersectionType();
 
 	});
 

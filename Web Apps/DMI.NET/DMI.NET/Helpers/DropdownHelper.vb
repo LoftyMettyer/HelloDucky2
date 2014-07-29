@@ -97,7 +97,7 @@ Namespace Helpers
 			builder.MergeAttributes(objAttributes)
 
 			If AddNone Then
-				content.AppendFormat("<option value=0 {0}>None</option>", IIf(bindValue = 0, "selected", ""))
+				content.AppendFormat("<option value=0 data-datatype={1} {0}>None</option>", IIf(bindValue = 0, "selected", ""), CInt(SQLDataType.sqlUnknown))
 			End If
 
 			Dim objColumns As IEnumerable(Of Column)
