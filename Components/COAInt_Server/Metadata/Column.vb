@@ -13,10 +13,11 @@ Namespace Metadata
 		Public Size As Long									' Needs to be long to handle ole embedded ole types.
 		Public Decimals As Integer
 		Public Use1000Separator As Boolean
+		Public ColumnType As ColumnType
 
 		Public ReadOnly Property IsVisible As Boolean
 			Get
-				Return Name <> "ID" And Not Name.StartsWith("ID_")
+				Return ColumnType <> ColumnType.Relation
 			End Get
 		End Property
 

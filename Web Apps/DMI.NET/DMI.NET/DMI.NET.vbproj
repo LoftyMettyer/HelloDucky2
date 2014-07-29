@@ -181,6 +181,7 @@
     <Compile Include="AttributeExtensions\ExcludeCharAttribute.vb" />
     <Compile Include="AttributeExtensions\NonZeroIfAttribute.vb" />
     <Compile Include="AttributeExtensions\RequiredIfAttribute.vb" />
+    <Compile Include="Classes\ColumnFilter.vb" />
     <Compile Include="Classes\ExpressionSelection.vb" />
     <Compile Include="Code\Conversions.vb" />
     <Compile Include="Code\Interfaces\IDataAccess.vb" />

@@ -49,7 +49,8 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <OutputPath>bin\Debug\</OutputPath>
-    <DocumentationFile>HR.Intranet.Server.xml</DocumentationFile>
+    <DocumentationFile>
+    </DocumentationFile>
     <DebugSymbols>True</DebugSymbols>
     <DefineDebug>True</DefineDebug>
     <DefineTrace>True</DefineTrace>
@@ -65,7 +66,8 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <OutputPath>bin\Release\</OutputPath>
-    <DocumentationFile>HR.Intranet.Server.xml</DocumentationFile>
+    <DocumentationFile>
+    </DocumentationFile>
     <DebugSymbols>False</DebugSymbols>
     <DefineDebug>False</DefineDebug>
     <DefineTrace>True</DefineTrace>
@@ -84,9 +86,9 @@
     <OptionStrict>Off</OptionStrict>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Aspose.Cells, Version=8.1.1.0, Culture=neutral, PublicKeyToken=716fcc553a201e56, processorArchitecture=MSIL">
+    <Reference Include="Aspose.Cells, Version=8.1.2.0, Culture=neutral, PublicKeyToken=716fcc553a201e56, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\Web Apps\DMI.NET\packages\Aspose.Cells.8.1.1\lib\net40-client\Aspose.Cells.dll</HintPath>
+      <HintPath>..\..\Web Apps\DMI.NET\packages\Aspose.Cells.8.1.2\lib\net40\Aspose.Cells.dll</HintPath>
     </Reference>
     <Reference Include="System">
       <Name>System</Name>
@@ -139,6 +141,7 @@
     <Compile Include="Enums\CalendarLegendType.vb" />
     <Compile Include="Enums\ChartAggregateType.vb" />
     <Compile Include="Enums\ColumnSelectionType.vb" />
+    <Compile Include="Enums\ColumnType.vb" />
     <Compile Include="Enums\ExistingFile.vb" />
     <Compile Include="Enums\IntersectionType.vb" />
     <Compile Include="Enums\Layout.vb" />

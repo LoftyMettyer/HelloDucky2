@@ -301,9 +301,21 @@ Namespace Controllers
 		<HttpPost, ValidateInput(False)>
 	 Function ChangeEventBaseTable(objModel As CalendarEventDetailViewModel) As ActionResult
 
+			Dim objReport = objReportRepository.RetrieveCalendarReport(objModel.ReportID)
+
 			objModel.ChangeBaseTable()
+			objModel.AvailableTables = objReportRepository.GetChildTables(objReport.BaseTableID, True)
 
 			ModelState.Clear()
+			Return PartialView("EditorTemplates\CalendarEventDetail", objModel)
+
+		End Function
+
+		<HttpPost>
+	 Function ChangeEventLookupTable(objModel As CalendarEventDetailViewModel) As ActionResult
+
+			Dim objReport = objReportRepository.RetrieveCalendarReport(objModel.ReportID)
+			objModel.AvailableTables = objReportRepository.GetChildTables(objReport.BaseTableID, True)
 			Return PartialView("EditorTemplates\CalendarEventDetail", objModel)
 
 		End Function

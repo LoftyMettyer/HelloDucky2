@@ -10,7 +10,7 @@ BEGIN
 
 	SELECT TableID, TableName, TableType, DefaultOrderID, RecordDescExprID FROM dbo.ASRSysTables;
 
-	SELECT ColumnID, TableID, ColumnName, DataType, Use1000Separator, Size, Decimals FROM dbo.ASRSysColumns;
+	SELECT ColumnID, TableID, ColumnName, DataType, ColumnType, Use1000Separator, Size, Decimals FROM dbo.ASRSysColumns;
 
 	SELECT ParentID, ChildID FROM dbo.ASRSysRelations;
 

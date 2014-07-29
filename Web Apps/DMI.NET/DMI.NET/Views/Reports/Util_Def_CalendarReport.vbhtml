@@ -1,6 +1,7 @@
 ﻿@Imports DMI.NET
 @Imports DMI.NET.Helpers
 @Imports HR.Intranet.Server.Enums
+@Imports DMI.NET.Classes
 @Inherits System.Web.Mvc.WebViewPage(Of Models.CalendarReportModel)
 
 @Code
@@ -29,11 +30,11 @@ End Code
 			<legend class="fontsmalltitle">Report Options:</legend>
 
 			@Html.LabelFor(Function(m) m.Description1ID)
-			@Html.ColumnDropdown2(Model.Description1ID, Model.BaseTableID, Nothing, True, False, New With {.Name = "Description1ID"})
+			@Html.ColumnDropdownFor(Function(m) m.Description1ID, New ColumnFilter() With {.TableID = Model.BaseTableID, .AddNone = True}, Nothing)
 
 			<br />
 			@Html.LabelFor(Function(m) m.Description2ID)
-			@Html.ColumnDropdown2(Model.Description2ID, Model.BaseTableID, Nothing, True, False, New With {.Name = "Description2ID"})
+			@Html.ColumnDropdownFor(Function(m) m.Description2ID, New ColumnFilter() With {.TableID = Model.BaseTableID, .AddNone = True}, Nothing)
 
 			<br />
 			@Html.LabelFor(Function(m) m.Description3ID)
@@ -43,7 +44,7 @@ End Code
 
 			<br/>
 			@Html.LabelFor(Function(m) m.RegionID)
-			@Html.ColumnDropdown2(Model.RegionID, Model.BaseTableID, SQLDataType.sqlVarChar, True, False, New With {.Name = "RegionID", .id = "cboRegionID"})
+			@Html.ColumnDropdownFor(Function(m) m.Description2ID, New ColumnFilter() With {.TableID = Model.BaseTableID, .AddNone = True, .DataType = SQLDataType.sqlVarChar}, New With {.id = "cboRegionID"})
 
 			<br/>
 			@Html.CheckBoxFor(Function(m) m.GroupByDescription, New With {.id = "chkGroupByDescription", .onclick = "selectGroupByDescription()"})

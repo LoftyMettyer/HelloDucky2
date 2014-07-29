@@ -1,7 +1,6 @@
 ﻿Option Explicit On
 Option Strict On
 
-Imports System.Collections
 Imports System.Collections.Generic
 Imports System.Text
 Imports System.Web.Mvc
@@ -16,7 +15,7 @@ Namespace Helpers
 	<HideModuleName> _
 	Public Module DropdownHelper
 
-		Private _objSessionInfo As SessionInfo = CType(HttpContext.Current.Session("SessionContext"), SessionInfo)
+		Private ReadOnly _objSessionInfo As SessionInfo = CType(HttpContext.Current.Session("SessionContext"), SessionInfo)
 
 		<Extension()> _
 		Public Function ColumnDropdown(helper As HtmlHelper, name As String, id As String, bindValue As Integer, items As IEnumerable(Of ReportColumnItem), onChangeEvent As String) As MvcHtmlString
@@ -71,14 +70,15 @@ Namespace Helpers
 		End Function
 
 		<Extension()> _
-		Public Function LookupTableDropdown(helper As HtmlHelper, name As String, id As String, bindValue As Integer) As MvcHtmlString
+		Public Function LookupTableDropdown(helper As HtmlHelper, name As String, id As String, bindValue As Integer, onChangeEvent As String) As MvcHtmlString
 
 			Dim content As New StringBuilder
 			Dim builder As New TagBuilder("select")
 			builder.MergeAttribute("name", name)
 			builder.MergeAttribute("id", id)
+			builder.MergeAttribute("onchange", onChangeEvent)
 
-			For Each item In _objSessionInfo.Tables.Where(Function(m) m.TableType = TableTypes.tabLookup)
+			For Each item In _objSessionInfo.Tables.Where(Function(m) m.TableType = TableTypes.tabLookup).OrderBy(Function(m) m.Name)
 				content.AppendFormat("<option value={0} {2}>{1}</option>", item.ID, item.Name, IIf(bindValue = item.ID, "selected", ""))
 			Next
 
@@ -87,32 +87,52 @@ Namespace Helpers
 
 		End Function
 
-		<Extension()> _
-		Public Function ColumnDropdown2(helper As HtmlHelper, bindValue As Integer, TableID As Integer, DataType As SQLDataType, AddNone As Boolean, LimitToLookups As Boolean, htmlAttributes As Object) As MvcHtmlString
+		<Extension> _
+		Public Function ColumnDropdownFor(Of TModel, TValue)(html As HtmlHelper(Of TModel), expression As Expression(Of Func(Of TModel, TValue)), filter As ColumnFilter, htmlAttributes As Object) As MvcHtmlString
 
+			Dim htmlFieldName = ExpressionHelper.GetExpressionText(expression)
+			Dim fullHtmlFieldName = TagBuilder.CreateSanitizedId(html.ViewContext.ViewData.TemplateInfo.GetFullHtmlFieldName(htmlFieldName))
+			Dim bindValue = CInt(ModelMetadata.FromLambdaExpression(expression, html.ViewData).Model)
 			Dim objAttributes = HtmlHelper.AnonymousObjectToHtmlAttributes(htmlAttributes)
 
 			Dim content As New StringBuilder
 			Dim builder As New TagBuilder("select")
+			builder.MergeAttribute("name", fullHtmlFieldName)
+			builder.MergeAttribute("id", fullHtmlFieldName)
 			builder.MergeAttributes(objAttributes)
 
-			If AddNone Then
+			If filter.AddNone Then
 				content.AppendFormat("<option value=0 data-datatype={1} {0}>None</option>", IIf(bindValue = 0, "selected", ""), CInt(SQLDataType.sqlUnknown))
 			End If
 
-			Dim objColumns As IEnumerable(Of Column)
-			If DataType = Nothing Then
-				objColumns = _objSessionInfo.Columns.Where(Function(m) m.TableID = TableID AndAlso m.IsVisible).OrderBy(Function(m) m.Name)
-			Else
-				objColumns = _objSessionInfo.Columns.Where(Function(m) m.TableID = TableID AndAlso m.IsVisible AndAlso m.DataType = DataType).OrderBy(Function(m) m.Name)
+			Dim iParent1 As Integer
+			Dim iParent2 As Integer
+			If filter.IncludeParents Then
+				Dim objParent1 = _objSessionInfo.Relations.FirstOrDefault(Function(m) m.ChildID = filter.TableID)
+				If objParent1 IsNot Nothing Then
+					iParent1 = objParent1.ParentID
+				End If
+
+				Dim objParent2 = _objSessionInfo.Relations.LastOrDefault(Function(m) m.ChildID = filter.TableID)
+				If objParent2 IsNot Nothing Then
+					iParent2 = objParent2.ParentID
+				End If
+
 			End If
 
+			Dim objColumns = _objSessionInfo.Columns.Where(Function(m) (m.TableID = filter.TableID OrElse m.TableID = iParent1 OrElse m.TableID = iParent2) AndAlso
+																m.IsVisible AndAlso
+																(m.Size = filter.Size OrElse filter.Size = 0) AndAlso
+																(m.DataType = filter.DataType OrElse filter.DataType = SQLDataType.sqlUnknown) AndAlso
+																(m.ColumnType = ColumnType.Lookup OrElse filter.ColumnType = ColumnType.Unknown)
+																).OrderBy(Function(m) m.TableID).ThenBy(Function(m) m.Name)
+
 			For Each item In objColumns
-
 				content.AppendFormat("<option value={0} data-datatype={4} data-size={2} data-decimals={3} {5}>{1}</option>" _
-																, item.ID, item.Name, item.Size.ToString, item.Decimals.ToString _
+																, item.ID _
+																, IIf(filter.ShowFullName, item.TableName & "." & item.Name, item.Name) _
+																, item.Size.ToString, item.Decimals.ToString _
 																, CInt(item.DataType), IIf(bindValue = item.ID, "selected", ""))
-
 			Next
 
 

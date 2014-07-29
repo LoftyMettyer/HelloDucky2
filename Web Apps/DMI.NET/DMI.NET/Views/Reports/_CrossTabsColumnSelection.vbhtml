@@ -1,6 +1,7 @@
 ﻿@Imports DMI.NET
 @Imports DMI.NET.Helpers
 @Imports HR.Intranet.Server.Enums
+@Imports DMI.NET.Classes
 @Inherits System.Web.Mvc.WebViewPage(Of Models.CrossTabModel)
 
 <div>
@@ -15,21 +16,24 @@ Headings &amp; Breaks
 			<div class="display-label_crosstabs">
 				Horizontal :
 			</div>
-			@Html.ColumnDropdown2(Model.HorizontalID, Model.BaseTableID, SQLDataType.sqlUnknown, False, False, New With {.name = "HorizontalID", .id = "HorizontalID", .onchange = "refreshCrossTabColumn(event.target, 'Horizontal');"})
+			@Html.ColumnDropdownFor(Function(m) m.HorizontalID, New ColumnFilter() _
+													 With {.TableID = Model.BaseTableID}, New With {.onchange = "refreshCrossTabColumn(event.target, 'Horizontal');"})
 			@Html.ValidationMessageFor(Function(m) m.HorizontalID)
 			@Html.Hidden("HorizontalDataType", CInt(Model.HorizontalDataType))
 	<br />
 			<div class="display-label_crosstabs">
 				Vertical :
 			</div>
-			@Html.ColumnDropdown2(Model.VerticalID, Model.BaseTableID, SQLDataType.sqlUnknown, False, False, New With {.name = "VerticalID", .id = "VerticalID", .onchange = "refreshCrossTabColumn(event.target, 'Vertical');"})
+			@Html.ColumnDropdownFor(Function(m) m.VerticalID, New ColumnFilter() _
+													 With {.TableID = Model.BaseTableID}, New With {.onchange = "refreshCrossTabColumn(event.target, 'Vertical');"})
 			@Html.ValidationMessageFor(Function(m) m.VerticalID)
 			@Html.Hidden("VerticalDataType", CInt(Model.VerticalDataType))
 			<br />
 			<div class="display-label_crosstabs">
 				Page Break :
 			</div>
-			@Html.ColumnDropdown2(Model.PageBreakID, Model.BaseTableID, SQLDataType.sqlUnknown, True, False, New With {.name = "PageBreakID", .id = "PageBreakID", .onchange = "refreshCrossTabColumn(event.target, 'PageBreak');"})
+			@Html.ColumnDropdownFor(Function(m) m.PageBreakID, New ColumnFilter() _
+													 With {.TableID = Model.BaseTableID, .AddNone = True}, New With {.onchange = "refreshCrossTabColumn(event.target, 'PageBreak');"})
 			@Html.Hidden("PageBreakDataType", CInt(Model.PageBreakDataType))
 
 		</fieldset>
@@ -52,7 +56,7 @@ Headings &amp; Breaks
 			@Html.EditorFor(Function(m) m.HorizontalIncrement)
 	@Html.EditorFor(Function(m) m.VerticalIncrement)
 	@Html.EditorFor(Function(m) m.PageBreakIncrement)
-		</fieldset>		
+		</fieldset>
 	</fieldset>
 
 	<br/>
@@ -73,9 +77,10 @@ Headings &amp; Breaks
 	<legend>Intersection</legend>
 	<fieldset class="CrosstabColumnWidth">
 		<div class="display-label_crosstabs">
-	Column :
+Column:
 		</div>
-		@Html.ColumnDropdown2(Model.IntersectionID, Model.BaseTableID, SQLDataType.sqlNumeric, True, False, New With {.name = "IntersectionID", .id = "IntersectionID", .onchange = "crossTabIntersectionType();"})
+		@Html.ColumnDropdownFor(Function(m) m.IntersectionID, New ColumnFilter() _
+													 With {.TableID = Model.BaseTableID, .AddNone = True}, New With {.onchange = "crossTabIntersectionType();"})
 		<br />
 		<div class="display-label_crosstabs">
 	@Html.LabelFor(Function(m) m.IntersectionType)

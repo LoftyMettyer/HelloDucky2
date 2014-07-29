@@ -1,13 +1,14 @@
 ﻿@Imports DMI.NET
 @Imports DMI.NET.Helpers
 @Imports HR.Intranet.Server.Enums
+@Imports DMI.NET.Classes
 @Inherits System.Web.Mvc.WebViewPage(Of ViewModels.CalendarEventDetailViewModel)
 
 @Code
 	Html.BeginForm("PostCalendarEvent", "Reports", FormMethod.Post, New With {.id = "frmPostCalendarEvent"})
 End Code
 
-<div class="left">
+<div class="width50 floatleft">
 
 	@Html.HiddenFor(Function(model) model.ID, New With {.id = "CalendarEventID"})
 	@Html.HiddenFor(Function(model) model.EventKey, New With {.id = "EventKey"})
@@ -21,7 +22,7 @@ End Code
 		@Html.TextBoxFor(Function(model) model.Name, New With {.id = "EventName"})
 		<br />
 		@Html.LabelFor(Function(model) model.TableID)
-		@Html.TableDropdown("CalendarEventTableID", "EventTableID", Model.TableID, Model.AvailableTables, "changeEventTable(event);")
+		@Html.TableDropdown("TableID", "EventTableID", Model.TableID, Model.AvailableTables, "changeEventTable(event);")
 
 		<br/>
 		<input type="hidden" id="txtEventFilterID" name="FilterID" value="@Model.FilterID" />
@@ -34,10 +35,12 @@ End Code
 		<legend>Event Start :</legend>
 
 		@Html.LabelFor(Function(model) model.EventStartDateID)
-		@Html.ColumnDropdown2(Model.EventStartDateID, Model.TableID, SQLDataType.sqlDate, False, False, New With {.name = "EventStartDateID"})
+		@Html.ColumnDropdownFor(Function(m) m.EventStartDateID, New ColumnFilter() _
+													 With {.TableID = Model.TableID, .DataType = SQLDataType.sqlDate}, Nothing)
 		<br/>
 		@Html.LabelFor(Function(model) model.EventStartSessionID)
-		@Html.ColumnDropdown2(Model.EventStartSessionID, Model.TableID, SQLDataType.sqlVarChar, True, False, New With {.name = "EventStartSessionID"})
+		@Html.ColumnDropdownFor(Function(m) m.EventStartSessionID, New ColumnFilter() _
+													 With {.TableID = Model.TableID, .DataType = SQLDataType.sqlVarChar, .AddNone = True, .Size = 2}, Nothing)
 
 	</fieldset>
 
@@ -52,20 +55,26 @@ End Code
 		End Date
 		<br />
 		@Html.LabelFor(Function(model) model.EventEndDateID)
-		@Html.ColumnDropdown2(Model.EventEndDateID, Model.TableID, SQLDataType.sqlDate, True, False, New With {.name = "EventEndDateID", .id = "EventEndDateID", .disabled = (Model.EventEndType = CalendarEventEndType.EndDate)})
+		@Html.ColumnDropdownFor(Function(m) m.EventEndDateID, New ColumnFilter() _
+													 With {.TableID = Model.TableID, .DataType = SQLDataType.sqlDate, .AddNone = True}, New With {.disabled = (Model.EventEndType = CalendarEventEndType.EndDate)})
 
 		<br />
 		@Html.LabelFor(Function(model) model.EventEndSessionID)
-		@Html.ColumnDropdown2(Model.EventEndSessionID, Model.TableID, SQLDataType.sqlVarChar, True, False, New With {.name = "EventEndSessionID", .id = "EventEndSessionID", .disabled = (Model.EventEndType = CalendarEventEndType.EndDate)})
+		@Html.ColumnDropdownFor(Function(m) m.EventEndSessionID, New ColumnFilter() _
+													 With {.TableID = Model.TableID, .DataType = SQLDataType.sqlVarChar, .AddNone = True, .Size = 2}, New With {.disabled = (Model.EventEndType = CalendarEventEndType.EndDate)})
+
 		<br/>
 		@Html.RadioButton("EventEndType", CInt(CalendarEventEndType.Duration), Model.EventEndType = CalendarEventEndType.Duration, New With {.onclick = "changeEventEndType('duration')"})
 		Duration
-		@Html.ColumnDropdown2(Model.EventDurationID, Model.TableID, SQLDataType.sqlNumeric, True, False, New With {.name = "EventDurationID", .id = "EventDurationID", .disabled = (Model.EventEndType = CalendarEventEndType.Duration)})
+		@Html.ColumnDropdownFor(Function(m) m.EventDurationID, New ColumnFilter() _
+													 With {.TableID = Model.TableID, .DataType = SQLDataType.sqlNumeric, .AddNone = True}, New With {.disabled = (Model.EventEndType = CalendarEventEndType.EndDate)})
+
+
 	</fieldset>
 
 </div>
 
-<div class="right">
+<div class="width50 floatleft">
 
 	<fieldset>
 		<legend>Key</legend>
@@ -76,45 +85,52 @@ End Code
 		<br />
 
 		@Html.RadioButton("LegendType", CInt(CalendarLegendType.LookupTable), Model.LegendType = CalendarLegendType.LookupTable, New With {.onclick = "changeEventLegendType('lookup')"})
-	Lookup Table
+		Lookup Table
 		<br />
 
 		@Html.DisplayNameFor(Function(model) model.LegendEventColumnID)
-		@Html.ColumnDropdown2(Model.LegendEventColumnID, Model.TableID, SQLDataType.sqlVarChar, False, True, New With {.name = "LegendEventColumnID"})
-		<br/>
-		<br/>
+		@Html.ColumnDropdownFor(Function(m) m.LegendEventColumnID, New ColumnFilter() _
+													 With {.TableID = Model.TableID, .DataType = SQLDataType.sqlVarChar, .ColumnType = ColumnType.Lookup}, New With {.disabled = (Model.EventEndType = CalendarEventEndType.EndDate)})
+
+		<br />
+		<br />
 
 		@Html.DisplayNameFor(Function(model) model.LegendLookupTableID)
-		@Html.LookupTableDropdown("LegendLookupTableID", "LegendLookupTableID", Model.LegendLookupTableID)
+		@Html.LookupTableDropdown("LegendLookupTableID", "LegendLookupTableID", Model.LegendLookupTableID, "changeEventLookupTable(event);")
 
 		<br />
 		@Html.DisplayNameFor(Function(model) model.LegendLookupColumnID)
-		@Html.ColumnDropdown2(Model.LegendLookupColumnID, Model.LegendLookupTableID, SQLDataType.sqlVarChar, False, False, New With {.name = "LegendLookupColumnID"})
+		@Html.ColumnDropdownFor(Function(m) m.LegendLookupColumnID, New ColumnFilter() _
+													 With {.TableID = Model.LegendLookupTableID, .DataType = SQLDataType.sqlVarChar}, Nothing)
+
 		<br />
 		@Html.DisplayNameFor(Function(model) model.LegendLookupCodeID)
-		@Html.ColumnDropdown2(Model.LegendLookupCodeID, Model.LegendLookupTableID, SQLDataType.sqlVarChar, False, False, New With {.name = "LegendLookupCodeID"})
-
+		@Html.ColumnDropdownFor(Function(m) m.LegendLookupCodeID, New ColumnFilter() _
+													 With {.TableID = Model.LegendLookupTableID, .DataType = SQLDataType.sqlVarChar}, Nothing)
 
 		<br />
 
-</fieldset>
+	</fieldset>
 
 	<fieldset>
 		<legend>Event Description</legend>
 		@Html.DisplayNameFor(Function(model) model.EventDesc1ColumnID)
-		@Html.ColumnDropdown2(Model.EventDesc1ColumnID, Model.TableID, SQLDataType.sqlVarChar, True, False, New With {.name = "EventDesc1ColumnID"})
-		<br/>
-		@Html.DisplayNameFor(Function(model) model.EventDesc2ColumnID)
-		@Html.ColumnDropdown2(Model.EventDesc2ColumnID, Model.TableID, SQLDataType.sqlVarChar, True, False, New With {.name = "EventDesc2ColumnID"})
+		@Html.ColumnDropdownFor(Function(m) m.EventDesc1ColumnID, New ColumnFilter() _
+													 With {.TableID = Model.TableID, .DataType = SQLDataType.sqlVarChar, .AddNone = True, .ShowFullName = True, .IncludeParents = True}, Nothing)
 
-</fieldset>
+		<br />
+		@Html.DisplayNameFor(Function(model) model.EventDesc2ColumnID)
+		@Html.ColumnDropdownFor(Function(m) m.EventDesc2ColumnID, New ColumnFilter() _
+													 With {.TableID = Model.TableID, .DataType = SQLDataType.sqlVarChar, .AddNone = True, .ShowFullName = True, .IncludeParents = True}, Nothing)
+
+	</fieldset>
 
 </div>
 
-<br/>
-
-<input type="button" value="OK" onclick="postThisCalendarEvent();" />
-<input type="button" value="Cancel" onclick="closeThisCalendarEvent();" />
+<div class="width100 floatleft">
+	<input type="button" value="OK" onclick="postThisCalendarEvent();" />
+	<input type="button" value="Cancel" onclick="closeThisCalendarEvent();" />
+</div>
 
 @code
 	Html.EndForm()
@@ -123,6 +139,13 @@ End Code
 
 
 <script type="text/javascript">
+
+	function changeEventLookupTable(event) {
+
+		var frmSubmit = $("#frmPostCalendarEvent");
+		OpenHR.submitForm(frmSubmit, "divPopupReportDefinition", null, null, "Reports/ChangeEventLookupTable");
+
+	}
 
 	function selectEventFilter() {
 
@@ -135,7 +158,6 @@ End Code
 		});
 
 	}
-
 
 	function changeEventEndType(endType) {
 
@@ -202,14 +224,13 @@ End Code
 			TableID: $("#EventTableID").val(),
 			TableName: $("#EventTableID option:selected").text(),
 			FilterID: $("#txtEventFilterID").val(),
-			EventEndType: $("#EventEndType").val(),
+			EventEndType: $("#EventEndType:checked").val(),
 			EventStartDateID: $("#EventStartDateID").val(),
 			EventStartSessionID: $("#EventStartSessionID").val(),
-			EventEndType: $("#EventEndType").val(),
 			EventEndDateID: $("#EventEndDateID").val(),
 			EventEndSessionID: $("#EventEndSessionID").val(),
 			EventDurationID: $("#EventDurationID").val(),
-			LegendType: $("#LegendType").val(),
+			LegendType: $("#LegendType:checked").val(),
 			LegendCharacter: $("#LegendCharacter").val(),
 			LegendLookupTableID: $("#LegendLookupTableID").val(),
 			LegendLookupColumnID: legendLookupColumnID,

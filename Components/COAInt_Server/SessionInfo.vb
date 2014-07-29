@@ -273,7 +273,8 @@ Public Class SessionInfo
 				column.TableID = CInt(objRow("tableid"))
 				column.TableName = Tables.GetById(column.TableID).Name
 				column.Name = objRow("columnname").ToString()
-				column.DataType = objRow("datatype")
+				column.DataType = CType(objRow("datatype"), SQLDataType)
+				column.ColumnType = CType(objRow("columnType"), ColumnType)
 				column.Use1000Separator = CBool(objRow("use1000separator"))
 				column.Size = CLng(objRow("size"))
 				column.Decimals = CShort(objRow("decimals"))
