@@ -2,110 +2,140 @@
 @Imports DMI.NET.Helpers
 @Imports HR.Intranet.Server.Enums
 @Inherits System.Web.Mvc.WebViewPage(Of Models.CalendarReportModel)
+@Imports System.Linq.Expressions
 
-<div class="left">
-	Start Date:
+<fieldset class="width45 floatleft">
+	<legend class="fontsmalltitle">Start Date</legend>
+	
+	<div class="">
+		@Html.RadioButton("StartType", CalendarDataType.CurrentDate, Model.StartType = CalendarDataType.CurrentDate, New With {.onclick = "changeEventStartType('CurrentDate')"})
+		<span>Today</span>
+	</div>
+	
+	<div class="width30 floatleft">
+		@Html.RadioButton("StartType", CalendarDataType.Fixed, Model.StartType = CalendarDataType.Fixed, New With {.onclick = "changeEventStartType('Fixed')"})
+		<span>Fixed</span>
+	</div>
+	@Html.TextBoxFor(Function(m) m.StartFixedDate, "{0:dd/MM/yyyy}", New With {.class = "datepicker"})
+	<br/>
+
+	<div class="width30 floatleft">
+		@Html.RadioButton("StartType", CalendarDataType.Offset, Model.StartType = CalendarDataType.Offset, New With {.onclick = "changeEventStartType('Offset')"})
+		<span>Offset</span>
+	</div>
+	
+	@Html.TextBoxFor(Function(m) m.StartOffset, New With {.id = "StartOffset", .class = "spinner"})
+	@Html.EnumDropDownListFor(Function(m) m.StartOffsetPeriod, New With {.id = "StartOffsetPeriod"})
 	<br />
-	@Html.RadioButton("StartType", CalendarDataType.Fixed, Model.StartType = CalendarDataType.Fixed, New With {.onclick = "changeEventStartType('fixed')"})
-	Fixed
-	@Html.TextBox("StartFixedDate", Model.StartFixedDate, New With {.type = "datetime", .class = "datetimepicker", .readonly = Not (Model.StartType = CalendarDataType.Fixed)})
-	<br />
-	@Html.RadioButton("StartType", CalendarDataType.CurrentDate, Model.StartType = CalendarDataType.CurrentDate, New With {.onclick = "changeEventStartType('current')"})
-	Current Date
-	<br />
-	@Html.RadioButton("StartType", CalendarDataType.Offset, Model.StartType = CalendarDataType.Offset, New With {.onclick = "changeEventStartType('offset')"})
-	Offset
-	@Html.TextBox("StartOffset", Model.StartOffset, New With {.readonly = Not (Model.StartType = CalendarDataType.Offset)})
-	@Html.TextBox("StartOffsetPeriod", Model.StartOffsetPeriod, New With {.readonly = Not (Model.StartType = CalendarDataType.Offset)})
-		
-	<br />
-	@Html.RadioButton("StartType", CalendarDataType.Custom, Model.StartType = CalendarDataType.Custom, New With {.onclick = "changeEventStartType('custom')"})
-	Custom
-	@Html.HiddenFor(Function(m) m.StartCustomId)
+
+	<div class="width30 floatleft">
+		@Html.RadioButton("StartType", CalendarDataType.Custom, Model.StartType = CalendarDataType.Custom, New With {.onclick = "changeEventStartType('Custom')"})
+		<span>Custom</span>
+	</div>
+	
+	@Html.HiddenFor(Function(m) m.StartCustomId, New With {.id = "StartCustomId"})
 	<input type="text" id="txtCustomStart" value="@Model.StartCustomName" disabled />
 	<input type="button" id="cmdCustomStart" value="..." onclick="selectCustomStartDate()" />
 	<br />
-	
-</div>
+</fieldset>
 
-<div class="right">
-	End Date:
+<fieldset class="width45 floatleft">
+	<legend class="fontsmalltitle">End Dates</legend>
+
+	<div class="width20">
+		@Html.RadioButton("EndType", CalendarDataType.CurrentDate, Model.EndType = CalendarDataType.CurrentDate, New With {.onclick = "changeEventEndType('CurrentDate')"})	
+		<span>Today</span>
+	</div>
+
+	<div class="width30 floatleft">
+		@Html.RadioButton("EndType", CalendarDataType.Fixed, Model.EndType = CalendarDataType.Fixed, New With {.onclick = "changeEventEndType('Fixed')"})
+		<span>Fixed</span>
+	</div>
+
+	@Html.TextBoxFor(Function(m) m.EndFixedDate, "{0:dd/MM/yyyy}", New With {.class = "datepicker"})	
+	<br />	
+	
+	<div class="width30 floatleft">
+		@Html.RadioButton("EndType", CalendarDataType.Offset, Model.EndType = CalendarDataType.Offset, New With {.onclick = "changeEventEndType('Offset')"})
+		<span>Offset</span>
+	</div>
+	@Html.TextBoxFor(Function(m) m.EndOffset, New With {.id = "EndOffset", .class = "spinner"})
+	@Html.EnumDropDownListFor(Function(m) m.EndOffsetPeriod, New With {.id = "EndOffsetPeriod"})
 	<br />
-	@Html.RadioButton("EndType", CalendarDataType.Fixed, Model.EndType = CalendarDataType.Fixed, New With {.onclick = "changeEventEndType('fixed')"})
-	Fixed
-	@Html.TextBox("EndFixedDate", Model.EndFixedDate, New With {.type = "datetime", .class = "datetimepicker", .readonly = Not (Model.EndType = CalendarDataType.Fixed)})
-	<br />
-	@Html.RadioButton("EndType", CalendarDataType.CurrentDate, Model.EndType = CalendarDataType.CurrentDate, New With {.onclick = "changeEventEndType('current')"})
-	Current Date
-	<br />
-	@Html.RadioButton("EndType", CalendarDataType.Offset, Model.EndType = CalendarDataType.Offset, New With {.onclick = "changeEventEndType('offset')"})
-	Offset
-	@Html.TextBox("EndOffset", Model.EndOffset, New With {.readonly = Not (Model.EndType = CalendarDataType.Offset)})
-	@Html.TextBox("EndOffsetPeriod", Model.EndOffsetPeriod, New With {.readonly = Not (Model.EndType = CalendarDataType.Offset)})
-	<br />
-	@Html.RadioButton("EndType", CalendarDataType.Custom, Model.EndType = CalendarDataType.Custom, New With {.onclick = "changeEventEndType('custom')"})
-	Custom
-	@Html.HiddenFor(Function(m) m.EndCustomId)
+	
+	<div class="width30 floatleft">
+		@Html.RadioButton("EndType", CalendarDataType.Custom, Model.EndType = CalendarDataType.Custom, New With {.onclick = "changeEventEndType('Custom')"})
+		<span>Custom</span>
+	</div>
+	@Html.HiddenFor(Function(m) m.EndCustomId, New With {.id = "EndCustomId"})
 	<input type="text" id="txtCustomEnd" value="@Model.EndCustomName" disabled />
 	<input type="button" id="cmdCustomEnd" value="..." onclick="selectCustomEndDate()" />
-
 	<br />
+</fieldset>
 
-</div>
-
-<div>
-	Default Display Options:
-	<br/>
-
+<fieldset class="width100 floatleft">
+	<legend class="fontsmalltitle">Default Display Options</legend>
 	@Html.CheckBoxFor(Function(m) m.IncludeBankHolidays)
 	@Html.LabelFor(Function(m) m.IncludeBankHolidays)
 	<br />
 	@Html.CheckBoxFor(Function(m) m.WorkingDaysOnly)
-	@Html.LabelFor(Function(m) m.WorkingDaysOnly)
+	@Html.LabelFor(Function(m) m.WorkingDaysOnly)	
 	<br />
 	@Html.CheckBoxFor(Function(m) m.ShowBankHolidays)
-	@Html.LabelFor(Function(m) m.ShowBankHolidays)
+	@Html.LabelFor(Function(m) m.ShowBankHolidays)	
 	<br />
 	@Html.CheckBoxFor(Function(m) m.ShowCaptions)
-	@Html.LabelFor(Function(m) m.ShowCaptions)
+	@Html.LabelFor(Function(m) m.ShowCaptions)	
 	<br />
 	@Html.CheckBoxFor(Function(m) m.ShowWeekends)
-	@Html.LabelFor(Function(m) m.ShowWeekends)
+	@Html.LabelFor(Function(m) m.ShowWeekends)	
 	<br />
 	@Html.CheckBoxFor(Function(m) m.StartOnCurrentMonth)
-	@Html.LabelFor(Function(m) m.StartOnCurrentMonth)
-	<br />
+	@Html.LabelFor(Function(m) m.StartOnCurrentMonth)	<br />
+</fieldset>
 
-</div>
 
-<script type="text/javascript">
+<script>
+	$(function () {
+
+		$(".spinner").spinner({
+			min: 0,
+			max: 99,
+			showOn: 'both'
+		}).css("width", "20px");
+
+		$(".datepicker").datepicker();
+		changeEventStartType('@Model.StartType');
+		changeEventEndType('@Model.EndType');
+	});
+
 
 	function changeEventStartType(type) {
 
-		$("#StartFixedDate").attr("readonly", "true");
-		$("#StartOffset").attr("readonly", "true");
-		$("#StartOffsetPeriod").attr("readonly", "true");
+		$("#StartFixedDate").attr("disabled", "true");
+		$("#StartOffset").spinner("option", "disabled", true);
+		$("#StartOffsetPeriod").attr("disabled", "true");
 		$("#cmdCustomStart").attr("disabled", "true");
 
 		switch (type) {
-			case "fixed":
-				$("#StartFixedDate").removeAttr("readonly");
+			case "Fixed":
+				$("#StartFixedDate").removeAttr("disabled");
 				$("#StartCustomId").val(0);
 				$("#StartOffset").val(0);
 				$("#StartOffsetPeriod").val(0);
 				break;
 
-			case "current":
+			case "Current":
 				$("#StartFixedDate").val('');
 				$("#StartCustomId").val(0);
 				$("#StartOffset").val(0);
 				$("#StartOffsetPeriod").val(0);
 				break;
 
-			case "offset":
+			case "Offset":
 				$("#StartFixedDate").val('');
-				$("#StartOffset").removeAttr("readonly");
-				$("#StartOffsetPeriod").removeAttr("readonly");
+				$("#StartOffset").spinner("option", "disabled", false);
+				$("#StartOffsetPeriod").removeAttr("disabled");
 				break;
 
 			default:
@@ -121,30 +151,30 @@
 
 	function changeEventEndType(type) {
 
-		$("#EndFixedDate").attr("readonly", "true");
-		$("#EndOffset").attr("readonly", "true");
-		$("#EndOffsetPeriod").attr("readonly", "true");
+		$("#EndFixedDate").attr("disabled", "true");
+		$("#EndOffset").spinner("option", "disabled", true);
+		$("#EndOffsetPeriod").attr("disabled", "true");
 		$("#cmdCustomEnd").attr("disabled", "true");
 
 		switch (type) {
-			case "fixed":
-				$("#EndFixedDate").removeAttr("readonly");
+			case "Fixed":
+				$("#EndFixedDate").removeAttr("disabled");
 				$("#EndCustomId").val(0);
 				$("#EndOffset").val(0);
 				$("#EndOffsetPeriod").val(0);
 				break;
 
-			case "current":
+			case "Current":
 				$("#EndFixedDate").val('');
 				$("#EndCustomId").val(0);
 				$("#EndOffset").val(0);
 				$("#EndOffsetPeriod").val(0);
 				break;
 
-			case "offset":
+			case "Offset":
 				$("#EndFixedDate").val('');
-				$("#EndOffset").removeAttr("readonly");
-				$("#EndOffsetPeriod").removeAttr("readonly");
+				$("#EndOffset").spinner("option", "disabled", false);
+				$("#EndOffsetPeriod").removeAttr("disabled");
 				break;
 
 			default:

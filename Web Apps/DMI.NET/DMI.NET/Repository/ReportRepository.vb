@@ -612,7 +612,7 @@ Namespace Repository
 					New SqlParameter("psDescSeparator", SqlDbType.VarChar, 100) With {.Value = sSeparator}, _
 					New SqlParameter("piStartType", SqlDbType.Int) With {.Value = objModel.StartType}, _
 					New SqlParameter("psFixedStart", SqlDbType.VarChar) With {.Value = If(objModel.StartFixedDate.HasValue, objModel.StartFixedDate.Value.ToString("yyyy-MM-dd hh:mm:ss"), "")}, _
-					New SqlParameter("piStartFrequency", SqlDbType.Int) With {.Value = objModel.StartOffsetPeriod}, _
+					New SqlParameter("piStartFrequency", SqlDbType.Int) With {.Value = objModel.StartOffset}, _
 					New SqlParameter("piStartPeriod", SqlDbType.Int) With {.Value = objModel.StartOffsetPeriod}, _
 					New SqlParameter("piStartDateExpr", SqlDbType.Int) With {.Value = objModel.StartCustomId}, _
 					New SqlParameter("piEndType", SqlDbType.Int) With {.Value = objModel.EndType}, _
