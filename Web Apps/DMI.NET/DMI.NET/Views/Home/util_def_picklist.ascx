@@ -6,14 +6,11 @@
 
 <script src="<%: Url.LatestContent("~/bundles/utilities_picklists")%>" type="text/javascript"></script>
 
-
-<%--licence manager reference for activeX--%>
-
 <form id="frmDefinition">
 	<div class="absolutefull">
 
 		<div style="display: block;">
-			<div class="formField floatleft">
+			<div class="formField floatleft formInput">
 				<label>Name :</label>
 				<input id="txtName" name="txtName" class="text" maxlength="50" onkeyup="changeName()">
 			</div>
@@ -102,7 +99,7 @@
 
 		</div>
 
-		<div id="RecordCountDIV"></div>
+		<div id="RecordCountDIV" style="margin-top: 40px; position: relative;"></div>
 
 
 		</div>

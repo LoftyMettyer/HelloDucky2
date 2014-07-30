@@ -671,11 +671,8 @@ function optiondata_onload() {
 				}
 			}
 
-
-
 			//Determine if the grid already exists...
 			if ($("#ssOleDBGrid").getGridParam("reccount") == undefined) { //It doesn't exist, create it
-
 				var shrinkToFit = false;
 				if (colMode.length < 8) shrinkToFit = true;
 
@@ -698,11 +695,15 @@ function optiondata_onload() {
 
 				//resize the grid to the height of its container.
 				$("#ssOleDBGrid").jqGrid('setGridHeight', $("#PickListGrid").height());
-				$("#ssOleDBGrid").jqGrid('setGridWidth', $("#PickListGrid").width() - 65);
+				$("#ssOleDBGrid").jqGrid('setGridWidth', $("#PickListGrid").width() - 426);
+
+	 			if ($("#ssOleDBGrid").jqGrid().width() < $("#PickListGrid").width()) {
+					 $("#ssOleDBGrid").parent().parent().addClass('jqgridHideHorScroll');
+				 }
 
 				// Select the top record.
 				if (fRecordAdded == true) {
-					moveFirst();
+					$("#ssOleDBGrid").jqGrid('setSelection', colData[0].id);
 				}
 			} else { // The grid exists, add rows to it
 				for (var j = 0; j <= colData.length - 1; j++) {
@@ -727,11 +728,6 @@ function optiondata_onload() {
 						OpenHR.getFrame("workframe").disableAll();
 					}
 				}
-			}
-
-			// Select the top record.
-			if (fRecordAdded == true) {
-				moveFirst();
 			}
 
 			refreshControls();

@@ -57,8 +57,8 @@ function refreshControls() {
 
 	var fAddDisabled = fViewing;
 	var fAddAllDisabled = fViewing;
-	var fRemoveDisabled =  (fViewing == true);
-	var fRemoveAllDisabled =  (fViewing == true);
+	var fRemoveDisabled = (fViewing == true);
+	var fRemoveAllDisabled = (fViewing == true);
 
 	button_disable(frmDefinition.cmdAdd, fAddDisabled);
 	button_disable(frmDefinition.cmdAddAll, fAddAllDisabled);
@@ -66,8 +66,6 @@ function refreshControls() {
 	button_disable(frmDefinition.cmdRemove, fRemoveDisabled);
 	button_disable(frmDefinition.cmdRemoveAll, fRemoveAllDisabled);
 
-	button_disable(frmDefinition.cmdOK, ((frmUseful.txtChanged.value == 0) || (fViewing == true)));
-	
 	menu_toolbarEnableItem('mnutoolSaveReport', (!((frmUseful.txtChanged.value == 0) || (fViewing == true))));
 	
 	// Get menu.asp to refresh the menu.
@@ -189,6 +187,8 @@ function removeClick() {
 
 	grid.jqGrid('delGridRow', grid.jqGrid('getGridParam', 'selarrrow'), myDelOptions);
 	
+	$("#dData").click(); //To remove the "delete confirmation" dialog
+
 	frmUseful.txtChanged.value = 1;
 
 	refreshControls();

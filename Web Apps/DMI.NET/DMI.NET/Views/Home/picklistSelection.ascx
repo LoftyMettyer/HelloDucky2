@@ -505,7 +505,7 @@
 	<input type='hidden' id="txtpicklistSelectionErrorDescription" name="txtpicklistSelectionErrorDescription" value="<%=sErrorDescription%>">
 
 	<footer>
-		<input id="cmdOK" type="button" value="OK" name="cmdOK" class="btn" style="width: 80px" onclick="makeSelection()" />
+		<input id="cmdOK" type="button" value="OK" name="cmdOK" class="btn ui-state-disabled btndisabled" style="width: 80px" onclick="makeSelection()" disabled="true" />
 		<input id="cmdCancel" type="button" value="Cancel" class="btn" name="cmdCancel" style="width: 80px" onclick="closeclick();" />
 	</footer>
 

@@ -43,7 +43,6 @@
 
 
 <script type="text/javascript">
-	//$("#workframeset").hide();
 	$("#reportframe").show();
 
 	picklistSelection_window_onload();

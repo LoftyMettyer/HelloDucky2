@@ -1047,6 +1047,10 @@ header {
 
 /* End of User dropdown menu */
 
+.pageTitle {
+	font-weight: normal;
+}
+
 .pageTitleSmaller {
 	font-size: x-large;
 	line-height: 50px;
@@ -1094,6 +1098,8 @@ input[type=button].Embedded, input[type=button].Linked {
 
 .optiondatagridpage footer {
 	text-align: right;
+	margin-top: 10px;
+	margin-bottom: 10px;
 }
 
 	.optiondatagridpage footer .ui-button {
@@ -1102,7 +1108,6 @@ input[type=button].Embedded, input[type=button].Linked {
 
 .formField {
 	margin: 10px auto;	
-	width: 340px;
 }
 
 .formField label {
@@ -1115,21 +1120,33 @@ input[type=button].Embedded, input[type=button].Linked {
 	width: 195px;
 }
 
-.formTextArea {
+.formField select {
+	width: 195px;
+}
+
+.formField input {
+	width: 345px;
+}
+
+.formTextArea, .formInput {
 	margin: 10px auto;
 	width: 500px;
 }
 
-	.formTextArea label {
-		vertical-align: top;
-		display: inline-block;
-		width: 120px;
+.jqgridHideHorScroll {
+	overflow-x: hidden !important;
 }
 
-	.formTextArea textarea {
-		display: inline-block;
-		width: 345px;
-	}
+.formTextArea label {
+	vertical-align: top;
+	display: inline-block;
+	width: 120px;
+}
+
+.formTextArea textarea {
+	display: inline-block;
+	width: 345px;
+}
 
 .formOptionGroup {
 	margin: 10px auto;

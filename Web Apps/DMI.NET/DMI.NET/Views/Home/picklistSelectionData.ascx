@@ -7,9 +7,14 @@
 <script type="text/javascript">
 
 	function picklistSelectionData_window_onload() {
-
 		$("#picklistdataframe").attr("data-framesource", "PICKLISTSELECTIONDATA");
-		//$("#workframeset").hide();
+
+		$(".popup").dialog({
+			resizable: false
+		});
+
+		$(".popup").css('height', '540px');
+
 		$("#reportframe").show();
 
 		if (frmSelectDataUseful.txtLoading.value == "True") {
@@ -105,46 +110,46 @@
 				}
 			}
 
-			if (colData.length > 0) { //If we have data to display, display it
-				//create the column layout:
-				var shrinkToFit = false;
-				if (colMode.length < 8) shrinkToFit = true;
+			//create the column layout:
+			var shrinkToFit = false;
+			if (colMode.length < 8) shrinkToFit = true;
 
-				$("#ssOleDBGridSelRecords").jqGrid({
-					multiselect: true,
-					data: colData,
-					datatype: 'local',
-					colNames: colNames,
-					colModel: colMode,
-					rowNum: 1000,
-					autowidth: true,
-					shrinkToFit: shrinkToFit,
-					onSelectRow: function () { },
-					ondblClickRow: function (rowID) {
-						makeSelection();
-					},
-					editurl: 'clientArray',
-					afterShowForm: function ($form) {
-						$("#dData", $form.parent()).click();
-					},
-					beforeSelectRow: handleMultiSelect // handle multi select
-				}).jqGrid('hideCol', 'cb');
+			$("#ssOleDBGridSelRecords").jqGrid({
+				multiselect: true,
+				data: colData,
+				datatype: 'local',
+				colNames: colNames,
+				colModel: colMode,
+				rowNum: 1000,
+				autowidth: true,
+				shrinkToFit: shrinkToFit,
+				onSelectRow: function () {
+					$("footer #cmdOK").removeClass("ui-state-disabled btndisabled").prop("disabled", false); //Enable the OK button
+				},
+				ondblClickRow: function (rowID) {
+					makeSelection();
+				},
+				editurl: 'clientArray',
+				afterShowForm: function ($form) {
+					$("#dData", $form.parent()).click();
+				},
+				beforeSelectRow: handleMultiSelect // handle multi select
+			}).jqGrid('hideCol', 'cb');
 
-				//resize the grid to the height of its container.		
-				var workPageHeight = $('.optiondatagridpage').outerHeight(true);
-				var pageTitleHeight = $('.optiondatagridpage h3').outerHeight(true);
-				var dropdownHeight = $('.optiondatagridpage .floatleft').outerHeight(true);
-				var footerheight = $('.optiondatagridpage footer').outerHeight(true);
+			//resize the grid to the height of its container.		
+			var workPageHeight = $('.optiondatagridpage').outerHeight(true);
+			var pageTitleHeight = $('.optiondatagridpage h3').outerHeight(true);
+			var dropdownHeight = $('.optiondatagridpage .floatleft').outerHeight(true);
+			var footerheight = $('.optiondatagridpage footer').outerHeight(true);
 
-				var newGridHeight = workPageHeight - pageTitleHeight - dropdownHeight - footerheight;
+			var newGridHeight = workPageHeight - pageTitleHeight - dropdownHeight - footerheight;
 
-				$("#ssOleDBGridSelRecords").jqGrid('setGridHeight', newGridHeight);
-				$("#ssOleDBGridSelRecords").jqGrid('setGridWidth', $("#ssOleDBGridSelRecordsDiv").width());
+			$("#ssOleDBGridSelRecords").jqGrid('setGridHeight', newGridHeight);
+			$("#ssOleDBGridSelRecords").jqGrid('setGridWidth', $("#ssOleDBGridSelRecordsDiv").width());
 
-				// Select the top record.
-				if (fRecordAdded == true) {
-					moveFirst();
-				}
+			// Select the top record.
+			if (fRecordAdded == true) {
+				$("#ssOleDBGridSelRecords").jqGrid('setSelection', 1);
 			}
 
 			frmPicklistData.txtRecordCount.value = iCount;
