@@ -79,18 +79,19 @@ End Code
 	<fieldset>
 		<legend>Key</legend>
 
-		@Html.RadioButton("LegendType", CInt(CalendarLegendType.Character), Model.LegendType = CalendarLegendType.Character, New With {.onclick = "changeEventLegendType('char')"})
+		@Html.RadioButton("LegendType", CInt(CalendarLegendType.Character), Model.LegendType = CalendarLegendType.Character, New With {.onclick = "changeEventLegendType('Character')"})
 		@Html.DisplayNameFor(Function(model) model.LegendCharacter)
-		@Html.TextBoxFor(Function(model) model.LegendCharacter)
+		@Html.TextBoxFor(Function(model) model.LegendCharacter, New With {.maxlength = 2})
 		<br />
 
-		@Html.RadioButton("LegendType", CInt(CalendarLegendType.LookupTable), Model.LegendType = CalendarLegendType.LookupTable, New With {.onclick = "changeEventLegendType('lookup')"})
+		@Html.RadioButton("LegendType", CInt(CalendarLegendType.LookupTable), Model.LegendType = CalendarLegendType.LookupTable, New With {.onclick = "changeEventLegendType('LookupTable')"})
 		Lookup Table
 		<br />
 
 		@Html.DisplayNameFor(Function(model) model.LegendEventColumnID)
 		@Html.ColumnDropdownFor(Function(m) m.LegendEventColumnID, New ColumnFilter() _
-													 With {.TableID = Model.TableID, .DataType = SQLDataType.sqlVarChar, .ColumnType = ColumnType.Lookup}, New With {.disabled = (Model.EventEndType = CalendarEventEndType.EndDate)})
+													 With {.TableID = Model.TableID, .DataType = SQLDataType.sqlVarChar, .ColumnType = ColumnType.Lookup}, _
+													 New With {.disabled = (Model.EventEndType = CalendarEventEndType.EndDate)})
 
 		<br />
 		<br />
@@ -140,6 +141,13 @@ End Code
 
 <script type="text/javascript">
 
+	$(function () {
+		changeEventLegendType('@Model.LegendType')
+	});
+
+
+
+
 	function changeEventLookupTable(event) {
 
 		var frmSubmit = $("#frmPostCalendarEvent");
@@ -185,11 +193,11 @@ End Code
 		text_disable("#LegendCharacter", true);
 
 		switch (type) {
-			case "char":
+			case "Character":
 				text_disable("#LegendCharacter", false);
 				break;
 
-			case "lookup":
+			case "LookupTable":
 				combo_disable("#LegendEventColumnID", false);
 				combo_disable("#LegendLookupTableID", false);
 				combo_disable("#LegendLookupColumnID", false);

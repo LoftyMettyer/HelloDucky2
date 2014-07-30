@@ -2,6 +2,7 @@
 Option Explicit On
 
 Imports System.ComponentModel
+Imports System.ComponentModel.DataAnnotations
 Imports DMI.NET.Classes
 Imports HR.Intranet.Server.Enums
 
@@ -44,6 +45,7 @@ Namespace ViewModels
 		Public Property LegendType As CalendarLegendType
 
 		<DisplayName("Character :")>
+		<MaxLength(2, ErrorMessage:="Legend cannot be longer than 2 characters.")> _
 		Public Property LegendCharacter As String
 
 		<DisplayName("Event Type :")>
