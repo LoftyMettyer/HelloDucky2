@@ -768,91 +768,91 @@ LocalErr:
 
 	Private Function DisplayInBrowser() As Boolean
 
-		Dim IE As System.Windows.Forms.WebBrowser
-		Dim dblWait As Double
-		Dim dblWait2 As Double
-		Dim blnOK As Boolean
+		'		Dim IE As System.Windows.Forms.WebBrowser
+		'		Dim dblWait As Double
+		'		Dim dblWait2 As Double
+		'		Dim blnOK As Boolean
 
-		On Error GoTo LocalErr
+		'		On Error GoTo LocalErr
 
-		blnOK = True
-		dblWait = VB.Timer() + 10
+		'		blnOK = True
+		'		dblWait = VB.Timer() + 10
 
-		IE = New System.Windows.Forms.WebBrowser
+		'		IE = New System.Windows.Forms.WebBrowser
 
-		'JPD 20091007 Fault HRPRO-31, HRPRO-33, HRPRO-34
-		' New SHDocVw.InternetExplorer sometimes gets a handle on the existing SSI/DMI browser instance.
-		' If this happens, do it again toensure you get a fresh instance.
-		If IE.DocumentTitle = "OpenHR" Then
+		'		'JPD 20091007 Fault HRPRO-31, HRPRO-33, HRPRO-34
+		'		' New SHDocVw.InternetExplorer sometimes gets a handle on the existing SSI/DMI browser instance.
+		'		' If this happens, do it again toensure you get a fresh instance.
+		'		If IE.DocumentTitle = "OpenHR" Then
 
-			IE = New System.Windows.Forms.WebBrowser
-		End If
+		'			IE = New System.Windows.Forms.WebBrowser
+		'		End If
 
-		If mblnSave Then
-			IE.Navigate(New System.URI(mstrFileName))
-			Do While IE.IsBusy
-				System.Windows.Forms.Application.DoEvents()
-			Loop
+		'		If mblnSave Then
+		'			IE.Navigate(New System.URI(mstrFileName))
+		'			Do While IE.IsBusy
+		'				System.Windows.Forms.Application.DoEvents()
+		'			Loop
 
-		Else
-RetryDisplay:
-			'AE20071129 Fault #12111 / #12112
-			'    IE.Navigate ""    'Creates a blank document
-			IE.Navigate(New System.URI("about:blank"))
-			Do While IE.IsBusy
-				System.Windows.Forms.Application.DoEvents()
-			Loop
+		'		Else
+		'RetryDisplay:
+		'			'AE20071129 Fault #12111 / #12112
+		'			'    IE.Navigate ""    'Creates a blank document
+		'			IE.Navigate(New System.URI("about:blank"))
+		'			Do While IE.IsBusy
+		'				System.Windows.Forms.Application.DoEvents()
+		'			Loop
 
-			'Keep trying for 10 seconds then error
-			blnOK = False
-			Do
+		'			'Keep trying for 10 seconds then error
+		'			blnOK = False
+		'			Do
 
-				Err.Clear()
-				On Error GoTo LocalErr
-				'UPGRADE_ISSUE: SHDocVw.InternetExplorer property IE.AddressBar was not upgraded. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="CC4C7EC0-C903-48FC-ACCC-81861D12DA4A"'
-	'			IE.AddressBar = False
-				If Not IE.Document.DomDocument Is Nothing Then
-					'UPGRADE_WARNING: Couldn't resolve default property of object IE.Document.Title. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					IE.Document.DomDocument.Title = mstrDefTitle
-					'UPGRADE_WARNING: Couldn't resolve default property of object IE.Document.Body. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					If Not IE.Document.DomDocument.Body Is Nothing Then
-						'UPGRADE_WARNING: Couldn't resolve default property of object IE.Document.Body. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						IE.Document.DomDocument.Body.InnerHtml = mstrHTMLOutput
-						'UPGRADE_WARNING: Couldn't resolve default property of object IE.Document.Body. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						IE.Document.DomDocument.Body.Bgcolor = "white"
-						blnOK = (Err.Number = 0)
-					End If
-				End If
-				System.Windows.Forms.Application.DoEvents()
+		'				Err.Clear()
+		'				On Error GoTo LocalErr
+		'				'UPGRADE_ISSUE: SHDocVw.InternetExplorer property IE.AddressBar was not upgraded. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="CC4C7EC0-C903-48FC-ACCC-81861D12DA4A"'
+		'	'			IE.AddressBar = False
+		'				If Not IE.Document.DomDocument Is Nothing Then
+		'					'UPGRADE_WARNING: Couldn't resolve default property of object IE.Document.Title. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+		'					IE.Document.DomDocument.Title = mstrDefTitle
+		'					'UPGRADE_WARNING: Couldn't resolve default property of object IE.Document.Body. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+		'					If Not IE.Document.DomDocument.Body Is Nothing Then
+		'						'UPGRADE_WARNING: Couldn't resolve default property of object IE.Document.Body. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+		'						IE.Document.DomDocument.Body.InnerHtml = mstrHTMLOutput
+		'						'UPGRADE_WARNING: Couldn't resolve default property of object IE.Document.Body. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+		'						IE.Document.DomDocument.Body.Bgcolor = "white"
+		'						blnOK = (Err.Number = 0)
+		'					End If
+		'				End If
+		'				System.Windows.Forms.Application.DoEvents()
 
-			Loop While Not blnOK
+		'			Loop While Not blnOK
 
-		End If
+		'		End If
 
-		If blnOK Then
-			IE.Visible = True
-		End If
-		'UPGRADE_NOTE: Object IE may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		IE = Nothing
+		'		If blnOK Then
+		'			IE.Visible = True
+		'		End If
+		'		'UPGRADE_NOTE: Object IE may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
+		'		IE = Nothing
 
-		DisplayInBrowser = blnOK
+		'		DisplayInBrowser = blnOK
 
-		Exit Function
+		'		Exit Function
 
-LocalErr:
-		dblWait2 = VB.Timer() + 2
-		Do While dblWait2 > VB.Timer()
-			System.Windows.Forms.Application.DoEvents()
-		Loop
+		'LocalErr:
+		'		dblWait2 = VB.Timer() + 2
+		'		Do While dblWait2 > VB.Timer()
+		'			System.Windows.Forms.Application.DoEvents()
+		'		Loop
 
-		If dblWait > VB.Timer() Then
-			Err.Clear()
-			On Error GoTo LocalErr
-			GoTo RetryDisplay
-		End If
-		DisplayInBrowser = False
-		'UPGRADE_NOTE: Object IE may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		IE = Nothing
+		'		If dblWait > VB.Timer() Then
+		'			Err.Clear()
+		'			On Error GoTo LocalErr
+		'			GoTo RetryDisplay
+		'		End If
+		'		DisplayInBrowser = False
+		'		'UPGRADE_NOTE: Object IE may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
+		'		IE = Nothing
 
 	End Function
 
