@@ -1384,10 +1384,6 @@ Namespace Controllers
 			Return View()
 		End Function
 
-		Function Util_SortOrderSelection() As ActionResult
-			Return View()
-		End Function
-
 		<HttpPost()>
 		Function LinksMain(Optional psScreenInfo As String = "") As ActionResult
 			' Get dashboard items

@@ -148,6 +148,7 @@
   <ItemGroup>
     <Import Include="DMI.NET.Code.Extensions" />
     <Import Include="DMI.NET.Code.Interfaces" />
+    <Import Include="HR.Intranet.Server.Enums" />
     <Import Include="Microsoft.VisualBasic" />
     <Import Include="System" />
     <Import Include="System.Collections" />
@@ -1670,7 +1671,6 @@
     <Content Include="Views\Home\util_run_customreportsMain.ascx" />
     <Content Include="Views\Home\util_run_promptedvalues.ascx" />
     <Content Include="Views\Home\util_run_workflow.ascx" />
-    <Content Include="Views\Home\Util_SortOrderSelection.aspx" />
     <Content Include="Views\Home\PasswordChange.ascx" />
     <Content Include="Views\Home\util_test_expression.aspx" />
     <Content Include="Views\Home\util_test_expression_pval.aspx" />
