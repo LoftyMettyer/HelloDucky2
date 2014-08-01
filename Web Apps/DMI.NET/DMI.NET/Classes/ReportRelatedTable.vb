@@ -2,7 +2,6 @@
 Option Explicit On
 
 Imports DMI.NET.AttributeExtensions
-Imports HR.Intranet.Server.Enums
 
 Namespace Classes
 

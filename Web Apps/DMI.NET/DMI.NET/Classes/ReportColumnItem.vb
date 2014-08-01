@@ -1,7 +1,6 @@
 ﻿Option Strict On
 Option Explicit On
 
-Imports HR.Intranet.Server.Enums
 Imports DMI.NET.AttributeExtensions
 
 Namespace Classes
@@ -21,7 +20,7 @@ Namespace Classes
 		<ExcludeChar("/,.!@#$%")>
 		Public Property Heading As String
 
-		Public Property DataType As SQLDataType
+		Public Property DataType As ColumnDataType
 		Public Property Size As Long
 		Public Property Decimals As Integer
 		Public Property IsAverage As Boolean
@@ -33,7 +32,7 @@ Namespace Classes
 
 		Public ReadOnly Property IsNumeric As Boolean
 			Get
-				Return DataType = SQLDataType.sqlInteger Or DataType = SQLDataType.sqlNumeric
+				Return DataType = DataType.sqlInteger Or DataType = DataType.sqlNumeric
 			End Get
 		End Property
 

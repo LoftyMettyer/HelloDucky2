@@ -8,8 +8,6 @@ Imports System.Runtime.CompilerServices
 Imports DMI.NET.Classes
 Imports System.Linq.Expressions
 Imports HR.Intranet.Server
-Imports HR.Intranet.Server.Enums
-Imports HR.Intranet.Server.Metadata
 
 Namespace Helpers
 	<HideModuleName> _
@@ -102,7 +100,7 @@ Namespace Helpers
 			builder.MergeAttributes(objAttributes)
 
 			If filter.AddNone Then
-				content.AppendFormat("<option value=0 data-datatype={1} {0}>None</option>", IIf(bindValue = 0, "selected", ""), CInt(SQLDataType.sqlUnknown))
+				content.AppendFormat("<option value=0 data-datatype={1} {0}>None</option>", IIf(bindValue = 0, "selected", ""), CInt(ColumnDataType.sqlUnknown))
 			End If
 
 			Dim iParent1 As Integer
@@ -123,7 +121,7 @@ Namespace Helpers
 			Dim objColumns = _objSessionInfo.Columns.Where(Function(m) (m.TableID = filter.TableID OrElse m.TableID = iParent1 OrElse m.TableID = iParent2) AndAlso
 																m.IsVisible AndAlso
 																(m.Size = filter.Size OrElse filter.Size = 0) AndAlso
-																(m.DataType = filter.DataType OrElse filter.DataType = SQLDataType.sqlUnknown) AndAlso
+																(m.DataType = filter.DataType OrElse filter.DataType = ColumnDataType.sqlUnknown) AndAlso
 																(m.ColumnType = ColumnType.Lookup OrElse filter.ColumnType = ColumnType.Unknown)
 																).OrderBy(Function(m) m.TableID).ThenBy(Function(m) m.Name)
 

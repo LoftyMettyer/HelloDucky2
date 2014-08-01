@@ -3,8 +3,6 @@ Option Strict On
 
 Imports System.Collections.ObjectModel
 Imports System.ComponentModel.DataAnnotations
-Imports HR.Intranet.Server
-Imports HR.Intranet.Server.Metadata
 Imports DMI.NET.Classes
 Imports HR.Intranet.Server.Enums
 Imports System.ComponentModel
@@ -84,7 +82,7 @@ Namespace Models
 
 			Dim objItems As New Collection(Of ReportColumnItem)
 
-			For Each objColumn In SessionInfo.Columns.Where(Function(m) m.TableID = BaseTableID And m.IsVisible).OrderBy(Function(m) m.Name)
+			For Each objColumn In SessionInfo.Columns.Where(Function(m) m.TableID = BaseTableID AndAlso m.IsVisible).OrderBy(Function(m) m.Name)
 				objItems.Add(New ReportColumnItem With {.ID = objColumn.ID, .Name = objColumn.Name})
 			Next
 

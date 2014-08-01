@@ -191,7 +191,7 @@ Public Class clsMultiAxisChart
 					pstrVerticalIDColumn = Trim(objRow("VERTICAL_ID").ToString())
 					pstrVerticalIDColumn = Replace(pstrVerticalIDColumn, "'", "''")
 
-					If GetColumnDataType(plngColumnID) = SQLDataType.sqlDate Then
+					If GetColumnDataType(plngColumnID) = ColumnDataType.sqlDate Then
 						pstrVerticalIDColumn = ReverseDateTextField(pstrVerticalIDColumn)
 					End If
 					pstrCaseStatements = pstrCaseStatements & " WHEN " & IIf(pstrVerticalIDColumn = "NULL", "NULL", "'" & pstrVerticalIDColumn & "'").ToString() & " THEN " & CStr(piCount)
@@ -266,10 +266,10 @@ SQLSelectVerticalID_ERROR:
 				Else
 					pstrHorizontalIDColumn = Trim(objRow("HORIZONTAL_ID").ToString())
 				End If
-				
+
 				pstrHorizontalIDColumn = Replace(pstrHorizontalIDColumn, "'", "''")
 
-				If GetColumnDataType(lngColumnID) = SQLDataType.sqlDate Then
+				If GetColumnDataType(lngColumnID) = ColumnDataType.sqlDate Then
 					pstrHorizontalIDColumn = ReverseDateTextField(pstrHorizontalIDColumn)
 				End If
 				pstrCaseStatements = pstrCaseStatements & " WHEN " & IIf(pstrHorizontalIDColumn = "NULL", "NULL", "'" & pstrHorizontalIDColumn & "'").ToString() & " THEN " & CStr(piCount)

@@ -109,7 +109,7 @@ Namespace BaseClasses
 
 			Select Case strType
 				Case "C" 'Column
-					Return (Columns.GetById(lngColumnID).DataType = SQLDataType.sqlDate)
+					Return (Columns.GetById(lngColumnID).DataType = ColumnDataType.sqlDate)
 
 				Case Else	'Calculation
 					Dim objCalcExpr = New clsExprExpression(SessionInfo)
@@ -127,7 +127,7 @@ Namespace BaseClasses
 
 			Select Case strType
 				Case "C" 'Column
-					Return (Columns.GetById(lngColumnID).DataType = SQLDataType.sqlBoolean)
+					Return (Columns.GetById(lngColumnID).DataType = ColumnDataType.sqlBoolean)
 
 				Case Else	'Calculation
 					Dim objCalcExpr = New clsExprExpression(SessionInfo)

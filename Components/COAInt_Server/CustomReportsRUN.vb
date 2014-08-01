@@ -3599,7 +3599,7 @@ CheckRecordSet_ERROR:
 			'UPGRADE_WARNING: Couldn't resolve default property of object mvarVisibleColumns(0, intVisColCount). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 			mvarVisibleColumns(0, intVisColCount) = "Summary Info" 'Heading
 			'UPGRADE_WARNING: Couldn't resolve default property of object mvarVisibleColumns(1, intVisColCount). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			mvarVisibleColumns(1, intVisColCount) = SQLDataType.sqlVarChar	'DataType
+			mvarVisibleColumns(1, intVisColCount) = ColumnDataType.sqlVarChar	'DataType
 			'UPGRADE_WARNING: Couldn't resolve default property of object mvarVisibleColumns(2, intVisColCount). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 			mvarVisibleColumns(2, intVisColCount) = 0	'Decimals
 			'UPGRADE_WARNING: Couldn't resolve default property of object mvarVisibleColumns(3, intVisColCount). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
@@ -3621,13 +3621,13 @@ CheckRecordSet_ERROR:
 					'If the column is is grouped then don't force the date format.
 					If objReportItem.IsDateColumn And objReportItem.GroupWithNextColumn = False Then
 						'UPGRADE_WARNING: Couldn't resolve default property of object mvarVisibleColumns(1, intVisColCount). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						mvarVisibleColumns(1, intVisColCount) = SQLDataType.sqlDate
+						mvarVisibleColumns(1, intVisColCount) = ColumnDataType.sqlDate
 					ElseIf objReportItem.IsNumeric And objReportItem.GroupWithNextColumn = False Then
 						'UPGRADE_WARNING: Couldn't resolve default property of object mvarVisibleColumns(1, intVisColCount). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						mvarVisibleColumns(1, intVisColCount) = SQLDataType.sqlNumeric
+						mvarVisibleColumns(1, intVisColCount) = ColumnDataType.sqlNumeric
 					Else
 						'UPGRADE_WARNING: Couldn't resolve default property of object mvarVisibleColumns(1, intVisColCount). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						mvarVisibleColumns(1, intVisColCount) = SQLDataType.sqlVarChar
+						mvarVisibleColumns(1, intVisColCount) = ColumnDataType.sqlVarChar
 					End If
 
 					'UPGRADE_WARNING: Couldn't resolve default property of object mvarVisibleColumns(2, intVisColCount). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'

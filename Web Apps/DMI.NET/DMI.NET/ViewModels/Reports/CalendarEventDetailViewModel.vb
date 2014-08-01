@@ -4,9 +4,8 @@ Option Explicit On
 Imports System.ComponentModel
 Imports System.ComponentModel.DataAnnotations
 Imports DMI.NET.Classes
-Imports HR.Intranet.Server.Enums
 
-Namespace ViewModels
+Namespace ViewModels.Reports
 	Public Class CalendarEventDetailViewModel
 		Implements IJsonSerialize
 		Implements IReportDetail

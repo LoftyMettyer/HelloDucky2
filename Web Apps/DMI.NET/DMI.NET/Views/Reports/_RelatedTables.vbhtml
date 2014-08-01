@@ -2,9 +2,7 @@
 @Imports DMI.NET.Helpers
 @Imports DMI.NET.Classes
 @Imports DMI.NET.Code.Extensions
-@Imports HR.Intranet.Server.Enums
 @Inherits System.Web.Mvc.WebViewPage(Of Models.CustomReportModel)
-
 
 <div id="divReportParents">
 

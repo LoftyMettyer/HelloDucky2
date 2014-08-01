@@ -1,6 +1,6 @@
 ﻿@Imports DMI.NET
 @Imports DMI.NET.Helpers
-@Imports HR.Intranet.Server.Enums
+
 @code
 	Html.EnableClientValidation()
 End Code

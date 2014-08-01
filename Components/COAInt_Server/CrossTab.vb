@@ -216,13 +216,6 @@ Public Class CrossTab
 		End Get
 	End Property
 
-	Public ReadOnly Property ColumnDataType(lngIndex As Integer) As Integer
-		Get
-			'UPGRADE_WARNING: Couldn't resolve default property of object lngIndex. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			ColumnDataType = CInt(mlngColDataType(lngIndex))
-		End Get
-	End Property
-
 	Public ReadOnly Property ColumnHeadingUbound(lngIndex As Integer) As Integer
 		Get
 			If Not mvarHeadings(lngIndex) Is Nothing Then
@@ -728,13 +721,13 @@ ErrorTrap:
 		Dim sFormat As String = ""
 
 		Select Case objColumn.DataType
-			Case SQLDataType.sqlNumeric
+			Case ColumnDataType.sqlNumeric
 				sFormat = New String("#", objColumn.Size - 1) & "0"
 				If objColumn.Decimals > 0 Then
 					sFormat = sFormat & "." & New String("0", objColumn.Decimals)
 				End If
 
-			Case SQLDataType.sqlInteger
+			Case ColumnDataType.sqlInteger
 				sFormat = New String("#", 9) & "0"
 
 		End Select
@@ -890,7 +883,7 @@ ErrorTrap:
 		mstrSQLJoin = vbNullString
 		Dim asViews(0) As Object
 
-		blnCharColumn = (Val(mlngColDataType(lngCount)) = SQLDataType.sqlVarChar)
+		blnCharColumn = (Val(mlngColDataType(lngCount)) = ColumnDataType.sqlVarChar)
 
 
 		For lngCount = 0 To UBound(strCol, 2)
@@ -910,7 +903,7 @@ ErrorTrap:
 			objColumnPrivileges = Nothing
 
 			If lngCount <= UBound(mlngColDataType) Then
-				blnCharColumn = (Val(mlngColDataType(lngCount)) = SQLDataType.sqlVarChar)
+				blnCharColumn = (Val(mlngColDataType(lngCount)) = ColumnDataType.sqlVarChar)
 			End If
 
 			If fColumnOK Then
@@ -1113,7 +1106,7 @@ LocalErr:
 			lngCount = 0
 
 			strWhereEmpty = strColumnName & " IS NULL"
-			If mlngColDataType(lngLoop) <> CStr(SQLDataType.sqlNumeric) And mlngColDataType(lngLoop) <> CStr(SQLDataType.sqlInteger) And mlngColDataType(lngLoop) <> CStr(SQLDataType.sqlBoolean) Then
+			If mlngColDataType(lngLoop) <> CStr(ColumnDataType.sqlNumeric) And mlngColDataType(lngLoop) <> CStr(ColumnDataType.sqlInteger) And mlngColDataType(lngLoop) <> CStr(ColumnDataType.sqlBoolean) Then
 				strWhereEmpty = strWhereEmpty & " OR Trim(" & strColumnName & ") = ''"
 			End If
 
@@ -1146,15 +1139,15 @@ LocalErr:
 					ReDim Preserve strSearch(lngCount)
 
 					Select Case mlngColDataType(lngLoop)
-						Case CStr(SQLDataType.sqlDate)
+						Case CStr(ColumnDataType.sqlDate)
 							strHeading(lngCount) = VB6.Format(objRow(0), LocaleDateFormat)
 							strSearch(lngCount) = strColumnName & " = '" & CDate(objRow(0)).ToString(LocaleDateFormat) & "'"
 
-						Case CStr(SQLDataType.sqlBoolean)
+						Case CStr(ColumnDataType.sqlBoolean)
 							strHeading(lngCount) = IIf(objRow(0), "True", "False")
 							strSearch(lngCount) = strColumnName & " = " & IIf(objRow(0), "1", "0")
 
-						Case CStr(SQLDataType.sqlNumeric), CStr(SQLDataType.sqlInteger)
+						Case CStr(ColumnDataType.sqlNumeric), CStr(ColumnDataType.sqlInteger)
 							strHeading(lngCount) = ConvertNumberForDisplay(VB6.Format(objRow(0), mstrFormat(lngLoop)))
 							strSearch(lngCount) = strColumnName & " = " & ConvertNumberForSQL(objRow(0))
 
@@ -1415,7 +1408,7 @@ LocalErr:
 				For lngCount = 0 To UBound(mvarHeadings(Index))
 
 					Select Case mlngColDataType(Index)
-						Case CStr(SQLDataType.sqlDate)
+						Case CStr(ColumnDataType.sqlDate)
 
 							If Not strValue Is Nothing Then
 								If mvarHeadings(Index)(lngCount) = CDate(strValue).ToString(LocaleDateFormat) Then
@@ -1423,13 +1416,13 @@ LocalErr:
 								End If
 							End If
 
-						Case CStr(SQLDataType.sqlNumeric), CStr(SQLDataType.sqlInteger)
+						Case CStr(ColumnDataType.sqlNumeric), CStr(ColumnDataType.sqlInteger)
 							'UPGRADE_WARNING: Couldn't resolve default property of object mvarHeadings()(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 							If UCase(mvarHeadings(Index)(lngCount)) = ConvertNumberForDisplay(VB6.Format(strValue, mstrFormat(Index))) Then
 								Return lngCount
 							End If
 
-						Case CStr(SQLDataType.sqlBoolean)
+						Case CStr(ColumnDataType.sqlBoolean)
 							Select Case LCase(strValue)
 								Case ""
 									'UPGRADE_WARNING: Couldn't resolve default property of object mvarHeadings(Index)(lngCount). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'

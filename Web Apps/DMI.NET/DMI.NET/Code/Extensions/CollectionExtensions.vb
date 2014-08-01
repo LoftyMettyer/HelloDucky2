@@ -3,8 +3,6 @@ Option Explicit On
 
 Imports System.Runtime.CompilerServices
 Imports System.Web.Script.Serialization
-Imports System.Collections.ObjectModel
-Imports DMI.NET.Classes
 
 Namespace Code.Extensions
 

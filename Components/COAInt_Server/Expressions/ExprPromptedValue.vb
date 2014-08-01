@@ -335,17 +335,17 @@ ErrorTrap:
 				Case ExpressionValueTypes.giEXPRVALUE_TABLEVALUE
 
 					Select Case Columns.GetById(mlngLookupColumnID).DataType
-						Case SQLDataType.sqlNumeric, SQLDataType.sqlInteger
+						Case ColumnDataType.sqlNumeric, ColumnDataType.sqlInteger
 							iType = ExpressionValueTypes.giEXPRVALUE_NUMERIC
-						Case SQLDataType.sqlDate
+						Case ColumnDataType.sqlDate
 							iType = ExpressionValueTypes.giEXPRVALUE_DATE
-						Case SQLDataType.sqlVarChar, SQLDataType.sqlLongVarChar
+						Case ColumnDataType.sqlVarChar, ColumnDataType.sqlLongVarChar
 							iType = ExpressionValueTypes.giEXPRVALUE_CHARACTER
-						Case SQLDataType.sqlBoolean
+						Case ColumnDataType.sqlBoolean
 							iType = ExpressionValueTypes.giEXPRVALUE_LOGIC
-						Case SQLDataType.sqlOle
+						Case ColumnDataType.sqlOle
 							iType = ExpressionValueTypes.giEXPRVALUE_OLE
-						Case SQLDataType.sqlVarBinary
+						Case ColumnDataType.sqlVarBinary
 							iType = ExpressionValueTypes.giEXPRVALUE_PHOTO
 					End Select
 

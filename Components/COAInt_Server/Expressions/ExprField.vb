@@ -283,17 +283,17 @@ ErrorTrap:
 				' instance of the column class, and instructing
 				' it to read its own details (including type).
 				Select Case Columns.GetById(mlngColumnID).DataType
-					Case SQLDataType.sqlNumeric, SQLDataType.sqlInteger
+					Case ColumnDataType.sqlNumeric, ColumnDataType.sqlInteger
 						iType = ExpressionValueTypes.giEXPRVALUE_NUMERIC
-					Case SQLDataType.sqlDate
+					Case ColumnDataType.sqlDate
 						iType = ExpressionValueTypes.giEXPRVALUE_DATE
-					Case SQLDataType.sqlVarChar, SQLDataType.sqlLongVarChar
+					Case ColumnDataType.sqlVarChar, ColumnDataType.sqlLongVarChar
 						iType = ExpressionValueTypes.giEXPRVALUE_CHARACTER
-					Case SQLDataType.sqlBoolean
+					Case ColumnDataType.sqlBoolean
 						iType = ExpressionValueTypes.giEXPRVALUE_LOGIC
-					Case SQLDataType.sqlOle
+					Case ColumnDataType.sqlOle
 						iType = ExpressionValueTypes.giEXPRVALUE_OLE
-					Case SQLDataType.sqlVarBinary
+					Case ColumnDataType.sqlVarBinary
 						iType = ExpressionValueTypes.giEXPRVALUE_PHOTO
 					Case Else
 						fOK = False

@@ -1,8 +1,8 @@
 ﻿@Imports DMI.NET
 @Imports DMI.NET.Helpers
-@Imports HR.Intranet.Server.Enums
 @Imports DMI.NET.Classes
-@Inherits System.Web.Mvc.WebViewPage(Of ViewModels.CalendarEventDetailViewModel)
+@Imports DMI.NET.ViewModels.Reports
+@Inherits System.Web.Mvc.WebViewPage(Of CalendarEventDetailViewModel)
 
 @Code
 	Html.BeginForm("PostCalendarEvent", "Reports", FormMethod.Post, New With {.id = "frmPostCalendarEvent"})
@@ -36,11 +36,11 @@ End Code
 
 		@Html.LabelFor(Function(model) model.EventStartDateID)
 		@Html.ColumnDropdownFor(Function(m) m.EventStartDateID, New ColumnFilter() _
-													 With {.TableID = Model.TableID, .DataType = SQLDataType.sqlDate}, Nothing)
+													 With {.TableID = Model.TableID, .DataType = ColumnDataType.sqlDate}, Nothing)
 		<br/>
 		@Html.LabelFor(Function(model) model.EventStartSessionID)
 		@Html.ColumnDropdownFor(Function(m) m.EventStartSessionID, New ColumnFilter() _
-													 With {.TableID = Model.TableID, .DataType = SQLDataType.sqlVarChar, .AddNone = True, .Size = 2}, Nothing)
+													 With {.TableID = Model.TableID, .DataType = ColumnDataType.sqlVarChar, .AddNone = True, .Size = 2}, Nothing)
 
 	</fieldset>
 
@@ -56,18 +56,18 @@ End Code
 		<br />
 		@Html.LabelFor(Function(model) model.EventEndDateID)
 		@Html.ColumnDropdownFor(Function(m) m.EventEndDateID, New ColumnFilter() _
-													 With {.TableID = Model.TableID, .DataType = SQLDataType.sqlDate, .AddNone = True}, New With {.disabled = (Model.EventEndType = CalendarEventEndType.EndDate)})
+													 With {.TableID = Model.TableID, .DataType = ColumnDataType.sqlDate, .AddNone = True}, New With {.disabled = (Model.EventEndType = CalendarEventEndType.EndDate)})
 
 		<br />
 		@Html.LabelFor(Function(model) model.EventEndSessionID)
 		@Html.ColumnDropdownFor(Function(m) m.EventEndSessionID, New ColumnFilter() _
-													 With {.TableID = Model.TableID, .DataType = SQLDataType.sqlVarChar, .AddNone = True, .Size = 2}, New With {.disabled = (Model.EventEndType = CalendarEventEndType.EndDate)})
+													 With {.TableID = Model.TableID, .DataType = ColumnDataType.sqlVarChar, .AddNone = True, .Size = 2}, New With {.disabled = (Model.EventEndType = CalendarEventEndType.EndDate)})
 
 		<br/>
 		@Html.RadioButton("EventEndType", CInt(CalendarEventEndType.Duration), Model.EventEndType = CalendarEventEndType.Duration, New With {.onclick = "changeEventEndType('duration')"})
 		Duration
 		@Html.ColumnDropdownFor(Function(m) m.EventDurationID, New ColumnFilter() _
-													 With {.TableID = Model.TableID, .DataType = SQLDataType.sqlNumeric, .AddNone = True}, New With {.disabled = (Model.EventEndType = CalendarEventEndType.EndDate)})
+													 With {.TableID = Model.TableID, .DataType = ColumnDataType.sqlNumeric, .AddNone = True}, New With {.disabled = (Model.EventEndType = CalendarEventEndType.EndDate)})
 
 
 	</fieldset>
@@ -90,7 +90,7 @@ End Code
 
 		@Html.DisplayNameFor(Function(model) model.LegendEventColumnID)
 		@Html.ColumnDropdownFor(Function(m) m.LegendEventColumnID, New ColumnFilter() _
-													 With {.TableID = Model.TableID, .DataType = SQLDataType.sqlVarChar, .ColumnType = ColumnType.Lookup}, _
+													 With {.TableID = Model.TableID, .DataType = ColumnDataType.sqlVarChar, .ColumnType = ColumnType.Lookup}, _
 													 New With {.disabled = (Model.EventEndType = CalendarEventEndType.EndDate)})
 
 		<br />
@@ -102,12 +102,12 @@ End Code
 		<br />
 		@Html.DisplayNameFor(Function(model) model.LegendLookupColumnID)
 		@Html.ColumnDropdownFor(Function(m) m.LegendLookupColumnID, New ColumnFilter() _
-													 With {.TableID = Model.LegendLookupTableID, .DataType = SQLDataType.sqlVarChar}, Nothing)
+													 With {.TableID = Model.LegendLookupTableID, .DataType = ColumnDataType.sqlVarChar}, Nothing)
 
 		<br />
 		@Html.DisplayNameFor(Function(model) model.LegendLookupCodeID)
 		@Html.ColumnDropdownFor(Function(m) m.LegendLookupCodeID, New ColumnFilter() _
-													 With {.TableID = Model.LegendLookupTableID, .DataType = SQLDataType.sqlVarChar}, Nothing)
+													 With {.TableID = Model.LegendLookupTableID, .DataType = ColumnDataType.sqlVarChar}, Nothing)
 
 		<br />
 
@@ -117,12 +117,12 @@ End Code
 		<legend>Event Description</legend>
 		@Html.DisplayNameFor(Function(model) model.EventDesc1ColumnID)
 		@Html.ColumnDropdownFor(Function(m) m.EventDesc1ColumnID, New ColumnFilter() _
-													 With {.TableID = Model.TableID, .DataType = SQLDataType.sqlVarChar, .AddNone = True, .ShowFullName = True, .IncludeParents = True}, Nothing)
+													 With {.TableID = Model.TableID, .DataType = ColumnDataType.sqlVarChar, .AddNone = True, .ShowFullName = True, .IncludeParents = True}, Nothing)
 
 		<br />
 		@Html.DisplayNameFor(Function(model) model.EventDesc2ColumnID)
 		@Html.ColumnDropdownFor(Function(m) m.EventDesc2ColumnID, New ColumnFilter() _
-													 With {.TableID = Model.TableID, .DataType = SQLDataType.sqlVarChar, .AddNone = True, .ShowFullName = True, .IncludeParents = True}, Nothing)
+													 With {.TableID = Model.TableID, .DataType = ColumnDataType.sqlVarChar, .AddNone = True, .ShowFullName = True, .IncludeParents = True}, Nothing)
 
 	</fieldset>
 

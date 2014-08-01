@@ -2575,9 +2575,9 @@ Namespace Controllers
 
 					ElseIf lngOutputFormat = OutputFormats.ExcelPivotTable Then
 
-						ClientDLL.AddColumn(" ", SQLDataType.sqlVarChar, 0, False)
+						ClientDLL.AddColumn(" ", ColumnDataType.sqlVarChar, 0, False)
 						For intCount = 0 To objCrossTab.ColumnHeadingUbound(0)
-							ClientDLL.AddColumn(objCrossTab.ColumnHeading(0, intCount), SQLDataType.sqlNumeric, objCrossTab.IntersectionDecimals, objCrossTab.Use1000Separator)
+							ClientDLL.AddColumn(objCrossTab.ColumnHeading(0, intCount), ColumnDataType.sqlNumeric, objCrossTab.IntersectionDecimals, objCrossTab.Use1000Separator)
 						Next
 
 						If objCrossTab.CrossTabType = CrossTabType.cttAbsenceBreakdown Then
@@ -2586,7 +2586,7 @@ Namespace Controllers
 							ClientDLL.IntersectionType = CInt(Session("CT_IntersectionType"))
 						End If
 
-						ClientDLL.AddColumn(strInterSectionType, SQLDataType.sqlInteger, objCrossTab.IntersectionDecimals, objCrossTab.Use1000Separator)
+						ClientDLL.AddColumn(strInterSectionType, ColumnDataType.sqlInteger, objCrossTab.IntersectionDecimals, objCrossTab.Use1000Separator)
 
 						Dim strOutput(,) As String
 						Dim strPageValue As String = ""
@@ -2683,12 +2683,12 @@ Namespace Controllers
 
 						ClientDLL.AddColumn(" ", 12, 0, False)
 						For intCount = 0 To objCrossTab.ColumnHeadingUbound(0)
-							ClientDLL.AddColumn(Left(objCrossTab.ColumnHeading(0, intCount), 255), SQLDataType.sqlNumeric, objCrossTab.IntersectionDecimals _
+							ClientDLL.AddColumn(Left(objCrossTab.ColumnHeading(0, intCount), 255), ColumnDataType.sqlNumeric, objCrossTab.IntersectionDecimals _
 							, LCase(objCrossTab.Use1000Separator))
 						Next
 
 						strInterSectionType = Session("CT_IntersectionType")
-						ClientDLL.AddColumn(strInterSectionType, SQLDataType.sqlNumeric, objCrossTab.IntersectionDecimals, objCrossTab.Use1000Separator)
+						ClientDLL.AddColumn(strInterSectionType, ColumnDataType.sqlNumeric, objCrossTab.IntersectionDecimals, objCrossTab.Use1000Separator)
 
 
 						If objCrossTab.PageBreakColumn = True Then

@@ -2,7 +2,6 @@
 Option Explicit On
 
 Imports System.ComponentModel
-Imports System.Collections.ObjectModel
 Imports DMI.NET.Classes
 
 Namespace ViewModels.Reports

@@ -2,8 +2,6 @@
 Option Explicit On
 
 Imports System.ComponentModel
-Imports System.Collections.ObjectModel
-Imports HR.Intranet.Server.Enums
 Imports DMI.NET.Classes
 
 Namespace ViewModels.Reports

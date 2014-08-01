@@ -15,7 +15,7 @@ Friend Class CColumnPrivileges
 		Return mCol.Contains(pvIndexKey)
 	End Function
 
-	Friend Function Add(pfSelect As Boolean, pfUpdate As Boolean, psColumnName As String, piColumnType As Short, piDataType As SQLDataType, plngColumnID As Integer, pfUniqueCheck As Boolean) As ColumnPrivilege
+	Friend Function Add(pfSelect As Boolean, pfUpdate As Boolean, psColumnName As String, piColumnType As Short, piDataType As ColumnDataType, plngColumnID As Integer, pfUniqueCheck As Boolean) As ColumnPrivilege
 		'create a new object
 		Dim objNewMember As ColumnPrivilege
 		objNewMember = New ColumnPrivilege

@@ -1,9 +1,6 @@
 ﻿Option Strict On
 Option Explicit On
 
-Imports HR.Intranet.Server.Enums
-Imports DMI.NET.AttributeExtensions
-
 Namespace Classes
 	Public Class ReportTableItem
 		Implements IJsonSerialize

@@ -161,7 +161,7 @@ Public Class clsOutputRun
 
 	End Sub
 
-	Public Sub AddColumn(Heading As String, DataType As SQLDataType, Decimals As Integer, ThousandSeparator As Boolean)
+	Public Sub AddColumn(Heading As String, DataType As ColumnDataType, Decimals As Integer, ThousandSeparator As Boolean)
 
 		Dim objColumn As New Column With {
 					.Name = Heading,

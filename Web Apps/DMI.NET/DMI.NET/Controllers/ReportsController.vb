@@ -6,9 +6,7 @@ Imports DMI.NET.Models
 Imports DMI.NET.Classes
 Imports DMI.NET.Repository
 Imports System.Web.Script.Serialization
-Imports DMI.NET.ViewModels
 Imports DMI.NET.ViewModels.Reports
-Imports HR.Intranet.Server.Enums
 Imports DMI.NET.Code
 
 Namespace Controllers

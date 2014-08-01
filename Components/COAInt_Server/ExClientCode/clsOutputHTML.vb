@@ -599,9 +599,9 @@ LocalErr:
 
 		'UPGRADE_WARNING: Couldn't resolve default property of object colColumns(lngCol + 1).DataType. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 		Select Case colColumns.Item(lngCol + 1).DataType
-			Case SQLDataType.sqlNumeric, SQLDataType.sqlInteger
+			Case ColumnDataType.sqlNumeric, ColumnDataType.sqlInteger
 				strTemp = " ALIGN=Right "
-			Case SQLDataType.sqlBoolean
+			Case ColumnDataType.sqlBoolean
 				strTemp = " ALIGN=Center "
 			Case Else
 				strTemp = " ALIGN=Left "

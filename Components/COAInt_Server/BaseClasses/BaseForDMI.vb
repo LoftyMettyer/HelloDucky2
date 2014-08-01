@@ -389,7 +389,7 @@ ErrorTrap:
 
 		End Function
 
-		Public Function GetDataType(lTableID As Integer, lngColumnID As Integer) As SQLDataType
+		Public Function GetDataType(lTableID As Integer, lngColumnID As Integer) As ColumnDataType
 			Return Columns.GetById(lngColumnID).DataType
 		End Function
 
@@ -405,12 +405,12 @@ ErrorTrap:
 			End If
 		End Function
 
-		Friend Function GetColumnDataType(plngColumnID As Integer) As SQLDataType
+		Friend Function GetColumnDataType(plngColumnID As Integer) As ColumnDataType
 			Return Columns.GetById(plngColumnID).DataType
 		End Function
 
 		Public Function IsPhotoDataType(lngColumnID As Integer) As Boolean
-			Return Columns.GetById(lngColumnID).DataType = SQLDataType.sqlVarBinary
+			Return Columns.GetById(lngColumnID).DataType = ColumnDataType.sqlVarBinary
 		End Function
 
 		Public Function GetColumnTableName(plngColumnID As Integer) As String

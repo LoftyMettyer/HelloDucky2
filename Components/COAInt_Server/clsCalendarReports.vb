@@ -771,10 +771,10 @@ Public Class CalendarReport
 				strFormat = "#,0" & IIf(iDecimals > 0, "." & New String("#", iDecimals), "")
 				strTempEventDesc = Format(pvarValue, strFormat)
 
-			ElseIf GetColumnDataType(plngColumnID) = SQLDataType.sqlBoolean Then
+			ElseIf GetColumnDataType(plngColumnID) = ColumnDataType.sqlBoolean Then
 				strTempEventDesc = pvarValue
 
-			ElseIf GetColumnDataType(plngColumnID) = SQLDataType.sqlDate Then
+			ElseIf GetColumnDataType(plngColumnID) = ColumnDataType.sqlDate Then
 				strTempEventDesc = VB6.Format(pvarValue, mstrClientDateFormat)
 
 			Else
@@ -2617,7 +2617,7 @@ ErrorTrap:
 
 		If blnColumnOK Then
 
-			If mobjColumnPrivileges.Item(strTempColumnName).DataType = SQLDataType.sqlDate Then
+			If mobjColumnPrivileges.Item(strTempColumnName).DataType = ColumnDataType.sqlDate Then
 				bDateColumn = True
 			End If
 
@@ -3322,7 +3322,7 @@ TidyUpAndExit:
 			mlngDescription1 = IIf(IsDBNull(rowDefinition("Description1")), 0, rowDefinition("Description1"))
 			If mlngDescription1 > 0 Then
 				mstrDescription1 = GetColumnName(rowDefinition("Description1"))
-				mblnDesc1IsDate = (GetDataType(mlngCalendarReportsBaseTable, mlngDescription1) = SQLDataType.sqlDate)
+				mblnDesc1IsDate = (GetDataType(mlngCalendarReportsBaseTable, mlngDescription1) = ColumnDataType.sqlDate)
 			Else
 				mstrDescription1 = vbNullString
 				mblnDesc1IsDate = False
@@ -3332,7 +3332,7 @@ TidyUpAndExit:
 			mlngDescription2 = IIf(IsDBNull(rowDefinition("Description2")), 0, rowDefinition("Description2"))
 			If mlngDescription2 > 0 Then
 				mstrDescription2 = GetColumnName(rowDefinition("Description2"))
-				mblnDesc2IsDate = (GetDataType(mlngCalendarReportsBaseTable, mlngDescription2) = SQLDataType.sqlDate)
+				mblnDesc2IsDate = (GetDataType(mlngCalendarReportsBaseTable, mlngDescription2) = ColumnDataType.sqlDate)
 			Else
 				mstrDescription2 = vbNullString
 				mblnDesc2IsDate = False
@@ -5278,7 +5278,7 @@ Error_Trap:
 							& "'" & .Description1Name & "' AS 'EventDescription1Column', " & vbNewLine
 
 					'TM20030407 Fault 5259 - if logic field...convert to 'Y' or 'N' accordingly.
-					If GetDataType(lngTempTableID, .Description1ID) = SQLDataType.sqlBoolean Then
+					If GetDataType(lngTempTableID, .Description1ID) = ColumnDataType.sqlBoolean Then
 						strColList = strColList & "CASE " & strTableColumn & " WHEN 1 THEN 'Y' ELSE 'N' END AS 'EventDescription1', " & vbNewLine
 					Else
 						strColList = strColList & "CONVERT(varchar(MAX)," & strTableColumn & ") AS 'EventDescription1', " & vbNewLine
@@ -5308,7 +5308,7 @@ Error_Trap:
 							& "'" & .Description2Name & "' AS 'EventDescription2Column', " & vbNewLine
 
 					'TM20030407 Fault 5259 - if logic field...convert to 'Y' or 'N' accordingly.
-					If GetDataType(lngTempTableID, .Description2ID) = SQLDataType.sqlBoolean Then
+					If GetDataType(lngTempTableID, .Description2ID) = ColumnDataType.sqlBoolean Then
 						strColList = strColList & "CASE " & strTableColumn & " WHEN 1 THEN 'Y' ELSE 'N' END AS 'EventDescription2', " & vbNewLine
 					Else
 						strColList = strColList & "CONVERT(varchar(MAX)," & strTableColumn & ") AS 'EventDescription2', " & vbNewLine

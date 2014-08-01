@@ -414,7 +414,7 @@ Namespace ExClientCode
 						If Not strArray(lngGridCol, lngGridRow) Is Nothing Then
 							Select Case colColumns.Item(lngGridCol).DataType
 
-								Case SQLDataType.sqlInteger
+								Case ColumnDataType.sqlInteger
 
 									If lngGridRow = 0 Then
 										.SetStyle(stlGeneral)
@@ -424,7 +424,7 @@ Namespace ExClientCode
 										.PutValue(NullSafeInteger(strArray(lngGridCol, lngGridRow)))
 									End If
 
-								Case SQLDataType.sqlNumeric
+								Case ColumnDataType.sqlNumeric
 
 									If lngGridRow = 0 Then
 										' header, so leave as a string
@@ -464,14 +464,14 @@ Namespace ExClientCode
 
 
 									End If
-								Case SQLDataType.sqlBoolean
+								Case ColumnDataType.sqlBoolean
 									.SetStyle(stlGeneral)
 									.PutValue(strArray(lngGridCol, lngGridRow))
-								Case SQLDataType.sqlUnknown
+								Case ColumnDataType.sqlUnknown
 									'Leave it alone! (Required for percentages on Standard Reports)
 									.SetStyle(stlGeneral)
 									.PutValue(strArray(lngGridCol, lngGridRow))
-								Case SQLDataType.sqlDate
+								Case ColumnDataType.sqlDate
 									.SetStyle(stlDate)
 									.PutValue(strArray(lngGridCol, lngGridRow))
 								Case Else
@@ -558,7 +558,7 @@ Namespace ExClientCode
 
 					dataFirstCol = 0
 					For Each objColumn In _mcolColumns
-						If (objColumn.DataType = SQLDataType.sqlNumeric Or objColumn.DataType = SQLDataType.sqlInteger) And dataFirstCol > 0 Then
+						If (objColumn.DataType = ColumnDataType.sqlNumeric Or objColumn.DataType = ColumnDataType.sqlInteger) And dataFirstCol > 0 Then
 							bNumericFound = True
 							Exit For
 						End If

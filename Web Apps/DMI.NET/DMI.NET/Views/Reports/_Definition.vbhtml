@@ -1,7 +1,7 @@
 ﻿@Imports DMI.NET
 @Imports DMI.NET.Helpers
 @Imports DMI.NET.Models
-@Imports HR.Intranet.Server.Enums
+
 @Inherits System.Web.Mvc.WebViewPage(Of ReportBaseModel)
 
 @Html.HiddenFor(Function(m) m.ID, New With {.id = "txtReportID"})

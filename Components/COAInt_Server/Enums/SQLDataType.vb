@@ -1,5 +1,5 @@
 ﻿Namespace Enums
-	Public Enum SQLDataType
+	Public Enum ColumnDataType
 		sqlUnknown = 0
 		sqlOle = -4
 		sqlBoolean = -7

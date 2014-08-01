@@ -1,6 +1,5 @@
 ﻿@Imports DMI.NET
 @Imports DMI.NET.Helpers
-@Imports HR.Intranet.Server.Enums
 @Imports DMI.NET.Classes
 @Inherits System.Web.Mvc.WebViewPage(Of Models.CalendarReportModel)
 
@@ -44,7 +43,7 @@ End Code
 
 			<br/>
 			@Html.LabelFor(Function(m) m.RegionID)
-			@Html.ColumnDropdownFor(Function(m) m.Description2ID, New ColumnFilter() With {.TableID = Model.BaseTableID, .AddNone = True, .DataType = SQLDataType.sqlVarChar}, New With {.id = "cboRegionID"})
+			@Html.ColumnDropdownFor(Function(m) m.Description2ID, New ColumnFilter() With {.TableID = Model.BaseTableID, .AddNone = True, .DataType = ColumnDataType.sqlVarChar}, New With {.id = "cboRegionID"})
 
 			<br/>
 			@Html.CheckBoxFor(Function(m) m.GroupByDescription, New With {.id = "chkGroupByDescription", .onclick = "selectGroupByDescription()"})

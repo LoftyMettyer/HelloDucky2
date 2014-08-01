@@ -1,6 +1,5 @@
 ﻿@Imports DMI.NET
 @Imports DMI.NET.Helpers
-@Imports HR.Intranet.Server.Enums
 @Imports DMI.NET.Code.Extensions
 @Inherits System.Web.Mvc.WebViewPage(Of Models.ReportBaseModel)
 

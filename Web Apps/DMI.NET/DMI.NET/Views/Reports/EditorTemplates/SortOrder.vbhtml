@@ -1,6 +1,5 @@
 ﻿@Imports DMI.NET.ViewModels.Reports
 @Imports DMI.NET.Helpers
-@Imports HR.Intranet.Server.Enums
 @Inherits System.Web.Mvc.WebViewPage(Of SortOrderViewModel)
 
 @Code

@@ -1,8 +1,7 @@
 ﻿@Imports DMI.NET
 @Imports DMI.NET.Helpers
-@Imports HR.Intranet.Server.Enums
-@Inherits System.Web.Mvc.WebViewPage(Of Models.CalendarReportModel)
 @Imports System.Linq.Expressions
+@Inherits System.Web.Mvc.WebViewPage(Of Models.CalendarReportModel)
 
 <fieldset class="width45 floatleft">
 	<legend class="fontsmalltitle">Start Date</legend>

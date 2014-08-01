@@ -1,8 +1,6 @@
 ﻿Option Strict On
 Option Explicit On
 
-Imports HR.Intranet.Server.Enums
-
 Namespace Code
 
 	<HideModuleName>

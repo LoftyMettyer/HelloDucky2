@@ -28,7 +28,7 @@ Namespace Models
 		Public Property HorizontalIncrement As Integer
 
 		<HiddenInput>
-		Public Property HorizontalDataType As SQLDataType
+		Public Property HorizontalDataType As ColumnDataType
 
 		<Range(1, Integer.MaxValue, ErrorMessage:="Vertical column not selected")>
 		Public Property VerticalID As Integer
@@ -38,7 +38,7 @@ Namespace Models
 		Public Property VerticalIncrement As Integer
 
 		<HiddenInput>
-		Public Property VerticalDataType As SQLDataType
+		Public Property VerticalDataType As ColumnDataType
 
 		Public Property PageBreakID As Integer
 		Public Property PageBreakStart As Integer
@@ -46,7 +46,7 @@ Namespace Models
 		Public Property PageBreakIncrement As Integer
 
 		<HiddenInput>
-		Public Property PageBreakDataType As SQLDataType
+		Public Property PageBreakDataType As ColumnDataType
 
 		Public Property IntersectionID As Integer
 

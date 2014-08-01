@@ -51,7 +51,7 @@ Public Class SessionInfo
 	End Function
 
 	Public Function IsPhotoDataType(lngColumnID As Integer) As Boolean
-		Return Columns.GetById(lngColumnID).DataType = SQLDataType.sqlVarBinary
+		Return Columns.GetById(lngColumnID).DataType = ColumnDataType.sqlVarBinary
 	End Function
 
 	Public Function GetUserSetting(ByVal Section As String, ByVal Key As String, ByVal DefaultValue As Object) As Object
@@ -273,7 +273,7 @@ Public Class SessionInfo
 				column.TableID = CInt(objRow("tableid"))
 				column.TableName = Tables.GetById(column.TableID).Name
 				column.Name = objRow("columnname").ToString()
-				column.DataType = CType(objRow("datatype"), SQLDataType)
+				column.DataType = CType(objRow("datatype"), ColumnDataType)
 				column.ColumnType = CType(objRow("columnType"), ColumnType)
 				column.Use1000Separator = CBool(objRow("use1000separator"))
 				column.Size = CLng(objRow("size"))

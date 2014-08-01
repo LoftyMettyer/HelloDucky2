@@ -7,18 +7,16 @@ Imports System.Data.SqlClient
 Imports HR.Intranet.Server.Metadata
 Imports System.Collections.ObjectModel
 Imports DMI.NET.Classes
-Imports HR.Intranet.Server.Enums
-Imports DMI.NET.ViewModels
 Imports DMI.NET.ViewModels.Reports
 Imports DMI.NET.Code.Extensions
 
 Namespace Repository
 	Public Class ReportRepository
 
-		Private _customreports As New Collection(Of CustomReportModel)
-		Private _crosstabs As New Collection(Of CrossTabModel)
-		Private _calendarreports As New Collection(Of CalendarReportModel)
-		Private _mailmerges As New Collection(Of MailMergeModel)
+		Private ReadOnly _customreports As New Collection(Of CustomReportModel)
+		Private ReadOnly _crosstabs As New Collection(Of CrossTabModel)
+		Private ReadOnly _calendarreports As New Collection(Of CalendarReportModel)
+		Private ReadOnly _mailmerges As New Collection(Of MailMergeModel)
 
 		Private _objSessionInfo As SessionInfo
 		Private _objDataAccess As clsDataAccess
@@ -522,7 +520,7 @@ Namespace Repository
 						New SqlParameter("psName", SqlDbType.VarChar, 255) With {.Value = objModel.Name}, _
 						New SqlParameter("psDescription", SqlDbType.VarChar, -1) With {.Value = objModel.Description}, _
 						New SqlParameter("piBaseTableID", SqlDbType.Int) With {.Value = objModel.BaseTableID}, _
-						New SqlParameter("pfAllRecords", SqlDbType.Bit) With {.Value = (objModel.PicklistID = 0 And objModel.FilterID = 0)}, _
+						New SqlParameter("pfAllRecords", SqlDbType.Bit) With {.Value = (objModel.PicklistID = 0 AndAlso objModel.FilterID = 0)}, _
 						New SqlParameter("piPicklistID", SqlDbType.Int) With {.Value = objModel.PicklistID}, _
 						New SqlParameter("piFilterID", SqlDbType.Int) With {.Value = objModel.FilterID}, _
 						New SqlParameter("piParent1TableID", SqlDbType.Int) With {.Value = objModel.Parent1.ID}, _
@@ -593,7 +591,7 @@ Namespace Repository
 				Dim bAllRecords As Boolean
 
 				' Calendar reports don't save the selection type - instead they have a boolean allrecords flag
-				If objModel.PicklistID = 0 And objModel.FilterID = 0 Then bAllRecords = True
+				If objModel.PicklistID = 0 AndAlso objModel.FilterID = 0 Then bAllRecords = True
 
 				_objDataAccess.ExecuteSP("spASRIntSaveCalendarReport", _
 				New SqlParameter("psName", SqlDbType.VarChar, 255) With {.Value = objModel.Name}, _
@@ -927,7 +925,7 @@ Namespace Repository
 						.Name = objRow("Name").ToString,
 						.IsExpression = True,
 						.Heading = "",
-						.DataType = CType(objRow("DataType"), SQLDataType),
+						.DataType = CType(objRow("DataType"), ColumnDataType),
 						.Size = CInt(objRow("Size")),
 						.Decimals = CInt(objRow("Decimals"))}
 
@@ -1077,7 +1075,7 @@ Namespace Repository
 						.ID = CInt(objRow("id")),
 						.Name = objRow("Name").ToString,
 						.TableID = CInt(objRow("Tableid")),
-						.DataType = CType(objRow("DataType"), SQLDataType),
+						.DataType = CType(objRow("DataType"), ColumnDataType),
 						.Sequence = CInt(objRow("Sequence")),
 						.Size = CInt(objRow("Size")),
 						.Decimals = CInt(objRow("Decimals")),

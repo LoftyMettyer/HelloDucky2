@@ -9,7 +9,7 @@ Namespace Metadata
 
 		Public TableID As Integer
 		Public TableName As String
-		Public DataType As SQLDataType = SQLDataType.sqlUnknown
+		Public DataType As ColumnDataType = ColumnDataType.sqlUnknown
 		Public Size As Long									' Needs to be long to handle ole embedded ole types.
 		Public Decimals As Integer
 		Public Use1000Separator As Boolean

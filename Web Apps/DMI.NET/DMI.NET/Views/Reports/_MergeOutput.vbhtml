@@ -1,6 +1,5 @@
 ﻿@Imports DMI.NET
 @Imports DMI.NET.Helpers
-@Imports HR.Intranet.Server.Enums
 @Inherits System.Web.Mvc.WebViewPage(Of Models.MailMergeModel)
 
 <fieldset class="width100">
