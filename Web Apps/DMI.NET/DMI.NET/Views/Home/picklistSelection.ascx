@@ -21,7 +21,7 @@
 		if ((frmUseful.txtSelectionType.value.toUpperCase() != "FILTER") &&
 				(frmUseful.txtSelectionType.value.toUpperCase() != "PICKLIST")) {
 
-			var sErrMsg = txtpicklistSelectionErrorDescription.value;
+			var sErrMsg = $('#txtpicklistSelectionErrorDescription').val();
 			if (sErrMsg.length > 0) {
 				fOK = false;
 				OpenHR.messageBox(sErrMsg);
@@ -47,10 +47,11 @@
 
 			//resize the grid to the height of its container.		
 			var workPageHeight = $('.optiondatagridpage').outerHeight(true);
-			var pageTitleHeight = $('.optiondatagridpage h3').outerHeight(true);			
+			var pageTitleHeight = $('.optiondatagridpage .pageTitle').outerHeight(true);
+			var dropDownHeight = $('.optiondatagridpage .formField:first').outerHeight(true);
 			var footerheight = $('.optiondatagridpage footer').outerHeight(true);
-			var marginHeadHeight = 50;
-			var newGridHeight = workPageHeight - pageTitleHeight - footerheight - marginHeadHeight;
+
+			var newGridHeight = workPageHeight - pageTitleHeight - dropDownHeight - footerheight;
 
 			var SelectionType = frmUseful.txtSelectionType.value;
 			tableToGrid("#ssOleDBGridSelRecords", {
@@ -58,6 +59,7 @@
 				autowidth: true,
 				onSelectRow: function (id) {
 					picklistSelection_refreshControls();
+					$('#cmdSelectFilter').button('enable');
 				},
 				ondblClickRow: function () {
 					makeSelection();
@@ -70,16 +72,15 @@
 
 			picklistSelection_refreshControls();
 		}
-		else {
-			txtTableID.value = frmUseful.txtTableID.value;
-			txtViewID.value = selectView.options[selectView.selectedIndex].value;
-			txtOrderID.value = selectOrder.options[selectOrder.selectedIndex].value;
-
+		else {			
+			//txtTableID.value = frmUseful.txtTableID.value;
+			//txtViewID.value = selectView.options[selectView.selectedIndex].value;
+			//txtOrderID.value = selectOrder.options[selectOrder.selectedIndex].value;
 			loadAddRecords();
 		}
 	}
 
-	function picklistSelection_refreshControls() {
+	function picklistSelection_refreshControls() {		
 		if ((frmpicklistSelectionUseful.txtSelectionType.value.toUpperCase() != "FILTER") &&
 				(frmpicklistSelectionUseful.txtSelectionType.value.toUpperCase() != "PICKLIST")) {
 
@@ -98,10 +99,11 @@
 	function makeSelection() {
 		
 		var frmUseful = document.getElementById("frmpicklistSelectionUseful");
+		var frmParentUseful = OpenHR.getForm("workframe", "frmUseful");
+		var frmPrompt = document.getElementById("frmPrompt");
+
 		if (frmUseful.txtSelectionType.value.toUpperCase() == "FILTER") {
 			try {
-				var frmParentUseful = OpenHR.getForm("workframe", "frmUseful");
-				var frmPrompt = document.getElementById("frmPrompt");
 				frmParentUseful.txtChanged.value = 1;
 			}
 			catch (e) {
@@ -154,9 +156,9 @@
 	function goView() {
 		// Get the picklistSelectionData.asp to get the find records.
 		var dataForm = OpenHR.getForm("picklistdataframe", "frmPicklistGetData");
-		dataForm.txtTableID.value = frmpicklistSelectionUseful.txtTableID.value;
-		dataForm.txtViewID.value = selectView.options[selectView.selectedIndex].value;
-		dataForm.txtOrderID.value = selectOrder.options[selectOrder.selectedIndex].value;
+		dataForm.txtTableID.value = $('#frmpicklistSelectionUseful #txtTableID').val();
+		dataForm.txtViewID.value = $('#selectView').val();
+		dataForm.txtOrderID.value = $('#selectOrder').val();
 		dataForm.txtFirstRecPos.value = 1;
 		dataForm.txtCurrentRecCount.value = 0;
 		dataForm.txtPageAction.value = "LOAD";
@@ -167,9 +169,9 @@
 	function goOrder() {
 		// Get the picklistSelectionData.asp to get the find records.
 		var dataForm = OpenHR.getForm("picklistdataframe", "frmPicklistGetData");
-		dataForm.txtTableID.value = frmpicklistSelectionUseful.txtTableID.value;
-		dataForm.txtViewID.value = selectView.options[selectView.selectedIndex].value;
-		dataForm.txtOrderID.value = selectOrder.options[selectOrder.selectedIndex].value;
+		dataForm.txtTableID.value = $('#frmpicklistSelectionUseful #txtTableID').val();
+		dataForm.txtViewID.value = $('#selectView').val();
+		dataForm.txtOrderID.value = $('#selectOrder').val();
 		dataForm.txtFirstRecPos.value = 1;
 		dataForm.txtCurrentRecCount.value = 0;
 		dataForm.txtPageAction.value = "LOAD";
@@ -177,13 +179,13 @@
 		picklist_refreshData();
 	}
 
-	function selectedOrderID() {
-		return selectOrder.options[selectOrder.selectedIndex].value;
-	}
+	//function selectedOrderID() {
+	//	return selectOrder.options[selectOrder.selectedIndex].value;
+	//}
 
-	function selectedViewID() {
-		return selectView.options[selectView.selectedIndex].value;
-	}
+	//function selectedViewID() {
+	//	return selectView.options[selectView.selectedIndex].value;
+	//}
 
 	function convertLocaleDateToSQL(psDateString) {
 		/* Convert the given date string (in locale format) into 
@@ -199,6 +201,7 @@
 		var sTempValue;
 		var sValue;
 		var iLoop;
+		var iValue;
 
 		sDateFormat = OpenHR.LocaleDateFormat.LocaleDateFormat;
 
@@ -333,7 +336,7 @@
 
 <div class="absolutefull optiondatagridpage">
 	<div>
-		<h3><span class="pageTitle">
+		<span class="pageTitle">
 			<%
 				Select Case UCase(Session("selectionType"))
 					Case UCase("picklist")
@@ -343,7 +346,7 @@
 					Case Else
 						Response.Write("Select Records")
 				End Select
-			%></span></h3>
+			%></span>
 
 
 		<%
@@ -505,8 +508,8 @@
 	<input type='hidden' id="txtpicklistSelectionErrorDescription" name="txtpicklistSelectionErrorDescription" value="<%=sErrorDescription%>">
 
 	<footer>
-		<input id="cmdOK" type="button" value="OK" name="cmdOK" class="btn ui-state-disabled btndisabled" style="width: 80px" onclick="makeSelection()" disabled="true" />
-		<input id="cmdCancel" type="button" value="Cancel" class="btn" name="cmdCancel" style="width: 80px" onclick="closeclick();" />
+		<button id="cmdSelectFilter" name="cmdSelectFilter" disabled="disabled" onclick="makeSelection()" style="width: 80px;">OK</button>
+		<button id="cmdCancelFilter" name="cmdCancelFilter" onclick="closeclick()" style="width: 80px;">Cancel</button>
 	</footer>
 
 </div>

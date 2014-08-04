@@ -89,6 +89,7 @@
 			// Add the grid records.
 			var sAddString;
 			iCount = 0;
+			var fRecordAdded;
 			if (dataCollection != null) {
 				colData = [];
 				for (i = 0; i < dataCollection.length; i++) {
@@ -124,7 +125,7 @@
 				autowidth: true,
 				shrinkToFit: shrinkToFit,
 				onSelectRow: function () {
-					$("footer #cmdOK").removeClass("ui-state-disabled btndisabled").prop("disabled", false); //Enable the OK button
+					$('#cmdSelectFilter').button('enable');
 				},
 				ondblClickRow: function (rowID) {
 					makeSelection();
@@ -138,7 +139,7 @@
 
 			//resize the grid to the height of its container.		
 			var workPageHeight = $('.optiondatagridpage').outerHeight(true);
-			var pageTitleHeight = $('.optiondatagridpage h3').outerHeight(true);
+			var pageTitleHeight = $('.optiondatagridpage .pageTitle').outerHeight(true);
 			var dropdownHeight = $('.optiondatagridpage .floatleft').outerHeight(true);
 			var footerheight = $('.optiondatagridpage footer').outerHeight(true);
 
@@ -149,7 +150,7 @@
 
 			// Select the top record.
 			if (fRecordAdded == true) {
-				$("#ssOleDBGridSelRecords").jqGrid('setSelection', 1);
+			//	$("#ssOleDBGridSelRecords").jqGrid('setSelection', 1);
 			}
 
 			frmPicklistData.txtRecordCount.value = iCount;

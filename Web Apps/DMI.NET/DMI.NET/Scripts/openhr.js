@@ -297,7 +297,8 @@
 
 					if (asyncFlag == true) {
 						$(".popup").dialog("open");
-						$(".popup").dialog('option', 'title', '');
+						//$(".popup").dialog('option', 'title', '');
+						$(".popup").dialog({ dialogClass: 'no-close' });
 					}
 
 					//OK

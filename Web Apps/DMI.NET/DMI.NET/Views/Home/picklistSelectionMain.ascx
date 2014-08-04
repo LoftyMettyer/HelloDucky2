@@ -1,5 +1,4 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
-<%@ Import Namespace="DMI.NET" %>
 
 <%
 	Session("selectionType") = Request.Form("selectionType")
@@ -12,15 +11,15 @@
 
 	function loadAddRecords() {
 		var iCount;
-		iCount = new Number(txtLoadCount.value);
-		txtLoadCount.value = iCount + 1;
+		iCount = new Number($('#txtLoadCount').val());
+		$('#txtLoadCount').val(iCount + 1);
 
 		if (iCount > 0) {
 			var dataForm = OpenHR.getForm("picklistdataframe", "frmPicklistGetData");
 
-			dataForm.txtTableID.value = txtTableID.value;
-			dataForm.txtViewID.value = txtViewID.value;
-			dataForm.txtOrderID.value = txtOrderID.value;
+			dataForm.txtTableID.value = frmUseful.txtTableID.value;
+			dataForm.txtViewID.value = $('#selectView').val();
+			dataForm.txtOrderID.value = $('#selectOrder').val();	// txtOrderID.value;
 			dataForm.txtFirstRecPos.value = 1;
 			dataForm.txtCurrentRecCount.value = 0;
 			dataForm.txtPageAction.value = "LOAD";
@@ -30,14 +29,14 @@
 	}
 
 </script>
-
-<input type='hidden' id="txtLoadCount" name="txtLoadCount" value="0">
-<input type='hidden' id="txtTableID" name="txtTableID" value="0">
-<input type='hidden' id="txtViewID" name="txtViewID" value="0">
-<input type='hidden' id="txtOrderID" name="txtOrderID" value="0">
-<input type='hidden' id="txtSelectionType" name="txtSelectionType" value='<%=Request.Form("selectionType")%>'>
-<input type='hidden' id="txtSelectionTableID" name="txtSelectionTableID" value='<%=Request.Form("selectionTableID")%>'>
-
+<div id="divPicklistSelectionMain">
+	<input type='hidden' id="txtLoadCount" name="txtLoadCount" value="0">
+	<input type='hidden' id="txtTableID" name="txtTableID" value="0">
+	<input type='hidden' id="txtViewID" name="txtViewID" value="0">
+	<input type='hidden' id="txtOrderID" name="txtOrderID" value="0">
+	<input type='hidden' id="txtSelectionType" name="txtSelectionType" value='<%=Request.Form("selectionType")%>'>
+	<input type='hidden' id="txtSelectionTableID" name="txtSelectionTableID" value='<%=Request.Form("selectionTableID")%>'>
+</div>
 <div id="picklistworkframe" data-framesource="picklistSelection" style="display: block"><%Html.RenderPartial("~/views/home/picklistSelection.ascx")%></div>
 <div id="picklistdataframe" data-framesource="picklistSelectionData" style="display: none"><%Html.RenderPartial("~/views/home/picklistSelectionData.ascx")%></div>
 
@@ -47,7 +46,7 @@
 
 	picklistSelection_window_onload();
 
-	$('.popup').bind('dialogclose', function (event) {
+	$('.popup').bind('dialogclose', function () {
 		closeclick();
 		$("#optionframe").hide();
 		$("#workframeset").show();
