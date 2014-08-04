@@ -695,7 +695,6 @@ function optiondata_onload() {
 
 				//resize the grid to the height of its container.
 				$("#ssOleDBGrid").jqGrid('setGridHeight', $("#PickListGrid").height());
-				$("#ssOleDBGrid").jqGrid('setGridWidth', $("#PickListGrid").width() - 426);
 
 	 			if ($("#ssOleDBGrid").jqGrid().width() < $("#PickListGrid").width()) {
 					 $("#ssOleDBGrid").parent().parent().addClass('jqgridHideHorScroll');
