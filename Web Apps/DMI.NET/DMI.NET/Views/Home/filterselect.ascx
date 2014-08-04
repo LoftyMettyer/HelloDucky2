@@ -4,14 +4,26 @@
 <%@ Import Namespace="HR.Intranet.Server" %>
 <%@ Import Namespace="System.Data.SqlClient" %>
 
-<object
-	classid="clsid:5220cb21-c88d-11cf-b347-00aa00a28331"
-	id="Microsoft_Licensed_Class_Manager_1_0"
-	viewastext>
-	<param name="LPKPath" value="<%:Url.Content("~/lpks/ssmain.lpk")%>">
-</object>
-
 <script type="text/javascript">
+	var colMode = [];
+	var colData = [];
+	var colNames = [];
+
+	//Create the column model
+	colMode.push({ name: 'ID', hidden: true });
+	colMode.push({ name: 'Field', width: 100 });
+	colMode.push({ name: 'Operator', width: 100 });
+	colMode.push({ name: 'Value', width: 100 });
+	colMode.push({ name: 'ColumnID', hidden: true });
+	colMode.push({ name: 'ConditionID', hidden: true });
+
+	colNames.push('ID');
+	colNames.push('Field');
+	colNames.push('Operator');
+	colNames.push('Value');
+	colNames.push('ColumnID');
+	colNames.push('ConditionID');
+
 	function filterselect_window_onload() {
 		var fOK;
 		var fFilterOK;
@@ -33,7 +45,7 @@
 
 			switch (event.keyCode) {
 				case 113:
-				    $(this).datepicker("setDate", new Date())
+					$(this).datepicker("setDate", new Date());
 					$(this).datepicker('widget').hide('true');
 					break;
 			}
@@ -54,8 +66,6 @@
 		}
 
 		if (fOK == true) {
-			setGridFont(frmFilterForm.ssOleDBGridFilterRecords);
-
 			// Expand the option frame and hide the work frame.
 			//window.parent.document.all.item("workframeset").cols = "0, *";
 			$("#optionframe").attr("data-framesource", "SELECTFILTER");
@@ -102,12 +112,15 @@
 				if (fFilterOK == true) {
 					// Get the column name.
 					fFound = false;
+
 					for (iLoop = 0; iLoop < frmFilterForm.selectColumn.options.length; iLoop++) {
-						if (iColumnID == frmFilterForm.selectColumn.options(iLoop).value) {
+						if (iColumnID == frmFilterForm.selectColumn.options[iLoop].value) {
 							fFound = true;
-							sColumnName = frmFilterForm.selectColumn.options(iLoop).text;
+							sColumnName = frmFilterForm.selectColumn.options[iLoop].text;
+							break;
 						}
 					}
+
 					if (fFound == false) {
 						fFilterOK = false;
 					} else {
@@ -127,6 +140,7 @@
 						}
 					}
 				}
+
 				if (fFilterOK == true) {
 					// Get the operator name.
 					fFound = false;
@@ -194,19 +208,67 @@
 					sAddString = sAddString.concat("	");
 					sAddString = sAddString.concat(iOperatorID);
 
-					frmFilterForm.ssOleDBGridFilterRecords.AddItem(sAddString);
+					//Determine if the grid already exists...
+					if ($("#DBGridFilterRecords").getGridParam("reccount") == undefined) { //It doesn't exist, create it
+						$("#DBGridFilterRecords").jqGrid({
+							multiselect: false,
+							data: colData,
+							datatype: 'local',
+							colNames: colNames,
+							colModel: colMode,
+							rowNum: 1000,
+							autowidth: true,
+							shrinkToFit: true,
+							onSelectRow: function () {
+								button_disable(frmFilterForm.cmdRemoveAll, false);
+								button_disable(frmFilterForm.cmdRemove, false);
+							},
+							editurl: 'clientArray'
+						}).jqGrid('hideCol', 'cb');
+					}
+
+					var items = sAddString.split("\t");
+					$("#DBGridFilterRecords").addRowData(
+							$("#DBGridFilterRecords").getGridParam("reccount") + 1, //ID
+							{ //Data
+								'Field': items[0],
+								'Operator': items[1],
+								'Value': items[2],
+								'ColumnID': items[3],
+								'ConditionID': items[4]
+							},
+							'last'); //Add the record at the end
+
+					//Select the newly added record
+					$("#DBGridFilterRecords").jqGrid('setSelection', $("#DBGridFilterRecords").getGridParam("reccount"));
+
+					FilterSelect_refreshControls();
 				}
 			}
 
-			// Select the top filter record (if one exists).	
-			if (frmFilterForm.ssOleDBGridFilterRecords.rows > 0) {
-				frmFilterForm.ssOleDBGridFilterRecords.MoveFirst();
-				frmFilterForm.ssOleDBGridFilterRecords.SelBookmarks.Add(frmFilterForm.ssOleDBGridFilterRecords.Bookmark);
+			//Select the top filter record
+			if ($("#DBGridFilterRecords").getGridParam("reccount") > 0) {
+				$("#DBGridFilterRecords").jqGrid('setSelection', 1);
 			}
 
-			// Get menu.asp to refresh the menu.
-			// NPG20100824 Fault HRPRO1065 - leave menus disabled in these modal screens		
-			//window.parent.frames("menuframe").refreshMenu();
+			//Determine if the grid already exists...
+			if ($("#DBGridFilterRecords").getGridParam("reccount") == undefined) { //It doesn't exist, create it
+				$("#DBGridFilterRecords").jqGrid({
+					multiselect: false,
+					data: colData,
+					datatype: 'local',
+					colNames: colNames,
+					colModel: colMode,
+					rowNum: 1000,
+					autowidth: true,
+					shrinkToFit: true,
+					onSelectRow: function() {
+						button_disable(frmFilterForm.cmdRemoveAll, false);
+						button_disable(frmFilterForm.cmdRemove, false);
+					},
+					editurl: 'clientArray'
+				}).jqGrid('hideCol', 'cb');
+			}
 
 			// Hide the workframe recedit control. IE6 still displays it.
 			var sWorkPage = currentWorkFramePage();
@@ -220,7 +282,7 @@
 
 			frmFilterForm.selectColumn.focus();
 			refreshOperatorCombo();
-			refreshControls();
+			FilterSelect_refreshControls();
 		}
 
 	}
@@ -262,20 +324,19 @@
 		sRealSource = frmFilterForm.txtRealSource.value;
 		sRealSource = sRealSource.concat(".");
 
-		if (frmFilterForm.ssOleDBGridFilterRecords.rows > 0) {
-			frmFilterForm.ssOleDBGridFilterRecords.MoveFirst();
-		}
-
 		// Loop through the grid records, building the filter code for each record.
-		for (iIndex = 1; iIndex <= frmFilterForm.ssOleDBGridFilterRecords.rows; iIndex++) {
+		var allIDs = $('#DBGridFilterRecords').getDataIDs();
+		var rowData;
+		for (iIndex = 0; iIndex < allIDs.length; iIndex++) {
+			rowData = $('#DBGridFilterRecords').getRowData(allIDs[iIndex]);
 			// Get the column name & id and the value used in the filter operation.
-			sColumnName = frmFilterForm.ssOleDBGridFilterRecords.Columns(0).value;
+			sColumnName = rowData.Field;
 			sColumnName = OpenHR.replaceAll(sColumnName, " ", "_");
 			sColumnName = sRealSource.concat(sColumnName);
 
-			sValue = frmFilterForm.ssOleDBGridFilterRecords.Columns(2).value;
-			iColumnID = frmFilterForm.ssOleDBGridFilterRecords.Columns(3).value;
-			iOperatorID = frmFilterForm.ssOleDBGridFilterRecords.Columns(4).value;
+			sValue = rowData.Value;
+			iColumnID = rowData.ColumnID;
+			iOperatorID = rowData.ConditionID;
 
 			fOK = false;
 			iDataType = 12;
@@ -575,13 +636,6 @@
 					sFilterDef = sFilterDef.concat("	");
 				}
 			}
-
-			if (iIndex < frmFilterForm.ssOleDBGridFilterRecords.rows) {
-				frmFilterForm.ssOleDBGridFilterRecords.MoveNext();
-			}
-			else {
-				break;
-			}
 		}
 
 		// Redisplay the workframe recedit control. 
@@ -865,11 +919,22 @@
 			}
 		}
 		if (fOK == true) {
-			frmFilterForm.ssOleDBGridFilterRecords.AddItem(sAddString);
-			frmFilterForm.ssOleDBGridFilterRecords.MoveLast();
-			frmFilterForm.ssOleDBGridFilterRecords.SelBookmarks.Add(frmFilterForm.ssOleDBGridFilterRecords.Bookmark);
+			var items = sAddString.split("\t");
+			$("#DBGridFilterRecords").addRowData(
+					$("#DBGridFilterRecords").getGridParam("reccount") + 1, //ID
+					{ //Data
+						'Field': items[0],
+						'Operator': items[1],
+						'Value': items[2],
+						'ColumnID': items[3],
+						'ConditionID': items[4]
+					},
+					'last'); //Add the record at the end
 
-			refreshControls();
+			//Select the newly added record
+			$("#DBGridFilterRecords").jqGrid('setSelection', $("#DBGridFilterRecords").getGridParam("reccount"));
+
+			FilterSelect_refreshControls();
 			frmFilterForm.selectColumn.focus();
 		}
 	}
@@ -1037,49 +1102,75 @@
 	}
 
 
-	function removeAll() {
-		var frmFilterForm = document.getElementById("frmFilterForm");
-		frmFilterForm.ssOleDBGridFilterRecords.RemoveAll();
-		refreshControls();
+	function FilterSelect_removeAll() {
+		$("#DBGridFilterRecords").jqGrid('clearGridData');
+		FilterSelect_refreshControls();
 	}
 
-	function remove() {
+	function FilterSelect_remove() {
 		var frmFilterForm = document.getElementById("frmFilterForm");
 
-		if (frmFilterForm.ssOleDBGridFilterRecords.Rows > 0) {
-			var iRowIndex = frmFilterForm.ssOleDBGridFilterRecords.AddItemRowIndex(frmFilterForm.ssOleDBGridFilterRecords.Bookmark);
+		if ($("#DBGridFilterRecords").getGridParam("reccount") > 0) {
+			var iRowIndex = $("#DBGridFilterRecords").jqGrid('getCell', $('#DBGridFilterRecords').jqGrid('getGridParam', 'selrow'), 5); //5 -> ID
 
-			if ((frmFilterForm.ssOleDBGridFilterRecords.Rows == 1) && (iRowIndex == 0)) {
-				frmFilterForm.ssOleDBGridFilterRecords.RemoveAll();
+			if (($("#DBGridFilterRecords").getGridParam("reccount") == 1) && (iRowIndex == 0)) {
+				FilterSelect_removeAll();
 			}
 			else {
-				frmFilterForm.ssOleDBGridFilterRecords.RemoveItem(iRowIndex);
-			}
+				var grid = $("#DBGridFilterRecords");
+				var myDelOptions = {
+					// because I use "local" data I don't want to send the changes
+					// to the server so I use "processing:true" setting and delete
+					// the row manually in onclickSubmit
+					onclickSubmit: function (options) {
+						var grid_id = $.jgrid.jqID(grid[0].id),
+								grid_p = grid[0].p,
+								newPage = grid_p.page,
+								rowids = grid_p.multiselect ? grid_p.selarrrow : [grid_p.selrow];
 
-			if (frmFilterForm.ssOleDBGridFilterRecords.Rows > 0) {
-				if (iRowIndex == 0) {
-					frmFilterForm.ssOleDBGridFilterRecords.MoveFirst();
-				}
-				else {
-					if (iRowIndex >= frmFilterForm.ssOleDBGridFilterRecords.Rows) {
-						frmFilterForm.ssOleDBGridFilterRecords.MoveLast();
-					}
-				}
+						// reset the value of processing option which could be modified
+						options.processing = true;
 
-				frmFilterForm.ssOleDBGridFilterRecords.SelBookmarks.Add(frmFilterForm.ssOleDBGridFilterRecords.Bookmark);
+						// delete the row
+						$.each(rowids, function () {
+							grid.delRowData(this);
+						});
+						$.jgrid.hideModal("#delmod" + grid_id,
+															{
+																gb: "#gbox_" + grid_id,
+																jqm: options.jqModal, onClose: options.onClose
+															});
+
+						if (grid_p.lastpage > 1) {// on the multipage grid reload the grid
+							if (grid_p.reccount === 0 && newPage === grid_p.lastpage) {
+								// if after deliting there are no rows on the current page
+								// which is the last page of the grid
+								newPage--; // go to the previous page
+							}
+							// reload grid to make the row from the next page visable.
+							grid.trigger("reloadGrid", [{ page: newPage }]);
+						}
+						return true;
+					},
+					processing: true
+				};
+
+				grid.jqGrid('delGridRow', grid.jqGrid('getGridParam', 'selarrrow'), myDelOptions);
+
+				$("#dData").click(); //To remove the "delete confirmation" dialog
 			}
 		}
 
-		refreshControls();
+		FilterSelect_refreshControls();
 	}
 
-	function refreshControls() {
+	function FilterSelect_refreshControls() {
 		var frmFilterForm = document.getElementById("frmFilterForm");
 
-		if (frmFilterForm.ssOleDBGridFilterRecords.Rows > 0) {
+		if ($("#DBGridFilterRecords").getGridParam("reccount") > 0) {
 			button_disable(frmFilterForm.cmdRemoveAll, false);
 
-			if (frmFilterForm.ssOleDBGridFilterRecords.SelBookmarks.Count > 0) {
+			if ($('#DBGridFilterRecords').jqGrid('getGridParam', 'selrow') != null && $('#DBGridFilterRecords').jqGrid('getGridParam', 'selrow').length > 0) {
 				button_disable(frmFilterForm.cmdRemove, false);
 			}
 			else {
@@ -1096,28 +1187,6 @@
 		// Return the current page in the workframeset.
 
 		var sCurrentPage = $("#workframe").attr("data-framesource");
-
-		//var sCols = window.parent.document.all.item("workframeset").cols;
-
-		//re = / /gi;
-		//sCols = sCols.replace(re, "");
-		//sCols = sCols.substr(0, 1);
-
-		//// Work frame is in view.
-		//sCurrentPage = window.parent.frames("workframe").document.location;
-		//sCurrentPage = sCurrentPage.toString();
-
-		//if (sCurrentPage.lastIndexOf("/") > 0) {
-		//	sCurrentPage = sCurrentPage.substr(sCurrentPage.lastIndexOf("/") + 1);
-		//}
-
-		//if (sCurrentPage.indexOf(".") > 0) {
-		//	sCurrentPage = sCurrentPage.substr(0, sCurrentPage.indexOf("."));
-		//}
-
-		//re = / /gi;
-		//sCurrentPage = sCurrentPage.replace(re, "");
-		//sCurrentPage = sCurrentPage.toUpperCase();
 
 		return (sCurrentPage);
 	}
@@ -1139,271 +1208,9 @@
 						<tr height="160">
 							<td width="10"></td>
 							<td>
-								<object classid="clsid:4A4AA697-3E6F-11D2-822F-00104B9E07A1"
-									codebase="cabs/COAInt_Grid.cab#version=3,1,3,6"
-									id="ssOleDBGridFilterRecords"
-									name="ssOleDBGridFilterRecords"
-									style="HEIGHT: 100%; LEFT: 0; TOP: 0; WIDTH: 100%"
-									viewastext>
-									<param name="ScrollBars" value="4">
-									<param name="_Version" value="196617">
-									<param name="DataMode" value="2">
-									<param name="Cols" value="0">
-									<param name="Rows" value="0">
-									<param name="BorderStyle" value="1">
-									<param name="RecordSelectors" value="0">
-									<param name="GroupHeaders" value="0">
-									<param name="ColumnHeaders" value="1">
-									<param name="GroupHeadLines" value="1">
-									<param name="HeadLines" value="1">
-									<param name="FieldDelimiter" value="(None)">
-									<param name="FieldSeparator" value="(Tab)">
-									<param name="Row.Count" value="0">
-									<param name="Col.Count" value="1">
-									<param name="stylesets.count" value="0">
-									<param name="TagVariant" value="EMPTY">
-									<param name="UseGroups" value="0">
-									<param name="HeadFont3D" value="0">
-									<param name="Font3D" value="0">
-									<param name="DividerType" value="3">
-									<param name="DividerStyle" value="1">
-									<param name="DefColWidth" value="0">
-									<param name="BeveColorScheme" value="2">
-									<param name="BevelColorFrame" value="-2147483642">
-									<param name="BevelColorHighlight" value="-2147483628">
-									<param name="BevelColorShadow" value="-2147483632">
-									<param name="BevelColorFace" value="-2147483633">
-									<param name="CheckBox3D" value="-1">
-									<param name="AllowAddNew" value="0">
-									<param name="AllowDelete" value="0">
-									<param name="AllowUpdate" value="0">
-									<param name="MultiLine" value="0">
-									<param name="ActiveCellStyleSet" value="">
-									<param name="RowSelectionStyle" value="0">
-									<param name="AllowRowSizing" value="0">
-									<param name="AllowGroupSizing" value="0">
-									<param name="AllowColumnSizing" value="-1">
-									<param name="AllowGroupMoving" value="0">
-									<param name="AllowColumnMoving" value="0">
-									<param name="AllowGroupSwapping" value="0">
-									<param name="AllowColumnSwapping" value="0">
-									<param name="AllowGroupShrinking" value="0">
-									<param name="AllowColumnShrinking" value="0">
-									<param name="AllowDragDrop" value="0">
-									<param name="UseExactRowCount" value="-1">
-									<param name="SelectTypeCol" value="0">
-									<param name="SelectTypeRow" value="1">
-									<param name="SelectByCell" value="-1">
-									<param name="BalloonHelp" value="0">
-									<param name="RowNavigation" value="1">
-									<param name="CellNavigation" value="0">
-									<param name="MaxSelectedRows" value="1">
-									<param name="HeadStyleSet" value="">
-									<param name="StyleSet" value="">
-									<param name="ForeColorEven" value="0">
-									<param name="ForeColorOdd" value="0">
-									<param name="BackColorEven" value="16777215">
-									<param name="BackColorOdd" value="16777215">
-									<param name="Levels" value="1">
-									<param name="RowHeight" value="503">
-									<param name="ExtraHeight" value="0">
-									<param name="ActiveRowStyleSet" value="">
-									<param name="CaptionAlignment" value="2">
-									<param name="SplitterPos" value="0">
-									<param name="SplitterVisible" value="0">
-									<param name="Columns.Count" value="5">
-									<param name="Columns(0).Width" value="6500">
-									<param name="Columns(0).Visible" value="-1">
-									<param name="Columns(0).Columns.Count" value="1">
-									<param name="Columns(0).Caption" value="Field">
-									<param name="Columns(0).Name" value="FilterColumn">
-									<param name="Columns(0).Alignment" value="0">
-									<param name="Columns(0).CaptionAlignment" value="3">
-									<param name="Columns(0).Bound" value="0">
-									<param name="Columns(0).AllowSizing" value="1">
-									<param name="Columns(0).DataField" value="Column 0">
-									<param name="Columns(0).DataType" value="8">
-									<param name="Columns(0).Level" value="0">
-									<param name="Columns(0).NumberFormat" value="">
-									<param name="Columns(0).Case" value="0">
-									<param name="Columns(0).FieldLen" value="256">
-									<param name="Columns(0).VertScrollBar" value="0">
-									<param name="Columns(0).Locked" value="0">
-									<param name="Columns(0).Style" value="0">
-									<param name="Columns(0).ButtonsAlways" value="0">
-									<param name="Columns(0).RowCount" value="0">
-									<param name="Columns(0).ColCount" value="1">
-									<param name="Columns(0).HasHeadForeColor" value="0">
-									<param name="Columns(0).HasHeadBackColor" value="0">
-									<param name="Columns(0).HasForeColor" value="0">
-									<param name="Columns(0).HasBackColor" value="0">
-									<param name="Columns(0).HeadForeColor" value="0">
-									<param name="Columns(0).HeadBackColor" value="0">
-									<param name="Columns(0).ForeColor" value="0">
-									<param name="Columns(0).BackColor" value="0">
-									<param name="Columns(0).HeadStyleSet" value="">
-									<param name="Columns(0).StyleSet" value="">
-									<param name="Columns(0).Nullable" value="1">
-									<param name="Columns(0).Mask" value="">
-									<param name="Columns(0).PromptInclude" value="0">
-									<param name="Columns(0).ClipMode" value="0">
-									<param name="Columns(0).PromptChar" value="95">
-									<param name="Columns(1).Width" value="6500">
-									<param name="Columns(1).Visible" value="-1">
-									<param name="Columns(1).Columns.Count" value="1">
-									<param name="Columns(1).Caption" value="Operator">
-									<param name="Columns(1).Name" value="FilterOperator">
-									<param name="Columns(1).Alignment" value="0">
-									<param name="Columns(1).CaptionAlignment" value="3">
-									<param name="Columns(1).Bound" value="0">
-									<param name="Columns(1).AllowSizing" value="1">
-									<param name="Columns(1).DataField" value="Column 1">
-									<param name="Columns(1).DataType" value="8">
-									<param name="Columns(1).Level" value="0">
-									<param name="Columns(1).NumberFormat" value="">
-									<param name="Columns(1).Case" value="0">
-									<param name="Columns(1).FieldLen" value="256">
-									<param name="Columns(1).VertScrollBar" value="0">
-									<param name="Columns(1).Locked" value="0">
-									<param name="Columns(1).Style" value="0">
-									<param name="Columns(1).ButtonsAlways" value="0">
-									<param name="Columns(1).RowCount" value="0">
-									<param name="Columns(1).ColCount" value="1">
-									<param name="Columns(1).HasHeadForeColor" value="0">
-									<param name="Columns(1).HasHeadBackColor" value="0">
-									<param name="Columns(1).HasForeColor" value="0">
-									<param name="Columns(1).HasBackColor" value="0">
-									<param name="Columns(1).HeadForeColor" value="0">
-									<param name="Columns(1).HeadBackColor" value="0">
-									<param name="Columns(1).ForeColor" value="0">
-									<param name="Columns(1).BackColor" value="0">
-									<param name="Columns(1).HeadStyleSet" value="">
-									<param name="Columns(1).StyleSet" value="">
-									<param name="Columns(1).Nullable" value="1">
-									<param name="Columns(1).Mask" value="">
-									<param name="Columns(1).PromptInclude" value="0">
-									<param name="Columns(1).ClipMode" value="0">
-									<param name="Columns(1).PromptChar" value="95">
-									<param name="Columns(2).Width" value="6500">
-									<param name="Columns(2).Visible" value="-1">
-									<param name="Columns(2).Columns.Count" value="1">
-									<param name="Columns(2).Caption" value="Value">
-									<param name="Columns(2).Name" value="FilterText">
-									<param name="Columns(2).Alignment" value="0">
-									<param name="Columns(2).CaptionAlignment" value="3">
-									<param name="Columns(2).Bound" value="0">
-									<param name="Columns(2).AllowSizing" value="1">
-									<param name="Columns(2).DataField" value="Column 2">
-									<param name="Columns(2).DataType" value="8">
-									<param name="Columns(2).Level" value="0">
-									<param name="Columns(2).NumberFormat" value="">
-									<param name="Columns(2).Case" value="0">
-									<param name="Columns(2).FieldLen" value="256">
-									<param name="Columns(2).VertScrollBar" value="0">
-									<param name="Columns(2).Locked" value="0">
-									<param name="Columns(2).Style" value="0">
-									<param name="Columns(2).ButtonsAlways" value="0">
-									<param name="Columns(2).RowCount" value="0">
-									<param name="Columns(2).ColCount" value="1">
-									<param name="Columns(2).HasHeadForeColor" value="0">
-									<param name="Columns(2).HasHeadBackColor" value="0">
-									<param name="Columns(2).HasForeColor" value="0">
-									<param name="Columns(2).HasBackColor" value="0">
-									<param name="Columns(2).HeadForeColor" value="0">
-									<param name="Columns(2).HeadBackColor" value="0">
-									<param name="Columns(2).ForeColor" value="0">
-									<param name="Columns(2).BackColor" value="0">
-									<param name="Columns(2).HeadStyleSet" value="">
-									<param name="Columns(2).StyleSet" value="">
-									<param name="Columns(2).Nullable" value="1">
-									<param name="Columns(2).Mask" value="">
-									<param name="Columns(2).PromptInclude" value="0">
-									<param name="Columns(2).ClipMode" value="0">
-									<param name="Columns(2).PromptChar" value="95">
-									<param name="Columns(3).Width" value="3200">
-									<param name="Columns(3).Visible" value="0">
-									<param name="Columns(3).Columns.Count" value="1">
-									<param name="Columns(3).Caption" value="FilterColumnID">
-									<param name="Columns(3).Name" value="FilterColumnID">
-									<param name="Columns(3).Alignment" value="0">
-									<param name="Columns(3).CaptionAlignment" value="3">
-									<param name="Columns(3).Bound" value="0">
-									<param name="Columns(3).AllowSizing" value="0">
-									<param name="Columns(3).DataField" value="Column 3">
-									<param name="Columns(3).DataType" value="8">
-									<param name="Columns(3).Level" value="0">
-									<param name="Columns(3).NumberFormat" value="">
-									<param name="Columns(3).Case" value="0">
-									<param name="Columns(3).FieldLen" value="256">
-									<param name="Columns(3).VertScrollBar" value="0">
-									<param name="Columns(3).Locked" value="0">
-									<param name="Columns(3).Style" value="0">
-									<param name="Columns(3).ButtonsAlways" value="0">
-									<param name="Columns(3).RowCount" value="0">
-									<param name="Columns(3).ColCount" value="1">
-									<param name="Columns(3).HasHeadForeColor" value="0">
-									<param name="Columns(3).HasHeadBackColor" value="0">
-									<param name="Columns(3).HasForeColor" value="0">
-									<param name="Columns(3).HasBackColor" value="0">
-									<param name="Columns(3).HeadForeColor" value="0">
-									<param name="Columns(3).HeadBackColor" value="0">
-									<param name="Columns(3).ForeColor" value="0">
-									<param name="Columns(3).BackColor" value="0">
-									<param name="Columns(3).HeadStyleSet" value="">
-									<param name="Columns(3).StyleSet" value="">
-									<param name="Columns(3).Nullable" value="1">
-									<param name="Columns(3).Mask" value="">
-									<param name="Columns(3).PromptInclude" value="0">
-									<param name="Columns(3).ClipMode" value="0">
-									<param name="Columns(3).PromptChar" value="95">
-									<param name="Columns(4).Width" value="0">
-									<param name="Columns(4).Visible" value="0">
-									<param name="Columns(4).Columns.Count" value="1">
-									<param name="Columns(4).Caption" value="FilterOperatorID">
-									<param name="Columns(4).Name" value="FilterOperatorID">
-									<param name="Columns(4).Alignment" value="0">
-									<param name="Columns(4).CaptionAlignment" value="3">
-									<param name="Columns(4).Bound" value="0">
-									<param name="Columns(4).AllowSizing" value="0">
-									<param name="Columns(4).DataField" value="Column 4">
-									<param name="Columns(4).DataType" value="8">
-									<param name="Columns(4).Level" value="0">
-									<param name="Columns(4).NumberFormat" value="">
-									<param name="Columns(4).Case" value="0">
-									<param name="Columns(4).FieldLen" value="256">
-									<param name="Columns(4).VertScrollBar" value="0">
-									<param name="Columns(4).Locked" value="0">
-									<param name="Columns(4).Style" value="0">
-									<param name="Columns(4).ButtonsAlways" value="0">
-									<param name="Columns(4).RowCount" value="0">
-									<param name="Columns(4).ColCount" value="1">
-									<param name="Columns(4).HasHeadForeColor" value="0">
-									<param name="Columns(4).HasHeadBackColor" value="0">
-									<param name="Columns(4).HasForeColor" value="0">
-									<param name="Columns(4).HasBackColor" value="0">
-									<param name="Columns(4).HeadForeColor" value="0">
-									<param name="Columns(4).HeadBackColor" value="0">
-									<param name="Columns(4).ForeColor" value="0">
-									<param name="Columns(4).BackColor" value="0">
-									<param name="Columns(4).HeadStyleSet" value="">
-									<param name="Columns(4).StyleSet" value="">
-									<param name="Columns(4).Nullable" value="1">
-									<param name="Columns(4).Mask" value="">
-									<param name="Columns(4).PromptInclude" value="0">
-									<param name="Columns(4).ClipMode" value="0">
-									<param name="Columns(4).PromptChar" value="95">
-									<param name="UseDefaults" value="-1">
-									<param name="TabNavigation" value="1">
-									<param name="BatchUpdate" value="0">
-									<param name="_ExtentX" value="16087">
-									<param name="_ExtentY" value="4630">
-									<param name="_StockProps" value="79">
-									<param name="Caption" value="">
-									<param name="ForeColor" value="0">
-									<param name="BackColor" value="16777215">
-									<param name="Enabled" value="-1">
-									<param name="DataMember" value="">
-								</object>
+								<div id="FilterRecordsGrid" style="height: 200px;">
+									<table id="DBGridFilterRecords"></table>
+								</div>
 							</td>
 							<td width="10"></td>
 						</tr>
@@ -1416,13 +1223,13 @@
 										<td height="10">&nbsp;
 										</td>
 										<td width="10" height="10">
-											<input id="cmdRemove" name="cmdRemove" type="button" value="Remove" style="WIDTH: 100px" width="100" class="btn"
-												onclick="remove()" />
+											<input id="cmdRemove" name="cmdRemove" type="button" value="Remove" style="width: 100px" class="btn"
+												onclick="FilterSelect_remove()" />
 										</td>
 										<td width="10" height="10"></td>
 										<td width="10" height="10">
-											<input id="cmdRemoveAll" name="cmdRemoveAll" type="button" value="Remove All" style="WIDTH: 100px" width="100" class="btn"
-												onclick="removeAll()" />
+											<input id="cmdRemoveAll" name="cmdRemoveAll" type="button" value="Remove All" style="width: 100px" class="btn"
+												onclick="FilterSelect_removeAll()" />
 										</td>
 									</tr>
 								</table>
@@ -1492,9 +1299,9 @@
 				Response.Write(">" & Replace(dr(1).ToString, "_", " ") & "</OPTION>" & vbCrLf)
 				iCount = iCount + 1
 			Next
-
-			Response.Write("					</SELECT>" & vbCrLf)
-
+%>
+			</select>
+<%
 			Response.Write("<INPUT type='hidden' id=txtRealSource name=txtRealSource value=""" & Replace(Replace(psRealSource.Value, "'", "'''"), """", "&quot;") & """>" & vbCrLf)
 			
 			For Each dr As DataRow In dtFilterColumns.Rows
