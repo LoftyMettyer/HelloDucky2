@@ -140,7 +140,7 @@
 			},
 			processing: true
 		};
-
+		
 		var firstSelectedRowNumber = 1;
 		try {
 			//get first row and calculate previous row ID so we can select it after removal
@@ -208,6 +208,7 @@
 				specificRowID = $("#ssOleDBGridFindRecords").getDataIDs()[rowNumber - 1]; // array is zero based
 			} catch (e) { }
 			finally {
+				$('#ssOleDBGridFindRecords').jqGrid('resetSelection');
 				$('#ssOleDBGridFindRecords').jqGrid('setSelection', specificRowID);
 			}
 		} else {
