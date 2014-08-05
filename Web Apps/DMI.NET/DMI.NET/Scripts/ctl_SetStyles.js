@@ -54,6 +54,7 @@ function button_disable(obj, pfDisable) {
 	//modified for use with themeroller
 	//obj.disabled = pfDisable;
 	var objectID = obj.id;
+	if (objectID == null) objectID = obj[0].id;
 
 	if (objectID) {
 		if (pfDisable == true) {

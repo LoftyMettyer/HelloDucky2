@@ -450,14 +450,14 @@ function optiondata_onload() {
 						tbrefreshControls();
 					},
 					ondblClickRow: function () {
-						tbSelect();
+						$('#cmdSelect').click();
 					}
 				});
 
 
 				$("#ssOleDBGridRecords").jqGrid('bindKeys', {
 					"onEnter": function () {
-						tbSelect();
+						$('#cmdSelect').click();
 					}
 				});
 

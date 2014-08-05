@@ -16,6 +16,9 @@
 	$('#FindGridRow').height(newGridHeight);
 
 	refreshData();
+
+	tbrefreshControls();
+
 });
 
 function refreshData() {
@@ -60,9 +63,9 @@ $('#cmdSelect').click(function () {
 	OpenHR.submitForm(frmGotoOption);
 });
 
-function tbrefreshControls() {
+function tbrefreshControls() {	
 	var selRowId = $("#ssOleDBGridRecords").jqGrid('getGridParam', 'selrow');
-
+	
 	button_disable($('#cmdSelect'), (!selRowId > 0));
 
 	if ($('#selectOrder').children().length <= 1) {
