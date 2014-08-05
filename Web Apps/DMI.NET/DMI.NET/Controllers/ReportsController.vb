@@ -84,6 +84,8 @@ Namespace Controllers
 			Dim objSaveWarning As SaveWarningModel
 			Dim deserializer = New JavaScriptSerializer()
 
+			objModel.Dependencies = objReportRepository.RetrieveDependencies(objModel.ID, UtilityType.utlCustomReport)
+
 			If objModel.ColumnsAsString.Length > 0 Then
 				objModel.Columns = deserializer.Deserialize(Of List(Of ReportColumnItem))(objModel.ColumnsAsString)
 			End If
@@ -97,7 +99,6 @@ Namespace Controllers
 			End If
 
 			If objModel.ValidityStatus = ReportValidationStatus.ServerCheckComplete Then
-				objModel.Dependencies = objReportRepository.RetrieveDependencies(objModel.ID, UtilityType.utlCustomReport)
 				objReportRepository.SaveReportDefinition(objModel)
 				Session("reaction") = "CUSTOMREPORTS"
 				Return RedirectToAction("confirmok", "home")
@@ -121,6 +122,8 @@ Namespace Controllers
 			Dim objSaveWarning As SaveWarningModel
 			Dim deserializer = New JavaScriptSerializer()
 
+			objModel.Dependencies = objReportRepository.RetrieveDependencies(objModel.ID, UtilityType.utlMailMerge)
+
 			If objModel.ColumnsAsString.Length > 0 Then
 				objModel.Columns = deserializer.Deserialize(Of List(Of ReportColumnItem))(objModel.ColumnsAsString)
 			End If
@@ -130,7 +133,6 @@ Namespace Controllers
 			End If
 
 			If objModel.ValidityStatus = ReportValidationStatus.ServerCheckComplete Then
-				objModel.Dependencies = objReportRepository.RetrieveDependencies(objModel.ID, UtilityType.utlMailMerge)
 				objReportRepository.SaveReportDefinition(objModel)
 				Session("reaction") = "MAILMERGE"
 				Return RedirectToAction("confirmok", "home")
@@ -153,9 +155,9 @@ Namespace Controllers
 		Function util_def_crosstab(objModel As CrossTabModel) As ActionResult
 
 			Dim objSaveWarning As SaveWarningModel
+			objModel.Dependencies = objReportRepository.RetrieveDependencies(objModel.ID, UtilityType.utlCrossTab)
 
 			If objModel.ValidityStatus = ReportValidationStatus.ServerCheckComplete Then
-				objModel.Dependencies = objReportRepository.RetrieveDependencies(objModel.ID, UtilityType.utlCrossTab)
 				objReportRepository.SaveReportDefinition(objModel)
 				Session("reaction") = "CROSSTABS"
 				Return RedirectToAction("confirmok", "home")
@@ -180,6 +182,8 @@ Namespace Controllers
 			Dim objSaveWarning As SaveWarningModel
 			Dim deserializer = New JavaScriptSerializer()
 
+			objModel.Dependencies = objReportRepository.RetrieveDependencies(objModel.ID, UtilityType.utlCalendarReport)
+
 			If objModel.EventsString.Length > 0 Then
 				objModel.Events = deserializer.Deserialize(Of Collection(Of CalendarEventDetailViewModel))(objModel.EventsString)
 			End If
@@ -189,7 +193,6 @@ Namespace Controllers
 			End If
 
 			If objModel.ValidityStatus = ReportValidationStatus.ServerCheckComplete Then
-				objModel.Dependencies = objReportRepository.RetrieveDependencies(objModel.ID, UtilityType.utlCalendarReport)
 				objReportRepository.SaveReportDefinition(objModel)
 				Session("reaction") = "CALENDARREPORTS"
 				Return RedirectToAction("confirmok", "home")
