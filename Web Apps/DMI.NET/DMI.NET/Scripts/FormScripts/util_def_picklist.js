@@ -192,6 +192,11 @@ function removeClick() {
 	frmUseful.txtChanged.value = 1;
 
 	refreshControls();
+
+	button_disable(frmDefinition.cmdRemove, true); //Disable the "Remove" button
+	if ($("#ssOleDBGrid").getGridParam('reccount') == 0) { //If the grid is empty, disable the "Remove All" button
+		button_disable(frmDefinition.cmdRemoveAll, true);
+	}
 }
 
 function removeAllClick() {
@@ -213,6 +218,9 @@ function removeAllClick() {
 	$('#RecordCountDIV').html($("#ssOleDBGrid").getGridParam('reccount') + " Record(s)");
 
 	refreshControls();
+
+	button_disable(frmDefinition.cmdRemove, true); //Disable the "Remove" button
+	button_disable(frmDefinition.cmdRemoveAll, true); //Disable the "Remove All" button
 }
 
 function cancelClick() {

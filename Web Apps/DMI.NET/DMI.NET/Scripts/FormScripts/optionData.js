@@ -685,7 +685,10 @@ function optiondata_onload() {
 					rowNum: 1000,
 					autowidth: true,
 					shrinkToFit: shrinkToFit,
-					onSelectRow: function() {},
+					onSelectRow: function() {
+						button_disable(frmDefinition.cmdRemove, false); //Enable the "Remove" button
+						button_disable(frmDefinition.cmdRemoveAll, false); //Enable the "Remove All" button
+					},
 					editurl: 'clientArray',
 					afterShowForm: function($form) {
 						$("#dData", $form.parent()).click();
