@@ -4,87 +4,108 @@
 
 @Inherits System.Web.Mvc.WebViewPage(Of ReportBaseModel)
 
+
 @Html.HiddenFor(Function(m) m.ID, New With {.id = "txtReportID"})
 @Html.HiddenFor(Function(m) m.ReportType, New With {.id = "txtReportType"})
 
 <div class="width100">
-	<fieldset class="floatleft width60">
-		<fieldset class="floatleft width90">
+	<fieldset class="floatleft width50 ">
+		<fieldset class="floatleft width99 bordered">
 			<legend class="fontsmalltitle">Description :</legend>
-			<div class="editor-field-greyed-out width100">
-				@Html.TextBoxFor(Function(m) m.Owner, New With {.readonly = "true", .class = "width70 floatright"})
-				<span style="float:left">Owner : </span>
-			</div>
-			<br />
-			<div class="width100">
-				@Html.LabelFor(Function(m) m.Name)
-				@Html.TextBoxFor(Function(m) m.Name, New With {.class = "width70 floatright"})
-				@Html.ValidationMessageFor(Function(m) m.Name)
-				<br />
-				@Html.LabelFor(Function(m) m.Description)
-				@Html.TextArea("description", Model.Description, New With {.class = "width70 floatright"})
-				@Html.ValidationMessageFor(Function(m) m.Description)
-			</div>
-		</fieldset>
-
-		<fieldset id="DataRecordsPermissions" class="overflowhidden width90">
-			<legend class="fontsmalltitle">Data :</legend>
-			<div class="inner">
-				<div class="left">
-					Base Table :
-					<select class="width70 floatright" name="BaseTableID" id="BaseTableID" onchange="requestChangeReportBaseTable(event.target);"></select>
+			<fieldset>
+				<div id="DescriptionItems">
+					@Html.LabelFor(Function(m) m.Name)
+					@Html.TextBoxFor(Function(m) m.Name, New With {.class = "width70 floatright"})
+					@Html.ValidationMessageFor(Function(m) m.Name)
 				</div>
 
 				<div>
-					<br />
-					<fieldset class="alignleft">
-						@Html.RadioButton("selectiontype", RecordSelectionType.AllRecords, Model.SelectionType = RecordSelectionType.AllRecords, New With {.onclick = "changeRecordOption('Base','all')", .style = "margin-bottom:10px"})All Records<br />
+					@Html.LabelFor(Function(m) m.Description)
+					@Html.TextArea("description", Model.Description, New With {.class = "width70 floatright"})
+					@Html.ValidationMessageFor(Function(m) m.Description)
+				</div>
+			</fieldset>
+		</fieldset>
 
-						@*Picklist group*@
-						<div class="width20 floatleft">
-							@Html.RadioButton("selectiontype", RecordSelectionType.Picklist, Model.SelectionType = RecordSelectionType.Picklist, New With {.onclick = "changeRecordOption('Base','picklist')"})
-							<span>Picklist</span>
-						</div>
-						<input type="hidden" id="txtBasePicklistID" name="picklistID" value="@Model.PicklistID" />
+		<fieldset id="DataRecordsPermissions" class="overflowhidden width99">
+			<legend class="fontsmalltitle">Data :</legend>
+			<div class="inner">
+				<fieldset class="">
+					Base Table :
+					<select class="width70 floatright" name="BaseTableID" id="BaseTableID" onchange="requestChangeReportBaseTable(event.target);"></select>
+				</fieldset>
 
-						@Html.TextBoxFor(Function(m) m.PicklistName, New With {.id = "txtBasePicklist", .readonly = "true", .class = "width60"})
-						@Html.EllipseButton("cmdBasePicklist", "selectBaseTablePicklist()", Model.SelectionType = RecordSelectionType.Picklist)<br />
+				<div>
+					<fieldset class="">
+						<fieldset id="selectiontypeallrecords" class="">							
+							@Html.RadioButton("selectiontype", RecordSelectionType.AllRecords, Model.SelectionType = RecordSelectionType.AllRecords,
+																New With {.onclick = "changeRecordOption('Base','all')"})All Records
+						</fieldset>
 
-						@*Filter group*@
-						<div class="width20 floatleft">
-							@Html.RadioButton("selectiontype", RecordSelectionType.Filter, Model.SelectionType = RecordSelectionType.Filter, New With {.onclick = "changeRecordOption('Base','filter')"})
-							<span>Filter</span>
-						</div>
+						<fieldset id="selectiontypepicklistgroup" class="width100">
+							<div id="PicklistRadioDiv" class="floatleft">
+								@Html.RadioButton("selectiontype", RecordSelectionType.Picklist, Model.SelectionType = RecordSelectionType.Picklist,
+																	New With {.onclick = "changeRecordOption('Base','picklist')"})
+								<span>Picklist</span>
+							</div>
+							<div class="width70 floatleft">
+								@Html.TextBoxFor(Function(m) m.PicklistName, New With {.id = "txtBasePicklist", .readonly = "true", .class = "width80"})
+								@Html.EllipseButton("cmdBasePicklist", "selectBaseTablePicklist()", Model.SelectionType = RecordSelectionType.Picklist)
+							</div>
+							<input type="hidden" id="txtBasePicklistID" name="picklistID" value="@Model.PicklistID" />
+						</fieldset>
 
-						<input type="hidden" id="txtBaseFilterID" name="filterID" value="@Model.FilterID" />
-						@Html.TextBoxFor(Function(m) m.FilterName, New With {.id = "txtBaseFilter", .readonly = "true", .class = "width60"})
-						@Html.EllipseButton("cmdBaseFilter", "selectBaseTableFilter()", Model.SelectionType = RecordSelectionType.Filter)
-						<br />
-						@Html.CheckBoxFor(Function(m) m.DisplayTitleInReportHeader)
-						@Html.LabelFor(Function(m) m.DisplayTitleInReportHeader)
-						<br />
-
+						<fieldset id="selectiontypefiltergroup" class="width100">
+							<div id="FilterRadioDiv" class="floatleft">
+								@Html.RadioButton("selectiontype", RecordSelectionType.Filter, Model.SelectionType = RecordSelectionType.Filter, New With {.onclick = "changeRecordOption('Base','filter')"})
+								<span>Filter</span>
+							</div>
+							<div class="width70  floatleft">
+								@Html.TextBoxFor(Function(m) m.FilterName, New With {.id = "txtBaseFilter", .readonly = "true", .class = "width80"})
+								@Html.EllipseButton("cmdBaseFilter", "selectBaseTableFilter()", Model.SelectionType = RecordSelectionType.Filter)
+							</div>
+							<input type="hidden" id="txtBaseFilterID" name="filterID" value="@Model.FilterID" />
+						</fieldset>
 						@Html.ValidationMessageFor(Function(m) m.PicklistID)
 						@Html.ValidationMessageFor(Function(m) m.FilterID)
 					</fieldset>
-					<br />
+
+					<fieldset>
+						<div class="width100  height25" style="display:block">
+							@Html.CheckBoxFor(Function(m) m.DisplayTitleInReportHeader)
+							@Html.LabelFor(Function(m) m.DisplayTitleInReportHeader)
+						</div>
+					</fieldset>
 				</div>
 
 				<input type="hidden" id="ctl_DefinitionChanged" name="HasChanged" value="false" />
-
 				<input type="hidden" id="baseHidden" name="baseHidden">
-
 			</div>
 		</fieldset>
 	</fieldset>
 
-	<fieldset id="AccessPermissions" class="width35 overflowhidden">
-		<legend class="fontsmalltitle">Access :</legend>
-		@Html.Raw(Html.AccessGrid("GroupAccess", Model.GroupAccess, Nothing))
+	<fieldset id="AccessPermissions"  class="width35">
+		<fieldset>
+			<legend class="fontsmalltitle">Access :</legend>
+			<fieldset>
+				<span class="floatleft">Owner : </span>
+				@Html.TextBoxFor(Function(m) m.Owner, New With {.readonly = "true"})
+			</fieldset>
+			<fieldset id="AccessPermissionsGrid" >
+				@Html.Raw(Html.AccessGrid("GroupAccess", Model.GroupAccess, Nothing))
+			</fieldset>
+		</fieldset>
 	</fieldset>
 </div>
 
 <script type="text/javascript">
+
+	$(function () {
+		 $('fieldset').css("border", "0");		
+		$("#frmReportDefintion :input").on("change", function () { enableSaveButton(this); });
+		getBaseTableList();
+
+	});
 
 	function getBaseTableList() {
 		$.ajax({
@@ -326,13 +347,7 @@
 		return false;
 	}
 
-	$(function () {
 
-		// tighten up these input selectors?
-		$("#frmReportDefintion :input").on("change", function () { enableSaveButton(this); });
-		getBaseTableList();
-
-	});
 
 </script>
 

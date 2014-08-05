@@ -283,15 +283,20 @@ input[readonly="readonly"] {
 .vertaligntop {	vertical-align:top;}
 .alignleft {	text-align:left;}
 .displaynone {	display:none;}
-.overflowhidden {	overflow:hidden;}
+.overflowxhidden {	overflow-x:hidden;}
+.overflowyhidden {	overflow-y:hidden;}
+.overflowauto {	overflow:auto;}
 .hidden {	visibility:hidden;}
 
 .width100 {	width: 100%;}
 .width99 {	width: 99%;}
 .width90 {	width: 90%;}
+.width85 {	width: 85%;}
 .width80 {	width: 80%;}
 .width70 {	width: 70%;}
+.width65 {	width: 65%;}
 .width60 {	width: 60%;}
+.width55 {	width: 55%;}
 .width50 {	width: 50%;}
 .width45 {	width: 45%;}
 .width35 {	width: 35%;}
@@ -311,6 +316,12 @@ input[readonly="readonly"] {
 .height25 {	height: 25%;}
 .height10 {	height: 10%;}
 
+
+
+#report_definition_tab_columns, #report_definition_tab_order {
+	/*padding-left:0px;*/
+}
+
 #report_definition_tab_columns #columnbuttons {
 	width: 120px;
 	margin-top: 10px;
@@ -320,36 +331,52 @@ input[readonly="readonly"] {
 }
 
 	#report_definition_tab_columns #columnbuttons button {
-		width: 200px;
+		/*width: 200px;*/
+		margin-bottom:10px;
 	}
 
 #colbtngrp1, #colbtngrp2, #colbtngrp3 {
-	margin-bottom: 50px;
+	margin-bottom:30px;
 	width: 110px;
 }
 
 #SelectedTableID {
-	margin: 10px;
+	width:300px;
+	margin-bottom:10px;
+
 }
 
 #columnsSelected, #columnsAvailable {
-	padding-top: 20px;
+	/*padding-top: 20px;*/
 	float: left;
-	height: 600px;
+	/*height: 600px;*/
+	/*width: 35%;*/
 }
 
 #columncalculations {
-	margin-top: 20px;
+	margin-top: 10px;
 }
 
 	#columncalculations legend {
 		width: 100%;
-		text-align: center;
+		/*text-align: center;*/
 	}
 
 #report_definition_tab_columns #columnbuttons input[type=button] {
 	width: 120px;
+	margin-bottom:10px;
 }
+
+#report_definition_tab_order #columnbuttons {
+	width: 110px;
+	float: left;	
+}
+
+#report_definition_tab_order #columnbuttons input[type=button] {
+	width: 110px;
+	margin-bottom: 10px;
+}
+
 
 #report_definition_tab_order #sortorderbuttons input[type=button] {
 	width: 120px;
@@ -373,9 +400,6 @@ input[readonly="readonly"] {
 	float: left;
 }
 
-#AccessPermissions {
-	height: 300px;
-}
 
 .display-label_crosstabs {
 	width: 20%;
@@ -420,3 +444,85 @@ input[readonly="readonly"] {
 	color: #ff0000;	
 }
 
+.accesspermissionsgrid {
+	width:110px;
+}
+
+#AccessPermissions {
+	width:40%;
+	height:200px;	
+}
+#AccessPermissionsGrid {
+	height:200px;
+	overflow:auto;
+}
+
+.bordernone {
+	/*border-color:none;*/
+	border-width:0px;
+}
+
+#tabs .ui-widget-content {
+	/*border:none;*/
+}
+#cmdBasePicklist, #cmdBaseFilter, #cmdParent1Picklist, #cmdParent1Filter, #cmdParent2Picklist, #cmdParent2Filter  {
+	float:left;
+	padding:2px 12px;
+	/*margin-bottom:2px;*/
+}
+
+#cmdParent1Picklist, #cmdParent2Picklist {
+	margin-bottom:2px
+}
+#RelatedTableParent1AllRecordsDiv, #RelatedTableParent2AllRecordsDiv {
+	margin-bottom:7px;
+	width:100%;
+}
+
+#report_definition_tab_order .ui-jqgrid .ui-jqgrid-bdiv
+{
+	overflow-y: hidden !important;
+}
+
+#RelatedTablesParent1PicklistDiv, #RelatedTablesParent2PicklistDiv {
+	margin-bottom:4px;
+	width:100%;
+}
+
+ #selectiontypepicklistgroup, #selectiontypefiltergroup {
+	margin-bottom:-11px;
+	/*width:100%;
+	border-style:none*/
+}
+
+ #selectiontypeallrecords {
+	 margin-bottom:-4px;
+ }
+
+#Owner {
+	width:225px;
+	margin-left:5px;
+}
+#CustomDefinitionReportOptions {
+	/*margin-left:20px;*/
+}
+#txtBasePicklist, #txtBaseFilter {
+	margin-top:2px;
+	float:left;
+}
+
+#BaseTableID {
+	width:71%
+}
+#PicklistRadioDiv, #FilterRadioDiv {
+	width:26%;
+}
+
+#DescriptionItems{
+	margin-bottom:7px;
+}
+
+#gbox_SelectedColumns {
+	margin-left:10px;
+	margin-top:13px;
+}
