@@ -382,7 +382,7 @@ function optiondata_onload() {
 						iIndex = sColDef.indexOf("	");
 						if (iIndex >= 0) {
 							sColumnName = sColDef.substr(0, iIndex);
-							sColumnType = sColDef.substr(iIndex + 1);
+							sColumnType = sColDef.substr(iIndex + 1).replace('System.', '').toLowerCase();
 
 							colNames.push(sColumnName);
 
@@ -504,7 +504,7 @@ function optiondata_onload() {
 						iIndex = sColDef.indexOf("	");
 						if (iIndex >= 0) {
 							sColumnName = sColDef.substr(0, iIndex);
-							sColumnType = sColDef.substr(iIndex + 1);
+							sColumnType = sColDef.substr(iIndex + 1).replace('System.', '').toLowerCase();
 
 							colNames.push(sColumnName);
 
@@ -623,7 +623,7 @@ function optiondata_onload() {
 						iIndex = sColDef.indexOf("	");
 						if (iIndex >= 0) {
 							sColumnName = sColDef.substr(0, iIndex);
-							sColumnType = sColDef.substr(iIndex + 1);
+							sColumnType = sColDef.substr(iIndex + 1).replace('System.', '').toLowerCase();
 
 							colNames.push(sColumnName);
 
