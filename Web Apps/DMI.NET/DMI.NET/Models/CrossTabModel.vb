@@ -1,14 +1,10 @@
 ﻿Option Explicit On
 Option Strict On
 
-Imports System.Collections.ObjectModel
-Imports HR.Intranet.Server
-Imports HR.Intranet.Server.Metadata
 Imports DMI.NET.Classes
 Imports HR.Intranet.Server.Enums
 Imports System.ComponentModel.DataAnnotations
 Imports System.ComponentModel
-Imports DMI.NET.AttributeExtensions
 
 Namespace Models
 

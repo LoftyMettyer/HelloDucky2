@@ -3,11 +3,8 @@ Option Strict On
 
 Imports System.Collections.ObjectModel
 Imports System.ComponentModel
-Imports System.ComponentModel.DataAnnotations
-Imports HR.Intranet.Server
 Imports HR.Intranet.Server.Metadata
 Imports DMI.NET.Classes
-Imports System.Runtime.CompilerServices
 Imports HR.Intranet.Server.Enums
 Imports DMI.NET.ViewModels.Reports
 
@@ -21,8 +18,6 @@ Namespace Models
 				Return UtilityType.utlCustomReport
 			End Get
 		End Property
-
-		Private _baseTable As Integer
 
 		Public Property AvailableTables As New Collection(Of ChildTableViewModel)
 
@@ -49,7 +44,7 @@ Namespace Models
 
 			ChildTables = New List(Of ChildTableViewModel)
 			BaseTableID = TableID
-			SelectionType = Enums.RecordSelectionType.AllRecords
+			SelectionType = RecordSelectionType.AllRecords
 			Columns = New List(Of ReportColumnItem)
 			SortOrders = New Collection(Of SortOrderViewModel)
 
@@ -57,7 +52,7 @@ Namespace Models
 
 			Parent1.ID = 0
 			Parent1.Name = ""
-			Parent1.SelectionType = Enums.RecordSelectionType.AllRecords
+			Parent1.SelectionType = RecordSelectionType.AllRecords
 			Parent1.PicklistID = 0
 			Parent1.PicklistName = ""
 			Parent1.FilterID = 0
@@ -65,7 +60,7 @@ Namespace Models
 
 			Parent2.ID = 0
 			Parent2.Name = ""
-			Parent2.SelectionType = Enums.RecordSelectionType.AllRecords
+			Parent2.SelectionType = RecordSelectionType.AllRecords
 			Parent2.PicklistID = 0
 			Parent2.PicklistName = ""
 			Parent2.FilterID = 0
@@ -115,7 +110,6 @@ Namespace Models
 			Return objItems.OrderBy(Function(m) m.Name)
 
 		End Function
-
 
 	End Class
 

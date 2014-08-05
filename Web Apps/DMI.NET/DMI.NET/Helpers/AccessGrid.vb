@@ -36,7 +36,8 @@ Public Module MVCExtensions
 	Private Sub BuildTableRow(sb As StringBuilder, obj As GroupAccess, name As String, rownumber As Integer)
 
 		Dim iSelected As Integer
-		Dim strSelected As String = "selected='selected'"
+		Dim sNiceText As String
+		Const strSelected As String = "selected='selected'"
 		Dim sName As String = String.Format("{0}[{1}]", name, rownumber)
 
 		sb.AppendLine("<tr>")
@@ -45,14 +46,24 @@ Public Module MVCExtensions
 		Select Case obj.Access.ToUpper
 			Case "RW"
 				iSelected = 0
+				sNiceText = "Read / Write"
 			Case "RO"
 				iSelected = 1
+				sNiceText = "Read Only"
 			Case Else
 				iSelected = 2
+				sNiceText = "Hidden"
 		End Select
 
-		sb.AppendFormat("<td><select name='{0}.Access'><option {1} value='RW'>Read / Write</option><option {2} value='RO'>Read Only</option><option {3} value='HD'>Hidden</option></select></td>" _
-				, sName, IIf(iSelected = 0, strSelected, ""), IIf(iSelected = 1, strSelected, ""), IIf(iSelected = 2, strSelected, ""))
+		If obj.IsReadOnly Then
+			sb.AppendFormat("<td><select style='width:120px' class='readonly' name='{0}.Access'><option value='{1}'>{2}</option></select></td>" _
+					, sName, obj.Access.ToUpper, sNiceText)
+
+		Else
+			sb.AppendFormat("<td width=80px><select style='width:120px' name='{0}.Access'><option {1} value='RW'>Read / Write</option><option {2} value='RO'>Read Only</option><option {3} value='HD'>Hidden</option></select></td>" _
+					, sName, IIf(iSelected = 0, strSelected, ""), IIf(iSelected = 1, strSelected, ""), IIf(iSelected = 2, strSelected, ""))
+		End If
+
 
 		sb.AppendLine("</tr>")
 

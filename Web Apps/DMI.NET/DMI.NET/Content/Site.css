@@ -270,6 +270,11 @@ input[readonly="readonly"] {
 	cursor: default;
 }
 
+select.readonly {
+	background-color: #F2F2F2 !important;
+	color: #826D82;	
+}
+
 .fontsmall {	font-size: small;}
 .fontsmaller {	font-size: smaller;}
 .fontx-small {	font-size: x-small;}

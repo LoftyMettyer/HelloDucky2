@@ -3,14 +3,11 @@ Option Strict On
 
 Imports System.Collections.ObjectModel
 Imports DMI.NET.AttributeExtensions
-Imports HR.Intranet.Server
-Imports HR.Intranet.Server.Metadata
 Imports DMI.NET.Classes
-Imports DMI.NET.ViewModels
 Imports System.ComponentModel
 Imports System.ComponentModel.DataAnnotations
 Imports HR.Intranet.Server.Enums
-Imports DMI.NET.ViewModels.Reports
+Imports System.Data.SqlClient
 
 Namespace Models
 
@@ -63,8 +60,8 @@ Namespace Models
 		<DisplayName("Send As Attachment")>
 		Public Property EmailAsAttachment As Boolean
 
-		<Required(ErrorMessage:="Name is required.")> _
-		<MaxLength(255, ErrorMessage:="Name cannot be longer than 255 characters.")> _
+		<Required(ErrorMessage:="Email attachment name is required.")> _
+		<MaxLength(255, ErrorMessage:="Email attachment cannot be longer than 255 characters.")> _
 		<DisplayName("Attach As")>
 		Public Property EmailAttachmentName As String
 

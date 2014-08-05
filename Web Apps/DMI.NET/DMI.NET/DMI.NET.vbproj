@@ -184,7 +184,9 @@
     <Compile Include="AttributeExtensions\RequiredIfAttribute.vb" />
     <Compile Include="Classes\ColumnFilter.vb" />
     <Compile Include="Classes\ExpressionSelection.vb" />
+    <Compile Include="Classes\ReportDependencies.vb" />
     <Compile Include="Code\Conversions.vb" />
+    <Compile Include="Code\Extensions\ModelStateDictionaryExtensions.vb" />
     <Compile Include="Code\Interfaces\IDataAccess.vb" />
     <Compile Include="Code\Interfaces\IReport.vb" />
     <Compile Include="Code\Interfaces\IReportDetail.vb" />
@@ -197,6 +199,7 @@
     <Compile Include="Classes\ReportColumnItem.vb" />
     <Compile Include="Classes\ReportRelatedTable.vb" />
     <Compile Include="Classes\ReportRepetition.vb" />
+    <Compile Include="ViewModels\Reports\SaveWarningModel.vb" />
     <Compile Include="ViewModels\Reports\SortOrderViewModel.vb" />
     <Compile Include="Classes\ReportTableItem.vb" />
     <Compile Include="Code\ApplicationSettings.vb" />
@@ -1703,6 +1706,7 @@
     <Content Include="Views\Reports\EditorTemplates\CalendarEventDetail.vbhtml" />
     <Content Include="Views\Reports\EditorTemplates\SortOrder.vbhtml" />
     <Content Include="Views\Home\DefinitionProperties.vbhtml" />
+    <Content Include="Views\Reports\EditorTemplates\SaveWarning.vbhtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Global.asax" />

@@ -198,6 +198,16 @@
 			var defer = $.Deferred();
 			var dialogButtons;
 			switch (buttons) {
+				case 0:
+					dialogButtons = {
+						"OK": function() {
+							defer.resolve(1);
+							$(this).dialog("close");
+							if (followOnFunctionName) followOnFunctionName(1);
+						}
+					};
+					break;
+
 			case 1:
 				dialogButtons = {
 					"OK": function() {

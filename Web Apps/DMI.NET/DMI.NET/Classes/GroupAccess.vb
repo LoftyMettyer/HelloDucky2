@@ -10,6 +10,7 @@ Namespace Classes
 
 		Public Property Name As String
 		Public Property Access As String
+		Public Property IsReadOnly As Boolean
 
 	End Class
 End Namespace

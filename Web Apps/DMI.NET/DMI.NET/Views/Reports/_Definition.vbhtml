@@ -7,6 +7,8 @@
 
 @Html.HiddenFor(Function(m) m.ID, New With {.id = "txtReportID"})
 @Html.HiddenFor(Function(m) m.ReportType, New With {.id = "txtReportType"})
+@Html.HiddenFor(Function(m) m.Timestamp)
+@Html.HiddenFor(Function(m) m.ValidityStatus)
 
 <div class="width100">
 	<fieldset class="floatleft width50 ">
@@ -288,7 +290,7 @@
 
 				OpenHR.modalPrompt("You have made changes. Click 'OK' to discard your changes, or 'Cancel' to continue editing.", 1, "Confirm").then(function (answer) {
 					if (answer == 1) {
-						submitReportDefinition();
+						validateReportDefinition();
 					}
 				});
 			}
@@ -297,14 +299,14 @@
 			}
 
 		} else {
-			submitReportDefinition()
+			validateReportDefinition()
 		}
 
 		return 0;
 
 	}
 
-	function submitReportDefinition() {
+	function validateReportDefinition() {
 
 		// Related Tables
 		var gridData = jQuery("#ChildTables").getRowData();
@@ -323,9 +325,45 @@
 		gridData = $("#SortOrders").getRowData();
 		$('#txtSOAAS').val(JSON.stringify(gridData));
 
+		var $form = $("#frmReportDefintion");
+
+		$.ajax({
+			url: $form.attr("action"),
+			type: $form.attr("method"),
+			data: $form.serialize(),
+			async: true,
+			success: function (json) {
+
+				switch (json.ErrorCode) {
+					case 0:
+						submitReportDefinition();
+						break;
+
+					case 1:
+						OpenHR.modalPrompt(json.ErrorMessage, 0, "OpenHR");
+						break;
+
+					case -1:
+						OpenHR.modalPrompt(json.ErrorMessage, 0, "OpenHR");
+						break;
+
+					default:
+						OpenHR.modalPrompt(json.ErrorMessage, 4, "Confirm").then(function (answer) {
+							if (answer == 6) {
+								submitReportDefinition();
+							}});
+						break;
+
+				}
+
+			}
+		});
+	}
+
+	function submitReportDefinition() {
+		$("#ValidityStatus").val('ServerCheckComplete');
 		var frmSubmit = $("#frmReportDefintion")[0];
 		OpenHR.submitForm(frmSubmit);
-
 	}
 
 	function cancelReportDefinition() {

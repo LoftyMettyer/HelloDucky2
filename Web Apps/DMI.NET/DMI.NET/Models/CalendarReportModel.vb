@@ -6,7 +6,6 @@ Imports System.ComponentModel.DataAnnotations
 Imports DMI.NET.Classes
 Imports HR.Intranet.Server.Enums
 Imports System.ComponentModel
-Imports DMI.NET.ViewModels
 Imports DMI.NET.AttributeExtensions
 Imports DMI.NET.ViewModels.Reports
 

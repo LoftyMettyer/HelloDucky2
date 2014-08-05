@@ -15,16 +15,19 @@ Namespace Models
 		Implements IReport
 
 		Public Property IsReadOnly As Boolean
-		Public MustOverride ReadOnly Property ReportType As UtilityType
+		Public MustOverride ReadOnly Property ReportType As UtilityType Implements IReport.ReportType
 
 		Public Property ID As Integer Implements IReport.ID
-		Public Property Owner As String
+		Public Property Owner As String Implements IReport.Owner
+
+		Public Property Timestamp As Long
+		Public Property ValidityStatus As ReportValidationStatus = ReportValidationStatus.InvalidOnClient
 
 		<Required(ErrorMessage:="A base table must be selected.")>
 		Public Property BaseTableID As Integer Implements IReport.BaseTableID
 
-		<Required(ErrorMessage:="Name is required.")>
-		<MaxLength(50, ErrorMessage:="Name cannot be longer than 50 characters.")>
+		<Required(ErrorMessage:="Definition name is required.")>
+		<MaxLength(50, ErrorMessage:="Definition name cannot be longer than 50 characters.")>
 		<DisplayName("Name :")>
 		Public Property Name As String
 
@@ -116,6 +119,8 @@ Namespace Models
 		Public Sub Attach(ByRef session As SessionInfo)
 			SessionInfo = session
 		End Sub
+
+		Public Property Dependencies As New ReportDependencies Implements IReport.Dependencies
 
 	End Class
 End Namespace

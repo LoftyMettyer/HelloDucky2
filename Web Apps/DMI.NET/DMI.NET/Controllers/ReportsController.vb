@@ -8,6 +8,7 @@ Imports DMI.NET.Repository
 Imports System.Web.Script.Serialization
 Imports DMI.NET.ViewModels.Reports
 Imports DMI.NET.Code
+Imports DMI.NET.Code.Extensions
 
 Namespace Controllers
 
@@ -66,7 +67,6 @@ Namespace Controllers
 
 		End Function
 
-
 		<HttpGet>
 		Function util_def_calendarreport() As ActionResult
 
@@ -81,6 +81,7 @@ Namespace Controllers
 		<HttpPost, ValidateInput(False)>
 	 Function util_def_customreport(objModel As CustomReportModel) As ActionResult
 
+			Dim objSaveWarning As SaveWarningModel
 			Dim deserializer = New JavaScriptSerializer()
 
 			If objModel.ColumnsAsString.Length > 0 Then
@@ -95,15 +96,21 @@ Namespace Controllers
 				objModel.SortOrders = deserializer.Deserialize(Of Collection(Of SortOrderViewModel))(objModel.SortOrdersString)
 			End If
 
-			If ModelState.IsValid Then
+			If objModel.ValidityStatus = ReportValidationStatus.ServerCheckComplete Then
+				objModel.Dependencies = objReportRepository.RetrieveDependencies(objModel.ID, UtilityType.utlCustomReport)
 				objReportRepository.SaveReportDefinition(objModel)
 				Session("reaction") = "CUSTOMREPORTS"
 				Return RedirectToAction("confirmok", "home")
+
 			Else
+				If ModelState.IsValid Then
+					objSaveWarning = objReportRepository.ServerValidate(objModel)
+				Else
+					objSaveWarning = ModelState.ToWebMessage
+				End If
 
-				Dim allErrors = ModelState.Values.SelectMany(Function(v) v.Errors)
+				Return Json(objSaveWarning, JsonRequestBehavior.AllowGet)
 
-				Return View(objModel)
 			End If
 
 		End Function
@@ -111,6 +118,7 @@ Namespace Controllers
 		<HttpPost, ValidateInput(False)>
 	 Function util_def_mailmerge(objModel As MailMergeModel) As ActionResult
 
+			Dim objSaveWarning As SaveWarningModel
 			Dim deserializer = New JavaScriptSerializer()
 
 			If objModel.ColumnsAsString.Length > 0 Then
@@ -121,13 +129,22 @@ Namespace Controllers
 				objModel.SortOrders = deserializer.Deserialize(Of Collection(Of SortOrderViewModel))(objModel.SortOrdersString)
 			End If
 
-			If ModelState.IsValid Then
+			If objModel.ValidityStatus = ReportValidationStatus.ServerCheckComplete Then
+				objModel.Dependencies = objReportRepository.RetrieveDependencies(objModel.ID, UtilityType.utlMailMerge)
 				objReportRepository.SaveReportDefinition(objModel)
 				Session("reaction") = "MAILMERGE"
 				Return RedirectToAction("confirmok", "home")
+
 			Else
-				objModel.AvailableEmails = objReportRepository.GetAvailableEmails(objModel.BaseTableID)
-				Return View(objModel)
+
+				If ModelState.IsValid Then
+					objSaveWarning = objReportRepository.ServerValidate(objModel)
+				Else
+					objSaveWarning = ModelState.ToWebMessage
+				End If
+
+				Return Json(objSaveWarning, JsonRequestBehavior.AllowGet)
+
 			End If
 
 		End Function
@@ -135,14 +152,24 @@ Namespace Controllers
 		<HttpPost, ValidateInput(False)>
 		Function util_def_crosstab(objModel As CrossTabModel) As ActionResult
 
-			If ModelState.IsValid Then
+			Dim objSaveWarning As SaveWarningModel
+
+			If objModel.ValidityStatus = ReportValidationStatus.ServerCheckComplete Then
+				objModel.Dependencies = objReportRepository.RetrieveDependencies(objModel.ID, UtilityType.utlCrossTab)
 				objReportRepository.SaveReportDefinition(objModel)
 				Session("reaction") = "CROSSTABS"
 				Return RedirectToAction("confirmok", "home")
-			Else
-				objModel.AvailableColumns = objReportRepository.GetColumnsForTable(objModel.BaseTableID)
 
-				Return View(objModel)
+			Else
+
+				If ModelState.IsValid Then
+					objSaveWarning = objReportRepository.ServerValidate(objModel)
+				Else
+					objSaveWarning = ModelState.ToWebMessage
+				End If
+
+				Return Json(objSaveWarning, JsonRequestBehavior.AllowGet)
+
 			End If
 
 		End Function
@@ -150,6 +177,7 @@ Namespace Controllers
 		<HttpPost, ValidateInput(False)>
 		Function util_def_calendarreport(objModel As CalendarReportModel) As ActionResult
 
+			Dim objSaveWarning As SaveWarningModel
 			Dim deserializer = New JavaScriptSerializer()
 
 			If objModel.EventsString.Length > 0 Then
@@ -160,16 +188,21 @@ Namespace Controllers
 				objModel.SortOrders = deserializer.Deserialize(Of Collection(Of SortOrderViewModel))(objModel.SortOrdersString)
 			End If
 
-
-			If ModelState.IsValid Then
+			If objModel.ValidityStatus = ReportValidationStatus.ServerCheckComplete Then
+				objModel.Dependencies = objReportRepository.RetrieveDependencies(objModel.ID, UtilityType.utlCalendarReport)
 				objReportRepository.SaveReportDefinition(objModel)
 				Session("reaction") = "CALENDARREPORTS"
 				Return RedirectToAction("confirmok", "home")
+
 			Else
 
-				Dim allErrors = ModelState.Values.SelectMany(Function(v) v.Errors)
+				If ModelState.IsValid Then
+					objSaveWarning = objReportRepository.ServerValidate(objModel)
+				Else
+					objSaveWarning = ModelState.ToWebMessage
+				End If
 
-				Return View(objModel)
+				Return Json(objSaveWarning, JsonRequestBehavior.AllowGet)
 			End If
 
 		End Function

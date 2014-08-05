@@ -10,6 +10,8 @@ Namespace Code.Interfaces
 	Public Interface IReport
 
 		Property ID As Integer
+		ReadOnly Property ReportType As UtilityType
+		Property Owner As String
 
 		Property SessionInfo As SessionInfo
 
@@ -22,5 +24,6 @@ Namespace Code.Interfaces
 
 		Property SortOrders As Collection(Of SortOrderViewModel)
 
+		Property Dependencies() As ReportDependencies
 	End Interface
 End Namespace

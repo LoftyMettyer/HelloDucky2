@@ -1,6 +1,7 @@
 ﻿Option Strict On
 Option Explicit On
 
+Imports System.ComponentModel.DataAnnotations
 Imports HR.Intranet.Server
 Imports DMI.NET.Models
 Imports System.Data.SqlClient
@@ -19,7 +20,7 @@ Namespace Repository
 		Private ReadOnly _mailmerges As New Collection(Of MailMergeModel)
 
 		Private _objSessionInfo As SessionInfo
-		Private _objDataAccess As clsDataAccess
+		Private ReadOnly _objDataAccess As clsDataAccess
 		Private _username As String
 		Private _defaultBaseTableID As Integer
 
@@ -103,7 +104,7 @@ Namespace Repository
 
 				End If
 
-				objModel.GroupAccess = GetUtilityAccess(UtilityType.utlCustomReport, objModel.ID, action)
+				objModel.GroupAccess = GetUtilityAccess(objModel, action)
 				objModel.IsReadOnly = (action = UtilityActionType.View)
 
 				_customreports.Remove(objModel.ID)
@@ -171,7 +172,7 @@ Namespace Repository
 
 				objModel.AvailableEmails = GetAvailableEmails(objModel.BaseTableID)
 
-				objModel.GroupAccess = GetUtilityAccess(UtilityType.utlMailMerge, ID, action)
+				objModel.GroupAccess = GetUtilityAccess(objModel, action)
 				objModel.IsReadOnly = (action = UtilityActionType.View)
 
 				_mailmerges.Remove(objModel.ID)
@@ -243,7 +244,7 @@ Namespace Repository
 				End If
 
 				objModel.AvailableColumns = GetColumnsForTable(objModel.BaseTableID)
-				objModel.GroupAccess = GetUtilityAccess(UtilityType.utlCrossTab, ID, action)
+				objModel.GroupAccess = GetUtilityAccess(objModel, action)
 				objModel.IsReadOnly = (action = UtilityActionType.View)
 
 				_crosstabs.Remove(objModel.ID)
@@ -370,7 +371,7 @@ Namespace Repository
 
 				End If
 
-				objModel.GroupAccess = GetUtilityAccess(UtilityType.utlCalendarReport, ID, action)
+				objModel.GroupAccess = GetUtilityAccess(objModel, action)
 				objModel.IsReadOnly = (action = UtilityActionType.View)
 
 				_calendarreports.Remove(objModel.ID)
@@ -388,10 +389,6 @@ Namespace Repository
 		Public Function SaveReportDefinition(objModel As MailMergeModel) As Boolean
 
 			Dim prmID = New SqlParameter("piId", SqlDbType.Int) With {.Direction = ParameterDirection.InputOutput, .Value = objModel.ID}
-
-			' TODO old access stuff - needs updating
-			Dim psJobsToHide As String = ""	' Request.Form("txtSend_jobsToHide")
-			Dim psJobsToHideGroups As String = ""	' Request.Form("txtSend_jobsToHideGroups")}
 
 			Try
 
@@ -422,8 +419,8 @@ Namespace Repository
 					, New SqlParameter("@piDocumentMapID", SqlDbType.Int) With {.Value = 0} _
 					, New SqlParameter("@pfManualDocManHeader", SqlDbType.Bit) With {.Value = False} _
 					, New SqlParameter("@psAccess", SqlDbType.VarChar, -1) With {.Value = sAccess} _
-					, New SqlParameter("@psJobsToHide", SqlDbType.VarChar, -1) With {.Value = ""} _
-					, New SqlParameter("@psJobsToHideGroups", SqlDbType.VarChar, -1) With {.Value = ""} _
+					, New SqlParameter("@psJobsToHide", SqlDbType.VarChar, -1) With {.Value = objModel.Dependencies.JobIDsToHide} _
+					, New SqlParameter("@psJobsToHideGroups", SqlDbType.VarChar, -1) With {.Value = objModel.GroupAccess.HiddenGroups()} _
 					, New SqlParameter("@psColumns", SqlDbType.VarChar, -1) With {.Value = sColumns} _
 					, New SqlParameter("@psColumns2", SqlDbType.VarChar, -1) With {.Value = ""} _
 				, prmID)
@@ -511,8 +508,6 @@ Namespace Repository
 				Dim prmID = New SqlParameter("piId", SqlDbType.Int) With {.Direction = ParameterDirection.InputOutput, .Value = objModel.ID}
 
 				Dim sAccess As String = UtilityAccessAsString(objModel.GroupAccess)
-				Dim sJobsToHide = JobsToHideAsString(objModel.JobsToHide)
-				Dim sJobsToHideGroups As String = "" ' TODO?
 				Dim sColumns = CustomReportColumnsAsString(objModel.BaseTableID, objModel.Columns, objModel.SortOrders)
 				Dim sChildren As String = ReportChildTablesAsString(objModel.ChildTables)
 
@@ -547,8 +542,8 @@ Namespace Repository
 						New SqlParameter("pfParent2AllRecords", SqlDbType.Bit) With {.Value = (objModel.Parent2.PicklistID = 0 And objModel.Parent2.FilterID = 0)}, _
 						New SqlParameter("piParent2Picklist", SqlDbType.Int) With {.Value = objModel.Parent2.PicklistID}, _
 						New SqlParameter("psAccess", SqlDbType.VarChar, -1) With {.Value = sAccess}, _
-						New SqlParameter("psJobsToHide", SqlDbType.VarChar, -1) With {.Value = sJobsToHide}, _
-						New SqlParameter("psJobsToHideGroups", SqlDbType.VarChar, -1) With {.Value = sJobsToHideGroups}, _
+						New SqlParameter("psJobsToHide", SqlDbType.VarChar, -1) With {.Value = objModel.Dependencies.JobIDsToHide}, _
+						New SqlParameter("psJobsToHideGroups", SqlDbType.VarChar, -1) With {.Value = objModel.GroupAccess.HiddenGroups()}, _
 						New SqlParameter("psColumns", SqlDbType.VarChar, -1) With {.Value = sColumns}, _
 						New SqlParameter("psColumns2", SqlDbType.VarChar, -1) With {.Value = ""}, _
 						New SqlParameter("psChildString", SqlDbType.VarChar, -1) With {.Value = sChildren}, _
@@ -573,7 +568,7 @@ Namespace Repository
 				Dim prmID = New SqlParameter("piId", SqlDbType.Int) With {.Direction = ParameterDirection.InputOutput, .Value = objModel.ID}
 
 				Dim sAccess = UtilityAccessAsString(objModel.GroupAccess)
-				Dim sJobsToHide = JobsToHideAsString(objModel.JobsToHide)
+				Dim sJobsToHide = objModel.Dependencies.JobIDsToHide
 				Dim sJobsToHideGroups As String = "" ' TODO?
 				Dim sEvents As String = EventsAsString(objModel.Events)
 
@@ -654,7 +649,7 @@ Namespace Repository
 			Return True
 		End Function
 
-		Private Function GetUtilityAccess(utilType As UtilityType, ID As Integer, action As UtilityActionType) As Collection(Of GroupAccess)
+		Private Function GetUtilityAccess(objModel As IReport, action As UtilityActionType) As Collection(Of GroupAccess)
 
 			Dim objAccess As New Collection(Of GroupAccess)
 			Dim isCopy = (action = UtilityActionType.Copy)
@@ -662,15 +657,19 @@ Namespace Repository
 			Try
 
 				Dim rstAccessInfo As DataTable = _objDataAccess.GetDataTable("spASRIntGetUtilityAccessRecords", CommandType.StoredProcedure _
-					, New SqlParameter("piUtilityType", SqlDbType.Int) With {.Value = CInt(utilType)} _
-					, New SqlParameter("piID", SqlDbType.Int) With {.Value = ID} _
+					, New SqlParameter("piUtilityType", SqlDbType.Int) With {.Value = objModel.ReportType} _
+					, New SqlParameter("piID", SqlDbType.Int) With {.Value = objModel.ID} _
 					, New SqlParameter("piFromCopy", SqlDbType.Int) With {.Value = isCopy})
 
-				' TODO - replace with dapper
 				For Each objRow As DataRow In rstAccessInfo.Rows
+
+					Dim bIsOwnerGroup = CBool(objRow("isOwner"))
+					Dim bIsReportOwner = (objModel.Owner.ToLower() = _username.ToLower())
+
 					objAccess.Add(New GroupAccess() With {
 									.Access = objRow("access").ToString,
-									.Name = objRow("name").ToString})
+									.Name = objRow("name").ToString,
+									.IsReadOnly = bIsOwnerGroup OrElse Not bIsReportOwner})
 				Next
 
 			Catch ex As Exception
@@ -792,11 +791,6 @@ Namespace Repository
 
 			Return sAccess
 
-		End Function
-
-		' TODO - Sometimes we may need to hide dependant objects
-		Private Function JobsToHideAsString(objJobs As Collection(Of Integer)) As String
-			Return ""
 		End Function
 
 		' Old style update of the events selection stuff
@@ -969,6 +963,8 @@ Namespace Repository
 						outputModel.DisplayTitleInReportHeader = CBool(row("PrintFilterHeader"))
 					End If
 
+					outputModel.Timestamp = CLng(row("Timestamp"))
+
 				End If
 
 			Catch ex As Exception
@@ -1128,13 +1124,13 @@ Namespace Repository
 
 				Select Case reportType
 					Case UtilityType.utlCalendarReport
-						Return _calendarreports.Where(Function(m) m.ID = reportID).FirstOrDefault()
+						Return _calendarreports.Where(Function(m) m.ID = reportID).FirstOrDefault
 
 					Case UtilityType.utlMailMerge
-						Return _mailmerges.Where(Function(m) m.ID = reportID).FirstOrDefault()
+						Return _mailmerges.Where(Function(m) m.ID = reportID).FirstOrDefault
 
 					Case UtilityType.utlCrossTab
-						Return _crosstabs.Where(Function(m) m.ID = reportID).FirstOrDefault()
+						Return _crosstabs.Where(Function(m) m.ID = reportID).FirstOrDefault
 
 					Case Else
 						Return _customreports.Where(Function(m) m.ID = reportID).FirstOrDefault
@@ -1151,7 +1147,9 @@ Namespace Repository
 			Return RetrieveParent(model.ReportID, model.ReportType)
 		End Function
 
-
+		Public Function RetrieveDependencies(reportID As Integer, reportType As UtilityType) As ReportDependencies
+			Return RetrieveParent(reportID, reportType).Dependencies
+		End Function
 
 		Function GetAllTablesInReport(reportID As Integer) As List(Of ReportTableItem)
 
@@ -1198,7 +1196,7 @@ Namespace Repository
 				For Each objRow As DataRow In dtDefinition.Rows
 
 					Dim objToAdd = New ExpressionSelectionItem With {
-						.id = CInt(objRow("ID")),
+						.ID = CInt(objRow("ID")),
 						.Name = objRow("Name").ToString,
 						.Description = objRow("Description").ToString,
 						.UserName = objRow("Username").ToString,
@@ -1232,6 +1230,191 @@ Namespace Repository
 
 		End Function
 
+		Public Function ServerValidate(objModel As CalendarReportModel) As SaveWarningModel
+
+			Dim objSaveMessage As SaveWarningModel
+
+			Try
+
+				Dim prmErrorMsg As New SqlParameter("psErrorMsg", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
+				Dim prmErrorCode As New SqlParameter("piErrorCode", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
+				Dim prmDeletedFilters As New SqlParameter("psDeletedFilters", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
+				Dim prmHiddenFilters As New SqlParameter("psHiddenFilters", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
+				Dim prmDeletedCalcs As New SqlParameter("psDeletedCalcs", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
+				Dim prmHiddenCalcs As New SqlParameter("psHiddenCalcs", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
+				Dim prmDeletedPicklists As New SqlParameter("psDeletedPicklists", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
+				Dim prmHiddenPicklists As New SqlParameter("psHiddenPicklists", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
+				Dim prmJobIDsToHide As New SqlParameter("psJobIDsToHide", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
+
+				_objDataAccess.ExecuteSP("spASRIntValidateCalendarReport", _
+						New SqlParameter("psUtilName", SqlDbType.VarChar, 255) With {.Value = objModel.Name}, _
+						New SqlParameter("piUtilID", SqlDbType.Int) With {.Value = objModel.ID}, _
+						New SqlParameter("piTimestamp", SqlDbType.Int) With {.Value = objModel.Timestamp}, _
+						New SqlParameter("piBasePicklistID", SqlDbType.Int) With {.Value = objModel.PicklistID}, _
+						New SqlParameter("piBaseFilterID", SqlDbType.Int) With {.Value = objModel.FilterID}, _
+						New SqlParameter("piEmailGroupID", SqlDbType.Int) With {.Value = objModel.Output.EmailGroupID}, _
+						New SqlParameter("piDescExprID", SqlDbType.Int) With {.Value = objModel.Description3ID}, _
+						New SqlParameter("psEventFilterIDs", SqlDbType.VarChar, -1) With {.Value = objModel.Dependencies.EventFilters}, _
+						New SqlParameter("piCustomStartID", SqlDbType.Int) With {.Value = objModel.StartCustomId}, _
+						New SqlParameter("piCustomEndID", SqlDbType.Int) With {.Value = objModel.EndCustomId}, _
+						New SqlParameter("psHiddenGroups ", SqlDbType.VarChar, -1) With {.Value = objModel.GroupAccess.HiddenGroups()}, _
+						prmErrorMsg, prmErrorCode, prmDeletedFilters, prmHiddenFilters, _
+						prmDeletedCalcs, prmHiddenCalcs, prmDeletedPicklists, prmHiddenPicklists, prmJobIDsToHide)
+
+				If prmJobIDsToHide.Value.ToString().Length > 0 Then
+					objModel.Dependencies.JobIDsToHide = vbTab + prmJobIDsToHide.Value.ToString() + vbTab
+				End If
+
+				objSaveMessage = New SaveWarningModel With {
+					.ReportType = objModel.ReportType,
+					.ID = objModel.ID,
+					.ErrorCode = CType(prmErrorCode.Value, ReportValidationStatus),
+					.ErrorMessage = prmErrorMsg.Value.ToString()}
+
+			Catch ex As Exception
+				Throw
+
+			End Try
+
+			Return objSaveMessage
+
+		End Function
+
+		Public Function ServerValidate(objModel As CrossTabModel) As SaveWarningModel
+
+			Dim objSaveMessage As SaveWarningModel
+
+			Try
+
+				Dim prmErrorMsg As New SqlParameter("@psErrorMsg", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
+				Dim prmErrorCode As New SqlParameter("@piErrorCode", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
+				Dim prmDeletedFilters As New SqlParameter("@psDeletedFilters", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
+				Dim prmHiddenFilters As New SqlParameter("@psHiddenFilters", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
+				Dim prmJobIDsToHide As New SqlParameter("@psJobIDsToHide", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
+
+				_objDataAccess.ExecuteSP("sp_ASRIntValidateCrossTab", _
+								New SqlParameter("psUtilName", SqlDbType.VarChar, 255) With {.Value = objModel.Name}, _
+								New SqlParameter("piUtilID", SqlDbType.Int) With {.Value = objModel.ID}, _
+								New SqlParameter("piTimestamp", SqlDbType.Int) With {.Value = objModel.Timestamp}, _
+								New SqlParameter("piBasePicklistID", SqlDbType.Int) With {.Value = objModel.PicklistID}, _
+								New SqlParameter("piBaseFilterID", SqlDbType.Int) With {.Value = objModel.FilterID}, _
+								New SqlParameter("piEmailGroupID", SqlDbType.Int) With {.Value = objModel.Output.EmailGroupID}, _
+								New SqlParameter("psHiddenGroups ", SqlDbType.VarChar, -1) With {.Value = objModel.GroupAccess.HiddenGroups()}, _
+								prmErrorMsg, prmErrorCode, prmDeletedFilters, prmHiddenFilters, prmJobIDsToHide)
+
+				If prmJobIDsToHide.Value.ToString().Length > 0 Then
+					objModel.Dependencies.JobIDsToHide = vbTab + prmJobIDsToHide.Value.ToString() + vbTab
+				End If
+
+				objSaveMessage = New SaveWarningModel With {
+					.ReportType = objModel.ReportType,
+					.ID = objModel.ID,
+					.ErrorCode = CType(prmErrorCode.Value, ReportValidationStatus),
+					.ErrorMessage = prmErrorMsg.Value.ToString()}
+
+			Catch ex As Exception
+				Throw
+
+			End Try
+
+			Return objSaveMessage
+
+		End Function
+
+		Public Function ServerValidate(objModel As CustomReportModel) As SaveWarningModel
+
+			Dim objSaveMessage As SaveWarningModel
+
+			Try
+
+				Dim prmErrorCode As New SqlParameter("@piErrorCode", SqlDbType.VarChar) With {.Direction = ParameterDirection.Output, .Size = -1}
+				Dim prmErrorMsg As New SqlParameter("@psErrorMsg", SqlDbType.VarChar) With {.Direction = ParameterDirection.Output, .Size = -1}
+				Dim prmDeletedCalcs As New SqlParameter("@psDeletedCalcs", SqlDbType.VarChar) With {.Direction = ParameterDirection.Output, .Size = -1}
+				Dim prmHiddenCalcs As New SqlParameter("@psHiddenCalcs", SqlDbType.VarChar) With {.Direction = ParameterDirection.Output, .Size = -1}
+				Dim prmDeletedFilters As New SqlParameter("@psDeletedFilters", SqlDbType.VarChar) With {.Direction = ParameterDirection.Output, .Size = -1}
+				Dim prmHiddenFilters As New SqlParameter("@psHiddenFilters", SqlDbType.VarChar) With {.Direction = ParameterDirection.Output, .Size = -1}
+				Dim prmDeletedOrders As New SqlParameter("@psDeletedOrders", SqlDbType.VarChar) With {.Direction = ParameterDirection.Output, .Size = -1}
+				Dim prmJobIDsToHide As New SqlParameter("@psJobIDsToHide", SqlDbType.VarChar) With {.Direction = ParameterDirection.Output, .Size = -1}
+				Dim prmDeletedPicklists As New SqlParameter("@psDeletedPicklists", SqlDbType.VarChar) With {.Direction = ParameterDirection.Output, .Size = -1}
+				Dim prmHiddenPicklists As New SqlParameter("@psHiddenPicklists", SqlDbType.VarChar) With {.Direction = ParameterDirection.Output, .Size = -1}
+
+				_objDataAccess.ExecuteSP("sp_ASRIntValidateReport", _
+								New SqlParameter("@psUtilName", SqlDbType.VarChar) With {.Value = objModel.Name, .Size = 255}, _
+								New SqlParameter("@piUtilID", SqlDbType.Int) With {.Value = objModel.ID}, _
+								New SqlParameter("@piTimestamp", SqlDbType.Int) With {.Value = objModel.Timestamp}, _
+								New SqlParameter("@piBasePicklistID", SqlDbType.Int) With {.Value = objModel.PicklistID}, _
+								New SqlParameter("@piBaseFilterID", SqlDbType.Int) With {.Value = objModel.FilterID}, _
+								New SqlParameter("@piEmailGroupID", SqlDbType.Int) With {.Value = objModel.Output.EmailGroupID}, _
+								New SqlParameter("@piParent1PicklistID", SqlDbType.Int) With {.Value = objModel.Parent1.PicklistID}, _
+								New SqlParameter("@piParent1FilterID", SqlDbType.Int) With {.Value = objModel.Parent1.FilterID}, _
+								New SqlParameter("@piParent2PicklistID", SqlDbType.Int) With {.Value = objModel.Parent2.PicklistID}, _
+								New SqlParameter("@piParent2FilterID", SqlDbType.Int) With {.Value = objModel.Parent2.FilterID},
+								New SqlParameter("@piChildFilterID", SqlDbType.VarChar) With {.Value = objModel.Dependencies.ChildFilters, .Size = 100}, _
+								New SqlParameter("@psCalculations", SqlDbType.VarChar) With {.Value = objModel.Dependencies.Calculations, .Size = -1}, _
+								New SqlParameter("@psHiddenGroups ", SqlDbType.VarChar) With {.Value = objModel.GroupAccess.HiddenGroups(), .Size = -1}, _
+								prmErrorMsg, prmErrorCode, prmDeletedCalcs, prmHiddenCalcs, prmDeletedFilters, prmHiddenFilters, prmDeletedOrders, _
+								prmJobIDsToHide, prmDeletedPicklists, prmHiddenPicklists)
+
+				If prmJobIDsToHide.Value.ToString().Length > 0 Then
+					objModel.Dependencies.JobIDsToHide = vbTab + prmJobIDsToHide.Value.ToString() + vbTab
+				End If
+
+				objSaveMessage = New SaveWarningModel With {
+					.ReportType = objModel.ReportType,
+					.ID = objModel.ID,
+					.ErrorCode = CType(prmErrorCode.Value, ReportValidationStatus),
+					.ErrorMessage = prmErrorMsg.Value.ToString()}
+
+			Catch
+				Throw
+
+			End Try
+
+			Return objSaveMessage
+
+		End Function
+
+		Public Function ServerValidate(objModel As MailMergeModel) As SaveWarningModel
+
+			Dim objSaveMessage As SaveWarningModel
+
+			Try
+
+				Dim prmErrorMsg = New SqlParameter("psErrorMsg", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
+				Dim prmErrorCode = New SqlParameter("piErrorCode", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
+				Dim prmDeletedCalcs = New SqlParameter("psDeletedCalcs", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
+				Dim prmHiddenCalcs = New SqlParameter("psHiddenCalcs", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
+				Dim prmJobIDsToHide = New SqlParameter("psJobIDsToHide", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
+
+				_objDataAccess.ExecuteSP("sp_ASRIntValidateMailMerge" _
+					, New SqlParameter("@psUtilName", SqlDbType.VarChar, 255) With {.Value = objModel.Name} _
+					, New SqlParameter("@piUtilID", SqlDbType.Int) With {.Value = objModel.ID} _
+					, New SqlParameter("@piTimestamp", SqlDbType.Int) With {.Value = objModel.Timestamp} _
+					, New SqlParameter("@piBasePicklistID", SqlDbType.Int) With {.Value = objModel.PicklistID} _
+					, New SqlParameter("@piBaseFilterID", SqlDbType.Int) With {.Value = objModel.FilterID} _
+					, New SqlParameter("@psCalculations", SqlDbType.VarChar, -1) With {.Value = objModel.Dependencies.Calculations} _
+					, New SqlParameter("@psHiddenGroups", SqlDbType.VarChar, -1) With {.Value = objModel.GroupAccess.HiddenGroups()} _
+					, prmErrorMsg, prmErrorCode, prmDeletedCalcs, prmHiddenCalcs, prmJobIDsToHide)
+
+				If prmJobIDsToHide.Value.ToString().Length > 0 Then
+					objModel.Dependencies.JobIDsToHide = vbTab + prmJobIDsToHide.Value.ToString() + vbTab
+				End If
+
+				objSaveMessage = New SaveWarningModel With {
+					.ReportType = objModel.ReportType,
+					.ID = objModel.ID,
+					.ErrorCode = CType(prmErrorCode.Value, ReportValidationStatus),
+					.ErrorMessage = prmErrorMsg.Value.ToString()}
+
+			Catch ex As Exception
+				Throw
+
+			End Try
+
+			Return objSaveMessage
+
+
+		End Function
 
 	End Class
 End Namespace
