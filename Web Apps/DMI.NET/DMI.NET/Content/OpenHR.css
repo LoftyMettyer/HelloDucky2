@@ -820,10 +820,10 @@ header {
 	left: 0; 
 	top: 0; 
 	width:100%; 
-	border-style: solid;
+	/*border-style: solid;
 	border-width: 1px;
 	border-spacing: 0px; 
-	border-collapse: collapse;
+	border-collapse: collapse;*/
 	
 	
 }

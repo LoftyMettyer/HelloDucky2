@@ -59,7 +59,7 @@
 		var selRowId = $("#ssOleDBGridFindRecords").jqGrid('getGridParam', 'selrow');
 
 		fNoneSelected = (selRowId == null || selRowId == 'undefined');
-		fGridHasRows = ($("#ssOleDBGridFindRecords").jqGrid('getGridParam', 'records') > 0);
+		var fGridHasRows = ($("#ssOleDBGridFindRecords").getGridParam("reccount") > 0);
 	
 		button_disable(frmBulkBooking.cmdRemove, fNoneSelected);
 		button_disable(frmBulkBooking.cmdRemoveAll, !fGridHasRows);
@@ -102,7 +102,7 @@
 
 	function remove() {
 
-		var grid = $("#ssOleDBGridFindRecords")
+		var grid = $("#ssOleDBGridFindRecords");
 		var myDelOptions = {
 			// because I use "local" data I don't want to send the changes
 			// to the server so I use "processing:true" setting and delete
@@ -141,14 +141,24 @@
 			processing: true
 		};
 
+		var firstSelectedRowNumber = 1;
+		try {
+			//get first row and calculate previous row ID so we can select it after removal
+			var firstSelectedRowID = $('#ssOleDBGridFindRecords').jqGrid('getGridParam', 'selarrrow')[0];
+
+			//get row number from rowID
+			firstSelectedRowNumber = $('#ssOleDBGridFindRecords #' + firstSelectedRowID)[0].rowIndex;
+		} catch (e) {}
+
 		grid.jqGrid('delGridRow', grid.jqGrid('getGridParam', 'selarrrow'), myDelOptions);
 
-		moveFirst();
+		$("#dData").click(); //To remove the "delete confirmation" dialog		
+		tbMoveSpecific(firstSelectedRowNumber - 1); //deduct one to select previous row.
 		tbrefreshControls();
 	}
 
 	function removeAll() {
-		$('#ssOleDBGridFindRecords').jqGrid('clearGridData');		
+		$("#ssOleDBGridFindRecords").jqGrid('GridUnload');
 		tbrefreshControls();
 	}
 
@@ -159,7 +169,7 @@
 		var sRecordID;
 
 		sSelectedIDs = $('#ssOleDBGridFindRecords').getDataIDs().join(",");
-
+		
 		if ((psType == "ALL") && (psPrompts.length > 0)) {
 			if (sSelectedIDs.length > 0) {
 				sSelectedIDs = sSelectedIDs + ",";
@@ -173,14 +183,38 @@
 		optionDataForm.txtOptionAction.value = "GETBULKBOOKINGSELECTION";
 		optionDataForm.txtOptionPageAction.value = psType;
 		optionDataForm.txtOptionRecordID.value = piID;
-		optionDataForm.txtOptionValue.value = sSelectedIDs;
+		optionDataForm.txtOptionValue.value = sSelectedIDs;		
 		optionDataForm.txtOptionPromptSQL.value = psPrompts;
 		optionDataForm.txtOption1000SepCols.value = frmBulkBooking.txt1000SepCols.value;
 		refreshOptionData(); //should be in scope.		
 	}
 
-	function moveFirst() {
-		$('#ssOleDBGridFindRecords').jqGrid('setSelection', 1);
+	function tbMoveFirst() {
+		if ($("#ssOleDBGridFindRecords").getGridParam("reccount") > 0) {
+			var topRowID = $("#ssOleDBGridFindRecords").getDataIDs()[0];
+			$('#ssOleDBGridFindRecords').jqGrid('setSelection', topRowID);
+		} else {
+			$("#ssOleDBGridFindRecords").jqGrid('GridUnload');
+		}
+		
+		menu_refreshMenu();
+	}
+
+	function tbMoveSpecific(rowNumber) {
+		if ($("#ssOleDBGridFindRecords").getGridParam("reccount") > 0) {
+			var specificRowID = $("#ssOleDBGridFindRecords").getDataIDs()[0];	//default to top row.
+
+			try {
+				specificRowID = $("#ssOleDBGridFindRecords").getDataIDs()[rowNumber - 1]; // array is zero based
+			} catch (e) { }
+			finally {
+				$('#ssOleDBGridFindRecords').jqGrid('setSelection', specificRowID);
+			}
+		} else {
+			//grid is empty.
+			$("#ssOleDBGridFindRecords").jqGrid('GridUnload');
+		}
+
 		menu_refreshMenu();
 	}
 
