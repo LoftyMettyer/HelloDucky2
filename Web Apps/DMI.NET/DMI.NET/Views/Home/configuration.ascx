@@ -231,12 +231,12 @@
             return false;
         }
 
-        frmConfiguration.txtPrimaryStartMode.value = frmConfiguration.cboPrimaryTableDisplay.options(frmConfiguration.cboPrimaryTableDisplay.options.selectedIndex).value;
-        frmConfiguration.txtHistoryStartMode.value = frmConfiguration.cboHistoryTableDisplay.options(frmConfiguration.cboHistoryTableDisplay.options.selectedIndex).value;
-        frmConfiguration.txtLookupStartMode.value = frmConfiguration.cboLookupTableDisplay.options(frmConfiguration.cboLookupTableDisplay.options.selectedIndex).value;
-        frmConfiguration.txtQuickAccessStartMode.value = frmConfiguration.cboQuickAccessDisplay.options(frmConfiguration.cboQuickAccessDisplay.options.selectedIndex).value;
-        frmConfiguration.txtExprColourMode.value = frmConfiguration.cboViewInColour.options(frmConfiguration.cboViewInColour.options.selectedIndex).value;
-        frmConfiguration.txtExprNodeMode.value = frmConfiguration.cboExpandNodes.options(frmConfiguration.cboExpandNodes.options.selectedIndex).value;
+        frmConfiguration.txtPrimaryStartMode.value = frmConfiguration.cboPrimaryTableDisplay.options[frmConfiguration.cboPrimaryTableDisplay.options.selectedIndex].value;
+        frmConfiguration.txtHistoryStartMode.value = frmConfiguration.cboHistoryTableDisplay.options[frmConfiguration.cboHistoryTableDisplay.options.selectedIndex].value;
+        frmConfiguration.txtLookupStartMode.value = frmConfiguration.cboLookupTableDisplay.options[frmConfiguration.cboLookupTableDisplay.options.selectedIndex].value;
+        frmConfiguration.txtQuickAccessStartMode.value = frmConfiguration.cboQuickAccessDisplay.options[frmConfiguration.cboQuickAccessDisplay.options.selectedIndex].value;
+        frmConfiguration.txtExprColourMode.value = frmConfiguration.cboViewInColour.options[frmConfiguration.cboViewInColour.options.selectedIndex].value;
+        frmConfiguration.txtExprNodeMode.value = frmConfiguration.cboExpandNodes.options[frmConfiguration.cboExpandNodes.options.selectedIndex].value;
        
         menu_refreshMenu();
         var menuForm = OpenHR.getForm("menuframe", "frmMenuInfo");
