@@ -2617,7 +2617,7 @@ function menu_saveChanges(psAction, pfPrompt, pfTBOverride) {
 
 	function menu_loadPage(psPage) {
 	var frmWorkArea;
-
+	showDefaultRibbon();
 	// Submit the current "workframe" form, and then load the required page.
 	frmWorkArea = OpenHR.getForm("workframe", "frmGoto");
 	frmWorkArea.txtGotoTableID.value = 0;
@@ -2650,7 +2650,7 @@ function menu_saveChanges(psAction, pfPrompt, pfTBOverride) {
 
 	// Submit the current "workframe" form, and then load the required page.
 	var frmWorkArea = OpenHR.getForm("workframe", "frmGoto");
-
+	showDefaultRibbon();
 	frmWorkArea.txtGotoTableID.value = piTableID;
 	frmWorkArea.txtGotoViewID.value = 0;
 	frmWorkArea.txtGotoScreenID.value = 0;

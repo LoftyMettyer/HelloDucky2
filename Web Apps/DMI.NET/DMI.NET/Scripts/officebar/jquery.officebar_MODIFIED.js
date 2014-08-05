@@ -327,8 +327,8 @@ jquery.com/upgrade-guide/1.9/#jquery-browser-removed
 		});
 		
 		//Add the resize to the list
-		$("div.buttonsplitmenu ul", object).append('<li class="resize"><span>&nbsp;</span></li>');
-		$("div.buttonsplitmenu ul li.resize", object).bind("mousedown", function(e) { (officeBarClass.dragStart)(e, this); });
+		//$("div.buttonsplitmenu ul", object).append('<li class="resize"><span>&nbsp;</span></li>');
+		//$("div.buttonsplitmenu ul li.resize", object).bind("mousedown", function(e) { (officeBarClass.dragStart)(e, this); });
 
 		$(document)
 		.bind("mousemove", function(e) { (officeBarClass.dragMove)(e); })
