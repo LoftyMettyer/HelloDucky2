@@ -583,10 +583,17 @@ filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#7abcff', end
 
 #ContextMenuIcon { border-style: none;}
 
-#contextmenu h3 { font-size: 14pt;
+#contextmenu h3 { 
+	font-size: 14pt;
 	padding: 2px;
 }
-	
+
+@-moz-document url-prefix() { /*Mozilla-specific extension */
+	#contextmenu h3 {
+		font-weight: normal;
+	}
+}
+
 #contextmenu > div {
 	padding-left: 0;
 	padding-top: 0;
