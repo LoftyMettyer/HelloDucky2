@@ -4435,8 +4435,8 @@ function menu_loadSelectOrderFilter(psType) {
 	if (lngRecordID > 0) {
 	if ((frmMenuInfo.txtTB_WaitListTableInsert.value.toUpperCase() == "TRUE") &&
 	(frmMenuInfo.txtTB_WaitListCourseTitleColumnUpdate.value.toUpperCase() == "TRUE")) {
-	//iUserChoice = OpenHR.messageBox("Transfer the booking to the employee's waiting list ?", 35);
-	OpenHR.modalPrompt("Transfer the booking to the employee's waiting list ?", 35, '', menu_cancelBookingResponse);			
+
+	OpenHR.modalPrompt("Transfer the booking to the employee's waiting list ?", 3, '', menu_cancelBookingResponse);			
 }
 	else {
 	//iUserChoice = 7; // No
@@ -4452,19 +4452,19 @@ function menu_loadSelectOrderFilter(psType) {
 
 
 	function menu_cancelBookingResponse(iUserChoice) {	
-	if (iUserChoice != 2) {
-	menu_disableMenu();
-	var frmDataArea;
-	var lngRecordID = selectedRecordID();
+		if (iUserChoice != 2) {
+			menu_disableMenu();
+			var frmDataArea;
+			var lngRecordID = selectedRecordID();
 
-	frmDataArea = OpenHR.getForm("dataframe", "frmGetData");
+			frmDataArea = OpenHR.getForm("dataframe", "frmGetData");
 
-	frmDataArea.txtAction.value = "CANCELBOOKING";
-	frmDataArea.txtRecordID.value = lngRecordID;
-	frmDataArea.txtUserChoice.value = (iUserChoice != 7);
+			frmDataArea.txtAction.value = "CANCELBOOKING";
+			frmDataArea.txtRecordID.value = lngRecordID;
+			frmDataArea.txtUserChoice.value = (iUserChoice != 7);
 
-	data_refreshData();
-}
+			data_refreshData();
+		}
 }
 
 
