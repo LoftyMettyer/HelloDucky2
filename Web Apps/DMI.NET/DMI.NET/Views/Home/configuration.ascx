@@ -109,33 +109,13 @@
         frmConfiguration.txtFindSize.value = frmOriginalConfiguration.txtFindSize.value;
 
         // Load the original values into tab 2. 
-        //frmConfiguration.chkOwner_BatchJobs.checked = (frmOriginalConfiguration.txtOnlyMineBatchJobs.value == 1);
         frmConfiguration.chkOwner_Calculations.checked = (frmOriginalConfiguration.txtOnlyMineCalculations.value == 1);
         frmConfiguration.chkOwner_CrossTabs.checked = (frmOriginalConfiguration.txtOnlyMineCrossTabs.value == 1);
         frmConfiguration.chkOwner_CustomReports.checked = (frmOriginalConfiguration.txtOnlyMineCustomReports.value == 1);
-        //frmConfiguration.chkOwner_DataTransfer.checked = (frmOriginalConfiguration.txtOnlyMineDataTransfer.value == 1);
-        //frmConfiguration.chkOwner_Export.checked = (frmOriginalConfiguration.txtOnlyMineExport.value == 1);
         frmConfiguration.chkOwner_Filters.checked = (frmOriginalConfiguration.txtOnlyMineFilters.value == 1);
-        //frmConfiguration.chkOwner_GlobalAdd.checked = (frmOriginalConfiguration.txtOnlyMineGlobalAdd.value == 1);
-        //frmConfiguration.chkOwner_GlobalUpdate.checked = (frmOriginalConfiguration.txtOnlyMineGlobalUpdate.value == 1);
-        //frmConfiguration.chkOwner_GlobalDelete.checked = (frmOriginalConfiguration.txtOnlyMineGlobalDelete.value == 1);
-        //frmConfiguration.chkOwner_Import.checked = (frmOriginalConfiguration.txtOnlyMineImport.value == 1);
         frmConfiguration.chkOwner_MailMerge.checked = (frmOriginalConfiguration.txtOnlyMineMailMerge.value == 1);
         frmConfiguration.chkOwner_Picklists.checked = (frmOriginalConfiguration.txtOnlyMinePicklists.value == 1);
         frmConfiguration.chkOwner_CalendarReports.checked = (frmOriginalConfiguration.txtOnlyMineCalendarReports.value == 1);
-        //frmConfiguration.chkOwner_CareerProgression.checked = (frmOriginalConfiguration.txtOnlyMineCareerProgression.value == 1);
-        //frmConfiguration.chkOwner_EmailGroups.checked = (frmOriginalConfiguration.txtOnlyMineEmailGroups.value == 1);
-        //frmConfiguration.chkOwner_Labels.checked = (frmOriginalConfiguration.txtOnlyMineLabels.value == 1);
-        //frmConfiguration.chkOwner_LabelDefinition.checked = (frmOriginalConfiguration.txtOnlyMineLabelDefinition.value == 1);
-        //frmConfiguration.chkOwner_MatchReports.checked = (frmOriginalConfiguration.txtOnlyMineMatchReports.value == 1);
-        //frmConfiguration.chkOwner_RecordProfile.checked = (frmOriginalConfiguration.txtOnlyMineRecordProfile.value == 1);
-        //frmConfiguration.chkOwner_SuccessionPlanning.checked = (frmOriginalConfiguration.txtOnlyMineSuccessionPlanning.value == 1);
-
-        //frmConfiguration.chkWarn_DataTransfer.checked = (frmOriginalConfiguration.txtUtilWarnDataTransfer.value == 1);
-        //frmConfiguration.chkWarn_GlobalAdd.checked = (frmOriginalConfiguration.txtUtilWarnGlobalAdd.value == 1);
-        //frmConfiguration.chkWarn_GlobalUpdate.checked = (frmOriginalConfiguration.txtUtilWarnGlobalUpdate.value == 1);
-        //frmConfiguration.chkWarn_GlobalDelete.checked = (frmOriginalConfiguration.txtUtilWarnGlobalDelete.value == 1);
-        //frmConfiguration.chkWarn_Import.checked = (frmOriginalConfiguration.txtUtilWarnImport.value == 1);
 
         display_Configuration_Page(1);
 
@@ -245,35 +225,13 @@
         menuForm.txtLookupStartMode.value = frmConfiguration.txtLookupStartMode.value;
         menuForm.txtQuickAccessStartMode.value = frmConfiguration.txtQuickAccessStartMode.value;
 
-        //if (frmConfiguration.chkOwner_BatchJobs.checked == true) frmConfiguration.txtOwner_BatchJobs.value = 1;
         if (frmConfiguration.chkOwner_Calculations.checked == true) frmConfiguration.txtOwner_Calculations.value = 1;
         if (frmConfiguration.chkOwner_CrossTabs.checked == true) frmConfiguration.txtOwner_CrossTabs.value = 1;
         if (frmConfiguration.chkOwner_CustomReports.checked == true) frmConfiguration.txtOwner_CustomReports.value = 1;
-        //if (frmConfiguration.chkOwner_DataTransfer.checked == true) frmConfiguration.txtOwner_DataTransfer.value = 1;
-        //if (frmConfiguration.chkOwner_Export.checked == true) frmConfiguration.txtOwner_Export.value = 1;
         if (frmConfiguration.chkOwner_Filters.checked == true) frmConfiguration.txtOwner_Filters.value = 1;
-        //if (frmConfiguration.chkOwner_GlobalAdd.checked == true) frmConfiguration.txtOwner_GlobalAdd.value = 1;
-        //if (frmConfiguration.chkOwner_GlobalDelete.checked == true) frmConfiguration.txtOwner_GlobalDelete.value = 1;
-        //if (frmConfiguration.chkOwner_GlobalUpdate.checked == true) frmConfiguration.txtOwner_GlobalUpdate.value = 1;
-        //if (frmConfiguration.chkOwner_Import.checked == true) frmConfiguration.txtOwner_Import.value = 1;
         if (frmConfiguration.chkOwner_MailMerge.checked == true) frmConfiguration.txtOwner_MailMerge.value = 1;
         if (frmConfiguration.chkOwner_Picklists.checked == true) frmConfiguration.txtOwner_Picklists.value = 1;
         if (frmConfiguration.chkOwner_CalendarReports.checked == true) frmConfiguration.txtOwner_CalendarReports.value = 1;
-        //if (frmConfiguration.chkOwner_CareerProgression.checked == true) frmConfiguration.txtOwner_CareerProgression.value = 1;
-        //if (frmConfiguration.chkOwner_EmailGroups.checked == true) frmConfiguration.txtOwner_EmailGroups.value = 1;
-        //if (frmConfiguration.chkOwner_Labels.checked == true) frmConfiguration.txtOwner_Labels.value = 1;
-        //if (frmConfiguration.chkOwner_LabelDefinition.checked == true) frmConfiguration.txtOwner_LabelDefinition.value = 1;
-        //if (frmConfiguration.chkOwner_MatchReports.checked == true) frmConfiguration.txtOwner_MatchReports.value = 1;
-        //if (frmConfiguration.chkOwner_RecordProfile.checked == true) frmConfiguration.txtOwner_RecordProfile.value = 1;
-        //if (frmConfiguration.chkOwner_SuccessionPlanning.checked == true) frmConfiguration.txtOwner_SuccessionPlanning.value = 1;
-
-        //if (frmConfiguration.chkWarn_DataTransfer.checked == true) frmConfiguration.txtWarn_DataTransfer.value = 1;
-        //if (frmConfiguration.chkWarn_GlobalAdd.checked == true) frmConfiguration.txtWarn_GlobalAdd.value = 1;
-        //if (frmConfiguration.chkWarn_GlobalDelete.checked == true) frmConfiguration.txtWarn_GlobalDelete.value = 1;
-        //if (frmConfiguration.chkWarn_GlobalUpdate.checked == true) frmConfiguration.txtWarn_GlobalUpdate.value = 1;
-        //if (frmConfiguration.chkWarn_Import.checked == true) frmConfiguration.txtWarn_Import.value = 1;
-
-        //frmConfiguration.submit();
         
         OpenHR.submitForm(frmConfiguration);
 
@@ -363,24 +321,7 @@
 
     /* Return to the default page. */
     function cancelClick() {
-        /* ------------------------------------ Not used anymore ---------------------------------------------------
-            if (definitionChanged() == false) {
-                    window.location.href = "main";
-                    return;
-            }
-
-            answer = OpenHR.messageBox("You have changed the current configuration. Save changes ?", 36);
-            if (answer == 7) {
-                    // No
-                    window.location.href = "main";
-                    return (false);
-            }
-            if (answer == 6) {
-                    // Yes
-                    frmConfiguration.txtReaction.value = "DEFAULT";
-                    saveConfiguration();
-            }
-            -----------------------------------------------------------------------------------------------------------*/
+    
     }
 
     function saveChanges(psAction, pfPrompt, pfTBOverride) {
@@ -391,6 +332,14 @@
     }
 
     function definitionChanged() {
+    	  //In certain circumstances frmConfiguration is not defined, so check first if it's defined before attempting to use it
+	      try {
+		      if (frmConfiguration == undefined) {
+		      }
+	      } catch (e) {
+		      return false; //i.e. nothing has changed
+	      }
+
         // Compare the tab 1 controls with the original values.
         if (frmConfiguration.cboPrimaryTableDisplay.options[frmConfiguration.cboPrimaryTableDisplay.selectedIndex].value != frmOriginalConfiguration.txtPrimaryStartMode.value) {
             return true;
@@ -417,29 +366,6 @@
             return true;
         }
 
-        // Compare the tab 2 controls with the original values.
-        /*if ((frmConfiguration.chkOwner_BatchJobs.checked != (frmOriginalConfiguration.txtOnlyMineBatchJobs.value == 1)) ||
-                (frmConfiguration.chkOwner_Calculations.checked != (frmOriginalConfiguration.txtOnlyMineCalculations.value == 1)) ||
-                (frmConfiguration.chkOwner_CrossTabs.checked != (frmOriginalConfiguration.txtOnlyMineCrossTabs.value == 1)) ||
-                (frmConfiguration.chkOwner_CustomReports.checked != (frmOriginalConfiguration.txtOnlyMineCustomReports.value == 1)) ||
-                (frmConfiguration.chkOwner_DataTransfer.checked != (frmOriginalConfiguration.txtOnlyMineDataTransfer.value == 1)) ||
-                (frmConfiguration.chkOwner_Export.checked != (frmOriginalConfiguration.txtOnlyMineExport.value == 1)) ||
-                (frmConfiguration.chkOwner_Filters.checked != (frmOriginalConfiguration.txtOnlyMineFilters.value == 1)) ||
-                (frmConfiguration.chkOwner_GlobalAdd.checked != (frmOriginalConfiguration.txtOnlyMineGlobalAdd.value == 1)) ||
-                (frmConfiguration.chkOwner_GlobalUpdate.checked != (frmOriginalConfiguration.txtOnlyMineGlobalUpdate.value == 1)) ||
-                (frmConfiguration.chkOwner_GlobalDelete.checked != (frmOriginalConfiguration.txtOnlyMineGlobalDelete.value == 1)) ||
-                (frmConfiguration.chkOwner_Import.checked != (frmOriginalConfiguration.txtOnlyMineImport.value == 1)) ||
-                (frmConfiguration.chkOwner_MailMerge.checked != (frmOriginalConfiguration.txtOnlyMineMailMerge.value == 1)) ||
-                (frmConfiguration.chkOwner_Picklists.checked != (frmOriginalConfiguration.txtOnlyMinePicklists.value == 1)) ||
-                (frmConfiguration.chkOwner_CalendarReports.checked != (frmOriginalConfiguration.txtOnlyMineCalendarReports.value == 1)) ||
-                (frmConfiguration.chkOwner_CareerProgression.checked != (frmOriginalConfiguration.txtOnlyMineCareerProgression.value == 1)) ||
-                (frmConfiguration.chkOwner_EmailGroups.checked != (frmOriginalConfiguration.txtOnlyMineEmailGroups.value == 1)) ||
-                (frmConfiguration.chkOwner_Labels.checked != (frmOriginalConfiguration.txtOnlyMineLabels.value == 1)) ||
-                (frmConfiguration.chkOwner_LabelDefinition.checked != (frmOriginalConfiguration.txtOnlyMineLabelDefinition.value == 1)) ||
-                (frmConfiguration.chkOwner_MatchReports.checked != (frmOriginalConfiguration.txtOnlyMineMatchReports.value == 1)) ||
-                (frmConfiguration.chkOwner_RecordProfile.checked != (frmOriginalConfiguration.txtOnlyMineRecordProfile.value == 1)) ||
-                (frmConfiguration.chkOwner_SuccessionPlanning.checked != (frmOriginalConfiguration.txtOnlyMineSuccessionPlanning.value == 1))) 
-                {*/
         if ((frmConfiguration.chkOwner_Calculations.checked != (frmOriginalConfiguration.txtOnlyMineCalculations.value == 1)) ||
                 (frmConfiguration.chkOwner_CrossTabs.checked != (frmOriginalConfiguration.txtOnlyMineCrossTabs.value == 1)) ||
                 (frmConfiguration.chkOwner_CustomReports.checked != (frmOriginalConfiguration.txtOnlyMineCustomReports.value == 1)) ||
@@ -449,14 +375,6 @@
                 (frmConfiguration.chkOwner_CalendarReports.checked != (frmOriginalConfiguration.txtOnlyMineCalendarReports.value == 1))) {
             return true;
         }
-
-        /*if ((frmConfiguration.chkWarn_DataTransfer.checked != (frmOriginalConfiguration.txtUtilWarnDataTransfer.value == 1)) ||
-                (frmConfiguration.chkWarn_GlobalAdd.checked != (frmOriginalConfiguration.txtUtilWarnGlobalAdd.value == 1)) ||
-                (frmConfiguration.chkWarn_GlobalDelete.checked != (frmOriginalConfiguration.txtUtilWarnGlobalDelete.value == 1)) ||
-                (frmConfiguration.chkWarn_GlobalUpdate.checked != (frmOriginalConfiguration.txtUtilWarnGlobalUpdate.value == 1)) ||
-                (frmConfiguration.chkWarn_Import.checked != (frmOriginalConfiguration.txtUtilWarnImport.value == 1))) {
-                return true;
-        }*/
 
         // If you reach here then nothing has changed.
         return false;
@@ -479,33 +397,14 @@
 
             frmConfiguration.txtFindSize.value = 1000;
 
-            //frmConfiguration.chkOwner_BatchJobs.checked = false;
             frmConfiguration.chkOwner_Calculations.checked = false;
             frmConfiguration.chkOwner_CrossTabs.checked = false;
             frmConfiguration.chkOwner_CustomReports.checked = false;
-            //frmConfiguration.chkOwner_DataTransfer.checked = false;
-            //frmConfiguration.chkOwner_Export.checked = false;
             frmConfiguration.chkOwner_Filters.checked = false;
-            //frmConfiguration.chkOwner_GlobalAdd.checked = false;
-            //frmConfiguration.chkOwner_GlobalDelete.checked = false;
-            //frmConfiguration.chkOwner_GlobalUpdate.checked = false;
-            //frmConfiguration.chkOwner_Import.checked = false;
             frmConfiguration.chkOwner_MailMerge.checked = false;
             frmConfiguration.chkOwner_Picklists.checked = false;
             frmConfiguration.chkOwner_CalendarReports.checked = false;
-            //frmConfiguration.chkOwner_CareerProgression.checked = false;
-            //frmConfiguration.chkOwner_EmailGroups.checked = false;
-            //frmConfiguration.chkOwner_Labels.checked = false;
-            //frmConfiguration.chkOwner_LabelDefinition.checked = false;
-            //frmConfiguration.chkOwner_MatchReports.checked = false;
-            //frmConfiguration.chkOwner_RecordProfile.checked = false;
-            //frmConfiguration.chkOwner_SuccessionPlanning.checked = false;
 
-            //frmConfiguration.chkWarn_DataTransfer.checked = true;
-            //frmConfiguration.chkWarn_GlobalAdd.checked = true;
-            //frmConfiguration.chkWarn_GlobalDelete.checked = true;
-            //frmConfiguration.chkWarn_GlobalUpdate.checked = true;
-        	//frmConfiguration.chkWarn_Import.checked = true;
             enableSaveButton();
         }
     }
@@ -724,32 +623,16 @@
 									<td width=20>
 									</td>
 									<TD width=150>
-										<input id="btnDiv1Restore" name="btnDiv1Restore" type="button" value="Restore Defaults" class="btn" style="WIDTH: 150px" width="150" 
-												onclick="restoreDefaults()"
-																			onmouseover="try{button_onMouseOver(this);}catch(e){}" 
-																			onmouseout="try{button_onMouseOut(this);}catch(e){}"
-																			onfocus="try{button_onFocus(this);}catch(e){}"
-																			onblur="try{button_onBlur(this);}catch(e){}" />
+										<input id="btnDiv1Restore" name="btnDiv1Restore" type="button" value="Restore Defaults" class="btn" style="width: 150px"
+												onclick="restoreDefaults()" />
 									</TD>
 									<TD>&nbsp;</TD>
 									<TD width=75>
-										<input id="btnDiv1OK" name="btnDiv1OK" type="button" value="OK" class="btn" style="WIDTH: 75px" width="75" 
-<%--												onclick="okClick()"
-																			onmouseover="try{button_onMouseOver(this);}catch(e){}" 
-																			onmouseout="try{button_onMouseOut(this);}catch(e){}"
-																			onfocus="try{button_onFocus(this);}catch(e){}"
-																			onblur="try{button_onBlur(this);}catch(e){}" --%>
-																			/>
+										<input id="btnDiv1OK" name="btnDiv1OK" type="button" value="OK" class="btn" style="width: 75px" />
 									</TD>
 									<TD width=20></TD>
 									<TD width=75>
-										<input id="btnDiv1Cancel" name="btnDiv1Cancel" type="button" value="Cancel" class="btn" style="WIDTH: 75px" width="75" 
-<%--												onclick="cancelClick()"
-																			onmouseover="try{button_onMouseOver(this);}catch(e){}" 
-																			onmouseout="try{button_onMouseOut(this);}catch(e){}"
-																			onfocus="try{button_onFocus(this);}catch(e){}"
-																			onblur="try{button_onBlur(this);}catch(e){}" --%>
-																			/>
+										<input id="btnDiv1Cancel" name="btnDiv1Cancel" type="button" value="Cancel" class="btn" style="width: 75px" />
 									</TD>
 									<td width=20>
 									</td>
@@ -974,27 +857,11 @@
 									</TD>
 									<TD>&nbsp;</TD>
 									<TD width=80>
-										<input id="btnDiv2OK" name="btnDiv2OK" type="button" class="btn" value="OK" style="WIDTH: 75px" width="75" 
-											<%--
-											onclick = "okClick()"
-											onmouseover = "try{button_onMouseOver(this);}catch(e){}"
-											onmouseout = "try{button_onMouseOut(this);}catch(e){}"
-											onfocus = "try{button_onFocus(this);}catch(e){}"
-											onblur = "try{button_onBlur(this);}catch(e){}"
-											--%>
- 											/>
+										<input id="btnDiv2OK" name="btnDiv2OK" type="button" class="btn" value="OK" style="width: 75px" />
 									</TD>
 									<TD width=20></TD>
 									<TD width=80>
-										<input id="btnDiv2Cancel" name="btnDiv2Cancel" type="button" class="btn" value="Cancel" style="WIDTH: 75px" width="75" 
-											<%--
-											onclick = "cancelClick()"
-											onmouseover = "try{button_onMouseOver(this);}catch(e){}"
-											onmouseout = "try{button_onMouseOut(this);}catch(e){}"
-											onfocus = "try{button_onFocus(this);}catch(e){}"
-											onblur = "try{button_onBlur(this);}catch(e){}"
-											--%>
-											/>
+										<input id="btnDiv2Cancel" name="btnDiv2Cancel" type="button" class="btn" value="Cancel" style="width: 75px" />
 									</TD>
 									<td width=20>
 									</td>
