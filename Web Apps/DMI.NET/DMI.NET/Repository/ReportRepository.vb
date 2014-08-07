@@ -104,6 +104,7 @@ Namespace Repository
 
 				End If
 
+				objModel.ChildTablesAvailable = _objSessionInfo.Relations.Any(Function(m) m.ParentID = objModel.BaseTableID)
 				objModel.GroupAccess = GetUtilityAccess(objModel, action)
 				objModel.IsReadOnly = (action = UtilityActionType.View)
 

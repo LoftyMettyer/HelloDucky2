@@ -19,10 +19,9 @@ Namespace Models
 			End Get
 		End Property
 
-		Public Property AvailableTables As New Collection(Of ChildTableViewModel)
-
 		Public Property ChildTables As New List(Of ChildTableViewModel)
 		Public Property ChildTablesString As String
+		Public Property ChildTablesAvailable As Boolean
 
 		Public Property Parent1 As New ReportRelatedTable
 		Public Property Parent2 As New ReportRelatedTable

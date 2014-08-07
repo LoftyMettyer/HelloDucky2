@@ -266,9 +266,9 @@
 				button_disable($("#btnChildRemove")[0], false);
 
 			},
-			gridComplete: function() {
+			gridComplete: function () {
 				var tablesSelected = $(this).getGridParam("reccount");
-				button_disable($("#btnChildAdd")[0], tablesSelected > 4);
+				button_disable($("#btnChildAdd")[0], tablesSelected > 4 || '@Model.ChildTablesAvailable' == 'False');
 				button_disable($("#btnChildEdit")[0], true);
 				button_disable($("#btnChildRemove")[0], true);
 				button_disable($("#btnChildRemoveAll")[0], tablesSelected == 0);
