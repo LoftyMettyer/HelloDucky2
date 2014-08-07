@@ -409,6 +409,7 @@
 		$('#txtSOAAS').val(JSON.stringify(gridData));
 
 		var $form = $("#frmReportDefintion");
+		$("#AccessPermissionsGrid").removeAttr("disabled");
 
 		$.ajax({
 			url: $form.attr("action"),
@@ -438,13 +439,14 @@
 						break;
 
 				}
-
+				refreshViewAccess();
 			}
 		});
 	}
 
 	function submitReportDefinition() {
 		$("#ValidityStatus").val('ServerCheckComplete');
+		$("#AccessPermissionsGrid").removeAttr("disabled");
 		var frmSubmit = $("#frmReportDefintion")[0];
 		OpenHR.submitForm(frmSubmit);
 	}

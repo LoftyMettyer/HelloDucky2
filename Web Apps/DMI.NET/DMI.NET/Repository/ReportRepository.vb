@@ -1,7 +1,6 @@
 ﻿Option Strict On
 Option Explicit On
 
-Imports System.ComponentModel.DataAnnotations
 Imports HR.Intranet.Server
 Imports DMI.NET.Models
 Imports System.Data.SqlClient
@@ -21,8 +20,8 @@ Namespace Repository
 
 		Private _objSessionInfo As SessionInfo
 		Private ReadOnly _objDataAccess As clsDataAccess
-		Private _username As String
-		Private _defaultBaseTableID As Integer
+		Private ReadOnly _username As String
+		Private ReadOnly _defaultBaseTableID As Integer
 
 		Public Sub New()
 
@@ -446,9 +445,6 @@ Namespace Repository
 
 				Dim sAccess As String = UtilityAccessAsString(objModel.GroupAccess)
 
-				Dim psJobsToHide As String = ""	' Request.Form("txtSend_jobsToHide")
-				Dim psJobsToHideGroups As String = ""	' Request.Form("txtSend_jobsToHideGroups")}
-
 				_objDataAccess.ExecuteSP("spASRIntSaveCrossTab", _
 						New SqlParameter("psName", SqlDbType.VarChar, 255) With {.Value = objModel.Name}, _
 						New SqlParameter("psDescription", SqlDbType.VarChar, -1) With {.Value = objModel.Description}, _
@@ -489,8 +485,8 @@ Namespace Repository
 						New SqlParameter("psOutputEmailAttachAs", SqlDbType.VarChar, -1) With {.Value = objModel.Output.EmailAttachmentName}, _
 						New SqlParameter("psOutputFilename", SqlDbType.VarChar, -1) With {.Value = objModel.Output.Filename}, _
 						New SqlParameter("psAccess", SqlDbType.VarChar, -1) With {.Value = sAccess}, _
-						New SqlParameter("psJobsToHide", SqlDbType.VarChar, -1) With {.Value = psJobsToHide}, _
-						New SqlParameter("psJobsToHideGroups", SqlDbType.VarChar, -1) With {.Value = psJobsToHideGroups}, _
+						New SqlParameter("psJobsToHide", SqlDbType.VarChar, -1) With {.Value = objModel.Dependencies.JobIDsToHide}, _
+						New SqlParameter("psJobsToHideGroups", SqlDbType.VarChar, -1) With {.Value = objModel.GroupAccess.HiddenGroups()}, _
 						prmID)
 
 				_crosstabs.Remove(objModel.ID)
@@ -539,9 +535,9 @@ Namespace Repository
 						New SqlParameter("psOutputEmailSubject", SqlDbType.VarChar, -1) With {.Value = objModel.Output.EmailSubject}, _
 						New SqlParameter("psOutputEmailAttachAs", SqlDbType.VarChar, -1) With {.Value = objModel.Output.EmailAttachmentName}, _
 						New SqlParameter("psOutputFilename", SqlDbType.VarChar, -1) With {.Value = objModel.Output.Filename}, _
-						New SqlParameter("pfParent1AllRecords", SqlDbType.Bit) With {.Value = (objModel.Parent1.PicklistID = 0 And objModel.Parent1.FilterID = 0)}, _
+						New SqlParameter("pfParent1AllRecords", SqlDbType.Bit) With {.Value = (objModel.Parent1.PicklistID = 0 AndAlso objModel.Parent1.FilterID = 0)}, _
 						New SqlParameter("piParent1Picklist", SqlDbType.Int) With {.Value = objModel.Parent1.PicklistID}, _
-						New SqlParameter("pfParent2AllRecords", SqlDbType.Bit) With {.Value = (objModel.Parent2.PicklistID = 0 And objModel.Parent2.FilterID = 0)}, _
+						New SqlParameter("pfParent2AllRecords", SqlDbType.Bit) With {.Value = (objModel.Parent2.PicklistID = 0 AndAlso objModel.Parent2.FilterID = 0)}, _
 						New SqlParameter("piParent2Picklist", SqlDbType.Int) With {.Value = objModel.Parent2.PicklistID}, _
 						New SqlParameter("psAccess", SqlDbType.VarChar, -1) With {.Value = sAccess}, _
 						New SqlParameter("psJobsToHide", SqlDbType.VarChar, -1) With {.Value = objModel.Dependencies.JobIDsToHide}, _
@@ -570,8 +566,6 @@ Namespace Repository
 				Dim prmID = New SqlParameter("piId", SqlDbType.Int) With {.Direction = ParameterDirection.InputOutput, .Value = objModel.ID}
 
 				Dim sAccess = UtilityAccessAsString(objModel.GroupAccess)
-				Dim sJobsToHide = objModel.Dependencies.JobIDsToHide
-				Dim sJobsToHideGroups As String = "" ' TODO?
 				Dim sEvents As String = EventsAsString(objModel.Events)
 
 				Dim sSeparator As String
@@ -634,8 +628,8 @@ Namespace Repository
 					New SqlParameter("psOutputEmailAttachAs", SqlDbType.VarChar, -1) With {.Value = objModel.Output.EmailAttachmentName}, _
 					New SqlParameter("psOutputFilename", SqlDbType.VarChar, -1) With {.Value = objModel.Output.Filename}, _
 					New SqlParameter("psAccess", SqlDbType.VarChar, -1) With {.Value = sAccess}, _
-					New SqlParameter("psJobsToHide", SqlDbType.VarChar, -1) With {.Value = sJobsToHide}, _
-					New SqlParameter("psJobsToHideGroups", SqlDbType.VarChar, -1) With {.Value = sJobsToHideGroups}, _
+					New SqlParameter("psJobsToHide", SqlDbType.VarChar, -1) With {.Value = objModel.Dependencies.JobIDsToHide}, _
+					New SqlParameter("psJobsToHideGroups", SqlDbType.VarChar, -1) With {.Value = objModel.GroupAccess.HiddenGroups()}, _
 					New SqlParameter("psEvents", SqlDbType.VarChar, -1) With {.Value = sEvents}, _
 					New SqlParameter("psEvents2", SqlDbType.VarChar, -1) With {.Value = ""}, _
 					New SqlParameter("psOrderString", SqlDbType.VarChar, -1) With {.Value = sReportOrder}, _
@@ -685,7 +679,7 @@ Namespace Repository
 
 		' Old style update of the column selection stuff
 		' could be dapperised, but the rest of our stored procs need updating too as everything has different column names and the IDs are not currently returned.
-		Private Function ReportChildTablesAsString(objSortColumns As List(Of ChildTableViewModel)) As String
+		Private Function ReportChildTablesAsString(objSortColumns As IEnumerable(Of ChildTableViewModel)) As String
 
 			Dim sOrderString As String = ""
 
@@ -735,7 +729,7 @@ Namespace Repository
 
 			Dim sColumns As String = ""
 			Dim sOrderString As String
-			Dim iRepeated As Integer = 0
+			Dim iRepeated As Integer
 
 			Dim iCount As Integer
 			Dim iSortSequence As Integer
@@ -784,7 +778,7 @@ Namespace Repository
 
 		' Old style update of the utility access grid
 		' could be dapperised, but the rest of our stored procs need updating too as everything has different column names and the IDs are not currently returned.
-		Private Function UtilityAccessAsString(objAccess As Collection(Of GroupAccess)) As String
+		Private Function UtilityAccessAsString(objAccess As IEnumerable(Of GroupAccess)) As String
 
 			Dim sAccess As String = ""
 			For Each group In objAccess
@@ -876,7 +870,7 @@ Namespace Repository
 			Dim objSessionInfo = CType(HttpContext.Current.Session("SessionContext"), SessionInfo)
 			Dim objReturnData As New List(Of ReportColumnItem)
 
-			Dim objToAdd As New ReportColumnItem
+			Dim objToAdd As ReportColumnItem
 
 			Try
 
