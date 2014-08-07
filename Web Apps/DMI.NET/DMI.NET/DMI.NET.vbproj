@@ -1645,8 +1645,6 @@
     <Content Include="Views\Home\util_run_calendarreport_breakdown.ascx" />
     <Content Include="Views\Home\util_run_mailmerge.ascx" />
     <Content Include="Views\Home\util_run_outputoptions.ascx" />
-    <Content Include="Views\Home\util_validate_calendarreport.ascx" />
-    <Content Include="Views\Home\util_validate_mailmerge.ascx" />
     <Content Include="Views\Home\Main.aspx" />
     <Content Include="Views\Home\Menu.ascx" />
     <Content Include="Views\Home\newUser.ascx" />
@@ -1677,15 +1675,11 @@
     <Content Include="Views\Home\PasswordChange.ascx" />
     <Content Include="Views\Home\util_test_expression.aspx" />
     <Content Include="Views\Home\util_test_expression_pval.aspx" />
-    <Content Include="Views\Home\Util_Validate_Crosstabs.ascx" />
-    <Content Include="Views\Home\util_validate_customreports.aspx" />
     <Content Include="Views\Home\util_validate_expression.aspx" />
     <Content Include="Views\Home\util_validate_picklist.ascx" />
     <Content Include="Views\Home\WorkflowPendingSteps.ascx" />
     <Content Include="Views\Shared\gotoOption.ascx" />
     <Content Include="Views\Shared\themeEditor.ascx" />
-    <Content Include="Views\Shared\Util_Def_CustomReports\ssCalOleDBGridSortOrder.ascx" />
-    <Content Include="Views\Shared\Util_Def_CustomReports\grdaccess.ascx" />
     <Content Include="Views\Shared\gotoWork.ascx" />
     <Content Include="Views\Shared\Site.Master" />
     <Content Include="Views\Reports\_ColumnSelection.vbhtml" />
@@ -1706,20 +1700,10 @@
     <Content Include="Views\Reports\EditorTemplates\CalendarEventDetail.vbhtml" />
     <Content Include="Views\Reports\EditorTemplates\SortOrder.vbhtml" />
     <Content Include="Views\Home\DefinitionProperties.vbhtml" />
-    <Content Include="Views\Reports\EditorTemplates\SaveWarning.vbhtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
-    <Content Include="Views\Shared\Util_Def_CustomReports\grdColProps.ascx" />
-    <Content Include="Views\Shared\Util_Def_CustomReports\ssHiddenGrid.ascx" />
-    <Content Include="Views\Shared\Util_Def_CustomReports\ssMailMergeOleDBGridSortOrder.ascx" />
-    <Content Include="Views\Shared\Util_Def_CustomReports\ssOleDBGridAvailableColumns.ascx" />
-    <Content Include="Views\Shared\Util_Def_CustomReports\ssOleDBGridCalculations.ascx" />
-    <Content Include="Views\Shared\Util_Def_CustomReports\ssOleDBGridChildren.ascx" />
-    <Content Include="Views\Shared\Util_Def_CustomReports\ssOleDBGridRepetition.ascx" />
-    <Content Include="Views\Shared\Util_Def_CustomReports\ssOleDBGridSelectedColumns.ascx" />
-    <Content Include="Views\Shared\Util_Def_CustomReports\ssOleDBGridSortOrder.ascx" />
     <Content Include="Views\Home\stdrpt_def_Absence.ascx" />
     <Content Include="Views\Shared\Util_Def_CustomReports\ssOleDBGridCalculations.ascx" />
     <Content Include="Views\Shared\_Banner.ascx" />
