@@ -12,7 +12,6 @@ Imports HR.Intranet.Server
 Imports DMI.NET.Models
 Imports System.Data.SqlClient
 Imports System.Net.Mail
-Imports System.Net.Mime
 Imports System.Net
 Imports DMI.NET.ViewModels
 Imports System.Collections.ObjectModel
@@ -1104,9 +1103,9 @@ Namespace Controllers
 
 							Catch ex As SqlException
 								If ex.Number.Equals(50000) Then
-									If ex.Message.IndexOf("The transaction ended in the trigger", System.StringComparison.Ordinal) > 0 Then
+									If ex.Message.IndexOf("The transaction ended in the trigger", StringComparison.Ordinal) > 0 Then
 										sErrorMsg = Trim(Mid(ex.Message, 1, (InStr(ex.Message, "The transaction ended in the trigger")) - 1))
-									ElseIf ex.Message.IndexOf("Invalid object name", System.StringComparison.Ordinal) > 0 Then
+									ElseIf ex.Message.IndexOf("Invalid object name", StringComparison.Ordinal) > 0 Then
 										sErrorMsg = Trim(Mid(ex.Message, 1, (InStr(ex.Message, "Invalid object name")) - 1))
 									Else
 										sErrorMsg = sErrorMsg & FormatError(ex.Message)
@@ -1378,10 +1377,6 @@ Namespace Controllers
 			' Go to the requested page.
 			Return RedirectToAction("Data", "Home")
 
-		End Function
-
-		Function Util_EmailSelection() As ActionResult
-			Return View()
 		End Function
 
 		<HttpPost()>
@@ -3922,17 +3917,6 @@ Namespace Controllers
 
 #End Region
 
-#Region "Utilities"
-
-		'ND my original call for reference later delete when approp
-		'<ValidateInput(False)>
-		Function util_validate_mailmerge() As ActionResult
-			Return View()
-		End Function
-
-#End Region
-
-
 		Function Quickfind() As ActionResult
 			Return View()
 		End Function
@@ -3997,10 +3981,6 @@ Namespace Controllers
 
 			Return RedirectToAction(sNextPage)
 
-		End Function
-
-		Function tbAddFromWaitingListFind() As ActionResult
-			Return View()
 		End Function
 
 		<HttpPost()>
@@ -4103,10 +4083,6 @@ Namespace Controllers
 		End Function
 
 		Function tbStatusPrompt() As ActionResult
-			Return View()
-		End Function
-
-		Function tbBookCourseFind() As ActionResult
 			Return View()
 		End Function
 
@@ -4446,16 +4422,9 @@ Namespace Controllers
 
 		End Function
 
-
 		Function promptedValues_completed() As ActionResult
 			Return View()
 		End Function
-
-		Function tbTransferBookingFind() As ActionResult
-			Return View()
-		End Function
-
-
 
 		<HttpPost()>
 		Function tbTransferBookingFind_Submit(value As FormCollection)
@@ -4574,11 +4543,6 @@ Namespace Controllers
 
 			Return View()
 		End Function
-
-		Function tbTransferCourseFind() As ActionResult
-			Return View()
-		End Function
-
 
 		Function OptionDataGrid(GotoOptionPage As String) As PartialViewResult
 			Dim m As New OptionDataGridViewModel(GotoOptionPage)
