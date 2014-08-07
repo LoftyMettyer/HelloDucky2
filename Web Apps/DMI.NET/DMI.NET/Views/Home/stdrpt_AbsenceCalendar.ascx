@@ -120,7 +120,7 @@
 			OpenHR.submitForm(frmAbsenceDetails, "DisplayAbsenceCalendarEventDetail");
 			$("#DisplayAbsenceCalendarEventDetail").dialog("open");
 			$("#DisplayAbsenceCalendarEventDetail").dialog("option", "position", ['center', 'center']);
-	
+			$("#DisplayAbsenceCalendarEventDetail").dialog("option", "height", 340);
 		}
 
 		// Returns to the recordedit screen
