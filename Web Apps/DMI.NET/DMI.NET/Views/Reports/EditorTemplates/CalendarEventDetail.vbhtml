@@ -13,7 +13,8 @@ End Code
 	@Html.HiddenFor(Function(model) model.ID, New With {.id = "CalendarEventID"})
 	@Html.HiddenFor(Function(model) model.EventKey, New With {.id = "EventKey"})
 	@Html.HiddenFor(Function(model) model.ReportID)
-	@Html.HiddenFor(Function(model) model.FilterHidden)
+	@Html.HiddenFor(Function(m) m.FilterViewAccess)
+
 
 	<fieldset>
 		<legend>Event :</legend>
@@ -160,9 +161,10 @@ End Code
 		var tableID = $("#EventTableID option:selected").val();
 		var currentID = $("#txtEventFilterID").val();
 
-		OpenHR.modalExpressionSelect("FILTER", tableID, currentID, function (id, name) {
+		OpenHR.modalExpressionSelect("FILTER", tableID, currentID, function (id, name, access) {
 			$("#txtEventFilterID").val(id);
 			$("#txtEventFilter").val(name);
+			$("#FilterViewAccess").val(access);
 		});
 
 	}
@@ -232,6 +234,8 @@ End Code
 			TableID: $("#EventTableID").val(),
 			TableName: $("#EventTableID option:selected").text(),
 			FilterID: $("#txtEventFilterID").val(),
+			FilterName: $("#txtEventFilter").val(),
+			FilterViewAccess: $("#FilterViewAccess").val(),
 			EventEndType: $("#EventEndType:checked").val(),
 			EventStartDateID: $("#EventStartDateID").val(),
 			EventStartSessionID: $("#EventStartSessionID").val(),
@@ -246,8 +250,6 @@ End Code
 			LegendEventColumnID: $("#LegendEventColumnID").val(),
 			EventDesc1ColumnID: $("#EventDesc1ColumnID").val(),
 			EventDesc2ColumnID: $("#EventDesc2ColumnID").val(),
-			FilterHidden: $("#FilterHidden").val(),
-			FilterName: $("#txtEventFilter").val(),
 			EventStartDateName: $("#EventStartDateID option:selected").text(),
 			EventStartSessionName: $("#EventStartSessionID option:selected").text(),
 			EventEndDateName: $("#EventEndDateID option:selected").text(),
@@ -262,8 +264,10 @@ End Code
 		$('#CalendarEvents').jqGrid('delRowData', '@Model.EventKey')
 		var su = jQuery("#CalendarEvents").jqGrid('addRowData', '@Model.EventKey', datarow);
 
+		setViewAccess('FILTER', $("#CalendarEventsViewAccess"), $("#FilterViewAccess").val(), $("#EventName").val());
+
 		// Post to server
-				OpenHR.postData("Reports/PostCalendarEvent", datarow)
+		OpenHR.postData("Reports/PostCalendarEvent", datarow)
 
 		$("#divPopupReportDefinition").dialog("close");
 		$("#divPopupReportDefinition").empty();

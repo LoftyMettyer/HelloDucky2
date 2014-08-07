@@ -363,7 +363,7 @@
 																	<tr>
 																		<td style="width: 95PX; padding-bottom: 6px" colspan="3">
 																			<input checked id="optAllRecords" name="optRecordSelection" type="radio"
-																				onclick="changeRecordOptions('all')"/>
+																				onclick="changeRecordOptions('ALL')"/>
 																			<label
 																				tabindex="-1"
 																				for="optAllRecords"
@@ -375,7 +375,7 @@
 																	<tr>
 																		<td style="white-space: nowrap">
 																			<input id="optPickList" name="optRecordSelection" type="radio"
-																				onclick="changeRecordOptions('picklist')" />
+																				onclick="changeRecordOptions('PICKLIST')" />
 																			<label
 																				tabindex="-1"
 																				for="optPickList"
@@ -394,7 +394,7 @@
 																	<tr>
 																		<td style="white-space: nowrap">
 																			<input id="optFilter" name="optRecordSelection" type="radio"
-																				onclick="changeRecordOptions('filter')" />
+																				onclick="changeRecordOptions('FILTER')" />
 																			<label
 																				tabindex="-1" 
 																				for="optFilter"

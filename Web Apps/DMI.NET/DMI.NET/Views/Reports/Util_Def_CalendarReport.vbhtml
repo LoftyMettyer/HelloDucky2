@@ -10,6 +10,7 @@ End Code
 <div>
 	@Using (Html.BeginForm("util_def_calendarreport", "Reports", FormMethod.Post, New With {.id = "frmReportDefintion", .name = "frmReportDefintion"}))
 		@Html.HiddenFor(Function(m) m.ID)
+		@Html.HiddenFor(Function(m) m.Description3ViewAccess)		 
 
 		@<div id="tabs">
 	<ul>
@@ -113,9 +114,10 @@ End Code
 		var tableID = $("#BaseTableID option:selected").val();
 		var currentID = $("#Description3ID").val();
 
-		OpenHR.modalExpressionSelect("CALC", tableID, currentID, function (id, name) {
+		OpenHR.modalExpressionSelect("CALC", tableID, currentID, function (id, name, access) {
 			$("#Description3ID").val(id);
 			$("#txtDescription3").val(name);
+			setViewAccess('CALC', $("#Description3ViewAccess"), access, "report description");
 		});
 
 	}

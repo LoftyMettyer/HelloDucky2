@@ -1,4 +1,4 @@
-CREATE PROCEDURE [dbo].[sp_ASRIntSaveCrossTab] (
+CREATE PROCEDURE [dbo].[spASRIntSaveCrossTab] (
 	@psName				varchar(255),
 	@psDescription		varchar(MAX),
 	@piTableID			integer,

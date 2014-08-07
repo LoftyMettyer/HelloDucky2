@@ -1,19 +1,18 @@
-CREATE PROCEDURE [dbo].[sp_ASRIntValidateMailMerge] (
+CREATE PROCEDURE [dbo].[spASRIntValidateCrossTab] (
 	@psUtilName 		varchar(255), 
 	@piUtilID 			integer, 
 	@piTimestamp 		integer, 
 	@piBasePicklistID	integer, 
 	@piBaseFilterID 	integer, 
-	@psCalculations 	varchar(MAX), 
+	@piEmailGroupID 	integer, 
 	@psHiddenGroups 	varchar(MAX), 
 	@psErrorMsg			varchar(MAX)	OUTPUT,
 	@piErrorCode		varchar(MAX)	OUTPUT, /* 	0 = no errors, 
 								1 = error, 
 								2 = definition deleted or made read only by someone else,  but prompt to save as new definition 
-								3 = definition changed by someone else, overwrite ?
-								4 = saving will cause batch jobs to be made hiiden. Prompt to continue */
-	@psDeletedCalcs 	varchar(MAX)	OUTPUT, 
-	@psHiddenCalcs 		varchar(MAX)	OUTPUT,
+								3 = definition changed by someone else, overwrite ? */
+	@psDeletedFilters 	varchar(MAX)	OUTPUT,
+	@psHiddenFilters 	varchar(MAX)	OUTPUT,
 	@psJobIDsToHide		varchar(MAX)	OUTPUT
 )
 AS
@@ -28,13 +27,15 @@ BEGIN
 			@sCurrentUser			sysname,
 			@sTemp					varchar(MAX),
 			@sCurrentID				varchar(MAX),
-			@sBatchJobName			varchar(255),
+			@sParameter				varchar(MAX),
+			@sExprName  			varchar(MAX),
+			@sBatchJobName			varchar(MAX),
 			@iBatchJobID			integer,
 			@iBatchJobScheduled		integer,
 			@sBatchJobRoleToPrompt	varchar(MAX),
 			@iNonHiddenCount		integer,
 			@sBatchJobUserName		sysname,
-			@sJobName				varchar(255),
+			@sJobName				varchar(MAX),
 			@sCurrentUserGroup		sysname,
 			@fBatchJobsOK			bit,
 			@sScheduledUserGroups	varchar(MAX),
@@ -61,45 +62,45 @@ BEGIN
 	SELECT @sCurrentUser = SYSTEM_USER
 	SET @psErrorMsg = ''
 	SET @piErrorCode = 0
-	SET @psDeletedCalcs = ''
-	SET @psHiddenCalcs = ''
+	SET @psDeletedFilters = ''
+	SET @psHiddenFilters = ''
 
 	exec spASRIntSysSecMgr @fSysSecMgr OUTPUT
 	
-	IF @piUtilID > 0
+ 	IF @piUtilID > 0
 	BEGIN
 		/* Check if this definition has been changed by another user. */
 		SELECT @iCount = COUNT(*)
-		FROM ASRSysMailMergeName
-		WHERE MailMergeID = @piUtilID
+		FROM ASRSysCrossTab
+		WHERE CrossTabID = @piUtilID
 
 		IF @iCount = 0
 		BEGIN
-			SET @psErrorMsg = 'The mail merge has been deleted by another user. Save as a new definition ?'
+			SET @psErrorMsg = 'The cross tab has been deleted by another user. Save as a new definition ?'
 			SET @piErrorCode = 2
 		END
 		ELSE
 		BEGIN
 			SELECT @iTimestamp = convert(integer, timestamp), 
 				@sOwner = userName
-			FROM ASRSysMailMergeName
-			WHERE MailMergeID = @piUtilID
+			FROM ASRSysCrossTab
+			WHERE CrossTabID = @piUtilID
 
-			IF (@iTimestamp <> @piTimestamp)
+			IF (@iTimestamp <>@piTimestamp)
 			BEGIN
 				exec spASRIntCurrentUserAccess 
-					9, 
+					1, 
 					@piUtilID,
 					@sAccess	OUTPUT
 		
 				IF (@sOwner <> @sCurrentUser) AND (@sAccess <> 'RW') AND (@iTimestamp <>@piTimestamp)
 				BEGIN
-					SET @psErrorMsg = 'The mail merge has been amended by another user and is now Read Only. Save as a new definition ?'
+					SET @psErrorMsg = 'The cross tab has been amended by another user and is now Read Only. Save as a new definition ?'
 					SET @piErrorCode = 2
 				END
 				ELSE
 				BEGIN
-					SET @psErrorMsg = 'The mail merge has been amended by another user. Would you like to overwrite this definition ?'
+					SET @psErrorMsg = 'The cross tab has been amended by another user. Would you like to overwrite this definition ?'
 					SET @piErrorCode = 3
 				END
 			END
@@ -109,24 +110,24 @@ BEGIN
 
 	IF @piErrorCode = 0
 	BEGIN
-		/* Check that the report name is unique. */
+		/* Check that the cross tab name is unique. */
 		IF @piUtilID > 0
 		BEGIN
 			SELECT @iCount = COUNT(*) 
-			FROM ASRSYSMailMergeName
+			FROM ASRSYSCrossTab
 			WHERE name = @psUtilName
-				AND MailMergeID <> @piUtilID AND IsLabel = 0
+				AND CrossTabID <> @piUtilID
 		END
 		ELSE
 		BEGIN
 			SELECT @iCount = COUNT(*) 
-			FROM ASRSYSMailMergeName
-			WHERE name = @psUtilName AND IsLabel = 0
+			FROM ASRSYSCrossTab
+			WHERE name = @psUtilName
 		END
 
 		IF @iCount > 0 
 		BEGIN
-			SET @psErrorMsg = 'A mail merge called ''' + @psUtilName + ''' already exists.'
+			SET @psErrorMsg = 'A cross tab called ''' + @psUtilName + ''' already exists.'
 			SET @piErrorCode = 1
 		END
 	END
@@ -185,85 +186,25 @@ BEGIN
 		END
 	END
 
-	/* Check that the selected runtime calculations exists. */
-	IF (@piErrorCode = 0) AND (LEN(@psCalculations) > 0)
+	IF (@piErrorCode = 0) AND (@piEmailGroupID > 0)
 	BEGIN
-		SET @sTemp = @psCalculations
+		/* Check that the email group exists. */
+		SELECT @iCount = COUNT(*)
+		FROM ASRSysEmailGroupName 
+		WHERE emailGroupID = @piEmailGroupID
 
-		WHILE LEN(@sTemp) > 0
+		IF @iCount = 0
 		BEGIN
-			IF CHARINDEX(',', @sTemp) > 0
-			BEGIN
-				SET @sCurrentID = LEFT(@sTemp, CHARINDEX(',', @sTemp) - 1)
-				SET @sTemp = RIGHT(@sTemp, LEN(@sTemp) - CHARINDEX(',', @sTemp))
-			END
-			ELSE
-			BEGIN
-				SET @sCurrentID = @sTemp
-				SET @sTemp = ''
-			END
-			
-			SELECT @iCount = COUNT(*)
-			FROM ASRSysExpressions
-			 WHERE exprID = convert(integer, @sCurrentID)
-
-			IF @iCount = 0
-			BEGIN
-				SET @psErrorMsg = 
-					@psErrorMsg + 
-					CASE
-						WHEN LEN(@psDeletedCalcs) > 0 THEN ''
-						ELSE 
-							CASE 
-								WHEN LEN(@psErrorMsg) > 0 THEN char(13)
-								ELSE ''
-							END +
-							'One or more runtime calculations have been deleted by another user. They will be automatically removed from the mail merge.'
-					END
-				SET @psDeletedCalcs = @psDeletedCalcs +
-					CASE
-						WHEN LEN(@psDeletedCalcs) > 0 THEN ','
-						ELSE ''
-					END + @sCurrentID
-				SET @piErrorCode = 1
-			END
-			ELSE
-			BEGIN
-				SELECT @sOwner = userName,
-					@sAccess = access
-				FROM ASRSysExpressions
-				WHERE exprID = convert(integer, @sCurrentID)
-
-				IF (@sOwner <> @sCurrentUser) AND (@sAccess = 'HD') AND (@fSysSecMgr = 0)
-				BEGIN
-					SET @psErrorMsg = 
-						@psErrorMsg + 
-						CASE
-							WHEN LEN(@psHiddenCalcs) > 0 THEN ''
-							ELSE 
-								CASE 
-									WHEN LEN(@psErrorMsg) > 0 THEN char(13)
-									ELSE ''
-								END +
-								'One or more runtime calculations have been made hidden by another user. They will be automatically removed from the mail merge.'
-						END
-					SET @psHiddenCalcs = @psHiddenCalcs +
-						CASE
-							WHEN LEN(@psHiddenCalcs) > 0 THEN ','
-							ELSE ''
-						END + @sCurrentID
-						
-					SET @piErrorCode = 1
-				END
-			END
+			SET @psErrorMsg = 'The email group has been deleted by another user.'
+			SET @piErrorCode = 1
 		END
 	END
 
 	IF (@piErrorCode = 0) AND (@piUtilID > 0) AND (len(@psHiddenGroups) > 0)
 	BEGIN
 		SELECT @sOwner = userName
-		FROM ASRSysMailMergeName
-		WHERE MailMergeID = @piUtilID
+		FROM ASRSysCrossTab
+		WHERE CrossTabID = @piUtilID
 
 		IF (@sOwner = @sCurrentUser) 
 		BEGIN
@@ -297,10 +238,10 @@ BEGIN
 				ASRSysBatchJobName.roleToPrompt,
 				COUNT (ASRSysBatchJobAccess.Access) AS [nonHiddenCount],
 				ASRSysBatchJobName.Username,
-				ASRSysMailMergeName.Name AS 'JobName'
+				ASRSysCrossTab.Name AS 'JobName'
 	 		FROM ASRSysBatchJobDetails
 			INNER JOIN ASRSysBatchJobName ON ASRSysBatchJobName.ID = ASRSysBatchJobDetails.BatchJobNameID 
-			INNER JOIN ASRSysMailMergeName ON ASRSysMailMergeName.MailMergeID = ASRSysBatchJobDetails.JobID
+			INNER JOIN ASRSysCrossTab ON ASRSysCrossTab.CrossTabID = ASRSysBatchJobDetails.JobID
 			LEFT OUTER JOIN ASRSysBatchJobAccess ON ASRSysBatchJobName.ID = ASRSysBatchJobAccess.ID
 				AND ASRSysBatchJobAccess.access <> 'HD'
 				AND ASRSysBatchJobAccess.groupName IN (SELECT name FROM sysusers WHERE uid IN (SELECT groupID FROM @HiddenGroups))
@@ -315,14 +256,14 @@ BEGIN
 						AND ASRSysPermissionCategories.categoryKey = 'MODULEACCESS')
 					WHERE sysusers.uid = sysusers.gid
 						AND sysusers.uid <> 0)
-			WHERE ASRSysBatchJobDetails.JobType = 'Mail Merge'
+			WHERE ASRSysBatchJobDetails.JobType = 'Cross Tab'
 				AND ASRSysBatchJobDetails.JobID IN (@piUtilID)
 			GROUP BY ASRSysBatchJobName.Name,
 				ASRSysBatchJobName.ID,
 				convert(integer, ASRSysBatchJobName.scheduled),
 				ASRSysBatchJobName.roleToPrompt,
 				ASRSysBatchJobName.Username,
-				ASRSysMailMergeName.Name
+				ASRSysCrossTab.Name
 
 			OPEN batchjob_cursor
 			FETCH NEXT FROM batchjob_cursor INTO @sBatchJobName, 
@@ -385,7 +326,7 @@ BEGIN
 						IF @iNonHiddenCount > 0 
 						BEGIN
 							SET @iOwnedJobCount = @iOwnedJobCount + 1
-							SET @sOwnedJobDetails = @sOwnedJobDetails + 'Batch Job : ' + @sBatchJobName + ' (Contains Mail Merge ' + @sJobName + ')' + '<BR>'
+							SET @sOwnedJobDetails = @sOwnedJobDetails + 'Batch Job : ' + @sBatchJobName + ' (Contains Cross Tab ' + @sJobName + ')' + '<BR>'
 							SET @sOwnedJobIDs = @sOwnedJobIDs +
 								CASE 
 									WHEN Len(@sOwnedJobIDs) > 0 THEN ', '
@@ -417,9 +358,9 @@ BEGIN
 					@sBatchJobUserName,
 					@sJobName	
 			END
+
 			CLOSE batchjob_cursor
 			DEALLOCATE batchjob_cursor	
-
 		END
 	END
 
@@ -452,5 +393,5 @@ BEGIN
 	END
 
 	SET @psJobIDsToHide = @sOwnedJobIDs
-	
+
 END

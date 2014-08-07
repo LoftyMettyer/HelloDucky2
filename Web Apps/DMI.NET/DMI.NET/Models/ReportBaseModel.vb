@@ -25,6 +25,7 @@ Namespace Models
 
 		<Required(ErrorMessage:="A base table must be selected.")>
 		Public Property BaseTableID As Integer Implements IReport.BaseTableID
+		Public Property BaseViewAccess As String
 
 		<Required(ErrorMessage:="Definition name is required.")>
 		<MaxLength(50, ErrorMessage:="Definition name cannot be longer than 50 characters.")>
@@ -48,7 +49,6 @@ Namespace Models
 		Public Property FilterName As String
 		Public Property PicklistName As String
 
-		'Public Property BaseTables As New List(Of ReportTableItem)
 
 		<DisplayName("Display Title In Report Header")>
 		Public Property DisplayTitleInReportHeader As Boolean

@@ -6,6 +6,7 @@
 	@Using (Html.BeginForm("PostChildTable", "Reports", FormMethod.Post, New With {.id = "frmPostChildTable"}))
 
  		@Html.HiddenFor(Function(m) m.ReportID)
+ 		@Html.HiddenFor(Function(m) m.FilterViewAccess)	 
 
 	 	@Html.LabelFor(Function(m) m.TableID) 
 	 	@Html.TableDropdown("TableID", "ChildTableID", Model.TableID, Model.AvailableTables, "changeChildTable();")
@@ -46,9 +47,10 @@
 		var tableID = $("#ChildTableID option:selected").val();
 		var currentID = $("#txtChildFilterID").val();
 
-		OpenHR.modalExpressionSelect("FILTER", tableID, currentID, function (id, name) {
+		OpenHR.modalExpressionSelect("FILTER", tableID, currentID, function (id, name, access) {
 			$("#txtChildFilterID").val(id);
 			$("#txtChildFilter").val(name);
+			$("#FilterViewAccess").val(access);
 		});
 
 	}
@@ -58,7 +60,7 @@
 		var tableID = $("#ChildTableID option:selected").val();
 		var currentID = $("#txtChildFieldOrderID").val();
 
-		OpenHR.modalExpressionSelect("ORDER", tableID, currentID, function (id, name) {
+		OpenHR.modalExpressionSelect("ORDER", tableID, currentID, function (id, name, access) {
 			$("#txtChildFieldOrderID").val(id);
 			$("#txtFieldRecOrder").val(name);
 		});
@@ -78,6 +80,7 @@
 				ID: '@Model.ID',
 				TableID: $("#ChildTableID").val(),
 				FilterID: $("#txtChildFilterID").val(),
+				FilterViewAccess: $("#FilterViewAccess").val(),
 				OrderID: $("#txtChildFieldOrderID").val(),
 				TableName: $("#ChildTableID option:selected").text(),
 				FilterName: $("#txtChildFilter").val(),
@@ -91,6 +94,8 @@
 			grid.jqGrid('addRowData', '@Model.ID', datarow);
 			grid.setGridParam({ sortname: 'ID' }).trigger('reloadGrid');
 			grid.jqGrid("setSelection", '@Model.ID');
+
+			setViewAccess('FILTER', $("#ChildTablesViewAccess"), $("#FilterViewAccess").val(), $("#ChildTableID option:selected").text());
 
 			// Post to server
 			OpenHR.postData("Reports/PostChildTable", datarow, loadAvailableTablesForReport)

@@ -89,5 +89,9 @@ Namespace Models
 
 		End Function
 
+		Public Property Description3ViewAccess As String
+		Public Property StartCustomViewAccess As String
+		Public Property EndCustomViewAccess As String
+
 	End Class
 End Namespace

@@ -7,9 +7,8 @@
 
 <fieldset id="divReportParents">
 
-	@Html.CheckBoxFor(Function(m) m.p1Hidden, New With {.Type = "hidden"})
-	@Html.CheckBoxFor(Function(m) m.p2Hidden, New With {.Type = "hidden"})
-	@Html.CheckBoxFor(Function(m) m.childHidden, New With {.Type = "hidden"})
+	@Html.HiddenFor(Function(m) m.Parent1ViewAccess)
+	@Html.HiddenFor(Function(m) m.Parent2ViewAccess)
 
 	<fieldset class="width45 floatleft" @Model.Parent1.Visibility>
 		<legend class="fontsmalltitle">Parent 1 :</legend>
@@ -28,13 +27,13 @@
 		<fieldset>
 			<div id="RelatedTableParent1AllRecordsDiv">
 				@Html.RadioButton("Parent1.Selectiontype", RecordSelectionType.AllRecords, Model.Parent1.SelectionType = RecordSelectionType.AllRecords,
-													New With {.onclick = "changeRecordOption('Parent1','all')"})
+													New With {.onclick = "changeRecordOption('Parent1','ALL')"})
 		All Records
 			</div>
 
 			<div id="RelatedTablesParent1PicklistDiv">
 				<div class="width30 floatleft">
-		@Html.RadioButton("Parent1.SelectionType", RecordSelectionType.Picklist, Model.Parent1.SelectionType = RecordSelectionType.Picklist, New With {.onclick = "changeRecordOption('Parent1','picklist')"})
+		@Html.RadioButton("Parent1.SelectionType", RecordSelectionType.Picklist, Model.Parent1.SelectionType = RecordSelectionType.Picklist, New With {.onclick = "changeRecordOption('Parent1','PICKLIST')"})
 		Picklist
 				</div>
 				<div class="floatleft">
@@ -49,7 +48,7 @@
 
 			<div class="width100 clearboth">
 				<div class="width30 floatleft">
-		@Html.RadioButton("Parent1.SelectionType", RecordSelectionType.Filter, Model.Parent1.SelectionType = RecordSelectionType.Filter, New With {.onclick = "changeRecordOption('Parent1','filter')"})
+		@Html.RadioButton("Parent1.SelectionType", RecordSelectionType.Filter, Model.Parent1.SelectionType = RecordSelectionType.Filter, New With {.onclick = "changeRecordOption('Parent1','FILTER')"})
 		Filter
 				</div>
 				<div class="floatleft">
@@ -80,13 +79,13 @@
 		<fieldset>
 			<div id="RelatedTableParent2AllRecordsDiv">
 				@Html.RadioButton("Parent2.Selectiontype", RecordSelectionType.AllRecords, Model.Parent2.SelectionType = RecordSelectionType.AllRecords,
-													New With {.onclick = "changeRecordOption('Parent2','all')"})
+													New With {.onclick = "changeRecordOption('Parent2','ALL')"})
 		All Records
 			</div>
 
 			<div id="RelatedTablesParent2PicklistDiv">
 				<div class="width30 floatleft">
-		@Html.RadioButton("Parent2.SelectionType", RecordSelectionType.Picklist, Model.Parent2.SelectionType = RecordSelectionType.Picklist, New With {.onclick = "changeRecordOption('Parent2','picklist')"})
+		@Html.RadioButton("Parent2.SelectionType", RecordSelectionType.Picklist, Model.Parent2.SelectionType = RecordSelectionType.Picklist, New With {.onclick = "changeRecordOption('Parent2','PICKLIST')"})
 		Picklist
 				</div>
 				<div class="floatleft">
@@ -102,7 +101,7 @@
 			<div class="clearboth">
 				<div class="width30 floatleft">
 					@Html.RadioButton("Parent2.SelectionType", RecordSelectionType.Filter, Model.Parent2.SelectionType = RecordSelectionType.Filter,
-											 New With {.onclick = "changeRecordOption('Parent2','filter')"})
+											 New With {.onclick = "changeRecordOption('Parent2','FILTER')"})
 		Filter
 				</div>
 				<div class="floatleft">
@@ -125,12 +124,11 @@
 	<legend class="fontsmalltitle">Child Tables :</legend>
 
 	<div class="stretchyfill">
-		@*<div class="">*@
-			<table id="ChildTables"></table>
+		<input type="hidden" id="ChildTablesViewAccess" />
+		<table id="ChildTables"></table>
 	</div>
 
 	<div class="stretchyfixed">
-		@*<div class="">*@
 		<input type="button" id="btnChildAdd" value="Add..." onclick="addChildTable();" />
 			<br />
 		<input type="button" id="btnChildEdit" value="Edit..." disabled onclick="editChildTable(0);" />
@@ -150,9 +148,10 @@
 		var tableID = $("#txtParent1ID").val();
 		var currentID = $("#txtParent1PicklistID").val();
 
-		OpenHR.modalExpressionSelect("PICKLIST", tableID, currentID, function (id, name) {
+		OpenHR.modalExpressionSelect("PICKLIST", tableID, currentID, function (id, name, access) {
 			$("#txtParent1PicklistID").val(id);
 			$("#txtParent1Picklist").val(name);
+			setViewAccess('PICKLIST', $("#Parent1ViewAccess"), access);
 		});
 
 	}
@@ -162,9 +161,10 @@
 		var tableID = $("#txtParent2ID").val();
 		var currentID = $("#txtParent2PicklistID").val();
 
-		OpenHR.modalExpressionSelect("PICKLIST", tableID, currentID, function (id, name) {
+		OpenHR.modalExpressionSelect("PICKLIST", tableID, currentID, function (id, name, access) {
 			$("#txtParent2PicklistID").val(id);
 			$("#txtParent2Picklist").val(name);
+			setViewAccess('PICKLIST', $("#Parent1ViewAccess"), access);
 		});
 
 	}
@@ -174,9 +174,10 @@
 		var tableID = $("#txtParent1ID").val();
 		var currentID = $("#txtParent1FilterID").val();
 
-		OpenHR.modalExpressionSelect("FILTER", tableID, currentID, function (id, name) {
+		OpenHR.modalExpressionSelect("FILTER", tableID, currentID, function (id, name, access) {
 			$("#txtParent1FilterID").val(id);
 			$("#txtParent1Filter").val(name);
+			setViewAccess('FILTER', $("#Parent1ViewAccess"), access);
 		});
 
 	}
@@ -186,9 +187,10 @@
 		var tableID = $("#txtParent2ID").val();
 		var currentID = $("#txtParent2FilterID").val();
 
-		OpenHR.modalExpressionSelect("FILTER", tableID, currentID, function (id, name) {
+		OpenHR.modalExpressionSelect("FILTER", tableID, currentID, function (id, name, access) {
 			$("#txtParent2FilterID").val(id);
 			$("#txtParent2Filter").val(name);
+			setViewAccess('FILTER', $("#Parent2ViewAccess"), access);
 		});
 
 	}
@@ -231,18 +233,19 @@
 				repeatitems: false,
 				id: "ID" //index of the column with the PK in it
 			},
-			colNames: ['ID', 'ReportID', 'ReportType', 'TableID', 'FilterID', 'OrderID', 'Table', 'Filter', 'Order', 'Records'],
+			colNames: ['ID', 'ReportID', 'ReportType', 'TableID', 'FilterID', 'FilterViewAccess', 'OrderID', 'Table', 'Filter', 'Order', 'Records'],
 			colModel: [
 				{ name: 'ID', index: 'ID', sorttype: 'int', hidden: true },
 				{ name: 'ReportID', index: 'ReportID', sorttype: 'int', hidden: true },
 				{ name: 'ReportType', index: 'ReportType', sorttype: 'int', hidden: true },
 				{ name: 'TableID', index: 'TableID', width: 100, hidden: true },
 				{ name: 'FilterID', index: 'FilterID', width: 100, hidden: true },
+				{ name: 'FilterViewAccess', index: 'Records', hidden: true },
 				{ name: 'OrderID', index: 'OrderID', width: 100, hidden: true },
 				{ name: 'TableName', index: 'TableName', width: 100 },
 				{ name: 'FilterName', index: 'FilterName', width: 100 },
 				{ name: 'OrderName', index: 'OrderName', width: 100 },
-			{ name: 'Records', index: 'Records', width: 100 }
+				{ name: 'Records', index: 'Records', width: 100 }
 			],
 			rowNum: 10,
 			autowidth: true,

@@ -405,10 +405,13 @@ BEGIN
 		@psOutputFilename AS [Filename], @piTimestamp AS [timestamp],
 		@pfParent1AllRecords AS parent1AllRecords, @piParent1PicklistID AS parent1Picklist,
 		@pfParent2AllRecords AS parent2AllRecords,@piParent2PicklistID AS parent2Picklist,
-		@pfIgnoreZeros AS IgnoreZerosForAggregates;
+		@pfIgnoreZeros AS IgnoreZerosForAggregates,
+		CASE WHEN @pfPicklistHidden = 1 OR @pfFilterHidden = 1 THEN 'HD' ELSE '' END AS [BaseViewAccess],
+		CASE WHEN @pfParent1PicklistHidden = 1 OR @pfParent1FilterHidden = 1 THEN 'HD' ELSE '' END AS [Parent1ViewAccess],
+		CASE WHEN @pfParent2PicklistHidden = 1 OR @pfParent2FilterHidden = 1 THEN 'HD' ELSE '' END AS [Parent2ViewAccess];
 
 	-- Get the definition columns
-	SELECT 'N' AS [AccessHidden],
+	SELECT 0 AS [AccessHidden],
 		0 AS [IsExpression],
 		ASRSysColumns.tableID,
 		cd.colExprID AS [id],
@@ -428,8 +431,8 @@ BEGIN
 		AND cd.type = 'C'
 	UNION
 	SELECT CASE 
-			WHEN ASRSysExpressions.access = 'HD' THEN 'Y'
-			ELSE 'N'
+			WHEN ASRSysExpressions.access = 'HD' THEN 1
+			ELSE 0
 		END,
 		1 AS [IsExpression],
 		ASRSysExpressions.tableID,

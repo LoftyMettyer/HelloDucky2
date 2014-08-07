@@ -103,7 +103,7 @@ BEGIN
 		templateFileName,		
 		outputscreen AS [DisplayOutputOnScreen],		
 		emailasattachment AS [EmailAsAttachment],		
-		isnull(emailattachmentname,'') AS [EmailAttachmentName],		
+		ISNULL(emailattachmentname,'') AS [EmailAttachmentName],		
 		suppressblanks AS SuppressBlankLines,		
 		PauseBeforeMerge,		
 		outputprinter AS [SendToPrinter],		
@@ -111,7 +111,8 @@ BEGIN
 		documentmapid,		
 		manualdocmanheader,
 		PromptStart AS PauseBeforeMerge,
-		convert(integer, timestamp) AS [Timestamp]
+		CONVERT(integer, timestamp) AS [Timestamp],
+		CASE WHEN @pfPicklistHidden = 1 OR @pfFilterHidden = 1 THEN 'HD' ELSE '' END AS [BaseViewAccess]
 	FROM [dbo].[ASRSysMailMergeName]		
 	WHERE MailMergeID = @piReportID;		
 

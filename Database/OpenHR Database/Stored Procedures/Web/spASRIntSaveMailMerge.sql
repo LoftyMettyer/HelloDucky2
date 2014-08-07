@@ -1,4 +1,4 @@
-CREATE PROCEDURE [dbo].[sp_ASRIntSaveMailMerge] (
+CREATE PROCEDURE [dbo].[spASRIntSaveMailMerge] (
 	@psName				varchar(255),
 	@psDescription		varchar(MAX),
 	@piTableID			integer,

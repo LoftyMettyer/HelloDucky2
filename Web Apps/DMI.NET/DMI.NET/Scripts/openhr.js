@@ -129,11 +129,12 @@
 					repeatitems: false,
 					id: "ID"
 				},
-				colNames: ['ID', 'Name', 'Description'],
+				colNames: ['ID', 'Name', 'Description', 'Access'],
 				colModel: [
 					{ name: 'ID', index: 'ID', hidden: true },
 					{ name: 'Name', index: 'Name', width: 40, sortable: false },
-					{ name: 'Description', index: 'Description', hidden: true }],
+					{ name: 'Description', index: 'Description', hidden: true },
+					{ name: 'Access', index: 'Access', hidden: true }],
 				viewrecords: true,
 				width: 600,
 				height: 400,
@@ -142,7 +143,7 @@
 				rowNum: 10000,
 				ondblClickRow: function (rowid) {
 					var gridData = $(this).getRowData(rowid);
-					followOnFunctionName(gridData.ID, gridData.Name);
+					followOnFunctionName(gridData.ID, gridData.Name, gridData.Access);
 					frame.dialog("close");
 				},
 				loadComplete: function(json) {
@@ -150,7 +151,7 @@
 					$("#ExpressionSelectOK").click(function () {
 						var rowid = $('#ExpressionsAvailable').jqGrid('getGridParam', 'selrow');
 						var gridData = $("#ExpressionsAvailable").getRowData(rowid);
-						followOnFunctionName(gridData.ID, gridData.Name);
+						followOnFunctionName(gridData.ID, gridData.Name, gridData.Access);
 						frame.dialog("close");
 
 					});
@@ -160,7 +161,7 @@
 					});
 
 					$("#ExpressionSelectNone").click(function () {
-						followOnFunctionName(0, "");
+						followOnFunctionName(0, "", "RW");
 						frame.dialog("close");
 					});
 

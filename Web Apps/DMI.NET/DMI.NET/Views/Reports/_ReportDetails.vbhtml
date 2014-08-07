@@ -5,6 +5,9 @@
 
 <fieldset class="width45 floatleft">
 	<legend class="fontsmalltitle">Start Date</legend>
+
+	@Html.HiddenFor(Function(m) m.StartCustomViewAccess)
+	@Html.HiddenFor(Function(m) m.EndCustomViewAccess)
 	
 	<div class="">
 		@Html.RadioButton("StartType", CalendarDataType.CurrentDate, Model.StartType = CalendarDataType.CurrentDate, New With {.onclick = "changeEventStartType('CurrentDate')"})
@@ -146,6 +149,8 @@
 
 		}
 
+		setViewAccess('CALC', $("#StartCustomViewAccess"), 'RW', '');
+
 	}
 
 	function changeEventEndType(type) {
@@ -185,6 +190,8 @@
 
 		}
 
+		setViewAccess('CALC', $("#EndCustomViewAccess"), 'RW', '');
+
 	}
 
 	function selectCustomStartDate() {
@@ -192,9 +199,10 @@
 		var tableID = $("#BaseTableID option:selected").val();
 		var currentID = $("#StartCustomId").val();
 
-		OpenHR.modalExpressionSelect("CALC", tableID, currentID, function (id, name) {
+		OpenHR.modalExpressionSelect("CALC", tableID, currentID, function (id, name, access) {
 			$("#StartCustomId").val(id);
 			$("#txtCustomStart").val(name);
+			setViewAccess('CALC', $("#StartCustomViewAccess"), access, "report start date");
 		});
 
 	}
@@ -204,13 +212,13 @@
 		var tableID = $("#BaseTableID option:selected").val();
 		var currentID = $("#EndCustomId").val();
 
-		OpenHR.modalExpressionSelect("CALC", tableID, currentID, function (id, name) {
+		OpenHR.modalExpressionSelect("CALC", tableID, currentID, function (id, name, access) {
 			$("#EndCustomId").val(id);
 			$("#txtCustomEnd").val(name);
+			setViewAccess('CALC', $("#EndCustomViewAccess"), access, "report end date");
 		});
 
 	}
-
 
 
 </script>

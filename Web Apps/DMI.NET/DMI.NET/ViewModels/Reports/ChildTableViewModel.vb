@@ -30,6 +30,7 @@ Namespace ViewModels.Reports
 
 		<DisplayName("Filter :")>
 		Public Property FilterName As String
+		Public Property FilterViewAccess As String
 
 		<DisplayName("Order :")>
 		Public Property OrderName As String

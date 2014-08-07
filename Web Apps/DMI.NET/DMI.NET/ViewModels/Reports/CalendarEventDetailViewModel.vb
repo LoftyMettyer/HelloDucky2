@@ -25,6 +25,7 @@ Namespace ViewModels.Reports
 
 		<DisplayName("Filter :")>
 		Public Property FilterID As Integer
+		Public Property FilterViewAccess As String
 
 		<DisplayName("Start Date :")>
 		Public Property EventStartDateID As Integer
@@ -63,8 +64,6 @@ Namespace ViewModels.Reports
 
 		<DisplayName("Description 2 :")>
 		Public Property EventDesc2ColumnID As Integer
-
-		Public Property FilterHidden As String
 
 		' For display purposes in grids
 		Public Property TableName As String

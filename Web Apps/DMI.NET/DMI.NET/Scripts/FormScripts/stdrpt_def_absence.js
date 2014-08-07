@@ -392,7 +392,7 @@ function changeRecordOptions(psType) {
 	var frmPostDefinition = $('#frmPostDefinition')[0];
 	var frmAbsenceDefinition = $('#frmAbsenceDefinition')[0];
 	
-	if (psType == 'picklist') {
+	if (psType == 'PICKLIST') {
 		button_disable(frmAbsenceDefinition.cmdBasePicklist, false);
 		button_disable(frmAbsenceDefinition.cmdBaseFilter, true);
 
@@ -403,7 +403,7 @@ function changeRecordOptions(psType) {
 		frmPostDefinition.txtBaseFilterID.value = 0;
 	}
 
-	if (psType == 'filter') {
+	if (psType == 'FILTER') {
 		button_disable(frmAbsenceDefinition.cmdBasePicklist, true);
 		button_disable(frmAbsenceDefinition.cmdBaseFilter, false);
 
@@ -414,7 +414,7 @@ function changeRecordOptions(psType) {
 		frmPostDefinition.txtBasePicklistID.value = 0;
 	}
 
-	if (psType == 'all') {
+	if (psType == 'ALL') {
 		button_disable(frmAbsenceDefinition.cmdBasePicklist, true);
 		button_disable(frmAbsenceDefinition.cmdBaseFilter, true);
 

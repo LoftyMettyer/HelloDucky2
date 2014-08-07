@@ -274,7 +274,11 @@ BEGIN
 		@psOutputPrinterName AS PrinterName, @pfOutputSave AS SaveToFile, @piOutputSaveExisting AS SaveExisting,
 		@pfOutputEmail AS SendToEmail, @piOutputEmailAddr AS EmailGroupID, @psOutputEmailName AS EmailGroupName,
 		@psOutputEmailSubject AS EmailSubject, @psOutputEmailAttachAs AS EmailAttachmentName,
-		@psOutputFilename AS [Filename], @piTimestamp AS [timestamp];
+		@psOutputFilename AS [Filename], @piTimestamp AS [timestamp],
+		CASE WHEN @pfPicklistHidden = 1 OR @pfFilterHidden = 1 THEN 'HD' ELSE '' END AS [BaseViewAccess],
+		CASE WHEN @pfDescCalcHidden = 1 THEN 'HD' ELSE '' END AS [Description3ViewAccess],
+		CASE WHEN @pfStartDateCalcHidden = 1 THEN 'HD' ELSE '' END AS [StartCustomViewAccess],
+		CASE WHEN @pfEndDateCalcHidden = 1 THEN 'HD' ELSE '' END AS [EndCustomViewAccess];
 
 	-- Calendar events definition recordset
 	SELECT 
@@ -347,10 +351,10 @@ BEGIN
 			EventKey,
 			CASE 
 				WHEN ASRSysCalendarReportEvents.FilterID > 0 THEN
-			  		(SELECT CASE WHEN ASRSysExpressions.Access = 'HD' THEN 'Y' ELSE 'N' END FROM ASRSysExpressions WHERE ASRSysExpressions.ExprID = ASRSysCalendarReportEvents.FilterID) 
+			  		(SELECT CASE WHEN ASRSysExpressions.Access = 'HD' THEN 'HD' ELSE 'RW' END FROM ASRSysExpressions WHERE ASRSysExpressions.ExprID = ASRSysCalendarReportEvents.FilterID) 
 				ELSE
-					'N'
-			END AS FilterHidden
+					'RW'
+			END AS FilterViewAccess
 	FROM ASRSysCalendarReportEvents
 	WHERE CalendarReportID = @piCalendarReportID
 	ORDER BY ID;

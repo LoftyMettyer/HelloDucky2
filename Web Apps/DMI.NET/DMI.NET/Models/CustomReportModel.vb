@@ -36,9 +36,8 @@ Namespace Models
 		Public Property Output As New ReportOutputModel
 
 		' Flags to detect if thius definition needs to be marked as hidden
-		Public Property p1Hidden As Boolean
-		Public Property p2Hidden As Boolean
-		Public Property childHidden As Boolean
+		Public Property Parent1ViewAccess As Boolean
+		Public Property Parent2ViewAccess As Boolean
 
 		Public Overrides Sub SetBaseTable(TableID As Integer)
 

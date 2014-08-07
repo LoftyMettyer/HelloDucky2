@@ -288,6 +288,7 @@ Namespace Repository
 						objModel.Description2ID = CInt(row("Description2Id"))
 						objModel.Description3ID = CInt(row("Description3Id"))
 						objModel.Description3Name = row("Description3Name").ToString
+						objModel.Description3ViewAccess = row("Description3ViewAccess").ToString
 
 						objModel.RegionID = CInt(row("RegionID"))
 						objModel.GroupByDescription = CBool(row("GroupByDescription"))
@@ -308,6 +309,7 @@ Namespace Repository
 						objModel.StartOffsetPeriod = CType(row("StartOffsetPeriod"), DatePeriod)
 						objModel.StartCustomId = CInt(row("StartCustomId"))
 						objModel.StartCustomName = row("StartCustomName").ToString
+						objModel.StartCustomViewAccess = row("StartCustomViewAccess").ToString
 
 						objModel.EndType = CType(row("EndType"), CalendarDataType)
 						objModel.EndFixedDate = CDate(row("EndFixedDate"))
@@ -315,6 +317,7 @@ Namespace Repository
 						objModel.EndOffsetPeriod = CType(row("EndOffsetPeriod"), DatePeriod)
 						objModel.EndCustomId = CInt(row("EndCustomId"))
 						objModel.EndCustomName = row("EndCustomName").ToString
+						objModel.EndCustomViewAccess = row("EndCustomViewAccess").ToString
 
 						objModel.IncludeBankHolidays = CBool(row("IncludeBankHolidays"))
 						objModel.WorkingDaysOnly = CBool(row("WorkingDaysOnly"))
@@ -325,8 +328,6 @@ Namespace Repository
 
 					End If
 
-
-					' Replace with Automapper?
 					For Each objRow As DataRow In dsDefinition.Tables(1).Rows
 						objEvent = New CalendarEventDetailViewModel
 
@@ -338,6 +339,7 @@ Namespace Repository
 						objEvent.TableName = objRow("TableName").ToString
 						objEvent.FilterID = CInt(objRow("FilterID"))
 						objEvent.FilterName = objRow("FilterName").ToString
+						objEvent.FilterViewAccess = objRow("FilterViewAccess").ToString()
 						objEvent.EventStartDateID = CInt(objRow("EventStartDateID"))
 						objEvent.EventStartDateName = objRow("EventStartDateName").ToString
 						objEvent.EventStartSessionID = CInt(objRow("EventStartSessionID"))
@@ -360,7 +362,6 @@ Namespace Repository
 						objEvent.EventDesc1ColumnName = objRow("EventDesc1ColumnName").ToString
 						objEvent.EventDesc2ColumnID = CInt(objRow("EventDesc2ColumnID"))
 						objEvent.EventDesc2ColumnName = objRow("EventDesc2ColumnName").ToString
-						objEvent.FilterHidden = objRow("FilterHidden").ToString
 
 						objModel.Events.Add(objEvent)
 
@@ -395,7 +396,7 @@ Namespace Repository
 				Dim sAccess = UtilityAccessAsString(objModel.GroupAccess)
 				Dim sColumns = MailMergeColumnsAsString(objModel.Columns, objModel.SortOrders)
 
-				_objDataAccess.ExecuteSP("sp_ASRIntSaveMailMerge" _
+				_objDataAccess.ExecuteSP("spASRIntSaveMailMerge" _
 					, New SqlParameter("@psName", SqlDbType.VarChar, 255) With {.Value = objModel.Name} _
 					, New SqlParameter("@psDescription", SqlDbType.VarChar, -1) With {.Value = objModel.Description} _
 					, New SqlParameter("@piTableID", SqlDbType.Int) With {.Value = objModel.BaseTableID} _
@@ -447,7 +448,7 @@ Namespace Repository
 				Dim psJobsToHide As String = ""	' Request.Form("txtSend_jobsToHide")
 				Dim psJobsToHideGroups As String = ""	' Request.Form("txtSend_jobsToHideGroups")}
 
-				_objDataAccess.ExecuteSP("sp_ASRIntSaveCrossTab", _
+				_objDataAccess.ExecuteSP("spASRIntSaveCrossTab", _
 						New SqlParameter("psName", SqlDbType.VarChar, 255) With {.Value = objModel.Name}, _
 						New SqlParameter("psDescription", SqlDbType.VarChar, -1) With {.Value = objModel.Description}, _
 						New SqlParameter("piTableID", SqlDbType.Int) With {.Value = objModel.BaseTableID}, _
@@ -511,7 +512,7 @@ Namespace Repository
 				Dim sColumns = CustomReportColumnsAsString(objModel.BaseTableID, objModel.Columns, objModel.SortOrders)
 				Dim sChildren As String = ReportChildTablesAsString(objModel.ChildTables)
 
-				_objDataAccess.ExecuteSP("sp_ASRIntSaveCustomReport", _
+				_objDataAccess.ExecuteSP("spASRIntSaveCustomReport", _
 						New SqlParameter("psName", SqlDbType.VarChar, 255) With {.Value = objModel.Name}, _
 						New SqlParameter("psDescription", SqlDbType.VarChar, -1) With {.Value = objModel.Description}, _
 						New SqlParameter("piBaseTableID", SqlDbType.Int) With {.Value = objModel.BaseTableID}, _
@@ -964,6 +965,7 @@ Namespace Repository
 					End If
 
 					outputModel.Timestamp = CLng(row("Timestamp"))
+					outputModel.BaseViewAccess = row("BaseViewAccess").ToString()
 
 				End If
 
@@ -1060,6 +1062,8 @@ Namespace Repository
 
 			Try
 
+				Dim bContainsHiddenObject As Boolean
+
 				outputModel.Columns = New List(Of ReportColumnItem)
 
 				For Each objRow As DataRow In data.Rows
@@ -1083,8 +1087,11 @@ Namespace Repository
 						.IsRepeated = CBool(objRow("IsRepeated"))}
 					outputModel.Columns.Add(objItem)
 
+					bContainsHiddenObject = bContainsHiddenObject OrElse CBool(objRow("AccessHidden"))
+
 				Next
 
+				'	outputModel.ContainsHiddenObjects = outputModel.ContainsHiddenObjects OrElse bContainsHiddenObject
 				outputModel.Columns = outputModel.Columns.OrderBy(Function(x) x.Sequence).ToList()
 
 			Catch ex As Exception
@@ -1292,7 +1299,7 @@ Namespace Repository
 				Dim prmHiddenFilters As New SqlParameter("@psHiddenFilters", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
 				Dim prmJobIDsToHide As New SqlParameter("@psJobIDsToHide", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
 
-				_objDataAccess.ExecuteSP("sp_ASRIntValidateCrossTab", _
+				_objDataAccess.ExecuteSP("spASRIntValidateCrossTab", _
 								New SqlParameter("psUtilName", SqlDbType.VarChar, 255) With {.Value = objModel.Name}, _
 								New SqlParameter("piUtilID", SqlDbType.Int) With {.Value = objModel.ID}, _
 								New SqlParameter("piTimestamp", SqlDbType.Int) With {.Value = objModel.Timestamp}, _
@@ -1338,7 +1345,7 @@ Namespace Repository
 				Dim prmDeletedPicklists As New SqlParameter("@psDeletedPicklists", SqlDbType.VarChar) With {.Direction = ParameterDirection.Output, .Size = -1}
 				Dim prmHiddenPicklists As New SqlParameter("@psHiddenPicklists", SqlDbType.VarChar) With {.Direction = ParameterDirection.Output, .Size = -1}
 
-				_objDataAccess.ExecuteSP("sp_ASRIntValidateReport", _
+				_objDataAccess.ExecuteSP("spASRIntValidateCustomReport", _
 								New SqlParameter("@psUtilName", SqlDbType.VarChar) With {.Value = objModel.Name, .Size = 255}, _
 								New SqlParameter("@piUtilID", SqlDbType.Int) With {.Value = objModel.ID}, _
 								New SqlParameter("@piTimestamp", SqlDbType.Int) With {.Value = objModel.Timestamp}, _
@@ -1386,7 +1393,7 @@ Namespace Repository
 				Dim prmHiddenCalcs = New SqlParameter("psHiddenCalcs", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
 				Dim prmJobIDsToHide = New SqlParameter("psJobIDsToHide", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
 
-				_objDataAccess.ExecuteSP("sp_ASRIntValidateMailMerge" _
+				_objDataAccess.ExecuteSP("spASRIntValidateMailMerge" _
 					, New SqlParameter("@psUtilName", SqlDbType.VarChar, 255) With {.Value = objModel.Name} _
 					, New SqlParameter("@piUtilID", SqlDbType.Int) With {.Value = objModel.ID} _
 					, New SqlParameter("@piTimestamp", SqlDbType.Int) With {.Value = objModel.Timestamp} _

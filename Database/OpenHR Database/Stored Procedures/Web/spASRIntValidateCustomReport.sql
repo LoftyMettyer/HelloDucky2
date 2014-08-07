@@ -1,4 +1,4 @@
-CREATE PROCEDURE [dbo].[sp_ASRIntValidateReport] (
+CREATE PROCEDURE [dbo].[spASRIntValidateCustomReport] (
 	@psUtilName 				varchar(255), 
 	@piUtilID 					integer, 
 	@piTimestamp 				integer, 

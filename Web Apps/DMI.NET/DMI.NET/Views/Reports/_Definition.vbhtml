@@ -9,6 +9,8 @@
 @Html.HiddenFor(Function(m) m.ReportType, New With {.id = "txtReportType"})
 @Html.HiddenFor(Function(m) m.Timestamp)
 @Html.HiddenFor(Function(m) m.ValidityStatus)
+@Html.HiddenFor(Function(m) m.BaseViewAccess)
+
 
 <div class="width100">
 	<fieldset class="floatleft width50 ">
@@ -41,13 +43,13 @@
 					<fieldset class="">
 						<fieldset id="selectiontypeallrecords" class="">							
 							@Html.RadioButton("selectiontype", RecordSelectionType.AllRecords, Model.SelectionType = RecordSelectionType.AllRecords,
-																New With {.onclick = "changeRecordOption('Base','all')"})All Records
+																New With {.onclick = "changeRecordOption('Base','ALL')"})All Records
 						</fieldset>
 
 						<fieldset id="selectiontypepicklistgroup" class="width100">
 							<div id="PicklistRadioDiv" class="floatleft">
 								@Html.RadioButton("selectiontype", RecordSelectionType.Picklist, Model.SelectionType = RecordSelectionType.Picklist,
-																	New With {.onclick = "changeRecordOption('Base','picklist')"})
+																	New With {.onclick = "changeRecordOption('Base','PICKLIST')"})
 								<span>Picklist</span>
 							</div>
 							<div class="width70 floatleft">
@@ -59,7 +61,7 @@
 
 						<fieldset id="selectiontypefiltergroup" class="width100">
 							<div id="FilterRadioDiv" class="floatleft">
-								@Html.RadioButton("selectiontype", RecordSelectionType.Filter, Model.SelectionType = RecordSelectionType.Filter, New With {.onclick = "changeRecordOption('Base','filter')"})
+								@Html.RadioButton("selectiontype", RecordSelectionType.Filter, Model.SelectionType = RecordSelectionType.Filter, New With {.onclick = "changeRecordOption('Base','FILTER')"})
 								<span>Filter</span>
 							</div>
 							<div class="width70  floatleft">
@@ -94,7 +96,9 @@
 				@Html.TextBoxFor(Function(m) m.Owner, New With {.readonly = "true"})
 			</fieldset>
 			<fieldset id="AccessPermissionsGrid" >
-				@Html.Raw(Html.AccessGrid("GroupAccess", Model.GroupAccess, Nothing))
+				@Html.AccessGrid("GroupAccess", Model.GroupAccess, Nothing)
+				<br/>
+				<span id="ForcedHiddenMessage" hidden="hidden">The definition access cannot be changed as it contains a hidden picklist, filter or calculation</span>
 			</fieldset>
 		</fieldset>
 	</fieldset>
@@ -103,9 +107,11 @@
 <script type="text/javascript">
 
 	$(function () {
+
 		 $('fieldset').css("border", "0");		
 		$("#frmReportDefintion :input").on("change", function () { enableSaveButton(this); });
 		getBaseTableList();
+		refreshViewAccess();
 
 	});
 
@@ -133,7 +139,7 @@
 
 	function changeRecordOption(psTable, psType) {
 
-		if (psType == "all") {
+		if (psType == "ALL") {
 			button_disable($("#cmd" + psTable + "Picklist")[0], true);
 			button_disable($("#cmd" + psTable + "Filter")[0], true);
 			$("#txt" + psTable + "Filter").val("");
@@ -142,7 +148,7 @@
 			$("#txt" + psTable + "FilterID").val(0);
 		}
 
-		if (psType == "picklist") {
+		if (psType == "PICKLIST") {
 			button_disable($("#cmd" + psTable + "Picklist")[0], false)
 			button_disable($("#cmd" + psTable + "Filter")[0], true)
 			$("#txt" + psTable + "Filter").val("");
@@ -154,7 +160,7 @@
 
 		}
 
-		if (psType == "filter") {
+		if (psType == "FILTER") {
 			button_disable($("#cmd" + psTable + "Picklist")[0], true)
 			button_disable($("#cmd" + psTable + "Filter")[0], false)
 			$("#txt" + psTable + "Picklist").val("");
@@ -166,16 +172,92 @@
 
 		}
 
+		setViewAccess(psType, $("#" + psTable + "ViewAccess"), 'RW', '');
+
 	}
+
+	function refreshViewAccess() {
+
+		var bViewAccessEnabled = true;
+		var list;
+
+		$("#AccessPermissionsGrid").removeAttr("disabled");
+		$("#ForcedHiddenMessage").hide();
+
+		if ($("#BaseViewAccess").val() == 'HD') { bViewAccessEnabled = false; }
+		if ($("#Parent1ViewAccess").val() == 'HD') { bViewAccessEnabled = false; }
+		if ($("#Parent2ViewAccess").val() == 'HD') { bViewAccessEnabled = false; }
+		if ($("#StartCustomViewAccess").val() == 'HD') { bViewAccessEnabled = false; }
+		if ($("#EndCustomViewAccess").val() == 'HD') { bViewAccessEnabled = false; }
+		if ($("#Description3ViewAccess").val() == 'HD') { bViewAccessEnabled = false; }
+
+		list = $("#ChildTables").getDataIDs();
+		for (i = 0; i < list.length; i++) {
+			rowData = $("#ChildTables").getRowData(list[i]);
+			if (rowData.FilterViewAccess == "HD") { bViewAccessEnabled = false; }
+		}
+
+		list = $("#CalendarEvents").getDataIDs();
+		for (i = 0; i < list.length; i++) {
+			rowData = $("#CalendarEvents").getRowData(list[i]);
+			if (rowData.FilterViewAccess == "HD") { bViewAccessEnabled = false; }
+		}
+
+
+		if (!bViewAccessEnabled) {
+			$("#AccessPermissionsGrid").attr("disabled", "disabled");
+			$("#ForcedHiddenMessage").show();
+		}
+
+	}
+
+	function setViewAccess(type, accessControl, newAccess, tableName) {
+	
+		var bResetGroupsToHidden = false;
+		var displayType;
+
+		if (accessControl.val() != newAccess && newAccess == "HD") {
+			bResetGroupsToHidden = true;
+		}
+
+		switch (type) {
+			case "FILTER":
+				displayType = "filter";
+				break;
+
+			case "PICKLIST":
+				displayType = "picklist";
+				break;
+
+			default:
+				displayType = "calculation";
+
+		}
+
+		if (bResetGroupsToHidden) {
+			OpenHR.modalPrompt("This definition will now be made hidden as the " + tableName + " table " + displayType + " is hidden.", 0, "Information").then(function (answer) {
+				$(".reportViewAccessGroup").val("HD");
+			});
+
+		}
+
+		accessControl.val(newAccess);
+
+		refreshViewAccess();
+
+	}
+
+
 
 	function selectBaseTableFilter() {
 
 		var tableID = $("#BaseTableID option:selected").val();
 		var currentID = $("#txtBaseFilterID").val();
 
-		OpenHR.modalExpressionSelect("FILTER", tableID, currentID, function (id, name) {
+		OpenHR.modalExpressionSelect("FILTER", tableID, currentID, function (id, name, access) {
 			$("#txtBaseFilterID").val(id);
 			$("#txtBaseFilter").val(name);
+			setViewAccess('FILTER', $("#BaseViewAccess"), access, $("#BaseTableID option:selected").text());
 		});
 
 	}
@@ -185,9 +267,10 @@
 		var tableID = $("#BaseTableID option:selected").val();
 		var currentID = $("#txtBasePicklistID").val();
 
-		OpenHR.modalExpressionSelect("PICKLIST", tableID, currentID, function (id, name) {
+		OpenHR.modalExpressionSelect("PICKLIST", tableID, currentID, function (id, name, access) {
 			$("#txtBasePicklistID").val(id);
 			$("#txtBasePicklist").val(name);
+			setViewAccess('PICKLIST', $("#BaseViewAccess"), access, $("#BaseTableID option:selected").text());
 		});
 
 	}

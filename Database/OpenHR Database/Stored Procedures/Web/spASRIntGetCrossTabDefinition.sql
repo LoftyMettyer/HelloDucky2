@@ -158,8 +158,8 @@ BEGIN
 		, @pfOutputSave AS [SaveToFile], @piOutputSaveExisting AS [SaveExisting]
 		, @pfOutputEmail AS [SendToEmail], @piOutputEmailAddr AS [EmailGroupID], @psOutputEmailName AS [EmailGroupName]
 		, @psOutputEmailSubject AS [EmailSubject], @psOutputEmailAttachAs AS [EmailAttachmentName]
-		, @psOutputFilename AS [FileName], @piTimestamp AS [Timestamp];
-
+		, @psOutputFilename AS [FileName], @piTimestamp AS [Timestamp],
+		CASE WHEN @pfPicklistHidden = 1 OR @pfFilterHidden = 1 THEN 'HD' ELSE '' END AS [BaseViewAccess];
 
 END
 

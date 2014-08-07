@@ -1,4 +1,4 @@
-CREATE PROCEDURE [dbo].[sp_ASRIntSaveCustomReport] (
+CREATE PROCEDURE [dbo].[spASRIntSaveCustomReport] (
 	@psName						varchar(255),
 	@psDescription				varchar(MAX),
 	@piBaseTableID				integer,

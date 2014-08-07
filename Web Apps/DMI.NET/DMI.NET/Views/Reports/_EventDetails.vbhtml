@@ -20,6 +20,7 @@
 	</div>
 
 	<div class="stretchyfill">
+		<input type="hidden" id="CalendarEventsViewAccess" />
 		<table id="CalendarEvents"></table>
 	</div>
 
@@ -49,7 +50,7 @@
 			colNames: ['ID', 'EventKey', 'ReportID', 'ReportType',
 					'Name', 'TableID', 'Table', 'FilterID', 'EventEndType', 'EventStartDateID', 'EventStartSessionID', 'EventEndDateID', 'EventEndSessionID', 'EventDurationID',
 					'LegendType', 'LegendCharacter', 'LegendLookupTableID', 'LegendLookupColumnID', 'LegendLookupCodeID', 'LegendEventColumnID',
-					'EventDesc1ColumnID', 'EventDesc2ColumnID', 'FilterHidden', 'Filter',
+					'EventDesc1ColumnID', 'EventDesc2ColumnID', 'Filter', 'FilterViewAccess',
 					'Start Date', 'Start Session', 'End Date', 'End Session', 'Duration', 'Key',
 					'Description 1', 'Description 2'
 			],
@@ -76,8 +77,8 @@
 				{ name: 'LegendEventColumnID', index: 'LegendEventColumnID', sorttype: 'int', hidden: true },
 				{ name: 'EventDesc1ColumnID', index: 'EventDesc1ColumnID', sorttype: 'int', hidden: true },
 				{ name: 'EventDesc2ColumnID', index: 'EventDesc2ColumnID', sorttype: 'int', hidden: true },
-				{ name: 'FilterHidden', index: 'FilterHidden', sorttype: 'text', hidden: true },
-				{ name: 'FilterName', index: 'FilterName', sorttype: 'text'},
+				{ name: 'FilterName', index: 'FilterName', sorttype: 'text' },
+				{ name: 'FilterViewAccess', index: 'FilterViewAccess', hidden: true },
 				{ name: 'EventStartDateName', index: 'EventStartDateName', sorttype: 'text' },
 				{ name: 'EventStartSessionName', index: 'EventStartSessionName', sorttype: 'text' },
 				{ name: 'EventEndDateName', index: 'EventEndDateName', sorttype: 'text'},
