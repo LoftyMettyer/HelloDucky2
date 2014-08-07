@@ -887,7 +887,7 @@
 														<td height="10" colspan="3">
 																<table width="100%" class="invisible">
 																		<tr>
-																				<td width="40">Table:
+																				<td style="width: 44px;">Table :
 																				</td>
 																				<td width="10">&nbsp;
 																				</td>
