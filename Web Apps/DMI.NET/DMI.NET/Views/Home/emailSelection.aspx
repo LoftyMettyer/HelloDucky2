@@ -6,73 +6,75 @@
 <%@ Import Namespace="System.Data" %>
 
 <script runat="server">
-    Private Function GetEmailSelection() As String
-        Dim emailSelectionHtmlTable As New StringBuilder 'Used to construct the (temporary) HTML table that will be transformed into a jQuery grid table
-        Dim objSession As SessionInfo = CType(Session("SessionContext"), SessionInfo)   'Set session info
-        Dim objDataAccess As New clsDataAccess(objSession.LoginInfo) 'Instantiate DataAccess class
+	Private Function GetEmailSelection() As String
+		Dim emailSelectionHtmlTable As New StringBuilder 'Used to construct the (temporary) HTML table that will be transformed into a jQuery grid table
+		Dim objSession As SessionInfo = CType(Session("SessionContext"), SessionInfo)		'Set session info
+		Dim objDataAccess As New clsDataAccess(objSession.LoginInfo) 'Instantiate DataAccess class
 		
-        'Get the records.
-        Dim rstDefSelRecords As DataTable = objDataAccess.GetDataTable("spASRIntGetEmailGroups", CommandType.StoredProcedure)
+		'Get the records.
+		Dim rstDefSelRecords As DataTable = objDataAccess.GetDataTable("spASRIntGetRecordSelection", CommandType.StoredProcedure _
+			, New SqlParameter("@psType", SqlDbType.VarChar, 255) With {.Value = "EMAIL"} _
+			, New SqlParameter("@piTableID", SqlDbType.Int) With {.Value = 0})
 
-        'Create an HTML table
-        With emailSelectionHtmlTable
-            .Append("<table id=""EmailSelectionTable"">")
-            .Append("<tr>")
-            .Append("<th id=""EmailGroupIDHeader"">EmailGroupID</th>")
-            .Append("<th id=""NameHeader"">Name</th>")
-            .Append("<th id=""FullNameHeader"">FullName</th>")
-            .Append("</tr>")
-        End With
+		'Create an HTML table
+		With emailSelectionHtmlTable
+			.Append("<table id=""EmailSelectionTable"">")
+			.Append("<tr>")
+			.Append("<th id=""EmailGroupIDHeader"">EmailGroupID</th>")
+			.Append("<th id=""NameHeader"">Name</th>")
+			.Append("<th id=""FullNameHeader"">FullName</th>")
+			.Append("</tr>")
+		End With
 
         'Populate the table
-        Dim i As Integer = 1
-        For Each r As DataRow In rstDefSelRecords.Rows
-            With emailSelectionHtmlTable
-                .Append("<tr>")
-                .Append("<td id='Row" & i & "'>" & r("emailGroupID").ToString & "</td>")
-                .Append("<td>" & r("name").ToString.Replace("_", " ").Replace("""", "&quot;") & "</td>")
-                'Loop around and add on fullemailaddresses to the grid
-                If r("emailGroupID") < 1 Then
-                Else
-                    Try
-                        Dim rstEmailAddr = objDataAccess.GetDataTable("spASRIntGetEmailGroupAddresses", CommandType.StoredProcedure _
-                        , New SqlParameter("EmailGroupID", SqlDbType.Int) With {.Value = r("emailGroupID")})
-                        Dim x As Integer = 1
-                        If Not rstEmailAddr Is Nothing Then
-                            If rstEmailAddr.Rows.Count < 2 Then
-                                For Each objRow In rstEmailAddr.Rows
-                                    If x > 0 Then
-                                        .Append("<td>" & objRow(0).ToString.Replace("_", " ").Replace("""", "&quot;") & "</td>")
-                                    End If
-                                    x += 1
-                                Next
-                            Else
-                                'Append two email addresses
-                                Dim buildMultipleEmailString As String = ""
-                                For Each objRow In rstEmailAddr.Rows
-                                    If buildMultipleEmailString.Length > 0 Then buildMultipleEmailString = buildMultipleEmailString + ";"
-                                    buildMultipleEmailString = buildMultipleEmailString + objRow(0).ToString.Replace("_", " ").Replace("""", "&quot;")
-                                    x += 1
-                                Next
-                                If x > 0 Then
-                                    .Append("<td>" & buildMultipleEmailString.ToString.Replace("_", " ").Replace("""", "&quot;") & "</td>")
-                                End If
-                            End If
-                        End If
+		Dim i As Integer = 1
+		For Each r As DataRow In rstDefSelRecords.Rows
+			With emailSelectionHtmlTable
+				.Append("<tr>")
+				.Append("<td id='Row" & i & "'>" & r("ID").ToString & "</td>")
+				.Append("<td>" & r("name").ToString.Replace("_", " ").Replace("""", "&quot;") & "</td>")
+				'Loop around and add on fullemailaddresses to the grid
+				If r("ID") < 1 Then
+				Else
+					Try
+						Dim rstEmailAddr = objDataAccess.GetDataTable("spASRIntGetEmailGroupAddresses", CommandType.StoredProcedure _
+						, New SqlParameter("EmailGroupID", SqlDbType.Int) With {.Value = r("ID")})
+						Dim x As Integer = 1
+						If Not rstEmailAddr Is Nothing Then
+							If rstEmailAddr.Rows.Count < 2 Then
+								For Each objRow In rstEmailAddr.Rows
+									If x > 0 Then
+										.Append("<td>" & objRow(0).ToString.Replace("_", " ").Replace("""", "&quot;") & "</td>")
+									End If
+									x += 1
+								Next
+							Else
+								'Append two email addresses
+								Dim buildMultipleEmailString As String = ""
+								For Each objRow In rstEmailAddr.Rows
+									If buildMultipleEmailString.Length > 0 Then buildMultipleEmailString = buildMultipleEmailString + ";"
+									buildMultipleEmailString = buildMultipleEmailString + objRow(0).ToString.Replace("_", " ").Replace("""", "&quot;")
+									x += 1
+								Next
+								If x > 0 Then
+									.Append("<td>" & buildMultipleEmailString.ToString.Replace("_", " ").Replace("""", "&quot;") & "</td>")
+								End If
+							End If
+						End If
                             
-                    Catch ex As Exception
-                        Dim sErrorDescription = "Error getting the email addresses for group." & vbCrLf & FormatError(ex.Message)
-                    End Try
-                End If
-                .Append("</tr>")
-                i += 1
-            End With
-        Next
+					Catch ex As Exception
+						Dim sErrorDescription = "Error getting the email addresses for group." & vbCrLf & FormatError(ex.Message)
+					End Try
+				End If
+				.Append("</tr>")
+				i += 1
+			End With
+		Next
 
-        emailSelectionHtmlTable.Append("</table>")
+		emailSelectionHtmlTable.Append("</table>")
 
-        Return emailSelectionHtmlTable.ToString
-    End Function
+		Return emailSelectionHtmlTable.ToString
+	End Function
 </script>
 
 <!DOCTYPE html>
