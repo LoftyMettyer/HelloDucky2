@@ -21,7 +21,6 @@ Namespace Controllers
 			objReportRepository = New ReportRepository
 		End Sub
 
-		' TODO (code beautification) - Replace with some kind of dependency injection (structuremap maybe?)
 		Protected Overrides Sub Initialize(requestContext As RequestContext)
 			MyBase.Initialize(requestContext)
 
@@ -324,7 +323,7 @@ Namespace Controllers
 			Dim objReport = objReportRepository.RetrieveCalendarReport(objModel.ReportID)
 			Dim original = objReport.Events.Where(Function(m) m.EventKey = objModel.EventKey).FirstOrDefault
 
-			If Not original Is Nothing Then
+			If original IsNot Nothing Then
 				objReport.Events.Remove(original)
 			End If
 
@@ -360,7 +359,7 @@ Namespace Controllers
 			Dim objReport = objReportRepository.RetrieveCalendarReport(objModel.ReportID)
 			Dim original = objReport.Events.Where(Function(m) m.EventKey = objModel.EventKey).FirstOrDefault
 
-			If Not original Is Nothing Then
+			If original IsNot Nothing Then
 				objReport.Events.Remove(original)
 			End If
 
@@ -431,7 +430,7 @@ Namespace Controllers
 
 			Dim original = objReport.SortOrders.Where(Function(m) m.ID = objModel.ID).FirstOrDefault
 
-			If Not original Is Nothing Then
+			If original IsNot Nothing Then
 				objReport.SortOrders.Remove(original)
 			End If
 
@@ -447,7 +446,7 @@ Namespace Controllers
 
 			Dim original = objReport.SortOrders.Where(Function(m) m.ID = objModel.ID).FirstOrDefault
 
-			If Not original Is Nothing Then
+			If original IsNot Nothing Then
 				objReport.SortOrders.Remove(original)
 			End If
 

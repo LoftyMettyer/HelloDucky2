@@ -64,6 +64,8 @@ Namespace Models
 
 		Public Property AvailableColumns As New List(Of ReportColumnItem)
 
+		Public Overrides Property SortOrdersString As String
+
 		Public Property Output As New ReportOutputModel
 
 		Public Overrides Sub SetBaseTable(TableID As Integer)

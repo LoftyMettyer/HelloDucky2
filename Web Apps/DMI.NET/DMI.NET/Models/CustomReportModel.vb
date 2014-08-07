@@ -3,6 +3,7 @@ Option Strict On
 
 Imports System.Collections.ObjectModel
 Imports System.ComponentModel
+Imports System.ComponentModel.DataAnnotations
 Imports HR.Intranet.Server.Metadata
 Imports DMI.NET.Classes
 Imports HR.Intranet.Server.Enums
@@ -18,6 +19,9 @@ Namespace Models
 				Return UtilityType.utlCustomReport
 			End Get
 		End Property
+
+		<MinLength(3, ErrorMessage:="You must select at least one column for your report.")> _
+		Public Overrides Property ColumnsAsString As String
 
 		Public Property ChildTables As New List(Of ChildTableViewModel)
 		Public Property ChildTablesString As String

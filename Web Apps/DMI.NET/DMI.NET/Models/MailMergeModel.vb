@@ -2,12 +2,11 @@
 Option Strict On
 
 Imports System.Collections.ObjectModel
-Imports DMI.NET.AttributeExtensions
+Imports DMI.NET.Code.Attributes
 Imports DMI.NET.Classes
 Imports System.ComponentModel
 Imports System.ComponentModel.DataAnnotations
 Imports HR.Intranet.Server.Enums
-Imports System.Data.SqlClient
 
 Namespace Models
 
@@ -19,6 +18,9 @@ Namespace Models
 				Return UtilityType.utlMailMerge
 			End Get
 		End Property
+
+		<MinLength(3, ErrorMessage:="You must select at least one column for your report.")> _
+		Public Overrides Property ColumnsAsString As String
 
 		<DisplayName("Template"), DisplayFormat(ConvertEmptyStringToNull:=False)>
 		Public Property TemplateFileName As String

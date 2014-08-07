@@ -179,9 +179,9 @@
     <Compile Include="App_Start\BundleConfig.vb" />
     <Compile Include="App_Start\DataAnnotationConfig.vb" />
     <Compile Include="App_Start\RouteConfig.vb" />
-    <Compile Include="AttributeExtensions\ExcludeCharAttribute.vb" />
-    <Compile Include="AttributeExtensions\NonZeroIfAttribute.vb" />
-    <Compile Include="AttributeExtensions\RequiredIfAttribute.vb" />
+    <Compile Include="Code\Attributes\ExcludeCharAttribute.vb" />
+    <Compile Include="Code\Attributes\NonZeroIfAttribute.vb" />
+    <Compile Include="Code\Attributes\RequiredIfAttribute.vb" />
     <Compile Include="Classes\ColumnFilter.vb" />
     <Compile Include="Classes\ExpressionSelection.vb" />
     <Compile Include="Classes\ReportDependencies.vb" />

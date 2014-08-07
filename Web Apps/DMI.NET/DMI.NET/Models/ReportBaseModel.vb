@@ -1,11 +1,11 @@
 ﻿Option Explicit On
 Option Strict On
 
+Imports DMI.NET.Code.Attributes
 Imports DMI.NET.Classes
 Imports System.Collections.ObjectModel
 Imports System.ComponentModel
 Imports System.ComponentModel.DataAnnotations
-Imports DMI.NET.AttributeExtensions
 Imports HR.Intranet.Server
 Imports DMI.NET.ViewModels.Reports
 
@@ -49,16 +49,15 @@ Namespace Models
 		Public Property FilterName As String
 		Public Property PicklistName As String
 
-
 		<DisplayName("Display Title In Report Header")>
 		Public Property DisplayTitleInReportHeader As Boolean
 
 		Public Property Columns As New List(Of ReportColumnItem) Implements IReport.Columns
-		Public Property ColumnsAsString As String
-
+		Public Overridable Property ColumnsAsString As String
 		Public Property SortOrders As New Collection(Of SortOrderViewModel) Implements IReport.SortOrders
 
-		Public Property SortOrdersString As String
+		<MinLength(3, ErrorMessage:="You must select at least one column to order the report by.")> _
+		Public Overridable Property SortOrdersString As String
 
 		Public Property JobsToHide As New Collection(Of Integer)
 

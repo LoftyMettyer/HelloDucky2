@@ -1,9 +1,9 @@
 ﻿Option Strict On
 Option Explicit On
 
+Imports DMI.NET.Code.Attributes
 Imports HR.Intranet.Server.Enums
 Imports System.ComponentModel.DataAnnotations
-Imports DMI.NET.AttributeExtensions
 Imports System.ComponentModel
 
 Namespace Models

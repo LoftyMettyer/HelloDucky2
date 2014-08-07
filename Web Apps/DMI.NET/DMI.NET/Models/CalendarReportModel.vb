@@ -3,10 +3,10 @@ Option Strict On
 
 Imports System.Collections.ObjectModel
 Imports System.ComponentModel.DataAnnotations
+Imports DMI.NET.Code.Attributes
 Imports DMI.NET.Classes
 Imports HR.Intranet.Server.Enums
 Imports System.ComponentModel
-Imports DMI.NET.AttributeExtensions
 Imports DMI.NET.ViewModels.Reports
 
 Namespace Models

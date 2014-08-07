@@ -1,6 +1,9 @@
-﻿Imports System.ComponentModel.DataAnnotations
+﻿Option Strict On
+Option Explicit On
 
-Namespace AttributeExtensions
+Imports System.ComponentModel.DataAnnotations
+
+Namespace Code.Attributes
 
 	Public Class RequiredIfAttribute
 		Inherits RequiredAttribute

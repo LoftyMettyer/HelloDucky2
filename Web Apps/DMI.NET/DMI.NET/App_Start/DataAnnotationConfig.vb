@@ -1,7 +1,7 @@
 ﻿Option Strict On
 Option Explicit On
 
-Imports DMI.NET.AttributeExtensions
+Imports DMI.NET.Code.Attributes
 
 Namespace App_Start
 

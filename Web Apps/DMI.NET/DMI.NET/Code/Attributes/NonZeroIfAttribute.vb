@@ -1,6 +1,9 @@
-﻿Imports System.ComponentModel.DataAnnotations
+﻿Option Strict On
+Option Explicit On
 
-Namespace AttributeExtensions
+Imports System.ComponentModel.DataAnnotations
+
+Namespace Code.Attributes
 
 	Public Class NonZeroIfAttribute
 		Inherits ValidationAttribute
@@ -18,7 +21,7 @@ Namespace AttributeExtensions
 			Dim type As Type = instance.[GetType]()
 			Dim proprtyvalue As [Object] = type.GetProperty(PropertyName).GetValue(instance, Nothing)
 			If proprtyvalue.ToString() = DesiredValue.ToString() Then
-				If value < 1 Then
+				If CInt(value) < 1 Then
 					Return New ValidationResult(String.Format(ErrorMessageString, context.DisplayName))
 				End If
 			End If

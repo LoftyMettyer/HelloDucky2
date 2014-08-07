@@ -3,7 +3,7 @@ Option Explicit On
 
 Imports System.ComponentModel.DataAnnotations
 
-Namespace AttributeExtensions
+Namespace Code.Attributes
 
 	Public Class ExcludeChar
 		Inherits ValidationAttribute
@@ -19,8 +19,8 @@ Namespace AttributeExtensions
 				For i As Integer = 0 To _chars.Length - 1
 					Dim valueAsString = value.ToString()
 					If valueAsString.Contains(_chars(i)) Then
-						Dim errorMessage = FormatErrorMessage(validationContext.DisplayName)
-						Return New ValidationResult(errorMessage)
+						Dim thisErrorMessage = FormatErrorMessage(validationContext.DisplayName)
+						Return New ValidationResult(thisErrorMessage)
 					End If
 				Next
 			End If
