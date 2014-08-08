@@ -1,5 +1,4 @@
 Imports System.Reflection
-Imports System.Runtime.CompilerServices
 Imports System.Runtime.InteropServices
 
 ' General Information about an assembly is controlled through the following
@@ -14,7 +13,7 @@ Imports System.Runtime.InteropServices
 <Assembly: AssemblyDescription("")>
 <Assembly: AssemblyCompany("Advanced Business Software and Solutions Limited")>
 <Assembly: AssemblyProduct("HR.Intranet.Server")> 
-<Assembly: AssemblyCopyright("Copyright Advanced Business Software and Solutions Limited 2000-2011")>
+<Assembly: AssemblyCopyright("Copyright Advanced Business Software and Solutions Limited 2000-2014")> 
 <Assembly: AssemblyTrademark("")>
 <Assembly: AssemblyCulture("")>
 
@@ -28,8 +27,5 @@ Imports System.Runtime.InteropServices
 ' You can specify all the values or you can default the Build and Revision Numbers
 ' by using the '*' as shown below:
 
-<Assembly:  AssemblyVersion("1.0.*")>
-
-
-
+<Assembly: AssemblyVersion("8.1.0")> 
 <Assembly: ComVisibleAttribute(False)> 
