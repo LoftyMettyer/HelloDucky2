@@ -141,6 +141,8 @@
 			processing: true
 		};
 		
+
+		//Now select the previous remaining row...
 		var firstSelectedRowNumber = 1;
 		try {
 			//get first row and calculate previous row ID so we can select it after removal
@@ -153,7 +155,7 @@
 		grid.jqGrid('delGridRow', grid.jqGrid('getGridParam', 'selarrrow'), myDelOptions);
 
 		$("#dData").click(); //To remove the "delete confirmation" dialog		
-		tbMoveSpecific(firstSelectedRowNumber - 1); //deduct one to select previous row.
+		tbMoveSpecificOrFirst(firstSelectedRowNumber - 1); //deduct one to select previous row.
 		tbrefreshControls();
 	}
 
@@ -200,12 +202,16 @@
 		menu_refreshMenu();
 	}
 
-	function tbMoveSpecific(rowNumber) {
+	function tbMoveSpecificOrFirst(rowNumber) {
+		
 		if ($("#ssOleDBGridFindRecords").getGridParam("reccount") > 0) {
 			var specificRowID = $("#ssOleDBGridFindRecords").getDataIDs()[0];	//default to top row.
 
+			//Get previous row by number, or first if selected row is at the top.
+			rowNumber = (rowNumber <= 0 ? 0 : rowNumber - 1);
+
 			try {
-				specificRowID = $("#ssOleDBGridFindRecords").getDataIDs()[rowNumber - 1]; // array is zero based
+				specificRowID = $("#ssOleDBGridFindRecords").getDataIDs()[rowNumber];
 			} catch (e) { }
 			finally {
 				$('#ssOleDBGridFindRecords').jqGrid('resetSelection');
