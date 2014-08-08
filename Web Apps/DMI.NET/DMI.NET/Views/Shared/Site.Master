@@ -64,6 +64,11 @@
 
 		document.title = 'OpenHR 8.1';
 	
+		//Force all dialogs to have no close button by default.
+		$.extend($.ui.dialog.prototype.options, {
+			dialogClass: 'no-close'
+		});
+
 		$(document).ready(function () {
 
 			OpenHR.setDatepickerLanguage();
