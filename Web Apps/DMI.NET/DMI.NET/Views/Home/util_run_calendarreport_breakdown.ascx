@@ -4,6 +4,7 @@
 	
 	$(document).ready(function () {
 		$("#CalendarEvent").dialog('option', 'title', "Calendar Breakdown");
+		$("#CalendarEvent").dialog("option", "height", 340);
 	});
 		
 		
