@@ -111,12 +111,12 @@
 
 		},
 
-		modalExpressionSelect = function (type, tableId, currentID, followOnFunctionName) {
+		modalExpressionSelect = function (type, tableId, currentID, followOnFunctionName, screenwidth, screenheight) {
 
 			var frame = $("#divExpressionSelection");
+			var capitalizedText = capitalizeMe(type);
 
 			$("#ExpressionsAvailable").jqGrid('GridUnload');
-
 			$("#ExpressionsAvailable").jqGrid({
 				url: 'Reports/GetExpressionsForTable?TableID=' + tableId + '&&selectionType=' + type,
 				datatype: 'json',
@@ -136,8 +136,8 @@
 					{ name: 'Description', index: 'Description', hidden: true },
 					{ name: 'Access', index: 'Access', hidden: true }],
 				viewrecords: true,
-				width: 600,
-				height: 400,
+				width: screenwidth,
+				height: screenheight,
 				sortname: 'Name',
 				sortorder: "desc",
 				rowNum: 10000,
@@ -153,7 +153,6 @@
 						var gridData = $("#ExpressionsAvailable").getRowData(rowid);
 						followOnFunctionName(gridData.ID, gridData.Name, gridData.Access);
 						frame.dialog("close");
-
 					});
 
 					$("#ExpressionSelectCancel").click(function () {
@@ -165,16 +164,17 @@
 						frame.dialog("close");
 					});
 
-					
-
+					$("#ExpressionSelection_PageTitle").text(capitalizedText);
 				}
-
 			});
 
 			//$frame.html(html);
 			frame.show();
 			frame.dialog("open");
 
+			function capitalizeMe(val) {
+				return val.charAt(0).toUpperCase() + val.substr(1).toLowerCase();
+			}
 
 			//jQuery styling
 			$(function () {

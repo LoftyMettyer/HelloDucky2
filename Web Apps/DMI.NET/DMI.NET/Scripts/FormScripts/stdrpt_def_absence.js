@@ -56,14 +56,11 @@ function formatAbsenceClick(index) {
 }
 
 function selectAbsenceEmailGroup() {
-
 	var currentID = $("#txtAbsenceEmailGroupID").val();
-
-	OpenHR.modalExpressionSelect("EMAIL", 0, currentID, function (id, name) {
+		OpenHR.modalExpressionSelect("EMAIL", 0, currentID, function (id, name) {
 		$("#txtAbsenceEmailGroupID").val(id);
 		$("#txtAbsenceEmailGroup").val(name);
-	});
-
+	}, 400, 400);
 }
 
 function validateNumeric(pobjNumericControl)
@@ -371,7 +368,7 @@ function selectAbsencePicklist() {
 	OpenHR.modalExpressionSelect("PICKLIST", tableID, currentID, function (id, name) {
 		$("#txtBasePicklistID").val(id);
 		$("#txtBasePicklist").val(name);
-	});
+},400,400);
 
 }
 
@@ -383,7 +380,7 @@ function selectAbsenceFilter() {
 	OpenHR.modalExpressionSelect("FILTER", tableID, currentID, function (id, name) {
 		$("#txtBaseFilterID").val(id);
 		$("#txtBaseFilter").val(name);
-	});
+},400,400);
 
 }
 

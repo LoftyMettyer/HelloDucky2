@@ -6,6 +6,10 @@
 	Html.BeginForm("PostSortOrder", "Reports", FormMethod.Post, New With {.id = "frmPostSortOrder"})
 End Code
 
+<div class="pageTitleDiv" style="margin-bottom: 15px">
+	<span class="pageTitle" id="PopupReportDefinition_PageTitle">Sort Order</span>
+</div>
+
 	@Html.HiddenFor(Function(m) m.ID, New With {.id = "SortOrderID"})
 	@Html.HiddenFor(Function(m) m.ReportID)
 	@Html.HiddenFor(Function(m) m.ReportType)
@@ -44,11 +48,10 @@ End Code
 		@Html.LabelFor(Function(m) m.SuppressRepeated)
 	</div>
 
-<br />
-<br />
-
-<input type="button" value="OK" onclick="postThisSortOrder();" />
-<input type="button" value="Cancel" onclick="closeThisSortOrder();" />
+<div id="divSortOrderButtons">
+	<input type="button" value="OK" onclick="postThisSortOrder();" />
+	<input type="button" value="Cancel" onclick="closeThisSortOrder();" />
+</div>
 
 @Code
 	Html.EndForm()

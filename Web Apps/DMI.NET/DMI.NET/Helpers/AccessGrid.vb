@@ -10,10 +10,10 @@ Imports DMI.NET.Classes
 Namespace Helpers
 
 	<HideModuleName()>
-	Public Module MVCExtensions
+ Public Module MVCExtensions
 
 		<Extension()> _
-		Public Function AccessGrid(helper As HtmlHelper, name As String, items As IList(Of GroupAccess), attributes As IDictionary(Of String, Object)) As MvcHtmlString
+		 Public Function AccessGrid(helper As HtmlHelper, name As String, items As IList(Of GroupAccess), attributes As IDictionary(Of String, Object)) As MvcHtmlString
 			If items Is Nothing OrElse items.Count = 0 OrElse String.IsNullOrEmpty(name) Then
 				Return MvcHtmlString.Empty
 			End If
@@ -67,7 +67,7 @@ Namespace Helpers
 
 			Else
 				sb.AppendFormat("<td width=80px><select class='reportViewAccessGroup' style='width:120px' name='{0}.Access'><option {1} value='RW'>Read / Write</option><option {2} value='RO'>Read Only</option><option {3} value='HD'>Hidden</option></select></td>" _
-												, sName, IIf(iSelected = 0, strSelected, ""), IIf(iSelected = 1, strSelected, ""), IIf(iSelected = 2, strSelected, ""))
+					, sName, IIf(iSelected = 0, strSelected, ""), IIf(iSelected = 1, strSelected, ""), IIf(iSelected = 2, strSelected, ""))
 			End If
 
 

@@ -1210,3 +1210,33 @@ input[type=button].Embedded, input[type=button].Linked {
 	margin-bottom: 10px;
 
 }
+
+.stretchyfixedbuttoncolumn {
+	min-width: 110px;
+	width:120px;
+	vertical-align: top;
+}
+
+.stretchyfixedbuttoncolumn .ui-button {
+	width: 110px;
+	margin-bottom: 10px;
+}
+#SortOrders {
+	/*margin-left:10px;*/
+}
+
+#txtChildRecords {
+	width:100px;
+}
+
+#ChildTableID {
+	width:100%;
+}
+
+.absolutefullchildren {
+	left: 0px ;
+	right: 0;
+	bottom: 40px;
+	padding-right: 20px;
+	padding-left: 20px;
+}

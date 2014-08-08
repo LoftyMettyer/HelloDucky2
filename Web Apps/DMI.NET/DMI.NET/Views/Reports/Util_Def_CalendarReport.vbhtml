@@ -27,7 +27,7 @@ End Code
 		End Code
 
 		<fieldset class="width100">
-			<legend class="fontsmalltitle">Report Options:</legend>
+			<legend class="fontsmalltitle">Report Options :</legend>
 
 			@Html.LabelFor(Function(m) m.Description1ID)
 			@Html.ColumnDropdownFor(Function(m) m.Description1ID, New ColumnFilter() With {.TableID = Model.BaseTableID, .AddNone = True}, Nothing)

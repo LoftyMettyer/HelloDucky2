@@ -89,23 +89,25 @@
 			height: 550,
 			width: 800
 		});
-
+		
 		$('#divPopupReportDefinition').dialog({
 			overflow: false,
 			autoOpen: false,
-			width: 660,
-			height: 590,
-			resizable: true,
-			modal: true
+			width: '400px',
+			height: 'auto',
+			resizable: false,
+			modal: true,
+			title: 'OpenHR Web'
 		});
 
 		$('#divExpressionSelection').dialog({
 			overflow: false,
 			autoOpen: false,
-			width: 660,
-			height: 590,
+			width: 'auto',
+			height: 'auto',
 			resizable: true,
-			modal: true
+			modal: true,
+			title: 'OpenHR Web'
 		});
 
 		//load menu for dmi, or linksmain for ssi

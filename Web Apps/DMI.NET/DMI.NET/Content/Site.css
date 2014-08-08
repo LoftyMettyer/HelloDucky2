@@ -54,20 +54,6 @@ section {
 /* Styles for basic forms
 -----------------------------------------------------------*/
 
-fieldset 
-{
-		/*border:1px solid #ddd;
-		padding:0 1.4em 1.4em 1.4em;
-		margin:0 0 1.5em 0;*/
-}
-
-/*I made a bigger css section below for legend items this is too widerangind and makes things huge*/
-/*legend 
-{
-		font-size:1.2em;
-		font-weight: bold;
-}*/
-
 textarea 
 {
 	resize: none;
@@ -335,11 +321,6 @@ select.readonly {
 	padding-top: 50px;
 }
 
-	#report_definition_tab_columns #columnbuttons button {
-		/*width: 200px;*/
-		margin-bottom:10px;
-	}
-
 #colbtngrp1, #colbtngrp2, #colbtngrp3 {
 	margin-bottom:30px;
 	width: 110px;
@@ -384,7 +365,8 @@ select.readonly {
 
 
 #report_definition_tab_order #sortorderbuttons input[type=button] {
-	width: 120px;
+	width: 110px;
+	margin-bottom: 10px;
 }
 
 #tabs-2 #sortorderbuttons input[type=button] {
@@ -398,13 +380,17 @@ select.readonly {
 .display-label_emails {
 	width: 30%;
 	float: left;
+	/*margin-left:20px;*/
 }
 
 .display-textbox-emails {
 	width: 69%;
 	float: left;
+	margin-bottom:4px;
 }
-
+#fieldsetsubjectemail {
+	/*margin-left:20px;*/
+}
 
 .display-label_crosstabs {
 	width: 20%;
@@ -415,6 +401,11 @@ select.readonly {
 	width: 60%;
 	float: left;
 }
+
+#fieldsetsendemail {
+	padding-bottom:0px;
+}
+
 
 .CrosstabIntersectionCheckBoxesWidth {
 	width: 20%;
@@ -438,7 +429,7 @@ select.readonly {
 }
 
 #EmailAttachmentName {
-	width: 100%;
+	/*width: 100%;*/
 }
 
 #customreportschildtableheight {
@@ -447,6 +438,10 @@ select.readonly {
 
 .DataManagerOnly {
 	color: #ff0000;	
+}
+
+#PrinterName {
+	width:100%;
 }
 
 .accesspermissionsgrid {
@@ -470,10 +465,31 @@ select.readonly {
 #tabs .ui-widget-content {
 	/*border:none;*/
 }
-#cmdBasePicklist, #cmdBaseFilter, #cmdParent1Picklist, #cmdParent1Filter, #cmdParent2Picklist, #cmdParent2Filter  {
+#cmdBasePicklist, #cmdBaseFilter, #cmdParent1Picklist, #cmdParent1Filter, #cmdParent2Picklist, #cmdParent2Filter, #cmdEmailGroup  {
 	float:left;
 	padding:2px 12px;
 	/*margin-bottom:2px;*/
+}
+
+#divPopupReportDefinition #cmdBaseFilter {
+		float:right;
+}
+
+#divPopupReportDefinition #txtChildTableID {
+	width:65%;
+	float:right;
+}
+
+#divPopupReportDefinition #TableID, 
+#divPopupReportDefinition #FilterName,
+#divPopupReportDefinition #OrderName,
+#divPopupReportDefinition #Records {
+	float:left;
+	width:30%;
+}
+
+#cmdEmailGroup {
+	padding-bottom:0px;
 }
 
 #cmdParent1Picklist, #cmdParent2Picklist {
@@ -530,4 +546,41 @@ select.readonly {
 #gbox_SelectedColumns {
 	margin-left:10px;
 	margin-top:13px;
+}
+
+#outputtabfilenametextbox {
+	margin-top:10px;
+	margin-left:30%;
+}
+
+
+#divExpressionSelectionButtons, #divSortOrderButtons {
+float:right;
+margin:15px 0 5px 0;
+}
+
+#divPopupReportDefinition #divChildTablesButtons {
+	float:right;
+	margin:10px 0px 5px 0;
+}
+.spacemeabit {
+	margin-bottom:45px;
+}
+
+#ReportChildTableMainDiv #cmdBaseFilter, 
+#ReportChildTableMainDiv #cmdBasePicklist {
+	float:right;
+	/*margin:10px 0px 0px 0px;*/
+}
+
+#ReportChildTableRecordsDiv, 
+#ReportChildTableOrderDiv, 
+#ReportChildTableFilterDiv, 
+#ReportChildTableDropdownDiv {
+	height:30px;;
+}
+
+#ReportChildTableFilterDiv #txtChildFilter, 
+#ReportChildTableOrderDiv #txtFieldRecOrder {
+	width:85%;
 }

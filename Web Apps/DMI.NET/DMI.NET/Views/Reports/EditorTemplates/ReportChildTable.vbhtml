@@ -2,37 +2,80 @@
 @Imports DMI.NET.Helpers
 @Inherits System.Web.Mvc.WebViewPage(Of ChildTableViewModel)
 
-<fieldset>
-	@Using (Html.BeginForm("PostChildTable", "Reports", FormMethod.Post, New With {.id = "frmPostChildTable"}))
+@code
+	Html.BeginForm("PostChildTable", "Reports", FormMethod.Post, New With {.id = "frmPostChildTable"})
+End Code
 
- 		@Html.HiddenFor(Function(m) m.ReportID)
- 		@Html.HiddenFor(Function(m) m.FilterViewAccess)	 
+<div class="pageTitleDiv" style="margin-bottom: 15px">
+	<span class="pageTitle" id="PopupReportDefinition_PageTitle">Child Tables</span>
+</div>
 
-	 	@Html.LabelFor(Function(m) m.TableID) 
+<div class="width100">
+	<div id="ReportChildTableMainDiv">
+		<div id="ReportChildTableDropdownDiv" class="clearboth">
+			<div class="floatleft width20">
+				@Html.HiddenFor(Function(m) m.ReportID)
+				@Html.HiddenFor(Function(m) m.FilterViewAccess)	 
+				@Html.LabelFor(Function(m) m.TableID, New With {.class = ""})
+			</div>
+			<div class="width80 floatleft">
 	 	@Html.TableDropdown("TableID", "ChildTableID", Model.TableID, Model.AvailableTables, "changeChildTable();")
+			</div>
+		</div>
 	 
-		@<br/>
+		<div id="ReportChildTableFilterDiv" class="clearboth" style="">
+			<div class="width20 floatleft">
 		@Html.HiddenFor(Function(m) m.FilterID, New With {.id = "txtChildFilterID"})
 		@Html.LabelFor(Function(m) m.FilterName)
+			</div>
+			<div class="floatleft width80">
 		@Html.TextBoxFor(Function(m) m.FilterName, New With {.id = "txtChildFilter", .readonly = "true"})
 		@Html.EllipseButton("cmdBaseFilter", "selectChildTableFilter()", True)
-		@<br />
+			</div>
+		</div>
+
+		<div id="ReportChildTableOrderDiv" class="clearboth">
+			<div class="width20 floatleft">
 		@Html.LabelFor(Function(m) m.OrderName)
 		@Html.HiddenFor(Function(m) m.OrderID, New With {.id = "txtChildFieldOrderID"})
+			</div>
+			<div class="floatleft width80">
 		@Html.TextBoxFor(Function(m) m.OrderName, New With {.id = "txtFieldRecOrder", .readonly = "true"})
-		@Html.EllipseButton("cmdBaseFilter", "selectRecordOrder()", True)
-		@<br />
+				@Html.EllipseButton("cmdBasePicklist", "selectRecordOrder()", True)
+			</div>
+		</div>
+
+		<div id="ReportChildTableRecordsDiv" class="clearboth">
+			<div class="width20 floatleft">
 		@Html.LabelFor(Function(m) m.Records)
+			</div>
+			<div class="floatleft">
 		@Html.TextBoxFor(Function(m) m.Records, New With {.id = "txtChildRecords"})
-		@<br />
-		@<input type="button" value="OK" onclick="postThisChildTable();" />
-		@<input type="button" value="Cancel" onclick="closeThisChildTable();" />
+			</div>
+		</div>
+	</div>
 
+	<div id="divChildTablesButtons" class="clearboth">
+		<input type="button" value="OK" onclick="postThisChildTable();" />
+		<input type="button" value="Cancel" onclick="closeThisChildTable();" />
+	</div>
+</div>
 		
-	End Using 
-</fieldset>
 
+@Code
+	Html.EndForm()
+End Code
 <script>
+
+
+	$(function () {
+
+		//some styling
+		//$("#ChildTableID").width("100%");
+		$('div').css("padding-right", "3");
+		//$('div').css("border", "0");
+
+	})
 
 	function changeChildTable() {
 		$("#txtChildFilterID").val(0);
@@ -51,7 +94,7 @@
 			$("#txtChildFilterID").val(id);
 			$("#txtChildFilter").val(name);
 			$("#FilterViewAccess").val(access);
-		});
+				}, 400, 200);
 
 	}
 
@@ -63,8 +106,7 @@
 		OpenHR.modalExpressionSelect("ORDER", tableID, currentID, function (id, name, access) {
 			$("#txtChildFieldOrderID").val(id);
 			$("#txtFieldRecOrder").val(name);
-		});
-
+		}, 400, 200);
 	}
 
 	function closeThisChildTable() {
@@ -102,7 +144,5 @@
 
 			$("#divPopupReportDefinition").dialog("close");
 			$("#divPopupReportDefinition").empty();
-
 		}
-
 </script>

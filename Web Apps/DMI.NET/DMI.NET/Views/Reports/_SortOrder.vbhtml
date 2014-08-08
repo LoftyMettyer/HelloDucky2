@@ -6,13 +6,15 @@
 
 @Html.HiddenFor(Function(m) m.SortOrdersString, New With {.id = "txtSOAAS"})
 
-<fieldset>
-	<legend class="fontsmalltitle">Sort Order :</legend>
-	<fieldset class="floatleft">
-		<table id="SortOrders"></table>
-	</fieldset>
 
-	<fieldset id="columnbuttons" class="">
+	<fieldset style="">
+	<legend class="fontsmalltitle">Sort Order :</legend>
+
+	<div style="float:left" class="">		
+			<table id="SortOrders"></table>		
+	</div>
+
+	<div class="stretchyfixedbuttoncolumn " id="sortorderbuttons" style="float:left">
 		<div id="colbtngrp1">
 			<input type="button" id="btnSortOrderAdd" value="Add" disabled onclick="addSortOrder();" />
 			<input type="button" id="btnSortOrderEdit" value="Edit" disabled onclick="editSortSorder(0);" />
@@ -25,20 +27,16 @@
 			<input type="button" id="btnSortOrderMoveUp" value="Move Up" disabled onclick="moveSelectedOrder('up')" />
 			<input type="button" id="btnSortOrderMoveDown" value="Move Down" disabled onclick="moveSelectedOrder('down')" />
 		</div>
-	</fieldset>
+	</div>
 </fieldset>
+
+
+
 	<script type="text/javascript">
 
 	$(function () {
 		attachGrid();
-
-		$("#SortOrders").jqGrid().css('overflow-y', 'hidden');
-		//}
-
-		//if ($("#SortOrders").jqGrid().width() < $("#PickListGrid").width()) {
-		//	$("#SortOrders").parent().parent().addClass('jqgridHideHorScroll');
-		//}
-
+		//$("#SortOrders").jqGrid().css('overflow-y', 'hidden');
 	})
 
 	function attachGrid() {
@@ -85,7 +83,7 @@
 									}
 			],
 			viewrecords: true,
-			width: '100%',
+			width: 200,
 			height: '400px',
 			sortname: 'Sequence',
 			sortorder: "asc",			

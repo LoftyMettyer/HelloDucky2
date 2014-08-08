@@ -118,14 +118,15 @@
 	</fieldset>
 	</fieldset>
 
-<br/>
+	<br />
 
+<div class="absolutefullchildtables">
 <fieldset class="relatedtables width100">
 	<legend class="fontsmalltitle">Child Tables :</legend>
 
 	<div class="stretchyfill">
 		<input type="hidden" id="ChildTablesViewAccess" />
-		<table id="ChildTables"></table>
+			<table id="ChildTables"></table>
 	</div>
 
 	<div class="stretchyfixed">
@@ -138,7 +139,7 @@
 		<input type="button" id="btnChildRemoveAll" value="Remove All" disabled onclick="removeAllChildTables();" />				
 	</div>
 </fieldset>
-
+</div>
 
 
 <script type="text/javascript">
@@ -152,7 +153,7 @@
 			$("#txtParent1PicklistID").val(id);
 			$("#txtParent1Picklist").val(name);
 			setViewAccess('PICKLIST', $("#Parent1ViewAccess"), access);
-		});
+		}, 400, 400);
 
 	}
 
@@ -165,7 +166,7 @@
 			$("#txtParent2PicklistID").val(id);
 			$("#txtParent2Picklist").val(name);
 			setViewAccess('PICKLIST', $("#Parent1ViewAccess"), access);
-		});
+		}, 400, 400);
 
 	}
 
@@ -178,7 +179,7 @@
 			$("#txtParent1FilterID").val(id);
 			$("#txtParent1Filter").val(name);
 			setViewAccess('FILTER', $("#Parent1ViewAccess"), access);
-		});
+		}, 400, 400);
 
 	}
 
@@ -191,7 +192,7 @@
 			$("#txtParent2FilterID").val(id);
 			$("#txtParent2Filter").val(name);
 			setViewAccess('FILTER', $("#Parent2ViewAccess"), access);
-		});
+		}, 400, 400);
 
 	}
 
@@ -218,7 +219,7 @@
 		$('#ChildTables').jqGrid('delRowData', rowID)
 		loadAvailableTablesForReport();
 	}
-	
+
 	$(function () {
 
 		jQuery("#ChildTables").jqGrid({
@@ -245,7 +246,7 @@
 				{ name: 'TableName', index: 'TableName', width: 100 },
 				{ name: 'FilterName', index: 'FilterName', width: 100 },
 				{ name: 'OrderName', index: 'OrderName', width: 100 },
-				{ name: 'Records', index: 'Records', width: 100 }
+			{ name: 'Records', index: 'Records', width: 100 }
 			],
 			rowNum: 10,
 			autowidth: true,
@@ -287,5 +288,5 @@
 
 	});
 
-	
+
 </script>

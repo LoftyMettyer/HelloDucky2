@@ -5,7 +5,6 @@
 
 @Html.HiddenFor(Function(m) m.EventsString, New With {.id = "txtCEAAS"})
 
-
 <fieldset class="relatedtables">
 	<legend>Calendar Events :</legend>
 

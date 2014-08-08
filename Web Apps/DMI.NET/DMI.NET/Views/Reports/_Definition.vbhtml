@@ -108,7 +108,7 @@
 
 	$(function () {
 
-		 $('fieldset').css("border", "0");		
+		 $('fieldset').css("border", "0");
 		$("#frmReportDefintion :input").on("change", function () { enableSaveButton(this); });
 		getBaseTableList();
 		refreshViewAccess();
@@ -212,7 +212,7 @@
 	}
 
 	function setViewAccess(type, accessControl, newAccess, tableName) {
-	
+
 		var bResetGroupsToHidden = false;
 		var displayType;
 
@@ -258,7 +258,7 @@
 			$("#txtBaseFilterID").val(id);
 			$("#txtBaseFilter").val(name);
 			setViewAccess('FILTER', $("#BaseViewAccess"), access, $("#BaseTableID option:selected").text());
-		});
+		}, 400, 400);
 
 	}
 
@@ -271,7 +271,7 @@
 			$("#txtBasePicklistID").val(id);
 			$("#txtBasePicklist").val(name);
 			setViewAccess('PICKLIST', $("#BaseViewAccess"), access, $("#BaseTableID option:selected").text());
-		});
+		}, 400, 400);
 
 	}
 

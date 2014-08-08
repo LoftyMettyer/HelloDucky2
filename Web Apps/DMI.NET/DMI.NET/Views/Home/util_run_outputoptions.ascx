@@ -474,7 +474,7 @@
 		OpenHR.modalExpressionSelect("EMAIL", 0, currentID, function (id, name) {
 			$("#txtEmailGroupID").val(id);
 			$("#txtEmailGroup").val(name);
-		});
+		},400,400);
 
 	}
 

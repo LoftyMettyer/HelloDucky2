@@ -347,9 +347,7 @@
 						}
 
 						if (action.toUpperCase().substr(0, 9) == "LINKSMAIN") {
-
 							resizeDashboard();
-
 						}
 					} catch (e) {
 						$("#errorDialogTitle").text(e.toString);
@@ -395,13 +393,9 @@
 					width += $(this).outerWidth(true);
 				});
 				$('.linkspagebuttonbox').css('width', width + 50);
-
 			}
 		}
-
-
 	</script>
-
 
 </head>
 <body class="ui-widget absolutefull">
@@ -431,15 +425,22 @@
 	</div>
 	
 	<div id="CalendarEvent"></div>
+
 	<div id="divPopupReportDefinition"></div>
 
 	<div id="divExpressionSelection" style="display: none;">
-		<table id="ExpressionsAvailable"></table>
-		<input type="button" id="ExpressionSelectOK" value="OK" />
-		<input type="button" id="ExpressionSelectNone" value="None" />
-		<input type="button" id="ExpressionSelectCancel" value="Cancel" />
+		<div class="pageTitleDiv" style="margin-bottom: 15px">
+			<span class="pageTitle" id="ExpressionSelection_PageTitle"></span>
+		</div>
+		<div>
+			<table id="ExpressionsAvailable"></table>
+		</div>
+		<div id="divExpressionSelectionButtons">
+			<input type="button" id="ExpressionSelectOK" value="OK" />
+			<input type="button" id="ExpressionSelectNone" value="None" />
+			<input type="button" id="ExpressionSelectCancel" value="Cancel" />
+		</div>
 	</div>
-
 
 	<div id="dialog-confirm" title="">
 		<p><span class="ui-icon ui-icon-help" style="float: left; margin: 0 7px 20px 0;"></span></p>
@@ -450,7 +451,6 @@
 	<div id="divPollMessage" style="display: block;">
 		<form id="frmPollMessage" action="pollMessage"></form>
 	</div>
-
 
 	<iframe name="submit-iframe" style="display: none;"></iframe>
 
