@@ -14,7 +14,7 @@
 			<table id="SortOrders"></table>		
 	</div>
 
-	<div class="stretchyfixedbuttoncolumn " id="sortorderbuttons" style="float:left">
+	<div class="stretchyfixedbuttoncolumn " id="sortorderbuttons" style="float:left;padding-left:20px">
 		<div id="colbtngrp1">
 			<input type="button" id="btnSortOrderAdd" value="Add" disabled onclick="addSortOrder();" />
 			<input type="button" id="btnSortOrderEdit" value="Edit" disabled onclick="editSortSorder(0);" />

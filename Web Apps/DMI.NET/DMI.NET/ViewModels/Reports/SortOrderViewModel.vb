@@ -26,16 +26,16 @@ Namespace ViewModels.Reports
 
 		Public Property Sequence As Integer
 
-		<DisplayName("Break on Change :")>
+		<DisplayName("Break on Change")>
 		Public Property BreakOnChange As Boolean
 
-		<DisplayName("Page on Change :")>
+		<DisplayName("Page on Change")>
 		Public Property PageOnChange As Boolean
 
-		<DisplayName("Value on Change :")>
+		<DisplayName("Value on Change")>
 		Public Property ValueOnChange As Boolean
 
-		<DisplayName("Suppress Repeated Values :")>
+		<DisplayName("Suppress Repeated Values")>
 		Public Property SuppressRepeated As Boolean
 
 		Public Property AvailableColumns As IEnumerable(Of ReportColumnItem)

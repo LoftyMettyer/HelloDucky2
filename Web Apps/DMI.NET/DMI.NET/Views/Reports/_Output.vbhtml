@@ -8,7 +8,7 @@ End Code
 @Inherits System.Web.Mvc.WebViewPage(Of Models.ReportOutputModel)
 <fieldset>
 
-	<fieldset class="border0 width25 floatleft">
+	<fieldset class="border0 width20 floatleft">
 		<legend class="fontsmalltitle">Output Formats</legend>
 		<fieldset id="outputformats">
 			@Html.RadioButton("Output.Format", 0, Model.Format = OutputFormats.DataOnly, New With {.onchange = "changeOutputType('DataOnly')"})
@@ -44,7 +44,7 @@ End Code
 		</fieldset>
 	</fieldset>
 
-	<fieldset id="outputdestinatonfieldset" class="border0 floatleft">
+	<fieldset id="outputdestinatonfieldset" class="border0 floatleft width70">
 		<legend class="fontsmalltitle">Output Destinations</legend>
 
 		<fieldset class="border0 reportdefpreview">

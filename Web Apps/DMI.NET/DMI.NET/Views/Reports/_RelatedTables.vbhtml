@@ -124,12 +124,13 @@
 <fieldset class="relatedtables width100">
 	<legend class="fontsmalltitle">Child Tables :</legend>
 
-	<div class="stretchyfill">
+	@*<div id="ChildTablesViewAccessdiv" class="stretchyfill">*@
+	<div id="ChildTablesViewAccessdiv" class="width80 floatleft" style="">
 		<input type="hidden" id="ChildTablesViewAccess" />
-			<table id="ChildTables"></table>
+		<table id="ChildTables"></table>
 	</div>
 
-	<div class="stretchyfixed">
+	<div class="stretchyfixed" style="padding-left:15px">
 		<input type="button" id="btnChildAdd" value="Add..." onclick="addChildTable();" />
 			<br />
 		<input type="button" id="btnChildEdit" value="Edit..." disabled onclick="editChildTable(0);" />
@@ -221,6 +222,8 @@
 	}
 
 	$(function () {
+
+		$("#ChildTables").jqGrid('setGridWidth', $("#ChildTablesViewAccessdiv").width() - 50);
 
 		jQuery("#ChildTables").jqGrid({
 			datatype: "jsonstring",

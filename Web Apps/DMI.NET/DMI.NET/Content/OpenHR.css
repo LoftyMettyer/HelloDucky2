@@ -1215,6 +1215,8 @@ input[type=button].Embedded, input[type=button].Linked {
 	min-width: 110px;
 	width:120px;
 	vertical-align: top;
+	float:left;
+	padding-left:20px;
 }
 
 .stretchyfixedbuttoncolumn .ui-button {
