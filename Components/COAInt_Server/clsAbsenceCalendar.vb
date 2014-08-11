@@ -703,7 +703,7 @@ errLoadColourKey:
 		' Build start of table
 		strHTML = strHTML & "<TABLE class='outline' cellPadding=0 cellSpacing=0 width=250>" & vbNewLine
 		strHTML = strHTML & "<TR>" & vbNewLine
-		strHTML = strHTML & "   <TD>"
+		strHTML = strHTML & "   <TD style='width: 50px;'>" & vbNewLine
 
 		bSecondColumn = False
 
@@ -713,7 +713,7 @@ errLoadColourKey:
 			If intCounter >= 10 And Not bSecondColumn Then
 				bSecondColumn = True
 				strHTML = strHTML & "   </TD>" & vbNewLine
-				strHTML = strHTML & "   <TD>" & vbNewLine
+				strHTML = strHTML & "   <TD style='width: 50px;'>" & vbNewLine
 			End If
 
 			' Set the colour box caption and show the label
