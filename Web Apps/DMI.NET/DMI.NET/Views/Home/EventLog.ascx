@@ -72,7 +72,7 @@
 		if (fOK == true) {
 			// Get menu to refresh the menu.
 			menu_refreshMenu();
-			
+
 		}
 
 		frmLog.txtELDeletePermission.value = menu_GetItemValue("txtSysPerm_EVENTLOG_DELETE");
@@ -82,7 +82,7 @@
 		// Buttons are enabled/disabled in EventLog_refreshButtons();
 
 		// Visible buttons and tabs set in menu.js
-		
+
 		$("#toolbarAdminConfig").parent().show();
 		$("#toolbarAdminConfig").click();
 
@@ -106,16 +106,16 @@
 	}
 
 	function refreshStatusBar() {
-		
+
 		var sRecords;
 		var sCaption;
 		var frmData = OpenHR.getForm("dataframe", "frmData");
 
 		sRecords = frmData.txtELTotalRecordCount.value;
-		
+
 		var iStartPosition = parseInt(frmData.txtELFirstRecPos.value);
 		var iEndPosition = iStartPosition - 1 + parseInt(frmData.txtELCurrentRecCount.value);
-		
+
 		if (sRecords > 0) {
 			sCaption = "Record(s): " + sRecords;
 		}
@@ -126,14 +126,14 @@
 		if (frmLog.txtELViewAllPermission.value == 0) {
 			sCaption = sCaption + "     [Viewing own entries only]";
 		}
-		
+
 		//TODO: We don't have a record position indicator yet on the ribbon for this form
-		
+
 		menu_SetmnutoolEventLogRecordPositionCaption(sCaption);
 		//Enable/disable navigation controls based on certain conditions
-		
+
 		var elFindRecords = Number('<%:Session("findRecords")%>');
-		
+
 		if (elFindRecords <= Number(sRecords)) {
 			if (iStartPosition == 1) { //Disable first and previous
 				menu_toolbarEnableItem("mnutoolFirstEventLogFind", false);
@@ -176,7 +176,7 @@
 		var dataCollection = frmUtilDefForm.elements;
 
 		var frmLog = OpenHR.getForm("workframe", "frmLog");
-		
+
 		//Clear the log table
 		$("#LogEvents").jqGrid('GridUnload');
 
@@ -199,6 +199,7 @@
 			colNames: colNames,
 			datatype: 'local',
 			data: colData,
+			width: 'auto',
 			colModel: [
 				{ name: 'ID', hidden: true },
 				{ name: 'Start Time' },
@@ -275,7 +276,7 @@
 		});
 
 		$("#LogEvents").jqGrid('setGridHeight', $("#gridContainer").height());
-
+		$("#LogEvents").jqGrid('setGridWidth', $("#gridContainer").width());
 		//menu_toolbarEnableItem("mnutoolViewEventLogFind", false);
 		//menu_toolbarEnableItem("mnutoolPurgeEventLogFind", false);
 		//menu_toolbarEnableItem("mnutoolEmailEventLogFind", false);
@@ -448,7 +449,7 @@
 		var selectedRows = $("#LogEvents").jqGrid('getGridParam', 'selarrrow');
 
 		//populate the txtSelectedIDs list
-		for (var i = 0; i <= selectedRows.length-1; i++) {
+		for (var i = 0; i <= selectedRows.length - 1; i++) {
 			var rowData = $("#LogEvents").getRowData(selectedRows[i]);
 			eventID = rowData["ID"];
 			sEventList = sEventList + eventID + ",";
@@ -541,315 +542,263 @@
 
 </script>
 
+<div class="absolutefull">
+	<div class="pageTitleDiv" style="margin-bottom: 15px; margin-top: 10px">
+		<span class="pageTitle" id="EventLog_PageTitle">Event Log</span>
+	</div>
 
-<form id="frmLog">
-	<table align="center" cellpadding="5" cellspacing="0" width="100%" height="100%">
-		<tr>
-			<tr>
-				<table width="100%" height="100%" class="invisible" cellspacing="0" cellpadding="0">
-					<tr height="5">
-						<td colspan="3"></td>
-					</tr>
+	<fieldset style="border:0">
+		<legend class="fontsmalltitle">Filter :</legend>
+		<form id="frmLog">
 
-					<tr>
-						<td width="5"></td>
-						<td>
-							<table width="100%" height="100%" cellspacing="0" cellpadding="5">
-								<tr valign="top">
-									<td>
-										<table height="100%" width="100%" class="invisible" cellspacing="0" cellpadding="4">
-											<tr height="10">
-												<td colspan="8">Filters : 
-												</td>
-											</tr>
-											<tr height="10">
-												<td width="82">User name: 
-												</td>
-												<td>
-													<select id="cboUsername" name="cboUsername" class="combo" style="WIDTH: 100%" onchange="refreshGrid();">
-													</select>
-												</td>
-												<td width="25">Type:</td>
-												<td>
-													<select id="cboType" name="cboType" class="combo" style="WIDTH: 100%" onchange="refreshGrid();">
+			<table style="height: 100%; width: 100%; padding: 0 10px 10px 0" class="invisible">
+				<tr height="10">
+					<td width="82">User name: 
+					</td>
+					<td>
+						<select id="cboUsername" name="cboUsername" class="combo" style="width: 100%" onchange="refreshGrid();">
+						</select>
+					</td>
+					<td width="25">Type:</td>
+					<td>
+						<select id="cboType" name="cboType" class="combo" style="width: 100%" onchange="refreshGrid();">
+							<%
+								If Session("CurrentType") = "-1" Then
+									Response.Write("											<option value=-1 selected>&lt;All&gt;" & vbCrLf)
+								Else
+									Response.Write("											<option value=-1>&lt;All&gt;" & vbCrLf)
+								End If
+	
+								If Session("CurrentType") = "17" Then
+									Response.Write("											<option value=17 selected>Calendar Report" & vbCrLf)
+								Else
+									Response.Write("											<option value=17>Calendar Report" & vbCrLf)
+								End If
 
-														<%
-															If Session("CurrentType") = "-1" Then
-																Response.Write("											<option value=-1 selected>&lt;All&gt;" & vbCrLf)
-															Else
-																Response.Write("											<option value=-1>&lt;All&gt;" & vbCrLf)
-															End If
-	
-															If Session("CurrentType") = "17" Then
-																Response.Write("											<option value=17 selected>Calendar Report" & vbCrLf)
-															Else
-																Response.Write("											<option value=17>Calendar Report" & vbCrLf)
-															End If
+								If Session("CurrentType") = "22" Then
+									Response.Write("											<option value=22 selected>Career Progression" & vbCrLf)
+								Else
+									Response.Write("											<option value=22>Career Progression" & vbCrLf)
+								End If
 
-															If Session("CurrentType") = "22" Then
-																Response.Write("											<option value=22 selected>Career Progression" & vbCrLf)
-															Else
-																Response.Write("											<option value=22>Career Progression" & vbCrLf)
-															End If
+								If Session("CurrentType") = "1" Then
+									Response.Write("											<option value=1 selected>Cross Tab" & vbCrLf)
+								Else
+									Response.Write("											<option value=1>Cross Tab" & vbCrLf)
+								End If
+	
+								If Session("CurrentType") = "2" Then
+									Response.Write("											<option value=2 selected>Custom Report" & vbCrLf)
+								Else
+									Response.Write("											<option value=2>Custom Report" & vbCrLf)
+								End If
+	
+								If Session("CurrentType") = "3" Then
+									Response.Write("											<option value=3 selected>Data Transfer" & vbCrLf)
+								Else
+									Response.Write("											<option value=3>Data Transfer" & vbCrLf)
+								End If
+	
+								If Session("CurrentType") = "11" Then
+									Response.Write("											<option value=11 selected>Diary Rebuild" & vbCrLf)
+								Else
+									Response.Write("											<option value=11>Diary Rebuild" & vbCrLf)
+								End If
+	
+								If Session("CurrentType") = "12" Then
+									Response.Write("											<option value=12 selected>Email Rebuild" & vbCrLf)
+								Else
+									Response.Write("											<option value=12>Email Rebuild" & vbCrLf)
+								End If
 
-															If Session("CurrentType") = "1" Then
-																Response.Write("											<option value=1 selected>Cross Tab" & vbCrLf)
-															Else
-																Response.Write("											<option value=1>Cross Tab" & vbCrLf)
-															End If
+								If Session("CurrentType") = "18" Then
+									Response.Write("											<option value=18 selected>Envelopes & Labels" & vbCrLf)
+								Else
+									Response.Write("											<option value=18>Envelopes & Labels" & vbCrLf)
+								End If
 	
-															If Session("CurrentType") = "2" Then
-																Response.Write("											<option value=2 selected>Custom Report" & vbCrLf)
-															Else
-																Response.Write("											<option value=2>Custom Report" & vbCrLf)
-															End If
+								If Session("CurrentType") = "4" Then
+									Response.Write("											<option value=4 selected>Export" & vbCrLf)
+								Else
+									Response.Write("											<option value=4>Export" & vbCrLf)
+								End If
 	
-															If Session("CurrentType") = "3" Then
-																Response.Write("											<option value=3 selected>Data Transfer" & vbCrLf)
-															Else
-																Response.Write("											<option value=3>Data Transfer" & vbCrLf)
-															End If
+								If Session("CurrentType") = "5" Then
+									Response.Write("											<option value=5 selected>Global Add" & vbCrLf)
+								Else
+									Response.Write("											<option value=5>Global Add" & vbCrLf)
+								End If
 	
-															If Session("CurrentType") = "11" Then
-																Response.Write("											<option value=11 selected>Diary Rebuild" & vbCrLf)
-															Else
-																Response.Write("											<option value=11>Diary Rebuild" & vbCrLf)
-															End If
+								If Session("CurrentType") = "6" Then
+									Response.Write("											<option value=6 selected>Global Delete" & vbCrLf)
+								Else
+									Response.Write("											<option value=6>Global Delete" & vbCrLf)
+								End If
 	
-															If Session("CurrentType") = "12" Then
-																Response.Write("											<option value=12 selected>Email Rebuild" & vbCrLf)
-															Else
-																Response.Write("											<option value=12>Email Rebuild" & vbCrLf)
-															End If
+								If Session("CurrentType") = "7" Then
+									Response.Write("											<option value=7 selected>Global Update" & vbCrLf)
+								Else
+									Response.Write("											<option value=7>Global Update" & vbCrLf)
+								End If
+	
+								If Session("CurrentType") = "8" Then
+									Response.Write("											<option value=8 selected>Import" & vbCrLf)
+								Else
+									Response.Write("											<option value=8>Import" & vbCrLf)
+								End If
 
-															If Session("CurrentType") = "18" Then
-																Response.Write("											<option value=18 selected>Envelopes & Labels" & vbCrLf)
-															Else
-																Response.Write("											<option value=18>Envelopes & Labels" & vbCrLf)
-															End If
+								'if Session("CurrentType") = "19" then
+								'	Response.Write "											<option value=19 selected>Label Definition" & vbCrLf
+								'else
+								'	Response.Write "											<option value=19>Label Definition" & vbCrLf
+								'end if
 	
-															If Session("CurrentType") = "4" Then
-																Response.Write("											<option value=4 selected>Export" & vbCrLf)
-															Else
-																Response.Write("											<option value=4>Export" & vbCrLf)
-															End If
-	
-															If Session("CurrentType") = "5" Then
-																Response.Write("											<option value=5 selected>Global Add" & vbCrLf)
-															Else
-																Response.Write("											<option value=5>Global Add" & vbCrLf)
-															End If
-	
-															If Session("CurrentType") = "6" Then
-																Response.Write("											<option value=6 selected>Global Delete" & vbCrLf)
-															Else
-																Response.Write("											<option value=6>Global Delete" & vbCrLf)
-															End If
-	
-															If Session("CurrentType") = "7" Then
-																Response.Write("											<option value=7 selected>Global Update" & vbCrLf)
-															Else
-																Response.Write("											<option value=7>Global Update" & vbCrLf)
-															End If
-	
-															If Session("CurrentType") = "8" Then
-																Response.Write("											<option value=8 selected>Import" & vbCrLf)
-															Else
-																Response.Write("											<option value=8>Import" & vbCrLf)
-															End If
+								If Session("CurrentType") = "9" Then
+									Response.Write("											<option value=9 selected>Mail Merge" & vbCrLf)
+								Else
+									Response.Write("											<option value=9>Mail Merge" & vbCrLf)
+								End If
 
-															'if Session("CurrentType") = "19" then
-															'	Response.Write "											<option value=19 selected>Label Definition" & vbCrLf
-															'else
-															'	Response.Write "											<option value=19>Label Definition" & vbCrLf
-															'end if
+								If Session("CurrentType") = "16" Then
+									Response.Write("											<option value=16 selected>Match Report" & vbCrLf)
+								Else
+									Response.Write("											<option value=16>Match Report" & vbCrLf)
+								End If
 	
-															If Session("CurrentType") = "9" Then
-																Response.Write("											<option value=9 selected>Mail Merge" & vbCrLf)
-															Else
-																Response.Write("											<option value=9>Mail Merge" & vbCrLf)
-															End If
+								If Session("CurrentType") = "20" Then
+									Response.Write("											<option value=20 selected>Record Profile" & vbCrLf)
+								Else
+									Response.Write("											<option value=20>Record Profile" & vbCrLf)
+								End If
 
-															If Session("CurrentType") = "16" Then
-																Response.Write("											<option value=16 selected>Match Report" & vbCrLf)
-															Else
-																Response.Write("											<option value=16>Match Report" & vbCrLf)
-															End If
-	
-															If Session("CurrentType") = "20" Then
-																Response.Write("											<option value=20 selected>Record Profile" & vbCrLf)
-															Else
-																Response.Write("											<option value=20>Record Profile" & vbCrLf)
-															End If
+								If Session("CurrentType") = "13" Then
+									Response.Write("											<option value=13 selected>Standard Report" & vbCrLf)
+								Else
+									Response.Write("											<option value=13>Standard Report" & vbCrLf)
+								End If
 
-															If Session("CurrentType") = "13" Then
-																Response.Write("											<option value=13 selected>Standard Report" & vbCrLf)
-															Else
-																Response.Write("											<option value=13>Standard Report" & vbCrLf)
-															End If
+								If Session("CurrentType") = "21" Then
+									Response.Write("											<option value=21 selected>Succession Planning" & vbCrLf)
+								Else
+									Response.Write("											<option value=21>Succession Planning" & vbCrLf)
+								End If
 
-															If Session("CurrentType") = "21" Then
-																Response.Write("											<option value=21 selected>Succession Planning" & vbCrLf)
-															Else
-																Response.Write("											<option value=21>Succession Planning" & vbCrLf)
-															End If
+								If Session("CurrentType") = "15" Then
+									Response.Write("											<option value=15 selected>System Error" & vbCrLf)
+								Else
+									Response.Write("											<option value=15>System Error" & vbCrLf)
+								End If
 
-															If Session("CurrentType") = "15" Then
-																Response.Write("											<option value=15 selected>System Error" & vbCrLf)
-															Else
-																Response.Write("											<option value=15>System Error" & vbCrLf)
-															End If
-
-															If Session("WF_Enabled") Then
-																If Session("CurrentType") = "25" Then
-																	Response.Write("											<option value=25 selected>Workflow Rebuild" & vbCrLf)
-																Else
-																	Response.Write("											<option value=25>Workflow Rebuild" & vbCrLf)
-																End If
-															End If
+								If Session("WF_Enabled") Then
+									If Session("CurrentType") = "25" Then
+										Response.Write("											<option value=25 selected>Workflow Rebuild" & vbCrLf)
+									Else
+										Response.Write("											<option value=25>Workflow Rebuild" & vbCrLf)
+									End If
+								End If
 		
-														%>
-													</select>
-												</td>
-												<td width="25">Mode: 
-												</td>
-												<td>
-													<select id="cboMode" name="cboMode" class="combo" style="WIDTH: 100%" onchange="refreshGrid();">
-														<%
-															If Session("CurrentMode") = "-1" Then
-																Response.Write("											<option value=-1 selected>&lt;All&gt;" & vbCrLf)
-															Else
-																Response.Write("											<option value=-1>&lt;All&gt;" & vbCrLf)
-															End If
+							%>
+						</select>
+					</td>
+					<td width="25">Mode: 
+					</td>
+					<td>
+						<select id="cboMode" name="cboMode" class="combo" style="width: 100%" onchange="refreshGrid();">
+							<%
+								If Session("CurrentMode") = "-1" Then
+									Response.Write("											<option value=-1 selected>&lt;All&gt;" & vbCrLf)
+								Else
+									Response.Write("											<option value=-1>&lt;All&gt;" & vbCrLf)
+								End If
 	
-															If Session("CurrentMode") = "1" Then
-																Response.Write("											<option value=1 selected>Batch" & vbCrLf)
-															Else
-																Response.Write("											<option value=1>Batch" & vbCrLf)
-															End If
+								If Session("CurrentMode") = "1" Then
+									Response.Write("											<option value=1 selected>Batch" & vbCrLf)
+								Else
+									Response.Write("											<option value=1>Batch" & vbCrLf)
+								End If
 	
-															If Session("CurrentMode") = "0" Then
-																Response.Write("											<option value=0 selected>Manual" & vbCrLf)
-															Else
-																Response.Write("											<option value=0>Manual" & vbCrLf)
-															End If
-														%>
-													</select>
-												</td>
-												<td width="25">Status: 
-												</td>
-												<td>
-													<select id="cboStatus" name="cboStatus" class="combo" style="width: 100%" onchange="refreshGrid();">
-														<%	
-															If Session("CurrentStatus") = "-1" Then
-																Response.Write("											<option value=-1 selected>&lt;All&gt;" & vbCrLf)
-															Else
-																Response.Write("											<option value=-1>&lt;All&gt;" & vbCrLf)
-															End If
+								If Session("CurrentMode") = "0" Then
+									Response.Write("											<option value=0 selected>Manual" & vbCrLf)
+								Else
+									Response.Write("											<option value=0>Manual" & vbCrLf)
+								End If
+							%>
+						</select>
+					</td>
+					<td width="25">Status: 
+					</td>
+					<td>
+						<select id="cboStatus" name="cboStatus" class="combo" style="width: 100%" onchange="refreshGrid();">
+							<%	
+								If Session("CurrentStatus") = "-1" Then
+									Response.Write("											<option value=-1 selected>&lt;All&gt;" & vbCrLf)
+								Else
+									Response.Write("											<option value=-1>&lt;All&gt;" & vbCrLf)
+								End If
 		
-															If Session("CurrentStatus") = "1" Then
-																Response.Write("											<option value=1 selected>Cancelled" & vbCrLf)
-															Else
-																Response.Write("											<option value=1>Cancelled" & vbCrLf)
-															End If
+								If Session("CurrentStatus") = "1" Then
+									Response.Write("											<option value=1 selected>Cancelled" & vbCrLf)
+								Else
+									Response.Write("											<option value=1>Cancelled" & vbCrLf)
+								End If
 	
-															If Session("CurrentStatus") = "5" Then
-																Response.Write("											<option value=5 selected>Error" & vbCrLf)
-															Else
-																Response.Write("											<option value=5>Error" & vbCrLf)
-															End If
+								If Session("CurrentStatus") = "5" Then
+									Response.Write("											<option value=5 selected>Error" & vbCrLf)
+								Else
+									Response.Write("											<option value=5>Error" & vbCrLf)
+								End If
 	
-															If Session("CurrentStatus") = "2" Then
-																Response.Write("											<option value=2 selected>Failed" & vbCrLf)
-															Else
-																Response.Write("											<option value=2>Failed" & vbCrLf)
-															End If
+								If Session("CurrentStatus") = "2" Then
+									Response.Write("											<option value=2 selected>Failed" & vbCrLf)
+								Else
+									Response.Write("											<option value=2>Failed" & vbCrLf)
+								End If
 	
-															If Session("CurrentStatus") = "0" Then
-																Response.Write("											<option value=0 selected>Pending" & vbCrLf)
-															Else
-																Response.Write("											<option value=0>Pending" & vbCrLf)
-															End If
+								If Session("CurrentStatus") = "0" Then
+									Response.Write("											<option value=0 selected>Pending" & vbCrLf)
+								Else
+									Response.Write("											<option value=0>Pending" & vbCrLf)
+								End If
 	
-															If Session("CurrentStatus") = "4" Then
-																Response.Write("											<option value=4 selected>Skipped" & vbCrLf)
-															Else
-																Response.Write("											<option value=4>Skipped" & vbCrLf)
-															End If
+								If Session("CurrentStatus") = "4" Then
+									Response.Write("											<option value=4 selected>Skipped" & vbCrLf)
+								Else
+									Response.Write("											<option value=4>Skipped" & vbCrLf)
+								End If
 	
-															If Session("CurrentStatus") = "3" Then
-																Response.Write("											<option value=3 selected>Successful" & vbCrLf)
-															Else
-																Response.Write("											<option value=3>Successful" & vbCrLf)
-															End If
-														%>
-													</select>
-												</td>
-											</tr>
-										</table>
-									</td>
-									<td width="80">
-										<table width="100%" class="invisible" cellspacing="0" cellpadding="2">
-											<tr height="30">
-												<td></td>
-											</tr>
-											<tr>
-												<td width="10">
-													<input id="cmdView" class="btn" type="button" value="View..." name="cmdView" style="WIDTH: 80px" width="80">
-												</td>
-											</tr>
-											<tr height="10">
-												<td></td>
-											</tr>
-											<tr>
-												<td width="10">
-													<input id="cmdDelete" class="btn" type="button" value="Delete..." name="cmdDelete" style="WIDTH: 80px" width="80">
-												</td>
-											</tr>
-											<tr height="10">
-												<td></td>
-											</tr>
-											<tr>
-												<td width="10">
-													<input id="cmdPurge" class="btn" type="button" value="Purge..." name="cmdPurge" style="WIDTH: 80px" width="80">
-												</td>
-											</tr>
-											<tr height="10">
-												<td></td>
-											</tr>
-											<tr>
-												<td width="10">
-													<input id="cmdEmail" class="button" type="button" value="Email..." name="cmdEmail" style="WIDTH: 80px" width="80">
-												</td>
-											</tr>
-										</table>
-									</td>
-								</tr>
+								If Session("CurrentStatus") = "3" Then
+									Response.Write("											<option value=3 selected>Successful" & vbCrLf)
+								Else
+									Response.Write("											<option value=3>Successful" & vbCrLf)
+								End If
+							%>
+						</select>
+					</td>
+				</tr>
+			</table>
 
-							</table>
-						</td>
-						<td width="5"></td>
-					</tr>
-	</table>
-	</tr> 
-</table>
+			<input id="cmdView" class="btn" type="button" value="View..." name="cmdView">
+			<input id="cmdDelete" class="btn" type="button" value="Delete..." name="cmdDelete">
+			<input id="cmdPurge" class="btn" type="button" value="Purge..." name="cmdPurge">
+			<input id="cmdEmail" class="button" type="button" value="Email..." name="cmdEmail">
 
-		<input type='hidden' id="txtELDeletePermission" name="txtELDeletePermission">
-	<input type='hidden' id="txtELViewAllPermission" name="txtELViewAllPermission">
-	<input type='hidden' id="txtELPurgePermission" name="txtELPurgePermission">
-	<input type='hidden' id="txtELEmailPermission" name="txtELEmailPermission">
-	<input type='hidden' id="txtELOrderColumn" name="txtELOrderColumn" value='DateTime'>
-	<input type='hidden' id="txtELOrderOrder" name="txtELOrderOrder" value='DESC'>
-	<input type='hidden' id="txtELSortColumnIndex" name="txtELSortColumnIndex" value="1">
-	<input type='hidden' id="txtELLoaded" name="txtELLoaded" value="0">
-	<input type="hidden" id="txtCurrUserFilter" name="txtCurrUserFilter" value='<%=Session("CurrentUsername")%>'>
-</form>
+			<input type='hidden' id="txtELDeletePermission" name="txtELDeletePermission">
+			<input type='hidden' id="txtELViewAllPermission" name="txtELViewAllPermission">
+			<input type='hidden' id="txtELPurgePermission" name="txtELPurgePermission">
+			<input type='hidden' id="txtELEmailPermission" name="txtELEmailPermission">
+			<input type='hidden' id="txtELOrderColumn" name="txtELOrderColumn" value='DateTime'>
+			<input type='hidden' id="txtELOrderOrder" name="txtELOrderOrder" value='DESC'>
+			<input type='hidden' id="txtELSortColumnIndex" name="txtELSortColumnIndex" value="1">
+			<input type='hidden' id="txtELLoaded" name="txtELLoaded" value="0">
+			<input type="hidden" id="txtCurrUserFilter" name="txtCurrUserFilter" value='<%=Session("CurrentUsername")%>'>
+		</form>
 
-<div id="gridContainer" style="height: 450px">
-	<table id='LogEvents'></table>
-	<div id='pager-coldata'></div>
+		<div id="gridContainer" style="height: 450px">
+			<table id='LogEvents'></table>
+			<div id='pager-coldata'></div>
+		</div>
+	</fieldset>
 </div>
-
 <form action="default_Submit" method="post" id="frmGoto" name="frmGoto">
 	<%Html.RenderPartial("~/Views/Shared/gotoWork.ascx")%>
 </form>
@@ -928,7 +877,7 @@
 		Session("CurrentUsername") = ""
 		Session("CurrentType") = ""
 		Session("CurrentMode") = ""
-		Session("CurrentStatus") = ""		
+		Session("CurrentStatus") = ""
 		
 	%>
 </form>
@@ -938,4 +887,6 @@
 
 <script type="text/javascript">
 	eventLog_window_onload();
+
+	$('table').attr('border', '0');
 </script>
