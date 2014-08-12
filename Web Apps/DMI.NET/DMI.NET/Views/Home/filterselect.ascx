@@ -40,6 +40,9 @@
 		var sReqdControlName;
 		var sControlName;
 
+		//usefull jquery snippets for formatting.
+		$('table').attr('border', '0'); //Change 0 to 1 to show borders.
+
 		$(".datepicker").datepicker();
 		$(document).on('keydown', '.datepicker', function (event) {
 
@@ -944,13 +947,13 @@
 
 		if (piDataType == -7) {
 			// Display the logic operator control.
-			frmFilterForm.txtConditionLogic.style.width = "175px";
+			frmFilterForm.txtConditionLogic.style.width = "100%";
 			frmFilterForm.txtConditionLogic.style.visibility = "";
 			frmFilterForm.txtConditionLogic.style.position = "";
 			frmFilterForm.txtConditionLogic.style.top = "";
 			frmFilterForm.txtConditionLogic.style.left = "";
 
-			frmFilterForm.selectValue.style.width = "175px";
+			frmFilterForm.selectValue.style.width = "25%";
 			frmFilterForm.selectValue.style.visibility = "";
 			frmFilterForm.selectValue.style.position = "";
 			frmFilterForm.selectValue.style.top = "";
@@ -982,7 +985,7 @@
 			frmFilterForm.selectValue.style.top = "0px";
 			frmFilterForm.selectValue.style.left = "0px";
 
-			frmFilterForm.selectDate.style.width = "175px";
+			frmFilterForm.selectDate.style.width = "100%";
 			frmFilterForm.selectDate.style.visibility = "";
 			frmFilterForm.selectDate.style.position = "";
 			frmFilterForm.selectDate.style.top = "";
@@ -1014,7 +1017,7 @@
 			frmFilterForm.selectDate.style.top = 0;
 			frmFilterForm.selectDate.style.left = 0;
 
-			frmFilterForm.txtValue.style.width = "175px";
+			frmFilterForm.txtValue.style.width = "100%";
 			frmFilterForm.txtValue.style.visibility = "";
 			frmFilterForm.txtValue.style.position = "";
 			frmFilterForm.txtValue.style.top = "";
@@ -1023,7 +1026,7 @@
 
 		if ((piDataType == 2) || (piDataType == 4)) {
 			// Display the Numeric/Integer operator control.
-			frmFilterForm.selectConditionNum.style.width = "175px";
+			frmFilterForm.selectConditionNum.style.width = "100%";
 			frmFilterForm.selectConditionNum.style.visibility = "";
 			frmFilterForm.selectConditionNum.style.position = "";
 			frmFilterForm.selectConditionNum.style.top = "";
@@ -1040,7 +1043,7 @@
 
 		if (piDataType == 11) {
 			// Display the Date operator control.
-			frmFilterForm.selectConditionDate.style.width = "175px";
+			frmFilterForm.selectConditionDate.style.width = "100%";
 			frmFilterForm.selectConditionDate.style.visibility = "";
 			frmFilterForm.selectConditionDate.style.position = "";
 			frmFilterForm.selectConditionDate.style.top = "";
@@ -1057,7 +1060,7 @@
 
 		if ((piDataType != -7) && (piDataType != 2) && (piDataType != 4) && (piDataType != 11)) {
 			// Display the Character/Working Pattern operator control.
-			frmFilterForm.selectConditionChar.style.width = "175px";
+			frmFilterForm.selectConditionChar.style.width = "100%";
 			frmFilterForm.selectConditionChar.style.visibility = "";
 			frmFilterForm.selectConditionChar.style.position = "";
 			frmFilterForm.selectConditionChar.style.top = "";
@@ -1193,135 +1196,125 @@
 
 </script>
 
-<div <%=session("BodyTag")%>>
+<div <%=session("BodyTag")%> style="padding: 10px 0px 0px 20px;">
 	<form action="" method="POST" id="frmFilterForm" name="frmFilterForm">
+
+		<div class="pageTitleDiv" style="margin-bottom: 15px">
+			<span class="pageTitle" id="PopupReportDefinition_PageTitle">Define Filter</span>
+		</div>
+
 		<table style="text-align: center; margin: 0px auto; border-spacing: 5px; border-collapse: collapse; width: 100%; height: 100%;" class="outline">
 			<tr>
 				<td>
 					<table id="filterTable" style="width: 100%; height: 100%; border-spacing: 0px; border-collapse: collapse;" class="invisible">
-						<tr>
-							<td style="height: 10%;text-align: left" colspan="3">
-								<span class="pageTitle">Define Filter</span>
-							</td>
-						</tr>
-
-						<tr height="160">
-							<td width="10"></td>
+						<tr style="height: 160px">
+							<td style="width: 10px"></td>
 							<td>
-								<div id="FilterRecordsGrid" style="height: 200px;">
+								<div id="FilterRecordsGrid">
 									<table id="DBGridFilterRecords"></table>
 								</div>
 							</td>
-							<td width="10"></td>
+							<td style="width: 10px"></td>
 						</tr>
 
 						<tr>
-							<td width="10"></td>
-							<td height="10">
+							<td style="width: 10px"></td>
+							<td style="height: 10px">
 								<table class="invisible" style="width: 100%; border-spacing: 5px; border-collapse: collapse;">
-									<tr height="10">
-										<td height="10">&nbsp;
+									<tr style="height: 10px">
+										<td style="height: 10px">&nbsp;
 										</td>
-										<td width="10" height="10">
-											<input id="cmdRemove" name="cmdRemove" type="button" value="Remove" style="width: 100px" class="btn"
+										<td style="width: 10px; height: 10px">
+											<input id="cmdRemove" name="cmdRemove" type="button" value="Remove" style="width: 100px; margin-top: 10px;" class="btn"
 												onclick="FilterSelect_remove()" />
 										</td>
-										<td width="10" height="10"></td>
-										<td width="10" height="10">
-											<input id="cmdRemoveAll" name="cmdRemoveAll" type="button" value="Remove All" style="width: 100px" class="btn"
+										<td style="width: 10px; height: 10px"></td>
+										<td style="width: 10px; height: 10px">
+											<input id="cmdRemoveAll" name="cmdRemoveAll" type="button" value="Remove All" style="width: 100px; margin-top: 10px;" class="btn"
 												onclick="FilterSelect_removeAll()" />
 										</td>
 									</tr>
 								</table>
 							</td>
-							<td width="10"></td>
+							<td style="width: 10px"></td>
 						</tr>
 
-						<tr height="10">
-							<td width="10"></td>
-							<td height="10">
-								<strong>Define more criteria</strong>
+						<tr style="height: 10px">
+							<td style="width: 10px"></td>
+							<td style="height: 10px; text-align: left">
+								<strong>Define more criteria :</strong>
 							</td>
-							<td width="10"></td>
+							<td style="width: 10px"></td>
 						</tr>
 
 						<tr>
-							<td width="10"></td>
-							<td height="10">
-
+							<td style="width: 10px"></td>
+							<td>
 								<table class="invisible" style="width: 100%; border-spacing: 5px; border-collapse: collapse;">
-									<tr>
-										<td width="10" height="10"></td>
-										<td width="175" height="10">Field :
-										</td>
-										<td width="10" height="10"></td>
-										<td width="175" height="10">Operator :
-										</td>
-										<td width="10" height="10"></td>
-										<td width="175">Value :
-										</td>
-										<td colspan="2" height="10"></td>
+									<tr style="">
+										<td style="width: 1%;"></td>
+										<td style="width: 30%; text-align: left">Field :</td>
+										<td style="width: 1%;"></td>
+										<td style="width: 20%; text-align: left">Operator :</td>
+										<td style="width: 1%;"></td>
+										<td style="width: 35%; text-align: left">Value :</td>
+										<td style="width: 1%;"></td>
+										<td style="width: 100%;"></td>
 									</tr>
 
-									<tr>
-										<td height="10" colspan="8"></td>
-									</tr>
-
-									<tr>
-										<td width="10" height="10"></td>
-										<td width="175" height="10">
-											<select id="selectColumn" name="selectColumn" class="combo" style="HEIGHT: 22px; WIDTH: 200px"
-												onchange="refreshOperatorCombo()">
-<%
-	' Populate the columns combo.
-	Dim iCount
-	Dim sErrorDescription = ""
-	Dim dtFilterColumns As DataTable
-	If Len(sErrorDescription) = 0 Then
-		' Get the column records.
-		Try
-			Dim objSession As SessionInfo = CType(HttpContext.Current.Session("SessionContext"), SessionInfo)	'Set session info
-			Dim objDataAccess As New clsDataAccess(objSession.LoginInfo) 'Instantiate DataAccess class
-			Dim psRealSource As New SqlParameter("@psRealSource", SqlDbType.VarChar) With {.Direction = ParameterDirection.Output, .Size = 8000}
-			dtFilterColumns = objDataAccess.GetDataTable("sp_ASRIntGetFilterColumns", _
-															CommandType.StoredProcedure, _
-															New SqlParameter("@plngTableID", SqlDbType.Int) With {.Value = CleanNumeric(Session("optionTableID"))}, _
-															New SqlParameter("@plngViewID ", SqlDbType.Int) With {.Value = CleanNumeric(Session("optionViewID"))}, _
-															psRealSource _
-															)
+									<tr style="">
+										<td></td>
+										<td>
+											<select id="selectColumn" name="selectColumn" class="combo" style="width: 100%" onchange="refreshOperatorCombo()">
+												<%
+													' Populate the columns combo.
+													Dim iCount
+													Dim sErrorDescription = ""
+													Dim dtFilterColumns As DataTable
+													If Len(sErrorDescription) = 0 Then
+														' Get the column records.
+														Try
+															Dim objSession As SessionInfo = CType(HttpContext.Current.Session("SessionContext"), SessionInfo)	'Set session info
+															Dim objDataAccess As New clsDataAccess(objSession.LoginInfo) 'Instantiate DataAccess class
+															Dim psRealSource As New SqlParameter("@psRealSource", SqlDbType.VarChar) With {.Direction = ParameterDirection.Output, .Size = 8000}
+															dtFilterColumns = objDataAccess.GetDataTable("sp_ASRIntGetFilterColumns", _
+																											CommandType.StoredProcedure, _
+																											New SqlParameter("@plngTableID", SqlDbType.Int) With {.Value = CleanNumeric(Session("optionTableID"))}, _
+																											New SqlParameter("@plngViewID ", SqlDbType.Int) With {.Value = CleanNumeric(Session("optionViewID"))}, _
+																											psRealSource _
+																											)
 	
-			iCount = 0
-			For Each dr As DataRow In dtFilterColumns.Rows
-				Response.Write("						<OPTION value=" & dr(0).ToString)
-				If iCount = 0 Then
-					Response.Write(" SELECTED")
-				End If
-				Response.Write(">" & Replace(dr(1).ToString, "_", " ") & "</OPTION>" & vbCrLf)
-				iCount = iCount + 1
-			Next
-%>
-			</select>
-<%
-			Response.Write("<INPUT type='hidden' id=txtRealSource name=txtRealSource value=""" & Replace(Replace(psRealSource.Value, "'", "'''"), """", "&quot;") & """>" & vbCrLf)
+															iCount = 0
+															For Each dr As DataRow In dtFilterColumns.Rows
+																Response.Write("						<OPTION value=" & dr(0).ToString)
+																If iCount = 0 Then
+																	Response.Write(" SELECTED")
+																End If
+																Response.Write(">" & Replace(dr(1).ToString, "_", " ") & "</OPTION>" & vbCrLf)
+																iCount = iCount + 1
+															Next
+												%>
+											</select>
+											<%
+												Response.Write("<INPUT type='hidden' id=txtRealSource name=txtRealSource value=""" & Replace(Replace(psRealSource.Value, "'", "'''"), """", "&quot;") & """>" & vbCrLf)
 			
-			For Each dr As DataRow In dtFilterColumns.Rows
-				Response.Write("					<INPUT type='hidden' id=txtFilterColumn_" & dr(0).ToString & " name=txtFilterColumn_" & dr(0).ToString & " value=" & dr(2).ToString & ">")
-				Response.Write("					<INPUT type='hidden' id=txtFilterColumnSize_" & dr(0).ToString & " name=txtFilterColumnSize_" & dr(0).ToString & " value=" & dr("size").ToString & ">")
-				Response.Write("					<INPUT type='hidden' id=txtFilterColumnDecimals_" & dr(0).ToString & " name=txtFilterColumnDecimals_" & dr(0).ToString & " value=" & dr("decimals").ToString & ">")
-			Next
+												For Each dr As DataRow In dtFilterColumns.Rows
+													Response.Write("					<INPUT type='hidden' id=txtFilterColumn_" & dr(0).ToString & " name=txtFilterColumn_" & dr(0).ToString & " value=" & dr(2).ToString & ">")
+													Response.Write("					<INPUT type='hidden' id=txtFilterColumnSize_" & dr(0).ToString & " name=txtFilterColumnSize_" & dr(0).ToString & " value=" & dr("size").ToString & ">")
+													Response.Write("					<INPUT type='hidden' id=txtFilterColumnDecimals_" & dr(0).ToString & " name=txtFilterColumnDecimals_" & dr(0).ToString & " value=" & dr("decimals").ToString & ">")
+												Next
 			
-		Catch ex As Exception
-			sErrorDescription = "The filter columns could not be retrieved." & vbCrLf & FormatError(ex.Message)
-		End Try
-	End If
-%>
-
+											Catch ex As Exception
+												sErrorDescription = "The filter columns could not be retrieved." & vbCrLf & FormatError(ex.Message)
+											End Try
+										End If
+											%>
 										</td>
-										<td width="10" height="10"></td>
-										<td width="175" height="10">
+										<td></td>
+										<td>
 											<input type="text" id="txtConditionLogic" class="text textdisabled" name="selectConditionLogic" disabled="disabled" value="is equal to">
 
-											<select id="selectConditionDate" name="selectConditionDate" class="combo" style="HEIGHT: 22px; LEFT: 0; POSITION: absolute; TOP: 0; VISIBILITY: hidden; WIDTH: 200px">
+											<select id="selectConditionDate" name="selectConditionDate" class="combo" style="width: 100%; left: 0; position: absolute; top: 0; visibility: hidden;">
 												<option value="1">is equal to</option>
 												<option value="2">is NOT equal to</option>
 												<option value="5">after</option>
@@ -1330,7 +1323,7 @@
 												<option value="3">is equal to or before</option>
 											</select>
 
-											<select id="selectConditionNum" name="selectConditionNum" class="combo" style="HEIGHT: 22px; LEFT: 0; POSITION: absolute; TOP: 0; VISIBILITY: hidden; WIDTH: 200px">
+											<select id="selectConditionNum" name="selectConditionNum" class="combo" style="width: 100%; left: 0; position: absolute; top: 0; visibility: hidden;">
 												<option value="1">is equal to</option>
 												<option value="2">is NOT equal to</option>
 												<option value="5">is greater than</option>
@@ -1339,61 +1332,63 @@
 												<option value="3">is less than or equal to</option>
 											</select>
 
-											<select id="selectConditionChar" name="selectConditionChar" class="combo" style="HEIGHT: 22px; LEFT: 0; POSITION: absolute; TOP: 0; VISIBILITY: hidden; WIDTH: 200px">
+											<select id="selectConditionChar" name="selectConditionChar" class="combo" style="width: 100%; left: 0; position: absolute; top: 0; visibility: hidden;">
 												<option value="1">is equal to</option>
 												<option value="2">is NOT equal to</option>
 												<option value="7">contains</option>
 												<option value="8">does not contain</option>
 											</select>
 										</td>
-										<td width="10" height="10"></td>
-										<td width="175" height="10">
-											<select id="selectValue" name='selectValue"' class="combo" style="HEIGHT: 22px; WIDTH: 200px">
+										<td></td>
+										<td style="text-align: left">
+											<select id="selectValue" name='selectValue"' class="combo" style="width: 30%;">
 												<option value="1">True</option>
 												<option value="0">False</option>
 											</select>
-											<input id="txtValue" name="txtValue" class="text" style="HEIGHT: 22px; LEFT: 0; POSITION: absolute; TOP: 0; VISIBILITY: hidden; WIDTH: 175px">
-									
-											<input id="selectDate" name="selectDate" type=text class="datepicker" style="HEIGHT: 22px; LEFT: 0; POSITION: absolute; TOP: 0; VISIBILITY: hidden; WIDTH: 175px" />
-
+											<input id="txtValue" name="txtValue" class="text" style="width: 100%; left: 0; position: absolute; top: 0; visibility: hidden;">
+											<input id="selectDate" name="selectDate" type="text" class="datepicker" style="width: 100%; left: 0; position: absolute; top: 0; visibility: hidden;" />
 										</td>
-										<td height="10"></td>
-										<td width="10" height="10">
-											<input id="cmdAddToList" name="cmdAddToList" class="btn" type="button" value="Add To List" style="WIDTH: 100px" width="100"
+										<td></td>
+										<td style="width: 175px; text-align: right">
+											<input id="cmdAddToList" name="cmdAddToList" class="btn" type="button" value="Add To List" style="width: 100px"
 												onclick="AddToList()" />
 										</td>
 									</tr>
 
-								</table>
-							</td>
-							<td width="10"></td>
-						</tr>
-
-						<tr height="10">
-							<td width="10"></td>
-							<td height="10">
-								<table width="100%" class="invisible" style="border-spacing: 0; border-collapse: collapse;">
-									<tr height="10">
-										<td height="10">&nbsp;
-										</td>
-										<td width="10" height="10">
-											<input id="cmdSelect" name="cmdSelect" class="btn" type="button" value="OK" style="WIDTH: 100px" width="100"
-												onclick="SelectFilter()" />
-										</td>
-										<td width="10" height="10"></td>
-										<td width="10" height="10">
-											<input id="cmdCancel" name="cmdCancel" type="button" value="Cancel" style="WIDTH: 100px" width="100" class="btn"
-												onclick="CancelFilter()" />
-										</td>
+									<tr>
+										<td colspan="8" style="height: 50px"></td>
 									</tr>
 								</table>
 							</td>
-							<td width="10"></td>
+							<td style="width: 10px"></td>
+						</tr>
+
+						<tr style="height: 10px">
+							<td style="width: 10px"></td>
+							<td style="height: 10px">
+								<table class="invisible" style="border-spacing: 0; border-collapse: collapse; width: 100%">
+									<tr>
+										<td colspan = 8>
+										<div class="floatright">
+											<input id="cmdSelect" name="cmdSelect" class="btn" type="button" value="OK"
+												onclick="SelectFilter()"
+												style="width: 100px; margin-right:10px"  />
+											<input id="cmdCancel" name="cmdCancel" class="btn" type="button" value="Cancel" 
+												onclick="CancelFilter()"
+												style="width: 100px"  />
+										</div>
+											</td>
+									</tr>
+								</table>
+							</td>
+							<td style="width: 10px"></td>
 						</tr>
 					</table>
 				</td>
 			</tr>
 		</table>
+
+
 
 		<%
 	Response.Write("<INPUT type='hidden' id=txtErrorDescription name=txtErrorDescription value=""" & sErrorDescription & """>" & vbcrlf)
@@ -1406,8 +1401,8 @@
 	<form action="filterselect_Submit" method="post" id="frmGotoOption" name="frmGotoOption">
 		<%Html.RenderPartial("~/Views/Shared/gotoOption.ascx")%>
 	</form>
-	
-	<script type="text/javascript">filterselect_window_onload()</script>
-	
 
+	<script type="text/javascript">
+		filterselect_window_onload()		
+	</script>
 </div>
