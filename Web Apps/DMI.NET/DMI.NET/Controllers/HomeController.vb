@@ -7,6 +7,7 @@ Imports System.IO
 Imports System.Web
 Imports System.Drawing
 Imports DMI.NET.Code
+Imports DMI.NET.ViewModels.Home
 Imports HR.Intranet.Server.Enums
 Imports HR.Intranet.Server
 Imports DMI.NET.Models
@@ -4201,12 +4202,13 @@ Namespace Controllers
 			Return RedirectToAction(sNextPage)
 		End Function
 
-		Function tbBulkBooking() As ActionResult
-			Return View()
+		Function BulkBooking() As ActionResult
+			Dim m As New BulkBookingViewModel()
+			Return PartialView("BulkBooking", m)
 		End Function
 
 		<HttpPost()>
-		Function tbBulkBooking_Submit(value As FormCollection)
+		Function BulkBooking_Submit(value As FormCollection)
 
 			Dim objDataAccess As clsDataAccess = CType(Session("DatabaseAccess"), clsDataAccess)
 
@@ -4303,44 +4305,92 @@ Namespace Controllers
 
 		End Function
 
-		Public Function tbBulkBookingSelectionMain() As ActionResult
-			Return View()
+		Public Function BulkBookingSelection() As ActionResult
+			Dim m As New BulkBookingSelectionViewModel
+			Return PartialView("BulkBookingSelection", m)
 		End Function
 
+		Public Function BulkBookingSelectionData(tableID As String, viewID As String, orderID As String, pageAction As String) As JsonResult
 
-		<HttpPost()>
-		Function tbBulkBookingSelectionData_Submit(value As FormCollection)
+			Dim sErrorDescription = ""
 
-			On Error Resume Next
+			Dim objDataAccess As clsDataAccess = CType(Session("DatabaseAccess"), clsDataAccess)
 
-			Response.Expires = -1
+			Dim sThousandColumns = ""
 
-			' Read the information from the calling form.
-			'		session("action") = Request.Form("txtAction")
-			Session("tableID") = Request.Form("txtTableID")
-			Session("viewID") = Request.Form("txtViewID")
-			Session("orderID") = Request.Form("txtOrderID")
-			'		Session("columnID") = Request.Form("txtColumnID")
-			Session("pageAction") = Request.Form("txtPageAction")
-			Session("firstRecPos") = Request.Form("txtFirstRecPos")
-			Session("currentRecCount") = Request.Form("txtCurrentRecCount")
-			Session("locateValue") = Request.Form("txtGotoLocateValue")
-			'		session("recordID") = Request.Form("txtRecordID")
-			'		session("linkRecordID") = Request.Form("txtLinkRecordID")
-			'		session("value") = Request.Form("txtValue")
-			'		session("SQL") = Request.Form("txtSQL")
-			'		session("promptSQL") = Request.Form("txtPromptSQL")
-			Session("fromMenu") = Request.Form("txtGotoFromMenu")
+			Try
+				sThousandColumns = Get1000SeparatorFindColumns(CleanNumeric(tableID), CleanNumeric(viewID), CleanNumeric(orderID))
 
-			Session("tbSelectionDataLoading") = False
+				Dim prmError = New SqlParameter("pfError", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
+				Dim prmIsFirstPage = New SqlParameter("pfFirstPage", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
+				Dim prmIsLastPage = New SqlParameter("pfLastPage", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
+				Dim prmColumnType = New SqlParameter("piColumnType", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
+				Dim prmTotalRecCount = New SqlParameter("piTotalRecCount", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
+				Dim prmFirstRecPos = New SqlParameter("piFirstRecPos", SqlDbType.Int) With {.Direction = ParameterDirection.InputOutput, .Value = CleanNumeric(Session("firstRecPos"))}
+				Dim prmColumnSize = New SqlParameter("piColumnSize", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
+				Dim prmColumnDecimals = New SqlParameter("piColumnDecimals", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
 
-			' Go to the requested page.
-			Return RedirectToAction("tbBulkBookingSelectionData")
+				Dim dsFindData = objDataAccess.GetDataSet("sp_ASRIntGetLinkFindRecords" _
+					, New SqlParameter("piTableID", SqlDbType.Int) With {.Value = CleanNumeric(tableID)} _
+					, New SqlParameter("piViewID", SqlDbType.Int) With {.Value = CleanNumeric(viewID)} _
+					, New SqlParameter("piOrderID", SqlDbType.Int) With {.Value = CleanNumeric(orderID)} _
+					, prmError _
+					, New SqlParameter("piRecordsRequired", SqlDbType.Int) With {.Value = 20000} _
+					, prmIsFirstPage _
+					, prmIsLastPage _
+					, New SqlParameter("psLocateValue", SqlDbType.VarChar, -1) With {.Value = Session("locateValue")} _
+					, prmColumnType _
+					, New SqlParameter("psAction", SqlDbType.VarChar, 100) With {.Value = pageAction} _
+					, prmTotalRecCount _
+					, prmFirstRecPos _
+					, New SqlParameter("piCurrentRecCount", SqlDbType.Int) With {.Value = CleanNumeric(Session("currentRecCount"))} _
+					, New SqlParameter("psExcludedIDs", SqlDbType.VarChar, -1) With {.Value = ""} _
+					, prmColumnSize _
+					, prmColumnDecimals)
 
-		End Function
+				Dim rstFindRecords As New DataTable
 
-		Public Function tbBulkBookingSelectionData() As ActionResult
-			Return View()
+				If dsFindData.Tables.Count > 0 Then
+					rstFindRecords = dsFindData.Tables(0)
+				End If
+
+				If prmError.Value <> 0 Then
+					Session("ErrorTitle") = "Bulk Booking Selection Find Page"
+					Session("ErrorText") = "Error reading employee records definition."
+					Response.Clear()
+					Response.Redirect("error")
+				End If
+
+				Dim jqGridColDef = New Dictionary(Of String, String)
+				Dim rows As New List(Of Dictionary(Of String, Object))()
+				Dim row As Dictionary(Of String, Object)
+				For Each dr As DataRow In rstFindRecords.Rows
+					row = New Dictionary(Of String, Object)()
+					For Each col As DataColumn In rstFindRecords.Columns
+
+						If Not jqGridColDef.ContainsKey(col.ColumnName) Then
+							jqGridColDef.Add(col.ColumnName, col.DataType.Name)
+						End If
+
+						If col.DataType.Name = "DateTime" And dr(col).ToString().Length > 0 Then
+							row.Add(col.ColumnName, dr(col).ToShortDateString())
+						Else
+							row.Add(col.ColumnName, dr(col))
+						End If
+
+					Next
+
+					rows.Add(row)
+
+				Next
+
+				Dim results = New With {.total = 1, .page = 1, .records = 0, .rows = rows, .colDef = jqGridColDef}
+				Return Json(results, JsonRequestBehavior.AllowGet)
+
+			Catch ex As Exception
+				sErrorDescription = "The find records could not be retrieved." & vbCrLf & FormatError(ex.Message)
+			End Try
+
 		End Function
 
 		Public Function util_run_mailmerge_completed() As FileStreamResult
@@ -4401,7 +4451,7 @@ Namespace Controllers
 								aPrompts(1, j) = Replace(Request.Form.Item(i), Session("LocaleDecimalSeparator"), ".")
 							Case "4"
 								' Date. Reformat to match SQL's mm/dd/yyyy format.
-								aPrompts(1, j) = convertLocaleDateToSQL(Request.Form.Item(i))
+								aPrompts(1, j) = ConvertLocaleDateToSQL(Request.Form.Item(i))
 							Case Else
 								aPrompts(1, j) = Request.Form.Item(i)
 						End Select

@@ -1242,3 +1242,11 @@ input[type=button].Embedded, input[type=button].Linked {
 	padding-right: 20px;
 	padding-left: 20px;
 }
+
+.silverborder {
+	border: 1px solid silver;
+}
+
+.width6em {
+	width: 6em;
+}

@@ -192,7 +192,9 @@
     <Compile Include="Code\Interfaces\IReportDetail.vb" />
     <Compile Include="Helpers\LabelHelper.vb" />
     <Compile Include="Models\CalendarEvent.vb" />
+    <Compile Include="ViewModels\Home\BulkBookingSelectionViewModel.vb" />
     <Compile Include="ViewModels\Home\DefinitionPropertiesViewModel.vb" />
+    <Compile Include="ViewModels\Home\BulkBookingViewModel.vb" />
     <Compile Include="ViewModels\Reports\CalendarEventDetailViewModel.vb" />
     <Compile Include="Classes\GroupAccess.vb" />
     <Compile Include="ViewModels\Reports\ChildTableViewModel.vb" />
@@ -1156,6 +1158,8 @@
     <Content Include="Scripts\FormScripts\crosstab.js" />
     <Content Include="Scripts\FormScripts\customreport.js" />
     <None Include="Scripts\jquery-2.1.1.intellisense.js" />
+    <Content Include="Scripts\FormScripts\BulkBooking.js" />
+    <Content Include="Scripts\FormScripts\BulkBookingSelection.js" />
     <Content Include="Scripts\jquery-2.1.1.js" />
     <Content Include="Scripts\jquery-2.1.1.min.js" />
     <Content Include="Scripts\jquery-ui-1.10.4.js" />
@@ -1637,10 +1641,6 @@
     <Content Include="Views\Home\stdrpt_AbsenceCalendar.ascx" />
     <Content Include="Views\Home\stdrpt_AbsenceCalendar_details.aspx" />
     <Content Include="Views\Home\stdrpt_run_AbsenceBreakdown.ascx" />
-    <Content Include="Views\Home\tbBulkBooking.ascx" />
-    <Content Include="Views\Home\tbBulkBookingSelection.ascx" />
-    <Content Include="Views\Home\tbBulkBookingSelectionData.ascx" />
-    <Content Include="Views\Home\tbBulkBookingSelectionMain.aspx" />
     <Content Include="Views\Home\tbStatusPrompt.ascx" />
     <Content Include="Views\Home\util_run_calendarreport_breakdown.ascx" />
     <Content Include="Views\Home\util_run_mailmerge.ascx" />
@@ -1700,6 +1700,8 @@
     <Content Include="Views\Reports\EditorTemplates\CalendarEventDetail.vbhtml" />
     <Content Include="Views\Reports\EditorTemplates\SortOrder.vbhtml" />
     <Content Include="Views\Home\DefinitionProperties.vbhtml" />
+    <Content Include="Views\Home\BulkBooking.vbhtml" />
+    <Content Include="Views\Home\BulkBookingSelection.vbhtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Global.asax" />

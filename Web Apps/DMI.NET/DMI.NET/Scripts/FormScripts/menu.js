@@ -2389,7 +2389,7 @@ function menu_refreshMenu() {
 
 	//}
 
-	if (sCurrentWorkPage == "TBBULKBOOKING") {
+	if (sCurrentWorkPage == "BULKBOOKING") {
 		menu_disableFindMenu();
 	} else {
 		menu_enableMenu();
@@ -4488,7 +4488,7 @@ function menu_loadSelectOrderFilter(psType) {
 	frmOptionArea = OpenHR.getForm("optionframe", "frmGotoOption");
 
 	frmOptionArea.txtGotoOptionRecordID.value = lngRecordID;
-	frmOptionArea.txtGotoOptionPage.value = "tbBulkBooking";
+	frmOptionArea.txtGotoOptionPage.value = "BulkBooking";
 
 	OpenHR.submitForm(frmOptionArea);
 }

@@ -478,7 +478,7 @@ function optiondata_onload() {
 			menu_refreshMenu();
 		}
 
-		if (sCurrentWorkPage == "TBBULKBOOKING") {
+		if (sCurrentWorkPage == "BULKBOOKING") {
 
 			frmOptionData = document.getElementById("frmOptionData");
 

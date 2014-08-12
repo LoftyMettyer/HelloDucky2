@@ -126,6 +126,36 @@
 				width: 'auto'
 			});
 
+			$("#BulkBookingSelect").dialog({
+				autoOpen: false,
+				modal: true,
+				width: (screen.width) / 2,
+				height: (screen.height) / 2,
+				buttons: [
+					{
+						text: "OK",
+						click: function () {
+							tbBBS_OKClick();							
+						},
+						"class": "width6em",
+						"id": "tbBBS_OK"
+					},
+					{
+						text: "Cancel",
+						click: function () {
+							$(this).dialog("close");
+						},
+						"class": "width6em",
+						"id": "tbBBS_Cancel"
+					}
+				],
+				resizable: false,
+				open: function(event, ui) {
+					$(this).load('BulkBookingSelection', function() {});
+				}
+			});
+
+
 			$(function () {
 				$("input[type=submit], input[type=button], button")
 					.button();
@@ -441,7 +471,7 @@
 			<input type="button" id="ExpressionSelectCancel" value="Cancel" />
 		</div>
 	</div>
-
+	<div id="BulkBookingSelect"></div>
 	<div id="dialog-confirm" title="">
 		<p><span class="ui-icon ui-icon-help" style="float: left; margin: 0 7px 20px 0;"></span></p>
 	</div>

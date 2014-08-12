@@ -104,6 +104,13 @@ Namespace App_Start
 			bundles.Add(New ScriptBundle("~/bundles/optiondatagrid").Include(
 										 "~/Scripts/FormScripts/OptiondataGrid.js"))
 
+			' BulkBooking grid bundle
+			bundles.Add(New ScriptBundle("~/bundles/bulkbooking").Include(
+										 "~/Scripts/FormScripts/BulkBooking.js"))
+
+			' BulkBookingSelection bundle
+			bundles.Add(New ScriptBundle("~/bundles/bulkbookingselection").Include(
+										 "~/Scripts/FormScripts/BulkBookingSelection.js"))
 #If DEBUG Then
 
 			For Each bundle As Bundle In BundleTable.Bundles
