@@ -837,7 +837,7 @@
 				, New SqlParameter("piFilterMode", SqlDbType.Int) With {.Value = Session("ELFilterMode")} _
 				, New SqlParameter("psOrderColumn", SqlDbType.VarChar, -1) With {.Value = Session("ELOrderColumn")} _
 				, New SqlParameter("psOrderOrder", SqlDbType.VarChar, -1) With {.Value = Session("ELOrderOrder")} _
-				, New SqlParameter("piRecordsRequired", SqlDbType.Int) With {.Value = 10000} _
+				, New SqlParameter("piRecordsRequired", SqlDbType.Int) With {.Value = 100000} _
 				, prmIsFirstPage _
 				, prmIsLastPage _
 				, New SqlParameter("psAction", SqlDbType.VarChar, 100) With {.Value = Session("ELAction")} _

@@ -228,7 +228,7 @@
 			pager: $('#pager-coldata'),
 			ignoreCase: true,
 			shrinkToFit: false,
-			rowNum: 1000,
+			rowNum: 500,
 			beforeSelectRow: function (rowid, e) { // handle jqGrid multiselect => thanks to solution from Byron Cobb on http://goo.gl/UvGku
 				if (!e.ctrlKey && !e.shiftKey) {
 					$("#LogEvents").jqGrid('resetSelection');
