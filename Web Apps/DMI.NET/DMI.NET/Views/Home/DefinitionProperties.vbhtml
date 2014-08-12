@@ -3,50 +3,42 @@
 @Imports DMI.NET.Helpers
 @Inherits System.Web.Mvc.WebViewPage(Of ViewModels.DefinitionPropertiesViewModel)
 
-<style>
-	.inputProperty {
-		width: 500px;
-	}
-
-	.labelProperty {
-		display: inline-block;
-		width: 120px;
-		text-align: left;
-	}
-
-	.buttonProperty {
-		float: right;
-	}
-
-</style>
-
-@Html.LabelFor(Function(m) m.Name, New With {.class = "labelProperty"})
-@Html.TextBoxFor(Function(m) m.Name, New With {.disabled = True, .class = "inputProperty"})
-<br/>
-@Html.LabelFor(Function(m) m.CreatedDate, New With {.class = "labelProperty"})
-@Html.TextBoxFor(Function(m) m.CreatedDate, New With {.disabled = True, .class = "inputProperty"})
-<br />
-@Html.LabelFor(Function(m) m.LastSaveDate, New With {.class = "labelProperty"})
-@Html.TextBoxFor(Function(m) m.LastSaveDate, New With {.disabled = True, .class = "inputProperty"})
-<br />
-@Html.LabelFor(Function(m) m.LastRunDate, New With {.class = "labelProperty", .style = Model.LastRunHidden})
-@Html.TextBoxFor(Function(m) m.LastRunDate, New With {.disabled = True, .class = "inputProperty", .style = Model.LastRunHidden})
-<br />
-<br />
-@Html.LabelFor(Function(m) m.Usage)
-
-<div class="stretchyfill">
-	<table id="definitionUsage"></table>
+<div class="pageTitleDiv" style="margin-bottom: 15px">
+	<span class="pageTitle" id="PopupReportDefinition_PageTitle">Properties</span>
 </div>
 
-<br/>
+<fieldset id="definitionPropertiesFields">
+	@Html.LabelFor(Function(m) m.Name, New With {.class = "labelProperty"})
+	@Html.TextBoxFor(Function(m) m.Name, New With {.disabled = True, .class = "inputProperty"})
+	<br />
+	@Html.LabelFor(Function(m) m.CreatedDate, New With {.class = "labelProperty"})
+	@Html.TextBoxFor(Function(m) m.CreatedDate, New With {.disabled = True, .class = "inputProperty"})
+	<br />
+	@Html.LabelFor(Function(m) m.LastSaveDate, New With {.class = "labelProperty"})
+	@Html.TextBoxFor(Function(m) m.LastSaveDate, New With {.disabled = True, .class = "inputProperty"})
+	<br />
+	@Html.LabelFor(Function(m) m.LastRunDate, New With {.class = "labelProperty", .style = Model.LastRunHidden})
+	@Html.TextBoxFor(Function(m) m.LastRunDate, New With {.disabled = True, .class = "inputProperty", .style = Model.LastRunHidden})
+</fieldset>
 
-<input type="button" value="Close" onclick="closeThisPopup();" class="buttonProperty" />
+<fieldset id="definitionusagediv">
+	<legend class="fontsmalltitle">@Html.LabelFor(Function(m) m.Usage)</legend>
+	<table id="definitionUsage"></table>
+</fieldset>
+
+<fieldset class="genericbuttonpopupalignment" id="defselPropertiesPopup">
+	<input type="button" value="Close" onclick="closeThisPopup();" />
+</fieldset>
 
 <script type="text/javascript">
 
+	$(function () {
+		attachUsage();
+		$('fieldset').css("border", "0");
+		$("#definitionUsage").jqGrid('setGridWidth', $("#definitionusagediv").width() - 4);
+	});
+
 	function attachUsage() {
-	
 		$("#definitionUsage").jqGrid({
 			datatype: "jsonstring",
 			datastr: '@Model.Usage.ToJsonResult',
@@ -61,9 +53,10 @@
 			},
 			colNames: ['Name'],
 			colModel: [
-				{ name: 'Name', index: 'Name', width: 620 }],
+				{ name: 'Name', index: 'Name', align: "center" }],
 			rowNum: 10,
-			height: 300,
+			width: 'auto',
+			height: '300px',
 			autowidth: true,
 			rowTotal: 50,
 			rowList: [10, 20, 30],
@@ -74,17 +67,12 @@
 			viewrecords: true,
 			sortorder: "asc"
 		});
-
 	}
 
 	function closeThisPopup() {
+
 		$("#divPopupReportDefinition").dialog("close");
 		$("#divPopupReportDefinition").empty();
 	}
 
-	$(function () {
-		attachUsage();
-	});
-
-
-	</script>
+</script>

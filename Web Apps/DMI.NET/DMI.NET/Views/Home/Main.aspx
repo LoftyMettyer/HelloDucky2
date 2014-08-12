@@ -93,7 +93,7 @@
 		$('#divPopupReportDefinition').dialog({
 			overflow: false,
 			autoOpen: false,
-			width: '400px',
+			width: 'auto',
 			height: 'auto',
 			resizable: false,
 			modal: true,
