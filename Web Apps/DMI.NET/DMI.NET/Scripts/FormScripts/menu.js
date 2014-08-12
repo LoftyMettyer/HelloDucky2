@@ -2488,6 +2488,11 @@ function menu_disableFindMenu() {
 		menu_toolbarEnableItem('mnutoolChangeOrderRecordFind', false);
 		menu_toolbarEnableItem('mnutoolFilterRecordFind', false);
 		menu_toolbarEnableItem('mnutoolClearFilterRecordFind', false);
+
+		menu_toolbarEnableItem('mnutoolBulkBookingRecordFind', false);
+		menu_toolbarEnableItem('mnutoolAddFromWaitingListRecordFind', false);
+		menu_toolbarEnableItem('mnutoolTransferBookingRecordFind', false);
+		menu_toolbarEnableItem('mnutoolCancelBookingRecordFind', false);
 	}
 }
 
