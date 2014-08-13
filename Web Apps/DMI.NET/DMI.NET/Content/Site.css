@@ -613,3 +613,7 @@ margin:15px 0 5px 0;
 #definitionPropertiesFields  {
 
 }
+
+.ui-dialog .ui-dialog-buttonpane {
+	 border-width: 0 !important;
+}
