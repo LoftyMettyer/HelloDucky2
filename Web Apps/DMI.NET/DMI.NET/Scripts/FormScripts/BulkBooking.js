@@ -43,9 +43,12 @@ function cancel() {
 function getRecordGroup(groupType) {
 	var tableID = $('#TableID').val();
 	var currentID = "";
+	var newHeight = (screen.height) / 2;
+	var newWidth = (screen.width) / 2;
 	OpenHR.modalExpressionSelect(groupType, tableID, currentID, function (id) {
 		makeSelection(groupType, id, '');
-	}, 400, 400);
+	}, newWidth - 40, newHeight - 160);
+	$('#ExpressionSelectNone').hide();
 }
 
 function makeSelection(psType, piID, psPrompts) {
@@ -209,6 +212,7 @@ function tbrefreshControls() {
 	button_disable(frmBulkBooking.cmd_tbBBRemoveAll, !fGridHasRows);
 	button_disable(frmBulkBooking.cmd_tbBBOK, !fGridHasRows);
 
-	$('#FindGridRow').toggleClass('silverborder', !fGridHasRows);	
+	$('#FindGridRow').toggleClass('silverborder', !fGridHasRows);
 
+	menu_refreshMenu();
 }

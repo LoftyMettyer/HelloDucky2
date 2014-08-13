@@ -1204,6 +1204,10 @@ input[type=button].Embedded, input[type=button].Linked {
 	margin-bottom: 10px;
 }
 
+#frmBulkBooking .ui-button {
+	width: 120px !important;
+}
+
 .stretchyfixed .ui-button {
 	margin-left: 20px;
 	width: 110px;

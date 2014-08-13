@@ -559,7 +559,7 @@ function optiondata_onload() {
 
 				//create the column layout:
 				var shrinkToFit = false;
-				if (colMode.length < 8) shrinkToFit = true;				
+				if (colMode.length < 8) shrinkToFit = true;
 
 				$("#ssOleDBGridFindRecords").jqGrid({
 					multiselect: true,
@@ -577,13 +577,16 @@ function optiondata_onload() {
 					afterShowForm: function ($form) {
 						$("#dData", $form.parent()).click();
 					},
+					loadComplete: function () {
+						grid_HideCheckboxes('ssOleDBGridFindRecords');
+					},
 					beforeSelectRow: handleMultiSelect // handle multi select
-				}).jqGrid('hideCol', 'cb');
+				});  //.jqGrid('hideCol', 'cb'); //bug - this causes horizontal scrollbars
 
 				//resize the grid to the height of its container.
 				$("#ssOleDBGridFindRecords").jqGrid('setGridHeight', $("#FindGridRow").height());
 
-			}			
+			}
 
 
 			// Select the top record.
@@ -793,6 +796,15 @@ function optiondata_onload() {
 			}
 		}
 
+	}
+}
+
+
+function grid_HideCheckboxes(gridID) {
+	//Hide the checkboxes.
+	if ($('#' + gridID)) {
+		$('#' + gridID + '_cb').css('visibility', 'hidden');
+		$('#' + gridID + ' .cbox').css('visibility', 'hidden');
 	}
 }
 

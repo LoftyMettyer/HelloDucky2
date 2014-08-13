@@ -147,24 +147,24 @@
 					frame.dialog("close");
 				},
 				loadComplete: function(json) {
-
-					$("#ExpressionSelectOK").click(function () {
+					
+					$("#ExpressionSelectOK").off('click').on('click', function() {
 						var rowid = $('#ExpressionsAvailable').jqGrid('getGridParam', 'selrow');
 						var gridData = $("#ExpressionsAvailable").getRowData(rowid);
 						followOnFunctionName(gridData.ID, gridData.Name, gridData.Access);
 						frame.dialog("close");
 					});
 
-					$("#ExpressionSelectCancel").click(function () {
+					$("#ExpressionSelectCancel").off('click').on('click', function () {					
 						frame.dialog("close");
 					});
 
-					$("#ExpressionSelectNone").click(function () {
+					$("#ExpressionSelectNone").off('click').on('click', function () {					
 						followOnFunctionName(0, "", "RW");
 						frame.dialog("close");
 					});
 
-					$("#ExpressionSelection_PageTitle").text(capitalizedText);
+					$("#ExpressionSelection_PageTitle").text(capitalizedText);					
 				}
 			});
 
