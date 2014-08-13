@@ -19,8 +19,9 @@
 		</div>
 	</nav>
 	<main>
-		<div class="clearboth" id="FindGridRow" style="height: 400px; margin-bottom: 50px;">
+		<div class="clearboth" id="FindGridRow" style="margin-bottom: 50px;">
 			<table id="ssOleDBGridRecords" style="width: 100%"></table>
+			<div id="pager-coldata-optiondata"></div>
 		</div>
 	</main>
 	<footer>

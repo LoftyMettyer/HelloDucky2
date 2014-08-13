@@ -443,7 +443,9 @@ function optiondata_onload() {
 					datatype: "local",
 					colNames: colNames,
 					colModel: colMode,
-					rowNum: 1000,
+					pager: $('#pager-coldata-optiondata'),
+					ignorecase: true,
+					rowNum: 100,
 					autowidth: true,
 					shrinkToFit: shrinkToFit,
 					onSelectRow: function () {
@@ -461,8 +463,20 @@ function optiondata_onload() {
 					}
 				});
 
+				$("#ssOleDBGridRecords").jqGrid('navGrid', '#pager-coldata-optiondata', { del: false, add: false, edit: false, search: false });
+				$("#ssOleDBGridRecords").jqGrid('navButtonAdd', "#pager-coldata-optiondata", {
+					caption: '',
+					buttonicon: 'ui-icon-search',
+					onClickButton: function () {
+						$("#ssOleDBGridRecords").jqGrid('filterToolbar', { stringResult: true, searchOnEnter: false });
+					},
+					position: 'first',
+					title: '',
+					cursor: 'pointer'
+				});
+
 				//resize the grid to the height of its container.
-				$("#ssOleDBGridRecords").jqGrid('setGridHeight', $("#FindGridRow").height());
+				$("#ssOleDBGridRecords").jqGrid('setGridHeight', $("#FindGridRow").height() - 40);
 
 			}
 		
