@@ -9,7 +9,7 @@ function util_def_picklist_onload() {
 	
 	// Expand the work frame and hide the option frame.
 	//            window.parent.document.all.item("workframeset").cols = "*, 0";
-
+	
 	if (frmUseful.txtAction.value.toUpperCase() == "NEW") {
 		frmDefinition.txtOwner.value = frmUseful.txtUserName.value;
 		frmDefinition.txtDescription.value = "";
@@ -39,7 +39,7 @@ function util_def_picklist_onload() {
 	}
 
 	// Get menu.asp to refresh the menu.
-	menu_refreshMenu();
+	//menu_refreshMenu();
 	$('#cmdOK').hide();
 	$('#cmdCancel').hide();
 }

@@ -574,6 +574,7 @@ function optiondata_onload() {
 				//create the column layout:
 				var shrinkToFit = false;
 				if (colMode.length < 8) shrinkToFit = true;
+				var gridWidth = $('#FindGridRow').width();
 
 				$("#ssOleDBGridFindRecords").jqGrid({
 					multiselect: true,
@@ -582,7 +583,8 @@ function optiondata_onload() {
 					colNames: colNames,
 					colModel: colMode,
 					rowNum: 1000,
-					autowidth: true,
+					width: gridWidth,
+					//autowidth: true,
 					shrinkToFit: shrinkToFit,
 					onSelectRow: function () {
 						tbrefreshControls();
@@ -692,7 +694,7 @@ function optiondata_onload() {
 			if ($("#ssOleDBGrid").getGridParam("reccount") == undefined) { //It doesn't exist, create it
 				var shrinkToFit = false;
 				if (colMode.length < 8) shrinkToFit = true;
-
+				var gridWidth = $('#PickListGrid').width();
 				$("#ssOleDBGrid").jqGrid({
 					multiselect: true,
 					data: colData,
@@ -700,7 +702,7 @@ function optiondata_onload() {
 					colNames: colNames,
 					colModel: colMode,
 					rowNum: 1000,
-					autowidth: true,
+					width: gridWidth,
 					shrinkToFit: shrinkToFit,
 					onSelectRow: function() {
 						button_disable(frmDefinition.cmdRemove, false); //Enable the "Remove" button

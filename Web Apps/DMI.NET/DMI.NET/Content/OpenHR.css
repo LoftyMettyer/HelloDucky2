@@ -1187,6 +1187,10 @@ input[type=button].Embedded, input[type=button].Linked {
 }
 
 
+.gridwithbuttons {
+	display: table;
+}
+
 .stretchyfill {
 	display: table-cell;
 	width: 100%;	

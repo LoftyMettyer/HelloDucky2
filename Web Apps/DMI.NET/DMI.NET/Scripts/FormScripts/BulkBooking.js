@@ -171,7 +171,7 @@ function resizeGridToFit() {
 	var workPageHeight = $('.optiondatagridpage').height();
 	var pageTitleHeight = $('.optiondatagridpage>.pageTitleDiv').height();
 	var dropdownHeight = $('.floatleft').height();
-	var gridMarginBottom = 50;
+	var gridMarginBottom = 70;
 
 	var newGridHeight = workPageHeight - pageTitleHeight - dropdownHeight - gridMarginBottom;
 

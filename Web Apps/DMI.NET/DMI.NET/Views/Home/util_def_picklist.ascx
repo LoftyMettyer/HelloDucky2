@@ -44,7 +44,7 @@
 
 		<div class="gridwithbuttons clearboth">
 
-			<div class="stretchyfill">
+			<div id="PickListGrid" style="height: 400px;" class="stretchyfill">
 				<%																																	
 					' Get the employee find columns.
 					Dim objDataAccess As clsDataAccess = CType(Session("DatabaseAccess"), clsDataAccess)
@@ -76,9 +76,7 @@
 					End Try
 
 				%>
-				<div id="PickListGrid" style="height: 400px;">
 					<table id="ssOleDBGrid"></table>
-				</div>
 			</div>
 
 			<div class="stretchyfixed">
