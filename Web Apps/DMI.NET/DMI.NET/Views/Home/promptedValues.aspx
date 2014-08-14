@@ -102,8 +102,7 @@
 				window.parent.self.close();
 			}
 			else {
-				//jquery div option
-				alert('click close');
+				$("#reportframeset").dialog('close');
 			}
 		}
 
@@ -609,6 +608,8 @@
 								%>
 
 								<input type="hidden" id="filterID" name="filterID" value="<%=Session("filterID")%>">
+			</table>
+		</table>
 	</form>
 	
 	<script type="text/javascript"> promptedValues_onload();</script>
