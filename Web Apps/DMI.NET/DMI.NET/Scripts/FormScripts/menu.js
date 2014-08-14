@@ -2447,6 +2447,8 @@ function menu_disableMenu() {
 		menu_toolbarEnableItem('mnutoolFilterRecord', false);
 		menu_toolbarEnableItem('mnutoolClearFilterRecord', false);
 
+		menu_toolbarEnableItem('mnutoolCancelCourseRecord', false);
+
 		menu_toolbarEnableItem('mnutoolCalendarReportsRecord', false);
 		menu_toolbarEnableItem('mnutoolAbsenceBreakdownRecord', false);
 		menu_toolbarEnableItem('mnutoolAbsenceCalendarRecord', false);
