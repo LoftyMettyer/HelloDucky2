@@ -108,13 +108,16 @@ function remove() {
 			var gridID = $.jgrid.jqID(grid[0].id),
 					gridP = grid[0].p,
 					newPage = gridP.page,
-					rowids = gridP.multiselect ? gridP.selarrrow : [gridP.selrow];
+					rowids = gridP.multiselect ? gridP.selarrrow : [gridP.selrow];			
 
 			// reset the value of processing option which could be modified
 			options.processing = true;
 
 			// delete the row
-			$.each(rowids, function () {
+			//BUG: Convert the rowids variable to a 'static' new variable.
+			var iDsToDelete = rowids.toString().split(',');
+
+			$.each(iDsToDelete, function () {
 				grid.delRowData(this);
 			});
 			$.jgrid.hideModal("#delmod" + gridID,
