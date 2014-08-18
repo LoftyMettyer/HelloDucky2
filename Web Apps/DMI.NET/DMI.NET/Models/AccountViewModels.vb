@@ -29,49 +29,55 @@ Namespace Models
 
 		Public Sub ReadFromCookie()
 
-			' -- SHOW 'DETAILS' BOXES? --
-			If Current.Request.QueryString("Details") <> "" Or _
-				Current.Request.QueryString("database") <> "" Or _
-				Current.Request.QueryString("server") <> "" Or _
-				Current.Request.QueryString.ToString() = "%3f" Then	' %3f = ?? to show details button.
-				SetDetails = True
-			Else
-				SetDetails = False
-			End If
+			Try
 
-			' -- DATABASE & SERVER -- 
-			If Current.Request.QueryString.Count = 0 Then
-
-				Database = ApplicationSettings.LoginPage_Database
-				Server = ApplicationSettings.LoginPage_Server
-
-				If Current.Session("server") <> Server Or Current.Session("database") <> Database Then
-					Database = Current.Session("database")
-					Server = Current.Session("server")
+				' -- SHOW 'DETAILS' BOXES? --
+				If Current.Request.QueryString("Details") <> "" OrElse _
+					Current.Request.QueryString("database") <> "" OrElse _
+					Current.Request.QueryString("server") <> "" OrElse _
+					Current.Request.QueryString.ToString() = "%3f" Then	' %3f = ?? to show details button.
+					SetDetails = True
+				Else
+					SetDetails = False
 				End If
 
-			Else 'Override database or server if a value is provided in the querystring
-				If Not String.IsNullOrEmpty(Current.Request.QueryString("database")) Then
-					Database = Current.Server.HtmlDecode(Current.Request.QueryString("database"))
-					Current.Session("database") = Database
-				End If
-				If Not String.IsNullOrEmpty(Current.Request.QueryString("server")) Then
-					Server = Current.Server.HtmlDecode(Current.Request.QueryString("server"))
-					Current.Session("server") = Server
-				End If
-			End If
+				' -- DATABASE & SERVER -- 
+				If Current.Request.QueryString.Count = 0 Then
 
-			' -- USER NAME --
-			If Current.Request.QueryString("user") <> "" Then
-				UserName = CleanStringForJavaScript(Current.Request.QueryString("user").ToString())
-			ElseIf Current.Request.QueryString("username") <> "" Then
-				UserName = CleanStringForJavaScript(Current.Request.QueryString("username").ToString())
-			Else
-				If Not Current.Request.Cookies("Login") Is Nothing Then
-					UserName = Current.Server.HtmlEncode(Current.Request.Cookies("Login")("User"))
-					WindowsAuthentication = (Current.Request.Cookies("Login")("WindowsAuthentication").ToUpper() = "TRUE")
+					Database = ApplicationSettings.LoginPage_Database
+					Server = ApplicationSettings.LoginPage_Server
+
+					If Current.Session("server") <> Server OrElse Current.Session("database") <> Database Then
+						Database = Current.Session("database")
+						Server = Current.Session("server")
+					End If
+
+				Else 'Override database or server if a value is provided in the querystring
+					If Not String.IsNullOrEmpty(Current.Request.QueryString("database")) Then
+						Database = Current.Server.HtmlDecode(Current.Request.QueryString("database"))
+						Current.Session("database") = Database
+					End If
+					If Not String.IsNullOrEmpty(Current.Request.QueryString("server")) Then
+						Server = Current.Server.HtmlDecode(Current.Request.QueryString("server"))
+						Current.Session("server") = Server
+					End If
 				End If
-			End If
+
+				' -- USER NAME --
+				If Current.Request.QueryString("user") <> "" Then
+					UserName = CleanStringForJavaScript(Current.Request.QueryString("user").ToString())
+				ElseIf Current.Request.QueryString("username") <> "" Then
+					UserName = CleanStringForJavaScript(Current.Request.QueryString("username").ToString())
+				Else
+					If Current.Request.Cookies("Login") IsNot Nothing Then
+						UserName = Current.Server.HtmlEncode(Current.Request.Cookies("Login")("User"))
+						WindowsAuthentication = (Current.Request.Cookies("Login")("WindowsAuthentication").ToUpper() = "TRUE")
+					End If
+				End If
+
+			Catch ex As Exception
+				Throw
+			End Try
 
 		End Sub
 
