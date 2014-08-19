@@ -26,36 +26,66 @@ End Code
 		Html.RenderPartial("_Definition", Model)
 		End Code
 
-		<fieldset class="width100">
+		<fieldset class="width90" style="padding-left:25px">
 			<legend class="fontsmalltitle">Report Options :</legend>
 
-			@Html.LabelFor(Function(m) m.Description1ID)
-			@Html.ColumnDropdownFor(Function(m) m.Description1ID, New ColumnFilter() With {.TableID = Model.BaseTableID, .AddNone = True}, Nothing)
+			<fieldset class="width50 floatleft" >
+				<div class="width100" style="height:30px">
+					<div class="width25 floatleft">
+						@Html.LabelFor(Function(m) m.Description1ID)
+					</div>
+					<div class="width70 floatleft">
+						@Html.ColumnDropdownFor(Function(m) m.Description1ID, New ColumnFilter() With {.TableID = Model.BaseTableID, .AddNone = True}, Nothing)
+					</div>
+				</div>
 
-			<br />
-			@Html.LabelFor(Function(m) m.Description2ID)
-			@Html.ColumnDropdownFor(Function(m) m.Description2ID, New ColumnFilter() With {.TableID = Model.BaseTableID, .AddNone = True}, Nothing)
+				<div class="width100" style="height:30px">
+					<div class="width25 floatleft">
+						@Html.LabelFor(Function(m) m.Description2ID)
+					</div>
+					<div class="width70 floatleft">
+						@Html.ColumnDropdownFor(Function(m) m.Description2ID, New ColumnFilter() With {.TableID = Model.BaseTableID, .AddNone = True}, Nothing)
+					</div>
+				</div>
 
-			<br />
-			@Html.LabelFor(Function(m) m.Description3ID)
-			@Html.HiddenFor(Function(m) m.Description3ID)
-			<input type="text" id="txtDescription3" value="@Model.Description3Name" disabled />
-			<input type="button" id="cmdDescription3" value="..." onclick="selectDescription3()" />
+				<div class="width100" style="height:30px">
+					<div class="width25 floatleft">
+						@Html.LabelFor(Function(m) m.Description3ID)
+						@Html.HiddenFor(Function(m) m.Description3ID)
+					</div>
+					<div class="width60 floatleft">
+						<input class="floatleft" type="text" id="txtDescription3" value="@Model.Description3Name" disabled />
+						<input class="floatleft" type="button" id="cmdDescription3" value="..." onclick="selectDescription3()" />
+					</div>
+				</div>
+			</fieldset>
 
-			<br/>
-			@Html.LabelFor(Function(m) m.RegionID)
-			@Html.ColumnDropdownFor(Function(m) m.Description2ID, New ColumnFilter() With {.TableID = Model.BaseTableID, .AddNone = True, .DataType = ColumnDataType.sqlVarChar}, New With {.id = "cboRegionID"})
+			<fieldset class="width40">
+				<div class="width100">
+					<div class="width100" style="height:30px">
+						<div class="width25 floatleft">
+							@Html.LabelFor(Function(m) m.RegionID)
+						</div>
+						<div class="width70 floatleft">
+							@Html.ColumnDropdownFor(Function(m) m.RegionID,
+																	New ColumnFilter() With {.TableID = Model.BaseTableID, .AddNone = True, .DataType = ColumnDataType.sqlVarChar},
+																	New With {.id = "cboRegionID"})
+						</div>
+					</div>
 
-			<br/>
-			@Html.CheckBoxFor(Function(m) m.GroupByDescription, New With {.id = "chkGroupByDescription", .onclick = "selectGroupByDescription()"})
-			@Html.LabelFor(Function(m) m.GroupByDescription)
-
-			<br/>
-			@Html.LabelFor(Function(m) m.Separator)
-			@Html.DropDownList("Separator", New SelectList(New List(Of String)() From {"None", "Space", ",", ".", "-", ":", ";", "/", "\", "#", "~", "^"}))
-
+					<div>
+						<div class="width25 floatleft">
+							@Html.LabelFor(Function(m) m.Separator)
+						</div>
+						<div class="width70 floatleft">
+							@Html.DropDownList("Separator", New SelectList(New List(Of String)() From {"None", "Space", ",", ".", "-", ":", ";", "/", "\", "#", "~", "^"}))
+							@Html.CheckBoxFor(Function(m) m.GroupByDescription, New With {.id = "chkGroupByDescription", .onclick = "selectGroupByDescription()"})
+							@Html.LabelFor(Function(m) m.GroupByDescription)
+						</div>
+					</div>
+					</div>
+</fieldset>
 		</fieldset>
-
 	</div>
 
 	<div id="report_definition_tab_eventdetails">

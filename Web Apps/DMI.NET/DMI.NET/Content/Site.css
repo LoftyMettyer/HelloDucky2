@@ -465,7 +465,9 @@ select.readonly {
 #tabs .ui-widget-content {
 	/*border:none;*/
 }
-#cmdBasePicklist, #cmdBaseFilter, #cmdParent1Picklist, #cmdParent1Filter, #cmdParent2Picklist, #cmdParent2Filter, #cmdEmailGroup  {
+#cmdBasePicklist, #cmdBaseFilter, #cmdParent1Picklist, 
+#cmdParent1Filter, #cmdParent2Picklist, #cmdParent2Filter, 
+#cmdEmailGroup, #cmdDescription3, #cmdCustomStart, #cmdCustomEnd  {
 	float:left;
 	padding:2px 12px;
 	/*margin-bottom:2px;*/

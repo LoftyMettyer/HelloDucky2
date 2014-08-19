@@ -6,9 +6,14 @@
 @Html.HiddenFor(Function(m) m.EventsString, New With {.id = "txtCEAAS"})
 
 <fieldset class="relatedtables">
-	<legend>Calendar Events :</legend>
+	<legend class="fontsmalltitle">Calendar Events :</legend>
 
-	<div class="stretchyfixed">
+	<div class="width80 floatleft overflowauto">
+		<input type="hidden" id="CalendarEventsViewAccess" />
+		<table id="CalendarEvents"></table>
+	</div>
+
+	<div class="stretchyfixed floatleft">
 		<input type="button" id="btnEventDetailsAdd" value="Add..." onclick="eventAdd();" />
 		<br />
 		<input type="button" id="btnEventDetailsEdit" value="Edit..." disabled onclick="eventEdit(0);" />
@@ -17,12 +22,6 @@
 		<br />
 		<input type="button" id="btnEventDetailsRemoveAll" value="Remove All" disabled onclick="removeAllEvents()" />
 	</div>
-
-	<div class="stretchyfill">
-		<input type="hidden" id="CalendarEventsViewAccess" />
-		<table id="CalendarEvents"></table>
-	</div>
-
 </fieldset>
 
 
@@ -33,7 +32,8 @@
 	})
 
 	function attachCalendarEventsGrid() {
-
+		//create the column layout:
+			
 		$("#CalendarEvents").jqGrid({
 			datatype: "jsonstring",
 			datastr: '@Model.Events.ToJsonResult',
@@ -88,10 +88,9 @@
 				{ name: 'EventDesc2ColumnName', index: 'EventDesc2ColumnName', sorttype: 'text' }
 			],
 			rowNum: 10,
-			autowidth: true,
 			rowTotal: 50,
 			rowList: [10, 20, 30],
-			shrinkToFit: true,
+			autowidth: false,			
 			pager: '#pcrud',
 			sortname: 'Name',
 			loadonce: true,
