@@ -4,98 +4,109 @@
 @Inherits System.Web.Mvc.WebViewPage(Of Models.CalendarReportModel)
 
 <fieldset class="width45 floatleft">
-	<legend class="fontsmalltitle">Start Date</legend>
+	<legend class="fontsmalltitle">Start Date :</legend>
+	<fieldset>
+		@Html.HiddenFor(Function(m) m.StartCustomViewAccess)
+		@Html.HiddenFor(Function(m) m.EndCustomViewAccess)
 
-	@Html.HiddenFor(Function(m) m.StartCustomViewAccess)
-	@Html.HiddenFor(Function(m) m.EndCustomViewAccess)
-	
-	<div class="">
-		@Html.RadioButton("StartType", CalendarDataType.CurrentDate, Model.StartType = CalendarDataType.CurrentDate, New With {.onclick = "changeEventStartType('CurrentDate')"})
-		<span>Today</span>
-	</div>
-	
-	<div class="width30 floatleft">
-		@Html.RadioButton("StartType", CalendarDataType.Fixed, Model.StartType = CalendarDataType.Fixed, New With {.onclick = "changeEventStartType('Fixed')"})
-		<span>Fixed</span>
-	</div>
-	@Html.TextBoxFor(Function(m) m.StartFixedDate, "{0:dd/MM/yyyy}", New With {.class = "datepicker"})
-	<br/>
+		<div class="width100 " style="padding-bottom:10px">
+			@Html.RadioButton("StartType", CalendarDataType.CurrentDate, Model.StartType = CalendarDataType.CurrentDate, New With {.onclick = "changeEventStartType('CurrentDate')"})
+			<span>Today</span>
+		</div>
 
-	<div class="width30 floatleft">
-		@Html.RadioButton("StartType", CalendarDataType.Offset, Model.StartType = CalendarDataType.Offset, New With {.onclick = "changeEventStartType('Offset')"})
-		<span>Offset</span>
-	</div>
-	
-	@Html.TextBoxFor(Function(m) m.StartOffset, New With {.id = "StartOffset", .class = "spinner"})
-	@Html.EnumDropDownListFor(Function(m) m.StartOffsetPeriod, New With {.id = "StartOffsetPeriod"})
-	<br />
+		<div class="width100 " style="padding-bottom:5px">
+			<div class="width30 floatleft">
+				@Html.RadioButton("StartType", CalendarDataType.Fixed, Model.StartType = CalendarDataType.Fixed, New With {.onclick = "changeEventStartType('Fixed')"})
+				<span>Fixed</span>
+			</div>
+			@Html.TextBoxFor(Function(m) m.StartFixedDate, "{0:dd/MM/yyyy}", New With {.class = "datepicker"})
+		</div>
 
-	<div class="width30 floatleft">
-		@Html.RadioButton("StartType", CalendarDataType.Custom, Model.StartType = CalendarDataType.Custom, New With {.onclick = "changeEventStartType('Custom')"})
-		<span>Custom</span>
-	</div>
-	
-	@Html.HiddenFor(Function(m) m.StartCustomId, New With {.id = "StartCustomId"})
-	<input type="text" id="txtCustomStart" value="@Model.StartCustomName" disabled />
-	<input type="button" id="cmdCustomStart" value="..." onclick="selectCustomStartDate()" />
-	<br />
+		<div class="width100" style="padding-bottom:5px">
+			<div class="width30 floatleft">
+				@Html.RadioButton("StartType", CalendarDataType.Offset, Model.StartType = CalendarDataType.Offset, New With {.onclick = "changeEventStartType('Offset')"})
+				<span>Offset</span>
+			</div>
+			@Html.TextBoxFor(Function(m) m.StartOffset, New With {.id = "StartOffset", .class = "spinner"})
+			@Html.EnumDropDownListFor(Function(m) m.StartOffsetPeriod, New With {.id = "StartOffsetPeriod"})
+		</div>
+
+		<div class="width100 ">
+			<div class="width30 floatleft">
+				@Html.RadioButton("StartType", CalendarDataType.Custom, Model.StartType = CalendarDataType.Custom,
+												New With {.onclick = "changeEventStartType('Custom')"})
+				<span>Custom</span>
+			</div>
+
+			@Html.HiddenFor(Function(m) m.StartCustomId,
+										 New With {.id = "StartCustomId"})
+			<input class="floatleft" type="text" id="txtCustomStart" value="@Model.StartCustomName" disabled />
+			<input class="floatleft" type="button" id="cmdCustomStart" value="..." onclick="selectCustomStartDate()" />
+		</div>
+	</fieldset>
 </fieldset>
 
 <fieldset class="width45 floatleft">
-	<legend class="fontsmalltitle">End Dates</legend>
+	<legend class="fontsmalltitle">End Dates :</legend>
+	<fieldset>
+		<div class="width100 " style="padding-bottom:10px">
+			@Html.RadioButton("EndType", CalendarDataType.CurrentDate, Model.EndType = CalendarDataType.CurrentDate, New With {.onclick = "changeEventEndType('CurrentDate')"})
+			<span>Today</span>
+		</div>
 
-	<div class="width20">
-		@Html.RadioButton("EndType", CalendarDataType.CurrentDate, Model.EndType = CalendarDataType.CurrentDate, New With {.onclick = "changeEventEndType('CurrentDate')"})	
-		<span>Today</span>
-	</div>
+		<div class="width100 " style="padding-bottom:5px">
+			<div class="width30 floatleft">
+				@Html.RadioButton("EndType", CalendarDataType.Fixed, Model.EndType = CalendarDataType.Fixed, New With {.onclick = "changeEventEndType('Fixed')"})
+				<span>Fixed</span>
+			</div>
+			@Html.TextBoxFor(Function(m) m.EndFixedDate, "{0:dd/MM/yyyy}", New With {.class = "datepicker"})
+		</div>
 
-	<div class="width30 floatleft">
-		@Html.RadioButton("EndType", CalendarDataType.Fixed, Model.EndType = CalendarDataType.Fixed, New With {.onclick = "changeEventEndType('Fixed')"})
-		<span>Fixed</span>
-	</div>
+		<div class="width100" style="padding-bottom:5px">
+			<div class="width30 floatleft">
+				@Html.RadioButton("EndType", CalendarDataType.Offset, Model.EndType = CalendarDataType.Offset, New With {.onclick = "changeEventEndType('Offset')"})
+				<span>Offset</span>
+			</div>
+			@Html.TextBoxFor(Function(m) m.EndOffset, New With {.id = "EndOffset", .class = "spinner"})
+			@Html.EnumDropDownListFor(Function(m) m.EndOffsetPeriod, New With {.id = "EndOffsetPeriod"})
+		</div>
 
-	@Html.TextBoxFor(Function(m) m.EndFixedDate, "{0:dd/MM/yyyy}", New With {.class = "datepicker"})	
-	<br />	
-	
-	<div class="width30 floatleft">
-		@Html.RadioButton("EndType", CalendarDataType.Offset, Model.EndType = CalendarDataType.Offset, New With {.onclick = "changeEventEndType('Offset')"})
-		<span>Offset</span>
-	</div>
-	@Html.TextBoxFor(Function(m) m.EndOffset, New With {.id = "EndOffset", .class = "spinner"})
-	@Html.EnumDropDownListFor(Function(m) m.EndOffsetPeriod, New With {.id = "EndOffsetPeriod"})
-	<br />
-	
-	<div class="width30 floatleft">
-		@Html.RadioButton("EndType", CalendarDataType.Custom, Model.EndType = CalendarDataType.Custom, New With {.onclick = "changeEventEndType('Custom')"})
-		<span>Custom</span>
-	</div>
-	@Html.HiddenFor(Function(m) m.EndCustomId, New With {.id = "EndCustomId"})
-	<input type="text" id="txtCustomEnd" value="@Model.EndCustomName" disabled />
-	<input type="button" id="cmdCustomEnd" value="..." onclick="selectCustomEndDate()" />
-	<br />
+		<div class="width100 ">
+			<div class="width30 floatleft">
+				@Html.RadioButton("EndType", CalendarDataType.Custom, Model.EndType = CalendarDataType.Custom, New With {.onclick = "changeEventEndType('Custom')"})				<span>Custom</span>
+			</div>
+
+			@Html.HiddenFor(Function(m) m.EndCustomId, New With {.id = "EndCustomId"})
+			<input class="floatleft" type="text" id="txtCustomEnd" value="@Model.EndCustomName" disabled />
+			<input class="floatleft" type="button" id="cmdCustomEnd" value="..." onclick="selectCustomEndDate()" />
+		</div>
+	</fieldset>
 </fieldset>
 
 <fieldset class="width100 floatleft">
-	<legend class="fontsmalltitle">Default Display Options</legend>
-	@Html.CheckBoxFor(Function(m) m.IncludeBankHolidays)
-	@Html.LabelFor(Function(m) m.IncludeBankHolidays)
-	<br />
-	@Html.CheckBoxFor(Function(m) m.WorkingDaysOnly)
-	@Html.LabelFor(Function(m) m.WorkingDaysOnly)	
-	<br />
-	@Html.CheckBoxFor(Function(m) m.ShowBankHolidays)
-	@Html.LabelFor(Function(m) m.ShowBankHolidays)	
-	<br />
-	@Html.CheckBoxFor(Function(m) m.ShowCaptions)
-	@Html.LabelFor(Function(m) m.ShowCaptions)	
-	<br />
-	@Html.CheckBoxFor(Function(m) m.ShowWeekends)
-	@Html.LabelFor(Function(m) m.ShowWeekends)	
-	<br />
-	@Html.CheckBoxFor(Function(m) m.StartOnCurrentMonth)
-	@Html.LabelFor(Function(m) m.StartOnCurrentMonth)	<br />
-</fieldset>
+	<legend class="fontsmalltitle">Default Display Options :</legend>
+	<fieldset class="floatleft width25">
+		@Html.CheckBoxFor(Function(m) m.IncludeBankHolidays)
+		@Html.LabelFor(Function(m) m.IncludeBankHolidays)
+		<br />
+		@Html.CheckBoxFor(Function(m) m.WorkingDaysOnly)
+		@Html.LabelFor(Function(m) m.WorkingDaysOnly)
+		<br />
+		@Html.CheckBoxFor(Function(m) m.StartOnCurrentMonth)
+		@Html.LabelFor(Function(m) m.StartOnCurrentMonth)
+	</fieldset>
 
+	<fieldset class="floatleft width25">
+		@Html.CheckBoxFor(Function(m) m.ShowBankHolidays)
+		@Html.LabelFor(Function(m) m.ShowBankHolidays)
+		<br />
+		@Html.CheckBoxFor(Function(m) m.ShowCaptions)
+		@Html.LabelFor(Function(m) m.ShowCaptions)
+		<br />
+		@Html.CheckBoxFor(Function(m) m.ShowWeekends)
+		@Html.LabelFor(Function(m) m.ShowWeekends)
+	</fieldset>
+</fieldset>
 
 <script>
 	$(function () {
