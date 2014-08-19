@@ -85,16 +85,22 @@ Namespace Controllers
 
 			objModel.Dependencies = objReportRepository.RetrieveDependencies(objModel.ID, UtilityType.utlCustomReport)
 
-			If objModel.ColumnsAsString.Length > 0 Then
-				objModel.Columns = deserializer.Deserialize(Of List(Of ReportColumnItem))(objModel.ColumnsAsString)
+			If objModel.ColumnsAsString IsNot Nothing Then
+				If objModel.ColumnsAsString.Length > 0 Then
+					objModel.Columns = deserializer.Deserialize(Of List(Of ReportColumnItem))(objModel.ColumnsAsString)
+				End If
 			End If
 
-			If objModel.ChildTablesString.Length > 0 Then
-				objModel.ChildTables = deserializer.Deserialize(Of List(Of ChildTableViewModel))(objModel.ChildTablesString)
+			If objModel.ChildTablesString IsNot Nothing Then
+				If objModel.ChildTablesString.Length > 0 Then
+					objModel.ChildTables = deserializer.Deserialize(Of List(Of ChildTableViewModel))(objModel.ChildTablesString)
+				End If
 			End If
 
-			If objModel.SortOrdersString.Length > 0 Then
-				objModel.SortOrders = deserializer.Deserialize(Of Collection(Of SortOrderViewModel))(objModel.SortOrdersString)
+			If objModel.SortOrdersString IsNot Nothing Then
+				If objModel.SortOrdersString.Length > 0 Then
+					objModel.SortOrders = deserializer.Deserialize(Of Collection(Of SortOrderViewModel))(objModel.SortOrdersString)
+				End If
 			End If
 
 			If objModel.ValidityStatus = ReportValidationStatus.ServerCheckComplete Then
@@ -123,12 +129,16 @@ Namespace Controllers
 
 			objModel.Dependencies = objReportRepository.RetrieveDependencies(objModel.ID, UtilityType.utlMailMerge)
 
-			If objModel.ColumnsAsString.Length > 0 Then
-				objModel.Columns = deserializer.Deserialize(Of List(Of ReportColumnItem))(objModel.ColumnsAsString)
+			If objModel.ColumnsAsString IsNot Nothing Then
+				If objModel.ColumnsAsString.Length > 0 Then
+					objModel.Columns = deserializer.Deserialize(Of List(Of ReportColumnItem))(objModel.ColumnsAsString)
+				End If
 			End If
 
-			If objModel.SortOrdersString.Length > 0 Then
-				objModel.SortOrders = deserializer.Deserialize(Of Collection(Of SortOrderViewModel))(objModel.SortOrdersString)
+			If objModel.SortOrdersString IsNot Nothing Then
+				If objModel.SortOrdersString.Length > 0 Then
+					objModel.SortOrders = deserializer.Deserialize(Of Collection(Of SortOrderViewModel))(objModel.SortOrdersString)
+				End If
 			End If
 
 			If objModel.ValidityStatus = ReportValidationStatus.ServerCheckComplete Then
@@ -183,12 +193,16 @@ Namespace Controllers
 
 			objModel.Dependencies = objReportRepository.RetrieveDependencies(objModel.ID, UtilityType.utlCalendarReport)
 
-			If objModel.EventsString.Length > 0 Then
-				objModel.Events = deserializer.Deserialize(Of Collection(Of CalendarEventDetailViewModel))(objModel.EventsString)
+			If objModel.EventsString IsNot Nothing Then
+				If objModel.EventsString.Length > 0 Then
+					objModel.Events = deserializer.Deserialize(Of Collection(Of CalendarEventDetailViewModel))(objModel.EventsString)
+				End If
 			End If
 
-			If objModel.SortOrdersString.Length > 0 Then
-				objModel.SortOrders = deserializer.Deserialize(Of Collection(Of SortOrderViewModel))(objModel.SortOrdersString)
+			If objModel.SortOrdersString IsNot Nothing Then
+				If objModel.SortOrdersString.Length > 0 Then
+					objModel.SortOrders = deserializer.Deserialize(Of Collection(Of SortOrderViewModel))(objModel.SortOrdersString)
+				End If
 			End If
 
 			If objModel.ValidityStatus = ReportValidationStatus.ServerCheckComplete Then

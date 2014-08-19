@@ -24,6 +24,8 @@ Namespace Models
 		Public Property Description3Name As String
 
 		Public Property Events As New Collection(Of CalendarEventDetailViewModel)
+
+		<MinLength(3, ErrorMessage:="You must select at least one event to report on.")> _
 		Public Property EventsString As String
 
 		Public Property StartType As CalendarDataType
