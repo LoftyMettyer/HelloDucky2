@@ -91,7 +91,7 @@ Namespace Models
 
 			Dim objItems As New Collection(Of ReportTableItem)
 			Dim objBaseTable = SessionInfo.Tables.Where(Function(m) m.ID = BaseTableID).FirstOrDefault
-			objItems.Add(New ReportTableItem With {.id = objBaseTable.ID, .Name = objBaseTable.Name})
+			objItems.Add(New ReportTableItem With {.id = objBaseTable.ID, .Name = objBaseTable.Name, .Relation = ReportRelationType.Base})
 			Return objItems
 
 		End Function

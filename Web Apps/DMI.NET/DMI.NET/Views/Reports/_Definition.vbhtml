@@ -43,13 +43,13 @@
 					<fieldset class="">
 						<fieldset id="selectiontypeallrecords" class="">							
 							@Html.RadioButton("selectiontype", RecordSelectionType.AllRecords, Model.SelectionType = RecordSelectionType.AllRecords,
-																New With {.onclick = "changeRecordOption('Base','ALL')"})All Records
+																New With {.id = "selectiontype_All", .onclick = "changeRecordOption('Base','ALL')"})All Records
 						</fieldset>
 
 						<fieldset id="selectiontypepicklistgroup" class="width100">
 							<div id="PicklistRadioDiv" class="floatleft">
 								@Html.RadioButton("selectiontype", RecordSelectionType.Picklist, Model.SelectionType = RecordSelectionType.Picklist,
-																	New With {.onclick = "changeRecordOption('Base','PICKLIST')"})
+																	New With {.id = "selectiontype_Picklist", .onclick = "changeRecordOption('Base','PICKLIST')"})
 								<span>Picklist</span>
 							</div>
 							<div class="width70 floatleft">
@@ -61,7 +61,8 @@
 
 						<fieldset id="selectiontypefiltergroup" class="width100">
 							<div id="FilterRadioDiv" class="floatleft">
-								@Html.RadioButton("selectiontype", RecordSelectionType.Filter, Model.SelectionType = RecordSelectionType.Filter, New With {.onclick = "changeRecordOption('Base','FILTER')"})
+								@Html.RadioButton("selectiontype", RecordSelectionType.Filter, Model.SelectionType = RecordSelectionType.Filter,
+																	New With {.id = "selectiontype_Filter", .onclick = "changeRecordOption('Base','FILTER')"})
 								<span>Filter</span>
 							</div>
 							<div class="width70  floatleft">
@@ -116,6 +117,7 @@
 	});
 
 	function getBaseTableList() {
+
 		$.ajax({
 			url: '@Url.Action("GetBaseTables", "Reports")',
 			type: 'GET',
@@ -129,7 +131,7 @@
 				$('#BaseTableID').val("@Model.BaseTableID");
 
 				if ('@CInt(Model.ReportType)' == '2' || '@CInt(Model.ReportType)' == '9') {
-					loadAvailableTablesForReport();
+					loadAvailableTablesForReport(false);
 					attachGridToSelectedColumns();
 				}
 
@@ -247,8 +249,6 @@
 
 	}
 
-
-
 	function selectBaseTableFilter() {
 
 		var tableID = $("#BaseTableID option:selected").val();
@@ -275,7 +275,7 @@
 
 	}
 
-	function loadAvailableTablesForReport() {
+	function loadAvailableTablesForReport(baseTableChanged) {
 
 		$.ajax({
 			url: '@Html.Raw(Url.Action("GetAllTablesInReport", "Reports", New With {.ReportID = Model.ID, .ReportType = CInt(Model.ReportType)}))',
@@ -286,9 +286,34 @@
 
 				$('#SelectedTableID').empty()
 
+				if (baseTableChanged == true) {
+
+					$("#RelatedTableParent1").attr("disabled", "disabled");
+					$("#Parent1_SelectionTypeAll").prop('checked', 'checked');
+					changeRecordOption('Parent1', 'ALL');
+
+					$("#RelatedTableParent2").attr("disabled", "disabled");
+					$("#Parent2_SelectionTypeAll").prop('checked', 'checked');
+					changeRecordOption('Parent2', 'ALL');
+
+				}
+
 				$.each(json, function (i, table) {
 					var optionHtml = '<option value=' + table.id + '>' + table.Name + '</option>'
 					$('#SelectedTableID').append(optionHtml);
+
+					if (table.Relation == 1 && baseTableChanged) {
+						$("#RelatedTableParent1").removeAttr("disabled");
+						$("#txtParent1ID").val(table.id);
+						$("#Parent1_Name").val(table.Name);
+					}
+
+					if (table.Relation == 2 && baseTableChanged) {
+						$("#RelatedTableParent2").removeAttr("disabled");
+						$("#txtParent2ID").val(table.id);
+						$("#Parent2_Name").val(table.Name);
+					}
+
 				});
 
 				$("#SelectedTableID").val($("#BaseTableID").val());
@@ -335,20 +360,22 @@
 
 		removeAllSelectedColumns();
 
+		$("#selectiontype_All").prop('checked', 'checked');
+
+		changeRecordOption('Base', 'ALL');
+
 		if ($("#txtReportType").val() != '@UtilityType.utlCrossTab') {
 			OpenHR.RemoveAllRowsFromGrid(SortOrders, 'Reports/RemoveSortOrder');
 		}
 
 		if ($("#txtReportType").val() == '@UtilityType.utlCustomReport') {
-			getAvailableTableColumnsCalcs();
 			removeAllChildTables();
-			loadAvailableTablesForReport();
+			loadAvailableTablesForReport(true);
 		}
 
 		if ($("#txtReportType").val() == '@UtilityType.utlCalendarReport') {
 			$('#CalendarEvents').jqGrid('clearGridData');
 		}
-
 
 	}
 

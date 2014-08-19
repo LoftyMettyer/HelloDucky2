@@ -39,8 +39,8 @@ Namespace Models
 		Public Property Output As New ReportOutputModel
 
 		' Flags to detect if thius definition needs to be marked as hidden
-		Public Property Parent1ViewAccess As Boolean
-		Public Property Parent2ViewAccess As Boolean
+		Public Property Parent1ViewAccess As String
+		Public Property Parent2ViewAccess As String
 
 		Public Overrides Sub SetBaseTable(TableID As Integer)
 
@@ -91,22 +91,22 @@ Namespace Models
 
 			' Add base table
 			objTable = SessionInfo.Tables.Where(Function(m) m.ID = BaseTableID).FirstOrDefault
-			objItems.Add(New ReportTableItem With {.id = objTable.ID, .Name = objTable.Name})
+			objItems.Add(New ReportTableItem With {.id = objTable.ID, .Name = objTable.Name, .Relation = ReportRelationType.Base})
 
 			' Add child tables
 			For Each objChild In ChildTables
-				objItems.Add(New ReportTableItem() With {.id = objChild.TableID, .Name = objChild.TableName})
+				objItems.Add(New ReportTableItem() With {.id = objChild.TableID, .Name = objChild.TableName, .Relation = ReportRelationType.Child})
 			Next
 
 			' Add parent tables
 			If Parent1.ID > 0 Then
 				objTable = SessionInfo.Tables.Where(Function(m) m.ID = Parent1.ID).FirstOrDefault
-				objItems.Add(New ReportTableItem With {.id = objTable.ID, .Name = objTable.Name})
+				objItems.Add(New ReportTableItem With {.id = objTable.ID, .Name = objTable.Name, .Relation = ReportRelationType.Parent1})
 			End If
 
 			If Parent2.ID > 0 Then
 				objTable = SessionInfo.Tables.Where(Function(m) m.ID = Parent2.ID).FirstOrDefault
-				objItems.Add(New ReportTableItem With {.id = objTable.ID, .Name = objTable.Name})
+				objItems.Add(New ReportTableItem With {.id = objTable.ID, .Name = objTable.Name, .Relation = ReportRelationType.Parent2})
 			End If
 
 			Return objItems.OrderBy(Function(m) m.Name)
