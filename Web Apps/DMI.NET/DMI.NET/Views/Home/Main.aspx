@@ -97,7 +97,7 @@
 			height: 'auto',
 			resizable: false,
 			modal: true,
-			title: 'OpenHR Web'
+			title: ''
 		});
 
 		$('#divExpressionSelection').dialog({
@@ -107,7 +107,7 @@
 			height: 'auto',
 			resizable: true,
 			modal: true,
-			title: 'OpenHR Web'
+			title: ''
 		});
 
 		//load menu for dmi, or linksmain for ssi

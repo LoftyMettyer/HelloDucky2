@@ -148,7 +148,7 @@ End Code
 			$("#Description3ID").val(id);
 			$("#txtDescription3").val(name);
 			setViewAccess('CALC', $("#Description3ViewAccess"), access, "report description");
-		});
+		}, 400, 400);
 
 	}
 
