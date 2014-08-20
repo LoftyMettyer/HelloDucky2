@@ -269,6 +269,7 @@ Namespace Controllers
 			Next
 
 			objModel.ID = objReport.ChildTables.Count + 1
+			objModel.IsAdd = True
 
 			Return PartialView("EditorTemplates\ReportChildTable", objModel)
 
@@ -278,8 +279,14 @@ Namespace Controllers
 		<HttpPost>
 		Function EditChildTable(objModel As ChildTableViewModel) As ActionResult
 
-			Dim objReport = objReportRepository.RetrieveParent(objModel)
-			objModel.AvailableTables = objReportRepository.GetChildTables(objReport.BaseTableID, True)
+			Dim objReport = CType(objReportRepository.RetrieveParent(objModel), CustomReportModel)
+			objModel.AvailableTables = objReportRepository.GetChildTables(objReport.BaseTableID, False)
+
+			For Each objTable In objReport.ChildTables
+				objModel.AvailableTables.RemoveAll(Function(m) m.id = objTable.TableID AndAlso objModel.TableID <> m.id)
+			Next
+
+			objModel.IsAdd = False
 
 			Return PartialView("EditorTemplates\ReportChildTable", objModel)
 		End Function
@@ -473,6 +480,16 @@ Namespace Controllers
 			objReport = CType(objReportRepository.RetrieveParent(objModel), ReportBaseModel)
 
 			objReport.Columns.Add(objModel)
+
+		End Sub
+
+		<HttpPost>
+		Sub RemoveChildTable(objModel As ReportColumnItem)
+
+			Dim objReport As CustomReportModel
+			objReport = CType(objReportRepository.RetrieveParent(objModel), CustomReportModel)
+
+			objReport.ChildTables.RemoveAll(Function(m) m.ID = objModel.ID)
 
 		End Sub
 

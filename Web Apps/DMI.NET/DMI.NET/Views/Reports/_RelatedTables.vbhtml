@@ -9,12 +9,12 @@
 
 	@Html.HiddenFor(Function(m) m.Parent1ViewAccess)
 	@Html.HiddenFor(Function(m) m.Parent2ViewAccess)
+	@Html.HiddenFor(Function(m) m.ChildTablesString, New With {.id = "txtCTAAS"})
 
 	<fieldset id="RelatedTableParent1" class="width45 floatleft" @Model.Parent1.Visibility>
 		<legend class="fontsmalltitle">Parent 1 :</legend>
 
 		<fieldset>
-			@Html.HiddenFor(Function(m) m.ChildTablesString, New With {.id = "txtCTAAS"})
 			<input type="hidden" id="txtParent1ID" name="Parent1.ID" value="@Model.Parent1.ID" />
 			<div class="width30 floatleft">
 				Table:
@@ -136,7 +136,7 @@
 			<br />
 		<input type="button" id="btnChildEdit" value="Edit..." disabled onclick="editChildTable(0);" />
 		<br />
-		<input type="button" id="btnChildRemove" value="Remove" disabled onclick="removeChildTable();" />
+		<input type="button" id="btnChildRemove" value="Remove" disabled onclick="requestRemoveChildTable();" />
 		<br />
 		<input type="button" id="btnChildRemoveAll" value="Remove All" disabled onclick="removeAllChildTables();" />				
 	</div>
@@ -216,10 +216,48 @@
 
 	}
 
-	function removeChildTable() {
+	function removeChildTableCompleted() {
+
 		rowID = $('#ChildTables').jqGrid('getGridParam', 'selrow');
-		$('#ChildTables').jqGrid('delRowData', rowID)
+		var gridData = $("#ChildTables").getRowData(rowID);
+		var columnList = $("#SelectedColumns").getDataIDs();
+
+		$('#ChildTables').jqGrid('delRowData', rowID);
 		loadAvailableTablesForReport(false);
+
+		for (i = 0; i < columnList.length; i++) {
+			rowData = $("#SelectedColumns").getRowData(columnList[i]);
+			if (rowData.TableID == gridData.TableID) {
+				$('#SelectedColumns').jqGrid('delRowData', rowData.ID);
+			}
+		}
+	}
+
+	function requestRemoveChildTable() {
+		rowID = $('#ChildTables').jqGrid('getGridParam', 'selrow');
+		var gridData = $("#ChildTables").getRowData(rowID);
+		var columnList = $("#SelectedColumns").getDataIDs();
+		var iColumnCount = 0;
+
+		for (i = 0; i < columnList.length; i++) {
+			rowData = $("#SelectedColumns").getRowData(columnList[i]);
+			if (rowData.TableID == gridData.TableID) {
+				iColumnCount = iColumnCount + 1;
+			}
+		}
+
+		if (iColumnCount > 0) {
+			OpenHR.modalPrompt("One or more columns from '" + gridData.TableName + "' table have been included in the report definition." +
+					"<br/><br/>Changing the child table will remove these columns from the report definition." +
+					"<br/><br/>Are you sure you wish to continue ?", 4, "").then(function (answer) {
+						if (answer == 6) { // Yes
+							OpenHR.postData("Reports/RemoveChildTable", gridData, removeChildTableCompleted);
+						}
+					});
+		}
+		else {
+			OpenHR.postData("Reports/RemoveChildTable", gridData, removeChildTableCompleted);
+		}
 	}
 
 	$(function () {

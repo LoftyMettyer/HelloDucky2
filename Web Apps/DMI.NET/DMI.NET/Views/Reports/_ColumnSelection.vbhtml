@@ -210,7 +210,7 @@
     			total: "total", //total pages for the query
     			records: "records", //total number of records
     			repeatitems: false,
-    			id: "Sequence" //index of the column with the PK in it
+    			id: "ID" //index of the column with the PK in it
     		},
     		colNames: ['ID', 'TableID', 'IsExpression',	'Name',	'Sequence',	'Heading',	'DataType',
     							'Size', 'Decimals', 'IsAverage', 'IsCount', 'IsTotal', 'IsHidden', 'IsGroupWithNext', 'IsRepeated', 'ReportID', 'ReportType'],

@@ -25,7 +25,6 @@ Namespace Models
 
 		Public Property ChildTables As New List(Of ChildTableViewModel)
 
-		<DisplayFormat(ConvertEmptyStringToNull:=False, NullDisplayText:="")>
 		Public Property ChildTablesString As String
 		Public Property ChildTablesAvailable As Boolean
 

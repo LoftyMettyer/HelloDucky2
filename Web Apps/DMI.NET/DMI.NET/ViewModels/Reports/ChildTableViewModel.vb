@@ -37,6 +37,8 @@ Namespace ViewModels.Reports
 
 		Public Property AvailableTables As New List(Of ReportTableItem)
 
+		Public IsAdd As Boolean
+
 	End Class
 
 End Namespace

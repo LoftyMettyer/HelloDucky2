@@ -114,35 +114,95 @@ End Code
 		$("#divPopupReportDefinition").empty();
 	}
 
+	function addChildTableCompleted() {
+
+		var datarow = {
+			ReportID: '@Model.ReportID',
+			ReportType: '@Model.ReportType',
+			ID: '@Model.ID',
+			TableID: $("#ChildTableID").val(),
+			FilterID: $("#txtChildFilterID").val(),
+			FilterViewAccess: $("#FilterViewAccess").val(),
+			OrderID: $("#txtChildFieldOrderID").val(),
+			TableName: $("#ChildTableID option:selected").text(),
+			FilterName: $("#txtChildFilter").val(),
+			OrderName: $("#txtFieldRecOrder").val(),
+			Records: $("#txtChildRecords").val()
+		};
+
+		var grid = $("#ChildTables")
+		grid.jqGrid('addRowData', '@Model.ID', datarow);
+		grid.setGridParam({ sortname: 'ID' }).trigger('reloadGrid');
+		grid.jqGrid("setSelection", '@Model.ID');
+
+		setViewAccess('FILTER', $("#ChildTablesViewAccess"), $("#FilterViewAccess").val(), $("#ChildTableID option:selected").text());
+
+		// Post to server
+		OpenHR.postData("Reports/PostChildTable", datarow, loadAvailableTablesForReport)
+
+		$("#divPopupReportDefinition").dialog("close");
+		$("#divPopupReportDefinition").empty();
+	}
+
+	function changeChildTableCompleted() {
+
+		rowID = $('#ChildTables').jqGrid('getGridParam', 'selrow');
+		var gridData = $("#ChildTables").getRowData(rowID);
+		var columnList = $("#SelectedColumns").getDataIDs();
+
+		$('#ChildTables').jqGrid('delRowData', rowID);
+		loadAvailableTablesForReport(false);
+
+		for (i = 0; i < columnList.length; i++) {
+			rowData = $("#SelectedColumns").getRowData(columnList[i]);
+			if (rowData.TableID == gridData.TableID) {
+				$('#SelectedColumns').jqGrid('delRowData', rowData.ID);
+			}
+		}
+
+		addChildTableCompleted();
+
+	}
+
 		function postThisChildTable() {
 
-			var datarow = {
-				ReportID: '@Model.ReportID',
-				ReportType: '@Model.ReportType',
-				ID: '@Model.ID',
-				TableID: $("#ChildTableID").val(),
-				FilterID: $("#txtChildFilterID").val(),
-				FilterViewAccess: $("#FilterViewAccess").val(),
-				OrderID: $("#txtChildFieldOrderID").val(),
-				TableName: $("#ChildTableID option:selected").text(),
-				FilterName: $("#txtChildFilter").val(),
-				OrderName: $("#txtFieldRecOrder").val(),
-				Records: $("#txtChildRecords").val()
-			};
-
 			// Update client
-			var grid = $('#ChildTables');
-			grid.jqGrid('delRowData', '@Model.ID');
-			grid.jqGrid('addRowData', '@Model.ID', datarow);
-			grid.setGridParam({ sortname: 'ID' }).trigger('reloadGrid');
-			grid.jqGrid("setSelection", '@Model.ID');
+			var gridData = $('#ChildTables').getRowData('@Model.ID');
+			var columnList = $("#SelectedColumns").getDataIDs();
+			var iColumnCount = 0;
 
-			setViewAccess('FILTER', $("#ChildTablesViewAccess"), $("#FilterViewAccess").val(), $("#ChildTableID option:selected").text());
+			for (i = 0; i < columnList.length; i++) {
+				rowData = $("#SelectedColumns").getRowData(columnList[i]);
+				if (rowData.TableID == '@Model.TableID') {
+					iColumnCount = iColumnCount + 1;
+				}
+			}
 
-			// Post to server
-			OpenHR.postData("Reports/PostChildTable", datarow, loadAvailableTablesForReport)
+			if ('@Model.TableID' !=  $("#ChildTableID").val() && '@Model.IsAdd' == 'False') {
+				if (iColumnCount > 0) {
+					OpenHR.modalPrompt("One or more columns from '" + "@Model.TableName" + "' table have been included in the report definition." +
+							"<br/><br/>Changing the child table will remove these columns from the report definition." +
+							"<br/><br/>Are you sure you wish to continue ?", 4, "").then(function (answer) {
+								if (answer == 6) { // Yes
+									OpenHR.postData("Reports/RemoveChildTable", gridData, changeChildTableCompleted);
+								}
+							});
+				}
+				else {
+					OpenHR.postData("Reports/RemoveChildTable", gridData, changeChildTableCompleted);
+				}
 
-			$("#divPopupReportDefinition").dialog("close");
-			$("#divPopupReportDefinition").empty();
+			}
+
+			else {
+
+				if ('@Model.IsAdd' == 'False') {
+					$('#ChildTables').jqGrid('delRowData', '@Model.ID');
+				}
+
+
+				addChildTableCompleted();
+			}
+
 		}
 </script>
