@@ -1134,6 +1134,28 @@ input[type=button].Embedded, input[type=button].Linked {
 	width: 345px;
 }
 
+.formField .ui-button {
+	width: auto;
+}
+
+
+#eventEventInformationContainer .formField {
+	margin: 2px auto;	
+	float:right;
+}
+
+#eventEventInformationContainer .formField label {
+margin-left:20px;
+}
+
+#eventEventInformationContainer {
+padding-left:0px;
+}
+
+#eventEventInformationContainer .optiongrouppadding {
+ padding-left:20px;
+}
+
 .formTextArea, .formInput {
 	margin: 10px auto;
 	width: 500px;
