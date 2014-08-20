@@ -7,10 +7,10 @@
 @Html.HiddenFor(Function(m) m.SortOrdersString, New With {.id = "txtSOAAS"})
 
 
-	<fieldset style="">
+	<fieldset style="width:100%">
 	<legend class="fontsmalltitle">Sort Order :</legend>
 
-	<div style="float:left" class="">		
+	<div id="divSortOrderDiv" style="float:left" class="width80">		
 			<table id="SortOrders"></table>		
 	</div>
 
@@ -36,7 +36,8 @@
 
 	$(function () {
 		attachGrid();
-		//$("#SortOrders").jqGrid().css('overflow-y', 'hidden');
+		$("#SortOrders").jqGrid('setGridWidth', $("#divSortOrderDiv").width() * .95);
+		$("#divSortOrderDiv").width();
 	})
 
 	function attachGrid() {
@@ -83,7 +84,7 @@
 									}
 			],
 			viewrecords: true,
-			width: 200,
+			width: 'auto',
 			height: '400px',
 			sortname: 'Sequence',
 			sortorder: "asc",			

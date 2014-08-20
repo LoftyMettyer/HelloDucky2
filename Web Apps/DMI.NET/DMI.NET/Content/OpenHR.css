@@ -1156,6 +1156,12 @@ padding-left:0px;
  padding-left:20px;
 }
 
+#eventEventInformationContainer #cmdBasePicklist {
+ 	float:right;
+	padding:2px 17px;
+}
+
+
 .formTextArea, .formInput {
 	margin: 10px auto;
 	width: 500px;

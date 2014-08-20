@@ -465,7 +465,7 @@ select.readonly {
 #tabs .ui-widget-content {
 	/*border:none;*/
 }
-#cmdBaseFilter, #cmdParent1Picklist, 
+#cmdBaseFilter, #cmdParent1Picklist, #cmdBasePicklist,
 #cmdParent1Filter, #cmdParent2Picklist, #cmdParent2Filter, 
 #cmdEmailGroup, #cmdDescription3, #cmdCustomStart, #cmdCustomEnd  {
 	float:left;

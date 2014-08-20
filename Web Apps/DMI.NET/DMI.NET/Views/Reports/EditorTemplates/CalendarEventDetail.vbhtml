@@ -182,16 +182,15 @@ End Code
 		changeEventLegendType('@Model.LegendType')
 		//some styling
 		$("#frmPostCalendarEvent").width('500');
-		//$('#LegendCharacter').width('');
 		var controlwidth = $("#frmPostCalendarEvent").width();
 		var newscontrolwidth = controlwidth - 180;
 
-		$('#LegendCharacter').width('30');
-		$('#txtEventFilter').width('270px');
-		$('#EventName').width(newscontrolwidth);
-		$('select').width(newscontrolwidth);
-		$('fieldset').css('border', '0');
-		//$('label').css('padding-left','20px');
+		$('#eventEventInformationContainer #LegendCharacter').width('30');
+		$('#eventEventInformationContainer #txtEventFilter').width('270px');
+		$('#eventEventInformationContainer #EventName').width(newscontrolwidth);
+		$('#eventEventInformationContainer select').width(newscontrolwidth);
+		$('#eventEventInformationContainer fieldset').css('border', '0');
+		$('#eventEventInformationContainer .ui-button').css('float', 'right');
 
 	});
 
@@ -313,7 +312,7 @@ ReportType: 		'@CInt(Model.ReportType)',
 		setViewAccess('FILTER', $("#CalendarEventsViewAccess"), $("#FilterViewAccess").val(), $("#EventName").val());
 
 		// Post to server
-								OpenHR.postData("Reports/PostCalendarEvent", datarow)
+		OpenHR.postData("Reports/PostCalendarEvent", datarow)
 
 		$("#divPopupReportDefinition").dialog("close");
 		$("#divPopupReportDefinition").empty();

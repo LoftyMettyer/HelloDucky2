@@ -214,8 +214,7 @@
 			$("#StartCustomId").val(id);
 			$("#txtCustomStart").val(name);
 			setViewAccess('CALC', $("#StartCustomViewAccess"), access, "report start date");
-		});
-
+		}, 400, 400);
 	}
 
 	function selectCustomEndDate() {
@@ -227,7 +226,7 @@
 			$("#EndCustomId").val(id);
 			$("#txtCustomEnd").val(name);
 			setViewAccess('CALC', $("#EndCustomViewAccess"), access, "report end date");
-		});
+		}, 400, 400);
 
 	}
 
