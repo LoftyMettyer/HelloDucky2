@@ -494,9 +494,10 @@
 					sControlName = sControlName.substr(0, 16);
 					if (sControlName == "txtEventLogUser_") {
 						var oOption = document.createElement("OPTION");
-						frmLog.cboUsername.options.add(oOption);
-						oOption.innerText = dataCollection.item(i).value;
+						
+						oOption.innerHTML = dataCollection.item(i).value;
 						oOption.value = dataCollection.item(i).value;
+						frmLog.cboUsername.options.add(oOption);
 						combo_disable(frmLog.cboUsername, false);
 
 						if (psCurrentFilterUser == dataCollection.item(i).value) {
@@ -519,10 +520,10 @@
 		else {
 			combo_disable(frmLog.cboUsername, true);
 			var oOption = document.createElement("OPTION");
-			frmLog.cboUsername.options.add(oOption);
-			oOption.innerText = frmEventUseful.txtUserName.value;
-			oOption.value = oOption.innerText;
+			oOption.innerHTML = frmEventUseful.txtUserName.value;
+			oOption.value = frmEventUseful.txtUserName.value;
 			oOption.selected = true;
+			frmLog.cboUsername.options.add(oOption);
 		}
 
 		refreshGrid();
