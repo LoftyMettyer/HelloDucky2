@@ -293,6 +293,8 @@
 		// Get menu to refresh the menu.
 		menu_refreshMenu();
 
+		EventLog_refreshButtons();
+
 		refreshStatusBar();
 
 		if (frmPurge.txtShowPurgeMSG.value == 1) {
@@ -349,6 +351,7 @@
 		frmGetDataForm.txtELOrderColumn.value = frmLog.txtELOrderColumn.value;
 		frmGetDataForm.txtELOrderOrder.value = frmLog.txtELOrderOrder.value;
 
+		EventLog_refreshButtons();
 		OpenHR.submitForm(frmGetDataForm);
 	}
 
@@ -415,6 +418,8 @@
 				"&txtEmailPermission=" + escape(frmDetails.txtEmailPermission.value);
 
 		openDialog(sURL, 500, 220);
+
+		EventLog_refreshButtons();
 	}
 
 	function EventLog_purgeEvent() {
@@ -466,6 +471,17 @@
 		openDialog(sURL, (screen.width) / 3 + 40, (screen.height) / 2 - 100, "no", "no");
 	}
 
+	function EventLog_refreshButtons() {
+		var frmLog = OpenHR.getForm("workframe", "frmLog");
+		var logEventRowCount = $("#LogEvents").getGridParam('reccount') == undefined ? 0 : $("#LogEvents").getGridParam('reccount');
+		var logEventSelectedRows = $('#LogEvents').jqGrid('getGridParam', 'selarrrow') == undefined ? 0 : $('#LogEvents').jqGrid('getGridParam', 'selarrrow').length;
+
+		menu_toolbarEnableItem("mnutoolViewEventLogFind", (logEventRowCount > 0));
+		menu_toolbarEnableItem("mnutoolPurgeEventLogFind", (frmLog.txtELPurgePermission.value == "1"));
+		menu_toolbarEnableItem("mnutoolDeleteEventLogFind", ((logEventRowCount > 0) && (frmLog.txtELDeletePermission.value == "1")));
+		menu_toolbarEnableItem("mnutoolEmailEventLogFind", ((logEventSelectedRows > 0) && (frmLog.txtELEmailPermission.value == "1")));
+	}
+
 	function refreshUsers() {
 		// Get the columns/calcs for the current table selection.
 		var frmGetDataForm = OpenHR.getForm("dataframe", "frmGetData");
@@ -511,6 +527,8 @@
 			if (psCurrentFilterUser == '-1' || psCurrentFilterUser == '' || !bFoundUser) {
 				oOptionALL.selected = true;
 			}
+
+			EventLog_refreshButtons();
 
 			// Get menu to refresh the menu.
 			menu_refreshMenu();
