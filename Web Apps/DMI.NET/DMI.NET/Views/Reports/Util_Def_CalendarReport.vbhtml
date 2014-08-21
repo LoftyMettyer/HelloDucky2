@@ -105,11 +105,11 @@ End Code
 	</div>
 
 	<div id="report_definition_tab_order">
-		<fieldset>
+		
 			@Code
 			Html.RenderPartial("_SortOrder", Model)
 			End Code
-		</fieldset>
+		
 	</div>
 
 	<div id="report_definition_tab_output">
