@@ -497,9 +497,9 @@
 
 		if (pbViewAll == 1) {
 			var oOptionALL = document.createElement("OPTION");
-			frmLog.cboUsername.options.add(oOptionALL);
-			oOptionALL.innerText = '<All>';
+			oOptionALL.innerHTML = '&lt;All&gt;';
 			oOptionALL.value = -1;
+			frmLog.cboUsername.options.add(oOptionALL);
 
 			var frmUtilDefForm = OpenHR.getForm("dataframe", "frmData");
 			var dataCollection = frmUtilDefForm.elements;
