@@ -53,7 +53,7 @@
 			},
 			colNames: ['Name'],
 			colModel: [
-				{ name: 'Name', index: 'Name', align: "center" }],
+				{ name: 'Name', index: 'Name', align: "left" }],
 			rowNum: 10,
 			width: 'auto',
 			height: '300px',
