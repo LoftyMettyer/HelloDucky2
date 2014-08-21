@@ -441,7 +441,7 @@ select.readonly {
 }
 
 #PrinterName {
-	width:100%;
+	/*width:100%;*/
 }
 
 .accesspermissionsgrid {
@@ -618,4 +618,12 @@ margin:15px 0 5px 0;
 
 .ui-dialog .ui-dialog-buttonpane {
 	 border-width: 0 !important;
+}
+
+.padbot5 {
+	padding-bottom:5px;
+}
+
+.padbot10 {
+	padding-bottom:10px;
 }

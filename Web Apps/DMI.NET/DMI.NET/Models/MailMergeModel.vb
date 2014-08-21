@@ -32,7 +32,7 @@ Namespace Models
 		Public Property SuppressBlankLines As Boolean
 		Public Property OutputFormat As MailMergeOutputTypes
 
-		<DisplayName("Display output on screen")>
+		<DisplayName("Display on screen")>
 		Public Property DisplayOutputOnScreen As Boolean
 
 		<DisplayName("Send to printer")>
@@ -51,20 +51,20 @@ Namespace Models
 		<ExcludeChar("/*?""<>|")>
 		Public Property Filename As String
 
-		<DisplayName("Email Address")>
+		<DisplayName("Email Address :")>
 		<NonZeroIf("OutputFormat", MailMergeOutputTypes.IndividualEmail, ErrorMessage:="No email group selected.")>
 		Public Property EmailGroupID As Integer
 
 		<DisplayFormat(ConvertEmptyStringToNull:=False)> _
-		<DisplayName("Email Subject")>
+		<DisplayName("Email Subject :")>
 		Public Property EmailSubject As String
 
-		<DisplayName("Send As Attachment")>
+		<DisplayName("Attach As :")>
 		Public Property EmailAsAttachment As Boolean
 
 		<Required(ErrorMessage:="Email attachment name is required.")> _
 		<MaxLength(255, ErrorMessage:="Email attachment cannot be longer than 255 characters.")> _
-		<DisplayName("Attach As")>
+		<DisplayName("Attach As :")>
 		Public Property EmailAttachmentName As String
 
 		Public Overrides Sub SetBaseTable(TableID As Integer)
