@@ -138,7 +138,7 @@
 		<br />
 		<input type="button" id="btnChildRemove" value="Remove" disabled onclick="requestRemoveChildTable();" />
 		<br />
-		<input type="button" id="btnChildRemoveAll" value="Remove All" disabled onclick="removeAllChildTables();" />				
+		<input type="button" id="btnChildRemoveAll" value="Remove All" disabled onclick="removeAllChildTables(true);" />				
 	</div>
 </fieldset>
 </div>
@@ -197,7 +197,6 @@
 		}, 400, 400);
 
 	}
-
 
 	function addChildTable() {
 
@@ -290,12 +289,8 @@
 				{ name: 'OrderName', index: 'OrderName', width: 100 },
 			{ name: 'Records', index: 'Records', width: 100 }
 			],
-			rowNum: 10,
 			autowidth: true,
-			rowTotal: 50,
-			rowList: [10, 20, 30],
 			shrinkToFit: true,
-			pager: '#pcrud',
 			sortname: 'TableName',
 			loadonce: true,
 			viewrecords: true,

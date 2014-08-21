@@ -110,7 +110,8 @@
 	$(function () {
 
 		 $('fieldset').css("border", "0");
-		$("#frmReportDefintion :input").on("change", function () { enableSaveButton(this); });
+		 $("#frmReportDefintion :input").on("change", function () { enableSaveButton(this); });
+		 $("#frmReportDefintion :input").on("click", function () { enableSaveButton(this); });
 		getBaseTableList();
 		refreshViewAccess();
 
@@ -369,7 +370,7 @@
 		}
 
 		if ($("#txtReportType").val() == '@UtilityType.utlCustomReport') {
-			removeAllChildTables();
+			removeAllChildTables(false);
 			loadAvailableTablesForReport(true);
 		}
 
@@ -379,8 +380,44 @@
 
 	}
 
-	function removeAllChildTables() {
+	function removeAllChildTablesCompleted() {
+
+		var childTables = $("#ChildTables").getDataIDs();
+
+		for (i = 0; i < childTables.length; i++) {
+			thisTable = $("#ChildTables").getRowData(childTables[i]);
+
+			var columnList = $("#SelectedColumns").getDataIDs();
+			for (j = 0; j < columnList.length; j++) {
+				rowData = $("#SelectedColumns").getRowData(columnList[j]);
+
+				if (rowData.TableID == thisTable.TableID) {
+					$('#SelectedColumns').jqGrid('delRowData', rowData.ID);
+				}
+
+			}
+
+		}
+
 		$('#ChildTables').jqGrid('clearGridData')
+	}
+
+	function removeAllChildTables(prompt) {
+
+		var data = { ReportID: "@Model.ID", ReportType: "@Model.ReportType" }
+
+		if (prompt == true) {
+			OpenHR.modalPrompt("Removing all the child tables will remove all child table columns included in the report definition." +
+					"<br/><br/>Are you sure you wish to continue ?", 4, "").then(function (answer) {
+						if (answer == 6) { // Yes
+							OpenHR.postData("Reports/RemoveAllChildTables", data, removeAllChildTablesCompleted);
+						}
+					});
+		}
+		else {
+			OpenHR.postData("Reports/RemoveAllChildTables", data, removeAllChildTablesCompleted);
+		}
+		
 	}
 
 	function removeAllSelectedColumns() {

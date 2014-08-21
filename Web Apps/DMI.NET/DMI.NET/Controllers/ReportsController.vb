@@ -484,6 +484,16 @@ Namespace Controllers
 		End Sub
 
 		<HttpPost>
+		Sub RemoveAllChildTables(objModel As ReportColumnItem)
+
+			Dim objReport As CustomReportModel
+			objReport = CType(objReportRepository.RetrieveParent(objModel), CustomReportModel)
+
+			objReport.ChildTables.Clear()
+
+		End Sub
+
+		<HttpPost>
 		Sub RemoveChildTable(objModel As ReportColumnItem)
 
 			Dim objReport As CustomReportModel
