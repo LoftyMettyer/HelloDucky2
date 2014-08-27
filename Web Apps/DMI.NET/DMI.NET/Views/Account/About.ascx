@@ -13,32 +13,29 @@
 		}
 
 		<%_txtLocalServerValue = ApplicationSettings.LoginPage_Server%>
-		<%_txtLocalDatabaseValue = ApplicationSettings.LoginPage_Database%>
-	
+		<%_txtLocalDatabaseValue = ApplicationSettings.LoginPage_Database%>	
 	</script>
+
 	<script runat="server">
 		Private _txtLocalServerValue As String
 		Private _txtLocalDatabaseValue As String
-</script>
-	<style type="text/css">
-		.auto-style1
-		{
-			width: 72px;
-		}
-  </style>
+	</script>
 </head>
 <body>
 
 <form method="post" id="frmAboutForm" name="frmAboutForm">
-	<br>
+	<div class="pageTitleDiv" style="margin-bottom: 15px">
+		<span class="pageTitle" id="PopupReportDefinition_PageTitle">About OpenHR</span>
+	</div>
+
 	<table style="text-align: center; border-spacing: 5px; border-collapse: collapse;" class="outline">
 		<tr>
 			<td>
 				<table style="text-align: center; border-spacing: 5px; border-collapse: collapse;" class="invisible">
-					<tr>
-						<td colspan="6" height="10"></td>
+					<tr style="display:none">
+						<td colspan="6"></td>
 					</tr>
-					<tr>
+					<tr style="display:none">
 						<td width="40"></td>
 						<td colspan="4">
 							<h3 align="center"></h3>
@@ -56,9 +53,7 @@
 						<td width="20" rowspan="<%=iNumRows %>"></td>
 						<td style="vertical-align: top; text-align: left; white-space: nowrap; padding-right: 10px;">OpenHR :&nbsp;
 						</td>
-						<td style="vertical-align: top; text-align: left; white-space: nowrap;">Version
-                                <%=session("Version")%>
-						</td>
+						<td style="vertical-align: top; text-align: left; white-space: nowrap;">Version <%=session("Version")%></td>
 						<td width="40" rowspan="<%=iNumRows %>"></td>
 					</tr>
 
@@ -123,11 +118,8 @@
 					</tr>
 					<tr>
 						<td colspan="2" style="vertical-align: top; text-align: left; white-space: nowrap;">
-							<a target="Advanced Website" href="http://www.advancedcomputersoftware.com/abs" class="hypertext"
-								onmouseover="try{hypertextARef_onMouseOver(this);}catch(e){}"
-								onmouseout="try{hypertextARef_onMouseOut(this);}catch(e){}"
-								onfocus="try{hypertextARef_onFocus(this);}catch(e){}"
-								onblur="try{hypertextARef_onBlur(this);}catch(e){}">http://www.advancedcomputersoftware.com/abs
+							<a target="Advanced Website" href="http://www.advancedcomputersoftware.com/abs" class="hypertext">
+								http://www.advancedcomputersoftware.com/abs
 							</a>
 						</td>
 					</tr>
@@ -155,17 +147,10 @@
 						</td>
 						<td style="vertical-align: top; text-align: left; white-space: nowrap;">
 							<%If Session("SupportEmail") = "" Then%>
-							<a href="mailto://service.delivery@advancedcomputersoftware.com?subject=OpenHR Support Query - Intranet Login" class="hypertext"
-								onmouseover="try{hypertextARef_onMouseOver(this);}catch(e){}"
-								onmouseout="try{hypertextARef_onMouseOut(this);}catch(e){}"
-								onfocus="try{hypertextARef_onFocus(this);}catch(e){}"
-								onblur="try{hypertextARef_onBlur(this);}catch(e){}">service.delivery@advancedcomputersoftware.com</a>
+							<a href="mailto://service.delivery@advancedcomputersoftware.com?subject=OpenHR Support Query - Intranet Login" class="hypertext">
+								service.delivery@advancedcomputersoftware.com</a>
 							<%Else%>
-							<a href="mailto://<%=session("SupportEmail") %>?subject=OpenHR Support Query - Web Login" class="hypertext"
-								onmouseover="try{hypertextARef_onMouseOver(this);}catch(e){}"
-								onmouseout="try{hypertextARef_onMouseOut(this);}catch(e){}"
-								onfocus="try{hypertextARef_onFocus(this);}catch(e){}"
-								onblur="try{hypertextARef_onBlur(this);}catch(e){}">
+							<a href="mailto://<%=session("SupportEmail") %>?subject=OpenHR Support Query - Web Login" class="hypertext">
 								<%=session("SupportEmail") %></a>
 							<%End If%>
 						</td>
@@ -175,17 +160,10 @@
 						</td>
 						<td style="vertical-align: top; text-align: left; white-space: nowrap;">
 							<%If Session("SupportWebpage") = "" Then%>
-							<a target="AdvancedSupportWebsite" href="http://webfirst.advancedcomputersoftware.com" class="hypertext"
-								onmouseover="try{hypertextARef_onMouseOver(this);}catch(e){}"
-								onmouseout="try{hypertextARef_onMouseOut(this);}catch(e){}"
-								onfocus="try{hypertextARef_onFocus(this);}catch(e){}"
-								onblur="try{hypertextARef_onBlur(this);}catch(e){}">http://webfirst.advancedcomputersoftware.com</a>
+							<a target="AdvancedSupportWebsite" href="http://webfirst.advancedcomputersoftware.com" class="hypertext">
+								http://webfirst.advancedcomputersoftware.com</a>
 							<%Else%>
-							<a target="AdvancedSupportWebsite" href="<%=session("SupportWebpage") %>" class="hypertext"
-								onmouseover="try{hypertextARef_onMouseOver(this);}catch(e){}"
-								onmouseout="try{hypertextARef_onMouseOut(this);}catch(e){}"
-								onfocus="try{hypertextARef_onFocus(this);}catch(e){}"
-								onblur="try{hypertextARef_onBlur(this);}catch(e){}">
+							<a target="AdvancedSupportWebsite" href="<%=session("SupportWebpage") %>" class="hypertext">
 								<%=session("SupportWebpage") %></a>
 							<%End If%>
 						</td>
@@ -196,11 +174,8 @@
 					</tr>
 					<tr>
 						<td colspan="2" style="vertical-align: top; text-align: left; white-space: nowrap;">
-							<a target="AdvancedConnectWebsite" href="http://www.advancedconnect.co.uk/" class="hypertext"
-								onmouseover="try{hypertextARef_onMouseOver(this);}catch(e){}"
-								onmouseout="try{hypertextARef_onMouseOut(this);}catch(e){}"
-								onfocus="try{hypertextARef_onFocus(this);}catch(e){}"
-								onblur="try{hypertextARef_onBlur(this);}catch(e){}">Visit Advanced Connect for the latest OpenHR news and events</a>
+							<a target="AdvancedConnectWebsite" href="http://www.advancedconnect.co.uk/" class="hypertext">
+								Visit Advanced Connect for the latest OpenHR news and events</a>
 						</td>
 					</tr>
 					<tr>
@@ -208,13 +183,9 @@
 						</td>
 					</tr>
 					<tr>
-						<td colspan="6" style="text-align: center">
-							<input id="btnCancel" name="btnCancel" type="button" class="btn" value="OK" style="width: 75px" width="75"
-								onclick="about_cancelClick()"
-								onmouseover="try{button_onMouseOver(this);}catch(e){}"
-								onmouseout="try{button_onMouseOut(this);}catch(e){}"
-								onfocus="try{button_onFocus(this);}catch(e){}"
-								onblur="try{button_onBlur(this);}catch(e){}" />
+						<td colspan="6" style="text-align: right">
+							<input id="btnCancel" name="btnCancel" type="button" class="btn" value="OK" style="width: 75px" 
+								onclick="about_cancelClick()" />
 						</td>
 					</tr>
 					<tr>
@@ -229,4 +200,7 @@
 
 <script type="text/javascript">
 	$("#spnAbout_LocaleCultureName")[0].innerHTML = window.UserLocale;
+	$('table').attr('border', '1');
 </script>
+
+
