@@ -296,15 +296,16 @@
         onSelectRow: function (rowID) { refreshControls(); },
         onSelectAll: function (rowID) { refreshControls(); },
         ondblClickRow: function (rowID) { },
-        colNames: ['EmailGroupIDHeader', 'Name', 'FullNameHeader', 'To', 'Cc', 'Bcc'],
+        colNames: ['EmailGroupIDHeader', 'FullNameHeader', 'To', 'Cc', 'Bcc', 'Recipient'],
         colModel: [
-			{ name: 'EmailGroupIDHeader', hidden: true },
-			{ name: 'NameHeader', sortable: false },
+						{ name: 'EmailGroupIDHeader', hidden: true },
             { name: 'FullNameHeader', sortable: false, hidden: true },
             { name: 'to', edittype: 'checkbox', index: 'to', editoptions: { value: "True:False" }, formatter: 'checkbox', formatoptions: { disabled: false }, align: 'center', width: 20 },
             { name: 'cc', edittype: 'checkbox', index: 'cc', editoptions: { value: "True:False" }, formatter: 'checkbox', formatoptions: { disabled: false }, align: 'center', width: 20 },
-            { name: 'bcc', edittype: 'checkbox', index: 'bcc', editoptions: { value: "True:False" }, formatter: 'checkbox', formatoptions: { disabled: false }, align: 'center', width: 20 }
+            { name: 'bcc', edittype: 'checkbox', index: 'bcc', editoptions: { value: "True:False" }, formatter: 'checkbox', formatoptions: { disabled: false }, align: 'center', width: 20 },
+			{ name: 'NameHeader', sortable: false }
         ],
+				cmTemplate: { sortable: false },
         rowNum: 1000,   //TODO set this to blocksize...
         height: 320,
         width: (screen.width) / 3 + 5,
