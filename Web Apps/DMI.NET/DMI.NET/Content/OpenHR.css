@@ -1142,7 +1142,7 @@ input[type=button].Embedded, input[type=button].Linked {
 #eventEventInformationContainer .formField {
 	margin: 2px auto;	
 	float:right;
-}
+} 
 
 #eventEventInformationContainer .formField label {
 margin-left:20px;
@@ -1161,6 +1161,10 @@ padding-left:0px;
 	padding:2px 17px;
 }
 
+.CrossTabsColumndiv {
+	margin-bottom:10px;
+	width:50%;
+}
 
 .formTextArea, .formInput {
 	margin: 10px auto;

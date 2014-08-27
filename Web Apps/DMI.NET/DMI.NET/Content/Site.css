@@ -398,7 +398,7 @@ select.readonly {
 }
 
 .CrosstabColumnWidth {
-	width: 60%;
+	width: 50%;
 	float: left;
 }
 
@@ -413,14 +413,14 @@ select.readonly {
 }
 
 .CrosstabColumnWidthStartStopIncrement {
-	width: 10%;
+	width: 30px;
 	float: left;
 }
 
 #HorizontalStart, #HorizontalStop, #HorizontalIncrement,
 #PageBreakStart, #PageBreakStop, #PageBreakIncrement,
 #VerticalStart, #VerticalStop, #VerticalIncrement {
-	width: 50px;
+	width: 40px;
 }
 
 #crosstabstartlegend {
@@ -626,4 +626,28 @@ margin:15px 0 5px 0;
 
 .padbot10 {
 	padding-bottom:10px;
+}
+
+.margebot10 {
+	margin-bottom:10px;
+}
+
+.margebot5 {
+	margin-bottom:5px;
+}
+
+.bgpink {
+	background-color:pink;
+}
+.bgaqua {
+	background-color:aquamarine;
+}
+.bgpalegreen {
+	background-color:palegreen;
+}
+.bggold {
+	background-color:darkgoldenrod;
+}
+.startstopincrementcol {
+	text-align:center;
 }
