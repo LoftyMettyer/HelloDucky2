@@ -199,8 +199,7 @@
 </html>
 
 <script type="text/javascript">
-	$("#spnAbout_LocaleCultureName")[0].innerHTML = window.UserLocale;
-	$('table').attr('border', '1');
+	$("#spnAbout_LocaleCultureName")[0].innerHTML = window.UserLocale;	
 </script>
 
 
