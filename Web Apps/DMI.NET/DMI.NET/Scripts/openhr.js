@@ -624,28 +624,6 @@
 			//TODO
 			return true;
 		},
-		sendMail = function (sTo, sSubject, sBody, sCC, sBCC) {
-			
-			$.ajax({
-				type: "POST",
-				url: "SendEmail",
-				data: { 'to': sTo, 'cc': sCC, 'bcc': sBCC, 'subject': sSubject, 'body': sBody },
-				dataType: "text",
-				success: function (html) {
-					alert("Email sent successfully");
-				},
-				error: function (req, status, errorObj) {
-
-					if (!(errorObj == "" || req.responseText == "")) {
-
-						alert(replaceAll(req.responseText, '<br/>', '\n'));
-					}
-				}
-
-			});
-
-
-		},
 		currentWorkPage = function () {
 			var sCurrentPage;
 			if (!($("#workframe").css('display') == 'none')) {
@@ -1262,7 +1240,6 @@
 		SaveRegistrySetting: saveRegistrySetting,
 		ValidateDir: validateDir,
 		ValidateFilePath: validateFilePath,
-		sendMail: sendMail,
 		currentWorkPage: currentWorkPage,
 		MM_WORD_CreateTemplateFile: mmwordCreateTemplateFile,
 		convertLocaleDateToSQL: convertLocaleDateToSQL,

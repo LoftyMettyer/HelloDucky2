@@ -318,21 +318,36 @@
     }
 
     function emailEvent() {
-        var sTo = getEmails(5);
-        var sCC = getEmails(6);
-        var sBCC = getEmails(7);
-        var sSubject = getSubject();
-        var sBody = getBody();
-        window.dialogArguments.OpenHR.sendMail(sTo, sSubject, sBody, sCC, sBCC);
-        self.close();
-        return true;
+	    var sTo = getEmails(4);
+	    var sCC = getEmails(5);
+	    var sBCC = getEmails(6);
+	    var sSubject = getSubject();
+	    var sBody = getBody();
+
+	    $.ajax({
+	    	type: "POST",
+	    	url: "SendEmail",
+	    	data: { 'to': sTo, 'cc': sCC, 'bcc': sBCC, 'subject': sSubject, 'body': sBody },
+	    	dataType: "text",
+	    	success: function (a, b, c) {
+	    		alert(window.dialogArguments.OpenHR.replaceAll(c.statusText, '<br/>', '\n'));
+	    		self.close();
+	    	},
+	    	error: function (req, status, errorObj) {
+	    		if (!(errorObj == "" || req.responseText == "")) {
+	    			alert(window.dialogArguments.OpenHR.replaceAll(errorObj, '<br/>', '\n'));
+	    		}
+	    	}
+	    });
+
+	    return true;
     }
 
     function getEmails(typeIndex) {
-        var localList = ""
+	    var localList = "";
         $('#EmailSelectionTable').find('td:nth-child(' + typeIndex + ')').each(function () {
             $(this).find('input:checked').each(function () {
-                localList += $(this).parent().parent().find('td:nth-child(' + 4 + ')').text() + ";";
+	            localList += $(this).parent().siblings()[2].innerHTML + ";";
             });
         });
         return localList;

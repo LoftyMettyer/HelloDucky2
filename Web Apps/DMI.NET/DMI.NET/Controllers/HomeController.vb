@@ -2274,13 +2274,11 @@ Namespace Controllers
 
 		<AcceptVerbs(HttpVerbs.Post), ValidateInput(False)> _
 		Function SendEmail() As ActionResult
-
 			Dim emailTo As String = Request.Form("To")
 			Dim emailCC As String = Request.Form("CC")
 			Dim emailBCC As String = Request.Form("BCC")
 			Dim emailSubject As String = Request.Form("Subject")
 			Dim emailBody As String = Request.Form("Body")
-			Dim returnMessage As String
 
 			Try
 				Dim message As New MailMessage()
@@ -2330,8 +2328,7 @@ Namespace Controllers
 
 				client.Send(message)
 
-				returnMessage = "Email sent successfully"
-
+				Return New HttpStatusCodeResult(HttpStatusCode.OK, "Email sent successfully")
 			Catch ex As Exception
 				' error generated - return error
 				Dim errMessage As String
@@ -2341,16 +2338,19 @@ Namespace Controllers
 					errMessage = ex.InnerException.Message
 				End If
 
-				Dim strErrors = String.Format("The following error occured when emailing your document:" _
+				Dim strErrors As String = ""
+
+				If emailTo = "" And emailCC = "" And emailBCC = "" Then
+					strErrors = "Please select recipient(s) to email"
+				Else
+					strErrors = String.Format("The following error occured when emailing your document:" _
 						& "{0}{0}{1}{0}{0}{2}{0}{0}Please check with your administrator for further details.", "<br/>", _
 						ex.Message, errMessage)
+				End If
 
-				Response.StatusCode = HttpStatusCode.InternalServerError
-				returnMessage = strErrors
+				'I used StatusCode BadRequest (400) below instead of StatusCode InternalServerError (500) because error 500 is not being properly caught by the ajax call in emailSelection.aspx
+				Return New HttpStatusCodeResult(HttpStatusCode.BadRequest, strErrors)
 			End Try
-
-			Return Content(returnMessage)
-
 		End Function
 
 #End Region
