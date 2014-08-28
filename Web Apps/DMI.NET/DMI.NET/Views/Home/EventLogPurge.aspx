@@ -10,7 +10,7 @@
 	<script src="<%: Url.LatestContent("~/bundles/jQuery")%>" type="text/javascript"></script>
 	<script src="<%: Url.LatestContent("~/bundles/jQueryUI7")%>" type="text/javascript"></script>
 	<script src="<%: Url.LatestContent("~/bundles/OpenHR_General")%>" type="text/javascript"></script>
-	<script id="officebarscript" src="<%: Url.LatestContent("~/Scripts/officebar/jquery.officebar.js")%>" type="text/javascript"></script>
+	<script id="officebarscript" src="<%: Url.LatestContent("~/Scripts/officebar/jquery.officebar_MODIFIED.js")%>" type="text/javascript"></script>
 	<link href="<%: Url.LatestContent("~/Content/OpenHR.css")%>" rel="stylesheet" type="text/css" />
 	<link href="<%: Url.LatestContent("~/Content/Site.css")%>" rel="stylesheet" type="text/css" />
 	<%--<link href="<%: Url.LatestContent("~/Content/OpenHR.css")%>" rel="stylesheet" type="text/css" />--%>
