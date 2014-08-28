@@ -258,7 +258,7 @@
 									<tr>
 										<td style="width: 8px"></td>
 										<td>
-											<input id="optNoPurge" name="optSelection" type="radio"
+											<input id="optNoPurge" name="optSelection" type="radio" checked="checked"
 												onclick="frmEventPurge.txtPurge.value=0;refreshControls();" />
 										</td>
 										<td colspan="6" style="text-align: left">
