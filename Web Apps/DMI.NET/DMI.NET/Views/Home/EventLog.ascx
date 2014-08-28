@@ -572,13 +572,13 @@
 
 			<table style="height: 100%; width: 100%; padding: 0 10px 10px 0" class="invisible">
 				<tr height="10">
-					<td width="82">User name: 
+					<td style="width: 7%">User name : 
 					</td>
 					<td>
 						<select id="cboUsername" name="cboUsername" class="combo" style="width: 100%" onchange="refreshGrid();">
 						</select>
 					</td>
-					<td width="25">Type:</td>
+					<td style="width: 5%">Type :</td>
 					<td>
 						<select id="cboType" name="cboType" class="combo" style="width: 100%" onchange="refreshGrid();">
 							<%
@@ -719,7 +719,7 @@
 							%>
 						</select>
 					</td>
-					<td width="25">Mode: 
+					<td style="width: 5%">Mode : 
 					</td>
 					<td>
 						<select id="cboMode" name="cboMode" class="combo" style="width: 100%" onchange="refreshGrid();">
@@ -744,7 +744,7 @@
 							%>
 						</select>
 					</td>
-					<td width="25">Status: 
+					<td style="width: 5%">Status : 
 					</td>
 					<td>
 						<select id="cboStatus" name="cboStatus" class="combo" style="width: 100%" onchange="refreshGrid();">
