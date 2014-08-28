@@ -1,0 +1,5 @@
+clsSysTray = 0, 0, 0, 0, C
+clsLicenceWrite = 0, 0, 0, 0, C
+clsLicenceWrite2 = 0, 0, 0, 0, C
+frmLogin = 125, 125, 1361, 626, C, 100, 100, 1249, 763, C
+frmHRProLicence = 67, 38, 1402, 671, C, 75, 75, 1224, 738, C
