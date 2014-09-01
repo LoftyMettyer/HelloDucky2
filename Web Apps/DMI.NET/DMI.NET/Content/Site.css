@@ -628,6 +628,10 @@ margin:15px 0 5px 0;
 	padding-bottom:10px;
 }
 
+.padleft20 {
+	padding-left:20px;
+}
+
 .margebot10 {
 	margin-bottom:10px;
 }
@@ -650,4 +654,22 @@ margin:15px 0 5px 0;
 }
 .startstopincrementcol {
 	text-align:center;
+}
+
+
+
+#limheight {
+  width:80%;
+	padding-left:20px;
+    -webkit-column-count: 8;
+       -moz-column-count: 8;
+            column-count: 8; /*3 is just placeholder -- can be anything*/
+}
+#limheight li {
+    display: inline-block;    
+		width:100px;
+		
+}
+#limheight li {
+    /*color: rgb(0, 162, 232);*/
 }
