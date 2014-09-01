@@ -713,6 +713,8 @@ TryUsingGroupSecurity:
     gsSecurityGroup = CurrentUserGroup
   End If
 
+  ' Populate licence key
+  gobjLicence.LicenceKey = GetSystemSetting("Licence", "Key", vbNullString)
 
   ' Check the database version is the right one for the application version.
   If Not CheckVersion(sConnect, mfReRunScript, gbIsUserSystemAdmin) Then
@@ -723,7 +725,7 @@ TryUsingGroupSecurity:
 
     Exit Sub
   End If
-  
+   
   ' If we're logged in under a windows authenticated group
   If gbUseWindowsAuthentication Then
     gsActualSQLLogin = GetActualLoginName

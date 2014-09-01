@@ -145,7 +145,7 @@ Private Function OvernightJob2(palngExpressions As Variant) As Boolean
 
 
   ' Payroll archiving functions
-  If IsModuleEnabled(modAccordPayroll) Then
+  If IsModuleEnabled(modAccord) Then
 
     ' Get the archive options
     With recModuleSetup

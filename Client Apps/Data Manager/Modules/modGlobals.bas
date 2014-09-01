@@ -103,7 +103,6 @@ Public glngSQLVersion As Double             ' SQL Version
 Public giOfficeVersion_Word As Integer      ' Microsoft Word Version
 Public giOfficeVersion_Excel As Integer     ' Microsoft Excel Version
 
-
 Public gcolSystemPermissions As Collection  ' Holds system permissions for this user
 Public gbEnableUDFFunctions As Boolean
 
@@ -132,4 +131,4 @@ Public gbVersion1Enabled As Boolean
 
 Public ASRDEVELOPMENT As Boolean
 
-
+Public gobjLicence As New clsLicence

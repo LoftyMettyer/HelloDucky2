@@ -1733,13 +1733,13 @@ Public Sub ActivateModules()
   gfSSIntranetModule = IsModuleEnabled(modIntranet)
   
   ' Payroll Module
-  gbAccordPayrollModule = IsModuleEnabled(modAccordPayroll)
+  gbAccordPayrollModule = IsModuleEnabled(modAccord)
 
 '  ' Fusion Module
 '  gbFusionModule = IsModuleEnabled(modFusion)
 
   ' Version 1 Module
-  gfVersion1Module = IsModuleEnabled(modVersion1)
+  gfVersion1Module = IsModuleEnabled(modVersionOne)
 
   ' Postcode Integration modules
   gbAFDEnabled = IsModuleEnabled(modAFD)

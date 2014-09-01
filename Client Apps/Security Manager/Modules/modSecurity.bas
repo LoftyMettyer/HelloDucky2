@@ -5698,3 +5698,7 @@ Public Function GetDBName()
 
 End Function
 
+Public Function IsModuleEnabled(lngModuleCode As enum_Module) As Boolean
+  IsModuleEnabled = (gobjLicence.Modules And lngModuleCode)
+End Function
+

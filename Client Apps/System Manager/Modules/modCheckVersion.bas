@@ -110,6 +110,7 @@ Public Function CheckVersion(sConnect As String, fReRunScript As Boolean, bIsSQL
       
       rsInfo.Close
     End If
+    
   End If
      
   ' AE20080218 Fault #12834, 12859
@@ -259,35 +260,11 @@ Public Function CheckVersion(sConnect As String, fReRunScript As Boolean, bIsSQL
     End If
   End If
   
+  
+If fOK Then
 
-'  If fOK Then
-'    ' Database is too old for the application. Try to update the database.
-'    If (App.Major > iMajorAppVersion) Or _
-'      ((App.Major = iMajorAppVersion) And (App.Minor > iMinorAppVersion)) Or _
-'      ((App.Major = iMajorAppVersion) And (App.Minor = iMinorAppVersion) And (App.Revision > iRevisionAppVersion And Not blnNewStyleVersionNo)) Then
-'
-'      'MH20070425 Think we need to check SQL sysadmin permission and not System Manager permission?
-'      ''''' JDM - Change to be a system administrator, not just sa
-'      ''''If gbCurrentUserIsSysSecMgr Then 'LCase(Trim(gsUserName)) = "sa" Then
-'      If bIsSQLSystemAdmin Then
-'        fVersionOK = UpdateDatabase(sConnect, False)
-'      Else
-'        fVersionOK = False
-'        MsgBox "The database is out of date." & vbNewLine & _
-'          "A system administrator must log into the System Manager to update the database." & vbNewLine & vbNewLine & _
-'          "Database Name : " & gsDatabaseName & vbNewLine & _
-'          "Database Version : " & sDBVersion & vbNewLine & vbNewLine & _
-'          "Application Version : " & CStr(App.Major) & "." & CStr(App.Minor), _
-'          vbExclamation + vbOKOnly, Application.Name
-'      End If
-'      fOK = fVersionOK
-'
-'    '''ElseIf fReRunScript And gbCurrentUserIsSysSecMgr Then 'LCase(Trim(gsUserName)) = "sa" Then
-'    ElseIf fReRunScript And bIsSQLSystemAdmin Then
-'      fVersionOK = UpdateDatabase(sConnect, fReRunScript)
-'    End If
-'  End If
-
+End If
+  
 
   If fOK Then
     ' Check if a new version of the application is required due to an Intranet update
@@ -375,6 +352,11 @@ Public Function CheckVersion(sConnect As String, fReRunScript As Boolean, bIsSQL
   'Check to see if the engine is the correct version
   If fOK Then
     fOK = CheckFrameworkVersion()
+  End If
+  
+  ' Is licence key correct version
+  If fOK Then
+    fOK = CheckLicenceVersion()
   End If
   
   ' Upload scripts
@@ -526,6 +508,31 @@ Private Function GetDBVersion() As String
     Set rsInfo = Nothing
   
   End If
+
+End Function
+
+Private Function CheckLicenceVersion() As Boolean
+
+  Dim sOldKey As String
+  Dim sNewKey As String
+  Dim bOK As Boolean
+
+  On Error GoTo Fail:
+
+  bOK = True
+  sOldKey = GetSystemSetting("Licence", "Key", vbNullString)
+
+  If sOldKey Like "A????-?????-?????-?????" Then
+    sNewKey = gobjHRProEngine.UpdateLicence(sOldKey)
+    bOK = SaveSystemSetting("Licence", "Key", sNewKey)
+    gobjLicence.LicenceKey = sNewKey
+  End If
+
+  CheckLicenceVersion = bOK
+  Exit Function
+
+Fail:
+  CheckLicenceVersion = False
 
 End Function
 
@@ -830,7 +837,6 @@ Private Function UpdateDatabase( _
 
   Loop While intMajor < App.Major Or intMinor < App.Minor And Not gobjProgress.Cancelled
 
-
 '  If IsModuleEnabled(modIntranet) Then
 '    strFileName = "HRProInt-" & CStr(App.Major) & "-" & CStr(App.Minor) & ".sql"
 '    If Dir(strScriptPath & strFileName) <> vbNullString Then
@@ -851,7 +857,7 @@ Private Function UpdateDatabase( _
       bRegenerateProc = True
     End If
   End If
-  
+    
   UnlockDatabase lckSaving
 
   gobjProgress.CloseProgress

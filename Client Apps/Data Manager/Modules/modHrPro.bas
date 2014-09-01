@@ -1,8 +1,6 @@
 Attribute VB_Name = "modHrPro"
 Option Explicit
 
-
-
 ' Generic Postcode Structure (Moved from modAFDSpecifics)
 Public Type PostCode
   PostCode As String * 8         ' Postcode
@@ -1612,7 +1610,7 @@ Public Function ReadPicture(ByRef PictureObject As Object, ByRef PictureField As
 '            Set PictureObject.Icon = LoadPicture(strTempName)
             
             PictureObject.picIcon = LoadPicture(strTempName, vbLPSmall, vbLPColor)
-            SendMessageLong PictureObject.hWnd, WM_SETICON, ICON_SMALL, PictureObject.picIcon.Picture.handle
+            SendMessageLong PictureObject.hWnd, WM_SETICON, ICON_SMALL, PictureObject.picIcon.Picture.Handle
             
         Else
             Set PictureObject.Picture = LoadPicture(strTempName)
@@ -4376,7 +4374,7 @@ Public Sub DebugOutput(strWhere As String, strWhat As String)
 
 End Sub
 
-Public Sub UpdateUsage(ByRef lngTYPE As UtilityType, ByRef lngUtilityID As Long, lngAction As EditOptions)
+Public Sub UpdateUsage(ByRef lngTYPE As utilityType, ByRef lngUtilityID As Long, lngAction As EditOptions)
 
   Dim cmdUsage As New ADODB.Command
   Dim pmADO As ADODB.Parameter
@@ -4412,7 +4410,7 @@ Public Sub UpdateUsage(ByRef lngTYPE As UtilityType, ByRef lngUtilityID As Long,
 
 End Sub
 
-Public Function SaveObjectCategories(ByRef theCombo As ComboBox, UtilityType As UtilityType, UtilityID As Long) As Boolean
+Public Function SaveObjectCategories(ByRef theCombo As ComboBox, utilityType As utilityType, UtilityID As Long) As Boolean
 
   On Error GoTo ErrorTrap
 
@@ -4423,7 +4421,7 @@ Public Function SaveObjectCategories(ByRef theCombo As ComboBox, UtilityType As 
   bOK = True
   iSelectedID = GetComboItem(theCombo)
   
-  gobjDataAccess.ExecuteSql "EXEC dbo.spsys_saveobjectcategories " & CStr(UtilityType) & ", " & CStr(UtilityID) & ", " & CStr(iSelectedID)
+  gobjDataAccess.ExecuteSql "EXEC dbo.spsys_saveobjectcategories " & CStr(utilityType) & ", " & CStr(UtilityID) & ", " & CStr(iSelectedID)
   
 TidyUpAndExit:
   SaveObjectCategories = bOK
@@ -4435,7 +4433,7 @@ bOK = False
 
 End Function
 
-Public Function GetObjectCategory(UtilityType As UtilityType, UtilityID As Long) As String
+Public Function GetObjectCategory(utilityType As utilityType, UtilityID As Long) As String
 
   On Error GoTo ErrorTrap
 
@@ -4443,7 +4441,7 @@ Public Function GetObjectCategory(UtilityType As UtilityType, UtilityID As Long)
   
   GetObjectCategory = "<None>"
 
-  Set rsTemp = gobjDataAccess.OpenRecordset("EXEC dbo.spsys_getobjectcategories " & CStr(UtilityType) & ", " & CStr(UtilityID) & ", 0" _
+  Set rsTemp = gobjDataAccess.OpenRecordset("EXEC dbo.spsys_getobjectcategories " & CStr(utilityType) & ", " & CStr(UtilityID) & ", 0" _
       , adOpenForwardOnly, adLockReadOnly)
   If Not rsTemp.BOF And Not rsTemp.EOF Then
     rsTemp.MoveFirst
@@ -4466,7 +4464,7 @@ ErrorTrap:
 
 End Function
 
-Public Sub GetObjectCategories(ByRef theCombo As ComboBox, UtilityType As UtilityType, UtilityID As Long, Optional TableID As Long)
+Public Sub GetObjectCategories(ByRef theCombo As ComboBox, utilityType As utilityType, UtilityID As Long, Optional TableID As Long)
 
   On Error GoTo ErrorTrap
 
@@ -4481,7 +4479,7 @@ Public Sub GetObjectCategories(ByRef theCombo As ComboBox, UtilityType As Utilit
   theCombo.ItemData(theCombo.NewIndex) = 0
   iListIndex = theCombo.NewIndex
      
-  Set rsTemp = gobjDataAccess.OpenRecordset("EXEC dbo.spsys_getobjectcategories " & CStr(UtilityType) & ", " & CStr(UtilityID) & ", " & CStr(TableID) _
+  Set rsTemp = gobjDataAccess.OpenRecordset("EXEC dbo.spsys_getobjectcategories " & CStr(utilityType) & ", " & CStr(UtilityID) & ", " & CStr(TableID) _
       , adOpenForwardOnly, adLockReadOnly)
   
   If Not rsTemp.BOF And Not rsTemp.EOF Then
@@ -4516,7 +4514,7 @@ ErrorTrap:
 End Sub
 
 
-Public Sub GetObjectOwners(ByRef theCombo As ComboBox, UtilityType As String)
+Public Sub GetObjectOwners(ByRef theCombo As ComboBox, utilityType As String)
 
   On Error GoTo ErrorTrap
 
@@ -4553,7 +4551,7 @@ Public Sub GetObjectOwners(ByRef theCombo As ComboBox, UtilityType As String)
   
   theCombo.Enabled = (theCombo.ListCount > 0)
     
-  If GetUserSetting("DefSel", "OnlyMine " & UtilityType, 0) = 1 Then
+  If GetUserSetting("DefSel", "OnlyMine " & utilityType, 0) = 1 Then
     SetComboItem theCombo, 1
   Else
     SetComboItem theCombo, 0
@@ -4569,7 +4567,7 @@ ErrorTrap:
 End Sub
 
 ' Converts utilityID to text format because the batch jobs store it in a testual format (Why? For god's sake why???)
-Public Function GetBatchJobType(ByVal Utility As UtilityType) As String
+Public Function GetBatchJobType(ByVal Utility As utilityType) As String
 
   Select Case Utility
   
@@ -4693,3 +4691,10 @@ Public Function ContainsInvalidXML(ByVal NodeText, AllowForwardSlash As Boolean)
   
 End Function
 
+Public Function IsModuleEnabled(lngModuleCode As Module) As Boolean
+  IsModuleEnabled = (gobjLicence.Modules And lngModuleCode)
+End Function
+
+Public Function GetLicencedUsers() As Long
+  GetLicencedUsers = gobjLicence.DATUsers
+End Function

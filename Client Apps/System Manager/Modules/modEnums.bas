@@ -709,11 +709,13 @@ Public Enum enum_Module
   modFullSysMgr = 64
   modCMG = 128
   modQAddress = 256
-  modAccordPayroll = 512
+  modAccord = 512
   modWorkflow = 1024
-  modVersion1 = 2048
+  modVersionOne = 2048
   modMobile = 4096
-  'modFusion = 8192
+  modFusion = 8192
+  modXMLExport = 16384
+  mod3rdPartyTables = 32768
 End Enum
 
 'System metrics constants

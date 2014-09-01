@@ -58,7 +58,7 @@ Public Function PrintSecurity(piLevel As Integer) As Boolean
   End If
   'NHRD28042010 JIRA HRPO 884
   If mvar_sCategoryKey = "VERSION1" Then
-    If IsModuleEnabled(modVersion1) = False Then GoTo TidyUpAndExit
+    If IsModuleEnabled(modVersionOne) = False Then GoTo TidyUpAndExit
   End If
   
   sPermission = IIf(mvar_fAllowed, "TRUE", "FALSE")

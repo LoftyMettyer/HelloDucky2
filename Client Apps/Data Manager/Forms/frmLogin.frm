@@ -582,7 +582,7 @@ Private Sub CheckRegistrySettings()
         
         fContinue = COAMsgBox("One or more data paths have not yet been defined for this database." & vbNewLine & _
                            "OpenHR may not function correctly without these paths defined." & vbNewLine & _
-                           "Would you like to define these now?", vbYesNo + vbQuestion + vbDefaultButton2, app.Title) = vbYes
+                           "Would you like to define these now?", vbYesNo + vbQuestion + vbDefaultButton2, app.title) = vbYes
       End If
       
     End If
@@ -856,7 +856,7 @@ Private Sub CheckPassword()
   
 Check_ERROR:
   
-  COAMsgBox "Error checking passwords." & vbNewLine & vbNewLine & "(" & Err.Number & " - " & Err.Description & ")", vbExclamation + vbOKOnly, app.Title
+  COAMsgBox "Error checking passwords." & vbNewLine & vbNewLine & "(" & Err.Number & " - " & Err.Description & ")", vbExclamation + vbOKOnly, app.title
   
 End Sub
 
@@ -886,7 +886,7 @@ Private Sub UpdateConfig()
 Update_ERROR:
 
   COAMsgBox "Error updating AsrSysPasswords." & vbNewLine & vbNewLine & _
-         "(" & Err.Number & " - " & Err.Description & ")", vbExclamation + vbOKOnly, app.Title
+         "(" & Err.Number & " - " & Err.Description & ")", vbExclamation + vbOKOnly, app.title
 
   Set rsInfo = Nothing
          
@@ -1011,6 +1011,10 @@ Public Sub Login()
     OK = False
     GoTo LoginError
   End If
+    
+  ' Populate licence key
+  gobjLicence.LicenceKey = GetSystemSetting("Licence", "Key", vbNullString)
+  gsCustomerName = GetSystemSetting("Licence", "Customer Name", "<Unknown>")
   
   ' If using trusted connection try and find any security groups that this user is a member of
 TryUsingGroupSecurity:

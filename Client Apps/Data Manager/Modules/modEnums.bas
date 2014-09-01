@@ -277,6 +277,7 @@ Public Enum Module
   modMobile = 4096
   modFusion = 8192
   modXMLExport = 16384
+  mod3rdPartyTables = 32768
 End Enum
 
 

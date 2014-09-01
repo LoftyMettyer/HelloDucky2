@@ -1,5 +1,5 @@
 VERSION 5.00
-Object = "{BD0C1912-66C3-49CC-8B12-7B347BF6C846}#13.1#0"; "CODEJO~3.OCX"
+Object = "{BD0C1912-66C3-49CC-8B12-7B347BF6C846}#13.1#0"; "Codejock.SkinFramework.v13.1.0.ocx"
 Begin VB.Form frmLogin 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "OpenHR Security Manager - Login"
@@ -20,6 +20,7 @@ Begin VB.Form frmLogin
    Icon            =   "frmLogin.frx":0000
    KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
+   LockControls    =   -1  'True
    MaxButton       =   0   'False
    MinButton       =   0   'False
    ScaleHeight     =   3675
@@ -846,6 +847,9 @@ Private Sub Login()
     gsUserGroup = CurrentUserGroup
     gbUserCanManageLogins = bIsSecurityAdmin
   End If
+
+  ' Populate licence key
+  gobjLicence.LicenceKey = GetSystemSetting("Licence", "Key", vbNullString)
 
   ' Misc security settings
   gbDeleteOrphanWindowsLogins = GetSystemSetting("Misc", "CFG_DELETEORPHANLOGINS", False)

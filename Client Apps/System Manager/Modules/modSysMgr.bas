@@ -63,7 +63,6 @@ Sub Main()
 
   gsApplicationPath = App.Path
 
-
   ' If we get problems, just in case...
   gbDisableCodeJock = (InStr(LCase(Command$), "/skin=false") > 0)
 
@@ -85,7 +84,7 @@ Sub Main()
   Set gobjProgress = New clsProgress
   gobjProgress.StyleResource = CodeJockStylePath
   gobjProgress.StyleIni = CodeJockStyleIni
-  
+   
   If App.StartMode = vbSModeAutomation Then
     'If started via OLE automation, return control back to client application
     Exit Sub
@@ -5912,7 +5911,6 @@ Public Function FormatTableName(ByVal Owner As String, TableName As String) As S
 
 End Function
 
-
 Public Sub GetObjectCategories(ByRef theCombo As ComboBox, UtilityType As UtilityType, UtilityID As Long, Optional TableID As Long)
 
   On Error GoTo ErrorTrap
@@ -5956,5 +5954,8 @@ ErrorTrap:
 
 End Sub
 
+Public Function IsModuleEnabled(lngModuleCode As enum_Module) As Boolean
+  IsModuleEnabled = (gobjLicence.Modules And lngModuleCode)
+End Function
 
 

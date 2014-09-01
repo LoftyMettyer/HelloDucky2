@@ -1,14 +1,15 @@
 VERSION 5.00
-Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TabCtl32.Ocx"
+Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
+Object = "{AB3877A8-B7B2-11CF-9097-444553540000}#1.0#0"; "gtdate32.ocx"
 Begin VB.Form frmHRProLicence 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "OpenHR Licence Generator"
-   ClientHeight    =   6090
+   ClientHeight    =   7800
    ClientLeft      =   45
    ClientTop       =   330
-   ClientWidth     =   4935
+   ClientWidth     =   6000
    BeginProperty Font 
-      Name            =   "Tahoma"
+      Name            =   "Verdana"
       Size            =   8.25
       Charset         =   0
       Weight          =   400
@@ -18,24 +19,34 @@ Begin VB.Form frmHRProLicence
    EndProperty
    Icon            =   "frmHRProLicence.frx":0000
    LinkTopic       =   "Form1"
+   LockControls    =   -1  'True
    MaxButton       =   0   'False
    MinButton       =   0   'False
-   ScaleHeight     =   6090
-   ScaleWidth      =   4935
+   ScaleHeight     =   7800
+   ScaleWidth      =   6000
    ShowInTaskbar   =   0   'False
    StartUpPosition =   2  'CenterScreen
    Begin TabDlg.SSTab SSTab1 
-      Height          =   5880
-      Left            =   120
-      TabIndex        =   46
-      Top             =   120
-      Width           =   4740
-      _ExtentX        =   8361
-      _ExtentY        =   10372
+      Height          =   7590
+      Left            =   75
+      TabIndex        =   44
+      Top             =   60
+      Width           =   5730
+      _ExtentX        =   10107
+      _ExtentY        =   13388
       _Version        =   393216
       Style           =   1
       Tabs            =   2
       TabHeight       =   520
+      BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
+         Name            =   "Verdana"
+         Size            =   8.25
+         Charset         =   0
+         Weight          =   400
+         Underline       =   0   'False
+         Italic          =   0   'False
+         Strikethrough   =   0   'False
+      EndProperty
       TabCaption(0)   =   "Ge&nerate Licence"
       TabPicture(0)   =   "frmHRProLicence.frx":000C
       Tab(0).ControlEnabled=   -1  'True
@@ -43,32 +54,170 @@ Begin VB.Form frmHRProLicence
       Tab(0).Control(0).Enabled=   0   'False
       Tab(0).Control(1)=   "fraLicenceGenerate"
       Tab(0).Control(1).Enabled=   0   'False
-      Tab(0).ControlCount=   2
+      Tab(0).Control(2)=   "fraLicenceType"
+      Tab(0).Control(2).Enabled=   0   'False
+      Tab(0).ControlCount=   3
       TabCaption(1)   =   "&Support"
       TabPicture(1)   =   "frmHRProLicence.frx":0028
       Tab(1).ControlEnabled=   0   'False
       Tab(1).Control(0)=   "Frame1"
       Tab(1).ControlCount=   1
+      Begin VB.Frame fraLicenceType 
+         Caption         =   "Licence Details :"
+         Height          =   1665
+         Left            =   135
+         TabIndex        =   48
+         Top             =   420
+         Width           =   5445
+         Begin VB.ComboBox cboType 
+            Height          =   315
+            ItemData        =   "frmHRProLicence.frx":0044
+            Left            =   1485
+            List            =   "frmHRProLicence.frx":0057
+            Style           =   2  'Dropdown List
+            TabIndex        =   55
+            Top             =   705
+            Width           =   2850
+         End
+         Begin GTMaskDate.GTMaskDate txtExpiryDate 
+            Height          =   300
+            Left            =   1485
+            TabIndex        =   52
+            Top             =   1170
+            Width           =   2850
+            _Version        =   65537
+            _ExtentX        =   5027
+            _ExtentY        =   529
+            _StockProps     =   77
+            BackColor       =   -2147483643
+            BeginProperty NullFont {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
+               Name            =   "MS Sans Serif"
+               Size            =   8.25
+               Charset         =   0
+               Weight          =   400
+               Underline       =   0   'False
+               Italic          =   -1  'True
+               Strikethrough   =   0   'False
+            EndProperty
+            BeginProperty CalFont {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
+               Name            =   "MS Sans Serif"
+               Size            =   8.25
+               Charset         =   0
+               Weight          =   400
+               Underline       =   0   'False
+               Italic          =   0   'False
+               Strikethrough   =   0   'False
+            EndProperty
+            BeginProperty CalCaptionFont {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
+               Name            =   "MS Sans Serif"
+               Size            =   8.25
+               Charset         =   0
+               Weight          =   400
+               Underline       =   0   'False
+               Italic          =   0   'False
+               Strikethrough   =   0   'False
+            EndProperty
+            BeginProperty CalDayCaptionFont {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
+               Name            =   "MS Sans Serif"
+               Size            =   8.25
+               Charset         =   0
+               Weight          =   400
+               Underline       =   0   'False
+               Italic          =   0   'False
+               Strikethrough   =   0   'False
+            EndProperty
+            BeginProperty ToolTipFont {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
+               Name            =   "MS Sans Serif"
+               Size            =   8.25
+               Charset         =   0
+               Weight          =   400
+               Underline       =   0   'False
+               Italic          =   0   'False
+               Strikethrough   =   0   'False
+            EndProperty
+         End
+         Begin VB.TextBox txtCustomerNo 
+            Height          =   315
+            Left            =   1485
+            MaxLength       =   4
+            TabIndex        =   49
+            Top             =   285
+            Width           =   2850
+         End
+         Begin VB.Label lblModel 
+            Caption         =   "Model :"
+            Height          =   240
+            Left            =   150
+            TabIndex        =   56
+            Top             =   765
+            Width           =   795
+         End
+         Begin VB.Label lblExpiryDate 
+            Caption         =   "Expiry Date :"
+            Height          =   225
+            Left            =   135
+            TabIndex        =   51
+            Top             =   1215
+            Width           =   1185
+         End
+         Begin VB.Label lblCustomerNo 
+            AutoSize        =   -1  'True
+            Caption         =   "Customer No. :"
+            Height          =   195
+            Index           =   0
+            Left            =   120
+            TabIndex        =   50
+            Top             =   330
+            Width           =   1320
+         End
+      End
       Begin VB.Frame Frame1 
+         BeginProperty Font 
+            Name            =   "Tahoma"
+            Size            =   8.25
+            Charset         =   0
+            Weight          =   400
+            Underline       =   0   'False
+            Italic          =   0   'False
+            Strikethrough   =   0   'False
+         EndProperty
          Height          =   2175
          Left            =   -74880
-         TabIndex        =   23
+         TabIndex        =   21
          Top             =   480
          Width           =   4485
          Begin VB.CommandButton cmdSuppGenerate 
             Caption         =   "&Generate"
+            BeginProperty Font 
+               Name            =   "Tahoma"
+               Size            =   8.25
+               Charset         =   0
+               Weight          =   400
+               Underline       =   0   'False
+               Italic          =   0   'False
+               Strikethrough   =   0   'False
+            EndProperty
             Height          =   400
             Left            =   2580
-            TabIndex        =   35
+            TabIndex        =   33
             Top             =   960
             Width           =   1680
          End
          Begin VB.CommandButton cmdSuppClipboard 
+            BeginProperty Font 
+               Name            =   "Tahoma"
+               Size            =   8.25
+               Charset         =   0
+               Weight          =   400
+               Underline       =   0   'False
+               Italic          =   0   'False
+               Strikethrough   =   0   'False
+            EndProperty
             Height          =   400
             Left            =   2040
-            Picture         =   "frmHRProLicence.frx":0044
+            Picture         =   "frmHRProLicence.frx":00C9
             Style           =   1  'Graphical
-            TabIndex        =   34
+            TabIndex        =   32
             ToolTipText     =   "Copy to clipboard"
             Top             =   960
             Width           =   360
@@ -77,16 +226,54 @@ Begin VB.Form frmHRProLicence
             BackColor       =   &H8000000C&
             BorderStyle     =   0  'None
             Caption         =   "Frame1"
+            BeginProperty Font 
+               Name            =   "Tahoma"
+               Size            =   8.25
+               Charset         =   0
+               Weight          =   400
+               Underline       =   0   'False
+               Italic          =   0   'False
+               Strikethrough   =   0   'False
+            EndProperty
             Height          =   375
             Left            =   215
-            TabIndex        =   36
+            TabIndex        =   34
             Top             =   1560
             Width           =   4095
             Begin VB.TextBox txtSupportOutput 
                BackColor       =   &H8000000F&
+               BeginProperty Font 
+                  Name            =   "Tahoma"
+                  Size            =   8.25
+                  Charset         =   0
+                  Weight          =   400
+                  Underline       =   0   'False
+                  Italic          =   0   'False
+                  Strikethrough   =   0   'False
+               EndProperty
                Height          =   315
                Index           =   0
                Left            =   0
+               Locked          =   -1  'True
+               MaxLength       =   4
+               TabIndex        =   35
+               Top             =   0
+               Width           =   700
+            End
+            Begin VB.TextBox txtSupportOutput 
+               BackColor       =   &H8000000F&
+               BeginProperty Font 
+                  Name            =   "Tahoma"
+                  Size            =   8.25
+                  Charset         =   0
+                  Weight          =   400
+                  Underline       =   0   'False
+                  Italic          =   0   'False
+                  Strikethrough   =   0   'False
+               EndProperty
+               Height          =   315
+               Index           =   1
+               Left            =   840
                Locked          =   -1  'True
                MaxLength       =   4
                TabIndex        =   37
@@ -95,9 +282,18 @@ Begin VB.Form frmHRProLicence
             End
             Begin VB.TextBox txtSupportOutput 
                BackColor       =   &H8000000F&
+               BeginProperty Font 
+                  Name            =   "Tahoma"
+                  Size            =   8.25
+                  Charset         =   0
+                  Weight          =   400
+                  Underline       =   0   'False
+                  Italic          =   0   'False
+                  Strikethrough   =   0   'False
+               EndProperty
                Height          =   315
-               Index           =   1
-               Left            =   840
+               Index           =   2
+               Left            =   1680
                Locked          =   -1  'True
                MaxLength       =   4
                TabIndex        =   39
@@ -106,9 +302,18 @@ Begin VB.Form frmHRProLicence
             End
             Begin VB.TextBox txtSupportOutput 
                BackColor       =   &H8000000F&
+               BeginProperty Font 
+                  Name            =   "Tahoma"
+                  Size            =   8.25
+                  Charset         =   0
+                  Weight          =   400
+                  Underline       =   0   'False
+                  Italic          =   0   'False
+                  Strikethrough   =   0   'False
+               EndProperty
                Height          =   315
-               Index           =   2
-               Left            =   1680
+               Index           =   3
+               Left            =   2520
                Locked          =   -1  'True
                MaxLength       =   4
                TabIndex        =   41
@@ -117,23 +322,21 @@ Begin VB.Form frmHRProLicence
             End
             Begin VB.TextBox txtSupportOutput 
                BackColor       =   &H8000000F&
-               Height          =   315
-               Index           =   3
-               Left            =   2520
-               Locked          =   -1  'True
-               MaxLength       =   4
-               TabIndex        =   43
-               Top             =   0
-               Width           =   700
-            End
-            Begin VB.TextBox txtSupportOutput 
-               BackColor       =   &H8000000F&
+               BeginProperty Font 
+                  Name            =   "Tahoma"
+                  Size            =   8.25
+                  Charset         =   0
+                  Weight          =   400
+                  Underline       =   0   'False
+                  Italic          =   0   'False
+                  Strikethrough   =   0   'False
+               EndProperty
                Height          =   315
                Index           =   4
                Left            =   3365
                Locked          =   -1  'True
                MaxLength       =   4
-               TabIndex        =   45
+               TabIndex        =   43
                Top             =   0
                Width           =   700
             End
@@ -152,7 +355,7 @@ Begin VB.Form frmHRProLicence
                Height          =   240
                Index           =   11
                Left            =   735
-               TabIndex        =   38
+               TabIndex        =   36
                Top             =   45
                Width           =   90
             End
@@ -171,7 +374,7 @@ Begin VB.Form frmHRProLicence
                Height          =   240
                Index           =   10
                Left            =   1575
-               TabIndex        =   40
+               TabIndex        =   38
                Top             =   45
                Width           =   90
             End
@@ -190,7 +393,7 @@ Begin VB.Form frmHRProLicence
                Height          =   240
                Index           =   9
                Left            =   2415
-               TabIndex        =   42
+               TabIndex        =   40
                Top             =   45
                Width           =   90
             End
@@ -209,7 +412,7 @@ Begin VB.Form frmHRProLicence
                Height          =   240
                Index           =   8
                Left            =   3260
-               TabIndex        =   44
+               TabIndex        =   42
                Top             =   45
                Width           =   90
             End
@@ -218,53 +421,107 @@ Begin VB.Form frmHRProLicence
             BackColor       =   &H8000000C&
             BorderStyle     =   0  'None
             Caption         =   "Frame1"
+            BeginProperty Font 
+               Name            =   "Tahoma"
+               Size            =   8.25
+               Charset         =   0
+               Weight          =   400
+               Underline       =   0   'False
+               Italic          =   0   'False
+               Strikethrough   =   0   'False
+            EndProperty
             Height          =   375
             Left            =   215
-            TabIndex        =   24
+            TabIndex        =   22
             Top             =   360
             Width           =   4095
             Begin VB.TextBox txtSupportInput 
+               BeginProperty Font 
+                  Name            =   "Tahoma"
+                  Size            =   8.25
+                  Charset         =   0
+                  Weight          =   400
+                  Underline       =   0   'False
+                  Italic          =   0   'False
+                  Strikethrough   =   0   'False
+               EndProperty
                Height          =   315
                Index           =   4
                Left            =   3365
-               MaxLength       =   4
-               TabIndex        =   33
-               Top             =   0
-               Width           =   700
-            End
-            Begin VB.TextBox txtSupportInput 
-               Height          =   315
-               Index           =   3
-               Left            =   2520
                MaxLength       =   4
                TabIndex        =   31
                Top             =   0
                Width           =   700
             End
             Begin VB.TextBox txtSupportInput 
+               BeginProperty Font 
+                  Name            =   "Tahoma"
+                  Size            =   8.25
+                  Charset         =   0
+                  Weight          =   400
+                  Underline       =   0   'False
+                  Italic          =   0   'False
+                  Strikethrough   =   0   'False
+               EndProperty
                Height          =   315
-               Index           =   2
-               Left            =   1680
+               Index           =   3
+               Left            =   2520
                MaxLength       =   4
                TabIndex        =   29
                Top             =   0
                Width           =   700
             End
             Begin VB.TextBox txtSupportInput 
+               BeginProperty Font 
+                  Name            =   "Tahoma"
+                  Size            =   8.25
+                  Charset         =   0
+                  Weight          =   400
+                  Underline       =   0   'False
+                  Italic          =   0   'False
+                  Strikethrough   =   0   'False
+               EndProperty
                Height          =   315
-               Index           =   1
-               Left            =   840
+               Index           =   2
+               Left            =   1680
                MaxLength       =   4
                TabIndex        =   27
                Top             =   0
                Width           =   700
             End
             Begin VB.TextBox txtSupportInput 
+               BeginProperty Font 
+                  Name            =   "Tahoma"
+                  Size            =   8.25
+                  Charset         =   0
+                  Weight          =   400
+                  Underline       =   0   'False
+                  Italic          =   0   'False
+                  Strikethrough   =   0   'False
+               EndProperty
+               Height          =   315
+               Index           =   1
+               Left            =   840
+               MaxLength       =   4
+               TabIndex        =   25
+               Top             =   0
+               Width           =   700
+            End
+            Begin VB.TextBox txtSupportInput 
+               BeginProperty Font 
+                  Name            =   "Tahoma"
+                  Size            =   8.25
+                  Charset         =   0
+                  Weight          =   400
+                  Underline       =   0   'False
+                  Italic          =   0   'False
+                  Strikethrough   =   0   'False
+               EndProperty
                Height          =   315
                Index           =   0
                Left            =   0
                MaxLength       =   4
-               TabIndex        =   25
+               TabIndex        =   23
                Top             =   0
                Width           =   700
             End
@@ -283,7 +540,7 @@ Begin VB.Form frmHRProLicence
                Height          =   240
                Index           =   3
                Left            =   3260
-               TabIndex        =   32
+               TabIndex        =   30
                Top             =   45
                Width           =   90
             End
@@ -302,7 +559,7 @@ Begin VB.Form frmHRProLicence
                Height          =   240
                Index           =   2
                Left            =   2415
-               TabIndex        =   30
+               TabIndex        =   28
                Top             =   45
                Width           =   90
             End
@@ -321,7 +578,7 @@ Begin VB.Form frmHRProLicence
                Height          =   240
                Index           =   1
                Left            =   1575
-               TabIndex        =   28
+               TabIndex        =   26
                Top             =   45
                Width           =   90
             End
@@ -340,7 +597,7 @@ Begin VB.Form frmHRProLicence
                Height          =   240
                Index           =   0
                Left            =   735
-               TabIndex        =   26
+               TabIndex        =   24
                Top             =   45
                Width           =   90
             End
@@ -350,15 +607,24 @@ Begin VB.Form frmHRProLicence
          Caption         =   "Licence Key :"
          Height          =   1335
          Left            =   120
-         TabIndex        =   11
-         Top             =   4410
-         Width           =   4485
+         TabIndex        =   9
+         Top             =   6060
+         Width           =   5445
          Begin VB.CommandButton cmdClipboard 
+            BeginProperty Font 
+               Name            =   "Tahoma"
+               Size            =   8.25
+               Charset         =   0
+               Weight          =   400
+               Underline       =   0   'False
+               Italic          =   0   'False
+               Strikethrough   =   0   'False
+            EndProperty
             Height          =   400
             Left            =   2107
-            Picture         =   "frmHRProLicence.frx":08C6
+            Picture         =   "frmHRProLicence.frx":094B
             Style           =   1  'Graphical
-            TabIndex        =   21
+            TabIndex        =   19
             ToolTipText     =   "Copy to clipboard"
             Top             =   720
             Width           =   360
@@ -367,7 +633,7 @@ Begin VB.Form frmHRProLicence
             Caption         =   "&Generate"
             Height          =   400
             Left            =   2640
-            TabIndex        =   22
+            TabIndex        =   20
             Top             =   720
             Width           =   1680
          End
@@ -375,7 +641,7 @@ Begin VB.Form frmHRProLicence
             Caption         =   "&Read"
             Height          =   400
             Left            =   240
-            TabIndex        =   20
+            TabIndex        =   18
             Top             =   720
             Width           =   1680
          End
@@ -383,44 +649,107 @@ Begin VB.Form frmHRProLicence
             BackColor       =   &H8000000C&
             BorderStyle     =   0  'None
             Caption         =   "Frame1"
+            BeginProperty Font 
+               Name            =   "Tahoma"
+               Size            =   8.25
+               Charset         =   0
+               Weight          =   400
+               Underline       =   0   'False
+               Italic          =   0   'False
+               Strikethrough   =   0   'False
+            EndProperty
             Height          =   375
             Left            =   240
-            TabIndex        =   12
+            TabIndex        =   10
             Top             =   240
-            Width           =   4095
+            Width           =   5145
             Begin VB.TextBox txtLicence 
+               BeginProperty Font 
+                  Name            =   "Tahoma"
+                  Size            =   8.25
+                  Charset         =   0
+                  Weight          =   400
+                  Underline       =   0   'False
+                  Italic          =   0   'False
+                  Strikethrough   =   0   'False
+               EndProperty
+               Height          =   315
+               Index           =   4
+               Left            =   4260
+               MaxLength       =   6
+               TabIndex        =   46
+               Top             =   0
+               Width           =   825
+            End
+            Begin VB.TextBox txtLicence 
+               BeginProperty Font 
+                  Name            =   "Tahoma"
+                  Size            =   8.25
+                  Charset         =   0
+                  Weight          =   400
+                  Underline       =   0   'False
+                  Italic          =   0   'False
+                  Strikethrough   =   0   'False
+               EndProperty
                Height          =   315
                Index           =   0
                Left            =   0
-               MaxLength       =   5
+               MaxLength       =   6
+               TabIndex        =   11
+               Top             =   0
+               Width           =   825
+            End
+            Begin VB.TextBox txtLicence 
+               BeginProperty Font 
+                  Name            =   "Tahoma"
+                  Size            =   8.25
+                  Charset         =   0
+                  Weight          =   400
+                  Underline       =   0   'False
+                  Italic          =   0   'False
+                  Strikethrough   =   0   'False
+               EndProperty
+               Height          =   315
+               Index           =   1
+               Left            =   1080
+               MaxLength       =   6
                TabIndex        =   13
                Top             =   0
                Width           =   825
             End
             Begin VB.TextBox txtLicence 
+               BeginProperty Font 
+                  Name            =   "Tahoma"
+                  Size            =   8.25
+                  Charset         =   0
+                  Weight          =   400
+                  Underline       =   0   'False
+                  Italic          =   0   'False
+                  Strikethrough   =   0   'False
+               EndProperty
                Height          =   315
-               Index           =   1
-               Left            =   1080
-               MaxLength       =   5
+               Index           =   2
+               Left            =   2200
+               MaxLength       =   6
                TabIndex        =   15
                Top             =   0
                Width           =   825
             End
             Begin VB.TextBox txtLicence 
-               Height          =   315
-               Index           =   2
-               Left            =   2200
-               MaxLength       =   5
-               TabIndex        =   17
-               Top             =   0
-               Width           =   825
-            End
-            Begin VB.TextBox txtLicence 
+               BeginProperty Font 
+                  Name            =   "Tahoma"
+                  Size            =   8.25
+                  Charset         =   0
+                  Weight          =   400
+                  Underline       =   0   'False
+                  Italic          =   0   'False
+                  Strikethrough   =   0   'False
+               EndProperty
                Height          =   315
                Index           =   3
                Left            =   3240
-               MaxLength       =   5
-               TabIndex        =   19
+               MaxLength       =   6
+               TabIndex        =   17
                Top             =   0
                Width           =   825
             End
@@ -437,9 +766,28 @@ Begin VB.Form frmHRProLicence
                   Strikethrough   =   0   'False
                EndProperty
                Height          =   240
+               Index           =   4
+               Left            =   4110
+               TabIndex        =   47
+               Top             =   45
+               Width           =   90
+            End
+            Begin VB.Label lblLicence 
+               AutoSize        =   -1  'True
+               Caption         =   "-"
+               BeginProperty Font 
+                  Name            =   "Tahoma"
+                  Size            =   9.75
+                  Charset         =   0
+                  Weight          =   700
+                  Underline       =   0   'False
+                  Italic          =   0   'False
+                  Strikethrough   =   0   'False
+               EndProperty
+               Height          =   240
                Index           =   7
                Left            =   917
-               TabIndex        =   14
+               TabIndex        =   12
                Top             =   45
                Width           =   90
             End
@@ -458,7 +806,7 @@ Begin VB.Form frmHRProLicence
                Height          =   240
                Index           =   6
                Left            =   2007
-               TabIndex        =   16
+               TabIndex        =   14
                Top             =   45
                Width           =   90
             End
@@ -477,69 +825,77 @@ Begin VB.Form frmHRProLicence
                Height          =   240
                Index           =   5
                Left            =   3087
-               TabIndex        =   18
+               TabIndex        =   16
                Top             =   45
                Width           =   90
             End
          End
       End
       Begin VB.Frame fraCustomerDetails 
-         Caption         =   "Customer Details :"
-         Height          =   3885
+         Caption         =   "Details :"
+         Height          =   3720
          Index           =   0
          Left            =   120
          TabIndex        =   0
-         Top             =   480
-         Width           =   4485
+         Top             =   2265
+         Width           =   5445
+         Begin VB.TextBox txtHeadcount 
+            Height          =   285
+            Left            =   1485
+            MaxLength       =   6
+            TabIndex        =   54
+            Top             =   2325
+            Width           =   705
+         End
          Begin VB.TextBox txtSSIUsers 
             Height          =   315
-            Left            =   1335
-            MaxLength       =   3
-            TabIndex        =   9
-            Top             =   1920
-            Width           =   465
-         End
-         Begin VB.TextBox txtCustomerNo 
-            Height          =   315
-            Left            =   1335
-            MaxLength       =   4
-            TabIndex        =   2
-            Top             =   315
-            Width           =   465
+            Left            =   1500
+            MaxLength       =   6
+            TabIndex        =   7
+            Top             =   1515
+            Width           =   700
          End
          Begin VB.TextBox txtDatUsers 
             Height          =   315
-            Left            =   1335
+            Left            =   1500
             MaxLength       =   3
-            TabIndex        =   4
-            Top             =   720
-            Width           =   465
+            TabIndex        =   2
+            Top             =   315
+            Width           =   700
          End
          Begin VB.ListBox lstModules 
-            Height          =   3435
-            ItemData        =   "frmHRProLicence.frx":1148
-            Left            =   1920
-            List            =   "frmHRProLicence.frx":114A
+            Height          =   3210
+            ItemData        =   "frmHRProLicence.frx":11CD
+            Left            =   2295
+            List            =   "frmHRProLicence.frx":11CF
             Style           =   1  'Checkbox
-            TabIndex        =   10
+            TabIndex        =   8
             Top             =   315
-            Width           =   2400
+            Width           =   2955
          End
          Begin VB.TextBox txtIntUsers 
             Height          =   315
-            Left            =   1335
+            Left            =   1500
             MaxLength       =   3
-            TabIndex        =   6
-            Top             =   1110
-            Width           =   465
+            TabIndex        =   4
+            Top             =   705
+            Width           =   700
          End
          Begin VB.TextBox txtDMISUsers 
             Height          =   315
-            Left            =   1335
+            Left            =   1500
             MaxLength       =   3
-            TabIndex        =   8
-            Top             =   1515
-            Width           =   465
+            TabIndex        =   6
+            Top             =   1110
+            Width           =   700
+         End
+         Begin VB.Label lblHeadcount 
+            Caption         =   "Headcount :"
+            Height          =   420
+            Left            =   105
+            TabIndex        =   53
+            Top             =   2385
+            Width           =   1065
          End
          Begin VB.Label lblNoUsers 
             AutoSize        =   -1  'True
@@ -547,19 +903,9 @@ Begin VB.Form frmHRProLicence
             Height          =   195
             Index           =   1
             Left            =   120
-            TabIndex        =   47
-            Top             =   1965
-            Width           =   795
-         End
-         Begin VB.Label lblCustomerNo 
-            AutoSize        =   -1  'True
-            Caption         =   "Cust No. :"
-            Height          =   195
-            Index           =   0
-            Left            =   120
-            TabIndex        =   1
-            Top             =   360
-            Width           =   735
+            TabIndex        =   45
+            Top             =   1560
+            Width           =   1065
          End
          Begin VB.Label lblNoUsers 
             AutoSize        =   -1  'True
@@ -567,9 +913,9 @@ Begin VB.Form frmHRProLicence
             Height          =   195
             Index           =   0
             Left            =   120
-            TabIndex        =   3
-            Top             =   765
-            Width           =   810
+            TabIndex        =   1
+            Top             =   360
+            Width           =   1050
          End
          Begin VB.Label lblNoUsers 
             AutoSize        =   -1  'True
@@ -577,9 +923,9 @@ Begin VB.Form frmHRProLicence
             Height          =   195
             Index           =   2
             Left            =   120
-            TabIndex        =   5
-            Top             =   1155
-            Width           =   1110
+            TabIndex        =   3
+            Top             =   750
+            Width           =   1410
          End
          Begin VB.Label lblNoUsers 
             AutoSize        =   -1  'True
@@ -587,9 +933,9 @@ Begin VB.Form frmHRProLicence
             Height          =   195
             Index           =   3
             Left            =   120
-            TabIndex        =   7
-            Top             =   1560
-            Width           =   1080
+            TabIndex        =   5
+            Top             =   1155
+            Width           =   1395
          End
       End
    End
@@ -604,7 +950,6 @@ Option Explicit
 Private WithEvents gSysTray As clsSysTray
 Attribute gSysTray.VB_VarHelpID = -1
 Private mstrAllowedInputCharacters As String
-
 
 Private Sub PopulateModules(lstTemp As ListBox)
 
@@ -627,6 +972,7 @@ Private Sub PopulateModules(lstTemp As ListBox)
     .AddItem "Mobile Interface": .ItemData(.NewIndex) = lngBit: lngBit = lngBit * 2
     .AddItem "Fusion Integration": .ItemData(.NewIndex) = lngBit: lngBit = lngBit * 2
     .AddItem "XML Exports": .ItemData(.NewIndex) = lngBit: lngBit = lngBit * 2
+    .AddItem "3rd Party Tables": .ItemData(.NewIndex) = lngBit: lngBit = lngBit * 2
   End With
 
 End Sub
@@ -638,13 +984,11 @@ End Sub
 
 Private Sub cmdRead_Click()
 
-  Dim objLicence As COALicence.clsLicence2
+  Dim objLicence As New clsLicence
   Dim lngCustNo As Long
   Dim lngUsers As Long
   Dim lngModules As Long
   Dim lngCount As Long
-
-  Set objLicence = New COALicence.clsLicence2
 
   With objLicence
     .LicenceKey = Me.LicenceKey
@@ -657,6 +1001,14 @@ Private Sub cmdRead_Click()
       txtIntUsers.Text = CStr(.DMIMUsers)
       txtDMISUsers.Text = CStr(.DMISUsers)
       txtSSIUsers.Text = CStr(.SSIUsers)
+      txtHeadcount.Text = CStr(.Headcount)
+      
+      If IsDate(.ExpiryDate) And Year(.ExpiryDate) > 1900 Then
+        txtExpiryDate.Text = .ExpiryDate
+      Else
+        txtExpiryDate.Text = ""
+      End If
+      cboType.ListIndex = .LicenceType
 
       For lngCount = 0 To lstModules.ListCount - 1
         lstModules.Selected(lngCount) = (.Modules And lstModules.ItemData(lngCount))
@@ -679,66 +1031,6 @@ Private Sub cmdSuppClipboard_Click()
       txtSupportOutput(4).Text
 End Sub
 
-Private Sub cmdSuppGenerate_Click()
-
-  Dim objInput As COALicence.clsLicence
-  Dim objOutput As clsLicenceWrite
-  Dim strInput As String
-  Dim strOutput As String
-  Dim lngCount As Long
-  Dim blnValid As Boolean
-
-  Set objInput = New COALicence.clsLicence
-  Set objOutput = New clsLicenceWrite
-
-  strInput = txtSupportInput(0).Text & "-" & _
-             txtSupportInput(1).Text & "-" & _
-             txtSupportInput(2).Text & "-" & _
-             txtSupportInput(3).Text & "-" & _
-             txtSupportInput(4).Text
-  objInput.LicenceKey2 = strInput
-
-  If objInput.CustomerNo = 0 Then
-    MsgBox "Invalid key", vbExclamation, "Support"
-
-  Else
-    objOutput.CustomerNo = objInput.CustomerNo
-    objOutput.NumUsers = objInput.NumUsers
-    objOutput.IntUsers = objInput.IntUsers
-    objOutput.SSUsers = objInput.SSUsers
-    objOutput.Modules = objInput.Modules
-
-    Do
-      'Assume that its going to be okay...
-      'blnValid = True
-      strOutput = objOutput.LicenceKey2
-      
-      'For lngCount = 1 To 19
-      '  If lngCount <> 5 And lngCount <> 10 And lngCount <> 15 Then
-      '    If Mid(strOutput, lngCount, 1) = Mid(strInput, lngCount, 1) Then
-      '      blnValid = False
-      '      Exit For
-      '    End If
-      '  End If
-      'Next
-      blnValid = (strOutput <> strInput)
-
-    Loop While Not blnValid
-
-    'lblSupportAuthorisation.Caption = strOutput
-    txtSupportOutput(0).Text = Mid(strOutput, 1, 4)
-    txtSupportOutput(1).Text = Mid(strOutput, 6, 4)
-    txtSupportOutput(2).Text = Mid(strOutput, 11, 4)
-    txtSupportOutput(3).Text = Mid(strOutput, 16, 4)
-    txtSupportOutput(4).Text = Mid(strOutput, 21, 4)
-
-  End If
-
-  Set objInput = Nothing
-  Set objOutput = Nothing
-
-End Sub
-
 Private Sub Form_Load()
 
   SSTab1.Tab = 0
@@ -755,7 +1047,8 @@ Private Sub Form_Load()
   'Err.Clear
   'Debug.Print 1 / 0
   'Me.SSTab1.TabVisible(1) = (Err.Number > 0)
-    
+  
+  cboType.ListIndex = 0
     
   Set gSysTray = New clsSysTray
   Set gSysTray.SourceWindow = Me
@@ -842,6 +1135,14 @@ Private Sub cmdGenerate_Click()
     .DMIMUsers = Val(txtIntUsers.Text)
     .DMISUsers = Val(txtDMISUsers.Text)
     .SSIUsers = Val(txtSSIUsers.Text)
+    .Headcount = Val(txtHeadcount.Text)
+    
+    If IsDate(txtExpiryDate.DateValue) Then
+      .ExpiryDate = txtExpiryDate.DateValue
+    End If
+    
+    .LicenceType = cboType.ListIndex
+   
     .Modules = lngModules
 
     Me.LicenceKey = .LicenceKey2
@@ -933,7 +1234,7 @@ End Sub
 Private Sub txtLicence_KeyDown(Index As Integer, KeyCode As Integer, Shift As Integer)
 
   If KeyCode = vbKeyV And (Shift And vbCtrlMask) Then
-    If Clipboard.GetText Like "?????-?????-?????-?????" Then
+    If Clipboard.GetText Like "??????-??????-??????-??????-??????" Then
       LicenceKey = Clipboard.GetText
       KeyCode = 0
       Shift = 0
@@ -1011,13 +1312,13 @@ End Property
 Public Property Let LicenceKey(ByVal strNewValue As String)
 
   Dim lngCount As Long
-  
-  'If strNewValue Like "????-????-????-????-????" Then
-  If strNewValue Like "?????-?????-?????-?????" Then
-    txtLicence(0).Text = Mid(strNewValue, 1, 5)
-    txtLicence(1).Text = Mid(strNewValue, 7, 5)
-    txtLicence(2).Text = Mid(strNewValue, 13, 5)
-    txtLicence(3).Text = Mid(strNewValue, 19, 5)
+ 
+  If strNewValue Like "??????-??????-??????-??????-??????" Then
+    txtLicence(0).Text = Mid(strNewValue, 1, 6)
+    txtLicence(1).Text = Mid(strNewValue, 8, 6)
+    txtLicence(2).Text = Mid(strNewValue, 15, 6)
+    txtLicence(3).Text = Mid(strNewValue, 22, 6)
+    txtLicence(4).Text = Mid(strNewValue, 29, 6)
   End If
 
 End Property

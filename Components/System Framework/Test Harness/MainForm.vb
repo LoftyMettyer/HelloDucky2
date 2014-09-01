@@ -253,4 +253,13 @@ Public Class MainForm
 #End Region
 
 
+	Private Sub Button4_Click(sender As Object, e As EventArgs) Handles Button4.Click
+
+		Dim objSysMgr As New SystemFramework.SysMgr
+
+		txtNewKey.Text = objSysMgr.UpdateLicence(txtOldKey.Text)
+
+
+
+	End Sub
 End Class

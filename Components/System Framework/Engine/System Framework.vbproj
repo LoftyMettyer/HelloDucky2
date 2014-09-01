@@ -97,6 +97,7 @@
     <Import Include="SystemFramework.Things" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Database Scripting\UpdateLicence.vb" />
     <Compile Include="Enums\Connection\LoginType.vb" />
     <Compile Include="Enums\Connection\DbType.vb" />
     <Compile Include="Enums\Connection\MetadataProvider.vb" />

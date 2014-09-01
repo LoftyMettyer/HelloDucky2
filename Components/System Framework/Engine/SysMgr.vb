@@ -143,6 +143,15 @@ Public Class SysMgr
     End Get
   End Property
 
+	Public Function UpdateLicence(existingLicence As String) As String Implements ISystemManager.UpdateLicence
+
+		Dim objLicence As New UpdateLicence
+		objLicence.SetOldLicenceKey(existingLicence)
+		Return objLicence.GenerateNewKey
+
+	End Function
+
+
 #End Region
 
 End Class

@@ -184,4 +184,4 @@ Public gfMobileModule As Boolean
 Public gsLogDirectory As String
 Public gsApplicationPath As String
 
-
+Public gobjLicence As New clsLicence

@@ -19,6 +19,7 @@ Begin VB.Form frmLicenceKey
    Icon            =   "frmLicenceKey.frx":0000
    KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
+   LockControls    =   -1  'True
    MaxButton       =   0   'False
    MinButton       =   0   'False
    ScaleHeight     =   2235
@@ -48,15 +49,24 @@ Begin VB.Form frmLicenceKey
       BorderStyle     =   0  'None
       Caption         =   "Frame1"
       Height          =   375
-      Left            =   615
+      Left            =   135
       TabIndex        =   1
       Top             =   1080
-      Width           =   4095
+      Width           =   5100
+      Begin VB.TextBox txtLicence 
+         Height          =   315
+         Index           =   4
+         Left            =   4230
+         MaxLength       =   6
+         TabIndex        =   12
+         Top             =   0
+         Width           =   825
+      End
       Begin VB.TextBox txtLicence 
          Height          =   315
          Index           =   0
          Left            =   0
-         MaxLength       =   5
+         MaxLength       =   6
          TabIndex        =   2
          Top             =   0
          Width           =   825
@@ -65,7 +75,7 @@ Begin VB.Form frmLicenceKey
          Height          =   315
          Index           =   1
          Left            =   1080
-         MaxLength       =   5
+         MaxLength       =   6
          TabIndex        =   4
          Top             =   0
          Width           =   825
@@ -74,7 +84,7 @@ Begin VB.Form frmLicenceKey
          Height          =   315
          Index           =   2
          Left            =   2200
-         MaxLength       =   5
+         MaxLength       =   6
          TabIndex        =   6
          Top             =   0
          Width           =   825
@@ -83,10 +93,29 @@ Begin VB.Form frmLicenceKey
          Height          =   315
          Index           =   3
          Left            =   3240
-         MaxLength       =   5
+         MaxLength       =   6
          TabIndex        =   8
          Top             =   0
          Width           =   825
+      End
+      Begin VB.Label lblLicence 
+         AutoSize        =   -1  'True
+         Caption         =   "-"
+         BeginProperty Font 
+            Name            =   "Verdana"
+            Size            =   9.75
+            Charset         =   0
+            Weight          =   700
+            Underline       =   0   'False
+            Italic          =   0   'False
+            Strikethrough   =   0   'False
+         EndProperty
+         Height          =   240
+         Index           =   3
+         Left            =   4080
+         TabIndex        =   13
+         Top             =   45
+         Width           =   90
       End
       Begin VB.Label lblLicence 
          AutoSize        =   -1  'True
@@ -189,9 +218,8 @@ End Property
 
 Public Property Get LicenceKey() As String
   LicenceKey = txtLicence(0).Text & "-" & txtLicence(1).Text & "-" & _
-               txtLicence(2).Text & "-" & txtLicence(3).Text '& "-" & txtLicence(4).Text
+               txtLicence(2).Text & "-" & txtLicence(3).Text & "-" & txtLicence(4).Text
 End Property
-
 
 Private Function GenerateAlphaString() As String
 
@@ -279,12 +307,12 @@ Private Sub txtLicence_KeyDown(Index As Integer, KeyCode As Integer, Shift As In
   'Check if a user is trying to paste in a whole licence key
   'If they are, then separate it into each text box.
   If KeyCode = vbKeyV And (Shift And vbCtrlMask) Then
-    If Clipboard.GetText Like "?????-?????-?????-?????" Then
-      txtLicence(0).Text = Mid(Clipboard.GetText, 1, 5)
-      txtLicence(1).Text = Mid(Clipboard.GetText, 7, 5)
-      txtLicence(2).Text = Mid(Clipboard.GetText, 13, 5)
-      txtLicence(3).Text = Mid(Clipboard.GetText, 19, 5)
-      'txtLicence(4).Text = Mid(Clipboard.GetText, 21, 4)
+    If Clipboard.GetText Like "??????-??????-??????-??????-??????" Then
+      txtLicence(0).Text = Mid(Clipboard.GetText, 1, 6)
+      txtLicence(1).Text = Mid(Clipboard.GetText, 8, 6)
+      txtLicence(2).Text = Mid(Clipboard.GetText, 15, 6)
+      txtLicence(3).Text = Mid(Clipboard.GetText, 22, 6)
+      txtLicence(4).Text = Mid(Clipboard.GetText, 29, 6)
       KeyCode = 0
       Shift = 0
     End If

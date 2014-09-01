@@ -55,6 +55,25 @@ Public Enum LoginType
   iUSERTYPE_ORPHANGROUP = 5
 End Enum
 
+Public Enum enum_Module
+  modPersonnel = 1
+  modRecruitment = 2
+  modAbsence = 4
+  modTraining = 8
+  modIntranet = 16
+  modAFD = 32
+  modFullSysMgr = 64
+  modCMG = 128
+  modQAddress = 256
+  modAccord = 512
+  modWorkflow = 1024
+  modVersionOne = 2048
+  modMobile = 4096
+  modFusion = 8192
+  modXMLExport = 16384
+  mod3rdPartyTables = 32768
+End Enum
+
 Public Enum SQLServerAuthenticationType
   iWINDOWSONLY = 1
   iMIXEDMODE = 2
@@ -70,6 +89,8 @@ Public glngWindowLeft As Long
 Public glngWindowTop As Long
 Public glngWindowHeight As Long
 Public glngWindowWidth As Long
+
+Public gobjLicence As New clsLicence
 
 Public Enum ArraySortOrder
    SortAscending = 0
@@ -568,7 +589,7 @@ ErrorTrap:
 End Function
 
 ' Sorts the array in the specified order
-Public Sub SortArray(ByRef vArray As Variant, Optional ByVal SortOrder As ArraySortOrder = SortAscending)
+Public Sub SortArray(ByRef vArray As Variant, Optional ByVal sortOrder As ArraySortOrder = SortAscending)
    Dim i          As Long
    Dim j          As Long
    Dim iLBound    As Long
@@ -583,7 +604,7 @@ Public Sub SortArray(ByRef vArray As Variant, Optional ByVal SortOrder As ArrayS
    iLBound = LBound(vArray)
    iUBound = UBound(vArray)
 
-   bSortOrder = IIf(SortOrder = SortAscending, False, True)
+   bSortOrder = IIf(sortOrder = SortAscending, False, True)
    iMax = iUBound - iLBound + 1
    
    Do
