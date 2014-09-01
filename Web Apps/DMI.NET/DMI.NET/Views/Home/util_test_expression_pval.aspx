@@ -29,7 +29,7 @@
 		<script type="text/javascript" >
 
 		function util_test_expression_pval_onload() {
-
+			
 		    window.parent.OpenHR.setDatepickerLanguage();
 	
 			$(".datepicker").datepicker();
@@ -426,11 +426,11 @@
 						fValueLogic = IIf(Left(sPrompts, iCharIndex - 1) = "", False, Left(sPrompts, iCharIndex - 1))
                     Case 12
                         sTemp = Left(sPrompts, iCharIndex - 1)
-                        If sTemp = "null" Or sTemp = "12/30/1899" Then
-                            dtValueDate = Nothing
-                        Else
-                            dtValueDate = DateTime.Parse(Left(sPrompts, iCharIndex - 1), CultureInfo.CreateSpecificCulture("en-US"))
-                        End If
+						If sTemp = "null" Or sTemp = "12/30/1899" Or sTemp = "" Then
+							dtValueDate = Nothing
+						Else
+							dtValueDate = DateTime.Parse(Left(sPrompts, iCharIndex - 1), CultureInfo.CreateSpecificCulture("en-US"))
+						End If
                     Case 13
                         iParameterIndex = 0
                         iPromptDateType = IIf(Left(sPrompts, iCharIndex - 1) = "", 0, Left(sPrompts, iCharIndex - 1))
