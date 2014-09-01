@@ -852,12 +852,12 @@ Namespace Controllers
 
 			If dsDefProp.Tables(1).Rows.Count > 0 Then
 				Dim rowAccess = dsDefProp.Tables(1).Rows(0)
-				objModel.CreatedDate = rowAccess("CreatedDate").ToString() & "  by " & rowAccess("Createdby").ToString
-				If objModel.CreatedDate = "  by " Then objModel.CreatedDate = "<Unknown>"
-				objModel.LastSaveDate = rowAccess("SavedDate").ToString() & "  by " & rowAccess("Savedby").ToString()
-				If objModel.LastSaveDate = "  by " Then objModel.LastSaveDate = "<Unknown>"
-				objModel.LastRunDate = rowAccess("RunDate").ToString() & "  by " & rowAccess("Runby").ToString()
-				If objModel.LastRunDate = "  by " Then objModel.LastRunDate = "<Unknown>"
+				objModel.CreatedDate = rowAccess("CreatedDate").ToString() & " by " & rowAccess("Createdby").ToString
+				If objModel.CreatedDate = " by " Then objModel.CreatedDate = "<Unknown>"
+				objModel.LastSaveDate = rowAccess("SavedDate").ToString() & " by " & rowAccess("Savedby").ToString()
+				If objModel.LastSaveDate = " by " Then objModel.LastSaveDate = "<Unknown>"
+				objModel.LastRunDate = rowAccess("RunDate").ToString() & " by " & rowAccess("Runby").ToString()
+				If objModel.LastRunDate = " by " Then objModel.LastRunDate = "<Unknown>"
 			End If
 
 			objModel.Usage = New Collection(Of DefinitionPropertiesViewModel)

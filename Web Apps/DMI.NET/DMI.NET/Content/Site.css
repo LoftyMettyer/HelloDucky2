@@ -598,7 +598,7 @@ margin:15px 0 5px 0;
 }
 
 #definitionPropertiesFields .inputProperty {
-	width:67%;
+	width:84%;
 	margin-bottom:5px;
 	/*float:right;*/
 }
@@ -608,12 +608,12 @@ margin:15px 0 5px 0;
 }
 #definitionPropertiesFields .labelProperty {
 		display: inline-block;
-		width: 30%;
+		width: 14%;
 		text-align: left;
 }
 
-#definitionPropertiesFields  {
-
+#divPopupReportDefinition .ui-jqgrid-bdiv {
+	overflow: hidden;
 }
 
 .ui-dialog .ui-dialog-buttonpane {

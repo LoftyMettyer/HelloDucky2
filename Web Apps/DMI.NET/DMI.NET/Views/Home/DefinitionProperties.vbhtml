@@ -31,46 +31,41 @@
 </fieldset>
 
 <script type="text/javascript">
-
-	$(function () {
-		attachUsage();
-		$('fieldset').css("border", "0");
-		$("#definitionUsage").jqGrid('setGridWidth', $("#definitionusagediv").width() - 4);
+	$("#definitionUsage").jqGrid({
+		datatype: "jsonstring",
+		datastr: '@Model.Usage.ToJsonResult',
+		mtype: 'GET',
+		jsonReader: {
+			root: "rows", //array containing actual data
+			page: "page", //current page
+			total: "total", //total pages for the query
+			records: "records", //total number of records
+			repeatitems: false,
+			id: "Name" //index of the column with the PK in it
+		},
+		colNames: ['Name'],
+		colModel: [
+			{ name: 'Name', index: 'Name', align: "left" }],
+		rowNum: 10,
+		width: 'auto',
+		height: '300px',
+		autowidth: true,
+		rowTotal: 50,
+		rowList: [10, 20, 30],
+		shrinkToFit: true,
+		pager: '#pcrud',
+		sortname: 'Name',
+		loadonce: true,
+		viewrecords: true,
+		sortorder: "asc",
+		cmTemplate: { sortable: false }
 	});
 
-	function attachUsage() {
-		$("#definitionUsage").jqGrid({
-			datatype: "jsonstring",
-			datastr: '@Model.Usage.ToJsonResult',
-			mtype: 'GET',
-			jsonReader: {
-				root: "rows", //array containing actual data
-				page: "page", //current page
-				total: "total", //total pages for the query
-				records: "records", //total number of records
-				repeatitems: false,
-				id: "Name" //index of the column with the PK in it
-			},
-			colNames: ['Name'],
-			colModel: [
-				{ name: 'Name', index: 'Name', align: "left" }],
-			rowNum: 10,
-			width: 'auto',
-			height: '300px',
-			autowidth: true,
-			rowTotal: 50,
-			rowList: [10, 20, 30],
-			shrinkToFit: true,
-			pager: '#pcrud',
-			sortname: 'Name',
-			loadonce: true,
-			viewrecords: true,
-			sortorder: "asc"
-		});
-	}
+	$('fieldset').css("border", "0");
+
+	$("#definitionUsage").jqGrid('setGridWidth', 840);
 
 	function closeThisPopup() {
-
 		$("#divPopupReportDefinition").dialog("close");
 		$("#divPopupReportDefinition").empty();
 	}

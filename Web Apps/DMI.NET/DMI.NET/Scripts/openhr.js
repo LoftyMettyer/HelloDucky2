@@ -431,7 +431,10 @@
 
 				$frame = $("#" + targetWin);
 				$frame.html(html);
+				$frame.dialog('option', 'width', 900);
+
 				$frame.show();
+				$frame.dialog({ position: { 'my': 'top', 'at': 'center center', 'of': 'header' } });
 				$frame.dialog("open");
 
 				//jQuery styling
