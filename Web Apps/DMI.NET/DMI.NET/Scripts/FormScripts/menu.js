@@ -610,13 +610,14 @@ function menu_MenuClick(sTool) {
 	}
 
 	if (sToolName == 'mnutoolCancelReport') {
+
 		try {
 
 			var frmSubmit = $("#frmReportDefintion");
 			if (frmSubmit.length == 0) {
 				$("#cmdCancel").click(); //Should be in scope	
 			} else {
-				cancelReportDefinition()
+				cancelReportDefinition();
 			}
 
 		} catch (e) {
@@ -5049,33 +5050,33 @@ function menu_loadSelectOrderFilter(psType) {
 	//Add treeview functionality to all divs in the accordion
 	if (element == undefined) element = "";
 	
-		
+
 
 	$(".accordion div" + element).jstree({
-	"themes": {
-	"dots": false,
-	"icons": true
-},
-			"plugins": ["html_data", "ui", "themeroller"],
-	types: {
-	"types": {
-	"disabled": {
-	"select_node": false,
-	"open_node": false,
-	"close_node": false,
-	"create_node": false,
-	"delete_node": false
-}
-}
-},
-	"themeroller": {
-	"item_leaf": false,
-	"item_clsd": false,
+		"themes": {
+			"dots": false,
+			"icons": true
+		},
+		"plugins": ["html_data", "ui", "themeroller"],
+		types: {
+			"types": {
+				"disabled": {
+					"select_node": false,
+					"open_node": false,
+					"close_node": false,
+					"create_node": false,
+					"delete_node": false
+				}
+			}
+		},
+		"themeroller": {
+			"item_leaf": false,
+			"item_clsd": false,
 			"item_open": false,
 			"item": "ui-menu-item"
-}
-});
-		
+		}
+	});
+
 	$('.accordion div' + element).removeClass('ui-widget-content');
 		$('.ui-accordion-content').addClass('ui-widget-content');
 }
@@ -5105,3 +5106,11 @@ function menu_loadSelectOrderFilter(psType) {
 			return false;
 		}
 	}
+
+function menu_SetmnutoolButtonCaption(itemID, newCaption) {
+	try {
+		$('#' + itemID + ' a').attr('title', newCaption);
+		$('#' + itemID + ' h6').text(newCaption);
+	}
+	catch(e) {}
+}

@@ -1171,6 +1171,7 @@
     <None Include="Scripts\jquery.validate-vsdoc.js" />
     <Content Include="Scripts\jquery.validate.js" />
     <Content Include="Scripts\jquery.validate.min.js" />
+    <Content Include="Scripts\jquery\jquery.hotkeys.js" />
     <Content Include="Scripts\jquery\jquery.numeric.js" />
     <Content Include="Scripts\FormScripts\OptionDataGrid.js" />
     <Content Include="lpks\ssmain.lpk" />
@@ -1223,6 +1224,11 @@
     <Content Include="Scripts\jquery\jquery.mCustomScrollbar.min.js" />
     <Content Include="Scripts\autoNumeric-1.9.15.js" />
     <Content Include="Scripts\jquery\jquery.tablesorter.min.js" />
+    <Content Include="Scripts\jquery\jsTree\themes\adv_themeroller\d.gif" />
+    <Content Include="Scripts\jquery\jsTree\themes\adv_themeroller\d.png" />
+    <Content Include="Scripts\jquery\jsTree\themes\adv_themeroller\dot_for_ie.gif" />
+    <Content Include="Scripts\jquery\jsTree\themes\adv_themeroller\style.css" />
+    <Content Include="Scripts\jquery\jsTree\themes\adv_themeroller\throbber.gif" />
     <Content Include="Scripts\jquery\MonthPicker.js" />
     <Content Include="Scripts\modernizr-2.7.2.js" />
     <Content Include="Views\Home\pollMessage.aspx" />
@@ -1401,11 +1407,11 @@
     <Content Include="Scripts\FormScripts\util_def_exprcomponent.js" />
     <Content Include="Scripts\FormScripts\util_def_expression.js" />
     <Content Include="Scripts\jquery\jquery.maskedinput.js" />
-    <Content Include="Scripts\jquery\jsTree\theme\apple\bg.jpg" />
-    <Content Include="Scripts\jquery\jsTree\theme\apple\d.png" />
-    <Content Include="Scripts\jquery\jsTree\theme\apple\dot_for_ie.gif" />
-    <Content Include="Scripts\jquery\jsTree\theme\apple\style.css" />
-    <Content Include="Scripts\jquery\jsTree\theme\apple\throbber.gif" />
+    <Content Include="Scripts\jquery\jsTree\themes\apple\bg.jpg" />
+    <Content Include="Scripts\jquery\jsTree\themes\apple\d.png" />
+    <Content Include="Scripts\jquery\jsTree\themes\apple\dot_for_ie.gif" />
+    <Content Include="Scripts\jquery\jsTree\themes\apple\style.css" />
+    <Content Include="Scripts\jquery\jsTree\themes\apple\throbber.gif" />
     <Content Include="Scripts\officebar\images\bg.png" />
     <Content Include="Scripts\officebar\images\bg_tab.png" />
     <Content Include="Scripts\officebar\images\button2_over.png" />
@@ -1427,11 +1433,11 @@
     <Content Include="Scripts\officebar\images\tab_right_over.gif" />
     <Content Include="Scripts\officebar\jquery.officebar_MODIFIED.js" />
     <Content Include="Scripts\officebar\jquery.ribbon.css" />
-    <Content Include="Scripts\jquery\jsTree\theme\classic\d.gif" />
-    <Content Include="Scripts\jquery\jsTree\theme\classic\d.png" />
-    <Content Include="Scripts\jquery\jsTree\theme\classic\dot_for_ie.gif" />
-    <Content Include="Scripts\jquery\jsTree\theme\classic\style.css" />
-    <Content Include="Scripts\jquery\jsTree\theme\classic\throbber.gif" />
+    <Content Include="Scripts\jquery\jsTree\themes\classic\d.gif" />
+    <Content Include="Scripts\jquery\jsTree\themes\classic\d.png" />
+    <Content Include="Scripts\jquery\jsTree\themes\classic\dot_for_ie.gif" />
+    <Content Include="Scripts\jquery\jsTree\themes\classic\style.css" />
+    <Content Include="Scripts\jquery\jsTree\themes\classic\throbber.gif" />
     <Content Include="Content\Menu\ActiveNode.png" />
     <Content Include="Content\Menu\InactiveNode.png" />
     <Content Include="Content\Menu\node_closed.png" />
@@ -1594,7 +1600,6 @@
     <Content Include="packages.config">
       <SubType>Designer</SubType>
     </Content>
-    <Content Include="Scripts\ctl_SetFont.js" />
     <Content Include="Scripts\ctl_SetStyles.js" />
     <Content Include="Scripts\jquery\jquery.cookie.js" />
     <Content Include="Scripts\jquery\jquery.rightClick.js" />
@@ -1627,7 +1632,6 @@
     <Content Include="Views\Home\EventLogDetails.aspx" />
     <Content Include="Views\Home\EventLogPurge.aspx" />
     <Content Include="Views\Home\EventLogSelection.aspx" />
-    <Content Include="Views\Home\fieldRec.aspx" />
     <Content Include="Views\Home\filterselect.ascx" />
     <Content Include="Views\Home\Find.ascx" />
     <Content Include="Views\Home\fixedlinks.ascx" />
@@ -1649,7 +1653,6 @@
     <Content Include="Views\Home\Menu.ascx" />
     <Content Include="Views\Home\newUser.ascx" />
     <Content Include="Views\Home\OptionData.ascx" />
-    <Content Include="Views\Home\pcconfiguration.ascx" />
     <Content Include="Views\Home\picklistSelection.ascx" />
     <Content Include="Views\Home\picklistSelectionData.ascx" />
     <Content Include="Views\Home\picklistSelectionMain.ascx" />
@@ -1707,7 +1710,6 @@
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
     <Content Include="Views\Home\stdrpt_def_Absence.ascx" />
-    <Content Include="Views\Shared\Util_Def_CustomReports\ssOleDBGridCalculations.ascx" />
     <Content Include="Views\Shared\_Banner.ascx" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>

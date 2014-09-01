@@ -6,17 +6,9 @@
 
 <script src="<%: Url.LatestContent("~/bundles/utilities_expressions")%>" type="text/javascript"></script>
 
-<%--licence manager reference for activeX--%>
-<object classid="clsid:5220cb21-c88d-11cf-b347-00aa00a28331"
-	id="Microsoft_Licensed_Class_Manager_1_0"
-	viewastext>
-	<param name="LPKPath" value="<%: Url.Content("~/lpks/ssmain.lpk")%>">
-</object>
-
 <form action="" method="POST" id="frmMainForm" name="frmMainForm">
 	<%
 		Dim objDataAccess As clsDataAccess = CType(Session("DatabaseAccess"), clsDataAccess)
-		
 		Dim iPassBy As Integer
 		Dim sErrMsg As String	
 		
@@ -550,52 +542,11 @@
 												<tr>
 													<td width="10">&nbsp;</td>
 													<td>
-														<object classid="clsid:1C203F13-95AD-11D0-A84B-00A0247B735B" id="SSFunctionTree" codebase="cabs/SStree.cab#version=1,0,2,24" style="LEFT: 0px; TOP: 0px; WIDTH: 100%; HEIGHT: 400px" viewastext>
-															<param name="_ExtentX" value="2646">
-															<param name="_ExtentY" value="1323">
-															<param name="_Version" value="65538">
-															<param name="BackColor" value="-2147483643">
-															<param name="ForeColor" value="-2147483640">
-															<param name="ImagesMaskColor" value="12632256">
-															<param name="PictureBackgroundMaskColor" value="12632256">
-															<param name="Appearance" value="1">
-															<param name="BorderStyle" value="0">
-															<param name="LabelEdit" value="1">
-															<param name="LineStyle" value="0">
-															<param name="LineType" value="1">
-															<param name="MousePointer" value="0">
-															<param name="NodeSelectionStyle" value="2">
-															<param name="PictureAlignment" value="0">
-															<param name="ScrollStyle" value="0">
-															<param name="Style" value="6">
-															<param name="IndentationStyle" value="0">
-															<param name="TreeTips" value="3">
-															<param name="PictureBackgroundStyle" value="0">
-															<param name="Indentation" value="38">
-															<param name="MaxLines" value="1">
-															<param name="TreeTipDelay" value="500">
-															<param name="ImageCount" value="0">
-															<param name="ImageListIndex" value="-1">
-															<param name="OLEDragMode" value="0">
-															<param name="OLEDropMode" value="0">
-															<param name="AllowDelete" value="0">
-															<param name="AutoSearch" value="0">
-															<param name="Enabled" value="-1">
-															<param name="HideSelection" value="0">
-															<param name="ImagesUseMask" value="0">
-															<param name="Redraw" value="-1">
-															<param name="UseImageList" value="-1">
-															<param name="PictureBackgroundUseMask" value="0">
-															<param name="HasFont" value="0">
-															<param name="HasMouseIcon" value="0">
-															<param name="HasPictureBackground" value="0">
-															<param name="PathSeparator" value="\">
-															<param name="TabStops" value="32">
-															<param name="ImageList" value="<None>">
-															<param name="LoadStyleRoot" value="1">
-															<param name="Sorted" value="0">
-															<param name="OnDemandDiscardBuffer" value="10">
-														</object>
+														<div id="SSFunctionTree" style="left: 0; top: 0; width: 100%; height: 400px;">
+															<ul>
+																<li id="FUNCTION_ROOT" class="root"><a href='#'>Functions</a></li>
+															</ul>
+														</div>
 													</td>
 													<td width="10">&nbsp;</td>
 												</tr>
@@ -625,52 +576,11 @@
 												<tr>
 													<td width="10">&nbsp;</td>
 													<td>
-														<object classid="clsid:1C203F13-95AD-11D0-A84B-00A0247B735B" id="SSOperatorTree" codebase="cabs/SStree.cab#version=1,0,2,24" style="LEFT: 0px; TOP: 0px; WIDTH: 100%; HEIGHT: 400px" viewastext>
-															<param name="_ExtentX" value="2646">
-															<param name="_ExtentY" value="1323">
-															<param name="_Version" value="65538">
-															<param name="BackColor" value="-2147483643">
-															<param name="ForeColor" value="-2147483640">
-															<param name="ImagesMaskColor" value="12632256">
-															<param name="PictureBackgroundMaskColor" value="12632256">
-															<param name="Appearance" value="1">
-															<param name="BorderStyle" value="0">
-															<param name="LabelEdit" value="1">
-															<param name="LineStyle" value="0">
-															<param name="LineType" value="1">
-															<param name="MousePointer" value="0">
-															<param name="NodeSelectionStyle" value="2">
-															<param name="PictureAlignment" value="0">
-															<param name="ScrollStyle" value="0">
-															<param name="Style" value="6">
-															<param name="IndentationStyle" value="0">
-															<param name="TreeTips" value="3">
-															<param name="PictureBackgroundStyle" value="0">
-															<param name="Indentation" value="38">
-															<param name="MaxLines" value="1">
-															<param name="TreeTipDelay" value="500">
-															<param name="ImageCount" value="0">
-															<param name="ImageListIndex" value="-1">
-															<param name="OLEDragMode" value="0">
-															<param name="OLEDropMode" value="0">
-															<param name="AllowDelete" value="0">
-															<param name="AutoSearch" value="0">
-															<param name="Enabled" value="-1">
-															<param name="HideSelection" value="0">
-															<param name="ImagesUseMask" value="0">
-															<param name="Redraw" value="-1">
-															<param name="UseImageList" value="-1">
-															<param name="PictureBackgroundUseMask" value="0">
-															<param name="HasFont" value="0">
-															<param name="HasMouseIcon" value="0">
-															<param name="HasPictureBackground" value="0">
-															<param name="PathSeparator" value="\">
-															<param name="TabStops" value="32">
-															<param name="ImageList" value="<None>">
-															<param name="LoadStyleRoot" value="1">
-															<param name="Sorted" value="0">
-															<param name="OnDemandDiscardBuffer" value="10">
-														</object>
+														<div id="SSOperatorTree" style="left: 0; top: 0; width: 100%; height: 400px;">
+															<ul>
+																<li id="OPERATOR_ROOT" class="root"><a href='#'>Operators</a></li>
+															</ul>
+														</div>														
 													</td>
 													<td width="10">&nbsp;</td>
 												</tr>
@@ -839,7 +749,7 @@
 												<tr>
 													<td width="10">&nbsp;</td>
 													<td>
-														<%Html.RenderPartial("~/Views/Shared/Util_Def_CustomReports/ssOleDBGridCalculations.ascx")%>
+														<table id="ssOleDBGridCalculations"></table>
 													</td>
 													<td width="10">&nbsp;</td>
 												</tr>
@@ -903,157 +813,7 @@
 												<tr>
 													<td width="10">&nbsp;</td>
 													<td>
-														<object classid="clsid:4A4AA697-3E6F-11D2-822F-00104B9E07A1" id="ssOleDBGridFilters" name="ssOleDBGridFilters" codebase="cabs/COAInt_Grid.cab#version=3,1,3,6" style="LEFT: 0px; TOP: 0px; WIDTH: 100%; HEIGHT: 400px">
-															<param name="ScrollBars" value="4">
-															<param name="_Version" value="196616">
-															<param name="DataMode" value="2">
-															<param name="Cols" value="0">
-															<param name="Rows" value="0">
-															<param name="BorderStyle" value="1">
-															<param name="RecordSelectors" value="0">
-															<param name="GroupHeaders" value="0">
-															<param name="ColumnHeaders" value="0">
-															<param name="GroupHeadLines" value="0">
-															<param name="HeadLines" value="0">
-															<param name="FieldDelimiter" value="(None)">
-															<param name="FieldSeparator" value="(Tab)">
-															<param name="Col.Count" value="2">
-															<param name="stylesets.count" value="0">
-															<param name="TagVariant" value="EMPTY">
-															<param name="UseGroups" value="0">
-															<param name="HeadFont3D" value="0">
-															<param name="Font3D" value="0">
-															<param name="DividerType" value="3">
-															<param name="DividerStyle" value="1">
-															<param name="DefColWidth" value="0">
-															<param name="BeveColorScheme" value="2">
-															<param name="BevelColorFrame" value="-2147483642">
-															<param name="BevelColorHighlight" value="-2147483628">
-															<param name="BevelColorShadow" value="-2147483632">
-															<param name="BevelColorFace" value="-2147483633">
-															<param name="CheckBox3D" value="-1">
-															<param name="AllowAddNew" value="0">
-															<param name="AllowDelete" value="0">
-															<param name="AllowUpdate" value="0">
-															<param name="MultiLine" value="0">
-															<param name="ActiveCellStyleSet" value="">
-															<param name="RowSelectionStyle" value="0">
-															<param name="AllowRowSizing" value="0">
-															<param name="AllowGroupSizing" value="0">
-															<param name="AllowColumnSizing" value="0">
-															<param name="AllowGroupMoving" value="0">
-															<param name="AllowColumnMoving" value="0">
-															<param name="AllowGroupSwapping" value="0">
-															<param name="AllowColumnSwapping" value="0">
-															<param name="AllowGroupShrinking" value="0">
-															<param name="AllowColumnShrinking" value="0">
-															<param name="AllowDragDrop" value="0">
-															<param name="UseExactRowCount" value="-1">
-															<param name="SelectTypeCol" value="0">
-															<param name="SelectTypeRow" value="1">
-															<param name="SelectByCell" value="-1">
-															<param name="BalloonHelp" value="0">
-															<param name="RowNavigation" value="1">
-															<param name="CellNavigation" value="0">
-															<param name="MaxSelectedRows" value="1">
-															<param name="HeadStyleSet" value="">
-															<param name="StyleSet" value="">
-															<param name="ForeColorEven" value="0">
-															<param name="ForeColorOdd" value="0">
-															<param name="BackColorEven" value="16777215">
-															<param name="BackColorOdd" value="16777215">
-															<param name="Levels" value="1">
-															<param name="RowHeight" value="503">
-															<param name="ExtraHeight" value="0">
-															<param name="ActiveRowStyleSet" value="">
-															<param name="CaptionAlignment" value="2">
-															<param name="SplitterPos" value="0">
-															<param name="SplitterVisible" value="0">
-															<param name="Columns.Count" value="2">
-															<param name="Columns(0).Width" value="100000">
-															<param name="Columns(0).Visible" value="-1">
-															<param name="Columns(0).Columns.Count" value="1">
-															<param name="Columns(0).Caption" value="Name">
-															<param name="Columns(0).Name" value="Name">
-															<param name="Columns(0).Alignment" value="0">
-															<param name="Columns(0).CaptionAlignment" value="3">
-															<param name="Columns(0).Bound" value="0">
-															<param name="Columns(0).AllowSizing" value="1">
-															<param name="Columns(0).DataField" value="Column 0">
-															<param name="Columns(0).DataType" value="8">
-															<param name="Columns(0).Level" value="0">
-															<param name="Columns(0).NumberFormat" value="">
-															<param name="Columns(0).Case" value="0">
-															<param name="Columns(0).FieldLen" value="256">
-															<param name="Columns(0).VertScrollBar" value="0">
-															<param name="Columns(0).Locked" value="0">
-															<param name="Columns(0).Style" value="0">
-															<param name="Columns(0).ButtonsAlways" value="0">
-															<param name="Columns(0).RowCount" value="0">
-															<param name="Columns(0).ColCount" value="1">
-															<param name="Columns(0).HasHeadForeColor" value="0">
-															<param name="Columns(0).HasHeadBackColor" value="0">
-															<param name="Columns(0).HasForeColor" value="0">
-															<param name="Columns(0).HasBackColor" value="0">
-															<param name="Columns(0).HeadForeColor" value="0">
-															<param name="Columns(0).HeadBackColor" value="0">
-															<param name="Columns(0).ForeColor" value="0">
-															<param name="Columns(0).BackColor" value="0">
-															<param name="Columns(0).HeadStyleSet" value="">
-															<param name="Columns(0).StyleSet" value="">
-															<param name="Columns(0).Nullable" value="1">
-															<param name="Columns(0).Mask" value="">
-															<param name="Columns(0).PromptInclude" value="0">
-															<param name="Columns(0).ClipMode" value="0">
-															<param name="Columns(0).PromptChar" value="95">
-															<param name="Columns(1).Width" value="0">
-															<param name="Columns(1).Visible" value="0">
-															<param name="Columns(1).Columns.Count" value="1">
-															<param name="Columns(1).Caption" value="id">
-															<param name="Columns(1).Name" value="id">
-															<param name="Columns(1).Alignment" value="0">
-															<param name="Columns(1).CaptionAlignment" value="3">
-															<param name="Columns(1).Bound" value="0">
-															<param name="Columns(1).AllowSizing" value="1">
-															<param name="Columns(1).DataField" value="Column 1">
-															<param name="Columns(1).DataType" value="8">
-															<param name="Columns(1).Level" value="0">
-															<param name="Columns(1).NumberFormat" value="">
-															<param name="Columns(1).Case" value="0">
-															<param name="Columns(1).FieldLen" value="256">
-															<param name="Columns(1).VertScrollBar" value="0">
-															<param name="Columns(1).Locked" value="0">
-															<param name="Columns(1).Style" value="0">
-															<param name="Columns(1).ButtonsAlways" value="0">
-															<param name="Columns(1).RowCount" value="0">
-															<param name="Columns(1).ColCount" value="1">
-															<param name="Columns(1).HasHeadForeColor" value="0">
-															<param name="Columns(1).HasHeadBackColor" value="0">
-															<param name="Columns(1).HasForeColor" value="0">
-															<param name="Columns(1).HasBackColor" value="0">
-															<param name="Columns(1).HeadForeColor" value="0">
-															<param name="Columns(1).HeadBackColor" value="0">
-															<param name="Columns(1).ForeColor" value="0">
-															<param name="Columns(1).BackColor" value="0">
-															<param name="Columns(1).HeadStyleSet" value="">
-															<param name="Columns(1).StyleSet" value="">
-															<param name="Columns(1).Nullable" value="1">
-															<param name="Columns(1).Mask" value="">
-															<param name="Columns(1).PromptInclude" value="0">
-															<param name="Columns(1).ClipMode" value="0">
-															<param name="Columns(1).PromptChar" value="95">
-															<param name="UseDefaults" value="-1">
-															<param name="TabNavigation" value="1">
-															<param name="_ExtentX" value="17330">
-															<param name="_ExtentY" value="1323">
-															<param name="_StockProps" value="79">
-															<param name="Caption" value="">
-															<param name="ForeColor" value="0">
-															<param name="BackColor" value="16777215">
-															<param name="Enabled" value="-1">
-															<param name="DataMember" value="">
-															<param name="Row.Count" value="0">
-														</object>
+														<table id="ssOleDBGridFilters"></table>
 													</td>
 													<td width="10">&nbsp;</td>
 												</tr>
@@ -1476,31 +1236,7 @@
 						<td height="10" colspan="5"></td>
 					</tr>
 
-					<tr height="10">
-						
-						<td colspan="3" alinn="left">
-							<table   width="100%" class="invisible" cellspacing="0" cellpadding="0">
-								<tr>
-									<td colspan="4"></td>
-								</tr>
-								<tr>
-									
-									<td width="10">
-										<input id="cmdOK" name="cmdOK" type="button" class="btn" value="OK" style="width: 75px" width="75"
-											onclick="component_OKClick()" />
-									</td>
-									<td width="20"></td>
-									<td width="10">
-										<input id="cmdCancel" name="cmdCancel" type="button" class="btn" value="Cancel" style="width: 75px" width="75"
-											onclick="component_CancelClick()"/>
-									</td>
-                                    <td></td>
-								</tr>
-							</table>
-						</td>
-						<td width="10"></td>
-                        <td width="10"></td>
-					</tr>
+			
 					<tr>
 						<td height="10" colspan="7"></td>
 					</tr>
@@ -1743,11 +1479,11 @@
 	%>
 </form>
 
-<form id="frmFieldRec" name="frmFieldRec" target="fieldRec" action="fieldRec" method="post" style="visibility: hidden; display: none">
+<div id="frmFieldRec" name="frmFieldRec" style="visibility: hidden; display: none">
 	<input type="hidden" id="selectionType" name="selectionType">
 	<input type="hidden" id="Hidden1" name="txtTableID">
 	<input type="hidden" id="selectedID" name="selectedID">
-</form>
+</div>
 
 <input type='hidden' id="txtTicker" name="txtTicker" value="0">
 <input type='hidden' id="txtLastKeyFind" name="txtLastKeyFind" value="">
@@ -2056,7 +1792,7 @@
 
 
 <script type="text/javascript">
-	util_def_exprcomponent_addhandlers();
+	//util_def_exprcomponent_addhandlers();
 	util_def_exprcomponent_onload();
 </script>
 

@@ -50,7 +50,8 @@ Namespace App_Start
 				"~/Scripts/clientDLL.js",
 				"~/Scripts/FormScripts/general.js",
 				"~/Scripts/FormScripts/menu.js",
-				"~/Scripts/ctl_SetStyles.js"))
+				"~/Scripts/ctl_SetStyles.js",
+				"~/Scripts/jquery/jquery.hotkeys.js"))
 
 			' Custom Reports
 			bundles.Add(New ScriptBundle("~/bundles/utilities_customreports").Include(
@@ -95,10 +96,6 @@ Namespace App_Start
 				"~/Scripts/FormScripts/recordEdit.js",
 				"~/Scripts/autoNumeric-1.9.15.js",
 				"~/Scripts/ColorPicker/spectrum.js"))
-
-			'ActiveX bundle (no minify)
-			bundles.Add(New Bundle("~/bundles/OpenHR_ActiveX").Include(
-				"~/Scripts/ctl_SetFont.js"))
 
 			' OptionData grid bundle
 			bundles.Add(New ScriptBundle("~/bundles/optiondatagrid").Include(

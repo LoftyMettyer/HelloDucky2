@@ -626,6 +626,7 @@
 		},
 		currentWorkPage = function () {
 			var sCurrentPage;
+			
 			if (!($("#workframe").css('display') == 'none')) {
 				//Work frame is in view.
 				sCurrentPage = $("#workframe").attr("data-framesource");
@@ -634,9 +635,17 @@
 				sCurrentPage = $("#optionframe").attr("data-framesource");
 			}
 
+			//Popout optionframe check
+			try {
+				if ($("#optionframe").dialog("isOpen") == true) {
+					sCurrentPage = $("#optionframe").attr("data-framesource");
+				}
+			} catch (e) {}
+
 			try {
 				sCurrentPage = sCurrentPage.toUpperCase();
 			} catch(e) {}
+
 
 			return sCurrentPage;
 		},
@@ -1099,12 +1108,15 @@
 			return strFilename.substr(strFilename.lastIndexOf('.') + 1);
 
 		},
-	printDiv = function (divID) {
+	printDiv = function (divID, cssObj) {
 		//Creates a new window, copies the specified div contents to it and sends to printer.
 		var divToPrint = document.getElementById(divID);
 		var newWin = window.open("", "_blank", 'toolbar=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=1, height=1, visible=none', "");
 		newWin.document.write('<sty');
 		newWin.document.write('le>');
+		for (var i = 0; i < cssObj.length; i++) {
+			newWin.document.write(cssObj[i].toString());
+		}
 		newWin.document.write('</sty');
 		newWin.document.write('le>');
 		newWin.document.write(divToPrint.innerHTML);

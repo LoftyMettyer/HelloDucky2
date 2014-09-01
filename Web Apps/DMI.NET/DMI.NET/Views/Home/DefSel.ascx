@@ -333,6 +333,7 @@
 						menu_toolbarEnableItem("mnutoolCopyReportFind", fHasRows && IsNewPermitted && fFromMenu);
 						menu_setVisibleMenuItem("mnutoolCopyReportFind", true);
 						menu_toolbarEnableItem("mnutoolEditReportFind", fHasRows && (IsEditPermitted || IsViewPermitted) && fFromMenu);
+						menu_SetmnutoolButtonCaption("mnutoolEditReportFind", (IsEditPermitted == false ? 'View' : 'Edit'));
 						menu_setVisibleMenuItem("mnutoolEditReportFind", true);
 						menu_toolbarEnableItem("mnutoolDeleteReportFind", fHasRows && IsDeletePermitted && fFromMenu);
 						menu_setVisibleMenuItem("mnutoolDeleteReportFind", true);
@@ -359,6 +360,7 @@
 						menu_toolbarEnableItem("mnutoolCopyReportFind", fHasRows && IsNewPermitted && fFromMenu);
 						menu_setVisibleMenuItem("mnutoolCopyReportFind", true);
 						menu_toolbarEnableItem("mnutoolEditReportFind", fHasRows && (IsEditPermitted || IsViewPermitted) && fFromMenu);
+						menu_SetmnutoolButtonCaption("mnutoolEditReportFind", (IsEditPermitted == false ? 'View' : 'Edit'));
 						menu_setVisibleMenuItem("mnutoolEditReportFind", true);
 						menu_toolbarEnableItem("mnutoolDeleteReportFind", fHasRows && IsDeletePermitted && fFromMenu);
 						menu_setVisibleMenuItem("mnutoolDeleteReportFind", true);
@@ -398,6 +400,7 @@
 						menu_toolbarEnableItem("mnutoolCopyUtilitiesFind", fHasRows && IsNewPermitted && fFromMenu);
 						menu_setVisibleMenuItem("mnutoolCopyUtilitiesFind", true);
 						menu_toolbarEnableItem("mnutoolEditUtilitiesFind", fHasRows && (IsEditPermitted || IsViewPermitted) && fFromMenu);
+						menu_SetmnutoolButtonCaption("mnutoolEditUtilitiesFind", (IsEditPermitted == false ? 'View' : 'Edit'));
 						menu_setVisibleMenuItem("mnutoolEditUtilitiesFind", true);
 						menu_toolbarEnableItem("mnutoolDeleteUtilitiesFind", fHasRows && IsDeletePermitted && fFromMenu);
 						menu_setVisibleMenuItem("mnutoolDeleteUtilitiesFind", true);
@@ -424,6 +427,7 @@
 						menu_toolbarEnableItem("mnutoolNewToolsFind", IsNewPermitted);
 						menu_toolbarEnableItem("mnutoolCopyToolsFind", true && IsNewPermitted && fFromMenu);
 						menu_toolbarEnableItem("mnutoolEditToolsFind", true && (IsEditPermitted || IsViewPermitted) && fFromMenu);
+						menu_SetmnutoolButtonCaption("mnutoolEditToolsFind", (IsEditPermitted == false ? 'View' : 'Edit'));
 						menu_toolbarEnableItem("mnutoolDeleteToolsFind", true && IsDeletePermitted && fFromMenu);
 						menu_toolbarEnableItem("mnutoolPropertiesToolsFind", fFromMenu);
 						menu_toolbarEnableItem("mnutoolRunToolsFind", false);
@@ -442,6 +446,7 @@
 						menu_toolbarEnableItem("mnutoolNewToolsFind", IsNewPermitted);
 						menu_toolbarEnableItem("mnutoolCopyToolsFind", true && IsNewPermitted && fFromMenu);
 						menu_toolbarEnableItem("mnutoolEditToolsFind", true && (IsEditPermitted || IsViewPermitted) && fFromMenu);
+						menu_SetmnutoolButtonCaption("mnutoolEditToolsFind", (IsEditPermitted == false ? 'View' : 'Edit'));
 						menu_toolbarEnableItem("mnutoolDeleteToolsFind", true && IsDeletePermitted && fFromMenu);
 						menu_toolbarEnableItem("mnutoolPropertiesToolsFind", fFromMenu);
 						menu_toolbarEnableItem("mnutoolRunToolsFind", false);
@@ -460,6 +465,7 @@
 						menu_toolbarEnableItem("mnutoolNewToolsFind", IsNewPermitted);
 						menu_toolbarEnableItem("mnutoolCopyToolsFind", true && IsNewPermitted && fFromMenu);
 						menu_toolbarEnableItem("mnutoolEditToolsFind", true && (IsEditPermitted || IsViewPermitted) && fFromMenu);
+					menu_SetmnutoolButtonCaption("mnutoolEditToolsFind", (IsEditPermitted == false ? 'View' : 'Edit'));
 						menu_toolbarEnableItem("mnutoolDeleteToolsFind", true && IsDeletePermitted && fFromMenu);
 						menu_toolbarEnableItem("mnutoolPropertiesToolsFind", fFromMenu);
 						menu_toolbarEnableItem("mnutoolRunToolsFind", false);
@@ -481,6 +487,7 @@
 						menu_toolbarEnableItem("mnutoolCopyReportFind", fHasRows && IsNewPermitted && fFromMenu);
 						menu_setVisibleMenuItem("mnutoolCopyReportFind", true);
 						menu_toolbarEnableItem("mnutoolEditReportFind", fHasRows && (IsEditPermitted || IsViewPermitted) && fFromMenu);
+						menu_SetmnutoolButtonCaption("mnutoolEditReportFind", (IsEditPermitted == false ? 'View' : 'Edit'));
 						menu_setVisibleMenuItem("mnutoolEditReportFind", true);
 						menu_toolbarEnableItem("mnutoolDeleteReportFind", fHasRows && IsDeletePermitted && fFromMenu);
 						menu_setVisibleMenuItem("mnutoolDeleteReportFind", true);
@@ -823,7 +830,7 @@
 	fEditGranted = objSession.IsPermissionGranted(strKeyPrefix, "EDIT")
 	fDeleteGranted = objSession.IsPermissionGranted(strKeyPrefix, "DELETE")
 	fRunGranted = objSession.IsPermissionGranted(strKeyPrefix, "RUN")
-	fViewGranted = objSession.IsPermissionGranted(strKeyPrefix, "_VIEW")
+	fViewGranted = objSession.IsPermissionGranted(strKeyPrefix, "VIEW")
 	
 	Response.Write("<input type=hidden id=""grantnew"" name=""grantnew"" value = " & IIf(fNewGranted, 1, 0) & ">" & vbCrLf)
 	Response.Write("<input type=hidden id=""grantedit"" name=""grantedit"" value = " & IIf(fEditGranted, 1, 0) & ">" & vbCrLf)

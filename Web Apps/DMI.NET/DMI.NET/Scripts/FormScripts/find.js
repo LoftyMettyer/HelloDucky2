@@ -220,9 +220,7 @@ function find_window_onload() {
 			// **************************************************************
 			if (fOk == true) {
 
-				//TODO: check the font settings.
-				//setGridFont(frmFindForm.ssOleDBGridFindRecords);
-
+				
 				var frmMenuInfo = document.getElementById("frmMenuInfo");
 				var isDMISingle = ($("#txtIsDMISingle")[0].value == "True");
 

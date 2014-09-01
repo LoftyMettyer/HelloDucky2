@@ -2,8 +2,6 @@
 <%@ Import Namespace="DMI.NET" %>
 <%@ Import Namespace="HR.Intranet.Server.Enums" %>
 
-<script src="<%: Url.LatestContent("~/Scripts/ctl_SetFont.js")%>" type="text/javascript"></script>
-
 <%
 	Session("CALREP_Year") = Nothing
 	Session("CALREP_Month") = Nothing

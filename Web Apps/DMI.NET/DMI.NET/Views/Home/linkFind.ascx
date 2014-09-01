@@ -4,8 +4,6 @@
 <%@ Import Namespace="HR.Intranet.Server" %>
 <%@ Import Namespace="System.Data.SqlClient" %>
 
-<script src="<%: Url.LatestContent("~/Scripts/ctl_SetFont.js")%>" type="text/javascript"></script>
-
 <script type="text/javascript">
 	
 	function linkFind_removeAll(jqGridID) {
@@ -51,8 +49,6 @@
 		}
 
 		if (fOK == true) {
-			setGridFont(frmLinkFindForm.ssOleDBGridLinkRecords);
-
 			// Expand the option frame and hide the work frame.
 			//window.parent.document.all.item("workframeset").cols = "0, *";
 			$("#optionframe").attr("data-framesource", "LINKFIND");

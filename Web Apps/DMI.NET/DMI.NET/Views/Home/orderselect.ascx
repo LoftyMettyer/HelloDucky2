@@ -3,8 +3,6 @@
 <%@ Import Namespace="HR.Intranet.Server" %>
 <%@ Import Namespace="System.Data" %>
 
-<script src="<%: Url.LatestContent("~/Scripts/ctl_SetFont.js")%>" type="text/javascript"></script>
-
 <script type="text/javascript">
 
 	function orderselect_window_onload() {
@@ -47,7 +45,6 @@
 		$("#ssOleDBGridOrderRecords").jqGrid('setGridHeight', $("#orderGridRow").height());
 
 		if (fOK == true) {
-			setGridFont(frmOrderForm.ssOleDBGridOrderRecords);
 
 			// Set focus onto one of the form controls. 
 			// NB. This needs to be done before making any reference to the grid

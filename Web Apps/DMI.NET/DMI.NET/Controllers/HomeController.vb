@@ -165,10 +165,6 @@ Namespace Controllers
 
 		End Function
 
-		Function PcConfiguration() As ActionResult
-			Return View()
-		End Function
-
 #End Region
 
 		<HttpPost()>
@@ -3624,14 +3620,6 @@ Namespace Controllers
 		Function util_dialog_expression() As ActionResult
 			Return View()
 		End Function
-
-
-
-
-		Function FieldRec() As ActionResult
-			Return View()
-		End Function
-
 
 #End Region
 

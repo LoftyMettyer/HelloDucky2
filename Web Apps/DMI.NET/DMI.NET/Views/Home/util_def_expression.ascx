@@ -6,413 +6,73 @@
 
 <script src="<%: Url.LatestContent("~/bundles/utilities_expressions")%>" type="text/javascript"></script>
 
-<%--licence manager reference for activeX--%>
-<object classid="clsid:5220cb21-c88d-11cf-b347-00aa00a28331"
-	id="Microsoft_Licensed_Class_Manager_1_0"
-	viewastext>
-	<param name="LPKPath" value="<%: Url.Content("~/lpks/ssmain.lpk")%>">
-</object>
-
 <div id ="divDefExpression">
 
-<object classid="clsid:6976CB54-C39B-4181-B1DC-1A829068E2E7" codebase="cabs/COAInt_Client.cab#Version=1,0,0,5"
-	id="abExprMenu" name="abExprMenu" style="left: 0px; top: 0px; position: absolute; height: 10px;">
-	<param name="_ExtentX" value="0">
-	<param name="_ExtentY" value="0">
-</object>
-
-<object classid="clsid:1C203F13-95AD-11D0-A84B-00A0247B735B" id="SSTreeClipboard" codebase="cabs/SStree.cab#version=1,0,2,24" style="LEFT: 0px; TOP: 0px; WIDTH: 0px; HEIGHT: 0px" viewastext>
-	<param name="_ExtentX" value="370">
-	<param name="_ExtentY" value="1323">
-	<param name="_Version" value="65538">
-	<param name="BackColor" value="-2147483643">
-	<param name="ForeColor" value="-2147483640">
-	<param name="ImagesMaskColor" value="12632256">
-	<param name="PictureBackgroundMaskColor" value="12632256">
-	<param name="Appearance" value="1">
-	<param name="BorderStyle" value="0">
-	<param name="LabelEdit" value="1">
-	<param name="LineStyle" value="0">
-	<param name="LineType" value="1">
-	<param name="MousePointer" value="0">
-	<param name="NodeSelectionStyle" value="2">
-	<param name="PictureAlignment" value="0">
-	<param name="ScrollStyle" value="0">
-	<param name="Style" value="6">
-	<param name="IndentationStyle" value="0">
-	<param name="TreeTips" value="3">
-	<param name="PictureBackgroundStyle" value="0">
-	<param name="Indentation" value="38">
-	<param name="MaxLines" value="1">
-	<param name="TreeTipDelay" value="500">
-	<param name="ImageCount" value="0">
-	<param name="ImageListIndex" value="-1">
-	<param name="OLEDragMode" value="0">
-	<param name="OLEDropMode" value="0">
-	<param name="AllowDelete" value="0">
-	<param name="AutoSearch" value="0">
-	<param name="Enabled" value="-1">
-	<param name="HideSelection" value="0">
-	<param name="ImagesUseMask" value="0">
-	<param name="Redraw" value="-1">
-	<param name="UseImageList" value="-1">
-	<param name="PictureBackgroundUseMask" value="0">
-	<param name="HasFont" value="0">
-	<param name="HasMouseIcon" value="0">
-	<param name="HasPictureBackground" value="0">
-	<param name="PathSeparator" value="\">
-	<param name="TabStops" value="32">
-	<param name="ImageList" value="<None>">
-	<param name="LoadStyleRoot" value="1">
-	<param name="Sorted" value="0">
-	<param name="OnDemandDiscardBuffer" value="10">
-</object>
-
-<object classid="clsid:1C203F13-95AD-11D0-A84B-00A0247B735B" id="SSTreeUndo" codebase="cabs/SStree.cab#version=1,0,2,24" style="LEFT: 0px; TOP: 0px; WIDTH: 0px; HEIGHT: 0px" viewastext>
-	<param name="_ExtentX" value="370">
-	<param name="_ExtentY" value="1323">
-	<param name="_Version" value="65538">
-	<param name="BackColor" value="-2147483643">
-	<param name="ForeColor" value="-2147483640">
-	<param name="ImagesMaskColor" value="12632256">
-	<param name="PictureBackgroundMaskColor" value="12632256">
-	<param name="Appearance" value="1">
-	<param name="BorderStyle" value="0">
-	<param name="LabelEdit" value="1">
-	<param name="LineStyle" value="0">
-	<param name="LineType" value="1">
-	<param name="MousePointer" value="0">
-	<param name="NodeSelectionStyle" value="2">
-	<param name="PictureAlignment" value="0">
-	<param name="ScrollStyle" value="0">
-	<param name="Style" value="6">
-	<param name="IndentationStyle" value="0">
-	<param name="TreeTips" value="3">
-	<param name="PictureBackgroundStyle" value="0">
-	<param name="Indentation" value="38">
-	<param name="MaxLines" value="1">
-	<param name="TreeTipDelay" value="500">
-	<param name="ImageCount" value="0">
-	<param name="ImageListIndex" value="-1">
-	<param name="OLEDragMode" value="0">
-	<param name="OLEDropMode" value="0">
-	<param name="AllowDelete" value="0">
-	<param name="AutoSearch" value="0">
-	<param name="Enabled" value="-1">
-	<param name="HideSelection" value="0">
-	<param name="ImagesUseMask" value="0">
-	<param name="Redraw" value="-1">
-	<param name="UseImageList" value="-1">
-	<param name="PictureBackgroundUseMask" value="0">
-	<param name="HasFont" value="0">
-	<param name="HasMouseIcon" value="0">
-	<param name="HasPictureBackground" value="0">
-	<param name="PathSeparator" value="\">
-	<param name="TabStops" value="32">
-	<param name="ImageList" value="<None>">
-	<param name="LoadStyleRoot" value="1">
-	<param name="Sorted" value="0">
-	<param name="OnDemandDiscardBuffer" value="10">
-</object>
-
 <form id="frmDefinition">
-	<table align="center" cellpadding="5" cellspacing="0" width="100%" height="100%">
-		<tr>
-			<td>
-				<table width="100%" height="100%" class="invisible" cellspacing="0" cellpadding="0">
-					<tr>
-						<td width="10"></td>
-						<td>
-							<table width="100%" height="100%" class="invisible" cellspacing="0" cellpadding="5">
-								<tr valign="top">
-									<td>
-										<table width="100%" height="100%" class="invisible" cellspacing="0" cellpadding="0">
-											<tr>
-												<td colspan="9" height="5"></td>
-											</tr>
 
-											<tr height="10">
-												<td width="5">&nbsp;</td>
-												<td width="10">Name :</td>
-												<td width="5">&nbsp;</td>
-												<td>
-													<input id="txtName" name="txtName" class="text" maxlength="50" style="WIDTH: 100%" onkeyup="changeName()">
-												</td>
-												<td width="20">&nbsp;</td>
-												<td width="10">Owner :</td>
-												<td width="5">&nbsp;</td>
-												<td width="40%">
-													<input id="txtOwner" name="txtOwner" class="text textdisabled" style="WIDTH: 70%" disabled="disabled" tabindex="-1">
-												</td>
-												<td style="width:50px">&nbsp;</td>
-											</tr>
+	<div class="absolutefull">
+		<nav style="display: block;">
+			<div class="formField floatleft formInput">
+				<label>Name :</label>
+				<input id="txtName" name="txtName" class="text" maxlength="50" onkeyup="changeName()">
+			</div>
+			<div class="formField floatright">
+				<label>Owner :</label>
+				<input id="txtOwner" name="txtOwner" class="text textdisabled" disabled="disabled" tabindex="-1">
+			</div>
 
-											<tr>
-												<td colspan="9" height="5"></td>
-											</tr>
+			<div class="formTextArea clearboth floatleft">
+				<label>Description :</label>
+				<textarea id="txtDescription" name="txtDescription" wrap="VIRTUAL" maxlength="255" onkeyup="changeDescription()"></textarea>
+			</div>
 
-											<tr height="10">
-												<td width="5">&nbsp;</td>
-												<td width="10" nowrap>Description :</td>
-												<td width="5">&nbsp;</td>
-												<td width="40%" rowspan="5">
-													<textarea id="txtDescription" name="txtDescription" class="textarea" style="HEIGHT: 99%; WIDTH: 100%" wrap="VIRTUAL" height="0" maxlength="255" onkeyup="changeDescription()">
-												</textarea>
-												</td>
-												<td width="20" nowrap>&nbsp;</td>
-												<td width="10">Access :</td>
-												<td width="5">&nbsp;</td>
-												<td width="40%">
-													<table class="invisible" cellspacing="0" cellpadding="0" width="100%">
-														<tr>
-															<td width="5">
-																<input checked id="optAccessRW" name="optAccess" type="radio"
-																	onclick="changeAccess()" />
-															</td>
-															<td width="5">&nbsp;</td>
-															<td width="30">
-																<label
-																	tabindex="-1"
-																	for="optAccessRW"
-																	class="radio">Read/Write</label>
-															</td>
-															<td>&nbsp;</td>
-														</tr>
-													</table>
-												</td>
-												<td width="5">&nbsp;</td>
-											</tr>
+			<div class="formOptionGroup floatright">
+				<label>Access :</label>
+				<div>
+					<label>
+						<input id="optAccessRW" name="optAccess" type="radio" onclick="changeAccess()" checked />
+						Read/Write</label>
+					<label>
+						<input id="optAccessRO" name="optAccess" type="radio" onclick="changeAccess()" />
+						Read Only</label>
+					<label>
+						<input id="optAccessHD" name="optAccess" type="radio" onclick="changeAccess()" />
+						Hidden</label>
+				</div>
+			</div>
+		</nav>
 
-											<tr>
-												<td colspan="8" height="5"></td>
-											</tr>
 
-											<tr height="10">
-												<td width="5">&nbsp;</td>
+		<div class="clearboth">
+			<hr />
+		</div>
 
-												<td width="10">&nbsp;</td>
-												<td width="5">&nbsp;</td>
+		<div class="gridwithbuttons clearboth">
 
-												<td width="20" nowrap>&nbsp;</td>
+			<div class="stretchyfill">
+				<div id="SSTree1" style="overflow: auto;"></div>
+			</div>
 
-												<td width="10">&nbsp;</td>
-												<td width="5">&nbsp;</td>
-												<td width="40%">
-													<table class="invisible" cellspacing="0" cellpadding="0" width="100%">
-														<tr>
-															<td width="5">
-																<input id="optAccessRO" name="optAccess" type="radio"
-																	onclick="changeAccess()" />
-															</td>
-															<td width="5">&nbsp;</td>
-															<td width="80" nowrap>
-																<label
-																	tabindex="-1"
-																	for="optAccessRO"
-																	class="radio">Read Only</label>
-															</td>
-															<td>&nbsp;</td>
-														</tr>
-													</table>
-												</td>
-												<td width="5">&nbsp;</td>
-											</tr>
-
-											<tr>
-												<td colspan="8" height="5"></td>
-											</tr>
-
-											<tr height="10">
-												<td width="5">&nbsp;</td>
-												<td width="10">&nbsp;</td>
-												<td width="5">&nbsp;</td>
-												<td width="20" nowrap>&nbsp;</td>
-												<td width="10">&nbsp;</td>
-												<td width="5">&nbsp;</td>
-												<td width="40%">
-													<table class="invisible" cellspacing="0" cellpadding="0" width="100%">
-														<tr>
-															<td width="5">
-																<input id="optAccessHD" name="optAccess" type="radio"
-																	onclick="changeAccess()" />
-															</td>
-															<td width="5">&nbsp;</td>
-															<td width="60" nowrap>
-																<label
-																	tabindex="-1"
-																	for="optAccessHD"
-																	class="radio">Hidden</label>
-															</td>
-															<td>&nbsp;</td>
-														</tr>
-													</table>
-												</td>
-												<td width="5">&nbsp;</td>
-											</tr>
-
-											<tr>
-												<td colspan="9">
-													<table width="100%" height="100%" class="invisible" cellspacing="0" cellpadding="0">
-														<tr>
-															<%--<TD colspan=3 height=30><hr></TD>--%>
-															<TD colspan=3 height=10></TD>
-														</tr>
-														<tr height="10">
-															<td rowspan="16">
-																<object classid="clsid:1C203F13-95AD-11D0-A84B-00A0247B735B" id="SSTree1"
-																	codebase="cabs/SStree.cab#version=1,0,2,24" style="LEFT: 0px; TOP: 0px; WIDTH: 100%; HEIGHT: 400px; VISIBILITY: visible;" viewastext>
-																	<param name="_ExtentX" value="30163">
-																	<param name="_ExtentY" value="10583">
-																	<param name="_Version" value="65538">
-																	<param name="BackColor" value="-2147483643">
-																	<param name="ForeColor" value="-2147483640">
-																	<param name="ImagesMaskColor" value="12632256">
-																	<param name="PictureBackgroundMaskColor" value="12632256">
-																	<param name="Appearance" value="0">
-																	<param name="BorderStyle" value="1">
-																	<param name="LabelEdit" value="1">
-																	<param name="LineStyle" value="0">
-																	<param name="LineType" value="1">
-																	<param name="MousePointer" value="0">
-																	<param name="NodeSelectionStyle" value="2">
-																	<param name="PictureAlignment" value="0">
-																	<param name="ScrollStyle" value="0">
-																	<param name="Style" value="6">
-																	<param name="IndentationStyle" value="0">
-																	<param name="TreeTips" value="3">
-																	<param name="PictureBackgroundStyle" value="0">
-																	<param name="Indentation" value="38">
-																	<param name="MaxLines" value="1">
-																	<param name="TreeTipDelay" value="500">
-																	<param name="ImageCount" value="0">
-																	<param name="ImageListIndex" value="-1">
-																	<param name="OLEDragMode" value="0">
-																	<param name="OLEDropMode" value="0">
-																	<param name="AllowDelete" value="0">
-																	<param name="AutoSearch" value="0">
-																	<param name="Enabled" value="-1">
-																	<param name="HideSelection" value="0">
-																	<param name="ImagesUseMask" value="0">
-																	<param name="Redraw" value="-1">
-																	<param name="UseImageList" value="-1">
-																	<param name="PictureBackgroundUseMask" value="0">
-																	<param name="HasFont" value="0">
-																	<param name="HasMouseIcon" value="0">
-																	<param name="HasPictureBackground" value="0">
-																	<param name="PathSeparator" value="\">
-																	<param name="TabStops" value="32">
-																	<param name="ImageList" value="<None>">
-																	<param name="LoadStyleRoot" value="1">
-																	<param name="Sorted" value="0">
-																	<param name="OnDemandDiscardBuffer" value="10">
-																</object>
-															</td>
-															<td rowspan="16" width="10">&nbsp;</td>
-															<td width="80">
-																<input type="button" id="cmdAdd" name="cmdAdd" class="btn" value="Add" style="WIDTH: 100%"
-																	onclick="addClick()" />
-															</td>
-														</tr>
-														<tr height="10">
-															<td>&nbsp;</td>
-														</tr>
-														<tr height="10">
-															<td width="80">
-																<input type="button" id="cmdInsert" name="cmdInsert" class="btn" value="Insert" style="WIDTH: 100%"
-																	onclick="insertClick()" />
-															</td>
-														</tr>
-														<tr height="10">
-															<td>&nbsp;</td>
-														</tr>
-														<tr height="10">
-															<td width="80">
-																<input type="button" id="cmdEdit" name="cmdEdit" class="btn" value="Edit"
-																	style="WIDTH: 100%"
-																	onclick="editClick()" />
-															</td>
-														</tr>
-														<tr height="10">
-															<td>&nbsp;</td>
-														</tr>
-														<tr height="10">
-															<td width="80">
-																<input type="button" id="cmdDelete" name="cmdDelete" class="btn" value="Delete"
-																	style="WIDTH: 100%"
-																	onclick="deleteClick()" />
-															</td>
-														</tr>
-														<tr height="10">
-															<td>&nbsp;</td>
-														</tr>
-														<tr height="10">
-															<td width="80">
-																<input type="button" id="cmdPrint" name="cmdPrint" class="btn" value="Print"
-																	style="WIDTH: 100%"
-																	onclick="printClick(true)" />
-															</td>
-														</tr>
-
-														<%
-															If Session("utiltype") = 11 Then
-														%>
-														<tr height="10">
-															<td>&nbsp;</td>
-														</tr>
-														<tr height="10">
-															<td width="80">
-																<input type="button" id="cmdTest" name="cmdTest" class="btn" value="Test" style="WIDTH: 100%"
-																	onclick="testClick()" />
-															</td>
-														</tr>
-														<%	
-														End If
-														%>
-														<tr>
-															<td></td>
-														</tr>
-														<tr height="10">
-															<td>&nbsp;</td>
-														</tr>
-														<tr height="10">
-															<td width="80">
-																<input type="button" id="cmdOK" name="cmdOK" class="btn" value="OK" style="WIDTH: 100%"
-																	onclick="okClick()" />
-															</td>
-														</tr>
-														<tr height="10">
-															<td>&nbsp;</td>
-														</tr>
-														<tr height="10">
-															<td width="80">
-																<input type="button" id="cmdCancel" name="cmdCancel" class="btn" value="Cancel" style="WIDTH: 100%"
-																	onclick="cancelClick()" />
-															</td>
-														</tr>
-													</table>
-												</td>
-											</tr>
-
-											<tr height="5">
-												<td colspan="9" height="5"></td>
-											</tr>
-										</table>
-									</td>
-								</tr>
-							</table>
-						</td>
-						<td width="10"></td>
-					</tr>
-
-					<tr height="5">
-						<td colspan="3"></td>
-					</tr>
-				</table>
-			</td>
-		</tr>
-	</table>
-
-</form>
+			<div class="stretchyfixed">
+				<input type="button" id="cmdAdd" name="cmdAdd" class="btn" value="Add" onclick="addClick()" />
+				<br />
+				<input type="button" id="cmdInsert" name="cmdInsert" class="btn" value="Insert" onclick="insertClick()" />
+				<br />
+				<input type="button" id="cmdEdit" name="cmdEdit" class="btn" value="Edit" onclick="editClick()" />
+				<br />
+				<input type="button" id="cmdDelete" name="cmdDelete" class="btn" value="Delete" onclick="deleteClick()" />
+				<br />
+				<input type="button" id="cmdPrint" name="cmdPrint" class="btn" value="Print" onclick="printClick()" />
+				<br />
+				<%If Session("utiltype") = 11 Then%>
+				<input type="button" id="cmdTest" name="cmdTest" class="btn" value="Test" onclick="testClick()" />
+				<br />				
+				<%End If%>				
+				<input type="button" id="cmdCancel" name="cmdCancel" class="btn" value="Cancel" onclick="cancelClick()" />
+			</div>
+		</div>
+	</div>
+	</form>
 
 <form action="default_Submit" method="post" id="frmGoto" name="frmGoto" style="visibility: hidden; display: none">
 	<%Html.RenderPartial("~/Views/Shared/gotoWork.ascx")%>
@@ -454,7 +114,7 @@
 					, prmTimestamp)
 
 				If Len(prmErrMsg.Value.ToString()) > 0 Then
-					sErrMsg = "'" & Session("utilname") & "' " & prmErrMsg.Value.ToString()
+					sErrMsg = "'" & Session("utilname").ToString() & "' " & prmErrMsg.Value.ToString()
 				Else
 					iCount = 0
 					For Each objRow As DataRow In rstDefinition.Rows
@@ -464,7 +124,7 @@
 					Response.Write("<input type='hidden' id=txtDefn_Timestamp name=txtDefn_Timestamp value=" & prmTimestamp.Value.ToString() & ">" & vbCrLf)
 				End If
 			Catch ex As Exception
-				sErrMsg = "'" & Session("utilname") & "' " & sUtilTypeName & " definition could not be read." & vbCrLf & FormatError(ex.Message)
+				sErrMsg = "'" & Session("utilname").ToString() & "' " & sUtilTypeName & " definition could not be read." & vbCrLf & FormatError(ex.Message)
 			End Try	
 	
 			If Len(sErrMsg) > 0 Then
@@ -475,7 +135,7 @@
 				Response.Clear()
 				Response.Redirect("confirmok")
 			End If
-		End If
+		End If			
 	%>
 	<input type="hidden" id="txtOriginalAccess" name="txtOriginalAccess" value="RW">
 </form>
@@ -511,6 +171,7 @@
 	<input type="hidden" id="txtCanMoveUp" name="txtCanMoveUp" value="0">
 	<input type="hidden" id="txtCanMoveDown" name="txtCanMoveDown" value="0">
 	<input type="hidden" id="txtUndoType" name="txtUndoType" value="">
+	<input type="hidden" id="txtCutCopyType" name="txtCutCopyType" value="">
 	<input type="hidden" id="txtOldText" name="txtOldText" value="">
 </form>
 
@@ -576,7 +237,7 @@
 			Response.Write("<input type='hidden' id=txtShortcutKeys name=txtShortcutKeys value=""" & Replace(sShortcutKeys, """", "&quot;") & """>" & vbCrLf)
 
 		Catch ex As Exception
-			sErrMsg = "'" & Session("utilname") & "' " & sUtilTypeName & " definition could not be read." & vbCrLf & FormatError(ex.Message)
+			' sErrMsg = "'" & Session("utilname").ToString() & "' " & sUtilTypeName & " definition could not be read." & vbCrLf & FormatError(ex.Message)
 
 		End Try
 
@@ -586,7 +247,6 @@
 	
 </div>
 
-<script type="text/javascript">
-	util_def_expression_addhandlers();
-	util_def_expression_onload();
+<script type="text/javascript">	
+	util_def_expression_onload();	
 </script>

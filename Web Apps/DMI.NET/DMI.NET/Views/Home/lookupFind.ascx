@@ -5,8 +5,6 @@
 <%@ Import Namespace="System.Data" %>
 <%@ Import Namespace="System.Data.SqlClient" %>
 
-<script src="<%: Url.LatestContent("~/Scripts/ctl_SetFont.js")%>" type="text/javascript"></script>
-
 <script type="text/javascript">
 
 	function lookupFind_removeAll(jqGridID) {
@@ -35,7 +33,6 @@
 		}
 
 		if (fOK == true) {
-			setGridFont(frmLookupFindForm.ssOleDBGrid);
 			// Expand the option frame and hide the work frame.
 			$("#optionframe").attr("data-framesource", "LOOKUPFIND");
 			$("#optionframe").dialog({

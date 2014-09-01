@@ -13,8 +13,6 @@
 	If Session("optionOLEReadOnly") = "true" Then sDialogTitle &= " (Read Only)"
 %>
 
-<script src="<%: Url.LatestContent("~/Scripts/ctl_SetFont.js")%>" type="text/javascript"></script>
-
 <script type='text/javascript'>
 	function oleFind_window_onload() {
 
@@ -82,7 +80,6 @@
 
 			if (frmGotoOption.txtOLEType.value < 2) {
 				// Populate the grid with the files in the specified picture folder.
-				setGridFont(frmFindForm.ssOleDBGrid);
 				PopulateGrid();
 
 				if (rowCount() > 0) {

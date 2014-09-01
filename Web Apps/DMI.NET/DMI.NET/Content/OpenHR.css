@@ -803,11 +803,11 @@ header {
 }
 
 
-.jsTree {
+#contextmenu .jsTree {
 	overflow: auto;
 }
 
-.jstree a {
+#contextmenu .jstree a {
 	width: 100%;
 	font-weight: normal!important;
 	/*font-weight: bold;
@@ -816,7 +816,7 @@ header {
 	border: none!important;*/
 }
 
-.jstree a:hover {
+#contextmenu .jstree a:hover {
 	padding: 0 1px!important;
 }
 
@@ -1188,7 +1188,7 @@ padding-left:0px;
 
 .formOptionGroup {
 	margin: 10px auto;
-	width: 340px;
+	/*width: 340px;*/
 }
 
 	.formOptionGroup > label {
@@ -1198,7 +1198,7 @@ padding-left:0px;
 	}
 
 	.formOptionGroup > div {
-	width: 195px;
+		width: 345px;
 		display: inline-block;
 	}
 
@@ -1289,4 +1289,12 @@ padding-left:0px;
 
 .width6em {
 	width: 6em;
+}
+
+#SSFunctionTree, #SSOperatorTree {
+	overflow: auto;
+}
+
+.root {
+	font-weight: bold;
 }
