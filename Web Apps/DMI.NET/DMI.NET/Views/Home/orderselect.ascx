@@ -43,6 +43,7 @@
 
 		//resize the grid to the height of its container.
 		$("#ssOleDBGridOrderRecords").jqGrid('setGridHeight', $("#orderGridRow").height());
+		$("#div3").width($("#orderGridRow").width() + 11);
 
 		if (fOK == true) {
 
@@ -215,15 +216,13 @@
 <script src="<%: Url.LatestContent("~/Scripts/ctl_SetStyles.js")%>" type="text/javascript"></script>
 
 <div <%=session("BodyTag")%>>
-	<form action="" method="POST" id="frmOrderForm" name="frmOrderForm">
+	<form method="POST" id="frmOrderForm" name="frmOrderForm">
 		<div class="absolutefull">
-			<div id="row1" style="margin-left: 20px;margin-right: 20px">
-				<h3 align="center">Select Order</h3>
+			<div class="pageTitleDiv" style="margin-bottom: 15px">
+				<span class="pageTitle" id="PopupReportDefinition_PageTitle">Select Order</span>
 			</div>
 			<div id="orderGridRow" style="height: 70%; margin-right: 20px; margin-left: 20px;">
-				<%
-
-					Dim objDatabase As Database = CType(Session("DatabaseFunctions"), Database)
+				<%Dim objDatabase As Database = CType(Session("DatabaseFunctions"), Database)
 					Dim sErrorDescription = ""
 	
 					If Len(sErrorDescription) = 0 Then
@@ -233,7 +232,6 @@
 						If Len(sErrorDescription) = 0 Then%>
 
 				<table class="outline" style="width: 100%;" id="ssOleDBGridOrderRecords">
-
 					<tr class="">
 						<%For iLoop = 0 To (rstOrderRecords.Columns.Count - 1)
 								Dim headerStyle As New StringBuilder
@@ -265,16 +263,16 @@
 									Exit For
 								End If
 							Next
-							%>
+					%>
 
 					<tr disabled="disabled" id="row_<%=iIDNumber.ToString()%>">
 						<%
 							For iLoop = 0 To (rstOrderRecords.Columns.Count - 1)
 								If rstOrderRecords.Columns(iLoop).ColumnName <> "orderID" Then
-									%>
+						%>
 						<td class="" id="col_<%=NullSafeString(iIDNumber)%>"><%=Replace(NullSafeString(objRow(iLoop).ToString), "_", " ")%><input type='hidden' value='<%=NullSafeString(iIDNumber)%>'></td>
 						<%
-							End If
+						End If
 					Next
 						%>
 					</tr>
@@ -293,29 +291,12 @@
 				End If
 				%>
 			</div>
-			<div id='row3' style='margin-top: 50px;'>
-				<table width="100%" class="invisible" cellspacing="0" cellpadding="0">
-					<tr>
-						<td>&nbsp;</td>
-						<td width="10">
-							<input id="cmdSelectOrder" name="cmdSelectOrder" type="button" value="Select" style="WIDTH: 75px" width="75" class="btn"
-								onclick="SelectOrder()"
-								onmouseover="try{button_onMouseOver(this);}catch(e){}"
-								onmouseout="try{button_onMouseOut(this);}catch(e){}"
-								onfocus="try{button_onFocus(this);}catch(e){}"
-								onblur="try{button_onBlur(this);}catch(e){}" />
-						</td>
-						<td width="40"></td>
-						<td width="10">
-							<input id="cmdCancel" name="cmdCancel" type="button" value="Cancel" style="WIDTH: 75px" width="75" class="btn"
-								onclick="CancelOrder()"
-								onmouseover="try{button_onMouseOver(this);}catch(e){}"
-								onmouseout="try{button_onMouseOut(this);}catch(e){}"
-								onfocus="try{button_onFocus(this);}catch(e){}"
-								onblur="try{button_onBlur(this);}catch(e){}" />
-						</td>
-					</tr>
-				</table>
+
+			<div id='div3' class="clearboth" style='margin-top:50px'>
+				<div id='divSelectOrder'>
+					<input id="cmdSelectOrder" name="cmdSelectOrder" type="button" value="Select" class="btn" onclick="SelectOrder()" />
+					<input id="cmdCancel" name="cmdCancel" type="button" value="Cancel" class="btn" onclick="CancelOrder()" />
+				</div>
 			</div>
 			<%
 				Response.Write("<INPUT type='hidden' id=txtErrorDescription name=txtErrorDescription value=""" & sErrorDescription & """>" & vbCrLf)
@@ -324,6 +305,7 @@
 				Response.Write("<INPUT type='hidden' id=txtOptionViewID name=txtOptionViewID value=" & Session("optionViewID") & ">" & vbCrLf)
 			%>
 		</div>
+
 	</form>
 	<input type='hidden' id="txtTicker" name="txtTicker" value="0">
 	<input type='hidden' id="txtLastKeyFind" name="txtLastKeyFind" value="">
