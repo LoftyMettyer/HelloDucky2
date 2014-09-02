@@ -37,19 +37,20 @@
 			$("#optionframe").attr("data-framesource", "LOOKUPFIND");
 			$("#optionframe").dialog({
 				autoOpen: true,
-				modal: true,
 				width: 750,
-				height: 600,
+				height: 500,
+				modal: true,
 				close: function () {
 					CancelLookup();
 				},
 				open: function (event, ui) {
-					$("#ssOleDBGrid").jqGrid('setGridWidth', $("#optionframe").width());
+					$("#ssOleDBGrid").jqGrid('setGridWidth', $("#optionframe").width());					
 				},
 				resize: function () { //resize the grid to the height of its container.		
-					$("#ssOleDBGrid").jqGrid('setGridWidth', $("#optionframe").width()-20);
+					$("#ssOleDBGrid").jqGrid('setGridWidth', $("#optionframe").width() - 20);
 				}
 			});
+
 		
 			// Set focus onto one of the form controls. 
 			// NB. This needs to be done before making any reference to the grid
@@ -277,9 +278,7 @@
 
 	function ssOleDBGrid_dblClick() {
 		SelectLookup();
-	}
-	
-	$("#ssOleDBGrid").jqGrid('setGridHeight', $("#lookupFindGridRow").height() - 50);
+	}	
 </script>
 
 <script src="<%: Url.LatestContent("~/Scripts/ctl_SetStyles.js")%>" type="text/javascript"></script>
@@ -301,8 +300,8 @@
 		%>
 		<div id="divFindForm" <%=session("BodyTag")%>>
 			<div class="absolutefull">
-				<div id="row1" style="margin-left: 20px;margin-right: 20px">
-					<h3 class="pageTitle" align="left">Find Lookup Record</h3>
+				<div class="pageTitleDiv" style="margin-bottom: 15px">
+					<span class="pageTitle" id="PopupReportDefinition_PageTitle">Find Lookup Record</span>
 				</div>
 
 				<%If Not fIsLookupTable Then%>
@@ -401,8 +400,6 @@
 															onclick="goOrder()" />
 													</td>
 												</tr>
-												
-
 											</table>
 										</td>
 										<td height="10">&nbsp;&nbsp;</td>
@@ -417,19 +414,17 @@
 				</div>
 				<%End If 'if fIsLookupTable then%>
 				<div id="lookupFindGridRow">
-					<table class="outline" style="width: 100%" id="ssOleDBGrid"></table>
+					<table class="outline" style="" id="ssOleDBGrid"></table>
 					<div id="ssOLEDBPager" style=""></div>
 				</div>
-
-				<div id="row3" style="text-align: center; padding: 20px 20px 0 0;">
-					<input id="cmdSelectLookup" name="cmdSelectLookup" type="button" value="Select" style="WIDTH: 75px" class="btn" onclick="SelectLookup()" />
-					<input id="cmdClearLookup" name="cmdClearLookup" type="button" value="Clear" style="WIDTH: 75px" class="btn" onclick="ClearLookup()" />
-					<input id="cmdCancel" name="cmdCancel" type="button" value="Cancel" style="WIDTH: 75px" class="btn" onclick="CancelLookup()" />
+				<%--'divLookupFindButtons--%>
+				<div id="divLookupFindButtons" style="">
+					<input id="cmdSelectLookup" name="cmdSelectLookup" type="button" value="Select"  class="btn" onclick="SelectLookup()" />
+					<input id="cmdClearLookup" name="cmdClearLookup" type="button" value="Clear" class="btn" onclick="ClearLookup()" />
+					<input id="cmdCancel" name="cmdCancel" type="button" value="Cancel" class="btn" onclick="CancelLookup()" />
 				</div>
-
 			</div>
 		</div>
-
 
 		<input type='hidden' id="txtErrorDescription" name="txtErrorDescription" value="<%=sErrorDescription%>">
 		<input type='hidden' id="txtFailureDescription" name="txtFailureDescription" value="<%=sFailureDescription%>">
