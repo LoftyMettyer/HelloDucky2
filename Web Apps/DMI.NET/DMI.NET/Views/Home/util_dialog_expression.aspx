@@ -18,7 +18,7 @@
 		function util_dialog_expression_onload() {
 
 				if(frmUseful.action.value == "test") {
-						var frmParentTest = window.dialogArguments.document.forms("frmTest");
+						var frmParentTest = window.dialogArguments.document.forms["frmTest"];
 	
 						frmTest.type.value = frmParentTest.type.value;
 						frmTest.components1.value = frmParentTest.components1.value;
