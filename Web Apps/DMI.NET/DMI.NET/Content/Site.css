@@ -613,7 +613,7 @@ margin:15px 0 5px 0;
 }
 
 #divPopupReportDefinition .ui-jqgrid-bdiv {
-	overflow: hidden;
+	overflow-x: hidden;
 }
 
 .ui-dialog .ui-dialog-buttonpane {
