@@ -46,7 +46,7 @@
 		colNames: ['Name'],
 		colModel: [
 			{ name: 'Name', index: 'Name', align: "left" }],
-		rowNum: 10,
+		rowNum: 10000,
 		width: 'auto',
 		height: '300px',
 		autowidth: true,
