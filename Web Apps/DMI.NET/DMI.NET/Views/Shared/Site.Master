@@ -54,7 +54,6 @@
 	<script src="<%: Url.LatestContent("~/bundles/jQueryUI7")%>" type="text/javascript"></script>
 	<script src="<%: Url.LatestContent("~/bundles/Microsoft")%>" type="text/javascript"></script>
 	<script src="<%: Url.LatestContent("~/bundles/OpenHR_General")%>" type="text/javascript"></script>
-	<script src="<%: Url.LatestContent("~/bundles/OpenHR_ActiveX")%>" type="text/javascript"></script>	
 
 	<script type="text/javascript">
 
