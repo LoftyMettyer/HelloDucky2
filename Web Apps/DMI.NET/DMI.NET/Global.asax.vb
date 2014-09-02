@@ -2,12 +2,10 @@
 Imports DMI.NET.Code
 Imports DMI.NET.App_Start
 Imports System.Drawing
-Imports HR.Intranet.Server
 Imports System.IO
-Imports DMI.NET.Classes
-
-' Note: For instructions on enabling IIS6 or IIS7 classic mode, 
-' visit http://go.microsoft.com/?LinkId=9394802
+Imports System.Data.SqlClient
+Imports DMI.NET.Models
+Imports DMI.NET.Code.Hubs
 
 Public Class MvcApplication
 	Inherits HttpApplication
@@ -23,11 +21,13 @@ Public Class MvcApplication
 		RouteConfig.RegisterRoutes(RouteTable.Routes)
 		BundleConfig.RegisterBundles(BundleTable.Bundles)
 		DataAnnotationConfig.RegisterDataAnnotations()
+		DatabaseConfig.Connect()
+		LicenceConfig.RegisterLicence()
 
-		'	ModelBinders.Binders.Add(GetType(ReportChildTables), New ReportChildTableModelBinder())
+	End Sub
 
-		'ValueProviderFactories.Factories.Add(New JsonValueProviderFactory())
-
+	Protected Sub Application_End()
+		DatabaseConfig.Disconnect()
 	End Sub
 
 	Sub Session_Start()
@@ -162,6 +162,8 @@ Public Class MvcApplication
 	Sub Session_End()
 
 		Try
+
+			LicenceHub.LogOff(Session.SessionID)
 
 			' Clear up any temporary files from OLE functionality
 			Session("OLEObject") = Nothing

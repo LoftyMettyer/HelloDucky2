@@ -7,6 +7,8 @@ Imports System.Data.SqlClient
 Imports System.Reflection
 Imports HR.Intranet.Server.Structures
 Imports DMI.NET.Models
+Imports System.Security
+Imports DMI.NET.Code.Hubs
 
 Namespace Controllers
 	Public Class AccountController
@@ -171,6 +173,8 @@ Namespace Controllers
 
 			Dim objLoginView As New LoginViewModel
 			objLoginView.ReadFromCookie()
+			objLoginView.ReadSystemConnection()
+
 			Return View(objLoginView)
 
 		End Function
@@ -311,14 +315,18 @@ Namespace Controllers
 						Return RedirectToAction("Loginerror")
 					End If
 
-					'Bounce non-IE users who have no SSI access...
-					If Session("MSBrowser") = False And Not objLogin.IsSSIUser Then
-						Session("ErrorText") = "You are not permitted to use OpenHR Self-service with this user name."
-						Return RedirectToAction("Loginerror")
-					End If
+					' Licence check
+					Dim licenceValidate = LicenceHub.LogIn(Session.SessionID, loginviewmodel, objLogin.DefaultWebArea)
+					Select Case licenceValidate
+						Case LicenceValidation.Expired
+							Session("ErrorText") = "Your licence has expired. Please contact your system administrator."
+							Return RedirectToAction("Loginerror")
 
-					' Track and audit that we've logged in
-					objServerSession.TrackUser(TrackType.Login)
+						Case LicenceValidation.Insufficient
+							Session("ErrorText") = "You have insufficient licences to use this module."
+							Return RedirectToAction("Loginerror")
+
+					End Select
 
 					' User is allowed into OpenHR, now populate some metadata
 					objServerSession.RegionalSettings = Platform.PopulateRegionalSettings(sLocaleCultureName)
@@ -351,7 +359,7 @@ Namespace Controllers
 					Session("SSILinkViewID") = 0
 
 					'Store in Session the logged in user's RecordID
-					Session("LoggedInUserRecordID") = ASRIntranetFunctions.GetLoggedInUserRecordID(Session("SingleRecordViewID"))
+					Session("LoggedInUserRecordID") = GetLoggedInUserRecordID(Session("SingleRecordViewID"))
 
 					objDatabase.SessionInfo = objServerSession
 
@@ -474,17 +482,10 @@ Namespace Controllers
 				cookie("WindowsAuthentication") = loginviewmodel.WindowsAuthentication
 				Response.Cookies.Add(cookie)
 
-				If Session("AdminRequiresIE") = "TRUE" And Session("MSBrowser") <> True Then
-					' non-IE browsers don't get DMI access yet.
-					ViewBag.SSIMode = True
+				If objLogin.IsDMIUser OrElse objLogin.IsDMISingle Then
+					ViewBag.SSIMode = False
 				Else
-
-					If objLogin.IsDMIUser Or objLogin.IsDMISingle Then
-						ViewBag.SSIMode = False
-					Else
-						ViewBag.SSIMode = True
-					End If
-
+					ViewBag.SSIMode = True
 				End If
 
 			Catch ex As Exception
@@ -501,8 +502,10 @@ Namespace Controllers
 			Session("ErrorText") = Nothing
 
 			Try
+
+				LicenceHub.LogOff(Session.SessionID)
+
 				Dim objServerSession As SessionInfo = Session("sessionContext")
-				objServerSession.TrackUser(TrackType.LogOff)
 
 				Session("avPrimaryMenuInfo") = Nothing
 				Session("avSubMenuInfo") = Nothing
@@ -530,7 +533,7 @@ Namespace Controllers
 			If fSubmitPasswordChange Then
 
 				' Read the Password details from the Password form.
-				Dim sNewPassword = Request.Form("txtPassword1")
+				Dim sNewPassword As String = Request.Form("txtPassword1")
 
 				Try
 					Dim objLogin = CType(Session("sessionChangePassword"), LoginInfo)

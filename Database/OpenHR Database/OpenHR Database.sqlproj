@@ -641,6 +641,7 @@
     <Build Include="Stored Procedures\Web\spASRIntGetCrosstabReportData.sql" />
     <Build Include="User Defined Functions\udfsys_FieldChangedSinceLastExport.sql" />
     <Build Include="Stored Procedures\Web\spASRGetCalculationsForTable.sql" />
+    <Build Include="Stored Procedures\Auto Generated\spASRGetHeadcount.sql" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Stored Procedures\Other\sp_ASR_Bradford_CalculateDurations.sql" />

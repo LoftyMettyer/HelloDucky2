@@ -3,6 +3,7 @@ Option Explicit On
 
 Imports System.Data.SqlClient
 Imports HR.Intranet.Server.Structures
+Imports System.Security
 
 Public Class clsResetPassword
 

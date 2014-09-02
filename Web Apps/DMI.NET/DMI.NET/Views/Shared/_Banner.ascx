@@ -24,3 +24,59 @@
 		<img src="<%=Session("LogoFile")%>" width="<%=Session("Config-banner-graphic-right-width")%>" height="44px" alt=""></div>
 </div>
 <%End If%>
+
+  <div id="signalRMessaging" class="container">
+    <input type="hidden" id="signalRUsersCount" />
+    <input type="hidden" id="signalRMessage" />
+  </div>
+
+	<script type="text/javascript">
+
+		$(function () {
+
+			// Activity Hub
+			var licence = $.connection.LicenceHub;
+
+			// Create a function that the hub can call back to display messages.
+			licence.client.updateUsersOnlineCount = function (count) {
+				$('#signalRUsersCount').val(count);
+			};
+
+			// System Admin Message
+			var hubProxy = $.connection.NotificationHub;
+			hubProxy.client.SystemAdminMessage = function (messageFrom, message) {
+				$("#SignalRDialogTitle").html(messageFrom);
+				$("#SignalRDialogContentText").html(message);
+				$("#divSignalRMessage").dialog('open');
+
+				$("#SignalRDialogClick").off('click').on('click', function () {
+					$("#divSignalRMessage").dialog("close");
+				});
+
+			};
+
+			// Session Timeout Message
+			hubProxy.client.SessionTimeOut = function () {
+
+				$("#SignalRDialogTitle").html("Message from Administrator");
+				$("#SignalRDialogContentText").html("Your session has timed out. You will need to login again");
+				$("#divSignalRMessage").dialog('open');
+
+				$("#SignalRDialogClick").off('click').on('click', function () {
+					window.onbeforeunload = null;
+					try {
+						window.location.href = "Main";
+					} catch (e) {
+					}
+					return false;
+				});
+
+			};
+
+			$.connection.hub.start()
+					.done(function () { console.log('Now connected, connection ID=' + $.connection.hub.id); })
+					.fail(function () { console.log('Could not Connect!'); });
+
+		});
+	</script>
+	

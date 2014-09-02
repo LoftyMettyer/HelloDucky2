@@ -5,6 +5,7 @@ Imports HR.Intranet.Server.Structures
 Imports System.Collections.ObjectModel
 Imports System.Data.SqlClient
 Imports System.Web
+Imports System.Security
 
 Public Class SessionInfo
 
@@ -130,7 +131,7 @@ Public Class SessionInfo
 				Permissions.Add(objPermissionItem)
 			Next
 
-			_objLogin.UserGroup = dsLoginData.Tables(0).Rows(0)(1)
+			_objLogin.UserGroup = dsLoginData.Tables(0).Rows(0)(1).ToString()
 
 			_objLogin.IsDMIUser = Permissions.IsPermitted("MODULEACCESS", "INTRANET")
 			_objLogin.IsDMISingle = Permissions.IsPermitted("MODULEACCESS", "INTRANET_SELFSERVICE")
@@ -138,8 +139,13 @@ Public Class SessionInfo
 			_objLogin.IsSystemOrSecurityAdmin = Permissions.IsPermitted("MODULEACCESS", "SYSTEMMANAGER")
 
 			objRow = dsLoginData.Tables(3).Rows(0)
-			_objLogin.IsServerRole = CBool(objRow("IsServeradmin")) Or CBool(objRow("IsSecurityadmin")) Or CBool(objRow("IsSysadmin"))
+			_objLogin.IsServerRole = CBool(objRow("IsServeradmin")) OrElse CBool(objRow("IsSecurityadmin")) OrElse CBool(objRow("IsSysadmin"))
 
+			If _objLogin.IsDMIUser Then
+				_objLogin.DefaultWebArea = WebArea.DMI
+			ElseIf _objLogin.IsDMISingle Then
+				_objLogin.DefaultWebArea = WebArea.DMISingle
+			End If
 
 		Catch ex As SqlException
 
@@ -199,43 +205,6 @@ Public Class SessionInfo
 		PersonnelModule.ReadPersonnelParameters()
 
 	End Sub
-
-	Public Sub TrackUser(Action As TrackType)
-
-		Dim objDataAccess As New clsDataAccess(_objLogin)
-		Dim sMachineName As String
-		Dim bIsLogin As Boolean
-
-		Try
-			Dim objUserMachine = Net.Dns.GetHostEntry(HttpContext.Current.Request.UserHostName)
-			sMachineName = objUserMachine.HostName
-
-		Catch ex As Exception
-			sMachineName = "Unknown"
-
-		End Try
-
-		Try
-			Dim prmLoginTime = New SqlParameter("LoginTime", SqlDbType.DateTime) With {.Direction = ParameterDirection.Output}
-
-			bIsLogin = (Action = TrackType.Login)
-
-			objDataAccess.ExecuteSP("spASRTrackSession" _
-					, New SqlParameter("LoggingIn", SqlDbType.Bit) With {.Value = bIsLogin} _
-					, New SqlParameter("Application", SqlDbType.VarChar, 255) With {.Value = "OpenHR Web"} _
-					, New SqlParameter("ClientMachine", SqlDbType.VarChar, 255) With {.Value = sMachineName} _
-					, prmLoginTime)
-
-			_objLogin.LoginTime = prmLoginTime.Value
-
-
-		Catch ex As Exception
-			Throw
-
-		End Try
-
-	End Sub
-
 
 #Region "FROM modPermissions"
 

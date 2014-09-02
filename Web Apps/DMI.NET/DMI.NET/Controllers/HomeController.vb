@@ -16,6 +16,8 @@ Imports System.Net.Mail
 Imports System.Net
 Imports DMI.NET.ViewModels
 Imports System.Collections.ObjectModel
+Imports System.Security
+Imports DMI.NET.Code.Hubs
 
 Namespace Controllers
 	Public Class HomeController
@@ -251,7 +253,7 @@ Namespace Controllers
 					If iUserSessionCount < 2 Then
 						' Read the Password details from the Password form.
 						Dim sCurrentPassword = Request.Form("txtCurrentPassword")
-						Dim sNewPassword = Request.Form("txtPassword1")
+						Dim sNewPassword As String = Request.Form("txtPassword1")
 
 						Try
 							clsDataAccess.ChangePassword(objDataAccess.Login, sNewPassword)
@@ -318,10 +320,11 @@ Namespace Controllers
 		End Function
 
 		' GET: /Home
-		Function Main(Optional SSIMode As Boolean = vbFalse) As ActionResult
+		Function Main(Optional SSIMode As Boolean = False) As ActionResult
 
 			Dim objSessionInfo = CType(Session("SessionContext"), SessionInfo)
 			Dim bOK As Boolean = True
+			Dim webArea As WebArea = webArea.SSI
 
 			If objSessionInfo Is Nothing Then
 				Return RedirectToAction("login", "Account")
@@ -333,29 +336,36 @@ Namespace Controllers
 			Session("selectSQL") = ""
 			ViewBag.SSIMode = SSIMode
 
-			' Non IE browsers attempt to goto SSI
-			If Session("AdminRequiresIE") = "TRUE" And Session("MSBrowser") <> True Then
-				If Not objSessionInfo.LoginInfo.IsSSIUser Then
-					Session("ErrorText") = "You are not permitted to use OpenHR Self-service with this user name."
-					bOK = False
-				End If
-
-				ViewBag.SSIMode = True
-
-			Else
-
-				' IE goes where requested (security permitting)
-				If ViewBag.SSIMode = True And Not objSessionInfo.LoginInfo.IsSSIUser Then
-					Session("ErrorText") = "You are not permitted to use OpenHR Self-service with this user name."
-					bOK = False
-				End If
-
-				If ViewBag.SSIMode = False And Not objSessionInfo.LoginInfo.IsDMIUser And Not objSessionInfo.LoginInfo.IsDMISingle Then
-					Session("ErrorText") = "You are not permitted to use OpenHR Web with this user name."
-					bOK = False
-				End If
-
+			If ViewBag.SSIMode = True And Not objSessionInfo.LoginInfo.IsSSIUser Then
+				Session("ErrorText") = "You are not permitted to use OpenHR Self-service with this user name."
+				bOK = False
 			End If
+
+			If ViewBag.SSIMode = False And Not objSessionInfo.LoginInfo.IsDMIUser And Not objSessionInfo.LoginInfo.IsDMISingle Then
+				Session("ErrorText") = "You are not permitted to use OpenHR Web with this user name."
+				bOK = False
+			End If
+
+			If Not SSIMode Then
+				If objSessionInfo.LoginInfo.IsDMISingle Then
+					webArea = webArea.DMISingle
+				Else
+					webArea = webArea.DMI
+				End If
+			End If
+
+			' Licence check
+			Dim licenceValidate = LicenceHub.NavigateWebArea(Session.SessionID, webArea)
+			Select Case licenceValidate
+				Case LicenceValidation.Expired
+					Session("ErrorText") = "Your licence has expired. Please contact your system administrator."
+					bOK = False
+
+				Case LicenceValidation.Insufficient
+					Session("ErrorText") = "You have insufficient licences to use this module."
+					bOK = False
+
+			End Select
 
 			If bOK Then
 				Return View()
@@ -2177,7 +2187,6 @@ Namespace Controllers
 			Dim objMessageModel As New PollMessageModel With {.Body = ""}
 
 			Try
-				LogOff()
 				objMessageModel.IsTimedOut = True
 
 			Catch ex As Exception
@@ -2198,7 +2207,6 @@ Namespace Controllers
 				Session("ErrorText") = Nothing
 
 				Dim objServerSession As SessionInfo = Session("sessionContext")
-				objServerSession.TrackUser(TrackType.Timedout)
 
 				Session("avPrimaryMenuInfo") = Nothing
 				Session("avSubMenuInfo") = Nothing

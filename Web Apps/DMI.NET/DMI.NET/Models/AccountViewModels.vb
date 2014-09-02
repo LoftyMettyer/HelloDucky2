@@ -1,10 +1,15 @@
 ﻿Imports System.ComponentModel.DataAnnotations
 Imports System.Web.HttpContext
 Imports DMI.NET.Code
+Imports System.Data.SqlClient
+Imports System.Diagnostics.Eventing.Reader
 
 Namespace Models
 
 	Public Class LoginViewModel
+		Implements IJsonSerialize
+
+		Public Property [ID] As Integer Implements IJsonSerialize.ID
 
 		<Required(ErrorMessage:="The user name is not valid.")> _
 		<Display(Name:="User name :")> _
@@ -26,6 +31,44 @@ Namespace Models
 		Public Property WindowsAuthentication As Boolean
 
 		Public Property SetDetails As Boolean
+
+		Public Property Device As String
+		Public Property IsLoggedIn() As Boolean
+		Public Property SignalRClientID As String
+
+		Public WebArea As WebArea = WebArea.SSI
+
+		Public ReadOnly Property WebAreaName As String
+			Get
+
+				Select Case WebArea
+					Case WebArea.DMI
+						Return "DMI"
+
+					Case WebArea.DMISingle
+						Return "DMI Lite"
+
+					Case Else
+						Return "Self Service"
+
+				End Select
+
+			End Get
+		End Property
+
+		Public Sub New()
+
+			Try
+				Dim objUserMachine = System.Net.Dns.GetHostEntry(Current.Request.UserHostName)
+				Device = objUserMachine.HostName
+
+			Catch ex As Exception
+				Device = "Unknown"
+
+			End Try
+
+		End Sub
+
 
 		Public Sub ReadFromCookie()
 
@@ -78,6 +121,15 @@ Namespace Models
 			Catch ex As Exception
 				Throw
 			End Try
+
+		End Sub
+
+		Public Sub ReadSystemConnection()
+
+			Dim systemConnection = New SqlConnection(ConfigurationManager.ConnectionStrings("OpenHR").ConnectionString)
+
+			Database = systemConnection.Database
+			Server = systemConnection.DataSource
 
 		End Sub
 

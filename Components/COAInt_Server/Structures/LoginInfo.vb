@@ -1,6 +1,8 @@
 ﻿Option Explicit On
 Option Strict On
 
+Imports HR.Intranet.Server.Enums
+
 Namespace Structures
 	Public Class LoginInfo
 		Public Server As String
@@ -23,6 +25,8 @@ Namespace Structures
 		Public IsDMIUser As Boolean = False
 		Public IsDMISingle As Boolean = False
 		Public IsSSIUser As Boolean = False
+
+		Public DefaultWebArea As WebArea = WebArea.SSI
 
 	End Class
 End Namespace

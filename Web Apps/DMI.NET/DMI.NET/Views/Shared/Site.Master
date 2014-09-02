@@ -55,6 +55,10 @@
 	<script src="<%: Url.LatestContent("~/bundles/Microsoft")%>" type="text/javascript"></script>
 	<script src="<%: Url.LatestContent("~/bundles/OpenHR_General")%>" type="text/javascript"></script>
 
+  <script src="../../Scripts/jquery.signalR-2.1.1.min.js"></script>
+  <script src="../../signalr/hubs"></script>
+	
+
 	<script type="text/javascript">
 
 		window.LocaleDateFormat = "";
@@ -115,6 +119,14 @@
 				height: 'auto',
 				resizable: false,
 				dialogClass: 'no-close'
+			});
+			
+			$("#divSignalRMessage").dialog({
+				autoOpen: false,
+				modal: true,
+				width: 650,
+				height: 500,
+				position: ['center', 100],
 			});
 			
 			$("#dialog-confirm").dialog({
@@ -479,6 +491,16 @@
 	
 	<div id="divPollMessage" style="display: block;">
 		<form id="frmPollMessage" action="pollMessage"></form>
+	</div>
+
+	<div id="divSignalRMessage" style="display: block;">
+		<div id="SignalRDialogTitleContent">
+			<h1 id="SignalRDialogTitle"></h1>
+		</div>
+		<div id="SignalRDialogContent">
+			<p id="SignalRDialogContentText"></p>
+		</div>
+		<input type="button" value="Close" id="SignalRDialogClick" />
 	</div>
 
 	<iframe name="submit-iframe" style="display: none;"></iframe>

@@ -64,8 +64,9 @@
 	
 		<div class="centered">
 			<input type="button" id="submitLoginDetails" name="submitLoginDetails" class="ui-button" onclick="SubmitLoginDetails()" value="Login" />
-			<input type="button" id="btnToggleDetailsDiv" name="details" class="ui-button <%=IIf(Model.SetDetails, "", "hidden")%>" value="Details >>" />
+			<input type="button" id="btnToggleDetailsDiv" name="details" class="ui-button <%=IIf(Model.SetDetails, "", "hidden")%>" value="Details >>" />		
 		</div>
+
 		<%End If%>
 	
 		<br />
@@ -90,6 +91,12 @@
 	<script type="text/javascript">
 		
 		$(document).ready(function () {
+
+			var licence = $.connection['LicenceHub'];
+			licence['client'].disableLogin = function (disabled, message) {
+				button_disable($('#submitLoginDetails'), disabled);
+			};
+
 			if (!window.isMobileBrowser) {
 				if ('<%=Model.UserName%>'.length > 0) $('#txtPassword').focus();
 				if ('<%=Model.UserName%>'.length == 0) $('#txtUser').focus();
@@ -113,47 +120,47 @@
 
 		function CheckKeyPressed(e) {
 			if (e.which === 13) SubmitLoginDetails();
-	}
+		}
 
-	function SubmitLoginDetails() {
-		/* Try to login to the OpenHR database. */
-		var frmLoginForm = document.getElementById('frmLoginForm');
+		function SubmitLoginDetails() {
+			/* Try to login to the OpenHR database. */
+			var frmLoginForm = document.getElementById('frmLoginForm');
 
-		frmLoginForm.txtLocaleCulture.value = window.UserLocale;
+			frmLoginForm.txtLocaleCulture.value = window.UserLocale;
 	
 			frmLoginForm.txtLocaleDecimalSeparator.value = OpenHR.LocaleDecimalSeparator();
 			frmLoginForm.txtLocaleThousandSeparator.value = OpenHR.LocaleThousandSeparator();
 
 			frmLoginForm.submit();			
-	}
+		}
 
-	function DisableUsernamePassword(pfDisable) {
+		function DisableUsernamePassword(pfDisable) {
 			$('#txtUserName').css('color', pfDisable ? 'lightgray' : '').prop('readonly', pfDisable);
 			$('#txtPassword').css('color', pfDisable ? 'lightgray' : '').prop('readonly', pfDisable);
-	}
+		}
 
 
-	function ToggleWindowsAuthentication() {
+		function ToggleWindowsAuthentication() {
 			if ($('#chkWindowsAuthentication').prop('checked') == true) {
-			DisableUsernamePassword(true);
+				DisableUsernamePassword(true);
 				$('#txtUserName').val($('#txtSystemUser').val());
 				$('#txtPassword').val('*****');
 				$("#ForgotPasswordLink").hide();
-		}
-		else {
-			DisableUsernamePassword(false);
+			}
+			else {
+				DisableUsernamePassword(false);
 				$('#txtPassword').val('');
 				$("#ForgotPasswordLink").show();
+			}
 		}
-	}
 
-	function setDetailsDisplay(pfShow) {
-		if (pfShow == true) {
+		function setDetailsDisplay(pfShow) {
+			if (pfShow == true) {
 				$('#btnToggleDetailsDiv').prop("value", "Details <<");
 				$('#divDetails').show();
 				$('#btnToggleDetailsDiv').removeClass('hidden');
-		}
-		else {
+			}
+			else {
 				$('#btnToggleDetailsDiv').prop("value", "Details >>");
 				$('#divDetails').hide();
 			}
@@ -174,6 +181,7 @@
 			$('#ForgotPasswordLink').css('display', 'block');
 		}
 
-	</script>
+</script>
 
 </asp:Content>
+

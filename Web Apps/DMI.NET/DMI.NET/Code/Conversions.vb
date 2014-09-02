@@ -1,6 +1,8 @@
 ﻿Option Strict On
 Option Explicit On
 
+Imports System.Security
+
 Namespace Code
 
 	<HideModuleName>

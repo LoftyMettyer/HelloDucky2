@@ -3,19 +3,27 @@ Option Explicit On
 
 Imports System.Data.SqlClient
 Imports HR.Intranet.Server.Structures
+Imports System.Security
 
 Public Class clsDataAccess
 
 	Const _CommandTimeOut = 600
 
 	Private ReadOnly _objLogin As LoginInfo
+	Private ReadOnly _connectionString As String
 
 	Public Sub New()
 		MyBase.New()
 	End Sub
 
-	Public Sub New(ByVal value As LoginInfo)
+	Public Sub New(value As LoginInfo)
 		_objLogin = value
+		_connectionString = GetConnectionString(_objLogin)
+
+	End Sub
+
+	Public Sub New(connectionString As String)
+		_connectionString = connectionString
 	End Sub
 
 	Public ReadOnly Property Login As LoginInfo
@@ -29,7 +37,7 @@ Public Class clsDataAccess
 		Dim strConn As String = GetConnectionString(Login)
 
 		Try
-			SqlConnection.ChangePassword(strConn, sNewPassword)
+			SqlConnection.ChangePassword(strConn, sNewPassword.ToString())
 
 		Catch ex As Exception
 			Throw
@@ -38,14 +46,12 @@ Public Class clsDataAccess
 
 	End Sub
 
-
 	Public Sub ExecuteSql(sSQL As String)
 		' Execute the given SQL statement.
-		Dim strConn As String = GetConnectionString(_objLogin)
 
 		Try
 
-			Using sqlConnection As New SqlConnection(strConn)
+			Using sqlConnection As New SqlConnection(_connectionString)
 				Using objCommand = New SqlCommand(sSQL, sqlConnection)
 
 					objCommand.CommandType = CommandType.Text
@@ -102,11 +108,10 @@ Public Class clsDataAccess
 
 	Public Sub ExecuteSP(ProcedureName As String, ParamArray args() As SqlParameter)
 
-		Dim strConn As String = GetConnectionString(_objLogin)
 		Dim retryCount = 5
 		Dim success As Boolean = False
 
-		Using sqlConnection As New SqlConnection(strConn)
+		Using sqlConnection As New SqlConnection(_connectionString)
 
 			Using objCommand = New SqlCommand(ProcedureName, sqlConnection)
 
@@ -189,14 +194,12 @@ Public Class clsDataAccess
 
 	Public Function GetDataTable(procedureName As String, parameterName As String, dataList As DataTable) As DataTable
 
-		Dim strConn As String = GetConnectionString(_objLogin)
 		Dim objDataSet As New DataSet
 		Dim objAdaptor As New SqlDataAdapter
 
-
 		Try
 
-			Using sqlConnection As New SqlConnection(strConn)
+			Using sqlConnection As New SqlConnection(_connectionString)
 				objAdaptor.SelectCommand = New SqlCommand(procedureName, sqlConnection)
 				objAdaptor.SelectCommand.CommandType = CommandType.StoredProcedure
 				objAdaptor.SelectCommand.CommandTimeout = _CommandTimeOut
@@ -221,8 +224,9 @@ Public Class clsDataAccess
 	End Function
 
 	Public Function CallToStoredProcedure(sProcedureName As String, ParamArray args() As SqlParameter) As String
-		Dim strConn As String = GetConnectionString(_objLogin)
-		Using sqlConnection As New SqlConnection(strConn)
+
+
+		Using sqlConnection As New SqlConnection(_connectionString)
 			Dim sqlCommand As New SqlCommand(sProcedureName, sqlConnection)
 			For Each sqlParm In args
 				sqlCommand.Parameters.Add(sqlParm)
@@ -295,7 +299,6 @@ Public Class clsDataAccess
 
 	Private Function GetDataSet(sProcedureName As String, CommandType As CommandType, ParamArray args() As SqlParameter) As DataSet
 
-		Dim strConn As String = GetConnectionString(_objLogin)
 		Dim objDataSet As New DataSet
 		Dim objAdaptor As New SqlDataAdapter
 
@@ -307,7 +310,7 @@ Public Class clsDataAccess
 
 			Try
 
-				Using sqlConnection As New SqlConnection(strConn)
+				Using sqlConnection As New SqlConnection(_connectionString)
 
 					objAdaptor.SelectCommand = New SqlCommand(sProcedureName, sqlConnection)
 					objAdaptor.SelectCommand.CommandType = CommandType

@@ -7,21 +7,6 @@ Imports System.Data.SqlClient
 
 Public Module ASRFunctions
 
-	Public Sub LogOff()
-
-		Dim objSession As SessionInfo = CType(HttpContext.Current.Session("SessionContext"), SessionInfo)
-
-		Try
-			objSession.TrackUser(TrackType.LogOff)
-
-		Catch ex As Exception
-			Throw
-
-		End Try
-
-	End Sub
-
-
 	Public Function GetCurrentUsersCountOnServer(LoginName As String) As Integer
 		Dim objSession As SessionInfo = CType(HttpContext.Current.Session("SessionContext"), SessionInfo)	'Set session info
 		Dim objDataAccess As New clsDataAccess(objSession.LoginInfo) 'Instantiate DataAccess class

@@ -2,6 +2,7 @@ Option Strict Off
 Option Explicit On
 
 Imports System.Globalization
+Imports System.Security
 
 Module modIntranet
 
@@ -31,6 +32,21 @@ Module modIntranet
 			DecToBin = CStr(CShort(DeciValue And 2 ^ i) / 2 ^ i) & DecToBin
 		Next i
 	End Function
+
+
+	Friend Function ConvertToSecureString(password As String) As SecureString
+		If password Is Nothing Then
+			Throw New ArgumentNullException("password")
+		End If
+
+		Dim securePassword = New SecureString()
+		For Each c As Char In password
+			securePassword.AppendChar(c)
+		Next
+		securePassword.MakeReadOnly()
+		Return securePassword
+	End Function
+
 
 
 End Module

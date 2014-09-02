@@ -142,6 +142,9 @@
     <Compile Include="Enums\ExistingFile.vb" />
     <Compile Include="Enums\IntersectionType.vb" />
     <Compile Include="Enums\Layout.vb" />
+    <Compile Include="Enums\LicenceValidation.vb" />
+    <Compile Include="Enums\LicenceType.vb" />
+    <Compile Include="Enums\WebArea.vb" />
     <Compile Include="Enums\OrderType.vb" />
     <Compile Include="Enums\PromptedDateType.vb" />
     <Compile Include="Enums\RecEditStartType.vb" />
