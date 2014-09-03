@@ -584,7 +584,7 @@
 
 				var id = $("#DefSelRecords").getGridParam('selrow');
 				var type = $("#utiltype").val();
-				OpenHR.OpenDialog("DefinitionProperties", "divPopupReportDefinition", { ID: id, Type: type });
+				OpenHR.OpenDialog("DefinitionProperties", "divPopupReportDefinition", { ID: id, Type: type }, '900px');
 
 			}
 		}

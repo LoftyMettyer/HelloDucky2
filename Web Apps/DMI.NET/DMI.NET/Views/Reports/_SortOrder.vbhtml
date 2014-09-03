@@ -121,7 +121,7 @@
 	}
 
 	function addSortOrder() {
-		OpenHR.OpenDialog("Reports/AddSortOrder", "divPopupReportDefinition", { ReportID: "@Model.ID", ReportType: "@Model.ReportType" });
+		OpenHR.OpenDialog("Reports/AddSortOrder", "divPopupReportDefinition", { ReportID: "@Model.ID", ReportType: "@Model.ReportType" }, 'auto');
 	}
 
 	function editSortSorder(rowID) {
@@ -131,7 +131,7 @@
 		}
 
 		var gridData = $("#SortOrders").getRowData(rowID);
-		OpenHR.OpenDialog("Reports/EditSortOrder", "divPopupReportDefinition", gridData);
+		OpenHR.OpenDialog("Reports/EditSortOrder", "divPopupReportDefinition", gridData, 'auto');
 
 	}
 

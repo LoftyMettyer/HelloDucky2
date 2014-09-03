@@ -402,7 +402,7 @@
 
 		},
 
-	openDialog = function (url, targetWin, jsonData) {
+	openDialog = function (url, targetWin, jsonData, dialogWidth) { //dialogWidth should be passed as a string, not a number: i.e 'auto' or '900px'
 
 		var $frame;
 
@@ -431,7 +431,7 @@
 
 				$frame = $("#" + targetWin);
 				$frame.html(html);
-				$frame.dialog('option', 'width', 900);
+				$frame.dialog('option', 'width', dialogWidth);
 
 				$frame.show();
 				$frame.dialog({ position: { 'my': 'top', 'at': 'center center', 'of': 'header' } });
