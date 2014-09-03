@@ -142,5 +142,9 @@ Namespace Classes
 
 		End Function
 
+		Public Shared Function IsModuleLicenced(softwareModule As SoftwareModule) As Boolean
+			Return CBool(Modules And softwareModule)
+		End Function
+
 	End Class
 End Namespace

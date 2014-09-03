@@ -85,12 +85,6 @@ BEGIN
 	AND ASRSysGroupPermissions.permitted = 1
 	AND ASRSysPermissionCategories.categoryKey = 'MODULEACCESS'
 
-	-- Activate module
-	EXEC [dbo].[spASRIntActivateModule] 'TRAINING', @fOK OUTPUT
-
-	/* Get the required training booking module paramaters. */
-	IF @fOK = 1
-	BEGIN
 		/* Get the EMPLOYEE table information. */
 		SELECT @piEmployeeTableID = convert(integer, parameterValue)
 		FROM ASRSysModuleSetup
@@ -397,15 +391,9 @@ BEGIN
 		WHERE moduleKey = 'MODULE_TRAININGBOOKING'
 			AND parameterKey = 'Param_BulkBookingDefaultView'
 		IF @piBulkBookingDefaultViewID IS NULL SET @piBulkBookingDefaultViewID = 0
-	END
+
+
 END
-
-
-
-
-
-
-
 
 
 

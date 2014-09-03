@@ -1,6 +1,7 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
 <%@ Import Namespace="HR.Intranet.Server.Enums" %>
 <%@ Import Namespace="HR.Intranet.Server" %>
+<%@ Import Namespace="DMI.NET" %>
 
 <%="" %>
 
@@ -75,7 +76,7 @@
 
 				If fGotId = False Then
 					If (Session("singleRecordID") > 0) Then
-						iBaseTableID = Session("Personnel_EmpTableID")
+						iBaseTableID = SettingsConfig.Personnel_EmpTableID
 					End If
 				End If
 			End If

@@ -914,7 +914,7 @@
 </form>
 
 <div style='height: 0; width: 0; overflow: hidden;'>
-	<input type="hidden" id="recSelTableID" name="recSelTableID" value="<%=Session("Personnel_EmpTableID")%>">
+	<input type="hidden" id="recSelTableID" name="recSelTableID" value="<%:SettingsConfig.Personnel_EmpTableID%>">
 	<input type="hidden" id="recSelCurrentID" name="recSelCurrentID" value='<%=Session("optionRecordID")%>'>
 	<input id="cmdGetFilename" name="cmdGetFilename" type="file" />
 </div>

@@ -231,7 +231,6 @@
     <Build Include="Stored Procedures\Web\spASRIntGetUtilityBaseTable.sql" />
     <Build Include="Stored Procedures\Web\spASRIntGetUtilityName.sql" />
     <Build Include="Stored Procedures\Web\spASRIntGetViewName.sql" />
-    <Build Include="Stored Procedures\Web\spASRIntGetWorkflowParameters.sql" />
     <Build Include="Stored Procedures\Web\spASRIntInsertNewRecord.sql" />
     <Build Include="Stored Procedures\Web\spASRIntSaveCalendarReport.sql" />
     <Build Include="Stored Procedures\Web\spASRIntSetEventLogPurge.sql" />

@@ -1401,7 +1401,7 @@
 	<input type="hidden" id="txtIsDMISingle" name="txtIsDMISingle" value=<%= objSession.LoginInfo.IsDMISingle%>>
 	<input type="hidden" id="txtIsSSIUser" name="txtIsSSIUser" value='<%= objSession.LoginInfo.IsSSIUser%>'>
 
-	<input type="hidden" id="txtPersonnel_EmpTableID" name="txtPersonnel_EmpTableID" value='<%=session("Personnel_EmpTableID")%>'>
+	<input type="hidden" id="txtPersonnel_EmpTableID" name="txtPersonnel_EmpTableID" value='<%:SettingsConfig.Personnel_EmpTableID%>'>
 
 	<input type="hidden" id="txtTB_EmpTableID" name="txtTB_EmpTableID" value='<%=session("TB_EmpTableID")%>'>
 	<input type="hidden" id="txtTB_CourseTableID" name="txtTB_CourseTableID" value='<%=session("TB_CourseTableID")%>'>

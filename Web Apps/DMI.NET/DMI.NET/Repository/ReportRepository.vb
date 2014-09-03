@@ -21,7 +21,6 @@ Namespace Repository
 		Private _objSessionInfo As SessionInfo
 		Private ReadOnly _objDataAccess As clsDataAccess
 		Private ReadOnly _username As String
-		Private ReadOnly _defaultBaseTableID As Integer
 
 		Public Sub New()
 
@@ -29,7 +28,6 @@ Namespace Repository
 			_objSessionInfo = CType(HttpContext.Current.Session("SessionContext"), SessionInfo)
 			_objDataAccess = CType(HttpContext.Current.Session("DatabaseAccess"), clsDataAccess)
 			_username = HttpContext.Current.Session("username").ToString
-			_defaultBaseTableID = CInt(HttpContext.Current.Session("Personnel_EmpTableID"))
 
 		End Sub
 
@@ -41,7 +39,7 @@ Namespace Repository
 				objModel.Attach(_objSessionInfo)
 
 				If action = UtilityActionType.New Then
-					objModel.BaseTableID = _defaultBaseTableID
+					objModel.BaseTableID = SettingsConfig.Personnel_EmpTableID
 					objModel.Owner = _username
 				Else
 
@@ -128,7 +126,7 @@ Namespace Repository
 				objModel.Attach(_objSessionInfo)
 
 				If action = UtilityActionType.New Then
-					objModel.BaseTableID = _defaultBaseTableID
+					objModel.BaseTableID = SettingsConfig.Personnel_EmpTableID
 					objModel.Owner = _username
 				Else
 
@@ -195,7 +193,7 @@ Namespace Repository
 				objModel.Attach(_objSessionInfo)
 
 				If action = UtilityActionType.New Then
-					objModel.BaseTableID = _defaultBaseTableID
+					objModel.BaseTableID = SettingsConfig.Personnel_EmpTableID
 					objModel.Owner = _username
 				Else
 
@@ -268,7 +266,7 @@ Namespace Repository
 				objModel.Attach(_objSessionInfo)
 
 				If action = UtilityActionType.New Then
-					objModel.BaseTableID = _defaultBaseTableID
+					objModel.BaseTableID = SettingsConfig.Personnel_EmpTableID
 					objModel.Owner = _username
 				Else
 

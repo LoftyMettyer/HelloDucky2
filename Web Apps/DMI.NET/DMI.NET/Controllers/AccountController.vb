@@ -1,5 +1,6 @@
 ﻿Imports System.IO
 Imports System.Drawing
+Imports DMI.NET.Classes
 Imports DMI.NET.Code
 Imports HR.Intranet.Server.Enums
 Imports HR.Intranet.Server
@@ -342,10 +343,13 @@ Namespace Controllers
 					Session("DatabaseAccess") = objDataAccess
 					Session("sessionContext") = objServerSession
 
-					' Get module parameters
-					PopulatePersonnelSessionVariables()
-					PopulateWorkflowSessionVariables()
-					PopulateTrainingBookingSessionVariables()
+					If Licence.IsModuleLicenced(SoftwareModule.Workflow) Then
+						PopulateWorkflowSessionVariables()
+					End If
+
+					If Licence.IsModuleLicenced(SoftwareModule.Training) Then
+						PopulateTrainingBookingSessionVariables()
+					End If
 
 					' Get parameters for the single record
 					Dim prmTableID = New SqlParameter("piTableID", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
@@ -411,7 +415,7 @@ Namespace Controllers
 				Session("WordFormatDefaultIndex") = 1
 				Session("ExcelFormatDefaultIndex") = 1
 				Session("OfficeSaveAsValues") = ""
-				Session("utilTableID") = Session("Personnel_EmpTableID")
+				Session("utilTableID") = SettingsConfig.Personnel_EmpTableID
 
 				Dim lngSSIWelcomeColumnID = CLng(objDatabase.GetModuleParameter("MODULE_PERSONNEL", "Param_FieldsSSIWelcome"))
 				If lngSSIWelcomeColumnID <= 0 Then lngSSIWelcomeColumnID = 0

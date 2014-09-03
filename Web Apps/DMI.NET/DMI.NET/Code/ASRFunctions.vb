@@ -1,6 +1,7 @@
 ﻿Option Strict On
 Option Explicit On
 
+Imports DMI.NET.Classes
 Imports HR.Intranet.Server.Enums
 Imports HR.Intranet.Server
 Imports System.Data.SqlClient
@@ -22,26 +23,9 @@ Public Module ASRFunctions
 
 	End Function
 
-	Public Sub PopulatePersonnelSessionVariables()
-
-		Dim objDataAccess As New clsDataAccess(ConfigurationManager.ConnectionStrings("OpenHR").ConnectionString)
-		Dim prmEmpTableID = New SqlParameter("piEmployeeTableID", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
-
-		Try
-			objDataAccess.ExecuteSP("sp_ASRIntGetPersonnelParameters", prmEmpTableID)
-
-			HttpContext.Current.Session("Personnel_EmpTableID") = prmEmpTableID.Value
-
-		Catch ex As Exception
-			Throw
-
-		End Try
-
-	End Sub
-
 	Public Sub PopulateWorkflowSessionVariables()
 
-		Dim objDataAccess As New clsDataAccess(ConfigurationManager.ConnectionStrings("OpenHR").ConnectionString)
+		Dim objDataAccess As clsDataAccess = CType(HttpContext.Current.Session("DatabaseAccess"), clsDataAccess)
 		Dim prmWFEnabled = New SqlParameter("pfWFEnabled", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
 		Dim prmWFOutOfOfficeConfig = New SqlParameter("pfOutOfOfficeConfigured", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
 		Dim bWorkflowEnabled As Boolean = False
@@ -50,9 +34,8 @@ Public Module ASRFunctions
 		Dim iWorkflowRecordCount = 0
 
 		Try
-			objDataAccess.ExecuteSP("spASRIntGetWorkflowParameters", prmWFEnabled)
 
-			bWorkflowEnabled = CBool(prmWFEnabled.Value)
+			bWorkflowEnabled = Licence.IsModuleLicenced(SoftwareModule.Workflow)
 			HttpContext.Current.Session("WF_Enabled") = bWorkflowEnabled
 
 			' Check if the OutOfOffice parameters have been configured.
@@ -93,7 +76,7 @@ Public Module ASRFunctions
 
 		Try
 
-			Dim objDataAccess As New clsDataAccess(ConfigurationManager.ConnectionStrings("OpenHR").ConnectionString)
+			Dim objDataAccess As clsDataAccess = CType(HttpContext.Current.Session("DatabaseAccess"), clsDataAccess)
 
 			Dim prmEmpTableID = New SqlParameter("piEmployeeTableID", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
 			Dim prmCourseTableID = New SqlParameter("piCourseTableID", SqlDbType.Int) With {.Direction = ParameterDirection.Output}

@@ -23,6 +23,7 @@ Public Class MvcApplication
 		DataAnnotationConfig.RegisterDataAnnotations()
 		DatabaseConfig.Connect()
 		LicenceConfig.RegisterLicence()
+		SettingsConfig.Register()
 
 	End Sub
 

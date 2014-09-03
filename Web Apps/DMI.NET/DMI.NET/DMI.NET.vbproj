@@ -202,6 +202,7 @@
     <Compile Include="App_Start\DatabaseConfig.vb" />
     <Compile Include="App_Start\LicenceConfig.vb" />
     <Compile Include="App_Start\RouteConfig.vb" />
+    <Compile Include="App_Start\SettingsConfig.vb" />
     <Compile Include="App_Start\Startup.vb" />
     <Compile Include="Classes\Licence.vb" />
     <Compile Include="Code\Hubs\LicenceHub.vb" />

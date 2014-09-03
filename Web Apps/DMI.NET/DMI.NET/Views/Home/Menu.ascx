@@ -460,7 +460,7 @@
 	<input type="hidden" id="txtIsSSIUser" name="txtIsSSIUser" value='<%= IIf(objSessionContext.LoginInfo.IsSSIUser, "1", "0")%>'>
 	<input type="hidden" id="txtIsWindowsLogon" name="txtIsWindowsLogon" value=<%= objSessionContext.LoginInfo.TrustedConnection%>>
 
-	<input type="hidden" id="txtPersonnel_EmpTableID" name="txtPersonnel_EmpTableID" value='<%=session("Personnel_EmpTableID")%>'>
+	<input type="hidden" id="txtPersonnel_EmpTableID" name="txtPersonnel_EmpTableID" value='<%:SettingsConfig.Personnel_EmpTableID%>'>
 
 	<input type="hidden" id="txtTB_EmpTableID" name="txtTB_EmpTableID" value='<%=session("TB_EmpTableID")%>'>
 	<input type="hidden" id="txtTB_CourseTableID" name="txtTB_CourseTableID" value='<%=session("TB_CourseTableID")%>'>
