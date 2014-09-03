@@ -82,17 +82,10 @@
     Next
 %>
 
-
 <script type="text/javascript">
     function configuration_window_onload() {
-       
-      
-
-        ////        var frmOriginalConfiguration = OpenHR.getForm("workframe", "frmOriginalConfiguration");
-
-        
-
-        var frmMenu = OpenHR.getForm("menuframe", "frmMenuInfo");
+       ////        var frmOriginalConfiguration = OpenHR.getForm("workframe", "frmOriginalConfiguration");
+			  var frmMenu = OpenHR.getForm("menuframe", "frmMenuInfo");
         $("#workframe").attr("data-framesource", "CONFIGURATION");
         showDefaultRibbon();
 
@@ -130,22 +123,16 @@
         $('select[name^="cbo"]').on("change", function () { enableSaveButton(); });
         $('input[name^="chk"]').on("change", function () { enableSaveButton(); });
         $("#optionframe").hide();
-        $("#workframe").show();
+        $("#workframe").show();       
     }
 
     function enableSaveButton() {
     	        if (definitionChanged()) menu_toolbarEnableItem('mnutoolSaveAdminConfig', true);
     }
-    
-    
-</script>
-
+</script> 
 
 <script type="text/javascript">
-
-
     function display_Configuration_Page(piPageNumber) {
-
         if (piPageNumber == 1) {
             div1.style.visibility = "visible";
             div1.style.display = "block";
@@ -153,7 +140,6 @@
             div2.style.display = "none";
             $('#btnDiv1OK').hide();
             $('#btnDiv1Cancel').hide();
-
 
             frmConfiguration.cboPrimaryTableDisplay.focus();
         }
@@ -166,6 +152,15 @@
             $('#btnDiv2OK').hide();
             $('#btnDiv2Cancel').hide();
         }
+
+        var styles = {'border-spacing':0, 'border-collapse':'separate'};
+        $('table').css(styles);      
+        $('td').css('padding', '0');
+        $('select, #txtFindSize').css('float', 'right');
+        $('select').css('width', '200px');
+        $('#txtFindSize').css('width', '100px');
+
+        //$('table').attr('border', '1');
     }
 
     function setComboValue(psCombo, piValue) {
@@ -312,11 +307,9 @@
         return true;
     }
 
-    function Configuration_okClick() {
-               
+    function Configuration_okClick() {               
             frmConfiguration.txtReaction.value = "DEFAULT";
-            saveConfiguration();
-      
+            saveConfiguration();      
     }
 
     /* Return to the default page. */
@@ -408,474 +401,323 @@
             enableSaveButton();
         }
     }
-
-  
 </script>
 
-
 <form action="configuration_Submit" onsubmit="return false;" method="post" id="frmConfiguration" name="frmConfiguration">
-	<br>
-	<DIV id=div1>
-		<table align=center class="outline" cellPadding=5 cellSpacing=0>
-			<TR>
-				<TD>
-					<table align=center class="invisible" cellPadding=0 cellSpacing=0>
-												<TR>
-								<td height=10 colspan=5></td>
-						</TR>
-						<TR>
-							<td height=10 colspan=5>
-								<TABLE class="invisible" CELLSPACING=0 CELLPADDING=0 align="center">
-									<TR>
-										<TD width=10>
-												<INPUT type="button" value="Display Defaults" id=btnDummyTab1 name=btnDummyTab1 class="btn btndisabled" disabled=true>
-										</TD>
-										<td width=10></td>
-										<TD width=10>
-												<INPUT type="button" value="Reports/Utilities & Tools" id=btnTab2 name=btnTab2 class="btn" 
-														onclick=" display_Configuration_Page(2)"
-																					onmouseover="try{button_onMouseOver(this);}catch(e){}" 
-																					onmouseout="try{button_onMouseOut(this);}catch(e){}"
-																					onfocus="try{button_onFocus(this);}catch(e){}"
-																					onblur="try{button_onBlur(this);}catch(e){}" />
-										</TD>
-									</TR>
-								</TABLE>
+	<div class="pageTitleDiv" style="margin: 10px">
+		<span class="pageTitle" id="PopupReportDefinition_PageTitle">Configuration</span>
+	</div>
+
+	<div id="div1">
+		<table class="outline padleft20">
+			<tr>
+				<td>
+					<table class="invisible" style="width: 500px;">
+						<tr>
+							<td height="10" colspan="5"></td>
+						</tr>
+						<tr>
+							<td height="10" colspan="5">
+								<table class="invisible">
+									<tr>
+										<td width="10">
+											<input type="button" value="Display Defaults" id="btnDummyTab1" name="btnDummyTab1" class="btn btndisabled" disabled="true">
+										</td>
+										<td width="10"></td>
+										<td width="10">
+											<input type="button" value="Reports/Utilities & Tools" id="btnTab2" name="btnTab2" class="btn"
+												onclick=" display_Configuration_Page(2)" />
+										</td>
+									</tr>
+								</table>
 							</td>
-						</TR>
-						<TR>
-							<td height=20 colspan=5></td>
-						</TR>
-						<TR>
-							<td align=center colspan=5>
-								<STRONG>Record Editing Start Mode</STRONG>
+						</tr>
+						<tr>
+							<td height="20" colspan="5"></td>
+						</tr>
+						<tr class="fontsmalltitle">
+							<td colspan="5">Record Editing Start Mode</td>
+						</tr>
+						<tr>
+							<td height="10" colspan="5"></td>
+						</tr>
+						<tr>
+							<td width="20"></td>
+							<td align="left" nowrap>Parent Tables :
 							</td>
-						</TR>
-						<TR>
-							<td height=10 colspan=5></td>
-						</TR>
-						<TR>
-							<td width=20></td>
-							<td align=left nowrap>
-								Parent Tables :
-							</td>
-							<td width=20></td>
-							<td align=left>
-								<select id=cboPrimaryTableDisplay name=cboPrimaryTableDisplay class="combo" style="HEIGHT: 22px; WIDTH: 200px;" width=200> 
+							<td width="20"></td>
+							<td align="left">
+								<select id="cboPrimaryTableDisplay" name="cboPrimaryTableDisplay" class="combo" style="height: 22px; width: 200px;">
 									<option value="3" selected>Find Window</option>
 									<option value="2">First Record</option>
 									<option value="1">New Record</option>
 								</select>
 							</td>
-							<td width=20></td>
-						</TR>
-						<TR>
-							<td height="5" colspan=5>
+							<td width="20"></td>
+						</tr>
+						<tr>
+							<td height="5" colspan="5"></td>
+						</tr>
+						<tr>
+							<td width="20"></td>
+							<td align="left" nowrap>Child Tables :
 							</td>
-						</TR>
-						<TR>
-							<td width=20></td>
-							<td align=left nowrap>
-								Child Tables :
-							</td>
-							<td width=20>
-							</td>
-							<td align=left>
-								<select id=cboHistoryTableDisplay name=cboHistoryTableDisplay class="combo" style="HEIGHT: 22px; WIDTH: 200px" width=200> 
+							<td width="20"></td>
+							<td align="left">
+								<select id="cboHistoryTableDisplay" name="cboHistoryTableDisplay" class="combo" style="height: 22px; width: 200px">
 									<option value="3" selected>Find Window</option>
 									<option value="2">First Record</option>
 									<option value="1">New Record</option>
 								</select>
 							</td>
-							<td width=20>
+							<td width="20"></td>
+						</tr>
+						<tr>
+							<td height="5" colspan="5"></td>
+						</tr>
+						<tr>
+							<td width="20"></td>
+							<td align="left" nowrap>Lookup Tables :
 							</td>
-						</TR>
-						<TR>
-							<td height="5" colspan=5>
-							</td>
-						</TR>									
-						<TR>
-							<td width=20></td>
-							<td align=left nowrap>
-								Lookup Tables :
-							</td>
-							<td width=20></td>
-							<td align=left>
-								<select id=cboLookupTableDisplay name=cboLookupTableDisplay class="combo" style="HEIGHT: 22px; WIDTH: 200px" width=200> 
+							<td width="20"></td>
+							<td align="left">
+								<select id="cboLookupTableDisplay" name="cboLookupTableDisplay" class="combo" style="height: 22px; width: 200px">
 									<option value="3" selected>Find Window</option>
 									<option value="2">First Record</option>
 									<option value="1">New Record</option>
 								</select>
 							</td>
-							<td width=20></td>
-						</TR>
-						<TR>
-							<td height="5" colspan=5>
+							<td width="20"></td>
+						</tr>
+						<tr>
+							<td height="5" colspan="5"></td>
+						</tr>
+						<tr>
+							<td width="20"></td>
+							<td align="left" nowrap>Quick Access :
 							</td>
-						</TR>
-						<TR>
-							<td width=20>
-							</td>
-							<td align=left nowrap>
-								Quick Access :
-							</td>
-							<td width=20>
-							</td>
-							<td align=left>
-								<select id=cboQuickAccessDisplay name=cboQuickAccessDisplay class="combo" style="HEIGHT: 22px; WIDTH: 200px" width=200> 
+							<td width="20"></td>
+							<td align="left">
+								<select id="cboQuickAccessDisplay" name="cboQuickAccessDisplay" class="combo" style="height: 22px; width: 200px">
 									<option value="3" selected>Find Window</option>
 									<option value="2">First Record</option>
 									<option value="1">New Record</option>
 								</select>
 							</td>
-							<td width=20>
+							<td width="20"></td>
+						</tr>
+						<tr>
+							<td height="20" colspan="5"></td>
+						</tr>
+						<tr class="fontsmalltitle">
+							<td colspan="5">Filters / Calculations</td>
+						</tr>
+						<tr>
+							<td height="10" colspan="5"></td>
+						</tr>
+						<tr>
+							<td width="20"></td>
+							<td align="left" nowrap>View in Colour :
 							</td>
-						</TR>
-						<TR>
-							<td height="20" colspan=5>
-							</td>
-						</TR>
-						<TR>
-							<td align=center colspan=5>
-								<STRONG>Filters / Calculations</STRONG>
-							</td>
-						</TR>
-						<TR>
-							<td height=10 colspan=5>
-							</td>
-						</TR>
-						<TR>
-							<td width=20>
-							</td>
-							<td align=left nowrap>
-								View in Colour :
-							</td>
-							<td width=20>
-							</td>
-							<td align=left>
-								<select id=cboViewInColour name=cboViewInColour class="combo" style="HEIGHT: 22px; WIDTH: 200px" width=200> 
+							<td width="20"></td>
+							<td align="left">
+								<select id="cboViewInColour" name="cboViewInColour" class="combo" style="height: 22px; width: 200px">
 									<option value="1" selected>Monochrome</option>
 									<option value="2">Colour Levels</option>
 								</select>
 							</td>
-							<td width=20>
+							<td width="20"></td>
+						</tr>
+						<tr>
+							<td height="5" colspan="5"></td>
+						</tr>
+						<tr>
+							<td width="20"></td>
+							<td align="left" nowrap>Expand Nodes :
 							</td>
-						</TR>
-						<TR>
-							<td height="5" colspan=5>
-							</td>
-						</TR>
-						<TR>
-							<td width=20>
-							</td>
-							<td align=left nowrap>
-								Expand Nodes :
-							</td>
-							<td width=20>
-							</td>
-							<td align=left>
-								<select id=cboExpandNodes name=cboExpandNodes class="combo" style="HEIGHT: 22px; WIDTH: 200px" width=200> 
+							<td width="20"></td>
+							<td align="left">
+								<select id="cboExpandNodes" name="cboExpandNodes" class="combo" style="height: 22px; width: 200px">
 									<option value="1" selected>Minimized</option>
 									<option value="2">Expand All</option>
 									<option value="4">Expand Top Level</option>
 								</select>
 							</td>
-							<td width=20>
+							<td width="20"></td>
+						</tr>
+						<tr>
+							<td height="20" colspan="5"></td>
+						</tr>
+						<tr class="fontsmalltitle">
+							<td colspan="5">Find Window / Event Log</td>
+						</tr>
+						<tr>
+							<td height="10" colspan="5"></td>
+						</tr>
+						<tr>
+							<td width="20"></td>
+							<td align="left" nowrap>Block Size :
 							</td>
-						</TR>
-						<TR>
-							<td height="20" colspan=5>
+							<td width="20"></td>
+							<td align="left">
+								<input id="txtFindSize" name="txtFindSize" class="text" style="height: 22px; width: 200px" width="200"
+									onkeyup="validateFindBlockSize()"
+									onchange="validateFindBlockSize()" />
 							</td>
-						</TR>
-						<TR>
-							<td align=center colspan=5>
-								<STRONG>Find Window / Event Log</STRONG>
-							</td>
-						</TR>
-						<TR>
-							<td height=10 colspan=5>
-							</td>
-						</TR>
-						<TR>
-							<td width=20>
-							</td>
-							<td align=left nowrap>
-								Block Size :
-							</td>
-							<td width=20>
-							</td>
-							<td align=left>
-								<INPUT id=txtFindSize name=txtFindSize class="text" style="HEIGHT: 22px; WIDTH: 200px" width=200 
-										onkeyup="validateFindBlockSize()" 
-										onchange="validateFindBlockSize()" 
-                                        />		
-							</td>
-							<td width=20>
-							</td>
-						</TR>
-						<TR>
-							<td height=20 colspan=5></td>
-						</TR>
+							<td width="20"></td>
+						</tr>
+						<tr>
+							<td height="20" colspan="5"></td>
+						</tr>
 
-						<TR>
-							<td height="5" colspan=5>
-								<TABLE WIDTH="100%" class="invisible" CELLSPACING=0 CELLPADDING=0 align="center">
-									<td width=20>
-									</td>
-									<TD width=150>
-										<input id="btnDiv1Restore" name="btnDiv1Restore" type="button" value="Restore Defaults" class="btn" style="width: 150px"
-												onclick="restoreDefaults()" />
-									</TD>
-									<TD>&nbsp;</TD>
-									<TD width=75>
-										<input id="btnDiv1OK" name="btnDiv1OK" type="button" value="OK" class="btn" style="width: 75px" />
-									</TD>
-									<TD width=20></TD>
-									<TD width=75>
-										<input id="btnDiv1Cancel" name="btnDiv1Cancel" type="button" value="Cancel" class="btn" style="width: 75px" />
-									</TD>
-									<td width=20>
-									</td>
-								</TABLE>
+						<tr>
+							<td colspan="4">
+								<input id="btnDiv1Restore" name="btnDiv1Restore" type="button" value="Restore Defaults" class="btn floatright" onclick="restoreDefaults()" />
+								<input id="btnDiv1OK" name="btnDiv1OK" type="button" value="OK" class="btn" />
+								<input id="btnDiv1Cancel" name="btnDiv1Cancel" type="button" value="Cancel" class="btn" />
 							</td>
-						</TR>
-						<TR>
-							<td height=10 colspan=5></td>
-						</TR>
-
-					</TABLE>
-
-				</TD>
-			</TR>
+						</tr>
+					</table>
+				</td>
+			</tr>
 		</table>
-	</DIV>
+	</div>
 
-	<DIV id=div2 style="visibility:hidden;display:none">
-		<table align=center class="outline" cellPadding=5 cellSpacing=0>
-			<TR>
-				<TD>
-					<table align=center class="invisible" cellPadding=0 cellSpacing=0>
-						<TR>
-							<td height=10 colspan=7></td>
-						</TR>
-						<TR>
-							<td height=10 colspan=7>
-								<TABLE class="invisible" CELLSPACING=0 CELLPADDING=0 align="center">
-									<TR>
-										<TD width=10>
-												<INPUT type="button" value="Display Defaults" id=btnTab1 name=btnTab1 class="btn"
-														onclick=" display_Configuration_Page(1)" 
-																					onmouseover="try{button_onMouseOver(this);}catch(e){}" 
-																					onmouseout="try{button_onMouseOut(this);}catch(e){}"
-																					onfocus="try{button_onFocus(this);}catch(e){}"
-																					onblur="try{button_onBlur(this);}catch(e){}" />
-										</TD>
-										<td width=10></td>
-										<TD width=10>
-												<INPUT type="button" value="Reports/Utilities & Tools" id=btnDummyTab2 name=btnDummyTab2 class="btn btndisabled" disabled=true />
-										</TD>
-									</TR>
-								</TABLE>
+	<div id=div2 style="visibility:hidden;display:none">
+		<table class="outline padleft20">
+			<tr>
+				<td>
+					<table class="invisible"  >
+						<tr>
+							<td style="height:10px" colspan=7></td>
+						</tr>
+						<tr>
+							<td height="10" colspan="7">
+								<table class="invisible">
+									<tr>
+										<td  style="width:10px">
+											<input type="button" value="Display Defaults" id="btnTab1" name="btnTab1" class="btn" onclick=" display_Configuration_Page(1)" />
+										</td>
+										<td  style="width:10px"></td>
+										<td  style="width:10px">
+											<input type="button" value="Reports/Utilities & Tools" id="btnDummyTab2" name="btnDummyTab2" class="btn btndisabled" disabled="true" />
+										</td>
+									</tr>
+								</table>
 							</td>
-						</TR>
-						<TR>
-							<td height=20 colspan=7></td>
-						</TR>
-						<TR>
-							<td align=center colspan=7>
-								<STRONG>Reports/Utilities & Tools Selection</STRONG>
-							</td>
-						</TR>
-						<TR>
-							<td height=10 colspan=7></td>
-						</TR>
-						<TR>
+						</tr>
+						<tr>
+							<td style="height:20px" colspan=7></td>
+						</tr>
+						<tr>
 							<td width=20></td>
 							<td align=center colspan=5>
 								Only show definitions where owner is '<%=session("username")%>' for the following :
 							</td>
 							<td width=20></td>
-						</TR>
-						<TR>
-							<td height=10 colspan=7></td>
-						</TR>
-						<TR>
-							<td width=20></td>
-							<td align=left nowrap>
-								<INPUT type="checkbox" id=chkOwner_Calculations name=chkOwner_Calculations tabindex=-1 
-																onmouseover="try{checkbox_onMouseOver(this);}catch(e){}" 
-																onmouseout="try{checkbox_onMouseOut(this);}catch(e){}" />
-																<label 
-														for="chkOwner_Calculations"
-														class="checkbox"
-														tabindex=0 
-														onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}"
-													onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}" 
-													onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}"
-																onfocus="try{checkboxLabel_onFocus(this);}catch(e){}"
-																onblur="try{checkboxLabel_onBlur(this);}catch(e){}">
-																Calculations
-												</label>
-							</td>
-							<td width=20></td>
-							<td align=left nowrap>
-								<INPUT type="checkbox" id=chkOwner_Filters name=chkOwner_Filters tabindex=-1 
-																onmouseover="try{checkbox_onMouseOver(this);}catch(e){}" 
-																onmouseout="try{checkbox_onMouseOut(this);}catch(e){}" />
-																<label 
-														for="chkOwner_Filters"
-														class="checkbox"
-														tabindex=0 
-														onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}"
-													onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}" 
-													onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}"
-																onfocus="try{checkboxLabel_onFocus(this);}catch(e){}"
-																onblur="try{checkboxLabel_onBlur(this);}catch(e){}">
-								Filters
-												</label>
-							</td>
-							<td width=20></td>
-						</TR>
+						</tr>
+						<tr>
+							<td style="height:10px" colspan=7></td>
+						</tr>
 
-						<TR>
-							<td width=20></td>
-							<td align=left nowrap>
-								<INPUT type="checkbox" id=chkOwner_CalendarReports name=chkOwner_CalendarReports tabindex=-1 
-																onmouseover="try{checkbox_onMouseOver(this);}catch(e){}" 
-																onmouseout="try{checkbox_onMouseOut(this);}catch(e){}" />
-																<label 
-														for="chkOwner_CalendarReports"
-														class="checkbox"
-														tabindex=0 
-														onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}"
-													onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}" 
-													onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}"
-																onfocus="try{checkboxLabel_onFocus(this);}catch(e){}"
-																onblur="try{checkboxLabel_onBlur(this);}catch(e){}">
-								Calendar Reports
-												</label>
-							</td>
-							<td width=20></td>
-							<td align=left nowrap>
-								<INPUT type="checkbox" id=chkOwner_MailMerge name=chkOwner_MailMerge tabindex=-1 
-																onmouseover="try{checkbox_onMouseOver(this);}catch(e){}" 
-																onmouseout="try{checkbox_onMouseOut(this);}catch(e){}" />
-																<label 
-														for="chkOwner_MailMerge"
-														class="checkbox"
-														tabindex=0 
-														onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}"
-													onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}" 
-													onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}"
-																onfocus="try{checkboxLabel_onFocus(this);}catch(e){}"
-																onblur="try{checkboxLabel_onBlur(this);}catch(e){}">
-								Mail Merge
-												</label>
-							</td>
-							<td width=20></td>
-						</TR>
+						<tr>
+							<td style="width: 20px"></td>
+							<td class="fontsmalltitle" colspan="6">Reports</td>
+						</tr>
 
-						<TR>
-							<td width=20></td>
-							<td align=left nowrap>
-								<INPUT type="checkbox" id=chkOwner_CrossTabs name=chkOwner_CrossTabs tabindex=-1 
-																onmouseover="try{checkbox_onMouseOver(this);}catch(e){}" 
-																onmouseout="try{checkbox_onMouseOut(this);}catch(e){}" />
-																<label 
-														for="chkOwner_CrossTabs"
-														class="checkbox"
-														tabindex=0 
-														onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}"
-													onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}" 
-													onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}"
-																onfocus="try{checkboxLabel_onFocus(this);}catch(e){}"
-																onblur="try{checkboxLabel_onBlur(this);}catch(e){}">
-								Cross Tabs
-												</label>
+												<tr>
+							<td style="width: 20px"></td>
+							<td style="width: 20px"></td>
+							<td align="left" nowrap>
+								<input type="checkbox" id="chkOwner_CustomReports" name="chkOwner_CustomReports" tabindex="-1" />
+								<label for="chkOwner_CustomReports" class="checkbox" tabindex="0">Custom Reports</label>
 							</td>
-							<td width=20></td>
-							<td align=left nowrap>
-								<INPUT type="checkbox" id=chkOwner_Picklists name=chkOwner_Picklists tabindex=-1 
-																onmouseover="try{checkbox_onMouseOver(this);}catch(e){}" 
-																onmouseout="try{checkbox_onMouseOut(this);}catch(e){}" />
-																<label 
-														for="chkOwner_Picklists"
-														class="checkbox"
-														tabindex=0 
-														onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}"
-													onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}" 
-													onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}"
-																onfocus="try{checkboxLabel_onFocus(this);}catch(e){}"
-																onblur="try{checkboxLabel_onBlur(this);}catch(e){}">
-								Picklists
-												</label>
-							</td>
-							<td width=20></td>
-						</TR>
+							<td colspan="4"></td>
+						</tr>
 
-						<TR>
-							<td width=20></td>
-							<td align=left nowrap>
-								<INPUT type="checkbox" id=chkOwner_CustomReports name=chkOwner_CustomReports tabindex=-1 
-																onmouseover="try{checkbox_onMouseOver(this);}catch(e){}" 
-																onmouseout="try{checkbox_onMouseOut(this);}catch(e){}" />
-																<label 
-														for="chkOwner_CustomReports"
-														class="checkbox"
-														tabindex=0 
-														onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}"
-													onmouseover="try{checkboxLabel_onMouseOver(this);}catch(e){}" 
-													onmouseout="try{checkboxLabel_onMouseOut(this);}catch(e){}"
-																onfocus="try{checkboxLabel_onFocus(this);}catch(e){}"
-																onblur="try{checkboxLabel_onBlur(this);}catch(e){}">
-								Custom Reports
-												</label>
+						<tr>
+							<td style="width: 20px"></td>
+							<td style="width: 20px"></td>
+							<td align="left" nowrap>
+								<input type="checkbox" id="chkOwner_CalendarReports" name="chkOwner_CalendarReports" tabindex="-1" />
+								<label for="chkOwner_CalendarReports" class="checkbox" tabindex="0">Calendar Reports</label>
 							</td>
-							<td width=20></td>
-							<td align=left nowrap>
-								
-							</td>
-							<td width=20></td>
-						</TR>
+							<td colspan="4"></td>
+						</tr>
 
-						<TR>
-							<td height="20" colspan=7>
+						<tr>
+							<td style="width: 20px"></td>
+							<td style="width: 20px"></td>
+							<td align="left" nowrap>
+								<input type="checkbox" id="chkOwner_MailMerge" name="chkOwner_MailMerge" tabindex="-1" />
+								<label for="chkOwner_MailMerge" class="checkbox" tabindex="0">Mail Merge</label>
 							</td>
-						</TR>
+							<td colspan="4"></td>
+						</tr>
 
-						<TR>
-							<td height="5" colspan=7>
-								<TABLE WIDTH="100%" class="invisible" CELLSPACING=0 CELLPADDING=0 align="center">
-									<td width=20></td>
-									<TD width=150>
-										<input id="btnDiv2Restore" name="btnDiv2Restore" type="button" class="btn" value="Restore Defaults" style="WIDTH: 150px" width="150" 
-												onclick="restoreDefaults()"
-																			onmouseover="try{button_onMouseOver(this);}catch(e){}" 
-																			onmouseout="try{button_onMouseOut(this);}catch(e){}"
-																			onfocus="try{button_onFocus(this);}catch(e){}"
-																			onblur="try{button_onBlur(this);}catch(e){}" />
-									</TD>
-									<TD>&nbsp;</TD>
-									<TD width=80>
-										<input id="btnDiv2OK" name="btnDiv2OK" type="button" class="btn" value="OK" style="width: 75px" />
-									</TD>
-									<TD width=20></TD>
-									<TD width=80>
-										<input id="btnDiv2Cancel" name="btnDiv2Cancel" type="button" class="btn" value="Cancel" style="width: 75px" />
-									</TD>
-									<td width=20>
-									</td>
-								</TABLE>
+						<tr>
+							<td style="width: 20px"></td>
+							<td style="width: 20px"></td>
+							<td align="left" nowrap>
+								<input type="checkbox" id="chkOwner_CrossTabs" name="chkOwner_CrossTabs" tabindex="-1" />
+								<label for="chkOwner_CrossTabs" class="checkbox" tabindex="0">Cross Tabs</label>
 							</td>
-						</TR>
-						<TR>
-							<td height=10 colspan=7></td>
-						</TR>
+						<td colspan="4"></td>
+						</tr>
+
+						<tr>
+							<td colspan="7" style="height:10px"></td>
+						</tr>
+												<tr>
+							<td style="width: 20px"></td>
+							<td class="fontsmalltitle" colspan="6">Utilities / Tools</td>
+						</tr>
+
+												<tr>
+							<td style="width: 20px"></td>
+							<td style="width: 20px"></td>
+							<td align="left" nowrap>
+								<input type="checkbox" id="chkOwner_Calculations" name="chkOwner_Calculations" tabindex="-1" />
+								<label for="chkOwner_Calculations" class="checkbox" tabindex="0">Calculations</label>
+							</td>
+							<td colspan="4"></td>
+						</tr>
+
+						<tr>
+							<td style="width: 20px"></td>
+							<td style="width: 20px"></td>
+							<td align="left" nowrap>
+								<input type="checkbox" id="chkOwner_Filters" name="chkOwner_Filters" tabindex="-1" />
+								<label for="chkOwner_Filters" class="checkbox" tabindex="0">Filters</label>
+							</td>
+							<td colspan="4"></td>
+						</tr>
+
+						<tr>
+							<td style="width: 20px"></td>
+							<td style="width: 20px"></td>
+							<td align="left" nowrap>
+								<input type="checkbox" id="chkOwner_Picklists" name="chkOwner_Picklists" tabindex="-1" />
+								<label for="chkOwner_Picklists" class="checkbox" tabindex="0">Picklists</label>
+							</td>
+							<td colspan="4"></td>
+						</tr>
+
+
+						
+						<tr>
+							<td colspan="6">
+								<input id="btnDiv2Restore" name="btnDiv2Restore" type="button" class="btn floatright" value="Restore Defaults" style="width: 150px"
+								<input id="btnDiv2OK" name="btnDiv2OK" type="button" class="btn" value="OK" style="width: 75px" />
+								<input id="btnDiv2Cancel" name="btnDiv2Cancel" type="button" class="btn" value="Cancel" style="width: 75px" />
+							</td>
+							<td style="width: 20px"></td>
+						</tr>
 					</table>
-				</TD>
-			</TR>
+				</td>
+			</tr>
 		</table>
-	</DIV>
+	</div>
 
 		<input type="hidden" id="txtReaction" name="txtReaction">
 
