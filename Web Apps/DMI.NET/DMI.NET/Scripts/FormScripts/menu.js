@@ -135,7 +135,7 @@ function ReloadPageWithFindTerm() {
 
 function menu_abMainMenu_DataReady() {
 	var iVisibleCount;
-	
+
 	//Disable/Hide menu items that are irrelevent for this user...
 	menu_refreshMenu();
 
@@ -3075,11 +3075,11 @@ function menu_saveChanges(psAction, pfPrompt, pfTBOverride) {
 	var iTempDecimals;
 	
 	sDecimalSeparator = "\\";
-	sDecimalSeparator = sDecimalSeparator.concat(OpenHR.LocaleDecimalSeparator);
+	sDecimalSeparator = sDecimalSeparator.concat(OpenHR.LocaleDecimalSeparator());
 	var reDecimalSeparator = new RegExp(sDecimalSeparator, "gi");
 
 	sThousandSeparator = "\\";
-	sThousandSeparator = sThousandSeparator.concat(OpenHR.LocaleThousandSeparator);
+	sThousandSeparator = sThousandSeparator.concat(OpenHR.LocaleThousandSeparator());
 	var reThousandSeparator = new RegExp(sThousandSeparator, "gi");
 
 	sPoint = "\\.";

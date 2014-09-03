@@ -226,157 +226,6 @@ table.rulesAll td {
 	border: 1px solid #ccc;
 }
 
-INPUT
-{
-	/*padding: 3px;*/
-		/*FONT-SIZE: 10pt;
-		COLOR: black;
-		/*FONT-FAMILY: Verdana, Tahoma, 'MS Sans Serif';*/
-}
-
-textarea
-{
-		/*FONT-SIZE: 10pt;
-		COLOR: #333366;
-		FONT-FAMILY: Verdana, Tahoma, 'MS Sans Serif';
-	background-color: #f6f5f3;
-	border: 1px solid;
-	border-color: #9a7057;*/
-}
-textarea.disabled
-{
-	/*font-size: 10pt;
-	color: #9594ad;
-	font-family: Verdana, Tahoma, 'MS Sans Serif';
-	background-color: #fdf3e4;
-	border: 1px solid;
-	border-color: #cbc3c4;*/
-}
-
-DIV
-{
-	 /*FONT-SIZE: 11pt;*/
-	 /*COLOR: black;*/
-	 /*FONT-FAMILY: Segoe UI, Verdana, Tahoma, 'MS Sans Serif'*/
-}
-
-input.btn
-{
-	/*color: #333366;
-	background-color: #f3f2f7;
-	border: 1px solid;
-	border-color: #9894a3;*/
-}
-
-input.btnhov 
-{   
-	/*border-color: #ff9608;*/
-}
-
-/*input.btnselect 
-{   
-	border-color: #ff9608;
-	background-color:#fdf1c2;   
-}
-
-input.btndisabled 
-{   
-	color: #999999;
-	border-color: #c8c5ce;
-	background-color:#fbf0e5;   
-}
-
-label.hypertext
-{ 
-	font-size:8pt;
-	color:#333366;
-	text-decoration: underline; 
-}
-
-label.hypertexthov
-{  
-	color:#ff9608;
-	cursor: hand; 
-}
-
-label.hypertextselect
-{ 
-	color:#ff9608;
-}
-
-label.checkbox
-{ 
-	color:#333366;
-}
-
-label.checkboxhov
-{  
-	color:#ff9608;
-}
-
-label.checkboxselect
-{ 
-	color:#ff9608;
-}
-label.checkboxdisabled
-{ 
-	color:#333366;
-}
-
-label.radio
-{ 
-	color:#333366;
-}
-
-label.radiohov
-{  
-	color:#ff9608;
-}
-
-label.radioselect
-{ 
-	color:#ff9608;
-}
-
-label.radiodisabled
-{ 
-	color:#333366;
-}*/
-
-/*.pageTitle {
-	/*font-family: segoe ui light;
-	font-size: 26pt;
-	font-weight: lighter;
-	/*color: #2778ec;
-	padding-left: 20px;
-	font-weight: 300;
-}
-
-.pageTitleIcon {
-	display: none;
-}*/
-
-input.text
-{
-	/*color: #333366;
-	background-color: #f6f5f3;
-	border: 1px solid;
-	border-color: #9a7057;
-	height:22px;*/
-}
-
-input.textselect
-{
-	/*border-color: #9994a4;*/
-}
-
-input.textdisabled
-{
-	/*background-color: #fdf3e4;
-	border-color: #cbc3c4;
-	color: #9594ad;*/
-}
-
 input.textwarning
 {
 	color: #993399;
@@ -396,39 +245,6 @@ input, textarea { border-width: 1px!important;
 }
 .ui-spinner-input {
 	padding: 0 2px 0 2px!important;
-}
-
-
-
-/*input[disabled=""], input[disabled="disabled"] {
-	color: black;
-	background-color: lightgray;
-}*/
-
-input.textinformation
-{
-	/*color:#333366;
-	border-bottom-style: none;
-	border-right-style: none;
-	border-top-style: none;
-	border-left-style: none;
-	background-color: transparent;*/
-}	
-
-SELECT
-{
-		/*FONT-FAMILY: Verdana, Tahoma, 'MS Sans Serif';
-		FONT-SIZE: 10pt;
-		COLOR: #333366;
-	background-color: #f6f5f3;
-	border-color: #9a7057;*/
-}
-select.combo
-{
-	/*color: #333366;
-	background-color: #f6f5f3;
-	border: 1px solid;
-	border-color: #9a7057;*/
 }
 
 select {
@@ -455,14 +271,6 @@ select[disabled=""] {
 .DashContent li.dimmed {
 	opacity: 0.1!important;
 	filter: Alpha(Opacity=10)!important;	
-}
-
-
-select.combodisabled
-{
-	/*background-color: #fdf3e4;
-	border-color: #cbc3c4;
-	color: #9594ad;*/
 }
 
 a.hypertext
@@ -1091,18 +899,6 @@ input[type=button].Embedded, input[type=button].Linked {
 	display: none;
 }
 
-.optiondatagridpage .floatleft {
-	float: left;
-}
-
-.optiondatagridpage .floatright {
-	float: right;
-}
-
-.optiondatagridpage .clearboth {
-	clear: both;
-}
-
 .optiondatagridpage footer {
 	text-align: right;
 	margin-top: 10px;
@@ -1140,6 +936,9 @@ input[type=button].Embedded, input[type=button].Linked {
 
 .formField .datepicker {
 	width: 100px;
+}
+.formField .ui-spinner-input {
+	width: 90px;
 }
 
 #eventEventInformationContainer .formField {
@@ -1237,6 +1036,12 @@ padding-left:0px;
 	vertical-align: top;
 }
 
+.stretchyfixed200 {	
+	display: table-cell;
+	min-width: 200px;
+	vertical-align: top;
+}
+
 #frmDefinition .ui-button {
 	margin-left: 20px;
 	width: 140px;
@@ -1301,3 +1106,39 @@ padding-left:0px;
 .root {
 	font-weight: bold;
 }
+
+.divExpressionTypes input[type=radio] {
+	margin-bottom: 10px;
+}
+
+.divExpressionOptions>div, .divFunctionOptions>div {
+	width: 100%;
+	/*height: 100%;*/	
+}
+
+#txtPValSize, #txtPValDecimals {
+	width: 80px;
+}
+
+/* This is calculations component form */
+#frmMainForm {
+	
+	height: 100%;
+}
+
+	#frmMainForm .gridwithbuttons, #frmMainForm #divField {
+		height: 100%;
+	}
+
+	#frmMainForm>.gridwithbuttons>div>fieldset, #frmMainForm>.gridwithbuttons>.divExpressionOptions>div>fieldset {
+		height: 100%;
+		padding: 2px;
+	}
+
+	#frmMainForm #divField fieldset>input, #frmMainForm #divField fieldset>.formField, #frmMainForm #divField fieldset>fieldset {
+		margin-left: 10px;
+		margin-right: 10px;
+	}
+
+
+/*End calcExpressionComponent*/

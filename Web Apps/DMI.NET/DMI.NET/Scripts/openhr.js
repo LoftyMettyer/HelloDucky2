@@ -589,12 +589,10 @@
 			//TODO
 		},
 		localeDecimalSeparator = function () {
-			//TODO
-			return ".";
+			return window.LocaleDecimalSeparator;
 		},
 		localeThousandSeparator = function () {
-			//TODO
-			return ",";
+			return window.LocaleThousandSeparator;
 		},
 		printerCount = function () {
 			//TODO

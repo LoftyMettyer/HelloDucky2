@@ -117,11 +117,11 @@
 			var sPoint;
 
 			sDecimalSeparator = "\\";
-			sDecimalSeparator = sDecimalSeparator.concat(OpenHR.LocaleDecimalSeparator);
+			sDecimalSeparator = sDecimalSeparator.concat(OpenHR.LocaleDecimalSeparator());
 			var reDecimalSeparator = new RegExp(sDecimalSeparator, "gi");
 
 			sThousandSeparator = "\\";
-			sThousandSeparator = sThousandSeparator.concat(OpenHR.LocaleThousandSeparator);
+			sThousandSeparator = sThousandSeparator.concat(OpenHR.LocaleThousandSeparator());
 			var reThousandSeparator = new RegExp(sThousandSeparator, "gi");
 
 			sPoint = "\\.";

@@ -8,12 +8,13 @@ var _OperatorTreeLoaded = false;
 
 function util_def_exprcomponent_onload() {
 
-	var fOK = true;
-
 	var options = {};
-	//BUG: why no dots/icons?
-	options["themes"] = { "dots": true, "icons": true };
-	options["plugins"] = ["html_data", "ui", "themeroller", "crrm", "hotkeys", "sort"];
+	options["themes"] = {
+		"dots": true, "icons": false
+		, "theme": "adv_themeroller",
+		"url": window.ROOT + "Scripts/jquery/jstree/themes/adv_themeroller/style.css"
+	};
+	options["plugins"] = ["html_data", "ui", "contextmenu", "crrm", "hotkeys", "themes", "themeroller"];
 
 	options["themeroller"] = {
 		"item_leaf": false,
@@ -23,49 +24,65 @@ function util_def_exprcomponent_onload() {
 	};
 
 
-	$("#SSOperatorTree").bind("loaded.jstree", function (event, data) {
+	$("#SSOperatorTree").bind("loaded.jstree", function () {
 		_OperatorTreeLoaded = true;
 		checkTreesLoaded();
 	})
-		.bind("select_node.jstree", function (evt, data) { componentRefreshControls(); });
+		.bind("select_node.jstree", function () { componentRefreshControls(); });
 
-	$("#SSFunctionTree").bind("loaded.jstree", function (event, data) {
+	$("#SSFunctionTree").bind("loaded.jstree", function () {
 		_FunctionTreeLoaded = true;
 		checkTreesLoaded();
 	})
-		.bind("select_node.jstree", function (evt, data) { componentRefreshControls(); });
+		.bind("select_node.jstree", function () { componentRefreshControls(); });
 
 	options["core"] = { 'check_callback': true };	// Must have - this enables inline renaming etc...
 
 	$('#SSOperatorTree').jstree(options);
 	$('#SSFunctionTree').jstree(options);
 
+
+	$('#txtFieldRecSel_Specific').spinner({
+		min: 1,
+		max: 250,
+		step: 1
+	});
+
+	$('#txtPValSize, #txtPValDecimals').spinner({
+		min: 1,
+		max: 250,
+		step: 1
+	});
+
+	setTimeout('resizeForm()', 300);
 }
 
 function checkTreesLoaded() {
-
 	if (_OperatorTreeLoaded && _FunctionTreeLoaded) {
 		onload2();
 	}
 }
 
+function resizeForm() {
+	var formHeight = $('#optionframe').height();
+	var titleHeight = $('#divOperator>h3').outerHeight(true);
+	$('#SSOperatorTree, #SSFunctionTree').height(formHeight - titleHeight - 20);
+}
 
 function onload2() {
 
-	var sUDFFunction_Visibility;
-	var sUDFFunction_Display;
-
-	// Expand the option frame and hide the work frame.
+	var sUdfFunctionVisibility;
+	var sUdfFunctionDisplay;
+	
 	$("#optionframe").attr("data-framesource", "UTIL_DEF_EXPRCOMPONENT");
 
-	//$("#workframe").hide();
-	//$("#optionframe").show();
 	var newHeight = (screen.height) / 2;
 	var newWidth = (screen.width) / 2;
 	$('#optionframe').dialog({
 		height: newHeight,
 		width: newWidth,
 		modal: true,
+		resizable: false,
 		buttons: [
 					{
 						text: "OK",
@@ -84,7 +101,7 @@ function onload2() {
 						"id": "cmdCancel"
 					}
 		],
-});
+	});
 
 	formatComponentTypeFrame();
 
@@ -98,41 +115,39 @@ function onload2() {
 		changeType(1);
 	}
 
-	sUDFFunction_Visibility = "visible";
-	sUDFFunction_Display = "block";
+	sUdfFunctionVisibility = "visible";
+	sUdfFunctionDisplay = "inline-block";
 
 	if (frmMainForm.txtPassByType.value == 1) {
+		// ReSharper disable once InconsistentNaming
 		var divFieldRecSel_Specific = document.getElementById("divFieldRecSel_Specific");
-		frmMainForm.optFieldRecSel_Specific.style.visibility = sUDFFunction_Visibility;
-		frmMainForm.optFieldRecSel_Specific.style.display = sUDFFunction_Display;
-		frmMainForm.txtFieldRecSel_Specific.style.visibility = sUDFFunction_Visibility;
-		frmMainForm.txtFieldRecSel_Specific.style.display = sUDFFunction_Display;
-		divFieldRecSel_Specific.style.visibility = sUDFFunction_Visibility;
-		divFieldRecSel_Specific.style.display = sUDFFunction_Display;
+		frmMainForm.optFieldRecSel_Specific.style.visibility = sUdfFunctionVisibility;
+		frmMainForm.optFieldRecSel_Specific.style.display = sUdfFunctionDisplay;
+		frmMainForm.txtFieldRecSel_Specific.style.visibility = sUdfFunctionVisibility;
+		frmMainForm.txtFieldRecSel_Specific.style.display = sUdfFunctionDisplay;
+		divFieldRecSel_Specific.style.visibility = sUdfFunctionVisibility;
+		divFieldRecSel_Specific.style.display = sUdfFunctionDisplay;
 	}
 
 	// Set focus onto one of the form controls. 
 	$('#optionframe #cmdCancel').focus();
 
-	// Hide the workframe ActiveX treeview. IE6 still displays it.
-	//OpenHR.getForm("workframe","frmDefinition").SSTree1.style.visibility = "hidden";
-
 }
 
 function formatComponentTypeFrame() {
-	var sType_PVal_Visibility;
-	var sType_PVal_Display;
-	var sType_Calc_Visibility;
-	var sType_Calc_Display;
-	var sType_Filter_Visibility;
-	var sType_Filter_Display;
+	var sTypePValVisibility;
+	var sTypePValDisplay;
+	var sTypeCalcVisibility;
+	var sTypeCalcDisplay;
+	var sTypeFilterVisibility;
+	var sTypeFilterDisplay;
 
-	sType_PVal_Visibility = "visible";
-	sType_PVal_Display = "block";
-	sType_Calc_Visibility = "visible";
-	sType_Calc_Display = "block";
-	sType_Filter_Visibility = "visible";
-	sType_Filter_Display = "block";
+	sTypePValVisibility = "visible";
+	sTypePValDisplay = "inline-block";
+	sTypeCalcVisibility = "visible";
+	sTypeCalcDisplay = "inline-block";
+	sTypeFilterVisibility = "visible";
+	sTypeFilterDisplay = "inline-block";
 
 	switch (util_def_exprcomponent_frmUseful.txtExprType.value) {
 		case "10":
@@ -143,37 +158,31 @@ function formatComponentTypeFrame() {
 			break;
 		case "14":
 			// Utility Runtime Calculation - no calcs, no filters, no prompted values
-			sType_PVal_Visibility = "hidden";
-			sType_PVal_Display = "none";
+			sTypePValVisibility = "hidden";
+			sTypePValDisplay = "none";
 
-			sType_Calc_Visibility = "hidden";
-			sType_Calc_Display = "none";
+			sTypeCalcVisibility = "hidden";
+			sTypeCalcDisplay = "none";
 
-			sType_Filter_Visibility = "hidden";
-			sType_Filter_Display = "none";
+			sTypeFilterVisibility = "hidden";
+			sTypeFilterDisplay = "none";
 			break;
 	}
 
-	trType_PVal.style.visibility = sType_PVal_Visibility;
-	trType_PVal.style.display = sType_PVal_Display;
-	trType_PVal2.style.visibility = sType_PVal_Visibility;
-	trType_PVal2.style.display = sType_PVal_Display;
+	document.getElementById('trType_PVal').style.visibility = sTypePValVisibility;
+	document.getElementById('trType_PVal').style.display = sTypePValDisplay;
 
-	trType_Calc.style.visibility = sType_Calc_Visibility;
-	trType_Calc.style.display = sType_Calc_Display;
-	trType_Calc2.style.visibility = sType_Calc_Visibility;
-	trType_Calc2.style.display = sType_Calc_Display;
+	document.getElementById('trType_Calc').style.visibility = sTypeCalcVisibility;
+	document.getElementById('trType_Calc').style.display = sTypeCalcDisplay;
 
-	trType_Filter.style.visibility = sType_Filter_Visibility;
-	trType_Filter.style.display = sType_Filter_Display;
+	document.getElementById('trType_Filter').style.visibility = sTypeFilterVisibility;
+	document.getElementById('trType_Filter').style.display = sTypeFilterDisplay;
 }
 
 function loadComponentDefinition() {
-
 	var iType;
 	var i;
 	var iIndex;
-
 	iType = new Number(util_def_exprcomponent_frmOriginalDefinition.txtType.value);
 
 	if (iType == 1) {
@@ -230,8 +239,8 @@ function loadComponentDefinition() {
 		changeType(iType);
 
 		util_def_exprcomponent_frmUseful.txtInitialising.value = 0;
-		functionAndOperator_refresh();		
-		$.jstree._focused().select_node("#" + util_def_exprcomponent_frmOriginalDefinition.txtFunctionID.value);
+		functionAndOperator_refresh();
+		$('#SSFunctionTree').jstree('select_node', '#' + util_def_exprcomponent_frmOriginalDefinition.txtFunctionID.value);
 		$('#cmdOK').button('enable');
 	}
 
@@ -262,7 +271,7 @@ function loadComponentDefinition() {
 			// Numeric value
 			frmMainForm.cboValueType.selectedIndex = 1;
 			value_changeType();
-			frmMainForm.txtValue.value = util_def_exprcomponent_frmOriginalDefinition.txtValueNumeric.value;
+			frmMainForm.txtValue.value = parseFloat(util_def_exprcomponent_frmOriginalDefinition.txtValueNumeric.value).toString();
 		}
 		if (util_def_exprcomponent_frmOriginalDefinition.txtValueType.value == 3) {
 			// Logic value
@@ -290,9 +299,7 @@ function loadComponentDefinition() {
 
 		util_def_exprcomponent_frmUseful.txtInitialising.value = 0;
 		functionAndOperator_refresh();
-		$.jstree._focused().select_node("#" + util_def_exprcomponent_frmOriginalDefinition.txtOperatorID.value);
-		//frmMainForm.SSOperatorTree.SelectedItem = frmMainForm.SSOperatorTree.Nodes(util_def_exprcomponent_frmOriginalDefinition.txtOperatorID.value);
-		//button_disable(frmMainForm.cmdOK, false);
+		$('#SSOperatorTree').jstree('select_node', '#' + util_def_exprcomponent_frmOriginalDefinition.txtOperatorID.value);
 		$('#cmdOK').button('enable');
 	}
 
@@ -324,7 +331,7 @@ function loadComponentDefinition() {
 		}
 		if (util_def_exprcomponent_frmOriginalDefinition.txtValueType.value == 2) {
 			// Numeric
-			frmMainForm.txtPValDefault.value = util_def_exprcomponent_frmOriginalDefinition.txtValueNumeric.value;
+			frmMainForm.txtPValDefault.value = parseFloat(util_def_exprcomponent_frmOriginalDefinition.txtValueNumeric.value);
 		}
 		if (util_def_exprcomponent_frmOriginalDefinition.txtValueType.value == 3) {
 			// Logic
@@ -382,97 +389,97 @@ function loadComponentDefinition() {
 }
 
 function changeType(piType) {
-	var sField_Visibility;
-	var sField_Display;
-	var sFunction_Visibility;
-	var sFunction_Display;
-	var sOperator_Visibility;
-	var sOperator_Display;
-	var sValue_Visibility;
-	var sValue_Display;
-	var sLookupValue_Visibility;
-	var sLookupValue_Display;
-	var sCalculation_Visibility;
-	var sCalculation_Display;
-	var sFilter_Visibility;
-	var sFilter_Display;
-	var sPromptedValue_Visibility;
-	var sPromptedValue_Display;
+	var sFieldVisibility;
+	var sFieldDisplay;
+	var sFunctionVisibility;
+	var sFunctionDisplay;
+	var sOperatorVisibility;
+	var sOperatorDisplay;
+	var sValueVisibility;
+	var sValueDisplay;
+	var sLookupValueVisibility;
+	var sLookupValueDisplay;
+	var sCalculationVisibility;
+	var sCalculationDisplay;
+	var sFilterVisibility;
+	var sFilterDisplay;
+	var sPromptedValueVisibility;
+	var sPromptedValueDisplay;
 
-	sField_Visibility = "hidden";
-	sField_Display = "none";
-	sFunction_Visibility = "hidden";
-	sFunction_Display = "none";
-	sOperator_Visibility = "hidden";
-	sOperator_Display = "none";
-	sValue_Visibility = "hidden";
-	sValue_Display = "none";
-	sLookupValue_Visibility = "hidden";
-	sLookupValue_Display = "none";
-	sCalculation_Visibility = "hidden";
-	sCalculation_Display = "none";
-	sFilter_Visibility = "hidden";
-	sFilter_Display = "none";
-	sPromptedValue_Visibility = "hidden";
-	sPromptedValue_Display = "none";
+	sFieldVisibility = "hidden";
+	sFieldDisplay = "none";
+	sFunctionVisibility = "hidden";
+	sFunctionDisplay = "none";
+	sOperatorVisibility = "hidden";
+	sOperatorDisplay = "none";
+	sValueVisibility = "hidden";
+	sValueDisplay = "none";
+	sLookupValueVisibility = "hidden";
+	sLookupValueDisplay = "none";
+	sCalculationVisibility = "hidden";
+	sCalculationDisplay = "none";
+	sFilterVisibility = "hidden";
+	sFilterDisplay = "none";
+	sPromptedValueVisibility = "hidden";
+	sPromptedValueDisplay = "none";
 
 	if (piType == 1) {
 		// Field
-		sField_Visibility = "visible";
-		sField_Display = "block";
+		sFieldVisibility = "visible";
+		sFieldDisplay = "inline-block";
 	}
 	if (piType == 2) {
 		// Function
-		sFunction_Visibility = "visible";
-		sFunction_Display = "block";
+		sFunctionVisibility = "visible";
+		sFunctionDisplay = "inline-block";
 	}
 	if (piType == 3) {
 		// Calculation
-		sCalculation_Visibility = "visible";
-		sCalculation_Display = "block";
+		sCalculationVisibility = "visible";
+		sCalculationDisplay = "inline-block";
 	}
 	if (piType == 4) {
 		// Value
-		sValue_Visibility = "visible";
-		sValue_Display = "block";
+		sValueVisibility = "visible";
+		sValueDisplay = "inline-block";
 	}
 	if (piType == 5) {
 		// Operator
-		sOperator_Visibility = "visible";
-		sOperator_Display = "block";
+		sOperatorVisibility = "visible";
+		sOperatorDisplay = "inline-block";
 	}
 	if (piType == 6) {
 		// Table Value
-		sLookupValue_Visibility = "visible";
-		sLookupValue_Display = "block";
+		sLookupValueVisibility = "visible";
+		sLookupValueDisplay = "inline-block";
 	}
 	if (piType == 7) {
 		// Prompted Value
-		sPromptedValue_Visibility = "visible";
-		sPromptedValue_Display = "block";
+		sPromptedValueVisibility = "visible";
+		sPromptedValueDisplay = "inline-block";
 	}
 	if (piType == 10) {
 		// Filter
-		sFilter_Visibility = "visible";
-		sFilter_Display = "block";
+		sFilterVisibility = "visible";
+		sFilterDisplay = "inline-block";
 	}
 
-	divField.style.visibility = sField_Visibility;
-	divField.style.display = sField_Display;
-	divFunction.style.visibility = sFunction_Visibility;
-	divFunction.style.display = sFunction_Display;
-	divOperator.style.visibility = sOperator_Visibility;
-	divOperator.style.display = sOperator_Display;
-	divValue.style.visibility = sValue_Visibility;
-	divValue.style.display = sValue_Display;
-	divLookupValue.style.visibility = sLookupValue_Visibility;
-	divLookupValue.style.display = sLookupValue_Display;
-	divCalculation.style.visibility = sCalculation_Visibility;
-	divCalculation.style.display = sCalculation_Display;
-	divFilter.style.visibility = sFilter_Visibility;
-	divFilter.style.display = sFilter_Display;
-	divPromptedValue.style.visibility = sPromptedValue_Visibility;
-	divPromptedValue.style.display = sPromptedValue_Display;
+	document.getElementById('divField').style.visibility = sFieldVisibility;
+	document.getElementById('divField').style.display = sFieldDisplay;
+	document.getElementById('divFunction').style.visibility = sFunctionVisibility;
+	document.getElementById('divFunction').style.display = sFunctionDisplay;
+	document.getElementById('divOperator').style.visibility = sOperatorVisibility;
+	document.getElementById('divOperator').style.display = sOperatorDisplay;
+	document.getElementById('divValue').style.visibility = sValueVisibility;
+	document.getElementById('divValue').style.display = sValueDisplay;
+	document.getElementById('divLookupValue').style.visibility = sLookupValueVisibility;
+	document.getElementById('divLookupValue').style.display = sLookupValueDisplay;
+	document.getElementById('divCalculation').style.visibility = sCalculationVisibility;
+	document.getElementById('divCalculation').style.display = sCalculationDisplay;
+	document.getElementById('divFilter').style.visibility = sFilterVisibility;
+	document.getElementById('divFilter').style.display = sFilterDisplay;
+	document.getElementById('divPromptedValue').style.visibility = sPromptedValueVisibility;
+	document.getElementById('divPromptedValue').style.display = sPromptedValueDisplay;
 
 	initializeComponentControls(piType);
 }
@@ -601,7 +608,7 @@ function field_refreshTable() {
 }
 
 function field_refreshColumn() {
-	
+
 	var sDefaultColumnID;
 	var fInitialise = util_def_exprcomponent_frmUseful.txtInitialising.value;
 
@@ -614,20 +621,17 @@ function field_refreshColumn() {
 
 	if (frmMainForm.txtPassByType.value == 2) {
 		frmMainForm.cboFieldColumn.style.visibility = "visible";
-		frmMainForm.cboFieldColumn.style.display = "block";
 		frmMainForm.cboFieldDummyColumn.style.visibility = "hidden";
 		frmMainForm.cboFieldDummyColumn.style.display = "none";
 	}
 	else {
 		if (frmMainForm.optField_Count.checked == true) {
 			frmMainForm.cboFieldColumn.style.visibility = "hidden";
-			frmMainForm.cboFieldColumn.style.display = "none";
 			frmMainForm.cboFieldDummyColumn.style.visibility = "visible";
-			frmMainForm.cboFieldDummyColumn.style.display = "block";
+			frmMainForm.cboFieldDummyColumn.style.display = "inline-block";
 		}
 		else {
 			frmMainForm.cboFieldColumn.style.visibility = "visible";
-			frmMainForm.cboFieldColumn.style.display = "block";
 			frmMainForm.cboFieldDummyColumn.style.visibility = "hidden";
 			frmMainForm.cboFieldDummyColumn.style.display = "none";
 		}
@@ -657,7 +661,6 @@ function field_refreshColumn() {
 			}
 		}
 
-		//OpenHR.getFrame("optiondataframe").refreshOptionData();
 		refreshOptionData();
 
 	}
@@ -700,15 +703,11 @@ function field_refreshChildFrame() {
 				radio_disable(frmMainForm.optFieldRecSel_Specific, false);
 
 				if (frmMainForm.optFieldRecSel_Specific.checked == false) {
-					frmMainForm.txtFieldRecSel_Specific.value = "";
-					text_disable(frmMainForm.txtFieldRecSel_Specific, true);
+					frmMainForm.txtFieldRecSel_Specific.value = "1";
+					$('#txtFieldRecSel_Specific').spinner('disable');
 				}
 				else {
-					if (frmMainForm.txtFieldRecSel_Specific.value == "") {
-						frmMainForm.txtFieldRecSel_Specific.value = "1";
-					}
-
-					text_disable(frmMainForm.txtFieldRecSel_Specific, false);
+					$('#txtFieldRecSel_Specific').spinner('enable');
 				}
 
 				button_disable(frmMainForm.btnFieldRecOrder, false);
@@ -719,8 +718,9 @@ function field_refreshChildFrame() {
 				radio_disable(frmMainForm.optFieldRecSel_First, true);
 				radio_disable(frmMainForm.optFieldRecSel_Last, true);
 				radio_disable(frmMainForm.optFieldRecSel_Specific, true);
-				frmMainForm.txtFieldRecSel_Specific.value = "";
-				text_disable(frmMainForm.txtFieldRecSel_Specific, true);
+				frmMainForm.txtFieldRecSel_Specific.value = "1";
+				//text_disable(frmMainForm.txtFieldRecSel_Specific, true);
+				$('#txtFieldRecSel_Specific').spinner('disable');
 
 				button_disable(frmMainForm.btnFieldRecOrder, true);
 				frmMainForm.txtFieldRecOrder.value = "";
@@ -737,8 +737,8 @@ function field_refreshChildFrame() {
 			radio_disable(frmMainForm.optFieldRecSel_Last, true);
 			radio_disable(frmMainForm.optFieldRecSel_Specific, true);
 
-			frmMainForm.txtFieldRecSel_Specific.value = "";
-			text_disable(frmMainForm.txtFieldRecSel_Specific, true);
+			frmMainForm.txtFieldRecSel_Specific.value = "1";
+			$('#txtFieldRecSel_Specific').spinner('disable');
 			button_disable(frmMainForm.btnFieldRecOrder, true);
 			frmMainForm.txtFieldRecOrder.value = "";
 			util_def_exprcomponent_frmUseful.txtChildFieldOrderID.value = 0;
@@ -757,11 +757,9 @@ function field_refreshChildFrame() {
 
 	if ((frmMainForm.cboFieldTable.selectedIndex < 0) ||
 			(frmMainForm.cboFieldColumn.selectedIndex < 0)) {
-		//button_disable(frmMainForm.cmdOK, true);
 		$('#cmdOK').button('disable');
 	}
 	else {
-		//button_disable(frmMainForm.cmdOK, false);
 		$('#cmdOK').button('enable');
 	}
 
@@ -842,37 +840,33 @@ function makeSelection(psType, psSelectedID, psSelectedName, psSelectedAccess) {
 function functionAndOperator_refresh() {
 	// Load the function treeview with the functions.
 	var i;
-	var objNode;
 	var colCollection;
 	var sName;
 	var sID;
 	var sCategory;
 	var fCategoryDone;
-	var iLoop;
 	var trvTreeView;
 	var sRootKey;
-	var sRootText;
 	var ctlLoadedFlag;
-	var fNoOperatorSelected;
 	var treeID;
 
 	if (frmMainForm.optType_Function.checked == true) {
 		trvTreeView = document.getElementById('SSFunctionTree');
+		var frmFunctions = document.getElementById('frmFunctions');
 		treeID = 'SSFunctionTree';
 		colCollection = frmFunctions.elements;
 		sRootKey = "FUNCTION_ROOT";
-		sRootText = "Functions";
 		ctlLoadedFlag = util_def_exprcomponent_frmUseful.txtFunctionsLoaded;
 	}
 	else {
 		trvTreeView = document.getElementById('SSOperatorTree');
 		treeID = 'SSOperatorTree';
+		var frmOperators = document.getElementById('frmOperators');
 		colCollection = frmOperators.elements;
 		sRootKey = "OPERATOR_ROOT";
-		sRootText = "Operators";
 		ctlLoadedFlag = util_def_exprcomponent_frmUseful.txtOperatorsLoaded;
 	}
-	
+
 	if (ctlLoadedFlag.value == 0) {
 		// Clear the treeview.
 		$(trvTreeView).html('');
@@ -886,7 +880,7 @@ function functionAndOperator_refresh() {
 				fCategoryDone = ($(trvTreeView).find('#' + safeID(sCategory)).length > 0);
 
 				if (fCategoryDone == false) {
-					addNode(treeID, '#' + sRootKey, 'last', sCategory, safeID(sCategory));				
+					addNode(treeID, '#' + sRootKey, 'last', sCategory, safeID(sCategory));
 				}
 
 				// Add the function node.							
@@ -898,8 +892,7 @@ function functionAndOperator_refresh() {
 	}
 	$('#SSFunctionTree').jstree("close_all");
 	$('#SSOperatorTree').jstree("close_all");
-	
-	//$(trvTreeView).jstree('select_node', '.root');
+
 	$('#cmdOK').button('disable');
 
 	util_def_exprcomponent_frmUseful.txtInitialising.value = 0;
@@ -915,8 +908,6 @@ function componentRefreshControls() {
 	}
 }
 
-
-
 function calculationAndFilter_refresh() {
 	var iCurrentID;
 	var grdGrid;
@@ -930,11 +921,9 @@ function calculationAndFilter_refresh() {
 		grdGrid = $('#ssOleDBGridCalculations');
 	}
 
-
 	$.when(calculationsAndFilters_load()).then(function () {
 
 		if (grdGrid.getGridParam("reccount") > 0) {
-
 			iCurrentID = grdGrid.getGridParam('selrow');
 
 			if (util_def_exprcomponent_frmUseful.txtInitialising.value == 1) {
@@ -955,9 +944,6 @@ function calculationAndFilter_refresh() {
 			$('#cmdOK').button('disable');
 		}
 
-		//frmMainForm.ssOleDBGridCalculations.RowHeight = 19;
-		//frmMainForm.ssOleDBGridFilters.RowHeight = 19;
-
 		util_def_exprcomponent_frmUseful.txtInitialising.value = 0;
 
 	});
@@ -972,8 +958,6 @@ function calculationsAndFilters_load() {
 	var sName;
 	var sID;
 	var sOwner;
-	var iLoop;
-	var sAddString;
 	var sCurrentOwner = new String(util_def_exprcomponent_frmUseful.txtUserName.value);
 	var grdGrid;
 	var fOwners;
@@ -981,21 +965,36 @@ function calculationsAndFilters_load() {
 	var dfd = new $.Deferred();
 
 	sCurrentOwner = sCurrentOwner.toUpperCase();
-
+	var formHeight;
+	var titleHeight;
+	var textareaHeight;
+	var onlyMineHeight;
+	var marginHeight;
+	var gridHeight;
 	if (frmMainForm.optType_Filter.checked == true) {
 		grdGrid = $('#ssOleDBGridFilters');
+		var frmFilters = document.getElementById('frmFilters');
 		colCollection = frmFilters.elements;
 		fOwners = frmMainForm.chkOwnersFilters.checked;
+		formHeight = $('#optionframe').height();
+		titleHeight = $('#divFilter>h3').outerHeight(true);
+		textareaHeight = $('#txtFilterDescription').outerHeight();
+		onlyMineHeight = $('#divFilter>label').outerHeight(true);
+		marginHeight = 60;
+		gridHeight = formHeight - titleHeight - textareaHeight - onlyMineHeight - marginHeight;
 	}
 	else {
 		grdGrid = $('#ssOleDBGridCalculations');
+		var frmCalcs = document.getElementById('frmCalcs');
 		colCollection = frmCalcs.elements;
 		fOwners = frmMainForm.chkOwnersCalcs.checked;
+		formHeight = $('#optionframe').height();
+		titleHeight = $('#divCalculation>h3').outerHeight(true);
+		textareaHeight = $('#txtCalcDescription').outerHeight();
+		onlyMineHeight = $('#divCalculation>label').outerHeight(true);
+		marginHeight = 60;
+		gridHeight = formHeight - titleHeight - textareaHeight - onlyMineHeight - marginHeight;
 	}
-
-	//grdGrid.focus();
-	//grdGrid.Redraw = false;
-
 
 	if (grdGrid.getGridParam("reccount") > 0) {
 		grdGrid.jqGrid('clearGridData');
@@ -1010,6 +1009,7 @@ function calculationsAndFilters_load() {
 		],
 		multiselect: false,
 		autowidth: true,
+		height: gridHeight,
 		caption: '',
 		onSelectRow: function () {
 			ssOleDBGridCalculations_rowcolchange();
@@ -1018,8 +1018,6 @@ function calculationsAndFilters_load() {
 			ssOleDBGridCalculations_dblClick();
 		}
 	});
-
-	//var colData = [];
 
 	if (colCollection != null) {
 		for (i = 0; i < colCollection.length; i++) {
@@ -1034,9 +1032,6 @@ function calculationsAndFilters_load() {
 						(sCurrentOwner == sOwner)) {
 
 					// Add the grid records.
-					//sAddString = sName + "	" + sID;
-					//grdGrid.addItem(sAddString);
-					//colData.push({ id: sID, name: sName });
 					grdGrid.jqGrid('addRowData', sID, { id: sID, name: sName });
 
 				}
@@ -1047,36 +1042,23 @@ function calculationsAndFilters_load() {
 	dfd.resolve();
 	return dfd.promise();
 
-	//	grdGrid.Redraw = true;
-
 }
 
 function value_changeType() {
 	if (frmMainForm.cboValueType.options[frmMainForm.cboValueType.selectedIndex].value == 3) {
-		frmMainForm.txtValue.style.width = 0;
-		frmMainForm.txtValue.style.visibility = "hidden";
-		frmMainForm.txtValue.style.position = "absolute";
-		frmMainForm.txtValue.style.top = 0;
-		frmMainForm.txtValue.style.left = 0;
-
-		frmMainForm.selectValue.style.width = "100%";
-		frmMainForm.selectValue.style.visibility = "";
-		frmMainForm.selectValue.style.position = "";
-		frmMainForm.selectValue.style.top = "";
-		frmMainForm.selectValue.style.left = "";
+		$('#frmMainForm #txtValue').hide();
+		$('#frmMainForm #selectValue').show();
 	}
 	else {
-		frmMainForm.selectValue.style.width = 0;
-		frmMainForm.selectValue.style.visibility = "hidden";
-		frmMainForm.selectValue.style.position = "absolute";
-		frmMainForm.selectValue.style.top = 0;
-		frmMainForm.selectValue.style.left = 0;
+		$('#frmMainForm #txtValue').show();
+		$('#frmMainForm #selectValue').hide();
 
-		frmMainForm.txtValue.style.width = "100%";
-		frmMainForm.txtValue.style.visibility = "";
-		frmMainForm.txtValue.style.position = "";
-		frmMainForm.txtValue.style.top = "";
-		frmMainForm.txtValue.style.left = "";
+		if (frmMainForm.cboValueType.options[frmMainForm.cboValueType.selectedIndex].value == 4) {
+			//Date value
+			$('#txtValue').datepicker();
+		} else {
+			$('#txtValue').datepicker('destroy');
+		}
 	}
 
 	frmMainForm.txtValue.value = "";
@@ -1168,7 +1150,6 @@ function lookupValue_refreshColumn() {
 		optionDataForm.txtOptionTableID.value = frmMainForm.cboLookupValueTable.options[frmMainForm.cboLookupValueTable.selectedIndex].Value;
 		optionDataForm.txtOptionColumnID.value = sDefaultColumnID;
 
-		//OpenHR.getFrame("optiondataframe").refreshOptionData();
 		refreshOptionData();
 	}
 	else {
@@ -1180,7 +1161,6 @@ function lookupValue_refreshColumn() {
 
 		combo_disable(frmMainForm.cboLookupValueValue, true);
 
-		//button_disable(frmMainForm.cmdOK, true);
 		$('#cmdOK').button('disable');
 	}
 }
@@ -1230,13 +1210,11 @@ function lookupValue_refreshValues() {
 		optionDataForm.txtOptionColumnID.value = columnParameter(frmMainForm.cboLookupValueColumn.options[frmMainForm.cboLookupValueColumn.selectedIndex].Value, "COLUMNID");
 		optionDataForm.txtGotoLocateValue.value = sDefaultValue;
 
-		//OpenHR.getFrame("optiondataframe").refreshOptionData();
 		refreshOptionData();
 	}
 	else {
 		combo_disable(frmMainForm.cboLookupValueValue, true);
 
-		//button_disable(frmMainForm.cmdOK, true);
 		$('#cmdOK').button('disable');
 	}
 }
@@ -1285,7 +1263,7 @@ function pVal_changeType() {
 		sFormatVisibility = "visible";
 		sFormatDisplay = "inline";
 		sTextDefaultVisibility = "visible";
-		sTextDefaultDisplay = "block";
+		sTextDefaultDisplay = "inline-block";
 		text_disable(frmMainForm.txtPValDefault, false);
 	}
 
@@ -1294,14 +1272,14 @@ function pVal_changeType() {
 		sSizeVisibility = "visible";
 		sDecimalsVisibility = "visible";
 		sTextDefaultVisibility = "visible";
-		sTextDefaultDisplay = "block";
+		sTextDefaultDisplay = "inline-block";
 		text_disable(frmMainForm.txtPValDefault, false);
 	}
 
 	if (iPValType == 3) {
 		// Logic
 		sComboDefaultVisibility = "visible";
-		sComboDefaultDisplay = "block";
+		sComboDefaultDisplay = "inline-block";
 
 		// Clear the current contents of the dropdown list.
 		while (frmMainForm.cboPValDefault.options.length > 0) {
@@ -1310,12 +1288,12 @@ function pVal_changeType() {
 
 		oOption = document.createElement("OPTION");
 		frmMainForm.cboPValDefault.options.add(oOption);
-		oOption.innerHTML = "Yes";
+		oOption.innerHTML = "True";
 		oOption.Value = 1;
 
 		oOption = document.createElement("OPTION");
 		frmMainForm.cboPValDefault.options.add(oOption);
-		oOption.innerHTML = "No";
+		oOption.innerHTML = "False";
 		oOption.Value = 0;
 
 		frmMainForm.cboPValDefault.selectedIndex = 0;
@@ -1324,7 +1302,7 @@ function pVal_changeType() {
 	if (iPValType == 4) {
 		// Date
 		sTextDefaultVisibility = "visible";
-		sTextDefaultDisplay = "block";
+		sTextDefaultDisplay = "inline-block";
 		sDateOptionsVisibility = "visible";
 		sDateOptionsDisplay = "inline";
 
@@ -1334,10 +1312,9 @@ function pVal_changeType() {
 	if (iPValType == 5) {
 		// Lookup Table Value
 		sLookupVisibility = "visible";
-		//sLookupDisplay = "block";
 		sLookupDisplay = "inline";
 		sComboDefaultVisibility = "visible";
-		sComboDefaultDisplay = "block";
+		sComboDefaultDisplay = "inline-block";
 
 		// Clear the current contents of the dropdown list.
 		while (frmMainForm.cboPValDefault.options.length > 0) {
@@ -1347,27 +1324,25 @@ function pVal_changeType() {
 		pVal_refreshTable();
 	}
 
-	frmMainForm.txtPValSize.style.visibility = sSizeVisibility;
-	tdPValSizePrompt.style.visibility = sSizeVisibility;
-	frmMainForm.txtPValDecimals.style.visibility = sDecimalsVisibility;
-	tdPValDecimalsPrompt.style.visibility = sDecimalsVisibility;
-	trPValFormat.style.visibility = sFormatVisibility;
-	trPValFormat.style.display = sFormatDisplay;
-	trPValFormat2.style.visibility = sFormatVisibility;
-	trPValFormat2.style.display = sFormatDisplay;
-	trPValLookup.style.visibility = sLookupVisibility;
-	trPValLookup.style.display = sLookupDisplay;
-	trPValLookup2.style.visibility = sLookupVisibility;
-	trPValLookup2.style.display = sLookupDisplay;
+	$('#txtPValSize').parent().toggle(sSizeVisibility == 'visible');
+	$('#tdPValSizePrompt').toggle(sSizeVisibility == 'visible');
+	$('#txtPValDecimals').parent().toggle(sDecimalsVisibility == 'visible');
+	$('#tdPValDecimalsPrompt').toggle(sDecimalsVisibility == 'visible');
+	$('#trPValFormat').toggle(sFormatVisibility == 'visible');
+	$('#trPValFormat2').toggle(sFormatVisibility == 'visible');
+	$('#trPValLookup').toggle(sLookupVisibility == 'visible');
+	$('#trPValLookup2').toggle(sLookupVisibility == 'visible');
 
-	trPValTextDefault.style.visibility = sTextDefaultVisibility;
-	trPValTextDefault.style.display = sTextDefaultDisplay;
-	trPValComboDefault.style.visibility = sComboDefaultVisibility;
-	trPValComboDefault.style.display = sComboDefaultDisplay;
-	trPValDateOptions.style.visibility = sDateOptionsVisibility;
-	trPValDateOptions.style.display = sDateOptionsDisplay;
-	trPValDateOptions2.style.visibility = sDateOptionsVisibility;
-	trPValDateOptions2.style.display = sDateOptionsDisplay;
+	$('#trPValTextDefault').toggle(sTextDefaultVisibility == 'visible');
+	$('#trPValComboDefault').toggle(sComboDefaultVisibility == 'visible');
+	$('#trPValDateOptions').toggle(sDateOptionsVisibility == 'visible');
+	$('#trPValDateOptions2').toggle(sDateOptionsVisibility == 'visible');
+
+	if (iPValType == 4) {
+		$('#txtPValDefault').datepicker();
+	} else {
+		$('#txtPValDefault').datepicker('destroy');
+	}
 
 	frmMainForm.txtPValDefault.value = "";
 
@@ -1380,7 +1355,6 @@ function pVal_refreshTable() {
 	var sTableID;
 	var sType;
 	var tableCollection = $("#frmExprTables")[0].elements;
-	var sDefaultTableID;
 	var i;
 	var iIndex;
 	var fInitialise = util_def_exprcomponent_frmUseful.txtInitialising.value;
@@ -1459,7 +1433,6 @@ function pVal_refreshColumn() {
 		optionDataForm.txtOptionTableID.value = frmMainForm.cboPValTable.options[frmMainForm.cboPValTable.selectedIndex].Value;
 		optionDataForm.txtOptionColumnID.value = sDefaultColumnID;
 
-		//OpenHR.getFrame("optiondataframe").refreshOptionData();
 		refreshOptionData();
 	}
 	else {
@@ -1470,7 +1443,6 @@ function pVal_refreshColumn() {
 		}
 
 		combo_disable(frmMainForm.cboPValDefault, true);
-		//button_disable(frmMainForm.cmdOK, true);
 		$('#cmdOK').button('disable');
 	}
 }
@@ -1519,12 +1491,10 @@ function pVal_refreshValues() {
 		optionDataForm.txtOptionColumnID.value = columnParameter(frmMainForm.cboPValColumn.options[frmMainForm.cboPValColumn.selectedIndex].Value, "COLUMNID");
 		optionDataForm.txtGotoLocateValue.value = sDefaultValue;
 
-		//OpenHR.getFrame("optiondataframe").refreshOptionData();
 		refreshOptionData();
 	}
 	else {
 		combo_disable(frmMainForm.cboPValDefault, true);
-		//button_disable(frmMainForm.cmdOK, true);
 		$('#cmdOK').button('disable');
 	}
 }
@@ -1532,11 +1502,9 @@ function pVal_refreshValues() {
 function pVal_changePrompt() {
 	if (frmMainForm.optType_PromptedValue.checked == true) {
 		if (frmMainForm.txtPrompt.value.length == 0) {
-			//button_disable(frmMainForm.cmdOK, true);
 			$('#cmdOK').button('disable');
 		}
 		else {
-			//button_disable(frmMainForm.cmdOK, false);
 			$('#cmdOK').button('enable');
 		}
 	}
@@ -1583,7 +1551,7 @@ function component_addColumn(psDefn) {
 	cboCombo.options.add(oOption);
 	oOption.innerHTML = sColumnName;
 	oOption.Value = psDefn;
-	
+
 
 }
 
@@ -1619,7 +1587,6 @@ function component_setColumn(piColumnID) {
 	}
 	else {
 		combo_disable(cboCombo, true);
-		//button_disable(frmMainForm.cmdOK, true);
 		$('#cmdOK').button('disable');
 	}
 
@@ -1669,7 +1636,7 @@ function component_addValue(psValue) {
 			psValue = psValue.substr(0, psValue.length - 1);
 		}
 
-		oOption = document.createElement("OPTION");
+		var oOption = document.createElement("OPTION");
 		cboValueCombo.options.add(oOption);
 		oOption.innerHTML = psValue;
 		oOption.Value = psValue;
@@ -1677,7 +1644,6 @@ function component_addValue(psValue) {
 }
 
 function component_setValue(psValue) {
-	var iIndex;
 	var i;
 	var fFound = false;
 	var sVisibility = "hidden";
@@ -1702,7 +1668,6 @@ function component_setValue(psValue) {
 	combo_disable(cboCombo, false);
 
 	if (frmMainForm.optType_LookupTableValue.checked == true) {
-		//button_disable(frmMainForm.cmdOK, false);
 		$('#cmdOK').button('enable');
 	}
 
@@ -1710,7 +1675,7 @@ function component_setValue(psValue) {
 		if ((frmMainForm.optType_LookupTableValue.checked == true) &&
 				(psValue.length > 0)) {
 
-			oOption = document.createElement("OPTION");
+			var oOption = document.createElement("OPTION");
 			cboCombo.options.add(oOption);
 			oOption.innerHTML = psValue;
 			oOption.Value = psValue;
@@ -1722,8 +1687,8 @@ function component_setValue(psValue) {
 					frmMainForm.cboLookupValueTable.options[frmMainForm.cboLookupValueTable.selectedIndex].text +
 					"." +
 					frmMainForm.cboLookupValueColumn.options[frmMainForm.cboLookupValueColumn.selectedIndex].text;
-			var sVisibility = "visible";
-			var sDisplay = "block";
+			sVisibility = "visible";
+			sDisplay = "inline-block";
 		}
 		else {
 			if (cboCombo.options.length > 0) {
@@ -1732,7 +1697,6 @@ function component_setValue(psValue) {
 			else {
 				combo_disable(cboCombo, true);
 				if (frmMainForm.optType_LookupTableValue.checked == true) {
-					//button_disable(frmMainForm.cmdOK, true);
 					$('#cmdOK').button('disable');
 				}
 			}
@@ -1840,10 +1804,7 @@ function calculationAndFilterParameter(psDefnString, psParameter) {
 
 function locateGridRecord(piID) {
 	var fFound;
-	var iIndex;
 	var grdGrid;
-
-	fFound = false;
 
 	if (frmMainForm.optType_Filter.checked == true) {
 		grdGrid = $('#ssOleDBGridFilters');
@@ -1851,11 +1812,6 @@ function locateGridRecord(piID) {
 	else {
 		grdGrid = $('#ssOleDBGridCalculations');
 	}
-
-	//grdGrid.redraw = false;
-
-	//grdGrid.MoveLast();
-	//grdGrid.MoveFirst();
 
 	try {
 		grdGrid.jqGrid('setSelection', piID);
@@ -1870,82 +1826,10 @@ function locateGridRecord(piID) {
 		var topRowID = grdGrid.getDataIDs()[0];
 		grdGrid.jqGrid('setSelection', topRowID);
 	}
-
-	//grdGrid.redraw = true;
-}
-
-/* Sequential search the grid for the required OLE. */
-function locateGridRecordString(psString) {
-	//var fFound;
-	//var grdGrid;
-
-	//if (frmMainForm.optType_Filter.checked == true) {
-	//	grdGrid = frmMainForm.ssOleDBGridFilters;
-	//}
-	//else {
-	//	grdGrid = frmMainForm.ssOleDBGridCalculations;
-	//}
-
-	//fFound = false;
-
-	//grdGrid.redraw = false;
-	//grdGrid.MoveLast();
-	//grdGrid.MoveFirst();
-
-	//for (iIndex = 1; iIndex <= grdGrid.rows; iIndex++) {
-	//	var sGridValue = new String(grdGrid.Columns(0).value);
-	//	sGridValue = sGridValue.substr(0, psString.length).toUpperCase();
-	//	if (sGridValue == psString.toUpperCase()) {
-	//		grdGrid.SelBookmarks.Add(grdGrid.Bookmark);
-	//		fFound = true;
-	//		break;
-	//	}
-
-	//	if (iIndex < grdGrid.rows) {
-	//		grdGrid.MoveNext();
-	//	}
-	//	else {
-	//		break;
-	//	}
-	//}
-
-	//if ((fFound == false) && (grdGrid.rows > 0)) {
-	//	// Select the top row.
-	//	grdGrid.MoveFirst();
-	//	grdGrid.SelBookmarks.Add(grdGrid.Bookmark);
-	//}
-
-	//grdGrid.redraw = true;
-}
-
-function gridKeyPress(iKeyAscii) {
-
-	//if ((iKeyAscii >= 32) && (iKeyAscii <= 255)) {
-	//	var dtTicker = new Date();
-	//	var iThisTick = new Number(dtTicker.getTime());
-	//	if (txtLastKeyFind.value.length > 0) {
-	//		var iLastTick = new Number(txtTicker.value);
-	//	}
-	//	else {
-	//		var iLastTick = new Number("0");
-	//	}
-
-	//	if (iThisTick > (iLastTick + 1500)) {
-	//		var sFind = String.fromCharCode(iKeyAscii);
-	//	}
-	//	else {
-	//		var sFind = txtLastKeyFind.value + String.fromCharCode(iKeyAscii);
-	//	}
-
-	//	txtTicker.value = iThisTick;
-	//	txtLastKeyFind.value = sFind;
-
-	//	locateGridRecordString(sFind);
-	//}
 }
 
 function openDialog(pDestination, pWidth, pHeight, psResizable, psScroll) {
-	dlgwinprops = "center:yes;" +
+	var dlgwinprops = "center:yes;" +
 			"dialogHeight:" + pHeight + "px;" +
 			"dialogWidth:" + pWidth + "px;" +
 			"help:no;" +
@@ -1956,7 +1840,7 @@ function openDialog(pDestination, pWidth, pHeight, psResizable, psScroll) {
 }
 
 function component_OKClick() {
-	
+
 	var sDefn;
 	var sTemp;
 	var sKey;
@@ -1966,16 +1850,15 @@ function component_OKClick() {
 	var fIsChild = false;
 	var tableCollection = $("#frmExprTables")[0].elements;
 	var sFunctionParameters;
+	var frmFunctionParameters = document.getElementById('frmFunctionParameters');
 	var colFunctionParameters = frmFunctionParameters.elements;
 
-	//if (frmMainForm.cmdOK.disabled == true) {
-	if ($('#optionframe #cmdCancel').hasClass('ui-state-disabled')) {		
+	if ($('#optionframe #cmdCancel').hasClass('ui-state-disabled')) {
 		return;
 	}
-
+	
 	if (validateComponent() == true) {
-		// Component definition is valid. Pass it back to the 
-		// expression page.
+		// Component definition is valid. Pass it back to the expression page.
 
 		sDefn = util_def_exprcomponent_frmOriginalDefinition.txtComponentID.value + "	0	";
 
@@ -2028,7 +1911,7 @@ function component_OKClick() {
 			sDefn = sDefn + "	";
 
 			// Field Selection Record
-			iFieldSelection = 1;
+			var iFieldSelection = 1;
 			if (frmMainForm.txtPassByType.value == 1) {
 				if (frmMainForm.optField_Count.checked == true) {
 					iFieldSelection = 5;
@@ -2429,7 +2312,6 @@ function component_OKClick() {
 						if (frmMainForm.optType_Filter.checked == true) {
 							selRowId = $('#ssOleDBGridFilters').getGridParam('selrow');
 							sDefn = sDefn + $('#ssOleDBGridFilters').getCell(selRowId, 'name') + "\t";
-							//sDefn = sDefn + frmMainForm.ssOleDBGridFilters.Columns("name").Value + "	";
 						}
 						else {
 							sDefn = sDefn + "	";
@@ -2493,17 +2375,13 @@ function component_OKClick() {
 
 
 		// Pass the component definition back to the expression page.
-		//OpenHR.getFrame("workframe").setComponent(sDefn, util_def_exprcomponent_frmUseful.txtAction.value, util_def_exprcomponent_frmUseful.txtLinkRecordID.value, sFunctionParameters);
 		setComponent(sDefn, util_def_exprcomponent_frmUseful.txtAction.value, util_def_exprcomponent_frmUseful.txtLinkRecordID.value, sFunctionParameters);
 
 		$('#optionframe').dialog('close');
-
-
 	}
 }
 
 function component_CancelClick() {
-	//OpenHR.getFrame("workframe").cancelComponent();
 	cancelComponent();
 }
 
@@ -2523,11 +2401,11 @@ function validateComponent() {
 	var sConvertedValue;
 
 	sDecimalSeparator = "\\";
-	sDecimalSeparator = sDecimalSeparator.concat(OpenHR.LocaleDecimalSeparator);
+	sDecimalSeparator = sDecimalSeparator.concat(OpenHR.LocaleDecimalSeparator());
 	var reDecimalSeparator = new RegExp(sDecimalSeparator, "gi");
 
 	sThousandSeparator = "\\";
-	sThousandSeparator = sThousandSeparator.concat(OpenHR.LocaleThousandSeparator);
+	sThousandSeparator = sThousandSeparator.concat(OpenHR.LocaleThousandSeparator());
 	var reThousandSeparator = new RegExp(sThousandSeparator, "gi");
 
 	sPoint = "\\.";
@@ -2560,7 +2438,7 @@ function validateComponent() {
 				frmMainForm.txtFieldRecSel_Specific.value = sConvertedValue;
 
 				// Convert any decimal separators to '.'.
-				if (OpenHR.LocaleDecimalSeparator != ".") {
+				if (OpenHR.LocaleDecimalSeparator() != ".") {
 					// Remove decimal points.
 					sConvertedValue = sConvertedValue.replace(rePoint, "A");
 					// replace the locale decimal marker with the decimal point.
@@ -2602,7 +2480,7 @@ function validateComponent() {
 			frmMainForm.txtValue.value = sConvertedValue;
 
 			// Convert any decimal separators to '.'.
-			if (OpenHR.LocaleDecimalSeparator != ".") {
+			if (OpenHR.LocaleDecimalSeparator() != ".") {
 				// Remove decimal points.
 				sConvertedValue = sConvertedValue.replace(rePoint, "A");
 				// replace the locale decimal marker with the decimal point.
@@ -2617,9 +2495,9 @@ function validateComponent() {
 		if (frmMainForm.cboValueType.value == 4) {
 			// Date
 			// Convert the date to SQL format (use this as a validation check).
-			// An empty string is returned if the date is invalid.
+			// An empty string is returned if the date is invalid.			
 			sValue = OpenHR.convertLocaleDateToSQL(sValue);
-			if (sValue.length == 0) {
+			if ((sValue.length == 0) || (sValue == 'null')) {
 				sErrorMsg = "Invalid date value entered.";
 			}
 		}
@@ -2643,7 +2521,7 @@ function validateComponent() {
 			frmMainForm.txtPValSize.value = sConvertedValue;
 
 			// Convert any decimal separators to '.'.
-			if (OpenHR.LocaleDecimalSeparator != ".") {
+			if (OpenHR.LocaleDecimalSeparator() != ".") {
 				// Remove decimal points.
 				sConvertedValue = sConvertedValue.replace(rePoint, "A");
 				// replace the locale decimal marker with the decimal point.
@@ -2685,7 +2563,7 @@ function validateComponent() {
 				frmMainForm.txtPValDecimals.value = sConvertedValue;
 
 				// Convert any decimal separators to '.'.
-				if (OpenHR.LocaleDecimalSeparator != ".") {
+				if (OpenHR.LocaleDecimalSeparator() != ".") {
 					// Remove decimal points.
 					sConvertedValue = sConvertedValue.replace(rePoint, "A");
 					// replace the locale decimal marker with the decimal point.
@@ -2776,7 +2654,7 @@ function validateComponent() {
 					frmMainForm.txtPValDefault.value = sConvertedValue;
 
 					// Convert any decimal separators to '.'.
-					if (OpenHR.LocaleDecimalSeparator != ".") {
+					if (OpenHR.LocaleDecimalSeparator() != ".") {
 						// Remove decimal points.
 						sConvertedValue = sConvertedValue.replace(rePoint, "A");
 						// replace the locale decimal marker with the decimal point.
@@ -2815,43 +2693,15 @@ function validateComponent() {
 	return true;
 }
 
-function component_saveChanges(psAction, pfPrompt, pfTBOverride) {
+function component_saveChanges(psAction, pfPrompt, pfTbOverride) {
 	// Expand the work frame and hide the option frame.
 	$("#optionframe").attr("data-framesource", "UTIL_DEF_EXPRCOMPONENT");
-	//$("#optionframe").hide();
-	//$("#workframe").show();
-
 	$('#optionframe').dialog('close');
+
 	// Pass the component definition back to the expression page.        
-	//OpenHR.getFrame("workframe").saveChanges(psAction, pfPrompt, pfTBOverride);
-	saveChanges(psAction, pfPrompt, pfTBOverride);
+	saveChanges(psAction, pfPrompt, pfTbOverride);
 }
 
-function util_def_exprcomponent_addhandlers() {
-	//OpenHR.addActiveXHandler("ssOleDBGridFilters", "KeyPress", "ssOleDBGridFilters_KeyPress()");
-	//OpenHR.addActiveXHandler("ssOleDBGridFilters", "rowcolchange", "ssOleDBGridFilters_rowcolchange()");
-	//OpenHR.addActiveXHandler("ssOleDBGridFilters", "dblClick", "ssOleDBGridFilters_dblClick()");
-	//OpenHR.addActiveXHandler("ssOleDBGridCalculations", "KeyPress", "ssOleDBGridCalculations_KeyPress()");
-	//OpenHR.addActiveXHandler("ssOleDBGridCalculations", "rowcolchange", "ssOleDBGridCalculations_rowcolchange()");
-	//OpenHR.addActiveXHandler("ssOleDBGridCalculations", "dblClick", "ssOleDBGridCalculations_dblClick()");
-	//OpenHR.addActiveXHandler("SSOperatorTree", "nodeClick", "SSOperatorTree_nodeClick(param1)");
-	//OpenHR.addActiveXHandler("SSOperatorTree", "dblClick", "SSOperatorTree_dblClick()");
-	//OpenHR.addActiveXHandler("SSFunctionTree", "nodeClick", "SSFunctionTree_nodeClick(param1)");
-	//OpenHR.addActiveXHandler("SSFunctionTree", "dblClick", "SSFunctionTree_dblClick()");
-}
-
-function ssOleDBGridFilters_KeyPress(iKeyAscii) {
-	//gridKeyPress(iKeyAscii);
-}
-
-
-//function ssOleDBGridFilters_dblClick() {
-//	component_OKClick();
-//}
-
-function ssOleDBGridCalculations_KeyPress(iKeyAscii) {
-	//gridKeyPress(iKeyAscii);
-}
 
 function ssOleDBGridCalculations_rowcolchange() {
 
@@ -2863,14 +2713,12 @@ function ssOleDBGridCalculations_rowcolchange() {
 		rowIndex = $('#ssOleDBGridFilters').jqGrid('getInd', rowId); // counting from 1
 		sDesc = "txtFilterDesc_" + rowIndex;
 		frmMainForm.txtFilterDescription.value = $('#' + sDesc).val();
-		//button_disable(frmMainForm.cmdOK, false);
 		$('#cmdOK').button('enable');
 	} else {
 		rowId = $('#ssOleDBGridCalculations').getGridParam('selrow');
 		rowIndex = $('#ssOleDBGridCalculations').jqGrid('getInd', rowId); // counting from 1
 		sDesc = "txtCalcDesc_" + rowIndex;
 		frmMainForm.txtCalcDescription.value = $('#' + sDesc).val();
-		//button_disable(frmMainForm.cmdOK, false);
 		$('#cmdOK').button('enable');
 	}
 
@@ -2892,7 +2740,6 @@ function SSOperatorTree_nodeClick(node) {
 		}
 	}
 
-	//button_disable(frmMainForm.cmdOK, fNoNodeSelected);
 	if (fNoNodeSelected) {
 		$('#cmdOK').button('disable');
 	} else {
@@ -2917,7 +2764,6 @@ function SSFunctionTree_nodeClick(node) {
 		}
 	}
 
-	//button_disable(frmMainForm.cmdOK, fNoNodeSelected);
 	if (fNoNodeSelected) {
 		$('#cmdOK').button('disable');
 	} else {

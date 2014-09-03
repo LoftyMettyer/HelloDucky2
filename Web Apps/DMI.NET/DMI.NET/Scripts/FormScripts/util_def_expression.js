@@ -162,7 +162,6 @@ function util_def_expression_onload() {
 		menu_refreshMenu();
 		//$('#cmdOK').hide();
 		$('#cmdCancel').hide();
-		console.log('done');
 	}
 
 	$("#SSTree1").delegate("a", "dblclick", function () {
@@ -286,8 +285,8 @@ function loadDefinition() {
 					sKey = "E" + expressionParameter(sExprDefn, "EXPRID");
 
 					//Add the title node
-					$('#SSTree1').append('<ul><li class="root" data-nodetype="root" id="' + sKey + '" data-tag="' + sExprDefn + '"><a style="font-weight: bold;" href="#">' + frmDefinition.txtName.value + '</a></li></ul>');
-
+					$('#SSTree1').append('<ul><li class="root" data-nodetype="root" id="' + sKey + '"><a style="font-weight: bold;" href="#">' + frmDefinition.txtName.value + '</a></li></ul>');
+					$('#' + sKey).attr('data-tag', sExprDefn);
 					// Load the expression definition into the treeview.
 					loadComponentNodes(expressionParameter(sExprDefn, "EXPRID"), true);
 
@@ -336,7 +335,8 @@ function loadComponentNodes(piExprID, pfVisible) {
 					//append new node to parent
 					var sText = componentDescription(sComponentDefn).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 					var nodeID = "C" + componentParameter(sComponentDefn, "COMPONENTID");
-					$('#' + sParentKey + ' ul').first().append('<li id="' + nodeID + '" data-tag="' + sComponentDefn + '"><a style="font-weight: normal;" href="#">' + sText + '</a></li>');
+					$('#' + sParentKey + ' ul').first().append('<li id="' + nodeID + '"><a style="font-weight: normal;" href="#">' + sText + '</a></li>');
+					$('#' + nodeID).attr('data-tag', sComponentDefn);
 
 					//Set colour of node.
 					$('#' + nodeID + ' a').css('color', getNodeColour(tree_SelectedItemLevel("#" + nodeID)));
@@ -373,7 +373,8 @@ function loadSubExpressionsNodes(piComponentID, pfVisible) {
 					//append new node to parent
 					var sText = expressionParameter(sExprDefn, "NAME").replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 					var nodeID = "E" + expressionParameter(sExprDefn, "EXPRID");
-					$('#' + sParentKey + ' ul').first().append('<li id="' + nodeID + '" data-tag="' + sExprDefn + '"><a style="font-weight: normal;" href="#">' + sText + '</a></li>');
+					$('#' + sParentKey + ' ul').first().append('<li id="' + nodeID + '"><a style="font-weight: normal;" href="#">' + sText + '</a></li>');
+					$('#' + nodeID).attr('data-tag', sExprDefn);
 
 					//Set colour of node.
 					$('#' + nodeID + ' a').css('color', getNodeColour(tree_SelectedItemLevel("#" + nodeID)));
@@ -692,8 +693,9 @@ function componentDescription(psDefnString) {
 				break;
 
 			case "2":
-				// Numeric value.
+				// Numeric value.				
 				sDesc = componentParameter(psDefnString, "VALUENUMERIC");
+				sDesc = parseFloat(sDesc).toString();
 				sDesc = sDesc.replace(reDecimalSeparator, frmUseful.txtLocaleDecimal.value);
 				break;
 
@@ -1130,8 +1132,8 @@ function editClick() {
 	}
 }
 
-function setComponent(psComponentDefn, psAction, psLinkComponentID, psFunctionParameters) {
-	
+function setComponent(psComponentDefn, psAction, psLinkComponentID, psFunctionParameters) {	
+
 	var iIndex;
 	var fNodeExists = false;
 	var objNode;
@@ -1533,7 +1535,7 @@ function definitionChanged() {
 }
 
 function submitDefinition() {
-
+	
 	if (validateExpression() == false) { menu_refreshMenu(); return false; }
 	if (populateSendForm() == false) { menu_refreshMenu(); return false; }
 
@@ -1658,7 +1660,7 @@ function validateExpression() {
 	return true;
 }
 
-function populateSendForm() {
+function populateSendForm() {	
 	var sNames = "";
 	var sComponents = "";
 	var reQuote = new RegExp("\"", "gi");
@@ -1682,7 +1684,7 @@ function populateSendForm() {
 	if (frmDefinition.optAccessHD.checked == true) {
 		frmSend.txtSend_access.value = "HD";
 	}
-
+	
 	// Now go through the components	
 	if ($('#SSTree1').children().length > 0) {
 		var objNode = $('#SSTree1 li.root>ul>li').first();
@@ -1701,7 +1703,7 @@ function populateSendForm() {
 
 		sComponents = sComponents + "	";
 	}
-
+	
 	frmSend.txtSend_components1.value = sComponents;
 	frmSend.txtSend_names.value = sNames;
 
@@ -1813,7 +1815,6 @@ function SSTree1_dblClick() {
 }
 
 function SSTree1_keyPress(sKeyPressed) {
-	console.log(sKeyPressed);
 	var sDefinition;
 	var frmShortcutKeys = document.getElementById('frmShortcutKeys');
 	var shortcutCollection = frmShortcutKeys.elements;	
@@ -2258,18 +2259,20 @@ function tree_SelectedItemLevel(nodeSelector) {
 function tree_NodesAdd(relative, relationship, key, text, tag) {
 	//clean the text
 	text = text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
-
+	//tag = tag.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
 	switch (relationship) {
 		case 3:
 			//Previous. The Node is placed before the Node named in relative.
-			$('<li id="' + key + '" data-tag="' + tag + '"><a style="font-weight: normal;" href="#">' + text + '</a></li>').insertBefore("#" + relative);
+			$('<li id="' + key + '"><a style="font-weight: normal;" href="#">' + text + '</a></li>').insertBefore("#" + relative);
+			$('#' + key).attr('data-tag', tag);
 			break;
 		case 4:
 			//Child. The Node becomes a child of the Node named in relative.
 			//$("#SSTree1").jstree("create","#C69315","after","No rename",false,true);
 			if ($('#' + relative + ' ul').length == 0) $('#' + relative).append('<ul></ul>');
-			$('#' + relative + ' ul').first().append('<li id="' + key + '" data-tag="' + tag + '"><a style="font-weight: normal;" href="#">' + text + '</a></li>');
+			$('#' + relative + ' ul').first().append('<li id="' + key + '"><a style="font-weight: normal;" href="#">' + text + '</a></li>');
+			$('#' + key).attr('data-tag', tag);
 			break;
 
 	}

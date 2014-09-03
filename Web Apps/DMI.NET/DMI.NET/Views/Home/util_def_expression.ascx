@@ -14,11 +14,11 @@
 		<nav style="display: block;">
 			<div class="formField floatleft formInput">
 				<label>Name :</label>
-				<input id="txtName" name="txtName" class="text" maxlength="50" onkeyup="changeName()">
+				<input id="txtName" name="txtName" maxlength="50" onkeyup="changeName()">
 			</div>
 			<div class="formField floatright">
 				<label>Owner :</label>
-				<input id="txtOwner" name="txtOwner" class="text textdisabled" disabled="disabled" tabindex="-1">
+				<input id="txtOwner" name="txtOwner" disabled="disabled" tabindex="-1">
 			</div>
 
 			<div class="formTextArea clearboth floatleft">
