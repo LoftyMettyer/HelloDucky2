@@ -37,6 +37,7 @@
 				<fieldset class="">
 					Base Table :
 					<select class="width70 floatright" name="BaseTableID" id="BaseTableID" onchange="requestChangeReportBaseTable(event.target);"></select>
+					<input type="hidden" id="OriginalBaseTableID" />
 				</fieldset>
 
 				<div>
@@ -130,6 +131,7 @@
 				});
 
 				$('#BaseTableID').val("@Model.BaseTableID");
+				$("#OriginalBaseTableID").val($('#BaseTableID')[0].selectedIndex);
 
 				if ('@CInt(Model.ReportType)' == '2' || '@CInt(Model.ReportType)' == '9') {
 					loadAvailableTablesForReport(false);
@@ -336,6 +338,9 @@
 				if (answer == 6) { // Yes
 					changeReportBaseTable();
 				}
+				else {
+					$('#BaseTableID')[0].selectedIndex = $("#OriginalBaseTableID").val();
+				}
 			});
 		}
 		else {
@@ -354,6 +359,7 @@
 		};
 
 		OpenHR.postData("Reports/ChangeBaseTable", dataSend, changeReportBaseTableCompleted);
+		$("#OriginalBaseTableID").val($('#BaseTableID')[0].selectedIndex);
 
 	}
 
