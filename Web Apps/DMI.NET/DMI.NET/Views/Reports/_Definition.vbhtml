@@ -102,7 +102,19 @@
 				<br/>
 				<span id="ForcedHiddenMessage" hidden="hidden">The definition access cannot be changed as it contains a hidden picklist, filter or calculation</span>
 			</fieldset>
+
+			<br />
+			Apply to all groups :
+			<select id="drpSetAllSecurityGroups">
+				<option value='RW'>Read / Write</option>
+				<option value='RO'>Read Only</option>
+				<option value='HD'>Hidden</option>
+			</select>
+			<input type="button" value="Go" onclick="setAllSecurityGroups();" />
+
 		</fieldset>
+
+
 	</fieldset>
 </div>
 
@@ -140,6 +152,13 @@
 
 			}
 		});
+	}
+
+	function setAllSecurityGroups() {
+
+		var setTo = $("#drpSetAllSecurityGroups").val();
+		$(".reportViewAccessGroup").val(setTo);
+
 	}
 
 	function changeRecordOption(psTable, psType) {
