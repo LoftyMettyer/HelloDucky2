@@ -332,6 +332,8 @@
 				error: function (req, status, errorObj) {
 					$("#errorDialogTitle").text(errorObj);
 					$("#errorDialogContentText").html(req.responseText);
+					$("#errorDialog").parent().find('.ui-dialog-titlebar-close').css('margin-top', '');
+					$("#errorDialog").parent().find('.ui-dialog-titlebar-close').show();
 					$("#errorDialog").dialog("open");
 				}
 			});
