@@ -130,13 +130,19 @@
 				sortname: 'Name',
 				sortorder: "desc",
 				rowNum: 10000,
+				scrollrows: true,
+				onSelectRow: function () {
+					button_disable($('#ExpressionSelectOK'), false);
+				},
 				ondblClickRow: function (rowid) {
 					var gridData = $(this).getRowData(rowid);
 					followOnFunctionName(gridData.ID, gridData.Name, gridData.Access);
 					frame.dialog("close");
 				},
 				loadComplete: function(json) {
-					
+
+					button_disable($('#ExpressionSelectOK'), true);
+
 					$("#ExpressionSelectOK").off('click').on('click', function() {
 						var rowid = $('#ExpressionsAvailable').jqGrid('getGridParam', 'selrow');
 						var gridData = $("#ExpressionsAvailable").getRowData(rowid);
@@ -153,6 +159,7 @@
 						frame.dialog("close");
 					});
 
+					$("#ExpressionsAvailable").jqGrid("setSelection", currentID);
 					$("#ExpressionSelection_PageTitle").text(capitalizedText);					
 				}
 			});
