@@ -14,6 +14,7 @@ BEGIN
 		@sName				varchar(255), 
 		@sUserName			varchar(255), 
 		@sAccess			varchar(MAX),
+		@fIsBatch			bit,
 		@sUtilType			varchar(255),
 		@iCompID			integer,
 		@iRootExprID		integer,
@@ -72,7 +73,8 @@ BEGIN
 		DECLARE usage_cursor CURSOR LOCAL FAST_FORWARD FOR 
 			SELECT DISTINCT ASRSysBatchJobName.Name, 
 				ASRSysBatchJobName.UserName, 
-				ASRSysBatchJobAccess.Access
+				ASRSysBatchJobAccess.Access,
+				AsrSysBatchJobName.IsBatch
 			FROM ASRSysBatchJobDetails
 			INNER JOIN ASRSysBatchJobName ON ASRSysBatchJobDetails.BatchJobNameID = ASRSysBatchJobName.ID
 			INNER JOIN ASRSysBatchJobAccess ON ASRSysBatchJobName.ID = ASRSysBatchJobAccess.ID
@@ -80,10 +82,14 @@ BEGIN
 			WHERE ASRSysBatchJobDetails.JobType = @sJobTypeName
 				AND ASRSysBatchJobDetails.JobID = @intID
 		OPEN usage_cursor
-		FETCH NEXT FROM usage_cursor INTO @sName, @sUserName, @sAccess
+		FETCH NEXT FROM usage_cursor INTO @sName, @sUserName, @sAccess, @fIsBatch
 		WHILE (@@fetch_status = 0)
 		BEGIN
-			SET @sDescription = 'Batch Job: '
+			IF @fIsBatch = 1 BEGIN
+				SET @sDescription = 'Batch Job: '
+			END ELSE BEGIN
+				SET @sDescription = 'Report Pack: '
+			END
 
 			IF (@sUserName <> @sCurrentUser)
 				AND (@sAccess = 'HD') AND (@fSysSecMgr = 0)
@@ -97,7 +103,7 @@ BEGIN
     
 			INSERT INTO @results (description) VALUES (@sDescription)
 
-			FETCH NEXT FROM usage_cursor INTO @sName, @sUserName, @sAccess
+			FETCH NEXT FROM usage_cursor INTO @sName, @sUserName, @sAccess, @fIsBatch
 		END
 		CLOSE usage_cursor
 		DEALLOCATE usage_cursor
@@ -495,6 +501,6 @@ BEGIN
 	END
 
 	/* Return the usage records. */
-	SELECT * FROM @results;
+	SELECT * FROM @results ORDER BY description;
 
 END
