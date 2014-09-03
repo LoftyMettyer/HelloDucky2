@@ -8,73 +8,104 @@ Namespace Code.Hubs
 	Public Class NotificationHub
 		Inherits Hub
 
-		Public Sub Send(messageFrom As String, message As String)
+		Private Shared connection As SqlConnection
+
+		Public Shared Sub Connect()
+
+			connection = New SqlConnection(ConfigurationManager.ConnectionStrings("OpenHR").ConnectionString)
+			If connection.State = ConnectionState.Closed Then
+				connection.Open()
+			End If
+
+		End Sub
+
+		Public Sub SendMessage(messageFrom As String, message As String, forceLogout As Boolean)
 			Dim allContext = GlobalHost.ConnectionManager.GetHubContext(Of NotificationHub)()
-			allContext.Clients.All.SystemAdminMessage(messageFrom, message)
+			allContext.Clients.All.SystemAdminMessage(messageFrom, message, forceLogout)
 		End Sub
 
-		' Handler method
-		Private Sub OnDependencyChange(sender As Object, e As SqlNotificationEventArgs)
-
+		Private Sub OnMessageChange(sender As Object, e As SqlNotificationEventArgs)
 			Dim Dependency As SqlDependency = CType(sender, SqlDependency)
-			RemoveHandler Dependency.OnChange, AddressOf OnDependencyChange
-
+			RemoveHandler Dependency.OnChange, AddressOf OnMessageChange
 			GetMessages()
-
 		End Sub
 
-		Public Function GetMessages() As DataTable
-			Dim dt As New DataTable()
+		Private Sub OnLockStatusChange(sender As Object, e As SqlNotificationEventArgs)
+			Dim Dependency As SqlDependency = CType(sender, SqlDependency)
+			RemoveHandler Dependency.OnChange, AddressOf OnLockStatusChange
+			GetLockStatus()
+		End Sub
+
+		Public Sub GetLockStatus()
 
 			Try
 
-				Dim connection = New SqlConnection(ConfigurationManager.ConnectionStrings("OpenHR").ConnectionString)
+				Dim dt As New DataTable()
 
-				Dim cmd As New SqlCommand("SELECT loginname, message, messageSource FROM dbo.ASRSysMessages", connection)
+				Dim cmd As New SqlCommand("SELECT Priority, Username FROM dbo.ASRSysLock WHERE Priority IN (1,2) ", connection)
 				cmd.CommandType = CommandType.Text
-
-				' Clear any existing notifications
 				cmd.Notification = Nothing
 
-				' Create the dependency for this command
 				Dim dependency As New SqlDependency(cmd)
+				AddHandler dependency.OnChange, AddressOf OnLockStatusChange
 
-				' Add the event handler
-				AddHandler dependency.OnChange, AddressOf OnDependencyChange
+				Dim iPriority As LockPriority
+				Dim sMessage As String = ""
+				Dim sMessageFrom As String = ""
 
-				' Open the connection if necessary
 				If connection.State = ConnectionState.Closed Then
 					connection.Open()
 				End If
 
-				' Get the messages
-				dt.Load(cmd.ExecuteReader(CommandBehavior.CloseConnection))
+				dt.Load(cmd.ExecuteReader())
+				For Each objRow In dt.Rows
+					iPriority = CType(objRow("Priority"), LockPriority)
+					sMessageFrom = objRow("UserName").ToString()
+					sMessage += "The system administrator has initiated a system save. You will need to logout."
+				Next
+
+				If iPriority = LockPriority.Manual OrElse iPriority = LockPriority.Saving Then
+					SendMessage(sMessageFrom, sMessage, True)
+				End If
+
+			Catch ex As Exception
+				Throw
+
+			End Try
+
+		End Sub
+
+		Public Sub GetMessages()
+			Dim dt As New DataTable()
+
+			Try
 
 				Dim sMessage As String = ""
 				Dim sMessageFrom As String = ""
 
-				'	Dim context = GlobalHost.ConnectionManager.GetHubContext(Of LogoutHub)()
+				Dim cmd As New SqlCommand("SELECT loginname, message, messageSource FROM dbo.ASRSysMessages WHERE LoginName = 'OpenHR Web Server'", connection)
+				cmd.CommandType = CommandType.Text
+				cmd.Notification = Nothing
+				Dim dependency As New SqlDependency(cmd)
+				AddHandler dependency.OnChange, AddressOf OnMessageChange
 
+				If connection.State = ConnectionState.Closed Then
+					connection.Open()
+				End If
+
+				dt.Load(cmd.ExecuteReader)
 				For Each objRow In dt.Rows
 					sMessageFrom = "System Administrator"
 					sMessage += objRow("message")
-					'''''		'  objChatHub.Send("server", sMessage)
-					''''				'        context.Clients.All.Send("Admin", sMessage)
-
-					'context.Clients.All.broadcastMessage("Admin", sMessage)
-
-
 				Next
 
-				Send(sMessageFrom, sMessage)
-
+				SendMessage(sMessageFrom, sMessage, False)
 
 			Catch ex As Exception
 				Throw
 			End Try
 
-			Return dt
-		End Function
+		End Sub
 
 
 	End Class

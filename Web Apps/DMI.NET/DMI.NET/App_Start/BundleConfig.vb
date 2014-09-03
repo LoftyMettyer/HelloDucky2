@@ -53,6 +53,11 @@ Namespace App_Start
 				"~/Scripts/ctl_SetStyles.js",
 				"~/Scripts/jquery/jquery.hotkeys.js"))
 
+			' SignalR
+			bundles.Add(New ScriptBundle("~/bundles/SignalR").Include(
+				"~/Scripts/jquery.signalR-2.1.1.min.js",
+				"~/signalr/hubs"))
+
 			' Custom Reports
 			bundles.Add(New ScriptBundle("~/bundles/utilities_customreports").Include(
 				"~/Scripts/FormScripts/ReportDefinition.js",

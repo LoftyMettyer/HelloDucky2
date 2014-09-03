@@ -54,11 +54,8 @@
 	<script src="<%: Url.LatestContent("~/bundles/jQueryUI7")%>" type="text/javascript"></script>
 	<script src="<%: Url.LatestContent("~/bundles/Microsoft")%>" type="text/javascript"></script>
 	<script src="<%: Url.LatestContent("~/bundles/OpenHR_General")%>" type="text/javascript"></script>
-
-  <script src="../../Scripts/jquery.signalR-2.1.1.min.js"></script>
-  <script src="../../signalr/hubs"></script>
+	<script src="<%: Url.LatestContent("~/bundles/SignalR")%>" type="text/javascript"></script>
 	
-
 	<script type="text/javascript">
 
 		window.LocaleDateFormat = "";
@@ -73,6 +70,12 @@
 		});
 
 		$(document).ready(function () {
+
+			$.ajax({
+				url: "/signalr/hubs",
+				dataType: "script",
+				async: false
+			});
 
 			OpenHR.setDatepickerLanguage();
 

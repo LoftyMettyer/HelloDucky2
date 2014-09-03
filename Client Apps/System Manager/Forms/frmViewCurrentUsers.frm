@@ -453,7 +453,7 @@ Private Function GetUsers() As Boolean
 
   fOK = CurrentUsersPopulate(grdUsers)
   Form_Resize
-  cmdSendMessage.Enabled = (grdUsers.Rows > 0)
+  cmdSendMessage.Enabled = True
 
   Screen.MousePointer = intTempPointer
 

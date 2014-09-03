@@ -215,11 +215,8 @@ function goScreen(psScreenInfo) {
 
 	//check to see if we're completing a drag event
 	if (!dragged) {
-		
-		//Check for messages from server
-		OpenHR.CheckForMessages();
+	
 
-		var sDestination;
 		menu_disableMenu();				
 		loadPartialView("recordEditMain", "home", "workframe", psScreenInfo);
 	}

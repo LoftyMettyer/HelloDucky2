@@ -633,7 +633,6 @@
     <Build Include="Stored Procedures\Web\spASRIntGetLoginDetails.sql" />
     <Build Include="Stored Procedures\Web\spASRTrackSession.sql" />
     <Build Include="Tables\ASRSysCurrentLogins.sql" />
-    <Build Include="Stored Procedures\Web\spASRIntGetMessages.sql" />
     <Build Include="Stored Procedures\Web\spASRIntCopyRecordPostSave.sql" />
     <Build Include="Stored Procedures\System Manager\spASRDatabaseStatus.sql" />
     <Build Include="Stored Procedures\Auto Generated\spASRGetCurrentUsersFromMaster.sql" />

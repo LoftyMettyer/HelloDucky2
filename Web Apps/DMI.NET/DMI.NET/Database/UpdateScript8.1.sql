@@ -64,6 +64,9 @@ IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spASRIntVa
 	DROP PROCEDURE [dbo].[spASRIntValidateMailMerge];
 GO
 
+IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spASRIntGetMessages]') AND xtype in (N'P'))
+	DROP PROCEDURE [dbo].[spASRIntGetMessages];
+GO
 
 
 

@@ -20,7 +20,9 @@ Public Class DatabaseConfig
 
 		SqlDependency.Start(sConnection)
 		Dim NotificationHub As New NotificationHub
+		NotificationHub.Connect()
 		NotificationHub.GetMessages()
+		NotificationHub.GetLockStatus()
 
 	End Sub
 

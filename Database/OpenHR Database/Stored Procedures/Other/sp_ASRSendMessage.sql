@@ -86,5 +86,9 @@ BEGIN
 	WHEN NOT MATCHED BY SOURCE THEN
 		DELETE;
 
+	-- Message to the Web Server
+	INSERT INTO ASRSysMessages 
+		(loginname, [message], loginTime, [dbid], [uid], spid, messageTime, messageFrom, messageSource) 
+		VALUES('OpenHR Web Server', @psMessage, @dtLoginTime, @iDBid, @iUid, @iSPid, @currentDate, @sCurrentUser, @sCurrentApp);
 
 END

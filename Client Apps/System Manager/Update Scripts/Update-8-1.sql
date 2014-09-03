@@ -49,6 +49,166 @@ BEGIN
 END
 
 
+IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[sp_ASRSendMessage]') AND xtype = 'P')
+		DROP PROCEDURE [dbo].[sp_ASRSendMessage];
+EXECUTE sp_executeSQL N'CREATE PROCEDURE [dbo].[sp_ASRSendMessage] 
+(
+	@psMessage	varchar(MAX),
+	@psSPIDS	varchar(MAX)
+)
+AS
+BEGIN
+	DECLARE @iDBid		integer,
+		@iSPid			integer,
+		@iUid			integer,
+		@sLoginName		varchar(256),
+		@dtLoginTime	datetime, 
+		@sCurrentUser	varchar(256),
+		@sCurrentApp	varchar(256),
+		@Realspid		integer;
+
+		DECLARE @currentDate	datetime = GETDATE();
+
+	CREATE TABLE #tblCurrentUsers				
+		(
+			hostname varchar(256)
+			,loginame varchar(256)
+			,program_name varchar(256)
+			,hostprocess varchar(20)
+			,sid binary(86)
+			,login_time datetime
+			,spid int
+			,uid smallint);
+			
+	INSERT INTO #tblCurrentUsers
+		EXEC spASRGetCurrentUsers;
+
+	--Need to get spid of parent process
+	SELECT @Realspid = a.spid
+	FROM #tblCurrentUsers a
+	FULL OUTER JOIN #tblCurrentUsers b
+		ON a.hostname = b.hostname
+		AND a.hostprocess = b.hostprocess
+		AND a.spid <> b.spid
+	WHERE b.spid = @@Spid;
+
+	--If there is no parent spid then use current spid
+	IF @Realspid is null SET @Realspid = @@spid;
+
+	/* Get the process information for the current user. */
+	SELECT @iDBid = db_id(), 
+		@sCurrentUser = loginame,
+		@sCurrentApp = program_name
+	FROM #tblCurrentUsers
+	WHERE spid = @@Spid;
+
+	/* Get a cursor of the other logged in users. */
+	DECLARE logins_cursor CURSOR LOCAL FAST_FORWARD FOR 
+		SELECT DISTINCT spid, loginame, uid, login_time
+		FROM #tblCurrentUsers
+		WHERE (spid <> @@spid and spid <> @Realspid)
+		AND (@psSPIDS = '''' OR charindex('' ''+convert(varchar,spid)+'' '', @psSPIDS)>0);
+
+	OPEN logins_cursor;
+	FETCH NEXT FROM logins_cursor INTO @iSPid, @sLoginName, @iUid, @dtLoginTime;
+	WHILE (@@fetch_status = 0)
+	BEGIN
+		/* Create a message record for each user. */
+		INSERT INTO ASRSysMessages 
+			(loginname, [message], loginTime, [dbid], [uid], spid, messageTime, messageFrom, messageSource) 
+			VALUES(@sLoginName, @psMessage, @dtLoginTime, @iDBid, @iUid, @iSPid, @currentDate, @sCurrentUser, @sCurrentApp);
+
+		FETCH NEXT FROM logins_cursor INTO @iSPid, @sLoginName, @iUid, @dtLoginTime;
+	END
+	CLOSE logins_cursor;
+	DEALLOCATE logins_cursor;
+
+	IF OBJECT_ID(''tempdb..#tblCurrentUsers'', N''U'') IS NOT NULL
+		DROP TABLE #tblCurrentUsers;
+
+	-- Send message to all the web connections
+	MERGE INTO ASRSysMessages AS Target
+		USING (SELECT username, loginTime
+			FROM ASRSysCurrentLogins) AS SOURCE (LoginName, loginTime)
+	ON target.loginName = source.LoginName AND target.loginTime = source.loginTime
+	WHEN MATCHED THEN
+		UPDATE SET message = @psMessage
+	WHEN NOT MATCHED BY TARGET THEN
+		INSERT (LoginName, message, loginTime, messageTime, messageFrom, messageSource)
+		VALUES (LoginName, @psMessage, loginTime, @currentDate, @sCurrentUser, @sCurrentApp)
+	WHEN NOT MATCHED BY SOURCE THEN
+		DELETE;
+
+	-- Message to the Web Server
+	INSERT INTO ASRSysMessages 
+		(loginname, [message], loginTime, [dbid], [uid], spid, messageTime, messageFrom, messageSource) 
+		VALUES(''OpenHR Web Server'', @psMessage, @dtLoginTime, @iDBid, @iUid, @iSPid, @currentDate, @sCurrentUser, @sCurrentApp);
+
+END'
+
+
+IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spASRGetCurrentUsersCountInApp]') AND xtype = 'P')
+		DROP PROCEDURE [dbo].[spASRGetCurrentUsersCountInApp];
+EXECUTE sp_executeSQL N'CREATE PROCEDURE [dbo].[spASRGetCurrentUsersCountInApp]
+(
+	@piCount integer OUTPUT
+)
+AS
+BEGIN
+
+	SET NOCOUNT ON;
+
+	DECLARE @Mode			smallint;
+
+	SELECT @Mode = [SettingValue] FROM ASRSysSystemSettings WHERE [Section] = ''ProcessAccount'' AND [SettingKey] = ''Mode'';
+	IF @@ROWCOUNT = 0 SET @Mode = 0;
+
+	IF (@Mode = 1 OR @Mode = 2) AND (NOT IS_SRVROLEMEMBER(''sysadmin'') = 1)
+	BEGIN
+		SELECT @piCount = dbo.[udfASRNetCountCurrentUsersInApp](APP_NAME());
+	END
+	ELSE
+	BEGIN
+
+		SELECT @piCount = COUNT(p.Program_Name)
+		FROM     master..sysprocesses p
+		JOIN     master..sysdatabases d
+		  ON     d.dbid = p.dbid
+		WHERE    p.program_name = APP_NAME()
+		  AND    d.name = db_name()
+		GROUP BY p.program_name;
+	END
+
+END'
+
+
+IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spASRGetCurrentUsersAppName]') AND xtype = 'P')
+		DROP PROCEDURE [dbo].[spASRGetCurrentUsersAppName];
+EXECUTE sp_executeSQL N'CREATE PROCEDURE [dbo].[spASRGetCurrentUsersAppName]
+(
+	@psAppName		varchar(MAX) OUTPUT,
+	@psUserName		varchar(MAX)
+)
+AS
+BEGIN
+
+    SELECT TOP 1 @psAppName = rtrim(p.program_name)
+    FROM master..sysprocesses p
+    WHERE p.program_name LIKE ''OpenHR%''
+		AND	p.program_name NOT LIKE ''OpenHR Workflow%''
+		AND	p.program_name NOT LIKE ''OpenHR Outlook%''
+		AND	p.program_name NOT LIKE ''OpenHR Server.Net%''
+		AND	p.program_name NOT LIKE ''OpenHR Intranet Embedding%''
+		AND	p.loginame = @psUsername
+    GROUP BY p.hostname
+           , p.loginame
+           , p.program_name
+           , p.hostprocess
+    ORDER BY p.loginame;
+
+END'
+
+
 
 /* ------------------------------------------------------------- */
 /* Update the database version flag in the ASRSysSettings table. */

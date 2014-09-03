@@ -26,17 +26,6 @@
 
 	}
 
-	function checkForMessages() {
-		
-		var frmMessage = OpenHR.getForm("divPollMessage", "frmPollMessage");
-
-		try {
-			$('#txtIsSessionTimeout').val('false');
-			OpenHR.submitForm(frmMessage, "divPollMessage");
-		} catch(e) {
-		}
-	}
-
 	function handleAjaxError(html) {
 		//handle error
 		messageBox(html.ErrorMessage.replace("<p>", "\n\n"), 48, html.ErrorTitle);
@@ -1264,7 +1253,6 @@
 		getCookie: getCookie,
 		CheckOLEFileNameLength: CheckOLEFileNameLength,
 		GetFileExtension: getFileExtension,
-		CheckForMessages: checkForMessages,
 		SessionTimeout: sessionTimeout,
 		printDiv: printDiv,
 		nullsafeString: nullsafeString,

@@ -1628,10 +1628,6 @@
 
 		$('header').show();
 
-		//Check for messages from server
-		OpenHR.CheckForMessages();
-
-
 		resetTimeout();	//Site.Master function.
 
 	});

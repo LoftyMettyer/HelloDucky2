@@ -286,11 +286,6 @@ function menu_MenuClick(sTool) {
 	//added for non-IE compatibility
 	var frmMenuInfo = document.getElementById("frmMenuInfo");
 
-	if ((sTool !== 'mnutoolFixedSelfService') && (sTool !== 'mnutoolAccessLinksFind')) {
-		//don't check for messages if hitting dashboard from DMI, or loading multirecord dashboard - they both fire the check themselves.
-	OpenHR.CheckForMessages();
-	}		
-
 	sToolName = sTool;
 	sCurrentWorkPage = OpenHR.currentWorkPage();
 

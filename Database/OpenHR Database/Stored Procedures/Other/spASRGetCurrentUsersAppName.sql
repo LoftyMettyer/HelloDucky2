@@ -6,11 +6,6 @@ CREATE PROCEDURE [dbo].[spASRGetCurrentUsersAppName]
 AS
 BEGIN
 
-    IF EXISTS (SELECT Name FROM sysobjects WHERE id = object_id('sp_ASRIntCheckPolls') AND sysstat & 0xf = 4)
-    BEGIN
-        EXEC sp_ASRIntCheckPolls;
-    END
-
     SELECT TOP 1 @psAppName = rtrim(p.program_name)
     FROM master..sysprocesses p
     WHERE p.program_name LIKE 'OpenHR%'

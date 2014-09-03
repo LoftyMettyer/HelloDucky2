@@ -1057,24 +1057,13 @@ Private Function CreateSP_GetCurrentUsers() As Boolean
     "ALTER PROCEDURE [dbo].[spASRGetCurrentUsers]" & vbNewLine & _
     "AS" & vbNewLine & _
     "BEGIN" & vbNewLine & vbNewLine & _
-    "   SET NOCOUNT ON;" & vbNewLine & vbNewLine & _
-    "   IF EXISTS (SELECT Name FROM sysobjects WHERE id = object_id('sp_ASRIntCheckPolls') AND sysstat & 0xf = 4)" & vbNewLine & _
-    "       AND APP_NAME() NOT LIKE 'OpenHR Workflow%'" & vbNewLine & _
-    "       AND APP_NAME() NOT LIKE 'OpenHR Mobile%'" & vbNewLine & _
-    "       AND APP_NAME() NOT LIKE 'OpenHR Outlook%'" & vbNewLine & _
-    "       AND APP_NAME() NOT LIKE 'System Framework Assembly%'" & vbNewLine & _
-    "       AND APP_NAME() NOT LIKE 'OpenHR Intranet Embedding%'" & vbNewLine & _
-    "   BEGIN" & vbNewLine & _
-    "       EXEC sp_executeSQL N'dbo.sp_ASRIntCheckPolls'" & vbNewLine & _
-    "   END" & vbNewLine & vbNewLine
+    "   SET NOCOUNT ON;" & vbNewLine & vbNewLine
     
   sProcSQL = sProcSQL & _
-    "   DECLARE @sSQLVersion  integer," & vbNewLine & _
-    "           @Mode         smallint" & vbNewLine & vbNewLine & _
+    "   DECLARE @Mode         smallint" & vbNewLine & vbNewLine & _
     "   SELECT @Mode = [SettingValue] FROM ASRSysSystemSettings WHERE [Section] = 'ProcessAccount' AND [SettingKey] = 'Mode';" & vbNewLine & _
     "   IF @@ROWCOUNT = 0 SET @Mode = 0" & vbNewLine & vbNewLine & _
-    "   SELECT @sSQLVersion = dbo.udfASRSQLVersion();" & vbNewLine & vbNewLine & _
-    "   IF ((@Mode = 1 OR @Mode = 2) AND @sSQLVersion > 8) AND (NOT IS_SRVROLEMEMBER('sysadmin') = 1)" & vbNewLine & _
+    "   IF (@Mode = 1 OR @Mode = 2) AND (NOT IS_SRVROLEMEMBER('sysadmin') = 1)" & vbNewLine & _
     "   BEGIN" & vbNewLine & _
     "       EXECUTE sp_executeSQL N'dbo.[spASRGetCurrentUsersFromAssembly]'" & vbNewLine & _
     "   END" & vbNewLine & _
