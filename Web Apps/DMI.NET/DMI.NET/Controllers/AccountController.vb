@@ -161,7 +161,6 @@ Namespace Controllers
 				Session("filterSQL") = ""
 				Session("filterDef") = ""
 				Session("optionAction") = ""
-				' Session("server") = ""
 
 				Session("showLoginDetails") = Request.QueryString("Details")
 			Catch ex As Exception
@@ -387,10 +386,6 @@ Namespace Controllers
 
 				End Try
 				Session("WF_ShowOutOfOffice") = fShowOOOHyperlink
-
-				'
-				Session("Server") = sServerName
-				Session("Database") = sDatabaseName
 				Session("WinAuth") = bWindowsAuthentication
 				Session("UserGroup") = objServerSession.LoginInfo.UserGroup
 
@@ -476,9 +471,6 @@ Namespace Controllers
 				cookie.Expires = DateTime.Now.AddYears(1)
 				cookie.HttpOnly = True
 				cookie("User") = loginviewmodel.UserName
-				'dont save or retrieve these anymore HRPRO-3030 / 3031
-				'cookie("Database") = Request.Form("txtDatabase")
-				'cookie("Server") = Request.Form("txtServer")
 				cookie("WindowsAuthentication") = loginviewmodel.WindowsAuthentication
 				Response.Cookies.Add(cookie)
 

@@ -1,4 +1,5 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
+<%@ Import Namespace="DMI.NET.Code" %>
 <%@ Import Namespace="DMI.NET" %>
 <%@ Import Namespace="HR.Intranet.Server" %>
 <%@ Import Namespace="HR.Intranet.Server.Structures" %>
@@ -452,7 +453,7 @@
 <FORM action="" method=POST id=frmMenuInfo name=frmMenuInfo>
 <%
 	Response.Write("<INPUT type=""hidden"" id=txtDefaultStartPage name=txtDefaultStartPage value=""" & Replace(Session("DefaultStartPage"), """", "&quot;") & """>")
-	Response.Write("<INPUT type=""hidden"" id=txtDatabase name=txtDatabase value=""" & Replace(Session("Database"), """", "&quot;") & """>")
+	Response.Write("<INPUT type=""hidden"" id=txtDatabase name=txtDatabase value=""" & Replace(ApplicationSettings.LoginPage_Database, """", "&quot;") & """>")
 %>
 	<input type="hidden" id="txtIsDMIUser" name="txtIsDMIUser" value=<%= objSessionContext.LoginInfo.IsDMIUser%>>
 	<input type="hidden" id="txtIsDMISingle" name="txtIsDMISingle" value=<%= objSessionContext.LoginInfo.IsDMISingle%>>

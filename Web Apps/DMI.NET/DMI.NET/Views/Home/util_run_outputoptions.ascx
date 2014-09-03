@@ -1055,7 +1055,6 @@
 		</tr>
 	</table>
 
-	<input type="hidden" id="txtDatabase" name="txtDatabase" value="<%=Session("Database")%>">
 	<input type="hidden" id="txtUtilType" name="txtUtilType" value="<%=Session("utilType")%>">
 	<input type="hidden" id="txtWordVer" name="txtWordVer" value="<%=Session("WordVer")%>">
 	<input type="hidden" id="txtExcelVer" name="txtExcelVer" value="<%=Session("ExcelVer")%>">

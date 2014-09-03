@@ -1,4 +1,5 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
+<%@ Import Namespace="DMI.NET.Code" %>
 <%@ Import Namespace="DMI.NET" %>
 <%@ Import Namespace="HR.Intranet.Server.Enums" %>
 <%@ Import Namespace="HR.Intranet.Server" %>
@@ -850,7 +851,6 @@
 				onclick="absence_returnToRecEdit()" />
 		</div>
 
-		<input type='hidden' id="txtDatabase" name="txtDatabase" value="<%=session("Database")%>">
 		<input type="hidden" id="txtWordVer" name="txtWordVer" value="<%=Session("WordVer")%>">
 		<input type="hidden" id="txtExcelVer" name="txtExcelVer" value="<%=Session("ExcelVer")%>">
 		<input type="hidden" id="txtWordFormats" name="txtWordFormats" value="<%=Session("WordFormats")%>">

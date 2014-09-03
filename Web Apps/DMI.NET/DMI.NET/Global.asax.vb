@@ -46,18 +46,6 @@ Public Class MvcApplication
 
 		Server.ScriptTimeout = 1000
 
-		If String.IsNullOrEmpty(Request.QueryString("database")) Then
-			Session("database") = ApplicationSettings.LoginPage_Database
-		Else
-			Session("database") = Request.QueryString("database")
-		End If
-
-		If String.IsNullOrEmpty(Request.QueryString("server")) Then
-			Session("server") = ApplicationSettings.LoginPage_Server
-		Else
-			Session("server") = Request.QueryString("server")
-		End If
-
 
 		Session("username") = Request.QueryString("username")
 		If Request.QueryString("username") = "" Then

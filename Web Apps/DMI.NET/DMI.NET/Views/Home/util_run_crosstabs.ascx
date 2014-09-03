@@ -1,4 +1,5 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
+<%@ Import Namespace="DMI.NET.Code" %>
 <%@ Import Namespace="DMI.NET" %>
 <%@ Import Namespace="HR.Intranet.Server.Enums" %>
 <%@ Import Namespace="HR.Intranet.Server" %>
@@ -161,7 +162,6 @@ Session("utiltype = 17 		Calendar Report--%>
 	%>
 	<input type="hidden" id="txtUserName" name="txtUserName" value="<%=session("username")%>">
 	<input type="hidden" id="txtDateFormat" name="txtDateFormat" value="<%=session("LocaleDateFormat")%>">
-	<input type="hidden" id="txtDatabase" name="txtDatabase" value="<%=session("database")%>">
 
 	<input type="hidden" id="txtCurrentPrintPage" name="txtCurrentPrintPage">
 	<input type="hidden" id="txtCancelPrint" name="txtCancelPrint">

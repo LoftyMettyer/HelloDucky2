@@ -3,6 +3,7 @@
 	Response.AddHeader("Pragma", "no-cache")
 	Response.Expires = -1%>
 <%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl(Of HR.Intranet.Server.NavLinksViewModel)" %>
+<%@ Import Namespace="DMI.NET.Code" %>
 <%@ Import Namespace="DMI.NET" %>
 <%@ Import Namespace="HR.Intranet.Server.Enums" %>
 <%@ Import Namespace="System.Data" %>
@@ -1394,7 +1395,6 @@
 <form action="" method="POST" id="frmMenuInfo" name="frmMenuInfo">
 	<%
 		Response.Write("<INPUT type=""hidden"" id=txtDefaultStartPage name=txtDefaultStartPage value=""" & Replace(Session("DefaultStartPage"), """", "&quot;") & """>")
-		Response.Write("<INPUT type=""hidden"" id=txtDatabase name=txtDatabase value=""" & Replace(Session("Database"), """", "&quot;") & """>")
 	%>
 
 	<input type="hidden" id="txtIsDMIUser" name="txtIsDMIUser" value=<%= objSession.LoginInfo.IsDMIUser%>>

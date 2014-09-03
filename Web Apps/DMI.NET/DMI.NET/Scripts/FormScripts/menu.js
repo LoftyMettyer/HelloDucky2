@@ -86,15 +86,10 @@
 		setTimeout("$(menu_abMainMenu_DataReady())", 0);
 
 
-
-
 		//Refreshes toolbars display and layout after modifying any of the properties at runtime.
 		//DON'T NEED.
 		//abMainMenu.RecalcLayout();
 		//		}
-
-		//TODO 
-		//ASRIntranetFunctions.DatabaseName = frmMenuInfo.txtDatabase.value;
 
 	}
 }
@@ -140,55 +135,7 @@ function ReloadPageWithFindTerm() {
 
 function menu_abMainMenu_DataReady() {
 	var iVisibleCount;
-	var iLoop;
-	var sKey;
-
-	//Get the frmMenuInfo object for implicit use in this function (non-ie)
-	var frmMenuInfo = document.getElementById("frmMenuInfo");
-
-
-	//THIS BLOCK WAS USED TO READ MENU LAYOUTS. 
-	//NOT REQUIRED
-	//	sKey = new String("tempmenufilepath_");
-	//	sKey = sKey.concat(frmMenuInfo.txtDatabase.value);	
-	//	sPath = ASRIntranetFunctions.GetRegistrySetting("HR Pro", "DataPaths", sKey);
-	//	if(sPath == "") {
-	//		sPath = "c:\\";
-	//	}
-
-	//	if(sPath == "<NONE>") {
-	//		frmMenuInfo.txtMenuSaved.value = 1;
-	//		abMainMenu.RecalcLayout();
-	//	}
-	//	else {
-	//		if (sPath.substr(sPath.length - 1, 1) != "\\") {
-	//			sPath = sPath.concat("\\");
-	//		}
-	//		
-	//		sPath = sPath.concat("tempmenu.asp");
-	//		if ((abMainMenu.Bands.Count() > 0) && (frmMenuInfo.txtMenuSaved.value == 0) && (window.menuErrorShown = false)) {
-	//			try {
-	//				abMainMenu.save(sPath, "");
-	//			}
-	//			catch(e) {
-	//				sKey = new String("tempMenuFilePath_");
-	//				sKey = sKey.concat(frmMenuInfo.txtDatabase.value);	
-	//				ASRIntranetFunctions.SaveRegistrySetting("HR Pro", "DataPaths", sKey, "<%=cleanStringForJavaScript(session('dfltTempMenuFilePath'))%>");
-	//				
-	//				ASRIntranetFunctions.MessageBox("The specified temporary menu file path cannot be written to. The default temporary menu file path will be applied."); 
-	//        menuErrorShown = true;
-	//			}			
-	//			frmMenuInfo.txtMenuSaved.value = 1;
-	//		}
-	//		else {
-	//			if ((abMainMenu.Bands.Count() == 0) && (frmMenuInfo.txtMenuSaved.value == 1)) {
-	//				abMainMenu.DataPath = sPath;
-	//				abMainMenu.RecalcLayout();
-	//				return;
-	//			}
-	//		}
-	//	}
-
+	
 	//Disable/Hide menu items that are irrelevent for this user...
 	menu_refreshMenu();
 

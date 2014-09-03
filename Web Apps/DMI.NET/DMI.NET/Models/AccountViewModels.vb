@@ -2,7 +2,6 @@
 Imports System.Web.HttpContext
 Imports DMI.NET.Code
 Imports System.Data.SqlClient
-Imports System.Diagnostics.Eventing.Reader
 
 Namespace Models
 
@@ -74,37 +73,8 @@ Namespace Models
 
 			Try
 
-				' -- SHOW 'DETAILS' BOXES? --
-				If Current.Request.QueryString("Details") <> "" OrElse _
-					Current.Request.QueryString("database") <> "" OrElse _
-					Current.Request.QueryString("server") <> "" OrElse _
-					Current.Request.QueryString.ToString() = "%3f" Then	' %3f = ?? to show details button.
-					SetDetails = True
-				Else
-					SetDetails = False
-				End If
-
-				' -- DATABASE & SERVER -- 
-				If Current.Request.QueryString.Count = 0 Then
-
-					Database = ApplicationSettings.LoginPage_Database
-					Server = ApplicationSettings.LoginPage_Server
-
-					If Current.Session("server") <> Server OrElse Current.Session("database") <> Database Then
-						Database = Current.Session("database")
-						Server = Current.Session("server")
-					End If
-
-				Else 'Override database or server if a value is provided in the querystring
-					If Not String.IsNullOrEmpty(Current.Request.QueryString("database")) Then
-						Database = Current.Server.HtmlDecode(Current.Request.QueryString("database"))
-						Current.Session("database") = Database
-					End If
-					If Not String.IsNullOrEmpty(Current.Request.QueryString("server")) Then
-						Server = Current.Server.HtmlDecode(Current.Request.QueryString("server"))
-						Current.Session("server") = Server
-					End If
-				End If
+				Database = ApplicationSettings.LoginPage_Database
+				Server = ApplicationSettings.LoginPage_Server
 
 				' -- USER NAME --
 				If Current.Request.QueryString("user") <> "" Then

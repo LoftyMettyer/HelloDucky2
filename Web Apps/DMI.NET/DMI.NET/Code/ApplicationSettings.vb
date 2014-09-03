@@ -3,16 +3,9 @@ Option Explicit On
 
 Namespace Code
 	Public Class ApplicationSettings
-		Public Shared ReadOnly Property LoginPage_Database As String
-			Get
-				Return ConfigurationManager.AppSettings("LoginPage_Database")
-			End Get
-		End Property
-		Public Shared ReadOnly Property LoginPage_Server As String
-			Get
-				Return ConfigurationManager.AppSettings("LoginPage_Server")
-			End Get
-		End Property
+		Public Shared Property LoginPage_Database As String
+		Public Shared Property LoginPage_Server As String
+
 		Public Shared ReadOnly Property UI_Admin_Theme As String
 			Get
 				Return ConfigurationManager.AppSettings("UI_Admin_Theme")

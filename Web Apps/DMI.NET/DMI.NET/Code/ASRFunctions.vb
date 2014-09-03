@@ -24,7 +24,7 @@ Public Module ASRFunctions
 
 	Public Sub PopulatePersonnelSessionVariables()
 
-		Dim objDataAccess As clsDataAccess = CType(HttpContext.Current.Session("DatabaseAccess"), clsDataAccess)
+		Dim objDataAccess As New clsDataAccess(ConfigurationManager.ConnectionStrings("OpenHR").ConnectionString)
 		Dim prmEmpTableID = New SqlParameter("piEmployeeTableID", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
 
 		Try
@@ -41,7 +41,7 @@ Public Module ASRFunctions
 
 	Public Sub PopulateWorkflowSessionVariables()
 
-		Dim objDataAccess As clsDataAccess = CType(HttpContext.Current.Session("DatabaseAccess"), clsDataAccess)
+		Dim objDataAccess As New clsDataAccess(ConfigurationManager.ConnectionStrings("OpenHR").ConnectionString)
 		Dim prmWFEnabled = New SqlParameter("pfWFEnabled", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
 		Dim prmWFOutOfOfficeConfig = New SqlParameter("pfOutOfOfficeConfigured", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
 		Dim bWorkflowEnabled As Boolean = False
@@ -93,7 +93,7 @@ Public Module ASRFunctions
 
 		Try
 
-			Dim objDataAccess As clsDataAccess = CType(HttpContext.Current.Session("DatabaseAccess"), clsDataAccess)
+			Dim objDataAccess As New clsDataAccess(ConfigurationManager.ConnectionStrings("OpenHR").ConnectionString)
 
 			Dim prmEmpTableID = New SqlParameter("piEmployeeTableID", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
 			Dim prmCourseTableID = New SqlParameter("piCourseTableID", SqlDbType.Int) With {.Direction = ParameterDirection.Output}

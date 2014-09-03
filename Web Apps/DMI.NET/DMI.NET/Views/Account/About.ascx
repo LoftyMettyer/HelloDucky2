@@ -39,7 +39,7 @@
 						</td>
 						<td width="40"></td>
 					</tr>
-					<%If Len(Session("Server")) = 0 Then
+					<%If Len(ApplicationSettings.LoginPage_Server) = 0 Then
 							iNumRows = 12
 						Else
 							iNumRows = 16
@@ -54,19 +54,19 @@
 						<td width="40" rowspan="<%=iNumRows %>"></td>
 					</tr>
 
-					<%If Len(Session("Server")) > 0 Then%>
+					<%If Len(ApplicationSettings.LoginPage_Server) > 0 Then%>
 						<tr>
 							<td style="vertical-align: top; text-align: left; white-space: nowrap; padding-right: 10px;">Server : 
 							</td>
 							<td style="vertical-align: top; text-align: left; white-space: nowrap;">
-								<%=session("Server")%>
+								<%=ApplicationSettings.LoginPage_Server%>
 							</td>
 						</tr>
 						<tr>
 							<td style="vertical-align: top; text-align: left; white-space: nowrap; padding-right: 10px;">Database : 
 							</td>
 							<td style="vertical-align: top; text-align: left; white-space: nowrap;">
-								<%=session("Database")%>
+								<%=ApplicationSettings.LoginPage_Database%>
 							</td>
 						</tr>
 						<tr>
