@@ -1156,42 +1156,29 @@
 	},
 
 	moveItemInGrid = function (grid, direction) {
-	
-		var selectedRow;
 
 		if (grid.getGridParam('selrow')) {
-			var ids = grid.getDataIDs();
-			var temp = 0;
-			var currRow = grid.getGridParam('selrow');
 
-			if (direction === 'up' && currRow > 1) {
-				var r1 = grid.getRowData(currRow - 1);
-				var r2 = grid.getRowData(currRow);
-				grid.delRowData(currRow - 1);
-				grid.delRowData(currRow);
-				temp = r1.Sequence;
-				r1.Sequence = r2.Sequence;
-				r2.Sequence = temp;
-				grid.addRowData(r1.Sequence, r1);
-				grid.addRowData(r2.Sequence, r2);
-				selectedRow = r2.ID;
-			}
+			var ids = grid.getDataIDs();
+			var currRow = grid.getGridParam('selrow');
+			var index = grid.getInd(currRow) - 1;
+			var rowData = grid.getRowData(ids[index]);
+
 			var recordCount = grid.getGridParam("records");
-			if (direction === 'down' && currRow < recordCount) {
-				var r1 = grid.getRowData(currRow);
-				var r2 = grid.getRowData(parseInt(currRow) + 1);
-				grid.delRowData(currRow);
-				grid.delRowData(parseInt(currRow) + 1);
-				temp = r1.Sequence;
-				r1.Sequence = r2.Sequence;
-				r2.Sequence = temp;
-				grid.addRowData(r1.Sequence, r1);
-				grid.addRowData(r2.Sequence, r2);
-				selectedRow = r1.ID;
+
+			if (direction === 'up' && index > 0) {
+				var rowAbove = grid.getRowData(ids[index - 1]);
+				grid.delRowData(rowData.ID);
+				grid.addRowData(rowData.ID, rowData, 'before', rowAbove.ID);
+
 			}
-			// Sort the table   
-			grid.setGridParam({ sortname: 'Sequence' }).trigger('reloadGrid');
-			grid.jqGrid("setSelection", selectedRow);
+			if (direction === 'down' && index < recordCount) {
+				var rowBelow = grid.getRowData(ids[index + 1]);
+				grid.delRowData(rowData.ID);
+				grid.addRowData(rowData.ID, rowData, 'after', rowBelow.ID);
+			}
+
+			grid.jqGrid("setSelection", rowData.ID);
 		}
 	},
 		
