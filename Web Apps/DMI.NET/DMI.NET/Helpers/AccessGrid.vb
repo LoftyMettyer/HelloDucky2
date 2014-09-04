@@ -47,7 +47,7 @@ Namespace Helpers
 			Dim sName As String = String.Format("{0}[{1}]", name, rownumber)
 
 			sb.AppendLine("<tr>")
-			sb.AppendFormat("<td><input name='{0}.Name' value='{1}' readonly='true'/></td>", sName, obj.Name)
+			sb.AppendFormat("<td><input style='width:100%'  name='{0}.Name' value='{1}' readonly='true'/></td>", sName, obj.Name)
 
 			Select Case obj.Access.ToUpper
 				Case "RW"
@@ -62,11 +62,11 @@ Namespace Helpers
 			End Select
 
 			If obj.IsReadOnly Then
-				sb.AppendFormat("<td><select style='width:120px' class='readonly' name='{0}.Access'><option value='{1}'>{2}</option></select></td>" _
+				sb.AppendFormat("<td><select style='width:95%'  class='readonly floatright' name='{0}.Access'><option value='{1}'>{2}</option></select></td>" _
 												, sName, obj.Access.ToUpper, sNiceText)
 
 			Else
-				sb.AppendFormat("<td width=80px><select class='reportViewAccessGroup' style='width:120px' name='{0}.Access'><option {1} value='RW'>Read / Write</option><option {2} value='RO'>Read Only</option><option {3} value='HD'>Hidden</option></select></td>" _
+				sb.AppendFormat("<td><select style='width:95%'  class='reportViewAccessGroup floatright' name='{0}.Access'><option {1} value='RW'>Read / Write</option><option {2} value='RO'>Read Only</option><option {3} value='HD'>Hidden</option></select></td>" _
 					, sName, IIf(iSelected = 0, strSelected, ""), IIf(iSelected = 1, strSelected, ""), IIf(iSelected = 2, strSelected, ""))
 			End If
 

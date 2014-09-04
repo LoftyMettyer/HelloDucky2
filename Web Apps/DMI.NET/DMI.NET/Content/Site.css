@@ -523,7 +523,7 @@ select.readonly {
  }
 
 #Owner {
-	width:225px;
+	width:48%;
 	margin-left:5px;
 }
 #CustomDefinitionReportOptions {
@@ -538,7 +538,7 @@ select.readonly {
 	width:71%
 }
 #PicklistRadioDiv, #FilterRadioDiv {
-	width:26%;
+	width:28.5%;
 }
 
 #DescriptionItems{

@@ -94,7 +94,7 @@
 		<fieldset>
 			<legend class="fontsmalltitle">Access :</legend>
 			<fieldset>
-				<span class="floatleft">Owner : </span>
+				<span class="floatleft" style="padding-left:5px">Owner : </span>
 				@Html.TextBoxFor(Function(m) m.Owner, New With {.readonly = "true"})
 			</fieldset>
 			<fieldset id="AccessPermissionsGrid" >
@@ -122,7 +122,10 @@
 
 	$(function () {
 
-		 $('fieldset').css("border", "0");
+		$('fieldset').css("border", "1");
+		$('table').css("border", "0");
+		$('#AccessPermissionsGrid table').css('width','100%');
+		
 		 $("#frmReportDefintion :input").on("change", function () { enableSaveButton(this); });
 		 $("#frmReportDefintion :input").on("click", function () { enableSaveButton(this); });
 		getBaseTableList();

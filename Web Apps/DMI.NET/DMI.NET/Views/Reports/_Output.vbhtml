@@ -67,7 +67,7 @@ End Code
 				@Html.LabelFor(Function(m) m.ToPrinter, New With {.class = "DataManagerOnly"})
 			</div>
 			<div class="width70 floatleft">
-				@Html.TextBoxFor(Function(m) m.PrinterName, New With {.Name = "Output.PrinterName", .placeholder = "Default Printer", .class = "DataManagerOnly", .readonly = "true"})
+				@Html.TextBoxFor(Function(m) m.PrinterName, New With {.Name = "Output.PrinterName", .placeholder = "Default Printer", .class = "DataManagerOnly width100", .readonly = "true"})
 			</div>
 		</fieldset>
 
