@@ -987,7 +987,7 @@ Namespace Repository
 					objSort.ReportType = outputModel.ReportType
 
 					objSort.TableID = CInt(objRow("tableid"))
-					objSort.ID = iSequence
+					objSort.ID = CInt(objRow("Id"))
 					objSort.ColumnID = CInt(objRow("Id"))
 
 					objSort.Name = objRow("name").ToString

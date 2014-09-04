@@ -26,8 +26,8 @@
 			<input type="button" id="btnColumnAddAll" value="Add All" onclick="addAllColumnsToSelected();" />
 		</div>
 		<div id="colbtngrp2">
-			<input type="button" id="btnColumnRemove" value="Remove" onclick="removeSelectedColumn();" />
-			<input type="button" id="btnColumnRemoveAll" value="Remove All" onclick="removeAllSelectedColumns(true);" />
+			<input type="button" id="btnColumnRemove" value="Remove" onclick="requestRemoveSelectedColumn();" />
+			<input type="button" id="btnColumnRemoveAll" value="Remove All" onclick="requestRemoveAllSelectedColumns();" />
 		</div>
 		<div id="colbtngrp3">
 			<input type="button" id="btnColumnMoveUp" value="Move Up" disabled onclick="moveSelectedColumn('up');" />
@@ -146,28 +146,60 @@
 			}
 		}
 
-		function removeSelectedColumn() {
+		function requestRemoveAllSelectedColumns() {
 
-			rowID = $("#SelectedColumns").getGridParam('selrow');
-			var datarow = $("#SelectedColumns").getRowData(rowID);
+			if ($("#SortOrders").jqGrid('getGridParam', 'records') > 0) {
+				OpenHR.modalPrompt("Removing all the columns will also remove them from the report sort order." +
+						"<br/><br/>Are you sure you wish to continue ?", 4, "").then(function (answer) {
+					if (answer == 6) {
+							removeAllSelectedColumns(true);
+					}
+		});
+			}
+			else {
+				removeAllSelectedColumns(true);
+			}
+		}
+
+		function requestRemoveSelectedColumn() {
+
+			var rowID = $("#SelectedColumns").getGridParam('selrow');
+			var rowData = $("#SelectedColumns").getRowData(rowID);
+			var iIsSortOrderColumns = $("#SortOrders #" + rowID).length;
+
+			if (iIsSortOrderColumns > 0) {
+				OpenHR.modalPrompt("Removing the '" + rowData.Name + "' column will also remove it from the report sort order." +
+						"<br/><br/>Are you sure you wish to continue ?", 4, "").then(function (answer) {
+							if (answer == 6) {
+								removeSelectedColumn(rowData);
+							}
+						});
+			}
+			else {
+				removeSelectedColumn(rowData);
+			}
+		}
+
+		function removeSelectedColumn(rowData) {
+
+			var recordCount = $("#SelectedColumns").jqGrid('getGridParam', 'records')
+			var thisIndex = $("#SelectedColumns").getInd(rowData.ID);
+			if (thisIndex == recordCount) { thisIndex -= 1;}
+
+			OpenHR.postData("Reports/RemoveReportColumn", rowData);
+
+			$("#SelectedColumns").jqGrid('delRowData', rowData.ID);
+			$("#AvailableColumns").trigger("reloadGrid");
 
 			var ids = $("#SelectedColumns").getDataIDs();
-			var nextIndex = $("#SelectedColumns").getInd(rowID) - 2;
-			if (nextIndex < 2) { nextIndex = 1; }
-
-			OpenHR.postData("Reports/RemoveReportColumn", datarow);
-
-			$("#AvailableColumns").jqGrid('addRowData', datarow.ID, datarow);
-			$("#AvailableColumns").jqGrid("sortGrid", "Name", true)
-			$("#SelectedColumns").jqGrid('delRowData', rowID);
-
-			$("#SelectedColumns").jqGrid("setSelection", ids[nextIndex], true);
-			$("#AvailableColumns").jqGrid("setSelection", rowID);
+			$("#SelectedColumns").jqGrid("setSelection", ids[thisIndex - 1], true);
+			$("#AvailableColumns").jqGrid("setSelection", rowData.ID);
 			refreshColumnButtons();
 
 			// Remove from sort order
+			$("#SortOrders").delRowData(rowData.ID);
 			$("#SortOrdersAvailable").val(parseInt($("#SortOrdersAvailable").val()) + 1);
-
+			
 		}
 
 		function removeAllSelectedColumns(reloadColumns) {

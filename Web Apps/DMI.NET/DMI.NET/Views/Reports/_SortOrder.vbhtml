@@ -112,7 +112,7 @@
 									{ name: 'ReportID', width: 50, hidden: true },
 									{ name: 'ReportType', width: 50, hidden: true },
 									{ name: 'TableID', width: 50, hidden: true },
-									{ name: 'ColumnID', width: 50, key: true, hidden: true },
+									{ name: 'ColumnID', width: 50, hidden: true },
 									{ name: 'Name', index: 'Name', width: 200 },
 									{ name: 'Sequence', index: 'Sequence', width: 150, hidden: true },
 									{ name: 'Order', index: 'Order', width: 90, editable: true, formatter: "select", edittype: "select", editoptions: { value: "0:Ascending;1:Descending" } },
