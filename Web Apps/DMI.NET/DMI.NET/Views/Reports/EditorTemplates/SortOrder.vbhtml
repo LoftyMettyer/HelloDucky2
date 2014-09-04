@@ -92,6 +92,9 @@ End Code
 		var su = $("#SortOrders").jqGrid('addRowData', $("#SortOrderID").val(), datarow);
 		$('#SortOrders').setGridParam({ sortname: 'Sequence' }).trigger('reloadGrid');
 
+		$("#SortOrdersAvailable").val(parseInt($("#SortOrdersAvailable").val()) - 1);
+		button_disable($("#btnSortOrderAdd")[0], ($("#SortOrdersAvailable").val() == 0));
+
 		$("#divPopupReportDefinition").dialog("close");
 		$("#divPopupReportDefinition").empty();
 	}

@@ -55,6 +55,7 @@ Namespace Models
 		Public Property Columns As New List(Of ReportColumnItem) Implements IReport.Columns
 		Public Overridable Property ColumnsAsString As String
 		Public Property SortOrders As New Collection(Of SortOrderViewModel) Implements IReport.SortOrders
+		Public Property SortOrdersAvailable As Integer
 
 		<MinLength(3, ErrorMessage:="You must select at least one column to order the report by.")> _
 		Public Overridable Property SortOrdersString As String
@@ -71,7 +72,7 @@ Namespace Models
 			Dim objItems As New Collection(Of ReportColumnItem)
 
 			' Add all columns that aren't already included in the sort collection
-			For Each objColumn In Columns
+			For Each objColumn In Columns.Where(Function(m) m.IsExpression = False)
 				If SortOrders.Where(Function(m) m.ColumnID = objColumn.ID).Count = 0 Then
 					objItems.Add(objColumn)
 				End If

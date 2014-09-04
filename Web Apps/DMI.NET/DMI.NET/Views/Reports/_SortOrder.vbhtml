@@ -5,7 +5,7 @@
 @Inherits System.Web.Mvc.WebViewPage(Of Models.ReportBaseModel)
 
 @Html.HiddenFor(Function(m) m.SortOrdersString, New With {.id = "txtSOAAS"})
-
+@Html.HiddenFor(Function(m) m.SortOrdersAvailable, New With {.id = "SortOrdersAvailable"})
 
 	<fieldset style="width:100%">
 	<legend class="fontsmalltitle">Sort Order :</legend>
@@ -20,8 +20,8 @@
 			<input type="button" id="btnSortOrderEdit" value="Edit" disabled onclick="editSortSorder(0);" />
 		</div>
 		<div id="colbtngrp2">
-			<input type="button" id="btnSortOrderRemove" value="Remove" disabled onclick="OpenHR.RemoveRowFromGrid(SortOrders, 'Reports/RemoveSortOrder')" />
-			<input type="button" id="btnSortOrderRemoveAll" value="Remove All" disabled onclick="OpenHR.RemoveAllRowsFromGrid(SortOrders, 'Reports/RemoveSortOrder')" />
+			<input type="button" id="btnSortOrderRemove" value="Remove" disabled onclick="removeSortOrder()" />
+			<input type="button" id="btnSortOrderRemoveAll" value="Remove All" disabled onclick="removeAllSortOrders()" />
 		</div>
 		<div id="colbtngrp3">
 			<input type="button" id="btnSortOrderMoveUp" value="Move Up" disabled onclick="moveSelectedOrder('up')" />
@@ -31,14 +31,39 @@
 </fieldset>
 
 
-
 	<script type="text/javascript">
 
-	$(function () {
-		attachGrid();
-		$("#SortOrders").jqGrid('setGridWidth', $("#divSortOrderDiv").width() * .95);
-		$("#divSortOrderDiv").width();
-	})
+		$(function () {
+
+			button_disable($("#btnSortOrderAdd")[0], ($("#SortOrdersAvailable").val() == 0));
+			button_disable($("#btnSortOrderEdit")[0], true);
+			button_disable($("#btnSortOrderRemove")[0], true);
+			button_disable($("#btnSortOrderRemoveAll")[0], true);
+			button_disable($("#btnSortOrderMoveUp")[0], true);
+			button_disable($("#btnSortOrderMoveDown")[0], true);
+
+			attachGrid();
+			$("#SortOrders").jqGrid('setGridWidth', $("#divSortOrderDiv").width() * .95);
+			$("#divSortOrderDiv").width();
+		})
+
+
+		function removeSortOrder() {
+
+			OpenHR.RemoveRowFromGrid(SortOrders, 'Reports/RemoveSortOrder');
+			$("#SortOrdersAvailable").val(parseInt($("#SortOrdersAvailable").val()) + 1);
+		}
+
+		function removeAllSortOrders() {
+
+			var nowAvailable = $("#SortOrders").getGridParam("reccount") + parseInt($("#SortOrdersAvailable").val());
+
+			OpenHR.RemoveAllRowsFromGrid(SortOrders, 'Reports/RemoveSortOrder');
+			$("#SortOrdersAvailable").val(nowAvailable);
+			button_disable($("#btnSortOrderAdd")[0], ($("#SortOrdersAvailable").val() == 0));
+
+		}
+
 
 	function attachGrid() {
 
@@ -87,7 +112,8 @@
 			width: 'auto',
 			height: '400px',
 			sortname: 'Sequence',
-			sortorder: "asc",			
+			sortorder: "asc",
+			scrollrows: true,
 			ondblClickRow: function (rowID) {
 				editSortSorder(rowID);
 			},
@@ -100,7 +126,6 @@
 				var isBottomRow = (rowId == allRows[allRows.length - 1].id);
 
 				// Enable / Disable relevant buttons
-				button_disable($("#btnSortOrderAdd")[0], false);
 				button_disable($("#btnSortOrderEdit")[0], false);
 				button_disable($("#btnSortOrderRemove")[0], false);
 				button_disable($("#btnSortOrderRemoveAll")[0], false);
@@ -116,6 +141,9 @@
 					$(this).showCol("ValueOnChange");
 					$(this).showCol("SuppressRepeated");
 				}
+
+				var topID = $("#SortOrders").getDataIDs()[0]
+				$("#SortOrders").jqGrid("setSelection", topID);
 			}
 		});
 	}

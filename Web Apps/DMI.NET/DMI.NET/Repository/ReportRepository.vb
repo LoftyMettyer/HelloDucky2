@@ -972,11 +972,15 @@ Namespace Repository
 		Private Sub PopulateSortOrder(outputModel As ReportBaseModel, data As DataTable)
 
 			Dim objSort As SortOrderViewModel
-			Dim iSequence As Integer = 1
+			Dim iSequence As Integer = 0
 
 			Try
 
+				outputModel.SortOrdersAvailable = 0
+
 				For Each objRow As DataRow In data.Rows
+
+					iSequence += 1
 					objSort = New SortOrderViewModel
 
 					objSort.ReportID = outputModel.ID
@@ -1007,8 +1011,9 @@ Namespace Repository
 					End If
 
 					outputModel.SortOrders.Add(objSort)
-					iSequence += 1
 				Next
+
+				outputModel.SortOrdersAvailable = outputModel.Columns.Where(Function(m) m.IsExpression = False).Count() - iSequence
 
 			Catch ex As Exception
 				Throw

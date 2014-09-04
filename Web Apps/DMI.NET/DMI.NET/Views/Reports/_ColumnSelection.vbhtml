@@ -112,7 +112,12 @@
 			$('#SelectedColumns').jqGrid("setSelection", rowID);
 
 			$("#AvailableColumns").jqGrid('delRowData', rowID);
-			button_disable($("#btnSortOrderAdd")[0], false);
+
+			if (datarow.IsExpression == "false") {
+				$("#SortOrdersAvailable").val(parseInt($("#SortOrdersAvailable").val()) + 1);
+				button_disable($("#btnSortOrderAdd")[0], ($("#SortOrdersAvailable").val() == 0));
+			}
+
 		}
 
 		function addAllColumnsToSelected() {
