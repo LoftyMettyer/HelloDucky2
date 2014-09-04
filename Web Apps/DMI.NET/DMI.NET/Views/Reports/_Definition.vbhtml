@@ -426,24 +426,14 @@
 
 		}
 
-		$('#ChildTables').jqGrid('clearGridData')
+		$('#ChildTables').jqGrid('clearGridData');
+
 	}
 
-	function removeAllChildTables(prompt) {
+	function removeAllChildTables() {
 
 		var data = { ReportID: "@Model.ID", ReportType: "@Model.ReportType" }
-
-		if (prompt == true) {
-			OpenHR.modalPrompt("Removing all the child tables will remove all child table columns included in the report definition." +
-					"<br/><br/>Are you sure you wish to continue ?", 4, "").then(function (answer) {
-						if (answer == 6) { // Yes
-							OpenHR.postData("Reports/RemoveAllChildTables", data, removeAllChildTablesCompleted);
-						}
-					});
-		}
-		else {
-			OpenHR.postData("Reports/RemoveAllChildTables", data, removeAllChildTablesCompleted);
-		}
+		OpenHR.postData("Reports/RemoveAllChildTables", data, removeAllChildTablesCompleted);
 		
 	}
 

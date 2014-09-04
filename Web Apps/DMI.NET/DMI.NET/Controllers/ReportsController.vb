@@ -489,6 +489,10 @@ Namespace Controllers
 			Dim objReport As CustomReportModel
 			objReport = CType(objReportRepository.RetrieveParent(objModel), CustomReportModel)
 
+			For Each objChildTable In objReport.ChildTables
+				objReport.Columns.RemoveAll(Function(m) m.TableID = objChildTable.TableID)
+			Next
+
 			objReport.ChildTables.Clear()
 
 		End Sub
@@ -500,6 +504,7 @@ Namespace Controllers
 			objReport = CType(objReportRepository.RetrieveParent(objModel), CustomReportModel)
 
 			objReport.ChildTables.RemoveAll(Function(m) m.ID = objModel.ID)
+			objReport.Columns.RemoveAll(Function(m) m.TableID = objModel.TableID)
 
 		End Sub
 

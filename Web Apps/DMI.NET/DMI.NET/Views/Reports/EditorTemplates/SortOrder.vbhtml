@@ -70,7 +70,7 @@ End Code
 	function postThisSortOrder() {
 
 		var datarow = {
-			ID: $("#SortOrderID").val(),
+			ID: $("#SortOrderColumnID").val(),
 			ReportID: '@Model.ReportID',
 			ReportType: '@CInt(Model.ReportType)',
 			TableID: $("#SortOrderTableID").val(),

@@ -138,7 +138,7 @@
 		<br />
 		<input type="button" id="btnChildRemove" value="Remove" disabled onclick="requestRemoveChildTable();" />
 		<br />
-		<input type="button" id="btnChildRemoveAll" value="Remove All" disabled onclick="removeAllChildTables(true);" />				
+		<input type="button" id="btnChildRemoveAll" value="Remove All" disabled onclick="requestRemoveAllChildTables();" />				
 	</div>
 </fieldset>
 </div>
@@ -228,8 +228,23 @@
 			rowData = $("#SelectedColumns").getRowData(columnList[i]);
 			if (rowData.TableID == gridData.TableID) {
 				$('#SelectedColumns').jqGrid('delRowData', rowData.ID);
+				$('#SortOrders').jqGrid('delRowData', rowData.ID);
 			}
 		}
+	}
+
+
+
+	function requestRemoveAllChildTables() {
+
+		OpenHR.modalPrompt("Removing all the child tables will remove all child table columns included in the report definition." +
+		"<br/><br/>Are you sure you wish to continue ?", 4, "").then(function (answer) {
+			if (answer == 6) { // Yes
+				removeAllChildTables();
+				loadAvailableTablesForReport(true);
+			}
+		});
+
 	}
 
 	function requestRemoveChildTable() {
