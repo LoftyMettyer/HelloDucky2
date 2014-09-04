@@ -693,7 +693,7 @@ Namespace Repository
 
 		' Old style update of the column selection stuff
 		' could be dapperised, but the rest of our stored procs need updating too as everything has different column names and the IDs are not currently returned.
-		Private Function MailMergeColumnsAsString(objColumns As IEnumerable(Of ReportColumnItem), objSortColumns As Collection(Of SortOrderViewModel)) As String
+		Private Function MailMergeColumnsAsString(objColumns As IEnumerable(Of ReportColumnItem), objSortColumns As List(Of SortOrderViewModel)) As String
 
 			Dim sColumns As String = ""
 			Dim sOrderString As String
@@ -723,7 +723,7 @@ Namespace Repository
 
 		' Old style update of the column selection stuff
 		' could be dapperised, but the rest of our stored procs need updating too as everything has different column names and the IDs are not currently returned.
-		Private Function CustomReportColumnsAsString(baseTableID As Integer, objColumns As IEnumerable(Of ReportColumnItem), objSortColumns As Collection(Of SortOrderViewModel)) As String
+		Private Function CustomReportColumnsAsString(baseTableID As Integer, objColumns As IEnumerable(Of ReportColumnItem), objSortColumns As List(Of SortOrderViewModel)) As String
 
 			Dim sColumns As String = ""
 			Dim sOrderString As String
@@ -812,7 +812,7 @@ Namespace Repository
 		End Function
 
 		' Old style update of the events selection stuff
-		Public Function SortOrderAsString(objSortOrders As Collection(Of SortOrderViewModel)) As String
+		Public Function SortOrderAsString(objSortOrders As List(Of SortOrderViewModel)) As String
 
 			Dim sOrders As String = ""
 			Dim iCount As Integer = 1

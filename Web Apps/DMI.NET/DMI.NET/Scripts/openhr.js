@@ -1154,25 +1154,6 @@
 		if ((searchValue.length == 0) || (string.length == 0)) return string;
 		return string.split(searchValue).join(newValue);
 	},
-		
-	removeRowFromGrid = function (grid, url) {
-		var rowID = $(grid).jqGrid('getGridParam', 'selrow');
-		var datarow = $(grid).getRowData(rowID);
-		OpenHR.postData(url, datarow);
-		$(grid).jqGrid('delRowData', rowID);
-	},
-
-	removeAllRowsFromGrid = function (grid, url) {
-
-		var rows = $(grid).jqGrid('getDataIDs');
-
-		for (var i = 0; i < rows.length; i++) {
-			var datarow = $(grid).getRowData(rows[i]);
-			OpenHR.postData(url, datarow);
-		}
-
-		$(grid).jqGrid('clearGridData');
-	},
 
 	moveItemInGrid = function (grid, direction) {
 	
@@ -1267,8 +1248,6 @@
 		getLocaleDateString: getLocaleDateString,
 		setDatepickerLanguage: setDatepickerLanguage,
 		IsValidDate: isValidDate,
-		RemoveRowFromGrid: removeRowFromGrid,
-		RemoveAllRowsFromGrid: removeAllRowsFromGrid,
 		MoveItemInGrid: moveItemInGrid,
 		OpenDialog: openDialog,
 		modalExpressionSelect: modalExpressionSelect,

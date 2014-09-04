@@ -75,7 +75,7 @@ Namespace Models
 
 			SelectionType = RecordSelectionType.AllRecords
 			Events = New Collection(Of CalendarEventDetailViewModel)()
-			SortOrders = New Collection(Of SortOrderViewModel)
+			SortOrders = New List(Of SortOrderViewModel)
 
 		End Sub
 

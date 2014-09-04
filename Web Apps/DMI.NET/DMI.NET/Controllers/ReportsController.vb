@@ -99,7 +99,7 @@ Namespace Controllers
 
 			If objModel.SortOrdersString IsNot Nothing Then
 				If objModel.SortOrdersString.Length > 0 Then
-					objModel.SortOrders = deserializer.Deserialize(Of Collection(Of SortOrderViewModel))(objModel.SortOrdersString)
+					objModel.SortOrders = deserializer.Deserialize(Of List(Of SortOrderViewModel))(objModel.SortOrdersString)
 				End If
 			End If
 
@@ -137,7 +137,7 @@ Namespace Controllers
 
 			If objModel.SortOrdersString IsNot Nothing Then
 				If objModel.SortOrdersString.Length > 0 Then
-					objModel.SortOrders = deserializer.Deserialize(Of Collection(Of SortOrderViewModel))(objModel.SortOrdersString)
+					objModel.SortOrders = deserializer.Deserialize(Of List(Of SortOrderViewModel))(objModel.SortOrdersString)
 				End If
 			End If
 
@@ -201,7 +201,7 @@ Namespace Controllers
 
 			If objModel.SortOrdersString IsNot Nothing Then
 				If objModel.SortOrdersString.Length > 0 Then
-					objModel.SortOrders = deserializer.Deserialize(Of Collection(Of SortOrderViewModel))(objModel.SortOrdersString)
+					objModel.SortOrders = deserializer.Deserialize(Of List(Of SortOrderViewModel))(objModel.SortOrdersString)
 				End If
 			End If
 
@@ -512,11 +512,24 @@ Namespace Controllers
 			For Each objItem In objReport.Columns
 				If objItem.ID = objModel.ID Then
 					objReport.Columns.Remove(objItem)
+					objReport.SortOrders.RemoveAll(Function(m) m.columnID = objModel.ID)
 					Exit For
 				End If
 			Next
 
 		End Sub
+
+		<HttpPost>
+		Sub RemoveAllReportColumns(objModel As ReportColumnItem)
+
+			Dim objReport As ReportBaseModel
+			objReport = CType(objReportRepository.RetrieveParent(objModel), ReportBaseModel)
+
+			objReport.Columns.Clear()
+			objReport.SortOrders.Clear()
+
+		End Sub
+
 
 		<HttpGet>
 		Function GetExpressionsForTable(TableID As Integer, SelectionType As String) As JsonResult

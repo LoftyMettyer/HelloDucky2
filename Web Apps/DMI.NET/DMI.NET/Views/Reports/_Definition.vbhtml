@@ -387,17 +387,16 @@
 
 	function changeReportBaseTableCompleted() {
 
-		removeAllSelectedColumns();
-
 		$("#selectiontype_All").prop('checked', 'checked');
 
 		changeRecordOption('Base', 'ALL');
 
 		if ($("#txtReportType").val() != '@UtilityType.utlCrossTab') {
-			OpenHR.RemoveAllRowsFromGrid(SortOrders, 'Reports/RemoveSortOrder');
+			removeAllSortOrders();
 		}
 
-		if ($("#txtReportType").val() == '@UtilityType.utlCustomReport') {
+		if ($("#txtReportType").val() == '@UtilityType.utlCustomReport' || $("#txtReportType").val() == '@UtilityType.utlMailMerge') {
+			removeAllSelectedColumns(false);
 			removeAllChildTables(false);
 			loadAvailableTablesForReport(true);
 		}
@@ -446,10 +445,6 @@
 			OpenHR.postData("Reports/RemoveAllChildTables", data, removeAllChildTablesCompleted);
 		}
 		
-	}
-
-	function removeAllSelectedColumns() {
-		$('#SelectedColumns').jqGrid('clearGridData')
 	}
 
 	function enableSaveButton() {

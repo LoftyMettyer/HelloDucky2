@@ -33,34 +33,59 @@
 
 	<script type="text/javascript">
 
-		$(function () {
+		function refreshSortButtons() {
+
+			var bDisableRemove = ($("#SortOrders").getGridParam("reccount") == 0) || ($("#SelectedColumns").getGridParam("reccount") == 0);
 
 			button_disable($("#btnSortOrderAdd")[0], ($("#SortOrdersAvailable").val() == 0));
 			button_disable($("#btnSortOrderEdit")[0], true);
 			button_disable($("#btnSortOrderRemove")[0], true);
-			button_disable($("#btnSortOrderRemoveAll")[0], true);
+			button_disable($("#btnSortOrderRemoveAll")[0], bDisableRemove);
 			button_disable($("#btnSortOrderMoveUp")[0], true);
 			button_disable($("#btnSortOrderMoveDown")[0], true);
+		
+		}
 
+		$(function () {
+
+			refreshSortButtons();
 			attachGrid();
 			$("#SortOrders").jqGrid('setGridWidth', $("#divSortOrderDiv").width() * .95);
 			$("#divSortOrderDiv").width();
-		})
 
+		})
 
 		function removeSortOrder() {
 
-			OpenHR.RemoveRowFromGrid(SortOrders, 'Reports/RemoveSortOrder');
+			var ids = $("#SortOrders").getDataIDs();
+			var rowID = $("#SortOrders").jqGrid('getGridParam', 'selrow');
+			var datarow = $("#SortOrders").getRowData(rowID);
+			OpenHR.postData('Reports/RemoveSortOrder', datarow);
+			$("#SortOrders").jqGrid('delRowData', rowID);
+
 			$("#SortOrdersAvailable").val(parseInt($("#SortOrdersAvailable").val()) + 1);
+
+			refreshSortButtons();
+
+			var nextIndex = $("#SortOrders").getInd(rowID - 1);
+			$("#SortOrders").jqGrid("setSelection", ids[nextIndex] - 1, true);
+
 		}
 
 		function removeAllSortOrders() {
 
+			var rows = $("#SortOrders").jqGrid('getDataIDs');
 			var nowAvailable = $("#SortOrders").getGridParam("reccount") + parseInt($("#SortOrdersAvailable").val());
 
-			OpenHR.RemoveAllRowsFromGrid(SortOrders, 'Reports/RemoveSortOrder');
+			for (var i = 0; i < rows.length; i++) {
+				var datarow = $("#SortOrders").getRowData(rows[i]);
+				OpenHR.postData('Reports/RemoveSortOrder', datarow);
+			}
+
+			$("#SortOrders").jqGrid('clearGridData');
+
 			$("#SortOrdersAvailable").val(nowAvailable);
-			button_disable($("#btnSortOrderAdd")[0], ($("#SortOrdersAvailable").val() == 0));
+			refreshSortButtons();
 
 		}
 

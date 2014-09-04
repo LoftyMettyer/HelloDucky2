@@ -22,7 +22,7 @@ Namespace Code.Interfaces
 		Function GetAvailableTables() As IEnumerable(Of ReportTableItem)
 		Property Columns() As List(Of ReportColumnItem)
 
-		Property SortOrders As Collection(Of SortOrderViewModel)
+		Property SortOrders As List(Of SortOrderViewModel)
 
 		Property Dependencies() As ReportDependencies
 	End Interface

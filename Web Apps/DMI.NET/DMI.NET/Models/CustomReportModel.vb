@@ -49,7 +49,7 @@ Namespace Models
 			BaseTableID = TableID
 			SelectionType = RecordSelectionType.AllRecords
 			Columns = New List(Of ReportColumnItem)
-			SortOrders = New Collection(Of SortOrderViewModel)
+			SortOrders = New List(Of SortOrderViewModel)
 
 			Dim objParents = SessionInfo.Relations.Where(Function(m) m.ChildID = TableID)
 

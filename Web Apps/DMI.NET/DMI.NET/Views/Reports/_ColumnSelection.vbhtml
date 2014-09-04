@@ -27,7 +27,7 @@
 		</div>
 		<div id="colbtngrp2">
 			<input type="button" id="btnColumnRemove" value="Remove" onclick="removeSelectedColumn();" />
-			<input type="button" id="btnColumnRemoveAll" value="Remove All" onclick="removeAllSelectedColumns();" />
+			<input type="button" id="btnColumnRemoveAll" value="Remove All" onclick="removeAllSelectedColumns(true);" />
 		</div>
 		<div id="colbtngrp3">
 			<input type="button" id="btnColumnMoveUp" value="Move Up" disabled onclick="moveSelectedColumn('up');" />
@@ -85,6 +85,17 @@
 			getAvailableTableColumnsCalcs();
 		}
 
+		function refreshColumnButtons() {
+			var bDisableAdd = ($("#AvailableColumns").getGridParam("reccount") == 0);
+			button_disable($("#btnColumnAdd")[0], bDisableAdd);
+			button_disable($("#btnColumnAddAll")[0], bDisableAdd);
+
+			bDisableAdd = ($("#SelectedColumns").getGridParam("reccount") == 0);
+			button_disable($("#btnColumnRemove")[0], bDisableAdd);
+			button_disable($("#btnColumnRemoveAll")[0], bDisableAdd);
+
+		}
+
 		function addColumnToSelected(rowID) {
 
 			if (rowID == 0) {
@@ -92,7 +103,10 @@
 			}
 
 			var datarow = $("#AvailableColumns").getRowData(rowID);
-	
+
+			var ids = $("#AvailableColumns").getDataIDs();
+			var nextIndex = $("#AvailableColumns").getInd(rowID);
+
 			datarow.Name = $("#SelectedTableID option:selected").text() + '.' + datarow.Name;
 			datarow.ReportType = '@Model.ReportType';
 			datarow.ReportID = '@Model.ID';
@@ -118,6 +132,9 @@
 				button_disable($("#btnSortOrderAdd")[0], ($("#SortOrdersAvailable").val() == 0));
 			}
 
+			$("#AvailableColumns").jqGrid("setSelection", ids[nextIndex], true);
+			refreshColumnButtons();
+
 		}
 
 		function addAllColumnsToSelected() {
@@ -130,15 +147,50 @@
 		}
 
 		function removeSelectedColumn() {
+
 			rowID = $("#SelectedColumns").getGridParam('selrow');
 			var datarow = $("#SelectedColumns").getRowData(rowID);
+
+			var ids = $("#SelectedColumns").getDataIDs();
+			var nextIndex = $("#SelectedColumns").getInd(rowID) - 2;
+			if (nextIndex < 2) { nextIndex = 1; }
 
 			OpenHR.postData("Reports/RemoveReportColumn", datarow);
 
 			$("#AvailableColumns").jqGrid('addRowData', datarow.ID, datarow);
 			$("#AvailableColumns").jqGrid("sortGrid", "Name", true)
 			$("#SelectedColumns").jqGrid('delRowData', rowID);
+
+			$("#SelectedColumns").jqGrid("setSelection", ids[nextIndex], true);
+			$("#AvailableColumns").jqGrid("setSelection", rowID);
+			refreshColumnButtons();
+
+			// Remove from sort order
+			$("#SortOrdersAvailable").val(parseInt($("#SortOrdersAvailable").val()) + 1);
+
 		}
+
+		function removeAllSelectedColumns(reloadColumns) {
+
+			var dataSend = {
+				ReportID: '@Model.ID',
+				ReportType: '@Model.ReportType'
+			};
+
+			OpenHR.postData("Reports/RemoveAllReportColumns", dataSend);
+			$('#SelectedColumns').jqGrid('clearGridData');
+
+			if (reloadColumns == true) {
+				getAvailableTableColumnsCalcs();
+			}
+
+			removeAllSortOrders();
+			$("#SortOrdersAvailable").val(0);
+			button_disable($("#btnSortOrderAdd")[0], true);
+
+			refreshColumnButtons();
+		}
+
 
     function getAvailableTableColumnsCalcs() {
     	var sType;
@@ -178,8 +230,14 @@
     		sortname: 'Name',
     		sortorder: "desc",
     		rowNum: 10000,
+    		scrollrows: true,
     		ondblClickRow: function (rowid) {
     			addColumnToSelected(rowid);
+    		},
+    		loadComplete: function (data) {
+    			var topID = $("#AvailableColumns").getDataIDs()[0]
+    			$("#AvailableColumns").jqGrid("setSelection", topID);
+    			refreshColumnButtons();
     		}
     	});    	
     }
@@ -243,6 +301,7 @@
     		sortname: 'Sequence',
     		sortorder: "asc",
     		rowNum: 10000,
+    		scrollrows: true,
     		beforeSelectRow: function(id) {
     			updateColumnsSelectedGrid();
     			return true;
@@ -292,11 +351,9 @@
     			button_disable($("#btnColumnMoveDown")[0], isBottomRow);
 
     		},
-    		gridComplete: function () {
-					// Highlight top row
-    			var ids = $(this).jqGrid("getDataIDs");
-    			if (ids && ids.length > 0)
-    				$(this).jqGrid("setSelection", ids[0]);
+    		loadComplete: function (data) {
+    			var topID = $("#SelectedColumns").getDataIDs()[0]
+    			$("#SelectedColumns").jqGrid("setSelection", topID);
     		}
     	});
 
