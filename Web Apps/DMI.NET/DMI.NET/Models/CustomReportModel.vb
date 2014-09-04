@@ -26,7 +26,7 @@ Namespace Models
 		Public Property ChildTables As New List(Of ChildTableViewModel)
 
 		Public Property ChildTablesString As String
-		Public Property ChildTablesAvailable As Boolean
+		Public Property ChildTablesAvailable As Integer
 
 		Public Property Parent1 As New ReportRelatedTable
 		Public Property Parent2 As New ReportRelatedTable
@@ -82,6 +82,8 @@ Namespace Models
 					Parent2.Name = SessionInfo.Tables.Where(Function(m) m.ID = .ParentID).FirstOrDefault.Name
 				End With
 			End If
+
+			ChildTablesAvailable = SessionInfo.Relations.Where(Function(m) m.ParentID = TableID).Count()
 
 		End Sub
 

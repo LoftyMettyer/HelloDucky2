@@ -9,6 +9,7 @@
 
 	@Html.HiddenFor(Function(m) m.Parent1ViewAccess)
 	@Html.HiddenFor(Function(m) m.Parent2ViewAccess)
+	@Html.HiddenFor(Function(m) m.ChildTablesAvailable)
 	@Html.HiddenFor(Function(m) m.ChildTablesString, New With {.id = "txtCTAAS"})
 
 	<fieldset id="RelatedTableParent1" class="width45 floatleft" @Model.Parent1.Visibility>
@@ -312,22 +313,23 @@
 			sortorder: "asc",
 			ondblClickRow: function (rowID) {
 				editChildTable(rowID);
-
 			},
 			onSelectRow: function (id) {
 				button_disable($("#btnChildEdit")[0], false);
 				button_disable($("#btnChildRemove")[0], false);
-
 			},
 			gridComplete: function () {
+
 				var tablesSelected = $(this).getGridParam("reccount");
-				button_disable($("#btnChildAdd")[0], tablesSelected > 4 || '@Model.ChildTablesAvailable' == 'False');
+				button_disable($("#btnChildAdd")[0], tablesSelected > 4 || $("#ChildTablesAvailable").val() == 0);
+
 				button_disable($("#btnChildEdit")[0], true);
 				button_disable($("#btnChildRemove")[0], true);
 				button_disable($("#btnChildRemoveAll")[0], tablesSelected == 0);
 
 			},
 			loadComplete: function(json) {
+
 				// Highlight top row
 				var ids = $(this).jqGrid("getDataIDs");
 				if (ids && ids.length > 0)

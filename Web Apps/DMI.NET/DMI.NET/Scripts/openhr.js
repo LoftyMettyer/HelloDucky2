@@ -368,7 +368,7 @@
 					} catch (e) {
 					}
 
-					if (followOnFunctionName) followOnFunctionName()
+					if (followOnFunctionName) followOnFunctionName(html);
 
 					try {
 						if ((html.ErrorMessage != null) && (html.ErrorMessage != undefined) && (html.ErrorMessage != "undefined")) {

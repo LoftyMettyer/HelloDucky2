@@ -395,9 +395,10 @@ Namespace Controllers
 		End Function
 
 		<HttpPost>
-		Sub ChangeBaseTable(ReportID As Integer, ReportType As UtilityType, BaseTableID As Integer)
+		Function ChangeBaseTable(ReportID As Integer, ReportType As UtilityType, BaseTableID As Integer) As JsonResult
 
 			Dim objDetail As New ReportColumnItem
+			Dim bChildTablesAvailable As Integer
 			objDetail.ReportID = ReportID
 			objDetail.ReportType = ReportType
 
@@ -406,7 +407,14 @@ Namespace Controllers
 
 			objReport.SetBaseTable(BaseTableID)
 
-		End Sub
+			If ReportType = UtilityType.utlCustomReport Then
+				bChildTablesAvailable = CType(objReport, CustomReportModel).ChildTablesAvailable
+			End If
+
+			Dim result = New With {.childTablesAvailable = bChildTablesAvailable}
+			Return Json(result, JsonRequestBehavior.AllowGet)
+
+		End Function
 
 		<HttpPost>
 		Function AddSortOrder(ReportID As Integer, ReportType As UtilityType) As ActionResult

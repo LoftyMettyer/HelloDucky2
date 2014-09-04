@@ -101,7 +101,7 @@ Namespace Repository
 
 				End If
 
-				objModel.ChildTablesAvailable = _objSessionInfo.Relations.Any(Function(m) m.ParentID = objModel.BaseTableID)
+				objModel.ChildTablesAvailable = CInt(_objSessionInfo.Relations.LongCount(Function(m) m.ParentID = objModel.BaseTableID))
 				objModel.GroupAccess = GetUtilityAccess(objModel, action)
 				objModel.IsReadOnly = (action = UtilityActionType.View)
 

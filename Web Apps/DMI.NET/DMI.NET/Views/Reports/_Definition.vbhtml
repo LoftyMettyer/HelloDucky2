@@ -300,6 +300,18 @@
 
 	}
 
+	function resetParentDetails() {
+
+		$("#RelatedTableParent1").attr("disabled", "disabled");
+		$("#Parent1_SelectionTypeAll").prop('checked', 'checked');
+		changeRecordOption('Parent1', 'ALL');
+
+		$("#RelatedTableParent2").attr("disabled", "disabled");
+		$("#Parent2_SelectionTypeAll").prop('checked', 'checked');
+		changeRecordOption('Parent2', 'ALL');
+
+	}
+
 	function loadAvailableTablesForReport(baseTableChanged) {
 
 		$.ajax({
@@ -310,18 +322,6 @@
 			success: function (json) {
 
 				$('#SelectedTableID').empty()
-
-				if (baseTableChanged == true) {
-
-					$("#RelatedTableParent1").attr("disabled", "disabled");
-					$("#Parent1_SelectionTypeAll").prop('checked', 'checked');
-					changeRecordOption('Parent1', 'ALL');
-
-					$("#RelatedTableParent2").attr("disabled", "disabled");
-					$("#Parent2_SelectionTypeAll").prop('checked', 'checked');
-					changeRecordOption('Parent2', 'ALL');
-
-				}
 
 				$.each(json, function (i, table) {
 					var optionHtml = '<option value=' + table.id + '>' + table.Name + '</option>'
@@ -385,9 +385,11 @@
 
 	}
 
-	function changeReportBaseTableCompleted() {
+	function changeReportBaseTableCompleted(json) {
 
 		$("#selectiontype_All").prop('checked', 'checked');
+
+		$("#ChildTablesAvailable").val(parseInt(json.childTablesAvailable));	
 
 		changeRecordOption('Base', 'ALL');
 
@@ -395,9 +397,13 @@
 			removeAllSortOrders();
 		}
 
+		if ($("#txtReportType").val() == '@UtilityType.utlCustomReport') {
+			removeAllChildTables(false);
+			resetParentDetails();
+		}
+
 		if ($("#txtReportType").val() == '@UtilityType.utlCustomReport' || $("#txtReportType").val() == '@UtilityType.utlMailMerge') {
 			removeAllSelectedColumns(false);
-			removeAllChildTables(false);
 			loadAvailableTablesForReport(true);
 		}
 
