@@ -468,7 +468,7 @@
 				"&txtEmailOrderColumn=" + frmLog.txtELOrderColumn.value +
 				"&txtEmailOrderOrder=" + frmLog.txtELOrderOrder.value;
 
-		openDialog(sURL, (screen.width) / 3 + 40, (screen.height) / 2 - 100, "no", "no");
+		openDialog(sURL, (screen.width) / 2 + 45, (screen.height) / 2 - 85, "no", "no");
 	}
 
 	function EventLog_refreshButtons() {

@@ -303,12 +303,12 @@
             { name: 'to', edittype: 'checkbox', index: 'to', editoptions: { value: "True:False" }, formatter: 'checkbox', formatoptions: { disabled: false }, align: 'center', width: 20 },
             { name: 'cc', edittype: 'checkbox', index: 'cc', editoptions: { value: "True:False" }, formatter: 'checkbox', formatoptions: { disabled: false }, align: 'center', width: 20 },
             { name: 'bcc', edittype: 'checkbox', index: 'bcc', editoptions: { value: "True:False" }, formatter: 'checkbox', formatoptions: { disabled: false }, align: 'center', width: 20 },
-			{ name: 'NameHeader', sortable: false }
+						{ name: 'NameHeader', sortable: false, width: '90%' }
         ],
 				cmTemplate: { sortable: false },
         rowNum: 1000,   //TODO set this to blocksize...
         height: 320,
-        width: (screen.width) / 3 + 5,
+        width: 850,
         beforeSelectRow: function (rowid, e) { return false; }
     });
 
