@@ -7,8 +7,9 @@
 	<fieldset class="formField width60 floatleft">
 		<input class="floatleft" type="hidden" id="txtEventFilterID" name="FilterID" value="@Model.FilterID" />
 		<label class="floatleft">@Html.LabelFor(Function(m) m.TemplateFileName)</label>
-		@Html.TextBox("TemplateFileName", Model.TemplateFileName, New With {.placeholder = "Template", .class = "floatleft"})
-		<input type="button" class="ui-state-disabled floatleft" id="cmdEmailGroup" name="cmdTemplate" value="..." style="padding-top: 0;" />
+		@Html.TextBox("TemplateFileName", Model.TemplateFileName, New With {.id = "TemplateFileName", .class = "floatleft", .disabled = "disabled"})
+		<input type="button" class="ui-state-disabled floatleft" id="cmdTemplateSelect" value="..." onclick="templateSelect()" style="padding-top: 0;" />
+		<input type="button" class="ui-state-disabled floatleft" id="cmdTemplateClear" value="Clear" onclick="TemplateClear()" style="padding-top: 0;" />
 	</fieldset>
 	<br />
 	<fieldset class="clearboth" style="padding-left:125px">
@@ -106,7 +107,41 @@
 	Note: Options marked in red are unavailable in OpenHR Web.
 </fieldset>
 
+<div style='height: 0;width:0; overflow:hidden;'>
+	<input id="cmdGetFilename" name="cmdGetFilename" type="file" />
+</div>
+
 <script type="text/javascript">
+
+	function TemplateClear() {
+		$("#TemplateFileName").val("");
+		button_disable($('#cmdTemplateClear'), true);
+	}
+
+	function templateSelect() {
+
+		var sFileName;
+		var dialog = document.getElementById("cmdGetFilename");
+		dialog.accept = "application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+
+		try {
+			dialog.click();
+			sFileName = dialog.value;
+
+			if (sFileName.length > 256) {
+				OpenHR.messageBox("Path and file name must not exceed 256 characters in length");
+				return;
+			}
+		}
+		catch (e) {
+		}
+
+		if (sFileName != "") {
+			$("#TemplateFileName").val(sFileName);
+			button_disable($('#cmdTemplateClear'), false);
+		}
+
+	}
 
 	function setOutputToFile() {
 		var bSelected = $("#").val();
