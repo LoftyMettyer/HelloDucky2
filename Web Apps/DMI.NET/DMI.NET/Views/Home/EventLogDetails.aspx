@@ -367,7 +367,8 @@
 					beforeSelectRow: function (rowid, e) {
 						return false;
 					},
-					rowNum: 1000
+					rowNum: 1000,
+					height: 200
 				});
 
 				$('#ssOleDBGridEventLogDetails').hideCol("ID");

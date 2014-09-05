@@ -180,7 +180,7 @@
 		//Clear the log table
 		$("#LogEvents").jqGrid('GridUnload');
 
-		var colNames = ['ID', 'Start Time', 'End Time', 'Duration', 'Type', 'Name', 'Status', 'Mode', 'User name'];
+		var colNames = ['ID', 'Start Time', 'End Time', 'Duration', 'Type', 'Name', 'Status', 'Mode', 'User name', 'Batch Run ID'];
 		var colData = [];
 		var obj;
 
@@ -192,6 +192,9 @@
 			for (i = 0; i <= 8; i++) {
 				obj[colNames[i]] = splitValue[i];
 			};
+
+			obj["Batch Run ID"] = splitValue[10]; //We also need this value
+
 			colData.push(obj);
 		});
 
@@ -209,7 +212,8 @@
 				{ name: 'Name' },
 				{ name: 'Status' },
 				{ name: 'Mode' },
-				{ name: 'User name' }
+				{ name: 'User name' },
+				{ name: 'Batch Run ID', hidden: true }
 			],
 			multiselect: true,
 			loadComplete: function () {
@@ -375,6 +379,7 @@
 		frmDetails.txtEventType.value = rowData["Type"];
 		frmDetails.txtEventStatus.value = rowData["Status"];
 		frmDetails.txtEventUser.value = rowData["User name"];
+		frmDetails.txtEventBatchRunID.value = rowData["Batch Run ID"];
 		frmDetails.txtEmailPermission.value = frmLog.txtELEmailPermission.value;
 
 		sURL = "eventLogDetails" +
