@@ -11,33 +11,25 @@
 <form id="frmDefinition">
 
 	<div class="absolutefull">
-		<nav style="display: block;">
-			<div class="formField floatleft formInput">
+		<nav class="nowrap tablelayout">
+			<div class="tablerow">
 				<label>Name :</label>
 				<input id="txtName" name="txtName" maxlength="50" onkeyup="changeName()">
-			</div>
-			<div class="formField floatright">
 				<label>Owner :</label>
 				<input id="txtOwner" name="txtOwner" disabled="disabled" tabindex="-1">
 			</div>
 
-			<div class="formTextArea clearboth floatleft">
+			<div class="tablerow">
 				<label>Description :</label>
 				<textarea id="txtDescription" name="txtDescription" wrap="VIRTUAL" maxlength="255" onkeyup="changeDescription()"></textarea>
-			</div>
-
-			<div class="formOptionGroup floatright">
 				<label>Access :</label>
 				<div>
-					<label>
-						<input id="optAccessRW" name="optAccess" type="radio" onclick="changeAccess()" checked />
-						Read/Write</label>
-					<label>
-						<input id="optAccessRO" name="optAccess" type="radio" onclick="changeAccess()" />
-						Read Only</label>
-					<label>
-						<input id="optAccessHD" name="optAccess" type="radio" onclick="changeAccess()" />
-						Hidden</label>
+					<input class="inline-block" id="optAccessRW" name="optAccess" type="radio" onclick="changeAccess()" checked />
+					<label class="inline-block" for="optAccessRW">Read/Write</label><br/>
+					<input class="inline-block" id="optAccessRO" name="optAccess" type="radio" onclick="changeAccess()"/>
+					<label class="inline-block" for="optAccessRO">Read Only</label><br/>
+					<input class="inline-block" id="optAccessHD" name="optAccess" type="radio" onclick="changeAccess()" />
+					<label class="inline-block" for="optAccessHD">Hidden</label>
 				</div>
 			</div>
 		</nav>

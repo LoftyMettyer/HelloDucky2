@@ -959,7 +959,7 @@ padding-left:0px;
 }
 
 #eventEventInformationContainer #cmdBasePicklist {
- 	float:right;
+	float:right;
 	padding:2px 17px;
 }
 
@@ -1142,3 +1142,29 @@ padding-left:0px;
 
 
 /*End calcExpressionComponent*/
+
+
+/* Header elements */
+nav.nowrap {
+	margin-top: 10px;
+		width: 100%;
+		white-space: nowrap;
+		overflow: hidden;
+		display: table;    
+}
+nav div.tablerow {
+		display: table-row;
+}
+nav.tablelayout label:not(.inline-block) {
+		display: table-cell;
+}
+nav.tablelayout input:not([type="radio"]), .tablelayout textarea {
+		display: table-cell;
+		width: 90%;
+		vertical-align: top;
+}
+
+.inline-block {
+	display: inline-block;
+}
+
