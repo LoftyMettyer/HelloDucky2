@@ -122,7 +122,7 @@
 
 	$(function () {
 
-		$('fieldset').css("border", "1");
+		$('fieldset').css("border", "0");
 		$('table').css("border", "0");
 		$('#AccessPermissionsGrid table').css('width','100%');
 		

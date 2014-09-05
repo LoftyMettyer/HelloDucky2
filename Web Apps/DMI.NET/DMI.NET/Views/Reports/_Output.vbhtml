@@ -81,15 +81,16 @@ End Code
 					@Html.TextBoxFor(Function(m) m.Filename, New With {.Name = "Output.Filename", .placeholder = "File Name", .readonly = "true", .class = "width100"})
 				</div>
 			</div>
-			<br />
-			
+		</fieldset>
+
+		<fieldset>
 			<div id="outputtabfilenametextbox" class="">
 				@Html.LabelFor(Function(m) m.SaveExisting)
 				@Html.EnumDropDownListFor(Function(m) m.SaveExisting, New With {.class = "DataManagerOnly", .readonly = "true"})
 			</div>
 		</fieldset>
 
-		<fieldset id="fieldsetsendemail" class="border0 reportdefemail">
+		<fieldset id="fieldsetsendemail" class="reportdefemail">
 			<div class="">
 				<div class="width30 floatleft">
 					@Html.CheckBoxFor(Function(m) m.SendToEmail, New With {Key .Name = "Output.SendToEmail", .onclick = "setOutputToEmail();"})
@@ -97,16 +98,17 @@ End Code
 				</div>
 				<div class="width70 floatleft">
 					@Html.HiddenFor(Function(m) m.EmailGroupID, New With {.Name = "Output.EmailGroupID", .id = "txtEmailGroupID"})
-					@Html.TextBoxFor(Function(m) m.EmailGroupName, New With {.Name = "Output.EmailGroupName", .id = "txtEmailGroup", .readonly = "readonly", .class = "floatleft", .style = "width:88%"})
-					<input type="button" class="width10" id="cmdEmailGroup" name="cmdEmailGroup" value="..." onclick="selectEmailGroup()" />
+					@Html.TextBoxFor(Function(m) m.EmailGroupName, New With {.Name = "Output.EmailGroupName", .id = "txtEmailGroup", .readonly = "readonly", .class = "display-textbox-emails", .style = ""})
+					<input type="button" class="" id="cmdEmailGroup" name="cmdEmailGroup" value="..." onclick="selectEmailGroup()" />
 				</div>
 			</div>
 		</fieldset>
 
-		<fieldset id="fieldsetsubjectemail">
-			@Html.LabelFor(Function(m) m.EmailSubject, New With {.class = "display-label_emails"})
-			@Html.TextBox("Output.EmailSubject", Model.EmailSubject, New With {.class = "display-textbox-emails"})
-			<br />
+		<fieldset id="fieldsetsubjectemail">			
+				@Html.LabelFor(Function(m) m.EmailSubject, New With {.class = "display-label_emails"})
+				@Html.TextBox("Output.EmailSubject", Model.EmailSubject, New With {.class = "display-textbox-emails"})			
+			</fieldset>
+		<fieldset id="fieldseattachas">
 			@Html.LabelFor(Function(m) m.EmailAttachmentName, New With {.class = "display-label_emails"})
 			@Html.TextBoxFor(Function(m) m.EmailAttachmentName, New With {.Name = "Output.EmailAttachmentName", .class = "display-textbox-emails"})
 		</fieldset>
