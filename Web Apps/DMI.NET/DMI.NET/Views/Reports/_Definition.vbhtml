@@ -128,6 +128,9 @@
 		refreshViewAccess();
 
 		tableToGrid('#tblGroupAccess', { autoWidth: 'true', height: 150, cmTemplate: { sortable: false } });
+
+		if ($('#selectiontype_All').prop('checked')) $('#DisplayTitleInReportHeader').prop('disabled', true);
+
 	});
 
 	function getBaseTableList() {
@@ -170,6 +173,10 @@
 			$("#txt" + psTable + "Picklist").val("");
 			$("#txt" + psTable + "PicklistID").val(0);
 			$("#txt" + psTable + "FilterID").val(0);
+			$('#DisplayTitleInReportHeader').prop('disabled', true);
+		}
+		else {
+			$('#DisplayTitleInReportHeader').prop('disabled', false);
 		}
 
 		if (psType == "PICKLIST") {
