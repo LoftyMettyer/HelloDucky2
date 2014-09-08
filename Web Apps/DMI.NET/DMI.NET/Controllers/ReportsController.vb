@@ -224,6 +224,17 @@ Namespace Controllers
 		End Function
 
 		<HttpGet>
+		Function GetAvailableColumnsForCrossTab(TableID As Integer, reportID As Integer) As JsonResult
+
+			'Dim objCrossTab = CType(objReportRepository.RetrieveParent(reportID, UtilityType.utlCrossTab), CrossTabModel)
+
+			Dim objResults = objReportRepository.GetColumnsForTable(TableID)
+			Return Json(objResults, JsonRequestBehavior.AllowGet)
+
+		End Function
+
+
+		<HttpGet>
 		Function GetAvailableItemsForTable(TableID As Integer, reportID As Integer, reportType As UtilityType, selectionType As String) As JsonResult
 
 			Dim objReport = objReportRepository.RetrieveParent(reportID, reportType)
@@ -525,7 +536,7 @@ Namespace Controllers
 			For Each objItem In objReport.Columns
 				If objItem.ID = objModel.ID Then
 					objReport.Columns.Remove(objItem)
-					objReport.SortOrders.RemoveAll(Function(m) m.columnID = objModel.ID)
+					objReport.SortOrders.RemoveAll(Function(m) m.ColumnID = objModel.ID)
 					Exit For
 				End If
 			Next

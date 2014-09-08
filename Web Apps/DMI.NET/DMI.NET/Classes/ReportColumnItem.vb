@@ -32,7 +32,7 @@ Namespace Classes
 
 		Public ReadOnly Property IsNumeric As Boolean
 			Get
-				Return DataType = DataType.sqlInteger Or DataType = DataType.sqlNumeric
+				Return DataType = ColumnDataType.sqlInteger OrElse DataType = ColumnDataType.sqlNumeric
 			End Get
 		End Property
 

@@ -411,6 +411,10 @@
 			$('#CalendarEvents').jqGrid('clearGridData');
 		}
 
+		if ($("#txtReportType").val() == '@UtilityType.utlCrossTab') {
+			refreshCrossTabColumnsAvailable();
+		}
+
 	}
 
 	function removeAllChildTablesCompleted() {
