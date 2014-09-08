@@ -64,11 +64,11 @@ End Code
 		<legend class="fontsmalltitle">Event End :</legend>
 		<div>
 			<div class="optiongrouppadding">
-				@Html.RadioButton("EventEndType", CInt(CalendarEventEndType.None), Model.EventEndType = CalendarEventEndType.None, New With {.onclick = "changeEventEndType('none')"})
+				@Html.RadioButton("EventEndType", CInt(CalendarEventEndType.None), Model.EventEndType = CalendarEventEndType.None, New With {.onclick = "changeEventEndType()"})
 				None
 			</div>
 			<div class="optiongrouppadding">
-				@Html.RadioButton("EventEndType", CInt(CalendarEventEndType.EndDate), Model.EventEndType = CalendarEventEndType.EndDate, New With {.onclick = "changeEventEndType('enddate')"})
+				@Html.RadioButton("EventEndType", CInt(CalendarEventEndType.EndDate), Model.EventEndType = CalendarEventEndType.EndDate, New With {.onclick = "changeEventEndType()"})
 				End Date
 			</div>
 
@@ -87,7 +87,7 @@ End Code
 			</div>
 
 			<div class="optiongrouppadding">
-				@Html.RadioButton("EventEndType", CInt(CalendarEventEndType.Duration), Model.EventEndType = CalendarEventEndType.Duration, New With {.onclick = "changeEventEndType('duration')"})
+				@Html.RadioButton("EventEndType", CInt(CalendarEventEndType.Duration), Model.EventEndType = CalendarEventEndType.Duration, New With {.onclick = "changeEventEndType()"})
 				Duration
 			</div>
 
@@ -216,17 +216,19 @@ End Code
 
 	function changeEventEndType(endType) {
 
-						combo_disable("#EventEndDateID", True)
-						combo_disable("#EventEndSessionID", True)
-						combo_disable("#EventDurationID", True)
+		var endType = $("input[name='EventEndType']:checked").val()
+
+		combo_disable("#EventEndDateID", true)
+		combo_disable("#EventEndSessionID", true)
+		combo_disable("#EventDurationID", true)
 
 		switch (endType) {
-			case "duration":
-						combo_disable("#EventDurationID", False)
+			case "1":
+				combo_disable("#EventEndDateID", false)
+				combo_disable("#EventEndSessionID", false)
 				break;
-			case "enddate":
-						combo_disable("#EventEndDateID", False)
-						combo_disable("#EventEndSessionID", False)
+			case "2":
+				combo_disable("#EventDurationID", false)
 				break;
 		}
 	}
@@ -272,9 +274,9 @@ End Code
 
 		var datarow = {
 			ID: $("#CalendarEventID").val(),
-EventKey: 			'@Model.EventKey',
-ReportID: 			'@Model.ReportID',
-ReportType: 		'@CInt(Model.ReportType)',
+			EventKey: 			'@Model.EventKey',
+			ReportID: 			'@Model.ReportID',
+			ReportType: 		'@CInt(Model.ReportType)',
 			Name: $("#EventName").val(),
 			TableID: $("#EventTableID").val(),
 			TableName: $("#EventTableID option:selected").text(),
@@ -324,6 +326,13 @@ ReportType: 		'@CInt(Model.ReportType)',
 		$("#divPopupReportDefinition").dialog("close");
 		$("#divPopupReportDefinition").empty();
 	}
+
+	$(function () {
+
+		changeEventEndType();
+
+	});
+
 
 </script>
 
