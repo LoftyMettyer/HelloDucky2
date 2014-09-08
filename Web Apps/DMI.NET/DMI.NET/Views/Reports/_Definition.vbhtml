@@ -127,7 +127,7 @@
 		getBaseTableList();
 		refreshViewAccess();
 
-		tableToGrid('#tblGroupAccess', { autoWidth: 'true', height: 150, cmTemplate: { sortable: false } });
+		tableToGrid('#tblGroupAccess', { autoWidth: true, height: 150, cmTemplate: { sortable: false } });
 
 		if ($('#selectiontype_All').prop('checked')) $('#DisplayTitleInReportHeader').prop('disabled', true);
 

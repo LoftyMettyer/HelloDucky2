@@ -1189,9 +1189,8 @@ div.tablelayout label:not(.inline-block) {
 
 div.tablelayout input:not([type="radio"]), .tablelayout textarea, .tablelayout div.ui-jqgrid {
 	display: table-cell;
-	width: 90%;
+	width: 99%;
 	vertical-align: top;
-	float: right;
 }
 
 
