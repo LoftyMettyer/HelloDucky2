@@ -260,9 +260,9 @@ Namespace Controllers
 		End Function
 
 		<HttpGet>
-		Function GetBaseTables() As JsonResult
+		Function GetBaseTables(reportType As UtilityType) As JsonResult
 
-			Dim objTables = objReportRepository.GetTables()
+			Dim objTables = objReportRepository.GetTables(reportType)
 			Return Json(objTables, JsonRequestBehavior.AllowGet)
 
 		End Function

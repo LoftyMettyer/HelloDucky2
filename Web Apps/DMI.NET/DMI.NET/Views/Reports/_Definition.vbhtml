@@ -136,7 +136,7 @@
 	function getBaseTableList() {
 
 		$.ajax({
-			url: '@Url.Action("GetBaseTables", "Reports")',
+			url: '@Url.Action("GetBaseTables", "Reports", New With {.ReportType = CInt(Model.ReportType)})',
 			type: 'GET',
 			dataType: 'json',
 			success: function (json) {

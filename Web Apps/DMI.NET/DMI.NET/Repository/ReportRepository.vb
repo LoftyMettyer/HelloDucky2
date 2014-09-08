@@ -834,14 +834,24 @@ Namespace Repository
 		End Function
 
 
-		Public Function GetTables() As List(Of ReportTableItem)
+		Public Function GetTables(reportType As UtilityType) As List(Of ReportTableItem)
 
 			Dim objSessionInfo = CType(HttpContext.Current.Session("SessionContext"), SessionInfo)
 			Dim objItems As New List(Of ReportTableItem)
 
 			For Each objTable In objSessionInfo.Tables.OrderBy(Function(n) n.Name)
 				Dim objItem As New ReportTableItem() With {.id = objTable.ID, .Name = objTable.Name}
-				objItems.Add(objItem)
+
+				If reportType = UtilityType.utlCrossTab Then
+
+					If objSessionInfo.Columns.LongCount(Function(m) m.TableID = objTable.ID AndAlso m.IsVisible = True) > 1 Then
+						objItems.Add(objItem)
+					End If
+
+				Else
+					objItems.Add(objItem)
+				End If
+
 			Next
 
 			Return objItems.OrderBy(Function(m) m.Name).ToList
