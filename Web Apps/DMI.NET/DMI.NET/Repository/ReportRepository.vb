@@ -104,6 +104,7 @@ Namespace Repository
 				objModel.ChildTablesAvailable = CInt(_objSessionInfo.Relations.LongCount(Function(m) m.ParentID = objModel.BaseTableID))
 				objModel.GroupAccess = GetUtilityAccess(objModel, action)
 				objModel.IsReadOnly = (action = UtilityActionType.View)
+				objModel.ID = If(action = UtilityActionType.Copy, 0, objModel.ID)
 
 				_customreports.Remove(objModel.ID)
 				_customreports.Add(objModel)
@@ -172,6 +173,7 @@ Namespace Repository
 
 				objModel.GroupAccess = GetUtilityAccess(objModel, action)
 				objModel.IsReadOnly = (action = UtilityActionType.View)
+				objModel.ID = If(action = UtilityActionType.Copy, 0, objModel.ID)
 
 				_mailmerges.Remove(objModel.ID)
 				_mailmerges.Add(objModel)
@@ -244,6 +246,7 @@ Namespace Repository
 				objModel.AvailableColumns = GetColumnsForTable(objModel.BaseTableID)
 				objModel.GroupAccess = GetUtilityAccess(objModel, action)
 				objModel.IsReadOnly = (action = UtilityActionType.View)
+				objModel.ID = If(action = UtilityActionType.Copy, 0, objModel.ID)
 
 				_crosstabs.Remove(objModel.ID)
 				_crosstabs.Add(objModel)
@@ -372,6 +375,7 @@ Namespace Repository
 
 				objModel.GroupAccess = GetUtilityAccess(objModel, action)
 				objModel.IsReadOnly = (action = UtilityActionType.View)
+				objModel.ID = If(action = UtilityActionType.Copy, 0, objModel.ID)
 
 				_calendarreports.Remove(objModel.ID)
 				_calendarreports.Add(objModel)

@@ -88,7 +88,7 @@ BEGIN
 	END
 
 	-- Definition
-	SELECT Name, [description], userName AS [owner],		
+	SELECT @psReportName AS [Name], [description], userName AS [owner],		
 		tableID AS BaseTableID,		
 		selection AS SelectionType,
 		picklistID,	
