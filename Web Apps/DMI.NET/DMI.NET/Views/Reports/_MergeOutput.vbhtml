@@ -56,7 +56,7 @@
 
 		<div class="padbot5">
 			<div class="width30 floatleft">
-				@Html.CheckBoxFor(Function(m) m.SaveToFile, New With {.onclick = "setOutputToFile();"})
+				@Html.CheckBoxFor(Function(m) m.SaveToFile, New With {.id = "SaveToFile", .onclick = "setOutputToFile();"})
 				@Html.LabelFor(Function(m) m.SaveToFile)
 			</div>
 			<div class="width70 floatleft">
@@ -72,14 +72,17 @@
 
 	<fieldset id="fieldsetsubjectemail">
 		@Html.LabelFor(Function(m) m.EmailGroupID, New With {.class = "display-label_emails"})
-		@Html.HiddenFor(Function(m) m.EmailGroupID, New With {.Name = "Output.EmailGroupID", .id = "txtEmailGroupID"})
 		@Html.EmailGroupDropdown("EmailGroupID", Model.EmailGroupID, Model.AvailableEmails)
 		<br />
 		@Html.LabelFor(Function(m) m.EmailSubject, New With {.class = "display-label_emails"})
-		@Html.TextBox("Output.EmailSubject", Model.EmailSubject, New With {.class = "display-textbox-emails"})
+		@Html.TextBox("EmailSubject", Model.EmailSubject, New With {.class = "display-textbox-emails"})
+		<br />
+		<br />
+		@Html.CheckBoxFor(Function(m) m.EmailAsAttachment, New With {.id = "EmailAsAttachment", .onclick = "setOutputSendAsAttachment();"})
+		@Html.LabelFor(Function(m) m.EmailAsAttachment)
 		<br />
 		@Html.LabelFor(Function(m) m.EmailAttachmentName, New With {.class = "display-label_emails"})
-		@Html.TextBoxFor(Function(m) m.EmailAttachmentName, New With {.Name = "Output.EmailAttachmentName", .class = "display-textbox-emails"})
+		@Html.TextBoxFor(Function(m) m.EmailAttachmentName, New With {.id = "EmailAttachmentName", .Name = "EmailAttachmentName", .class = "display-textbox-emails"})
 		<br />
 		@Html.ValidationMessageFor(Function(m) m.EmailAttachmentName)
 		<br />
@@ -144,7 +147,7 @@
 	}
 
 	function setOutputToFile() {
-		var bSelected = $("#").val();
+		var bSelected = $("#SaveToFile").prop("checked");
 		$(".outputfile").children().attr("readonly", !bSelected);
 		if (!bSelected) {
 			$(".outputfile").children().val("");
@@ -152,7 +155,7 @@
 	}
 
 	function setOutputSendAsAttachment() {
-		var bSelected = $("#").val();
+		var bSelected = $("#EmailAsAttachment").prop("checked");
 		$("#EmailAttachmentName").attr("readonly", !bSelected);
 
 		if (!bSelected) {
@@ -167,6 +170,7 @@
 
 	$(function () {
 		selectMergeOutput('@Model.OutputFormat');
+		setOutputSendAsAttachment();
 		//styling for email address under Individual Emails section
 		$('#fieldsetsubjectemail select').css({
 			width: '70%',

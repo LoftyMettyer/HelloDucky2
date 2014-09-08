@@ -394,6 +394,10 @@ Namespace Repository
 				Dim sAccess = UtilityAccessAsString(objModel.GroupAccess)
 				Dim sColumns = MailMergeColumnsAsString(objModel.Columns, objModel.SortOrders)
 
+				objModel.EmailAttachmentName = If(objModel.EmailAttachmentName Is Nothing, "", objModel.EmailAttachmentName)
+				objModel.EmailSubject = If(objModel.EmailSubject Is Nothing, "", objModel.EmailSubject)
+				objModel.TemplateFileName = If(objModel.TemplateFileName Is Nothing, "", objModel.TemplateFileName)
+
 				_objDataAccess.ExecuteSP("spASRIntSaveMailMerge" _
 					, New SqlParameter("@psName", SqlDbType.VarChar, 255) With {.Value = objModel.Name} _
 					, New SqlParameter("@psDescription", SqlDbType.VarChar, -1) With {.Value = objModel.Description} _
@@ -402,7 +406,7 @@ Namespace Repository
 					, New SqlParameter("@piPicklistID", SqlDbType.Int) With {.Value = objModel.PicklistID} _
 					, New SqlParameter("@piFilterID", SqlDbType.Int) With {.Value = objModel.FilterID} _
 					, New SqlParameter("@piOutputFormat", SqlDbType.Int) With {.Value = objModel.OutputFormat} _
-					, New SqlParameter("@pfOutputSave", SqlDbType.Bit) With {.Value = True} _
+					, New SqlParameter("@pfOutputSave", SqlDbType.Bit) With {.Value = objModel.SaveToFile} _
 					, New SqlParameter("@psOutputFilename", SqlDbType.VarChar, -1) With {.Value = objModel.Filename} _
 					, New SqlParameter("@piEmailAddrID", SqlDbType.Int) With {.Value = objModel.EmailGroupID} _
 					, New SqlParameter("@psEmailSubject", SqlDbType.VarChar, -1) With {.Value = objModel.EmailSubject} _

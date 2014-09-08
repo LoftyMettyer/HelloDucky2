@@ -59,12 +59,13 @@ Namespace Models
 		<DisplayName("Email Subject :")>
 		Public Property EmailSubject As String
 
-		<DisplayName("Attach As :")>
+		<DisplayName("Send as attachment")>
 		Public Property EmailAsAttachment As Boolean
 
-		<Required(ErrorMessage:="Email attachment name is required.")> _
+		<RequiredIf("EmailAsAttachment", True, ErrorMessage:="Email attachment name is required.")>
 		<MaxLength(255, ErrorMessage:="Email attachment cannot be longer than 255 characters.")> _
 		<DisplayName("Attach As :")>
+		<DisplayFormat(ConvertEmptyStringToNull:=False)>
 		Public Property EmailAttachmentName As String
 
 		Public Overrides Sub SetBaseTable(TableID As Integer)
