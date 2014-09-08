@@ -453,13 +453,9 @@ select.readonly {
 }
 
 #AccessPermissions {
-	width:40%;
-	height:200px;	
+	width:45%;
 }
-#AccessPermissionsGrid {
-	height:200px;
-	overflow:auto;
-}
+
 
 .bordernone {
 	/*border-color:none;*/
@@ -526,14 +522,7 @@ select.readonly {
 	 margin-bottom:-4px;
  }
 
-#Owner {
-	width:48%;
-	margin-left:5px;
-}
-#CustomDefinitionReportOptions {
-	/*margin-left:20px;*/
-}
-#txtBasePicklist, #txtBaseFilter {
+#txtBaseFilter {
 	margin-top:2px;
 	float:left;
 }
@@ -664,11 +653,11 @@ margin:15px 0 5px 0;
 #limheight {
 	width: 80%;
 	padding-left: 20px;
-	-webkit-column-count: 8;
-	-moz-column-count: 8;
+    -webkit-column-count: 8;
+       -moz-column-count: 8;
 	-ms-column-count: 8;
 	-o-column-count: 8;
-	column-count: 8; /*3 is just placeholder -- can be anything*/
+            column-count: 8; /*3 is just placeholder -- can be anything*/
 }
 
 #limheight li {

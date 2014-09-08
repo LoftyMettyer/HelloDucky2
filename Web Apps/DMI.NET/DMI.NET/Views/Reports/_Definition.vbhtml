@@ -1,7 +1,6 @@
 ﻿@Imports DMI.NET
 @Imports DMI.NET.Helpers
 @Imports DMI.NET.Models
-
 @Inherits System.Web.Mvc.WebViewPage(Of ReportBaseModel)
 
 
@@ -13,16 +12,15 @@
 
 
 <div class="width100">
-	<fieldset class="floatleft width50 ">
-		<fieldset class="floatleft width99 bordered">
-			<legend class="fontsmalltitle">Description :</legend>
+	<fieldset class="floatleft width50 bordered">
+		<legend class="fontsmalltitle">Name :</legend>
 			<fieldset>
 				<div id="DescriptionItems">
 					@Html.LabelFor(Function(m) m.Name)
 					@Html.TextBoxFor(Function(m) m.Name, New With {.class = "width70 floatright"})
 					@Html.ValidationMessageFor(Function(m) m.Name)
 				</div>
-
+			<br />
 				<div>
 					@Html.LabelFor(Function(m) m.Description)
 					@Html.TextArea("description", Model.Description, New With {.class = "width70 floatright"})
@@ -31,7 +29,7 @@
 			</fieldset>
 		</fieldset>
 
-		<fieldset id="DataRecordsPermissions" class="overflowhidden width99">
+	<fieldset id="DataRecordsPermissions" class="floatleft overflowhidden width50">
 			<legend class="fontsmalltitle">Data :</legend>
 			<div class="inner">
 				<fieldset class="">
@@ -54,9 +52,11 @@
 								<span>Picklist</span>
 							</div>
 							<div class="width70 floatleft">
-								@Html.TextBoxFor(Function(m) m.PicklistName, New With {.id = "txtBasePicklist", .readonly = "true", .class = "width80"})
 								@Html.EllipseButton("cmdBasePicklist", "selectBaseTablePicklist()", Model.SelectionType = RecordSelectionType.Picklist)
+							<div class="ellipsistextbox">
+								@Html.TextBoxFor(Function(m) m.PicklistName, New With {.id = "txtBasePicklist", .readonly = "true"})
 							</div>
+						</div>
 							<input type="hidden" id="txtBasePicklistID" name="picklistID" value="@Model.PicklistID" />
 						</fieldset>
 
@@ -67,54 +67,51 @@
 								<span>Filter</span>
 							</div>
 							<div class="width70  floatleft">
-								@Html.TextBoxFor(Function(m) m.FilterName, New With {.id = "txtBaseFilter", .readonly = "true", .class = "width80"})
 								@Html.EllipseButton("cmdBaseFilter", "selectBaseTableFilter()", Model.SelectionType = RecordSelectionType.Filter)
+							<div class="ellipsistextbox">
+								@Html.TextBoxFor(Function(m) m.FilterName, New With {.id = "txtBaseFilter", .readonly = "true", .class = "width80"})
 							</div>
+						</div>
 							<input type="hidden" id="txtBaseFilterID" name="filterID" value="@Model.FilterID" />
 						</fieldset>
 						@Html.ValidationMessageFor(Function(m) m.PicklistID)
 						@Html.ValidationMessageFor(Function(m) m.FilterID)
-					</fieldset>
-
+					<br />
 					<fieldset>
 						<div class="width100  height25" style="display:block">
 							@Html.CheckBoxFor(Function(m) m.DisplayTitleInReportHeader)
 							@Html.LabelFor(Function(m) m.DisplayTitleInReportHeader)
 						</div>
 					</fieldset>
+				</fieldset>
+
+
 				</div>
 
 				<input type="hidden" id="ctl_DefinitionChanged" name="HasChanged" value="false" />
 				<input type="hidden" id="baseHidden" name="baseHidden">
 			</div>
 		</fieldset>
-	</fieldset>
 
-	<fieldset id="AccessPermissions"  class="width35">
-		<fieldset>
+	<fieldset id="AccessPermissions" class="table">
 			<legend class="fontsmalltitle">Access :</legend>
+
 			<fieldset>
-				<span class="floatleft" style="padding-left:5px">Owner : </span>
+			<div class="nowrap tablelayout" style="margin-top: 0;">
+				<div class="tablerow">
+					<label>Owner :</label>
 				@Html.TextBoxFor(Function(m) m.Owner, New With {.readonly = "true"})
-			</fieldset>
-			<fieldset id="AccessPermissionsGrid" >
-				@Html.AccessGrid("GroupAccess", Model.GroupAccess, Nothing)
-				<br/>
-				<span id="ForcedHiddenMessage" hidden="hidden">The definition access cannot be changed as it contains a hidden picklist, filter or calculation</span>
-			</fieldset>
+				</div>
+				<br />
+				<div class="tablerow">
+					<label>Access :</label>
+					@Html.AccessGrid("GroupAccess", Model.GroupAccess, New With {.id = "tblGroupAccess"})
+				</div>
+			</div>
 
 			<br />
-			Apply to all groups :
-			<select id="drpSetAllSecurityGroups">
-				<option value='RW'>Read / Write</option>
-				<option value='RO'>Read Only</option>
-				<option value='HD'>Hidden</option>
-			</select>
-			<input type="button" value="Go" onclick="setAllSecurityGroups();" />
-
+			<label id="ForcedHiddenMessage" hidden="hidden">The definition access cannot be changed as it contains a hidden picklist, filter or calculation</label>
 		</fieldset>
-
-
 	</fieldset>
 </div>
 
@@ -124,13 +121,13 @@
 
 		$('fieldset').css("border", "0");
 		$('table').css("border", "0");
-		$('#AccessPermissionsGrid table').css('width','100%');
 		
 		 $("#frmReportDefintion :input").on("change", function () { enableSaveButton(this); });
 		 $("#frmReportDefintion :input").on("click", function () { enableSaveButton(this); });
 		getBaseTableList();
 		refreshViewAccess();
 
+		tableToGrid('#tblGroupAccess', { autoWidth: 'true', height: 150, cmTemplate: { sortable: false } });
 	});
 
 	function getBaseTableList() {
@@ -160,7 +157,7 @@
 	function setAllSecurityGroups() {
 
 		var setTo = $("#drpSetAllSecurityGroups").val();
-		$(".reportViewAccessGroup").val(setTo);
+		if (setTo.length > 0) $(".reportViewAccessGroup").val(setTo);
 
 	}
 
@@ -523,7 +520,8 @@
 						OpenHR.modalPrompt(json.ErrorMessage, 4, "Confirm").then(function (answer) {
 							if (answer == 6) {
 								submitReportDefinition();
-							}});
+							}
+						});
 						break;
 
 				}

@@ -49,7 +49,7 @@ Namespace Models
 		Public Property FilterName As String
 		Public Property PicklistName As String
 
-		<DisplayName("Display Title In Report Header")>
+		<DisplayName("Display filter or picklist title in the report header")>
 		Public Property DisplayTitleInReportHeader As Boolean
 
 		Public Property Columns As New List(Of ReportColumnItem) Implements IReport.Columns

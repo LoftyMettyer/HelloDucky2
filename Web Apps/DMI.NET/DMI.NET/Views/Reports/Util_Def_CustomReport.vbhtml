@@ -25,24 +25,22 @@ End Code
 		<li><a href="#report_definition_tab_output">Output</a></li>
 	</ul>
 
-	<div id="tabs-1">
-		@Code
-		Html.RenderPartial("_Definition", Model)
-		End Code
+ 	<div id="tabs-1">
+ 		@Code
+	 Html.RenderPartial("_Definition", Model)
+ 	End Code
 
-		<fieldset id="CustomDefinitionReportOptions" class="width100">
-			<fieldset>
-				<legend class="fontsmalltitle">Report Options :</legend>
-				<fieldset>
-					@Html.CheckBoxFor(Function(m) m.IsSummary)
-					@Html.LabelFor(Function(m) m.IsSummary)
-					<br />
-					@Html.CheckBoxFor(Function(m) m.IgnoreZerosForAggregates)
-					@Html.LabelFor(Function(m) m.IgnoreZerosForAggregates)
-				</fieldset>
-			</fieldset>
-		</fieldset>
-	</div>
+ 	<fieldset id="CustomDefinitionReportOptions" class="width100">
+ 		<legend class="fontsmalltitle">Report Options :</legend>
+ 		<fieldset>
+ 			@Html.CheckBoxFor(Function(m) m.IsSummary)
+ 	@Html.LabelFor(Function(m) m.IsSummary)
+ <br />
+ @Html.CheckBoxFor(Function(m) m.IgnoreZerosForAggregates)
+ @Html.LabelFor(Function(m) m.IgnoreZerosForAggregates)
+ </fieldset>
+ </fieldset>
+ </div>
 
 	<div id="tabs-2">
 		@Code

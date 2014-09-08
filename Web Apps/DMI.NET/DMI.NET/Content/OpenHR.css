@@ -1147,24 +1147,70 @@ padding-left:0px;
 /* Header elements */
 nav.nowrap {
 	margin-top: 10px;
-		width: 100%;
-		white-space: nowrap;
-		overflow: hidden;
-		display: table;    
+	width: 100%;
+	white-space: nowrap;
+	overflow: hidden;
+	display: table;
 }
 nav div.tablerow {
-		display: table-row;
+	display: table-row;
 }
 nav.tablelayout label:not(.inline-block) {
-		display: table-cell;
+	display: table-cell;
+	vertical-align: top;
 }
 nav.tablelayout input:not([type="radio"]), .tablelayout textarea {
-		display: table-cell;
-		width: 90%;
-		vertical-align: top;
+	display: table-cell;
+	width: 90%;
+	vertical-align: top;
 }
 
 .inline-block {
 	display: inline-block;
 }
 
+/* stretchyfill for elements */
+div.nowrap {
+	margin-top: 10px;
+	width: 100%;
+	white-space: nowrap;
+	overflow: hidden;
+	display: table;
+}
+
+div.tablerow {
+	display: table-row;
+}
+
+div.tablelayout label:not(.inline-block) {
+	display: table-cell;
+	vertical-align: top;
+}
+
+div.tablelayout input:not([type="radio"]), .tablelayout textarea, .tablelayout div.ui-jqgrid {
+	display: table-cell;
+	width: 90%;
+	vertical-align: top;
+	float: right;
+}
+
+
+/* Reports definition */
+#tabs-1 #description {
+	height: 90px;
+}
+
+#tabs-1 #AccessPermissions label { padding-top: 2px;}
+
+#cmdBasePicklist, #cmdBaseFilter {
+	float: right;
+}
+
+.ellipsistextbox {
+	overflow: hidden;
+	padding-right: 0.5em;
+}
+
+.ellipsistextbox input {
+	width: 100%;
+}
