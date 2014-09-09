@@ -186,7 +186,7 @@
 			$("#txt" + psTable + "FilterID").val(0);
 
 			if ($("#txt" + psTable + "PicklistID").val() == 0) {
-				$("#txt" + psTable + "Picklist").val("<None>");
+				$("#txt" + psTable + "Picklist").val("None");
 			}
 
 		}
@@ -198,7 +198,7 @@
 			$("#txt" + psTable + "PicklistID").val(0);
 
 			if ($("#txt" + psTable + "FilterID").val() == 0) {
-				$("#txt" + psTable + "Filter").val("<None>");
+				$("#txt" + psTable + "Filter").val("None");
 			}
 
 		}

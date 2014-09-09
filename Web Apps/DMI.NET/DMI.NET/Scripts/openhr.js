@@ -155,7 +155,7 @@
 					});
 
 					$("#ExpressionSelectNone").off('click').on('click', function () {					
-						followOnFunctionName(0, "", "RW");
+						followOnFunctionName(0, "None", "RW");
 						frame.dialog("close");
 					});
 
