@@ -86,13 +86,16 @@
 		}
 
 		function refreshColumnButtons() {
+
+			var isReadonly = isDefinitionReadOnly();
 			var bDisableAdd = ($("#AvailableColumns").getGridParam("reccount") == 0);
-			button_disable($("#btnColumnAdd")[0], bDisableAdd);
-			button_disable($("#btnColumnAddAll")[0], bDisableAdd);
+
+			button_disable($("#btnColumnAdd")[0], bDisableAdd || isReadonly);
+			button_disable($("#btnColumnAddAll")[0], bDisableAdd || isReadonly);
 
 			bDisableAdd = ($("#SelectedColumns").getGridParam("reccount") == 0);
-			button_disable($("#btnColumnRemove")[0], bDisableAdd);
-			button_disable($("#btnColumnRemoveAll")[0], bDisableAdd);
+			button_disable($("#btnColumnRemove")[0], bDisableAdd || isReadonly);
+			button_disable($("#btnColumnRemoveAll")[0], bDisableAdd || isReadonly);
 
 		}
 
@@ -264,8 +267,10 @@
     		rowNum: 10000,
     		scrollrows: true,
     		ondblClickRow: function (rowid) {
-    			addColumnToSelected(rowid);
-    			enableSaveButton();
+    			if (!isDefinitionReadOnly()) {
+    				addColumnToSelected(rowid);
+    				enableSaveButton();
+    			}
     		},
     		loadComplete: function (data) {
     			var topID = $("#AvailableColumns").getDataIDs()[0]
@@ -378,10 +383,11 @@
     			$('#SelectedColumnIsRepeated').prop('checked', JSON.parse(dataRow.IsRepeated));
 
     			// Enable / Disable relevant buttons
-    			button_disable($("#btnColumnRemove")[0], false);
-    			button_disable($("#btnColumnRemoveAll")[0], false);
-    			button_disable($("#btnColumnMoveUp")[0], isTopRow);
-    			button_disable($("#btnColumnMoveDown")[0], isBottomRow);
+    			var isReadOnly = isDefinitionReadOnly();
+    			button_disable($("#btnColumnRemove")[0], false || isReadOnly);
+    			button_disable($("#btnColumnRemoveAll")[0], false || isReadOnly);
+    			button_disable($("#btnColumnMoveUp")[0], isTopRow || isReadOnly);
+    			button_disable($("#btnColumnMoveDown")[0], isBottomRow || isReadOnly);
 
     		},
     		loadComplete: function (data) {

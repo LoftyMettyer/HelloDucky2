@@ -18,18 +18,23 @@ Namespace Repository
 		Private ReadOnly _calendarreports As New Collection(Of CalendarReportModel)
 		Private ReadOnly _mailmerges As New Collection(Of MailMergeModel)
 
-		Private _objSessionInfo As SessionInfo
-		Private ReadOnly _objDataAccess As clsDataAccess
-		Private ReadOnly _username As String
+		Private ReadOnly Property _username As String
+			Get
+				Return HttpContext.Current.Session("username").ToString
+			End Get
+		End Property
 
-		Public Sub New()
+		Private ReadOnly Property _objSessionInfo As SessionInfo
+			Get
+				Return CType(HttpContext.Current.Session("SessionContext"), SessionInfo)
+			End Get
+		End Property
 
-			MyBase.New()
-			_objSessionInfo = CType(HttpContext.Current.Session("SessionContext"), SessionInfo)
-			_objDataAccess = CType(HttpContext.Current.Session("DatabaseAccess"), clsDataAccess)
-			_username = HttpContext.Current.Session("username").ToString
-
-		End Sub
+		Private ReadOnly Property _objDataAccess As clsDataAccess
+			Get
+				Return CType(HttpContext.Current.Session("DatabaseAccess"), clsDataAccess)
+			End Get
+		End Property
 
 		Public Function LoadCustomReport(ID As Integer, action As UtilityActionType) As CustomReportModel
 

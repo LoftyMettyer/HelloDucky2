@@ -65,6 +65,11 @@ End Code
 		if ('@Model.ReportType' != '@UtilityType.utlCustomReport') {
 			$(".customReportsOnly").hide();
 		}
+
+		if (isDefinitionReadOnly()) {
+			$("#frmPostSortOrder").prop('disabled', true);
+		}
+
 	});
 
 	function postThisSortOrder() {

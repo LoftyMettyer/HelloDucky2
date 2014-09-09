@@ -36,11 +36,12 @@
 		function refreshSortButtons() {
 
 			var bDisableRemove = ($("#SortOrders").getGridParam("reccount") == 0) || ($("#SelectedColumns").getGridParam("reccount") == 0);
+			var isReadonly = isDefinitionReadOnly();
 
-			button_disable($("#btnSortOrderAdd")[0], ($("#SortOrdersAvailable").val() == 0));
+			button_disable($("#btnSortOrderAdd")[0], ($("#SortOrdersAvailable").val() == 0) || isReadonly);
 			button_disable($("#btnSortOrderEdit")[0], true);
 			button_disable($("#btnSortOrderRemove")[0], true);
-			button_disable($("#btnSortOrderRemoveAll")[0], bDisableRemove);
+			button_disable($("#btnSortOrderRemoveAll")[0], bDisableRemove || isReadonly);
 			button_disable($("#btnSortOrderMoveUp")[0], true);
 			button_disable($("#btnSortOrderMoveDown")[0], true);
 		
@@ -151,12 +152,14 @@
 				var isTopRow = (rowId == allRows[1].id);
 				var isBottomRow = (rowId == allRows[allRows.length - 1].id);
 
+				var isReadonly = isDefinitionReadOnly();
+
 				// Enable / Disable relevant buttons
-				button_disable($("#btnSortOrderEdit")[0], false);
-				button_disable($("#btnSortOrderRemove")[0], false);
-				button_disable($("#btnSortOrderRemoveAll")[0], false);
-				button_disable($("#btnSortOrderMoveUp")[0], isTopRow);
-				button_disable($("#btnSortOrderMoveDown")[0], isBottomRow);
+				button_disable($("#btnSortOrderEdit")[0], false || isReadonly);
+				button_disable($("#btnSortOrderRemove")[0], false || isReadonly);
+				button_disable($("#btnSortOrderRemoveAll")[0], false || isReadonly);
+				button_disable($("#btnSortOrderMoveUp")[0], isTopRow || isReadonly);
+				button_disable($("#btnSortOrderMoveDown")[0], isBottomRow || isReadonly);
 
 			},
 			loadComplete: function (data) {

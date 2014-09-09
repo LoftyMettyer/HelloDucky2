@@ -103,10 +103,10 @@
 			},
 			onSelectRow: function (id) {
 
-				// Enable / Disable relevant buttons
-				button_disable($("#btnEventDetailsEdit")[0], false);
-				button_disable($("#btnEventDetailsRemove")[0], false);
-				button_disable($("#btnEventDetailsRemoveAll")[0], false);
+				var isReadOnly = isDefinitionReadOnly();
+				button_disable($("#btnEventDetailsEdit")[0], isReadOnly);
+				button_disable($("#btnEventDetailsRemove")[0], isReadOnly);
+				button_disable($("#btnEventDetailsRemoveAll")[0], isReadOnly);
 
 			},
 			gridComplete: function () {

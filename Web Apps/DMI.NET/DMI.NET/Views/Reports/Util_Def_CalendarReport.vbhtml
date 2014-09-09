@@ -156,12 +156,9 @@ End Code
 		$("#tabs").tabs();
 		$('input[type=number]').numeric();
 
-		if ($("#IsReadOnly").val() == "True") {
-			$("#frmReportDefintion :input").prop("disabled", true);
-		}
-
 		selectGroupByDescription();
-		button_disable($("#btnSortOrderAdd")[0], false);
+		button_disable($("#btnSortOrderAdd")[0], isDefinitionReadOnly());
+
 	});
 
 	function submitForm() {

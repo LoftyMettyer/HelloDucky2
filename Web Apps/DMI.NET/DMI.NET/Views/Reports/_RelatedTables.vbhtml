@@ -315,17 +315,17 @@
 				enableSaveButton();
 			},
 			onSelectRow: function (id) {
-				button_disable($("#btnChildEdit")[0], false);
-				button_disable($("#btnChildRemove")[0], false);
+				button_disable($("#btnChildEdit")[0], isDefinitionReadOnly());
+				button_disable($("#btnChildRemove")[0], isDefinitionReadOnly());
 			},
 			gridComplete: function () {
 
 				var tablesSelected = $(this).getGridParam("reccount");
-				button_disable($("#btnChildAdd")[0], tablesSelected > 4 || $("#ChildTablesAvailable").val() == 0);
+				button_disable($("#btnChildAdd")[0], tablesSelected > 4 || $("#ChildTablesAvailable").val() == 0 || isDefinitionReadOnly());
 
 				button_disable($("#btnChildEdit")[0], true);
 				button_disable($("#btnChildRemove")[0], true);
-				button_disable($("#btnChildRemoveAll")[0], tablesSelected == 0);
+				button_disable($("#btnChildRemoveAll")[0], tablesSelected == 0 || isDefinitionReadOnly());
 
 			},
 			loadComplete: function(json) {

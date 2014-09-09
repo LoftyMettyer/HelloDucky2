@@ -76,6 +76,10 @@ End Code
 			showOn: 'both'
 		}).css("width", "40px");
 
+		if (isDefinitionReadOnly()) {
+			$("#frmPostChildTable").prop('disabled', true);
+		}
+
 	})
 
 	function changeChildTable() {

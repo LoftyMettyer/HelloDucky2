@@ -9,6 +9,7 @@
 @Html.HiddenFor(Function(m) m.Timestamp)
 @Html.HiddenFor(Function(m) m.ValidityStatus)
 @Html.HiddenFor(Function(m) m.BaseViewAccess)
+@Html.HiddenFor(Function(m) m.IsReadOnly)
 
 
 <div class="width100">
@@ -127,16 +128,25 @@
 
 		tableToGrid('#tblGroupAccess', { autoWidth: true, height: 150, cmTemplate: { sortable: false } });
 
-		$("#frmReportDefintion input").on("keydown", function () { enableSaveButton(); });
-		$("#frmReportDefintion textarea").on("keydown", function () { enableSaveButton(); });
-		$("#frmReportDefintion input").on("change", function () { enableSaveButton(); });
-		$("#frmReportDefintion select").on("change", function () { enableSaveButton(); });
-		$("#frmReportDefintion :button").on("click", function () { enableSaveButton(); });
-
 		if ($('#selectiontype_All').prop('checked')) $('#DisplayTitleInReportHeader').prop('disabled', true);
 		menu_toolbarEnableItem('mnutoolSaveReport', false);
 
+		if (isDefinitionReadOnly()) {
+			$("#frmReportDefintion").prop('disabled', "disabled");
+			$("#frmReportDefintion :button").prop('disabled', "disabled");
+		} else {
+			$("#frmReportDefintion input").on("keydown", function () { enableSaveButton(); });
+			$("#frmReportDefintion textarea").on("keydown", function () { enableSaveButton(); });
+			$("#frmReportDefintion input").on("change", function () { enableSaveButton(); });
+			$("#frmReportDefintion select").on("change", function () { enableSaveButton(); });
+			$("#frmReportDefintion :button").on("click", function () { enableSaveButton(); });
+		}
+
 	});
+
+	function isDefinitionReadOnly() {
+		return ($("#IsReadOnly").val() == "True");
+	}
 
 	function getBaseTableList() {
 
@@ -457,8 +467,11 @@
 	}
 
 	function enableSaveButton() {
-		$("#ctl_DefinitionChanged").val("true");
-		menu_toolbarEnableItem('mnutoolSaveReport', true);
+
+		if (!isDefinitionReadOnly()) {
+			$("#ctl_DefinitionChanged").val("true");
+			menu_toolbarEnableItem('mnutoolSaveReport', true);
+		}
 	}
 
 	function saveReportDefinition(prompt) {

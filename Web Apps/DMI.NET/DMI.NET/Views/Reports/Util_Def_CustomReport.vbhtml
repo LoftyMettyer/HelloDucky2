@@ -81,15 +81,7 @@ End Code
   $(function () {
   	$("#tabs").tabs();
   	$('input[type=number]').numeric();
-
-  	if ($("#IsReadOnly").val() == "True") {
-  		$("#frmReportDefintion :input").prop("disabled", true);
-  	}
-
-			$(function () {
-	  });
-
-		});
+	});
 
     $("#workframe").attr("data-framesource", "UTIL_DEF_CUSTOMREPORTS");
 	  $('#tabs').bind('tabsshow', function (event, ui) {

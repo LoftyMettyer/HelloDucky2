@@ -192,6 +192,10 @@ End Code
 		$('#eventEventInformationContainer fieldset').css('border', '0');
 		$('#eventEventInformationContainer .ui-button').css('float', 'right');
 
+		if (isDefinitionReadOnly()) {
+			$("#frmPostCalendarEvent").prop('disabled', true);
+		}
+
 	});
 
 	function changeEventLookupTable() {
