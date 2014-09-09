@@ -21,7 +21,7 @@
 				<tr>
 					<td>Horizontal :</td>
 					<td>
-						@Html.ColumnDropdownFor(Function(m) m.HorizontalID, New ColumnFilter() With {.TableID = Model.BaseTableID}, New With {.onchange = "refreshCrossTabColumn(event.target, 'Horizontal');"})
+						@Html.ColumnDropdownFor(Function(m) m.HorizontalID, New ColumnFilter() With {.TableID = Model.BaseTableID}, New With {.onchange = "crossTabHorizontalClick()"})
 						@Html.ValidationMessageFor(Function(m) m.HorizontalID)
 						@Html.Hidden("HorizontalDataType", CInt(Model.HorizontalDataType))
 					</td>
@@ -32,7 +32,7 @@
 				<tr>
 					<td>Vertical :</td>
 					<td>
-						@Html.ColumnDropdownFor(Function(m) m.VerticalID, New ColumnFilter() With {.TableID = Model.BaseTableID}, New With {.onchange = "refreshCrossTabColumn(event.target, 'Vertical');"})
+						@Html.ColumnDropdownFor(Function(m) m.VerticalID, New ColumnFilter() With {.TableID = Model.BaseTableID}, New With {.onchange = "crossTabVerticalClick()"})
 						@Html.ValidationMessageFor(Function(m) m.VerticalID)
 						@Html.Hidden("VerticalDataType", CInt(Model.VerticalDataType))
 					</td>
@@ -43,7 +43,7 @@
 				<tr>
 					<td>Page Break :</td>
 					<td>
-						@Html.ColumnDropdownFor(Function(m) m.PageBreakID, New ColumnFilter() With {.TableID = Model.BaseTableID, .AddNone = True}, New With {.onchange = "refreshCrossTabColumn(event.target, 'PageBreak');"})
+						@Html.ColumnDropdownFor(Function(m) m.PageBreakID, New ColumnFilter() With {.TableID = Model.BaseTableID, .AddNone = True}, New With {.onchange = "crossTabPageBreakClick()"})
 						@Html.Hidden("PageBreakDataType", CInt(Model.PageBreakDataType))
 					</td>
 					<td class="startstopincrementcol">@Html.TextBoxFor(Function(m) m.PageBreakStart, New With {.class = "number"})</td>
@@ -104,47 +104,6 @@
 	</fieldset>
 
 <script type="text/javascript">
-
-	function refreshCrossTabColumnsAvailable() {
-
-		$.ajax({
-			url: 'Reports/GetAvailableColumnsForTable?TableID=' + $("#BaseTableID").val(),
-			datatype: 'json',
-			mtype: 'GET',
-			success: function (json) {
-
-				var OptionNone = '<option value=0 data-datatype=0 data-decimals=0 selected>None</option>';
-				var optionHorizontal = "";
-				var optionVertical = "";
-				var optionPageBreak = "";
-				var optionIntersection = "";
-
-				var options = '';
-				for (var i = 0; i < json.length; i++) {
-
-					optionHorizontal += "<option value='" + json[i].ID + "' data-datatype='" + json[i].DataType + "' data-size='" + json[i].Size + "' data-decimals='" + json[i].Decimals + "'>" + json[i].Name + "</option>";
-					optionVertical += "<option value='" + json[i].ID + "' data-datatype='" + json[i].DataType + "' data-size='" + json[i].Size + "' data-decimals='" + json[i].Decimals + "'>" + json[i].Name + "</option>";
-					optionPageBreak += "<option value='" + json[i].ID + "' data-datatype='" + json[i].DataType + "' data-size='" + json[i].Size + "' data-decimals='" + json[i].Decimals + "'>" + json[i].Name + "</option>";
-
-					if (json[i].IsNumeric) {
-						optionIntersection += "<option value='" + json[i].ID + "' data-datatype='" + json[i].DataType + "' data-size='" + json[i].Size + "' data-decimals='" + json[i].Decimals + "'>" + json[i].Name + "</option>";
-					}
-
-				}
-
-				$("select#HorizontalID").html(optionHorizontal);
-				$("select#VerticalID").html(optionVertical);
-				$("select#PageBreakID").html(OptionNone + optionPageBreak);
-				$("select#IntersectionID").html(OptionNone + optionIntersection);
-
-				crossTabHorizontalClick();
-				crossTabVerticalClick();
-				crossTabPageBreakClick();
-
-			}
-		});
-
-	}
 
 	function crossTabIntersectionType() {
 		var dropDown = $("#IntersectionID")[0];
@@ -258,9 +217,10 @@
 		$("#CrossTabsColumnTab select").css("width", "100%");
 		$('table').attr('border', '0');
 
-		refreshCrossTabColumn($("#HorizontalID")[0], 'Horizontal');
-		refreshCrossTabColumn($("#VerticalID")[0], 'Vertical');
-		refreshCrossTabColumn($("#PageBreakID")[0], 'PageBreak');
+		crossTabHorizontalClick();
+		crossTabVerticalClick();
+		crossTabPageBreakClick();
+
 	});
 
 
