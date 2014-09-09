@@ -4,104 +4,110 @@
 @Inherits System.Web.Mvc.WebViewPage(Of Models.CrossTabModel)
 
 <fieldset id="CrossTabsColumnTab" class="width100">
-		<legend class="fontsmalltitle">
-			Headings &amp; Column Breaks
-		</legend>
-		<fieldset>
-			<table class="width80">
-				<thead class="fontsmalltitle">
-					<tr>
-						<td style="width:15%"></td>
-						<td style="width:55%;text-align:center">Columns</td>
-						<td style="width:10%;text-align:center">Start</td>
-						<td style="width:10%;text-align:center">Stop</td>
-						<td style="width:10%;text-align:center">Increment</td>
-					</tr>
-				</thead>
+	<legend class="fontsmalltitle">
+		Headings &amp; Column Breaks
+	</legend>
+	<fieldset>
+		<table class="width80">
+			<thead class="fontsmalltitle">
 				<tr>
-					<td>Horizontal :</td>
-					<td>
-						@Html.ColumnDropdownFor(Function(m) m.HorizontalID, New ColumnFilter() With {.TableID = Model.BaseTableID}, New With {.class = "crosstabDropdown", .onchange = "refreshCrossTabColumn(event.target, 'Horizontal');"})
-						@Html.ValidationMessageFor(Function(m) m.HorizontalID)
-						@Html.Hidden("HorizontalDataType", CInt(Model.HorizontalDataType))
-					</td>
-					<td class="startstopincrementcol">@Html.EditorFor(Function(m) m.HorizontalStart)</td>
-					<td class="startstopincrementcol">@Html.EditorFor(Function(m) m.HorizontalStop)</td>
-					<td class="startstopincrementcol">@Html.EditorFor(Function(m) m.HorizontalIncrement)</td>
+					<td style="width:15%"></td>
+					<td style="width:55%;text-align:center">Columns</td>
+					<td style="width:10%;text-align:center">Start</td>
+					<td style="width:10%;text-align:center">Stop</td>
+					<td style="width:10%;text-align:center">Increment</td>
 				</tr>
-				<tr>
-					<td>Vertical :</td>
-					<td>
-						@Html.ColumnDropdownFor(Function(m) m.VerticalID, New ColumnFilter() With {.TableID = Model.BaseTableID}, New With {.class = "crosstabDropdown", .onchange = "refreshCrossTabColumn(event.target, 'Vertical');"})
-						@Html.ValidationMessageFor(Function(m) m.VerticalID)
-						@Html.Hidden("VerticalDataType", CInt(Model.VerticalDataType))
-					</td>
-					<td class="startstopincrementcol">@Html.EditorFor(Function(m) m.VerticalStart)</td>
-					<td class="startstopincrementcol">@Html.EditorFor(Function(m) m.VerticalStop)</td>
-					<td class="startstopincrementcol">@Html.EditorFor(Function(m) m.VerticalIncrement)</td>
-				</tr>
-				<tr>
-					<td>Page Break :</td>
-					<td>
-						@Html.ColumnDropdownFor(Function(m) m.PageBreakID, New ColumnFilter() With {.TableID = Model.BaseTableID, .AddNone = True}, New With {.class = "crosstabDropdown", .onchange = "refreshCrossTabColumn(event.target, 'PageBreak');"})
-						@Html.Hidden("PageBreakDataType", CInt(Model.PageBreakDataType))
-					</td>
-					<td class="startstopincrementcol">@Html.EditorFor(Function(m) m.PageBreakStart)</td>
-					<td class="startstopincrementcol">@Html.EditorFor(Function(m) m.PageBreakStop)</td>
-					<td class="startstopincrementcol">@Html.EditorFor(Function(m) m.PageBreakIncrement)</td>
-				</tr>
-			</table>
-			<br />
-			<table class="width80">
-				<thead class="fontsmalltitle">
-					<tr>
-						<td style="width:15%">Intersection :</td>
-						<td style="width:55%"></td>
-						<td style="width:10%;text-align:center"></td>
-						<td style="width:10%;text-align:center"></td>
-						<td style="width:10%;text-align:center"></td>
-					</tr>
-				</thead>
-				<tr>
-					<td>Column :</td>
-					<td>
-						@Html.ColumnDropdownFor(Function(m) m.IntersectionID, New ColumnFilter() With {.TableID = Model.BaseTableID, .AddNone = True, .IsNumeric = True}, New With {.onchange = "crossTabIntersectionType();"})
-					</td>
-					<td colspan="3" rowspan="3" style="padding-left:10px">
-						@Html.CheckBox("PercentageOfType", Model.PercentageOfType)
-						@Html.LabelFor(Function(m) m.PercentageOfType)
-						<br />
-						@Html.CheckBox("PercentageOfPage", Model.PercentageOfPage)
-						@Html.LabelFor(Function(m) m.PercentageOfPage)
-						<br />
-						@Html.CheckBox("SuppressZeros", Model.SuppressZeros)
-						@Html.LabelFor(Function(m) m.SuppressZeros)
-						<br />
-						@Html.CheckBox("UseThousandSeparators", Model.UseThousandSeparators)
-						@Html.LabelFor(Function(m) m.UseThousandSeparators)
-					</td>
-				</tr>
-				<tr>
-					<td>@Html.LabelFor(Function(m) m.IntersectionType)</td>
-					<td>
-						@Html.EnumDropDownListFor(Function(m) m.IntersectionType)
-					</td>
-				</tr>
-				<tr style="height:22px"></tr>
-			</table>
-
-			<br />
-			@Html.ValidationMessageFor(Function(m) m.HorizontalStart)
-			@Html.ValidationMessageFor(Function(m) m.HorizontalStop)
-			@Html.ValidationMessageFor(Function(m) m.HorizontalIncrement)
-			@Html.ValidationMessageFor(Function(m) m.VerticalStart)
-			@Html.ValidationMessageFor(Function(m) m.VerticalStop)
-			@Html.ValidationMessageFor(Function(m) m.VerticalIncrement)
-			@Html.ValidationMessageFor(Function(m) m.PageBreakStart)
-			@Html.ValidationMessageFor(Function(m) m.PageBreakStop)
-			@Html.ValidationMessageFor(Function(m) m.PageBreakIncrement)
-		</fieldset>
+			</thead>
+			<tr>
+				<td>Horizontal :</td>
+				<td>
+					@Html.ColumnDropdownFor(Function(m) m.HorizontalID, New ColumnFilter() With {.TableID = Model.BaseTableID}, New With {.class = "crosstabDropdown", .onchange = "refreshCrossTabColumn(event.target, 'Horizontal');"})
+					@Html.ValidationMessageFor(Function(m) m.HorizontalID)
+					@Html.Hidden("HorizontalDataType", CInt(Model.HorizontalDataType))
+				</td>
+				<td class="startstopincrementcol">@Html.EditorFor(Function(m) m.HorizontalStart)</td>
+				<td class="startstopincrementcol">@Html.EditorFor(Function(m) m.HorizontalStop)</td>
+				<td class="startstopincrementcol">@Html.EditorFor(Function(m) m.HorizontalIncrement)</td>
+			</tr>
+			<tr>
+				<td>Vertical :</td>
+				<td>
+					@Html.ColumnDropdownFor(Function(m) m.VerticalID, New ColumnFilter() With {.TableID = Model.BaseTableID}, New With {.class = "crosstabDropdown", .onchange = "refreshCrossTabColumn(event.target, 'Vertical');"})
+					@Html.ValidationMessageFor(Function(m) m.VerticalID)
+					@Html.Hidden("VerticalDataType", CInt(Model.VerticalDataType))
+				</td>
+				<td class="startstopincrementcol">@Html.EditorFor(Function(m) m.VerticalStart)</td>
+				<td class="startstopincrementcol">@Html.EditorFor(Function(m) m.VerticalStop)</td>
+				<td class="startstopincrementcol">@Html.EditorFor(Function(m) m.VerticalIncrement)</td>
+			</tr>
+			<tr>
+				<td>Page Break :</td>
+				<td>
+					@Html.ColumnDropdownFor(Function(m) m.PageBreakID, New ColumnFilter() With {.TableID = Model.BaseTableID, .AddNone = True}, New With {.class = "crosstabDropdown", .onchange = "refreshCrossTabColumn(event.target, 'PageBreak');"})
+					@Html.Hidden("PageBreakDataType", CInt(Model.PageBreakDataType))
+				</td>
+				<td class="startstopincrementcol">@Html.EditorFor(Function(m) m.PageBreakStart)</td>
+				<td class="startstopincrementcol">@Html.EditorFor(Function(m) m.PageBreakStop)</td>
+				<td class="startstopincrementcol">@Html.EditorFor(Function(m) m.PageBreakIncrement)</td>
+			</tr>
+		</table>
 	</fieldset>
+</fieldset>
+
+<fieldset>
+	<legend class="fontsmalltitle">
+		Intersection :
+	</legend>
+	<fieldset>
+		<table class="width80">
+			<tr>
+				<td style="width:15%"></td>
+				<td style="width:55%"></td>
+				<td style="width:10%;text-align:center"></td>
+				<td style="width:10%;text-align:center"></td>
+				<td style="width:10%;text-align:center"></td>
+			</tr>
+
+			<tr>
+				<td>Column :</td>
+				<td>
+					@Html.ColumnDropdownFor(Function(m) m.IntersectionID, New ColumnFilter() With {.TableID = Model.BaseTableID, .AddNone = True, .IsNumeric = True}, New With {.onchange = "crossTabIntersectionType();"})
+				</td>
+				<td colspan="3" rowspan="3" style="padding-left:10px">
+					@Html.CheckBox("PercentageOfType", Model.PercentageOfType)
+					@Html.LabelFor(Function(m) m.PercentageOfType)
+					<br />
+					@Html.CheckBox("PercentageOfPage", Model.PercentageOfPage)
+					@Html.LabelFor(Function(m) m.PercentageOfPage)
+					<br />
+					@Html.CheckBox("SuppressZeros", Model.SuppressZeros)
+					@Html.LabelFor(Function(m) m.SuppressZeros)
+					<br />
+					@Html.CheckBox("UseThousandSeparators", Model.UseThousandSeparators)
+					@Html.LabelFor(Function(m) m.UseThousandSeparators)
+				</td>
+			</tr>
+			<tr>
+				<td>@Html.LabelFor(Function(m) m.IntersectionType)</td>
+				<td>
+					@Html.EnumDropDownListFor(Function(m) m.IntersectionType)
+				</td>
+			</tr>
+			<tr style="height:22px"></tr>
+		</table>
+	</fieldset>
+</fieldset>
+
+<br />
+@Html.ValidationMessageFor(Function(m) m.HorizontalStart)
+@Html.ValidationMessageFor(Function(m) m.HorizontalStop)
+@Html.ValidationMessageFor(Function(m) m.HorizontalIncrement)
+@Html.ValidationMessageFor(Function(m) m.VerticalStart)
+@Html.ValidationMessageFor(Function(m) m.VerticalStop)
+@Html.ValidationMessageFor(Function(m) m.VerticalIncrement)
+@Html.ValidationMessageFor(Function(m) m.PageBreakStart)
+@Html.ValidationMessageFor(Function(m) m.PageBreakStop)
+@Html.ValidationMessageFor(Function(m) m.PageBreakIncrement)
 
 <script type="text/javascript">
 
@@ -153,7 +159,7 @@
 	function refreshCrossTabColumn(target, type) {
 
 		var horizontalValue = $("#HorizontalID").val();
-		var verticalValue = $("#VerticalID").val();	
+		var verticalValue = $("#VerticalID").val();
 		var pageBreakValue = $("#PageBreakID").val();
 
 		var iDataType = target.options[target.selectedIndex].attributes["data-datatype"].value;
