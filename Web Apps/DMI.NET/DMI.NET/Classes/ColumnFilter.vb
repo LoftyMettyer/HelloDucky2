@@ -10,5 +10,6 @@ Namespace Classes
 		Public AddNone As Boolean = False
 		Public ShowFullName As Boolean = False
 		Public IncludeParents As Boolean = False
+		Public IsNumeric As Boolean
 	End Class
 End Namespace

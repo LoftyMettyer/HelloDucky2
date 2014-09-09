@@ -65,7 +65,7 @@
 				<tr>
 					<td>Column :</td>
 					<td>
-						@Html.ColumnDropdownFor(Function(m) m.IntersectionID, New ColumnFilter() With {.TableID = Model.BaseTableID, .AddNone = True}, New With {.onchange = "crossTabIntersectionType();"})
+						@Html.ColumnDropdownFor(Function(m) m.IntersectionID, New ColumnFilter() With {.TableID = Model.BaseTableID, .AddNone = True, .IsNumeric = True}, New With {.onchange = "crossTabIntersectionType();"})
 					</td>
 					<td colspan="3" rowspan="3" style="padding-left:10px">
 						@Html.CheckBox("PercentageOfType", Model.PercentageOfType)

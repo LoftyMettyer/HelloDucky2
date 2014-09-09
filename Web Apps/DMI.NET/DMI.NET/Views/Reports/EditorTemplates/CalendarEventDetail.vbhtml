@@ -95,7 +95,7 @@ End Code
 				<label style="padding-left:20px;width:100px">
 					Length :
 				</label>
-				@Html.ColumnDropdownFor(Function(m) m.EventDurationID, New ColumnFilter() With {.TableID = Model.TableID, .DataType = ColumnDataType.sqlNumeric, .AddNone = True}, New With {.disabled = (Model.EventEndType = CalendarEventEndType.EndDate)})
+				@Html.ColumnDropdownFor(Function(m) m.EventDurationID, New ColumnFilter() With {.TableID = Model.TableID, .IsNumeric = True, .AddNone = True}, New With {.disabled = (Model.EventEndType = CalendarEventEndType.EndDate)})
 			</div>
 		</div>
 	</fieldset>

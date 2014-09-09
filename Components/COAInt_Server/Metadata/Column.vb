@@ -23,5 +23,11 @@ Namespace Metadata
 			End Get
 		End Property
 
+		Public ReadOnly Property IsNumeric As Boolean
+			Get
+				Return DataType = ColumnDataType.sqlInteger OrElse DataType = ColumnDataType.sqlNumeric
+			End Get
+		End Property
+
 	End Class
 End Namespace
