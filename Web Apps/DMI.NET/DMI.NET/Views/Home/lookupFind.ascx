@@ -13,6 +13,9 @@
 	}
 
 	function lookupFind_window_onload() {
+
+		//$('table').attr('border', '1');
+
 		var fOK;
 		fOK = true;
 		var frmLookupFindForm = document.getElementById("frmLookupFindForm");
@@ -39,19 +42,20 @@
 				autoOpen: true,
 				width: 750,
 				height: 500,
-				modal: true,
 				close: function () {
 					CancelLookup();
 				},
-				open: function (event, ui) {
-					$("#ssOleDBGrid").jqGrid('setGridWidth', $("#optionframe").width());					
+				open: function(event, ui) {
+					$('#ssOleDBGrid').jqGrid('setGridWidth', $("#lookupFindGridRow").width() - 5);
 				},
-				resize: function () { //resize the grid to the height of its container.		
-					$("#ssOleDBGrid").jqGrid('setGridWidth', $("#optionframe").width() - 20);
+				resize: function () { //resize the grid to the height/width of its container.		
+					//$("#ssOleDBGrid").jqGrid('setGridWidth', $("#optionframe").width() - 20);
+					$("#ssOleDBGrid").jqGrid('setGridWidth', $("#lookupFindGridRow").width() - 5);
+					$("#ssOleDBGrid").jqGrid('setGridHeight', $("#optionframe").height() - 227);
+					
 				}
 			});
 
-		
 			// Set focus onto one of the form controls. 
 			// NB. This needs to be done before making any reference to the grid
 			frmLookupFindForm.cmdCancel.focus();
@@ -294,8 +298,8 @@
 			Dim fIsLookupTable = (objTable.TableType = TableTypes.tabLookup)
 			Dim lngLookupTableID = objTable.ID
 
-			Dim sErrorDescription = ""
-			Dim sFailureDescription = ""
+			Dim sErrorDescription As String = ""
+			Dim sFailureDescription As String = ""
 	
 		%>
 		<div id="divFindForm" <%=session("BodyTag")%>>
@@ -305,17 +309,10 @@
 				</div>
 
 				<%If Not fIsLookupTable Then%>
-				<div id="row1a">
-					<table align="center" class="outline" cellpadding="5" cellspacing="0" width="100%" height="100%">
-						<tr>
-							<td>
-								<table width="100%" height="100%" class="invisible" cellspacing="0" cellpadding="0">
-									<tr>
-										<td height="10">&nbsp;&nbsp;</td>
-										<td height="10">
-											<table width="100%" class="invisible" cellspacing="0" cellpadding="0">
+				<div id="row1a" class="padbot10"> 
+					<table class="invisible cellpadding0 cellspace0" >
 												<tr>
-													<td style="white-space: nowrap">View : </td>
+													<td style="white-space: nowrap;padding-right: 10px">View : </td>
 													<td style="width: 205px">
 														<select id="selectView" name="selectView" class="combo" style="HEIGHT: 22px; WIDTH: 200px">
 															<%' Get the view records.
@@ -366,7 +363,7 @@
 															onclick="goView()" />
 													</td>
 													<td ></td>
-													<td style="white-space: nowrap">Order : </td>
+													<td style="white-space: nowrap;padding-right: 10px">Order : </td>
 													<td ></td>
 													<td style="width: 205px">
 														<select id="selectOrder" name="selectOrder" class="combo" style="HEIGHT: 22px; WIDTH: 200px">
@@ -389,10 +386,10 @@
 														</select>
 													</td>
 
-													<td id="tdTOrderHelp" name="tdTOrderHelp" onclick="doOrderHelp()" style="white-space: nowrap; text-align: center;">
-														<img id="imgTOrderHelp" name="imgTOrderHelp" alt="help"
-															src="<%=Url.Content("~/Content/images/Help32.png")%>"
-															title="What happens if I change the order?" style="width: 17px; height: 17px; border: 0; cursor: pointer" />
+													<td id="tdTOrderHelp" name="tdTOrderHelp" onclick="doOrderHelp()" 
+														style="white-space: nowrap; text-align: center;">
+														<img alt="help" id="imgTOrderHelp" name="imgTOrderHelp" src="<%=Url.Content("~/Content/images/Help32.png")%>" 
+															style="width: 17px; height: 17px; border: 0; cursor: pointer" title="What happens if I change the order?" />
 													</td>
 													<td ></td>
 													<td >
@@ -401,16 +398,6 @@
 													</td>
 												</tr>
 											</table>
-										</td>
-										<td height="10">&nbsp;&nbsp;</td>
-									</tr>
-									<tr>
-										<td height="10" colspan="3"></td>
-									</tr>
-								</table>
-							</td>
-						</tr>
-					</table>
 				</div>
 				<%End If 'if fIsLookupTable then%>
 				<div id="lookupFindGridRow">
