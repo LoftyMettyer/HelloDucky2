@@ -121,15 +121,20 @@
 
 		$('fieldset').css("border", "0");
 		$('table').css("border", "0");
-		
-		 $("#frmReportDefintion :input").on("change", function () { enableSaveButton(this); });
-		 $("#frmReportDefintion :input").on("click", function () { enableSaveButton(this); });
+	
 		getBaseTableList();
 		refreshViewAccess();
 
 		tableToGrid('#tblGroupAccess', { autoWidth: true, height: 150, cmTemplate: { sortable: false } });
 
+		$("#frmReportDefintion input").on("keydown", function () { enableSaveButton(); });
+		$("#frmReportDefintion textarea").on("keydown", function () { enableSaveButton(); });
+		$("#frmReportDefintion input").on("change", function () { enableSaveButton(); });
+		$("#frmReportDefintion select").on("change", function () { enableSaveButton(); });
+		$("#frmReportDefintion :button").on("click", function () { enableSaveButton(); });
+
 		if ($('#selectiontype_All').prop('checked')) $('#DisplayTitleInReportHeader').prop('disabled', true);
+		menu_toolbarEnableItem('mnutoolSaveReport', false);
 
 	});
 
@@ -453,6 +458,7 @@
 
 	function enableSaveButton() {
 		$("#ctl_DefinitionChanged").val("true");
+		menu_toolbarEnableItem('mnutoolSaveReport', true);
 	}
 
 	function saveReportDefinition(prompt) {

@@ -141,6 +141,7 @@
 			scrollrows: true,
 			ondblClickRow: function (rowID) {
 				editSortSorder(rowID);
+				enableSaveButton();
 			},
 			onSelectRow: function (id) {
 
@@ -166,6 +167,8 @@
 					$(this).showCol("ValueOnChange");
 					$(this).showCol("SuppressRepeated");
 				}
+
+				$('#SortOrders input[type=checkbox]').on('click', function () { enableSaveButton(); });
 
 				var topID = $("#SortOrders").getDataIDs()[0]
 				$("#SortOrders").jqGrid("setSelection", topID);

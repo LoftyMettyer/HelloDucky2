@@ -98,6 +98,7 @@
 			sortorder: "desc",
 			ondblClickRow: function (rowID) {
 				eventEdit(rowID);
+				enableSaveButton();
 			},
 			onSelectRow: function (id) {
 

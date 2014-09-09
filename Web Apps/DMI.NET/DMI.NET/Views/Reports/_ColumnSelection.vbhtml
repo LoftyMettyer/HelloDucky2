@@ -265,6 +265,7 @@
     		scrollrows: true,
     		ondblClickRow: function (rowid) {
     			addColumnToSelected(rowid);
+    			enableSaveButton();
     		},
     		loadComplete: function (data) {
     			var topID = $("#AvailableColumns").getDataIDs()[0]

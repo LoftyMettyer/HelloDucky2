@@ -312,6 +312,7 @@
 			sortorder: "asc",
 			ondblClickRow: function (rowID) {
 				editChildTable(rowID);
+				enableSaveButton();
 			},
 			onSelectRow: function (id) {
 				button_disable($("#btnChildEdit")[0], false);
