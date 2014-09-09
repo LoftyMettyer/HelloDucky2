@@ -137,19 +137,17 @@ End Code
 	}
 
 	function setOutputToEmail() {
-
 		var bSelected = $("#SendToEmail").prop('checked');
 
 		$(".reportdefemail").children().attr("readonly", !bSelected);
 		button_disable($("#cmdEmailGroup")[0], !bSelected);
 
 		if (!bSelected) {
-
 			$(".reportdefemail").children().val("");
 			$("#txtEmailGroupID").val(0);
-
 		}
 
+		sendAsEmailChecked();
 	}
 
 	function selectEmailGroup() {
@@ -225,6 +223,25 @@ End Code
 
 	}
 
+	function sendAsEmailChecked() {
+		var isDisabled = $("#SendToEmail").prop('checked') == false ? 'disabled' : '';
+		$("#Output_EmailSubject").prop('disabled', isDisabled);
+		$("#EmailAttachmentName").prop('disabled', isDisabled);
+		$("#txtEmailGroup").prop('disabled', isDisabled);
+
+		if (isDisabled == "disabled") {
+			$("#Output_EmailSubject").val('');
+			$("#EmailAttachmentName").val('');
+			$("#txtEmailGroupID").val('');
+			$("#txtEmailGroup").val('');
+		} else {
+			$("#Output_EmailSubject").val('@Model.EmailSubject');
+			$("#EmailAttachmentName").val('@Model.EmailAttachmentName');
+			$("#txtEmailGroupID").val('@Model.EmailGroupID');
+			$("#txtEmailGroup").val('@Model.EmailGroupName');
+		}
+	}
+
 	$(function () {
 		selectOutputType('@Model.Format');
 
@@ -232,8 +249,6 @@ End Code
 			$(".hideforcalendarreport").hide();
 		}
 
+		sendAsEmailChecked();
 	});
-
-
-
 </script>
