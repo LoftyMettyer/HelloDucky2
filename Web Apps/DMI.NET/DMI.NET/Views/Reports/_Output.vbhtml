@@ -6,7 +6,6 @@
 End Code
 
 @Inherits System.Web.Mvc.WebViewPage(Of Models.ReportOutputModel)
-<fieldset>
 
 	<fieldset class="border0 width20 floatleft">
 		<legend class="fontsmalltitle">Output Formats</legend>
@@ -122,7 +121,7 @@ End Code
 	<fieldset class="DataManagerOnly width100">
 		Note: Options marked in red are unavailable in OpenHR Web.
 	</fieldset>
-</fieldset>
+
 
 <script type="text/javascript">
 

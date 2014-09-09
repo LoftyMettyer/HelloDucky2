@@ -5,7 +5,7 @@
 @Inherits System.Web.Mvc.WebViewPage(Of Models.CustomReportModel)
 
 
-<fieldset id="divReportParents">
+
 
 	@Html.HiddenFor(Function(m) m.Parent1ViewAccess)
 	@Html.HiddenFor(Function(m) m.Parent2ViewAccess)
@@ -119,8 +119,7 @@
 			</div>
 		</fieldset>
 	</fieldset>
-	</fieldset>
-
+	
 	<br />
 
 <div class="absolutefullchildtables">

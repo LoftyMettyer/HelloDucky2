@@ -89,19 +89,19 @@ End Code
 	</div>
 
 	<div id="report_definition_tab_eventdetails">
-		<fieldset>
+		
 			@Code
 			 Html.RenderPartial("_EventDetails", Model)
 			End Code
-		</fieldset>
+		
 	</div>
 
 	<div id="report_definition_tab_reportdetails">
-		<fieldset>
+		
 			@Code
 			 Html.RenderPartial("_ReportDetails", Model)
 			End Code
-		</fieldset>
+		
 	</div>
 
 	<div id="report_definition_tab_order">
@@ -113,11 +113,11 @@ End Code
 	</div>
 
 	<div id="report_definition_tab_output">
-		<fieldset>
+		
 			@Code
 				Html.RenderPartial("_Output", Model.Output)
 			End Code
-		</fieldset>
+		
 	</div>
 
 </div>

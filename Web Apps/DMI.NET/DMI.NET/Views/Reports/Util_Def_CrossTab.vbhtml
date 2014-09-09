@@ -22,11 +22,11 @@ End Code
 			</ul>
 
 			<div id="tabs-1">
-				<fieldset>
+				
 					@Code				
 					Html.RenderPartial("_Definition", Model)
 					End Code
-				</fieldset>
+				
 			</div>
 
 			<div id="report_definition_tab_columns">

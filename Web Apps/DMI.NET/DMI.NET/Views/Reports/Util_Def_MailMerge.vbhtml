@@ -20,11 +20,11 @@ End Code
       </ul>
 
       <div id="tabs-1" class="">	
-				<fieldset>
+				
 					@Code
 					Html.RenderPartial("_Definition", Model)
 					End Code
-				</fieldset>							
+						
       </div>
 
 			<div id="report_definition_tab_columns">
@@ -36,19 +36,19 @@ End Code
 			</div>
 
       <div id="report_definition_tab_order">
-				<fieldset>
+				
 					@Code
 					Html.RenderPartial("_SortOrder", Model)
 					End Code
-				</fieldset>
+				
       </div>
 
       <div id="report_definition_tab_output">
-				<fieldset>
+				
 					@Code
 					Html.RenderPartial("_MergeOutput", Model)
 					End Code
-				</fieldset>
+				
       </div>
     </div>
   End Using

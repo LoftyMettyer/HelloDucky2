@@ -6,7 +6,7 @@
 @Inherits System.Web.Mvc.WebViewPage(Of ReportBaseModel)
 
 @Html.HiddenFor(Function(m) m.ColumnsAsString, New With {.id = "txtCSAAS"})
-<fieldset>
+
 	<fieldset id="columnsAvailable">
 		<legend class="fontsmalltitle">Columns / Calculations Available :</legend>
 		<fieldset id="columncalculations">
@@ -72,7 +72,7 @@
 			</div>
 		</div>
 	</fieldset>
-</fieldset>
+
 <input type="hidden" name="Columns.BaseTableID" value="@Model.BaseTableID" />
 
   <script type="text/javascript">
