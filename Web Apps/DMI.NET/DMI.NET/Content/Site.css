@@ -4,8 +4,8 @@ html {
 	-o-background-size: cover;
 	-ms-background-size: cover;
 	background-size: cover;
-}
-
+}	
+		
 .header-banner {
 	position: absolute;
 	top: 0;
@@ -15,10 +15,10 @@ html {
 }
 
 body {
-	/*font-size: .85em;*/
-	font-family: Segoe UI, Verdana, "Open Sans", Tahoma,Helvetica,sans-serif;
-	color: #232323;
-	/*background-color: #fff;*/
+		/*font-size: .85em;*/
+		font-family: Segoe UI, Verdana, "Open Sans", Tahoma,Helvetica,sans-serif; 
+		color: #232323;
+		/*background-color: #fff;*/
 	margin: 0;
 }
 
@@ -33,7 +33,7 @@ header {
 footer,
 nav,
 section {
-	display: block;
+		display: block;
 }
 
 .divLogin {
@@ -55,7 +55,7 @@ section {
 	right: 0;
 	bottom: 0;
 	overflow: auto;
-}
+	}
 
 .DMI #menuframe {
 	display: block;
@@ -72,7 +72,7 @@ textarea {
 }
 
 .editor-label {
-	margin: 1em 0 0 0;
+		margin: 1em 0 0 0;
 }
 
 .editor-field {
@@ -83,25 +83,25 @@ textarea {
 /* Styles for validation helpers
 -----------------------------------------------------------*/
 .field-validation-error {
-	color: #ff0000;
+		color: #ff0000;
 }
 
 .field-validation-valid {
-	display: none;
+		display: none;
 }
 
 .input-validation-error {
-	border: 1px solid #ff0000;
-	background-color: #ffeeee;
+		border: 1px solid #ff0000;
+		background-color: #ffeeee;
 }
 
 .validation-summary-errors {
-	font-weight: bold;
-	color: #ff0000;
+		font-weight: bold;
+		color: #ff0000;
 }
 
 .validation-summary-valid {
-	display: none;
+		display: none;
 }
 
 /*NHRD - Lofty has probably inclued these for expediency but */
@@ -111,14 +111,14 @@ textarea {
 	-ms-min-width: 100px;
 	-o-min-width: 100px;
 	-webkit-min-width: 100px;
-	min-width: 100px;
+	 min-width: 100px;
 	margin: 3px;
 	padding: 0;
-	font-size: 15px;
-	vertical-align: top;
-	padding: 3px;
+	 font-size: 15px; 
+	 vertical-align: top;
+	 padding: 3px;
 }
-
+				
 .tile {
 	margin: 0 0 500px;
 	padding: 1px;
@@ -127,23 +127,23 @@ textarea {
 	text-decoration: none;
 }
 
-	.tile img {
-		border: currentColor;
-	}
+.tile img {
+	border: currentColor;
+}
 
-	.tile:hover {
+.tile:hover {
 		padding: 0;
 		border: 1px solid rgb(255, 255, 255);
-		/*color: rgb(255, 255, 255); */
+	/*color: rgb(255, 255, 255); */
 		text-decoration: none;
 		-ms-box-shadow: 0 0 7px #fff;
 		-moz-box-shadow: 0 0 7px #fff;
 		-webkit-box-shadow: 0 0 7px #fff;
 		box-shadow: 0 0 7px #fff;
-	}
-
-
-
+}        
+				
+				 
+									 
 .subTitle {
 	font-size: 26px;
 	font-weight: lighter;
@@ -151,13 +151,13 @@ textarea {
 	/*color: White; */
 	margin: 0;
 }
-
+				
 .actionUnderline {
-	width: 100%;
-	height: 20px;
-	background-color: rgb(193, 216, 241);
+	 width: 100%;
+	 height: 20px;
+	 background-color: rgb(193, 216, 241);
 }
-
+				
 /* ------- End of Metro (or whatever it's called now) buttons etc */
 
 .splashDiv {
@@ -180,14 +180,14 @@ textarea {
 /* When the body has the loading class, we turn
 	 the scrollbar off with overflow:hidden */
 body.loading {
-	overflow: hidden;
+		overflow: hidden;   
 }
 
-	/* Anytime the body has the loading class, our
+/* Anytime the body has the loading class, our
 	 modal element will be visible */
-	body.loading .modal {
+body.loading .modal {
 		display: block;
-	}
+}
 
 #officebar > ul > li {
 	display: none;
@@ -233,12 +233,12 @@ body.loading {
 
 .reportsleft {
 	width: 50%;
-	float: left;
+	float: left;	
 }
 
 .reportsright {
 	width: 50%;
-	float: left;
+	float: left;	
 }
 
 input[readonly="true"] {
@@ -259,7 +259,7 @@ input[readonly="readonly"] {
 
 select.readonly {
 	background-color: #F2F2F2 !important;
-	color: #826D82;
+	color: #826D82;	
 }
 
 .fontsmall {
@@ -476,13 +476,13 @@ select.readonly {
 
 #report_definition_tab_order #columnbuttons {
 	width: 110px;
-	float: left;
+	float: left;	
 }
 
-	#report_definition_tab_order #columnbuttons input[type=button] {
-		width: 110px;
-		margin-bottom: 10px;
-	}
+#report_definition_tab_order #columnbuttons input[type=button] {
+	width: 110px;
+	margin-bottom: 10px;
+}
 
 
 #report_definition_tab_order #sortorderbuttons input[type=button] {
@@ -540,7 +540,9 @@ select.readonly {
 #HorizontalStart, #HorizontalStop, #HorizontalIncrement,
 #PageBreakStart, #PageBreakStop, #PageBreakIncrement,
 #VerticalStart, #VerticalStop, #VerticalIncrement {
-	width: 40px;
+	width: 140px;
+	margin: 0 20px 0 20px;
+	text-align: right;
 }
 
 #crosstabstartlegend {
@@ -553,7 +555,7 @@ select.readonly {
 }
 
 .DataManagerOnly {
-	color: #ff0000;
+	color: #ff0000;	
 }
 
 .accesspermissionsgrid {
@@ -571,7 +573,7 @@ select.readonly {
 }
 
 #cmdBaseFilter, #cmdParent1Picklist, #cmdBasePicklist,
-#cmdParent1Filter, #cmdParent2Picklist, #cmdParent2Filter,
+#cmdParent1Filter, #cmdParent2Picklist, #cmdParent2Filter, 
 #cmdEmailGroup, #cmdDescription3, #cmdCustomStart, #cmdCustomEnd,
 #cmdTemplateSelect, #cmdTemplateClear {
 	float: left;
@@ -588,7 +590,7 @@ select.readonly {
 	float: right;
 }
 
-#divPopupReportDefinition #TableID,
+#divPopupReportDefinition #TableID, 
 #divPopupReportDefinition #FilterName,
 #divPopupReportDefinition #OrderName,
 #divPopupReportDefinition #Records {
@@ -618,15 +620,15 @@ select.readonly {
 	width: 100%;
 }
 
-#selectiontypepicklistgroup, #selectiontypefiltergroup {
+ #selectiontypepicklistgroup, #selectiontypefiltergroup {
 	margin-bottom: -11px;
 	/*width:100%;
 	border-style:none*/
 }
 
-#selectiontypeallrecords {
+ #selectiontypeallrecords {
 	margin-bottom: -4px;
-}
+ }
 
 #txtBaseFilter {
 	margin-top: 2px;
@@ -674,43 +676,43 @@ select.readonly {
 	margin-bottom: 45px;
 }
 
-#ReportChildTableMainDiv #cmdBaseFilter,
+#ReportChildTableMainDiv #cmdBaseFilter, 
 #ReportChildTableMainDiv #cmdBasePicklist {
 	float: right;
 	/*margin:10px 0 0 0;*/
 }
 
-#ReportChildTableRecordsDiv,
-#ReportChildTableOrderDiv,
-#ReportChildTableFilterDiv,
+#ReportChildTableRecordsDiv, 
+#ReportChildTableOrderDiv, 
+#ReportChildTableFilterDiv, 
 #ReportChildTableDropdownDiv {
 	height: 30px;
 }
 
-	#ReportChildTableFilterDiv #txtChildFilter,
-	#ReportChildTableOrderDiv #txtFieldRecOrder {
+#ReportChildTableFilterDiv #txtChildFilter, 
+#ReportChildTableOrderDiv #txtFieldRecOrder {
 		width: 75%;
-	}
+}
 
 
 #definitionPropertiesFields {
 	padding-bottom: 20px;
 }
 
-	#definitionPropertiesFields .inputProperty {
+#definitionPropertiesFields .inputProperty {
 		width: 84%;
 		margin-bottom: 5px;
-		/*float:right;*/
-	}
+	/*float:right;*/
+}
 
 #definitionusagediv {
 	width: 400px;
 }
 
 #definitionPropertiesFields .labelProperty {
-	display: inline-block;
-	width: 14%;
-	text-align: left;
+		display: inline-block;
+		width: 14%;
+		text-align: left;
 }
 
 #divPopupReportDefinition .ui-jqgrid-bdiv {
@@ -718,7 +720,7 @@ select.readonly {
 }
 
 .ui-dialog .ui-dialog-buttonpane {
-	border-width: 0 !important;
+	 border-width: 0 !important;
 }
 
 .padbot5 {
@@ -764,21 +766,21 @@ select.readonly {
 #limheight {
 	width: 80%;
 	padding-left: 20px;
-	-webkit-column-count: 8;
-	-moz-column-count: 8;
+    -webkit-column-count: 8;
+       -moz-column-count: 8;
 	-ms-column-count: 8;
 	-o-column-count: 8;
-	column-count: 8; /*3 is just placeholder -- can be anything*/
+            column-count: 8; /*3 is just placeholder -- can be anything*/
 }
 
-	#limheight li {
-		display: inline-block;
+#limheight li {
+    display: inline-block;    
 		width: 100px;
-	}
+}
 
 .bob > span {
-	display: block;
-	overflow: hidden;
+    display: block;
+    overflow: hidden;
 	padding-right: 5px;
 }
 
