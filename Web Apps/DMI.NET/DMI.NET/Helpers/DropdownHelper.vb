@@ -103,7 +103,7 @@ Namespace Helpers
 			builder.MergeAttributes(objAttributes)
 
 			If filter.AddNone Then
-				content.AppendFormat("<option value=0 data-datatype={1} {0}>None</option>", IIf(bindValue = 0, "selected", ""), CInt(ColumnDataType.sqlUnknown))
+				content.AppendFormat("<option value=0 data-datatype={1} data-decimals=0 {0}>None</option>", IIf(bindValue = 0, "selected", ""), CInt(ColumnDataType.sqlUnknown))
 			End If
 
 			Dim iParent1 As Integer
