@@ -14,6 +14,8 @@ Namespace Metadata
 		Public Decimals As Integer
 		Public Use1000Separator As Boolean
 		Public ColumnType As ColumnType
+		Public LookupTableID As Integer
+		Public LookupColumnID As Integer
 
 		Public ReadOnly Property IsVisible As Boolean
 			Get

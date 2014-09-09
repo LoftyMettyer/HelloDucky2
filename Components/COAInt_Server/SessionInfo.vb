@@ -247,6 +247,8 @@ Public Class SessionInfo
 				column.Use1000Separator = CBool(objRow("use1000separator"))
 				column.Size = CLng(objRow("size"))
 				column.Decimals = CShort(objRow("decimals"))
+				column.LookupTableID = CInt(objRow("LookupTableID"))
+				column.LookupColumnID = CInt(objRow("LookupColumnID"))
 				Columns.Add(column)
 			Next
 

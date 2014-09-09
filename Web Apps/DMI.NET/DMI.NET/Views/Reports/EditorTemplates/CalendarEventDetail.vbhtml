@@ -30,7 +30,7 @@ End Code
 
 		<div class="formField">
 			@Html.LabelFor(Function(model) model.TableID)
-			@Html.TableDropdown("TableID", "EventTableID", Model.TableID, Model.AvailableTables, "changeEventTable(event);")
+			@Html.TableDropdown("TableID", "EventTableID", Model.TableID, Model.AvailableTables, "changeEventTable();")
 		</div>
 
 		<div class="formField">
@@ -120,14 +120,14 @@ End Code
 			</label>
 			@Html.ColumnDropdownFor(Function(m) m.LegendEventColumnID, New ColumnFilter() _
 													 With {.TableID = Model.TableID, .DataType = ColumnDataType.sqlVarChar, .ColumnType = ColumnType.Lookup}, _
-													 New With {.disabled = (Model.EventEndType = CalendarEventEndType.EndDate)})
+													 New With {.disabled = (Model.EventEndType = CalendarEventEndType.EndDate), .onchange = "changeLegendEventColumnID()"})
 		</div>
 
 		<div class="formField">
 			<label style="padding-left:20px;width:100px">
 				@Html.DisplayNameFor(Function(model) model.LegendLookupTableID)
 			</label>
-			@Html.LookupTableDropdown("LegendLookupTableID", "LegendLookupTableID", Model.LegendLookupTableID, "changeEventLookupTable(event);")
+			@Html.LookupTableDropdown("LegendLookupTableID", "LegendLookupTableID", Model.LegendLookupTableID, "changeEventLookupTable();")
 		</div>
 
 		<div class="formField">
@@ -194,11 +194,34 @@ End Code
 
 	});
 
-	function changeEventLookupTable(event) {
+	function changeEventLookupTable() {
 
-		var frmSubmit = $("#frmPostCalendarEvent");
-		OpenHR.submitForm(frmSubmit, "divPopupReportDefinition", null, null, "Reports/ChangeEventLookupTable");
+		$.ajax({
+			url: 'Reports/GetAvailableColumnsForTable?TableID=' + $("#LegendLookupTableID").val(),
+			datatype: 'json',
+			mtype: 'GET',
+			success: function (json) {
 
+				var optionItem = "";
+
+				var options = '';
+				for (var i = 0; i < json.length; i++) {
+					optionItem += "<option value='" + json[i].ID + "'>" + json[i].Name + "</option>";
+				}
+
+				$("select#LegendLookupColumnID").html(optionItem);
+				$("select#LegendLookupCodeID").html(optionItem);
+
+			}
+		});
+
+	}
+
+	function changeLegendEventColumnID() {
+		var dropDown = $("#LegendEventColumnID")[0];
+		var iLookupTableID = dropDown.options[dropDown.selectedIndex].attributes["data-lookuptableid"].value;
+		$("#LegendLookupTableID").val(iLookupTableID);
+		changeEventLookupTable();
 	}
 
 	function selectEventFilter() {
@@ -256,7 +279,7 @@ End Code
 
 	}
 
-	function changeEventTable(event) {
+	function changeEventTable() {
 
 		// Reload dropdowns from server
 		var frmSubmit = $("#frmPostCalendarEvent");
@@ -328,9 +351,7 @@ End Code
 	}
 
 	$(function () {
-
 		changeEventEndType();
-
 	});
 
 

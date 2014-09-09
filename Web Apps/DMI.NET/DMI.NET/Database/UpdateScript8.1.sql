@@ -1760,14 +1760,15 @@ WITH ENCRYPTION
 AS
 BEGIN
 
+	SET NOCOUNT ON;
+
 	DECLARE @licenseKey			varchar(MAX);
 
 	EXEC [dbo].[sp_ASRIntGetSystemSetting] 'Licence', 'Key', 'moduleCode', @licenseKey OUTPUT, 0, 0;
 
-
 	SELECT TableID, TableName, TableType, DefaultOrderID, RecordDescExprID FROM dbo.ASRSysTables;
 
-	SELECT ColumnID, TableID, ColumnName, DataType, ColumnType, Use1000Separator, Size, Decimals FROM dbo.ASRSysColumns;
+	SELECT ColumnID, TableID, ColumnName, DataType, ColumnType, Use1000Separator, Size, Decimals, LookupTableID, LookupColumnID FROM dbo.ASRSysColumns;
 
 	SELECT ParentID, ChildID FROM dbo.ASRSysRelations;
 
@@ -1794,12 +1795,11 @@ BEGIN
 	UNION
 	SELECT  'VERSIONONE' AS [name], dbo.udfASRNetIsModuleLicensed(@licenseKey,2048) AS [enabled];
 
-
 	-- Selected system settings
 	SELECT * FROM ASRSysSystemSettings;
 
-
 END
+
 GO
 
 
@@ -4991,6 +4991,7 @@ BEGIN
 
 
 END
+GO
 
 IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[sp_ASRIntDefUsage]') AND xtype in (N'P'))
 	DROP PROCEDURE [dbo].[sp_ASRIntDefUsage];

@@ -126,13 +126,13 @@ Namespace Helpers
 																).OrderBy(Function(m) m.TableID).ThenBy(Function(m) m.Name)
 
 			For Each item In objColumns
-				content.AppendFormat("<option value={0} data-datatype={4} data-size={2} data-decimals={3} {5}>{1}</option>" _
+				content.AppendFormat("<option value={0} data-datatype={4} data-size={2} data-decimals={3} data-lookuptableID={6} {5}>{1}</option>" _
 																, item.ID _
 																, IIf(filter.ShowFullName, item.TableName & "." & item.Name, item.Name) _
 																, item.Size.ToString, item.Decimals.ToString _
-																, CInt(item.DataType), IIf(bindValue = item.ID, "selected", ""))
+																, CInt(item.DataType), IIf(bindValue = item.ID, "selected", "") _
+																, item.LookupTableID)
 			Next
-
 
 			builder.InnerHtml = content.ToString
 			Return MvcHtmlString.Create(builder.ToString())

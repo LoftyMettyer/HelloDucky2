@@ -224,15 +224,12 @@ Namespace Controllers
 		End Function
 
 		<HttpGet>
-		Function GetAvailableColumnsForCrossTab(TableID As Integer, reportID As Integer) As JsonResult
-
-			'Dim objCrossTab = CType(objReportRepository.RetrieveParent(reportID, UtilityType.utlCrossTab), CrossTabModel)
+		Function GetAvailableColumnsForTable(TableID As Integer) As JsonResult
 
 			Dim objResults = objReportRepository.GetColumnsForTable(TableID)
 			Return Json(objResults, JsonRequestBehavior.AllowGet)
 
 		End Function
-
 
 		<HttpGet>
 		Function GetAvailableItemsForTable(TableID As Integer, reportID As Integer, reportType As UtilityType, selectionType As String) As JsonResult

@@ -108,7 +108,7 @@
 	function refreshCrossTabColumnsAvailable() {
 
 		$.ajax({
-			url: 'Reports/GetAvailableColumnsForCrossTab?TableID=' + $("#BaseTableID").val() + '&&ReportID=' + '@Model.ID',
+			url: 'Reports/GetAvailableColumnsForTable?TableID=' + $("#BaseTableID").val(),
 			datatype: 'json',
 			mtype: 'GET',
 			success: function (json) {
