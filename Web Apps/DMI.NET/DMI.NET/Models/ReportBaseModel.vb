@@ -109,7 +109,7 @@ Namespace Models
 		<DisplayName("Region : ")>
 		Public Property RegionID As Integer
 
-		<DisplayName("Group by Description : ")>
+		<DisplayName("Group by Description")>
 		Public Property GroupByDescription As Boolean
 
 		<DisplayFormat(ConvertEmptyStringToNull:=False)>
