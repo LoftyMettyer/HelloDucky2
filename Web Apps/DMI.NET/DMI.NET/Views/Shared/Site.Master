@@ -83,7 +83,8 @@
 			$("#About").dialog({
 				autoOpen: false,
 				modal: true,
-				width: 500
+				width: 500,
+				resizable: false
 			});
 
 			$("#errorDialog").dialog({

@@ -180,7 +180,7 @@
 						</td>
 					</tr>
 					
-					<tr>
+					<tr style="display: none">
 						<td colspan="7">
 							Current Users
 							<table id="currentLoggedInUsers">	
@@ -189,13 +189,9 @@
 					</tr>
 
 					<tr>
-						<td colspan="6" style="text-align: center">
-							<input id="btnCancel" name="btnCancel" type="button" class="btn" value="OK" style="width: 75px" width="75"
-								onclick="about_cancelClick()"
-								onmouseover="try{button_onMouseOver(this);}catch(e){}"
-								onmouseout="try{button_onMouseOut(this);}catch(e){}"
-								onfocus="try{button_onFocus(this);}catch(e){}"
-								onblur="try{button_onBlur(this);}catch(e){}" />
+						<td colspan="6" style="text-align: right">
+							<input id="btnCancel" name="btnCancel" type="button" class="btn" value="OK"  style="width: 75px" 
+								onclick="about_cancelClick()" />
 						</td>
 					</tr>
 					<tr>
@@ -245,7 +241,7 @@
 				height: 90,
 				sortname: 'User',
 				sortorder: "desc",
-				rowNum: 10000,
+				rowNum: 10000
 			});
 		}
 	});
