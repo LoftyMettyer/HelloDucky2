@@ -105,6 +105,10 @@
 			var frame = $("#divExpressionSelection");
 			var capitalizedText = capitalizeMe(type);
 
+			if (type == 'CALC') {
+				capitalizedText = 'Calculations';
+			}
+			
 			$("#ExpressionsAvailable").jqGrid('GridUnload');
 			$("#ExpressionsAvailable").jqGrid({
 				url: 'Reports/GetExpressionsForTable?TableID=' + tableId + '&&selectionType=' + type,
