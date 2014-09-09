@@ -21,34 +21,34 @@
 				<tr>
 					<td>Horizontal :</td>
 					<td>
-						@Html.ColumnDropdownFor(Function(m) m.HorizontalID, New ColumnFilter() With {.TableID = Model.BaseTableID}, New With {.class = "crosstabDropdown", .onchange = "crossTabHorizontalClick();"})
+						@Html.ColumnDropdownFor(Function(m) m.HorizontalID, New ColumnFilter() With {.TableID = Model.BaseTableID}, New With {.onchange = "refreshCrossTabColumn(event.target, 'Horizontal');"})
 						@Html.ValidationMessageFor(Function(m) m.HorizontalID)
 						@Html.Hidden("HorizontalDataType", CInt(Model.HorizontalDataType))
 					</td>
-					<td class="startstopincrementcol">@Html.EditorFor(Function(m) m.HorizontalStart)</td>
-					<td class="startstopincrementcol">@Html.EditorFor(Function(m) m.HorizontalStop)</td>
-					<td class="startstopincrementcol">@Html.EditorFor(Function(m) m.HorizontalIncrement)</td>
+					<td class="startstopincrementcol">@Html.TextBoxFor(Function(m) m.HorizontalStart, New With {.class = "number"})</td>
+					<td class="startstopincrementcol">@Html.TextBoxFor(Function(m) m.HorizontalStop, New With {.class = "number"})</td>
+					<td class="startstopincrementcol">@Html.TextBoxFor(Function(m) m.HorizontalIncrement, New With {.class = "number"})</td>
 				</tr>
 				<tr>
 					<td>Vertical :</td>
 					<td>
-						@Html.ColumnDropdownFor(Function(m) m.VerticalID, New ColumnFilter() With {.TableID = Model.BaseTableID}, New With {.class = "crosstabDropdown", .onchange = "crossTabVerticalClick();"})
+						@Html.ColumnDropdownFor(Function(m) m.VerticalID, New ColumnFilter() With {.TableID = Model.BaseTableID}, New With {.onchange = "refreshCrossTabColumn(event.target, 'Vertical');"})
 						@Html.ValidationMessageFor(Function(m) m.VerticalID)
 						@Html.Hidden("VerticalDataType", CInt(Model.VerticalDataType))
 					</td>
-					<td class="startstopincrementcol">@Html.EditorFor(Function(m) m.VerticalStart)</td>
-					<td class="startstopincrementcol">@Html.EditorFor(Function(m) m.VerticalStop)</td>
-					<td class="startstopincrementcol">@Html.EditorFor(Function(m) m.VerticalIncrement)</td>
+					<td class="startstopincrementcol">@Html.TextBoxFor(Function(m) m.VerticalStart, New With {.class = "number"})</td>
+					<td class="startstopincrementcol">@Html.TextBoxFor(Function(m) m.VerticalStop, New With {.class = "number"})</td>
+					<td class="startstopincrementcol">@Html.TextBoxFor(Function(m) m.VerticalIncrement, New With {.class = "number"})</td>
 				</tr>
 				<tr>
 					<td>Page Break :</td>
 					<td>
-						@Html.ColumnDropdownFor(Function(m) m.PageBreakID, New ColumnFilter() With {.TableID = Model.BaseTableID, .AddNone = True}, New With {.class = "crosstabDropdown", .onchange = "crossTabPageBreakClick();"})
+						@Html.ColumnDropdownFor(Function(m) m.PageBreakID, New ColumnFilter() With {.TableID = Model.BaseTableID, .AddNone = True}, New With {.onchange = "refreshCrossTabColumn(event.target, 'PageBreak');"})
 						@Html.Hidden("PageBreakDataType", CInt(Model.PageBreakDataType))
 					</td>
-					<td class="startstopincrementcol">@Html.EditorFor(Function(m) m.PageBreakStart)</td>
-					<td class="startstopincrementcol">@Html.EditorFor(Function(m) m.PageBreakStop)</td>
-					<td class="startstopincrementcol">@Html.EditorFor(Function(m) m.PageBreakIncrement)</td>
+					<td class="startstopincrementcol">@Html.TextBoxFor(Function(m) m.PageBreakStart, New With {.class = "number"})</td>
+					<td class="startstopincrementcol">@Html.TextBoxFor(Function(m) m.PageBreakStop, New With {.class = "number"})</td>
+					<td class="startstopincrementcol">@Html.TextBoxFor(Function(m) m.PageBreakIncrement, New With {.class = "number"})</td>
 				</tr>
 			</table>
 			<br />
@@ -113,7 +113,7 @@
 			mtype: 'GET',
 			success: function (json) {
 
-				var OptionNone = '<option value=0 data-datatype=0 selected>None</option>';
+				var OptionNone = '<option value=0 data-datatype=0 data-decimals=0 selected>None</option>';
 				var optionHorizontal = "";
 				var optionVertical = "";
 				var optionPageBreak = "";
@@ -156,10 +156,12 @@
 	function refreshCrossTabColumn(target, type) {
 
 		var horizontalValue = $("#HorizontalID").val();
-		var verticalValue = $("#VerticalID").val();
+		var verticalValue = $("#VerticalID").val();	
 		var pageBreakValue = $("#PageBreakID").val();
 
 		var iDataType = target.options[target.selectedIndex].attributes["data-datatype"].value;
+		var iDecimals = target.options[target.selectedIndex].attributes["data-decimals"].value;
+
 		$("#" + type + "DataType").val(iDataType);
 		switch (iDataType) {
 			case "2":
@@ -182,6 +184,15 @@
 				$("#" + type + "Increment").attr("disabled", "disabled");
 				$("#" + type + "Increment").val(0);
 		}
+
+		$("#" + type + "Start").autoNumeric('destroy');
+		$("#" + type + "Stop").autoNumeric('destroy');
+		$("#" + type + "Increment").autoNumeric('destroy');
+
+		$("#" + type + "Start").autoNumeric({ aSep: ',', aNeg: '', mDec: iDecimals, mRound: 'S', mNum: 10 });
+		$("#" + type + "Stop").autoNumeric({ aSep: ',', aNeg: '', mDec: iDecimals, mRound: 'S', mNum: 10 });
+		$("#" + type + "Increment").autoNumeric({ aSep: ',', aNeg: '', mDec: iDecimals, mRound: 'S', mNum: 10 });
+
 	}
 
 	function crossTabHorizontalClick() {
@@ -247,11 +258,9 @@
 		$("#CrossTabsColumnTab select").css("width", "100%");
 		$('table').attr('border', '0');
 
-
 		refreshCrossTabColumn($("#HorizontalID")[0], 'Horizontal');
 		refreshCrossTabColumn($("#VerticalID")[0], 'Vertical');
 		refreshCrossTabColumn($("#PageBreakID")[0], 'PageBreak');
-
 	});
 
 
