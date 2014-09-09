@@ -4,15 +4,21 @@
 
 <fieldset class="width100">
 	<legend class="fontsmalltitle">Options:</legend>
-	<fieldset class="formField width60 floatleft">
-		<input class="floatleft" type="hidden" id="txtEventFilterID" name="FilterID" value="@Model.FilterID" />
-		<label class="floatleft">@Html.LabelFor(Function(m) m.TemplateFileName)</label>
-		@Html.TextBoxFor(Function(m) m.TemplateFileName, New With {.id = "TemplateFileName", .class = "floatleft", .readonly = "true"})
-		<input type="button" class="ui-state-disabled floatleft" id="cmdTemplateSelect" value="..." onclick="requestTemplateSelect()" style="padding-top: 0;" />
-		<input type="button" class="ui-state-disabled floatleft" id="cmdTemplateClear" value="Clear" onclick="TemplateClear()" style="padding-top: 0;" />
+	<fieldset class="">
+		<div class="formField">
+			<input type="hidden" id="txtEventFilterID" name="FilterID" value="@Model.FilterID" />
+			<div class="floatleft"> 
+				@Html.LabelFor(Function(m) m.TemplateFileName)
+			</div>
+
+			@Html.TextBoxFor(Function(m) m.TemplateFileName, New With {.id = "TemplateFileName", .class = "floatleft", .readonly = "true"})
+			
+			<input type="button" class="ui-state-disabled floatleft" style="margin-left:2px" id="cmdTemplateSelect" value="..." onclick="requestTemplateSelect()"  />
+			<input type="button" class="ui-state-disabled floatleft" id="cmdTemplateClear" value="Clear" onclick="TemplateClear()"  />
+		</div>
 	</fieldset>
-	<br />
-	<fieldset class="clearboth" style="padding-left:125px">
+	
+	<fieldset class="clearboth" style="padding-left:126px">
 		@Html.CheckBoxFor(Function(m) m.PauseBeforeMerge)
 		@Html.LabelFor(Function(m) m.PauseBeforeMerge)
 		<br />
@@ -176,7 +182,10 @@
 			width: '70%',
 			marginBottom: '4px',
 			float: 'left'
-			});
+		});
+
+		$('fieldset').css("border", "1");
+
 	});
 
 </script>
