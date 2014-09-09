@@ -150,6 +150,7 @@
 		var dropDown = $("#IntersectionID")[0];
 		var iDataType = dropDown.options[dropDown.selectedIndex].attributes["data-datatype"].value;
 		combo_disable($("#IntersectionType"), (iDataType == "0"));
+		$("#IntersectionType").val(0); //Select 'Count' every time a Column is selected (as per the FD)
 	}
 
 	function refreshCrossTabColumn(target, type) {
