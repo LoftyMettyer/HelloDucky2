@@ -96,6 +96,7 @@
 			loadonce: true,
 			viewrecords: true,
 			sortorder: "desc",
+			height: 400,
 			ondblClickRow: function (rowID) {
 				eventEdit(rowID);
 				enableSaveButton();

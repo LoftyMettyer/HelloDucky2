@@ -1,11 +1,11 @@
-html
-{
+html {
 	-webkit-background-size: cover;
 	-moz-background-size: cover;
 	-o-background-size: cover;
+	-ms-background-size: cover;
 	background-size: cover;
-}	
-		
+}
+
 .header-banner {
 	position: absolute;
 	top: 0;
@@ -14,163 +14,162 @@ html
 	height: 44px;
 }
 
-body
-{
-		/*font-size: .85em;*/
-		font-family: Segoe UI, Verdana, "Open Sans", Tahoma,Helvetica,sans-serif; 
-		color: #232323;
-		/*background-color: #fff;*/
-		margin: 0px;
+body {
+	/*font-size: .85em;*/
+	font-family: Segoe UI, Verdana, "Open Sans", Tahoma,Helvetica,sans-serif;
+	color: #232323;
+	/*background-color: #fff;*/
+	margin: 0;
 }
 
-header { display: none;}
+header {
+	display: none;
+}
 
-#Microsoft_Licensed_Class_Manager_1_0 { display: none;}
+#Microsoft_Licensed_Class_Manager_1_0 {
+	display: none;
+}
 
 footer,
 nav,
 section {
-		display: block;
+	display: block;
 }
 
 .divLogin {
 	position: absolute;
-	top: 44px;left: 0;right: 0;bottom: 0;
+	top: 44px;
+	left: 0;
+	right: 0;
+	bottom: 0;
 }
-#frmLoginForm { height: 100%;}
+
+#frmLoginForm {
+	height: 100%;
+}
 
 
-#workframeset { position: absolute;
+#workframeset {
+	position: absolute;
 	left: 350px;
 	right: 0;
 	bottom: 0;
 	overflow: auto;
-	}
+}
 
-.DMI #menuframe {display: block;}
-
-#workframe { /*height: 100%;*/}
+.DMI #menuframe {
+	display: block;
+}
 
 /* Styles for basic forms
 -----------------------------------------------------------*/
 
-textarea 
-{
+textarea {
+	-moz-resize: none;
+	-ms-resize: none;
+	-o-resize: none;
 	resize: none;
 }
 
-.editor-label 
-{
-		margin: 1em 0 0 0;
+.editor-label {
+	margin: 1em 0 0 0;
 }
 
-.editor-field 
-{
-		margin:0.5em 0 0 0;
+.editor-field {
+	margin: 0.5em 0 0 0;
 }
 
 
 /* Styles for validation helpers
 -----------------------------------------------------------*/
-.field-validation-error
-{
-		color: #ff0000;
+.field-validation-error {
+	color: #ff0000;
 }
 
-.field-validation-valid
-{
-		display: none;
+.field-validation-valid {
+	display: none;
 }
 
-.input-validation-error
-{
-		border: 1px solid #ff0000;
-		background-color: #ffeeee;
+.input-validation-error {
+	border: 1px solid #ff0000;
+	background-color: #ffeeee;
 }
 
-.validation-summary-errors
-{
-		font-weight: bold;
-		color: #ff0000;
+.validation-summary-errors {
+	font-weight: bold;
+	color: #ff0000;
 }
 
-.validation-summary-valid
-{
-		display: none;
+.validation-summary-valid {
+	display: none;
 }
 
 /*NHRD - Lofty has probably inclued these for expediency but */
 /* ------- Metro (or whatever it's called now) buttons etc */
-.dashButton 
-{
-	 min-width: 100px;
-	 /*width: 100px;
-	 height: 100px;           */
-	 margin: 3px; padding: 0px; 
-	 /*color: rgb(255, 255, 255); */
-	 /*font-family: Segoe UI, Verdana, "Open Sans", Tahoma,Helvetica,sans-serif; */
-	 font-size: 15px; 
-	 vertical-align: top;
-	 padding: 3px;
+.dashButton {
+	-moz-min-width: 100px;
+	-ms-min-width: 100px;
+	-o-min-width: 100px;
+	-webkit-min-width: 100px;
+	min-width: 100px;
+	margin: 3px;
+	padding: 0;
+	font-size: 15px;
+	vertical-align: top;
+	padding: 3px;
 }
-				
+
 .tile {
-	margin: 0px 0px 500px; padding: 1px; 
+	margin: 0 0 500px;
+	padding: 1px;
 	/*color: rgb(255, 255, 255); */
-	overflow: hidden; text-decoration: none; 
+	overflow: hidden;
+	text-decoration: none;
 }
-.tile:visited {
-	/*color: rgb(255, 255, 255);*/
-}
-.tile img {
-	border: currentColor;
-}
-.tile:hover {
-	padding: 0px; border: 1px solid rgb(255, 255, 255); 
-	/*color: rgb(255, 255, 255); */
-	text-decoration: none; box-shadow: 0px 0px 7px #fff; -moz-box-shadow: 0 0 7px #fff; -webkit-box-shadow: 0 0 7px #fff;
-}        
-				
-				 
-									 
+
+	.tile img {
+		border: currentColor;
+	}
+
+	.tile:hover {
+		padding: 0;
+		border: 1px solid rgb(255, 255, 255);
+		/*color: rgb(255, 255, 255); */
+		text-decoration: none;
+		-ms-box-shadow: 0 0 7px #fff;
+		-moz-box-shadow: 0 0 7px #fff;
+		-webkit-box-shadow: 0 0 7px #fff;
+		box-shadow: 0 0 7px #fff;
+	}
+
+
+
 .subTitle {
-	font-size: 26px; font-weight: lighter; text-decoration: none; 
+	font-size: 26px;
+	font-weight: lighter;
+	text-decoration: none;
 	/*color: White; */
-	margin: 0px;
+	margin: 0;
 }
-				
-.actionUnderline 
-{
-	 width: 100%;
-	 height: 20px;
-	 background-color: rgb(193, 216, 241);
-					
-}
-				
-.bkgimg 
-{
-	 /*background-color: rgb(92, 135, 178);
-	background: url("../Content/Images/bluebgrd.png") fixed; 
-	-webkit-background-size: cover;
-	-moz-background-size: cover;
-	-o-background-size: cover;
-	background-size: cover;
-	background-repeat: repeat-y;      */
+
+.actionUnderline {
+	width: 100%;
+	height: 20px;
+	background-color: rgb(193, 216, 241);
 }
 
 /* ------- End of Metro (or whatever it's called now) buttons etc */
 
 .splashDiv {
-
 	position: absolute;
-	
-	top: 0px;left: 0px;right: 0px;bottom: 0px;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
 	background-color: rgb(7, 55, 99);
-
 	/*background-image: url("../Content/images/OpenHRLogo2.png");*/
 	background-image: url("../Content/images/ABSLogo/OpenHRLogo1024x768.png");
 	/*background-image: url("../Content/images/ABSLogo/swirlsgreyscaleopacity26.png");*/
-	
 	background-repeat: no-repeat;
 	background-position: center center;
 	vertical-align: middle;
@@ -181,28 +180,30 @@ textarea
 /* When the body has the loading class, we turn
 	 the scrollbar off with overflow:hidden */
 body.loading {
-		overflow: hidden;   
+	overflow: hidden;
 }
 
-/* Anytime the body has the loading class, our
+	/* Anytime the body has the loading class, our
 	 modal element will be visible */
-body.loading .modal {
+	body.loading .modal {
 		display: block;
-}
+	}
 
-#officebar>ul>li {
+#officebar > ul > li {
 	display: none;
 }
 
-.ui-jqgrid .ui-jqgrid-btable { cursor : default; }
+.ui-jqgrid .ui-jqgrid-btable {
+	cursor: default;
+}
 
 
 .display-label {
 	float: left;
-	width: 25%
+	width: 25%;
 }
 
-.display-field{
+.display-field {
 	float: right;
 	width: 73%;
 }
@@ -232,12 +233,12 @@ body.loading .modal {
 
 .reportsleft {
 	width: 50%;
-	float: left;	
+	float: left;
 }
 
 .reportsright {
 	width: 50%;
-	float: left;	
+	float: left;
 }
 
 input[readonly="true"] {
@@ -258,60 +259,181 @@ input[readonly="readonly"] {
 
 select.readonly {
 	background-color: #F2F2F2 !important;
-	color: #826D82;	
+	color: #826D82;
 }
 
-.fontsmall {	font-size: small;}
-.fontsmaller {	font-size: smaller;}
-.fontx-small {	font-size: x-small;}
-.fontxx-small {	font-size: xx-small;}
-.fontlarge {	font-size: large;}
-.fontx-large {	font-size: x-large;}
-.fontsmalltitle {	font-size: small;	font-weight: bold;}
-
-.floatleft {	float:left;}
-.floatright {	float:right;}
-.vertaligntop {	vertical-align:top;}
-.alignleft {	text-align:left;}
-.displaynone {	display:none;}
-.overflowxhidden {	overflow-x:hidden;}
-.overflowyhidden {	overflow-y:hidden;}
-.overflowauto {	overflow:auto;}
-.hidden {	visibility:hidden;}
-
-.width100 {	width: 100%;}
-.width99 {	width: 99%;}
-.width90 {	width: 90%;}
-.width85 {	width: 85%;}
-.width80 {	width: 80%;}
-.width70 {	width: 70%;}
-.width65 {	width: 65%;}
-.width60 {	width: 60%;}
-.width55 {	width: 55%;}
-.width50 {	width: 50%;}
-.width45 {	width: 45%;}
-.width35 {	width: 35%;}
-.width30 {	width: 30%;}
-.width25 {	width: 25%;}
-.width20 {	width: 20%;}
-.width10 {	width: 10%;}
-
-.height100{	height: 100%;}
-.height99 {	height: 99%;}
-.height90 {	height: 90%;}
-.height80 {	height: 80%;}
-.height70 {	height: 70%;}
-.height60 {	height: 60%;}
-.height50 {	height: 50%;}
-.height30 {	height: 30%;}
-.height25 {	height: 25%;}
-.height10 {	height: 10%;}
-
-
-
-#report_definition_tab_columns, #report_definition_tab_order {
-	/*padding-left:0px;*/
+.fontsmall {
+	font-size: small;
 }
+
+.fontsmaller {
+	font-size: smaller;
+}
+
+.fontx-small {
+	font-size: x-small;
+}
+
+.fontxx-small {
+	font-size: xx-small;
+}
+
+.fontlarge {
+	font-size: large;
+}
+
+.fontx-large {
+	font-size: x-large;
+}
+
+.fontsmalltitle {
+	font-size: small;
+	font-weight: bold;
+}
+
+.floatleft {
+	float: left;
+}
+
+.floatright {
+	float: right;
+}
+
+.vertaligntop {
+	vertical-align: top;
+}
+
+.alignleft {
+	text-align: left;
+}
+
+.displaynone {
+	display: none;
+}
+
+.overflowxhidden {
+	overflow-x: hidden;
+}
+
+.overflowyhidden {
+	overflow-y: hidden;
+}
+
+.overflowauto {
+	overflow: auto;
+}
+
+.hidden {
+	visibility: hidden;
+}
+
+.width100 {
+	width: 100%;
+}
+
+.width99 {
+	width: 99%;
+}
+
+.width90 {
+	width: 90%;
+}
+
+.width85 {
+	width: 85%;
+}
+
+.width80 {
+	width: 80%;
+}
+
+.width70 {
+	width: 70%;
+}
+
+.width65 {
+	width: 65%;
+}
+
+.width60 {
+	width: 60%;
+}
+
+.width55 {
+	width: 55%;
+}
+
+.width50 {
+	width: 50%;
+}
+
+.width45 {
+	width: 45%;
+}
+
+.width35 {
+	width: 35%;
+}
+
+.width30 {
+	width: 30%;
+}
+
+.width25 {
+	width: 25%;
+}
+
+.width20 {
+	width: 20%;
+}
+
+.width10 {
+	width: 10%;
+}
+
+.height100 {
+	height: 100%;
+}
+
+.height99 {
+	height: 99%;
+}
+
+.height90 {
+	height: 90%;
+}
+
+.height80 {
+	height: 80%;
+}
+
+.height70 {
+	height: 70%;
+}
+
+.height60 {
+	height: 60%;
+}
+
+.height50 {
+	height: 50%;
+}
+
+.height30 {
+	height: 30%;
+}
+
+.height25 {
+	height: 25%;
+}
+
+.height10 {
+	height: 10%;
+}
+
+
+
+
 
 #report_definition_tab_columns #columnbuttons {
 	width: 120px;
@@ -322,14 +444,13 @@ select.readonly {
 }
 
 #colbtngrp1, #colbtngrp2, #colbtngrp3 {
-	margin-bottom:30px;
+	margin-bottom: 30px;
 	width: 110px;
 }
 
 #SelectedTableID {
-	width:300px;
-	margin-bottom:10px;
-
+	width: 300px;
+	margin-bottom: 10px;
 }
 
 #columnsSelected, #columnsAvailable {
@@ -350,18 +471,18 @@ select.readonly {
 
 #report_definition_tab_columns #columnbuttons input[type=button] {
 	width: 120px;
-	margin-bottom:10px;
+	margin-bottom: 10px;
 }
 
 #report_definition_tab_order #columnbuttons {
 	width: 110px;
-	float: left;	
+	float: left;
 }
 
-#report_definition_tab_order #columnbuttons input[type=button] {
-	width: 110px;
-	margin-bottom: 10px;
-}
+	#report_definition_tab_order #columnbuttons input[type=button] {
+		width: 110px;
+		margin-bottom: 10px;
+	}
 
 
 #report_definition_tab_order #sortorderbuttons input[type=button] {
@@ -386,11 +507,9 @@ select.readonly {
 .display-textbox-emails {
 	width: 345px;
 	float: left;
-	/*margin-bottom:0px;*/
+	/*margin-bottom:0;*/
 }
-#fieldsetsubjectemail {
-	/*margin-left:20px;*/
-}
+
 
 .display-label_crosstabs {
 	width: 20%;
@@ -402,9 +521,6 @@ select.readonly {
 	float: left;
 }
 
-#fieldsetsendemail {
-	/*padding-bottom:0px;*/
-}
 
 #outputdestinatonfieldset input[type=text] {
 	width: 345px;
@@ -432,178 +548,169 @@ select.readonly {
 	text-align: center;
 }
 
-#EmailAttachmentName {
-	/*width: 100%;*/
-}
-
 #customreportschildtableheight {
 	height: 300px;
 }
 
 .DataManagerOnly {
-	color: #ff0000;	
-}
-
-#PrinterName {
-	/*width:100%;*/
+	color: #ff0000;
 }
 
 .accesspermissionsgrid {
-	width:110px;
+	width: 110px;
 }
 
 #AccessPermissions {
-	width:45%;
+	width: 43%;
 }
 
 
 .bordernone {
 	/*border-color:none;*/
-	border-width:0px;
+	border-width: 0;
 }
 
-#tabs .ui-widget-content {
-	/*border:none;*/
-}
 #cmdBaseFilter, #cmdParent1Picklist, #cmdBasePicklist,
-#cmdParent1Filter, #cmdParent2Picklist, #cmdParent2Filter, 
-#cmdEmailGroup, #cmdDescription3, #cmdCustomStart, #cmdCustomEnd, 
-#cmdTemplateSelect, #cmdTemplateClear
-{
-	float:left;
-	padding:2px 11px;
+#cmdParent1Filter, #cmdParent2Picklist, #cmdParent2Filter,
+#cmdEmailGroup, #cmdDescription3, #cmdCustomStart, #cmdCustomEnd,
+#cmdTemplateSelect, #cmdTemplateClear {
+	float: left;
+	padding: 2px 11px;
 	/*margin-bottom:2px;*/
 }
 
 #divPopupReportDefinition #cmdBaseFilter {
-		float:right;
+	float: right;
 }
 
 #divPopupReportDefinition #txtChildTableID {
-	width:65%;
-	float:right;
+	width: 65%;
+	float: right;
 }
 
-#divPopupReportDefinition #TableID, 
+#divPopupReportDefinition #TableID,
 #divPopupReportDefinition #FilterName,
 #divPopupReportDefinition #OrderName,
 #divPopupReportDefinition #Records {
-	float:left;
-	width:30%;
+	float: left;
+	width: 30%;
 }
 
 #cmdEmailGroup {
-	padding-bottom:0px;
+	padding-bottom: 0;
 }
 
 #cmdParent1Picklist, #cmdParent2Picklist {
-	margin-bottom:2px
-}
-#RelatedTableParent1AllRecordsDiv, #RelatedTableParent2AllRecordsDiv {
-	margin-bottom:7px;
-	width:100%;
+	margin-bottom: 2px;
 }
 
-#report_definition_tab_order .ui-jqgrid .ui-jqgrid-bdiv
-{
+#RelatedTableParent1AllRecordsDiv, #RelatedTableParent2AllRecordsDiv {
+	margin-bottom: 7px;
+	width: 100%;
+}
+
+#report_definition_tab_order .ui-jqgrid .ui-jqgrid-bdiv {
 	overflow-y: hidden !important;
 }
 
 #RelatedTablesParent1PicklistDiv, #RelatedTablesParent2PicklistDiv {
-	margin-bottom:4px;
-	width:100%;
+	margin-bottom: 4px;
+	width: 100%;
 }
 
- #selectiontypepicklistgroup, #selectiontypefiltergroup {
-	margin-bottom:-11px;
+#selectiontypepicklistgroup, #selectiontypefiltergroup {
+	margin-bottom: -11px;
 	/*width:100%;
 	border-style:none*/
 }
 
- #selectiontypeallrecords {
-	 margin-bottom:-4px;
- }
+#selectiontypeallrecords {
+	margin-bottom: -4px;
+}
 
 #txtBaseFilter {
-	margin-top:2px;
-	float:left;
+	margin-top: 2px;
+	float: left;
 }
 
 #BaseTableID {
-	width:71%
-}
-#PicklistRadioDiv, #FilterRadioDiv {
-	width:28.5%;
+	width: 71%;
 }
 
-#DescriptionItems{
-	margin-bottom:7px;
+#PicklistRadioDiv, #FilterRadioDiv {
+	width: 28.5%;
+}
+
+#DescriptionItems {
+	margin-bottom: 7px;
 }
 
 #gbox_SelectedColumns {
-	margin-left:10px;
-	margin-top:13px;
+	margin-left: 10px;
+	margin-top: 13px;
 }
 
 #outputtabfilenametextbox {
-	margin-left:30%;
+	margin-left: 30%;
 }
 
 
 .genericbuttonpopupalignment {
-	float:right;
-	margin:5px 0 5px 0;
+	float: right;
+	margin: 5px 0 5px 0;
 }
 
 #divExpressionSelectionButtons, #divSortOrderButtons, #divCalendarDetailButtons, #divSelectOrder, #divLookupFindButtons {
-float:right;
-margin:15px 0 5px 0;
+	float: right;
+	margin: 15px 0 5px 0;
 }
 
 #divPopupReportDefinition #divChildTablesButtons {
-	float:right;
-	margin:10px 0px 5px 0;
+	float: right;
+	margin: 10px 0 5px 0;
 }
+
 .spacemeabit {
-	margin-bottom:45px;
+	margin-bottom: 45px;
 }
 
-#ReportChildTableMainDiv #cmdBaseFilter, 
+#ReportChildTableMainDiv #cmdBaseFilter,
 #ReportChildTableMainDiv #cmdBasePicklist {
-	float:right;
-	/*margin:10px 0px 0px 0px;*/
+	float: right;
+	/*margin:10px 0 0 0;*/
 }
 
-#ReportChildTableRecordsDiv, 
-#ReportChildTableOrderDiv, 
-#ReportChildTableFilterDiv, 
+#ReportChildTableRecordsDiv,
+#ReportChildTableOrderDiv,
+#ReportChildTableFilterDiv,
 #ReportChildTableDropdownDiv {
-	height:30px;;
+	height: 30px;
 }
 
-#ReportChildTableFilterDiv #txtChildFilter, 
-#ReportChildTableOrderDiv #txtFieldRecOrder {
-	width:75%;
-}
+	#ReportChildTableFilterDiv #txtChildFilter,
+	#ReportChildTableOrderDiv #txtFieldRecOrder {
+		width: 75%;
+	}
 
 
 #definitionPropertiesFields {
-	padding-bottom:20px;
+	padding-bottom: 20px;
 }
 
-#definitionPropertiesFields .inputProperty {
-	width:84%;
-	margin-bottom:5px;
-	/*float:right;*/
-}
+	#definitionPropertiesFields .inputProperty {
+		width: 84%;
+		margin-bottom: 5px;
+		/*float:right;*/
+	}
 
 #definitionusagediv {
 	width: 400px;
 }
+
 #definitionPropertiesFields .labelProperty {
-		display: inline-block;
-		width: 14%;
-		text-align: left;
+	display: inline-block;
+	width: 14%;
+	text-align: left;
 }
 
 #divPopupReportDefinition .ui-jqgrid-bdiv {
@@ -611,72 +718,78 @@ margin:15px 0 5px 0;
 }
 
 .ui-dialog .ui-dialog-buttonpane {
-	 border-width: 0 !important;
+	border-width: 0 !important;
 }
 
 .padbot5 {
-	padding-bottom:5px;
+	padding-bottom: 5px;
 }
 
 .padbot10 {
-	padding-bottom:10px;
+	padding-bottom: 10px;
 }
 
 .padleft20 {
-	padding-left:20px;
+	padding-left: 20px;
 }
 
 .margebot10 {
-	margin-bottom:10px;
+	margin-bottom: 10px;
 }
 
 .margebot5 {
-	margin-bottom:5px;
+	margin-bottom: 5px;
 }
 
 .bgpink {
-	background-color:pink;
+	background-color: pink;
 }
+
 .bgaqua {
-	background-color:aquamarine;
+	background-color: aquamarine;
 }
+
 .bgpalegreen {
-	background-color:palegreen;
+	background-color: palegreen;
 }
+
 .bggold {
-	background-color:darkgoldenrod;
+	background-color: darkgoldenrod;
 }
+
 .startstopincrementcol {
-	text-align:center;
+	text-align: center;
 }
-
-
 
 #limheight {
 	width: 80%;
 	padding-left: 20px;
-    -webkit-column-count: 8;
-       -moz-column-count: 8;
+	-webkit-column-count: 8;
+	-moz-column-count: 8;
 	-ms-column-count: 8;
 	-o-column-count: 8;
-            column-count: 8; /*3 is just placeholder -- can be anything*/
+	column-count: 8; /*3 is just placeholder -- can be anything*/
 }
 
-#limheight li {
-    display: inline-block;    
-		width:100px;
-		
-}
-#limheight li {
-    /*color: rgb(0, 162, 232);*/
-}
+	#limheight li {
+		display: inline-block;
+		width: 100px;
+	}
 
 .bob > span {
-    display: block;
-    overflow: hidden;
-    padding-right: 5px
+	display: block;
+	overflow: hidden;
+	padding-right: 5px;
 }
-.bob input[type=text] {width: 100%}
-.bob input[type=button] {float: right}
 
-#tabs {border: none}
+.bob input[type=text] {
+	width: 100%;
+}
+
+.bob input[type=button] {
+	float: right;
+}
+
+#tabs {
+	border: none;
+}
