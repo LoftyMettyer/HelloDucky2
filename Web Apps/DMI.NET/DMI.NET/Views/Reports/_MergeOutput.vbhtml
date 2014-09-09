@@ -7,8 +7,8 @@
 	<fieldset class="formField width60 floatleft">
 		<input class="floatleft" type="hidden" id="txtEventFilterID" name="FilterID" value="@Model.FilterID" />
 		<label class="floatleft">@Html.LabelFor(Function(m) m.TemplateFileName)</label>
-		@Html.TextBox("TemplateFileName", Model.TemplateFileName, New With {.id = "TemplateFileName", .class = "floatleft", .disabled = "disabled"})
-		<input type="button" class="ui-state-disabled floatleft" id="cmdTemplateSelect" value="..." onclick="templateSelect()" style="padding-top: 0;" />
+		@Html.TextBoxFor(Function(m) m.TemplateFileName, New With {.id = "TemplateFileName", .class = "floatleft", .readonly = "true"})
+		<input type="button" class="ui-state-disabled floatleft" id="cmdTemplateSelect" value="..." onclick="requestTemplateSelect()" style="padding-top: 0;" />
 		<input type="button" class="ui-state-disabled floatleft" id="cmdTemplateClear" value="Clear" onclick="TemplateClear()" style="padding-top: 0;" />
 	</fieldset>
 	<br />
@@ -111,7 +111,7 @@
 </fieldset>
 
 <div style='height: 0;width:0; overflow:hidden;'>
-	<input id="cmdGetFilename" name="cmdGetFilename" type="file" />
+	<input type="file" name="cmdGetFilename" id="cmdGetFilename" onchange="templateSelect()" />
 </div>
 
 <script type="text/javascript">
@@ -121,22 +121,22 @@
 		button_disable($('#cmdTemplateClear'), true);
 	}
 
-	function templateSelect() {
+	function requestTemplateSelect() {
 
-		var sFileName;
 		var dialog = document.getElementById("cmdGetFilename");
 		dialog.accept = "application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+		dialog.click();
 
-		try {
-			dialog.click();
-			sFileName = dialog.value;
+	}
 
-			if (sFileName.length > 256) {
-				OpenHR.messageBox("Path and file name must not exceed 256 characters in length");
-				return;
-			}
-		}
-		catch (e) {
+	function templateSelect() {
+
+		var dialog = document.getElementById("cmdGetFilename");
+		var sFileName = /([^\\]+)$/.exec(dialog.value)[1];
+
+		if (sFileName.length > 256) {
+			OpenHR.messageBox("Path and file name must not exceed 256 characters in length");
+			return;
 		}
 
 		if (sFileName != "") {
