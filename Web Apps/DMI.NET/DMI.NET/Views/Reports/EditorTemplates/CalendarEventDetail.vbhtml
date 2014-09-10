@@ -193,7 +193,9 @@ End Code
 		$('#eventEventInformationContainer .ui-button').css('float', 'right');
 
 		if (isDefinitionReadOnly()) {
-			$("#frmPostCalendarEvent").prop('disabled', true);
+			$("#frmPostCalendarEvent input").prop('disabled', "disabled");
+			$("#frmPostCalendarEvent select").prop('disabled', "disabled");
+			$("#frmPostCalendarEvent :button").prop('disabled', "disabled");
 		}
 
 	});

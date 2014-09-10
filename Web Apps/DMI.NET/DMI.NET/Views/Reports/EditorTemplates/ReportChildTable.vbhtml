@@ -77,7 +77,9 @@ End Code
 		}).css("width", "40px");
 
 		if (isDefinitionReadOnly()) {
-			$("#frmPostChildTable").prop('disabled', true);
+			$("#frmPostChildTable input").prop('disabled', "disabled");
+			$("#frmPostChildTable select").prop('disabled', "disabled");
+			$("#frmPostChildTable :button").prop('disabled', "disabled");
 		}
 
 	})

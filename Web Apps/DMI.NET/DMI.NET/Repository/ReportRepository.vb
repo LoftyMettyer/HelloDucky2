@@ -218,21 +218,21 @@ Namespace Repository
 
 						objModel.HorizontalID = CInt(objRow("HorizontalID"))
 						objModel.HorizontalDataType = _objSessionInfo.GetColumn(objModel.HorizontalID).DataType
-						objModel.HorizontalStart = CInt(objRow("HorizontalStart"))
-						objModel.HorizontalStop = CInt(objRow("HorizontalStop"))
-						objModel.HorizontalIncrement = CInt(objRow("HorizontalIncrement"))
+						objModel.HorizontalStart = CDbl(objRow("HorizontalStart"))
+						objModel.HorizontalStop = CDbl(objRow("HorizontalStop"))
+						objModel.HorizontalIncrement = CDbl(objRow("HorizontalIncrement"))
 
 						objModel.VerticalID = CInt(objRow("VerticalID"))
 						objModel.VerticalDataType = _objSessionInfo.GetColumn(objModel.VerticalID).DataType
-						objModel.VerticalStart = CInt(objRow("VerticalStart"))
-						objModel.VerticalStop = CInt(objRow("VerticalStop"))
-						objModel.VerticalIncrement = CInt(objRow("VerticalIncrement"))
+						objModel.VerticalStart = CDbl(objRow("VerticalStart"))
+						objModel.VerticalStop = CDbl(objRow("VerticalStop"))
+						objModel.VerticalIncrement = CDbl(objRow("VerticalIncrement"))
 
 						objModel.PageBreakID = CInt(objRow("PageBreakID"))
 						objModel.PageBreakDataType = _objSessionInfo.GetColumn(objModel.PageBreakID).DataType
-						objModel.PageBreakStart = CInt(objRow("PageBreakStart"))
-						objModel.PageBreakStop = CInt(objRow("PageBreakStop"))
-						objModel.PageBreakIncrement = CInt(objRow("PageBreakIncrement"))
+						objModel.PageBreakStart = CDbl(objRow("PageBreakStart"))
+						objModel.PageBreakStop = CDbl(objRow("PageBreakStop"))
+						objModel.PageBreakIncrement = CDbl(objRow("PageBreakIncrement"))
 
 						objModel.IntersectionID = CInt(objRow("IntersectionID"))
 						objModel.IntersectionType = CType(objRow("IntersectionType"), IntersectionType)

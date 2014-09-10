@@ -67,7 +67,9 @@ End Code
 		}
 
 		if (isDefinitionReadOnly()) {
-			$("#frmPostSortOrder").prop('disabled', true);
+			$("#frmPostSortOrder input").prop('disabled', "disabled");
+			$("#frmPostSortOrder select").prop('disabled', "disabled");
+			$("#frmPostSortOrder :button").prop('disabled', "disabled");
 		}
 
 	});

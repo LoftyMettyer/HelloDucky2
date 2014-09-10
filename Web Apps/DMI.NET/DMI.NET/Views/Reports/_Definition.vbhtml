@@ -132,7 +132,9 @@
 		menu_toolbarEnableItem('mnutoolSaveReport', false);
 
 		if (isDefinitionReadOnly()) {
-			$("#frmReportDefintion").prop('disabled', "disabled");
+			$("#frmReportDefintion input").prop('disabled', "disabled");
+			$("#frmReportDefintion textarea").prop('disabled', "disabled");
+			$("#frmReportDefintion select").prop('disabled', "disabled");
 			$("#frmReportDefintion :button").prop('disabled', "disabled");
 		} else {
 			$("#frmReportDefintion input").on("keydown", function () { enableSaveButton(); });
