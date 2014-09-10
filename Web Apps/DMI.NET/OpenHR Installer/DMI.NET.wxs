@@ -51,11 +51,32 @@
                 <Component Id="cmp4694065D67E87E6FC07799089F4CF157" Guid="*">
                     <File Id="fil1705838E4BA562F81356911BCACC6982" KeyPath="yes" Source="SourceDir\bin\HR.Intranet.Server.dll" />
                 </Component>
+                <Component Id="cmpD5C9472224ADD82443D4CD1070A6D6E8" Guid="*">
+                    <File Id="fil9EDE90BDBBFFAA75B3BCE050B38C9160" KeyPath="yes" Source="SourceDir\bin\Microsoft.AspNet.SignalR.Core.dll" />
+                </Component>
+                <Component Id="cmpEB87EE68123BF0D6A0A3F626E1D0408D" Guid="*">
+                    <File Id="fil9A78A5EB4A8F395F652060A1698CC8F7" KeyPath="yes" Source="SourceDir\bin\Microsoft.AspNet.SignalR.SystemWeb.dll" />
+                </Component>
+                <Component Id="cmp55212C805D6FA2A5EE12A3EEFF5EC94E" Guid="*">
+                    <File Id="fil82F7CFA6F9A6345FE1143DD988E7D8D4" KeyPath="yes" Source="SourceDir\bin\Microsoft.Owin.dll" />
+                </Component>
+                <Component Id="cmp339B9888C380764349EC4713B4B37B06" Guid="*">
+                    <File Id="filEA6E4D79EC583425335FA2851D7C3D02" KeyPath="yes" Source="SourceDir\bin\Microsoft.Owin.Host.SystemWeb.dll" />
+                </Component>
+                <Component Id="cmp31FAF349B59B83E92DBB948CAB419509" Guid="*">
+                    <File Id="fil2EEB55464B2B332A7DEB32B0ED320252" KeyPath="yes" Source="SourceDir\bin\Microsoft.Owin.Security.dll" />
+                </Component>
                 <Component Id="cmp48B5CE506D86BF39F5848F1D62F6CFAE" Guid="*">
                     <File Id="fil4A13ABF803EECCA5885EFAE4997322B4" KeyPath="yes" Source="SourceDir\bin\Microsoft.Web.Infrastructure.dll" />
                 </Component>
+                <Component Id="cmp7A56EE2BB8356CEC1CF742B9949E16FB" Guid="*">
+                    <File Id="filA306CB4264294CD56152AA29C42371F4" KeyPath="yes" Source="SourceDir\bin\MVC Foolproof Validation.dll" />
+                </Component>
                 <Component Id="cmpCBBD857B6884D163CDBADD7367F6EAB5" Guid="*">
                     <File Id="filB93E309871BBBB64382DAED7AC48DF75" KeyPath="yes" Source="SourceDir\bin\Newtonsoft.Json.dll" />
+                </Component>
+                <Component Id="cmp8AB9E98812D4FF1396E72067FB9138E7" Guid="*">
+                    <File Id="fil9369FF0D08849E97BCE6FBF835C04429" KeyPath="yes" Source="SourceDir\bin\Owin.dll" />
                 </Component>
                 <Component Id="cmp703C2CA9CED6F3E7FDFB80ED8CC8013B" Guid="*">
                     <File Id="filB0554C99199765789F311022C5041355" KeyPath="yes" Source="SourceDir\bin\System.Web.Helpers.dll" />
@@ -3431,9 +3452,6 @@
                 <Component Id="cmp729A53F9875531F56E7F900CF5182A29" Guid="*">
                     <File Id="fil4E8C1D0173CD206D379B91636127DEC8" KeyPath="yes" Source="SourceDir\Scripts\ClientDLL.js" />
                 </Component>
-                <Component Id="cmpC9584F48E1EC753F95918D149D00D1C8" Guid="*">
-                    <File Id="fil619B2510EE63A35442169FFF228F5A88" KeyPath="yes" Source="SourceDir\Scripts\ctl_SetFont.js" />
-                </Component>
                 <Component Id="cmp8D2D1A1587E5DCA5E896DDF215472AD0" Guid="*">
                     <File Id="fil815DA33D891DE0CA75681961AD2332D7" KeyPath="yes" Source="SourceDir\Scripts\ctl_SetStyles.js" />
                 </Component>
@@ -3461,6 +3479,12 @@
                 <Component Id="cmp8D9DF2F238A4B32EA1AF9EC16FD4516A" Guid="*">
                     <File Id="fil3B63598B1AC59900FE421E275C2CDF21" KeyPath="yes" Source="SourceDir\Scripts\jquery.jqGrid.min.js" />
                 </Component>
+                <Component Id="cmp029E1DC93E0FF8D5DEFF5CDB30D87A0B" Guid="*">
+                    <File Id="fil7A96561E58703E17E0588D1A536B1A2C" KeyPath="yes" Source="SourceDir\Scripts\jquery.signalR-2.1.1.js" />
+                </Component>
+                <Component Id="cmp3926AA4001E2C42E451540B579E51CE1" Guid="*">
+                    <File Id="filB93018C1C3093DE6A2AA8552F293540F" KeyPath="yes" Source="SourceDir\Scripts\jquery.signalR-2.1.1.min.js" />
+                </Component>
                 <Component Id="cmp26738939EC1DF5CF1C498914AD2FF539" Guid="*">
                     <File Id="fil8183F0C42C7D452F304DAE8E8F280A6C" KeyPath="yes" Source="SourceDir\Scripts\jquery.validate.js" />
                 </Component>
@@ -3469,6 +3493,15 @@
                 </Component>
                 <Component Id="cmpF53D8E4689DCF1B289E53C3DFE20D80E" Guid="*">
                     <File Id="filD0B567E137C393F3005CA9ECEB182633" KeyPath="yes" Source="SourceDir\Scripts\modernizr-2.7.2.js" />
+                </Component>
+                <Component Id="cmp042946E80CE3F2297102E9353D205F31" Guid="*">
+                    <File Id="fil1D7B0EA411D6F08318888F896D2CEFA4" KeyPath="yes" Source="SourceDir\Scripts\mvcfoolproof.unobtrusive.min.js" />
+                </Component>
+                <Component Id="cmp5522000AD3AC450C8791B88B2BC3B163" Guid="*">
+                    <File Id="filFF7E6BF66E256BAC60AD8F02101A53F5" KeyPath="yes" Source="SourceDir\Scripts\MvcFoolproofJQueryValidation.min.js" />
+                </Component>
+                <Component Id="cmp12D27204C1D896F392E6CD5163DD2B11" Guid="*">
+                    <File Id="filA23E92AF906CCDF639864471613F0928" KeyPath="yes" Source="SourceDir\Scripts\MvcFoolproofValidation.min.js" />
                 </Component>
                 <Component Id="cmp6F8111E6E7634D29F8A05DB786CFF959" Guid="*">
                     <File Id="filD0A220DB7E8DA98FC7CB9DC50126E1BB" KeyPath="yes" Source="SourceDir\Scripts\OpenHR.js" />
@@ -3547,6 +3580,9 @@
                     <Component Id="cmp97A3B1185F6440CB633A84875303429F" Guid="*">
                         <File Id="filAD990BAFF5EA8AF27966D82AAE7966F4" KeyPath="yes" Source="SourceDir\Scripts\jquery\jquery.gridster.js" />
                     </Component>
+                    <Component Id="cmp77B99A610094DA9758FA6CD5FB2E32F9" Guid="*">
+                        <File Id="fil6D7893DCA4D253E79F9041365E2FEDF0" KeyPath="yes" Source="SourceDir\Scripts\jquery\jquery.hotkeys.js" />
+                    </Component>
                     <Component Id="cmpBA93C17F1A568930FC034D6DF77A6F32" Guid="*">
                         <File Id="fil06C3F75503D1A60CC2CC88EEC2060213" KeyPath="yes" Source="SourceDir\Scripts\jquery\jquery.marquee.js" />
                     </Component>
@@ -3614,39 +3650,56 @@
                         <Component Id="cmpB2491CED45731E5155B3FC58E4907CCD" Guid="*">
                             <File Id="filDBD175D804EB8169E086EFD23C410871" KeyPath="yes" Source="SourceDir\Scripts\jquery\jsTree\jquery.jstree.js" />
                         </Component>
-                        <Directory Id="dir4909036F822B5692D581B70B36B4B2EC" Name="theme">
-                            <Directory Id="dirC9FC2896DB4397FECB5EEECE326304A4" Name="apple">
-                                <Component Id="cmp067D577CB83054016EBB16FCE6316DC6" Guid="*">
-                                    <File Id="filEF531D19D598E54DADC5BC68253F95F4" KeyPath="yes" Source="SourceDir\Scripts\jquery\jsTree\theme\apple\bg.jpg" />
+                        <Directory Id="dir8535D457290EC8B5C1072CD57B45DED4" Name="themes">
+                            <Directory Id="dir89AA9B0F5E4532EF7885A4A22BCD4693" Name="adv_themeroller">
+                                <Component Id="cmp5F2CA22110208D01825E4324F2D92FEF" Guid="*">
+                                    <File Id="fil5F4567EA15E2ABF8E87CCCB4DE12A599" KeyPath="yes" Source="SourceDir\Scripts\jquery\jsTree\themes\adv_themeroller\d.gif" />
                                 </Component>
-                                <Component Id="cmp957408E822DC8B39768DC2F04A6FCABF" Guid="*">
-                                    <File Id="filF1EB19723A65F83F214DAADEFB06C42B" KeyPath="yes" Source="SourceDir\Scripts\jquery\jsTree\theme\apple\d.png" />
+                                <Component Id="cmp037D3CA4527A37875D424479558FB14D" Guid="*">
+                                    <File Id="fil0107CBA2AC98DCA1AD709311B1770293" KeyPath="yes" Source="SourceDir\Scripts\jquery\jsTree\themes\adv_themeroller\d.png" />
                                 </Component>
-                                <Component Id="cmpC7678E6378958132A35B48E66AEEF754" Guid="*">
-                                    <File Id="fil388C4ABB76BFF53189035140C71FFE45" KeyPath="yes" Source="SourceDir\Scripts\jquery\jsTree\theme\apple\dot_for_ie.gif" />
+                                <Component Id="cmp463CCFBD12998DD1985D51044DDF0BD3" Guid="*">
+                                    <File Id="fil4CD7EA025DB170B65796BF67726F3038" KeyPath="yes" Source="SourceDir\Scripts\jquery\jsTree\themes\adv_themeroller\dot_for_ie.gif" />
                                 </Component>
-                                <Component Id="cmpF7F71EE3794425D335641CD69F2979EC" Guid="*">
-                                    <File Id="fil6CBCBFF75C55E8225EB8B0B1D93022E2" KeyPath="yes" Source="SourceDir\Scripts\jquery\jsTree\theme\apple\style.css" />
+                                <Component Id="cmp67E4D624A87DCA96231A49FC7B400A2F" Guid="*">
+                                    <File Id="fil9F0C55B9471611A6AC5AD83665A9508E" KeyPath="yes" Source="SourceDir\Scripts\jquery\jsTree\themes\adv_themeroller\style.css" />
                                 </Component>
-                                <Component Id="cmp2CC44933112F90F1D1A8FE44CC776C3C" Guid="*">
-                                    <File Id="fil8AEFE01C9F4CB02AD392285E9228AAB4" KeyPath="yes" Source="SourceDir\Scripts\jquery\jsTree\theme\apple\throbber.gif" />
+                                <Component Id="cmp0A77D00D2EFEE99953BE2273D1BBBBEE" Guid="*">
+                                    <File Id="fil1EA2212B01AAA0542242E3C903157300" KeyPath="yes" Source="SourceDir\Scripts\jquery\jsTree\themes\adv_themeroller\throbber.gif" />
                                 </Component>
                             </Directory>
-                            <Directory Id="dirD3EDE675AC2C4612B2F3C65A2309C60D" Name="classic">
-                                <Component Id="cmp213C63C4F7F6E2FBE0B66CEA4A8F4179" Guid="*">
-                                    <File Id="fil926A54FC778E54CA6E3FAEF45B6CDEE7" KeyPath="yes" Source="SourceDir\Scripts\jquery\jsTree\theme\classic\d.gif" />
+                            <Directory Id="dirC1CD0B7C47498AE55F389F20B2C09193" Name="apple">
+                                <Component Id="cmp2524E1B12E0B1A4970EF63150FF3F144" Guid="*">
+                                    <File Id="fil1E8A82E9AD593C7D9260B030EA96DACF" KeyPath="yes" Source="SourceDir\Scripts\jquery\jsTree\themes\apple\bg.jpg" />
                                 </Component>
-                                <Component Id="cmp345C09471025F00314A353855E2B9A64" Guid="*">
-                                    <File Id="fil33FAA156531E85FD92790A0AAAB2FAB7" KeyPath="yes" Source="SourceDir\Scripts\jquery\jsTree\theme\classic\d.png" />
+                                <Component Id="cmp669FA5ABF80C02CF31D8E4B636682A98" Guid="*">
+                                    <File Id="fil0466022DD2B33BE727D7FD85C513E0AA" KeyPath="yes" Source="SourceDir\Scripts\jquery\jsTree\themes\apple\d.png" />
                                 </Component>
-                                <Component Id="cmp19ECEDB0CF1BE73626271EFC3B0F0F87" Guid="*">
-                                    <File Id="filD82292831DED9CC6B5D6586D101DEEB8" KeyPath="yes" Source="SourceDir\Scripts\jquery\jsTree\theme\classic\dot_for_ie.gif" />
+                                <Component Id="cmp1D9DD64D1990B5BFA6FFA337EF905199" Guid="*">
+                                    <File Id="filE985E3AEC08D90FA2C719BC74D942C0D" KeyPath="yes" Source="SourceDir\Scripts\jquery\jsTree\themes\apple\dot_for_ie.gif" />
                                 </Component>
-                                <Component Id="cmp6DE31EB1CD22961022B315C04D520AC0" Guid="*">
-                                    <File Id="filBA59D4669D59C3B5D8A1C6CAB505412D" KeyPath="yes" Source="SourceDir\Scripts\jquery\jsTree\theme\classic\style.css" />
+                                <Component Id="cmp33B7100FA1B48E2477837B59799EC885" Guid="*">
+                                    <File Id="filBBDDB3410D207E60CE5BADF1359C008B" KeyPath="yes" Source="SourceDir\Scripts\jquery\jsTree\themes\apple\style.css" />
                                 </Component>
-                                <Component Id="cmp2832DBD372CABCEAF60550E4F5466EA7" Guid="*">
-                                    <File Id="fil10F15DC754566E4270C4296769AEDEB1" KeyPath="yes" Source="SourceDir\Scripts\jquery\jsTree\theme\classic\throbber.gif" />
+                                <Component Id="cmpB2FD1E4E97BD618193F322F865B495C5" Guid="*">
+                                    <File Id="filF6DBBB0641FAC85E1A61B42D00FB9019" KeyPath="yes" Source="SourceDir\Scripts\jquery\jsTree\themes\apple\throbber.gif" />
+                                </Component>
+                            </Directory>
+                            <Directory Id="dir214F19B1D01E3A5DE3D02B1B8257AEE5" Name="classic">
+                                <Component Id="cmp6ABAE2CB6E42661CACD6BB25FF617562" Guid="*">
+                                    <File Id="fil412BDB0963E2CA33AC77682535775C97" KeyPath="yes" Source="SourceDir\Scripts\jquery\jsTree\themes\classic\d.gif" />
+                                </Component>
+                                <Component Id="cmp481C7372D33C9CC568DFCB0E165A4BE1" Guid="*">
+                                    <File Id="fil7DB0DC86A8827DEC6FB701A7B341AB0A" KeyPath="yes" Source="SourceDir\Scripts\jquery\jsTree\themes\classic\d.png" />
+                                </Component>
+                                <Component Id="cmp03E356021CE2C25F90FEAF9B6A48A2D1" Guid="*">
+                                    <File Id="filF4BB78B647198289E078EE58E7F03501" KeyPath="yes" Source="SourceDir\Scripts\jquery\jsTree\themes\classic\dot_for_ie.gif" />
+                                </Component>
+                                <Component Id="cmpE7D1AD27A20453A7C53EC78939858F45" Guid="*">
+                                    <File Id="filD97159FDF7BB55C76C80CF89A39B9E06" KeyPath="yes" Source="SourceDir\Scripts\jquery\jsTree\themes\classic\style.css" />
+                                </Component>
+                                <Component Id="cmpACE137BBE119301CB60E07357C26E7EA" Guid="*">
+                                    <File Id="filE704BE699C0D30E170DC9AE2C4637569" KeyPath="yes" Source="SourceDir\Scripts\jquery\jsTree\themes\classic\throbber.gif" />
                                 </Component>
                             </Directory>
                         </Directory>
@@ -4257,9 +4310,6 @@
                     <Component Id="cmp2C55099185D46EEFE424235206F02C32" Guid="*">
                         <File Id="fil8239F01C28D587D91CE8B8362953CAAE" KeyPath="yes" Source="SourceDir\Views\Home\EventLogSelection.aspx" />
                     </Component>
-                    <Component Id="cmp3E7CD63A7824965D47140569928A1D13" Guid="*">
-                        <File Id="fil47342FC4D116775F2D298549B2A5C04D" KeyPath="yes" Source="SourceDir\Views\Home\fieldRec.aspx" />
-                    </Component>
                     <Component Id="cmp09F75A7F48E04429E89F07A5C5E1E6EC" Guid="*">
                         <File Id="fil313DF09493A0E0F8A73B2DEE824DB24E" KeyPath="yes" Source="SourceDir\Views\Home\filterselect.ascx" />
                     </Component>
@@ -4304,9 +4354,6 @@
                     </Component>
                     <Component Id="cmp8A5AA0810E075347B396BD7108AD0F92" Guid="*">
                         <File Id="filB0E0EA5E091140CB9B5833911DD0FE28" KeyPath="yes" Source="SourceDir\Views\Home\PasswordChange.ascx" />
-                    </Component>
-                    <Component Id="cmpAC340A8F3D61FE16A091C858F28D8EE3" Guid="*">
-                        <File Id="fil68CAE381D7714C1C127FC0FBC54F193D" KeyPath="yes" Source="SourceDir\Views\Home\pcconfiguration.ascx" />
                     </Component>
                     <Component Id="cmpC0E3B458D6FE1AAC9EF5EF9B59FB5123" Guid="*">
                         <File Id="fil5F66A3FDE7F49A61B4745459241E608D" KeyPath="yes" Source="SourceDir\Views\Home\picklistSelection.ascx" />
@@ -4503,11 +4550,6 @@
                     <Component Id="cmp05C3916BD6B0E0E3B3CF947C9ED34DB4" Guid="*">
                         <File Id="fil738FF8AD811D71F27C1D717719074525" KeyPath="yes" Source="SourceDir\Views\Shared\_Banner.ascx" />
                     </Component>
-                    <Directory Id="dir0F2F7AD5EE60C97ED958B6C878A34677" Name="Util_Def_CustomReports">
-                        <Component Id="cmp907881F4621F72464BD929B261836151" Guid="*">
-                            <File Id="filFD8C63680D5E1002CBF69CCCC429343E" KeyPath="yes" Source="SourceDir\Views\Shared\Util_Def_CustomReports\ssOleDBGridCalculations.ascx" />
-                        </Component>
-                    </Directory>
                 </Directory>
             </Directory>
         </DirectoryRef>
@@ -4530,8 +4572,15 @@
             <ComponentRef Id="cmp3D8F7A091348223A4D8D6B969300CBE5" />
             <ComponentRef Id="cmp7039F2A4749B36C0437DB4CEE8BBCB69" />
             <ComponentRef Id="cmp4694065D67E87E6FC07799089F4CF157" />
+            <ComponentRef Id="cmpD5C9472224ADD82443D4CD1070A6D6E8" />
+            <ComponentRef Id="cmpEB87EE68123BF0D6A0A3F626E1D0408D" />
+            <ComponentRef Id="cmp55212C805D6FA2A5EE12A3EEFF5EC94E" />
+            <ComponentRef Id="cmp339B9888C380764349EC4713B4B37B06" />
+            <ComponentRef Id="cmp31FAF349B59B83E92DBB948CAB419509" />
             <ComponentRef Id="cmp48B5CE506D86BF39F5848F1D62F6CFAE" />
+            <ComponentRef Id="cmp7A56EE2BB8356CEC1CF742B9949E16FB" />
             <ComponentRef Id="cmpCBBD857B6884D163CDBADD7367F6EAB5" />
+            <ComponentRef Id="cmp8AB9E98812D4FF1396E72067FB9138E7" />
             <ComponentRef Id="cmp703C2CA9CED6F3E7FDFB80ED8CC8013B" />
             <ComponentRef Id="cmp5FFDB77ADD8BE767FEDFE1EB9C1D96AA" />
             <ComponentRef Id="cmp6A31FB8007844E13E98BD2057F458827" />
@@ -5600,7 +5649,6 @@
             <ComponentRef Id="cmpDDE912B211A493BE2F614A96BCB8876C" />
             <ComponentRef Id="cmp2EC4FFAA76A6D61C5F52C78950AB33AB" />
             <ComponentRef Id="cmp729A53F9875531F56E7F900CF5182A29" />
-            <ComponentRef Id="cmpC9584F48E1EC753F95918D149D00D1C8" />
             <ComponentRef Id="cmp8D2D1A1587E5DCA5E896DDF215472AD0" />
             <ComponentRef Id="cmpFB721D25FA87DA9DCF43BD67E30D3013" />
             <ComponentRef Id="cmpE1D44797F6A549AA86CDA0B7CD9EEB26" />
@@ -5610,9 +5658,14 @@
             <ComponentRef Id="cmp8A4328FE92D1071F6546C02986DA8F25" />
             <ComponentRef Id="cmpBF49CAC0CFBD98AC0CC81A0EE0D78275" />
             <ComponentRef Id="cmp8D9DF2F238A4B32EA1AF9EC16FD4516A" />
+            <ComponentRef Id="cmp029E1DC93E0FF8D5DEFF5CDB30D87A0B" />
+            <ComponentRef Id="cmp3926AA4001E2C42E451540B579E51CE1" />
             <ComponentRef Id="cmp26738939EC1DF5CF1C498914AD2FF539" />
             <ComponentRef Id="cmp1251430FCCD760B36BD7609CC611037A" />
             <ComponentRef Id="cmpF53D8E4689DCF1B289E53C3DFE20D80E" />
+            <ComponentRef Id="cmp042946E80CE3F2297102E9353D205F31" />
+            <ComponentRef Id="cmp5522000AD3AC450C8791B88B2BC3B163" />
+            <ComponentRef Id="cmp12D27204C1D896F392E6CD5163DD2B11" />
             <ComponentRef Id="cmp6F8111E6E7634D29F8A05DB786CFF959" />
             <ComponentRef Id="cmpAA5CD97B88F178A602C20B72624A58FB" />
             <ComponentRef Id="cmpA5BDD9BECF386E00E98A86B1FB87EA9F" />
@@ -5637,6 +5690,7 @@
             <ComponentRef Id="cmp23C771E32F822F8104B93FD962AF817B" />
             <ComponentRef Id="cmpE782E0AD6DBD09F44EB15BC5A3AD379A" />
             <ComponentRef Id="cmp97A3B1185F6440CB633A84875303429F" />
+            <ComponentRef Id="cmp77B99A610094DA9758FA6CD5FB2E32F9" />
             <ComponentRef Id="cmpBA93C17F1A568930FC034D6DF77A6F32" />
             <ComponentRef Id="cmp968E95796D6D3014503108EE20FF59FF" />
             <ComponentRef Id="cmpF09BBC659FEB36B14FC9124DB93E0B62" />
@@ -5657,16 +5711,21 @@
             <ComponentRef Id="cmpFE736119F7B3D6ADDB2DC363DBDA3960" />
             <ComponentRef Id="cmp6CBC54FA26DEEC80BC406D62CA359E15" />
             <ComponentRef Id="cmpB2491CED45731E5155B3FC58E4907CCD" />
-            <ComponentRef Id="cmp067D577CB83054016EBB16FCE6316DC6" />
-            <ComponentRef Id="cmp957408E822DC8B39768DC2F04A6FCABF" />
-            <ComponentRef Id="cmpC7678E6378958132A35B48E66AEEF754" />
-            <ComponentRef Id="cmpF7F71EE3794425D335641CD69F2979EC" />
-            <ComponentRef Id="cmp2CC44933112F90F1D1A8FE44CC776C3C" />
-            <ComponentRef Id="cmp213C63C4F7F6E2FBE0B66CEA4A8F4179" />
-            <ComponentRef Id="cmp345C09471025F00314A353855E2B9A64" />
-            <ComponentRef Id="cmp19ECEDB0CF1BE73626271EFC3B0F0F87" />
-            <ComponentRef Id="cmp6DE31EB1CD22961022B315C04D520AC0" />
-            <ComponentRef Id="cmp2832DBD372CABCEAF60550E4F5466EA7" />
+            <ComponentRef Id="cmp5F2CA22110208D01825E4324F2D92FEF" />
+            <ComponentRef Id="cmp037D3CA4527A37875D424479558FB14D" />
+            <ComponentRef Id="cmp463CCFBD12998DD1985D51044DDF0BD3" />
+            <ComponentRef Id="cmp67E4D624A87DCA96231A49FC7B400A2F" />
+            <ComponentRef Id="cmp0A77D00D2EFEE99953BE2273D1BBBBEE" />
+            <ComponentRef Id="cmp2524E1B12E0B1A4970EF63150FF3F144" />
+            <ComponentRef Id="cmp669FA5ABF80C02CF31D8E4B636682A98" />
+            <ComponentRef Id="cmp1D9DD64D1990B5BFA6FFA337EF905199" />
+            <ComponentRef Id="cmp33B7100FA1B48E2477837B59799EC885" />
+            <ComponentRef Id="cmpB2FD1E4E97BD618193F322F865B495C5" />
+            <ComponentRef Id="cmp6ABAE2CB6E42661CACD6BB25FF617562" />
+            <ComponentRef Id="cmp481C7372D33C9CC568DFCB0E165A4BE1" />
+            <ComponentRef Id="cmp03E356021CE2C25F90FEAF9B6A48A2D1" />
+            <ComponentRef Id="cmpE7D1AD27A20453A7C53EC78939858F45" />
+            <ComponentRef Id="cmpACE137BBE119301CB60E07357C26E7EA" />
             <ComponentRef Id="cmp73D3AA959364ADF34C72A2A83F1FB500" />
             <ComponentRef Id="cmpCD15548AACBC0C61567A0B3B0400C5D8" />
             <ComponentRef Id="cmp43710C5405730714470C7462F1CA1581" />
@@ -5863,7 +5922,6 @@
             <ComponentRef Id="cmp1546DF3E244E2E0CB4007CBF53B3AE20" />
             <ComponentRef Id="cmp1C2683A40E88CDFD072246E5F6EC960A" />
             <ComponentRef Id="cmp2C55099185D46EEFE424235206F02C32" />
-            <ComponentRef Id="cmp3E7CD63A7824965D47140569928A1D13" />
             <ComponentRef Id="cmp09F75A7F48E04429E89F07A5C5E1E6EC" />
             <ComponentRef Id="cmp4FAC186088BB8234537D315451395644" />
             <ComponentRef Id="cmp7F91F39360C863F6C20C8970558618D1" />
@@ -5879,7 +5937,6 @@
             <ComponentRef Id="cmp9A21B19851085555DF11C250C35C2EB9" />
             <ComponentRef Id="cmp4B54BBC36B3743B193A3FCBF18CCF9A4" />
             <ComponentRef Id="cmp8A5AA0810E075347B396BD7108AD0F92" />
-            <ComponentRef Id="cmpAC340A8F3D61FE16A091C858F28D8EE3" />
             <ComponentRef Id="cmpC0E3B458D6FE1AAC9EF5EF9B59FB5123" />
             <ComponentRef Id="cmp0E95E9EF0CC7F7EC6962763CD75C48B7" />
             <ComponentRef Id="cmp4E8703206A87C8ECDC4124C784B7A942" />
@@ -5943,7 +6000,6 @@
             <ComponentRef Id="cmp34FC75B786E04B3A89A6F4ACEFC5A069" />
             <ComponentRef Id="cmpFDDE3D6D07FB231F25F7D52440073411" />
             <ComponentRef Id="cmp05C3916BD6B0E0E3B3CF947C9ED34DB4" />
-            <ComponentRef Id="cmp907881F4621F72464BD929B261836151" />
         </ComponentGroup>
     </Fragment>
 </Wix>
