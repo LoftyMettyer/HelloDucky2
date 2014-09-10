@@ -40,53 +40,49 @@
 				</fieldset>
 
 				<div>
-					<fieldset class="">
-						<fieldset id="selectiontypeallrecords" class="">							
-							@Html.RadioButton("selectiontype", RecordSelectionType.AllRecords, Model.SelectionType = RecordSelectionType.AllRecords,
+					<fieldset id="selectiontypeallrecords" class="">
+						@Html.RadioButton("selectiontype", RecordSelectionType.AllRecords, Model.SelectionType = RecordSelectionType.AllRecords,
 																New With {.id = "selectiontype_All", .onclick = "changeRecordOption('Base','ALL')"})All Records
-						</fieldset>
+					</fieldset>
 
-						<fieldset id="selectiontypepicklistgroup" class="width100">
-							<div id="PicklistRadioDiv" class="floatleft">
-								@Html.RadioButton("selectiontype", RecordSelectionType.Picklist, Model.SelectionType = RecordSelectionType.Picklist,
+					<fieldset id="selectiontypepicklistgroup" class="width100">
+						<div id="PicklistRadioDiv" class="floatleft">
+							@Html.RadioButton("selectiontype", RecordSelectionType.Picklist, Model.SelectionType = RecordSelectionType.Picklist,
 																	New With {.id = "selectiontype_Picklist", .onclick = "changeRecordOption('Base','PICKLIST')"})
-								<span>Picklist</span>
-							</div>
-							<div class="width70 floatleft">
-								@Html.EllipseButton("cmdBasePicklist", "selectBaseTablePicklist()", Model.SelectionType = RecordSelectionType.Picklist)
+							<span>Picklist</span>
+						</div>
+						<div class="width70 floatleft">
+							@Html.EllipseButton("cmdBasePicklist", "selectBaseTablePicklist()", Model.SelectionType = RecordSelectionType.Picklist)
 							<div class="ellipsistextbox">
 								@Html.TextBoxFor(Function(m) m.PicklistName, New With {.id = "txtBasePicklist", .readonly = "true"})
 							</div>
 						</div>
-							<input type="hidden" id="txtBasePicklistID" name="picklistID" value="@Model.PicklistID" />
-						</fieldset>
+						<input type="hidden" id="txtBasePicklistID" name="picklistID" value="@Model.PicklistID" />
+					</fieldset>
 
-						<fieldset id="selectiontypefiltergroup" class="width100">
-							<div id="FilterRadioDiv" class="floatleft">
-								@Html.RadioButton("selectiontype", RecordSelectionType.Filter, Model.SelectionType = RecordSelectionType.Filter,
+					<fieldset id="selectiontypefiltergroup" class="width100">
+						<div id="FilterRadioDiv" class="floatleft">
+							@Html.RadioButton("selectiontype", RecordSelectionType.Filter, Model.SelectionType = RecordSelectionType.Filter,
 																	New With {.id = "selectiontype_Filter", .onclick = "changeRecordOption('Base','FILTER')"})
-								<span>Filter</span>
-							</div>
-							<div class="width70  floatleft">
-								@Html.EllipseButton("cmdBaseFilter", "selectBaseTableFilter()", Model.SelectionType = RecordSelectionType.Filter)
+							<span>Filter</span>
+						</div>
+						<div class="width70  floatleft">
+							@Html.EllipseButton("cmdBaseFilter", "selectBaseTableFilter()", Model.SelectionType = RecordSelectionType.Filter)
 							<div class="ellipsistextbox">
 								@Html.TextBoxFor(Function(m) m.FilterName, New With {.id = "txtBaseFilter", .readonly = "true", .class = "width80"})
 							</div>
 						</div>
-							<input type="hidden" id="txtBaseFilterID" name="filterID" value="@Model.FilterID" />
-						</fieldset>
+						<input type="hidden" id="txtBaseFilterID" name="filterID" value="@Model.FilterID" />
 						@Html.ValidationMessageFor(Function(m) m.PicklistID)
 						@Html.ValidationMessageFor(Function(m) m.FilterID)
-					<br />
+					</fieldset>
+
 					<fieldset>
 						<div class="width100  height25" style="display:block">
 							@Html.CheckBoxFor(Function(m) m.DisplayTitleInReportHeader)
 							@Html.LabelFor(Function(m) m.DisplayTitleInReportHeader)
 						</div>
 					</fieldset>
-				</fieldset>
-
-
 				</div>
 
 				<input type="hidden" id="ctl_DefinitionChanged" name="HasChanged" value="false" />
