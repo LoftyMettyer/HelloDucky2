@@ -97,9 +97,47 @@
 @Html.ValidationMessageFor(Function(m) m.PageBreakIncrement)
 
 
-
-
 <script type="text/javascript">
+
+	function refreshCrossTabColumnsAvailable() {
+
+		$.ajax({
+			url: 'Reports/GetAvailableColumnsForTable?TableID=' + $("#BaseTableID").val(),
+			datatype: 'json',
+			mtype: 'GET',
+			success: function (json) {
+
+				var OptionNone = '<option value=0 data-datatype=0 data-decimals=0 selected>None</option>';
+				var optionHorizontal = "";
+				var optionVertical = "";
+				var optionPageBreak = "";
+				var optionIntersection = "";
+
+				var options = '';
+				for (var i = 0; i < json.length; i++) {
+
+					optionHorizontal += "<option value='" + json[i].ID + "' data-datatype='" + json[i].DataType + "' data-size='" + json[i].Size + "' data-decimals='" + json[i].Decimals + "'>" + json[i].Name + "</option>";
+					optionVertical += "<option value='" + json[i].ID + "' data-datatype='" + json[i].DataType + "' data-size='" + json[i].Size + "' data-decimals='" + json[i].Decimals + "'>" + json[i].Name + "</option>";
+					optionPageBreak += "<option value='" + json[i].ID + "' data-datatype='" + json[i].DataType + "' data-size='" + json[i].Size + "' data-decimals='" + json[i].Decimals + "'>" + json[i].Name + "</option>";
+
+					if (json[i].IsNumeric) {
+						optionIntersection += "<option value='" + json[i].ID + "' data-datatype='" + json[i].DataType + "' data-size='" + json[i].Size + "' data-decimals='" + json[i].Decimals + "'>" + json[i].Name + "</option>";
+					}
+
+				}
+
+				$("select#HorizontalID").html(optionHorizontal);
+				$("select#VerticalID").html(optionVertical);
+				$("select#PageBreakID").html(OptionNone + optionPageBreak);
+				$("select#IntersectionID").html(OptionNone + optionIntersection);
+
+				crossTabHorizontalClick();
+				crossTabVerticalClick();
+				crossTabPageBreakClick();
+
+			}
+		});
+	}
 
 	function crossTabIntersectionType() {
 		var dropDown = $("#IntersectionID")[0];
