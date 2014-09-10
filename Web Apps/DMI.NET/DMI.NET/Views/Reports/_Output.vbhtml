@@ -224,15 +224,17 @@ End Code
 	}
 
 	function sendAsEmailChecked() {
-		var isDisabled = $("#SendToEmail").prop('checked') == false ? 'disabled' : '';
-		$("#Output_EmailSubject").prop('disabled', isDisabled);
-		$("#EmailAttachmentName").prop('disabled', isDisabled);
-		$("#txtEmailGroup").prop('disabled', isDisabled);
 
-		if (isDisabled == "disabled") {
+		var isReadonly = $("#SendToEmail").prop('checked') == false ? 'readonly' : '';
+		$("#Output_EmailSubject").removeAttr('readonly');
+		$("#EmailAttachmentName").removeAttr('readonly');
+
+		if (isReadonly == "readonly") {
+			$("#Output_EmailSubject").attr('readonly', isReadonly);
+			$("#EmailAttachmentName").attr('readonly', isReadonly);
 			$("#Output_EmailSubject").val('');
 			$("#EmailAttachmentName").val('');
-			$("#txtEmailGroupID").val('');
+			$("#txtEmailGroupID").val(0);
 			$("#txtEmailGroup").val('');
 		} else {
 			$("#Output_EmailSubject").val('@Model.EmailSubject');

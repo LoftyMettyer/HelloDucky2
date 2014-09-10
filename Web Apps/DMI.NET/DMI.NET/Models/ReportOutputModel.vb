@@ -49,17 +49,19 @@ Namespace Models
 		Public Property EmailGroupID As Integer
 
 		<DisplayName("Email Group :")>
+		<DisplayFormat(ConvertEmptyStringToNull:=False)>
 		Public Property EmailGroupName As String
 
 		<DisplayFormat(ConvertEmptyStringToNull:=False)>
 		Public Property EmailAddress As String
 
 		<DisplayName("Subject :")>
+		<RequiredIf("SendToEmail", True, ErrorMessage:="No email subject name entered.")>
 		<DisplayFormat(ConvertEmptyStringToNull:=False)>
 		Public Property EmailSubject As String
 
-		<RequiredIf("SendToEmail", True, ErrorMessage:="No email attachment name entered.")>
 		<DisplayName("Attach As :")>
+		<RequiredIf("SendToEmail", True, ErrorMessage:="No email attachment name entered.")>
 		<DisplayFormat(ConvertEmptyStringToNull:=False)>
 		Public Property EmailAttachmentName As String
 
