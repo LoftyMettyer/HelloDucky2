@@ -167,13 +167,13 @@
 		//reset ver if it is selected by hor
 		if ($("#VerticalID option:selected").val() == horval) {
 			//reset the value to top item
-			$('#VerticalID').val($("#VerticalID option:first").val());
+			$('#VerticalID').val($("#VerticalID option:not([disabled]):first").val());
 		}
 
 		//reset pb if it is selected by hor
 		if ($("#PageBreakID option:selected").val() == horval) {
 			//reset the value to top item
-			$('#PageBreakID').val($("#PageBreakID option:first").val());
+			$('#PageBreakID').val($("#PageBreakID option:not([disabled]):first").val());
 		}
 
 		refreshCrossTabColumn($("#HorizontalID")[0], 'Horizontal');
