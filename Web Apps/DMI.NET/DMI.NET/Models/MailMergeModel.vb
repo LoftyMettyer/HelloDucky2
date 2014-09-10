@@ -23,6 +23,7 @@ Namespace Models
 		Public Overrides Property ColumnsAsString As String
 
 		<DisplayName("Template"), DisplayFormat(ConvertEmptyStringToNull:=False)>
+		<Required(ErrorMessage:="No template name entered.")>
 		Public Property TemplateFileName As String
 
 		<DisplayName("Pause before merge")>
