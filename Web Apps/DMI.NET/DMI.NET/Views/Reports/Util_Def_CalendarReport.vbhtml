@@ -21,7 +21,7 @@ End Code
 		<li><a href="#report_definition_tab_output">Output</a></li>
 	</ul>
 
-	<div id="tabs-1" class="width100">
+	<div id="tabs-1">
 		@Code
 		Html.RenderPartial("_Definition", Model)
 		End Code
@@ -88,38 +88,29 @@ End Code
 		</fieldset>
 	</div>
 
-	<div id="report_definition_tab_eventdetails">
-		
+	<div id="report_definition_tab_eventdetails">		
 			@Code
 			 Html.RenderPartial("_EventDetails", Model)
-			End Code
-		
+			End Code		
 	</div>
 
-	<div id="report_definition_tab_reportdetails">
-		
+	<div id="report_definition_tab_reportdetails">		
 			@Code
-			 Html.RenderPartial("_ReportDetails", Model)
-			End Code
-		
+			Html.RenderPartial("_ReportDetails", Model)
+			End Code		
 	</div>
 
-	<div id="report_definition_tab_order">
-		
+	<div id="report_definition_tab_order">		
 			@Code
 			Html.RenderPartial("_SortOrder", Model)
-			End Code
-		
+			End Code		
 	</div>
 
-	<div id="report_definition_tab_output">
-		
+	<div id="report_definition_tab_output">		
 			@Code
 				Html.RenderPartial("_Output", Model.Output)
-			End Code
-		
+			End Code		
 	</div>
-
 </div>
 	End Using
 </div>

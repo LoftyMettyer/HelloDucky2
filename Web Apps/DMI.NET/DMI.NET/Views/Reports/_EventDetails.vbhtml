@@ -5,35 +5,36 @@
 
 @Html.HiddenFor(Function(m) m.EventsString, New With {.id = "txtCEAAS"})
 
-<fieldset class="relatedtables">
-	<legend class="fontsmalltitle">Calendar Events :</legend>
+<div id="eventDetailsContainer" class="" style="width:94%">
+	<fieldset class="">
+		<legend class="fontsmalltitle">Calendar Events :</legend>
 
-	<div class="width80 floatleft overflowauto">
-		<input type="hidden" id="CalendarEventsViewAccess" />
-		<table id="CalendarEvents"></table>
-	</div>
+		<div id="divEventDetailsDiv" class="floatleft width80 overflowyhidden">
+			<input type="hidden" id="CalendarEventsViewAccess" />
+			<table id="CalendarEvents"></table>
+		</div>
 
-	<div class="stretchyfixed floatleft">
-		<input type="button" id="btnEventDetailsAdd" value="Add..." onclick="eventAdd();" />
-		<br />
-		<input type="button" id="btnEventDetailsEdit" value="Edit..." disabled onclick="eventEdit(0);" />
-		<br />
-		<input type="button" id="btnEventDetailsRemove" value="Remove" disabled onclick="removeEvent()" />
-		<br />
-		<input type="button" id="btnEventDetailsRemoveAll" value="Remove All" disabled onclick="removeAllEvents()" />
-	</div>
-</fieldset>
-
+		<div class="stretchyfixedbuttoncolumn floatleft">
+			<input type="button" id="btnEventDetailsAdd" value="Add..." onclick="eventAdd();" />
+			<br />
+			<input type="button" id="btnEventDetailsEdit" value="Edit..." disabled onclick="eventEdit(0);" />
+			<br />
+			<input type="button" id="btnEventDetailsRemove" value="Remove" disabled onclick="removeEvent()" />
+			<br />
+			<input type="button" id="btnEventDetailsRemoveAll" value="Remove All" disabled onclick="removeAllEvents()" />
+		</div>
+	</fieldset>
+</div>
 
 <script type="text/javascript">
 
 	$(function () {
 		attachCalendarEventsGrid();
-	})
+		$('#CalendarEvents').jqGrid('setGridWidth', $('#eventDetailsContainer').width());
+	});
 
 	function attachCalendarEventsGrid() {
 		//create the column layout:
-			
 		$("#CalendarEvents").jqGrid({
 			datatype: "jsonstring",
 			datastr: '@Model.Events.ToJsonResult',
@@ -58,7 +59,7 @@
 				{ name: 'EventKey', index: 'EventKey', sorttype: 'text', hidden: true },
 				{ name: 'ReportID', index: 'ReportID', sorttype: 'int', hidden: true },
 				{ name: 'ReportType', index: 'ReportType', hidden: true },
-				{ name: 'Name', index: 'Name', sorttype: 'text'},
+				{ name: 'Name', index: 'Name', sorttype: 'text' },
 				{ name: 'TableID', index: 'TableID', width: 100, hidden: true },
 				{ name: 'TableName', index: 'TableName', width: 100 },
 				{ name: 'FilterID', index: 'FilterID', width: 100, hidden: true },
@@ -80,22 +81,23 @@
 				{ name: 'FilterViewAccess', index: 'FilterViewAccess', hidden: true },
 				{ name: 'EventStartDateName', index: 'EventStartDateName', sorttype: 'text' },
 				{ name: 'EventStartSessionName', index: 'EventStartSessionName', sorttype: 'text' },
-				{ name: 'EventEndDateName', index: 'EventEndDateName', sorttype: 'text'},
-				{ name: 'EventEndSessionName', index: 'EventEndSessionName', sorttype: 'text'},
-				{ name: 'EventDurationName', index: 'EventDurationName', sorttype: 'text'},
-				{ name: 'LegendTypeName', index: 'LegendTypeName', sorttype: 'text'},
+				{ name: 'EventEndDateName', index: 'EventEndDateName', sorttype: 'text' },
+				{ name: 'EventEndSessionName', index: 'EventEndSessionName', sorttype: 'text' },
+				{ name: 'EventDurationName', index: 'EventDurationName', sorttype: 'text' },
+				{ name: 'LegendTypeName', index: 'LegendTypeName', sorttype: 'text' },
 				{ name: 'EventDesc1ColumnName', index: 'EventDesc1ColumnName', sorttype: 'text' },
 				{ name: 'EventDesc2ColumnName', index: 'EventDesc2ColumnName', sorttype: 'text' }
 			],
 			rowNum: 10,
 			rowTotal: 50,
 			rowList: [10, 20, 30],
-			autowidth: false,			
 			pager: '#pcrud',
+			autowidth: false,
 			sortname: 'Name',
 			loadonce: true,
 			viewrecords: true,
 			sortorder: "desc",
+			width: 'auto',
 			height: 400,
 			ondblClickRow: function (rowID) {
 				eventEdit(rowID);
@@ -116,14 +118,14 @@
 					$(this).jqGrid("setSelection", ids[0]);
 			}
 		});
-		$("#Events").jqGrid('navGrid', '#pcrud', {});
 
+		$("#Events").jqGrid('navGrid', '#pcrud', {});
 	}
+
 
 	function eventAdd() {
 		OpenHR.OpenDialog("Reports/AddCalendarEvent", "divPopupReportDefinition", { ReportID: "@Model.ID" }, 'auto');
 	}
-
 
 	function eventEdit(rowID) {
 

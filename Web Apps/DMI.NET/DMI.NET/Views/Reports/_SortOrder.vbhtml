@@ -52,7 +52,7 @@
 			refreshSortButtons();
 			attachGrid();
 			$("#SortOrders").jqGrid('setGridWidth', $("#divSortOrderDiv").width() * .95);
-			$("#divSortOrderDiv").width();
+			//$("#divSortOrderDiv").width();
 
 		})
 

@@ -1030,8 +1030,12 @@ padding-left:0px;
 	width: 100%;	
 }
 
-.stretchyfixed {	
+.stretchyfixed {
 	display: table-cell;
+	-moz-min-width: 160px;
+	-ms-min-width: 160px;
+	-o-min-width: 160px;
+	-webkit-min-width: 160px;
 	min-width: 160px;
 	vertical-align: top;
 }
@@ -1060,6 +1064,10 @@ padding-left:0px;
 }
 
 .stretchyfixedbuttoncolumn {
+	-moz-min-width: 110px;
+	-ms-min-width: 110px;
+	-o-min-width: 110px;
+	-webkit-min-width: 110px;
 	min-width: 110px;
 	width:120px;
 	vertical-align: top;

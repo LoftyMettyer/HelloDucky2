@@ -611,7 +611,9 @@ select.readonly {
 	width: 100%;
 }
 
-#report_definition_tab_order .ui-jqgrid .ui-jqgrid-bdiv {
+#report_definition_tab_order .ui-jqgrid .ui-jqgrid-bdiv,
+#divEventDetailsDiv .ui-jqgrid .ui-jqgrid-bdiv
+{
 	overflow-y: hidden !important;
 }
 
