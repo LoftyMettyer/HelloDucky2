@@ -6,47 +6,49 @@
 	Html.BeginForm("PostSortOrder", "Reports", FormMethod.Post, New With {.id = "frmPostSortOrder"})
 End Code
 
-<div class="pageTitleDiv" style="margin-bottom: 15px">
+<div class="pageTitleDiv" style="margin-bottom: 0px">
 	<span class="pageTitle" id="PopupReportDefinition_PageTitle">Sort Order</span>
 </div>
 
-	@Html.HiddenFor(Function(m) m.ID, New With {.id = "SortOrderID"})
-	@Html.HiddenFor(Function(m) m.ReportID)
-	@Html.HiddenFor(Function(m) m.ReportType)
-	@Html.HiddenFor(Function(m) m.TableID, New With {.id = "SortOrderTableID"})
-	@Html.HiddenFor(Function(m) m.Sequence, New With {.id = "SortOrderSequence"})
+<div class="padleft20">
+	<div class="formField">
+		@Html.HiddenFor(Function(m) m.ID, New With {.id = "SortOrderID"})
+		@Html.HiddenFor(Function(m) m.ReportID)
+		@Html.HiddenFor(Function(m) m.ReportType)
+		@Html.HiddenFor(Function(m) m.TableID, New With {.id = "SortOrderTableID"})
+		@Html.HiddenFor(Function(m) m.Sequence, New With {.id = "SortOrderSequence"})
 
-	@Html.LabelFor(Function(m) m.ColumnID)
-	@Html.ColumnDropdown("ColumnID", "SortOrderColumnID", Model.ColumnID, Model.AvailableColumns, "")
-	<br/>
-	<br />
-
-
-	@Html.RadioButton("Order", CInt(OrderType.Ascending), Model.Order = OrderType.Ascending, New With {.id = "SortOrderOrder"})
-	Ascending
-	<br/>
-	@Html.RadioButton("Order", CInt(OrderType.Descending), Model.Order = OrderType.Descending, New With {.id = "SortOrderOrder"})
-	Descending
-	<br />
-	<br />
-
-	<div class="customReportsOnly">
-
-		@Html.CheckBoxFor(Function(m) m.BreakOnChange)
-		@Html.LabelFor(Function(m) m.BreakOnChange)
-		<br />
-
-		@Html.CheckBoxFor(Function(m) m.PageOnChange)
-		@Html.LabelFor(Function(m) m.PageOnChange)
-		<br />
-
-		@Html.CheckBoxFor(Function(m) m.ValueOnChange)
-		@Html.LabelFor(Function(m) m.ValueOnChange)
-		<br />
-
-		@Html.CheckBoxFor(Function(m) m.SuppressRepeated)
-		@Html.LabelFor(Function(m) m.SuppressRepeated)
+		@Html.LabelFor(Function(m) m.ColumnID)
+		@Html.ColumnDropdown("ColumnID", "SortOrderColumnID", Model.ColumnID, Model.AvailableColumns, "")
 	</div>
+	<div style="padding-left:125px">
+		@Html.RadioButton("Order", CInt(OrderType.Ascending), Model.Order = OrderType.Ascending, New With {.id = "SortOrderOrder"})
+		Ascending
+		<br />
+		@Html.RadioButton("Order", CInt(OrderType.Descending), Model.Order = OrderType.Descending, New With {.id = "SortOrderOrder"})
+		Descending
+
+		<br />
+		<br />
+
+		<div class="customReportsOnly">
+			@Html.CheckBoxFor(Function(m) m.BreakOnChange)
+			@Html.LabelFor(Function(m) m.BreakOnChange)
+			<br />
+
+			@Html.CheckBoxFor(Function(m) m.PageOnChange)
+			@Html.LabelFor(Function(m) m.PageOnChange)
+			<br />
+
+			@Html.CheckBoxFor(Function(m) m.ValueOnChange)
+			@Html.LabelFor(Function(m) m.ValueOnChange)
+			<br />
+
+			@Html.CheckBoxFor(Function(m) m.SuppressRepeated)
+			@Html.LabelFor(Function(m) m.SuppressRepeated)
+		</div>
+	</div>
+</div>
 
 <div id="divSortOrderButtons">
 	<input type="button" value="OK" onclick="postThisSortOrder();" />
@@ -63,7 +65,7 @@ End Code
 	$(function () {
 
 		if ('@Model.ReportType' != '@UtilityType.utlCustomReport') {
-			$(".customReportsOnly").hide();
+			//$(".customReportsOnly").hide();
 		}
 
 		if (isDefinitionReadOnly()) {
