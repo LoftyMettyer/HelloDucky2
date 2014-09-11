@@ -7,11 +7,11 @@
 @Html.HiddenFor(Function(m) m.SortOrdersString, New With {.id = "txtSOAAS"})
 @Html.HiddenFor(Function(m) m.SortOrdersAvailable, New With {.id = "SortOrdersAvailable"})
 
-	<fieldset style="width:100%">
+<fieldset style="width:100%">
 	<legend class="fontsmalltitle">Sort Order :</legend>
 
-	<div id="divSortOrderDiv" style="float:left" class="width80">		
-			<table id="SortOrders"></table>		
+	<div id="divSortOrderDiv" style="float:left" class="width80">
+		<table id="SortOrders"></table>
 	</div>
 
 	<div class="stretchyfixedbuttoncolumn " id="sortorderbuttons" style="float:left;padding-left:20px">
@@ -180,7 +180,7 @@
 	}
 
 	function addSortOrder() {
-		OpenHR.OpenDialog("Reports/AddSortOrder", "divPopupReportDefinition", { ReportID: "@Model.ID", ReportType: "@Model.ReportType" }, '500');
+		OpenHR.OpenDialog("Reports/AddSortOrder", "divPopupReportDefinition", { ReportID: "@Model.ID", ReportType: "@Model.ReportType" }, 'auto');
 	}
 
 	function editSortSorder(rowID) {
@@ -190,7 +190,7 @@
 		}
 
 		var gridData = $("#SortOrders").getRowData(rowID);
-		OpenHR.OpenDialog("Reports/EditSortOrder", "divPopupReportDefinition", gridData, '500');
+		OpenHR.OpenDialog("Reports/EditSortOrder", "divPopupReportDefinition", gridData, 'auto');
 
 	}
 
