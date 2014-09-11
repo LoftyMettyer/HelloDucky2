@@ -9,7 +9,7 @@
 	<fieldset class="">
 		<legend class="fontsmalltitle">Calendar Events :</legend>
 
-		<div id="divEventDetailsDiv" class="floatleft width80 overflowyhidden">
+		<div id="divEventDetails" class="floatleft width80 overflowyhidden">
 			<input type="hidden" id="CalendarEventsViewAccess" />
 			<table id="CalendarEvents"></table>
 		</div>

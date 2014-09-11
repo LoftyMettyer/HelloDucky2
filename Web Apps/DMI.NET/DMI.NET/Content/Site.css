@@ -612,7 +612,7 @@ select.readonly {
 }
 
 #report_definition_tab_order .ui-jqgrid .ui-jqgrid-bdiv,
-#divEventDetailsDiv .ui-jqgrid .ui-jqgrid-bdiv
+#divEventDetails .ui-jqgrid .ui-jqgrid-bdiv
 {
 	overflow-y: hidden !important;
 }
