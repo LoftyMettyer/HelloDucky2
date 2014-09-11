@@ -40,6 +40,31 @@
 		<table id="SelectedColumns" class="scroll" cellpadding="0" cellspacing="0"></table>
 		<br />
 
+		<div class="floatleft width100 customReportsOnly">
+			<div class="floatleft width25">
+				<label for="SelectedColumnHeading">Heading :</label>
+			</div>
+				<input class="width70" type='text' id="SelectedColumnHeading" onchange="updateColumnsSelectedGrid();" />
+		</div>
+		<br style="clear:both" />
+
+		<div class="floatleft width100">
+			<div class="floatleft width25">
+				<label for="SelectedColumnSize">Size :</label>
+			</div>
+			<input class="width70" type='number' id="SelectedColumnSize" onchange="updateColumnsSelectedGrid();" />
+		</div>
+		<br style="clear:both" />
+
+		<div class="floatleft width100 decimalsOnly">
+			<div class="floatleft width25">
+				<label for="SelectedColumnDecimals">Decimals :</label>
+			</div>
+			<input class="width70" type='number' id="SelectedColumnDecimals" onchange="updateColumnsSelectedGrid();" />
+		</div>
+		<br style="clear:both" />
+		<br />
+
 		<div class="customReportsOnly" style="margin-left:20px;">
 			<div class="numericOnly width35 floatleft" style="color: rgb(0, 0, 0)">
 				<div class="width100">
@@ -353,10 +378,12 @@
     			var isTopRow = (rowId == allRows[1].id);
     			var isBottomRow = (rowId == allRows[allRows.length - 1].id);
     			var isNumeric = (dataRow.DataType == '2' || dataRow.DataType == '4');
+    			var isDecimals = (isNumeric == true || dataRow.IsExpression == "true");
     			var isBaseOrParentTableColumn = (dataRow.TableID == $("#BaseTableID").val()) || (dataRow.TableID == $("#txtParent1ID").val()) || (dataRow.TableID == $("#txtParent2ID").val());
     			var isThereChildColumns = true;
 
     			$(".numericOnly :input").attr("disabled", !isNumeric);
+    			$(".decimalsOnly :input").attr("disabled", !isDecimals);
     			$(".baseTableOnly :input").attr("disabled", !isBaseOrParentTableColumn);
 
     			if (isNumeric) {
