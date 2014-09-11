@@ -1,6 +1,6 @@
 VERSION 5.00
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
-Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "comdlg32.ocx"
+Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "COMDLG32.OCX"
 Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
 Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "COA_Spinner.ocx"
 Begin VB.Form frmExport 
@@ -57,7 +57,6 @@ Begin VB.Form frmExport
       _Version        =   393216
       Style           =   1
       Tabs            =   6
-      Tab             =   2
       TabsPerRow      =   6
       TabHeight       =   520
       BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
@@ -71,9 +70,11 @@ Begin VB.Form frmExport
       EndProperty
       TabCaption(0)   =   "&Definition"
       TabPicture(0)   =   "frmExport.frx":000C
-      Tab(0).ControlEnabled=   0   'False
-      Tab(0).Control(0)=   "fraInformation"
-      Tab(0).Control(1)=   "fraBase"
+      Tab(0).ControlEnabled=   -1  'True
+      Tab(0).Control(0)=   "fraBase"
+      Tab(0).Control(0).Enabled=   0   'False
+      Tab(0).Control(1)=   "fraInformation"
+      Tab(0).Control(1).Enabled=   0   'False
       Tab(0).ControlCount=   2
       TabCaption(1)   =   "Related &Tables"
       TabPicture(1)   =   "frmExport.frx":0028
@@ -84,9 +85,8 @@ Begin VB.Form frmExport
       Tab(1).ControlCount=   3
       TabCaption(2)   =   "Colu&mns"
       TabPicture(2)   =   "frmExport.frx":0044
-      Tab(2).ControlEnabled=   -1  'True
+      Tab(2).ControlEnabled=   0   'False
       Tab(2).Control(0)=   "fraColumns"
-      Tab(2).Control(0).Enabled=   0   'False
       Tab(2).ControlCount=   1
       TabCaption(3)   =   "&Sort Order"
       TabPicture(3)   =   "frmExport.frx":0060
@@ -102,98 +102,20 @@ Begin VB.Form frmExport
       TabCaption(5)   =   "O&utput"
       TabPicture(5)   =   "frmExport.frx":0098
       Tab(5).ControlEnabled=   0   'False
-      Tab(5).Control(0)=   "fraXML"
-      Tab(5).Control(1)=   "fraOutputType"
-      Tab(5).Control(2)=   "fraOutputDestination"
-      Tab(5).Control(3)=   "fraCMGFile"
-      Tab(5).Control(4)=   "fraDelimFile"
+      Tab(5).Control(0)=   "fraDelimFile"
+      Tab(5).Control(0).Enabled=   0   'False
+      Tab(5).Control(1)=   "fraCMGFile"
+      Tab(5).Control(1).Enabled=   0   'False
+      Tab(5).Control(2)=   "fraXML"
+      Tab(5).Control(2).Enabled=   0   'False
+      Tab(5).Control(3)=   "fraOutputDestination"
+      Tab(5).Control(3).Enabled=   0   'False
+      Tab(5).Control(4)=   "fraOutputType"
+      Tab(5).Control(4).Enabled=   0   'False
       Tab(5).ControlCount=   5
-      Begin VB.Frame fraXML 
-         Caption         =   "XML Options :"
-         Height          =   1410
-         Left            =   -74850
-         TabIndex        =   125
-         Top             =   3580
-         Width           =   9180
-         Begin VB.CheckBox chkAuditChangesOnly 
-            Caption         =   "Only &Include Audited Changes"
-            Height          =   210
-            Left            =   5940
-            TabIndex        =   132
-            Top             =   360
-            Width           =   3030
-         End
-         Begin VB.TextBox txtXMLDataNodeName 
-            Height          =   315
-            Left            =   2115
-            MaxLength       =   50
-            TabIndex        =   131
-            Top             =   315
-            Width           =   3000
-         End
-         Begin VB.CommandButton cmdTransformFileClear 
-            Caption         =   "O"
-            BeginProperty Font 
-               Name            =   "Wingdings 2"
-               Size            =   14.25
-               Charset         =   2
-               Weight          =   400
-               Underline       =   0   'False
-               Italic          =   0   'False
-               Strikethrough   =   0   'False
-            EndProperty
-            Height          =   315
-            Left            =   5460
-            MaskColor       =   &H000000FF&
-            TabIndex        =   129
-            ToolTipText     =   "Clear Path"
-            Top             =   750
-            UseMaskColor    =   -1  'True
-            Width           =   330
-         End
-         Begin VB.CommandButton cmdTransformFile 
-            Caption         =   "..."
-            Enabled         =   0   'False
-            Height          =   315
-            Left            =   5115
-            TabIndex        =   128
-            Top             =   750
-            UseMaskColor    =   -1  'True
-            Width           =   330
-         End
-         Begin VB.TextBox txtTransformFile 
-            BackColor       =   &H8000000F&
-            Enabled         =   0   'False
-            ForeColor       =   &H00000000&
-            Height          =   315
-            Left            =   2115
-            Locked          =   -1  'True
-            TabIndex        =   127
-            TabStop         =   0   'False
-            Tag             =   "0"
-            Top             =   750
-            Width           =   3000
-         End
-         Begin VB.Label lblXMLNodeName 
-            Caption         =   "Custom Node Name : "
-            Height          =   285
-            Left            =   225
-            TabIndex        =   130
-            Top             =   390
-            Width           =   1845
-         End
-         Begin VB.Label lblTransformFile 
-            Caption         =   "Transformation File :"
-            Height          =   255
-            Left            =   225
-            TabIndex        =   126
-            Top             =   825
-            Width           =   1815
-         End
-      End
       Begin VB.Frame fraInformation 
          Height          =   2355
-         Left            =   -74850
+         Left            =   150
          TabIndex        =   118
          Top             =   400
          Width           =   9180
@@ -396,7 +318,7 @@ Begin VB.Form frmExport
       End
       Begin VB.Frame fraOutputType 
          Caption         =   "Output Format :"
-         Height          =   3135
+         Height          =   2835
          Left            =   -74850
          TabIndex        =   82
          Top             =   405
@@ -460,7 +382,7 @@ Begin VB.Form frmExport
       End
       Begin VB.Frame fraOutputDestination 
          Caption         =   "Output Destination(s) :"
-         Height          =   3135
+         Height          =   2835
          Left            =   -72345
          TabIndex        =   88
          Top             =   405
@@ -782,7 +704,7 @@ Begin VB.Form frmExport
       Begin VB.Frame fraColumns 
          Caption         =   "Columns :"
          Height          =   4560
-         Left            =   150
+         Left            =   -74850
          TabIndex        =   47
          Top             =   405
          Width           =   9180
@@ -1530,7 +1452,7 @@ Begin VB.Form frmExport
       Begin VB.Frame fraBase 
          Caption         =   "Data :"
          Height          =   2115
-         Left            =   -74850
+         Left            =   150
          TabIndex        =   0
          Top             =   2850
          Width           =   9180
@@ -1630,12 +1552,158 @@ Begin VB.Form frmExport
             Width           =   1155
          End
       End
+      Begin VB.Frame fraXML 
+         Caption         =   "XML Options :"
+         Height          =   1665
+         Left            =   -74850
+         TabIndex        =   125
+         Top             =   3285
+         Width           =   9180
+         Begin VB.CheckBox chkPreserveTransformPath 
+            Caption         =   "Preser&ve Transformation Path"
+            Height          =   270
+            Left            =   5925
+            TabIndex        =   138
+            Top             =   1215
+            Width           =   2865
+         End
+         Begin VB.CheckBox chkPreserveXSDPath 
+            Caption         =   "Preserve XSD Pat&h"
+            Height          =   270
+            Left            =   5925
+            TabIndex        =   133
+            Top             =   780
+            Width           =   2355
+         End
+         Begin VB.CommandButton cmdXSDFile 
+            Caption         =   "..."
+            Enabled         =   0   'False
+            Height          =   315
+            Left            =   5115
+            TabIndex        =   131
+            Top             =   750
+            UseMaskColor    =   -1  'True
+            Width           =   330
+         End
+         Begin VB.CommandButton cmdXSDFileClear 
+            Caption         =   "O"
+            BeginProperty Font 
+               Name            =   "Wingdings 2"
+               Size            =   14.25
+               Charset         =   2
+               Weight          =   400
+               Underline       =   0   'False
+               Italic          =   0   'False
+               Strikethrough   =   0   'False
+            EndProperty
+            Height          =   315
+            Left            =   5460
+            MaskColor       =   &H000000FF&
+            TabIndex        =   132
+            ToolTipText     =   "Clear Path"
+            Top             =   750
+            UseMaskColor    =   -1  'True
+            Width           =   330
+         End
+         Begin VB.TextBox txtXSDFilename 
+            BackColor       =   &H8000000F&
+            Enabled         =   0   'False
+            Height          =   315
+            Left            =   2115
+            TabIndex        =   136
+            Top             =   750
+            Width           =   3000
+         End
+         Begin VB.CheckBox chkAuditChangesOnly 
+            Caption         =   "Only &Include Audited Changes"
+            Height          =   210
+            Left            =   5940
+            TabIndex        =   130
+            Top             =   360
+            Width           =   3030
+         End
+         Begin VB.TextBox txtXMLDataNodeName 
+            Height          =   315
+            Left            =   2115
+            MaxLength       =   50
+            TabIndex        =   129
+            Top             =   315
+            Width           =   3000
+         End
+         Begin VB.CommandButton cmdTransformFileClear 
+            Caption         =   "O"
+            BeginProperty Font 
+               Name            =   "Wingdings 2"
+               Size            =   14.25
+               Charset         =   2
+               Weight          =   400
+               Underline       =   0   'False
+               Italic          =   0   'False
+               Strikethrough   =   0   'False
+            EndProperty
+            Height          =   315
+            Left            =   5460
+            MaskColor       =   &H000000FF&
+            TabIndex        =   137
+            ToolTipText     =   "Clear Path"
+            Top             =   1200
+            UseMaskColor    =   -1  'True
+            Width           =   330
+         End
+         Begin VB.CommandButton cmdTransformFile 
+            Caption         =   "..."
+            Enabled         =   0   'False
+            Height          =   315
+            Left            =   5115
+            TabIndex        =   135
+            Top             =   1200
+            UseMaskColor    =   -1  'True
+            Width           =   330
+         End
+         Begin VB.TextBox txtTransformFile 
+            BackColor       =   &H8000000F&
+            Enabled         =   0   'False
+            ForeColor       =   &H00000000&
+            Height          =   315
+            Left            =   2115
+            Locked          =   -1  'True
+            TabIndex        =   127
+            TabStop         =   0   'False
+            Tag             =   "0"
+            Top             =   1200
+            Width           =   3000
+         End
+         Begin VB.Label lblXSDFile 
+            Caption         =   "XSD File :"
+            Height          =   210
+            Left            =   240
+            TabIndex        =   134
+            Top             =   825
+            Width           =   1410
+         End
+         Begin VB.Label lblXMLNodeName 
+            Caption         =   "Custom Node Name : "
+            Height          =   285
+            Left            =   225
+            TabIndex        =   128
+            Top             =   390
+            Width           =   1845
+         End
+         Begin VB.Label lblTransformFile 
+            Caption         =   "Transformation File :"
+            Height          =   255
+            Left            =   225
+            TabIndex        =   126
+            Top             =   1275
+            Width           =   1815
+         End
+      End
       Begin VB.Frame fraCMGFile 
          Caption         =   "CMG Options :"
-         Height          =   1410
+         Height          =   1665
          Left            =   -74850
          TabIndex        =   109
-         Top             =   3580
+         Top             =   3285
          Width           =   9180
          Begin VB.CheckBox chkUpdateAuditPointer 
             Caption         =   "Commit &after run"
@@ -1680,10 +1748,10 @@ Begin VB.Form frmExport
       End
       Begin VB.Frame fraDelimFile 
          Caption         =   "Delimited File Options :"
-         Height          =   1410
+         Height          =   1665
          Left            =   -74850
          TabIndex        =   103
-         Top             =   3570
+         Top             =   3285
          Width           =   9180
          Begin VB.TextBox txtDelimiter 
             Alignment       =   2  'Center
@@ -1808,7 +1876,7 @@ Public Property Let FormPrint(ByVal bPrint As Boolean)
 End Property
 
 Public Property Get Changed() As Boolean
-  Changed = cmdOk.Enabled
+  Changed = cmdOK.Enabled
 End Property
 Private Sub ForceAccess(Optional pvAccess As Variant)
   Dim iLoop As Integer
@@ -1848,7 +1916,7 @@ End Sub
 
 
 Public Property Let Changed(ByVal pblnChanged As Boolean)
-  cmdOk.Enabled = pblnChanged
+  cmdOK.Enabled = pblnChanged
 End Property
 
 Public Property Get SelectedID() As Long
@@ -2300,6 +2368,14 @@ Private Sub chkAuditChangesOnly_Click()
   Changed = True
 End Sub
 
+Private Sub chkPreserveTransformPath_Click()
+  Changed = True
+End Sub
+
+Private Sub chkPreserveXSDPath_Click()
+  Changed = True
+End Sub
+
 Private Sub cmdAddAllColumns_Click()
 
   Dim pstrRow As String
@@ -2403,7 +2479,7 @@ Private Sub cmdTransformFile_Click()
     
   With cd1
     .Filter = "XSLT File (*.xslt)|*.xslt"
-    .filename = txtTransformFile.Text
+    .FileName = txtTransformFile.Text
     If txtTransformFile.Text = vbNullString Then
       .InitDir = gsDocumentsPath
     End If
@@ -2414,11 +2490,11 @@ Private Sub cmdTransformFile_Click()
         
     .ShowSave
 
-    If .filename <> vbNullString Then
-      If Len(.filename) > 255 Then
+    If .FileName <> vbNullString Then
+      If Len(.FileName) > 255 Then
         COAMsgBox "Path and file name must not exceed 255 characters in length", vbExclamation, Me.Caption
       Else
-        txtTransformFile.Text = .filename    'activates the change event
+        txtTransformFile.Text = .FileName    'activates the change event
       End If
     End If
   End With
@@ -2437,6 +2513,53 @@ End Sub
 
 Private Sub cmdTransformFileClear_Click()
   txtTransformFile.Text = vbNullString
+  Changed = True
+End Sub
+
+Private Sub cmdXSDFile_Click()
+
+  Dim cd1 As CommonDialog
+  
+  On Local Error GoTo LocalErr
+  
+  Set cd1 = frmMain.CommonDialog1
+    
+  With cd1
+    .Filter = "XSD File (*.xsd)|*.xsd"
+    .FileName = txtXSDFilename.Text
+    If txtXSDFilename.Text = vbNullString Then
+      .InitDir = gsDocumentsPath
+    End If
+
+    .CancelError = True
+    .DialogTitle = "XSD file name"
+    .Flags = cdlOFNExplorer + cdlOFNHideReadOnly + cdlOFNLongNames
+        
+    .ShowSave
+
+    If .FileName <> vbNullString Then
+      If Len(.FileName) > 255 Then
+        COAMsgBox "Path and file name must not exceed 255 characters in length", vbExclamation, Me.Caption
+      Else
+        txtXSDFilename.Text = .FileName    'activates the change event
+      End If
+    End If
+  End With
+
+  Changed = True
+
+Exit Sub
+
+LocalErr:
+  If Err.Number <> 32755 Then   '32755 = Cancel was selected.
+    COAMsgBox Err.Description, vbCritical
+  End If
+
+End Sub
+
+Private Sub cmdXSDFileClear_Click()
+  txtXSDFilename.Text = vbNullString
+  Changed = True
 End Sub
 
 Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
@@ -4298,6 +4421,7 @@ Private Sub TextOptionsStatus(intFormat As Integer)
 
   fraXML.Visible = (intFormat = fmtXML)
   EnableFrame fraXML, (intFormat = fmtXML)
+  EnableControl txtXSDFilename, False
   EnableControl txtTransformFile, False
       
   If intFormat = fmtXML Then
@@ -4966,7 +5090,10 @@ Private Function SaveDefinition() As Boolean
     ' Save the XML export options
     If optOutputFormat(fmtXML).Value = True Then
       strSQL = strSQL & "TransformFile = '" & Replace(txtTransformFile.Text, "'", "''") & "'," _
-              & "XMLDataNodeName = '" & Replace(txtXMLDataNodeName.Text, "'", "''") & "',"
+              & "XMLDataNodeName = '" & Replace(txtXMLDataNodeName.Text, "'", "''") & "'," _
+              & "XSDFilename = '" & Replace(txtXSDFilename.Text, "'", "''") & "'," _
+              & "PreserveTransformPath = " & IIf(chkPreserveTransformPath.Value = vbChecked, "1", "0") & ", " _
+              & "PreserveXSDPath = " & IIf(chkPreserveXSDPath.Value = vbChecked, "1", "0") & ", "
     End If
        
     strSQL = strSQL & "Quotes = " & IIf(Me.chkQuotes.Value, 1, 0) & "," & _
@@ -5002,7 +5129,7 @@ Private Function SaveDefinition() As Boolean
 
     ' Adding a new export definition
 
-    strSQL = "Insert ASRSysExportName (" & _
+    strSQL = "INSERT ASRSysExportName (" & _
            "Name, Description, BaseTable, " & _
            "AllRecords, Picklist, Filter, " & _
            "Parent1Table, Parent1Filter, " & _
@@ -5014,10 +5141,9 @@ Private Function SaveDefinition() As Boolean
            "CMGExportFileCode, CMGExportUpdateAudit, CMGExportRecordID," & _
            "Parent1AllRecords, Parent1Picklist, Parent2AllRecords, Parent2Picklist, " & _
            "AuditChangesOnly, OmitHeader, ForceHeader, OutputFormat, OutputSave, " & _
-           "OutputSaveExisting, OutputEmail, OutputEmailAddr, OutputEmailSubject, OutputEmailAttachAs, OutputFilename, TransformFile, XMLDataNodeName) "
-           
-           'AppendToFile,
-
+           "OutputSaveExisting, OutputEmail, OutputEmailAddr, OutputEmailSubject, OutputEmailAttachAs, OutputFilename," & _
+           "TransformFile, XMLDataNodeName, XSDFilename, PreserveTransformPath, PreserveXSDPath) "
+                     
     strSQL = strSQL & _
            "Values('" & _
            Trim(Replace(txtName.Text, "'", "''")) & "','" & _
@@ -5096,16 +5222,13 @@ Private Function SaveDefinition() As Boolean
       strSQL = strSQL & "0, 0, '', '', "
     End If
 
-'    If optOutputFormat(fmtSQLTable).Value Then
-'      strSQL = strSQL & _
-'          "'" & Replace(txtSQLTableName.Text, "'", "''") & "')"
-'    Else
-      strSQL = strSQL & _
-          "'" & Replace(txtFilename.Text, "'", "''") & "','" & Replace(txtTransformFile.Text, "'", "''") & "'," & _
-          "'" & Replace(txtXMLDataNodeName.Text, "'", "''") & "')"
+    strSQL = strSQL & _
+        "'" & Replace(txtFilename.Text, "'", "''") & "','" & Replace(txtTransformFile.Text, "'", "''") & "'," & _
+        "'" & Replace(txtXMLDataNodeName.Text, "'", "''") & "'," & _
+        "'" & Replace(txtXSDFilename.Text, "'", "''") & "'," & _
+        IIf(chkPreserveTransformPath.Value = vbChecked, "1", "0") & ", " & _
+        IIf(chkPreserveXSDPath.Value = vbChecked, "1", "0") & ")"
           
-'    End If
-
     If IsRecordSelectionValid = False Then
       SaveDefinition = False
       Exit Function
@@ -5644,6 +5767,10 @@ Private Function RetrieveExportDetails(plngExportID As Long) As Boolean
   If rsTemp!OutputFormat = fmtXML Then
     If Not IsNull(rsTemp!TransformFile) Then txtTransformFile.Text = rsTemp!TransformFile
     If Not IsNull(rsTemp!XMLDataNodeName) Then txtXMLDataNodeName.Text = rsTemp!XMLDataNodeName
+    
+    If Not IsNull(rsTemp!XSDFilename) Then txtXSDFilename.Text = rsTemp!XSDFilename
+    chkPreserveTransformPath.Value = IIf(rsTemp!PreserveTransformPath = True, vbChecked, vbUnchecked)
+    chkPreserveXSDPath.Value = IIf(rsTemp!PreserveXSDPath = True, vbChecked, vbUnchecked)
   End If
 
   chkAuditChangesOnly.Value = IIf(rsTemp!AuditChangesOnly = True, vbChecked, vbUnchecked)
@@ -6886,9 +7013,11 @@ Public Sub PrintDef(lExportID As Long)
         Case fmtXML
           .PrintNormal "Output Type : XML File"
           .PrintNormal "XML Custom Node Name : " & IIf(rsTemp!XMLDataNodeName = "", "<None>", rsTemp!XMLDataNodeName)
+          .PrintNormal "XML XSD File : " & IIf(rsTemp!txtXSDFilename = "", "<None>", rsTemp!txtXSDFilename)
+          .PrintNormal "XML XSD File Preserve Path : " & IIf(rsTemp!chkPreserveXSDPath, "True", "False")
           .PrintNormal "XML Transformation File : " & IIf(rsTemp!TransformFile = "", "<None>", rsTemp!TransformFile)
+          .PrintNormal "XML Transformation File Preserve Path : " & IIf(rsTemp!PreserveTransformPath, "True", "False")
 
-        
         End Select
         
         .PrintNormal

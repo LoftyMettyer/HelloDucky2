@@ -209,6 +209,12 @@ BEGIN
 END'
 
 
+/* ------------------------------------------------------- */
+PRINT 'Step - XML Export Improvement'
+/* ------------------------------------------------------- */
+
+	IF NOT EXISTS(SELECT id FROM syscolumns WHERE  id = OBJECT_ID('ASRSysExportName', 'U') AND name = 'XSDFileName')
+		EXEC sp_executesql N'ALTER TABLE ASRSysExportName ADD XSDFileName nvarchar(255) NULL, PreserveTransformPath bit, PreserveXSDPath bit;';
 
 /* ------------------------------------------------------------- */
 /* Update the database version flag in the ASRSysSettings table. */

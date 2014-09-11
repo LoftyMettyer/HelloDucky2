@@ -96,6 +96,10 @@ Private mstrOnlyChangesFilter As String
 
 Private mstrTransformFile As String
 Private mstrXMLDataNodeName As String
+Private mstrXSDFilename As String
+Private mbPreserveTransformPath As Boolean
+Private mbPreserveXSDPath As Boolean
+
 
 ' Data access classes
 Private mclsData As clsDataAccess
@@ -684,6 +688,9 @@ Private Function GetExportDefinition() As Boolean
     End If
 
     mstrTransformFile = IIf(IsNull(!TransformFile), "", !TransformFile)
+    mstrXSDFilename = IIf(IsNull(!XSDFilename), "", !XSDFilename)
+    mbPreserveTransformPath = IIf(IsNull(!PreserveTransformPath), "", !PreserveTransformPath)
+    mbPreserveXSDPath = IIf(IsNull(!PreserveXSDPath), "", !PreserveXSDPath)
 
     mbDefinitionOwner = (LCase(Trim(gsUserName)) = LCase(Trim(!UserName)))
     mbAuditChangesOnly = IIf(IsNull(!AuditChangesOnly), False, !AuditChangesOnly)
@@ -2559,10 +2566,34 @@ Private Function ExportData_XML() As Boolean
   Dim sExportText As String
   Dim sTransFormText As String
   Dim sSQL As String
+  Dim sSQLGetData As String
   Dim prstReadyToExport As Recordset
   Dim rstConverted As Recordset
   
-  Set prstReadyToExport = mclsData.OpenRecordset("SELECT CAST((SELECT * FROM [" & mstrTempTableName & "] FOR XML PATH('" & mstrXMLDataNodeName & "'), ROOT('" & mstrExportHeaderText & "'), ELEMENTS XSINIL) AS VARCHAR(MAX)) AS XmlData", adOpenForwardOnly, adLockReadOnly)
+  Dim sXSDName As String
+  Dim sXSDTransformFile As String
+  
+  sXSDName = mstrXSDFilename
+  sXSDTransformFile = mstrTransformFile
+  
+  If Not mbPreserveTransformPath And Len(mstrTransformFile) > 0 Then
+    sXSDTransformFile = GetFileNameOnly(mstrTransformFile)
+  End If
+  
+  If Not mbPreserveXSDPath And Len(mstrXSDFilename) > 0 Then
+    sXSDName = GetFileNameOnly(mstrXSDFilename)
+  End If
+  
+  If Len(sXSDName) > 0 Then
+    sSQLGetData = "WITH XMLNAMESPACES ('" & sXSDName & "' as noNamespaceSchemaLocation)" & _
+        "SELECT CAST((SELECT * FROM [" & mstrTempTableName & "] FOR XML PATH('" & mstrXMLDataNodeName & "'), ROOT('" & mstrExportHeaderText & "')" & _
+        ", ELEMENTS XSINIL) AS VARCHAR(MAX)) AS XmlData"
+  Else
+    sSQLGetData = "SELECT CAST((SELECT * FROM [" & mstrTempTableName & "] FOR XML PATH('" & mstrXMLDataNodeName & "'), ROOT('" & mstrExportHeaderText & "')" & _
+        ", ELEMENTS XSINIL) AS VARCHAR(MAX)) AS XmlData"
+  End If
+  
+  Set prstReadyToExport = mclsData.OpenRecordset(sSQLGetData, adOpenForwardOnly, adLockReadOnly)
 
   If (prstReadyToExport.BOF And prstReadyToExport.EOF) Then
     mstrErrorString = "No records to export."
@@ -2573,15 +2604,22 @@ Private Function ExportData_XML() As Boolean
   Else
     prstReadyToExport.MoveFirst
 
-    If Len(mstrTransformFile) > 0 Then
+    If Len(sXSDTransformFile) > 0 Then
       sExportText = (mstrExportHeaderText & prstReadyToExport(0).Value & mstrExportFooterText)
-      sTransFormText = GetFileText(mstrTransformFile)
+      sTransFormText = GetFileText(sXSDTransformFile)
       sSQL = "SELECT convert(nvarchar(MAX), dbo.udfASRNetApplyXsltTransform(convert(xml,'" & Replace(sExportText, "'", "''") & "'), convert(xml,'" & Replace(sTransFormText, "'", "''") & "')))"
       Set rstConverted = mclsData.OpenRecordset(sSQL, adOpenForwardOnly, adLockReadOnly)
       sExportText = PrettyPrintXml(rstConverted(0).Value)
     Else
-      sExportText = prstReadyToExport(0).Value
-      sExportText = PrettyPrintXml(sExportText)
+      If Not IsNull(prstReadyToExport(0).Value) Then
+        sExportText = prstReadyToExport(0).Value
+        sExportText = PrettyPrintXml(sExportText)
+        
+        If Len(sXSDName) > 0 Then
+          sExportText = Replace(sExportText, "xmlns:noNamespaceSchemaLocation", "xsi:noNamespaceSchemaLocation")
+        End If
+        
+      End If
     End If
 
 
@@ -3559,4 +3597,11 @@ Private Function GetFileText(ByVal FileName As String) As String
   Open FileName$ For Input As #Handle
   GetFileText = Input$(LOF(Handle), Handle)
   Close #Handle
+End Function
+
+' Extracts just the filename from a path
+Function GetFileNameOnly(pstrFilePath As String) As String
+  Dim astrPath() As String
+  astrPath = Split(pstrFilePath, "\")
+  GetFileNameOnly = astrPath(UBound(astrPath))
 End Function
