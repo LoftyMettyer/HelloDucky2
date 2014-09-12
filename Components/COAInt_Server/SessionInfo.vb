@@ -47,10 +47,6 @@ Public Class SessionInfo
 		Return Permissions.IsPermitted(Category, Key)
 	End Function
 
-	Public Function IsModuleEnabled(name As String) As Boolean
-		Return _modules.GetByKey(name).Enabled
-	End Function
-
 	Public Function IsPhotoDataType(lngColumnID As Integer) As Boolean
 		Return Columns.GetById(lngColumnID).DataType = ColumnDataType.sqlVarBinary
 	End Function
