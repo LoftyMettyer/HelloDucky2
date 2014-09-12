@@ -2,11 +2,11 @@ VERSION 5.00
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
 Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "COMDLG32.OCX"
 Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
-Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "COA_Spinner.ocx"
+Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "coa_spinner.ocx"
 Begin VB.Form frmExport 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Export Definition"
-   ClientHeight    =   5835
+   ClientHeight    =   6060
    ClientLeft      =   45
    ClientTop       =   330
    ClientWidth     =   9630
@@ -26,7 +26,7 @@ Begin VB.Form frmExport
    LockControls    =   -1  'True
    MaxButton       =   0   'False
    MinButton       =   0   'False
-   ScaleHeight     =   5835
+   ScaleHeight     =   6060
    ScaleWidth      =   9630
    ShowInTaskbar   =   0   'False
    StartUpPosition =   1  'CenterOwner
@@ -35,7 +35,7 @@ Begin VB.Form frmExport
       Height          =   400
       Left            =   8325
       TabIndex        =   116
-      Top             =   5310
+      Top             =   5550
       Width           =   1200
    End
    Begin VB.CommandButton cmdOK 
@@ -43,20 +43,21 @@ Begin VB.Form frmExport
       Height          =   400
       Left            =   7050
       TabIndex        =   115
-      Top             =   5310
+      Top             =   5550
       Width           =   1200
    End
    Begin TabDlg.SSTab SSTab1 
-      Height          =   5130
+      Height          =   5385
       Left            =   45
       TabIndex        =   117
       Top             =   45
       Width           =   9480
       _ExtentX        =   16722
-      _ExtentY        =   9049
+      _ExtentY        =   9499
       _Version        =   393216
       Style           =   1
       Tabs            =   6
+      Tab             =   5
       TabsPerRow      =   6
       TabHeight       =   520
       BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
@@ -70,18 +71,16 @@ Begin VB.Form frmExport
       EndProperty
       TabCaption(0)   =   "&Definition"
       TabPicture(0)   =   "frmExport.frx":000C
-      Tab(0).ControlEnabled=   -1  'True
+      Tab(0).ControlEnabled=   0   'False
       Tab(0).Control(0)=   "fraBase"
-      Tab(0).Control(0).Enabled=   0   'False
       Tab(0).Control(1)=   "fraInformation"
-      Tab(0).Control(1).Enabled=   0   'False
       Tab(0).ControlCount=   2
       TabCaption(1)   =   "Related &Tables"
       TabPicture(1)   =   "frmExport.frx":0028
       Tab(1).ControlEnabled=   0   'False
-      Tab(1).Control(0)=   "fraChild"
+      Tab(1).Control(0)=   "fraParent1"
       Tab(1).Control(1)=   "fraParent2"
-      Tab(1).Control(2)=   "fraParent1"
+      Tab(1).Control(2)=   "fraChild"
       Tab(1).ControlCount=   3
       TabCaption(2)   =   "Colu&mns"
       TabPicture(2)   =   "frmExport.frx":0044
@@ -96,12 +95,12 @@ Begin VB.Form frmExport
       TabCaption(4)   =   "O&ptions"
       TabPicture(4)   =   "frmExport.frx":007C
       Tab(4).ControlEnabled=   0   'False
-      Tab(4).Control(0)=   "fraHeaderOptions"
-      Tab(4).Control(1)=   "fraDateOptions"
+      Tab(4).Control(0)=   "fraDateOptions"
+      Tab(4).Control(1)=   "fraHeaderOptions"
       Tab(4).ControlCount=   2
       TabCaption(5)   =   "O&utput"
       TabPicture(5)   =   "frmExport.frx":0098
-      Tab(5).ControlEnabled=   0   'False
+      Tab(5).ControlEnabled=   -1  'True
       Tab(5).Control(0)=   "fraDelimFile"
       Tab(5).Control(0).Enabled=   0   'False
       Tab(5).Control(1)=   "fraCMGFile"
@@ -115,7 +114,7 @@ Begin VB.Form frmExport
       Tab(5).ControlCount=   5
       Begin VB.Frame fraInformation 
          Height          =   2355
-         Left            =   150
+         Left            =   -74850
          TabIndex        =   118
          Top             =   400
          Width           =   9180
@@ -319,7 +318,7 @@ Begin VB.Form frmExport
       Begin VB.Frame fraOutputType 
          Caption         =   "Output Format :"
          Height          =   2835
-         Left            =   -74850
+         Left            =   150
          TabIndex        =   82
          Top             =   405
          Width           =   2400
@@ -383,7 +382,7 @@ Begin VB.Form frmExport
       Begin VB.Frame fraOutputDestination 
          Caption         =   "Output Destination(s) :"
          Height          =   2835
-         Left            =   -72345
+         Left            =   2655
          TabIndex        =   88
          Top             =   405
          Width           =   6675
@@ -780,9 +779,9 @@ Begin VB.Form frmExport
             RecordSelectors =   0   'False
             Col.Count       =   11
             stylesets.count =   5
-            stylesets(0).Name=   "ssetHeaderDisabled"
-            stylesets(0).ForeColor=   -2147483631
-            stylesets(0).BackColor=   -2147483633
+            stylesets(0).Name=   "ssetSelected"
+            stylesets(0).ForeColor=   -2147483634
+            stylesets(0).BackColor=   -2147483635
             stylesets(0).HasFont=   -1  'True
             BeginProperty stylesets(0).Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
                Name            =   "Verdana"
@@ -794,9 +793,9 @@ Begin VB.Form frmExport
                Strikethrough   =   0   'False
             EndProperty
             stylesets(0).Picture=   "frmExport.frx":01BF
-            stylesets(1).Name=   "ssetSelected"
-            stylesets(1).ForeColor=   -2147483634
-            stylesets(1).BackColor=   -2147483635
+            stylesets(1).Name=   "ssetHeaderDisabled"
+            stylesets(1).ForeColor=   -2147483631
+            stylesets(1).BackColor=   -2147483633
             stylesets(1).HasFont=   -1  'True
             BeginProperty stylesets(1).Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
                Name            =   "Verdana"
@@ -1452,7 +1451,7 @@ Begin VB.Form frmExport
       Begin VB.Frame fraBase 
          Caption         =   "Data :"
          Height          =   2115
-         Left            =   150
+         Left            =   -74850
          TabIndex        =   0
          Top             =   2850
          Width           =   9180
@@ -1554,13 +1553,21 @@ Begin VB.Form frmExport
       End
       Begin VB.Frame fraXML 
          Caption         =   "XML Options :"
-         Height          =   1665
-         Left            =   -74850
+         Height          =   1950
+         Left            =   150
          TabIndex        =   125
          Top             =   3285
          Width           =   9180
+         Begin VB.CheckBox chkSplitXMLNodesFile 
+            Caption         =   "&Split nodes into individual files"
+            Height          =   210
+            Left            =   5925
+            TabIndex        =   139
+            Top             =   1665
+            Width           =   3030
+         End
          Begin VB.CheckBox chkPreserveTransformPath 
-            Caption         =   "Preser&ve Transformation Path"
+            Caption         =   "Preser&ve transformation path"
             Height          =   270
             Left            =   5925
             TabIndex        =   138
@@ -1568,7 +1575,7 @@ Begin VB.Form frmExport
             Width           =   2865
          End
          Begin VB.CheckBox chkPreserveXSDPath 
-            Caption         =   "Preserve XSD Pat&h"
+            Caption         =   "Preserve XSD pat&h"
             Height          =   270
             Left            =   5925
             TabIndex        =   133
@@ -1615,7 +1622,7 @@ Begin VB.Form frmExport
             Width           =   3000
          End
          Begin VB.CheckBox chkAuditChangesOnly 
-            Caption         =   "Only &Include Audited Changes"
+            Caption         =   "Only &include audited changes"
             Height          =   210
             Left            =   5940
             TabIndex        =   130
@@ -1701,7 +1708,7 @@ Begin VB.Form frmExport
       Begin VB.Frame fraCMGFile 
          Caption         =   "CMG Options :"
          Height          =   1665
-         Left            =   -74850
+         Left            =   150
          TabIndex        =   109
          Top             =   3285
          Width           =   9180
@@ -1749,7 +1756,7 @@ Begin VB.Form frmExport
       Begin VB.Frame fraDelimFile 
          Caption         =   "Delimited File Options :"
          Height          =   1665
-         Left            =   -74850
+         Left            =   150
          TabIndex        =   103
          Top             =   3285
          Width           =   9180
@@ -1805,7 +1812,7 @@ Begin VB.Form frmExport
    End
    Begin MSComDlg.CommonDialog CommonDialog1 
       Left            =   120
-      Top             =   5280
+      Top             =   5535
       _ExtentX        =   847
       _ExtentY        =   847
       _Version        =   393216
@@ -1876,7 +1883,7 @@ Public Property Let FormPrint(ByVal bPrint As Boolean)
 End Property
 
 Public Property Get Changed() As Boolean
-  Changed = cmdOK.Enabled
+  Changed = cmdOk.Enabled
 End Property
 Private Sub ForceAccess(Optional pvAccess As Variant)
   Dim iLoop As Integer
@@ -1916,7 +1923,7 @@ End Sub
 
 
 Public Property Let Changed(ByVal pblnChanged As Boolean)
-  cmdOK.Enabled = pblnChanged
+  cmdOk.Enabled = pblnChanged
 End Property
 
 Public Property Get SelectedID() As Long
@@ -2373,6 +2380,10 @@ Private Sub chkPreserveTransformPath_Click()
 End Sub
 
 Private Sub chkPreserveXSDPath_Click()
+  Changed = True
+End Sub
+
+Private Sub chkSplitXMLNodesFile_Click()
   Changed = True
 End Sub
 
@@ -3769,7 +3780,7 @@ Private Sub cmdEditColumn_Click()
             
             If COAMsgBox("You have changed a column that is used in the export sort order." & vbCrLf & _
                       "Continuing will remove the old column from the sort order." & vbCrLf & _
-                      "Do you wish to continue ?", vbYesNo + vbQuestion, app.title) = vbNo Then
+                      "Do you wish to continue ?", vbYesNo + vbQuestion, app.Title) = vbNo Then
               Exit Sub
             End If
             RemoveFromSortOrder lID
@@ -5093,7 +5104,8 @@ Private Function SaveDefinition() As Boolean
               & "XMLDataNodeName = '" & Replace(txtXMLDataNodeName.Text, "'", "''") & "'," _
               & "XSDFilename = '" & Replace(txtXSDFilename.Text, "'", "''") & "'," _
               & "PreserveTransformPath = " & IIf(chkPreserveTransformPath.Value = vbChecked, "1", "0") & ", " _
-              & "PreserveXSDPath = " & IIf(chkPreserveXSDPath.Value = vbChecked, "1", "0") & ", "
+              & "PreserveXSDPath = " & IIf(chkPreserveXSDPath.Value = vbChecked, "1", "0") & ", " _
+              & "SplitXMLNodesFile = " & IIf(chkSplitXMLNodesFile.Value = vbChecked, "1", "0") & ", "
     End If
        
     strSQL = strSQL & "Quotes = " & IIf(Me.chkQuotes.Value, 1, 0) & "," & _
@@ -5142,7 +5154,7 @@ Private Function SaveDefinition() As Boolean
            "Parent1AllRecords, Parent1Picklist, Parent2AllRecords, Parent2Picklist, " & _
            "AuditChangesOnly, OmitHeader, ForceHeader, OutputFormat, OutputSave, " & _
            "OutputSaveExisting, OutputEmail, OutputEmailAddr, OutputEmailSubject, OutputEmailAttachAs, OutputFilename," & _
-           "TransformFile, XMLDataNodeName, XSDFilename, PreserveTransformPath, PreserveXSDPath) "
+           "TransformFile, XMLDataNodeName, XSDFilename, PreserveTransformPath, PreserveXSDPath, SplitXMLNodesFile) "
                      
     strSQL = strSQL & _
            "Values('" & _
@@ -5227,7 +5239,8 @@ Private Function SaveDefinition() As Boolean
         "'" & Replace(txtXMLDataNodeName.Text, "'", "''") & "'," & _
         "'" & Replace(txtXSDFilename.Text, "'", "''") & "'," & _
         IIf(chkPreserveTransformPath.Value = vbChecked, "1", "0") & ", " & _
-        IIf(chkPreserveXSDPath.Value = vbChecked, "1", "0") & ")"
+        IIf(chkPreserveXSDPath.Value = vbChecked, "1", "0") & ", " & _
+        IIf(chkSplitXMLNodesFile.Value = vbChecked, "1", "0") & ")"
           
     If IsRecordSelectionValid = False Then
       SaveDefinition = False
@@ -5771,6 +5784,7 @@ Private Function RetrieveExportDetails(plngExportID As Long) As Boolean
     If Not IsNull(rsTemp!XSDFilename) Then txtXSDFilename.Text = rsTemp!XSDFilename
     chkPreserveTransformPath.Value = IIf(rsTemp!PreserveTransformPath = True, vbChecked, vbUnchecked)
     chkPreserveXSDPath.Value = IIf(rsTemp!PreserveXSDPath = True, vbChecked, vbUnchecked)
+    chkSplitXMLNodesFile.Value = IIf(rsTemp!SplitXMLNodesFile = True, vbChecked, vbUnchecked)
   End If
 
   chkAuditChangesOnly.Value = IIf(rsTemp!AuditChangesOnly = True, vbChecked, vbUnchecked)
@@ -7013,10 +7027,11 @@ Public Sub PrintDef(lExportID As Long)
         Case fmtXML
           .PrintNormal "Output Type : XML File"
           .PrintNormal "XML Custom Node Name : " & IIf(rsTemp!XMLDataNodeName = "", "<None>", rsTemp!XMLDataNodeName)
-          .PrintNormal "XML XSD File : " & IIf(rsTemp!txtXSDFilename = "", "<None>", rsTemp!txtXSDFilename)
-          .PrintNormal "XML XSD File Preserve Path : " & IIf(rsTemp!chkPreserveXSDPath, "True", "False")
+          .PrintNormal "XSD File : " & IIf(rsTemp!txtXSDFilename = "", "<None>", rsTemp!txtXSDFilename)
+          .PrintNormal "XSD File Preserve Path : " & IIf(rsTemp!chkPreserveXSDPath, "True", "False")
           .PrintNormal "XML Transformation File : " & IIf(rsTemp!TransformFile = "", "<None>", rsTemp!TransformFile)
           .PrintNormal "XML Transformation File Preserve Path : " & IIf(rsTemp!PreserveTransformPath, "True", "False")
+          .PrintNormal "Split nodes into individual files : " & IIf(rsTemp!chkSplitXMLNodesFile, "True", "False")
 
         End Select
         

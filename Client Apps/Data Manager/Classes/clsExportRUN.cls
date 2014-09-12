@@ -99,7 +99,7 @@ Private mstrXMLDataNodeName As String
 Private mstrXSDFilename As String
 Private mbPreserveTransformPath As Boolean
 Private mbPreserveXSDPath As Boolean
-
+Private mbSplitXMLIntoFiles As Boolean
 
 ' Data access classes
 Private mclsData As clsDataAccess
@@ -664,6 +664,7 @@ Private Function GetExportDefinition() As Boolean
     mintExportFooter = !Footer
     mstrExportFooterText = IIf(IsNull(!FooterText), vbNullString, !FooterText)
     mstrXMLDataNodeName = IIf(IsNull(!XMLDataNodeName), vbNullString, !XMLDataNodeName)
+    mbSplitXMLIntoFiles = IIf(IsNull(!SplitXMLNodesFile), False, !SplitXMLNodesFile)
     
     If mlngOutputFormat = fmtXML Then
       mstrExportHeaderText = IIf(Len(mstrExportHeaderText) = 0, "root", mstrExportHeaderText)
@@ -859,7 +860,7 @@ Private Function GetDetailsRecordsets() As Boolean
   
   'Add in the ID of the record if we are a cmg output
   'If mstrExportOutputType = "C" Then
-  If mlngOutputFormat = fmtCMGFile Then
+  If mlngOutputFormat = fmtCMGFile Or mlngOutputFormat = fmtXML Then
     pintTemp = UBound(mvarColDetails, 2) + 2
     ReDim Preserve mvarColDetails(UBound(mvarColDetails, 1), pintTemp)
     mvarColDetails(0, pintTemp - 1) = "C"
@@ -1008,6 +1009,7 @@ Private Function GenerateSQLSelect() As Boolean
   ' Set flags with their starting values
   pblnOK = True
   pblnNoSelect = False
+  pstrColumnList = ""
   
   ReDim mastrUDFsRequired(0)
   
@@ -2542,10 +2544,12 @@ Public Function PrettyPrintXml(xmlDoc)
   Dim rdr, wrt
   Set rdr = CreateObject("Msxml2.SAXXMLReader.3.0")
   Set wrt = CreateObject("Msxml2.MXXMLWriter.3.0")
+  wrt.Encoding = "UTF-8"
   wrt.standalone = False
   wrt.byteOrderMark = True
   wrt.omitXMLDeclaration = False
   wrt.Indent = True
+
   Set rdr.contentHandler = wrt
   Set rdr.dtdHandler = wrt
   Set rdr.errorHandler = wrt
@@ -2556,6 +2560,7 @@ Public Function PrettyPrintXml(xmlDoc)
   Dim sRemoveHeader As String
   sRemoveHeader = "standalone=""no"""
   PrettyPrintXml = Replace(wrt.Output, sRemoveHeader, "")
+  PrettyPrintXml = Replace(PrettyPrintXml, "encoding=""UTF-16""", "encoding=""UTF-8""")
   
 End Function
 
@@ -2569,10 +2574,14 @@ Private Function ExportData_XML() As Boolean
   Dim sSQLGetData As String
   Dim prstReadyToExport As Recordset
   Dim rstConverted As Recordset
+  Dim iFileCount As Integer
+  Dim strOutputFileName As String
   
   Dim sXSDName As String
   Dim sXSDTransformFile As String
+  Dim sWhereClause As String
   
+  strOutputFileName = mstrOutputFileName
   sXSDName = mstrXSDFilename
   sXSDTransformFile = mstrTransformFile
   
@@ -2583,16 +2592,22 @@ Private Function ExportData_XML() As Boolean
   If Not mbPreserveXSDPath And Len(mstrXSDFilename) > 0 Then
     sXSDName = GetFileNameOnly(mstrXSDFilename)
   End If
-  
-  If Len(sXSDName) > 0 Then
-    sSQLGetData = "WITH XMLNAMESPACES ('" & sXSDName & "' as noNamespaceSchemaLocation)" & _
-        "SELECT CAST((SELECT * FROM [" & mstrTempTableName & "] FOR XML PATH('" & mstrXMLDataNodeName & "'), ROOT('" & mstrExportHeaderText & "')" & _
-        ", ELEMENTS XSINIL) AS VARCHAR(MAX)) AS XmlData"
-  Else
-    sSQLGetData = "SELECT CAST((SELECT * FROM [" & mstrTempTableName & "] FOR XML PATH('" & mstrXMLDataNodeName & "'), ROOT('" & mstrExportHeaderText & "')" & _
-        ", ELEMENTS XSINIL) AS VARCHAR(MAX)) AS XmlData"
+      
+  If mbSplitXMLIntoFiles Then
+    sWhereClause = " WHERE basetable.ID = ID "
   End If
+   
+  sSQLGetData = "SELECT CAST((SELECT * FROM [" & mstrTempTableName & "]" & sWhereClause & " FOR XML PATH('" & mstrXMLDataNodeName & "'), ROOT('" & mstrExportHeaderText & "')" & _
+    ", ELEMENTS XSINIL) AS VARCHAR(MAX)) AS XmlData"
   
+  If mbSplitXMLIntoFiles Then
+    sSQLGetData = "SELECT XMLData =(" & sSQLGetData & ") FROM [" & mstrTempTableName & "] basetable"
+  End If
+   
+  If Len(sXSDName) > 0 Then
+    sSQLGetData = "WITH XMLNAMESPACES ('" & sXSDName & "' as noNamespaceSchemaLocation)" & sSQLGetData
+  End If
+   
   Set prstReadyToExport = mclsData.OpenRecordset(sSQLGetData, adOpenForwardOnly, adLockReadOnly)
 
   If (prstReadyToExport.BOF And prstReadyToExport.EOF) Then
@@ -2604,57 +2619,67 @@ Private Function ExportData_XML() As Boolean
   Else
     prstReadyToExport.MoveFirst
 
-    If Len(sXSDTransformFile) > 0 Then
-      sExportText = (mstrExportHeaderText & prstReadyToExport(0).Value & mstrExportFooterText)
-      sTransFormText = GetFileText(sXSDTransformFile)
-      sSQL = "SELECT convert(nvarchar(MAX), dbo.udfASRNetApplyXsltTransform(convert(xml,'" & Replace(sExportText, "'", "''") & "'), convert(xml,'" & Replace(sTransFormText, "'", "''") & "')))"
-      Set rstConverted = mclsData.OpenRecordset(sSQL, adOpenForwardOnly, adLockReadOnly)
-      sExportText = PrettyPrintXml(rstConverted(0).Value)
-    Else
-      If Not IsNull(prstReadyToExport(0).Value) Then
+    Do While Not prstReadyToExport.EOF
+
+      iFileCount = iFileCount + 1
+
+      If Len(sXSDTransformFile) > 0 Then
         sExportText = prstReadyToExport(0).Value
-        sExportText = PrettyPrintXml(sExportText)
-        
-        If Len(sXSDName) > 0 Then
-          sExportText = Replace(sExportText, "xmlns:noNamespaceSchemaLocation", "xsi:noNamespaceSchemaLocation")
+        sTransFormText = GetFileText(sXSDTransformFile)
+        sSQL = "SELECT convert(nvarchar(MAX), dbo.udfASRNetApplyXsltTransform(convert(xml,'" & Replace(sExportText, "'", "''") & "'), convert(xml,'" & Replace(sTransFormText, "'", "''") & "')))"
+        Set rstConverted = mclsData.OpenRecordset(sSQL, adOpenForwardOnly, adLockReadOnly)
+        sExportText = PrettyPrintXml(rstConverted(0).Value)
+      Else
+        If Not IsNull(prstReadyToExport(0).Value) Then
+          sExportText = prstReadyToExport(0).Value
+          sExportText = PrettyPrintXml(sExportText)
+          
+          If Len(sXSDName) > 0 Then
+            sExportText = Replace(sExportText, "xmlns:noNamespaceSchemaLocation", "xsi:noNamespaceSchemaLocation")
+          End If
+          
         End If
-        
       End If
-    End If
 
+      If mbSplitXMLIntoFiles Then
+        strOutputFileName = InsertNumberIntoFilename(mstrOutputFileName, iFileCount)
+      End If
 
-    Select Case mlngOutputSaveExisting
-    Case 0  ' Overwrite
-      bAppended = False
-     ' Kill mstrOutputFileName
-      
-    Case 1  ' Do not overwrite (fail)
-      mstrErrorString = "File already exists."
-      ExportData_XML = False
-      Exit Function
-  
-    Case 2  ' Add sequential number to filename
-      mstrOutputFileName = GetSequentialNumberedFile(mstrOutputFileName)
-      bAppended = False
+      Select Case mlngOutputSaveExisting
+      Case 0  ' Overwrite
+        bAppended = False
+       ' Kill mstrOutputFileName
+        
+      Case 1  ' Do not overwrite (fail)
+        mstrErrorString = "File already exists."
+        ExportData_XML = False
+        Exit Function
     
-    Case 3  ' Append to Existing File
-      bAppended = True
+      Case 2  ' Add sequential number to filename
+        mstrOutputFileName = GetSequentialNumberedFile(strOutputFileName)
+        bAppended = False
       
-    End Select
-
-    ' Open file for output.
-    pintFileNo = FreeFile
+      Case 3  ' Append to Existing File
+        bAppended = True
+        
+      End Select
   
-    If bAppended Then
-      Open mstrOutputFileName For Append As pintFileNo
-    Else
-      Open mstrOutputFileName For Output As pintFileNo
-    End If
-     
-    Print #pintFileNo, sExportText
-     
-    Close #pintFileNo
-
+      ' Open file for output.
+      pintFileNo = FreeFile
+    
+      If bAppended Then
+        Open strOutputFileName For Append As pintFileNo
+      Else
+        Open strOutputFileName For Output As pintFileNo
+      End If
+       
+      Print #pintFileNo, sExportText
+       
+      Close #pintFileNo
+      
+    prstReadyToExport.MoveNext
+  Loop
+  
   End If
   
   ExportData_XML = True
@@ -3225,6 +3250,19 @@ Public Function GetSequentialNumberedFile(ByVal strFileName As String) As String
   GetSequentialNumberedFile = Left(strFileName, lngFound - 1) & "(" & CStr(lngCount) & ")" & Mid(strFileName, lngFound)
 
 End Function
+
+Public Function InsertNumberIntoFilename(ByVal strFileName As String, intNumber As Integer) As String
+
+  Dim lngFound As Long
+  Dim lngCount As Long
+
+  lngCount = 2
+  lngFound = InStrRev(strFileName, ".")
+
+  InsertNumberIntoFilename = Left(strFileName, lngFound - 1) & "(" & CStr(intNumber) & ")" & Mid(strFileName, lngFound)
+
+End Function
+
 
 Private Function ReadDataIntoArray() As Boolean
 
