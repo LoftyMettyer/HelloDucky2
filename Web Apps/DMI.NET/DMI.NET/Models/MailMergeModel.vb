@@ -6,6 +6,7 @@ Imports DMI.NET.Code.Attributes
 Imports DMI.NET.Classes
 Imports System.ComponentModel
 Imports System.ComponentModel.DataAnnotations
+Imports HR.Intranet.Server.Extensions
 Imports HR.Intranet.Server.Enums
 
 Namespace Models
@@ -86,6 +87,24 @@ Namespace Models
 
 			End Get
 		End Property
+
+
+		Public Overrides Function GetAvailableTables() As IEnumerable(Of ReportTableItem)
+
+			Dim objItems As New Collection(Of ReportTableItem)
+
+			' Add base table
+			Dim objTable = SessionInfo.Tables.Where(Function(m) m.ID = BaseTableID).FirstOrDefault
+			objItems.Add(New ReportTableItem With {.id = objTable.ID, .Name = objTable.Name, .Relation = ReportRelationType.Base})
+
+			For Each objParent In SessionInfo.Relations.Where(Function(m) m.ChildID = objTable.ID)
+				Dim sParentName = SessionInfo.Tables.GetById(objParent.ParentID).Name
+				objItems.Add(New ReportTableItem With {.id = objParent.ParentID, .Name = sParentName, .Relation = ReportRelationType.Parent1})
+			Next
+
+			Return objItems.OrderBy(Function(m) m.Name)
+
+		End Function
 
 	End Class
 
