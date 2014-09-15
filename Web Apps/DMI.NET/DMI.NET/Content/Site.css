@@ -669,6 +669,10 @@ select.readonly {
 	margin: 15px 0 5px 0;
 }
 
+
+#divExpressionSelectionButtons input[type=button] {
+	width: 86px;
+}
 #divPopupReportDefinition #divChildTablesButtons {
 	float: right;
 	margin: 10px 0 5px 0;
