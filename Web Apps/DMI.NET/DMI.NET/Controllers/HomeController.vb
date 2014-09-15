@@ -1319,6 +1319,7 @@ Namespace Controllers
 						, prmErrorMessage)
 
 					If Len(prmErrorMessage.Value.ToString()) > 0 Then
+						sErrorMsg = prmErrorMessage.Value.ToString()
 						sAction = "SAVEERROR"
 					Else
 						sAction = "CANCELBOOKING_1"
