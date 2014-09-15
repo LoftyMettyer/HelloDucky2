@@ -8,9 +8,13 @@ Namespace ViewModels
 
 	Public Class OptionDataGridViewModel
 
-
+		<Display(Name:="View :")>
 		Public Property Views As New Collection(Of SelectListItem)
+		<Display(Name:="Order :")>
 		Public Property Orders As New Collection(Of SelectListItem)
+
+		Public Property OrderId() As Integer
+		Public Property ViewId() As Integer
 
 		Public Property TableID As Integer
 		Public Property CourseTitle As String
@@ -23,16 +27,13 @@ Namespace ViewModels
 		Public Property PageTitle As String
 		Public Property SubmitAction As String
 
-		<Display(Name:="View :")> _
-		Public Property View As String()
-
-		<Display(Name:="Order :")> _
-		Public Property Order As String()
-
 		Public Sub New(GotoOptionPage As String)
 
 			Views = getViews()
 			Orders = getOrders()
+
+			OrderId = CInt(Current.Session("optionLinkOrderID"))
+			ViewId = CInt(Current.Session("optionLinkViewID"))
 
 			TableID = NullSafeInteger(Current.Session("optionLinkTableID"))
 			CourseTitle = NullSafeString(Current.Session("optionCourseTitle"))
@@ -89,7 +90,7 @@ Namespace ViewModels
 
 			For Each objRow As DataRow In rstViewRecords.Rows
 
-				Dim objRowItem As New SelectListItem() With {.Value = CStr(objRow(0)), .Text = Replace(objRow(1).ToString(), "_", " "), .Selected = (CInt(objRow(0)) = CInt(Current.Session("optionLinkViewID")))}
+				Dim objRowItem As New SelectListItem() With {.Value = CStr(objRow(0)), .Text = Replace(objRow(1).ToString(), "_", " ")}
 				objItems.Add(objRowItem)
 
 			Next
@@ -113,7 +114,7 @@ Namespace ViewModels
 			Dim rstOrderRecords = objDatabase.GetTableOrders(CInt(CleanNumeric(Current.Session("optionLinkTableID"))), 0)
 			For Each objRow As DataRow In rstOrderRecords.Rows
 
-				Dim objRowItem As New SelectListItem() With {.Value = CStr(objRow(1)), .Text = Replace(objRow(0).ToString(), "_", " "), .Selected = (objRow(1) = CInt(Current.Session("optionLinkOrderID")))}
+				Dim objRowItem As New SelectListItem() With {.Value = CStr(objRow(1)), .Text = Replace(objRow(0).ToString(), "_", " ")}
 				objItems.Add(objRowItem)
 
 			Next

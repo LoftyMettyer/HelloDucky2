@@ -8,13 +8,13 @@
 	</div>
 	<nav>
 		<div class="formField floatleft">
-			@Html.LabelFor(Function(m) m.View)
-			@Html.DropDownListFor(Function(m) m.Views, New SelectList(Model.Views, "Value", "Text", Model.Views.First().Value), New With {.id = "selectView"})
+			@Html.LabelFor(Function(m) m.Views)
+			@Html.DropDownListFor(Function(m) m.ViewId, New SelectList(Model.Views, "Value", "Text"), New With {.id = "selectView"})
 			@Html.ValidationMessageFor(Function(m) m.Views)
 		</div>
 		<div class="formField floatright">
-			@Html.LabelFor(Function(m) m.Order)
-			@Html.DropDownListFor(Function(m) m.Orders, New SelectList(Model.Orders, "Value", "Text", Model.Orders.First().Value), New With {.id = "selectOrder"})
+			@Html.LabelFor(Function(m) m.Orders)
+			@Html.DropDownListFor(Function(m) m.OrderId, New SelectList(Model.Orders, "Value", "Text"), New With {.id = "selectOrder"})
 			@Html.ValidationMessageFor(Function(m) m.Orders)
 		</div>
 	</nav>
