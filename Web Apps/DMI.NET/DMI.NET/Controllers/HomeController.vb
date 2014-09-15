@@ -4331,16 +4331,34 @@ Namespace Controllers
 				Dim jqGridColDef = New Dictionary(Of String, String)
 				Dim rows As New List(Of Dictionary(Of String, Object))()
 				Dim row As Dictionary(Of String, Object)
+				Dim iLoop As Integer = 0
+
 				For Each dr As DataRow In rstFindRecords.Rows
+					iLoop += 1
 					row = New Dictionary(Of String, Object)()
 					For Each col As DataColumn In rstFindRecords.Columns
 
 						If Not jqGridColDef.ContainsKey(col.ColumnName) Then
-							jqGridColDef.Add(col.ColumnName, col.DataType.Name)
+							Dim sColDef As String = col.DataType.Name
+
+							If sColDef = "Decimal" Then
+								Dim numberAsString As String = dr(col).ToString()
+								Dim indexOfDecimalPoint As Integer = numberAsString.IndexOf(LocaleDecimalSeparator(), System.StringComparison.Ordinal)
+								Dim numberOfDecimals As Integer = 0
+								If indexOfDecimalPoint > 0 Then numberOfDecimals = numberAsString.Substring(indexOfDecimalPoint + 1).Length
+
+								If Mid(sThousandColumns, iLoop + 1, 1) = "1" Then
+									sColDef &= vbTab & numberOfDecimals.ToString() & vbTab & "true"
+								Else
+									sColDef &= vbTab & numberOfDecimals.ToString() & vbTab & "false"
+								End If
+							End If
+
+							jqGridColDef.Add(col.ColumnName, sColDef)
 						End If
 
 						If col.DataType.Name = "DateTime" And dr(col).ToString().Length > 0 Then
-							row.Add(col.ColumnName, dr(col).ToShortDateString())
+							row.Add(col.ColumnName, dr(col).ToShortDateString())							
 						Else
 							row.Add(col.ColumnName, dr(col))
 						End If

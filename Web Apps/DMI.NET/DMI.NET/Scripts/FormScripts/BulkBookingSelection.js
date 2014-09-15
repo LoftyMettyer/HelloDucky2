@@ -69,11 +69,12 @@ function refreshGrid(jsonData) {
 	if (jsonData != null) {
 		var gridColDef = $.parseJSON(JSON.stringify(jsonData)).colDef;
 		var dateFormat = OpenHR.getLocaleDateString();
-
+		
 		for (var sColumnName in gridColDef) {
 			if (gridColDef.hasOwnProperty(sColumnName)) {
 
-				var sColumnType = gridColDef[sColumnName];
+				var aColumnType = gridColDef[sColumnName].split('\t');
+				var sColumnType = aColumnType[0];
 
 				//Add column Name to grid
 				colNames.push(OpenHR.replaceAll(sColumnName, "_", " "));
@@ -90,7 +91,9 @@ function refreshGrid(jsonData) {
 							colMode.push({ name: sColumnName, edittype: "numeric", sorttype: 'integer', formatter: 'number', formatoptions: { disabled: true }, align: 'right', width: 100 });
 							break;
 						case "Decimal":
-							colMode.push({ name: sColumnName, edittype: "numeric", sorttype: 'integer', formatter: 'number', formatoptions: { disabled: true }, align: 'right', width: 100 });
+							var numDecimals = Number(aColumnType[1]);
+							var sThousandSeparator = (aColumnType[2] === 'true') ? OpenHR.LocaleThousandSeparator() : "";
+						colMode.push({ name: sColumnName, edittype: "numeric", sorttype: 'integer', formatter: 'number', formatoptions: { thousandsSeparator: sThousandSeparator, decimalPlaces: numDecimals, disabled: true }, align: 'right', width: 100 });
 							break;
 						case "DateTime":
 							colMode.push({ name: sColumnName, edittype: "date", sorttype: 'date', formatter: 'date', formatoptions: { srcformat: dateFormat, newformat: dateFormat, disabled: true }, align: 'left', width: 100 });
