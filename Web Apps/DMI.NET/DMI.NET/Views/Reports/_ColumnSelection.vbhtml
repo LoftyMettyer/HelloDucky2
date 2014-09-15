@@ -22,11 +22,11 @@
 
 	<fieldset id="columnbuttons">
 		<div id="colbtngrp1">
-			<input type="button" id="btnColumnAdd" value="Add" onclick="addColumnToSelected(0);" />
+			<input type="button" id="btnColumnAdd" value="Add" onclick="addColumnToSelected();" />
 			<input type="button" id="btnColumnAddAll" value="Add All" onclick="addAllColumnsToSelected();" />
 		</div>
 		<div id="colbtngrp2">
-			<input type="button" id="btnColumnRemove" value="Remove" onclick="requestRemoveSelectedColumn();" />
+			<input type="button" id="btnColumnRemove" value="Remove" onclick="requestRemoveSelectedColumns();" />
 			<input type="button" id="btnColumnRemoveAll" value="Remove All" onclick="requestRemoveAllSelectedColumns();" />
 		</div>
 		<div id="colbtngrp3" class="customReportsOnly">
@@ -40,62 +40,65 @@
 		<table id="SelectedColumns" class="scroll" cellpadding="0" cellspacing="0"></table>
 		<br />
 
-		<div class="floatleft width100 customReportsOnly">
-			<div class="floatleft width25">
-				<label for="SelectedColumnHeading">Heading :</label>
-			</div>
+		<div id="definitionColumnProperties">
+			<div class="floatleft width100 customReportsOnly">
+				<div class="floatleft width25">
+					<label for="SelectedColumnHeading">Heading :</label>
+				</div>
 				<input class="width70" type='text' id="SelectedColumnHeading" onchange="updateColumnsSelectedGrid();" />
-		</div>
-		<br style="clear:both" />
-
-		<div class="floatleft width100">
-			<div class="floatleft width25">
-				<label for="SelectedColumnSize">Size :</label>
 			</div>
-			<input class="width70" type='number' id="SelectedColumnSize" onchange="updateColumnsSelectedGrid();" />
-		</div>
-		<br style="clear:both" />
+			<br style="clear:both" />
 
-		<div class="floatleft width100 decimalsOnly">
-			<div class="floatleft width25">
-				<label for="SelectedColumnDecimals">Decimals :</label>
+			<div class="floatleft width100">
+				<div class="floatleft width25">
+					<label for="SelectedColumnSize">Size :</label>
+				</div>
+				<input class="width70" type='number' id="SelectedColumnSize" onchange="updateColumnsSelectedGrid();" />
 			</div>
-			<input class="width70" type='number' id="SelectedColumnDecimals" onchange="updateColumnsSelectedGrid();" />
-		</div>
-		<br style="clear:both" />
-		<br />
+			<br style="clear:both" />
 
-		<div class="customReportsOnly" style="margin-left:20px;">
-			<div class="numericOnly width35 floatleft" style="color: rgb(0, 0, 0)">
-				<div class="width100">
-					<input class=" ui-widget ui-corner-all" id="SelectedColumnIsAverage" onchange="updateColumnsSelectedGrid();" type="checkbox">
-					<label for="SelectedColumnIsAverage">Average</label>
+			<div class="floatleft width100 decimalsOnly">
+				<div class="floatleft width25">
+					<label for="SelectedColumnDecimals">Decimals :</label>
 				</div>
-				<div class="width100">
-					<input class="ui-widget ui-corner-all" id="SelectedColumnIsCount" onchange="updateColumnsSelectedGrid();" type="checkbox">
-					<label for="SelectedColumnIsCount">Count</label>
-				</div>
-				<div class="width100">
-					<input class="ui-widget ui-corner-all" id="SelectedColumnIsTotal" onchange="updateColumnsSelectedGrid();" type="checkbox">
-					<label for="SelectedColumnIsTotal">Total</label>
-				</div>
+				<input class="width70" type='number' id="SelectedColumnDecimals" onchange="updateColumnsSelectedGrid();" />
 			</div>
+			<br style="clear:both" />
+			<br />
 
-			<div>
-				<div class="width65 floatleft">
-					<input class="ui-widget ui-corner-all" id="SelectedColumnIsHidden" onchange="updateColumnsSelectedGrid();" type="checkbox">
-					<label for="SelectedColumnIsHidden">Hidden</label>
-					<div class="numericOnly" style="color: rgb(0, 0, 0);">
-						<input class="ui-widget ui-corner-all" id="SelectedColumnIsGroupWithNext" onchange="updateColumnsSelectedGrid();" type="checkbox">
-						<label for="SelectedColumnIsGroupWithNext">Group With Next</label>
+			<div class="customReportsOnly" style="margin-left:20px;">
+				<div class="numericOnly width35 floatleft" style="color: rgb(0, 0, 0)">
+					<div class="width100">
+						<input class=" ui-widget ui-corner-all" id="SelectedColumnIsAverage" onchange="updateColumnsSelectedGrid();" type="checkbox">
+						<label for="SelectedColumnIsAverage">Average</label>
 					</div>
-					<div class="baseTableOnly" style="color: rgb(165, 147, 147);">
-						<input disabled="disabled" class="ui-widget ui-corner-all" id="SelectedColumnIsRepeated" onchange="updateColumnsSelectedGrid();" type="checkbox">
-						<label for="SelectedColumnIsRepeated">Repeat on child rows</label>
+					<div class="width100">
+						<input class="ui-widget ui-corner-all" id="SelectedColumnIsCount" onchange="updateColumnsSelectedGrid();" type="checkbox">
+						<label for="SelectedColumnIsCount">Count</label>
+					</div>
+					<div class="width100">
+						<input class="ui-widget ui-corner-all" id="SelectedColumnIsTotal" onchange="updateColumnsSelectedGrid();" type="checkbox">
+						<label for="SelectedColumnIsTotal">Total</label>
 					</div>
 				</div>
+
+				<div>
+					<div class="width65 floatleft">
+						<input class="ui-widget ui-corner-all" id="SelectedColumnIsHidden" onchange="updateColumnsSelectedGrid();" type="checkbox">
+						<label for="SelectedColumnIsHidden">Hidden</label>
+						<div class="numericOnly" style="color: rgb(0, 0, 0);">
+							<input class="ui-widget ui-corner-all" id="SelectedColumnIsGroupWithNext" onchange="updateColumnsSelectedGrid();" type="checkbox">
+							<label for="SelectedColumnIsGroupWithNext">Group With Next</label>
+						</div>
+						<div class="baseTableOnly" style="color: rgb(165, 147, 147);">
+							<input disabled="disabled" class="ui-widget ui-corner-all" id="SelectedColumnIsRepeated" onchange="updateColumnsSelectedGrid();" type="checkbox">
+							<label for="SelectedColumnIsRepeated">Repeat on child rows</label>
+						</div>
+					</div>
+				</div>
 			</div>
 		</div>
+
 	</fieldset>
 
 <input type="hidden" name="Columns.BaseTableID" value="@Model.BaseTableID" />
@@ -124,43 +127,52 @@
 
 	}
 
-	function addColumnToSelected(rowID) {
+	function addColumnToSelected() {
 
-		if (rowID == 0) {
-			rowID = $("#AvailableColumns").getGridParam('selrow');
+		var rowID;
+
+		$('#SelectedColumns').jqGrid('resetSelection');
+
+		var selectedRows = $('#AvailableColumns').jqGrid('getGridParam', 'selarrrow');
+
+		for (var i = 0; i <= selectedRows.length - 1; i++) {
+			rowID = selectedRows[i];
+			var datarow = $("#AvailableColumns").getRowData(selectedRows[i]);
+
+			if (datarow.IsExpression == "false") {
+				datarow.Name = $("#SelectedTableID option:selected").text() + '.' + datarow.Name;
+			}
+
+			datarow.ReportType = '@Model.ReportType';
+			datarow.ReportID = '@Model.ID';
+			datarow.Heading = datarow.Name;
+			datarow.Sequence = $("#SelectedColumns").jqGrid('getGridParam', 'records') + 1;
+			datarow.IsAverage = false;
+			datarow.IsCount = false;
+			datarow.IsTotal = false;
+			datarow.IsHidden = false;
+			datarow.IsGroupWithNext = false;
+			datarow.IsRepeated = false;
+			datarow.TableID = $("#SelectedTableID option:selected").val();
+
+			OpenHR.postData("Reports/AddReportColumn", datarow);
+
+			$("#SelectedColumns").jqGrid('addRowData', datarow.ID, datarow);
+			$('#SelectedColumns').jqGrid("setSelection", rowID);
+
+			if (datarow.IsExpression == "false") {
+				$("#SortOrdersAvailable").val(parseInt($("#SortOrdersAvailable").val()) + 1);
+				button_disable($("#btnSortOrderAdd")[0], ($("#SortOrdersAvailable").val() == 0));
+			}
+
 		}
-
-		var datarow = $("#AvailableColumns").getRowData(rowID);
 
 		var ids = $("#AvailableColumns").getDataIDs();
 		var nextIndex = $("#AvailableColumns").getInd(rowID);
 
-		if (datarow.IsExpression == "false") {
-			datarow.Name = $("#SelectedTableID option:selected").text() + '.' + datarow.Name;
-		}
-
-		datarow.ReportType = '@Model.ReportType';
-		datarow.ReportID = '@Model.ID';
-		datarow.Heading = datarow.Name;
-		datarow.Sequence = $("#SelectedColumns").jqGrid('getGridParam', 'records') + 1;
-		datarow.IsAverage = false;
-		datarow.IsCount = false;
-		datarow.IsTotal = false;
-		datarow.IsHidden = false;
-		datarow.IsGroupWithNext = false;
-		datarow.IsRepeated = false;
-		datarow.TableID = $("#SelectedTableID option:selected").val();
-
-		OpenHR.postData("Reports/AddReportColumn", datarow);
-
-		$("#SelectedColumns").jqGrid('addRowData', datarow.ID, datarow);
-		$('#SelectedColumns').jqGrid("setSelection", rowID);
-
-		$("#AvailableColumns").jqGrid('delRowData', rowID);
-
-		if (datarow.IsExpression == "false") {
-			$("#SortOrdersAvailable").val(parseInt($("#SortOrdersAvailable").val()) + 1);
-			button_disable($("#btnSortOrderAdd")[0], ($("#SortOrdersAvailable").val() == 0));
+		// Remove selected columns from available
+		for (var i = selectedRows.length - 1; i >= 0; i--) {
+			$("#AvailableColumns").delRowData(selectedRows[i]);
 		}
 
 		$("#AvailableColumns").jqGrid("setSelection", ids[nextIndex], true);
@@ -192,44 +204,79 @@
 		}
 	}
 
-	function requestRemoveSelectedColumn() {
+	function requestRemoveSelectedColumns() {
 
-		var rowID = $("#SelectedColumns").getGridParam('selrow');
-		var rowData = $("#SelectedColumns").getRowData(rowID);
-		var iIsSortOrderColumns = $("#SortOrders #" + rowID).length;
+		var selectedRows = $('#SelectedColumns').jqGrid('getGridParam', 'selarrrow');
+		var sMessage = "";
 
-		if (iIsSortOrderColumns > 0) {
-			OpenHR.modalPrompt("Removing the '" + rowData.Name + "' column will also remove it from the report sort order." +
-					"<br/><br/>Are you sure you wish to continue ?", 4, "").then(function (answer) {
+		for (var i = 0; i <= selectedRows.length - 1; i++) {
+			rowID = selectedRows[i];
+
+			if ($("#SortOrders #" + rowID).length > 0) {
+				var datarow = $("#SelectedColumns").getRowData(selectedRows[i]);
+				sMessage += datarow.Name + "<br/>";
+			}
+		}
+
+		if (sMessage.length > 0) {
+			OpenHR.modalPrompt("Removing the following columns will also be removed from the sort order.<br/>" + sMessage + "" +
+					"Are you sure you wish to continue ?", 4, "").then(function (answer) {
 						if (answer == 6) {
-							removeSelectedColumn(rowData);
+							removeSelectedColumns();
 						}
 					});
 		}
 		else {
-			removeSelectedColumn(rowData);
+			removeSelectedColumns();
 		}
 	}
 
-	function removeSelectedColumn(rowData) {
+	function removeSelectedColumns() {
 
+		var thisIndex;
+
+		var selectedRows = $('#SelectedColumns').jqGrid('getGridParam', 'selarrrow');
+
+		var postData = {
+			ReportID: '@Model.ID',
+			ReportType: '@Model.ReportType',
+			Columns: selectedRows
+		};
+
+		for (var i = 0; i <= selectedRows.length - 1; i++) {
+
+			var datarow = $("#SelectedColumns").getRowData(selectedRows[i]);
+
+			// Remove from sort order
+			if ($("#SortOrders #" + datarow.ID).length > 0) {
+				$("#SortOrders").delRowData(datarow.ID);
+			} 
+			else 
+			if (datarow.IsExpression == "false") {
+				$("#SortOrdersAvailable").val(parseInt($("#SortOrdersAvailable").val()) - 1);
+			}
+
+			thisIndex = $("#SelectedColumns").getInd(selectedRows[i]);
+		}
+
+		OpenHR.postData("Reports/RemoveReportColumn", postData, getAvailableTableColumnsCalcs);
+
+		if ($("#SortOrdersAvailable").val() == 0) {
+			button_disable($("#btnSortOrderAdd")[0], true);
+		}
+
+		// Position next selected column
 		var recordCount = $("#SelectedColumns").jqGrid('getGridParam', 'records')
-		var thisIndex = $("#SelectedColumns").getInd(rowData.ID);
-		if (thisIndex == recordCount) { thisIndex -= 1;}
-
-		OpenHR.postData("Reports/RemoveReportColumn", rowData);
-
-		$("#SelectedColumns").jqGrid('delRowData', rowData.ID);
-		$("#AvailableColumns").trigger("reloadGrid");
-
 		var ids = $("#SelectedColumns").getDataIDs();
-		$("#SelectedColumns").jqGrid("setSelection", ids[thisIndex - 1], true);
-		$("#AvailableColumns").jqGrid("setSelection", rowData.ID);
-		refreshColumnButtons();
+		if (thisIndex >= recordCount) { thisIndex = 0; }
 
-		// Remove from sort order
-		$("#SortOrders").delRowData(rowData.ID);
-		$("#SortOrdersAvailable").val(parseInt($("#SortOrdersAvailable").val()) + 1);
+		// Remove removed columns
+		for (var i = selectedRows.length - 1; i >= 0; i--) {
+			$("#SelectedColumns").delRowData(selectedRows[i]);
+		}
+
+		$("#SelectedColumns").jqGrid("setSelection", ids[thisIndex], true);
+		refreshColumnButtons();
 
 	}
 
@@ -304,6 +351,44 @@
 		sortorder: "desc",
 		rowNum: 10000,
 		scrollrows: true,
+		multiselect: true,
+		beforeSelectRow: function (rowid, e) {
+			var $this = $(this), rows = this.rows,
+					// get id of the previous selected row
+					startId = $this.jqGrid('getGridParam', 'selrow'),
+					startRow, endRow, iStart, iEnd, i, rowidIndex;
+
+			if (!e.ctrlKey && !e.shiftKey) {
+				$this.jqGrid('resetSelection');
+			} else if (startId && e.shiftKey) {
+				$this.jqGrid('resetSelection');
+
+				// get DOM elements of the previous selected and the currect selected rows
+				startRow = rows.namedItem(startId);
+				endRow = rows.namedItem(rowid);
+				if (startRow && endRow) {
+					// get min and max from the indexes of the previous selected
+					// and the currect selected rows 
+					iStart = Math.min(startRow.rowIndex, endRow.rowIndex);
+					rowidIndex = endRow.rowIndex;
+					iEnd = Math.max(startRow.rowIndex, rowidIndex);
+					for (i = iStart; i <= iEnd; i++) {
+						// the row with rowid will be selected by jqGrid, so:
+						if (i != rowidIndex) {
+							$this.jqGrid('setSelection', rows[i].id, false);
+						}
+					}
+				}
+
+				// clear text selection
+				if(document.selection && document.selection.empty) {
+					document.selection.empty();
+				} else if(window.getSelection) {
+					window.getSelection().removeAllRanges();
+				}
+			}
+			return true;
+		},
 		ondblClickRow: function (rowid) {
 			if (!isDefinitionReadOnly()) {
 				addColumnToSelected(rowid);
@@ -316,6 +401,9 @@
 			refreshColumnButtons();
 		}
 	});
+
+	$("#AvailableColumns").jqGrid('hideCol', 'cb');
+
 	}
 
 	function updateColumnsSelectedGrid() {
@@ -378,56 +466,115 @@
 			sortorder: "asc",
 			rowNum: 10000,
 			scrollrows: true,
-			beforeSelectRow: function(id) {
-				updateColumnsSelectedGrid();
+			multiselect: true,
+			beforeSelectRow: function (rowid, e) {
+
+				if ($('#SelectedColumns').jqGrid('getGridParam', 'selarrrow').length == 1) {
+					updateColumnsSelectedGrid();
+				}
+
+				var $this = $(this), rows = this.rows,
+						// get id of the previous selected row
+						startId = $this.jqGrid('getGridParam', 'selrow'),
+						startRow, endRow, iStart, iEnd, i, rowidIndex;
+
+				if (!e.ctrlKey && !e.shiftKey) {
+					$this.jqGrid('resetSelection');
+				} else if (startId && e.shiftKey) {
+					$this.jqGrid('resetSelection');
+
+					// get DOM elements of the previous selected and the currect selected rows
+					startRow = rows.namedItem(startId);
+					endRow = rows.namedItem(rowid);
+					if (startRow && endRow) {
+						// get min and max from the indexes of the previous selected
+						// and the currect selected rows 
+						iStart = Math.min(startRow.rowIndex, endRow.rowIndex);
+						rowidIndex = endRow.rowIndex;
+						iEnd = Math.max(startRow.rowIndex, rowidIndex);
+						for (i = iStart; i <= iEnd; i++) {
+							// the row with rowid will be selected by jqGrid, so:
+							if (i != rowidIndex) {
+								$this.jqGrid('setSelection', rows[i].id, false);
+							}
+						}
+					}
+
+					// clear text selection
+					if (document.selection && document.selection.empty) {
+						document.selection.empty();
+					} else if (window.getSelection) {
+						window.getSelection().removeAllRanges();
+					}
+				}
 				return true;
 			},
 			onSelectRow: function (id) {
 
-				var rowId = $("#SelectedColumns").jqGrid('getGridParam', 'selrow');
-				var dataRow = $("#SelectedColumns").getRowData(rowId)
-				var allRows = $("#SelectedColumns")[0].rows;
+				var rowCount = $('#SelectedColumns').jqGrid('getGridParam', 'selarrrow').length;
 
-				var isTopRow = (rowId == allRows[1].id);
-				var isBottomRow = (rowId == allRows[allRows.length - 1].id);
-				var isNumeric = (dataRow.DataType == '2' || dataRow.DataType == '4');
-				var isDecimals = (isNumeric == true || dataRow.IsExpression == "true");
-				var isBaseOrParentTableColumn = (dataRow.TableID == $("#BaseTableID").val()) || (dataRow.TableID == $("#txtParent1ID").val()) || (dataRow.TableID == $("#txtParent2ID").val());
-				var isThereChildColumns = true;
+				if (rowCount > 1) {
+					$("#definitionColumnProperties :input").attr("disabled", true);
+					$("#SelectedColumnHeading").val("");
+					$("#SelectedColumnSize").val("");
+					$("#SelectedColumnDecimals").val("");
+					$('#SelectedColumnIsAverage').prop('checked', false);
+					$('#SelectedColumnIsCount').prop('checked', false);
+					$('#SelectedColumnIsTotal').prop('checked', false);
+					$('#SelectedColumnIsHidden').prop('checked', false);
+					$('#SelectedColumnIsGroupWithNext').prop('checked', false);
+					$('#SelectedColumnIsRepeated').prop('checked', false);
 
-				$(".numericOnly :input").attr("disabled", !isNumeric);
-				$(".decimalsOnly :input").attr("disabled", !isDecimals);
-				$(".baseTableOnly :input").attr("disabled", !isBaseOrParentTableColumn);
-
-				if (isNumeric) {
-					$(".numericOnly").css("color", "#000000");
-				} else {
-					$(".numericOnly").css("color", "#A59393");
 				}
+				else {
 
-				if (isBaseOrParentTableColumn && isThereChildColumns) {
-					$(".baseTableOnly").css("color", "#000000");
-				} else {
-					$(".baseTableOnly").css("color", "#A59393");
+					$("#definitionColumnProperties :input").removeAttr("disabled");
+
+					var rowId = $("#SelectedColumns").jqGrid('getGridParam', 'selrow');
+					var dataRow = $("#SelectedColumns").getRowData(rowId)
+					var allRows = $("#SelectedColumns")[0].rows;
+
+					var isTopRow = (rowId == allRows[1].id);
+					var isBottomRow = (rowId == allRows[allRows.length - 1].id);
+					var isNumeric = (dataRow.DataType == '2' || dataRow.DataType == '4');
+					var isDecimals = (isNumeric == true || dataRow.IsExpression == "true");
+					var isBaseOrParentTableColumn = (dataRow.TableID == $("#BaseTableID").val()) || (dataRow.TableID == $("#txtParent1ID").val()) || (dataRow.TableID == $("#txtParent2ID").val());
+					var isThereChildColumns = true;
+
+					$(".numericOnly :input").attr("disabled", !isNumeric);
+					$(".decimalsOnly :input").attr("disabled", !isDecimals);
+					$(".baseTableOnly :input").attr("disabled", !isBaseOrParentTableColumn);
+
+					if (isNumeric) {
+						$(".numericOnly").css("color", "#000000");
+					} else {
+						$(".numericOnly").css("color", "#A59393");
+					}
+
+					if (isBaseOrParentTableColumn && isThereChildColumns) {
+						$(".baseTableOnly").css("color", "#000000");
+					} else {
+						$(".baseTableOnly").css("color", "#A59393");
+					}
+
+					$("#SelectedColumnHeading").val(dataRow.Heading);
+
+					$("#SelectedColumnSize").val(dataRow.Size);
+					$("#SelectedColumnDecimals").val(dataRow.Decimals);
+					$('#SelectedColumnIsAverage').prop('checked', JSON.parse(dataRow.IsAverage));
+					$('#SelectedColumnIsCount').prop('checked', JSON.parse(dataRow.IsCount));
+					$('#SelectedColumnIsTotal').prop('checked', JSON.parse(dataRow.IsTotal));
+					$('#SelectedColumnIsHidden').prop('checked', JSON.parse(dataRow.IsHidden));
+					$('#SelectedColumnIsGroupWithNext').prop('checked', JSON.parse(dataRow.IsGroupWithNext));
+					$('#SelectedColumnIsRepeated').prop('checked', JSON.parse(dataRow.IsRepeated));
+
+					// Enable / Disable relevant buttons
+					var isReadOnly = isDefinitionReadOnly();
+					button_disable($("#btnColumnRemove")[0], false || isReadOnly);
+					button_disable($("#btnColumnRemoveAll")[0], false || isReadOnly);
+					button_disable($("#btnColumnMoveUp")[0], isTopRow || isReadOnly);
+					button_disable($("#btnColumnMoveDown")[0], isBottomRow || isReadOnly);
 				}
-
-				$("#SelectedColumnHeading").val(dataRow.Heading);
-
-				$("#SelectedColumnSize").val(dataRow.Size);
-				$("#SelectedColumnDecimals").val(dataRow.Decimals);
-				$('#SelectedColumnIsAverage').prop('checked', JSON.parse(dataRow.IsAverage));
-				$('#SelectedColumnIsCount').prop('checked', JSON.parse(dataRow.IsCount));
-				$('#SelectedColumnIsTotal').prop('checked', JSON.parse(dataRow.IsTotal));
-				$('#SelectedColumnIsHidden').prop('checked', JSON.parse(dataRow.IsHidden));
-				$('#SelectedColumnIsGroupWithNext').prop('checked', JSON.parse(dataRow.IsGroupWithNext));
-				$('#SelectedColumnIsRepeated').prop('checked', JSON.parse(dataRow.IsRepeated));
-
-				// Enable / Disable relevant buttons
-				var isReadOnly = isDefinitionReadOnly();
-				button_disable($("#btnColumnRemove")[0], false || isReadOnly);
-				button_disable($("#btnColumnRemoveAll")[0], false || isReadOnly);
-				button_disable($("#btnColumnMoveUp")[0], isTopRow || isReadOnly);
-				button_disable($("#btnColumnMoveDown")[0], isBottomRow || isReadOnly);
 
 			},
 			loadComplete: function (data) {
@@ -437,6 +584,7 @@
 		});
 
 		$("#SelectedColumns").jqGrid('sortableRows');
+		$("#SelectedColumns").jqGrid('hideCol', 'cb');
 
 	}
 

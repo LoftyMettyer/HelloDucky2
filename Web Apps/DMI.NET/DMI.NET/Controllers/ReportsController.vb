@@ -524,18 +524,15 @@ Namespace Controllers
 
 		End Sub
 
-		<HttpPost>
-		Sub RemoveReportColumn(objModel As ReportColumnItem)
+		<HttpPost, ValidateInput(False)>
+		Sub RemoveReportColumn(objModel As ReportColumnCollection)
 
 			Dim objReport As ReportBaseModel
 			objReport = CType(objReportRepository.RetrieveParent(objModel), ReportBaseModel)
 
-			For Each objItem In objReport.Columns
-				If objItem.ID = objModel.ID Then
-					objReport.Columns.Remove(objItem)
-					objReport.SortOrders.RemoveAll(Function(m) m.ColumnID = objModel.ID)
-					Exit For
-				End If
+			For Each iColumnID In objModel.Columns
+				objReport.Columns.RemoveAll(Function(m) m.ID = iColumnID)
+				objReport.SortOrders.RemoveAll(Function(m) m.ColumnID = iColumnID)
 			Next
 
 		End Sub
