@@ -29,7 +29,7 @@
 			<input type="button" id="btnColumnRemove" value="Remove" onclick="requestRemoveSelectedColumn();" />
 			<input type="button" id="btnColumnRemoveAll" value="Remove All" onclick="requestRemoveAllSelectedColumns();" />
 		</div>
-		<div id="colbtngrp3">
+		<div id="colbtngrp3" class="customReportsOnly">
 			<input type="button" id="btnColumnMoveUp" value="Move Up" disabled onclick="moveSelectedColumn('up');" />
 			<input type="button" id="btnColumnMoveDown" value="Move Down" disabled onclick="moveSelectedColumn('down');" />
 		</div>
