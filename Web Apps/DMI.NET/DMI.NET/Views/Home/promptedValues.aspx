@@ -454,7 +454,12 @@
 									Select Case rowPromptedValues("promptDateType")
 										Case 0
 											' Explicit value
-											Response.Write(ConvertSQLDateToLocale(rowPromptedValues("valuedate").ToString))
+											'If the explicit value is 1899-12-30 00:00:00.000 we need to display an empty date
+											If ConvertSQLDateToLocale(rowPromptedValues("valuedate").ToString) = "30/12/1899" Then
+												Response.Write("")
+											Else 'Display the explicit value coming down from the database
+												Response.Write(ConvertSQLDateToLocale(rowPromptedValues("valuedate").ToString))
+											End If
 										Case 1
 											' Current date
 											Response.Write(ConvertSQLDateToLocale(Now()))
