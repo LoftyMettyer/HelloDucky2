@@ -64,12 +64,7 @@
 		window.SSIMode = '<%=ViewBag.SSIMode%>';
 		window.isMobileDevice = '<%=Session("isMobileDevice")%>';
 
-		document.title = 'OpenHR 8.1';
-	
-		//Force all dialogs to have no close button by default.
-		$.extend($.ui.dialog.prototype.options, {
-			dialogClass: 'no-close'
-		});
+		document.title = 'OpenHR 8.1';	
 
 		$(document).ready(function () {
 
@@ -182,8 +177,7 @@
 				$("input[type=submit], input[type=button], button").removeClass("ui-corner-all");
 				$("input[type=submit], input[type=button], button").addClass("ui-corner-tl ui-corner-br");
 			});
-			
-			$("button").css("margin", "5px");			
+						
 			if (SSIMode != "True") {
 				$("link[id=layoutLink]").attr({ href: "<%:Url.LatestContent("~/Content/DashboardStyles/layouts/winkit.css")%>" });
 				$("link[id=themeLink]").attr({ href: "<%:Url.LatestContent("~/Content/DashboardStyles/themes/white.css")%>" });
