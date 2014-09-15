@@ -19,36 +19,28 @@ End Code
 				<li><a href="#report_definition_tab_output">Output</a></li>
       </ul>
 
-      <div id="tabs-1" class="">	
-				
+      <div id="tabs-1">
 					@Code
 					Html.RenderPartial("_Definition", Model)
-					End Code
-						
+					End Code						
       </div>
 
-			<div id="report_definition_tab_columns">
-				
+			<div id="report_definition_tab_columns">				
 					@Code
 					Html.RenderPartial("_ColumnSelection", Model)
-					End Code
-				
+					End Code				
 			</div>
 
-      <div id="report_definition_tab_order">
-				
+      <div id="report_definition_tab_order">				
 					@Code
 					Html.RenderPartial("_SortOrder", Model)
-					End Code
-				
+					End Code				
       </div>
 
-      <div id="report_definition_tab_output">
-				
+      <div id="report_definition_tab_output">				
 					@Code
 					Html.RenderPartial("_MergeOutput", Model)
-					End Code
-				
+					End Code				
       </div>
     </div>
   End Using
@@ -65,6 +57,7 @@ End Code
   $(function () {
   	$("#tabs").tabs();
   	$('input[type=number]').numeric();
+  	$('#description, #Name').css('width', $('#BaseTableID').width());  	
   });
 
   $("#workframe").attr("data-framesource", "UTIL_DEF_MAILMERGE");

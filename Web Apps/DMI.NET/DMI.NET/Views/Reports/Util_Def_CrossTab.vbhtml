@@ -21,12 +21,10 @@ End Code
 				<li><a href="#report_definition_tab_output">Output</a></li>
 			</ul>
 
-			<div id="tabs-1">
-				
+			<div id="tabs-1">				
 					@Code				
 					Html.RenderPartial("_Definition", Model)
-					End Code
-				
+					End Code				
 			</div>
 
 			<div id="report_definition_tab_columns">
@@ -57,6 +55,8 @@ End Code
 	$(function () {
 		$("#tabs").tabs();
 		$('input[type=number]').numeric();
+		$('#description, #Name').css('width', $('#BaseTableID').width());
+
 	});
 
 	$("#workframe").attr("data-framesource", "UTIL_DEF_CROSSTABS");

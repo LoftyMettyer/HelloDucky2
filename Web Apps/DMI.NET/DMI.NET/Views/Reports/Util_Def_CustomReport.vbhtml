@@ -81,6 +81,8 @@ End Code
   $(function () {
   	$("#tabs").tabs();
   	$('input[type=number]').numeric();
+  	$('#description, #Name').css('width', $('#BaseTableID').width());
+
 	});
 
     $("#workframe").attr("data-framesource", "UTIL_DEF_CUSTOMREPORTS");

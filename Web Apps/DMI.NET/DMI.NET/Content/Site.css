@@ -574,13 +574,16 @@ select.readonly {
 
 #cmdBaseFilter, #cmdParent1Picklist, #cmdBasePicklist,
 #cmdParent1Filter, #cmdParent2Picklist, #cmdParent2Filter, 
-#cmdEmailGroup, #cmdDescription3, #cmdCustomStart, #cmdCustomEnd,
+#cmdEmailGroup, #cmdCustomStart, #cmdCustomEnd,
 #cmdTemplateSelect, #cmdTemplateClear {
 	float: left;
 	padding: 2px 11px;
-	/*margin-bottom:2px;*/
 }
 
+#cmdDescription3 {
+	float: right;
+	padding: 1px 11px;
+}
 #divPopupReportDefinition #cmdBaseFilter {
 	float: right;
 }
@@ -623,13 +626,13 @@ select.readonly {
 }
 
  #selectiontypepicklistgroup, #selectiontypefiltergroup {
-	margin-bottom: -11px;
-	/*width:100%;
+	/*margin-bottom: -11px;
+	width:100%;
 	border-style:none*/
 }
 
  #selectiontypeallrecords {
-	margin-bottom: -4px;
+	/*margin-bottom: -4px;*/
  }
 
 #txtBaseFilter {
@@ -638,15 +641,15 @@ select.readonly {
 }
 
 #BaseTableID {
-	width: 71%;
+	/*width: 71%;*/
 }
 
 #PicklistRadioDiv, #FilterRadioDiv {
-	width: 27.5%;
+	/*width: 27.5%;*/
 }
 
 #DescriptionItems {
-	margin-bottom: 7px;
+	/*margin-bottom: 7px;*/
 }
 
 #gbox_SelectedColumns {

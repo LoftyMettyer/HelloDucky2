@@ -15,20 +15,42 @@
 <div class="width100">
 	<fieldset class="floatleft width50 bordered">
 		<legend class="fontsmalltitle">Name :</legend>
-			<fieldset>
-				<div id="DescriptionItems">
-					@Html.LabelFor(Function(m) m.Name)
-					@Html.TextBoxFor(Function(m) m.Name, New With {.class = "width70 floatright"})
-					@Html.ValidationMessageFor(Function(m) m.Name)
-				</div>
-			<br />
-				<div>
-					@Html.LabelFor(Function(m) m.Description)
-					@Html.TextArea("description", Model.Description, New With {.class = "width70 floatright"})
-					@Html.ValidationMessageFor(Function(m) m.Description)
-				</div>
-			</fieldset>
+
+		<fieldset class="">
+			@Html.LabelFor(Function(m) m.Name)
+			<div class="width70 floatright">
+				@Html.TextBoxFor(Function(m) m.Name, New With {.class = "width100 floatright"})
+				@Html.ValidationMessageFor(Function(m) m.Name)
+			</div>
 		</fieldset>
+
+		<fieldset class="">
+			@Html.LabelFor(Function(m) m.Description)
+			<div id="textareadescription" class="width70 floatright">
+				@Html.TextArea("description", Model.Description, New With {.class = "width100 floatright"})
+				@Html.ValidationMessageFor(Function(m) m.Description)
+			</div>
+		</fieldset>
+
+		
+		@*<fieldset>
+			<div id="DescriptionItems">
+				@Html.LabelFor(Function(m) m.Name)
+				@Html.TextBoxFor(Function(m) m.Name, New With {.class = "width70 floatright"})
+				@Html.ValidationMessageFor(Function(m) m.Name)
+			</div>
+			<br />
+			<div>
+				@Html.LabelFor(Function(m) m.Description)
+				@Html.TextArea("description", Model.Description, New With {.class = "width70 floatright"})
+				@Html.ValidationMessageFor(Function(m) m.Description)
+			</div>
+		</fieldset>*@
+
+
+
+	</fieldset>
+
 
 	<fieldset id="DataRecordsPermissions" class="floatleft overflowhidden width50">
 			<legend class="fontsmalltitle">Data :</legend>
@@ -45,13 +67,13 @@
 																New With {.id = "selectiontype_All", .onclick = "changeRecordOption('Base','ALL')"})All Records
 					</fieldset>
 
-					<fieldset id="selectiontypepicklistgroup" class="width100">
+					<fieldset id="selectiontypepicklistgroup" class="">
 						<div id="PicklistRadioDiv" class="floatleft">
 							@Html.RadioButton("selectiontype", RecordSelectionType.Picklist, Model.SelectionType = RecordSelectionType.Picklist,
 																	New With {.id = "selectiontype_Picklist", .onclick = "changeRecordOption('Base','PICKLIST')"})
 							<span>Picklist</span>
 						</div>
-						<div class="width70 floatleft">
+						<div class="width70 floatright">
 							@Html.EllipseButton("cmdBasePicklist", "selectBaseTablePicklist()", Model.SelectionType = RecordSelectionType.Picklist)
 							<div class="ellipsistextbox">
 								@Html.TextBoxFor(Function(m) m.PicklistName, New With {.id = "txtBasePicklist", .readonly = "true"})
@@ -60,13 +82,13 @@
 						<input type="hidden" id="txtBasePicklistID" name="picklistID" value="@Model.PicklistID" />
 					</fieldset>
 
-					<fieldset id="selectiontypefiltergroup" class="width100">
+					<fieldset id="selectiontypefiltergroup" class="">
 						<div id="FilterRadioDiv" class="floatleft">
 							@Html.RadioButton("selectiontype", RecordSelectionType.Filter, Model.SelectionType = RecordSelectionType.Filter,
 																	New With {.id = "selectiontype_Filter", .onclick = "changeRecordOption('Base','FILTER')"})
 							<span>Filter</span>
 						</div>
-						<div class="width70  floatleft">
+						<div class="width70  floatright">
 							@Html.EllipseButton("cmdBaseFilter", "selectBaseTableFilter()", Model.SelectionType = RecordSelectionType.Filter)
 							<div class="ellipsistextbox">
 								@Html.TextBoxFor(Function(m) m.FilterName, New With {.id = "txtBaseFilter", .readonly = "true", .class = "width80"})
@@ -118,7 +140,9 @@
 
 		$('fieldset').css("border", "0");
 		$('table').css("border", "0");
-	
+		
+//		$('#textareadescription').css('', '');
+
 		getBaseTableList();
 		refreshViewAccess();
 
