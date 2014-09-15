@@ -605,7 +605,7 @@ function optiondata_onload() {
 						grid_HideCheckboxes('ssOleDBGridFindRecords');
 					},
 					beforeSelectRow: handleMultiSelect // handle multi select
-				});  //.jqGrid('hideCol', 'cb'); //bug - this causes horizontal scrollbars
+				}).jqGrid('hideCol', 'cb');
 
 				//resize the grid to the height of its container.
 				$("#ssOleDBGridFindRecords").jqGrid('setGridHeight', $("#FindGridRow").height());
