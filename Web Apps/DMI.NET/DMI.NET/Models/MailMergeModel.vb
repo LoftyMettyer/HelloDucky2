@@ -19,7 +19,7 @@ Namespace Models
 			End Get
 		End Property
 
-		<MinLength(3, ErrorMessage:="You must select at least one column for your report.")> _
+		<MinLength(3, ErrorMessage:="You must select at least one column for your mail merge.")> _
 		Public Overrides Property ColumnsAsString As String
 
 		<DisplayName("Template"), DisplayFormat(ConvertEmptyStringToNull:=False)>

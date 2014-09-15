@@ -57,7 +57,7 @@ Namespace Models
 		Public Property SortOrders As New List(Of SortOrderViewModel) Implements IReport.SortOrders
 		Public Property SortOrdersAvailable As Integer
 
-		<MinLength(3, ErrorMessage:="You must select at least one column to order the report by.")> _
+		<MinLength(3, ErrorMessage:="You must select at least one column to order the definition by.")> _
 		Public Overridable Property SortOrdersString As String
 
 		Public Property JobsToHide As New Collection(Of Integer)
