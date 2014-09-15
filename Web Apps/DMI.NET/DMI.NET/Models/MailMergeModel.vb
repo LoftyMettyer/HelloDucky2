@@ -74,6 +74,19 @@ Namespace Models
 
 		Public Property AvailableEmails As Collection(Of ReportTableItem)
 
+		<RegularExpression("True", ErrorMessage:="You must select a destination")>
+		Public ReadOnly Property IsDestinationOK As Boolean
+			Get
+
+				If OutputFormat = MailMergeOutputTypes.WordDocument Then
+					Return (SaveToFile OrElse SendToPrinter OrElse DisplayOutputOnScreen)
+				Else
+					Return True
+				End If
+
+			End Get
+		End Property
+
 	End Class
 
 End Namespace
