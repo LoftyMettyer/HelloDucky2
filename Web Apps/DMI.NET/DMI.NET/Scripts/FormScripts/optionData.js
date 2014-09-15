@@ -453,6 +453,14 @@ function optiondata_onload() {
 					},
 					ondblClickRow: function () {
 						$('#cmdSelect').click();
+					},
+					loadComplete: function () {
+						$("#ssOleDBGridRecords").jqGrid('setSelection', 1);
+						tbrefreshControls();
+					},
+					afterSearch: function () {
+						$("#ssOleDBGridRecords").jqGrid('setSelection', 1);
+						tbrefreshControls();
 					}
 				});
 
