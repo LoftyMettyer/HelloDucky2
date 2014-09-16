@@ -84,11 +84,11 @@
 
 				<div>
 					<div class="width65 floatleft">
-						<input class="ui-widget ui-corner-all" id="SelectedColumnIsHidden" onchange="updateColumnsSelectedGrid();" type="checkbox">
-						<label for="SelectedColumnIsHidden">Hidden</label>
-						<div class="numericOnly" style="color: rgb(0, 0, 0);">
-							<input class="ui-widget ui-corner-all" id="SelectedColumnIsGroupWithNext" onchange="updateColumnsSelectedGrid();" type="checkbox">
-							<label for="SelectedColumnIsGroupWithNext">Group With Next</label>
+						<input class="ui-widget ui-corner-all" id="SelectedColumnIsHidden" onchange="changeColumnIsHidden();" type="checkbox">
+						<label id="labelSelectedColumnIsHidden" for="SelectedColumnIsHidden">Hidden</label>
+						<div class="canGroupWithNext" style="color: rgb(0, 0, 0);">
+							<input class="ui-widget ui-corner-all" id="SelectedColumnIsGroupWithNext" onchange="changeColumnIsGroupWithNext();" type="checkbox">
+							<label id="labelSelectedColumnIsGroupWithNext" for="SelectedColumnIsGroupWithNext">Group With Next</label>
 						</div>
 						<div class="baseTableOnly" style="color: rgb(165, 147, 147);">
 							<input disabled="disabled" class="ui-widget ui-corner-all" id="SelectedColumnIsRepeated" onchange="updateColumnsSelectedGrid();" type="checkbox">
@@ -406,6 +406,109 @@
 
 	}
 
+		function changeColumnIsHidden() {
+
+			if ($("#SelectedColumnIsHidden").is(':checked')) {
+				$('#SelectedColumnIsAverage').prop('checked', false);
+				$('#SelectedColumnIsCount').prop('checked', false);
+				$('#SelectedColumnIsTotal').prop('checked', false);
+				$('#SelectedColumnIsGroupWithNext').prop('checked', false);
+			}
+
+			refreshcolumnPropertiesPanel();
+			updateColumnsSelectedGrid();
+		}
+
+		function changeColumnIsGroupWithNext() {
+
+			if ($("#SelectedColumnIsGroupWithNext").is(':checked')) {
+				$('#SelectedColumnIsAverage').prop('checked', false);
+				$('#SelectedColumnIsCount').prop('checked', false);
+				$('#SelectedColumnIsTotal').prop('checked', false);
+				$('#SelectedColumnIsHidden').prop('checked', false);
+			}
+
+			refreshcolumnPropertiesPanel();
+			updateColumnsSelectedGrid();
+		}
+
+	function refreshcolumnPropertiesPanel() {
+
+		var rowCount = $('#SelectedColumns').jqGrid('getGridParam', 'selarrrow').length;
+		var rowId = $("#SelectedColumns").jqGrid('getGridParam', 'selrow');
+		var dataRow = $("#SelectedColumns").getRowData(rowId)
+		var allRows = $("#SelectedColumns")[0].rows;
+
+		var isTopRow = (rowId == allRows[1].id);
+		var isBottomRow = (rowId == allRows[allRows.length - 1].id);
+
+		var isReadOnly = isDefinitionReadOnly();
+
+		if (rowCount > 1) {
+			$("#definitionColumnProperties :input").attr("disabled", true);
+			$("#SelectedColumnHeading").val("");
+			$("#SelectedColumnSize").val("");
+			$("#SelectedColumnDecimals").val("");
+			$('#SelectedColumnIsAverage').prop('checked', false);
+			$('#SelectedColumnIsCount').prop('checked', false);
+			$('#SelectedColumnIsTotal').prop('checked', false);
+			$('#SelectedColumnIsHidden').prop('checked', false);
+			$('#SelectedColumnIsGroupWithNext').prop('checked', false);
+			$('#SelectedColumnIsRepeated').prop('checked', false);
+
+		}
+		else {
+
+			$("#definitionColumnProperties :input").removeAttr("disabled");
+
+			var isNumeric = (dataRow.DataType == '2' || dataRow.DataType == '4');
+			var isDecimals = (isNumeric == true || dataRow.IsExpression == "true");
+			var isBaseOrParentTableColumn = (dataRow.TableID == $("#BaseTableID").val()) || (dataRow.TableID == $("#txtParent1ID").val()) || (dataRow.TableID == $("#txtParent2ID").val());
+			var isThereChildColumns = true;
+
+			var isHidden = $("#SelectedColumnIsHidden").is(':checked');
+			var isGroupWithNext = $("#SelectedColumnIsGroupWithNext").is(':checked');
+
+			$(".numericOnly :input").attr("disabled", !isNumeric || isHidden || isGroupWithNext);
+			$(".decimalsOnly :input").attr("disabled", !isDecimals);
+			$(".baseTableOnly :input").attr("disabled", !isBaseOrParentTableColumn);
+			$(".canGroupWithNext :input").attr("disabled", isBottomRow || isHidden);
+			$("#SelectedColumnIsHidden").attr("disabled", isGroupWithNext);
+
+			if (!isNumeric || isHidden || isGroupWithNext) {
+				$(".numericOnly").css("color", "#A59393");
+			} else {
+				$(".numericOnly").css("color", "#000000");
+			}
+
+			if (isBottomRow || isHidden) {
+				$(".canGroupWithNext").css("color", "#A59393");
+			} else {
+				$(".canGroupWithNext").css("color", "#000000");
+			}
+
+			if (isGroupWithNext) {
+				$("#labelSelectedColumnIsHidden").css("color", "#A59393");
+			} else {
+				$("#labelSelectedColumnIsHidden").css("color", "#000000");
+			}
+
+			if (isBaseOrParentTableColumn && isThereChildColumns) {
+				$(".baseTableOnly").css("color", "#000000");
+			} else {
+				$(".baseTableOnly").css("color", "#A59393");
+			}
+
+		}
+
+		// Enable / Disable relevant buttons
+		button_disable($("#btnColumnRemove")[0], false || isReadOnly);
+		button_disable($("#btnColumnRemoveAll")[0], false || isReadOnly);
+		button_disable($("#btnColumnMoveUp")[0], isTopRow || isReadOnly);
+		button_disable($("#btnColumnMoveDown")[0], isBottomRow || isReadOnly);
+
+	}
+
 	function updateColumnsSelectedGrid() {
 
 		var rowId = $("#SelectedColumns").jqGrid('getGridParam', 'selrow');
@@ -511,70 +614,21 @@
 			},
 			onSelectRow: function (id) {
 
-				var rowCount = $('#SelectedColumns').jqGrid('getGridParam', 'selarrrow').length;
+				var rowId = $("#SelectedColumns").jqGrid('getGridParam', 'selrow');
+				var dataRow = $("#SelectedColumns").getRowData(rowId)
 
-				if (rowCount > 1) {
-					$("#definitionColumnProperties :input").attr("disabled", true);
-					$("#SelectedColumnHeading").val("");
-					$("#SelectedColumnSize").val("");
-					$("#SelectedColumnDecimals").val("");
-					$('#SelectedColumnIsAverage').prop('checked', false);
-					$('#SelectedColumnIsCount').prop('checked', false);
-					$('#SelectedColumnIsTotal').prop('checked', false);
-					$('#SelectedColumnIsHidden').prop('checked', false);
-					$('#SelectedColumnIsGroupWithNext').prop('checked', false);
-					$('#SelectedColumnIsRepeated').prop('checked', false);
+				$("#SelectedColumnHeading").val(dataRow.Heading);
 
-				}
-				else {
+				$("#SelectedColumnSize").val(dataRow.Size);
+				$("#SelectedColumnDecimals").val(dataRow.Decimals);
+				$('#SelectedColumnIsAverage').prop('checked', JSON.parse(dataRow.IsAverage));
+				$('#SelectedColumnIsCount').prop('checked', JSON.parse(dataRow.IsCount));
+				$('#SelectedColumnIsTotal').prop('checked', JSON.parse(dataRow.IsTotal));
+				$('#SelectedColumnIsHidden').prop('checked', JSON.parse(dataRow.IsHidden));
+				$('#SelectedColumnIsGroupWithNext').prop('checked', JSON.parse(dataRow.IsGroupWithNext));
+				$('#SelectedColumnIsRepeated').prop('checked', JSON.parse(dataRow.IsRepeated));
 
-					$("#definitionColumnProperties :input").removeAttr("disabled");
-
-					var rowId = $("#SelectedColumns").jqGrid('getGridParam', 'selrow');
-					var dataRow = $("#SelectedColumns").getRowData(rowId)
-					var allRows = $("#SelectedColumns")[0].rows;
-
-					var isTopRow = (rowId == allRows[1].id);
-					var isBottomRow = (rowId == allRows[allRows.length - 1].id);
-					var isNumeric = (dataRow.DataType == '2' || dataRow.DataType == '4');
-					var isDecimals = (isNumeric == true || dataRow.IsExpression == "true");
-					var isBaseOrParentTableColumn = (dataRow.TableID == $("#BaseTableID").val()) || (dataRow.TableID == $("#txtParent1ID").val()) || (dataRow.TableID == $("#txtParent2ID").val());
-					var isThereChildColumns = true;
-
-					$(".numericOnly :input").attr("disabled", !isNumeric);
-					$(".decimalsOnly :input").attr("disabled", !isDecimals);
-					$(".baseTableOnly :input").attr("disabled", !isBaseOrParentTableColumn);
-
-					if (isNumeric) {
-						$(".numericOnly").css("color", "#000000");
-					} else {
-						$(".numericOnly").css("color", "#A59393");
-					}
-
-					if (isBaseOrParentTableColumn && isThereChildColumns) {
-						$(".baseTableOnly").css("color", "#000000");
-					} else {
-						$(".baseTableOnly").css("color", "#A59393");
-					}
-
-					$("#SelectedColumnHeading").val(dataRow.Heading);
-
-					$("#SelectedColumnSize").val(dataRow.Size);
-					$("#SelectedColumnDecimals").val(dataRow.Decimals);
-					$('#SelectedColumnIsAverage').prop('checked', JSON.parse(dataRow.IsAverage));
-					$('#SelectedColumnIsCount').prop('checked', JSON.parse(dataRow.IsCount));
-					$('#SelectedColumnIsTotal').prop('checked', JSON.parse(dataRow.IsTotal));
-					$('#SelectedColumnIsHidden').prop('checked', JSON.parse(dataRow.IsHidden));
-					$('#SelectedColumnIsGroupWithNext').prop('checked', JSON.parse(dataRow.IsGroupWithNext));
-					$('#SelectedColumnIsRepeated').prop('checked', JSON.parse(dataRow.IsRepeated));
-
-					// Enable / Disable relevant buttons
-					var isReadOnly = isDefinitionReadOnly();
-					button_disable($("#btnColumnRemove")[0], false || isReadOnly);
-					button_disable($("#btnColumnRemoveAll")[0], false || isReadOnly);
-					button_disable($("#btnColumnMoveUp")[0], isTopRow || isReadOnly);
-					button_disable($("#btnColumnMoveDown")[0], isBottomRow || isReadOnly);
-				}
+				refreshcolumnPropertiesPanel();
 
 			},
 			loadComplete: function (data) {
