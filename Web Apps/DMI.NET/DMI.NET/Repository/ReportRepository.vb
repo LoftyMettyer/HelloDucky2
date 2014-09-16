@@ -110,6 +110,7 @@ Namespace Repository
 				objModel.GroupAccess = GetUtilityAccess(objModel, action)
 				objModel.IsReadOnly = (action = UtilityActionType.View)
 				objModel.ID = If(action = UtilityActionType.Copy, 0, objModel.ID)
+				objModel.Owner = If(action = UtilityActionType.Copy, _username, objModel.Owner)
 
 				_customreports.Remove(objModel.ID)
 				_customreports.Add(objModel)
@@ -179,6 +180,7 @@ Namespace Repository
 				objModel.GroupAccess = GetUtilityAccess(objModel, action)
 				objModel.IsReadOnly = (action = UtilityActionType.View)
 				objModel.ID = If(action = UtilityActionType.Copy, 0, objModel.ID)
+				objModel.Owner = If(action = UtilityActionType.Copy, _username, objModel.Owner)
 
 				_mailmerges.Remove(objModel.ID)
 				_mailmerges.Add(objModel)
@@ -252,6 +254,7 @@ Namespace Repository
 				objModel.GroupAccess = GetUtilityAccess(objModel, action)
 				objModel.IsReadOnly = (action = UtilityActionType.View)
 				objModel.ID = If(action = UtilityActionType.Copy, 0, objModel.ID)
+				objModel.Owner = If(action = UtilityActionType.Copy, _username, objModel.Owner)
 
 				_crosstabs.Remove(objModel.ID)
 				_crosstabs.Add(objModel)
@@ -381,6 +384,7 @@ Namespace Repository
 				objModel.GroupAccess = GetUtilityAccess(objModel, action)
 				objModel.IsReadOnly = (action = UtilityActionType.View)
 				objModel.ID = If(action = UtilityActionType.Copy, 0, objModel.ID)
+				objModel.Owner = If(action = UtilityActionType.Copy, _username, objModel.Owner)
 
 				_calendarreports.Remove(objModel.ID)
 				_calendarreports.Add(objModel)
