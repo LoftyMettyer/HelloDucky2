@@ -97,12 +97,13 @@ Public Module ASRFunctions
 			Dim prmWaitListCourseTitleColumnUpdate = New SqlParameter("pfWaitListCourseTitleColumnUpdate", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
 			Dim prmWaitListCourseTitleColumnSelect = New SqlParameter("pfWaitListCourseTitleColumnSelect", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
 			Dim prmBulkBookingDefaultViewID = New SqlParameter("piBulkBookingDefaultViewID", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
+			Dim prmBulkBookingDefaultOrderID = New SqlParameter("piBulkBookingDefaultOrderID", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
 
 			objDataAccess.ExecuteSP("sp_ASRIntGetTrainingBookingParameters", _
 					prmEmpTableID, prmCourseTableID, prmCourseCancelDateColumnID, prmTBTableID, prmTBTableSelect, prmTBTableInsert, prmTBTableUpdate, _
 					prmTBStatusColumnID, prmTBStatusColumnUpdate, prmTBCancelDateColumnID, prmTBCancelDateColumnUpdate, prmTBStatusPExists, prmWaitListTableID, _
 					prmWaitListTableInsert, prmWaitListTableDelete, prmWaitListCourseTitleColumnID, prmWaitListCourseTitleColumnUpdate, prmWaitListCourseTitleColumnSelect, _
-					prmBulkBookingDefaultViewID)
+					prmBulkBookingDefaultViewID, prmBulkBookingDefaultOrderID)
 
 			HttpContext.Current.Session("TB_EmpTableID") = prmEmpTableID.Value
 			HttpContext.Current.Session("TB_CourseTableID") = prmCourseTableID.Value
@@ -124,6 +125,7 @@ Public Module ASRFunctions
 			HttpContext.Current.Session("TB_WaitListCourseTitleColumnSelect") = prmWaitListCourseTitleColumnSelect.Value
 
 			HttpContext.Current.Session("TB_BulkBookingDefaultViewID") = prmBulkBookingDefaultViewID.Value
+			HttpContext.Current.Session("TB_BulkBookingDefaultOrderID") = prmBulkBookingDefaultOrderID.Value
 
 			If CStr(HttpContext.Current.Session("TB_TBTableID")) = "" Then HttpContext.Current.Session("TB_TBTableID") = 0
 

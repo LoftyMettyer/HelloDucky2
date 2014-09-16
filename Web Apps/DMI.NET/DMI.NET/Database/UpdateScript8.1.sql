@@ -4614,7 +4614,8 @@ CREATE PROCEDURE [dbo].[sp_ASRIntGetTrainingBookingParameters] (
 	@piWaitListCourseTitleColumnID		integer	OUTPUT,
 	@pfWaitListCourseTitleColumnUpdate	bit	OUTPUT,
 	@pfWaitListCourseTitleColumnSelect	bit	OUTPUT,
-	@piBulkBookingDefaultViewID		integer	OUTPUT
+	@piBulkBookingDefaultViewID		integer	OUTPUT,
+	@piBulkBookingDefaultOrderID		integer	OUTPUT
 )
 AS
 BEGIN
@@ -4989,7 +4990,12 @@ BEGIN
 			AND parameterKey = 'Param_BulkBookingDefaultView'
 		IF @piBulkBookingDefaultViewID IS NULL SET @piBulkBookingDefaultViewID = 0
 
-
+			/* Get the Bulk Booking default order. */
+		SELECT @piBulkBookingDefaultOrderID = convert(integer, parameterValue)
+		FROM ASRSysModuleSetup
+		WHERE moduleKey = 'MODULE_TRAININGBOOKING'
+			AND parameterKey = 'Param_EmployeeOrder'
+		IF @piBulkBookingDefaultOrderID IS NULL SET @piBulkBookingDefaultOrderID = 0
 END
 GO
 
