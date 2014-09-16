@@ -1162,7 +1162,7 @@
 
 
 <script>
-	$(".ui-jqgrid").keydown(function (event) {
+	$("#DefSelRecords").keydown(function (event) {		
 		//Add first letter search to the grid...
 		try {
 			var id = $('#DefSelRecords td:visible').filter(function () {
