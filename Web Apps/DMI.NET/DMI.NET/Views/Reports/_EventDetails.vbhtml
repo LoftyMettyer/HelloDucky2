@@ -5,11 +5,11 @@
 
 @Html.HiddenFor(Function(m) m.EventsString, New With {.id = "txtCEAAS"})
 
-<div id="eventDetailsContainer" class="" style="width:94%">
+<div id="eventDetailsContainer" style="">
 	<fieldset class="">
 		<legend class="fontsmalltitle">Calendar Events :</legend>
 
-		<div id="divEventDetails" class="floatleft width80 overflowyhidden">
+		<div id="divEventDetails" class="floatleft width80 overflowyhidden ui-widget-content">
 			<input type="hidden" id="CalendarEventsViewAccess" />
 			<table id="CalendarEvents"></table>
 		</div>
@@ -97,7 +97,7 @@
 			loadonce: true,
 			viewrecords: true,
 			sortorder: "desc",
-			width: 'auto',
+			width: '80%',
 			height: 400,
 			ondblClickRow: function (rowID) {
 				eventEdit(rowID);
