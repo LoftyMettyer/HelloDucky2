@@ -186,6 +186,10 @@
 
 		$('fieldset').css("border", "1");
 
+		if ($("#TemplateFileName").val().length == 0) {
+			button_disable($('#cmdTemplateClear'), true);
+		}
+
 	});
 
 </script>
