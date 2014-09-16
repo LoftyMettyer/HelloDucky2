@@ -67,16 +67,16 @@
 			<br />
 
 			<div class="customReportsOnly" style="margin-left:20px;">
-				<div class="numericOnly width35 floatleft" style="color: rgb(0, 0, 0)">
-					<div class="width100">
+				<div class="width35 floatleft" style="color: rgb(0, 0, 0)">
+					<div class="numericOnly width100">
 						<input class=" ui-widget ui-corner-all" id="SelectedColumnIsAverage" onchange="updateColumnsSelectedGrid();" type="checkbox">
 						<label for="SelectedColumnIsAverage">Average</label>
 					</div>
-					<div class="width100">
+					<div class="cannotBeHidden width100">
 						<input class="ui-widget ui-corner-all" id="SelectedColumnIsCount" onchange="updateColumnsSelectedGrid();" type="checkbox">
 						<label for="SelectedColumnIsCount">Count</label>
 					</div>
-					<div class="width100">
+					<div class="numericOnly width100">
 						<input class="ui-widget ui-corner-all" id="SelectedColumnIsTotal" onchange="updateColumnsSelectedGrid();" type="checkbox">
 						<label for="SelectedColumnIsTotal">Total</label>
 					</div>
@@ -470,6 +470,7 @@
 			var isGroupWithNext = $("#SelectedColumnIsGroupWithNext").is(':checked');
 
 			$(".numericOnly :input").attr("disabled", !isNumeric || isHidden || isGroupWithNext);
+			$(".cannotBeHidden :input").attr("disabled", isHidden || isGroupWithNext);
 			$(".decimalsOnly :input").attr("disabled", !isDecimals);
 			$(".baseTableOnly :input").attr("disabled", !isBaseOrParentTableColumn);
 			$(".canGroupWithNext :input").attr("disabled", isBottomRow || isHidden);
@@ -479,6 +480,12 @@
 				$(".numericOnly").css("color", "#A59393");
 			} else {
 				$(".numericOnly").css("color", "#000000");
+			}
+
+			if (isHidden || isGroupWithNext) {
+				$(".cannotBeHidden").css("color", "#A59393");
+			} else {
+				$(".cannotBeHidden").css("color", "#000000");
 			}
 
 			if (isBottomRow || isHidden) {
