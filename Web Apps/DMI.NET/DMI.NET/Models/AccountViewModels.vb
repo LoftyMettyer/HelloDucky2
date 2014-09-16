@@ -89,7 +89,7 @@ Namespace Models
 				End If
 
 			Catch ex As Exception
-				Throw
+
 			End Try
 
 		End Sub
