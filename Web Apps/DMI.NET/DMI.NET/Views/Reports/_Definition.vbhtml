@@ -397,7 +397,7 @@
 		var sortOrderCount = $("#SortOrders").getGridParam("reccount");
 
 		if (tableCount > 0 || columnCount > 0 || eventCount > 0 || sortOrderCount > 0) {
-			OpenHR.modalPrompt("Changing the base table will result in all table/column specific aspects of this report definition being cleared. <br/><br/>Are you sure you wish to continue ?", 4, "").then(function (answer) {
+			OpenHR.modalPrompt("Changing the base table will result in all table/column specific aspects of this definition being cleared. <br/><br/>Are you sure you wish to continue ?", 4, "").then(function (answer) {
 				if (answer == 6) { // Yes
 					changeReportBaseTable();
 				}
