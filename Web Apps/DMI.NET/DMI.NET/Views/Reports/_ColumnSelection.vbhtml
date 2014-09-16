@@ -260,10 +260,7 @@
 		}
 
 		OpenHR.postData("Reports/RemoveReportColumn", postData, getAvailableTableColumnsCalcs);
-
-		if ($("#SortOrdersAvailable").val() == 0) {
-			button_disable($("#btnSortOrderAdd")[0], true);
-		}
+		refreshSortButtons();
 
 		// Position next selected column
 		var recordCount = $("#SelectedColumns").jqGrid('getGridParam', 'records')
