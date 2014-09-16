@@ -89,6 +89,17 @@ Namespace Controllers
 				If objModel.ColumnsAsString.Length > 0 Then
 					objModel.Columns = deserializer.Deserialize(Of List(Of ReportColumnItem))(objModel.ColumnsAsString)
 				End If
+
+				If objModel.IsSummary AndAlso objModel.Columns.Where(Function(m) m.IsAverage OrElse m.IsCount OrElse m.IsTotal).LongCount() = 0 Then
+					ModelState.AddModelError("IsSummaryOK", "There are no columns defined as aggregates for this summary report.")
+				End If
+
+				If objModel.IgnoreZerosForAggregates AndAlso objModel.Columns.Where( _
+					Function(m) (m.DataType = ColumnDataType.sqlInteger OrElse m.DataType = ColumnDataType.sqlNumeric) AndAlso (m.IsAverage OrElse m.IsCount OrElse m.IsTotal) _
+						).LongCount() = 0 Then
+					ModelState.AddModelError("IsIgnoreZerosOK", "Ignore zeros defined but there are no numeric columns defined as aggregates.")
+				End If
+
 			End If
 
 			If objModel.ChildTablesString IsNot Nothing Then
@@ -101,6 +112,11 @@ Namespace Controllers
 				If objModel.SortOrdersString.Length > 0 Then
 					objModel.SortOrders = deserializer.Deserialize(Of List(Of SortOrderViewModel))(objModel.SortOrdersString)
 				End If
+
+				If objModel.IsSummary AndAlso objModel.SortOrders.Where(Function(m) m.ValueOnChange).LongCount() = 0 Then
+					ModelState.AddModelError("IsValueOnChangeOK", "There are no columns defined as 'value on change' for this summary report.")
+				End If
+
 			End If
 
 			If objModel.ValidityStatus = ReportValidationStatus.ServerCheckComplete Then
