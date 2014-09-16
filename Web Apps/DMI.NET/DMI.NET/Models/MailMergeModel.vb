@@ -75,7 +75,7 @@ Namespace Models
 
 		Public Property AvailableEmails As Collection(Of ReportTableItem)
 
-		<RegularExpression("True", ErrorMessage:="You must select a destination")>
+		<RegularExpression("True", ErrorMessage:="No output destination selected.")>
 		Public ReadOnly Property IsDestinationOK As Boolean
 			Get
 

@@ -65,6 +65,27 @@ Namespace Models
 		<DisplayFormat(ConvertEmptyStringToNull:=False)>
 		Public Property EmailAttachmentName As String
 
+		<RegularExpression("True", ErrorMessage:="No output destination selected.")>
+		Public ReadOnly Property IsDestinationOK As Boolean
+			Get
+				Return (IsPreview OrElse ToScreen OrElse SaveToFile OrElse ToPrinter OrElse SendToEmail)
+			End Get
+		End Property
+
+		<RegularExpression("True", ErrorMessage:="You must select a destination in addition to preview.")>
+	 Public ReadOnly Property IsOtherThanPreviewOK As Boolean
+			Get
+				If IsPreview Then
+					Return (ToScreen OrElse SaveToFile OrElse ToPrinter)
+				Else
+					Return True
+				End If
+
+			End Get
+		End Property
+
+
+
 	End Class
 
 End Namespace
