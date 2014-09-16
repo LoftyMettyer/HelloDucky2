@@ -478,7 +478,7 @@ Namespace Controllers
 				cookie("WindowsAuthentication") = loginviewmodel.WindowsAuthentication
 				Response.Cookies.Add(cookie)
 
-				If objLogin.IsDMIUser OrElse objLogin.IsDMISingle Then
+				If (objLogin.IsDMIUser OrElse objLogin.IsDMISingle) And Not Session("isMobileDevice") Then
 					ViewBag.SSIMode = False
 				Else
 					ViewBag.SSIMode = True
