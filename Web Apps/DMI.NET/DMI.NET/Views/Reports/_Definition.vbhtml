@@ -100,7 +100,7 @@
 					</fieldset>
 
 					<fieldset>
-						<div class="width100  height25" style="display:block">
+						<div class="width100  height25 displayTitleInReportHeader" style="display:block">
 							@Html.CheckBoxFor(Function(m) m.DisplayTitleInReportHeader)
 							@Html.LabelFor(Function(m) m.DisplayTitleInReportHeader)
 						</div>
@@ -138,11 +138,13 @@
 
 	$(function () {
 
+		if ($("#txtReportType").val() == '@UtilityType.utlMailMerge') {
+			$(".displayTitleInReportHeader").hide();
+		}
+
 		$('fieldset').css("border", "0");
 		$('table').css("border", "0");
 		
-//		$('#textareadescription').css('', '');
-
 		getBaseTableList();
 		refreshViewAccess();
 
