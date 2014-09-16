@@ -33,7 +33,7 @@ Namespace ViewModels
 			Orders = getOrders()
 
 			OrderId = CInt(Current.Session("optionLinkOrderID"))
-			ViewId = CInt(Current.Session("optionLinkViewID"))
+			ViewId = CInt(Current.Session("TB_BulkBookingDefaultViewID"))
 
 			TableID = NullSafeInteger(Current.Session("optionLinkTableID"))
 			CourseTitle = NullSafeString(Current.Session("optionCourseTitle"))
