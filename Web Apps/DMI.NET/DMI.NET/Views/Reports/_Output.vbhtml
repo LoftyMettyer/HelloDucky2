@@ -66,25 +66,25 @@ End Code
 				@Html.LabelFor(Function(m) m.ToPrinter, New With {.class = "DataManagerOnly"})
 			</div>
 			<div class="width70 floatleft">
-				@Html.TextBoxFor(Function(m) m.PrinterName, New With {.Name = "Output.PrinterName", .placeholder = "Default Printer", .class = "DataManagerOnly width100", .readonly = "true"})
+				@Html.TextBoxFor(Function(m) m.PrinterName, New With {.Name = "Output.PrinterName", .class = "DataManagerOnly width100", .readonly = "true"})
 			</div>
 		</fieldset>
 
-		<fieldset class="border0 reportdeffile">
-			<div class="">
+		<fieldset class="border0">
+			<div class="reportdeffile">
 				<div class="width30 floatleft">
 					@Html.CheckBoxFor(Function(m) m.SaveToFile, New With {Key .Name = "Output.SaveToFile", .onclick = "setOutputToFile();", .class = "DataManagerOnly"})
 					@Html.LabelFor(Function(m) m.SaveToFile, New With {.class = "DataManagerOnly"})
 				</div>
 				<div class="width70 floatleft">
-					@Html.TextBoxFor(Function(m) m.Filename, New With {.Name = "Output.Filename", .placeholder = "File Name", .readonly = "true", .class = "width100"})
+					@Html.TextBoxFor(Function(m) m.Filename, New With {.Name = "Output.Filename", .class = "width100"})
 				</div>
 			</div>
 		</fieldset>
 
 		<fieldset>
-			<div id="outputtabfilenametextbox" class="">
-				@Html.LabelFor(Function(m) m.SaveExisting)
+			<div id="outputtabfilenametextbox" class="reportdeffile">
+				@Html.LabelFor(Function(m) m.SaveExisting, New With {.class = "display-label_file"})
 				@Html.CustomEnumDropDownListFor(Function(m) m.SaveExisting, New With {.Name = "Output.SaveExisting", .class = "DataManagerOnly", .readonly = "true"})
 			</div>
 		</fieldset>
@@ -99,7 +99,7 @@ End Code
 					<div class="width70 floatleft">
 						@Html.HiddenFor(Function(m) m.EmailGroupID, New With {.Name = "Output.EmailGroupID", .id = "txtEmailGroupID"})
 						@Html.TextBoxFor(Function(m) m.EmailGroupName, New With {.Name = "Output.EmailGroupName", .id = "txtEmailGroup", .readonly = "readonly", .class = "display-textbox-emails", .style = ""})
-						<input type="button" class="" id="cmdEmailGroup" name="cmdEmailGroup" value="..." onclick="selectEmailGroup()" />
+						<input type="button" class="reportdefemail" id="cmdEmailGroup" name="cmdEmailGroup" value="..." onclick="selectEmailGroup()" />
 					</div>
 				</div>
 			</fieldset>
@@ -131,11 +131,14 @@ End Code
 	function setOutputToFile() {
 
 		var bSelected = $("#SaveToFile").prop('checked');
+
 		$(".reportdeffile").children().attr("readonly", !bSelected);
 
 		if (!bSelected) {
-			$(".reportdeffile").children().val("");
+			$("#Filename").val("");
 		}
+
+		saveToFileChecked();
 
 	}
 
@@ -201,8 +204,8 @@ End Code
 		var type = $('#outputformats :checked').val();
 
 		$(".reportdefpreview").attr("disabled", (type == "0"));
-		$(".reportdefemail").attr("disabled", (type == "0"));
-		$(".reportdeffile").attr("disabled", (type == "0"));
+		$(".reportdefemail").children().attr("disabled", (type == "0"));
+		$(".reportdeffile").children().attr("disabled", (type == "0"));
 
 		$(".reportdefscreen").attr("disabled", (type == "1"));
 		$(".reportdefprinter").attr("disabled", (type == "1" || type == "2"));
@@ -210,9 +213,11 @@ End Code
 		if (type == "0") {
 			$(".reportdefpreview").css("color", "#A59393");
 			$(".reportdefemail").css("color", "#A59393");
+			$(".reportdeffile").css("color", "#A59393");		
 		} else {
 			$(".reportdefpreview").css("color", "#000000");
 			$(".reportdefemail").css("color", "#000000");
+			$(".reportdeffile").css("color", "#000000");
 		}
 
 		if (type == "1") {
@@ -232,11 +237,9 @@ End Code
 		$("#ToScreen").prop('checked', true);
 		$("#ToPrinter").prop('checked', false);
 		$("#SaveToFile").prop('checked', false);
+		$("#Filename").val("");
 		$("#SendToEmail").prop('checked', false);
-
-		setOutputToEmail();
-		setOutputToFile();
-	
+		
 		switch (type) {
 
 			case "DataOnly":
@@ -253,6 +256,24 @@ End Code
 		}
 
 		refreshOutputOptions();
+		setOutputToEmail();
+		setOutputToFile();
+
+	}
+
+	function saveToFileChecked() {
+
+		var isChecked = $("#SaveToFile").prop('checked');
+		$("#SaveExisting").attr('disabled', !isChecked);
+		$("#Filename").removeAttr('readonly');
+
+		if (isChecked) {
+			$(".display-label_file").css("color", "#000000");
+		} else {
+			$("#Filename").attr('readonly', 'readonly');
+			$(".display-label_file").css("color", "#A59393");
+		}
+
 
 	}
 
@@ -265,27 +286,27 @@ End Code
 		if (isReadonly == "readonly") {
 			$("#Output_EmailSubject").attr('readonly', isReadonly);
 			$("#EmailAttachmentName").attr('readonly', isReadonly);
+			$(".display-label_emails").css("color", "#A59393");
 			$("#Output_EmailSubject").val('');
 			$("#EmailAttachmentName").val('');
 			$("#txtEmailGroupID").val(0);
 			$("#txtEmailGroup").val('');
 		} else {
-			$("#Output_EmailSubject").val('@Model.EmailSubject');
-			$("#EmailAttachmentName").val('@Model.EmailAttachmentName');
-			$("#txtEmailGroupID").val('@Model.EmailGroupID');
-			$("#txtEmailGroup").val('@Model.EmailGroupName');
+			$(".display-label_emails").css("color", "#000000");
 		}
+
 	}
 
 	$(function () {
-		selectOutputType('@Model.Format');
 
 		if ('@Model.ReportType' == '@UtilityType.utlCalendarReport') {
 			$(".hideforcalendarreport").hide();
 		}
 
-		sendAsEmailChecked();
+		selectOutputType('@Model.Format');
 		refreshOutputOptions();
+		saveToFileChecked();
+		sendAsEmailChecked();
 
 	});
 </script>
