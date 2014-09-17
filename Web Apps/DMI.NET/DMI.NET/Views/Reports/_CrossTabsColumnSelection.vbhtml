@@ -21,7 +21,7 @@
 			<tr>
 				<td style="padding-right: 40px;">Horizontal :</td>
 				<td>
-					@Html.ColumnDropdownFor(Function(m) m.HorizontalID, New ColumnFilter() With {.TableID = Model.BaseTableID}, New With {.onchange = "crossTabHorizontalClick()"})
+					@Html.ColumnDropdownFor(Function(m) m.HorizontalID, New ColumnFilter() With {.TableID = Model.BaseTableID}, New With {.onchange = "crossTabHorizontalChange()"})
 					@Html.ValidationMessageFor(Function(m) m.HorizontalID)
 					@Html.Hidden("HorizontalDataType", CInt(Model.HorizontalDataType))
 				</td>
@@ -33,7 +33,7 @@
 			<tr>
 				<td>Vertical :</td>
 				<td>
-					@Html.ColumnDropdownFor(Function(m) m.VerticalID, New ColumnFilter() With {.TableID = Model.BaseTableID}, New With {.onchange = "crossTabVerticalClick()"})
+					@Html.ColumnDropdownFor(Function(m) m.VerticalID, New ColumnFilter() With {.TableID = Model.BaseTableID}, New With {.onchange = "crossTabVerticalChange()"})
 					@Html.ValidationMessageFor(Function(m) m.VerticalID)
 					@Html.Hidden("VerticalDataType", CInt(Model.VerticalDataType))
 				</td>
@@ -45,7 +45,7 @@
 			<tr>
 				<td>Page Break :</td>
 				<td>
-					@Html.ColumnDropdownFor(Function(m) m.PageBreakID, New ColumnFilter() With {.TableID = Model.BaseTableID, .AddNone = True}, New With {.onchange = "crossTabPageBreakClick()"})
+					@Html.ColumnDropdownFor(Function(m) m.PageBreakID, New ColumnFilter() With {.TableID = Model.BaseTableID, .AddNone = True}, New With {.onchange = "crossTabPageBreakChange()"})
 					@Html.Hidden("PageBreakDataType", CInt(Model.PageBreakDataType))
 				</td>
 				<td class="startstopincrementcol">@Html.TextBoxFor(Function(m) m.PageBreakStart, New With {.class = "number"})</td>
@@ -187,6 +187,27 @@
 		$("#" + type + "Stop").autoNumeric({ aSep: ',', aNeg: '', mDec: iDecimals, mRound: 'S', mNum: 10 });
 		$("#" + type + "Increment").autoNumeric({ aSep: ',', aNeg: '', mDec: iDecimals, mRound: 'S', mNum: 10 });
 
+	}
+
+	function crossTabHorizontalChange() {
+		$("#HorizontalStart").val(0);
+		$("#HorizontalStop").val(0);
+		$("#HorizontalIncrement").val(0);
+		crossTabHorizontalClick();
+	}
+
+	function crossTabVerticalChange() {
+		$("#VerticalStart").val(0);
+		$("#VerticalStop").val(0);
+		$("#VerticalIncrement").val(0);
+		crossTabVerticalClick();
+	}
+
+	function crossTabPageBreakChange() {
+		$("#PageBreakStart").val(0);
+		$("#PageBreakStop").val(0);
+		$("#PageBreakIncrement").val(0);
+		crossTabPageBreakClick();
 	}
 
 	function crossTabHorizontalClick() {
