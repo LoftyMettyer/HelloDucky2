@@ -102,7 +102,7 @@
 					<fieldset>
 						<div class="width100  height25 displayTitleInReportHeader" style="display:block">
 							@Html.CheckBoxFor(Function(m) m.DisplayTitleInReportHeader)
-							@Html.LabelFor(Function(m) m.DisplayTitleInReportHeader)
+							@Html.LabelFor(Function(m) m.DisplayTitleInReportHeader, New With {.id = "label_DisplayTitleInReportHeader"})
 						</div>
 					</fieldset>
 				</div>
@@ -150,7 +150,11 @@
 
 		tableToGrid('#tblGroupAccess', { autoWidth: true, height: 150, cmTemplate: { sortable: false } });
 
-		if ($('#selectiontype_All').prop('checked')) $('#DisplayTitleInReportHeader').prop('disabled', true);
+		if ($('#selectiontype_All').prop('checked')) {
+			$('#DisplayTitleInReportHeader').prop('disabled', true);
+			$("#label_DisplayTitleInReportHeader").css("color", "#A59393");
+		}
+			
 		menu_toolbarEnableItem('mnutoolSaveReport', false);
 
 		if (isDefinitionReadOnly()) {
@@ -213,9 +217,12 @@
 			$("#txt" + psTable + "PicklistID").val(0);
 			$("#txt" + psTable + "FilterID").val(0);
 			$('#DisplayTitleInReportHeader').prop('disabled', true);
+			$("#DisplayTitleInReportHeader").prop('checked', false);
+			$("#label_DisplayTitleInReportHeader").css("color", "#A59393");
 		}
 		else {
 			$('#DisplayTitleInReportHeader').prop('disabled', false);
+			$("#label_DisplayTitleInReportHeader").css("color", "#000000");
 		}
 
 		if (psType == "PICKLIST") {
