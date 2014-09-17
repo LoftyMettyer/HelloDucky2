@@ -32,6 +32,7 @@ Namespace Models
 
 		<DisplayName("Start Date")>
 		<DisplayFormat(ApplyFormatInEditMode:=True, DataFormatString:="{0:dd/MM/yyyy}")>
+		<RequiredIf("StartType", CalendarDataType.Fixed, ErrorMessage:="You must select a fixed start date.")>
 		Public Property StartFixedDate As DateTime?
 
 		Public Property StartOffset As Integer
@@ -43,7 +44,11 @@ Namespace Models
 
 		Public Property EndType As CalendarDataType
 
+		<DisplayName("End Date")>
+		<DisplayFormat(ApplyFormatInEditMode:=True, DataFormatString:="{0:dd/MM/yyyy}")>
+		<RequiredIf("EndType", CalendarDataType.Fixed, ErrorMessage:="You must select a fixed end date.")>
 		Public Property EndFixedDate As DateTime?
+
 		Public Property EndOffset As Integer
 		Public Property EndOffsetPeriod As DatePeriod
 
