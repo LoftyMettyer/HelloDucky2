@@ -976,12 +976,14 @@ Namespace Repository
 					outputModel.Description = row("description").ToString
 					outputModel.Owner = row("owner").ToString
 
-					outputModel.FilterID = CInt(row("FilterID"))
-					outputModel.FilterName = row("filtername").ToString
-					outputModel.PicklistID = CInt(row("PicklistID"))
-					outputModel.PicklistName = row("picklistname").ToString
-
 					outputModel.SelectionType = CType(row("SelectionType"), RecordSelectionType)
+
+					If outputModel.SelectionType <> RecordSelectionType.AllRecords Then
+						outputModel.FilterID = CInt(row("FilterID"))
+						outputModel.FilterName = row("filtername").ToString
+						outputModel.PicklistID = CInt(row("PicklistID"))
+						outputModel.PicklistName = row("picklistname").ToString
+					End If
 
 					If data.Columns.Contains("PrintFilterHeader") Then
 						outputModel.DisplayTitleInReportHeader = CBool(row("PrintFilterHeader"))
