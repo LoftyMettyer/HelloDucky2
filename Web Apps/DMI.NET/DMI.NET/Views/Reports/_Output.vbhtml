@@ -146,6 +146,7 @@ End Code
 		var bSelected = $("#SendToEmail").prop('checked');
 
 		$(".reportdefemail").children().attr("readonly", !bSelected);
+		$('#cmdEmailGroup').attr('disabled', !bSelected);
 		button_disable($("#cmdEmailGroup")[0], !bSelected);
 
 		if (!bSelected) {
@@ -205,6 +206,7 @@ End Code
 
 		$(".reportdefpreview").attr("disabled", (type == "0"));
 		$(".reportdefemail").children().attr("disabled", (type == "0"));
+		$('#cmdEmailGroup').attr('disabled', (type == "0"));
 		$(".reportdeffile").children().attr("disabled", (type == "0"));
 
 		$(".reportdefscreen").attr("disabled", (type == "1"));
