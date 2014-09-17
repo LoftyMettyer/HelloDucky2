@@ -17,7 +17,7 @@ Namespace Models
 		Public Property Format As OutputFormats
 
 		<DisplayName("Preview on screen")>
-		Public Property IsPreview As Boolean
+		Public Property IsPreview As Boolean = True
 
 		<DisplayName("Display output on screen")>
 		Public Property ToScreen As Boolean
