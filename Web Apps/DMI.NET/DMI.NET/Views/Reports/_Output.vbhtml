@@ -89,28 +89,31 @@ End Code
 			</div>
 		</fieldset>
 
-		<fieldset id="fieldsetsendemail" class="reportdefemail">
-			<div class="">
-				<div class="width30 floatleft">
-					@Html.CheckBoxFor(Function(m) m.SendToEmail, New With {Key .Name = "Output.SendToEmail", .onclick = "setOutputToEmail();"})
-					@Html.LabelFor(Function(m) m.SendToEmail)
+		<div class="reportdefemail">
+			<fieldset id="fieldsetsendemail" class="reportdefemail">
+				<div class="">
+					<div class="width30 floatleft">
+						@Html.CheckBoxFor(Function(m) m.SendToEmail, New With {Key .Name = "Output.SendToEmail", .onclick = "setOutputToEmail();"})
+						@Html.LabelFor(Function(m) m.SendToEmail)
+					</div>
+					<div class="width70 floatleft">
+						@Html.HiddenFor(Function(m) m.EmailGroupID, New With {.Name = "Output.EmailGroupID", .id = "txtEmailGroupID"})
+						@Html.TextBoxFor(Function(m) m.EmailGroupName, New With {.Name = "Output.EmailGroupName", .id = "txtEmailGroup", .readonly = "readonly", .class = "display-textbox-emails", .style = ""})
+						<input type="button" class="" id="cmdEmailGroup" name="cmdEmailGroup" value="..." onclick="selectEmailGroup()" />
+					</div>
 				</div>
-				<div class="width70 floatleft">
-					@Html.HiddenFor(Function(m) m.EmailGroupID, New With {.Name = "Output.EmailGroupID", .id = "txtEmailGroupID"})
-					@Html.TextBoxFor(Function(m) m.EmailGroupName, New With {.Name = "Output.EmailGroupName", .id = "txtEmailGroup", .readonly = "readonly", .class = "display-textbox-emails", .style = ""})
-					<input type="button" class="" id="cmdEmailGroup" name="cmdEmailGroup" value="..." onclick="selectEmailGroup()" />
-				</div>
-			</div>
-		</fieldset>
-
-		<fieldset id="fieldsetsubjectemail">			
-				@Html.LabelFor(Function(m) m.EmailSubject, New With {.class = "display-label_emails"})
-				@Html.TextBox("Output.EmailSubject", Model.EmailSubject, New With {.class = "display-textbox-emails"})			
 			</fieldset>
-		<fieldset id="fieldseattachas">
-			@Html.LabelFor(Function(m) m.EmailAttachmentName, New With {.class = "display-label_emails"})
-			@Html.TextBoxFor(Function(m) m.EmailAttachmentName, New With {.Name = "Output.EmailAttachmentName", .class = "display-textbox-emails"})
-		</fieldset>
+
+			<fieldset id="fieldsetsubjectemail">
+				@Html.LabelFor(Function(m) m.EmailSubject, New With {.class = "display-label_emails"})
+				@Html.TextBox("Output.EmailSubject", Model.EmailSubject, New With {.class = "display-textbox-emails"})
+			</fieldset>
+			<fieldset id="fieldseattachas">
+				@Html.LabelFor(Function(m) m.EmailAttachmentName, New With {.class = "display-label_emails"})
+				@Html.TextBoxFor(Function(m) m.EmailAttachmentName, New With {.Name = "Output.EmailAttachmentName", .class = "display-textbox-emails"})
+			</fieldset>
+		</div>
+
 		<br />
 		@Html.ValidationMessage("Output.EmailGroupID")		<br />
 		@Html.ValidationMessage("Output.EmailSubject")		<br />
@@ -193,6 +196,34 @@ End Code
 
 	}
 
+	function refreshOutputOptions() {
+
+		var type = $('#outputformats :checked').val();
+
+		$(".reportdefpreview").attr("disabled", (type == "0"));
+		$(".reportdefemail").attr("disabled", (type == "0"));
+		$(".reportdeffile").attr("disabled", (type == "0"));
+
+		$(".reportdefscreen").attr("disabled", (type == "1"));
+		$(".reportdefprinter").attr("disabled", (type == "1" || type == "2"));
+
+		if (type == "0") {
+			$(".reportdefpreview").css("color", "#A59393");
+			$(".reportdefemail").css("color", "#A59393");
+		} else {
+			$(".reportdefpreview").css("color", "#000000");
+			$(".reportdefemail").css("color", "#000000");
+		}
+
+		if (type == "1") {
+			$(".reportdefscreen").css("color", "#A59393");
+			$(".reportdefprinter").css("color", "#A59393");
+		} else {
+			$(".reportdefscreen").css("color", "#000000");
+			$(".reportdefprinter").css("color", "#000000");
+		}
+	}
+
 	function changeOutputType(type) {
 
 		selectOutputType(type);
@@ -205,7 +236,7 @@ End Code
 
 		setOutputToEmail();
 		setOutputToFile();
-
+	
 		switch (type) {
 
 			case "DataOnly":
@@ -220,6 +251,8 @@ End Code
 			default:
 				break;
 		}
+
+		refreshOutputOptions();
 
 	}
 
@@ -252,5 +285,7 @@ End Code
 		}
 
 		sendAsEmailChecked();
+		refreshOutputOptions();
+
 	});
 </script>

@@ -46,6 +46,7 @@ Namespace Repository
 				If action = UtilityActionType.New Then
 					objModel.BaseTableID = SettingsConfig.Personnel_EmpTableID
 					objModel.Owner = _username
+					objModel.Output.ToScreen = True
 				Else
 
 					objModel.ID = ID
@@ -204,6 +205,7 @@ Namespace Repository
 				If action = UtilityActionType.New Then
 					objModel.BaseTableID = SettingsConfig.Personnel_EmpTableID
 					objModel.Owner = _username
+					objModel.Output.ToScreen = True
 				Else
 
 					objModel.ID = ID
@@ -279,6 +281,7 @@ Namespace Repository
 				If action = UtilityActionType.New Then
 					objModel.BaseTableID = SettingsConfig.Personnel_EmpTableID
 					objModel.Owner = _username
+					objModel.Output.ToScreen = True
 				Else
 
 					objModel.ID = ID
