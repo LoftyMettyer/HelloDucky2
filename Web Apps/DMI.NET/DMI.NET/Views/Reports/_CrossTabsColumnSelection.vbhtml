@@ -183,9 +183,9 @@
 		$("#" + type + "Stop").autoNumeric('destroy');
 		$("#" + type + "Increment").autoNumeric('destroy');
 
-		$("#" + type + "Start").autoNumeric({ aSep: ',', aNeg: '', mDec: iDecimals, mRound: 'S', mNum: 10 });
-		$("#" + type + "Stop").autoNumeric({ aSep: ',', aNeg: '', mDec: iDecimals, mRound: 'S', mNum: 10 });
-		$("#" + type + "Increment").autoNumeric({ aSep: ',', aNeg: '', mDec: iDecimals, mRound: 'S', mNum: 10 });
+		$("#" + type + "Start").autoNumeric({ aSep: '', aNeg: '', mDec: iDecimals, mRound: 'S', mNum: 10 });
+		$("#" + type + "Stop").autoNumeric({ aSep: '', aNeg: '', mDec: iDecimals, mRound: 'S', mNum: 10 });
+		$("#" + type + "Increment").autoNumeric({ aSep: '', aNeg: '', mDec: iDecimals, mRound: 'S', mNum: 10 });
 
 	}
 
