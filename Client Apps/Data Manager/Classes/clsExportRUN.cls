@@ -1042,7 +1042,10 @@ Private Function GenerateSQLSelect() As Boolean
   '                               as with SQL 2005, for some reason when using the SELECT... INTO it ignores the sort.
   '                               Run the query analyser with display execution plan to find out for yourself.
   '                               This doesn't affect 2008. I wonder what the next version of SQL will do?
-  If glngSQLVersion = 9 Or glngSQLVersion = 11 Then
+  
+  ' COWBOY ALERT RE-REVISTITED !!!!!!
+  ' JDM - 17/09/2014 - TFS-9973 - Well, well, well, here we go again.
+  If glngSQLVersion = 9 Or glngSQLVersion >= 10.5 Then
     mstrSQLSelect = "SELECT TOP 1000000000000 "
   Else
     mstrSQLSelect = "SELECT "
