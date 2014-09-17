@@ -92,7 +92,7 @@
 						</div>
 						<div class="baseTableOnly" style="color: rgb(165, 147, 147);">
 							<input disabled="disabled" class="ui-widget ui-corner-all" id="SelectedColumnIsRepeated" onchange="updateColumnsSelectedGrid();" type="checkbox">
-							<label for="SelectedColumnIsRepeated">Repeat on child rows</label>
+							<label id="labelSelectedColumnRepeatOnChild" for="SelectedColumnIsRepeated">Repeat on child rows</label>
 						</div>
 					</div>
 				</div>
@@ -453,6 +453,12 @@
 			$('#SelectedColumnIsGroupWithNext').prop('checked', false);
 			$('#SelectedColumnIsRepeated').prop('checked', false);
 
+			$(".numericOnly").css("color", "#A59393");
+			$(".cannotBeHidden").css("color", "#A59393");
+			$(".canGroupWithNext").css("color", "#A59393");
+			$("#labelSelectedColumnIsHidden").css("color", "#A59393");
+			$("#labelSelectedColumnRepeatOnChild").css("color", "#A59393");
+
 		}
 		else {
 
@@ -503,13 +509,15 @@
 				$(".baseTableOnly").css("color", "#A59393");
 			}
 
+			$("#labelSelectedColumnRepeatOnChild").css("color", "#000000");
+
 		}
 
 		// Enable / Disable relevant buttons
 		button_disable($("#btnColumnRemove")[0], false || isReadOnly);
 		button_disable($("#btnColumnRemoveAll")[0], false || isReadOnly);
-		button_disable($("#btnColumnMoveUp")[0], isTopRow || isReadOnly);
-		button_disable($("#btnColumnMoveDown")[0], isBottomRow || isReadOnly);
+		button_disable($("#btnColumnMoveUp")[0], isTopRow || isReadOnly || (rowCount > 1));
+		button_disable($("#btnColumnMoveDown")[0], isBottomRow || isReadOnly || (rowCount > 1));
 
 	}
 
