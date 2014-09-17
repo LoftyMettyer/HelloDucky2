@@ -50,6 +50,27 @@ Namespace Helpers
 
 			Return New SelectList(items, "Value", "Text", selectedItem)
 		End Function
+
+		<Extension> _
+	 Public Function CustomEnumDropDownListFor(Of TModel, TEnum)(htmlHelper__1 As HtmlHelper(Of TModel), expression As Expression(Of Func(Of TModel, TEnum)), htmlAttributes As Object) As MvcHtmlString
+			Dim metadata = ModelMetadata.FromLambdaExpression(expression, htmlHelper__1.ViewData)
+			Dim values = [Enum].GetValues(GetType(TEnum)).Cast(Of TEnum)()
+
+			Dim items = values.[Select](Function(value) New SelectListItem() With { _
+				.Text = GetEnumDescription(value), _
+				.Value = value.ToString(), _
+				.Selected = value.Equals(metadata.Model)})
+
+			Dim attributes = HtmlHelper.AnonymousObjectToHtmlAttributes(htmlAttributes)
+			Return htmlHelper__1.DropDownListFor(expression, items, attributes)
+		End Function
+
+		Public Function GetEnumDescription(Of TEnum)(value As TEnum) As String
+			Dim field = value.[GetType]().GetField(value.ToString())
+			Dim attributes = DirectCast(field.GetCustomAttributes(GetType(DescriptionAttribute), False), DescriptionAttribute())
+			Return If(attributes.Length > 0, attributes(0).Description, value.ToString())
+		End Function
+		
 	End Module
 
 End Namespace
