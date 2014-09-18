@@ -204,15 +204,24 @@ End Code
 
 		var type = $('#outputformats :checked').val();
 
-		$(".reportdefpreview").attr("readonly", (type == "0"));
-		$(".reportdefemail").children().attr("readonly", (type == "0"));
-		$('#cmdEmailGroup').attr('disabled', (type == "0"));
-		$(".reportdeffile").children().attr("readonly", (type == "0"));
+		$(".reportdefpreview").children().removeAttr("readonly");
+		$(".reportdefscreen").children().removeAttr("readonly");
+		$(".reportdeffile").children().removeAttr("readonly");
+		$(".reportdefemail").children().removeAttr("readonly");
 
-		$(".reportdefscreen").attr("readonly", (type == "1"));
-		$(".reportdefprinter").attr("readonly", (type == "1" || type == "2"));
+		$(".reportdefpreview :checkbox").attr("disabled", (type == "0"));
+		$(".reportdefemail :checkbox").attr("disabled", (type == "0"));
+		$('#cmdEmailGroup').attr('disabled', (type == "0"));
+		$(".reportdeffile :checkbox").attr("disabled", (type == "0"));
+
+		$(".reportdefscreen :checkbox").attr("disabled", (type == "1"));
+		$(".reportdefprinter :checkbox").attr("disabled", (type == "1" || type == "2"));
 
 		if (type == "0") {
+			$(".reportdefpreview").children().attr("readonly", "readonly");
+			$(".reportdeffile").children().attr("readonly", "readonly");
+			$(".reportdefemail").children().attr("readonly", "readonly");
+
 			$(".reportdefpreview").css("color", "#A59393");
 			$(".reportdefemail").css("color", "#A59393");
 			$(".reportdeffile").css("color", "#A59393");		
@@ -223,12 +232,20 @@ End Code
 		}
 
 		if (type == "1") {
+			$(".reportdefpreview").children().attr("readonly", "readonly");
+			$(".reportdefscreen").children().attr("readonly", "readonly");
 			$(".reportdefscreen").css("color", "#A59393");
 			$(".reportdefprinter").css("color", "#A59393");
 		} else {
 			$(".reportdefscreen").css("color", "#000000");
 			$(".reportdefprinter").css("color", "#000000");
 		}
+
+		if (type == "2") {
+			$(".reportdefprinter").children().attr("readonly", "readonly");
+			$(".reportdefprinter").css("color", "#A59393");
+		}
+
 	}
 
 	function changeOutputType(type) {
