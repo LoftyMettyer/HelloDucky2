@@ -204,13 +204,13 @@ End Code
 
 		var type = $('#outputformats :checked').val();
 
-		$(".reportdefpreview").attr("disabled", (type == "0"));
-		$(".reportdefemail").children().attr("disabled", (type == "0"));
+		$(".reportdefpreview").attr("readonly", (type == "0"));
+		$(".reportdefemail").children().attr("readonly", (type == "0"));
 		$('#cmdEmailGroup').attr('disabled', (type == "0"));
-		$(".reportdeffile").children().attr("disabled", (type == "0"));
+		$(".reportdeffile").children().attr("readonly", (type == "0"));
 
-		$(".reportdefscreen").attr("disabled", (type == "1"));
-		$(".reportdefprinter").attr("disabled", (type == "1" || type == "2"));
+		$(".reportdefscreen").attr("readonly", (type == "1"));
+		$(".reportdefprinter").attr("readonly", (type == "1" || type == "2"));
 
 		if (type == "0") {
 			$(".reportdefpreview").css("color", "#A59393");
