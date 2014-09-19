@@ -1140,7 +1140,7 @@ input[type=button].Embedded, input[type=button].Linked {
 
 
 /* Header elements */
-nav.nowrap {
+/*nav.nowrap {
 	margin-top: 10px;
 	width: 100%;
 	white-space: nowrap;
@@ -1158,7 +1158,7 @@ nav.tablelayout input:not([type="radio"]), .tablelayout textarea {
 	display: table-cell;
 	width: 90%;
 	vertical-align: top;
-}
+}*/
 
 .inline-block {
 	display: inline-block;

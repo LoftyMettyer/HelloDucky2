@@ -144,7 +144,22 @@ function util_def_expression_onload() {
 								refreshControls();
 							}
 			);
-			$('#SSTree1').bind("paste.jstree", function (event, data) { resetIDandTag(data.rslt); });
+			$('#SSTree1').bind("paste.jstree", function(event, data) {
+				resetIDandTag(data.rslt);
+				
+				if (frmUseful.txtCutCopyType.value == "CUT") {
+					
+					var pastedId = data.rslt.nodes[0].id;
+					$.jstree._focused().deselect_all();
+					$.jstree._focused().select_node("#" + pastedId);
+					//Turn into a copy now, for repeated pasting...
+					frmUseful.txtUndoType.value = "COPY";
+					frmUseful.txtCutCopyType.value = "COPY";
+					$.jstree._focused().copy();
+
+				}
+
+			});
 
 		}
 		catch (e) {
@@ -1070,7 +1085,6 @@ function editClick() {
 	var iParamIndex = 0;
 
 	fOK = true;
-	OpenHR.submitForm(frmRefresh);
 
 	frmOptionArea.txtGotoOptionPage.value = "util_def_exprComponent";
 	frmOptionArea.txtGotoOptionAction.value = "EDITEXPRCOMPONENT";
@@ -1252,7 +1266,9 @@ function cancelComponent() {
 	// Expand the work frame and hide the option frame.
 	//$("#optionframe").hide();
 	//$("#workframe").show();
-	$('#optionframe').dialog('close');
+	try {
+		$('#optionframe').dialog('close');
+	} catch (e) {	};
 
 	//frmDefinition.SSTree1.style.visibility = "visible";
 	//frmDefinition.SSTree1.Refresh();
@@ -1294,7 +1310,12 @@ function deleteClick() {
 	if (tree_selectedNodeID().substr(0, 1) != "E") {
 		createUndoView("DELETE");
 
-		$("#SSTree1").jstree("remove", '#' + tree_selectedNodeID());
+		$.each($.jstree._focused().get_selected(), function(obj) {
+			$.jstree._focused().remove('#' + this.id);
+		});
+
+		$.jstree._focused().deselect_all();
+
 		refreshControls();
 	}
 }
@@ -1436,9 +1457,9 @@ function clipboardClick() {
 }
 
 function cutComponents() {
-	$.jstree._focused().cut();
 	frmUseful.txtUndoType.value = "CUT";
 	frmUseful.txtCutCopyType.value = "CUT";
+	$.jstree._focused().cut();
 }
 
 function copyComponents() {
@@ -1461,12 +1482,7 @@ function pasteComponents() {
 		//create sibling
 		$.jstree._focused().paste($('#' + tree_SelectedItemParentKey()));
 	}
-	
-
-	var frmUseful = document.getElementById("frmUseful");
-	if (frmUseful.txtUndoType.value == "COPY") {
-		//TODO: This is a copy; change the IDs to new values.
-	}
+		
 	refreshControls();
 }
 

@@ -11,17 +11,17 @@
 <form id="frmDefinition">
 
 	<div class="absolutefull">
-		<nav class="nowrap tablelayout">
+		<div class="nowrap tablelayout">
 			<div class="tablerow">
 				<label>Name :</label>
-				<input id="txtName" name="txtName" maxlength="50" onkeyup="changeName()">
+				<input id="txtName" name="txtName" maxlength="50" onkeyup="changeName()" style="width:90%;">				
 				<label>Owner :</label>
-				<input id="txtOwner" name="txtOwner" disabled="disabled" tabindex="-1">
+				<input id="txtOwner" style=" margin-left: 4px;" name="txtOwner" disabled="disabled" tabindex="-1">
 			</div>
-
+			<br/>
 			<div class="tablerow">
 				<label>Description :</label>
-				<textarea id="txtDescription" name="txtDescription" wrap="VIRTUAL" maxlength="255" onkeyup="changeDescription()"></textarea>
+				<textarea id="txtDescription" name="txtDescription" wrap="VIRTUAL" style="width:90%; height: 60px;" maxlength="255" onkeyup="changeDescription()"></textarea>
 				<label>Access :</label>
 				<div>
 					<input class="inline-block" id="optAccessRW" name="optAccess" type="radio" onclick="changeAccess()" checked />
@@ -32,7 +32,7 @@
 					<label class="inline-block" for="optAccessHD">Hidden</label>
 				</div>
 			</div>
-		</nav>
+		</div>
 
 
 		<div class="clearboth">
