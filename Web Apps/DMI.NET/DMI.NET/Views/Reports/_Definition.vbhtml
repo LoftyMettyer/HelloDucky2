@@ -19,7 +19,7 @@
 		<fieldset class="">
 			@Html.LabelFor(Function(m) m.Name)
 			<div class="width70 floatright">
-				@Html.TextBoxFor(Function(m) m.Name, New With {.class = "width100 floatright"})
+				@Html.TextBoxFor(Function(m) m.Name, New With {.class = "width100 floatright", .maxlength = 50})
 				@Html.ValidationMessageFor(Function(m) m.Name)
 			</div>
 		</fieldset>
