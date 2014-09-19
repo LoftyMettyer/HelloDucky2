@@ -941,26 +941,10 @@ input[type=button].Embedded, input[type=button].Linked {
 	width: 90px;
 }
 
-#eventEventInformationContainer .formField {
-	margin: 2px auto;	
-	float:right;
-} 
-
-#eventEventInformationContainer .formField label {
-margin-left:20px;
-}
-
-#eventEventInformationContainer {
-padding-left:0px;
-}
-
-#eventEventInformationContainer .optiongrouppadding {
- padding-left:20px;
-}
-
-#eventEventInformationContainer #cmdBasePicklist {
-	float:right;
-	padding:2px 17px;
+#divCalendarDetailButtons .ui-button {
+	float: right;
+	margin: 15px 5px 5px 10px;
+	width: 100px;
 }
 
 .CrossTabsColumndiv {

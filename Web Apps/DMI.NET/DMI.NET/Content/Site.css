@@ -667,7 +667,7 @@ select.readonly {
 	margin: 5px 0 5px 0;
 }
 
-#divExpressionSelectionButtons, #divSortOrderButtons, #divCalendarDetailButtons, #divSelectOrder, #divLookupFindButtons {
+#divExpressionSelectionButtons, #divSortOrderButtons, #divSelectOrder, #divLookupFindButtons {
 	float: right;
 	margin: 15px 0 5px 0;
 }

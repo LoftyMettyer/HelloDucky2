@@ -124,7 +124,7 @@
 
 
 	function eventAdd() {
-		OpenHR.OpenDialog("Reports/AddCalendarEvent", "divPopupReportDefinition", { ReportID: "@Model.ID" }, 'auto');
+		OpenHR.OpenDialog("Reports/AddCalendarEvent", "divPopupReportDefinition", { ReportID: "@Model.ID" }, '1000');
 	}
 
 	function eventEdit(rowID) {
@@ -134,7 +134,7 @@
 		}
 
 		var gridData = $("#CalendarEvents").getRowData(rowID);
-		OpenHR.OpenDialog("Reports/EditCalendarEvent", "divPopupReportDefinition", gridData, 'auto');
+		OpenHR.OpenDialog("Reports/EditCalendarEvent", "divPopupReportDefinition", gridData, '1000');
 
 	}
 
