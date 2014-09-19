@@ -84,7 +84,7 @@ Namespace Models
 				objItems.Add(objItem)
 			End If
 
-			Return objItems
+			Return objItems.OrderBy(Function(m) m.Sequence)
 
 		End Function
 

@@ -92,7 +92,7 @@ Namespace Models
 				objItems.Add(New ReportColumnItem With {.ID = objColumn.ID, .Name = objColumn.Name})
 			Next
 
-			Return objItems
+			Return objItems.OrderBy(Function(m) m.Name)
 
 		End Function
 

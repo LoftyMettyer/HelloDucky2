@@ -8,6 +8,7 @@ Imports System.ComponentModel
 Imports System.ComponentModel.DataAnnotations
 Imports HR.Intranet.Server.Extensions
 Imports HR.Intranet.Server.Enums
+Imports DMI.NET.ViewModels.Reports
 
 Namespace Models
 
@@ -101,6 +102,27 @@ Namespace Models
 				Dim sParentName = SessionInfo.Tables.GetById(objParent.ParentID).Name
 				objItems.Add(New ReportTableItem With {.id = objParent.ParentID, .Name = sParentName, .Relation = ReportRelationType.Parent1})
 			Next
+
+			Return objItems.OrderBy(Function(m) m.Name)
+
+		End Function
+
+		Public Overrides Function GetAvailableSortColumns(Self As SortOrderViewModel) As IEnumerable(Of ReportColumnItem)
+
+			Dim objItems As New Collection(Of ReportColumnItem)
+
+			' Add all columns that aren't already included in the sort collection
+			For Each objColumn In Columns.Where(Function(m) m.IsExpression = False)
+				If SortOrders.Where(Function(m) m.ColumnID = objColumn.ID).Count = 0 Then
+					objItems.Add(objColumn)
+				End If
+			Next
+
+			' Add self to collection if not already there
+			If Self.ColumnID > 0 AndAlso objItems.Where(Function(m) m.ID = Self.ColumnID).Count = 0 Then
+				Dim objItem = Columns.Where(Function(m) m.ID = Self.ColumnID).FirstOrDefault
+				objItems.Add(objItem)
+			End If
 
 			Return objItems.OrderBy(Function(m) m.Name)
 

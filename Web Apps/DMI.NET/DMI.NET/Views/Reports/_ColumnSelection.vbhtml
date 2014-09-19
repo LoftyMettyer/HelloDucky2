@@ -168,6 +168,10 @@
 
 		}
 
+		if ('@Model.ReportType' == '@UtilityType.utlMailMerge') {
+			$("#SelectedColumns").setGridParam({ sortname: 'Name', sortorder: 'asc' }).trigger('reloadGrid');
+		}
+
 		var ids = $("#AvailableColumns").getDataIDs();
 		var nextIndex = $("#AvailableColumns").getInd(rowID);
 
@@ -650,7 +654,14 @@
 			}
 		});
 
-		$("#SelectedColumns").jqGrid('sortableRows');
+		if ('@Model.ReportType' == '@UtilityType.utlMailMerge') {
+			$("#SelectedColumns").setGridParam({ sortname: 'Name', sortorder: 'asc' }).trigger('reloadGrid');
+		}
+
+		if ('@Model.ReportType' == '@UtilityType.utlCustomReport') {
+			$("#SelectedColumns").jqGrid('sortableRows');
+		}
+
 		$("#SelectedColumns").jqGrid('hideCol', 'cb');
 
 	}
@@ -663,7 +674,6 @@
 			max: 10,
 			showOn: 'both'
 		}).css("width", "15px");
-
 
 		if ('@Model.ReportType' == '@UtilityType.utlMailMerge') {
 			$(".customReportsOnly").hide();
