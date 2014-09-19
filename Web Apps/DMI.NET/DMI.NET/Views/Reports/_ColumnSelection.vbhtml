@@ -45,7 +45,7 @@
 				<div class="floatleft width25">
 					<label for="SelectedColumnHeading">Heading :</label>
 				</div>
-				<input class="width70" type='text' id="SelectedColumnHeading" onchange="updateColumnsSelectedGrid();" />
+				<input class="width70" type='text' id="SelectedColumnHeading" maxlength="50" onchange="updateColumnsSelectedGrid();" />
 			</div>
 			<br style="clear:both" />
 
@@ -139,13 +139,14 @@
 			rowID = selectedRows[i];
 			var datarow = $("#AvailableColumns").getRowData(selectedRows[i]);
 
+			datarow.ReportType = '@Model.ReportType';
+			datarow.ReportID = '@Model.ID';
+			datarow.Heading = datarow.Name.substr(0, 50);
+
 			if (datarow.IsExpression == "false") {
 				datarow.Name = $("#SelectedTableID option:selected").text() + '.' + datarow.Name;
 			}
 
-			datarow.ReportType = '@Model.ReportType';
-			datarow.ReportID = '@Model.ID';
-			datarow.Heading = datarow.Name;
 			datarow.Sequence = $("#SelectedColumns").jqGrid('getGridParam', 'records') + 1;
 			datarow.IsAverage = false;
 			datarow.IsCount = false;
