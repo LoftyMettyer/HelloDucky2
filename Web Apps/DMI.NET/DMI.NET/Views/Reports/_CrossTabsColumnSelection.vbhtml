@@ -193,6 +193,7 @@
 		$("#HorizontalStop").val(0);
 		$("#HorizontalIncrement").val(0);
 		crossTabHorizontalClick();
+		refreshTab2Controls();
 	}
 
 	function crossTabVerticalChange() {
@@ -200,6 +201,7 @@
 		$("#VerticalStop").val(0);
 		$("#VerticalIncrement").val(0);
 		crossTabVerticalClick();
+		refreshTab2Controls();
 	}
 
 	function crossTabPageBreakChange() {
@@ -207,6 +209,7 @@
 		$("#PageBreakStop").val(0);
 		$("#PageBreakIncrement").val(0);
 		crossTabPageBreakClick();
+		refreshTab2Controls();
 	}
 
 	function crossTabHorizontalClick() {

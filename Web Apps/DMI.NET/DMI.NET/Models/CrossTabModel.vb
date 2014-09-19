@@ -92,6 +92,73 @@ Namespace Models
 			End Get
 		End Property
 
+		<RegularExpression("True", ErrorMessage:="Horizontal increment must be greater than zero")>
+		Public ReadOnly Property IsHorizontalIncrementOK1 As Boolean
+			Get
+				If (HorizontalStart > 0 OrElse HorizontalStop > 0) Then
+					Return HorizontalIncrement > 0
+				Else
+					Return True
+				End If
+			End Get
+		End Property
+
+		<RegularExpression("True", ErrorMessage:="Maximum number of steps between start, stop and increment value for the horizontal range has been exceeded")>
+		Public ReadOnly Property IsHorizontalIncrementOK2 As Boolean
+			Get
+				If HorizontalIncrement > 0 Then
+					Return (HorizontalStop - HorizontalStart) / HorizontalIncrement <= 32768
+				Else
+					Return True
+				End If
+			End Get
+		End Property
+
+		<RegularExpression("True", ErrorMessage:="Vertical increment must be greater than zero")>
+	 Public ReadOnly Property IsVerticalIncrementOK1 As Boolean
+			Get
+				If (VerticalStart > 0 OrElse VerticalStop > 0) Then
+					Return VerticalIncrement > 0
+				Else
+					Return True
+				End If
+			End Get
+		End Property
+
+		<RegularExpression("True", ErrorMessage:="Maximum number of steps between start, stop and increment value for the vertical range has been exceeded")>
+		Public ReadOnly Property IsVerticalIncrementOK2 As Boolean
+			Get
+				If VerticalIncrement > 0 Then
+					Return (VerticalStop - VerticalStart) / VerticalIncrement <= 32768
+				Else
+					Return True
+				End If
+			End Get
+		End Property
+
+		<RegularExpression("True", ErrorMessage:="Page break increment must be greater than zero")>
+	 Public ReadOnly Property IsPageBreakIncrementOK1 As Boolean
+			Get
+				If (PageBreakStart > 0 OrElse PageBreakStop > 0) Then
+					Return PageBreakIncrement > 0
+				Else
+					Return True
+				End If
+			End Get
+		End Property
+
+		<RegularExpression("True", ErrorMessage:="Maximum number of steps between start, stop and increment value for the page break range has been exceeded")>
+		Public ReadOnly Property IsPageBreakIncrementOK2 As Boolean
+			Get
+				If PageBreakIncrement > 0 Then
+					Return (PageBreakStop - PageBreakStart) / PageBreakIncrement <= 32768
+				Else
+					Return True
+				End If
+			End Get
+		End Property
+
+
 	End Class
 
 End Namespace
