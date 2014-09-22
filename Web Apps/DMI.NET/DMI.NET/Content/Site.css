@@ -786,3 +786,8 @@ select.readonly {
     display: inline-block;    
 		width: 100px;
 }
+
+#tabs {
+	background-image: none;
+	border: none;
+}
