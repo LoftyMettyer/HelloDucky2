@@ -607,7 +607,8 @@
 			})
 		}
 		else {
-			menu_loadDefSelPage('@CInt(Model.ReportType)', '@Model.ID', $("#BaseTableID option:selected").val(), true);
+
+			menu_loadDefSelPage('@CInt(Model.ReportType)', '@Session("utilid")', $("#BaseTableID option:selected").val(), true);
 		}
 
 		return false;

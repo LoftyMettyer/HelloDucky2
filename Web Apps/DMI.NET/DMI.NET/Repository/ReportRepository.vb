@@ -445,6 +445,7 @@ Namespace Repository
 				, prmID)
 
 				_mailmerges.Remove(objModel)
+				objModel.ID = CInt(prmID.Value)
 
 			Catch ex As Exception
 				Throw
@@ -508,6 +509,7 @@ Namespace Repository
 						prmID)
 
 				_crosstabs.Remove(objModel.ID)
+				objModel.ID = CInt(prmID.Value)
 
 			Catch
 				Throw
@@ -567,6 +569,7 @@ Namespace Repository
 						New SqlParameter("pfIgnoreZeros", SqlDbType.Bit) With {.Value = objModel.IgnoreZerosForAggregates})
 
 				_customreports.Remove(objModel.ID)
+				objModel.ID = CInt(prmID.Value)
 
 			Catch ex As Exception
 				Throw
@@ -654,6 +657,7 @@ Namespace Repository
 					prmID)
 
 				_calendarreports.Remove(objModel.ID)
+				objModel.ID = CInt(prmID.Value)
 
 			Catch ex As Exception
 				Throw

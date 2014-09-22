@@ -122,6 +122,7 @@ Namespace Controllers
 			If objModel.ValidityStatus = ReportValidationStatus.ServerCheckComplete Then
 				objReportRepository.SaveReportDefinition(objModel)
 				Session("reaction") = "CUSTOMREPORTS"
+				Session("utilid") = objModel.ID
 				Return RedirectToAction("confirmok", "home")
 
 			Else
@@ -160,6 +161,7 @@ Namespace Controllers
 			If objModel.ValidityStatus = ReportValidationStatus.ServerCheckComplete Then
 				objReportRepository.SaveReportDefinition(objModel)
 				Session("reaction") = "MAILMERGE"
+				Session("utilid") = objModel.ID
 				Return RedirectToAction("confirmok", "home")
 
 			Else
@@ -185,6 +187,7 @@ Namespace Controllers
 			If objModel.ValidityStatus = ReportValidationStatus.ServerCheckComplete Then
 				objReportRepository.SaveReportDefinition(objModel)
 				Session("reaction") = "CROSSTABS"
+				Session("utilid") = objModel.ID
 				Return RedirectToAction("confirmok", "home")
 
 			Else
@@ -224,6 +227,7 @@ Namespace Controllers
 			If objModel.ValidityStatus = ReportValidationStatus.ServerCheckComplete Then
 				objReportRepository.SaveReportDefinition(objModel)
 				Session("reaction") = "CALENDARREPORTS"
+				Session("utilid") = objModel.ID
 				Return RedirectToAction("confirmok", "home")
 
 			Else
