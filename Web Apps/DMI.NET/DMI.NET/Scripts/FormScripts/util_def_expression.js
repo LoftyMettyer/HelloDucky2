@@ -1459,6 +1459,7 @@ function clipboardClick() {
 function cutComponents() {
 	frmUseful.txtUndoType.value = "CUT";
 	frmUseful.txtCutCopyType.value = "CUT";
+	$('#' + tree_selectedNodeID()).css('opacity', 0.5);
 	$.jstree._focused().cut();
 }
 
@@ -1473,7 +1474,7 @@ function pasteComponents() {
 	//NB Pasting is also bound to the resetIDandTag function
 	frmUseful = OpenHR.getForm("divDefExpression", "frmUseful");
 	if ((frmUseful.txtCutCopyType.value != "COPY") && (frmUseful.txtCutCopyType.value != "CUT")) return true;
-
+	
 	createUndoView("PASTE");
 	
 	if (tree_selectedNodeID().substr(0, 1) == "E") {
@@ -1482,7 +1483,9 @@ function pasteComponents() {
 		//create sibling
 		$.jstree._focused().paste($('#' + tree_SelectedItemParentKey()));
 	}
-		
+
+	$('#SSTree1 .jstree-leaf').css('opacity', 1);
+
 	refreshControls();
 }
 
