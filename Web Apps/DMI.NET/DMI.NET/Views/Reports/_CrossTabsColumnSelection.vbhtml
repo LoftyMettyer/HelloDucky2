@@ -8,10 +8,10 @@
 		Headings &amp; Column Breaks
 	</legend>
 	<fieldset>
-		<table class="width80">
+		<table class="width100">
 			<thead class="fontsmalltitle">
 				<tr>
-					<td style="width:15%"></td>
+					<td style="width:10%"></td>
 					<td style="width:55%;text-align:center">Column</td>
 					<td style="width:10%;text-align:center">Start</td>
 					<td style="width:10%;text-align:center">Stop</td>
@@ -19,7 +19,7 @@
 				</tr>
 			</thead>
 			<tr>
-				<td style="padding-right: 40px;">Horizontal :</td>
+				<td style="padding-right: 20px;">Horizontal :</td>
 				<td>
 					@Html.ColumnDropdownFor(Function(m) m.HorizontalID, New ColumnFilter() With {.TableID = Model.BaseTableID}, New With {.onchange = "crossTabHorizontalChange()"})
 					@Html.ValidationMessageFor(Function(m) m.HorizontalID)
@@ -53,22 +53,25 @@
 				<td class="startstopincrementcol">@Html.TextBoxFor(Function(m) m.PageBreakIncrement, New With {.class = "number"})</td>
 			</tr>
 		
-			<tr style="height:60px;"><td class="fontsmalltitle" style="position:absolute;margin-left: -13px; margin-top: 20px;">Intersection</td></tr>
+			<tr style="height:60px;">
+			<td class="fontsmalltitle" style="position:absolute;margin-left: -13px; margin-top: 20px;">Intersection</td>
+			</tr>
+
 			<tr>
 				<td>Column :</td>
-				<td>
+				<td colspan="1">
 					@Html.ColumnDropdownFor(Function(m) m.IntersectionID, New ColumnFilter() With {.TableID = Model.BaseTableID, .AddNone = True, .IsNumeric = True}, New With {.onchange = "crossTabIntersectionType();"})
 				</td>
-				<td colspan="3" rowspan="4" style="padding-left:20px" align="left">
+				<td colspan="3" rowspan="4" style="padding-left:20px;vertical-align:top ">
 					@Html.CheckBox("PercentageOfType", Model.PercentageOfType)
 					@Html.LabelFor(Function(m) m.PercentageOfType)
-					<br /><br />
+					<br />
 					@Html.CheckBox("PercentageOfPage", Model.PercentageOfPage)
 					@Html.LabelFor(Function(m) m.PercentageOfPage)
-					<br /><br />
+					<br />
 					@Html.CheckBox("SuppressZeros", Model.SuppressZeros)
 					@Html.LabelFor(Function(m) m.SuppressZeros)
-					<br /><br />
+					<br />
 					@Html.CheckBox("UseThousandSeparators", Model.UseThousandSeparators)
 					@Html.LabelFor(Function(m) m.UseThousandSeparators)
 				</td>
@@ -76,7 +79,7 @@
 			<tr style="height: 10px;"></tr>
 			<tr>
 				<td>@Html.LabelFor(Function(m) m.IntersectionType)</td>
-				<td>
+				<td colspan="1">
 					@Html.EnumDropDownListFor(Function(m) m.IntersectionType)
 				</td>
 			</tr>

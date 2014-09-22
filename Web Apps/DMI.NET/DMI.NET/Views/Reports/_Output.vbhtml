@@ -287,13 +287,11 @@ End Code
 		$("#Filename").removeAttr('readonly');
 
 		if (isChecked) {
-			$(".display-label_file").css("color", "#000000");
+			$(".display-label_file").css("color", "#ff0000");
 		} else {
 			$("#Filename").attr('readonly', 'readonly');
 			$(".display-label_file").css("color", "#A59393");
 		}
-
-
 	}
 
 	function sendAsEmailChecked() {
