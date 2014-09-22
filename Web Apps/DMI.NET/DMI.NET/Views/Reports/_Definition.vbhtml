@@ -14,7 +14,7 @@
 
 <div class="width100">
 	<fieldset class="floatleft width50 bordered">
-		<legend class="fontsmalltitle">Name :</legend>
+		<legend class="fontsmalltitle">Identification :</legend>
 
 		<fieldset class="">
 			@Html.LabelFor(Function(m) m.Name)
@@ -64,7 +64,7 @@
 				<div>
 					<fieldset id="selectiontypeallrecords" class="">
 						@Html.RadioButton("selectiontype", RecordSelectionType.AllRecords, Model.SelectionType = RecordSelectionType.AllRecords,
-																New With {.id = "selectiontype_All", .onclick = "changeRecordOption('Base','ALL')"})All Records
+																New With {.id = "selectiontype_All", .onclick = "changeRecordOption('Base','ALL')"})<span> All Records</span>
 					</fieldset>
 
 					<fieldset id="selectiontypepicklistgroup" class="">
@@ -113,7 +113,7 @@
 		</fieldset>
 
 	<fieldset id="AccessPermissions" class="table">
-			<legend class="fontsmalltitle">Access :</legend>
+			<legend class="fontsmalltitle">Group Access :</legend>
 
 			<fieldset>
 			<div class="nowrap tablelayout" style="margin-top: 0;">

@@ -70,7 +70,11 @@
 
 /* TABS */
 
-#tabs {border: none}
+#tabs {
+	border: none;
+	background-image: none;
+}
+
 
 #tabs { margin-top: 10px; padding: 10px 0px 0px 0px; width: 100%; }
 #tabs > div { padding-left: 13px; xborder-bottom: 1px solid #bfbfbf; }
