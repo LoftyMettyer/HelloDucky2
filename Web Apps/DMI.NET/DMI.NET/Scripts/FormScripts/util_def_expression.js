@@ -161,6 +161,11 @@ function util_def_expression_onload() {
 
 			});
 
+			$('#SSTree1').bind("dblclick.jstree", function () {
+				SSTree1_dblClick();
+				return false;
+			});
+
 		}
 		catch (e) {
 			alert("Unable to generate expression tree.\n" + e);			
@@ -175,13 +180,10 @@ function util_def_expression_onload() {
 
 		// Get menu.asp to refresh the menu.
 		menu_refreshMenu();
-		//$('#cmdOK').hide();
 		$('#cmdCancel').hide();
 	}
 
-	$("#SSTree1").delegate("a", "dblclick", function () {
-		SSTree1_dblClick();
-	});
+
 }
 
 
@@ -1077,7 +1079,7 @@ function insertClick() {
 	}
 }
 
-function editClick() {
+function editClick() {	
 	var fOK;
 	var frmOptionArea = OpenHR.getForm("optionframe", "frmGotoOption");
 	var frmRefresh = OpenHR.getForm("refreshframe", "frmRefresh");

@@ -354,27 +354,14 @@
 				this.data.core.li_height = this.get_container_ul().find("li.jstree-closed, li.jstree-leaf").eq(0).height() || 18;
 
 				this.get_container()
-					.delegate("li > ins", "click.jstree", $.proxy(function (event) {
-							var trgt = $(event.target);
-							// if(trgt.is("ins") && event.pageY - trgt.offset().top < this.data.core.li_height) { this.toggle_node(trgt); }
-							this.toggle_node(trgt);
-						}, this))
-					.bind("mousedown.jstree", $.proxy(function () { 
-							this.set_focus(); // This used to be setTimeout(set_focus,0) - why?
-						}, this))
-					.bind("dblclick.jstree", function (event) { 
-						var sel;
-						if(document.selection && document.selection.empty) { document.selection.empty(); }
-						else {
-							if(window.getSelection) {
-								sel = window.getSelection();
-								try { 
-									sel.removeAllRanges();
-									sel.collapse();
-								} catch (err) { }
-							}
-						}
-					});
+					.delegate("li > ins", "click.jstree", $.proxy(function(event) {
+						var trgt = $(event.target);
+						// if(trgt.is("ins") && event.pageY - trgt.offset().top < this.data.core.li_height) { this.toggle_node(trgt); }
+						this.toggle_node(trgt);
+					}, this))
+					.bind("mousedown.jstree", $.proxy(function() {
+						this.set_focus(); // This used to be setTimeout(set_focus,0) - why?
+					}, this));		
 				if(this._get_settings().core.notify_plugins) {
 					this.get_container()
 						.bind("load_node.jstree", $.proxy(function (e, data) { 
