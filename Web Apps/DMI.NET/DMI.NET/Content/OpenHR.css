@@ -1208,3 +1208,8 @@ div.tablelayout input:not([type="radio"]), .tablelayout textarea, .tablelayout d
 .ellipsistextbox input {
 	width: 100%;
 }
+
+.divExpressionTypes .disabled {
+	opacity: 0.5;
+}
+

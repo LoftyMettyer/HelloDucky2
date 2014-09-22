@@ -14,7 +14,7 @@ function util_def_exprcomponent_onload() {
 		, "theme": "adv_themeroller",
 		"url": window.ROOT + "Scripts/jquery/jstree/themes/adv_themeroller/style.css"
 	};
-	options["plugins"] = ["html_data", "ui", "contextmenu", "crrm", "hotkeys", "themes", "themeroller"];
+	options["plugins"] = ["html_data", "ui", "contextmenu", "crrm", "hotkeys", "themes", "themeroller", "sort"];
 
 	options["themeroller"] = {
 		"item_leaf": false,
@@ -31,9 +31,9 @@ function util_def_exprcomponent_onload() {
 		.bind("select_node.jstree", function () { componentRefreshControls(); });
 
 	$("#SSFunctionTree").bind("loaded.jstree", function () {
-		_FunctionTreeLoaded = true;
-		checkTreesLoaded();
-	})
+			_FunctionTreeLoaded = true;
+			checkTreesLoaded();
+		})
 		.bind("select_node.jstree", function () { componentRefreshControls(); });
 
 	options["core"] = { 'check_callback': true };	// Must have - this enables inline renaming etc...
@@ -53,6 +53,15 @@ function util_def_exprcomponent_onload() {
 		max: 250,
 		step: 1
 	});
+
+	$("#SSOperatorTree").delegate("a", "dblclick", function () {
+		component_OKClick();
+	});
+
+	$("#SSFunctionTree").delegate("a", "dblclick", function () {
+		component_OKClick();
+	});
+
 
 	setTimeout('resizeForm()', 300);
 }
@@ -620,18 +629,18 @@ function field_refreshColumn() {
 	}
 
 	if (frmMainForm.txtPassByType.value == 2) {
-		frmMainForm.cboFieldColumn.style.visibility = "visible";
+		frmMainForm.cboFieldColumn.style.display = "inline-block";
 		frmMainForm.cboFieldDummyColumn.style.visibility = "hidden";
 		frmMainForm.cboFieldDummyColumn.style.display = "none";
 	}
 	else {
 		if (frmMainForm.optField_Count.checked == true) {
-			frmMainForm.cboFieldColumn.style.visibility = "hidden";
+			frmMainForm.cboFieldColumn.style.display = "none";
 			frmMainForm.cboFieldDummyColumn.style.visibility = "visible";
 			frmMainForm.cboFieldDummyColumn.style.display = "inline-block";
 		}
 		else {
-			frmMainForm.cboFieldColumn.style.visibility = "visible";
+			frmMainForm.cboFieldColumn.style.display = "inline-block";
 			frmMainForm.cboFieldDummyColumn.style.visibility = "hidden";
 			frmMainForm.cboFieldDummyColumn.style.display = "none";
 		}
@@ -1002,7 +1011,7 @@ function calculationsAndFilters_load() {
 
 	grdGrid.jqGrid({
 		datatype: "local",
-		colNames: ['id', 'name'],
+		colNames: ['id', 'Name'],
 		colModel: [
 			{ name: 'id', index: 'id', sorttype: "int", hidden: true },
 			{ name: 'name', index: 'name' }
@@ -1061,7 +1070,11 @@ function value_changeType() {
 		}
 	}
 
-	frmMainForm.txtValue.value = "";
+	if ($('#frmMainForm #cboValueType').val() == "2") {
+		$('#frmMainForm #txtValue').val(0);
+	} else {
+		frmMainForm.txtValue.value = "";
+	}
 	frmMainForm.selectValue.selectedIndex = 0;
 }
 

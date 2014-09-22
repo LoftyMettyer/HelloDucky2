@@ -40,31 +40,31 @@
 			<input id="optType_Field" name="optType" type="radio" selected onclick="changeType(1)" />
 			<label tabindex="-1" for="optType_Field">Field</label>
 			<br />
-			<input id="optType_Operator" name="optType" type="radio" <%If iPassBy = 2 Then Response.Write("disabled")%> onclick="changeType(5)" />
-			<label tabindex="-1" for="optType_Operator">Operator</label>
+			<input id="optType_Operator" name="optType" type="radio" <%If iPassBy = 2 Then Response.Write("disabled class='disabled'")%> onclick="changeType(5)" />
+			<label <%If iPassBy = 2 Then Response.Write("class='disabled'")%> tabindex="-1" for="optType_Operator">Operator</label>
 			<br />
-			<input id="optType_Function" name="optType" type="radio" <%If iPassBy = 2 Then Response.Write("disabled")%> onclick="changeType(2)" />
-			<label tabindex="-1" for="optType_Function">Function</label>
+			<input id="optType_Function" name="optType" type="radio" <%If iPassBy = 2 Then Response.Write("disabled class='disabled'")%> onclick="changeType(2)" />
+			<label <%If iPassBy = 2 Then Response.Write("class='disabled'")%> tabindex="-1" for="optType_Function">Function</label>
 			<br />
-			<input id="optType_Value" name="optType" type="radio" <%If iPassBy = 2 Then Response.Write("disabled")%> onclick="changeType(4)" />
-			<label tabindex="-1" for="optType_Value">Value</label>
+			<input id="optType_Value" name="optType" type="radio" <%If iPassBy = 2 Then Response.Write("disabled class='disabled'")%> onclick="changeType(4)" />
+			<label <%If iPassBy = 2 Then Response.Write("class='disabled'")%> tabindex="-1" for="optType_Value">Value</label>
 			<br />
-			<input id="optType_LookupTableValue" name="optType" type="radio" <%If iPassBy = 2 Then Response.Write("disabled")%> onclick="changeType(6)" />
-			<label tabindex="-1" for="optType_LookupTableValue">Lookup Table Value</label>
+			<input id="optType_LookupTableValue" name="optType" type="radio" <%If iPassBy = 2 Then Response.Write("disabled class='disabled'")%> onclick="changeType(6)" />
+			<label <%If iPassBy = 2 Then Response.Write("class='disabled'")%> tabindex="-1" for="optType_LookupTableValue">Lookup Table Value</label>
 			<br />
 			<div id="trType_PVal">
-				<input id="optType_PromptedValue" name="optType" type="radio" <%If iPassBy = 2 Then Response.Write("disabled")%> onclick="changeType(7)" />
-				<label tabindex="-1" for="optType_PromptedValue">Prompted Value</label>
+				<input id="optType_PromptedValue" name="optType" type="radio" <%If iPassBy = 2 Then Response.Write("disabled class='disabled'")%> onclick="changeType(7)" />
+				<label <%If iPassBy = 2 Then Response.Write("class='disabled'")%> tabindex="-1" for="optType_PromptedValue">Prompted Value</label>
 			</div>
 			<br />
 			<div id="trType_Calc">
-				<input id="optType_Calculation" name="optType" type="radio" <%	 If iPassBy = 2 Then Response.Write("disabled")%> onclick="changeType(3)" />
-				<label tabindex="-1" for="optType_Calculation">Calculation</label>
+				<input id="optType_Calculation" name="optType" type="radio" <%	 If iPassBy = 2 Then Response.Write("disabled class='disabled'")%> onclick="changeType(3)" />
+				<label <%If iPassBy = 2 Then Response.Write("class='disabled'")%> tabindex="-1" for="optType_Calculation">Calculation</label>
 			</div>
 			<br />
 			<div id="trType_Filter">
-				<input id="optType_Filter" name="optType" type="radio" <%If iPassBy = 2 Then Response.Write("disabled")%> onclick="changeType(10)" />
-				<label tabindex="-1" for="optType_Filter">Filter</label>
+				<input id="optType_Filter" name="optType" type="radio" <%If iPassBy = 2 Then Response.Write("disabled class='disabled'")%> onclick="changeType(10)" />
+				<label <%If iPassBy = 2 Then Response.Write("class='disabled'")%> tabindex="-1" for="optType_Filter">Filter</label>
 			</div>
 		</div>
 
