@@ -526,6 +526,15 @@ select.readonly {
 	width: 345px;
 }
 
+#tableOutputDestination input[type=text] {
+	width: 99%;
+	margin: 5px 0 5px 0;
+}
+
+#tableOutputDestination select {
+	width: 100%;
+	margin: 5px 0 5px 0;
+}
 
 .CrosstabIntersectionCheckBoxesWidth {
 	width: 20%;
@@ -575,7 +584,7 @@ select.readonly {
 #cmdBaseFilter, #cmdParent1Picklist, #cmdBasePicklist,
 #cmdParent1Filter, #cmdParent2Picklist, #cmdParent2Filter, 
 #cmdEmailGroup, #cmdCustomStart, #cmdCustomEnd,
-#cmdTemplateSelect, #cmdTemplateClear {
+#cmdTemplateSelect, #cmdTemplateClear, #cmdFilename {
 	float: left;
 	padding: 2px 11px;
 }

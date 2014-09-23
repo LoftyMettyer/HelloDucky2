@@ -1,5 +1,4 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
-<%@ Import Namespace="DMI.NET.Code" %>
 <%@ Import Namespace="DMI.NET" %>
 <%@ Import Namespace="HR.Intranet.Server.Enums" %>
 <%@ Import Namespace="HR.Intranet.Server" %>
@@ -255,15 +254,14 @@
 <div id="frmAbsenceDefinitiontabs">
 	<form id="frmAbsenceDefinition" name="frmAbsenceDefinition">
 
-		<div style="padding: 10px 0px 50px 10px" id="thefrmAbsenceDefinitionButtons">
+		<div id="thefrmAbsenceDefinitionButtons" style="padding: 10px 0 50px 10px">
 			<div style="float: left">
 				<input type="button" class="btn" value="Definition" id="btnTab1" name="btnTab1" disabled="disabled"
 					onclick="display_Absence_Page(1);" />
 				<%
 					If Session("StandardReport_Type") = UtilityType.utlBradfordFactor Then
 				%>
-				<input type="button" class="btn" value="Options" id="btnTab2" name="btnTab2"
-					onclick="display_Absence_Page(2);" />
+				<input class="btn" id="btnTab2" name="btnTab2" onclick="display_Absence_Page(2);" type="button" value="Options" />
 				<%
 				End If
 				%>
@@ -275,8 +273,7 @@
 					' Causes problems if button isn't there
 					If Session("StandardReport_Type") <> UtilityType.utlBradfordFactor Then
 				%>
-				<input type="button" class="btn" value="Options" id="btnTab2" name="btnTab2"
-					onclick="display_Absence_Page(2);" />
+				<input class="btn" id="btnTab2" name="btnTab2" onclick="display_Absence_Page(2);" type="button" value="Options" />
 				<%
 				End If
 				%>
@@ -313,7 +310,7 @@
 					<legend class="fontsmalltitle">Date Range :</legend>
 					<div style="padding-left: 20px">
 						<div class="formField">
-							<label class="" style="">Start :</label>
+							<label>Start :</label>
 							<input class="datepicker" id="txtDateFrom" name="txtDateFrom">
 						</div>
 						<div class="formField">
@@ -330,23 +327,23 @@
 					<div class="padleft20">
 						<div class="padbot5" style="padding-top: 10px">
 							<input checked id="optAllRecords" name="optRecordSelection" type="radio" onclick="changeRecordOptions('ALL')" />
-							<label tabindex="-1" for="optAllRecords" class="radio">All</label>
+							<label tabindex="-1" for="optAllRecords">All</label>
 						</div>
 
 						<div class="padbot10">
 							<input id="optPickList" name="optRecordSelection" type="radio" onclick="changeRecordOptions('PICKLIST')" />
-							<label tabindex="-1" for="optPickList" class="radio">Picklist</label>
+							<label tabindex="-1" for="optPickList">Picklist</label>
 							<div class="floatright">
-								<input id="txtBasePicklist" name="txtBasePicklist" class="text textdisabled" disabled="disabled" style="width: 250px">
+								<input id="txtBasePicklist" name="txtBasePicklist"  disabled="disabled" style="width: 250px">
 								<input id="cmdBasePicklist" name="cmdBasePicklist" class="btn btndisabled" disabled="disabled" type="button" value="..." onclick="selectAbsencePicklist()" />
 							</div>
 						</div>
 
 						<div class="padbot10">
 							<input id="optFilter" name="optRecordSelection" type="radio" onclick="changeRecordOptions('FILTER')" />
-							<label tabindex="-1" for="optFilter" class="radio">Filter</label>
+							<label for="optFilter" tabindex="-1">Filter</label>
 							<div class="floatright">
-								<input id="txtBaseFilter" name="txtBaseFilter" class="text textdisabled" disabled="disabled" style="width: 250px">
+								<input id="txtBaseFilter" name="txtBaseFilter"  disabled="disabled" style="width: 250px">
 								<input id="cmdBaseFilter" name="cmdBaseFilter" class="btn btndisabled" disabled="disabled" type="button" value="..." onclick="selectAbsenceFilter()" />
 							</div>
 						</div>
@@ -370,7 +367,7 @@
 						<table class="invisible floatleft" style="width: 40%; border-collapse: collapse">
 							<tr>
 								<td>
-									<table class="invisible" style="border-collapse: collapse; padding: 0px">
+									<table class="invisible" style="border-collapse: collapse; padding: 0">
 										<tr>
 											<td class="fontsmalltitle" colspan="2">Display :</td>
 										</tr>
@@ -379,10 +376,7 @@
 											<td class="padleft20"></td>
 											<td>
 												<input type="checkbox" id="chkSRV" name="chkSRV" tabindex="0" />
-												<label
-													for="chkSRV"
-													class="checkbox"
-													tabindex="-1">
+												<label class="checkbox" for="chkSRV" tabindex="-1">
 													Suppress Repeated Personnel Details
 												</label>
 											</td>
@@ -391,10 +385,7 @@
 											<td class="padleft20"></td>
 											<td>
 												<input type="checkbox" id="chkShowDurations" name="chkShowDurations" tabindex="0">
-												<label
-													for="chkShowDurations"
-													class="checkbox"
-													tabindex="-1">
+												<label class="checkbox" for="chkShowDurations" tabindex="-1">
 													Show Duration Totals
 												</label>
 											</td>
@@ -403,10 +394,7 @@
 											<td class="padleft20"></td>
 											<td>
 												<input type="checkbox" id="chkShowInstances" name="chkShowInstances" tabindex="0" />
-												<label
-													for="chkShowInstances"
-													class="checkbox"
-													tabindex="-1">
+												<label class="checkbox" for="chkShowInstances" tabindex="-1">
 													Show Instances Count
 												</label>
 											</td>
@@ -415,10 +403,7 @@
 											<td class="padleft20"></td>
 											<td>
 												<input type="checkbox" id="chkShowFormula" name="chkShowFormula" tabindex="0" />
-												<label
-													for="chkShowFormula"
-													class="checkbox"
-													tabindex="-1">
+												<label class="checkbox" for="chkShowFormula" tabindex="-1">
 													Show Bradford Factor Formula
 												</label>
 											</td>
@@ -426,13 +411,9 @@
 										<tr>
 											<td class="padleft20"></td>
 											<td>
-												<input type="checkbox" id="chkShowAbsenceDetails" name="chkAbsenceDetails" tabindex="0"
-													onclick="absenceBreakdownRefreshTab2Controls();"
-													onchange="absenceBreakdownRefreshTab2Controls();" />
-												<label
-													for="chkShowAbsenceDetails"
-													class="checkbox"
-													tabindex="-1">
+												<input id="chkShowAbsenceDetails" name="chkAbsenceDetails" onchange="absenceBreakdownRefreshTab2Controls();" 
+													onclick="absenceBreakdownRefreshTab2Controls();" tabindex="0" type="checkbox" />
+												<label class="checkbox" for="chkShowAbsenceDetails" tabindex="-1">
 													Show Absence Details
 												</label>
 											</td>
@@ -444,7 +425,7 @@
 						<table class="invisible" style="width: 45%; border-collapse: collapse; padding: 5px">
 							<tr>
 								<td>
-									<table class="invisible" style="border-collapse: collapse; padding: 0px">
+									<table class="invisible" style="border-collapse: collapse; padding: 0">
 										<tr>
 											<td class="fontsmalltitle">Record Selection :</td>
 										</tr>
@@ -482,7 +463,7 @@
 													tabindex="-1">
 													Minimum Bradford Factor
 												</label>
-												<input id="Text1" name="txtMinimumBradfordFactor" class="text width20" onblur="validateNumeric(this);">
+												<input id="Text1" name="txtMinimumBradfordFactor" class="width20" onblur="validateNumeric(this);">
 											</td>
 										</tr>
 									</table>
@@ -501,11 +482,11 @@
 											<td class="fontsmalltitle" colspan="3">Order :</td>
 										</tr>
 
-										<tr>
+										<tr style="height: 40px"> 
 											<td class="padleft20"></td>
 											<td class="width10">Order By :</td>
 											<td class="width90">
-												<select id="cboOrderBy1" name="cboOrderBy1" style="" class="combo" onchange="absenceBreakdownRefreshTab2Controls();">
+												<select id="cboOrderBy1" name="cboOrderBy1" onchange="absenceBreakdownRefreshTab2Controls();">
 													<option value="0">&lt;None&gt;</option>
 													<%
 														For iCount = 0 To UBound(aColumnNames, 2) - 1
@@ -524,7 +505,7 @@
 											<td></td>
 											<td>Then : </td>
 											<td>
-												<select id="cboOrderBy2" name="cboOrderBy2" class="combo" onchange="absenceBreakdownRefreshTab2Controls();">
+												<select id="cboOrderBy2" name="cboOrderBy2"  onchange="absenceBreakdownRefreshTab2Controls();">
 													<option value="0">&lt;None&gt;</option>
 													<%
 														For iCount = 0 To UBound(aColumnNames, 2) - 1
@@ -548,300 +529,275 @@
 		</div>
 
 		<!-- Third tab -->
-		<div id="div3" style="visibility: hidden; display: none">
+		<div id="div3"  style="display: none;padding-left: 10px; padding-right: 20px" >
+			<table class="width100" style="border-collapse: collapse">
+				<tr>
+					<td colspan="2" class="fontsmalltitle width20">Output Format :</td>
+					<td colspan="2" class="fontsmalltitle">Output Destination :</td>
+				</tr>
 
-			<fieldset class="width25 floatleft">
-				<legend class="fontsmalltitle">Output Format : </legend>
-				<div class="padleft20">
-					<table style="border-collapse: collapse; width: 200px; height: 100%; padding: 4px">
+				<tr class="hidden">
+					<td style="width: 15px"></td>
+					<td class="width30" ></td>
+					<td style="width: 20px"></td>
+					<td ></td>
+				</tr>
+
+				<tr>
+					<td></td>
+					<td  class="vertaligntop">
+							<table >
+								<tr>
+									<td>
+										<table class="invisible" style="border-collapse: collapse; padding: 0; width: 100%">
+											<tr style="height: 20px">
+												<td></td>
+												<td style="text-align: left; width: 15px">
+													<input type="radio" name="optDefOutputFormat" id="optDefOutputFormat0" value="0"
+														style="width: 20px"
+														onclick="formatAbsenceClick(0);" />
+												</td>
+												<td style="text-align: left; white-space: nowrap">
+													<label for="optDefOutputFormat0" tabindex="-1">
+														Data Only
+													</label>
+												</td>
+												<td></td>
+											</tr>
+											<%
+												'MH20040705
+												'Don't allow CSV for Bradford
+												If Session("StandardReport_Type") = UtilityType.utlBradfordFactor Then
+											%>
+											<input id="optDefOutputFormat1" name="optDefOutputFormat" onclick="formatAbsenceClick(1);" style="width: 20px" type="hidden" value="1" />
+											<%
+											Else
+											%>
+											<tr style="height: 10px">
+												<td colspan="4"></td>
+											</tr>
+											<tr style="height: 20px">
+												<td></td>
+												<td style="text-align: left; width: 15px">
+													<input id="optDefOutputFormat1" name="optDefOutputFormat" onclick="formatAbsenceClick(1);" style="width: 20px" type="radio" value="1" />
+												</td>
+												<td style="text-align: left; white-space: nowrap">
+													<label class="ui-state-error-text" for="optDefOutputFormat1" tabindex="-1">CSV File</label>
+												</td>
+												<td></td>
+											</tr>
+											<%
+											End If
+											%>
+											<tr style="height: 10px">
+												<td colspan="4"></td>
+											</tr>
+											<tr style="height: 20px">
+												<td></td>
+												<td style="text-align: left; width: 15px">
+													<input type="radio" style="width: 20px" name="optDefOutputFormat" id="optDefOutputFormat2" value="2"
+														onclick="formatAbsenceClick(2);" />
+												</td>
+												<td style="text-align: left; white-space: nowrap">
+													<label
+														tabindex="-1"
+														for="optDefOutputFormat2"
+														class="radio ui-state-error-text">
+														HTML Document
+													</label>
+												</td>
+												<td></td>
+											</tr>
+											<tr style="height: 10px">
+												<td colspan="4"></td>
+											</tr>
+											<tr style="height: 20px">
+												<td></td>
+												<td style="text-align: left; width: 15px">
+													<input type="radio" style="width: 20px" name="optDefOutputFormat" id="optDefOutputFormat3" value="3"
+														onclick="	formatAbsenceClick(3);" />
+												</td>
+												<td style="text-align: left; white-space: nowrap">
+													<label
+														tabindex="-1"
+														for="optDefOutputFormat3"
+														class="radio ui-state-error-text">
+														Word Document
+													</label>
+												</td>
+												<td></td>
+											</tr>
+											<tr style="height: 10px">
+												<td colspan="4"></td>
+											</tr>
+											<tr style="height: 20px">
+												<td></td>
+												<td style="text-align: left; width: 15px">
+													<input type="radio" style="width: 20px" name="optDefOutputFormat" id="optDefOutputFormat4" value="4"
+														onclick="	formatAbsenceClick(4);" />
+												</td>
+												<td style="text-align: left; white-space: nowrap">
+													<label
+														tabindex="-1"
+														for="optDefOutputFormat4"
+														>
+														Excel Worksheet
+													</label>
+												</td>
+												<td></td>
+											</tr>
+											<tr style="height: 10px">
+												<td colspan="4"></td>
+											</tr>
+
+											<tr style="height: 5px">
+												<td></td>
+												<td style="text-align: left; width: 15px">
+													<input type="radio" style="width: 20px" name="optDefOutputFormat" id="optDefOutputFormat5" value="5"
+														onclick="formatAbsenceClick(5);" />
+												</td>
+												<td>
+													<label
+														tabindex="-1"
+														for="optDefOutputFormat5"
+														>
+														Excel Chart
+													</label>
+												</td>
+												<td></td>
+											</tr>
+											<%
+												'MH20031211 Fault 7787
+												'Don't allow Pivot for Bradford
+												If Session("StandardReport_Type") = UtilityType.utlBradfordFactor Then
+											%>
+											<input id="optDefOutputFormat6" name="optDefOutputFormat" onclick="formatAbsenceClick(6);" style="width: 20px" type="hidden" value="6" />
+											<%
+											Else
+											%>
+											<tr style="height: 10px">
+												<td colspan="4"></td>
+											</tr>
+											<tr style="height: 5px">
+												<td></td>
+												<td style="text-align: left; width: 15px">
+													<input id="optDefOutputFormat6" name="optDefOutputFormat" onclick="formatAbsenceClick(6);" style="width: 20px" type="radio" value="6" />
+												</td>
+												<td>
+													<label
+														for="optDefOutputFormat6" tabindex="-1">
+														Excel Pivot Table
+													</label>
+												</td>
+												<td></td>
+											</tr>
+											<%
+											End If
+											%>
+											<tr style="height: 5px">
+												<td colspan="4"></td>
+											</tr>
+										</table>
+									</td>
+								</tr>
+							</table>
+					</td>
+					<td style="width:10px"></td>
+					<td  class="vertaligntop">
+						<table id="tableOutputDestination" class="invisible" style="border-collapse: collapse; padding: 0; width: 100%;">
+
+							<tr class="hidden">
+								<td class="width25" style="height: 30px"></td>
+								<td class="width20"  >
+								<td colspan="2" class="width100" >
+								<td  >
+							</tr>
+
 						<tr>
-							<td>
-								<table class="invisible" style="border-collapse: collapse; padding: 0px; width: 100%">
-									<tr style="height: 20px">
-										<td style="width: 5px">&nbsp;</td>
-										<td style="text-align: left; width: 15px">
-											<input type="radio" name="optDefOutputFormat" id="optDefOutputFormat0" value="0"
-												style="width: 20px"
-												onclick="formatAbsenceClick(0);" />
-										</td>
-										<td style="text-align: left; white-space: nowrap">
-											<label
-												tabindex="-1"
-												for="optDefOutputFormat0"
-												class="radio">
-												Data Only
-											</label>
-										</td>
-										<td style="width: 5px">&nbsp;</td>
-									</tr>
-									<%
-										'MH20040705
-										'Don't allow CSV for Bradford
-										If Session("StandardReport_Type") = UtilityType.utlBradfordFactor Then
-									%>
-									<input type="hidden" style="width: 20px" name="optDefOutputFormat" id="optDefOutputFormat1" value="1"
-										onclick="formatAbsenceClick(1);" />
-									<%
-									Else
-									%>
-									<tr style="height: 10px">
-										<td colspan="4"></td>
-									</tr>
-									<tr style="height: 20px">
-										<td style="width: 5px">&nbsp;</td>
-										<td style="text-align: left; width: 15px">
-											<input type="radio" style="width: 20px" name="optDefOutputFormat" id="optDefOutputFormat1" value="1"
-												onclick="formatAbsenceClick(1);" />
-										</td>
-										<td style="text-align: left; white-space: nowrap">
-											<label
-												tabindex="-1"
-												for="optDefOutputFormat1"
-												class="radio ui-state-error-text">
-												CSV File
-											</label>
-										</td>
-										<td style="width: 5px">&nbsp;</td>
-									</tr>
-									<%
-									End If
-									%>
-									<tr style="height: 10px">
-										<td colspan="4"></td>
-									</tr>
-									<tr style="height: 20px">
-										<td style="width: 5px">&nbsp;</td>
-										<td style="text-align: left; width: 15px">
-											<input type="radio" style="width: 20px" name="optDefOutputFormat" id="optDefOutputFormat2" value="2"
-												onclick="formatAbsenceClick(2);" />
-										</td>
-										<td style="text-align: left; white-space: nowrap">
-											<label
-												tabindex="-1"
-												for="optDefOutputFormat2"
-												class="radio ui-state-error-text">
-												HTML Document
-											</label>
-										</td>
-										<td style="width: 5px">&nbsp;</td>
-									</tr>
-									<tr style="height: 10px">
-										<td colspan="4"></td>
-									</tr>
-									<tr style="height: 20px">
-										<td style="width: 5px">&nbsp;</td>
-										<td style="text-align: left; width: 15px">
-											<input type="radio" style="width: 20px" name="optDefOutputFormat" id="optDefOutputFormat3" value="3"
-												onclick="	formatAbsenceClick(3);" />
-										</td>
-										<td style="text-align: left; white-space: nowrap">
-											<label
-												tabindex="-1"
-												for="optDefOutputFormat3"
-												class="radio ui-state-error-text">
-												Word Document
-											</label>
-										</td>
-										<td style="width: 5px">&nbsp;</td>
-									</tr>
-									<tr style="height: 10px">
-										<td colspan="4"></td>
-									</tr>
-									<tr style="height: 20px">
-										<td style="width: 5px">&nbsp;</td>
-										<td style="text-align: left; width: 15px">
-											<input type="radio" style="width: 20px" name="optDefOutputFormat" id="optDefOutputFormat4" value="4"
-												onclick="	formatAbsenceClick(4);" />
-										</td>
-										<td style="text-align: left; white-space: nowrap">
-											<label
-												tabindex="-1"
-												for="optDefOutputFormat4"
-												class="radio">
-												Excel Worksheet
-											</label>
-										</td>
-										<td style="width: 5px">&nbsp;</td>
-									</tr>
-									<tr style="height: 10px">
-										<td colspan="4"></td>
-									</tr>
-
-									<tr style="height: 5px">
-										<td style="width: 5px">&nbsp;</td>
-										<td style="text-align: left; width: 15px">
-											<input type="radio" style="width: 20px" name="optDefOutputFormat" id="optDefOutputFormat5" value="5"
-												onclick="formatAbsenceClick(5);" />
-										</td>
-										<td>
-											<label
-												tabindex="-1"
-												for="optDefOutputFormat5"
-												class="radio">
-												Excel Chart
-											</label>
-										</td>
-										<td style="width: 5px">&nbsp;</td>
-									</tr>
-									<%
-										'MH20031211 Fault 7787
-										'Don't allow Pivot for Bradford
-										If Session("StandardReport_Type") = UtilityType.utlBradfordFactor Then
-									%>
-									<input type="hidden" style="width: 20px" name="optDefOutputFormat" id="optDefOutputFormat6" value="6"
-										onclick="formatAbsenceClick(6);" />
-									<%
-									Else
-									%>
-									<tr style="height: 10px">
-										<td colspan="4"></td>
-									</tr>
-									<tr style="height: 5px">
-										<td style="width: 5px">&nbsp;</td>
-										<td style="text-align: left; width: 15px">
-											<input type="radio" style="width: 20px" name="optDefOutputFormat" id="optDefOutputFormat6" value="6"
-												onclick="formatAbsenceClick(6);" />
-										</td>
-										<td>
-											<label
-												tabindex="-1"
-												for="optDefOutputFormat6"
-												class="radio">
-												Excel Pivot Table
-											</label>
-										</td>
-										<td style="width: 5px">&nbsp;</td>
-									</tr>
-									<%
-									End If
-									%>
-									<tr style="height: 5px">
-										<td colspan="4"></td>
-									</tr>
-								</table>
-							</td>
-						</tr>
-					</table>
-				</div>
-			</fieldset>
-
-			<fieldset class="width65">
-				<legend class="fontsmalltitle">Output Destination(s) : </legend>
-				<div class="padleft20">
-					<table class="invisible" style="border-collapse: collapse; padding: 0px; width: 100%;">
-						<tr style="height: 20px">
-							<td></td>
-							<td style="white-space: nowrap; text-align: left" colspan="6">
+							
+							<td  colspan="5">
 								<input name="chkPreview" id="chkPreview" type="checkbox" disabled="disabled" tabindex="0"
 									onclick="absenceBreakdownRefreshTab3Controls();" />
-								<label
-									for="chkPreview"
-									class="checkbox"
-									tabindex="-1">
+								<label for="chkPreview" class="checkbox" tabindex="-1">
 									Preview on screen
 								</label>
 							</td>
-							<td></td>
+							<%--<td colspan="4"></td>--%>
 						</tr>
 
-						<tr style="height: 20px">
-							<td style="width: 5px">&nbsp;</td>
-							<td style="text-align: left; white-space: nowrap; width: 150px">
+						<tr>
+							<td  colspan="1">
 								<input name="chkDestination2" id="chkDestination2" type="checkbox" disabled="disabled" tabindex="0"
 									onclick="absenceBreakdownRefreshTab3Controls();" />
-								<label
-									for="chkDestination2"
-									class="checkbox checkboxdisabled"
-									tabindex="-1">
+								<label for="chkDestination2" class="checkbox" tabindex="-1">
 									Save to file
 								</label>
 							</td>
-							<td>&nbsp;</td>
-							<td style="width: 5px"></td>
-							<td style="width: 5px"></td>
-							<td style="text-align: left; white-space: nowrap">File name :</td>
-							<td style="width: 100%">
-								<input id="txtFilename" name="txtFilename" class="text textdisabled" disabled="disabled"
-									style="width: 99%">
+							<td >File name :</td>
+							<td  colspan="2">
+								<input  disabled="disabled" id="txtFilename" name="txtFilename" type="text">
 							</td>
-							<td style="width: 5px; padding-left: 2px">
+							<td >
 								<input id="cmdFilename" name="cmdFilename" class="btn" type="button" value="..."
 									onclick="populateAbsenceFileName(frmAbsenceDefinition);" />
 							</td>
-
 						</tr>
 
 						<tr>
-							<td style="width: 5px">&nbsp;</td>
-							<td style="width: 5px">&nbsp;</td>
-							<td style="width: 5px">&nbsp;</td>
-							<td style="width: 5px">&nbsp;</td>
-							<td style="width: 5px">&nbsp;</td>
-							<td></td>
+							<td  colspan="1">
 							<td>
-								<label class="floatleft width30 ui-state-error-text">If file exists :</label>
-								<select class="floatright width70 combo" id="cboSaveExisting" name="cboSaveExisting"></select>
+								<label class="ui-state-error-text">If file exists :</label>
+							</td>
+							<td colspan="2">
+								<select  id="cboSaveExisting" name="cboSaveExisting"></select>
 							</td>
 							<td></td>
 						</tr>
 
 						<tr>
-							<td style="width: 5px">&nbsp;</td>
-							<td style="text-align: left; white-space: nowrap">
-								<input name="chkDestination3" id="chkDestination3" type="checkbox" disabled="disabled" tabindex="0"
-									onclick="absenceBreakdownRefreshTab3Controls();" />
-								<label
-									for="chkDestination3"
-									class="checkbox checkboxdisabled"
-									tabindex="-1">
+							
+							<td  colspan="1">
+								<input disabled="disabled" id="chkDestination3" name="chkDestination3" onclick="absenceBreakdownRefreshTab3Controls();" tabindex="0" type="checkbox" />
+								<label class="checkbox" for="chkDestination3" tabindex="-1">
 									Send as email
 								</label>
 							</td>
-							<td style="width: 5px">&nbsp;</td>
-							<td></td>
-
-							<td></td>
 							<td>Group :</td>
-							<td style="white-space: nowrap; width: 80%">
-								<input style="width: 99%;" id="txtAbsenceEmailGroup" name="txtAbsenceEmailGroup" class="text textdisabled" disabled="disabled">
+							<td  colspan="2">
+								<input  disabled="disabled" id="txtAbsenceEmailGroup" name="txtAbsenceEmailGroup"  type="text">
 								<input id="txtAbsenceEmailGroupID" name="txtAbsenceEmailGroupID" type="hidden">
 							</td>
-							<td style="width: 5px; padding-left: 2px">
-								<input id="cmdEmailGroup" name="cmdEmailGroup" class="btn" type="button" value="..."
-									onclick="selectAbsenceEmailGroup();" />
+							<td >
+								<input class="btn" id="cmdEmailGroup" name="cmdEmailGroup" onclick="selectAbsenceEmailGroup();" type="button" value="..." />
 							</td>
 						</tr>
 
 						<tr>
-							<td style="width: 5px">&nbsp;</td>
-							<td></td>
-							<td></td>
-							<td></td>
-							<td></td>
-							<td style="text-align: left; white-space: nowrap">Subject :</td>
-							<td>
-								<input style="width: 99%" id="txtEmailSubject" class="text textdisabled" disabled="disabled" maxlength="255" name="txtEmailSubject">
+							<td colspan="1"></td>
+							<td >Subject :</td>
+							<td colspan="2">
+								<input  disabled="disabled" id="txtEmailSubject" maxlength="255" name="txtEmailSubject"  type="text">
 							</td>
-							<td></td>
+							 <td></td>
 						</tr>
 
 						<tr>
-							<td style="width: 5px; padding-top: 15px">&nbsp;</td>
-							<td></td>
-							<td></td>
-							<td></td>
-							<td></td>
-							<td style="text-align: left; white-space: nowrap">Attach as :</td>
-							<td>
-								<input style="width: 99%" id="txtEmailAttachAs" class="text textdisabled" disabled="disabled" maxlength="255" name="txtEmailAttachAs">
+							<td colspan="1"></td>
+							<td >Attach as :</td>
+							<td colspan="2">
+								<input  disabled="disabled" id="txtEmailAttachAs" maxlength="255" name="txtEmailAttachAs"  type="text">
 							</td>
 							<td></td>
 						</tr>
 					</table>
-				</div>
-			</fieldset>
-		
-			<fieldset class="DataManagerOnly ui-state-error-text width100" style="padding-left: 20px">Note: Options marked in red are unavailable in OpenHR Web.	</fieldset>
+					</td>
+				</tr>
+
+				<tr>
+					<td></td>
+					<td colspan="3"><span class="DataManagerOnly ui-state-error-text">Note: Options marked in red are unavailable in OpenHR Web.</span></td>
+				</tr>
+			</table>
 		</div>
 		
 		<div id="RunBackButtons" style="visibility: hidden; float: left; padding: 10px">
@@ -960,7 +916,7 @@
 
 		switch (event.keyCode) {
 			case 113:
-				$(this).datepicker("setDate", new Date())
+				$(this).datepicker("setDate", new Date());
 				$(this).datepicker('widget').hide('true');
 				break;
 		}
@@ -975,7 +931,4 @@
 
 	$('table').attr('border', '0');
 	$('fieldset').css("border", '0');
-	$('#BF-table-output-destinations input, select').css('margin', '0 0 5px 0');
-	$('#BF-table-output-destinations select').css('margin', '0 0 7px 0');
-
 </script>
