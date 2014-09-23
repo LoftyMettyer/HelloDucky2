@@ -4,9 +4,6 @@
 @Imports DMI.NET.Code.Extensions
 @Inherits System.Web.Mvc.WebViewPage(Of Models.CustomReportModel)
 
-
-
-
 	@Html.HiddenFor(Function(m) m.Parent1ViewAccess)
 	@Html.HiddenFor(Function(m) m.Parent2ViewAccess)
 	@Html.HiddenFor(Function(m) m.ChildTablesAvailable)
@@ -154,7 +151,7 @@
 		OpenHR.modalExpressionSelect("PICKLIST", tableID, currentID, function (id, name, access) {
 			$("#txtParent1PicklistID").val(id);
 			$("#txtParent1Picklist").val(name);
-			setViewAccess('PICKLIST', $("#Parent1ViewAccess"), access);
+			setViewAccess('PICKLIST', $("#Parent1ViewAccess"), access, $("#Parent1_Name").val());
 		}, 400, 400);
 
 	}
@@ -167,7 +164,7 @@
 		OpenHR.modalExpressionSelect("PICKLIST", tableID, currentID, function (id, name, access) {
 			$("#txtParent2PicklistID").val(id);
 			$("#txtParent2Picklist").val(name);
-			setViewAccess('PICKLIST', $("#Parent1ViewAccess"), access);
+			setViewAccess('PICKLIST', $("#Parent1ViewAccess"), access, $("#Parent2_Name").val());
 		}, 400, 400);
 
 	}
@@ -180,7 +177,7 @@
 		OpenHR.modalExpressionSelect("FILTER", tableID, currentID, function (id, name, access) {
 			$("#txtParent1FilterID").val(id);
 			$("#txtParent1Filter").val(name);
-			setViewAccess('FILTER', $("#Parent1ViewAccess"), access);
+			setViewAccess('FILTER', $("#Parent1ViewAccess"), access, $("#Parent1_Name").val());
 		}, 400, 400);
 
 	}
@@ -193,7 +190,7 @@
 		OpenHR.modalExpressionSelect("FILTER", tableID, currentID, function (id, name, access) {
 			$("#txtParent2FilterID").val(id);
 			$("#txtParent2Filter").val(name);
-			setViewAccess('FILTER', $("#Parent2ViewAccess"), access);
+			setViewAccess('FILTER', $("#Parent2ViewAccess"), access, $("#Parent2_Name").val());
 		}, 400, 400);
 
 	}
@@ -327,6 +324,7 @@
 				button_disable($("#btnChildRemove")[0], true);
 				button_disable($("#btnChildRemoveAll")[0], tablesSelected == 0 || isDefinitionReadOnly());
 
+				refreshViewAccess();
 			},
 			loadComplete: function(json) {
 

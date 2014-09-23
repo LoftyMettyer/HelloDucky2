@@ -137,12 +137,12 @@ End Code
 			Records: $("#txtChildRecords").val()
 		};
 
+		setViewAccess('FILTER', $("#ChildTablesViewAccess"), $("#FilterViewAccess").val(), $("#ChildTableID option:selected").text());
+
 		var grid = $("#ChildTables")
 		grid.jqGrid('addRowData', '@Model.ID', datarow);
 		grid.setGridParam({ sortname: 'ID' }).trigger('reloadGrid');
 		grid.jqGrid("setSelection", '@Model.ID');
-
-		setViewAccess('FILTER', $("#ChildTablesViewAccess"), $("#FilterViewAccess").val(), $("#ChildTableID option:selected").text());
 
 		// Post to server
 		OpenHR.postData("Reports/PostChildTable", datarow, loadAvailableTablesForReport)

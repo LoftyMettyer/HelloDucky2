@@ -97,6 +97,7 @@ Namespace Repository
 										.ReportID = objModel.ID,
 										.TableName = objRow("tablename").ToString,
 										.FilterName = objRow("filtername").ToString,
+										.FilterViewAccess = objRow("FilterViewAccess").ToString(),
 										.OrderName = objRow("ordername").ToString,
 										.TableID = CInt(objRow("tableid")),
 										.FilterID = CInt(objRow("filterid")),

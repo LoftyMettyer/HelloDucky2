@@ -11,7 +11,6 @@
 @Html.HiddenFor(Function(m) m.BaseViewAccess)
 @Html.HiddenFor(Function(m) m.IsReadOnly)
 
-
 <div class="width100">
 	<fieldset class="floatleft width50 bordered">
 		<legend class="fontsmalltitle">Identification :</legend>
@@ -31,24 +30,6 @@
 				@Html.ValidationMessageFor(Function(m) m.Description)
 			</div>
 		</fieldset>
-
-		
-		@*<fieldset>
-			<div id="DescriptionItems">
-				@Html.LabelFor(Function(m) m.Name)
-				@Html.TextBoxFor(Function(m) m.Name, New With {.class = "width70 floatright"})
-				@Html.ValidationMessageFor(Function(m) m.Name)
-			</div>
-			<br />
-			<div>
-				@Html.LabelFor(Function(m) m.Description)
-				@Html.TextArea("description", Model.Description, New With {.class = "width70 floatright"})
-				@Html.ValidationMessageFor(Function(m) m.Description)
-			</div>
-		</fieldset>*@
-
-
-
 	</fieldset>
 
 
@@ -125,11 +106,10 @@
 				<div class="tablerow">
 					<label>Access :</label>
 					@Html.AccessGrid("GroupAccess", Model.GroupAccess, New With {.id = "tblGroupAccess"})
+					<input type="hidden" id="IsForcedHidden" />
 				</div>
 			</div>
 
-			<br />
-			<label id="ForcedHiddenMessage" hidden="hidden">The definition access cannot be changed as it contains a hidden picklist, filter or calculation</label>
 		</fieldset>
 	</fieldset>
 </div>
@@ -258,8 +238,7 @@
 		var bViewAccessEnabled = true;
 		var list;
 
-		$("#AccessPermissionsGrid").removeAttr("disabled");
-		$("#ForcedHiddenMessage").hide();
+		$("#tblGroupAccess").removeAttr("disabled");
 
 		if ($("#BaseViewAccess").val() == 'HD') { bViewAccessEnabled = false; }
 		if ($("#Parent1ViewAccess").val() == 'HD') { bViewAccessEnabled = false; }
@@ -280,17 +259,16 @@
 			if (rowData.FilterViewAccess == "HD") { bViewAccessEnabled = false; }
 		}
 
-
 		if (!bViewAccessEnabled) {
-			$("#AccessPermissionsGrid").attr("disabled", "disabled");
-			$("#ForcedHiddenMessage").show();
+			$("#IsForcedHidden").val(true);
+			$("#tblGroupAccess").attr("disabled", "disabled");
 		}
-
 	}
 
 	function setViewAccess(type, accessControl, newAccess, tableName) {
 
 		var bResetGroupsToHidden = false;
+		var iObjectsHidden = 0;
 		var displayType;
 
 		if (accessControl.val() != newAccess && newAccess == "HD") {
@@ -311,14 +289,29 @@
 
 		}
 
-		if (bResetGroupsToHidden) {
+		accessControl.val(newAccess);
+
+		if (bResetGroupsToHidden && $("#IsForcedHidden").val() != "true") {
 			OpenHR.modalPrompt("This definition will now be made hidden as the " + tableName + " table " + displayType + " is hidden.", 0, "Information").then(function (answer) {
 				$(".reportViewAccessGroup").val("HD");
+				$("#IsForcedHidden").val(true);
+			});
+		}
+		else {
+
+			$("[id$='ViewAccess']").each(function (index) {
+				if ((this).value == "HD") {
+					iObjectsHidden += 1;
+				}
 			});
 
-		}
+			if (iObjectsHidden == 0 && $("#IsForcedHidden").val() == "true") {
+				OpenHR.modalPrompt("This definition no longer has to be hidden.", 0, "Information").then(function (answer) {
+					$("#IsForcedHidden").val(false);
+				});
+			}
 
-		accessControl.val(newAccess);
+		}
 
 		refreshViewAccess();
 
@@ -551,7 +544,7 @@
 		$('#txtSOAAS').val(JSON.stringify(gridData));
 
 		var $form = $("#frmReportDefintion");
-		$("#AccessPermissionsGrid").removeAttr("disabled");
+		$("#tblGroupAccess").removeAttr("disabled");
 
 		$.ajax({
 			url: $form.attr("action"),
@@ -589,7 +582,7 @@
 
 	function submitReportDefinition() {
 		$("#ValidityStatus").val('ServerCheckComplete');
-		$("#AccessPermissionsGrid").removeAttr("disabled");
+		$("#tblGroupAccess").removeAttr("disabled");
 		var frmSubmit = $("#frmReportDefintion")[0];
 		OpenHR.submitForm(frmSubmit);
 	}
