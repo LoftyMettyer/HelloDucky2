@@ -147,11 +147,19 @@
 
 		var tableID = $("#txtParent1ID").val();
 		var currentID = $("#txtParent1PicklistID").val();
+		var tableName = $("#Parent1_Name").val();
 
 		OpenHR.modalExpressionSelect("PICKLIST", tableID, currentID, function (id, name, access) {
-			$("#txtParent1PicklistID").val(id);
-			$("#txtParent1Picklist").val(name);
-			setViewAccess('PICKLIST', $("#Parent1ViewAccess"), access, $("#Parent1_Name").val());
+			if (access == "HD" && $("#owner") != '@Session("Username")') {
+				$("#txtParent1PicklistID").val(0);
+				$("#txtParent1Picklist").val('None');
+				OpenHR.modalMessage("The " + tableName + " table picklist will be removed from this definition as it is hidden and you do not have permission to make this definition hidden.");
+			}
+			else {
+				$("#txtParent1PicklistID").val(id);
+				$("#txtParent1Picklist").val(name);
+				setViewAccess('PICKLIST', $("#Parent1ViewAccess"), access, tableName);
+			}
 		}, 400, 400);
 
 	}
@@ -160,11 +168,19 @@
 
 		var tableID = $("#txtParent2ID").val();
 		var currentID = $("#txtParent2PicklistID").val();
+		var tableName = $("#Parent2_Name").val();
 
 		OpenHR.modalExpressionSelect("PICKLIST", tableID, currentID, function (id, name, access) {
-			$("#txtParent2PicklistID").val(id);
-			$("#txtParent2Picklist").val(name);
-			setViewAccess('PICKLIST', $("#Parent1ViewAccess"), access, $("#Parent2_Name").val());
+			if (access == "HD" && $("#owner") != '@Session("Username")') {
+				$("#txtParent2PicklistID").val(0);
+				$("#txtParent2Picklist").val('None');
+				OpenHR.modalMessage("The " + tableName + " table picklist will be removed from this definition as it is hidden and you do not have permission to make this definition hidden.");
+			}
+			else {
+				$("#txtParent2PicklistID").val(id);
+				$("#txtParent2Picklist").val(name);
+				setViewAccess('PICKLIST', $("#Parent2ViewAccess"), access, tableName);
+			}
 		}, 400, 400);
 
 	}
@@ -173,11 +189,19 @@
 
 		var tableID = $("#txtParent1ID").val();
 		var currentID = $("#txtParent1FilterID").val();
+		var tableName = $("#Parent1_Name").val();
 
 		OpenHR.modalExpressionSelect("FILTER", tableID, currentID, function (id, name, access) {
-			$("#txtParent1FilterID").val(id);
-			$("#txtParent1Filter").val(name);
-			setViewAccess('FILTER', $("#Parent1ViewAccess"), access, $("#Parent1_Name").val());
+			if (access == "HD" && $("#owner") != '@Session("Username")') {
+				$("#txtParent1FilterID").val(0);
+				$("#txtParent1Filter").val('None');
+				OpenHR.modalMessage("The " + tableName + " table filter will be removed from this definition as it is hidden and you do not have permission to make this definition hidden.");
+			}
+			else {
+				$("#txtParent1FilterID").val(id);
+				$("#txtParent1Filter").val(name);
+				setViewAccess('FILTER', $("#Parent1ViewAccess"), access, tableName);
+			}
 		}, 400, 400);
 
 	}
@@ -186,11 +210,19 @@
 
 		var tableID = $("#txtParent2ID").val();
 		var currentID = $("#txtParent2FilterID").val();
+		var tableName = $("#Parent2_Name").val();
 
 		OpenHR.modalExpressionSelect("FILTER", tableID, currentID, function (id, name, access) {
-			$("#txtParent2FilterID").val(id);
-			$("#txtParent2Filter").val(name);
-			setViewAccess('FILTER', $("#Parent2ViewAccess"), access, $("#Parent2_Name").val());
+			if (access == "HD" && $("#owner") != '@Session("Username")') {
+				$("#txtParent2FilterID").val(0);
+				$("#txtParent2Filter").val('None');
+				OpenHR.modalMessage("The " + tableName + " table filter will be removed from this definition as it is hidden and you do not have permission to make this definition hidden.");
+			}
+			else {
+				$("#txtParent2FilterID").val(id);
+				$("#txtParent2Filter").val(name);
+				setViewAccess('FILTER', $("#Parent2ViewAccess"), access, tableName);
+			}
 		}, 400, 400);
 
 	}

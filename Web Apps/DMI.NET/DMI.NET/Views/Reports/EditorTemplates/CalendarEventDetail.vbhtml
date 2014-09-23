@@ -403,9 +403,18 @@ End Code
 		var currentID = $("#txtEventFilterID").val();
 
 		OpenHR.modalExpressionSelect("FILTER", tableID, currentID, function (id, name, access) {
-			$("#txtEventFilterID").val(id);
-			$("#txtEventFilter").val(name);
-			$("#FilterViewAccess").val(access);
+			if (access == "HD" && $("#owner") != '@Session("Username")') {
+				$("#txtEventFilterID").val(0);
+				$("#txtEventFilter").val('None');
+				$("#FilterViewAccess").val('');
+				OpenHR.modalMessage("The event filter will be removed from this definition as it is hidden and you do not have permission to make this definition hidden.");
+			}
+			else {
+				$("#txtEventFilterID").val(id);
+				$("#txtEventFilter").val(name);
+				$("#FilterViewAccess").val(access);
+			}
+
 		}, 400, 400);
 
 	}

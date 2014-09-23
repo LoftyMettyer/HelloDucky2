@@ -321,24 +321,40 @@
 
 		var tableID = $("#BaseTableID option:selected").val();
 		var currentID = $("#txtBaseFilterID").val();
+		var tableName = $("#BaseTableID option:selected").text();
 
 		OpenHR.modalExpressionSelect("FILTER", tableID, currentID, function (id, name, access) {
-			$("#txtBaseFilterID").val(id);
-			$("#txtBaseFilter").val(name);
-			setViewAccess('FILTER', $("#BaseViewAccess"), access, $("#BaseTableID option:selected").text());
-		}, 400, 400);
-
+			if (access == "HD" && $("#owner") != '@Session("Username")') {
+				$("#txtBaseFilterID").val(0);
+				$("#txtBaseFilter").val('None');
+				OpenHR.modalMessage("The " + tableName + " table filter will be removed from this definition as it is hidden and you do not have permission to make this definition hidden.");
+			}
+			else {
+				$("#txtBaseFilterID").val(id);
+				$("#txtBaseFilter").val(name);
+				setViewAccess('FILTER', $("#BaseViewAccess"), access, tableName);
+			}
+		}, 400, 400)
 	}
 
 	function selectBaseTablePicklist() {
 
 		var tableID = $("#BaseTableID option:selected").val();
 		var currentID = $("#txtBasePicklistID").val();
+		var tableName = $("#BaseTableID option:selected").text();
 
 		OpenHR.modalExpressionSelect("PICKLIST", tableID, currentID, function (id, name, access) {
-			$("#txtBasePicklistID").val(id);
-			$("#txtBasePicklist").val(name);
-			setViewAccess('PICKLIST', $("#BaseViewAccess"), access, $("#BaseTableID option:selected").text());
+			if (access == "HD" && $("#owner") != '@Session("Username")') {
+				$("#txtBasePicklistID").val(0);
+				$("#txtBasePicklist").val('None');
+				OpenHR.modalMessage("The " + tableName + " table picklist will be removed from this definition as it is hidden and you do not have permission to make this definition hidden.");
+			}
+			else {
+				$("#txtBasePicklistID").val(id);
+				$("#txtBasePicklist").val(name);
+				setViewAccess('PICKLIST', $("#BaseViewAccess"), access, tableName);
+			}
+
 		}, 400, 400);
 
 	}

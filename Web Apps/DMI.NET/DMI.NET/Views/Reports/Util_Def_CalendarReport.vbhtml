@@ -124,9 +124,16 @@ End Code
 		var currentID = $("#Description3ID").val();
 
 		OpenHR.modalExpressionSelect("CALC", tableID, currentID, function (id, name, access) {
-			$("#Description3ID").val(id);
-			$("#txtDescription3").val(name);
-			setViewAccess('CALC', $("#Description3ViewAccess"), access, "report description");
+			if (access == "HD" && $("#owner") != '@Session("Username")') {
+				$("#Description3ID").val(0);
+				$("#txtDescription3").val('None');
+				OpenHR.modalMessage("The report description calculation will be removed from this definition as it is hidden and you do not have permission to make this definition hidden.");
+			}
+			else {
+				$("#Description3ID").val(id);
+				$("#txtDescription3").val(name);
+				setViewAccess('CALC', $("#Description3ViewAccess"), access, "report description");
+			}
 		}, 400, 400);
 
 	}

@@ -223,9 +223,16 @@
 		var currentID = $("#StartCustomId").val();
 
 		OpenHR.modalExpressionSelect("CALC", tableID, currentID, function (id, name, access) {
-			$("#StartCustomId").val(id);
-			$("#txtCustomStart").val(name);
-			setViewAccess('CALC', $("#StartCustomViewAccess"), access, "report start date");
+			if (access == "HD" && $("#owner") != '@Session("Username")') {
+				$("#StartCustomId").val(0);
+				$("#txtCustomStart").val('None');
+				OpenHR.modalMessage("The report start date calculation will be removed from this definition as it is hidden and you do not have permission to make this definition hidden.");
+			}
+			else {
+				$("#StartCustomId").val(id);
+				$("#txtCustomStart").val(name);
+				setViewAccess('CALC', $("#StartCustomViewAccess"), access, "report start date");
+			}
 		}, 400, 400);
 	}
 
@@ -235,12 +242,18 @@
 		var currentID = $("#EndCustomId").val();
 
 		OpenHR.modalExpressionSelect("CALC", tableID, currentID, function (id, name, access) {
-			$("#EndCustomId").val(id);
-			$("#txtCustomEnd").val(name);
-			setViewAccess('CALC', $("#EndCustomViewAccess"), access, "report end date");
+			if (access == "HD" && $("#owner") != '@Session("Username")') {
+				$("#EndCustomId").val(0);
+				$("#txtCustomEnd").val('None');
+				OpenHR.modalMessage("The report end date calculation will be removed from this definition as it is hidden and you do not have permission to make this definition hidden.");
+			}
+			else {
+				$("#EndCustomId").val(id);
+				$("#txtCustomEnd").val(name);
+				setViewAccess('CALC', $("#EndCustomViewAccess"), access, "report end date");
+			}
 		}, 400, 400);
 
 	}
-
 
 </script>

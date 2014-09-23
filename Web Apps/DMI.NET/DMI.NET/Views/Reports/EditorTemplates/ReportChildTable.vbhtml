@@ -96,12 +96,21 @@ End Code
 
 		var tableID = $("#ChildTableID option:selected").val();
 		var currentID = $("#txtChildFilterID").val();
+		var tableName = $("#ChildTableID option:selected").text();
 
 		OpenHR.modalExpressionSelect("FILTER", tableID, currentID, function (id, name, access) {
-			$("#txtChildFilterID").val(id);
-			$("#txtChildFilter").val(name);
-			$("#FilterViewAccess").val(access);
-				}, 400, 200);
+			if (access == "HD" && $("#owner") != '@Session("Username")') {
+				$("#txtChildFilterID").val(0);
+				$("#txtChildFilter").val('None');
+				$("#FilterViewAccess").val('');
+				OpenHR.modalMessage("The " + tableName + " filter will be removed from this definition as it is hidden and you do not have permission to make this definition hidden.");
+			}
+			else {
+				$("#txtChildFilterID").val(id);
+				$("#txtChildFilter").val(name);
+				$("#FilterViewAccess").val(access);
+			}
+		}, 400, 200);
 
 	}
 
@@ -171,45 +180,45 @@ End Code
 
 	}
 
-		function postThisChildTable() {
+	function postThisChildTable() {
 
-			// Update client
-			var gridData = $('#ChildTables').getRowData('@Model.ID');
-			var columnList = $("#SelectedColumns").getDataIDs();
-			var iColumnCount = 0;
+		// Update client
+		var gridData = $('#ChildTables').getRowData('@Model.ID');
+		var columnList = $("#SelectedColumns").getDataIDs();
+		var iColumnCount = 0;
 
-			for (i = 0; i < columnList.length; i++) {
-				rowData = $("#SelectedColumns").getRowData(columnList[i]);
-				if (rowData.TableID == '@Model.TableID') {
-					iColumnCount = iColumnCount + 1;
-				}
+		for (i = 0; i < columnList.length; i++) {
+			rowData = $("#SelectedColumns").getRowData(columnList[i]);
+			if (rowData.TableID == '@Model.TableID') {
+				iColumnCount = iColumnCount + 1;
 			}
+		}
 
-			if ('@Model.TableID' !=  $("#ChildTableID").val() && '@Model.IsAdd' == 'False') {
-				if (iColumnCount > 0) {
-					OpenHR.modalPrompt("One or more columns from '" + "@Model.TableName" + "' table have been included in the report definition." +
-							"<br/><br/>Changing the child table will remove these columns from the report definition." +
-							"<br/><br/>Are you sure you wish to continue ?", 4, "").then(function (answer) {
-								if (answer == 6) { // Yes
-									OpenHR.postData("Reports/RemoveChildTable", gridData, changeChildTableCompleted);
-								}
-							});
-				}
-				else {
-					OpenHR.postData("Reports/RemoveChildTable", gridData, changeChildTableCompleted);
-				}
-
+		if ('@Model.TableID' != $("#ChildTableID").val() && '@Model.IsAdd' == 'False') {
+			if (iColumnCount > 0) {
+				OpenHR.modalPrompt("One or more columns from '" + "@Model.TableName" + "' table have been included in the report definition." +
+						"<br/><br/>Changing the child table will remove these columns from the report definition." +
+						"<br/><br/>Are you sure you wish to continue ?", 4, "").then(function (answer) {
+							if (answer == 6) { // Yes
+								OpenHR.postData("Reports/RemoveChildTable", gridData, changeChildTableCompleted);
+							}
+						});
 			}
-
 			else {
-
-				if ('@Model.IsAdd' == 'False') {
-					$('#ChildTables').jqGrid('delRowData', '@Model.ID');
-				}
-
-
-				addChildTableCompleted();
+				OpenHR.postData("Reports/RemoveChildTable", gridData, changeChildTableCompleted);
 			}
 
 		}
+
+		else {
+
+			if ('@Model.IsAdd' == 'False') {
+				$('#ChildTables').jqGrid('delRowData', '@Model.ID');
+			}
+
+
+			addChildTableCompleted();
+		}
+
+	}
 </script>
