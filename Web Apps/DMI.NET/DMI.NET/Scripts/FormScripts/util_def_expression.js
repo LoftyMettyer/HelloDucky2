@@ -1582,7 +1582,7 @@ function submitDefinition() {
 		frmValidate.validateUtilID.value = 0;
 	}
 
-	disableButtons();
+	//disableButtons(); 
 
 	var sURL = "util_dialog_expression" + "?action=validate";
 
