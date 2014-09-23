@@ -75,7 +75,7 @@ function checkTreesLoaded() {
 function resizeForm() {
 	var formHeight = $('#optionframe').height();
 	var titleHeight = $('#divOperator>h3').outerHeight(true);
-	$('#SSOperatorTree, #SSFunctionTree').height(formHeight - titleHeight - 20);
+	$('#SSOperatorTree, #SSFunctionTree').height(formHeight - titleHeight - 25);
 }
 
 function onload2() {
@@ -280,7 +280,8 @@ function loadComponentDefinition() {
 			// Numeric value
 			frmMainForm.cboValueType.selectedIndex = 1;
 			value_changeType();
-			frmMainForm.txtValue.value = parseFloat(util_def_exprcomponent_frmOriginalDefinition.txtValueNumeric.value).toString();
+			frmMainForm.txtValue.value = util_def_exprcomponent_frmOriginalDefinition.txtValueNumeric.value; // parseFloat(util_def_exprcomponent_frmOriginalDefinition.txtValueNumeric.value).toString();
+			$('#frmMainForm #txtValue').autoNumeric('update');
 		}
 		if (util_def_exprcomponent_frmOriginalDefinition.txtValueType.value == 3) {
 			// Logic value
@@ -340,7 +341,8 @@ function loadComponentDefinition() {
 		}
 		if (util_def_exprcomponent_frmOriginalDefinition.txtValueType.value == 2) {
 			// Numeric
-			frmMainForm.txtPValDefault.value = parseFloat(util_def_exprcomponent_frmOriginalDefinition.txtValueNumeric.value);
+			frmMainForm.txtPValDefault.value = util_def_exprcomponent_frmOriginalDefinition.txtValueNumeric.value; //parseFloat(util_def_exprcomponent_frmOriginalDefinition.txtValueNumeric.value);
+			$('#frmMainForm #txtPValDefault').autoNumeric('update');
 		}
 		if (util_def_exprcomponent_frmOriginalDefinition.txtValueType.value == 3) {
 			// Logic
@@ -1071,10 +1073,15 @@ function value_changeType() {
 	}
 
 	if ($('#frmMainForm #cboValueType').val() == "2") {
+		$('#frmMainForm #txtValue').autoNumeric('init', {vMax: 99999999.9999999, mDec: 7, aPad: false});
 		$('#frmMainForm #txtValue').val(0);
 	} else {
 		frmMainForm.txtValue.value = "";
-	}
+			try {
+				$('#frmMainForm #txtValue').autoNumeric('destroy');
+			}
+			catch (e) { }
+		}
 	frmMainForm.selectValue.selectedIndex = 0;
 }
 
@@ -1270,6 +1277,9 @@ function pVal_changeType() {
 	sDateOptionsVisibility = "hidden";
 	sDateOptionsDisplay = "none";
 
+	$('#frmMainForm #txtPValDefault').autoNumeric('destroy');
+	$('#frmMainForm #txtPValDefault').removeClass('number');
+
 	if (iPValType == 1) {
 		// Character
 		sSizeVisibility = "visible";
@@ -1287,6 +1297,25 @@ function pVal_changeType() {
 		sTextDefaultVisibility = "visible";
 		sTextDefaultDisplay = "inline-block";
 		text_disable(frmMainForm.txtPValDefault, false);
+		$('#frmMainForm #txtPValDefault').addClass('number');
+		$('#frmMainForm #txtPValDefault').autoNumeric('init', {
+			vMax: 99999999.9999, mDec: 4, aPad: false
+		});
+
+		//Change prompted value sizes to match default value
+		$('.number').on('keyup', function () {
+			//txtPValSize
+			//txtPValDecimals
+
+			var newSize = $('#frmMainForm #txtPValDefault').val().length;
+			if ($('#frmMainForm #txtPValSize').val() < newSize) $('#frmMainForm #txtPValSize').val(newSize);
+
+			var decimalSeparator = OpenHR.LocaleDecimalSeparator();
+			var newDecimals = $('#frmMainForm #txtPValDefault').val().split(decimalSeparator)[1].length;
+			if ($('#frmMainForm #txtPValDefault').val().indexOf(decimalSeparator) > 0) {				
+				if ($('#frmMainForm #txtPValDecimals').val() < newDecimals) $('#frmMainForm #txtPValDecimals').val(newDecimals);
+			}
+		});
 	}
 
 	if (iPValType == 3) {

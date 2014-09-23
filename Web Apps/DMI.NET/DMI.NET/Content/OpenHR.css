@@ -1111,7 +1111,7 @@ input[type=button].Embedded, input[type=button].Linked {
 	width: 80px;
 }
 
-/* This is calculations component form */
+/* This is expression component form */
 #frmMainForm {
 	
 	height: 100%;
@@ -1131,8 +1131,28 @@ input[type=button].Embedded, input[type=button].Linked {
 		margin-right: 10px;
 	}
 
+	#frmMainForm #divField #optField_Field, #frmMainForm #divField #optFieldRecSel_First {
+		margin-left: 0;
+	}
 
-/*End calcExpressionComponent*/
+	#frmMainForm #divField #optField_Count, #frmMainForm #divField #optField_Total,  #frmMainForm #divField #optFieldRecSel_Last,  #frmMainForm #divField #optFieldRecSel_Specific {
+		/* 38px is odd so that it lines up with other components on screen */
+		margin-left: 38px;
+	}
+
+	#frmMainForm .formField select {
+		width: 345px;
+	}
+
+	#frmMainForm #divField #txtFieldRecSel_Specific {
+		margin-top: 0;
+	}
+
+	#frmMainForm #txtPValFormat, #frmMainForm #txtPValDefault:not(.hasDatepicker), #frmMainForm #cboPValDefault {
+		width: 345px;
+	}
+
+/*End ExpressionComponent*/
 
 #outputformats input[type=radio] {
 	margin-bottom: 10px;

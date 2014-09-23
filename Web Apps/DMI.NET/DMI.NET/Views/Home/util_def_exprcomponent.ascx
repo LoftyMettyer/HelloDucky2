@@ -89,6 +89,7 @@
 					<select id="cboFieldDummyColumn" name="cboFieldDummyColumn" style="display: none" disabled="disabled"></select>
 				</div>
 				<%If iPassBy = 1 Then%>
+				<br/>
 				<h3>Child Field Options</h3>
 				<span style="display: inline-block">
 					<input id="optFieldRecSel_First" name="optFieldRecSel" type="radio" onclick="field_refreshChildFrame()" />
