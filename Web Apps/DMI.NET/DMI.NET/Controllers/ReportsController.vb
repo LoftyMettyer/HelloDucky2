@@ -360,7 +360,7 @@ Namespace Controllers
 		Function EditCalendarEvent(objModel As CalendarEventDetailViewModel) As ActionResult
 
 			Dim objReport = objReportRepository.RetrieveCalendarReport(objModel.ReportID)
-			objModel.AvailableTables = objReportRepository.GetChildTables(objReport.BaseTableID, True)
+			objModel.AvailableTables = objReportRepository.GetTablesWithEvents(objReport.BaseTableID)
 
 			ModelState.Clear()
 			Return PartialView("EditorTemplates\CalendarEventDetail", objModel)
