@@ -513,8 +513,12 @@ End Code
 		};
 
 		// Update client
-		$('#CalendarEvents').jqGrid('delRowData', '@Model.EventKey')
-		var su = jQuery("#CalendarEvents").jqGrid('addRowData', '@Model.EventKey', datarow);
+		var grid = $("#CalendarEvents")
+		grid.jqGrid('delRowData', '@Model.EventKey')
+		grid.jqGrid('addRowData', '@Model.EventKey', datarow);
+		grid.setGridParam({ sortname: 'EventKey', sortorder: "Asc"}).trigger('reloadGrid');
+		grid.jqGrid("setSelection", '@Model.EventKey');
+
 
 		setViewAccess('FILTER', $("#CalendarEventsViewAccess"), $("#FilterViewAccess").val(), $("#EventName").val());
 
