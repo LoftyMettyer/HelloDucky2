@@ -132,7 +132,21 @@ End Code
 	}
 
 	$(function () {
-		$("#tabs").tabs();
+		$("#tabs").tabs({
+			activate: function (event, ui) {
+				//Tab click event fired
+				if (ui.newTab.text() == "Event Details") {
+					//resize the Event Details grid to fit
+					var workPageHeight = $('#workframeset').height();
+					var gridTopPos = $('#divEventDetails').position().top;
+					var tabHeight = $('#tabs>.ui-tabs-nav').outerHeight();
+					var marginHeight = 40;
+					var gridHeight = workPageHeight - gridTopPos - tabHeight - marginHeight;
+					$("#CalendarEvents").jqGrid('setGridHeight', gridHeight);
+				}
+			}
+		});
+
 		$('input[type=number]').numeric();
 		$('#Description2ID,#Description1ID').css({ "width": "100%", "float": "right" });
 		$('#description, #Name').css('width', $('#Description1ID').width());

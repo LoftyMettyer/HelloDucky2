@@ -5,16 +5,16 @@
 
 @Html.HiddenFor(Function(m) m.EventsString, New With {.id = "txtCEAAS"})
 
-<div id="eventDetailsContainer" style="">
-	<fieldset class="">
+<div id="eventDetailsContainer">
+	<fieldset>
 		<legend class="fontsmalltitle">Calendar Events :</legend>
 
-		<div id="divEventDetails" class="floatleft width80 overflowyhidden ui-widget-content">
+		<div id="divEventDetails" class="stretchyfill">
 			<input type="hidden" id="CalendarEventsViewAccess" />
 			<table id="CalendarEvents"></table>
 		</div>
 
-		<div class="stretchyfixedbuttoncolumn floatleft">
+		<div class="stretchyfixed">
 			<input type="button" id="btnEventDetailsAdd" value="Add..." onclick="eventAdd();" />
 			<br />
 			<input type="button" id="btnEventDetailsEdit" value="Edit..." disabled onclick="eventEdit(0);" />
@@ -30,11 +30,12 @@
 
 	$(function () {
 		attachCalendarEventsGrid();
-		$('#CalendarEvents').jqGrid('setGridWidth', $('#eventDetailsContainer').width());
 	});
 
 	function attachCalendarEventsGrid() {
 		//create the column layout:
+		var gridWidth = $('#divEventDetails').width();
+
 		$("#CalendarEvents").jqGrid({
 			datatype: "jsonstring",
 			datastr: '@Model.Events.ToJsonResult',
@@ -97,8 +98,7 @@
 			loadonce: true,
 			viewrecords: true,
 			sortorder: "desc",
-			width: '80%',
-			height: 400,
+			width: gridWidth,
 			ondblClickRow: function (rowID) {
 				eventEdit(rowID);
 				enableSaveButton();
