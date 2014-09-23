@@ -898,6 +898,30 @@ Namespace Repository
 
 		End Function
 
+		Public Function GetTablesWithEvents(BaseTableID As Integer) As List(Of ReportTableItem)
+
+			Dim objSessionInfo = CType(HttpContext.Current.Session("SessionContext"), SessionInfo)
+			Dim objItems As New List(Of ReportTableItem)
+			Dim objTable As Table
+			Dim objItem As ReportTableItem
+
+			For Each objRelation In objSessionInfo.Relations.Where(Function(n) n.ParentID = BaseTableID)
+				objTable = objSessionInfo.Tables.Where(Function(m) m.ID = objRelation.ChildID).FirstOrDefault
+				If objSessionInfo.Columns.LongCount(Function(m) m.TableID = objTable.ID AndAlso m.DataType = ColumnDataType.sqlDate) > 0 Then
+					objItem = New ReportTableItem() With {.id = objRelation.ChildID, .Name = objTable.Name}
+					objItems.Add(objItem)
+				End If
+			Next
+
+			objTable = objSessionInfo.Tables.Where(Function(m) m.ID = BaseTableID).FirstOrDefault
+			objItem = New ReportTableItem() With {.id = objTable.ID, .Name = objTable.Name}
+			objItems.Add(objItem)
+
+			Return objItems.OrderBy(Function(m) m.Name).ToList
+
+		End Function
+
+
 		Public Function GetColumnsForTable(id As Integer) As List(Of ReportColumnItem)
 
 			Dim objSessionInfo = CType(HttpContext.Current.Session("SessionContext"), SessionInfo)

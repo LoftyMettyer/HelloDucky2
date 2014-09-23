@@ -348,7 +348,7 @@ Namespace Controllers
 			objModel.TableID = objReport.BaseTableID
 			objModel.ReportID = ReportID
 			objModel.EventKey = String.Format("EV_{0}", objReport.Events.Count + 1)
-			objModel.AvailableTables = objReportRepository.GetChildTables(objReport.BaseTableID, True)
+			objModel.AvailableTables = objReportRepository.GetTablesWithEvents(objReport.BaseTableID)
 
 			ModelState.Clear()
 			Return PartialView("EditorTemplates\CalendarEventDetail", objModel)
