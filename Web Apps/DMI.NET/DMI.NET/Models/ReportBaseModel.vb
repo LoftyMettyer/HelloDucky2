@@ -37,6 +37,9 @@ Namespace Models
 		<DisplayFormat(ConvertEmptyStringToNull:=False)>
 		Public Property Description As String
 
+		<DisplayName("Ignore zeros when calculating aggregates")>
+		Public Property IgnoreZerosForAggregates As Boolean
+
 		Public Property GroupAccess As New Collection(Of GroupAccess)
 		Public Property SelectionType As RecordSelectionType
 

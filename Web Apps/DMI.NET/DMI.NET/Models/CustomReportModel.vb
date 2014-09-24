@@ -34,9 +34,6 @@ Namespace Models
 		<DisplayName("Summary Report")>
 		Public Property IsSummary As Boolean
 
-		<DisplayName("Ignore zeros when calculating aggregates")>
-		Public Property IgnoreZerosForAggregates As Boolean
-
 		Public Property Output As New ReportOutputModel
 
 		' Flags to detect if thius definition needs to be marked as hidden

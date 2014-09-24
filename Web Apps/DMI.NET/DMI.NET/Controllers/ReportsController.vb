@@ -97,7 +97,7 @@ Namespace Controllers
 				If objModel.IgnoreZerosForAggregates AndAlso objModel.Columns.Where( _
 					Function(m) (m.DataType = ColumnDataType.sqlInteger OrElse m.DataType = ColumnDataType.sqlNumeric) AndAlso (m.IsAverage OrElse m.IsCount OrElse m.IsTotal) _
 						).LongCount() = 0 Then
-					ModelState.AddModelError("IsIgnoreZerosOK", "Ignore zeros defined but there are no numeric columns defined as aggregates.")
+					ModelState.AddModelError("IsIgnoreZerosOK", "You have chosen to ignore zeros when calculating aggregates, but have not selected to show aggregates for any numeric columns.")
 				End If
 
 			End If

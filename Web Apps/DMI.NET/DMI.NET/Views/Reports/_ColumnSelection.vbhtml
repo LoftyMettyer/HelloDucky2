@@ -96,6 +96,11 @@
 						</div>
 					</div>
 				</div>
+
+				<div class="width65 floatleft">
+					@Html.CheckBoxFor(Function(m) m.IgnoreZerosForAggregates)
+					@Html.LabelFor(Function(m) m.IgnoreZerosForAggregates)
+				</div>
 			</div>
 		</div>
 
@@ -347,7 +352,7 @@
 			{ name: 'Size', index: 'Size',  hidden: true },
 			{ name: 'Decimals', index: 'Decimals', hidden: true }],
 		viewrecords: true,
-		width: 300,
+		width: 320,
 		height: 320,
 		sortname: 'Name',
 		sortorder: "desc",
@@ -580,7 +585,7 @@
 				{ name: 'ReportID', index: 'ReportID', hidden: true },
 				{ name: 'ReportType', index: 'ReportType', hidden: true }],
 			viewrecords: true,
-			width: 300,
+			width: 540,
 			height: 320,
 			sortname: 'Sequence',
 			sortorder: "asc",
