@@ -117,9 +117,9 @@
 		</fieldset>
 	</fieldset>
 	
-	<br />
+<br style="clear: left;" />
 
-<div class="absolutefullchildtables">
+<div>
 <fieldset class="relatedtables width100">
 	<legend class="fontsmalltitle">Child Tables :</legend>
 
