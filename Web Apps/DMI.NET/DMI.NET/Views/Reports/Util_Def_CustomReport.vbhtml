@@ -30,14 +30,6 @@ End Code
 	 Html.RenderPartial("_Definition", Model)
  	End Code
 
-	 	<fieldset id="CustomDefinitionReportOptions" class="width100">
-	 		<legend class="fontsmalltitle">Report Options :</legend>
-	 		<fieldset>
-	 			@Html.CheckBoxFor(Function(m) m.IsSummary)
-	 			@Html.LabelFor(Function(m) m.IsSummary)
-			<br />
-			</fieldset>
-		</fieldset>
 	</div>
 
 	<div id="tabs-2">

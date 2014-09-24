@@ -7,8 +7,9 @@
 
 @Html.HiddenFor(Function(m) m.ColumnsAsString, New With {.id = "txtCSAAS"})
 
+<fieldset class="floatleft">
 	<fieldset id="columnsAvailable">
-		<legend class="fontsmalltitle">Columns / Calculations Available :</legend>
+		<legend class="fontsmalltitle width100">Columns / Calculations Available :</legend>
 		<fieldset id="columncalculations">
 			<legend>
 				@Html.RadioButton("columnSelectiontype", CInt(ColumnSelectionType.Columns), True, New With {.onclick = "toggleColumnsCalculations('column')", .class = "radioColumnType", .id = "columnSelectiontype_0"})
@@ -20,91 +21,98 @@
 		</fieldset>
 	</fieldset>
 
-	<fieldset id="columnbuttons">
-		<div id="colbtngrp1">
-			<input type="button" id="btnColumnAdd" value="Add" onclick="addColumnToSelected();" />
-			<input type="button" id="btnColumnAddAll" value="Add All" onclick="addAllColumnsToSelected();" />
-		</div>
-		<div id="colbtngrp2">
-			<input type="button" id="btnColumnRemove" value="Remove" onclick="requestRemoveSelectedColumns();" />
-			<input type="button" id="btnColumnRemoveAll" value="Remove All" onclick="requestRemoveAllSelectedColumns();" />
-		</div>
-		<div id="colbtngrp3" class="customReportsOnly">
-			<input type="button" id="btnColumnMoveUp" value="Move Up" disabled onclick="moveSelectedColumn('up');" />
-			<input type="button" id="btnColumnMoveDown" value="Move Down" disabled onclick="moveSelectedColumn('down');" />
-		</div>
-	</fieldset>
+	<br style="clear: left;" />
 
-	<fieldset id="columnsSelected">
-		<legend class="fontsmalltitle">Columns / Calculations Selected :</legend>
-		<table id="SelectedColumns" class="scroll" cellpadding="0" cellspacing="0"></table>
+	<fieldset id="CustomDefinitionReportOptions">
+		<legend class="fontsmalltitle width100">Report Options :</legend>
+		@Html.CheckBoxFor(Function(m) m.IsSummary)
+		@Html.LabelFor(Function(m) m.IsSummary)
+		<br />
+		@Html.CheckBoxFor(Function(m) m.IgnoreZerosForAggregates)
+		@Html.LabelFor(Function(m) m.IgnoreZerosForAggregates)
+	</fieldset>
+</fieldset>
+
+	<fieldset class="floatleft" id="columnbuttons">
+	<div id="colbtngrp1">
+		<input type="button" id="btnColumnAdd" value="Add" onclick="addColumnToSelected();" />
+		<input type="button" id="btnColumnAddAll" value="Add All" onclick="addAllColumnsToSelected();" />
+	</div>
+	<div id="colbtngrp2">
+		<input type="button" id="btnColumnRemove" value="Remove" onclick="requestRemoveSelectedColumns();" />
+		<input type="button" id="btnColumnRemoveAll" value="Remove All" onclick="requestRemoveAllSelectedColumns();" />
+	</div>
+	<div id="colbtngrp3" class="customReportsOnly">
+		<input type="button" id="btnColumnMoveUp" value="Move Up" disabled onclick="moveSelectedColumn('up');" />
+		<input type="button" id="btnColumnMoveDown" value="Move Down" disabled onclick="moveSelectedColumn('down');" />
+	</div>
+</fieldset>
+
+<fieldset class="floatleft" id="columnsSelected">
+	<legend class="fontsmalltitle">Columns / Calculations Selected :</legend>
+	<table id="SelectedColumns" class="scroll" cellpadding="0" cellspacing="0"></table>
+	<br />
+
+	<div id="definitionColumnProperties">
+		<div class="floatleft width100 customReportsOnly">
+			<div class="floatleft width25">
+				<label for="SelectedColumnHeading">Heading :</label>
+			</div>
+			<input class="width70" type='text' id="SelectedColumnHeading" maxlength="50" onchange="updateColumnsSelectedGrid();" />
+		</div>
+		<br style="clear:both" />
+
+		<div class="floatleft width100">
+			<div class="floatleft width25">
+				<label for="SelectedColumnSize">Size :</label>
+			</div>
+			<input class="width70" type='number' id="SelectedColumnSize" onchange="updateColumnsSelectedGrid();" />
+		</div>
+		<br style="clear:both" />
+
+		<div class="floatleft width100 decimalsOnly">
+			<div class="floatleft width25">
+				<label for="SelectedColumnDecimals">Decimals :</label>
+			</div>
+			<input class="width70" type='number' id="SelectedColumnDecimals" onchange="updateColumnsSelectedGrid();" />
+		</div>
+		<br style="clear:both" />
 		<br />
 
-		<div id="definitionColumnProperties">
-			<div class="floatleft width100 customReportsOnly">
-				<div class="floatleft width25">
-					<label for="SelectedColumnHeading">Heading :</label>
+		<div class="customReportsOnly" style="margin-left:20px;">
+			<div class="width35 floatleft" style="color: rgb(0, 0, 0)">
+				<div class="numericOnly width100">
+					<input class=" ui-widget ui-corner-all" id="SelectedColumnIsAverage" onchange="updateColumnsSelectedGrid();" type="checkbox">
+					<label for="SelectedColumnIsAverage">Average</label>
 				</div>
-				<input class="width70" type='text' id="SelectedColumnHeading" maxlength="50" onchange="updateColumnsSelectedGrid();" />
+				<div class="cannotBeHidden width100">
+					<input class="ui-widget ui-corner-all" id="SelectedColumnIsCount" onchange="updateColumnsSelectedGrid();" type="checkbox">
+					<label for="SelectedColumnIsCount">Count</label>
+				</div>
+				<div class="numericOnly width100">
+					<input class="ui-widget ui-corner-all" id="SelectedColumnIsTotal" onchange="updateColumnsSelectedGrid();" type="checkbox">
+					<label for="SelectedColumnIsTotal">Total</label>
+				</div>
 			</div>
-			<br style="clear:both" />
 
-			<div class="floatleft width100">
-				<div class="floatleft width25">
-					<label for="SelectedColumnSize">Size :</label>
-				</div>
-				<input class="width70" type='number' id="SelectedColumnSize" onchange="updateColumnsSelectedGrid();" />
-			</div>
-			<br style="clear:both" />
-
-			<div class="floatleft width100 decimalsOnly">
-				<div class="floatleft width25">
-					<label for="SelectedColumnDecimals">Decimals :</label>
-				</div>
-				<input class="width70" type='number' id="SelectedColumnDecimals" onchange="updateColumnsSelectedGrid();" />
-			</div>
-			<br style="clear:both" />
-			<br />
-
-			<div class="customReportsOnly" style="margin-left:20px;">
-				<div class="width35 floatleft" style="color: rgb(0, 0, 0)">
-					<div class="numericOnly width100">
-						<input class=" ui-widget ui-corner-all" id="SelectedColumnIsAverage" onchange="updateColumnsSelectedGrid();" type="checkbox">
-						<label for="SelectedColumnIsAverage">Average</label>
-					</div>
-					<div class="cannotBeHidden width100">
-						<input class="ui-widget ui-corner-all" id="SelectedColumnIsCount" onchange="updateColumnsSelectedGrid();" type="checkbox">
-						<label for="SelectedColumnIsCount">Count</label>
-					</div>
-					<div class="numericOnly width100">
-						<input class="ui-widget ui-corner-all" id="SelectedColumnIsTotal" onchange="updateColumnsSelectedGrid();" type="checkbox">
-						<label for="SelectedColumnIsTotal">Total</label>
-					</div>
-				</div>
-
-				<div>
-					<div class="width65 floatleft">
-						<input class="ui-widget ui-corner-all" id="SelectedColumnIsHidden" onchange="changeColumnIsHidden();" type="checkbox">
-						<label id="labelSelectedColumnIsHidden" for="SelectedColumnIsHidden">Hidden</label>
-						<div class="canGroupWithNext" style="color: rgb(0, 0, 0);">
-							<input class="ui-widget ui-corner-all" id="SelectedColumnIsGroupWithNext" onchange="changeColumnIsGroupWithNext();" type="checkbox">
-							<label id="labelSelectedColumnIsGroupWithNext" for="SelectedColumnIsGroupWithNext">Group With Next</label>
-						</div>
-						<div class="baseTableOnly" style="color: rgb(165, 147, 147);">
-							<input disabled="disabled" class="ui-widget ui-corner-all" id="SelectedColumnIsRepeated" onchange="updateColumnsSelectedGrid();" type="checkbox">
-							<label id="labelSelectedColumnRepeatOnChild" for="SelectedColumnIsRepeated">Repeat on child rows</label>
-						</div>
-					</div>
-				</div>
-
+			<div>
 				<div class="width65 floatleft">
-					@Html.CheckBoxFor(Function(m) m.IgnoreZerosForAggregates)
-					@Html.LabelFor(Function(m) m.IgnoreZerosForAggregates)
+					<input class="ui-widget ui-corner-all" id="SelectedColumnIsHidden" onchange="changeColumnIsHidden();" type="checkbox">
+					<label id="labelSelectedColumnIsHidden" for="SelectedColumnIsHidden">Hidden</label>
+					<div class="canGroupWithNext" style="color: rgb(0, 0, 0);">
+						<input class="ui-widget ui-corner-all" id="SelectedColumnIsGroupWithNext" onchange="changeColumnIsGroupWithNext();" type="checkbox">
+						<label id="labelSelectedColumnIsGroupWithNext" for="SelectedColumnIsGroupWithNext">Group with next</label>
+					</div>
+					<div class="baseTableOnly" style="color: rgb(165, 147, 147);">
+						<input disabled="disabled" class="ui-widget ui-corner-all" id="SelectedColumnIsRepeated" onchange="updateColumnsSelectedGrid();" type="checkbox">
+						<label id="labelSelectedColumnRepeatOnChild" for="SelectedColumnIsRepeated">Repeat on child rows</label>
+					</div>
 				</div>
 			</div>
 		</div>
+	</div>
 
-	</fieldset>
+</fieldset>
 
 <input type="hidden" name="Columns.BaseTableID" value="@Model.BaseTableID" />
 
@@ -625,7 +633,7 @@
 				{ name: 'ReportID', index: 'ReportID', hidden: true },
 				{ name: 'ReportType', index: 'ReportType', hidden: true }],
 			viewrecords: true,
-			width: 540,
+			width: 500,
 			height: 320,
 			sortname: 'Sequence',
 			sortorder: "asc",

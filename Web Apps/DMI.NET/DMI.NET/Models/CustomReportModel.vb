@@ -31,9 +31,6 @@ Namespace Models
 		Public Property Parent1 As New ReportRelatedTable
 		Public Property Parent2 As New ReportRelatedTable
 
-		<DisplayName("Summary Report")>
-		Public Property IsSummary As Boolean
-
 		Public Property Output As New ReportOutputModel
 
 		' Flags to detect if thius definition needs to be marked as hidden

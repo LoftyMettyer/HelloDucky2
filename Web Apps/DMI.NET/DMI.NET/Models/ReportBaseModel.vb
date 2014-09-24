@@ -40,6 +40,9 @@ Namespace Models
 		<DisplayName("Ignore zeros when calculating aggregates")>
 		Public Property IgnoreZerosForAggregates As Boolean
 
+		<DisplayName("Summary Report")>
+		Public Property IsSummary As Boolean
+
 		Public Property GroupAccess As New Collection(Of GroupAccess)
 		Public Property SelectionType As RecordSelectionType
 
