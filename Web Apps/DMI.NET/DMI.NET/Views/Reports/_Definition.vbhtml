@@ -10,6 +10,7 @@
 @Html.HiddenFor(Function(m) m.ValidityStatus)
 @Html.HiddenFor(Function(m) m.BaseViewAccess)
 @Html.HiddenFor(Function(m) m.IsReadOnly)
+@Html.HiddenFor(Function(m) m.ActionType)
 
 <div class="width100">
 	<fieldset class="floatleft width50 bordered">
@@ -124,7 +125,7 @@
 
 		$('fieldset').css("border", "0");
 		$('table').css("border", "0");
-		
+
 		getBaseTableList();
 		refreshViewAccess();
 
@@ -134,8 +135,11 @@
 			$('#DisplayTitleInReportHeader').prop('disabled', true);
 			$("#label_DisplayTitleInReportHeader").css("color", "#A59393");
 		}
-			
+
 		menu_toolbarEnableItem('mnutoolSaveReport', false);
+		if ($("#ActionType").val() == '@UtilityActionType.Copy') {
+			enableSaveButton()
+		}
 
 		if (isDefinitionReadOnly()) {
 			$("#frmReportDefintion input").prop('disabled', "disabled");
@@ -448,7 +452,7 @@
 
 		$("#selectiontype_All").prop('checked', 'checked');
 
-		$("#ChildTablesAvailable").val(parseInt(json.childTablesAvailable));	
+		$("#ChildTablesAvailable").val(parseInt(json.childTablesAvailable));
 
 		changeRecordOption('Base', 'ALL');
 
@@ -503,7 +507,7 @@
 
 		var data = { ReportID: "@Model.ID", ReportType: "@Model.ReportType" }
 		OpenHR.postData("Reports/RemoveAllChildTables", data, removeAllChildTablesCompleted);
-		
+
 	}
 
 	function enableSaveButton() {

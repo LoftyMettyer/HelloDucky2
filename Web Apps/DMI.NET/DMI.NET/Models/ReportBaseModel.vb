@@ -20,6 +20,7 @@ Namespace Models
 		Public Property ID As Integer Implements IReport.ID
 		Public Property Owner As String Implements IReport.Owner
 
+		Public Property ActionType As UtilityActionType
 		Public Property Timestamp As Long
 		Public Property ValidityStatus As ReportValidationStatus = ReportValidationStatus.InvalidOnClient
 

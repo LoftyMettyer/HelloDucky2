@@ -42,6 +42,7 @@ Namespace Repository
 			Try
 
 				objModel.Attach(_objSessionInfo)
+				objModel.ActionType = action
 
 				If action = UtilityActionType.New Then
 					objModel.BaseTableID = SettingsConfig.Personnel_EmpTableID
@@ -133,6 +134,7 @@ Namespace Repository
 			Try
 
 				objModel.Attach(_objSessionInfo)
+				objModel.ActionType = action
 
 				If action = UtilityActionType.New Then
 					objModel.BaseTableID = SettingsConfig.Personnel_EmpTableID
@@ -202,6 +204,7 @@ Namespace Repository
 
 			Try
 				objModel.Attach(_objSessionInfo)
+				objModel.ActionType = action
 
 				If action = UtilityActionType.New Then
 					objModel.BaseTableID = SettingsConfig.Personnel_EmpTableID
@@ -278,6 +281,7 @@ Namespace Repository
 
 			Try
 				objModel.Attach(_objSessionInfo)
+				objModel.ActionType = action
 
 				If action = UtilityActionType.New Then
 					objModel.BaseTableID = SettingsConfig.Personnel_EmpTableID
