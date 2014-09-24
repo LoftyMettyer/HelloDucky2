@@ -350,8 +350,9 @@
 			gridComplete: function () {
 
 				var tablesSelected = $(this).getGridParam("reccount");
-				button_disable($("#btnChildAdd")[0], tablesSelected > 4 || $("#ChildTablesAvailable").val() == 0 || isDefinitionReadOnly());
+				var tablesAvailable = $("#ChildTablesAvailable").val() - tablesSelected;
 
+				button_disable($("#btnChildAdd")[0], tablesSelected > 4 || tablesAvailable == 0 || isDefinitionReadOnly());
 				button_disable($("#btnChildEdit")[0], true);
 				button_disable($("#btnChildRemove")[0], true);
 				button_disable($("#btnChildRemoveAll")[0], tablesSelected == 0 || isDefinitionReadOnly());
