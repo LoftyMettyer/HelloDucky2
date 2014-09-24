@@ -126,20 +126,6 @@
 		getAvailableTableColumnsCalcs();
 	}
 
-	function refreshColumnButtons() {
-
-		var isReadonly = isDefinitionReadOnly();
-		var bDisableAdd = ($("#AvailableColumns").getGridParam("reccount") == 0);
-
-		button_disable($("#btnColumnAdd")[0], bDisableAdd || isReadonly);
-		button_disable($("#btnColumnAddAll")[0], bDisableAdd || isReadonly);
-
-		bDisableAdd = ($("#SelectedColumns").getGridParam("reccount") == 0);
-		button_disable($("#btnColumnRemove")[0], bDisableAdd || isReadonly);
-		button_disable($("#btnColumnRemoveAll")[0], bDisableAdd || isReadonly);
-
-	}
-
 	function addColumnToSelected() {
 
 		var rowID;
@@ -177,7 +163,7 @@
 		}
 
 		$("#AvailableColumns").jqGrid("setSelection", ids[nextIndex], true);
-		refreshColumnButtons();
+		refreshcolumnPropertiesPanel();
 
 	}
 
@@ -242,7 +228,7 @@
 		$('#SelectedColumns').jqGrid("setSelection", rowID);
 		$('#AvailableColumns').jqGrid('clearGridData');
 
-		refreshColumnButtons();
+		refreshcolumnPropertiesPanel();
 
 	}
 
@@ -335,7 +321,7 @@
 		}
 
 		$("#SelectedColumns").jqGrid("setSelection", ids[thisIndex], true);
-		refreshColumnButtons();
+		refreshcolumnPropertiesPanel();
 
 	}
 
@@ -361,7 +347,7 @@
 			resetRepeatOnChildRows();
 		}
 
-		refreshColumnButtons();
+		refreshcolumnPropertiesPanel();
 	}
 
 
@@ -461,7 +447,7 @@
 			loadComplete: function (data) {
 				var topID = $("#AvailableColumns").getDataIDs()[0]
 				$("#AvailableColumns").jqGrid("setSelection", topID);
-				refreshColumnButtons();
+				refreshcolumnPropertiesPanel();
 			}
 		});
 
@@ -528,14 +514,20 @@
 		var rowCount = $('#SelectedColumns').jqGrid('getGridParam', 'selarrrow').length;
 		var rowId = $("#SelectedColumns").jqGrid('getGridParam', 'selrow');
 		var dataRow = $("#SelectedColumns").getRowData(rowId)
-		var allRows = $("#SelectedColumns")[0].rows;
-
-		var isTopRow = (rowId == allRows[1].id);
-		var isBottomRow = (rowId == allRows[allRows.length - 1].id);
-
+		var allRows = $('#SelectedColumns').jqGrid('getDataIDs');
+		var bDisableAdd = ($("#AvailableColumns").getGridParam("reccount") == 0);
+		var isTopRow = true;
+		var isBottomRow = true;
 		var isReadOnly = isDefinitionReadOnly();
+		var bRowSelected = false;
 
-		if (rowCount > 1) {
+		if (allRows.length > 0) {
+			bRowSelected = true;
+			isTopRow = (rowId == allRows[0]);
+			isBottomRow = (rowId == allRows[allRows.length - 1]);
+		} 
+
+		if (rowCount > 1 || allRows.length == 0) {
 			$("#definitionColumnProperties :input").attr("disabled", true);
 			$("#SelectedColumnHeading").val("");
 			$("#SelectedColumnSize").val("");
@@ -606,8 +598,10 @@
 		}
 
 		// Enable / Disable relevant buttons
-		button_disable($("#btnColumnRemove")[0], false || isReadOnly);
-		button_disable($("#btnColumnRemoveAll")[0], false || isReadOnly);
+		button_disable($("#btnColumnAdd")[0], bDisableAdd || isReadOnly);
+		button_disable($("#btnColumnAddAll")[0], bDisableAdd || isReadOnly);
+		button_disable($("#btnColumnRemove")[0], !bRowSelected || isReadOnly);
+		button_disable($("#btnColumnRemoveAll")[0], !bRowSelected || isReadOnly);
 		button_disable($("#btnColumnMoveUp")[0], isTopRow || isReadOnly || (rowCount > 1));
 		button_disable($("#btnColumnMoveDown")[0], isBottomRow || isReadOnly || (rowCount > 1));
 
