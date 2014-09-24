@@ -115,8 +115,7 @@ function util_def_expression_onload() {
 				//expand all
 				tree = $("#SSTree1");
 				tree.bind("loaded.jstree", function (event, data) {
-					tree.jstree("open_all");
-					refreshControls();
+					tree.jstree("open_all");					
 				});
 				break;
 			case "4":
@@ -180,6 +179,7 @@ function util_def_expression_onload() {
 
 		// Get menu.asp to refresh the menu.
 		menu_refreshMenu();
+		refreshControls();
 		$('#cmdCancel').hide();
 	}
 

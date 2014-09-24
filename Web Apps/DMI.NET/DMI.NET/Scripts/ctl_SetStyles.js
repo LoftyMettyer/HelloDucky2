@@ -595,11 +595,11 @@ function radio_disable(obj, pfDisable)
 				
 				if (pfDisable == true)
 				{
-					objAssociated.className='radio radiodisabled';
+					$(objAssociated).addClass('radiodisabled');
 				}
 				else
 				{
-					objAssociated.className='radio';
+					$(objAssociated).removeClass('radiodisabled');
 				}
 
 				break;
