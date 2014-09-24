@@ -1196,6 +1196,14 @@
 		//true = window.dialog.
 		var opener = window.dialogArguments;
 		return (opener == null)?false:true;
+	},
+
+	windowOpen = function (destination, width, height) {
+		// From https://developer.mozilla.org/en-US/docs/Web/API/Window.open:
+		// "only list the features to be enabled or rendered; the others (except titlebar and close) will be disabled or removed."
+		var windowProperties = "centerscreen,chrome," + "height=" + height + "," + "width=" + width;
+
+		return window.open(destination, "_blank", windowProperties);
 	};
 
 	window.OpenHR = {
@@ -1240,7 +1248,8 @@
 		MoveItemInGrid: moveItemInGrid,
 		OpenDialog: openDialog,
 		modalExpressionSelect: modalExpressionSelect,
-		parentExists: parentExists
+		parentExists: parentExists,
+		windowOpen: windowOpen
 	};
 
 })(window, jQuery);

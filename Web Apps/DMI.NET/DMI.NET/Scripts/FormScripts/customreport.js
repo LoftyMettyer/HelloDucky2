@@ -1,16 +1,4 @@
-﻿
-function openDialog(pDestination, pWidth, pHeight, psResizable, psScroll) {
-		dlgwinprops = "center:yes;" +
-				"dialogHeight:" + pHeight + "px;" +
-				"dialogWidth:" + pWidth + "px;" +
-				"help:no;" +
-				"resizable:" + psResizable + ";" +
-				"scroll:" + psScroll + ";" +
-				"status:no;";
-		window.showModalDialog(pDestination, self, dlgwinprops);
-}
-
-function replace(sExpression, sFind, sReplace) {
+﻿function replace(sExpression, sFind, sReplace) {
 		//gi (global search, ignore case)
 		var re = new RegExp(sFind, "gi");
 		sExpression = sExpression.replace(re, sReplace);

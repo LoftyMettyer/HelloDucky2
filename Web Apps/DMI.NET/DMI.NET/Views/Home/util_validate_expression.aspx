@@ -79,8 +79,8 @@
 						OpenHR.submitForm(frmValidate);
 				}
 				else {
-						var frmSend = window.dialogArguments.OpenHR.getForm("workframe", "frmSend");
-						window.dialogArguments.OpenHR.submitForm(frmSend);
+						var frmSend = window.OpenHR.getForm("workframe", "frmSend");
+						window.OpenHR.submitForm(frmSend);
 						self.close();
 				}
 		}

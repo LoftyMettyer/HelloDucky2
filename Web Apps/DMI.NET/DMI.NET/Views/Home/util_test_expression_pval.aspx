@@ -29,15 +29,15 @@
 		<script type="text/javascript" >
 
 		function util_test_expression_pval_onload() {
-			
-		    window.parent.OpenHR.setDatepickerLanguage();
+			window.UserLocale = "<%:Session("LocaleCultureName").ToString().ToLower()%>";
+			window.parent.OpenHR.setDatepickerLanguage();
 	
 			$(".datepicker").datepicker();
 			$(document).on('keydown', '.datepicker', function (event) {
 
 				switch (event.keyCode) {
 					case 113:
-					    $(this).datepicker("setDate", new Date())
+					    $(this).datepicker("setDate", new Date());
 						$(this).datepicker('widget').hide('true');
 						break;
 				}

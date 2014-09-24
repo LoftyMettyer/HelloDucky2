@@ -628,17 +628,6 @@
 
 		}
 
-		function openDialog(pDestination, pWidth, pHeight) {
-				var dlgwinprops = "center:yes;" +
-								"dialogHeight:" + pHeight + "px;" +
-								"dialogWidth:" + pWidth + "px;" +
-								"help:no;" +
-								"resizable:yes;" +
-								"scroll:yes;" +
-								"status:no;";
-				window.showModalDialog(pDestination, self, dlgwinprops);
-		}
-
 		function ToggleCheck() {
 
 				var frmOnlyMine = document.getElementById('frmOnlyMine');

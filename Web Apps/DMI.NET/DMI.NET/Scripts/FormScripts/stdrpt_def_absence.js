@@ -431,17 +431,6 @@ function changeRecordOptions(psType) {
 	absenceBreakdownRefreshTab1Controls();
 }
 
-function openDialog(pDestination, pWidth, pHeight, psResizable, psScroll) {
-	var dlgwinprops = "center:yes;" +
-			"dialogHeight:" + pHeight + "px;" +
-			"dialogWidth:" + pWidth + "px;" +
-			"help:no;" +
-			"resizable:" + psResizable + ";" +
-			"scroll:" + psScroll + ";" +
-			"status:no;";
-	window.showModalDialog(pDestination, self, dlgwinprops);
-}
-
 function display_Absence_Page(piPageNumber) {
 
 	var div1 = document.getElementById("div1");

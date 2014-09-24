@@ -337,6 +337,7 @@ Namespace Controllers
 
 					Session("LocaleDecimalSeparator") = sLocaleDecimalSeparator
 					Session("LocaleThousandSeparator") = sLocaleThousandSeparator
+					Session("LocaleCultureName") = sLocaleCultureName
 
 					objDataAccess = New clsDataAccess(objServerSession.LoginInfo)
 					Session("DatabaseFunctions") = objDatabase

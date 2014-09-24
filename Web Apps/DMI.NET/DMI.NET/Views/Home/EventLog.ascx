@@ -398,7 +398,7 @@
 				"&txtEventBatchRunID=" + frmDetails.txtEventBatchRunID.value +
 				"&txtEmailPermission=" + escape(frmDetails.txtEmailPermission.value);
 
-		openDialog(sURL, 900, 770);
+		OpenHR.windowOpen(sURL, 900, 770);
 	}
 
 	function EventLog_deleteEvent() {
@@ -421,7 +421,7 @@
 				"&txtEventBatchRunID=" + frmDetails.txtEventBatchRunID.value +
 				"&txtEmailPermission=" + escape(frmDetails.txtEmailPermission.value);
 
-		openDialog(sURL, 500, 220);
+		OpenHR.windowOpen(sURL, 500, 220);
 
 		EventLog_refreshButtons();
 	}
@@ -446,7 +446,7 @@
 				"&txtEventBatchRunID=" + frmDetails.txtEventBatchRunID.value +
 				"&txtEmailPermission=" + escape(frmDetails.txtEmailPermission.value);
 
-		openDialog(sURL, 500, 220);
+		OpenHR.windowOpen(sURL, 500, 220);
 
 	}
 
@@ -472,7 +472,7 @@
 				"&txtEmailOrderColumn=" + frmLog.txtELOrderColumn.value +
 				"&txtEmailOrderOrder=" + frmLog.txtELOrderOrder.value;
 
-		openDialog(sURL, (screen.width) / 2 + 45, (screen.height) / 2 - 85, "no", "no");
+		OpenHR.windowOpen(sURL, (screen.width) / 2 + 45, (screen.height) / 2 - 85, "no", "no");
 	}
 
 	function EventLog_refreshButtons() {
@@ -551,17 +551,6 @@
 		refreshGrid();
 	}
 
-	function openDialog(pDestination, pWidth, pHeight) {
-
-		dlgwinprops = "center:yes;" +
-				"dialogHeight:" + pHeight + "px;" +
-				"dialogWidth:" + pWidth + "px;" +
-				"help:no;" +
-				"resizable:no;" +
-				"scroll:no;" +
-				"status:no;";
-		window.showModalDialog(pDestination, self, dlgwinprops);
-	}
 
 </script>
 

@@ -281,18 +281,16 @@
 																						Response.Write("</tr>")
 																			
 																					Next
-	
+																				%>
+																			</table>
+																				<% 
 																					If prmEventExists.Value > 0 Then
 																						Response.Write("<input type='hidden' Name='txtEventExists' id='txtEventExists' value='1'>" & vbCrLf)
 																					Else
 																						Response.Write("<input type='hidden' Name='txtEventExists' id='txtEventExists' value='0'>" & vbCrLf)
 																					End If
-	
-
-																					prmEventExists = Nothing
+																				prmEventExists = Nothing
 																				%>
-																			</table>
-
 																		</td>
 																	</tr>
 																</table>
@@ -379,10 +377,12 @@
 
 				$("#ssOleDBGridEventLogDetails").setGridWidth($("#findGridRow").width() - 50);
 
-				if ($("#txtEventExists").value == 0) {
+				if ($("#txtEventExists").val() == 0) {
 
-					var frmOpenerRefresh = window.dialogArguments.OpenHR.getForm("workframe", "frmRefresh");
-					var frmMainLog = window.dialogArguments.OpenHR.getForm("workframe", "frmLog");
+					var frmOpenerRefresh = OpenHR.getForm("workframe", "frmRefresh");
+					var frmMainLog = OpenHR.getForm("workframe", "frmLog");
+
+
 
 					OpenHR.messageBox("This record no longer exists in the event log.", 48, "Event Log");
 
@@ -395,9 +395,7 @@
 
 					self.close();
 				} else {
-					var frmOpenerDetails = window.dialogArguments.OpenHR.getForm("workframe", "frmDetails");
-
-					if (frmOpenerDetails.txtEmailPermission.value == 1) {
+					if (<%: Request("txtEmailPermission") %> == 1) {
 						button_disable(frmEventDetails.cmdEmail, false);
 					} else {
 						button_disable(frmEventDetails.cmdEmail, true);
@@ -443,7 +441,7 @@
 					"&txtFromMain=" + frmEmail.txtFromMain.value +
 					"&txtBatchInfo=" + escape(frmEmail.txtBatchInfo.value) +
 					"&txtBatchy=" + frmEmail.txtBatchy.value;
-				openDialog(sURL, (screen.width) / 3 + 40, (screen.height) / 2 - 100, "no", "no");
+				OpenHR.windowOpen(sURL, (screen.width) / 2 + 45, (screen.height) / 2 - 85, "no", "no");
 			}
 
 			function printEvent() {
@@ -519,17 +517,6 @@
 
 				$("#ssOleDBGridEventLogDetails").setLabel("Details", sCaption);
 
-			}
-
-			function openDialog(pDestination, pWidth, pHeight) {
-				dlgwinprops = "center:yes;" +
-					"dialogHeight:" + pHeight + "px;" +
-					"dialogWidth:" + pWidth + "px;" +
-					"help:no;" +
-					"resizable:yes;" +
-					"scroll:yes;" +
-					"status:no;";
-				window.showModalDialog(pDestination, self, dlgwinprops);
 			}
 
 		</script>

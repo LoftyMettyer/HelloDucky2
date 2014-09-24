@@ -94,18 +94,6 @@ function UpdateGrid() {
     getCrossTabData(strMode, lngPageNumber, lngIntType, blnShowPer, blnPerPage, blnSupZeros, blnThousand);
 }
 
-function openDialog(pDestination, pWidth, pHeight, psResizable, psScroll) {
-    dlgwinprops = "center:yes;" +
-        "dialogHeight:" + pHeight + "px;" +
-        "dialogWidth:" + pWidth + "px;" +
-        "help:no;" +
-        "resizable:" + psResizable + ";" +
-        "scroll:" + psScroll + ";" +
-        "status:no;";
-    window.showModalDialog(pDestination, self, dlgwinprops);
-}
-
-
 function util_run_crosstabs_window_onload() {
 
     try {

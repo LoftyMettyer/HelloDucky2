@@ -159,14 +159,14 @@
     function setForm() {
         var frmPopup = document.getElementById("frmPopup");
 
-        if (window.dialogArguments.document.getElementById('txtAbsenceEmailGroup') != null) {
-            window.dialogArguments.document.getElementById('txtAbsenceEmailGroup').value = frmPopup.txtSelectedName.value;
-            window.dialogArguments.document.getElementById('txtAbsenceEmailGroupID').value = frmPopup.txtSelectedID.value;
+        if (document.getElementById('txtAbsenceEmailGroup') != null) {
+            document.getElementById('txtAbsenceEmailGroup').value = frmPopup.txtSelectedName.value;
+            document.getElementById('txtAbsenceEmailGroupID').value = frmPopup.txtSelectedID.value;
         }
 
-        if (window.dialogArguments.document.getElementById('txtEmailGroup') != null) {
-            window.dialogArguments.document.getElementById('txtEmailGroup').value = frmPopup.txtSelectedName.value;
-            window.dialogArguments.document.getElementById('txtEmailGroupID').value = frmPopup.txtSelectedID.value;
+        if (document.getElementById('txtEmailGroup') != null) {
+            document.getElementById('txtEmailGroup').value = frmPopup.txtSelectedName.value;
+            document.getElementById('txtEmailGroupID').value = frmPopup.txtSelectedID.value;
         }
 
         self.close();
@@ -308,9 +308,11 @@
 				cmTemplate: { sortable: false },
         rowNum: 1000,   //TODO set this to blocksize...
         height: 320,
-        width: 850,
+        autowidth: true,
         beforeSelectRow: function (rowid, e) { return false; }
     });
+
+    $("#EmailSelectionTable").jqGrid('setGridWidth', $("#EmailSelectionTable").jqGrid().width() - 4);
 
     function refreshControls() {
         var sSelectionList = jQuery("#EmailSelectionTable").jqGrid('getGridParam', 'selarrrow');
@@ -330,12 +332,12 @@
 	    	data: { 'to': sTo, 'cc': sCC, 'bcc': sBCC, 'subject': sSubject, 'body': sBody },
 	    	dataType: "text",
 	    	success: function (a, b, c) {
-	    		alert(window.dialogArguments.OpenHR.replaceAll(c.statusText, '<br/>', '\n'));
+	    		alert(OpenHR.replaceAll(c.statusText, '<br/>', '\n'));
 	    		self.close();
 	    	},
 	    	error: function (req, status, errorObj) {
 	    		if (!(errorObj == "" || req.responseText == "")) {
-	    			alert(window.dialogArguments.OpenHR.replaceAll(errorObj, '<br/>', '\n'));
+	    			alert(OpenHR.replaceAll(errorObj, '<br/>', '\n'));
 	    		}
 	    	}
 	    });

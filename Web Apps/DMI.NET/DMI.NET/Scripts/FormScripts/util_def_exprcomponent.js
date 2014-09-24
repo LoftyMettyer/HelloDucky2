@@ -1870,17 +1870,6 @@ function locateGridRecord(piID) {
 	}
 }
 
-function openDialog(pDestination, pWidth, pHeight, psResizable, psScroll) {
-	var dlgwinprops = "center:yes;" +
-			"dialogHeight:" + pHeight + "px;" +
-			"dialogWidth:" + pWidth + "px;" +
-			"help:no;" +
-			"resizable:" + psResizable + ";" +
-			"scroll:" + psScroll + ";" +
-			"status:no;";
-	window.showModalDialog(pDestination, self, dlgwinprops);
-}
-
 function component_OKClick() {
 
 	var sDefn;
