@@ -143,14 +143,17 @@
 	}
 
 	function crossTabIntersectionType() {
+
+		var bReadOnly = isDefinitionReadOnly();
 		var dropDown = $("#IntersectionID")[0];
 		var iDataType = dropDown.options[dropDown.selectedIndex].attributes["data-datatype"].value;
-		combo_disable($("#IntersectionType"), (iDataType == "0"));
+		combo_disable($("#IntersectionType"), (iDataType == "0") || bReadOnly);
 		refreshTab2Controls();
 	}
 
 	function refreshCrossTabColumn(target, type) {
 
+		var bReadOnly = isDefinitionReadOnly();
 		var horizontalValue = $("#HorizontalID").val();
 		var verticalValue = $("#VerticalID").val();
 		var pageBreakValue = $("#PageBreakID").val();
@@ -161,15 +164,15 @@
 		$("#" + type + "DataType").val(iDataType);
 		switch (iDataType) {
 			case "2":
-				$("#" + type + "Start").removeAttr("disabled");
-				$("#" + type + "Stop").removeAttr("disabled");
-				$("#" + type + "Increment").removeAttr("disabled");
+				$("#" + type + "Start").attr("disabled", bReadOnly);
+				$("#" + type + "Stop").attr("disabled", bReadOnly);
+				$("#" + type + "Increment").attr("disabled", bReadOnly);
 				break;
 
 			case "4":
-				$("#" + type + "Start").removeAttr("disabled");
-				$("#" + type + "Stop").removeAttr("disabled");
-				$("#" + type + "Increment").removeAttr("disabled");
+				$("#" + type + "Start").attr("disabled", bReadOnly);
+				$("#" + type + "Stop").attr("disabled", bReadOnly);
+				$("#" + type + "Increment").attr("disabled", bReadOnly);
 				break;
 
 			default:

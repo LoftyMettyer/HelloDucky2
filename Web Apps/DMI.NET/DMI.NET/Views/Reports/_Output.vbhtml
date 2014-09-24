@@ -144,10 +144,11 @@ End Code
 
 	function setOutputToEmail() {
 		var bSelected = $("#SendToEmail").prop('checked');
+		var bReadOnly = isDefinitionReadOnly();
 
-		$(".reportdefemail").children().attr("readonly", !bSelected);
-		$('#cmdEmailGroup').attr('disabled', !bSelected);
-		button_disable($("#cmdEmailGroup")[0], !bSelected);
+		$(".reportdefemail").children().attr("readonly", !bSelected || bReadOnly);
+		$('#cmdEmailGroup').attr('disabled', !bSelected || bReadOnly);
+		button_disable($("#cmdEmailGroup")[0], !bSelected || bReadOnly);
 
 		if (!bSelected) {
 			$(".reportdefemail").children().val("");
@@ -202,6 +203,7 @@ End Code
 
 	function refreshOutputOptions() {
 
+		var bReadOnly = isDefinitionReadOnly();
 		var type = $('#outputformats :checked').val();
 
 		$(".reportdefpreview").children().removeAttr("readonly");
@@ -209,13 +211,13 @@ End Code
 		$(".reportdeffile").children().removeAttr("readonly");
 		$(".reportdefemail").children().removeAttr("readonly");
 
-		$(".reportdefpreview :checkbox").attr("disabled", (type == "0"));
-		$(".reportdefemail :checkbox").attr("disabled", (type == "0"));
-		$('#cmdEmailGroup').attr('disabled', (type == "0"));
-		$(".reportdeffile :checkbox").attr("disabled", (type == "0"));
+		$(".reportdefpreview :checkbox").attr("disabled", (type == "0") || bReadOnly);
+		$(".reportdefemail :checkbox").attr("disabled", (type == "0") || bReadOnly);
+		$('#cmdEmailGroup').attr('disabled', (type == "0") || bReadOnly);
+		$(".reportdeffile :checkbox").attr("disabled", (type == "0") || bReadOnly);
 
-		$(".reportdefscreen :checkbox").attr("disabled", (type == "1"));
-		$(".reportdefprinter :checkbox").attr("disabled", (type == "1" || type == "2"));
+		$(".reportdefscreen :checkbox").attr("disabled", (type == "1") || bReadOnly);
+		$(".reportdefprinter :checkbox").attr("disabled", (type == "1" || type == "2" || bReadOnly));
 
 		if (type == "0") {
 			$(".reportdefpreview").children().attr("readonly", "readonly");

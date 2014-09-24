@@ -548,7 +548,9 @@
 		}
 		else {
 
-			$("#definitionColumnProperties :input").removeAttr("disabled");
+			if (!isReadOnly) {
+				$("#definitionColumnProperties :input").removeAttr("disabled");
+			}
 
 			var isThereChildColumns = (childColumnsCount() > 0);
 			var isNumeric = (dataRow.DataType == '2' || dataRow.DataType == '4');
@@ -558,38 +560,38 @@
 			var isHidden = $("#SelectedColumnIsHidden").is(':checked');
 			var isGroupWithNext = $("#SelectedColumnIsGroupWithNext").is(':checked');
 
-			$(".numericOnly :input").attr("disabled", !isNumeric || isHidden || isGroupWithNext);
-			$(".cannotBeHidden :input").attr("disabled", isHidden || isGroupWithNext);
-			$(".decimalsOnly :input").attr("disabled", !isDecimals);
-			$(".baseTableOnly :input").attr("disabled", !isBaseOrParentTableColumn || !isThereChildColumns);
-			$(".canGroupWithNext :input").attr("disabled", isBottomRow || isHidden);
-			$("#SelectedColumnIsHidden").attr("disabled", isGroupWithNext);
+			$(".numericOnly :input").attr("disabled", !isNumeric || isHidden || isGroupWithNext || isReadOnly);
+			$(".cannotBeHidden :input").attr("disabled", isHidden || isGroupWithNext || isReadOnly);
+			$(".decimalsOnly :input").attr("disabled", !isDecimals || isReadOnly);
+			$(".baseTableOnly :input").attr("disabled", !isBaseOrParentTableColumn || !isThereChildColumns || isReadOnly);
+			$(".canGroupWithNext :input").attr("disabled", isBottomRow || isHidden || isReadOnly);
+			$("#SelectedColumnIsHidden").attr("disabled", isGroupWithNext || isReadOnly);
 
-			if (!isNumeric || isHidden || isGroupWithNext) {
+			if (!isNumeric || isHidden || isGroupWithNext || isReadOnly) {
 				$(".numericOnly").css("color", "#A59393");
 			} else {
 				$(".numericOnly").css("color", "#000000");
 			}
 
-			if (isHidden || isGroupWithNext) {
+			if (isHidden || isGroupWithNext || isReadOnly) {
 				$(".cannotBeHidden").css("color", "#A59393");
 			} else {
 				$(".cannotBeHidden").css("color", "#000000");
 			}
 
-			if (isBottomRow || isHidden) {
+			if (isBottomRow || isHidden || isReadOnly) {
 				$(".canGroupWithNext").css("color", "#A59393");
 			} else {
 				$(".canGroupWithNext").css("color", "#000000");
 			}
 
-			if (isGroupWithNext) {
+			if (isGroupWithNext || isReadOnly) {
 				$("#labelSelectedColumnIsHidden").css("color", "#A59393");
 			} else {
 				$("#labelSelectedColumnIsHidden").css("color", "#000000");
 			}
 
-			if (isBaseOrParentTableColumn && isThereChildColumns) {
+			if (isBaseOrParentTableColumn && isThereChildColumns && !isReadOnly) {
 				$(".baseTableOnly").css("color", "#000000");
 			} else {
 				$(".baseTableOnly").css("color", "#A59393");
