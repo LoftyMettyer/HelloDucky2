@@ -72,26 +72,20 @@
 			optionDataForm.txtOptionPageAction.value = "LOAD";
 
 			frmLinkFindForm.txtOptionLinkOrderID.value = optionDataForm.txtOptionOrderID.value;
-
 			refreshOptionData();	//should be in scope now...
-
-
+			
 			//get width
-
 			$("#optionframe").dialog({
 				autoOpen: true,
 				modal: true,
 				width: 'auto',
-				height: 'auto'
+				height: 'auto',
+				resizable: false
 			});
-			var width = document.getElementById('tbllinkFind').offsetWidth;
-			
-
-
+			//var width = document.getElementById('tbllinkFind').offsetWidth;
 			// Set focus onto one of the form controls. 
 			// NB. This needs to be done before making any reference to the grid
 			frmLinkFindForm.cmdCancel.focus();
-
 		}
 	}
 
@@ -127,34 +121,6 @@
 		frmGotoOption.txtGotoOptionPage.value = "emptyoption";
 		OpenHR.submitForm(frmGotoOption);
 	}
-
-	/* Return the ID of the record selected in the find form. */
-	//function selectedRecordID() {
-	//	var iRecordID;
-	//	var iIndex;
-	//	var iIDColumnIndex;
-	//	var sColumnName;
-	//	var frmLinkFindForm = document.getElementById('frmLinkFindForm');
-
-	//	iRecordID = 0;
-	//	iIDColumnIndex = 0;
-
-	//	//TODO: ActiveX!!
-	//	if (frmLinkFindForm.ssOleDBGridLinkRecords.SelBookmarks.Count > 0) {
-	//		for (iIndex = 0; iIndex < frmLinkFindForm.ssOleDBGridLinkRecords.Cols; iIndex++) {
-	//			sColumnName = frmLinkFindForm.ssOleDBGridLinkRecords.Columns(iIndex).Name;
-	//			if (sColumnName.toUpperCase() == "ID") {
-	//				iIDColumnIndex = iIndex;
-	//				break;
-	//			}
-	//		}
-
-	//		iRecordID = frmLinkFindForm.ssOleDBGridLinkRecords.Columns(iIDColumnIndex).Value;
-	//	}
-
-	//	return (iRecordID);
-	//}
-
 	/* Sequential search the grid for the required ID. */
 	function locateRecord(psSearchFor, pfIDMatch) {
 		var fFound;
@@ -225,8 +191,7 @@
 
 		frmLinkFindForm.ssOleDBGridLinkRecords.redraw = true;
 	}
-
-
+	
 	function linkFind_refreshControls() {
 		//linkFind...
 		var frmLinkFindForm = document.getElementById("frmLinkFindForm");
@@ -250,7 +215,6 @@
 		}
 	}
 	
-
 	function goLinkView() {
 		//need this as this grid won't accept live changes :/		
 		$("#ssOleDBGridLinkRecords").jqGrid('GridUnload');
@@ -319,172 +283,117 @@
 
 <div id="divLinkFindForm" <%=session("BodyTag")%>>
 	<form action="" method="POST" id="frmLinkFindForm" name="frmLinkFindForm">
-		<table id="tbllinkFind" align="center" class="outline" cellpadding="5" cellspacing="0" width="100%" height="100%">
-			<tr>
-				<td>
-					<table width="100%" height="100%" class="invisible" cellspacing="0" cellpadding="0">
-						<tr>
-							<td height="10" colspan="3"></td>
-						</tr>
-						<tr>
-							<td align="center" height="10" colspan="3">
-								<h3 class="pageTitle" align="left">Find Link Record</h3>
-							</td>
-						</tr>
-						<tr>
-							<td height="10">&nbsp;&nbsp;</td>
-							<td height="10">
-								<table width="100%" class="invisible" cellspacing="0" cellpadding="0">
-									<tr>
-										<td width="40">View :
-										</td>
-										<td width="10">&nbsp;
-										</td>
-										<td width="175">
-											<select id="selectView" name="selectView" class="combo" style="HEIGHT: 22px; WIDTH: 200px">
-												<%
+		<div class="" style="">
+			<div class="pageTitleDiv" style="margin-bottom: 15px">
+				<span class="pageTitle" id="PopupReportDefinition_PageTitle">Find Link Record</span>
+			</div>
 
-													Dim objDatabase As Database = CType(Session("DatabaseFunctions"), Database)
+			<table  class="invisible" style="border-spacing: 0;">
+				<tr>
+					<td style="height:10px">
+						<table class="width100 invisible" style="border-spacing: 0;">
+							<tr>
+								<td>View :</td>
+								<td>
+									<select id="selectView" name="selectView" class="width100" style="">
+										<%
+											Dim objDatabase As Database = CType(Session("DatabaseFunctions"), Database)
+											Dim sErrorDescription = ""
+											Dim sFailureDescription = ""
+											Dim prmDfltOrderID As New SqlParameter("plngDfltOrderID", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
+											Dim rstViewRecords = objDatabase.DB.GetDataTable("sp_ASRIntGetLinkViews", CommandType.StoredProcedure _
+													, New SqlParameter("plngTableID", SqlDbType.Int) With {.Value = CleanNumeric(Session("optionLinkTableID"))} _
+													, prmDfltOrderID)
 
-													Dim sErrorDescription = ""
-													Dim sFailureDescription = ""
-														
-													Dim prmDfltOrderID As New SqlParameter("plngDfltOrderID", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
-													Dim rstViewRecords = objDatabase.DB.GetDataTable("sp_ASRIntGetLinkViews", CommandType.StoredProcedure _
-															, New SqlParameter("plngTableID", SqlDbType.Int) With {.Value = CleanNumeric(Session("optionLinkTableID"))} _
-															, prmDfltOrderID)
+											If (Len(sErrorDescription) = 0) And (Len(sFailureDescription) = 0) Then
+												For Each objRow As DataRow In rstViewRecords.Rows
+													Response.Write("						<option value=" & objRow(0))
+													If CInt(objRow(0)) = CInt(Session("optionLinkViewID")) Then
+														Response.Write(" SELECTED")
+													End If
 
-													If (Len(sErrorDescription) = 0) And (Len(sFailureDescription) = 0) Then
-														For Each objRow As DataRow In rstViewRecords.Rows
-															Response.Write("						<option value=" & objRow(0))
-															If CInt(objRow(0)) = CInt(Session("optionLinkViewID")) Then
-																Response.Write(" SELECTED")
-															End If
-
-															If objRow(0) = 0 Then
-																Response.Write(">" & Replace(objRow(1).ToString(), "_", " ") & "</option>" & vbCrLf)
-															Else
-																Response.Write(">'" & Replace(objRow(1).ToString, "_", " ") & "' view</option>" & vbCrLf)
-															End If
-																
-														Next
+													If objRow(0) = 0 Then
+														Response.Write(">" & Replace(objRow(1).ToString(), "_", " ") & "</option>" & vbCrLf)
+													Else
+														Response.Write(">'" & Replace(objRow(1).ToString, "_", " ") & "' view</option>" & vbCrLf)
+													End If
+												Next
 	
-														If Session("optionLinkOrderID") <= 0 Then
-															Session("optionLinkOrderID") = prmDfltOrderID.Value
-														End If
-													End If
+												If Session("optionLinkOrderID") <= 0 Then
+													Session("optionLinkOrderID") = prmDfltOrderID.Value
+												End If
+											End If
+										%>
+									</select>
+								</td>
 
-												%>
-											</select>
-										</td>
-									
-										<td width="17" id="tdTViewHelp" name="tdTViewHelp" onclick="doViewHelp()" style="white-space: nowrap; " disabled>
-												&nbsp;&nbsp;&nbsp;
-											<img id="imgTViewHelp" name="imgTViewHelp" alt="help"
-												src="<%=Url.Content("~/Content/images/Help32.png")%>"
-												title="What happens if I change the view?" style="width: 17px; height: 17px; border: 0; cursor: pointer" />
-										</td>
-										
-										<td width="10">
-											&nbsp;&nbsp;&nbsp;
-											<input type="button" value="Go" id="btnGoLinkView" name="btnGoLinkView" class="btn"
-												onclick="goLinkView()" />
-										</td>
-										<td>&nbsp;
-										</td>
-										<td style="text-align: right;">Order :
-										</td>
-										<td width="10">&nbsp;
-										</td>
-										<td width="175">
-											<select id="selectOrder" name="selectOrder" class="combo" style="HEIGHT: 22px; WIDTH: 200px">
-												<%
-													If (Len(sErrorDescription) = 0) And (Len(sFailureDescription) = 0) Then
+								<td id="tdTViewHelp" name="tdTViewHelp" onclick="doViewHelp()" class="nowrap">
+									<img id="imgTViewHelp" name="imgTViewHelp" alt="help"
+										src="<%=Url.Content("~/Content/images/Help32.png")%>"
+										title="What happens if I change the view?" style="vertical-align: middle;width: 17px; height: 17px; border: 0; cursor: pointer" />
+								</td>
+
+								<td>
+									<input class="btn" id="btnGoLinkView" name="btnGoLinkView" onclick="goLinkView()" type="button" value="Go" />
+								</td>
+
+								<td style="text-align: right;">Order :</td>
+
+								<td>
+									<select id="selectOrder" name="selectOrder" class="width100" style="">
+										<%
+											If (Len(sErrorDescription) = 0) And (Len(sFailureDescription) = 0) Then
 														
-														Dim rstOrderRecords = objDatabase.GetTableOrders(CleanNumeric(Session("optionLinkTableID")), 0)
-														For Each objRow As DataRow In rstOrderRecords.Rows
-															Response.Write("						<option value=" & objRow(1))
-															If objRow(1) = CInt(Session("optionLinkOrderID")) Then
-																Response.Write(" SELECTED")
-															End If
-															Response.Write(">" & Replace(objRow(0).ToString(), "_", " ") & "</option>" & vbCrLf)
-														Next
-
+												Dim rstOrderRecords = objDatabase.GetTableOrders(CleanNumeric(Session("optionLinkTableID")), 0)
+												For Each objRow As DataRow In rstOrderRecords.Rows
+													Response.Write("						<option value=" & objRow(1))
+													If objRow(1) = CInt(Session("optionLinkOrderID")) Then
+														Response.Write(" SELECTED")
 													End If
-												%>
-											</select>
-										</td>
-										
-										<td width="17" id="tdTOrderHelp" name="tdTOrderHelp" onclick="doOrderHelp()" style="white-space: nowrap; " disabled>
-											&nbsp;&nbsp;&nbsp;
-											<img id="imgTOrderHelp" name="imgTOrderHelp" alt="help"
-												src="<%=Url.Content("~/Content/images/Help32.png")%>"
-												title="What happens if I change the order?" style="width: 17px; height: 17px; border: 0; cursor: pointer" />
-										</td>										
-										<td width="10">
-											&nbsp;&nbsp;&nbsp;
-											<input type="button" value="Go" id="btnGoLinkOrder" name="btnGoLinkOrder" class="btn"
-												onclick="goLinkOrder()" />
-										</td>
-									</tr>
-								</table>
-							</td>
-							<td height="10">&nbsp;&nbsp;</td>
-						</tr>
-						<tr>
-							<td height="10" colspan="3"></td>
-						</tr>
-						<tr>
-							<td></td>
-							<td>
-								<div id="linkFindGridRow" style="height: 75%; margin-bottom: 50px;">
-									<table id="ssOleDBGridLinkRecords" name="ssOleDBGridLinkRecords" style="width: 100%"></table>
-								</div>
-							</td>
-							<td></td>
-						</tr>
-						<tr>
-							<td height="10" colspan="3"></td>
-						</tr>
-						<tr>
-							<td height="10"></td>
-							<td height="10">
-								<table width="100%" class="invisible" cellspacing="0" cellpadding="0">
-									<tr>
-										<td colspan="4"></td>
-									</tr>
-									<tr>
-										<td></td>
-										<td width="10">
-											<input id="cmdSelectLink" name="cmdSelectLink" type="button" value="Select" style="WIDTH: 75px" width="75" class="btn"
-												onclick="SelectLink()"/>
-										</td>
-										<td width="40"></td>
-										<td width="10">
-											<input id="cmdCancel" name="cmdCancel" type="button" value="Cancel" style="WIDTH: 75px" width="75" class="btn"
-												onclick="CancelLink()" />
-										</td>
-									</tr>
-								</table>
-							</td>
-							<td height="10"></td>
-						</tr>
-						<tr>
-							<td height="10" colspan="3"></td>
-						</tr>
-					</table>
-				</td>
-			</tr>
-		</table>
-		<%
-			Response.Write("<INPUT type='hidden' id=txtErrorDescription name=txtErrorDescription value=""" & sErrorDescription & """>" & vbCrLf)
-			Response.Write("<INPUT type='hidden' id=txtFailureDescription name=txtFailureDescription value=""" & sFailureDescription & """>" & vbCrLf)
-			Response.Write("<INPUT type='hidden' id=txtOptionScreenID name=txtOptionScreenID value=" & Session("optionScreenID") & ">" & vbCrLf)
-			Response.Write("<INPUT type='hidden' id=txtOptionLinkTableID name=txtOptionLinkTableID value=" & Session("optionLinkTableID") & ">" & vbCrLf)
-			Response.Write("<INPUT type='hidden' id=txtOptionLinkViewID name=txtOptionLinkViewID value=" & Session("optionLinkViewID") & ">" & vbCrLf)
-			Response.Write("<INPUT type='hidden' id=txtOptionLinkOrderID name=txtOptionLinkOrderID value=" & Session("optionLinkOrderID") & ">" & vbCrLf)
-			Response.Write("<INPUT type='hidden' id=txtOptionLinkRecordID name=txtOptionLinkRecordID value=" & Session("optionLinkRecordID") & ">" & vbCrLf)
-		%>
+													Response.Write(">" & Replace(objRow(0).ToString(), "_", " ") & "</option>" & vbCrLf)
+												Next
+
+											End If
+										%>
+									</select>
+								</td>
+
+								<td id="tdTOrderHelp" name="tdTOrderHelp" onclick="doOrderHelp()" class="nowrap">
+									<img id="imgTOrderHelp" name="imgTOrderHelp" alt="help"
+										src="<%=Url.Content("~/Content/images/Help32.png")%>"
+										title="What happens if I change the order?" style="vertical-align: middle; width: 17px; height: 17px; border: 0; cursor: pointer" />
+								</td>
+								<td>
+									<input class="btn" id="btnGoLinkOrder" name="btnGoLinkOrder" onclick="goLinkOrder()" type="button" value="Go" />
+								</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+
+				<tr>
+					<td>
+						<%--<div id="linkFindGridRow" style="height: 75%; margin-bottom: 50px;">--%>
+						<table id="ssOleDBGridLinkRecords" name="ssOleDBGridLinkRecords" class="width100 height100"></table>
+						<%--</div>--%>
+					</td>
+				</tr>
+			</table>
+
+			<%
+				Response.Write("<INPUT type='hidden' id=txtErrorDescription name=txtErrorDescription value=""" & sErrorDescription & """>" & vbCrLf)
+				Response.Write("<INPUT type='hidden' id=txtFailureDescription name=txtFailureDescription value=""" & sFailureDescription & """>" & vbCrLf)
+				Response.Write("<INPUT type='hidden' id=txtOptionScreenID name=txtOptionScreenID value=" & Session("optionScreenID") & ">" & vbCrLf)
+				Response.Write("<INPUT type='hidden' id=txtOptionLinkTableID name=txtOptionLinkTableID value=" & Session("optionLinkTableID") & ">" & vbCrLf)
+				Response.Write("<INPUT type='hidden' id=txtOptionLinkViewID name=txtOptionLinkViewID value=" & Session("optionLinkViewID") & ">" & vbCrLf)
+				Response.Write("<INPUT type='hidden' id=txtOptionLinkOrderID name=txtOptionLinkOrderID value=" & Session("optionLinkOrderID") & ">" & vbCrLf)
+				Response.Write("<INPUT type='hidden' id=txtOptionLinkRecordID name=txtOptionLinkRecordID value=" & Session("optionLinkRecordID") & ">" & vbCrLf)
+			%>
+			<div id="divLinkFindButtons">
+				<input class="btn" id="cmdSelectLink" name="cmdSelectLink" onclick="SelectLink()" type="button" value="Select" />
+				<input class="btn" id="cmdCancel" name="cmdCancel" onclick="CancelLink()" type="button" value="Cancel" />
+			</div>
+		</div>
 	</form>
 	<input type="hidden" id="txtTicker" name="txtTicker" value="0">
 	<input type="hidden" id="txtLastKeyFind" name="txtLastKeyFind" value="">
@@ -496,6 +405,6 @@
 </div>
 
 <script type="text/javascript">
-
 	linkFind_window_onload();
+	$('table').attr('border', '0');
 </script>

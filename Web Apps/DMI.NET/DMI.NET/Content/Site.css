@@ -584,7 +584,8 @@ select.readonly {
 #cmdBaseFilter, #cmdParent1Picklist, #cmdBasePicklist,
 #cmdParent1Filter, #cmdParent2Picklist, #cmdParent2Filter, 
 #cmdEmailGroup, #cmdCustomStart, #cmdCustomEnd,
-#cmdTemplateSelect, #cmdTemplateClear, #cmdFilename {
+#cmdTemplateSelect, #cmdTemplateClear, #cmdFilename,
+#btnGoLinkOrder, #btnGoLinkView {
 	float: left;
 	padding: 2px 11px;
 }
@@ -676,7 +677,7 @@ select.readonly {
 	margin: 5px 0 5px 0;
 }
 
-#divExpressionSelectionButtons, #divSortOrderButtons, #divSelectOrder, #divLookupFindButtons {
+#divExpressionSelectionButtons, #divSortOrderButtons, #divSelectOrder, #divLookupFindButtons, #divLinkFindButtons {
 	float: right;
 	margin: 15px 0 5px 0;
 }
