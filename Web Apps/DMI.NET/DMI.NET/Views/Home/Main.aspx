@@ -59,7 +59,7 @@
 							} else {
 								$('#menuframe').animate({ left: '0' }, contextMenuTab.speed)
 									.addClass('open');
-								$("#workframeset").css("left", containerWidth);
+								$("#workframeset").css("left", containerWidth + 30);
 								// $("#reportframeset").css("left", "350px");
 								$('#ContextMenuIcon').attr('src', '<%= Url.Content("~/content/images/retract.png") %>');
 							}
