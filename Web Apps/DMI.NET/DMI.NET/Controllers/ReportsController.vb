@@ -510,6 +510,26 @@ Namespace Controllers
 		End Sub
 
 		<HttpPost>
+		Sub AddAllReportColumns(objModel As ReportColumnCollection)
+
+			Dim objReport As ReportBaseModel
+			objReport = CType(objReportRepository.RetrieveParent(objModel), ReportBaseModel)
+			Dim objAllObjects As List(Of ReportColumnItem)
+
+			If objModel.SelectionType = "C" Then
+				objAllObjects = objReportRepository.GetColumnsForTable(objModel.ColumnsTableID)
+			Else
+				objAllObjects = objReportRepository.GetCalculationsForTable(objModel.ColumnsTableID)
+			End If
+
+			For Each ObjectID In objModel.Columns
+				Dim objColumn = objAllObjects.First(Function(m) m.ID = ObjectID)
+				objReport.Columns.Add(objColumn)
+			Next
+
+		End Sub
+
+		<HttpPost>
 		Sub AddReportColumn(objModel As ReportColumnItem)
 
 			Dim objReport As ReportBaseModel

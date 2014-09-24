@@ -142,24 +142,7 @@
 
 		for (var i = 0; i <= selectedRows.length - 1; i++) {
 			rowID = selectedRows[i];
-			var datarow = $("#AvailableColumns").getRowData(selectedRows[i]);
-
-			datarow.ReportType = '@Model.ReportType';
-			datarow.ReportID = '@Model.ID';
-			datarow.Heading = datarow.Name.substr(0, 50);
-
-			if (datarow.IsExpression == "false") {
-				datarow.Name = $("#SelectedTableID option:selected").text() + '.' + datarow.Name;
-			}
-
-			datarow.Sequence = $("#SelectedColumns").jqGrid('getGridParam', 'records') + 1;
-			datarow.IsAverage = false;
-			datarow.IsCount = false;
-			datarow.IsTotal = false;
-			datarow.IsHidden = false;
-			datarow.IsGroupWithNext = false;
-			datarow.IsRepeated = false;
-			datarow.TableID = $("#SelectedTableID option:selected").val();
+			var datarow = getDatarowFromAvailable(selectedRows[i]);
 
 			OpenHR.postData("Reports/AddReportColumn", datarow);
 
@@ -190,13 +173,69 @@
 
 	}
 
-	function addAllColumnsToSelected() {
-		var rows = $("#AvailableColumns").jqGrid('getDataIDs');
+	function getDatarowFromAvailable(index) {
 
-		for (var i = 0; i < rows.length; i++) {
-			var datarow = $("#AvailableColumns").getRowData(rows[i]);
-			addColumnToSelected(datarow.ID);
+		var datarow = $("#AvailableColumns").getRowData(index);
+
+		datarow.ReportType = '@Model.ReportType';
+		datarow.ReportID = '@Model.ID';
+		datarow.Heading = datarow.Name.substr(0, 50);
+
+		if (datarow.IsExpression == "false") {
+			datarow.Name = $("#SelectedTableID option:selected").text() + '.' + datarow.Name;
 		}
+
+		datarow.Sequence = $("#SelectedColumns").jqGrid('getGridParam', 'records') + 1;
+		datarow.IsAverage = false;
+		datarow.IsCount = false;
+		datarow.IsTotal = false;
+		datarow.IsHidden = false;
+		datarow.IsGroupWithNext = false;
+		datarow.IsRepeated = false;
+		datarow.TableID = $("#SelectedTableID option:selected").val();
+
+		return datarow;
+	}
+
+	function addAllColumnsToSelected() {
+
+		var sType;
+		if ($('input[name=columnSelectiontype]:checked').val() == 0) {
+			sType = "C";
+		}
+		else {
+			sType = "E";
+		}
+
+		var allRows = $('#AvailableColumns').jqGrid('getDataIDs');
+		var postData = {
+			ReportID: '@Model.ID',
+			ReportType: '@Model.ReportType',
+			SelectionType: sType,
+			ColumnsTableID: $("#SelectedTableID").val(),
+			Columns: allRows
+		};
+
+		OpenHR.postData("Reports/AddAllReportColumns", postData);
+
+		for (var i = 0; i <= allRows.length - 1; i++) {
+			rowID = allRows[i];
+			var datarow = getDatarowFromAvailable(allRows[i]);
+
+			$("#SelectedColumns").jqGrid('addRowData', datarow.ID, datarow);
+
+			if (datarow.IsExpression == "false") {
+				$("#SortOrdersAvailable").val(parseInt($("#SortOrdersAvailable").val()) + 1);
+				button_disable($("#btnSortOrderAdd")[0], ($("#SortOrdersAvailable").val() == 0));
+			}
+
+		}
+
+		$('#SelectedColumns').jqGrid("setSelection", rowID);
+		$('#AvailableColumns').jqGrid('clearGridData');
+
+		refreshColumnButtons();
+
 	}
 
 	function requestRemoveAllSelectedColumns() {
@@ -250,6 +289,7 @@
 		var postData = {
 			ReportID: '@Model.ID',
 			ReportType: '@Model.ReportType',
+			ColumnsTableID: $("#SelectedTableID").val(),
 			Columns: selectedRows
 		};
 
@@ -260,11 +300,11 @@
 			// Remove from sort order
 			if ($("#SortOrders #" + datarow.ID).length > 0) {
 				$("#SortOrders").delRowData(datarow.ID);
-			} 
-			else 
-			if (datarow.IsExpression == "false") {
-				$("#SortOrdersAvailable").val(parseInt($("#SortOrdersAvailable").val()) - 1);
 			}
+			else
+				if (datarow.IsExpression == "false") {
+					$("#SortOrdersAvailable").val(parseInt($("#SortOrdersAvailable").val()) - 1);
+				}
 
 			thisIndex = $("#SelectedColumns").getInd(selectedRows[i]);
 		}
@@ -315,7 +355,7 @@
 
 		$("#AvailableColumns").jqGrid('GridUnload');
 
-		bIsBaseTable = ($("#SelectedTableID").val() ==  $("#BaseTableID").val());
+		bIsBaseTable = ($("#SelectedTableID").val() == $("#BaseTableID").val());
 		if (!bIsBaseTable && $("#txtReportType").val() == '@UtilityType.utlMailMerge') {
 			$('#columnSelectiontype_0').prop("checked", true);
 			$(".radioColumnType").attr("disabled", "disabled");
@@ -331,113 +371,113 @@
 			sType = "E";
 		}
 
-	$("#AvailableColumns").jqGrid({
-		url: 'Reports/GetAvailableItemsForTable?TableID=' + $("#SelectedTableID").val() + '&&ReportID=' + '@Model.ID' + '&&ReportType=' + '@Model.ReportType' + '&&selectionType=' + sType,
-		datatype: 'json',
-		mtype: 'GET',
-		jsonReader: {
-			root: "rows", //array containing actual data
-			page: "page", //current page
-			total: "total", //total pages for the query
-			records: "records", //total number of records
-			repeatitems: false,
-			id: "ID"
-		},
-		colNames: ['ID', 'IsExpression', 'Name', 'DataType', 'Size', 'Decimals'],
-		colModel: [
-			{ name: 'ID', index: 'ID', hidden: true },
-			{ name: 'IsExpression', index: 'IsExpression3', hidden: true },
-			{ name: 'Name', index: 'Name', width: 40, sortable: false },
-			{ name: 'DataType', index: 'DataType', hidden: true },
-			{ name: 'Size', index: 'Size',  hidden: true },
-			{ name: 'Decimals', index: 'Decimals', hidden: true }],
-		viewrecords: true,
-		width: 320,
-		height: 320,
-		sortname: 'Name',
-		sortorder: "desc",
-		rowNum: 10000,
-		scrollrows: true,
-		multiselect: true,
-		beforeSelectRow: function (rowid, e) {
-			var $this = $(this), rows = this.rows,
-					// get id of the previous selected row
-					startId = $this.jqGrid('getGridParam', 'selrow'),
-					startRow, endRow, iStart, iEnd, i, rowidIndex;
+		$("#AvailableColumns").jqGrid({
+			url: 'Reports/GetAvailableItemsForTable?TableID=' + $("#SelectedTableID").val() + '&&ReportID=' + '@Model.ID' + '&&ReportType=' + '@Model.ReportType' + '&&selectionType=' + sType,
+			datatype: 'json',
+			mtype: 'GET',
+			jsonReader: {
+				root: "rows", //array containing actual data
+				page: "page", //current page
+				total: "total", //total pages for the query
+				records: "records", //total number of records
+				repeatitems: false,
+				id: "ID"
+			},
+			colNames: ['ID', 'IsExpression', 'Name', 'DataType', 'Size', 'Decimals'],
+			colModel: [
+				{ name: 'ID', index: 'ID', hidden: true },
+				{ name: 'IsExpression', index: 'IsExpression3', hidden: true },
+				{ name: 'Name', index: 'Name', width: 40, sortable: false },
+				{ name: 'DataType', index: 'DataType', hidden: true },
+				{ name: 'Size', index: 'Size', hidden: true },
+				{ name: 'Decimals', index: 'Decimals', hidden: true }],
+			viewrecords: true,
+			width: 320,
+			height: 320,
+			sortname: 'Name',
+			sortorder: "desc",
+			rowNum: 10000,
+			scrollrows: true,
+			multiselect: true,
+			beforeSelectRow: function (rowid, e) {
+				var $this = $(this), rows = this.rows,
+						// get id of the previous selected row
+						startId = $this.jqGrid('getGridParam', 'selrow'),
+						startRow, endRow, iStart, iEnd, i, rowidIndex;
 
-			if (!e.ctrlKey && !e.shiftKey) {
-				$this.jqGrid('resetSelection');
-			} else if (startId && e.shiftKey) {
-				$this.jqGrid('resetSelection');
+				if (!e.ctrlKey && !e.shiftKey) {
+					$this.jqGrid('resetSelection');
+				} else if (startId && e.shiftKey) {
+					$this.jqGrid('resetSelection');
 
-				// get DOM elements of the previous selected and the currect selected rows
-				startRow = rows.namedItem(startId);
-				endRow = rows.namedItem(rowid);
-				if (startRow && endRow) {
-					// get min and max from the indexes of the previous selected
-					// and the currect selected rows 
-					iStart = Math.min(startRow.rowIndex, endRow.rowIndex);
-					rowidIndex = endRow.rowIndex;
-					iEnd = Math.max(startRow.rowIndex, rowidIndex);
-					for (i = iStart; i <= iEnd; i++) {
-						// the row with rowid will be selected by jqGrid, so:
-						if (i != rowidIndex) {
-							$this.jqGrid('setSelection', rows[i].id, false);
+					// get DOM elements of the previous selected and the currect selected rows
+					startRow = rows.namedItem(startId);
+					endRow = rows.namedItem(rowid);
+					if (startRow && endRow) {
+						// get min and max from the indexes of the previous selected
+						// and the currect selected rows
+						iStart = Math.min(startRow.rowIndex, endRow.rowIndex);
+						rowidIndex = endRow.rowIndex;
+						iEnd = Math.max(startRow.rowIndex, rowidIndex);
+						for (i = iStart; i <= iEnd; i++) {
+							// the row with rowid will be selected by jqGrid, so:
+							if (i != rowidIndex) {
+								$this.jqGrid('setSelection', rows[i].id, false);
+							}
 						}
 					}
-				}
 
-				// clear text selection
-				if(document.selection && document.selection.empty) {
-					document.selection.empty();
-				} else if(window.getSelection) {
-					window.getSelection().removeAllRanges();
+					// clear text selection
+					if (document.selection && document.selection.empty) {
+						document.selection.empty();
+					} else if (window.getSelection) {
+						window.getSelection().removeAllRanges();
+					}
 				}
+				return true;
+			},
+			ondblClickRow: function (rowid) {
+				if (!isDefinitionReadOnly()) {
+					addColumnToSelected(rowid);
+					enableSaveButton();
+				}
+			},
+			loadComplete: function (data) {
+				var topID = $("#AvailableColumns").getDataIDs()[0]
+				$("#AvailableColumns").jqGrid("setSelection", topID);
+				refreshColumnButtons();
 			}
-			return true;
-		},
-		ondblClickRow: function (rowid) {
-			if (!isDefinitionReadOnly()) {
-				addColumnToSelected(rowid);
-				enableSaveButton();
-			}
-		},
-		loadComplete: function (data) {
-			var topID = $("#AvailableColumns").getDataIDs()[0]
-			$("#AvailableColumns").jqGrid("setSelection", topID);
-			refreshColumnButtons();
-		}
-	});
+		});
 
-	$("#AvailableColumns").jqGrid('hideCol', 'cb');
+		$("#AvailableColumns").jqGrid('hideCol', 'cb');
 
 	}
 
-		function changeColumnIsHidden() {
+	function changeColumnIsHidden() {
 
-			if ($("#SelectedColumnIsHidden").is(':checked')) {
-				$('#SelectedColumnIsAverage').prop('checked', false);
-				$('#SelectedColumnIsCount').prop('checked', false);
-				$('#SelectedColumnIsTotal').prop('checked', false);
-				$('#SelectedColumnIsGroupWithNext').prop('checked', false);
-			}
-
-			refreshcolumnPropertiesPanel();
-			updateColumnsSelectedGrid();
+		if ($("#SelectedColumnIsHidden").is(':checked')) {
+			$('#SelectedColumnIsAverage').prop('checked', false);
+			$('#SelectedColumnIsCount').prop('checked', false);
+			$('#SelectedColumnIsTotal').prop('checked', false);
+			$('#SelectedColumnIsGroupWithNext').prop('checked', false);
 		}
 
-		function changeColumnIsGroupWithNext() {
+		refreshcolumnPropertiesPanel();
+		updateColumnsSelectedGrid();
+	}
 
-			if ($("#SelectedColumnIsGroupWithNext").is(':checked')) {
-				$('#SelectedColumnIsAverage').prop('checked', false);
-				$('#SelectedColumnIsCount').prop('checked', false);
-				$('#SelectedColumnIsTotal').prop('checked', false);
-				$('#SelectedColumnIsHidden').prop('checked', false);
-			}
+	function changeColumnIsGroupWithNext() {
 
-			refreshcolumnPropertiesPanel();
-			updateColumnsSelectedGrid();
+		if ($("#SelectedColumnIsGroupWithNext").is(':checked')) {
+			$('#SelectedColumnIsAverage').prop('checked', false);
+			$('#SelectedColumnIsCount').prop('checked', false);
+			$('#SelectedColumnIsTotal').prop('checked', false);
+			$('#SelectedColumnIsHidden').prop('checked', false);
 		}
+
+		refreshcolumnPropertiesPanel();
+		updateColumnsSelectedGrid();
+	}
 
 	function refreshcolumnPropertiesPanel() {
 
@@ -564,13 +604,13 @@
 				repeatitems: false,
 				id: "ID" //index of the column with the PK in it
 			},
-			colNames: ['ID', 'TableID', 'IsExpression',	'Name',	'Sequence',	'Heading',	'DataType',
+			colNames: ['ID', 'TableID', 'IsExpression', 'Name', 'Sequence', 'Heading', 'DataType',
 								'Size', 'Decimals', 'IsAverage', 'IsCount', 'IsTotal', 'IsHidden', 'IsGroupWithNext', 'IsRepeated', 'ReportID', 'ReportType'],
 			colModel: [
 				{ name: 'ID', index: 'ID', hidden: true },
 				{ name: 'TableID', index: 'TableID', hidden: true },
-				{ name: 'IsExpression', index: 'IsExpression2', hidden: true},
-				{ name: 'Name', index: 'Name', sortable: false},
+				{ name: 'IsExpression', index: 'IsExpression2', hidden: true },
+				{ name: 'Name', index: 'Name', sortable: false },
 				{ name: 'Sequence', index: 'Sequence', hidden: true },
 				{ name: 'Heading', index: 'Heading', hidden: true },
 				{ name: 'DataType', index: 'DataType', hidden: true },
@@ -613,7 +653,7 @@
 					endRow = rows.namedItem(rowid);
 					if (startRow && endRow) {
 						// get min and max from the indexes of the previous selected
-						// and the currect selected rows 
+						// and the currect selected rows
 						iStart = Math.min(startRow.rowIndex, endRow.rowIndex);
 						rowidIndex = endRow.rowIndex;
 						iEnd = Math.max(startRow.rowIndex, rowidIndex);

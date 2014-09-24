@@ -7,6 +7,8 @@ Namespace Classes
 
 		Public Property ReportID As Integer Implements IReportDetail.ReportID
 		Public Property ReportType As UtilityType Implements IReportDetail.ReportType
+		Public Property SelectionType As String
+		Public Property ColumnsTableID As Integer
 		Public Property Columns() As Integer()
 
 	End Class
