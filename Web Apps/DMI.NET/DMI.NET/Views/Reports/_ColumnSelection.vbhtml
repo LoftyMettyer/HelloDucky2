@@ -23,7 +23,7 @@
 
 	<br style="clear: left;" />
 
-	<fieldset id="CustomDefinitionReportOptions">
+	<fieldset class="customReportsOnly" id="CustomDefinitionReportOptions">
 		<legend class="fontsmalltitle width100">Report Options :</legend>
 		@Html.CheckBoxFor(Function(m) m.IsSummary)
 		@Html.LabelFor(Function(m) m.IsSummary)
