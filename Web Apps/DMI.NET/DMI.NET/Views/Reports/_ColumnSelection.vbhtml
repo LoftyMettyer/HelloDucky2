@@ -103,8 +103,8 @@
 						<input class="ui-widget ui-corner-all" id="SelectedColumnIsGroupWithNext" onchange="changeColumnIsGroupWithNext();" type="checkbox">
 						<label id="labelSelectedColumnIsGroupWithNext" for="SelectedColumnIsGroupWithNext">Group with next</label>
 					</div>
-					<div class="baseTableOnly" style="color: rgb(165, 147, 147);">
-						<input disabled="disabled" class="ui-widget ui-corner-all" id="SelectedColumnIsRepeated" onchange="updateColumnsSelectedGrid();" type="checkbox">
+					<div class="baseTableOnly">
+						<input class="ui-widget ui-corner-all" id="SelectedColumnIsRepeated" onchange="updateColumnsSelectedGrid();" type="checkbox">
 						<label id="labelSelectedColumnRepeatOnChild" for="SelectedColumnIsRepeated">Repeat on child rows</label>
 					</div>
 				</div>
@@ -330,6 +330,10 @@
 			$("#SelectedColumns").delRowData(selectedRows[i]);
 		}
 
+		if (childColumnsCount() == 0) {
+			resetRepeatOnChildRows();
+		}
+
 		$("#SelectedColumns").jqGrid("setSelection", ids[thisIndex], true);
 		refreshColumnButtons();
 
@@ -352,6 +356,10 @@
 		removeAllSortOrders();
 		$("#SortOrdersAvailable").val(0);
 		button_disable($("#btnSortOrderAdd")[0], true);
+
+		if (childColumnsCount() == 0) {
+			resetRepeatOnChildRows();
+		}
 
 		refreshColumnButtons();
 	}
@@ -487,6 +495,34 @@
 		updateColumnsSelectedGrid();
 	}
 
+	function resetRepeatOnChildRows() {
+
+		var allRows = $('#SelectedColumns').jqGrid('getDataIDs');
+		for (var i = 0; i <= allRows.length - 1; i++) {
+			var datarow = $("#SelectedColumns").getRowData(allRows[i]);
+			datarow.IsRepeated = false;
+			$('#SelectedColumns').jqGrid('setRowData', allRows[i], datarow);
+		}
+
+		return true;
+	}
+
+
+	function childColumnsCount() {
+
+		var allRows = $('#SelectedColumns').jqGrid('getDataIDs');
+		var iChildCount = 0;
+
+		for (var i = 0; i <= allRows.length - 1; i++) {
+			var datarow = $("#SelectedColumns").getRowData(allRows[i]);
+			if (datarow.TableID != $('#BaseTableID').val()) {
+				iChildCount += 1;
+			}
+		}
+
+		return iChildCount;
+	}
+
 	function refreshcolumnPropertiesPanel() {
 
 		var rowCount = $('#SelectedColumns').jqGrid('getGridParam', 'selarrrow').length;
@@ -522,10 +558,10 @@
 
 			$("#definitionColumnProperties :input").removeAttr("disabled");
 
+			var isThereChildColumns = (childColumnsCount() > 0);
 			var isNumeric = (dataRow.DataType == '2' || dataRow.DataType == '4');
 			var isDecimals = (isNumeric == true || dataRow.IsExpression == "true");
 			var isBaseOrParentTableColumn = (dataRow.TableID == $("#BaseTableID").val()) || (dataRow.TableID == $("#txtParent1ID").val()) || (dataRow.TableID == $("#txtParent2ID").val());
-			var isThereChildColumns = true;
 
 			var isHidden = $("#SelectedColumnIsHidden").is(':checked');
 			var isGroupWithNext = $("#SelectedColumnIsGroupWithNext").is(':checked');
@@ -533,7 +569,7 @@
 			$(".numericOnly :input").attr("disabled", !isNumeric || isHidden || isGroupWithNext);
 			$(".cannotBeHidden :input").attr("disabled", isHidden || isGroupWithNext);
 			$(".decimalsOnly :input").attr("disabled", !isDecimals);
-			$(".baseTableOnly :input").attr("disabled", !isBaseOrParentTableColumn);
+			$(".baseTableOnly :input").attr("disabled", !isBaseOrParentTableColumn || !isThereChildColumns);
 			$(".canGroupWithNext :input").attr("disabled", isBottomRow || isHidden);
 			$("#SelectedColumnIsHidden").attr("disabled", isGroupWithNext);
 
@@ -566,8 +602,6 @@
 			} else {
 				$(".baseTableOnly").css("color", "#A59393");
 			}
-
-			$("#labelSelectedColumnRepeatOnChild").css("color", "#000000");
 
 		}
 
