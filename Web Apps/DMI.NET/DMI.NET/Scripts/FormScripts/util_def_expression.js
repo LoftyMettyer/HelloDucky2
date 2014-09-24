@@ -3,6 +3,146 @@ var frmOriginalDefinition = OpenHR.getForm("divDefExpression", "frmOriginalDefin
 var frmDefinition = OpenHR.getForm("divDefExpression", "frmDefinition");
 var frmUseful = OpenHR.getForm("divDefExpression", "frmUseful");
 
+
+function buildjsTree() {
+	var options = {};
+	//BUG: why no dots/icons?
+	options["themes"] = {
+		"dots": true, "icons": false
+		,"theme": "adv_themeroller",
+		"url": window.ROOT + "Scripts/jquery/jstree/themes/adv_themeroller/style.css"
+	};
+	options["plugins"] = ["html_data", "ui", "contextmenu", "crrm", "hotkeys", "themes", "themeroller"];
+
+	var hotkey = {};
+	$('input[id^="txtShortcutKeys_"]').each(function () {
+		var hotkeychar = $(this).val();
+
+		$.each(hotkeychar.split(''), function (intIndex, objValue) {
+			hotkey[objValue] = function () {
+				SSTree1_keyPress(objValue);
+			};
+		});
+
+	});
+
+	//override default hotkeys...
+	hotkey["del"] = function () {
+		deleteClick();
+	};
+	hotkey["f2"] = function () {
+		var obj = (this.data.ui.last_selected);
+		if (($(obj).attr('id').substr(0, 1) == "C") || ($(obj).hasClass('root'))) return false;
+		abExprMenu_Click('ID_Rename');
+	}
+	hotkey["ctrl+c"] = function() {
+		abExprMenu_Click('ID_Copy');
+	};
+	hotkey["ctrl+x"] = function () {
+		abExprMenu_Click('ID_Cut');
+	};
+	hotkey["ctrl+v"] = function () {
+		abExprMenu_Click('ID_Paste');
+	};
+	hotkey["shift+="] = function() {
+		SSTree1_keyPress("+");
+	};
+	hotkey["shift+,"] = function() {
+		SSTree1_keyPress("<");
+	};
+	hotkey["shift+."] = function () {
+		SSTree1_keyPress(">");
+	};
+
+	options["hotkeys"] = hotkey;
+
+	options["contextmenu"] = { "items": customMenu };
+	options["types"] = {
+		"types": {
+			"disabled": {
+				"select_node": false,
+				"open_node": false,
+				"close_node": false,
+				"create_node": false,
+				"delete_node": false
+			}
+		}
+	};
+	options["themeroller"] = {
+		"item_leaf": false,
+		"item_clsd": false,
+		"item_open": false,
+		"item": "ui-menu-item"
+	};
+
+	//set Initial Expanded Nodes
+	var tree;
+	switch (frmUseful.txtExprNodeMode.value) {
+		case "2":
+			//expand all
+			tree = $("#SSTree1");
+			tree.bind("loaded.jstree", function (event, data) {
+				tree.jstree("open_all");
+			});
+			break;
+		case "4":
+			// Expand Top Level.
+			var topLevelNodeID = $('.root>ul>li').attr('id');
+			tree = $("#SSTree1");
+			// ReSharper disable once UnusedParameter
+			tree.bind("loaded.jstree", function (event, data) {
+				$.jstree._reference("#SSTree1").open_node('#' + tree_getRootNodeID());
+				$.jstree._reference("#SSTree1").open_node('#' + topLevelNodeID);
+				$('#SSTree1').jstree('refresh');
+			});
+			break;
+	}
+
+	options["core"] = { 'check_callback': true };	// Must have - this enables inline renaming etc...
+
+	//Convert the <ul><li> structure to a jsTree
+	try {
+		$('#SSTree1').jstree("set_theme", "apple", "/Scripts/jquery/jstree/theme/apple");
+		$('#SSTree1').jstree(options);
+		$("#SSTree1").bind(
+						//click event
+						"select_node.jstree", function (evt, data) {
+							refreshControls();
+						}
+		);
+		$('#SSTree1').bind("paste.jstree", function(event, data) {
+			resetIDandTag(data.rslt);
+
+			if (frmUseful.txtCutCopyType.value == "CUT") {
+
+				var pastedId = data.rslt.nodes[0].id;
+				$.jstree._focused().deselect_all();
+				$.jstree._focused().select_node("#" + pastedId);
+				//Turn into a copy now, for repeated pasting...
+				frmUseful.txtUndoType.value = "COPY";
+				frmUseful.txtCutCopyType.value = "COPY";
+				$.jstree._focused().copy();
+
+			}
+
+		});
+
+		$('#SSTree1').bind("dblclick.jstree", function () {
+			SSTree1_dblClick();
+			return false;
+		});
+
+	}
+	catch (e) {
+		alert("Unable to generate expression tree.\n" + e);
+	}
+
+
+
+}
+
+
+
 function util_def_expression_onload() {
 
 
@@ -38,137 +178,7 @@ function util_def_expression_onload() {
 			
 		}
 
-		var options = {};
-		//BUG: why no dots/icons?
-		options["themes"] = {
-			"dots": true, "icons": false
-			,"theme": "adv_themeroller",
-			"url": window.ROOT + "Scripts/jquery/jstree/themes/adv_themeroller/style.css"
-		};
-		options["plugins"] = ["html_data", "ui", "contextmenu", "crrm", "hotkeys", "themes", "themeroller"];
-
-		var hotkey = {};
-		$('input[id^="txtShortcutKeys_"]').each(function () {
-			var hotkeychar = $(this).val();
-
-			$.each(hotkeychar.split(''), function (intIndex, objValue) {
-				hotkey[objValue] = function () {
-					SSTree1_keyPress(objValue);
-				};
-			});
-
-		});
-
-		//override default hotkeys...
-		hotkey["del"] = function () {
-			deleteClick();
-		};
-		hotkey["f2"] = function () {
-			var obj = (this.data.ui.last_selected);
-			if (($(obj).attr('id').substr(0, 1) == "C") || ($(obj).hasClass('root'))) return false;
-			abExprMenu_Click('ID_Rename');
-		}
-		hotkey["ctrl+c"] = function() {
-			abExprMenu_Click('ID_Copy');
-		};
-		hotkey["ctrl+x"] = function () {
-			abExprMenu_Click('ID_Cut');
-		};
-		hotkey["ctrl+v"] = function () {
-			abExprMenu_Click('ID_Paste');
-		};
-		hotkey["shift+="] = function() {
-			SSTree1_keyPress("+");
-		};
-		hotkey["shift+,"] = function() {
-			SSTree1_keyPress("<");
-		};
-		hotkey["shift+."] = function () {
-			SSTree1_keyPress(">");
-		};
-
-		options["hotkeys"] = hotkey;
-
-		options["contextmenu"] = { "items": customMenu };
-		options["types"] = {
-			"types": {
-				"disabled": {
-					"select_node": false,
-					"open_node": false,
-					"close_node": false,
-					"create_node": false,
-					"delete_node": false
-				}
-			}
-		};
-		options["themeroller"] = {
-			"item_leaf": false,
-			"item_clsd": false,
-			"item_open": false,
-			"item": "ui-menu-item"
-		};
-
-		//set Initial Expanded Nodes
-		var tree;
-		switch (frmUseful.txtExprNodeMode.value) {
-			case "2":
-				//expand all
-				tree = $("#SSTree1");
-				tree.bind("loaded.jstree", function (event, data) {
-					tree.jstree("open_all");					
-				});
-				break;
-			case "4":
-				// Expand Top Level.
-				var topLevelNodeID = $('.root>ul>li').attr('id');
-				tree = $("#SSTree1");
-				// ReSharper disable once UnusedParameter
-				tree.bind("loaded.jstree", function (event, data) {
-					$.jstree._reference("#SSTree1").open_node('#' + tree_getRootNodeID());
-					$.jstree._reference("#SSTree1").open_node('#' + topLevelNodeID);
-					$('#SSTree1').jstree('refresh');
-				});
-				break;
-		}
-
-		options["core"] = { 'check_callback': true };	// Must have - this enables inline renaming etc...
-
-		//Convert the <ul><li> structure to a jsTree
-		try {
-			$('#SSTree1').jstree("set_theme", "apple", "/Scripts/jquery/jstree/theme/apple");
-			$('#SSTree1').jstree(options);
-			$("#SSTree1").bind(
-							//click event
-							"select_node.jstree", function (evt, data) {
-								refreshControls();
-							}
-			);
-			$('#SSTree1').bind("paste.jstree", function(event, data) {
-				resetIDandTag(data.rslt);
-				
-				if (frmUseful.txtCutCopyType.value == "CUT") {
-					
-					var pastedId = data.rslt.nodes[0].id;
-					$.jstree._focused().deselect_all();
-					$.jstree._focused().select_node("#" + pastedId);
-					//Turn into a copy now, for repeated pasting...
-					frmUseful.txtUndoType.value = "COPY";
-					frmUseful.txtCutCopyType.value = "COPY";
-					$.jstree._focused().copy();
-
-				}
-
-			});
-
-			$('#SSTree1').bind("dblclick.jstree", function () {
-				SSTree1_dblClick();
-				return false;
-			});
-
-		}
-		catch (e) {
-			alert("Unable to generate expression tree.\n" + e);			
-		}
+		buildjsTree();
 
 
 		frmUseful.txtLoading.value = 'N';
@@ -942,20 +952,16 @@ function addClick() {
 	var sRelativeKey;
 
 	var frmOptionArea = OpenHR.getForm("optionframe", "frmGotoOption");
-	var frmRefresh = OpenHR.getForm("refreshframe", "frmRefresh");
 	var iFunctionID = 0;
 	var iParamIndex = 0;
 	var nodParameter;
 
 	fOK = true;
 
-	OpenHR.submitForm(frmRefresh);
-
 	frmOptionArea.txtGotoOptionPage.value = "util_def_exprComponent";
 	frmOptionArea.txtGotoOptionAction.value = "ADDEXPRCOMPONENT";
 	frmOptionArea.txtGotoOptionTableID.value = frmUseful.txtTableID.value;
 	frmOptionArea.txtGotoOptionExprID.value = frmUseful.txtUtilID.value;
-
 
 	sKey = tree_SelectedItemKey();
 	if (sKey.substr(0, 1) == "E") {
@@ -1520,9 +1526,15 @@ function undoClick() {
 		$.jstree.rollback(window.SSTree1UndoData);
 		window.SSTree1UndoData = null;
 		window.SSTree1UndoData = $('#SSTree1').jstree('get_rollback');
+
+		$('#SSTree1').jstree('destroy');
+		buildjsTree();
+
+		refreshControls();
+
 	}
 
-	refreshControls();
+	
 }
 
 function createUndoView(psType) {
