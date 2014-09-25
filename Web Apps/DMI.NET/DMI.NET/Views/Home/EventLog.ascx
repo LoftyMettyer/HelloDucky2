@@ -398,7 +398,7 @@
 				"&txtEventBatchRunID=" + frmDetails.txtEventBatchRunID.value +
 				"&txtEmailPermission=" + escape(frmDetails.txtEmailPermission.value);
 
-		OpenHR.windowOpen(sURL, 900, 770);
+		OpenHR.windowOpen(sURL, 900, 720);
 	}
 
 	function EventLog_deleteEvent() {

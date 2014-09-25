@@ -147,7 +147,7 @@
 				Response.Write("<input type='hidden' Name='txtOriginalEventID' id='txtOriginalEventID' value='" & Request("txtEventID") & "'>" & vbCrLf)
 			%>
 
-			<div id="findGridRow" style="height: 70%; margin-right: 20px; margin-left: 20px;">
+			<div id="findGridRow" style="height: 50%; margin-right: 20px; margin-left: 20px;">
 
 				<table align="center" cellpadding="5" cellspacing="0" width="100%" height="100%">
 					<tr>
@@ -383,24 +383,18 @@
 					beforeSelectRow: function (rowid, e) {
 						return false;
 					},
-					rowNum: 1000,
-					height: 200
+					rowNum: 1000
 				});
 
 				$('#ssOleDBGridEventLogDetails').hideCol("ID");
 
 				$("#ssOleDBGridEventLogDetails").jqGrid('setGridHeight', $("#findGridRow").height());
-				var y = $("#gbox_findGridTable").height();
-				var z = $('#gbox_findGridTable .ui-jqgrid-bdiv').height();
-
 				$("#ssOleDBGridEventLogDetails").setGridWidth($("#findGridRow").width() - 50);
 
 				if ($("#txtEventExists").val() == 0) {
 
 					var frmOpenerRefresh = OpenHR.getForm("workframe", "frmRefresh");
 					var frmMainLog = OpenHR.getForm("workframe", "frmLog");
-
-
 
 					OpenHR.messageBox("This record no longer exists in the event log.", 48, "Event Log");
 
@@ -423,6 +417,12 @@
 					populateEventDetails();
 					setGridCaption();
 				}
+
+				//Modify the height and position of the window depending on it having an extra line of information for Packs or Batches
+				if ($("#cboOtherJobs").length > 0) {
+					window.resizeBy(0, 110);
+					window.moveBy(0, -110);
+				} 
 			}
 
 			function okClick() {
