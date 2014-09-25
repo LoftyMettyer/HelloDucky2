@@ -1315,16 +1315,16 @@ function getUniqueNodeKey(psType) {
 	return (sKey);
 }
 
-function deleteClick() {
+function deleteClick() {	
 	// Delete the selected tree nodes.
 	if (tree_selectedNodeID().substr(0, 1) != "E") {
 		createUndoView("DELETE");
 
-		$.each($.jstree._focused().get_selected(), function(obj) {
-			$.jstree._focused().remove('#' + this.id);
+		$.each($('#SSTree1').jstree('get_selected'), function(obj) {
+			$('#SSTree1').jstree('remove', '#' + this.id);
 		});
 
-		$.jstree._focused().deselect_all();
+		$('#SSTree1').jstree('deselect_all');
 
 		refreshControls();
 	}

@@ -891,11 +891,11 @@ function functionAndOperator_refresh() {
 				fCategoryDone = ($(trvTreeView).find('#' + safeID(sCategory)).length > 0);
 
 				if (fCategoryDone == false) {
-					addNode(treeID, '#' + sRootKey, 'last', sCategory, safeID(sCategory));
+					addNode(treeID, '#' + sRootKey, 'last', sCategory, safeID(sCategory), true);
 				}
 
 				// Add the function node.							
-				addNode(treeID, '#' + safeID(sCategory), 'inside', sName, sID);
+				addNode(treeID, '#' + safeID(sCategory), 'inside', sName, sID, false);
 			}
 		}
 
@@ -1870,8 +1870,7 @@ function locateGridRecord(piID) {
 	}
 }
 
-function component_OKClick() {
-
+function component_OKClick() {	
 	var sDefn;
 	var sTemp;
 	var sKey;
@@ -1887,7 +1886,24 @@ function component_OKClick() {
 	if ($('#optionframe #cmdCancel').hasClass('ui-state-disabled')) {
 		return;
 	}
-	
+
+	if ((frmMainForm.optType_Function.checked == true) || (frmMainForm.optType_Operator.checked == true)) {
+		//Has user selected a valid item
+		if ($.jstree._focused().get_selected().hasClass('toplevelnode')) {
+			//expand selected node and get out of here!
+			var selectedNode = $.jstree._focused().get_selected()[0].id;
+			$.jstree._focused().open_node('#' + selectedNode);
+			return false;
+		}
+
+		//Has user selected more than one item
+		if ($.jstree._focused().get_selected().length != 1) {
+			OpenHR.modalMessage('Please select one item');
+			return false;
+		}
+	}
+
+
 	if (validateComponent() == true) {
 		// Component definition is valid. Pass it back to the expression page.
 
@@ -2450,7 +2466,7 @@ function validateComponent() {
 				(util_def_exprcomponent_frmUseful.txtChildFieldOrderID.value <= 0)) {
 			sErrorMsg = "An order must be specified when referring to child fields.";
 		}
-		else {
+		else {			
 			if ((frmMainForm.txtPassByType.value == 1) &&
 					(frmMainForm.optFieldRecSel_Specific.checked == true)) {
 
@@ -2806,10 +2822,12 @@ function SSFunctionTree_dblClick() {
 	component_OKClick();
 }
 
-function addNode(treeID, parentID, position, text, newID) {
+function addNode(treeID, parentID, position, text, newID, isParent) {
 	$('#' + treeID).jstree('create', parentID, position, text, function (data) {
 		data[0].id = newID;
 	}, true);
+
+	if(isParent) $('#' + newID).addClass('toplevelnode');
 }
 
 function safeID(oldID) {
