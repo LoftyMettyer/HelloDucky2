@@ -72,7 +72,13 @@ BEGIN
 	IF @piFilterMode <> -1
 	BEGIN
 		IF len(@sFilterSQL) > 0 SET @sFilterSQL = @sFilterSQL + ' AND ';
-		SET @sFilterSQL = @sFilterSQL + ' Mode = ' + convert(varchar(MAX), @piFilterMode) + ' ';
+		--SET @sFilterSQL = @sFilterSQL + ' Mode = ' + convert(varchar(MAX), @piFilterMode) + ' ';
+		SET @sFilterSQL = @sFilterSQL + 
+			CASE @piFilterMode 
+				WHEN 1 THEN '[Mode] = 1 AND [ReportPack] = 0'
+				WHEN 2 THEN '[ReportPack] = 1'
+				WHEN 0 THEN '[Mode] = 0 AND [ReportPack] = 0'
+			END 
 	END
 	
 	/* Construct the order SQL from ther input parameters. */
@@ -112,10 +118,10 @@ BEGIN
 		IF @psOrderColumn = 'Mode'
 		BEGIN
 			SET @sOrderSQL =	
-				' CASE [Mode] 
+				' CASE ' + @piFilterMode + '
 						WHEN 1 THEN ''Batch''
 						WHEN 0 THEN ''Manual''
-						ELSE ''Unknown''
+						WHEN 2 THEN ''Pack''
 					END ';
 		END
 		ELSE 
@@ -193,10 +199,10 @@ BEGIN
 						WHEN 5 THEN ''Error''
 						ELSE ''Unknown'' 
 					END + char(9) +
-					CASE [Mode] 
-						WHEN 1 THEN ''Batch''
-						WHEN 0 THEN ''Manual''
-						ELSE ''Unknown''
+					CASE 
+						WHEN [Mode] = 1 AND ([ReportPack] = 0 OR [ReportPack] IS NULL) THEN ''Batch''
+						WHEN [Mode] = 0 AND ([ReportPack] = 0 OR [ReportPack] IS NULL) THEN ''Manual''
+						ELSE ''Pack''
 				 	END + char(9) + 
 					[Username] + char(9) + 
 					IsNull(convert(varchar, [BatchJobID]), ''0'') + char(9) +

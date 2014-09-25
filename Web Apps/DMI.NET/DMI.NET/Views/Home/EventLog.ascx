@@ -734,6 +734,12 @@
 								Else
 									Response.Write("											<option value=0>Manual" & vbCrLf)
 								End If
+								
+								If Session("CurrentMode") = "2" Then
+									Response.Write("											<option value=2 selected>Pack" & vbCrLf)
+								Else
+									Response.Write("											<option value=2>Pack" & vbCrLf)
+								End If
 							%>
 						</select>
 					</td>

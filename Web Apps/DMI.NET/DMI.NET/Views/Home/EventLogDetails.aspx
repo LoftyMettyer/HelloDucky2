@@ -49,16 +49,29 @@
 
 				Dim i As Integer
 				Dim sValue As String
-			
+				Dim DetailsLabel1 As String = ""
+				Dim DetailsLabel2 As String = ""
+				
 				Session("eventName") = Request("txtEventName")
 				Session("eventID") = Request("txtEventID")
 				Session("cboString") = vbNullString
 
-				If Request("txtEventMode") = "Batch" Then
+				If Request("txtEventMode") = "Batch" Or Request("txtEventMode") = "Pack" Then
 					Session("eventBatch") = True
 					Response.Write("<input type='hidden' Name='txtEventBatch' ID='txtEventBatch' value='1'>" & vbCrLf)
+					
+					If Request("txtEventMode") = "Batch" Then
+						DetailsLabel1 = "Batch Job Name"
+						DetailsLabel2 = "All Jobs in Batch"
+						Session("txtEventMode") = "Batch"
+					Else
+						DetailsLabel1 = "Report Pack Name"
+						DetailsLabel2 = "All Reports in Pack"
+						Session("txtEventMode") = "Pack"
+					End If
 				Else
 					Session("eventBatch") = False
+					Session("txtEventMode") = "Manual"
 					Response.Write("<input type='hidden' Name='txtEventBatch' ID='txtEventBatch' value='0'>" & vbCrLf)
 				End If
 				
@@ -81,7 +94,7 @@
 						sValue = Replace(sValue, "<", "&lt;")						'escape left angle bracket
 						sValue = Replace(sValue, ">", "&gt;")						'escape right angle bracket
 				
-						Response.Write("<input type='hidden' Name='txtEventName_" & objRow("ID") & "' id='txtEventName_" & objRow("ID") & "' value='" & sValue & "'>" & vbCrLf)
+						Response.Write("<input type='hidden' Name='txtEventName_" & objRow("ID") & "' id='txtEventName_" & objRow("ID") & "' value='" & sValue.ToString.Replace("'", "&#39;") & "'>" & vbCrLf)
 						Response.Write("<input type='hidden' Name='txtEventMode_" & objRow("ID") & "' id='txtEventMode_" & objRow("ID") & "' value='" & Replace(objRow("Mode"), """", "&quot;") & "'>" & vbCrLf)
 				
 						Response.Write("<input type='hidden' Name='txtEventStartTime_" & objRow("ID") & "' id='txtEventStartTime_" & objRow("ID") & "' value='" & ConvertSQLDateToLocale(objRow("DateTime")) & " " & ConvertSqlDateToTime(objRow("DateTime")) & "'>" & vbCrLf)
@@ -114,7 +127,12 @@
 						End If
 				
 					Next
-					Session("eventBatchName") = Request("txtEventBatchName")
+					
+					Try
+						Session("eventBatchName") = .Rows(0)("BatchName")
+					Catch ex As Exception
+						Session("eventBatchName") = ""
+					End Try
 			
 					Session("cboString") = Session("cboString") & "</SELECT>" & vbCrLf
 					If i <= 1 Then
@@ -158,13 +176,13 @@
 																			Response.Write("													<table width='100%' class='invisible' cellspacing='0' cellpadding='4'>" & vbCrLf)
 																			Response.Write("														<tr> " & vbCrLf)
 																			Response.Write("															<td width='120' nowrap>" & vbCrLf)
-																			Response.Write("																Batch Job Name :  " & vbCrLf)
+																			Response.Write("																" & DetailsLabel1 & " :  " & vbCrLf)
 																			Response.Write("															</td> " & vbCrLf)
 																			Response.Write("															<td width='200' name='tdBatchJobName' id='tdBatchJobName'> " & vbCrLf)
 																			Response.Write("																" & Session("eventBatchName") & vbCrLf)
 																			Response.Write("															</td>" & vbCrLf)
 																			Response.Write("															<td width='120' nowrap> " & vbCrLf)
-																			Response.Write("																All Jobs in Batch :  " & vbCrLf)
+																			Response.Write("																" & DetailsLabel2 & " :  " & vbCrLf)
 																			Response.Write("															</td>" & vbCrLf)
 																			Response.Write("															<td> " & vbCrLf)
 		
@@ -273,7 +291,7 @@
 																						iDetailCount = iDetailCount + 1
 				
 																						sValue = objRow("Notes").ToString()
-																						sValue = Replace(sValue, """", "&quot;")	'escape quotes
+																						sValue = Replace(sValue, """", "&quot;").Replace("'", "&#39;").Replace("<", "&lt;").Replace(">", "&gt;")	'Escape some characters
 
 																						Response.Write("<tr disabled='disabled'>")
 																						Response.Write("<td><input type='radio' value='row_" & objRow("EventLogID") & "'></td>")
@@ -419,9 +437,9 @@
 					frmEmail.txtBatchy.value = 1;
 					frmEmail.txtSelectedEventIDs.value = frmEventDetails.cboOtherJobs.options[frmEventDetails.cboOtherJobs.selectedIndex].value;
 
-					sBatchInfo = sBatchInfo + "Batch Job Name :	" + document.getElementById('tdBatchJobName').innerText + String.fromCharCode(13) + String.fromCharCode(13);
+					sBatchInfo = sBatchInfo + "<%:DetailsLabel1%> :	" + document.getElementById('tdBatchJobName').innerText + String.fromCharCode(13) + String.fromCharCode(13);
 
-					sBatchInfo = sBatchInfo + "All Jobs in Batch :	" + String.fromCharCode(13) + String.fromCharCode(13);
+					sBatchInfo = sBatchInfo + "<%:DetailsLabel2%> :	" + String.fromCharCode(13) + String.fromCharCode(13);
 
 					for (var iCount = 0; iCount < frmEventDetails.cboOtherJobs.options.length; iCount++) {
 						sBatchInfo = sBatchInfo + String(frmEventDetails.cboOtherJobs.options[iCount].text) + String.fromCharCode(13) + String.fromCharCode(13);
@@ -467,7 +485,7 @@
 				}
 
 				document.getElementById('tdName').innerHTML = document.getElementById('txtEventName_' + sNumber).value;
-				document.getElementById('tdMode').innerHTML = document.getElementById('txtEventMode_' + sNumber).value;
+				document.getElementById('tdMode').innerHTML = '<%:Session("txtEventMode")%>';
 
 				document.getElementById('tdStartTime').innerHTML = document.getElementById('txtEventStartTime_' + sNumber).value;
 				document.getElementById('tdEndTime').innerHTML = document.getElementById('txtEventEndTime_' + sNumber).value;
@@ -494,26 +512,24 @@
 			}
 
 			function setGridCaption() {
-				var iTotalRec;
-				var sCaption;
+				var sCaption = "Details"; 
 
-				if ($("#cboOtherJobs").length > 0) {
-					iTotalRec = $('[id^="' + "row_" + $("#cboOtherJobs")[0].value + '" ]').length;
-				} else {
-					iTotalRec = $("#ssOleDBGridEventLogDetails tr").length;
-				}
-				iTotalRec--;
+				 
 
-				// Update the grid caption after the user has used keys to view the details
-				if (iTotalRec < 1) {
-					sCaption = "No details exist for this entry";
-				}
-				else if (iTotalRec == 1) {
-					sCaption = "Details (1 Entry)";
+				//If one of the entries in the "All Reports in Batch" or "All Reports in Pack" contains additional details, then the grid will contain those details; however, 
+				//if one of the entries does not contain any details, the details are only hidden (i.e. the table is not cleared), so the number of items is not reported correctly
+				//So I've set the caption to "Details" only
 
-				} else {
-					sCaption = "Details (" + iTotalRec + " Entries)";
-				}
+				//var iTotalRec = $("#ssOleDBGridEventLogDetails").getGridParam('reccount');
+				//if (iTotalRec < 1) {
+				//	sCaption = "No details exist for this entry";
+				//}
+				//else if (iTotalRec == 1) {
+				//	sCaption = "Details (1 Entry)";
+
+				//} else {
+				//	sCaption = "Details (" + iTotalRec + " Entries)";
+				//}
 
 				$("#ssOleDBGridEventLogDetails").setLabel("Details", sCaption);
 
