@@ -1483,6 +1483,8 @@ function pasteComponents() {
 	frmUseful = OpenHR.getForm("divDefExpression", "frmUseful");
 	if ((frmUseful.txtCutCopyType.value != "COPY") && (frmUseful.txtCutCopyType.value != "CUT")) return true;
 	
+	$('#SSTree1 .jstree-leaf').css('opacity', 1);
+
 	createUndoView("PASTE");
 	
 	if (tree_selectedNodeID().substr(0, 1) == "E") {
@@ -1491,8 +1493,6 @@ function pasteComponents() {
 		//create sibling
 		$.jstree._focused().paste($('#' + tree_SelectedItemParentKey()));
 	}
-
-	$('#SSTree1 .jstree-leaf').css('opacity', 1);
 
 	refreshControls();
 }
@@ -1520,7 +1520,9 @@ function moveComponentDown() {
 }
 
 function undoClick() {
+	
 	frmUseful.txtUndoType.value = "";
+	frmUseful.txtCutCopyType.value = "";	//disable 'paste option'
 
 	if (window.SSTree1UndoData) {
 		$.jstree.rollback(window.SSTree1UndoData);
