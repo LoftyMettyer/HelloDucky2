@@ -345,12 +345,14 @@ Namespace Repository
 
 					End If
 
+					Dim iEventCount As Integer = 0
 					For Each objRow As DataRow In dsDefinition.Tables(1).Rows
 						objEvent = New CalendarEventDetailViewModel
 
+						iEventCount += 1
 						objEvent.ID = CInt(objRow("ID"))
 						objEvent.Name = objRow("Name").ToString
-						objEvent.EventKey = objRow("EventKey").ToString
+						objEvent.EventKey = iEventCount
 						objEvent.ReportID = objModel.ID
 						objEvent.TableID = CInt(objRow("TableID"))
 						objEvent.TableName = objRow("TableName").ToString
@@ -821,8 +823,10 @@ Namespace Repository
 
 			Dim sEvents As String = ""
 			Dim sLegend As String
+			Dim iEventCount As Integer = 0
 
 			For Each objItem In objEvents
+				iEventCount += 1
 				If objItem.LegendType = CalendarLegendType.LookupTable Then
 					sLegend = String.Format("1||||{0}||{1}||{2}||{3}" _
 																			, objItem.LegendLookupTableID, objItem.LegendLookupColumnID, objItem.LegendLookupCodeID, objItem.LegendEventColumnID)
@@ -830,8 +834,8 @@ Namespace Repository
 					sLegend = String.Format("0||{0}||||||||", objItem.LegendCharacter)
 				End If
 
-				sEvents += String.Format("{0}||{1}||{2}||{3}||{4}||{5}||{6}||{7}||{8}||{9}||{10}||{11}||**" _
-																 , objItem.EventKey, objItem.Name, objItem.TableID, objItem.FilterID _
+				sEvents += String.Format("EV_{0}||{1}||{2}||{3}||{4}||{5}||{6}||{7}||{8}||{9}||{10}||{11}||**" _
+																 , iEventCount, objItem.Name, objItem.TableID, objItem.FilterID _
 																 , objItem.EventStartDateID, objItem.EventStartSessionID, objItem.EventEndDateID, objItem.EventEndSessionID _
 																 , objItem.EventDurationID, sLegend, objItem.EventDesc1ColumnID, objItem.EventDesc2ColumnID)
 			Next

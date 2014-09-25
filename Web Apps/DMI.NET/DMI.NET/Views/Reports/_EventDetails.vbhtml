@@ -57,7 +57,7 @@
 			],
 			colModel: [
 				{ name: 'ID', index: 'ID', sorttype: 'int', hidden: true },
-				{ name: 'EventKey', index: 'EventKey', sorttype: 'text', hidden: true },
+				{ name: 'EventKey', index: 'EventKey', sorttype: 'int', hidden: true },
 				{ name: 'ReportID', index: 'ReportID', sorttype: 'int', hidden: true },
 				{ name: 'ReportType', index: 'ReportType', hidden: true },
 				{ name: 'Name', index: 'Name', sorttype: 'text' },

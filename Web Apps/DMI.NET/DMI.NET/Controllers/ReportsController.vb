@@ -296,7 +296,12 @@ Namespace Controllers
 				objModel.AvailableTables.RemoveAll(Function(m) m.id = objTable.TableID)
 			Next
 
-			objModel.ID = objReport.ChildTables.Count + 1
+			If objReport.ChildTables.Any() Then
+				objModel.ID = objReport.ChildTables.Max(Function(m) m.ID) + 1
+			Else
+				objModel.ID = 1
+			End If
+																		 
 			objModel.IsAdd = True
 
 			Return PartialView("EditorTemplates\ReportChildTable", objModel)
@@ -347,7 +352,13 @@ Namespace Controllers
 			objModel.ID = 0
 			objModel.TableID = objReport.BaseTableID
 			objModel.ReportID = ReportID
-			objModel.EventKey = String.Format("EV_{0}", objReport.Events.Count + 1)
+
+			If objReport.Events.Any() Then
+				objModel.EventKey = objReport.Events.Max(Function(m) m.EventKey) + 1
+			Else
+				objModel.EventKey = 0
+			End If
+
 			objModel.AvailableTables = objReportRepository.GetTablesWithEvents(objReport.BaseTableID)
 
 			ModelState.Clear()

@@ -15,7 +15,7 @@ Namespace ViewModels.Reports
 
 		<Browsable(False)>
 		Public Property ID As Integer Implements IJsonSerialize.ID
-		Public Property EventKey As String
+		Public Property EventKey As Integer
 
 		<DisplayName("Name :")>
 		Public Property Name As String
