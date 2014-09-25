@@ -1115,9 +1115,13 @@
 		var newWin = window.open("", "_blank", 'toolbar=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=1, height=1, visible=none', "");
 		newWin.document.write('<sty');
 		newWin.document.write('le>');
-		for (var i = 0; i < cssObj.length; i++) {
-			newWin.document.write(cssObj[i].toString());
+
+		if (cssObj) {
+			for (var i = 0; i < cssObj.length; i++) {
+				newWin.document.write(cssObj[i].toString());
+			}
 		}
+
 		newWin.document.write('</sty');
 		newWin.document.write('le>');
 		newWin.document.write(divToPrint.innerHTML);
