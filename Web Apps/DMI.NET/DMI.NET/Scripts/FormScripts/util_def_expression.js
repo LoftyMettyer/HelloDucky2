@@ -83,6 +83,7 @@ function buildjsTree() {
 			tree = $("#SSTree1");
 			tree.bind("loaded.jstree", function (event, data) {
 				tree.jstree("open_all");
+				tree_SelectRootNode();
 			});
 			break;
 		case "4":
@@ -94,6 +95,7 @@ function buildjsTree() {
 				$.jstree._reference("#SSTree1").open_node('#' + tree_getRootNodeID());
 				$.jstree._reference("#SSTree1").open_node('#' + topLevelNodeID);
 				$('#SSTree1').jstree('refresh');
+				tree_SelectRootNode();
 			});
 			break;
 	}
@@ -130,7 +132,7 @@ function buildjsTree() {
 		$('#SSTree1').bind("dblclick.jstree", function () {
 			SSTree1_dblClick();
 			return false;
-		});
+		});		
 
 	}
 	catch (e) {
@@ -179,10 +181,10 @@ function util_def_expression_onload() {
 		}
 
 		buildjsTree();
-
+		
 
 		frmUseful.txtLoading.value = 'N';
-		try {
+		try {			
 			frmDefinition.txtName.focus();
 		} catch (e) {
 		}
@@ -417,7 +419,7 @@ function getNodeColour(piLevel) {
 	var sColour;
 	var iModLevel;
 
-	sColour = 'rgb(105, 105, 129)'; //6697779;
+	sColour = 'rgb(0, 0, 0)'; //6697779;
 
 	if (frmUseful.txtExprColourMode.value == 2) {
 		iModLevel = piLevel % 7;
