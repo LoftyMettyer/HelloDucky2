@@ -436,16 +436,21 @@ select.readonly {
 
 
 #report_definition_tab_columns #columnbuttons {
-	width: 120px;
+	/*width: 120px;
 	margin-top: 10px;
 	float: left;
 	height: 400px;
-	padding-top: 50px;
+	padding-top: 50px;*/
 }
 
 #colbtngrp1, #colbtngrp2, #colbtngrp3 {
+	white-space: normal;
 	margin-bottom: 30px;
-	width: 110px;
+	/*width: 110px;*/
+}
+
+#colbtngrp1 > input[type=button], #colbtngrp2 > input[type=button], #colbtngrp3 > input[type=button] {
+	width: 100%;
 }
 
 #SelectedTableID {
@@ -455,19 +460,19 @@ select.readonly {
 
 #columnsSelected, #columnsAvailable {
 	/*padding-top: 20px;*/
-	float: left;
+	/*float: left;*/
 	/*height: 600px;*/
 	/*width: 35%;*/
 }
 
-#columncalculations {
+/*#columncalculations {
 	margin-top: 10px;
 }
 
 	#columncalculations legend {
 		width: 100%;
 		/*text-align: center;*/
-	}
+	}*/
 
 #report_definition_tab_columns #columnbuttons input[type=button] {
 	width: 120px;
@@ -663,8 +668,8 @@ select.readonly {
 }
 
 #gbox_SelectedColumns {
-	margin-left: 10px;
-	margin-top: 13px;
+	/*margin-left: 10px;*/
+	/*margin-top: 13px;*/
 }
 
 #outputtabfilenametextbox {

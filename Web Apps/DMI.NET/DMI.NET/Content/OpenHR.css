@@ -1186,7 +1186,7 @@ nav.tablelayout input:not([type="radio"]), .tablelayout textarea {
 
 /* stretchyfill for elements */
 div.nowrap {
-	margin-top: 10px;
+	/*margin-top: 10px;*/
 	width: 100%;
 	white-space: nowrap;
 	overflow: hidden;
@@ -1197,12 +1197,16 @@ div.tablerow {
 	display: table-row;
 }
 
-div.tablelayout label:not(.inline-block) {
+div.tablecell {
+	display: table-cell;
+}
+
+div.tablerow>label:not(.inline-block) {
 	display: table-cell;
 	vertical-align: top;
 }
 
-div.tablelayout input:not([type="radio"]), .tablelayout textarea, .tablelayout div.ui-jqgrid {
+div.tablerow>input:not([type="radio"]), .tablerow>textarea, .tablerow>div.ui-jqgrid {
 	display: table-cell;
 	width: 99%;
 	vertical-align: top;
@@ -1213,6 +1217,18 @@ div.tablelayout input:not([type="radio"]), .tablelayout textarea, .tablelayout d
 #tabs-1 #description {
 	height: 90px;
 }
+
+
+	/* 3 column layout, fixed center column, two flexible side columns */
+.coldefinition>div:first-child, .coldefinition>div:last-child {
+	width: 50%;
+}
+
+.coldefinition>div:nth-child(2) {
+	min-width: 160px;
+	vertical-align: middle;
+}
+
 
 #tabs-1 #AccessPermissions label { padding-top: 2px;}
 
@@ -1233,3 +1249,28 @@ div.tablelayout input:not([type="radio"]), .tablelayout textarea, .tablelayout d
 	opacity: 0.5;
 }
 
+.formfieldfill {
+	display: table;
+	width: 100%;
+	padding-bottom: 5px;
+}
+
+	.formfieldfill label {
+		display: table-cell;
+		width: 100px;
+		white-space: nowrap;
+	}
+
+	.formfieldfill span {
+		display: table-cell;
+		padding: 0 0 0 5px;
+	}
+
+	.formfieldfill input {
+		width: 98%;
+	}
+
+#frmReportDefintion #SelectedColumnSize, #frmReportDefintion #SelectedColumnDecimals {
+	width: 160px;
+}
+	

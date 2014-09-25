@@ -10,13 +10,13 @@
 
 <form id="frmDefinition">
 
-	<div class="absolutefull">
-		<div class="nowrap tablelayout">
+	<div class="absolutefull" style="margin-top:10px;">
+		<div class="nowrap">
 			<div class="tablerow">
 				<label>Name :</label>
 				<input id="txtName" name="txtName" maxlength="50" onkeyup="changeName()" style="width:90%;">				
 				<label>Owner :</label>
-				<input id="txtOwner" style=" margin-left: 4px;" name="txtOwner" disabled="disabled" tabindex="-1">
+				<input id="txtOwner" style=" margin-left: 4px; width: 90%;" name="txtOwner" disabled="disabled" tabindex="-1">
 			</div>
 			<br/>
 			<div class="tablerow">

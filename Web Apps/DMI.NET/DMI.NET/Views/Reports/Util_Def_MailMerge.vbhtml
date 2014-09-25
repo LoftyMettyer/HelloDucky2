@@ -55,10 +55,33 @@ End Code
 <script type="text/javascript">
 
   $(function () {
-  	$("#tabs").tabs();
+  	$("#tabs").tabs({
+  		activate: function (event, ui) {
+  			//Tab click event fired
+  			if (ui.newTab.text() == "Columns") {
+  				resizeColumnGrids();
+  			}
+  		}
+  	});
   	$('input[type=number]').numeric();
   	$('#description, #Name').css('width', $('#BaseTableID').width());  	
   });
+  function resizeColumnGrids() {
+  	var gridWidth = $('#columnsAvailable').width() - 10;
+  	$("#AvailableColumns").jqGrid('setGridWidth', gridWidth);
+  	$('#SelectedTableID').width(gridWidth);
+
+  	gridWidth = $('#columnsSelected').width() - 10;
+  	$("#SelectedColumns").jqGrid('setGridWidth', gridWidth);
+
+  	//var gridHeight = $('#columnsAvailable').parent().height() - 20;
+  	var gridHeight = screen.height / 3;
+  	$("#SelectedColumns").jqGrid('setGridHeight', gridHeight);
+  	$("#AvailableColumns").jqGrid('setGridHeight', gridHeight);
+
+  	//column aggregate widths
+  	$('.colAggregates').find('.tablecell').css('width', gridWidth / 3);
+  }
 
   $("#workframe").attr("data-framesource", "UTIL_DEF_MAILMERGE");
 </script>

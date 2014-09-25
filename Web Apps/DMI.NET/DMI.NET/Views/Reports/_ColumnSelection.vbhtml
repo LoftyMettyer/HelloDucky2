@@ -7,33 +7,31 @@
 
 @Html.HiddenFor(Function(m) m.ColumnsAsString, New With {.id = "txtCSAAS"})
 
-<fieldset class="floatleft">
-	<fieldset id="columnsAvailable">
-		<legend class="fontsmalltitle width100">Columns / Calculations Available :</legend>
-		<fieldset id="columncalculations">
-			<legend>
-				@Html.RadioButton("columnSelectiontype", CInt(ColumnSelectionType.Columns), True, New With {.onclick = "toggleColumnsCalculations('column')", .class = "radioColumnType", .id = "columnSelectiontype_0"})
-				<span style="padding-right:30px">Columns</span>
-				@Html.RadioButton("columnSelectiontype", CInt(ColumnSelectionType.Calculations), False, New With {.onclick = "toggleColumnsCalculations('calc')", .class = "radioColumnType", .id = "columnSelectiontype_1"})	Calculations
-			</legend>
+<div class="nowrap">
+
+	<div class="tablerow">
+		<fieldset id="selectedTable">
+			<legend class="fontsmalltitle width100">Base Table :</legend>
 			<select name="SelectedTableID" id="SelectedTableID" onchange="getAvailableTableColumnsCalcs();"></select>
-			<table id="AvailableColumns"></table>
+			<br />
+			@Html.RadioButton("columnSelectiontype", CInt(ColumnSelectionType.Columns), True,
+												New With {.onclick = "toggleColumnsCalculations('column')", .class = "radioColumnType", .id = "columnSelectiontype_0"})
+			<span style="padding-right:30px">Columns</span>
+			@Html.RadioButton("columnSelectiontype", CInt(ColumnSelectionType.Calculations), False,
+												New With {.onclick = "toggleColumnsCalculations('calc')", .class = "radioColumnType", .id = "columnSelectiontype_1"})	Calculations
 		</fieldset>
+	</div>
+
+	<div class="tablerow coldefinition">
+		<div class="tablecell">
+			<fieldset id="columnsAvailable">
+				<legend class="fontsmalltitle">Columns / Calculations Available :</legend>
+				<table id="AvailableColumns"></table>
 	</fieldset>
+		</div>
 
-	<br style="clear: left;" />
-
-	<fieldset class="customReportsOnly" id="CustomDefinitionReportOptions">
-		<legend class="fontsmalltitle width100">Report Options :</legend>
-		@Html.CheckBoxFor(Function(m) m.IsSummary)
-		@Html.LabelFor(Function(m) m.IsSummary)
-		<br />
-		@Html.CheckBoxFor(Function(m) m.IgnoreZerosForAggregates)
-		@Html.LabelFor(Function(m) m.IgnoreZerosForAggregates)
-	</fieldset>
-</fieldset>
-
-	<fieldset class="floatleft" id="columnbuttons">
+		<div class="tablecell">
+			<fieldset class="" id="columnbuttons">
 	<div id="colbtngrp1">
 		<input type="button" id="btnColumnAdd" value="Add" onclick="addColumnToSelected();" />
 		<input type="button" id="btnColumnAddAll" value="Add All" onclick="addAllColumnsToSelected();" />
@@ -47,72 +45,85 @@
 		<input type="button" id="btnColumnMoveDown" value="Move Down" disabled onclick="moveSelectedColumn('down');" />
 	</div>
 </fieldset>
+		</div>
 
-<fieldset class="floatleft" id="columnsSelected">
+		<div class="tablecell">
+			<fieldset class="left" id="columnsSelected">
 	<legend class="fontsmalltitle">Columns / Calculations Selected :</legend>
 	<table id="SelectedColumns" class="scroll" cellpadding="0" cellspacing="0"></table>
-	<br />
-
+			</fieldset>
+		</div>
+	</div>
+	<div class="tablerow coldefinition">
+		<div class="tablecell">
+			<fieldset class="customReportsOnly" id="CustomDefinitionReportOptions">
+				<legend class="fontsmalltitle">Report Options :</legend>
+				<div>
+					@Html.CheckBoxFor(Function(m) m.IsSummary)
+					@Html.LabelFor(Function(m) m.IsSummary)
+				</div>
+				<div>
+					@Html.CheckBoxFor(Function(m) m.IgnoreZerosForAggregates)
+					@Html.LabelFor(Function(m) m.IgnoreZerosForAggregates)
+				</div>
+			</fieldset>
+		</div>
+		<div class="tablecell"></div>
+		<div class="tablecell">
+			<fieldset>				
 	<div id="definitionColumnProperties">
-		<div class="floatleft width100 customReportsOnly">
-			<div class="floatleft width25">
+					<div class="formfieldfill customReportsOnly">
 				<label for="SelectedColumnHeading">Heading :</label>
-			</div>
-			<input class="width70" type='text' id="SelectedColumnHeading" maxlength="50" onchange="updateColumnsSelectedGrid();" />
+						<span><input type='text' id="SelectedColumnHeading" maxlength="50" onchange="updateColumnsSelectedGrid();" /></span>
 		</div>
-		<br style="clear:both" />
-
-		<div class="floatleft width100">
-			<div class="floatleft width25">
+					<div class="formfieldfill">
 				<label for="SelectedColumnSize">Size :</label>
-			</div>
-			<input class="width70" type='number' id="SelectedColumnSize" onchange="updateColumnsSelectedGrid();" />
+						<span><input class="" type='number' id="SelectedColumnSize" onchange="updateColumnsSelectedGrid();" /></span>
 		</div>
-		<br style="clear:both" />
-
-		<div class="floatleft width100 decimalsOnly">
-			<div class="floatleft width25">
+					<div class="formfieldfill decimalsOnly">
 				<label for="SelectedColumnDecimals">Decimals :</label>
-			</div>
-			<input class="width70" type='number' id="SelectedColumnDecimals" onchange="updateColumnsSelectedGrid();" />
+						<span><input class="" type='number' id="SelectedColumnDecimals" onchange="updateColumnsSelectedGrid();" /></span>
 		</div>
-		<br style="clear:both" />
-		<br />
 
-		<div class="customReportsOnly" style="margin-left:20px;">
-			<div class="width35 floatleft" style="color: rgb(0, 0, 0)">
-				<div class="numericOnly width100">
+					<div class="tablelayout customReportsOnly colAggregates">
+						<div class="tablerow" style="color: rgb(0, 0, 0)">
+							<div class="tablecell numericOnly">
 					<input class=" ui-widget ui-corner-all" id="SelectedColumnIsAverage" onchange="updateColumnsSelectedGrid();" type="checkbox">
 					<label for="SelectedColumnIsAverage">Average</label>
 				</div>
-				<div class="cannotBeHidden width100">
+							<div class="tablecell cannotBeHidden">
 					<input class="ui-widget ui-corner-all" id="SelectedColumnIsCount" onchange="updateColumnsSelectedGrid();" type="checkbox">
 					<label for="SelectedColumnIsCount">Count</label>
 				</div>
-				<div class="numericOnly width100">
+							<div class="tablecell numericOnly">
 					<input class="ui-widget ui-corner-all" id="SelectedColumnIsTotal" onchange="updateColumnsSelectedGrid();" type="checkbox">
 					<label for="SelectedColumnIsTotal">Total</label>
 				</div>
 			</div>
 
+
+						<div class="tablerow">
 			<div>
-				<div class="width65 floatleft">
 					<input class="ui-widget ui-corner-all" id="SelectedColumnIsHidden" onchange="changeColumnIsHidden();" type="checkbox">
 					<label id="labelSelectedColumnIsHidden" for="SelectedColumnIsHidden">Hidden</label>
-					<div class="canGroupWithNext" style="color: rgb(0, 0, 0);">
+							</div>
+							<div class="tablecell canGroupWithNext" style="color: rgb(0, 0, 0);">
 						<input class="ui-widget ui-corner-all" id="SelectedColumnIsGroupWithNext" onchange="changeColumnIsGroupWithNext();" type="checkbox">
 						<label id="labelSelectedColumnIsGroupWithNext" for="SelectedColumnIsGroupWithNext">Group with next</label>
 					</div>
-					<div class="baseTableOnly">
-						<input class="ui-widget ui-corner-all" id="SelectedColumnIsRepeated" onchange="updateColumnsSelectedGrid();" type="checkbox">
+							<div class="tablecell baseTableOnly" style="color: rgb(165, 147, 147);">
+								<input disabled="disabled" class="ui-widget ui-corner-all" id="SelectedColumnIsRepeated" onchange="updateColumnsSelectedGrid();" type="checkbox">
 						<label id="labelSelectedColumnRepeatOnChild" for="SelectedColumnIsRepeated">Repeat on child rows</label>
 					</div>
+						</div>
+
+					</div>
+
 				</div>
+			</fieldset>
 			</div>
 		</div>
 	</div>
-
-</fieldset>
 
 <input type="hidden" name="Columns.BaseTableID" value="@Model.BaseTableID" />
 
@@ -394,8 +405,7 @@
 				{ name: 'Size', index: 'Size', hidden: true },
 				{ name: 'Decimals', index: 'Decimals', hidden: true }],
 			viewrecords: true,
-			width: 320,
-			height: 320,
+				autowidth: false,
 			sortname: 'Name',
 			sortorder: "desc",
 			rowNum: 10000,
@@ -452,6 +462,9 @@
 		});
 
 		$("#AvailableColumns").jqGrid('hideCol', 'cb');
+
+			//if ($('#txtReportType').val() == "utlCustomReport") 
+			resizeColumnGrids(); //should be in scope; this function resides in Util_Def_CustomReport.vbhtml
 
 	}
 
@@ -549,7 +562,7 @@
 		else {
 
 			if (!isReadOnly) {
-				$("#definitionColumnProperties :input").removeAttr("disabled");
+			$("#definitionColumnProperties :input").removeAttr("disabled");
 			}
 
 			var isThereChildColumns = (childColumnsCount() > 0);
@@ -663,8 +676,7 @@
 				{ name: 'ReportID', index: 'ReportID', hidden: true },
 				{ name: 'ReportType', index: 'ReportType', hidden: true }],
 			viewrecords: true,
-			width: 500,
-			height: 320,
+				autowidth: false,
 			sortname: 'Sequence',
 			sortorder: "asc",
 			rowNum: 10000,
