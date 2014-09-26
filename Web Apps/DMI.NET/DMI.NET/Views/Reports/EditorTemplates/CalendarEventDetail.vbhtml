@@ -322,6 +322,24 @@ End Code
 
 	function postThisCalendarEvent() {
 
+		// Validation
+		if ($("#EventName").val() == "") {
+			OpenHR.modalMessage("You must give this event a name.");
+			return false;
+		}
+
+		if ($('input:radio[name=EventEndType]:checked').val() == "1" && $("#EventEndDateID").val() == "0") {
+			OpenHR.modalMessage("A valid end date column has not been selected.")
+			return false;
+		}
+
+		if ($('input:radio[name=EventEndType]:checked').val() == "2" && $("#EventDurationID").val() == "0") {
+			OpenHR.modalMessage("A valid duration column has not been selected.")
+			return false;
+		}
+
+
+
 		var legendLookupColumnID = $("#LegendLookupColumnID").val()
 		if (legendLookupColumnID == null) { legendLookupColumnID = 0 }
 
