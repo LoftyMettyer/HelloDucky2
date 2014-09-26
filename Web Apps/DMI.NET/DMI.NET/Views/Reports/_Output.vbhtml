@@ -85,7 +85,7 @@ End Code
 		<fieldset>
 			<div id="outputtabfilenametextbox" class="reportdeffile">
 				@Html.LabelFor(Function(m) m.SaveExisting, New With {.class = "display-label_file"})
-				@Html.CustomEnumDropDownListFor(Function(m) m.SaveExisting, New With {.Name = "Output.SaveExisting", .class = "DataManagerOnly", .readonly = "true"})
+				@Html.CustomEnumDropDownListFor(Function(m) m.SaveExisting, New With {.Name = "Output.SaveExisting", .class = "", .readonly = "true"})
 			</div>
 		</fieldset>
 
