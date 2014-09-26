@@ -121,7 +121,6 @@ function buildjsTree() {
 				$.jstree._focused().deselect_all();
 				$.jstree._focused().select_node("#" + pastedId);
 				//Turn into a copy now, for repeated pasting...
-				frmUseful.txtUndoType.value = "COPY";
 				frmUseful.txtCutCopyType.value = "COPY";
 				$.jstree._focused().copy();
 
@@ -1523,20 +1522,23 @@ function moveComponentDown() {
 
 function undoClick() {
 	
+	if ((frmUseful.txtUndoType.value == "CUT") || (frmUseful.txtUndoType.value == "COPY")) {
+		$('#SSTree1 .jstree-leaf').css('opacity', 1);
+	} else {
+		if (window.SSTree1UndoData) {
+			$.jstree.rollback(window.SSTree1UndoData);
+			window.SSTree1UndoData = null;
+			window.SSTree1UndoData = $('#SSTree1').jstree('get_rollback');
+
+			$('#SSTree1').jstree('destroy');
+			buildjsTree();
+		}
+	}
+
 	frmUseful.txtUndoType.value = "";
 	frmUseful.txtCutCopyType.value = "";	//disable 'paste option'
 
-	if (window.SSTree1UndoData) {
-		$.jstree.rollback(window.SSTree1UndoData);
-		window.SSTree1UndoData = null;
-		window.SSTree1UndoData = $('#SSTree1').jstree('get_rollback');
-
-		$('#SSTree1').jstree('destroy');
-		buildjsTree();
-
-		refreshControls();
-
-	}
+	refreshControls();
 
 	
 }
