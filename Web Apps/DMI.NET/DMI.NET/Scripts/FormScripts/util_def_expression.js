@@ -1412,14 +1412,14 @@ function testClick() {
 		}
 	});
 	
-	sURL = "util_dialog_expression" + "?action=test&" +
-		"type=" + encodeURIComponent(frmSend.txtSend_type.value) + "&" +
-		"components1=" + encodeURIComponent(frmSend.txtSend_components1.value) + "&" +
-		"prompts=" + encodeURIComponent(sPrompts) + "&" +
-		"tableID=" + encodeURIComponent(frmTest.tableID.value) + "&" +
-		"filtersAndCalcs=" + encodeURIComponent(sFiltersAndCalcs);
+	frmTest.type.value = frmSend.txtSend_type.value;
+	frmTest.components1.value = frmSend.txtSend_components1.value;
+	frmTest.prompts.value = sPrompts;
+	frmTest.filtersAndCalcs.value = sFiltersAndCalcs;
 
-	OpenHR.windowOpen(sURL, (screen.width) / 2, (screen.height) / 3);
+	sURL = "util_dialog_expression" + "?action=test";
+
+	openDialog(sURL, (screen.width) / 2, (screen.height) / 3);
 
 }
 
@@ -1580,27 +1580,30 @@ function submitDefinition() {
 	var frmValidate = OpenHR.getForm("divDefExpression", "frmValidate");
 	var frmSend = OpenHR.getForm("divDefExpression", "frmSend");
 
-	var sURL = "util_dialog_expression" + "?action=validate&" +
-		"validatePass=1&" +
-		"validateName=" + encodeURIComponent(frmDefinition.txtName.value) + "&" +
-		"validateAccess=" + encodeURIComponent(frmSend.txtSend_access.value) + "&" +
-		"validateUtilType=" + encodeURIComponent(frmSend.txtSend_type.value) + "&" +
-		"validateOwner=" + encodeURIComponent(frmDefinition.txtOwner.value) + "&" +
-		"components1=" + encodeURIComponent(frmSend.txtSend_components1.value) + "&" +
-		"validateOriginalAccess=" + encodeURIComponent(frmOriginalDefinition.txtOriginalAccess.value) + "&";
+	frmValidate.validatePass.value = 1;
+	frmValidate.validateName.value = frmDefinition.txtName.value;
+	frmValidate.validateAccess.value = frmSend.txtSend_access.value;
+	frmValidate.validateUtilType.value = frmSend.txtSend_type.value;
+	frmValidate.validateAccess.value = frmSend.txtSend_access.value;
+	frmValidate.validateOwner.value = frmDefinition.txtOwner.value;
+	frmValidate.components1.value = frmSend.txtSend_components1.value;
+	frmValidate.validateOriginalAccess.value = frmOriginalDefinition.txtOriginalAccess.value;
 
 	if (frmUseful.txtAction.value.toUpperCase() == "EDIT") {
-		sURL +=
-			"validateTimestamp=" + encodeURIComponent(frmOriginalDefinition.txtDefn_Timestamp.value) + "&" +
-			"validateUtilID=" + encodeURIComponent(frmUseful.txtUtilID.value);
+		frmValidate.validateTimestamp.value = frmOriginalDefinition.txtDefn_Timestamp.value;
+		frmValidate.validateUtilID.value = frmUseful.txtUtilID.value;
 	}
 	else {
-		sURL += "validateTimestamp=0&validateUtilID=0;";
+		frmValidate.validateTimestamp.value = 0;
+		frmValidate.validateUtilID.value = 0;
 	}
 
 	//disableButtons(); 
 
-	OpenHR.windowOpen(sURL, 600, 230);
+	var sURL = "util_dialog_expression" + "?action=validate";
+
+	openDialog(sURL, 600, 230);
+
 	reEnableControls();
 	return true;
 
@@ -1802,6 +1805,17 @@ function makeHidden(pPopup) {
 	pPopup.close();
 	frmDefinition.optAccessHD.checked = true;
 	submitDefinition();
+}
+
+function openDialog(pDestination, pWidth, pHeight) {
+	var dlgwinprops = "center:yes;" +
+			"dialogHeight:" + pHeight + "px;" +
+			"dialogWidth:" + pWidth + "px;" +
+			"help:no;" +
+			"resizable:yes;" +
+			"scroll:yes;" +
+			"status:no;";
+	window.showModalDialog(pDestination, self, dlgwinprops);
 }
 
 function SSTree1_afterLabelEdit() {

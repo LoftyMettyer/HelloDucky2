@@ -18,27 +18,32 @@
 		function util_dialog_expression_onload() {
 
 				if(frmUseful.action.value == "test") {
-					frmTest.type.value = decodeURIComponent('<%: Request.QueryString("type")%>'); //frmParentTest.type.value;
-					frmTest.components1.value = decodeURIComponent('<%: Request.QueryString("components1")%>'); // frmParentTest.components1.value;
-					frmTest.tableID.value = decodeURIComponent('<%: Request.QueryString("tableID")%>'); //frmParentTest.tableID.value;
-					frmTest.prompts.value = decodeURIComponent('<%: Request.QueryString("prompts")%>'); //frmParentTest.prompts.value;
-					frmTest.filtersAndCalcs.value = decodeURIComponent('<%: Request.QueryString("filtersAndCalcs")%>'); // frmParentTest.filtersAndCalcs.value;
-					OpenHR.submitForm(frmTest);
+						var frmParentTest = window.dialogArguments.document.forms["frmTest"];
+	
+						frmTest.type.value = frmParentTest.type.value;
+						frmTest.components1.value = frmParentTest.components1.value;
+						frmTest.tableID.value = frmParentTest.tableID.value;
+						frmTest.prompts.value = frmParentTest.prompts.value;
+						frmTest.filtersAndCalcs.value = frmParentTest.filtersAndCalcs.value;
+						OpenHR.submitForm(frmTest);
 
 				}
 				else {
-					frmValidate.validatePass.value = decodeURIComponent('<%: Request.QueryString("validatePass")%>'); // frmParentValidate.validatePass.value;
-					frmValidate.validateName.value = decodeURIComponent('<%: Request.QueryString("validateName")%>'); // frmParentValidate.validateName.value;
-					frmValidate.validateOwner.value = decodeURIComponent('<%: Request.QueryString("validateOwner")%>'); // frmParentValidate.validateOwner.value;
-					frmValidate.validateTimestamp.value = decodeURIComponent('<%: Request.QueryString("validateTimestamp")%>'); // frmParentValidate.validateTimestamp.value;
-					frmValidate.validateUtilID.value = decodeURIComponent('<%: Request.QueryString("validateUtilID")%>'); //  frmParentValidate.validateUtilID.value;
-					frmValidate.validateUtilType.value = decodeURIComponent('<%: Request.QueryString("validateUtilType")%>'); // frmParentValidate.validateUtilType.value;
-					frmValidate.validateAccess.value = decodeURIComponent('<%: Request.QueryString("validateAccess")%>'); // frmParentValidate.validateAccess.value;
-					frmValidate.components1.value = decodeURIComponent('<%: Request.QueryString("components1")%>'); // frmParentValidate.components1.value;
-					frmValidate.validateBaseTableID.value = decodeURIComponent('<%: Session("utiltableid")%>'); // frmParentValidate.validateBaseTableID.value;
-					frmValidate.validateOriginalAccess.value = decodeURIComponent('<%: Request.QueryString("validateOriginalAccess")%>'); // frmParentValidate.validateOriginalAccess.value;
-					OpenHR.submitForm(frmValidate);
-				}
+						var frmParentValidate = window.dialogArguments.OpenHR.getForm("workframe","frmValidate");
+	
+						frmValidate.validatePass.value = frmParentValidate.validatePass.value;
+						frmValidate.validateName.value = frmParentValidate.validateName.value;
+						frmValidate.validateOwner.value = frmParentValidate.validateOwner.value;
+						frmValidate.validateTimestamp.value = frmParentValidate.validateTimestamp.value;
+						frmValidate.validateUtilID.value = frmParentValidate.validateUtilID.value;
+						frmValidate.validateUtilType.value = frmParentValidate.validateUtilType.value;
+						frmValidate.validateAccess.value = frmParentValidate.validateAccess.value;
+						frmValidate.components1.value = frmParentValidate.components1.value;
+						frmValidate.validateBaseTableID.value = frmParentValidate.validateBaseTableID.value;
+						frmValidate.validateOriginalAccess.value = frmParentValidate.validateOriginalAccess.value;
+
+						OpenHR.submitForm(frmValidate);
+						}
 		}
 		
 </script>
