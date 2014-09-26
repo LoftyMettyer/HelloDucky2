@@ -1311,9 +1311,11 @@ function pVal_changeType() {
 			if ($('#frmMainForm #txtPValSize').val() < newSize) $('#frmMainForm #txtPValSize').val(newSize);
 
 			var decimalSeparator = OpenHR.LocaleDecimalSeparator();
-			var newDecimals = $('#frmMainForm #txtPValDefault').val().split(decimalSeparator)[1].length;
-			if ($('#frmMainForm #txtPValDefault').val().indexOf(decimalSeparator) > 0) {				
-				if ($('#frmMainForm #txtPValDecimals').val() < newDecimals) $('#frmMainForm #txtPValDecimals').val(newDecimals);
+			if ($('#frmMainForm #txtPValDefault').val().indexOf(decimalSeparator) > 0) {
+				var newDecimals = $('#frmMainForm #txtPValDefault').val().split(decimalSeparator)[1].length;
+				if ($('#frmMainForm #txtPValDefault').val().indexOf(decimalSeparator) > 0) {
+					if ($('#frmMainForm #txtPValDecimals').val() < newDecimals) $('#frmMainForm #txtPValDecimals').val(newDecimals);
+				}
 			}
 		});
 	}
