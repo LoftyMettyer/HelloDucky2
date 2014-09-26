@@ -112,6 +112,11 @@
 
 			},
 			gridComplete: function () {
+
+				button_disable($("#btnEventDetailsEdit")[0], true);
+				button_disable($("#btnEventDetailsRemove")[0], true);
+				button_disable($("#btnEventDetailsRemoveAll")[0], true);
+
 				// Highlight top row
 				var ids = $(this).jqGrid("getDataIDs");
 				if (ids && ids.length > 0)
