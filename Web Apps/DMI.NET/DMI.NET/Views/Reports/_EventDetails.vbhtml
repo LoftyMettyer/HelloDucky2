@@ -17,7 +17,7 @@
 		<div class="stretchyfixed">
 			<input type="button" id="btnEventDetailsAdd" value="Add..." onclick="eventAdd();" />
 			<br />
-			<input type="button" id="btnEventDetailsEdit" value="Edit..." disabled onclick="eventEdit(0);" />
+			<input type="button" id="btnEventDetailsEdit" value="Edit..." disabled onclick="eventEdit();" />
 			<br />
 			<input type="button" id="btnEventDetailsRemove" value="Remove" disabled onclick="removeEvent()" />
 			<br />
@@ -132,23 +132,28 @@
 		OpenHR.OpenDialog("Reports/AddCalendarEvent", "divPopupReportDefinition", { ReportID: "@Model.ID" }, '1000');
 	}
 
-	function eventEdit(rowID) {
+	function eventEdit() {
 
-		if (rowID == 0) {
-			rowID = $('#CalendarEvents').jqGrid('getGridParam', 'selrow');
-		}
+		var rowID = $('#CalendarEvents').jqGrid('getGridParam', 'selrow');
+		var datarow = $("#CalendarEvents").getRowData(rowID);
 
-		var gridData = $("#CalendarEvents").getRowData(rowID);
-		OpenHR.OpenDialog("Reports/EditCalendarEvent", "divPopupReportDefinition", gridData, '1000');
+		OpenHR.OpenDialog("Reports/EditCalendarEvent", "divPopupReportDefinition", datarow, '1000');
 
 	}
 
 	function removeEvent() {
 
+		var recordCount = $("#CalendarEvents").jqGrid('getGridParam', 'records')
+		var ids = $("#CalendarEvents").getDataIDs();
 		var rowID = $('#CalendarEvents').jqGrid('getGridParam', 'selrow');
 		var datarow = $("#CalendarEvents").getRowData(rowID);
+		var thisIndex = $("#CalendarEvents").getInd(rowID);
+
 		OpenHR.postData("Reports/RemoveCalendarEvent", datarow)
 		$('#CalendarEvents').jqGrid('delRowData', rowID)
+
+		if (thisIndex >= recordCount) { thisIndex = 0; }
+		$("#CalendarEvents").jqGrid("setSelection", ids[thisIndex], true);
 
 	}
 
