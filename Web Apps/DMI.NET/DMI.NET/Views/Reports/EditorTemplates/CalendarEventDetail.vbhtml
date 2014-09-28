@@ -202,8 +202,8 @@ End Code
 </div>
 
 <div id="divCalendarDetailButtons" class="width100 floatright">
-	<input type="button" value="Cancel" onclick="closeThisCalendarEvent();" />
-	<input type="button" value="OK" onclick="postThisCalendarEvent();" />
+	<input type="button" id="butEventEditCancel" value="Cancel" onclick="closeThisCalendarEvent();" />
+	<input type="button" id="butEventEditOK" value="OK" onclick="postThisCalendarEvent();" />
 </div>
 
 @code
@@ -228,6 +228,9 @@ End Code
 			$("#frmPostCalendarEvent select").prop('disabled', "disabled");
 			$("#frmPostCalendarEvent :button").prop('disabled', "disabled");
 		}
+
+		button_disable($("#butEventEditCancel")[0], false);
+
 	});
 
 	function changeEventLookupTable() {
@@ -329,7 +332,6 @@ End Code
 			$(".eventLegendLookupDummy").hide();
 		}
 
-
 		var endType = $("input[name='EventEndType']:checked").val();
 		combo_disable("#EventEndDateID", (endType != "1"));
 		combo_disable("#EventEndSessionID", (endType != "1"));
@@ -362,6 +364,11 @@ End Code
 		// Validation
 		if ($("#EventName").val() == "") {
 			OpenHR.modalMessage("You must give this event a name.");
+			return false;
+		}
+
+		if ( $("#EventStartDateID")[0].length == 0) {
+			OpenHR.modalMessage("A valid start date column has not been selected.");
 			return false;
 		}
 

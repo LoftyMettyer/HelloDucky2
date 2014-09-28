@@ -52,7 +52,7 @@ End Code
 
 <div id="divSortOrderButtons">
 	<input type="button" value="OK" onclick="postThisSortOrder();" />
-	<input type="button" value="Cancel" onclick="closeThisSortOrder();" />
+	<input type="button" value="Cancel" id="butSortOrderEditCancel" onclick="closeThisSortOrder();" />
 </div>
 
 @Code
@@ -73,6 +73,9 @@ End Code
 			$("#frmPostSortOrder select").prop('disabled', "disabled");
 			$("#frmPostSortOrder :button").prop('disabled', "disabled");
 		}
+
+		button_disable($("#butSortOrderEditCancel")[0], false);
+
 
 	});
 

@@ -57,7 +57,7 @@ End Code
 
 	<div id="divChildTablesButtons" class="clearboth">
 		<input type="button" value="OK" onclick="postThisChildTable();" />
-		<input type="button" value="Cancel" onclick="closeThisChildTable();" />
+		<input type="button" value="Cancel" id="butEditChildTableCancel" onclick="closeThisChildTable();" />
 	</div>
 </div>
 	
@@ -81,6 +81,8 @@ End Code
 			$("#frmPostChildTable select").prop('disabled', "disabled");
 			$("#frmPostChildTable :button").prop('disabled', "disabled");
 		}
+
+		button_disable($("#butEditChildTableCancel")[0], false);
 
 	})
 
