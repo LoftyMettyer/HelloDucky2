@@ -72,7 +72,7 @@ End Code
 		<table class="width100">
 			<tr>
 				<td class="width30">
-					@Html.RadioButton("EventEndType", CInt(CalendarEventEndType.None), Model.EventEndType = CalendarEventEndType.None, New With {.onclick = "refreshCalendarEventDisplay()"})
+					@Html.RadioButton("EventEndType", CInt(CalendarEventEndType.None), Model.EventEndType = CalendarEventEndType.None, New With {.onclick = "changeEventEndType()"})
 					None
 				</td>
 				<td class="width60"></td>
@@ -80,7 +80,7 @@ End Code
 			</tr>
 			<tr>
 				<td class="width30">
-					@Html.RadioButton("EventEndType", CInt(CalendarEventEndType.EndDate), Model.EventEndType = CalendarEventEndType.EndDate, New With {.onclick = "refreshCalendarEventDisplay()"})
+					@Html.RadioButton("EventEndType", CInt(CalendarEventEndType.EndDate), Model.EventEndType = CalendarEventEndType.EndDate, New With {.onclick = "changeEventEndType()"})
 					End Date
 				</td>
 				<td></td>
@@ -99,7 +99,7 @@ End Code
 
 			<tr>
 				<td>
-					@Html.RadioButton("EventEndType", CInt(CalendarEventEndType.Duration), Model.EventEndType = CalendarEventEndType.Duration, New With {.onclick = "refreshCalendarEventDisplay()"})
+					@Html.RadioButton("EventEndType", CInt(CalendarEventEndType.Duration), Model.EventEndType = CalendarEventEndType.Duration, New With {.onclick = "changeEventEndType()"})
 					Duration
 				</td>
 				<td></td>
@@ -108,7 +108,9 @@ End Code
 
 			<tr>
 				<td class="width30 padleft20">Length :</td>
-				<td class="" colspan="2">@Html.ColumnDropdownFor(Function(m) m.EventDurationID, New ColumnFilter() With {.TableID = Model.TableID, .IsNumeric = True, .AddNone = True}, New With {.disabled = (Model.EventEndType = CalendarEventEndType.EndDate)})</td>
+				<td class="" colspan="2">
+				@Html.ColumnDropdownFor(Function(m) m.EventDurationID, New ColumnFilter() With {.TableID = Model.TableID, .IsNumeric = True, .AddNone = True}, New With {.disabled = (Model.EventEndType = CalendarEventEndType.EndDate)})
+				</td>
 			</tr>
 		</table>
 
@@ -142,7 +144,7 @@ End Code
 					@Html.ColumnDropdownFor(Function(m) m.LegendEventColumnID, New ColumnFilter() _
 													 With {.TableID = Model.TableID, .DataType = ColumnDataType.sqlVarChar, .ColumnType = ColumnType.Lookup}, _
 													 New With {.class = "eventLegendLookupLive", .disabled = (Model.EventEndType = CalendarEventEndType.EndDate), .onchange = "changeLegendEventColumnID()"})
-					<select disabled="disabled" class="eventLegendLookupDummy"></select>
+					<select disabled class="eventLegendLookupDummy"><option>None</option></select>
 				</td>
 			</tr>
 			<tr>
@@ -150,7 +152,7 @@ End Code
 				<td class="" colspan="2">
 					@Html.LookupTableDropdown("LegendLookupTableID", "LegendLookupTableID", Model.LegendLookupTableID, "changeEventLookupTable();" _
 																	, New With {.class = "eventLegendLookupLive"})
-					<select disabled="disabled" class="eventLegendLookupDummy"></select>
+					<select disabled class="eventLegendLookupDummy"><option>None</option></select>
 				</td>
 			</tr>
 			<tr>
@@ -159,7 +161,7 @@ End Code
 					@Html.ColumnDropdownFor(Function(m) m.LegendLookupColumnID _
 																	, New ColumnFilter() With {.TableID = Model.LegendLookupTableID, .DataType = ColumnDataType.sqlVarChar} _
 																	, New With {.class = "eventLegendLookupLive"})
-					<select disabled="disabled" class="eventLegendLookupDummy"></select>
+					<select disabled class="eventLegendLookupDummy"><option>None</option></select>
 				</td>
 			</tr>
 			<tr>
@@ -168,7 +170,7 @@ End Code
 					@Html.ColumnDropdownFor(Function(m) m.LegendLookupCodeID _
 																	, New ColumnFilter() With {.TableID = Model.LegendLookupTableID, .DataType = ColumnDataType.sqlVarChar} _
 																	, New With {.class = "eventLegendLookupLive"})
-					<select disabled="disabled" class="eventLegendLookupDummy"></select>
+					<select disabled class="eventLegendLookupDummy"><option>None</option></select>
 				</td>
 			</tr>
 		</table>
@@ -290,6 +292,22 @@ End Code
 
 	}
 
+	function changeEventEndType() {
+
+		var eventEndType = $("input[name='EventEndType']:checked").val();
+
+		if (eventEndType == "0" || eventEndType == "1") {
+			$("#EventDurationID").val(0);
+		}
+
+		if (eventEndType == "0" || eventEndType == "2") {
+			$("#EventEndDateID").val(0);
+			$("#EventEndSessionID").val(0);
+		}
+
+		refreshCalendarEventDisplay();
+	}
+
 	function refreshCalendarEventDisplay() {
 
 		var legendType = $("input[name='LegendType']:checked").val();
@@ -370,6 +388,36 @@ End Code
 			legendTypeName = $("#LegendCharacter").val();
 		}
 
+		var eventStartSessionName = "";
+		if ($("#EventStartSessionID option:selected").val() > 0) {
+			eventStartSessionName = $("#EventStartSessionID option:selected").text();
+		}
+
+		var eventEndDateName = "";
+		if ($("#EventEndDateID option:selected").val() > 0) {
+			eventEndDateName = $("#EventEndDateID option:selected").text();
+		}
+
+		var eventEndSessionName = "";
+		if ($("#EventEndSessionID option:selected").val() > 0) {
+			eventEndSessionName = $("#EventEndSessionID option:selected").text();
+		}
+
+		var eventDurationName = "";
+		if ($("#EventDurationID option:selected").val() > 0) {
+			eventDurationName = $("#EventDurationID option:selected").text();
+		}
+
+		var description1Text = "";
+		if ($("#EventDesc1ColumnID option:selected").val() > 0) {
+			description1Text = $("#EventDesc1ColumnID option:selected").text();
+		}
+
+		var description2Text = "";
+		if ($("#EventDesc2ColumnID option:selected").val() > 0) {
+			description2Text = $("#EventDesc2ColumnID option:selected").text();
+		}
+
 		var datarow = {
 			ID: $("#CalendarEventID").val(),
 			EventKey: 			'@Model.EventKey',
@@ -396,13 +444,13 @@ End Code
 			EventDesc1ColumnID: $("#EventDesc1ColumnID").val(),
 			EventDesc2ColumnID: $("#EventDesc2ColumnID").val(),
 			EventStartDateName: $("#EventStartDateID option:selected").text(),
-			EventStartSessionName: $("#EventStartSessionID option:selected").text(),
-			EventEndDateName: $("#EventEndDateID option:selected").text(),
-			EventEndSessionName: $("#EventEndSessionID option:selected").text(),
-			EventDurationName: $("#EventDurationID option:selected").text(),
+			EventStartSessionName: eventStartSessionName,
+			EventEndDateName: eventEndDateName,
+			EventEndSessionName: eventEndSessionName,
+			EventDurationName: eventDurationName,
 			LegendTypeName: legendTypeName,
-			EventDesc1ColumnName: $("#EventDesc1ColumnID option:selected").text(),
-			EventDesc2ColumnName: $("#EventDesc2ColumnID option:selected").text()
+			EventDesc1ColumnName: description1Text,
+			EventDesc2ColumnName: description2Text
 		};
 
 
