@@ -117,6 +117,7 @@
 				repeatitems: false,
 				id: "ID"
 			},
+			cmTemplate: {sortable:false},
 			colNames: ['ID', 'ReportID', 'ReportType', 'TableID', 'ColumnID', 'Column Name', 'Sequence', 'Order',
 									'Break On Change', 'Page On Change', 'Value On Change', 'Suppress Repeated'],
 			colModel: [
@@ -148,8 +149,6 @@
 			viewrecords: true,
 			width: 'auto',
 			height: '400px',
-			sortname: 'Sequence',
-			sortorder: "asc",
 			scrollrows: true,
 			ondblClickRow: function (rowID) {
 				editSortSorder(rowID);

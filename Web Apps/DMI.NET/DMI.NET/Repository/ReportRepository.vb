@@ -728,17 +728,15 @@ Namespace Repository
 
 			Dim sColumns As String = ""
 			Dim sOrderString As String
-			Dim iSortSequence As Integer = 1
 
 			Dim iCount As Integer = 1
 			For Each objItem In objColumns
 
 				' this could be improve with some linq or whatever! No panic because the whole function could be tidied up
 				sOrderString = "0||"
-				For Each objSortItem In objSortColumns
+				For Each objSortItem In objSortColumns.OrderBy((Function(m) m.Sequence))
 					If objSortItem.ColumnID = objItem.ID Then
-						sOrderString = String.Format("{0}||{1}||", iSortSequence, IIf(objSortItem.Order = OrderType.Ascending, "Asc", "Desc").ToString)
-						iSortSequence += 1
+						sOrderString = String.Format("{0}||{1}||", objSortItem.Sequence, IIf(objSortItem.Order = OrderType.Ascending, "Asc", "Desc").ToString)
 					End If
 				Next
 
@@ -761,21 +759,18 @@ Namespace Repository
 			Dim iRepeated As Integer
 
 			Dim iCount As Integer
-			Dim iSortSequence As Integer
 			For Each objItem In objColumns
 
 				' this could be improve with some linq or whatever! No panic because the whole function could be tidied up
 				sOrderString = "0||0||0||0||0||0"
 
-				iSortSequence = 1
-				For Each objSortItem In objSortColumns
+				For Each objSortItem In objSortColumns.OrderBy((Function(m) m.Sequence))
 					If objSortItem.ColumnID = objItem.ID Then
 						sOrderString = String.Format("{0}||{1}||{2}||{3}||{4}||{5}" _
-							, iSortSequence, IIf(objSortItem.Order = OrderType.Ascending, "Asc", "Desc").ToString _
+							, objSortItem.Sequence, IIf(objSortItem.Order = OrderType.Ascending, "Asc", "Desc").ToString _
 							, If(objSortItem.BreakOnChange, 1, 0), If(objSortItem.PageOnChange, 1, 0) _
 							, If(objSortItem.ValueOnChange, 1, 0), If(objSortItem.SuppressRepeated, 1, 0))
 
-						iSortSequence += 1
 						Exit For
 					End If
 				Next
@@ -785,7 +780,7 @@ Namespace Repository
 					iRepeated = 1
 				Else
 					Dim objColumn = _objSessionInfo.Columns.Where(Function(m) m.ID = objItem.ID And m.TableID = baseTableID).FirstOrDefault
-					If Not objColumn Is Nothing Then
+					If objColumn IsNot Nothing Then
 						If objColumn.TableID = baseTableID Then
 							iRepeated = 0
 						End If
@@ -848,10 +843,8 @@ Namespace Repository
 		Public Function SortOrderAsString(objSortOrders As List(Of SortOrderViewModel)) As String
 
 			Dim sOrders As String = ""
-			Dim iCount As Integer = 1
-			For Each objItem In objSortOrders
-				iCount += 1
-				sOrders += String.Format("{0}||{1}||{2}||**", objItem.ID, iCount, IIf(objItem.Order = OrderType.Ascending, "Asc", "Desc").ToString)
+			For Each objItem In objSortOrders.OrderBy(Function(m) m.Sequence)
+				sOrders += String.Format("{0}||{1}||{2}||**", objItem.ID, objItem.Sequence, IIf(objItem.Order = OrderType.Ascending, "Asc", "Desc").ToString)
 			Next
 
 			Return sOrders
@@ -1041,13 +1034,10 @@ Namespace Repository
 		Private Sub PopulateSortOrder(outputModel As ReportBaseModel, data As DataTable)
 
 			Dim objSort As SortOrderViewModel
-			Dim iSequence As Integer = 0
 
 			Try
 
 				For Each objRow As DataRow In data.Rows
-
-					iSequence += 1
 					objSort = New SortOrderViewModel
 
 					objSort.ReportID = outputModel.ID
@@ -1059,7 +1049,7 @@ Namespace Repository
 
 					objSort.Name = objRow("name").ToString
 					objSort.Order = CType(IIf(objRow("order").ToString.ToUpper = "ASC", OrderType.Ascending, OrderType.Descending), OrderType)
-					objSort.Sequence = iSequence
+					objSort.Sequence = CInt(objRow("Sequence"))
 
 					If data.Columns.Contains("PageOnChange") Then
 						objSort.PageOnChange = CBool(objRow("PageOnChange"))

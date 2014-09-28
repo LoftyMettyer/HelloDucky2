@@ -1174,12 +1174,19 @@
 
 			if (direction === 'up' && index > 0) {
 				var rowAbove = grid.getRowData(ids[index - 1]);
+				rowAbove.Sequence = parseInt(rowAbove.Sequence) + 1;
+				grid.setRowData(rowAbove.ID, rowAbove);
+
+				rowData.Sequence = parseInt(rowData.Sequence) - 1;
 				grid.delRowData(rowData.ID);
 				grid.addRowData(rowData.ID, rowData, 'before', rowAbove.ID);
-
 			}
 			if (direction === 'down' && index < recordCount) {
 				var rowBelow = grid.getRowData(ids[index + 1]);
+				rowBelow.Sequence = parseInt(rowBelow.Sequence) - 1;
+				grid.setRowData(rowBelow.ID, rowBelow);
+
+				rowData.Sequence = parseInt(rowData.Sequence) + 1;
 				grid.delRowData(rowData.ID);
 				grid.addRowData(rowData.ID, rowData, 'after', rowBelow.ID);
 			}

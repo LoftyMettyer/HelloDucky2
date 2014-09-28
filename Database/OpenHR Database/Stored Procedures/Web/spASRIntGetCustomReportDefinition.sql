@@ -467,7 +467,8 @@ BEGIN
 	INNER JOIN ASRSysTables ON ASRSysColumns.tableID = ASRSysTables.tableID
 	WHERE cd.customReportID = @piReportID
 		AND cd.type = 'C'
-		AND cd.sortOrderSequence > 0;
+		AND cd.sortOrderSequence > 0
+	ORDER BY cd.SortOrderSequence;
 
 	-- Return the child table information
 	SELECT  C.ChildTable AS [TableID],

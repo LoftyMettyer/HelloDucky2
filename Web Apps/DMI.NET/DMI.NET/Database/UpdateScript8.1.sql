@@ -609,7 +609,6 @@ GO
 IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spASRIntGetCustomReportDefinition]') AND xtype in (N'P'))
 	DROP PROCEDURE [dbo].[spASRIntGetCustomReportDefinition];
 GO
-
 CREATE PROCEDURE [dbo].[spASRIntGetCustomReportDefinition] (
 	@piReportID 				integer, 
 	@psCurrentUser				varchar(255),
@@ -1079,7 +1078,8 @@ BEGIN
 	INNER JOIN ASRSysTables ON ASRSysColumns.tableID = ASRSysTables.tableID
 	WHERE cd.customReportID = @piReportID
 		AND cd.type = 'C'
-		AND cd.sortOrderSequence > 0;
+		AND cd.sortOrderSequence > 0
+	ORDER BY cd.SortOrderSequence;
 
 	-- Return the child table information
 	SELECT  C.ChildTable AS [TableID],
