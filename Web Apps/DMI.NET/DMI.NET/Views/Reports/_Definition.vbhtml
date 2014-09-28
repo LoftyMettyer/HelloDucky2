@@ -385,6 +385,8 @@
 			success: function (json) {
 
 				$('#SelectedTableID').empty()
+				$("#Parent1_Name").val("");
+				$("#Parent2_Name").val("");
 
 				$.each(json, function (i, table) {
 					var optionHtml = '<option value=' + table.id + '>' + table.Name + '</option>'
