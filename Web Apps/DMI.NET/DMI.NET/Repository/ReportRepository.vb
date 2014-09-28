@@ -922,7 +922,6 @@ Namespace Repository
 
 		End Function
 
-
 		Public Function GetColumnsForTable(id As Integer) As List(Of ReportColumnItem)
 
 			Dim objSessionInfo = CType(HttpContext.Current.Session("SessionContext"), SessionInfo)
@@ -933,6 +932,39 @@ Namespace Repository
 			Try
 
 				For Each objColumn In objSessionInfo.Columns.Where(Function(m) m.TableID = id And m.IsVisible).OrderBy(Function(n) n.Name)
+
+					objToAdd = New ReportColumnItem With {
+						.ID = objColumn.ID,
+						.Name = objColumn.Name,
+						.IsExpression = False,
+						.Heading = objColumn.Name,
+						.DataType = objColumn.DataType,
+						.Size = objColumn.Size,
+						.Decimals = objColumn.Decimals}
+
+					objReturnData.Add(objToAdd)
+
+				Next
+
+			Catch ex As Exception
+				Throw
+
+			End Try
+
+			Return objReturnData
+
+		End Function
+
+		Public Function GetAvailableCharacterLookupsForTable(id As Integer) As List(Of ReportColumnItem)
+
+			Dim objSessionInfo = CType(HttpContext.Current.Session("SessionContext"), SessionInfo)
+			Dim objReturnData As New List(Of ReportColumnItem)
+
+			Dim objToAdd As ReportColumnItem
+
+			Try
+
+				For Each objColumn In objSessionInfo.Columns.Where(Function(m) m.TableID = id AndAlso m.IsVisible AndAlso m.DataType = ColumnDataType.sqlVarChar).OrderBy(Function(n) n.Name)
 
 					objToAdd = New ReportColumnItem With {
 						.ID = objColumn.ID,

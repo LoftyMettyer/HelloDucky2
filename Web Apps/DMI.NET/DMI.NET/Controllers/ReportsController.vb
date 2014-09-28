@@ -252,6 +252,14 @@ Namespace Controllers
 		End Function
 
 		<HttpGet>
+		Function GetAvailableCharacterLookupsForTable(TableID As Integer) As JsonResult
+
+			Dim objResults = objReportRepository.GetAvailableCharacterLookupsForTable(TableID)
+			Return Json(objResults, JsonRequestBehavior.AllowGet)
+
+		End Function
+
+		<HttpGet>
 		Function GetAvailableItemsForTable(TableID As Integer, reportID As Integer, reportType As UtilityType, selectionType As String) As JsonResult
 
 			Dim objReport = objReportRepository.RetrieveParent(reportID, reportType)
@@ -301,7 +309,7 @@ Namespace Controllers
 			Else
 				objModel.ID = 1
 			End If
-																		 
+
 			objModel.IsAdd = True
 
 			Return PartialView("EditorTemplates\ReportChildTable", objModel)

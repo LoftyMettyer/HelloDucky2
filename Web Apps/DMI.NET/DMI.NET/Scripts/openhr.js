@@ -467,7 +467,7 @@
 	},
 
 
-	submitForm = function (form, targetWin, asyncFlag, jsonData, action) {
+	submitForm = function (form, targetWin, asyncFlag, jsonData, action, followOnFunctionName) {
 
 		var $form = $(form),
 			$frame = $form.closest("div[data-framesource]").first(),
@@ -558,6 +558,10 @@
 						$("input[type=submit], input[type=button], button").removeClass("ui-corner-all");
 						$("input[type=submit], input[type=button], button").addClass("ui-corner-tl ui-corner-br");						
 					});
+
+					if (typeof followOnFunctionName !== "undefined") {
+						followOnFunctionName();
+					}
 
 				},
 				error: function (req, status, errorObj) {

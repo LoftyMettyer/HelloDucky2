@@ -72,7 +72,7 @@ End Code
 		<table class="width100">
 			<tr>
 				<td class="width30">
-					@Html.RadioButton("EventEndType", CInt(CalendarEventEndType.None), Model.EventEndType = CalendarEventEndType.None, New With {.onclick = "changeEventEndType()"})
+					@Html.RadioButton("EventEndType", CInt(CalendarEventEndType.None), Model.EventEndType = CalendarEventEndType.None, New With {.onclick = "refreshCalendarEventDisplay()"})
 					None
 				</td>
 				<td class="width60"></td>
@@ -80,7 +80,7 @@ End Code
 			</tr>
 			<tr>
 				<td class="width30">
-					@Html.RadioButton("EventEndType", CInt(CalendarEventEndType.EndDate), Model.EventEndType = CalendarEventEndType.EndDate, New With {.onclick = "changeEventEndType()"})
+					@Html.RadioButton("EventEndType", CInt(CalendarEventEndType.EndDate), Model.EventEndType = CalendarEventEndType.EndDate, New With {.onclick = "refreshCalendarEventDisplay()"})
 					End Date
 				</td>
 				<td></td>
@@ -99,7 +99,7 @@ End Code
 
 			<tr>
 				<td>
-					@Html.RadioButton("EventEndType", CInt(CalendarEventEndType.Duration), Model.EventEndType = CalendarEventEndType.Duration, New With {.onclick = "changeEventEndType()"})
+					@Html.RadioButton("EventEndType", CInt(CalendarEventEndType.Duration), Model.EventEndType = CalendarEventEndType.Duration, New With {.onclick = "refreshCalendarEventDisplay()"})
 					Duration
 				</td>
 				<td></td>
@@ -120,7 +120,7 @@ End Code
 		<table class="width100">
 			<tr>
 				<td class="width30">
-					@Html.RadioButton("LegendType", CInt(CalendarLegendType.Character), Model.LegendType = CalendarLegendType.Character, New With {.onclick = "changeEventLegendType('Character')"})
+					@Html.RadioButton("LegendType", CInt(CalendarLegendType.Character), Model.LegendType = CalendarLegendType.Character, New With {.id = "legendType_character", .onclick = "changeEventLegendType('Character')"})
 					@Html.DisplayNameFor(Function(model) model.LegendCharacter)
 				</td>
 				<td class="width60">
@@ -130,7 +130,7 @@ End Code
 			</tr>
 			<tr>
 				<td>
-					@Html.RadioButton("LegendType", CInt(CalendarLegendType.LookupTable), Model.LegendType = CalendarLegendType.LookupTable, New With {.onclick = "changeEventLegendType('LookupTable')"})
+					@Html.RadioButton("LegendType", CInt(CalendarLegendType.LookupTable), Model.LegendType = CalendarLegendType.LookupTable, New With {.id = "legendType_lookuptable", .onclick = "changeEventLegendType('LookupTable')"})
 					Lookup Table
 				</td>
 				<td></td>
@@ -141,25 +141,34 @@ End Code
 				<td class="" colspan="2">
 					@Html.ColumnDropdownFor(Function(m) m.LegendEventColumnID, New ColumnFilter() _
 													 With {.TableID = Model.TableID, .DataType = ColumnDataType.sqlVarChar, .ColumnType = ColumnType.Lookup}, _
-													 New With {.disabled = (Model.EventEndType = CalendarEventEndType.EndDate), .onchange = "changeLegendEventColumnID()"})
+													 New With {.class = "eventLegendLookupLive", .disabled = (Model.EventEndType = CalendarEventEndType.EndDate), .onchange = "changeLegendEventColumnID()"})
+					<select disabled="disabled" class="eventLegendLookupDummy"></select>
 				</td>
 			</tr>
 			<tr>
 				<td class="padleft20">@Html.DisplayNameFor(Function(model) model.LegendLookupTableID)</td>
-				<td class="" colspan="2">@Html.LookupTableDropdown("LegendLookupTableID", "LegendLookupTableID", Model.LegendLookupTableID, "changeEventLookupTable();")</td>
+				<td class="" colspan="2">
+					@Html.LookupTableDropdown("LegendLookupTableID", "LegendLookupTableID", Model.LegendLookupTableID, "changeEventLookupTable();" _
+																	, New With {.class = "eventLegendLookupLive"})
+					<select disabled="disabled" class="eventLegendLookupDummy"></select>
+				</td>
 			</tr>
 			<tr>
 				<td class="padleft20">@Html.DisplayNameFor(Function(model) model.LegendLookupColumnID)</td>
 				<td class="" colspan="2">
-					@Html.ColumnDropdownFor(Function(m) m.LegendLookupColumnID, New ColumnFilter() _
-													 With {.TableID = Model.LegendLookupTableID, .DataType = ColumnDataType.sqlVarChar}, Nothing)
+					@Html.ColumnDropdownFor(Function(m) m.LegendLookupColumnID _
+																	, New ColumnFilter() With {.TableID = Model.LegendLookupTableID, .DataType = ColumnDataType.sqlVarChar} _
+																	, New With {.class = "eventLegendLookupLive"})
+					<select disabled="disabled" class="eventLegendLookupDummy"></select>
 				</td>
 			</tr>
 			<tr>
 				<td class="padleft20">@Html.DisplayNameFor(Function(model) model.LegendLookupCodeID)</td>
 				<td class="" colspan="2">
-					@Html.ColumnDropdownFor(Function(m) m.LegendLookupCodeID, New ColumnFilter() _
-													 With {.TableID = Model.LegendLookupTableID, .DataType = ColumnDataType.sqlVarChar}, Nothing)
+					@Html.ColumnDropdownFor(Function(m) m.LegendLookupCodeID _
+																	, New ColumnFilter() With {.TableID = Model.LegendLookupTableID, .DataType = ColumnDataType.sqlVarChar} _
+																	, New With {.class = "eventLegendLookupLive"})
+					<select disabled="disabled" class="eventLegendLookupDummy"></select>
 				</td>
 			</tr>
 		</table>
@@ -202,7 +211,8 @@ End Code
 <script type="text/javascript">
 
 	$(function () {
-		changeEventLegendType('@Model.LegendType')
+		refreshCalendarEventDisplay();
+
 		//some styling - alter with caution		
 		$("#frmPostCalendarEvent select").css('width', "100%");
 		$('#LegendCharacter').width('30');
@@ -221,7 +231,7 @@ End Code
 	function changeEventLookupTable() {
 
 		$.ajax({
-			url: 'Reports/GetAvailableColumnsForTable?TableID=' + $("#LegendLookupTableID").val(),
+			url: 'Reports/GetAvailableCharacterLookupsForTable?TableID=' + $("#LegendLookupTableID").val(),
 			datatype: 'json',
 			mtype: 'GET',
 			success: function (json) {
@@ -242,10 +252,20 @@ End Code
 	}
 
 	function changeLegendEventColumnID() {
+
 		var dropDown = $("#LegendEventColumnID")[0];
-		var iLookupTableID = dropDown.options[dropDown.selectedIndex].attributes["data-lookuptableid"].value;
-		$("#LegendLookupTableID").val(iLookupTableID);
-		changeEventLookupTable();
+
+		if (dropDown.length == 0) {
+			$("#legendType_character").prop('checked', 'checked');
+		}
+		else {
+			var iLookupTableID = dropDown.options[dropDown.selectedIndex].attributes["data-lookuptableid"].value;
+			$("#LegendLookupTableID").val(iLookupTableID);
+			changeEventLookupTable();
+		}
+
+		refreshCalendarEventDisplay();
+
 	}
 
 	function selectEventFilter() {
@@ -270,45 +290,42 @@ End Code
 
 	}
 
-	function changeEventEndType(endType) {
+	function refreshCalendarEventDisplay() {
 
-		var endType = $("input[name='EventEndType']:checked").val()
+		var legendType = $("input[name='LegendType']:checked").val();
+		var legendDropDown = $("#LegendEventColumnID")[0];
 
-		combo_disable("#EventEndDateID", true)
-		combo_disable("#EventEndSessionID", true)
-		combo_disable("#EventDurationID", true)
+		text_disable("#LegendCharacter", (legendType != "0"));
+		combo_disable("#LegendEventColumnID", (legendType != "1"));
+		combo_disable("#LegendLookupTableID", (legendType != "1"));
+		combo_disable("#LegendLookupColumnID", (legendType != "1"));
+		combo_disable("#LegendLookupCodeID", (legendType != "1"));
 
-		switch (endType) {
-			case "1":
-				combo_disable("#EventEndDateID", false)
-				combo_disable("#EventEndSessionID", false)
-				break;
-			case "2":
-				combo_disable("#EventDurationID", false)
-				break;
+		$("#legendType_lookuptable").attr('disabled', (legendDropDown.length == 0));
+		if (legendType == "0") {
+			$(".eventLegendLookupDummy").show();
+			$(".eventLegendLookupLive").hide();
 		}
+		else {
+			$(".eventLegendLookupLive").show();
+			$(".eventLegendLookupDummy").hide();
+		}
+
+
+		var endType = $("input[name='EventEndType']:checked").val();
+		combo_disable("#EventEndDateID", (endType != "1"));
+		combo_disable("#EventEndSessionID", (endType != "1"));
+		combo_disable("#EventDurationID", (endType != "2"));
+
 	}
 
 	function changeEventLegendType(type) {
 
-		combo_disable("#LegendEventColumnID", true);
-		combo_disable("#LegendLookupTableID", true);
-		combo_disable("#LegendLookupColumnID", true);
-		combo_disable("#LegendLookupCodeID", true);
-		text_disable("#LegendCharacter", true);
-
-		switch (type) {
-			case "Character":
-				text_disable("#LegendCharacter", false);
-				break;
-
-			case "LookupTable":
-				combo_disable("#LegendEventColumnID", false);
-				combo_disable("#LegendLookupTableID", false);
-				combo_disable("#LegendLookupColumnID", false);
-				combo_disable("#LegendLookupCodeID", false);
-				break;
+		if (type == "LookupTable") {
+			changeLegendEventColumnID();
 		}
+
+		refreshCalendarEventDisplay();
 
 	}
 
@@ -316,11 +333,13 @@ End Code
 
 		// Reload dropdowns from server
 		var frmSubmit = $("#frmPostCalendarEvent");
-		OpenHR.submitForm(frmSubmit, "divPopupReportDefinition", null, null, "Reports/ChangeEventBaseTable");
+		OpenHR.submitForm(frmSubmit, "divPopupReportDefinition", null, null, "Reports/ChangeEventBaseTable", changeLegendEventColumnID);
 
 	}
 
 	function postThisCalendarEvent() {
+
+		var legendTypeName;
 
 		// Validation
 		if ($("#EventName").val() == "") {
@@ -338,13 +357,18 @@ End Code
 			return false;
 		}
 
-
-
-		var legendLookupColumnID = $("#LegendLookupColumnID").val()
+		var legendLookupColumnID = $("#LegendLookupColumnID").val();
 		if (legendLookupColumnID == null) { legendLookupColumnID = 0 }
 
 		var legendLookupCodeID = $("#LegendLookupCodeID").val()
 		if (legendLookupCodeID == null) { legendLookupCodeID = 0 }
+
+		if ($("input[name='LegendType']:checked").val() == "1") {
+			legendTypeName = $("#LegendEventColumnID option:selected").text() + "." + $("#LegendLookupCodeID option:selected").text()
+		}
+		else {
+			legendTypeName = $("#LegendCharacter").val();
+		}
 
 		var datarow = {
 			ID: $("#CalendarEventID").val(),
@@ -363,7 +387,7 @@ End Code
 			EventEndDateID: $("#EventEndDateID").val(),
 			EventEndSessionID: $("#EventEndSessionID").val(),
 			EventDurationID: $("#EventDurationID").val(),
-			LegendType: $("#LegendType:checked").val(),
+			LegendType: $("input:radio[name=LegendType]:checked").val(),
 			LegendCharacter: $("#LegendCharacter").val(),
 			LegendLookupTableID: $("#LegendLookupTableID").val(),
 			LegendLookupColumnID: legendLookupColumnID,
@@ -376,10 +400,11 @@ End Code
 			EventEndDateName: $("#EventEndDateID option:selected").text(),
 			EventEndSessionName: $("#EventEndSessionID option:selected").text(),
 			EventDurationName: $("#EventDurationID option:selected").text(),
-			LegendTypeName: $("#LegendEventColumnID option:selected").text(),
+			LegendTypeName: legendTypeName,
 			EventDesc1ColumnName: $("#EventDesc1ColumnID option:selected").text(),
 			EventDesc2ColumnName: $("#EventDesc2ColumnID option:selected").text()
 		};
+
 
 		// Update client
 		var grid = $("#CalendarEvents")
@@ -397,18 +422,12 @@ End Code
 		$("#divPopupReportDefinition").dialog("close");
 		$("#divPopupReportDefinition").empty();
 
-
 	}
 
 	function closeThisCalendarEvent() {
 		$("#divPopupReportDefinition").dialog("close");
 		$("#divPopupReportDefinition").empty();
 	}
-
-	$(function () {
-		changeEventEndType();
-	});
-
 
 </script>
 

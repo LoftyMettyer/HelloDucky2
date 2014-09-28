@@ -70,13 +70,16 @@ Namespace Helpers
 		End Function
 
 		<Extension()> _
-		Public Function LookupTableDropdown(helper As HtmlHelper, name As String, id As String, bindValue As Integer, onChangeEvent As String) As MvcHtmlString
+		Public Function LookupTableDropdown(helper As HtmlHelper, name As String, id As String, bindValue As Integer, onChangeEvent As String, htmlAttributes As Object) As MvcHtmlString
+
+			Dim objAttributes = HtmlHelper.AnonymousObjectToHtmlAttributes(htmlAttributes)
 
 			Dim content As New StringBuilder
 			Dim builder As New TagBuilder("select")
 			builder.MergeAttribute("name", name)
 			builder.MergeAttribute("id", id)
 			builder.MergeAttribute("onchange", onChangeEvent)
+			builder.MergeAttributes(objAttributes)
 
 			For Each item In _objSessionInfo.Tables.Where(Function(m) m.TableType = TableTypes.tabLookup).OrderBy(Function(m) m.Name)
 				content.AppendFormat("<option value={0} {2}>{1}</option>", item.ID, item.Name, IIf(bindValue = item.ID, "selected", ""))
@@ -103,7 +106,7 @@ Namespace Helpers
 			builder.MergeAttributes(objAttributes)
 
 			If filter.AddNone Then
-				content.AppendFormat("<option value=0 data-datatype={1} data-decimals=0 {0}>None</option>", IIf(bindValue = 0, "selected", ""), CInt(ColumnDataType.sqlUnknown))
+				content.AppendFormat("<option value=0 data-datatype={1} data-decimals=0 data-lookuptableID=0 {0}>None</option>", IIf(bindValue = 0, "selected", ""), CInt(ColumnDataType.sqlUnknown))
 			End If
 
 			Dim iParent1 As Integer
