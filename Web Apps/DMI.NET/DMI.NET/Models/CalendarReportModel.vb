@@ -89,7 +89,10 @@ Namespace Models
 			Dim objItems As New Collection(Of ReportColumnItem)
 
 			For Each objColumn In SessionInfo.Columns.Where(Function(m) m.TableID = BaseTableID AndAlso m.IsVisible).OrderBy(Function(m) m.Name)
-				objItems.Add(New ReportColumnItem With {.ID = objColumn.ID, .Name = objColumn.Name})
+				Dim objForEachSafety = objColumn
+				If Not SortOrders.Any((Function(m) m.ColumnID = objForEachSafety.ID)) Then
+					objItems.Add(New ReportColumnItem With {.ID = objColumn.ID, .Name = objColumn.Name})
+				End If
 			Next
 
 			Return objItems.OrderBy(Function(m) m.Name)
