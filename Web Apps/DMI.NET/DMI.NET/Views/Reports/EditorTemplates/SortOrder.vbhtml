@@ -17,6 +17,7 @@ End Code
 		@Html.HiddenFor(Function(m) m.ReportType)
 		@Html.HiddenFor(Function(m) m.TableID, New With {.id = "SortOrderTableID"})
 		@Html.HiddenFor(Function(m) m.Sequence, New With {.id = "SortOrderSequence"})
+		@Html.HiddenFor(Function(m) m.IsNew)
 
 		@Html.LabelFor(Function(m) m.ColumnID)
 		@Html.ColumnDropdown("ColumnID", "SortOrderColumnID", Model.ColumnID, Model.AvailableColumns, "")
@@ -99,8 +100,12 @@ End Code
 		$('#SortOrders').jqGrid('delRowData', $("#SortOrderID").val())
 		var su = $("#SortOrders").jqGrid('addRowData', $("#SortOrderID").val(), datarow);
 		$('#SortOrders').setGridParam({ sortname: 'Sequence' }).trigger('reloadGrid');
+		$('#SortOrders').jqGrid("setSelection", $("#SortOrderColumnID").val());
 
-		$("#SortOrdersAvailable").val(parseInt($("#SortOrdersAvailable").val()) - 1);
+		if ($("#IsNew").val() == "True") {
+			$("#SortOrdersAvailable").val(parseInt($("#SortOrdersAvailable").val()) - 1);
+		}
+
 		button_disable($("#btnSortOrderAdd")[0], ($("#SortOrdersAvailable").val() == 0));
 
 		$("#divPopupReportDefinition").dialog("close");

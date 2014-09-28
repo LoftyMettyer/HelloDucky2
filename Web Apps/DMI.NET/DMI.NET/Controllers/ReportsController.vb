@@ -436,21 +436,18 @@ Namespace Controllers
 		<HttpPost>
 		Function ChangeBaseTable(ReportID As Integer, ReportType As UtilityType, BaseTableID As Integer) As JsonResult
 
-			Dim objDetail As New ReportColumnItem
-			Dim bChildTablesAvailable As Integer
-			objDetail.ReportID = ReportID
-			objDetail.ReportType = ReportType
+			Dim iChildTablesAvailable As Integer
 
-			Dim objReport = objReportRepository.RetrieveParent(objDetail)
+			Dim objReport = objReportRepository.RetrieveParent(New ReportColumnItem With {.ReportID = ReportID, .ReportType = ReportType})
+
 			objReport.BaseTableID = BaseTableID
-
 			objReport.SetBaseTable(BaseTableID)
 
 			If ReportType = UtilityType.utlCustomReport Then
-				bChildTablesAvailable = CType(objReport, CustomReportModel).ChildTablesAvailable
+				iChildTablesAvailable = CType(objReport, CustomReportModel).ChildTablesAvailable
 			End If
 
-			Dim result = New With {.childTablesAvailable = bChildTablesAvailable}
+			Dim result = New With {.childTablesAvailable = iChildTablesAvailable, .sortOrdersAvailable = objReport.SortOrdersAvailable}
 			Return Json(result, JsonRequestBehavior.AllowGet)
 
 		End Function
@@ -462,6 +459,7 @@ Namespace Controllers
 
 			objModel.ReportID = ReportID
 			objModel.ReportType = ReportType
+			objModel.IsNew = True
 
 			Dim objReport = objReportRepository.RetrieveParent(objModel)
 

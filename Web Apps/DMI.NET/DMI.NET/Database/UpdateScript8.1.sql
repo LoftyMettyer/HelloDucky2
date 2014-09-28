@@ -1471,7 +1471,6 @@ BEGIN
 	-- Orders
 	SELECT 
 		ColumnID AS Id, TableID, 
-		(SELECT ISNULL(ASRSysTables.TableName,'') FROM ASRSysTables WHERE ASRSysTables.TableID = ASRSysCalendarReportOrder.TableID) + '.' +
 		(SELECT ISNULL(ASRSysColumns.ColumnName,'') FROM ASRSysColumns WHERE ASRSysColumns.ColumnID = ASRSysCalendarReportOrder.ColumnID) AS [Name],
 		OrderSequence AS [Sequence],
 		OrderType AS [Order]

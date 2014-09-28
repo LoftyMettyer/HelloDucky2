@@ -95,9 +95,24 @@ Namespace Models
 				End If
 			Next
 
+			If Self.ColumnID > 0 Then
+				Dim objColumn = SessionInfo.Columns.FirstOrDefault(Function(m) m.ID = Self.ColumnID)
+				objItems.Add(New ReportColumnItem With {.ID = objColumn.ID, .Name = objColumn.Name})
+			End If
+
 			Return objItems.OrderBy(Function(m) m.Name)
 
 		End Function
+
+		Public Overrides ReadOnly Property SortOrdersAvailable As Integer
+			Get
+				If SessionInfo IsNot Nothing Then
+					Return SessionInfo.Columns.AsEnumerable.Count(Function(m) m.TableID = BaseTableID AndAlso m.IsVisible) - SortOrders.Count()
+				Else
+					Return 0
+				End If
+			End Get
+		End Property
 
 		Public Property Description3ViewAccess As String
 		Public Property StartCustomViewAccess As String

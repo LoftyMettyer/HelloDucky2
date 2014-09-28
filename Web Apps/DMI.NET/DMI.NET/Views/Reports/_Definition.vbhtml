@@ -471,6 +471,8 @@
 		}
 
 		if ($("#txtReportType").val() == '@UtilityType.utlCalendarReport') {
+			button_disable($("#btnSortOrderAdd")[0], false);
+			$("#SortOrdersAvailable").val(parseInt(json.sortOrdersAvailable));
 			$('#CalendarEvents').jqGrid('clearGridData');
 		}
 

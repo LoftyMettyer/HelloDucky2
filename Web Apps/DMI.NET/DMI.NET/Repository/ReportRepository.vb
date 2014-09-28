@@ -1045,8 +1045,6 @@ Namespace Repository
 
 			Try
 
-				outputModel.SortOrdersAvailable = 0
-
 				For Each objRow As DataRow In data.Rows
 
 					iSequence += 1
@@ -1081,8 +1079,6 @@ Namespace Repository
 
 					outputModel.SortOrders.Add(objSort)
 				Next
-
-				outputModel.SortOrdersAvailable = outputModel.Columns.Where(Function(m) m.IsExpression = False).Count() - iSequence
 
 			Catch ex As Exception
 				Throw

@@ -23,6 +23,7 @@ Namespace Code.Interfaces
 		Property Columns() As List(Of ReportColumnItem)
 
 		Property SortOrders As List(Of SortOrderViewModel)
+		ReadOnly Property SortOrdersAvailable As Integer
 
 		Property Dependencies() As ReportDependencies
 	End Interface

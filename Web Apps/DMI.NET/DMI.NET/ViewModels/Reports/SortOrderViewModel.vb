@@ -40,5 +40,7 @@ Namespace ViewModels.Reports
 
 		Public Property AvailableColumns As IEnumerable(Of ReportColumnItem)
 
+		Public Property IsNew As Boolean
+
 	End Class
 End Namespace

@@ -62,7 +62,16 @@ Namespace Models
 		Public Property Columns As New List(Of ReportColumnItem) Implements IReport.Columns
 		Public Overridable Property ColumnsAsString As String
 		Public Property SortOrders As New List(Of SortOrderViewModel) Implements IReport.SortOrders
-		Public Property SortOrdersAvailable As Integer
+
+		Public Overridable ReadOnly Property SortOrdersAvailable As Integer Implements IReport.SortOrdersAvailable
+			Get
+				If Columns IsNot Nothing Then
+					Return Columns.Where(Function(m) m.IsExpression = False).Count - SortOrders.Count
+				Else
+					Return 0
+				End If
+			End Get
+		End Property
 
 		<MinLength(3, ErrorMessage:="You must select at least one column to order the definition by.")> _
 		Public Overridable Property SortOrdersString As String
