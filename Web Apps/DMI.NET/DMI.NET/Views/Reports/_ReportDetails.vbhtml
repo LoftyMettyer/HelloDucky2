@@ -241,7 +241,7 @@
 		var tableID = $("#BaseTableID option:selected").val();
 		var currentID = $("#EndCustomId").val();
 
-		OpenHR.modalExpressionSelect("CALC", tableID, currentID, function (id, name, access) {
+		OpenHR.modalExpressionSelect("CALC", 0, currentID, function (id, name, access) {
 			if (access == "HD" && $("#owner") != '@Session("Username")') {
 				$("#EndCustomId").val(0);
 				$("#txtCustomEnd").val('None');
