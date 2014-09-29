@@ -947,12 +947,12 @@
 				<li class="ui-corner-top"><a id="toolbarOrgChart" href="#" rel="Find">Organisation Chart</a>
 					<ul>
 						<li><span>Output</span>
-							<div>
+							<div class="button">
 								<a class="mnuBtnPrintOrgChart" href="#" rel="paste">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/printer64HOVER.png")%>" alt="" /><span>
 									<i class="icon-print"></i>
 									<h6>Print</h6></span>
-								</a>
+								</a>								
 								<div style="display: none;">
 									<ul>
 										<li class="menutitle">Print options</li>
@@ -961,6 +961,12 @@
 										<li><a class="mnuBtnPrintOrgChartSelected" href="#">Print selected nodes</a></li>
 									</ul>
 								</div>
+							</div>
+							<div class="button notwinkit" style="display: none;">
+								<a class="mnuBtnSelectOrgChart" href="#" rel="table" title="Select nodes to print">									
+									<i class="icon-check"></i>
+									<h6>Select nodes to print</h6>
+								</a>
 							</div>
 						</li>
 						<li><span>Interact</span>

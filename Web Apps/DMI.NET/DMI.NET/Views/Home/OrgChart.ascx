@@ -123,7 +123,10 @@
 
 	function printOrgChart(fPrintAll) {
 		
-		
+		if (window.currentLayout != "winkit") {
+			//calculate fPrintAll flag based on selection
+			fPrintAll = ($('.printSelect').css('display') == "none");
+		}
 
 		var divToPrint;
 		var untickedItemsCount = $('.printSelect:not(:checked)').length;

@@ -2161,6 +2161,11 @@ function menu_refreshMenu() {
 									if (sCurrentWorkPage == "ORGCHART") {
 										$("#toolbarOrgChart").parent().show();
 										$("#toolbarOrgChart").click();
+
+										if (window.currentLayout != "winkit") {
+											//show the additional 'select nodes' button
+											$('#toolbarOrgChart').parent().find('.notwinkit').show();
+										}
 									}
 								}
 						}
