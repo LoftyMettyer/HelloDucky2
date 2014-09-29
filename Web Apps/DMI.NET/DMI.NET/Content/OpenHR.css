@@ -1218,6 +1218,12 @@ div.tablerow>input:not([type="radio"]), .tablerow>textarea, .tablerow>div.ui-jqg
 	height: 90px;
 }
 
+div.displaytable {
+    display:table;
+    border-collapse:collapse;
+		width: 100%;
+}
+
 
 	/* 3 column layout, fixed center column, two flexible side columns */
 .coldefinition>div:first-child, .coldefinition>div:last-child {

@@ -465,14 +465,13 @@ select.readonly {
 	/*width: 35%;*/
 }
 
-/*#columncalculations {
-	margin-top: 10px;
-}
-
-	#columncalculations legend {
-		width: 100%;
-		/*text-align: center;*/
-	}*/
+/* Calendar Event Details*/
+#LegendCharacter {width: 30px}
+#frmPostCalendarEvent select {width: 100%;}
+#frmPostCalendarEvent #EventName {width: 99%;}
+#frmPostCalendarEvent #txtEventFilter{width: 85%;} 
+#frmPostCalendarEvent fieldset {border:0}
+#frmPostCalendarEvent .tablecell {padding-bottom: 5px}
 
 #report_definition_tab_columns #columnbuttons input[type=button] {
 	width: 120px;
@@ -757,6 +756,10 @@ select.readonly {
 
 .padleft20 {
 	padding-left: 20px;
+}
+
+.padleft45 {
+	padding-left: 45px;
 }
 
 .margebot10 {

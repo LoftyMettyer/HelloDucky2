@@ -20,184 +20,188 @@ End Code
 <div class="width50 floatleft ">
 	<fieldset class="">
 		<legend class="fontsmalltitle">Event :</legend>
-		<table class="width100">
-			<tr>
-				<td class="width30">
-					@Html.DisplayNameFor(Function(model) model.Name)
-				</td>
+		<div class="displaytable">
+			<div class="tablerow">
+				<div class="tablecell width35 padleft20">
+					<label>
+						@Html.DisplayNameFor(Function(model) model.Name)
+					</label>
+				</div>
 
-				<td class="width70" colspan="2">
-					@Html.TextBoxFor(Function(model) model.Name, New With {.id = "EventName", .class = "width99"})
-				</td>
-			</tr>
+				<div class="tablecell">
+					@Html.TextBoxFor(Function(model) model.Name, New With {.id = "EventName", .class = ""})
+				</div>
+			</div>
 
-			<tr>
-				<td class="width30">
+			<div class="tablerow">
+				<div class="tablecell width35 padleft20">
 					@Html.LabelFor(Function(model) model.TableID)
-				</td>
+				</div>
 
-				<td class="width70" colspan="2">
+				<div class="tablecell">
 					@Html.TableDropdown("TableID", "EventTableID", Model.TableID, Model.AvailableTables, "changeEventTable();")
-				</td>
-			</tr>
-			<tr>
-				<td class="width30">
-					Filter :
+				</div>
+			</div>
+			<div class="tablerow">
+				<div class="tablecell width35 padleft20">
+					<label class="">Filter :</label>
 					<input type="hidden" id="txtEventFilterID" name="FilterID" value="@Model.FilterID" />
-				</td>
-				<td class="">
-					@Html.TextBoxFor(Function(m) m.FilterName, New With {.id = "txtEventFilter", .readonly = "true", .style = "width:86%"})
+				</div>
+				<div class="tablecell">
+					@Html.TextBoxFor(Function(m) m.FilterName, New With {.id = "txtEventFilter", .readonly = "true"})
 					@Html.EllipseButton("cmdBasePicklist", "selectEventFilter()", True)
-				</td>
-			</tr>
-		</table>
+				</div>
+			</div>
+		</div>
 	</fieldset>
 
-	<fieldset>
+	<fieldset class="">
 		<legend class="fontsmalltitle">Event Start :</legend>
-		<table class="width100">
-			<tr>
-				<td class="width30">@Html.LabelFor(Function(model) model.EventStartDateID)</td>
-				<td class="" colspan="2">@Html.ColumnDropdownFor(Function(m) m.EventStartDateID, New ColumnFilter() With {.TableID = Model.TableID, .DataType = ColumnDataType.sqlDate}, Nothing)</td>
-			</tr>
-			<tr>
-				<td class="width30">@Html.LabelFor(Function(model) model.EventStartSessionID)</td>
-				<td class="" colspan="2">@Html.ColumnDropdownFor(Function(m) m.EventStartSessionID, New ColumnFilter() With {.TableID = Model.TableID, .DataType = ColumnDataType.sqlVarChar, .AddNone = True, .Size = 2}, Nothing)</td>
-			</tr>
-		</table>
+		<div class="displaytable">
+			<div class="tablerow">
+				<div class="tablecell width35 padleft20">
+					@Html.LabelFor(Function(model) model.EventStartDateID)
+				</div>
+				<div class="tablecell ">
+					@Html.ColumnDropdownFor(Function(m) m.EventStartDateID, New ColumnFilter() With {.TableID = Model.TableID, .DataType = ColumnDataType.sqlDate}, Nothing)
+				</div>
+			</div>
+			<div class="tablerow">
+				<div class="tablecell width35 padleft20">
+					@Html.LabelFor(Function(model) model.EventStartSessionID)
+				</div>
+				<div class="tablecell">
+					@Html.ColumnDropdownFor(Function(m) m.EventStartSessionID, New ColumnFilter() With {.TableID = Model.TableID, .DataType = ColumnDataType.sqlVarChar, .AddNone = True, .Size = 2}, Nothing)
+				</div>
+			</div>
+		</div>
 	</fieldset>
 
-	<fieldset>
+	<fieldset class="">
 		<legend class="fontsmalltitle">Event End :</legend>
-		<table class="width100">
-			<tr>
-				<td class="width30">
+		<div class="displaytable">
+			<div class="tablerow">
+				<div class="tablecell width35 padleft20">
 					@Html.RadioButton("EventEndType", CInt(CalendarEventEndType.None), Model.EventEndType = CalendarEventEndType.None, New With {.onclick = "changeEventEndType()"})
 					None
-				</td>
-				<td class="width60"></td>
-				<td></td>
-			</tr>
-			<tr>
-				<td class="width30">
+				</div>
+				<div class="tablecell"></div>
+			</div>
+
+			<div class="tablerow">
+				<div class="tablecell width35 padleft20">
 					@Html.RadioButton("EventEndType", CInt(CalendarEventEndType.EndDate), Model.EventEndType = CalendarEventEndType.EndDate, New With {.onclick = "changeEventEndType()"})
 					End Date
-				</td>
-				<td></td>
-				<td></td>
-			</tr>
+				</div>
+			</div>
 
-			<tr>
-				<td class="width30 padleft20">@Html.LabelFor(Function(model) model.EventEndDateID)</td>
-				<td class="" colspan="2">@Html.ColumnDropdownFor(Function(m) m.EventEndDateID, New ColumnFilter() With {.TableID = Model.TableID, .DataType = ColumnDataType.sqlDate, .AddNone = True}, New With {.disabled = (Model.EventEndType = CalendarEventEndType.EndDate)})</td>
-			</tr>
+			<div class="tablerow">								
+					<div class="tablecell width35 padleft45">@Html.LabelFor(Function(model) model.EventEndDateID)</div>
+					<div class="tablecell">@Html.ColumnDropdownFor(Function(m) m.EventEndDateID, New ColumnFilter() With {.TableID = Model.TableID, .DataType = ColumnDataType.sqlDate, .AddNone = True}, New With {.disabled = (Model.EventEndType = CalendarEventEndType.EndDate)})</div>				
+			</div>
 
-			<tr>
-				<td class="width30 padleft20">@Html.LabelFor(Function(model) model.EventEndSessionID)</td>
-				<td class="" colspan="2">@Html.ColumnDropdownFor(Function(m) m.EventEndSessionID, New ColumnFilter() With {.TableID = Model.TableID, .DataType = ColumnDataType.sqlVarChar, .AddNone = True, .Size = 2}, New With {.disabled = (Model.EventEndType = CalendarEventEndType.EndDate)})</td>
-			</tr>
+			<div class="tablerow">
+				<div class="tablecell width35 padleft45">@Html.LabelFor(Function(model) model.EventEndSessionID)</div>
+				<div class="tablecell">@Html.ColumnDropdownFor(Function(m) m.EventEndSessionID, New ColumnFilter() With {.TableID = Model.TableID, .DataType = ColumnDataType.sqlVarChar, .AddNone = True, .Size = 2}, New With {.disabled = (Model.EventEndType = CalendarEventEndType.EndDate)})</div>
+			</div>
 
-			<tr>
-				<td>
+			<div class="tablerow">
+				<div class="tablecell width35 padleft20">
 					@Html.RadioButton("EventEndType", CInt(CalendarEventEndType.Duration), Model.EventEndType = CalendarEventEndType.Duration, New With {.onclick = "changeEventEndType()"})
 					Duration
-				</td>
-				<td></td>
-				<td></td>
-			</tr>
+				</div>
+			</div>
 
-			<tr>
-				<td class="width30 padleft20">Length :</td>
-				<td class="" colspan="2">
-				@Html.ColumnDropdownFor(Function(m) m.EventDurationID, New ColumnFilter() With {.TableID = Model.TableID, .IsNumeric = True, .AddNone = True}, New With {.disabled = (Model.EventEndType = CalendarEventEndType.EndDate)})
-				</td>
-			</tr>
-		</table>
-
+			<div class="tablerow">
+				<div class="tablecell width35 padleft45">Length :</div>
+				<div class="tablecell">@Html.ColumnDropdownFor(Function(m) m.EventDurationID, New ColumnFilter() With {.TableID = Model.TableID, .IsNumeric = True, .AddNone = True}, New With {.disabled = (Model.EventEndType = CalendarEventEndType.EndDate)})</div>
+			</div>
+		</div>
 	</fieldset>
 </div>
+
 <div class="width50 floatleft ">
 	<fieldset class="">
 		<legend class="fontsmalltitle">Key :</legend>
-		<table class="width100">
-			<tr>
-				<td class="width30">
+		<div class="displaytable">
+			<div class="tablerow">
+				<div class="tablecell width35 padleft20">
 					@Html.RadioButton("LegendType", CInt(CalendarLegendType.Character), Model.LegendType = CalendarLegendType.Character, New With {.id = "legendType_character", .onclick = "changeEventLegendType('Character')"})
 					@Html.DisplayNameFor(Function(model) model.LegendCharacter)
-				</td>
-				<td class="width60">
+				</div>
+				<div class="tablecell">
 					@Html.TextBoxFor(Function(model) model.LegendCharacter, New With {.maxlength = 2})
-				</td>
-				<td></td>
-			</tr>
-			<tr>
-				<td>
+				</div>
+			</div>
+
+			<div class="tablerow">
+				<div class="tablecell width35 padleft20">
 					@Html.RadioButton("LegendType", CInt(CalendarLegendType.LookupTable), Model.LegendType = CalendarLegendType.LookupTable, New With {.id = "legendType_lookuptable", .onclick = "changeEventLegendType('LookupTable')"})
 					Lookup Table
-				</td>
-				<td></td>
-				<td></td>
-			</tr>
-			<tr>
-				<td class="padleft20">@Html.DisplayNameFor(Function(model) model.LegendEventColumnID)</td>
-				<td class="" colspan="2">
+				</div>
+			</div>
+
+			<div class="tablerow">
+				<div class="tablecell width35 padleft45">@Html.DisplayNameFor(Function(model) model.LegendEventColumnID)</div>
+				<div class="tablecell">
 					@Html.ColumnDropdownFor(Function(m) m.LegendEventColumnID, New ColumnFilter() _
 													 With {.TableID = Model.TableID, .DataType = ColumnDataType.sqlVarChar, .ColumnType = ColumnType.Lookup}, _
 													 New With {.class = "eventLegendLookupLive", .disabled = (Model.EventEndType = CalendarEventEndType.EndDate), .onchange = "changeLegendEventColumnID()"})
 					<select disabled class="eventLegendLookupDummy"><option>None</option></select>
-				</td>
-			</tr>
-			<tr>
-				<td class="padleft20">@Html.DisplayNameFor(Function(model) model.LegendLookupTableID)</td>
-				<td class="" colspan="2">
+				</div>
+			</div>
+			<div class="tablerow">
+				<div class="tablecell width35 padleft45">@Html.DisplayNameFor(Function(model) model.LegendLookupTableID)</div>
+				<div class="tablecell">
 					@Html.LookupTableDropdown("LegendLookupTableID", "LegendLookupTableID", Model.LegendLookupTableID, "changeEventLookupTable();" _
 																	, New With {.class = "eventLegendLookupLive"})
 					<select disabled class="eventLegendLookupDummy"><option>None</option></select>
-				</td>
-			</tr>
-			<tr>
-				<td class="padleft20">@Html.DisplayNameFor(Function(model) model.LegendLookupColumnID)</td>
-				<td class="" colspan="2">
+				</div>
+			</div>
+			<div class="tablerow">
+				<div class="tablecell width35 padleft45">@Html.DisplayNameFor(Function(model) model.LegendLookupColumnID)</div>
+				<div class="tablecell">
 					@Html.ColumnDropdownFor(Function(m) m.LegendLookupColumnID _
 																	, New ColumnFilter() With {.TableID = Model.LegendLookupTableID, .DataType = ColumnDataType.sqlVarChar} _
 																	, New With {.class = "eventLegendLookupLive"})
 					<select disabled class="eventLegendLookupDummy"><option>None</option></select>
-				</td>
-			</tr>
-			<tr>
-				<td class="padleft20">@Html.DisplayNameFor(Function(model) model.LegendLookupCodeID)</td>
-				<td class="" colspan="2">
+				</div>
+			</div>
+			<div class="tablerow">
+				<div class="tablecell width35 padleft45">@Html.DisplayNameFor(Function(model) model.LegendLookupCodeID)</div>
+				<div class="tablecell">
 					@Html.ColumnDropdownFor(Function(m) m.LegendLookupCodeID _
 																	, New ColumnFilter() With {.TableID = Model.LegendLookupTableID, .DataType = ColumnDataType.sqlVarChar} _
 																	, New With {.class = "eventLegendLookupLive"})
 					<select disabled class="eventLegendLookupDummy"><option>None</option></select>
-				</td>
-			</tr>
-		</table>
+				</div>
+			</div>
+		</div>
 	</fieldset>
 
 	<fieldset class="">
 		<legend class="fontsmalltitle">Event Description :</legend>
-		<table class="width100">
-			<tr>
-				<td class="width30">@Html.DisplayNameFor(Function(model) model.EventDesc1ColumnID)</td>
-				<td class="" colspan="2">
+		<div class="displaytable">
+			<div class="tablerow">
+				<div class="tablecell width35 padleft20">
+					@Html.DisplayNameFor(Function(model) model.EventDesc1ColumnID)
+				</div>
+				<div class="tablecell">
 					@Html.ColumnDropdownFor(Function(m) m.EventDesc1ColumnID, New ColumnFilter() _
 													 With {.TableID = Model.TableID, .DataType = ColumnDataType.sqlVarChar, .AddNone = True, .ShowFullName = True, .IncludeParents = True}, Nothing)
-				</td>
+				</div>
 
-			</tr>
-			<tr>
-				<td>
+			</div>
+			<div class="tablerow">
+				<div class="tablecell width35 padleft20">
 					@Html.DisplayNameFor(Function(model) model.EventDesc2ColumnID)
-				</td>
-				<td class="" colspan="2">
+				</div>
+				<div class="tablecell">
 					@Html.ColumnDropdownFor(Function(m) m.EventDesc2ColumnID, New ColumnFilter() _
 													 With {.TableID = Model.TableID, .DataType = ColumnDataType.sqlVarChar, .AddNone = True, .ShowFullName = True, .IncludeParents = True}, Nothing)
-				</td>
-
-			</tr>
-		</table>
+				</div>
+			</div>
+		</div>
 	</fieldset>
 </div>
 
@@ -215,13 +219,13 @@ End Code
 	$(function () {
 		refreshCalendarEventDisplay();
 
-		//some styling - alter with caution		
-		$("#frmPostCalendarEvent select").css('width', "100%");
-		$('#LegendCharacter').width('30');
-		$('fieldset').css('border', '0');
-		$('table').attr('border', '0');
-		$('#frmPostCalendarEvent table').addClass('padleft20');
-		$('fieldset').css('padding-right', '0px');
+		//some styling - alter with caution
+		//$('#LegendCharacter').width('30');
+		//$('#frmPostCalendarEvent fieldset').css('border', '0');
+		//$('#frmPostCalendarEvent select, #EventName ').css('width', '100%');
+		//$('#frmPostCalendarEvent #EventName ').css('width', '99%');
+		//$('#frmPostCalendarEvent #txtEventFilter ').css('width', '86%');
+		//$('#frmPostCalendarEvent .tablecell').css('padding-bottom', '5px');		
 
 		if (isDefinitionReadOnly()) {
 			$("#frmPostCalendarEvent input").prop('disabled', "disabled");
@@ -367,7 +371,7 @@ End Code
 			return false;
 		}
 
-		if ( $("#EventStartDateID")[0].length == 0) {
+		if ($("#EventStartDateID")[0].length == 0) {
 			OpenHR.modalMessage("A valid start date column has not been selected.");
 			return false;
 		}
@@ -427,9 +431,9 @@ End Code
 
 		var datarow = {
 			ID: $("#CalendarEventID").val(),
-			EventKey: 			'@Model.EventKey',
-			ReportID: 			'@Model.ReportID',
-			ReportType: 		'@CInt(Model.ReportType)',
+			EventKey: '@Model.EventKey',
+			ReportID: '@Model.ReportID',
+			ReportType: '@CInt(Model.ReportType)',
 			Name: $("#EventName").val(),
 			TableID: $("#EventTableID").val(),
 			TableName: $("#EventTableID option:selected").text(),
@@ -465,7 +469,7 @@ End Code
 		var grid = $("#CalendarEvents")
 		grid.jqGrid('delRowData', '@Model.EventKey')
 		grid.jqGrid('addRowData', '@Model.EventKey', datarow);
-		grid.setGridParam({ sortname: 'EventKey', sortorder: "Asc"}).trigger('reloadGrid');
+		grid.setGridParam({ sortname: 'EventKey', sortorder: "Asc" }).trigger('reloadGrid');
 		grid.jqGrid("setSelection", '@Model.EventKey');
 
 
