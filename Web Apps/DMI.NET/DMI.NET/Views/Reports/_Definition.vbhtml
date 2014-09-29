@@ -328,7 +328,8 @@
 		var tableName = $("#BaseTableID option:selected").text();
 
 		OpenHR.modalExpressionSelect("FILTER", tableID, currentID, function (id, name, access) {
-			if (access == "HD" && $("#owner") != '@Session("Username")') {
+
+			if (access == "HD" && $("#Owner").val() != '@Session("Username")') {
 				$("#txtBaseFilterID").val(0);
 				$("#txtBaseFilter").val('None');
 				OpenHR.modalMessage("The " + tableName + " table filter will be removed from this definition as it is hidden and you do not have permission to make this definition hidden.");
@@ -348,7 +349,7 @@
 		var tableName = $("#BaseTableID option:selected").text();
 
 		OpenHR.modalExpressionSelect("PICKLIST", tableID, currentID, function (id, name, access) {
-			if (access == "HD" && $("#owner") != '@Session("Username")') {
+			if (access == "HD" && $("#Owner").val() != '@Session("Username")') {
 				$("#txtBasePicklistID").val(0);
 				$("#txtBasePicklist").val('None');
 				OpenHR.modalMessage("The " + tableName + " table picklist will be removed from this definition as it is hidden and you do not have permission to make this definition hidden.");

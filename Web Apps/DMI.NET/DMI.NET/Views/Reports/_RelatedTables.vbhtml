@@ -150,7 +150,7 @@
 		var tableName = $("#Parent1_Name").val();
 
 		OpenHR.modalExpressionSelect("PICKLIST", tableID, currentID, function (id, name, access) {
-			if (access == "HD" && $("#owner") != '@Session("Username")') {
+			if (access == "HD" && $("#Owner").val() != '@Session("Username")') {
 				$("#txtParent1PicklistID").val(0);
 				$("#txtParent1Picklist").val('None');
 				OpenHR.modalMessage("The " + tableName + " table picklist will be removed from this definition as it is hidden and you do not have permission to make this definition hidden.");
@@ -171,7 +171,7 @@
 		var tableName = $("#Parent2_Name").val();
 
 		OpenHR.modalExpressionSelect("PICKLIST", tableID, currentID, function (id, name, access) {
-			if (access == "HD" && $("#owner") != '@Session("Username")') {
+			if (access == "HD" && $("#Owner").val() != '@Session("Username")') {
 				$("#txtParent2PicklistID").val(0);
 				$("#txtParent2Picklist").val('None');
 				OpenHR.modalMessage("The " + tableName + " table picklist will be removed from this definition as it is hidden and you do not have permission to make this definition hidden.");
@@ -192,7 +192,7 @@
 		var tableName = $("#Parent1_Name").val();
 
 		OpenHR.modalExpressionSelect("FILTER", tableID, currentID, function (id, name, access) {
-			if (access == "HD" && $("#owner") != '@Session("Username")') {
+			if (access == "HD" && $("#Owner").val() != '@Session("Username")') {
 				$("#txtParent1FilterID").val(0);
 				$("#txtParent1Filter").val('None');
 				OpenHR.modalMessage("The " + tableName + " table filter will be removed from this definition as it is hidden and you do not have permission to make this definition hidden.");
@@ -213,7 +213,7 @@
 		var tableName = $("#Parent2_Name").val();
 
 		OpenHR.modalExpressionSelect("FILTER", tableID, currentID, function (id, name, access) {
-			if (access == "HD" && $("#owner") != '@Session("Username")') {
+			if (access == "HD" && $("#Owner").val() != '@Session("Username")') {
 				$("#txtParent2FilterID").val(0);
 				$("#txtParent2Filter").val('None');
 				OpenHR.modalMessage("The " + tableName + " table filter will be removed from this definition as it is hidden and you do not have permission to make this definition hidden.");

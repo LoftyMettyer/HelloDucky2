@@ -223,7 +223,7 @@
 		var currentID = $("#StartCustomId").val();
 
 		OpenHR.modalExpressionSelect("CALC", 0, currentID, function (id, name, access) {
-			if (access == "HD" && $("#owner") != '@Session("Username")') {
+			if (access == "HD" && $("#Owner").val() != '@Session("Username")') {
 				$("#StartCustomId").val(0);
 				$("#txtCustomStart").val('None');
 				OpenHR.modalMessage("The report start date calculation will be removed from this definition as it is hidden and you do not have permission to make this definition hidden.");
@@ -242,7 +242,7 @@
 		var currentID = $("#EndCustomId").val();
 
 		OpenHR.modalExpressionSelect("CALC", 0, currentID, function (id, name, access) {
-			if (access == "HD" && $("#owner") != '@Session("Username")') {
+			if (access == "HD" && $("#Owner").val() != '@Session("Username")') {
 				$("#EndCustomId").val(0);
 				$("#txtCustomEnd").val('None');
 				OpenHR.modalMessage("The report end date calculation will be removed from this definition as it is hidden and you do not have permission to make this definition hidden.");

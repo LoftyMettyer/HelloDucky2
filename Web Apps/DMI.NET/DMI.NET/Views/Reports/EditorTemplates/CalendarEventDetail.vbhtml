@@ -279,7 +279,7 @@ End Code
 		var currentID = $("#txtEventFilterID").val();
 
 		OpenHR.modalExpressionSelect("FILTER", tableID, currentID, function (id, name, access) {
-			if (access == "HD" && $("#owner") != '@Session("Username")') {
+			if (access == "HD" && $("#Owner").val() != '@Session("Username")') {
 				$("#txtEventFilterID").val(0);
 				$("#txtEventFilter").val('None');
 				$("#FilterViewAccess").val('');
