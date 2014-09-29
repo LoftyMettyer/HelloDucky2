@@ -12,7 +12,6 @@ Imports DMI.NET.ViewModels.Reports
 Namespace Models
 
 	Public Class CalendarReportModel
-
 		Inherits ReportBaseModel
 
 		Public Overrides ReadOnly Property ReportType As UtilityType
@@ -117,6 +116,13 @@ Namespace Models
 		Public Property Description3ViewAccess As String
 		Public Property StartCustomViewAccess As String
 		Public Property EndCustomViewAccess As String
+
+		<RegularExpression("True", ErrorMessage:="You must select at least one base description column or calculation for the report.")>
+	 Public ReadOnly Property IsDescriptionOK As Boolean
+			Get
+				Return (Description1ID > 0 OrElse Description2ID > 0 OrElse Description3ID > 0)
+			End Get
+		End Property
 
 	End Class
 End Namespace
