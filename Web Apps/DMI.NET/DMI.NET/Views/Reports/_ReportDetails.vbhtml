@@ -150,6 +150,7 @@
 				$("#StartOffsetPeriod").val(0);
 				$("#StartCustomId").val(0);
 				$("#txtCustomStart").val("");
+				setViewAccess('CALC', $("#StartCustomViewAccess"), 'RW', '');
 				break;
 
 			case "Current":
@@ -159,6 +160,7 @@
 				$("#StartOffsetPeriod").val(0);
 				$("#StartCustomId").val(0);
 				$("#txtCustomStart").val("");
+				setViewAccess('CALC', $("#StartCustomViewAccess"), 'RW', '');
 				break;
 
 			case "Offset":
@@ -167,6 +169,7 @@
 				$("#StartOffsetPeriod").removeAttr("disabled");
 				$("#StartCustomId").val(0);
 				$("#txtCustomStart").val("");
+				setViewAccess('CALC', $("#StartCustomViewAccess"), 'RW', '');
 				break;
 
 			default:
@@ -177,7 +180,6 @@
 
 		}
 
-		setViewAccess('CALC', $("#StartCustomViewAccess"), 'RW', '');
 
 	}
 
@@ -196,6 +198,7 @@
 				$("#EndOffsetPeriod").val(0);
 				$("#EndCustomId").val(0);
 				$("#txtCustomEnd").val("");
+				setViewAccess('CALC', $("#EndCustomViewAccess"), 'RW', '');
 				break;
 
 			case "Current":
@@ -205,6 +208,7 @@
 				$("#EndOffsetPeriod").val(0);
 				$("#EndCustomId").val(0);
 				$("#txtCustomEnd").val("");
+				setViewAccess('CALC', $("#EndCustomViewAccess"), 'RW', '');
 				break;
 
 			case "Offset":
@@ -213,6 +217,7 @@
 				$("#EndOffsetPeriod").removeAttr("disabled");
 				$("#EndCustomId").val(0);
 				$("#txtCustomEnd").val("");
+				setViewAccess('CALC', $("#EndCustomViewAccess"), 'RW', '');
 				break;
 
 			default:
@@ -223,7 +228,6 @@
 
 		}
 
-		setViewAccess('CALC', $("#EndCustomViewAccess"), 'RW', '');
 
 	}
 
