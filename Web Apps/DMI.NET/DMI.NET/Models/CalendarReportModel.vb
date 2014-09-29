@@ -162,7 +162,7 @@ Namespace Models
 		End Property
 
 		<RegularExpression("True", ErrorMessage:="The end offset period must be the same as the start date offset period.")>
-	 Public ReadOnly Property IsOffsetPeriodOK As Boolean
+	 Public ReadOnly Property IsOffsetPeriodOK1 As Boolean
 			Get
 				If (EndType = CalendarDataType.Offset AndAlso StartType = CalendarDataType.Offset) Then
 					Return StartOffsetPeriod = EndOffsetPeriod
@@ -171,6 +171,18 @@ Namespace Models
 				End If
 			End Get
 		End Property
+
+		<RegularExpression("True", ErrorMessage:="The start offset period must be the before as the end date offset period.")>
+	 Public ReadOnly Property IsOffsetPeriodOK2 As Boolean
+			Get
+				If (EndType = CalendarDataType.Offset AndAlso StartType = CalendarDataType.Offset) Then
+					Return StartOffset <= EndOffset
+				Else
+					Return True
+				End If
+			End Get
+		End Property
+
 
 	End Class
 End Namespace
