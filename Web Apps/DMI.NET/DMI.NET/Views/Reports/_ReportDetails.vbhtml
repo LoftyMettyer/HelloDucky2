@@ -140,7 +140,7 @@
 		$("#StartFixedDate").attr("disabled", "true");
 		$("#StartOffset").spinner("option", "disabled", true);
 		$("#StartOffsetPeriod").attr("disabled", "true");
-		$("#cmdCustomStart").attr("disabled", "true");
+		button_disable($("#cmdCustomStart")[0], (type != "Custom"));
 
 		switch (type) {
 			case "Fixed":
@@ -148,6 +148,8 @@
 				$("#StartCustomId").val(0);
 				$("#StartOffset").val(0);
 				$("#StartOffsetPeriod").val(0);
+				$("#StartCustomId").val(0);
+				$("#txtCustomStart").val("");
 				break;
 
 			case "Current":
@@ -155,19 +157,22 @@
 				$("#StartCustomId").val(0);
 				$("#StartOffset").val(0);
 				$("#StartOffsetPeriod").val(0);
+				$("#StartCustomId").val(0);
+				$("#txtCustomStart").val("");
 				break;
 
 			case "Offset":
 				$("#StartFixedDate").val('');
 				$("#StartOffset").spinner("option", "disabled", false);
 				$("#StartOffsetPeriod").removeAttr("disabled");
+				$("#StartCustomId").val(0);
+				$("#txtCustomStart").val("");
 				break;
 
 			default:
 				$("#StartFixedDate").val('');
 				$("#StartOffset").val(0);
 				$("#StartOffsetPeriod").val(0);
-				$("#cmdCustomStart").removeAttr("disabled", false);
 				break;
 
 		}
@@ -181,7 +186,7 @@
 		$("#EndFixedDate").attr("disabled", "true");
 		$("#EndOffset").spinner("option", "disabled", true);
 		$("#EndOffsetPeriod").attr("disabled", "true");
-		$("#cmdCustomEnd").attr("disabled", "true");
+		button_disable($("#cmdCustomEnd")[0], (type != "Custom"));
 
 		switch (type) {
 			case "Fixed":
@@ -189,6 +194,8 @@
 				$("#EndCustomId").val(0);
 				$("#EndOffset").val(0);
 				$("#EndOffsetPeriod").val(0);
+				$("#EndCustomId").val(0);
+				$("#txtCustomEnd").val("");
 				break;
 
 			case "Current":
@@ -196,19 +203,22 @@
 				$("#EndCustomId").val(0);
 				$("#EndOffset").val(0);
 				$("#EndOffsetPeriod").val(0);
+				$("#EndCustomId").val(0);
+				$("#txtCustomEnd").val("");
 				break;
 
 			case "Offset":
 				$("#EndFixedDate").val('');
 				$("#EndOffset").spinner("option", "disabled", false);
 				$("#EndOffsetPeriod").removeAttr("disabled");
+				$("#EndCustomId").val(0);
+				$("#txtCustomEnd").val("");
 				break;
 
 			default:
 				$("#EndFixedDate").val('');
 				$("#EndOffset").val(0);
 				$("#EndOffsetPeriod").val(0);
-				$("#cmdCustomEnd").removeAttr("disabled", false);
 				break;
 
 		}
