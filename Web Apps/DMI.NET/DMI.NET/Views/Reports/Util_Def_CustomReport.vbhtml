@@ -75,6 +75,15 @@ End Code
 				if (ui.newTab.text() == "Columns") {
 					resizeColumnGrids();
 				}
+				if (ui.newTab.text() == "Sort Order") {
+					//resize the Event Details grid to fit
+					var workPageHeight = $('#workframeset').height();
+					var gridTopPos = $('#divSortOrderDiv').position().top;
+					var tabHeight = $('#tabs>.ui-tabs-nav').outerHeight();
+					var marginHeight = 40;
+					var gridHeight = workPageHeight - gridTopPos - tabHeight - marginHeight;
+					$("#SortOrders").jqGrid('setGridHeight', gridHeight);
+				}
 			}
 		});
 

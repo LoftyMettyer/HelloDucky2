@@ -17,7 +17,7 @@ End Code
 			<li><a href="#tabs-1">Definition</a></li>
 			<li><a href="#report_definition_tab_eventdetails">Event Details</a></li>
 			<li><a href="#report_definition_tab_reportdetails">Report Details</a></li>
-			<li><a href="#report_definition_tab_order">Order</a></li>
+			<li><a href="#report_definition_tab_order">Sort Order</a></li>
 			<li><a href="#report_definition_tab_output">Output</a></li>
 		</ul>
 
@@ -150,6 +150,15 @@ End Code
 					var marginHeight = 40;
 					var gridHeight = workPageHeight - gridTopPos - tabHeight - marginHeight;
 					$("#CalendarEvents").jqGrid('setGridHeight', gridHeight);
+				}
+				if (ui.newTab.text() == "Sort Order") {
+					//resize the Event Details grid to fit
+					var workPageHeight = $('#workframeset').height();
+					var gridTopPos = $('#divSortOrderDiv').position().top;
+					var tabHeight = $('#tabs>.ui-tabs-nav').outerHeight();
+					var marginHeight = 40;
+					var gridHeight = workPageHeight - gridTopPos - tabHeight - marginHeight;
+					$("#SortOrders").jqGrid('setGridHeight', gridHeight);
 				}
 			}
 		});
