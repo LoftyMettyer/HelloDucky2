@@ -37,7 +37,7 @@ Namespace Models
 		Public Property StartOffset As Integer
 		Public Property StartOffsetPeriod As DatePeriod
 
-		<NonZeroIf("StartType", CalendarDataType.Custom, ErrorMessage:="No custom start date selected.")> _
+		<NonZeroIf("StartType", CalendarDataType.Custom, ErrorMessage:="You must select a calculation for the report start date.")> _
 		Public Property StartCustomId As Integer = 0
 		Public Property StartCustomName As String
 
@@ -51,7 +51,7 @@ Namespace Models
 		Public Property EndOffset As Integer
 		Public Property EndOffsetPeriod As DatePeriod
 
-		<NonZeroIf("EndType", CalendarDataType.Custom, ErrorMessage:="No custom end date selected.")> _
+		<NonZeroIf("EndType", CalendarDataType.Custom, ErrorMessage:="You must select a calculation for the report end date.")> _
 		Public Property EndCustomId As Integer = 0
 		Public Property EndCustomName As String
 
@@ -121,6 +121,54 @@ Namespace Models
 	 Public ReadOnly Property IsDescriptionOK As Boolean
 			Get
 				Return (Description1ID > 0 OrElse Description2ID > 0 OrElse Description3ID > 0)
+			End Get
+		End Property
+
+		<RegularExpression("True", ErrorMessage:="You must select a fixed end date later than or equal to the fixed start date.")>
+	 Public ReadOnly Property IsFixedDatesOK As Boolean
+			Get
+				If StartType = CalendarDataType.Fixed AndAlso EndType = CalendarDataType.Fixed Then
+
+					If StartFixedDate Is Nothing Then Return True
+					If EndFixedDate Is Nothing Then Return True
+
+					Return (CDate(EndFixedDate) >= CDate(StartFixedDate))
+				Else
+					Return True
+				End If
+			End Get
+		End Property
+
+		<RegularExpression("True", ErrorMessage:="You must select an end date offset greater than or equal to zero.")>
+	 Public ReadOnly Property IsEndOffsetDateOK As Boolean
+			Get
+				If (StartType = CalendarDataType.Fixed OrElse StartType = CalendarDataType.CurrentDate) AndAlso EndType = CalendarDataType.Offset Then
+					Return EndOffset >= 0
+				Else
+					Return True
+				End If
+			End Get
+		End Property
+
+		<RegularExpression("True", ErrorMessage:="You must select a start date offset less than or equal to zero.")>
+		Public ReadOnly Property IsStartOffsetDateOK As Boolean
+			Get
+				If (EndType = CalendarDataType.Fixed OrElse EndType = CalendarDataType.CurrentDate) AndAlso StartType = CalendarDataType.Offset Then
+					Return StartOffset <= 0
+				Else
+					Return True
+				End If
+			End Get
+		End Property
+
+		<RegularExpression("True", ErrorMessage:="The end offset period must be the same as the start date offset period.")>
+	 Public ReadOnly Property IsOffsetPeriodOK As Boolean
+			Get
+				If (EndType = CalendarDataType.Offset AndAlso StartType = CalendarDataType.Offset) Then
+					Return StartOffsetPeriod = EndOffsetPeriod
+				Else
+					Return True
+				End If
 			End Get
 		End Property
 

@@ -124,7 +124,7 @@
 	$(function () {
 
 		$(".spinner").spinner({
-			min: 0,
+			min: -99,
 			max: 99,
 			showOn: 'both'
 		}).css("width", "20px");
