@@ -844,7 +844,7 @@ Namespace Repository
 
 			Dim sOrders As String = ""
 			For Each objItem In objSortOrders.OrderBy(Function(m) m.Sequence)
-				sOrders += String.Format("{0}||{1}||{2}||**", objItem.ID, objItem.Sequence, IIf(objItem.Order = OrderType.Ascending, "Asc", "Desc").ToString)
+				sOrders += String.Format("{0}||{1}||{2}||**", objItem.ColumnID, objItem.Sequence, IIf(objItem.Order = OrderType.Ascending, "Asc", "Desc").ToString)
 			Next
 
 			Return sOrders
@@ -1066,17 +1066,20 @@ Namespace Repository
 		Private Sub PopulateSortOrder(outputModel As ReportBaseModel, data As DataTable)
 
 			Dim objSort As SortOrderViewModel
+			Dim iSortOrderID As Integer = 0
 
 			Try
 
 				For Each objRow As DataRow In data.Rows
 					objSort = New SortOrderViewModel
 
+					iSortOrderID += 1
+
 					objSort.ReportID = outputModel.ID
 					objSort.ReportType = outputModel.ReportType
 
 					objSort.TableID = CInt(objRow("tableid"))
-					objSort.ID = CInt(objRow("Id"))
+					objSort.ID = iSortOrderID
 					objSort.ColumnID = CInt(objRow("Id"))
 
 					objSort.Name = objRow("name").ToString

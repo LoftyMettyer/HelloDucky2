@@ -82,7 +82,7 @@ End Code
 	function postThisSortOrder() {
 
 		var datarow = {
-			ID: $("#SortOrderColumnID").val(),
+			ID: '@Model.ID',
 			ReportID: '@Model.ReportID',
 			ReportType: '@CInt(Model.ReportType)',
 			TableID: $("#SortOrderTableID").val(),
@@ -100,10 +100,10 @@ End Code
 		OpenHR.postData("Reports/PostSortOrder", datarow)
 
 		// Update client
-		$('#SortOrders').jqGrid('delRowData', $("#SortOrderID").val())
-		var su = $("#SortOrders").jqGrid('addRowData', $("#SortOrderID").val(), datarow);
+		$('#SortOrders').jqGrid('delRowData', '@Model.ID')
+		var su = $("#SortOrders").jqGrid('addRowData', '@Model.ID', datarow);
 		$('#SortOrders').setGridParam({ sortname: 'Sequence' }).trigger('reloadGrid');
-		$('#SortOrders').jqGrid("setSelection", $("#SortOrderColumnID").val());
+		$('#SortOrders').jqGrid("setSelection", '@Model.ID');
 
 		if ($("#IsNew").val() == "True") {
 			$("#SortOrdersAvailable").val(parseInt($("#SortOrdersAvailable").val()) - 1);

@@ -115,13 +115,13 @@
 				colNames: ['ID', 'ReportID', 'ReportType', 'TableID', 'ColumnID', 'Column Name', 'Sequence', 'Order',
 										'Break On Change', 'Page On Change', 'Value On Change', 'Suppress Repeated'],
 				colModel: [
-										{ name: 'ID', width: 50, key: true, hidden: true },
+										{ name: 'ID', width: 50, key: true, hidden: true, sorttype: 'integer' },
 										{ name: 'ReportID', width: 50, hidden: true },
 										{ name: 'ReportType', width: 50, hidden: true },
 										{ name: 'TableID', width: 50, hidden: true },
 										{ name: 'ColumnID', width: 50, hidden: true },
 										{ name: 'Name', index: 'Name', width: 200 },
-										{ name: 'Sequence', index: 'Sequence', width: 150, hidden: true },
+										{ name: 'Sequence', index: 'Sequence', width: 150, hidden: true, sorttype: 'integer' },
 										{ name: 'Order', index: 'Order', width: 90, editable: true, formatter: "select", edittype: "select", editoptions: { value: "0:Ascending;1:Descending" } },
 										{
 											name: 'BreakOnChange', index: 'BreakOnChange', width: 120, align: "center", hidden: true,
