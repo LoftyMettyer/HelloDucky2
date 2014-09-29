@@ -101,7 +101,7 @@ End Code
 		var tableName = $("#ChildTableID option:selected").text();
 
 		OpenHR.modalExpressionSelect("FILTER", tableID, currentID, function (id, name, access) {
-			if (access == "HD" && $("#Owner").val() != '@Session("Username")') {
+			if (access == "HD" && $("#Owner").val().toLowerCase() != '@Session("Username").ToString.ToLower') {
 				$("#txtChildFilterID").val(0);
 				$("#txtChildFilter").val('None');
 				$("#FilterViewAccess").val('');

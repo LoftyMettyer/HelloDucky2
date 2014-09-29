@@ -124,7 +124,7 @@ End Code
 		var currentID = $("#Description3ID").val();
 
 		OpenHR.modalExpressionSelect("CALC", tableID, currentID, function (id, name, access) {
-			if (access == "HD" && $("#Owner").val() != '@Session("Username")') {
+			if (access == "HD" && $("#Owner").val().toLowerCase() != '@Session("Username").ToString.ToLower') {
 				$("#Description3ID").val(0);
 				$("#txtDescription3").val('None');
 				OpenHR.modalMessage("The report description calculation will be removed from this definition as it is hidden and you do not have permission to make this definition hidden.");
