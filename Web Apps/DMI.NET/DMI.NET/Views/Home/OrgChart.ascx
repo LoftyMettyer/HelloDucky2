@@ -23,76 +23,87 @@
 		menu_refreshMenu();
 
 		if ('<%=Model.any()%>' == 'False') {
-				$('#noData').show();
-			} else {
-				//process the results into unordered list.		
-				$("#hiddenItems").find(":hidden").not("script").each(function () {
-					var props = $(this).val().split("\t");
-					var employeeID = props[0],
-						employeeForenames = props[1],
-						employeeSurname = props[2],
-						employeeStaffNo = props[3],
-						lineManagerStaffNo = props[4],
-						employeeJobTitle = props[5],
-						hierarchyLevel = props[6],
-						photoPath = props[7],
-						absenceTypeClass = props[8];
+			$('#noData').show();
+			menu_toolbarEnableItem('divBtnPrintOrgChart', false);
+			menu_toolbarEnableItem('mnutoolOrgChartExpand', false);
+			$('.mnuBtnPrintOrgChart>span').prop('disabled', true);
+			$('.mnuBtnPrintOrgChart').prop('disabled', true);
+			$('.mnuBtnPrintOrgChart>span').hide();
+		} else {
+			//process the results into unordered list.		
+			$("#hiddenItems").find(":hidden").not("script").each(function () {
+				var props = $(this).val().split("\t");
+				var employeeID = props[0],
+					employeeForenames = props[1],
+					employeeSurname = props[2],
+					employeeStaffNo = props[3],
+					lineManagerStaffNo = props[4],
+					employeeJobTitle = props[5],
+					hierarchyLevel = props[6],
+					photoPath = props[7],
+					absenceTypeClass = props[8];
 
-					//If hierarchy level = 0 add to root (#org), otherwise append to previous manager's staff_number
-					var parentNode = hierarchyLevel == "0" ? 'org' : lineManagerStaffNo;
-					var nodeHTML = '<li class="' + absenceTypeClass + '">';	//this is converted to a div at runtime
-					nodeHTML += '<input type="checkbox" checked="checked" class="printSelect"/>';
-					nodeHTML += '<div class="jobTitle">' + employeeJobTitle + '</div>';
-					nodeHTML += '<img style="width: 48px; height: 48px;" src="' + photoPath + '"/>';
-					nodeHTML += '<p>' + employeeForenames + ' ' + employeeSurname + '</p>';
-					nodeHTML += '<ul id="' + employeeStaffNo + '">';
-					nodeHTML += '</li>';
-					$('#' + parentNode).append(nodeHTML);
-				});
+				//If hierarchy level = 0 add to root (#org), otherwise append to previous manager's staff_number
+				var parentNode = hierarchyLevel == "0" ? 'org' : lineManagerStaffNo;
+				var nodeHTML = '<li class="' + absenceTypeClass + '">';	//this is converted to a div at runtime
+				nodeHTML += '<input type="checkbox" checked="checked" class="printSelect"/>';
+				nodeHTML += '<div class="jobTitle">' + employeeJobTitle + '</div>';
+				nodeHTML += '<img style="width: 48px; height: 48px;" src="' + photoPath + '"/>';
+				nodeHTML += '<p>' + employeeForenames + ' ' + employeeSurname + '</p>';
+				nodeHTML += '<ul id="' + employeeStaffNo + '">';
+				nodeHTML += '</li>';
+				$('#' + parentNode).append(nodeHTML);
+			});
 
-				//Add a class to collapse all peer trees.
-				$("#org li.ui-state-active").siblings().addClass("collapsed");
+			//Add a class to collapse all peer trees.
+			$("#org li.ui-state-active").siblings().addClass("collapsed");
 
-				$('#workframe').attr('overflow', 'auto');
-				$("#org").jOrgChart({
-					chartElement: '#chart',
-					dragAndDrop: true
-				});
+			$('#workframe').attr('overflow', 'auto');
+			$("#org").jOrgChart({
+				chartElement: '#chart',
+				dragAndDrop: true
+			});
 
-				setTimeout('centreMe()', 500);
+			setTimeout('centreMe()', 500);
 
 			//Set up tool tip for absentees...
-				$("div[class*='REASON']").each(function () {
-					try {
-						var classString = $(this).attr('class');
+			$("div[class*='REASON']").each(function () {
+				try {
+					var classString = $(this).attr('class');
 
-						if (OpenHR.nullsafeString(classString).length > 0) {
-							var absReason = classString.substr(classString.indexOf('#') + 1);
-							absReason = absReason.substr(0, absReason.indexOf('#'));
+					if (OpenHR.nullsafeString(classString).length > 0) {
+						var absReason = classString.substr(classString.indexOf('#') + 1);
+						absReason = absReason.substr(0, absReason.indexOf('#'));
 
-							$(this).attr('title', absReason);
-						}
+						$(this).attr('title', absReason);
 					}
-					catch(e) {}
-				});
+				}
+				catch (e) { }
+			});
 
-				$("#optionframe").hide();
-				$("#workframe").show();
+			$("#optionframe").hide();
+			$("#workframe").show();
+
+
+			// Kill checkbox bubbling
+			$('.printSelect').click(function () { printSelectClick(this); });
+
+
+
+			//Set up print options on ribbon
+			$('.mnuBtnPrintOrgChart').click(function () { printOrgChart(true); });	// print all nodes
+			$('.mnuBtnPrintOrgChartSelected').click(function () { printOrgChart(false); }); // print selected nodes
+
+
+			$(document).off('click', '.mnuBtnSelectOrgChart').on('click', '.mnuBtnSelectOrgChart', function () {
+				//Enable org chart nodes to be selected for printing.				
+				$('.printSelect').toggle();				
+			});
+
+
 		}
-		
-		// Kill checkbox bubbling
-		$('.printSelect').click(function () { printSelectClick(this); });
 
 
-
-		//Set up print options on ribbon
-		$('.mnuBtnPrintOrgChart').click(function() { printOrgChart(true); });	// print all nodes
-		$('.mnuBtnPrintOrgChartSelected').click(function () { printOrgChart(false); }); // print selected nodes
-
-		$('.mnuBtnSelectOrgChart').click(function () {
-			//Enable org chart nodes to be selected for printing.
-			$('.printSelect').toggle();
-		});
 	});
 
 	function centreMe() {
@@ -196,10 +207,7 @@
 		newWin.focus();
 		newWin.print();
 		newWin.close();
-
 	}
-
-
 
 </script>
 

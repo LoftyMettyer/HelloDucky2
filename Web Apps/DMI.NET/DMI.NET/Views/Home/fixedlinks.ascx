@@ -947,13 +947,13 @@
 				<li class="ui-corner-top"><a id="toolbarOrgChart" href="#" rel="Find">Organisation Chart</a>
 					<ul>
 						<li><span>Output</span>
-							<div class="button">
+							<div class="button" id="divBtnPrintOrgChart">
 								<a class="mnuBtnPrintOrgChart" href="#" rel="paste">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/printer64HOVER.png")%>" alt="" /><span>
 									<i class="icon-print"></i>
 									<h6>Print</h6></span>
 								</a>								
-								<div style="display: none;">
+								<div style="display: none;" id="divBtnPrintOrgChartOptions">
 									<ul>
 										<li class="menutitle">Print options</li>
 										<li><a class="mnuBtnPrintOrgChart" href="#">Print all nodes</a></li>
