@@ -172,7 +172,7 @@ Namespace Models
 			End Get
 		End Property
 
-		<RegularExpression("True", ErrorMessage:="The start offset period must be the before as the end date offset period.")>
+		<RegularExpression("True", ErrorMessage:="The start offset period must be before the end date offset period.")>
 	 Public ReadOnly Property IsOffsetPeriodOK2 As Boolean
 			Get
 				If (EndType = CalendarDataType.Offset AndAlso StartType = CalendarDataType.Offset) Then
