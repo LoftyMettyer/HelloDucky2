@@ -861,25 +861,27 @@ Private Function GetDetailsRecordsets() As Boolean
   'Add in the ID of the record if we are a cmg output
   'If mstrExportOutputType = "C" Then
   If mlngOutputFormat = fmtCMGFile Or mlngOutputFormat = fmtXML Then
-    pintTemp = UBound(mvarColDetails, 2) + 2
+    pintTemp = UBound(mvarColDetails, 2) + 1
     ReDim Preserve mvarColDetails(UBound(mvarColDetails, 1), pintTemp)
-    mvarColDetails(0, pintTemp - 1) = "C"
-    mvarColDetails(1, pintTemp - 1) = mlngExportBaseTable
-    mvarColDetails(2, pintTemp - 1) = mstrExportBaseTableName
-    mvarColDetails(3, pintTemp - 1) = 0
-    mvarColDetails(4, pintTemp - 1) = "ID"
-    mvarColDetails(5, pintTemp - 1) = "ID"
-    mvarColDetails(6, pintTemp - 1) = 0
-    mvarColDetails(7, pintTemp - 1) = ""
-    mvarColDetails(8, pintTemp - 1) = ""    ' The CMG Code for this column
-    mvarColDetails(9, pintTemp - 1) = False ' Is this column audited
-    mvarColDetails(10, pintTemp - 1) = False ' Do we export this column
-    'TM20011010 Fault 2197
-    mvarColDetails(11, pintTemp - 1) = 0
-    mvarColDetails(12, pintTemp - 1) = False
-    mvarColDetails(13, pintTemp - 1) = "ID"
-    mvarColDetails(14, pintTemp - 1) = "ID"
+    mvarColDetails(0, pintTemp) = "C"
+    mvarColDetails(1, pintTemp) = mlngExportBaseTable
+    mvarColDetails(2, pintTemp) = mstrExportBaseTableName
+    mvarColDetails(3, pintTemp) = 0
+    mvarColDetails(4, pintTemp) = "ID"
+    mvarColDetails(5, pintTemp) = "ID"
+    mvarColDetails(6, pintTemp) = 0
+    mvarColDetails(7, pintTemp) = ""
+    mvarColDetails(8, pintTemp) = ""    ' The CMG Code for this column
+    mvarColDetails(9, pintTemp) = False ' Is this column audited
+    mvarColDetails(10, pintTemp) = False ' Do we export this column
+    mvarColDetails(11, pintTemp) = 0
+    mvarColDetails(12, pintTemp) = False
+    mvarColDetails(13, pintTemp) = "ID"
+    mvarColDetails(14, pintTemp) = "ID"
+  End If
     
+  If mlngOutputFormat = fmtCMGFile Then
+    pintTemp = UBound(mvarColDetails, 2) + 1
     mvarColDetails(0, pintTemp) = "C"
     mvarColDetails(1, pintTemp) = mlngExportBaseTable
     mvarColDetails(2, pintTemp) = mstrExportBaseTableName
@@ -891,7 +893,6 @@ Private Function GetDetailsRecordsets() As Boolean
     mvarColDetails(8, pintTemp) = ""      ' The CMG Code for this column
     mvarColDetails(9, pintTemp) = False   ' Is this column audited
     mvarColDetails(10, pintTemp) = False   ' Do we export this column
-    'TM20011010 Fault 2197
     mvarColDetails(11, pintTemp) = 0
     mvarColDetails(12, pintTemp) = False
     mvarColDetails(13, pintTemp) = "Identifier"
@@ -2579,6 +2580,8 @@ Private Function ExportData_XML() As Boolean
   Dim rstConverted As Recordset
   Dim iFileCount As Integer
   Dim strOutputFileName As String
+  Dim sLimitedColumns As String
+  Dim iCount As Integer
   
   Dim sXSDName As String
   Dim sXSDTransformFile As String
@@ -2596,11 +2599,17 @@ Private Function ExportData_XML() As Boolean
     sXSDName = GetFileNameOnly(mstrXSDFilename)
   End If
       
+  ' Limit the column selection to actual columns the user has selected (XML has nto include the ID for the splitter to work)
+  sLimitedColumns = ""
+  For iCount = 1 To UBound(mvarColDetails, 2) - 1
+    sLimitedColumns = sLimitedColumns & IIf(Len(sLimitedColumns) > 0, ", ", "") & "[" & mvarColDetails(14, iCount) & "]"
+  Next
+      
   If mbSplitXMLIntoFiles Then
     sWhereClause = " WHERE basetable.ID = ID "
   End If
    
-  sSQLGetData = "SELECT CAST((SELECT * FROM [" & mstrTempTableName & "]" & sWhereClause & " FOR XML PATH('" & mstrXMLDataNodeName & "'), ROOT('" & mstrExportHeaderText & "')" & _
+  sSQLGetData = "SELECT CAST((SELECT " & sLimitedColumns & " FROM [" & mstrTempTableName & "]" & sWhereClause & " FOR XML PATH('" & mstrXMLDataNodeName & "'), ROOT('" & mstrExportHeaderText & "')" & _
     ", ELEMENTS XSINIL) AS VARCHAR(MAX)) AS XmlData"
   
   If mbSplitXMLIntoFiles Then
