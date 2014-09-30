@@ -1,4 +1,5 @@
 ﻿
+
 ---- Drop redundant functions (or renamed)
 IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[sp_ASRIntGetMailMergeDefinition]') AND xtype in (N'P'))
 	DROP PROCEDURE [dbo].[sp_ASRIntGetMailMergeDefinition];
@@ -6181,7 +6182,7 @@ DEALLOCATE curObjects
 GO
 
 		
-DECLARE @sVersion varchar(10) = '8.1.3'
+DECLARE @sVersion varchar(10) = '8.1.4'
 
 EXEC spsys_setsystemsetting 'database', 'version', '8.1';
 EXEC spsys_setsystemsetting 'intranet', 'version', @sVersion;
