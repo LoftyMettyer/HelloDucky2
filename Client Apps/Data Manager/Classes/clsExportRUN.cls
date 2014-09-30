@@ -1385,6 +1385,10 @@ Private Function GenerateSQLSelect() As Boolean
 
   mstrSQLSelect = mstrSQLSelect & pstrColumnList
   
+  If mlngOutputFormat = fmtXML Then
+    mstrSQLSelect = mstrSQLSelect & ", NEWID() AS [_XMLSplitID]"
+  End If
+  
   GenerateSQLSelect = True
   
   Exit Function
@@ -2606,7 +2610,7 @@ Private Function ExportData_XML() As Boolean
   Next
       
   If mbSplitXMLIntoFiles Then
-    sWhereClause = " WHERE basetable.ID = ID "
+    sWhereClause = " WHERE basetable._XMLSplitID = _XMLSplitID "
   End If
    
   sSQLGetData = "SELECT CAST((SELECT " & sLimitedColumns & " FROM [" & mstrTempTableName & "]" & sWhereClause & " FOR XML PATH('" & mstrXMLDataNodeName & "'), ROOT('" & mstrExportHeaderText & "')" & _
