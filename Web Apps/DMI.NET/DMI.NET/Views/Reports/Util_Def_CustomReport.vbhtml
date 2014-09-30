@@ -83,6 +83,9 @@ End Code
 					var marginHeight = 40;
 					var gridHeight = workPageHeight - gridTopPos - tabHeight - marginHeight;
 					$("#SortOrders").jqGrid('setGridHeight', gridHeight);
+
+					var gridWidth = $('#divSortOrderDiv').width();
+					$("#SortOrders").jqGrid('setGridWidth', gridWidth);
 				}
 			}
 		});

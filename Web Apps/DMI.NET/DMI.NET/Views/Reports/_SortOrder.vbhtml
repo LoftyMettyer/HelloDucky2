@@ -96,8 +96,6 @@
 
 		function attachGrid() {
 
-			//$("#SortOrders").jqGrid('setGridWidth', $("#divSortOrderDiv").width() * .95);
-			var gridWidth = $('#divSortOrderDiv').width();			
 
 			$("#SortOrders").jqGrid({
 				datatype: 'jsonstring',
@@ -141,7 +139,6 @@
 										}
 				],
 				viewrecords: true,
-				width: gridWidth,
 				scrollrows: true,
 				ondblClickRow: function (rowID) {
 					editSortSorder(rowID);
@@ -165,8 +162,6 @@
 					$("#SortOrders").jqGrid("setSelection", topID);
 				}
 			});
-
-			$('#SortOrders').setGridWidth(gridWidth);
 
 		}
 

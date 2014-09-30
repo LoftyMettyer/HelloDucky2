@@ -151,7 +151,7 @@ End Code
 					var gridHeight = workPageHeight - gridTopPos - tabHeight - marginHeight;
 					$("#CalendarEvents").jqGrid('setGridHeight', gridHeight);
 				}
-				if (ui.newTab.text() == "Sort Order") {
+				if (ui.newTab.text() == "Sort Order") {					
 					//resize the Event Details grid to fit
 					var workPageHeight = $('#workframeset').height();
 					var gridTopPos = $('#divSortOrderDiv').position().top;
@@ -159,6 +159,9 @@ End Code
 					var marginHeight = 40;
 					var gridHeight = workPageHeight - gridTopPos - tabHeight - marginHeight;
 					$("#SortOrders").jqGrid('setGridHeight', gridHeight);
+
+					var gridWidth = $('#divSortOrderDiv').width();
+					$("#SortOrders").jqGrid('setGridWidth', gridWidth);
 				}
 			}
 		});
