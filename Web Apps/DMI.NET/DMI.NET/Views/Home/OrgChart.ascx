@@ -28,7 +28,7 @@
 			menu_toolbarEnableItem('mnutoolOrgChartExpand', false);
 			$('.mnuBtnPrintOrgChart>span').prop('disabled', true);
 			$('.mnuBtnPrintOrgChart').prop('disabled', true);
-			$('.mnuBtnPrintOrgChart>span').hide();
+			//$('.mnuBtnPrintOrgChart>span').hide();
 		} else {
 			//process the results into unordered list.		
 			$("#hiddenItems").find(":hidden").not("script").each(function () {
@@ -85,25 +85,17 @@
 			$("#workframe").show();
 
 
-			// Kill checkbox bubbling
-			$('.printSelect').click(function () { printSelectClick(this); });
-
-
+			// Print selected nodes and kill checkbox bubbling (so the nodes don't expand aswell)
+			$(document).off('click', '.printSelect').on('click', '.printSelect', function (event) { printSelectClick(this, event);  });			
 
 			//Set up print options on ribbon
-			$('.mnuBtnPrintOrgChart').click(function () { printOrgChart(true); });	// print all nodes
-			$('.mnuBtnPrintOrgChartSelected').click(function () { printOrgChart(false); }); // print selected nodes
+			$(document).off('click', '.mnuBtnPrintOrgChart').on('click', '.mnuBtnPrintOrgChart', function () { printOrgChart(); });	// print all nodes
 
-
+			//Enable org chart nodes to be selected for printing.				
 			$(document).off('click', '.mnuBtnSelectOrgChart').on('click', '.mnuBtnSelectOrgChart', function () {
-				//Enable org chart nodes to be selected for printing.				
 				$('.printSelect').toggle();				
 			});
-
-
 		}
-
-
 	});
 
 	function centreMe() {
@@ -117,7 +109,7 @@
 	}
 
 
-	function printSelectClick(clickObj) {
+	function printSelectClick(clickObj, event) {
 
 		var fChecked = $(clickObj).prop('checked');
 
@@ -125,19 +117,16 @@
 		if (fChecked) {
 			$(clickObj).closest('table').addClass('print');
 		} else {
-			$(clickObj).parent('table').removeClass('print');
-		}
-		
-		event.stopPropagation(); // Don't expand the node
+			$(clickObj).closest('table').removeClass('print');
+		}		
 
+		event.stopPropagation();
 	}
 
-	function printOrgChart(fPrintAll) {
+	function printOrgChart() {
 		
-		if (window.currentLayout != "winkit") {
-			//calculate fPrintAll flag based on selection
-			fPrintAll = ($('.printSelect').css('display') == "none");
-		}
+		//calculate fPrintAll flag based on selection
+		var fPrintAll = ($('.printSelect').css('display') == "none");
 
 		var divToPrint;
 		var untickedItemsCount = $('.printSelect:not(:checked)').length;

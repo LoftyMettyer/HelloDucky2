@@ -10,13 +10,13 @@
 <script type="text/javascript">
 	$(document).ready(function () {
 		
-		//Org Chart Print button is split only for winkit mode.
-		if (window.currentLayout == "winkit") {
-			//winkit has a split button
-			$('.mnuBtnPrintOrgChart').parent().addClass("button split");
-		} else {
-			$('.mnuBtnPrintOrgChart').parent().addClass("button");
-		}
+		////Org Chart Print button is split only for winkit mode.
+		//if (window.currentLayout == "winkit") {
+		//	//winkit has a split button
+		//	$('.mnuBtnPrintOrgChart').parent().addClass("button split");
+		//} else {
+		//	$('.mnuBtnPrintOrgChart').parent().addClass("button");
+		//}
 
 
 
@@ -953,19 +953,12 @@
 									<i class="icon-print"></i>
 									<h6>Print</h6></span>
 								</a>								
-								<div style="display: none;" id="divBtnPrintOrgChartOptions">
-									<ul>
-										<li class="menutitle">Print options</li>
-										<li><a class="mnuBtnPrintOrgChart" href="#">Print all nodes</a></li>
-										<li class="separator"><a class="mnuBtnSelectOrgChart" href="#">Select nodes to print</a></li>
-										<li><a class="mnuBtnPrintOrgChartSelected" href="#">Print selected nodes</a></li>
-									</ul>
-								</div>
 							</div>
-							<div class="button notwinkit" style="display: none;">
-								<a class="mnuBtnSelectOrgChart" href="#" rel="table" title="Select nodes to print">									
+							<div class="button">
+								<a class="mnuBtnSelectOrgChart" href="#" rel="table" title="Select nodes to print">
+									<img src="<%: Url.Content("~/Scripts/officebar/winkit/Checkmark64HOVER.png")%>" alt="" /><span>			
 									<i class="icon-check"></i>
-									<h6>Select nodes to print</h6>
+									<h6>Select nodes<br/>to print</h6></span>
 								</a>
 							</div>
 						</li>
