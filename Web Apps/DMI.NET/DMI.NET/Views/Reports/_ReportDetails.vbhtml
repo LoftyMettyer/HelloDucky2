@@ -10,13 +10,13 @@
 		@Html.HiddenFor(Function(m) m.EndCustomViewAccess)
 
 		<div class="width100 " style="">
-			@Html.RadioButton("StartType", CalendarDataType.CurrentDate, Model.StartType = CalendarDataType.CurrentDate, New With {.onclick = "changeEventStartType('CurrentDate')"})
+			@Html.RadioButton("StartType", CalendarDataType.CurrentDate, Model.StartType = CalendarDataType.CurrentDate, New With {.onclick = "changeCalendarStartType('CurrentDate')"})
 			<span>Today</span>
 		</div>
 
 		<div class="width100 " style="">
 			<div class="width20 floatleft">
-				@Html.RadioButton("StartType", CalendarDataType.Fixed, Model.StartType = CalendarDataType.Fixed, New With {.onclick = "changeEventStartType('Fixed')"})
+				@Html.RadioButton("StartType", CalendarDataType.Fixed, Model.StartType = CalendarDataType.Fixed, New With {.onclick = "changeCalendarStartType('Fixed')"})
 				<span>Fixed</span>
 			</div>
 			<div class="formField">
@@ -26,7 +26,7 @@
 
 		<div class="width100">
 			<div class="width20 floatleft">
-				@Html.RadioButton("StartType", CalendarDataType.Offset, Model.StartType = CalendarDataType.Offset, New With {.onclick = "changeEventStartType('Offset')"})
+				@Html.RadioButton("StartType", CalendarDataType.Offset, Model.StartType = CalendarDataType.Offset, New With {.onclick = "changeCalendarStartType('Offset')"})
 				<span>Offset</span>
 			</div>
 			@Html.TextBoxFor(Function(m) m.StartOffset, New With {.id = "StartOffset", .class = "spinner"})
@@ -35,7 +35,7 @@
 
 		<div class="width100 ">
 			<div class="width20 floatleft">
-				@Html.RadioButton("StartType", CalendarDataType.Custom, Model.StartType = CalendarDataType.Custom, New With {.onclick = "changeEventStartType('Custom')"})
+				@Html.RadioButton("StartType", CalendarDataType.Custom, Model.StartType = CalendarDataType.Custom, New With {.onclick = "changeCalendarStartType('Custom')"})
 				<span>Custom</span>
 			</div>
 
@@ -52,13 +52,13 @@
 	<legend class="fontsmalltitle">End Dates :</legend>
 	<fieldset>
 		<div class="width100 " style="">
-			@Html.RadioButton("EndType", CalendarDataType.CurrentDate, Model.EndType = CalendarDataType.CurrentDate, New With {.onclick = "changeEventEndType('CurrentDate')"})
+			@Html.RadioButton("EndType", CalendarDataType.CurrentDate, Model.EndType = CalendarDataType.CurrentDate, New With {.onclick = "changeCalendarEndType('CurrentDate')"})
 			<span>Today</span>
 		</div>
 
 		<div class="width100 " style="">
 			<div class="width20 floatleft">
-				@Html.RadioButton("EndType", CalendarDataType.Fixed, Model.EndType = CalendarDataType.Fixed, New With {.onclick = "changeEventEndType('Fixed')"})
+				@Html.RadioButton("EndType", CalendarDataType.Fixed, Model.EndType = CalendarDataType.Fixed, New With {.onclick = "changeCalendarEndType('Fixed')"})
 				<span>Fixed</span>
 			</div>
 			<div class="formField">
@@ -68,7 +68,7 @@
 
 		<div class="width100">
 			<div class="width20 floatleft">
-				@Html.RadioButton("EndType", CalendarDataType.Offset, Model.EndType = CalendarDataType.Offset, New With {.onclick = "changeEventEndType('Offset')"})
+				@Html.RadioButton("EndType", CalendarDataType.Offset, Model.EndType = CalendarDataType.Offset, New With {.onclick = "changeCalendarEndType('Offset')"})
 				<span>Offset</span>
 			</div>
 			@Html.TextBoxFor(Function(m) m.EndOffset, New With {.id = "EndOffset", .class = "spinner"})
@@ -77,7 +77,7 @@
 
 		<div class="width100 ">
 			<div class="width20 floatleft">
-				@Html.RadioButton("EndType", CalendarDataType.Custom, Model.EndType = CalendarDataType.Custom, New With {.onclick = "changeEventEndType('Custom')"})
+				@Html.RadioButton("EndType", CalendarDataType.Custom, Model.EndType = CalendarDataType.Custom, New With {.onclick = "changeCalendarEndType('Custom')"})
 				<span>Custom</span>
 			</div>
 
@@ -130,12 +130,12 @@
 		}).css("width", "20px");
 
 		$(".datepicker").datepicker();
-		changeEventStartType('@Model.StartType');
-		changeEventEndType('@Model.EndType');
+		changeCalendarStartType('@Model.StartType');
+		changeCalendarEndType('@Model.EndType');
 	});
 
 
-	function changeEventStartType(type) {
+	function changeCalendarStartType(type) {
 
 		$("#StartFixedDate").attr("disabled", "true");
 		$("#StartOffset").spinner("option", "disabled", true);
@@ -183,7 +183,7 @@
 
 	}
 
-	function changeEventEndType(type) {
+	function changeCalendarEndType(type) {
 
 		$("#EndFixedDate").attr("disabled", "true");
 		$("#EndOffset").spinner("option", "disabled", true);
