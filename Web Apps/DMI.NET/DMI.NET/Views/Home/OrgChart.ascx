@@ -57,7 +57,7 @@
 			});
 
 			//Add a class to collapse all peer trees.
-			$("#org li.ui-state-active").siblings().addClass("collapsed");
+			$("#org li.ui-state-highlight").siblings().addClass("collapsed");
 
 			$('#workframe').attr('overflow', 'auto');
 			$("#org").jOrgChart({
@@ -65,7 +65,7 @@
 				dragAndDrop: true
 			});
 
-			setTimeout('centreMe()', 500);
+			setTimeout('centreMe(true)', 500);
 
 			//Set up tool tip for absentees...
 			$("div[class*='REASON']").each(function () {
@@ -97,6 +97,12 @@
 				$('.printSelect').toggle();				
 			});
 
+			$(document).off('click', 'div.node').on('click', 'div.node', function () {
+				$('div.node.ui-state-active').removeClass('ui-state-active').addClass('ui-state-default');
+				$(this).removeClass('ui-state-default').addClass('ui-state-active');
+				centreMe(false);
+			});
+
 			//Show the click to expand plus/minus icon
 			$('.node').each(function () {
 				if ($(this).parent().parent().siblings().length > 0) {
@@ -110,13 +116,27 @@
 		}
 	});
 
-	function centreMe() {
+	function centreMe(fSelf) {
 		try {
-			var myNodePos = $('.node.ui-state-active').offset().left;
-			var workframeWidth = $('#workframeset').width();
-			var scrollLeftNewPos = myNodePos - workframeWidth + 380 + 48;
+			
+			var classToCentre = (fSelf ? '.node.ui-state-highlight' : '.node.ui-state-active');
+			var menuWidth = 0;
+			if (!window.menu_isSSIMode()) menuWidth = $('#menuframe').width();
 
-			$('#workframeset').animate({ scrollLeft: scrollLeftNewPos }, 2000);
+			var myNodePos = $(classToCentre).offset().left;
+			var workframeWidth = $('#workframeset').width();
+			workframeWidth += menuWidth;
+
+			if ((myNodePos > workframeWidth) || (myNodePos < menuWidth)) {
+				$('#workframeset').animate({ scrollLeft: 0 }, 0);
+				myNodePos = $(classToCentre).offset().left;
+				workframeWidth = $('#workframeset').width();
+
+				var scrollLeftNewPos = myNodePos - workframeWidth + menuWidth + 48;
+				$('#workframeset').animate({ scrollLeft: scrollLeftNewPos }, 2000);
+			}
+
+
 		} catch(e) {}
 	}
 
@@ -128,11 +148,6 @@
 		$(clickObj).parent().parent().parent().nextAll("tr").find(".printSelect").prop('checked', fChecked);
 		$(clickObj).parent().parent().parent().nextAll("tr").find(".printSelect").prop('disabled', fChecked);
 
-		//if (fChecked) {
-		//	$(clickObj).closest('table').addClass('print');
-		//} else {
-		//	$(clickObj).closest('table').removeClass('print');
-		//}
 	}
 
 	function printOrgChart() {
@@ -166,7 +181,7 @@
 			var pageNo = 1;
 
 			$('.printSelect:checked:enabled').closest('table').each(function () {
-				
+
 				$(this).parent().attr('id', 'currentlyPrinting');	//get a handle on the parent table.
 
 				newWin.document.write('<div class="orgChart" id="chart">');
@@ -185,11 +200,9 @@
 
 				pageNo += 1;
 			});
-
 			$('.printSelect').show();	// redisplay checkboxes.
-			$('.expandNode').show();	// redisplay checkboxes.
 
-		} else {			
+		} else {
 			//print all - just grab the whole div.
 			divToPrint = document.getElementById('chart');
 			newWin.document.write(divToPrint.innerHTML);
@@ -203,6 +216,9 @@
 		newWin.focus();
 		newWin.print();
 		newWin.close();
+		
+		$('.expandNode').show();	// redisplay expand boxes.
+
 	}
 
 </script>

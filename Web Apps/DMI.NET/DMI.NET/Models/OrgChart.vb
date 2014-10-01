@@ -54,7 +54,7 @@ Namespace Models
 
 						' highlight the current user's node
 						If CInt(objRow(0)) = iTopLevelRecID Then
-							additionalClasses &= " ui-state-active"
+							additionalClasses &= " ui-state-highlight"
 						Else
 							additionalClasses &= " ui-state-default"
 						End If
