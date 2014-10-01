@@ -1197,15 +1197,19 @@ function menu_MenuClick(sTool) {
 	if (sTool == 'mnutoolOrgChartExpand') {
 		//Expand all nodes.
 		$('.contracted').each(function() {
-			$(this).css('cursor', 'n-resize');
 			$(this).removeClass('contracted').addClass('expanded');
 			$(this).nextAll("tr").find(".node").show("blind");
 			$(this).nextAll("tr").css('visibility', '');
 			$(this).nextAll('tr').css('display', '');
 			// Update the <li> appropriately so that if the tree redraws collapsed/non-collapsed nodes
 			// maintain their appearance
-			$(this).removeClass('collapsed');
+			$(this).removeClass('collapsed');			
 		});
+
+		$('.expandNode').attr('src', window.ROOT + 'Content/images/minus.gif');
+
+		//enable/disable expand all nodes button
+		menu_toolbarEnableItem("mnutoolOrgChartExpand", ($('.contracted').length > 0));
 
 		return false;
 	}

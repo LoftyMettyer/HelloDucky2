@@ -135,37 +135,40 @@
 
 		// Expand and contract nodes
 		if ($childNodes.length > 0) {
-			$nodeDiv.click(function() {
-					var $this = $(this);
-					var $tr = $this.closest("tr");
+			$nodeDiv.find('.expandNode').click(function () {
+				var $this = $(this);
+				var $tr = $this.closest("tr");
 
-					if($tr.hasClass('contracted')){
-						$this.css('cursor','n-resize');
-						$tr.removeClass('contracted').addClass('expanded');
-						$tr.nextAll("tr").find(".node").show("blind");
-						$tr.nextAll("tr").css('visibility', '');
-						$nodeRow.nextAll('tr').css('display', '');
-						// Update the <li> appropriately so that if the tree redraws collapsed/non-collapsed nodes
-						// maintain their appearance
-						$node.removeClass('collapsed');
-					}else{
-						$this.css('cursor','s-resize');
-						$tr.removeClass('expanded').addClass('contracted');
-							$tr.nextAll("tr").find(".node").hide("blind").promise().done(function() {
-							$tr.nextAll("tr").css('visibility', 'hidden');							
-						});
-						$node.addClass('collapsed');
-					}
-				});
+				if ($tr.hasClass('contracted')) {
+					$tr.removeClass('contracted').addClass('expanded');
+					$tr.nextAll("tr").find(".node").show("blind");
+					$tr.nextAll("tr").css('visibility', '');
+					$nodeRow.nextAll('tr').css('display', '');
+					// Update the <li> appropriately so that if the tree redraws collapsed/non-collapsed nodes
+					// maintain their appearance
+					$node.removeClass('collapsed');
+					$this.attr('src', window.ROOT + 'Content/images/minus.gif');
+				} else {
+					$tr.removeClass('expanded').addClass('contracted');
+					$tr.nextAll("tr").find(".node").hide("blind").promise().done(function () {
+						$tr.nextAll("tr").css('visibility', 'hidden');
+					});
+					$node.addClass('collapsed');
+					$this.attr('src', window.ROOT + 'Content/images/plus.gif');
+				}
+
+				//enable/disable expand all nodes button
+				menu_toolbarEnableItem("mnutoolOrgChartExpand", ($('.contracted').length > 0));
+
+
+			});
 		}
-		
+
 		$nodeCell.append($nodeDiv);
 		$nodeRow.append($nodeCell);
 		$tbody.append($nodeRow);
 
 		if($childNodes.length > 0) {
-			// if it can be expanded then change the cursor
-			$nodeDiv.css('cursor','n-resize');
 		
 			// recurse until leaves found (-1) or to the level specified
 			if(opts.depth == -1 || (level+1 < opts.depth)) { 
@@ -217,7 +220,6 @@
 								$nodeRow.nextAll('tr').css('visibility', 'hidden');
 										$nodeRow.removeClass('expanded');
 										$nodeRow.addClass('contracted');
-										$nodeDiv.css('cursor', 's-resize');
 										$nodeRow.nextAll('tr').css('display', 'none');
 						} else {
 								$nodeDiv.addClass(item);

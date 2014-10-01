@@ -894,6 +894,19 @@ input[type=button].Embedded, input[type=button].Linked {
 	cursor: default;
 }
 
+.print {
+	border: 2px solid red;
+}
+
+.expandNode {
+	display: none;
+	position: absolute;
+	bottom: 2px;
+	right: 2px;
+	opacity: .5;
+	cursor: pointer;
+}
+
 #frmGotoOption {
 	visibility: hidden;
 	display: none;

@@ -46,7 +46,8 @@
 				//If hierarchy level = 0 add to root (#org), otherwise append to previous manager's staff_number
 				var parentNode = hierarchyLevel == "0" ? 'org' : lineManagerStaffNo;
 				var nodeHTML = '<li class="' + absenceTypeClass + '">';	//this is converted to a div at runtime
-				nodeHTML += '<input type="checkbox" checked="checked" class="printSelect"/>';
+				nodeHTML += '<input type="checkbox" class="printSelect"/>';
+				nodeHTML += '<img title="expand/contract this node" class="expandNode" src="' + window.ROOT + 'Content/images/minus.gif"/>';
 				nodeHTML += '<div class="jobTitle">' + employeeJobTitle + '</div>';
 				nodeHTML += '<img style="width: 48px; height: 48px;" src="' + photoPath + '"/>';
 				nodeHTML += '<p>' + employeeForenames + ' ' + employeeSurname + '</p>';
@@ -86,7 +87,7 @@
 
 
 			// Print selected nodes and kill checkbox bubbling (so the nodes don't expand aswell)
-			$(document).off('click', '.printSelect').on('click', '.printSelect', function (event) { printSelectClick(this, event);  });			
+			$(document).off('click', '.printSelect').on('click', '.printSelect', function (event) { event.stopPropagation(); printSelectClick(this); });
 
 			//Set up print options on ribbon
 			$(document).off('click', '.mnuBtnPrintOrgChart').on('click', '.mnuBtnPrintOrgChart', function () { printOrgChart(); });	// print all nodes
@@ -95,6 +96,17 @@
 			$(document).off('click', '.mnuBtnSelectOrgChart').on('click', '.mnuBtnSelectOrgChart', function () {
 				$('.printSelect').toggle();				
 			});
+
+			//Show the click to expand plus/minus icon
+			$('.node').each(function () {
+				if ($(this).parent().parent().siblings().length > 0) {
+					$(this).find('.expandNode').show();
+				}
+			});	
+
+			//set all contracted nodes expand icon to a +
+			$('.contracted .expandNode').attr('src', window.ROOT + 'Content/images/plus.gif');
+
 		}
 	});
 
@@ -114,13 +126,13 @@
 		var fChecked = $(clickObj).prop('checked');
 
 		$(clickObj).parent().parent().parent().nextAll("tr").find(".printSelect").prop('checked', fChecked);
-		if (fChecked) {
-			$(clickObj).closest('table').addClass('print');
-		} else {
-			$(clickObj).closest('table').removeClass('print');
-		}		
+		$(clickObj).parent().parent().parent().nextAll("tr").find(".printSelect").prop('disabled', fChecked);
 
-		event.stopPropagation();
+		//if (fChecked) {
+		//	$(clickObj).closest('table').addClass('print');
+		//} else {
+		//	$(clickObj).closest('table').removeClass('print');
+		//}
 	}
 
 	function printOrgChart() {
@@ -146,21 +158,15 @@
 		newWin.document.write('<h1 style="width: 400px;">Organisation Chart</h1>');
 
 		$('.printSelect').hide();	//hide the selection tickboxes.
+		$('.expandNode').hide();	//hide the selection tickboxes.
 
 		if ((untickedItemsCount > 0) && (fPrintAll !== true)) {
 			//Send only selected items to printer. 
 			// This is different to normal print - it includes page breaks, and expands hidden, selected nodes.
 			var pageNo = 1;
 
-			$('.print').each(function () {
-				//First expand all contracted nodes.
-				var $tr = $(this).find('tr:first');
-				if ($tr.hasClass('contracted')) {
-					$tr.removeClass('contracted').addClass('expanded');
-					$tr.nextAll("tr").show();
-					$tr.nextAll("tr").css('visibility', '');
-				}
-
+			$('.printSelect:checked:enabled').closest('table').each(function () {
+				
 				$(this).parent().attr('id', 'currentlyPrinting');	//get a handle on the parent table.
 
 				newWin.document.write('<div class="orgChart" id="chart">');
@@ -181,6 +187,7 @@
 			});
 
 			$('.printSelect').show();	// redisplay checkboxes.
+			$('.expandNode').show();	// redisplay checkboxes.
 
 		} else {			
 			//print all - just grab the whole div.
