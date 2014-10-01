@@ -713,6 +713,12 @@
 								Response.Write("<input type='hidden' id=txtOptionColDef_" & iloop & " name=txtOptionColDef_" & iloop & " value=""" & sColDef & """>" & vbCrLf)
 							End If
 							
+							Dim numberAsString As String = objRow(iloop).ToString()
+							Dim indexOfDecimalPoint As Integer = numberAsString.IndexOf(".", StringComparison.Ordinal)
+							Dim numberOfDecimals As Integer = 0
+							If indexOfDecimalPoint > 0 Then numberOfDecimals = numberAsString.Substring(indexOfDecimalPoint + 1).Length
+							
+							
 							If rstFindRecords.Columns(iloop).DataType.ToString().ToLower() = "system.datetime" Then
 								' Field is a date so format as such.
 								sAddString = sAddString & ConvertSQLDateToLocale(objRow(iloop).ToString())
@@ -720,9 +726,9 @@
 								' Field is a numeric so format as such.
 								If Not IsDBNull(objRow(iloop)) Then
 									If Mid(sThousandColumns, iloop + 1, 1) = "1" Then
-										sTemp = FormatNumber(objRow(iloop), , True, False, True)
+										sTemp = FormatNumber(objRow(iloop), numberOfDecimals, True, False, True)
 									Else
-										sTemp = FormatNumber(objRow(iloop), , True, False, False)
+										sTemp = FormatNumber(objRow(iloop), numberOfDecimals, True, False, False)
 									End If
 									sTemp = Replace(sTemp, ".", "x")
 									sTemp = Replace(sTemp, ",", Session("LocaleThousandSeparator"))
