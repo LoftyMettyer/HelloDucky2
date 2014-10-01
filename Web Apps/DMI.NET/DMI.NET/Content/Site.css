@@ -688,36 +688,25 @@ select.readonly {
 }
 
 
-#divExpressionSelectionButtons input[type=button], #divEmailSelectionButtons  input[type=button] {
+#divExpressionSelectionButtons input[type=button], #divEmailSelectionButtons  input[type=button], #divChildTablesButtons input[type=button] {
 	width: 86px;
 }
-#divPopupReportDefinition #divChildTablesButtons {
+#divChildTablesButtons {
 	float: right;
 	margin: 10px 0 5px 0;
-}
-
-.spacemeabit {
-	margin-bottom: 45px;
-}
-
-#ReportChildTableMainDiv #cmdBaseFilter, 
-#ReportChildTableMainDiv #cmdBasePicklist {
-	float: right;
-	/*margin:10px 0 0 0;*/
 }
 
 #ReportChildTableRecordsDiv, 
 #ReportChildTableOrderDiv, 
 #ReportChildTableFilterDiv, 
 #ReportChildTableDropdownDiv {
-	height: 30px;
+	padding-bottom: 5px;
 }
 
 #ReportChildTableFilterDiv #txtChildFilter, 
 #ReportChildTableOrderDiv #txtFieldRecOrder {
-		width: 75%;
+		width: 93%;
 }
-
 
 #definitionPropertiesFields {
 	padding-bottom: 20px;

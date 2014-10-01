@@ -6,62 +6,63 @@
 	Html.BeginForm("PostChildTable", "Reports", FormMethod.Post, New With {.id = "frmPostChildTable"})
 End Code
 
-<div class="pageTitleDiv" style="margin-bottom: 15px">
-	<span class="pageTitle" id="PopupReportDefinition_PageTitle">Child Tables</span>
-</div>
+<div class="">
+	<div class="pageTitleDiv" style="margin-bottom: 15px">
+		<span class="pageTitle" id="PopupReportDefinition_PageTitle">Child Tables</span>
+	</div>
 
-<div class="width100">
-	<div id="ReportChildTableMainDiv">
-		<div id="ReportChildTableDropdownDiv" class="clearboth">
-			<div class="floatleft width25">
-				@Html.HiddenFor(Function(m) m.ReportID)
-				@Html.HiddenFor(Function(m) m.FilterViewAccess)
-				@Html.LabelFor(Function(m) m.TableID, New With {.class = ""})
+	<div class="width100">
+		<div id="ReportChildTableMainDiv">
+			<div id="ReportChildTableDropdownDiv" class="clearboth">
+				<div class="stretchyfixed">
+					@Html.HiddenFor(Function(m) m.ReportID)
+					@Html.HiddenFor(Function(m) m.FilterViewAccess)
+					@Html.LabelFor(Function(m) m.TableID, New With {.class = ""})
+				</div>
+				<div class="stretchyfill">
+					@Html.TableDropdown("TableID", "ChildTableID", Model.TableID, Model.AvailableTables, "changeChildTable();")
+				</div>
 			</div>
-			<div class="width70 floatleft">
-				@Html.TableDropdown("TableID", "ChildTableID", Model.TableID, Model.AvailableTables, "changeChildTable();")
+
+			<div id="ReportChildTableFilterDiv" class="clearboth" style="">
+				<div class="stretchyfixed">
+					@Html.HiddenFor(Function(m) m.FilterID, New With {.id = "txtChildFilterID"})
+					@Html.LabelFor(Function(m) m.FilterName)
+				</div>
+				<div class="stretchyfill">
+					@Html.TextBoxFor(Function(m) m.FilterName, New With {.id = "txtChildFilter", .readonly = "true"})
+					@Html.EllipseButton("cmdBaseFilter", "selectChildTableFilter()", True)
+				</div>
+			</div>
+
+			<div id="ReportChildTableOrderDiv" class="clearboth">
+				<div class="stretchyfixed">
+					@Html.LabelFor(Function(m) m.OrderName)
+					@Html.HiddenFor(Function(m) m.OrderID, New With {.id = "txtChildFieldOrderID"})
+				</div>
+				<div class="stretchyfill">
+					@Html.TextBoxFor(Function(m) m.OrderName, New With {.id = "txtFieldRecOrder", .readonly = "true"})
+					@Html.EllipseButton("cmdBasePicklist", "selectRecordOrder()", True)
+				</div>
+			</div>
+			
+			<div id="ReportChildTableRecordsDiv" class="clearboth">
+				<div class="stretchyfixed">
+					@Html.LabelFor(Function(m) m.Records)
+				</div>
+				<div class="stretchyfill">
+					@Html.TextBoxFor(Function(m) m.Records, New With {.id = "txtChildRecords", .class = "spinner"})
+				</div>
 			</div>
 		</div>
 
-		<div id="ReportChildTableFilterDiv" class="clearboth" style="">
-			<div class="width25 floatleft">
-				@Html.HiddenFor(Function(m) m.FilterID, New With {.id = "txtChildFilterID"})
-				@Html.LabelFor(Function(m) m.FilterName)
-			</div>
-			<div class="floatleft width70">
-				@Html.TextBoxFor(Function(m) m.FilterName, New With {.id = "txtChildFilter", .readonly = "true"})
-				@Html.EllipseButton("cmdBaseFilter", "selectChildTableFilter()", True)
-			</div>
-		</div>
-
-		<div id="ReportChildTableOrderDiv" class="clearboth">
-			<div class="width25 floatleft">
-				@Html.LabelFor(Function(m) m.OrderName)
-				@Html.HiddenFor(Function(m) m.OrderID, New With {.id = "txtChildFieldOrderID"})
-			</div>
-			<div class="floatleft width70">
-				@Html.TextBoxFor(Function(m) m.OrderName, New With {.id = "txtFieldRecOrder", .readonly = "true"})
-				@Html.EllipseButton("cmdBasePicklist", "selectRecordOrder()", True)
-			</div>
-		</div>
-
-		<div id="ReportChildTableRecordsDiv" class="clearboth">
-			<div class="width25 floatleft">
-				@Html.LabelFor(Function(m) m.Records)
-			</div>
-			<div class="floatleft">
-				@Html.TextBoxFor(Function(m) m.Records, New With {.id = "txtChildRecords", .class = "spinner"})
-			</div>
+		<div id="divChildTablesButtons" class="clearboth">
+			<input type="button" value="OK" onclick="postThisChildTable();" />
+			<input type="button" value="Cancel" id="butEditChildTableCancel" onclick="closeThisChildTable();" />
 		</div>
 	</div>
 
-	<div id="divChildTablesButtons" class="clearboth">
-		<input type="button" value="OK" onclick="postThisChildTable();" />
-		<input type="button" value="Cancel" id="butEditChildTableCancel" onclick="closeThisChildTable();" />
-	</div>
 </div>
-	
-
 @Code
 	Html.EndForm()
 End Code
@@ -69,12 +70,11 @@ End Code
 
 	$(function () {
 		//some styling
-		$("#divPopupReportDefinition").width("1000px");
 		$(".spinner").spinner({
 			min: 0,
 			max: 999,
 			showOn: 'both'
-		}).css("width", "40px");
+		}).css("width", "60px");
 
 		if (isDefinitionReadOnly()) {
 			$("#frmPostChildTable input").prop('disabled', "disabled");

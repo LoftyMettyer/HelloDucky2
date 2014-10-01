@@ -229,7 +229,7 @@
 
 	function addChildTable() {
 
-		OpenHR.OpenDialog("Reports/AddChildTable", "divPopupReportDefinition", { ReportID: "@Model.ID" }, 'auto');
+		OpenHR.OpenDialog("Reports/AddChildTable", "divPopupReportDefinition", { ReportID: "@Model.ID" }, '800');
 
 	}
 
@@ -240,7 +240,7 @@
 		}
 
 		var gridData = $("#ChildTables").getRowData(rowID);
-		OpenHR.OpenDialog("Reports/EditChildTable", "divPopupReportDefinition", gridData, 'auto');
+		OpenHR.OpenDialog("Reports/EditChildTable", "divPopupReportDefinition", gridData, '800');
 
 	}
 
