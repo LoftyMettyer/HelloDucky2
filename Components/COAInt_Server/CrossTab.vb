@@ -1190,7 +1190,7 @@ LocalErr:
 				ReDim Preserve strSearch(lngCount)
 				dblGroupMax = dblGroup + mdblStep(lngLoop) - dblUnit
 				strHeading(lngCount) = ConvertNumberForDisplay(VB6.Format(dblGroup, mstrFormat(lngLoop))) & IIf(dblGroupMax <> dblGroup, " - " & ConvertNumberForDisplay(Format(dblGroupMax, mstrFormat(lngLoop))), "")
-				strSearch(lngCount) = String.Format("{0} > {1} AND {0} < {2}", strColumnName, ConvertNumberForSQL(CStr(dblGroup)), ConvertNumberForSQL(CStr(dblGroupMax)))
+				strSearch(lngCount) = String.Format("{0} >= {1} AND {0} <= {2}", strColumnName, ConvertNumberForSQL(CStr(dblGroup)), ConvertNumberForSQL(CStr(dblGroupMax)))
 				lngCount += 1
 			Next
 
