@@ -681,13 +681,14 @@ select.readonly {
 	margin: 5px 0 5px 0;
 }
 
-#divExpressionSelectionButtons, #divSortOrderButtons, #divSelectOrder, #divLookupFindButtons, #divLinkFindButtons {
+#divExpressionSelectionButtons, #divSortOrderButtons, #divSelectOrder, 
+#divLookupFindButtons, #divLinkFindButtons, #divEmailSelectionButtons {
 	float: right;
 	margin: 15px 0 5px 0;
 }
 
 
-#divExpressionSelectionButtons input[type=button] {
+#divExpressionSelectionButtons input[type=button], #divEmailSelectionButtons  input[type=button] {
 	width: 86px;
 }
 #divPopupReportDefinition #divChildTablesButtons {

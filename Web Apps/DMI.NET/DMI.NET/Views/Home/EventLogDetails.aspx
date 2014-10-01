@@ -459,7 +459,7 @@
 					"&txtFromMain=" + frmEmail.txtFromMain.value +
 					"&txtBatchInfo=" + escape(frmEmail.txtBatchInfo.value) +
 					"&txtBatchy=" + frmEmail.txtBatchy.value;
-				OpenHR.windowOpen(sURL, (screen.width) / 2 + 45, (screen.height) / 2 - 85, "no", "no");
+				OpenHR.windowOpen(sURL, (screen.width) / 3, (screen.height) / 2,'no','no');
 			}
 
 			function printEvent() {

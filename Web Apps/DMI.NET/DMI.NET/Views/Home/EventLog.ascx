@@ -397,7 +397,7 @@
 				"&txtEventBatchJobID=" + frmDetails.txtEventBatchJobID.value +
 				"&txtEventBatchRunID=" + frmDetails.txtEventBatchRunID.value +
 				"&txtEmailPermission=" + escape(frmDetails.txtEmailPermission.value);
-
+		
 		OpenHR.windowOpen(sURL, 900, 720);
 	}
 
@@ -465,14 +465,14 @@
 		}
 
 		frmEmail.txtSelectedEventIDs.value = sEventList.substr(0, sEventList.length - 1);
-
+		
 		sURL = "emailSelection" +
 				"?txtSelectedEventIDs=" + frmEmail.txtSelectedEventIDs.value +
 				"&txtFromMain=" + frmEmail.txtFromMain.value +
 				"&txtEmailOrderColumn=" + frmLog.txtELOrderColumn.value +
 				"&txtEmailOrderOrder=" + frmLog.txtELOrderOrder.value;
 
-		OpenHR.windowOpen(sURL, (screen.width) / 2 + 45, (screen.height) / 2 - 85, "no", "no");
+		OpenHR.windowOpen(sURL, (screen.width) / 3, (screen.height) / 2, "no", "no");
 	}
 
 	function EventLog_refreshButtons() {

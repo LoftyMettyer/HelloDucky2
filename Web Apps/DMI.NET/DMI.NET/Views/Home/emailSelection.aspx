@@ -175,7 +175,7 @@
     </script>
 </head>
 
-<body id="bdyMain" name="bdyMain" <%=session("BodyColour")%> leftmargin="20" topmargin="20" bottommargin="20" rightmargin="20" style="overflow: hidden">
+<body id="bdyMain" name="bdyMain" <%=session("BodyColour")%>>
     <form id="frmPopup" name="frmPopup" onsubmit="return setForm();" style="visibility: hidden; display: none">
         <input type="hidden" id="txtSelectedID" name="txtSelectedID">
         <input type="hidden" id="txtSelectedName" name="txtSelectedName">
@@ -183,24 +183,20 @@
         <input type="hidden" id="txtSelectedUserName" name="txtSelectedUserName">
     </form>
 
-    <div style="text-align: center">
-        <h3></h3>
-    </div>
+	<div class="absolutefull">
+		<div class="pageTitleDiv" style="margin-bottom: 15px; margin-top: 10px">
+			<span class="pageTitle" id="EventLogEmailPageTitle">Email Selection</span>
+		</div>
 
-    <div style="margin-left: 15px;">
-        <%=GetEmailSelection()%>
-    </div>
+		<div style="">
+			<%=GetEmailSelection()%>
 
-    <div style="margin-top: 10px; margin-right: 20px; float: right;">
-        <input id="cmdok" type="button" value="OK" name="cmdok"
-            style="width: 80px"
-            class="button"
-            onclick="emailEvent();" />
-        <input id="cmdcancel" type="button" value="Cancel" name="cmdcancel"
-            style="width: 80px"
-            class="button"
-            onclick="self.close();" />
-    </div>
+			<div id="divEmailSelectionButtons">
+				<input class="button" id="cmdok" name="cmdok" onclick="emailEvent();" type="button" value="OK" />
+				<input class="button" id="cmdcancel" name="cmdcancel" onclick="self.close();" style="" type="button" value="Cancel" />
+			</div>
+		</div>
+	</div>
 
     <form name="frmEmailDetails" id="frmEmailDetails" style="visibility: hidden; display: none; width: 100%">
         <%
@@ -300,19 +296,17 @@
         colModel: [
 						{ name: 'EmailGroupIDHeader', hidden: true },
             { name: 'FullNameHeader', sortable: false, hidden: true },
-            { name: 'to', edittype: 'checkbox', index: 'to', editoptions: { value: "True:False" }, formatter: 'checkbox', formatoptions: { disabled: false }, align: 'center', width: 20 },
-            { name: 'cc', edittype: 'checkbox', index: 'cc', editoptions: { value: "True:False" }, formatter: 'checkbox', formatoptions: { disabled: false }, align: 'center', width: 20 },
-            { name: 'bcc', edittype: 'checkbox', index: 'bcc', editoptions: { value: "True:False" }, formatter: 'checkbox', formatoptions: { disabled: false }, align: 'center', width: 20 },
+            { name: 'to', edittype: 'checkbox', index: 'to', editoptions: { value: "True:False" }, formatter: 'checkbox', formatoptions: { disabled: false }, align: 'center', width: '10' },
+            { name: 'cc', edittype: 'checkbox', index: 'cc', editoptions: { value: "True:False" }, formatter: 'checkbox', formatoptions: { disabled: false }, align: 'center', width: '10' },
+            { name: 'bcc', edittype: 'checkbox', index: 'bcc', editoptions: { value: "True:False" }, formatter: 'checkbox', formatoptions: { disabled: false }, align: 'center', width: '10' },
 						{ name: 'NameHeader', sortable: false, width: '90%' }
         ],
 				cmTemplate: { sortable: false },
         rowNum: 1000,   //TODO set this to blocksize...
-        height: 320,
+        height: 350,
         autowidth: true,
         beforeSelectRow: function (rowid, e) { return false; }
     });
-
-    $("#EmailSelectionTable").jqGrid('setGridWidth', $("#EmailSelectionTable").jqGrid().width() - 4);
 
     function refreshControls() {
         var sSelectionList = jQuery("#EmailSelectionTable").jqGrid('getGridParam', 'selarrrow');
