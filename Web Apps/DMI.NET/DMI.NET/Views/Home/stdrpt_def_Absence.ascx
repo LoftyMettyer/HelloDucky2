@@ -738,7 +738,7 @@
 								<input  disabled="disabled" id="txtFilename" name="txtFilename" type="text">
 							</td>
 							<td >
-								<input id="cmdFilename" name="cmdFilename" class="btn" type="button" value="..."
+								<input id="cmdFilename" name="cmdFilename" class="btn hidden" type="button" value="..."
 									onclick="populateAbsenceFileName(frmAbsenceDefinition);" />
 							</td>
 						</tr>
