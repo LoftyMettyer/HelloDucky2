@@ -7,43 +7,35 @@
 <script src="<%: Url.LatestContent("~/bundles/utilities_picklists")%>" type="text/javascript"></script>
 
 <form id="frmDefinition">
-	<div class="absolutefull">
-
-		<div style="display: block;">
-			<div class="formField floatleft formInput">
+	<div class="absolutefull" style="padding-top: 15px">
+		<div class="nowrap">
+			<div class="tablerow">
 				<label>Name :</label>
-				<input id="txtName" name="txtName" class="text" maxlength="50" onkeyup="changeName()">
-			</div>
-			<div class="formField floatright">
+				<input id="txtName" name="txtName" maxlength="50" onkeyup="changeName()" style="width: 90%;">
 				<label>Owner :</label>
-				<input id="txtOwner" name="txtOwner" class="text textdisabled" disabled="disabled" tabindex="-1">
+				<input id="txtOwner" style="margin-left: 4px; width: 90%;" name="txtOwner" disabled="disabled" tabindex="-1">
 			</div>
-
-			<div class="formTextArea clearboth floatleft">
+			<br />
+			<div class="tablerow">
 				<label>Description :</label>
-				<textarea id="txtDescription" name="txtDescription" class="textarea" wrap="VIRTUAL" maxlength="255"	onkeyup="changeDescription()"></textarea>
-			</div>
-
-			<div class="formOptionGroup floatright">
+				<textarea id="txtDescription" name="txtDescription" wrap="VIRTUAL" style="width: 90%; height: 60px;" maxlength="255" onkeyup="changeDescription()"></textarea>
 				<label>Access :</label>
 				<div>
-					<label>
-						<input id="optAccessRW" name="optAccess" type="radio" onclick="changeAccess()" checked />
-						Read/Write</label>
-					<label>
-						<input id="optAccessRO" name="optAccess" type="radio" onclick="changeAccess()" />
-						Read Only</label>
-					<label>
-						<input id="optAccessHD" name="optAccess" type="radio" onclick="changeAccess()" />
-						Hidden</label>
+					<input class="inline-block" id="optAccessRW" name="optAccess" type="radio" onclick="changeAccess()" checked />
+					<label class="inline-block" for="optAccessRW">Read/Write</label><br />
+					<input class="inline-block" id="optAccessRO" name="optAccess" type="radio" onclick="changeAccess()" />
+					<label class="inline-block" for="optAccessRO">Read Only</label><br />
+					<input class="inline-block" id="optAccessHD" name="optAccess" type="radio" onclick="changeAccess()" />
+					<label class="inline-block" for="optAccessHD">Hidden</label>
 				</div>
 			</div>
 		</div>
 
-		<div class="clearboth"><hr /></div>
+		<div class="clearboth">
+			<hr />
+		</div>
 
 		<div class="gridwithbuttons clearboth">
-
 			<div id="PickListGrid" style="height: 400px;" class="stretchyfill">
 				<%																																	
 					' Get the employee find columns.
@@ -76,9 +68,8 @@
 					End Try
 
 				%>
-					<table id="ssOleDBGrid"></table>
+				<table id="ssOleDBGrid"></table>
 			</div>
-
 			<div class="stretchyfixed">
 				<input type="button" id="cmdAdd" name="cmdAdd" class="btn" value="Add" onclick="addClick()" />
 				<br />
@@ -94,13 +85,10 @@
 				<br />
 				<input type="button" id="cmdCancel" name="cmdCancel" class="btn" value="Cancel" onclick="cancelClick()" />
 			</div>
-
 		</div>
 
-		<div id="RecordCountDIV" style="margin-top: 40px; position: relative;"></div>
-
-
-		</div>
+	<div id="RecordCountDIV" style="margin-top: 30px; position: relative;"></div>
+	</div>
 </form>
 
 <form action="default_Submit" method="post" id="frmGoto" name="frmGoto" style="visibility: hidden; display: none">
