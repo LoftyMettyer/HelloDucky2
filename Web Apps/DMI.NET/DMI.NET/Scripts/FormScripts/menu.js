@@ -917,6 +917,24 @@ function menu_MenuClick(sTool) {
 			return false;
 		}
 
+	// Nine box grid Reports
+		if (sToolName == "mnutoolNineBox") {
+			hasChanged = menu_saveChanges("NINEBOX", true, false);
+			if (hasChanged == 6) { // 6 = No Change
+				menu_loadDefSelPage(35, 0, 0, true);
+			}
+			else if (hasChanged == 0) {  // 0 = Changed, allow prompted navigation.
+				OpenHR.modalPrompt("You have made changes. Click 'OK' to discard your changes, or 'Cancel' to continue editing.", 1, "Confirm").then(function (answer) {
+					if (answer == 1) {  // OK
+						menu_loadDefSelPage(35, 0, 0, true);
+					}
+					else {
+					}
+				});
+			}
+			return false;
+		}
+
 		// Custom Reports
 		if (sToolName == "mnutoolCustomReports") {
 			hasChanged = menu_saveChanges("CUSTOMREPORTS", true, false);

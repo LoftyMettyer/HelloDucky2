@@ -52,6 +52,8 @@
 					sTemp = sTemp & "CalendarReports"
 				Case 25
 					sTemp = sTemp & "Workflow"
+				Case 35
+					sTemp = sTemp & "NineBoxGrid"
 			End Select
 
 			Session("OnlyMine") = (CLng(objSession.GetUserSetting("defsel", sTemp, "0")) = 1)
@@ -143,6 +145,9 @@
 						if (frmDefSel.utiltype.value == 25) {
 								answer = OpenHR.messageBox("Are you sure you want to run the '" + $.trim(frmDefSel.utilname.value) + "' Workflow ?", 36, "Confirmation...");
 						}
+						if (frmDefSel.utiltype.value == 35) {
+							answer = OpenHR.messageBox("Are you sure you want to run the '" + $.trim(frmDefSel.utilname.value) + "' 9-Box Grid Report ?", 36, "Confirmation...");
+						}
 
 						if (answer == 6) {
 								setrun();
@@ -196,6 +201,7 @@
 		}
 	
 		function defsel_window_onload() {
+			
 				var frmDefSel = document.getElementById('frmDefSel');
 			
 				// Expand the option frame and hide the work frame.
@@ -297,8 +303,7 @@
 		function refreshControls() {
 				//show the Defsel-Find menu block.
 				//$("#mnuSectionUtilities").show();
-				frmDefSel = document.getElementById('frmDefSel');
-			 
+				frmDefSel = document.getElementById('frmDefSel');			
 
 				disableNonDefselTabs();
 
@@ -528,6 +533,32 @@
 						// Show and select the tab
 						$("#toolbarUtilitiesFind").parent().show();
 						$("#toolbarUtilitiesFind").click();
+						break;
+					case '35':  // "NineBoxGrid"
+						// Hide the remaining tabs
+						$("#toolbarUtilitiesFind").parent().hide();
+						$("#toolbarToolsFind").parent().hide();
+						$("#toolbarEventLogFind").parent().hide();
+						$("#toolbarWFPendingStepsFind").parent().hide();
+						// Enable the buttons
+						menu_toolbarEnableItem("mnutoolNewReportFind", IsNewPermitted && fFromMenu);
+						menu_setVisibleMenuItem("mnutoolNewReportFind", true);
+						menu_toolbarEnableItem("mnutoolCopyReportFind", fHasRows && IsNewPermitted && fFromMenu);
+						menu_setVisibleMenuItem("mnutoolCopyReportFind", true);
+						menu_toolbarEnableItem("mnutoolEditReportFind", fHasRows && (IsEditPermitted || IsViewPermitted) && fFromMenu);
+						menu_SetmnutoolButtonCaption("mnutoolEditReportFind", (IsEditPermitted == false ? 'View' : 'Edit'));
+						menu_setVisibleMenuItem("mnutoolEditReportFind", true);
+						menu_toolbarEnableItem("mnutoolDeleteReportFind", fHasRows && IsDeletePermitted && fFromMenu);
+						menu_setVisibleMenuItem("mnutoolDeleteReportFind", true);
+						menu_toolbarEnableItem("mnutoolPropertiesReportFind", fHasRows && fFromMenu);
+						menu_setVisibleMenuItem("mnutoolPropertiesReportFind", true);
+						menu_toolbarEnableItem("mnutoolRunReportFind", fHasRows && IsRunPermitted && fFromMenu);
+						// Only display the 'close' button for defsel when called from rec edit...
+						menu_setVisibleMenuItem('mnutoolCloseReportFind', !fFromMenu);
+						menu_toolbarEnableItem('mnutoolCloseReportFind', !fFromMenu);
+						// Show and select the tab
+						$("#toolbarReportFind").parent().show();
+						$("#toolbarReportFind").click();
 						break;
 		}
 			//menu_toolbarEnableItem("mnutoolNewReportFind", true);
@@ -813,7 +844,9 @@
 
 		Case "25"
 			strKeyPrefix = "WORKFLOW"
-				
+		
+		Case "35"
+			strKeyPrefix = "NINEBOXGRID"
 	End Select
 	
 	fNewGranted = objSession.IsPermissionGranted(strKeyPrefix, "NEW")
@@ -868,6 +901,8 @@
 																				Response.Write("Calendar Reports")
 																			ElseIf Session("defseltype") = UtilityType.utlWorkflow Then
 																				Response.Write("Workflow")
+																			ElseIf Session("defseltype") = UtilityType.utlNineBoxGrid Then
+																				Response.Write("9-Box Grid Reports")
 																			End If
 																		%>
 																</span>

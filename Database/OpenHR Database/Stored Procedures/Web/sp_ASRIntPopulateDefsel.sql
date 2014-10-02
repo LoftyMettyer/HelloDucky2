@@ -112,7 +112,15 @@ BEGIN
 				AND ISNULL(ASRSysWorkflows.initiationType, 0) = 0
 			ORDER BY ASRSysWorkflows.name';
 	END
-	
+
+	IF @intType = 35 /*'nineboxgridreport'*/
+	BEGIN
+		SET @strTableName = 'AsrSysCrossTab';
+		SET @strIDName = 'CrossTabID';
+		SET @fNewAccess = 1;
+		SET @sAccessTableName= 'ASRSysCrossTabAccess';
+	END
+		
 	IF len(@strExplicitSQL) > 0 
 	BEGIN
 		SET @strSQL = @strExplicitSQL;

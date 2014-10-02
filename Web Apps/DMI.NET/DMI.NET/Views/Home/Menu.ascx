@@ -347,6 +347,7 @@
 				<li class="hidden" id="mnutoolStdRpt_BradfordFactor"><a href="#">Bradford Factor...</a></li>
 				<li class="hidden" id="mnutoolStdRpt_StabilityReport"><a href="#">Stability Report...</a></li>
 				<li class="hidden" id="mnutoolStdRpt_TurnoverReport"><a href="#">Turnover...</a></li>
+				<li id="mnutoolNineBox"><a href="#">9-Box Grid Reports</a></li>
 				<li id="mnutoolOrgChart"><a href="#">Organisation Chart</a></li>
 			</ul>
 		</div>
