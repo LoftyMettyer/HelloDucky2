@@ -51,7 +51,7 @@ End Code
 					@Html.LabelFor(Function(m) m.Records)
 				</div>
 				<div class="stretchyfill">
-					@Html.TextBoxFor(Function(m) m.Records, New With {.id = "txtChildRecords", .class = "spinner"})
+                    @Html.TextBoxFor(Function(m) m.Records, New With {.id = "txtChildRecords", .class = "spinner"})
 				</div>
 			</div>
 		</div>
@@ -68,7 +68,40 @@ End Code
 End Code
 <script>
 
-	$(function () {
+    $(function () {
+
+        //add spinner functionality
+        $('.spinner').each(function () {
+            var id = $(this).attr('id');
+            var minvalue = $(this).attr('data-minval');
+            var maxvalue = $(this).attr('data-maxval');
+            var increment = $(this).attr('data-increment');
+            var disabledflag = $(this).attr('data-disabled');
+
+            $('#' + id).spinner({
+                min: minvalue,
+                max: maxvalue,
+                step: increment,
+                disabled: disabledflag,
+                spin: function (event, ui) { enableSaveButton(); }
+            }).on('input', function () {
+                if (this.value == "") {
+                    return;
+                }
+                var val = parseInt(this.value, 10),
+                $this = $(this),
+                max = $this.spinner('option', 'max'),
+                min = $this.spinner('option', 'min');
+                //if (!val.match(/^\d+$/)) val = 0; //we want only number, no alpha			                
+                this.value = val > max ? max : val < min ? min : val;
+            }).blur(function () {
+                if (this.value == "") this.value = 0;
+            });
+        });
+
+        //set the records field to numeric
+        $('#txtChildRecords').numeric();
+
 		//some styling
 		$(".spinner").spinner({
 			min: 0,
@@ -76,14 +109,15 @@ End Code
 			showOn: 'both'
 		}).css("width", "60px");
 
+        //set the fields to read only
 		if (isDefinitionReadOnly()) {
 			$("#frmPostChildTable input").prop('disabled', "disabled");
 			$("#frmPostChildTable select").prop('disabled', "disabled");
 			$("#frmPostChildTable :button").prop('disabled', "disabled");
+			$("#frmPostChildTable .spinner").spinner("option", "disabled", true);
 		}
 
 		button_disable($("#butEditChildTableCancel")[0], false);
-
 	})
 
 	function changeChildTable() {
@@ -183,6 +217,12 @@ End Code
 	}
 
 	function postThisChildTable() {
+
+	    // Validation
+	    if (isNaN($("#txtChildRecords").val()) == true) {
+	        OpenHR.modalMessage("The value '" + $("#txtChildRecords").val() + "' is not valid for Records.");
+	        return false;
+	    }
 
 		// Update client
 		var gridData = $('#ChildTables').getRowData('@Model.ID');

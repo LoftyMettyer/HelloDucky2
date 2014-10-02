@@ -123,15 +123,55 @@
 <script>
 	$(function () {
 
-		$(".spinner").spinner({
-			min: -99,
-			max: 99,
-			showOn: 'both'
-		}).css("width", "20px");
+	    //add spinner functionality
+	    $('.spinner').each(function () {
+	        var id = $(this).attr('id');
+	        var minvalue = $(this).attr('data-minval');
+	        var maxvalue = $(this).attr('data-maxval');
+	        var increment = $(this).attr('data-increment');
+	        var disabledflag = $(this).attr('data-disabled');
 
-		$(".datepicker").datepicker();
+	        $('#' + id).spinner({
+	            min: minvalue,
+	            max: maxvalue,
+	            step: increment,
+	            disabled: disabledflag,
+	            spin: function (event, ui) { enableSaveButton(); }
+	        }).on('input', function () {
+	            if (this.value == "") {
+	                return;
+	            }
+	            var val = parseInt(this.value, 10),
+                $this = $(this),
+                max = $this.spinner('option', 'max'),
+                min = $this.spinner('option', 'min');
+	            //if (!val.match(/^\d+$/)) val = 0; //we want only number, no alpha			                
+	            this.value = val > max ? max : val < min ? min : val;
+	        }).blur(function () {
+	            if (this.value == "") this.value = 0;
+	        });
+	    });
+
+	    $(".spinner").spinner({
+	        min: -99,
+	        max: 99,
+	        showOn: 'both'
+	    }).css("width", "20px");
+
+	    //set the start and end offset fields to numeric
+	    $('#StartOffset').numeric();
+	    $('#EndOffset').numeric();
+
+	    $(".datepicker").datepicker();
 		changeCalendarStartType('@Model.StartType');
-		changeCalendarEndType('@Model.EndType');
+	    changeCalendarEndType('@Model.EndType');
+
+	    //set the fields to read only
+	    if (isDefinitionReadOnly()) {
+	        $("#frmReportDefintion input").prop('disabled', "disabled");
+	        $("#frmReportDefintion select").prop('disabled', "disabled");
+	        $("#frmReportDefintion .spinner").spinner("option", "disabled", true);
+	    }
 	});
 
 

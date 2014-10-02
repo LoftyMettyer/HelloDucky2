@@ -15,7 +15,7 @@
 		<fieldset>
 			<input type="hidden" id="txtParent1ID" name="Parent1.ID" value="@Model.Parent1.ID" />
 			<div class="width30 floatleft">
-				Table:
+				Table :
 			</div>
 			<div class="width70 floatleft">
 				@Html.TextBoxFor(Function(m) m.Parent1.Name, New With {.readonly = "true", .style = "width:100%"})
@@ -69,7 +69,7 @@
 		<fieldset>
 			<input type="hidden" id="txtParent2ID" name="Parent2.ID" value="@Model.Parent2.ID" />
 			<div class="width30 floatleft">
-				Table:
+				Table :
 			</div>
 			<div class="width70 floatleft">
 				@Html.TextBoxFor(Function(m) m.Parent2.Name, New With {.readonly = "true", .style = "width:100%"})
