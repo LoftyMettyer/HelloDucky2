@@ -27,6 +27,7 @@
 		utlSuccession = 23
 		utlCareer = 24
 		utlWorkflow = 25
+		utlNineBoxGrid = 26
 	End Enum
 
 End Namespace
