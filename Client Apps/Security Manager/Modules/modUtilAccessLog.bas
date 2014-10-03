@@ -28,8 +28,16 @@ Public Enum UtilityType
   utlSuccession = 23
   utlCareer = 24
   utlWorkflow = 25
-  utlVersion1 = 26
-  utlReportPack = 27
+  utlWorkFlowPendingSteps = 26
+  utlOrderDefinition = 27
+  utlDocumentMapping = 28
+  utlReportPack = 29
+  utlTurnover = 30
+  utlStability = 31
+  utlScreen = 32
+  utlTable = 33
+  utlColumn = 34
+  utlNineBoxGrid = 35
 End Enum
 
 
