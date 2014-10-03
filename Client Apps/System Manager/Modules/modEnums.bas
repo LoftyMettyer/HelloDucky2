@@ -401,6 +401,7 @@ Public Enum UtilityType
   utlScreen = 32
   utlTable = 33
   utlColumn = 34
+  utlNineBoxGrid = 35
 End Enum
 
 ' Workflow Edit
