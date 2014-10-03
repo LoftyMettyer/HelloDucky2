@@ -76,6 +76,7 @@ Public Enum UtilityType
   utlScreen = 32
   utlTable = 33
   utlColumn = 34
+  utlNineBoxGrid = 35
 End Enum
 
 ' Screen Types
@@ -213,7 +214,7 @@ End Enum
 Public Enum NavigateIn
   URL = 0
   MenuBar = 1
-  Db = 2
+  DB = 2
 End Enum
 
 
