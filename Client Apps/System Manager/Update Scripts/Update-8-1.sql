@@ -219,6 +219,46 @@ PRINT 'Step - XML Export Improvement'
 	IF NOT EXISTS(SELECT id FROM syscolumns WHERE  id = OBJECT_ID('ASRSysExportName', 'U') AND name = 'SplitXMLNodesFile')
 		EXEC sp_executesql N'ALTER TABLE ASRSysExportName ADD SplitXMLNodesFile bit;';
 
+/* --------------------------------------------------------- */
+PRINT 'Step - Update ASRSysCrossTab definition for 9-Box Grid'
+/* --------------------------------------------------------- */
+
+	IF NOT EXISTS(SELECT id FROM syscolumns WHERE  id = OBJECT_ID('ASRSysCrossTab', 'U') AND name = 'CrossTabType') BEGIN
+		EXEC sp_executesql N'
+			ALTER TABLE ASRSysCrossTab ADD
+									   CrossTabType tinyint, 
+									   XAxisLabel nvarchar(255) NULL,
+									   XAxisSubLabel1 nvarchar(255) NULL,
+									   XAxisSubLabel2 nvarchar(255) NULL,
+									   XAxisSubLabel3 nvarchar(255) NULL,
+									   YAxisLabel nvarchar(255) NULL,
+									   YAxisSubLabel1 nvarchar(255) NULL,
+									   YAxisSubLabel2 nvarchar(255) NULL,
+									   YAxisSubLabel3 nvarchar(255) NULL,
+									   Description1 nvarchar(255) NULL,
+									   ColorDesc1 INT NULL,
+									   Description2 nvarchar(255) NULL,
+									   ColorDesc2 INT NULL,
+									   Description3 nvarchar(255) NULL,
+									   ColorDesc3 INT NULL,
+									   Description4 nvarchar(255) NULL,
+									   ColorDesc4 INT NULL,
+									   Description5 nvarchar(255) NULL,
+									   ColorDesc5 INT NULL,
+									   Description6 nvarchar(255) NULL,
+									   ColorDesc6 INT NULL,
+									   Description7 nvarchar(255) NULL,
+									   ColorDesc7 INT NULL,
+									   Description8 nvarchar(255) NULL,
+									   ColorDesc8 INT NULL,
+									   Description9 nvarchar(255) NULL,
+									   ColorDesc9 INT NULL;
+									   ';
+        EXEC sp_executesql N'UPDATE ASRSysCrossTab SET CrossTabType = 0'; --'Normal' crosstab
+	END
+
+/* ------------------------------------------------------- */
+
 /* ------------------------------------------------------------- */
 /* Update the database version flag in the ASRSysSettings table. */
 /* Dont Set the flag to refresh the stored procedures            */
