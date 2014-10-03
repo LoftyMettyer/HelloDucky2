@@ -111,10 +111,10 @@
 						<input class="ui-widget ui-corner-all" id="SelectedColumnIsGroupWithNext" onchange="changeColumnIsGroupWithNext();" type="checkbox">
 						<label id="labelSelectedColumnIsGroupWithNext" for="SelectedColumnIsGroupWithNext">Group with next</label>
 					</div>
-							<div class="tablecell baseTableOnly" style="color: rgb(165, 147, 147);">
-								<input disabled="disabled" class="ui-widget ui-corner-all" id="SelectedColumnIsRepeated" onchange="updateColumnsSelectedGrid();" type="checkbox">
-						<label id="labelSelectedColumnRepeatOnChild" for="SelectedColumnIsRepeated">Repeat on child rows</label>
-					</div>
+                            <div class="tablecell baseTableOnly">
+                                <input class="ui-widget ui-corner-all" id="SelectedColumnIsRepeated" onchange="updateColumnsSelectedGrid();" type="checkbox">
+                                <label id="labelSelectedColumnRepeatOnChild" for="SelectedColumnIsRepeated">Repeat on child records</label>
+                            </div>
 						</div>
 
 					</div>
@@ -556,8 +556,7 @@
 			$(".cannotBeHidden").css("color", "#A59393");
 			$(".canGroupWithNext").css("color", "#A59393");
 			$("#labelSelectedColumnIsHidden").css("color", "#A59393");
-			$("#labelSelectedColumnRepeatOnChild").css("color", "#A59393");
-
+			$(".baseTableOnly").css("color", "#A59393");
 		}
 		else {
 
