@@ -104,17 +104,21 @@
 			});
 
 			//Show the click to expand plus/minus icon
-			$('.node').each(function () {
-				if ($(this).parent().parent().siblings().length > 0) {
-					$(this).find('.expandNode').show();
-				}
-			});	
+			showExpandNodeIcons();
 
 			//set all contracted nodes expand icon to a +
 			$('.contracted .expandNode').attr('src', window.ROOT + 'Content/images/plus.gif');
 
 		}
 	});
+
+	function showExpandNodeIcons() {
+		$('.node').each(function () {
+			if ($(this).parent().parent().siblings().length > 0) {
+				$(this).find('.expandNode').show();
+			}
+		});
+	}
 
 	function centreMe(fSelf) {
 		try {
@@ -216,9 +220,9 @@
 		newWin.focus();
 		newWin.print();
 		newWin.close();
-		
-		$('.expandNode').show();	// redisplay expand boxes.
 
+		showExpandNodeIcons(); // redisplay expand boxes.
+		
 	}
 
 </script>
