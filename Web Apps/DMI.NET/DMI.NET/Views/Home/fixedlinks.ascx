@@ -964,7 +964,7 @@
 						</li>
 						<li><span>Interact</span>
 							<div id="mnutoolOrgChartExpand" class="button">
-								<a href="#" rel="table" title="View">
+								<a href="#" rel="table" title="Expand all nodes">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/add64HOVER.png")%>" alt="" />
 									<i class="icon-plus"></i>
 									<h6>Expand All Nodes</h6>
