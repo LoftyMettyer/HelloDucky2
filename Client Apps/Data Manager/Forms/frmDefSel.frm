@@ -2188,6 +2188,7 @@ Public Sub GetSQL(lngUtilType As utilityType, Optional psRecordSourceWhere As St
   Case utlCrossTab
     msTypeCode = "CROSSTABS"
     msType = "Cross Tab"
+			strExtraWhereClause = "CrossTabType <> 4"
     msGeneralCaption = "Cross Tabs"
     msSingularCaption = "Cross Tab"
     msTableName = "ASRSysCrossTab"
