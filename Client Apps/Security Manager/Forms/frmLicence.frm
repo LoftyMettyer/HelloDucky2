@@ -476,7 +476,7 @@ Private Sub PopulateModules()
     .AddItem "Fusion Integration": .ItemData(.NewIndex) = lngBit: lngBit = lngBit * 2
     .AddItem "XML Exports": .ItemData(.NewIndex) = lngBit: lngBit = lngBit * 2
     .AddItem "3rd Party Tables": .ItemData(.NewIndex) = lngBit: lngBit = lngBit * 2
-    
+    .AddItem "9-Box Grids": .ItemData(.NewIndex) = lngBit: lngBit = lngBit * 2
     lngBit = lngBit * 2
   End With
 
