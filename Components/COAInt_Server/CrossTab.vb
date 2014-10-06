@@ -400,6 +400,8 @@ Public Class CrossTab
 		' JDM - 05/12/02 - Fault 4840 - Wrong report type in event log
 		If mlngCrossTabType = Enums.CrossTabType.cttAbsenceBreakdown Then
 			Logs.AddHeader(EventLog_Type.eltStandardReport, "Absence Breakdown")
+		ElseIf mlngCrossTabType = CrossTabType.ctt9GridBox Then
+			Logs.AddHeader(EventLog_Type.elt9GridBox, Name)
 		Else
 			Logs.AddHeader(EventLog_Type.eltCrossTab, Name)
 		End If
@@ -493,9 +495,6 @@ ErrorTrap:
 
 		ReDim mastrUDFsRequired(0)
 
-		' Define this cross tab as a normal one
-		mlngCrossTabType = Enums.CrossTabType.cttNormal
-
 		strSQL = "SELECT ASRSysCrossTab.*, 'TableName' = ASRSysTables.TableName, 'RecordDescExprID' = ASRSysTables.RecordDescExprID, 'IntersectionColName' = ASRSysColumns.ColumnName, " & "'IntersectionDecimals' = ASRSysColumns.Decimals " & "FROM ASRSysCrossTab " & "JOIN ASRSysTables ON ASRSysCrossTab.TableID = ASRSysTables.TableID " & "LEFT OUTER JOIN ASRSysColumns ON ASRSysCrossTab.IntersectionColID = ASRSysColumns.ColumnID " & "WHERE CrossTabID = " & CStr(mlngCrossTabID)
 
 		Try
@@ -519,6 +518,9 @@ ErrorTrap:
 					RetreiveDefinition = False
 					Exit Function
 				End If
+
+				'Set the CrossTab type
+				mlngCrossTabType = CInt(objRow("CrossTabType"))
 
 				mlngBaseTableID = CInt(objRow("TableID"))
 				mstrBaseTable = objRow("TableName").ToString()
@@ -549,7 +551,12 @@ ErrorTrap:
 				mlngColID(HOR) = CInt(objRow("HorizontalColID"))
 				mdblMin(HOR) = Val(objRow("HorizontalStart"))
 				mdblMax(HOR) = Val(objRow("HorizontalStop"))
-				mdblStep(HOR) = Val(objRow("HorizontalStep"))
+				If CrossTabType = CrossTabType.ctt9GridBox Then
+					mdblStep(HOR) = (mdblMax(HOR) - mdblMin(HOR)) / 3
+				Else
+					mdblStep(HOR) = Val(objRow("HorizontalStep"))
+				End If
+
 				mstrColName(HOR) = GetColumnName(mlngColID(HOR))
 				mlngColDataType(HOR) = CStr(GetDataType(mlngBaseTableID, mlngColID(HOR)))
 				mstrFormat(HOR) = GetFormat(mlngColID(HOR))
@@ -557,7 +564,11 @@ ErrorTrap:
 				mlngColID(VER) = CInt(objRow("VerticalColID"))
 				mdblMin(VER) = Val(objRow("VerticalStart"))
 				mdblMax(VER) = Val(objRow("VerticalStop"))
-				mdblStep(VER) = Val(objRow("VerticalStep"))
+				If CrossTabType = CrossTabType.ctt9GridBox Then
+					mdblStep(VER) = (mdblMax(VER) - mdblMin(VER)) / 3
+				Else
+					mdblStep(VER) = Val(objRow("VerticalStep"))
+				End If
 				mstrColName(VER) = GetColumnName(mlngColID(VER))
 				mlngColDataType(VER) = CStr(GetDataType(mlngBaseTableID, mlngColID(VER)))
 				mstrFormat(VER) = GetFormat(mlngColID(VER))
@@ -1185,7 +1196,7 @@ LocalErr:
 			End If
 
 			lngCount = 2
-			For dblGroup = mdblMin(lngLoop) To mdblMax(lngLoop) Step mdblStep(lngLoop)
+			For dblGroup = mdblMin(lngLoop) To mdblMax(lngLoop) - IIf(CrossTabType = CrossTabType.ctt9GridBox, mdblStep(lngLoop), 0) Step mdblStep(lngLoop)
 				ReDim Preserve strHeading(lngCount)
 				ReDim Preserve strSearch(lngCount)
 				dblGroupMax = dblGroup + mdblStep(lngLoop) - dblUnit
