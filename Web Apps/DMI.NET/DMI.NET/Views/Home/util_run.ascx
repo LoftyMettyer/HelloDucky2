@@ -250,6 +250,8 @@
 					Html.RenderPartial("~/Views/Home/util_run_customreportsMain.ascx")
 				ElseIf Session("utiltype") = "17" Then
 					Html.RenderPartial("~/Views/Home/util_run_calendarreport_main.ascx")
+				ElseIf Session("utiltype") = "35" Then
+					Html.RenderPartial("~/Views/Home/util_run_crosstabsMain.ascx")
 				Else
 					' blah.
 				End If

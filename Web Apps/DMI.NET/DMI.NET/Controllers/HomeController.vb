@@ -818,6 +818,8 @@ Namespace Controllers
 						Return RedirectToAction("util_def_calendarreport", "reports")
 						'Case 25	' WORKFLOW 
 						'Return RedirectToAction("util_run_workflow")
+					Case 35	' NINE BOX
+						Return RedirectToAction("util_def_crosstab", "reports")
 				End Select
 
 			ElseIf Session("action") = "delete" Then
@@ -838,6 +840,8 @@ Namespace Controllers
 						Session("reaction") = "CALENDARREPORTS"
 						'Case 25	' WORKFLOW 
 						'	Session("reaction") = "WORKFLOWS"
+					Case 35	' NINE BOX
+						Session("reaction") = "NINEBOX"
 				End Select
 				Return RedirectToAction("checkforusage")
 			End If

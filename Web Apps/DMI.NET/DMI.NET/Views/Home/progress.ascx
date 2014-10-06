@@ -57,6 +57,10 @@
 	ElseIf Session("utiltype") = 17 Then
 		Response.Write("Calendar Report.&nbsp; ")
 		Response.Write("<INPUT value=""Calendar Report '" & Replace(Session("utilname"), """", "&quot;") & "'"" id=txtUtilTypeDesc name=txtUtilTypeDesc type=hidden>")
+	ElseIf Session("utiltype") = 35 Then
+		Response.Write("9-Box Grid Report.&nbsp; ")
+		Response.Write("<INPUT value=""9-Box Grid Report '" & Replace(Session("utilname"), """", "&quot;") & "'"" id=txtUtilTypeDesc name=txtUtilTypeDesc type=hidden>")
+
 	Else
 		Response.Write("<INPUT value=""Unknown"" id=txtUtilTypeDesc name=txtUtilTypeDesc type=hidden>")
 	End If

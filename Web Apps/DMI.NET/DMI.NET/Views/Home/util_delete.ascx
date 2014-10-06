@@ -78,7 +78,12 @@
 			' Calendar Reports
 			sPrimaryTableName = "ASRSysCalendarReports"
 			sUtilTypeName = "calendar report"
-	
+
+		ElseIf Session("utiltype") = 35 Then
+			' Cross Tabs
+			sPrimaryTableName = "AsrSysCrossTab"
+			sUtilTypeName = "9-box grid report"
+
 		End If
 	
 		If Len(sPrimaryTableName) > 0 Then
