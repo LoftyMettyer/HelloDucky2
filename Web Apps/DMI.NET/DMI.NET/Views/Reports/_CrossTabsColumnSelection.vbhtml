@@ -25,9 +25,9 @@
 					@Html.ValidationMessageFor(Function(m) m.HorizontalID)
 					@Html.Hidden("HorizontalDataType", CInt(Model.HorizontalDataType))
 				</td>
-				<td class="startstopincrementcol">@Html.TextBoxFor(Function(m) m.HorizontalStart, New With {.class = "number"})</td>
-				<td class="startstopincrementcol">@Html.TextBoxFor(Function(m) m.HorizontalStop, New With {.class = "number"})</td>
-				<td class="startstopincrementcol">@Html.TextBoxFor(Function(m) m.HorizontalIncrement, New With {.class = "number"})</td>
+				<td class="startstopincrementcol">@Html.TextBoxFor(Function(m) m.HorizontalStart, New With {.class = "selectFullText"})</td>
+				<td class="startstopincrementcol">@Html.TextBoxFor(Function(m) m.HorizontalStop, New With {.class = "selectFullText"})</td>
+				<td class="startstopincrementcol">@Html.TextBoxFor(Function(m) m.HorizontalIncrement, New With {.class = "selectFullText"})</td>
 			</tr>
 			<tr style="height: 10px;"></tr>
 			<tr>
@@ -37,9 +37,9 @@
 					@Html.ValidationMessageFor(Function(m) m.VerticalID)
 					@Html.Hidden("VerticalDataType", CInt(Model.VerticalDataType))
 				</td>
-				<td class="startstopincrementcol">@Html.TextBoxFor(Function(m) m.VerticalStart, New With {.class = "number"})</td>
-				<td class="startstopincrementcol">@Html.TextBoxFor(Function(m) m.VerticalStop, New With {.class = "number"})</td>
-				<td class="startstopincrementcol">@Html.TextBoxFor(Function(m) m.VerticalIncrement, New With {.class = "number"})</td>
+				<td class="startstopincrementcol">@Html.TextBoxFor(Function(m) m.VerticalStart, New With {.class = "selectFullText"})</td>
+				<td class="startstopincrementcol">@Html.TextBoxFor(Function(m) m.VerticalStop, New With {.class = "selectFullText"})</td>
+				<td class="startstopincrementcol">@Html.TextBoxFor(Function(m) m.VerticalIncrement, New With {.class = "selectFullText"})</td>
 			</tr>
 			<tr style="height: 10px;"></tr>
 			<tr>
@@ -48,9 +48,9 @@
 					@Html.ColumnDropdownFor(Function(m) m.PageBreakID, New ColumnFilter() With {.TableID = Model.BaseTableID, .AddNone = True}, New With {.onchange = "crossTabPageBreakChange()"})
 					@Html.Hidden("PageBreakDataType", CInt(Model.PageBreakDataType))
 				</td>
-				<td class="startstopincrementcol">@Html.TextBoxFor(Function(m) m.PageBreakStart, New With {.class = "number"})</td>
-				<td class="startstopincrementcol">@Html.TextBoxFor(Function(m) m.PageBreakStop, New With {.class = "number"})</td>
-				<td class="startstopincrementcol">@Html.TextBoxFor(Function(m) m.PageBreakIncrement, New With {.class = "number"})</td>
+				<td class="startstopincrementcol">@Html.TextBoxFor(Function(m) m.PageBreakStart, New With {.class = "selectFullText"})</td>
+				<td class="startstopincrementcol">@Html.TextBoxFor(Function(m) m.PageBreakStop, New With {.class = "selectFullText"})</td>
+				<td class="startstopincrementcol">@Html.TextBoxFor(Function(m) m.PageBreakIncrement, New With {.class = "selectFullText"})</td>
 			</tr>
 		
 			<tr style="height:60px;">
@@ -288,6 +288,23 @@
 		$('#PercentageOfType').click(function () { refreshTab2Controls(); });
 
 		refreshTab2Controls();
+
+	    //Note:-
+		//This solution working in Firefox, Chrome and IE, both with keyboard focus and mouse focus. 
+		//It also handles correctly clicks following the focus (it moves the caret and doesn't reselect the text):
+	    //With keyboard focus, only onfocus triggers which selects the text because this.clicked is not set. With mouse focus, onmousedown triggers, then onfocus and then onclick which selects the text in onclick but not in onfocus (Chrome requires this).
+		//Mouse clicks when the field is already focused don't trigger onfocus which results in not selecting anything.
+		$(".selectFullText").bind({
+		    click: function () {
+		        if (this.clicked == 2) this.select(); this.clicked = 0;
+		    },
+		    mousedown: function () {
+		        this.clicked = 1;
+		    },
+		    focus: function () {
+		        if (!this.clicked) this.select(); else this.clicked = 2;
+		    }
+		});
 
 	});
 
