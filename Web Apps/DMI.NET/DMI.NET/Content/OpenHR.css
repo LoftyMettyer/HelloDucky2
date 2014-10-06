@@ -1293,3 +1293,41 @@ div.displaytable {
 	width: 160px;
 }
 	
+ 
+
+#tblNineBox {
+    font-family: verdana;
+    padding: 0;
+    margin: 0 auto;
+    text-align: center;
+    vertical-align: middle;
+}
+#tblNineBox p {
+    margin: 0;
+}
+#tblNineBox td {
+    border: 1px solid black;
+    width: 100px;
+    height: 100px;
+}
+#tblNineBox .yaxisminor, #tblNineBox .yaxismajor {
+    width: 30px;
+}
+#tblNineBox .xaxis {
+    border: none;
+}
+#tblNineBox .xaxisminor {
+    height: 30px;
+}
+#tblNineBox .rot270 {    
+    transform: rotate(270deg);
+}
+#tblNineBox #id5 {
+    background-color: orange;
+}
+
+
+
+
+
+

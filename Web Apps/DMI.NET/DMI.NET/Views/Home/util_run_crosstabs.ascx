@@ -47,13 +47,54 @@
 %>
 
 <div>
-	<table id="ssOutputGrid">
+	<table id="ssOutputGrid" style="display: none;">
 		<tbody>
 			<tr>
 				<th>_</th>
 			</tr>
 		</tbody>
 	</table>
+
+	<table id="tblNineBox" style="display: none;">
+		<tr>
+			<td class="yaxismajor" rowspan="3">
+				<p class="rot270">Potential</p>
+			</td>
+			<td class="yaxisminor">
+				<p class="rot270">High</p>
+			</td>
+			<td>1</td>
+			<td>2</td>
+			<td>3</td>
+		</tr>
+		<tr>
+			<td class="yaxisminor">
+				<p class="rot270">Medium</p>
+			</td>
+			<td>4</td>
+			<td>5</td>
+			<td>6</td>
+		</tr>
+		<tr>
+			<td class="yaxisminor">
+				<p class="rot270">Low</p>
+			</td>
+			<td>7</td>
+			<td>8</td>
+			<td>9</td>
+		</tr>
+		<tr>
+			<td colspan="2" rowspan="2" class="xaxis"></td>
+			<td class="xaxisminor">Low</td>
+			<td class="xaxisminor">Medium</td>
+			<td class="xaxisminor">High</td>
+		</tr>
+		<tr>
+			<td colspan="3" class="xaxisminor">Performance</td>
+		</tr>
+	</table>
+
+
 </div>
 
 

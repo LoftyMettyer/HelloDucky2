@@ -281,15 +281,22 @@
 		'Must be the first time this asp is called...
 		Response.Write(" crosstab_loadAddRecords();" & vbCrLf)
 	Else
-		Response.Write("	$('#ssOutputGrid').jqGrid({data: colData, datatype: 'local', colNames: colNames, height: $('#main').height() * 0.8, colModel: colMode, width: $('#main').width() * 0.99" & vbCrLf)
-		Response.Write("    , rowNum:1000000")
-		Response.Write("	  , ondblClickRow: function (rowId, iRow, iCol, e) {" & vbCrLf)
-		Response.Write("	    	  if (iCol == 0) { return; } // Ignore double click on first column" & vbCrLf)
-		Response.Write("	    	  var lngPage = cboPage.options[cboPage.selectedIndex].Value;" & vbCrLf)
-		Response.Write("	    		var intType = cboIntersectionType.options[cboIntersectionType.selectedIndex].Value;" & vbCrLf)
-		Response.Write("	    		var txtValue = $('#ssOutputGrid')[0].rows[iRow].cells[iCol].textContent;" & vbCrLf)
-		Response.Write("	    		getBreakdown(iCol -1, iRow -1, lngPage, intType, txtValue);}" & vbCrLf)
-		Response.Write("	, cmTemplate: { sortable: false, editable: true }});")
+		If Session("utiltype") <> "35" Then
+			Response.Write("$('#ssOutputGrid').show();" & vbCrLf)
+			Response.Write("	$('#ssOutputGrid').jqGrid({data: colData, datatype: 'local', colNames: colNames, height: $('#main').height() * 0.8, colModel: colMode, width: $('#main').width() * 0.99" & vbCrLf)
+			Response.Write("    , rowNum:1000000")
+			Response.Write("	  , ondblClickRow: function (rowId, iRow, iCol, e) {" & vbCrLf)
+			Response.Write("	    	  if (iCol == 0) { return; } // Ignore double click on first column" & vbCrLf)
+			Response.Write("	    	  var lngPage = cboPage.options[cboPage.selectedIndex].Value;" & vbCrLf)
+			Response.Write("	    		var intType = cboIntersectionType.options[cboIntersectionType.selectedIndex].Value;" & vbCrLf)
+			Response.Write("	    		var txtValue = $('#ssOutputGrid')[0].rows[iRow].cells[iCol].textContent;" & vbCrLf)
+			Response.Write("	    		getBreakdown(iCol -1, iRow -1, lngPage, intType, txtValue);}" & vbCrLf)
+			Response.Write("	, cmTemplate: { sortable: false, editable: true }});")
+		Else
+			Response.Write("$('#tblNineBox').show();" & vbCrLf)
+			
+		End If
+		
 	End If
 	
 	Response.Write("  try {" & vbCrLf)
