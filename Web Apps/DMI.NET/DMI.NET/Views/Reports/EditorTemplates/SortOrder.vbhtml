@@ -113,6 +113,9 @@ End Code
 
 		$("#divPopupReportDefinition").dialog("close");
 		$("#divPopupReportDefinition").empty();
+
+    // enable save button
+		enableSaveButton();
 	}
 
 	function closeThisSortOrder() {

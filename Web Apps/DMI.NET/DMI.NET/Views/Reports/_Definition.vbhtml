@@ -141,17 +141,35 @@
 			enableSaveButton()
 		}
 
-		if (isDefinitionReadOnly()) {
+		if (isDefinitionReadOnly())
+		{
 			$("#frmReportDefintion input").prop('disabled', "disabled");
 			$("#frmReportDefintion textarea").prop('disabled', "disabled");
 			$("#frmReportDefintion select").prop('disabled', "disabled");
 			$("#frmReportDefintion :button").prop('disabled', "disabled");
-		} else {
+		}
+		else
+		{
 			$("#frmReportDefintion input").on("keydown", function () { enableSaveButton(); });
 			$("#frmReportDefintion textarea").on("keydown", function () { enableSaveButton(); });
 			$("#frmReportDefintion input").on("change", function () { enableSaveButton(); });
 			$("#frmReportDefintion select").on("change", function () { enableSaveButton(); });
-			$("#frmReportDefintion :button").on("click", function () { enableSaveButton(); });
+
+			//bind click event for all buttons on columns tab to enable the save button
+			$("#frmReportDefintion #report_definition_tab_columns :button").on("click", function () { enableSaveButton(); });
+
+			//bind click event for all buttons on Custom Reports->Related Tables tab to enable the save button
+			$("#frmReportDefintion #tabs-2 :button").on("click", function () { enableSaveButton(); });
+
+			//bind click event for remove and removeall button on events tab to enable the save button
+			$("#frmReportDefintion #report_definition_tab_eventdetails #btnEventDetailsRemove").on("click", function () { enableSaveButton(); });
+			$("#frmReportDefintion #report_definition_tab_eventdetails #btnEventDetailsRemoveAll").on("click", function () { enableSaveButton(); });
+
+			//bind click event for all buttons except add and edit on sort order tab to enable the save button
+			$("#frmReportDefintion #report_definition_tab_order #btnSortOrderRemove").on("click", function () { enableSaveButton(); });
+			$("#frmReportDefintion #report_definition_tab_order #btnSortOrderRemoveAll").on("click", function () { enableSaveButton(); });
+			$("#frmReportDefintion #report_definition_tab_order #btnSortOrderMoveUp").on("click", function () { enableSaveButton(); });
+			$("#frmReportDefintion #report_definition_tab_order #btnSortOrderMoveDown").on("click", function () { enableSaveButton(); });
 		}
 
 	});

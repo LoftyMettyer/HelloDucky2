@@ -101,7 +101,7 @@
 			width: gridWidth,
 			ondblClickRow: function (rowID) {
 				eventEdit(rowID);
-				enableSaveButton();
+				//enableSaveButton();
 			},
 			onSelectRow: function (id) {
 

@@ -142,7 +142,7 @@
 				scrollrows: true,
 				ondblClickRow: function (rowID) {
 					editSortSorder(rowID);
-					enableSaveButton();
+					//enableSaveButton();
 				},
 				onSelectRow: function (id) {
 					refreshSortButtons();
