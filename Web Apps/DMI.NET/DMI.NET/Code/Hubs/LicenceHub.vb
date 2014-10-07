@@ -3,8 +3,6 @@ Option Strict Off
 
 Imports System.Collections.Generic
 Imports DMI.NET.Classes
-Imports System.Web.UI.WebControls.Expressions
-Imports Microsoft.AspNet.SignalR.Messaging
 Imports Microsoft.AspNet.SignalR
 Imports Microsoft.AspNet.SignalR.Hubs
 Imports System.Threading.Tasks
@@ -17,6 +15,8 @@ Namespace Code.Hubs
 	<HubName("LicenceHub")> _
 	Public Class LicenceHub
 		Inherits Hub
+
+		Private Shared ReadOnly Licence As New Licence
 
 		Private Shared ReadOnly Sessions As New List(Of String)
 		Private Shared ReadOnly Logins As New List(Of LoginViewModel)
@@ -47,7 +47,7 @@ Namespace Code.Hubs
 																	"Please contact your Account Manager as soon as possible<br/>to increase the licence headcount number.")
 
 				Case LicenceValidation.HeadcountWarning
-					message = String.Format("You are currently within 5% ({0} of {1} employees) of the reaching the<br/>headcount limit set within the terms of your licence agreement.<br/><br/>" & _
+					message = String.Format("You are currently within 95% ({0} of {1} employees) of the reaching the<br/>headcount limit set within the terms of your licence agreement.<br/><br/>" & _
 																	"Once this limit is reached, you will no longer be able to add<br/>new employee records to the system.<br/><br/>" & _
 																	"If you wish to increase the headcount number, please<br/>contact your Account Manager as soon as possible.", _
 																	current_Headcount, Licence.Headcount)
@@ -257,12 +257,23 @@ Namespace Code.Hubs
 
 			Try
 
+				Dim sGetHeadcount As String
+
 				Dim dt As New DataTable()
 
 				Dim connection = New SqlConnection(ConfigurationManager.ConnectionStrings("OpenHR").ConnectionString)
 
-				Dim cmd As New SqlCommand("SELECT SettingValue FROM dbo.ASRSysSystemSettings WHERE Section = 'Database' AND SettingKey = 'Headcount'", connection)
-				cmd.CommandType = Data.CommandType.Text
+				Select Case Licence.Type
+					Case LicenceType.Headcount, LicenceType.DMIConcurrencyAndHeadcount
+						sGetHeadcount = "SELECT SettingValue FROM dbo.ASRSysSystemSettings WHERE Section = 'Headcount' AND SettingKey = 'current'"
+
+					Case Else
+						sGetHeadcount = "SELECT SettingValue FROM dbo.ASRSysSystemSettings WHERE Section = 'Headcount' AND SettingKey = 'P14'"
+
+				End Select
+
+				Dim cmd As New SqlCommand(sGetHeadcount, connection)
+				cmd.CommandType = CommandType.Text
 
 				cmd.Notification = Nothing
 				Dim dependency As New SqlDependency(cmd)
@@ -290,6 +301,53 @@ Namespace Code.Hubs
 			RemoveHandler Dependency.OnChange, AddressOf HeadcountChange
 
 			ValidateHeadCount()
+		End Sub
+
+		Public Shared Sub RegisterLicence()
+
+			Try
+
+				Dim dt As New DataTable()
+				Dim sLicence As String
+
+				Dim connection = New SqlConnection(ConfigurationManager.ConnectionStrings("OpenHR").ConnectionString)
+				Const sSQL As String = "SELECT SettingValue FROM dbo.ASRSysSystemSettings WHERE Section = 'licence' AND SettingKey = 'key'"
+
+				Dim cmd As New SqlCommand(sSQL, connection)
+				cmd.CommandType = CommandType.Text
+
+				cmd.Notification = Nothing
+				Dim dependency As New SqlDependency(cmd)
+				AddHandler dependency.OnChange, AddressOf LicenceKeyChange
+
+				' Open the connection if necessary
+				If connection.State = ConnectionState.Closed Then
+					connection.Open()
+				End If
+
+				' Get the messages
+				dt.Load(cmd.ExecuteReader(CommandBehavior.CloseConnection))
+				sLicence = dt.Rows(0)(0).ToString()
+
+				Licence.Populate(sLicence)
+
+				If Not Licence.Type = LicenceType.Concurrency Then
+					ValidateHeadCount()
+				End If
+
+			Catch ex As Exception
+				Throw
+
+			End Try
+
+		End Sub
+
+		Private Shared Sub LicenceKeyChange(sender As Object, e As SqlNotificationEventArgs)
+
+			Dim Dependency As SqlDependency = CType(sender, SqlDependency)
+			RemoveHandler Dependency.OnChange, AddressOf LicenceKeyChange
+
+			RegisterLicence()
 		End Sub
 
 	End Class

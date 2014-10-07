@@ -22,7 +22,7 @@ Public Class MvcApplication
 		BundleConfig.RegisterBundles(BundleTable.Bundles)
 		DataAnnotationConfig.RegisterDataAnnotations()
 		DatabaseConfig.Connect()
-		LicenceConfig.RegisterLicence()
+		LicenceHub.RegisterLicence()
 		SettingsConfig.Register()
 
 	End Sub

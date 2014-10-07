@@ -203,7 +203,6 @@
     <Compile Include="App_Start\BundleConfig.vb" />
     <Compile Include="App_Start\DataAnnotationConfig.vb" />
     <Compile Include="App_Start\DatabaseConfig.vb" />
-    <Compile Include="App_Start\LicenceConfig.vb" />
     <Compile Include="App_Start\RouteConfig.vb" />
     <Compile Include="App_Start\SettingsConfig.vb" />
     <Compile Include="App_Start\Startup.vb" />
