@@ -849,7 +849,7 @@
 			strKeyPrefix = "NINEBOXGRID"
 	End Select
 	
-	If Session("defseltype") = 35 Then
+	If Session("defseltype") = "35" Then
 		fNewGranted = True
 		fEditGranted = True
 		fDeleteGranted = True
