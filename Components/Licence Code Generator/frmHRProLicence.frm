@@ -973,7 +973,7 @@ Private Sub PopulateModules(lstTemp As ListBox)
     .AddItem "Fusion Integration": .ItemData(.NewIndex) = lngBit: lngBit = lngBit * 2
     .AddItem "XML Exports": .ItemData(.NewIndex) = lngBit: lngBit = lngBit * 2
     .AddItem "3rd Party Tables": .ItemData(.NewIndex) = lngBit: lngBit = lngBit * 2
-    .AddItem "9-Box Grids": .ItemData(.NewIndex) = lngBit: lngBit = lngBit * 2
+    .AddItem "9-Box Grid Reports": .ItemData(.NewIndex) = lngBit: lngBit = lngBit * 2
   End With
 
 End Sub
