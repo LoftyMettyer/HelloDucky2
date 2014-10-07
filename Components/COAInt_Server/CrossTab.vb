@@ -395,6 +395,35 @@ Public Class CrossTab
 		End Get
 	End Property
 
+	' 9-Box Grid Reports
+	Property XAxisLabel() As String
+	Property XAxisSubLabel1() As String
+	Property XAxisSubLabel2() As String
+	Property XAxisSubLabel3() As String
+	Property YAxisLabel() As String
+	Property YAxisSubLabel1() As String
+	Property YAxisSubLabel2() As String
+	Property YAxisSubLabel3() As String
+	Property Description1() As String
+	Property ColorDesc1() As Integer
+	Property Description2() As String
+	Property ColorDesc2() As Integer
+	Property Description3() As String
+	Property ColorDesc3() As Integer
+	Property Description4() As String
+	Property ColorDesc4() As Integer
+	Property Description5() As String
+	Property ColorDesc5() As Integer
+	Property Description6() As String
+	Property ColorDesc6() As Integer
+	Property Description7() As String
+	Property ColorDesc7() As Integer
+	Property Description8() As String
+	Property ColorDesc8() As Integer
+	Property Description9() As String
+	Property ColorDesc9() As Integer
+
+
 	Public Function EventLogAddHeader() As Integer
 
 		' JDM - 05/12/02 - Fault 4840 - Wrong report type in event log
@@ -597,6 +626,34 @@ ErrorTrap:
 				Else
 					mlngType = 0
 				End If
+
+				' 9-Box Grid Reports
+				XAxisLabel = NullSafeString(objRow("XAxisLabel"))
+				XAxisSubLabel1 = NullSafeString(objRow("XAxisSubLabel1"))
+				XAxisSubLabel2 = NullSafeString(objRow("XAxisSubLabel2"))
+				XAxisSubLabel3 = NullSafeString(objRow("XAxisSubLabel3"))
+				YAxisLabel = NullSafeString(objRow("YAxisLabel"))
+				YAxisSubLabel1 = NullSafeString(objRow("YAxisSubLabel1"))
+				YAxisSubLabel2 = NullSafeString(objRow("YAxisSubLabel2"))
+				YAxisSubLabel3 = NullSafeString(objRow("YAxisSubLabel3"))
+				Description1 = NullSafeString(objRow("Description1"))
+				ColorDesc1 = NullSafeInteger(objRow("ColorDesc1"))
+				Description2 = NullSafeString(objRow("Description2"))
+				ColorDesc2 = NullSafeInteger(objRow("ColorDesc2"))
+				Description3 = NullSafeString(objRow("Description3"))
+				ColorDesc3 = NullSafeInteger(objRow("ColorDesc3"))
+				Description4 = NullSafeString(objRow("Description4"))
+				ColorDesc4 = NullSafeInteger(objRow("ColorDesc4"))
+				Description5 = NullSafeString(objRow("Description5"))
+				ColorDesc5 = NullSafeInteger(objRow("ColorDesc5"))
+				Description6 = NullSafeString(objRow("Description6"))
+				ColorDesc6 = NullSafeInteger(objRow("ColorDesc6"))
+				Description7 = NullSafeString(objRow("Description7"))
+				ColorDesc7 = NullSafeInteger(objRow("ColorDesc7"))
+				Description8 = NullSafeString(objRow("Description8"))
+				ColorDesc8 = NullSafeInteger(objRow("ColorDesc8"))
+				Description9 = NullSafeString(objRow("Description9"))
+				ColorDesc9 = NullSafeInteger(objRow("ColorDesc9"))
 
 				fOK = IsRecordSelectionValid(CInt(objRow("PickListID")), CInt(objRow("FilterID")))
 				If fOK = False Then
@@ -2074,7 +2131,53 @@ LocalErr:
 		Return True
 	End Function
 
+	'****************************************************************
+	' NullSafeString
+	'****************************************************************
+	Public Function NullSafeString(ByVal arg As Object, _
+	Optional ByVal returnIfEmpty As String = "") As String
 
+		Dim returnValue As String
+
+		If (arg Is DBNull.Value) OrElse (arg Is Nothing) _
+			OrElse (arg Is String.Empty) Then
+			returnValue = returnIfEmpty
+		Else
+			Try
+				returnValue = CStr(arg)
+			Catch
+				returnValue = returnIfEmpty
+			End Try
+
+		End If
+
+		Return returnValue
+
+	End Function
+
+	'****************************************************************
+	' NullSafeInteger
+	'****************************************************************
+	Public Function NullSafeInteger(ByVal arg As Object, _
+	Optional ByVal returnIfEmpty As Integer = 0) As Integer
+
+		Dim returnValue As Integer
+
+		If (arg Is DBNull.Value) OrElse (arg Is Nothing) _
+			OrElse (arg Is String.Empty) Then
+			returnValue = returnIfEmpty
+		Else
+			Try
+				returnValue = CInt(arg)
+			Catch
+				returnValue = returnIfEmpty
+			End Try
+
+		End If
+
+		Return returnValue
+
+	End Function
 
 
 End Class

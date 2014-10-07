@@ -54,46 +54,74 @@
 			</tr>
 		</tbody>
 	</table>
-
+	
+	<%If objCrossTab.CrossTabType = CrossTabType.ctt9GridBox Then%>
 	<table id="tblNineBox" style="display: none;">
 		<tr>
 			<td class="yaxismajor" rowspan="3">
-				<p class="rot270">Potential</p>
+				<p class="rot270"><%:objCrossTab.YAxisLabel%></p>
 			</td>
 			<td class="yaxisminor">
-				<p class="rot270">High</p>
+				<p class="rot270"><%:objCrossTab.YAxisSubLabel1%></p>
 			</td>
-			<td id="nineBoxR1C1">1</td>
-			<td id="nineBoxR1C2">2</td>
-			<td id="nineBoxR1C3">3</td>
+			<td id="nineBoxR1C1" class="nineBoxGridCell">
+				<p><%:objCrossTab.Description1%></p>
+				<p></p>
+			</td>
+			<td id="nineBoxR1C2" class="nineBoxGridCell">
+				<p><%:objCrossTab.Description2%></p>
+				<p></p>
+			</td>
+			<td id="nineBoxR1C3" class="nineBoxGridCell">
+				<p><%:objCrossTab.Description3%></p>
+				<p></p>
+			</td>
 		</tr>
 		<tr>
 			<td class="yaxisminor">
-				<p class="rot270">Medium</p>
+				<p class="rot270"><%:objCrossTab.YAxisSubLabel2%></p>
 			</td>
-			<td id="nineBoxR2C1">4</td>
-			<td id="nineBoxR2C2">5</td>
-			<td id="nineBoxR2C3">6</td>
+			<td id="nineBoxR2C1" class="nineBoxGridCell">
+				<p><%:objCrossTab.Description4%></p>
+				<p></p>
+			</td>
+			<td id="nineBoxR2C2" class="nineBoxGridCell">
+				<p><%:objCrossTab.Description5%></p>
+				<p></p>
+			</td>
+			<td id="nineBoxR2C3" class="nineBoxGridCell">
+				<p><%:objCrossTab.Description6%></p>
+				<p></p>
+			</td>
 		</tr>
 		<tr>
 			<td class="yaxisminor">
-				<p class="rot270">Low</p>
+				<p class="rot270"><%:objCrossTab.YAxisSubLabel3%></p>
 			</td>
-			<td id="nineBoxR3C1">7</td>
-			<td id="nineBoxR3C2">8</td>
-			<td id="nineBoxR3C3">9</td>
+			<td id="nineBoxR3C1" class="nineBoxGridCell">
+				<p><%:objCrossTab.Description7%></p>
+				<p></p>
+			</td>
+			<td id="nineBoxR3C2" class="nineBoxGridCell">
+				<p><%:objCrossTab.Description8%></p>
+				<p></p>
+			</td>
+			<td id="nineBoxR3C3" class="nineBoxGridCell">
+				<p><%:objCrossTab.Description9%></p>
+				<p></p>
+			</td>
 		</tr>
 		<tr>
 			<td colspan="2" rowspan="2" class="xaxis"></td>
-			<td class="xaxisminor">Low</td>
-			<td class="xaxisminor">Medium</td>
-			<td class="xaxisminor">High</td>
+			<td class="xaxisminor"><%:objCrossTab.XAxisSubLabel1%></td>
+			<td class="xaxisminor"><%:objCrossTab.XAxisSubLabel2%></td>
+			<td class="xaxisminor"><%:objCrossTab.XAxisSubLabel3%></td>
 		</tr>
 		<tr>
-			<td colspan="3" class="xaxisminor">Performance</td>
+			<td colspan="3" class="xaxisminor"><%:objCrossTab.XAxisLabel%></td>
 		</tr>
 	</table>
-
+	<%End If%>
 
 </div>
 

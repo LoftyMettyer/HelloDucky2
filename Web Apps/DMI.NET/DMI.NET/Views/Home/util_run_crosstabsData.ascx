@@ -304,9 +304,9 @@
 			Response.Write("				(key.indexOf('&gt') >= 0) || (colData[i][key].indexOf('&gt') >= 0) ||" & vbCrLf)
 			Response.Write("				(key.length === 0))) {" & vbCrLf)
 			Response.Write("        var gridRefID = 'nineBoxR' + rowNum + 'C' + colNum;" & vbCrLf)
-			Response.Write("				$('#' + gridRefID).html(colData[i][key]);" & vbCrLf)
-			Response.Write("				$('#' + gridRefID).html(colData[i][key]).attr('data-row', i);" & vbCrLf)
-			Response.Write("				$('#' + gridRefID).html(colData[i][key]).attr('data-col', originalColNum);" & vbCrLf)
+			Response.Write("				$('#' + gridRefID + '>p:last').html(colData[i][key]);" & vbCrLf)
+			Response.Write("				$('#' + gridRefID).attr('data-row', i);" & vbCrLf)
+			Response.Write("				$('#' + gridRefID).attr('data-col', originalColNum);" & vbCrLf)
 			Response.Write("				$('#' + gridRefID).click(function () {" & vbCrLf)
 			Response.Write("					var iRow = $(this).attr('data-row');" & vbCrLf)
 			Response.Write("					var iCol = $(this).attr('data-col');" & vbCrLf)
@@ -322,7 +322,7 @@
 			Response.Write("    rowNum += 1;" & vbCrLf)
 			Response.Write("	}" & vbCrLf)
 			Response.Write("}" & vbCrLf)
-			
+			Response.Write("$( '#tblNineBox td[id^=\'nineBoxR\']' ).hover(function() {   $( this ).addClass('ui-state-highlight');}, function() {$( this ).removeClass('ui-state-highlight'); });" & vbCrLf)
 			Response.Write("$('#tblNineBox').show();" & vbCrLf)
 			
 		End If
