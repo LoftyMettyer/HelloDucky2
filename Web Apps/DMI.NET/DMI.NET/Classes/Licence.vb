@@ -13,7 +13,7 @@ Namespace Classes
 		Public Shared DMIUsers As Integer
 		Public Shared DMISingleUsers As Integer
 		Public Shared Headcount As Long
-		Public Shared P14Headcount As Integer
+		'		Public Shared P14Headcount As Integer
 
 		Public Shared ExpiryDate As DateTime
 

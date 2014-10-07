@@ -119,9 +119,11 @@
 			$("#divSignalRMessage").dialog({
 				autoOpen: false,
 				modal: true,
-				width: 650,
-				height: 500,
+				height: 'auto',
+				width: 'auto',
 				position: ['center', 100],
+				dialogClass: 'no-close',
+				resizable: false
 			});
 			
 			$("#dialog-confirm").dialog({
@@ -494,7 +496,7 @@
 		<div id="SignalRDialogContent">
 			<p id="SignalRDialogContentText"></p>
 		</div>
-		<input type="button" value="Close" id="SignalRDialogClick" />
+		<input type="button" class="button" value="OK" id="SignalRDialogClick" style="float: right" />
 	</div>
 
 	<iframe name="submit-iframe" style="display: none;"></iframe>

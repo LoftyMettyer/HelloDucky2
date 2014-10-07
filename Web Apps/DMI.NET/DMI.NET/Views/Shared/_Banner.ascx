@@ -36,6 +36,29 @@
 
 	<script type="text/javascript">
 
+		function displaySignalRMessage(messageFrom, message, forceLogout) {
+
+			$("#SignalRDialogClick").val("Close");
+			$("#SignalRDialogTitle").html(messageFrom);
+			$("#SignalRDialogContentText").html(message);
+			$("#divSignalRMessage").dialog('open');
+
+			if (forceLogout == true) {
+				$("#SignalRDialogClick").val("Log Out");
+			}
+
+			$("#SignalRDialogClick").off('click').on('click', function () {
+				$("#divSignalRMessage").dialog("close");
+
+				if (forceLogout == true) {
+					menu_logoffIntranet();
+				}
+
+			});
+
+		}
+
+
 		$(function () {
 
 			// Activity Hub
@@ -46,27 +69,11 @@
 				$('#signalRUsersCount').val(count);
 			};
 
+
 			// System Admin Message
 			var hubProxy = $.connection.NotificationHub;
 			hubProxy.client.SystemAdminMessage = function (messageFrom, message, forceLogout) {
-				$("#SignalRDialogClick").val("Close");
-				$("#SignalRDialogTitle").html(messageFrom);
-				$("#SignalRDialogContentText").html(message);
-				$("#divSignalRMessage").dialog('open');
-
-				if (forceLogout == true) {
-					$("#SignalRDialogClick").val("Log Out");
-				}
-
-				$("#SignalRDialogClick").off('click').on('click', function () {
-					$("#divSignalRMessage").dialog("close");
-
-					if (forceLogout == true) {
-						menu_logoffIntranet();
-					}
-
-				});
-
+				displaySignalRMessage(messageFrom, message, forceLogout);
 			};
 
 			// Session Timeout Message

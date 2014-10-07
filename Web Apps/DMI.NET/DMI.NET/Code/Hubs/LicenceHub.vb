@@ -3,6 +3,8 @@ Option Strict Off
 
 Imports System.Collections.Generic
 Imports DMI.NET.Classes
+Imports System.Web.UI.WebControls.Expressions
+Imports Microsoft.AspNet.SignalR.Messaging
 Imports Microsoft.AspNet.SignalR
 Imports Microsoft.AspNet.SignalR.Hubs
 Imports System.Threading.Tasks
@@ -22,7 +24,43 @@ Namespace Code.Hubs
 		Private Shared current_SSIUsers As Integer = 0
 		Private Shared current_DMIUsers As Integer = 0
 		Private Shared current_DMISingleUsers As Integer = 0
-		Private Shared current_Headcount As Integer = 0
+		Private Shared current_Headcount As Long = 0
+
+		Private Const HeadcountWarningThreshold = 0.95
+
+		Friend Shared Function ErrorMessage(failureCode As LicenceValidation) As String
+
+			Dim message As String = ""
+
+			Select Case failureCode
+				Case LicenceValidation.Expired
+					message = String.Format("Your licence to use this product has expired.<br/><br/>" & _
+																	"Please contact your Account Manager as soon as possible.")
+
+				Case LicenceValidation.ExpiryWarning
+					message = String.Format("Your licence to use this product will expire in one week.<br/>" & _
+																	"Please contact your Account Manager as soon as possible.")
+
+				Case LicenceValidation.HeadcountExceeded
+					message = String.Format("You have reached or exceeded the headcount limit<br/>set within the terms of your licence agreement.<br/><br/>" & _
+																	"You are no longer able to add new employee records,<br/>but you may access the system for other purposes.<br/><br/>" & _
+																	"Please contact your Account Manager as soon as possible<br/>to increase the licence headcount number.")
+
+				Case LicenceValidation.HeadcountWarning
+					message = String.Format("You are currently within 5% ({0} of {1} employees) of the reaching the<br/>headcount limit set within the terms of your licence agreement.<br/><br/>" & _
+																	"Once this limit is reached, you will no longer be able to add<br/>new employee records to the system.<br/><br/>" & _
+																	"If you wish to increase the headcount number, please<br/>contact your Account Manager as soon as possible.", _
+																	current_Headcount, Licence.Headcount)
+
+				Case LicenceValidation.Insufficient
+					message = String.Format("The maximum number of licenced users are currently logged into OpenHR.<br/><br/>" & _
+																	"Please try again later.")
+
+			End Select
+
+			Return message
+
+		End Function
 
 		'<HubMethodName("")
 		Private Shared Sub UpdateOnlineCount()
@@ -64,37 +102,6 @@ Namespace Code.Hubs
 
 		End Sub
 
-		Private Shared Sub NotifyDisableLogin()
-
-			Dim bDisabled As Boolean
-			Dim sMessage As String = ""
-			Dim totalLogins = current_DMIUsers + current_DMISingleUsers + current_SSIUsers
-
-			If totalLogins >= (Licence.DMIUsers + Licence.DMISingleUsers + Licence.SSIUsers) Then
-				bDisabled = True
-				sMessage = "There are too many users logged in at the moment. Please contact your system administrator"
-			End If
-
-			If Now > Licence.ExpiryDate Then
-				bDisabled = True
-				sMessage = "Your licence has expired. Please contact your system administrator."
-			End If
-
-			Dim myContext = GlobalHost.ConnectionManager.GetHubContext(Of LicenceHub)()
-			'myContext.Clients.All.disableLogin(bDisabled, sMessage)
-
-		End Sub
-
-		Private Shared Sub NotifyHeadcountExceeded()
-
-			Dim notifyHub = GlobalHost.ConnectionManager.GetHubContext(Of NotificationHub)()
-			notifyHub.Clients.All.SystemAdminMessage("OpenHR", String.Format("Your database contains too many records ({0}).</br>You are licenced for only {1} employees. Start firing some people", Licence.Headcount, current_Headcount))
-
-			Dim thisHub = GlobalHost.ConnectionManager.GetHubContext(Of LicenceHub)()
-			thisHub.Clients.All.disableLogin(True, "")
-
-		End Sub
-
 		Public Overrides Function OnConnected() As Task
 			Dim clientId As String = GetClientId()
 
@@ -109,7 +116,7 @@ Namespace Code.Hubs
 
 			' Send the current count of users
 			UpdateOnlineCount()
-			NotifyDisableLogin()
+			'NotifyDisableLogin()
 			UpdateUserList()
 
 			Return MyBase.OnConnected()
@@ -130,7 +137,7 @@ Namespace Code.Hubs
 
 			' Send the current count of users
 			UpdateOnlineCount()
-			NotifyDisableLogin()
+			'NotifyDisableLogin()
 			UpdateUserList()
 
 			Return MyBase.OnReconnected()
@@ -149,7 +156,7 @@ Namespace Code.Hubs
 
 			' Send the current count of users
 			UpdateOnlineCount()
-			NotifyDisableLogin()
+			'NotifyDisableLogin()
 			UpdateUserList()
 
 			Return MyBase.OnDisconnected(stopCalled)
@@ -171,47 +178,40 @@ Namespace Code.Hubs
 			Return clientId
 		End Function
 
-		Private Shared Function AllowAccess(webArea As WebArea) As LicenceValidation
+		Private Shared Function AllowAccess(targetWebArea As WebArea) As LicenceValidation
 
-			Dim allow As LicenceValidation = LicenceValidation.Ok
-
-			If (Now > Licence.ExpiryDate) Then
-				allow = LicenceValidation.Expired
+			If (Now.Date > Licence.ExpiryDate.AddDays(-7)) Then
+				Return LicenceValidation.ExpiryWarning
 			End If
 
-			If Licence.Type = LicenceType.Headcount Then
+			If (Now.Date > Licence.ExpiryDate) Then
+				Return LicenceValidation.Expired
+			End If
+
+			If Licence.Type = LicenceType.Concurrency Then
+				If (targetWebArea = WebArea.DMI AndAlso current_DMIUsers >= Licence.DMIUsers) OrElse _
+						(targetWebArea = WebArea.DMISingle AndAlso current_DMISingleUsers >= Licence.DMISingleUsers) OrElse _
+						(targetWebArea = WebArea.DMI AndAlso current_SSIUsers >= Licence.SSIUsers) Then
+					Return LicenceValidation.Insufficient
+				End If
+			End If
+
+			If Licence.Type = LicenceType.DMIConcurrencyAndHeadcount OrElse Licence.Type = LicenceType.DMIConcurrencyAndHeadcount Then
+				If (targetWebArea = WebArea.DMI AndAlso current_DMIUsers >= Licence.DMIUsers) OrElse _
+						(targetWebArea = WebArea.DMISingle AndAlso current_DMISingleUsers >= Licence.DMISingleUsers) Then
+					Return LicenceValidation.Insufficient
+				End If
+			End If
+
+			If targetWebArea = WebArea.DMI OrElse targetWebArea = WebArea.DMISingle Then
 				If current_Headcount > Licence.Headcount Then
-					allow = LicenceValidation.Insufficient
+					Return LicenceValidation.HeadcountExceeded
+				ElseIf current_Headcount >= Licence.Headcount * HeadcountWarningThreshold Then
+					Return LicenceValidation.HeadcountWarning
 				End If
-
-			ElseIf Licence.Type = LicenceType.P14Headcount Then
-				If current_Headcount > Licence.P14Headcount Then
-					allow = LicenceValidation.Insufficient
-				End If
-
-			Else
-				Select Case webArea
-					Case webArea.DMI
-						If current_DMIUsers >= Licence.DMIUsers Then
-							allow = LicenceValidation.Insufficient
-						End If
-
-					Case webArea.DMISingle
-						If current_DMISingleUsers >= Licence.DMISingleUsers Then
-							allow = LicenceValidation.Insufficient
-						End If
-
-					Case Else
-
-						If current_SSIUsers >= Licence.SSIUsers Then
-							allow = LicenceValidation.Insufficient
-						End If
-
-				End Select
-
 			End If
 
-			Return allow
+			Return LicenceValidation.Ok
 
 		End Function
 
@@ -220,7 +220,7 @@ Namespace Code.Hubs
 
 			Dim allow = AllowAccess(webArea)
 
-			If allow = LicenceValidation.Ok Then
+			If allow = LicenceValidation.Ok OrElse allow = LicenceValidation.HeadcountWarning OrElse allow = LicenceValidation.HeadcountExceeded Then
 				objLogin.IsLoggedIn = True
 				objLogin.UserName = objActualLogin.UserName
 				objLogin.WebArea = webArea
@@ -238,7 +238,7 @@ Namespace Code.Hubs
 
 			If Not objLogin.WebArea = webArea Then
 				allow = AllowAccess(webArea)
-				If allow = LicenceValidation.Ok Then
+				If allow = LicenceValidation.Ok OrElse allow = LicenceValidation.HeadcountExceeded OrElse allow = LicenceValidation.HeadcountWarning Then
 					objLogin.IsLoggedIn = True
 					objLogin.WebArea = webArea
 					UpdateOnlineCount()
@@ -255,24 +255,14 @@ Namespace Code.Hubs
 
 		Public Shared Sub ValidateHeadCount()
 
-			'	Dim objDataAccess As New clsDataAccess(ConfigurationManager.ConnectionStrings("OpenHR").ConnectionString)
-			'	Dim dtHeadcount = objDataAccess.GetDataTable("SELECT Headcount FROM ASRSysEmployees", CommandType.Text)
-			'	current_Headcount = CLng(dtHeadcount.Rows(0)("Headcount"))
 			Try
 
 				Dim dt As New DataTable()
 
 				Dim connection = New SqlConnection(ConfigurationManager.ConnectionStrings("OpenHR").ConnectionString)
 
-				'Dim cmd As New SqlCommand("SELECT surname FROM dbo.ASRSysEmployees", connection)
-				'Dim cmd As New SqlCommand("SELECT surname FROM dbo.tbuser_Personnel_Records", connection)
-				Dim cmd As New SqlCommand("dbo.spASRGetHeadcount", connection)
-
-				'Dim cmd As New SqlCommand("SELECT loginname, message, messageSource FROM dbo.ASRSysMessages", connection)
-				cmd.CommandType = CommandType.StoredProcedure
-
-				cmd.Parameters.Add(New SqlParameter("@type", CInt(Licence.Type)))
-				cmd.Parameters.Add(New SqlParameter("@today", DateTime.Now))
+				Dim cmd As New SqlCommand("SELECT SettingValue FROM dbo.ASRSysSystemSettings WHERE Section = 'Database' AND SettingKey = 'Headcount'", connection)
+				cmd.CommandType = Data.CommandType.Text
 
 				cmd.Notification = Nothing
 				Dim dependency As New SqlDependency(cmd)
@@ -285,13 +275,7 @@ Namespace Code.Hubs
 
 				' Get the messages
 				dt.Load(cmd.ExecuteReader(CommandBehavior.CloseConnection))
-				current_Headcount = dt.Rows.Count
-
-				' We've exceeded our licence
-				If (Licence.Type = LicenceType.P14Headcount AndAlso current_Headcount > Licence.P14Headcount) _
-					OrElse (Licence.Type = LicenceType.Headcount AndAlso current_Headcount > Licence.Headcount) Then
-					NotifyHeadcountExceeded()
-				End If
+				current_Headcount = CLng(dt.Rows(0)(0))
 
 			Catch ex As Exception
 				current_Headcount = -1
@@ -307,7 +291,6 @@ Namespace Code.Hubs
 
 			ValidateHeadCount()
 		End Sub
-
 
 	End Class
 End Namespace

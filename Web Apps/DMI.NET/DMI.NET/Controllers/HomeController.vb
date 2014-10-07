@@ -324,7 +324,7 @@ Namespace Controllers
 
 			Dim objSessionInfo = CType(Session("SessionContext"), SessionInfo)
 			Dim bOK As Boolean = True
-			Dim webArea As WebArea = webArea.SSI
+			Dim targetWebArea As WebArea = WebArea.SSI
 
 			If objSessionInfo Is Nothing Then
 				Return RedirectToAction("login", "Account")
@@ -336,34 +336,37 @@ Namespace Controllers
 			Session("selectSQL") = ""
 			ViewBag.SSIMode = SSIMode
 
-			If ViewBag.SSIMode = True And Not objSessionInfo.LoginInfo.IsSSIUser Then
+			Session("ErrorText") = ""
+			Session("WarningText") = ""
+
+			If ViewBag.SSIMode = True AndAlso Not objSessionInfo.LoginInfo.IsSSIUser Then
 				Session("ErrorText") = "You are not permitted to use OpenHR Self-service with this user name."
 				bOK = False
 			End If
 
-			If ViewBag.SSIMode = False And Not objSessionInfo.LoginInfo.IsDMIUser And Not objSessionInfo.LoginInfo.IsDMISingle Then
+			If ViewBag.SSIMode = False AndAlso Not objSessionInfo.LoginInfo.IsDMIUser AndAlso Not objSessionInfo.LoginInfo.IsDMISingle Then
 				Session("ErrorText") = "You are not permitted to use OpenHR Web with this user name."
 				bOK = False
 			End If
 
 			If Not SSIMode Then
 				If objSessionInfo.LoginInfo.IsDMISingle Then
-					webArea = webArea.DMISingle
+					targetWebArea = WebArea.DMISingle
 				Else
-					webArea = webArea.DMI
+					targetWebArea = WebArea.DMI
 				End If
 			End If
 
 			' Licence check
-			Dim licenceValidate = LicenceHub.NavigateWebArea(Session.SessionID, webArea)
+			Dim licenceValidate = LicenceHub.NavigateWebArea(Session.SessionID, targetWebArea)
 			Select Case licenceValidate
-				Case LicenceValidation.Expired
-					Session("ErrorText") = "Your licence has expired. Please contact your system administrator."
+				Case LicenceValidation.Expired, LicenceValidation.Insufficient
+					Session("ErrorText") = LicenceHub.ErrorMessage(licenceValidate)
 					bOK = False
 
-				Case LicenceValidation.Insufficient
-					Session("ErrorText") = "You have insufficient licences to use this module."
-					bOK = False
+				Case LicenceValidation.ExpiryWarning, LicenceValidation.HeadcountWarning, LicenceValidation.HeadcountExceeded
+					Session("WarningText") = LicenceHub.ErrorMessage(licenceValidate)
+					bOK = True
 
 			End Select
 

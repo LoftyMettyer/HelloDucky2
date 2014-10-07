@@ -19,7 +19,7 @@ Namespace Code.Hubs
 
 		End Sub
 
-		Public Sub SendMessage(messageFrom As String, message As String, forceLogout As Boolean)
+		Public Shared Sub SendMessage(messageFrom As String, message As String, forceLogout As Boolean)
 			Dim allContext = GlobalHost.ConnectionManager.GetHubContext(Of NotificationHub)()
 			allContext.Clients.All.SystemAdminMessage(messageFrom, message, forceLogout)
 		End Sub

@@ -316,17 +316,21 @@ Namespace Controllers
 					End If
 
 					' Licence check
-					Dim licenceValidate = LicenceHub.LogIn(Session.SessionID, loginviewmodel, objLogin.DefaultWebArea)
-					Select Case licenceValidate
-						Case LicenceValidation.Expired
-							Session("ErrorText") = "Your licence has expired. Please contact your system administrator."
-							Return RedirectToAction("Loginerror")
+					'Dim licenceValidate = LicenceHub.LogIn(Session.SessionID, loginviewmodel, objLogin.DefaultWebArea)
+					'			LicenceHub.LogIn(Session.SessionID, loginviewmodel, objLogin.DefaultWebArea)
+					'Select Case licenceValidate
+					'	Case LicenceValidation.Expired, LicenceValidation.Insufficient
+					'		Session("ErrorText") = LicenceHub.ErrorMessage(licenceValidate)
+					'		Return RedirectToAction("Loginerror")
 
-						Case LicenceValidation.Insufficient
-							Session("ErrorText") = "You have insufficient licences to use this module."
-							Return RedirectToAction("Loginerror")
+					'		'Case LicenceValidation.Insufficient
+					'		'	Session("ErrorText") = LicenceHub.ErrorMessage(licenceValidate)
+					'		'	Return RedirectToAction("Loginerror")
 
-					End Select
+					'	Case LicenceValidation.ExpiryWarning, LicenceValidation.HeadcountWarning, LicenceValidation.HeadcountExceeded
+					'		Session("WarningText") = LicenceHub.ErrorMessage(licenceValidate)
+
+					'End Select
 
 					' User is allowed into OpenHR, now populate some metadata
 					objServerSession.RegionalSettings = Platform.PopulateRegionalSettings(sLocaleCultureName)

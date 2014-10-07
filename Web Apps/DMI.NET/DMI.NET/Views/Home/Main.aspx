@@ -79,6 +79,11 @@
 
 	$(document).ready(function() {
 
+		var sMessage = '<%: HttpUtility.JavaScriptStringEncode(Session("WarningText").ToString)%>';
+		if (sMessage != '') {
+			displaySignalRMessage("Licence Warning", sMessage, false);
+		}
+
 		$("#fixedlinksframe").show();
 		$("#FixedLinksContent").fadeIn("slow");
 
