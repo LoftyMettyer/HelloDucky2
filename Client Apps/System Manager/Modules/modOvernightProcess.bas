@@ -407,23 +407,27 @@ Private Function OvernightJob4() As Boolean
     "/* ------------------------------------------------------------------------------- */" & vbNewLine & _
   "CREATE PROCEDURE [dbo].[" & strOvernightSP & "] AS" & vbNewLine & _
     "BEGIN" & vbNewLine & _
-    "    /* Overnight Email Processing */" & vbNewLine & _
+    "    -- Overnight Email Processing" & vbNewLine & _
     "    EXEC sp_ASRPurgeRecords 'EMAIL', 'ASRSysEmailQueue', 'DateDue'" & vbNewLine & _
-    "    EXEC spASREmailRebuild" & vbNewLine & _
-    "    EXEC spASREmailBatch" & vbNewLine & vbNewLine & _
-    "    /* Overnight Diary Processing */" & vbNewLine & _
-    "    EXEC sp_ASRDiaryPurge" & vbNewLine & vbNewLine & _
+    "    EXEC spASREmailRebuild;" & vbNewLine & _
+    "    EXEC spASREmailBatch;" & vbNewLine & vbNewLine & _
+    "    -- Overnight Diary Processing" & vbNewLine & _
+    "    EXEC sp_executeSQL sp_ASRDiaryPurge;" & vbNewLine & vbNewLine & _
     IIf(Application.WorkflowModule, _
-    "    /* Overnight Workflow Processing */" & vbNewLine & _
-    "    EXEC spASRWorkflowRebuild" & vbNewLine & vbNewLine, vbNullString) & _
-    "    /* Overnight Log Purging */" & vbNewLine & _
-    "    EXEC sp_ASRAuditLogPurge" & vbNewLine & _
-    "    EXEC sp_AsrEventLogPurge" & vbNewLine & vbNewLine & _
-    "    /* Update Overnight Job Log */" & vbNewLine & _
+    "    -- Overnight Workflow Processing" & vbNewLine & _
+    "    EXEC sp_executeSQL spASRWorkflowRebuild;" & vbNewLine & vbNewLine, vbNullString) & _
+    "    -- Overnight Log Purging" & vbNewLine & _
+    "    EXEC sp_executeSQL sp_ASRAuditLogPurge;" & vbNewLine & _
+    "    EXEC sp_executeSQL sp_AsrEventLogPurge;" & vbNewLine & vbNewLine
+    
+  strSQL = strSQL & _
+    "    -- Update Overnight Job Log" & vbNewLine & _
     "    DELETE from ASRSysSystemSettings" & vbNewLine & _
-    "    WHERE [Section] = 'overnight' and [SettingKey] = 'last completed'" & vbNewLine & _
+    "    WHERE [Section] = 'overnight' and [SettingKey] = 'last completed';" & vbNewLine & _
     "    INSERT ASRSysSystemSettings([Section], [SettingKey], [SettingValue])" & vbNewLine & _
-    "    VALUES('overnight', 'last completed', convert(varchar,getdate(),103)+' '+convert(varchar,getdate(),108))" & vbNewLine & _
+    "    VALUES('overnight', 'last completed', convert(varchar,getdate(),103)+' '+convert(varchar,getdate(),108));" & vbNewLine & vbNewLine & _
+    "    -- Update the system wide headcounts" & vbNewLine & _
+    "    EXEC sp_executeSQL spASRCalculateHeadcounts;" & vbNewLine & _
     "END"
 
 '  AE20071219 Fault #12731
@@ -479,7 +483,6 @@ Private Function OvernightJob5() As Boolean
     "BEGIN" & vbNewLine & _
     "    DECLARE @iCount int;" & vbNewLine & vbNewLine
     
-'  If gbReorganiseIndexesInOvernightJob Then
   strSQL = strSQL & "    EXEC [dbo].[spASRGetCurrentUsers]" & vbNewLine & _
     "    IF @@ROWCOUNT = 0" & vbNewLine & _
     "    BEGIN" & vbNewLine & _
@@ -492,7 +495,6 @@ Private Function OvernightJob5() As Boolean
     "        -- Optimise the record save for single record" & vbNewLine & _
     "        EXEC sp_executeSQL spadmin_optimiserecordsave;" & vbNewLine & _
     "    END" & vbNewLine
- ' End If
   
   strSQL = strSQL & "END"
   
