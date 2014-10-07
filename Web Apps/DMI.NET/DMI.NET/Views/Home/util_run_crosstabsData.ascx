@@ -293,22 +293,52 @@
 			Response.Write("	    		getBreakdown(iCol -1, iRow -1, lngPage, intType, txtValue);}" & vbCrLf)
 			Response.Write("	, cmTemplate: { sortable: false, editable: true }});")
 		Else
+			
+			Response.Write("var rowNum = 1;" & vbCrLf)
+			Response.Write("for (var i = 0; i < colData.length; i++) {" & vbCrLf)
+			Response.Write("	if ((colData[i][''].indexOf('&lt') < 0) && (colData[i][''].indexOf('&gt') < 0) && (colData[i][''].indexOf('Total') < 0)) {" & vbCrLf)
+			Response.Write("		var colNum = 1;" & vbCrLf)
+			Response.Write("		var originalColNum = 0;" & vbCrLf)
+			Response.Write("		for (var key in colData[i]) {			" & vbCrLf)
+			Response.Write("			if (!((key.indexOf('&lt') >= 0) || (colData[i][key].indexOf('&lt') >= 0) ||" & vbCrLf)
+			Response.Write("				(key.indexOf('&gt') >= 0) || (colData[i][key].indexOf('&gt') >= 0) ||" & vbCrLf)
+			Response.Write("				(key.length === 0))) {" & vbCrLf)
+			Response.Write("        var gridRefID = 'nineBoxR' + rowNum + 'C' + colNum;" & vbCrLf)
+			Response.Write("				$('#' + gridRefID).html(colData[i][key]);" & vbCrLf)
+			Response.Write("				$('#' + gridRefID).html(colData[i][key]).attr('data-row', i);" & vbCrLf)
+			Response.Write("				$('#' + gridRefID).html(colData[i][key]).attr('data-col', originalColNum);" & vbCrLf)
+			Response.Write("				$('#' + gridRefID).click(function () {" & vbCrLf)
+			Response.Write("					var iRow = $(this).attr('data-row');" & vbCrLf)
+			Response.Write("					var iCol = $(this).attr('data-col');" & vbCrLf)
+			Response.Write("	    	  if (iCol == 0) { return; } // Ignore double click on first column" & vbCrLf)
+			Response.Write("	    	  var lngPage = cboPage.options[cboPage.selectedIndex].Value;" & vbCrLf)
+			Response.Write("	    		var intType = cboIntersectionType.options[cboIntersectionType.selectedIndex].Value;" & vbCrLf)
+			Response.Write("	    		var txtValue = $(this).html();" & vbCrLf)
+			Response.Write("	    		getBreakdown(iCol, iRow, lngPage, intType, txtValue);});" & vbCrLf)
+			Response.Write("				colNum += 1;" & vbCrLf)
+			Response.Write("			}" & vbCrLf)
+			Response.Write("			 if(key.length > 0) originalColNum += 1;" & vbCrLf)
+			Response.Write("		}" & vbCrLf)
+			Response.Write("    rowNum += 1;" & vbCrLf)
+			Response.Write("	}" & vbCrLf)
+			Response.Write("}" & vbCrLf)
+			
 			Response.Write("$('#tblNineBox').show();" & vbCrLf)
 			
 		End If
 		
-	End If
+		End If
 	
-	Response.Write("  try {" & vbCrLf)
-	Response.Write("    refreshCombo(""INTERSECTIONTYPE"");" & vbCrLf)
-	Response.Write("    refreshCombo(""PAGE"");" & vbCrLf)
-	Response.Write("    refreshCombo(""FILEFORMAT"");" & vbCrLf)
-	Response.Write("  }" & vbCrLf)
-	Response.Write("  catch(e) {" & vbCrLf)
-	Response.Write("  }" & vbCrLf)
+		Response.Write("  try {" & vbCrLf)
+		Response.Write("    refreshCombo(""INTERSECTIONTYPE"");" & vbCrLf)
+		Response.Write("    refreshCombo(""PAGE"");" & vbCrLf)
+		Response.Write("    refreshCombo(""FILEFORMAT"");" & vbCrLf)
+		Response.Write("  }" & vbCrLf)
+		Response.Write("  catch(e) {" & vbCrLf)
+		Response.Write("  }" & vbCrLf)
 
-	Response.Write("}" & vbCrLf)
-	Response.Write("</script>" & vbCrLf & vbCrLf)
+		Response.Write("}" & vbCrLf)
+		Response.Write("</script>" & vbCrLf & vbCrLf)
 %>
 
 <script type="text/javascript">	

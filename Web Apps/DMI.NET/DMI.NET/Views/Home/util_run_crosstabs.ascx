@@ -63,25 +63,25 @@
 			<td class="yaxisminor">
 				<p class="rot270">High</p>
 			</td>
-			<td>1</td>
-			<td>2</td>
-			<td>3</td>
+			<td id="nineBoxR1C1">1</td>
+			<td id="nineBoxR1C2">2</td>
+			<td id="nineBoxR1C3">3</td>
 		</tr>
 		<tr>
 			<td class="yaxisminor">
 				<p class="rot270">Medium</p>
 			</td>
-			<td>4</td>
-			<td>5</td>
-			<td>6</td>
+			<td id="nineBoxR2C1">4</td>
+			<td id="nineBoxR2C2">5</td>
+			<td id="nineBoxR2C3">6</td>
 		</tr>
 		<tr>
 			<td class="yaxisminor">
 				<p class="rot270">Low</p>
 			</td>
-			<td>7</td>
-			<td>8</td>
-			<td>9</td>
+			<td id="nineBoxR3C1">7</td>
+			<td id="nineBoxR3C2">8</td>
+			<td id="nineBoxR3C3">9</td>
 		</tr>
 		<tr>
 			<td colspan="2" rowspan="2" class="xaxis"></td>
