@@ -158,71 +158,75 @@
 		
 		//calculate fPrintAll flag based on selection
 		var fPrintAll = ($('.printSelect').css('display') == "none");
-
 		var divToPrint;
 		var untickedItemsCount = $('.printSelect:not(:checked)').length;
 
-		//Creates a new window, copies the required html content to it and send it to printer.
-		var newWin = window.open("", "_blank", 'toolbar=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=1, height=1, visible=none', "");
-		newWin.document.write('<link href="../Scripts/jquery/jOrgChart/css/jquery.jOrgChart.css" rel="stylesheet" />');
-		newWin.document.write('<link href="../Scripts/jquery/jOrgChart/css/custom.css" rel="stylesheet" />');
-		newWin.document.write('<link href="../Scripts/jquery/jOrgChart/css/prettify.css" rel="stylesheet" />');
-		newWin.document.write('<link href="../Content/themes/redmond-segoe/jquery-ui.min.css" rel="stylesheet" />');
-		newWin.document.write('<sty');
-		newWin.document.write('le>');
-		newWin.document.write('body {font-family: "Segoe UI", Verdana; }');
-		newWin.document.write('h2 {page-break-before: always;}');	//adds page breaks as required.
-		newWin.document.write('</sty');
-		newWin.document.write('le>');
-		newWin.document.write('<h1 style="width: 400px;">Organisation Chart</h1>');
-
-		$('.printSelect').hide();	//hide the selection tickboxes.
-		$('.expandNode').hide();	//hide the selection tickboxes.
-
-		if ((untickedItemsCount > 0) && (fPrintAll !== true)) {
-			//Send only selected items to printer. 
-			// This is different to normal print - it includes page breaks, and expands hidden, selected nodes.
-			var pageNo = 1;
-
-			$('.printSelect:checked:enabled').closest('table').each(function () {
-
-				$(this).parent().attr('id', 'currentlyPrinting');	//get a handle on the parent table.
-
-				newWin.document.write('<div class="orgChart" id="chart">');
-				newWin.document.write('<div class="jOrgChart">');
-				newWin.document.write('<table border="0">');
-				if (pageNo > 1) newWin.document.write('<h2 style="width: 400px;">Organisation Chart</h2>');
-
-				divToPrint = document.getElementById('currentlyPrinting');
-				newWin.document.write(divToPrint.innerHTML);
-
-				newWin.document.write('</table>');
-				newWin.document.write('</div>');
-				newWin.document.write('</div>');
-
-				$(this).parent().attr('id', ''); // remove handle for the next branch
-
-				pageNo += 1;
-			});
-			$('.printSelect').show();	// redisplay checkboxes.
-
+		if (($('.printSelect:checked:enabled').length === 0) && (!fPrintAll)) {
+			OpenHR.modalMessage("No nodes selected to print.");
 		} else {
-			//print all - just grab the whole div.
-			divToPrint = document.getElementById('chart');
-			newWin.document.write(divToPrint.innerHTML);
+
+			//Creates a new window, copies the required html content to it and send it to printer.
+			var newWin = window.open("", "_blank", 'toolbar=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=1, height=1, visible=none', "");
+			newWin.document.write('<link href="../Scripts/jquery/jOrgChart/css/jquery.jOrgChart.css" rel="stylesheet" />');
+			newWin.document.write('<link href="../Scripts/jquery/jOrgChart/css/custom.css" rel="stylesheet" />');
+			newWin.document.write('<link href="../Scripts/jquery/jOrgChart/css/prettify.css" rel="stylesheet" />');
+			newWin.document.write('<link href="../Content/themes/redmond-segoe/jquery-ui.min.css" rel="stylesheet" />');
+			newWin.document.write('<sty');
+			newWin.document.write('le>');
+			newWin.document.write('body {font-family: "Segoe UI", Verdana; }');
+			newWin.document.write('h2 {page-break-before: always;}'); //adds page breaks as required.
+			newWin.document.write('</sty');
+			newWin.document.write('le>');
+			newWin.document.write('<h1 style="width: 400px;">Organisation Chart</h1>');
+
+			$('.printSelect').hide(); //hide the selection tickboxes.
+			$('.expandNode').hide(); //hide the selection tickboxes.
+
+			if ((untickedItemsCount > 0) && (fPrintAll !== true)) {
+
+				//Send only selected items to printer. 
+				// This is different to normal print - it includes page breaks, and expands hidden, selected nodes.
+				var pageNo = 1;
+
+				$('.printSelect:checked:enabled').closest('table').each(function() {
+					if ($(this).parent().parent().css('visibility') !== "hidden") {
+						$(this).parent().attr('id', 'currentlyPrinting'); //get a handle on the parent table.
+
+						newWin.document.write('<div class="orgChart" id="chart">');
+						newWin.document.write('<div class="jOrgChart">');
+						newWin.document.write('<table border="0">');
+						if (pageNo > 1) newWin.document.write('<h2 style="width: 400px;">Organisation Chart</h2>');
+
+						divToPrint = document.getElementById('currentlyPrinting');
+						newWin.document.write(divToPrint.innerHTML);
+
+						newWin.document.write('</table>');
+						newWin.document.write('</div>');
+						newWin.document.write('</div>');
+
+						$(this).parent().attr('id', ''); // remove handle for the next branch
+
+						pageNo += 1;
+					}
+				});
+				$('.printSelect').show(); // redisplay checkboxes.			
+			} else {
+				//print all - just grab the whole div.
+				divToPrint = document.getElementById('chart');
+				newWin.document.write(divToPrint.innerHTML);
+			}
+
+			newWin.document.write('<scri');
+			newWin.document.write('pt type="text/javascript">');
+			newWin.document.write('</scri');
+			newWin.document.write('pt>');
+			newWin.document.close();
+			newWin.focus();
+			newWin.print();
+			newWin.close();
+
+			showExpandNodeIcons(); // redisplay expand boxes.
 		}
-
-		newWin.document.write('<scri');
-		newWin.document.write('pt type="text/javascript">');
-		newWin.document.write('</scri');
-		newWin.document.write('pt>');
-		newWin.document.close();
-		newWin.focus();
-		newWin.print();
-		newWin.close();
-
-		showExpandNodeIcons(); // redisplay expand boxes.
-		
 	}
 
 </script>
