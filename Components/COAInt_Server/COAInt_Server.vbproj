@@ -137,6 +137,7 @@
     <Compile Include="Enums\CalendarEventEndType.vb" />
     <Compile Include="Enums\CalendarLegendType.vb" />
     <Compile Include="Enums\ChartAggregateType.vb" />
+    <Compile Include="Enums\EventLogMode.vb" />
     <Compile Include="Enums\ColumnSelectionType.vb" />
     <Compile Include="Enums\ColumnType.vb" />
     <Compile Include="Enums\ExistingFile.vb" />

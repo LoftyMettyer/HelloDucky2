@@ -5928,6 +5928,7 @@ BEGIN
 					WHEN 21 THEN ''Succession Planning''
 					WHEN 22 THEN ''Career Progression''
 					WHEN 25 THEN ''Workflow Rebuild''
+					WHEN 26 THEN ''9-Box Grid Report''
 					ELSE ''Unknown''
 				END ';
 	END
@@ -6005,6 +6006,7 @@ BEGIN
 						WHEN 21	THEN ''Succession Planning''
 						WHEN 22 THEN ''Career Progression''
 						WHEN 25 THEN ''Workflow Rebuild''
+						WHEN 26 THEN ''9-Box Grid Report''
 						ELSE ''Unknown''  
 					END + char(9) + 
 				 	[Name] + char(9) + 
