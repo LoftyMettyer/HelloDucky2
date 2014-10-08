@@ -38,7 +38,34 @@
 	[OutputEmailSubject] [varchar](255) NULL,
 	[OutputFilename] [varchar](255) NULL,
 	[ThousandSeparators] [bit] NULL,
-	[OutputEmailAttachAs] [varchar](255) NULL
+	[OutputEmailAttachAs] [varchar](255) NULL,
+	[CrossTabType] [tinyint] NULL,
+	[XAxisLabel] [varchar](255) NULL,
+	[XAxisSubLabel1] [varchar](255) NULL,
+	[XAxisSubLabel2] [varchar](255) NULL,
+	[XAxisSubLabel3] [varchar](255) NULL,
+	[YAxisLabel] [varchar](255) NULL,
+	[YAxisSubLabel1] [varchar](255) NULL,
+	[YAxisSubLabel2] [varchar](255) NULL,
+	[YAxisSubLabel3] [varchar](255) NULL,
+	[Description1] [varchar](255) NULL,
+	[ColorDesc1] [varchar](6) NULL,
+	[Description2] [varchar](255) NULL,
+	[ColorDesc2] [varchar](6) NULL,
+	[Description3] [varchar](255) NULL,
+	[ColorDesc3] [varchar](6) NULL,
+	[Description4] [varchar](255) NULL,
+	[ColorDesc4] [varchar](6) NULL,
+	[Description5] [varchar](255) NULL,
+	[ColorDesc5] [varchar](6) NULL,
+	[Description6] [varchar](255) NULL,
+	[ColorDesc6] [varchar](6) NULL,
+	[Description7] [varchar](255) NULL,
+	[ColorDesc7] [varchar](6) NULL,
+	[Description8] [varchar](255) NULL,
+	[ColorDesc8] [varchar](6) NULL,
+	[Description9] [varchar](255) NULL,
+	[ColorDesc9] [varchar](6) NULL
 ) ON [PRIMARY]
 GO
-ALTER TABLE [dbo].[ASRSysCrossTab] ADD  DEFAULT ('') FOR [Name]
+ALTER TABLE [dbo].[ASRSysCrossTab] ADD DEFAULT ('') FOR [Name]
