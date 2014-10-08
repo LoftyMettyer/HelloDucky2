@@ -155,7 +155,7 @@
 				} else {
 					$tr.removeClass('expanded').addClass('contracted');
 					$tr.nextAll("tr").find(".node").hide("blind").promise().done(function () {
-						$tr.nextAll("tr").css('visibility', 'hidden');
+						$tr.nextAll("tr").css('visibility', 'hidden').css('display', 'none');
 					});
 					$node.addClass('collapsed');
 					$this.attr('src', window.ROOT + 'Content/images/plus.gif');
