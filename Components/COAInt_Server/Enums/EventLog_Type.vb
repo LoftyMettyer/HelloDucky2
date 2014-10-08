@@ -22,6 +22,9 @@
 		eltRecordProfile = 20
 		eltSuccessionPlanning = 21
 		eltCareerProgression = 22
-		elt9GridBox = 23
+		eltAccordImport = 23
+		eltAccordExport = 24
+		eltWorkflowRebuild = 25
+		elt9GridBox = 26
 	End Enum
 End Namespace
