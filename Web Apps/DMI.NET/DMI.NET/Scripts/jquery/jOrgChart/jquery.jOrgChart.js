@@ -63,7 +63,12 @@
 
 				/* reload the plugin */
 				$(opts.chartElement).children().remove();
-				$this.jOrgChart(opts);      
+				$this.jOrgChart(opts);
+				try {
+					showExpandNodeIcons();
+				}
+				catch (e) { }
+
 			});
 		
 			// Drop event handler for nodes
@@ -87,8 +92,7 @@
 				//Removes any empty lists
 				if (sourceUl.children().length === 0){
 					sourceUl.remove();
-				}
-		
+				}			
 			}); // handleDropEvent
 				
 		} // Drag and drop

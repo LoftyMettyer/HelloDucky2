@@ -106,18 +106,22 @@
 			//Show the click to expand plus/minus icon
 			showExpandNodeIcons();
 
-			//set all contracted nodes expand icon to a +
-			$('.contracted .expandNode').attr('src', window.ROOT + 'Content/images/plus.gif');
+			
 
 		}
 	});
 
 	function showExpandNodeIcons() {
+
 		$('.node').each(function () {
 			if ($(this).parent().parent().siblings().length > 0) {
 				$(this).find('.expandNode').show();
 			}
 		});
+
+		//set all contracted nodes expand icon to a +
+		$('.contracted .expandNode').attr('src', window.ROOT + 'Content/images/plus.gif');
+
 	}
 
 	function centreMe(fSelf) {
