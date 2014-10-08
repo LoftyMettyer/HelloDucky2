@@ -1,8 +1,8 @@
 VERSION 5.00
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
 Object = "{604A59D5-2409-101D-97D5-46626B63EF2D}#1.0#0"; "TDBNumbr.ocx"
-Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "ComDlg32.OCX"
-Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
+Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "COMDLG32.OCX"
+Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "tabctl32.ocx"
 Begin VB.Form frmCrossTabDef 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Cross Tab Definition"
@@ -83,8 +83,8 @@ Begin VB.Form frmCrossTabDef
       TabCaption(1)   =   "Colu&mns"
       TabPicture(1)   =   "frmCrossTabDef.frx":0028
       Tab(1).ControlEnabled=   0   'False
-      Tab(1).Control(0)=   "fraColumns(1)"
-      Tab(1).Control(1)=   "fraColumns(0)"
+      Tab(1).Control(0)=   "fraColumns(0)"
+      Tab(1).Control(1)=   "fraColumns(1)"
       Tab(1).ControlCount=   2
       TabCaption(2)   =   "O&utput"
       TabPicture(2)   =   "frmCrossTabDef.frx":0044
@@ -2894,6 +2894,7 @@ Private Sub SaveDefinition()
                "Name = " & strName & ", " & _
                "Description = " & strDesc & ", " & _
                "TableID = " & strTableID & ", " & _
+               "CrossTabType = 0, " & _
                "Selection = " & strSelection & ", " & _
                "PicklistID = " & strPicklist & ", " & _
                "FilterID = " & strFilter & ", "
@@ -2974,7 +2975,7 @@ Private Sub SaveDefinition()
   
   Else
     strSQL = "INSERT ASRSysCrossTab (" & _
-               "Name, Description, TableID, " & _
+               "Name, Description, TableID, CrossTabType, " & _
                "Selection, PicklistID, FilterID, " & _
                "HorizontalColID, HorizontalStart, HorizontalStop, HorizontalStep, " & _
                "VerticalColID, VerticalStart, VerticalStop, VerticalStep, " & _
@@ -2988,7 +2989,7 @@ Private Sub SaveDefinition()
                
     strSQL = strSQL & _
                "VALUES( " & _
-               strName & ", " & strDesc & ", " & strTableID & ", " & _
+               strName & ", " & strDesc & ", " & strTableID & ", 0, " & _
                strSelection & ", " & strPicklist & ", " & strFilter & ", " & _
                strHorizontalColID & ", " & strHorizontalStart & ", " & strHorizontalStop & ", " & strHorizontalStep & ", " & _
                strVerticalColID & ", " & strVerticalStart & ", " & strVerticalStop & ", " & strVerticalStep & ", " & _
