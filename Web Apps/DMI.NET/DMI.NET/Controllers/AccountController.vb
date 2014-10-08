@@ -315,23 +315,6 @@ Namespace Controllers
 						Return RedirectToAction("Loginerror")
 					End If
 
-					' Licence check
-					'Dim licenceValidate = LicenceHub.LogIn(Session.SessionID, loginviewmodel, objLogin.DefaultWebArea)
-					'			LicenceHub.LogIn(Session.SessionID, loginviewmodel, objLogin.DefaultWebArea)
-					'Select Case licenceValidate
-					'	Case LicenceValidation.Expired, LicenceValidation.Insufficient
-					'		Session("ErrorText") = LicenceHub.ErrorMessage(licenceValidate)
-					'		Return RedirectToAction("Loginerror")
-
-					'		'Case LicenceValidation.Insufficient
-					'		'	Session("ErrorText") = LicenceHub.ErrorMessage(licenceValidate)
-					'		'	Return RedirectToAction("Loginerror")
-
-					'	Case LicenceValidation.ExpiryWarning, LicenceValidation.HeadcountWarning, LicenceValidation.HeadcountExceeded
-					'		Session("WarningText") = LicenceHub.ErrorMessage(licenceValidate)
-
-					'End Select
-
 					' User is allowed into OpenHR, now populate some metadata
 					objServerSession.RegionalSettings = Platform.PopulateRegionalSettings(sLocaleCultureName)
 					objServerSession.Initialise()

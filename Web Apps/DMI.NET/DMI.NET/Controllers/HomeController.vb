@@ -364,7 +364,19 @@ Namespace Controllers
 					Session("ErrorText") = LicenceHub.ErrorMessage(licenceValidate)
 					bOK = False
 
-				Case LicenceValidation.ExpiryWarning, LicenceValidation.HeadcountWarning, LicenceValidation.HeadcountExceeded
+				Case LicenceValidation.HeadcountWarning
+					If LicenceHub.DisplayWarningToUser(Session("Username").ToString(), WarningType.Headcount95Percent, 7) Then
+						Session("WarningText") = LicenceHub.ErrorMessage(licenceValidate)
+					End If
+					bOK = True
+
+				Case LicenceValidation.ExpiryWarning
+					If LicenceHub.DisplayWarningToUser(Session("Username").ToString(), WarningType.Licence5DayExpiry, 1) Then
+						Session("WarningText") = LicenceHub.ErrorMessage(licenceValidate)
+					End If
+					bOK = True
+
+				Case LicenceValidation.HeadcountExceeded
 					Session("WarningText") = LicenceHub.ErrorMessage(licenceValidate)
 					bOK = True
 

@@ -146,6 +146,7 @@
     <Compile Include="Enums\LicenceType.vb" />
     <Compile Include="Enums\LockPriority.vb" />
     <Compile Include="Enums\SoftwareModule.vb" />
+    <Compile Include="Enums\WarningType.vb" />
     <Compile Include="Enums\WebArea.vb" />
     <Compile Include="Enums\OrderType.vb" />
     <Compile Include="Enums\PromptedDateType.vb" />

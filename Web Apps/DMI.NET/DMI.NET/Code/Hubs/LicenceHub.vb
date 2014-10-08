@@ -9,12 +9,15 @@ Imports System.Threading.Tasks
 Imports DMI.NET.Models
 Imports System.Web.Script.Serialization
 Imports System.Data.SqlClient
+Imports HR.Intranet.Server
 
 Namespace Code.Hubs
 
 	<HubName("LicenceHub")> _
 	Public Class LicenceHub
 		Inherits Hub
+
+		Private Shared Property Connection As SqlConnection
 
 		Private Shared ReadOnly Licence As New Licence
 
@@ -27,6 +30,12 @@ Namespace Code.Hubs
 		Private Shared current_Headcount As Long = 0
 
 		Private Const HeadcountWarningThreshold = 0.95
+
+		Shared Sub New()
+
+			Connection = New SqlConnection(ConfigurationManager.ConnectionStrings("OpenHR").ConnectionString)
+
+		End Sub
 
 		Friend Shared Function ErrorMessage(failureCode As LicenceValidation) As String
 
@@ -101,6 +110,28 @@ Namespace Code.Hubs
 			myContext.Clients.All.currentUserList(result)
 
 		End Sub
+
+		Friend Shared Function DisplayWarningToUser(userName As String, warningType As WarningType, warningRefreshRate As Integer) As Boolean
+
+			Try
+
+				Dim objDataAccess As New clsDataAccess(ConfigurationManager.ConnectionStrings("OpenHR").ConnectionString)
+
+				Dim prmWarnUser As New SqlParameter("@WarnUser", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
+				objDataAccess.ExecuteSP("spASRUpdateWarningLog" _
+						, New SqlParameter("@Username", SqlDbType.VarChar, 255) With {.Value = userName} _
+						, New SqlParameter("@WarningType", SqlDbType.Int) With {.Value = CInt(warningType)} _
+						, New SqlParameter("@WarningRefreshRate", SqlDbType.Int) With {.Value = warningRefreshRate} _
+						, prmWarnUser)
+
+				Return CBool(prmWarnUser.Value)
+
+			Catch ex As Exception
+				Throw
+
+			End Try
+
+		End Function
 
 		Public Overrides Function OnConnected() As Task
 			Dim clientId As String = GetClientId()
@@ -261,8 +292,6 @@ Namespace Code.Hubs
 
 				Dim dt As New DataTable()
 
-				Dim connection = New SqlConnection(ConfigurationManager.ConnectionStrings("OpenHR").ConnectionString)
-
 				Select Case Licence.Type
 					Case LicenceType.Headcount, LicenceType.DMIConcurrencyAndHeadcount
 						sGetHeadcount = "SELECT SettingValue FROM dbo.ASRSysSystemSettings WHERE Section = 'Headcount' AND SettingKey = 'current'"
@@ -272,7 +301,7 @@ Namespace Code.Hubs
 
 				End Select
 
-				Dim cmd As New SqlCommand(sGetHeadcount, connection)
+				Dim cmd As New SqlCommand(sGetHeadcount, Connection)
 				cmd.CommandType = CommandType.Text
 
 				cmd.Notification = Nothing
@@ -280,8 +309,8 @@ Namespace Code.Hubs
 				AddHandler dependency.OnChange, AddressOf HeadcountChange
 
 				' Open the connection if necessary
-				If connection.State = ConnectionState.Closed Then
-					connection.Open()
+				If Connection.State = ConnectionState.Closed Then
+					Connection.Open()
 				End If
 
 				' Get the messages
@@ -310,10 +339,9 @@ Namespace Code.Hubs
 				Dim dt As New DataTable()
 				Dim sLicence As String
 
-				Dim connection = New SqlConnection(ConfigurationManager.ConnectionStrings("OpenHR").ConnectionString)
 				Const sSQL As String = "SELECT SettingValue FROM dbo.ASRSysSystemSettings WHERE Section = 'licence' AND SettingKey = 'key'"
 
-				Dim cmd As New SqlCommand(sSQL, connection)
+				Dim cmd As New SqlCommand(sSQL, Connection)
 				cmd.CommandType = CommandType.Text
 
 				cmd.Notification = Nothing
@@ -321,8 +349,8 @@ Namespace Code.Hubs
 				AddHandler dependency.OnChange, AddressOf LicenceKeyChange
 
 				' Open the connection if necessary
-				If connection.State = ConnectionState.Closed Then
-					connection.Open()
+				If Connection.State = ConnectionState.Closed Then
+					Connection.Open()
 				End If
 
 				' Get the messages
