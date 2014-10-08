@@ -919,7 +919,7 @@ function menu_MenuClick(sTool) {
 
 	// Nine box grid Reports
 		if (sToolName == "mnutoolNineBox") {
-			hasChanged = menu_saveChanges("NINEBOX", true, false);
+			hasChanged = menu_saveChanges("NINEBOXGRID", true, false);
 			if (hasChanged == 6) { // 6 = No Change
 				menu_loadDefSelPage(35, 0, 0, true);
 			}

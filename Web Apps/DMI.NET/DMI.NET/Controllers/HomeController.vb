@@ -77,7 +77,7 @@ Namespace Controllers
 				'--------------------------------------------
 				' Save the DefSel 'only mine' settings.
 				'--------------------------------------------
-				For i = 0 To 20
+				For i = 0 To 21
 					Select Case i
 						Case 0
 							sType = "BatchJobs"
@@ -121,6 +121,9 @@ Namespace Controllers
 							sType = "RecordProfile"
 						Case 20
 							sType = "SuccessionPlanning"
+						Case 21
+							sType = "NineBoxGrid"
+
 					End Select
 
 					sControlName = "txtOwner_" & sType
@@ -856,7 +859,7 @@ Namespace Controllers
 						'Case 25	' WORKFLOW 
 						'	Session("reaction") = "WORKFLOWS"
 					Case 35	' NINE BOX
-						Session("reaction") = "NINEBOX"
+						Session("reaction") = "NINEBOXGRID"
 				End Select
 				Return RedirectToAction("checkforusage")
 			End If

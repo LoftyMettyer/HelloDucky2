@@ -8,7 +8,7 @@
 	Dim objDatabase As Database = CType(Session("DatabaseFunctions"), Database)
    	
 	' Get the DefSel 'only mine' settings.
-	For i = 0 To 20
+	For i = 0 To 21
 		sTemp = "onlymine "
 
 		Select Case i
@@ -54,6 +54,8 @@
 				sTemp = sTemp & "RecordProfile"
 			Case 20
 				sTemp = sTemp & "SuccessionPlanning"
+			Case 21
+				sTemp = sTemp & "NineBoxGrid"
 		End Select
 
 		Session(sTemp) = CLng(objDatabase.GetUserSetting("defsel", sTemp, 0))
@@ -104,6 +106,7 @@
 		// Load the original values into tab 2. 
 		frmConfiguration.chkOwner_Calculations.checked = (frmOriginalConfiguration.txtOnlyMineCalculations.value == 1);
 		frmConfiguration.chkOwner_CrossTabs.checked = (frmOriginalConfiguration.txtOnlyMineCrossTabs.value == 1);
+		frmConfiguration.chkOwner_NineBoxGrid.checked = (frmOriginalConfiguration.txtOnlyMineNineBoxGrid.value == 1);
 		frmConfiguration.chkOwner_CustomReports.checked = (frmOriginalConfiguration.txtOnlyMineCustomReports.value == 1);
 		frmConfiguration.chkOwner_Filters.checked = (frmOriginalConfiguration.txtOnlyMineFilters.value == 1);
 		frmConfiguration.chkOwner_MailMerge.checked = (frmOriginalConfiguration.txtOnlyMineMailMerge.value == 1);
@@ -222,6 +225,7 @@
 
 		if (frmConfiguration.chkOwner_Calculations.checked == true) frmConfiguration.txtOwner_Calculations.value = 1;
 		if (frmConfiguration.chkOwner_CrossTabs.checked == true) frmConfiguration.txtOwner_CrossTabs.value = 1;
+		if (frmConfiguration.chkOwner_NineBoxGrid.checked == true) frmConfiguration.txtOwner_NineBoxGrid.value = 1;
 		if (frmConfiguration.chkOwner_CustomReports.checked == true) frmConfiguration.txtOwner_CustomReports.value = 1;
 		if (frmConfiguration.chkOwner_Filters.checked == true) frmConfiguration.txtOwner_Filters.value = 1;
 		if (frmConfiguration.chkOwner_MailMerge.checked == true) frmConfiguration.txtOwner_MailMerge.value = 1;
@@ -361,6 +365,7 @@
 
 		if ((frmConfiguration.chkOwner_Calculations.checked != (frmOriginalConfiguration.txtOnlyMineCalculations.value == 1)) ||
 						(frmConfiguration.chkOwner_CrossTabs.checked != (frmOriginalConfiguration.txtOnlyMineCrossTabs.value == 1)) ||
+						(frmConfiguration.chkOwner_NineBoxGrid.checked != (frmOriginalConfiguration.txtOnlyMineNineBoxGrid.value == 1)) ||
 						(frmConfiguration.chkOwner_CustomReports.checked != (frmOriginalConfiguration.txtOnlyMineCustomReports.value == 1)) ||
 						(frmConfiguration.chkOwner_Filters.checked != (frmOriginalConfiguration.txtOnlyMineFilters.value == 1)) ||
 						(frmConfiguration.chkOwner_MailMerge.checked != (frmOriginalConfiguration.txtOnlyMineMailMerge.value == 1)) ||
@@ -392,6 +397,7 @@
 
 			frmConfiguration.chkOwner_Calculations.checked = false;
 			frmConfiguration.chkOwner_CrossTabs.checked = false;
+			frmConfiguration.chkOwner_NineBoxGrid.checked = false;
 			frmConfiguration.chkOwner_CustomReports.checked = false;
 			frmConfiguration.chkOwner_Filters.checked = false;
 			frmConfiguration.chkOwner_MailMerge.checked = false;
@@ -665,6 +671,16 @@
 						</tr>
 
 						<tr>
+							<td></td>
+							<td style="width: 20px"></td>
+							<td align="left" nowrap>
+								<input type="checkbox" id="chkOwner_NineBoxGrid" name="chkOwner_NineBoxGrid" tabindex="-1" />
+								<label for="chkOwner_NineBoxGrid" class="checkbox" tabindex="0">9-Box Grid Reports</label>
+							</td>
+							<td colspan="4"></td>
+						</tr>
+
+						<tr>
 							<td colspan="7" style="height: 10px"></td>
 						</tr>
 						<tr>
@@ -730,6 +746,7 @@
 	<input type="hidden" id="txtOwner_BatchJobs" name="txtOwner_BatchJobs" value="0">
 	<input type="hidden" id="txtOwner_Calculations" name="txtOwner_Calculations" value="0">
 	<input type="hidden" id="txtOwner_CrossTabs" name="txtOwner_CrossTabs" value="0">
+	<input type="hidden" id="txtOwner_NineBoxGrid" name="txtOwner_NineBoxGrid" value="0">
 	<input type="hidden" id="txtOwner_CustomReports" name="txtOwner_CustomReports" value="0">
 	<input type="hidden" id="txtOwner_DataTransfer" name="txtOwner_DataTransfer" value="0">
 	<input type="hidden" id="txtOwner_Export" name="txtOwner_Export" value="0">
@@ -769,6 +786,7 @@
 	<input type="hidden" id="txtOnlyMineBatchJobs" name="txtOnlyMineBatchJobs" value='<%=session("onlyMine BatchJobs")%>'>
 	<input type="hidden" id="txtOnlyMineCalculations" name="txtOnlyMineCalculations" value='<%=session("onlyMine Calculations")%>'>
 	<input type="hidden" id="txtOnlyMineCrossTabs" name="txtOnlyMineCrossTabs" value='<%=session("onlyMine CrossTabs")%>'>
+	<input type="hidden" id="txtOnlyMineNineBoxGrid" name="txtOnlyMineNineBoxGrid" value='<%=Session("onlyMine NineBoxGrid")%>'>
 	<input type="hidden" id="txtOnlyMineCustomReports" name="txtOnlyMineCustomReports" value='<%=session("onlyMine CustomReports")%>'>
 	<input type="hidden" id="txtOnlyMineDataTransfer" name="txtOnlyMineDataTransfer" value='<%=session("onlyMine DataTransfer")%>'>
 	<input type="hidden" id="txtOnlyMineExport" name="txtOnlyMineExport" value='<%=session("onlyMine Export")%>'>
