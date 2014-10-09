@@ -247,6 +247,8 @@ Public Enum EventLog_Type
   eltAccordImport = 23
   eltAccordExport = 24
   eltWorkflowRebuild = 25
+  elt9GridBox = 23
+  
 End Enum
 
 Public Enum EventLog_Status
@@ -386,6 +388,7 @@ Public Enum CrossTabType
   cttTurnover = 1
   cttStability = 2
   cttAbsenceBreakdown = 3
+  ctt9GridBox = 4
 End Enum
 
 Public Enum MatchReportType

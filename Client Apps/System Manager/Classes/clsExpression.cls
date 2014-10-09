@@ -2690,6 +2690,8 @@ Public Function ExpressionIsUsed(plngExprID As Long) As Boolean
   Dim rsADOCheck12 As ADODB.Recordset
   Dim rsADOCheck13 As ADODB.Recordset
   Dim rsADOCheck14 As ADODB.Recordset
+  Dim rsADOCheck15 As ADODB.Recordset
+  
   Dim rsDAOCheck As DAO.Recordset
   Dim wfTempElement As VB.Control
   Dim lngLoop As Long
@@ -2858,8 +2860,9 @@ Public Function ExpressionIsUsed(plngExprID As Long) As Boolean
   
     ' Check that the expression is not used as a filter for a Cross-Tab.
     sSQL = "SELECT DISTINCT name" & _
-      " FROM ASRSysCrossTab" & _
-      " WHERE filterID = " & Trim$(Str$(plngExprID))
+        " FROM ASRSysCrossTab" & _
+        " WHERE filterID = " & Trim$(Str$(plngExprID)) & _
+        " AND CrossTabType <> 4"
     Set rsADOCheck1 = New ADODB.Recordset
     rsADOCheck1.Open sSQL, gADOCon, adOpenForwardOnly, adLockReadOnly, adCmdText
     With rsADOCheck1
@@ -2873,6 +2876,25 @@ Public Function ExpressionIsUsed(plngExprID As Long) As Boolean
       .Close
     End With
     Set rsADOCheck1 = Nothing
+  
+      ' Check that the expression is not used as a filter for a 9-Box Grid Report
+    sSQL = "SELECT DISTINCT name" & _
+        " FROM ASRSysCrossTab" & _
+        " WHERE filterID = " & Trim$(Str$(plngExprID)) & _
+        " AND CrossTabType = 4"
+    Set rsADOCheck15 = New ADODB.Recordset
+    rsADOCheck15.Open sSQL, gADOCon, adOpenForwardOnly, adLockReadOnly, adCmdText
+    With rsADOCheck15
+      If Not (.EOF And .BOF) Then
+        fUsed = True
+        Do Until .EOF
+          mfrmUse.AddToList "9-Box Grid Report : " & !Name
+          .MoveNext
+        Loop
+      End If
+      .Close
+    End With
+    Set rsADOCheck15 = Nothing
   
   
     ' Check that the expression is not used as a filter for a Custom Report.
@@ -3496,6 +3518,7 @@ TidyUpAndExit:
   Set rsADOCheck12 = Nothing
   Set rsADOCheck13 = Nothing
   Set rsADOCheck14 = Nothing
+  Set rsADOCheck15 = Nothing
   
   ExpressionIsUsed = fUsed
   Exit Function

@@ -800,7 +800,8 @@ Private Sub Form_Load()
   'Add all available functions to the Type combo
   With cboType
     .AddItem "<All>"
-    .AddItem "Cross Tab": .ItemData(.NewIndex) = eltCrossTab
+		.AddItem "Cross Tab" : .ItemData(.NewIndex) = eltCrossTab
+		.AddItem "9-Box Grid" : .ItemData(.NewIndex) = elt9BoxGrid
     .AddItem "Custom Report": .ItemData(.NewIndex) = eltCustomReport
     .AddItem "Data Transfer": .ItemData(.NewIndex) = eltDataTransfer
     .AddItem "Diary Rebuild": .ItemData(.NewIndex) = eltDiaryRebuild

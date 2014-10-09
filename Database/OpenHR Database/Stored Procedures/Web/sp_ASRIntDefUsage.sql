@@ -61,7 +61,7 @@ BEGIN
 		DEALLOCATE expr_cursor
 	END
 
-	IF @intType = 1 OR @intType = 2 OR @intType = 9 OR @intType = 17
+	IF @intType = 1 OR @intType = 2 OR @intType = 9 OR @intType = 17 OR @intType = 35
 	BEGIN
 		/* Reports & Utilities
 		Check for usage in Batch Jobs */
@@ -69,6 +69,7 @@ BEGIN
 		IF @intType = 2 SET @sJobTypeName = 'CUSTOM REPORT'
 		IF @intType = 9 SET @sJobTypeName = 'MAIL MERGE' 
 		IF @intType = 17 SET @sJobTypeName = 'CALENDAR REPORT'
+		IF @intType = 35 SET @sJobTypeName = '9-BOX GRID REPORT'
 		
 		DECLARE usage_cursor CURSOR LOCAL FAST_FORWARD FOR 
 			SELECT DISTINCT ASRSysBatchJobName.Name, 
@@ -131,15 +132,17 @@ BEGIN
 				INNER JOIN ASRSysCrossTabAccess ON ASRSysCrossTab.crossTabID = ASRSysCrossTabAccess.ID
 					AND ASRSysCrossTabAccess.groupname = @sRoleName
 				WHERE PickListID =@intID
+					AND ASRSysCrossTab.CrossTabType <> 4
 			UNION
-				SELECT DISTINCT 'Data Transfer',
-					ASRSysDataTransferName.Name,
-					ASRSysDataTransferName.UserName,
-					ASRSysDataTransferAccess.Access
-				FROM ASRSysDataTransferName
-				INNER JOIN ASRSysDataTransferAccess ON ASRSysDataTransferName.DataTransferID = ASRSysDataTransferAccess.ID
-					AND ASRSysDataTransferAccess.groupname = @sRoleName
-				WHERE ASRSysDataTransferName.pickListID = @intID
+				SELECT DISTINCT '9-Box Grid Report', 
+					ASRSysCrossTab.Name, 
+					ASRSysCrossTab.UserName, 
+					ASRSysCrossTabAccess.Access
+				FROM ASRSysCrossTab
+				INNER JOIN ASRSysCrossTabAccess ON ASRSysCrossTab.crossTabID = ASRSysCrossTabAccess.ID
+					AND ASRSysCrossTabAccess.groupname = @sRoleName
+				WHERE PickListID =@intID
+					AND ASRSysCrossTab.CrossTabType = 4
 			UNION
 				SELECT DISTINCT 'Export',
 					ASRSysExportName.Name,
@@ -265,6 +268,17 @@ BEGIN
 				INNER JOIN ASRSysCrossTabAccess ON ASRSysCrossTab.crossTabID = ASRSysCrossTabAccess.ID
 					AND ASRSysCrossTabAccess.groupname = @sRoleName
 				WHERE ASRSysCrossTab.FilterID = @intID
+					AND ASRSysCrossTab.CrossTabType <> 4
+			UNION
+				SELECT DISTINCT '9-Box Grid Report', 
+					ASRSysCrossTab.Name, 
+					ASRSysCrossTab.UserName, 
+					ASRSysCrossTabAccess.Access
+				FROM ASRSysCrossTab
+				INNER JOIN ASRSysCrossTabAccess ON ASRSysCrossTab.crossTabID = ASRSysCrossTabAccess.ID
+					AND ASRSysCrossTabAccess.groupname = @sRoleName
+				WHERE ASRSysCrossTab.FilterID = @intID
+					AND ASRSysCrossTab.CrossTabType = 4
 			UNION
 				SELECT DISTINCT 'Custom Report', 
 					ASRSysCustomReportsName.Name, 

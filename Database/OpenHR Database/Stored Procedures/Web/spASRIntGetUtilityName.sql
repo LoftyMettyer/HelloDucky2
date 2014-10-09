@@ -40,7 +40,13 @@ BEGIN
 		SET @sTableName = 'ASRSysCrossTab';
 		SET @sIDColumnName = 'CrossTabID';
     END
-    
+
+	IF @piUtilityType = 35 /* 9-Box Grid Report*/
+	BEGIN
+		SET @sTableName = 'ASRSysCrossTab';
+		SET @sIDColumnName = 'CrossTabID';
+	END
+	    
 	IF @piUtilityType = 2 /* Custom Report */
 	BEGIN
 		SET @sTableName = 'ASRSysCustomReportsName';

@@ -31,6 +31,14 @@ Public Enum ViewItemTypes
   giNODE_RELATIONCHILD = (2 ^ 5 Or edtAdd Or edtEdit Or edtDelete)
 End Enum
 
+Public Enum CrossTabType
+    cttNormal = 0
+    cttTurnover = 1
+    cttStability = 2
+    cttAbsenceBreakdown = 3
+    ctt9GridBox = 4
+End Enum
+
 ' Control type constants
 Public Enum ControlTypes
   giCTRL_CHECKBOX = 2 ^ 0

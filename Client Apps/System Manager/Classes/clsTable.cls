@@ -3849,6 +3849,8 @@ Public Function TableIsUsed(pfrmUsage As frmUsage) As Boolean
   Dim rsUtils10 As ADODB.Recordset
   Dim rsUtils11 As ADODB.Recordset
   Dim rsUtils12 As ADODB.Recordset
+  Dim rsUtils13 As ADODB.Recordset
+  
   Dim rsUtilsDocTypes As ADODB.Recordset
   Dim sGlobalFunctionType As String
   Dim rsEmail As DAO.Recordset
@@ -4151,7 +4153,8 @@ Public Function TableIsUsed(pfrmUsage As frmUsage) As Boolean
   ' Now Check if the column is used in a Cross Tab
   sSQL = "SELECT DISTINCT ASRSysCrossTab.CrossTabID, ASRSysCrossTab.Name, ASRSysCrossTab.Username" & _
          " FROM ASRSysCrossTab " & _
-         " WHERE ASRSysCrossTab.TableID = " & Trim(Str(gLngTableID))
+         " WHERE ASRSysCrossTab.TableID = " & Trim(Str(gLngTableID)) & _
+         " AND CrossTabType <> 4"
   Set rsUtils3 = New ADODB.Recordset
   rsUtils3.Open sSQL, gADOCon, adOpenForwardOnly, adLockReadOnly
   With rsUtils3
@@ -4166,6 +4169,28 @@ Public Function TableIsUsed(pfrmUsage As frmUsage) As Boolean
   End With
   Set rsUtils3 = Nothing
  
+   ' Now Check if the column is used in a 9-Box Grid Reports
+  sSQL = "SELECT DISTINCT ASRSysCrossTab.CrossTabID, ASRSysCrossTab.Name, ASRSysCrossTab.Username" & _
+         " FROM ASRSysCrossTab " & _
+         " WHERE ASRSysCrossTab.TableID = " & Trim(Str(gLngTableID)) & _
+         " AND CrossTabType = 4"
+  Set rsUtils13 = New ADODB.Recordset
+  rsUtils13.Open sSQL, gADOCon, adOpenForwardOnly, adLockReadOnly
+  With rsUtils13
+    If Not (rsUtils13.BOF And rsUtils13.EOF) Then
+      fUsed = True
+      Do Until .EOF
+        mfrmUse.AddToList ("9-Box Grid Report : " & !Name)
+        .MoveNext
+      Loop
+    End If
+    .Close
+  End With
+  Set rsUtils13 = Nothing
+  
+  
+
+
  
   ' Now Check if the column is used in a Record Profile
   sSQL = "SELECT DISTINCT ASRSysRecordProfileName.Name, ASRSysRecordProfileName.Username, ASRSysRecordProfileName.recordProfileID " & _
@@ -4580,6 +4605,7 @@ TidyUpAndExit:
   Set rsUtils10 = Nothing
   Set rsUtils11 = Nothing
   Set rsUtils12 = Nothing
+  Set rsUtils13 = Nothing
   
   TableIsUsed = fUsed
   Exit Function

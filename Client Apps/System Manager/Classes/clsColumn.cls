@@ -325,6 +325,8 @@ Public Function ColumnIsUsed(pfrmUsage As frmUsage) As Boolean
   Dim rsUtils9 As ADODB.Recordset
   Dim rsUtils10 As ADODB.Recordset
   Dim rsUtils11 As ADODB.Recordset
+  Dim rsUtils12 As ADODB.Recordset
+  
   Dim rsUtilsDocTypes As ADODB.Recordset
   
   Dim rsExprs As ADODB.Recordset
@@ -1033,7 +1035,8 @@ Public Function ColumnIsUsed(pfrmUsage As frmUsage) As Boolean
          " WHERE ASRSysCrossTab.HorizontalColID = " & Trim(Str(gLngColumnID)) & _
          "   OR ASRSysCrossTab.VerticalColID = " & Trim(Str(gLngColumnID)) & _
          "   OR ASRSysCrossTab.PageBreakColID = " & Trim(Str(gLngColumnID)) & _
-         "   OR ASRSysCrossTab.IntersectionColID = " & Trim(Str(gLngColumnID))
+         "   OR ASRSysCrossTab.IntersectionColID = " & Trim(Str(gLngColumnID)) & _
+         " AND CrossTabType <> 4"
   Set rsUtils3 = New ADODB.Recordset
   ' AE20080326 Fault #13043 - KB272358
   'rsUtils3.Open sSQL, gADOCon, adOpenForwardOnly, adLockReadOnly
@@ -1050,6 +1053,28 @@ Public Function ColumnIsUsed(pfrmUsage As frmUsage) As Boolean
   End With
   Set rsUtils3 = Nothing
 
+  ' Now Check if the column is used in a 9-Box Grid Report
+  sSQL = "SELECT DISTINCT ASRSysCrossTab.CrossTabID, ASRSysCrossTab.Name, ASRSysCrossTab.Username" & _
+         " FROM ASRSysCrossTab " & _
+         " WHERE ASRSysCrossTab.HorizontalColID = " & Trim(Str(gLngColumnID)) & _
+         "   OR ASRSysCrossTab.VerticalColID = " & Trim(Str(gLngColumnID)) & _
+         "   OR ASRSysCrossTab.PageBreakColID = " & Trim(Str(gLngColumnID)) & _
+         "   OR ASRSysCrossTab.IntersectionColID = " & Trim(Str(gLngColumnID)) & _
+         " AND CrossTabType = 4"
+  Set rsUtils12 = New ADODB.Recordset
+  rsUtils12.Open sSQL, gADOCon, adOpenStatic, adLockReadOnly
+  With rsUtils12
+    If Not (.EOF And .BOF) Then
+      fUsed = True
+      Do Until .EOF
+        mfrmUse.AddToList ("9-Box Grid Report : " & !Name)
+        .MoveNext
+      Loop
+    End If
+    .Close
+  End With
+  Set rsUtils12 = Nothing
+  
 
   ' Now Check if the column is used in a Record Profile
   sSQL = "SELECT DISTINCT ASRSysRecordProfileName.Name, ASRSysRecordProfileName.Username, ASRSysRecordProfileName.recordProfileID " & _
@@ -1501,6 +1526,7 @@ TidyUpAndExit:
   Set rsUtils9 = Nothing
   Set rsUtils10 = Nothing
   Set rsUtils11 = Nothing
+  Set rsUtils12 = Nothing
   
   ColumnIsUsed = fUsed
   Exit Function

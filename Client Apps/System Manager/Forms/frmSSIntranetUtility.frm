@@ -107,7 +107,7 @@ Public Sub Initialize(psUtilityType As String, psUtilityID As String)
   UtilityType = psUtilityType
   UtilityID = psUtilityID
 
-  cmdOK.Enabled = (val(psUtilityID) = 0)
+  cmdOk.Enabled = (val(psUtilityID) = 0)
   
   'RefreshControls
 End Sub
@@ -141,7 +141,7 @@ If cboHRProUtilityType.ListIndex >= 0 Then
   End If
 End If
 
-cmdOK.Enabled = True
+cmdOk.Enabled = True
 
 End Sub
 
@@ -231,6 +231,13 @@ Private Sub GetHRProUtilities(pUtilityType As UtilityType)
     Case utlCrossTab
       sTableName = "ASRSysCrossTab"
       sIDColumnName = "CrossTabID"
+      sWhereSQL = "ASRSysCrossTab.CrossTabType <> " & CStr(0)
+      
+    Case utlNineBoxGrid
+        sTableName = "ASRSysCrossTab"
+        sIDColumnName = "CrossTabID"
+        sWhereSQL = "ASRSysCrossTab.CrossTabType = " & CStr(4)
+        
     
     Case utlCustomReport
       sTableName = "ASRSysCustomReportsName"
@@ -294,7 +301,7 @@ Private Sub GetHRProUtilities(pUtilityType As UtilityType)
 
       While Not rsLocalUtilities.EOF
         cboHRProUtility.AddItem rsLocalUtilities!Name
-        cboHRProUtility.ItemData(cboHRProUtility.NewIndex) = rsLocalUtilities!id
+        cboHRProUtility.ItemData(cboHRProUtility.NewIndex) = rsLocalUtilities!ID
 
         rsLocalUtilities.MoveNext
       Wend
@@ -315,7 +322,7 @@ Private Sub GetHRProUtilities(pUtilityType As UtilityType)
       rsUtilities.Open sSQL, gADOCon, adOpenForwardOnly, adLockReadOnly
       While Not rsUtilities.EOF
         cboHRProUtility.AddItem rsUtilities!Name
-        cboHRProUtility.ItemData(cboHRProUtility.NewIndex) = rsUtilities!id
+        cboHRProUtility.ItemData(cboHRProUtility.NewIndex) = rsUtilities!ID
   
         rsUtilities.MoveNext
       Wend
