@@ -9,7 +9,7 @@
 	@Html.HiddenFor(Function(m) m.ChildTablesAvailable)
 	@Html.HiddenFor(Function(m) m.ChildTablesString, New With {.id = "txtCTAAS"})
 
-	<fieldset id="RelatedTableParent1" class="width45 floatleft bgpink" @Model.Parent1.Visibility>
+	<fieldset id="RelatedTableParent1" class="width45 floatleft" @Model.Parent1.Visibility>
 		<legend class="fontsmalltitle">Parent 1 :</legend>
 
 		<fieldset>
