@@ -9,16 +9,16 @@
 	@Html.HiddenFor(Function(m) m.ChildTablesAvailable)
 	@Html.HiddenFor(Function(m) m.ChildTablesString, New With {.id = "txtCTAAS"})
 
-	<fieldset id="RelatedTableParent1" class="width45 floatleft" @Model.Parent1.Visibility>
+	<fieldset id="RelatedTableParent1" class="width45 floatleft bgpink" @Model.Parent1.Visibility>
 		<legend class="fontsmalltitle">Parent 1 :</legend>
 
 		<fieldset>
 			<input type="hidden" id="txtParent1ID" name="Parent1.ID" value="@Model.Parent1.ID" />
-			<div class="width30 floatleft">
-				Table :
+			<div class="stretchyfixed">
+				Table:
 			</div>
-			<div class="width70 floatleft">
-				@Html.TextBoxFor(Function(m) m.Parent1.Name, New With {.readonly = "true", .style = "width:100%"})
+			<div class="stretchyfill">
+				@Html.TextBoxFor(Function(m) m.Parent1.Name, New With {.readonly = "true", .class = "width100"})
 			</div>
 		</fieldset>
 
@@ -29,34 +29,35 @@
 				All Records
 			</div>
 
-			<div id="RelatedTablesParent1PicklistDiv">
-				<div class="width30 floatleft">
+			<div id="" class="tablerow">
+				<div class="stretchyfixed">
 					@Html.RadioButton("Parent1.SelectionType", RecordSelectionType.Picklist, Model.Parent1.SelectionType = RecordSelectionType.Picklist _
 														, New With {.id = "Parent1_SelectionTypePicklist", .onclick = "changeRecordOption('Parent1','PICKLIST')"})
 					Picklist
 				</div>
-				<div class="floatleft">
+				<div class="tablecell width100">
 					<input type="hidden" id="txtParent1PicklistID" name="Parent1.PicklistID" value="@Model.Parent1.PicklistID" />
-					@Html.TextBoxFor(Function(m) m.Parent1.PicklistName, New With {.id = "txtParent1Picklist", .readonly = "true"})
+					@Html.TextBoxFor(Function(m) m.Parent1.PicklistName, New With {.id = "txtParent1Picklist", .readonly = "true", .class = "floatright width99"})
 					@Html.ValidationMessageFor(Function(m) m.Parent1.PicklistID)
 				</div>
-				<div class="floatleft">
+				<div class="tablecell">
 					@Html.EllipseButton("cmdParent1Picklist", "selectParent1Picklist()", Model.Parent1.SelectionType = RecordSelectionType.Picklist)
 				</div>
 			</div>
 
-			<div class="width100 clearboth">
-				<div class="width30 floatleft">
+			<div id="" class="tablerow">
+				<div class="stretchyfixed">
 					@Html.RadioButton("Parent1.SelectionType", RecordSelectionType.Filter, Model.Parent1.SelectionType = RecordSelectionType.Filter _
 														, New With {.id = "Parent1_SelectionTypeFilter", .onclick = "changeRecordOption('Parent1','FILTER')"})
 					Filter
 				</div>
-				<div class="floatleft">
+				<div class="tablecell width100">
 					<input type="hidden" id="txtParent1FilterID" name="Parent1.FilterID" value="@Model.Parent1.FilterID" />
-					@Html.TextBoxFor(Function(m) m.Parent1.FilterName, New With {.id = "txtParent1Filter", .readonly = "true"})
+					@Html.TextBoxFor(Function(m) m.Parent1.FilterName, New With {.id = "txtParent1Filter", .readonly = "true", .class = "floatright width99"})
 					@Html.ValidationMessageFor(Function(m) m.Parent1.FilterID)
+
 				</div>
-				<div class="floatleft">
+				<div class="tablecell">
 					@Html.EllipseButton("cmdParent1Filter", "selectParent1Filter()", Model.Parent1.SelectionType = RecordSelectionType.Filter)
 				</div>
 			</div>
@@ -68,11 +69,11 @@
 
 		<fieldset>
 			<input type="hidden" id="txtParent2ID" name="Parent2.ID" value="@Model.Parent2.ID" />
-			<div class="width30 floatleft">
-				Table :
+			<div class="stretchyfixed">
+				Table:
 			</div>
-			<div class="width70 floatleft">
-				@Html.TextBoxFor(Function(m) m.Parent2.Name, New With {.readonly = "true", .style = "width:100%"})
+			<div class="stretchyfill">
+				@Html.TextBoxFor(Function(m) m.Parent2.Name, New With {.readonly = "true", .class = "width100"})
 			</div>
 		</fieldset>
 
@@ -83,34 +84,35 @@
 				All Records
 			</div>
 
-			<div id="RelatedTablesParent2PicklistDiv">
-				<div class="width30 floatleft">
-					@Html.RadioButton("Parent2.SelectionType", RecordSelectionType.Picklist, Model.Parent2.SelectionType = RecordSelectionType.Picklist, New With {.id = "Parent2_SelectionTypePicklist", .onclick = "changeRecordOption('Parent2','PICKLIST')"})
+			<div id="" class="tablerow">
+				<div class="stretchyfixed">
+					@Html.RadioButton("Parent2.SelectionType", RecordSelectionType.Picklist, Model.Parent2.SelectionType = RecordSelectionType.Picklist, 
+		 												New With {.id = "Parent2_SelectionTypePicklist", .onclick = "changeRecordOption('Parent2','PICKLIST')"})
 					Picklist
 				</div>
-				<div class="floatleft">
+				<div class="tablecell width100">
 					<input type="hidden" id="txtParent2PicklistID" name="Parent2.PicklistID" value="@Model.Parent2.PicklistID" />
-					@Html.TextBoxFor(Function(m) m.Parent2.PicklistName, New With {.id = "txtParent2Picklist", .readonly = "true"})
+					@Html.TextBoxFor(Function(m) m.Parent2.PicklistName, New With {.id = "txtParent2Picklist", .readonly = "true", .class = "floatright width99"})
 					@Html.ValidationMessageFor(Function(m) m.Parent2.PicklistID)
 				</div>
-				<div class="floatleft">
+				<div class="tablecell">
 					@Html.EllipseButton("cmdParent2Picklist", "selectParent2Picklist()", Model.Parent2.SelectionType = RecordSelectionType.Picklist)
 				</div>
 			</div>
 
-			<div class="clearboth">
-				<div class="width30 floatleft">
+			<div id="" class="tablerow">
+				<div class="stretchyfixed">
 					@Html.RadioButton("Parent2.SelectionType", RecordSelectionType.Filter, Model.Parent2.SelectionType = RecordSelectionType.Filter,
 											 New With {.id = "Parent2_SelectionTypeFilter", .onclick = "changeRecordOption('Parent2','FILTER')"})
 					Filter
 				</div>
-				<div class="floatleft">
+				<div class="tablecell width100">
 					<input type="hidden" id="txtParent2FilterID" name="Parent2.FilterID" value="@Model.Parent2.FilterID" />
 
-					@Html.TextBoxFor(Function(m) m.Parent2.FilterName, New With {.id = "txtParent2Filter", .readonly = "true"})
+					@Html.TextBoxFor(Function(m) m.Parent2.FilterName, New With {.id = "txtParent2Filter", .readonly = "true", .class = "floatright width99"})
 					@Html.ValidationMessageFor(Function(m) m.Parent2.FilterID)
 				</div>
-				<div class="floatleft">
+				<div class="tablecell">
 					@Html.EllipseButton("cmdParent2Filter", "selectParent2Filter()", Model.Parent2.SelectionType = RecordSelectionType.Filter)
 				</div>
 			</div>

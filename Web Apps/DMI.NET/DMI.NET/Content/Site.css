@@ -619,10 +619,6 @@ select.readonly {
 	padding-bottom: 0;
 }
 
-#cmdParent1Picklist, #cmdParent2Picklist {
-	margin-bottom: 2px;
-}
-
 #RelatedTableParent1AllRecordsDiv, #RelatedTableParent2AllRecordsDiv {
 	margin-bottom: 7px;
 	width: 100%;
