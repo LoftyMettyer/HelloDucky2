@@ -17,11 +17,13 @@ Private mlngCustomerNo As Long
 Private mlngDAT As Long
 Private mlngDMIM As Long
 Private mlngDMIS As Long
-Private mlngSSI As Long
 Private mlngModules As Long
-Private mlngHeadcount As Long
+Private mlngHeadcountSSI As Long
 Private mdExpiryDate As Date
 Private mlngLicenceType As Long
+
+Public IsValid As Boolean
+Public ValidateCreationDate As Boolean
 
 Public Property Get CustomerNo()
   CustomerNo = mlngCustomerNo
@@ -40,7 +42,7 @@ Public Property Get DMISUsers()
 End Property
 
 Public Property Get SSIUsers()
-  SSIUsers = mlngSSI
+  SSIUsers = IIf(mlngLicenceType = 0, mlngHeadcountSSI, 0)
 End Property
 
 Public Property Get Modules()
@@ -48,7 +50,7 @@ Public Property Get Modules()
 End Property
 
 Public Property Get Headcount()
-  Headcount = mlngHeadcount
+  Headcount = IIf(mlngLicenceType > 0, mlngHeadcountSSI, 0)
 End Property
 
 Public Property Get ExpiryDate()
@@ -65,10 +67,9 @@ Public Property Let LicenceKey(ByVal strNewValue As String)
   Dim strDAT As String
   Dim strDMIM As String
   Dim strDMIS As String
-  Dim strSSI As String
   Dim strModules As String
   Dim strRandomDigit As String
-  Dim strHeadcount As String
+  Dim strSSIHeadcount As String
   Dim strExpiryDate As String
   Dim sLicenceType As String
 
@@ -76,6 +77,9 @@ Public Property Let LicenceKey(ByVal strNewValue As String)
   Dim strInput As String
   Dim lngCount As Long
   Dim lngDateValue As Long
+  Dim strCheckSum As String
+  Dim lngRandomDigit As Long
+  Dim strGeneratedDay As String
 
   '1st Generation: AAAAAAAAAAAAAAA
   '2nd Generation: 1231-2312-3123-1233
@@ -86,40 +90,50 @@ Public Property Let LicenceKey(ByVal strNewValue As String)
   Randomize Timer
   mlngCustomerNo = 0
 
-  If strNewValue Like "??????-??????-??????-??????-??????" Then
+  If strNewValue Like "??????-??????-??????-??????-??????-??????" Then
     
     strInput = Replace(strNewValue, "-", "")
-    strInput = Mid(strInput, 1, 1) & Mid(strInput, 7, 1) & Mid(strInput, 13, 1) & Mid(strInput, 19, 1) & Mid(strInput, 25, 1) & _
-               Mid(strInput, 4, 1) & Mid(strInput, 10, 1) & Mid(strInput, 16, 1) & Mid(strInput, 22, 1) & Mid(strInput, 28, 1) & _
-               Mid(strInput, 3, 1) & Mid(strInput, 9, 1) & Mid(strInput, 15, 1) & Mid(strInput, 21, 1) & Mid(strInput, 27, 1) & _
-               Mid(strInput, 2, 1) & Mid(strInput, 8, 1) & Mid(strInput, 14, 1) & Mid(strInput, 20, 1) & Mid(strInput, 26, 1) & _
-               Mid(strInput, 6, 1) & Mid(strInput, 12, 1) & Mid(strInput, 18, 1) & Mid(strInput, 24, 1) & Mid(strInput, 30, 1) & _
-               Mid(strInput, 5, 1) & Mid(strInput, 11, 1) & Mid(strInput, 17, 1) & Mid(strInput, 23, 1) & Mid(strInput, 29, 1)
+    strInput = Mid(strInput, 32, 1) & Mid(strInput, 35, 1) & Mid(strInput, 6, 1) & Mid(strInput, 27, 1) & Mid(strInput, 21, 1) & Mid(strInput, 29, 1) & _
+           Mid(strInput, 1, 1) & Mid(strInput, 26, 1) & Mid(strInput, 4, 1) & Mid(strInput, 28, 1) & Mid(strInput, 2, 1) & Mid(strInput, 8, 1) & _
+           Mid(strInput, 3, 1) & Mid(strInput, 13, 1) & Mid(strInput, 31, 1) & Mid(strInput, 18, 1) & Mid(strInput, 33, 1) & Mid(strInput, 10, 1) & _
+           Mid(strInput, 20, 1) & Mid(strInput, 14, 1) & Mid(strInput, 23, 1) & Mid(strInput, 9, 1) & Mid(strInput, 25, 1) & Mid(strInput, 16, 1) & _
+           Mid(strInput, 36, 1) & Mid(strInput, 7, 1) & Mid(strInput, 22, 1) & Mid(strInput, 17, 1) & Mid(strInput, 34, 1) & Mid(strInput, 19, 1) & _
+           Mid(strInput, 30, 1) & Mid(strInput, 24, 1) & Mid(strInput, 15, 1) & Mid(strInput, 5, 1) & Mid(strInput, 12, 1) & Mid(strInput, 11, 1)
 
     sLicenceType = Mid(strInput, 1, 1)
     strCustNo = Mid(strInput, 2, 3)
     strDAT = Mid(strInput, 5, 2)
     strDMIM = Mid(strInput, 7, 2)
-    strDMIS = Mid(strInput, 9, 2)
-    strSSI = Mid(strInput, 11, 4)
-    strModules = Mid(strInput, 15, 6)
-    strRandomDigit = Mid(strInput, 21, 1)
-    strHeadcount = Mid(strInput, 22, 4)
-    strExpiryDate = Mid(strInput, 26, 5)
+    strCheckSum = Mid(strInput, 9, 6)
+    strDMIS = Mid(strInput, 15, 2)
+    strModules = Mid(strInput, 17, 7)
+    strRandomDigit = Mid(strInput, 24, 1)
+    strSSIHeadcount = Mid(strInput, 25, 4)
+    strExpiryDate = Mid(strInput, 29, 5)
+    strGeneratedDay = Mid(strInput, 34, 2)
 
+    mlngLicenceType = ConvertStringToNumber2(strRandomDigit & sLicenceType)
     mlngCustomerNo = ConvertStringToNumber2(strRandomDigit & strCustNo)
     mlngDAT = ConvertStringToNumber2(strRandomDigit & strDAT)
     mlngDMIM = ConvertStringToNumber2(strRandomDigit & strDMIM)
     mlngDMIS = ConvertStringToNumber2(strRandomDigit & strDMIS)
-    mlngSSI = ConvertStringToNumber2(strRandomDigit & strSSI)
+    mlngHeadcountSSI = ConvertStringToNumber2(strRandomDigit & strSSIHeadcount)
     mlngModules = ConvertStringToNumber2(strModules)
-    mlngHeadcount = ConvertStringToNumber2(strRandomDigit & strHeadcount)
-    
+    lngRandomDigit = Asc(strRandomDigit) - 64
+       
     lngDateValue = ConvertStringToNumber2(strRandomDigit & strExpiryDate)
     If lngDateValue > 0 Then
       mdExpiryDate = DateFromJulian(lngDateValue)
     End If
-    mlngLicenceType = ConvertStringToNumber2(strRandomDigit & sLicenceType)
+
+    ' Validate checksum
+    If ValidateCreationDate Then
+      IsValid = (ConvertStringToNumber2(strRandomDigit & strGeneratedDay) = DayNumber(Now))
+    Else
+      IsValid = True
+    End If
+    
+    IsValid = IsValid And (ConvertNumberToString2(6, mlngCustomerNo + mlngLicenceType + mlngDAT + mlngDMIM + mlngDMIS + mlngHeadcountSSI + mlngModules + lngDateValue, lngRandomDigit) = strCheckSum)
 
   End If
 
@@ -189,8 +203,45 @@ Private Function GenerateAlphaString(lngGap As Long) As String
 
 End Function
 
+Private Function ConvertNumberToString2(lngSize As Long, lngInput As Long, lngDigit As Long) As String
 
+  Dim lngRandomDigit As Long
+  Dim strAlphaString As String
+  Dim lngFactor As Double
+  Dim lngCount As Long
 
+  lngRandomDigit = IIf(lngDigit = 0, Int(Rnd * 26) + 1, lngDigit)
+  strAlphaString = GenerateAlphaString(lngRandomDigit)
+
+  ConvertNumberToString2 = Mid(strAlphaString, (lngInput And 31) + 1, 1)
+    
+  lngFactor = 32
+  For lngCount = 2 To lngSize - IIf(lngDigit = 0, 1, 0)
+    ConvertNumberToString2 = _
+        Mid(strAlphaString, ((lngInput \ lngFactor) And 31) + 1, 1) & _
+        ConvertNumberToString2
+    lngFactor = lngFactor * 32
+  Next
+  
+  If lngDigit = 0 Then
+    ConvertNumberToString2 = _
+        Chr(lngRandomDigit + 64) & ConvertNumberToString2
+  End If
+
+End Function
+
+Private Function Date2Julian(ByVal vDate As Date) As Long
+    Date2Julian = CLng(Format(Year(vDate), "0000") _
+                  + Format(DateDiff("d", CDate("01/01/" _
+                  + Format(Year(vDate), "0000")), vDate) _
+                  + 1, "000"))
+End Function
+
+Private Function DayNumber(ByVal vDate As Date) As Long
+    DayNumber = CLng(Format(DateDiff("d", CDate("01/01/" _
+                  + Format(Year(vDate), "0000")), vDate) _
+                  + 1, "000"))
+End Function
 
 
 

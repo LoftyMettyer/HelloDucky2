@@ -34,6 +34,7 @@ Public Function CheckVersion(sConnect As String, fReRunScript As Boolean, bIsSQL
   Dim sDependencyVersion As String
   Dim iMajorDependencyVersion As Integer
   Dim iMinorDependencyVersion As Integer
+  Dim bLicenceKeyRequired As Boolean
   
   Dim idxname As Integer
   Dim rsInfo As New ADODB.Recordset
@@ -142,6 +143,14 @@ Public Function CheckVersion(sConnect As String, fReRunScript As Boolean, bIsSQL
           mavValidationMessages(1, UBound(mavValidationMessages, 2)) = sDBVersion
           mavValidationMessages(2, UBound(mavValidationMessages, 2)) = CStr(App.Major) & "." & CStr(App.Minor)
           mavValidationMessages(3, UBound(mavValidationMessages, 2)) = "The database is out of date"
+          
+          ReDim Preserve mavValidationMessages(3, UBound(mavValidationMessages, 2) + 1)
+          mavValidationMessages(0, UBound(mavValidationMessages, 2)) = "Licence key must be entered"
+          mavValidationMessages(1, UBound(mavValidationMessages, 2)) = ""
+          mavValidationMessages(2, UBound(mavValidationMessages, 2)) = ""
+          mavValidationMessages(3, UBound(mavValidationMessages, 2)) = "Licence key must be entered"
+          
+          bLicenceKeyRequired = True
           fVersionOK = True
         Else
           fVersionOK = False
@@ -230,11 +239,17 @@ Public Function CheckVersion(sConnect As String, fReRunScript As Boolean, bIsSQL
           iPointer = Screen.MousePointer
           Screen.MousePointer = vbDefault
           
+          frmChangedPlatform.LicenceKeyRequired = bLicenceKeyRequired
           frmChangedPlatform.ShowMessage
           
           Screen.MousePointer = iPointer
           
           If frmChangedPlatform.Choice = vbYes Then
+          
+            fOK = SaveSystemSetting("Licence", "Key", frmChangedPlatform.LicenceKey)
+            gobjLicence.ValidateCreationDate = False
+            gobjLicence.LicenceKey = frmChangedPlatform.LicenceKey
+
             ' AE20080415 Fault #13098
             'fOK = UpdateDatabase(sConnect, False)
             'fOK = UpdateDatabase(sConnect, True, True)
@@ -259,12 +274,6 @@ Public Function CheckVersion(sConnect As String, fReRunScript As Boolean, bIsSQL
       Set frmChangedPlatform = Nothing
     End If
   End If
-  
-  
-If fOK Then
-
-End If
-  
 
   If fOK Then
     ' Check if a new version of the application is required due to an Intranet update
@@ -293,56 +302,9 @@ End If
       End If
     End If
   End If
-   
-  'MH20060126 Temporary skip checking the Server DLL if DEV so that we can connect to QA databases...
-  'If fOK Then
-'  If fOK And Not ASRDEVELOPMENT Then
-  If fOK And glngSQLVersion = 8 Then
-
-    ' Get minimum server dependency info
-    sMinVersion = GetSystemSetting("Server DLL", "Minimum Version", vbNullString)
-    sDependencyVersion = GetServerDLLVersion(sConnect)
-
-    If Len(sDependencyVersion) > 0 And Len(sMinVersion) > 0 Then
-
-      iMinimumMajor = val(Split(sMinVersion, ".")(0))
-      iMinimumMinor = val(Split(sMinVersion, ".")(1))
-
-      iMajorDependencyVersion = val(Split(sDependencyVersion, ".")(0))
-      iMinorDependencyVersion = val(Split(sDependencyVersion, ".")(1))
-
-      blnNewStyleVersionNo = (UBound(Split(sDependencyVersion, ".")) = 1)
-      If Not blnNewStyleVersionNo Then
-        iRevisionAppVersion = val(Split(sDependencyVersion, ".")(2))
-      End If
-
-      If (iMajorDependencyVersion <> iMinimumMajor) Or _
-        ((iMajorDependencyVersion = iMinimumMajor) And (iMinorDependencyVersion < iMinimumMinor)) Then
-
-        fVersionOK = False
         
-        MsgBox "The OpenHR Server package is out of date." & vbNewLine & _
-          "Contact your System Administrator to install the latest OpenHR Server package on the SQL Server." & vbNewLine & vbNewLine & _
-          "Database Name : " & gsDatabaseName & vbNewLine & _
-          "Minimum Server Version : " & sMinVersion & vbNewLine & _
-          "Actual Server Version : " & sDependencyVersion & vbNewLine & vbNewLine & _
-          "NOTE: IF THIS PROBLEM PERSISTS, PLEASE RESTART THE SQL SERVICES.", _
-          vbExclamation + vbOKOnly, Application.Name
- 
-        fOK = fVersionOK
-
-      End If
-    End If
-  End If
- 
   ' Do we enable UDF functions on this installation
   gbEnableUDFFunctions = EnableUDFFunctions
-
-  ' AE20080219 Fault #12608
-  ' Check that no system changes have occured since last login
-'  If fOK Then
-'    Application.Changed = Not frmChangedPlatform.VerifyPlatformDetails
-'  End If
 
   If fOK Then
     gfRefreshStoredProcedures = (GetSystemSetting("Database", "RefreshStoredProcedures", 0) = 1)
@@ -353,12 +315,7 @@ End If
   If fOK Then
     fOK = CheckFrameworkVersion()
   End If
-  
-  ' Is licence key correct version
-  If fOK Then
-    fOK = CheckLicenceVersion()
-  End If
-  
+    
   ' Upload scripts
   If fOK Then
     fOK = UploadHotfixes
@@ -508,31 +465,6 @@ Private Function GetDBVersion() As String
     Set rsInfo = Nothing
   
   End If
-
-End Function
-
-Private Function CheckLicenceVersion() As Boolean
-
-  Dim sOldKey As String
-  Dim sNewKey As String
-  Dim bOK As Boolean
-
-  On Error GoTo Fail:
-
-  bOK = True
-  sOldKey = GetSystemSetting("Licence", "Key", vbNullString)
-
-  If sOldKey Like "A????-?????-?????-?????" Then
-    sNewKey = gobjHRProEngine.UpdateLicence(sOldKey)
-    bOK = SaveSystemSetting("Licence", "Key", sNewKey)
-    gobjLicence.LicenceKey = sNewKey
-  End If
-
-  CheckLicenceVersion = bOK
-  Exit Function
-
-Fail:
-  CheckLicenceVersion = False
 
 End Function
 

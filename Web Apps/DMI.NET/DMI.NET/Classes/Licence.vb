@@ -1,75 +1,81 @@
 ﻿Option Strict On
 Option Explicit On
 
-Imports System.Diagnostics.Eventing.Reader
-
 Namespace Classes
 	Public Class Licence
 
 		Public Shared Type As LicenceType
 		Public Shared CustomerNumber As Long
 
+		Public Shared DATUsers As Integer
 		Public Shared SSIUsers As Long
 		Public Shared DMIUsers As Integer
 		Public Shared DMISingleUsers As Integer
 		Public Shared Headcount As Long
-		'		Public Shared P14Headcount As Integer
-
 		Public Shared ExpiryDate As DateTime
-
 		Public Shared Modules As Long
+
+		Public Shared IsValid As Boolean
 
 		Public Sub Populate(licenceKey As String)
 
 			Dim strCustNo As String
-			Dim strDAT As String
 			Dim strDMIM As String
+			Dim strDAT As String
 			Dim strDMIS As String
-			Dim strSSI As String
 			Dim strModules As String
 			Dim strRandomDigit As String
-			Dim strHeadcount As String
+			Dim strSSIHeadcount As String
 			Dim strExpiryDate As String
 			Dim sLicenceType As String
 
 			Dim strInput As String
-
+			Dim strCheckSum As String
+			Dim strGeneratedDay As String
+			Dim lngHeadcountSSI As Long
 			Randomize()
 
-			If licenceKey Like "??????-??????-??????-??????-??????" Then
+			If licenceKey Like "??????-??????-??????-??????-??????-??????" Then
 
 				strInput = Replace(licenceKey, "-", "")
-				strInput = strInput.Substring(0, 1) & strInput.Substring(6, 1) & strInput.Substring(12, 1) & strInput.Substring(18, 1) & strInput.Substring(24, 1) & _
-						strInput.Substring(3, 1) & strInput.Substring(9, 1) & strInput.Substring(15, 1) & strInput.Substring(11, 1) & strInput.Substring(27, 1) & _
-						strInput.Substring(2, 1) & strInput.Substring(8, 1) & strInput.Substring(14, 1) & strInput.Substring(20, 1) & strInput.Substring(26, 1) & _
-						strInput.Substring(1, 1) & strInput.Substring(7, 1) & strInput.Substring(13, 1) & strInput.Substring(19, 1) & strInput.Substring(25, 1) & _
-						strInput.Substring(5, 1) & strInput.Substring(11, 1) & strInput.Substring(17, 1) & strInput.Substring(23, 1) & strInput.Substring(29, 1) & _
-						strInput.Substring(4, 1) & strInput.Substring(10, 1) & strInput.Substring(16, 1) & strInput.Substring(22, 1) & strInput.Substring(28, 1)
+				strInput = Mid(strInput, 32, 1) & Mid(strInput, 35, 1) & Mid(strInput, 6, 1) & Mid(strInput, 27, 1) & Mid(strInput, 21, 1) & Mid(strInput, 29, 1) & _
+					 Mid(strInput, 1, 1) & Mid(strInput, 26, 1) & Mid(strInput, 4, 1) & Mid(strInput, 28, 1) & Mid(strInput, 2, 1) & Mid(strInput, 8, 1) & _
+					 Mid(strInput, 3, 1) & Mid(strInput, 13, 1) & Mid(strInput, 31, 1) & Mid(strInput, 18, 1) & Mid(strInput, 33, 1) & Mid(strInput, 10, 1) & _
+					 Mid(strInput, 20, 1) & Mid(strInput, 14, 1) & Mid(strInput, 23, 1) & Mid(strInput, 9, 1) & Mid(strInput, 25, 1) & Mid(strInput, 16, 1) & _
+					 Mid(strInput, 36, 1) & Mid(strInput, 7, 1) & Mid(strInput, 22, 1) & Mid(strInput, 17, 1) & Mid(strInput, 34, 1) & Mid(strInput, 19, 1) & _
+					 Mid(strInput, 30, 1) & Mid(strInput, 24, 1) & Mid(strInput, 15, 1) & Mid(strInput, 5, 1) & Mid(strInput, 12, 1) & Mid(strInput, 11, 1)
 
 				sLicenceType = Mid(strInput, 1, 1)
 				strCustNo = Mid(strInput, 2, 3)
 				strDAT = Mid(strInput, 5, 2)
 				strDMIM = Mid(strInput, 7, 2)
-				strDMIS = Mid(strInput, 9, 2)
-				strSSI = Mid(strInput, 11, 4)
-				strModules = Mid(strInput, 15, 6)
-				strRandomDigit = Mid(strInput, 21, 1)
-				strHeadcount = Mid(strInput, 22, 4)
-				strExpiryDate = Mid(strInput, 26, 5)
+				strCheckSum = Mid(strInput, 9, 6)
+				strDMIS = Mid(strInput, 15, 2)
+				strModules = Mid(strInput, 17, 7)
+				strRandomDigit = Mid(strInput, 24, 1)
+				strSSIHeadcount = Mid(strInput, 25, 4)
+				strExpiryDate = Mid(strInput, 29, 5)
 
 				CustomerNumber = ConvertBase32ToLong(strRandomDigit & strCustNo)
-				'DATUsers = ConvertBase32ToLong(strRandomDigit & strDAT)
+				DATUsers = CInt(ConvertBase32ToLong(strRandomDigit & strDAT))
 				DMIUsers = CInt(ConvertBase32ToLong(strRandomDigit & strDMIM))
 				DMISingleUsers = CInt(ConvertBase32ToLong(strRandomDigit & strDMIS))
-				SSIUsers = ConvertBase32ToLong(strRandomDigit & strSSI)
 				Modules = ConvertBase32ToLong(strModules)
-				Headcount = ConvertBase32ToLong(strRandomDigit & strHeadcount)
+				lngHeadcountSSI = ConvertBase32ToLong(strRandomDigit & strSSIHeadcount)
 				Type = CType(ConvertBase32ToLong(strRandomDigit & sLicenceType), LicenceType)
+
+				If Type = LicenceType.Concurrency Then
+					SSIUsers = lngHeadcountSSI
+				Else
+					Headcount = lngHeadcountSSI
+				End If
 
 				Dim lngDate = ConvertBase32ToLong(strRandomDigit & strExpiryDate)
 				If lngDate > 0 Then
 					ExpiryDate = CDate(DateFromJulian(lngDate.ToString()))
 				End If
+
+				IsValid = (ConvertBase32ToLong(strRandomDigit & strCheckSum) = CustomerNumber + Type + DATUsers + DMIUsers + DMISingleUsers + Headcount + Modules + lngDate)
 
 			End If
 		End Sub

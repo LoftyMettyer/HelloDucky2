@@ -1,12 +1,12 @@
 VERSION 5.00
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.Ocx"
+Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.ocx"
 Begin VB.Form frmChangedPlatform 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Platform Change Details"
-   ClientHeight    =   4995
+   ClientHeight    =   5730
    ClientLeft      =   -15
    ClientTop       =   375
-   ClientWidth     =   5505
+   ClientWidth     =   6870
    BeginProperty Font 
       Name            =   "Verdana"
       Size            =   8.25
@@ -23,21 +23,179 @@ Begin VB.Form frmChangedPlatform
    LockControls    =   -1  'True
    MaxButton       =   0   'False
    MinButton       =   0   'False
-   ScaleHeight     =   4995
-   ScaleWidth      =   5505
+   ScaleHeight     =   5730
+   ScaleWidth      =   6870
    ShowInTaskbar   =   0   'False
    StartUpPosition =   1  'CenterOwner
+   Begin VB.Frame fraLicenceKey 
+      Caption         =   "Licence Key :"
+      Height          =   675
+      Left            =   105
+      TabIndex        =   16
+      Top             =   1770
+      Visible         =   0   'False
+      Width           =   6645
+      Begin VB.TextBox txtLicence 
+         Height          =   315
+         Index           =   5
+         Left            =   5655
+         MaxLength       =   6
+         TabIndex        =   6
+         Top             =   240
+         Width           =   825
+      End
+      Begin VB.TextBox txtLicence 
+         Height          =   315
+         Index           =   3
+         Left            =   3495
+         MaxLength       =   6
+         TabIndex        =   4
+         Top             =   240
+         Width           =   825
+      End
+      Begin VB.TextBox txtLicence 
+         Height          =   315
+         Index           =   2
+         Left            =   2415
+         MaxLength       =   6
+         TabIndex        =   3
+         Top             =   240
+         Width           =   825
+      End
+      Begin VB.TextBox txtLicence 
+         Height          =   315
+         Index           =   1
+         Left            =   1335
+         MaxLength       =   6
+         TabIndex        =   2
+         Top             =   240
+         Width           =   825
+      End
+      Begin VB.TextBox txtLicence 
+         Height          =   315
+         Index           =   0
+         Left            =   255
+         MaxLength       =   6
+         TabIndex        =   1
+         Top             =   240
+         Width           =   825
+      End
+      Begin VB.TextBox txtLicence 
+         Height          =   315
+         Index           =   4
+         Left            =   4575
+         MaxLength       =   6
+         TabIndex        =   5
+         Top             =   240
+         Width           =   825
+      End
+      Begin VB.Label lblLicence 
+         AutoSize        =   -1  'True
+         Caption         =   "-"
+         BeginProperty Font 
+            Name            =   "Verdana"
+            Size            =   9.75
+            Charset         =   0
+            Weight          =   700
+            Underline       =   0   'False
+            Italic          =   0   'False
+            Strikethrough   =   0   'False
+         EndProperty
+         Height          =   240
+         Index           =   4
+         Left            =   5475
+         TabIndex        =   21
+         Top             =   285
+         Width           =   90
+      End
+      Begin VB.Label lblLicence 
+         AutoSize        =   -1  'True
+         Caption         =   "-"
+         BeginProperty Font 
+            Name            =   "Verdana"
+            Size            =   9.75
+            Charset         =   0
+            Weight          =   700
+            Underline       =   0   'False
+            Italic          =   0   'False
+            Strikethrough   =   0   'False
+         EndProperty
+         Height          =   240
+         Index           =   2
+         Left            =   3315
+         TabIndex        =   20
+         Top             =   285
+         Width           =   90
+      End
+      Begin VB.Label lblLicence 
+         AutoSize        =   -1  'True
+         Caption         =   "-"
+         BeginProperty Font 
+            Name            =   "Verdana"
+            Size            =   9.75
+            Charset         =   0
+            Weight          =   700
+            Underline       =   0   'False
+            Italic          =   0   'False
+            Strikethrough   =   0   'False
+         EndProperty
+         Height          =   240
+         Index           =   1
+         Left            =   2235
+         TabIndex        =   19
+         Top             =   300
+         Width           =   90
+      End
+      Begin VB.Label lblLicence 
+         AutoSize        =   -1  'True
+         Caption         =   "-"
+         BeginProperty Font 
+            Name            =   "Verdana"
+            Size            =   9.75
+            Charset         =   0
+            Weight          =   700
+            Underline       =   0   'False
+            Italic          =   0   'False
+            Strikethrough   =   0   'False
+         EndProperty
+         Height          =   240
+         Index           =   0
+         Left            =   1155
+         TabIndex        =   18
+         Top             =   285
+         Width           =   90
+      End
+      Begin VB.Label lblLicence 
+         AutoSize        =   -1  'True
+         Caption         =   "-"
+         BeginProperty Font 
+            Name            =   "Verdana"
+            Size            =   9.75
+            Charset         =   0
+            Weight          =   700
+            Underline       =   0   'False
+            Italic          =   0   'False
+            Strikethrough   =   0   'False
+         EndProperty
+         Height          =   240
+         Index           =   3
+         Left            =   4395
+         TabIndex        =   17
+         Top             =   285
+         Width           =   90
+      End
+   End
    Begin VB.Frame fraUsage 
       Caption         =   "Details :"
       Height          =   975
       Left            =   120
-      TabIndex        =   5
+      TabIndex        =   11
       Top             =   720
       Width           =   1890
       Begin ComctlLib.ListView lstUsage 
          Height          =   525
          Left            =   240
-         TabIndex        =   7
+         TabIndex        =   13
          Top             =   240
          Width           =   1395
          _ExtentX        =   2461
@@ -119,7 +277,7 @@ Begin VB.Form frmChangedPlatform
       Left            =   0
       ScaleHeight     =   255
       ScaleWidth      =   435
-      TabIndex        =   4
+      TabIndex        =   10
       Top             =   195
       Visible         =   0   'False
       Width           =   495
@@ -129,14 +287,14 @@ Begin VB.Form frmChangedPlatform
       Height          =   3000
       Left            =   120
       TabIndex        =   0
-      Top             =   1800
+      Top             =   2550
       Width           =   1200
       Begin VB.CommandButton cmdOK 
          Caption         =   "&OK"
          Default         =   -1  'True
          Height          =   400
          Left            =   0
-         TabIndex        =   9
+         TabIndex        =   15
          Top             =   500
          Width           =   1200
       End
@@ -144,7 +302,7 @@ Begin VB.Form frmChangedPlatform
          Caption         =   "&Copy"
          Height          =   400
          Left            =   0
-         TabIndex        =   8
+         TabIndex        =   14
          Top             =   2000
          Width           =   1200
       End
@@ -152,15 +310,16 @@ Begin VB.Form frmChangedPlatform
          Caption         =   "&Print"
          Height          =   400
          Left            =   0
-         TabIndex        =   3
+         TabIndex        =   9
          Top             =   0
          Width           =   1200
       End
       Begin VB.CommandButton cmdYes 
          Caption         =   "&Yes"
+         Enabled         =   0   'False
          Height          =   400
          Left            =   0
-         TabIndex        =   2
+         TabIndex        =   8
          Top             =   1000
          Width           =   1200
       End
@@ -168,7 +327,7 @@ Begin VB.Form frmChangedPlatform
          Caption         =   "&No"
          Height          =   400
          Left            =   0
-         TabIndex        =   1
+         TabIndex        =   7
          Top             =   1500
          Width           =   1200
       End
@@ -177,7 +336,7 @@ Begin VB.Form frmChangedPlatform
       AutoSize        =   -1  'True
       Height          =   195
       Left            =   960
-      TabIndex        =   6
+      TabIndex        =   12
       Top             =   120
       Width           =   2085
       WordWrap        =   -1  'True
@@ -224,6 +383,14 @@ Private Enum ScreenMode
   miMODE_WORKFLOWURLS = 1
   miMODE_MOBILECREDENTIALS = 2
 End Enum
+
+Public LicenceKeyRequired As Boolean
+
+Private msLicenceKey As String
+
+Public Property Get LicenceKey() As String
+  LicenceKey = msLicenceKey
+End Property
 
 Public Property Get Choice() As Integer
   Choice = miChoice
@@ -335,6 +502,8 @@ Private Sub FormatButtons()
     fVisible = (miButtons And USAGEBUTTONS_YES)
     .Visible = fVisible
     iVisibleButtonCount = iVisibleButtonCount + IIf(fVisible, 1, 0)
+    
+    .Enabled = Not LicenceKeyRequired
   End With
     
   ' NO
@@ -359,6 +528,8 @@ Private Sub FormatButtons()
     .Width = (iVisibleButtonCount * (BUTTONWIDTH + BUTTON_OFFSET)) - BUTTON_OFFSET
   End With
 
+
+
 End Sub
 
 Public Sub ResetList()
@@ -371,7 +542,8 @@ End Sub
 Public Sub ShowMessage(Optional pvMode As Variant)
   Dim sMessage As String
   Dim sFrameCaption As String
-     Dim iCount As Integer
+  Dim iCount As Integer
+  Dim lngWidth As Integer
   
   ' AE20080317 Fault #13011
 '  lblUsageMSG.Caption = "The update script needs to be run on this system for the following reasons." _
@@ -448,8 +620,10 @@ Public Sub ShowMessage(Optional pvMode As Variant)
       sFrameCaption = "Details :"
       imgIcon(0).Picture = LoadResPicture("IMG_EXCLAMATION", 1)
       miButtons = USAGEBUTTONS_PRINT + USAGEBUTTONS_YES + USAGEBUTTONS_NO
-  
-      Me.Width = ((mlngMaxTextLength / 1.5) * 3)
+      fraLicenceKey.Visible = LicenceKeyRequired
+      Me.Width = Maximum(((mlngMaxTextLength / 1.5) * 3), (fraLicenceKey.Width + (BUTTON_OFFSET * 4)))
+      Me.Height = Me.Height + (fraLicenceKey.Height + (BUTTON_OFFSET * 2))
+
   End Select
   
   lblUsageMSG.Caption = sMessage
@@ -457,6 +631,7 @@ Public Sub ShowMessage(Optional pvMode As Variant)
   
   Call FormatButtons
 
+  ResizeForm
   Me.Show vbModal
   
 End Sub
@@ -526,6 +701,9 @@ Private Sub ResizeForm()
   
 '  If Me.Height < MIN_FORM_HEIGHT Then Me.Height = MIN_FORM_HEIGHT
 '  If Me.Width < MIN_FORM_WIDTH Then Me.Width = MIN_FORM_WIDTH
+
+  fraLicenceKey.Width = IIf(LicenceKeyRequired, fraLicenceKey.Width, 0)
+  fraLicenceKey.Height = IIf(LicenceKeyRequired, fraLicenceKey.Height, 0)
   
   lblUsageMSG.Width = Me.ScaleWidth - imgIcon(0).Width - (3 * MSG_OFFSET)
   lblUsageMSG.Top = 300
@@ -535,19 +713,22 @@ Private Sub ResizeForm()
   imgIcon(0).Left = MSG_OFFSET
   imgIcon(0).Width = 480
   imgIcon(0).Height = imgIcon(0).Width
-  
+    
   fraButtons.Top = Me.ScaleHeight - BUTTON_OFFSET - fraButtons.Height
-  fraButtons.Left = Me.ScaleWidth - OFFSET_RIGHT - fraButtons.Width
+  fraButtons.Left = (Me.ScaleWidth - OFFSET_RIGHT - fraButtons.Width)
   
   sngOffset = lblUsageMSG.Top + lblUsageMSG.Height
   If (sngOffset < imgIcon(0).Top + imgIcon(0).Height) Then
     sngOffset = imgIcon(0).Top + imgIcon(0).Height
   End If
   
+  fraLicenceKey.Top = Me.ScaleHeight - (BUTTON_OFFSET * 2) - fraLicenceKey.Height - fraButtons.Height
+  fraLicenceKey.Left = OFFSET_LEFT
+  
   fraUsage.Top = sngOffset + 60
   fraUsage.Left = OFFSET_LEFT
   fraUsage.Width = Me.ScaleWidth - OFFSET_LEFT - OFFSET_RIGHT
-  fraUsage.Height = fraButtons.Top - BUTTON_OFFSET - fraUsage.Top
+  fraUsage.Height = fraButtons.Top - (BUTTON_OFFSET * 2) - fraUsage.Top - fraLicenceKey.Height
   
   lstUsage.Top = OFFSET_TOP
   lstUsage.Left = OFFSET_LEFT
@@ -628,6 +809,10 @@ Private Sub cmdPrint_Click()
 End Sub
 
 Private Sub cmdYes_Click()
+
+  msLicenceKey = txtLicence(0).Text & "-" & txtLicence(1).Text & "-" & _
+                 txtLicence(2).Text & "-" & txtLicence(3).Text & "-" & txtLicence(4).Text & "-" & txtLicence(5).Text
+
   miChoice = vbYes
   UnLoad Me
   
@@ -671,10 +856,39 @@ Private Sub Form_QueryUnload(Cancel As Integer, UnloadMode As Integer)
   End If
 End Sub
 
-Private Sub Form_Resize()
-  ResizeForm
-End Sub
-
 Private Sub Form_Unload(Cancel As Integer)
   Unhook Me.hWnd
+End Sub
+
+Private Sub txtLicence_KeyDown(Index As Integer, KeyCode As Integer, Shift As Integer)
+
+  Dim bValidKey As Boolean
+
+  'Check if a user is trying to paste in a whole licence key
+  'If they are, then separate it into each text box.
+  If KeyCode = vbKeyV And (Shift And vbCtrlMask) Then
+    If Clipboard.GetText Like "??????-??????-??????-??????-??????-??????" Then
+      txtLicence(0).Text = Mid(Clipboard.GetText, 1, 6)
+      txtLicence(1).Text = Mid(Clipboard.GetText, 8, 6)
+      txtLicence(2).Text = Mid(Clipboard.GetText, 15, 6)
+      txtLicence(3).Text = Mid(Clipboard.GetText, 22, 6)
+      txtLicence(4).Text = Mid(Clipboard.GetText, 29, 6)
+      txtLicence(5).Text = Mid(Clipboard.GetText, 36, 6)
+      KeyCode = 0
+      Shift = 0
+    End If
+  End If
+
+End Sub
+
+Private Sub txtLicence_KeyUp(Index As Integer, KeyCode As Integer, Shift As Integer)
+
+  Dim objLicence As New clsLicence
+  objLicence.ValidateCreationDate = True
+  objLicence.LicenceKey = txtLicence(0).Text & "-" & txtLicence(1).Text & "-" & _
+               txtLicence(2).Text & "-" & txtLicence(3).Text & "-" & txtLicence(4).Text & "-" & txtLicence(5).Text
+
+  ' Validate licence key
+  cmdYes.Enabled = objLicence.IsValid
+
 End Sub

@@ -5,7 +5,7 @@ Begin VB.Form frmLicenceKey
    ClientHeight    =   2235
    ClientLeft      =   45
    ClientTop       =   330
-   ClientWidth     =   5325
+   ClientWidth     =   6360
    BeginProperty Font 
       Name            =   "Verdana"
       Size            =   8.25
@@ -23,78 +23,138 @@ Begin VB.Form frmLicenceKey
    MaxButton       =   0   'False
    MinButton       =   0   'False
    ScaleHeight     =   2235
-   ScaleWidth      =   5325
+   ScaleWidth      =   6360
    ShowInTaskbar   =   0   'False
    StartUpPosition =   2  'CenterScreen
-   Begin VB.CommandButton cmdApply 
-      Caption         =   "&OK"
-      Default         =   -1  'True
-      Height          =   400
-      Left            =   1425
-      TabIndex        =   9
-      Top             =   1680
-      Width           =   1200
-   End
-   Begin VB.CommandButton cmdCancel 
-      Cancel          =   -1  'True
-      Caption         =   "&Cancel"
-      Height          =   400
-      Left            =   2715
-      TabIndex        =   10
-      Top             =   1680
-      Width           =   1200
-   End
    Begin VB.Frame Frame1 
       BackColor       =   &H8000000C&
       BorderStyle     =   0  'None
       Caption         =   "Frame1"
+      BeginProperty Font 
+         Name            =   "Tahoma"
+         Size            =   8.25
+         Charset         =   0
+         Weight          =   400
+         Underline       =   0   'False
+         Italic          =   0   'False
+         Strikethrough   =   0   'False
+      EndProperty
       Height          =   375
-      Left            =   135
-      TabIndex        =   1
-      Top             =   1080
-      Width           =   5100
+      Left            =   75
+      TabIndex        =   4
+      Top             =   960
+      Width           =   6255
       Begin VB.TextBox txtLicence 
-         Height          =   315
-         Index           =   4
-         Left            =   4230
-         MaxLength       =   6
-         TabIndex        =   12
-         Top             =   0
-         Width           =   825
-      End
-      Begin VB.TextBox txtLicence 
-         Height          =   315
-         Index           =   0
-         Left            =   0
-         MaxLength       =   6
-         TabIndex        =   2
-         Top             =   0
-         Width           =   825
-      End
-      Begin VB.TextBox txtLicence 
-         Height          =   315
-         Index           =   1
-         Left            =   1080
-         MaxLength       =   6
-         TabIndex        =   4
-         Top             =   0
-         Width           =   825
-      End
-      Begin VB.TextBox txtLicence 
-         Height          =   315
-         Index           =   2
-         Left            =   2200
-         MaxLength       =   6
-         TabIndex        =   6
-         Top             =   0
-         Width           =   825
-      End
-      Begin VB.TextBox txtLicence 
+         BeginProperty Font 
+            Name            =   "Tahoma"
+            Size            =   8.25
+            Charset         =   0
+            Weight          =   400
+            Underline       =   0   'False
+            Italic          =   0   'False
+            Strikethrough   =   0   'False
+         EndProperty
          Height          =   315
          Index           =   3
          Left            =   3240
          MaxLength       =   6
+         TabIndex        =   10
+         TabStop         =   0   'False
+         Top             =   0
+         Width           =   825
+      End
+      Begin VB.TextBox txtLicence 
+         BeginProperty Font 
+            Name            =   "Tahoma"
+            Size            =   8.25
+            Charset         =   0
+            Weight          =   400
+            Underline       =   0   'False
+            Italic          =   0   'False
+            Strikethrough   =   0   'False
+         EndProperty
+         Height          =   315
+         Index           =   2
+         Left            =   2200
+         MaxLength       =   6
+         TabIndex        =   9
+         TabStop         =   0   'False
+         Top             =   0
+         Width           =   825
+      End
+      Begin VB.TextBox txtLicence 
+         BeginProperty Font 
+            Name            =   "Tahoma"
+            Size            =   8.25
+            Charset         =   0
+            Weight          =   400
+            Underline       =   0   'False
+            Italic          =   0   'False
+            Strikethrough   =   0   'False
+         EndProperty
+         Height          =   315
+         Index           =   1
+         Left            =   1080
+         MaxLength       =   6
          TabIndex        =   8
+         TabStop         =   0   'False
+         Top             =   0
+         Width           =   825
+      End
+      Begin VB.TextBox txtLicence 
+         BeginProperty Font 
+            Name            =   "Tahoma"
+            Size            =   8.25
+            Charset         =   0
+            Weight          =   400
+            Underline       =   0   'False
+            Italic          =   0   'False
+            Strikethrough   =   0   'False
+         EndProperty
+         Height          =   315
+         Index           =   0
+         Left            =   45
+         MaxLength       =   6
+         TabIndex        =   7
+         TabStop         =   0   'False
+         Top             =   0
+         Width           =   825
+      End
+      Begin VB.TextBox txtLicence 
+         BeginProperty Font 
+            Name            =   "Tahoma"
+            Size            =   8.25
+            Charset         =   0
+            Weight          =   400
+            Underline       =   0   'False
+            Italic          =   0   'False
+            Strikethrough   =   0   'False
+         EndProperty
+         Height          =   315
+         Index           =   4
+         Left            =   4260
+         MaxLength       =   6
+         TabIndex        =   6
+         TabStop         =   0   'False
+         Top             =   0
+         Width           =   825
+      End
+      Begin VB.TextBox txtLicence 
+         BeginProperty Font 
+            Name            =   "Tahoma"
+            Size            =   8.25
+            Charset         =   0
+            Weight          =   400
+            Underline       =   0   'False
+            Italic          =   0   'False
+            Strikethrough   =   0   'False
+         EndProperty
+         Height          =   315
+         Index           =   5
+         Left            =   5235
+         MaxLength       =   6
+         TabIndex        =   5
+         TabStop         =   0   'False
          Top             =   0
          Width           =   825
       End
@@ -102,7 +162,7 @@ Begin VB.Form frmLicenceKey
          AutoSize        =   -1  'True
          Caption         =   "-"
          BeginProperty Font 
-            Name            =   "Verdana"
+            Name            =   "Tahoma"
             Size            =   9.75
             Charset         =   0
             Weight          =   700
@@ -111,8 +171,46 @@ Begin VB.Form frmLicenceKey
             Strikethrough   =   0   'False
          EndProperty
          Height          =   240
-         Index           =   3
-         Left            =   4080
+         Index           =   5
+         Left            =   3087
+         TabIndex        =   15
+         Top             =   45
+         Width           =   90
+      End
+      Begin VB.Label lblLicence 
+         AutoSize        =   -1  'True
+         Caption         =   "-"
+         BeginProperty Font 
+            Name            =   "Tahoma"
+            Size            =   9.75
+            Charset         =   0
+            Weight          =   700
+            Underline       =   0   'False
+            Italic          =   0   'False
+            Strikethrough   =   0   'False
+         EndProperty
+         Height          =   240
+         Index           =   6
+         Left            =   2007
+         TabIndex        =   14
+         Top             =   45
+         Width           =   90
+      End
+      Begin VB.Label lblLicence 
+         AutoSize        =   -1  'True
+         Caption         =   "-"
+         BeginProperty Font 
+            Name            =   "Tahoma"
+            Size            =   9.75
+            Charset         =   0
+            Weight          =   700
+            Underline       =   0   'False
+            Italic          =   0   'False
+            Strikethrough   =   0   'False
+         EndProperty
+         Height          =   240
+         Index           =   7
+         Left            =   917
          TabIndex        =   13
          Top             =   45
          Width           =   90
@@ -121,7 +219,7 @@ Begin VB.Form frmLicenceKey
          AutoSize        =   -1  'True
          Caption         =   "-"
          BeginProperty Font 
-            Name            =   "Verdana"
+            Name            =   "Tahoma"
             Size            =   9.75
             Charset         =   0
             Weight          =   700
@@ -130,9 +228,9 @@ Begin VB.Form frmLicenceKey
             Strikethrough   =   0   'False
          EndProperty
          Height          =   240
-         Index           =   0
-         Left            =   917
-         TabIndex        =   3
+         Index           =   4
+         Left            =   4110
+         TabIndex        =   12
          Top             =   45
          Width           =   90
       End
@@ -140,7 +238,7 @@ Begin VB.Form frmLicenceKey
          AutoSize        =   -1  'True
          Caption         =   "-"
          BeginProperty Font 
-            Name            =   "Verdana"
+            Name            =   "Tahoma"
             Size            =   9.75
             Charset         =   0
             Weight          =   700
@@ -149,31 +247,31 @@ Begin VB.Form frmLicenceKey
             Strikethrough   =   0   'False
          EndProperty
          Height          =   240
-         Index           =   1
-         Left            =   2007
-         TabIndex        =   5
+         Index           =   12
+         Left            =   5115
+         TabIndex        =   11
          Top             =   45
          Width           =   90
       End
-      Begin VB.Label lblLicence 
-         AutoSize        =   -1  'True
-         Caption         =   "-"
-         BeginProperty Font 
-            Name            =   "Verdana"
-            Size            =   9.75
-            Charset         =   0
-            Weight          =   700
-            Underline       =   0   'False
-            Italic          =   0   'False
-            Strikethrough   =   0   'False
-         EndProperty
-         Height          =   240
-         Index           =   2
-         Left            =   3087
-         TabIndex        =   7
-         Top             =   45
-         Width           =   90
-      End
+   End
+   Begin VB.CommandButton cmdApply 
+      Caption         =   "&OK"
+      Default         =   -1  'True
+      Enabled         =   0   'False
+      Height          =   400
+      Left            =   2070
+      TabIndex        =   1
+      Top             =   1620
+      Width           =   1200
+   End
+   Begin VB.CommandButton cmdCancel 
+      Cancel          =   -1  'True
+      Caption         =   "&Cancel"
+      Height          =   400
+      Left            =   3360
+      TabIndex        =   2
+      Top             =   1620
+      Width           =   1200
    End
    Begin VB.Label lblSupportTel 
       AutoSize        =   -1  'True
@@ -189,7 +287,7 @@ Begin VB.Form frmLicenceKey
       EndProperty
       Height          =   195
       Left            =   2940
-      TabIndex        =   11
+      TabIndex        =   3
       Top             =   240
       Width           =   2190
    End
@@ -199,7 +297,7 @@ Begin VB.Form frmLicenceKey
       Left            =   210
       TabIndex        =   0
       Top             =   240
-      Width           =   4950
+      Width           =   5910
    End
 End
 Attribute VB_Name = "frmLicenceKey"
@@ -218,7 +316,7 @@ End Property
 
 Public Property Get LicenceKey() As String
   LicenceKey = txtLicence(0).Text & "-" & txtLicence(1).Text & "-" & _
-               txtLicence(2).Text & "-" & txtLicence(3).Text & "-" & txtLicence(4).Text
+               txtLicence(2).Text & "-" & txtLicence(3).Text & "-" & txtLicence(4).Text & "-" & txtLicence(5).Text
 End Property
 
 Private Function GenerateAlphaString() As String
@@ -269,7 +367,7 @@ Private Sub Form_Load()
   Frame1.BackColor = Me.BackColor
   Label1.Caption = _
     "Please call OpenHR Support on" & vbCrLf & _
-    "quoting your new licence details to obtain the authorisation code."
+    "quoting your existing licence number and licence amendments."
   lblSupportTel = GetSystemSetting("Support", "Telephone No", "")
 
   mstrAllowedInputCharacters = GenerateAlphaString
@@ -281,9 +379,6 @@ Private Sub Form_Resize()
   DisplayApplication
 
 End Sub
-
-
-
 
 Private Sub txtLicence_Change(Index As Integer)
 
@@ -307,12 +402,13 @@ Private Sub txtLicence_KeyDown(Index As Integer, KeyCode As Integer, Shift As In
   'Check if a user is trying to paste in a whole licence key
   'If they are, then separate it into each text box.
   If KeyCode = vbKeyV And (Shift And vbCtrlMask) Then
-    If Clipboard.GetText Like "??????-??????-??????-??????-??????" Then
+    If Clipboard.GetText Like "??????-??????-??????-??????-??????-??????" Then
       txtLicence(0).Text = Mid(Clipboard.GetText, 1, 6)
       txtLicence(1).Text = Mid(Clipboard.GetText, 8, 6)
       txtLicence(2).Text = Mid(Clipboard.GetText, 15, 6)
       txtLicence(3).Text = Mid(Clipboard.GetText, 22, 6)
       txtLicence(4).Text = Mid(Clipboard.GetText, 29, 6)
+      txtLicence(5).Text = Mid(Clipboard.GetText, 36, 6)
       KeyCode = 0
       Shift = 0
     End If
@@ -338,3 +434,14 @@ Private Sub txtLicence_KeyPress(Index As Integer, KeyAscii As Integer)
 
 End Sub
 
+Private Sub txtLicence_KeyUp(Index As Integer, KeyCode As Integer, Shift As Integer)
+
+  Dim objLicence As New clsLicence
+  objLicence.ValidateCreationDate = True
+  objLicence.LicenceKey = txtLicence(0).Text & "-" & txtLicence(1).Text & "-" & _
+               txtLicence(2).Text & "-" & txtLicence(3).Text & "-" & txtLicence(4).Text & "-" & txtLicence(5).Text
+
+  ' Validate licence key
+  cmdApply.Enabled = objLicence.IsValid
+
+End Sub

@@ -3,7 +3,7 @@ Object = "{AB3877A8-B7B2-11CF-9097-444553540000}#1.0#0"; "gtdate32.ocx"
 Begin VB.Form frmLicence 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Licence Information"
-   ClientHeight    =   7170
+   ClientHeight    =   7590
    ClientLeft      =   45
    ClientTop       =   330
    ClientWidth     =   9075
@@ -23,28 +23,86 @@ Begin VB.Form frmLicence
    LockControls    =   -1  'True
    MaxButton       =   0   'False
    MinButton       =   0   'False
-   ScaleHeight     =   7170
+   ScaleHeight     =   7590
    ScaleWidth      =   9075
    ShowInTaskbar   =   0   'False
    StartUpPosition =   2  'CenterScreen
    Begin VB.Frame fraCustomer 
       Caption         =   "Customer Details :"
-      Height          =   1620
+      Height          =   1395
       Left            =   120
       TabIndex        =   0
       Top             =   105
-      Width           =   8850
-      Begin VB.ComboBox cboType 
+      Width           =   8865
+      Begin VB.TextBox txtLicence 
+         BackColor       =   &H8000000F&
+         Enabled         =   0   'False
          Height          =   315
-         ItemData        =   "frmLicence.frx":000C
+         Index           =   4
+         Left            =   6120
+         MaxLength       =   6
+         TabIndex        =   28
+         Top             =   765
+         Width           =   840
+      End
+      Begin VB.TextBox txtLicence 
+         BackColor       =   &H8000000F&
+         Enabled         =   0   'False
+         Height          =   315
+         Index           =   0
          Left            =   1800
-         List            =   "frmLicence.frx":001F
-         Style           =   2  'Dropdown List
-         TabIndex        =   3
-         Top             =   705
-         Width           =   3120
+         MaxLength       =   6
+         TabIndex        =   27
+         Top             =   765
+         Width           =   840
+      End
+      Begin VB.TextBox txtLicence 
+         BackColor       =   &H8000000F&
+         Enabled         =   0   'False
+         Height          =   315
+         Index           =   1
+         Left            =   2880
+         MaxLength       =   6
+         TabIndex        =   26
+         Top             =   765
+         Width           =   840
+      End
+      Begin VB.TextBox txtLicence 
+         BackColor       =   &H8000000F&
+         Enabled         =   0   'False
+         Height          =   315
+         Index           =   2
+         Left            =   3960
+         MaxLength       =   6
+         TabIndex        =   25
+         Top             =   765
+         Width           =   840
+      End
+      Begin VB.TextBox txtLicence 
+         BackColor       =   &H8000000F&
+         Enabled         =   0   'False
+         Height          =   315
+         Index           =   3
+         Left            =   5040
+         MaxLength       =   6
+         TabIndex        =   24
+         Top             =   765
+         Width           =   840
+      End
+      Begin VB.TextBox txtLicence 
+         BackColor       =   &H8000000F&
+         Enabled         =   0   'False
+         Height          =   315
+         Index           =   5
+         Left            =   7200
+         MaxLength       =   6
+         TabIndex        =   23
+         Top             =   765
+         Width           =   840
       End
       Begin VB.TextBox txtCustName 
+         BackColor       =   &H8000000F&
+         Enabled         =   0   'False
          Height          =   315
          Left            =   1800
          MaxLength       =   50
@@ -53,24 +111,226 @@ Begin VB.Form frmLicence
          Width           =   3135
       End
       Begin VB.TextBox txtCustNo 
+         BackColor       =   &H8000000F&
+         Enabled         =   0   'False
          Height          =   315
-         Left            =   6870
+         Left            =   6780
          MaxLength       =   4
          TabIndex        =   2
          Top             =   300
          Width           =   1260
       End
+      Begin VB.Label lblLicenceKey 
+         Caption         =   "Licence Key :"
+         Height          =   255
+         Left            =   210
+         TabIndex        =   36
+         Top             =   810
+         Width           =   1230
+      End
+      Begin VB.Label lblLicence 
+         AutoSize        =   -1  'True
+         Caption         =   "-"
+         BeginProperty Font 
+            Name            =   "Verdana"
+            Size            =   9.75
+            Charset         =   0
+            Weight          =   700
+            Underline       =   0   'False
+            Italic          =   0   'False
+            Strikethrough   =   0   'False
+         EndProperty
+         Height          =   240
+         Index           =   6
+         Left            =   7035
+         TabIndex        =   35
+         Top             =   795
+         Width           =   90
+      End
+      Begin VB.Label lblLicence 
+         AutoSize        =   -1  'True
+         Caption         =   "-"
+         BeginProperty Font 
+            Name            =   "Verdana"
+            Size            =   9.75
+            Charset         =   0
+            Weight          =   700
+            Underline       =   0   'False
+            Italic          =   0   'False
+            Strikethrough   =   0   'False
+         EndProperty
+         Height          =   240
+         Index           =   5
+         Left            =   5955
+         TabIndex        =   34
+         Top             =   795
+         Width           =   90
+      End
+      Begin VB.Label lblLicence 
+         AutoSize        =   -1  'True
+         Caption         =   "-"
+         BeginProperty Font 
+            Name            =   "Verdana"
+            Size            =   9.75
+            Charset         =   0
+            Weight          =   700
+            Underline       =   0   'False
+            Italic          =   0   'False
+            Strikethrough   =   0   'False
+         EndProperty
+         Height          =   240
+         Index           =   2
+         Left            =   4860
+         TabIndex        =   33
+         Top             =   795
+         Width           =   90
+      End
+      Begin VB.Label lblLicence 
+         AutoSize        =   -1  'True
+         Caption         =   "-"
+         BeginProperty Font 
+            Name            =   "Verdana"
+            Size            =   9.75
+            Charset         =   0
+            Weight          =   700
+            Underline       =   0   'False
+            Italic          =   0   'False
+            Strikethrough   =   0   'False
+         EndProperty
+         Height          =   240
+         Index           =   0
+         Left            =   3780
+         TabIndex        =   32
+         Top             =   795
+         Width           =   90
+      End
+      Begin VB.Label lblLicence 
+         AutoSize        =   -1  'True
+         Caption         =   "-"
+         BeginProperty Font 
+            Name            =   "Verdana"
+            Size            =   9.75
+            Charset         =   0
+            Weight          =   700
+            Underline       =   0   'False
+            Italic          =   0   'False
+            Strikethrough   =   0   'False
+         EndProperty
+         Height          =   240
+         Index           =   1
+         Left            =   2715
+         TabIndex        =   31
+         Top             =   795
+         Width           =   90
+      End
+      Begin VB.Label lblCustomerName 
+         AutoSize        =   -1  'True
+         Caption         =   "Customer Name :"
+         Height          =   195
+         Left            =   195
+         TabIndex        =   11
+         Top             =   360
+         Width           =   1530
+      End
+      Begin VB.Label lblCustomerNo 
+         AutoSize        =   -1  'True
+         Caption         =   "Customer No. :"
+         Height          =   195
+         Left            =   5265
+         TabIndex        =   12
+         Top             =   360
+         Width           =   1320
+      End
+   End
+   Begin VB.Frame fraLicensedUsers 
+      Caption         =   "Licence Details :"
+      Height          =   5310
+      Left            =   120
+      TabIndex        =   13
+      Top             =   1560
+      Width           =   8865
+      Begin VB.ComboBox cboType 
+         BackColor       =   &H8000000F&
+         Enabled         =   0   'False
+         Height          =   315
+         ItemData        =   "frmLicence.frx":000C
+         Left            =   1770
+         List            =   "frmLicence.frx":001F
+         Style           =   2  'Dropdown List
+         TabIndex        =   19
+         Top             =   315
+         Width           =   3120
+      End
+      Begin VB.TextBox txtHeadcount 
+         BackColor       =   &H8000000F&
+         Enabled         =   0   'False
+         Height          =   315
+         Left            =   3990
+         MaxLength       =   6
+         TabIndex        =   7
+         Top             =   3210
+         Width           =   915
+      End
+      Begin VB.TextBox txtSSI 
+         BackColor       =   &H8000000F&
+         Enabled         =   0   'False
+         Height          =   315
+         Left            =   4005
+         MaxLength       =   6
+         TabIndex        =   6
+         Top             =   2490
+         Width           =   900
+      End
+      Begin VB.ListBox lstModules 
+         BackColor       =   &H8000000F&
+         Enabled         =   0   'False
+         Height          =   4785
+         Left            =   5010
+         Style           =   1  'Checkbox
+         TabIndex        =   8
+         Top             =   315
+         Width           =   3690
+      End
+      Begin VB.TextBox txtDMIS 
+         BackColor       =   &H8000000F&
+         Enabled         =   0   'False
+         Height          =   315
+         Left            =   4005
+         MaxLength       =   3
+         TabIndex        =   5
+         Top             =   2085
+         Width           =   900
+      End
+      Begin VB.TextBox txtDMIM 
+         BackColor       =   &H8000000F&
+         Enabled         =   0   'False
+         Height          =   315
+         Left            =   4005
+         MaxLength       =   3
+         TabIndex        =   4
+         Top             =   1695
+         Width           =   900
+      End
+      Begin VB.TextBox txtDAT 
+         BackColor       =   &H8000000F&
+         Enabled         =   0   'False
+         Height          =   315
+         Left            =   4005
+         MaxLength       =   3
+         TabIndex        =   3
+         Top             =   1290
+         Width           =   900
+      End
       Begin GTMaskDate.GTMaskDate txtExpiryDate 
          Height          =   315
-         Left            =   1800
-         TabIndex        =   4
-         Top             =   1110
+         Left            =   1770
+         TabIndex        =   20
+         Top             =   720
          Width           =   3120
          _Version        =   65537
          _ExtentX        =   5503
          _ExtentY        =   556
          _StockProps     =   77
-         BackColor       =   -2147483643
          Enabled         =   0   'False
          BeginProperty NullFont {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
             Name            =   "MS Sans Serif"
@@ -81,6 +341,7 @@ Begin VB.Form frmLicence
             Italic          =   -1  'True
             Strikethrough   =   0   'False
          EndProperty
+         BackColor       =   -2147483633
          BeginProperty CalFont {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
             Name            =   "MS Sans Serif"
             Size            =   8.25
@@ -118,102 +379,28 @@ Begin VB.Form frmLicence
             Strikethrough   =   0   'False
          EndProperty
       End
-      Begin VB.Label lblExpiryDate 
-         Caption         =   "Expiry Date :"
-         Height          =   225
-         Left            =   195
-         TabIndex        =   21
-         Top             =   1170
-         Width           =   1185
-      End
       Begin VB.Label lblModel 
          Caption         =   "Model :"
          Height          =   240
-         Left            =   195
-         TabIndex        =   20
-         Top             =   780
+         Left            =   165
+         TabIndex        =   22
+         Top             =   390
          Width           =   795
       End
-      Begin VB.Label lblCustomerName 
-         AutoSize        =   -1  'True
-         Caption         =   "Customer Name :"
-         Height          =   195
-         Left            =   195
-         TabIndex        =   13
-         Top             =   360
-         Width           =   1530
-      End
-      Begin VB.Label lblCustomerNo 
-         AutoSize        =   -1  'True
-         Caption         =   "Customer No. :"
-         Height          =   195
-         Left            =   5265
-         TabIndex        =   14
-         Top             =   360
-         Width           =   1095
-      End
-   End
-   Begin VB.Frame fraLicensedUsers 
-      Caption         =   "Licence Details :"
-      Height          =   4620
-      Left            =   120
-      TabIndex        =   15
-      Top             =   1845
-      Width           =   8850
-      Begin VB.TextBox txtHeadcount 
-         Height          =   315
-         Left            =   3990
-         MaxLength       =   6
-         TabIndex        =   9
-         Top             =   2220
-         Width           =   915
-      End
-      Begin VB.TextBox txtSSI 
-         Height          =   315
-         Left            =   4000
-         MaxLength       =   6
-         TabIndex        =   8
-         Top             =   1500
-         Width           =   900
-      End
-      Begin VB.ListBox lstModules 
-         Height          =   4110
-         Left            =   5010
-         Style           =   1  'Checkbox
-         TabIndex        =   10
-         Top             =   315
-         Width           =   3690
-      End
-      Begin VB.TextBox txtDMIS 
-         Height          =   315
-         Left            =   4000
-         MaxLength       =   3
-         TabIndex        =   7
-         Top             =   1100
-         Width           =   900
-      End
-      Begin VB.TextBox txtDMIM 
-         Height          =   315
-         Left            =   4000
-         MaxLength       =   3
-         TabIndex        =   6
-         Top             =   700
-         Width           =   900
-      End
-      Begin VB.TextBox txtDAT 
-         Height          =   315
-         Left            =   4000
-         MaxLength       =   3
-         TabIndex        =   5
-         Top             =   300
-         Width           =   900
+      Begin VB.Label lblExpiryDate 
+         Caption         =   "Expiry Date :"
+         Height          =   225
+         Left            =   165
+         TabIndex        =   21
+         Top             =   780
+         Width           =   1185
       End
       Begin VB.Label lblHeadcount 
          Caption         =   "Headcount :"
          Height          =   420
          Left            =   195
-         TabIndex        =   22
-         Top             =   2280
+         TabIndex        =   18
+         Top             =   3270
          Width           =   1065
       End
       Begin VB.Label lblSSI 
@@ -221,8 +408,8 @@ Begin VB.Form frmLicence
          Caption         =   "Self-service Intranet :"
          Height          =   195
          Left            =   195
-         TabIndex        =   19
-         Top             =   1560
+         TabIndex        =   17
+         Top             =   2550
          Width           =   1905
       End
       Begin VB.Label lblDMIS 
@@ -230,8 +417,8 @@ Begin VB.Form frmLicence
          Caption         =   "Data Manager Intranet (Single Record) :"
          Height          =   195
          Left            =   195
-         TabIndex        =   18
-         Top             =   1155
+         TabIndex        =   16
+         Top             =   2145
          Width           =   3450
       End
       Begin VB.Label lblDMIM 
@@ -239,8 +426,8 @@ Begin VB.Form frmLicence
          Caption         =   "Data Manager Intranet (Multiple Records) :"
          Height          =   195
          Left            =   195
-         TabIndex        =   17
-         Top             =   765
+         TabIndex        =   15
+         Top             =   1755
          Width           =   3690
       End
       Begin VB.Label lblDAT 
@@ -248,8 +435,8 @@ Begin VB.Form frmLicence
          Caption         =   "Data Manager :"
          Height          =   195
          Left            =   195
-         TabIndex        =   16
-         Top             =   360
+         TabIndex        =   14
+         Top             =   1350
          Width           =   1335
       End
    End
@@ -258,19 +445,56 @@ Begin VB.Form frmLicence
       Caption         =   "&Cancel"
       Height          =   400
       Left            =   7755
-      TabIndex        =   12
-      Top             =   6600
+      TabIndex        =   10
+      Top             =   6990
       Width           =   1200
    End
    Begin VB.CommandButton cmdApply 
-      Caption         =   "&OK"
+      Caption         =   "&Request..."
       Default         =   -1  'True
-      Enabled         =   0   'False
       Height          =   400
       Left            =   6390
-      TabIndex        =   11
-      Top             =   6600
+      TabIndex        =   9
+      Top             =   6990
       Width           =   1200
+   End
+   Begin VB.Label lblLicence 
+      AutoSize        =   -1  'True
+      Caption         =   "-"
+      BeginProperty Font 
+         Name            =   "Verdana"
+         Size            =   9.75
+         Charset         =   0
+         Weight          =   700
+         Underline       =   0   'False
+         Italic          =   0   'False
+         Strikethrough   =   0   'False
+      EndProperty
+      Height          =   240
+      Index           =   4
+      Left            =   7140
+      TabIndex        =   30
+      Top             =   930
+      Width           =   90
+   End
+   Begin VB.Label lblLicence 
+      AutoSize        =   -1  'True
+      Caption         =   "-"
+      BeginProperty Font 
+         Name            =   "Verdana"
+         Size            =   9.75
+         Charset         =   0
+         Weight          =   700
+         Underline       =   0   'False
+         Italic          =   0   'False
+         Strikethrough   =   0   'False
+      EndProperty
+      Height          =   240
+      Index           =   3
+      Left            =   6045
+      TabIndex        =   29
+      Top             =   900
+      Width           =   90
    End
 End
 Attribute VB_Name = "frmLicence"
@@ -284,12 +508,14 @@ Private mfLoading As Boolean
 
 Private mblnReadOnly As Boolean
 
-Public Property Let Changed(ByVal blnNewValue As Boolean)
-  cmdApply.Enabled = blnNewValue
-End Property
-
-Private Sub cboType_Change()
-  Changed = True
+Private Sub cboType_Click()
+ 
+  If cboType.ListIndex = 0 Then
+    txtHeadcount.Text = 0
+  Else
+    txtSSI.Text = 0
+  End If
+ 
 End Sub
 
 Private Sub cmdApply_Click()
@@ -298,37 +524,8 @@ Private Sub cmdApply_Click()
   Dim lngCount As Long
   Dim lngModules As Long
 
-  'Validate customer number...
-  With txtCustNo
-    If Len(.Text) <> 4 Or Val(.Text) < 1000 Then
-      MsgBox "Invalid Customer Number", vbExclamation
-      .SetFocus
-      Exit Sub
-    End If
-  End With
-
-  'Validate number of users...
-  If Val(txtDAT.Text) = 0 And Val(txtDMIM.Text) = 0 Then
-    MsgBox "Invalid Number of Users", vbExclamation
-    txtDAT.SetFocus
-    Exit Sub
-  End If
-
-  'Check with modules have been selected...
-  With lstModules
-    lngModules = 0
-    For lngCount = 0 To .ListCount - 1
-      If .Selected(lngCount) Then
-        lngModules = lngModules + .ItemData(lngCount)
-      End If
-    Next
-
-  End With
-
-
   Dim blnCorrectKey As Boolean
-  
-  
+    
   With frmLicenceKey
     
     blnCorrectKey = False
@@ -337,34 +534,13 @@ Private Sub cmdApply_Click()
       .Show vbModal
       If Not .Cancelled Then
     
-        'If not cancelled then check they have entered the correct key
-        Set objLicence = New clsLicence
-        objLicence.LicenceKey = .LicenceKey
+        SaveSystemSetting "Licence", "Customer Name", txtCustName.Text
+        SaveSystemSetting "Licence", "Customer No", txtCustNo.Text
+        SaveSystemSetting "Licence", "Key", .LicenceKey
 
-        If objLicence.CustomerNo = Val(txtCustNo.Text) And _
-           objLicence.DATUsers = Val(txtDAT.Text) And _
-           objLicence.DMIMUsers = Val(txtDMIM.Text) And _
-           objLicence.DMISUsers = Val(txtDMIS.Text) And _
-           objLicence.SSIUsers = Val(txtSSI.Text) And _
-           objLicence.Headcount = Val(txtHeadcount.Text) And _
-           objLicence.LicenceType = cboType.ListIndex And _
-           objLicence.Modules = lngModules Then
-
-              'MH20010910 Fault 2819
-              SaveSystemSetting "Licence", "Customer Name", txtCustName.Text
-              SaveSystemSetting "Licence", "Customer No", txtCustNo.Text
-              SaveSystemSetting "Licence", "Key", .LicenceKey
-
-              blnCorrectKey = True
-              MsgBox "Licence details amended successfully", vbExclamation, "Licence Key"
-              Unload Me
-
-        Else
-          MsgBox "Invalid licence key.", vbExclamation, "Licence Key"
-
-        End If
-
-        Set objLicence = Nothing
+        blnCorrectKey = True
+        MsgBox "Licence details amended successfully", vbExclamation, "Licence Key"
+        Unload Me
 
       End If
     
@@ -408,17 +584,21 @@ Private Sub Form_Load()
   Dim lngModules As Long
   Dim lngCount As Long
   Dim ctlTemp As Control
+  Dim sLicence As String
+  
+  sLicence = GetSystemSetting("Licence", "Key", vbNullString)
   
   If Application.AccessMode <> accFull Then
     ControlsDisableAll Me
   End If
   
   PopulateModules
+  DisplayLicence (sLicence)
   
   Set objLicence = New clsLicence
 
   With objLicence
-    .LicenceKey = GetSystemSetting("Licence", "Key", vbNullString)
+    .LicenceKey = sLicence
 
     If .CustomerNo > 0 Then
 
@@ -449,8 +629,6 @@ Private Sub Form_Load()
 
   Set objLicence = Nothing
 
-  Changed = False
-
 End Sub
 
 
@@ -477,6 +655,7 @@ Private Sub PopulateModules()
     .AddItem "XML Exports": .ItemData(.NewIndex) = lngBit: lngBit = lngBit * 2
     .AddItem "3rd Party Tables": .ItemData(.NewIndex) = lngBit: lngBit = lngBit * 2
     .AddItem "9-Box Grid Reports": .ItemData(.NewIndex) = lngBit: lngBit = lngBit * 2
+    .AddItem "Editable Grids": .ItemData(.NewIndex) = lngBit: lngBit = lngBit * 2
     lngBit = lngBit * 2
   End With
 
@@ -503,29 +682,11 @@ Private Sub lstModules_ItemCheck(Item As Integer)
     Exit Sub
   End If
   
-  Changed = True
-  
-End Sub
-
-'Private Sub tabLicences_Click(PreviousTab As Integer)
-'  fraCustomer(0).Enabled = (tabLicences.Tab = 0)
-'  fraCustomer(1).Enabled = (tabLicences.Tab = 1)
-'  fraLicensedUsers.Enabled = (tabLicences.Tab = 0)
-'  fraModules.Enabled = (tabLicences.Tab = 1)
-'
-'End Sub
-
-Private Sub Text1_Change()
-
 End Sub
 
 Private Sub lstModules_MouseDown(Button As Integer, Shift As Integer, X As Single, Y As Single)
     Button = 0
     Shift = 0
-End Sub
-
-Private Sub txtCustName_Change()
-  Changed = True
 End Sub
 
 Private Sub txtCustName_GotFocus()
@@ -535,10 +696,6 @@ Private Sub txtCustName_GotFocus()
   End With
 End Sub
 
-Private Sub txtCustNo_Change()
-  Changed = True
-End Sub
-
 Private Sub txtCustNo_GotFocus()
   With txtCustNo
     .SelStart = 0
@@ -546,40 +703,18 @@ Private Sub txtCustNo_GotFocus()
   End With
 End Sub
 
-Private Sub txtDMIM_Change()
-  Changed = True
-
-End Sub
-
 Private Sub txtDMIM_GotFocus()
   With txtDMIM
     .SelStart = 0
     .SelLength = Len(.Text)
   End With
-
 End Sub
-
-
-Private Sub txtDMIS_Change()
-  Changed = True
-
-End Sub
-
 
 Private Sub txtDMIS_GotFocus()
   With txtDMIS
     .SelStart = 0
     .SelLength = Len(.Text)
   End With
-
-End Sub
-
-Private Sub txtHeadcount_Change()
-  Changed = True
-End Sub
-
-Private Sub txtSSI_Change()
-  Changed = True
 End Sub
 
 Private Sub txtSSI_GotFocus()
@@ -587,11 +722,6 @@ Private Sub txtSSI_GotFocus()
     .SelStart = 0
     .SelLength = Len(.Text)
   End With
-
-End Sub
-
-Private Sub txtDAT_Change()
-  Changed = True
 End Sub
 
 Private Sub txtDAT_GotFocus()
@@ -600,3 +730,15 @@ Private Sub txtDAT_GotFocus()
     .SelLength = Len(.Text)
   End With
 End Sub
+
+Private Sub DisplayLicence(ByVal sLicence As String)
+  txtLicence(0).Text = Mid(sLicence, 1, 6)
+  txtLicence(1).Text = Mid(sLicence, 8, 6)
+  txtLicence(2).Text = Mid(sLicence, 15, 6)
+  txtLicence(3).Text = Mid(sLicence, 22, 6)
+  txtLicence(4).Text = Mid(sLicence, 29, 6)
+  txtLicence(5).Text = Mid(sLicence, 36, 6)
+End Sub
+
+
+

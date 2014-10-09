@@ -271,6 +271,15 @@ Namespace Controllers
 
 				Try
 
+					' Is the DB the correct version
+					Dim objAppVersion As Version = Assembly.GetExecutingAssembly().GetName().Version
+
+					If Not Licence.IsValid Then
+						Session("ErrorText") = String.Format("The database licence is invalid.<BR>Please ask the System Administrator to update the database for use with version {0}.{1}.{2}" _
+								, objAppVersion.Major, objAppVersion.Minor, objAppVersion.Build)
+						Return RedirectToAction("Loginerror")
+					End If
+
 					' Validate the login
 					objLogin = objServerSession.SessionLogin(sUserName, sPassword, sDatabaseName, sServerName, bWindowsAuthentication)
 
@@ -298,9 +307,6 @@ Namespace Controllers
 						FormatError(objServerSession.LoginInfo.LoginFailReason)
 						Return RedirectToAction("Loginerror")
 					End If
-
-					' Is the DB the correct version
-					Dim objAppVersion As Version = Assembly.GetExecutingAssembly().GetName().Version
 
 					If Not CompareVersion(objServerSession.DatabaseStatus.IntranetVersion, objAppVersion, False) _
 						Or Not CompareVersion(objServerSession.DatabaseStatus.SysMgrVersion, objAppVersion, True) Then

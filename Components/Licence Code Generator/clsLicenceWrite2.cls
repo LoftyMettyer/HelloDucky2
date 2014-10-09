@@ -122,47 +122,51 @@ Public Property Get LicenceKey2()
   Dim strDAT As String
   Dim strDMIM As String
   Dim strDMIS As String
-  Dim strSSI As String
   Dim strModules As String
-  Dim strVersion As String
-  Dim strHeadcount As String
+  Dim strSSIHeadcount As String
   Dim strExpiryDate As String
   Dim lngCount As Long
   Dim strOutput As String
   Dim lngRandomDigit As Long
   Dim sLicenceType As String
+  Dim strCheckSum As String
+  Dim strGeneratedDay As String
+  Dim lngExpiryDate As Long
+  Dim lngSSIHeadcount As Long
   
   LicenceKey2 = vbNullString
   If Valid Then
     Randomize Timer
     lngRandomDigit = Int(Rnd * 26) + 1
     
+    lngSSIHeadcount = IIf(mlngLicenceType = 0, mlngSSI, mlngHeadcount)
+    
     sLicenceType = ConvertNumberToString2(1, mlngLicenceType, lngRandomDigit)
     strCustNo = ConvertNumberToString2(3, mlngCustomerNo, lngRandomDigit)
     strDAT = ConvertNumberToString2(2, mlngDAT, lngRandomDigit)
     strDMIM = ConvertNumberToString2(2, mlngDMIM, lngRandomDigit)
     strDMIS = ConvertNumberToString2(2, mlngDMIS, lngRandomDigit)
-    strSSI = ConvertNumberToString2(4, mlngSSI, lngRandomDigit)
-    strModules = ConvertNumberToString2(6, mlngModules, 0)            ' Allows upto 24 modules
-    strHeadcount = ConvertNumberToString2(4, mlngHeadcount, lngRandomDigit)
-    strExpiryDate = ConvertNumberToString2(5, Date2Julian(mdExpiryDate), lngRandomDigit)
+    strSSIHeadcount = ConvertNumberToString2(4, lngSSIHeadcount, lngRandomDigit)
+    strModules = ConvertNumberToString2(7, mlngModules, 0)            ' Allows upto 35 modules
+    
+    lngExpiryDate = Date2Julian(mdExpiryDate)
+    strExpiryDate = ConvertNumberToString2(5, lngExpiryDate, lngRandomDigit)
+    
+    strGeneratedDay = ConvertNumberToString2(2, DayNumber(Now), lngRandomDigit)
+    strCheckSum = ConvertNumberToString2(6, mlngCustomerNo + mlngLicenceType + mlngDAT + mlngDMIM + mlngDMIS + lngSSIHeadcount + mlngModules + lngExpiryDate, lngRandomDigit)
 
     strOutput = _
-        strVersion & sLicenceType & strCustNo & strDAT & strDMIM & _
-        strDMIS & strSSI & strModules & Chr(lngRandomDigit + 64) & strHeadcount & strExpiryDate
+        sLicenceType & strCustNo & strDAT & strDMIM & strCheckSum & _
+        strDMIS & strModules & Chr(lngRandomDigit + 64) & strSSIHeadcount & strExpiryDate + strGeneratedDay + "X"
 
     'Jumble it up!
-    For lngCount = 1 To 5
-      LicenceKey2 = LicenceKey2 & _
-        IIf(LicenceKey2 <> vbNullString, "-", "") & _
-          Mid(strOutput, lngCount, 1) & _
-          Mid(strOutput, lngCount + 15, 1) & _
-          Mid(strOutput, lngCount + 10, 1) & _
-          Mid(strOutput, lngCount + 5, 1) & _
-          Mid(strOutput, lngCount + 25, 1) & _
-          Mid(strOutput, lngCount + 20, 1)
-    Next
-    
+    LicenceKey2 = Mid(strOutput, 7, 1) & Mid(strOutput, 11, 1) & Mid(strOutput, 13, 1) & Mid(strOutput, 9, 1) & Mid(strOutput, 34, 1) & Mid(strOutput, 3, 1) & "-" & _
+           Mid(strOutput, 26, 1) & Mid(strOutput, 12, 1) & Mid(strOutput, 22, 1) & Mid(strOutput, 18, 1) & Mid(strOutput, 36, 1) & Mid(strOutput, 35, 1) & "-" & _
+           Mid(strOutput, 14, 1) & Mid(strOutput, 20, 1) & Mid(strOutput, 33, 1) & Mid(strOutput, 24, 1) & Mid(strOutput, 28, 1) & Mid(strOutput, 16, 1) & "-" & _
+           Mid(strOutput, 30, 1) & Mid(strOutput, 19, 1) & Mid(strOutput, 5, 1) & Mid(strOutput, 27, 1) & Mid(strOutput, 21, 1) & Mid(strOutput, 32, 1) & "-" & _
+           Mid(strOutput, 23, 1) & Mid(strOutput, 8, 1) & Mid(strOutput, 4, 1) & Mid(strOutput, 10, 1) & Mid(strOutput, 6, 1) & Mid(strOutput, 31, 1) & "-" & _
+           Mid(strOutput, 15, 1) & Mid(strOutput, 1, 1) & Mid(strOutput, 17, 1) & Mid(strOutput, 29, 1) & Mid(strOutput, 2, 1) & Mid(strOutput, 25, 1)
+
   End If
 
 End Property
@@ -179,4 +183,13 @@ Private Function Date2Julian(ByVal vDate As Date) As Long
                   + 1, "000"))
     
 End Function
+
+Private Function DayNumber(ByVal vDate As Date) As Long
+
+    DayNumber = CLng(Format(DateDiff("d", CDate("01/01/" _
+                  + Format(Year(vDate), "0000")), vDate) _
+                  + 1, "000"))
+    
+End Function
+
 
