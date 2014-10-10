@@ -541,13 +541,19 @@ Namespace Controllers
 
 			For Each ObjectID In objModel.Columns
 				Dim objColumn = objAllObjects.First(Function(m) m.ID = ObjectID)
+
+				'Concatenate table name and column name, if the column is not the calculated column
+				If objColumn.IsExpression = False Then
+					objColumn.Name = objModel.TableName + "." + objColumn.Name
+				End If
+
 				objReport.Columns.Add(objColumn)
 			Next
 
 		End Sub
 
 		<HttpPost>
-		Sub AddReportColumn(objModel As ReportColumnItem)
+		 Sub AddReportColumn(objModel As ReportColumnItem)
 
 			Dim objReport As ReportBaseModel
 			objReport = CType(objReportRepository.RetrieveParent(objModel), ReportBaseModel)

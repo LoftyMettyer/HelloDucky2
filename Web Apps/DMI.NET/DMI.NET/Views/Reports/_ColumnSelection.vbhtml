@@ -218,6 +218,7 @@
 			ReportType: '@Model.ReportType',
 			SelectionType: sType,
 			ColumnsTableID: $("#SelectedTableID").val(),
+			TableName: $("#SelectedTableID option:selected").text(),
 			Columns: allRows
 		};
 
