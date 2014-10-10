@@ -403,14 +403,10 @@
 			dataType: 'json',
 			cache: false,
 			success: function (json) {
-				
-				$('#SelectedTableID').empty()
 
-				// Clear Parent1 and Parent2 table names only if the base table change and not on loading defination
-				if (baseTableChanged) {
-					$("#Parent1_Name").val("");
-					$("#Parent2_Name").val("");
-				}
+				$('#SelectedTableID').empty()
+				$("#Parent1_Name").val("");
+				$("#Parent2_Name").val("");
 
 				$.each(json, function (i, table) {
 					var optionHtml = '<option value=' + table.id + '>' + table.Name + '</option>'
