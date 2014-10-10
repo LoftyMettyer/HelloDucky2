@@ -351,8 +351,8 @@ end if
 
 <input type='hidden' id="txtNoRecs" name="txtNoRecs" value="<%=objCrossTab.NoRecords%>">
 
+<%If Not objCrossTab.NoRecords Then%>
 <script type="text/javascript">
-
 	util_run_crosstabs_window_onload();
-
 </script>
+<%End If%>

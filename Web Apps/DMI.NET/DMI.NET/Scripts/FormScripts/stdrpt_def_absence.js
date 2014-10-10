@@ -191,15 +191,17 @@ function absence_okClick() {
 		{
 				for (iIndex=0; iIndex<dataCollection.length; iIndex++)  
 				{
+					try {
 						sControlName = dataCollection.item(iIndex).name;
 
-						if (sControlName.substr(0, 15) == "chkAbsenceType_") 
-						{
-								if (dataCollection.item(iIndex).checked == true) {
-									//Who hardcoded the "7"???? - frmPostDefinition.txtAbsenceTypes.value = frmPostDefinition.txtAbsenceTypes.value + dataCollection.item(iIndex).attributes[7].nodeValue + ",";
-									frmPostDefinition.txtAbsenceTypes.value = frmPostDefinition.txtAbsenceTypes.value + $(dataCollection.item(iIndex)).attr('tagname') + ",";
-								}
+						if (sControlName.substr(0, 15) == "chkAbsenceType_") {
+							if (dataCollection.item(iIndex).checked == true) {
+								//Who hardcoded the "7"???? - frmPostDefinition.txtAbsenceTypes.value = frmPostDefinition.txtAbsenceTypes.value + dataCollection.item(iIndex).attributes[7].nodeValue + ",";
+								frmPostDefinition.txtAbsenceTypes.value = frmPostDefinition.txtAbsenceTypes.value + $(dataCollection.item(iIndex)).attr('tagname') + ",";
+							}
 						}
+					}
+					catch(e) {}
 				}
 		}
 

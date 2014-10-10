@@ -174,7 +174,7 @@
 
 
 
-
+<%If Not objCrossTab.NoRecords Then%>
 <script type="text/javascript">
 
 	util_run_crosstabs_window_onload();
@@ -183,3 +183,4 @@
 	$("#top").hide();
 	$("#reportworkframe").show();
 </script>
+<%End If%>
