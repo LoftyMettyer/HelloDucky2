@@ -210,7 +210,6 @@
 	}
 
 	function changeRecordOption(psTable, psType) {
-
 		if (psType == "ALL") {
 			button_disable($("#cmd" + psTable + "Picklist")[0], true);
 			button_disable($("#cmd" + psTable + "Filter")[0], true);
@@ -385,10 +384,12 @@
 	function resetParentDetails() {
 
 		$("#RelatedTableParent1").attr("disabled", "disabled");
+		disableParent1RadioButtons();
 		$("#Parent1_SelectionTypeAll").prop('checked', 'checked');
 		changeRecordOption('Parent1', 'ALL');
 
 		$("#RelatedTableParent2").attr("disabled", "disabled");
+		disableParent2RadioButtons();
 		$("#Parent2_SelectionTypeAll").prop('checked', 'checked');
 		changeRecordOption('Parent2', 'ALL');
 
@@ -402,10 +403,14 @@
 			dataType: 'json',
 			cache: false,
 			success: function (json) {
-
+				
 				$('#SelectedTableID').empty()
-				$("#Parent1_Name").val("");
-				$("#Parent2_Name").val("");
+
+				// Clear Parent1 and Parent2 table names only if the base table change and not on loading defination
+				if (baseTableChanged) {
+					$("#Parent1_Name").val("");
+					$("#Parent2_Name").val("");
+				}
 
 				$.each(json, function (i, table) {
 					var optionHtml = '<option value=' + table.id + '>' + table.Name + '</option>'
@@ -413,12 +418,14 @@
 
 					if (table.Relation == 1 && baseTableChanged) {
 						$("#RelatedTableParent1").removeAttr("disabled");
+						enableParent1RadioButtons();
 						$("#txtParent1ID").val(table.id);
 						$("#Parent1_Name").val(table.Name);
 					}
 
 					if (table.Relation == 2 && baseTableChanged) {
 						$("#RelatedTableParent2").removeAttr("disabled");
+						enableParent2RadioButtons();
 						$("#txtParent2ID").val(table.id);
 						$("#Parent2_Name").val(table.Name);
 					}

@@ -305,6 +305,31 @@
 		}
 	}
 
+	function enableParent1RadioButtons()
+	{
+		$("#Parent1_SelectionTypeAll").removeAttr("disabled");
+		$("#Parent1_SelectionTypePicklist").removeAttr("disabled");
+		$("#Parent1_SelectionTypeFilter").removeAttr("disabled");
+	}
+
+	function disableParent1RadioButtons() {
+		$("#Parent1_SelectionTypeAll").prop('disabled', "disabled");
+		$("#Parent1_SelectionTypePicklist").prop('disabled', "disabled");
+		$("#Parent1_SelectionTypeFilter").prop('disabled', "disabled");
+	}
+
+	function disableParent2RadioButtons() {
+		$("#Parent2_SelectionTypeAll").prop('disabled', "disabled");
+		$("#Parent2_SelectionTypePicklist").prop('disabled', "disabled");
+		$("#Parent2_SelectionTypeFilter").prop('disabled', "disabled");
+	}
+
+	function enableParent2RadioButtons() {
+		$("#Parent2_SelectionTypeAll").removeAttr("disabled");
+		$("#Parent2_SelectionTypePicklist").removeAttr("disabled");
+		$("#Parent2_SelectionTypeFilter").removeAttr("disabled");
+	}
+
 	$(function () {
 
 		$("#ChildTables").jqGrid('setGridWidth', $("#ChildTablesViewAccessdiv").width() - 50);
@@ -372,6 +397,16 @@
 
 		});
 		$("#ChildTables").jqGrid('navGrid', '#pcrud', {});
+
+		//If Parent1 table does not exit then disabled the Parent1 radio buttons, because in IE browser the control shows as disabled but fires the click event while doing double click (i.e the fieldset control has disabled attribute in this scenario)
+		if ('@Model.Parent1.Visibility' == 'disabled') {
+			disableParent1RadioButtons();
+		}
+
+		//If Parent2 table does not exit then disabled the Parent2 radio buttons, because in IE browser the control shows as disabled but fires the click event while doing double click (i.e the fieldset control has disabled attribute in this scenario)
+		if ('@Model.Parent2.Visibility' == 'disabled') {
+			disableParent2RadioButtons();
+		}
 
 	});
 
