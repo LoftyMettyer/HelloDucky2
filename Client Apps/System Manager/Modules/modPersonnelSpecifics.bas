@@ -54,6 +54,8 @@ Public Function CreateSP_CalculateHeadcount() As Boolean
   Dim iTempID As Integer
   Dim iPersonnelTableID As Integer
   Dim sPersonnelTableName As String
+  Dim sLeavingDateColumn As String
+  Dim sStartDateColumn As String
   Dim fCreatedOK As Boolean
 
   On Error GoTo ErrorTrap
@@ -80,6 +82,9 @@ Public Function CreateSP_CalculateHeadcount() As Boolean
     sPersonnelTableName = vbNullString
   End If
 
+      
+  sStartDateColumn = GetColumnNameFromModuleSetup(gsMODULEKEY_PERSONNEL, gsPARAMETERKEY_STARTDATE)
+  sLeavingDateColumn = GetColumnNameFromModuleSetup(gsMODULEKEY_PERSONNEL, gsPARAMETERKEY_LEAVINGDATE)
 
   DropProcedure "spASRCalculateHeadcounts"
 
@@ -97,22 +102,49 @@ Public Function CreateSP_CalculateHeadcount() As Boolean
       "    @Today      datetime = GETDATE()," & vbNewLine & _
       "    @p14CountHeadcount  integer," & vbNewLine & _
       "    @HeadCount  integer" & vbNewLine & vbNewLine & _
+      "  EXEC spsys_setsystemsetting 'overnight', 'PREnable', 1;" & vbNewLine & vbNewLine & _
       "  DECLARE @CurrentYear integer  = DATEPART(year, @Today);" & vbNewLine & _
       "  SELECT @TaxYearStartDay = SettingValue FROM ASRSysSystemSettings WHERE Section = 'taxyear' AND SettingKey = 'startday';" & vbNewLine
       
-  sProcSQL = sProcSQL & _
-      "  SET @TaxYearStart = @TaxYearStartDay + cast(@CurrentYear as varchar(4));" & vbNewLine & _
-      "  IF @Today < @TaxYearStart SET @TaxYearStart = @TaxYearStartDay + cast(@CurrentYear-1 as varchar(4));" & vbNewLine & _
-      "  SET @TaxYearEnd = DATEADD(year, 1, @TaxYearStart) - 1;" & vbNewLine & vbNewLine & _
-      "  SELECT @p14CountHeadcount = COUNT(ID) FROM " & sPersonnelTableName & vbNewLine & _
-      "    WHERE ([Leaving_Date] >= @TaxYearStart OR [Leaving_Date] IS NULL) AND [Start_Date] <= @TaxYearEnd AND [Start_Date] IS NOT NULL;" & vbNewLine & vbNewLine & _
-      "  SELECT @HeadCount = COUNT(ID) FROM " & sPersonnelTableName & vbNewLine & _
-      "    WHERE [Start_Date] <= @Today AND [Start_Date] IS NOT NULL  AND ([Leaving_Date] > @Today OR [Leaving_Date] IS NULL);" & vbNewLine & vbNewLine & _
+  '    "WITH ENCYPTION" & vbNewLine & _
+
+  If Len(sStartDateColumn) = 0 Or Len(sLeavingDateColumn) = 0 Or Len(sPersonnelTableName) = 0 Then
+      sProcSQL = sProcSQL & "  EXEC spsys_setsystemsetting 'overnight', 'PREnable', 0;" & vbNewLine & vbNewLine
+  
+  Else
+  
+    sProcSQL = sProcSQL & _
+        "  SET @TaxYearStart = @TaxYearStartDay + cast(@CurrentYear as varchar(4));" & vbNewLine & _
+        "  IF @Today < @TaxYearStart SET @TaxYearStart = @TaxYearStartDay + cast(@CurrentYear-1 as varchar(4));" & vbNewLine & _
+        "  SET @TaxYearEnd = DATEADD(year, 1, @TaxYearStart) - 1;" & vbNewLine & vbNewLine & _
+        "  SELECT @p14CountHeadcount = COUNT(ID) FROM " & sPersonnelTableName & vbNewLine & _
+        "    WHERE ([" & sLeavingDateColumn & "] >= @TaxYearStart OR [" & sLeavingDateColumn & "] IS NULL) AND [" & sStartDateColumn & "] <= @TaxYearEnd AND [" & sStartDateColumn & "] IS NOT NULL;" & vbNewLine & vbNewLine & _
+        "  SELECT @HeadCount = COUNT(ID) FROM " & sPersonnelTableName & vbNewLine & _
+        "    WHERE [" & sStartDateColumn & "] <= @Today AND [" & sStartDateColumn & "] IS NOT NULL  AND ([" & sLeavingDateColumn & "] > @Today OR [" & sLeavingDateColumn & "] IS NULL);" & vbNewLine & vbNewLine
+  
+    If gobjLicence.LicenceType = LicenceType.Headcount Or gobjLicence.LicenceType = LicenceType.DMIConcurrencyAndHeadcount Then
+      sProcSQL = sProcSQL & _
+        "  IF @HeadCount > " & gobjLicence.Headcount & vbNewLine & _
+        "    EXEC spsys_setsystemsetting 'overnight', 'PREnable', 0;" & vbNewLine
+  
+    ElseIf gobjLicence.LicenceType = LicenceType.P14Headcount Or gobjLicence.LicenceType = LicenceType.DMIConcurrencyAndP14 Then
+      sProcSQL = sProcSQL & _
+        "  IF @p14CountHeadcount > " & gobjLicence.Headcount & vbNewLine & _
+        "    EXEC spsys_setsystemsetting 'overnight', 'PREnable', 0;" & vbNewLine
+    
+    Else
+      sProcSQL = sProcSQL & "  EXEC spsys_setsystemsetting 'overnight', 'PREnable', 1;" & vbNewLine
+    
+    End If
+  
+  End If
+
+  sProcSQL = sProcSQL & vbNewLine & _
       "  EXEC spsys_setsystemsetting 'headcount', 'current', @HeadCount;" & vbNewLine & _
       "  EXEC spsys_setsystemsetting 'headcount', 'p14', @p14CountHeadcount;" & vbNewLine & _
-      "END"
+  "END"
 
-    gADOCon.Execute sProcSQL, , adExecuteNoRecords
+  gADOCon.Execute sProcSQL, , adExecuteNoRecords
   
   
 TidyUpAndExit:
@@ -440,4 +472,23 @@ ErrorTrap:
 
 End Function
 
+Public Function GetColumnNameFromModuleSetup(ByVal module As String, ByVal key As String)
+
+  Dim lngKey As Long
+  Dim sValue As String
+
+  With recModuleSetup
+    .Index = "idxModuleParameter"
+    .Seek "=", module, key
+    If .NoMatch Then
+      lngKey = 0
+    Else
+      lngKey = IIf(IsNull(!parametervalue), 0, val(!parametervalue))
+      sValue = GetColumnName(lngKey, True)
+    End If
+  End With
+          
+  GetColumnNameFromModuleSetup = sValue
+
+End Function
 

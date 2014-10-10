@@ -246,7 +246,7 @@ Public Function CheckVersion(sConnect As String, fReRunScript As Boolean, bIsSQL
           
           If frmChangedPlatform.Choice = vbYes Then
           
-            fOK = SaveSystemSetting("Licence", "Key", frmChangedPlatform.LicenceKey)
+            SaveSystemSetting "Licence", "Key", frmChangedPlatform.LicenceKey
             gobjLicence.ValidateCreationDate = False
             gobjLicence.LicenceKey = frmChangedPlatform.LicenceKey
 
