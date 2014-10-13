@@ -248,23 +248,7 @@ Namespace Code.Hubs
 
 		End Function
 
-		Public Shared Function LogIn(SessionID As String, objActualLogin As LoginViewModel, webArea As WebArea) As LicenceValidation
-			Dim objLogin = Logins.First(Function(m) m.SignalRClientID = SessionID)
-
-			Dim allow = AllowAccess(webArea)
-
-			If allow = LicenceValidation.Ok OrElse allow = LicenceValidation.HeadcountWarning OrElse allow = LicenceValidation.HeadcountExceeded Then
-				objLogin.IsLoggedIn = True
-				objLogin.UserName = objActualLogin.UserName
-				objLogin.WebArea = webArea
-				UpdateOnlineCount()
-			End If
-
-			Return allow
-
-		End Function
-
-		Public Shared Function NavigateWebArea(SessionID As String, webArea As WebArea) As LicenceValidation
+		Public Shared Function NavigateWebArea(SessionID As String, loginName As String, webArea As WebArea) As LicenceValidation
 
 			Dim objLogin = Logins.First(Function(m) m.SignalRClientID = SessionID)
 			Dim allow As LicenceValidation = LicenceValidation.Ok
@@ -273,6 +257,7 @@ Namespace Code.Hubs
 				allow = AllowAccess(webArea)
 				If allow = LicenceValidation.Ok OrElse allow = LicenceValidation.HeadcountExceeded OrElse allow = LicenceValidation.HeadcountWarning Then
 					objLogin.IsLoggedIn = True
+					objLogin.UserName = loginName
 					objLogin.WebArea = webArea
 					UpdateOnlineCount()
 				End If

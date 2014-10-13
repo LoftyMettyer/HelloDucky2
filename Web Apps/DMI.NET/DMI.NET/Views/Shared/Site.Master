@@ -82,6 +82,14 @@
 				resizable: false
 			});
 
+			$("#divCurrentUsers").dialog({
+				autoOpen: false,
+				modal: true,
+				width: 600,
+				height: 500,
+				resizable: false
+			});
+
 			$("#errorDialog").dialog({
 				autoOpen: false,
 				modal: true,			
@@ -451,6 +459,7 @@
 	</div>
 
 	<div id="About" style="display: none;"><%Html.RenderPartial("~/views/account/about.ascx")%></div>
+	<div id="divCurrentUsers" style="display: none;"><%Html.RenderPartial("~/views/account/CurrentUsers.ascx")%></div>
 
 	<div id="errorDialog" title="AJAX call failed">
 		<div id="errorDialogTitleContent">

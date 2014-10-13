@@ -42,13 +42,13 @@ Namespace Models
 
 				Select Case WebArea
 					Case WebArea.DMI
-						Return "DMI"
+						Return "OpenHR Web"
 
 					Case WebArea.DMISingle
-						Return "DMI Lite"
+						Return "OpenHR Web"
 
 					Case Else
-						Return "Self Service"
+						Return "Self-service"
 
 				End Select
 

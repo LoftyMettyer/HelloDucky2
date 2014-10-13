@@ -180,14 +180,6 @@
 						</td>
 					</tr>
 					
-					<tr style="display: none">
-						<td colspan="7">
-							Current Users
-							<table id="currentLoggedInUsers">	
-							</table>
-						</td>
-					</tr>
-
 					<tr>
 						<td colspan="6" style="text-align: right">
 							<input id="btnCancel" name="btnCancel" type="button" class="btn" value="OK"  style="width: 75px" 
@@ -207,47 +199,6 @@
 
 <script type="text/javascript">
 	$("#spnAbout_LocaleCultureName")[0].innerHTML = window.UserLocale;
-
-
-
-	$(document).ready(function() {
-
-		var licence = $.connection['LicenceHub'];
-
-		licence['client'].currentUserList = function(userList) {
-
-			$("#currentLoggedInUsers").jqGrid('GridUnload');
-
-			$("#currentLoggedInUsers").jqGrid({
-				datatype: 'jsonstring',
-				datastr: userList,
-				mtype: 'GET',
-				jsonReader: {
-					root: "rows", //array containing actual data
-					page: "page", //current page
-					total: "total", //total pages for the query
-					records: "records", //total number of records
-					repeatitems: false,
-					id: "UserName" //index of the column with the PK in it
-				},
-				colNames: ['User Name', 'Device', 'Area'],
-				colModel: [
-					{ name: 'UserName', index: 'UserName' },
-					{ name: 'Device', index: 'Device' },
-					{ name: 'WebAreaName', index: 'WebAreaName' }
-				],
-				viewrecords: true,
-				width: 450,
-				height: 90,
-				sortname: 'User',
-				sortorder: "desc",
-				rowNum: 10000
-			});
-		}
-	});
-
-
-
 </script>
 
 

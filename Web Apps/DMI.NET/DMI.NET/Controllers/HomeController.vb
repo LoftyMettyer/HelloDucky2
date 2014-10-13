@@ -361,7 +361,7 @@ Namespace Controllers
 			End If
 
 			' Licence check
-			Dim licenceValidate = LicenceHub.NavigateWebArea(Session.SessionID, targetWebArea)
+			Dim licenceValidate = LicenceHub.NavigateWebArea(Session.SessionID, Session("Username").ToString, targetWebArea)
 			Select Case licenceValidate
 				Case LicenceValidation.Expired, LicenceValidation.Insufficient
 					Session("ErrorText") = LicenceHub.ErrorMessage(licenceValidate)

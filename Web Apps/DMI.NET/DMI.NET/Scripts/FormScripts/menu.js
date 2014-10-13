@@ -145,6 +145,7 @@ function menu_abMainMenu_DataReady() {
 		menu_setVisibleMenuItem("mnutoolReports", false);
 		menu_setVisibleMenuItem("mnutoolTools", false);
 		menu_setVisibleMenuItem("mnutoolNewUser", false);
+		menu_setVisibleMenuItem("mnutoolCurrentUsers", false);
 
 		iVisibleCount = 0;
 		if ($("#mnutoolDiary").css("display") != "none") {
@@ -363,6 +364,13 @@ function menu_MenuClick(sTool) {
 		//showDefaultRibbon();
 		//$("#toolbarHome").click();
 	}
+
+
+	if (sToolName == "mnutoolCurrentUsers") {
+		$("#divCurrentUsers").dialog("open");
+		return false;
+	}
+
 
 	//------------------------DEFSEL----------------------------//
 	//NEW buttons
@@ -2197,37 +2205,30 @@ function menu_refreshMenu() {
 		}
 		}
 
-
-
-	//if (txtSysPerm_INTRANET_NEW_USER != null) {
 	if ($("#txtSysPerm_INTRANET_NEW_USER").length) {
 		if ($("#txtSysPerm_INTRANET_NEW_USER").val() == 1) {
-			//abMainMenu.Tools("mnutoolNewUser").enabled = (txtNewUserGranted.value == "True");				
 			menu_enableMenuItem("mnutoolNewUser", $("#txtNewUserGranted").val());
+			menu_enableMenuItem("mnutoolCurrentUsers", $("#txtNewUserGranted").val());
+
 		}
 		else {
-			//abMainMenu.Tools("mnutoolNewUser").enabled = false;				
 			menu_enableMenuItem("mnutoolNewUser", false);
+			menu_enableMenuItem("mnutoolCurrentUsers", false);
 		}
 	}
 	else {
-		//abMainMenu.Tools("mnutoolNewUser").enabled = false;
 		menu_enableMenu("#mnutoolNewUser", false);
 	}
 
-	//if (txtSysPerm_CONFIGURATION_USER != null) {
 	if ($("#txtSysPerm_CONFIGURATION_USER").length) {
 		if ($("#txtSysPerm_CONFIGURATION_USER").val() == 1) {
-			//abMainMenu.Tools("mnutoolConfiguration").enabled = true;
 			menu_enableMenuItem("mnutoolConfiguration", true);
 		}
 		else {
-			//abMainMenu.Tools("mnutoolConfiguration").enabled = false;
 			menu_enableMenuItem("mnutoolConfiguration", false);
 		}
 	}
 	else {
-		//abMainMenu.Tools("mnutoolConfiguration").enabled = false;
 		menu_enableMenuItem("mnutoolConfiguration", false);
 	}
 

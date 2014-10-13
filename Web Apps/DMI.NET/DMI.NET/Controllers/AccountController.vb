@@ -149,13 +149,6 @@ Namespace Controllers
 
 				Session("ErrorText") = Nothing
 
-				' Are we already logged in on the session?
-				If Not objServerSession Is Nothing Then
-					If objServerSession.ActiveConnections > 0 Then
-						objServerSession.ActiveConnections += 1
-						Return RedirectToAction("Main", "Home", New With {.SSIMode = ViewBag.SSIMode})
-					End If
-				End If
 
 				Session("action") = ""
 				Session("selectSQL") = ""
@@ -321,16 +314,12 @@ Namespace Controllers
 						Return RedirectToAction("Loginerror")
 					End If
 
-					' Login to licence hub
-					LicenceHub.LogIn(Session.SessionID, loginviewmodel, objLogin.DefaultWebArea)
-
 					' User is allowed into OpenHR, now populate some metadata
 					objServerSession.RegionalSettings = Platform.PopulateRegionalSettings(sLocaleCultureName)
 					objServerSession.Initialise()
 					objServerSession.ReadModuleParameters()
 
 					Session("LocaleDateFormat") = objServerSession.RegionalSettings.DateFormat.ShortDatePattern
-
 					Session("LocaleDecimalSeparator") = sLocaleDecimalSeparator
 					Session("LocaleThousandSeparator") = sLocaleThousandSeparator
 					Session("LocaleCultureName") = sLocaleCultureName
