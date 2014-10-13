@@ -20,7 +20,7 @@ Private mlngDMIS As Long
 Private mlngModules As Long
 Private mlngHeadcountSSI As Long
 Private mdExpiryDate As Date
-Private mlngLicenceType As Long
+Private mlngLicenceType As LicenceType
 
 Public IsValid As Boolean
 Public ValidateCreationDate As Boolean
@@ -57,7 +57,7 @@ Public Property Get ExpiryDate()
   ExpiryDate = mdExpiryDate
 End Property
 
-Public Property Get LicenceType()
+Public Property Get LicenceType() As LicenceType
   LicenceType = mlngLicenceType
 End Property
 

@@ -474,97 +474,78 @@ Err_Trap:
 
 End Function
 
-'MH20050309 Fault 9872
-'Moved Licence check from "sub Connect"
 Public Function CheckLicence() As Boolean
 
-  'Dim rsUsers As ADODB.Recordset
-  'Dim sSQL As String
-  Dim lUsers As Long
   Dim sMsg As String
   Dim lActualCount As Long
+  Dim lngCurrentHeadcount As Long
+  Dim dToday As Date
   
   On Error GoTo Err_Trap
   
   CheckLicence = False
-  
-  
-  lUsers = GetLicencedUsers
-  
-'MH20061017 Fault 11376
-  'Count of users on current database
-  lActualCount = GetCurrentUsersCountInApp
-  
-''  'MH20040331 Fault 8420
-''  sSQL = "SELECT DISTINCT hostname, hostprocess, loginame, program_name " & _
-''  "FROM master..sysprocesses " & _
-''  "WHERE dbid in (" & _
-''                  "SELECT dbid " & _
-''                  "FROM master..sysdatabases " & _
-''                  "WHERE name = '" & gsDatabaseName & "') " & _
-''  "AND program_name = '" & App.ProductName & "' " & _
-''  "ORDER BY loginame"
-''
-''
-''  Set rsUsers = datData.OpenRecordset(sSQL, adOpenKeyset, adLockReadOnly)
-''
-''  If lUsers > 0 Then
-''    If rsUsers.RecordCount > 0 Then
-''
-''      'MH20010104 Changed "<" to "<=" as it was picking up the current connection
-''      'in the user count and then not allowing the current connection.
-''      'e.g. If there are 2 users permitted and a user is already logged on then
-''      'when the second user logs on the "logged on" count is 2.  The old validation
-''      'then failed as the "allowed users" and the "logged on" users matched !
-''
-''
-''      'If rsUsers.RecordCount < lUsers Then
-''      If rsUsers.RecordCount <= lUsers Then
-      
-  If lUsers > 0 Then
-      If lActualCount <= lUsers Then
-        GoTo Exit_Ok
-      Else
-        'AE20071005 Fault #10016
-        'ND27022002 Fault 3399 Logon or Login - I changed it to Log On.
-        sMsg = "Unable to log in, cannot exceed number of " & lUsers & " licensed users."
-        GoTo Exit_Fail
-      End If
+  dToday = CDate(Now)
     
-'    Else
-'      GoTo Exit_Ok
-'    End If
-  Else
-    sMsg = "Unable to validate Licensing Authorisation Code, please contact ASR Support."
-    'Auth code not validated, only allow 1 user and inform user to phone support
-    'If rsUsers.RecordCount = 0 Then
-    If lActualCount = 1 Then
-      sMsg = sMsg & vbCrLf & "Defaulting to Single User System."
-      GoTo Exit_Ok
-    Else
-      sMsg = sMsg & vbCrLf & "Single User is already logged on to System, cannot continue."
+  ' Expiry date checks
+  If gobjLicence.ExpiryDate <> "00:00:00" Then
+    If (dToday > gobjLicence.ExpiryDate) Then
+      sMsg = "Your licence to use this product has expired." & vbNewLine & _
+            "Please contact your Account Manager as soon as possible."
+      GoTo Exit_Fail
+    End If
+            
+    If (dToday > gobjLicence.ExpiryDate.AddDays(-7)) Then
+      sMsg = "Your licence to use this product will expire in one week." & vbNewLine & vbNewLine & _
+            "Please contact your Account Manager as soon as possible."
+      COAMsgBox sMsg, vbInformation
+    End If
+  End If
+     
+     
+  ' Concurrency checks
+  If gobjLicence.LicenceType = Concurrency Or gobjLicence.LicenceType = DMIConcurrencyAndHeadcount Or gobjLicence.LicenceType = DMIConcurrencyAndP14 Then
+    lActualCount = GetCurrentUsersCountInApp
+    
+    If lActualCount > gobjLicence.DATUsers And gobjLicence.LicenceType Then
+      sMsg = "Unable to log in, cannot exceed number of " & gobjLicence.DATUsers & " licensed users."
       GoTo Exit_Fail
     End If
   End If
 
 
+  ' Headcount checks
+  If gobjLicence.Headcount > 0 Then
+    Select Case gobjLicence.LicenceType
+      Case LicenceType.Headcount, LicenceType.DMIConcurrencyAndHeadcount
+        lngCurrentHeadcount = GetSystemSetting("Headcount", "current", 0)
+        
+      Case LicenceType.P14Headcount, LicenceType.DMIConcurrencyAndP14
+       lngCurrentHeadcount = GetSystemSetting("Headcount", "P14", 0)
+
+    End Select
+   
+    If lngCurrentHeadcount >= gobjLicence.Headcount Then
+      sMsg = "You have reached or exceeded the headcount limit set within the terms of your licence agreement." & vbNewLine & vbNewLine & _
+                            "You are no longer able to add new employee records, but you may access the system for other purposes." & vbNewLine & vbNewLine & _
+                            "Please contact your Account Manager as soon as possible to increase the licence headcount number."
+      COAMsgBox sMsg, vbCritical
+    
+    ElseIf lngCurrentHeadcount >= gobjLicence.Headcount * 0.95 Then
+      sMsg = "You are currently within 95% (" & lngCurrentHeadcount & " of " & gobjLicence.Headcount & " employees) of the reaching the headcount limit set within the terms of your licence agreement." & vbNewLine & vbNewLine & _
+                            "Once this limit is reached, you will no longer be able to add new employee records to the system." & vbNewLine & vbNewLine & _
+                            "If you wish to increase the headcount number, please contact your Account Manager as soon as possible."
+      COAMsgBox sMsg, vbInformation
+    End If
+  End If
+    
+
 Exit_Ok:
   CheckLicence = True
-  'gsConnectString = sConnect
-'  If rsUsers.State = adStateOpen Then
-'    rsUsers.Close
-'  End If
-'  Set rsUsers = Nothing
-  
   Exit Function
     
 Exit_Fail:
     COAMsgBox sMsg, vbCritical
     CheckLicence = False
-'    If rsUsers.State = adStateOpen Then
-'      rsUsers.Close
-'    End If
-'    Set rsUsers = Nothing
     Exit Function
 
 Err_Trap:
@@ -1692,7 +1673,7 @@ DeadlockRecoveryPoint:
         
             If Not fDoneOK Then
               COAMsgBox "ERROR." & vbCrLf & vbCrLf & _
-                sErrorMsg, vbOKOnly + vbExclamation, App.ProductName
+                sErrorMsg, vbOKOnly + vbExclamation, app.ProductName
             End If
           End If
 
@@ -2849,7 +2830,7 @@ Public Function AFDEnabled() As AFDTypes
   If AFDEnabled = AFD_Disabled And bLicensed Then
     'MH20010830 New version stuff
     'If GetPCSetting( "Afd", "ShowError" & CStr(App.Major & "." & App.Minor & "." & App.Revision), True) = True Then
-    If GetPCSetting("Afd", "ShowError" & CStr(App.Major & "." & App.Minor), True) = True Then
+    If GetPCSetting("Afd", "ShowError" & CStr(app.Major & "." & app.Minor), True) = True Then
       If Not ASRDEVELOPMENT And Not gblnBatchJobsOnly Then
         COAMsgBox "OpenHR is configured to use Afd Postcode Names and Numbers software," & vbCrLf & _
                "but one or more of the required files are missing from your PC." & vbCrLf & vbCrLf & _
@@ -2858,7 +2839,7 @@ Public Function AFDEnabled() As AFDTypes
                , vbExclamation + vbOKOnly, Application.Name
         'MH20010830 New version stuff
         'SavePCSetting "Afd", "ShowError" & CStr(App.Major & "." & App.Minor & "." & App.Revision), False
-        SavePCSetting "Afd", "ShowError" & CStr(App.Major & "." & App.Minor), False
+        SavePCSetting "Afd", "ShowError" & CStr(app.Major & "." & app.Minor), False
       End If
     End If
   End If
@@ -5375,7 +5356,7 @@ InsertDeadlockRecoveryPoint:
 
           If Not fInsertedOK Then
             COAMsgBox "The new record could not be created." & vbCrLf & vbCrLf & _
-              sErrorMsg, vbOKOnly + vbExclamation, App.ProductName
+              sErrorMsg, vbOKOnly + vbExclamation, app.ProductName
           End If
         End If
         
@@ -5552,12 +5533,12 @@ DeleteDeadlockRecoveryPoint:
 
           If Not fDeletedOK Then
             COAMsgBox "The record could not be deleted." & vbCrLf & vbCrLf & _
-              sErrorMsg, vbOKOnly + vbExclamation, App.ProductName
+              sErrorMsg, vbOKOnly + vbExclamation, app.ProductName
           End If
         Else
           Select Case .Parameters(0).Value
             Case 2 ' Record has been amended AND is no longer in the given table/view.
-              COAMsgBox "The record has been amended by another user and is no longer in the current view.", vbExclamation, App.ProductName
+              COAMsgBox "The record has been amended by another user and is no longer in the current view.", vbExclamation, app.ProductName
               
             Case Else ' Record deleted OK.
           End Select
@@ -5735,18 +5716,18 @@ UpdateDeadlockRecoveryPoint:
 
           If Not fUpdatedOK Then
             COAMsgBox "The record could not be updated." & vbCrLf & vbCrLf & _
-              sErrorMsg, vbOKOnly + vbExclamation, App.ProductName
+              sErrorMsg, vbOKOnly + vbExclamation, app.ProductName
           End If
         End If
         
         If fUpdatedOK And (Not fDeadlock) Then
           Select Case .Parameters(0).Value
             Case 1 ' Record changed by another user, and still in the current table/view.
-              COAMsgBox "The record has been amended by another user and will be refreshed.", vbExclamation, App.ProductName
+              COAMsgBox "The record has been amended by another user and will be refreshed.", vbExclamation, app.ProductName
             Case 2 ' Record changed by another user, and is no longer in the current table/view.
-              COAMsgBox "The record has been amended by another user and is no longer in the current view.", vbExclamation, App.ProductName
+              COAMsgBox "The record has been amended by another user and is no longer in the current view.", vbExclamation, app.ProductName
             Case 3 ' Record deleted by another user.
-              COAMsgBox "The record has been deleted by another user.", vbExclamation, App.ProductName
+              COAMsgBox "The record has been deleted by another user.", vbExclamation, app.ProductName
             Case Else ' Record updated OK.
               
           End Select
@@ -6001,7 +5982,7 @@ ExitPoint:
   
 ErrTrap:
   
-  COAMsgBox "Error determining Access rights of selected calc:" & vbCrLf & Err.Description, vbExclamation + vbOKOnly, App.Title
+  COAMsgBox "Error determining Access rights of selected calc:" & vbCrLf & Err.Description, vbExclamation + vbOKOnly, app.Title
   Resume ExitPoint
 End Function
 
@@ -6108,10 +6089,10 @@ Public Function CMGCommit() As Boolean
 
   ' Commit the changes to the audit log
   Dim sSQL As String
-  Dim bOk As Boolean
+  Dim bOK As Boolean
  
   On Error GoTo ErrTrap
-  bOk = True
+  bOK = True
   
   ' Update the audit log to say these have been exported
   sSQL = "Update asrsysAuditTrail Set CMGCommitDate = Convert(smalldatetime,getdate()) " _
@@ -6119,11 +6100,11 @@ Public Function CMGCommit() As Boolean
   datData.ExecuteSql sSQL
   
 ExitPoint:
-  CMGCommit = bOk
+  CMGCommit = bOK
   Exit Function
   
 ErrTrap:
-  bOk = False
+  bOK = False
   Resume ExitPoint
 
 End Function
@@ -6446,14 +6427,14 @@ Public Function QAddressEnabled() As DataMgr.QAddressTypes
   
   ' JDM - 25/02/3004 - Fault 8000 - Not warning if Quick Address is not installed
   If iQAddressType = QADDRESS_DISABLED And bLicensed Then
-    If GetPCSetting("QAddress", "ShowError" & CStr(App.Major & "." & App.Minor), True) = True Then
+    If GetPCSetting("QAddress", "ShowError" & CStr(app.Major & "." & app.Minor), True) = True Then
       If Not ASRDEVELOPMENT And Not gblnBatchJobsOnly Then
         COAMsgBox "OpenHR is configured to use Quick Address Postcode recognition," & vbCrLf & _
                "but one or more of the required files are missing from your PC." & vbCrLf & vbCrLf & _
                "OpenHR will continue, but all Quick Address functionality will be disabled." & vbCrLf & vbCrLf & _
                "(This message will not appear again until a new version of OpenHR is installed.)" _
                , vbExclamation + vbOKOnly, Application.Name
-        SavePCSetting "QAddress", "ShowError" & CStr(App.Major & "." & App.Minor), False
+        SavePCSetting "QAddress", "ShowError" & CStr(app.Major & "." & app.Minor), False
       End If
     End If
   End If

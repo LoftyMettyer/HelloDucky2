@@ -665,7 +665,7 @@ TidyUpAndExit:
   
 ErrorTrap:
   COAMsgBox "Error checking if the database " & gsDatabaseName & " contains columns of the specified datatype." _
-          , vbExclamation + vbOKOnly, app.title
+          , vbExclamation + vbOKOnly, app.Title
   DBContains_DataType = False
   Resume TidyUpAndExit
   
@@ -2800,7 +2800,7 @@ Public Sub UtilityDefAmended(psTable As String, _
   
 Amended_ERROR:
   
-  COAMsgBox "Error whilst checking if utility definition has been amended." & vbCrLf & vbCrLf & "(" & Err.Number & " - " & Err.Description & ")", vbExclamation + vbOKOnly, app.title
+  COAMsgBox "Error whilst checking if utility definition has been amended." & vbCrLf & vbCrLf & "(" & Err.Number & " - " & Err.Description & ")", vbExclamation + vbOKOnly, app.Title
   blnContinueSave = False
   
 End Sub
@@ -3529,7 +3529,7 @@ Public Function ValidateGTMaskDate(dtTemp As GTMaskDate.GTMaskDate) As Boolean
         'COAMsgBox sometimes causes run time error but DoEvents prevents this!
         DoEvents
 
-        COAMsgBox "You have entered an invalid date.", vbOKOnly + vbExclamation, app.title
+        COAMsgBox "You have entered an invalid date.", vbOKOnly + vbExclamation, app.Title
         .ForeColor = vbWindowText
         .DateValue = Null
         If .Visible And .Enabled Then
@@ -4693,8 +4693,4 @@ End Function
 
 Public Function IsModuleEnabled(lngModuleCode As Module) As Boolean
   IsModuleEnabled = (gobjLicence.Modules And lngModuleCode)
-End Function
-
-Public Function GetLicencedUsers() As Long
-  GetLicencedUsers = gobjLicence.DATUsers
 End Function

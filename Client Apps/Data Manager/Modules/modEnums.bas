@@ -214,7 +214,7 @@ End Enum
 Public Enum NavigateIn
   URL = 0
   MenuBar = 1
-  DB = 2
+  Db = 2
 End Enum
 
 
@@ -436,4 +436,10 @@ Public Enum FileFormatDirection
   DirectionBoth = 2
 End Enum
 
-
+Public Enum LicenceType
+  Concurrency = 0
+  P14Headcount = 1
+  Headcount = 2
+  DMIConcurrencyAndP14 = 3
+  DMIConcurrencyAndHeadcount = 4
+End Enum
