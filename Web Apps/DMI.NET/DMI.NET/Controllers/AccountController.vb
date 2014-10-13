@@ -321,6 +321,9 @@ Namespace Controllers
 						Return RedirectToAction("Loginerror")
 					End If
 
+					' Login to licence hub
+					LicenceHub.LogIn(Session.SessionID, loginviewmodel, objLogin.DefaultWebArea)
+
 					' User is allowed into OpenHR, now populate some metadata
 					objServerSession.RegionalSettings = Platform.PopulateRegionalSettings(sLocaleCultureName)
 					objServerSession.Initialise()

@@ -224,6 +224,8 @@ Namespace Code.Hubs
 						(targetWebArea = WebArea.DMISingle AndAlso current_DMISingleUsers >= Licence.DMISingleUsers) OrElse _
 						(targetWebArea = WebArea.DMI AndAlso current_SSIUsers >= Licence.SSIUsers) Then
 					Return LicenceValidation.Insufficient
+				Else
+					Return LicenceValidation.Ok
 				End If
 			End If
 
