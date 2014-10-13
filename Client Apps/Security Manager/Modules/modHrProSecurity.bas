@@ -19,6 +19,7 @@ Public gsDatabaseName As String
 Public gsServerName As String
 Public gsUserGroup As String
 Public gbShiftSave As Boolean
+Public gbLicenceExpired As Boolean
 
 Public gbCanUseWindowsAuthentication As Boolean
 Public gbUseWindowsAuthentication As Boolean

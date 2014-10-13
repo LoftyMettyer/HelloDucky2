@@ -558,6 +558,8 @@ Private Sub cmdApply_Click()
         SaveSystemSetting "Licence", "Key", .LicenceKey
 
         blnCorrectKey = True
+        gbLicenceExpired = False
+        frmMain.RefreshMenu False
         MsgBox "Licence details amended successfully", vbExclamation, "Licence Key"
         Unload Me
 

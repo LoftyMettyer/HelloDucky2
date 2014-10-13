@@ -412,7 +412,7 @@ Public Function Connect(sConnect As String, sMsg As String, sUser As String, lng
         End If
         
         sMsg = sMsg & vbCrLf & vbCrLf & _
-              "User :  " & !UserName & vbCrLf & _
+              "User :  " & !userName & vbCrLf & _
               "Date/Time :  " & !Lock_Time & vbCrLf & _
               "Machine :  " & !HostName & vbCrLf & _
               "Type :  " & !Description
@@ -425,7 +425,7 @@ Public Function Connect(sConnect As String, sMsg As String, sUser As String, lng
         ' Do Nothing
       Case Else ' System is locked for a save or somthing
         sMsg = "Unable to login to " & gsDatabaseName & " as the database has been locked." & vbCrLf & vbCrLf & _
-               "User :  " & !UserName & vbCrLf & _
+               "User :  " & !userName & vbCrLf & _
                "Date/Time :  " & !Lock_Time & vbCrLf & _
                "Machine :  " & !HostName & vbCrLf & _
                "Type :  " & !Description
@@ -494,7 +494,7 @@ Public Function CheckLicence() As Boolean
       GoTo Exit_Fail
     End If
             
-    If (dToday > gobjLicence.ExpiryDate.AddDays(-7)) Then
+    If (dToday > DateAdd("d", -7, gobjLicence.ExpiryDate)) Then
       sMsg = "Your licence to use this product will expire in one week." & vbNewLine & vbNewLine & _
             "Please contact your Account Manager as soon as possible."
       COAMsgBox sMsg, vbInformation
@@ -531,10 +531,14 @@ Public Function CheckLicence() As Boolean
       COAMsgBox sMsg, vbCritical
     
     ElseIf lngCurrentHeadcount >= gobjLicence.Headcount * 0.95 Then
-      sMsg = "You are currently within 95% (" & lngCurrentHeadcount & " of " & gobjLicence.Headcount & " employees) of the reaching the headcount limit set within the terms of your licence agreement." & vbNewLine & vbNewLine & _
-                            "Once this limit is reached, you will no longer be able to add new employee records to the system." & vbNewLine & vbNewLine & _
-                            "If you wish to increase the headcount number, please contact your Account Manager as soon as possible."
-      COAMsgBox sMsg, vbInformation
+      
+      If DisplayWarningToUser(gsUserName, Headcount95Percent, 7) Then
+        sMsg = "You are currently within 95% (" & lngCurrentHeadcount & " of " & gobjLicence.Headcount & " employees) of the reaching the headcount limit set within the terms of your licence agreement." & vbNewLine & vbNewLine & _
+                              "Once this limit is reached, you will no longer be able to add new employee records to the system." & vbNewLine & vbNewLine & _
+                              "If you wish to increase the headcount number, please contact your Account Manager as soon as possible."
+        COAMsgBox sMsg, vbInformation
+      End If
+    
     End If
   End If
     
@@ -6545,4 +6549,54 @@ Dim iCount As Integer
   Next
   
 End Function
+
+Private Function DisplayWarningToUser(userName As String, WarningType As WarningType, warningRefreshRate As Integer) As Boolean
+
+  Dim cmADO As ADODB.Command
+  Dim pmADO As ADODB.Parameter
+  Dim bResult As Boolean
+
+  On Error GoTo ErrorTrap
+  
+  ' Run the stored procedure to see if the given record has changed
+  Set cmADO = New ADODB.Command
+  With cmADO
+    .CommandText = "spASRUpdateWarningLog"
+    .CommandType = adCmdStoredProc
+    .CommandTimeout = 0
+    Set .ActiveConnection = gADOCon
+                      
+    Set pmADO = .CreateParameter("Username", adVarChar, adParamInput, 255)
+    .Parameters.Append pmADO
+    pmADO.Value = userName
+    
+    Set pmADO = .CreateParameter("WarningType", adInteger, adParamInput)
+    .Parameters.Append pmADO
+    pmADO.Value = WarningType
+          
+    Set pmADO = .CreateParameter("WarningRefreshRate", adInteger, adParamInput)
+    .Parameters.Append pmADO
+    pmADO.Value = warningRefreshRate
+          
+    Set pmADO = .CreateParameter("WarnUser", adBoolean, adParamOutput)
+    .Parameters.Append pmADO
+          
+    Set pmADO = Nothing
+
+    cmADO.Execute
+    bResult = CBool(.Parameters(3).Value)
+    
+  End With
+               
+TidyUpAndExit:
+  DisplayWarningToUser = bResult
+  Exit Function
+
+ErrorTrap:
+  bResult = False
+  GoTo TidyUpAndExit
+
+End Function
+    
+    
 

@@ -408,7 +408,7 @@ Private Sub Form_Load()
   End If
 
   ' Get the details of the last connection from the registry.
-  sUserName = GetPCSetting("Login", "SysMgr_UserName", Net.UserName)
+  sUserName = GetPCSetting("Login", "SysMgr_UserName", Net.userName)
   sDatabaseName = GetPCSetting("Login", "SysMgr_Database", vbNullString)
   sServerName = GetPCSetting("Login", "SysMgr_Server", vbNullString)
   bUseWindowsAuthentication = GetPCSetting("Login", "SysMgr_AuthenticationMode", 0)
@@ -480,7 +480,7 @@ Private Sub Form_KeyUp(KeyCode As Integer, Shift As Integer)
   mfReRunScript = False
 End Sub
 
-Private Sub cmdOk_Click()
+Private Sub cmdOK_Click()
   Login
   
   ' SQL 2005 may have forced us to change the password, so we need to re-attempt the logon process in full
@@ -725,7 +725,7 @@ TryUsingGroupSecurity:
 
     Exit Sub
   End If
-   
+          
   ' If we're logged in under a windows authenticated group
   If gbUseWindowsAuthentication Then
     gsActualSQLLogin = GetActualLoginName
@@ -741,6 +741,11 @@ TryUsingGroupSecurity:
       Set gADOCon = Nothing
     End If
     Screen.MousePointer = vbDefault
+    Exit Sub
+  End If
+  
+  ' Check licence details
+  If Not CheckLicence() Then
     Exit Sub
   End If
   
@@ -1307,7 +1312,7 @@ Private Sub UpdateConfig()
     rsInfo.AddNew
   End If
   
-  rsInfo!UserName = LCase(gsUserName)
+  rsInfo!userName = LCase(gsUserName)
   rsInfo!LastChanged = Replace(Format(Now, "mm/dd/yyyy"), UI.GetSystemDateSeparator, "/")
   rsInfo!ForceChange = 0
   
@@ -1450,7 +1455,7 @@ Private Sub CheckApplicationAccess()
   
   If blnCurrentlyLocked Then
     'Ignore users own manual lock
-    If LCase(gsUserName) = LCase(rsTemp!UserName) And rsTemp!Priority = lckManual Then
+    If LCase(gsUserName) = LCase(rsTemp!userName) And rsTemp!Priority = lckManual Then
       rsTemp.MoveNext
     End If
     blnCurrentlyLocked = (Not rsTemp.BOF And Not rsTemp.EOF)
@@ -1458,7 +1463,7 @@ Private Sub CheckApplicationAccess()
     If blnCurrentlyLocked Then
   
       'If not locked by current app then can we get read only access...
-      strLockDetails = "User :  " & rsTemp!UserName & vbNewLine & _
+      strLockDetails = "User :  " & rsTemp!userName & vbNewLine & _
                        "Date/Time :  " & rsTemp!Lock_Time & vbNewLine & _
                        "Machine :  " & rsTemp!HostName & vbNewLine & _
                        "Type :  " & rsTemp!Description

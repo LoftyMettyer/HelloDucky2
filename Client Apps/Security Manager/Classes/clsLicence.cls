@@ -20,7 +20,7 @@ Private mlngDMIS As Long
 Private mlngModules As Long
 Private mlngHeadcountSSI As Long
 Private mdExpiryDate As Date
-Private mlngLicenceType As Long
+Private mlngLicenceType As LicenceType
 
 Public IsValid As Boolean
 Public ValidateCreationDate As Boolean

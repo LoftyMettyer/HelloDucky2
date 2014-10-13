@@ -128,6 +128,19 @@ Public Enum PasswordChangeReason
   giPasswordChange_ComplexitySettings = 5
 End Enum
 
+Public Enum LicenceType
+  Concurrency = 0
+  P14Headcount = 1
+  Headcount = 2
+  DMIConcurrencyAndP14 = 3
+  DMIConcurrencyAndHeadcount = 4
+End Enum
+
+Public Enum WarningType
+  Headcount95Percent = 0
+  Licence5DayExpiry = 1
+End Enum
+
 Public Function LoadDomainSecurityPolicy() As Boolean
 
   On Error GoTo ErrorTrap

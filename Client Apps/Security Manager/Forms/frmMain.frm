@@ -1,6 +1,6 @@
 VERSION 5.00
-Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "ActBar.ocx"
-Object = "{BD0C1912-66C3-49CC-8B12-7B347BF6C846}#13.1#0"; "CODEJO~2.OCX"
+Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "actbar.ocx"
+Object = "{BD0C1912-66C3-49CC-8B12-7B347BF6C846}#13.1#0"; "Codejock.SkinFramework.v13.1.0.ocx"
 Begin VB.MDIForm frmMain 
    AutoShowChildren=   0   'False
    BackColor       =   &H00F7EEE9&
@@ -833,12 +833,14 @@ Public Sub RefreshMenu(pfUnloadingForm As Boolean)
   
   Set frmTemp = Screen.ActiveForm
   
-  ' NPG20081201 Fault 13401
-  ' abSecurity.Bands("bndModule").Tools("ID_Audit").Enabled = (iFormCount <= 1) Or (Not TypeOf Screen.ActiveForm Is frmAudit)
-  ' abSecurity.Bands("bndModule").Tools("ID_Group").Enabled = (iFormCount <= 1) Or (Not TypeOf Screen.ActiveForm Is frmGroupMaint1)
   If Not frmTemp Is Nothing Then
-    abSecurity.Bands("bndModule").Tools("ID_Audit").Enabled = (iFormCount <= 1) Or (Not TypeOf Screen.ActiveForm Is frmAudit)
-    abSecurity.Bands("bndModule").Tools("ID_Group").Enabled = (iFormCount <= 1) Or (Not TypeOf Screen.ActiveForm Is frmGroupMaint1)
+    abSecurity.Bands("bndModule").Tools("ID_Audit").Enabled = ((iFormCount <= 1) Or (Not TypeOf Screen.ActiveForm Is frmAudit)) And Not gbLicenceExpired
+    abSecurity.Bands("bndModule").Tools("ID_Group").Enabled = ((iFormCount <= 1) Or (Not TypeOf Screen.ActiveForm Is frmGroupMaint1)) And Not gbLicenceExpired
+    
+    abSecurity.Bands("bndTools").Tools("ID_SecurityOptions").Enabled = ((iFormCount <= 1) Or (Not TypeOf Screen.ActiveForm Is frmGroupMaint1)) And Not gbLicenceExpired
+    abSecurity.Bands("bndTools").Tools("ID_PasswordMaintenance").Enabled = ((iFormCount <= 1) Or (Not TypeOf Screen.ActiveForm Is frmGroupMaint1)) And Not gbLicenceExpired
+    abSecurity.Bands("bndTools").Tools("ID_UtilityOwnership").Enabled = ((iFormCount <= 1) Or (Not TypeOf Screen.ActiveForm Is frmGroupMaint1)) And Not gbLicenceExpired
+    
   Else
     abSecurity.Bands("bndModule").Tools("ID_Audit").Enabled = (iFormCount <= 1)
     abSecurity.Bands("bndModule").Tools("ID_Group").Enabled = (iFormCount <= 1)

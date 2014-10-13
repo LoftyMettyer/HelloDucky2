@@ -888,6 +888,11 @@ Private Sub Login()
     Exit Sub
   End If
 
+  ' Check licence details
+  If Not CheckLicence() Then
+    Exit Sub
+  End If
+
   ' Save the connection details in the registry..
   SavePCSetting "Login", "SecMgr_UserName", txtUID.Text
   SavePCSetting "Login", "SecMgr_Database", txtDatabase.Text
@@ -1353,3 +1358,129 @@ Private Function GetActualLoginName() As String
   Set cmdDetail = Nothing
 
 End Function
+
+Public Function CheckLicence() As Boolean
+
+  Dim sMsg As String
+  Dim lActualCount As Long
+  Dim lngCurrentHeadcount As Long
+  Dim dToday As Date
+  
+  On Error GoTo Err_Trap
+  
+  CheckLicence = False
+  dToday = CDate(Now)
+    
+  ' Expiry date checks
+  If gobjLicence.ExpiryDate <> "00:00:00" Then
+    If (dToday > gobjLicence.ExpiryDate) Then
+      sMsg = "Your licence to use this product has expired." & vbNewLine & _
+            "Please contact your Account Manager as soon as possible."
+      gbLicenceExpired = True
+      MsgBox sMsg, vbInformation
+      GoTo Exit_Ok:
+      
+    End If
+            
+    If (dToday > DateAdd("d", -7, gobjLicence.ExpiryDate)) Then
+      sMsg = "Your licence to use this product will expire in one week." & vbNewLine & vbNewLine & _
+            "Please contact your Account Manager as soon as possible."
+      MsgBox sMsg, vbInformation
+    End If
+  End If
+    
+     
+  ' Headcount checks
+  If gobjLicence.Headcount > 0 Then
+    Select Case gobjLicence.LicenceType
+      Case LicenceType.Headcount, LicenceType.DMIConcurrencyAndHeadcount
+        lngCurrentHeadcount = GetSystemSetting("Headcount", "current", 0)
+        
+      Case LicenceType.P14Headcount, LicenceType.DMIConcurrencyAndP14
+       lngCurrentHeadcount = GetSystemSetting("Headcount", "P14", 0)
+
+    End Select
+   
+    If lngCurrentHeadcount >= gobjLicence.Headcount Then
+      sMsg = "You have reached or exceeded the headcount limit set within the terms of your licence agreement." & vbNewLine & vbNewLine & _
+                            "You are no longer able to add new employee records, but you may access the system for other purposes." & vbNewLine & vbNewLine & _
+                            "Please contact your Account Manager as soon as possible to increase the licence headcount number."
+      MsgBox sMsg, vbCritical
+    
+    ElseIf lngCurrentHeadcount >= gobjLicence.Headcount * 0.95 Then
+      
+      If DisplayWarningToUser(gsUserName, Headcount95Percent, 7) Then
+        sMsg = "You are currently within 95% (" & lngCurrentHeadcount & " of " & gobjLicence.Headcount & " employees) of the reaching the headcount limit set within the terms of your licence agreement." & vbNewLine & vbNewLine & _
+                              "Once this limit is reached, you will no longer be able to add new employee records to the system." & vbNewLine & vbNewLine & _
+                              "If you wish to increase the headcount number, please contact your Account Manager as soon as possible."
+        MsgBox sMsg, vbInformation
+      End If
+    
+    End If
+  End If
+    
+Exit_Ok:
+  CheckLicence = True
+  Exit Function
+    
+Exit_Fail:
+  Screen.MousePointer = vbDefault
+  MsgBox sMsg, vbCritical
+  CheckLicence = False
+  Exit Function
+
+Err_Trap:
+  CheckLicence = False
+
+End Function
+
+Private Function DisplayWarningToUser(UserName As String, WarningType As WarningType, warningRefreshRate As Integer) As Boolean
+
+  Dim cmADO As ADODB.Command
+  Dim pmADO As ADODB.Parameter
+  Dim bResult As Boolean
+
+  On Error GoTo ErrorTrap
+  
+  ' Run the stored procedure to see if the given record has changed
+  Set cmADO = New ADODB.Command
+  With cmADO
+    .CommandText = "spASRUpdateWarningLog"
+    .CommandType = adCmdStoredProc
+    .CommandTimeout = 0
+    Set .ActiveConnection = gADOCon
+                      
+    Set pmADO = .CreateParameter("Username", adVarChar, adParamInput, 255)
+    .Parameters.Append pmADO
+    pmADO.Value = UserName
+    
+    Set pmADO = .CreateParameter("WarningType", adInteger, adParamInput)
+    .Parameters.Append pmADO
+    pmADO.Value = WarningType
+          
+    Set pmADO = .CreateParameter("WarningRefreshRate", adInteger, adParamInput)
+    .Parameters.Append pmADO
+    pmADO.Value = warningRefreshRate
+          
+    Set pmADO = .CreateParameter("WarnUser", adBoolean, adParamOutput)
+    .Parameters.Append pmADO
+          
+    Set pmADO = Nothing
+
+    cmADO.Execute
+    bResult = CBool(.Parameters(3).Value)
+    
+  End With
+               
+TidyUpAndExit:
+  DisplayWarningToUser = bResult
+  Exit Function
+
+ErrorTrap:
+  bResult = False
+  GoTo TidyUpAndExit
+
+End Function
+
+
+
