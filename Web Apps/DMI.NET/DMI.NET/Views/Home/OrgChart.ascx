@@ -222,12 +222,10 @@
 
 			newWin.document.write('<scri');
 			newWin.document.write('pt type="text/javascript">');
+			newWin.document.write('setTimeout("this.print(); this.close();", 500);');
 			newWin.document.write('</scri');
 			newWin.document.write('pt>');
-			newWin.document.close();
-			newWin.focus();
-			newWin.print();
-			newWin.close();
+			newWin.document.close();			
 
 			showExpandNodeIcons(); // redisplay expand boxes.
 		}
