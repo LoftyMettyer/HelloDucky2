@@ -31,7 +31,6 @@ Namespace Classes
 
 			Dim strInput As String
 			Dim strCheckSum As String
-			Dim strGeneratedDay As String
 			Dim lngHeadcountSSI As Long
 			Randomize()
 
@@ -75,7 +74,7 @@ Namespace Classes
 					ExpiryDate = CDate(DateFromJulian(lngDate.ToString()))
 				End If
 
-				IsValid = (ConvertBase32ToLong(strRandomDigit & strCheckSum) = CustomerNumber + Type + DATUsers + DMIUsers + DMISingleUsers + Headcount + Modules + lngDate)
+				IsValid = (ConvertBase32ToLong(strRandomDigit & strCheckSum) = CustomerNumber + Type + DATUsers + DMIUsers + DMISingleUsers + lngHeadcountSSI + Modules + lngDate)
 
 			End If
 		End Sub
