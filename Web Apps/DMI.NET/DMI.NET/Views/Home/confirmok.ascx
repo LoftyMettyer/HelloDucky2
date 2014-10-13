@@ -29,7 +29,7 @@
         //	window.parent.frames("menuframe").loadDefSelPage(txtUtilType.value, txtUtilID.value, true);
         //}
 
-        if (sAction == "CROSSTABS") {
+        if (sAction == "CROSSTABS" || sAction == "NINEBOX") {
             menu_loadDefSelPage(txtUtilType.value, txtUtilID.value, 0, true);
         }
 

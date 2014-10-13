@@ -1344,6 +1344,6 @@ div.displaytable {
 	font-size: x-large;
 }
 
-
-
-
+.nineboxgridColorpicker {
+	position: static;
+}

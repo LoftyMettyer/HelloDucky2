@@ -480,7 +480,7 @@
 
 		changeRecordOption('Base', 'ALL');
 
-		if ($("#txtReportType").val() != '@UtilityType.utlCrossTab') {
+		if ($("#txtReportType").val() != '@UtilityType.utlCrossTab' && $("#txtReportType").val() != '@UtilityType.utlNineBoxGrid') {
 			removeAllSortOrders();
 		}
 
@@ -500,7 +500,7 @@
 			$('#CalendarEvents').jqGrid('clearGridData');
 		}
 
-		if ($("#txtReportType").val() == '@UtilityType.utlCrossTab') {
+		if ($("#txtReportType").val() == '@UtilityType.utlCrossTab' || $("#txtReportType").val() == '@UtilityType.utlNineBoxGrid') {
 			refreshCrossTabColumnsAvailable();
 		}
 

@@ -480,6 +480,7 @@
 			else if ((sCurrentWorkPage == "UTIL_DEF_CUSTOMREPORTS") ||
 					 (sCurrentWorkPage == "UTIL_DEF_CALENDARREPORT") ||
 							 (sCurrentWorkPage == "UTIL_DEF_CROSSTABS") ||
+							 (sCurrentWorkPage == "UTIL_DEF_9BOXGRID") ||
 							 (sCurrentWorkPage == "UTIL_DEF_MAILMERGE") ||
 							 (sCurrentWorkPage == "EVENTLOG")) {
 					
