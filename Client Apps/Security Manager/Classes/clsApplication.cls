@@ -67,6 +67,15 @@ Public Enum ColumnTypes
   colWorkPattern = 5
 End Enum
 
+'CrossTabTypes for Crosstabs and Nine Box Grids
+Public Enum CrossTabType
+	cttNormal = 0
+	cttTurnover = 1
+	cttStability = 2
+	cttAbsenceBreakdown = 3
+	ctt9GridBox = 4
+End Enum
+
 Public Enum AccessModes
   accNone = 0
   accFull = 1
