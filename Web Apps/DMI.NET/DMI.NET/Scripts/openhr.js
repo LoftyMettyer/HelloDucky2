@@ -1219,6 +1219,19 @@
 		var windowProperties = "centerscreen,chrome," + "height=" + height + "," + "width=" + width;
 
 		return window.open(destination, "_blank", windowProperties);
+	},
+	
+	isChrome = function() {
+		// please note, that IE11 now returns undefined again for window.chrome
+		var isChromium = window.chrome,
+				vendorName = window.navigator.vendor;
+		if (isChromium !== null && isChromium !== undefined && vendorName === "Google Inc.") {
+			// is Google chrome 
+			return true;
+		} else {
+			// not Google chrome 
+			return false;
+		}
 	};
 
 	window.OpenHR = {
@@ -1264,7 +1277,8 @@
 		OpenDialog: openDialog,
 		modalExpressionSelect: modalExpressionSelect,
 		parentExists: parentExists,
-		windowOpen: windowOpen
+		windowOpen: windowOpen,
+		isChrome: isChrome
 	};
 
 })(window, jQuery);

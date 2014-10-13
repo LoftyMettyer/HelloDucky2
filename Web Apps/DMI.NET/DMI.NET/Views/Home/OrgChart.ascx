@@ -169,8 +169,16 @@
 			OpenHR.modalMessage("No nodes selected to print.");
 		} else {
 
+			var winHeight = 1;
+			var winWidth = 1;
+			
+			if (OpenHR.isChrome()) {
+				winHeight = screen.height / 2;
+				winWidth = screen.width / 2;
+			}
+
 			//Creates a new window, copies the required html content to it and send it to printer.
-			var newWin = window.open("", "_blank", 'toolbar=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=1, height=1, visible=none', "");
+			var newWin = window.open("", "_blank", 'toolbar=no,status=no,menubar=no,scrollbars=yes,resizable=yes, width=' + winWidth + ', height=' + winHeight + ', visible=none', "");
 			newWin.document.write('<link href="../Scripts/jquery/jOrgChart/css/jquery.jOrgChart.css" rel="stylesheet" />');
 			newWin.document.write('<link href="../Scripts/jquery/jOrgChart/css/custom.css" rel="stylesheet" />');
 			newWin.document.write('<link href="../Scripts/jquery/jOrgChart/css/prettify.css" rel="stylesheet" />');
