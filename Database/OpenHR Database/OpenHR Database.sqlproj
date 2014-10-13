@@ -642,6 +642,9 @@
     <Build Include="Stored Procedures\Auto Generated\spASRGetHeadcount.sql" />
     <Build Include="Stored Procedures\Other\spASRUpdateWarningLog.sql" />
     <Build Include="Tables\ASRSysWarningsLog.sql" />
+    <Build Include="Stored Procedures\Web\spASRIntGetNineBoxGridDefinition.sql" />
+    <Build Include="Stored Procedures\Web\spASRIntSaveNineBoxGrid.sql" />
+    <Build Include="Stored Procedures\Web\spASRIntValidateNineBoxGrid.sql" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Stored Procedures\Other\sp_ASR_Bradford_CalculateDurations.sql" />

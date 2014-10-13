@@ -49,10 +49,6 @@ IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[sp_ASRIntS
 	DROP PROCEDURE [dbo].[sp_ASRIntSaveMailMerge];
 GO
 
-IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[sp_ASRIntSaveCrossTab]') AND xtype in (N'P'))
-	DROP PROCEDURE [dbo].[sp_ASRIntSaveCrossTab];
-GO
-
 IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[sp_ASRIntSaveCustomReport]') AND xtype in (N'P'))
 	DROP PROCEDURE [dbo].[sp_ASRIntSaveCustomReport];
 GO
@@ -907,6 +903,1854 @@ END
 GO
 
 	
+IF EXISTS (SELECT * FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spASRIntDeleteCheck]') AND xtype in (N'P'))
+	DROP PROCEDURE [dbo].[spASRIntDeleteCheck];
+GO
+
+CREATE PROCEDURE [dbo].[spASRIntDeleteCheck] (
+	@piUtilityType	integer,
+	@plngID			integer,
+	@pfDeleted		bit				OUTPUT,
+	@psAccess		varchar(MAX)	OUTPUT
+)
+AS
+BEGIN
+
+	SET NOCOUNT ON;
+
+	DECLARE 
+		@sTableName			sysname,
+		@sAccessTableName	sysname,
+		@sIDColumnName		sysname,
+		@sSQL				nvarchar(MAX),
+		@sParamDefinition	nvarchar(500),
+		@fNewAccess			bit,
+		@iCount				integer,
+		@sAccess			varchar(MAX),
+		@fSysSecMgr			bit;
+
+	SET @sTableName = '';
+	SET @psAccess = 'HD';
+	SET @pfDeleted = 0;
+	SET @fNewAccess = 0;
+
+	IF @piUtilityType = 0 /* Batch Job */
+	BEGIN
+		SET @sTableName = 'ASRSysBatchJobName';
+		SET @sAccessTableName = 'ASRSysBatchJobAccess';
+		SET @sIDColumnName = 'ID';
+		SET @fNewAccess = 1;
+  END
+
+	IF @piUtilityType = 17 /* Calendar Report */
+	BEGIN
+		SET @sTableName = 'ASRSysCalendarReports';
+		SET @sAccessTableName = 'ASRSysCalendarReportAccess';
+		SET @sIDColumnName = 'ID';
+		SET @fNewAccess = 1;
+  END
+
+	IF @piUtilityType = 1 OR @piUtilityType = 35 /* Cross Tab or 9-Box Grid*/
+	BEGIN
+		SET @sTableName = 'ASRSysCrossTab';
+		SET @sAccessTableName = 'ASRSysCrossTabAccess';
+		SET @sIDColumnName = 'CrossTabID';
+		SET @fNewAccess = 1;
+ 	END
+    
+	IF @piUtilityType = 2 /* Custom Report */
+	BEGIN
+		SET @sTableName = 'ASRSysCustomReportsName';
+		SET @sAccessTableName = 'ASRSysCustomReportAccess';
+		SET @sIDColumnName = 'ID';
+		SET @fNewAccess = 1;
+ 	END
+    
+	IF @piUtilityType = 3 /* Data Transfer */
+	BEGIN
+		SET @sTableName = 'ASRSysDataTransferName';
+		SET @sAccessTableName = 'ASRSysDataTransferAccess';
+		SET @sIDColumnName = 'DataTransferID';
+		SET @fNewAccess = 1;
+  END
+    
+	IF @piUtilityType = 4 /* Export */
+	BEGIN
+		SET @sTableName = 'ASRSysExportName';
+		SET @sAccessTableName = 'ASRSysExportAccess';
+		SET @sIDColumnName = 'ID';
+		SET @fNewAccess = 1;
+  END
+    
+	IF (@piUtilityType = 5) OR (@piUtilityType = 6) OR (@piUtilityType = 7) /* Globals */
+	BEGIN
+		SET @sTableName = 'ASRSysGlobalFunctions';
+		SET @sAccessTableName = 'ASRSysGlobalAccess';
+		SET @sIDColumnName = 'functionID';
+		SET @fNewAccess = 1;
+  END
+    
+	IF (@piUtilityType = 8) /* Import */
+	BEGIN
+		SET @sTableName = 'ASRSysImportName';
+		SET @sAccessTableName = 'ASRSysImportAccess';
+		SET @sIDColumnName = 'ID';
+		SET @fNewAccess = 1;
+  END
+    
+	IF (@piUtilityType = 9) OR (@piUtilityType = 18) /* Label or Mail Merge */
+	BEGIN
+		SET @sTableName = 'ASRSysMailMergeName';
+		SET @sAccessTableName = 'ASRSysMailMergeAccess';
+		SET @sIDColumnName = 'mailMergeID';
+		SET @fNewAccess = 1;
+  END
+    
+	IF (@piUtilityType = 20) /* Record Profile */
+	BEGIN
+		SET @sTableName = 'ASRSysRecordProfileName';
+		SET @sAccessTableName = 'ASRSysRecordProfileAccess';
+		SET @sIDColumnName = 'recordProfileID';
+		SET @fNewAccess = 1
+  END
+    
+	IF (@piUtilityType = 14) OR (@piUtilityType = 23) OR (@piUtilityType = 24) /* Match Report, Succession, Career */
+	BEGIN
+		SET @sTableName = 'ASRSysMatchReportName';
+		SET @sAccessTableName = 'ASRSysMatchReportAccess';
+		SET @sIDColumnName = 'matchReportID';
+		SET @fNewAccess = 1;
+  END
+
+	IF (@piUtilityType = 11) OR (@piUtilityType = 12)  /* Filters/Calcs */
+	BEGIN
+		SET @sTableName = 'ASRSysExpressions';
+		SET @sIDColumnName = 'exprID';
+  END
+
+	IF (@piUtilityType = 10)  /* Picklists */
+	BEGIN
+		SET @sTableName = 'ASRSysPicklistName';
+		SET @sIDColumnName = 'picklistID';
+  END
+
+	IF len(@sTableName) > 0
+	BEGIN
+		SET @sSQL = 'SELECT @iCount = COUNT(*)
+				FROM ' + @sTableName + 
+				' WHERE ' + @sTableName + '.' + @sIDColumnName + ' = ' + convert(nvarchar(255), @plngID);
+		SET @sParamDefinition = N'@iCount integer OUTPUT';
+		EXEC sp_executesql @sSQL,  @sParamDefinition, @iCount OUTPUT;
+
+		IF @iCount = 0 
+		BEGIN
+			SET @pfDeleted = 1;
+		END
+		ELSE
+		BEGIN
+			IF @fNewAccess = 1
+			BEGIN
+				exec [dbo].[spASRIntCurrentUserAccess] @piUtilityType,	@plngID, @psAccess OUTPUT;
+			END
+			ELSE
+			BEGIN
+				exec [dbo].[spASRIntSysSecMgr] @fSysSecMgr OUTPUT;
+				
+				IF @fSysSecMgr = 1 
+				BEGIN
+					SET @psAccess = 'RW';
+				END
+				ELSE
+				BEGIN
+					SET @sSQL = 'SELECT @sAccess = CASE 
+								WHEN userName = system_user THEN ''RW''
+								ELSE access
+							END
+							FROM ' + @sTableName + 
+							' WHERE ' + @sTableName + '.' + @sIDColumnName + ' = ' + convert(nvarchar(255), @plngID);
+					SET @sParamDefinition = N'@sAccess varchar(MAX) OUTPUT';
+					EXEC sp_executesql @sSQL,  @sParamDefinition, @sAccess OUTPUT;
+
+					SET @psAccess = @sAccess;
+				END
+			END
+		END
+	END
+END
+
+GO
+
+IF EXISTS (SELECT * FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[sp_ASRIntDeleteUtility]') AND xtype in (N'P'))
+	DROP PROCEDURE [dbo].[sp_ASRIntDeleteUtility];
+GO
+
+CREATE PROCEDURE [dbo].[sp_ASRIntDeleteUtility] (
+	@piUtilType	integer,
+	@piUtilID	integer
+)
+AS
+BEGIN
+
+	SET NOCOUNT ON;
+
+	DECLARE @iExprID	integer;
+
+	IF @piUtilType = 0
+	BEGIN
+		/* Batch Jobs */
+		DELETE FROM ASRSysBatchJobName WHERE ID = @piUtilID;
+		DELETE FROM ASRSysBatchJobDetails WHERE BatchJobNameID = @piUtilID;
+		DELETE FROM ASRSysBatchJobAccess WHERE ID = @piUtilID;
+	END
+
+	IF @piUtilType = 1 OR @piUtilType = 35
+	BEGIN
+		/* Cross Tabs or 9-Box Grid*/
+		DELETE FROM ASRSysCrossTab WHERE CrossTabID = @piUtilID;
+		DELETE FROM ASRSysCrossTabAccess WHERE ID = @piUtilID;
+	END
+
+	IF @piUtilType = 2
+	BEGIN
+		/* Custom Reports. */
+		DELETE FROM ASRSysCustomReportsName WHERE id = @piUtilID;
+		DELETE FROM ASRSysCustomReportsDetails WHERE customReportID= @piUtilID;
+		DELETE FROM ASRSysCustomReportAccess WHERE ID = @piUtilID;
+	END
+	
+	IF @piUtilType = 3
+	BEGIN
+		/* Data Transfer. */
+		DELETE FROM ASRSysDataTransferName WHERE DataTransferID = @piUtilID;
+		DELETE FROM ASRSysDataTransferAccess WHERE ID = @piUtilID;
+	END
+
+	IF @piUtilType = 4
+	BEGIN
+		/* Export. */
+		DELETE FROM ASRSysExportName WHERE ID = @piUtilID;
+		DELETE FROM ASRSysExportDetails WHERE ExportID = @piUtilID;
+		DELETE FROM ASRSysExportAccess WHERE ID = @piUtilID;
+	END
+
+	IF (@piUtilType = 5) OR (@piUtilType = 6) OR (@piUtilType = 7)
+	BEGIN
+		/* Globals. */
+		DELETE FROM ASRSysGlobalFunctions  WHERE FunctionID = @piUtilID;
+		DELETE FROM ASRSysGlobalAccess WHERE ID = @piUtilID;
+	END
+
+	IF @piUtilType = 8
+	BEGIN
+		/* Import. */
+		DELETE FROM ASRSysImportName  WHERE ID = @piUtilID;
+		DELETE FROM ASRSysImportDetails WHERE ImportID = @piUtilID;
+		DELETE FROM ASRSysImportAccess WHERE ID = @piUtilID;
+	END
+
+	IF (@piUtilType = 9) OR (@piUtilType = 18)
+	BEGIN
+		/* Mail Merge/ Envelopes & Labels. */
+		DELETE FROM ASRSysMailMergeName  WHERE MailMergeID = @piUtilID;
+		DELETE FROM ASRSysMailMergeColumns  WHERE MailMergeID = @piUtilID;
+		DELETE FROM ASRSysMailMergeAccess WHERE ID = @piUtilID;
+	END
+
+	IF @piUtilType = 10
+	BEGIN
+		/* Picklists. */
+		DELETE FROM ASRSysPickListName WHERE picklistID = @piUtilID;
+		DELETE FROM ASRSysPickListItems WHERE picklistID = @piUtilID;
+	END
+	
+	IF @piUtilType = 11 OR @piUtilType = 12
+	BEGIN
+		/* Filters and Calculations. */
+		DECLARE subExpressions_cursor CURSOR LOCAL FAST_FORWARD FOR 
+			SELECT ASRSysExpressions.exprID
+			FROM ASRSysExpressions
+			INNER JOIN ASRSysExprComponents ON ASRSysExpressions.parentComponentID = ASRSysExprComponents.componentID
+			AND ASRSysExprComponents.exprID = @piUtilID;
+		OPEN subExpressions_cursor;
+		FETCH NEXT FROM subExpressions_cursor INTO @iExprID;
+		WHILE (@@fetch_status = 0)
+		BEGIN
+			exec [dbo].[sp_ASRIntDeleteUtility] @piUtilType, @iExprID;
+			
+			FETCH NEXT FROM subExpressions_cursor INTO @iExprID;
+		END
+		CLOSE subExpressions_cursor;
+		DEALLOCATE subExpressions_cursor;
+
+		DELETE FROM ASRSysExprComponents
+		WHERE exprID = @piUtilID;
+
+		DELETE FROM ASRSysExpressions WHERE exprID = @piUtilID;
+	END	
+
+	IF (@piUtilType = 14) OR (@piUtilType = 23) OR (@piUtilType = 24)
+	BEGIN
+		/* Match Reports/Succession Planning/Career Progression. */
+		DELETE FROM ASRSysMatchReportName WHERE MatchReportID = @piUtilID;
+		DELETE FROM ASRSysMatchReportAccess WHERE ID = @piUtilID;
+	END
+
+	IF @piUtilType = 17 
+	BEGIN
+		/*Calendar Reports*/
+		DELETE FROM ASRSysCalendarReports WHERE ID = @piUtilID;
+		DELETE FROM ASRSysCalendarReportEvents WHERE CalendarReportID = @piUtilID;
+		DELETE FROM ASRSysCalendarReportOrder WHERE CalendarReportID = @piUtilID;
+		DELETE FROM ASRSysCalendarReportAccess WHERE ID = @piUtilID;
+	END
+	
+	IF @piUtilType = 20 
+	BEGIN
+		/*Record Profile*/
+		DELETE FROM ASRSysRecordProfileName WHERE recordProfileID = @piUtilID;
+		DELETE FROM ASRSysRecordProfileDetails WHERE RecordProfileID = @piUtilID;
+		DELETE FROM ASRSysRecordProfileTables WHERE RecordProfileID = @piUtilID;
+		DELETE FROM ASRSysRecordProfileAccess WHERE ID = @piUtilID;
+	END
+	
+END
+
+GO
+
+IF EXISTS (SELECT * FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spASRIntSaveCrossTab]') AND xtype in (N'P'))
+	DROP PROCEDURE [dbo].[spASRIntSaveCrossTab];
+GO
+
+CREATE PROCEDURE [dbo].[spASRIntSaveCrossTab] (
+	@psName				varchar(255),
+	@psDescription		varchar(MAX),
+	@piTableID			integer,
+	@piSelection		integer,
+	@piPicklistID		integer,
+	@piFilterID			integer,
+	@pfPrintFilter		bit,
+	@psUserName			varchar(255),
+	@piHColID			integer,
+	@psHStart			varchar(100),
+	@psHStop			varchar(100),
+	@psHStep			varchar(100),
+	@piVColID			integer,
+	@psVStart			varchar(100),
+	@psVStop			varchar(100),
+	@psVStep			varchar(100),
+	@piPColID			integer,
+	@psPStart			varchar(100),
+	@psPStop			varchar(100),
+	@psPStep			varchar(100),
+	@piIType			integer,
+	@piIColID			integer,
+	@pfPercentage		bit,
+	@pfPerPage			bit,
+	@pfSuppress			bit,
+	@pfUse1000Separator	bit,
+	@pfOutputPreview	bit,
+	@piOutputFormat		integer,
+	@pfOutputScreen		bit,
+	@pfOutputPrinter	bit,
+	@psOutputPrinterName	varchar(MAX),
+	@pfOutputSave		bit,
+	@piOutputSaveExisting	integer,
+	@pfOutputEmail		bit,
+	@piOutputEmailAddr	integer,
+	@psOutputEmailSubject	varchar(MAX),
+	@psOutputEmailAttachAs	varchar(MAX),
+	@psOutputFilename	varchar(MAX),
+	@psAccess			varchar(MAX),
+	@psJobsToHide		varchar(MAX),
+	@psJobsToHideGroups	varchar(MAX),
+	@piID				integer	OUTPUT
+)
+AS
+BEGIN
+
+	SET NOCOUNT ON;
+
+	DECLARE 
+			@fIsNew		bit,
+			@sTemp		varchar(MAX),
+			@iCount		integer,
+			@sGroup		varchar(MAX),
+			@sAccess	varchar(MAX),
+			@sSQL		nvarchar(MAX);
+
+	/* Clean the input string parameters. */
+	IF len(@psJobsToHide) > 0 SET @psJobsToHide = replace(@psJobsToHide, '''', '''''')
+	IF len(@psJobsToHideGroups) > 0 SET @psJobsToHideGroups = replace(@psJobsToHideGroups, '''', '''''')
+
+	SET @fIsNew = 0
+
+	/* Insert/update the report header. */
+	IF (@piID = 0)
+	BEGIN
+		/* Creating a new report. */
+		INSERT ASRSysCrossTab (
+			Name, 
+			Description, 
+			TableID, 
+			Selection, 
+			PicklistID, 
+			FilterID, 
+ 			PrintFilterHeader, 
+ 			UserName, 
+ 			HorizontalColID, 
+ 			HorizontalStart, 
+ 			HorizontalStop, 
+ 			HorizontalStep, 
+			VerticalColID, 
+			VerticalStart, 
+			VerticalStop, 
+			VerticalStep, 
+			PageBreakColID, 
+			PageBreakStart, 
+			PageBreakStop, 
+			PageBreakStep, 
+			IntersectionType, 
+			IntersectionColID, 
+			Percentage, 
+			PercentageofPage, 
+			SuppressZeros, 
+			ThousandSeparators, 
+			OutputPreview, 
+			OutputFormat, 
+			OutputScreen, 
+			OutputPrinter, 
+			OutputPrinterName, 
+			OutputSave, 
+			OutputSaveExisting, 
+			OutputEmail, 
+			OutputEmailAddr, 
+			OutputEmailSubject, 
+			OutputEmailAttachAs, 
+			OutputFileName,
+			CrossTabType)
+		VALUES (
+			@psName,
+			@psDescription,
+			@piTableID,
+			@piSelection,
+			@piPicklistID,
+			@piFilterID,
+			@pfPrintFilter,
+			@psUserName,
+			@piHColID,
+			@psHStart,
+			@psHStop,
+			@psHStep,
+			@piVColID,
+			@psVStart,
+			@psVStop,
+			@psVStep,
+			@piPColID,
+			@psPStart,
+			@psPStop,
+			@psPStep,
+			@piIType,
+			@piIColID,
+			@pfPercentage,
+			@pfPerPage,
+			@pfSuppress,
+			@pfUse1000Separator,
+			@pfOutputPreview,
+			@piOutputFormat,
+			@pfOutputScreen,
+			@pfOutputPrinter,
+			@psOutputPrinterName,
+			@pfOutputSave,
+			@piOutputSaveExisting,
+			@pfOutputEmail,
+			@piOutputEmailAddr,
+			@psOutputEmailSubject,
+			@psOutputEmailAttachAs,
+			@psOutputFilename,
+			0 -- Cross tab
+		)
+
+		SET @fIsNew = 1
+		/* Get the ID of the inserted record.*/
+		SELECT @piID = MAX(CrossTabID) FROM ASRSysCrossTab
+	END
+	ELSE
+	BEGIN
+		/* Updating an existing report. */
+		UPDATE ASRSysCrossTab SET 
+			Name = @psName,
+			Description = @psDescription,
+			TableID = @piTableID,
+			Selection = @piSelection,
+			PicklistID = @piPicklistID,
+			FilterID = @piFilterID,
+			PrintFilterHeader = @pfPrintFilter,
+			HorizontalColID = @piHColID,
+			HorizontalStart = @psHStart,
+			HorizontalStop = @psHStop,
+			HorizontalStep = @psHStep,	
+			VerticalColID = @piVColID,
+			VerticalStart = @psVStart,
+			VerticalStop = @psVStop,
+			VerticalStep = @psVStep,	
+			PageBreakColID = @piPColID,
+			PageBreakStart = @psPStart,
+			PageBreakStop = @psPStop,
+			PageBreakStep = @psPStep,	
+			IntersectionType = @piIType,
+			IntersectionColID = @piIColID,
+			Percentage = @pfPercentage,
+			PercentageofPage = @pfPerPage,
+			SuppressZeros = @pfSuppress,
+			ThousandSeparators = @pfUse1000Separator,
+			OutputPreview = @pfOutputPreview,
+			OutputFormat = @piOutputFormat,
+			OutputScreen = @pfOutputScreen,
+			OutputPrinter = @pfOutputPrinter,
+			OutputPrinterName = @psOutputPrinterName,
+			OutputSave = @pfOutputSave,
+			OutputSaveExisting = @piOutputSaveExisting,
+			OutputEmail = @pfOutputEmail,
+			OutputEmailAddr = @piOutputEmailAddr,
+			OutputEmailSubject = @psOutputEmailSubject,
+			OutputEmailAttachAs = @psOutputEmailAttachAs,
+			OutputFileName = @psOutputFilename
+		WHERE CrossTabID = @piID
+	END
+
+	DELETE FROM ASRSysCrossTabAccess WHERE ID = @piID
+
+	INSERT INTO ASRSysCrossTabAccess (ID, groupName, access)
+		(SELECT @piID, sysusers.name,
+			CASE
+				WHEN (SELECT count(*)
+					FROM ASRSysGroupPermissions
+					INNER JOIN ASRSysPermissionItems ON (ASRSysGroupPermissions.itemID  = ASRSysPermissionItems.itemID
+						AND (ASRSysPermissionItems.itemKey = 'SYSTEMMANAGER'
+						OR ASRSysPermissionItems.itemKey = 'SECURITYMANAGER'))
+					INNER JOIN ASRSysPermissionCategories ON (ASRSysPermissionItems.categoryID = ASRSysPermissionCategories.categoryID
+						AND ASRSysPermissionCategories.categoryKey = 'MODULEACCESS')
+					WHERE sysusers.Name = ASRSysGroupPermissions.groupname
+						AND ASRSysGroupPermissions.permitted = 1) > 0 THEN 'RW'
+				ELSE 'HD'
+			END
+		FROM sysusers
+		WHERE sysusers.uid = sysusers.gid
+			AND sysusers.name <> 'ASRSysGroup'
+			AND sysusers.uid <> 0)
+
+	SET @sTemp = @psAccess
+	WHILE LEN(@sTemp) > 0
+	BEGIN
+		IF CHARINDEX(char(9), @sTemp) > 0
+		BEGIN
+			SET @sGroup = LEFT(@sTemp, CHARINDEX(char(9), @sTemp) - 1)
+			SET @sTemp = SUBSTRING(@sTemp, CHARINDEX(char(9), @sTemp) + 1, LEN(@sTemp) - (CHARINDEX(char(9), @sTemp)))
+	
+			SET @sAccess = LEFT(@sTemp, CHARINDEX(char(9), @sTemp) - 1)
+			SET @sTemp = SUBSTRING(@sTemp, CHARINDEX(char(9), @sTemp) + 1, LEN(@sTemp) - (CHARINDEX(char(9), @sTemp)))
+	
+			IF EXISTS (SELECT * FROM ASRSysCrossTabAccess
+				WHERE ID = @piID
+				AND groupName = @sGroup
+				AND access <> 'RW')
+				UPDATE ASRSysCrossTabAccess
+					SET access = @sAccess
+					WHERE ID = @piID
+						AND groupName = @sGroup
+		END
+	END
+
+	IF (@fIsNew = 1)
+	BEGIN
+		/* Update the util access log. */
+		INSERT INTO ASRSysUtilAccessLog 
+			(type, utilID, createdBy, createdDate, createdHost, savedBy, savedDate, savedHost)
+		VALUES (1, @piID, system_user, getdate(), host_name(), system_user, getdate(), host_name())
+	END
+	ELSE
+	BEGIN
+		/* Update the last saved log. */
+		/* Is there an entry in the log already? */
+		SELECT @iCount = COUNT(*) 
+		FROM ASRSysUtilAccessLog
+		WHERE utilID = @piID
+			AND type = 1
+
+		IF @iCount = 0 
+		BEGIN
+			INSERT INTO ASRSysUtilAccessLog
+ 				(type, utilID, savedBy, savedDate, savedHost)
+			VALUES (1, @piID, system_user, getdate(), host_name())
+		END
+		ELSE
+		BEGIN
+			UPDATE ASRSysUtilAccessLog 
+			SET savedBy = system_user,
+				savedDate = getdate(), 
+				savedHost = host_name() 
+			WHERE utilID = @piID
+				AND type = 1
+		END
+	END
+	
+	IF LEN(@psJobsToHide) > 0 
+	BEGIN
+		SET @psJobsToHideGroups = '''' + REPLACE(SUBSTRING(LEFT(@psJobsToHideGroups, LEN(@psJobsToHideGroups) - 1), 2, LEN(@psJobsToHideGroups)-1), char(9), ''',''') + ''''
+		SET @sSQL = 'DELETE FROM ASRSysBatchJobAccess 
+			WHERE ID IN (' + @psJobsToHide + ')
+				AND groupName IN (' + @psJobsToHideGroups + ')'
+		EXEC sp_executesql @sSQL
+
+		SET @sSQL = 'INSERT INTO ASRSysBatchJobAccess
+			(ID, groupName, access)
+			(SELECT ASRSysBatchJobName.ID, 
+				sysusers.name,
+				CASE
+					WHEN (SELECT count(*)
+						FROM ASRSysGroupPermissions
+						INNER JOIN ASRSysPermissionItems ON (ASRSysGroupPermissions.itemID  = ASRSysPermissionItems.itemID
+							AND (ASRSysPermissionItems.itemKey = ''SYSTEMMANAGER''
+							OR ASRSysPermissionItems.itemKey = ''SECURITYMANAGER''))
+						INNER JOIN ASRSysPermissionCategories ON (ASRSysPermissionItems.categoryID = ASRSysPermissionCategories.categoryID
+							AND ASRSysPermissionCategories.categoryKey = ''MODULEACCESS'')
+						WHERE sysusers.Name = ASRSysGroupPermissions.groupname
+							AND ASRSysGroupPermissions.permitted = 1) > 0 THEN ''RW''
+					ELSE ''HD''
+				END
+			FROM sysusers,
+				ASRSysBatchJobName
+			WHERE sysusers.uid = sysusers.gid
+				AND sysusers.uid <> 0
+				AND sysusers.name IN (' + @psJobsToHideGroups + ')
+				AND ASRSysBatchJobName.ID IN (' + @psJobsToHide + '))'
+		EXEC sp_executesql @sSQL
+	END
+	
+END
+
+GO
+
+IF EXISTS (SELECT * FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spASRIntGetUtilityAccessRecords]') AND xtype in (N'P'))
+	DROP PROCEDURE [dbo].[spASRIntGetUtilityAccessRecords];
+GO
+
+CREATE PROCEDURE [dbo].[spASRIntGetUtilityAccessRecords] (
+	@piUtilityType		integer,
+	@piID				integer,
+	@piFromCopy			integer
+)
+AS
+BEGIN
+
+	SET NOCOUNT ON;
+
+	DECLARE
+		@sDefaultAccess	varchar(2),
+		@sAccessTable	sysname,
+		@sKey			varchar(255),
+		@sSQL			nvarchar(MAX);
+
+	SET @sAccessTable = '';
+
+	IF @piUtilityType = 17
+	BEGIN
+		/* Calendar Reports */
+		SET @sAccessTable = 'ASRSysCalendarReportAccess';
+		SET @sKey = 'dfltaccess CalendarReports';
+	END
+
+	IF @piUtilityType = 1 OR @piUtilityType = 35
+	BEGIN
+		/* Cross Tabs or 9-box Grid*/
+		SET @sAccessTable = 'ASRSysCrossTabAccess';
+		SET @sKey = 'dfltaccess CrossTabs';
+	END
+
+	IF @piUtilityType = 2
+	BEGIN
+		/* Custom Reports */
+		SET @sAccessTable = 'ASRSysCustomReportAccess';
+		SET @sKey = 'dfltaccess CustomReports';
+	END
+
+	IF @piUtilityType = 9
+	BEGIN
+		/* Mail Merge */
+		SET @sAccessTable = 'ASRSysMailMergeAccess';
+		SET @sKey = 'dfltaccess MailMerge';
+	END
+
+	IF LEN(@sAccessTable) > 0
+	BEGIN
+		IF (@piID = 0) OR (@piFromCopy = 1)
+		BEGIN
+			SELECT @sDefaultAccess = SettingValue 
+			FROM ASRSysUserSettings
+			WHERE UserName = system_user
+				AND Section = 'utils&reports'
+				AND SettingKey = @sKey;
+	
+			IF (@sDefaultAccess IS null)
+			BEGIN
+				SET @sDefaultAccess = 'RW';
+			END
+		END
+		ELSE
+		BEGIN
+			SET @sDefaultAccess = 'HD';
+		END
+		
+		SET @sSQL = 'SELECT sysusers.name ,
+				CASE WHEN	
+					CASE
+						WHEN (SELECT count(*)
+							FROM ASRSysGroupPermissions
+							INNER JOIN ASRSysPermissionItems ON (ASRSysGroupPermissions.itemID  = ASRSysPermissionItems.itemID
+								AND (ASRSysPermissionItems.itemKey = ''SYSTEMMANAGER''
+								OR ASRSysPermissionItems.itemKey = ''SECURITYMANAGER''))
+							INNER JOIN ASRSysPermissionCategories ON (ASRSysPermissionItems.categoryID = ASRSysPermissionCategories.categoryID
+								AND ASRSysPermissionCategories.categoryKey = ''MODULEACCESS'')
+							WHERE sysusers.Name = ASRSysGroupPermissions.groupname
+								AND ASRSysGroupPermissions.permitted = 1) > 0 THEN ''RW''
+						ELSE ';
+  
+		IF (@piID = 0) OR (@piFromCopy = 1)
+		BEGIN
+			SET @sSQL = @sSQL + ' ''' + @sDefaultAccess + '''';
+		END
+		ELSE
+		BEGIN
+			SET @sSQL = @sSQL + 
+				' CASE
+					WHEN ' + @sAccessTable + '.access IS null THEN ''' + @sDefaultAccess + '''
+					ELSE ' + @sAccessTable + '.access
+				END';
+		END
+
+		SET @sSQL = @sSQL + 
+			' END = ''RW'' THEN ''RW''
+			 WHEN	CASE
+				WHEN (SELECT count(*)
+					FROM ASRSysGroupPermissions
+					INNER JOIN ASRSysPermissionItems ON (ASRSysGroupPermissions.itemID  = ASRSysPermissionItems.itemID
+						AND (ASRSysPermissionItems.itemKey = ''SYSTEMMANAGER''
+						OR ASRSysPermissionItems.itemKey = ''SECURITYMANAGER''))
+					INNER JOIN ASRSysPermissionCategories ON (ASRSysPermissionItems.categoryID = ASRSysPermissionCategories.categoryID
+						AND ASRSysPermissionCategories.categoryKey = ''MODULEACCESS'')
+					WHERE sysusers.Name = ASRSysGroupPermissions.groupname
+						AND ASRSysGroupPermissions.permitted = 1) > 0 THEN ''RW''
+			ELSE '
+  
+		IF (@piID = 0) OR (@piFromCopy = 1)
+		BEGIN
+			SET @sSQL = @sSQL + ' ''' + @sDefaultAccess + '''';
+		END
+		ELSE
+		BEGIN
+			SET @sSQL = @sSQL + 
+				' CASE
+					WHEN ' + @sAccessTable + '.access IS null THEN ''' + @sDefaultAccess + '''
+					ELSE ' + @sAccessTable + '.access
+				END';
+		END
+
+		SET @sSQL = @sSQL + 
+			' END = ''RO'' THEN ''RO''
+			ELSE ''HD'' 
+			END AS [access] ,
+			CASE
+				WHEN (SELECT count(*)
+					FROM ASRSysGroupPermissions
+					INNER JOIN ASRSysPermissionItems ON (ASRSysGroupPermissions.itemID  = ASRSysPermissionItems.itemID
+						AND (ASRSysPermissionItems.itemKey = ''SYSTEMMANAGER''
+ 						OR ASRSysPermissionItems.itemKey = ''SECURITYMANAGER''))
+					INNER JOIN ASRSysPermissionCategories ON (ASRSysPermissionItems.categoryID = ASRSysPermissionCategories.categoryID
+						AND ASRSysPermissionCategories.categoryKey = ''MODULEACCESS'')
+					WHERE sysusers.Name = ASRSysGroupPermissions.groupName
+						AND ASRSysGroupPermissions.permitted = 1) > 0 THEN ''1''
+				ELSE
+					''0''
+			END AS [isOwner]
+			FROM sysusers
+			LEFT OUTER JOIN ' + @sAccessTable + ' ON (sysusers.name = ' + @sAccessTable + '.groupName
+				AND ' + @sAccessTable + '.id = ' + convert(nvarchar(100), @piID) + ')
+			WHERE sysusers.uid = sysusers.gid
+				AND sysusers.uid <> 0 AND NOT (sysusers.name LIKE ''ASRSys%'') AND NOT (sysusers.name LIKE ''db_%'')
+			ORDER BY sysusers.name';
+
+			EXEC sp_executesql @sSQL;
+
+	END
+
+END
+
+GO
+
+IF EXISTS (SELECT * FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spASRIntValidateNineBoxGrid]') AND xtype in (N'P'))
+	DROP PROCEDURE [dbo].[spASRIntValidateNineBoxGrid];
+GO
+
+CREATE PROCEDURE [dbo].[spASRIntValidateNineBoxGrid] (
+	@psUtilName 		varchar(255), 
+	@piUtilID 			integer, 
+	@piTimestamp 		integer, 
+	@piBasePicklistID	integer, 
+	@piBaseFilterID 	integer, 
+	@piEmailGroupID 	integer, 
+	@psHiddenGroups 	varchar(MAX), 
+	@psErrorMsg			varchar(MAX)	OUTPUT,
+	@piErrorCode		varchar(MAX)	OUTPUT, /* 	0 = no errors, 
+								1 = error, 
+								2 = definition deleted or made read only by someone else,  but prompt to save as new definition 
+								3 = definition changed by someone else, overwrite ? */
+	@psDeletedFilters 	varchar(MAX)	OUTPUT,
+	@psHiddenFilters 	varchar(MAX)	OUTPUT,
+	@psJobIDsToHide		varchar(MAX)	OUTPUT
+)
+AS
+BEGIN
+
+	SET NOCOUNT ON;
+
+	DECLARE	@iTimestamp				integer,
+			@sAccess				varchar(MAX),
+			@sOwner					varchar(255),
+			@iCount					integer,
+			@sCurrentUser			sysname,
+			@sTemp					varchar(MAX),
+			@sCurrentID				varchar(MAX),
+			@sParameter				varchar(MAX),
+			@sExprName  			varchar(MAX),
+			@sBatchJobName			varchar(MAX),
+			@iBatchJobID			integer,
+			@iBatchJobScheduled		integer,
+			@sBatchJobRoleToPrompt	varchar(MAX),
+			@iNonHiddenCount		integer,
+			@sBatchJobUserName		sysname,
+			@sJobName				varchar(MAX),
+			@sCurrentUserGroup		sysname,
+			@fBatchJobsOK			bit,
+			@sScheduledUserGroups	varchar(MAX),
+			@sScheduledJobDetails	varchar(MAX),
+			@sCurrentUserAccess		varchar(MAX),
+			@iOwnedJobCount 		integer,
+			@sOwnedJobDetails		varchar(MAX),
+			@sOwnedJobIDs			varchar(MAX),
+			@sNonOwnedJobDetails	varchar(MAX),
+			@sHiddenGroupsList		varchar(MAX),
+			@sHiddenGroup			varchar(MAX),
+			@fSysSecMgr				bit,
+			@sActualUserName		sysname,
+			@iUserGroupID			integer;
+
+	SET @fBatchJobsOK = 1
+	SET @sScheduledUserGroups = ''
+	SET @sScheduledJobDetails = ''
+	SET @iOwnedJobCount = 0
+	SET @sOwnedJobDetails = ''
+	SET @sOwnedJobIDs = ''
+	SET @sNonOwnedJobDetails = ''
+
+	SELECT @sCurrentUser = SYSTEM_USER
+	SET @psErrorMsg = ''
+	SET @piErrorCode = 0
+	SET @psDeletedFilters = ''
+	SET @psHiddenFilters = ''
+
+	exec spASRIntSysSecMgr @fSysSecMgr OUTPUT
+	
+ 	IF @piUtilID > 0
+	BEGIN
+		/* Check if this definition has been changed by another user. */
+		SELECT @iCount = COUNT(*)
+		FROM ASRSysCrossTab
+		WHERE CrossTabID = @piUtilID
+
+		IF @iCount = 0
+		BEGIN
+			SET @psErrorMsg = 'The 9-Box Grid has been deleted by another user. Save as a new definition ?'
+			SET @piErrorCode = 2
+		END
+		ELSE
+		BEGIN
+			SELECT @iTimestamp = convert(integer, timestamp), 
+				@sOwner = userName
+			FROM ASRSysCrossTab
+			WHERE CrossTabID = @piUtilID
+
+			IF (@iTimestamp <>@piTimestamp)
+			BEGIN
+				exec spASRIntCurrentUserAccess 
+					1, 
+					@piUtilID,
+					@sAccess	OUTPUT
+		
+				IF (@sOwner <> @sCurrentUser) AND (@sAccess <> 'RW') AND (@iTimestamp <>@piTimestamp)
+				BEGIN
+					SET @psErrorMsg = 'The 9-Box Grid has been amended by another user and is now Read Only. Save as a new definition ?'
+					SET @piErrorCode = 2
+				END
+				ELSE
+				BEGIN
+					SET @psErrorMsg = 'The 9-Box Grid has been amended by another user. Would you like to overwrite this definition ?'
+					SET @piErrorCode = 3
+				END
+			END
+			
+		END
+	END
+
+	IF @piErrorCode = 0
+	BEGIN
+		/* Check that the 9-Box Grid name is unique. */
+		IF @piUtilID > 0
+		BEGIN
+			SELECT @iCount = COUNT(*) 
+			FROM ASRSYSCrossTab
+			WHERE name = @psUtilName
+				AND CrossTabID <> @piUtilID
+		END
+		ELSE
+		BEGIN
+			SELECT @iCount = COUNT(*) 
+			FROM ASRSYSCrossTab
+			WHERE name = @psUtilName
+		END
+
+		IF @iCount > 0 
+		BEGIN
+			SET @psErrorMsg = 'A 9-Box Grid called ''' + @psUtilName + ''' already exists.'
+			SET @piErrorCode = 1
+		END
+	END
+
+	IF (@piErrorCode = 0) AND (@piBasePicklistID > 0)
+	BEGIN
+		/* Check that the Base table picklist exists. */
+		SELECT @iCount = COUNT(*)
+		FROM ASRSysPicklistName 
+		WHERE picklistID = @piBasePicklistID
+
+		IF @iCount = 0
+		BEGIN
+			SET @psErrorMsg = 'The base table picklist has been deleted by another user.'
+			SET @piErrorCode = 1
+		END
+		ELSE
+		BEGIN
+			SELECT @sOwner = userName,
+				@sAccess = access
+			FROM ASRSysPicklistName 
+			WHERE picklistID = @piBasePicklistID
+
+			IF (@sOwner <> @sCurrentUser) AND (@sAccess = 'HD') AND (@fSysSecMgr = 0)
+			BEGIN
+				SET @psErrorMsg = 'The base table picklist has been made hidden by another user.'
+				SET @piErrorCode = 1
+			END
+		END
+	END
+
+	IF (@piErrorCode = 0) AND (@piBaseFilterID > 0)
+	BEGIN
+		/* Check that the Base table filter exists. */
+		SELECT @iCount = COUNT(*)
+		FROM ASRSysExpressions 
+		WHERE exprID = @piBaseFilterID
+
+		IF @iCount = 0
+		BEGIN
+			SET @psErrorMsg = 'The base table filter has been deleted by another user.'
+			SET @piErrorCode = 1
+		END
+		ELSE
+		BEGIN
+			SELECT @sOwner = userName,
+				@sAccess = access
+			FROM ASRSysExpressions 
+			WHERE exprID = @piBaseFilterID
+
+			IF (@sOwner <> @sCurrentUser) AND (@sAccess = 'HD') AND (@fSysSecMgr = 0)
+			BEGIN
+				SET @psErrorMsg = 'The base table filter has been made hidden by another user.'
+				SET @piErrorCode = 1
+			END
+		END
+	END
+
+	IF (@piErrorCode = 0) AND (@piEmailGroupID > 0)
+	BEGIN
+		/* Check that the email group exists. */
+		SELECT @iCount = COUNT(*)
+		FROM ASRSysEmailGroupName 
+		WHERE emailGroupID = @piEmailGroupID
+
+		IF @iCount = 0
+		BEGIN
+			SET @psErrorMsg = 'The email group has been deleted by another user.'
+			SET @piErrorCode = 1
+		END
+	END
+
+	IF (@piErrorCode = 0) AND (@piUtilID > 0) AND (len(@psHiddenGroups) > 0)
+	BEGIN
+		SELECT @sOwner = userName
+		FROM ASRSysCrossTab
+		WHERE CrossTabID = @piUtilID
+
+		IF (@sOwner = @sCurrentUser) 
+		BEGIN
+			EXEC spASRIntGetActualUserDetails
+				@sActualUserName OUTPUT,
+				@sCurrentUserGroup OUTPUT,
+				@iUserGroupID OUTPUT
+
+			DECLARE @HiddenGroups TABLE(groupName sysname, groupID integer)
+			SET @sHiddenGroupsList = substring(@psHiddenGroups, 2, len(@psHiddenGroups)-2)
+			WHILE LEN(@sHiddenGroupsList) > 0
+			BEGIN
+				IF CHARINDEX(char(9), @sHiddenGroupsList) > 0
+				BEGIN
+					SET @sHiddenGroup = LEFT(@sHiddenGroupsList, CHARINDEX(char(9), @sHiddenGroupsList) - 1)
+					SET @sHiddenGroupsList = RIGHT(@sHiddenGroupsList, LEN(@sHiddenGroupsList) - CHARINDEX(char(9), @sHiddenGroupsList))
+				END
+				ELSE
+				BEGIN
+					SET @sHiddenGroup = @sHiddenGroupsList
+					SET @sHiddenGroupsList = ''
+				END
+
+				INSERT INTO @HiddenGroups (groupName, groupID) (SELECT @sHiddenGroup, uid FROM sysusers WHERE name = @sHiddenGroup)
+			END
+
+			DECLARE batchjob_cursor CURSOR LOCAL FAST_FORWARD FOR 
+			SELECT ASRSysBatchJobName.Name,
+				ASRSysBatchJobName.ID,
+				convert(integer, ASRSysBatchJobName.scheduled),
+				ASRSysBatchJobName.roleToPrompt,
+				COUNT (ASRSysBatchJobAccess.Access) AS [nonHiddenCount],
+				ASRSysBatchJobName.Username,
+				ASRSysCrossTab.Name AS 'JobName'
+	 		FROM ASRSysBatchJobDetails
+			INNER JOIN ASRSysBatchJobName ON ASRSysBatchJobName.ID = ASRSysBatchJobDetails.BatchJobNameID 
+			INNER JOIN ASRSysCrossTab ON ASRSysCrossTab.CrossTabID = ASRSysBatchJobDetails.JobID
+			LEFT OUTER JOIN ASRSysBatchJobAccess ON ASRSysBatchJobName.ID = ASRSysBatchJobAccess.ID
+				AND ASRSysBatchJobAccess.access <> 'HD'
+				AND ASRSysBatchJobAccess.groupName IN (SELECT name FROM sysusers WHERE uid IN (SELECT groupID FROM @HiddenGroups))
+				AND ASRSysBatchJobAccess.groupName NOT IN (SELECT sysusers.name
+					FROM sysusers
+					INNER JOIN ASRSysGroupPermissions ON sysusers.name = ASRSysGroupPermissions.groupName
+						AND ASRSysGroupPermissions.permitted = 1
+					INNER JOIN ASRSysPermissionItems ON (ASRSysGroupPermissions.itemID  = ASRSysPermissionItems.itemID
+						AND (ASRSysPermissionItems.itemKey = 'SYSTEMMANAGER'
+						OR ASRSysPermissionItems.itemKey = 'SECURITYMANAGER'))
+					INNER JOIN ASRSysPermissionCategories ON (ASRSysPermissionItems.categoryID = ASRSysPermissionCategories.categoryID
+						AND ASRSysPermissionCategories.categoryKey = 'MODULEACCESS')
+					WHERE sysusers.uid = sysusers.gid
+						AND sysusers.uid <> 0)
+			WHERE ASRSysBatchJobDetails.JobType = '9-BOX GRID REPORT'
+				AND ASRSysBatchJobDetails.JobID IN (@piUtilID)
+			GROUP BY ASRSysBatchJobName.Name,
+				ASRSysBatchJobName.ID,
+				convert(integer, ASRSysBatchJobName.scheduled),
+				ASRSysBatchJobName.roleToPrompt,
+				ASRSysBatchJobName.Username,
+				ASRSysCrossTab.Name
+
+			OPEN batchjob_cursor
+			FETCH NEXT FROM batchjob_cursor INTO @sBatchJobName, 
+				@iBatchJobID,
+				@iBatchJobScheduled,
+				@sBatchJobRoleToPrompt,
+				@iNonHiddenCount,
+				@sBatchJobUserName,
+				@sJobName	
+			WHILE (@@fetch_status = 0)
+			BEGIN
+				SELECT @sCurrentUserAccess = 
+					CASE
+						WHEN (SELECT count(*)
+							FROM ASRSysGroupPermissions
+							INNER JOIN ASRSysPermissionItems ON (ASRSysGroupPermissions.itemID  = ASRSysPermissionItems.itemID
+								AND (ASRSysPermissionItems.itemKey = 'SYSTEMMANAGER'
+								OR ASRSysPermissionItems.itemKey = 'SECURITYMANAGER'))
+							INNER JOIN ASRSysPermissionCategories ON (ASRSysPermissionItems.categoryID = ASRSysPermissionCategories.categoryID
+		 						AND ASRSysPermissionCategories.categoryKey = 'MODULEACCESS')
+							WHERE b.Name = ASRSysGroupPermissions.groupname
+								AND ASRSysGroupPermissions.permitted = 1) > 0 THEN 'RW'
+						WHEN ASRSysBatchJobName.userName = system_user THEN 'RW'
+						ELSE
+							CASE
+								WHEN ASRSysBatchJobAccess.access IS null THEN 'HD'
+								ELSE ASRSysBatchJobAccess.access
+							END
+					END 
+				FROM sysusers b
+				INNER JOIN sysusers a ON b.uid = a.gid
+				LEFT OUTER JOIN ASRSysBatchJobAccess ON (b.name = ASRSysBatchJobAccess.groupName
+					AND ASRSysBatchJobAccess.id = @iBatchJobID)
+				INNER JOIN ASRSysBatchJobName ON ASRSysBatchJobAccess.ID = ASRSysBatchJobName.ID
+				WHERE a.Name = @sActualUserName
+
+				IF @sBatchJobUserName = @sOwner
+				BEGIN
+					/* Found a Batch Job whose owner is the same. */
+					IF (@iBatchJobScheduled = 1) AND
+						(len(@sBatchJobRoleToPrompt) > 0) AND
+						(@sBatchJobRoleToPrompt <> @sCurrentUserGroup) AND
+						(CHARINDEX(char(9) + @sBatchJobRoleToPrompt + char(9), @psHiddenGroups) > 0)
+					BEGIN
+						/* Found a Batch Job which is scheduled for another user group to run. */
+						SET @fBatchJobsOK = 0
+						SET @sScheduledUserGroups = @sScheduledUserGroups + @sBatchJobRoleToPrompt + '<BR>'
+
+						IF @sCurrentUserAccess = 'HD'
+						BEGIN
+							SET @sScheduledJobDetails = @sScheduledJobDetails + 'Batch Job : <Hidden> by ' + @sBatchJobUserName + '<BR>'
+						END
+						ELSE
+						BEGIN
+							SET @sScheduledJobDetails = @sScheduledJobDetails + 'Batch Job : ' + @sBatchJobName + '<BR>'
+						END
+					END
+					ELSE
+					BEGIN
+						IF @iNonHiddenCount > 0 
+						BEGIN
+							SET @iOwnedJobCount = @iOwnedJobCount + 1
+							SET @sOwnedJobDetails = @sOwnedJobDetails + 'Batch Job : ' + @sBatchJobName + ' (Contains 9-Box Grid ' + @sJobName + ')' + '<BR>'
+							SET @sOwnedJobIDs = @sOwnedJobIDs +
+								CASE 
+									WHEN Len(@sOwnedJobIDs) > 0 THEN ', '
+									ELSE ''
+								END +  convert(varchar(100), @iBatchJobID)
+						END
+					END
+				END			
+				ELSE
+				BEGIN
+					/* Found a Batch Job whose owner is not the same. */
+					SET @fBatchJobsOK = 0
+	    
+					IF @sCurrentUserAccess = 'HD'
+					BEGIN
+						SET @sNonOwnedJobDetails = @sNonOwnedJobDetails + 'Batch Job : <Hidden> by ' + @sBatchJobUserName + '<BR>'
+					END
+					ELSE
+					BEGIN
+						SET @sNonOwnedJobDetails = @sNonOwnedJobDetails + 'Batch Job : ' + @sBatchJobName + '<BR>'
+					END
+				END
+
+				FETCH NEXT FROM batchjob_cursor INTO @sBatchJobName, 
+					@iBatchJobID,
+					@iBatchJobScheduled,
+					@sBatchJobRoleToPrompt,
+					@iNonHiddenCount,
+					@sBatchJobUserName,
+					@sJobName	
+			END
+
+			CLOSE batchjob_cursor
+			DEALLOCATE batchjob_cursor	
+		END
+	END
+
+	IF @fBatchJobsOK = 0
+	BEGIN
+		SET @piErrorCode = 1
+
+		IF Len(@sScheduledJobDetails) > 0 
+		BEGIN
+			SET @psErrorMsg = 'This definition cannot be made hidden from the following user groups :'  + '<BR><BR>' +
+				@sScheduledUserGroups  +
+				'<BR>as it is used in the following batch jobs which are scheduled to be run by these user groups :<BR><BR>' +
+				@sScheduledJobDetails
+		END
+		ELSE
+		BEGIN
+			SET @psErrorMsg = 'This definition cannot be made hidden as it is used in the following batch jobs of which you are not the owner :<BR><BR>' +
+				@sNonOwnedJobDetails
+	      	END
+	END
+	ELSE
+	BEGIN
+	    	IF (@iOwnedJobCount > 0) 
+		BEGIN
+			SET @piErrorCode = 4
+			SET @psErrorMsg = 'Making this definition hidden to user groups will automatically make the following definition(s), of which you are the owner, hidden to the same user groups:<BR><BR>' +
+				@sOwnedJobDetails + '<BR><BR>' +
+				'Do you wish to continue ?'
+		END
+	END
+
+	SET @psJobIDsToHide = @sOwnedJobIDs
+
+END
+
+GO
+
+IF EXISTS (SELECT * FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spASRIntSaveNineBoxGrid]') AND xtype in (N'P'))
+	DROP PROCEDURE [dbo].[spASRIntSaveNineBoxGrid];
+GO
+
+CREATE PROCEDURE [dbo].[spASRIntSaveNineBoxGrid] (
+	@psName				varchar(255),
+	@psDescription		varchar(MAX),
+	@piTableID			integer,
+	@piSelection		integer,
+	@piPicklistID		integer,
+	@piFilterID			integer,
+	@pfPrintFilter		bit,
+	@psUserName			varchar(255),
+	@piHColID			integer,
+	@psHStart			varchar(100),
+	@psHStop			varchar(100),
+	@piVColID			integer,
+	@psVStart			varchar(100),
+	@psVStop			varchar(100),
+	@piPColID			integer,
+	@psPStart			varchar(100),
+	@psPStop			varchar(100),
+	@piIType			integer,
+	@piIColID			integer,
+	@pfPercentage		bit,
+	@pfPerPage			bit,
+	@pfSuppress			bit,
+	@pfUse1000Separator	bit,
+	@pfOutputPreview	bit,
+	@piOutputFormat		integer,
+	@pfOutputScreen		bit,
+	@pfOutputPrinter	bit,
+	@psOutputPrinterName	varchar(MAX),
+	@pfOutputSave		bit,
+	@piOutputSaveExisting	integer,
+	@pfOutputEmail		bit,
+	@piOutputEmailAddr	integer,
+	@psOutputEmailSubject	varchar(MAX),
+	@psOutputEmailAttachAs	varchar(MAX),
+	@psOutputFilename	varchar(MAX),
+	@psAccess			varchar(MAX),
+	@psJobsToHide		varchar(MAX),
+	@psJobsToHideGroups	varchar(MAX),
+	@XAxisLabel varchar(255),
+	@XAxisSubLabel1 varchar(255),
+	@XAxisSubLabel2 varchar(255),
+	@XAxisSubLabel3 varchar(255),
+	@YAxisLabel varchar(255),
+	@YAxisSubLabel1 varchar(255),
+	@YAxisSubLabel2 varchar(255),
+	@YAxisSubLabel3 varchar(255),
+	@Description1 varchar(255),
+	@ColorDesc1 varchar(6),
+	@Description2 varchar(255),
+	@ColorDesc2 varchar(6),
+	@Description3 varchar(255),
+	@ColorDesc3 varchar(6),
+	@Description4 varchar(255),
+	@ColorDesc4 varchar(6),
+	@Description5 varchar(255),
+	@ColorDesc5 varchar(6),
+	@Description6 varchar(255),
+	@ColorDesc6 varchar(6),
+	@Description7 varchar(255),
+	@ColorDesc7 varchar(6),
+	@Description8 varchar(255),
+	@ColorDesc8 varchar(6),
+	@Description9 varchar(255),
+	@ColorDesc9 varchar(6),
+	@piID				integer	OUTPUT
+)
+AS
+BEGIN
+
+	SET NOCOUNT ON;
+
+	DECLARE 
+			@fIsNew		bit,
+			@sTemp		varchar(MAX),
+			@iCount		integer,
+			@sGroup		varchar(MAX),
+			@sAccess	varchar(MAX),
+			@sSQL		nvarchar(MAX);
+
+	/* Clean the input string parameters. */
+	IF len(@psJobsToHide) > 0 SET @psJobsToHide = replace(@psJobsToHide, '''', '''''')
+	IF len(@psJobsToHideGroups) > 0 SET @psJobsToHideGroups = replace(@psJobsToHideGroups, '''', '''''')
+
+	SET @fIsNew = 0
+
+	/* Insert/update the report header. */
+	IF (@piID = 0)
+	BEGIN
+		/* Creating a new report. */
+		INSERT ASRSysCrossTab (
+			Name, 
+			Description, 
+			TableID, 
+			Selection, 
+			PicklistID, 
+			FilterID, 
+ 			PrintFilterHeader, 
+ 			UserName, 
+ 			HorizontalColID, 
+ 			HorizontalStart, 
+ 			HorizontalStop, 
+ 			HorizontalStep, 
+			VerticalColID, 
+			VerticalStart, 
+			VerticalStop, 
+			VerticalStep, 
+			PageBreakColID, 
+			PageBreakStart, 
+			PageBreakStop, 
+			PageBreakStep, 
+			IntersectionType, 
+			IntersectionColID, 
+			Percentage, 
+			PercentageofPage, 
+			SuppressZeros, 
+			ThousandSeparators, 
+			OutputPreview, 
+			OutputFormat, 
+			OutputScreen, 
+			OutputPrinter, 
+			OutputPrinterName, 
+			OutputSave, 
+			OutputSaveExisting, 
+			OutputEmail, 
+			OutputEmailAddr, 
+			OutputEmailSubject, 
+			OutputEmailAttachAs, 
+			OutputFileName,
+			CrossTabType,
+			XAxisLabel,
+			XAxisSubLabel1,
+			XAxisSubLabel2,
+			XAxisSubLabel3,
+			YAxisLabel,
+			YAxisSubLabel1,
+			YAxisSubLabel2,
+			YAxisSubLabel3,
+			Description1,
+			ColorDesc1,
+			Description2,
+			ColorDesc2,
+			Description3,
+			ColorDesc3,
+			Description4,
+			ColorDesc4,
+			Description5,
+			ColorDesc5,
+			Description6,
+			ColorDesc6,
+			Description7,
+			ColorDesc7,
+			Description8,
+			ColorDesc8,
+			Description9,
+			ColorDesc9)
+		VALUES (
+			@psName,
+			@psDescription,
+			@piTableID,
+			@piSelection,
+			@piPicklistID,
+			@piFilterID,
+			@pfPrintFilter,
+			@psUserName,
+			@piHColID,
+			@psHStart,
+			@psHStop,
+			0,
+			@piVColID,
+			@psVStart,
+			@psVStop,
+			0,
+			@piPColID,
+			@psPStart,
+			@psPStop,
+			0,
+			@piIType,
+			@piIColID,
+			@pfPercentage,
+			@pfPerPage,
+			@pfSuppress,
+			@pfUse1000Separator,
+			@pfOutputPreview,
+			@piOutputFormat,
+			@pfOutputScreen,
+			@pfOutputPrinter,
+			@psOutputPrinterName,
+			@pfOutputSave,
+			@piOutputSaveExisting,
+			@pfOutputEmail,
+			@piOutputEmailAddr,
+			@psOutputEmailSubject,
+			@psOutputEmailAttachAs,
+			@psOutputFilename,
+			4, -- Nine box grid
+			@XAxisLabel,
+			@XAxisSubLabel1,
+			@XAxisSubLabel2,
+			@XAxisSubLabel3,
+			@YAxisLabel,
+			@YAxisSubLabel1,
+			@YAxisSubLabel2,
+			@YAxisSubLabel3,
+			@Description1,
+			@ColorDesc1,
+			@Description2,
+			@ColorDesc2,
+			@Description3,
+			@ColorDesc3,
+			@Description4,
+			@ColorDesc4,
+			@Description5,
+			@ColorDesc5,
+			@Description6,
+			@ColorDesc6,
+			@Description7,
+			@ColorDesc7,
+			@Description8,
+			@ColorDesc8,
+			@Description9,
+			@ColorDesc9)
+
+		SET @fIsNew = 1
+		/* Get the ID of the inserted record.*/
+		SELECT @piID = MAX(CrossTabID) FROM ASRSysCrossTab
+	END
+	ELSE
+	BEGIN
+		/* Updating an existing report. */
+		UPDATE ASRSysCrossTab SET 
+			Name = @psName,
+			Description = @psDescription,
+			TableID = @piTableID,
+			Selection = @piSelection,
+			PicklistID = @piPicklistID,
+			FilterID = @piFilterID,
+			PrintFilterHeader = @pfPrintFilter,
+			HorizontalColID = @piHColID,
+			HorizontalStart = @psHStart,
+			HorizontalStop = @psHStop,
+			VerticalColID = @piVColID,
+			VerticalStart = @psVStart,
+			VerticalStop = @psVStop,
+			PageBreakColID = @piPColID,
+			PageBreakStart = @psPStart,
+			PageBreakStop = @psPStop,
+			IntersectionType = @piIType,
+			IntersectionColID = @piIColID,
+			Percentage = @pfPercentage,
+			PercentageofPage = @pfPerPage,
+			SuppressZeros = @pfSuppress,
+			ThousandSeparators = @pfUse1000Separator,
+			OutputPreview = @pfOutputPreview,
+			OutputFormat = @piOutputFormat,
+			OutputScreen = @pfOutputScreen,
+			OutputPrinter = @pfOutputPrinter,
+			OutputPrinterName = @psOutputPrinterName,
+			OutputSave = @pfOutputSave,
+			OutputSaveExisting = @piOutputSaveExisting,
+			OutputEmail = @pfOutputEmail,
+			OutputEmailAddr = @piOutputEmailAddr,
+			OutputEmailSubject = @psOutputEmailSubject,
+			OutputEmailAttachAs = @psOutputEmailAttachAs,
+			OutputFileName = @psOutputFilename,
+			XAxisLabel = @XAxisLabel,
+			XAxisSubLabel1 = @XAxisSubLabel1,
+			XAxisSubLabel2 = @XAxisSubLabel2,
+			XAxisSubLabel3 = @XAxisSubLabel3,
+			YAxisLabel = @YAxisLabel,
+			YAxisSubLabel1 = @YAxisSubLabel1,
+			YAxisSubLabel2 = @YAxisSubLabel2,
+			YAxisSubLabel3 = @YAxisSubLabel3,
+			Description1 = @Description1,
+			ColorDesc1 = @ColorDesc1,
+			Description2 = @Description2,
+			ColorDesc2 = @ColorDesc2,
+			Description3 = @Description3,
+			ColorDesc3 = @ColorDesc3,
+			Description4 = @Description4,
+			ColorDesc4 = @ColorDesc4,
+			Description5 = @Description5,
+			ColorDesc5 = @ColorDesc5,
+			Description6 = @Description6,
+			ColorDesc6 = @ColorDesc6,
+			Description7 = @Description7,
+			ColorDesc7 = @ColorDesc7,
+			Description8 = @Description8,
+			ColorDesc8 = @ColorDesc8,
+			Description9 = @Description9,
+			ColorDesc9 = @ColorDesc9
+		WHERE CrossTabID = @piID
+	END
+
+	DELETE FROM ASRSysCrossTabAccess WHERE ID = @piID
+
+	INSERT INTO ASRSysCrossTabAccess (ID, groupName, access)
+		(SELECT @piID, sysusers.name,
+			CASE
+				WHEN (SELECT count(*)
+					FROM ASRSysGroupPermissions
+					INNER JOIN ASRSysPermissionItems ON (ASRSysGroupPermissions.itemID  = ASRSysPermissionItems.itemID
+						AND (ASRSysPermissionItems.itemKey = 'SYSTEMMANAGER'
+						OR ASRSysPermissionItems.itemKey = 'SECURITYMANAGER'))
+					INNER JOIN ASRSysPermissionCategories ON (ASRSysPermissionItems.categoryID = ASRSysPermissionCategories.categoryID
+						AND ASRSysPermissionCategories.categoryKey = 'MODULEACCESS')
+					WHERE sysusers.Name = ASRSysGroupPermissions.groupname
+						AND ASRSysGroupPermissions.permitted = 1) > 0 THEN 'RW'
+				ELSE 'HD'
+			END
+		FROM sysusers
+		WHERE sysusers.uid = sysusers.gid
+			AND sysusers.name <> 'ASRSysGroup'
+			AND sysusers.uid <> 0)
+
+	SET @sTemp = @psAccess
+	WHILE LEN(@sTemp) > 0
+	BEGIN
+		IF CHARINDEX(char(9), @sTemp) > 0
+		BEGIN
+			SET @sGroup = LEFT(@sTemp, CHARINDEX(char(9), @sTemp) - 1)
+			SET @sTemp = SUBSTRING(@sTemp, CHARINDEX(char(9), @sTemp) + 1, LEN(@sTemp) - (CHARINDEX(char(9), @sTemp)))
+	
+			SET @sAccess = LEFT(@sTemp, CHARINDEX(char(9), @sTemp) - 1)
+			SET @sTemp = SUBSTRING(@sTemp, CHARINDEX(char(9), @sTemp) + 1, LEN(@sTemp) - (CHARINDEX(char(9), @sTemp)))
+	
+			IF EXISTS (SELECT * FROM ASRSysCrossTabAccess
+				WHERE ID = @piID
+				AND groupName = @sGroup
+				AND access <> 'RW')
+				UPDATE ASRSysCrossTabAccess
+					SET access = @sAccess
+					WHERE ID = @piID
+						AND groupName = @sGroup
+		END
+	END
+
+	IF (@fIsNew = 1)
+	BEGIN
+		/* Update the util access log. */
+		INSERT INTO ASRSysUtilAccessLog 
+			(type, utilID, createdBy, createdDate, createdHost, savedBy, savedDate, savedHost)
+		VALUES (35, @piID, system_user, getdate(), host_name(), system_user, getdate(), host_name())
+	END
+	ELSE
+	BEGIN
+		/* Update the last saved log. */
+		/* Is there an entry in the log already? */
+		SELECT @iCount = COUNT(*) 
+		FROM ASRSysUtilAccessLog
+		WHERE utilID = @piID
+			AND type = 35
+
+		IF @iCount = 0 
+		BEGIN
+			INSERT INTO ASRSysUtilAccessLog
+ 				(type, utilID, savedBy, savedDate, savedHost)
+			VALUES (35, @piID, system_user, getdate(), host_name())
+		END
+		ELSE
+		BEGIN
+			UPDATE ASRSysUtilAccessLog 
+			SET savedBy = system_user,
+				savedDate = getdate(), 
+				savedHost = host_name() 
+			WHERE utilID = @piID
+				AND type = 35
+		END
+	END
+	
+	IF LEN(@psJobsToHide) > 0 
+	BEGIN
+		SET @psJobsToHideGroups = '''' + REPLACE(SUBSTRING(LEFT(@psJobsToHideGroups, LEN(@psJobsToHideGroups) - 1), 2, LEN(@psJobsToHideGroups)-1), char(9), ''',''') + ''''
+		SET @sSQL = 'DELETE FROM ASRSysBatchJobAccess 
+			WHERE ID IN (' + @psJobsToHide + ')
+				AND groupName IN (' + @psJobsToHideGroups + ')'
+		EXEC sp_executesql @sSQL
+
+		SET @sSQL = 'INSERT INTO ASRSysBatchJobAccess
+			(ID, groupName, access)
+			(SELECT ASRSysBatchJobName.ID, 
+				sysusers.name,
+				CASE
+					WHEN (SELECT count(*)
+						FROM ASRSysGroupPermissions
+						INNER JOIN ASRSysPermissionItems ON (ASRSysGroupPermissions.itemID  = ASRSysPermissionItems.itemID
+							AND (ASRSysPermissionItems.itemKey = ''SYSTEMMANAGER''
+							OR ASRSysPermissionItems.itemKey = ''SECURITYMANAGER''))
+						INNER JOIN ASRSysPermissionCategories ON (ASRSysPermissionItems.categoryID = ASRSysPermissionCategories.categoryID
+							AND ASRSysPermissionCategories.categoryKey = ''MODULEACCESS'')
+						WHERE sysusers.Name = ASRSysGroupPermissions.groupname
+							AND ASRSysGroupPermissions.permitted = 1) > 0 THEN ''RW''
+					ELSE ''HD''
+				END
+			FROM sysusers,
+				ASRSysBatchJobName
+			WHERE sysusers.uid = sysusers.gid
+				AND sysusers.uid <> 0
+				AND sysusers.name IN (' + @psJobsToHideGroups + ')
+				AND ASRSysBatchJobName.ID IN (' + @psJobsToHide + '))'
+		EXEC sp_executesql @sSQL
+	END
+	
+END
+
+GO
+
+IF EXISTS (SELECT * FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spASRIntGetNineBoxGridDefinition]') AND xtype in (N'P'))
+	DROP PROCEDURE [dbo].[spASRIntGetNineBoxGridDefinition];
+GO
+
+CREATE PROCEDURE [dbo].[spASRIntGetNineBoxGridDefinition] (
+		@piReportID 			integer, 
+	@psCurrentUser			varchar(255),
+	@psAction				varchar(255))
+AS
+BEGIN
+
+	SET NOCOUNT ON;
+
+	DECLARE @psErrorMsg				varchar(MAX) = '',
+			@psReportName			varchar(255) = '',
+			@psReportOwner			varchar(255) = '',
+			@psReportDesc			varchar(MAX) = '',
+			@piBaseTableID			integer = 0,
+			@piSelection			integer = 0,
+			@piPicklistID			integer = 0,
+			@psPicklistName			varchar(255) = '',
+			@pfPicklistHidden		bit,
+			@piFilterID				integer = 0,
+			@psFilterName			varchar(255) = '',
+			@pfFilterHidden			bit,
+			@pfPrintFilterHeader	bit,
+			@HColID					integer = 0,
+			@HStart					varchar(20) = '',
+			@HStop					varchar(20) = '',
+			@HStep					varchar(20) = '',
+			@VColID					integer = 0,
+			@VStart					varchar(20) = '',
+			@VStop					varchar(20) = '',
+			@VStep					varchar(20) = '',
+			@PColID					integer = 0,
+			@PStart					varchar(20) = '',
+			@PStop					varchar(20) = '',
+			@PStep					varchar(20) = '',
+			@IType					integer = 0,
+			@IColID					integer = 0,
+			@Percentage				bit,
+			@PerPage				bit,
+			@Suppress				bit,
+			@Thousand				bit,
+			@pfOutputPreview		bit,
+			@piOutputFormat			integer = 0,
+			@pfOutputScreen			bit,
+			@pfOutputPrinter		bit,
+			@psOutputPrinterName	varchar(MAX) = '',
+			@pfOutputSave			bit,
+			@piOutputSaveExisting	integer = 0,
+			@pfOutputEmail			bit,
+			@piOutputEmailAddr		integer = 0,
+			@psOutputEmailName		varchar(MAX) = '',
+			@psOutputEmailSubject	varchar(MAX) = '',
+			@psOutputEmailAttachAs	varchar(MAX) = '',
+			@psOutputFilename		varchar(MAX) = '',
+ 			@piTimestamp			integer	= 0,
+			@XAxisLabel varchar(255) = '',
+			@XAxisSubLabel1 varchar(255) = '',
+			@XAxisSubLabel2 varchar(255) = '',
+			@XAxisSubLabel3 varchar(255) = '',
+			@YAxisLabel varchar(255) = '',
+			@YAxisSubLabel1 varchar(255) = '',
+			@YAxisSubLabel2 varchar(255) = '',
+			@YAxisSubLabel3 varchar(255) = '',
+			@Description1 varchar(255) = '',
+			@ColorDesc1 varchar(6) = '',
+			@Description2 varchar(255) = '',
+			@ColorDesc2 varchar(6) = '',
+			@Description3 varchar(255) = '',
+			@ColorDesc3 varchar(6) = '',
+			@Description4 varchar(255) = '',
+			@ColorDesc4 varchar(6) = '',
+			@Description5 varchar(255) = '',
+			@ColorDesc5 varchar(6) = '',
+			@Description6 varchar(255) = '',
+			@ColorDesc6 varchar(6) = '',
+			@Description7 varchar(255) = '',
+			@ColorDesc7 varchar(6) = '',
+			@Description8 varchar(255) = '',
+			@ColorDesc8 varchar(6) = '',
+			@Description9 varchar(255) = '',
+			@ColorDesc9 varchar(6);
+
+
+	DECLARE	@iCount			integer,
+			@sTempHidden	varchar(MAX),
+			@sAccess 		varchar(MAX);
+
+
+	/* Check the report exists. */
+	SELECT @iCount = COUNT(*)
+	FROM ASRSysCrossTab
+	WHERE CrossTabID = @piReportID
+
+	IF @iCount = 0
+	BEGIN
+		SET @psErrorMsg = '9-Box Grid has been deleted by another user.'
+		RETURN
+	END
+
+	SELECT @psReportName = name, @psReportDesc	 = description, @psReportOwner = userName,
+		@piBaseTableID = TableID, @piSelection = Selection, @piPicklistID = PicklistID,
+		@piFilterID = FilterID,	@pfPrintFilterHeader = PrintFilterHeader, @psReportOwner = userName,
+		@HColID = HorizontalColID, @HStart = HorizontalStart, @HStop = HorizontalStop, @HStep = HorizontalStep,
+		@VColID = VerticalColID, @VStart = VerticalStart, @VStop = VerticalStop, @VStep = VerticalStep,
+		@PColID = PageBreakColID, @PStart = PageBreakStart,	@PStop = PageBreakStop,	@PStep = PageBreakStep,
+		@IType = IntersectionType, @IColID = IntersectionColID,	@Percentage = Percentage, @PerPage = PercentageofPage,
+		@Suppress = SuppressZeros,@Thousand = ThousandSeparators,
+		@pfOutputPreview = OutputPreview, @piOutputFormat = OutputFormat, @pfOutputScreen = OutputScreen,
+		@pfOutputPrinter = OutputPrinter, @psOutputPrinterName = OutputPrinterName,
+		@pfOutputSave = OutputSave,	@piOutputSaveExisting = OutputSaveExisting,
+		@pfOutputEmail = OutputEmail, @piOutputEmailAddr = OutputEmailAddr,
+		@psOutputEmailSubject = ISNULL(OutputEmailSubject,''),
+		@psOutputEmailAttachAs = ISNULL(OutputEmailAttachAs,''),
+		@psOutputFilename = ISNULL(OutputFilename,''),
+		@piTimestamp = convert(integer, timestamp),
+		@XAxisLabel = XAxisLabel,
+		@XAxisSubLabel1 = XAxisSubLabel1,
+		@XAxisSubLabel2 = XAxisSubLabel2,
+		@XAxisSubLabel3 = XAxisSubLabel3,
+		@YAxisLabel = YAxisLabel,
+		@YAxisSubLabel1 = YAxisSubLabel1,
+		@YAxisSubLabel2 = YAxisSubLabel2,
+		@YAxisSubLabel3 = YAxisSubLabel3,
+		@Description1 = Description1,
+		@ColorDesc1 = ColorDesc1,
+		@Description2 = Description2,
+		@ColorDesc2 = ColorDesc2,
+		@Description3 = Description3,
+		@ColorDesc3 = ColorDesc3,
+		@Description4 = Description4,
+		@ColorDesc4 = ColorDesc4,
+		@Description5 = Description5,
+		@ColorDesc5 = ColorDesc5,
+		@Description6 = Description6,
+		@ColorDesc6 = ColorDesc6,
+		@Description7 = Description7,
+		@ColorDesc7 = ColorDesc7,
+		@Description8 = Description8,
+		@ColorDesc8 = ColorDesc8,
+		@Description9 = Description9,
+		@ColorDesc9 = ColorDesc9
+	FROM ASRSysCrossTab
+	WHERE CrossTabID = @piReportID;
+
+	/* Check the current user can view the report. */
+	EXEC spASRIntCurrentUserAccess 	1, @piReportID,	@sAccess OUTPUT;
+
+	IF (@sAccess = 'HD') AND (@psReportOwner <> @psCurrentUser) 
+		SET @psErrorMsg = '9-Box Grid has been made hidden by another user.';
+
+	IF (@psAction <> 'view') AND (@psAction <> 'copy') AND (@sAccess = 'RO') AND (@psReportOwner <> @psCurrentUser) 
+		SET @psErrorMsg = '9-Box Grid has been made read only by another user.';
+
+	IF @psAction = 'copy'
+	BEGIN
+		SET @psReportName = left('copy of ' + @psReportName, 50);
+		SET @psReportOwner = @psCurrentUser;
+	END
+
+	IF @piPicklistID > 0 
+	BEGIN
+		SELECT @psPicklistName = name,
+			@sTempHidden = access
+		FROM ASRSysPicklistName 
+		WHERE picklistID = @piPicklistID;
+
+		IF UPPER(@sTempHidden) = 'HD'
+		BEGIN
+			SET @pfPicklistHidden = 1;
+		END
+	END
+
+	IF @piFilterID > 0 
+	BEGIN
+		SELECT @psFilterName = name,
+			@sTempHidden = access
+		FROM ASRSysExpressions 
+		WHERE exprID = @piFilterID;
+
+		IF UPPER(@sTempHidden) = 'HD'
+		BEGIN
+			SET @pfFilterHidden = 1;
+		END
+	END
+
+	IF @piOutputEmailAddr > 0
+	BEGIN
+		SELECT @psOutputEmailName = name,
+			@sTempHidden = access
+		FROM ASRSysEmailGroupName
+		WHERE EmailGroupID = @piOutputEmailAddr;
+	END
+	ELSE
+	BEGIN
+		SET @piOutputEmailAddr = 0;
+		SET @psOutputEmailName = '';
+	END
+
+	SELECT @psErrorMsg AS ErrorMsg, @psReportName AS Name, @psReportOwner AS [Owner], @psReportDesc AS [Description]
+		, @piBaseTableID AS [BaseTableID], @piSelection AS SelectionType
+		, @piPicklistID AS PicklistID, @psPicklistName AS PicklistName, @pfPicklistHidden AS [IsPicklistHidden]
+		, @piFilterID AS FilterID, @psFilterName AS [FilterName], @pfFilterHidden AS [IsFilterHidden]
+		, @pfPrintFilterHeader AS [PrintFilterHeader]
+		, @HColID AS HorizontalID, @HStart AS HorizontalStart, @HStop AS HorizontalStop, @HStep AS HorizontalIncrement
+		, @VColID AS VerticalID, @VStart AS VerticalStart, @VStop AS VerticalStop, @VStep AS VerticalIncrement
+		, @PColID AS PageBreakID, @PStart AS PageBreakStart, @PStop AS PageBreakStop, @PStep AS PageBreakIncrement
+		, @IType AS IntersectionType, @IColID AS IntersectionID
+		, @Percentage AS PercentageOfType, @PerPage AS PercentageOfPage
+		, @Suppress	AS SuppressZeros, @Thousand AS [UseThousandSeparators]
+		, @pfOutputPreview AS IsPreview, @piOutputFormat AS [Format],	@pfOutputScreen AS [ToScreen]
+		, @pfOutputPrinter AS [ToPrinter], @psOutputPrinterName	AS [PrinterName]
+		, @pfOutputSave AS [SaveToFile], @piOutputSaveExisting AS [SaveExisting]
+		, @pfOutputEmail AS [SendToEmail], @piOutputEmailAddr AS [EmailGroupID], @psOutputEmailName AS [EmailGroupName]
+		, @psOutputEmailSubject AS [EmailSubject], @psOutputEmailAttachAs AS [EmailAttachmentName]
+		, @psOutputFilename AS [FileName], @piTimestamp AS [Timestamp],
+		CASE WHEN @pfPicklistHidden = 1 OR @pfFilterHidden = 1 THEN 'HD' ELSE '' END AS [BaseViewAccess],
+		@XAxisLabel AS XAxisLabel,
+		@XAxisSubLabel1 AS XAxisSubLabel1,
+		@XAxisSubLabel2 AS XAxisSubLabel2,
+		@XAxisSubLabel3 AS XAxisSubLabel3,
+		@YAxisLabel AS YAxisLabel,
+		@YAxisSubLabel1 AS YAxisSubLabel1,
+		@YAxisSubLabel2 AS YAxisSubLabel2,
+		@YAxisSubLabel3 AS YAxisSubLabel3,
+		@Description1 AS Description1,
+		@ColorDesc1 AS ColorDesc1,
+		@Description2 AS Description2,
+		@ColorDesc2 AS ColorDesc2,
+		@Description3 AS Description3,
+		@ColorDesc3 AS ColorDesc3,
+		@Description4 AS Description4,
+		@ColorDesc4 AS ColorDesc4,
+		@Description5 AS Description5,
+		@ColorDesc5 AS ColorDesc5,
+		@Description6 AS Description6,
+		@ColorDesc6 AS ColorDesc6,
+		@Description7 AS Description7,
+		@ColorDesc7 AS ColorDesc7,
+		@Description8 AS Description8,
+		@ColorDesc8 AS ColorDesc8,
+		@Description9 AS Description9,
+		@ColorDesc9 AS ColorDesc9;
+END
+
+GO
+
 IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[sp_ASRIntDefUsage]') AND xtype in (N'P'))
 	DROP PROCEDURE [dbo].[sp_ASRIntDefUsage];
 GO

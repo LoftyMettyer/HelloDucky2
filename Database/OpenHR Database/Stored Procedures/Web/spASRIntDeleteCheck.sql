@@ -41,7 +41,7 @@ BEGIN
 		SET @fNewAccess = 1;
   END
 
-	IF @piUtilityType = 1 /* Cross Tab */
+	IF @piUtilityType = 1 OR @piUtilityType = 35 /* Cross Tab or 9-Box Grid*/
 	BEGIN
 		SET @sTableName = 'ASRSysCrossTab';
 		SET @sAccessTableName = 'ASRSysCrossTabAccess';

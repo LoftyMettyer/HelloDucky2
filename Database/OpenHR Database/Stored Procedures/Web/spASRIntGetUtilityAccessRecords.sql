@@ -23,9 +23,9 @@ BEGIN
 		SET @sKey = 'dfltaccess CalendarReports';
 	END
 
-	IF @piUtilityType = 1
+	IF @piUtilityType = 1 OR @piUtilityType = 35
 	BEGIN
-		/* Cross Tabs */
+		/* Cross Tabs or 9-box Grid*/
 		SET @sAccessTable = 'ASRSysCrossTabAccess';
 		SET @sKey = 'dfltaccess CrossTabs';
 	END

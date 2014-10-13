@@ -17,9 +17,9 @@ BEGIN
 		DELETE FROM ASRSysBatchJobAccess WHERE ID = @piUtilID;
 	END
 
-	IF @piUtilType = 1
+	IF @piUtilType = 1 OR @piUtilType = 35
 	BEGIN
-		/* Cross Tabs */
+		/* Cross Tabs or 9-Box Grid*/
 		DELETE FROM ASRSysCrossTab WHERE CrossTabID = @piUtilID;
 		DELETE FROM ASRSysCrossTabAccess WHERE ID = @piUtilID;
 	END

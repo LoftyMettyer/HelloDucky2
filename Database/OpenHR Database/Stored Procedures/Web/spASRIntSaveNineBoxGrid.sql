@@ -1,4 +1,4 @@
-CREATE PROCEDURE [dbo].[spASRIntSaveCrossTab] (
+﻿CREATE PROCEDURE [dbo].[spASRIntSaveNineBoxGrid] (
 	@psName				varchar(255),
 	@psDescription		varchar(MAX),
 	@piTableID			integer,
@@ -10,15 +10,12 @@ CREATE PROCEDURE [dbo].[spASRIntSaveCrossTab] (
 	@piHColID			integer,
 	@psHStart			varchar(100),
 	@psHStop			varchar(100),
-	@psHStep			varchar(100),
 	@piVColID			integer,
 	@psVStart			varchar(100),
 	@psVStop			varchar(100),
-	@psVStep			varchar(100),
 	@piPColID			integer,
 	@psPStart			varchar(100),
 	@psPStop			varchar(100),
-	@psPStep			varchar(100),
 	@piIType			integer,
 	@piIColID			integer,
 	@pfPercentage		bit,
@@ -40,6 +37,32 @@ CREATE PROCEDURE [dbo].[spASRIntSaveCrossTab] (
 	@psAccess			varchar(MAX),
 	@psJobsToHide		varchar(MAX),
 	@psJobsToHideGroups	varchar(MAX),
+	@XAxisLabel varchar(255),
+	@XAxisSubLabel1 varchar(255),
+	@XAxisSubLabel2 varchar(255),
+	@XAxisSubLabel3 varchar(255),
+	@YAxisLabel varchar(255),
+	@YAxisSubLabel1 varchar(255),
+	@YAxisSubLabel2 varchar(255),
+	@YAxisSubLabel3 varchar(255),
+	@Description1 varchar(255),
+	@ColorDesc1 varchar(6),
+	@Description2 varchar(255),
+	@ColorDesc2 varchar(6),
+	@Description3 varchar(255),
+	@ColorDesc3 varchar(6),
+	@Description4 varchar(255),
+	@ColorDesc4 varchar(6),
+	@Description5 varchar(255),
+	@ColorDesc5 varchar(6),
+	@Description6 varchar(255),
+	@ColorDesc6 varchar(6),
+	@Description7 varchar(255),
+	@ColorDesc7 varchar(6),
+	@Description8 varchar(255),
+	@ColorDesc8 varchar(6),
+	@Description9 varchar(255),
+	@ColorDesc9 varchar(6),
 	@piID				integer	OUTPUT
 )
 AS
@@ -104,7 +127,33 @@ BEGIN
 			OutputEmailSubject, 
 			OutputEmailAttachAs, 
 			OutputFileName,
-			CrossTabType)
+			CrossTabType,
+			XAxisLabel,
+			XAxisSubLabel1,
+			XAxisSubLabel2,
+			XAxisSubLabel3,
+			YAxisLabel,
+			YAxisSubLabel1,
+			YAxisSubLabel2,
+			YAxisSubLabel3,
+			Description1,
+			ColorDesc1,
+			Description2,
+			ColorDesc2,
+			Description3,
+			ColorDesc3,
+			Description4,
+			ColorDesc4,
+			Description5,
+			ColorDesc5,
+			Description6,
+			ColorDesc6,
+			Description7,
+			ColorDesc7,
+			Description8,
+			ColorDesc8,
+			Description9,
+			ColorDesc9)
 		VALUES (
 			@psName,
 			@psDescription,
@@ -117,15 +166,15 @@ BEGIN
 			@piHColID,
 			@psHStart,
 			@psHStop,
-			@psHStep,
+			0,
 			@piVColID,
 			@psVStart,
 			@psVStop,
-			@psVStep,
+			0,
 			@piPColID,
 			@psPStart,
 			@psPStop,
-			@psPStep,
+			0,
 			@piIType,
 			@piIColID,
 			@pfPercentage,
@@ -144,8 +193,33 @@ BEGIN
 			@psOutputEmailSubject,
 			@psOutputEmailAttachAs,
 			@psOutputFilename,
-			0 -- Cross tab
-		)
+			4, -- Nine box grid
+			@XAxisLabel,
+			@XAxisSubLabel1,
+			@XAxisSubLabel2,
+			@XAxisSubLabel3,
+			@YAxisLabel,
+			@YAxisSubLabel1,
+			@YAxisSubLabel2,
+			@YAxisSubLabel3,
+			@Description1,
+			@ColorDesc1,
+			@Description2,
+			@ColorDesc2,
+			@Description3,
+			@ColorDesc3,
+			@Description4,
+			@ColorDesc4,
+			@Description5,
+			@ColorDesc5,
+			@Description6,
+			@ColorDesc6,
+			@Description7,
+			@ColorDesc7,
+			@Description8,
+			@ColorDesc8,
+			@Description9,
+			@ColorDesc9)
 
 		SET @fIsNew = 1
 		/* Get the ID of the inserted record.*/
@@ -165,15 +239,12 @@ BEGIN
 			HorizontalColID = @piHColID,
 			HorizontalStart = @psHStart,
 			HorizontalStop = @psHStop,
-			HorizontalStep = @psHStep,	
 			VerticalColID = @piVColID,
 			VerticalStart = @psVStart,
 			VerticalStop = @psVStop,
-			VerticalStep = @psVStep,	
 			PageBreakColID = @piPColID,
 			PageBreakStart = @psPStart,
 			PageBreakStop = @psPStop,
-			PageBreakStep = @psPStep,	
 			IntersectionType = @piIType,
 			IntersectionColID = @piIColID,
 			Percentage = @pfPercentage,
@@ -191,7 +262,33 @@ BEGIN
 			OutputEmailAddr = @piOutputEmailAddr,
 			OutputEmailSubject = @psOutputEmailSubject,
 			OutputEmailAttachAs = @psOutputEmailAttachAs,
-			OutputFileName = @psOutputFilename
+			OutputFileName = @psOutputFilename,
+			XAxisLabel = @XAxisLabel,
+			XAxisSubLabel1 = @XAxisSubLabel1,
+			XAxisSubLabel2 = @XAxisSubLabel2,
+			XAxisSubLabel3 = @XAxisSubLabel3,
+			YAxisLabel = @YAxisLabel,
+			YAxisSubLabel1 = @YAxisSubLabel1,
+			YAxisSubLabel2 = @YAxisSubLabel2,
+			YAxisSubLabel3 = @YAxisSubLabel3,
+			Description1 = @Description1,
+			ColorDesc1 = @ColorDesc1,
+			Description2 = @Description2,
+			ColorDesc2 = @ColorDesc2,
+			Description3 = @Description3,
+			ColorDesc3 = @ColorDesc3,
+			Description4 = @Description4,
+			ColorDesc4 = @ColorDesc4,
+			Description5 = @Description5,
+			ColorDesc5 = @ColorDesc5,
+			Description6 = @Description6,
+			ColorDesc6 = @ColorDesc6,
+			Description7 = @Description7,
+			ColorDesc7 = @ColorDesc7,
+			Description8 = @Description8,
+			ColorDesc8 = @ColorDesc8,
+			Description9 = @Description9,
+			ColorDesc9 = @ColorDesc9
 		WHERE CrossTabID = @piID
 	END
 
@@ -243,7 +340,7 @@ BEGIN
 		/* Update the util access log. */
 		INSERT INTO ASRSysUtilAccessLog 
 			(type, utilID, createdBy, createdDate, createdHost, savedBy, savedDate, savedHost)
-		VALUES (1, @piID, system_user, getdate(), host_name(), system_user, getdate(), host_name())
+		VALUES (35, @piID, system_user, getdate(), host_name(), system_user, getdate(), host_name())
 	END
 	ELSE
 	BEGIN
@@ -252,13 +349,13 @@ BEGIN
 		SELECT @iCount = COUNT(*) 
 		FROM ASRSysUtilAccessLog
 		WHERE utilID = @piID
-			AND type = 1
+			AND type = 35
 
 		IF @iCount = 0 
 		BEGIN
 			INSERT INTO ASRSysUtilAccessLog
  				(type, utilID, savedBy, savedDate, savedHost)
-			VALUES (1, @piID, system_user, getdate(), host_name())
+			VALUES (35, @piID, system_user, getdate(), host_name())
 		END
 		ELSE
 		BEGIN
@@ -267,7 +364,7 @@ BEGIN
 				savedDate = getdate(), 
 				savedHost = host_name() 
 			WHERE utilID = @piID
-				AND type = 1
+				AND type = 35
 		END
 	END
 	
