@@ -80,6 +80,7 @@ Public Property Let LicenceKey(ByVal strNewValue As String)
   Dim strCheckSum As String
   Dim lngRandomDigit As Long
   Dim strGeneratedDay As String
+  Dim lngGeneratedDay As Long
 
   '1st Generation: AAAAAAAAAAAAAAA
   '2nd Generation: 1231-2312-3123-1233
@@ -128,7 +129,8 @@ Public Property Let LicenceKey(ByVal strNewValue As String)
 
     ' Validate checksum
     If ValidateCreationDate Then
-      IsValid = (ConvertStringToNumber2(strRandomDigit & strGeneratedDay) = DayNumber(Now))
+      lngGeneratedDay = ConvertStringToNumber2(strRandomDigit & strGeneratedDay)
+      IsValid = (lngGeneratedDay >= DayNumber(Now) - 6) And (lngGeneratedDay <= DayNumber(Now))
     Else
       IsValid = True
     End If
