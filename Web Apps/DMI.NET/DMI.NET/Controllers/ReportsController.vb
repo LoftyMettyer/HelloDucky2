@@ -67,6 +67,17 @@ Namespace Controllers
 		End Function
 
 		<HttpGet>
+		Function util_def_9boxgrid() As ActionResult
+
+			Dim iReportID As Integer = CInt(Session("utilid"))
+			Dim iAction = ActionToUtilityAction(Session("action").ToString)
+			Dim objModel = objReportRepository.LoadNineBoxGrid(iReportID, iAction)
+
+			Return View(objModel)
+
+		End Function
+
+		<HttpGet>
 		Function util_def_calendarreport() As ActionResult
 
 			Dim iReportID As Integer = CInt(Session("utilid"))
@@ -187,6 +198,32 @@ Namespace Controllers
 			If objModel.ValidityStatus = ReportValidationStatus.ServerCheckComplete Then
 				objReportRepository.SaveReportDefinition(objModel)
 				Session("reaction") = "CROSSTABS"
+				Session("utilid") = objModel.ID
+				Return RedirectToAction("confirmok", "home")
+
+			Else
+
+				If ModelState.IsValid Then
+					objSaveWarning = objReportRepository.ServerValidate(objModel)
+				Else
+					objSaveWarning = ModelState.ToWebMessage
+				End If
+
+				Return Json(objSaveWarning, JsonRequestBehavior.AllowGet)
+
+			End If
+
+		End Function
+
+		<HttpPost, ValidateInput(False)>
+		Function util_def_9boxgrid(objModel As NineBoxGridModel) As ActionResult
+
+			Dim objSaveWarning As SaveWarningModel
+			objModel.Dependencies = objReportRepository.RetrieveDependencies(objModel.ID, UtilityType.utlNineBoxGrid)
+
+			If objModel.ValidityStatus = ReportValidationStatus.ServerCheckComplete Then
+				objReportRepository.SaveReportDefinition(objModel)
+				Session("reaction") = "NINEBOX"
 				Session("utilid") = objModel.ID
 				Return RedirectToAction("confirmok", "home")
 

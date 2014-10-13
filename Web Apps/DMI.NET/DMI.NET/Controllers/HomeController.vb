@@ -837,7 +837,7 @@ Namespace Controllers
 						'Case 25	' WORKFLOW 
 						'Return RedirectToAction("util_run_workflow")
 					Case 35	' NINE BOX
-						Return RedirectToAction("util_def_crosstab", "reports")
+						Return RedirectToAction("util_def_9boxgrid", "reports")
 				End Select
 
 			ElseIf Session("action") = "delete" Then

@@ -17,6 +17,7 @@ Namespace Repository
 		Private ReadOnly _crosstabs As New Collection(Of CrossTabModel)
 		Private ReadOnly _calendarreports As New Collection(Of CalendarReportModel)
 		Private ReadOnly _mailmerges As New Collection(Of MailMergeModel)
+		Private ReadOnly _nineboxgrids As New Collection(Of NineBoxGridModel)
 
 		Private ReadOnly Property _username As String
 			Get
@@ -274,6 +275,100 @@ Namespace Repository
 
 		End Function
 
+		Public Function LoadNineBoxGrid(ID As Integer, action As UtilityActionType) As NineBoxGridModel
+
+			Dim objModel As New NineBoxGridModel
+
+			Try
+				objModel.Attach(_objSessionInfo)
+				objModel.ActionType = action
+
+				If action = UtilityActionType.New Then
+					objModel.BaseTableID = SettingsConfig.Personnel_EmpTableID
+					objModel.Owner = _username
+					objModel.Output.ToScreen = True
+				Else
+					objModel.ID = ID
+
+					Dim dtDefinition = _objDataAccess.GetFromSP("spASRIntGetNineBoxGridDefinition", _
+							New SqlParameter("piReportID", SqlDbType.Int) With {.Value = objModel.ID}, _
+							New SqlParameter("psCurrentUser", SqlDbType.VarChar, 255) With {.Value = _username}, _
+							New SqlParameter("psAction", SqlDbType.VarChar, 255) With {.Value = action})
+
+					PopulateDefintion(objModel, dtDefinition)
+
+					If dtDefinition.Rows.Count = 1 Then
+						Dim objRow As DataRow = dtDefinition.Rows(0)
+
+						objModel.HorizontalID = CInt(objRow("HorizontalID"))
+						objModel.HorizontalDataType = _objSessionInfo.GetColumn(objModel.HorizontalID).DataType
+						objModel.HorizontalStart = CDbl(objRow("HorizontalStart"))
+						objModel.HorizontalStop = CDbl(objRow("HorizontalStop"))
+
+						objModel.VerticalID = CInt(objRow("VerticalID"))
+						objModel.VerticalDataType = _objSessionInfo.GetColumn(objModel.VerticalID).DataType
+						objModel.VerticalStart = CDbl(objRow("VerticalStart"))
+						objModel.VerticalStop = CDbl(objRow("VerticalStop"))
+
+						objModel.PageBreakID = CInt(objRow("PageBreakID"))
+						objModel.PageBreakDataType = _objSessionInfo.GetColumn(objModel.PageBreakID).DataType
+
+						objModel.PercentageOfType = CBool(objRow("PercentageOfType"))
+						objModel.PercentageOfPage = CBool(objRow("PercentageOfPage"))
+						objModel.SuppressZeros = CBool(objRow("SuppressZeros"))
+						objModel.UseThousandSeparators = CBool(objRow("UseThousandSeparators"))
+
+						objModel.XAxisLabel = objRow("XAxisLabel").ToString()
+						objModel.XAxisSubLabel1 = objRow("XAxisSubLabel1").ToString()
+						objModel.XAxisSubLabel2 = objRow("XAxisSubLabel2").ToString()
+						objModel.XAxisSubLabel3 = objRow("XAxisSubLabel3").ToString()
+						objModel.YAxisLabel = objRow("YAxisLabel").ToString()
+						objModel.YAxisSubLabel1 = objRow("YAxisSubLabel1").ToString()
+						objModel.YAxisSubLabel2 = objRow("YAxisSubLabel2").ToString()
+						objModel.YAxisSubLabel3 = objRow("YAxisSubLabel3").ToString()
+						objModel.Description1 = objRow("Description1").ToString()
+						objModel.ColorDesc1 = objRow("ColorDesc1").ToString()
+						objModel.Description2 = objRow("Description2").ToString()
+						objModel.ColorDesc2 = objRow("ColorDesc2").ToString()
+						objModel.Description3 = objRow("Description3").ToString()
+						objModel.ColorDesc3 = objRow("ColorDesc3").ToString()
+						objModel.Description4 = objRow("Description4").ToString()
+						objModel.ColorDesc4 = objRow("ColorDesc4").ToString()
+						objModel.Description5 = objRow("Description5").ToString()
+						objModel.ColorDesc5 = objRow("ColorDesc5").ToString()
+						objModel.Description6 = objRow("Description6").ToString()
+						objModel.ColorDesc6 = objRow("ColorDesc6").ToString()
+						objModel.Description7 = objRow("Description7").ToString()
+						objModel.ColorDesc7 = objRow("ColorDesc7").ToString()
+						objModel.Description8 = objRow("Description8").ToString()
+						objModel.ColorDesc8 = objRow("ColorDesc8").ToString()
+						objModel.Description9 = objRow("Description9").ToString()
+						objModel.ColorDesc9 = objRow("ColorDesc9").ToString()
+					End If
+
+					' Output Tab
+					PopulateOutput(objModel.ReportType, objModel.Output, dtDefinition)
+
+				End If
+
+				objModel.AvailableColumns = GetColumnsForTable(objModel.BaseTableID)
+				objModel.GroupAccess = GetUtilityAccess(objModel, action)
+				objModel.IsReadOnly = (action = UtilityActionType.View)
+				objModel.ID = If(action = UtilityActionType.Copy, 0, objModel.ID)
+				objModel.Owner = If(action = UtilityActionType.Copy, _username, objModel.Owner)
+
+				_nineboxgrids.Remove(objModel.ID)
+				_nineboxgrids.Add(objModel)
+
+			Catch ex As Exception
+				Throw
+
+			End Try
+
+			Return objModel
+
+		End Function
+
 		Public Function LoadCalendarReport(ID As Integer, action As UtilityActionType) As CalendarReportModel
 
 			Dim objModel As New CalendarReportModel
@@ -516,6 +611,92 @@ Namespace Repository
 						prmID)
 
 				_crosstabs.Remove(objModel.ID)
+				objModel.ID = CInt(prmID.Value)
+
+			Catch
+				Throw
+
+			End Try
+
+			Return True
+		End Function
+
+		Public Function SaveReportDefinition(objModel As NineBoxGridModel) As Boolean
+
+			Try
+
+				Dim prmID = New SqlParameter("piId", SqlDbType.Int) With {.Direction = ParameterDirection.InputOutput, .Value = objModel.ID}
+
+				Dim sAccess As String = UtilityAccessAsString(objModel.GroupAccess)
+
+				_objDataAccess.ExecuteSP("spASRIntSaveNineBoxGrid", _
+						New SqlParameter("psName", SqlDbType.VarChar, 255) With {.Value = objModel.Name}, _
+						New SqlParameter("psDescription", SqlDbType.VarChar, -1) With {.Value = objModel.Description}, _
+						New SqlParameter("piTableID", SqlDbType.Int) With {.Value = objModel.BaseTableID}, _
+						New SqlParameter("piSelection", SqlDbType.Int) With {.Value = objModel.SelectionType}, _
+						New SqlParameter("piPicklistID", SqlDbType.Int) With {.Value = objModel.PicklistID}, _
+						New SqlParameter("piFilterID", SqlDbType.Int) With {.Value = objModel.FilterID}, _
+						New SqlParameter("pfPrintFilter", SqlDbType.Bit) With {.Value = objModel.DisplayTitleInReportHeader}, _
+						New SqlParameter("psUserName", SqlDbType.VarChar, 255) With {.Value = objModel.Owner}, _
+						New SqlParameter("piHColID", SqlDbType.Int) With {.Value = objModel.HorizontalID}, _
+						New SqlParameter("psHStart", SqlDbType.VarChar, 100) With {.Value = objModel.HorizontalStart}, _
+						New SqlParameter("psHStop", SqlDbType.VarChar, 100) With {.Value = objModel.HorizontalStop}, _
+						New SqlParameter("piVColID", SqlDbType.Int) With {.Value = objModel.VerticalID}, _
+						New SqlParameter("psVStart", SqlDbType.VarChar, 100) With {.Value = objModel.VerticalStart}, _
+						New SqlParameter("psVStop", SqlDbType.VarChar, 100) With {.Value = objModel.VerticalStop}, _
+						New SqlParameter("piPColID", SqlDbType.Int) With {.Value = objModel.PageBreakID}, _
+						New SqlParameter("psPStart", SqlDbType.VarChar, 100) With {.Value = objModel.PageBreakStart}, _
+						New SqlParameter("psPStop", SqlDbType.VarChar, 100) With {.Value = objModel.PageBreakStop}, _
+						New SqlParameter("piIType", SqlDbType.Int) With {.Value = objModel.IntersectionType}, _
+						New SqlParameter("piIColID", SqlDbType.Int) With {.Value = objModel.IntersectionID}, _
+						New SqlParameter("pfPercentage", SqlDbType.Bit) With {.Value = objModel.PercentageOfType}, _
+						New SqlParameter("pfPerPage", SqlDbType.Bit) With {.Value = objModel.PercentageOfPage}, _
+						New SqlParameter("pfSuppress", SqlDbType.Bit) With {.Value = objModel.SuppressZeros}, _
+						New SqlParameter("pfUse1000Separator", SqlDbType.Bit) With {.Value = objModel.UseThousandSeparators}, _
+						New SqlParameter("pfOutputPreview", SqlDbType.Bit) With {.Value = objModel.Output.IsPreview}, _
+						New SqlParameter("piOutputFormat", SqlDbType.Int) With {.Value = objModel.Output.Format}, _
+						New SqlParameter("pfOutputScreen", SqlDbType.Bit) With {.Value = objModel.Output.ToScreen}, _
+						New SqlParameter("pfOutputPrinter", SqlDbType.Bit) With {.Value = objModel.Output.ToPrinter}, _
+						New SqlParameter("psOutputPrinterName", SqlDbType.VarChar, -1) With {.Value = objModel.Output.PrinterName}, _
+						New SqlParameter("pfOutputSave", SqlDbType.Bit) With {.Value = objModel.Output.SaveToFile}, _
+						New SqlParameter("piOutputSaveExisting", SqlDbType.Int) With {.Value = objModel.Output.SaveExisting}, _
+						New SqlParameter("pfOutputEmail", SqlDbType.Bit) With {.Value = objModel.Output.SendToEmail}, _
+						New SqlParameter("piOutputEmailAddr", SqlDbType.Int) With {.Value = objModel.Output.EmailGroupID}, _
+						New SqlParameter("psOutputEmailSubject", SqlDbType.VarChar, -1) With {.Value = objModel.Output.EmailSubject}, _
+						New SqlParameter("psOutputEmailAttachAs", SqlDbType.VarChar, -1) With {.Value = objModel.Output.EmailAttachmentName}, _
+						New SqlParameter("psOutputFilename", SqlDbType.VarChar, -1) With {.Value = objModel.Output.Filename}, _
+						New SqlParameter("psAccess", SqlDbType.VarChar, -1) With {.Value = sAccess}, _
+						New SqlParameter("psJobsToHide", SqlDbType.VarChar, -1) With {.Value = objModel.Dependencies.JobIDsToHide}, _
+						New SqlParameter("psJobsToHideGroups", SqlDbType.VarChar, -1) With {.Value = objModel.GroupAccess.HiddenGroups()}, _
+						New SqlParameter("XAxisLabel", SqlDbType.VarChar, 255) With {.Value = objModel.XAxisLabel}, _
+						New SqlParameter("XAxisSubLabel1", SqlDbType.VarChar, 255) With {.Value = objModel.XAxisSubLabel1}, _
+						New SqlParameter("XAxisSubLabel2", SqlDbType.VarChar, 255) With {.Value = objModel.XAxisSubLabel2}, _
+						New SqlParameter("XAxisSubLabel3", SqlDbType.VarChar, 255) With {.Value = objModel.XAxisSubLabel3}, _
+						New SqlParameter("YAxisLabel", SqlDbType.VarChar, 255) With {.Value = objModel.YAxisLabel}, _
+						New SqlParameter("YAxisSubLabel1", SqlDbType.VarChar, 255) With {.Value = objModel.YAxisSubLabel1}, _
+						New SqlParameter("YAxisSubLabel2", SqlDbType.VarChar, 255) With {.Value = objModel.YAxisSubLabel2}, _
+						New SqlParameter("YAxisSubLabel3", SqlDbType.VarChar, 255) With {.Value = objModel.YAxisSubLabel3}, _
+						New SqlParameter("Description1", SqlDbType.VarChar, 255) With {.Value = IIf(objModel.Description1 Is Nothing, "", objModel.Description1)}, _
+						New SqlParameter("ColorDesc1", SqlDbType.VarChar, 6) With {.Value = objModel.ColorDesc1}, _
+						New SqlParameter("Description2", SqlDbType.VarChar, 255) With {.Value = IIf(objModel.Description2 Is Nothing, "", objModel.Description2)}, _
+						New SqlParameter("ColorDesc2", SqlDbType.VarChar, 6) With {.Value = objModel.ColorDesc2}, _
+						New SqlParameter("Description3", SqlDbType.VarChar, 255) With {.Value = IIf(objModel.Description3 Is Nothing, "", objModel.Description3)}, _
+						New SqlParameter("ColorDesc3", SqlDbType.VarChar, 6) With {.Value = objModel.ColorDesc3}, _
+						New SqlParameter("Description4", SqlDbType.VarChar, 255) With {.Value = IIf(objModel.Description4 Is Nothing, "", objModel.Description4)}, _
+						New SqlParameter("ColorDesc4", SqlDbType.VarChar, 6) With {.Value = objModel.ColorDesc4}, _
+						New SqlParameter("Description5", SqlDbType.VarChar, 255) With {.Value = IIf(objModel.Description5 Is Nothing, "", objModel.Description5)}, _
+						New SqlParameter("ColorDesc5", SqlDbType.VarChar, 6) With {.Value = objModel.ColorDesc5}, _
+						New SqlParameter("Description6", SqlDbType.VarChar, 255) With {.Value = IIf(objModel.Description6 Is Nothing, "", objModel.Description6)}, _
+						New SqlParameter("ColorDesc6", SqlDbType.VarChar, 6) With {.Value = objModel.ColorDesc6}, _
+						New SqlParameter("Description7", SqlDbType.VarChar, 255) With {.Value = IIf(objModel.Description7 Is Nothing, "", objModel.Description7)}, _
+						New SqlParameter("ColorDesc7", SqlDbType.VarChar, 6) With {.Value = objModel.ColorDesc7}, _
+						New SqlParameter("Description8", SqlDbType.VarChar, 255) With {.Value = IIf(objModel.Description8 Is Nothing, "", objModel.Description8)}, _
+						New SqlParameter("ColorDesc8", SqlDbType.VarChar, 6) With {.Value = objModel.ColorDesc8}, _
+						New SqlParameter("Description9", SqlDbType.VarChar, 255) With {.Value = IIf(objModel.Description9 Is Nothing, "", objModel.Description9)}, _
+						New SqlParameter("ColorDesc9", SqlDbType.VarChar, 6) With {.Value = objModel.ColorDesc9}, _
+						prmID)
+
+				_nineboxgrids.Remove(objModel.ID)
 				objModel.ID = CInt(prmID.Value)
 
 			Catch
@@ -861,11 +1042,13 @@ Namespace Repository
 				Dim objItem As New ReportTableItem() With {.id = objTable.ID, .Name = objTable.Name}
 
 				If reportType = UtilityType.utlCrossTab Then
-
 					If objSessionInfo.Columns.LongCount(Function(m) m.TableID = objTable.ID AndAlso m.IsVisible = True) > 1 Then
 						objItems.Add(objItem)
 					End If
-
+				ElseIf reportType = UtilityType.utlNineBoxGrid Then ' for 9-box grid, get only numeric columns
+					If objSessionInfo.Columns.LongCount(Function(m) m.TableID = objTable.ID AndAlso m.IsNumeric = True AndAlso m.IsVisible = True) > 1 Then
+						objItems.Add(objItem)
+					End If
 				Else
 					objItems.Add(objItem)
 				End If
@@ -1227,6 +1410,9 @@ Namespace Repository
 					Case UtilityType.utlCrossTab
 						Return _crosstabs.Where(Function(m) m.ID = reportID).FirstOrDefault
 
+					Case UtilityType.utlNineBoxGrid
+						Return _nineboxgrids.Where(Function(m) m.ID = reportID).FirstOrDefault
+
 					Case Else
 						Return _customreports.Where(Function(m) m.ID = reportID).FirstOrDefault
 
@@ -1388,6 +1574,47 @@ Namespace Repository
 				Dim prmJobIDsToHide As New SqlParameter("@psJobIDsToHide", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
 
 				_objDataAccess.ExecuteSP("spASRIntValidateCrossTab", _
+								New SqlParameter("psUtilName", SqlDbType.VarChar, 255) With {.Value = objModel.Name}, _
+								New SqlParameter("piUtilID", SqlDbType.Int) With {.Value = objModel.ID}, _
+								New SqlParameter("piTimestamp", SqlDbType.Int) With {.Value = objModel.Timestamp}, _
+								New SqlParameter("piBasePicklistID", SqlDbType.Int) With {.Value = objModel.PicklistID}, _
+								New SqlParameter("piBaseFilterID", SqlDbType.Int) With {.Value = objModel.FilterID}, _
+								New SqlParameter("piEmailGroupID", SqlDbType.Int) With {.Value = objModel.Output.EmailGroupID}, _
+								New SqlParameter("psHiddenGroups ", SqlDbType.VarChar, -1) With {.Value = objModel.GroupAccess.HiddenGroups()}, _
+								prmErrorMsg, prmErrorCode, prmDeletedFilters, prmHiddenFilters, prmJobIDsToHide)
+
+				If prmJobIDsToHide.Value.ToString().Length > 0 Then
+					objModel.Dependencies.JobIDsToHide = vbTab + prmJobIDsToHide.Value.ToString() + vbTab
+				End If
+
+				objSaveMessage = New SaveWarningModel With {
+					.ReportType = objModel.ReportType,
+					.ID = objModel.ID,
+					.ErrorCode = CType(prmErrorCode.Value, ReportValidationStatus),
+					.ErrorMessage = prmErrorMsg.Value.ToString()}
+
+			Catch ex As Exception
+				Throw
+
+			End Try
+
+			Return objSaveMessage
+
+		End Function
+
+		Public Function ServerValidate(objModel As NineBoxGridModel) As SaveWarningModel
+
+			Dim objSaveMessage As SaveWarningModel
+
+			Try
+
+				Dim prmErrorMsg As New SqlParameter("@psErrorMsg", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
+				Dim prmErrorCode As New SqlParameter("@piErrorCode", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
+				Dim prmDeletedFilters As New SqlParameter("@psDeletedFilters", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
+				Dim prmHiddenFilters As New SqlParameter("@psHiddenFilters", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
+				Dim prmJobIDsToHide As New SqlParameter("@psJobIDsToHide", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
+
+				_objDataAccess.ExecuteSP("spASRIntValidateNineBoxGrid", _
 								New SqlParameter("psUtilName", SqlDbType.VarChar, 255) With {.Value = objModel.Name}, _
 								New SqlParameter("piUtilID", SqlDbType.Int) With {.Value = objModel.ID}, _
 								New SqlParameter("piTimestamp", SqlDbType.Int) With {.Value = objModel.Timestamp}, _
