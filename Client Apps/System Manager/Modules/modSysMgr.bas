@@ -5980,7 +5980,7 @@ Public Function CheckLicence() As Boolean
     End If
             
     If (dToday > DateAdd("d", -7, gobjLicence.ExpiryDate)) Then
-      sMsg = "Your licence to use this product will expire in one week." & vbNewLine & vbNewLine & _
+      sMsg = "Your licence to use this product will expire on " & gobjLicence.ExpiryDate & "." & vbNewLine & vbNewLine & _
             "Please contact your Account Manager as soon as possible."
       MsgBox sMsg, vbInformation
     End If
