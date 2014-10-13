@@ -484,7 +484,7 @@ Public Function CheckLicence() As Boolean
   On Error GoTo Err_Trap
   
   CheckLicence = False
-  dToday = CDate(Now)
+  dToday = DateValue(Now)
     
   ' Expiry date checks
   If gobjLicence.ExpiryDate <> "00:00:00" Then
@@ -495,7 +495,7 @@ Public Function CheckLicence() As Boolean
     End If
             
     If (dToday > DateAdd("d", -7, gobjLicence.ExpiryDate)) Then
-      sMsg = "Your licence to use this product will expire in one week." & vbNewLine & vbNewLine & _
+      sMsg = "Your licence to use this product will expire on " & gobjLicence.ExpiryDate & "." & vbNewLine & vbNewLine & _
             "Please contact your Account Manager as soon as possible."
       COAMsgBox sMsg, vbInformation
     End If

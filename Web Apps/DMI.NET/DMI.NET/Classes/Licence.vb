@@ -136,11 +136,11 @@ Namespace Classes
 
 		Private Shared Function DateFromJulian(sDate As String) As Date
 
-			Dim sYear = CInt(sDate.Substring(0, 4))
-			Dim sDayNo = CInt(sDate.Substring(4, 3))
+			Dim iYear = CInt(sDate.Substring(0, 4))
+			Dim iDayNo = CInt(sDate.Substring(4, 3))
 
-			If sYear > 1900 Then
-				Return DateSerial(sYear, 1, 1).AddDays(sDayNo)
+			If iYear > 1900 Then
+				Return DateSerial(iYear, 1, 1).AddDays(iDayNo - 1)
 			Else
 				Return DateSerial(9999, 12, 31)
 			End If

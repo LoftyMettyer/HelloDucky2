@@ -47,8 +47,10 @@ Namespace Code.Hubs
 																	"Please contact your Account Manager as soon as possible.")
 
 				Case LicenceValidation.ExpiryWarning
-					message = String.Format("Your licence to use this product will expire in one week.<br/>" & _
-																	"Please contact your Account Manager as soon as possible.")
+					Dim sLocaleFormat = HttpContext.Current.Session("LocaleDateFormat").ToString()
+					message = String.Format("Your licence to use this product will expire on {0}.<br/><br/>" & _
+																	"Please contact your Account Manager as soon as possible.", _
+																 Licence.ExpiryDate.ToString(sLocaleFormat))
 
 				Case LicenceValidation.HeadcountExceeded
 					message = String.Format("You have reached or exceeded the headcount limit<br/>set within the terms of your licence agreement.<br/><br/>" & _

@@ -5969,7 +5969,7 @@ Public Function CheckLicence() As Boolean
   On Error GoTo Err_Trap
   
   CheckLicence = False
-  dToday = CDate(Now)
+  dToday = DateValue(Now)
     
   ' Expiry date checks
   If gobjLicence.ExpiryDate <> "00:00:00" Then
