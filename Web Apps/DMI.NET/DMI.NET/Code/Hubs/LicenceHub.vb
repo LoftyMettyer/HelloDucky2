@@ -56,7 +56,7 @@ Namespace Code.Hubs
 																	"Please contact your Account Manager as soon as possible<br/>to increase the licence headcount number.")
 
 				Case LicenceValidation.HeadcountWarning
-					message = String.Format("You are currently within 95% ({0} of {1} employees) of the reaching the<br/>headcount limit set within the terms of your licence agreement.<br/><br/>" & _
+					message = String.Format("You are currently within 95% ({0} of {1} employees) of reaching the<br/>headcount limit set within the terms of your licence agreement.<br/><br/>" & _
 																	"Once this limit is reached, you will no longer be able to add<br/>new employee records to the system.<br/><br/>" & _
 																	"If you wish to increase the headcount number, please<br/>contact your Account Manager as soon as possible.", _
 																	current_Headcount, Licence.Headcount)

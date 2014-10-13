@@ -6007,7 +6007,7 @@ Public Function CheckLicence() As Boolean
     ElseIf lngCurrentHeadcount >= gobjLicence.Headcount * 0.95 Then
       
       If DisplayWarningToUser(gsUserName, Headcount95Percent, 7) Then
-        sMsg = "You are currently within 95% (" & lngCurrentHeadcount & " of " & gobjLicence.Headcount & " employees) of the reaching the headcount limit set within the terms of your licence agreement." & vbNewLine & vbNewLine & _
+        sMsg = "You are currently within 95% (" & lngCurrentHeadcount & " of " & gobjLicence.Headcount & " employees) of reaching the headcount limit set within the terms of your licence agreement." & vbNewLine & vbNewLine & _
                               "Once this limit is reached, you will no longer be able to add new employee records to the system." & vbNewLine & vbNewLine & _
                               "If you wish to increase the headcount number, please contact your Account Manager as soon as possible."
         MsgBox sMsg, vbInformation
