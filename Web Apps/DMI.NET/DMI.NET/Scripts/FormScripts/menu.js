@@ -2564,6 +2564,7 @@ function menu_saveChanges(psAction, pfPrompt, pfTBOverride) {
 
 	else if ((sCurrentPage == "UTIL_DEF_CUSTOMREPORTS") ||
 					(sCurrentPage == "UTIL_DEF_CROSSTABS") ||
+					(sCurrentPage == "UTIL_DEF_9BOXGRID") ||
 					(sCurrentPage == "UTIL_DEF_CALENDARREPORT") ||
 					(sCurrentPage == "UTIL_DEF_MAILMERGE")) {
 
