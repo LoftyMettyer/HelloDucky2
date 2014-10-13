@@ -20,7 +20,6 @@ Begin VB.Form frmLicence
    Icon            =   "frmLicence.frx":0000
    KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
-   LockControls    =   -1  'True
    MaxButton       =   0   'False
    MinButton       =   0   'False
    ScaleHeight     =   7590
@@ -34,6 +33,25 @@ Begin VB.Form frmLicence
       TabIndex        =   0
       Top             =   105
       Width           =   8865
+      Begin VB.CommandButton cmdClipboard 
+         BeginProperty Font 
+            Name            =   "Tahoma"
+            Size            =   8.25
+            Charset         =   0
+            Weight          =   400
+            Underline       =   0   'False
+            Italic          =   0   'False
+            Strikethrough   =   0   'False
+         EndProperty
+         Height          =   400
+         Left            =   8190
+         Picture         =   "frmLicence.frx":000C
+         Style           =   1  'Graphical
+         TabIndex        =   37
+         ToolTipText     =   "Copy to clipboard"
+         Top             =   735
+         Width           =   360
+      End
       Begin VB.TextBox txtLicence 
          BackColor       =   &H8000000F&
          Enabled         =   0   'False
@@ -253,9 +271,9 @@ Begin VB.Form frmLicence
          BackColor       =   &H8000000F&
          Enabled         =   0   'False
          Height          =   315
-         ItemData        =   "frmLicence.frx":000C
+         ItemData        =   "frmLicence.frx":088E
          Left            =   1770
-         List            =   "frmLicence.frx":001F
+         List            =   "frmLicence.frx":08A1
          Style           =   2  'Dropdown List
          TabIndex        =   19
          Top             =   315
@@ -507,6 +525,7 @@ Option Explicit
 Private mfLoading As Boolean
 
 Private mblnReadOnly As Boolean
+Private mstrLicenceKey As String
 
 Private Sub cboType_Click()
  
@@ -557,6 +576,11 @@ Private Sub cmdCancel_Click()
   Unload Me
 End Sub
 
+Private Sub cmdClipboard_Click()
+  Clipboard.Clear
+  Clipboard.SetText mstrLicenceKey
+End Sub
+
 Private Sub Form_Initialize()
 
   mblnReadOnly = (Application.AccessMode = accSystemReadOnly)
@@ -584,21 +608,20 @@ Private Sub Form_Load()
   Dim lngModules As Long
   Dim lngCount As Long
   Dim ctlTemp As Control
-  Dim sLicence As String
   
-  sLicence = GetSystemSetting("Licence", "Key", vbNullString)
+  mstrLicenceKey = GetSystemSetting("Licence", "Key", vbNullString)
   
   If Application.AccessMode <> accFull Then
     ControlsDisableAll Me
   End If
   
   PopulateModules
-  DisplayLicence (sLicence)
+  DisplayLicence (mstrLicenceKey)
   
   Set objLicence = New clsLicence
 
   With objLicence
-    .LicenceKey = sLicence
+    .LicenceKey = mstrLicenceKey
 
     If .CustomerNo > 0 Then
 
@@ -739,6 +762,3 @@ Private Sub DisplayLicence(ByVal sLicence As String)
   txtLicence(4).Text = Mid(sLicence, 29, 6)
   txtLicence(5).Text = Mid(sLicence, 36, 6)
 End Sub
-
-
-
