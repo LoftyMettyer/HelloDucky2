@@ -57,7 +57,6 @@ Begin VB.Form frmExport
       _Version        =   393216
       Style           =   1
       Tabs            =   6
-      Tab             =   5
       TabsPerRow      =   6
       TabHeight       =   520
       BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
@@ -71,16 +70,18 @@ Begin VB.Form frmExport
       EndProperty
       TabCaption(0)   =   "&Definition"
       TabPicture(0)   =   "frmExport.frx":000C
-      Tab(0).ControlEnabled=   0   'False
+      Tab(0).ControlEnabled=   -1  'True
       Tab(0).Control(0)=   "fraBase"
+      Tab(0).Control(0).Enabled=   0   'False
       Tab(0).Control(1)=   "fraInformation"
+      Tab(0).Control(1).Enabled=   0   'False
       Tab(0).ControlCount=   2
       TabCaption(1)   =   "Related &Tables"
       TabPicture(1)   =   "frmExport.frx":0028
       Tab(1).ControlEnabled=   0   'False
-      Tab(1).Control(0)=   "fraParent1"
+      Tab(1).Control(0)=   "fraChild"
       Tab(1).Control(1)=   "fraParent2"
-      Tab(1).Control(2)=   "fraChild"
+      Tab(1).Control(2)=   "fraParent1"
       Tab(1).ControlCount=   3
       TabCaption(2)   =   "Colu&mns"
       TabPicture(2)   =   "frmExport.frx":0044
@@ -96,25 +97,22 @@ Begin VB.Form frmExport
       TabPicture(4)   =   "frmExport.frx":007C
       Tab(4).ControlEnabled=   0   'False
       Tab(4).Control(0)=   "fraDateOptions"
+      Tab(4).Control(0).Enabled=   0   'False
       Tab(4).Control(1)=   "fraHeaderOptions"
+      Tab(4).Control(1).Enabled=   0   'False
       Tab(4).ControlCount=   2
       TabCaption(5)   =   "O&utput"
       TabPicture(5)   =   "frmExport.frx":0098
-      Tab(5).ControlEnabled=   -1  'True
+      Tab(5).ControlEnabled=   0   'False
       Tab(5).Control(0)=   "fraDelimFile"
-      Tab(5).Control(0).Enabled=   0   'False
       Tab(5).Control(1)=   "fraCMGFile"
-      Tab(5).Control(1).Enabled=   0   'False
       Tab(5).Control(2)=   "fraXML"
-      Tab(5).Control(2).Enabled=   0   'False
       Tab(5).Control(3)=   "fraOutputDestination"
-      Tab(5).Control(3).Enabled=   0   'False
       Tab(5).Control(4)=   "fraOutputType"
-      Tab(5).Control(4).Enabled=   0   'False
       Tab(5).ControlCount=   5
       Begin VB.Frame fraInformation 
          Height          =   2355
-         Left            =   -74850
+         Left            =   150
          TabIndex        =   118
          Top             =   400
          Width           =   9180
@@ -318,7 +316,7 @@ Begin VB.Form frmExport
       Begin VB.Frame fraOutputType 
          Caption         =   "Output Format :"
          Height          =   2835
-         Left            =   150
+         Left            =   -74850
          TabIndex        =   82
          Top             =   405
          Width           =   2400
@@ -382,7 +380,7 @@ Begin VB.Form frmExport
       Begin VB.Frame fraOutputDestination 
          Caption         =   "Output Destination(s) :"
          Height          =   2835
-         Left            =   2655
+         Left            =   -72345
          TabIndex        =   88
          Top             =   405
          Width           =   6675
@@ -613,7 +611,7 @@ Begin VB.Form frmExport
             Top             =   360
             Width           =   1230
          End
-         Begin VB.Label Label1 
+         Begin VB.Label lblCustomHeader 
             AutoSize        =   -1  'True
             Caption         =   "Custom Header :"
             Height          =   195
@@ -779,9 +777,9 @@ Begin VB.Form frmExport
             RecordSelectors =   0   'False
             Col.Count       =   11
             stylesets.count =   5
-            stylesets(0).Name=   "ssetSelected"
-            stylesets(0).ForeColor=   -2147483634
-            stylesets(0).BackColor=   -2147483635
+            stylesets(0).Name=   "ssetHeaderDisabled"
+            stylesets(0).ForeColor=   -2147483631
+            stylesets(0).BackColor=   -2147483633
             stylesets(0).HasFont=   -1  'True
             BeginProperty stylesets(0).Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
                Name            =   "Verdana"
@@ -793,9 +791,9 @@ Begin VB.Form frmExport
                Strikethrough   =   0   'False
             EndProperty
             stylesets(0).Picture=   "frmExport.frx":01BF
-            stylesets(1).Name=   "ssetHeaderDisabled"
-            stylesets(1).ForeColor=   -2147483631
-            stylesets(1).BackColor=   -2147483633
+            stylesets(1).Name=   "ssetSelected"
+            stylesets(1).ForeColor=   -2147483634
+            stylesets(1).BackColor=   -2147483635
             stylesets(1).HasFont=   -1  'True
             BeginProperty stylesets(1).Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
                Name            =   "Verdana"
@@ -1451,7 +1449,7 @@ Begin VB.Form frmExport
       Begin VB.Frame fraBase 
          Caption         =   "Data :"
          Height          =   2115
-         Left            =   -74850
+         Left            =   150
          TabIndex        =   0
          Top             =   2850
          Width           =   9180
@@ -1554,7 +1552,7 @@ Begin VB.Form frmExport
       Begin VB.Frame fraXML 
          Caption         =   "XML Options :"
          Height          =   1950
-         Left            =   150
+         Left            =   -74850
          TabIndex        =   125
          Top             =   3285
          Width           =   9180
@@ -1708,7 +1706,7 @@ Begin VB.Form frmExport
       Begin VB.Frame fraCMGFile 
          Caption         =   "CMG Options :"
          Height          =   1665
-         Left            =   150
+         Left            =   -74850
          TabIndex        =   109
          Top             =   3285
          Width           =   9180
@@ -1756,7 +1754,7 @@ Begin VB.Form frmExport
       Begin VB.Frame fraDelimFile 
          Caption         =   "Delimited File Options :"
          Height          =   1665
-         Left            =   150
+         Left            =   -74850
          TabIndex        =   103
          Top             =   3285
          Width           =   9180
@@ -4447,7 +4445,19 @@ Private Sub TextOptionsStatus(intFormat As Integer)
     EnableControl chkOmitHeader, False
     EnableControl chkForceHeader, False
   Else
-    EnableFrame fraHeaderOptions, True
+  
+    EnableControl cboHeaderOptions, True
+    EnableControl lblHeaderLine, True
+    EnableControl lblCustomHeader, True
+    EnableControl txtCustomHeader, Not cboHeaderOptions.ListIndex = 1
+    
+    EnableControl cboFooterOptions, True
+    EnableControl lblFooterLine, True
+    EnableControl lblCustomFooter, True
+    EnableControl txtCustomFooter, Not cboFooterOptions.ListIndex = 1
+    
+    EnableControl chkOmitHeader, True
+    EnableControl chkForceHeader, True
   End If
   
   EnableFrame fraDateOptions, (intFormat <> fmtXML)
@@ -5576,8 +5586,8 @@ Private Function RetrieveExportDetails(plngExportID As Long) As Boolean
     mblnDefinitionCreator = True
   Else
     txtName.Text = rsTemp!Name
-    txtUserName = StrConv(rsTemp!UserName, vbProperCase)
-    mblnDefinitionCreator = (LCase$(rsTemp!UserName) = LCase$(gsUserName))
+    txtUserName = StrConv(rsTemp!userName, vbProperCase)
+    mblnDefinitionCreator = (LCase$(rsTemp!userName) = LCase$(gsUserName))
   End If
    
   mblnReadOnly = Not datGeneral.SystemPermission("EXPORT", "EDIT")
@@ -6839,7 +6849,7 @@ Public Sub PrintDef(lExportID As Long)
         
         .PrintNormal "Category : " & GetObjectCategory(utlExport, mlngExportID)
         .PrintNormal "Description : " & rsTemp!Description
-        .PrintNormal "Owner : " & rsTemp!UserName
+        .PrintNormal "Owner : " & rsTemp!userName
         
         ' Access section --------------------------------------------------------
         .PrintTitle "Access"
@@ -7127,7 +7137,7 @@ Private Function IsRecordSelectionValid() As Boolean
       Set rsTemp = Nothing
       IsRecordSelectionValid = False
       Exit Function
-    ElseIf rsTemp!Access = "HD" And LCase(Trim(rsTemp!UserName)) <> LCase(Trim(gsUserName)) Then
+    ElseIf rsTemp!Access = "HD" And LCase(Trim(rsTemp!userName)) <> LCase(Trim(gsUserName)) Then
       ' Filter has been made hidden by its owner
       COAMsgBox "The '" & txtBaseFilter.Text & "' filter has been made hidden by another user.", vbExclamation + vbOKOnly, "Export"
       txtBaseFilter.Tag = 0
@@ -7147,7 +7157,7 @@ Private Function IsRecordSelectionValid() As Boolean
       Set rsTemp = Nothing
       IsRecordSelectionValid = False
       Exit Function
-    ElseIf rsTemp!Access = "HD" And LCase(Trim(rsTemp!UserName)) <> LCase(Trim(gsUserName)) Then
+    ElseIf rsTemp!Access = "HD" And LCase(Trim(rsTemp!userName)) <> LCase(Trim(gsUserName)) Then
       ' picklist has been made hidden by its owner
       COAMsgBox "The '" & txtBasePicklist.Text & "' picklist has been made hidden by another user.", vbExclamation + vbOKOnly, "Export"
       txtBasePicklist.Tag = 0
@@ -7170,7 +7180,7 @@ Private Function IsRecordSelectionValid() As Boolean
       Set rsTemp = Nothing
       IsRecordSelectionValid = False
       Exit Function
-    ElseIf rsTemp!Access = "HD" And LCase(Trim(rsTemp!UserName)) <> LCase(Trim(gsUserName)) Then
+    ElseIf rsTemp!Access = "HD" And LCase(Trim(rsTemp!userName)) <> LCase(Trim(gsUserName)) Then
       ' filter has been made hidden by its owner
       COAMsgBox "The '" & txtParent1Filter.Text & "' filter has been made hidden by another user.", vbExclamation + vbOKOnly, "Export"
       txtParent1Filter.Tag = 0
@@ -7191,7 +7201,7 @@ Private Function IsRecordSelectionValid() As Boolean
       Set rsTemp = Nothing
       IsRecordSelectionValid = False
       Exit Function
-    ElseIf rsTemp!Access = "HD" And LCase(rsTemp!UserName) <> LCase(gsUserName) Then
+    ElseIf rsTemp!Access = "HD" And LCase(rsTemp!userName) <> LCase(gsUserName) Then
       ' Picklist has been made hidden by its owner
       COAMsgBox "The '" & txtParent1Picklist.Text & "' picklist has been made hidden by another user.", vbExclamation + vbOKOnly, "Export"
       txtParent1Picklist.Tag = 0
@@ -7214,7 +7224,7 @@ Private Function IsRecordSelectionValid() As Boolean
       Set rsTemp = Nothing
       IsRecordSelectionValid = False
       Exit Function
-    ElseIf rsTemp!Access = "HD" And LCase(Trim(rsTemp!UserName)) <> LCase(Trim(gsUserName)) Then
+    ElseIf rsTemp!Access = "HD" And LCase(Trim(rsTemp!userName)) <> LCase(Trim(gsUserName)) Then
       ' filter has been made hidden by its owner
       COAMsgBox "The '" & txtParent2Filter.Text & "' filter has been made hidden by another user.", vbExclamation + vbOKOnly, "Export"
       txtParent2Filter.Tag = 0
@@ -7235,7 +7245,7 @@ Private Function IsRecordSelectionValid() As Boolean
       Set rsTemp = Nothing
       IsRecordSelectionValid = False
       Exit Function
-    ElseIf rsTemp!Access = "HD" And LCase(rsTemp!UserName) <> LCase(gsUserName) Then
+    ElseIf rsTemp!Access = "HD" And LCase(rsTemp!userName) <> LCase(gsUserName) Then
       ' Picklist has been made hidden by its owner
       COAMsgBox "The '" & txtParent2Picklist.Text & "' picklist has been made hidden by another user.", vbExclamation + vbOKOnly, "Export"
       txtParent2Picklist.Tag = 0
@@ -7258,7 +7268,7 @@ Private Function IsRecordSelectionValid() As Boolean
       Set rsTemp = Nothing
       IsRecordSelectionValid = False
       Exit Function
-    ElseIf rsTemp!Access = "HD" And LCase(Trim(rsTemp!UserName)) <> LCase(Trim(gsUserName)) Then
+    ElseIf rsTemp!Access = "HD" And LCase(Trim(rsTemp!userName)) <> LCase(Trim(gsUserName)) Then
       ' filter has been made hidden by its owner
       COAMsgBox "The '" & txtChildFilter.Text & "' filter has been made hidden by another user.", vbExclamation + vbOKOnly, "Export"
       txtChildFilter.Tag = 0
@@ -7296,7 +7306,7 @@ Private Function IsRecordSelectionValid() As Boolean
         aRowsToDelete(1, UBound(aRowsToDelete, 2)) = grdColumns.Columns("ColExprID").CellValue(pvarbookmark)
         aRowsToDelete(2, UBound(aRowsToDelete, 2)) = lCount
         blnDeletedCalcs = True    'MH20001102
-      ElseIf rsTemp!Access = "HD" And LCase(Trim(rsTemp!UserName)) <> LCase(Trim(gsUserName)) Then
+      ElseIf rsTemp!Access = "HD" And LCase(Trim(rsTemp!userName)) <> LCase(Trim(gsUserName)) Then
         ReDim Preserve aRowsToDelete(2, UBound(aRowsToDelete, 2) + 1)
         aRowsToDelete(0, UBound(aRowsToDelete, 2)) = grdColumns.Columns("Data").CellValue(pvarbookmark)
         aRowsToDelete(1, UBound(aRowsToDelete, 2)) = grdColumns.Columns("ColExprID").CellValue(pvarbookmark)
