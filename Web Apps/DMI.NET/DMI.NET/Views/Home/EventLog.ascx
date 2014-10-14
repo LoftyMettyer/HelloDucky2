@@ -600,9 +600,9 @@
 								End If
 
 								If Session("CurrentType") = EventLog_Type.elt9GridBox.ToString Then
-									Response.Write("											<option value=26 selected>9-Box Grid Report" & vbCrLf)
+									Response.Write("											<option value=35 selected>9-Box Grid Report" & vbCrLf)
 								Else
-									Response.Write("											<option value=26>9-Box Grid Report" & vbCrLf)
+									Response.Write("											<option value=35>9-Box Grid Report" & vbCrLf)
 								End If
 								
 								If Session("CurrentType") = EventLog_Type.eltCustomReport.ToString Then
