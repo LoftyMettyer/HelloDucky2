@@ -222,11 +222,9 @@ function find_window_onload() {
 
 				
 				var frmMenuInfo = document.getElementById("frmMenuInfo");
-				var isDMISingle = ($("#txtIsDMISingle")[0].value == "True");
 
 				if ($("#workframe").length == 0) { //only check if not in SSI mode.
-					if (isDMISingle &&
-							(frmMenuInfo.txtPersonnel_EmpTableID.value == frmFindForm.txtCurrentTableID.value) &&
+					if ((frmMenuInfo.txtPersonnel_EmpTableID.value == frmFindForm.txtCurrentTableID.value) &&
 							(frmFindForm.txtRecordCount.value > 1)) {
 
 						$("#findGridTable").focus();

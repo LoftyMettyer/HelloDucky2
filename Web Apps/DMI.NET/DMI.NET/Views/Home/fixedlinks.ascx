@@ -57,7 +57,7 @@
 
 		menu_setVisibleMenuItem("userDropdownmenu_Layout", menu_isSSIMode()); //Set visibility of Layout menu
 		menu_setVisibleMenuItem("mnutoolFixedSelfService", '<%=objSessionContext.LoginInfo.IsSSIUser%>');
-		menu_setVisibleMenuItem("mnutoolFixedOpenHR", '<%: (objSessionContext.LoginInfo.IsDMISingle OrElse objSessionContext.LoginInfo.IsDMIUser) And Not Session("isMobileDevice")%>');
+		menu_setVisibleMenuItem("mnutoolFixedOpenHR", '<%: (objSessionContext.LoginInfo.IsDMIUser) And Not Session("isMobileDevice")%>');
 
 		$("#userDropdownmenu a").on("click", function () {
 			$("#userDropdownmenu ul").css("visibility", "visible");

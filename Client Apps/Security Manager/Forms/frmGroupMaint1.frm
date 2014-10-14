@@ -1,8 +1,8 @@
 VERSION 5.00
-Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "ActBar.ocx"
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "Comctl32.ocx"
+Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "actbar.ocx"
+Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.ocx"
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
-Object = "{1C203F10-95AD-11D0-A84B-00A0247B735B}#1.0#0"; "SSTree.ocx"
+Object = "{1C203F10-95AD-11D0-A84B-00A0247B735B}#1.0#0"; "sstree.ocx"
 Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "mscomctl.ocx"
 Begin VB.Form frmGroupMaint1 
    BackColor       =   &H80000004&
@@ -4951,24 +4951,7 @@ Private Sub ToggleSystemPermission(pobjNode As SSActiveTreeView.SSNode)
   End If
 
   sCurrentGroup = WhichGroup(trvConsole.SelectedItem)
-  
-  'NHRD07012004 Fault 3620 - If all of the access modules are unticked and
-  'someone tries to tick the Intranet Self Service Only then
-  'A message to instruct the user that none of the Reports and Utilies will be enabled
-  If ((pobjNode.Key = "P_MODULEACCESS_INTRANET_SELFSERVICE") And _
-    (Not gObjGroups(sCurrentGroup).SystemPermissions.Item("P_MODULEACCESS_INTRANET_SELFSERVICE").Allowed)) Then
-      
-      If (gObjGroups(sCurrentGroup).SystemPermissions.Item("P_MODULEACCESS_SYSTEMMANAGER").Allowed) Or _
-        (gObjGroups(sCurrentGroup).SystemPermissions.Item("P_MODULEACCESS_SYSTEMMANAGERRO").Allowed) Or _
-        (gObjGroups(sCurrentGroup).SystemPermissions.Item("P_MODULEACCESS_SECURITYMANAGER").Allowed) Or _
-        (gObjGroups(sCurrentGroup).SystemPermissions.Item("P_MODULEACCESS_SECURITYMANAGERRO").Allowed) Or _
-        (gObjGroups(sCurrentGroup).SystemPermissions.Item("P_MODULEACCESS_SYSTEMMANAGERRO").Allowed) Then
-      Else
-        sMessage = "If this option is granted Reports and Utilities will NOT be enabled in Data Manager Intranet (single record access)."
-        MsgBox sMessage, vbOKOnly + vbInformation, App.ProductName
-      End If
-  End If
-  
+   
   ' Do nothing if the node is locked.
   If pobjNode.Image = "SYSIMG_GREYTICK" Or pobjNode.Image = "SYSIMG_GREYNOTICK" Then
     ' Tell the user why they cannot change the item.
@@ -4976,14 +4959,12 @@ Private Sub ToggleSystemPermission(pobjNode As SSActiveTreeView.SSNode)
     sMessage = "Unable to alter this permission."
     
     If gObjGroups(sCurrentGroup).SystemPermissions.Item("P_MODULEACCESS_SYSTEMMANAGER").Allowed Then
-      If (pobjNode.Key <> "P_MODULEACCESS_INTRANET_SELFSERVICE") And _
-        (pobjNode.Key <> "P_MODULEACCESS_SSINTRANET") Then
+      If (pobjNode.Key <> "P_MODULEACCESS_SSINTRANET") Then
         sMessage = sMessage & vbNewLine & _
          "It is required if permission is granted to run the Security Manager."
       End If
     ElseIf gObjGroups(sCurrentGroup).SystemPermissions.Item("P_MODULEACCESS_SECURITYMANAGER").Allowed Then
-      If (pobjNode.Key <> "P_MODULEACCESS_INTRANET_SELFSERVICE") And _
-        (pobjNode.Key <> "P_MODULEACCESS_SSINTRANET") Then
+      If (pobjNode.Key <> "P_MODULEACCESS_SSINTRANET") Then
         sMessage = sMessage & vbNewLine & _
          "It is required if permission is granted to run the Security Manager."
       End If
@@ -5075,18 +5056,7 @@ Private Sub ToggleSystemPermission(pobjNode As SSActiveTreeView.SSNode)
       Exit Sub
     End If
   End If
-  
-  If (pobjNode.Key = "P_MODULEACCESS_INTRANET") And _
-    (pobjNode.Image = "SYSIMG_NOTICK") Then
-    sstrvSystemPermissions.Nodes.Item("P_MODULEACCESS_INTRANET_SELFSERVICE").Image = "SYSIMG_NOTICK"
-    gObjGroups(sCurrentGroup).SystemPermissions.Item("P_MODULEACCESS_INTRANET_SELFSERVICE").Allowed = False
-  End If
-  If (pobjNode.Key = "P_MODULEACCESS_INTRANET_SELFSERVICE") And _
-    (pobjNode.Image = "SYSIMG_NOTICK") Then
-    sstrvSystemPermissions.Nodes.Item("P_MODULEACCESS_INTRANET").Image = "SYSIMG_NOTICK"
-    gObjGroups(sCurrentGroup).SystemPermissions.Item("P_MODULEACCESS_INTRANET").Allowed = False
-  End If
-  
+    
   ' JDM - Fault 9832 - 24/02/2005 - If its an Accord Export - make sure they have system or security access
   If IsModuleEnabled(modAccord) Then
 
@@ -5254,76 +5224,46 @@ Private Sub RelateSystemPermissions()
     Set objNode = Nothing
   End If
   
-  'NHRD09012004 Fault 3621
-  If gObjGroups(sCurrentGroup).SystemPermissions.Item("P_MODULEACCESS_INTRANET_SELFSERVICE").Allowed Then
-    For Each objNode In sstrvSystemPermissions.Nodes
-      Select Case objNode.Key
-        Case "P_MODULEACCESS_SYSTEMMANAGER"
-          objNode.Image = "SYSIMG_GREYNOTICK"
-          gObjGroups(sCurrentGroup).SystemPermissions.Item("P_MODULEACCESS_SYSTEMMANAGER").Allowed = False
-        Case "P_MODULEACCESS_SYSTEMMANAGERRO"
-          objNode.Image = "SYSIMG_GREYNOTICK"
-          gObjGroups(sCurrentGroup).SystemPermissions.Item("P_MODULEACCESS_SYSTEMMANAGERRO").Allowed = False
-        Case "P_MODULEACCESS_SECURITYMANAGER"
-          objNode.Image = "SYSIMG_GREYNOTICK"
-          gObjGroups(sCurrentGroup).SystemPermissions.Item("P_MODULEACCESS_SECURITYMANAGER").Allowed = False
-        Case "P_MODULEACCESS_SECURITYMANAGERRO"
-          objNode.Image = "SYSIMG_GREYNOTICK"
-          gObjGroups(sCurrentGroup).SystemPermissions.Item("P_MODULEACCESS_SECURITYMANAGERRO").Allowed = False
-        End Select
-    Next objNode
-  Else
-    For Each objNode In sstrvSystemPermissions.Nodes
-    Dim fAllowed, fAllowedRO As Boolean
-      Select Case objNode.Key
-        Case "P_MODULEACCESS_SYSTEMMANAGER"
-          fAllowed = gObjGroups(sCurrentGroup).SystemPermissions.Item("P_MODULEACCESS_SYSTEMMANAGER").Allowed
-          objNode.Image = IIf(fAllowed, "SYSIMG_TICK", "SYSIMG_NOTICK")
-        Case "P_MODULEACCESS_SYSTEMMANAGERRO"
-          'If System Manager RW is unticked then the System Manager RO will be a grey ticked
-          fAllowed = gObjGroups(sCurrentGroup).SystemPermissions.Item("P_MODULEACCESS_SYSTEMMANAGER").Allowed
-          fAllowedRO = gObjGroups(sCurrentGroup).SystemPermissions.Item("P_MODULEACCESS_SYSTEMMANAGERRO").Allowed
-          
-          If fAllowed Then
-            objNode.Image = "SYSIMG_GREYTICK"
-          Else
-            If fAllowedRO Then
-              objNode.Image = "SYSIMG_TICK"
-            Else
-              objNode.Image = "SYSIMG_NOTICK"
-            End If
-          End If
-        Case "P_MODULEACCESS_SECURITYMANAGER"
-          fAllowed = gObjGroups(sCurrentGroup).SystemPermissions.Item("P_MODULEACCESS_SECURITYMANAGER").Allowed
-          objNode.Image = IIf(fAllowed, "SYSIMG_TICK", "SYSIMG_NOTICK")
-        Case "P_MODULEACCESS_SECURITYMANAGERRO"
-          'If Security Manager RW is unticked then the Security Manager RO will be a grey ticked
-          fAllowed = gObjGroups(sCurrentGroup).SystemPermissions.Item("P_MODULEACCESS_SECURITYMANAGER").Allowed
-          fAllowedRO = gObjGroups(sCurrentGroup).SystemPermissions.Item("P_MODULEACCESS_SECURITYMANAGERRO").Allowed
-          
-          If fAllowed Then
-            objNode.Image = "SYSIMG_GREYTICK"
-          Else
-            If fAllowedRO Then
-              objNode.Image = "SYSIMG_TICK"
-            Else
-              objNode.Image = "SYSIMG_NOTICK"
-            End If
-          End If
-        Case "P_MODULEACCESS_INTRANET_SELFSERVICE"
-          If gObjGroups(sCurrentGroup).SystemPermissions.Item("P_MODULEACCESS_SYSTEMMANAGER").Allowed Or _
-            gObjGroups(sCurrentGroup).SystemPermissions.Item("P_MODULEACCESS_SYSTEMMANAGERRO").Allowed Or _
-            gObjGroups(sCurrentGroup).SystemPermissions.Item("P_MODULEACCESS_SECURITYMANAGER").Allowed Or _
-            gObjGroups(sCurrentGroup).SystemPermissions.Item("P_MODULEACCESS_SECURITYMANAGERRO").Allowed Then
-            
-            objNode.Image = "SYSIMG_GREYNOTICK"
+  Dim fAllowed, fAllowedRO As Boolean
+  For Each objNode In sstrvSystemPermissions.Nodes
+
+    Select Case objNode.Key
+      Case "P_MODULEACCESS_SYSTEMMANAGER"
+        fAllowed = gObjGroups(sCurrentGroup).SystemPermissions.Item("P_MODULEACCESS_SYSTEMMANAGER").Allowed
+        objNode.Image = IIf(fAllowed, "SYSIMG_TICK", "SYSIMG_NOTICK")
+      Case "P_MODULEACCESS_SYSTEMMANAGERRO"
+        'If System Manager RW is unticked then the System Manager RO will be a grey ticked
+        fAllowed = gObjGroups(sCurrentGroup).SystemPermissions.Item("P_MODULEACCESS_SYSTEMMANAGER").Allowed
+        fAllowedRO = gObjGroups(sCurrentGroup).SystemPermissions.Item("P_MODULEACCESS_SYSTEMMANAGERRO").Allowed
+        
+        If fAllowed Then
+          objNode.Image = "SYSIMG_GREYTICK"
+        Else
+          If fAllowedRO Then
+            objNode.Image = "SYSIMG_TICK"
           Else
             objNode.Image = "SYSIMG_NOTICK"
           End If
-      End Select
-    Next objNode
-  End If
-  'END - NHRD09012004 Fault 3621
+        End If
+      Case "P_MODULEACCESS_SECURITYMANAGER"
+        fAllowed = gObjGroups(sCurrentGroup).SystemPermissions.Item("P_MODULEACCESS_SECURITYMANAGER").Allowed
+        objNode.Image = IIf(fAllowed, "SYSIMG_TICK", "SYSIMG_NOTICK")
+      Case "P_MODULEACCESS_SECURITYMANAGERRO"
+        'If Security Manager RW is unticked then the Security Manager RO will be a grey ticked
+        fAllowed = gObjGroups(sCurrentGroup).SystemPermissions.Item("P_MODULEACCESS_SECURITYMANAGER").Allowed
+        fAllowedRO = gObjGroups(sCurrentGroup).SystemPermissions.Item("P_MODULEACCESS_SECURITYMANAGERRO").Allowed
+        
+        If fAllowed Then
+          objNode.Image = "SYSIMG_GREYTICK"
+        Else
+          If fAllowedRO Then
+            objNode.Image = "SYSIMG_TICK"
+          Else
+            objNode.Image = "SYSIMG_NOTICK"
+          End If
+        End If
+    End Select
+  Next objNode
 
   ' JPD 9/4/01 - If the user is denied Full access to the intranet module, deny access to all Intranet
   ' items, and lock them.

@@ -315,7 +315,14 @@ PRINT 'Step - Licence Modifications'
 			INSERT ASRSysWarningsLog (UserName, WarningType, WarningDate) VALUES (@UserName, @WarningType, @Today);
 
 		RETURN @WarnUser;
-	END'
+	END';
+
+
+	-- Removal of DMIS licence option
+	EXECUTE sp_executeSQL N'UPDATE ASRSysPermissionItems SET [description] = ''Data Manager Intranet'' WHERE categoryID = 1 AND itemKey = ''INTRANET'''
+	EXECUTE sp_executeSQL N'UPDATE ASRSysPermissionItems SET [description] = ''Self-service'' WHERE categoryID = 1 AND itemKey = ''SSINTRANET'''
+	EXECUTE sp_executeSQL N'DELETE FROM ASRSysPermissionItems where categoryID = 1 AND itemKey = ''INTRANET_SELFSERVICE'''
+	EXECUTE sp_executeSQL N'DELETE FROM ASRSysGroupPermissions WHERE itemid = 100'
 
 
 /* ------------------------------------------------------------- */

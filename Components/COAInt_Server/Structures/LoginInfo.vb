@@ -23,7 +23,6 @@ Namespace Structures
 		Public IsServerRole As Boolean = False
 		Public IsSystemOrSecurityAdmin As Boolean = False
 		Public IsDMIUser As Boolean = False
-		Public IsDMISingle As Boolean = False
 		Public IsSSIUser As Boolean = False
 
 		Public DefaultWebArea As WebArea = WebArea.SSI

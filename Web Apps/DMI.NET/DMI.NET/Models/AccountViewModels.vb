@@ -44,9 +44,6 @@ Namespace Models
 					Case WebArea.DMI
 						Return "OpenHR Web"
 
-					Case WebArea.DMISingle
-						Return "OpenHR Web"
-
 					Case Else
 						Return "Self-service"
 

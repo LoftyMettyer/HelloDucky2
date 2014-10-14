@@ -134,51 +134,9 @@ function ReloadPageWithFindTerm() {
 }
 
 function menu_abMainMenu_DataReady() {
-	var iVisibleCount;
 
 	//Disable/Hide menu items that are irrelevent for this user...
 	menu_refreshMenu();
-
-	var isDMISingle = ($("#txtIsDMISingle")[0].value == "True");
-
-	if (isDMISingle) {
-		menu_setVisibleMenuItem("mnutoolReports", false);
-		menu_setVisibleMenuItem("mnutoolTools", false);
-		menu_setVisibleMenuItem("mnutoolNewUser", false);
-		menu_setVisibleMenuItem("mnutoolCurrentUsers", false);
-
-		iVisibleCount = 0;
-		if ($("#mnutoolDiary").css("display") != "none") {
-			iVisibleCount = 1;
-		}
-		$("#mnubandUtilities li").hide();
-		if (iVisibleCount > 0) {
-			$("#mnutoolDiary").show();
-		} else {
-			$("#mnutoolUtilities").hide();
-		}	
-	}
-
-
-
-	//NOT REQUIRED
-	//	// Try to use the height property of the menu.
-	//	// If this fails then the menu has failed to load properly, so we need to define
-	//	// a temporary menu file path.
-	//	try 
-	//	{
-	//		a = abMainMenu.Bands.Item("mnuMainMenu").height;
-	//	}
-	//	catch (e) 
-	//	{
-	//		// The menu has failed to load properly, so we need to define
-	//		// a temporary menu file path.
-	//		ASRIntranetFunctions.MessageBox("Please define the Temporary Menu File Path.");
-	//		frmWorkArea = window.parent.frames("workframe").document.forms("frmGoto");
-	//		frmWorkArea.txtReloadMenu.value = 1;
-	//		loadPage("pcConfiguration");
-	//		return;
-	//	}
 	
 	if (OpenHR.currentWorkPage() == "DEFAULT") {		
 		//window.parent.frames("workframe").hideMessage();

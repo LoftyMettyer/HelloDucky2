@@ -263,11 +263,8 @@
 						return;
 					}
 				}
-
-				var isDMISingle = ($("#txtIsDMISingle")[0].value == "True");
-				
-				if (isDMISingle &&
-					(frmMenuInfo.txtPersonnel_EmpTableID.value == frmRecEditArea.txtCurrentTableID.value) && 
+			
+				if ((frmMenuInfo.txtPersonnel_EmpTableID.value == frmRecEditArea.txtCurrentTableID.value) && 
 					(frmData.txtRecordCount.value > 1)) {
 					
 					// Get menu to refresh the menu.

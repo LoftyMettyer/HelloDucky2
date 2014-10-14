@@ -309,7 +309,7 @@ Namespace Controllers
 					End If
 
 					' Valid login, but do we have any kind of access?
-					If Not objLogin.IsSSIUser And Not objLogin.IsDMIUser And Not objLogin.IsDMISingle Then
+					If Not (objLogin.IsSSIUser OrElse objLogin.IsDMIUser) Then
 						Session("ErrorText") = "You are not permitted to use OpenHR Web with this user name."
 						Return RedirectToAction("Loginerror")
 					End If
@@ -464,7 +464,7 @@ Namespace Controllers
 				cookie("WindowsAuthentication") = loginviewmodel.WindowsAuthentication
 				Response.Cookies.Add(cookie)
 
-				If (objLogin.IsDMIUser OrElse objLogin.IsDMISingle) And Not Session("isMobileDevice") Then
+				If objLogin.IsDMIUser And Not Session("isMobileDevice") Then
 					ViewBag.SSIMode = False
 				Else
 					ViewBag.SSIMode = True

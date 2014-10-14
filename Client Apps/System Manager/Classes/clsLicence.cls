@@ -16,11 +16,10 @@ Option Explicit
 Private mlngCustomerNo As Long
 Private mlngDAT As Long
 Private mlngDMIM As Long
-Private mlngDMIS As Long
 Private mlngModules As Long
 Private mlngHeadcountSSI As Long
 Private mdExpiryDate As Date
-Private mlngLicenceType As Long
+Private mlngLicenceType As LicenceType
 
 Public IsValid As Boolean
 Public ValidateCreationDate As Boolean
@@ -35,10 +34,6 @@ End Property
 
 Public Property Get DMIMUsers()
   DMIMUsers = mlngDMIM
-End Property
-
-Public Property Get DMISUsers()
-  DMISUsers = mlngDMIS
 End Property
 
 Public Property Get SSIUsers()
@@ -66,7 +61,6 @@ Public Property Let LicenceKey(ByVal strNewValue As String)
   Dim strCustNo As String
   Dim strDAT As String
   Dim strDMIM As String
-  Dim strDMIS As String
   Dim strModules As String
   Dim strRandomDigit As String
   Dim strSSIHeadcount As String
@@ -106,7 +100,6 @@ Public Property Let LicenceKey(ByVal strNewValue As String)
     strDAT = Mid(strInput, 5, 2)
     strDMIM = Mid(strInput, 7, 2)
     strCheckSum = Mid(strInput, 9, 6)
-    strDMIS = Mid(strInput, 15, 2)
     strModules = Mid(strInput, 17, 7)
     strRandomDigit = Mid(strInput, 24, 1)
     strSSIHeadcount = Mid(strInput, 25, 4)
@@ -117,7 +110,6 @@ Public Property Let LicenceKey(ByVal strNewValue As String)
     mlngCustomerNo = ConvertStringToNumber2(strRandomDigit & strCustNo)
     mlngDAT = ConvertStringToNumber2(strRandomDigit & strDAT)
     mlngDMIM = ConvertStringToNumber2(strRandomDigit & strDMIM)
-    mlngDMIS = ConvertStringToNumber2(strRandomDigit & strDMIS)
     mlngHeadcountSSI = ConvertStringToNumber2(strRandomDigit & strSSIHeadcount)
     mlngModules = ConvertStringToNumber2(strModules)
     lngRandomDigit = Asc(strRandomDigit) - 64
@@ -135,7 +127,7 @@ Public Property Let LicenceKey(ByVal strNewValue As String)
       IsValid = True
     End If
     
-    IsValid = IsValid And (ConvertNumberToString2(6, mlngCustomerNo + mlngLicenceType + mlngDAT + mlngDMIM + mlngDMIS + mlngHeadcountSSI + mlngModules + lngDateValue, lngRandomDigit) = strCheckSum)
+    IsValid = IsValid And (ConvertNumberToString2(6, mlngCustomerNo + mlngLicenceType + mlngDAT + mlngDMIM + mlngHeadcountSSI + mlngModules + lngDateValue, lngRandomDigit) = strCheckSum)
 
   End If
 
@@ -244,6 +236,8 @@ Private Function DayNumber(ByVal vDate As Date) As Long
                   + Format(Year(vDate), "0000")), vDate) _
                   + 1, "000"))
 End Function
+
+
 
 
 

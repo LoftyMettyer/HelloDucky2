@@ -10,7 +10,6 @@ Namespace Classes
 		Public Shared DATUsers As Integer
 		Public Shared SSIUsers As Long
 		Public Shared DMIUsers As Integer
-		Public Shared DMISingleUsers As Integer
 		Public Shared Headcount As Long
 		Public Shared ExpiryDate As DateTime
 		Public Shared Modules As Long
@@ -58,7 +57,6 @@ Namespace Classes
 				CustomerNumber = ConvertBase32ToLong(strRandomDigit & strCustNo)
 				DATUsers = CInt(ConvertBase32ToLong(strRandomDigit & strDAT))
 				DMIUsers = CInt(ConvertBase32ToLong(strRandomDigit & strDMIM))
-				DMISingleUsers = CInt(ConvertBase32ToLong(strRandomDigit & strDMIS))
 				Modules = ConvertBase32ToLong(strModules)
 				lngHeadcountSSI = ConvertBase32ToLong(strRandomDigit & strSSIHeadcount)
 				Type = CType(ConvertBase32ToLong(strRandomDigit & sLicenceType), LicenceType)
@@ -74,7 +72,7 @@ Namespace Classes
 					ExpiryDate = CDate(DateFromJulian(lngDate.ToString()))
 				End If
 
-				IsValid = (ConvertBase32ToLong(strRandomDigit & strCheckSum) = CustomerNumber + Type + DATUsers + DMIUsers + DMISingleUsers + lngHeadcountSSI + Modules + lngDate)
+				IsValid = (ConvertBase32ToLong(strRandomDigit & strCheckSum) = CustomerNumber + Type + DATUsers + DMIUsers + lngHeadcountSSI + Modules + lngDate)
 
 			End If
 		End Sub

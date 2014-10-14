@@ -347,17 +347,13 @@ Namespace Controllers
 				bOK = False
 			End If
 
-			If ViewBag.SSIMode = False AndAlso Not objSessionInfo.LoginInfo.IsDMIUser AndAlso Not objSessionInfo.LoginInfo.IsDMISingle Then
+			If ViewBag.SSIMode = False AndAlso Not objSessionInfo.LoginInfo.IsDMIUser Then
 				Session("ErrorText") = "You are not permitted to use OpenHR Web with this user name."
 				bOK = False
 			End If
 
 			If Not SSIMode Then
-				If objSessionInfo.LoginInfo.IsDMISingle Then
-					targetWebArea = WebArea.DMISingle
-				Else
-					targetWebArea = WebArea.DMI
-				End If
+				targetWebArea = WebArea.DMI
 			End If
 
 			' Licence check

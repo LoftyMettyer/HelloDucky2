@@ -130,7 +130,6 @@ Public Class SessionInfo
 			_objLogin.UserGroup = dsLoginData.Tables(0).Rows(0)(1).ToString()
 
 			_objLogin.IsDMIUser = Permissions.IsPermitted("MODULEACCESS", "INTRANET")
-			_objLogin.IsDMISingle = Permissions.IsPermitted("MODULEACCESS", "INTRANET_SELFSERVICE")
 			_objLogin.IsSSIUser = Permissions.IsPermitted("MODULEACCESS", "SSINTRANET")
 			_objLogin.IsSystemOrSecurityAdmin = Permissions.IsPermitted("MODULEACCESS", "SYSTEMMANAGER")
 
@@ -139,8 +138,6 @@ Public Class SessionInfo
 
 			If _objLogin.IsDMIUser Then
 				_objLogin.DefaultWebArea = WebArea.DMI
-			ElseIf _objLogin.IsDMISingle Then
-				_objLogin.DefaultWebArea = WebArea.DMISingle
 			End If
 
 		Catch ex As SqlException

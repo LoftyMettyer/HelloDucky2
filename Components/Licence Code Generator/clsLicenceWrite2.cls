@@ -16,7 +16,6 @@ Option Explicit
 Private mlngCustomerNo As Long
 Private mlngDAT As Long
 Private mlngDMIM As Long
-Private mlngDMIS As Long
 Private mlngSSI As Long
 Private mlngModules As Long
 
@@ -34,10 +33,6 @@ End Property
 
 Public Property Let DMIMUsers(ByVal lngNewValue As Long)
   mlngDMIM = lngNewValue
-End Property
-
-Public Property Let DMISUsers(ByVal lngNewValue As Long)
-  mlngDMIS = lngNewValue
 End Property
 
 Public Property Let SSIUsers(ByVal lngNewValue As Long)
@@ -121,7 +116,7 @@ Public Property Get LicenceKey2()
   Dim strCustNo As String
   Dim strDAT As String
   Dim strDMIM As String
-  Dim strDMIS As String
+  Dim strFiller1 As String
   Dim strModules As String
   Dim strSSIHeadcount As String
   Dim strExpiryDate As String
@@ -145,7 +140,7 @@ Public Property Get LicenceKey2()
     strCustNo = ConvertNumberToString2(3, mlngCustomerNo, lngRandomDigit)
     strDAT = ConvertNumberToString2(2, mlngDAT, lngRandomDigit)
     strDMIM = ConvertNumberToString2(2, mlngDMIM, lngRandomDigit)
-    strDMIS = ConvertNumberToString2(2, mlngDMIS, lngRandomDigit)
+    strFiller1 = ConvertNumberToString2(2, 1024, lngRandomDigit)
     strSSIHeadcount = ConvertNumberToString2(4, lngSSIHeadcount, lngRandomDigit)
     strModules = ConvertNumberToString2(7, mlngModules, 0)            ' Allows upto 35 modules
     
@@ -153,11 +148,11 @@ Public Property Get LicenceKey2()
     strExpiryDate = ConvertNumberToString2(5, lngExpiryDate, lngRandomDigit)
     
     strGeneratedDay = ConvertNumberToString2(2, DayNumber(Now), lngRandomDigit)
-    strCheckSum = ConvertNumberToString2(6, mlngCustomerNo + mlngLicenceType + mlngDAT + mlngDMIM + mlngDMIS + lngSSIHeadcount + mlngModules + lngExpiryDate, lngRandomDigit)
+    strCheckSum = ConvertNumberToString2(6, mlngCustomerNo + mlngLicenceType + mlngDAT + mlngDMIM + lngSSIHeadcount + mlngModules + lngExpiryDate, lngRandomDigit)
 
     strOutput = _
         sLicenceType & strCustNo & strDAT & strDMIM & strCheckSum & _
-        strDMIS & strModules & Chr(lngRandomDigit + 64) & strSSIHeadcount & strExpiryDate + strGeneratedDay + "X"
+        strFiller1 & strModules & Chr(lngRandomDigit + 64) & strSSIHeadcount & strExpiryDate + strGeneratedDay + "X"
 
     'Jumble it up!
     LicenceKey2 = Mid(strOutput, 7, 1) & Mid(strOutput, 11, 1) & Mid(strOutput, 13, 1) & Mid(strOutput, 9, 1) & Mid(strOutput, 34, 1) & Mid(strOutput, 3, 1) & "-" & _

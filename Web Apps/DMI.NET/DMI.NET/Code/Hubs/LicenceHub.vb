@@ -26,7 +26,6 @@ Namespace Code.Hubs
 
 		Private Shared current_SSIUsers As Integer = 0
 		Private Shared current_DMIUsers As Integer = 0
-		Private Shared current_DMISingleUsers As Integer = 0
 		Private Shared current_Headcount As Long = 0
 
 		Private Const HeadcountWarningThreshold = 0.95
@@ -80,15 +79,13 @@ Namespace Code.Hubs
 
 			current_SSIUsers = 0
 			current_DMIUsers = 0
-			current_DMISingleUsers = 0
 
 			For Each sSession In Sessions
 				current_DMIUsers += Logins.LongCount(Function(m) m.IsLoggedIn = True AndAlso m.SignalRClientID = sSession AndAlso m.WebArea = WebArea.DMI)
-				current_DMISingleUsers += Logins.LongCount(Function(m) m.IsLoggedIn = True AndAlso m.SignalRClientID = sSession AndAlso m.WebArea = WebArea.DMISingle)
 				current_SSIUsers += Logins.LongCount(Function(m) m.IsLoggedIn = True AndAlso m.SignalRClientID = sSession AndAlso m.WebArea = WebArea.SSI)
 			Next
 
-			totalLogins = current_DMIUsers + current_DMISingleUsers + current_SSIUsers
+			totalLogins = current_DMIUsers + current_SSIUsers
 
 			Dim myContext = GlobalHost.ConnectionManager.GetHubContext(Of LicenceHub)()
 			myContext.Clients.All.updateUsersOnlineCount(totalLogins)
@@ -223,7 +220,6 @@ Namespace Code.Hubs
 
 			If Licence.Type = LicenceType.Concurrency Then
 				If (targetWebArea = WebArea.DMI AndAlso current_DMIUsers >= Licence.DMIUsers) OrElse _
-						(targetWebArea = WebArea.DMISingle AndAlso current_DMISingleUsers >= Licence.DMISingleUsers) OrElse _
 						(targetWebArea = WebArea.DMI AndAlso current_SSIUsers >= Licence.SSIUsers) Then
 					Return LicenceValidation.Insufficient
 				Else
@@ -232,13 +228,12 @@ Namespace Code.Hubs
 			End If
 
 			If Licence.Type = LicenceType.DMIConcurrencyAndHeadcount OrElse Licence.Type = LicenceType.DMIConcurrencyAndHeadcount Then
-				If (targetWebArea = WebArea.DMI AndAlso current_DMIUsers >= Licence.DMIUsers) OrElse _
-						(targetWebArea = WebArea.DMISingle AndAlso current_DMISingleUsers >= Licence.DMISingleUsers) Then
+				If (targetWebArea = WebArea.DMI AndAlso current_DMIUsers >= Licence.DMIUsers) Then
 					Return LicenceValidation.Insufficient
 				End If
 			End If
 
-			If targetWebArea = WebArea.DMI OrElse targetWebArea = WebArea.DMISingle Then
+			If targetWebArea = WebArea.DMI Then
 				If current_Headcount > Licence.Headcount Then
 					Return LicenceValidation.HeadcountExceeded
 				ElseIf current_Headcount >= Licence.Headcount * HeadcountWarningThreshold Then

@@ -31,7 +31,7 @@
 	' to the current user.
 	' ------------------------------------------------------------------------------
 	Response.Write("function refreshDatabaseMenu() {" & vbCrLf)
-	If objSessionContext.LoginInfo.IsDMIUser Or objSessionContext.LoginInfo.IsDMISingle Then
+	If objSessionContext.LoginInfo.IsDMIUser Then
 
 		Response.Write("  var objFileTool;" & vbCrLf)
 		Response.Write("  var sLastToolName;" & vbCrLf)
@@ -459,7 +459,6 @@
 	Response.Write("<INPUT type=""hidden"" id=txtDatabase name=txtDatabase value=""" & Replace(ApplicationSettings.LoginPage_Database, """", "&quot;") & """>")
 %>
 	<input type="hidden" id="txtIsDMIUser" name="txtIsDMIUser" value=<%= objSessionContext.LoginInfo.IsDMIUser%>>
-	<input type="hidden" id="txtIsDMISingle" name="txtIsDMISingle" value=<%= objSessionContext.LoginInfo.IsDMISingle%>>
 	<input type="hidden" id="txtIsSSIUser" name="txtIsSSIUser" value='<%= IIf(objSessionContext.LoginInfo.IsSSIUser, "1", "0")%>'>
 	<input type="hidden" id="txtIsWindowsLogon" name="txtIsWindowsLogon" value=<%= objSessionContext.LoginInfo.TrustedConnection%>>
 
