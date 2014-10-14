@@ -863,7 +863,7 @@ Namespace Controllers
 		End Function
 
 		<HttpPost>
-		Function DefinitionProperties(ID As Integer, Type As UtilityType) As ActionResult
+		Function DefinitionProperties(ID As Integer, Type As UtilityType, Name As String) As ActionResult
 
 			Dim objModel As New DefinitionPropertiesViewModel
 
@@ -874,12 +874,11 @@ Namespace Controllers
 				, New SqlParameter("intType", SqlDbType.Int) With {.Value = CInt(Type)} _
 				, New SqlParameter("intID", SqlDbType.Int) With {.Value = ID})
 
-			Dim rowDefinition = dsDefProp.Tables(0).Rows(0)
-			objModel.Name = rowDefinition("Name").ToString
+			objModel.Name = Name
 			objModel.Type = Type
 
-			If dsDefProp.Tables(1).Rows.Count > 0 Then
-				Dim rowAccess = dsDefProp.Tables(1).Rows(0)
+			If dsDefProp.Tables(0).Rows.Count > 0 Then
+				Dim rowAccess = dsDefProp.Tables(0).Rows(0)
 				objModel.CreatedDate = rowAccess("CreatedDate").ToString() & " by " & rowAccess("Createdby").ToString
 				If objModel.CreatedDate = " by " Then objModel.CreatedDate = "<Unknown>"
 				objModel.LastSaveDate = rowAccess("SavedDate").ToString() & " by " & rowAccess("Savedby").ToString()
@@ -889,7 +888,7 @@ Namespace Controllers
 			End If
 
 			objModel.Usage = New Collection(Of DefinitionPropertiesViewModel)
-			For Each objRow As DataRow In dsDefProp.Tables(2).Rows
+			For Each objRow As DataRow In dsDefProp.Tables(1).Rows
 				Dim objUsage As New DefinitionPropertiesViewModel With {.Name = objRow("description").ToString()}
 				objModel.Usage.Add(objUsage)
 			Next

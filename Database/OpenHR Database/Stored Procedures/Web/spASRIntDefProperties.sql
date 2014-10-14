@@ -9,11 +9,6 @@ BEGIN
 
 	DECLARE @Name	nvarchar(255);
 
-	-- Definition details
-	EXEC [spASRIntGetUtilityName] @intType, @intID, @Name OUTPUT
-
-	SELECT @name AS Name;
-
 	-- Access details of object
 	SELECT convert(varchar, CreatedDate,103) + ' ' + convert(varchar, CreatedDate,108) as [CreatedDate], 
 		convert(varchar, SavedDate,103) + ' ' + convert(varchar, SavedDate,108) as [SavedDate], 

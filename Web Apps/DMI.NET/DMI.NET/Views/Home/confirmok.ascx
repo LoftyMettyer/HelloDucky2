@@ -2,7 +2,8 @@
 
 <script type="text/javascript">
     function confirmok_window_onload() {
-        $("#workframe").attr("data-framesource", "CONFIRMOK");
+
+    	$("#workframe").attr("data-framesource", "CONFIRMOK");
 
         if (txtReloadMenu.value == 1) {
             window.parent.location.href = "main";
@@ -29,7 +30,7 @@
         //	window.parent.frames("menuframe").loadDefSelPage(txtUtilType.value, txtUtilID.value, true);
         //}
 
-        if (sAction == "CROSSTABS" || sAction == "NINEBOX") {
+        if (sAction == "CROSSTABS" || sAction == "NINEBOXGRID") {
             menu_loadDefSelPage(txtUtilType.value, txtUtilID.value, 0, true);
         }
 

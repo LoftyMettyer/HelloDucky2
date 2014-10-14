@@ -41,7 +41,7 @@ BEGIN
 		SET @sIDColumnName = 'ID';
  	END
 
-	IF @piUtilityType = 1 /* Cross Tab */
+	IF @piUtilityType = 1 OR @piUtilityType = 35 /* Cross Tab */
 	BEGIN
 		SET @sTableName = 'ASRSysCrossTab';
 		SET @sAccessTableName = 'ASRSysCrossTabAccess';

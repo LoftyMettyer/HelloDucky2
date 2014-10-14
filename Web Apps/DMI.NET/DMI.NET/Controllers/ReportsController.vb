@@ -223,7 +223,7 @@ Namespace Controllers
 
 			If objModel.ValidityStatus = ReportValidationStatus.ServerCheckComplete Then
 				objReportRepository.SaveReportDefinition(objModel)
-				Session("reaction") = "NINEBOX"
+				Session("reaction") = "NINEBOXGRID"
 				Session("utilid") = objModel.ID
 				Return RedirectToAction("confirmok", "home")
 

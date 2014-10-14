@@ -611,12 +611,14 @@
 		button_disable(frmDefSel.cmdRun, (fNoneSelected || (frmpermissions.grantrun.value == 0)));
 		}
 
-		function showproperties() {
+	function showproperties() {
+
 			if (!$("#mnutoolPropertiesUtil").hasClass("disabled")) {
 
 				var id = $("#DefSelRecords").getGridParam('selrow');
 				var type = $("#utiltype").val();
-				OpenHR.OpenDialog("DefinitionProperties", "divPopupReportDefinition", { ID: id, Type: type }, '900px');
+				var name = $("#utilname").val();
+				OpenHR.OpenDialog("DefinitionProperties", "divPopupReportDefinition", { ID: id, Type: type, Name: name }, '900px');
 
 			}
 		}

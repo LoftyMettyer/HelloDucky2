@@ -111,22 +111,23 @@
 					Session("confirmtext") = sCheckStatus
 					Session("confirmtitle") = "OpenHR"
 					Session("followpage") = "defsel"
-					Response.Redirect("confirmok")
-				End If		
+				Else
 				
-				objDataAccess.ExecuteSP("sp_ASRIntDeleteUtility" _
-										, New SqlParameter("piUtilType", SqlDbType.Int) With {.Value = CleanNumeric(Session("utiltype"))} _
-										, New SqlParameter("piUtilID", SqlDbType.Int) With {.Value = CleanNumeric(Session("utilid"))})
+					objDataAccess.ExecuteSP("sp_ASRIntDeleteUtility" _
+											, New SqlParameter("piUtilType", SqlDbType.Int) With {.Value = CleanNumeric(Session("utiltype"))} _
+											, New SqlParameter("piUtilID", SqlDbType.Int) With {.Value = CleanNumeric(Session("utilid"))})
 
-				Session("confirmtext") = "'" & Session("utilname") & "' " & sUtilTypeName & " has been deleted."
-				Session("confirmtitle") = "Delete Confirmation"
-				Session("followpage") = "defsel"
+					Session("confirmtext") = "'" & Session("utilname") & "' " & sUtilTypeName & " has been deleted."
+					Session("confirmtitle") = "Delete Confirmation"
+					Session("followpage") = "defsel"
+				End If
+
 				Response.Redirect("confirmok")
-				
+
 			Catch ex As Exception
 
 				Session("ErrorTitle") = "Login Page"
-				Session("ErrorText") = "An error has occured whilst performing the delete operation:" & vbCrLf & ex.Message & "<p>" & vbCrLf			
+				Session("ErrorText") = "An error has occured whilst performing the delete operation:" & vbCrLf & ex.Message & "<p>" & vbCrLf
 				Response.Redirect("FormError")
 				
 			End Try

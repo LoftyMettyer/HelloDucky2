@@ -228,8 +228,6 @@
     <Build Include="Stored Procedures\Web\spASRIntGetSummaryValues.sql" />
     <Build Include="Stored Procedures\Web\spASRIntGetTimestamp.sql" />
     <Build Include="Stored Procedures\Web\spASRIntGetUtilityAccessRecords.sql" />
-    <Build Include="Stored Procedures\Web\spASRIntGetUtilityBaseTable.sql" />
-    <Build Include="Stored Procedures\Web\spASRIntGetUtilityName.sql" />
     <Build Include="Stored Procedures\Web\spASRIntGetViewName.sql" />
     <Build Include="Stored Procedures\Web\spASRIntInsertNewRecord.sql" />
     <Build Include="Stored Procedures\Web\spASRIntSaveCalendarReport.sql" />
