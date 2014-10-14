@@ -217,32 +217,6 @@ function find_window_onload() {
 
 			frmFindForm.txtRecordCount.value = iCount;
 
-			// **************************************************************
-			if (fOk == true) {
-
-				
-				var frmMenuInfo = document.getElementById("frmMenuInfo");
-
-				if ($("#workframe").length == 0) { //only check if not in SSI mode.
-					if ((frmMenuInfo.txtPersonnel_EmpTableID.value == frmFindForm.txtCurrentTableID.value) &&
-							(frmFindForm.txtRecordCount.value > 1)) {
-
-						$("#findGridTable").focus();
-						$("#findGridTable").html = ""; //empty the grid
-
-						// Get menu.asp to refresh the menu.
-						menu_refreshMenu();
-
-						/* The user does NOT have permission to create new records. */
-						OpenHR.messageBox("Unable to load personnel records.\n\nYou are logged on as a self-service user and can access only single record personnel record sets.");
-
-						/* Go to the default page. */
-						menu_loadPage("main?SSIMode=True");
-						return;
-					}
-				}
-			}
-
 			if (fOk == true) {
 				var sControlPrefix;
 				var sColumnId;

@@ -263,20 +263,7 @@
 						return;
 					}
 				}
-			
-				if ((frmMenuInfo.txtPersonnel_EmpTableID.value == frmRecEditArea.txtCurrentTableID.value) && 
-					(frmData.txtRecordCount.value > 1)) {
-					
-					// Get menu to refresh the menu.
-					menu_refreshMenu();		  
 
-					/* The user does NOT have permission to create new records. */
-					OpenHR.messageBox("Unable to load personnel records.\n\nYou are logged on as a self-service user and can access only single record personnel record sets.");
-
-					/* Go to the default page. */
-					menu_loadPage("_default");
-					return;
-				}
 
 				if (sAction == "NEW") {
 					applyDefaultValues();					
