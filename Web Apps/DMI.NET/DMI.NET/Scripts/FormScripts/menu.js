@@ -2166,12 +2166,9 @@ function menu_refreshMenu() {
 	if ($("#txtSysPerm_INTRANET_NEW_USER").length) {
 		if ($("#txtSysPerm_INTRANET_NEW_USER").val() == 1) {
 			menu_enableMenuItem("mnutoolNewUser", $("#txtNewUserGranted").val());
-			menu_enableMenuItem("mnutoolCurrentUsers", $("#txtNewUserGranted").val());
-
 		}
 		else {
 			menu_enableMenuItem("mnutoolNewUser", false);
-			menu_enableMenuItem("mnutoolCurrentUsers", false);
 		}
 	}
 	else {
@@ -2189,6 +2186,8 @@ function menu_refreshMenu() {
 	else {
 		menu_enableMenuItem("mnutoolConfiguration", false);
 	}
+
+	menu_enableMenuItem("mnutoolCurrentUsers", $("#txtCurrentUsersGranted").val());
 
 	var bChangePassword = ($("#txtIsWindowsLogon")[0].value == "False");
 	menu_setVisibleMenuItem("mnutoolPasswordChange", bChangePassword);

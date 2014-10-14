@@ -279,6 +279,7 @@
 	Dim iFiltersGranted As Integer = 0
 	Dim iPicklistsGranted As Integer = 0
 	Dim iNewUserGranted As Integer = 0
+	Dim iCurrentUsersGranted As Integer = 0
 	Dim iEventLogGranted As Integer = 1	'As agreed with Phil, the Event Log menu should be available to anyone; the Event Log screen itself contains the logic that takes into account the user's permissions
 	
 	Dim sKey As String
@@ -294,9 +295,11 @@
 		If Left(objPermission.CategoryKey, 12) = "CALCULATIONS" And objPermission.IsPermitted Then iCalculationsGranted = 1
 		If Left(objPermission.CategoryKey, 7) = "FILTERS" And objPermission.IsPermitted Then iFiltersGranted = 1
 		If Left(objPermission.CategoryKey, 9) = "PICKLISTS" And objPermission.IsPermitted Then iPicklistsGranted = 1
-		If objSessionContext.LoginInfo.IsSystemOrSecurityAdmin Then iNewUserGranted = 1
-		If Left(objPermission.CategoryKey, 8) = "EVENTLOG" And objPermission.IsPermitted Then iEventLogGranted = 1
+		If objSessionContext.LoginInfo.IsSystemOrSecurityAdmin Then iNewUserGranted = 1		
+		If Left(objPermission.CategoryKey, 8) = "EVENTLOG" And objPermission.IsPermitted Then iEventLogGranted = 1	
+		If Left(objPermission.CategoryKey, 8) = "INTRANET" AndAlso objPermission.Key = "CURRENTUSERS" AndAlso objPermission.IsPermitted Then iCurrentUsersGranted = 1
 	Next
+
 	
 	Dim bAbsenceEnabled = Licence.IsModuleLicenced(SoftwareModule.Absence)
 
@@ -310,6 +313,7 @@
 	Response.Write("<input type='hidden' id=txtFiltersGranted name=txtFiltersGranted value=" & iFiltersGranted & ">")
 	Response.Write("<input type='hidden' id=txtPicklistsGranted name=txtPicklistsGranted value=" & iPicklistsGranted & ">")
 	Response.Write("<input type='hidden' id=txtNewUserGranted name=txtNewUserGranted value=" & iNewUserGranted & ">")
+	Response.Write("<input type='hidden' id=txtCurrentUsersGranted name=txtCurrentUsersGranted value=" & iCurrentUsersGranted & ">")
 	Response.Write("<input type='hidden' id=txtEventLogGranted name=txtEventLogGranted value=" & iEventLogGranted & ">")
 	Response.Write("<input type='hidden' id=txtQuickAccessGranted name=txtQuickAccessGranted value=" & IIf(avQuickEntryMenuInfo.Count > 0, "1", "0").ToString & ">")
 		
@@ -388,7 +392,7 @@
 				<li id="mnutoolNewUser"><a href="#">New User...</a></li>
 				<li id="mnutoolConfiguration"><a href="#">User Configuration...</a></li>
 				<li id="mnutoolPCConfiguration" class="hidden"><a href="#">PC Configuration...</a></li>
-				<li id="mnutoolCurrentUsers"><a href="#">Current Users...</a></li>
+				<li id="mnutoolCurrentUsers"><a href="#">View Current Users...</a></li>
 			</ul>
 		</div>
 		<h3 id="mnutoolHelp">Help</h3>
