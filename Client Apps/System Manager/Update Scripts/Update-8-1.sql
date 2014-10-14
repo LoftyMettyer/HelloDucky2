@@ -324,6 +324,15 @@ PRINT 'Step - Licence Modifications'
 	EXECUTE sp_executeSQL N'DELETE FROM ASRSysPermissionItems where categoryID = 1 AND itemKey = ''INTRANET_SELFSERVICE'''
 	EXECUTE sp_executeSQL N'DELETE FROM ASRSysGroupPermissions WHERE itemid = 100'
 
+	-- Add view current users (DMI) security option
+	IF NOT EXISTS(SELECT * FROM dbo.ASRSysPermissionItems WHERE [itemID] = 168)
+	BEGIN
+		INSERT ASRSysPermissionItems ([itemID], [description], [listOrder], [categoryID], [itemKey])
+			VALUES (168,'View Current Users',20, 19,'CURRENTUSERS');
+
+		INSERT ASRSysGroupPermissions (itemID, groupName, permitted)
+			SELECT 168, groupName, permitted from ASRSysGroupPermissions where itemid = 78
+	END
 
 /* ------------------------------------------------------------- */
 /* Update the database version flag in the ASRSysSettings table. */
