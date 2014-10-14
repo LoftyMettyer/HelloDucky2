@@ -321,7 +321,7 @@
 				</fieldset>
 			</div>
 
-			<div class="width45 floatleft">
+			<div class="width45 floatleft" id="RecordSelection">
 				<fieldset>
 					<legend class="fontsmalltitle">Record Selection :</legend>
 					<div class="padleft20">
