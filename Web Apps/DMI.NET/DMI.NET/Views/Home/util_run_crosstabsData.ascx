@@ -4,6 +4,7 @@
 <%@ Import Namespace="HR.Intranet.Server" %>
 <%@ Import Namespace="System.Data.SqlClient" %>
 <%@ Import Namespace="System.Data" %>
+<%@ Import Namespace="System.Activities.Statements" %>
 
 
 <%		
@@ -56,13 +57,18 @@
 			Response.Write("  AddToPgbCombo(""" & CleanStringForJavaScript(Left(objCrossTab.ColumnHeading(2, intCount), 255)) & """,""" & CStr(intCount) & """);" & vbCrLf)
 		Next
 
-		Response.Write("  txtPageColumn.value = """ & CleanStringForJavaScript(objCrossTab.PageBreakColumnName) & """;" & vbCrLf)
+		If CleanStringForJavaScript(objCrossTab.PageBreakColumnName) <> "<None>" Then
+			Response.Write("  $('#txtPageColumn').text(""" & CleanStringForJavaScript(objCrossTab.PageBreakColumnName) & " :  " & """);" & vbCrLf)
+		End If
 		Response.Write("  chkPercentType.checked = " & LCase(CStr(objCrossTab.ShowPercentage)) & ";" & vbCrLf)
 		Response.Write("  chkPercentPage.checked = " & LCase(CStr(objCrossTab.PercentageOfPage)) & ";" & vbCrLf)
 		Response.Write("  chkSuppressZeros.checked = " & LCase(CStr(objCrossTab.SuppressZeros)) & ";" & vbCrLf)
 		Response.Write("  chkUse1000.checked = " & LCase(CStr(objCrossTab.Use1000Separator)) & ";" & vbCrLf)
 		
-		Response.Write("  txtIntersectionColumn.value = """ & CleanStringForJavaScript(objCrossTab.IntersectionColumnName) & """;" & vbCrLf)
+		If CleanStringForJavaScript(objCrossTab.IntersectionColumnName) <> "<None>" Then
+			Response.Write("  $('#txtIntersectionColumn').text(""" & CleanStringForJavaScript(objCrossTab.IntersectionColumnName) & " :  " & """);" & vbCrLf)
+		End If
+		
 		Response.Write("  cboIntersectionType.selectedIndex = " & CStr(objCrossTab.IntersectionType) & ";" & vbCrLf)
 
 		If objCrossTab.PageBreakColumn = True Then
@@ -307,7 +313,7 @@
 			Response.Write("				$('#' + gridRefID + '>p:last').html(colData[i][key]);" & vbCrLf)
 			Response.Write("				$('#' + gridRefID).attr('data-row', i);" & vbCrLf)
 			Response.Write("				$('#' + gridRefID).attr('data-col', originalColNum);" & vbCrLf)
-			Response.Write("				$('#' + gridRefID).click(function () {" & vbCrLf)
+			Response.Write("				$('#' + gridRefID).off('click').on('click', function () {" & vbCrLf)
 			Response.Write("					var iRow = $(this).attr('data-row');" & vbCrLf)
 			Response.Write("					var iCol = $(this).attr('data-col');" & vbCrLf)
 			Response.Write("	    	  if (iCol == 0) { return; } // Ignore double click on first column" & vbCrLf)
@@ -327,18 +333,18 @@
 			
 		End If
 		
-		End If
+	End If
 	
-		Response.Write("  try {" & vbCrLf)
-		Response.Write("    refreshCombo(""INTERSECTIONTYPE"");" & vbCrLf)
-		Response.Write("    refreshCombo(""PAGE"");" & vbCrLf)
-		Response.Write("    refreshCombo(""FILEFORMAT"");" & vbCrLf)
-		Response.Write("  }" & vbCrLf)
-		Response.Write("  catch(e) {" & vbCrLf)
-		Response.Write("  }" & vbCrLf)
+	Response.Write("  try {" & vbCrLf)
+	Response.Write("    refreshCombo(""INTERSECTIONTYPE"");" & vbCrLf)
+	Response.Write("    refreshCombo(""PAGE"");" & vbCrLf)
+	Response.Write("    refreshCombo(""FILEFORMAT"");" & vbCrLf)
+	Response.Write("  }" & vbCrLf)
+	Response.Write("  catch(e) {" & vbCrLf)
+	Response.Write("  }" & vbCrLf)
 
-		Response.Write("}" & vbCrLf)
-		Response.Write("</script>" & vbCrLf & vbCrLf)
+	Response.Write("}" & vbCrLf)
+	Response.Write("</script>" & vbCrLf & vbCrLf)
 %>
 
 <script type="text/javascript">	

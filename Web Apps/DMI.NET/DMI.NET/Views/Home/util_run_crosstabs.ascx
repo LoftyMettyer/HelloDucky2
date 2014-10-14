@@ -3,7 +3,9 @@
 <%@ Import Namespace="DMI.NET" %>
 <%@ Import Namespace="HR.Intranet.Server.Enums" %>
 <%@ Import Namespace="HR.Intranet.Server" %>
-
+<%-- For other devs: Do not remove below line. --%>
+<%="" %>
+<%-- For other devs: Do not remove above line. --%>
 <script type="text/javascript">
 
 	$("#top").hide();
@@ -58,10 +60,10 @@
 	<%If objCrossTab.CrossTabType = CrossTabType.ctt9GridBox Then%>
 	<table id="tblNineBox" style="display: none;">
 		<tr>
-			<td class="yaxismajor" rowspan="3">
+			<td class="yaxismajor ui-widget-header" rowspan="3">
 				<p class="rot270"><%:objCrossTab.YAxisLabel%></p>
 			</td>
-			<td class="yaxisminor">
+			<td class="yaxisminor ui-state-default">
 				<p class="rot270"><%:objCrossTab.YAxisSubLabel1%></p>
 			</td>
 			<td id="nineBoxR1C1" class="nineBoxGridCell">
@@ -78,7 +80,7 @@
 			</td>
 		</tr>
 		<tr>
-			<td class="yaxisminor">
+			<td class="yaxisminor ui-state-default">
 				<p class="rot270"><%:objCrossTab.YAxisSubLabel2%></p>
 			</td>
 			<td id="nineBoxR2C1" class="nineBoxGridCell">
@@ -95,7 +97,7 @@
 			</td>
 		</tr>
 		<tr>
-			<td class="yaxisminor">
+			<td class="yaxisminor ui-state-default">
 				<p class="rot270"><%:objCrossTab.YAxisSubLabel3%></p>
 			</td>
 			<td id="nineBoxR3C1" class="nineBoxGridCell">
@@ -113,18 +115,17 @@
 		</tr>
 		<tr>
 			<td colspan="2" rowspan="2" class="xaxis"></td>
-			<td class="xaxisminor"><%:objCrossTab.XAxisSubLabel1%></td>
-			<td class="xaxisminor"><%:objCrossTab.XAxisSubLabel2%></td>
-			<td class="xaxisminor"><%:objCrossTab.XAxisSubLabel3%></td>
+			<td class="xaxisminor ui-state-default"><%:objCrossTab.XAxisSubLabel1%></td>
+			<td class="xaxisminor ui-state-default"><%:objCrossTab.XAxisSubLabel2%></td>
+			<td class="xaxisminor ui-state-default"><%:objCrossTab.XAxisSubLabel3%></td>
 		</tr>
 		<tr>
-			<td colspan="3" class="xaxisminor"><%:objCrossTab.XAxisLabel%></td>
+			<td colspan="3" class="xaxisminor ui-widget-header"><%:objCrossTab.XAxisLabel%></td>
 		</tr>
 	</table>
 	<%End If%>
 
 </div>
-
 
 <%--Session("utiltype = 1 		Cross Tab
 Session("utiltype = 2		Custom Report
@@ -133,97 +134,88 @@ Session("utiltype = 15 		Absence Breakdown
 Session("utiltype = 16 		Bradford Factor
 Session("utiltype = 17 		Calendar Report--%>
 <br />
-
-<div id="divCrossTabOptions">
-	<%--Not a Absence Breakdown so show all components--%>
-	<div id="CrossTabsIntersectionControls" style="float: left; width: 45%">
-		<div id="Div1" style="font-weight: bold;">Intersection</div>
-		<div style="width: 80px; float: left">
-			<label>Column :</label>
-		</div>
-		<div>
-			<input id="txtIntersectionColumn" name="txtIntersectionColumn" class="text textdisabled" style="WIDTH: 200px;" disabled="disabled">
-		</div>
-		<div style="width: 80px; float: left">
-			<label>Type :</label>
-		</div>
-		<div>
-			<select id="cboIntersectionType" name="cboIntersectionType" class="combo" style="WIDTH: 205px" onchange="UpdateGrid()"></select>
-		</div>
-		<div id="CrossTabCheckBoxes" style="float: left; margin-left: 80px; padding-top: 10px">
-		<input type="checkbox" id="chkSuppressZeros" name="chkSuppressZeros" value="checkbox"
-			onclick="UpdateGrid()" />
-		<label
-			for="chkSuppressZeros"
-			class="checkbox"
-			tabindex="0">
-			Suppress Zeros<br>
-		</label>
-
-		<input type="checkbox" id="chkPercentType" name="chkPercentType" value="checkbox"
-			onclick="chkPercentType_Click()" />
-		<label
-			for="chkPercentType"
-			class="checkbox"
-			tabindex="0">
-			<%
-				If objCrossTab.CrossTabType <> CrossTabType.cttAbsenceBreakdown Then
-					Response.Write(" Percentage of Type")
-				End If
-			%>
-		</label>
-		<br>
-		<input type="checkbox" id="chkPercentPage" name="chkPercentPage" value="checkbox"
-			onclick="UpdateGrid();" />
-		<label
-			for="chkPercentPage"
-			class="checkbox"
-			tabindex="0">
-			<%
-				If objCrossTab.CrossTabType <> CrossTabType.cttAbsenceBreakdown Then
-					Response.Write(" Percentage of Page")
-				End If
-			%>
-		</label>
-		<br>
-		<input type="checkbox" id="chkUse1000" name="chkUse1000" value="checkbox"
-			onclick="UpdateGrid()" />
-		<label
-			for="chkUse1000"
-			class="checkbox"
-			tabindex="0">
-			<%
-				If objCrossTab.CrossTabType <> CrossTabType.cttAbsenceBreakdown Then
-					Response.Write(" Use 1000 Separators (,)")
-				End If
-			%>
-		</label>
-	</div>
-	</div>
-		
-	<div id="PageControls" style="float: left">
-		
-
-		<div id="CrossTabPage" name="CrossTabPage">
-			<div id="txtWordVer" style="font-weight: bold;">Page</div>
-			<div style="width: 80px; float: left">
-				<label>Column :</label>
+<fieldset class="ui-state-default CTT<%=objCrossTab.CrossTabType%>">
+	<div id="divCrossTabOptions">
+		<%--Not a Absence Breakdown so show all components--%>
+		<div id="CrossTabsIntersectionControls" style="float: left; width: 33%;">
+			<div id="Div1" style="font-weight: bold;margin-bottom: 8px;">Intersection</div>
+			<div style="float: left; font-weight: normal; margin-left: 5px;">
+				<label name="txtIntersectionColumn" id="txtIntersectionColumn">Type :</label>
 			</div>
 			<div>
-				<input id="txtPageColumn" name="txtPageColumn" style="WIDTH: 200px;" class="text textdisabled" disabled="disabled">
+				<select id="cboIntersectionType" name="cboIntersectionType" class="combo" style="width: 205px" onchange="UpdateGrid()"></select>
 			</div>
+		</div>
 
-			<div style="width: 80px; float: left">
-				<label>Value :</label>
+
+		<div id="PageControls" style="float: left; width: 33%;">
+			<div id="CrossTabPage" name="CrossTabPage">
+				<div id="txtWordVer" style="font-weight: bold;margin-bottom: 8px;">Page</div>
+				<div style="float: left; font-weight: normal; margin-left: 5px;">
+					<label id="txtPageColumn" name="txtPageColumn">Page :</label>
+				</div>
+				<div>
+					<select id="cboPage" name="cboPage" class="combo" style="width: 205px" onchange="UpdateGrid()"></select>
+				</div>
 			</div>
-			<div>
-				<select id="cboPage" name="cboPage" class="combo" style="WIDTH: 205px" onchange="UpdateGrid()"></select>
+		</div>
+
+		<div id="CrossTabCheckBoxes" style="float: left;width: 33%;">
+			<div style="font-weight: bold;
+				<%If objCrossTab.CrossTabType = CrossTabType.cttAbsenceBreakdown Then Response.Write(";margin-bottom: 8px;")%>">Options</div>
+			<div style="float: left; font-weight: normal;">
+				<input type="checkbox" id="chkSuppressZeros" name="chkSuppressZeros" value="checkbox"
+					onclick="UpdateGrid()" />
+				<label
+					for="chkSuppressZeros"
+					class="checkbox"
+					tabindex="0">
+					Suppress Zeros
+				</label>
+				<br />
+				<input type="checkbox" id="chkUse1000" name="chkUse1000" value="checkbox"
+					onclick="UpdateGrid()" />
+				<label
+					for="chkUse1000"
+					class="checkbox"
+					tabindex="0">
+					<%
+						If objCrossTab.CrossTabType <> CrossTabType.cttAbsenceBreakdown Then
+							Response.Write(" Use 1000 Separators (,)")
+						End If
+					%>
+				</label>
+			</div>
+			<div style="float: left;font-weight: normal;">
+				<input type="checkbox" id="chkPercentType" name="chkPercentType" value="checkbox"
+					onclick="chkPercentType_Click()" />
+				<label
+					for="chkPercentType"
+					class="checkbox"
+					tabindex="0">
+					<%
+						If objCrossTab.CrossTabType <> CrossTabType.cttAbsenceBreakdown Then
+							Response.Write(" Percentage of Type")
+						End If
+					%>
+				</label>
+				<br />
+				<input type="checkbox" id="chkPercentPage" name="chkPercentPage" value="checkbox"
+					onclick="UpdateGrid();" />
+				<label
+					for="chkPercentPage"
+					class="checkbox"
+					tabindex="0">
+					<%
+						If objCrossTab.CrossTabType <> CrossTabType.cttAbsenceBreakdown Then
+							Response.Write(" Percentage of Page")
+						End If
+					%>
+				</label>
 			</div>
 		</div>
 	</div>
-
-</div>
-
+</fieldset>
 <form id="frmOriginalDefinition">
 	<%
 		Response.Write("	<input type='hidden' id='txtDefn_Name' name='txtDefn_Name' value='" & objCrossTab.CrossTabName.ToString() & "'>" & vbCrLf)
@@ -245,3 +237,16 @@ Session("utiltype = 17 		Calendar Report--%>
 
 <select style="visibility: hidden; display: none" id="cboDummy" name="cboDummy">
 </select>
+
+<script type="text/javascript">
+	$('#nineBoxR1C1').css('background-color', '<%="#" & objCrossTab.ColorDesc1%>');
+	$('#nineBoxR1C2').css('background-color', '<%="#" & objCrossTab.ColorDesc2%>');
+	$('#nineBoxR1C3').css('background-color', '<%="#" & objCrossTab.ColorDesc3%>');
+	$('#nineBoxR2C1').css('background-color', '<%="#" & objCrossTab.ColorDesc4%>');
+	$('#nineBoxR2C2').css('background-color', '<%="#" & objCrossTab.ColorDesc5%>');
+	$('#nineBoxR2C3').css('background-color', '<%="#" & objCrossTab.ColorDesc6%>');
+	$('#nineBoxR3C1').css('background-color', '<%="#" & objCrossTab.ColorDesc7%>');
+	$('#nineBoxR3C2').css('background-color', '<%="#" & objCrossTab.ColorDesc8%>');
+	$('#nineBoxR3C3').css('background-color', '<%="#" & objCrossTab.ColorDesc9%>');
+
+</script>

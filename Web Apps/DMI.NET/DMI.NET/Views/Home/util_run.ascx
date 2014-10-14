@@ -123,7 +123,8 @@
 		if (menu_isSSIMode() == true) {
 			$("#cmdClose").hide();  // Don't show the Close button in SSI
 		} else {
-			$("#cmdClose").show();
+			$("#divReportButtons #cmdClose").show();
+			$('#divReportButtons #cmdBack').hide();
 		}
 
 		$("#reportbreakdownframe").hide();
@@ -257,14 +258,16 @@
 				End If
 			%>
 		</div>
-		<div id="divReportButtons" style="margin: 30px 50px 0 0; visibility: hidden; padding-top: 20px; float: right">
+		<br/>
+		<div id="divReportButtons" style="margin: 30px 0 0 0; visibility: hidden; padding-top: 20px; float: right">
 				<%If (Session("utiltype") = "2") Then%> 
-					<input class="btn" type="button" id="cmdPrint" name="cmdPrint" value="<%=sPrintButtonLabel%>" onclick="outputOptionsPrintClick()" />
+					<input class="btn minwidth100" type="button" id="cmdPrint" name="cmdPrint" value="<%=sPrintButtonLabel%>" onclick="outputOptionsPrintClick()" />
 				<%End If%>
-				<input class="btn" type="button" id="cmdOK" name="cmdOK" value="Export" onclick="outputOptionsOKClick()" />
-				<input class="btn" type="button" id="cmdOutput" name="cmdOutput" value="Output" onclick="ExportDataPrompt();" />
-				<input class="btn" type="button" id="cmdCancel" name="cmdCancel" value="Preview" onclick="ShowDataFrame();" />
-				<input class="btn" type="button" id="cmdClose" name="cmdClose" value="Close" onclick="closeclick();" />
+				<input class="btn minwidth100" type="button" id="cmdOK" name="cmdOK" value="Export" onclick="outputOptionsOKClick()" />
+				<input class="btn minwidth100" type="button" id="cmdOutput" name="cmdOutput" value="Output" onclick="ExportDataPrompt();" />
+				<input class="btn minwidth100" type="button" id="cmdCancel" name="cmdCancel" value="Preview" onclick="ShowDataFrame();" />
+				<input class="btn minwidth100" type="button" id="cmdBack" name="cmdBack" value="Back" style="WIDTH: 80px; display: none;"  onclick="ShowDataFrame();" />
+				<input class="btn minwidth100" type="button" id="cmdClose" name="cmdClose" value="Close" onclick="closeclick();" />
 			</div>
 		</div>
 	</div>

@@ -18,14 +18,14 @@
 		If Session("CT_Mode") = "BREAKDOWN" Then
 
 		If objCrossTab.CrossTabType = CrossTabType.cttAbsenceBreakdown Then
-			Response.Write("Absence Breakdown Cell Breakdown")
+			Response.Write("<label style='font-weight: bold;'>Absence Breakdown Cell Breakdown</label>")
 		Else
-			Response.Write("Cross Tabs Cell Breakdown")
+			Response.Write("<label style='font-weight: bold;'>Cross Tabs Cell Breakdown</label>")
 		End If
 		
 %>
 
-		<table align="center" class="outline" cellpadding="5" cellspacing="0" width="100%" height="400px">
+		<table align="center" class="outline" cellpadding="5" cellspacing="0" width="100%">
 				<tr height="1">
 						<td>
 								<table height="100%" width="100%" class="invisible" cellspacing="0" cellpadding="0">
@@ -92,24 +92,13 @@
 										<tr>
 												<td></td>
 												<td colspan="2">
-													<table id="ssOutputBreakdown"></table>
-													
-												</td>
-										</tr>
-										<tr height="2">
-												<td>&nbsp;</td>
-										</tr>
-										<tr height="5">
-												<td colspan="3" align="RIGHT">
-														<input type="button" id="cmdClose" name="cmdClose" value="Back" style="WIDTH: 80px" class="btn" onclick="ShowDataFrame();" />
+													<table id="ssOutputBreakdown"></table>													
 												</td>
 										</tr>
 								</table>
-
 						</td>
 				</tr>
-		</table>
-
+		</table>	
 		<%
 
 			Response.Write("<script type=""text/javascript"">" & vbCrLf)			
@@ -159,7 +148,7 @@
 				Response.Write("  colData.push(obj);")
 			Next
 		
-			Response.Write("	$('#ssOutputBreakdown').jqGrid({data: colData, datatype: 'local', colNames: colNames, colModel: colMode, autowidth: true" & vbCrLf)
+			Response.Write("	$('#ssOutputBreakdown').jqGrid({data: colData, datatype: 'local', colNames: colNames, height: 400, colModel: colMode, autowidth: true" & vbCrLf)
 			Response.Write("   ,rowNum:1000000")
 			Response.Write("	, cmTemplate: { editable: true }});")
 		
@@ -174,15 +163,18 @@
 
 <script type="text/javascript">
 
-		$("#reportbreakdownframe").attr("data-framesource", "UTIL_RUN_CROSSTABSBREAKDOWN");
+	$("#reportbreakdownframe").attr("data-framesource", "UTIL_RUN_CROSSTABSBREAKDOWN");
+	
+	$("#reportframe").show();
+	$("#reportdataframe").hide();
+	$("#reportworkframe").hide();
+	$("#reportbreakdownframe").show();
 
-		$("#reportframe").show();
-		$("#reportdataframe").hide();
-		$("#reportworkframe").hide();
-		$("#reportbreakdownframe").show();
+	$('#divReportButtons #cmdClose').hide();
+	$('#divReportButtons #cmdBack').show();
 
-		setTimeout("util_run_crosstabsBreakdown_window_onload()", 100);
-		
+	setTimeout("util_run_crosstabsBreakdown_window_onload()", 100);
+
 </script>
 
 <%

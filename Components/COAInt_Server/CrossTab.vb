@@ -405,23 +405,23 @@ Public Class CrossTab
 	Property YAxisSubLabel2() As String
 	Property YAxisSubLabel3() As String
 	Property Description1() As String
-	Property ColorDesc1() As Integer
+	Property ColorDesc1() As String
 	Property Description2() As String
-	Property ColorDesc2() As Integer
+	Property ColorDesc2() As String
 	Property Description3() As String
-	Property ColorDesc3() As Integer
+	Property ColorDesc3() As String
 	Property Description4() As String
-	Property ColorDesc4() As Integer
+	Property ColorDesc4() As String
 	Property Description5() As String
-	Property ColorDesc5() As Integer
+	Property ColorDesc5() As String
 	Property Description6() As String
-	Property ColorDesc6() As Integer
+	Property ColorDesc6() As String
 	Property Description7() As String
-	Property ColorDesc7() As Integer
+	Property ColorDesc7() As String
 	Property Description8() As String
-	Property ColorDesc8() As Integer
+	Property ColorDesc8() As String
 	Property Description9() As String
-	Property ColorDesc9() As Integer
+	Property ColorDesc9() As String
 
 
 	Public Function EventLogAddHeader() As Integer
@@ -637,23 +637,23 @@ ErrorTrap:
 				YAxisSubLabel2 = NullSafeString(objRow("YAxisSubLabel2"))
 				YAxisSubLabel3 = NullSafeString(objRow("YAxisSubLabel3"))
 				Description1 = NullSafeString(objRow("Description1"))
-				ColorDesc1 = NullSafeInteger(objRow("ColorDesc1"))
+				ColorDesc1 = NullSafeString(objRow("ColorDesc1"))
 				Description2 = NullSafeString(objRow("Description2"))
-				ColorDesc2 = NullSafeInteger(objRow("ColorDesc2"))
+				ColorDesc2 = NullSafeString(objRow("ColorDesc2"))
 				Description3 = NullSafeString(objRow("Description3"))
-				ColorDesc3 = NullSafeInteger(objRow("ColorDesc3"))
+				ColorDesc3 = NullSafeString(objRow("ColorDesc3"))
 				Description4 = NullSafeString(objRow("Description4"))
-				ColorDesc4 = NullSafeInteger(objRow("ColorDesc4"))
+				ColorDesc4 = NullSafeString(objRow("ColorDesc4"))
 				Description5 = NullSafeString(objRow("Description5"))
-				ColorDesc5 = NullSafeInteger(objRow("ColorDesc5"))
+				ColorDesc5 = NullSafeString(objRow("ColorDesc5"))
 				Description6 = NullSafeString(objRow("Description6"))
-				ColorDesc6 = NullSafeInteger(objRow("ColorDesc6"))
+				ColorDesc6 = NullSafeString(objRow("ColorDesc6"))
 				Description7 = NullSafeString(objRow("Description7"))
-				ColorDesc7 = NullSafeInteger(objRow("ColorDesc7"))
+				ColorDesc7 = NullSafeString(objRow("ColorDesc7"))
 				Description8 = NullSafeString(objRow("Description8"))
-				ColorDesc8 = NullSafeInteger(objRow("ColorDesc8"))
+				ColorDesc8 = NullSafeString(objRow("ColorDesc8"))
 				Description9 = NullSafeString(objRow("Description9"))
-				ColorDesc9 = NullSafeInteger(objRow("ColorDesc9"))
+				ColorDesc9 = NullSafeString(objRow("ColorDesc9"))
 
 				fOK = IsRecordSelectionValid(CInt(objRow("PickListID")), CInt(objRow("FilterID")))
 				If fOK = False Then

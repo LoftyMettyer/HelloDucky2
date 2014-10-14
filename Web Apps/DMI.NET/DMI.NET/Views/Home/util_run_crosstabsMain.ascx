@@ -158,7 +158,7 @@
 	<%Html.RenderPartial("~/views/home/util_run_crosstabsData.ascx")%>
 </div>
 
-<div id="reportbreakdownframe" data-framesource="util_run_crosstabsBreakdown" style="display: none;" accesskey="">
+<div id="reportbreakdownframe" data-framesource="util_run_crosstabsBreakdown" style="display: none;height: 100%;" accesskey="">
 	<%Html.RenderPartial("~/views/home/util_run_crosstabsBreakdown.ascx")%>
 </div>
 

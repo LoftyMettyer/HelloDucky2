@@ -1347,3 +1347,34 @@ div.displaytable {
 .nineboxgridColorpicker {
 	position: static;
 }
+
+.minwidth100 {
+	min-width: 100px;
+}
+
+/* CTT4  is 9-box grid only */
+.CTT4 {
+	margin: 0 auto;
+	width: 425px;
+}
+
+	.CTT4 #CrossTabsIntersectionControls {
+		display: none;
+	}
+
+	.CTT4 #PageControls, .CTT4 #CrossTabCheckBoxes {
+		width: 100% !important;
+		margin-bottom: 8px;
+	}
+
+		.CTT4 #CrossTabCheckBoxes > div:first-child {
+			margin-bottom: 8px;
+		}
+
+		.CTT4 #CrossTabCheckBoxes > div:nth-child(3) {
+			float: right !important;
+		}
+
+		.CTT4 #CrossTabPage > div:nth-child(3) {
+			float: right!important;
+		}
