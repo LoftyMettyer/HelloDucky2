@@ -9,144 +9,149 @@
 	<legend class="fontsmalltitle">
 		Headings &amp; Column Breaks
 	</legend>
-	<fieldset>
-		<table class="width100">
-			<thead class="fontsmalltitle">
-				<tr>
-					<td style="width:10%"></td>
-					<td style="width:55%;text-align:center">Column</td>
-					<td style="width:10%;text-align:center">Start</td>
-					<td style="width:10%;text-align:center">Stop</td>
-					<td style="width:10%;text-align:center"></td>
-				</tr>
-			</thead>
+	<table class="width100">
+		<thead class="fontsmalltitle">
 			<tr>
-				<td style="padding-right: 20px;">Horizontal :</td>
-				<td>
-					@Html.ColumnDropdownFor(Function(m) m.HorizontalID, New ColumnFilter() With {.TableID = Model.BaseTableID, .IsNumeric = True}, New With {.onchange = "crossTabHorizontalChange()"})
-					@Html.ValidationMessageFor(Function(m) m.HorizontalID)
-					@Html.Hidden("HorizontalDataType", CInt(Model.HorizontalDataType))
-				</td>
-				<td class="startstopincrementcol">@Html.TextBoxFor(Function(m) m.HorizontalStart, New With {.class = "selectFullText"})</td>
-				<td class="startstopincrementcol">@Html.TextBoxFor(Function(m) m.HorizontalStop, New With {.class = "selectFullText"})</td>
+				<td style="width:10%"></td>
+				<td style="width:55%;text-align:center">Column</td>
+				<td style="width:10%;text-align:center">Start</td>
+				<td style="width:10%;text-align:center">Stop</td>
+				<td style="width:10%;text-align:center"></td>
 			</tr>
-			<tr style="height: 10px;"></tr>
-			<tr>
-				<td>Vertical :</td>
-				<td>
-					@Html.ColumnDropdownFor(Function(m) m.VerticalID, New ColumnFilter() With {.TableID = Model.BaseTableID, .IsNumeric = True}, New With {.onchange = "crossTabVerticalChange()"})
-					@Html.ValidationMessageFor(Function(m) m.VerticalID)
-					@Html.Hidden("VerticalDataType", CInt(Model.VerticalDataType))
-				</td>
-				<td class="startstopincrementcol">@Html.TextBoxFor(Function(m) m.VerticalStart, New With {.class = "selectFullText"})</td>
-				<td class="startstopincrementcol">@Html.TextBoxFor(Function(m) m.VerticalStop, New With {.class = "selectFullText"})</td>
-			</tr>
-			<tr style="height: 10px;"></tr>
-			<tr>
-				<td>Page Break :</td>
-				<td>
-					@Html.ColumnDropdownFor(Function(m) m.PageBreakID, New ColumnFilter() With {.TableID = Model.BaseTableID, .AddNone = True}, New With {.onchange = "crossTabPageBreakChange()"})
-					@Html.Hidden("PageBreakDataType", CInt(Model.PageBreakDataType))
-				</td>
-				<td></td>
-				<td></td>
-			</tr>
+		</thead>
+		<tr>
+			<td style="padding-right: 20px;">Horizontal :</td>
+			<td>
+				@Html.ColumnDropdownFor(Function(m) m.HorizontalID, New ColumnFilter() With {.TableID = Model.BaseTableID, .IsNumeric = True}, New With {.onchange = "crossTabHorizontalChange()"})
+				@Html.ValidationMessageFor(Function(m) m.HorizontalID)
+				@Html.Hidden("HorizontalDataType", CInt(Model.HorizontalDataType))
+			</td>
+			<td class="startstopincrementcol">@Html.TextBoxFor(Function(m) m.HorizontalStart, New With {.class = "selectFullText"})</td>
+			<td class="startstopincrementcol">@Html.TextBoxFor(Function(m) m.HorizontalStop, New With {.class = "selectFullText"})</td>
+		</tr>
+		<tr style="height: 10px;"></tr>
+		<tr>
+			<td>Vertical :</td>
+			<td>
+				@Html.ColumnDropdownFor(Function(m) m.VerticalID, New ColumnFilter() With {.TableID = Model.BaseTableID, .IsNumeric = True}, New With {.onchange = "crossTabVerticalChange()"})
+				@Html.ValidationMessageFor(Function(m) m.VerticalID)
+				@Html.Hidden("VerticalDataType", CInt(Model.VerticalDataType))
+			</td>
+			<td class="startstopincrementcol">@Html.TextBoxFor(Function(m) m.VerticalStart, New With {.class = "selectFullText"})</td>
+			<td class="startstopincrementcol">@Html.TextBoxFor(Function(m) m.VerticalStop, New With {.class = "selectFullText"})</td>
+		</tr>
+		<tr style="height: 10px;"></tr>
+		<tr>
+			<td>Page Break :</td>
+			<td>
+				@Html.ColumnDropdownFor(Function(m) m.PageBreakID, New ColumnFilter() With {.TableID = Model.BaseTableID, .AddNone = True}, New With {.onchange = "crossTabPageBreakChange()"})
+				@Html.Hidden("PageBreakDataType", CInt(Model.PageBreakDataType))
+			</td>
+			<td></td>
+			<td></td>
+		</tr>
 
-			<tr style="height:60px;">
-				<td class="fontsmalltitle" style="position:absolute;margin-left: -13px; margin-top: 20px;">Display :</td>
-			</tr>
+		<tr style="height:20px;"></tr>
 
-			<tr>
-				<td colspan="2" rowspan="4">
-					<table id="tblNineBoxDefinition">
-						<tr>
-							<td class="yaxismajor" rowspan="3">
-								<p>@Html.TextBoxFor(Function(m) m.YAxisLabel)</p>
-							</td>
-							<td class="yaxisminor">
-								<p>@Html.TextBoxFor(Function(m) m.YAxisSubLabel1)</p>
-							</td>
-							<td id="nineBoxR1C1" class="nineBoxGridCell">
-								<p>@Html.TextBoxFor(Function(m) m.Description1)</p>
-								<p>@Html.TextBoxFor(Function(m) m.ColorDesc1)</p>
-							</td>
-							<td id="nineBoxR1C2" class="nineBoxGridCell">
-								<p>@Html.TextBoxFor(Function(m) m.Description2)</p>
-								<p>@Html.TextBoxFor(Function(m) m.ColorDesc2)</p>
-							</td>
-							<td id="nineBoxR1C3" class="nineBoxGridCell">
-								<p>@Html.TextBoxFor(Function(m) m.Description3)</p>
-								<p>@Html.TextBoxFor(Function(m) m.ColorDesc3)</p>
-							</td>
-						</tr>
-						<tr>
-							<td class="yaxisminor">
-								<p>@Html.TextBoxFor(Function(m) m.YAxisSubLabel2)</p>
-							</td>
-							<td id="nineBoxR2C1" class="nineBoxGridCell">
-								<p>@Html.TextBoxFor(Function(m) m.Description4)</p>
-								<p>@Html.TextBoxFor(Function(m) m.ColorDesc4)</p>
-							</td>
-							<td id="nineBoxR2C2" class="nineBoxGridCell">
-								<p>@Html.TextBoxFor(Function(m) m.Description5)</p>
-								<p>@Html.TextBoxFor(Function(m) m.ColorDesc5)</p>
-							</td>
-							<td id="nineBoxR2C3" class="nineBoxGridCell">
-								<p>@Html.TextBoxFor(Function(m) m.Description6)</p>
-								<p>@Html.TextBoxFor(Function(m) m.ColorDesc6)</p>
-							</td>
-						</tr>
-						<tr>
-							<td class="yaxisminor">
-								<p>@Html.TextBoxFor(Function(m) m.YAxisSubLabel3)</p>
-							</td>
-							<td id="nineBoxR3C1" class="nineBoxGridCell">
-								<p>@Html.TextBoxFor(Function(m) m.Description7)</p>
-								<p>@Html.TextBoxFor(Function(m) m.ColorDesc7)</p>
-							</td>
-							<td id="nineBoxR3C2" class="nineBoxGridCell">
-								<p>@Html.TextBoxFor(Function(m) m.Description8)</p>
-								<p>@Html.TextBoxFor(Function(m) m.ColorDesc8)</p>
-							</td>
-							<td id="nineBoxR3C3" class="nineBoxGridCell">
-								<p>@Html.TextBoxFor(Function(m) m.Description9)</p>
-								<p>@Html.TextBoxFor(Function(m) m.ColorDesc9)</p>
-							</td>
-						</tr>
-						<tr>
-							<td colspan="2" rowspan="2" class="xaxis"></td>
-							<td class="xaxisminor">@Html.TextBoxFor(Function(m) m.XAxisSubLabel1)</td>
-							<td class="xaxisminor">@Html.TextBoxFor(Function(m) m.XAxisSubLabel2)</td>
-							<td class="xaxisminor">@Html.TextBoxFor(Function(m) m.XAxisSubLabel3)</td>
-						</tr>
-						<tr>
-							<td colspan="3" class="xaxisminor">@Html.TextBoxFor(Function(m) m.XAxisLabel)</td>
-						</tr>
-					</table>
-				</td>
-				<td colspan="3" rowspan="4" style="padding-left:20px; vertical-align:top; ">
-					@Html.CheckBox("PercentageOfType", Model.PercentageOfType)
-					@Html.LabelFor(Function(m) m.PercentageOfType)
-					<br />
-					@Html.CheckBox("PercentageOfPage", Model.PercentageOfPage)
-					@Html.LabelFor(Function(m) m.PercentageOfPage)
-					<br />
-					@Html.CheckBox("SuppressZeros", Model.SuppressZeros)
-					@Html.LabelFor(Function(m) m.SuppressZeros)
-					<br />
-					@Html.CheckBox("UseThousandSeparators", Model.UseThousandSeparators)
-					@Html.LabelFor(Function(m) m.UseThousandSeparators)
-				</td>
-			</tr>
-		</table>
-		
-
-		@Html.Hidden("IntersectionID", CInt(Model.IntersectionID))
-		@Html.Hidden("IntersectionType", CInt(Model.IntersectionType))
-		@Html.Hidden("PageBreakStart", CDbl(Model.PageBreakStart))
-		@Html.Hidden("PageBreakStop", CDbl(Model.PageBreakStop))
-	</fieldset>
+		<tr>
+			<td style="vertical-align:top;">
+				<label style="font-weight: bold;margin-left: -5px;">Label Settings</label>
+				<br />
+				<label style="font-size:small;">(Click the report labels to edit them)</label>
+			</td>
+			<td>
+				<table id="tblNineBox_def" style="">
+					<tr>
+						<td class="yaxismajor" rowspan="3">
+							<p>@Html.TextBoxFor(Function(m) m.YAxisLabel)</p>
+						</td>
+						<td class="yaxisminor">
+							<p>@Html.TextBoxFor(Function(m) m.YAxisSubLabel1)</p>
+						</td>
+						<td id="nineBoxR1C1" class="nineBoxGridCell">
+							<p>@Html.TextAreaFor(Function(m) m.Description1)</p>
+							<p>@Html.TextBoxFor(Function(m) m.ColorDesc1)</p>
+						</td>
+						<td id="nineBoxR1C2" class="nineBoxGridCell">
+							<p>@Html.TextAreaFor(Function(m) m.Description2)</p>
+							<p>@Html.TextBoxFor(Function(m) m.ColorDesc2)</p>
+						</td>
+						<td id="nineBoxR1C3" class="nineBoxGridCell">
+							<p>@Html.TextAreaFor(Function(m) m.Description3)</p>
+							<p>@Html.TextBoxFor(Function(m) m.ColorDesc3)</p>
+						</td>
+					</tr>
+					<tr>
+						<td class="yaxisminor">
+							<p>@Html.TextBoxFor(Function(m) m.YAxisSubLabel2)</p>
+						</td>
+						<td id="nineBoxR2C1" class="nineBoxGridCell">
+							<p>@Html.TextAreaFor(Function(m) m.Description4)</p>
+							<p>@Html.TextBoxFor(Function(m) m.ColorDesc4)</p>
+						</td>
+						<td id="nineBoxR2C2" class="nineBoxGridCell">
+							<p>@Html.TextAreaFor(Function(m) m.Description5)</p>
+							<p>@Html.TextBoxFor(Function(m) m.ColorDesc5)</p>
+						</td>
+						<td id="nineBoxR2C3" class="nineBoxGridCell">
+							<p>@Html.TextAreaFor(Function(m) m.Description6)</p>
+							<p>@Html.TextBoxFor(Function(m) m.ColorDesc6)</p>
+						</td>
+					</tr>
+					<tr>
+						<td class="yaxisminor">
+							<p>@Html.TextBoxFor(Function(m) m.YAxisSubLabel3)</p>
+						</td>
+						<td id="nineBoxR3C1" class="nineBoxGridCell">
+							<p>@Html.TextAreaFor(Function(m) m.Description7)</p>
+							<p>@Html.TextBoxFor(Function(m) m.ColorDesc7)</p>
+						</td>
+						<td id="nineBoxR3C2" class="nineBoxGridCell">
+							<p>@Html.TextAreaFor(Function(m) m.Description8)</p>
+							<p>@Html.TextBoxFor(Function(m) m.ColorDesc8)</p>
+						</td>
+						<td id="nineBoxR3C3" class="nineBoxGridCell">
+							<p>@Html.TextAreaFor(Function(m) m.Description9)</p>
+							<p>@Html.TextBoxFor(Function(m) m.ColorDesc9)</p>
+						</td>
+					</tr>
+					<tr>
+						<td colspan="2" rowspan="2" class="xaxis"></td>
+						<td class="xaxisminor">@Html.TextBoxFor(Function(m) m.XAxisSubLabel1)</td>
+						<td class="xaxisminor">@Html.TextBoxFor(Function(m) m.XAxisSubLabel2)</td>
+						<td class="xaxisminor">@Html.TextBoxFor(Function(m) m.XAxisSubLabel3)</td>
+					</tr>
+					<tr>
+						<td colspan="3" class="xaxisminor">@Html.TextBoxFor(Function(m) m.XAxisLabel)</td>
+					</tr>
+				</table>
+			</td>
+			<td colspan="2" id="td9boxOptions">
+				<label style="font-weight: bold;margin-left: -5px;">Display Options</label>
+				<br />
+				@Html.CheckBox("PercentageOfType", Model.PercentageOfType)
+				@Html.LabelFor(Function(m) m.PercentageOfType)
+				<br />
+				@Html.CheckBox("PercentageOfPage", Model.PercentageOfPage)
+				@Html.LabelFor(Function(m) m.PercentageOfPage)
+				<br />
+				@Html.CheckBox("SuppressZeros", Model.SuppressZeros)
+				@Html.LabelFor(Function(m) m.SuppressZeros)
+				<br />
+				@Html.CheckBox("UseThousandSeparators", Model.UseThousandSeparators)
+				@Html.LabelFor(Function(m) m.UseThousandSeparators)
+			</td>
+		</tr>
+	</table>
 </fieldset>
+
+
+
+@Html.Hidden("IntersectionID", CInt(Model.IntersectionID))
+@Html.Hidden("IntersectionType", CInt(Model.IntersectionType))
+@Html.Hidden("PageBreakStart", CDbl(Model.PageBreakStart))
+@Html.Hidden("PageBreakStop", CDbl(Model.PageBreakStop))
+
 <br />
 @Html.ValidationMessageFor(Function(m) m.HorizontalStart)
 @Html.ValidationMessageFor(Function(m) m.HorizontalStop)
@@ -326,21 +331,21 @@
 
 		refreshTab2Controls();
 
-	    //Note:-
+		//Note:-
 		//This solution working in Firefox, Chrome and IE, both with keyboard focus and mouse focus.
 		//It also handles correctly clicks following the focus (it moves the caret and doesn't reselect the text):
-	    //With keyboard focus, only onfocus triggers which selects the text because this.clicked is not set. With mouse focus, onmousedown triggers, then onfocus and then onclick which selects the text in onclick but not in onfocus (Chrome requires this).
+		//With keyboard focus, only onfocus triggers which selects the text because this.clicked is not set. With mouse focus, onmousedown triggers, then onfocus and then onclick which selects the text in onclick but not in onfocus (Chrome requires this).
 		//Mouse clicks when the field is already focused don't trigger onfocus which results in not selecting anything.
 		$(".selectFullText").bind({
-		    click: function () {
-		        if (this.clicked == 2) this.select(); this.clicked = 0;
-		    },
-		    mousedown: function () {
-		        this.clicked = 1;
-		    },
-		    focus: function () {
-		        if (!this.clicked) this.select(); else this.clicked = 2;
-		    }
+			click: function () {
+				if (this.clicked == 2) this.select(); this.clicked = 0;
+			},
+			mousedown: function () {
+				this.clicked = 1;
+			},
+			focus: function () {
+				if (!this.clicked) this.select(); else this.clicked = 2;
+			}
 		});
 
 	});
@@ -362,7 +367,7 @@
 		var ID = "ColorDesc" + colorPickerId;
 
 		if ($("#" + ID).val() == "") { //Set default color to black if empty
-			$("#" + ID).val("000000"); 
+			$("#" + ID).val("000000");
 		}
 
 		$("#" + ID).spectrum("destroy");
@@ -372,8 +377,12 @@
 			cancelText: "", //Hide the Cancel button
 			change: function (color) { //On selecting a color...
 				$("#" + ID).val(color.toHex()).change(); //Set the new color and trigger the change event so the Save button is enabled
+				$(this).closest('td').css('background-color', color.toHexString());
 			}
 		});
+
+		$("#" + ID).closest('td').css('background-color', '#' + $("#" + ID).val());
+
 		$("#" + colorPickerId).next().css("top", $("#" + ID).attr("data-style-top") - 2 + "px");
 		$("#" + ID).next().css("left", $("#" + ID).attr("data-style-left") - 1 + "px");
 		$("#" + ID).next().css("height", $("#" + ID).attr("data-style-height") + "px");

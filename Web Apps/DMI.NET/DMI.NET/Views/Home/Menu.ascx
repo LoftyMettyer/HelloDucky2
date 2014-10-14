@@ -350,11 +350,11 @@
 				<li id="mnutoolCustomReports"><a href="#">Custom Reports</a></li>
 				<li id="mnutoolCalendarReports"><a href="#">Calendar Reports</a></li>
 				<li id="mnutoolCrossTabs"><a href="#">Cross Tabs</a></li>
+				<li id="mnutoolNineBox"><a href="#">9-Box Grid Reports</a></li>
 				<li class="hidden" id="mnutoolStdRpt_AbsenceBreakdown"><a href="#">Absence Breakdown...</a></li>
 				<li class="hidden" id="mnutoolStdRpt_BradfordFactor"><a href="#">Bradford Factor...</a></li>
 				<li class="hidden" id="mnutoolStdRpt_StabilityReport"><a href="#">Stability Report...</a></li>
 				<li class="hidden" id="mnutoolStdRpt_TurnoverReport"><a href="#">Turnover...</a></li>
-				<li id="mnutoolNineBox"><a href="#">9-Box Grid Reports</a></li>
 				<li id="mnutoolOrgChart"><a href="#">Organisation Chart</a></li>
 			</ul>
 		</div>

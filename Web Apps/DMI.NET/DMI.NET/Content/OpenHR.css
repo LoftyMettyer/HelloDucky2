@@ -1317,11 +1317,15 @@ div.displaytable {
 		width: 30px;
 	}
 
-	#tblNineBox .xaxis {
+	#tblNineBox .xaxis, #tblNineBox_def .xaxis, #tblNineBox_def .yaxisminor, #tblNineBox_def .yaxismajor, #tblNineBox_def .xaxisminor, #tblNineBox_def .xaxismajor {
 		border: none;
+		vertical-align: middle;
 	}
+		#tblNineBox_def .yaxismajor p {
+			margin: 0;
+		}
 
-	#tblNineBox .xaxisminor {
+	#tblNineBox .xaxisminor, #tblNineBox_def .xaxisminor {
 		height: 30px;
 	}
 
@@ -1332,6 +1336,57 @@ div.displaytable {
 	#tblNineBox #id5 {
 		background-color: orange;
 	}
+
+#tblNineBox_def {
+	padding: 0;		
+	text-align: center;
+	vertical-align: middle;
+}
+
+#tblNineBox_def td:not(.yaxismajor) p {
+	margin: 0;
+	/*width: 90%;*/
+}
+
+	#tblNineBox_def td:not(.yaxismajor) input {
+		width: 90%;
+	}
+
+	#tblNineBox_def td:not(.yaxismajor) textarea {
+		width: 90%;
+		border: none;
+		overflow: hidden;
+		background-color: transparent;
+		border-radius: 5px;
+		text-align: center;
+	}
+
+		#tblNineBox_def td:not(.yaxismajor) textarea:focus, #tblNineBox_def td:not(.yaxismajor) textarea:hover {
+			border: 1px solid black;
+			background-color: white;
+			padding: 1px;
+		}
+
+#tblNineBox_def td {
+		border: 1px solid black;
+		width: 100px;
+		height: 100px;		
+	}
+
+#tblNineBox_def .yaxisminor, #tblNineBox_def .yaxismajor {
+	width: 200px;
+}
+
+#tblNineBox_def td div.sp-preview {
+	width: 75px;
+	height: 20px;
+}
+
+#tblNineBox_def .yaxismajor input, #tblNineBox_def .yaxisminor input, #tblNineBox_def .xaxismajor input, #tblNineBox_def .xaxisminor input { text-align: center;}
+
+#td9boxOptions {
+	vertical-align: top;
+}
 
 .nineBoxGridCell p:first-child {
 	height: 50%;
