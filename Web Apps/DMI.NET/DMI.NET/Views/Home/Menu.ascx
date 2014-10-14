@@ -272,6 +272,7 @@
 	' ------------------------------------------------------------------------------
 	Dim iCustomReportsGranted As Integer = 0
 	Dim iCrossTabsGranted As Integer = 0
+	Dim iNineBoxGridGranted As Integer = 0
 	Dim iCalendarReportsGranted As Integer = 0
 	Dim iMailMergeGranted As Integer = 0
 	Dim iWorkflowGranted As Integer = 0
@@ -295,11 +296,12 @@
 		If Left(objPermission.CategoryKey, 12) = "CALCULATIONS" And objPermission.IsPermitted Then iCalculationsGranted = 1
 		If Left(objPermission.CategoryKey, 7) = "FILTERS" And objPermission.IsPermitted Then iFiltersGranted = 1
 		If Left(objPermission.CategoryKey, 9) = "PICKLISTS" And objPermission.IsPermitted Then iPicklistsGranted = 1
-		If objSessionContext.LoginInfo.IsSystemOrSecurityAdmin Then iNewUserGranted = 1		
-		If Left(objPermission.CategoryKey, 8) = "EVENTLOG" And objPermission.IsPermitted Then iEventLogGranted = 1	
+		If objSessionContext.LoginInfo.IsSystemOrSecurityAdmin Then iNewUserGranted = 1
+		If Left(objPermission.CategoryKey, 8) = "EVENTLOG" And objPermission.IsPermitted Then iEventLogGranted = 1
+		If Left(objPermission.CategoryKey, 11) = "NINEBOXGRID" And objPermission.IsPermitted Then iNineBoxGridGranted = 1
 		If Left(objPermission.CategoryKey, 8) = "INTRANET" AndAlso objPermission.Key = "CURRENTUSERS" AndAlso objPermission.IsPermitted Then iCurrentUsersGranted = 1
 	Next
-
+	
 	
 	Dim bAbsenceEnabled = Licence.IsModuleLicenced(SoftwareModule.Absence)
 
@@ -315,6 +317,7 @@
 	Response.Write("<input type='hidden' id=txtNewUserGranted name=txtNewUserGranted value=" & iNewUserGranted & ">")
 	Response.Write("<input type='hidden' id=txtCurrentUsersGranted name=txtCurrentUsersGranted value=" & iCurrentUsersGranted & ">")
 	Response.Write("<input type='hidden' id=txtEventLogGranted name=txtEventLogGranted value=" & iEventLogGranted & ">")
+	Response.Write("<input type='hidden' id=txtNineBoxGridGranted name=txtNineboxGridGranted value=" & iNineBoxGridGranted & ">")
 	Response.Write("<input type='hidden' id=txtQuickAccessGranted name=txtQuickAccessGranted value=" & IIf(avQuickEntryMenuInfo.Count > 0, "1", "0").ToString & ">")
 		
 	Response.Write("<input type='hidden' id=txtErrorDescription name=txtErrorDescription value=""" & sErrorDescription & """>")

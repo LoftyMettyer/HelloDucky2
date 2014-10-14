@@ -137,7 +137,7 @@ function menu_abMainMenu_DataReady() {
 
 	//Disable/Hide menu items that are irrelevent for this user...
 	menu_refreshMenu();
-	
+
 	if (OpenHR.currentWorkPage() == "DEFAULT") {		
 		//window.parent.frames("workframe").hideMessage();
 		//window.hideMessage();
@@ -2242,6 +2242,7 @@ function menu_refreshMenu() {
 	//JDM: - Oh no its not!!!
 	menu_enableMenuItem("mnutoolCustomReports", $("#txtCustomReportsGranted").val());
 	menu_enableMenuItem("mnutoolCrossTabs", $("#txtCrossTabsGranted").val());
+	menu_enableMenuItem("mnutoolNineBox", $("#txtNineBoxGridGranted").val());
 	menu_enableMenuItem("mnutoolCalendarReports", $("#txtCalendarReportsGranted").val());
 	menu_enableMenuItem("mnutoolMailMerge", $("#txtMailMergeGranted").val());
 		

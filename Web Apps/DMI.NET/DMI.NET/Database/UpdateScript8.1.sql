@@ -122,6 +122,7 @@ BEGIN
 		SET @strIDName = 'CrossTabID';
 		SET @fNewAccess = 1;
 		SET @sAccessTableName= 'ASRSysCrossTabAccess';
+		SET @sExtraWhereSQL = ' CrossTabType = 0';
 	END
 
 	IF @intType = 2 /*'customreports'*/
@@ -198,6 +199,7 @@ BEGIN
 		SET @strIDName = 'CrossTabID';
 		SET @fNewAccess = 1;
 		SET @sAccessTableName= 'ASRSysCrossTabAccess';
+		SET @sExtraWhereSQL = ' CrossTabType = 4';
 	END
 		
 	IF len(@strExplicitSQL) > 0 

@@ -849,20 +849,11 @@
 			strKeyPrefix = "NINEBOXGRID"
 	End Select
 	
-	If Session("defseltype") = "35" Then
-		fNewGranted = True
-		fEditGranted = True
-		fDeleteGranted = True
-		fRunGranted = True
-		fViewGranted = True
-	Else
-		fNewGranted = objSession.IsPermissionGranted(strKeyPrefix, "NEW")
-		fEditGranted = objSession.IsPermissionGranted(strKeyPrefix, "EDIT")
-		fDeleteGranted = objSession.IsPermissionGranted(strKeyPrefix, "DELETE")
-		fRunGranted = objSession.IsPermissionGranted(strKeyPrefix, "RUN")
-		fViewGranted = objSession.IsPermissionGranted(strKeyPrefix, "VIEW")
-	End If
-	
+	fNewGranted = objSession.IsPermissionGranted(strKeyPrefix, "NEW")
+	fEditGranted = objSession.IsPermissionGranted(strKeyPrefix, "EDIT")
+	fDeleteGranted = objSession.IsPermissionGranted(strKeyPrefix, "DELETE")
+	fRunGranted = objSession.IsPermissionGranted(strKeyPrefix, "RUN")
+	fViewGranted = objSession.IsPermissionGranted(strKeyPrefix, "VIEW")
 	
 	Response.Write("<input type=hidden id=""grantnew"" name=""grantnew"" value = " & IIf(fNewGranted, 1, 0) & ">" & vbCrLf)
 	Response.Write("<input type=hidden id=""grantedit"" name=""grantedit"" value = " & IIf(fEditGranted, 1, 0) & ">" & vbCrLf)
