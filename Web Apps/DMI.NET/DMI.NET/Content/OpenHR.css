@@ -1367,10 +1367,12 @@ div.displaytable {
 			padding: 1px;
 		}
 
-#tblNineBox_def td {
+	#tblNineBox_def td {
 		border: 1px solid black;
-		width: 100px;
-		height: 100px;		
+		width: 100px !important;
+		height: 100px !important;
+		min-width: 100px;
+		min-height: 100px;
 	}
 
 #tblNineBox_def .yaxisminor, #tblNineBox_def .yaxismajor {
