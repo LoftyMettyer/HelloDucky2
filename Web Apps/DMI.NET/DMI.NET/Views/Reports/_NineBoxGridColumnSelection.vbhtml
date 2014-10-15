@@ -127,7 +127,7 @@
 				</table>
 			</td>
 			<td colspan="2" id="td9boxOptions">
-				<label style="font-weight: bold;margin-left: -5px;">Display Options</label>
+				<label style="font-weight: bold;">Display Options</label>
 				<br />
 				@Html.CheckBox("PercentageOfType", Model.PercentageOfType)
 				@Html.LabelFor(Function(m) m.PercentageOfType)

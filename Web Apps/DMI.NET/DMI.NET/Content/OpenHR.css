@@ -1367,17 +1367,21 @@ div.displaytable {
 			padding: 1px;
 		}
 
-	#tblNineBox_def td {
+	#tblNineBox_def td:not(.xaxismajor):not(.xaxisminor):not(.yaxismajor):not(.yaxisminor):not(.xaxis) {
 		border: 1px solid black;
 		width: 100px !important;
 		height: 100px !important;
 		min-width: 100px;
 		min-height: 100px;
 	}
-
-#tblNineBox_def .yaxisminor, #tblNineBox_def .yaxismajor {
+	
+#tblNineBox_def .yaxismajor {
 	width: 200px;
 }
+
+	#tblNineBox_def td.yaxisminor input {
+		width: 100px;
+	}
 
 #tblNineBox_def td div.sp-preview {
 	width: 75px;
@@ -1396,6 +1400,10 @@ div.displaytable {
 
 #td9boxOptions {
 	vertical-align: top;
+}
+
+#td9boxOptions input[type=checkbox] {
+	margin-left: 5px;
 }
 
 .nineBoxGridCell p:first-child {
