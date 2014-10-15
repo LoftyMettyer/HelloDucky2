@@ -247,7 +247,7 @@ Public Enum EventLog_Type
   eltAccordImport = 23
   eltAccordExport = 24
   eltWorkflowRebuild = 25
-	elt9BoxGrid = 26
+  elt9BoxGrid = 35
   
 End Enum
 
