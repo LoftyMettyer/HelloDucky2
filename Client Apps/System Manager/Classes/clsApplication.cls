@@ -31,7 +31,7 @@ Private mintAccessMode As AccessModes
 Private blnLoggedIn As Boolean
 
 Public Property Get Changed() As Boolean
-  Changed = blnChanged And (mintAccessMode <> accSystemReadOnly)
+  Changed = blnChanged And (mintAccessMode <> accSystemReadOnly) And Not gbLicenceExpired
 End Property
 
 Public Property Let Changed(ByVal IsChanged As Boolean)
@@ -55,31 +55,31 @@ Private Sub Class_Initialize()
 End Sub
 
 Public Property Get SelfServiceIntranetModule() As Boolean
-  SelfServiceIntranetModule = gfSSIntranetModule
+  SelfServiceIntranetModule = IsModuleEnabled(modIntranet)
 End Property
 
 Public Property Get MobileModule() As Boolean
-  MobileModule = gfMobileModule
+  MobileModule = IsModuleEnabled(modMobile)
 End Property
 
 Public Property Get WorkflowModule() As Boolean
-  WorkflowModule = gfWorkflowModule
+  WorkflowModule = IsModuleEnabled(modWorkflow)
 End Property
 
 Public Property Get Version1Module() As Boolean
-  Version1Module = gfVersion1Module
+  Version1Module = IsModuleEnabled(modVersionOne)
 End Property
 
 Public Property Get TrainingBookingModule() As Boolean
-  TrainingBookingModule = gfTrainingBookingModule
+  TrainingBookingModule = IsModuleEnabled(modTraining)
 End Property
 
 Public Property Get PersonnelModule() As Boolean
-  PersonnelModule = gfPersonnelModule
+  PersonnelModule = IsModuleEnabled(modPersonnel)
 End Property
 
 Public Property Get AbsenceModule() As Boolean
-  AbsenceModule = gfAbsenceModule
+  AbsenceModule = IsModuleEnabled(modAbsence)
 End Property
 
 Public Property Get ChangedDiaryLink() As Boolean
@@ -155,7 +155,11 @@ Public Property Let ChangedDataStructure(ByVal blnNewValue As Boolean)
 End Property
 
 Public Property Get AccessMode() As AccessModes
-  AccessMode = mintAccessMode
+  If IsModuleEnabled(modFullSysMgr) = True Then
+    AccessMode = mintAccessMode
+  Else
+    AccessMode = accLimited
+  End If
 End Property
 
 Public Property Let AccessMode(ByVal intNewValue As AccessModes)

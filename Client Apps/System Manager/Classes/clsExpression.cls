@@ -2190,7 +2190,7 @@ Public Function ReadExpressionDetails() As Boolean
       End If
       
       mlngParentComponentID = IIf(IsNull(!ParentComponentID), 0, !ParentComponentID)
-      msOwner = IIf(IsNull(!UserName), vbNullString, !UserName)
+      msOwner = IIf(IsNull(!userName), vbNullString, !userName)
       msAccess = IIf(IsNull(!Access), ACCESS_READWRITE, !Access)
       msDescription = IIf(IsNull(!Description), vbNullString, !Description)
       
@@ -2341,7 +2341,7 @@ Public Function WriteExpression() As Boolean
       !ReturnDecimals = 0 ' Not used.
       !Type = miExpressionType
       !ParentComponentID = mlngParentComponentID
-      !UserName = msOwner
+      !userName = msOwner
       !Access = msAccess
       !Description = msDescription
 
@@ -3114,7 +3114,7 @@ Public Function ExpressionIsUsed(plngExprID As Long) As Boolean
     
     ' JDM - 10/11/2004 - Fault 9415 - Payroll setup
     'AE20071204 Fault #12658
-    If gbAccordPayrollModule Then
+    If IsModuleEnabled(modAccord) Then
       sSQL = "SELECT rtrim(t.TransferType) + ' - ' + f.Description AS Description" & _
              " FROM tmpAccordTransferFieldDefinitions f " & _
              " INNER JOIN tmpAccordTransferTypes t ON t.TransferTypeID = f.TransferTypeID" & _

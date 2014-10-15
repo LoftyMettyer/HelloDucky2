@@ -219,7 +219,7 @@ Function SaveChanges(Optional pfRefreshDatabase As Boolean) As Boolean
       
       
     'Create Payroll lookup column calculations
-    If gbAccordPayrollModule Then
+    If IsModuleEnabled(modAccord) Then
       If fOK Then
         DoEvents
         OutputCurrentProcess "Payroll Integration"
@@ -2066,14 +2066,14 @@ Private Function UpdateLockCheck() As Boolean
   
   If Not (rsTemp.BOF And rsTemp.EOF) Then
     'Ignore users own manual lock
-    If LCase(gsUserName) = LCase(rsTemp!UserName) And rsTemp!Priority = lckManual Then
+    If LCase(gsUserName) = LCase(rsTemp!userName) And rsTemp!Priority = lckManual Then
       rsTemp.MoveNext
     End If
     
     If Not (rsTemp.BOF And rsTemp.EOF) Then
   
       'If not locked by current app then can we get read only access...
-      strLockDetails = "User :  " & rsTemp!UserName & vbNewLine & _
+      strLockDetails = "User :  " & rsTemp!userName & vbNewLine & _
                        "Date/Time :  " & rsTemp!Lock_Time & vbNewLine & _
                        "Machine :  " & rsTemp!HostName & vbNewLine & _
                        "Type :  " & rsTemp!Description

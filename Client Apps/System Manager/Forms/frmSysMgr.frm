@@ -1279,7 +1279,7 @@ Private Sub RefreshMenu_ScrDesigner(piFormCount As Integer)
     .Tools("ID_Cut").Enabled = fControlsExist
     .Tools("ID_Copy").Enabled = fControlsExist
     .Tools("ID_Paste").Enabled = (objScreen.ClipboardControlsCount > 0)
-    .Tools("ID_ScreenObjectDelete").Enabled = fControlsExist Or (objScreen.tabPages.Tabs.Count > 0)
+    .Tools("ID_ScreenObjectDelete").Enabled = fControlsExist Or (objScreen.TabPages.Tabs.Count > 0)
     .Tools("ID_ScreenSelectAll").Enabled = bFormHasControls
     .Tools("ID_Save").Enabled = objScreen.IsChanged
             
@@ -1559,7 +1559,7 @@ Private Sub RefreshMenu_WebFormDesigner(piFormCount As Integer)
     .Tools("ID_Cut").Enabled = fControlsExist And (Not objScreen.ReadOnly)
     .Tools("ID_Copy").Enabled = fControlsExist And (Not objScreen.ReadOnly)
     .Tools("ID_Paste").Enabled = (objScreen.ClipboardControlsCount > 0) And (Not objScreen.ReadOnly)
-    .Tools("ID_ScreenObjectDelete").Enabled = (fControlsExist And (Not objScreen.ReadOnly)) Or objScreen.tabPages.Tabs.Count > 0
+    .Tools("ID_ScreenObjectDelete").Enabled = (fControlsExist And (Not objScreen.ReadOnly)) Or objScreen.TabPages.Tabs.Count > 0
     .Tools("ID_ScreenSelectAll").Enabled = bFormHasControls And (Not objScreen.ReadOnly)
     .Tools("ID_mnuWFSave").Enabled = objScreen.IsChanged And (Not objScreen.ReadOnly)
             
@@ -1738,31 +1738,32 @@ Private Sub RefreshMenu_Defaults(piFormCount As Integer)
     '==================================================
     ' Enable/disable the required tools.
     ' Only enable the module menu options if the modules are not already active.
-    .Tools("ID_DatMgr").Enabled = (piFormCount <= 1)
-    .Tools("ID_PicMgr").Enabled = (piFormCount <= 1 And Not blnReadonly)
-    .Tools("ID_ScrMgr").Enabled = (piFormCount <= 1 And Not blnReadonly)
-    .Tools("ID_WorkflowMgr").Enabled = (piFormCount <= 1) And Application.WorkflowModule
-    .Tools("ID_ViewMgr").Enabled = (piFormCount <= 1)
-    .Tools("ID_MobileDesigner").Enabled = (piFormCount <= 1) And Application.MobileModule
-    .Tools("ID_SSIntranet").Enabled = (piFormCount <= 1) And Application.SelfServiceIntranetModule
+    .Tools("ID_DatMgr").Enabled = (piFormCount <= 1) And Not gbLicenceExpired
+    .Tools("ID_PicMgr").Enabled = (piFormCount <= 1 And Not blnReadonly And Not gbLicenceExpired)
+    .Tools("ID_ScrMgr").Enabled = (piFormCount <= 1 And Not blnReadonly And Not gbLicenceExpired)
+    .Tools("ID_WorkflowMgr").Enabled = (piFormCount <= 1) And Application.WorkflowModule And Not gbLicenceExpired
+    .Tools("ID_ViewMgr").Enabled = (piFormCount <= 1) And Not gbLicenceExpired
+    .Tools("ID_MobileDesigner").Enabled = (piFormCount <= 1) And Application.MobileModule And Not gbLicenceExpired
+    .Tools("ID_SSIntranet").Enabled = (piFormCount <= 1) And Application.SelfServiceIntranetModule And Not gbLicenceExpired
     .Tools("ID_SaveChanges").Enabled = Application.Changed
              
     ' Enable/disable Module setup menu options if the modules are activated.
-    .Tools("ID_TrainingBooking").Enabled = Application.TrainingBookingModule
-    .Tools("ID_Personnel").Enabled = Application.PersonnelModule
-    .Tools("ID_Maternity").Enabled = Application.PersonnelModule
-    .Tools("ID_Post").Enabled = Application.PersonnelModule
-    .Tools("ID_Absence").Enabled = Application.AbsenceModule
-    .Tools("ID_AccordTransfer").Enabled = gbAccordPayrollModule
-    .Tools("ID_CMG").Enabled = gbCMGExportEnabled
-    .Tools("ID_WorkflowSetup").Enabled = Application.WorkflowModule
-    .Tools("ID_MobileSetup").Enabled = Application.MobileModule
-    .Tools("ID_ModuleDocument").Enabled = Application.Version1Module
-    .Tools("ID_AuditModule").Enabled = True
-    .Tools("ID_BankHoliday").Enabled = Application.PersonnelModule
-    .Tools("ID_Currency").Enabled = True
-    .Tools("ID_Configuration").Enabled = True
-    .Tools("ID_CategorySetup").Enabled = True
+    .Tools("ID_TrainingBooking").Enabled = Application.TrainingBookingModule And Not gbLicenceExpired
+    .Tools("ID_Personnel").Enabled = Application.PersonnelModule And Not gbLicenceExpired
+    .Tools("ID_Maternity").Enabled = Application.PersonnelModule And Not gbLicenceExpired
+    .Tools("ID_Post").Enabled = Application.PersonnelModule And Not gbLicenceExpired
+    .Tools("ID_Absence").Enabled = Application.AbsenceModule And Not gbLicenceExpired
+    .Tools("ID_AccordTransfer").Enabled = IsModuleEnabled(modAccord) And Not gbLicenceExpired
+    .Tools("ID_CMG").Enabled = IsModuleEnabled(modCMG) And Not gbLicenceExpired
+    .Tools("ID_WorkflowSetup").Enabled = Application.WorkflowModule And Not gbLicenceExpired
+    .Tools("ID_MobileSetup").Enabled = Application.MobileModule And Not gbLicenceExpired
+    .Tools("ID_ModuleDocument").Enabled = Application.Version1Module And Not gbLicenceExpired
+    .Tools("ID_AuditModule").Enabled = Not gbLicenceExpired
+    .Tools("ID_BankHoliday").Enabled = Application.PersonnelModule And Not gbLicenceExpired
+    .Tools("ID_Currency").Enabled = Not gbLicenceExpired
+    .Tools("ID_Configuration").Enabled = Not gbLicenceExpired
+    .Tools("ID_CategorySetup").Enabled = Not gbLicenceExpired
+    .Tools("ID_LicenceInfo").Enabled = True
     
     ' Display the required menu and it's tools.
     .Tools("ID_mnuModule").Visible = True
@@ -1783,21 +1784,22 @@ Private Sub RefreshMenu_Defaults(piFormCount As Integer)
     .Tools("ID_MobileDesigner").Visible = True
     
     ' Configuration menu remove disabled menuitems
-    .Tools("ID_TrainingBooking").Visible = Application.TrainingBookingModule
-    .Tools("ID_Personnel").Visible = Application.PersonnelModule
-    .Tools("ID_Maternity").Visible = Application.PersonnelModule
-    .Tools("ID_Post").Visible = Application.PersonnelModule
-    .Tools("ID_Absence").Visible = Application.AbsenceModule
-    .Tools("ID_AccordTransfer").Visible = gbAccordPayrollModule
-    .Tools("ID_CMG").Visible = gbCMGExportEnabled
-    .Tools("ID_WorkflowSetup").Visible = Application.WorkflowModule
-    .Tools("ID_MobileSetup").Visible = Application.MobileModule
-    .Tools("ID_ModuleDocument").Visible = Application.Version1Module
+    .Tools("ID_TrainingBooking").Visible = True
+    .Tools("ID_Personnel").Visible = True
+    .Tools("ID_Maternity").Visible = True
+    .Tools("ID_Post").Visible = True
+    .Tools("ID_Absence").Visible = True
+    .Tools("ID_AccordTransfer").Visible = True
+    .Tools("ID_CMG").Visible = True
+    .Tools("ID_WorkflowSetup").Visible = True
+    .Tools("ID_MobileSetup").Visible = True
+    .Tools("ID_ModuleDocument").Visible = True
     .Tools("ID_AuditModule").Visible = True
-    .Tools("ID_BankHoliday").Visible = Application.PersonnelModule
+    .Tools("ID_BankHoliday").Visible = True
     .Tools("ID_Currency").Visible = True
     .Tools("ID_Configuration").Visible = True
     .Tools("ID_CategorySetup").Visible = True
+    .Tools("ID_LicenceInfo").Visible = True
     
     .Tools("ID_SaveChanges").Visible = True
     .Tools("ID_Logoff").Visible = True
@@ -2162,6 +2164,10 @@ Private Sub ToolClick_DBMgr(ByVal pTool As ActiveBarLibraryCtl.Tool)
       frmCategorySetup.Show vbModal
       Set frmCategorySetup = Nothing
 
+    Case "ID_LicenceInfo"
+      frmLicence.Show vbModal
+      Set frmLicence = Nothing
+
     Case "ID_Currency"
       'Call up the Currency setup screen.
       frmCurrencySetup.Show vbModal
@@ -2487,6 +2493,10 @@ Private Sub ToolClick_PictMgr(ByVal pTool As ActiveBarLibraryCtl.Tool)
     Case "ID_CategorySetup"
       frmCategorySetup.Show vbModal
       Set frmCategorySetup = Nothing
+ 
+    Case "ID_LicenceInfo"
+      frmLicence.Show vbModal
+      Set frmLicence = Nothing
  
     Case "ID_Currency"
       'Call up the Currency setup screen.
@@ -2816,6 +2826,10 @@ Private Sub ToolClick_ScrMgr(ByVal pTool As ActiveBarLibraryCtl.Tool)
       frmCategorySetup.Show vbModal
       Set frmCategorySetup = Nothing
      
+    Case "ID_LicenceInfo"
+      frmLicence.Show vbModal
+      Set frmLicence = Nothing
+     
     Case "ID_Currency"
       'Call up the Currency setup screen.
       frmCurrencySetup.Show vbModal
@@ -3119,6 +3133,10 @@ Private Sub ToolClick_WorkflowMgr(ByVal pTool As ActiveBarLibraryCtl.Tool)
       frmCategorySetup.Show vbModal
       Set frmCategorySetup = Nothing
 
+    Case "ID_LicenceInfo"
+      frmLicence.Show vbModal
+      Set frmLicence = Nothing
+
     Case "ID_Currency"
       'Call up the Currency setup screen.
       frmCurrencySetup.Show vbModal
@@ -3421,6 +3439,10 @@ Private Sub ToolClick_ViewMgr(ByVal pTool As ActiveBarLibraryCtl.Tool)
     Case "ID_CategorySetup"
       frmCategorySetup.Show vbModal
       Set frmCategorySetup = Nothing
+
+    Case "ID_LicenceInfo"
+      frmLicence.Show vbModal
+      Set frmLicence = Nothing
 
     Case "ID_Currency"
       'Call up the Currency setup screen.
@@ -3768,6 +3790,10 @@ Private Sub ToolClick_SysMgr(ByVal pTool As ActiveBarLibraryCtl.Tool)
       frmCategorySetup.Show vbModal
       Set frmCategorySetup = Nothing
       
+    Case "ID_LicenceInfo"
+      frmLicence.Show vbModal
+      Set frmLicence = Nothing
+      
     Case "ID_Currency"
       'Call up the Currency setup screen.
       frmCurrencySetup.Show vbModal
@@ -3802,6 +3828,10 @@ Private Sub ToolClick_SysMgr(ByVal pTool As ActiveBarLibraryCtl.Tool)
       frmCategorySetup.Show vbModal
       Set frmCategorySetup = Nothing
 
+    Case "ID_LicenceInfo"
+      frmLicence.Show vbModal
+      Set frmLicence = Nothing
+   
     Case "ID_SaveChanges"
       '01/08/2001 MH Fault 2382
       '' Save changes without exiting.
@@ -4047,6 +4077,10 @@ Private Sub ToolClick_ScrDesigner(ByVal pTool As ActiveBarLibraryCtl.Tool)
     Case "ID_CategorySetup"
       frmCategorySetup.Show vbModal
       Set frmCategorySetup = Nothing
+      
+    Case "ID_LicenceInfo"
+      frmLicence.Show vbModal
+      Set frmLicence = Nothing
       
     Case "ID_Currency"
       'Call up the Currency setup screen.
@@ -4439,6 +4473,10 @@ Private Sub ToolClick_WebFormDesigner(ByVal pTool As ActiveBarLibraryCtl.Tool)
     Case "ID_CategorySetup"
       frmCategorySetup.Show vbModal
       Set frmCategorySetup = Nothing
+      
+    Case "ID_LicenceInfo"
+      frmLicence.Show vbModal
+      Set frmLicence = Nothing
       
     Case "ID_Currency"
       'Call up the Currency setup screen.

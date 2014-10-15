@@ -538,12 +538,18 @@ Private Sub cmdApply_Click()
         SaveSystemSetting "Licence", "Customer Name", txtCustName.Text
         SaveSystemSetting "Licence", "Customer No", txtCustNo.Text
         SaveSystemSetting "Licence", "Key", .LicenceKey
-
-        blnCorrectKey = True
+        
+        gobjLicence.LicenceKey = .LicenceKey
         gbLicenceExpired = False
-        frmMain.RefreshMenu False
+        CheckLicence
+        
+        CreateSP_CalculateHeadcount
+        
+        blnCorrectKey = True
+        frmSysMgr.RefreshMenu
         MsgBox "Licence details amended successfully", vbExclamation, "Licence Key"
-        Unload Me
+        
+        UnLoad Me
 
       End If
     
@@ -551,13 +557,13 @@ Private Sub cmdApply_Click()
   
   End With
 
-  Unload frmLicenceKey
+  UnLoad frmLicenceKey
   Set frmLicenceKey = Nothing
 
 End Sub
 
 Private Sub cmdCancel_Click()
-  Unload Me
+  UnLoad Me
 End Sub
 
 Private Sub cmdClipboard_Click()
@@ -594,11 +600,7 @@ Private Sub Form_Load()
   Dim ctlTemp As Control
   
   mstrLicenceKey = GetSystemSetting("Licence", "Key", vbNullString)
-  
-  If Application.AccessMode <> accFull Then
-    ControlsDisableAll Me
-  End If
-  
+    
   PopulateModules
   DisplayLicence (mstrLicenceKey)
   

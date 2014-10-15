@@ -18,7 +18,6 @@ Public giCMGExportFieldCodeOrderID As Integer
 Public giCMGExportOutputColumnOrderID As Integer
 Public giCMGExportLastChangeDateOrderID As Integer
 
-Public gbCMGExportEnabled As Boolean
 Public gbCMGExportFileCode As Boolean
 Public gbCMGExportFieldCode As Boolean
 Public gbCMGExportLastChangeDate As Boolean
@@ -47,7 +46,6 @@ Public gbQAddressEnabled As Boolean
 'Public gbFusionModule As Boolean
 
 ' Payroll module
-Public gbAccordPayrollModule As Boolean
 Public gbOpenPayModule As Boolean
 
 Public gbManualRecursionLevel As Boolean
@@ -171,17 +169,9 @@ Public gstrEmailTestAddr As String
 Public gstrUpdateEmailCode As String
 Public gstrDeleteEmailCode As String
 
-' Module settings
-Public gfTrainingBookingModule As Boolean
-Public gfPersonnelModule As Boolean
-Public gfAbsenceModule As Boolean
-Public gfSSIntranetModule As Boolean
-Public gfWorkflowModule As Boolean
-Public gfVersion1Module As Boolean
-Public gfMobileModule As Boolean
-
 ' Directory paths
 Public gsLogDirectory As String
 Public gsApplicationPath As String
 
 Public gobjLicence As New clsLicence
+Public gbLicenceExpired As Boolean

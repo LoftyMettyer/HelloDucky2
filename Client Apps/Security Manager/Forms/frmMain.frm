@@ -413,13 +413,6 @@ Private Sub abSecurity_Click(ByVal Tool As ActiveBarLibraryCtl.Tool)
 
     ' Tools menu.
 
-    Case "ID_LicenceInfo"
-      frmLicence.Show vbModal
-      Set frmLicence = Nothing
-      If Not ActiveForm Is Nothing Then
-        ActiveForm.SetFocus
-      End If
-
     Case "ID_PasswordMaintenance"
       frmPasswordMaintenance.ShowAllUsers = True
       If frmPasswordMaintenance.Initialise Then
@@ -834,12 +827,12 @@ Public Sub RefreshMenu(pfUnloadingForm As Boolean)
   Set frmTemp = Screen.ActiveForm
   
   If Not frmTemp Is Nothing Then
-    abSecurity.Bands("bndModule").Tools("ID_Audit").Enabled = ((iFormCount <= 1) Or (Not TypeOf Screen.ActiveForm Is frmAudit)) And Not gbLicenceExpired
-    abSecurity.Bands("bndModule").Tools("ID_Group").Enabled = ((iFormCount <= 1) Or (Not TypeOf Screen.ActiveForm Is frmGroupMaint1)) And Not gbLicenceExpired
+    abSecurity.Bands("bndModule").Tools("ID_Audit").Enabled = ((iFormCount <= 1) Or (Not TypeOf Screen.ActiveForm Is frmAudit))
+    abSecurity.Bands("bndModule").Tools("ID_Group").Enabled = ((iFormCount <= 1) Or (Not TypeOf Screen.ActiveForm Is frmGroupMaint1))
     
-    abSecurity.Bands("bndTools").Tools("ID_SecurityOptions").Enabled = ((iFormCount <= 1) Or (Not TypeOf Screen.ActiveForm Is frmGroupMaint1)) And Not gbLicenceExpired
-    abSecurity.Bands("bndTools").Tools("ID_PasswordMaintenance").Enabled = ((iFormCount <= 1) Or (Not TypeOf Screen.ActiveForm Is frmGroupMaint1)) And Not gbLicenceExpired
-    abSecurity.Bands("bndTools").Tools("ID_UtilityOwnership").Enabled = ((iFormCount <= 1) Or (Not TypeOf Screen.ActiveForm Is frmGroupMaint1)) And Not gbLicenceExpired
+    abSecurity.Bands("bndTools").Tools("ID_SecurityOptions").Enabled = ((iFormCount <= 1) Or (Not TypeOf Screen.ActiveForm Is frmGroupMaint1))
+    abSecurity.Bands("bndTools").Tools("ID_PasswordMaintenance").Enabled = ((iFormCount <= 1) Or (Not TypeOf Screen.ActiveForm Is frmGroupMaint1))
+    abSecurity.Bands("bndTools").Tools("ID_UtilityOwnership").Enabled = ((iFormCount <= 1) Or (Not TypeOf Screen.ActiveForm Is frmGroupMaint1))
     
   Else
     abSecurity.Bands("bndModule").Tools("ID_Audit").Enabled = (iFormCount <= 1)

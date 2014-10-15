@@ -803,7 +803,7 @@ Public Function ColumnIsUsed(pfrmUsage As frmUsage) As Boolean
   
   ' JDM - 10/11/2004 - Fault 9415 - Payroll module setup
   'AE20071204 Fault #12658
-  If gbAccordPayrollModule Then
+  If IsModuleEnabled(modAccord) Then
     sSQL = "SELECT rtrim(t.TransferType) + ' - ' + f.Description AS Description" & _
            " FROM tmpAccordTransferFieldDefinitions f " & _
            " INNER JOIN tmpAccordTransferTypes t ON t.TransferTypeID = f.TransferTypeID" & _

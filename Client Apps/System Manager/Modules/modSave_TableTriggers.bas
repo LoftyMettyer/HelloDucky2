@@ -314,13 +314,11 @@ Private Function SetTableTriggers_GetStrings(pLngCurrentTableID As Long, _
     sUpdateWorkflowCode.Append WorkflowTableTriggerCode(pLngCurrentTableID, WFRELATEDRECORD_UPDATE)
     sDeleteWorkflowCode.Append WorkflowTableTriggerCode(pLngCurrentTableID, WFRELATEDRECORD_DELETE)
   End With
-    
-  
-  
+   
   
   ' Payroll Transfer Triggers
   ' --------------------------------
-  If gbAccordPayrollModule Then
+  If IsModuleEnabled(modAccord) Then
     
     Set sUpdateAccordCode = New SystemMgr.cStringBuilder
     Set sDeleteAccordCode = New SystemMgr.cStringBuilder
@@ -1231,7 +1229,7 @@ Private Function SetTableTriggers_CreateTriggers(pLngCurrentTableID As Long, _
       "    WHILE (@@fetch_status = 0)" & vbNewLine & _
       "    BEGIN" & vbNewLine
      
-    If gbAccordPayrollModule Then
+    If IsModuleEnabled(modAccord) Then
     
       sSQL = "SELECT TransferTypeID FROM tmpAccordTransferTypes" _
           & " WHERE ASRBaseTableID = " & CStr(pLngCurrentTableID)
@@ -2662,7 +2660,7 @@ Private Function SetTableTriggers_AccordTransfer(ByRef sUpdateAccordCode As Syst
   Dim iTransferTypeID As Integer
 
   ' Get Payroll Tranfers options
-  If gbAccordPayrollModule Then
+  If IsModuleEnabled(modAccord) Then
     With recModuleSetup
       .Index = "idxModuleParameter"
       .Seek "=", gsMODULEKEY_ACCORD, gsPARAMETERKEY_DEFAULTSTATUS

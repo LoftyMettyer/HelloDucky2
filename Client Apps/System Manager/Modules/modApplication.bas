@@ -1685,8 +1685,6 @@ Public Sub ActivateModules()
   
   '26/07/2001 MH
   '' CMG settings
-  'gbCMGExportEnabled = ASRDEVELOPMENT   'This will need to change to a module setup check
-  gbCMGExportEnabled = IsModuleEnabled(modCMG)
   gbCMGExportUseCSV = GetSystemSetting("CMGExport", "UseCSV", False)
   gbCMGIgnoreBlanks = GetSystemSetting("CMGExport", "IgnoreBlanks", False)
   gbCMGReverseDateChanged = GetSystemSetting("CMGExport", "ReverseOutput", False)
@@ -1715,44 +1713,21 @@ Public Sub ActivateModules()
 
   ' SQL 2005 Process Info
   glngProcessMethod = GetSystemSetting("ProcessAccount", "Mode", 1)
-
-  gfTrainingBookingModule = IsModuleEnabled(modTraining)
-  gfPersonnelModule = IsModuleEnabled(modPersonnel)
-  gfAbsenceModule = IsModuleEnabled(modAbsence)
   
   'load the overnight job schedule variables
   glngOvernightJobTime = GetSystemSetting("overnight", "time", 30000)
-
 
   'MH20040301
   glngAMStartTime = val(Replace(GetSystemSetting("Outlook", "AMStartTime", 900), ":", ""))
   glngAMEndTime = val(Replace(GetSystemSetting("Outlook", "AMEndTime", 1230), ":", ""))
   glngPMStartTime = val(Replace(GetSystemSetting("Outlook", "PMStartTime", 1330), ":", ""))
   glngPMEndTime = val(Replace(GetSystemSetting("Outlook", "PMEndTime", 1700), ":", ""))
-
-  gfSSIntranetModule = IsModuleEnabled(modIntranet)
   
-  ' Payroll Module
-  gbAccordPayrollModule = IsModuleEnabled(modAccord)
-
-'  ' Fusion Module
-'  gbFusionModule = IsModuleEnabled(modFusion)
-
-  ' Version 1 Module
-  gfVersion1Module = IsModuleEnabled(modVersionOne)
-
   ' Postcode Integration modules
   gbAFDEnabled = IsModuleEnabled(modAFD)
   gbQAddressEnabled = IsModuleEnabled(modQAddress)
-  
-  ' Needs settings to the ismoduleenabled, but function is not yet ready (and checked out by someone! else)
-  gfMobileModule = IsModuleEnabled(modMobile)
-  
-  ' Workflow Module
-  gfWorkflowModule = IsModuleEnabled(modWorkflow) _
-    And (glngSQLVersion >= 8)
-
-  If gfWorkflowModule And gfDatabaseServerChanged Then
+   
+  If IsModuleEnabled(modWorkflow) And gfDatabaseServerChanged Then
     sURL = GetWorkflowURL
     
     If Len(sURL) > 0 Then
