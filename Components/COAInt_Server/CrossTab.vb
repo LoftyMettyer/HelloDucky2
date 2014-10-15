@@ -842,15 +842,6 @@ ErrorTrap:
 
 			If mlngCrossTabType = CrossTabType.cttAbsenceBreakdown Then
 
-				lngMax = lngMax + 2
-				ReDim Preserve strColumn(2, lngMax)
-
-				strColumn(1, lngMax - 1) = PersonnelModule.gsPersonnelStartDateColumnName
-				strColumn(2, lngMax - 1) = "StartDate"
-
-				strColumn(1, lngMax) = PersonnelModule.gsPersonnelLeavingDateColumnName
-				strColumn(2, lngMax) = "LeavingDate"
-
 				lngMax = lngMax + 7
 				ReDim Preserve strColumn(2, lngMax)
 
