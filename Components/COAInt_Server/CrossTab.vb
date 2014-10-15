@@ -809,7 +809,7 @@ ErrorTrap:
 		Dim strColumn(,) As String
 		Dim strSQL As String
 		Dim lngMax As Integer
-		Dim bIsAbsenceBreakdown As Boolean = mlngCrossTabType = Enums.CrossTabType.cttAbsenceBreakdown
+
 		Try
 
 			lngMax = 2
@@ -840,51 +840,44 @@ ErrorTrap:
 				strColumn(2, lngMax) = "Ins"
 			End If
 
-			'MH20020321 Remmed out for INT
-			If mlngCrossTabType <> Enums.CrossTabType.cttNormal Then
-				If mlngCrossTabType <> Enums.CrossTabType.cttAbsenceBreakdown Then
-					lngMax = lngMax + 2
-					ReDim Preserve strColumn(2, lngMax)
+			If mlngCrossTabType = CrossTabType.cttAbsenceBreakdown Then
 
-					strColumn(1, lngMax - 1) = PersonnelModule.gsPersonnelStartDateColumnName
-					strColumn(2, lngMax - 1) = "StartDate"
+				lngMax = lngMax + 2
+				ReDim Preserve strColumn(2, lngMax)
 
-					strColumn(1, lngMax) = PersonnelModule.gsPersonnelLeavingDateColumnName
-					strColumn(2, lngMax) = "LeavingDate"
-				End If
+				strColumn(1, lngMax - 1) = PersonnelModule.gsPersonnelStartDateColumnName
+				strColumn(2, lngMax - 1) = "StartDate"
 
-				If bIsAbsenceBreakdown Then
-					lngMax = lngMax + 7
-					ReDim Preserve strColumn(2, lngMax)
+				strColumn(1, lngMax) = PersonnelModule.gsPersonnelLeavingDateColumnName
+				strColumn(2, lngMax) = "LeavingDate"
 
-					strColumn(1, lngMax) = AbsenceModule.gsAbsenceDurationColumnName
-					strColumn(2, lngMax) = "Value"
+				lngMax = lngMax + 7
+				ReDim Preserve strColumn(2, lngMax)
 
-					strColumn(1, lngMax - 4) = AbsenceModule.gsAbsenceStartDateColumnName
-					strColumn(2, lngMax - 4) = "Start_Date"
+				strColumn(1, lngMax) = AbsenceModule.gsAbsenceDurationColumnName
+				strColumn(2, lngMax) = "Value"
 
-					strColumn(1, lngMax - 3) = AbsenceModule.gsAbsenceStartSessionColumnName
-					strColumn(2, lngMax - 3) = "Start_Session"
+				strColumn(1, lngMax - 4) = AbsenceModule.gsAbsenceStartDateColumnName
+				strColumn(2, lngMax - 4) = "Start_Date"
 
-					strColumn(1, lngMax - 2) = AbsenceModule.gsAbsenceEndDateColumnName
-					strColumn(2, lngMax - 2) = "End_Date"
+				strColumn(1, lngMax - 3) = AbsenceModule.gsAbsenceStartSessionColumnName
+				strColumn(2, lngMax - 3) = "Start_Session"
 
-					strColumn(1, lngMax - 1) = AbsenceModule.gsAbsenceEndSessionColumnName
-					strColumn(2, lngMax - 1) = "End_Session"
+				strColumn(1, lngMax - 2) = AbsenceModule.gsAbsenceEndDateColumnName
+				strColumn(2, lngMax - 2) = "End_Date"
 
-					strColumn(1, lngMax - 5) = "ID_" & Trim(Str(PersonnelModule.glngPersonnelTableID))
-					strColumn(2, lngMax - 5) = "Personnel_ID"
+				strColumn(1, lngMax - 1) = AbsenceModule.gsAbsenceEndSessionColumnName
+				strColumn(2, lngMax - 1) = "End_Session"
 
-					strColumn(1, lngMax - 6) = AbsenceModule.gsAbsenceDurationColumnName ' Used to hold the day number (1=Mon, 2=Tues etc.)
-					strColumn(2, lngMax - 6) = "Day_Number"
+				strColumn(1, lngMax - 5) = "ID_" & Trim(Str(PersonnelModule.glngPersonnelTableID))
+				strColumn(2, lngMax - 5) = "Personnel_ID"
 
-
-				End If
-
+				strColumn(1, lngMax - 6) = AbsenceModule.gsAbsenceDurationColumnName ' Used to hold the day number (1=Mon, 2=Tues etc.)
+				strColumn(2, lngMax - 6) = "Day_Number"
 			End If
 
 			fOK = True
-			Call GetSQL2(strColumn)
+			GetSQL2(strColumn)
 			If fOK = False Then
 				mblnNoRecords = True
 				Return False
@@ -903,7 +896,7 @@ ErrorTrap:
 			rsCrossTabData = DB.GetFromSP("spASRIntGetCrosstabReportData" _
 				, New SqlParameter("@tablename", SqlDbType.Char, 30) With {.Value = mstrTempTableName} _
 				, New SqlParameter("@recordDescid", SqlDbType.Int) With {.Value = mlngRecordDescExprID} _
-				, New SqlParameter("@isAbsenceBreakdown", SqlDbType.Int) With {.Value = bIsAbsenceBreakdown} _
+				, New SqlParameter("@isAbsenceBreakdown", SqlDbType.Int) With {.Value = (mlngCrossTabType = Enums.CrossTabType.cttAbsenceBreakdown)} _
 				, New SqlParameter("@startDate", SqlDbType.DateTime) With {.IsNullable = True, .Value = mdReportStartDate} _
 				, New SqlParameter("@endDate", SqlDbType.DateTime) With {.IsNullable = True, .Value = mdReportEndDate})
 
