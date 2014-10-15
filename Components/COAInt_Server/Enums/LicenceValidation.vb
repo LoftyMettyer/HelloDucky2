@@ -6,5 +6,6 @@
 		ExpiryWarning = 3
 		HeadcountWarning = 4
 		HeadcountExceeded = 5
+		Failure = 6
 	End Enum
 End Namespace

@@ -65,13 +65,16 @@ Namespace Code.Hubs
 				Case LicenceValidation.Insufficient
 					message = "The maximum number of licenced users are currently<br/>logged into OpenHR - Please try again later.<br/><br/>" & _
 																	"If you wish to increase the number of licenced users, please<br/>contact your Account Manager as soon as possible."
+
+				Case LicenceValidation.Failure
+					message = "An error has occured connecting to the database<br/>Please contact your system administrator.<br/><br/>"
+
 			End Select
 
 			Return message
 
 		End Function
 
-		'<HubMethodName("")
 		Private Shared Sub UpdateOnlineCount()
 
 			Dim totalLogins As Integer
@@ -109,6 +112,15 @@ Namespace Code.Hubs
 
 		End Sub
 
+		Private Sub ActivateLogin(thisConnection As String)
+
+			Dim myContext = GlobalHost.ConnectionManager.GetHubContext(Of LicenceHub)()
+			'			myContext.Clients.Client(thisConnection).activateLogin()
+			myContext.Clients.All.activateLogin()
+
+		End Sub
+
+
 		Friend Shared Function DisplayWarningToUser(userName As String, warningType As WarningType, warningRefreshRate As Integer) As Boolean
 
 			Try
@@ -145,7 +157,7 @@ Namespace Code.Hubs
 
 			' Send the current count of users
 			UpdateOnlineCount()
-			'NotifyDisableLogin()
+			ActivateLogin(clientId)
 			UpdateUserList()
 
 			Return MyBase.OnConnected()
@@ -166,7 +178,7 @@ Namespace Code.Hubs
 
 			' Send the current count of users
 			UpdateOnlineCount()
-			'NotifyDisableLogin()
+			ActivateLogin(clientId)
 			UpdateUserList()
 
 			Return MyBase.OnReconnected()
@@ -185,7 +197,6 @@ Namespace Code.Hubs
 
 			' Send the current count of users
 			UpdateOnlineCount()
-			'NotifyDisableLogin()
 			UpdateUserList()
 
 			Return MyBase.OnDisconnected(stopCalled)
@@ -246,20 +257,27 @@ Namespace Code.Hubs
 
 		Public Shared Function NavigateWebArea(SessionID As String, loginName As String, webArea As WebArea) As LicenceValidation
 
-			Dim objLogin = Logins.First(Function(m) m.SignalRClientID = SessionID)
-			Dim allow As LicenceValidation = LicenceValidation.Ok
+			Try
 
-			If Not objLogin.WebArea = webArea Then
-				allow = AllowAccess(webArea)
-				If allow = LicenceValidation.Ok OrElse allow = LicenceValidation.HeadcountExceeded OrElse allow = LicenceValidation.HeadcountWarning Then
-					objLogin.IsLoggedIn = True
-					objLogin.UserName = loginName
-					objLogin.WebArea = webArea
-					UpdateOnlineCount()
+				Dim objLogin = Logins.First(Function(m) m.SignalRClientID = SessionID)
+				Dim allow As LicenceValidation = LicenceValidation.Ok
+
+				If Not objLogin.WebArea = webArea Then
+					allow = AllowAccess(webArea)
+					If allow = LicenceValidation.Ok OrElse allow = LicenceValidation.HeadcountExceeded OrElse allow = LicenceValidation.HeadcountWarning Then
+						objLogin.IsLoggedIn = True
+						objLogin.UserName = loginName
+						objLogin.WebArea = webArea
+						UpdateOnlineCount()
+					End If
 				End If
-			End If
 
-			Return allow
+				Return allow
+
+			Catch ex As Exception
+				Return LicenceValidation.Failure
+
+			End Try
 
 		End Function
 

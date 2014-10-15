@@ -92,9 +92,11 @@
 		
 		$(document).ready(function () {
 
+			button_disable($('#submitLoginDetails'), true);
+
 			var licence = $.connection['LicenceHub'];
-			licence['client'].disableLogin = function (disabled, message) {
-				button_disable($('#submitLoginDetails'), disabled);
+			licence['client'].activateLogin = function () {
+				button_disable($('#submitLoginDetails'), false);
 			};
 
 			if (!window.isMobileBrowser) {
