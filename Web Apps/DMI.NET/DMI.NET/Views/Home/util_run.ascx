@@ -278,7 +278,7 @@
 	// first get the size from the window
 	// if that didn't work, get it from the body
 	var size = {
-		<%If Session("utiltype") = "35" Then%>
+		<%If Session("utiltype") = UtilityType.utlNineBoxGrid Then%>
 		width: (screen.width) / 2,
 		<%Else%>
 		width: window.innerWidth || document.body.clientWidth,
