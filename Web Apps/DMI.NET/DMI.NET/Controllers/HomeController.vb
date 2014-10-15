@@ -4065,7 +4065,19 @@ Namespace Controllers
 			Session("PreReqFails") = sPreReqFails	' This will be a sp output in the future along the lines of Bulkbooking
 			Session("Overbooked") = sCourseOverbooked
 
-			Return RedirectToAction(sNextPage)
+			' Go to the requested page.
+			Dim GotoOptionPage As String = Request.Form("txtGotoOptionPage")
+			If GotoOptionPage = "tbTransferCourseFind" _
+				Or GotoOptionPage = "tbTransferBookingFind" _
+				Or GotoOptionPage = "tbBookCourseFind" _
+				Or GotoOptionPage = "tbAddFromWaitingListFind" Then
+
+				Return RedirectToAction("OptionDataGrid", "Home", New With {.GotoOptionPage = GotoOptionPage})
+
+			Else
+				Return RedirectToAction(sNextPage)
+			End If
+
 		End Function
 
 		Function tbStatusPrompt() As ActionResult
