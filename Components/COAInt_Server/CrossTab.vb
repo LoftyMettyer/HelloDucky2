@@ -2090,7 +2090,11 @@ LocalErr:
 	Public Function ClearUp() As Boolean
 
 		Try
-			AccessLog.UtilUpdateLastRun(UtilityType.utlCrossTab, mlngCrossTabID)
+			If mlngCrossTabType = CrossTabType.ctt9GridBox Then
+				AccessLog.UtilUpdateLastRun(UtilityType.utlNineBoxGrid, mlngCrossTabID)
+			Else
+				AccessLog.UtilUpdateLastRun(UtilityType.utlCrossTab, mlngCrossTabID)
+			End If
 
 			' Delete the temptable if exists
 			General.DropUniqueSQLObject(mstrTempTableName, 3)
