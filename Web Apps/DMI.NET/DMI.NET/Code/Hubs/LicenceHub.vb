@@ -63,8 +63,9 @@ Namespace Code.Hubs
 																	current_Headcount, Licence.Headcount)
 
 				Case LicenceValidation.Insufficient
-					message = String.Format("The maximum number of licenced users are currently logged into OpenHR.<br/><br/>" & _
-																	"Please try again later.")
+					message = "The maximum number of licenced users are currently<br/>logged into OpenHR - Please try again later.<br/><br/>" & _
+																	"If you wish to increase the number of licenced users, please<br/>contact your Account Manager as soon as possible."
+
 
 			End Select
 
