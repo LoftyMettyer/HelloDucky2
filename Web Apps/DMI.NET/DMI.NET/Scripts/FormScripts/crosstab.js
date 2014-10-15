@@ -3,8 +3,12 @@ function AddToIntTypeCombo(strText, strValue) {
 	$("#cboIntersectionType").append('<option value=' + strValue + '>' + strText + '</option>');
 }
 
-function AddToPgbCombo(strText, strValue) {
-	$("#cboPage").append('<option value=' + strValue + '>' + strText + '</option>');   
+function AddToPgbCombo(strText, strValue) {	
+	var oOption = document.createElement("OPTION");
+	var cboPage = document.getElementById("cboPage");
+	cboPage.options.add(oOption);
+	oOption.text = strText;
+	oOption.value = strValue;
 }
 
 
