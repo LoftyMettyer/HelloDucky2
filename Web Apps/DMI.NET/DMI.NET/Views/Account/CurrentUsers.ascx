@@ -46,8 +46,8 @@
 					{ name: 'WebAreaName', index: 'WebAreaName' }
 				],
 				autowidth: false,
-				width: 570,
-				height: 300,
+				width: 560,
+				height: 290,
 				viewrecords: true,
 				sortname: 'User',
 				sortorder: "desc",
