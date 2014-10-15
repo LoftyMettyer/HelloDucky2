@@ -1451,3 +1451,8 @@ div.displaytable {
 		.CTT4 #CrossTabPage > div:nth-child(3) {
 			float: right!important;
 		}
+
+
+#divCrossTabOptions #cboIntersectionType, #divCrossTabOptions #cboPage {
+	margin-left: 10px;
+}
