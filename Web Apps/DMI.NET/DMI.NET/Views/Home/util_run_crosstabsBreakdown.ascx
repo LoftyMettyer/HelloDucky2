@@ -19,6 +19,8 @@
 
 		If objCrossTab.CrossTabType = CrossTabType.cttAbsenceBreakdown Then
 			Response.Write("<label style='font-weight: bold;'>Absence Breakdown Cell Breakdown</label>")
+		ElseIf objCrossTab.CrossTabType = CrossTabType.ctt9GridBox Then
+			Response.Write("<label style='font-weight: bold;'>9-Box Grid Cell Breakdown</label>")
 		Else
 			Response.Write("<label style='font-weight: bold;'>Cross Tabs Cell Breakdown</label>")
 		End If

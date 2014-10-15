@@ -315,8 +315,7 @@
 			Response.Write("				$('#' + gridRefID).attr('data-col', originalColNum);" & vbCrLf)
 			Response.Write("				$('#' + gridRefID).off('click').on('click', function () {" & vbCrLf)
 			Response.Write("					var iRow = $(this).attr('data-row');" & vbCrLf)
-			Response.Write("					var iCol = $(this).attr('data-col');" & vbCrLf)
-			Response.Write("	    	  if (iCol == 0) { return; } // Ignore double click on first column" & vbCrLf)
+			Response.Write("					var iCol = $(this).attr('data-col');" & vbCrLf)			
 			Response.Write("	    	  var lngPage = cboPage.options[cboPage.selectedIndex].value;" & vbCrLf)
 			Response.Write("	    		var intType = cboIntersectionType.options[cboIntersectionType.selectedIndex].value;" & vbCrLf)
 			Response.Write("	    		var txtValue = $(this).html();" & vbCrLf)
@@ -373,7 +372,6 @@
 	}
 
 	function getBreakdown(lngHor, lngVer, lngPgb, txtIntType, txtCellValue) {
-
 		var frmGetData = OpenHR.getForm("reportdataframe", "frmGetReportData");
 		frmGetData.txtMode.value = "BREAKDOWN";
 		frmGetData.txtHor.value = lngHor;

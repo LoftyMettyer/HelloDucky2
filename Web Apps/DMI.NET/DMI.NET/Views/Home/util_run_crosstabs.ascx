@@ -181,7 +181,7 @@ Session("utiltype = 17 		Calendar Report--%>
 					tabindex="0">
 					<%
 						If objCrossTab.CrossTabType <> CrossTabType.cttAbsenceBreakdown Then
-							Response.Write(" Use 1000 Separators (,)")
+							Response.Write(" Use 1000 Separators")
 						End If
 					%>
 				</label>
