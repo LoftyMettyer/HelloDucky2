@@ -70,15 +70,15 @@
 						</td>
 						<td id="nineBoxR1C1" class="nineBoxGridCell">
 							<p>@Html.TextAreaFor(Function(m) m.Description1)</p>
-							<p>@Html.TextBoxFor(Function(m) m.ColorDesc1)</p>
+							<p class="pcolpicker">@Html.TextBoxFor(Function(m) m.ColorDesc1)</p>
 						</td>
 						<td id="nineBoxR1C2" class="nineBoxGridCell">
 							<p>@Html.TextAreaFor(Function(m) m.Description2)</p>
-							<p>@Html.TextBoxFor(Function(m) m.ColorDesc2)</p>
+							<p class="pcolpicker">@Html.TextBoxFor(Function(m) m.ColorDesc2)</p>
 						</td>
 						<td id="nineBoxR1C3" class="nineBoxGridCell">
 							<p>@Html.TextAreaFor(Function(m) m.Description3)</p>
-							<p>@Html.TextBoxFor(Function(m) m.ColorDesc3)</p>
+							<p class="pcolpicker">@Html.TextBoxFor(Function(m) m.ColorDesc3)</p>
 						</td>
 					</tr>
 					<tr>
@@ -87,15 +87,15 @@
 						</td>
 						<td id="nineBoxR2C1" class="nineBoxGridCell">
 							<p>@Html.TextAreaFor(Function(m) m.Description4)</p>
-							<p>@Html.TextBoxFor(Function(m) m.ColorDesc4)</p>
+							<p class="pcolpicker">@Html.TextBoxFor(Function(m) m.ColorDesc4)</p>
 						</td>
 						<td id="nineBoxR2C2" class="nineBoxGridCell">
 							<p>@Html.TextAreaFor(Function(m) m.Description5)</p>
-							<p>@Html.TextBoxFor(Function(m) m.ColorDesc5)</p>
+							<p class="pcolpicker">@Html.TextBoxFor(Function(m) m.ColorDesc5)</p>
 						</td>
 						<td id="nineBoxR2C3" class="nineBoxGridCell">
 							<p>@Html.TextAreaFor(Function(m) m.Description6)</p>
-							<p>@Html.TextBoxFor(Function(m) m.ColorDesc6)</p>
+							<p class="pcolpicker">@Html.TextBoxFor(Function(m) m.ColorDesc6)</p>
 						</td>
 					</tr>
 					<tr>
@@ -104,15 +104,15 @@
 						</td>
 						<td id="nineBoxR3C1" class="nineBoxGridCell">
 							<p>@Html.TextAreaFor(Function(m) m.Description7)</p>
-							<p>@Html.TextBoxFor(Function(m) m.ColorDesc7)</p>
+							<p class="pcolpicker">@Html.TextBoxFor(Function(m) m.ColorDesc7)</p>
 						</td>
 						<td id="nineBoxR3C2" class="nineBoxGridCell">
 							<p>@Html.TextAreaFor(Function(m) m.Description8)</p>
-							<p>@Html.TextBoxFor(Function(m) m.ColorDesc8)</p>
+							<p class="pcolpicker">@Html.TextBoxFor(Function(m) m.ColorDesc8)</p>
 						</td>
 						<td id="nineBoxR3C3" class="nineBoxGridCell">
 							<p>@Html.TextAreaFor(Function(m) m.Description9)</p>
-							<p>@Html.TextBoxFor(Function(m) m.ColorDesc9)</p>
+							<p class="pcolpicker">@Html.TextBoxFor(Function(m) m.ColorDesc9)</p>
 						</td>
 					</tr>
 					<tr>

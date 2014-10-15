@@ -1384,6 +1384,14 @@ div.displaytable {
 
 #tblNineBox_def .yaxismajor input, #tblNineBox_def .yaxisminor input, #tblNineBox_def .xaxismajor input, #tblNineBox_def .xaxisminor input { text-align: center;}
 
+#tblNineBox_def .pcolpicker {
+	position: relative;
+}
+
+	#tblNineBox_def .pcolpicker div.nineboxgridColorpicker {
+		left: 0;
+	}
+
 #td9boxOptions {
 	vertical-align: top;
 }
