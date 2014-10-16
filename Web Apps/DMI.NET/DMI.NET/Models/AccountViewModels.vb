@@ -42,7 +42,7 @@ Namespace Models
 			End Get
 		End Property
 
-		Public WebArea As WebArea = WebArea.SSI
+		Public WebArea As WebArea = WebArea.None
 
 		Public ReadOnly Property WebAreaName As String
 			Get
