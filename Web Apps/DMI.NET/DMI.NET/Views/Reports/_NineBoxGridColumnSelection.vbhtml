@@ -14,8 +14,8 @@
 			<tr>
 				<td style="width:10%"></td>
 				<td style="width:55%;text-align:center">Column</td>
-				<td style="width:10%;text-align:center">Start</td>
-				<td style="width:10%;text-align:center">Stop</td>
+				<td style="width:10%;text-align:center">Minimum Value</td>
+				<td style="width:10%;text-align:center">Maximum Value</td>
 				<td style="width:10%;text-align:center"></td>
 			</tr>
 		</thead>

@@ -1310,8 +1310,15 @@ div.displaytable {
 		border: 1px solid black;
 		width: 100px;
 		height: 100px;
+	}
+
+.nineBoxGridCell {
 		cursor: pointer;
 	}
+
+.xaxismajor, .yaxismajor, .xaxisminor, .yaxisminor {
+	cursor: default;
+}
 
 	#tblNineBox .yaxisminor, #tblNineBox .yaxismajor {
 		width: 30px;

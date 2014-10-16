@@ -115,14 +115,14 @@ Namespace Models
 		Public Overrides Sub SetBaseTable(TableID As Integer)
 		End Sub
 
-		<RegularExpression("True", ErrorMessage:="Vertical stop value must be greater than its start value")>
+		<RegularExpression("True", ErrorMessage:="Vertical Maximum Value must be greater than its Minimum Value")>
 		Public ReadOnly Property IsVerticalStopOK As Boolean
 			Get
 				Return (VerticalStop > VerticalStart OrElse VerticalStart = 0)
 			End Get
 		End Property
 
-		<RegularExpression("True", ErrorMessage:="Horizontal stop value must be greater than its start value")>
+		<RegularExpression("True", ErrorMessage:="Horizontal Maximum Value must be greater than its Minimum Value")>
 		Public ReadOnly Property IsHorizontalStopOK As Boolean
 			Get
 				Return (HorizontalStop > HorizontalStart OrElse HorizontalStart = 0)
