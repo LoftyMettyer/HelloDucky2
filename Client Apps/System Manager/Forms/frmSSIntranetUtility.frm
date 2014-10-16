@@ -231,12 +231,12 @@ Private Sub GetHRProUtilities(pUtilityType As UtilityType)
     Case utlCrossTab
       sTableName = "ASRSysCrossTab"
       sIDColumnName = "CrossTabID"
-      sWhereSQL = "ASRSysCrossTab.CrossTabType <> " & CStr(0)
+      sWhereSQL = "ASRSysCrossTab.CrossTabType <> " & ctt9GridBox
       
     Case utlNineBoxGrid
         sTableName = "ASRSysCrossTab"
         sIDColumnName = "CrossTabID"
-        sWhereSQL = "ASRSysCrossTab.CrossTabType = " & CStr(4)
+        sWhereSQL = "ASRSysCrossTab.CrossTabType = " & ctt9GridBox
         
     
     Case utlCustomReport

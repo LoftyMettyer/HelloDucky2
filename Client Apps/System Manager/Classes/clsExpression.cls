@@ -2862,7 +2862,7 @@ Public Function ExpressionIsUsed(plngExprID As Long) As Boolean
     sSQL = "SELECT DISTINCT name" & _
         " FROM ASRSysCrossTab" & _
         " WHERE filterID = " & Trim$(Str$(plngExprID)) & _
-        " AND CrossTabType <> 4"
+        " AND CrossTabType <> " & ctt9GridBox
     Set rsADOCheck1 = New ADODB.Recordset
     rsADOCheck1.Open sSQL, gADOCon, adOpenForwardOnly, adLockReadOnly, adCmdText
     With rsADOCheck1
@@ -2881,7 +2881,7 @@ Public Function ExpressionIsUsed(plngExprID As Long) As Boolean
     sSQL = "SELECT DISTINCT name" & _
         " FROM ASRSysCrossTab" & _
         " WHERE filterID = " & Trim$(Str$(plngExprID)) & _
-        " AND CrossTabType = 4"
+        " AND CrossTabType = " & ctt9GridBox
     Set rsADOCheck15 = New ADODB.Recordset
     rsADOCheck15.Open sSQL, gADOCon, adOpenForwardOnly, adLockReadOnly, adCmdText
     With rsADOCheck15

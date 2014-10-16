@@ -4154,7 +4154,9 @@ Public Function TableIsUsed(pfrmUsage As frmUsage) As Boolean
   sSQL = "SELECT DISTINCT ASRSysCrossTab.CrossTabID, ASRSysCrossTab.Name, ASRSysCrossTab.Username" & _
          " FROM ASRSysCrossTab " & _
          " WHERE ASRSysCrossTab.TableID = " & Trim(Str(gLngTableID)) & _
-         " AND CrossTabType <> 4"
+         " AND CrossTabType <> " & ctt9GridBox
+    
+    Print sSQL
   Set rsUtils3 = New ADODB.Recordset
   rsUtils3.Open sSQL, gADOCon, adOpenForwardOnly, adLockReadOnly
   With rsUtils3
@@ -4173,7 +4175,9 @@ Public Function TableIsUsed(pfrmUsage As frmUsage) As Boolean
   sSQL = "SELECT DISTINCT ASRSysCrossTab.CrossTabID, ASRSysCrossTab.Name, ASRSysCrossTab.Username" & _
          " FROM ASRSysCrossTab " & _
          " WHERE ASRSysCrossTab.TableID = " & Trim(Str(gLngTableID)) & _
-         " AND CrossTabType = 4"
+         " AND CrossTabType = " & ctt9GridBox
+    
+    Print sSQL
   Set rsUtils13 = New ADODB.Recordset
   rsUtils13.Open sSQL, gADOCon, adOpenForwardOnly, adLockReadOnly
   With rsUtils13

@@ -795,14 +795,16 @@ Private Function DoTransfer() As Boolean
 
   ' Cross Tabs
   Progress "Transferring CrossTabs..."
-  strCommand = "UPDATE ASRSysCrossTab SET Username = '" & strTo & "' AND WHERE CrossTabType <> '" & ctt9GridBox & "'"
+  strCommand = "UPDATE ASRSysCrossTab SET Username = '" & strTo & "'"
+  sWhere = sWhere & " AND CrossTabType <> '" & ctt9GridBox & "'"
   strCommand = strCommand & sWhere
   gADOCon.Execute strCommand
   DoEvents
   
   ' 9-Box Grid Reports
   Progress "Transferring 9-Box Grid Reports..."
-  strCommand = "UPDATE ASRSysCrossTab SET Username = '" & strTo & "' AND WHERE CrossTabType = '" & ctt9GridBox & "'"
+  strCommand = "UPDATE ASRSysCrossTab SET Username = '" & strTo & "'"
+  sWhere = sWhere & " AND CrossTabType = '" & ctt9GridBox & "'"
   strCommand = strCommand & sWhere
   gADOCon.Execute strCommand
   DoEvents
