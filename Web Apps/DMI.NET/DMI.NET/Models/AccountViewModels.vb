@@ -32,8 +32,15 @@ Namespace Models
 		Public Property SetDetails As Boolean
 
 		Public Property Device As String
+		Public Property Browser As String
 		Public Property IsLoggedIn() As Boolean
 		Public Property SignalRClientID As String
+
+		Public ReadOnly Property DeviceBrowser
+			Get
+				Return String.Format("{0} ({1})", Device, Browser)
+			End Get
+		End Property
 
 		Public WebArea As WebArea = WebArea.SSI
 
@@ -57,6 +64,7 @@ Namespace Models
 			Try
 				Dim objUserMachine = System.Net.Dns.GetHostEntry(Current.Request.UserHostName)
 				Device = objUserMachine.HostName
+				Browser = String.Format("{0} {1}", Current.Request.Browser.Browser, Current.Request.Browser.MajorVersion)
 
 			Catch ex As Exception
 				Device = "Unknown"
