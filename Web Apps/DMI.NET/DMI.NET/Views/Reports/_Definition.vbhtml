@@ -405,8 +405,12 @@
 			success: function (json) {
 
 				$('#SelectedTableID').empty()
-				$("#Parent1_Name").val("");
-				$("#Parent2_Name").val("");
+
+				// Clear the Parent1 and Parent2 table names only if the base table changed 
+				if (baseTableChanged) {
+					$("#Parent1_Name").val("");
+					$("#Parent2_Name").val("");
+				}
 
 				$.each(json, function (i, table) {
 					var optionHtml = '<option value=' + table.id + '>' + table.Name + '</option>'
