@@ -63,7 +63,7 @@
 		</div>
 	
 		<div class="centered">
-			<input type="button" id="submitLoginDetails" name="submitLoginDetails" class="ui-button" onclick="SubmitLoginDetails()" value="Login" />
+			<input type="button" id="submitLoginDetails" name="submitLoginDetails" onclick="SubmitLoginDetails()" value="Login" />
 			<input type="button" id="btnToggleDetailsDiv" name="details" class="ui-button <%=IIf(Model.SetDetails, "", "hidden")%>" value="Details >>" />		
 		</div>
 
@@ -92,11 +92,12 @@
 		
 		$(document).ready(function () {
 
-			button_disable($('#submitLoginDetails'), true);
+			$('#submitLoginDetails').button();
+			$('#submitLoginDetails').button('disable');
 
 			var licence = $.connection['LicenceHub'];
 			licence['client'].activateLogin = function () {
-				button_disable($('#submitLoginDetails'), false);
+				$('#submitLoginDetails').button('enable');
 			};
 
 			if (!window.isMobileBrowser) {

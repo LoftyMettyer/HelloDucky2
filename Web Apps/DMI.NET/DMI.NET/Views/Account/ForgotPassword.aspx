@@ -133,15 +133,6 @@
 	<input type="button" class="btn" value="OK" style="float: right; margin-left: auto; margin-right: auto;" onclick="$('#MessageBox').dialog('close'); return false;" />
 </div>
 <script type="text/javascript">
-	window_Onload();
-	
-	//Prevent the form from being submitted (without being checked) when the user presses Enter
-	$('#frmforgotPasswordForm').bind("keypress", function(e) {
-		var code = e.keyCode || e.which; 
-		if (code == 13) {               
-			e.preventDefault();
-			return false;
-		}
-	});
+	window_Onload();	
 </script>
 </asp:Content>
