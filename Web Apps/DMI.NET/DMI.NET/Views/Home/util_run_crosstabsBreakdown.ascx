@@ -172,8 +172,8 @@
 	$("#reportworkframe").hide();
 	$("#reportbreakdownframe").show();
 
-	$('#divReportButtons #cmdClose').hide();
-	$('#divReportButtons #cmdBack').show();
+	$('.ui-dialog-buttonpane #cmdClose').hide();
+	$('.ui-dialog-buttonpane #cmdBack').show();
 
 	setTimeout("util_run_crosstabsBreakdown_window_onload()", 100);
 

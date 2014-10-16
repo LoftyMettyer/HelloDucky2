@@ -1,6 +1,7 @@
 ﻿
 function closeclick() {
 	try {
+		$('.popup').dialog("option", "buttons", {});
 		$(".month-year-input").remove();
 		$(".popup").dialog("close");
 	}
@@ -10,7 +11,7 @@ function closeclick() {
 function closepromptedclick() {
 	try {
 		$(".popup").dialog("close");
-
+		$('.popup').dialog("option", "buttons", {});
 		if (menu_isSSIMode()) {
 			window.loadPartialView("linksMain", "Home", "workframe", null);
 		}

@@ -60,10 +60,10 @@
 	<%If objCrossTab.CrossTabType = CrossTabType.ctt9GridBox Then%>
 	<table id="tblNineBox" style="display: none;">
 		<tr>
-			<td class="yaxismajor ui-widget-header" rowspan="3">
+			<td class="yaxismajor" rowspan="3">
 				<p class="rot270"><%:objCrossTab.YAxisLabel%></p>
 			</td>
-			<td class="yaxisminor ui-state-default">
+			<td class="yaxisminor">
 				<p class="rot270"><%:objCrossTab.YAxisSubLabel1%></p>
 			</td>
 			<td id="nineBoxR1C1" class="nineBoxGridCell">
@@ -80,7 +80,7 @@
 			</td>
 		</tr>
 		<tr>
-			<td class="yaxisminor ui-state-default">
+			<td class="yaxisminor">
 				<p class="rot270"><%:objCrossTab.YAxisSubLabel2%></p>
 			</td>
 			<td id="nineBoxR2C1" class="nineBoxGridCell">
@@ -97,7 +97,7 @@
 			</td>
 		</tr>
 		<tr>
-			<td class="yaxisminor ui-state-default">
+			<td class="yaxisminor">
 				<p class="rot270"><%:objCrossTab.YAxisSubLabel3%></p>
 			</td>
 			<td id="nineBoxR3C1" class="nineBoxGridCell">
@@ -115,12 +115,12 @@
 		</tr>
 		<tr>
 			<td colspan="2" rowspan="2" class="xaxis"></td>
-			<td class="xaxisminor ui-state-default"><%:objCrossTab.XAxisSubLabel1%></td>
-			<td class="xaxisminor ui-state-default"><%:objCrossTab.XAxisSubLabel2%></td>
-			<td class="xaxisminor ui-state-default"><%:objCrossTab.XAxisSubLabel3%></td>
+			<td class="xaxisminor"><%:objCrossTab.XAxisSubLabel1%></td>
+			<td class="xaxisminor"><%:objCrossTab.XAxisSubLabel2%></td>
+			<td class="xaxisminor"><%:objCrossTab.XAxisSubLabel3%></td>
 		</tr>
 		<tr>
-			<td colspan="3" class="xaxisminor ui-widget-header"><%:objCrossTab.XAxisLabel%></td>
+			<td colspan="3" class="xaxisminor xaxismajor"><%:objCrossTab.XAxisLabel%></td>
 		</tr>
 	</table>
 	<%End If%>
@@ -134,7 +134,7 @@ Session("utiltype = 15 		Absence Breakdown
 Session("utiltype = 16 		Bradford Factor
 Session("utiltype = 17 		Calendar Report--%>
 <br />
-<fieldset class="ui-state-default CTT<%=objCrossTab.CrossTabType%>">
+<fieldset class="CTT<%=objCrossTab.CrossTabType%>" style="border: 0;">
 	<div id="divCrossTabOptions">
 		<%--Not a Absence Breakdown so show all components--%>
 		<div id="CrossTabsIntersectionControls" style="float: left; width: 33%;">

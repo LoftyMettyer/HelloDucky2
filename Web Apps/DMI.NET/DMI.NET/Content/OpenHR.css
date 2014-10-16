@@ -1325,7 +1325,7 @@ div.displaytable {
 			margin: 0;
 		}
 
-	#tblNineBox .xaxisminor, #tblNineBox_def .xaxisminor {
+	#tblNineBox .xaxisminor, #tblNineBox_def .xaxisminor {		
 		height: 30px;
 	}
 
@@ -1335,6 +1335,10 @@ div.displaytable {
 
 	#tblNineBox #id5 {
 		background-color: orange;
+	}
+
+	#tblNineBox .xaxismajor, #tblNineBox .yaxismajor {
+		font-weight: bold;
 	}
 
 #tblNineBox_def {

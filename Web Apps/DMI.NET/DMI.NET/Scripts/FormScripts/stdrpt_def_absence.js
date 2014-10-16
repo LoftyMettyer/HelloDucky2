@@ -14,7 +14,7 @@ function stdrpt_def_absence_window_onload() {
 	} else {
 		loadEmptyOption();
 		$("#workframe").attr("data-framesource", "STDRPT_DEF_ABSENCE");
-		$("#cmdBack").hide();
+		$('.ui-dialog-buttonpane #cmdBack').hide();
 	}
 
 		showDefaultRibbon();

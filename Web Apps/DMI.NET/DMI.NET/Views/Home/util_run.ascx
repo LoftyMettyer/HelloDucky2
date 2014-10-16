@@ -123,8 +123,8 @@
 		if (menu_isSSIMode() == true) {
 			$("#cmdClose").hide();  // Don't show the Close button in SSI
 		} else {
-			$("#divReportButtons #cmdClose").show();
-			$('#divReportButtons #cmdBack').hide();
+			$(".ui-dialog-buttonpane #cmdClose").show();
+			$('.ui-dialog-buttonpane #cmdBack').hide();
 		}
 
 		$("#reportbreakdownframe").hide();
@@ -260,14 +260,14 @@
 		</div>
 		<br/>
 		<div id="divReportButtons" style="margin: 30px 0 0 0; visibility: hidden; padding-top: 20px; float: right">
-				<%If (Session("utiltype") = "2") Then%> 
+				<%--<%If (Session("utiltype") = "2") Then%> 
 					<input class="btn minwidth100" type="button" id="cmdPrint" name="cmdPrint" value="<%=sPrintButtonLabel%>" onclick="outputOptionsPrintClick()" />
-				<%End If%>
-				<input class="btn minwidth100" type="button" id="cmdOK" name="cmdOK" value="Export" onclick="outputOptionsOKClick()" />
+				<%End If%>--%>
+			<%--	<input class="btn minwidth100" type="button" id="cmdOK" name="cmdOK" value="Export" onclick="outputOptionsOKClick()" />
 				<input class="btn minwidth100" type="button" id="cmdOutput" name="cmdOutput" value="Output" onclick="ExportDataPrompt();" />
 				<input class="btn minwidth100" type="button" id="cmdCancel" name="cmdCancel" value="Preview" onclick="ShowDataFrame();" />
 				<input class="btn minwidth100" type="button" id="cmdBack" name="cmdBack" value="Back" style="WIDTH: 80px; display: none;"  onclick="ShowDataFrame();" />
-				<input class="btn minwidth100" type="button" id="cmdClose" name="cmdClose" value="Close" onclick="closeclick();" />
+				<input class="btn minwidth100" type="button" id="cmdClose" name="cmdClose" value="Close" onclick="closeclick();" />--%>
 			</div>
 		</div>
 	</div>
@@ -295,7 +295,7 @@
 		}
 
 	} else {
-
+		
 		if ($("#txtPreview").val() == "True") {
 
 			<%If Session("utiltype") = UtilityType.utlCalendarReport Then%>
@@ -320,6 +320,57 @@
 			});
 
 			<%End If%>
+
+
+			var newButtons = [
+				{
+					text: "Export",
+					click: function() { outputOptionsOKClick(); },
+					"class": "minwidth100",
+					"id": "cmdOK"
+				},
+				{
+					text: "Output",
+					click: function() { ExportDataPrompt(); },
+					"class": "minwidth100",
+					"id": "cmdOutput"
+				}
+				,
+				{
+					text: "Preview",
+					click: function() { ShowDataFrame(); },
+					"class": "minwidth100",
+					"id": "cmdCancel"
+				},
+				{
+					text: "Back",
+					click: function() { ShowDataFrame(); },
+					"class": "minwidth100",
+					"id": "cmdBack"
+				},
+				{
+					text: "Close",
+					click: function() { closeclick(); },
+					"class": "minwidth100",
+					"id": "cmdClose"
+				}
+				<%If (Session("utiltype") = "2") Then%> 
+				,{
+					text: "<%=sPrintButtonLabel%>",
+					click: function() { outputOptionsPrintClick(); },
+					"class": "minwidth100",
+					"id": "cmdPrint"
+				}
+				<%End If%>
+			];
+
+			$('.popup').dialog('option', 'buttons', newButtons);
+			$('.ui-dialog-buttonpane #cmdBack').hide();
+			//<input class="btn minwidth100" type="button" id="cmdOK" name="cmdOK" value="Export" onclick="outputOptionsOKClick()" />
+			//<input class="btn minwidth100" type="button" id="cmdOutput" name="cmdOutput" value="Output" onclick="ExportDataPrompt();" />
+			//<input class="btn minwidth100" type="button" id="cmdCancel" name="cmdCancel" value="Preview" onclick="ShowDataFrame();" />
+			//<input class="btn minwidth100" type="button" id="cmdBack" name="cmdBack" value="Back" style="WIDTH: 80px; display: none;"  onclick="ShowDataFrame();" />
+			//<input class="btn minwidth100" type="button" id="cmdClose" name="cmdClose" value="Close" onclick="closeclick();" />
 
 			function resizeGrid() {
 				var newHeight = $('#reportworkframe').height();
