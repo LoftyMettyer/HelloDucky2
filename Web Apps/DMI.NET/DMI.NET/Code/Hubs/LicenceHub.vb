@@ -220,12 +220,12 @@ Namespace Code.Hubs
 
 		Private Shared Function AllowAccess(targetWebArea As WebArea) As LicenceValidation
 
-			If (Now.Date > Licence.ExpiryDate.AddDays(-7)) Then
-				Return LicenceValidation.ExpiryWarning
-			End If
-
 			If (Now.Date > Licence.ExpiryDate) Then
 				Return LicenceValidation.Expired
+			End If
+
+			If (Now.Date > Licence.ExpiryDate.AddDays(-7)) Then
+				Return LicenceValidation.ExpiryWarning
 			End If
 
 			If Licence.Type = LicenceType.Concurrency Then
