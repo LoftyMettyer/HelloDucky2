@@ -809,7 +809,7 @@
 	 
 </script>
 
-<div id="defsel" data-framesource="defsel" style="display: block; height:100%">
+<div id="defsel" data-framesource="defsel" style="display: block; height:100%; width: 99.9%">
 
 <form id=frmpermissions name=frmpermissions style="visibility:hidden;display:none">
 <%
