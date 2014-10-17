@@ -4156,7 +4156,6 @@ Public Function TableIsUsed(pfrmUsage As frmUsage) As Boolean
          " WHERE ASRSysCrossTab.TableID = " & Trim(Str(gLngTableID)) & _
          " AND CrossTabType <> " & ctt9GridBox
     
-    Print sSQL
   Set rsUtils3 = New ADODB.Recordset
   rsUtils3.Open sSQL, gADOCon, adOpenForwardOnly, adLockReadOnly
   With rsUtils3
@@ -4177,7 +4176,6 @@ Public Function TableIsUsed(pfrmUsage As frmUsage) As Boolean
          " WHERE ASRSysCrossTab.TableID = " & Trim(Str(gLngTableID)) & _
          " AND CrossTabType = " & ctt9GridBox
     
-    Print sSQL
   Set rsUtils13 = New ADODB.Recordset
   rsUtils13.Open sSQL, gADOCon, adOpenForwardOnly, adLockReadOnly
   With rsUtils13
@@ -4191,10 +4189,6 @@ Public Function TableIsUsed(pfrmUsage As frmUsage) As Boolean
     .Close
   End With
   Set rsUtils13 = Nothing
-  
-  
-
-
  
   ' Now Check if the column is used in a Record Profile
   sSQL = "SELECT DISTINCT ASRSysRecordProfileName.Name, ASRSysRecordProfileName.Username, ASRSysRecordProfileName.recordProfileID " & _

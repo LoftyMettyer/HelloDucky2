@@ -734,6 +734,7 @@ Private Function DoTransfer() As Boolean
   Dim strTo As String
   Dim blnAll As Boolean
   Dim sWhere As String
+  Dim sWhereExtra As String
   Dim i As Integer
   
   With gobjProgress
@@ -796,16 +797,17 @@ Private Function DoTransfer() As Boolean
   ' Cross Tabs
   Progress "Transferring CrossTabs..."
   strCommand = "UPDATE ASRSysCrossTab SET Username = '" & strTo & "'"
-  sWhere = sWhere & " AND CrossTabType <> '" & ctt9GridBox & "'"
-  strCommand = strCommand & sWhere
+  sWhereExtra = sWhere & " AND CrossTabType <> '" & ctt9GridBox & "'"
+  
+  strCommand = strCommand & sWhereExtra
   gADOCon.Execute strCommand
   DoEvents
   
   ' 9-Box Grid Reports
   Progress "Transferring 9-Box Grid Reports..."
   strCommand = "UPDATE ASRSysCrossTab SET Username = '" & strTo & "'"
-  sWhere = sWhere & " AND CrossTabType = '" & ctt9GridBox & "'"
-  strCommand = strCommand & sWhere
+  sWhereExtra = sWhere & " AND CrossTabType = '" & ctt9GridBox & "'"
+  strCommand = strCommand & sWhereExtra
   gADOCon.Execute strCommand
   DoEvents
   

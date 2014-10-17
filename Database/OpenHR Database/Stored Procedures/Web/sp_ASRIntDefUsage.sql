@@ -134,6 +134,15 @@ BEGIN
 				WHERE PickListID =@intID
 					AND ASRSysCrossTab.CrossTabType <> 4
 			UNION
+				SELECT DISTINCT 'Data Transfer',
+					ASRSysDataTransferName.Name,
+					ASRSysDataTransferName.UserName,
+					ASRSysDataTransferAccess.Access
+				FROM ASRSysDataTransferName
+				INNER JOIN ASRSysDataTransferAccess ON ASRSysDataTransferName.DataTransferID = ASRSysDataTransferAccess.ID
+					AND ASRSysDataTransferAccess.groupname = @sRoleName
+				WHERE ASRSysDataTransferName.pickListID = @intID
+			UNION
 				SELECT DISTINCT '9-Box Grid Report', 
 					ASRSysCrossTab.Name, 
 					ASRSysCrossTab.UserName, 
