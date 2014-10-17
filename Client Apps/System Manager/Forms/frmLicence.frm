@@ -35,6 +35,7 @@ Begin VB.Form frmLicence
       Top             =   105
       Width           =   8865
       Begin VB.CommandButton cmdClipboard 
+         Caption         =   "Copy"
          BeginProperty Font 
             Name            =   "Tahoma"
             Size            =   8.25
@@ -45,13 +46,12 @@ Begin VB.Form frmLicence
             Strikethrough   =   0   'False
          EndProperty
          Height          =   400
-         Left            =   8190
-         Picture         =   "frmLicence.frx":000C
+         Left            =   8070
          Style           =   1  'Graphical
          TabIndex        =   35
          ToolTipText     =   "Copy to clipboard"
          Top             =   735
-         Width           =   360
+         Width           =   720
       End
       Begin VB.TextBox txtLicence 
          BackColor       =   &H8000000F&
@@ -272,9 +272,9 @@ Begin VB.Form frmLicence
          BackColor       =   &H8000000F&
          Enabled         =   0   'False
          Height          =   315
-         ItemData        =   "frmLicence.frx":088E
+         ItemData        =   "frmLicence.frx":000C
          Left            =   1770
-         List            =   "frmLicence.frx":08A1
+         List            =   "frmLicence.frx":0013
          Style           =   2  'Dropdown List
          TabIndex        =   17
          Top             =   315
