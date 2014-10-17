@@ -66,10 +66,10 @@ Namespace Models
 			End Get
 		End Property
 
-		<DisplayName("Percentage of Type")>
+		<DisplayName("Percentage of all data")>
 		Public Property PercentageOfType As Boolean
 
-		<DisplayName("Percentage of Page")>
+		<DisplayName("Percentage of page")>
 		Public Property PercentageOfPage As Boolean
 
 		<DisplayName("Suppress zeroes")>
