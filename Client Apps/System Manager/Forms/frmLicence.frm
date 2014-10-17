@@ -36,15 +36,6 @@ Begin VB.Form frmLicence
       Width           =   8865
       Begin VB.CommandButton cmdClipboard 
          Caption         =   "Copy"
-         BeginProperty Font 
-            Name            =   "Verdana"
-            Size            =   8.25
-            Charset         =   0
-            Weight          =   400
-            Underline       =   0   'False
-            Italic          =   0   'False
-            Strikethrough   =   0   'False
-         EndProperty
          Height          =   400
          Left            =   8175
          Picture         =   "frmLicence.frx":000C
@@ -268,6 +259,7 @@ Begin VB.Form frmLicence
       Top             =   1560
       Width           =   8865
       Begin VB.ComboBox cboType 
+         BackColor       =   &H8000000F&
          Enabled         =   0   'False
          Height          =   315
          ItemData        =   "frmLicence.frx":0316
