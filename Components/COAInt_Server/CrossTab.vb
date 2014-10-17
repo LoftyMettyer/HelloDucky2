@@ -589,15 +589,18 @@ ErrorTrap:
 				mstrColName(HOR) = GetColumnName(mlngColID(HOR))
 				mlngColDataType(HOR) = CStr(GetDataType(mlngBaseTableID, mlngColID(HOR)))
 				mstrFormat(HOR) = GetFormat(mlngColID(HOR))
-
 				mlngColID(VER) = CInt(objRow("VerticalColID"))
-				mdblMin(VER) = Val(objRow("VerticalStart"))
-				mdblMax(VER) = Val(objRow("VerticalStop"))
+
 				If CrossTabType = CrossTabType.ctt9GridBox Then
+					mdblMin(VER) = Val(objRow("VerticalStop"))
+					mdblMax(VER) = Val(objRow("VerticalStart"))
 					mdblStep(VER) = (mdblMax(VER) - mdblMin(VER)) / 3
 				Else
+					mdblMin(VER) = Val(objRow("VerticalStart"))
+					mdblMax(VER) = Val(objRow("VerticalStop"))
 					mdblStep(VER) = Val(objRow("VerticalStep"))
 				End If
+
 				mstrColName(VER) = GetColumnName(mlngColID(VER))
 				mlngColDataType(VER) = CStr(GetDataType(mlngBaseTableID, mlngColID(VER)))
 				mstrFormat(VER) = GetFormat(mlngColID(VER))
@@ -1240,9 +1243,14 @@ LocalErr:
 			For dblGroup = mdblMin(lngLoop) To mdblMax(lngLoop) - IIf(CrossTabType = CrossTabType.ctt9GridBox, mdblStep(lngLoop), 0) Step mdblStep(lngLoop)
 				ReDim Preserve strHeading(lngCount)
 				ReDim Preserve strSearch(lngCount)
+
 				dblGroupMax = dblGroup + mdblStep(lngLoop) - dblUnit
 				strHeading(lngCount) = ConvertNumberForDisplay(VB6.Format(dblGroup, mstrFormat(lngLoop))) & IIf(dblGroupMax <> dblGroup, " - " & ConvertNumberForDisplay(Format(dblGroupMax, mstrFormat(lngLoop))), "")
-				strSearch(lngCount) = String.Format("{0} >= {1} AND {0} <= {2}", strColumnName, ConvertNumberForSQL(CStr(dblGroup)), ConvertNumberForSQL(CStr(dblGroupMax)))
+
+				Dim dblMin = Math.Min(dblGroup, dblGroupMax)
+				Dim dblMax = Math.Max(dblGroup, dblGroupMax)
+
+				strSearch(lngCount) = String.Format("{0} >= {1} AND {0} <= {2}", strColumnName, dblMin.ToString(), dblMax.ToString())
 				lngCount += 1
 			Next
 
@@ -1332,18 +1340,15 @@ LocalErr:
 
 				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
 				strTempValue = IIf(Not IsDBNull(objRow("HOR")), objRow("HOR"), vbNullString)
-				'UPGRADE_WARNING: Couldn't resolve default property of object GetGroupNumber(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 				lngCol = GetGroupNumber(strTempValue, HOR)
 
 				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
 				strTempValue = IIf(Not IsDBNull(objRow("VER")), objRow("VER"), vbNullString)
-				'UPGRADE_WARNING: Couldn't resolve default property of object GetGroupNumber(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 				lngRow = GetGroupNumber(strTempValue, VER)
 
 				If mblnPageBreak Then
 					'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
 					strTempValue = IIf(Not IsDBNull(objRow("PGB")), objRow("PGB"), vbNullString)
-					'UPGRADE_WARNING: Couldn't resolve default property of object GetGroupNumber(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 					lngPage = GetGroupNumber(strTempValue, PGB)
 				Else
 					lngPage = 0
@@ -1511,15 +1516,18 @@ LocalErr:
 				dblValue = Val(strValue)
 				If strValue = vbNullString Then
 					Return 0
-				ElseIf dblValue < mdblMin(Index) Then
+				ElseIf dblValue < mdblMin(Index) AndAlso Not mlngCrossTabType = CrossTabType.ctt9GridBox Then
 					Return 1
 				End If
 
 				lngCount = 1
 				For dblLoop = mdblMin(Index) To mdblMax(Index) Step mdblStep(Index)
-					lngCount = lngCount + 1
-					'If dblValue >= dblLoop And dblValue <= dblLoop + mdblStep(Index) Then
-					If dblValue >= dblLoop And dblValue < dblLoop + mdblStep(Index) Then
+					lngCount += 1
+
+					Dim dblMin = Math.Min(dblLoop, dblLoop + mdblStep(Index))
+					Dim dblMax = Math.Max(dblLoop, dblLoop + mdblStep(Index))
+
+					If dblValue >= dblMin AndAlso dblValue < dblMax Then
 						Return lngCount
 					End If
 				Next
