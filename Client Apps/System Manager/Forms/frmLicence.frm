@@ -37,7 +37,7 @@ Begin VB.Form frmLicence
       Begin VB.CommandButton cmdClipboard 
          Caption         =   "Copy"
          BeginProperty Font 
-            Name            =   "Tahoma"
+            Name            =   "Verdana"
             Size            =   8.25
             Charset         =   0
             Weight          =   400
@@ -46,12 +46,12 @@ Begin VB.Form frmLicence
             Strikethrough   =   0   'False
          EndProperty
          Height          =   400
-         Left            =   8070
-         Style           =   1  'Graphical
-         TabIndex        =   35
+         Left            =   8175
+         Picture         =   "frmLicence.frx":000C
+         TabIndex        =   34
          ToolTipText     =   "Copy to clipboard"
          Top             =   735
-         Width           =   720
+         Width           =   570
       End
       Begin VB.TextBox txtLicence 
          BackColor       =   &H8000000F&
@@ -60,7 +60,7 @@ Begin VB.Form frmLicence
          Index           =   4
          Left            =   6120
          MaxLength       =   6
-         TabIndex        =   26
+         TabIndex        =   25
          Top             =   765
          Width           =   840
       End
@@ -71,7 +71,7 @@ Begin VB.Form frmLicence
          Index           =   0
          Left            =   1800
          MaxLength       =   6
-         TabIndex        =   25
+         TabIndex        =   24
          Top             =   765
          Width           =   840
       End
@@ -82,7 +82,7 @@ Begin VB.Form frmLicence
          Index           =   1
          Left            =   2880
          MaxLength       =   6
-         TabIndex        =   24
+         TabIndex        =   23
          Top             =   765
          Width           =   840
       End
@@ -93,7 +93,7 @@ Begin VB.Form frmLicence
          Index           =   2
          Left            =   3960
          MaxLength       =   6
-         TabIndex        =   23
+         TabIndex        =   22
          Top             =   765
          Width           =   840
       End
@@ -104,7 +104,7 @@ Begin VB.Form frmLicence
          Index           =   3
          Left            =   5040
          MaxLength       =   6
-         TabIndex        =   22
+         TabIndex        =   21
          Top             =   765
          Width           =   840
       End
@@ -115,13 +115,12 @@ Begin VB.Form frmLicence
          Index           =   5
          Left            =   7200
          MaxLength       =   6
-         TabIndex        =   21
+         TabIndex        =   20
          Top             =   765
          Width           =   840
       End
       Begin VB.TextBox txtCustName 
-         BackColor       =   &H8000000F&
-         Enabled         =   0   'False
+         BackColor       =   &H00FFFFFF&
          Height          =   315
          Left            =   1800
          MaxLength       =   50
@@ -143,7 +142,7 @@ Begin VB.Form frmLicence
          Caption         =   "Licence Key :"
          Height          =   255
          Left            =   210
-         TabIndex        =   34
+         TabIndex        =   33
          Top             =   810
          Width           =   1230
       End
@@ -162,7 +161,7 @@ Begin VB.Form frmLicence
          Height          =   240
          Index           =   6
          Left            =   7035
-         TabIndex        =   33
+         TabIndex        =   32
          Top             =   795
          Width           =   90
       End
@@ -181,7 +180,7 @@ Begin VB.Form frmLicence
          Height          =   240
          Index           =   5
          Left            =   5955
-         TabIndex        =   32
+         TabIndex        =   31
          Top             =   795
          Width           =   90
       End
@@ -200,7 +199,7 @@ Begin VB.Form frmLicence
          Height          =   240
          Index           =   2
          Left            =   4860
-         TabIndex        =   31
+         TabIndex        =   30
          Top             =   795
          Width           =   90
       End
@@ -219,7 +218,7 @@ Begin VB.Form frmLicence
          Height          =   240
          Index           =   0
          Left            =   3780
-         TabIndex        =   30
+         TabIndex        =   29
          Top             =   795
          Width           =   90
       End
@@ -238,7 +237,7 @@ Begin VB.Form frmLicence
          Height          =   240
          Index           =   1
          Left            =   2715
-         TabIndex        =   29
+         TabIndex        =   28
          Top             =   795
          Width           =   90
       End
@@ -269,16 +268,15 @@ Begin VB.Form frmLicence
       Top             =   1560
       Width           =   8865
       Begin VB.ComboBox cboType 
-         BackColor       =   &H8000000F&
          Enabled         =   0   'False
          Height          =   315
-         ItemData        =   "frmLicence.frx":000C
-         Left            =   1770
-         List            =   "frmLicence.frx":0013
+         ItemData        =   "frmLicence.frx":0316
+         Left            =   1785
+         List            =   "frmLicence.frx":0329
          Style           =   2  'Dropdown List
-         TabIndex        =   17
-         Top             =   315
-         Width           =   3120
+         TabIndex        =   35
+         Top             =   330
+         Width           =   3105
       End
       Begin VB.TextBox txtHeadcount 
          BackColor       =   &H8000000F&
@@ -333,7 +331,7 @@ Begin VB.Form frmLicence
       Begin GTMaskDate.GTMaskDate txtExpiryDate 
          Height          =   315
          Left            =   1770
-         TabIndex        =   18
+         TabIndex        =   17
          Top             =   720
          Width           =   3120
          _Version        =   65537
@@ -392,7 +390,7 @@ Begin VB.Form frmLicence
          Caption         =   "Model :"
          Height          =   240
          Left            =   165
-         TabIndex        =   20
+         TabIndex        =   19
          Top             =   390
          Width           =   795
       End
@@ -400,7 +398,7 @@ Begin VB.Form frmLicence
          Caption         =   "Expiry Date :"
          Height          =   225
          Left            =   165
-         TabIndex        =   19
+         TabIndex        =   18
          Top             =   780
          Width           =   1185
       End
@@ -473,7 +471,7 @@ Begin VB.Form frmLicence
       Height          =   240
       Index           =   4
       Left            =   7140
-      TabIndex        =   28
+      TabIndex        =   27
       Top             =   930
       Width           =   90
    End
@@ -492,7 +490,7 @@ Begin VB.Form frmLicence
       Height          =   240
       Index           =   3
       Left            =   6045
-      TabIndex        =   27
+      TabIndex        =   26
       Top             =   900
       Width           =   90
    End
