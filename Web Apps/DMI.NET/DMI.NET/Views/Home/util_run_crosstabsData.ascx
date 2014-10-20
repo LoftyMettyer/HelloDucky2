@@ -314,7 +314,7 @@
 			Response.Write("				$('#' + gridRefID).attr('data-row', i);" & vbCrLf)
 			Response.Write("				$('#' + gridRefID).attr('data-col', originalColNum);" & vbCrLf)
 			Response.Write("				$('#' + gridRefID).attr('data-countvalue', colData[i][key]);" & vbCrLf)
-			Response.Write("				if (colData[i][key] != '') { //Only add click event handlers to cells that have a value" & vbCrLf)
+			Response.Write("				if (colData[i][key] != '' && colData[i][key] != '0') { //Only add click event handlers to cells that have a value" & vbCrLf)
 			Response.Write("					$('#' + gridRefID).off('click').on('click', function () {" & vbCrLf)
 			Response.Write("						var iRow = $(this).attr('data-row');" & vbCrLf)
 			Response.Write("						var iCol = $(this).attr('data-col');" & vbCrLf)
