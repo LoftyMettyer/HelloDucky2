@@ -219,11 +219,17 @@
                     <Component Id="cmp74DDB480A70EC2127E7D92072DBF8ED6" Guid="*">
                         <File Id="fil20930B72FA1878B4BEC05602EDB5818D" KeyPath="yes" Source="SourceDir\Content\images\Help32.png" />
                     </Component>
+                    <Component Id="cmp045E8A6E1F6561BF88D82A476343F05B" Guid="*">
+                        <File Id="fil3B4FD332D90DB1972F74BD9EC63754DC" KeyPath="yes" Source="SourceDir\Content\images\minus.gif" />
+                    </Component>
                     <Component Id="cmpC6BBEA228D0098318C4C91687E5EC2E3" Guid="*">
                         <File Id="fil90A7529C8CBBDE9C5A5B87087DD8BC62" KeyPath="yes" Source="SourceDir\Content\images\OpenHRWeb_Splash.png" />
                     </Component>
                     <Component Id="cmp9BB6963D0DF4D174FB4CD8877C3188E8" Guid="*">
                         <File Id="fil2253D7D184BA353F0BFE11C9C18514CD" KeyPath="yes" Source="SourceDir\Content\images\OpenHR_Icon.ico" />
+                    </Component>
+                    <Component Id="cmpE87D6FA74D0EB8A70F487F910F986FDD" Guid="*">
+                        <File Id="filBA5D6440924D8E11B7CCF37E2EEE3AAF" KeyPath="yes" Source="SourceDir\Content\images\plus.gif" />
                     </Component>
                     <Component Id="cmpA42022FDEF405B75ABCF0371ED2872EB" Guid="*">
                         <File Id="fil42CBBEF259E9CAED933FA7372A12CB12" KeyPath="yes" Source="SourceDir\Content\images\ProgressBar.gif" />
@@ -4239,6 +4245,9 @@
                     <Component Id="cmpFCF664996E952F5290C273F1ACEFF953" Guid="*">
                         <File Id="filD9CCECA77F74E2CB8B8102FF70D975E4" KeyPath="yes" Source="SourceDir\Views\Account\About.ascx" />
                     </Component>
+                    <Component Id="cmp8B33084DF0DBCC14DE2FCA8AE0716626" Guid="*">
+                        <File Id="fil8833F33E70CA12C46EF0B2F249462452" KeyPath="yes" Source="SourceDir\Views\Account\CurrentUsers.ascx" />
+                    </Component>
                     <Component Id="cmp1EB3E4751AF79A2D453EB3DAFCBA02EE" Guid="*">
                         <File Id="filA961B741B8779A186B3571B1C9320F9C" KeyPath="yes" Source="SourceDir\Views\Account\ForcedPasswordChange.aspx" />
                     </Component>
@@ -4480,6 +4489,9 @@
                     </Component>
                 </Directory>
                 <Directory Id="dir591E8881BE4D45BE12A0B87E6F16B76A" Name="Reports">
+                    <Component Id="cmp9007F758607639851BFAC81E6955952C" Guid="*">
+                        <File Id="fil0A699C0032D2E2C08E039195AF4FE07C" KeyPath="yes" Source="SourceDir\Views\Reports\Util_Def_9BoxGrid.vbhtml" />
+                    </Component>
                     <Component Id="cmp206BDBEEB697454305FE85E33C514F14" Guid="*">
                         <File Id="filF955878938D3B67440EE8D76C345E0AC" KeyPath="yes" Source="SourceDir\Views\Reports\Util_Def_CalendarReport.vbhtml" />
                     </Component>
@@ -4506,6 +4518,9 @@
                     </Component>
                     <Component Id="cmpAE42260A853E8237207CAD8726C4CA90" Guid="*">
                         <File Id="fil979FE92AA1888F9ABB7AECE9EABEBAAB" KeyPath="yes" Source="SourceDir\Views\Reports\_MergeOutput.vbhtml" />
+                    </Component>
+                    <Component Id="cmpE683625E10F2CA55D9E27ED77257140D" Guid="*">
+                        <File Id="filF491118F4ED10BB1F54677AF73816F99" KeyPath="yes" Source="SourceDir\Views\Reports\_NineBoxGridColumnSelection.vbhtml" />
                     </Component>
                     <Component Id="cmpD0F21098EE2D5CB4DF0B6A3B6FB9F1EA" Guid="*">
                         <File Id="fil64479E0F6C18BECA26DB3E08441FF7EA" KeyPath="yes" Source="SourceDir\Views\Reports\_Output.vbhtml" />
@@ -4623,8 +4638,10 @@
             <ComponentRef Id="cmp16EDFE3CE25EC908A9BCF85056C16227" />
             <ComponentRef Id="cmpBC4DF2B3B1ADA901FF112721A0F14A11" />
             <ComponentRef Id="cmp74DDB480A70EC2127E7D92072DBF8ED6" />
+            <ComponentRef Id="cmp045E8A6E1F6561BF88D82A476343F05B" />
             <ComponentRef Id="cmpC6BBEA228D0098318C4C91687E5EC2E3" />
             <ComponentRef Id="cmp9BB6963D0DF4D174FB4CD8877C3188E8" />
+            <ComponentRef Id="cmpE87D6FA74D0EB8A70F487F910F986FDD" />
             <ComponentRef Id="cmpA42022FDEF405B75ABCF0371ED2872EB" />
             <ComponentRef Id="cmpD2BE55022B52C068D4D9B2845ED1A22A" />
             <ComponentRef Id="cmp89BD9CC905EA8B27D9967221A8B65777" />
@@ -5899,6 +5916,7 @@
             <ComponentRef Id="cmpD52934463B3058E97CA0F816C5BE2784" />
             <ComponentRef Id="cmp59C1AF38179F0401D56B6149279A915F" />
             <ComponentRef Id="cmpFCF664996E952F5290C273F1ACEFF953" />
+            <ComponentRef Id="cmp8B33084DF0DBCC14DE2FCA8AE0716626" />
             <ComponentRef Id="cmp1EB3E4751AF79A2D453EB3DAFCBA02EE" />
             <ComponentRef Id="cmp29DA8C91613440EED851C8EAC1EA7DAE" />
             <ComponentRef Id="cmp3312766D27B4BB49F60F8B8603255398" />
@@ -5978,6 +5996,7 @@
             <ComponentRef Id="cmpB22AAB4BAD21BF1DE5AE0008C2B37EBD" />
             <ComponentRef Id="cmp8FF624F2621E3D996BD6895A6B377E48" />
             <ComponentRef Id="cmp218ABAC59F39561A0134D84C04A1C91F" />
+            <ComponentRef Id="cmp9007F758607639851BFAC81E6955952C" />
             <ComponentRef Id="cmp206BDBEEB697454305FE85E33C514F14" />
             <ComponentRef Id="cmp84FB2757D7A8E77BDCE5846CCED6A939" />
             <ComponentRef Id="cmpF8483AEBDA4C2920696D1E62396A6250" />
@@ -5987,6 +6006,7 @@
             <ComponentRef Id="cmpDA7C0D6236E451E1B61111757013B380" />
             <ComponentRef Id="cmpC698FD5A90066DF4FE18115FF83A3139" />
             <ComponentRef Id="cmpAE42260A853E8237207CAD8726C4CA90" />
+            <ComponentRef Id="cmpE683625E10F2CA55D9E27ED77257140D" />
             <ComponentRef Id="cmpD0F21098EE2D5CB4DF0B6A3B6FB9F1EA" />
             <ComponentRef Id="cmp9CF2322DDD5CDE9F413C514C02FECFF7" />
             <ComponentRef Id="cmp319F61571E2A312146943D9952478907" />
