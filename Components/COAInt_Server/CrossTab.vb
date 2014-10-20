@@ -581,7 +581,7 @@ ErrorTrap:
 				mdblMin(HOR) = Val(objRow("HorizontalStart"))
 				mdblMax(HOR) = Val(objRow("HorizontalStop"))
 				If CrossTabType = CrossTabType.ctt9GridBox Then
-					mdblStep(HOR) = (mdblMax(HOR) - mdblMin(HOR)) / 3
+					mdblStep(HOR) = (mdblMax(HOR) - mdblMin(HOR) + GetSmallestUnit(HOR)) / 3
 				Else
 					mdblStep(HOR) = Val(objRow("HorizontalStep"))
 				End If
@@ -594,7 +594,7 @@ ErrorTrap:
 				If CrossTabType = CrossTabType.ctt9GridBox Then
 					mdblMin(VER) = Val(objRow("VerticalStop"))
 					mdblMax(VER) = Val(objRow("VerticalStart"))
-					mdblStep(VER) = (mdblMax(VER) - mdblMin(VER)) / 3
+					mdblStep(VER) = (mdblMax(VER) - mdblMin(VER) - GetSmallestUnit(VER)) / 3
 				Else
 					mdblMin(VER) = Val(objRow("VerticalStart"))
 					mdblMax(VER) = Val(objRow("VerticalStop"))
@@ -1106,43 +1106,42 @@ LocalErr:
 		Dim strSearch() As String
 		Dim lngLoop As Integer
 
+		Try
 
-		On Error GoTo LocalErr
+			For lngLoop = 0 To 2
 
-		For lngLoop = 0 To 2
+				ReDim strHeading(0)
+				ReDim strSearch(0)
 
-			ReDim strHeading(0)
-			ReDim strSearch(0)
+				If lngLoop = 2 And mblnPageBreak = False Then
+					'When no page break field is specified
+					strHeading(0) = "<None>"
 
-			If lngLoop = 2 And mblnPageBreak = False Then
-				'When no page break field is specified
-				strHeading(0) = "<None>"
+				Else
+					GetHeadingsAndSearchesForColumns(lngLoop, strHeading, strSearch)
 
-			Else
-				GetHeadingsAndSearchesForColumns(lngLoop, strHeading, strSearch)
+				End If
 
-			End If
+				'Store each array in an array of variants (an array in an array!)
+				'UPGRADE_WARNING: Couldn't resolve default property of object mvarHeadings(lngLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+				mvarHeadings(lngLoop) = VB6.CopyArray(strHeading)
+				'UPGRADE_WARNING: Couldn't resolve default property of object mvarSearches(lngLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+				mvarSearches(lngLoop) = VB6.CopyArray(strSearch)
 
-			'Store each array in an array of variants (an array in an array!)
-			'UPGRADE_WARNING: Couldn't resolve default property of object mvarHeadings(lngLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			mvarHeadings(lngLoop) = VB6.CopyArray(strHeading)
-			'UPGRADE_WARNING: Couldn't resolve default property of object mvarSearches(lngLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			mvarSearches(lngLoop) = VB6.CopyArray(strSearch)
+			Next
 
-		Next
+		Catch ex As Exception
+			mstrStatusMessage = "Error building headings and search arrays"
+			Throw
 
-		GetHeadingsAndSearches = fOK
-		Exit Function
+		End Try
 
-LocalErr:
-		mstrStatusMessage = "Error building headings and search arrays"
-		GetHeadingsAndSearches = False
+		Return True
 
 	End Function
 
 	Private Sub GetHeadingsAndSearchesForColumns(lngLoop As Integer, ByRef strHeading() As String, ByRef strSearch() As String)
 
-		Dim strSQL As String
 		Dim strFieldValue As String
 		Dim lngCount As Integer
 		Dim dblGroup As Double
@@ -1240,11 +1239,16 @@ LocalErr:
 			End If
 
 			lngCount = 2
-			For dblGroup = mdblMin(lngLoop) To mdblMax(lngLoop) - IIf(CrossTabType = CrossTabType.ctt9GridBox, mdblStep(lngLoop), 0) Step mdblStep(lngLoop)
+			For dblGroup = mdblMin(lngLoop) To mdblMax(lngLoop) Step mdblStep(lngLoop)
 				ReDim Preserve strHeading(lngCount)
 				ReDim Preserve strSearch(lngCount)
 
-				dblGroupMax = dblGroup + mdblStep(lngLoop) - dblUnit
+				If mlngCrossTabType = CrossTabType.ctt9GridBox AndAlso lngLoop = VER Then
+					dblGroupMax = dblGroup + mdblStep(lngLoop) + dblUnit
+				Else
+					dblGroupMax = dblGroup + mdblStep(lngLoop) - dblUnit
+				End If
+
 				strHeading(lngCount) = ConvertNumberForDisplay(VB6.Format(dblGroup, mstrFormat(lngLoop))) & IIf(dblGroupMax <> dblGroup, " - " & ConvertNumberForDisplay(Format(dblGroupMax, mstrFormat(lngLoop))), "")
 
 				Dim dblMin = Math.Min(dblGroup, dblGroupMax)
@@ -1527,9 +1531,18 @@ LocalErr:
 					Dim dblMin = Math.Min(dblLoop, dblLoop + mdblStep(Index))
 					Dim dblMax = Math.Max(dblLoop, dblLoop + mdblStep(Index))
 
-					If dblValue >= dblMin AndAlso dblValue < dblMax Then
-						Return lngCount
+					If mlngCrossTabType = CrossTabType.ctt9GridBox AndAlso Index = VER Then
+						If dblValue > dblMin AndAlso dblValue <= dblMax Then
+							Return lngCount
+						End If
+
+					Else
+						If dblValue >= dblMin AndAlso dblValue < dblMax Then
+							Return lngCount
+						End If
+
 					End If
+
 				Next
 				Return lngCount + 1
 
