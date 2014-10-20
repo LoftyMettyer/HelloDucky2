@@ -129,24 +129,10 @@ Namespace Models
 			End Get
 		End Property
 
-		<RegularExpression("True", ErrorMessage:="Horizontal Minimum Value must be greater than zero")>
-		Public ReadOnly Property IsHorizontalMinimumValueOK As Boolean
-			Get
-				Return HorizontalStart > 0
-			End Get
-		End Property
-
 		<RegularExpression("True", ErrorMessage:="Horizontal Maximum Value must be greater than zero")>
 		Public ReadOnly Property IsHorizontalMaximumValueOK As Boolean
 			Get
 				Return HorizontalStop > 0
-			End Get
-		End Property
-
-		<RegularExpression("True", ErrorMessage:="Vertical Minimum Value must be greater than zero")>
-		Public ReadOnly Property IsVerticalMinimumValueOK As Boolean
-			Get
-				Return VerticalStart > 0
 			End Get
 		End Property
 
