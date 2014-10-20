@@ -1467,3 +1467,8 @@ div.displaytable {
 #divCrossTabOptions #cboIntersectionType, #divCrossTabOptions #cboPage {
 	margin-left: 10px;
 }
+
+#frmDefSel .ui-jqgrid-bdiv /* Hide jqGrid horizontal scrollbar in defsel*/
+{
+overflow-x : hidden !important;
+}
