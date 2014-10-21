@@ -374,6 +374,7 @@
 		$("#" + ID).spectrum({
 			color: "#" + $("#" + ID).val(), //Set the initial color
 			className: "nineboxgridColorpicker",
+			showInput: true, //Show a textbox with the selected color in hex
 			cancelText: "", //Hide the Cancel button
 			change: function (color) { //On selecting a color...
 				$("#" + ID).val(color.toHex()).change(); //Set the new color and trigger the change event so the Save button is enabled
