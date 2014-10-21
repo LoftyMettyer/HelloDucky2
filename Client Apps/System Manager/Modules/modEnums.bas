@@ -725,6 +725,8 @@ Public Enum enum_Module
   modFusion = 8192
   modXMLExport = 16384
   mod3rdPartyTables = 32768
+  modNineBoxGrid = 65536
+  modEditableGrids = 131072
 End Enum
 
 'System metrics constants
