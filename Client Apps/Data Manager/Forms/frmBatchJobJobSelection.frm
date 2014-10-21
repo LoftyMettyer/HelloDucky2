@@ -143,6 +143,7 @@ End Property
 Public Property Let Cancelled(ByVal bCancel As Boolean)
   mblnCancelled = bCancel                               'Set value of cancelled flag
 End Property
+
 Private Sub chkOnlyMine_Click()
   mstrPrevSelectedJob = Me.cboJobName.Text
   cboJobName.Clear                                      'Clear Previous JobNames/IDs
@@ -285,6 +286,7 @@ Private Sub GetIndividualJobs()
       sBaseTableName = "ASRSysCrossTab"
       sBaseTableIDColumnName = "CrossTabID"
       sAccessTableName = "ASRSysCrossTabAccess"
+      sExtraClause = "CrossTabType <> " & ctt9GridBox
         
     Case "CUSTOM REPORT"
       sBaseTableName = "ASRSysCustomReportsName"
