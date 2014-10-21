@@ -19,9 +19,9 @@
 			<br />
 			<input type="button" id="btnEventDetailsEdit" value="Edit..." disabled onclick="eventEdit();" />
 			<br />
-			<input type="button" id="btnEventDetailsRemove" value="Remove" disabled onclick="removeEvent()" />
+			<input type="button" id="btnEventDetailsRemove" class="enableSaveButtonOnClick" value="Remove" disabled onclick="removeEvent()" />
 			<br />
-			<input type="button" id="btnEventDetailsRemoveAll" value="Remove All" disabled onclick="removeAllEvents()" />
+			<input type="button" id="btnEventDetailsRemoveAll" class="enableSaveButtonOnClick" value="Remove All" disabled onclick="removeAllEvents()" />
 		</div>
 	</fieldset>
 </div>
@@ -101,7 +101,6 @@
 			width: gridWidth,
 			ondblClickRow: function (rowID) {
 				eventEdit(rowID);
-				//enableSaveButton();
 			},
 			onSelectRow: function (id) {
 

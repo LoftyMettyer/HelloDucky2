@@ -155,23 +155,9 @@
 			$("#frmReportDefintion input").on("change", function () { enableSaveButton(); });
 			$("#frmReportDefintion select").on("change", function () { enableSaveButton(); });
 
-			//bind click event for all buttons on columns tab to enable the save button
-			$("#frmReportDefintion #report_definition_tab_columns :button").on("click", function () { enableSaveButton(); });
-
-			//bind click event for all buttons on Custom Reports->Related Tables tab to enable the save button
-			$("#frmReportDefintion #tabs-2 :button").on("click", function () { enableSaveButton(); });
-
-			//bind click event for remove and removeall button on events tab to enable the save button
-			$("#frmReportDefintion #report_definition_tab_eventdetails #btnEventDetailsRemove").on("click", function () { enableSaveButton(); });
-			$("#frmReportDefintion #report_definition_tab_eventdetails #btnEventDetailsRemoveAll").on("click", function () { enableSaveButton(); });
-
-			//bind click event for all buttons except add and edit on sort order tab to enable the save button
-			$("#frmReportDefintion #report_definition_tab_order #btnSortOrderRemove").on("click", function () { enableSaveButton(); });
-			$("#frmReportDefintion #report_definition_tab_order #btnSortOrderRemoveAll").on("click", function () { enableSaveButton(); });
-			$("#frmReportDefintion #report_definition_tab_order #btnSortOrderMoveUp").on("click", function () { enableSaveButton(); });
-			$("#frmReportDefintion #report_definition_tab_order #btnSortOrderMoveDown").on("click", function () { enableSaveButton(); });
+			//bind click event on the css class for the button and used to enable the save button
+			$("#frmReportDefintion .enableSaveButtonOnClick").on("click", function () { enableSaveButton(); });
 		}
-
 	});
 
 	function isDefinitionReadOnly() {
@@ -531,13 +517,14 @@
 
 		$('#ChildTables').jqGrid('clearGridData');
 
+		enableSaveButton();
+
 	}
 
 	function removeAllChildTables() {
 
 		var data = { ReportID: "@Model.ID", ReportType: "@Model.ReportType" }
 		OpenHR.postData("Reports/RemoveAllChildTables", data, removeAllChildTablesCompleted);
-
 	}
 
 	function enableSaveButton() {

@@ -260,6 +260,7 @@ End Code
 
 
 			addChildTableCompleted();
+			enableSaveButton();
 		}
 
 	}

@@ -33,16 +33,16 @@
 		<div class="tablecell">
 			<fieldset class="" id="columnbuttons">
 	<div id="colbtngrp1">
-		<input type="button" id="btnColumnAdd" value="Add" onclick="addColumnToSelected();" />
-		<input type="button" id="btnColumnAddAll" value="Add All" onclick="addAllColumnsToSelected();" />
+		<input type="button" id="btnColumnAdd" class="enableSaveButtonOnClick" value="Add" onclick="addColumnToSelected();" />
+		<input type="button" id="btnColumnAddAll" class="enableSaveButtonOnClick" value="Add All" onclick="addAllColumnsToSelected();" />
 	</div>
 	<div id="colbtngrp2">
-		<input type="button" id="btnColumnRemove" value="Remove" onclick="requestRemoveSelectedColumns();" />
-		<input type="button" id="btnColumnRemoveAll" value="Remove All" onclick="requestRemoveAllSelectedColumns();" />
+		<input type="button" id="btnColumnRemove" class="enableSaveButtonOnClick" value="Remove" onclick="requestRemoveSelectedColumns();" />
+		<input type="button" id="btnColumnRemoveAll" class="enableSaveButtonOnClick" value="Remove All" onclick="requestRemoveAllSelectedColumns();" />
 	</div>
 	<div id="colbtngrp3" class="customReportsOnly">
-		<input type="button" id="btnColumnMoveUp" value="Move Up" disabled onclick="moveSelectedColumn('up');" />
-		<input type="button" id="btnColumnMoveDown" value="Move Down" disabled onclick="moveSelectedColumn('down');" />
+		<input type="button" id="btnColumnMoveUp" class="enableSaveButtonOnClick" value="Move Up" disabled onclick="moveSelectedColumn('up');" />
+		<input type="button" id="btnColumnMoveDown" class="enableSaveButtonOnClick" value="Move Down" disabled onclick="moveSelectedColumn('down');" />
 	</div>
 </fieldset>
 		</div>

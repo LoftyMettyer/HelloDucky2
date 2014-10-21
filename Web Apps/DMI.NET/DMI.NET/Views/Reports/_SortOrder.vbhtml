@@ -16,12 +16,12 @@
 		</div>
 
 		<div class="stretchyfixed" id="sortorderbuttons">
-				<input type="button" id="btnSortOrderAdd" value="Add..." disabled onclick="addSortOrder();" />
-				<input type="button" id="btnSortOrderEdit" value="Edit..." disabled onclick="editSortSorder(0);" />
-				<input type="button" id="btnSortOrderRemove" value="Remove" disabled onclick="removeSortOrder()" />
-				<input type="button" id="btnSortOrderRemoveAll" value="Remove All" disabled onclick="removeAllSortOrders()" />
-				<input type="button" id="btnSortOrderMoveUp" value="Move Up" disabled onclick="moveSelectedOrder('up')" />
-				<input type="button" id="btnSortOrderMoveDown" value="Move Down" disabled onclick="moveSelectedOrder('down')" />
+			<input type="button" id="btnSortOrderAdd" value="Add..." disabled onclick="addSortOrder();" />
+			<input type="button" id="btnSortOrderEdit" value="Edit..." disabled onclick="editSortSorder(0);" />
+			<input type="button" id="btnSortOrderRemove" class="enableSaveButtonOnClick" value="Remove" disabled onclick="removeSortOrder()" />
+			<input type="button" id="btnSortOrderRemoveAll" class="enableSaveButtonOnClick" value="Remove All" disabled onclick="removeAllSortOrders()" />
+			<input type="button" id="btnSortOrderMoveUp" class="enableSaveButtonOnClick" value="Move Up" disabled onclick="moveSelectedOrder('up')" />
+			<input type="button" id="btnSortOrderMoveDown" class="enableSaveButtonOnClick" value="Move Down" disabled onclick="moveSelectedOrder('down')" />
 		</div>
 	</fieldset>
 </div>
@@ -142,7 +142,6 @@
 				scrollrows: true,
 				ondblClickRow: function (rowID) {
 					editSortSorder(rowID);
-					//enableSaveButton();
 				},
 				onSelectRow: function (id) {
 					refreshSortButtons();
