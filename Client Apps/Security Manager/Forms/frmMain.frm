@@ -829,11 +829,6 @@ Public Sub RefreshMenu(pfUnloadingForm As Boolean)
   If Not frmTemp Is Nothing Then
     abSecurity.Bands("bndModule").Tools("ID_Audit").Enabled = ((iFormCount <= 1) Or (Not TypeOf Screen.ActiveForm Is frmAudit))
     abSecurity.Bands("bndModule").Tools("ID_Group").Enabled = ((iFormCount <= 1) Or (Not TypeOf Screen.ActiveForm Is frmGroupMaint1))
-    
-    abSecurity.Bands("bndTools").Tools("ID_SecurityOptions").Enabled = ((iFormCount <= 1) Or (Not TypeOf Screen.ActiveForm Is frmGroupMaint1))
-    abSecurity.Bands("bndTools").Tools("ID_PasswordMaintenance").Enabled = ((iFormCount <= 1) Or (Not TypeOf Screen.ActiveForm Is frmGroupMaint1))
-    abSecurity.Bands("bndTools").Tools("ID_UtilityOwnership").Enabled = ((iFormCount <= 1) Or (Not TypeOf Screen.ActiveForm Is frmGroupMaint1))
-    
   Else
     abSecurity.Bands("bndModule").Tools("ID_Audit").Enabled = (iFormCount <= 1)
     abSecurity.Bands("bndModule").Tools("ID_Group").Enabled = (iFormCount <= 1)
