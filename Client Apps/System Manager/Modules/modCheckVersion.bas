@@ -244,9 +244,11 @@ Public Function CheckVersion(sConnect As String, fReRunScript As Boolean, bIsSQL
         
         If frmChangedPlatform.Choice = vbYes Then
         
-          SaveSystemSetting "Licence", "Key", frmChangedPlatform.LicenceKey
-          gobjLicence.ValidateCreationDate = False
-          gobjLicence.LicenceKey = frmChangedPlatform.LicenceKey
+          If bLicenceKeyRequired Then
+            SaveSystemSetting "Licence", "Key", frmChangedPlatform.LicenceKey
+            gobjLicence.ValidateCreationDate = False
+            gobjLicence.LicenceKey = frmChangedPlatform.LicenceKey
+          End If
 
           ' AE20080415 Fault #13098
           'fOK = UpdateDatabase(sConnect, False)
