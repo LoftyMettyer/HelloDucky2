@@ -30,6 +30,59 @@ Begin VB.Form frmSSIntranetLink
    ScaleWidth      =   9360
    ShowInTaskbar   =   0   'False
    StartUpPosition =   2  'CenterScreen
+   Begin VB.Frame fraHRProUtilityLink 
+      Caption         =   "Report / Utility :"
+      Height          =   1485
+      Left            =   2880
+      TabIndex        =   31
+      Top             =   6180
+      Width           =   6300
+      Begin VB.ComboBox cboHRProUtility 
+         Height          =   315
+         Left            =   1400
+         Style           =   2  'Dropdown List
+         TabIndex        =   35
+         Top             =   700
+         Width           =   4700
+      End
+      Begin VB.ComboBox cboHRProUtilityType 
+         Height          =   315
+         ItemData        =   "frmSSIntranetLink.frx":000C
+         Left            =   1400
+         List            =   "frmSSIntranetLink.frx":000E
+         Style           =   2  'Dropdown List
+         TabIndex        =   33
+         Top             =   300
+         Width           =   4700
+      End
+      Begin VB.Label lblHRProUtilityMessage 
+         AutoSize        =   -1  'True
+         Caption         =   "<message>"
+         ForeColor       =   &H000000FF&
+         Height          =   195
+         Left            =   1395
+         TabIndex        =   36
+         Top             =   1160
+         Width           =   4695
+         WordWrap        =   -1  'True
+      End
+      Begin VB.Label lblHRProUtility 
+         Caption         =   "Name :"
+         Height          =   195
+         Left            =   195
+         TabIndex        =   34
+         Top             =   765
+         Width           =   780
+      End
+      Begin VB.Label lblHRProUtilityType 
+         Caption         =   "Type :"
+         Height          =   195
+         Left            =   195
+         TabIndex        =   32
+         Top             =   360
+         Width           =   645
+      End
+   End
    Begin VB.Frame fraURLLink 
       Caption         =   "URL :"
       Height          =   1125
@@ -160,7 +213,7 @@ Begin VB.Form frmSSIntranetLink
       Begin MSChart20Lib.MSChart MSChart1 
          Height          =   2505
          Left            =   2730
-         OleObjectBlob   =   "frmSSIntranetLink.frx":000C
+         OleObjectBlob   =   "frmSSIntranetLink.frx":0010
          TabIndex        =   83
          Top             =   555
          Width           =   3330
@@ -199,9 +252,9 @@ Begin VB.Form frmSSIntranetLink
       End
       Begin VB.ComboBox cboChartType 
          Height          =   315
-         ItemData        =   "frmSSIntranetLink.frx":24FC
+         ItemData        =   "frmSSIntranetLink.frx":2500
          Left            =   210
-         List            =   "frmSSIntranetLink.frx":24FE
+         List            =   "frmSSIntranetLink.frx":2502
          Style           =   2  'Dropdown List
          TabIndex        =   68
          Top             =   555
@@ -412,9 +465,9 @@ Begin VB.Form frmSSIntranetLink
       Width           =   9000
       Begin VB.ComboBox cboTableView 
          Height          =   315
-         ItemData        =   "frmSSIntranetLink.frx":2500
+         ItemData        =   "frmSSIntranetLink.frx":2504
          Left            =   1485
-         List            =   "frmSSIntranetLink.frx":2502
+         List            =   "frmSSIntranetLink.frx":2506
          Sorted          =   -1  'True
          Style           =   2  'Dropdown List
          TabIndex        =   6
@@ -462,7 +515,7 @@ Begin VB.Form frmSSIntranetLink
             Italic          =   0   'False
             Strikethrough   =   0   'False
          EndProperty
-         stylesets(0).Picture=   "frmSSIntranetLink.frx":2504
+         stylesets(0).Picture=   "frmSSIntranetLink.frx":2508
          stylesets(1).Name=   "ReadOnly"
          stylesets(1).ForeColor=   -2147483631
          stylesets(1).BackColor=   -2147483633
@@ -476,7 +529,7 @@ Begin VB.Form frmSSIntranetLink
             Italic          =   0   'False
             Strikethrough   =   0   'False
          EndProperty
-         stylesets(1).Picture=   "frmSSIntranetLink.frx":2520
+         stylesets(1).Picture=   "frmSSIntranetLink.frx":2524
          MultiLine       =   0   'False
          AllowRowSizing  =   0   'False
          AllowGroupSizing=   0   'False
@@ -791,9 +844,9 @@ Begin VB.Form frmSSIntranetLink
       Begin VB.ComboBox cboDBValCFStyle 
          Height          =   315
          Index           =   0
-         ItemData        =   "frmSSIntranetLink.frx":253C
+         ItemData        =   "frmSSIntranetLink.frx":2540
          Left            =   3660
-         List            =   "frmSSIntranetLink.frx":253E
+         List            =   "frmSSIntranetLink.frx":2542
          Style           =   2  'Dropdown List
          TabIndex        =   108
          Top             =   3915
@@ -1198,59 +1251,6 @@ Begin VB.Form frmSSIntranetLink
          TabIndex        =   11
          Top             =   650
          Width           =   2265
-      End
-   End
-   Begin VB.Frame fraHRProUtilityLink 
-      Caption         =   "Report / Utility :"
-      Height          =   1485
-      Left            =   2880
-      TabIndex        =   31
-      Top             =   6180
-      Width           =   6300
-      Begin VB.ComboBox cboHRProUtility 
-         Height          =   315
-         Left            =   1400
-         Style           =   2  'Dropdown List
-         TabIndex        =   35
-         Top             =   700
-         Width           =   4700
-      End
-      Begin VB.ComboBox cboHRProUtilityType 
-         Height          =   315
-         ItemData        =   "frmSSIntranetLink.frx":2540
-         Left            =   1400
-         List            =   "frmSSIntranetLink.frx":2542
-         Style           =   2  'Dropdown List
-         TabIndex        =   33
-         Top             =   300
-         Width           =   4700
-      End
-      Begin VB.Label lblHRProUtilityMessage 
-         AutoSize        =   -1  'True
-         Caption         =   "<message>"
-         ForeColor       =   &H000000FF&
-         Height          =   195
-         Left            =   1395
-         TabIndex        =   36
-         Top             =   1160
-         Width           =   4695
-         WordWrap        =   -1  'True
-      End
-      Begin VB.Label lblHRProUtility 
-         Caption         =   "Name :"
-         Height          =   195
-         Left            =   195
-         TabIndex        =   34
-         Top             =   765
-         Width           =   780
-      End
-      Begin VB.Label lblHRProUtilityType 
-         Caption         =   "Type :"
-         Height          =   195
-         Left            =   195
-         TabIndex        =   32
-         Top             =   360
-         Width           =   645
       End
    End
    Begin VB.Frame fraHRProScreenLink 
@@ -1659,6 +1659,11 @@ Private Sub GetHRProUtilityTypes()
       .ItemData(.NewIndex) = utlWorkflow
     End If
 
+    If ASRDEVELOPMENT Or Application.NineBoxGridModule Then
+      .AddItem "9-Box Grid Reports"
+      .ItemData(.NewIndex) = utlNineBoxGrid
+    End If
+
     .ListIndex = iDefaultItem
   End With
  
@@ -1740,6 +1745,7 @@ Private Sub GetHRProUtilities(pUtilityType As UtilityType)
     Case utlCrossTab
       sTableName = "ASRSysCrossTab"
       sIDColumnName = "CrossTabID"
+      sWhereSQL = "ASRSysCrossTab.CrossTabType = " & CStr(cttNormal)
     
     Case utlCustomReport
       sTableName = "ASRSysCustomReportsName"
@@ -1785,6 +1791,12 @@ Private Sub GetHRProUtilities(pUtilityType As UtilityType)
       sIDColumnName = "ID"
       sWhereSQL = "tmpWorkflows.initiationType = " & CStr(WORKFLOWINITIATIONTYPE_MANUAL) & _
         " OR tmpWorkflows.initiationType is null"
+        
+    Case utlNineBoxGrid
+       sTableName = "ASRSysCrossTab"
+      sIDColumnName = "CrossTabID"
+      sWhereSQL = "ASRSysCrossTab.CrossTabType = " & CStr(ctt9GridBox)
+      
   End Select
   
   If Len(sTableName) > 0 Then

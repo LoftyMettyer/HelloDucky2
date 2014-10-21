@@ -172,6 +172,11 @@ Private Sub GetHRProUtilityTypes()
       .ItemData(.NewIndex) = utlWorkflow
     End If
     
+   If ASRDEVELOPMENT Or Application.NineBoxGridModule Then
+      .AddItem "9-Box Grid Reports"
+      .ItemData(.NewIndex) = utlNineBoxGrid
+    End If
+    
     .ListIndex = iDefaultItem
   End With
  

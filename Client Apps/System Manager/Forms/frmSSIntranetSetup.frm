@@ -123,7 +123,7 @@ Begin VB.Form frmSSIntranetSetup
       _Version        =   393216
       Style           =   1
       Tabs            =   5
-      Tab             =   3
+      Tab             =   2
       TabsPerRow      =   5
       TabHeight       =   520
       TabCaption(0)   =   "&General"
@@ -138,14 +138,14 @@ Begin VB.Form frmSSIntranetSetup
       Tab(1).ControlCount=   1
       TabCaption(2)   =   "Dash&board"
       TabPicture(2)   =   "frmSSIntranetSetup.frx":1BC18
-      Tab(2).ControlEnabled=   0   'False
+      Tab(2).ControlEnabled=   -1  'True
       Tab(2).Control(0)=   "fraButtonLinks"
+      Tab(2).Control(0).Enabled=   0   'False
       Tab(2).ControlCount=   1
       TabCaption(3)   =   "&Dropdown List Links"
       TabPicture(3)   =   "frmSSIntranetSetup.frx":1BC34
-      Tab(3).ControlEnabled=   -1  'True
+      Tab(3).ControlEnabled=   0   'False
       Tab(3).Control(0)=   "fraDropdownListLinks"
-      Tab(3).Control(0).Enabled=   0   'False
       Tab(3).ControlCount=   1
       TabCaption(4)   =   "On-screen Docume&nt Display"
       TabPicture(4)   =   "frmSSIntranetSetup.frx":1BC50
@@ -857,7 +857,7 @@ Begin VB.Form frmSSIntranetSetup
          Caption         =   "Dashboard Links :"
          Enabled         =   0   'False
          Height          =   4935
-         Left            =   -74850
+         Left            =   150
          TabIndex        =   49
          Top             =   405
          Width           =   8120
@@ -1440,7 +1440,7 @@ Begin VB.Form frmSSIntranetSetup
          Caption         =   "Dropdown List Links :"
          Enabled         =   0   'False
          Height          =   4935
-         Left            =   150
+         Left            =   -74850
          TabIndex        =   51
          Top             =   405
          Width           =   8120
@@ -4624,7 +4624,7 @@ Private Sub cmdMoveTableViewUp_Click()
   MoveView MOVEDIRECTION_UP
 End Sub
 
-Private Sub cmdOk_Click()
+Private Sub cmdOK_Click()
   'AE20071119 Fault #12607
   'If ValidateSetup Then
     'SaveChanges
@@ -4894,6 +4894,7 @@ Private Sub ReadParameters()
   Dim sHiddenGroups As String
   Dim iIndex As Integer
   Dim fWorkflowLicensed As Boolean
+  Dim fNineBoxGridLicensed As Boolean
   
   ' Get the configured Personnel table ID and Personnel table view ID.
   With recModuleSetup
@@ -4966,12 +4967,16 @@ Private Sub ReadParameters()
   Set rsLinks = daoDb.OpenRecordset(sSQL, dbOpenForwardOnly, dbReadOnly)
 
   fWorkflowLicensed = IsModuleEnabled(modWorkflow)
+  fNineBoxGridLicensed = IsModuleEnabled(modNineBoxGrid)
 
   While Not rsLinks.EOF
     Set ctlGrid = Nothing
     
-    ' NPG20100520 Fault HRPRO-938 - Don't display workflow items if not licensed for workflow.
-    If Not (rsLinks!UtilityType = 25 And Not fWorkflowLicensed) And Not (rsLinks!Element_Type = 3 And Not fWorkflowLicensed) Then
+    ' NPG - Don't display unlicensed items.
+    If rsLinks!UtilityType = 25 And Not fWorkflowLicensed Then GoTo continueDo
+    If rsLinks!Element_Type = 3 And Not fWorkflowLicensed Then GoTo continueDo
+    If rsLinks!UtilityType = utlNineBoxGrid And Not fNineBoxGridLicensed Then GoTo continueDo
+  
     Select Case rsLinks!LinkType
       Case SSINTLINK_HYPERTEXT
         iIndex = -1
@@ -5127,7 +5132,10 @@ Private Sub ReadParameters()
       'JPD 20050118 Fault 9722
       ctlGrid.MoveFirst
     End If
-    End If
+ 
+    
+continueDo:
+       
     rsLinks.MoveNext
   Wend
   rsLinks.Close

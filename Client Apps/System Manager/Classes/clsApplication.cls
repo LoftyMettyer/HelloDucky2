@@ -82,6 +82,10 @@ Public Property Get AbsenceModule() As Boolean
   AbsenceModule = IsModuleEnabled(modAbsence)
 End Property
 
+Public Property Get NineBoxGridModule() As Boolean
+  NineBoxGridModule = IsModuleEnabled(modNineBoxGrid)
+End Property
+
 Public Property Get ChangedDiaryLink() As Boolean
   ChangedDiaryLink = blnChangedDiaryLink
 End Property
