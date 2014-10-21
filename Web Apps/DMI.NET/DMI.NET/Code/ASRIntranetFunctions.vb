@@ -438,4 +438,32 @@ Public Module ASRIntranetFunctions
 		End Using
 	End Sub
 
+	Public Function RoundValuesInRange(Value As String) As String
+		Dim RetValue As String = ""
+		Dim val1 As String = ""
+		Dim val2 As String = ""
+
+		If Value.Contains(" - ") Then	'Range (such as A - B), separate in two values
+			val1 = Value.Substring(0, Value.IndexOf(" - "))
+			val2 = Value.Substring(Value.IndexOf(" - ") + 3)
+		ElseIf Value.Contains(".") Then	'Single value, round up and return
+			Return Decimal.Round(CDec(Value), 2).ToString()
+		Else 'Single value, no round up necessary, return
+			Return Value
+		End If
+
+		If val1.Contains(".") Then
+			RetValue = String.Concat(RetValue, Decimal.Round(CDec(val1), 2))
+		Else
+			RetValue = String.Concat(RetValue, val1)
+		End If
+		RetValue = String.Concat(RetValue, " - ")
+		If val2.Contains(".") Then
+			RetValue = String.Concat(RetValue, Decimal.Round(CDec(val2), 2))
+		Else
+			RetValue = String.Concat(RetValue, val2)
+		End If
+
+		Return RetValue
+	End Function
 End Module

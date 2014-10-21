@@ -20,7 +20,7 @@
 		If objCrossTab.CrossTabType = CrossTabType.cttAbsenceBreakdown Then
 			Response.Write("<label style='font-weight: bold;'>Absence Breakdown Cell Breakdown</label>")
 		ElseIf objCrossTab.CrossTabType = CrossTabType.ctt9GridBox Then
-			Response.Write("<label style='font-weight: bold;'>9-Box Grid Cell Breakdown</label>")
+			Response.Write("<label id='nineBoxGridCellBreakdownLabel' style='font-weight: bold;'></label>")
 		Else
 			Response.Write("<label style='font-weight: bold;'>Cross Tabs Cell Breakdown</label>")
 		End If
@@ -54,7 +54,7 @@
 												If CLng(Session("CT_Hor")) > CLng(objCrossTab.ColumnHeadingUbound(0)) Then
 														Response.Write("<All>")
 												Else
-														Response.Write(objCrossTab.ColumnHeading(0, Session("CT_Hor")))
+														Response.Write(RoundValuesInRange(objCrossTab.ColumnHeading(0, Session("CT_Hor"))))
 												End If
 												Response.Write(""" style=""WIDTH: 100%"" class=""text textdisabled"" disabled=""disabled""></TD>" & vbCrLf)
 												Response.Write("  <TD WIDTH=50>&nbsp;</TD>" & vbCrLf)
@@ -68,7 +68,7 @@
 												If CLng(Session("CT_Ver")) > CLng(objCrossTab.ColumnHeadingUbound(1)) Then
 														Response.Write("<All>")
 												Else
-														Response.Write(objCrossTab.ColumnHeading(1, Session("CT_Ver")))
+														Response.Write(RoundValuesInRange(objCrossTab.ColumnHeading(1, Session("CT_Ver"))))
 												End If
 												Response.Write(""" style=""WIDTH: 100%"" class=""text textdisabled"" disabled=""disabled""></TD>" & vbCrLf)
 												Response.Write("</TR>" & vbCrLf)
@@ -152,8 +152,9 @@
 		
 			Response.Write("	$('#ssOutputBreakdown').jqGrid({data: colData, datatype: 'local', colNames: colNames, height: 400, colModel: colMode, autowidth: true" & vbCrLf)
 			Response.Write("   ,rowNum:1000000")
-			Response.Write("	, cmTemplate: { editable: true }});")
-		
+			Response.Write("	, cmTemplate: { editable: true }});" & vbCrLf & vbCrLf)
+
+			Response.Write("$('#nineBoxGridCellBreakdownLabel').text('9-Box Grid Cell Breakdown: ' + $('#nineBoxR' + " & Session("CT_Ver") - 1 & " + 'C' + " & Session("CT_Hor") - 1 & ").attr('data-titlevalue'));" & vbCrLf)
 			
 		Response.Write("}" & vbCrLf)
 			Response.Write("</script>" & vbCrLf & vbCrLf)

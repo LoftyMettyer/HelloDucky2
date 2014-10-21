@@ -299,7 +299,6 @@
 			Response.Write("	    		getBreakdown(iCol -1, iRow -1, lngPage, intType, txtValue);}" & vbCrLf)
 			Response.Write("	, cmTemplate: { sortable: false, editable: true }});")
 		Else
-			
 			Response.Write("var rowNum = 1;" & vbCrLf)
 			Response.Write("for (var i = 0; i < colData.length; i++) {" & vbCrLf)
 			Response.Write("	if ((colData[i][''].indexOf('&lt') < 0) && (colData[i][''].indexOf('&gt') < 0) && (colData[i][''].indexOf('Total') < 0)) {" & vbCrLf)
@@ -313,17 +312,17 @@
 			Response.Write("				$('#' + gridRefID + '>p:last').html(colData[i][key]);" & vbCrLf)
 			Response.Write("				$('#' + gridRefID).attr('data-row', i);" & vbCrLf)
 			Response.Write("				$('#' + gridRefID).attr('data-col', originalColNum);" & vbCrLf)
+			Response.Write("				$('#' + gridRefID).attr('data-titlevalue', $('#' + gridRefID + '>p:first').html());" & vbCrLf)
 			Response.Write("				$('#' + gridRefID).attr('data-countvalue', colData[i][key]);" & vbCrLf)
-			Response.Write("				if (colData[i][key] != '' && colData[i][key] != '0') { //Only add click event handlers to cells that have a value" & vbCrLf)
-			Response.Write("					$('#' + gridRefID).off('click').on('click', function () {" & vbCrLf)
-			Response.Write("						var iRow = $(this).attr('data-row');" & vbCrLf)
-			Response.Write("						var iCol = $(this).attr('data-col');" & vbCrLf)
-			Response.Write("	    			var lngPage = cboPage.options[cboPage.selectedIndex].value;" & vbCrLf)
-			Response.Write("	    			var intType = cboIntersectionType.options[cboIntersectionType.selectedIndex].value;" & vbCrLf)
-			Response.Write("	    			var countValue = $(this).attr('data-countvalue');" & vbCrLf)
-			Response.Write("						getBreakdown(iCol, iRow, lngPage, intType, countValue);" & vbCrLf)
-			Response.Write("					}); //End of click event handler" & vbCrLf)
-			Response.Write("        }; //End of if (colData.....)" & vbCrLf)
+			Response.Write("				$('#' + gridRefID).off('click').on('click', function () {" & vbCrLf)
+			Response.Write("					var iRow = $(this).attr('data-row');" & vbCrLf)
+			Response.Write("					var iCol = $(this).attr('data-col');" & vbCrLf)
+			Response.Write("	    		var lngPage = cboPage.options[cboPage.selectedIndex].value;" & vbCrLf)
+			Response.Write("	    		var intType = cboIntersectionType.options[cboIntersectionType.selectedIndex].value;" & vbCrLf)
+			Response.Write("	    		var countValue = $(this).attr('data-countvalue');" & vbCrLf)
+			Response.Write("	    		if (countValue == '') countValue = '0';" & vbCrLf)
+			Response.Write("					getBreakdown(iCol, iRow, lngPage, intType, countValue);" & vbCrLf)
+			Response.Write("				}); //End of click event handler" & vbCrLf)
 			Response.Write("				colNum += 1;" & vbCrLf)
 			Response.Write("			}" & vbCrLf)
 			Response.Write("			 if(key.length > 0) originalColNum += 1;" & vbCrLf)
@@ -333,9 +332,7 @@
 			Response.Write("}" & vbCrLf)
 			Response.Write("$( '#tblNineBox td[id^=\'nineBoxR\']' ).hover(function() {   $( this ).addClass('ui-state-highlight');}, function() {$( this ).removeClass('ui-state-highlight'); });" & vbCrLf)
 			Response.Write("$('#tblNineBox').show();" & vbCrLf)
-			
-		End If
-		
+		End If	
 	End If
 	
 	Response.Write("  try {" & vbCrLf)
