@@ -4818,6 +4818,11 @@ Private Sub sstrvSystemPermissions_Initialise()
       strSQLWhere = strSQLWhere & IIf(InStr(strSQLWhere, "WHERE") > 0, " AND ", " WHERE ") & "ASRSysPermissionCategories.categoryKey <> 'VERSION1'"
     End If
     
+    ' Hide Workflow if module not enabled
+    If Not IsModuleEnabled(modNineBoxGrid) Then
+      strSQLWhere = strSQLWhere & IIf(InStr(strSQLWhere, "WHERE") > 0, " AND ", " WHERE ") & "ASRSysPermissionCategories.categoryKey <> 'NINEBOXGRID'"
+    End If
+    
     ' Add order by clause
     sSQL = sSQL & strSQLWhere & " ORDER BY listOrder, description"
     

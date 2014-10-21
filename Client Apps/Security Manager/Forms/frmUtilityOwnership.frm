@@ -403,12 +403,14 @@ Private Function DoTransfer() As Boolean
   DoEvents
   
   ' 9-Box Grid Reports
-  Progress "Transferring 9-Box Grid Reports..."
-  strCommand = "UPDATE ASRSysCrossTab SET Username = '" & strTo & "'" & " WHERE CrossTabType = " & ctt9GridBox
-  If Not blnAll Then strCommand = strCommand & " AND Username = '" & strFrom & "'"
-
-  gADOCon.Execute strCommand
-  DoEvents
+  If IsModuleEnabled(modNineBoxGrid) Then
+    Progress "Transferring 9-Box Grid Reports..."
+    strCommand = "UPDATE ASRSysCrossTab SET Username = '" & strTo & "'" & " WHERE CrossTabType = " & ctt9GridBox
+    If Not blnAll Then strCommand = strCommand & " AND Username = '" & strFrom & "'"
+  
+    gADOCon.Execute strCommand
+    DoEvents
+  End If
   
   ' Custom Reports
   Progress "Transferring Custom Reports..."

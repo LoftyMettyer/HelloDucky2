@@ -57,21 +57,23 @@ End Enum
 
 Public Enum enum_Module
   modPersonnel = 1
-  modRecruitment = 2
-  modAbsence = 4
-  modTraining = 8
-  modIntranet = 16
-  modAFD = 32
-  modFullSysMgr = 64
-  modCMG = 128
-  modQAddress = 256
-  modAccord = 512
-  modWorkflow = 1024
-  modVersionOne = 2048
-  modMobile = 4096
-  modFusion = 8192
-  modXMLExport = 16384
-  mod3rdPartyTables = 32768
+  modRecruitment = 2 ^ 1
+  modAbsence = 2 ^ 2
+  modTraining = 2 ^ 3
+  modIntranet = 2 ^ 4
+  modAFD = 2 ^ 5
+  modFullSysMgr = 2 ^ 6
+  modCMG = 2 ^ 7
+  modQAddress = 2 ^ 8
+  modAccord = 2 ^ 9
+  modWorkflow = 2 ^ 10
+  modVersionOne = 2 ^ 11
+  modMobile = 2 ^ 12
+  modFusion = 2 ^ 13
+  modXMLExport = 2 ^ 14
+  mod3rdPartyTables = 2 ^ 15
+  modNineBoxGrid = 2 ^ 16
+  modEditableGrids = 2 ^ 17
 End Enum
 
 Public Enum SQLServerAuthenticationType
