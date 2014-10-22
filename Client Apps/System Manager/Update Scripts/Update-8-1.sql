@@ -348,6 +348,19 @@ PRINT 'Step - Licence Modifications'
 			SELECT 168, groupName, permitted from ASRSysGroupPermissions where itemid = 78
 	END
 
+
+/* --------------------------------------------------------- */
+PRINT 'Step - Workflow Log Enhancements'
+/* --------------------------------------------------------- */
+
+	IF NOT EXISTS(SELECT id FROM syscolumns WHERE  id = OBJECT_ID('ASRSysWorkflowInstances', 'U') AND name = 'TargetName')
+	BEGIN
+		EXEC sp_executesql N'ALTER TABLE ASRSysWorkflowInstances ADD TargetName nvarchar(255) NULL;';
+		EXEC sp_executesql N'UPDATE ASRSysWorkflowInstances SET TargetName = ''<Unidentified>'';';
+	END
+
+
+
 /* ------------------------------------------------------------- */
 /* Update the database version flag in the ASRSysSettings table. */
 /* Dont Set the flag to refresh the stored procedures            */

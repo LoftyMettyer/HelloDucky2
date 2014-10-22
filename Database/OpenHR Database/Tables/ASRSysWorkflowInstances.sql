@@ -10,7 +10,8 @@
 	[parent1RecordID] [int] NULL,
 	[parent2TableID] [int] NULL,
 	[parent2RecordID] [int] NULL,
-	[pageno] [int] NULL
+	[pageno] [int] NULL, 
+    [TargetName] NVARCHAR(255) NULL
 ) ON [PRIMARY]
 GO
 ALTER TABLE [dbo].[ASRSysWorkflowInstances] ADD  CONSTRAINT [DF_ASRSysWorkflowInstances_InitiationDateTime]  DEFAULT (getdate()) FOR [InitiationDateTime]
