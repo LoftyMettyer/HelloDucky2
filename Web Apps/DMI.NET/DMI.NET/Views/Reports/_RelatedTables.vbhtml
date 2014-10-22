@@ -15,7 +15,7 @@
 		<fieldset>
 			<input type="hidden" id="txtParent1ID" name="Parent1.ID" value="@Model.Parent1.ID" />
 			<div class="stretchyfixed">
-				Table:
+				Table :
 			</div>
 			<div class="stretchyfill">
 				@Html.TextBoxFor(Function(m) m.Parent1.Name, New With {.readonly = "true", .class = "width100"})
@@ -70,7 +70,7 @@
 		<fieldset>
 			<input type="hidden" id="txtParent2ID" name="Parent2.ID" value="@Model.Parent2.ID" />
 			<div class="stretchyfixed">
-				Table:
+				Table :
 			</div>
 			<div class="stretchyfill">
 				@Html.TextBoxFor(Function(m) m.Parent2.Name, New With {.readonly = "true", .class = "width100"})
