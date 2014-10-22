@@ -34,7 +34,7 @@ End Code
 
 			<div id="report_definition_tab_output">
 				@Code
-				Html.RenderPartial("_Output", Model.Output)
+				Html.RenderPartial("_OutputNineBoxGrid", Model.Output)
 				End Code
 			</div>
 		</div>

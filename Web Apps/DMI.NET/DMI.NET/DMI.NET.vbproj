@@ -1748,6 +1748,7 @@
     <Content Include="Views\Home\BulkBookingSelection.vbhtml" />
     <Content Include="Views\Reports\_NineBoxGridColumnSelection.vbhtml" />
     <Content Include="Views\Reports\Util_Def_9BoxGrid.vbhtml" />
+    <Content Include="Views\Reports\_OutputNineBoxGrid.vbhtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Global.asax" />
