@@ -8,7 +8,9 @@ BEGIN
 
 	SET NOCOUNT ON;
 
-	DECLARE @iCount				integer,
+	DECLARE @iUserGroupID	integer,
+		@sUserGroupName		sysname,
+		@iCount				integer,
 		@iUtilType			integer, 
 		@iUtilID			integer,
 		@iScreenID			integer,
@@ -29,6 +31,12 @@ BEGIN
 		@fDrillDownHidden bit,
 		@iLinkType			integer,		-- 0 = Hypertext, 1 = Button, 2 = Dropdown List
 		@iElement_Type		integer;		-- 2 = chart
+
+	/* Get the current user's group ID. */
+	EXEC spASRIntGetActualUserDetails
+		@sActualUserName OUTPUT,
+		@sUserGroupName OUTPUT,
+		@iUserGroupID OUTPUT;
 	
 	IF @plngViewID < 1 
 	BEGIN 
@@ -73,7 +81,7 @@ BEGIN
 							AND (convert(int,substring(p.columns,c.colid/8+1,1))&power(2,c.colid&7)) != 0)
 							OR ((convert(tinyint,substring(p.columns,1,1))&1) != 0
 							AND (convert(int,substring(p.columns,c.colid/8+1,1))&power(2,c.colid&7)) = 0)))
-			WHERE p.UID = @iActualUserGroupID
+			WHERE p.UID = @iUserGroupID
 				AND p.[ProtectType] IN (204, 205)
 				AND p.[Action] = 193			
 				AND p.id IN (SELECT ID FROM @Phase1);
@@ -185,6 +193,7 @@ BEGIN
 								WHEN @iUtilType = 9 THEN 'MAILMERGE'
 								WHEN @iUtilType = 2 THEN 'CUSTOMREPORTS'
 								WHEN @iUtilType = 25 THEN 'WORKFLOW'
+								WHEN @iUtilType = 35 THEN 'NINEBOXGRID'
 								ELSE ''
 							END
 					LEFT OUTER JOIN ASRSysGroupPermissions 
@@ -228,6 +237,13 @@ BEGIN
 					SELECT @iBaseTableID = TableID
 					FROM ASRSysMailMergeName
 					WHERE MailMergeID = @iUtilID;
+				END
+				IF @iUtilType = 35 /* 9-Box Grid Reports */
+				BEGIN				
+					SELECT @iBaseTableID = TableID
+					FROM ASRSysCrossTab
+					WHERE CrossTabID = @iUtilID
+					AND CrossTabType = 4;
 				END
 				/* Not check required for reports/utilities without a base table.
 				OR reports/utilities based on the top-level table if the user has read permission on the current view. */
@@ -378,6 +394,7 @@ BEGIN
 			WHEN ASRSysSSIntranetLinks.utilityType = 9 THEN ASRSysMailMergeName.TableID
 			WHEN ASRSysSSIntranetLinks.utilityType = 2 THEN ASRSysCustomReportsName.baseTable
 			WHEN ASRSysSSIntranetLinks.utilityType = 17 THEN ASRSysCalendarReports.baseTable
+			WHEN ASRSysSSIntranetLinks.utilityType = 35 THEN ASRSysCrossTab.TableID
 			WHEN ASRSysSSIntranetLinks.utilityType = 25 THEN 0
 			ELSE null
 		END AS [baseTable],
@@ -390,6 +407,9 @@ BEGIN
 			LEFT OUTER JOIN ASRSysCalendarReports 
 			ON ASRSysSSIntranetLinks.utilityID = ASRSysCalendarReports.ID
 				AND ASRSysSSIntranetLinks.utilityType = 17
+			LEFT OUTER JOIN ASRSysCrossTab 
+			ON ASRSysSSIntranetLinks.utilityID = ASRSysCrossTab.CrossTabID
+				AND ASRSysSSIntranetLinks.utilityType = 35
 			LEFT OUTER JOIN ASRSysCustomReportsName 
 			ON ASRSysSSIntranetLinks.utilityID = ASRSysCustomReportsName.ID
 				AND ASRSysSSIntranetLinks.utilityType = 2
