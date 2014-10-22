@@ -943,8 +943,11 @@ function calculationAndFilter_refresh() {
 				grdGrid.jqGrid('setSelection', topRowID);
 			}
 			else {
-				// Locate the current calc/filter if required.
-				grdGrid.jqGrid('setSelection', iCurrentID);
+				// Locate the last selected record. if not exist then select the top record.
+				if (iCurrentID == null) {
+				var gotoTopRow = grdGrid.getDataIDs()[0];
+				grdGrid.jqGrid('setSelection', gotoTopRow);
+				} 
 			}
 
 			//button_disable(frmMainForm.cmdOK, false);
@@ -958,8 +961,6 @@ function calculationAndFilter_refresh() {
 		util_def_exprcomponent_frmUseful.txtInitialising.value = 0;
 
 	});
-
-
 }
 
 function calculationsAndFilters_load() {
@@ -972,6 +973,7 @@ function calculationsAndFilters_load() {
 	var sCurrentOwner = new String(util_def_exprcomponent_frmUseful.txtUserName.value);
 	var grdGrid;
 	var fOwners;
+	var idBeforeClearingGrid;
 
 	var dfd = new $.Deferred();
 
@@ -1008,6 +1010,7 @@ function calculationsAndFilters_load() {
 	}
 
 	if (grdGrid.getGridParam("reccount") > 0) {
+		idBeforeClearingGrid = grdGrid.getGridParam('selrow');
 		grdGrid.jqGrid('clearGridData');
 	}
 
@@ -1027,6 +1030,12 @@ function calculationsAndFilters_load() {
 		},
 		ondblClickRow: function () {
 			ssOleDBGridCalculations_dblClick();
+		},
+		loadComplete: function (json) {
+			// Highlight top row. this will be called when doing soring too.
+			var ids = $(this).jqGrid("getDataIDs");
+			if (ids && ids.length > 0)
+				$(this).jqGrid("setSelection", ids[0]);
 		}
 	});
 
@@ -1044,6 +1053,11 @@ function calculationsAndFilters_load() {
 
 					// Add the grid records.
 					grdGrid.jqGrid('addRowData', sID, { id: sID, name: sName });
+
+					// Set the selected row
+					if (idBeforeClearingGrid == sID) {
+						grdGrid.jqGrid('setSelection', idBeforeClearingGrid);
+					}
 
 				}
 			}
