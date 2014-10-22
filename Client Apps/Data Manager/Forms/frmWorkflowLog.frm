@@ -34,6 +34,14 @@ Begin VB.Form frmWorkflowLog
       TabIndex        =   0
       Top             =   120
       Width           =   11910
+      Begin VB.ComboBox cboTargetName 
+         Height          =   315
+         Left            =   6315
+         Style           =   2  'Dropdown List
+         TabIndex        =   16
+         Top             =   500
+         Width           =   3300
+      End
       Begin VB.ComboBox cboType 
          Height          =   315
          ItemData        =   "frmWorkflowLog.frx":000C
@@ -61,6 +69,14 @@ Begin VB.Form frmWorkflowLog
          TabIndex        =   6
          Top             =   500
          Width           =   1545
+      End
+      Begin VB.Label lblTargetName 
+         Caption         =   "Target Name :"
+         Height          =   210
+         Left            =   6315
+         TabIndex        =   15
+         Top             =   255
+         Width           =   1245
       End
       Begin VB.Label lblName 
          AutoSize        =   -1  'True
@@ -594,6 +610,10 @@ ErrorTrap:
 End Sub
 
 
+Private Sub cboTargetName_Click()
+  RefreshGrid
+End Sub
+
 Private Sub cboType_Click()
   On Error GoTo ErrorTrap
   gobjErrorStack.PushStack "frmWorkflowLog.cboStatus_Click()"
@@ -862,6 +882,11 @@ Private Function RefreshGrid() As Boolean
       "WI.status = " & CStr(cboStatus.ItemData(cboStatus.ListIndex))
   End If
 
+  If cboTargetName.ListIndex > 0 Then
+    pstrSQL = pstrSQL & IIf(InStr(pstrSQL, "WHERE") > 0, " AND ", " WHERE ") & _
+      "WI.TargetName = '" & Replace(cboTargetName.Text, "'", "''") & "'"
+  End If
+
   If mblnViewAllEntries = False Then
     pstrSQL = pstrSQL & IIf(InStr(pstrSQL, "WHERE") > 0, " AND ", " WHERE ") & _
       "WI.Username = '" & Replace(gsUserName, "'", "''") & "'"
@@ -1019,6 +1044,22 @@ Private Sub Form_Load()
     .ListIndex = 0
   End With
 
+  ' Add all distinct target names
+  With cboTargetName
+    .AddItem "<All>"
+    
+    Set rstWorkflows = mclsData.OpenRecordset("SELECT DISTINCT TargetName FROM ASRSysWorkflowInstances ORDER BY TargetName", adOpenForwardOnly, adLockReadOnly)
+    Do Until rstWorkflows.EOF
+      .AddItem IIf(IsNull(rstWorkflows.Fields("TargetName")), "", rstWorkflows.Fields("TargetName"))
+      rstWorkflows.MoveNext
+    Loop
+    Set rstWorkflows = Nothing
+    
+    .ListIndex = 0
+  End With
+
+
+
   'Add all available statuses to the Status combo
   With cboStatus
     .AddItem WorkflowStatusDescription(giWFSTATUS_ALL)
@@ -1095,25 +1136,22 @@ Private Sub Form_Resize()
   DisplayApplication
   
   ' Ensure form does not get too small/big. Also reposition controls as necessary
-'  UI.ClipForForm Me, 5550, 11700
-'  If Me.Width < 11700 Then Me.Width = 11700
-'  If Me.Width > Screen.Width Then Me.Width = (Screen.Width - 200)
-'  If Me.Height < 5550 Then Me.Height = 5550
-'  If Me.Height > Screen.Height Then Me.Height = (Screen.Height - 500)
-  
   fraButtons.Left = Me.ScaleWidth - (fraButtons.Width + COMBO_GAP)
   fraFilters.Width = fraButtons.Left - COMBO_GAP
-  
-  cboStatus.Left = fraFilters.Width - (cboStatus.Width + COMBO_GAP)
-  lblStatus.Left = cboStatus.Left
-  
-  lngComboWidth = (cboStatus.Left - (COMBO_GAP * 3)) / 2
+   
+  cboTargetName.Move fraFilters.Width - (cboTargetName.Width + COMBO_GAP)
+  lblTargetName.Left = cboTargetName.Left
+   
+  lngComboWidth = (cboTargetName.Left - (COMBO_GAP * 4)) / 3
   
   cboUser.Move COMBO_GAP, 500, lngComboWidth
   lblUser.Left = cboUser.Left
   
   cboType.Move cboUser.Left + cboUser.Width + COMBO_GAP, 500, lngComboWidth
   lblName.Left = cboType.Left
+
+  cboStatus.Move cboType.Left + cboType.Width + COMBO_GAP, 500, lngComboWidth
+  lblStatus.Left = cboStatus.Left
 
   grdWorkflowLog.Width = fraFilters.Width
   grdWorkflowLog.Height = Me.ScaleHeight - (fraFilters.Height + StatusBar1.Height + (COMBO_GAP * 2))
@@ -1203,11 +1241,11 @@ ErrorTrap:
 End Sub
 
 
-Private Sub grdWorkflowLog_MouseUp(Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub grdWorkflowLog_MouseUp(Button As Integer, Shift As Integer, x As Single, y As Single)
   On Error GoTo ErrorTrap
-  gobjErrorStack.PushStack "frmWorkflowLog.grdWorkflowLog_MouseUp(Button,Shift,X,Y)", Array(Button, Shift, X, Y)
+  gobjErrorStack.PushStack "frmWorkflowLog.grdWorkflowLog_MouseUp(Button,Shift,X,Y)", Array(Button, Shift, x, y)
 
- If (Button = vbRightButton) And (Y > Me.grdWorkflowLog.RowHeight) Then
+ If (Button = vbRightButton) And (y > Me.grdWorkflowLog.RowHeight) Then
     ' Enable/disable the required tools.
     With Me.abWorkflowLog.Bands("bndWorkflowLog")
       .Tools("View").Enabled = Me.cmdView.Enabled
