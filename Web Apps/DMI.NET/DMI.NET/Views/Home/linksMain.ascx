@@ -110,7 +110,7 @@
 				For Each navlink In Model.NavigationLinks.FindAll(Function(n) n.LinkType = LinkType.HyperLink)
 					Dim sTileColourClass = "Colour" & CStr(CInt(Math.Ceiling(Rnd() * 7)))
 							
-					If (navlink.Element_Type = 1 Or navlink.LinkOrder = 0) Then		' separator
+					If navlink.Element_Type = 1 Or navlink.LinkOrder = 0 or fFirstSeparator Then		' separator
 						iRowNum = 1
 						iColNum = 1
 						If fFirstSeparator Then
@@ -359,7 +359,7 @@
 						End If
 					End If
 
-					If navlink.Element_Type = 1 Or navlink.LinkOrder = 0 Then			' separator
+					If navlink.Element_Type = 1 Or navlink.LinkOrder = 0 or fFirstSeparator Then			' separator
 						iRowNum = 1
 						iColNum = 1
 						Dim sSeparatorColor = ""
@@ -420,7 +420,7 @@
 				<div class="gridster buttonlinkcontent" id="gridster_buttonlink_<%=tileCount%>">
 					<ul>
 						<%											
-						End If
+						End If  ' end separator...
 						If navlink.Element_Type <> 1 Then	' not a separator...
 							If iRowNum > iMaxRows Then	 ' start a new column if required (affects tiles only)
 								iColNum += 1
@@ -1044,10 +1044,9 @@
 							<a style="<%:sTileForeColourStyle%>" href="#"><%: navlink.Text %></a>
 							<p class="linkspagebuttontileIcon"><i class="icon-sitemap"></i></p>
 						</li>
-
-						<%
-						Case Else
-						%>
+						<%iRowNum += 1%>
+						
+						<%Case Else%>
 						<li data-col="<%=iColNum %>" data-row="<%=iRowNum %>" data-sizex="1" data-sizey="1" style="<%:sTileBackColourStyle%><%:sTileForeColourStyle%>"
 							class="linkspagebuttontext <%=sTileColourClass%> displayonly"><a style="<%:sTileForeColourStyle%>" href="#">
 								<%: navlink.Text %></a></li>
