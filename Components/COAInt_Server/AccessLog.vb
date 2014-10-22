@@ -14,7 +14,7 @@ Public Class AccessLog
 
 	Public Sub UtilCreated(utlType As UtilityType, lngID As Integer)
 		Dim strSQL As String
-		strSQL = "INSERT ASRSysUtilAccessLog (Type, UtilID, CreatedBy, CreatedDate, CreatedHost, SavedBy, SavedDate, SavedHost) VALUES '" _
+		strSQL = "INSERT ASRSysUtilAccessLog (Type, UtilID, CreatedBy, CreatedDate, CreatedHost, SavedBy, SavedDate, SavedHost) VALUES ('" _
 			& utlType & "', " & CStr(lngID) & ", " & " system_user, getdate(), host_name(), system_user, getdate(), host_name())"
 		DB.ExecuteSql(strSQL)
 	End Sub
