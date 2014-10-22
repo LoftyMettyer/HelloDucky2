@@ -1,4 +1,5 @@
 VERSION 5.00
+Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "actbar.ocx"
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
 Object = "{1EE59219-BC23-4BDF-BB08-D545C8A38D6D}#1.1#0"; "coa_line.ocx"
 Begin VB.Form frmWorkflowStepDetails 
@@ -645,6 +646,22 @@ Begin VB.Form frmWorkflowStepDetails
             Width           =   1275
          End
       End
+   End
+   Begin ActiveBarLibraryCtl.ActiveBar abWorkflowStep 
+      Left            =   2385
+      Top             =   8145
+      _ExtentX        =   847
+      _ExtentY        =   847
+      BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
+         Name            =   "Verdana"
+         Size            =   8.25
+         Charset         =   0
+         Weight          =   400
+         Underline       =   0   'False
+         Italic          =   0   'False
+         Strikethrough   =   0   'False
+      EndProperty
+      Bands           =   "frmWorkflowStepDetails.frx":000C
    End
 End
 Attribute VB_Name = "frmWorkflowStepDetails"
@@ -1603,6 +1620,26 @@ End Sub
 
 
 
+Private Sub abWorkflowStep_Click(ByVal Tool As ActiveBarLibraryCtl.Tool)
+
+  Dim sText As String
+
+  Select Case Tool.Name
+    Case "CopyWebForm"
+      sText = grdWebFormEnteredValues.Columns(2).Value
+    
+    Case "CopyStoredData"
+      sText = grdStoredDataValues.Columns(1).Value
+
+  End Select
+
+  If Len(sText) > 0 Then
+    Clipboard.Clear
+    Clipboard.SetText sText
+  End If
+
+End Sub
+
 Private Sub cmdOK_Click()
   Unload Me
 
@@ -2175,3 +2212,28 @@ Private Sub Form_Unload(Cancel As Integer)
   Unhook Me.hWnd
 End Sub
 
+Private Sub grdStoredDataValues_MouseUp(Button As Integer, Shift As Integer, X As Single, Y As Single)
+
+ If (Button = vbRightButton) And (Y > Me.grdStoredDataValues.RowHeight) Then
+    ' Enable/disable the required tools.
+    With Me.abWorkflowStep.Bands("bndWorkflowStepDetails")
+      .Tools("CopyStoredData").Visible = True
+      .Tools("CopyWebForm").Visible = False
+      .TrackPopup -1, -1
+    End With
+  End If
+  
+End Sub
+
+Private Sub grdWebFormEnteredValues_MouseUp(Button As Integer, Shift As Integer, X As Single, Y As Single)
+ 
+ If (Button = vbRightButton) And (Y > Me.grdWebFormEnteredValues.RowHeight) Then
+    ' Enable/disable the required tools.
+    With Me.abWorkflowStep.Bands("bndWorkflowStepDetails")
+      .Tools("CopyWebForm").Visible = True
+      .Tools("CopyStoredData").Visible = False
+      .TrackPopup -1, -1
+    End With
+  End If
+  
+End Sub
