@@ -2441,7 +2441,7 @@ Private Sub RefreshControls()
   lblHRProUtilityMessage.Caption = sUtilityMessage
   
   ' Disable the OK button as required.
-  cmdOk.Enabled = mfChanged
+  cmdOK.Enabled = mfChanged
   
 
 End Sub
@@ -3879,7 +3879,7 @@ Private Sub optLink_Click(Index As Integer)
 
   GetHRProTables
   GetHRProUtilityTypes
-  UtilityType = CStr(utlCalendarreport)
+  UtilityType = CStr(utlNineBoxGrid)
   
   'dashboard
   If optLink(SSINTLINKSEPARATOR).value Then
