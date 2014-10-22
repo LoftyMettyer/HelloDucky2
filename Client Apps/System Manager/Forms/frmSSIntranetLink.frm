@@ -1644,6 +1644,11 @@ Private Sub GetHRProUtilityTypes()
   
   With cboHRProUtilityType
     .Clear
+    
+    If ASRDEVELOPMENT Or Application.NineBoxGridModule Then
+      .AddItem "9-Box Grid Report"
+      .ItemData(.NewIndex) = utlNineBoxGrid
+    End If
       
     .AddItem "Calendar Report"
     .ItemData(.NewIndex) = utlCalendarreport
@@ -1657,11 +1662,6 @@ Private Sub GetHRProUtilityTypes()
     If ASRDEVELOPMENT Or Application.WorkflowModule Then
       .AddItem "Workflow"
       .ItemData(.NewIndex) = utlWorkflow
-    End If
-
-    If ASRDEVELOPMENT Or Application.NineBoxGridModule Then
-      .AddItem "9-Box Grid Reports"
-      .ItemData(.NewIndex) = utlNineBoxGrid
     End If
 
     .ListIndex = iDefaultItem
