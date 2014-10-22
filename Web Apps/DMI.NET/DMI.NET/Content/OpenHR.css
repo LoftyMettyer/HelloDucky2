@@ -1492,3 +1492,8 @@ div.displaytable {
 {
 overflow-x : hidden !important;
 }
+
+.radiodisabled /* Gives read only effect to radio button label */
+{
+	opacity: 0.5;
+}
