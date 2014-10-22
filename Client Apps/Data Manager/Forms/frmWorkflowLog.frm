@@ -1,13 +1,13 @@
 VERSION 5.00
-Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "ActBar.ocx"
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.Ocx"
+Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "actbar.ocx"
+Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.ocx"
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
 Begin VB.Form frmWorkflowLog 
    Caption         =   "Workflow Log"
    ClientHeight    =   5145
    ClientLeft      =   60
    ClientTop       =   450
-   ClientWidth     =   11550
+   ClientWidth     =   13470
    BeginProperty Font 
       Name            =   "Verdana"
       Size            =   8.25
@@ -25,7 +25,7 @@ Begin VB.Form frmWorkflowLog
    MaxButton       =   0   'False
    MinButton       =   0   'False
    ScaleHeight     =   5145
-   ScaleWidth      =   11550
+   ScaleWidth      =   13470
    StartUpPosition =   2  'CenterScreen
    Begin VB.Frame fraFilters 
       Caption         =   "Filters :"
@@ -33,7 +33,7 @@ Begin VB.Form frmWorkflowLog
       Left            =   90
       TabIndex        =   0
       Top             =   120
-      Width           =   10020
+      Width           =   11910
       Begin VB.ComboBox cboType 
          Height          =   315
          ItemData        =   "frmWorkflowLog.frx":000C
@@ -55,7 +55,7 @@ Begin VB.Form frmWorkflowLog
       Begin VB.ComboBox cboStatus 
          Height          =   315
          ItemData        =   "frmWorkflowLog.frx":0010
-         Left            =   8355
+         Left            =   10200
          List            =   "frmWorkflowLog.frx":0012
          Style           =   2  'Dropdown List
          TabIndex        =   6
@@ -87,9 +87,9 @@ Begin VB.Form frmWorkflowLog
          BackStyle       =   0  'Transparent
          Caption         =   "Status :"
          Height          =   195
-         Left            =   8355
+         Left            =   10200
          TabIndex        =   5
-         Top             =   250
+         Top             =   255
          Width           =   705
       End
    End
@@ -97,7 +97,7 @@ Begin VB.Form frmWorkflowLog
       BorderStyle     =   0  'None
       Caption         =   "Frame1"
       Height          =   2650
-      Left            =   10200
+      Left            =   12180
       TabIndex        =   8
       Top             =   200
       Width           =   1200
@@ -130,7 +130,7 @@ Begin VB.Form frmWorkflowLog
          Height          =   400
          Left            =   0
          TabIndex        =   10
-         Top             =   550
+         Top             =   525
          Width           =   1200
       End
       Begin VB.CommandButton cmdOK 
@@ -148,8 +148,8 @@ Begin VB.Form frmWorkflowLog
       Left            =   0
       TabIndex        =   14
       Top             =   4845
-      Width           =   11550
-      _ExtentX        =   20373
+      Width           =   13470
+      _ExtentX        =   23760
       _ExtentY        =   529
       Style           =   1
       SimpleText      =   ""
@@ -158,7 +158,7 @@ Begin VB.Form frmWorkflowLog
          NumPanels       =   1
          BeginProperty Panel1 {0713E89F-850A-101B-AFC0-4210102A8DA7} 
             AutoSize        =   1
-            Object.Width           =   19844
+            Object.Width           =   23230
             Key             =   ""
             Object.Tag             =   ""
          EndProperty
@@ -169,7 +169,7 @@ Begin VB.Form frmWorkflowLog
       Left            =   90
       TabIndex        =   7
       Top             =   1185
-      Width           =   10020
+      Width           =   11910
       _Version        =   196617
       DataMode        =   1
       RecordSelectors =   0   'False
@@ -222,7 +222,7 @@ Begin VB.Form frmWorkflowLog
       RowHeight       =   423
       ActiveRowStyleSet=   "ssetActive"
       CaptionAlignment=   0
-      Columns.Count   =   7
+      Columns.Count   =   8
       Columns(0).Width=   3200
       Columns(0).Visible=   0   'False
       Columns(0).Caption=   "ID"
@@ -248,7 +248,7 @@ Begin VB.Form frmWorkflowLog
       Columns(3).DataField=   "Column 3"
       Columns(3).DataType=   8
       Columns(3).FieldLen=   256
-      Columns(4).Width=   4419
+      Columns(4).Width=   3519
       Columns(4).Caption=   "Workflow Name"
       Columns(4).Name =   "Utility Name"
       Columns(4).DataField=   "Column 4"
@@ -266,8 +266,14 @@ Begin VB.Form frmWorkflowLog
       Columns(6).DataField=   "Column 6"
       Columns(6).DataType=   8
       Columns(6).FieldLen=   256
+      Columns(7).Width=   5292
+      Columns(7).Caption=   "Target"
+      Columns(7).Name =   "TargetName"
+      Columns(7).DataField=   "Column 7"
+      Columns(7).DataType=   8
+      Columns(7).FieldLen=   256
       TabNavigation   =   1
-      _ExtentX        =   17674
+      _ExtentX        =   21008
       _ExtentY        =   6218
       _StockProps     =   79
       BeginProperty PageFooterFont {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
@@ -290,8 +296,8 @@ Begin VB.Form frmWorkflowLog
       EndProperty
    End
    Begin ActiveBarLibraryCtl.ActiveBar abWorkflowLog 
-      Left            =   10230
-      Top             =   2925
+      Left            =   12810
+      Top             =   4185
       _ExtentX        =   847
       _ExtentY        =   847
       BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
@@ -771,8 +777,10 @@ Private Sub DoColumnSizes()
   With grdWorkflowLog
     lngAvailableWidth = grdWorkflowLog.Width - (270 + .Columns(1).Width + .Columns(2).Width + .Columns(3).Width + .Columns(5).Width)
 
-    .Columns(4).Width = (lngAvailableWidth * 0.68)
-    .Columns(6).Width = (lngAvailableWidth * 0.32)
+    .Columns(4).Width = (lngAvailableWidth * 0.399)
+    .Columns(6).Width = (lngAvailableWidth * 0.2)
+    .Columns(7).Width = (lngAvailableWidth * 0.399)
+    
   End With
   
 TidyUpAndExit:
@@ -840,7 +848,8 @@ Private Function RefreshGrid() As Boolean
     "   CASE WF.initiationType" & _
     "     WHEN 2 THEN '<External>'" & _
     "     ELSE WI.Username" & _
-    "   END AS [Username]" & _
+    "   END AS [Username]," & _
+    "   [TargetName]" & _
     " FROM ASRSysWorkflowInstances WI" & _
     " INNER JOIN ASRSysWorkflows WF ON WI.workflowID = WF.ID"
 
@@ -876,7 +885,8 @@ Private Function RefreshGrid() As Boolean
       " 0 AS [Duration]," & _
       " ISNULL(WF.Name,'<Deleted>') AS [Name]," & _
       " '" & WorkflowStatusDescription(giWFSTATUS_SCHEDULED) & "' AS [Status]," & _
-      " '<Triggered>' AS [Username]" & _
+      " '<Triggered>' AS [Username]," & _
+      " '<System>' AS [TargetName]" & _
       " FROM [ASRSysWorkflowQueue] Q" & _
       " INNER JOIN [ASRSysWorkflowTriggeredLinks] TL ON Q.linkID = TL.linkID" & _
       " INNER JOIN [ASRSysWorkflows] WF ON TL.workflowID = WF.ID" & _
@@ -1173,6 +1183,7 @@ Private Sub grdWorkflowLog_HeadClick(ByVal ColIndex As Integer)
     Case 4: pstrOrderField = "Name"
     Case 5: pstrOrderField = "Status"
     Case 6: pstrOrderField = "Username"
+    Case 7: pstrOrderField = "TargetName"
   End Select
   
   If ColIndex = mintSortColumnIndex Then
