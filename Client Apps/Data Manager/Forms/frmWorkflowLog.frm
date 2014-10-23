@@ -1139,11 +1139,11 @@ Private Sub Form_Resize()
   fraButtons.Left = Me.ScaleWidth - (fraButtons.Width + COMBO_GAP)
   fraFilters.Width = fraButtons.Left - COMBO_GAP
    
-  cboTargetName.Move fraFilters.Width - (cboTargetName.Width + COMBO_GAP)
-  lblTargetName.Left = cboTargetName.Left
+  lngComboWidth = (fraFilters.Width - (COMBO_GAP * 5)) / 4
    
-  lngComboWidth = (cboTargetName.Left - (COMBO_GAP * 4)) / 3
-  
+  cboTargetName.Move fraFilters.Width - (cboTargetName.Width + COMBO_GAP), 500, lngComboWidth
+  lblTargetName.Left = cboTargetName.Left
+     
   cboUser.Move COMBO_GAP, 500, lngComboWidth
   lblUser.Left = cboUser.Left
   
@@ -1241,11 +1241,11 @@ ErrorTrap:
 End Sub
 
 
-Private Sub grdWorkflowLog_MouseUp(Button As Integer, Shift As Integer, x As Single, y As Single)
+Private Sub grdWorkflowLog_MouseUp(Button As Integer, Shift As Integer, X As Single, Y As Single)
   On Error GoTo ErrorTrap
-  gobjErrorStack.PushStack "frmWorkflowLog.grdWorkflowLog_MouseUp(Button,Shift,X,Y)", Array(Button, Shift, x, y)
+  gobjErrorStack.PushStack "frmWorkflowLog.grdWorkflowLog_MouseUp(Button,Shift,X,Y)", Array(Button, Shift, X, Y)
 
- If (Button = vbRightButton) And (y > Me.grdWorkflowLog.RowHeight) Then
+ If (Button = vbRightButton) And (Y > Me.grdWorkflowLog.RowHeight) Then
     ' Enable/disable the required tools.
     With Me.abWorkflowLog.Bands("bndWorkflowLog")
       .Tools("View").Enabled = Me.cmdView.Enabled
