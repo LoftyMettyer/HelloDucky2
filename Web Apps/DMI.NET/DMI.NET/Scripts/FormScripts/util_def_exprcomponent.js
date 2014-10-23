@@ -1047,7 +1047,9 @@ function calculationsAndFilters_load() {
 		ondblClickRow: function () {
 			ssOleDBGridCalculations_dblClick();
 		},
-		loadComplete: function (json) {
+		rowNum: colCollection.length, // Set the number of records to display
+		ignoreCase: true, // This make the local-search and sorting of values be case insensitive...
+		loadComplete: function () {
 			// Highlight top row. this will be called when doing soring too.
 			var ids = $(this).jqGrid("getDataIDs");
 			if (ids && ids.length > 0)
