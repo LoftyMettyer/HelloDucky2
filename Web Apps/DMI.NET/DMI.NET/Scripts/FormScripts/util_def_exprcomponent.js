@@ -197,6 +197,8 @@ function loadComponentDefinition() {
 	if (iType == 1) {
 		// Field
 		frmMainForm.optType_Field.checked = true;
+		frmMainForm.optType_Field.focus();
+
 		changeType(iType);
 
 		util_def_exprcomponent_frmUseful.txtInitialising.value = 0;
@@ -245,6 +247,8 @@ function loadComponentDefinition() {
 	if (iType == 2) {
 		// Function
 		frmMainForm.optType_Function.checked = true;
+		frmMainForm.optType_Function.focus();
+
 		changeType(iType);
 
 		util_def_exprcomponent_frmUseful.txtInitialising.value = 0;
@@ -256,6 +260,8 @@ function loadComponentDefinition() {
 	if (iType == 3) {
 		// Calculation.
 		frmMainForm.optType_Calculation.checked = true;
+		frmMainForm.optType_Calculation.focus();
+
 		changeType(iType);
 
 		util_def_exprcomponent_frmUseful.txtInitialising.value = 0;
@@ -268,6 +274,8 @@ function loadComponentDefinition() {
 	if (iType == 4) {
 		// Value
 		frmMainForm.optType_Value.checked = true;
+		frmMainForm.optType_Value.focus();
+
 		changeType(iType);
 
 		if (util_def_exprcomponent_frmOriginalDefinition.txtValueType.value == 1) {
@@ -305,6 +313,8 @@ function loadComponentDefinition() {
 	if (iType == 5) {
 		// Operator
 		frmMainForm.optType_Operator.checked = true;
+		frmMainForm.optType_Operator.focus();
+
 		changeType(iType);
 
 		util_def_exprcomponent_frmUseful.txtInitialising.value = 0;
@@ -316,6 +326,8 @@ function loadComponentDefinition() {
 	if (iType == 6) {
 		// Lookup Table Value
 		frmMainForm.optType_LookupTableValue.checked = true;
+		frmMainForm.optType_LookupTableValue.focus();
+
 		changeType(iType);
 
 		util_def_exprcomponent_frmUseful.txtInitialising.value = 0;
@@ -325,6 +337,8 @@ function loadComponentDefinition() {
 	if (iType == 7) {
 		// Prompted Value.
 		frmMainForm.optType_PromptedValue.checked = true;
+		frmMainForm.optType_PromptedValue.focus();
+
 		changeType(iType);
 
 		frmMainForm.txtPrompt.value = util_def_exprcomponent_frmOriginalDefinition.txtPromptDescription.value;
@@ -389,6 +403,8 @@ function loadComponentDefinition() {
 	if (iType == 10) {
 		// Filter.
 		frmMainForm.optType_Filter.checked = true;
+		frmMainForm.optType_Filter.focus();
+
 		changeType(iType);
 
 		util_def_exprcomponent_frmUseful.txtInitialising.value = 0;
