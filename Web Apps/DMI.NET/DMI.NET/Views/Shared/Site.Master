@@ -61,7 +61,7 @@
 	<script type="text/javascript">
 
 		window.LocaleDateFormat = "";
-		window.SSIMode = '<%=ViewBag.SSIMode%>';
+		window.SSIMode = '<%=session("SSIMode")%>';
 		window.isMobileDevice = '<%=Session("isMobileDevice")%>';
 
 		document.title = 'OpenHR 8.1';	

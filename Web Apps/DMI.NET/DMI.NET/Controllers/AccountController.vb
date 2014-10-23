@@ -465,9 +465,9 @@ Namespace Controllers
 				Response.Cookies.Add(cookie)
 
 				If objLogin.IsDMIUser And Not Session("isMobileDevice") Then
-					ViewBag.SSIMode = False
+					Session("SSIMode") = False
 				Else
-					ViewBag.SSIMode = True
+					Session("SSIMode") = True
 				End If
 
 			Catch ex As Exception
@@ -476,7 +476,7 @@ Namespace Controllers
 			End Try
 
 			' always main.
-			Return RedirectToAction("Main", "Home", New With {.SSIMode = ViewBag.SSIMode})
+			Return RedirectToAction("Main", "Home")
 
 		End Function
 

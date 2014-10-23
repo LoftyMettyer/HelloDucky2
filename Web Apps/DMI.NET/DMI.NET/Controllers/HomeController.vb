@@ -251,7 +251,7 @@ Namespace Controllers
 
 					' variables to help select which main screen we return to after change or cancel
 					fRedirectToSSI = CleanBoolean(Request.Form("txtRedirectToSSI"))
-					Dim sMainRedirect = IIf(fRedirectToSSI, "Main?SSIMode=True", "main")
+					Session("SSIMode") = fRedirectToSSI
 
 					If iUserSessionCount < 2 Then
 						' Read the Password details from the Password form.
@@ -266,13 +266,13 @@ Namespace Controllers
 							Session("ErrorTitle") = "Change Password Page"
 							Session("ErrorText") = "Password changed successfully."
 
-							Dim data = New ErrMsgJsonAjaxResponse() With {.ErrorTitle = Session("ErrorTitle"), .ErrorMessage = Session("ErrorText"), .Redirect = sMainRedirect}
+							Dim data = New ErrMsgJsonAjaxResponse() With {.ErrorTitle = Session("ErrorTitle"), .ErrorMessage = Session("ErrorText"), .Redirect = "Main"}
 							Return Json(data, JsonRequestBehavior.AllowGet)
 
 						Catch ex As Exception
 							Session("ErrorTitle") = "Change Password Page"
 							Session("ErrorText") = "You could not change your password because of the following error:<p>" & FormatError(ex.Message)
-							Dim data = New ErrMsgJsonAjaxResponse() With {.ErrorTitle = Session("ErrorTitle"), .ErrorMessage = Session("ErrorText"), .Redirect = sMainRedirect}
+							Dim data = New ErrMsgJsonAjaxResponse() With {.ErrorTitle = Session("ErrorTitle"), .ErrorMessage = Session("ErrorText"), .Redirect = "Main"}
 							Return Json(data, JsonRequestBehavior.AllowGet)
 
 						End Try
@@ -322,8 +322,20 @@ Namespace Controllers
 			Return View()
 		End Function
 
+
+		Function MainSSI() As ActionResult
+			Session("SSIMode") = True
+			Return RedirectToAction("Main")
+		End Function
+
+		Function MainDMI() As ActionResult
+			Session("SSIMode") = False
+			Return RedirectToAction("Main")
+		End Function
+
+
 		' GET: /Home
-		Function Main(Optional SSIMode As Boolean = False) As ActionResult
+		Function Main() As ActionResult
 
 			Dim objSessionInfo = CType(Session("SessionContext"), SessionInfo)
 			Dim bOK As Boolean = True
@@ -337,22 +349,23 @@ Namespace Controllers
 
 			Session("utilid") = ""
 			Session("selectSQL") = ""
-			ViewBag.SSIMode = SSIMode
+
+			If Session("SSIMode") <> True Then Session("SSIMode") = False ' set default value
 
 			Session("ErrorText") = ""
 			Session("WarningText") = ""
 
-			If ViewBag.SSIMode = True AndAlso Not objSessionInfo.LoginInfo.IsSSIUser Then
+			If Session("SSIMode") = True AndAlso Not objSessionInfo.LoginInfo.IsSSIUser Then
 				Session("ErrorText") = "You are not permitted to use OpenHR Self-service with this user name."
 				bOK = False
 			End If
 
-			If ViewBag.SSIMode = False AndAlso Not objSessionInfo.LoginInfo.IsDMIUser Then
+			If Session("SSIMode") = False AndAlso Not objSessionInfo.LoginInfo.IsDMIUser Then
 				Session("ErrorText") = "You are not permitted to use OpenHR Web with this user name."
 				bOK = False
 			End If
 
-			If Not SSIMode Then
+			If Not Session("SSIMode") Then
 				targetWebArea = WebArea.DMI
 			End If
 
@@ -5073,7 +5086,7 @@ Namespace Controllers
 
 			End If
 
-			Return RedirectToAction("Main", "Home", New With {.SSIMode = True})
+			Return RedirectToAction("Main", "Home")
 
 		End Function
 

@@ -252,20 +252,20 @@ function menu_MenuClick(sTool) {
 
 	// Fixed Links ---------------------------------------------------------------------------------------------------
 
-	if (sToolName == "mnutoolFixedSelfService") { 
+	if (sToolName == "mnutoolFixedSelfService") {
 		hasChanged = menu_saveChanges(sToolName, true, false);
 		if (hasChanged == 0) { // Prompt for navigation
 
 			OpenHR.modalPrompt("You have made changes. Click 'OK' to discard your changes, or 'Cancel' to continue editing.", 1, "Confirm").then(function (answer) {
 				if (answer == 1) { // OK
-					window.location.href = "Main?SSIMode=True";
+					window.location.href = "MainSSI";
 					return false;
 				} else {
 					return false;
 				}
 			});
 		} else {
-			window.location.href = "Main?SSIMode=True";
+			window.location.href = "MainSSI";
 		}
 		return false;
 	}
@@ -280,14 +280,14 @@ function menu_MenuClick(sTool) {
 
 			OpenHR.modalPrompt("You have made changes. Click 'OK' to discard your changes, or 'Cancel' to continue editing.", 1, "Confirm").then(function (answer) {
 				if (answer == 1) { // OK
-					window.location.href = "Main?SSIMode=False";
+					window.location.href = "MainDMI";
 					return false;
 				} else {
 					return false;
 				}
 			});
 		} else {
-			window.location.href = "Main?SSIMode=False";
+			window.location.href = "MainDMI";
 		}
 		return false;
 	}

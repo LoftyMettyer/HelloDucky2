@@ -116,7 +116,7 @@ function changeLayout(newLayoutName) {
 	$(".DashContent").fadeOut("slow");
 
 	$(".DashContent").promise().done(function () {
-		window.location = "Main?SSIMode=True";
+		window.location = "MainSSI";
 	});
 }
 

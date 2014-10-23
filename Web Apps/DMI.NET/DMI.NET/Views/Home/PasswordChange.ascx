@@ -76,9 +76,9 @@
 	/* Return to the default page. */
 	function cancelClick() {
 		if (menu_isSSIMode()) {
-			window.location = "Main?SSIMode=True";
+			window.location = "MainSSI";
 		} else {
-			window.location = "main";
+			window.location = "mainDMI";
 		}
 	}
 </script>

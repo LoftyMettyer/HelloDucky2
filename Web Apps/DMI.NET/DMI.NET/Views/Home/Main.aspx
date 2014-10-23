@@ -32,7 +32,7 @@
 	Response.Write("window.LocaleDateFormat = """ & Session("LocaleDateFormat") & """;")
 		%>
 
-			var SelfServiceUserType = '<%=ViewBag.SSIMode%>';
+			var SelfServiceUserType = '<%=Session("SSIMode")%>';
 
 			if (SelfServiceUserType == 'True') {
 				$("#workframeset").css("left", "0px");
@@ -116,7 +116,7 @@
 		});
 
 		//load menu for dmi, or linksmain for ssi
-		var SelfServiceUserType = '<%=ViewBag.SSIMode%>';
+		var SelfServiceUserType = '<%=Session("SSIMode")%>';
 
 		if (SelfServiceUserType == 'True') {
 
