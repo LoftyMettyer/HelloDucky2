@@ -72,5 +72,6 @@
 	[pageno] [int] NULL,
 	[buttonstyle] [tinyint] NULL,
 	[LookupOrderID] [int] NULL,
-	[HotSpotIdentifier] [varchar](200) NULL
+	[HotSpotIdentifier] [varchar](200) NULL, 
+    [UseAsTargetIdentifier] BIT NULL
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]

@@ -1,5 +1,5 @@
 VERSION 5.00
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.Ocx"
+Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.ocx"
 Begin VB.Form frmWorkflowOpen 
    Caption         =   "Workflow Designer"
    ClientHeight    =   6285
@@ -575,6 +575,7 @@ Private Sub cmdCopy_Click()
         
         recWorkflowElementEdit!DataRecordTable = .Fields("DataRecordTable")
         recWorkflowElementEdit!SecondaryDataRecordTable = .Fields("secondaryDataRecordTable")
+        recWorkflowElementEdit!UseAsTargetIdentifier = .Fields("UseAsTargetIdentifier")
         
         'JPD 20060908 Fault 11482
         recWorkflowElementEdit!EMailSubject = .Fields("EmailSubject")
@@ -642,6 +643,7 @@ Private Sub cmdCopy_Click()
           End If
         Next iLoop
         
+        recWorkflowElementItemEdit!UseAsTargetIdentifier = .Fields("UseAsTargetIdentifier")
         recWorkflowElementItemEdit!Caption = .Fields("Caption")
         recWorkflowElementItemEdit!DBColumnID = .Fields("DBColumnID")
         recWorkflowElementItemEdit!DBRecord = .Fields("DBRecord")
@@ -684,7 +686,7 @@ Private Sub cmdCopy_Click()
         recWorkflowElementItemEdit!HeadFontItalic = .Fields("HeadFontItalic")
         recWorkflowElementItemEdit!HeadFontStrikeThru = .Fields("HeadFontStrikeThru")
         recWorkflowElementItemEdit!HeadFontUnderline = .Fields("HeadFontUnderline")
-        recWorkflowElementItemEdit!Headlines = .Fields("Headlines")
+        recWorkflowElementItemEdit!HeadLines = .Fields("Headlines")
         recWorkflowElementItemEdit!TableID = .Fields("TableID")
         recWorkflowElementItemEdit!RecSelWebFormIdentifier = .Fields("recSelWebFormIdentifier")
         recWorkflowElementItemEdit!RecSelIdentifier = .Fields("recSelIdentifier")

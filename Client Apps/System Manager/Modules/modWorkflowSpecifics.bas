@@ -1377,6 +1377,7 @@ Public Function CloneWorkflow(plngWorkflowID As Long, _
           Next iIndex
         End If
         recWorkflowElementEdit!SecondaryDataRecordTable = lngTempNewID
+        recWorkflowElementEdit!UseAsTargetIdentifier = .Fields("UseAsTargetIdentifier")
         
         recWorkflowElementEdit!EMailSubject = .Fields("EmailSubject")
         recWorkflowElementEdit!TimeoutFrequency = .Fields("TimeoutFrequency")
@@ -1435,6 +1436,7 @@ Public Function CloneWorkflow(plngWorkflowID As Long, _
         Next iLoop
 
         recWorkflowElementItemEdit!Caption = .Fields("Caption")
+        recWorkflowElementItemEdit!UseAsTargetIdentifier = .Fields("UseAsTargetIdentifier")
 
         lngTempNewID = IIf(IsNull(.Fields("DBColumnID")), 0, .Fields("DBColumnID"))
         If lngTempNewID > 0 Then
@@ -2204,6 +2206,9 @@ Public Function WebFormItemHasProperty(piItemType As WorkflowWebFormItemTypes, _
       
     Case WFITEMPROP_HOTSPOT ' 78
       fHasProperty = (piItemType = giWFFORMITEM_FRAME)
+      
+    Case WFITEMPROP_USEASTARGETIDENTIFIER ' 79
+      fHasProperty = (piItemType = giWFFORMITEM_INPUTVALUE_GRID)
       
   End Select
   

@@ -1,8 +1,8 @@
 VERSION 5.00
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.Ocx"
-Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "ComDlg32.OCX"
+Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.ocx"
+Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "COMDLG32.OCX"
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
-Object = "{051CE3FC-5250-4486-9533-4E0723733DFA}#1.0#0"; "COA_ColourPicker.ocx"
+Object = "{051CE3FC-5250-4486-9533-4E0723733DFA}#1.0#0"; "coa_colourpicker.ocx"
 Begin VB.Form frmWorkflowWFItemProps 
    Caption         =   "Control Properties"
    ClientHeight    =   5070
@@ -50,7 +50,6 @@ Begin VB.Form frmWorkflowWFItemProps
       BeginProperty Panels {0713E89E-850A-101B-AFC0-4210102A8DA7} 
          NumPanels       =   1
          BeginProperty Panel1 {0713E89F-850A-101B-AFC0-4210102A8DA7} 
-            Key             =   ""
             Object.Tag             =   ""
          EndProperty
       EndProperty
@@ -80,15 +79,13 @@ Begin VB.Form frmWorkflowWFItemProps
          Strikethrough   =   0   'False
       EndProperty
       stylesets(0).Picture=   "frmWorkflowWFItemProps.frx":000C
-      stylesets(1).Name=   "ssetDormantRowBold"
-      stylesets(1).ForeColor=   -2147483630
-      stylesets(1).BackColor=   -2147483643
+      stylesets(1).Name=   "ssetBackColorEven"
       stylesets(1).HasFont=   -1  'True
       BeginProperty stylesets(1).Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
          Name            =   "Verdana"
          Size            =   8.25
          Charset         =   0
-         Weight          =   700
+         Weight          =   400
          Underline       =   0   'False
          Italic          =   0   'False
          Strikethrough   =   0   'False
@@ -106,13 +103,15 @@ Begin VB.Form frmWorkflowWFItemProps
          Strikethrough   =   0   'False
       EndProperty
       stylesets(2).Picture=   "frmWorkflowWFItemProps.frx":0044
-      stylesets(3).Name=   "ssetBackColorEven"
+      stylesets(3).Name=   "ssetDormantRowBold"
+      stylesets(3).ForeColor=   -2147483630
+      stylesets(3).BackColor=   -2147483643
       stylesets(3).HasFont=   -1  'True
       BeginProperty stylesets(3).Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
          Name            =   "Verdana"
          Size            =   8.25
          Charset         =   0
-         Weight          =   400
+         Weight          =   700
          Underline       =   0   'False
          Italic          =   0   'False
          Strikethrough   =   0   'False
@@ -144,7 +143,7 @@ Begin VB.Form frmWorkflowWFItemProps
          Strikethrough   =   0   'False
       EndProperty
       stylesets(5).Picture=   "frmWorkflowWFItemProps.frx":0098
-      stylesets(6).Name=   "ssetForeColorOdd"
+      stylesets(6).Name=   "ssetBackColorValue"
       stylesets(6).HasFont=   -1  'True
       BeginProperty stylesets(6).Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
          Name            =   "Verdana"
@@ -156,7 +155,7 @@ Begin VB.Form frmWorkflowWFItemProps
          Strikethrough   =   0   'False
       EndProperty
       stylesets(6).Picture=   "frmWorkflowWFItemProps.frx":00B4
-      stylesets(7).Name=   "ssetBackColorValue"
+      stylesets(7).Name=   "ssetForeColorOdd"
       stylesets(7).HasFont=   -1  'True
       BeginProperty stylesets(7).Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
          Name            =   "Verdana"
@@ -168,7 +167,7 @@ Begin VB.Form frmWorkflowWFItemProps
          Strikethrough   =   0   'False
       EndProperty
       stylesets(7).Picture=   "frmWorkflowWFItemProps.frx":00D0
-      stylesets(8).Name=   "ssetHeaderBackColor"
+      stylesets(8).Name=   "ssetForeColorValue"
       stylesets(8).HasFont=   -1  'True
       BeginProperty stylesets(8).Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
          Name            =   "Verdana"
@@ -180,7 +179,7 @@ Begin VB.Form frmWorkflowWFItemProps
          Strikethrough   =   0   'False
       EndProperty
       stylesets(8).Picture=   "frmWorkflowWFItemProps.frx":00EC
-      stylesets(9).Name=   "ssetForeColorValue"
+      stylesets(9).Name=   "ssetHeaderBackColor"
       stylesets(9).HasFont=   -1  'True
       BeginProperty stylesets(9).Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
          Name            =   "Verdana"
@@ -218,9 +217,9 @@ Begin VB.Form frmWorkflowWFItemProps
          Strikethrough   =   0   'False
       EndProperty
       stylesets(11).Picture=   "frmWorkflowWFItemProps.frx":0140
-      stylesets(12).Name=   "ssetDormantRow"
-      stylesets(12).ForeColor=   -2147483630
-      stylesets(12).BackColor=   -2147483643
+      stylesets(12).Name=   "ssetDisabled"
+      stylesets(12).ForeColor=   -2147483631
+      stylesets(12).BackColor=   -2147483633
       stylesets(12).HasFont=   -1  'True
       BeginProperty stylesets(12).Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
          Name            =   "Verdana"
@@ -232,9 +231,9 @@ Begin VB.Form frmWorkflowWFItemProps
          Strikethrough   =   0   'False
       EndProperty
       stylesets(12).Picture=   "frmWorkflowWFItemProps.frx":015C
-      stylesets(13).Name=   "ssetDisabled"
-      stylesets(13).ForeColor=   -2147483631
-      stylesets(13).BackColor=   -2147483633
+      stylesets(13).Name=   "ssetDormantRow"
+      stylesets(13).ForeColor=   -2147483630
+      stylesets(13).BackColor=   -2147483643
       stylesets(13).HasFont=   -1  'True
       BeginProperty stylesets(13).Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
          Name            =   "Verdana"
@@ -431,6 +430,7 @@ Private mlngLookupColumnID As Long
 Private mlngRecordTableID As Long
 Private mfPasswordType As Boolean
 Private mlngTabNumber As Long
+Private mfUseAsTargetIdentifier As Boolean
 
 ' mlngPictureLocation is used as main web form property i.e. not a WebFormItem
 Private mlngPictureLocation As Long
@@ -903,6 +903,14 @@ Private Sub ConfigureGridRow()
         .Columns(1).Locked = False
         .Columns(1).DataType = vbString
         .Columns(1).Style = ssStyleEdit
+
+      Case WFITEMPROP_USEASTARGETIDENTIFIER
+        .Columns(1).Locked = True
+        .Columns(1).DataType = vbBoolean
+        .Columns(1).Style = ssStyleComboBox
+        .Columns(1).RemoveAll
+        .Columns(1).AddItem msBOOLEAN_TRUE, 0
+        .Columns(1).AddItem msBOOLEAN_FALSE, 1
 
       Case Else
         .Columns(1).Locked = True
@@ -2245,6 +2253,13 @@ Private Sub ssGridProperties_ComboCloseUp()
           mlngPictureLocation = 7
       End Select
       
+    Case WFITEMPROP_USEASTARGETIDENTIFIER
+      If sNewValue = msBOOLEAN_TRUE Then
+        mfUseAsTargetIdentifier = True
+      Else
+        mfUseAsTargetIdentifier = False
+      End If
+      
   End Select
 
   ' Update the selected controls with the new property value.
@@ -2560,6 +2575,21 @@ Public Function RefreshProperties(Optional pfStayOnSameLine As Boolean) As Boole
                 End If
               End If
 
+              ' Read the Use as target identifier
+              If avProperties(WFITEMPROP_USEASTARGETIDENTIFIER, 1) Then
+                If WebFormItemHasProperty(iControlType, WFITEMPROP_USEASTARGETIDENTIFIER) Then
+                  If (fPassedOnce) And (Not avProperties(WFITEMPROP_USEASTARGETIDENTIFIER, 2)) Then
+                    If mfUseAsTargetIdentifier <> .UseAsTargetIdentifier Then
+                      avProperties(WFITEMPROP_USEASTARGETIDENTIFIER, 2) = True
+                    End If
+                  Else
+                    mfUseAsTargetIdentifier = .UseAsTargetIdentifier
+                  End If
+                Else
+                  avProperties(WFITEMPROP_USEASTARGETIDENTIFIER, 1) = False
+                End If
+              End If
+
               ' Read the Caption property from the control if required.
               If avProperties(WFITEMPROP_CAPTION, 1) Then
                 
@@ -2854,11 +2884,11 @@ Public Function RefreshProperties(Optional pfStayOnSameLine As Boolean) As Boole
               If avProperties(WFITEMPROP_HEADLINES, 1) Then
                 If WebFormItemHasProperty(iControlType, WFITEMPROP_HEADLINES) Then
                   If (fPassedOnce) And (Not avProperties(WFITEMPROP_HEADLINES, 2)) Then
-                    If mlngHeadlines <> .Headlines Then
+                    If mlngHeadlines <> .HeadLines Then
                       avProperties(WFITEMPROP_HEADLINES, 2) = True
                     End If
                   Else
-                    mlngHeadlines = .Headlines
+                    mlngHeadlines = .HeadLines
                   End If
                 Else
                   avProperties(WFITEMPROP_HEADLINES, 1) = False
@@ -3136,9 +3166,9 @@ Public Function RefreshProperties(Optional pfStayOnSameLine As Boolean) As Boole
       If CurrentWebForm.ActiveControl.Name = "TabPages" Then
       ' The screen's tab strip is the active control.
         Me.StatusBar1.SimpleText = "Tab"
-        If CurrentWebForm.tabPages.Tabs.Count > 0 Then
+        If CurrentWebForm.TabPages.Tabs.Count > 0 Then
           
-          With CurrentWebForm.tabPages
+          With CurrentWebForm.TabPages
             ' Read the Caption property from the tab strip.
             avProperties(WFITEMPROP_TABCAPTION, 1) = True
             msTabCaption = Replace(.SelectedItem.Caption, "&&", "&")
@@ -3248,6 +3278,20 @@ Public Function RefreshProperties(Optional pfStayOnSameLine As Boolean) As Boole
       End If
   
       .AddItem "Identifier" & vbTab & sDescription & vbTab & Str(WFITEMPROP_WFIDENTIFIER)
+    End If
+
+    ' Add the ColumnHeaders property row to the properties grid if required.
+    If avProperties(WFITEMPROP_USEASTARGETIDENTIFIER, 1) Then
+      If avProperties(WFITEMPROP_USEASTARGETIDENTIFIER, 2) Then
+        sDescription = ""
+      Else
+        If mfUseAsTargetIdentifier = True Then
+          sDescription = msBOOLEAN_TRUE
+        Else
+          sDescription = msBOOLEAN_FALSE
+        End If
+      End If
+      .AddItem "Use As Workflow Target Id" & vbTab & sDescription & vbTab & Str(WFITEMPROP_USEASTARGETIDENTIFIER)
     End If
 
     ' Add the Caption property row to the properties grid if required.
@@ -3705,7 +3749,7 @@ Public Function RefreshProperties(Optional pfStayOnSameLine As Boolean) As Boole
   
       .AddItem "Location" & vbTab & sDescription & vbTab & Str(WFITEMPROP_PICTURELOCATION)
     End If
-    
+        
     .Redraw = True
   End With
 
@@ -3788,6 +3832,12 @@ Private Function UpdateControls(piProperty As WFItemProperty) As Boolean
                 msWFIdentifier, _
                 0, _
                 0
+
+            Case WFITEMPROP_USEASTARGETIDENTIFIER
+              If (.UseAsTargetIdentifier <> mfUseAsTargetIdentifier) Then
+                fChangeMade = True
+              End If
+              .UseAsTargetIdentifier = mfUseAsTargetIdentifier
 
             Case WFITEMPROP_CAPTION
               msCaption = CStr(Left(msCaption, 200))
@@ -3960,10 +4010,10 @@ Private Function UpdateControls(piProperty As WFItemProperty) As Boolean
               .ColumnHeaders = mfColumnHeaders
 
             Case WFITEMPROP_HEADLINES
-              If (.Headlines <> mlngHeadlines) Then
+              If (.HeadLines <> mlngHeadlines) Then
                 fChangeMade = True
               End If
-              .Headlines = mlngHeadlines
+              .HeadLines = mlngHeadlines
 
             Case WFITEMPROP_HEADFONT
               Set objFont = New StdFont
@@ -4120,7 +4170,7 @@ Private Function UpdateControls(piProperty As WFItemProperty) As Boolean
         Next iCount
 
         ' If tab page is selected then force a refresh.
-        If mfrmWebForm.tabPages.Selected Then
+        If mfrmWebForm.TabPages.Selected Then
           mfrmWebForm.DockPagesToTabStrip
         End If
 
@@ -4267,23 +4317,23 @@ Private Function UpdateControls(piProperty As WFItemProperty) As Boolean
         
           Case WFITEMPROP_TABNUMBER
             
-            If mlngTabNumber <> mfrmWebForm.tabPages.SelectedItem.Tag Then
-              lngTargetPageNumber = mfrmWebForm.tabPages.SelectedItem.Tag
-              sCaption = mfrmWebForm.tabPages.SelectedItem.Caption
+            If mlngTabNumber <> mfrmWebForm.TabPages.SelectedItem.Tag Then
+              lngTargetPageNumber = mfrmWebForm.TabPages.SelectedItem.Tag
+              sCaption = mfrmWebForm.TabPages.SelectedItem.Caption
               
-              mfrmWebForm.tabPages.SelectedItem.Tag = mfrmWebForm.tabPages.Tabs.Item(mlngTabNumber).Tag
-              mfrmWebForm.tabPages.Tabs.Item(mlngTabNumber).Tag = lngTargetPageNumber
+              mfrmWebForm.TabPages.SelectedItem.Tag = mfrmWebForm.TabPages.Tabs.Item(mlngTabNumber).Tag
+              mfrmWebForm.TabPages.Tabs.Item(mlngTabNumber).Tag = lngTargetPageNumber
               
               ' Select the new page
-              mfrmWebForm.tabPages.SelectedItem.Caption = mfrmWebForm.tabPages.Tabs.Item(mlngTabNumber).Caption
-              mfrmWebForm.tabPages.Tabs.Item(mlngTabNumber).Caption = sCaption
+              mfrmWebForm.TabPages.SelectedItem.Caption = mfrmWebForm.TabPages.Tabs.Item(mlngTabNumber).Caption
+              mfrmWebForm.TabPages.Tabs.Item(mlngTabNumber).Caption = sCaption
               mfrmWebForm.PageNo = mlngTabNumber
               mfrmWebForm.IsChanged = True
               blnDontRefresh = True
             End If
             
           Case WFITEMPROP_TABCAPTION
-            mfrmWebForm.tabPages.Tabs.Item(mlngTabNumber).Caption = Replace(ssGridProperties.ActiveCell.Text, "&", "&&")
+            mfrmWebForm.TabPages.Tabs.Item(mlngTabNumber).Caption = Replace(ssGridProperties.ActiveCell.Text, "&", "&&")
             mfrmWebForm.IsChanged = True
             blnDontRefresh = True
             

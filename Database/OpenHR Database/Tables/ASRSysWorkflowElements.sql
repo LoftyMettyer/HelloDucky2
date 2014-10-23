@@ -56,5 +56,6 @@
 	[Attachment_DBColumnID] [int] NULL,
 	[Attachment_DBRecord] [int] NULL,
 	[Attachment_DBElement] [varchar](200) NULL,
-	[Attachment_DBValue] [varchar](200) NULL
+	[Attachment_DBValue] [varchar](200) NULL, 
+    [UseAsTargetIdentifier] BIT NULL
 ) ON [PRIMARY]

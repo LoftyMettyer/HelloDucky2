@@ -359,6 +359,11 @@ PRINT 'Step - Workflow Log Enhancements'
 		EXEC sp_executesql N'UPDATE ASRSysWorkflowInstances SET TargetName = ''<Unidentified>'';';
 	END
 
+	IF NOT EXISTS(SELECT id FROM syscolumns WHERE  id = OBJECT_ID('ASRSysWorkflowElementItems', 'U') AND name = 'UseAsTargetIdentifier')
+		EXEC sp_executesql N'ALTER TABLE ASRSysWorkflowElementItems ADD UseAsTargetIdentifier bit;';
+
+	IF NOT EXISTS(SELECT id FROM syscolumns WHERE  id = OBJECT_ID('ASRSysWorkflowElements', 'U') AND name = 'UseAsTargetIdentifier')
+		EXEC sp_executesql N'ALTER TABLE ASRSysWorkflowElements ADD UseAsTargetIdentifier bit;';
 
 
 /* ------------------------------------------------------------- */

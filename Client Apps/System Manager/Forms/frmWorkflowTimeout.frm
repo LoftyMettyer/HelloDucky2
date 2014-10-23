@@ -1,19 +1,19 @@
 VERSION 5.00
 Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
-Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "ComDlg32.OCX"
+Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "COMDLG32.OCX"
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
 Object = "{604A59D5-2409-101D-97D5-46626B63EF2D}#1.0#0"; "TDBNumbr.ocx"
 Object = "{AB3877A8-B7B2-11CF-9097-444553540000}#1.0#0"; "gtdate32.ocx"
-Object = "{051CE3FC-5250-4486-9533-4E0723733DFA}#1.0#0"; "COA_ColourPicker.ocx"
-Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "COA_Spinner.ocx"
-Object = "{96E404DC-B217-4A2D-A891-C73A92A628CC}#1.0#0"; "COA_WorkingPattern.ocx"
+Object = "{051CE3FC-5250-4486-9533-4E0723733DFA}#1.0#0"; "coa_colourpicker.ocx"
+Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "coa_spinner.ocx"
+Object = "{96E404DC-B217-4A2D-A891-C73A92A628CC}#1.0#0"; "coa_workingpattern.ocx"
 Begin VB.Form frmWorkflowTimeout 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Web Form Item Properties"
-   ClientHeight    =   10560
+   ClientHeight    =   10590
    ClientLeft      =   45
    ClientTop       =   435
-   ClientWidth     =   8955
+   ClientWidth     =   8880
    BeginProperty Font 
       Name            =   "Verdana"
       Size            =   8.25
@@ -27,10 +27,11 @@ Begin VB.Form frmWorkflowTimeout
    Icon            =   "frmWorkflowTimeout.frx":0000
    KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
+   LockControls    =   -1  'True
    MaxButton       =   0   'False
    MinButton       =   0   'False
-   ScaleHeight     =   10560
-   ScaleWidth      =   8955
+   ScaleHeight     =   10590
+   ScaleWidth      =   8880
    ShowInTaskbar   =   0   'False
    Begin COAColourPicker.COA_ColourPicker colPickDlg 
       Left            =   2280
@@ -65,8 +66,8 @@ Begin VB.Form frmWorkflowTimeout
       End
    End
    Begin TabDlg.SSTab ssTabStrip 
-      Height          =   9800
-      Left            =   105
+      Height          =   9795
+      Left            =   90
       TabIndex        =   65
       Top             =   105
       Width           =   8700
@@ -105,6 +106,161 @@ Begin VB.Form frmWorkflowTimeout
          TabStop         =   0   'False
          Top             =   400
          Width           =   8400
+         Begin VB.Frame fraRecordIdentification 
+            Caption         =   "Record Identification :"
+            Height          =   3200
+            Left            =   0
+            TabIndex        =   121
+            Top             =   0
+            Width           =   2800
+            Begin VB.ComboBox cboRecordIdentificationRecordSelector 
+               Height          =   315
+               ItemData        =   "frmWorkflowTimeout.frx":0060
+               Left            =   1800
+               List            =   "frmWorkflowTimeout.frx":0062
+               Sorted          =   -1  'True
+               Style           =   2  'Dropdown List
+               TabIndex        =   129
+               Top             =   1500
+               Width           =   500
+            End
+            Begin VB.ComboBox cboRecordIdentificationElement 
+               Height          =   315
+               ItemData        =   "frmWorkflowTimeout.frx":0064
+               Left            =   1800
+               List            =   "frmWorkflowTimeout.frx":0066
+               Sorted          =   -1  'True
+               Style           =   2  'Dropdown List
+               TabIndex        =   127
+               Top             =   1100
+               Width           =   500
+            End
+            Begin VB.ComboBox cboRecordIdentificationRecord 
+               Height          =   315
+               ItemData        =   "frmWorkflowTimeout.frx":0068
+               Left            =   1800
+               List            =   "frmWorkflowTimeout.frx":006A
+               Sorted          =   -1  'True
+               Style           =   2  'Dropdown List
+               TabIndex        =   125
+               Top             =   700
+               Width           =   500
+            End
+            Begin VB.ComboBox cboRecordIdentificationTable 
+               Height          =   315
+               Left            =   1800
+               Sorted          =   -1  'True
+               Style           =   2  'Dropdown List
+               TabIndex        =   123
+               Top             =   300
+               Width           =   500
+            End
+            Begin VB.ComboBox cboRecordIdentificationRecordTable 
+               Height          =   315
+               Left            =   1800
+               Sorted          =   -1  'True
+               Style           =   2  'Dropdown List
+               TabIndex        =   131
+               Top             =   1900
+               Width           =   500
+            End
+            Begin VB.CommandButton cmdRecordIdentificationOrder 
+               Caption         =   "..."
+               Height          =   315
+               Left            =   2300
+               TabIndex        =   134
+               Top             =   2300
+               UseMaskColor    =   -1  'True
+               Width           =   315
+            End
+            Begin VB.TextBox txtRecordIdentificationOrder 
+               BackColor       =   &H8000000F&
+               Enabled         =   0   'False
+               Height          =   315
+               Left            =   1800
+               Locked          =   -1  'True
+               TabIndex        =   133
+               TabStop         =   0   'False
+               Top             =   2300
+               Width           =   500
+            End
+            Begin VB.CommandButton cmdRecordIdentificationFilter 
+               Caption         =   "..."
+               Height          =   315
+               Left            =   2300
+               TabIndex        =   137
+               Top             =   2700
+               UseMaskColor    =   -1  'True
+               Width           =   315
+            End
+            Begin VB.TextBox txtRecordIdentificationFilter 
+               BackColor       =   &H8000000F&
+               Enabled         =   0   'False
+               Height          =   315
+               Left            =   1800
+               Locked          =   -1  'True
+               TabIndex        =   136
+               TabStop         =   0   'False
+               Top             =   2700
+               Width           =   500
+            End
+            Begin VB.Label lblRecordIdentificationRecordSelector 
+               Caption         =   "Record Selector :"
+               Height          =   195
+               Left            =   195
+               TabIndex        =   128
+               Top             =   1560
+               Width           =   1515
+            End
+            Begin VB.Label lblRecordIdentificationElement 
+               Caption         =   "Element :"
+               Height          =   195
+               Left            =   200
+               TabIndex        =   126
+               Top             =   1160
+               Width           =   840
+            End
+            Begin VB.Label lblRecordIdentificationRecord 
+               Caption         =   "Record :"
+               Height          =   195
+               Left            =   195
+               TabIndex        =   124
+               Top             =   765
+               Width           =   930
+            End
+            Begin VB.Label lblRecordIdentificationTable 
+               Caption         =   "Table :"
+               Height          =   195
+               Left            =   195
+               TabIndex        =   122
+               Top             =   360
+               Width           =   810
+            End
+            Begin VB.Label lblRecordIdentificationRecordTable 
+               Caption         =   "Record Table :"
+               Height          =   195
+               Left            =   195
+               TabIndex        =   130
+               Top             =   1965
+               Width           =   1320
+            End
+            Begin VB.Label lblRecordIdentificationFilter 
+               Caption         =   "Filter :"
+               Height          =   195
+               Left            =   195
+               TabIndex        =   135
+               Top             =   2760
+               Width           =   735
+            End
+            Begin VB.Label lblRecordIdentificationOrder 
+               Caption         =   "Order :"
+               Height          =   195
+               Left            =   195
+               TabIndex        =   132
+               Top             =   2355
+               Width           =   795
+            End
+         End
          Begin VB.Frame fraValidation 
             Caption         =   "Validation :"
             Height          =   2535
@@ -282,161 +438,6 @@ Begin VB.Form frmWorkflowTimeout
                TabIndex        =   186
                Top             =   1920
                Width           =   1410
-            End
-         End
-         Begin VB.Frame fraRecordIdentification 
-            Caption         =   "Record Identification :"
-            Height          =   3200
-            Left            =   0
-            TabIndex        =   121
-            Top             =   0
-            Width           =   2800
-            Begin VB.ComboBox cboRecordIdentificationRecordSelector 
-               Height          =   315
-               ItemData        =   "frmWorkflowTimeout.frx":0060
-               Left            =   1800
-               List            =   "frmWorkflowTimeout.frx":0062
-               Sorted          =   -1  'True
-               Style           =   2  'Dropdown List
-               TabIndex        =   129
-               Top             =   1500
-               Width           =   500
-            End
-            Begin VB.ComboBox cboRecordIdentificationElement 
-               Height          =   315
-               ItemData        =   "frmWorkflowTimeout.frx":0064
-               Left            =   1800
-               List            =   "frmWorkflowTimeout.frx":0066
-               Sorted          =   -1  'True
-               Style           =   2  'Dropdown List
-               TabIndex        =   127
-               Top             =   1100
-               Width           =   500
-            End
-            Begin VB.ComboBox cboRecordIdentificationRecord 
-               Height          =   315
-               ItemData        =   "frmWorkflowTimeout.frx":0068
-               Left            =   1800
-               List            =   "frmWorkflowTimeout.frx":006A
-               Sorted          =   -1  'True
-               Style           =   2  'Dropdown List
-               TabIndex        =   125
-               Top             =   700
-               Width           =   500
-            End
-            Begin VB.ComboBox cboRecordIdentificationTable 
-               Height          =   315
-               Left            =   1800
-               Sorted          =   -1  'True
-               Style           =   2  'Dropdown List
-               TabIndex        =   123
-               Top             =   300
-               Width           =   500
-            End
-            Begin VB.ComboBox cboRecordIdentificationRecordTable 
-               Height          =   315
-               Left            =   1800
-               Sorted          =   -1  'True
-               Style           =   2  'Dropdown List
-               TabIndex        =   131
-               Top             =   1900
-               Width           =   500
-            End
-            Begin VB.CommandButton cmdRecordIdentificationOrder 
-               Caption         =   "..."
-               Height          =   315
-               Left            =   2300
-               TabIndex        =   134
-               Top             =   2300
-               UseMaskColor    =   -1  'True
-               Width           =   315
-            End
-            Begin VB.TextBox txtRecordIdentificationOrder 
-               BackColor       =   &H8000000F&
-               Enabled         =   0   'False
-               Height          =   315
-               Left            =   1800
-               Locked          =   -1  'True
-               TabIndex        =   133
-               TabStop         =   0   'False
-               Top             =   2300
-               Width           =   500
-            End
-            Begin VB.CommandButton cmdRecordIdentificationFilter 
-               Caption         =   "..."
-               Height          =   315
-               Left            =   2300
-               TabIndex        =   137
-               Top             =   2700
-               UseMaskColor    =   -1  'True
-               Width           =   315
-            End
-            Begin VB.TextBox txtRecordIdentificationFilter 
-               BackColor       =   &H8000000F&
-               Enabled         =   0   'False
-               Height          =   315
-               Left            =   1800
-               Locked          =   -1  'True
-               TabIndex        =   136
-               TabStop         =   0   'False
-               Top             =   2700
-               Width           =   500
-            End
-            Begin VB.Label lblRecordIdentificationRecordSelector 
-               Caption         =   "Record Selector :"
-               Height          =   195
-               Left            =   195
-               TabIndex        =   128
-               Top             =   1560
-               Width           =   1515
-            End
-            Begin VB.Label lblRecordIdentificationElement 
-               Caption         =   "Element :"
-               Height          =   195
-               Left            =   200
-               TabIndex        =   126
-               Top             =   1160
-               Width           =   840
-            End
-            Begin VB.Label lblRecordIdentificationRecord 
-               Caption         =   "Record :"
-               Height          =   195
-               Left            =   195
-               TabIndex        =   124
-               Top             =   765
-               Width           =   930
-            End
-            Begin VB.Label lblRecordIdentificationTable 
-               Caption         =   "Table :"
-               Height          =   195
-               Left            =   195
-               TabIndex        =   122
-               Top             =   360
-               Width           =   810
-            End
-            Begin VB.Label lblRecordIdentificationRecordTable 
-               Caption         =   "Record Table :"
-               Height          =   195
-               Left            =   195
-               TabIndex        =   130
-               Top             =   1965
-               Width           =   1320
-            End
-            Begin VB.Label lblRecordIdentificationFilter 
-               Caption         =   "Filter :"
-               Height          =   195
-               Left            =   195
-               TabIndex        =   135
-               Top             =   2760
-               Width           =   735
-            End
-            Begin VB.Label lblRecordIdentificationOrder 
-               Caption         =   "Order :"
-               Height          =   195
-               Left            =   195
-               TabIndex        =   132
-               Top             =   2355
-               Width           =   795
             End
          End
          Begin VB.Frame fraControlValues 
@@ -934,172 +935,187 @@ Begin VB.Form frmWorkflowTimeout
          TabStop         =   0   'False
          Top             =   400
          Width           =   8400
-         Begin VB.Frame fraHotspot 
-            Caption         =   "Hotspot :"
-            Height          =   1095
-            Left            =   1200
-            TabIndex        =   59
-            Top             =   3360
-            Width           =   6615
-            Begin VB.ComboBox cboHotSpotIdentifier 
+         Begin VB.Frame fraBehaviour 
+            Caption         =   "Behaviour : "
+            Height          =   2300
+            Left            =   0
+            TabIndex        =   41
+            Top             =   6960
+            Width           =   8000
+            Begin VB.ComboBox cboFollowOnFormsMessageType 
                Height          =   315
                ItemData        =   "frmWorkflowTimeout.frx":0088
-               Left            =   3360
+               Left            =   2700
+               List            =   "frmWorkflowTimeout.frx":008A
+               Style           =   2  'Dropdown List
+               TabIndex        =   57
+               Top             =   1840
+               Visible         =   0   'False
+               Width           =   1875
+            End
+            Begin VB.ComboBox cboSavedForLaterMessageType 
+               Height          =   315
+               ItemData        =   "frmWorkflowTimeout.frx":008C
+               Left            =   2700
+               List            =   "frmWorkflowTimeout.frx":008E
+               Style           =   2  'Dropdown List
+               TabIndex        =   54
+               Top             =   1450
+               Visible         =   0   'False
+               Width           =   1875
+            End
+            Begin VB.ComboBox cboCompletionMessageType 
+               Height          =   315
+               ItemData        =   "frmWorkflowTimeout.frx":0090
+               Left            =   2700
                List            =   "frmWorkflowTimeout.frx":0092
                Style           =   2  'Dropdown List
-               TabIndex        =   61
-               Top             =   360
+               TabIndex        =   51
+               Top             =   1060
                Visible         =   0   'False
-               Width           =   2895
+               Width           =   1875
             End
-            Begin VB.Label lblHotSpotIdentifier 
-               AutoSize        =   -1  'True
-               Caption         =   "Hotspot Identifier : "
-               Height          =   195
-               Left            =   360
-               TabIndex        =   60
-               Top             =   480
-               Visible         =   0   'False
-               Width           =   1680
-            End
-         End
-         Begin VB.Frame fraIdentification 
-            Caption         =   "Identification :"
-            Height          =   3700
-            Left            =   0
-            TabIndex        =   1
-            Top             =   0
-            Width           =   7400
-            Begin VB.Frame fraCaption 
-               Caption         =   "Caption :"
-               Height          =   1200
-               Left            =   200
-               TabIndex        =   6
-               Top             =   1100
-               Width           =   6495
-               Begin VB.CommandButton cmdCaptionTypeExpression 
-                  Caption         =   "..."
-                  Height          =   315
-                  Left            =   5900
-                  TabIndex        =   11
-                  Top             =   700
-                  UseMaskColor    =   -1  'True
-                  Width           =   315
-               End
-               Begin VB.TextBox txtCaptionTypeExpression 
-                  BackColor       =   &H8000000F&
-                  Enabled         =   0   'False
-                  Height          =   315
-                  Left            =   1600
-                  Locked          =   -1  'True
-                  TabIndex        =   10
-                  TabStop         =   0   'False
-                  Top             =   700
-                  Width           =   4300
-               End
-               Begin VB.TextBox txtCaptionTypeValue 
-                  Height          =   315
-                  Left            =   1600
-                  MaxLength       =   200
-                  TabIndex        =   9
-                  Top             =   300
-                  Width           =   4600
-               End
-               Begin VB.OptionButton optCaptionType 
-                  Caption         =   "Calc&ulation"
-                  Height          =   255
-                  Index           =   3
-                  Left            =   200
-                  TabIndex        =   8
-                  Top             =   760
-                  Width           =   1410
-               End
-               Begin VB.OptionButton optCaptionType 
-                  Caption         =   "V&alue"
-                  Height          =   255
-                  Index           =   0
-                  Left            =   200
-                  TabIndex        =   7
-                  Top             =   360
-                  Value           =   -1  'True
-                  Width           =   1020
-               End
-            End
-            Begin VB.CheckBox chkDescriptionHasElementCaption 
-               Caption         =   "Description prefixed with &Element Caption"
-               Height          =   195
-               Left            =   1800
-               TabIndex        =   16
-               Top             =   3300
-               Width           =   4110
-            End
-            Begin VB.CheckBox chkDescriptionHasWorkflowName 
-               Caption         =   "Description prefixed with &Workflow Name "
-               Height          =   195
-               Left            =   1800
-               TabIndex        =   15
-               Top             =   2975
-               Width           =   4110
-            End
-            Begin VB.TextBox txtIdentifier 
-               Height          =   315
-               Left            =   1800
-               MaxLength       =   200
-               TabIndex        =   3
-               Top             =   300
-               Width           =   4600
-            End
-            Begin VB.TextBox txtDescriptionExpression 
-               BackColor       =   &H8000000F&
-               Enabled         =   0   'False
-               Height          =   315
-               Left            =   1800
-               Locked          =   -1  'True
-               TabIndex        =   13
-               TabStop         =   0   'False
-               Top             =   2500
-               Width           =   4300
-            End
-            Begin VB.CommandButton cmdDescriptionExpression 
+            Begin VB.CommandButton cmdFollowOnFormsMessage 
                Caption         =   "..."
                Height          =   315
-               Left            =   6100
-               TabIndex        =   14
-               Top             =   2500
+               Left            =   6105
+               TabIndex        =   58
+               Top             =   1840
                UseMaskColor    =   -1  'True
                Width           =   315
             End
-            Begin VB.TextBox txtCaption 
+            Begin VB.CommandButton cmdSavedForLaterMessage 
+               Caption         =   "..."
+               Height          =   315
+               Left            =   6105
+               TabIndex        =   55
+               Top             =   1450
+               UseMaskColor    =   -1  'True
+               Width           =   315
+            End
+            Begin VB.CommandButton cmdCompletionMessage 
+               Caption         =   "..."
+               Height          =   315
+               Left            =   6105
+               TabIndex        =   52
+               Top             =   1060
+               UseMaskColor    =   -1  'True
+               Width           =   315
+            End
+            Begin VB.CheckBox chkExcludeWeekends 
+               Caption         =   "E&xclude Weekends"
+               Height          =   255
+               Left            =   4560
+               TabIndex        =   45
+               Top             =   330
+               Width           =   2040
+            End
+            Begin VB.OptionButton optButtonAction 
+               Caption         =   "Su&bmit (no validation)"
+               Height          =   195
+               Index           =   2
+               Left            =   4185
+               TabIndex        =   48
+               Top             =   700
+               Width           =   2250
+            End
+            Begin VB.OptionButton optButtonAction 
+               Caption         =   "&Submit (with validation)"
+               Height          =   195
+               Index           =   0
+               Left            =   1800
+               TabIndex        =   47
+               Top             =   700
+               Value           =   -1  'True
+               Width           =   2400
+            End
+            Begin VB.OptionButton optButtonAction 
+               Caption         =   "Save for &later"
+               Height          =   195
+               Index           =   1
+               Left            =   6400
+               TabIndex        =   49
+               Top             =   700
+               Width           =   1530
+            End
+            Begin VB.ComboBox cboTimeoutPeriod 
+               Height          =   315
+               ItemData        =   "frmWorkflowTimeout.frx":0094
+               Left            =   2715
+               List            =   "frmWorkflowTimeout.frx":00A4
+               Style           =   2  'Dropdown List
+               TabIndex        =   44
+               Top             =   300
+               Width           =   1515
+            End
+            Begin COASpinner.COA_Spinner spnTimeoutFrequency 
                Height          =   315
                Left            =   1800
-               MaxLength       =   200
-               TabIndex        =   5
-               Top             =   700
-               Width           =   4600
+               TabIndex        =   43
+               Top             =   300
+               Width           =   705
+               _ExtentX        =   1244
+               _ExtentY        =   556
+               BackColor       =   -2147483643
+               BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
+                  Name            =   "Verdana"
+                  Size            =   8.25
+                  Charset         =   0
+                  Weight          =   400
+                  Underline       =   0   'False
+                  Italic          =   0   'False
+                  Strikethrough   =   0   'False
+               EndProperty
+               MaximumValue    =   999
+               Text            =   "1"
             End
-            Begin VB.Label lblIdentifier 
-               Caption         =   "Identifier :"
+            Begin VB.Label lblCompletionMessage 
+               AutoSize        =   -1  'True
+               BackStyle       =   0  'Transparent
+               Caption         =   "Completion Message :"
                Height          =   195
                Left            =   195
-               TabIndex        =   2
+               TabIndex        =   50
+               Top             =   1125
+               Width           =   2115
+            End
+            Begin VB.Label lblFollowOnFormsMessage 
+               AutoSize        =   -1  'True
+               BackStyle       =   0  'Transparent
+               Caption         =   "Follow On Forms Message :"
+               Height          =   195
+               Left            =   195
+               TabIndex        =   56
+               Top             =   1905
+               Width           =   2505
+            End
+            Begin VB.Label lblSavedForLaterMessage 
+               AutoSize        =   -1  'True
+               BackStyle       =   0  'Transparent
+               Caption         =   "Save For Later Message :"
+               Height          =   195
+               Left            =   195
+               TabIndex        =   53
+               Top             =   1515
+               Width           =   2385
+            End
+            Begin VB.Label lblButtonAction 
+               Caption         =   "Action :"
+               Height          =   195
+               Left            =   195
+               TabIndex        =   46
+               Top             =   705
+               Width           =   825
+            End
+            Begin VB.Label lblTimeoutPeriod 
+               AutoSize        =   -1  'True
+               BackStyle       =   0  'Transparent
+               Caption         =   "Timeout Period :"
+               Height          =   195
+               Left            =   200
+               TabIndex        =   42
                Top             =   360
-               Width           =   1125
-            End
-            Begin VB.Label lblDescription 
-               Caption         =   "Description :"
-               Height          =   195
-               Left            =   195
-               TabIndex        =   12
-               Top             =   2565
-               Width           =   1260
-            End
-            Begin VB.Label lblCaption 
-               Caption         =   "Caption :"
-               Height          =   195
-               Left            =   195
-               TabIndex        =   4
-               Top             =   765
-               Width           =   1125
+               Width           =   1170
             End
          End
          Begin VB.Frame fraDisplay 
@@ -1107,13 +1123,13 @@ Begin VB.Form frmWorkflowTimeout
             Height          =   3060
             Left            =   0
             TabIndex        =   17
-            Top             =   3840
+            Top             =   4335
             Width           =   7400
             Begin VB.ComboBox cboWidthBehaviour 
                Height          =   315
-               ItemData        =   "frmWorkflowTimeout.frx":00A3
+               ItemData        =   "frmWorkflowTimeout.frx":00CC
                Left            =   1800
-               List            =   "frmWorkflowTimeout.frx":00AD
+               List            =   "frmWorkflowTimeout.frx":00D6
                Style           =   2  'Dropdown List
                TabIndex        =   38
                Top             =   2670
@@ -1122,9 +1138,9 @@ Begin VB.Form frmWorkflowTimeout
             End
             Begin VB.ComboBox cboHeightBehaviour 
                Height          =   315
-               ItemData        =   "frmWorkflowTimeout.frx":00BE
+               ItemData        =   "frmWorkflowTimeout.frx":00E7
                Left            =   1800
-               List            =   "frmWorkflowTimeout.frx":00C8
+               List            =   "frmWorkflowTimeout.frx":00F1
                Style           =   2  'Dropdown List
                TabIndex        =   34
                Top             =   2280
@@ -1133,9 +1149,9 @@ Begin VB.Form frmWorkflowTimeout
             End
             Begin VB.ComboBox cboHOffsetBehaviour 
                Height          =   315
-               ItemData        =   "frmWorkflowTimeout.frx":00D9
+               ItemData        =   "frmWorkflowTimeout.frx":0102
                Left            =   5295
-               List            =   "frmWorkflowTimeout.frx":00E3
+               List            =   "frmWorkflowTimeout.frx":010C
                Style           =   2  'Dropdown List
                TabIndex        =   32
                Top             =   1110
@@ -1144,9 +1160,9 @@ Begin VB.Form frmWorkflowTimeout
             End
             Begin VB.ComboBox cboVOffsetBehaviour 
                Height          =   315
-               ItemData        =   "frmWorkflowTimeout.frx":00F4
+               ItemData        =   "frmWorkflowTimeout.frx":011D
                Left            =   5295
-               List            =   "frmWorkflowTimeout.frx":00FE
+               List            =   "frmWorkflowTimeout.frx":0127
                Style           =   2  'Dropdown List
                TabIndex        =   28
                Top             =   720
@@ -1409,187 +1425,180 @@ Begin VB.Form frmWorkflowTimeout
                Width           =   510
             End
          End
-         Begin VB.Frame fraBehaviour 
-            Caption         =   "Behaviour : "
-            Height          =   2300
-            Left            =   0
-            TabIndex        =   41
-            Top             =   6960
-            Width           =   8000
-            Begin VB.ComboBox cboFollowOnFormsMessageType 
+         Begin VB.Frame fraHotspot 
+            Caption         =   "Hotspot :"
+            Height          =   1095
+            Left            =   1380
+            TabIndex        =   59
+            Top             =   3510
+            Width           =   6615
+            Begin VB.ComboBox cboHotSpotIdentifier 
                Height          =   315
-               ItemData        =   "frmWorkflowTimeout.frx":010F
-               Left            =   2700
-               List            =   "frmWorkflowTimeout.frx":0111
+               ItemData        =   "frmWorkflowTimeout.frx":0138
+               Left            =   3360
+               List            =   "frmWorkflowTimeout.frx":0142
                Style           =   2  'Dropdown List
-               TabIndex        =   57
-               Top             =   1840
-               Visible         =   0   'False
-               Width           =   1875
-            End
-            Begin VB.ComboBox cboSavedForLaterMessageType 
-               Height          =   315
-               ItemData        =   "frmWorkflowTimeout.frx":0113
-               Left            =   2700
-               List            =   "frmWorkflowTimeout.frx":0115
-               Style           =   2  'Dropdown List
-               TabIndex        =   54
-               Top             =   1450
-               Visible         =   0   'False
-               Width           =   1875
-            End
-            Begin VB.ComboBox cboCompletionMessageType 
-               Height          =   315
-               ItemData        =   "frmWorkflowTimeout.frx":0117
-               Left            =   2700
-               List            =   "frmWorkflowTimeout.frx":0119
-               Style           =   2  'Dropdown List
-               TabIndex        =   51
-               Top             =   1060
-               Visible         =   0   'False
-               Width           =   1875
-            End
-            Begin VB.CommandButton cmdFollowOnFormsMessage 
-               Caption         =   "..."
-               Height          =   315
-               Left            =   6105
-               TabIndex        =   58
-               Top             =   1840
-               UseMaskColor    =   -1  'True
-               Width           =   315
-            End
-            Begin VB.CommandButton cmdSavedForLaterMessage 
-               Caption         =   "..."
-               Height          =   315
-               Left            =   6105
-               TabIndex        =   55
-               Top             =   1450
-               UseMaskColor    =   -1  'True
-               Width           =   315
-            End
-            Begin VB.CommandButton cmdCompletionMessage 
-               Caption         =   "..."
-               Height          =   315
-               Left            =   6105
-               TabIndex        =   52
-               Top             =   1060
-               UseMaskColor    =   -1  'True
-               Width           =   315
-            End
-            Begin VB.CheckBox chkExcludeWeekends 
-               Caption         =   "E&xclude Weekends"
-               Height          =   255
-               Left            =   4560
-               TabIndex        =   45
-               Top             =   330
-               Width           =   2040
-            End
-            Begin VB.OptionButton optButtonAction 
-               Caption         =   "Su&bmit (no validation)"
-               Height          =   195
-               Index           =   2
-               Left            =   4185
-               TabIndex        =   48
-               Top             =   700
-               Width           =   2250
-            End
-            Begin VB.OptionButton optButtonAction 
-               Caption         =   "&Submit (with validation)"
-               Height          =   195
-               Index           =   0
-               Left            =   1800
-               TabIndex        =   47
-               Top             =   700
-               Value           =   -1  'True
-               Width           =   2400
-            End
-            Begin VB.OptionButton optButtonAction 
-               Caption         =   "Save for &later"
-               Height          =   195
-               Index           =   1
-               Left            =   6400
-               TabIndex        =   49
-               Top             =   700
-               Width           =   1530
-            End
-            Begin VB.ComboBox cboTimeoutPeriod 
-               Height          =   315
-               ItemData        =   "frmWorkflowTimeout.frx":011B
-               Left            =   2715
-               List            =   "frmWorkflowTimeout.frx":012B
-               Style           =   2  'Dropdown List
-               TabIndex        =   44
-               Top             =   300
-               Width           =   1515
-            End
-            Begin COASpinner.COA_Spinner spnTimeoutFrequency 
-               Height          =   315
-               Left            =   1800
-               TabIndex        =   43
-               Top             =   300
-               Width           =   705
-               _ExtentX        =   1244
-               _ExtentY        =   556
-               BackColor       =   -2147483643
-               BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
-                  Name            =   "Verdana"
-                  Size            =   8.25
-                  Charset         =   0
-                  Weight          =   400
-                  Underline       =   0   'False
-                  Italic          =   0   'False
-                  Strikethrough   =   0   'False
-               EndProperty
-               MaximumValue    =   999
-               Text            =   "1"
-            End
-            Begin VB.Label lblCompletionMessage 
-               AutoSize        =   -1  'True
-               BackStyle       =   0  'Transparent
-               Caption         =   "Completion Message :"
-               Height          =   195
-               Left            =   195
-               TabIndex        =   50
-               Top             =   1125
-               Width           =   2115
-            End
-            Begin VB.Label lblFollowOnFormsMessage 
-               AutoSize        =   -1  'True
-               BackStyle       =   0  'Transparent
-               Caption         =   "Follow On Forms Message :"
-               Height          =   195
-               Left            =   195
-               TabIndex        =   56
-               Top             =   1905
-               Width           =   2505
-            End
-            Begin VB.Label lblSavedForLaterMessage 
-               AutoSize        =   -1  'True
-               BackStyle       =   0  'Transparent
-               Caption         =   "Save For Later Message :"
-               Height          =   195
-               Left            =   195
-               TabIndex        =   53
-               Top             =   1515
-               Width           =   2385
-            End
-            Begin VB.Label lblButtonAction 
-               Caption         =   "Action :"
-               Height          =   195
-               Left            =   195
-               TabIndex        =   46
-               Top             =   705
-               Width           =   825
-            End
-            Begin VB.Label lblTimeoutPeriod 
-               AutoSize        =   -1  'True
-               BackStyle       =   0  'Transparent
-               Caption         =   "Timeout Period :"
-               Height          =   195
-               Left            =   200
-               TabIndex        =   42
+               TabIndex        =   61
                Top             =   360
-               Width           =   1170
+               Visible         =   0   'False
+               Width           =   2895
+            End
+            Begin VB.Label lblHotSpotIdentifier 
+               AutoSize        =   -1  'True
+               Caption         =   "Hotspot Identifier : "
+               Height          =   195
+               Left            =   360
+               TabIndex        =   60
+               Top             =   480
+               Visible         =   0   'False
+               Width           =   1680
+            End
+         End
+         Begin VB.Frame fraIdentification 
+            Caption         =   "Identification :"
+            Height          =   4035
+            Left            =   0
+            TabIndex        =   1
+            Top             =   0
+            Width           =   7400
+            Begin VB.CheckBox chkUseAsTargetIdentifier 
+               Caption         =   "Use as workflow target &identifier"
+               Height          =   405
+               Left            =   150
+               TabIndex        =   187
+               Top             =   3570
+               Width           =   3225
+            End
+            Begin VB.Frame fraCaption 
+               Caption         =   "Caption :"
+               Height          =   1200
+               Left            =   200
+               TabIndex        =   6
+               Top             =   1100
+               Width           =   6495
+               Begin VB.CommandButton cmdCaptionTypeExpression 
+                  Caption         =   "..."
+                  Height          =   315
+                  Left            =   5900
+                  TabIndex        =   11
+                  Top             =   700
+                  UseMaskColor    =   -1  'True
+                  Width           =   315
+               End
+               Begin VB.TextBox txtCaptionTypeExpression 
+                  BackColor       =   &H8000000F&
+                  Enabled         =   0   'False
+                  Height          =   315
+                  Left            =   1600
+                  Locked          =   -1  'True
+                  TabIndex        =   10
+                  TabStop         =   0   'False
+                  Top             =   700
+                  Width           =   4300
+               End
+               Begin VB.TextBox txtCaptionTypeValue 
+                  Height          =   315
+                  Left            =   1600
+                  MaxLength       =   200
+                  TabIndex        =   9
+                  Top             =   300
+                  Width           =   4600
+               End
+               Begin VB.OptionButton optCaptionType 
+                  Caption         =   "Calc&ulation"
+                  Height          =   255
+                  Index           =   3
+                  Left            =   200
+                  TabIndex        =   8
+                  Top             =   760
+                  Width           =   1410
+               End
+               Begin VB.OptionButton optCaptionType 
+                  Caption         =   "V&alue"
+                  Height          =   255
+                  Index           =   0
+                  Left            =   200
+                  TabIndex        =   7
+                  Top             =   360
+                  Value           =   -1  'True
+                  Width           =   1020
+               End
+            End
+            Begin VB.CheckBox chkDescriptionHasElementCaption 
+               Caption         =   "Description prefixed with &Element Caption"
+               Height          =   195
+               Left            =   1800
+               TabIndex        =   16
+               Top             =   3300
+               Width           =   4110
+            End
+            Begin VB.CheckBox chkDescriptionHasWorkflowName 
+               Caption         =   "Description prefixed with &Workflow Name "
+               Height          =   195
+               Left            =   1800
+               TabIndex        =   15
+               Top             =   2975
+               Width           =   4110
+            End
+            Begin VB.TextBox txtIdentifier 
+               Height          =   315
+               Left            =   1800
+               MaxLength       =   200
+               TabIndex        =   3
+               Top             =   300
+               Width           =   4600
+            End
+            Begin VB.TextBox txtDescriptionExpression 
+               BackColor       =   &H8000000F&
+               Enabled         =   0   'False
+               Height          =   315
+               Left            =   1800
+               Locked          =   -1  'True
+               TabIndex        =   13
+               TabStop         =   0   'False
+               Top             =   2500
+               Width           =   4300
+            End
+            Begin VB.CommandButton cmdDescriptionExpression 
+               Caption         =   "..."
+               Height          =   315
+               Left            =   6100
+               TabIndex        =   14
+               Top             =   2500
+               UseMaskColor    =   -1  'True
+               Width           =   315
+            End
+            Begin VB.TextBox txtCaption 
+               Height          =   315
+               Left            =   1800
+               MaxLength       =   200
+               TabIndex        =   5
+               Top             =   700
+               Width           =   4600
+            End
+            Begin VB.Label lblIdentifier 
+               Caption         =   "Identifier :"
+               Height          =   195
+               Left            =   195
+               TabIndex        =   2
+               Top             =   360
+               Width           =   1125
+            End
+            Begin VB.Label lblDescription 
+               Caption         =   "Description :"
+               Height          =   195
+               Left            =   195
+               TabIndex        =   12
+               Top             =   2565
+               Width           =   1260
+            End
+            Begin VB.Label lblCaption 
+               Caption         =   "Caption :"
+               Height          =   195
+               Left            =   195
+               TabIndex        =   4
+               Top             =   765
+               Width           =   1125
             End
          End
       End
@@ -2308,7 +2317,7 @@ Private Sub ResizeGridColumns(pctlGrid As SSDBGrid)
   Dim iColumn As Integer
   Dim iRow As Integer
   Dim lngTextWidth As Long
-  Dim varBookmark As Variant
+  Dim varBookMark As Variant
   Dim varOriginalPos As Variant
   Dim fVerticalScrollRequired As Boolean
   Dim fHorizontalScrollRequired As Boolean
@@ -2332,10 +2341,10 @@ Private Sub ResizeGridColumns(pctlGrid As SSDBGrid)
         iLastVisibleColumn = iColumn
         
         For iRow = 0 To .Rows - 1 Step 1
-          varBookmark = .AddItemBookmark(iRow)
+          varBookMark = .AddItemBookmark(iRow)
 
-          If TextWidth(Trim(.Columns(iColumn).CellText(varBookmark))) > lngTextWidth Then
-            lngTextWidth = TextWidth(Trim(.Columns(iColumn).CellText(varBookmark)))
+          If TextWidth(Trim(.Columns(iColumn).CellText(varBookMark))) > lngTextWidth Then
+            lngTextWidth = TextWidth(Trim(.Columns(iColumn).CellText(varBookMark)))
           End If
         Next iRow
 
@@ -4999,7 +5008,7 @@ Private Sub SaveProperties()
   Dim sNewList As String
   Dim sCaption As String
   Dim sExprCaption As String
-  Dim varBookmark As Variant
+  Dim varBookMark As Variant
   Dim lngExprID As Long
   Dim iValidationType As WorkflowWebFormValidationTypes
   Dim sMessage As String
@@ -5035,6 +5044,10 @@ Private Sub SaveProperties()
     sOriginalIdentifier = varControl.WFIdentifier
     varControl.WFIdentifier = txtIdentifier.Text
     sNewIdentifier = varControl.WFIdentifier
+  End If
+  
+  If WebFormItemHasProperty(miItemType, WFITEMPROP_USEASTARGETIDENTIFIER) Then
+    varControl.UseAsTargetIdentifier = chkUseAsTargetIdentifier.value
   End If
   
   If WebFormItemHasProperty(miItemType, WFITEMPROP_CAPTION) Then
@@ -5247,7 +5260,7 @@ Private Sub SaveProperties()
   ' Header frame
   '--------------------------------------------------
   If WebFormItemHasProperty(miItemType, WFITEMPROP_HEADLINES) Then
-    varControl.Headlines = spnHeaderLines.value
+    varControl.HeadLines = spnHeaderLines.value
   End If
 
   If WebFormItemHasProperty(miItemType, WFITEMPROP_COLUMNHEADERS) Then
@@ -5537,11 +5550,11 @@ Private Sub SaveProperties()
   
     With grdValidation
       For iLoop = 0 To (.Rows - 1)
-        varBookmark = .AddItemBookmark(iLoop)
+        varBookMark = .AddItemBookmark(iLoop)
   
-        lngExprID = val(.Columns("ExprID").CellText(varBookmark))
-        iValidationType = val(.Columns("Type").CellText(varBookmark))
-        sMessage = Trim(.Columns("Message").CellText(varBookmark))
+        lngExprID = val(.Columns("ExprID").CellText(varBookMark))
+        iValidationType = val(.Columns("Type").CellText(varBookMark))
+        sMessage = Trim(.Columns("Message").CellText(varBookMark))
         
         ReDim Preserve asValidations(4, UBound(asValidations, 2) + 1)
         asValidations(1, UBound(asValidations, 2)) = CStr(lngExprID)
@@ -5742,7 +5755,7 @@ Private Function ValidateProperties() As Boolean
   Dim sMessage As String
   Dim fInvalidValidationExpr As Boolean
   Dim fInvalidValidationMessage As Boolean
-  Dim varBookmark As Variant
+  Dim varBookMark As Variant
   Dim fCalcDefault As Boolean
   Dim fValid As Boolean
   
@@ -5837,10 +5850,10 @@ Private Function ValidateProperties() As Boolean
     
     With grdValidation
       For iLoop = 0 To (.Rows - 1)
-        varBookmark = .AddItemBookmark(iLoop)
+        varBookMark = .AddItemBookmark(iLoop)
   
-        lngExprID = val(.Columns("ExprID").CellText(varBookmark))
-        sMessage = Trim(.Columns("Message").CellText(varBookmark))
+        lngExprID = val(.Columns("ExprID").CellText(varBookMark))
+        sMessage = Trim(.Columns("Message").CellText(varBookMark))
         
         If lngExprID <= 0 Then
           fInvalidValidationExpr = True
@@ -6211,9 +6224,12 @@ Private Sub chkPasswordType_Click()
 
 End Sub
 
+Private Sub chkUseAsTargetIdentifier_Click()
+  Changed = True
+End Sub
+
 Private Sub chkValidationMandatory_Click()
   Changed = True
-
 End Sub
 
 Private Sub cmdBackgroundColour_Click()
@@ -7194,8 +7210,6 @@ Private Sub Form_Resize()
   'JPD 20030908 Fault 5756
   DisplayApplication
   
-  ResizeForm
-
 End Sub
 
 Private Sub Form_Unload(Cancel As Integer)
@@ -8394,7 +8408,7 @@ Private Function FormatScreen_Frame_Header() As Boolean
       If miItemType = giWFFORMITEM_FORM Then
         .value = 0 ' Not available for forms
       Else
-        .value = mctlSelectedControl.Headlines
+        .value = mctlSelectedControl.HeadLines
       End If
     End With
   Else
@@ -9435,10 +9449,6 @@ ErrorTrap:
   
 End Function
 
-
-
-
-
 Private Function FormatScreen_Frame_Identification() As Boolean
   ' Format the IDENTIFICATION frame on the GENERAL tab.
   ' Return TRUE if the frame needs to be displayed
@@ -9481,6 +9491,21 @@ Private Function FormatScreen_Frame_Identification() As Boolean
   Else
     lblIdentifier.Visible = False
     txtIdentifier.Visible = False
+  End If
+
+  ' Format the Target Identifier if required.
+  If WebFormItemHasProperty(miItemType, WFITEMPROP_USEASTARGETIDENTIFIER) Then
+    fFrameNeeded = True
+    
+    With chkUseAsTargetIdentifier
+      .Top = sngCurrentControlTop + YGAP_CONTROL_LABEL
+      .Left = X_COLUMN1
+      .Visible = True
+      .value = IIf(mctlSelectedControl.UseAsTargetIdentifier, vbChecked, vbUnchecked)
+    End With
+    
+    sngCurrentControlTop = sngCurrentControlTop + YGAP_CONTROL_CONTROL
+    
   End If
 
   ' Format the Caption controls if required.
@@ -10551,6 +10576,7 @@ Private Function FormatScreen_Frame_RecordIdentification() As Boolean
 
     sngCurrentControlTop = sngCurrentControlTop _
       + YGAP_CONTROL_CONTROL
+            
   Else
     lblRecordIdentificationRecordSelector.Visible = False
     cboRecordIdentificationRecordSelector.Visible = False
@@ -10755,13 +10781,6 @@ ErrorTrap:
   Resume TidyUpAndExit
   
 End Function
-
-
-
-
-
-Private Sub ResizeForm()
-End Sub
 
 Private Sub spnTimeoutFrequency_Click()
   spnTimeoutFrequency.SetFocus

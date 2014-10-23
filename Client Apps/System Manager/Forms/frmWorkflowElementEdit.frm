@@ -432,16 +432,16 @@ Begin VB.Form frmWorkflowElementEdit
       End
    End
    Begin VB.Frame fraElement 
-      Height          =   6400
+      Height          =   6705
       Index           =   2
       Left            =   6240
       TabIndex        =   43
-      Top             =   550
+      Top             =   555
       Visible         =   0   'False
       Width           =   7800
       Begin VB.Frame fraDataRecord 
          Caption         =   "Secondary Record :"
-         Height          =   1900
+         Height          =   2325
          Index           =   1
          Left            =   3950
          TabIndex        =   57
@@ -539,12 +539,20 @@ Begin VB.Form frmWorkflowElementEdit
       End
       Begin VB.Frame fraDataRecord 
          Caption         =   "Primary Record :"
-         Height          =   1900
+         Height          =   2325
          Index           =   0
          Left            =   200
          TabIndex        =   48
          Top             =   750
          Width           =   3650
+         Begin VB.CheckBox chkUseAsTargetIdentifier 
+            Caption         =   "Use as workflow target &identifier"
+            Height          =   405
+            Left            =   165
+            TabIndex        =   74
+            Top             =   1845
+            Width           =   3225
+         End
          Begin VB.ComboBox cboDataRecordTable 
             Height          =   315
             Index           =   0
@@ -640,7 +648,7 @@ Begin VB.Form frmWorkflowElementEdit
          Height          =   400
          Left            =   6400
          TabIndex        =   70
-         Top             =   4300
+         Top             =   4680
          Width           =   1200
       End
       Begin VB.CommandButton cmdDataRemove 
@@ -648,7 +656,7 @@ Begin VB.Form frmWorkflowElementEdit
          Height          =   400
          Left            =   6400
          TabIndex        =   69
-         Top             =   3800
+         Top             =   4170
          Width           =   1200
       End
       Begin VB.CommandButton cmdDataEdit 
@@ -656,7 +664,7 @@ Begin VB.Form frmWorkflowElementEdit
          Height          =   400
          Left            =   6400
          TabIndex        =   68
-         Top             =   3300
+         Top             =   3675
          Width           =   1200
       End
       Begin VB.CommandButton cmdDataAdd 
@@ -664,7 +672,7 @@ Begin VB.Form frmWorkflowElementEdit
          Height          =   400
          Left            =   6400
          TabIndex        =   67
-         Top             =   2800
+         Top             =   3180
          Width           =   1200
       End
       Begin VB.ComboBox cboDataAction 
@@ -688,10 +696,10 @@ Begin VB.Form frmWorkflowElementEdit
          Width           =   2750
       End
       Begin SSDataWidgets_B.SSDBGrid ssgrdColumns 
-         Height          =   3400
-         Left            =   200
+         Height          =   3405
+         Left            =   195
          TabIndex        =   66
-         Top             =   2800
+         Top             =   3180
          Width           =   6000
          _Version        =   196617
          DataMode        =   2
@@ -1256,6 +1264,8 @@ Private Sub FormatScreen()
       If Not fFound Then
         cboDataAction.ListIndex = 0
       End If
+           
+      chkUseAsTargetIdentifier.value = IIf(mwfElement.UseAsTargetIdentifier, vbChecked, vbUnchecked)
       
       cboDataTable_Refresh
       
@@ -1782,7 +1792,7 @@ Private Sub ResizeGridColumns(pctlGrid As SSDBGrid)
   Dim iColumn As Integer
   Dim iRow As Integer
   Dim lngTextWidth As Long
-  Dim varBookmark As Variant
+  Dim varBookMark As Variant
   Dim varOriginalPos As Variant
   Dim fVerticalScrollRequired As Boolean
   Dim fHorizontalScrollRequired As Boolean
@@ -1805,10 +1815,10 @@ Private Sub ResizeGridColumns(pctlGrid As SSDBGrid)
         iLastVisibleColumn = iColumn
         
         For iRow = 0 To .Rows - 1 Step 1
-          varBookmark = .AddItemBookmark(iRow)
+          varBookMark = .AddItemBookmark(iRow)
 
-          If TextWidth(Trim(.Columns(iColumn).CellText(varBookmark))) > lngTextWidth Then
-            lngTextWidth = TextWidth(Trim(.Columns(iColumn).CellText(varBookmark)))
+          If TextWidth(Trim(.Columns(iColumn).CellText(varBookMark))) > lngTextWidth Then
+            lngTextWidth = TextWidth(Trim(.Columns(iColumn).CellText(varBookMark)))
           End If
         Next iRow
 
@@ -2231,6 +2241,10 @@ Private Sub cboDecisionFlowButton_Click()
   Changed = True
 End Sub
 
+Private Sub chkUseAsTargetIdentifier_Click()
+  Changed = True
+End Sub
+
 Private Sub cmdAddItem_Click()
 
   Dim sRow As String
@@ -2317,7 +2331,7 @@ Private Sub cmdAddItem_Click()
 End Sub
 Private Sub RefreshExpressionNames()
   ' Refresh any calculation titles in the grid.
-  Dim varBookmark As Variant
+  Dim varBookMark As Variant
   Dim lngCalcID As Long
   Dim sDescription As String
   Dim sTemp As String
@@ -2326,7 +2340,7 @@ Private Sub RefreshExpressionNames()
   UI.LockWindow ssgrdItems.hWnd
 
   With ssgrdItems
-    varBookmark = .Bookmark
+    varBookMark = .Bookmark
     
     .MoveFirst
 
@@ -2356,7 +2370,7 @@ Private Sub RefreshExpressionNames()
     Next iLoop
 
     .MoveFirst
-    .Bookmark = varBookmark
+    .Bookmark = varBookMark
   End With
 
   UI.UnlockWindow
@@ -3214,6 +3228,8 @@ Private Sub cmdOK_Click()
         mwfElement.SecondaryDataRecordTableID = 0
       End If
             
+      mwfElement.UseAsTargetIdentifier = chkUseAsTargetIdentifier.value
+            
       With ssgrdColumns
         ReDim avColumns(.Columns.Count + 1, .Rows)
         
@@ -4027,7 +4043,7 @@ Private Sub cboDataElement_Refresh(piIndex As Integer)
   If (piIndex = STOREDDATATABLE_SECONDARY) Then
     lngFirstDataRecordTable = DataRecordTable(STOREDDATATABLE_PRIMARY)
   End If
-  
+    
   With cboDataElement(piIndex)
     If .ListIndex < 0 Then
       sElementIdentifier = IIf(piIndex = STOREDDATATABLE_PRIMARY, mwfElement.RecordSelectorWebFormIdentifier, mwfElement.SecondaryRecordSelectorWebFormIdentifier)

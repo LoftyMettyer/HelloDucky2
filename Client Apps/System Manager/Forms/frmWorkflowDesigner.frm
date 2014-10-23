@@ -1,14 +1,13 @@
 VERSION 5.00
-Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "ActBar.ocx"
-Object = "{86CF1D34-0C5F-11D2-A9FC-0000F8754DA1}#2.0#0"; "mscomct2.ocx"
-Object = "{714061F3-25A6-4821-B196-7D15DCCDE00E}#1.0#0"; "COASD_SelectionBox.ocx"
-Object = "{F3C5146D-8FDA-4D29-8E41-0C27C803C808}#1.0#0"; "COAWF_BeginEnd.ocx"
-Object = "{08EDC6C1-0A62-485F-8917-8D9FB93DB156}#1.0#0"; "COAWF_Decision.ocx"
-Object = "{FA64823C-ABCB-45AC-ADF2-640EA91D7B88}#1.0#0"; "COAWF_Email.ocx"
-Object = "{9833D366-F890-48E4-BB54-43ACC99E8E7C}#1.0#0"; "COAWF_Junction.ocx"
+Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "actbar.ocx"
+Object = "{86CF1D34-0C5F-11D2-A9FC-0000F8754DA1}#2.0#0"; "MSCOMCT2.OCX"
+Object = "{714061F3-25A6-4821-B196-7D15DCCDE00E}#1.0#0"; "coasd_selectionbox.ocx"
+Object = "{F3C5146D-8FDA-4D29-8E41-0C27C803C808}#1.0#0"; "coawf_beginend.ocx"
+Object = "{08EDC6C1-0A62-485F-8917-8D9FB93DB156}#1.0#0"; "coawf_decision.ocx"
+Object = "{FA64823C-ABCB-45AC-ADF2-640EA91D7B88}#1.0#0"; "coawf_email.ocx"
+Object = "{9833D366-F890-48E4-BB54-43ACC99E8E7C}#1.0#0"; "coawf_junction.ocx"
 Object = "{853234F9-0AB0-42A6-8030-F601CCDCEDBB}#1.0#0"; "COAWF_Link.ocx"
-Object = "{40328770-C879-4F55-94F3-172D2486CEC0}#1.0#0"; "COAWF_StoredData.ocx"
-Object = "{63212438-5384-4CC0-B836-A2C015CCBF9B}#1.0#0"; "COAWF_WebForm.ocx"
+Object = "{63212438-5384-4CC0-B836-A2C015CCBF9B}#1.0#0"; "coawf_webform.ocx"
 Begin VB.Form frmWorkflowDesigner 
    AutoRedraw      =   -1  'True
    Caption         =   "Workflow Designer"
@@ -108,6 +107,27 @@ Begin VB.Form frmWorkflowDesigner
          TabIndex        =   7
          Top             =   0
          Width           =   8355
+         Begin SystemMgr.COAWF_StoredData ASRWFStoredData1 
+            Height          =   780
+            Index           =   0
+            Left            =   6240
+            TabIndex        =   15
+            Top             =   120
+            Visible         =   0   'False
+            Width           =   1545
+            _ExtentX        =   2725
+            _ExtentY        =   1376
+            BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
+               Name            =   "Verdana"
+               Size            =   6.75
+               Charset         =   0
+               Weight          =   400
+               Underline       =   0   'False
+               Italic          =   0   'False
+               Strikethrough   =   0   'False
+            EndProperty
+            Caption         =   "Stored Data"
+         End
          Begin COAWFDecision.COAWF_Decision ASRWFDecision1 
             Height          =   1230
             Index           =   0
@@ -128,27 +148,6 @@ Begin VB.Form frmWorkflowDesigner
                Strikethrough   =   0   'False
             EndProperty
             Caption         =   "Decision"
-         End
-         Begin COAWFStoredData.COAWF_StoredData ASRWFStoredData1 
-            Height          =   780
-            Index           =   0
-            Left            =   6240
-            TabIndex        =   15
-            Top             =   120
-            Visible         =   0   'False
-            Width           =   1545
-            _ExtentX        =   2725
-            _ExtentY        =   1376
-            BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
-               Name            =   "Verdana"
-               Size            =   6.75
-               Charset         =   0
-               Weight          =   400
-               Underline       =   0   'False
-               Italic          =   0   'False
-               Strikethrough   =   0   'False
-            EndProperty
-            Caption         =   "Stored Data"
          End
          Begin COAWFWebForm.COAWF_Webform ASRWFWebform1 
             Height          =   795
@@ -464,7 +463,7 @@ Private Function ArrowSelect(piKeyCode As Integer) As Boolean
     If IsWorkflowControl(ctlTemp) Then
     
       If (ctlTemp.Visible) Then
-        If (ctlTemp.HighLighted) Then
+        If (ctlTemp.Highlighted) Then
           If ctlCurrentItem Is Nothing Then
             Set ctlCurrentItem = ctlTemp
           Else
@@ -1239,7 +1238,7 @@ Private Function CanDeleteElementsAndLinks() As Boolean
   ReDim avarDisconnectedElements(2, 0)
 
   For Each wfElement In mcolwfElements
-    If wfElement.HighLighted And _
+    If wfElement.Highlighted And _
       (wfElement.Visible) Then
 
       iElementCount = iElementCount + 1
@@ -1330,7 +1329,7 @@ Private Function CanDeleteElementsAndLinks() As Boolean
   Set wfElement = Nothing
 
   For Each wfLink In ASRWFLink1
-    If wfLink.HighLighted And (wfLink.Visible) Then
+    If wfLink.Highlighted And (wfLink.Visible) Then
       iLinkCount = iLinkCount + 1
 
       Set wfElement = mcolwfElements(CStr(wfLink.EndElementIndex))
@@ -1554,6 +1553,7 @@ Private Sub CopyElementProperties(pwfSourceElement As VB.Control, pwfDestElement
       .SecondaryRecordSelectorWebFormIdentifier = pwfSourceElement.SecondaryRecordSelectorWebFormIdentifier
       .SecondaryRecordSelectorIdentifier = pwfSourceElement.SecondaryRecordSelectorIdentifier
       .SecondaryDataRecordTableID = pwfSourceElement.SecondaryDataRecordTableID
+      .UseAsTargetIdentifier = pwfSourceElement.UseAsTargetIdentifier
     
     Case Else
       .ElementType = pwfSourceElement.ElementType
@@ -1563,7 +1563,7 @@ Private Sub CopyElementProperties(pwfSourceElement As VB.Control, pwfDestElement
     .Caption = pwfSourceElement.Caption
     .ConnectorPairIndex = pwfSourceElement.ConnectorPairIndex
     
-    .HighLighted = False
+    .Highlighted = False
     .Visible = False
   End With
 
@@ -1576,7 +1576,7 @@ Private Sub CopyLinkProperties(pwfSourceLink As COAWF_Link, pwfDestLink As COAWF
     .EndElementIndex = pwfSourceLink.EndElementIndex
     .StartOutboundFlowCode = pwfSourceLink.StartOutboundFlowCode
 
-    .HighLighted = False
+    .Highlighted = False
     .Visible = False
   End With
 
@@ -1735,7 +1735,7 @@ Private Function CreateLink(piStartElementIndex As Integer, _
     
     FormatLink wfNewLink
     
-    .HighLighted = False
+    .Highlighted = False
     .Visible = True
     .ZOrder 0
   End With
@@ -1796,7 +1796,7 @@ Private Sub DeleteElementsAndLinks()
   SetLastActionFlag giACTION_DELETECONTROLS
     
   For Each wfElement In mcolwfElements
-    If wfElement.HighLighted And (wfElement.Visible) Then
+    If wfElement.Highlighted And (wfElement.Visible) Then
       If wfElement.ElementType = elem_Begin Then
         iBeginElementIndex = wfElement.ControlIndex
       Else
@@ -1858,7 +1858,7 @@ Private Sub DeleteElementsAndLinks()
 
   ' Delete the selected links.
   For Each wfLink In ASRWFLink1
-    If wfLink.HighLighted And (wfLink.Visible) Then
+    If wfLink.Highlighted And (wfLink.Visible) Then
       ReDim Preserve mactlUndoControls(UBound(mactlUndoControls) + 1)
       Set mactlUndoControls(UBound(mactlUndoControls)) = wfLink
 
@@ -1886,7 +1886,7 @@ Private Sub DeleteElement(pwfElement As VB.Control, pfFromDeletedConnector As Bo
   
   ' AE20080502 Fault #13149
   If IsWorkflowElement(pwfElement) Then
-    pwfElement.HighLighted = False
+    pwfElement.Highlighted = False
     
     If mcolwfSelectedElements.Count > 0 Then
       'JPD 20080729 Fault 13302
@@ -1966,7 +1966,7 @@ On Error GoTo Deselect_Err
 '  Next ctrl
   
   For Each ctrl In mcolwfSelectedElements
-    ctrl.HighLighted = False
+    ctrl.Highlighted = False
     mcolwfSelectedElements.Remove CStr(ctrl.ControlIndex)
   Next
   Set ctrl = Nothing
@@ -1984,7 +1984,7 @@ On Error GoTo Deselect_Err
 '  Set wfLink = Nothing
 
   For Each wfLink In mcolwfSelectedLinks
-    wfLink.HighLighted = False
+    wfLink.Highlighted = False
   Next
   Set wfLink = Nothing
   Set mcolwfSelectedLinks = Nothing
@@ -2003,9 +2003,9 @@ Private Sub SelectElement(pwfElement As VB.Control)
   
   ' Add the element to the selected collection
   If (IsWorkflowElement(pwfElement) _
-    And pwfElement.Visible And (Not pwfElement.HighLighted)) Then
+    And pwfElement.Visible And (Not pwfElement.Highlighted)) Then
     
-    pwfElement.HighLighted = True
+    pwfElement.Highlighted = True
     mcolwfSelectedElements.Add pwfElement, CStr(pwfElement.ControlIndex)
   End If
 
@@ -2014,8 +2014,8 @@ End Sub
 Private Sub SelectLink(pwfElement As COAWF_Link)
 
   ' Add the link to the selected collection
-  If (pwfElement.Visible And (Not pwfElement.HighLighted)) Then
-    pwfElement.HighLighted = True
+  If (pwfElement.Visible And (Not pwfElement.Highlighted)) Then
+    pwfElement.Highlighted = True
     
     mcolwfSelectedLinks.Add pwfElement, CStr(pwfElement.Index)
   End If
@@ -2101,7 +2101,7 @@ Public Sub Start()
     If wfElement.ElementType = elem_Begin _
       And wfElement.ControlIndex > 0 Then
     
-      If Not wfElement.HighLighted Then
+      If Not wfElement.Highlighted Then
         ReDim Preserve miSelectionOrder(UBound(miSelectionOrder) + 1)
         miSelectionOrder(UBound(miSelectionOrder)) = wfElement.ControlIndex
       End If
@@ -6591,7 +6591,7 @@ Private Sub FormatLink(pwfLink As COAWF_Link)
 
   If (wfStartElement Is Nothing) Or (wfEndElement Is Nothing) Then
   
-    If pwfLink.HighLighted Then
+    If pwfLink.Highlighted Then
       mcolwfSelectedLinks.Remove CStr(pwfLink.Index)
     End If
         
@@ -10109,7 +10109,7 @@ Public Sub EditMenu(ByVal psMenuOption As String)
     Case "ID_WorkflowElementProperties"
       iCount = 0
       For Each wfTempElement1 In mcolwfElements
-        If (wfTempElement1.HighLighted) And (wfTempElement1.Visible) Then
+        If (wfTempElement1.Highlighted) And (wfTempElement1.Visible) Then
           iCount = iCount + 1
           iElementIndex = wfTempElement1.ControlIndex
         End If
@@ -10737,7 +10737,7 @@ Private Function CopySelectedElements() As Boolean
   ' Create a copy of each selected element (and the links) in the array.
   For Each wfElement In mcolwfElements
 
-    If (wfElement.HighLighted) _
+    If (wfElement.Highlighted) _
       And (wfElement.Visible) _
       And (wfElement.ElementType <> elem_Begin) Then
       
@@ -10757,7 +10757,7 @@ Private Function CopySelectedElements() As Boolean
         With wfTemp
           ' Copy connector pair elements (if not already selected to be copied)
           If ((wfTemp.ElementType = elem_Connector1) Or (wfTemp.ElementType = elem_Connector2)) Then
-            If (Not mcolwfElements(CStr(wfTemp.ConnectorPairIndex)).HighLighted) Then
+            If (Not mcolwfElements(CStr(wfTemp.ConnectorPairIndex)).Highlighted) Then
           
               Set wfElement2 = mcolwfElements(CStr(wfTemp.ConnectorPairIndex))
               
@@ -11109,7 +11109,7 @@ End Sub
 Private Sub ASRWFLink1_MouseDown(Index As Integer, Button As Integer, Shift As Integer, x As Single, y As Single)
 
   If Button = vbLeftButton Then
-    If (Shift <> vbShiftMask) And (Shift <> vbCtrlMask) And (Not ASRWFLink1(Index).HighLighted) Then
+    If (Shift <> vbShiftMask) And (Shift <> vbCtrlMask) And (Not ASRWFLink1(Index).Highlighted) Then
       DeselectAllElements
     End If
   
@@ -11281,7 +11281,7 @@ Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
       If iSelectedElementCount + iSelectedLinkCount = 1 Then
         If iSelectedElementCount = 1 Then
           For Each wfElement In mcolwfElements
-            If (wfElement.HighLighted) And (wfElement.Visible) Then
+            If (wfElement.Highlighted) And (wfElement.Visible) Then
               ElementEdit wfElement
               Exit For
             End If
@@ -11289,7 +11289,7 @@ Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
           Set wfElement = Nothing
         Else
           For Each wfLink In ASRWFLink1
-            If (wfLink.HighLighted) And (wfLink.Visible) Then
+            If (wfLink.Highlighted) And (wfLink.Visible) Then
               ASRWFLink1_DblClick wfLink.Index
               Exit For
             End If
@@ -11380,7 +11380,7 @@ Private Function Element_KeyMove(pSngX As Single, pSngY As Single) As Boolean
 
   For Each wfElement In mcolwfElements
     If (wfElement.Visible) _
-      And (wfElement.HighLighted) Then
+      And (wfElement.Highlighted) Then
       
       wfElement.Move pSngX + wfElement.Left, pSngY + wfElement.Top
     
@@ -12153,6 +12153,7 @@ Private Function SaveElementsAndLinks() As Boolean
           .Fields("secondaryRecSelWebFormIdentifier") = wfElement.SecondaryRecordSelectorWebFormIdentifier
           .Fields("secondaryRecSelIdentifier") = wfElement.SecondaryRecordSelectorIdentifier
           .Fields("SecondaryDataRecordTable") = wfElement.SecondaryDataRecordTableID
+          .Fields("UseAsTargetIdentifier") = wfElement.UseAsTargetIdentifier
                  
         End Select
         .Update
@@ -12303,6 +12304,8 @@ Private Function SaveElementsAndLinks() As Boolean
               .Fields("LookupFilterValue") = asItems(69, iLoop)
               .Fields("LookupOrderID") = asItems(80, iLoop)
               .Fields("HotSpotIdentifier") = asItems(81, iLoop)
+              .Fields("UseAsTargetIdentifier") = asItems(82, iLoop)
+              
             End If
             
             .Fields("CalcID") = val(asItems(56, iLoop))
@@ -13159,6 +13162,8 @@ Public Function LoadElementsAndLinks() As Boolean
             wfElement.SecondaryRecordSelectorWebFormIdentifier = IIf(IsNull(.Fields("secondaryRecSelWebFormIdentifier")), "", .Fields("secondaryRecSelWebFormIdentifier"))
             wfElement.SecondaryRecordSelectorIdentifier = IIf(IsNull(.Fields("secondaryRecSelIdentifier")), "", .Fields("secondaryRecSelIdentifier"))
             wfElement.SecondaryDataRecordTableID = IIf(IsNull(.Fields("secondaryDataRecordTable")), 0, .Fields("secondaryDataRecordTable"))
+            wfElement.UseAsTargetIdentifier = IIf(IsNull(.Fields("UseAsTargetIdentifier")), 0, .Fields("UseAsTargetIdentifier"))
+            
           End Select
           
           ReDim asItems(0)
@@ -13403,6 +13408,7 @@ Public Function LoadElementsAndLinks() As Boolean
                   asItems(69, lngArraySize) = IIf(IsNull(recWorkflowElementItemEdit.Fields("LookupFilterValue").value), "", recWorkflowElementItemEdit.Fields("LookupFilterValue").value)
                   asItems(80, lngArraySize) = IIf(IsNull(recWorkflowElementItemEdit.Fields("LookupOrderID").value), 0, recWorkflowElementItemEdit.Fields("LookupOrderID").value)
                   asItems(81, lngArraySize) = recWorkflowElementItemEdit.Fields("HotSpotIdentifier").value
+                  asItems(82, lngArraySize) = recWorkflowElementItemEdit.Fields("UseAsTargetIdentifier").value
 
                   If (recWorkflowElementItemEdit.Fields("itemType") = giWFFORMITEM_INPUTVALUE_FILEUPLOAD) Then
 
@@ -13546,7 +13552,7 @@ Public Function LoadElementsAndLinks() As Boolean
           malngIndexDirectory(1, UBound(malngIndexDirectory, 2)) = wfElement.ControlIndex
           malngIndexDirectory(2, UBound(malngIndexDirectory, 2)) = .Fields("ID")
           
-          wfElement.HighLighted = False
+          wfElement.Highlighted = False
         
           sngMaxX = IIf(sngMaxX >= wfElement.Left + wfElement.Width, sngMaxX, wfElement.Left + wfElement.Width)
           sngMaxY = IIf(sngMaxY >= wfElement.Top + wfElement.Height, sngMaxY, wfElement.Top + wfElement.Height)
@@ -13652,7 +13658,7 @@ Public Function LoadElementsAndLinks() As Boolean
     
         FormatLink wfLink
         
-        wfLink.HighLighted = False
+        wfLink.Highlighted = False
         wfLink.Visible = True
         wfLink.ZOrder 1
         
@@ -14430,7 +14436,7 @@ Private Sub SetLastActionFlag(piLastActionFlag As UndoActionFlags)
           mcolwfElements.Remove CStr(ctlControl.ControlIndex)
         End If
         
-        If ctlControl.HighLighted Then
+        If ctlControl.Highlighted Then
           If IsWorkflowElement(ctlControl) Then
             mcolwfSelectedElements.Remove CStr(ctlControl.ControlIndex)
           ElseIf TypeOf ctlControl Is COAWF_Link Then
@@ -14456,7 +14462,7 @@ Private Sub SetLastActionFlag(piLastActionFlag As UndoActionFlags)
           mcolwfElements.Remove CStr(ctlControl.ControlIndex)
         End If
         
-        If ctlControl.HighLighted Then
+        If ctlControl.Highlighted Then
           If IsWorkflowElement(ctlControl) Then
             mcolwfSelectedElements.Remove CStr(ctlControl.ControlIndex)
           ElseIf TypeOf ctlControl Is COAWF_Link Then
@@ -15463,12 +15469,12 @@ Private Sub WorkflowElement_MouseDown(Index As Integer, Button As Integer, Shift
   GetCursorPos startPointSingle
   GetCursorPos startPointMulti
 
-  If Not mcolwfElements(CStr(Index)).HighLighted Then
+  If Not mcolwfElements(CStr(Index)).Highlighted Then
     ReDim Preserve miSelectionOrder(UBound(miSelectionOrder) + 1)
     miSelectionOrder(UBound(miSelectionOrder)) = Index
   End If
   
-  If (Shift <> vbShiftMask) And (Shift <> vbCtrlMask) And (Not mcolwfElements(CStr(Index)).HighLighted) Then
+  If (Shift <> vbShiftMask) And (Shift <> vbCtrlMask) And (Not mcolwfElements(CStr(Index)).Highlighted) Then
     If Not abMenu.Tools("ID_WFElement_Link").Checked Then
       DeselectAllElements
     End If
