@@ -1161,7 +1161,7 @@
 						For Each navlink In Model.NavigationLinks.FindAll(Function(n) n.LinkType = LinkType.DropDown)
 						
 							Dim sTileColourClass = "Colour" & CStr(CInt(Math.Ceiling(Rnd() * 7)))
-							Dim sValue As String, sUtilityType As String, sUtilityID As String, sUtilityBaseTable As String, sUtilityDef As String
+							Dim sValue As String, sUtilityType As String, sUtilityID As String, sUtilityDef As String, sUtilityName As String
 						
 							If Len(navlink.AppFilePath) > 0 Then
 								sAppFilePath = Replace(navlink.AppFilePath, "\", "\\")
@@ -1192,8 +1192,8 @@
 								If navlink.UtilityID > 0 Then
 									sUtilityType = CStr(navlink.UtilityType)
 									sUtilityID = CStr(navlink.UtilityID)
-									sUtilityBaseTable = CStr(navlink.BaseTableID)
-									sUtilityDef = sUtilityType & "_" & sUtilityID & "_" & sUtilityBaseTable
+									sUtilityName = navlink.Text.Replace("'", "")
+									sUtilityDef = sUtilityType & "_" & sUtilityID & "_" & sUtilityName
 				
 									sValue = "2_" & sUtilityDef
 				

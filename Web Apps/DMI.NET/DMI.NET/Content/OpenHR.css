@@ -1336,9 +1336,13 @@ div.displaytable {
 		height: 30px;
 	}
 
-	#tblNineBox .rot270 {
-		transform: rotate(270deg);
-	}
+#tblNineBox .rot270 {
+	-moz-transform: rotate(270deg);
+	-ms-transform: rotate(270deg);
+	-o-transform: rotate(270deg);
+	-webkit-transform: rotate(270deg);
+	transform: rotate(270deg);
+}
 
 	#tblNineBox #id5 {
 		background-color: orange;

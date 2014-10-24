@@ -293,11 +293,11 @@ function goDropLink(sLinkInfo) {
 		case "2":
 
 			// Utility link
-			var iIndex1 = sLinkInfo.indexOf("_");
-			var iIndex2 = sLinkInfo.indexOf("_", sLinkInfo.indexOf("_") + 1);
-			var sUtilityType = sLinkInfo.substring(0, iIndex1);
-			var sUtilityID = sLinkInfo.substring(iIndex1 + 1, iIndex2);
-			var sUtilityName = $('.DropdownlistSelect option:selected').text();
+			var arrLinkInfo = sLinkInfo.split('_');
+
+			var sUtilityType = arrLinkInfo[0];
+			var sUtilityID = arrLinkInfo[1];
+			var sUtilityName = arrLinkInfo[2];
 
 			goUtility(sUtilityType, sUtilityID, sUtilityName);
 			break;
