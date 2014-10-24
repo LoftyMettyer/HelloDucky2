@@ -2723,7 +2723,7 @@ Public Sub UtilityDefAmended(psTable As String, _
   blnDeletedDef = (rsCheck.BOF And rsCheck.EOF)
   If Not blnDeletedDef Then
     blnTimeStampChanged = (plngTimestamp <> rsCheck!Timestamp)
-    blnReadOnly = (LCase$(rsCheck!UserName) <> LCase$(gsUserName) And rsCheck!Access <> ACCESS_READWRITE)
+    blnReadOnly = (LCase$(rsCheck!userName) <> LCase$(gsUserName) And rsCheck!Access <> ACCESS_READWRITE)
   End If
   
   rsCheck.Close
@@ -3272,7 +3272,7 @@ Private Function IsSelectionValid(varID As Variant, strType As String) As String
         "The " & strType & " used in this definition has been " & _
         "deleted by another user."
     
-    ElseIf LCase(Trim(rsTemp!UserName)) <> LCase(Trim(gsUserName)) And _
+    ElseIf LCase(Trim(rsTemp!userName)) <> LCase(Trim(gsUserName)) And _
           (rsTemp!Access = ACCESS_HIDDEN) Then
       IsSelectionValid = _
         "The " & strType & " used in this definition has been made " & _
@@ -3286,7 +3286,7 @@ Private Function IsSelectionValid(varID As Variant, strType As String) As String
         "The " & strType & " used in this definition has been " & _
         "deleted by another user."
     
-    ElseIf LCase(Trim(rsTemp!UserName)) <> LCase(Trim(gsUserName)) And _
+    ElseIf LCase(Trim(rsTemp!userName)) <> LCase(Trim(gsUserName)) And _
           (rsTemp!Access = ACCESS_HIDDEN Or HasHiddenComponents(CLng(varID))) Then
       IsSelectionValid = _
         "The " & strType & " used in this definition has been made " & _
@@ -3809,6 +3809,7 @@ Public Function GetUtilityType(pintID As Integer) As String
     Case eltAccordImport: GetUtilityType = "Payroll Transfer (In)"
     Case eltAccordExport: GetUtilityType = "Payroll Transfer (Out)"
     Case eltWorkflowRebuild: GetUtilityType = "Workflow Rebuild"
+    Case elt9BoxGrid: GetUtilityType = "9 Box Grid Report"
     Case Else: GetUtilityType = "Unknown"
   End Select
 
