@@ -121,10 +121,10 @@
 		$("#cmdOutput").prop('disabled', isMobileDevice);
 
 		if (menu_isSSIMode() == true) {
-			$("#cmdClose").hide();  // Don't show the Close button in SSI
+			$("#divReportButtons #cmdClose").hide();  // Don't show the Close button in SSI
+
 		} else {
 			$(".ui-dialog-buttonpane #cmdClose").show();
-			$('.ui-dialog-buttonpane #cmdBack').hide();
 		}
 
 		$("#reportbreakdownframe").hide();
@@ -260,14 +260,15 @@
 		</div>
 		<br/>
 		<div id="divReportButtons" style="margin: 30px 0 0 0; visibility: hidden; padding-top: 20px; float: right">
-				<%--<%If (Session("utiltype") = "2") Then%> 
+			<%If Session("SSIMode") = True Then%>
+				<%If (Session("utiltype") = "2") Then%> 
 					<input class="btn minwidth100" type="button" id="cmdPrint" name="cmdPrint" value="<%=sPrintButtonLabel%>" onclick="outputOptionsPrintClick()" />
-				<%End If%>--%>
-			<%--	<input class="btn minwidth100" type="button" id="cmdOK" name="cmdOK" value="Export" onclick="outputOptionsOKClick()" />
+				<%End If%>
+				<input class="btn minwidth100" type="button" id="cmdOK" name="cmdOK" value="Export" onclick="outputOptionsOKClick()" />
 				<input class="btn minwidth100" type="button" id="cmdOutput" name="cmdOutput" value="Output" onclick="ExportDataPrompt();" />
 				<input class="btn minwidth100" type="button" id="cmdCancel" name="cmdCancel" value="Preview" onclick="ShowDataFrame();" />
-				<input class="btn minwidth100" type="button" id="cmdBack" name="cmdBack" value="Back" style="WIDTH: 80px; display: none;"  onclick="ShowDataFrame();" />
-				<input class="btn minwidth100" type="button" id="cmdClose" name="cmdClose" value="Close" onclick="closeclick();" />--%>
+				<input class="btn minwidth100" type="button" id="cmdClose" name="cmdClose" value="Close" onclick="closeclick();" />
+			<%End If%>
 			</div>
 		</div>
 	</div>
@@ -341,13 +342,7 @@
 					click: function() { ShowDataFrame(); },
 					"class": "minwidth100",
 					"id": "cmdCancel"
-				},
-				{
-					text: "Back",
-					click: function() { ShowDataFrame(); },
-					"class": "minwidth100",
-					"id": "cmdBack"
-				},
+				},				
 				{
 					text: "Close",
 					click: function() { closeclick(); },
@@ -365,7 +360,6 @@
 			];
 
 			$('.popup').dialog('option', 'buttons', newButtons);
-			$('.ui-dialog-buttonpane #cmdBack').hide();
 			//<input class="btn minwidth100" type="button" id="cmdOK" name="cmdOK" value="Export" onclick="outputOptionsOKClick()" />
 			//<input class="btn minwidth100" type="button" id="cmdOutput" name="cmdOutput" value="Output" onclick="ExportDataPrompt();" />
 			//<input class="btn minwidth100" type="button" id="cmdCancel" name="cmdCancel" value="Preview" onclick="ShowDataFrame();" />

@@ -174,8 +174,12 @@
 	$("#reportbreakdownframe").show();
 
 	$('.ui-dialog-buttonpane #cmdClose').hide();
-	$('.ui-dialog-buttonpane #cmdBack').show();
-
+	<%If Session("SSIMode") = False Then%>
+	$('.ui-dialog-buttonpane #cmdCancel').button('enable');
+	$('.ui-dialog-buttonpane #cmdClose').show();
+	<%Else%>
+	$('#divReportButtons #cmdCancel').button('enable');
+	<%End If%>
 	setTimeout("util_run_crosstabsBreakdown_window_onload()", 100);
 
 </script>
