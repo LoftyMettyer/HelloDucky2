@@ -13,6 +13,7 @@ CREATE PROCEDURE [dbo].[spASRInstantiateWorkflow]
 				@iElementID				integer,
 				@iRecordID				integer,
 				@iRecordCount			integer,
+				@sTargetName			nvarchar(MAX) = '',
 				@sSQL					nvarchar(MAX),
 				@hResult				integer,
 				@sActualLoginName		sysname,
@@ -88,7 +89,8 @@ CREATE PROCEDURE [dbo].[spASRInstantiateWorkflow]
 			
 					EXEC @hResult = @sSQL 
 						@iRecordID OUTPUT,
-						@iRecordCount OUTPUT;
+						@iRecordCount OUTPUT,
+						@sTargetName OUTPUT;
 				END
 			
 				IF NOT @iRecordID IS null SET @iInitiatorID = @iRecordID
@@ -145,6 +147,7 @@ CREATE PROCEDURE [dbo].[spASRInstantiateWorkflow]
 				[initiatorID], 
 				[status], 
 				[userName], 
+				[TargetName],
 				[parent1TableID],
 				[parent1RecordID],
 				[parent2TableID],
@@ -154,6 +157,7 @@ CREATE PROCEDURE [dbo].[spASRInstantiateWorkflow]
 				@iInitiatorID, 
 				0, 
 				@sActualLoginName,
+				@sTargetName,
 				@iParent1TableID,
 				@iParent1RecordID,
 				@iParent2TableID,

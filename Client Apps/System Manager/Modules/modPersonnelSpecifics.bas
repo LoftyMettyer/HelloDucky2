@@ -167,6 +167,7 @@ Public Function CreateSP_GetCurrentUserRecordID() As Boolean
   Dim fCreatedOK As Boolean
   Dim sProcSQL As String
   Dim lngPersonnelTableID As Long
+  Dim lngRecordDescriptionID As Long
   Dim sPersonnelTableName As String
   Dim lngLoginColumnID As Long
   Dim sLoginColumnName As String
@@ -175,11 +176,7 @@ Public Function CreateSP_GetCurrentUserRecordID() As Boolean
   
   fCreatedOK = True
 
-'  sProcSQL = "IF EXISTS (SELECT Name FROM sysobjects" & _
-'    "    WHERE id = object_id(N'spASRSysGetCurrentUserRecordID')" & _
-'    "    AND objectproperty(id, N'IsProcedure') = 1)" & _
-'    "  DROP PROCEDURE spASRSysGetCurrentUserRecordID"
-'  gADOCon.Execute sProcSQL, , adExecuteNoRecords
+
   DropProcedure "spASRSysGetCurrentUserRecordID"
 
 
@@ -194,9 +191,11 @@ Public Function CreateSP_GetCurrentUserRecordID() As Boolean
       recTabEdit.Seek "=", lngPersonnelTableID
       If Not recTabEdit.NoMatch Then
         sPersonnelTableName = recTabEdit!TableName
+        lngRecordDescriptionID = recTabEdit!RecordDescExprID
       Else
         lngPersonnelTableID = 0
         sPersonnelTableName = vbNullString
+        lngRecordDescriptionID = 0
       End If
     End If
 
@@ -240,14 +239,14 @@ Public Function CreateSP_GetCurrentUserRecordID() As Boolean
       "/* ------------------------------------------------ */" & vbNewLine & _
       "CREATE PROCEDURE dbo.spASRSysGetCurrentUserRecordID(" & vbNewLine & _
       "    @piRecordID integer OUTPUT," & vbNewLine & _
-      "    @piRecordCount integer OUTPUT" & vbNewLine & _
+      "    @piRecordCount integer OUTPUT," & vbNewLine & _
+      "    @psRecordDescription nvarchar(MAX) OUTPUT" & vbNewLine & _
       ")" & vbNewLine & _
       "AS " & vbNewLine & _
       "BEGIN" & vbNewLine & _
       "    DECLARE @iCount integer;" & vbNewLine & vbNewLine & _
       "    SET @piRecordID = 0;" & vbNewLine & _
       "    SET @piRecordCount = 0;" & vbNewLine & vbNewLine
-      
       
     If (lngPersonnelTableID > 0) _
       And (lngLoginColumnID > 0) Then
@@ -264,8 +263,19 @@ Public Function CreateSP_GetCurrentUserRecordID() As Boolean
         "        SELECT @piRecordID = " & sPersonnelTableName & ".ID" & vbNewLine & _
         "        FROM " & sPersonnelTableName & vbNewLine & _
         "        WHERE (ISNULL(" & sPersonnelTableName & "." & sLoginColumnName & ", '') = SUSER_SNAME()" & _
-        IIf(Len(sSecondLoginColumnName) > 0, vbNewLine & "            OR ISNULL(" & sPersonnelTableName & "." & sSecondLoginColumnName & ", '') = SUSER_SNAME()", "") & ")" & vbNewLine & _
+        IIf(Len(sSecondLoginColumnName) > 0, vbNewLine & "            OR ISNULL(" & sPersonnelTableName & "." & sSecondLoginColumnName & ", '') = SUSER_SNAME()", "") & ")" & vbNewLine
+
+      If lngRecordDescriptionID > 0 Then
+        sProcSQL = sProcSQL & vbNewLine & _
+          "        EXEC [sp_ASRExpr_" & lngRecordDescriptionID & "] @psRecordDescription OUTPUT, @piRecordID;" & vbNewLine & vbNewLine
+      Else
+        sProcSQL = sProcSQL & _
+          "        SET @psRecordDescription = '';" & vbNewLine & vbNewLine
+      End If
+
+      sProcSQL = sProcSQL & _
         "    END" & vbNewLine
+        
     End If
         
     sProcSQL = sProcSQL & _
