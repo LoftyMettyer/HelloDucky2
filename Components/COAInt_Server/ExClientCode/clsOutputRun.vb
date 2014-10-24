@@ -15,6 +15,7 @@ Public Class clsOutputRun
 
 	Private mobjOutputType As Object
 	Private mcolStyles As Collection
+	Private mcolStylesNineGridBox As Collection
 	Private mcolMerges As Collection
 	Private mcolColumns As List(Of Column)
 	Private mstrErrorMessage As String
@@ -33,6 +34,7 @@ Public Class clsOutputRun
 	Private mlngHeaderRows As Integer
 	Private mlngHeaderCols As Integer
 	Private mstrArray(,) As String
+	Private mstrArrayNineBoxGrid(,) As String
 
 	Private mstrSaveAsValues As String
 
@@ -48,6 +50,16 @@ Public Class clsOutputRun
 	Private mblnPageTitles As Boolean
 
 	Private mblnSummaryReport As Boolean
+
+	Private _axisLabelsAsArray As ArrayList
+	Public Property AxisLabelsAsArray As ArrayList
+		Get
+			Return _axisLabelsAsArray
+		End Get
+		Set(value As ArrayList)
+			_axisLabelsAsArray = value
+		End Set
+	End Property
 
 	Public GeneratedFile As String
 
@@ -156,9 +168,40 @@ Public Class clsOutputRun
 		mcolStyles.Add(objStyle, objStyle.Name)
 
 
-		'UPGRADE_NOTE: Object objStyle may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		objStyle = Nothing
+		'Nine box grid styles
+		mcolStylesNineGridBox = New Collection
 
+		objStyle = New clsOutputStyle
+		objStyle.Name = "Title"
+
+		mcolStylesNineGridBox.Add(objStyle, objStyle.Name)
+		
+		objStyle = New clsOutputStyle
+		objStyle.Name = "Heading"
+
+		mcolStylesNineGridBox.Add(objStyle, objStyle.Name)
+		
+		objStyle = New clsOutputStyle
+		With objStyle
+			.Name = "HeadingCols"
+			.StartCol = 0
+			.StartRow = 0
+			.Gridlines = gblnSettingHeadingGridlines
+		End With
+
+		mcolStylesNineGridBox.Add(objStyle, objStyle.Name)
+		
+		objStyle = New clsOutputStyle
+		With objStyle
+			.Name = "Data"
+			.StartCol = glngSettingDataCol
+			.StartRow = glngSettingDataRow
+			.Gridlines = gblnSettingDataGridlines
+		End With
+
+		mcolStylesNineGridBox.Add(objStyle, objStyle.Name)
+
+		objStyle = Nothing
 	End Sub
 
 	Public Sub AddColumn(Heading As String, DataType As ColumnDataType, Decimals As Integer, ThousandSeparator As Boolean)
@@ -488,6 +531,24 @@ LocalErr:
 		'UPGRADE_WARNING: Couldn't resolve default property of object mobjOutputType.DataArray. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 		mobjOutputType.DataArray(mstrArray, mcolColumns, mcolStyles, mcolMerges)
 
+	End Sub
+
+	Public Sub DataArrayNineBoxGrid()
+		If UBound(mstrArrayNineBoxGrid, 2) < 1 Then
+			mstrErrorMessage = "No data to output."
+			Exit Sub
+		End If
+
+		mobjOutputType.SizeColumnsIndependently = mblnSizeColumnsIndependently
+
+		mobjOutputType.HeaderCols = mlngHeaderCols
+
+		mobjOutputType.HeaderRows = mlngHeaderRows
+
+		mobjOutputType.IntersectionType = IntersectionType
+
+
+		mobjOutputType.DataArrayNineBoxGrid(mstrArrayNineBoxGrid, mcolColumns, mcolStylesNineGridBox, mcolMerges)
 	End Sub
 
 	Public Sub Complete()
@@ -824,14 +885,20 @@ LocalErr:
 
 	Public Sub ArrayDim(lngCol As Integer, lngRow As Integer)
 		ReDim mstrArray(lngCol, lngRow)
+		ReDim mstrArrayNineBoxGrid(lngCol, lngRow)
 	End Sub
 
 	Public Sub ArrayReDim()
 		ReDim Preserve mstrArray(UBound(mstrArray, 1), UBound(mstrArray, 2) + 1)
+		ReDim Preserve mstrArrayNineBoxGrid(UBound(mstrArray, 1), UBound(mstrArray, 2) + 1)
 	End Sub
 
 	Public Sub ArrayAddTo(lngCol As Integer, lngRow As Integer, strInput As String)
 		mstrArray(lngCol, lngRow) = strInput
+	End Sub
+
+	Public Sub ArrayAddToNineBoxGrid(lngCol As Integer, lngRow As Integer, desc As String, value As String, colour As String)
+		mstrArrayNineBoxGrid(lngCol, lngRow) = desc & "¦" & value & "|" & colour
 	End Sub
 
 	Public Function KillFile(strFilename As String) As Boolean

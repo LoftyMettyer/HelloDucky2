@@ -2791,6 +2791,210 @@ Namespace Controllers
 
 		End Function
 
+		Public Function util_run_nineboxgrid_downloadoutput() As FilePathResult
+
+			Dim lngOutputFormat As OutputFormats = Request("txtFormat")
+			Dim bPreview As Boolean = Request("txtPreview")
+			Dim sUtilID As String = Request("txtUtilID")
+			Dim blnSavetoFile As Boolean = Request("txtSave")
+			Dim lngSaveExisting As Long = -1
+			Dim blnEmail As Boolean = Request("txtEmail")
+			Dim lngEmailGroupID As Integer = Request("txtEmailGroupID")
+			Dim strEmailSubject As String = Request("txtEmailSubject")
+			Dim strEmailAttachAs As String = Request("txtEmailAttachAs")
+			Dim strDownloadFileName As String = Request("txtFilename")
+			Dim downloadTokenValue As String = Request("download_token_value_id")
+			Dim strDownloadExtension As String
+			Dim strInterSectionType As String
+			Dim sEmailAddresses As String
+
+			Dim lngLoopMin As Long
+			Dim lngLoopMax As Long
+
+			Dim objCrossTab As CrossTab = CType(Session("objCrossTab" & sUtilID), CrossTab)
+
+			Dim ClientDLL As New HR.Intranet.Server.clsOutputRun
+			ClientDLL.SessionInfo = CType(Session("SessionContext"), SessionInfo)
+
+			Dim objUser As New HR.Intranet.Server.clsSettings
+			objUser.SessionInfo = CType(Session("SessionContext"), SessionInfo)
+
+			ClientDLL.SaveAsValues = Session("OfficeSaveAsValues").ToString()
+
+			ClientDLL.SettingOptions(objUser.GetUserSetting("Output", "WordTemplate", "").ToString() _
+				, objUser.GetUserSetting("Output", "ExcelTemplate", "").ToString() _
+				, CBool(objUser.GetUserSetting("Output", "ExcelGridlines", False)) _
+				, CBool(objUser.GetUserSetting("Output", "ExcelHeaders", False)) _
+				, CBool(objUser.GetUserSetting("Output", "ExcelOmitSpacerRow", False)) _
+				, CBool(objUser.GetUserSetting("Output", "ExcelOmitSpacerCol", False)) _
+				, CBool(objUser.GetUserSetting("Output", "AutoFitCols", True)) _
+				, CBool(objUser.GetUserSetting("Output", "Landscape", True)) _
+				, False)
+
+			ClientDLL.SettingLocations(CInt(objUser.GetUserSetting("Output", "TitleCol", 3)) _
+				, CInt(objUser.GetUserSetting("Output", "TitleRow", 2)) _
+				, CInt(objUser.GetUserSetting("Output", "DataCol", 2)) _
+				, 4)
+
+			ClientDLL.SettingTitle(CBool(objUser.GetUserSetting("Output", "TitleGridLines", False)) _
+				, CBool(objUser.GetUserSetting("Output", "TitleBold", True)) _
+				, CBool(objUser.GetUserSetting("Output", "TitleUnderline", False)) _
+				, CInt(objUser.GetUserSetting("Output", "TitleBackcolour", "16777215")) _
+				, CInt(objUser.GetUserSetting("Output", "TitleForecolour", "6697779")) _
+				, objUser.GetWordColourIndex(CLng(objUser.GetUserSetting("Output", "TitleBackcolour", "16777215"))) _
+				, objUser.GetWordColourIndex(CLng(objUser.GetUserSetting("Output", "TitleForecolour", "6697779"))))
+
+			ClientDLL.SettingHeading(CBool(objUser.GetUserSetting("Output", "HeadingGridLines", True)) _
+				, CBool(objUser.GetUserSetting("Output", "HeadingBold", True)) _
+				, CBool(objUser.GetUserSetting("Output", "HeadingUnderline", False)) _
+				, CInt(objUser.GetUserSetting("Output", "HeadingBackcolour", 16248553)) _
+				, CInt(objUser.GetUserSetting("Output", "HeadingForecolour", 6697779)) _
+				, CInt(objUser.GetWordColourIndex(CLng(objUser.GetUserSetting("Output", "HeadingBackcolour", 16248553)))) _
+				, CInt(objUser.GetWordColourIndex(CLng(objUser.GetUserSetting("Output", "HeadingForecolour", 6697779)))))
+
+			ClientDLL.SettingData(CBool(objUser.GetUserSetting("Output", "DataGridLines", True)) _
+				, CBool(objUser.GetUserSetting("Output", "DataBold", False)) _
+				, CBool(objUser.GetUserSetting("Output", "DataUnderline", False)) _
+				, CInt(objUser.GetUserSetting("Output", "DataBackcolour", 15988214)) _
+				, CInt(objUser.GetUserSetting("Output", "DataForecolour", 6697779)) _
+				, CInt(objUser.GetWordColourIndex(CLng(objUser.GetUserSetting("Output", "DataBackcolour", 15988214)))) _
+				, CInt(objUser.GetWordColourIndex(CLng(objUser.GetUserSetting("Output", "DataForecolour", 6697779)))))
+
+			ClientDLL.InitialiseStyles()
+			ClientDLL.HeaderCols = 0
+			ClientDLL.HeaderRows = 1
+
+			'Set Options
+			If Not bPreview And objCrossTab.CrossTabType = CrossTabType.ctt9GridBox Then
+				lngOutputFormat = objCrossTab.OutputFormat
+				blnSavetoFile = objCrossTab.OutputSave
+				lngSaveExisting = -1
+				blnEmail = objCrossTab.OutputEmail
+				lngEmailGroupID = objCrossTab.OutputEmailID
+				strEmailSubject = objCrossTab.OutputEmailSubject
+				strEmailAttachAs = objCrossTab.OutputEmailAttachAs
+				strDownloadFileName = objCrossTab.DownloadFileName
+			End If
+
+			If strDownloadFileName.Length = 0 Then
+				objCrossTab.OutputFormat = lngOutputFormat
+				objCrossTab.OutputFilename = ""
+				strDownloadFileName = objCrossTab.DownloadFileName
+			End If
+
+			strDownloadExtension = Path.GetExtension(strDownloadFileName)
+
+			Dim fOK = ClientDLL.SetOptions(False, lngOutputFormat, False, False, "", True, lngSaveExisting, blnEmail, lngEmailGroupID, strEmailSubject, strEmailAttachAs, strDownloadExtension)
+
+			If fOK Then
+				If ClientDLL.GetFile() Then
+					ClientDLL.AddColumn(" ", 12, 0, False)
+					For intCount = 3 To 5
+						ClientDLL.AddColumn(Left(objCrossTab.ColumnHeading(0, intCount), 255), ColumnDataType.sqlNumeric, objCrossTab.IntersectionDecimals, LCase(objCrossTab.Use1000Separator))
+					Next
+
+					strInterSectionType = Session("CT_IntersectionType")
+					ClientDLL.AddColumn(strInterSectionType, ColumnDataType.sqlNumeric, objCrossTab.IntersectionDecimals, objCrossTab.Use1000Separator)
+
+					If objCrossTab.PageBreakColumn = True Then
+						lngLoopMin = 0
+						lngLoopMax = objCrossTab.ColumnHeadingUbound(2)
+					Else
+						lngLoopMin = 0
+						lngLoopMax = 0
+					End If
+
+					Dim sOutputGridCaption As String = objCrossTab.CrossTabName
+
+					For lngCount = lngLoopMin To lngLoopMax
+						If objCrossTab.PageBreakColumn = True Then
+							ClientDLL.AddPage(sOutputGridCaption, Left(objCrossTab.ColumnHeading(2, lngCount), 255))
+						Else
+							If objCrossTab.CrossTabType = CrossTabType.cttAbsenceBreakdown Then
+								ClientDLL.AddPage(sOutputGridCaption, "Absence Breakdown")
+							Else
+								ClientDLL.AddPage(sOutputGridCaption, objCrossTab.BaseTableName)
+							End If
+						End If
+
+						objCrossTab.BuildOutputStrings(lngCount)
+						ClientDLL.ArrayDim(2, 2)
+						ClientDLL.AxisLabelsAsArray = objCrossTab.AxisLabelsAsArray
+						For intCol = 3 To 5
+							For intRow = 3 To 5
+								ClientDLL.ArrayAddToNineBoxGrid(
+																								intCol - 3, _
+																								intRow - 3, _
+																								objCrossTab.ReturnDescriptionOrColourForNineBoxGridCell(intCol - 3, intRow - 3, CrossTab.enumNineBoxDescriptionOrColour.Description), _
+																								HttpUtility.HtmlDecode(Left(objCrossTab.DataArray(intCol, intRow), 255)), _
+																								objCrossTab.ReturnDescriptionOrColourForNineBoxGridCell(intCol - 3, intRow - 3, CrossTab.enumNineBoxDescriptionOrColour.Colour))
+							Next
+						Next
+
+						ClientDLL.DataArrayNineBoxGrid()
+					Next
+
+					ClientDLL.Complete()
+				End If
+			End If
+
+			' Email the generated file
+			If blnEmail And lngEmailGroupID > 0 Then
+				sEmailAddresses = GetEmailAddressesForGroup(lngEmailGroupID)
+
+				Dim objDocument As New FileStream(ClientDLL.GeneratedFile, FileMode.Open)
+				Try
+					SendMailWithAttachment(strEmailSubject, objDocument, sEmailAddresses, strEmailAttachAs)
+					Response.AppendCookie(New HttpCookie("fileDownloadErrors", "Email sent successfully."))	' Send completion message	
+				Catch ex As Exception
+					' error generated - return error
+					Dim errMessage As String
+					If ex.InnerException Is Nothing Then
+						errMessage = ""
+					Else
+						errMessage = ex.InnerException.Message
+					End If
+
+					Dim strErrors = String.Format("The following error occured when emailing your document:" _
+						& "{0}{0}{1}{0}{0}{2}{0}{0}Please check with your administrator for further details.", "<br/>", _
+						ex.Message, errMessage)
+
+					Response.AppendCookie(New HttpCookie("fileDownloadErrors", strErrors))	' marks the download as complete on the client		
+				Finally
+					Response.AppendCookie(New HttpCookie("fileDownloadToken", downloadTokenValue)) ' marks the download as complete on the client		
+				End Try
+
+			End If
+
+			' Return the generated file
+			If blnSavetoFile Or (Not blnSavetoFile And Not blnEmail) Then
+				If IO.File.Exists(ClientDLL.GeneratedFile) Then
+					Try
+						Dim fileInfo As FileInfo = New FileInfo(ClientDLL.GeneratedFile)
+						Response.ContentType = "application/octet-stream"
+						Response.Clear()
+						Response.AppendCookie(New HttpCookie("fileDownloadToken", downloadTokenValue)) ' marks the download as complete on the client
+						If Not blnEmail Then Response.AppendCookie(New HttpCookie("fileDownloadErrors", vbNullString)) ' Clear error message response cookie
+						Response.AddHeader("Content-Disposition", String.Format("attachment;filename=""{0}""", strDownloadFileName))
+						Response.AddHeader("Content-Length", fileInfo.Length.ToString())
+						Response.WriteFile(fileInfo.FullName)
+						'Response.End()
+						Response.Flush()
+					Catch ex As Exception
+						' error generated - return error
+						Response.AppendCookie(New HttpCookie("fileDownloadToken", downloadTokenValue)) ' marks the download as complete on the client		
+						Response.AppendCookie(New HttpCookie("fileDownloadErrors", ex.Message))	' marks the download as complete on the client		
+					Finally
+						IO.File.Delete(ClientDLL.GeneratedFile)
+					End Try
+				Else
+					' No file generated - return error
+					Response.AppendCookie(New HttpCookie("fileDownloadToken", downloadTokenValue)) ' marks the download as complete on the client		
+					Response.AppendCookie(New HttpCookie("fileDownloadErrors", "No output file was generated. Check your data."))	' marks the download as complete on the client
+				End If
+			End If
+
+		End Function
 		Public Function util_run_customreport_downloadoutput() As FilePathResult
 
 			Dim lngOutputFormat = CType(Request("txtFormat"), OutputFormats)
@@ -4401,7 +4605,7 @@ Namespace Controllers
 						End If
 
 						If col.DataType.Name = "DateTime" And dr(col).ToString().Length > 0 Then
-							row.Add(col.ColumnName, dr(col).ToShortDateString())							
+							row.Add(col.ColumnName, dr(col).ToShortDateString())
 						Else
 							row.Add(col.ColumnName, dr(col))
 						End If

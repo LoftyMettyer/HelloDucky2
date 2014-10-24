@@ -100,6 +100,21 @@ Public Class CrossTab
 	' Array holding the User Defined functions that are needed for this report
 	Private mastrUDFsRequired() As String
 
+	Private _descriptionsAsArray As ArrayList
+	Private _cellColoursAsArray As ArrayList
+	Private _axisLabelsAsArray As ArrayList
+	Public ReadOnly Property AxisLabelsAsArray As ArrayList
+		Get
+			Return _axisLabelsAsArray
+		End Get
+	End Property
+
+	Public Enum enumNineBoxDescriptionOrColour
+		Description
+		Colour
+	End Enum
+
+
 	Public PivotData As DataTable
 
 	Public WriteOnly Property CustomReportID() As Integer
@@ -1445,6 +1460,41 @@ LocalErr:
 
 			Next
 
+			'Build an array with the nine box grid cells descriptions so we can map cells to their descriptions
+			_descriptionsAsArray = New ArrayList
+			_descriptionsAsArray.Add(Description1)
+			_descriptionsAsArray.Add(Description2)
+			_descriptionsAsArray.Add(Description3)
+			_descriptionsAsArray.Add(Description4)
+			_descriptionsAsArray.Add(Description5)
+			_descriptionsAsArray.Add(Description6)
+			_descriptionsAsArray.Add(Description7)
+			_descriptionsAsArray.Add(Description8)
+			_descriptionsAsArray.Add(Description9)
+
+			'Build an array with the nine box grid cells colours so we can map cells to their colours
+			_cellColoursAsArray = New ArrayList
+			_cellColoursAsArray.Add(ColorDesc1)
+			_cellColoursAsArray.Add(ColorDesc2)
+			_cellColoursAsArray.Add(ColorDesc3)
+			_cellColoursAsArray.Add(ColorDesc4)
+			_cellColoursAsArray.Add(ColorDesc5)
+			_cellColoursAsArray.Add(ColorDesc6)
+			_cellColoursAsArray.Add(ColorDesc7)
+			_cellColoursAsArray.Add(ColorDesc8)
+			_cellColoursAsArray.Add(ColorDesc9)
+
+			'Build an array with the axis labels
+			_axisLabelsAsArray = New ArrayList
+			_axisLabelsAsArray.Add(XAxisLabel)
+			_axisLabelsAsArray.Add(XAxisSubLabel1)
+			_axisLabelsAsArray.Add(XAxisSubLabel2)
+			_axisLabelsAsArray.Add(XAxisSubLabel3)
+			_axisLabelsAsArray.Add(YAxisLabel)
+			_axisLabelsAsArray.Add(YAxisSubLabel1)
+			_axisLabelsAsArray.Add(YAxisSubLabel2)
+			_axisLabelsAsArray.Add(YAxisSubLabel3)
+
 		Catch ex As Exception
 			mstrStatusMessage = "Error processing data"
 			Return False
@@ -2188,5 +2238,25 @@ LocalErr:
 
 	End Function
 
-
+	Public Function ReturnDescriptionOrColourForNineBoxGridCell(col As Integer, row As Integer, descriptionOrColour As enumNineBoxDescriptionOrColour) As String
+		If row = 0 Then
+			If descriptionOrColour = enumNineBoxDescriptionOrColour.Description Then
+				Return _descriptionsAsArray(col)
+			Else
+				Return _cellColoursAsArray(col)
+			End If
+		ElseIf row = 1 Then
+			If descriptionOrColour = enumNineBoxDescriptionOrColour.Description Then
+				Return _descriptionsAsArray(col + 3)
+			Else
+				Return _cellColoursAsArray(col + 3)
+			End If
+		Else 'row = 2
+			If descriptionOrColour = enumNineBoxDescriptionOrColour.Description Then
+				Return _descriptionsAsArray(col + 6)
+			Else
+				Return _cellColoursAsArray(col + 6)
+			End If
+		End If
+	End Function
 End Class

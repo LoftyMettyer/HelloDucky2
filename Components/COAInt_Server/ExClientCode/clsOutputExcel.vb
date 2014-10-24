@@ -527,6 +527,174 @@ Namespace ExClientCode
 
 		End Sub
 
+		Public Sub DataArrayNineBoxGrid(ByRef strArray(,) As String, ByRef colColumns As List(Of Metadata.Column), ByRef colStyles As Collection, ByRef colMerges As Collection)
+			Dim lngGridCol As Integer
+			Dim lngGridRow As Integer
+			Dim lngExcelCol As Integer
+			Dim lngExcelRow As Integer
+			Dim cell As String
+			Dim cellDescription As String
+			Dim cellValue As String
+			Dim cellColour As String
+			Dim stlGeneral As Style
+
+			_mcolColumns = colColumns
+
+			If _mstrErrorMessage <> vbNullString Then
+				Exit Sub
+			End If
+
+			If UBound(strArray, 1) > 255 Then
+				_mstrErrorMessage = "Maximum of 255 columns exceeded"
+				Exit Sub
+			End If
+
+			'Instantiate the error checking options
+			Dim opts As ErrorCheckOptionCollection = _mxlWorkSheet.ErrorCheckOptions
+			Dim index As Integer = opts.Add()
+			Dim opt As ErrorCheckOption = opts(index)
+			'Disable the numbers stored as text option
+			opt.SetErrorCheck(ErrorCheckType.TextNumber, False)
+
+			lngExcelCol = _mlngDataStartCol
+			lngExcelRow = _mlngDataCurrentRow
+
+			If _mblnApplyStyles And Not (_mblnPivotTable) Then
+				ApplyStyle(UBound(strArray, 1), UBound(strArray, 2), colStyles)
+			End If
+
+			For lngGridRow = 0 To UBound(strArray, 2)
+				For lngGridCol = 0 To UBound(strArray, 1)
+					cell = strArray(lngGridCol, lngGridRow)
+					cellDescription = cell.Substring(0, cell.IndexOf("¦"))
+					cellValue = cell.Substring(cell.IndexOf("¦") + 1, cell.IndexOf("|") - cell.IndexOf("¦") - 1)
+					cellColour = cell.Substring(cell.IndexOf("|") + 1)
+
+					With _mxlWorkSheet.Cells(lngExcelRow + lngGridRow - 1, lngExcelCol + lngGridCol - 1)
+						stlGeneral = .GetStyle()
+						With stlGeneral
+							.Number = 49	'Text style
+							.VerticalAlignment = TextAlignmentType.Center
+							.HorizontalAlignment = TextAlignmentType.Center
+							.ForegroundColor = ColorTranslator.FromHtml("#" & cellColour)
+							.IsTextWrapped = True
+						End With
+
+						If cellValue Is Nothing Then
+							cellValue = ""
+						End If
+
+						.SetStyle(stlGeneral)
+						.PutValue(cellDescription & vbLf & cellValue)
+						.Characters(cellDescription.Length + 1, cellValue.Length).Font.Size = 20 'Set the font size of the value
+					End With
+				Next
+			Next
+
+			'Insert rows and columns to contain the axis labels
+			_mxlWorkSheet.Cells.InsertColumns(0, 2)
+			_mxlWorkSheet.Cells.InsertRows(_mxlWorkSheet.Cells.Rows.Count, 2)
+			'X axis
+			With _mxlWorkSheet.Cells(9, 4) 'row,col
+				stlGeneral = .GetStyle
+				stlGeneral.HorizontalAlignment = TextAlignmentType.Center
+				stlGeneral.VerticalAlignment = TextAlignmentType.Center
+				stlGeneral.Font.Size = 14
+				.SetStyle(stlGeneral)
+				.PutValue(_mobjParent.AxisLabelsAsArray(0))
+			End With
+			With _mxlWorkSheet.Cells(8, 3) 'row,col
+				stlGeneral = .GetStyle
+				stlGeneral.HorizontalAlignment = TextAlignmentType.Center
+				stlGeneral.VerticalAlignment = TextAlignmentType.Center
+				stlGeneral.Font.Size = 12
+				.SetStyle(stlGeneral)
+				.PutValue(_mobjParent.AxisLabelsAsArray(1))
+			End With
+			With _mxlWorkSheet.Cells(8, 4) 'row,col
+				stlGeneral = .GetStyle
+				stlGeneral.HorizontalAlignment = TextAlignmentType.Center
+				stlGeneral.VerticalAlignment = TextAlignmentType.Center
+				stlGeneral.Font.Size = 12
+				.SetStyle(stlGeneral)
+				.PutValue(_mobjParent.AxisLabelsAsArray(2))
+			End With
+			With _mxlWorkSheet.Cells(8, 5) 'row,col
+				stlGeneral = .GetStyle
+				stlGeneral.HorizontalAlignment = TextAlignmentType.Center
+				stlGeneral.VerticalAlignment = TextAlignmentType.Center
+				stlGeneral.Font.Size = 12
+				.SetStyle(stlGeneral)
+				.PutValue(_mobjParent.AxisLabelsAsArray(3))
+			End With
+			'Y axis
+			With _mxlWorkSheet.Cells(6, 1) 'row,col
+				stlGeneral = .GetStyle
+				stlGeneral.RotationAngle = 90
+				stlGeneral.HorizontalAlignment = TextAlignmentType.Center
+				stlGeneral.VerticalAlignment = TextAlignmentType.Center
+				stlGeneral.Font.Size = 14
+				.SetStyle(stlGeneral)
+				.PutValue(_mobjParent.AxisLabelsAsArray(4))
+			End With
+			With _mxlWorkSheet.Cells(5, 2) 'row,col
+				stlGeneral = .GetStyle
+				stlGeneral.RotationAngle = 90
+				stlGeneral.HorizontalAlignment = TextAlignmentType.Center
+				stlGeneral.VerticalAlignment = TextAlignmentType.Center
+				stlGeneral.Font.Size = 12
+				.SetStyle(stlGeneral)
+				.PutValue(_mobjParent.AxisLabelsAsArray(5))
+			End With
+			With _mxlWorkSheet.Cells(6, 2) 'row,col
+				stlGeneral = .GetStyle
+				stlGeneral.RotationAngle = 90
+				stlGeneral.HorizontalAlignment = TextAlignmentType.Center
+				stlGeneral.VerticalAlignment = TextAlignmentType.Center
+				stlGeneral.Font.Size = 12
+				.SetStyle(stlGeneral)
+				.PutValue(_mobjParent.AxisLabelsAsArray(6))
+			End With
+			With _mxlWorkSheet.Cells(7, 2) 'row,col
+				stlGeneral = .GetStyle
+				stlGeneral.RotationAngle = 90
+				stlGeneral.HorizontalAlignment = TextAlignmentType.Center
+				stlGeneral.VerticalAlignment = TextAlignmentType.Center
+				stlGeneral.Font.Size = 12
+				.SetStyle(stlGeneral)
+				.PutValue(_mobjParent.AxisLabelsAsArray(7))
+			End With
+
+			If _mblnApplyStyles Then
+				ApplyMerges(colMerges)
+			End If
+			ApplyCellOptions(_mxlWorkSheet, colStyles, True)
+
+			With _mxlWorkSheet.Cells(1, 2) 'Increase the size of the title
+				stlGeneral = .GetStyle
+				stlGeneral.Font.Size = 14
+				.SetStyle(stlGeneral)
+			End With
+			_mxlWorkSheet.Cells.Merge(1, 2, 1, 5)	'Merge the title into 5 columns
+
+			_mxlWorkSheet.AutoFitColumns()
+			_mxlWorkSheet.AutoFitRows()
+
+			'Set the cells' height and width
+			_mxlWorkSheet.Cells.SetRowHeight(5, 110)
+			_mxlWorkSheet.Cells.SetRowHeight(6, 110)
+			_mxlWorkSheet.Cells.SetRowHeight(7, 110)
+			_mxlWorkSheet.Cells.SetRowHeight(8, 40)
+			_mxlWorkSheet.Cells.SetRowHeight(9, 40)
+			_mxlWorkSheet.Cells.SetColumnWidth(1, 8)
+			_mxlWorkSheet.Cells.SetColumnWidth(2, 8)
+			_mxlWorkSheet.Cells.SetColumnWidth(3, 25)
+			_mxlWorkSheet.Cells.SetColumnWidth(4, 25)
+			_mxlWorkSheet.Cells.SetColumnWidth(5, 25)
+
+			_mlngDataCurrentRow += UBound(strArray, 2) + IIf(_mblnApplyStyles, 2, 1)
+		End Sub
+
 		Private Sub CreateChart(ByRef objDataSheet As Worksheet, lngMaxRows As Integer, lngMaxCols As Integer, colStyles As Collection)
 
 			Dim strSheetName As String

@@ -844,7 +844,7 @@
 									<td colspan=4></td>
 								</tr>
 																									
-<% else %>
+<% ElseIf Session("utilType") <> 35 Then 'Don't show for 9-box grid %>
 								<tr height=5>
 									<td width=5>&nbsp</td>
 									<td align=left width=15>
@@ -930,6 +930,7 @@
 								<tr height=10 class="hidden"> 
 									<td colspan=8></td>
 								</tr>
+<%If Session("utilType") <> 35 Then	'Don't show for 9-box grid %>
 								<tr height=20>
 									<td width=5>&nbsp</td>
 									<td align=left nowrap>
@@ -977,7 +978,7 @@
 									</td>
 									<td width=5>&nbsp</td>
 								</tr>
-
+<%End If%>
 								<tr height=10 class="hidden"> 
 									<td colspan=8></td>
 								</tr>
@@ -1063,6 +1064,15 @@
 	<input type="hidden" id="txtWordFormatDefaultIndex" name="txtWordFormatDefaultIndex" value="<%=Session("WordFormatDefaultIndex")%>">
 	<input type="hidden" id="txtExcelFormatDefaultIndex" name="txtExcelFormatDefaultIndex" value="<%=Session("ExcelFormatDefaultIndex")%>">
 	<input type="hidden" id="txtOfficeSaveAsFormats" name="txtOfficeSaveAsFormats" value="<%=Session("OfficeSaveAsValues")%>">
+
+	<%If Session("utilType") = 35 Then	'For 9-box grids we need here the fields that are not needed for it but need to be present for the run-time engine to work%>
+	<input name="chkDestination2" id="chkDestination2" type="hidden" value="false">
+	<input id="txtFilename" name="txtFilename" type="hidden" value="">
+	<input type="hidden" id="cmdFilename" name="cmdFilename" value="...">
+	<input type="hidden" name="optOutputFormat" id="optOutputFormat5" value="5">
+	<input type="hidden" name="optOutputFormat" id="optOutputFormat6" value="6">
+	<input id=cboSaveExisting name=cboSaveExisting type="hidden" value="-1" >
+	<%End If%>
 </form>
 
 <script type="text/javascript">

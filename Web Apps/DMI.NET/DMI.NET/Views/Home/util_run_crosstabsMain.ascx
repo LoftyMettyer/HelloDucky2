@@ -131,7 +131,7 @@
 <div id="reportworkframe" data-framesource="util_run_crosstabs" style="display: block">
 	<%Html.RenderPartial("~/views/home/util_run_crosstabs.ascx")%>
 		
-	<form action="util_run_crosstab_downloadoutput" method="post" id="frmExportData" name="frmExportData" target="submit-iframe">
+	<form action="<%= IIf(objCrossTab.CrossTabType = CrossTabType.ctt9GridBox, "util_run_nineboxgrid_downloadoutput", "util_run_crosstab_downloadoutput")%>" method="post" id="frmExportData" name="frmExportData" target="submit-iframe">
 		<input type="hidden" id="txtPreview" name="txtPreview" value="<%=objCrossTab.OutputPreview%>">	
 		<input type="hidden" id="txtFormat" name="txtFormat" value="<%=objCrossTab.OutputFormat%>">
 		<input type="hidden" id="txtScreen" name="txtScreen" value="<%=objCrossTab.OutputScreen%>">
