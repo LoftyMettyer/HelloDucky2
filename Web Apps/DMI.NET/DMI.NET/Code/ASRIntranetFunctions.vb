@@ -263,7 +263,7 @@ Public Module ASRIntranetFunctions
 						objLegend.HTMLColorName = objCalendar.LegendColors(iNextColor).ColDesc
 						Dim objColor = Color.FromArgb(objCalendar.LegendColors(iNextColor).ColValue)
 						iNextColor += 1
-						If iNextColor > objCalendar.LegendColors.Count Then iNextColor = objCalendar.LegendColors.Count - 1
+						If iNextColor >= objCalendar.LegendColors.Count Then iNextColor = objCalendar.LegendColors.Count - 1
 						objLegend.HexColor = String.Format("#{0}{1}{2}", objColor.R.ToString("X").PadLeft(2, "0"), objColor.G.ToString("X").PadLeft(2, "0"), objColor.B.ToString("X").PadLeft(2, "0"))
 					End If
 
@@ -318,7 +318,7 @@ Public Module ASRIntranetFunctions
 					objLegend.HTMLColorName = objCalendar.LegendColors(iNextColor).ColDesc
 					Dim objColor = Color.FromArgb(objCalendar.LegendColors(iNextColor).ColValue)
 					iNextColor += 1
-					If iNextColor > objCalendar.LegendColors.Count Then iNextColor = objCalendar.LegendColors.Count - 1
+					If iNextColor >= objCalendar.LegendColors.Count Then iNextColor = objCalendar.LegendColors.Count - 1
 					objLegend.HexColor = String.Format("#{0}{1}{2}", objColor.R.ToString("X").PadLeft(2, "0"), objColor.G.ToString("X").PadLeft(2, "0"), objColor.B.ToString("X").PadLeft(2, "0"))
 				End If
 
