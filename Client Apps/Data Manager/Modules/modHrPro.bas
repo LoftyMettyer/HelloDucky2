@@ -3809,7 +3809,7 @@ Public Function GetUtilityType(pintID As Integer) As String
     Case eltAccordImport: GetUtilityType = "Payroll Transfer (In)"
     Case eltAccordExport: GetUtilityType = "Payroll Transfer (Out)"
     Case eltWorkflowRebuild: GetUtilityType = "Workflow Rebuild"
-    Case elt9BoxGrid: GetUtilityType = "9 Box Grid Report"
+    Case elt9BoxGrid: GetUtilityType = "9-Box Grid Report"
     Case Else: GetUtilityType = "Unknown"
   End Select
 
