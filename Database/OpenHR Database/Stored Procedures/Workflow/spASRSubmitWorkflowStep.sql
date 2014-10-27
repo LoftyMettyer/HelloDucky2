@@ -57,6 +57,7 @@ CREATE PROCEDURE [dbo].[spASRSubmitWorkflowStep]
 			@sValueDescription	varchar(MAX),
 			@iTableID			integer,
 			@iRecDescID			integer,
+			@bUseAsTargetIdentifier bit = 0,
 			@sEvalRecDesc		varchar(MAX),
 			@sExecString		nvarchar(MAX),
 			@sParamDefinition	nvarchar(500),
@@ -113,7 +114,8 @@ CREATE PROCEDURE [dbo].[spASRSubmitWorkflowStep]
 			@iDataAction = E.dataAction, 
 			@iTrueFlowType = isnull(E.trueFlowType, 0), 
 			@iExprID = isnull(E.trueFlowExprID, 0), 
-			@sEmailSubject = ISNULL(E.emailSubject, '')
+			@sEmailSubject = ISNULL(E.emailSubject, ''),
+			@bUseAsTargetIdentifier = ISNULL(E.UseAsTargetIdentifier, 0)
 		FROM ASRSysWorkflowElements E
 		WHERE E.ID = @piElementID;
 
@@ -180,7 +182,8 @@ CREATE PROCEDURE [dbo].[spASRSubmitWorkflowStep]
 				SELECT @sIdentifier = EI.identifier,
 					@iItemType = EI.itemType,
 					@iTableID = EI.tableID,
-					@iBehaviour = EI.behaviour
+					@iBehaviour = EI.behaviour,
+					@bUseAsTargetIdentifier = ISNULL(EI.UseAsTargetIdentifier, 0)
 				FROM ASRSysWorkflowElementItems EI
 				WHERE EI.ID = convert(integer, @sID);
 
@@ -206,6 +209,9 @@ CREATE PROCEDURE [dbo].[spASRSubmitWorkflowStep]
 						EXEC sp_executesql @sExecString, @sParamDefinition, @sEvalRecDesc OUTPUT, @iTemp;
 						IF (NOT @sEvalRecDesc IS null) AND (LEN(@sEvalRecDesc) > 0) SET @sValueDescription = @sEvalRecDesc;
 					END
+
+					IF @bUseAsTargetIdentifier = 1
+							UPDATE ASRSysWorkflowInstances SET TargetName = @sEvalRecDesc	WHERE ID = @piInstanceID;
 
 					-- Record the selected record's parent details.
 					exec [dbo].[spASRGetParentDetails]

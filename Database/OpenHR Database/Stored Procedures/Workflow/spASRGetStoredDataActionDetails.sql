@@ -7,6 +7,7 @@ CREATE PROCEDURE [dbo].[spASRGetStoredDataActionDetails]
 	@psTableName		varchar(255)	OUTPUT,
 	@piDataAction		integer			OUTPUT, 
 	@piRecordID			integer			OUTPUT,
+	@bUseAsTargetIdentifier	bit OUTPUT,
 	@pfResult	bit OUTPUT
 )
 AS
@@ -112,7 +113,8 @@ BEGIN
 		@iDataRecordTableID = dataRecordTable,
 		@iSecondaryDataRecordTableID = secondaryDataRecordTable,
 		@iWorkflowID = workflowID,
-		@iTriggerTableID = ASRSysWorkflows.baseTable
+		@iTriggerTableID = ASRSysWorkflows.baseTable,
+		@bUseAsTargetIdentifier = ISNULL(UseAsTargetIdentifier, 0)
 	FROM ASRSysWorkflowElements
 	INNER JOIN ASRSysWorkflows ON ASRSysWorkflowElements.workflowID = ASRSysWorkflows.ID
 	WHERE ASRSysWorkflowElements.ID = @piElementID;
@@ -270,7 +272,7 @@ BEGIN
 				@iInitParent2RecordID,
 				@iSecondaryDataRecordTableID,
 				@iSecondaryRecordID	OUTPUT;
-	
+
 			IF @piDataTableID = @iSecondaryDataRecordTableID
 			BEGIN
 				SET @sSecondaryIDColumnName = 'ID';
@@ -394,6 +396,7 @@ BEGIN
 				RETURN;
 			END
 		END
+
 	END
 
 	IF @piDataAction = 0 OR @piDataAction = 1

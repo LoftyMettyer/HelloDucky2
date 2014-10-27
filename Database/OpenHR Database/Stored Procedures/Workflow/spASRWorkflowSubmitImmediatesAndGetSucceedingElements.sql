@@ -15,6 +15,7 @@ BEGIN
 		@iElementID				integer,
 		@iElementType			integer,
 		@iFlowCode				integer,
+		@bUseAsTargetIdentifier	bit,
 		@iTrueFlowType			integer,
 		@iExprID				integer,
 		@iResultType			integer,
@@ -78,8 +79,8 @@ BEGIN
 	SELECT SUCC.id,
 		E.type,
 		0,
-		isnull(E.trueFlowType, 0),
-		isnull(E.trueFlowExprID, 0)
+		ISNULL(E.trueFlowType, 0),
+		ISNULL(E.trueFlowExprID, 0)
 	FROM [dbo].[udfASRGetSucceedingWorkflowElements](@piElementID, 0) SUCC
 	INNER JOIN ASRSysWorkflowElements E ON SUCC.ID = E.ID;
 		
@@ -199,9 +200,9 @@ BEGIN
 					@sStoredDataTableName	OUTPUT,
 					@iStoredDataAction		OUTPUT, 
 					@iStoredDataRecordID	OUTPUT,
+					@bUseAsTargetIdentifier OUTPUT,
 					@fResult OUTPUT;
 
-				--IF LEN(@sStoredDataSQL) > 0 
 				IF @fResult = 1
 				BEGIN
 					IF @iStoredDataAction = 0 -- Insert
@@ -400,6 +401,13 @@ BEGIN
 							ASRSysWorkflowInstanceSteps.message = @sStoredDataMsg
 						WHERE ASRSysWorkflowInstanceSteps.instanceID = @piInstanceID
 							AND ASRSysWorkflowInstanceSteps.elementID = @iElementID;
+
+						IF @bUseAsTargetIdentifier = 1
+						BEGIN
+							EXEC [dbo].[spASRRecordDescription] @iStoredDataTableID, @iStoredDataRecordID, @sEvalRecDesc OUTPUT;
+							UPDATE ASRSysWorkflowInstances SET TargetName = @sEvalRecDesc WHERE ID = @piInstanceID;
+						END
+
 					END
 					ELSE
 					BEGIN

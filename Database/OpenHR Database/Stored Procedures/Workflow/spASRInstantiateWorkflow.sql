@@ -18,6 +18,7 @@ CREATE PROCEDURE [dbo].[spASRInstantiateWorkflow]
 				@hResult				integer,
 				@sActualLoginName		sysname,
 				@fUsesInitiator			bit, 
+				@bUseAsTargetIdentifier bit,
 				@iTemp					integer,
 				@iStartElementID		integer,
 				@iTableID				integer,
@@ -276,6 +277,7 @@ CREATE PROCEDURE [dbo].[spASRInstantiateWorkflow]
 							@sStoredDataTableName	OUTPUT,
 							@iStoredDataAction		OUTPUT, 
 							@iStoredDataRecordID	OUTPUT,
+							@bUseAsTargetIdentifier OUTPUT,
 							@fResult OUTPUT;
 		
 						IF @iStoredDataAction = 0 -- Insert

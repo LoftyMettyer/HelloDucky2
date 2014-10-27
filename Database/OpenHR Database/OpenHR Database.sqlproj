@@ -322,22 +322,12 @@
     <Build Include="Stored Procedures\Other\spASRGetPicture.sql" />
     <Build Include="Stored Procedures\Other\spASRGetServerDLLVersion.sql" />
     <Build Include="Stored Procedures\Other\spASRGetSetting.sql" />
-    <Build Include="Stored Procedures\Other\spASRGetStoredDataActionDetails.sql" />
     <Build Include="Stored Procedures\Other\spASRGetUserSetting.sql" />
     <Build Include="Stored Procedures\Other\spASRGetWindowsUsers.sql" />
-    <Build Include="Stored Procedures\Other\spASRGetWorkflowDelegates.sql" />
-    <Build Include="Stored Procedures\Other\spASRGetWorkflowEmailMessage.sql" />
-    <Build Include="Stored Procedures\Other\spASRGetWorkflowFileUploadDetails.sql" />
-    <Build Include="Stored Procedures\Other\spASRGetWorkflowFormItems.sql" />
-    <Build Include="Stored Procedures\Other\spASRGetWorkflowGridItems.sql" />
-    <Build Include="Stored Procedures\Other\spASRGetWorkflowItemValues.sql" />
-    <Build Include="Stored Procedures\Other\spASRGetWorkflowQueryString.sql" />
     <Build Include="Stored Procedures\Other\spASRInstantiateTriggeredWorkflows.sql" />
-    <Build Include="Stored Procedures\Other\spASRInstantiateWorkflow.sql" />
     <Build Include="Stored Procedures\Other\spASRLockWriteBatch.sql" />
     <Build Include="Stored Procedures\Other\spASRMakeLoginsProcessAdmin.sql" />
     <Build Include="Stored Procedures\Other\spASRMaternityExpectedReturn.sql" />
-    <Build Include="Stored Procedures\Other\spASRMobileInstantiateWorkflow.sql" />
     <Build Include="Stored Procedures\Other\spASRNetOutlookBatch.sql" />
     <Build Include="Stored Procedures\Other\spASROutlookEventRefresh.sql" />
     <Build Include="Stored Procedures\Other\spASRParentalLeaveEntitlement.sql" />
@@ -345,7 +335,6 @@
     <Build Include="Stored Procedures\Other\spASRResizeColumn.sql" />
     <Build Include="Stored Procedures\Other\spASRSaveSetting.sql" />
     <Build Include="Stored Procedures\Other\spASRSaveUserSetting.sql" />
-    <Build Include="Stored Procedures\Other\spASRSubmitWorkflowStep.sql" />
     <Build Include="Stored Procedures\Other\spASRSysGenMobileLicence.sql" />
     <Build Include="Stored Procedures\Other\spASRSysOvernightTableUpdate.sql" />
     <Build Include="Stored Procedures\Other\spASRSysUpdateFrameworkVersions.sql" />
@@ -644,6 +633,17 @@
     <Build Include="Stored Procedures\Web\spASRIntSaveNineBoxGrid.sql" />
     <Build Include="Stored Procedures\Web\spASRIntValidateNineBoxGrid.sql" />
     <Build Include="Stored Procedures\Auto Generated\spASRSysGetCurrentUserRecordID.sql" />
+    <Build Include="Stored Procedures\Workflow\spASRSubmitWorkflowStep.sql" />
+    <Build Include="Stored Procedures\Workflow\spASRGetWorkflowDelegates.sql" />
+    <Build Include="Stored Procedures\Workflow\spASRGetWorkflowEmailMessage.sql" />
+    <Build Include="Stored Procedures\Workflow\spASRGetWorkflowFileUploadDetails.sql" />
+    <Build Include="Stored Procedures\Workflow\spASRGetWorkflowFormItems.sql" />
+    <Build Include="Stored Procedures\Workflow\spASRGetWorkflowGridItems.sql" />
+    <Build Include="Stored Procedures\Workflow\spASRGetWorkflowItemValues.sql" />
+    <Build Include="Stored Procedures\Workflow\spASRGetWorkflowQueryString.sql" />
+    <Build Include="Stored Procedures\Workflow\spASRMobileInstantiateWorkflow.sql" />
+    <Build Include="Stored Procedures\Workflow\spASRGetStoredDataActionDetails.sql" />
+    <Build Include="Stored Procedures\Workflow\spASRInstantiateWorkflow.sql" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Stored Procedures\Other\sp_ASR_Bradford_CalculateDurations.sql" />
