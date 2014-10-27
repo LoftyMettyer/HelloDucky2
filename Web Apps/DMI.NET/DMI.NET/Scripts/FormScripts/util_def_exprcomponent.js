@@ -961,9 +961,12 @@ function calculationAndFilter_refresh() {
 			else {
 				// Locate the last selected record. if not exist then select the top record.
 				if (iCurrentID == null) {
-				var gotoTopRow = grdGrid.getDataIDs()[0];
-				grdGrid.jqGrid('setSelection', gotoTopRow);
-				} 
+					var gotoTopRow = grdGrid.getDataIDs()[0];
+					grdGrid.jqGrid('setSelection', gotoTopRow);
+
+					// Move scrollbar to top position at first row
+					grdGrid.closest(".ui-jqgrid-bdiv").scrollTop(0);
+				}
 			}
 
 			//button_disable(frmMainForm.cmdOK, false);
