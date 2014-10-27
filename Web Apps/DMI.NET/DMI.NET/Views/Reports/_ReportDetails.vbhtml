@@ -193,7 +193,7 @@
 				setViewAccess('CALC', $("#StartCustomViewAccess"), 'RW', '');
 				break;
 
-			case "Current":
+			case "CurrentDate":
 				$("#StartFixedDate").val('');
 				$("#StartCustomId").val(0);
 				$("#StartOffset").val(0);
@@ -241,7 +241,7 @@
 				setViewAccess('CALC', $("#EndCustomViewAccess"), 'RW', '');
 				break;
 
-			case "Current":
+			case "CurrentDate":
 				$("#EndFixedDate").val('');
 				$("#EndCustomId").val(0);
 				$("#EndOffset").val(0);
