@@ -324,6 +324,14 @@
 
 
 			var newButtons = [
+				<%If (Session("utiltype") = "2") Then%> 
+				{
+					text: "<%=sPrintButtonLabel%>",
+					click: function() { outputOptionsPrintClick(); },
+					"class": "minwidth100",
+					"id": "cmdPrint"
+				},
+				<%End If%>
 				{
 					text: "Export",
 					click: function() { outputOptionsOKClick(); },
@@ -349,14 +357,6 @@
 					"class": "minwidth100",
 					"id": "cmdClose"
 				}
-				<%If (Session("utiltype") = "2") Then%> 
-				,{
-					text: "<%=sPrintButtonLabel%>",
-					click: function() { outputOptionsPrintClick(); },
-					"class": "minwidth100",
-					"id": "cmdPrint"
-				}
-				<%End If%>
 			];
 
 			$('.popup').dialog('option', 'buttons', newButtons);
