@@ -9,6 +9,7 @@
 	<script src="<%: Url.LatestContent("~/bundles/jQueryUI7")%>" type="text/javascript"></script>
 	<script src="<%: Url.LatestContent("~/bundles/OpenHR_General")%>" type="text/javascript"></script>
 	<link href="<%: Url.LatestContent("~/Content/OpenHR.css")%>" rel="stylesheet" type="text/css" />
+	<script src="<%: Url.LatestContent("~/bundles/eventlog")%>" type="text/javascript"></script>
 
 	<%--Here's the stylesheets for the font-icons displayed on the dashboard for wireframe and tile layouts--%>
 	<link href="<%= Url.LatestContent("~/Content/general_enclosed_foundicons.css")%>" rel="stylesheet" type="text/css" />
@@ -31,7 +32,8 @@
 	<script type="text/javascript">
 
 		function cancelClick() {
-			self.close();
+			//self.close();
+			$(this).dialog("close");
 		}
 
 		function deleteClick() {
@@ -40,7 +42,7 @@
 			var frmOpenerDelete = window.dialogArguments.OpenHR.getForm("workframe", "frmDelete");
 			var frmOpenerLog = window.dialogArguments.OpenHR.getForm("workframe", "frmLog");
 			var LogEvents = window.dialogArguments.OpenHR.getForm("workframe", "LogEvents");
-
+			
 			sEventIDs = '';
 
 			if (frmEventSelection.optSelection1.checked == true) { //Only the currently highlighted row(s)
@@ -55,7 +57,7 @@
 				}
 
 				sEventIDs = sEventIDs.substr(0, sEventIDs.length - 1);
-			} else if (frmEventSelection.optSelection2.checked == true) { //All entries currently displayed
+			} else if (window.frmEventSelection.optSelection2.checked == true) { //All entries currently displayed
 				frmOpenerDelete.txtDeleteSel.value = 1;
 
 				var allRows = $(LogEvents).jqGrid('getGridParam', 'data');
@@ -64,7 +66,7 @@
 				}
 
 				sEventIDs = sEventIDs.substr(0, sEventIDs.length - 1);
-			} else if (frmEventSelection.optSelection3.checked == true) { //All entries (that the current user has permission to see)
+			} else if (window.frmEventSelection.optSelection3.checked == true) { //All entries (that the current user has permission to see)
 				frmOpenerDelete.txtDeleteSel.value = 2;
 			}
 			
@@ -84,88 +86,35 @@
 
 
 	<form id="frmEventSelection" name="frmEventSelection">
-		<table align="center" cellpadding="5" cellspacing="0" width="100%" height="100%">
-			<tr>
-				<td>
-					<table width="100%" height="100%" class="invisible" cellspacing="0" cellpadding="0">
-						<tr>
-							<td>
-								<table height="100%" width="100%" class="invisible" cellspacing="0" cellpadding="4">
-									<tr height="30">
-										<td colspan="4">Please the select the entries you wish to delete from the options below : 
-										</td>
-									</tr>
-									<tr height="15">
-										<td></td>
-										<td width="8"></td>
-										<td>
-											<input id="optSelection1" name="optSelection" type="radio" checked>
-										</td>
-										<td>
-											<label
-												tabindex="-1"
-												for="optSelection1"
-												class="radio"/>
-											Only the currently highlighted row(s)
-										</td>
-									</tr>
-									<tr height="15">
-										<td></td>
-										<td width="8"></td>
-										<td>
-											<input id="optSelection2" name="optSelection" type="radio">
-										</td>
-										<td>
-											<label
-												tabindex="-1"
-												for="optSelection2"
-												class="radio" />
-											All entries currently displayed
-										</td>
-									</tr>
-									<tr height="15">
-										<td></td>
-										<td width="8"></td>
-										<td>
-											<input id="optSelection3" name="optSelection" type="radio">
-										</td>
-										<td nowrap>
-											<label
-												tabindex="-1"
-												for="optSelection3"
-												class="radio"/>
-											All entries (that the current user has permission to see)
-										</td>
-									</tr>
-									<tr height="5">
-										<td colspan="4"></td>
-									</tr>
-									<tr>
-										<td width="100%" colspan="4">
-											<table height="100%" width="100%" class="invisible" cellspacing="0" cellpadding="4">
-												<tr>
-													<td></td>
-													<td width="5">
-														<input id="cmdDelete" type="button" value="Delete" name="cmdDelete" style="WIDTH: 80px" width="80" class="button ui-button ui-widget ui-state-default ui-widget-content ui-corner-tl ui-corner-br"
-															onclick="deleteClick();">
-													</td>
-													<td width="5">
-														<input id="cmdCancel" type="button" value="Cancel" name="cmdCancel" style="WIDTH: 80px" width="80" class="button ui-button ui-widget ui-state-default ui-widget-content ui-corner-tl ui-corner-br"
-															onclick="cancelClick();">
-													</td>
-													<td></td>
-												</tr>
-											</table>
-										</td>
-									</tr>
-								</table>
-							</td>
-							<td width="5"></td>
-						</tr>
-					</table>
-				</td>
-			</tr>
-		</table>
+		<div>
+			<div class="pageTitleDiv" style="margin-bottom: 15px">
+				<span class="pageTitle" id="PopupReportDefinition_PageTitle">Delete Events</span>
+			</div>
+
+			<div class="padleft20 padbot10">
+				<div class="padbot10">
+					Please the select the entries you wish to delete from the options below : 
+				</div>
+
+				<div class="padbot5">
+					<input id="optSelection1" name="optSelection" type="radio" checked>
+					<label for="optSelection1" tabindex="-1">Only the currently highlighted row(s)</label>
+				</div>
+				<div class="padbot5">
+					<input id="optSelection2" name="optSelection" type="radio">
+					<label for="optSelection2" tabindex="-1">All entries currently displayed</label>				
+				</div>
+				<div class="padbot5">
+					<input id="optSelection3" name="optSelection" type="radio">
+					<label for="optSelection3" tabindex="-1">All entries (that the current user has permission to see)</label>
+				</div>
+			</div>
+
+			<div id="divEventLogDeleteButtons" class="clearboth">
+				<input id="cmdDelete" type="button" value="Delete" name="cmdDelete" onclick="deleteClick();">
+				<input id="cmdCancel" type="button" value="Cancel" name="cmdCancel" onclick="cancelClick();">
+			</div>
+		</div>
 	</form>
 
 </body>

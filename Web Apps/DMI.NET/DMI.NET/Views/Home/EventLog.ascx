@@ -398,7 +398,10 @@
 				"&txtEventBatchRunID=" + frmDetails.txtEventBatchRunID.value +
 				"&txtEmailPermission=" + escape(frmDetails.txtEmailPermission.value);
 		
-		OpenHR.windowOpen(sURL, 900, 720);
+		var sURLString = sURL;
+		$('#EventLogViewDetails').data('sURLData', sURLString);
+		$('#EventLogEmailSelect').dialog("open");
+		//OpenHR.windowOpen(sURL, 700, 560);
 	}
 
 	function EventLog_deleteEvent() {
@@ -421,7 +424,11 @@
 				"&txtEventBatchRunID=" + frmDetails.txtEventBatchRunID.value +
 				"&txtEmailPermission=" + escape(frmDetails.txtEmailPermission.value);
 
-		OpenHR.windowOpen(sURL, 500, 220);
+		
+		var sURLString = sURL;
+		$('#EventLogDelete').data('sURLData', sURLString);
+		$('#EventLogDelete').dialog("open");
+		//OpenHR.windowOpen(sURL, 500, 220);
 
 		EventLog_refreshButtons();
 	}
@@ -446,8 +453,11 @@
 				"&txtEventBatchRunID=" + frmDetails.txtEventBatchRunID.value +
 				"&txtEmailPermission=" + escape(frmDetails.txtEmailPermission.value);
 
-		OpenHR.windowOpen(sURL, 500, 220);
+		var sURLString = sURL;
+		$('#EventLogPurge').data('sURLData', sURLString);
+		$('#EventLogPurge').dialog("open");
 
+		//OpenHR.windowOpen(sURL, 500, 220);
 	}
 
 	function EventLog_emailEvent() {
@@ -472,9 +482,12 @@
 				"&txtEmailOrderColumn=" + frmLog.txtELOrderColumn.value +
 				"&txtEmailOrderOrder=" + frmLog.txtELOrderOrder.value;
 
-		OpenHR.windowOpen(sURL, (screen.width) / 3, (screen.height) / 2, "no", "no");
+		var sURLString = sURL;
+		$('#EventLogEmailSelect').data('sURLData', sURLString);
+		$('#EventLogEmailSelect').dialog("open");
+		//OpenHR.windowOpen(sURL, (screen.width) / 3, (screen.height) / 2, "no", "no");
 	}
-
+	
 	function EventLog_refreshButtons() {
 		var frmLog = OpenHR.getForm("workframe", "frmLog");
 		var logEventRowCount = $("#LogEvents").getGridParam('reccount') == undefined ? 0 : $("#LogEvents").getGridParam('reccount');
@@ -908,3 +921,5 @@
 
 	$('table').attr('border', '0');
 </script>
+
+

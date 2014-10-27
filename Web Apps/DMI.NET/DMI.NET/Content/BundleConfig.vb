@@ -113,6 +113,11 @@ Namespace App_Start
 			' BulkBookingSelection bundle
 			bundles.Add(New ScriptBundle("~/bundles/bulkbookingselection").Include(
 										 "~/Scripts/FormScripts/BulkBookingSelection.js"))
+
+			' EventLog bundle
+			bundles.Add(New ScriptBundle("~/bundles/eventlog").Include(
+										 "~/Scripts/FormScripts/EventLog.js"))
+
 #If DEBUG Then
 
 			For Each bundle As Bundle In BundleTable.Bundles

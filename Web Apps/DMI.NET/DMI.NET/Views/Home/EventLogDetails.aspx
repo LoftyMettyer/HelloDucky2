@@ -14,6 +14,7 @@
 	<script src="<%: Url.LatestContent("~/bundles/jQuery")%>" type="text/javascript"></script>
 	<script src="<%: Url.LatestContent("~/bundles/jQueryUI7")%>" type="text/javascript"></script>
 	<script src="<%: Url.LatestContent("~/bundles/OpenHR_General")%>" type="text/javascript"></script>
+	<script src="<%: Url.LatestContent("~/bundles/eventlog")%>" type="text/javascript"></script>
 
 
 	<%--Here's the stylesheets for the font-icons displayed on the dashboard for wireframe and tile layouts--%>
@@ -37,10 +38,12 @@
 </head>
 <body>
 
-	<div>
+	
 
 	<div id="popout_Wrapper">
-
+		<div class="pageTitleDiv" style="margin-bottom: 15px">
+			<span class="pageTitle" id="PopupReportDefinition_PageTitle">Event Detail</span>
+		</div>
 		<form id="frmEventDetails" name="frmEventDetails">
 
 			<%
@@ -148,208 +151,144 @@
 			%>
 
 			<div id="findGridRow" style="height: 50%; margin-right: 20px; margin-left: 20px;">
+				<div>
+					<table style="padding: 4px; border-collapse: collapse">
+						<%					
 
-				<table align="center" cellpadding="5" cellspacing="0" width="100%" height="100%">
-					<tr>
-						<td>
-							<table width="100%" height="100%" cellspacing="0" cellpadding="0">
-								<tr height="5">
-									<td colspan="3"></td>
-								</tr>
-
-								<tr>
-									<td width="5"></td>
-									<td>
-										<table width="100%" height="100%" cellspacing="0" cellpadding="5">
-											<tr valign="top">
-												<td>
-													<table height="100%" width="100%" class="invisible" cellspacing="0" cellpadding="0">
-														<tr>
-															<td>
-																<table height="100%" width="100%" cellspacing="0" cellpadding="4">
-
-																	<%					
-
-																		If Session("eventBatch") = True Then
-																			Response.Write("										<tr height='20'> " & vbCrLf)
-																			Response.Write("												<td>" & vbCrLf)
-																			Response.Write("													<table width='100%' class='invisible' cellspacing='0' cellpadding='4'>" & vbCrLf)
-																			Response.Write("														<tr> " & vbCrLf)
-																			Response.Write("															<td width='120' nowrap>" & vbCrLf)
-																			Response.Write("																" & DetailsLabel1 & " :  " & vbCrLf)
-																			Response.Write("															</td> " & vbCrLf)
-																			Response.Write("															<td width='200' name='tdBatchJobName' id='tdBatchJobName'> " & vbCrLf)
-																			Response.Write("																" & Session("eventBatchName") & vbCrLf)
-																			Response.Write("															</td>" & vbCrLf)
-																			Response.Write("															<td width='120' nowrap> " & vbCrLf)
-																			Response.Write("																" & DetailsLabel2 & " :  " & vbCrLf)
-																			Response.Write("															</td>" & vbCrLf)
-																			Response.Write("															<td> " & vbCrLf)
+							If Session("eventBatch") = True Then
+								Response.Write("										<tr height='20'> " & vbCrLf)
+								Response.Write("												<td>" & vbCrLf)
+								Response.Write("													<table width='100%' class='invisible' cellspacing='0' cellpadding='4'>" & vbCrLf)
+								Response.Write("														<tr> " & vbCrLf)
+								Response.Write("															<td width='120' nowrap>" & vbCrLf)
+								Response.Write("																" & DetailsLabel1 & " :  " & vbCrLf)
+								Response.Write("															</td> " & vbCrLf)
+								Response.Write("															<td width='200' name='tdBatchJobName' id='tdBatchJobName'> " & vbCrLf)
+								Response.Write("																" & Session("eventBatchName") & vbCrLf)
+								Response.Write("															</td>" & vbCrLf)
+								Response.Write("															<td width='120' nowrap> " & vbCrLf)
+								Response.Write("																" & DetailsLabel2 & " :  " & vbCrLf)
+								Response.Write("															</td>" & vbCrLf)
+								Response.Write("															<td> " & vbCrLf)
 		
-																			Response.Write(Session("cboString"))
+								Response.Write(Session("cboString"))
 		
-																			Response.Write("															</td> " & vbCrLf)
-																			Response.Write("														</tr>" & vbCrLf)
-																			Response.Write("													</table>" & vbCrLf)
-																			Response.Write("												</td>" & vbCrLf)
-																			Response.Write("											</tr>" & vbCrLf)
-																			Response.Write("											<tr height='10'> " & vbCrLf)
-																			Response.Write("												<td>" & vbCrLf)
-																			Response.Write("													<hr> " & vbCrLf)
-																			Response.Write("												</td>" & vbCrLf)
-																			Response.Write("											</tr>" & vbCrLf)
-																		End If
-																	%>
-																	<tr height="10">
-																		<td>
-																			<table width="100%" class="invisible" cellspacing="0" cellpadding="4">
-																				<tr>
-																					<td nowrap>Name : 
-																					</td>
-																					<td name="tdame" id="tdName" colspan="3"></td>
+								Response.Write("															</td> " & vbCrLf)
+								Response.Write("														</tr>" & vbCrLf)
+								Response.Write("													</table>" & vbCrLf)
+								Response.Write("												</td>" & vbCrLf)
+								Response.Write("											</tr>" & vbCrLf)
+								Response.Write("											<tr height='10'> " & vbCrLf)
+								Response.Write("												<td>" & vbCrLf)
+								Response.Write("													<hr> " & vbCrLf)
+								Response.Write("												</td>" & vbCrLf)
+								Response.Write("											</tr>" & vbCrLf)
+							End If
+						%>
+						<tr height="10">
+							<td>
+								<table class="invisible"  style="padding: 4px; border-collapse: collapse">
+									<tr>
+										<td class="fontsmalltitle">Name : </td>
+										<td name="tdame" id="tdName" colspan="3"></td>
+										<td class="fontsmalltitle" style="width: 8%">Mode : </td>
+										<td width="35%" name="tdMode" id="tdMode"></td>
+									</tr>
 
-																					<td width="8%" nowrap>Mode : 
-																					</td>
-																					<td width="35%" name="tdMode" id="tdMode"></td>
-																				</tr>
+									<tr height="10">
+										<td class="fontsmalltitle nowrap" style="width: 8%">Start : </td>
+										<td width="25%" name="tdStartTime" id="tdStartTime"></td>
+										<td class="fontsmalltitle" style="width: 8%">End : </td>
+										<td width="25%" name="tdEndTime" id="tdEndTime"></td>
+										<td class="fontsmalltitle" style="width: 8%">Duration : </td>
+										<td width="25%" name="tdDuration" id="tdDuration"></td>
+									</tr>
 
-																				<tr height="5">
-																					<td colspan="6"></td>
-																				</tr>
+									<tr height="10">
+										<td class="fontsmalltitle">Type : </td>
+										<td name="tdType" id="tdType"></td>
+										<td class="fontsmalltitle">Status : </td>
+										<td name="tdStatus" id="tdStatus"></td>
+										<td class="fontsmalltitle" style="white-space: nowrap">User name : </td>
+										<td width="15%" name="tdUser" id="tdUser"></td>
+									</tr>
+								</table>
+							</td>
+						</tr>
+						<tr>
+							<td>
+								<hr>
+							</td>
+						</tr>
+						<tr style="height: 20px">
+							<td class="padbot10">
+								<table class="invisible"  style="padding: 4px; border-collapse: collapse">
+									<tr class="padbot10">
+										<td class="fontsmalltitle" style="white-space: nowrap;width:30%">Records Successful :</td>
+										<td name="tdSuccessCount" id="tdSuccessCount"></td>
+										<td class="fontsmalltitle" style="white-space: nowrap;width:30%">Records Failed : </td>
+										<td name="tdFailCount" id="tdFailCount"></td>
+									</tr>
+								</table>
+							</td>
+						</tr>
+						<tr>
+							<td colspan="6" id="gridCell" name="gridCell">
 
-																				<tr height="10">
-																					<td width="8%" nowrap>Start : 
-																					</td>
-																					<td width="25%" name="tdStartTime" id="tdStartTime"></td>
-																					<td width="8%" nowrap>End : 
-																					</td>
-																					<td width="25%" name="tdEndTime" id="tdEndTime"></td>
-																					<td width="8%" nowrap>Duration : 
-																					</td>
-																					<td width="25%" name="tdDuration" id="tdDuration"></td>
-																				</tr>
+								<table id="ssOleDBGridEventLogDetails" class='outline' style="width: 100%">
+									<tr class='header'>
+										<th style='text-align: left;'>ID</th>
+										<th style='text-align: left;'>Details</th>
+									</tr>
 
-																				<tr height="5">
-																					<td colspan="6"></td>
-																				</tr>
+									<%
+										Dim iDetailCount As Integer = 0
 
-																				<tr height="10">
-																					<td nowrap>Type : 
-																					</td>
-																					<td name="tdType" id="tdType"></td>
-																					<td nowrap>Status : 
-																					</td>
-																					<td name="tdStatus" id="tdStatus"></td>
-																					<td width="9%" nowrap>User name : 
-																					</td>
-																					<td width="15%" name="tdUser" id="tdUser"></td>
-																				</tr>
-																			</table>
-																		</td>
-																	</tr>
-																	<tr height="10">
-																		<td>
-																			<hr>
-																		</td>
-																	</tr>
-																	<tr height="10">
-																		<td>
-																			<table width='100%' class="invisible" cellspacing="0" cellpadding="4">
-																				<tr>
-																					<td width="23%" nowrap>Records Successful : 
-																					</td>
-																					<td width="10%" name="tdSuccessCount" id="tdSuccessCount"></td>
-																					<td width="20%" nowrap>Records Failed : 
-																					</td>
-																					<td width="50%" name="tdFailCount" id="tdFailCount"></td>
-																				</tr>
-																			</table>
-																		</td>
-																	</tr>
-																	<tr height="5">
-																		<td colspan="6"></td>
-																	</tr>
-																	<tr>
-																		<td colspan="6" id="gridCell" name="gridCell">
-
-																			<table id="ssOleDBGridEventLogDetails" class='outline' style="width: 100%">
-																				<tr class='header'>
-																					<th style='text-align: left;'>ID</th>
-																					<th style='text-align: left;'>Details</th>
-																				</tr>
-
-																				<%
-																					Dim iDetailCount As Integer = 0
-
-																					Dim prmEventExists = New SqlParameter("piExists", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
-																					Dim rsEventDetails = objDataAccess.GetDataTable("spASRIntGetEventLogDetails", CommandType.StoredProcedure _
-																						, New SqlParameter("piBatchRunID", SqlDbType.Int) With {.Value = CleanNumeric(Request("txtEventBatchRunID"))} _
-																						, New SqlParameter("piEventID", SqlDbType.Int) With {.Value = CleanNumeric(Request("txtEventID"))} _
-																						, prmEventExists)
+										Dim prmEventExists = New SqlParameter("piExists", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
+										Dim rsEventDetails = objDataAccess.GetDataTable("spASRIntGetEventLogDetails", CommandType.StoredProcedure _
+											, New SqlParameter("piBatchRunID", SqlDbType.Int) With {.Value = CleanNumeric(Request("txtEventBatchRunID"))} _
+											, New SqlParameter("piEventID", SqlDbType.Int) With {.Value = CleanNumeric(Request("txtEventID"))} _
+											, prmEventExists)
 		
-																					For Each objRow As DataRow In rsEventDetails.Rows
-																						iDetailCount = iDetailCount + 1
+										For Each objRow As DataRow In rsEventDetails.Rows
+											iDetailCount = iDetailCount + 1
 				
-																						sValue = objRow("Notes").ToString()
-																						sValue = Replace(sValue, """", "&quot;").Replace("'", "&#39;").Replace("<", "&lt;").Replace(">", "&gt;")	'Escape some characters
+											sValue = objRow("Notes").ToString()
+											sValue = Replace(sValue, """", "&quot;").Replace("'", "&#39;").Replace("<", "&lt;").Replace(">", "&gt;")	'Escape some characters
 
-																						Response.Write("<tr disabled='disabled'>")
-																						Response.Write("<td><input type='radio' value='row_" & objRow("EventLogID") & "'></td>")
-																						Response.Write("<td class='findGridCell' id='col_" & iDetailCount.ToString() & "'>" & sValue & "<input id='detail_" & objRow("EventLogID") & "' type='hidden' value='" & sValue & "'></td>")
-																						Response.Write("</tr>")
+											Response.Write("<tr disabled='disabled'>")
+											Response.Write("<td><input type='radio' value='row_" & objRow("EventLogID") & "'></td>")
+											Response.Write("<td class='findGridCell' id='col_" & iDetailCount.ToString() & "'>" & sValue & "<input id='detail_" & objRow("EventLogID") & "' type='hidden' value='" & sValue & "'></td>")
+											Response.Write("</tr>")
 																			
-																					Next
-																				%>
-																			</table>
-																				<% 
-																					If prmEventExists.Value > 0 Then
-																						Response.Write("<input type='hidden' Name='txtEventExists' id='txtEventExists' value='1'>" & vbCrLf)
-																					Else
-																						Response.Write("<input type='hidden' Name='txtEventExists' id='txtEventExists' value='0'>" & vbCrLf)
-																					End If
-																				prmEventExists = Nothing
-																				%>
-																		</td>
-																	</tr>
-																</table>
-															</td>
-														</tr>
-														<tr height="5">
-															<td align="right" valign="bottom">
-																<table class="invisible" cellspacing="0" cellpadding="4">
-																	<tr>
-																		<td width="10">
-																			<input id="cmdEmail" type="button" class="button ui-button ui-widget ui-state-default ui-widget-content ui-corner-tl ui-corner-br" value="Email..." name="cmdEmail" style="width: 80px" onclick="emailEvent();" />
-																			
-																		</td>
-																		<td width="5">
-																			<input id="cmdPrint"  type="button" class="button ui-button ui-widget ui-state-default ui-widget-content ui-corner-tl ui-corner-br" value="Print..." name="cmdPrint" style="width: 80px" onclick="printEvent();" />
-																		</td>
-																		<td width="5">
-																			<input id="cmdOK" type="button" class="button ui-button ui-widget ui-state-default ui-widget-content ui-corner-tl ui-corner-br" value="Close" name="cmdOK" style="width: 80px" onclick="okClick();" />
-																		</td>
-																	</tr>
-																</table>
-															</td>
-														</tr>
-													</table>
-												</td>
-											</tr>
-										</table>
-									</td>
-									<td width="5"></td>
-								</tr>
-							</table>
-						</td>
-					</tr>
-				</table>
-
+										Next
+									%>
+								</table>
+								<% 
+									If prmEventExists.Value > 0 Then
+										Response.Write("<input type='hidden' Name='txtEventExists' id='txtEventExists' value='1'>" & vbCrLf)
+									Else
+										Response.Write("<input type='hidden' Name='txtEventExists' id='txtEventExists' value='0'>" & vbCrLf)
+									End If
+									prmEventExists = Nothing
+								%>
+							</td>
+						</tr>
+					</table>
+				</div>
+				<div id="divEventLogViewDetailsButtons" class="clearboth">
+					<input id="cmdEmail" type="button"  value="Email..." name="cmdEmail"  onclick="emailEvent();" />
+					<input id="cmdPrint" type="button"  value="Print..." name="cmdPrint" onclick="printEvent();" />
+					<input id="cmdOK" type="button"  value="Close" name="cmdOK" onclick="okClick();" />
+				</div>
 			</div>
-
+			<%--This is the popout for email selection--%>
+			<div id="EventLogEmailfromDetails"></div>
 		</form>
 
 		</div>
-		<form id="frmUseful" name="frmUseful" style="visibility: hidden; display: none">
+
+	<form id="frmUseful" name="frmUseful" style="visibility: hidden; display: none">
 			<input type="hidden" id="txtUserName" name="txtUserName" value="<%=session("username")%>">
 			<%
 					
@@ -365,13 +304,13 @@
 			%>
 		</form>
 
-		<form id="frmEmail" name="frmEmail" method="post" style="visibility: hidden; display: none" action="emailSelection">
+	<form id="frmEmail" name="frmEmail" method="post" style="visibility: hidden; display: none" action="emailSelection">
 			<input type="hidden" id="txtSelectedEventIDs" name="txtSelectedEventIDs">
 			<input type="hidden" id="txtBatchInfo" name="txtBatchInfo">
 			<input type="hidden" id="txtBatchy" name="txtBatchy" value="0">
 			<input type="hidden" id="txtFromMain" name="txtFromMain" value="0">
 		</form>
-
+	
 
 		<script type="text/javascript">
 
@@ -379,6 +318,7 @@
 
 				// Convert table to jQuery grid
 				tableToGrid("#ssOleDBGridEventLogDetails", {
+					height: 300,
 					cmTemplate: { sortable: false, editable: false },
 					beforeSelectRow: function (rowid, e) {
 						return false;
@@ -387,9 +327,7 @@
 				});
 
 				$('#ssOleDBGridEventLogDetails').hideCol("ID");
-
-				$("#ssOleDBGridEventLogDetails").jqGrid('setGridHeight', $("#findGridRow").height());
-				$("#ssOleDBGridEventLogDetails").setGridWidth($("#findGridRow").width() - 50);
+				$("#ssOleDBGridEventLogDetails").setGridWidth($("#findGridRow").width());
 
 				if ($("#txtEventExists").val() == 0) {
 
@@ -459,7 +397,25 @@
 					"&txtFromMain=" + frmEmail.txtFromMain.value +
 					"&txtBatchInfo=" + escape(frmEmail.txtBatchInfo.value) +
 					"&txtBatchy=" + frmEmail.txtBatchy.value;
-				OpenHR.windowOpen(sURL, (screen.width) / 3, (screen.height) / 2,'no','no');
+
+				$("#EventLogEmailfromDetails").dialog({
+					autoOpen: false,
+					modal: true,
+					width: (screen.width) / 3,
+					height: (screen.height) / 2,
+					resizable: false,
+					open: function (event, ui) {
+						var $EmailSelect = $('#EventLogEmailfromDetails').dialog();
+						$EmailSelect.load($EmailSelect.data('sURLData'), function () {});
+					},
+					close: function (event, ui) { }
+				});
+
+				var sURLString = sURL;
+				$('#EventLogEmailfromDetails').data('sURLData', sURLString);		
+				$('#EventLogEmailfromDetails').dialog("open");
+
+				<%--OpenHR.windowOpen(sURL, (screen.width) / 3, (screen.height) / 2,'no','no');--%>
 			}
 
 			function printEvent() {
@@ -490,7 +446,7 @@
 				document.getElementById('tdStartTime').innerHTML = document.getElementById('txtEventStartTime_' + sNumber).value;
 				document.getElementById('tdEndTime').innerHTML = document.getElementById('txtEventEndTime_' + sNumber).value;
 				document.getElementById('tdDuration').innerHTML = document.getElementById('txtEventDuration_' + sNumber).value;
-
+				
 				//document.getElementById('tdTime').innerHTML = ASRIntranetFunctions.ConvertSQLDateToTime(document.getElementById('txtEventTime_' + sNumber).value);
 				document.getElementById('tdType').innerHTML = document.getElementById('txtEventType_' + sNumber).value;
 				document.getElementById('tdStatus').innerHTML = document.getElementById('txtEventStatus_' + sNumber).value;
@@ -536,13 +492,10 @@
 			}
 
 		</script>
-
-
+	
 		<script type="text/javascript">
+			$('table').attr('border', '0');
 			eventlogdetails_window_onload();
 		</script>
-
-	</div>
-
 </body>
 </html>

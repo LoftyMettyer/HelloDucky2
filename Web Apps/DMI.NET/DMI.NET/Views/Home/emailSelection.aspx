@@ -85,6 +85,7 @@
     <script src="<%: Url.LatestContent("~/bundles/jQueryUI7")%>" type="text/javascript"></script>
     <script src="<%: Url.LatestContent("~/bundles/Microsoft")%>" type="text/javascript"></script>
     <script src="<%: Url.LatestContent("~/bundles/OpenHR_General")%>" type="text/javascript"></script>
+	  <script src="<%: Url.LatestContent("~/bundles/eventlog")%>" type="text/javascript"></script>
 
     <link id="DMIthemeLink" href="<%: Url.LatestContent("~/Content/themes/" & Session("ui-admin-theme").ToString() & "/jquery-ui.min.css")%>" rel="stylesheet" type="text/css" />
     <script id="officebarscript" src="<%: Url.LatestContent("~/Scripts/officebar/jquery.officebar_MODIFIED.js")%>" type="text/javascript"></script>
@@ -176,12 +177,12 @@
 </head>
 
 <body id="bdyMain" name="bdyMain" <%=session("BodyColour")%>>
-    <form id="frmPopup" name="frmPopup" onsubmit="return setForm();" style="visibility: hidden; display: none">
-        <input type="hidden" id="txtSelectedID" name="txtSelectedID">
-        <input type="hidden" id="txtSelectedName" name="txtSelectedName">
-        <input type="hidden" id="txtSelectedAccess" name="txtSelectedAccess">
-        <input type="hidden" id="txtSelectedUserName" name="txtSelectedUserName">
-    </form>
+	<form id="frmPopup" name="frmPopup" onsubmit="return setForm();" style="visibility: hidden; display: none">
+		<input type="hidden" id="txtSelectedID" name="txtSelectedID">
+		<input type="hidden" id="txtSelectedName" name="txtSelectedName">
+		<input type="hidden" id="txtSelectedAccess" name="txtSelectedAccess">
+		<input type="hidden" id="txtSelectedUserName" name="txtSelectedUserName">
+	</form>
 
 	<div class="absolutefull">
 		<div class="pageTitleDiv" style="margin-bottom: 15px; margin-top: 10px">
@@ -193,96 +194,97 @@
 
 			<div id="divEmailSelectionButtons">
 				<input class="button" id="cmdok" name="cmdok" onclick="emailEvent();" type="button" value="OK" />
-				<input class="button" id="cmdcancel" name="cmdcancel" onclick="self.close();" style="" type="button" value="Cancel" />
+				<input class="button" id="cmdcancel" name="cmdcancel" onclick="closeEmail()" style="" type="button" value="Cancel" />
+				<%--<input class="button" id="cmdcancel" name="cmdcancel" onclick="$(this).dialog().dialog('close');" style="" type="button" value="Cancel" />--%>
 			</div>
 		</div>
 	</div>
 
-    <form name="frmEmailDetails" id="frmEmailDetails" style="visibility: hidden; display: none; width: 100%">
-        <%
-            'Get the required Email information
-            Dim sErrorDescription As String = ""
-            Dim sEmailInfo As String = vbNullString
-            Dim iLastEventID As Integer = -1
-            Dim iDetailCount As Integer = 0
-            Dim EventCounter As Integer = 0
-            Dim objDataAccess As clsDataAccess = CType(Session("DatabaseAccess"), clsDataAccess)
+	<form name="frmEmailDetails" id="frmEmailDetails" style="visibility: hidden; display: none; width: 100%">
+		<%
+			'Get the required Email information
+			Dim sErrorDescription As String = ""
+			Dim sEmailInfo As String = vbNullString
+			Dim iLastEventID As Integer = -1
+			Dim iDetailCount As Integer = 0
+			Dim EventCounter As Integer = 0
+			Dim objDataAccess As clsDataAccess = CType(Session("DatabaseAccess"), clsDataAccess)
 
-            Try
-                Dim prmSubject = New SqlParameter("psSubject", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
-                Dim rsEmailDetails = objDataAccess.GetFromSP("spASRIntGetEventLogEmailInfo" _
-                , New SqlParameter("psSelectedIDs", SqlDbType.VarChar, -1) With {.Value = Request("txtSelectedEventIDs")} _
-                , prmSubject _
-                , New SqlParameter("psOrderColumn", SqlDbType.VarChar, -1) With {.Value = CStr(Request("txtEmailOrderColumn"))} _
-                , New SqlParameter("psOrderOrder", SqlDbType.VarChar, -1) With {.Value = CStr(Request("txtEmailOrderOrder"))})
+			Try
+				Dim prmSubject = New SqlParameter("psSubject", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
+				Dim rsEmailDetails = objDataAccess.GetFromSP("spASRIntGetEventLogEmailInfo" _
+				, New SqlParameter("psSelectedIDs", SqlDbType.VarChar, -1) With {.Value = Request("txtSelectedEventIDs")} _
+				, prmSubject _
+				, New SqlParameter("psOrderColumn", SqlDbType.VarChar, -1) With {.Value = CStr(Request("txtEmailOrderColumn"))} _
+				, New SqlParameter("psOrderOrder", SqlDbType.VarChar, -1) With {.Value = CStr(Request("txtEmailOrderOrder"))})
 			
-                If rsEmailDetails.Rows.Count > 0 Then
-                    For Each objRow As DataRow In rsEmailDetails.Rows
-                        If iLastEventID <> CInt(objRow("ID")) Then
-                            EventCounter = EventCounter + 1
-                            Response.Write(CStr(EventCounter))
-                            sEmailInfo = sEmailInfo & StrDup(Len(objRow("Name").ToString()) + 30, "-") & vbCrLf
-                            sEmailInfo = sEmailInfo & "Event Name : " & objRow("Name").ToString() & vbCrLf
-                            sEmailInfo = sEmailInfo & StrDup(Len(objRow("Name").ToString()) + 30, "-") & vbCrLf
-                            sEmailInfo = sEmailInfo & "Mode :		" & objRow("Mode").ToString() & vbCrLf & vbCrLf
-                            sEmailInfo = sEmailInfo & "Start Time :	" & ConvertSQLDateToLocale(objRow("DateTime")) & " " & ConvertSqlDateToTime(objRow("DateTime")) & vbCrLf
-                            If IsDBNull(objRow("EndTime")) Then
-                                sEmailInfo = sEmailInfo & "End Time :	" & vbCrLf
-                            Else
-                                sEmailInfo = sEmailInfo & "End Time :	" & ConvertSQLDateToLocale(objRow("DateTime")) & " " & ConvertSqlDateToTime(objRow("EndTime")) & vbCrLf
-                            End If
-                            sEmailInfo = sEmailInfo & "Duration :	" & FormatEventDuration(CInt(objRow("Duration"))) & vbCrLf
-                            sEmailInfo = sEmailInfo & "Type :		" & objRow("Type").ToString() & vbCrLf
-                            sEmailInfo = sEmailInfo & "Status :		" & objRow("Status").ToString() & vbCrLf
-                            sEmailInfo = sEmailInfo & "User name :	" & objRow("Username").ToString() & vbCrLf & vbCrLf
-                            If Request("txtFromMain") = 0 Then
-                                If Request("txtBatchy") Then
-                                    sEmailInfo = sEmailInfo & Request("txtBatchInfo") & vbCrLf
-                                End If
-                            Else
-                                If (Not IsDBNull(objRow("BatchName"))) And (Len(objRow("BatchName").ToString()) > 0) Then
-                                    sEmailInfo = sEmailInfo & "Batch Job Name	: " & objRow("BatchName").ToString() & vbCrLf & vbCrLf
-                                End If
-                            End If
+				If rsEmailDetails.Rows.Count > 0 Then
+					For Each objRow As DataRow In rsEmailDetails.Rows
+						If iLastEventID <> CInt(objRow("ID")) Then
+							EventCounter = EventCounter + 1
+							Response.Write(CStr(EventCounter))
+							sEmailInfo = sEmailInfo & StrDup(Len(objRow("Name").ToString()) + 30, "-") & vbCrLf
+							sEmailInfo = sEmailInfo & "Event Name : " & objRow("Name").ToString() & vbCrLf
+							sEmailInfo = sEmailInfo & StrDup(Len(objRow("Name").ToString()) + 30, "-") & vbCrLf
+							sEmailInfo = sEmailInfo & "Mode :		" & objRow("Mode").ToString() & vbCrLf & vbCrLf
+							sEmailInfo = sEmailInfo & "Start Time :	" & ConvertSQLDateToLocale(objRow("DateTime")) & " " & ConvertSqlDateToTime(objRow("DateTime")) & vbCrLf
+							If IsDBNull(objRow("EndTime")) Then
+								sEmailInfo = sEmailInfo & "End Time :	" & vbCrLf
+							Else
+								sEmailInfo = sEmailInfo & "End Time :	" & ConvertSQLDateToLocale(objRow("DateTime")) & " " & ConvertSqlDateToTime(objRow("EndTime")) & vbCrLf
+							End If
+							sEmailInfo = sEmailInfo & "Duration :	" & FormatEventDuration(CInt(objRow("Duration"))) & vbCrLf
+							sEmailInfo = sEmailInfo & "Type :		" & objRow("Type").ToString() & vbCrLf
+							sEmailInfo = sEmailInfo & "Status :		" & objRow("Status").ToString() & vbCrLf
+							sEmailInfo = sEmailInfo & "User name :	" & objRow("Username").ToString() & vbCrLf & vbCrLf
+							If Request("txtFromMain") = 0 Then
+								If Request("txtBatchy") Then
+									sEmailInfo = sEmailInfo & Request("txtBatchInfo") & vbCrLf
+								End If
+							Else
+								If (Not IsDBNull(objRow("BatchName"))) And (Len(objRow("BatchName").ToString()) > 0) Then
+									sEmailInfo = sEmailInfo & "Batch Job Name	: " & objRow("BatchName").ToString() & vbCrLf & vbCrLf
+								End If
+							End If
 										
-                            sEmailInfo = sEmailInfo & "Records Successful :	" & objRow("SuccessCount").ToString() & vbCrLf
-                            sEmailInfo = sEmailInfo & "Records Failed :		" & objRow("FailCount").ToString() & vbCrLf & vbCrLf
-                            sEmailInfo = sEmailInfo & "Details : " & vbCrLf & vbCrLf
-                            iLastEventID = CInt(objRow("ID"))
-                            iDetailCount = 0
-                        End If
+							sEmailInfo = sEmailInfo & "Records Successful :	" & objRow("SuccessCount").ToString() & vbCrLf
+							sEmailInfo = sEmailInfo & "Records Failed :		" & objRow("FailCount").ToString() & vbCrLf & vbCrLf
+							sEmailInfo = sEmailInfo & "Details : " & vbCrLf & vbCrLf
+							iLastEventID = CInt(objRow("ID"))
+							iDetailCount = 0
+						End If
 				
-                        iDetailCount += 1
+						iDetailCount += 1
 				
-                        If objRow("count") > 0 Then
-                            If (Not IsDBNull(objRow("Notes"))) And (Len(objRow("Notes")) > 0) Then
-                                sEmailInfo = sEmailInfo & "*** Log Entry " & CStr(iDetailCount) & " of " & CStr(objRow("count")) & " ***" & vbCrLf
-                                sEmailInfo = sEmailInfo & objRow("Notes").ToString()
-                            End If
-                        Else
-                            sEmailInfo = sEmailInfo & "There are no details for this event log entry" & vbCrLf
-                        End If
-                        sEmailInfo = sEmailInfo & vbCrLf & vbCrLf & vbCrLf
-                    Next
-                    Response.Write("<input  name=txtEventDeleted id=txtEventDeleted value=0>" & vbCrLf)
-                Else
-                    Response.Write("<input  name=txtEventDeleted id=txtEventDeleted value=1>" & vbCrLf)
-                End If
+						If objRow("count") > 0 Then
+							If (Not IsDBNull(objRow("Notes"))) And (Len(objRow("Notes")) > 0) Then
+								sEmailInfo = sEmailInfo & "*** Log Entry " & CStr(iDetailCount) & " of " & CStr(objRow("count")) & " ***" & vbCrLf
+								sEmailInfo = sEmailInfo & objRow("Notes").ToString()
+							End If
+						Else
+							sEmailInfo = sEmailInfo & "There are no details for this event log entry" & vbCrLf
+						End If
+						sEmailInfo = sEmailInfo & vbCrLf & vbCrLf & vbCrLf
+					Next
+					Response.Write("<input  name=txtEventDeleted id=txtEventDeleted value=0>" & vbCrLf)
+				Else
+					Response.Write("<input  name=txtEventDeleted id=txtEventDeleted value=1>" & vbCrLf)
+				End If
 
-                Response.Write("<input  name=txtBody id=txtBody value=""" & Replace(sEmailInfo, """", "&quot;") & """>" & vbCrLf)
-                Response.Write("<input  name=txtSubject id=txtSubject value=""" & Replace(prmSubject.Value.ToString(), """", "&quot;") & """>" & vbCrLf)
-            Catch ex As Exception
-                sErrorDescription = "Error getting the event log records." & vbCrLf & FormatError(ex.Message)
-            End Try
-        %>
-    </form>
+				Response.Write("<input  name=txtBody id=txtBody value=""" & Replace(sEmailInfo, """", "&quot;") & """>" & vbCrLf)
+				Response.Write("<input  name=txtSubject id=txtSubject value=""" & Replace(prmSubject.Value.ToString(), """", "&quot;") & """>" & vbCrLf)
+			Catch ex As Exception
+				sErrorDescription = "Error getting the event log records." & vbCrLf & FormatError(ex.Message)
+			End Try
+		%>
+	</form>
 
-    <form id="frmFromOpener" name="frmFromOpener" style="visibility: hidden; display: none">
-        <input type="hidden" id="calcEmailCurrentID" name="calcEmailCurrentID" value='<%= Request("emailSelCurrentID") %>'>
-    </form>
+	<form id="frmFromOpener" name="frmFromOpener" style="visibility: hidden; display: none">
+		<input type="hidden" id="calcEmailCurrentID" name="calcEmailCurrentID" value='<%= Request("emailSelCurrentID") %>'>
+	</form>
 
-    <input type="hidden" id="txtTicker" name="txtTicker" value="0">
-    <input type="hidden" id="txtLastKeyFind" name="txtLastKeyFind" value="">
+	<input type="hidden" id="txtTicker" name="txtTicker" value="0">
+	<input type="hidden" id="txtLastKeyFind" name="txtLastKeyFind" value="">
 </body>
 
 <script type="text/javascript">
@@ -303,7 +305,8 @@
         ],
 				cmTemplate: { sortable: false },
         rowNum: 1000,   //TODO set this to blocksize...
-        height: 350,
+        //height: 300,
+        height: ((screen.height) / 3.5) + 25,
         autowidth: true,
         beforeSelectRow: function (rowid, e) { return false; }
     });
@@ -313,31 +316,31 @@
         sSelectionList = (sSelectionList == null ? '' : sSelectionList);
     }
 
-    function emailEvent() {
-	    var sTo = getEmails(4);
-	    var sCC = getEmails(5);
-	    var sBCC = getEmails(6);
-	    var sSubject = getSubject();
-	    var sBody = getBody();
+    //function emailEvent() {
+	//    var sTo = getEmails(4);
+	//    var sCC = getEmails(5);
+	//    var sBCC = getEmails(6);
+	//    var sSubject = getSubject();
+	//    var sBody = getBody();
 
-	    $.ajax({
-	    	type: "POST",
-	    	url: "SendEmail",
-	    	data: { 'to': sTo, 'cc': sCC, 'bcc': sBCC, 'subject': sSubject, 'body': sBody },
-	    	dataType: "text",
-	    	success: function (a, b, c) {
-	    		alert(OpenHR.replaceAll(c.statusText, '<br/>', '\n'));
-	    		self.close();
-	    	},
-	    	error: function (req, status, errorObj) {
-	    		if (!(errorObj == "" || req.responseText == "")) {
-	    			alert(OpenHR.replaceAll(errorObj, '<br/>', '\n'));
-	    		}
-	    	}
-	    });
+	//    $.ajax({
+	//    	type: "POST",
+	//    	url: "SendEmail",
+	//    	data: { 'to': sTo, 'cc': sCC, 'bcc': sBCC, 'subject': sSubject, 'body': sBody },
+	//    	dataType: "text",
+	//    	success: function (a, b, c) {
+	//    		alert(OpenHR.replaceAll(c.statusText, '<br/>', '\n'));
+	//    		self.close();
+	//    	},
+	//    	error: function (req, status, errorObj) {
+	//    		if (!(errorObj == "" || req.responseText == "")) {
+	//    			alert(OpenHR.replaceAll(errorObj, '<br/>', '\n'));
+	//    		}
+	//    	}
+	//    });
 
-	    return true;
-    }
+	//    return true;
+    //}
 
     function getEmails(typeIndex) {
 	    var localList = "";
