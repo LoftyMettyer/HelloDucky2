@@ -1623,17 +1623,22 @@ End Sub
 Private Sub abWorkflowStep_Click(ByVal Tool As ActiveBarLibraryCtl.Tool)
 
   Dim sText As String
+  Dim bCopyToClipboard As Boolean
+
+  bCopyToClipboard = False
 
   Select Case Tool.Name
     Case "CopyWebForm"
       sText = grdWebFormEnteredValues.Columns(2).Value
+      bCopyToClipboard = True
     
     Case "CopyStoredData"
       sText = grdStoredDataValues.Columns(1).Value
+      bCopyToClipboard = True
 
   End Select
 
-  If Len(sText) > 0 Then
+  If bCopyToClipboard Then
     Clipboard.Clear
     Clipboard.SetText sText
   End If
