@@ -8865,7 +8865,7 @@ BEGIN
 	EXEC sp_executeSQL @sExecString;
 	
 END
-
+GO
 
 
 IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[sp_ASRIntGetExpressionDefinition]') AND xtype in (N'P'))
