@@ -24,13 +24,16 @@
 			menu_setVisibleMenuItem("mnutoolAccessLinksFind", true);
 			menu_setVisibleMenuItem("mnutoolCancelLinksFind", false);
 
-			//redo the doubleclick function			
-			setTimeout('$("#findGridTable").jqGrid("setGridParam", { ondblClickRow: function (rowID) {doEdit();}});', 200);
+			setTimeout('gridBindKeys(true)', 300);
+
 
 		} else {
 			menu_setVisibletoolbarGroupById("mnuSectionRecordFindEdit", true);
 			menu_setVisibleMenuItem("mnutoolAccessLinksFind", false);
 			menu_setVisibleMenuItem("mnutoolCancelLinksFind", false);
+
+			setTimeout('gridBindKeys(false)', 300);
+
 		}
 	});
 
@@ -43,6 +46,20 @@
 			loadPartialView('linksMain', 'Home', 'workframe', sParams);
 		}
 	}
+
+
+	function gridBindKeys(multifind) {
+		if (multifind) {
+			$("#findGridTable").jqGrid("setGridParam", { ondblClickRow: function(rowID) { doEdit(); } });
+			$('#findGridTable').jqGrid('bindKeys', { "onEnter": function() { doEdit(); } });
+		} else {
+			$("#findGridTable").jqGrid("setGridParam", { ondblClickRow: function (rowID) { menu_editRecord(); } });
+			$('#findGridTable').jqGrid('bindKeys', { "onEnter": function () { menu_editRecord(); } });
+		}
+	}
+
+
+
 </script>
 
 <div id="divFindForm" <%=session("BodyTag")%>>

@@ -171,20 +171,11 @@ function find_window_onload() {
 					pager: $('#pager-coldata'),
 					ignoreCase: true,
 					shrinkToFit: shrinkToFit,
-					ondblClickRow: function () {
-						menu_editRecord();
-					},
 					loadComplete: function () {
 						moveFirst();
 					},
 					afterSearch: function() {
 						moveFirst();
-					}
-				});
-
-				$("#findGridTable").jqGrid('bindKeys', {
-					"onEnter": function () {
-						menu_editRecord();
 					}
 				});
 
