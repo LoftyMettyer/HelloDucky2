@@ -72,7 +72,7 @@ function refreshControls() {
 	menu_refreshMenu();
 }
 
-function submitDefinition() {
+function submitDefinition() {	
 	if (validate() == false) { menu_refreshMenu(); return; }
 	if (populateSendForm() == false) { menu_refreshMenu(); return; }
 
@@ -336,7 +336,7 @@ function validate() {
 	}
 
 	// Check the picklist list does have some records.      
-	if ($("#ssOleDBGrid").getGridParam('reccount') == 0) {
+	if (($("#ssOleDBGrid").getGridParam('reccount') == 0) ||($("#ssOleDBGrid").getGridParam('reccount') == undefined)) {
 		OpenHR.messageBox("Picklists must contain at least one record.");
 		return (false);
 	}
