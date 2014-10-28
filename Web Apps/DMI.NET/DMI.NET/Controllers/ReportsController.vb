@@ -101,15 +101,36 @@ Namespace Controllers
 					objModel.Columns = deserializer.Deserialize(Of List(Of ReportColumnItem))(objModel.ColumnsAsString)
 				End If
 
-				If objModel.IsSummary AndAlso objModel.Columns.Where(Function(m) m.IsAverage OrElse m.IsCount OrElse m.IsTotal).LongCount() = 0 Then
-					ModelState.AddModelError("IsSummaryOK", "There are no columns defined as aggregates for this summary report.")
-				End If
+				' Check the column heading has value.
+				For Each columnItem As ReportColumnItem In objModel.Columns
+					If String.IsNullOrEmpty(columnItem.Heading.Trim()) And
+							columnItem.IsHidden = False Then
+						ModelState.AddModelError("IsColumnHeaderEmpty", "The '" & columnItem.Name & "' column has a blank column heading.")
+						Exit For
+					End If
+				Next
 
-				If objModel.IgnoreZerosForAggregates AndAlso objModel.Columns.Where( _
-					Function(m) (m.DataType = ColumnDataType.sqlInteger OrElse m.DataType = ColumnDataType.sqlNumeric) AndAlso (m.IsAverage OrElse m.IsCount OrElse m.IsTotal) _
-						).LongCount() = 0 Then
-					ModelState.AddModelError("IsIgnoreZerosOK", "You have chosen to ignore zeros when calculating aggregates, but have not selected to show aggregates for any numeric columns.")
-				End If
+				' Check the column headings are unique. Used the Goto statement to break the nested loop.
+					For Each columnItem As ReportColumnItem In objModel.Columns
+						For Each columnItemHeaderToCheck As ReportColumnItem In objModel.Columns
+
+							If columnItem.ID <> columnItemHeaderToCheck.ID AndAlso UCase(columnItem.Heading.Trim()) = UCase(columnItemHeaderToCheck.Heading.Trim()) AndAlso columnItemHeaderToCheck.IsHidden = False Then
+								ModelState.AddModelError("IsColumnHeaderUnique", "One or more columns / calculations in your report have a heading of '" & columnItemHeaderToCheck.Heading & "'. " & "Column headings must be unique.")
+							GoTo ExitNestedLoop
+							End If
+						Next
+					Next
+ExitNestedLoop:
+
+					If objModel.IsSummary AndAlso objModel.Columns.Where(Function(m) m.IsAverage OrElse m.IsCount OrElse m.IsTotal).LongCount() = 0 Then
+						ModelState.AddModelError("IsSummaryOK", "There are no columns defined as aggregates for this summary report.")
+					End If
+
+					If objModel.IgnoreZerosForAggregates AndAlso objModel.Columns.Where( _
+						Function(m) (m.DataType = ColumnDataType.sqlInteger OrElse m.DataType = ColumnDataType.sqlNumeric) AndAlso (m.IsAverage OrElse m.IsCount OrElse m.IsTotal) _
+							).LongCount() = 0 Then
+						ModelState.AddModelError("IsIgnoreZerosOK", "You have chosen to ignore zeros when calculating aggregates, but have not selected to show aggregates for any numeric columns.")
+					End If
 
 			End If
 
@@ -590,7 +611,7 @@ Namespace Controllers
 		End Sub
 
 		<HttpPost>
-		 Sub AddReportColumn(objModel As ReportColumnItem)
+		Sub AddReportColumn(objModel As ReportColumnItem)
 
 			Dim objReport As ReportBaseModel
 			objReport = CType(objReportRepository.RetrieveParent(objModel), ReportBaseModel)
