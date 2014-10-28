@@ -200,7 +200,7 @@
     <Import Include="System.Web.UI.HtmlControls" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Content\BundleConfig.vb" />
+    <Compile Include="App_Start\BundleConfig.vb" />
     <Compile Include="App_Start\DataAnnotationConfig.vb" />
     <Compile Include="App_Start\DatabaseConfig.vb" />
     <Compile Include="App_Start\RouteConfig.vb" />
@@ -1195,7 +1195,6 @@
     <None Include="Scripts\jquery-2.1.1.intellisense.js" />
     <Content Include="Scripts\FormScripts\BulkBooking.js" />
     <Content Include="Scripts\FormScripts\BulkBookingSelection.js" />
-    <Content Include="Scripts\FormScripts\EventLog.js" />
     <Content Include="Scripts\jquery-2.1.1.js" />
     <Content Include="Scripts\jquery-2.1.1.min.js" />
     <Content Include="Scripts\jquery-ui-1.10.4.js" />

@@ -684,23 +684,10 @@ select.readonly {
 }
 
 
-#divExpressionSelectionButtons input[type=button], 
-#divEmailSelectionButtons  input[type=button], 
-#divChildTablesButtons input[type=button],
-#divEventLogPurgeButtons input[type=button],
-#divEventLogDeleteButtons input[type=button],
-#divEventLogEmailSelectButtons input[type=button],
-#divEventLogViewDetailsButtons input[type=button]
-{
+#divExpressionSelectionButtons input[type=button], #divEmailSelectionButtons  input[type=button], #divChildTablesButtons input[type=button] {
 	width: 86px;
 }
-
-#divChildTablesButtons, 
-#divEventLogPurgeButtons,
-#divEventLogDeleteButtons,
-#divEventLogEmailSelectButtons,
-#divEventLogViewDetailsButtons
- {
+#divChildTablesButtons {
 	float: right;
 	margin: 10px 0 5px 0;
 }
