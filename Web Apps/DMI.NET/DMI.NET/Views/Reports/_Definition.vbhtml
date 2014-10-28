@@ -394,6 +394,8 @@
 
 				// Clear the Parent1 and Parent2 table names only if the base table changed 
 				if (baseTableChanged) {
+					$("#txtParent1ID").val(0);
+					$("#txtParent2ID").val(0);
 					$("#Parent1_Name").val("");
 					$("#Parent2_Name").val("");
 				}
