@@ -36,7 +36,7 @@
 		}
 
 		function createNew(){
-				window.dialogArguments.OpenHR.createNew(self);		
+				window.opener.OpenHR.createNew(self);		
 		}
 
 		function removeComponents(piIndex)
@@ -54,18 +54,18 @@
 								sKeys = window.txtHiddenOwnerKeys.value;
 						}
 				}
-				window.dialogArguments.OpenHR.removeComponents(sKeys);		  
+				window.opener.OpenHR.removeComponents(sKeys);		  
 				cancelClick();
 		}
 
 		function returnToDefSel() {
 
-				window.dialogArguments.OpenHR.returnToDefSel();		  
+				window.opener.OpenHR.returnToDefSel();		  
 				cancelClick();
 		}
 
 		function makeHidden() {
-			document.parentWindow.parent.window.dialogArguments.window.makeHidden(self);
+			document.parentWindow.parent.window.opener.window.makeHidden(self);
 		}
 
 		function nextPass() {
@@ -79,8 +79,8 @@
 						OpenHR.submitForm(frmValidate);
 				}
 				else {
-						var frmSend = window.dialogArguments.OpenHR.getForm("workframe", "frmSend");
-						window.dialogArguments.OpenHR.submitForm(frmSend);
+						var frmSend = window.opener.OpenHR.getForm("workframe", "frmSend");
+						window.opener.OpenHR.submitForm(frmSend);
 						self.close();
 				}
 		}
@@ -88,7 +88,7 @@
 		function cancelClick() {
 
 				var iIndex;
-				var sCurrentPage = window.dialogArguments.document.location;
+				var sCurrentPage = window.opener.document.location;
 
 				try {
 						sCurrentPage = sCurrentPage.toString();
@@ -108,7 +108,7 @@
 					} catch(e) {}
 					
 					if (sCurrentPage == "UTIL_DEF_EXPRESSION") {
-								window.dialogArguments.OpenHR.reEnableControls();
+								window.opener.OpenHR.reEnableControls();
 						}
 				}
 				catch(e) {

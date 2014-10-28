@@ -67,7 +67,7 @@
 		}
 
 		function createNew() {
-				window.dialogArguments.OpenHR.createNew(self);
+				window.opener.OpenHR.createNew(self);
 		}
 
 		function makeHidden() {

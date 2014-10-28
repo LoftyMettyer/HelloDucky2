@@ -1416,7 +1416,7 @@ function testClick() {
 	frmTest.prompts.value = sPrompts;
 	frmTest.filtersAndCalcs.value = sFiltersAndCalcs;
 
-	sURL = "util_dialog_expression" + "?action=test";
+	sURL = "util_dialog_expression" + "?action=test";	
 
 	openDialog(sURL, (screen.width) / 2, (screen.height) / 3);
 
@@ -1810,14 +1810,14 @@ function makeHidden(pPopup) {
 }
 
 function openDialog(pDestination, pWidth, pHeight) {
-	var dlgwinprops = "center:yes;" +
-			"dialogHeight:" + pHeight + "px;" +
-			"dialogWidth:" + pWidth + "px;" +
-			"help:no;" +
-			"resizable:yes;" +
-			"scroll:yes;" +
-			"status:no;";
-	window.showModalDialog(pDestination, self, dlgwinprops);
+	var dlgwinprops = "center:yes," +
+			"height=" + pHeight + "px," +
+			"width=" + pWidth + "px," +
+			"resizable=yes," +
+			"scroll=yes," +
+			"status=no";
+	var newWin = window.open(pDestination, self, dlgwinprops);
+	newWin.focus();
 }
 
 function SSTree1_afterLabelEdit() {

@@ -1209,7 +1209,7 @@
 	{
 		//function to detect if this form is displayed in a dialog or a jquery modal div.
 		//true = window.dialog.
-		var opener = window.dialogArguments;
+		var opener = window.dialogArguments || window.opener;
 		return (opener == null)?false:true;
 	},
 

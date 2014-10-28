@@ -18,7 +18,7 @@
 		function util_dialog_expression_onload() {
 
 				if(frmUseful.action.value == "test") {
-						var frmParentTest = window.dialogArguments.document.forms["frmTest"];
+					var frmParentTest = window.opener.document.forms["frmTest"];
 	
 						frmTest.type.value = frmParentTest.type.value;
 						frmTest.components1.value = frmParentTest.components1.value;
@@ -29,7 +29,7 @@
 
 				}
 				else {
-						var frmParentValidate = window.dialogArguments.OpenHR.getForm("workframe","frmValidate");
+					var frmParentValidate = window.opener.OpenHR.getForm("workframe", "frmValidate");
 	
 						frmValidate.validatePass.value = frmParentValidate.validatePass.value;
 						frmValidate.validateName.value = frmParentValidate.validateName.value;
