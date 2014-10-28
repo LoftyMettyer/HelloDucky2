@@ -52,56 +52,56 @@
 
 <html>
 <head runat="server">
-		<title>OpenHR</title>
-		
-		<script type="text/javascript">
-				function util_test_expression_onload() {
+	<title>OpenHR</title>
 
-					var iNewWidth;
-					
-						if (txtDisplay.value != "False") {
+	<script type="text/javascript">
+		function util_test_expression_onload() {
 
-								// Hide the 'please wait' message.
-								trPleaseWait1.style.visibility='hidden';
-								trPleaseWait1.style.display='none';
-								trPleaseWait2.style.visibility='hidden';
-								trPleaseWait2.style.display='none';
-								trPleaseWait3.style.visibility='hidden';
-								trPleaseWait3.style.display='none';
-								trPleaseWait4.style.visibility='hidden';
-								trPleaseWait4.style.display='none';
-								trPleaseWait5.style.visibility='hidden';
-								trPleaseWait5.style.display='none';
+			var iNewWidth, iNewHeight;
 
-								var bdyMain = $("#bdyMain");
+			if (txtDisplay.value != "False") {
 
-								// Resize the grid to show all prompted values.
-								var iResizeBy = bdyMain.scrollWidth	- bdyMain.clientWidth;
-								if (bdyMain.offsetWidth + iResizeBy > screen.width) {
-										window.dialogWidth = new String(screen.width) + "px";
-								}
-								else {
-										iNewWidth = new Number(window.dialogWidth.substr(0, window.dialogWidth.length-2));
-										iNewWidth = iNewWidth + iResizeBy;
-										window.dialogWidth = new String(iNewWidth) + "px";
-								}
+				// Hide the 'please wait' message.
+				trPleaseWait1.style.visibility = 'hidden';
+				trPleaseWait1.style.display = 'none';
+				trPleaseWait2.style.visibility = 'hidden';
+				trPleaseWait2.style.display = 'none';
+				trPleaseWait3.style.visibility = 'hidden';
+				trPleaseWait3.style.display = 'none';
+				trPleaseWait4.style.visibility = 'hidden';
+				trPleaseWait4.style.display = 'none';
+				trPleaseWait5.style.visibility = 'hidden';
+				trPleaseWait5.style.display = 'none';
 
-								iResizeBy = bdyMain.scrollHeight	- bdyMain.clientHeight;
-								if (bdyMain.offsetHeight + iResizeBy > screen.height) {
-										window.dialogHeight = new String(screen.height) + "px";
-								}
-								else {
-										iNewHeight = new Number(window.dialogHeight.substr(0, window.dialogHeight.length-2));
-										iNewHeight = iNewHeight + iResizeBy;
-										window.dialogHeight = new String(iNewHeight) + "px";
-								}
-						}
-						else {
-								self.close();
-						}
+				var bdyMain = $("#bdyMain");
+
+				// Resize the grid to show all prompted values.
+				var iResizeBy = bdyMain.scrollWidth - bdyMain.clientWidth;
+				if (bdyMain.offsetWidth + iResizeBy > screen.width) {
+					window.outerWidth = new String(screen.width) + "px";
+				}
+				else {
+					iNewWidth = window.parent.outerWidth;
+					iNewWidth = iNewWidth + iResizeBy;
+					window.outerWidth = new String(iNewWidth) + "px";
 				}
 
-		</script>
+				iResizeBy = bdyMain.scrollHeight - bdyMain.clientHeight;
+				if (bdyMain.offsetHeight + iResizeBy > screen.height) {
+					window.outerHeight = new String(screen.height) + "px";
+				}
+				else {
+					iNewHeight = window.parent.outerHeight;
+					iNewHeight = iNewHeight + iResizeBy;
+					window.outerHeight = new String(iNewHeight) + "px";
+				}
+			}
+			else {
+				self.close();
+			}
+		}
+
+	</script>
 
 
 </head>

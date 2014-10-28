@@ -13,7 +13,7 @@
 			if (OpenHR.parentExists()) {
 
 				try {
-					window.parent.window.dialogArguments.window.makeSelection('FILTER', '<%=Session("filterIDvalue")%>', '<%=Session("promptsvalue")%>');
+					window.parent.window.opener.window.makeSelection('FILTER', '<%=Session("filterIDvalue")%>', '<%=Session("promptsvalue")%>');
 				}
 				catch (e) {
 					try {

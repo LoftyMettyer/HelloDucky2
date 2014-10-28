@@ -76,12 +76,12 @@
 						// Resize the grid to show all prompted values.
 						var iResizeBy = frmPromptedValues.offsetParent.scrollHeight	- frmPromptedValues.offsetParent.clientHeight;
 						if (frmPromptedValues.offsetParent.offsetHeight + iResizeBy > screen.height) {
-								window.parent.dialogHeight = new String(screen.height) + "px";
+								window.parent.outerHeight = new String(screen.height) + "px";
 						}
 						else {
-								var iNewHeight = new Number(window.parent.dialogHeight.substr(0, window.parent.dialogHeight.length-2));
+							var iNewHeight = window.parent.outerHeight;
 								iNewHeight = iNewHeight + iResizeBy;
-								window.parent.dialogHeight = new String(iNewHeight) + "px";
+								window.parent.outerHeight = new String(iNewHeight) + "px";
 						}
 				}
 		}

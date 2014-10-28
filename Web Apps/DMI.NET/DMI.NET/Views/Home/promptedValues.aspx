@@ -48,11 +48,11 @@
 					// dialog option
 					var iResizeBy = frmPromptedValues.offsetParent.scrollHeight - frmPromptedValues.offsetParent.clientHeight;
 					if (frmPromptedValues.offsetParent.offsetHeight + iResizeBy > screen.height) {
-						window.parent.dialogHeight = new String(screen.height) + "px";
+						window.parent.offsetHeight = new String(screen.height) + "px";
 					} else {
-						var iNewHeight = new Number(window.parent.dialogHeight.substr(0, window.parent.dialogHeight.length - 2));
+						var iNewHeight = new Number(window.parent.offsetHeight.substr(0, window.parent.offsetHeight.length - 2));
 						iNewHeight = iNewHeight + iResizeBy;
-						window.parent.dialogHeight = new String(iNewHeight) + "px";
+						window.parent.offsetHeight = new String(iNewHeight) + "px";
 					}
 				}
 				else {
