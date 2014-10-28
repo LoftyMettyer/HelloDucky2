@@ -8,10 +8,12 @@ CREATE PROCEDURE [dbo].[spASRInstantiateTriggeredWorkflows]
 				@iInstanceID		integer,
 				@iStartElementID	integer,
 				@iTemp				integer,
+				@iBaseTable		integer,
 				@iParent1TableID	integer,
 				@iParent1RecordID	integer,
 				@iParent2TableID	integer,
-				@iParent2RecordID	integer
+				@iParent2RecordID	integer,
+				@TargetName varchar(MAX);
 
 			DECLARE @succeedingElements table(elementID int)
 		
@@ -22,7 +24,8 @@ CREATE PROCEDURE [dbo].[spASRInstantiateTriggeredWorkflows]
 				Q.parent1TableID,
 				Q.parent1RecordID,
 				Q.parent2TableID,
-				Q.parent2RecordID
+				Q.parent2RecordID,
+				WF.baseTable
 			FROM ASRSysWorkflowQueue Q
 			INNER JOIN ASRSysWorkflowTriggeredLinks TL ON Q.linkID = TL.linkID
 			INNER JOIN ASRSysWorkflows WF ON TL.workflowID = WF.ID
@@ -31,12 +34,14 @@ CREATE PROCEDURE [dbo].[spASRInstantiateTriggeredWorkflows]
 				AND datediff(dd,DateDue,getdate()) >= 0
 		
 			OPEN triggeredWFCursor
-			FETCH NEXT FROM triggeredWFCursor INTO @iQueueID, @iRecordID, @iWorkflowID, @iParent1TableID, @iParent1RecordID, @iParent2TableID, @iParent2RecordID
+			FETCH NEXT FROM triggeredWFCursor INTO @iQueueID, @iRecordID, @iWorkflowID, @iParent1TableID, @iParent1RecordID, @iParent2TableID, @iParent2RecordID, @iBaseTable
 			WHILE (@@fetch_status = 0) 
 			BEGIN
 				UPDATE ASRSysWorkflowQueue
 				SET dateInitiated = getDate()
-				WHERE queueID = @iQueueID
+				WHERE queueID = @iQueueID;
+
+				EXEC [dbo].[sp_ASRIntGetRecordDescription] @iBaseTable, @iRecordID, 0, 0, @TargetName OUTPUT;
 				
 				-- Create the Workflow Instance record, and remember the ID. */
 				INSERT INTO ASRSysWorkflowInstances (workflowID, 
@@ -47,7 +52,8 @@ CREATE PROCEDURE [dbo].[spASRInstantiateTriggeredWorkflows]
 					parent1RecordID,
 					parent2TableID,
 					parent2RecordID,
-					pageno)
+					pageno,
+					TargetName)
 				VALUES (@iWorkflowID, 
 					@iRecordID, 
 					0, 
@@ -56,7 +62,8 @@ CREATE PROCEDURE [dbo].[spASRInstantiateTriggeredWorkflows]
 					@iParent1RecordID,
 					@iParent2TableID,
 					@iParent2RecordID,
-					0)
+					0,
+					@TargetName)
 								
 				SELECT @iInstanceID = MAX(id)
 				FROM ASRSysWorkflowInstances
@@ -131,7 +138,7 @@ CREATE PROCEDURE [dbo].[spASRInstantiateTriggeredWorkflows]
 				WHERE ASRSysWorkflowElements.workflowID = @iWorkflowID
 					AND ASRSysWorkflowElements.type = 5						
 				
-				FETCH NEXT FROM triggeredWFCursor INTO @iQueueID, @iRecordID, @iWorkflowID, @iParent1TableID, @iParent1RecordID, @iParent2TableID, @iParent2RecordID
+				FETCH NEXT FROM triggeredWFCursor INTO @iQueueID, @iRecordID, @iWorkflowID, @iParent1TableID, @iParent1RecordID, @iParent2TableID, @iParent2RecordID, @iBaseTable
 			END
 			CLOSE triggeredWFCursor
 			DEALLOCATE triggeredWFCursor
