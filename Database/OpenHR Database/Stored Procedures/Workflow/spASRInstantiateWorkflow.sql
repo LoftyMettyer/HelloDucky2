@@ -31,6 +31,7 @@ CREATE PROCEDURE [dbo].[spASRInstantiateWorkflow]
 				@iSQLVersion			integer,
 				@fExternallyInitiated	bit,
 				@fEnabled				bit,
+				@fHasTargetIdentifier bit,
 				@iElementType			integer,
 				@fStoredDataOK			bit, 
 				@sStoredDataMsg			varchar(MAX), 
@@ -64,7 +65,8 @@ CREATE PROCEDURE [dbo].[spASRInstantiateWorkflow]
 					WHEN initiationType = 2 THEN 1
 					ELSE 0
 				END,
-				@fEnabled = enabled
+				@fEnabled = [enabled],
+				@fHasTargetIdentifier = [HasTargetIdentifier]
 			FROM ASRSysWorkflows
 			WHERE ID = @piWorkflowID;
 		
@@ -93,6 +95,9 @@ CREATE PROCEDURE [dbo].[spASRInstantiateWorkflow]
 						@iRecordCount OUTPUT,
 						@sTargetName OUTPUT;
 				END
+
+				IF @fHasTargetIdentifier = 1
+					SET @sTargetName = '<Unidentified>';
 			
 				IF NOT @iRecordID IS null SET @iInitiatorID = @iRecordID
 				IF @iInitiatorID = 0 

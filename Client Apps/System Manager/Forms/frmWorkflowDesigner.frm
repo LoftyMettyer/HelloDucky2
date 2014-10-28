@@ -11563,6 +11563,7 @@ Private Function SaveWorkflow() As Boolean
 
   Dim fOK As Boolean
   Dim fTransStarted As Boolean
+  Dim bHasTargetIdentifier As Boolean
   
   fTransStarted = False
   
@@ -11596,6 +11597,16 @@ Private Function SaveWorkflow() As Boolean
     fTransStarted = True
     daoWS.BeginTrans
 
+    ' Delete the existing element and link definitions for this workflow.
+    daoDb.Execute "DELETE FROM tmpWorkflowElementItems WHERE elementID IN(SELECT ID FROM tmpWorkflowElements WHERE workflowID=" & mlngWorkflowID & ")"
+    daoDb.Execute "DELETE FROM tmpWorkflowElementItemValues WHERE itemID NOT IN(SELECT ID FROM tmpWorkflowElementItems)"
+    daoDb.Execute "DELETE FROM tmpWorkflowElementColumns WHERE elementID IN(SELECT ID FROM tmpWorkflowElements WHERE workflowID=" & mlngWorkflowID & ")"
+    daoDb.Execute "DELETE FROM tmpWorkflowElementValidations WHERE elementID IN(SELECT ID FROM tmpWorkflowElements WHERE workflowID=" & mlngWorkflowID & ")"
+    daoDb.Execute "DELETE FROM tmpWorkflowElements WHERE workflowID=" & mlngWorkflowID
+    daoDb.Execute "DELETE FROM tmpWorkflowLinks WHERE workflowID=" & mlngWorkflowID
+
+    fOK = SaveElementsAndLinks(bHasTargetIdentifier)
+    
     ' Find the workflow record.
     With recWorkflowEdit
       .Index = "idxWorkflowID"
@@ -11612,20 +11623,13 @@ Private Function SaveWorkflow() As Boolean
         .Fields("baseTable") = mlngBaseTableID
         .Fields("changed") = True
         .Fields("perge") = (.Fields("perge") Or mfPerge)
+        .Fields("HasTargetIdentifier") = bHasTargetIdentifier
       End If
 
       .Update
     End With
 
-    ' Delete the existing element and link definitions for this workflow.
-    daoDb.Execute "DELETE FROM tmpWorkflowElementItems WHERE elementID IN(SELECT ID FROM tmpWorkflowElements WHERE workflowID=" & mlngWorkflowID & ")"
-    daoDb.Execute "DELETE FROM tmpWorkflowElementItemValues WHERE itemID NOT IN(SELECT ID FROM tmpWorkflowElementItems)"
-    daoDb.Execute "DELETE FROM tmpWorkflowElementColumns WHERE elementID IN(SELECT ID FROM tmpWorkflowElements WHERE workflowID=" & mlngWorkflowID & ")"
-    daoDb.Execute "DELETE FROM tmpWorkflowElementValidations WHERE elementID IN(SELECT ID FROM tmpWorkflowElements WHERE workflowID=" & mlngWorkflowID & ")"
-    daoDb.Execute "DELETE FROM tmpWorkflowElements WHERE workflowID=" & mlngWorkflowID
-    daoDb.Execute "DELETE FROM tmpWorkflowLinks WHERE workflowID=" & mlngWorkflowID
 
-    fOK = SaveElementsAndLinks
   End If
 
 ExitSaveWorkflow:
@@ -12023,7 +12027,7 @@ ErrorTrap:
 End Function
 
 
-Private Function SaveElementsAndLinks() As Boolean
+Private Function SaveElementsAndLinks(ByRef bHasTargetIdentifier As Boolean) As Boolean
   ' Save the definition of the given element.
   On Error GoTo ErrorTrap
 
@@ -12049,6 +12053,8 @@ Private Function SaveElementsAndLinks() As Boolean
   ReDim alngIndexDirectory(2, 0)
   ' Column 1 = element control index
   ' Column 2 = element record ID
+  
+  bHasTargetIdentifier = False
   
   ' Save the elements.
   For Each wfElement In mcolwfElements
@@ -12154,6 +12160,7 @@ Private Function SaveElementsAndLinks() As Boolean
           .Fields("secondaryRecSelIdentifier") = wfElement.SecondaryRecordSelectorIdentifier
           .Fields("SecondaryDataRecordTable") = wfElement.SecondaryDataRecordTableID
           .Fields("UseAsTargetIdentifier") = wfElement.UseAsTargetIdentifier
+          bHasTargetIdentifier = bHasTargetIdentifier Or wfElement.UseAsTargetIdentifier
                  
         End Select
         .Update
@@ -12306,6 +12313,7 @@ Private Function SaveElementsAndLinks() As Boolean
               .Fields("HotSpotIdentifier") = asItems(81, iLoop)
               .Fields("UseAsTargetIdentifier") = asItems(82, iLoop)
               
+              bHasTargetIdentifier = bHasTargetIdentifier Or CBool(asItems(82, iLoop))
             End If
             
             .Fields("CalcID") = val(asItems(56, iLoop))

@@ -359,6 +359,56 @@ PRINT 'Step - Workflow Log Enhancements'
 		EXEC sp_executesql N'UPDATE ASRSysWorkflowInstances SET TargetName = ''<Unidentified>'';';
 	END
 
+	IF NOT EXISTS(SELECT id FROM syscolumns WHERE  id = OBJECT_ID('tbsys_Workflows', 'U') AND name = 'HasTargetIdentifier')
+	BEGIN
+		EXEC sp_executesql N'DROP VIEW ASRSysWorkflows;';
+		EXEC sp_executesql N'ALTER TABLE tbsys_Workflows ADD HasTargetIdentifier bit;';
+		EXEC sp_executesql N'CREATE VIEW [dbo].[ASRSysWorkflows]
+					WITH SCHEMABINDING
+					AS SELECT base.[id], base.[name], base.[description], base.[enabled], base.[initiationtype], base.[basetable], base.[querystring], base.[pictureid], obj.[locked], obj.[lastupdated], obj.[lastupdatedby], base.[HasTargetIdentifier]
+						FROM dbo.[tbsys_workflows] base
+						INNER JOIN dbo.[tbsys_scriptedobjects] obj ON obj.targetid = base.id AND obj.objecttype = 10
+						INNER JOIN dbo.[tbstat_effectivedates] dt ON dt.[type] = 1
+						WHERE obj.effectivedate <= dt.[date]';
+
+		EXEC sp_executesql N'CREATE TRIGGER [dbo].[INS_ASRSysWorkflows] ON [dbo].[ASRSysWorkflows]
+		INSTEAD OF INSERT
+		AS
+		BEGIN
+	
+			SET NOCOUNT ON;
+	
+			-- Update objects table
+			IF NOT EXISTS(SELECT [guid]
+				FROM dbo.[tbsys_scriptedobjects] o
+				INNER JOIN inserted i ON i.id = o.targetid AND o.objecttype = 10)
+			BEGIN
+				INSERT dbo.[tbsys_scriptedobjects] ([guid], [objecttype], [targetid], [ownerid], [effectivedate], [revision], [locked], [lastupdated])
+					SELECT NEWID(), 10, [id], dbo.[udfsys_getownerid](), ''01/01/1900'',1,0, GETDATE()
+						FROM inserted;
+			END
+
+			-- Update base table								
+			INSERT dbo.[tbsys_workflows] ([id], [name], [description], [enabled], [initiationType], [baseTable], [queryString], [pictureid], [HasTargetIdentifier]) 
+				SELECT [id], [name], [description], [enabled], [initiationType], [baseTable], [queryString], [pictureid], [HasTargetIdentifier] FROM inserted;
+
+		END';
+
+		EXEC sp_executesql N'CREATE TRIGGER [dbo].[DEL_ASRSysWorkflows] ON [dbo].[ASRSysWorkflows]
+		INSTEAD OF DELETE
+		AS
+		BEGIN
+			SET NOCOUNT ON;
+
+			DELETE FROM [tbsys_workflows] WHERE id IN (SELECT id FROM deleted);
+			DELETE FROM [tbsys_scriptedobjects] WHERE targetid IN (SELECT id FROM deleted) AND objecttype = 10;
+
+		END';
+
+		EXEC sp_executesql N'UPDATE [ASRSysWorkflows] SET HasTargetIdentifier = 0'; 
+
+	END
+
 	IF NOT EXISTS(SELECT id FROM syscolumns WHERE  id = OBJECT_ID('ASRSysWorkflowElementItems', 'U') AND name = 'UseAsTargetIdentifier')
 		EXEC sp_executesql N'ALTER TABLE ASRSysWorkflowElementItems ADD UseAsTargetIdentifier bit;';
 
@@ -1422,6 +1472,7 @@ END'
 				@iSQLVersion			integer,
 				@fExternallyInitiated	bit,
 				@fEnabled				bit,
+				@fHasTargetIdentifier bit,
 				@iElementType			integer,
 				@fStoredDataOK			bit, 
 				@sStoredDataMsg			varchar(MAX), 
@@ -1455,7 +1506,8 @@ END'
 					WHEN initiationType = 2 THEN 1
 					ELSE 0
 				END,
-				@fEnabled = enabled
+				@fEnabled = [enabled],
+				@fHasTargetIdentifier = [HasTargetIdentifier]
 			FROM ASRSysWorkflows
 			WHERE ID = @piWorkflowID;
 		
@@ -1484,6 +1536,9 @@ END'
 						@iRecordCount OUTPUT,
 						@sTargetName OUTPUT;
 				END
+
+				IF @fHasTargetIdentifier = 1
+					SET @sTargetName = ''<Unidentified>'';
 			
 				IF NOT @iRecordID IS null SET @iInitiatorID = @iRecordID
 				IF @iInitiatorID = 0 
@@ -2793,7 +2848,7 @@ END'
 				exec [dbo].[spASREmailImmediate] ''OpenHR Workflow'';
 			END
 		END
-	END'
+	END';
 
 	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spASRMobileInstantiateWorkflow]') AND xtype = 'P')
 		DROP PROCEDURE [dbo].[spASRMobileInstantiateWorkflow];
