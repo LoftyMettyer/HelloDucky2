@@ -237,8 +237,8 @@
 		$("#" + type + "Start").autoNumeric('destroy');
 		$("#" + type + "Stop").autoNumeric('destroy');
 
-		$("#" + type + "Start").autoNumeric({ aSep: '', aNeg: '', mDec: iDecimals, mRound: 'S', mNum: 10 });
-		$("#" + type + "Stop").autoNumeric({ aSep: '', aNeg: '', mDec: iDecimals, mRound: 'S', mNum: 10 });
+		$("#" + type + "Start").autoNumeric({ aSep: '', aNeg: '', mDec: iDecimals, mRound: 'S', mNum: 10, vMin: -999999999.99 });
+		$("#" + type + "Stop").autoNumeric({ aSep: '', aNeg: '', mDec: iDecimals, mRound: 'S', mNum: 10, vMin: -999999999.99 });
 	}
 
 	function crossTabHorizontalChange() {
