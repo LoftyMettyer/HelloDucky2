@@ -328,7 +328,7 @@ function loadDefinition() {
 	if (frmUseful.txtAction.value.toUpperCase() == "VIEW") {	
 		setTimeout('expr_disableAll()', 100);
 	
-		button_disable(frmDefinition.cmdPrint, true);
+		button_disable(frmDefinition.cmdPrint, false);
 		if (frmUseful.txtUtilType.value == 11) {
 			button_disable(frmDefinition.cmdTest, false);
 		}
@@ -887,7 +887,7 @@ function refreshControls() {
 	button_disable(frmDefinition.cmdInsert, fDisableInsert);
 	button_disable(frmDefinition.cmdEdit, fDisableEdit);
 	button_disable(frmDefinition.cmdDelete, fDisableDelete);
-	button_disable(frmDefinition.cmdPrint, true);
+	//button_disable(frmDefinition.cmdPrint, true);
 
 	//button_disable(frmDefinition.cmdOK, ((frmUseful.txtChanged.value == 0) ||
 	//		(fViewing == true)));
@@ -1644,7 +1644,7 @@ function reEnableControls() {
 
 	//button_disable(frmDefinition.cmdCancel, false);
 	menu_toolbarEnableItem('mnutoolCancelReport', true);
-	button_disable(frmDefinition.cmdPrint, true);
+	button_disable(frmDefinition.cmdPrint, false);
 
 	if (frmUseful.txtUtilType.value == 11) {
 		button_disable(frmDefinition.cmdTest, false);
