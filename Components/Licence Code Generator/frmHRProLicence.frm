@@ -24,7 +24,6 @@ Begin VB.Form frmHRProLicence
    MinButton       =   0   'False
    ScaleHeight     =   7800
    ScaleWidth      =   7080
-   ShowInTaskbar   =   0   'False
    StartUpPosition =   2  'CenterScreen
    Begin TabDlg.SSTab SSTab1 
       Height          =   7590

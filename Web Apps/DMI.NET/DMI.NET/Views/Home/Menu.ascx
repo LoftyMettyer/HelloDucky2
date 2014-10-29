@@ -298,7 +298,7 @@
 		If Left(objPermission.CategoryKey, 9) = "PICKLISTS" And objPermission.IsPermitted Then iPicklistsGranted = 1
 		If objSessionContext.LoginInfo.IsSystemOrSecurityAdmin Then iNewUserGranted = 1
 		If Left(objPermission.CategoryKey, 8) = "EVENTLOG" And objPermission.IsPermitted Then iEventLogGranted = 1
-		If Left(objPermission.CategoryKey, 11) = "NINEBOXGRID" And objPermission.IsPermitted Then iNineBoxGridGranted = 1
+		If Left(objPermission.CategoryKey, 11) = "NINEBOXGRID" AndAlso objPermission.IsPermitted AndAlso Licence.IsModuleLicenced(SoftwareModule.NineBoxGrid) Then iNineBoxGridGranted = 1
 		If Left(objPermission.CategoryKey, 8) = "INTRANET" AndAlso objPermission.Key = "CURRENTUSERS" AndAlso objPermission.IsPermitted Then iCurrentUsersGranted = 1
 	Next
 	

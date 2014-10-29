@@ -16,6 +16,8 @@
 		Fusion = 8192
 		XMLExport = 16384
 		ThirdPartyTables = 32768
+		NineBoxGrid = 65536
+		EditableGrids = 131072
 	End Enum
 End Namespace
 
