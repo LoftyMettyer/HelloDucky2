@@ -690,10 +690,10 @@ Private Function GetExportDefinition() As Boolean
 
     mstrTransformFile = IIf(IsNull(!TransformFile), "", !TransformFile)
     mstrXSDFilename = IIf(IsNull(!XSDFilename), "", !XSDFilename)
-    mbPreserveTransformPath = IIf(IsNull(!PreserveTransformPath), "", !PreserveTransformPath)
-    mbPreserveXSDPath = IIf(IsNull(!PreserveXSDPath), "", !PreserveXSDPath)
+    mbPreserveTransformPath = IIf(IsNull(!PreserveTransformPath), False, !PreserveTransformPath)
+    mbPreserveXSDPath = IIf(IsNull(!PreserveXSDPath), False, !PreserveXSDPath)
 
-    mbDefinitionOwner = (LCase(Trim(gsUserName)) = LCase(Trim(!UserName)))
+    mbDefinitionOwner = (LCase(Trim(gsUserName)) = LCase(Trim(!userName)))
     mbAuditChangesOnly = IIf(IsNull(!AuditChangesOnly), False, !AuditChangesOnly)
 
     If Not IsRecordSelectionValid Then
