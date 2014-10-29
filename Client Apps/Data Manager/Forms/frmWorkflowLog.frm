@@ -175,7 +175,6 @@ Begin VB.Form frmWorkflowLog
          BeginProperty Panel1 {0713E89F-850A-101B-AFC0-4210102A8DA7} 
             AutoSize        =   1
             Object.Width           =   23230
-            Key             =   ""
             Object.Tag             =   ""
          EndProperty
       EndProperty
@@ -1127,7 +1126,7 @@ End Sub
 Private Sub Form_Resize()
 
   Const COMBO_GAP As Integer = 170
-  Dim lngComboWidth As Long
+  Const lngGap As Long = 120
   
   On Error GoTo ErrorTrap
   gobjErrorStack.PushStack "frmWorkflowLog.Form_Resize()"
@@ -1136,25 +1135,22 @@ Private Sub Form_Resize()
   DisplayApplication
   
   ' Ensure form does not get too small/big. Also reposition controls as necessary
-  fraButtons.Left = Me.ScaleWidth - (fraButtons.Width + COMBO_GAP)
-  fraFilters.Width = fraButtons.Left - COMBO_GAP
-   
-  lngComboWidth = (fraFilters.Width - (COMBO_GAP * 5)) / 4
-   
-  cboTargetName.Move fraFilters.Width - (cboTargetName.Width + COMBO_GAP), 500, lngComboWidth
-  lblTargetName.Left = cboTargetName.Left
-     
-  cboUser.Move COMBO_GAP, 500, lngComboWidth
-  lblUser.Left = cboUser.Left
+  fraButtons.Left = Me.ScaleWidth - (fraButtons.Width + lngGap)
+  fraFilters.Width = fraButtons.Left - (lngGap * 2)
   
-  cboType.Move cboUser.Left + cboUser.Width + COMBO_GAP, 500, lngComboWidth
-  lblName.Left = cboType.Left
+  cboTargetName.Left = fraFilters.Width - (cboTargetName.Width + COMBO_GAP)
+  lblTargetName.Left = cboTargetName.Left
 
-  cboStatus.Move cboType.Left + cboType.Width + COMBO_GAP, 500, lngComboWidth
+  cboStatus.Left = cboTargetName.Left - (cboStatus.Width + COMBO_GAP)
   lblStatus.Left = cboStatus.Left
 
+  cboType.Left = cboStatus.Left - (cboType.Width + COMBO_GAP)
+  lblName.Left = cboType.Left
+
+  cboUser.Width = cboType.Left - (cboUser.Left + COMBO_GAP)
+
   grdWorkflowLog.Width = fraFilters.Width
-  grdWorkflowLog.Height = Me.ScaleHeight - (fraFilters.Height + StatusBar1.Height + (COMBO_GAP * 2))
+  grdWorkflowLog.Height = Me.ScaleHeight - (fraFilters.Height + StatusBar1.Height + (lngGap * 3))
   
   DoColumnSizes
   
