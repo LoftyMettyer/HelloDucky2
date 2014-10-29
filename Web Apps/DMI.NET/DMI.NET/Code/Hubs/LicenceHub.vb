@@ -230,7 +230,7 @@ Namespace Code.Hubs
 
 			If Licence.Type = LicenceType.Concurrency Then
 				If (targetWebArea = WebArea.DMI AndAlso current_DMIUsers >= Licence.DMIUsers) OrElse _
-						(targetWebArea = WebArea.DMI AndAlso current_SSIUsers >= Licence.SSIUsers) Then
+						(targetWebArea = WebArea.SSI AndAlso current_SSIUsers >= Licence.SSIUsers) Then
 					Return LicenceValidation.Insufficient
 				Else
 					Return LicenceValidation.Ok
