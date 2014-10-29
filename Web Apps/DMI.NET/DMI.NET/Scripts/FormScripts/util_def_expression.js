@@ -1677,8 +1677,8 @@ function validateExpression() {
 		return false;
 	}
 
-	// Check the expression does have some components.      
-	if ($('#SSTree1 li').length < 1) {
+	// Check the expression does have some components.      	
+	if ($('#SSTree1 li').length <= 1) {
 		sMsg = " The " + sTypeName + " must have some components.";
 		OpenHR.messageBox(sMsg);
 		return false;
