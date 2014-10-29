@@ -71,7 +71,7 @@ Begin VB.Form frmWorkflowLog
          Width           =   1545
       End
       Begin VB.Label lblTargetName 
-         Caption         =   "Identified Column :"
+         Caption         =   "Identified Record :"
          Height          =   210
          Left            =   6315
          TabIndex        =   15
@@ -283,7 +283,7 @@ Begin VB.Form frmWorkflowLog
       Columns(6).DataType=   8
       Columns(6).FieldLen=   256
       Columns(7).Width=   5292
-      Columns(7).Caption=   "Identified Column"
+      Columns(7).Caption=   "Identified Record"
       Columns(7).Name =   "TargetName"
       Columns(7).DataField=   "Column 7"
       Columns(7).DataType=   8
