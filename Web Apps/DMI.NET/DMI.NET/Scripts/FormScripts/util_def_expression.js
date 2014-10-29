@@ -1817,6 +1817,7 @@ function openDialog(pDestination, pWidth, pHeight) {
 			"scroll=yes," +
 			"status=no";
 	var newWin = window.open(pDestination, self, dlgwinprops);
+	$(newWin).bind('blur', function() { $(this).focus(); });
 	newWin.focus();
 }
 
