@@ -407,6 +407,8 @@ PRINT 'Step - Workflow Log Enhancements'
 
 		EXEC sp_executesql N'UPDATE [ASRSysWorkflows] SET HasTargetIdentifier = 0'; 
 
+		EXEC sp_executesql N'GRANT SELECT, UPDATE, INSERT, DELETE ON ASRSysWorkflows TO ASRSysGroup;';
+
 	END
 
 	IF NOT EXISTS(SELECT id FROM syscolumns WHERE  id = OBJECT_ID('ASRSysWorkflowElementItems', 'U') AND name = 'UseAsTargetIdentifier')
