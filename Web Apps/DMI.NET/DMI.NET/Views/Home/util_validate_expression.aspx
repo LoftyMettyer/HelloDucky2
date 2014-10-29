@@ -39,23 +39,23 @@
 				window.opener.OpenHR.createNew(self);		
 		}
 
-		function removeComponents(piIndex)
-		{
-				var sKeys;
-	
-				if (piIndex == 1) {
-						sKeys = window.txtDeletedKeys.value;
+		function removeComponents(piIndex) {
+
+			var sKeys;
+
+			if (piIndex == 1) {
+				sKeys = window.txtDeletedKeys.value;
+			}
+			else {
+				if (piIndex == 2) {
+					sKeys = window.txtHiddenNotOwnerKeys.value;
 				}
 				else {
-						if (piIndex == 2) {
-								sKeys = window.txtHiddenNotOwnerKeys.value;
-						}
-						else {
-								sKeys = window.txtHiddenOwnerKeys.value;
-						}
+					sKeys = window.txtHiddenOwnerKeys.value;
 				}
-				window.opener.OpenHR.removeComponents(sKeys);		  
-				cancelClick();
+			}
+			window.opener.tree_NodesRemove(sKeys);
+			cancelClick();
 		}
 
 		function returnToDefSel() {
