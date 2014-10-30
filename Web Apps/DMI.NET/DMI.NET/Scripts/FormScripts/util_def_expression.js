@@ -2041,7 +2041,6 @@ function customMenu(node) {
 		},
 		"13": {
 			"separator_before": true,
-			"icon": "../Content/images/abssmall.png",
 			"label": "Undo",
 			action: function () {
 				abExprMenu_Click('ID_Undo');
