@@ -98,6 +98,13 @@ function buildjsTree() {
 				tree_SelectRootNode();
 			});
 			break;
+		default:
+			tree = $("#SSTree1");
+			tree.bind("loaded.jstree", function (event, data) {
+				$('#SSTree1').jstree('refresh');
+				tree_SelectRootNode();
+			});
+			break;
 	}
 
 	options["core"] = { 'check_callback': true };	// Must have - this enables inline renaming etc...
@@ -964,7 +971,7 @@ function addClick() {
 	frmOptionArea.txtGotoOptionTableID.value = frmUseful.txtTableID.value;
 	frmOptionArea.txtGotoOptionExprID.value = frmUseful.txtUtilID.value;
 
-	sKey = tree_SelectedItemKey();
+	sKey = tree_SelectedItemKey();	
 	if (sKey.substr(0, 1) == "E") {
 		sRelativeKey = sKey;
 		nodParameter = $('#' + sRelativeKey);
@@ -2272,6 +2279,7 @@ function abExprMenu_Click(pTool) {
 
 
 function tree_SelectedItemKey() {
+	if (!($('#SSTree1 .jstree-clicked'))) tree_SelectRootNode();
 	return $('#SSTree1 .jstree-clicked').parent().attr('id');
 }
 
