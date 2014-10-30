@@ -31,50 +31,61 @@ Namespace Classes
 			Dim strInput As String
 			Dim strCheckSum As String
 			Dim lngHeadcountSSI As Long
-			Randomize()
 
-			If licenceKey Like "??????-??????-??????-??????-??????-??????" Then
+			Try
 
-				strInput = Replace(licenceKey, "-", "")
-				strInput = Mid(strInput, 32, 1) & Mid(strInput, 35, 1) & Mid(strInput, 6, 1) & Mid(strInput, 27, 1) & Mid(strInput, 21, 1) & Mid(strInput, 29, 1) & _
-					 Mid(strInput, 1, 1) & Mid(strInput, 26, 1) & Mid(strInput, 4, 1) & Mid(strInput, 28, 1) & Mid(strInput, 2, 1) & Mid(strInput, 8, 1) & _
-					 Mid(strInput, 3, 1) & Mid(strInput, 13, 1) & Mid(strInput, 31, 1) & Mid(strInput, 18, 1) & Mid(strInput, 33, 1) & Mid(strInput, 10, 1) & _
-					 Mid(strInput, 20, 1) & Mid(strInput, 14, 1) & Mid(strInput, 23, 1) & Mid(strInput, 9, 1) & Mid(strInput, 25, 1) & Mid(strInput, 16, 1) & _
-					 Mid(strInput, 36, 1) & Mid(strInput, 7, 1) & Mid(strInput, 22, 1) & Mid(strInput, 17, 1) & Mid(strInput, 34, 1) & Mid(strInput, 19, 1) & _
-					 Mid(strInput, 30, 1) & Mid(strInput, 24, 1) & Mid(strInput, 15, 1) & Mid(strInput, 5, 1) & Mid(strInput, 12, 1) & Mid(strInput, 11, 1)
+				Randomize()
 
-				sLicenceType = Mid(strInput, 1, 1)
-				strCustNo = Mid(strInput, 2, 3)
-				strDAT = Mid(strInput, 5, 2)
-				strDMIM = Mid(strInput, 7, 2)
-				strCheckSum = Mid(strInput, 9, 6)
-				strDMIS = Mid(strInput, 15, 2)
-				strModules = Mid(strInput, 17, 7)
-				strRandomDigit = Mid(strInput, 24, 1)
-				strSSIHeadcount = Mid(strInput, 25, 4)
-				strExpiryDate = Mid(strInput, 29, 5)
+				If licenceKey Like "??????-??????-??????-??????-??????-??????" Then
 
-				CustomerNumber = ConvertBase32ToLong(strRandomDigit & strCustNo)
-				DATUsers = CInt(ConvertBase32ToLong(strRandomDigit & strDAT))
-				DMIUsers = CInt(ConvertBase32ToLong(strRandomDigit & strDMIM))
-				Modules = ConvertBase32ToLong(strModules)
-				lngHeadcountSSI = ConvertBase32ToLong(strRandomDigit & strSSIHeadcount)
-				Type = CType(ConvertBase32ToLong(strRandomDigit & sLicenceType), LicenceType)
+					strInput = Replace(licenceKey, "-", "")
+					strInput = Mid(strInput, 32, 1) & Mid(strInput, 35, 1) & Mid(strInput, 6, 1) & Mid(strInput, 27, 1) & Mid(strInput, 21, 1) & Mid(strInput, 29, 1) & _
+						 Mid(strInput, 1, 1) & Mid(strInput, 26, 1) & Mid(strInput, 4, 1) & Mid(strInput, 28, 1) & Mid(strInput, 2, 1) & Mid(strInput, 8, 1) & _
+						 Mid(strInput, 3, 1) & Mid(strInput, 13, 1) & Mid(strInput, 31, 1) & Mid(strInput, 18, 1) & Mid(strInput, 33, 1) & Mid(strInput, 10, 1) & _
+						 Mid(strInput, 20, 1) & Mid(strInput, 14, 1) & Mid(strInput, 23, 1) & Mid(strInput, 9, 1) & Mid(strInput, 25, 1) & Mid(strInput, 16, 1) & _
+						 Mid(strInput, 36, 1) & Mid(strInput, 7, 1) & Mid(strInput, 22, 1) & Mid(strInput, 17, 1) & Mid(strInput, 34, 1) & Mid(strInput, 19, 1) & _
+						 Mid(strInput, 30, 1) & Mid(strInput, 24, 1) & Mid(strInput, 15, 1) & Mid(strInput, 5, 1) & Mid(strInput, 12, 1) & Mid(strInput, 11, 1)
 
-				If Type = LicenceType.Concurrency Then
-					SSIUsers = lngHeadcountSSI
-				Else
-					Headcount = lngHeadcountSSI
+					sLicenceType = Mid(strInput, 1, 1)
+					strCustNo = Mid(strInput, 2, 3)
+					strDAT = Mid(strInput, 5, 2)
+					strDMIM = Mid(strInput, 7, 2)
+					strCheckSum = Mid(strInput, 9, 6)
+					strDMIS = Mid(strInput, 15, 2)
+					strModules = Mid(strInput, 17, 7)
+					strRandomDigit = Mid(strInput, 24, 1)
+					strSSIHeadcount = Mid(strInput, 25, 4)
+					strExpiryDate = Mid(strInput, 29, 5)
+
+					CustomerNumber = ConvertBase32ToLong(strRandomDigit & strCustNo)
+					DATUsers = CInt(ConvertBase32ToLong(strRandomDigit & strDAT))
+					DMIUsers = CInt(ConvertBase32ToLong(strRandomDigit & strDMIM))
+					Modules = ConvertBase32ToLong(strModules)
+					lngHeadcountSSI = ConvertBase32ToLong(strRandomDigit & strSSIHeadcount)
+					Type = CType(ConvertBase32ToLong(strRandomDigit & sLicenceType), LicenceType)
+
+					If Type = LicenceType.Concurrency Then
+						SSIUsers = lngHeadcountSSI
+					Else
+						Headcount = lngHeadcountSSI
+					End If
+
+					Dim lngDate = ConvertBase32ToLong(strRandomDigit & strExpiryDate)
+					If lngDate = 0 Then
+						ExpiryDate = Date.MaxValue
+					Else
+						ExpiryDate = Date.FromOADate(lngDate)
+					End If
+
+					IsValid = (ConvertBase32ToLong(strRandomDigit & strCheckSum) = CustomerNumber + Type + DATUsers + DMIUsers + lngHeadcountSSI + Modules + lngDate)
+
 				End If
 
-				Dim lngDate = ConvertBase32ToLong(strRandomDigit & strExpiryDate)
-				If lngDate > 0 Then
-					ExpiryDate = CDate(DateFromJulian(lngDate.ToString()))
-				End If
+			Catch ex As Exception
+				IsValid = False
 
-				IsValid = (ConvertBase32ToLong(strRandomDigit & strCheckSum) = CustomerNumber + Type + DATUsers + DMIUsers + lngHeadcountSSI + Modules + lngDate)
+			End Try
 
-			End If
 		End Sub
 
 		Private Function GenerateAlphaString(lngGap As Long) As String
@@ -129,19 +140,6 @@ Namespace Classes
 				Return 0
 
 			End Try
-
-		End Function
-
-		Private Shared Function DateFromJulian(sDate As String) As Date
-
-			Dim iYear = CInt(sDate.Substring(0, 4))
-			Dim iDayNo = CInt(sDate.Substring(4, 3))
-
-			If iYear > 1900 Then
-				Return DateSerial(iYear, 1, 1).AddDays(iDayNo - 1)
-			Else
-				Return DateSerial(9999, 12, 31)
-			End If
 
 		End Function
 

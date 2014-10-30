@@ -19,7 +19,7 @@ Private mlngDMIM As Long
 Private mlngModules As Long
 Private mlngHeadcountSSI As Long
 Private mdExpiryDate As Date
-Private mlngLicenceType As LicenceType
+Private mlngLicenceType As Long
 
 Public IsValid As Boolean
 Public ValidateCreationDate As Boolean
@@ -61,6 +61,7 @@ Public Property Let LicenceKey(ByVal strNewValue As String)
   Dim strCustNo As String
   Dim strDAT As String
   Dim strDMIM As String
+  Dim strDMIS As String
   Dim strModules As String
   Dim strRandomDigit As String
   Dim strSSIHeadcount As String
@@ -74,7 +75,6 @@ Public Property Let LicenceKey(ByVal strNewValue As String)
   Dim strCheckSum As String
   Dim lngRandomDigit As Long
   Dim strGeneratedDay As String
-  Dim lngGeneratedDay As Long
 
   '1st Generation: AAAAAAAAAAAAAAA
   '2nd Generation: 1231-2312-3123-1233
@@ -115,14 +115,11 @@ Public Property Let LicenceKey(ByVal strNewValue As String)
     lngRandomDigit = Asc(strRandomDigit) - 64
        
     lngDateValue = ConvertStringToNumber2(strRandomDigit & strExpiryDate)
-    If lngDateValue > 0 Then
-      mdExpiryDate = DateFromJulian(lngDateValue)
-    End If
+    mdExpiryDate = CDate(lngDateValue)
 
     ' Validate checksum
     If ValidateCreationDate Then
-      lngGeneratedDay = ConvertStringToNumber2(strRandomDigit & strGeneratedDay)
-      IsValid = (lngGeneratedDay >= DayNumber(Now) - 6) And (lngGeneratedDay <= DayNumber(Now))
+      IsValid = (ConvertStringToNumber2(strRandomDigit & strGeneratedDay) = DayNumber(Now))
     Else
       IsValid = True
     End If
@@ -224,20 +221,11 @@ Private Function ConvertNumberToString2(lngSize As Long, lngInput As Long, lngDi
 
 End Function
 
-Private Function Date2Julian(ByVal vDate As Date) As Long
-    Date2Julian = CLng(Format(Year(vDate), "0000") _
-                  + Format(DateDiff("d", CDate("01/01/" _
-                  + Format(Year(vDate), "0000")), vDate) _
-                  + 1, "000"))
-End Function
-
 Private Function DayNumber(ByVal vDate As Date) As Long
     DayNumber = CLng(Format(DateDiff("d", CDate("01/01/" _
                   + Format(Year(vDate), "0000")), vDate) _
                   + 1, "000"))
 End Function
-
-
 
 
 

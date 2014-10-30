@@ -116,7 +116,7 @@ Public Property Let LicenceKey(ByVal strNewValue As String)
        
     lngDateValue = ConvertStringToNumber2(strRandomDigit & strExpiryDate)
     If lngDateValue > 0 Then
-      mdExpiryDate = DateFromJulian(lngDateValue)
+      mdExpiryDate = CDate(lngDateValue)
     End If
 
     ' Validate checksum
@@ -221,13 +221,6 @@ Private Function ConvertNumberToString2(lngSize As Long, lngInput As Long, lngDi
         Chr(lngRandomDigit + 64) & ConvertNumberToString2
   End If
 
-End Function
-
-Private Function Date2Julian(ByVal vDate As Date) As Long
-    Date2Julian = CLng(Format(Year(vDate), "0000") _
-                  + Format(DateDiff("d", CDate("01/01/" _
-                  + Format(Year(vDate), "0000")), vDate) _
-                  + 1, "000"))
 End Function
 
 Private Function DayNumber(ByVal vDate As Date) As Long

@@ -20,7 +20,7 @@ Private mlngSSI As Long
 Private mlngModules As Long
 
 Private mlngHeadcount As Long
-Private mdExpiryDate As Date
+Private mlngExpiryDate As Long
 Private mlngLicenceType As Long
 
 Public Property Let CustomerNo(ByVal lngNewValue As Long)
@@ -47,8 +47,8 @@ Public Property Let Headcount(ByVal lngNewValue As Long)
   mlngHeadcount = lngNewValue
 End Property
 
-Public Property Let ExpiryDate(ByVal dNewValue As Date)
-  mdExpiryDate = dNewValue
+Public Property Let ExpiryDate(ByVal lngNewValue As Long)
+  mlngExpiryDate = lngNewValue
 End Property
 
 Public Property Let LicenceType(ByVal lngNewValue As Long)
@@ -126,7 +126,6 @@ Public Property Get LicenceKey2()
   Dim sLicenceType As String
   Dim strCheckSum As String
   Dim strGeneratedDay As String
-  Dim lngExpiryDate As Long
   Dim lngSSIHeadcount As Long
   
   LicenceKey2 = vbNullString
@@ -143,12 +142,10 @@ Public Property Get LicenceKey2()
     strFiller1 = ConvertNumberToString2(2, 1024, lngRandomDigit)
     strSSIHeadcount = ConvertNumberToString2(4, lngSSIHeadcount, lngRandomDigit)
     strModules = ConvertNumberToString2(7, mlngModules, 0)            ' Allows upto 35 modules
-    
-    lngExpiryDate = Date2Julian(mdExpiryDate)
-    strExpiryDate = ConvertNumberToString2(5, lngExpiryDate, lngRandomDigit)
+    strExpiryDate = ConvertNumberToString2(5, mlngExpiryDate, lngRandomDigit)
     
     strGeneratedDay = ConvertNumberToString2(2, DayNumber(Now), lngRandomDigit)
-    strCheckSum = ConvertNumberToString2(6, mlngCustomerNo + mlngLicenceType + mlngDAT + mlngDMIM + lngSSIHeadcount + mlngModules + lngExpiryDate, lngRandomDigit)
+    strCheckSum = ConvertNumberToString2(6, mlngCustomerNo + mlngLicenceType + mlngDAT + mlngDMIM + lngSSIHeadcount + mlngModules + mlngExpiryDate, lngRandomDigit)
 
     strOutput = _
         sLicenceType & strCustNo & strDAT & strDMIM & strCheckSum & _
