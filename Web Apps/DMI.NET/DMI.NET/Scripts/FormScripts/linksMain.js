@@ -168,7 +168,7 @@ function relocateURL(psUrl, pfNewWindow) {
 	}
 }
 
-function goURL(psUrl, pfNewWindow, pfExternal) {
+function goURL(psUrl, pfNewWindow, pfExternal, psTitle) {
 	
 	if (pfExternal == true) {
 		if (isEMail(psUrl) == 0) {
@@ -186,7 +186,7 @@ function goURL(psUrl, pfNewWindow, pfExternal) {
 		$('#workflowDisplay').show();
 		$('#externalContentFrame').attr('src', psUrl);
 		$('#externalContentFrame').css("height", "90%");
-		$('#workflowDisplay .pageTitle').text(psUrl);
+		$('#workflowDisplay .pageTitle').text(psTitle);
 
 		if (window.currentLayout == "tiles") { //Tiles need some tweaking of the HTML/CSS
 			$('.DashContent').show();
@@ -272,7 +272,7 @@ function goUtility(sUtilityType, sUtilityID, sUtilityName, sUtilityBaseTable) {
 }
 
 function goDropLink(sLinkInfo) {
-
+	
 	if (sLinkInfo == undefined) {
 		sLinkInfo = $('.DropdownlistSelect').val();				
 	}
@@ -282,18 +282,22 @@ function goDropLink(sLinkInfo) {
 	var sNewWindow;
 	var sAppFilePath;
 	var sAppParameters;
+	var arrLinkInfo;
 
 	switch (sLinkType) {
 		case "0":
 			// URL link
-			sNewWindow = sLinkInfo.substr(0, 1);
-			sLinkInfo = sLinkInfo.substr(2);
-			goURL(sLinkInfo, sNewWindow, true);
+			arrLinkInfo = sLinkInfo.split('_');
+			sNewWindow = arrLinkInfo[0];
+			sLinkInfo = arrLinkInfo[1];
+			var sTitleText = arrLinkInfo[2];
+
+			goURL(sLinkInfo, sNewWindow, true, sTitleText);
 			break;
 		case "2":
 
 			// Utility link
-			var arrLinkInfo = sLinkInfo.split('_');
+			arrLinkInfo = sLinkInfo.split('_');
 
 			var sUtilityType = arrLinkInfo[0];
 			var sUtilityID = arrLinkInfo[1];
