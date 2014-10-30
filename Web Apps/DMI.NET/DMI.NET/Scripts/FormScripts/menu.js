@@ -204,10 +204,10 @@ function menu_abMainMenu_DataReady() {
 }
 
 function menu_abMainMenu_Click(pTool) {
-	
 
+	
 	//reject disabled icon clicks
-	if ($("#" + pTool).hasClass("disabled")) return false;
+	if ($("#" + pTool + " a:first").attr("disabled") == "disabled") return false;
 	menu_MenuClick(pTool);	
 	return true;
 }
