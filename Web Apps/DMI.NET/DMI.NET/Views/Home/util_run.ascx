@@ -278,14 +278,19 @@
 	var isMobileDevice = ('<%=Session("isMobileDevice")%>' == 'True');
 	// first get the size from the window
 	// if that didn't work, get it from the body
-	var size = {
-		<%If Session("utiltype") = UtilityType.utlNineBoxGrid Then%>
-		width: (screen.width) / 2,
-		<%Else%>
-		width: window.innerWidth || document.body.clientWidth,
-		<%End If%>
-		height: window.innerHeight || document.body.clientHeight
-	};
+	var size = {};
+
+	<%If Session("utiltype") = UtilityType.utlNineBoxGrid Then%>
+	size.width = (screen.width) / 2;
+	size.height = (window.innerHeight || document.body.clientHeight) - 100;
+	<%Else%>
+	size.width = window.innerWidth || document.body.clientWidth;
+	size.height = (window.innerHeight || document.body.clientHeight) - 200;
+	<%End If%>
+
+	
+
+	
 
 	if ($('#txtNoRecs').val() == "True") {
 		OpenHR.modalPrompt($("#txtDefn_ErrMsg").val(), 2, $("#txtDefn_Name").val(), "");
@@ -311,7 +316,7 @@
 			$(".popup").dialog({
 				title: "",
 				width: size.width - 200,
-				height: size.height - 200,
+				height: size.height,
 				resizable: true,
 				resize: function() {
 					var doit = 0;
