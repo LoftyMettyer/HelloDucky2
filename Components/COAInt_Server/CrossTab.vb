@@ -595,25 +595,22 @@ ErrorTrap:
 				mlngColID(HOR) = CInt(objRow("HorizontalColID"))
 				mdblMin(HOR) = Val(objRow("HorizontalStart"))
 				mdblMax(HOR) = Val(objRow("HorizontalStop"))
+				mdblStep(HOR) = Val(objRow("HorizontalStep"))
+
 				If CrossTabType = CrossTabType.ctt9GridBox Then
-					mdblStep(HOR) = (mdblMax(HOR) - mdblMin(HOR) + GetSmallestUnit(HOR)) / 3
-				Else
-					mdblStep(HOR) = Val(objRow("HorizontalStep"))
+					mdblStep(HOR) = Math.Round((mdblMax(HOR) - mdblMin(HOR)) / 3, GetDecimalsSize(mlngColID(HOR)) + 2)
 				End If
 
+				mstrFormat(HOR) = GetFormat(mlngColID(HOR))
 				mstrColName(HOR) = GetColumnName(mlngColID(HOR))
 				mlngColDataType(HOR) = CStr(GetDataType(mlngBaseTableID, mlngColID(HOR)))
-				mstrFormat(HOR) = GetFormat(mlngColID(HOR))
 				mlngColID(VER) = CInt(objRow("VerticalColID"))
+				mdblMin(VER) = Val(objRow("VerticalStart"))
+				mdblMax(VER) = Val(objRow("VerticalStop"))
+				mdblStep(VER) = Val(objRow("VerticalStep"))
 
 				If CrossTabType = CrossTabType.ctt9GridBox Then
-					mdblMin(VER) = Val(objRow("VerticalStop"))
-					mdblMax(VER) = Val(objRow("VerticalStart"))
-					mdblStep(VER) = (mdblMax(VER) - mdblMin(VER) - GetSmallestUnit(VER)) / 3
-				Else
-					mdblMin(VER) = Val(objRow("VerticalStart"))
-					mdblMax(VER) = Val(objRow("VerticalStop"))
-					mdblStep(VER) = Val(objRow("VerticalStep"))
+					mdblStep(VER) = Math.Round((mdblMax(VER) - mdblMin(VER)) / 3, GetDecimalsSize(mlngColID(VER)) + 2)
 				End If
 
 				mstrColName(VER) = GetColumnName(mlngColID(VER))
@@ -800,7 +797,7 @@ ErrorTrap:
 		End If
 
 	End Function
-
+	
 	Private Function GetFormat(lngColumnID As Integer) As String
 
 		Dim objColumn = Columns.GetById(lngColumnID)
@@ -1247,31 +1244,61 @@ LocalErr:
 
 			dblUnit = GetSmallestUnit(lngLoop)
 
-			If mdblStep(lngLoop) = 0 Then
-				mstrStatusMessage = "Step value for " & strColumnName & " column cannot be zero"
-				fOK = False
-				Exit Sub
-			End If
-
 			lngCount = 2
-			For dblGroup = mdblMin(lngLoop) To mdblMax(lngLoop) Step mdblStep(lngLoop)
-				ReDim Preserve strHeading(lngCount)
-				ReDim Preserve strSearch(lngCount)
 
-				If mlngCrossTabType = CrossTabType.ctt9GridBox AndAlso lngLoop = VER Then
-					dblGroupMax = dblGroup + mdblStep(lngLoop) + dblUnit
-				Else
-					dblGroupMax = dblGroup + mdblStep(lngLoop) - dblUnit
+			If mlngCrossTabType = CrossTabType.ctt9GridBox Then
+
+				Dim stepValue = Math.Round((mdblMax(lngLoop) - mdblMin(lngLoop)) / 3, 3)
+				Dim lastValue = mdblMin(lngLoop)
+
+				For iLoop2 = 0 To 2
+
+					ReDim Preserve strHeading(lngCount)
+					ReDim Preserve strSearch(lngCount)
+
+					Dim dblFrom = lastValue
+					Dim dblTo As Double
+
+					dblTo = Math.Min(Math.Round(lastValue + stepValue, 2), mdblMax(lngLoop))
+
+					strHeading(lngCount) = String.Format("{0} - {1}", dblFrom, dblTo)
+					strSearch(lngCount) = String.Format("{0} >= {1} AND {0} <= {2}", strColumnName, dblFrom, dblTo)
+
+					lastValue = dblTo + 0.01
+					lngCount += 1
+
+				Next
+
+				' Because the Nine Box Grid is upside down swap rows 3 and 5 around
+				If lngLoop = 1 Then
+					Dim swapNineBox As String
+					swapNineBox = strHeading(2)
+					strHeading(2) = strHeading(4)
+					strHeading(4) = swapNineBox
+
+					swapNineBox = strSearch(2)
+					strSearch(2) = strSearch(4)
+					strSearch(4) = swapNineBox
 				End If
 
-				strHeading(lngCount) = ConvertNumberForDisplay(VB6.Format(dblGroup, mstrFormat(lngLoop))) & IIf(dblGroupMax <> dblGroup, " - " & ConvertNumberForDisplay(Format(dblGroupMax, mstrFormat(lngLoop))), "")
+			Else
 
-				Dim dblMin = Math.Min(dblGroup, dblGroupMax)
-				Dim dblMax = Math.Max(dblGroup, dblGroupMax)
+				If mdblStep(lngLoop) = 0 Then
+					mstrStatusMessage = "Step value for " & strColumnName & " column cannot be zero"
+					fOK = False
+					Exit Sub
+				End If
 
-				strSearch(lngCount) = String.Format("{0} >= {1} AND {0} <= {2}", strColumnName, dblMin.ToString(), dblMax.ToString())
-				lngCount += 1
-			Next
+				For dblGroup = mdblMin(lngLoop) To mdblMax(lngLoop) Step mdblStep(lngLoop)
+					ReDim Preserve strHeading(lngCount)
+					ReDim Preserve strSearch(lngCount)
+					dblGroupMax = dblGroup + mdblStep(lngLoop) - dblUnit
+					strHeading(lngCount) = ConvertNumberForDisplay(VB6.Format(dblGroup, mstrFormat(lngLoop))) & IIf(dblGroupMax <> dblGroup, " - " & ConvertNumberForDisplay(Format(dblGroupMax, mstrFormat(lngLoop))), "")
+					strSearch(lngCount) = String.Format("{0} >= {1} AND {0} <= {2}", strColumnName, ConvertNumberForSQL(CStr(dblGroup)), ConvertNumberForSQL(CStr(dblGroupMax)))
+					lngCount += 1
+				Next
+
+			End If
 
 			ReDim Preserve strHeading(lngCount)
 			ReDim Preserve strSearch(lngCount)
@@ -1279,7 +1306,7 @@ LocalErr:
 			strHeading(lngCount) = "> " & ConvertNumberForDisplay(VB6.Format(dblGroup - dblUnit, mstrFormat(lngLoop)))
 			strSearch(lngCount) = strColumnName & " > " & ConvertNumberForSQL(CStr(dblGroup - dblUnit))
 
-		End If
+			End If
 
 	End Sub
 
@@ -1300,6 +1327,8 @@ LocalErr:
 		Else
 			GetSmallestUnit = 1
 		End If
+
+		'	Return 1.0
 
 	End Function
 
@@ -1567,34 +1596,52 @@ LocalErr:
 
 			Else 'Numeric ranges...
 
-				dblValue = Val(strValue)
-				If strValue = vbNullString Then
-					Return 0
-				ElseIf dblValue < mdblMin(Index) AndAlso Not mlngCrossTabType = CrossTabType.ctt9GridBox Then
-					Return 1
-				End If
-
 				lngCount = 1
-				For dblLoop = mdblMin(Index) To mdblMax(Index) Step mdblStep(Index)
-					lngCount += 1
+				dblValue = Val(strValue)
 
-					Dim dblMin = Math.Min(dblLoop, dblLoop + mdblStep(Index))
-					Dim dblMax = Math.Max(dblLoop, dblLoop + mdblStep(Index))
+				If mlngCrossTabType = CrossTabType.ctt9GridBox Then
 
-					If mlngCrossTabType = CrossTabType.ctt9GridBox AndAlso Index = VER Then
-						If dblValue > dblMin AndAlso dblValue <= dblMax Then
+					Dim stepValue = Math.Round((mdblMax(Index) - mdblMin(Index)) / 3, 3)
+					Dim lastValue2 = mdblMin(Index)
+
+					For iLoop2 = 0 To 2
+
+						Dim dblFrom = lastValue2
+						Dim dblTo As Double
+
+						dblTo = Math.Min(Math.Round(lastValue2 + stepValue, 2), mdblMax(Index))
+
+						lastValue2 = dblTo + 0.01
+						lngCount += 1
+
+						If dblValue >= dblFrom AndAlso dblValue <= dblTo Then
 							Return lngCount
 						End If
 
-					Else
+					Next
+
+				Else
+
+
+					If strValue = vbNullString Then
+						Return 0
+					ElseIf dblValue < mdblMin(Index) AndAlso Not mlngCrossTabType = CrossTabType.ctt9GridBox Then
+						Return 1
+					End If
+
+
+					For dblLoop = mdblMin(Index) To mdblMax(Index) Step mdblStep(Index)
+						lngCount += 1
+
+						Dim dblMin = Math.Min(dblLoop, dblLoop + mdblStep(Index))
+						Dim dblMax = Math.Max(dblLoop, dblLoop + mdblStep(Index))
+
 						If dblValue >= dblMin AndAlso dblValue < dblMax Then
 							Return lngCount
 						End If
-
-					End If
-
-				Next
-				Return lngCount + 1
+					Next
+					Return lngCount + 1
+				End If
 
 			End If
 
@@ -1687,6 +1734,14 @@ LocalErr:
 		Else
 			'Now add the main row data
 			For lngCol = 0 To lngNumCols
+
+				If mlngCrossTabType = CrossTabType.ctt9GridBox Then
+					Dim swapNineBox As Double
+					swapNineBox = mdblDataArray(lngCol, 2, lngSinglePage, lngTYPE)
+					mdblDataArray(lngCol, 2, lngSinglePage, lngTYPE) = mdblDataArray(lngCol, 4, lngSinglePage, lngTYPE)
+					mdblDataArray(lngCol, 4, lngSinglePage, lngTYPE) = swapNineBox
+				End If
+
 				'UPGRADE_WARNING: Couldn't resolve default property of object mvarHeadings()(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 				mstrOutput(0) = mstrOutput(0) & Trim(mvarHeadings(0)(lngCol)) & IIf(lngCol <> lngNumCols, strDelim, "")
 				For lngRow = 0 To lngNumRows
@@ -1711,13 +1766,13 @@ LocalErr:
 				Next
 				mstrOutput(lngNumRows + 2) = mstrOutput(lngNumRows + 2) & strDelim & FormatCell(mdblPageTotal(lngSinglePage, lngTYPE))
 			End If
-		End If
+			End If
 
-		Exit Sub
+			Exit Sub
 
 LocalErr:
-		mstrStatusMessage = "Error building output strings (" & Err.Description & ")"
-		fOK = False
+			mstrStatusMessage = "Error building output strings (" & Err.Description & ")"
+			fOK = False
 
 	End Sub
 
