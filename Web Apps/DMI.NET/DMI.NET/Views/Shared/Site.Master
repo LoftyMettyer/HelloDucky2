@@ -184,6 +184,63 @@
 				}
 			});
 
+			/* Setup Dialogs for EventLog*/
+			
+			$("#EventLogViewDetails").dialog({
+				autoOpen: false,
+				modal: true,
+				width: 1000,
+				height: 'auto',
+				resizable: false,
+				open: function() {
+					$(this).load($(this).data('sURLData'), function () {
+					$("input[type=submit], input[type=button], button").button();
+					});
+				},
+				close: function (event, ui) { }
+			});
+
+			$("#EventLogPurge").dialog({
+				autoOpen: false,
+				modal: true,
+				width: 550,
+				height: 'auto',
+				resizable: false,
+				open: function (event, ui) {
+					$(this).load($(this).data('sURLData'), function() {
+						$("input[type=submit], input[type=button], button").button();
+					});
+				},
+				close: function (event, ui) { }
+			});
+
+
+			$("#EventLogEmailSelect").dialog({
+				autoOpen: false,
+				modal: true,
+				width: (screen.width) / 3,
+				height: (screen.height) / 2 + 10,
+				resizable: false,
+				open: function (event, ui) {
+					$(this).load($(this).data('sURLData'), function () { });
+				},
+				close: function (event, ui) { }
+			});
+
+			$("#EventLogDelete").dialog({
+				autoOpen: false,
+				modal: true,
+				width: 550,
+				height: 'auto',
+				resizable: false,
+				open: function (event, ui) {
+					$(this).load($(this).data('sURLData'), function () {
+							$("input[type=submit], input[type=button], button").button();
+					});
+				},
+				close: function (event, ui) { }
+			});
+			/* EOF dialogs for EventLog*/
 
 			$(function () {
 				$("input[type=submit], input[type=button], button")
@@ -501,6 +558,12 @@
 		</div>
 	</div>
 	<div id="BulkBookingSelect"></div>
+
+	<div id="EventLogEmailSelect"></div>
+	<div id="EventLogDelete"></div>
+	<div id="EventLogPurge"></div>
+	<div id="EventLogViewDetails"></div>
+
 	<div id="dialog-confirm">
 		<p><span class="ui-icon ui-icon-help" style="float: left; margin: 0 7px 20px 0;"></span></p>
 	</div>

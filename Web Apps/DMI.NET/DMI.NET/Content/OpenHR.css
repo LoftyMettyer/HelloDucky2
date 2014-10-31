@@ -1501,3 +1501,7 @@ overflow-x : hidden !important;
 {
 	opacity: 0.5;
 }
+
+#frmEventDetails .ui-jqgrid-bdiv{
+	overflow-x: hidden;
+}

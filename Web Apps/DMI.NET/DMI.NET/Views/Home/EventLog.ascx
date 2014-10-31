@@ -49,14 +49,20 @@
 %>
 
 <script type="text/javascript">
+	var frmEventUseful = OpenHR.getForm("workframe", "frmEventUseful");
+	var frmPurge = OpenHR.getForm("workframe", "frmPurge");
+	var frmEmail = OpenHR.getForm("workframe", "frmEmail");
+	var frmLog = OpenHR.getForm("workframe", "frmLog");
+	var frmDetails = OpenHR.getForm("workframe", "frmDetails");
+	var frmRefresh = OpenHR.getForm("workframe", "frmRefresh");
 
 	function eventLog_window_onload() {
 		$("#workframe").attr("data-framesource", "EVENTLOG");
-
+		
+		var sErrMsg = $('#txtErrorDescription').val();
 		var fOK;
 		fOK = true;
 
-		var sErrMsg = frmEventUseful.txtErrorDescription.value;
 		if (sErrMsg.length > 0) {
 			fOK = false;
 			OpenHR.messageBox(sErrMsg);
@@ -104,77 +110,9 @@
 
 		return;
 	}
-
-	function refreshStatusBar() {
-
-		var sRecords;
-		var sCaption;
-		var frmData = OpenHR.getForm("dataframe", "frmData");
-
-		sRecords = frmData.txtELTotalRecordCount.value;
-
-		var iStartPosition = parseInt(frmData.txtELFirstRecPos.value);
-		var iEndPosition = iStartPosition - 1 + parseInt(frmData.txtELCurrentRecCount.value);
-
-		if (sRecords > 0) {
-			sCaption = "Record(s): " + sRecords;
-		}
-		else {
-			sCaption = "No Records";
-		}
-
-		if (frmLog.txtELViewAllPermission.value == 0) {
-			sCaption = sCaption + "     [Viewing own entries only]";
-		}
-
-		//TODO: We don't have a record position indicator yet on the ribbon for this form
-
-		menu_SetmnutoolEventLogRecordPositionCaption(sCaption);
-		//Enable/disable navigation controls based on certain conditions
-
-		var elFindRecords = Number('<%:Session("findRecords")%>');
-
-		if (elFindRecords <= Number(sRecords)) {
-			if (iStartPosition == 1) { //Disable first and previous
-				menu_toolbarEnableItem("mnutoolFirstEventLogFind", false);
-				menu_toolbarEnableItem("mnutoolPreviousEventLogFind", false);
-				menu_toolbarEnableItem("mnutoolNextEventLogFind", true);
-				menu_toolbarEnableItem("mnutoolLastEventLogFind", true);
-			} else if (iEndPosition == sRecords) { //Disable next and last
-				menu_toolbarEnableItem("mnutoolFirstEventLogFind", true);
-				menu_toolbarEnableItem("mnutoolPreviousEventLogFind", true);
-				menu_toolbarEnableItem("mnutoolNextEventLogFind", false);
-				menu_toolbarEnableItem("mnutoolLastEventLogFind", false);
-			}
-			else { //Enable all
-				menu_toolbarEnableItem("mnutoolFirstEventLogFind", true);
-				menu_toolbarEnableItem("mnutoolPreviousEventLogFind", true);
-				menu_toolbarEnableItem("mnutoolNextEventLogFind", true);
-				menu_toolbarEnableItem("mnutoolLastEventLogFind", true);
-			}
-		} else { //Disable all
-			menu_toolbarEnableItem("mnutoolFirstEventLogFind", false);
-			menu_toolbarEnableItem("mnutoolPreviousEventLogFind", false);
-			menu_toolbarEnableItem("mnutoolNextEventLogFind", false);
-			menu_toolbarEnableItem("mnutoolLastEventLogFind", false);
-		}
-
-		return true;
-	}
-
+	
 	function loadEventLog() {
 		var i;
-		var iPollCounter;
-		var iPollPeriod;
-		var sControlName;
-		var sControlPrefix;
-
-		iPollPeriod = 100;
-		iPollCounter = iPollPeriod;
-
-		var frmUtilDefForm = OpenHR.getForm("dataframe", "frmData");
-		var dataCollection = frmUtilDefForm.elements;
-
 		var frmLog = OpenHR.getForm("workframe", "frmLog");
 
 		//Clear the log table
@@ -218,13 +156,9 @@
 			loadComplete: function () {
 				moveFirst();
 			},
-			onSelectRow: function (rowID) { //Enalbe ribbon
-				//menu_toolbarEnableItem("mnutoolViewEventLogFind", true);
-				//menu_toolbarEnableItem("mnutoolPurgeEventLogFind", true);
-				//menu_toolbarEnableItem("mnutoolEmailEventLogFind", true);
-				//menu_toolbarEnableItem("mnutoolDeleteEventLogFind", true);
+			onSelectRow: function () { //Enable ribbon
 			},
-			ondblClickRow: function (rowID) {
+			ondblClickRow: function () {
 				EventLog_viewEvent();
 			},
 			cmTemplate: { sortable: true },
@@ -241,11 +175,11 @@
 
 					var CurrentSelectIndex = $("#LogEvents").jqGrid('getInd', rowid);
 					var InitialSelectIndex = $("#LogEvents").jqGrid('getInd', initialRowSelect);
-					var startID = "";
-					var endID = "";
+					var startID;
+					var endID;
 					if (CurrentSelectIndex > InitialSelectIndex) {
 						startID = initialRowSelect;
-						endID = rowid;
+						endID = rowid; 
 					}
 					else {
 						startID = rowid;
@@ -280,10 +214,6 @@
 
 		$("#LogEvents").jqGrid('setGridHeight', $("#gridContainer").height());
 		$("#LogEvents").jqGrid('setGridWidth', $("#gridContainer").width());
-		//menu_toolbarEnableItem("mnutoolViewEventLogFind", false);
-		//menu_toolbarEnableItem("mnutoolPurgeEventLogFind", false);
-		//menu_toolbarEnableItem("mnutoolEmailEventLogFind", false);
-		//menu_toolbarEnableItem("mnutoolDeleteEventLogFind", false);
 
 		frmLog.cboUsername.style.color = 'black';
 		frmLog.cboType.style.color = 'black';
@@ -300,9 +230,9 @@
 
 		refreshStatusBar();
 
-		if (frmPurge.txtShowPurgeMSG.value == 1) {
+		if ($('#txtShowPurgeMSG').val() == 1) {
 			OpenHR.messageBox("Purge completed.", 64, "Event Log");
-			frmPurge.txtShowPurgeMSG.value = 0;
+			$('#txtShowPurgeMSG').val(0);
 		}
 	}
 
@@ -311,35 +241,35 @@
 	}
 
 	function filterSQL() {
-		var sSQL = new String("");
+		var SSql = new String("");
 
 		if (frmLog.cboUsername.options[frmLog.cboUsername.selectedIndex].value != -1) {
 			var sUsername = new String(frmLog.cboUsername.options[frmLog.cboUsername.selectedIndex].value);
-			sSQL = sSQL + " LOWER(Username) = '" + sUsername.toLowerCase() + "' ";
+			SSql = SSql + " LOWER(Username) = '" + sUsername.toLowerCase() + "' ";
 		}
 
 		if (frmLog.cboType.options[frmLog.cboType.selectedIndex].value != -1) {
-			if (sSQL.length > 0) {
-				sSQL = sSQL + " AND ";
+			if (SSql.length > 0) {
+				SSql = SSql + " AND ";
 			}
-			sSQL = sSQL + " Type = " + frmLog.cboType.options[frmLog.cboType.selectedIndex].value + " ";
+			SSql = SSql + " Type = " + frmLog.cboType.options[frmLog.cboType.selectedIndex].value + " ";
 		}
 
 		if (frmLog.cboStatus.options[frmLog.cboStatus.selectedIndex].value != -1) {
-			if (sSQL.length > 0) {
-				sSQL = sSQL + " AND ";
+			if (SSql.length > 0) {
+				SSql = SSql + " AND ";
 			}
-			sSQL = sSQL + "Status = " + frmLog.cboStatus.options[frmLog.cboStatus.selectedIndex].value + " ";
+			SSql = SSql + "Status = " + frmLog.cboStatus.options[frmLog.cboStatus.selectedIndex].value + " ";
 		}
 
 		if (frmLog.cboMode.options[frmLog.cboMode.selectedIndex].value != -1) {
-			if (sSQL.length > 0) {
-				sSQL = sSQL + " AND ";
+			if (SSql.length > 0) {
+				SSql = SSql + " AND ";
 			}
-			sSQL = sSQL + " Mode = " + frmLog.cboMode.options[frmLog.cboMode.selectedIndex].value + " ";
+			SSql = SSql + " Mode = " + frmLog.cboMode.options[frmLog.cboMode.selectedIndex].value + " ";
 		}
 
-		return sSQL;
+		return SSql;
 	}
 
 	function refreshGrid() {
@@ -360,9 +290,8 @@
 
 	function EventLog_viewEvent() {
 		var sURL;
-		//Get the row ID
 		var rowID = $("#LogEvents").jqGrid('getGridParam', 'selrow');
-
+		
 		if (rowID == null) { //No row selected
 			return;
 		}
@@ -382,79 +311,34 @@
 		frmDetails.txtEmailPermission.value = frmLog.txtELEmailPermission.value;
 
 		sURL = "eventLogDetails" +
-				"?txtEventID=" + frmDetails.txtEventID.value +
-				"&txtEventName=" + escape(frmDetails.txtEventName.value) +
-				"&txtEventMode=" + escape(frmDetails.txtEventMode.value) +
-				"&txtEventStartTime=" + frmDetails.txtEventStartTime.value +
-				"&txtEventEndTime=" + frmDetails.txtEventEndTime.value +
-				"&txtEventDuration=" + frmDetails.txtEventDuration.value +
-				"&txtEventType=" + escape(frmDetails.txtEventType.value) +
-				"&txtEventStatus=" + escape(frmDetails.txtEventStatus.value) +
-				"&txtEventUser=" + escape(frmDetails.txtEventUser.value) +
-				"&txtEventSuccessCount=" + frmDetails.txtEventSuccessCount.value +
-				"&txtEventFailCount=" + frmDetails.txtEventFailCount.value +
-				"&txtEventBatchName=" + escape(frmDetails.txtEventBatchName.value) +
-				"&txtEventBatchJobID=" + frmDetails.txtEventBatchJobID.value +
-				"&txtEventBatchRunID=" + frmDetails.txtEventBatchRunID.value +
-				"&txtEmailPermission=" + escape(frmDetails.txtEmailPermission.value);
-		
-		OpenHR.windowOpen(sURL, 900, 720);
+			"?txtEventID=" + frmDetails.txtEventID.value +
+			"&txtEventName=" + escape(frmDetails.txtEventName.value) +
+			"&txtEventMode=" + escape(frmDetails.txtEventMode.value);
+
+		$('#EventLogViewDetails').data('sURLData', sURL);
+		$('#EventLogViewDetails').dialog("open");
 	}
 
 	function EventLog_deleteEvent() {
-		var sURL;
+		var sURL = "eventLogSelection";
 
-		sURL = "eventLogSelection" +
-				"?txtEventID=" + frmDetails.txtEventID.value +
-				"&txtEventName=" + escape(frmDetails.txtEventName.value) +
-				"&txtEventMode=" + escape(frmDetails.txtEventMode.value) +
-				"&txtEventStartTime=" + frmDetails.txtEventStartTime.value +
-				"&txtEventEndTime=" + frmDetails.txtEventEndTime.value +
-				"&txtEventDuration=" + frmDetails.txtEventDuration.value +
-				"&txtEventType=" + escape(frmDetails.txtEventType.value) +
-				"&txtEventStatus=" + escape(frmDetails.txtEventStatus.value) +
-				"&txtEventUser=" + escape(frmDetails.txtEventUser.value) +
-				"&txtEventSuccessCount=" + frmDetails.txtEventSuccessCount.value +
-				"&txtEventFailCount=" + frmDetails.txtEventFailCount.value +
-				"&txtEventBatchName=" + escape(frmDetails.txtEventBatchName.value) +
-				"&txtEventBatchJobID=" + frmDetails.txtEventBatchJobID.value +
-				"&txtEventBatchRunID=" + frmDetails.txtEventBatchRunID.value +
-				"&txtEmailPermission=" + escape(frmDetails.txtEmailPermission.value);
-
-		OpenHR.windowOpen(sURL, 500, 220);
+		$('#EventLogDelete').data('sURLData', sURL);
+		$('#EventLogDelete').dialog("open");
 
 		EventLog_refreshButtons();
 	}
 
 	function EventLog_purgeEvent() {
-		var sURL;
+		var sURL = "EventLogPurge";
 
-		sURL = "EventLogPurge" +
-				"?txtEventID=" + frmDetails.txtEventID.value +
-				"&txtEventName=" + escape(frmDetails.txtEventName.value) +
-				"&txtEventMode=" + escape(frmDetails.txtEventMode.value) +
-				"&txtEventStartTime=" + frmDetails.txtEventStartTime.value +
-				"&txtEventEndTime=" + frmDetails.txtEventEndTime.value +
-				"&txtEventDuration=" + frmDetails.txtEventDuration.value +
-				"&txtEventType=" + escape(frmDetails.txtEventType.value) +
-				"&txtEventStatus=" + escape(frmDetails.txtEventStatus.value) +
-				"&txtEventUser=" + escape(frmDetails.txtEventUser.value) +
-				"&txtEventSuccessCount=" + frmDetails.txtEventSuccessCount.value +
-				"&txtEventFailCount=" + frmDetails.txtEventFailCount.value +
-				"&txtEventBatchName=" + escape(frmDetails.txtEventBatchName.value) +
-				"&txtEventBatchJobID=" + frmDetails.txtEventBatchJobID.value +
-				"&txtEventBatchRunID=" + frmDetails.txtEventBatchRunID.value +
-				"&txtEmailPermission=" + escape(frmDetails.txtEmailPermission.value);
-
-		OpenHR.windowOpen(sURL, 500, 220);
-
+		$('#EventLogPurge').data('sURLData', sURL);
+		$('#EventLogPurge').dialog("open");
 	}
 
 	function EventLog_emailEvent() {
 		var eventID;
 		var sEventList = new String("");
 		var sURL;
-
 		var selectedRows = $("#LogEvents").jqGrid('getGridParam', 'selarrrow');
 
 		//populate the txtSelectedIDs list
@@ -471,10 +355,11 @@
 				"&txtFromMain=" + frmEmail.txtFromMain.value +
 				"&txtEmailOrderColumn=" + frmLog.txtELOrderColumn.value +
 				"&txtEmailOrderOrder=" + frmLog.txtELOrderOrder.value;
-
-		OpenHR.windowOpen(sURL, (screen.width) / 3, (screen.height) / 2, "no", "no");
+		
+		$('#EventLogEmailSelect').data('sURLData', sURL);
+		$('#EventLogEmailSelect').dialog("open");
 	}
-
+	
 	function EventLog_refreshButtons() {
 		var frmLog = OpenHR.getForm("workframe", "frmLog");
 		var logEventRowCount = $("#LogEvents").getGridParam('reccount') == undefined ? 0 : $("#LogEvents").getGridParam('reccount');
@@ -500,20 +385,20 @@
 		var bFoundUser = false;
 
 		if (pbViewAll == 1) {
-			var oOptionALL = document.createElement("OPTION");
-			oOptionALL.innerHTML = '&lt;All&gt;';
-			oOptionALL.value = -1;
-			frmLog.cboUsername.options.add(oOptionALL);
+			var OOptionAll = document.createElement("OPTION");
+			OOptionAll.innerHTML = '&lt;All&gt;';
+			OOptionAll.value = -1;
+			frmLog.cboUsername.options.add(OOptionAll);
 
 			var frmUtilDefForm = OpenHR.getForm("dataframe", "frmData");
 			var dataCollection = frmUtilDefForm.elements;
 
 			if (dataCollection != null) {
 				for (i = 0; i < dataCollection.length; i++) {
-					sControlName = dataCollection.item(i).name;
+					var sControlName = dataCollection.item(i).name;
 					sControlName = sControlName.substr(0, 16);
 					if (sControlName == "txtEventLogUser_") {
-						var oOption = document.createElement("OPTION");
+						oOption = document.createElement("OPTION");
 						
 						oOption.innerHTML = dataCollection.item(i).value;
 						oOption.value = dataCollection.item(i).value;
@@ -529,7 +414,7 @@
 			}
 
 			if (psCurrentFilterUser == '-1' || psCurrentFilterUser == '' || !bFoundUser) {
-				oOptionALL.selected = true;
+				OOptionAll.selected = true;
 			}
 
 			EventLog_refreshButtons();
@@ -550,7 +435,60 @@
 
 		refreshGrid();
 	}
+	
+	function refreshStatusBar() {
+		var sRecords;
+		var sCaption;
+		var frmData = OpenHR.getForm("dataframe", "frmData");
 
+		sRecords = frmData.txtELTotalRecordCount.value;
+
+		var iStartPosition = parseInt(frmData.txtELFirstRecPos.value);
+		var iEndPosition = iStartPosition - 1 + parseInt(frmData.txtELCurrentRecCount.value);
+
+		if (sRecords > 0) {
+			sCaption = "Record(s): " + sRecords;
+		} else {
+			sCaption = "No Records";
+		}
+
+		if (frmLog.txtELViewAllPermission.value == 0) {
+			sCaption = sCaption + "     [Viewing own entries only]";
+		}
+
+		//TODO: We don't have a record position indicator yet on the ribbon for this form
+
+		menu_SetmnutoolEventLogRecordPositionCaption(sCaption);
+		//Enable/disable navigation controls based on certain conditions
+
+		var elFindRecords = Number('<%:Session("findRecords")%>');
+
+		if (elFindRecords <= Number(sRecords)) {
+			if (iStartPosition == 1) { //Disable first and previous
+				menu_toolbarEnableItem("mnutoolFirstEventLogFind", false);
+				menu_toolbarEnableItem("mnutoolPreviousEventLogFind", false);
+				menu_toolbarEnableItem("mnutoolNextEventLogFind", true);
+				menu_toolbarEnableItem("mnutoolLastEventLogFind", true);
+			} else if (iEndPosition == sRecords) { //Disable next and last
+				menu_toolbarEnableItem("mnutoolFirstEventLogFind", true);
+				menu_toolbarEnableItem("mnutoolPreviousEventLogFind", true);
+				menu_toolbarEnableItem("mnutoolNextEventLogFind", false);
+				menu_toolbarEnableItem("mnutoolLastEventLogFind", false);
+			} else { //Enable all
+				menu_toolbarEnableItem("mnutoolFirstEventLogFind", true);
+				menu_toolbarEnableItem("mnutoolPreviousEventLogFind", true);
+				menu_toolbarEnableItem("mnutoolNextEventLogFind", true);
+				menu_toolbarEnableItem("mnutoolLastEventLogFind", true);
+			}
+		} else { //Disable all
+			menu_toolbarEnableItem("mnutoolFirstEventLogFind", false);
+			menu_toolbarEnableItem("mnutoolPreviousEventLogFind", false);
+			menu_toolbarEnableItem("mnutoolNextEventLogFind", false);
+			menu_toolbarEnableItem("mnutoolLastEventLogFind", false);
+		}
+
+		return true;
+	}
 
 </script>
 
@@ -564,16 +502,16 @@
 		<form id="frmLog">
 
 			<table style="height: 100%; width: 100%; padding: 0 10px 10px 0" class="invisible">
-				<tr height="10">
+				<tr style="height:10px">
 					<td style="width: 7%">User name : 
 					</td>
 					<td>
-						<select id="cboUsername" name="cboUsername" class="combo" style="width: 100%" onchange="refreshGrid();">
+						<select class="width100" id="cboUsername" name="cboUsername" onchange="refreshGrid();">
 						</select>
 					</td>
 					<td style="width: 5%">Type :</td>
 					<td>
-						<select id="cboType" name="cboType" class="combo" style="width: 100%" onchange="refreshGrid();">
+						<select class="width100" id="cboType" name="cboType" onchange="refreshGrid();">
 							<%
 								If Session("CurrentType") = "-1" Then
 									Response.Write("											<option value=-1 selected>&lt;All&gt;" & vbCrLf)
@@ -715,7 +653,7 @@
 					<td style="width: 5%">Mode : 
 					</td>
 					<td>
-						<select id="cboMode" name="cboMode" class="combo" style="width: 100%" onchange="refreshGrid();">
+						<select class="width100" id="cboMode" name="cboMode" onchange="refreshGrid();">
 							<%
 								If Session("CurrentMode") = "-1" Then
 									Response.Write("											<option value=-1 selected>&lt;All&gt;" & vbCrLf)
@@ -746,7 +684,7 @@
 					<td style="width: 5%">Status : 
 					</td>
 					<td>
-						<select id="cboStatus" name="cboStatus" class="combo" style="width: 100%" onchange="refreshGrid();">
+						<select class="width100" id="cboStatus" name="cboStatus" onchange="refreshGrid();">
 							<%	
 								If Session("CurrentStatus") = "-1" Then
 									Response.Write("											<option value=-1 selected>&lt;All&gt;" & vbCrLf)
@@ -850,20 +788,20 @@
 	<input type="hidden" id="txtPurgePeriod" name="txtPurgePeriod">
 	<input type="hidden" id="txtPurgeFrequency" name="txtPurgeFrequency">
 	<input type="hidden" id="txtShowPurgeMSG" name="txtShowPurgeMSG" value='<%=Session("showPurgeMessage")%>'>
-	<input type="hidden" id="txtCurrentUsername" name="txtCurrentUsername">
-	<input type="hidden" id="txtCurrentType" name="txtCurrentType">
-	<input type="hidden" id="txtCurrentMode" name="txtCurrentMode">
-	<input type="hidden" id="txtCurrentStatus" name="txtCurrentStatus">
+	<input type="hidden" id="txtPurgeCurrentUsername" name="txtCurrentUsername">
+	<input type="hidden" id="txtPurgeCurrentType" name="txtCurrentType">
+	<input type="hidden" id="txtPurgeCurrentMode" name="txtCurrentMode">
+	<input type="hidden" id="txtPurgeCurrentStatus" name="txtCurrentStatus">
 </form>
 
 <form id="frmDelete" name="frmDelete" method="post" style="visibility: hidden; display: none" action="eventLog">
 	<input type="hidden" id="txtDeleteSel" name="txtDeleteSel">
 	<input type="hidden" id="txtSelectedIDs" name="txtSelectedIDs">
 	<input type="hidden" id="txtViewAllPerm" name="txtViewAllPerm">
-	<input type="hidden" id="txtCurrentUsername" name="txtCurrentUsername">
-	<input type="hidden" id="txtCurrentType" name="txtCurrentType">
-	<input type="hidden" id="txtCurrentMode" name="txtCurrentMode">
-	<input type="hidden" id="txtCurrentStatus" name="txtCurrentStatus">
+	<input type="hidden" id="txtDetleteCurrentUsername" name="txtCurrentUsername">
+	<input type="hidden" id="txtDetleteCurrentType" name="txtCurrentType">
+	<input type="hidden" id="txtDetleteCurrentMode" name="txtCurrentMode">
+	<input type="hidden" id="txtDetleteCurrentStatus" name="txtCurrentStatus">
 </form>
 
 <form id="frmEmail" name="frmEmail" method="post" style="visibility: hidden; display: none" action="emailSelection">
@@ -875,10 +813,10 @@
 
 <form id="frmRefresh" name="frmRefresh" method="post" style="visibility: hidden; display: none" action="eventLog">
 	<input type="hidden" id="txtEventExisted" name="txtEventExisted">
-	<input type="hidden" id="txtCurrentUsername" name="txtCurrentUsername">
-	<input type="hidden" id="txtCurrentType" name="txtCurrentType">
-	<input type="hidden" id="txtCurrentMode" name="txtCurrentMode">
-	<input type="hidden" id="txtCurrentStatus" name="txtCurrentStatus">
+	<input type="hidden" id="txtRefreshCurrentUsername" name="txtCurrentUsername">
+	<input type="hidden" id="txtRefreshCurrentType" name="txtCurrentType">
+	<input type="hidden" id="txtRefreshCurrentMode" name="txtCurrentMode">
+	<input type="hidden" id="txtRefreshCurrentStatus" name="txtCurrentStatus">
 </form>
 
 <form id="frmEventUseful" name="frmEventUseful" style="visibility: hidden; display: none">
@@ -905,6 +843,6 @@
 
 <script type="text/javascript">
 	eventLog_window_onload();
-
-	$('table').attr('border', '0');
 </script>
+
+
