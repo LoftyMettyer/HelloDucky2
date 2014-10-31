@@ -284,7 +284,7 @@
 	size.width = (screen.width) / 2;
 	size.height = (window.innerHeight || document.body.clientHeight) - 100;
 	<%Else%>
-	size.width = window.innerWidth || document.body.clientWidth;
+	size.width = (window.innerWidth || document.body.clientWidth) - 200;
 	size.height = (window.innerHeight || document.body.clientHeight) - 200;
 	<%End If%>
 
@@ -315,7 +315,7 @@
 			<%Else%>
 			$(".popup").dialog({
 				title: "",
-				width: size.width - 200,
+				width: size.width,
 				height: size.height,
 				resizable: true,
 				resize: function() {
