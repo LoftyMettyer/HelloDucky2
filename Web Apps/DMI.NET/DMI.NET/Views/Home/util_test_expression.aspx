@@ -73,27 +73,27 @@
 				trPleaseWait5.style.visibility = 'hidden';
 				trPleaseWait5.style.display = 'none';
 
-				var bdyMain = $("#bdyMain");
-
+				var bdyMain = document.getElementById('bdyMain');
 				// Resize the grid to show all prompted values.
 				var iResizeBy = bdyMain.scrollWidth - bdyMain.clientWidth;
 				if (bdyMain.offsetWidth + iResizeBy > screen.width) {
-					window.outerWidth = new String(screen.width) + "px";
+					window.outerWidth = new String(screen.width);
 				}
 				else {
 					iNewWidth = window.parent.outerWidth;
 					iNewWidth = iNewWidth + iResizeBy;
-					window.outerWidth = new String(iNewWidth) + "px";
+					
+					window.outerWidth = new String(iNewWidth);
 				}
 
 				iResizeBy = bdyMain.scrollHeight - bdyMain.clientHeight;
 				if (bdyMain.offsetHeight + iResizeBy > screen.height) {
-					window.outerHeight = new String(screen.height) + "px";
+					window.outerHeight = new String(screen.height);
 				}
 				else {
 					iNewHeight = window.parent.outerHeight;
 					iNewHeight = iNewHeight + iResizeBy;
-					window.outerHeight = new String(iNewHeight) + "px";
+					window.outerHeight = new String(iNewHeight);
 				}
 			}
 			else {
@@ -106,8 +106,9 @@
 
 </head>
 
-<body id="bdyMain">    
-		<div data-framesource="util_test_expression">
+<body>
+	<div  id="bdyMain">
+	<div data-framesource="util_test_expression">
 
 		
 		<table align=center class="outline" cellPadding=5 cellSpacing=0>
@@ -327,6 +328,7 @@ Response.Write("			    <td align=center colspan=3> " & vbCrLf)
 </table>
 
 </div>
+		</div>
 </body>
 
 </html>
