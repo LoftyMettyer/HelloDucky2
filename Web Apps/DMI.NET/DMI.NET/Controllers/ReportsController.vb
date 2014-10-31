@@ -105,22 +105,26 @@ Namespace Controllers
 				For Each columnItem As ReportColumnItem In objModel.Columns
 					If String.IsNullOrEmpty(columnItem.Heading.Trim()) And
 							columnItem.IsHidden = False Then
-						ModelState.AddModelError("IsColumnHeaderEmpty", "The '" & columnItem.Name & "' column has a blank column heading.")
+						ModelState.AddModelError("IsColumnHeaderEmpty", "The '" & columnItem.Name & "' column has a blank heading.")
 						Exit For
 					End If
 				Next
 
 				' Check the column headings are unique. Used the Goto statement to break the nested loop.
-					For Each columnItem As ReportColumnItem In objModel.Columns
-						For Each columnItemHeaderToCheck As ReportColumnItem In objModel.Columns
+				Dim breakNestedLoop As Boolean
+				For Each columnItem As ReportColumnItem In objModel.Columns
+					For Each columnItemHeaderToCheck As ReportColumnItem In objModel.Columns
 
-							If columnItem.ID <> columnItemHeaderToCheck.ID AndAlso UCase(columnItem.Heading.Trim()) = UCase(columnItemHeaderToCheck.Heading.Trim()) AndAlso columnItemHeaderToCheck.IsHidden = False Then
-								ModelState.AddModelError("IsColumnHeaderUnique", "One or more columns / calculations in your report have a heading of '" & columnItemHeaderToCheck.Heading & "'. " & "Column headings must be unique.")
-							GoTo ExitNestedLoop
-							End If
-						Next
+						If columnItem.ID <> columnItemHeaderToCheck.ID AndAlso UCase(columnItem.Heading.Trim()) = UCase(columnItemHeaderToCheck.Heading.Trim()) AndAlso columnItemHeaderToCheck.IsHidden = False Then
+							ModelState.AddModelError("IsColumnHeaderUnique", "One or more columns / calculations in your report have a heading of '" & columnItemHeaderToCheck.Heading & "'. " & "Column headings must be unique.")
+							breakNestedLoop = True
+							Exit For
+						End If
 					Next
-ExitNestedLoop:
+					If breakNestedLoop Then
+						Exit For
+					End If
+				Next
 
 					If objModel.IsSummary AndAlso objModel.Columns.Where(Function(m) m.IsAverage OrElse m.IsCount OrElse m.IsTotal).LongCount() = 0 Then
 						ModelState.AddModelError("IsSummaryOK", "There are no columns defined as aggregates for this summary report.")
