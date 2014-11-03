@@ -231,7 +231,8 @@
 		refreshStatusBar();
 
 		if ($('#txtShowPurgeMSG').val() == 1) {
-			OpenHR.messageBox("Purge completed.", 64, "Event Log");
+			OpenHR.modalMessage("Purge Event Log completed.","Event Log Purge");
+			$('#dialog-confirm').width(300);
 			$('#txtShowPurgeMSG').val(0);
 		}
 	}

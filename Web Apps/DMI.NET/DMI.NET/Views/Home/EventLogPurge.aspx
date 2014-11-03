@@ -3,17 +3,16 @@
 <%@ Import Namespace="HR.Intranet.Server" %>
 
 <script type="text/javascript">
-	var frmOpenerPurge = OpenHR.getForm("workframe", "frmPurge");
-	var frmMainLog = OpenHR.getForm("workframe", "frmLog");
 	
 		function eventlogpurge_window_onload() {
-			$('#optNoPurge').prop('checked', true);
-			$('#optPurge').prop('checked', false);
-			$('#cboPeriod').val(0); 
+			$('#optPurge').prop('checked', true);
 			refreshControls();
 		}	
 
 		function okClick() {
+			var frmMainLog = OpenHR.getForm("workframe", "frmLog");
+			var frmOpenerPurge = OpenHR.getForm("workframe", "frmPurge");
+
 			if (($('#cboPeriod').val() == 3) && ($('#txtPeriod').val() > 200)) {
 				OpenHR.messageBox("You cannot select a purge period of greater than 200 years.", 48, "Event Log");
 			}
@@ -67,7 +66,9 @@
 		}
 
 		function refreshControls() {
+			
 			if ($('#optNoPurge').prop('checked') == true) {
+				$('#optNoPurge').prop('checked', true);
 				text_disable($('#txtPeriod'), true);
 				button_disable($('#cmdPeriodDown'), true);
 				button_disable($('#cmdPeriodUp'), true);
@@ -78,6 +79,7 @@
 				$('#txtFrequency').val(0);
 			}
 			else {
+				$('#optPurge').prop('checked', true);
 				text_disable($('#txtPeriod'), false);
 				button_disable($('#cmdPeriodDown'), false);
 				button_disable($('#cmdPeriodUp'), false);
@@ -123,9 +125,11 @@
 				// replace the locale decimal marker with the decimal point.
 				sConvertedValue = sConvertedValue.replace(reDecimalSeparator, ".");
 			}
-
+			
 			if (isNaN(sConvertedValue) == true) {
-				OpenHR.messageBox("Invalid numeric value.", 48, "Event Log");
+				$("#errorDialogTitle").text("Event Log");
+				$("#errorDialogContentText").html("Invalid numeric value.");
+				$("#errorDialog").dialog("open");
 				 $('#txtPeriod').val(0);
 			}
 			else {
@@ -136,13 +140,18 @@
 				}
 				else {
 					if ($('#txtPeriod').val() < 0) {
-						OpenHR.messageBox("The value cannot be negative.", 48, "Event Log");
+						$("#errorDialogTitle").text("Event Log");
+						$("#errorDialogContentText").html("The value cannot be negative.");
+						$("#errorDialog").dialog("open");
 						$('#txtPeriod').val(0);
 						$('#txtFrequency').val(0);
 					}
 					else {
 						if ($('#txtPeriod').val() > 999) {
-							OpenHR.messageBox("The value cannot be greater than 999.", 48, "Event Log");
+							$("#errorDialogTitle").text("Event Log");
+							$("#errorDialogContentText").html("The value cannot be greater than 999.");
+							$("#errorDialog").dialog("open");
+
 							$('#txtPeriod').val(999);
 							$('#txtFrequency').val(999);
 						}
@@ -191,7 +200,7 @@
 					<td style="width: 8px"></td>
 					<td>
 						<input id="optNoPurge" name="optSelection" type="radio" checked="checked"
-							onclick="$('#txtPurge').value = 0; refreshControls();" />
+							onclick="$('#txtPurge').val(0); refreshControls();" />
 					</td>
 					<td class="alignleft" colspan="6">
 						<label for="optNoPurge" tabindex="-1">
@@ -206,7 +215,7 @@
 					<td style="width: 8px"></td>
 					<td>
 						<input id="optPurge" name="optSelection" type="radio"
-							onclick="$('#txtPurge').value = 1; refreshControls();" />
+							onclick="$('#txtPurge').val(1); refreshControls();" />
 					</td>
 					<td class="alignleft">
 						<label for="optPurge" tabindex="-1">
@@ -238,7 +247,7 @@
 
 		<div id="divEventLogPurgeButtons" class="clearboth">
 			<input id="cmdOK" onclick=" okClick() " type="button" value="OK" />
-			<input id="okClick" onclick="cancelClick();;" type="button" value="Cancel" />
+			<input id="okClick" onclick="cancelClick();" type="button" value="Cancel" />
 		</div>
 	</div>
 
