@@ -12,7 +12,7 @@
 	<div class="tablerow">
 		<fieldset id="selectedTable">
 			<legend class="fontsmalltitle width100">Base Table :</legend>
-			<select name="SelectedTableID" id="SelectedTableID" onchange="getAvailableTableColumnsCalcs();"></select>
+			<select name="SelectedTableID" id="SelectedTableID" class="enableSaveButtonOnComboChange" onchange="getAvailableTableColumnsCalcs();"></select>
 			<br />
 			@Html.RadioButton("columnSelectiontype", CInt(ColumnSelectionType.Columns), True,
 												New With {.onclick = "toggleColumnsCalculations('column')", .class = "radioColumnType", .id = "columnSelectiontype_0"})
@@ -27,30 +27,30 @@
 			<fieldset id="columnsAvailable">
 				<legend class="fontsmalltitle">Columns / Calculations Available :</legend>
 				<table id="AvailableColumns"></table>
-	</fieldset>
+			</fieldset>
 		</div>
 
 		<div class="tablecell">
 			<fieldset class="" id="columnbuttons">
-	<div id="colbtngrp1">
-		<input type="button" id="btnColumnAdd" class="enableSaveButtonOnClick" value="Add" onclick="addColumnToSelected();" />
-		<input type="button" id="btnColumnAddAll" class="enableSaveButtonOnClick" value="Add All" onclick="addAllColumnsToSelected();" />
-	</div>
-	<div id="colbtngrp2">
-		<input type="button" id="btnColumnRemove" class="enableSaveButtonOnClick" value="Remove" onclick="requestRemoveSelectedColumns();" />
-		<input type="button" id="btnColumnRemoveAll" class="enableSaveButtonOnClick" value="Remove All" onclick="requestRemoveAllSelectedColumns();" />
-	</div>
-	<div id="colbtngrp3" class="customReportsOnly">
-		<input type="button" id="btnColumnMoveUp" class="enableSaveButtonOnClick" value="Move Up" disabled onclick="moveSelectedColumn('up');" />
-		<input type="button" id="btnColumnMoveDown" class="enableSaveButtonOnClick" value="Move Down" disabled onclick="moveSelectedColumn('down');" />
-	</div>
-</fieldset>
+				<div id="colbtngrp1">
+					<input type="button" id="btnColumnAdd" class="enableSaveButtonOnClick" value="Add" onclick="addColumnToSelected();" />
+					<input type="button" id="btnColumnAddAll" class="enableSaveButtonOnClick" value="Add All" onclick="addAllColumnsToSelected();" />
+				</div>
+				<div id="colbtngrp2">
+					<input type="button" id="btnColumnRemove" value="Remove" onclick="requestRemoveSelectedColumns();" />
+					<input type="button" id="btnColumnRemoveAll" class="enableSaveButtonOnClick" value="Remove All" onclick="requestRemoveAllSelectedColumns();" />
+				</div>
+				<div id="colbtngrp3" class="customReportsOnly">
+					<input type="button" id="btnColumnMoveUp" value="Move Up" disabled onclick="moveSelectedColumn('up');" />
+					<input type="button" id="btnColumnMoveDown" class="enableSaveButtonOnClick" value="Move Down" disabled onclick="moveSelectedColumn('down');" />
+				</div>
+			</fieldset>
 		</div>
 
 		<div class="tablecell">
 			<fieldset class="left" id="columnsSelected">
-	<legend class="fontsmalltitle">Columns / Calculations Selected :</legend>
-	<table id="SelectedColumns" class="scroll" cellpadding="0" cellspacing="0"></table>
+				<legend class="fontsmalltitle">Columns / Calculations Selected :</legend>
+				<table id="SelectedColumns" class="scroll" cellpadding="0" cellspacing="0"></table>
 			</fieldset>
 		</div>
 	</div>
@@ -70,64 +70,64 @@
 		</div>
 		<div class="tablecell"></div>
 		<div class="tablecell">
-			<fieldset>				
-	<div id="definitionColumnProperties">
+			<fieldset>
+				<div id="definitionColumnProperties">
 					<div class="formfieldfill customReportsOnly">
-				<label for="SelectedColumnHeading">Heading :</label>
+						<label for="SelectedColumnHeading">Heading :</label>
 						<span><input type='text' id="SelectedColumnHeading" maxlength="50" onchange="updateColumnsSelectedGrid();" /></span>
-		</div>
+					</div>
 					<div class="formfieldfill">
-				<label for="SelectedColumnSize">Size :</label>
+						<label for="SelectedColumnSize">Size :</label>
 						<span><input class="" type='number' id="SelectedColumnSize" onchange="updateColumnsSelectedGrid();" /></span>
-		</div>
+					</div>
 					<div class="formfieldfill decimalsOnly">
-				<label for="SelectedColumnDecimals">Decimals :</label>
+						<label for="SelectedColumnDecimals">Decimals :</label>
 						<span><input class="" type='number' id="SelectedColumnDecimals" onchange="updateColumnsSelectedGrid();" /></span>
-		</div>
+					</div>
 
 					<div class="tablelayout customReportsOnly colAggregates">
 						<div class="tablerow" style="color: rgb(0, 0, 0)">
 							<div class="tablecell numericOnly">
-					<input class=" ui-widget ui-corner-all" id="SelectedColumnIsAverage" onchange="updateColumnsSelectedGrid();" type="checkbox">
-					<label for="SelectedColumnIsAverage">Average</label>
-				</div>
+								<input class=" ui-widget ui-corner-all" id="SelectedColumnIsAverage" onchange="updateColumnsSelectedGrid();" type="checkbox">
+								<label for="SelectedColumnIsAverage">Average</label>
+							</div>
 							<div class="tablecell cannotBeHidden">
-					<input class="ui-widget ui-corner-all" id="SelectedColumnIsCount" onchange="updateColumnsSelectedGrid();" type="checkbox">
-					<label for="SelectedColumnIsCount">Count</label>
-				</div>
+								<input class="ui-widget ui-corner-all" id="SelectedColumnIsCount" onchange="updateColumnsSelectedGrid();" type="checkbox">
+								<label for="SelectedColumnIsCount">Count</label>
+							</div>
 							<div class="tablecell numericOnly">
-					<input class="ui-widget ui-corner-all" id="SelectedColumnIsTotal" onchange="updateColumnsSelectedGrid();" type="checkbox">
-					<label for="SelectedColumnIsTotal">Total</label>
-				</div>
-			</div>
+								<input class="ui-widget ui-corner-all" id="SelectedColumnIsTotal" onchange="updateColumnsSelectedGrid();" type="checkbox">
+								<label for="SelectedColumnIsTotal">Total</label>
+							</div>
+						</div>
 
 
 						<div class="tablerow">
-			<div>
-					<input class="ui-widget ui-corner-all" id="SelectedColumnIsHidden" onchange="changeColumnIsHidden();" type="checkbox">
-					<label id="labelSelectedColumnIsHidden" for="SelectedColumnIsHidden">Hidden</label>
+							<div>
+								<input class="ui-widget ui-corner-all" id="SelectedColumnIsHidden" onchange="changeColumnIsHidden();" type="checkbox">
+								<label id="labelSelectedColumnIsHidden" for="SelectedColumnIsHidden">Hidden</label>
 							</div>
 							<div class="tablecell canGroupWithNext" style="color: rgb(0, 0, 0);">
-						<input class="ui-widget ui-corner-all" id="SelectedColumnIsGroupWithNext" onchange="changeColumnIsGroupWithNext();" type="checkbox">
-						<label id="labelSelectedColumnIsGroupWithNext" for="SelectedColumnIsGroupWithNext">Group with next</label>
-					</div>
-                            <div class="tablecell baseTableOnly">
-                                <input class="ui-widget ui-corner-all" id="SelectedColumnIsRepeated" onchange="updateColumnsSelectedGrid();" type="checkbox">
-                                <label id="labelSelectedColumnRepeatOnChild" for="SelectedColumnIsRepeated">Repeat on child records</label>
-                            </div>
+								<input class="ui-widget ui-corner-all" id="SelectedColumnIsGroupWithNext" onchange="changeColumnIsGroupWithNext();" type="checkbox">
+								<label id="labelSelectedColumnIsGroupWithNext" for="SelectedColumnIsGroupWithNext">Group with next</label>
+							</div>
+							<div class="tablecell baseTableOnly">
+								<input class="ui-widget ui-corner-all" id="SelectedColumnIsRepeated" onchange="updateColumnsSelectedGrid();" type="checkbox">
+								<label id="labelSelectedColumnRepeatOnChild" for="SelectedColumnIsRepeated">Repeat on child records</label>
+							</div>
 						</div>
 
 					</div>
 
 				</div>
 			</fieldset>
-			</div>
 		</div>
 	</div>
+</div>
 
 <input type="hidden" name="Columns.BaseTableID" value="@Model.BaseTableID" />
 
-  <script type="text/javascript">
+<script type="text/javascript">
 
 	function moveSelectedColumn(direction) {
 		OpenHR.MoveItemInGrid($("#SelectedColumns"), direction);
@@ -278,15 +278,17 @@
 					"Are you sure you wish to continue ?", 4, "").then(function (answer) {
 						if (answer == 6) {
 							removeSelectedColumns();
+							enableSaveButton();
 						}
 					});
 		}
 		else {
 			removeSelectedColumns();
+			enableSaveButton();
 		}
 	}
 
-	function removeSelectedColumns() {
+		function removeSelectedColumns() {
 
 		var thisIndex;
 
@@ -406,7 +408,7 @@
 				{ name: 'Size', index: 'Size', hidden: true },
 				{ name: 'Decimals', index: 'Decimals', hidden: true }],
 			viewrecords: true,
-				autowidth: false,
+			autowidth: false,
 			sortname: 'Name',
 			sortorder: "desc",
 			rowNum: 10000,
@@ -464,8 +466,8 @@
 
 		$("#AvailableColumns").jqGrid('hideCol', 'cb');
 
-			//if ($('#txtReportType').val() == "utlCustomReport") 
-			resizeColumnGrids(); //should be in scope; this function resides in Util_Def_CustomReport.vbhtml
+		//if ($('#txtReportType').val() == "utlCustomReport")
+		resizeColumnGrids(); //should be in scope; this function resides in Util_Def_CustomReport.vbhtml
 
 	}
 
@@ -539,7 +541,7 @@
 			bRowSelected = true;
 			isTopRow = (rowId == allRows[0]);
 			isBottomRow = (rowId == allRows[allRows.length - 1]);
-		} 
+		}
 
 		if (rowCount > 1 || allRows.length == 0) {
 			$("#definitionColumnProperties :input").attr("disabled", true);
@@ -562,7 +564,7 @@
 		else {
 
 			if (!isReadOnly) {
-			$("#definitionColumnProperties :input").removeAttr("disabled");
+				$("#definitionColumnProperties :input").removeAttr("disabled");
 			}
 
 			var isThereChildColumns = (childColumnsCount() > 0);
@@ -676,7 +678,7 @@
 				{ name: 'ReportID', index: 'ReportID', hidden: true },
 				{ name: 'ReportType', index: 'ReportType', hidden: true }],
 			viewrecords: true,
-				autowidth: false,
+			autowidth: false,
 			sortname: 'Sequence',
 			sortorder: "asc",
 			rowNum: 10000,
@@ -775,4 +777,4 @@
 		}
 	});
 
-  </script>
+</script>

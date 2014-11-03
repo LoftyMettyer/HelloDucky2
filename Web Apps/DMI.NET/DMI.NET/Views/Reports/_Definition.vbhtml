@@ -35,73 +35,73 @@
 
 
 	<fieldset id="DataRecordsPermissions" class="floatleft overflowhidden width50">
-			<legend class="fontsmalltitle">Data :</legend>
-			<div class="inner">
-				<fieldset class="">
-					Base Table :
-					<select class="width70 floatright" name="BaseTableID" id="BaseTableID" onchange="requestChangeReportBaseTable(event.target);"></select>
-					<input type="hidden" id="OriginalBaseTableID" />
+		<legend class="fontsmalltitle">Data :</legend>
+		<div class="inner">
+			<fieldset class="">
+				Base Table :
+				<select class="width70 floatright" name="BaseTableID" id="BaseTableID" onchange="requestChangeReportBaseTable(event.target);"></select>
+				<input type="hidden" id="OriginalBaseTableID" />
+			</fieldset>
+
+			<div>
+				<fieldset id="selectiontypeallrecords" class="">
+					@Html.RadioButton("selectiontype", RecordSelectionType.AllRecords, Model.SelectionType = RecordSelectionType.AllRecords,
+																New With {.id = "selectiontype_All", .onclick = "changeRecordOption('Base','ALL')"})<span> All Records</span>
 				</fieldset>
 
-				<div>
-					<fieldset id="selectiontypeallrecords" class="">
-						@Html.RadioButton("selectiontype", RecordSelectionType.AllRecords, Model.SelectionType = RecordSelectionType.AllRecords,
-																New With {.id = "selectiontype_All", .onclick = "changeRecordOption('Base','ALL')"})<span> All Records</span>
-					</fieldset>
-
-					<fieldset id="selectiontypepicklistgroup" class="">
-						<div id="PicklistRadioDiv" class="floatleft">
-							@Html.RadioButton("selectiontype", RecordSelectionType.Picklist, Model.SelectionType = RecordSelectionType.Picklist,
+				<fieldset id="selectiontypepicklistgroup" class="">
+					<div id="PicklistRadioDiv" class="floatleft">
+						@Html.RadioButton("selectiontype", RecordSelectionType.Picklist, Model.SelectionType = RecordSelectionType.Picklist,
 																	New With {.id = "selectiontype_Picklist", .onclick = "changeRecordOption('Base','PICKLIST')"})
-							<span>Picklist</span>
+						<span>Picklist</span>
+					</div>
+					<div class="width70 floatright">
+						@Html.EllipseButton("cmdBasePicklist", "selectBaseTablePicklist()", Model.SelectionType = RecordSelectionType.Picklist)
+						<div class="ellipsistextbox">
+							@Html.TextBoxFor(Function(m) m.PicklistName, New With {.id = "txtBasePicklist", .readonly = "true"})
 						</div>
-						<div class="width70 floatright">
-							@Html.EllipseButton("cmdBasePicklist", "selectBaseTablePicklist()", Model.SelectionType = RecordSelectionType.Picklist)
-							<div class="ellipsistextbox">
-								@Html.TextBoxFor(Function(m) m.PicklistName, New With {.id = "txtBasePicklist", .readonly = "true"})
-							</div>
-						</div>
-						<input type="hidden" id="txtBasePicklistID" name="picklistID" value="@Model.PicklistID" />
-					</fieldset>
+					</div>
+					<input type="hidden" id="txtBasePicklistID" name="picklistID" value="@Model.PicklistID" />
+				</fieldset>
 
-					<fieldset id="selectiontypefiltergroup" class="">
-						<div id="FilterRadioDiv" class="floatleft">
-							@Html.RadioButton("selectiontype", RecordSelectionType.Filter, Model.SelectionType = RecordSelectionType.Filter,
+				<fieldset id="selectiontypefiltergroup" class="">
+					<div id="FilterRadioDiv" class="floatleft">
+						@Html.RadioButton("selectiontype", RecordSelectionType.Filter, Model.SelectionType = RecordSelectionType.Filter,
 																	New With {.id = "selectiontype_Filter", .onclick = "changeRecordOption('Base','FILTER')"})
-							<span>Filter</span>
+						<span>Filter</span>
+					</div>
+					<div class="width70  floatright">
+						@Html.EllipseButton("cmdBaseFilter", "selectBaseTableFilter()", Model.SelectionType = RecordSelectionType.Filter)
+						<div class="ellipsistextbox">
+							@Html.TextBoxFor(Function(m) m.FilterName, New With {.id = "txtBaseFilter", .readonly = "true", .class = "width80"})
 						</div>
-						<div class="width70  floatright">
-							@Html.EllipseButton("cmdBaseFilter", "selectBaseTableFilter()", Model.SelectionType = RecordSelectionType.Filter)
-							<div class="ellipsistextbox">
-								@Html.TextBoxFor(Function(m) m.FilterName, New With {.id = "txtBaseFilter", .readonly = "true", .class = "width80"})
-							</div>
-						</div>
-						<input type="hidden" id="txtBaseFilterID" name="filterID" value="@Model.FilterID" />
-						@Html.ValidationMessageFor(Function(m) m.PicklistID)
-						@Html.ValidationMessageFor(Function(m) m.FilterID)
-					</fieldset>
+					</div>
+					<input type="hidden" id="txtBaseFilterID" name="filterID" value="@Model.FilterID" />
+					@Html.ValidationMessageFor(Function(m) m.PicklistID)
+					@Html.ValidationMessageFor(Function(m) m.FilterID)
+				</fieldset>
 
-					<fieldset>
-						<div class="width100  height25 displayTitleInReportHeader" style="display:block">
-							@Html.CheckBoxFor(Function(m) m.DisplayTitleInReportHeader)
-							@Html.LabelFor(Function(m) m.DisplayTitleInReportHeader, New With {.id = "label_DisplayTitleInReportHeader"})
-						</div>
-					</fieldset>
-				</div>
-
-				<input type="hidden" id="ctl_DefinitionChanged" name="HasChanged" value="false" />
-				<input type="hidden" id="baseHidden" name="baseHidden">
+				<fieldset>
+					<div class="width100  height25 displayTitleInReportHeader" style="display:block">
+						@Html.CheckBoxFor(Function(m) m.DisplayTitleInReportHeader)
+						@Html.LabelFor(Function(m) m.DisplayTitleInReportHeader, New With {.id = "label_DisplayTitleInReportHeader"})
+					</div>
+				</fieldset>
 			</div>
-		</fieldset>
+
+			<input type="hidden" id="ctl_DefinitionChanged" name="HasChanged" value="false" />
+			<input type="hidden" id="baseHidden" name="baseHidden">
+		</div>
+	</fieldset>
 
 	<fieldset id="AccessPermissions" class="table">
-			<legend class="fontsmalltitle">Group Access :</legend>
+		<legend class="fontsmalltitle">Group Access :</legend>
 
-			<fieldset>
+		<fieldset>
 			<div class="nowrap tablelayout" style="margin-top: 0;">
 				<div class="tablerow">
 					<label>Owner :</label>
-				@Html.TextBoxFor(Function(m) m.Owner, New With {.readonly = "true"})
+					@Html.TextBoxFor(Function(m) m.Owner, New With {.readonly = "true"})
 				</div>
 				<br />
 				<div class="tablerow">
@@ -153,10 +153,10 @@
 			$("#frmReportDefintion input").on("keydown", function () { enableSaveButton(); });
 			$("#frmReportDefintion textarea").on("keydown", function () { enableSaveButton(); });
 			$("#frmReportDefintion input").on("change", function () { enableSaveButton(); });
-			$("#frmReportDefintion select").on("change", function () { enableSaveButton(); });
 
-			//bind click event on the css class for the button and used to enable the save button
+			//bind click event on the css class for the button and change event for the dropdown to enable the save button
 			$("#frmReportDefintion .enableSaveButtonOnClick").on("click", function () { enableSaveButton(); });
+			$("#frmReportDefintion .enableSaveButtonOnComboChange").on("change", function () { enableSaveButton(); });
 		}
 	});
 
@@ -341,6 +341,7 @@
 				$("#txtBaseFilterID").val(id);
 				$("#txtBaseFilter").val(name);
 				setViewAccess('FILTER', $("#BaseViewAccess"), access, tableName);
+				enableSaveButton();
 			}
 		}, 400, 400)
 	}
@@ -361,6 +362,7 @@
 				$("#txtBasePicklistID").val(id);
 				$("#txtBasePicklist").val(name);
 				setViewAccess('PICKLIST', $("#BaseViewAccess"), access, tableName);
+				enableSaveButton();
 			}
 
 		}, 400, 400);
@@ -392,7 +394,7 @@
 
 				$('#SelectedTableID').empty()
 
-				// Clear the Parent1 and Parent2 table names only if the base table changed 
+				// Clear the Parent1 and Parent2 table names only if the base table changed
 				if (baseTableChanged) {
 					$("#txtParent1ID").val(0);
 					$("#txtParent2ID").val(0);
@@ -649,4 +651,3 @@
 
 
 </script>
-
