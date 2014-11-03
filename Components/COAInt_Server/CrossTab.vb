@@ -1489,6 +1489,18 @@ LocalErr:
 
 			Next
 
+			Dim swapNineBox As Double
+			If mlngCrossTabType = CrossTabType.ctt9GridBox Then
+				For lngPage = 0 To ColumnHeadingUbound(2)
+					For lngCol = 0 To UBound(mvarHeadings(HOR))
+						swapNineBox = mdblDataArray(lngCol, 2, lngPage, TYPECOUNT)
+						mdblDataArray(lngCol, 2, lngPage, TYPECOUNT) = mdblDataArray(lngCol, 4, lngPage, TYPECOUNT)
+						mdblDataArray(lngCol, 4, lngPage, TYPECOUNT) = swapNineBox
+					Next
+				Next
+			End If
+
+
 			'Build an array with the nine box grid cells descriptions so we can map cells to their descriptions
 			_descriptionsAsArray = New ArrayList
 			_descriptionsAsArray.Add(Description1)
@@ -1734,13 +1746,6 @@ LocalErr:
 		Else
 			'Now add the main row data
 			For lngCol = 0 To lngNumCols
-
-				If mlngCrossTabType = CrossTabType.ctt9GridBox Then
-					Dim swapNineBox As Double
-					swapNineBox = mdblDataArray(lngCol, 2, lngSinglePage, lngTYPE)
-					mdblDataArray(lngCol, 2, lngSinglePage, lngTYPE) = mdblDataArray(lngCol, 4, lngSinglePage, lngTYPE)
-					mdblDataArray(lngCol, 4, lngSinglePage, lngTYPE) = swapNineBox
-				End If
 
 				'UPGRADE_WARNING: Couldn't resolve default property of object mvarHeadings()(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 				mstrOutput(0) = mstrOutput(0) & Trim(mvarHeadings(0)(lngCol)) & IIf(lngCol <> lngNumCols, strDelim, "")
