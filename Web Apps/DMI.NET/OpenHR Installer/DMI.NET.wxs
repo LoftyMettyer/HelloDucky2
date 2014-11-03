@@ -4525,6 +4525,9 @@
                     <Component Id="cmpD0F21098EE2D5CB4DF0B6A3B6FB9F1EA" Guid="*">
                         <File Id="fil64479E0F6C18BECA26DB3E08441FF7EA" KeyPath="yes" Source="SourceDir\Views\Reports\_Output.vbhtml" />
                     </Component>
+                    <Component Id="cmpE9E66D68664034CF676CE87FAD17D407" Guid="*">
+                        <File Id="fil213782111F172AF4E2B56C03C7B436A9" KeyPath="yes" Source="SourceDir\Views\Reports\_OutputNineBoxGrid.vbhtml" />
+                    </Component>
                     <Component Id="cmp9CF2322DDD5CDE9F413C514C02FECFF7" Guid="*">
                         <File Id="fil661DD573B3A288E353F7C45DCBD4EF66" KeyPath="yes" Source="SourceDir\Views\Reports\_RelatedTables.vbhtml" />
                     </Component>
@@ -6008,6 +6011,7 @@
             <ComponentRef Id="cmpAE42260A853E8237207CAD8726C4CA90" />
             <ComponentRef Id="cmpE683625E10F2CA55D9E27ED77257140D" />
             <ComponentRef Id="cmpD0F21098EE2D5CB4DF0B6A3B6FB9F1EA" />
+            <ComponentRef Id="cmpE9E66D68664034CF676CE87FAD17D407" />
             <ComponentRef Id="cmp9CF2322DDD5CDE9F413C514C02FECFF7" />
             <ComponentRef Id="cmp319F61571E2A312146943D9952478907" />
             <ComponentRef Id="cmp5DC28F40AF4909D22FD15F6F7A4F7FF0" />

@@ -31,33 +31,24 @@
 			</Dialog>
 
 			<Dialog Id="ApplicationSettingsDlg" Width="370" Height="300" Title="Application Settings - [ProductName]" NoMinimize="yes">
-				<!-- Server -->
-				<Control Id="ServerLabel" Type="Text" X="45" Y="55" Width="100" Height="15" TabSkip="no" Text="&amp;SQL Server:" />
-				<Control Id="ServerField" Type="Edit" X="45" Y="70" Width="220" Height="18" Property="SERVER_STRING" Text="{200}" />
-				<!-- Database -->
-				<Control Id="DatabaseLabel" Type="Text" X="45" Y="95" Width="100" Height="15" TabSkip="no" Text="&amp;Database:" />
-				<Control Id="DatabaseField" Type="Edit" X="45" Y="110" Width="220" Height="18" Property="DATABASE_STRING" Text="{200}" />
 				<!-- SMTP "Email from" -->
-				<Control Id="SMTPEmailAddressLabel1" Type="Text" X="45" Y="135" Width="100" Height="15" TabSkip="no" Text="SMTP &amp;Email address:" />
-				<Control Id="SMTPEmailAddressField" Type="Edit" X="45" Y="150" Width="220" Height="18" Property="SMTP_EMAIL_ADDRESS_STRING" Text="{200}" />
-				<Control Id="SMTPEmailAddressLabel2" Type="Text" X="270" Y="153" Width="50" Height="15" TabSkip="yes" Text="(optional)" />
+				<Control Id="SMTPEmailAddressLabel1" Type="Text" X="45" Y="55" Width="100" Height="15" TabSkip="no" Text="SMTP &amp;Email address:" />
+				<Control Id="SMTPEmailAddressField" Type="Edit" X="45" Y="70" Width="220" Height="18" Property="SMTP_EMAIL_ADDRESS_STRING" Text="{200}" />
+				<Control Id="SMTPEmailAddressLabel2" Type="Text" X="270" Y="73" Width="50" Height="15" TabSkip="yes" Text="(optional)" />
 				<!-- SMTP server -->
-				<Control Id="SMTPServerLabel1" Type="Text" X="45" Y="175" Width="100" Height="15" TabSkip="no" Text="S&amp;MTP server:" />
-				<Control Id="SMTPServerField" Type="Edit" X="45" Y="190" Width="220" Height="18" Property="SMTP_SERVER_STRING" Text="{200}" />
-				<Control Id="SMTPServerLabel2" Type="Text" X="270" Y="193" Width="50" Height="15" TabSkip="yes" Text="(optional)" />
+				<Control Id="SMTPServerLabel1" Type="Text" X="45" Y="95" Width="100" Height="15" TabSkip="no" Text="S&amp;MTP server:" />
+				<Control Id="SMTPServerField" Type="Edit" X="45" Y="110" Width="220" Height="18" Property="SMTP_SERVER_STRING" Text="{200}" />
+				<Control Id="SMTPServerLabel2" Type="Text" X="270" Y="113" Width="50" Height="15" TabSkip="yes" Text="(optional)" />
 				<!-- SMTP port -->
-				<Control Id="SMTPPortLabel1" Type="Text" X="45" Y="215" Width="100" Height="15" TabSkip="no" Text="SMTP &amp;port:" />
-				<Control Id="SMTPPortField" Type="Edit" X="45" Y="230" Width="35" Height="18" Property="SMTP_PORT_STRING" Text="{200}" />
-				<Control Id="SMTPPortLabel2" Type="Text" X="85" Y="233" Width="50" Height="15" TabSkip="yes" Text="(optional)" />
+				<Control Id="SMTPPortLabel1" Type="Text" X="45" Y="135" Width="100" Height="15" TabSkip="no" Text="SMTP &amp;port:" />
+				<Control Id="SMTPPortField" Type="Edit" X="45" Y="150" Width="35" Height="18" Property="SMTP_PORT_STRING" Text="{200}" />
+				<Control Id="SMTPPortLabel2" Type="Text" X="85" Y="153" Width="50" Height="15" TabSkip="yes" Text="(optional)" />
 				<!-- Back button -->
 				<Control Id="Back" Type="PushButton" X="180" Y="273" Width="56" Height="17" Text="&amp;Back">
 					<Publish Event="NewDialog" Value="IisSetupDlg">1</Publish>
 				</Control>
 				<Control Id="Next" Type="PushButton" X="236" Y="273" Width="56" Height="17" Default="yes" Text="&amp;Next">
-					<Publish Event="NewDialog" Value="CustomizeDlg">
-						<!--Check if all settings have values-->
-						<![CDATA[SERVER_STRING <> "" and DATABASE_STRING <> ""]]>
-					</Publish>
+					<Publish Event="NewDialog" Value="CustomizeDlg">1</Publish>
 				</Control>
 				<Control Id="Cancel" Type="PushButton" X="304" Y="273" Width="56" Height="17" Cancel="yes" Text="Cancel">
 					<Publish Event="SpawnDialog" Value="CancelDlg">1</Publish>
