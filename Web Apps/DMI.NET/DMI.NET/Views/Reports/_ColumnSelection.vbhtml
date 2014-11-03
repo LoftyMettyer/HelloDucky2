@@ -261,15 +261,21 @@
 
 	function requestRemoveSelectedColumns() {
 
-		var selectedRows = $('#SelectedColumns').jqGrid('getGridParam', 'selarrrow');
+		var selectedColumnList = $('#SelectedColumns').jqGrid('getGridParam', 'selarrrow');
+		var sortColumnList = $("#SortOrders").getDataIDs();
 		var sMessage = "";
+		var dataRowOfSelectedColumn, dataRowOfSortColumn;
 
-		for (var i = 0; i <= selectedRows.length - 1; i++) {
-			rowID = selectedRows[i];
+		for (var i = 0; i < selectedColumnList.length; i++) {
 
-			if ($("#SortOrders #" + rowID).length > 0) {
-				var datarow = $("#SelectedColumns").getRowData(selectedRows[i]);
-				sMessage += datarow.Name + "<br/>";
+			dataRowOfSelectedColumn = $("#SelectedColumns").getRowData(selectedColumnList[i]);
+
+			for (j = 0; j < sortColumnList.length; j++) {
+				dataRowOfSortColumn = $("#SortOrders").getRowData(sortColumnList[j]);
+				if (dataRowOfSortColumn.ColumnID == dataRowOfSelectedColumn.ID) {
+					sMessage += "'" + dataRowOfSelectedColumn.Name + "'" + "<br/>";
+					break;
+				}
 			}
 		}
 
@@ -288,11 +294,14 @@
 		}
 	}
 
-		function removeSelectedColumns() {
+	function removeSelectedColumns() {
 
-		var thisIndex;
-
+		var thisIndex = 0, sortColumnRowIndex;
 		var selectedRows = $('#SelectedColumns').jqGrid('getGridParam', 'selarrrow');
+		var sortColumnList = $("#SortOrders").getDataIDs();
+		var dataRowOfSortColumn, dataRowOfSelectedColumn;
+		var sortColumnRowId, selectedColumnRowId;
+		var found = false;
 
 		var postData = {
 			ReportID: '@Model.ID',
@@ -303,18 +312,26 @@
 
 		for (var i = 0; i <= selectedRows.length - 1; i++) {
 
-			var datarow = $("#SelectedColumns").getRowData(selectedRows[i]);
+			selectedColumnRowId = selectedRows[i];
+			dataRowOfSelectedColumn = $("#SelectedColumns").getRowData(selectedColumnRowId);
 
-			// Remove from sort order
-			if ($("#SortOrders #" + datarow.ID).length > 0) {
-				$("#SortOrders").delRowData(datarow.ID);
-			}
-			else
-				if (datarow.IsExpression == "false") {
-					$("#SortOrdersAvailable").val(parseInt($("#SortOrdersAvailable").val()) - 1);
+			// Remove the matched sort columns from sort order
+			for (j = 0; j < sortColumnList.length; j++) {
+
+				sortColumnRowId = sortColumnList[j];
+				thisIndex = $("#SelectedColumns").getInd(selectedColumnRowId);
+
+				dataRowOfSortColumn = $("#SortOrders").getRowData(sortColumnRowId);
+				if (dataRowOfSortColumn.ColumnID == dataRowOfSelectedColumn.ID) {
+					$("#SortOrders").delRowData(sortColumnRowId);
+					found = true;
+					break;
 				}
+			}
 
-			thisIndex = $("#SelectedColumns").getInd(selectedRows[i]);
+			if (found == false && dataRowOfSelectedColumn.IsExpression == "false") {
+				$("#SortOrdersAvailable").val(parseInt($("#SortOrdersAvailable").val()) - 1);
+			}
 		}
 
 		OpenHR.postData("Reports/RemoveReportColumn", postData, getAvailableTableColumnsCalcs);
@@ -408,7 +425,7 @@
 				{ name: 'Size', index: 'Size', hidden: true },
 				{ name: 'Decimals', index: 'Decimals', hidden: true }],
 			viewrecords: true,
-			autowidth: false,
+				autowidth: false,
 			sortname: 'Name',
 			sortorder: "desc",
 			rowNum: 10000,
@@ -466,8 +483,8 @@
 
 		$("#AvailableColumns").jqGrid('hideCol', 'cb');
 
-		//if ($('#txtReportType').val() == "utlCustomReport")
-		resizeColumnGrids(); //should be in scope; this function resides in Util_Def_CustomReport.vbhtml
+			//if ($('#txtReportType').val() == "utlCustomReport")
+			resizeColumnGrids(); //should be in scope; this function resides in Util_Def_CustomReport.vbhtml
 
 	}
 
@@ -564,7 +581,7 @@
 		else {
 
 			if (!isReadOnly) {
-				$("#definitionColumnProperties :input").removeAttr("disabled");
+			$("#definitionColumnProperties :input").removeAttr("disabled");
 			}
 
 			var isThereChildColumns = (childColumnsCount() > 0);
@@ -678,7 +695,7 @@
 				{ name: 'ReportID', index: 'ReportID', hidden: true },
 				{ name: 'ReportType', index: 'ReportType', hidden: true }],
 			viewrecords: true,
-			autowidth: false,
+				autowidth: false,
 			sortname: 'Sequence',
 			sortorder: "asc",
 			rowNum: 10000,
