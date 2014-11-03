@@ -2921,7 +2921,7 @@ Namespace Controllers
 						ClientDLL.ArrayDim(2, 2)
 						ClientDLL.AxisLabelsAsArray = objCrossTab.AxisLabelsAsArray
 						For intCol = 3 To 5
-							For intRow = 3 To 5
+							For intRow = 5 To 3 Step -1
 								ClientDLL.ArrayAddToNineBoxGrid(
 																								intCol - 3, _
 																								intRow - 3, _

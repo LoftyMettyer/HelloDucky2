@@ -602,30 +602,37 @@ Namespace ExClientCode
 				stlGeneral.Font.Size = 14
 				.SetStyle(stlGeneral)
 				.PutValue(_mobjParent.AxisLabelsAsArray(0))
+				'.PutValue("9,4")
 			End With
 			With _mxlWorkSheet.Cells(8, 3) 'row,col
 				stlGeneral = .GetStyle
 				stlGeneral.HorizontalAlignment = TextAlignmentType.Center
 				stlGeneral.VerticalAlignment = TextAlignmentType.Center
 				stlGeneral.Font.Size = 12
+				SetCellBorders(stlGeneral)
 				.SetStyle(stlGeneral)
 				.PutValue(_mobjParent.AxisLabelsAsArray(1))
+				'.PutValue("8,3")
 			End With
 			With _mxlWorkSheet.Cells(8, 4) 'row,col
 				stlGeneral = .GetStyle
 				stlGeneral.HorizontalAlignment = TextAlignmentType.Center
 				stlGeneral.VerticalAlignment = TextAlignmentType.Center
 				stlGeneral.Font.Size = 12
+				SetCellBorders(stlGeneral)
 				.SetStyle(stlGeneral)
 				.PutValue(_mobjParent.AxisLabelsAsArray(2))
+				'.PutValue("8,4")
 			End With
 			With _mxlWorkSheet.Cells(8, 5) 'row,col
 				stlGeneral = .GetStyle
 				stlGeneral.HorizontalAlignment = TextAlignmentType.Center
 				stlGeneral.VerticalAlignment = TextAlignmentType.Center
 				stlGeneral.Font.Size = 12
+				SetCellBorders(stlGeneral)
 				.SetStyle(stlGeneral)
 				.PutValue(_mobjParent.AxisLabelsAsArray(3))
+				'.PutValue("8,5")
 			End With
 			'Y axis
 			With _mxlWorkSheet.Cells(6, 1) 'row,col
@@ -636,6 +643,7 @@ Namespace ExClientCode
 				stlGeneral.Font.Size = 14
 				.SetStyle(stlGeneral)
 				.PutValue(_mobjParent.AxisLabelsAsArray(4))
+				'.PutValue("6,1")
 			End With
 			With _mxlWorkSheet.Cells(5, 2) 'row,col
 				stlGeneral = .GetStyle
@@ -643,8 +651,10 @@ Namespace ExClientCode
 				stlGeneral.HorizontalAlignment = TextAlignmentType.Center
 				stlGeneral.VerticalAlignment = TextAlignmentType.Center
 				stlGeneral.Font.Size = 12
+				SetCellBorders(stlGeneral)
 				.SetStyle(stlGeneral)
 				.PutValue(_mobjParent.AxisLabelsAsArray(5))
+				'.PutValue("5,2")
 			End With
 			With _mxlWorkSheet.Cells(6, 2) 'row,col
 				stlGeneral = .GetStyle
@@ -652,8 +662,10 @@ Namespace ExClientCode
 				stlGeneral.HorizontalAlignment = TextAlignmentType.Center
 				stlGeneral.VerticalAlignment = TextAlignmentType.Center
 				stlGeneral.Font.Size = 12
+				SetCellBorders(stlGeneral)
 				.SetStyle(stlGeneral)
 				.PutValue(_mobjParent.AxisLabelsAsArray(6))
+				'.PutValue("6,2")
 			End With
 			With _mxlWorkSheet.Cells(7, 2) 'row,col
 				stlGeneral = .GetStyle
@@ -661,8 +673,46 @@ Namespace ExClientCode
 				stlGeneral.HorizontalAlignment = TextAlignmentType.Center
 				stlGeneral.VerticalAlignment = TextAlignmentType.Center
 				stlGeneral.Font.Size = 12
+				SetCellBorders(stlGeneral)
 				.SetStyle(stlGeneral)
 				.PutValue(_mobjParent.AxisLabelsAsArray(7))
+				'.PutValue("7,2")
+			End With
+
+			'Merge the X axis label into three columns and add borders to it
+			_mxlWorkSheet.Cells.Merge(9, 3, 1, 3)
+			With _mxlWorkSheet.Cells(9, 3)
+				stlGeneral = .GetStyle
+				SetCellBorders(stlGeneral)
+				.SetStyle(stlGeneral)
+			End With
+			With _mxlWorkSheet.Cells(9, 4)
+				stlGeneral = .GetStyle
+				SetCellBorders(stlGeneral)
+				.SetStyle(stlGeneral)
+			End With
+			With _mxlWorkSheet.Cells(9, 5)
+				stlGeneral = .GetStyle
+				SetCellBorders(stlGeneral)
+				.SetStyle(stlGeneral)
+			End With
+
+			'Merge the Y axis label into three rows and add borders to it
+			_mxlWorkSheet.Cells.Merge(5, 1, 3, 1)
+			With _mxlWorkSheet.Cells(5, 1)
+				stlGeneral = .GetStyle
+				SetCellBorders(stlGeneral)
+				.SetStyle(stlGeneral)
+			End With
+			With _mxlWorkSheet.Cells(6, 1)
+				stlGeneral = .GetStyle
+				SetCellBorders(stlGeneral)
+				.SetStyle(stlGeneral)
+			End With
+			With _mxlWorkSheet.Cells(7, 1)
+				stlGeneral = .GetStyle
+				SetCellBorders(stlGeneral)
+				.SetStyle(stlGeneral)
 			End With
 
 			If _mblnApplyStyles Then
@@ -1253,5 +1303,11 @@ Namespace ExClientCode
 			End If
 		End Function
 
+		Private Sub SetCellBorders(ByRef stlGeneral As Style)
+			stlGeneral.SetBorder(BorderType.TopBorder, CellBorderType.Thin, Color.Black) 'Top border
+			stlGeneral.SetBorder(BorderType.BottomBorder, CellBorderType.Thin, Color.Black) 'Bottom border
+			stlGeneral.SetBorder(BorderType.LeftBorder, CellBorderType.Thin, Color.Black) 'Left border
+			stlGeneral.SetBorder(BorderType.RightBorder, CellBorderType.Thin, Color.Black) 'Right border
+		End Sub
 	End Class
 End Namespace
