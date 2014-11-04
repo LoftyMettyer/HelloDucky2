@@ -1,4 +1,5 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
+
 <%@ Import Namespace="DMI.NET" %>
 <%@ Import Namespace="HR.Intranet.Server" %>
 <%@ Import Namespace="System.Data.SqlClient" %>
@@ -13,7 +14,7 @@
 	Dim sDoesPurge As String = Trim(Request.Form("txtDoesPurge"))
 	Dim sPeriod As String = Request.Form("txtPurgePeriod")
 	Dim iFrequency As Integer = CInt(Request.Form("txtPurgeFrequency"))
-			
+	
 	If sDoesPurge <> vbNullString Then
 		
 		' Delete old purge information to the database
@@ -52,12 +53,13 @@
 	var frmEventUseful = OpenHR.getForm("workframe", "frmEventUseful");
 	var frmPurge = OpenHR.getForm("workframe", "frmPurge");
 	var frmEmail = OpenHR.getForm("workframe", "frmEmail");
-	var frmLog = OpenHR.getForm("workframe", "frmLog");
+	
 	var frmDetails = OpenHR.getForm("workframe", "frmDetails");
 	var frmRefresh = OpenHR.getForm("workframe", "frmRefresh");
 
 	function eventLog_window_onload() {
 		$("#workframe").attr("data-framesource", "EVENTLOG");
+		var frmLog = OpenHR.getForm("workframe", "frmLog");
 		
 		var sErrMsg = $('#txtErrorDescription').val();
 		var fOK;
@@ -231,8 +233,8 @@
 		refreshStatusBar();
 
 		if ($('#txtShowPurgeMSG').val() == 1) {
-			OpenHR.modalMessage("Purge Event Log completed.","Event Log Purge");
-			$('#dialog-confirm').width(300);
+			OpenHR.modalPrompt("Purge Event Log completed.",0,"Event Log");
+			$('#EventLogPurge').dialog('close');
 			$('#txtShowPurgeMSG').val(0);
 		}
 	}
@@ -243,6 +245,7 @@
 
 	function filterSQL() {
 		var SSql = new String("");
+		var frmLog = OpenHR.getForm("workframe", "frmLog");
 
 		if (frmLog.cboUsername.options[frmLog.cboUsername.selectedIndex].value != -1) {
 			var sUsername = new String(frmLog.cboUsername.options[frmLog.cboUsername.selectedIndex].value);
@@ -274,7 +277,7 @@
 	}
 
 	function refreshGrid() {
-
+		var frmLog = OpenHR.getForm("workframe", "frmLog");
 		var frmGetDataForm = OpenHR.getForm("dataframe", "frmGetData");
 		frmGetDataForm.txtAction.value = "LOADEVENTLOG";
 		
@@ -292,7 +295,8 @@
 	function EventLog_viewEvent() {
 		var sURL;
 		var rowID = $("#LogEvents").jqGrid('getGridParam', 'selrow');
-		
+		var frmLog = OpenHR.getForm("workframe", "frmLog");
+
 		if (rowID == null) { //No row selected
 			return;
 		}
@@ -331,7 +335,6 @@
 
 	function EventLog_purgeEvent() {
 		var sURL = "EventLogPurge";
-
 		$('#EventLogPurge').data('sURLData', sURL);
 		$('#EventLogPurge').dialog("open");
 	}
@@ -341,6 +344,7 @@
 		var sEventList = new String("");
 		var sURL;
 		var selectedRows = $("#LogEvents").jqGrid('getGridParam', 'selarrrow');
+		var frmLog = OpenHR.getForm("workframe", "frmLog");
 
 		//populate the txtSelectedIDs list
 		for (var i = 0; i <= selectedRows.length - 1; i++) {
@@ -384,6 +388,7 @@
 	function loadEventLogUsers(pbViewAll, psCurrentFilterUser) {
 		var i;
 		var bFoundUser = false;
+		var frmLog = OpenHR.getForm("workframe", "frmLog");
 
 		if (pbViewAll == 1) {
 			var OOptionAll = document.createElement("OPTION");
@@ -441,6 +446,7 @@
 		var sRecords;
 		var sCaption;
 		var frmData = OpenHR.getForm("dataframe", "frmData");
+		var frmLog = OpenHR.getForm("workframe", "frmLog");
 
 		sRecords = frmData.txtELTotalRecordCount.value;
 
@@ -789,20 +795,20 @@
 	<input type="hidden" id="txtPurgePeriod" name="txtPurgePeriod">
 	<input type="hidden" id="txtPurgeFrequency" name="txtPurgeFrequency">
 	<input type="hidden" id="txtShowPurgeMSG" name="txtShowPurgeMSG" value='<%=Session("showPurgeMessage")%>'>
-	<input type="hidden" id="txtPurgeCurrentUsername" name="txtCurrentUsername">
-	<input type="hidden" id="txtPurgeCurrentType" name="txtCurrentType">
-	<input type="hidden" id="txtPurgeCurrentMode" name="txtCurrentMode">
-	<input type="hidden" id="txtPurgeCurrentStatus" name="txtCurrentStatus">
+	<input type="hidden" id="txtCurrentUsername" name="txtCurrentUsername">
+	<input type="hidden" id="txtPurgeType" name="txtCurrentType">
+	<input type="hidden" id="txtPurgeMode" name="txtCurrentMode">
+	<input type="hidden" id="txtPurgeStatus" name="txtCurrentStatus">
 </form>
 
 <form id="frmDelete" name="frmDelete" method="post" style="visibility: hidden; display: none" action="eventLog">
 	<input type="hidden" id="txtDeleteSel" name="txtDeleteSel">
 	<input type="hidden" id="txtSelectedIDs" name="txtSelectedIDs">
 	<input type="hidden" id="txtViewAllPerm" name="txtViewAllPerm">
-	<input type="hidden" id="txtDetleteCurrentUsername" name="txtCurrentUsername">
-	<input type="hidden" id="txtDetleteCurrentType" name="txtCurrentType">
-	<input type="hidden" id="txtDetleteCurrentMode" name="txtCurrentMode">
-	<input type="hidden" id="txtDetleteCurrentStatus" name="txtCurrentStatus">
+	<input type="hidden" id="txtCurrentUsername" name="txtCurrentUsername">
+	<input type="hidden" id="txtCurrentType" name="txtCurrentType">
+	<input type="hidden" id="txtCurrentMode" name="txtCurrentMode">
+	<input type="hidden" id="txtCurrentStatus" name="txtCurrentStatus">
 </form>
 
 <form id="frmEmail" name="frmEmail" method="post" style="visibility: hidden; display: none" action="emailSelection">
@@ -814,16 +820,15 @@
 
 <form id="frmRefresh" name="frmRefresh" method="post" style="visibility: hidden; display: none" action="eventLog">
 	<input type="hidden" id="txtEventExisted" name="txtEventExisted">
-	<input type="hidden" id="txtRefreshCurrentUsername" name="txtCurrentUsername">
-	<input type="hidden" id="txtRefreshCurrentType" name="txtCurrentType">
-	<input type="hidden" id="txtRefreshCurrentMode" name="txtCurrentMode">
-	<input type="hidden" id="txtRefreshCurrentStatus" name="txtCurrentStatus">
+	<input type="hidden" id="txtCurrentUsername" name="txtCurrentUsername">
+	<input type="hidden" id="txtCurrentType" name="txtCurrentType">
+	<input type="hidden" id="txtCurrentMode" name="txtCurrentMode">
+	<input type="hidden" id="txtCurrentStatus" name="txtCurrentStatus">
 </form>
 
 <form id="frmEventUseful" name="frmEventUseful" style="visibility: hidden; display: none">
 	<input type="hidden" id="txtUserName" name="txtUserName" value="<%=session("username")%>">
 	<%
-			
 		Dim sParameterValue As String = objDatabase.GetModuleParameter("MODULE_PERSONNEL", "Param_TablePersonnel")
 		Response.Write("<input type='hidden' id=txtPersonnelTableID name=txtPersonnelTableID value=" & sParameterValue & ">" & vbCrLf)
 		
@@ -835,7 +840,6 @@
 		Session("CurrentType") = ""
 		Session("CurrentMode") = ""
 		Session("CurrentStatus") = ""
-		
 	%>
 </form>
 

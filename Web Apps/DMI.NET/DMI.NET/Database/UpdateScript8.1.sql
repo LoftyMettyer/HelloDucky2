@@ -13,10 +13,6 @@ IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spASRIntGe
 	DROP PROCEDURE [dbo].spASRIntGetEventLogBatchDetails;
 GO
 
-IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spASRIntGetEventLogEmailInfo]') AND xtype in (N'P'))
-	DROP PROCEDURE [dbo].spASRIntGetEventLogEmailInfo;
-GO
-
 IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[sp_ASRIntGetCrossTabDefinition]') AND xtype in (N'P'))
 	DROP PROCEDURE [dbo].[sp_ASRIntGetCrossTabDefinition];
 GO
@@ -8869,6 +8865,10 @@ BEGIN
 	EXEC sp_executeSQL @sExecString;
 	
 END
+GO
+
+IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spASRIntGetEventLogEmailInfo]') AND xtype in (N'P'))
+	DROP PROCEDURE [dbo].spASRIntGetEventLogEmailInfo;
 GO
 
 CREATE PROCEDURE [dbo].[spASRIntGetEventLogEmailInfo] (
