@@ -5,7 +5,9 @@
 <script type="text/javascript">
 	
 		function eventlogpurge_window_onload() {
-			$('#optPurge').prop('checked', true);
+			$('#optNoPurge').prop('checked', ($('#txtPurge').val() == 0));
+			$('#optPurge').prop('checked', ($('#txtPurge').val() == 1));
+
 			refreshControls();
 		}	
 
@@ -14,7 +16,7 @@
 			var frmOpenerPurge = OpenHR.getForm("workframe", "frmPurge");
 
 			if (($('#cboPeriod').val() == 3) && ($('#txtPeriod').val() > 200)) {
-				OpenHR.messageBox("You cannot select a purge period of greater than 200 years.", 48, "Event Log");
+				OpenHR.modalPrompt("You cannot select a purge period of greater than 200 years.", 0, "Event Log");
 			}
 			else {
 				if ($('#cboPeriod').val() == 0) {
@@ -38,10 +40,10 @@
 					frmOpenerPurge.txtDoesPurge.value = 0;
 				}
 
-				frmOpenerPurge.txtPurgeCurrentUsername.value = frmMainLog.cboUsername.options[frmMainLog.cboUsername.selectedIndex].value;
-				frmOpenerPurge.txtPurgeCurrentType.value = frmMainLog.cboType.options[frmMainLog.cboType.selectedIndex].value;
-				frmOpenerPurge.txtPurgeCurrentMode.value = frmMainLog.cboMode.options[frmMainLog.cboMode.selectedIndex].value;
-				frmOpenerPurge.txtPurgeCurrentStatus.value = frmMainLog.cboStatus.options[frmMainLog.cboStatus.selectedIndex].value;
+				frmOpenerPurge.txtCurrentUsername.value = frmMainLog.cboUsername.options[frmMainLog.cboUsername.selectedIndex].value;
+				frmOpenerPurge.txtCurrentType.value = frmMainLog.cboType.options[frmMainLog.cboType.selectedIndex].value;
+				frmOpenerPurge.txtCurrentMode.value = frmMainLog.cboMode.options[frmMainLog.cboMode.selectedIndex].value;
+				frmOpenerPurge.txtCurrentStatus.value = frmMainLog.cboStatus.options[frmMainLog.cboStatus.selectedIndex].value;
 
 				OpenHR.submitForm(frmOpenerPurge);
 				$('#EventLogPurge').dialog("close");
@@ -68,7 +70,6 @@
 		function refreshControls() {
 			
 			if ($('#optNoPurge').prop('checked') == true) {
-				$('#optNoPurge').prop('checked', true);
 				text_disable($('#txtPeriod'), true);
 				button_disable($('#cmdPeriodDown'), true);
 				button_disable($('#cmdPeriodUp'), true);
@@ -78,8 +79,7 @@
 				$('#txtPeriod').val(0);
 				$('#txtFrequency').val(0);
 			}
-			else {
-				$('#optPurge').prop('checked', true);
+			if ($('#optPurge').prop('checked') == true) {
 				text_disable($('#txtPeriod'), false);
 				button_disable($('#cmdPeriodDown'), false);
 				button_disable($('#cmdPeriodUp'), false);
@@ -127,31 +127,24 @@
 			}
 			
 			if (isNaN(sConvertedValue) == true) {
-				$("#errorDialogTitle").text("Event Log");
-				$("#errorDialogContentText").html("Invalid numeric value.");
-				$("#errorDialog").dialog("open");
+				OpenHR.modalPrompt("Invalid numeric value.", 0, "Event Log");
 				 $('#txtPeriod').val(0);
 			}
 			else {
 				if (sConvertedValue.indexOf(".") >= 0) {
-					OpenHR.messageBox("Invalid integer value.", 48, "Event Log");
+					OpenHR.modalPrompt("Invalid integer value.", 0, "Event Log");
 					$('#txtPeriod').val(0);
 					$('#txtFrequency').val(0);
 				}
 				else {
 					if ($('#txtPeriod').val() < 0) {
-						$("#errorDialogTitle").text("Event Log");
-						$("#errorDialogContentText").html("The value cannot be negative.");
-						$("#errorDialog").dialog("open");
+						OpenHR.modalPrompt("The value cannot be negative.", 0, "Event Log");
 						$('#txtPeriod').val(0);
 						$('#txtFrequency').val(0);
 					}
 					else {
 						if ($('#txtPeriod').val() > 999) {
-							$("#errorDialogTitle").text("Event Log");
-							$("#errorDialogContentText").html("The value cannot be greater than 999.");
-							$("#errorDialog").dialog("open");
-
+							OpenHR.modalPrompt("The value cannot be greater than 999.", 0, "Event Log");
 							$('#txtPeriod').val(999);
 							$('#txtFrequency').val(999);
 						}
@@ -247,7 +240,7 @@
 
 		<div id="divEventLogPurgeButtons" class="clearboth">
 			<input id="cmdOK" onclick=" okClick() " type="button" value="OK" />
-			<input id="okClick" onclick="cancelClick();" type="button" value="Cancel" />
+			<input id="okClick" onclick="cancelClick();" tabindex="1" type="button" value="Cancel" />
 		</div>
 	</div>
 
