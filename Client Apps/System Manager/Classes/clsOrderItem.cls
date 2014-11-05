@@ -19,7 +19,15 @@ Private msColumnName As String
 Private msType As String
 Private miSequence As Integer
 Private mfAscending As Boolean
+Private mbEditable As Boolean
 
+Public Property Get Editable() As Boolean
+  Editable = mbEditable
+End Property
+
+Public Property Let Editable(pbNewValue As Boolean)
+  mbEditable = pbNewValue
+End Property
 
 Public Property Get Ascending() As Boolean
   Ascending = mfAscending

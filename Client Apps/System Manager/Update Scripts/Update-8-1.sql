@@ -4185,6 +4185,15 @@ END'
 		
 
 
+
+/* --------------------------------------------------------- */
+PRINT 'Step - Editable grids Enhancements'
+/* --------------------------------------------------------- */
+
+	IF NOT EXISTS(SELECT id FROM syscolumns WHERE  id = OBJECT_ID('ASRSysOrderItems', 'U') AND name = 'Editable')
+		EXEC sp_executesql N'ALTER TABLE ASRSysOrderItems ADD [Editable] bit NULL';
+
+
 /* ------------------------------------------------------------- */
 /* Update the database version flag in the ASRSysSettings table. */
 /* Dont Set the flag to refresh the stored procedures            */

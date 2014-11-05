@@ -288,7 +288,7 @@ Public Function OrderIsUsed(pfrmUsage As frmUsage) As Boolean
   Dim sExprParentTable As String
   Dim objExpr As CExpression
   Dim objComp As CExprComponent
-  Dim rsCheck As DAO.Recordset
+  Dim rsCheck As dao.Recordset
   Dim sModuleName As String
   Dim rsUtils1 As ADODB.Recordset
   Dim rsUtils2 As ADODB.Recordset
@@ -778,7 +778,7 @@ Public Function ConstructOrder() As Boolean
   Dim fOK As Boolean
   Dim sIndex As String
   Dim sSQL As String
-  Dim rsOrderItems As DAO.Recordset
+  Dim rsOrderItems As dao.Recordset
     
   With recOrdEdit
     'Store current index
@@ -818,7 +818,7 @@ Public Function ConstructOrder() As Boolean
     
     With rsOrderItems
       Do While Not .EOF
-        AddOrderItem !ColumnID, !Type, !Sequence, !Ascending, !ColumnName
+        AddOrderItem !ColumnID, !Type, !Sequence, !Ascending, !ColumnName, !Editable
         .MoveNext
       Loop
     End With
@@ -971,7 +971,7 @@ Private Sub PrintOrder()
   Dim iSequence As Integer
   Dim sSQL As String
   Dim sTableName As String
-  Dim rsInfo As DAO.Recordset
+  Dim rsInfo As dao.Recordset
   Dim objOrderItem As OrderItem
   Dim objPrinter As clsPrintDef
 
@@ -1061,7 +1061,7 @@ Public Function WriteOrder() As Boolean
   Dim sSQL As String
   Dim objItem As OrderItem
   Dim objComp As CExprComponent
-  Dim rsCheck As DAO.Recordset
+  Dim rsCheck As dao.Recordset
   
   With recOrdEdit
     'Store current index
@@ -1120,6 +1120,7 @@ Public Function WriteOrder() As Boolean
         !Type = objItem.ItemType
         !Sequence = objItem.Sequence
         !Ascending = objItem.Ascending
+        !Editable = objItem.Editable
         .Update
       Next
       Set objItem = Nothing
@@ -1163,7 +1164,7 @@ ErrorTrap:
 End Function
 
 Public Function AddOrderItem(plngColumnID As Long, psItemType As String, _
-  piSequence As Integer, pfAscending As Boolean, psColumnName As String) As OrderItem
+  piSequence As Integer, pfAscending As Boolean, psColumnName As String, pbEditable As Boolean) As OrderItem
   ' Add the given column to the order definition.
   On Error GoTo ErrorTrap
   
@@ -1182,6 +1183,7 @@ Public Function AddOrderItem(plngColumnID As Long, psItemType As String, _
     .ItemType = psItemType
     .Sequence = piSequence
     .Ascending = pfAscending
+    .Editable = pbEditable
   End With
   
   mcolOrderItems.Add objNewItem, psItemType & "_" & Trim(Str(plngColumnID))
@@ -1286,6 +1288,7 @@ Public Function CloneOrder(pavCloneRegister As Variant) As Order
           .ItemType = objSourceOrderItem.ItemType
           .Sequence = objSourceOrderItem.Sequence
           .Ascending = objSourceOrderItem.Ascending
+          .Editable = objSourceOrderItem.Editable
         End With
         colOrderItems.Add objCopyOrderItem
         ' Disassociate object variables.

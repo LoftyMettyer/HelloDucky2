@@ -1,13 +1,13 @@
 VERSION 5.00
 Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.ocx"
-Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "tabctl32.ocx"
+Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
 Begin VB.Form frmOrdEdit 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Order Definition"
-   ClientHeight    =   5475
+   ClientHeight    =   8010
    ClientLeft      =   -390
    ClientTop       =   1950
-   ClientWidth     =   7890
+   ClientWidth     =   10905
    BeginProperty Font 
       Name            =   "Verdana"
       Size            =   8.25
@@ -24,18 +24,18 @@ Begin VB.Form frmOrdEdit
    LockControls    =   -1  'True
    MaxButton       =   0   'False
    MinButton       =   0   'False
-   ScaleHeight     =   5475
-   ScaleWidth      =   7890
+   ScaleHeight     =   8010
+   ScaleWidth      =   10905
    ShowInTaskbar   =   0   'False
    StartUpPosition =   1  'CenterOwner
    Begin VB.PictureBox picDocument 
       Height          =   510
-      Left            =   1995
+      Left            =   1980
       Picture         =   "frmOrdEdit.frx":000C
       ScaleHeight     =   450
       ScaleWidth      =   465
-      TabIndex        =   28
-      Top             =   4920
+      TabIndex        =   27
+      Top             =   7485
       Visible         =   0   'False
       Width           =   525
    End
@@ -43,9 +43,9 @@ Begin VB.Form frmOrdEdit
       Cancel          =   -1  'True
       Caption         =   "&Cancel"
       Height          =   400
-      Left            =   6650
-      TabIndex        =   9
-      Top             =   5000
+      Left            =   9600
+      TabIndex        =   8
+      Top             =   7485
       Width           =   1200
    End
    Begin VB.CommandButton cmdOK 
@@ -53,60 +53,61 @@ Begin VB.Form frmOrdEdit
       Default         =   -1  'True
       Enabled         =   0   'False
       Height          =   400
-      Left            =   5385
-      TabIndex        =   8
-      Top             =   5000
+      Left            =   8340
+      TabIndex        =   7
+      Top             =   7485
       Width           =   1200
    End
    Begin TabDlg.SSTab sstabOrderDefinition 
-      Height          =   4800
-      Left            =   50
-      TabIndex        =   10
+      Height          =   7335
+      Left            =   45
+      TabIndex        =   9
       Top             =   45
-      Width           =   7800
-      _ExtentX        =   13758
-      _ExtentY        =   8467
+      Width           =   10770
+      _ExtentX        =   18997
+      _ExtentY        =   12938
       _Version        =   393216
       Style           =   1
       Tabs            =   2
+      Tab             =   1
       TabsPerRow      =   2
       TabHeight       =   520
       TabCaption(0)   =   "&Find Window Columns"
       TabPicture(0)   =   "frmOrdEdit.frx":0596
-      Tab(0).ControlEnabled=   -1  'True
+      Tab(0).ControlEnabled=   0   'False
       Tab(0).Control(0)=   "fraPageContainer(0)"
-      Tab(0).Control(0).Enabled=   0   'False
       Tab(0).ControlCount=   1
       TabCaption(1)   =   "&Sort Order Columns"
       TabPicture(1)   =   "frmOrdEdit.frx":05B2
-      Tab(1).ControlEnabled=   0   'False
+      Tab(1).ControlEnabled=   -1  'True
       Tab(1).Control(0)=   "fraPageContainer(1)"
+      Tab(1).Control(0).Enabled=   0   'False
       Tab(1).ControlCount=   1
       Begin VB.Frame fraPageContainer 
          BackColor       =   &H80000010&
          BorderStyle     =   0  'None
-         Height          =   4300
+         Height          =   6800
          Index           =   1
-         Left            =   -74850
-         TabIndex        =   24
+         Left            =   150
+         TabIndex        =   23
          Top             =   450
-         Width           =   7500
+         Width           =   10545
          Begin VB.Frame fraSortColumns 
             Caption         =   "Sort Order Columns :"
-            Height          =   3800
-            Left            =   4500
-            TabIndex        =   26
+            Height          =   6300
+            Left            =   6000
+            TabIndex        =   25
             Top             =   400
-            Width           =   3000
+            Width           =   4400
             Begin ComctlLib.TreeView trvSelectedSortColumns 
                DragIcon        =   "frmOrdEdit.frx":05CE
-               Height          =   3375
+               Height          =   5910
                Left            =   150
-               TabIndex        =   19
+               TabIndex        =   18
                Top             =   250
-               Width           =   2700
-               _ExtentX        =   4763
-               _ExtentY        =   5953
+               Width           =   4150
+               _ExtentX        =   7329
+               _ExtentY        =   10425
                _Version        =   327682
                HideSelection   =   0   'False
                LabelEdit       =   1
@@ -119,26 +120,26 @@ Begin VB.Form frmOrdEdit
             Height          =   315
             Index           =   1
             Left            =   780
-            TabIndex        =   11
+            TabIndex        =   10
             Top             =   0
             Width           =   2670
          End
          Begin VB.Frame fraSortColumnsSource 
             Caption         =   "Columns :"
-            Height          =   3800
+            Height          =   6300
             Left            =   0
-            TabIndex        =   25
+            TabIndex        =   24
             Top             =   400
-            Width           =   3000
+            Width           =   4400
             Begin ComctlLib.TreeView trvSortColumns 
                DragIcon        =   "frmOrdEdit.frx":0718
-               Height          =   3375
+               Height          =   5910
                Left            =   150
-               TabIndex        =   12
+               TabIndex        =   11
                Top             =   250
-               Width           =   2700
-               _ExtentX        =   4763
-               _ExtentY        =   5953
+               Width           =   4150
+               _ExtentX        =   7329
+               _ExtentY        =   10425
                _Version        =   327682
                HideSelection   =   0   'False
                LabelEdit       =   1
@@ -150,48 +151,48 @@ Begin VB.Form frmOrdEdit
          Begin VB.CommandButton cmdSortColumnAscDesc 
             Caption         =   "Asc. / D&esc."
             Height          =   400
-            Left            =   3060
-            TabIndex        =   18
+            Left            =   4500
+            TabIndex        =   17
             Top             =   3800
             Width           =   1380
          End
          Begin VB.CommandButton sscmdAddSortColumn 
             Caption         =   "&Add"
             Height          =   405
-            Left            =   3060
-            TabIndex        =   13
+            Left            =   4500
+            TabIndex        =   12
             Top             =   495
             Width           =   1380
          End
          Begin VB.CommandButton sscmdInsertSortColumn 
             Caption         =   "&Insert"
             Height          =   405
-            Left            =   3060
-            TabIndex        =   14
+            Left            =   4500
+            TabIndex        =   13
             Top             =   1005
             Width           =   1380
          End
          Begin VB.CommandButton sscmdRemoveSortColumn 
             Caption         =   "&Remove"
             Height          =   405
-            Left            =   3060
-            TabIndex        =   15
+            Left            =   4500
+            TabIndex        =   14
             Top             =   1500
             Width           =   1380
          End
          Begin VB.CommandButton sscmdMoveUpSortColumn 
             Caption         =   "Move &Up"
             Height          =   405
-            Left            =   3060
-            TabIndex        =   16
+            Left            =   4500
+            TabIndex        =   15
             Top             =   2400
             Width           =   1380
          End
          Begin VB.CommandButton sscmdMoveDownSortColumn 
             Caption         =   "Move &Down"
             Height          =   405
-            Left            =   3060
-            TabIndex        =   17
+            Left            =   4500
+            TabIndex        =   16
             Top             =   2895
             Width           =   1380
          End
@@ -202,7 +203,7 @@ Begin VB.Form frmOrdEdit
             Height          =   195
             Index           =   1
             Left            =   45
-            TabIndex        =   27
+            TabIndex        =   26
             Top             =   60
             Width           =   510
          End
@@ -210,32 +211,26 @@ Begin VB.Form frmOrdEdit
       Begin VB.Frame fraPageContainer 
          BackColor       =   &H80000010&
          BorderStyle     =   0  'None
-         Height          =   4300
+         Height          =   6800
          Index           =   0
-         Left            =   150
-         TabIndex        =   20
+         Left            =   -74850
+         TabIndex        =   19
          Top             =   450
-         Width           =   7500
+         Width           =   10545
          Begin VB.Frame fraFindColumns 
             Caption         =   "Find Window Columns :"
-            Height          =   3800
-            Left            =   4500
-            TabIndex        =   22
+            Height          =   6300
+            Left            =   6000
+            TabIndex        =   21
             Top             =   400
-            Width           =   3000
-            Begin ComctlLib.TreeView trvSelectedFindColumns 
-               DragIcon        =   "frmOrdEdit.frx":0B5A
-               Height          =   3375
+            Width           =   4400
+            Begin VB.ListBox lstSelectedFindColumns 
+               Height          =   5910
                Left            =   150
-               TabIndex        =   7
-               Top             =   250
-               Width           =   2700
-               _ExtentX        =   4763
-               _ExtentY        =   5953
-               _Version        =   327682
-               HideSelection   =   0   'False
-               LabelEdit       =   1
-               Appearance      =   1
+               Style           =   1  'Checkbox
+               TabIndex        =   28
+               Top             =   255
+               Width           =   4150
             End
          End
          Begin VB.TextBox txtOrderName 
@@ -248,20 +243,20 @@ Begin VB.Form frmOrdEdit
          End
          Begin VB.Frame fraFindColumnsSource 
             Caption         =   "Columns :"
-            Height          =   3800
+            Height          =   6300
             Left            =   0
-            TabIndex        =   21
+            TabIndex        =   20
             Top             =   400
-            Width           =   3000
+            Width           =   4400
             Begin ComctlLib.TreeView trvFindColumns 
-               DragIcon        =   "frmOrdEdit.frx":0CA4
-               Height          =   3375
+               DragIcon        =   "frmOrdEdit.frx":0B5A
+               Height          =   5910
                Left            =   150
                TabIndex        =   1
                Top             =   250
-               Width           =   2700
-               _ExtentX        =   4763
-               _ExtentY        =   5953
+               Width           =   4150
+               _ExtentX        =   7329
+               _ExtentY        =   10425
                _Version        =   327682
                HideSelection   =   0   'False
                LabelEdit       =   1
@@ -273,7 +268,7 @@ Begin VB.Form frmOrdEdit
          Begin VB.CommandButton sscmdRemoveFindColumn 
             Caption         =   "&Remove"
             Height          =   405
-            Left            =   3060
+            Left            =   4500
             TabIndex        =   4
             Top             =   1500
             Width           =   1380
@@ -281,7 +276,7 @@ Begin VB.Form frmOrdEdit
          Begin VB.CommandButton sscmdAddFindColumn 
             Caption         =   "&Add"
             Height          =   405
-            Left            =   3060
+            Left            =   4500
             TabIndex        =   2
             Top             =   495
             Width           =   1380
@@ -289,7 +284,7 @@ Begin VB.Form frmOrdEdit
          Begin VB.CommandButton sscmdInsertFindColumn 
             Caption         =   "&Insert"
             Height          =   405
-            Left            =   3060
+            Left            =   4500
             TabIndex        =   3
             Top             =   1005
             Width           =   1380
@@ -297,7 +292,7 @@ Begin VB.Form frmOrdEdit
          Begin VB.CommandButton sscmdMoveUpFindColumn 
             Caption         =   "Move &Up"
             Height          =   405
-            Left            =   3060
+            Left            =   4500
             TabIndex        =   5
             Top             =   2400
             Width           =   1380
@@ -305,10 +300,18 @@ Begin VB.Form frmOrdEdit
          Begin VB.CommandButton sscmdMoveDownFindColumn 
             Caption         =   "Move &Down"
             Height          =   405
-            Left            =   3060
+            Left            =   4500
             TabIndex        =   6
             Top             =   2895
             Width           =   1380
+         End
+         Begin VB.Label lblMakeEditable 
+            Caption         =   "Check box to enable in-line column editing"
+            Height          =   270
+            Left            =   6135
+            TabIndex        =   29
+            Top             =   60
+            Width           =   4005
          End
          Begin VB.Label lblOrderName 
             AutoSize        =   -1  'True
@@ -317,15 +320,15 @@ Begin VB.Form frmOrdEdit
             Height          =   195
             Index           =   0
             Left            =   45
-            TabIndex        =   23
+            TabIndex        =   22
             Top             =   60
             Width           =   510
          End
       End
    End
    Begin ComctlLib.ImageList imglstTreeviewImages 
-      Left            =   1125
-      Top             =   4875
+      Left            =   1110
+      Top             =   7440
       _ExtentX        =   1005
       _ExtentY        =   1005
       BackColor       =   -2147483643
@@ -336,18 +339,18 @@ Begin VB.Form frmOrdEdit
       BeginProperty Images {0713E8C2-850A-101B-AFC0-4210102A8DA7} 
          NumListImages   =   2
          BeginProperty ListImage1 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmOrdEdit.frx":0DEE
+            Picture         =   "frmOrdEdit.frx":0CA4
             Key             =   "IMG_TABLE"
          EndProperty
          BeginProperty ListImage2 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmOrdEdit.frx":1340
+            Picture         =   "frmOrdEdit.frx":11F6
             Key             =   "IMG_COLUMN"
          EndProperty
       EndProperty
    End
    Begin ComctlLib.ImageList ImageList1 
-      Left            =   4230
-      Top             =   4875
+      Left            =   4215
+      Top             =   7440
       _ExtentX        =   1005
       _ExtentY        =   1005
       BackColor       =   -2147483643
@@ -358,11 +361,11 @@ Begin VB.Form frmOrdEdit
       BeginProperty Images {0713E8C2-850A-101B-AFC0-4210102A8DA7} 
          NumListImages   =   2
          BeginProperty ListImage1 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmOrdEdit.frx":1692
+            Picture         =   "frmOrdEdit.frx":1548
             Key             =   "IMG_DOWN"
          EndProperty
          BeginProperty ListImage2 {0713E8C3-850A-101B-AFC0-4210102A8DA7} 
-            Picture         =   "frmOrdEdit.frx":1BE4
+            Picture         =   "frmOrdEdit.frx":1A9A
             Key             =   "IMG_UP"
          EndProperty
       EndProperty
@@ -406,7 +409,7 @@ Public Property Set Order(pobjOrder As Order)
   Dim sIcon As String
   Dim objOrdItem As OrderItem
   Dim objNewNode As ComctlLib.Node
-  Dim iSequence As Integer
+  'Dim iSequence As Integer
 
   ' Set the Order object global variable.
   Set mobjOrder = pobjOrder
@@ -422,9 +425,9 @@ Public Property Set Order(pobjOrder As Order)
   PopulateTreeViews
   
   ' Add items to the order and find columns listviews as required.
-  For iSequence = 1 To mobjOrder.OrderItems.Count
+ ' For iSequence = 0 To mobjOrder.OrderItems.Count
     For Each objOrdItem In mobjOrder.OrderItems
-      If objOrdItem.Sequence = iSequence Then
+     ' If objOrdItem.Sequence = iSequence Then
         If objOrdItem.ItemType = "O" Then
           sIcon = IIf(objOrdItem.Ascending, "IMG_UP", "IMG_DOWN")
           Set objNewNode = trvSelectedSortColumns.Nodes.Add(, , , objOrdItem.FullColumnName, sIcon)
@@ -434,25 +437,22 @@ Public Property Set Order(pobjOrder As Order)
           ' Remove the item from the Sort Coumns treeview.
           trvSortColumns.Nodes.Remove "C" & Trim(Str(objOrdItem.ColumnID))
         Else
-          Set objNewNode = trvSelectedFindColumns.Nodes.Add(, , , objOrdItem.FullColumnName)
-          objNewNode.Tag = objOrdItem.ColumnID
-          Set objNewNode = Nothing
+                    
+          With lstSelectedFindColumns
+            .AddItem objOrdItem.FullColumnName
+            .ItemData(.newIndex) = objOrdItem.ColumnID
+            .Selected(.newIndex) = objOrdItem.Editable
+          End With
       
           ' Remove the item from the Find Coumns treeview.
           trvFindColumns.Nodes.Remove "C" & Trim(Str(objOrdItem.ColumnID))
         End If
-      End If
+      'End If
     Next objOrdItem
     Set objOrdItem = Nothing
-  Next iSequence
-      
-  ' Select the first item in each treeview.
-  With trvSelectedFindColumns
-    If .Nodes.Count > 0 Then
-      .Nodes.Item(1).Selected = True
-      .SelectedItem.EnsureVisible
-    End If
-  End With
+  'Next iSequence
+  
+  lstSelectedFindColumns.ListIndex = 0
   
   With trvSelectedSortColumns
     If .Nodes.Count > 0 Then
@@ -563,21 +563,19 @@ Private Sub cmdOk_Click()
         iSequence = 0
         Do While Not objNode Is Nothing
           iSequence = iSequence + 1
-          mobjOrder.AddOrderItem objNode.Tag, "O", iSequence, (objNode.Image = "IMG_UP"), objNode.Text
+          mobjOrder.AddOrderItem objNode.Tag, "O", iSequence, (objNode.Image = "IMG_UP"), objNode.Text, False
           Set objNode = objNode.Next
         Loop
       End If
-      
-      If trvSelectedFindColumns.Nodes.Count > 0 Then
-        Set objNode = trvSelectedFindColumns.Nodes.Item(1).FirstSibling
-        iSequence = 0
-        Do While Not objNode Is Nothing
-          iSequence = iSequence + 1
-          mobjOrder.AddOrderItem objNode.Tag, "F", iSequence, True, objNode.Text
-          Set objNode = objNode.Next
-        Loop
-      End If
+            
+      With lstSelectedFindColumns
+        For iSequence = 0 To .ListCount - 1
+          mobjOrder.AddOrderItem .ItemData(iSequence), "F", iSequence, True, .List(iSequence), .Selected(iSequence)
+        Next
+      End With
+           
     End If
+    
   Else
     mfCancelled = True
   End If
@@ -638,7 +636,6 @@ Private Sub Form_Load()
     fraPageContainer(iLoop).BackColor = Me.BackColor
   Next iLoop
   
-  trvSelectedFindColumns.DragIcon = picDocument.Picture
   trvFindColumns.DragIcon = picDocument.Picture
   trvSelectedSortColumns.DragIcon = picDocument.Picture
   trvSortColumns.DragIcon = picDocument.Picture
@@ -683,7 +680,7 @@ Private Sub PopulateTreeViews()
   ' Populate the Find Columns treeview.
   Dim lngTableID As Long
   Dim sSQL As String
-  Dim rsInfo As DAO.Recordset
+  Dim rsInfo As dao.Recordset
   Dim objNode As ComctlLib.Node
   
   lngTableID = 0
@@ -830,24 +827,20 @@ Private Sub FindColumns_RefreshControls()
   sscmdInsertFindColumn.Enabled = fSelectedColumnValid
   
   ' Check if we have a 'selected column' selected.
-  fSelectedFirstNode = False
-  fSelectedLastNode = False
-  fSelectedFindColumnValid = Not (trvSelectedFindColumns.SelectedItem Is Nothing)
-  If fSelectedFindColumnValid Then
-    fSelectedFirstNode = (trvSelectedFindColumns.SelectedItem.Tag = trvSelectedFindColumns.SelectedItem.FirstSibling.Tag)
-    fSelectedLastNode = (trvSelectedFindColumns.SelectedItem.Tag = trvSelectedFindColumns.SelectedItem.LastSibling.Tag)
-  End If
+  fSelectedFirstNode = (lstSelectedFindColumns.ListIndex = 0)
+  fSelectedLastNode = (lstSelectedFindColumns.ListIndex = lstSelectedFindColumns.ListCount - 1)
+  fSelectedFindColumnValid = (lstSelectedFindColumns.ListCount > 0)
   
   sscmdRemoveFindColumn.Enabled = fSelectedFindColumnValid
   sscmdMoveUpFindColumn.Enabled = fSelectedFindColumnValid And _
-    (trvSelectedFindColumns.Nodes.Count > 1) And _
+    (lstSelectedFindColumns.ListCount > 1) And _
     (Not fSelectedFirstNode)
   sscmdMoveDownFindColumn.Enabled = fSelectedFindColumnValid And _
-    (trvSelectedFindColumns.Nodes.Count > 1) And _
+    (lstSelectedFindColumns.ListCount > 1) And _
     (Not fSelectedLastNode)
     
   ' Disable the OK command control if there are no order items specified.
-  cmdOK.Enabled = (trvSelectedFindColumns.Nodes.Count > 0) And _
+  cmdOK.Enabled = (lstSelectedFindColumns.ListCount > 0) And _
     (trvSelectedSortColumns.Nodes.Count > 0) And _
     (Len(Trim(txtOrderName(0).Text)) > 0) And Not mblnReadOnly
 
@@ -888,7 +881,7 @@ Private Sub SortColumns_RefreshControls()
     (Not fSelectedLastNode)
     
   ' Disable the OK command control if there are no order items specified.
-  cmdOK.Enabled = (trvSelectedFindColumns.Nodes.Count > 0) And _
+  cmdOK.Enabled = (lstSelectedFindColumns.ListCount > 0) And _
     (trvSelectedSortColumns.Nodes.Count > 0) And _
     (Len(Trim(txtOrderName(0).Text)) > 0) And Not mblnReadOnly
 
@@ -930,11 +923,23 @@ Private Sub Form_Resize()
 
 End Sub
 
+Private Sub lstSelectedFindColumns_Click()
+  FindColumns_RefreshControls
+End Sub
+
+Private Sub lstSelectedFindColumns_ItemCheck(Item As Integer)
+  mfChanged = True
+End Sub
+
+Private Sub lstSelectedFindColumns_MouseDown(Button As Integer, Shift As Integer, X As Single, Y As Single)
+  FindColumns_RefreshControls
+End Sub
+
 Private Sub sscmdAddFindColumn_Click()
   ' Add the selected column to the find columns listview in the last position.
   Dim nodSelection As Node
   Dim objNewNode As ComctlLib.Node
-  
+         
   ' Do nothing if there is no selection in the treeview.
   If trvFindColumns.SelectedItem Is Nothing Then
     Exit Sub
@@ -948,12 +953,11 @@ Private Sub sscmdAddFindColumn_Click()
   End If
   
   ' Add the selected column to the Find Columns listview.
-  Set objNewNode = trvSelectedFindColumns.Nodes.Add(, , , nodSelection.Parent.Text & "." & nodSelection.Text)
-  objNewNode.Tag = nodSelection.Tag
-  objNewNode.Selected = True
-  objNewNode.EnsureVisible
-  Set objNewNode = Nothing
-    
+  With lstSelectedFindColumns
+    .AddItem nodSelection.Parent.Text & "." & nodSelection.Text
+    .ItemData(.newIndex) = nodSelection.Tag
+  End With
+
   ' Remove the column from the treeview.
   trvFindColumns.Nodes.Remove "C" & Trim(Str(nodSelection.Tag))
   
@@ -1025,16 +1029,13 @@ Private Sub sscmdInsertFindColumn_Click()
   
   ' Deselect the current listview selection.
   ' Add the selected column to the Find Columns listview.
-  Set objHighlightNode = trvSelectedFindColumns.SelectedItem
-  If Not objHighlightNode Is Nothing Then
-    objHighlightNode.Selected = False
-    Set objNewNode = trvSelectedFindColumns.Nodes.Add(objHighlightNode.Index, tvwPrevious, , nodSelection.Parent.Text & "." & nodSelection.Text)
-  Else
-    Set objNewNode = trvSelectedFindColumns.Nodes.Add(, , , nodSelection.Parent.Text & "." & nodSelection.Text)
-  End If
-  objNewNode.Tag = nodSelection.Tag
-  objNewNode.Selected = True
-  objNewNode.EnsureVisible
+  With lstSelectedFindColumns
+    .AddItem nodSelection.Parent.Text & "." & nodSelection.Text
+    .ItemData(.newIndex) = nodSelection.Tag
+  End With
+
+  ' Ensure that it appears inserted
+  MoveItemInListBox lstSelectedFindColumns, lstSelectedFindColumns.newIndex, lstSelectedFindColumns.ListIndex
 
   ' Remove the column from the treeview.
   trvFindColumns.Nodes.Remove "C" & Trim(Str(nodSelection.Tag))
@@ -1098,30 +1099,11 @@ Private Sub sscmdInsertSortColumn_Click()
 End Sub
 
 Private Sub sscmdMoveDownFindColumn_Click()
-  ' Move the selected treeview item DOWN one position.
-  Dim objNode As ComctlLib.Node
-  Dim objNewNode As ComctlLib.Node
   
-  Set objNode = trvSelectedFindColumns.SelectedItem
-  If Not objNode Is Nothing Then
-    ' Move the selected item down one position in the treeview.
-    If objNode.Tag <> objNode.LastSibling.Tag Then
-      Set objNewNode = trvSelectedFindColumns.Nodes.Add(objNode.Next, tvwNext, , objNode.Text)
-      objNewNode.Tag = objNode.Tag
-      objNewNode.Selected = True
-      objNewNode.EnsureVisible
-      Set objNewNode = Nothing
-
-      trvSelectedFindColumns.Nodes.Remove objNode.Index
-      
-      mfChanged = True
-    End If
-  End If
-    
-  ' Disassociate object variables.
-  Set objNode = Nothing
-
+  ' Move the selected treeview item DOWN one position.
+  MoveItemInListBox lstSelectedFindColumns, lstSelectedFindColumns.ListIndex, lstSelectedFindColumns.ListIndex + 1
   FindColumns_RefreshControls
+  mfChanged = True
   
 End Sub
 
@@ -1156,30 +1138,11 @@ Private Sub sscmdMoveDownSortColumn_Click()
 End Sub
 
 Private Sub sscmdMoveUpFindColumn_Click()
-  ' Move the selected treeview item DOWN one position.
-  Dim objNode As ComctlLib.Node
-  Dim objNewNode As ComctlLib.Node
-  
-  Set objNode = trvSelectedFindColumns.SelectedItem
-  If Not objNode Is Nothing Then
-    ' Move the selected item up one position in the treeview.
-    If objNode.Tag <> objNode.FirstSibling.Tag Then
-      Set objNewNode = trvSelectedFindColumns.Nodes.Add(objNode.Previous, tvwPrevious, , objNode.Text)
-      objNewNode.Tag = objNode.Tag
-      objNewNode.Selected = True
-      objNewNode.EnsureVisible
-      Set objNewNode = Nothing
 
-      trvSelectedFindColumns.Nodes.Remove objNode.Index
-      
-      mfChanged = True
-    End If
-  End If
-    
-  ' Disassociate object variables.
-  Set objNode = Nothing
-
+  ' Move the selected treeview item UP one position.
+  MoveItemInListBox lstSelectedFindColumns, lstSelectedFindColumns.ListIndex, lstSelectedFindColumns.ListIndex - 1
   FindColumns_RefreshControls
+  mfChanged = True
 
 End Sub
 
@@ -1218,36 +1181,27 @@ Private Sub sscmdRemoveFindColumn_Click()
   Dim lngColumnID As Long
   Dim sSQL As String
   Dim objNode As ComctlLib.Node
-  Dim rsInfo As DAO.Recordset
+  Dim rsInfo As dao.Recordset
   
-  With trvSelectedFindColumns
-    If Not .SelectedItem Is Nothing Then
-      lngColumnID = .SelectedItem.Tag
-      
-      .Nodes.Remove .SelectedItem.Index
-      
-      ' Get the columnName and tableID of the selected column.
-      sSQL = "SELECT tmpColumns.tableID, tmpColumns.columnName" & _
-        " FROM tmpColumns" & _
-        " WHERE tmpColumns.columnID = " & Trim(Str(lngColumnID))
-      Set rsInfo = daoDb.OpenRecordset(sSQL, dbOpenForwardOnly, dbReadOnly)
-    
-      If Not (rsInfo.EOF And rsInfo.BOF) Then
-        ' Add the column back into the treeview.
-        Set objNode = trvFindColumns.Nodes.Add("T" & Trim(Str(rsInfo!TableID)), _
-          tvwChild, "C" & Trim(Str(lngColumnID)), rsInfo!ColumnName, "IMG_COLUMN", "IMG_COLUMN")
-        objNode.Tag = lngColumnID
-        Set objNode = Nothing
-      End If
-    
-      mfChanged = True
-    End If
-      
-    If Not .SelectedItem Is Nothing Then
-      .SelectedItem.Selected = True
-    End If
-  End With
-    
+  lngColumnID = lstSelectedFindColumns.ItemData(lstSelectedFindColumns.ListIndex)
+  lstSelectedFindColumns.RemoveItem (lstSelectedFindColumns.ListIndex)
+  
+  ' Get the columnName and tableID of the selected column.
+  sSQL = "SELECT tmpColumns.tableID, tmpColumns.columnName" & _
+    " FROM tmpColumns" & _
+    " WHERE tmpColumns.columnID = " & Trim(Str(lngColumnID))
+  Set rsInfo = daoDb.OpenRecordset(sSQL, dbOpenForwardOnly, dbReadOnly)
+
+  If Not (rsInfo.EOF And rsInfo.BOF) Then
+    ' Add the column back into the treeview.
+    Set objNode = trvFindColumns.Nodes.Add("T" & Trim(Str(rsInfo!TableID)), _
+      tvwChild, "C" & Trim(Str(lngColumnID)), rsInfo!ColumnName, "IMG_COLUMN", "IMG_COLUMN")
+    objNode.Tag = lngColumnID
+    Set objNode = Nothing
+  End If
+
+  mfChanged = True
+         
   FindColumns_RefreshControls
 
 End Sub
@@ -1257,7 +1211,7 @@ Private Sub sscmdRemoveSortColumn_Click()
   Dim lngColumnID As Long
   Dim sSQL As String
   Dim objNode As ComctlLib.Node
-  Dim rsInfo As DAO.Recordset
+  Dim rsInfo As dao.Recordset
   
   With trvSelectedSortColumns
     If Not .SelectedItem Is Nothing Then
@@ -1316,230 +1270,16 @@ Private Sub trvFindColumns_DblClick()
   End If
 End Sub
 
-Private Sub trvFindColumns_DragDrop(Source As Control, X As Single, Y As Single)
-  ' Remove the selected item from the columns listview.
-  If Not mblnReadOnly Then
-    If Source Is trvSelectedFindColumns Then
-      sscmdRemoveFindColumn_Click
-    End If
-    FindColumns_RefreshControls
-  End If
-End Sub
-
 Private Sub trvFindColumns_MouseDown(Button As Integer, Shift As Integer, X As Single, Y As Single)
-  ' Start the drag-drop operation.
-  Dim fGoodColumn As Boolean
-  Dim objItem As ComctlLib.ListItem
-  Dim nodSelection As Node
-
-  If mblnReadOnly Then
-    Exit Sub
-  End If
-
-  If Button = vbLeftButton Then
-    'Get the item at the mouse position
-    Set nodSelection = trvFindColumns.HitTest(X, Y)
-    If Not nodSelection Is Nothing Then
-      'If this item is not the selected item, make it
-      If Not nodSelection Is trvFindColumns.SelectedItem Then
-        Set trvFindColumns.SelectedItem = nodSelection
-      End If
-    End If
-  End If
-  
-  ' Do not drag anything if there is no selected item in the treeview.
-  fGoodColumn = Not (trvFindColumns.SelectedItem Is Nothing)
-  
-  ' Do not drag the selected item if is not a column.
-  If fGoodColumn Then
-    fGoodColumn = (Left(trvFindColumns.SelectedItem.key, 1) = "C")
-  End If
-  
-  If fGoodColumn Then
-    ' Set the flag to show that a column is being dragged.
-    mfColumnDrag = True
-    trvFindColumns.Drag vbBeginDrag
-  End If
-  
   FindColumns_RefreshControls
-  
 End Sub
 
 Private Sub trvFindColumns_MouseUp(Button As Integer, Shift As Integer, X As Single, Y As Single)
-  
-  If mblnReadOnly Then
-    Exit Sub
-  End If
-  
-  If mfColumnDrag Then
-    ' Reset the flag that shows that a column is being dragged.
-    trvFindColumns.Drag vbCancel
-    mfColumnDrag = False
-  End If
-
   FindColumns_RefreshControls
-
 End Sub
 
 Private Sub trvFindColumns_NodeClick(ByVal Node As ComctlLib.Node)
   FindColumns_RefreshControls
-
-End Sub
-
-Private Sub trvSelectedFindColumns_DblClick()
-  If Not mblnReadOnly Then
-    sscmdRemoveFindColumn_Click
-  End If
-End Sub
-
-Private Sub trvSelectedFindColumns_DragDrop(Source As Control, X As Single, Y As Single)
-  ' Drop a selected item from the columns treeview into the selected columns treeview.
-  Dim fDropOk As Boolean
-  Dim objHighlightNode As ComctlLib.Node
-  Dim objNewNode As ComctlLib.Node
-  Dim objOldNode As ComctlLib.Node
-
-  If mblnReadOnly Then
-    Exit Sub
-  End If
-  
-  Set objHighlightNode = trvSelectedFindColumns.DropHighlight
-
-  If Source Is trvFindColumns Then
-    fDropOk = Not (trvFindColumns.SelectedItem Is Nothing)
-
-    If fDropOk Then
-      If Not trvSelectedFindColumns.SelectedItem Is Nothing Then
-        trvSelectedFindColumns.SelectedItem.Selected = False
-      End If
-
-      If objHighlightNode Is Nothing Then
-        Set objNewNode = trvSelectedFindColumns.Nodes.Add(, , , trvFindColumns.SelectedItem.Parent.Text & "." & trvFindColumns.SelectedItem.Text)
-      Else
-        Set objNewNode = trvSelectedFindColumns.Nodes.Add(objHighlightNode, tvwPrevious, , trvFindColumns.SelectedItem.Parent.Text & "." & trvFindColumns.SelectedItem.Text)
-      End If
-      
-      objNewNode.Tag = trvFindColumns.SelectedItem.Tag
-      objNewNode.Selected = True
-      objNewNode.EnsureVisible
-      
-      ' Remove the column from the treeview.
-      trvFindColumns.Nodes.Remove trvFindColumns.SelectedItem.Index
-      
-      
-      trvFindColumns.Drag vbEndDrag
-      Set objNewNode = Nothing
-      trvSelectedFindColumns.SetFocus
-      mfChanged = True
-    Else
-      trvFindColumns.Drag vbCancel
-    End If
-  ElseIf Source Is trvSelectedFindColumns Then
-    If (objHighlightNode Is Nothing) Or _
-      (trvSelectedFindColumns.SelectedItem Is objHighlightNode) Then
-
-      trvSelectedFindColumns.Drag vbCancel
-    Else
-      Set objOldNode = trvSelectedFindColumns.SelectedItem
-      Set objNewNode = trvSelectedFindColumns.Nodes.Add(objHighlightNode, tvwPrevious, , objOldNode.Text)
-      objNewNode.Tag = objOldNode.Tag
-      objNewNode.Selected = True
-      objNewNode.EnsureVisible
-
-      trvSelectedFindColumns.Nodes.Remove objOldNode.Index
-      
-      Set objNewNode = Nothing
-      Set objOldNode = Nothing
-      mfChanged = True
-    End If
-  End If
-
-  Set objHighlightNode = Nothing
-  Set trvSelectedFindColumns.DropHighlight = Nothing
-
-  FindColumns_RefreshControls
-
-End Sub
-
-Private Sub trvSelectedFindColumns_DragOver(Source As Control, X As Single, Y As Single, State As Integer)
-  
-  Dim objNode As ComctlLib.Node
-
-  If mblnReadOnly Then
-    Exit Sub
-  End If
-  
-  
-  'Get the item at the mouse's coordinates.
-  Set objNode = trvSelectedFindColumns.HitTest(X, Y)
-
-  ' Check if the item at the mouse's coordinates is a control.
-  If Not objNode Is Nothing Then
-    objNode.EnsureVisible
-  End If
-
-  ' Set the DropHighlight node
-  Set trvSelectedFindColumns.DropHighlight = objNode
-
-  Set objNode = Nothing
-
-End Sub
-
-Private Sub trvSelectedFindColumns_KeyUp(KeyCode As Integer, Shift As Integer)
-  If KeyCode = vbKeyDelete Then
-    sscmdRemoveFindColumn_Click
-  End If
-  
-End Sub
-
-Private Sub trvSelectedFindColumns_MouseDown(Button As Integer, Shift As Integer, X As Single, Y As Single)
-  Dim objNode As ComctlLib.Node
-
-  If mblnReadOnly Then
-    Exit Sub
-  End If
-  
-  If Button = vbLeftButton Then
-    ' Get the item at the mouse position
-    Set objNode = trvSelectedFindColumns.HitTest(X, Y)
-    If Not objNode Is Nothing Then
-      ' If this node is not the selected node, make it
-      If Not objNode Is trvSelectedFindColumns.SelectedItem Then
-        trvSelectedFindColumns.SelectedItem.Selected = False
-        Set trvSelectedFindColumns.SelectedItem = objNode
-      End If
-    End If
-
-    If trvSelectedFindColumns.Nodes.Count > 0 Then
-      mfColumnDrag = True
-      trvSelectedFindColumns.Drag vbBeginDrag
-    End If
-  End If
-
-  FindColumns_RefreshControls
-
-End Sub
-
-Private Sub trvSelectedFindColumns_MouseUp(Button As Integer, Shift As Integer, X As Single, Y As Single)
-  
-  If mblnReadOnly Then
-    Exit Sub
-  End If
-  
-  If mfColumnDrag Then
-    ' Reset the flag that shows that a column is being dragged.
-    trvSelectedFindColumns.Drag vbCancel
-    mfColumnDrag = False
-  End If
-
-  FindColumns_RefreshControls
-
-End Sub
-
-Private Sub trvSelectedFindColumns_NodeClick(ByVal Node As ComctlLib.Node)
-  Node.Selected = True
-  FindColumns_RefreshControls
-
 End Sub
 
 Private Sub trvSelectedSortColumns_DblClick()
@@ -1819,7 +1559,7 @@ Private Sub txtOrderName_Change(Index As Integer)
   mfChanged = True
   
   ' Disable the OK command control if there are no order items specified.
-  cmdOK.Enabled = (trvSelectedFindColumns.Nodes.Count > 0) And _
+  cmdOK.Enabled = (lstSelectedFindColumns.ListCount > 0) And _
     (trvSelectedSortColumns.Nodes.Count > 0) And _
     (Len(Trim(txtOrderName(0).Text)) > 0) And Not mblnReadOnly
 
@@ -1834,5 +1574,26 @@ End Sub
 Private Sub txtOrderName_KeyPress(Index As Integer, KeyAscii As Integer)
   ' Validate the character entered.
   KeyAscii = ValidNameChar(KeyAscii, txtOrderName(Index).SelStart)
+
+End Sub
+
+Private Sub MoveItemInListBox(ByRef objListbox As listbox, iOldIndex As Integer, iNewIndex As Integer)
+  
+  Dim sItem As String
+  Dim iItemData As Integer
+  Dim bSelected As Boolean
+  
+  With objListbox
+    bSelected = .Selected(iOldIndex)
+    sItem = .List(iOldIndex)
+    iItemData = .ItemData(iOldIndex)
+    
+    .RemoveItem iOldIndex
+    .AddItem sItem, iNewIndex
+    .Selected(iNewIndex) = bSelected
+    .ItemData(iNewIndex) = iItemData
+    
+    .ListIndex = iNewIndex
+  End With
 
 End Sub
