@@ -77,290 +77,225 @@
 	End Function
 </script>
 
-<!DOCTYPE html>
-<html>
-<head>
-    <title>OpenHR</title>
-    <script src="<%: Url.LatestContent("~/bundles/jQuery")%>" type="text/javascript"></script>
-    <script src="<%: Url.LatestContent("~/bundles/jQueryUI7")%>" type="text/javascript"></script>
-    <script src="<%: Url.LatestContent("~/bundles/Microsoft")%>" type="text/javascript"></script>
-    <script src="<%: Url.LatestContent("~/bundles/OpenHR_General")%>" type="text/javascript"></script>
+<script type="text/javascript">
 
-    <link id="DMIthemeLink" href="<%: Url.LatestContent("~/Content/themes/" & Session("ui-admin-theme").ToString() & "/jquery-ui.min.css")%>" rel="stylesheet" type="text/css" />
-    <script id="officebarscript" src="<%: Url.LatestContent("~/Scripts/officebar/jquery.officebar_MODIFIED.js")%>" type="text/javascript"></script>
+	function emailSelection_window_onload() {
+		$(".button").button();
+		//Hide the EmailGroup table header and its column
+		$('.ui-jqgrid-htable tr th:nth-child(1)').hide();
+		$('#EmailSelectionTable tr td:nth-child(1)').hide();
+	};
 
-    <script src="<%: Url.LatestContent("~/Scripts/ctl_SetStyles.js")%>" type="text/javascript"></script>
-    <link href="<%: Url.LatestContent("~/Content/OpenHR.css")%>" rel="stylesheet" type="text/css" />
-    <link href="<%: Url.LatestContent("~/Content/Site.css")%>" rel="stylesheet" type="text/css" />
-    <link href="<%= Url.LatestContent("~/Content/general_enclosed_foundicons.css")%>" rel="stylesheet" type="text/css" />
-    <link href="<%= Url.LatestContent("~/Content/font-awesome.min.css")%>" rel="stylesheet" type="text/css" />
+	function setForm() {
+		var frmPopup = document.getElementById("frmPopup");
 
-    <%--jQuery Grid Stylesheet--%>
-    <link href="<%: Url.LatestContent("~/Content/ui.jqgrid.css")%>" rel="stylesheet" type="text/css" />
+		if (document.getElementById('txtAbsenceEmailGroup') != null) {
+			document.getElementById('txtAbsenceEmailGroup').value = frmPopup.txtSelectedName.value;
+			document.getElementById('txtAbsenceEmailGroupID').value = frmPopup.txtSelectedID.value;
+		}
 
-    <%--Placeholders for theme and layout--%>
-    <link id="layoutLink" rel="stylesheet" type="text/css" />
-    <link id="themeLink" rel="stylesheet" type="text/css" />
-    <link id="WireframethemeLink" rel="stylesheet" type="text/css" />
+		if (document.getElementById('txtEmailGroup') != null) {
+			document.getElementById('txtEmailGroup').value = frmPopup.txtSelectedName.value;
+			document.getElementById('txtEmailGroupID').value = frmPopup.txtSelectedID.value;
+		}
 
-    <script type="text/javascript">
-        window.onload = function () {
-            //Get some cookies that we need to determine the CSS to apply
-            var SSIMode = OpenHR.getCookie("SSIMode");
-            var currentLayout = OpenHR.getCookie("currentLayout");
-            var currentTheme = OpenHR.getCookie("currentTheme");
-            var cookiewireframeTheme = OpenHR.getCookie("cookiewireframeTheme");
-            var cookieapplyWireframeTheme = OpenHR.getCookie("cookieapplyWireframeTheme");
+		$('#EventLogEmailSelect').dialog("close");
+		return false;
+	};
 
-            if (($("#fixedlinksframe").length > 0) && (currentLayout != "winkit"))
-                $("link[id=DMIthemeLink]").attr({ href: "" });
-
-            //The logic below is taken from Site.Master, it should be abstracted somewhere else, but no time to do that now
-            if (SSIMode != "True") {
-                $("link[id=layoutLink]").attr({ href: "<%:Url.LatestContent("~/Content/DashboardStyles/layouts/winkit.css")%>" });
-                $("link[id=themeLink]").attr({ href: "<%:Url.LatestContent("~/Content/DashboardStyles/themes/white.css")%>" });
-                $('body').addClass('DMI');
-            } else {
-                switch (OpenHR.getCookie("Intranet_Layout")) {
-                    case "winkit":
-                        $("link[id=layoutLink]").attr({ href: "<%:Url.LatestContent("~/Content/DashboardStyles/layouts/winkit.css")%>" });
-                        $("link[id=SSIthemeLink]").attr({ href: "<%:Url.LatestContent("~/Content/themes/redmond-segoe/jquery-ui.min.css")%>" });
-                        $("link[id=DMIthemeLink]").attr({ href: "<%:Url.LatestContent("~/Content/themes/redmond-segoe/jquery-ui.min.css")%>" });
-                        break;
-                    case "wireframe":
-                        if (cookieapplyWireframeTheme == "true") $("link[id=WireframethemeLink]").attr({ href: "../Content/DashboardStyles/themes/upgraded.css" });
-
-                        $("link[id=layoutLink]").attr({ href: "<%:Url.LatestContent("~/Content/DashboardStyles/layouts/wireframe.css")%>" });
-                        $("link[id=SSIthemeLink]").attr({ href: "../Content/themes/" + cookiewireframeTheme + "/jquery-ui.min.css" });
-                        $("link[id=DMIthemeLink]").attr({ href: "../Content/themes/" + cookiewireframeTheme + "/jquery-ui.min.css" });
-                        break;
-                    case "tiles":
-                        $("link[id=layoutLink]").attr({ href: "<%:Url.LatestContent("~/Content/DashboardStyles/layouts/tiles.css")%>" });
-                        $("link[id=SSIthemeLink]").attr({ href: "<%:Url.LatestContent("~/Content/themes/start/jquery-ui.min.css")%>" });
-                        $("link[id=DMIthemeLink]").attr({ href: "<%:Url.LatestContent("~/Content/themes/start/jquery-ui.min.css")%>" });
-                        break;
-                }
-
-                switch (currentTheme) {
-                    case "red":
-                        $("link[id=themeLink]").attr({ href: "<%: Url.LatestContent("~/Content/DashboardStyles/themes/Red.css")%>" });
-                    break;
-                case "blue":
-                    $("link[id=themeLink]").attr({ href: "<%: Url.LatestContent("~/Content/DashboardStyles/themes/Blue.css")%>" });
-                    break;
-                case "white":
-                    $("link[id=themeLink]").attr({ href: "<%: Url.LatestContent("~/Content/DashboardStyles/themes/White.css")%>" });
-                default:
-                    break;
-            }
-        }
-        };
-
-    function setForm() {
-        var frmPopup = document.getElementById("frmPopup");
-
-        if (document.getElementById('txtAbsenceEmailGroup') != null) {
-            document.getElementById('txtAbsenceEmailGroup').value = frmPopup.txtSelectedName.value;
-            document.getElementById('txtAbsenceEmailGroupID').value = frmPopup.txtSelectedID.value;
-        }
-
-        if (document.getElementById('txtEmailGroup') != null) {
-            document.getElementById('txtEmailGroup').value = frmPopup.txtSelectedName.value;
-            document.getElementById('txtEmailGroupID').value = frmPopup.txtSelectedID.value;
-        }
-
-        self.close();
-        return false;
-    }
-    </script>
-</head>
+</script>
 
 <body id="bdyMain" name="bdyMain" <%=session("BodyColour")%>>
-    <form id="frmPopup" name="frmPopup" onsubmit="return setForm();" style="visibility: hidden; display: none">
-        <input type="hidden" id="txtSelectedID" name="txtSelectedID">
-        <input type="hidden" id="txtSelectedName" name="txtSelectedName">
-        <input type="hidden" id="txtSelectedAccess" name="txtSelectedAccess">
-        <input type="hidden" id="txtSelectedUserName" name="txtSelectedUserName">
-    </form>
+	<form class="displaynone" id="frmPopup" name="frmPopup" onsubmit="return setForm();">
+		<input id="txtSelectedID" name="txtSelectedID" type="hidden">
+		<input id="txtSelectedName" name="txtSelectedName" type="hidden">
+		<input id="txtSelectedAccess" name="txtSelectedAccess" type="hidden">
+		<input id="txtSelectedUserName" name="txtSelectedUserName" type="hidden">
+	</form>
 
 	<div class="absolutefull">
-		<div class="pageTitleDiv" style="margin-bottom: 15px; margin-top: 10px">
-			<span class="pageTitle" id="EventLogEmailPageTitle">Email Selection</span>
+		<div class="pageTitleDiv padbot15 margeTop10">
+			<span class="pageTitle" id="EventLogEmailTitle">Email Selection</span>
 		</div>
-
-		<div style="">
+		<div>
 			<%=GetEmailSelection()%>
-
-			<div id="divEmailSelectionButtons">
-				<input class="button" id="cmdok" name="cmdok" onclick="emailEvent();" type="button" value="OK" />
-				<input class="button" id="cmdcancel" name="cmdcancel" onclick="self.close();" style="" type="button" value="Cancel" />
+			<div>
+				<div id="divEmailSelectionButtons">
+					<input class="button" id="cmdok" name="cmdok" onclick="emailEvent()" type="button" value="OK" />
+					<input class="button" id="cmdcancel" name="cmdcancel" onclick="closeEmailSelect()" type="button" value="Cancel" />
+				</div>
 			</div>
 		</div>
 	</div>
 
-    <form name="frmEmailDetails" id="frmEmailDetails" style="visibility: hidden; display: none; width: 100%">
-        <%
-            'Get the required Email information
-            Dim sErrorDescription As String = ""
-            Dim sEmailInfo As String = vbNullString
-            Dim iLastEventID As Integer = -1
-            Dim iDetailCount As Integer = 0
-            Dim EventCounter As Integer = 0
-            Dim objDataAccess As clsDataAccess = CType(Session("DatabaseAccess"), clsDataAccess)
+	<form class="displaynone" id="frmEmailDetails" name="frmEmailDetails">
+		<%
+			'Get the required Email information
+			Dim sErrorDescription As String
+			Dim sEmailInfo As String = vbNullString
+			Dim iLastEventID As Integer = -1
+			Dim iDetailCount As Integer = 0
+			Dim eventCounter As Integer = 0
+			Dim objDataAccess As clsDataAccess = CType(Session("DatabaseAccess"), clsDataAccess)
 
-            Try
-                Dim prmSubject = New SqlParameter("psSubject", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
-                Dim rsEmailDetails = objDataAccess.GetFromSP("spASRIntGetEventLogEmailInfo" _
-                , New SqlParameter("psSelectedIDs", SqlDbType.VarChar, -1) With {.Value = Request("txtSelectedEventIDs")} _
-                , prmSubject _
-                , New SqlParameter("psOrderColumn", SqlDbType.VarChar, -1) With {.Value = CStr(Request("txtEmailOrderColumn"))} _
-                , New SqlParameter("psOrderOrder", SqlDbType.VarChar, -1) With {.Value = CStr(Request("txtEmailOrderOrder"))})
+			Try
+				Dim prmSubject = New SqlParameter("psSubject", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
+				Dim rsEmailDetails = objDataAccess.GetFromSP("spASRIntGetEventLogEmailInfo" _
+				, New SqlParameter("psSelectedIDs", SqlDbType.VarChar, -1) With {.Value = Request("txtSelectedEventIDs")} _
+				, prmSubject _
+				, New SqlParameter("psOrderColumn", SqlDbType.VarChar, -1) With {.Value = CStr(Request("txtEmailOrderColumn"))} _
+				, New SqlParameter("psOrderOrder", SqlDbType.VarChar, -1) With {.Value = CStr(Request("txtEmailOrderOrder"))})
 			
-                If rsEmailDetails.Rows.Count > 0 Then
-                    For Each objRow As DataRow In rsEmailDetails.Rows
-                        If iLastEventID <> CInt(objRow("ID")) Then
-                            EventCounter = EventCounter + 1
-                            Response.Write(CStr(EventCounter))
-                            sEmailInfo = sEmailInfo & StrDup(Len(objRow("Name").ToString()) + 30, "-") & vbCrLf
-                            sEmailInfo = sEmailInfo & "Event Name : " & objRow("Name").ToString() & vbCrLf
-                            sEmailInfo = sEmailInfo & StrDup(Len(objRow("Name").ToString()) + 30, "-") & vbCrLf
-                            sEmailInfo = sEmailInfo & "Mode :		" & objRow("Mode").ToString() & vbCrLf & vbCrLf
-                            sEmailInfo = sEmailInfo & "Start Time :	" & ConvertSQLDateToLocale(objRow("DateTime")) & " " & ConvertSqlDateToTime(objRow("DateTime")) & vbCrLf
-                            If IsDBNull(objRow("EndTime")) Then
-                                sEmailInfo = sEmailInfo & "End Time :	" & vbCrLf
-                            Else
-                                sEmailInfo = sEmailInfo & "End Time :	" & ConvertSQLDateToLocale(objRow("DateTime")) & " " & ConvertSqlDateToTime(objRow("EndTime")) & vbCrLf
-                            End If
-                            sEmailInfo = sEmailInfo & "Duration :	" & FormatEventDuration(CInt(objRow("Duration"))) & vbCrLf
-                            sEmailInfo = sEmailInfo & "Type :		" & objRow("Type").ToString() & vbCrLf
-                            sEmailInfo = sEmailInfo & "Status :		" & objRow("Status").ToString() & vbCrLf
-                            sEmailInfo = sEmailInfo & "User name :	" & objRow("Username").ToString() & vbCrLf & vbCrLf
-                            If Request("txtFromMain") = 0 Then
-                                If Request("txtBatchy") Then
-                                    sEmailInfo = sEmailInfo & Request("txtBatchInfo") & vbCrLf
-                                End If
-                            Else
-                                If (Not IsDBNull(objRow("BatchName"))) And (Len(objRow("BatchName").ToString()) > 0) Then
-                                    sEmailInfo = sEmailInfo & "Batch Job Name	: " & objRow("BatchName").ToString() & vbCrLf & vbCrLf
-                                End If
-                            End If
+				If rsEmailDetails.Rows.Count > 0 Then
+					For Each objRow As DataRow In rsEmailDetails.Rows
+						If iLastEventID <> CInt(objRow("ID")) Then
+							eventCounter = eventCounter + 1
+							Response.Write(CStr(eventCounter))
+							sEmailInfo = sEmailInfo & StrDup(Len(objRow("Name").ToString()) + 30, "-") & vbCrLf
+							sEmailInfo = sEmailInfo & "Event Name : " & objRow("Name").ToString() & vbCrLf
+							sEmailInfo = sEmailInfo & StrDup(Len(objRow("Name").ToString()) + 30, "-") & vbCrLf
+							sEmailInfo = sEmailInfo & "Mode :		" & objRow("Mode").ToString() & vbCrLf & vbCrLf
+							sEmailInfo = sEmailInfo & "Start Time :	" & ConvertSQLDateToLocale(objRow("DateTime")) & " " & ConvertSqlDateToTime(objRow("DateTime")) & vbCrLf
+							If IsDBNull(objRow("EndTime")) Then
+								sEmailInfo = sEmailInfo & "End Time :	" & vbCrLf
+							Else
+								sEmailInfo = sEmailInfo & "End Time :	" & ConvertSQLDateToLocale(objRow("DateTime")) & " " & ConvertSqlDateToTime(objRow("EndTime")) & vbCrLf
+							End If
+							sEmailInfo = sEmailInfo & "Duration :	" & FormatEventDuration(CInt(objRow("Duration"))) & vbCrLf
+							sEmailInfo = sEmailInfo & "Type :		" & objRow("Type").ToString() & vbCrLf
+							sEmailInfo = sEmailInfo & "Status :		" & objRow("Status").ToString() & vbCrLf
+							sEmailInfo = sEmailInfo & "User name :	" & objRow("Username").ToString() & vbCrLf & vbCrLf
+							If Request("txtFromMain") = 0 Then
+								If Request("txtBatchy") Then
+									sEmailInfo = sEmailInfo & Request("txtBatchInfo") & vbCrLf
+								End If
+							Else
+								If (Not IsDBNull(objRow("BatchName"))) And (Len(objRow("BatchName").ToString()) > 0) Then
+									sEmailInfo = sEmailInfo & "Batch Job Name	: " & objRow("BatchName").ToString() & vbCrLf & vbCrLf
+								End If
+							End If
 										
-                            sEmailInfo = sEmailInfo & "Records Successful :	" & objRow("SuccessCount").ToString() & vbCrLf
-                            sEmailInfo = sEmailInfo & "Records Failed :		" & objRow("FailCount").ToString() & vbCrLf & vbCrLf
-                            sEmailInfo = sEmailInfo & "Details : " & vbCrLf & vbCrLf
-                            iLastEventID = CInt(objRow("ID"))
-                            iDetailCount = 0
-                        End If
+							sEmailInfo = sEmailInfo & "Records Successful :	" & objRow("SuccessCount").ToString() & vbCrLf
+							sEmailInfo = sEmailInfo & "Records Failed :		" & objRow("FailCount").ToString() & vbCrLf & vbCrLf
+							sEmailInfo = sEmailInfo & "Details : " & vbCrLf & vbCrLf
+							iLastEventID = CInt(objRow("ID"))
+							iDetailCount = 0
+						End If
 				
-                        iDetailCount += 1
+						iDetailCount += 1
 				
-                        If objRow("count") > 0 Then
-                            If (Not IsDBNull(objRow("Notes"))) And (Len(objRow("Notes")) > 0) Then
-                                sEmailInfo = sEmailInfo & "*** Log Entry " & CStr(iDetailCount) & " of " & CStr(objRow("count")) & " ***" & vbCrLf
-                                sEmailInfo = sEmailInfo & objRow("Notes").ToString()
-                            End If
-                        Else
-                            sEmailInfo = sEmailInfo & "There are no details for this event log entry" & vbCrLf
-                        End If
-                        sEmailInfo = sEmailInfo & vbCrLf & vbCrLf & vbCrLf
-                    Next
-                    Response.Write("<input  name=txtEventDeleted id=txtEventDeleted value=0>" & vbCrLf)
-                Else
-                    Response.Write("<input  name=txtEventDeleted id=txtEventDeleted value=1>" & vbCrLf)
-                End If
+						If objRow("count") > 0 Then
+							If (Not IsDBNull(objRow("Notes"))) And (Len(objRow("Notes")) > 0) Then
+								sEmailInfo = sEmailInfo & "*** Log Entry " & CStr(iDetailCount) & " of " & CStr(objRow("count")) & " ***" & vbCrLf
+								sEmailInfo = sEmailInfo & objRow("Notes").ToString()
+							End If
+						Else
+							sEmailInfo = sEmailInfo & "There are no details for this event log entry" & vbCrLf
+						End If
+						sEmailInfo = sEmailInfo & vbCrLf & vbCrLf & vbCrLf
+					Next
+					Response.Write("<input  name=txtEventDeleted id=txtEventDeleted value=0>" & vbCrLf)
+				Else
+					Response.Write("<input  name=txtEventDeleted id=txtEventDeleted value=1>" & vbCrLf)
+				End If
 
-                Response.Write("<input  name=txtBody id=txtBody value=""" & Replace(sEmailInfo, """", "&quot;") & """>" & vbCrLf)
-                Response.Write("<input  name=txtSubject id=txtSubject value=""" & Replace(prmSubject.Value.ToString(), """", "&quot;") & """>" & vbCrLf)
-            Catch ex As Exception
-                sErrorDescription = "Error getting the event log records." & vbCrLf & FormatError(ex.Message)
-            End Try
-        %>
-    </form>
+				Response.Write("<input  name=txtBody id=txtBody value=""" & Replace(sEmailInfo, """", "&quot;") & """>" & vbCrLf)
+				Response.Write("<input  name=txtSubject id=txtSubject value=""" & Replace(prmSubject.Value.ToString(), """", "&quot;") & """>" & vbCrLf)
+			Catch ex As Exception
+				sErrorDescription = "Error getting the event log records." & vbCrLf & FormatError(ex.Message)
+			End Try
+		%>
+	</form>
 
-    <form id="frmFromOpener" name="frmFromOpener" style="visibility: hidden; display: none">
-        <input type="hidden" id="calcEmailCurrentID" name="calcEmailCurrentID" value='<%= Request("emailSelCurrentID") %>'>
-    </form>
+	<form class="displaynone" id="frmFromOpener" name="frmFromOpener">
+		<input id="calcEmailCurrentID" name="calcEmailCurrentID" type="hidden" value='<%= Request("emailSelCurrentID") %>'>
+	</form>
 
-    <input type="hidden" id="txtTicker" name="txtTicker" value="0">
-    <input type="hidden" id="txtLastKeyFind" name="txtLastKeyFind" value="">
+	<input id="txtTicker" name="txtTicker" type="hidden" value="0">
+	<input id="txtLastKeyFind" name="txtLastKeyFind" type="hidden" value="">
 </body>
 
 <script type="text/javascript">
-    // Table to jQuery grid
-    tableToGrid("#EmailSelectionTable", {
-        multiselect: true,
-        onSelectRow: function (rowID) { refreshControls(); },
-        onSelectAll: function (rowID) { refreshControls(); },
-        ondblClickRow: function (rowID) { },
-        colNames: ['EmailGroupIDHeader', 'FullNameHeader', 'To', 'Cc', 'Bcc', 'Recipient'],
-        colModel: [
-						{ name: 'EmailGroupIDHeader', hidden: true },
-            { name: 'FullNameHeader', sortable: false, hidden: true },
-            { name: 'to', edittype: 'checkbox', index: 'to', editoptions: { value: "True:False" }, formatter: 'checkbox', formatoptions: { disabled: false }, align: 'center', width: '10' },
-            { name: 'cc', edittype: 'checkbox', index: 'cc', editoptions: { value: "True:False" }, formatter: 'checkbox', formatoptions: { disabled: false }, align: 'center', width: '10' },
-            { name: 'bcc', edittype: 'checkbox', index: 'bcc', editoptions: { value: "True:False" }, formatter: 'checkbox', formatoptions: { disabled: false }, align: 'center', width: '10' },
-						{ name: 'NameHeader', sortable: false, width: '90%' }
-        ],
-				cmTemplate: { sortable: false },
-        rowNum: 1000,   //TODO set this to blocksize...
-        height: 350,
-        autowidth: true,
-        beforeSelectRow: function (rowid, e) { return false; }
-    });
+	// Table to jQuery grid
+	tableToGrid("#EmailSelectionTable", {
+		multiselect: true,
+		onSelectRow: function () { refreshControls(); },
+		onSelectAll: function () { refreshControls(); },
+		ondblClickRow: function () { },
+		colNames: ['EmailGroupIDHeader', 'FullNameHeader', 'To', 'Cc', 'Bcc', 'Recipient'],
+		colModel: [
+			{ name: 'EmailGroupIDHeader', hidden: true },
+			{ name: 'FullNameHeader', sortable: false, hidden: true },
+			{ name: 'to', edittype: 'checkbox', index: 'to', editoptions: { value: "True:False" }, formatter: 'checkbox', formatoptions: { disabled: false }, align: 'center', width: '10' },
+			{ name: 'cc', edittype: 'checkbox', index: 'cc', editoptions: { value: "True:False" }, formatter: 'checkbox', formatoptions: { disabled: false }, align: 'center', width: '10' },
+			{ name: 'bcc', edittype: 'checkbox', index: 'bcc', editoptions: { value: "True:False" }, formatter: 'checkbox', formatoptions: { disabled: false }, align: 'center', width: '10' },
+			{ name: 'NameHeader', sortable: false, width: '90%' }
+		],
+		cmTemplate: { sortable: false },
+		rowNum: 1000,
+		height: ((screen.height) / 3.5) + 25,
+		autowidth: true,
+		beforeSelectRow: function () { return false; }
+	});
 
-    function refreshControls() {
-        var sSelectionList = jQuery("#EmailSelectionTable").jqGrid('getGridParam', 'selarrrow');
-        sSelectionList = (sSelectionList == null ? '' : sSelectionList);
-    }
+	function refreshControls() {
+		var sSelectionList = jQuery("#EmailSelectionTable").jqGrid('getGridParam', 'selarrrow');
+		sSelectionList = (sSelectionList == null ? '' : sSelectionList);
+	}
 
-    function emailEvent() {
-	    var sTo = getEmails(4);
-	    var sCC = getEmails(5);
-	    var sBCC = getEmails(6);
-	    var sSubject = getSubject();
-	    var sBody = getBody();
+	function emailEvent() {
+	
+		var sTo = getEmails(4);
+		var SCc = getEmails(5);
+		var SBcc = getEmails(6);
+		var sSubject = getSubject();
+		var sBody = getBody();
+		
+		$.ajax({
+			type: "POST",
+			url: "SendEmail",
+			data: { 'to': sTo, 'cc': SCc, 'bcc': SBcc, 'subject': sSubject, 'body': sBody },
+			dataType: "text",
+			success: function (a, b, c) {
+				alert(OpenHR.replaceAll(c.statusText, '<br/>', '\n'));
+				$('#EventLogEmailSelect').dialog("close");
+			},
+			error: function (req, status, errorObj) {
+				if (!(errorObj == "" || req.responseText == "")) {
+					alert(OpenHR.replaceAll(errorObj, '<br/>', '\n'));
+				}
+			}
+		});
 
-	    $.ajax({
-	    	type: "POST",
-	    	url: "SendEmail",
-	    	data: { 'to': sTo, 'cc': sCC, 'bcc': sBCC, 'subject': sSubject, 'body': sBody },
-	    	dataType: "text",
-	    	success: function (a, b, c) {
-	    		alert(OpenHR.replaceAll(c.statusText, '<br/>', '\n'));
-	    		self.close();
-	    	},
-	    	error: function (req, status, errorObj) {
-	    		if (!(errorObj == "" || req.responseText == "")) {
-	    			alert(OpenHR.replaceAll(errorObj, '<br/>', '\n'));
-	    		}
-	    	}
-	    });
+		return true;
+	}
 
-	    return true;
-    }
+	function getEmails(typeIndex) {
+		var localList = "";
+		$('#EmailSelectionTable').find('td:nth-child(' + typeIndex + ')').each(function () {
+			$(this).find('input:checked').each(function () {
+				localList += $(this).parent().siblings()[2].innerHTML + ";";
+			});
+		});
+		return localList;
+	}
 
-    function getEmails(typeIndex) {
-	    var localList = "";
-        $('#EmailSelectionTable').find('td:nth-child(' + typeIndex + ')').each(function () {
-            $(this).find('input:checked').each(function () {
-	            localList += $(this).parent().siblings()[2].innerHTML + ";";
-            });
-        });
-        return localList;
-    }
+	function getSubject() {
+		return $('#txtSubject').val();
+	}
 
-    function getSubject() {
-        return frmEmailDetails.txtSubject.value;
-    }
+	function getBody() {
+		return $('#txtBody').val();
+	}
 
-    function getBody() {
-        return frmEmailDetails.txtBody.value;
-    }
+	function closeEmailSelect() {
+		$('#EventLogEmailSelect').dialog("close");
+	}
 
-    $(".button").button();
-    //Hide the EmailGroup table header and its column
-    $('.ui-jqgrid-htable tr th:nth-child(1)').hide();
-    $('#EmailSelectionTable tr td:nth-child(1)').hide();
+	</script>
+
+<script type="text/javascript">
+	emailSelection_window_onload();
 </script>
 
-</html>
+
