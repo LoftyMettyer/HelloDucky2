@@ -13,10 +13,6 @@ Public Class Database
 		_timeout = App.Config.SubmissionTimeoutInSeconds
 	End Sub
 
-	Public Shared Function CreateConnectionString(server As String, database As String, user As String, password As String) As String
-		Return "Application Name=OpenHR Workflow;Data Source=" & server & ";Initial Catalog=" & database & ";Integrated Security=false;User ID=" & user & ";Password=" & password & ";Pooling=true"
-	End Function
-
 	Public Function CanConnect() As Boolean
 		Using conn As New SqlConnection(_connectionString)
 			Try
@@ -179,13 +175,7 @@ Public Class Database
 		End If
 
 		Dim crypt As New Crypt
-		Dim encryptedString As String = crypt.EncryptQueryString((userId), -2,
-								 App.Config.Login,
-								 App.Config.Password,
-								 App.Config.Server,
-								 App.Config.Database,
-								 "",
-								 "")
+		Dim encryptedString As String = crypt.EncryptQueryString((userId), -2, "", "", "", "", "", "")
 
 		Dim activationUrl As String = App.Config.WorkflowUrl & "?" & encryptedString
 
