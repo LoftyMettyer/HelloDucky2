@@ -2,7 +2,7 @@
 Imports System.Linq
 Imports System.Data.SqlClient
 Imports System.Collections.Generic
-Imports System.IO
+Imports OpenHRWorkflow.Code
 
 Public Class Database
 	Private ReadOnly _connectionString As String
@@ -38,6 +38,18 @@ Public Class Database
 			Return CInt(result) = 1
 		End Using
 
+	End Function
+
+	Public Function IsUserProhibited() As Boolean
+		If App.Config.Login.ToUpper() = "SA" Then
+			' raise error in event log
+			Dim objEventLog As EventLog = New EventLog("Advanced Business Solutions", "OpenHR Workflow Website")
+			objEventLog.WriteEntry("Unable to connect to the database specified (Error Code: CE002). A prohibited username has been configured into the web config's connection string.", EventLogEntryType.Error)
+
+			Return True
+		Else
+			Return False
+		End If
 	End Function
 
 	Public Function IsMobileModuleInstalled() As Boolean
@@ -116,7 +128,7 @@ Public Class Database
 
 			Dim result As CheckLoginResult
 			result.InvalidReason = NullSafeString(cmd.Parameters("@psMessage").Value())
-			result.UserGroupID = NullSafeInteger(cmd.Parameters("@piUserGroupID").Value())
+			result.UserGroupId = NullSafeInteger(cmd.Parameters("@piUserGroupID").Value())
 			result.Valid = (result.InvalidReason = Nothing)
 			Return result
 		End Using
@@ -168,7 +180,7 @@ Public Class Database
 	Public Function Register(email As String) As String
 
 		'Check the email address relates to a user
-		Dim userId = GetUserID(email)
+		Dim userId = GetUserId(email)
 
 		If userId = 0 Then
 			Return "No records exist with the given email address."
@@ -204,7 +216,7 @@ Public Class Database
 	Public Function ForgotLogin(email As String) As String
 
 		'Check the email address relates to a user
-		Dim userId = GetUserID(email)
+		Dim userId = GetUserId(email)
 
 		If userId = 0 Then
 			Return "No records exist with the given email address."
@@ -322,7 +334,7 @@ Public Class Database
 					.Height = NullSafeInteger(dr("Height"))
 					.TabIndex = NullSafeShort(dr("TabIndex"))
 					.PageNo = NullSafeInteger(dr("PageNo"))
-					.PictureID = NullSafeInteger(dr("PictureID"))
+					.PictureId = NullSafeInteger(dr("PictureID"))
 					.PictureBorder = NullSafeBoolean(dr("PictureBorder"))
 					.FontName = NullSafeString(dr("FontName"))
 					.FontSize = NullSafeInteger(dr("FontSize"))
@@ -336,7 +348,7 @@ Public Class Database
 					.LookupFilterColumnName = NullSafeString(dr("LookupFilterColumnName"))
 					.LookupFilterColumnDataType = NullSafeInteger(dr("LookupFilterColumnDataType"))
 					.LookupFilterOperator = NullSafeInteger(dr("LookupFilterOperator"))
-					.LookupFilterValueID = NullSafeString(dr("LookupFilterValueID"))
+					.LookupFilterValueId = NullSafeString(dr("LookupFilterValueID"))
 					.LookupFilterValueType = NullSafeString(dr("LookupFilterValueType"))
 					.ColumnHeaders = NullSafeBoolean(dr("ColumnHeaders"))
 					.HeadFontSize = NullSafeInteger(dr("HeadFontSize"))
@@ -490,7 +502,7 @@ Public Class Database
 			cmd.Parameters("@piInstanceID").Value = instanceId
 
 			cmd.Parameters.Add("@piElementItemID", SqlDbType.Int).Direction = ParameterDirection.Input
-			cmd.Parameters("@piElementItemID").Value = elementItemID
+			cmd.Parameters("@piElementItemID").Value = elementItemId
 
 			cmd.Parameters.Add("@pfOK", SqlDbType.Bit).Direction = ParameterDirection.Output
 
@@ -519,7 +531,7 @@ Public Class Database
 			cmd.Parameters("@piInstanceID").Value = instanceId
 
 			cmd.Parameters.Add("@piElementID", SqlDbType.Int).Direction = ParameterDirection.Input
-			cmd.Parameters("@piElementID").Value = elementItemID
+			cmd.Parameters("@piElementID").Value = elementItemId
 
 			cmd.Parameters.Add("@psFormInput1", SqlDbType.VarChar, 2147483646).Direction = ParameterDirection.Input
 			cmd.Parameters("@psFormInput1").Value = values
@@ -555,7 +567,7 @@ Public Class Database
 			cmd.Parameters("@piInstanceID").Value = instanceId
 
 			cmd.Parameters.Add("@piElementID", SqlDbType.Int).Direction = ParameterDirection.Input
-			cmd.Parameters("@piElementID").Value = elementItemID
+			cmd.Parameters("@piElementID").Value = elementItemId
 
 			cmd.Parameters.Add("@psFormInput1", SqlDbType.VarChar, 2147483646).Direction = ParameterDirection.Input
 			cmd.Parameters("@psFormInput1").Value = values
@@ -688,7 +700,7 @@ Public Class Database
 				 " SELECT [itemID] FROM [ASRSysPermissionItems]	" &
 				 " WHERE [categoryID] = (SELECT [categoryID] FROM [ASRSysPermissionCategories] WHERE [categoryKey] = 'WORKFLOW')) " &
 				 " AND [groupName] = (SELECT [Name] FROM [ASRSysGroups] WHERE [ID] = " &
-				 userGroupID.ToString & ")"
+				 userGroupId.ToString & ")"
 
 			conn.Open()
 			Dim cmd As New SqlCommand(sql, conn)
@@ -714,7 +726,7 @@ Public Class Database
 			Dim sql As String = "SELECT w.Id, w.Name, w.PictureID" &
 				 " FROM tbsys_mobilegroupworkflows gw" &
 				 " INNER JOIN tbsys_workflows w on gw.WorkflowID = w.ID" &
-				 " WHERE gw.UserGroupID = " & userGroupID & " AND w.enabled = 1 ORDER BY gw.Pos ASC"
+				 " WHERE gw.UserGroupID = " & userGroupId & " AND w.enabled = 1 ORDER BY gw.Pos ASC"
 
 			conn.Open()
 			Dim cmd As New SqlCommand(sql, conn)
@@ -723,9 +735,9 @@ Public Class Database
 			While dr.Read()
 				list.Add(
 				 New WorkflowLink() With _
-					{.ID = NullSafeInteger(dr("ID")), _
+					{.Id = NullSafeInteger(dr("ID")), _
 					.Name = NullSafeString(dr("Name")), _
-					.PictureID = NullSafeInteger(dr("PictureID")) _
+					.PictureId = NullSafeInteger(dr("PictureID")) _
 					})
 			End While
 
@@ -758,11 +770,11 @@ Public Class Database
 				End If
 
 				list.Add(New WorkflowStepLink() With _
-					  {.Url = NullSafeString(dr("Url")),
-					  .Name = NullSafeString(dr("Name")),
-					  .Desc = desc,
-					  .PictureID = NullSafeInteger(dr("PictureID"))
-					  })
+						{.Url = NullSafeString(dr("Url")),
+						.Name = NullSafeString(dr("Name")),
+						.Desc = desc,
+						.PictureId = NullSafeInteger(dr("PictureID"))
+						})
 			End While
 
 			Return (From x In list Order By x.Name, x.Desc).ToList()

@@ -43,6 +43,11 @@ Public Class [Default]
 
 		_db = New Database(App.Config.ConnectionString)
 
+		' check that the stored username is allowed
+		If _db.IsUserProhibited() And Not IsPostBack Then
+			message = "Unable to connect to the database specified<BR><BR>Contact your system administrator. (Error Code: CE002)."
+		End If
+
 		'check to see if the database is locked
 		If message.IsNullOrEmpty And Not IsPostBack Then
 
@@ -69,9 +74,9 @@ Public Class [Default]
 #End If
 
 		'Activating mobile security. I've hijacked the InstanceID and populated it with the User ID that is to be activated.
-		If message.IsNullOrEmpty() And Not IsPostBack And _url.ElementID = -2 And _url.InstanceID > 0 Then
+		If message.IsNullOrEmpty() And Not IsPostBack And _url.ElementId = -2 And _url.InstanceId > 0 Then
 
-			message = _db.ActivateUser(_url.InstanceID)
+			message = _db.ActivateUser(_url.InstanceId)
 
 			If message.IsNullOrEmpty() Then
 				message = "You have been successfully activated."
@@ -79,9 +84,9 @@ Public Class [Default]
 		End If
 
 		'Initiate the workflow if thats whats required
-		If message.IsNullOrEmpty() And Not IsPostBack And _url.InstanceID < 0 And _url.ElementID = -1 Then
+		If message.IsNullOrEmpty() And Not IsPostBack And _url.InstanceId < 0 And _url.ElementId = -1 Then
 
-			Dim result As InstantiateWorkflowResult = _db.InstantiateWorkflow(-_url.InstanceID, _url.UserName)
+			Dim result As InstantiateWorkflowResult = _db.InstantiateWorkflow(-_url.InstanceId, _url.UserName)
 
 			If Not result.Message.IsNullOrEmpty() Then
 				message = "Error:<BR><BR>" & result.Message
@@ -92,14 +97,14 @@ Public Class [Default]
 					'The first form element is this workflow and any others are sibling forms (that need to be opened at the same time)
 					Dim forms = result.FormElements.Split(New String() {vbTab}, StringSplitOptions.RemoveEmptyEntries).ToList
 
-					_url.InstanceID = result.InstanceId
-					_url.ElementID = CInt(forms(0))
+					_url.InstanceId = result.InstanceId
+					_url.ElementId = CInt(forms(0))
 					forms.RemoveAt(0)
 
-					Dim siblingForms = String.Join(vbTab, forms.Select(Function(f) _db.GetWorkflowQueryString(_url.InstanceID, CInt(f))))
+					Dim siblingForms = String.Join(vbTab, forms.Select(Function(f) _db.GetWorkflowQueryString(_url.InstanceId, CInt(f))))
 
 					Dim crypt As New Crypt
-					Dim newUrl = crypt.EncryptQueryString(_url.InstanceID, _url.ElementID, _url.User, _url.Password, _url.Server, _url.Database, "", "")
+					Dim newUrl = crypt.EncryptQueryString(_url.InstanceId, _url.ElementId, _url.User, _url.Password, _url.Server, _url.Database, "", "")
 
 					Session("FireSiblings_" & newUrl) = siblingForms
 					Response.Redirect("~/Default.aspx?" & newUrl, True)

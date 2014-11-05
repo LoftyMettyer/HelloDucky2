@@ -30,9 +30,11 @@ Public Class Forms
 		Dim db As New Database(App.Config.ConnectionString)
 
 		If Not db.CanConnect() Then
-			errors.Add("Unable to connect to the database specified.")
+			errors.Add("Unable to connect to the database specified (Error Code: CE001).")
 		Else
-			If Not db.IsIntranetFunctionInstalled() Then
+			If db.IsUserProhibited() Then
+				errors.Add("Unable to connect to the database specified (Error Code: CE002).")
+			ElseIf Not db.IsIntranetFunctionInstalled() Then
 				errors.Add("The database is out of date, re-run the latest intranet update script.")
 			End If
 		End If
