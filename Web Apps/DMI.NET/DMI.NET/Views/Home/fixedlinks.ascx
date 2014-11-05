@@ -1120,6 +1120,20 @@
 						</li>						
 					</ul>
 				</li>
+				
+				<li class="ui-corner-top"><a id="toolbarStandardReportConfig" href="#" rel="Report">Configure</a>
+					<ul>
+						<li><span>Configure</span>
+							<div id="mnutoolSaveStandardReportConfig" class="button">
+								<a href="#" rel="table" title="Save">
+									<img src="<%: Url.Content("~/Scripts/officebar/winkit/diskette64HOVER.png")%>" alt="" />
+									<i class="icon-save"></i>
+									<h6>Save</h6>
+								</a>
+							</div>
+						</li>
+					</ul>
+				</li>
 			</ul>
 		</div>
 	</div>

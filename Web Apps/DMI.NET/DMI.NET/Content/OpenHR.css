@@ -1251,7 +1251,7 @@ div.displaytable {
 
 #tabs-1 #AccessPermissions label { padding-top: 2px;}
 
-#cmdBasePicklist, #cmdBaseFilter {
+#cmdBasePicklist, #cmdBaseFilter, #cmdBaseStartDateCalc, #cmdBaseEndDateCalc {
 	float: right;
 }
 

@@ -1065,6 +1065,25 @@ function menu_MenuClick(sTool) {
 
 	// Administration Menu -------------------------------------------------------------------------------------------------------------------
 
+	
+	  // Loads the Absence Breakdown report configuration
+		if (sToolName == "mnutoolStdRpt_AbsenceBreakdownConfiguration") {
+			hasChanged = menu_saveChanges("ABSENCEBREAKDOWNCONFIGURATION", true, false);
+			if (hasChanged == 6) { // 6 = No Change
+				menu_loadPage("AbsenceBreakdownConfiguration");
+			}
+			else if (hasChanged == 0) {  // 0 = Changed, allow prompted navigation.
+				OpenHR.modalPrompt("You have made changes. Click 'OK' to discard your changes, or 'Cancel' to continue editing.", 1, "Confirm").then(function (answer) {
+					if (answer == 1) {  // OK
+						menu_loadPage("AbsenceBreakdownConfiguration");
+					}
+					else {
+					}
+				});
+			}
+			return false;
+		}
+
 	// Event Log
 	
 		if (sToolName == "mnutoolEventLog") {
@@ -1152,6 +1171,12 @@ function menu_MenuClick(sTool) {
 		// User Config and PC Config
 		if (sToolName == "mnutoolSaveAdminConfig") {
 			Configuration_okClick();
+			return false;
+		}
+
+	  // Report configuration
+		if (sToolName == "mnutoolSaveStandardReportConfig") {
+			ReportConfiguration_okClick();
 			return false;
 		}
 
@@ -1361,6 +1386,8 @@ function showDefaultRibbon() {
 	$("#toolbarEventLogView").parent().hide();
 	$("#toolbarWFPendingStepsFind").parent().hide();
 	$("#toolbarAdminConfig").parent().hide();
+	$("#toolbarStandardReportConfig").parent().hide();
+	
 
 	// Hide the Self-service or OpenHR button, as appropriate	
 	if (menu_isSSIMode()) {
@@ -2121,6 +2148,7 @@ function menu_refreshMenu() {
 							$("#toolbarEventLogView").parent().hide();
 							$("#toolbarWFPendingStepsFind").parent().hide();
 							$("#toolbarAdminConfig").parent().hide();
+							$("#toolbarStandardReportConfig").parent().hide();
 
 							// Enable buttons
 							menu_setVisibleMenuItem("mnutoolViewEventLogFind", true);
