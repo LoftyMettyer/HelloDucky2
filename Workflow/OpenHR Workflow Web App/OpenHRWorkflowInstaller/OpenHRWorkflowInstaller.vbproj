@@ -10,11 +10,10 @@
     <RootNamespace>InstallerClassLibrary</RootNamespace>
     <AssemblyName>InstallerClassLibrary</AssemblyName>
     <MyType>Windows</MyType>
-    <SccProjectName>"%24/Workflow/OpenHR Workflow Web App", LTQDAAAA</SccProjectName>
+    <SccProjectName>%24/OpenHR/Workflow/OpenHR Workflow Web App</SccProjectName>
     <SccLocalPath>..</SccLocalPath>
-    <SccAuxPath>
-    </SccAuxPath>
-    <SccProvider>MSSCCI:Microsoft Visual SourceSafe</SccProvider>
+    <SccAuxPath>http://harptfs01:8080/tfs/defaultcollection</SccAuxPath>
+    <SccProvider>{4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}</SccProvider>
     <FileUpgradeFlags>
     </FileUpgradeFlags>
     <OldToolsVersion>3.5</OldToolsVersion>

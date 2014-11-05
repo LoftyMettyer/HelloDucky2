@@ -1,6 +1,8 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.30723.0
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "OpenHRWorkflowInstaller", "OpenHRWorkflowInstaller\OpenHRWorkflowInstaller.vbproj", "{1371B89A-9495-484C-816F-DEE9025335E0}"
 	ProjectSection(ProjectDependencies) = postProject
 		{FC85112C-FF7D-4539-8F0C-785C8AA08AD6} = {FC85112C-FF7D-4539-8F0C-785C8AA08AD6}
@@ -11,24 +13,28 @@ EndProject
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "OpenHRWorkflow", "OpenHRWorkflow\OpenHRWorkflow.vbproj", "{FC85112C-FF7D-4539-8F0C-785C8AA08AD6}"
 EndProject
 Global
-	GlobalSection(SourceCodeControl) = preSolution
-		SccNumberOfProjects = 4
-		SccProjectName0 = \u0022$/Workflow/OpenHR\u0020Workflow\u0020Web\u0020App\u0022,\u0020LTQDAAAA
+	GlobalSection(TeamFoundationVersionControl) = preSolution
+		SccNumberOfProjects = 3
+		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
+		SccTeamFoundationServer = http://harptfs01:8080/tfs/defaultcollection
+		SccProjectUniqueName0 = OpenHRWorkflowInstaller\\OpenHRWorkflowInstaller.vbproj
+		SccProjectName0 = .
+		SccAuxPath0 = http://harptfs01:8080/tfs/defaultcollection
 		SccLocalPath0 = .
-		SccProvider0 = MSSCCI:Microsoft\u0020Visual\u0020SourceSafe
-		CanCheckoutShared = false
-		SccProjectUniqueName1 = OpenHRWorkflow\\OpenHRWorkflow.vbproj
+		SccProvider0 = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
+		SccProjectFilePathRelativizedFromConnection0 = OpenHRWorkflowInstaller\\
+		SccProjectUniqueName1 = OpenHRWorkflowSetup\\HRProWorkflowWebSetup.vdproj
+		SccProjectName1 = .
+		SccAuxPath1 = http://harptfs01:8080/tfs/defaultcollection
 		SccLocalPath1 = .
-		CanCheckoutShared = false
-		SccProjectFilePathRelativizedFromConnection1 = OpenHRWorkflow\\
-		SccProjectUniqueName2 = OpenHRWorkflowInstaller\\OpenHRWorkflowInstaller.vbproj
+		SccProvider1 = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
+		SccProjectFilePathRelativizedFromConnection1 = OpenHRWorkflowSetup\\
+		SccProjectUniqueName2 = OpenHRWorkflow\\OpenHRWorkflow.vbproj
+		SccProjectName2 = .
+		SccAuxPath2 = http://harptfs01:8080/tfs/defaultcollection
 		SccLocalPath2 = .
-		CanCheckoutShared = false
-		SccProjectFilePathRelativizedFromConnection2 = OpenHRWorkflowInstaller\\
-		SccProjectUniqueName3 = OpenHRWorkflowSetup\\HRProWorkflowWebSetup.vdproj
-		SccLocalPath3 = .
-		CanCheckoutShared = false
-		SccProjectFilePathRelativizedFromConnection3 = OpenHRWorkflowSetup\\
+		SccProvider2 = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
+		SccProjectFilePathRelativizedFromConnection2 = OpenHRWorkflow\\
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|.NET = Debug|.NET
