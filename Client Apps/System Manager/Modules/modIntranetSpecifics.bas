@@ -555,7 +555,6 @@ Private Function CreateSP_ResetPassword() As Boolean
     "END;"
 
   gADOCon.Execute sProcSQL, , adExecuteNoRecords
-  gADOCon.Execute "GRANT EXECUTE ON dbo.spadmin_resetpassword TO [OpenHR2IIS];"
 
 TidyUpAndExit:
   CreateSP_ResetPassword = fCreatedOK

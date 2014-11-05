@@ -578,10 +578,8 @@ Namespace Controllers
 			Try
 
 
-				Dim objResetPwd As New HR.Intranet.Server.clsResetPassword
+				Dim objResetPwd As New Code.ResetPassword
 
-				objResetPwd.Database = ApplicationSettings.LoginPage_Database
-				objResetPwd.ServerName = ApplicationSettings.LoginPage_Server
 				objResetPwd.Username = Request.Form("txtUserName")
 
 				' Force password change only if there are no other users logged in with the same name.
@@ -623,10 +621,7 @@ Namespace Controllers
 			Dim Password As String = Request.Form("txtPassword1")
 			Dim QueryString As String = Request.Form("txtQueryString")
 			Dim Message As String
-			Dim objResetPwd As New HR.Intranet.Server.clsResetPassword
-
-			objResetPwd.Database = ApplicationSettings.LoginPage_Database
-			objResetPwd.ServerName = ApplicationSettings.LoginPage_Server
+			Dim objResetPwd As New Code.ResetPassword
 
 			' Force password change only if there are no other users logged in with the same name.
 			Message = objResetPwd.ResetPassword(QueryString, Password)

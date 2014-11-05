@@ -3,7 +3,6 @@ Option Explicit On
 
 Imports System.Data.SqlClient
 Imports HR.Intranet.Server.Structures
-Imports System.Security
 
 Public Class clsDataAccess
 
@@ -11,6 +10,22 @@ Public Class clsDataAccess
 
 	Private ReadOnly _objLogin As LoginInfo
 	Private ReadOnly _connectionString As String
+
+	Public ReadOnly Property Database As String
+		Get
+			Using sqlConnection As New SqlConnection(_connectionString)
+				Return sqlConnection.Database
+			End Using
+		End Get
+	End Property
+
+	Public ReadOnly Property Server As String
+		Get
+			Using sqlConnection As New SqlConnection(_connectionString)
+				Return sqlConnection.DataSource
+			End Using
+		End Get
+	End Property
 
 	Public Sub New()
 		MyBase.New()
@@ -167,9 +182,6 @@ Public Class clsDataAccess
 
 		End Try
 
-		Return Nothing
-
-
 	End Function
 
 	Public Function GetDataTable(sProcedureName As String, CommandType As CommandType, ParamArray args() As SqlParameter) As DataTable
@@ -187,8 +199,6 @@ Public Class clsDataAccess
 			Throw
 
 		End Try
-
-		Return Nothing
 
 	End Function
 

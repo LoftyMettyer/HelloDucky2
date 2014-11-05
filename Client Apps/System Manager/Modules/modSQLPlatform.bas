@@ -399,30 +399,6 @@ ErrorTrap:
 
 End Function
 
-Public Function GenerateIISLogin() As Boolean
-
-  On Error GoTo ErrorTrap
-  
-  Dim sSQL As String
-
-  sSQL = "IF EXISTS (SELECT * FROM sys.database_principals WHERE name = N'openhr2iis') DROP USER openhr2iis"
-  gADOCon.Execute sSQL, adExecuteNoRecords
-
-  sSQL = "EXECUTE sp_executeSQL N'spadmin_createsystemlogin';"
-  gADOCon.Execute sSQL, adExecuteNoRecords
-
-  sSQL = "GRANT EXEC ON spadmin_commitresetpassword TO [openhr2iis]"
-  gADOCon.Execute sSQL, adExecuteNoRecords
-
-  GenerateIISLogin = True
-  Exit Function
-
-ErrorTrap:
-  GenerateIISLogin = False
-
-
-End Function
-
 Public Function RegenerateSQLProcessAccount( _
     Optional psName As String, _
     Optional psPassword As String, _

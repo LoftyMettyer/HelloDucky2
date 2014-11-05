@@ -651,10 +651,6 @@ Private Function UpdateDatabase( _
       End If
     End If
 
-    If bOK Then
-      bOK = GenerateIISLogin()
-    End If
-
   End If
   gobjProgress.CloseProgress
   
