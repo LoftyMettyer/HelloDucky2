@@ -23,14 +23,7 @@ Public Class ImageHandler
 
 		'Which database do we want to get the picture from?
 		Dim conn As String
-
-		If request.QueryString("s") IsNot Nothing Then
-			'for workflows the database info is store in the session and comes from the workflow url
-			Dim url As WorkflowUrl = CType(HttpContext.Current.Session("workflowUrl"), WorkflowUrl)
-			conn = Database.CreateConnectionString(url.Server, url.Database, url.User, url.Password)
-		Else
-			conn = App.Config.ConnectionString
-		End If
+		conn = App.Config.ConnectionString
 
 		Dim db As New Database(conn)
 		Dim picture = db.GetPicture(id)

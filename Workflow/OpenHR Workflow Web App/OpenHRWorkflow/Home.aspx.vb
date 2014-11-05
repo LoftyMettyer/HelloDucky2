@@ -115,13 +115,7 @@ Partial Class Home
       '      plngStepID = -
 
       Dim objCrypt As New Crypt
-      Dim sEncryptedString As String = objCrypt.EncryptQueryString((-1 * workflowID), -1, _
-          App.Config.Login, _
-          App.Config.Password, _
-          App.Config.Server, _
-          App.Config.Database, _
-          User.Identity.Name, _
-          "")
+		Dim sEncryptedString As String = objCrypt.EncryptQueryString((-1 * workflowID), -1, "", "", "", "", User.Identity.Name, "")
 
       Return App.Config.WorkflowUrl & "?" & sEncryptedString
 

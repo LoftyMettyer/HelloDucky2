@@ -25,19 +25,15 @@ Public Class Forms
 
 		Dim errors As New List(Of String)
 
-		If App.Config.WorkflowUrl.IsNullOrEmpty Then errors.Add("The Workflow Url is has not been configured.")
+		If App.Config.WorkflowUrl.IsNullOrEmpty Then errors.Add("The Workflow Url has not been configured.")
 
-		If App.Config.MobileKey.IsNullOrEmpty Then
-			errors.Add("The Mobile Key has not been configured.")
+		Dim db As New Database(App.Config.ConnectionString)
+
+		If Not db.CanConnect() Then
+			errors.Add("Unable to connect to the database specified.")
 		Else
-			Dim db As New Database(App.Config.ConnectionString)
-
-			If Not db.CanConnect() Then
-				errors.Add("Unable to connect to the database specified by the Mobile Key, either the key is invalid or the database is unreachable.")
-			Else
-				If Not db.IsIntranetFunctionInstalled() Then
-					errors.Add("The database is out of date, re-run the latest intranet update script.")
-				End If
+			If Not db.IsIntranetFunctionInstalled() Then
+				errors.Add("The database is out of date, re-run the latest intranet update script.")
 			End If
 		End If
 
