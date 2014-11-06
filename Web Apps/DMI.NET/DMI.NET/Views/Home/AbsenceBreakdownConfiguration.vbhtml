@@ -314,6 +314,13 @@ End Using
 			saveConfiguration();
 		}
 
+		function saveChanges(psAction, pfPrompt, pfTBOverride) {
+			if ($("#mnutoolSaveStandardReportConfig").disabled == true) {
+				return 6; //No to saving the changes, as none have been made.
+			} else
+				return 0;
+		}
+
 		function saveConfiguration() {
 
 			var frmReportConfiguration = OpenHR.getForm("workframe", "frmReportConfiguration");

@@ -1068,6 +1068,7 @@ function menu_MenuClick(sTool) {
 	
 	  // Loads the Absence Breakdown report configuration
 		if (sToolName == "mnutoolStdRpt_AbsenceBreakdownConfiguration") {
+
 			hasChanged = menu_saveChanges("ABSENCEBREAKDOWNCONFIGURATION", true, false);
 			if (hasChanged == 6) { // 6 = No Change
 				menu_loadPage("AbsenceBreakdownConfiguration");
@@ -2561,7 +2562,8 @@ function menu_saveChanges(psAction, pfPrompt, pfTBOverride) {
 		(sCurrentPage == "UTIL_DEF_EXPRESSION") ||
 		(sCurrentPage == "UTIL_DEF_EXPRCOMPONENT") ||
 		(sCurrentPage == "CONFIGURATION") ||
-		(sCurrentPage == "PCCONFIGURATION")) {
+		(sCurrentPage == "PCCONFIGURATION") ||
+		(sCurrentPage == "ABSENCE_BREAKDOWN_CONFIGURATION")) {
 
 		iResult = saveChanges(psAction, pfPrompt, pfTBOverride);
 	}
