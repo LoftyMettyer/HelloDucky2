@@ -1,5 +1,5 @@
 VERSION 5.00
-Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
+Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "tabctl32.ocx"
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
 Object = "{1EE59219-BC23-4BDF-BB08-D545C8A38D6D}#1.1#0"; "COA_Line.ocx"
 Begin VB.Form frmWorkflowSetup 
@@ -77,6 +77,7 @@ Begin VB.Form frmWorkflowSetup
          Left            =   -74850
          TabIndex        =   43
          Top             =   3090
+         Visible         =   0   'False
          Width           =   6500
          Begin VB.CommandButton cmdGenMobileKey 
             Caption         =   "&Generate"
@@ -194,6 +195,7 @@ Begin VB.Form frmWorkflowSetup
          Left            =   150
          TabIndex        =   4
          Top             =   1500
+         Visible         =   0   'False
          Width           =   6500
          Begin VB.CommandButton cmdTestLogon 
             Caption         =   "&Test Login"
@@ -1010,18 +1012,6 @@ Private Sub cmdOK_Click()
       .Close
     End With
     Set rsWorkflows = Nothing
-    
-    
-    ' NPG20120402 Fault HRPRO-2155
-    If Application.MobileModule Then
-      fGoAhead = (MsgBox("Warning: The change in server/database configuration requires you to regenerate the mobile keys." & vbCrLf & _
-      "Do you want to do so now?", _
-      vbQuestion + vbYesNo + vbDefaultButton2, Me.Caption) = vbYes)
-    
-      If fGoAhead Then
-        cmdGenMobileKey_Click
-      End If
-    End If
     
   End If
   
