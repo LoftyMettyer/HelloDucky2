@@ -506,8 +506,9 @@ Public Function CheckLicence() As Boolean
   If gobjLicence.LicenceType = Concurrency Or gobjLicence.LicenceType = DMIConcurrencyAndHeadcount Or gobjLicence.LicenceType = DMIConcurrencyAndP14 Then
     lActualCount = GetCurrentUsersCountInApp
     
-    If lActualCount > gobjLicence.DATUsers And gobjLicence.LicenceType Then
-      sMsg = "Unable to log in, cannot exceed number of " & gobjLicence.DATUsers & " licensed users."
+    If lActualCount > gobjLicence.DATUsers Then
+      sMsg = "The maximum number of licenced users are currently" & vbNewLine & "logged into OpenHR - Please try again later." & vbNewLine & vbNewLine & _
+             "If you wish to increase the number of licenced users, please" & vbNewLine & "contact your Account Manager as soon as possible."
       GoTo Exit_Fail
     End If
   End If
@@ -5986,7 +5987,7 @@ ExitPoint:
   
 ErrTrap:
   
-  COAMsgBox "Error determining Access rights of selected calc:" & vbCrLf & Err.Description, vbExclamation + vbOKOnly, app.Title
+  COAMsgBox "Error determining Access rights of selected calc:" & vbCrLf & Err.Description, vbExclamation + vbOKOnly, app.title
   Resume ExitPoint
 End Function
 
