@@ -1,5 +1,6 @@
 Imports System
 Imports System.Xml
+Imports System.Data.SqlClient
 
 Public Class Config
 
@@ -50,17 +51,16 @@ Public Class Config
 		DefaultActiveDirectoryServer = GetSetting("DefaultActiveDirectoryServer", "")
 
 		' Retrieve connection string from web config.
-		Try			
-			Dim sConnection As New Common.DbConnectionStringBuilder()
-			sConnection.ConnectionString = ConfigurationManager.ConnectionStrings("OpenHR").ConnectionString
+		Try
+			Dim builder As New SqlConnectionStringBuilder(ConfigurationManager.ConnectionStrings("OpenHR").ConnectionString)
 
-			Login = sConnection("User ID").ToString()
-			Password = sConnection("Password").ToString()
-			Server = sConnection("Server").ToString()
-			Database = sConnection("Database").ToString()
-			sConnection("Application Name") = "OpenHR Mobile"
+			Login = builder.UserID
+			Password = builder.Password
+			Server = builder.DataSource
+			Database = builder.InitialCatalog
+			builder.ApplicationName = "OpenHR Mobile"
 
-			ConnectionString = sConnection.ToString()
+			ConnectionString = builder.ToString()
 
 		Catch ex As Exception
 			ConnectionString = ""
