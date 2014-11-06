@@ -1,5 +1,4 @@
 ﻿<%@ Page Language="VB" Inherits="System.Web.Mvc.ViewPage" %>
-
 <%@ Import Namespace="DMI.NET" %>
 <%@ Import Namespace="HR.Intranet.Server" %>
 <%@ Import Namespace="System.Data.SqlClient" %>
@@ -80,7 +79,7 @@
 <script type="text/javascript">
 
 	function emailSelection_window_onload() {
-		$(".button").button();
+		$("#EventLogEmailSelect .button").button();
 		//Hide the EmailGroup table header and its column
 		$('.ui-jqgrid-htable tr th:nth-child(1)').hide();
 		$('#EmailSelectionTable tr td:nth-child(1)').hide();
@@ -99,13 +98,13 @@
 			document.getElementById('txtEmailGroupID').value = frmPopup.txtSelectedID.value;
 		}
 
-		$('#EventLogEmailSelect').dialog("close");
+		closeEmailSelect();
 		return false;
 	};
 
 </script>
 
-<body id="bdyMain" name="bdyMain" <%=session("BodyColour")%>>
+<div>
 	<form class="displaynone" id="frmPopup" name="frmPopup" onsubmit="return setForm();">
 		<input id="txtSelectedID" name="txtSelectedID" type="hidden">
 		<input id="txtSelectedName" name="txtSelectedName" type="hidden">
@@ -118,13 +117,11 @@
 			<span class="pageTitle" id="EventLogEmailTitle">Email Selection</span>
 		</div>
 		<div>
-			<%=GetEmailSelection()%>
-			<div>
-				<div id="divEmailSelectionButtons">
-					<input class="button" id="cmdok" name="cmdok" onclick="emailEvent()" type="button" value="OK" />
-					<input class="button" id="cmdcancel" name="cmdcancel" onclick="closeEmailSelect()" type="button" value="Cancel" />
-				</div>
-			</div>
+		<%=GetEmailSelection()%>
+		<div id="divEmailSelectionButtons">
+			<input class="button" id="cmdok" name="cmdok" onclick="emailEvent()" type="button" value="OK" />
+			<input class="button" id="cmdcancel" name="cmdcancel" onclick="closeEmailSelect()" type="button" value="Cancel" />
+		</div>
 		</div>
 	</div>
 
@@ -213,14 +210,12 @@
 
 	<input id="txtTicker" name="txtTicker" type="hidden" value="0">
 	<input id="txtLastKeyFind" name="txtLastKeyFind" type="hidden" value="">
-</body>
+</div>
 
 <script type="text/javascript">
 	// Table to jQuery grid
 	tableToGrid("#EmailSelectionTable", {
 		multiselect: true,
-		onSelectRow: function () { refreshControls(); },
-		onSelectAll: function () { refreshControls(); },
 		ondblClickRow: function () { },
 		colNames: ['EmailGroupIDHeader', 'FullNameHeader', 'To', 'Cc', 'Bcc', 'Recipient'],
 		colModel: [
@@ -238,11 +233,6 @@
 		beforeSelectRow: function () { return false; }
 	});
 
-	function refreshControls() {
-		var sSelectionList = jQuery("#EmailSelectionTable").jqGrid('getGridParam', 'selarrrow');
-		sSelectionList = (sSelectionList == null ? '' : sSelectionList);
-	}
-
 	function emailEvent() {
 	
 		var sTo = getEmails(4);
@@ -257,12 +247,12 @@
 			data: { 'to': sTo, 'cc': SCc, 'bcc': SBcc, 'subject': sSubject, 'body': sBody },
 			dataType: "text",
 			success: function (a, b, c) {
-				alert(OpenHR.replaceAll(c.statusText, '<br/>', '\n'));
-				$('#EventLogEmailSelect').dialog("close");
+				OpenHR.modalPrompt(c.statusText, 0, "Event Log");
+				closeEmailSelect();
 			},
 			error: function (req, status, errorObj) {
 				if (!(errorObj == "" || req.responseText == "")) {
-					alert(OpenHR.replaceAll(errorObj, '<br/>', '\n'));
+					OpenHR.modalPrompt(errorObj, 0, "Event Log");
 				}
 			}
 		});
