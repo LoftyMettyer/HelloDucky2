@@ -2,11 +2,14 @@
 Imports System.Linq
 Imports System.Data.SqlClient
 Imports System.Collections.Generic
+Imports OpenHRWorkflow.Enums
 Imports OpenHRWorkflow.Code
 
 Public Class Database
 	Private ReadOnly _connectionString As String
 	Private ReadOnly _timeout As Integer
+
+	Private Shared ReadOnly Licence As New Licence
 
 	Public Sub New(connectionString As String)
 		_connectionString = connectionString
@@ -25,19 +28,7 @@ Public Class Database
 	End Function
 
 	Public Function IsIntranetFunctionInstalled() As Boolean
-
-		Using conn As New SqlConnection(_connectionString)
-			conn.Open()
-
-			Dim cmd As New SqlCommand("IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[udfASRNetIsModuleLicensed]') AND type in (N'FN', N'IF', N'TF', N'FS', N'FT')) SELECT 1 ELSE SELECT 0", conn)
-			cmd.CommandType = CommandType.Text
-			cmd.CommandTimeout = _timeout
-
-			Dim result = cmd.ExecuteScalar()
-
-			Return CInt(result) = 1
-		End Using
-
+		Return True
 	End Function
 
 	Public Function IsUserProhibited() As Boolean
@@ -88,24 +79,30 @@ Public Class Database
 		End Using
 	End Function
 
-	Public Function IsMobileLicensed() As Boolean
+	Public Function IsMobileModuleLicensed() As Boolean
+
+		Const sSQL As String = "SELECT SettingValue FROM dbo.ASRSysSystemSettings WHERE Section = 'licence' AND SettingKey = 'key'"
+
+		Dim dt As New DataTable()
+		Dim sLicence As String
 
 		Using conn As New SqlConnection(_connectionString)
-			conn.Open()
 
-			Dim cmd As New SqlCommand("spASRIntActivateModule", conn)
-			cmd.CommandType = CommandType.StoredProcedure
+			Dim cmd As New SqlCommand(sSQL, conn)
+			cmd.CommandType = CommandType.Text
 			cmd.CommandTimeout = _timeout
 
-			cmd.Parameters.Add("@sModule", SqlDbType.VarChar, 50).Direction = ParameterDirection.Input
-			cmd.Parameters("@sModule").Value = "MOBILE"
+			conn.Open()
 
-			cmd.Parameters.Add("@bLicensed", SqlDbType.Bit).Direction = ParameterDirection.Output
+			dt.Load(cmd.ExecuteReader(CommandBehavior.CloseConnection))
+			sLicence = dt.Rows(0)(0).ToString()
 
-			cmd.ExecuteNonQuery()
+			Licence.Populate(sLicence)
 
-			Return NullSafeBoolean(cmd.Parameters("@bLicensed").Value())
+			Return Licence.IsValid AndAlso Licence.IsModuleLicenced(SoftwareModule.Mobile)
+
 		End Using
+
 	End Function
 
 	Public Function CheckLoginDetails(userName As String) As CheckLoginResult

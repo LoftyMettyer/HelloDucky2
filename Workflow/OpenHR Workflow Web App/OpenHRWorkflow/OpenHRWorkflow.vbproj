@@ -388,6 +388,7 @@
     <Compile Include="Code\Forms.vb" />
     <Compile Include="Code\General.vb" />
     <Compile Include="Code\ImageHandler.vb" />
+    <Compile Include="Code\Licence.vb" />
     <Compile Include="Code\RecordSelector.vb" />
     <Compile Include="Code\Security.vb" />
     <Compile Include="Code\Utilities.vb" />
@@ -399,6 +400,8 @@
       <DependentUpon>Default.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
+    <Compile Include="Enums\LicenceType.vb" />
+    <Compile Include="Enums\SoftwareModule.vb" />
     <Compile Include="FileDownload.aspx.designer.vb">
       <DependentUpon>FileDownload.aspx</DependentUpon>
     </Compile>

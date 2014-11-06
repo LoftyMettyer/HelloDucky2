@@ -4,7 +4,7 @@ Public Class Forms
 	Public Shared Sub RedirectIfNotLicensed()
 
 		Dim db As New Database(App.Config.ConnectionString)
-		If Not db.IsMobileLicensed() Then
+		If Not db.IsMobileModuleLicensed() Then
 			HttpContext.Current.Session("message") = "You are not licensed for the OpenHR Mobile module. Please contact your Advanced Business Solutions Account Manager for details"
 			HttpContext.Current.Server.Transfer("~/Message.aspx")
 		End If
@@ -34,6 +34,8 @@ Public Class Forms
 		Else
 			If db.IsUserProhibited() Then
 				errors.Add("Unable to connect to the database specified (Error Code: CE002).")
+			ElseIf Not db.IsMobileModuleLicensed() Then
+				errors.Add("You are not licensed for the OpenHR Mobile module. Please contact your Advanced Business Solutions Account Manager for details")
 			ElseIf Not db.IsIntranetFunctionInstalled() Then
 				errors.Add("The database is out of date, re-run the latest intranet update script.")
 			End If
