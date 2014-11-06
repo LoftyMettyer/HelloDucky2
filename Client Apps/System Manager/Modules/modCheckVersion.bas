@@ -651,6 +651,11 @@ Private Function UpdateDatabase( _
       End If
     End If
 
+    If bOK Then
+      bOK = RemoveWorkflowLoginCredentials()
+      gobjProgress.UpdateProgress False
+    End If
+
   End If
   gobjProgress.CloseProgress
   

@@ -498,6 +498,79 @@ LocalErr:
 
 End Function
 
+
+Public Function RemoveWorkflowLoginCredentials() As Boolean
+ 
+  Dim sSQL As String
+  Dim strInput As String
+  Dim strOutput As String
+  Dim strEKey As String
+  Dim strLens As String
+  Dim lngCount As Long
+  Dim iChar As Integer
+  Dim bOK As Boolean
+  Dim strUserName As String
+  Dim strPassword As String
+  
+  ' NPG: I've blocked out the username and password instead of removing them,
+  ' because Len(sUser) is used throughout this and other modules to validate
+  ' workflow credentials.
+  strUserName = "XX"
+  strPassword = "XX"
+
+  strOutput = strUserName & strPassword
+  strLens = Chr(Len(strUserName) + 127) & Chr(Len(strPassword) + 127)
+  
+  ' AE20080229 Fault #12939, #12959
+  Do While strInput = vbNullString _
+    Or (CBool(InStr(strInput, Chr(0))) Or CBool(InStr(strInput, Chr(144))))
+    
+    strInput = vbNullString
+    strEKey = vbNullString
+    For lngCount = 1 To 10
+      'strEKey = strEKey & Chr(Int(Rnd * 255) + 1)
+      iChar = 0
+      iChar = Int(Rnd * 255) + 1
+      strEKey = strEKey & Chr(iChar)
+    Next
+
+    strInput = XOREncript(strOutput, strEKey) & strEKey & strLens
+  Loop
+  strOutput = strInput
+    ' AE20081003 Fault #13387
+  sSQL = _
+        "DELETE FROM [ASRSysModuleSetup]" & vbNewLine & _
+        "WHERE  [ModuleKey] = '" & gsMODULEKEY_WORKFLOW & "'" & vbNewLine & _
+        "AND    [ParameterKey] = '" & gsPARAMETERKEY_WEBPARAM1 & "'" & vbNewLine
+      
+  sSQL = sSQL & vbNewLine & _
+        "INSERT INTO [ASRSysModuleSetup]" & vbNewLine & _
+        "     ([ModuleKey]" & vbNewLine & _
+        "     ,[ParameterKey]" & vbNewLine & _
+        "     ,[ParameterValue]" & vbNewLine & _
+        "     ,[ParameterType])" & vbNewLine & _
+        "VALUES (" & vbNewLine & _
+        "       '" & gsMODULEKEY_WORKFLOW & "'" & vbNewLine & _
+        "      ,'" & gsPARAMETERKEY_WEBPARAM1 & "'" & vbNewLine & _
+        "      ,'" & strOutput & "'" & vbNewLine & _
+        "      ,'" & gsPARAMETERTYPE_ENCYPTED & "')"
+  
+  gADOCon.Execute sSQL, adExecuteNoRecords
+      
+      bOK = True
+
+TidyUpAndExit:
+  RemoveWorkflowLoginCredentials = bOK
+  Exit Function
+
+LocalErr:
+  bOK = False
+  GoTo TidyUpAndExit
+
+End Function
+
+
+
 Public Function GetSystemLogon() As String
 
   Dim rsLogon As ADODB.Recordset
