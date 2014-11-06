@@ -9,6 +9,7 @@ Dim mstrCurrentServerName As String  ' Using SERVERPROPERTY('servername')
 Dim mstrOldServerName As String      ' Using @@SERVERNAME
 
 Public gfDatabaseServerChanged As Boolean
+Public gfWFCredentialsChanged As Boolean
 
 Public Function CheckVersion(sConnect As String, fReRunScript As Boolean, bIsSQLSystemAdmin As Boolean) As Boolean
   ' Check that the database version is the right one for this application's version.
@@ -45,6 +46,7 @@ Public Function CheckVersion(sConnect As String, fReRunScript As Boolean, bIsSQL
   fVersionOK = False
   gfRefreshStoredProcedures = False
   gfDatabaseServerChanged = False
+  gfWFCredentialsChanged = False
     
   blnReRunCurrent = False
   

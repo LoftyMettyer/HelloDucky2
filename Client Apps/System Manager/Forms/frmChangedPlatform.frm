@@ -580,7 +580,12 @@ Public Sub ShowMessage(Optional pvMode As Variant)
   
   Select Case miMode
     Case miMODE_WORKFLOWURLS
-      sMessage = "The URLs for the following externally initiated Workflows have changed due to the change in server/database name."
+      If gfWFCredentialsChanged Then
+        sMessage = "The URLs for the following externally initiated Workflows have been regenerated."
+      Else
+        sMessage = "The URLs for the following externally initiated Workflows have changed due to the change in server/database name."
+      End If
+            
       sFrameCaption = "Externally Initiated Workflows :"
       imgIcon(0).Picture = LoadResPicture("IMG_INFORMATION", 1)
       miButtons = USAGEBUTTONS_COPY + USAGEBUTTONS_PRINT + USAGEBUTTONS_OK

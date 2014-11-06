@@ -511,15 +511,43 @@ Public Function RemoveWorkflowLoginCredentials() As Boolean
   Dim bOK As Boolean
   Dim strUserName As String
   Dim strPassword As String
+  Dim lngStart As Long
+  Dim lngFinish As Long
+  
+  Const dummyUsername = "XX"
+  Const dummyPassword = "XX"
+  
+  ' Read existing username/password - only reset the credentials if required.
+  strInput = GetWebLogon()
+    
+  If strInput <> vbNullString Then
+
+    lngStart = Len(strInput) - 12
+    strEKey = Mid(strInput, lngStart + 1, 10)
+    strLens = Right(strInput, 2)
+    strInput = XOREncript(Left(strInput, lngStart), strEKey)
+  
+    lngStart = 1
+    lngFinish = Asc(Mid(strLens, 1, 1)) - 127
+    strUserName = Mid(strInput, lngStart, lngFinish)
+  
+    lngStart = lngStart + lngFinish
+    lngFinish = Asc(Mid(strLens, 2, 1)) - 127
+    strPassword = Mid(strInput, lngStart, lngFinish)
+  
+    If strUserName = dummyUsername And strPassword = dummyPassword Then
+      gfWFCredentialsChanged = False
+      GoTo TidyUpAndExit
+    End If
+  
+  End If
   
   ' NPG: I've blocked out the username and password instead of removing them,
   ' because Len(sUser) is used throughout this and other modules to validate
   ' workflow credentials.
-  strUserName = "XX"
-  strPassword = "XX"
-
-  strOutput = strUserName & strPassword
-  strLens = Chr(Len(strUserName) + 127) & Chr(Len(strPassword) + 127)
+  strInput = vbNullString
+  strOutput = dummyUsername & dummyPassword
+  strLens = Chr(Len(dummyUsername) + 127) & Chr(Len(dummyPassword) + 127)
   
   ' AE20080229 Fault #12939, #12959
   Do While strInput = vbNullString _
@@ -537,7 +565,8 @@ Public Function RemoveWorkflowLoginCredentials() As Boolean
     strInput = XOREncript(strOutput, strEKey) & strEKey & strLens
   Loop
   strOutput = strInput
-    ' AE20081003 Fault #13387
+  
+  ' AE20081003 Fault #13387
   sSQL = _
         "DELETE FROM [ASRSysModuleSetup]" & vbNewLine & _
         "WHERE  [ModuleKey] = '" & gsMODULEKEY_WORKFLOW & "'" & vbNewLine & _
@@ -557,7 +586,8 @@ Public Function RemoveWorkflowLoginCredentials() As Boolean
   
   gADOCon.Execute sSQL, adExecuteNoRecords
       
-      bOK = True
+  bOK = True
+  gfWFCredentialsChanged = True
 
 TidyUpAndExit:
   RemoveWorkflowLoginCredentials = bOK
@@ -584,6 +614,26 @@ Public Function GetSystemLogon() As String
   
   If Not (rsLogon.BOF And rsLogon.EOF) Then
     GetSystemLogon = IIf(IsNull(rsLogon!parametervalue), vbNullString, rsLogon!parametervalue)
+  End If
+
+  rsLogon.Close
+  Set rsLogon = Nothing
+  
+End Function
+
+Public Function GetWebLogon() As String
+
+  Dim rsLogon As ADODB.Recordset
+  Dim sSQL As String
+  
+  sSQL = "SELECT [ParameterValue] FROM ASRSysModuleSetup WHERE [ModuleKey] =  'MODULE_WORKFLOW'" & _
+                      " AND [ParameterKey] = 'Param_Web1'"
+        
+  Set rsLogon = New ADODB.Recordset
+  rsLogon.Open sSQL, gADOCon, adOpenForwardOnly, adLockReadOnly
+  
+  If Not (rsLogon.BOF And rsLogon.EOF) Then
+    GetWebLogon = IIf(IsNull(rsLogon!parametervalue), vbNullString, rsLogon!parametervalue)
   End If
 
   rsLogon.Close

@@ -1727,7 +1727,7 @@ Public Sub ActivateModules()
   gbAFDEnabled = IsModuleEnabled(modAFD)
   gbQAddressEnabled = IsModuleEnabled(modQAddress)
    
-  If IsModuleEnabled(modWorkflow) And gfDatabaseServerChanged Then
+  If IsModuleEnabled(modWorkflow) And (gfDatabaseServerChanged Or gfWFCredentialsChanged) Then
     sURL = GetWorkflowURL
     
     If Len(sURL) > 0 Then
