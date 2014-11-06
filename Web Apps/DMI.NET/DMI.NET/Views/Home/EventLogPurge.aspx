@@ -3,11 +3,16 @@
 <%@ Import Namespace="HR.Intranet.Server" %>
 
 <script type="text/javascript">
-	
+	<%
+	Response.Cache.SetCacheability(System.Web.HttpCacheability.NoCache)
+	Response.Cache.SetNoStore()
+	%>
+
 		function eventlogpurge_window_onload() {
 			$('#optNoPurge').prop('checked', ($('#txtPurge').val() == 0));
 			$('#optPurge').prop('checked', ($('#txtPurge').val() == 1));
-
+			
+	
 			refreshControls();
 		}	
 
