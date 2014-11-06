@@ -114,7 +114,7 @@
     <Build Include="Stored Procedures\Web\sp_ASRIntGetExpressionDefinition.sql" />
     <Build Include="Stored Procedures\Web\sp_ASRIntGetExprFilters.sql" />
     <Build Include="Stored Procedures\Web\sp_ASRIntGetExprFunctionParameters.sql" />
-    <Build Include="Stored Procedures\Web\sp_ASRIntGetExprFunctions.sql" />
+    <Build Include="Stored Procedures\Web\spASRIntGetExprFunctions.sql" />
     <Build Include="Stored Procedures\Web\sp_ASRIntGetExprLookupValues.sql" />
     <Build Include="Stored Procedures\Web\sp_ASRIntGetExprOperators.sql" />
     <Build Include="Stored Procedures\Web\sp_ASRIntGetExprTables.sql" />
@@ -175,7 +175,6 @@
     <Build Include="Stored Procedures\Web\spASRIntValidateCustomReport.sql" />
     <Build Include="Stored Procedures\Web\sp_ASRIntValidateTrainingBooking.sql" />
     <Build Include="Stored Procedures\Web\sp_ASRIntValidateTransfers.sql" />
-    <Build Include="Stored Procedures\Web\spASRIntActivateModule.sql" />
     <Build Include="Stored Procedures\Web\spASRIntAllTablePermissions.sql" />
     <Build Include="Stored Procedures\Web\spASRIntCheckSPExists.sql" />
     <Build Include="Stored Procedures\Web\spASRIntClearEventLogPurge.sql" />

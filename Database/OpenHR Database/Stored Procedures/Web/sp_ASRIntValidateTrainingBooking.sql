@@ -25,31 +25,17 @@ BEGIN
 
 	The psCourseOverbooked parameter returns if the course is overbooked
 	*/
-	DECLARE @fOK				bit,
-		@fIncludeProvisionals	bit,
+	DECLARE	@fIncludeProvisionals	bit,
 		@sIncludeProvisionals	varchar(MAX),
 		@iCount					integer,
 		@iResult				integer,
 		@iTemp					integer,
-		@piResultOverlapping   integer,
-		@piResultPrerequisites	integer,
-		@piResultUnavailability	integer
+		@piResultOverlapping   integer = 0,
+		@piResultPrerequisites	integer = 0,
+		@piResultUnavailability	integer = 0;
 
-	SET @fOK = 1
-	SET @piResultCode = ''
-	SET @piResultOverlapping = 0
-    SET @piResultPrerequisites = 0
-	SET @piResultUnavailability= 0
-	SET @psCourseOverbooked = 0
-
-	-- Activate module
-	EXEC [dbo].[spASRIntActivateModule] 'TRAINING', @fOK OUTPUT
-		
-	IF @fOK = 0
-	BEGIN
-		/* Do not perform any training Booking checks if the module is not licenced. */
-		RETURN
-	END
+	SET @piResultCode = '';
+	SET @psCourseOverbooked = 0;
 
 	IF (@piCourseRecID > 0) AND ((@psBookingStatus = 'B') OR (@psBookingStatus = 'P'))
 	BEGIN  

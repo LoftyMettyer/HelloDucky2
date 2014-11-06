@@ -29,8 +29,6 @@ Public Class SessionInfo
 	Friend UserSettings As ICollection(Of UserSetting)
 	Friend SystemSettings As IList(Of UserSetting)
 
-	Private _modules As List(Of ModuleSetting)
-
 	Friend Functions As ICollection(Of Metadata.Function)
 	Friend Operators As ICollection(Of Metadata.Operator)
 
@@ -213,7 +211,6 @@ Public Class SessionInfo
 		SystemSettings = New List(Of UserSetting)
 		Functions = New Collection(Of Metadata.Function)
 		Operators = New Collection(Of Metadata.Operator)
-		_modules = New List(Of ModuleSetting)
 
 		Try
 
@@ -318,15 +315,7 @@ Public Class SessionInfo
 				Operators.GetById(CInt(objRow("operatorID"))).Parameters.Add(objParameter)
 			Next
 
-
 			For Each objRow As DataRow In objData.Tables(9).Rows
-				Dim objModule = New ModuleSetting
-				objModule.ModuleKey = objRow("Name").ToString()
-				objModule.Enabled = CBool(objRow("Enabled"))
-				_modules.Add(objModule)
-			Next
-
-			For Each objRow As DataRow In objData.Tables(10).Rows
 				Dim systemSetting As New UserSetting
 				systemSetting.Section = objRow("Section").ToString()
 				systemSetting.Key = objRow("SettingKey").ToString()

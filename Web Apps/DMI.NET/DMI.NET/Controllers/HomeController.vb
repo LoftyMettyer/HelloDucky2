@@ -6,6 +6,7 @@ Imports System.Web.UI.DataVisualization.Charting
 Imports System.IO
 Imports System.Web
 Imports System.Drawing
+Imports DMI.NET.Classes
 Imports DMI.NET.Code
 Imports DMI.NET.ViewModels.Home
 Imports HR.Intranet.Server.Enums
@@ -998,7 +999,7 @@ Namespace Controllers
 				Dim sTBWarningMsg = ""
 				Dim sCode = ""
 
-				If (Not fTBOverride) And (NullSafeInteger(lngTableID) = NullSafeInteger(Session("TB_TBTableID"))) Then
+				If Not fTBOverride AndAlso (NullSafeInteger(lngTableID) = NullSafeInteger(Session("TB_TBTableID")) AndAlso Licence.IsModuleLicenced(SoftwareModule.Training)) Then
 					' Training Booking check.
 					Try
 						Dim prmResult = New SqlParameter("@piResultCode", SqlDbType.Int) With {.Direction = ParameterDirection.Output}

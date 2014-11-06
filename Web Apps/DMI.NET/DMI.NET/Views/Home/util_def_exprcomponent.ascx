@@ -1,4 +1,5 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
+<%@ Import Namespace="DMI.NET.Classes" %>
 <%@ Import Namespace="DMI.NET" %>
 <%@ Import Namespace="HR.Intranet.Server" %>
 <%@ Import Namespace="System.Data.SqlClient" %>
@@ -415,8 +416,9 @@
 		If Len(sErrMsg) = 0 Then
 			
 			Try
-				Dim rstFunctions = objDataAccess.GetFromSP("sp_ASRIntGetExprFunctions" _
-						, New SqlParameter("piTableID", SqlDbType.Int) With {.Value = CleanNumeric(Session("optionTableID"))})
+				Dim rstFunctions = objDataAccess.GetFromSP("spASRIntGetExprFunctions" _
+						, New SqlParameter("piTableID", SqlDbType.Int) With {.Value = CleanNumeric(Session("optionTableID"))} _
+						, New SqlParameter("@pbAbsenceEnabled", SqlDbType.Bit) With {.Value = Licence.IsModuleLicenced(SoftwareModule.Absence)})
 
 				iCount = 0
 				For Each objRow As DataRow In rstFunctions.Rows

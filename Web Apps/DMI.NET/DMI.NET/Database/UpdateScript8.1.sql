@@ -85,6 +85,13 @@ IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spASRIntGe
 	DROP PROCEDURE [dbo].[spASRIntGetUtilityName];
 GO
 
+IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[sp_ASRIntGetExprFunctions]') AND xtype in (N'P'))
+	DROP PROCEDURE [dbo].[sp_ASRIntGetExprFunctions];
+GO
+
+IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spASRIntActivateModule]') AND xtype in (N'P'))
+	DROP PROCEDURE [dbo].[spASRIntActivateModule];
+GO
 
 
 
@@ -4929,22 +4936,11 @@ BEGIN
 
 	SELECT * FROM dbo.ASRSysOperatorParameters ORDER BY OperatorID, parameterIndex;
 	
-	-- Which modules are enabled?
-	SELECT 'WORKFLOW' AS [name], dbo.udfASRNetIsModuleLicensed(@licenseKey,1024) AS [enabled]
-	UNION
-	SELECT 'PERSONNEL' AS [name], dbo.udfASRNetIsModuleLicensed(@licenseKey,1) AS [enabled]
-	UNION
-	SELECT 'ABSENCE' AS [name], dbo.udfASRNetIsModuleLicensed(@licenseKey,4) AS [enabled]
-	UNION
-	SELECT 'TRAINING' AS [name],  dbo.udfASRNetIsModuleLicensed(@licenseKey,8) AS [enabled]
-	UNION
-	SELECT  'VERSIONONE' AS [name], dbo.udfASRNetIsModuleLicensed(@licenseKey,2048) AS [enabled];
-
 	-- Selected system settings
 	SELECT * FROM ASRSysSystemSettings;
 
-END
 
+END
 GO
 
 
@@ -9546,6 +9542,308 @@ BEGIN
 	IF @psAccess IS null SET @psAccess = 'HD';
 END
 GO
+
+
+IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spASRIntGetExprFunctions]') AND xtype in (N'P'))
+	DROP PROCEDURE [dbo].[spASRIntGetExprFunctions];
+GO
+
+CREATE PROCEDURE [dbo].[spASRIntGetExprFunctions] (
+	@piTableID 		integer,
+	@pbAbsenceEnabled	bit
+)
+AS
+BEGIN
+
+	SET NOCOUNT ON;
+
+	/* Return a recordset of tab-delimited runtime function definitions ;
+	<function id><tab><function name><tab><function category> */
+	DECLARE @iTemp 					integer,
+		@iPersonnelTableID		integer,
+		@iHierarchyTableID		integer,
+		@iPostAllocationTableID	integer,
+		@iIdentifyingColumnID	integer,
+		@iReportsToColumnID		integer,
+		@iLoginColumnID			integer,
+		@iSecondLoginColumnID	integer,
+		@fIsPostSubOfOK			bit = 0,
+		@fIsPostSubOfUserOK		bit = 0,
+		@fIsPersSubOfOK			bit = 0,
+		@fIsPersSubOfUserOK		bit = 0,
+		@fHasPostSubOK			bit = 0,
+		@fHasPostSubUserOK		bit = 0,
+		@fHasPersSubOK			bit = 0,
+		@fHasPersSubUserOK		bit = 0,
+		@fPostBased				bit = 0, 
+		@sSQLVersion			integer,
+		@fBaseTablePersonnelOK	bit = 0;
+	
+	SELECT @iPersonnelTableID = convert(integer, isnull(parameterValue, '0'))
+	FROM ASRSysModuleSetup 
+	WHERE moduleKey = 'MODULE_PERSONNEL' 
+		AND parameterKey = 'Param_TablePersonnel';
+
+	SELECT @iHierarchyTableID = convert(integer, isnull(parameterValue, '0'))
+	FROM ASRSysModuleSetup 
+	WHERE moduleKey = 'MODULE_HIERARCHY' 
+		AND parameterKey = 'Param_TableHierarchy';
+
+	SELECT @iIdentifyingColumnID = convert(integer, isnull(parameterValue, '0'))
+	FROM ASRSysModuleSetup 
+	WHERE moduleKey = 'MODULE_HIERARCHY' 
+		AND parameterKey = 'Param_FieldIdentifier';
+
+	SELECT @iReportsToColumnID = convert(integer, isnull(parameterValue, '0'))
+	FROM ASRSysModuleSetup 
+	WHERE moduleKey = 'MODULE_HIERARCHY' 
+		AND parameterKey = 'Param_FieldReportsTo';
+
+	SELECT @iPostAllocationTableID = convert(integer, isnull(parameterValue, '0'))
+	FROM ASRSysModuleSetup 
+	WHERE moduleKey = 'MODULE_HIERARCHY' 
+		AND parameterKey = 'Param_TablePostAllocation';
+
+	SELECT @iLoginColumnID = convert(integer, isnull(parameterValue, '0'))
+	FROM ASRSysModuleSetup 
+	WHERE moduleKey = 'MODULE_PERSONNEL' 
+		AND parameterKey = 'Param_FieldsLoginName';
+
+	SELECT @iSecondLoginColumnID = convert(integer, isnull(parameterValue, '0'))
+	FROM ASRSysModuleSetup 
+	WHERE moduleKey = 'MODULE_PERSONNEL' 
+		AND parameterKey = 'Param_FieldsSecondLoginName';
+
+	IF (@iLoginColumnID = 0) AND (@iSecondLoginColumnID > 0)
+	BEGIN
+		SET @iLoginColumnID = @iSecondLoginColumnID;
+		SET @iSecondLoginColumnID = 0;
+	END
+
+	IF @iPersonnelTableID <> @iHierarchyTableID SET @fPostBased = 1;
+	IF @iPersonnelTableID = @piTableID 
+	BEGIN
+		IF (@iIdentifyingColumnID > 0) AND
+			(@iReportsToColumnID > 0) AND
+			((@fPostBased = 0) OR (@iPersonnelTableID > 0)) AND
+			((@fPostBased = 0) OR (@iPostAllocationTableID > 0)) 
+		BEGIN
+			SET @fIsPersSubOfOK = 1;
+			SET @fHasPersSubOK = 1;
+		END
+		IF (@iIdentifyingColumnID > 0) AND
+			(@iReportsToColumnID > 0) AND
+			(@iPersonnelTableID > 0) AND
+			(@iLoginColumnID > 0) AND
+			((@fPostBased = 0) OR (@iPostAllocationTableID > 0)) 
+		BEGIN
+			SET @fIsPersSubOfUserOK = 1;
+			SET @fHasPersSubUserOK = 1;
+		END
+	END
+				
+	IF @iHierarchyTableID = @piTableID 
+	BEGIN
+		IF (@iIdentifyingColumnID > 0) AND
+			(@iReportsToColumnID > 0) AND
+			(@fPostBased = 1)
+		BEGIN
+			SET @fIsPostSubOfOK = 1;
+			SET @fHasPostSubOK = 1;
+		END
+		IF (@iIdentifyingColumnID > 0) AND
+			(@iReportsToColumnID > 0) AND
+			(@iPersonnelTableID > 0) AND
+			(@iLoginColumnID > 0) AND
+			(@fPostBased = 1) AND
+			(@iPostAllocationTableID > 0)
+		BEGIN
+			SET @fIsPostSubOfUserOK = 1;
+			SET @fHasPostSubUserOK = 1;
+		END
+	END
+	IF @iPersonnelTableID = @piTableID 
+	BEGIN
+		SET @fBaseTablePersonnelOK = 1;
+	END
+	ELSE
+	BEGIN
+		SELECT @iTemp = COUNT(*)
+		FROM ASRSysRelations
+		WHERE parentID = @iPersonnelTableID
+			AND childID = @piTableID;
+		IF @iTemp > 0
+		BEGIN
+			SET @fBaseTablePersonnelOK = 1;
+		END
+	END
+
+	SELECT 
+		convert(varchar(255), functionID) + char(9) +
+		functionName + 
+		CASE 
+			WHEN len(shortcutKeys) > 0 THEN ' ' + shortcutKeys
+			ELSE ''
+		END + char(9) +
+		category AS [definitionString]
+	FROM ASRSysFunctions
+	WHERE (runtime = 1 OR UDF = 1)
+		AND ((functionID <> 65) OR (@fIsPostSubOfOK = 1))
+		AND ((functionID <> 66) OR (@fIsPostSubOfUserOK = 1))
+		AND ((functionID <> 67) OR (@fIsPersSubOfOK = 1))
+		AND ((functionID <> 68) OR (@fIsPersSubOfUserOK = 1))
+		AND ((functionID <> 69) OR (@fHasPostSubOK = 1))
+		AND ((functionID <> 70) OR (@fHasPostSubUserOK = 1))
+		AND ((functionID <> 71) OR (@fHasPersSubOK = 1))
+		AND ((functionID <> 72) OR (@fHasPersSubUserOK = 1))
+		AND ((functionID <> 30) OR (@fBaseTablePersonnelOK = 1))
+		AND ((functionID <> 46) OR (@fBaseTablePersonnelOK = 1))
+		AND ((functionID <> 47) OR (@fBaseTablePersonnelOK = 1))
+		AND ((functionID <> 73) OR ((@fBaseTablePersonnelOK = 1) AND (@pbAbsenceEnabled = 1)));
+END
+GO
+
+
+IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[sp_ASRIntValidateTrainingBooking]') AND xtype in (N'P'))
+	DROP PROCEDURE [dbo].[sp_ASRIntValidateTrainingBooking];
+GO
+
+CREATE PROCEDURE [dbo].[sp_ASRIntValidateTrainingBooking] (
+	@piResultCode		varchar(MAX) OUTPUT,
+	@piEmpRecID		integer,
+	@piCourseRecID		integer,
+	@psBookingStatus	varchar(MAX),
+	@piTBRecID		integer,
+	@psCourseOverbooked integer OUTPUT
+)
+AS
+BEGIN
+
+	SET NOCOUNT ON;
+
+	/* Perform the Training Booking validation on the given insert/update SQL string.
+	Return codes are :
+		@piResultCode = '000' - completely valid
+		If non-zero then the result code is composed as abc,
+		where a is the result of the PRE-REQUISITES check
+			b is the result of the AVAILABILITY check
+			c is the result of the OVERLAPPED BOOKING check.
+		the values of which can be :
+			0 if the check PASSED
+			1 if the check FAILED and CANNOT be overridden
+			2 if the check FAILED but CAN be overridden
+
+	The psCourseOverbooked parameter returns if the course is overbooked
+	*/
+	DECLARE	@fIncludeProvisionals	bit,
+		@sIncludeProvisionals	varchar(MAX),
+		@iCount					integer,
+		@iResult				integer,
+		@iTemp					integer,
+		@piResultOverlapping   integer = 0,
+		@piResultPrerequisites	integer = 0,
+		@piResultUnavailability	integer = 0;
+
+	SET @piResultCode = '';
+	SET @psCourseOverbooked = 0;
+
+	IF (@piCourseRecID > 0) AND ((@psBookingStatus = 'B') OR (@psBookingStatus = 'P'))
+	BEGIN  
+		SELECT @sIncludeProvisionals = parameterValue
+		FROM ASRSysModuleSetup
+		WHERE moduleKey = 'MODULE_TRAININGBOOKING'
+			AND parameterKey = 'Param_CourseIncludeProvisionals'
+		IF @sIncludeProvisionals IS NULL SET @sIncludeProvisionals = 'FALSE'
+		IF @sIncludeProvisionals = 'FALSE'
+		BEGIN
+			SET @sIncludeProvisionals = 0
+		END
+		ELSE
+		BEGIN
+			SET @sIncludeProvisionals = 1
+		END
+
+		/* Only check that the selected course is not fully booked if the new booking is included in the number booked. */
+		IF (@fIncludeProvisionals = 1) OR (@psBookingStatus = 'B') 
+		BEGIN
+			/* Check if the overbooking stored procedure exists. */
+			SELECT @iCount = COUNT(*) 
+			FROM sysobjects
+			WHERE id = object_id('sp_ASR_TBCheckOverbooking')
+				AND sysstat & 0xf = 4
+
+			IF @iCount > 0
+			BEGIN
+				exec sp_ASR_TBCheckOverbooking @piCourseRecID, @piTBRecID, 1, @iResult OUTPUT
+				SET @psCourseOverbooked = @iResult -- @iResult = 1 -> Course fully booked (error). @iResult = 2 -> Course fully booked (over-rideable by the user).
+			END
+		END
+      
+		IF @piEmpRecID > 0
+		BEGIN
+			/* Check that the employee has satisfied the pre-requisite criteria for the selected course. */
+			/* First check if the pre-requisite table is configured. If not, we do not need to do the pre-req check. */
+			SELECT @iTemp = convert(integer, parameterValue)
+			FROM ASRSysModuleSetup
+			WHERE moduleKey = 'MODULE_TRAININGBOOKING'
+				AND parameterKey = 'Param_PreReqTable'
+			IF @iTemp IS NULL SET @iTemp = 0
+
+			IF @iTemp > 0 
+			BEGIN
+				/* Check if the pre-req stored procedure exists. */
+				SELECT @iCount = COUNT(*) 
+				FROM sysobjects
+				WHERE id = object_id('sp_ASR_TBCheckPreRequisites')
+					AND sysstat & 0xf = 4
+
+				IF @iCount > 0
+				BEGIN
+					exec sp_ASR_TBCheckPreRequisites @piCourseRecID, @piEmpRecID, @iResult OUTPUT
+					SET @piResultPrerequisites = @iResult -- @iResult = 1 -> Pre-requisites not satisfied (error). @iResult = 2 -> Pre-requisites not satisfied (over-rideable by the user). 
+				END
+			END
+
+			/* Check that the employee is available for the selected course. */
+			/* First check if the unavailability table is configured. If not, we do not need to do the unavailability check. */
+			SELECT @iTemp = convert(integer, parameterValue)
+			FROM ASRSysModuleSetup
+			WHERE moduleKey = 'MODULE_TRAININGBOOKING'
+				AND parameterKey = 'Param_UnavailTable'
+			IF @iTemp IS NULL SET @iTemp = 0
+
+			IF @iTemp > 0 
+			BEGIN
+				/* Check if the unavailability stored procedure exists. */
+				SELECT @iCount = COUNT(*) 
+				FROM sysobjects
+				WHERE id = object_id('sp_ASR_TBCheckUnavailability')
+					AND sysstat & 0xf = 4
+
+				IF @iCount > 0
+				BEGIN
+					exec sp_ASR_TBCheckUnavailability @piCourseRecID, @piEmpRecID, @iResult OUTPUT
+					SET @piResultUnavailability = @iResult -- @iResult = 1 -> Employee unavailable (error). @iResult = 2 -> Employee unavailable (over-rideable by the user).
+				END
+			END
+
+			/* Check if the overlapped booking stored procedure exists. */
+			SELECT @iCount = COUNT(*) 
+			FROM sysobjects
+			WHERE id = object_id('sp_ASR_TBCheckOverlappedBooking')
+				AND sysstat & 0xf = 4
+
+			IF @iCount > 0
+			BEGIN
+				exec sp_ASR_TBCheckOverlappedBooking @piCourseRecID, @piEmpRecID, @piTBRecID, @iResult OUTPUT
+				SET @piResultOverlapping = @iResult -- @iResult = 1 -> Overlapped booking (error). @iResult = 2 -> Overlapped booking (over-rideable by the user). 
+			END
+		END
+		SET @piResultCode = CONVERT(VARCHAR(1), @piResultPrerequisites) + CONVERT(VARCHAR(1), @piResultUnavailability) + CONVERT(VARCHAR(1), @piResultOverlapping)
+	END
+END
+GO
+
 
 
 
