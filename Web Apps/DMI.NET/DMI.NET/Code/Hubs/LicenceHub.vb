@@ -217,7 +217,7 @@ Namespace Code.Hubs
 				Return LicenceValidation.Expired
 			End If
 
-			If (Now.Date > Licence.ExpiryDate.AddDays(-7)) Then
+			If (Now.Date > Licence.ExpiryDate.AddDays(-7) AndAlso targetWebArea = WebArea.DMI) Then
 				Return LicenceValidation.ExpiryWarning
 			End If
 
@@ -239,7 +239,7 @@ Namespace Code.Hubs
 			If targetWebArea = WebArea.DMI Then
 				If current_Headcount > Licence.Headcount Then
 					Return LicenceValidation.HeadcountExceeded
-				ElseIf current_Headcount >= Licence.Headcount * HeadcountWarningThreshold Then
+				ElseIf (current_Headcount >= Licence.Headcount * HeadcountWarningThreshold) AndAlso targetWebArea = WebArea.DMI Then
 					Return LicenceValidation.HeadcountWarning
 				End If
 			End If
@@ -257,10 +257,10 @@ Namespace Code.Hubs
 
 				If Not objLogin.WebArea = webArea Then
 					allow = AllowAccess(webArea)
-					If allow = LicenceValidation.Insufficient Then
+					If allow = LicenceValidation.Insufficient Or allow = LicenceValidation.Expired Then
 						LogOff(SessionID)
 
-					ElseIf allow = LicenceValidation.Ok OrElse allow = LicenceValidation.HeadcountExceeded OrElse allow = LicenceValidation.HeadcountWarning Then
+					Else
 						objLogin.IsLoggedIn = True
 						objLogin.UserName = loginName
 						objLogin.WebArea = webArea
