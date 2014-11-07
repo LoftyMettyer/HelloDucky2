@@ -77,8 +77,6 @@ Namespace Code.Hubs
 
 		Private Shared Sub UpdateOnlineCount()
 
-			Dim totalLogins As Integer
-
 			current_SSIUsers = 0
 			current_DMIUsers = 0
 
@@ -86,11 +84,6 @@ Namespace Code.Hubs
 				current_DMIUsers += Logins.LongCount(Function(m) m.IsLoggedIn = True AndAlso m.SignalRClientID = sSession AndAlso m.WebArea = WebArea.DMI)
 				current_SSIUsers += Logins.LongCount(Function(m) m.IsLoggedIn = True AndAlso m.SignalRClientID = sSession AndAlso m.WebArea = WebArea.SSI)
 			Next
-
-			totalLogins = current_DMIUsers + current_SSIUsers
-
-			Dim myContext = GlobalHost.ConnectionManager.GetHubContext(Of LicenceHub)()
-			myContext.Clients.All.updateUsersOnlineCount(totalLogins)
 
 		End Sub
 
@@ -264,12 +257,16 @@ Namespace Code.Hubs
 
 				If Not objLogin.WebArea = webArea Then
 					allow = AllowAccess(webArea)
-					If allow = LicenceValidation.Ok OrElse allow = LicenceValidation.HeadcountExceeded OrElse allow = LicenceValidation.HeadcountWarning Then
+					If allow = LicenceValidation.Insufficient Then
+						LogOff(SessionID)
+
+					ElseIf allow = LicenceValidation.Ok OrElse allow = LicenceValidation.HeadcountExceeded OrElse allow = LicenceValidation.HeadcountWarning Then
 						objLogin.IsLoggedIn = True
 						objLogin.UserName = loginName
 						objLogin.WebArea = webArea
-						UpdateOnlineCount()
 					End If
+
+					UpdateOnlineCount()
 				End If
 
 				Return allow
@@ -283,6 +280,7 @@ Namespace Code.Hubs
 
 		Public Shared Sub LogOff(SessionID As String)
 			Logins.RemoveAll(Function(m) m.SignalRClientID = SessionID)
+			UpdateOnlineCount()
 		End Sub
 
 		Public Shared Sub ValidateHeadCount()

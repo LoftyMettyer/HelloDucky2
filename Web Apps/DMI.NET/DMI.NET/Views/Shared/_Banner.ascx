@@ -30,7 +30,6 @@
 <%End If%>
 
   <div id="signalRMessaging" class="container">
-    <input type="hidden" id="signalRUsersCount" />
     <input type="hidden" id="signalRMessage" />
   </div>
 
@@ -63,12 +62,6 @@
 
 			// Activity Hub
 			var licence = $.connection.LicenceHub;
-
-			// Create a function that the hub can call back to display messages.
-			licence.client.updateUsersOnlineCount = function (count) {
-				$('#signalRUsersCount').val(count);
-			};
-
 
 			// System Admin Message
 			var hubProxy = $.connection.NotificationHub;
