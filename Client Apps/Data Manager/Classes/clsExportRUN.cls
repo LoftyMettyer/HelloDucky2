@@ -693,7 +693,7 @@ Private Function GetExportDefinition() As Boolean
     mbPreserveTransformPath = IIf(IsNull(!PreserveTransformPath), False, !PreserveTransformPath)
     mbPreserveXSDPath = IIf(IsNull(!PreserveXSDPath), False, !PreserveXSDPath)
 
-    mbDefinitionOwner = (LCase(Trim(gsUserName)) = LCase(Trim(!userName)))
+    mbDefinitionOwner = (LCase(Trim(gsUserName)) = LCase(Trim(!UserName)))
     mbAuditChangesOnly = IIf(IsNull(!AuditChangesOnly), False, !AuditChangesOnly)
 
     If Not IsRecordSelectionValid Then
@@ -882,6 +882,7 @@ Private Function GetDetailsRecordsets() As Boolean
     
   If mlngOutputFormat = fmtCMGFile Then
     pintTemp = UBound(mvarColDetails, 2) + 1
+    ReDim Preserve mvarColDetails(UBound(mvarColDetails, 1), pintTemp)
     mvarColDetails(0, pintTemp) = "C"
     mvarColDetails(1, pintTemp) = mlngExportBaseTable
     mvarColDetails(2, pintTemp) = mstrExportBaseTableName
