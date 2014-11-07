@@ -12,7 +12,6 @@ Public Class SessionInfo
 	Private _objLogin As LoginInfo
 	Private _licenseKey As String
 
-	Public ActiveConnections As Integer = 0
 	Public DatabaseStatus As New DatabaseStatus
 	Public Permissions As ICollection(Of Permission)
 
@@ -175,8 +174,6 @@ Public Class SessionInfo
 
 			PopulateMetadata(_objLogin)
 			SetupTablesCollection()
-
-			ActiveConnections = 1
 
 		Catch ex As Exception
 			Throw

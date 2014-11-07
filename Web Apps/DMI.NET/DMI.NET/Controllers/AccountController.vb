@@ -487,15 +487,12 @@ Namespace Controllers
 
 				LicenceHub.LogOff(Session.SessionID)
 
-				Dim objServerSession As SessionInfo = Session("sessionContext")
-
 				Session("avPrimaryMenuInfo") = Nothing
 				Session("avSubMenuInfo") = Nothing
 				Session("avQuickEntryMenuInfo") = Nothing
 				Session("avTableMenuInfo") = Nothing
 				Session("avTableHistoryMenuInfo") = Nothing
 
-				objServerSession.ActiveConnections -= 1
 				Session("sessionContext") = Nothing
 
 			Catch ex As Exception
