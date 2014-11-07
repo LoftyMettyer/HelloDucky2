@@ -35,7 +35,7 @@ Begin VB.Form frmLicence
       Top             =   105
       Width           =   8865
       Begin VB.CommandButton cmdClipboard 
-         Caption         =   "Copy"
+         Caption         =   "C&opy"
          Height          =   400
          Left            =   8175
          Picture         =   "frmLicence.frx":000C
