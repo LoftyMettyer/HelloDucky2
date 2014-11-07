@@ -318,6 +318,7 @@
 		sURL = "eventLogDetails" +
 			"?txtEventID=" + frmDetails.txtEventID.value +
 			"&txtEventName=" + escape(frmDetails.txtEventName.value) +
+			"&txtEventBatchRunID=" + frmDetails.txtEventBatchRunID.value +
 			"&txtEventMode=" + escape(frmDetails.txtEventMode.value);
 
 		$('#EventLogViewDetails').data('sURLData', sURL);

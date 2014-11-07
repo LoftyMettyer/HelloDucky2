@@ -191,6 +191,7 @@
 				modal: true,
 				width: 1000,
 				height: 'auto',
+				position: ['center'],
 				resizable: false,
 				open: function() {
 					$(this).load($(this).data('sURLData'), function () {
@@ -205,6 +206,7 @@
 				modal: true,
 				width: 550,
 				height: 'auto',
+				position: ['center'],
 				resizable: false,
 				open: function (event, ui) {
 					$(this).load($(this).data('sURLData'), function() {
@@ -220,6 +222,7 @@
 				modal: true,
 				width: (screen.width) / 3,
 				height: (screen.height) / 2 + 10,
+				position: ['center'],
 				resizable: false,
 				open: function (event, ui) {
 					$(this).load($(this).data('sURLData'), function () { });
@@ -232,6 +235,7 @@
 				modal: true,
 				width: 550,
 				height: 'auto',
+				position: ['center'],
 				resizable: false,
 				open: function (event, ui) {
 					$(this).load($(this).data('sURLData'), function () {
