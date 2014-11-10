@@ -478,6 +478,7 @@ Private Function BuildReportSQL(sUserName As String) As String
   Dim sWhere As String
   Dim bAll As Boolean
   Dim i As Integer
+  Dim sWhereExtra As String
   
   On Error GoTo ErrorTrap
   
@@ -512,7 +513,13 @@ Private Function BuildReportSQL(sUserName As String) As String
   sSQL = sSQL & "Union " & vbCrLf
   sSQL = sSQL & "SELECT  CrossTabID AS ID, 'CROSS TAB' AS Type, Name, Username " & vbCrLf
   sSQL = sSQL & "From ASRSysCrossTab " & vbCrLf
-  sSQL = sSQL & sWhere
+    sWhereExtra = sWhere & " AND CrossTabType <> " & ctt9GridBox & vbCrLf
+  sSQL = sSQL & sWhereExtra
+  sSQL = sSQL & "Union " & vbCrLf
+  sSQL = sSQL & "SELECT  CrossTabID AS ID, '9-Box Grid Report' AS Type, Name, Username " & vbCrLf
+  sSQL = sSQL & "From ASRSysCrossTab " & vbCrLf
+    sWhereExtra = sWhere & " AND CrossTabType = " & ctt9GridBox & vbCrLf
+  sSQL = sSQL & sWhereExtra
   sSQL = sSQL & "Union " & vbCrLf
   
   'MH20020529 Fault 5706

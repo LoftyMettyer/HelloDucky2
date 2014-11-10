@@ -341,63 +341,66 @@ Public Sub Initialise(piAction As groupAction)
     
     ' Populate the report/utility access grid.
     With grdAccess
-      .RemoveAll
-      
-      ' NEWACCESS - needs to be updated as each report/utility is updated for the new access.
-      .AddItem "<All Reports / Utilities>" & _
-        vbTab & AccessDescription(ACCESS_HIDDEN) & _
-        vbTab & "-1"
-      .AddItem "Batch Job" & _
-        vbTab & AccessDescription(ACCESS_HIDDEN) & _
-        vbTab & utlBatchJob
-      .AddItem "Calendar Report" & _
-        vbTab & AccessDescription(ACCESS_HIDDEN) & _
-        vbTab & utlCalendarReport
-      .AddItem "Career Progression" & _
-        vbTab & AccessDescription(ACCESS_HIDDEN) & _
-        vbTab & utlCareer
-      .AddItem "Cross Tab" & _
-        vbTab & AccessDescription(ACCESS_HIDDEN) & _
-        vbTab & utlCrossTab
-      .AddItem "Custom Report" & _
-        vbTab & AccessDescription(ACCESS_HIDDEN) & _
-        vbTab & utlCustomReport
-      .AddItem "Data Transfer" & _
-        vbTab & AccessDescription(ACCESS_HIDDEN) & _
-        vbTab & utlDataTransfer
-      .AddItem "Envelopes & Labels" & _
-        vbTab & AccessDescription(ACCESS_HIDDEN) & _
-        vbTab & utlLabel
-      .AddItem "Export" & _
-        vbTab & AccessDescription(ACCESS_HIDDEN) & _
-        vbTab & utlExport
-      .AddItem "Global Add" & _
-        vbTab & AccessDescription(ACCESS_HIDDEN) & _
-        vbTab & UtlGlobalAdd
-      .AddItem "Global Delete" & _
-        vbTab & AccessDescription(ACCESS_HIDDEN) & _
-        vbTab & utlGlobalDelete
-      .AddItem "Global Update" & _
-        vbTab & AccessDescription(ACCESS_HIDDEN) & _
-        vbTab & utlGlobalUpdate
-      .AddItem "Import" & _
-        vbTab & AccessDescription(ACCESS_HIDDEN) & _
-        vbTab & utlImport
-      .AddItem "Mail Merge" & _
-        vbTab & AccessDescription(ACCESS_HIDDEN) & _
-        vbTab & utlMailMerge
-      .AddItem "Match Report" & _
-        vbTab & AccessDescription(ACCESS_HIDDEN) & _
-        vbTab & utlMatchReport
-      .AddItem "Record Profile" & _
-        vbTab & AccessDescription(ACCESS_HIDDEN) & _
-        vbTab & utlRecordProfile
-      .AddItem "Report Pack" & _
-        vbTab & AccessDescription(ACCESS_HIDDEN) & _
-        vbTab & utlReportPack
-      .AddItem "Succession Planning" & _
-        vbTab & AccessDescription(ACCESS_HIDDEN) & _
-        vbTab & utlSuccession
+    .RemoveAll
+    
+    ' NEWACCESS - needs to be updated as each report/utility is updated for the new access.
+    .AddItem "<All Reports / Utilities>" & _
+      vbTab & AccessDescription(ACCESS_HIDDEN) & _
+      vbTab & "-1"
+    .AddItem "Batch Job" & _
+      vbTab & AccessDescription(ACCESS_HIDDEN) & _
+      vbTab & utlBatchJob
+    .AddItem "Calendar Report" & _
+      vbTab & AccessDescription(ACCESS_HIDDEN) & _
+      vbTab & utlCalendarReport
+    .AddItem "Career Progression" & _
+      vbTab & AccessDescription(ACCESS_HIDDEN) & _
+      vbTab & utlCareer
+    .AddItem "Cross Tab" & _
+      vbTab & AccessDescription(ACCESS_HIDDEN) & _
+      vbTab & utlCrossTab
+    .AddItem "9-Box Grid Report" & _
+      vbTab & AccessDescription(ACCESS_HIDDEN) & _
+      vbTab & utlNineBoxGrid
+    .AddItem "Custom Report" & _
+      vbTab & AccessDescription(ACCESS_HIDDEN) & _
+      vbTab & utlCustomReport
+    .AddItem "Data Transfer" & _
+      vbTab & AccessDescription(ACCESS_HIDDEN) & _
+      vbTab & utlDataTransfer
+    .AddItem "Envelopes & Labels" & _
+      vbTab & AccessDescription(ACCESS_HIDDEN) & _
+      vbTab & utlLabel
+    .AddItem "Export" & _
+      vbTab & AccessDescription(ACCESS_HIDDEN) & _
+      vbTab & utlExport
+    .AddItem "Global Add" & _
+      vbTab & AccessDescription(ACCESS_HIDDEN) & _
+      vbTab & UtlGlobalAdd
+    .AddItem "Global Delete" & _
+      vbTab & AccessDescription(ACCESS_HIDDEN) & _
+      vbTab & utlGlobalDelete
+    .AddItem "Global Update" & _
+      vbTab & AccessDescription(ACCESS_HIDDEN) & _
+      vbTab & utlGlobalUpdate
+    .AddItem "Import" & _
+      vbTab & AccessDescription(ACCESS_HIDDEN) & _
+      vbTab & utlImport
+    .AddItem "Mail Merge" & _
+      vbTab & AccessDescription(ACCESS_HIDDEN) & _
+      vbTab & utlMailMerge
+    .AddItem "Match Report" & _
+      vbTab & AccessDescription(ACCESS_HIDDEN) & _
+      vbTab & utlMatchReport
+    .AddItem "Record Profile" & _
+      vbTab & AccessDescription(ACCESS_HIDDEN) & _
+      vbTab & utlRecordProfile
+    .AddItem "Report Pack" & _
+      vbTab & AccessDescription(ACCESS_HIDDEN) & _
+      vbTab & utlReportPack
+    .AddItem "Succession Planning" & _
+      vbTab & AccessDescription(ACCESS_HIDDEN) & _
+      vbTab & utlSuccession
     End With
     
     msAllAccessSetting = ACCESSDESC_HIDDEN
