@@ -1,6 +1,5 @@
 ﻿<%@ Page Language="VB" Inherits="System.Web.Mvc.ViewPage" %>
 
-<%@ Import Namespace="System.Diagnostics" %>
 <%@ Import Namespace="DMI.NET" %>
 <%@ Import Namespace="HR.Intranet.Server" %>
 <%@ Import Namespace="System.Data.SqlClient" %>
@@ -156,7 +155,7 @@
 
 									<tr style="height:10px">
 										<td class="fontsmalltitle nowrap" style="width: 8%">Start : </td>
-										<td style="width: 25%" " id="tdStartTime"></td>
+										<td style="width: 25%" id="tdStartTime"></td>
 										<td class="fontsmalltitle" style="width: 8%">End : </td>
 										<td style="width: 25%" id="tdEndTime"></td>
 										<td class="fontsmalltitle" style="width: 8%">Duration : </td>
@@ -296,7 +295,7 @@
 					okClick();
 
 				} else {
-					if ($("#txtEventExists").val() == 0) {
+					if ($("#txtEmailPermission").val() == 1) {
 						button_disable($('#cmdEmail'), false);
 					} else {
 						button_disable($('#cmdEmail'), true);
@@ -307,14 +306,10 @@
 					setGridCaption();
 				}
 
-				//Modify the height and position of the window depending on it having an extra line of information for Packs or Batches
-				if ($("#cboOtherJobs").length <= 0) {
-				} else {
-					$('#EventLogViewDetails').dialog(
-					{
-						position: ['center']
-					});
-				}
+				$('#EventLogViewDetails').dialog(
+				{
+					position: ['center']
+				});
 			}
 
 			function okClick() {
