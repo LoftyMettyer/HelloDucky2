@@ -56,7 +56,7 @@ function find_window_onload() {
 		var iCount;
 		var fRecordAdded;
 		var sColumnType;
-		var colMode;
+		var colModel;
 		var colNames;
 		var sColDef;
 		var iIndex;
@@ -79,8 +79,9 @@ function find_window_onload() {
 			if (newFormat.toLowerCase().indexOf('y.m.d') >= 0) srcFormat = 'd/m/Y';
 			
 			dataCollection = frmFindForm.elements; // Configure the grid columns.
-			colMode = [];
+			colModel = [];
 			colNames = [];
+
 			if (dataCollection != null) {
 				for (i = 0; i < dataCollection.length; i++) {
 					sControlName = dataCollection.item(i).name;
@@ -91,22 +92,28 @@ function find_window_onload() {
 						iIndex = sColDef.indexOf("	");
 						if (iIndex >= 0) {
 							sColumnName = sColDef.substr(0, iIndex);
+							var sColumnDisplayName = dataCollection.item(i).getAttribute("data-colname");
+							var iColumnId = dataCollection.item(i).getAttribute("data-columnid");
+							var sColumnEditable = dataCollection.item(i).getAttribute("data-editable") == "1" ? true : false;
+
 							sColumnType = sColDef.substr(iIndex + 1);
 							colNames.push(sColumnName);
 
-							if (sColumnName == "ID") {
-								colMode.push({ name: sColumnName, hidden: true });
+							if (sColumnName == "ID" || sColumnName == "Timestamp") {
+								colModel.push({ name: sColumnName, hidden: true });
 							} else {
 								switch (sColumnType.toLowerCase()) {
 									case "boolean": //checkbox - 11
-										colMode.push({ name: sColumnName, edittype: "checkbox", formatter: 'checkbox', formatoptions: { disabled: true }, align: 'center', width: 100 });
+										colModel.push({ name: sColumnName, id: iColumnId, edittype: "checkbox", formatter: 'checkbox', editable: sColumnEditable, formatoptions: { disabled: true }, align: 'center', width: 100 });
 										break;
 									case "decimal": //Numeric - 131
-										colMode.push({ name: sColumnName, edittype: "numeric", sorttype: 'integer', formatter: 'numeric', formatoptions: { disabled: true }, align: 'right', width: 100 });
+										colModel.push({ name: sColumnName, id: iColumnId, edittype: "text", sorttype: 'integer', formatter: 'numeric', editable: sColumnEditable, align: 'right', width: 100 });
 										break;
 									case "datetime": //Date - 135
-										colMode.push({
-											name: sColumnName, edittype: "date",
+										colModel.push({
+											name: sColumnName,
+											edittype: "text",
+											id: iColumnId,
 											sorttype: function(cellValue) { //Sort function that deals correctly with empty dates
 												if (Date.parse(cellValue)) {
 													var d = cellValue.split("/");
@@ -118,11 +125,22 @@ function find_window_onload() {
 											formatter: 'date',
 											formatoptions: { srcformat: srcFormat, newformat: newFormat, disabled: true },
 											align: 'left',
-											width: 100
+											width: 100,
+											editable: sColumnEditable,
+											editoptions: {
+												size: 20,
+												maxlengh: 10,
+												dataInit: function(element) {
+													$(element).datepicker({
+														constrainInput: true,
+														showOn: 'focus'
+													});
+												}
+											}
 										});
 										break;
 									default:
-										colMode.push({ name: sColumnName, width: 100 });
+										colModel.push({ name: sColumnName, id: iColumnId, width: 100, editable: sColumnEditable, editoptions: { size: "20", maxlength: "30" }, label: sColumnDisplayName });
 								}
 							}
 						}
@@ -141,7 +159,7 @@ function find_window_onload() {
 					if (sControlName == "txtAddString_") {
 						colDataArray = dataCollection.item(i).value.split("\t");
 						obj = {};
-						for (iCount2 = 0; iCount2 < colNames.length; iCount2++) {
+						for (iCount2 = 0; iCount2 < (colNames.length); iCount2++) {
 							//loop through columns and add each one to the 'obj' object
 							obj[colNames[iCount2]] = colDataArray[iCount2];
 						}
@@ -155,7 +173,7 @@ function find_window_onload() {
 
 				var shrinkToFit = false;
 				var wfSetWidth = $('#workframeset').width();
-				if (colMode.length < (wfSetWidth / 100)) shrinkToFit = true;
+				if (colModel.length < (wfSetWidth / 100)) shrinkToFit = true;
 				//var gridWidth = menu_isSSIMode() ? 'auto' : wfSetWidth - 100;
 				var gridWidth = wfSetWidth - 100;
 				//var rowNum = (Number($('#txtFindRecords').val()) > 100) ? 100 : Number($('#txtFindRecords').val());
@@ -165,16 +183,18 @@ function find_window_onload() {
 					data: colData,
 					datatype: "local",
 					colNames: colNames,
-					colModel: colMode,
+					colModel: colModel,
 					rowNum: 50,
 					width: gridWidth,
 					pager: $('#pager-coldata'),
+					editurl: 'clientArray',
 					ignoreCase: true,
 					shrinkToFit: shrinkToFit,
 					loadComplete: function () {
 						moveFirst();
 					},
-					afterSearch: function() {
+					gridComplete: function () {},
+					afterSearch: function () {
 						moveFirst();
 					}
 				});
@@ -193,6 +213,24 @@ function find_window_onload() {
 					cursor: 'pointer'
 				});
 
+				//Enable inline editing
+				$("#findGridTable").jqGrid('inlineNav', '#pager-coldata', {
+					edit: true,
+					add: false,
+					save: true,
+					cancel: true,
+					addParams: { useFormatter: false },
+					editParams: {
+						aftersavefunc: function (rowid, response, options) {
+							saveInlineRowToDatabase(rowid);
+						}
+					}
+				});
+
+				//Hide the edit icons by default
+				$("#findGridTable_iledit").hide();
+				$("#findGridTable_ilsave").hide();
+				$("#findGridTable_ilcancel").hide();
 
 				//resize the grid to the height of its container.
 				var gridRowHeight = $("#findGridRow").height();

@@ -121,7 +121,7 @@
     <Build Include="Stored Procedures\Web\sp_ASRIntGetFilterColumns.sql" />
     <Build Include="Stored Procedures\Web\sp_ASRIntGetFilterPromptedValues.sql" />
     <Build Include="Stored Procedures\Web\sp_ASRIntGetFilterPromptedValuesRecordset.sql" />
-    <Build Include="Stored Procedures\Web\sp_ASRIntGetFindRecords3.sql" />
+    <Build Include="Stored Procedures\Web\spASRIntGetFindRecords.sql" />
     <Build Include="Stored Procedures\Web\sp_ASRIntGetFindWindowInfo.sql" />
     <Build Include="Stored Procedures\Web\sp_ASRIntGetLinkFindRecords.sql" />
     <Build Include="Stored Procedures\Web\sp_ASRIntGetLinkParentValues.sql" />

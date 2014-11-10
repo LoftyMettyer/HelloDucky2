@@ -323,6 +323,25 @@ function menu_MenuClick(sTool) {
 		//$("#toolbarHome").click();
 	}
 
+	if (sToolName == "mnutoolInlineEditRecordFind") {
+		$('#mnutoolInlineEditRecordFind').toggleClass("toolbarButtonOn");
+		setinlineeditmode();
+		return false;
+	}
+
+
+	if (sToolName == "mnutoolAutoSaveRecordFind") {
+		$('#mnutoolAutoSaveRecordFind').toggleClass("toolbarButtonOn");
+		if ($('#mnutoolAutoSaveRecordFind').hasClass("toolbarButtonOn")) {
+			$('#mnutoolInlineEditRecordFind').addClass("toolbarButtonOn");
+		} else {
+			$('#mnutoolInlineEditRecordFind').removeClass("toolbarButtonOn"); 
+		}
+
+		setinlineeditmode();
+		return false;
+	}
+
 
 	if (sToolName == "mnutoolCurrentUsers") {
 		$("#divCurrentUsers").dialog("open");
@@ -1849,6 +1868,9 @@ function menu_refreshMenu() {
 
 			menu_toolbarEnableItem("mnutoolAccessLinksFind", (menu_isSSIMode() && (lngRecordID > 0)));
 			menu_setVisibletoolbarGroupById("mnuSectionRecordFindNavigate", !(menu_isSSIMode() && ($("#mnutoolAccessLinksFind").hasClass("hidden"))));
+
+			$('#mnutoolInlineEditRecordFind').removeClass("toolbarButtonOn");
+			$('#mnutoolAutoSaveRecordFind').removeClass("toolbarButtonOn");
 
 			if (menu_isSSIMode()) {
 				menu_setVisibletoolbarGroupById('mnuSectionRecordFindOrder', false);
@@ -5071,5 +5093,84 @@ function menu_SetmnutoolButtonCaption(itemID, newCaption) {
 		$('#' + itemID + ' a').attr('title', newCaption);
 		$('#' + itemID + ' h6').text(newCaption);
 	}
-	catch(e) {}
+	catch (e) { }
+}
+
+
+function setinlineeditmode() {
+	if ($('#mnutoolInlineEditRecordFind').hasClass("toolbarButtonOn")) {
+		$("#findGridTable_iledit").show();
+		$("#findGridTable_ilsave").show();
+		$("#findGridTable_ilcancel").show();
+	}
+
+	if ($('#mnutoolAutoSaveRecordFind').hasClass("toolbarButtonOn")) {
+		$('#findGridTable').jqGrid('setGridParam', {
+			beforeSelectRow: function (rowid, e) {
+				if (window.lastRowId == undefined) {
+					window.lastRowId = rowid;
+				}
+
+				if (rowid !== window.lastRowId) {
+					$('#findGridTable').saveRow(window.lastRowId);
+					saveInlineRowToDatabase(window.lastRowId);
+					window.lastRowId = rowid;
+				}
+
+				$('#findGridTable').editRow(rowid); //Edit the current row
+			}
+		})
+	};
+
+	if (!$('#mnutoolInlineEditRecordFind').hasClass("toolbarButtonOn") || !$('#mnutoolAutoSaveRecordFind').hasClass("toolbarButtonOn")) {
+		//Disable inline editing
+		$("#findGridTable").jqGrid('inlineNav', '#pager-coldata', {
+			edit: false,
+			add: false,
+			save: false,
+			cancel: false
+		});
+	}
+}
+
+function saveInlineRowToDatabase(rowId) {
+	var sUpdate = "";
+	var gridData = $("#findGridTable").getRowData(rowId);
+	var gridColumns = $("#findGridTable").jqGrid('getGridParam', 'colNames');
+	var gridModel = $("#findGridTable").jqGrid('getGridParam', 'colModel');
+	var columnValue = "";
+
+	for (var i = 0; i <= gridColumns.length - 1; i++) {
+		if (gridColumns[i] != '' && gridColumns[i] != 'ID' && gridColumns[i] != 'Timestamp') {
+			columnValue = gridData[gridModel[i].name];
+
+			//If the formatter is undefined then we treat the value as text
+			switch (gridModel[i].formatter) {
+				case "checkbox":
+					if (columnValue == "No" || columnValue == null)
+						columnValue = "0";
+					else
+						columnValue = "1";
+					break;
+				case "date":
+					columnValue = OpenHR.convertLocaleDateToSQL(columnValue);
+					break;
+			}
+
+			sUpdate += gridModel[i].id + "\t" + columnValue + "\t";
+		}
+	}
+
+	var frmDataArea = OpenHR.getForm("dataframe", "frmGetData");
+	frmDataArea.txtAction.value = "SAVE";
+
+	frmDataArea.txtCurrentViewID.value = $("#txtCurrentViewID").val();;
+	frmDataArea.txtCurrentTableID.value = $("#txtCurrentTableID").val();
+	frmDataArea.txtRealSource.value = $("#txtRealSource").val();
+	frmDataArea.txtRecordID.value = gridData.ID;
+	frmDataArea.txtDefaultCalcCols.value = "";
+	frmDataArea.txtInsertUpdateDef.value = sUpdate;
+	frmDataArea.txtTimestamp.value = gridData.Timestamp;
+
+	OpenHR.submitForm(frmDataArea);
 }

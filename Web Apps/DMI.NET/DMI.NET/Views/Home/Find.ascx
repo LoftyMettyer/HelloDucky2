@@ -11,6 +11,7 @@
 	Dim objDataAccess As New clsDataAccess(objSession.LoginInfo) 'Instantiate DataAccess class
 	Dim SPParameters() As SqlParameter
 	Dim resultDataSet As DataSet
+	Dim rstFindDefinition As DataTable
 	Dim rstFindRecords As DataTable
 	Dim resultsDataTable As DataTable
 %>
@@ -53,13 +54,18 @@
 			$("#findGridTable").jqGrid("setGridParam", { ondblClickRow: function(rowID) { doEdit(); } });
 			$('#findGridTable').jqGrid('bindKeys', { "onEnter": function() { doEdit(); } });
 		} else {
-			$("#findGridTable").jqGrid("setGridParam", { ondblClickRow: function (rowID) { menu_editRecord(); } });
+			$("#findGridTable").jqGrid("setGridParam", {
+				ondblClickRow: function(rowID) {
+					if ($('#mnutoolInlineEditRecordFind').hasClass("toolbarButtonOn")) {
+						$('#findGridTable').editRow(rowID); //Edit the current row
+					} else {
+						menu_editRecord();
+					}
+				}
+			});
 			$('#findGridTable').jqGrid('bindKeys', { "onEnter": function () { menu_editRecord(); } });
 		}
 	}
-
-
-
 </script>
 
 <div id="divFindForm" <%=session("BodyTag")%>>
@@ -194,12 +200,14 @@
 				        }
 
 						Try
-							resultDataSet = objDataAccess.GetDataSet("sp_ASRIntGetFindRecords3", SPParameters)
+							resultDataSet = objDataAccess.GetDataSet("spASRIntGetFindRecords", SPParameters)
 
-							If prmSomeSelectable.Value = 0 Then								
+							If prmSomeSelectable.Value = 0 Then
 								sErrorDescription = "You do not have permission to read any of the selected order's find columns."
 							Else
-													
+
+								rstFindDefinition = resultDataSet.Tables(2)
+								
 								' Get the recordset parameters
 								sThousandColumns = resultDataSet.Tables(0).Rows(0)("ThousandColumns").ToString()
 								sBlankIfZeroColumns = resultDataSet.Tables(0).Rows(0)("BlankIfZeroColumns").ToString()
@@ -217,12 +225,20 @@
 						
 									For iloop = 0 To (rstFindRecords.Columns.Count - 1)
 										If iloop > 0 Then
-											sAddString = sAddString & "	"
+											sAddString &= "	"
 										End If
 							
 										If iCount = 0 Then
 											sColDef = Replace(rstFindRecords.Columns(iloop).ColumnName, "_", " ") & "	" & rstFindRecords.Columns(iloop).DataType.ToString.Replace("System.", "")
-											Response.Write("<INPUT type='hidden' id=txtFindColDef_" & iloop & " name=txtFindColDef_" & iloop & " value=""" & sColDef & """>" & vbCrLf)
+											If (rstFindRecords.Columns(iloop).ColumnName = "ID" OrElse rstFindRecords.Columns(iloop).ColumnName = "Timestamp") Then
+												Response.Write(String.Format("<input type='hidden' id=txtFindColDef_{0} name=txtFindColDef_{0} value='{1}' data-colname='{2}' data-type='{3}'>" _
+														 , iloop, sColDef, rstFindRecords.Columns(iloop).ColumnName, "integer") & vbCrLf)
+											Else
+												Response.Write(String.Format("<input type='hidden' id='txtFindColDef_{0}' name='txtFindColDef_{0}' value='{1}' data-colname='{2}' data-type='{3}' data-columnid='{4}' data-editable='{5}'>" _
+														 , iloop, sColDef, rstFindRecords.Columns(iloop).ColumnName, "", _
+														 rstFindDefinition.Select("ColumnName='" & rstFindRecords.Columns(iloop).ColumnName & "'").FirstOrDefault.Item("columnID"), _
+														 rstFindDefinition.Select("ColumnName='" & rstFindRecords.Columns(iloop).ColumnName & "'").FirstOrDefault.Item("updateGranted")) & vbCrLf)
+											End If
 										End If
 							
 										If rstFindRecords.Columns(iloop).DataType = GetType(System.DateTime) Then

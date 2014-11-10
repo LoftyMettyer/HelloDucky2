@@ -3,5 +3,6 @@
 	[ColumnID] [int] NOT NULL,
 	[Type] [char](1) NOT NULL,
 	[Sequence] [smallint] NOT NULL,
-	[Ascending] [bit] NOT NULL
+	[Ascending] [bit] NOT NULL, 
+    [Editable] BIT NULL
 ) ON [PRIMARY]

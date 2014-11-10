@@ -1497,12 +1497,11 @@ div.displaytable {
 overflow-x : hidden !important;
 }
 
-.radiodisabled /* Gives read only effect to radio button label */
-{
-	opacity: 0.5;
-}
 
 #frmEventDetails .ui-jqgrid-bdiv,
  #EventLogEmailSelect .ui-jqgrid-bdiv {
 	overflow-x: hidden;
 }
+
+.toolbarButtonOn {
+	background: #d0e5f5 url("images/ui-bg_glass_75_d0e5f5_1x400png") 50% 50% repeat-x !important;

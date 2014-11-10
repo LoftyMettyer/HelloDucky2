@@ -920,6 +920,7 @@
 			// garbage data. Our problem is that at present there is no validation of the record before its is sent. Checking validtity of dates
 			// is something that the old ActivbeX control used to do. This is just to get things running.
 			if (psDateString == "") return "null";
+			if (psDateString.toString().trim() == "") return "null";
 
 			if (!isValidDate(psDateString)) {
 			return psDateString;

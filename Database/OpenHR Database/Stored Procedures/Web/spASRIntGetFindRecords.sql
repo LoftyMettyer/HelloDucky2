@@ -1,4 +1,4 @@
-CREATE PROCEDURE [dbo].[sp_ASRIntGetFindRecords3] (
+CREATE PROCEDURE [dbo].[spASRIntGetFindRecords] (
 	@pfError 				bit 			OUTPUT, 
 	@pfSomeSelectable 		bit 			OUTPUT, 
 	@pfSomeNotSelectable 	bit 			OUTPUT, 
@@ -96,7 +96,12 @@ BEGIN
 		@sJoinSQL			nvarchar(max),
 		@psOriginalAction		varchar(255),
 		@sThousandColumns		varchar(255),
-		@sBlankIfZeroColumns	varchar(255);
+		@sBlankIfZeroColumns	varchar(255),
+		@bEditable				bit;
+
+	DECLARE @FindDefinition TABLE(tableID integer, columnID integer, columnName nvarchar(255), tableName nvarchar(255),
+									ascending bit, type varchar(1), datatype integer, size integer, decimals integer, Use1000Separator bit, BlankIfZero bit, Editable bit)
+
 	
 	/* Clean the input string parameters. */
 	IF len(@psLocateValue) > 0 SET @psLocateValue = replace(@psLocateValue, '''', '''''');
@@ -156,7 +161,8 @@ BEGIN
 	DECLARE @ColumnPermissions TABLE(tableID integer,
 								tableViewName	sysname,
 								columnName	sysname,
-								selectGranted	bit);
+								selectGranted	bit,
+								updateGranted	bit);
 								
 	/* Get the table type and name. */
 	SELECT @iTableType = ASRSysTables.tableType,
@@ -505,21 +511,19 @@ BEGIN
 				@iTempTableID,
 				@sRealSource,
 				syscolumns.name,
-				CASE protectType
-					WHEN 205 THEN 1
-					WHEN 204 THEN 1
-					ELSE 0
-				END 
+				MAX(CASE WHEN [protectType] IN (204, 205) AND [action] = 193 THEN 1	ELSE 0 END) AS selectGranted,
+				MAX(CASE WHEN [protectType] IN (204, 205) AND [action] = 197 THEN 1	ELSE 0 END) AS updateGranted
 			FROM @sysprotects p
 			INNER JOIN sysobjects ON p.id = sysobjects.id
 			INNER JOIN syscolumns ON p.id = syscolumns.id
-			WHERE p.action = 193 
+			WHERE p.action IN (193, 197)
 				AND syscolumns.name <> 'timestamp'
 				AND sysobjects.name = @sRealSource
 				AND (((convert(tinyint,substring(p.columns,1,1))&1) = 0
 				AND (convert(int,substring(p.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) != 0)
 				OR ((convert(tinyint,substring(p.columns,1,1))&1) != 0
-				AND (convert(int,substring(p.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) = 0));
+				AND (convert(int,substring(p.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) = 0))
+			GROUP BY syscolumns.name,[protectType];
 		END
 		ELSE
 		BEGIN
@@ -529,51 +533,55 @@ BEGIN
 				@iTempTableID,
 				sysobjects.name,
 				syscolumns.name,
-				CASE protectType
-				        	WHEN 205 THEN 1
-					WHEN 204 THEN 1
-					ELSE 0
-				END 
+				MAX(CASE WHEN [protectType] IN (204, 205) AND [action] = 193 THEN 1	ELSE 0 END) AS selectGranted,
+				MAX(CASE WHEN [protectType] IN (204, 205) AND [action] = 197 THEN 1	ELSE 0 END) AS updateGranted
 			FROM @sysprotects p
 			INNER JOIN sysobjects ON p.id = sysobjects.id
 			INNER JOIN syscolumns ON p.id = syscolumns.id
-			WHERE p.action = 193 
+			WHERE p.action IN (193, 197)
 				AND syscolumns.name <> 'timestamp'
 				AND sysobjects.name IN (SELECT ASRSysTables.tableName FROM ASRSysTables WHERE 
 					ASRSysTables.tableID = @iTempTableID 
 					UNION SELECT ASRSysViews.viewName FROM ASRSysViews WHERE ASRSysViews.viewTableID = @iTempTableID)
-			AND (((convert(tinyint,substring(p.columns,1,1))&1) = 0
-			AND (convert(int,substring(p.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) != 0)
-			OR ((convert(tinyint,substring(p.columns,1,1))&1) != 0
-			AND (convert(int,substring(p.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) = 0));
+				AND (((convert(tinyint,substring(p.columns,1,1))&1) = 0
+				AND (convert(int,substring(p.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) != 0)
+				OR ((convert(tinyint,substring(p.columns,1,1))&1) != 0
+				AND (convert(int,substring(p.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) = 0))
+			GROUP BY sysobjects.name, syscolumns.name,[protectType];
+
 		END
 		FETCH NEXT FROM tablesCursor INTO @iTempTableID;
 	END
 	
 	CLOSE tablesCursor;
 	DEALLOCATE tablesCursor;
-	
+
 	/* Create the order select strings. */
+	INSERT @FindDefinition
+		SELECT ASRSysColumns.tableID,
+			ASRSysOrderItems.columnID, 
+			ASRSysColumns.columnName,
+	    		ASRSysTables.tableName,
+			ASRSysOrderItems.ascending,
+			ASRSysOrderItems.type,
+			ASRSysColumns.dataType,
+			ASRSysColumns.size,
+			ASRSysColumns.decimals,
+			ASRSysColumns.Use1000Separator,
+			ASRSysColumns.BlankIfZero,
+			ISNULL(ASRSysOrderItems.Editable, 0)
+		FROM [dbo].[ASRSysOrderItems]
+		INNER JOIN ASRSysColumns ON ASRSysOrderItems.columnID = ASRSysColumns.columnID
+		INNER JOIN ASRSysTables ON ASRSysTables.tableID = ASRSysColumns.tableID
+		WHERE ASRSysOrderItems.orderID = @piOrderID
+		ORDER BY ASRSysOrderItems.sequence;
+
+	
 	DECLARE orderCursor CURSOR LOCAL FAST_FORWARD FOR 
-	SELECT ASRSysColumns.tableID,
-		ASRSysOrderItems.columnID, 
-		ASRSysColumns.columnName,
-	    	ASRSysTables.tableName,
-		ASRSysOrderItems.ascending,
-		ASRSysOrderItems.type,
-		ASRSysColumns.dataType,
-		ASRSysColumns.size,
-		ASRSysColumns.decimals,
-		ASRSysColumns.Use1000Separator,
-		ASRSysColumns.BlankIfZero
-	FROM [dbo].[ASRSysOrderItems]
-	INNER JOIN ASRSysColumns ON ASRSysOrderItems.columnID = ASRSysColumns.columnID
-	INNER JOIN ASRSysTables ON ASRSysTables.tableID = ASRSysColumns.tableID
-	WHERE ASRSysOrderItems.orderID = @piOrderID
-	ORDER BY ASRSysOrderItems.sequence;
+		SELECT * FROM @FindDefinition;
 	
 	OPEN orderCursor;
-	FETCH NEXT FROM orderCursor INTO @iColumnTableId, @iColumnId, @sColumnName, @sColumnTableName, @fAscending, @sType, @iDataType, @iSize, @iDecimals, @bUse1000Separator, @bBlankIfZero;
+	FETCH NEXT FROM orderCursor INTO @iColumnTableId, @iColumnId, @sColumnName, @sColumnTableName, @fAscending, @sType, @iDataType, @iSize, @iDecimals, @bUse1000Separator, @bBlankIfZero, @bEditable;
 
 	/* Check if the order exists. */
 	IF  @@fetch_status <> 0
@@ -819,7 +827,7 @@ BEGIN
 				END	
 			END
 		END
-		FETCH NEXT FROM orderCursor INTO @iColumnTableId, @iColumnId, @sColumnName, @sColumnTableName, @fAscending, @sType, @iDataType, @iSize, @iDecimals, @bUse1000Separator, @bBlankIfZero;
+		FETCH NEXT FROM orderCursor INTO @iColumnTableId, @iColumnId, @sColumnName, @sColumnTableName, @fAscending, @sType, @iDataType, @iSize, @iDecimals, @bUse1000Separator, @bBlankIfZero, @bEditable;
 	END
 
 	CLOSE orderCursor;
@@ -882,7 +890,7 @@ BEGIN
 	SET @piTotalRecCount = @iCount;
 	IF len(@sSelectSQL) > 0 
 	BEGIN
-		SET @sTempString = ',' + @sRealSource + '.ID';
+		SET @sTempString = ',' + @sRealSource + '.ID, CONVERT(int, ' + @sRealSource + '.Timestamp) AS [Timestamp]';
 		SET @sSelectSQL = @sSelectSQL + @sTempString;
 
 		SET @sExecString = 'SELECT ' 
@@ -1261,34 +1269,6 @@ BEGIN
 			SET @sExecString = @sExecString + @sTempString;
 		END
 
-		--/* Add in the string to include max number of records available in block */				
-		--/* Fault HRPRO-382 */
-		--IF @psAction = 'LOCATE'
-		--BEGIN
-		--	SET @sTempString = ' OR '+@sRealSource + '.ID IN (SELECT TOP ' + convert(varchar(100), @piRecordsRequired) + ' ' + @sRealSource + '.ID FROM ' + @sRealSource
-		--	SET @sTempFilterString = ''
-			
-		--	IF @piParentTableID > 0 SET @sTempFilterString = @sTempFilterString + ' WHERE ' + @sRealSource + '.ID_' + convert(varchar(100), @piParentTableID) + ' = ' + convert(varchar(100), @piParentRecordID);						
-
-		--	IF LEN(@sFilterSQL) > 0
-		--	BEGIN
-		--		IF LEN(@sTempFilterString) > 0
-		--			SET @sTempFilterString = @sTempFilterString + ' AND ' + @sFilterSQL	
-		--		ELSE
-		--			SET @sTempFilterString = @sTempFilterString + ' WHERE ' + @sFilterSQL	
-		--	END
-			
-		--	--use for 'go to' only:
-		--	IF @psOriginalAction = 'LOCATE'
-		--	BEGIN
-		--		IF LEN(@sLocateCode) > 0 SET @sTempFilterString = @sTempFilterString + @sLocateCode	
-		--	END
-			
-		--	SET @sTempString = @sTempString + @sTempFilterString
-		--	SET @sTempString = @sTempString +  ' ORDER BY ' + @sReverseOrderSQL + ')';
-		--	SET @sExecString = @sExecString + @sTempString;		
-		--END
-		
 		/* Add the ORDER BY code to the find record selection string if required. */
 		SET @sTempString = ' ORDER BY ' + @sOrderSQL;
 		SET @sExecString = @sExecString + @sTempString;
@@ -1444,7 +1424,13 @@ BEGIN
 			, @sThousandColumns AS ThousandColumns
 
 		EXECUTE sp_executeSQL @sExecString;
-	END
 
+		SELECT f.tableID, f.columnID, f.columnName, f.ascending, f.type, f.datatype, f.size, f.decimals, f.Use1000Separator, f.BlankIfZero
+			 , CASE WHEN f.Editable = 1 AND p.updateGranted = 1 THEN 1 ELSE 0 END AS updateGranted
+			FROM @FindDefinition f
+				INNER JOIN @ColumnPermissions p ON p.columnName = f.columnName
+			WHERE f.[type] = 'F';
+
+	END
 
 END
