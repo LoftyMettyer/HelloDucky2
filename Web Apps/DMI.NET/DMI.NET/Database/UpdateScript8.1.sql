@@ -9951,11 +9951,11 @@ BEGIN
 		@sJoinSQL			nvarchar(max),
 		@psOriginalAction		varchar(255),
 		@sThousandColumns		varchar(255),
-		@sBlankIfZeroColumns	varchar(255),
-		@bEditable				bit;
+		@sBlankIfZeroColumns	varchar(255);
 
-	DECLARE @FindDefinition TABLE(tableID integer, columnID integer, columnName nvarchar(255), tableName nvarchar(255),
-									ascending bit, type varchar(1), datatype integer, size integer, decimals integer, Use1000Separator bit, BlankIfZero bit, Editable bit)
+	DECLARE @FindDefinition TABLE(tableID integer, columnID integer, columnName nvarchar(255), tableName nvarchar(255)
+									, ascending bit, type varchar(1), datatype integer, controltype integer, size integer, decimals integer, Use1000Separator bit, BlankIfZero bit, Editable bit
+									, LookupTableID integer, LookupColumnID integer, LookupFilterColumnID integer, LookupFilterValueID integer)
 
 	
 	/* Clean the input string parameters. */
@@ -10413,30 +10413,36 @@ BEGIN
 
 	/* Create the order select strings. */
 	INSERT @FindDefinition
-		SELECT ASRSysColumns.tableID,
-			ASRSysOrderItems.columnID, 
-			ASRSysColumns.columnName,
-	    		ASRSysTables.tableName,
-			ASRSysOrderItems.ascending,
-			ASRSysOrderItems.type,
-			ASRSysColumns.dataType,
-			ASRSysColumns.size,
-			ASRSysColumns.decimals,
-			ASRSysColumns.Use1000Separator,
-			ASRSysColumns.BlankIfZero,
-			ISNULL(ASRSysOrderItems.Editable, 0)
-		FROM [dbo].[ASRSysOrderItems]
-		INNER JOIN ASRSysColumns ON ASRSysOrderItems.columnID = ASRSysColumns.columnID
-		INNER JOIN ASRSysTables ON ASRSysTables.tableID = ASRSysColumns.tableID
-		WHERE ASRSysOrderItems.orderID = @piOrderID
-		ORDER BY ASRSysOrderItems.sequence;
+		SELECT c.tableID,
+			o.columnID, 
+			c.columnName,
+	    	t.tableName,
+			o.ascending,
+			o.type,
+			c.dataType,
+			c.controltype,
+			c.size,
+			c.decimals,
+			c.Use1000Separator,
+			c.BlankIfZero,
+			ISNULL(o.Editable, 0),
+			ISNULL(c.LookupTableID, 0) AS LookupTableID,
+			ISNULL(c.LookupColumnID, 0) AS LookupColumnID,
+			ISNULL(c.LookupFilterColumnID, 0) AS LookupFilterColumnID,
+			ISNULL(c.LookupFilterValueID, 0) AS LookupFilterValueID
+		FROM [dbo].[ASRSysOrderItems] o
+		INNER JOIN ASRSysColumns c ON o.columnID = c.columnID
+		INNER JOIN ASRSysTables t ON c.tableID = t.tableID
+		WHERE o.orderID = @piOrderID
+		ORDER BY o.sequence;
 
 	
 	DECLARE orderCursor CURSOR LOCAL FAST_FORWARD FOR 
-		SELECT * FROM @FindDefinition;
-	
+		SELECT tableID, columnID, columnName, tableName, ascending, type, datatype, size, decimals, Use1000Separator, BlankIfZero FROM @FindDefinition;
+
+
 	OPEN orderCursor;
-	FETCH NEXT FROM orderCursor INTO @iColumnTableId, @iColumnId, @sColumnName, @sColumnTableName, @fAscending, @sType, @iDataType, @iSize, @iDecimals, @bUse1000Separator, @bBlankIfZero, @bEditable;
+	FETCH NEXT FROM orderCursor INTO @iColumnTableId, @iColumnId, @sColumnName, @sColumnTableName, @fAscending, @sType, @iDataType, @iSize, @iDecimals, @bUse1000Separator, @bBlankIfZero;
 
 	/* Check if the order exists. */
 	IF  @@fetch_status <> 0
@@ -10682,7 +10688,7 @@ BEGIN
 				END	
 			END
 		END
-		FETCH NEXT FROM orderCursor INTO @iColumnTableId, @iColumnId, @sColumnName, @sColumnTableName, @fAscending, @sType, @iDataType, @iSize, @iDecimals, @bUse1000Separator, @bBlankIfZero, @bEditable;
+		FETCH NEXT FROM orderCursor INTO @iColumnTableId, @iColumnId, @sColumnName, @sColumnTableName, @fAscending, @sType, @iDataType, @iSize, @iDecimals, @bUse1000Separator, @bBlankIfZero;
 	END
 
 	CLOSE orderCursor;
@@ -11250,14 +11256,7 @@ BEGIN
 		END
 		ELSE
 		BEGIN
-			--IF @psOriginalAction = 'LOCATEID'	
-			--BEGIN				
-			--	SET @piFirstRecPos = @piTotalRecCount - CASE WHEN @piRecordsRequired > @piTotalRecCount THEN @piTotalRecCount - 1 ELSE @piRecordsRequired END;
-			--END
-			--ELSE 
-			--BEGIN
-				SET @piFirstRecPos = @piTotalRecCount - @iTemp + 1;
-			--END
+			SET @piFirstRecPos = @piTotalRecCount - @iTemp + 1;
 		END
 		SET @pfFirstPage = 
 			CASE 
@@ -11280,8 +11279,9 @@ BEGIN
 
 		EXECUTE sp_executeSQL @sExecString;
 
-		SELECT f.tableID, f.columnID, f.columnName, f.ascending, f.type, f.datatype, f.size, f.decimals, f.Use1000Separator, f.BlankIfZero
+		SELECT f.tableID, f.columnID, f.columnName, f.ascending, f.type, f.datatype, f.controltype, f.size, f.decimals, f.Use1000Separator, f.BlankIfZero
 			 , CASE WHEN f.Editable = 1 AND p.updateGranted = 1 THEN 1 ELSE 0 END AS updateGranted
+			 , LookupTableID, LookupColumnID, LookupFilterColumnID, LookupFilterValueID
 			FROM @FindDefinition f
 				INNER JOIN @ColumnPermissions p ON p.columnName = f.columnName
 			WHERE f.[type] = 'F';
@@ -11289,7 +11289,7 @@ BEGIN
 	END
 
 END
-
+GO
 
 
 
