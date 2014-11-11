@@ -217,10 +217,6 @@ Namespace Code.Hubs
 				Return LicenceValidation.Expired
 			End If
 
-			If (Now.Date > Licence.ExpiryDate.AddDays(-7) AndAlso targetWebArea = WebArea.DMI) Then
-				Return LicenceValidation.ExpiryWarning
-			End If
-
 			If Licence.Type = LicenceType.Concurrency Then
 				If (targetWebArea = WebArea.DMI AndAlso current_DMIUsers >= Licence.DMIUsers) OrElse _
 						(targetWebArea = WebArea.SSI AndAlso current_SSIUsers >= Licence.SSIUsers) Then
@@ -242,6 +238,10 @@ Namespace Code.Hubs
 				ElseIf (current_Headcount >= Licence.Headcount * HeadcountWarningThreshold) AndAlso targetWebArea = WebArea.DMI Then
 					Return LicenceValidation.HeadcountWarning
 				End If
+			End If
+
+			If (Now.Date > Licence.ExpiryDate.AddDays(-7) AndAlso targetWebArea = WebArea.DMI) Then
+				Return LicenceValidation.ExpiryWarning
 			End If
 
 			Return LicenceValidation.Ok
