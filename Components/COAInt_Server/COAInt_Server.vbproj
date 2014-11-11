@@ -61,7 +61,7 @@
     <DebugType>full</DebugType>
     <WarningsAsErrors>
     </WarningsAsErrors>
-    <Optimize>false</Optimize>
+    <Optimize>true</Optimize>
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
