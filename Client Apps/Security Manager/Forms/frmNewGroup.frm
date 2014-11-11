@@ -347,6 +347,9 @@ Public Sub Initialise(piAction As groupAction)
     .AddItem "<All Reports / Utilities>" & _
       vbTab & AccessDescription(ACCESS_HIDDEN) & _
       vbTab & "-1"
+    .AddItem "9-Box Grid Report" & _
+      vbTab & AccessDescription(ACCESS_HIDDEN) & _
+      vbTab & utlNineBoxGrid
     .AddItem "Batch Job" & _
       vbTab & AccessDescription(ACCESS_HIDDEN) & _
       vbTab & utlBatchJob
@@ -359,9 +362,6 @@ Public Sub Initialise(piAction As groupAction)
     .AddItem "Cross Tab" & _
       vbTab & AccessDescription(ACCESS_HIDDEN) & _
       vbTab & utlCrossTab
-    .AddItem "9-Box Grid Report" & _
-      vbTab & AccessDescription(ACCESS_HIDDEN) & _
-      vbTab & utlNineBoxGrid
     .AddItem "Custom Report" & _
       vbTab & AccessDescription(ACCESS_HIDDEN) & _
       vbTab & utlCustomReport

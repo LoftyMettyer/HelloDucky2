@@ -354,6 +354,7 @@ Private Function WriteReport(sUserName As String, iFromIndex As Integer) As Bool
   Dim bAll As Boolean
   Dim i As Integer
   Dim s As String
+  Dim tStr As String
   
   On Error GoTo ErrorTrap
 
@@ -373,38 +374,40 @@ Private Function WriteReport(sUserName As String, iFromIndex As Integer) As Bool
   End If
 
   With Me.txtUtil(iFromIndex)
-
-      'Connect mstrConnectString
-      rsTemp.Open BuildReportSQL(sUserName), gADOCon, adOpenStatic, adLockReadOnly
+    'Connect mstrConnectString
+    rsTemp.Open BuildReportSQL(sUserName), gADOCon, adOpenStatic, adLockReadOnly
       .Enabled = True
       .Locked = True
       .Text = vbNullString
-
-      If rsTemp.RecordCount > 0 Then
-        Do While Not rsTemp.EOF
-          If rsTemp!Type <> sCurrentType And sCurrentType <> vbNullString Then
-            .Text = .Text & vbCrLf
-            .Text = .Text & vbCrLf
-'            .Text = .Text & "-----------------------------------------------------------------------------" & vbCrLf
-          ElseIf sCurrentType <> vbNullString Then
-            .Text = .Text & vbCrLf
-          End If
-          sCurrentType = IIf(IsNull(rsTemp!Type), "Other", rsTemp!Type)
-
-          .Text = .Text & StrConv(sCurrentType, vbProperCase) & ":  "
-          .Text = .Text & "'" & StrConv(rsTemp!Name, vbProperCase) & "'"
-          If bAll Then .Text = .Text & " (" & rsTemp!UserName & ")"
-           rsTemp.MoveNext
+    
+    If rsTemp.RecordCount > 0 Then
+      Do While Not rsTemp.EOF
+        If rsTemp!Type <> sCurrentType And sCurrentType <> vbNullString Then
+          .Text = .Text & vbCrLf
+          .Text = .Text & vbCrLf
+        ElseIf sCurrentType <> vbNullString Then
+          .Text = .Text & vbCrLf
+        End If
+        sCurrentType = IIf(IsNull(rsTemp!Type), "Other", rsTemp!Type)
+        
+        tStr = StrConv(sCurrentType, VbStrConv.vbProperCase) & ":  "
+        i = InStr(i + 1, tStr, "-")
+        Do While i > 0 And i < Len(tStr)
+          Mid$(tStr, i + 1, 1) = UCase(Mid$(tStr, i + 1, 1))
+          i = InStr(i + 1, tStr, "-")
         Loop
-        'WriteReport = True
-      Else
-        .Text = "<None>"
-        'WriteReport = False
-      End If
-
-      rsTemp.Close
+        .Text = .Text & tStr
+        
+        .Text = .Text & "'" & StrConv(rsTemp!Name, vbProperCase) & "'"
+        If bAll Then .Text = .Text & " (" & rsTemp!UserName & ")"
+        rsTemp.MoveNext
+      Loop
+    Else
+      .Text = "<None>"
+    End If
+    
+    rsTemp.Close
   End With
-
 
 '********************************************************************************
 ' The following code is for displaying the reports in grid form.                *
@@ -503,6 +506,11 @@ Private Function BuildReportSQL(sUserName As String) As String
     sWhere = "WHERE LOWER(Username) = '" & Replace(LCase(sUserName), "'", "''") & "' " & vbCrLf
   End If
   
+  
+  sSQL = sSQL & "SELECT  CrossTabID AS ID, '9-BOX GRID REPORT' AS Type, Name, Username " & vbCrLf
+  sSQL = sSQL & "From ASRSysCrossTab " & vbCrLf
+  sSQL = sSQL & sWhere & " AND CrossTabType = " & ctt9GridBox & vbCrLf
+  sSQL = sSQL & "Union " & vbCrLf
   sSQL = sSQL & "SELECT  ID, CASE IsBatch WHEN 1 THEN 'BATCH JOB' WHEN 0 THEN 'REPORT PACK' END AS Type, Name, Username " & vbCrLf
   sSQL = sSQL & "From  ASRSysBatchJobName " & vbCrLf
   sSQL = sSQL & sWhere
@@ -513,19 +521,9 @@ Private Function BuildReportSQL(sUserName As String) As String
   sSQL = sSQL & "Union " & vbCrLf
   sSQL = sSQL & "SELECT  CrossTabID AS ID, 'CROSS TAB' AS Type, Name, Username " & vbCrLf
   sSQL = sSQL & "From ASRSysCrossTab " & vbCrLf
-    sWhereExtra = sWhere & " AND CrossTabType <> " & ctt9GridBox & vbCrLf
-  sSQL = sSQL & sWhereExtra
+  sSQL = sSQL & sWhere & " AND CrossTabType <> " & ctt9GridBox & vbCrLf
   sSQL = sSQL & "Union " & vbCrLf
-  sSQL = sSQL & "SELECT  CrossTabID AS ID, '9-Box Grid Report' AS Type, Name, Username " & vbCrLf
-  sSQL = sSQL & "From ASRSysCrossTab " & vbCrLf
-    sWhereExtra = sWhere & " AND CrossTabType = " & ctt9GridBox & vbCrLf
-  sSQL = sSQL & sWhereExtra
-  sSQL = sSQL & "Union " & vbCrLf
-  
-  'MH20020529 Fault 5706
-  'sSQL = sSQL & "SELECT  MailMergeID AS ID, 'MAIL MERGE' AS Type, Name, Username " & vbCrLf
   sSQL = sSQL & "SELECT  MailMergeID AS ID, CASE IsLabel WHEN 1 THEN 'ENVELOPE & LABEL' ELSE 'MAIL MERGE' END AS Type, Name, Username " & vbCrLf
-
   sSQL = sSQL & "From ASRSysMailMergeName " & vbCrLf
   sSQL = sSQL & sWhere
   sSQL = sSQL & "Union " & vbCrLf
