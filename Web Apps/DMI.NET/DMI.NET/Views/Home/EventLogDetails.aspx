@@ -235,7 +235,7 @@
 
 					</table>
 					<div id="divEventLogViewDetailsButtons" class="clearboth">
-						<input id="cmdEmail" type="button"  value="Email..." name="cmdEmail"  onclick="emailEvent();" />
+						<input id="cmdEmail" type="button"  value="Email..." name="cmdEmail"  onclick="emailDetailEvent();" />
 						<input id="cmdPrint" type="button"  value="Print..." name="cmdPrint" onclick="printEvent();" />
 						<input id="cmdOK" type="button"  value="Close" name="cmdOK" onclick="okClick();" />
 					</div>
@@ -268,7 +268,7 @@
 			var frmDetails = OpenHR.getForm("workframe", "frmDetails");
 
 			function eventlogdetails_window_onload() {
-				// Convert table to jQuery grid
+				// Convert table to jQuery grid				
 				tableToGrid("#ssOleDBGridEventLogDetails", {
 					height: '300',
 					width: 'auto',
@@ -278,7 +278,7 @@
 					},
 					rowNum: 1000
 				});
-
+				
 				$('#ssOleDBGridEventLogDetails').hideCol("ID");
 				$("#ssOleDBGridEventLogDetails").setGridWidth($("#findGridRow").width());
 
@@ -316,10 +316,10 @@
 				$("#EventLogViewDetails").dialog("close");
 			}
 
-			function emailEvent() {
+			function emailDetailEvent() {
 				var sBatchInfo = "";
 				var sURL;
-
+				
 				if ($('#txtEventBatch').val() == 1) {
 					$("#txtBatchy").val(1);
 					$('#txtSelectedEventIDs').val(frmEventDetails.cboOtherJobs.options[frmEventDetails.cboOtherJobs.selectedIndex].value);
@@ -347,24 +347,9 @@
 					"&txtBatchy=" + $("#txtBatchy").val();
 
 				var sURLString = sURL;
-				$('#EventDetailEmailSelect').data('sURLData', sURLString);
-				$('#EventDetailEmailSelect').dialog("open");
+				$('#EventLogEmailSelect').data('sURLData', sURLString);
+				$('#EventLogEmailSelect').dialog("open");
 			}			
-
-			$("#EventDetailEmailSelect").dialog({
-				autoOpen: false,
-				modal: true,
-				width: (screen.width) / 3,
-				height: (screen.height) / 2 + 10,
-				resizable: false,
-				position: ['center'],
-				open: function (event, ui) {					
-					$('#EventDetailEmailSelect').load($('#EventDetailEmailSelect').data('sURLData'), function () {
-						$("input[type=submit], input[type=button], button").button();
-					});
-				},
-				close: function (event, ui) {}
-			});
 
 			function printEvent() {
 				//Hide the buttons before printing...

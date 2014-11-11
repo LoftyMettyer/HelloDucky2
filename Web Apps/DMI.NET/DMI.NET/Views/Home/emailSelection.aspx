@@ -78,7 +78,7 @@
 
 <script type="text/javascript">
 
-	function emailSelection_window_onload() {
+	function emailSelection_window_onload() {		
 		$("#EventLogEmailSelect .button").button();
 		//Hide the EmailGroup table header and its column
 		$('.ui-jqgrid-htable tr th:nth-child(1)').hide();
@@ -87,7 +87,7 @@
 
 	function setForm() {
 		var frmPopup = document.getElementById("frmPopup");
-
+		
 		if (document.getElementById('txtAbsenceEmailGroup') != null) {
 			document.getElementById('txtAbsenceEmailGroup').value = frmPopup.txtSelectedName.value;
 			document.getElementById('txtAbsenceEmailGroupID').value = frmPopup.txtSelectedID.value;
@@ -119,7 +119,7 @@
 		<div>
 		<%=GetEmailSelection()%>
 		<div id="divEmailSelectionButtons">
-			<input class="button" id="cmdok" name="cmdok" onclick="emailEvent()" type="button" value="OK" />
+			<input class="button" id="cmdok" name="cmdok" onclick="emailSelectionEvent()" type="button" value="OK" />
 			<input class="button" id="cmdcancel" name="cmdcancel" onclick="closeEmailSelect()" type="button" value="Cancel" />
 		</div>
 		</div>
@@ -233,7 +233,7 @@
 		beforeSelectRow: function () { return false; }
 	});
 
-	function emailEvent() {
+	function emailSelectionEvent() {
 	
 		var sTo = getEmails(4);
 		var SCc = getEmails(5);
