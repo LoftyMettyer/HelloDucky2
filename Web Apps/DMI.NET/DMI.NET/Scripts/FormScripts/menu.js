@@ -324,21 +324,42 @@ function menu_MenuClick(sTool) {
 	}
 
 	if (sToolName == "mnutoolInlineEditRecordFind") {
-		$('#mnutoolInlineEditRecordFind').toggleClass("toolbarButtonOn");
-		setinlineeditmode();
+		if (!$('#mnutoolInlineEditRecordFind').hasClass('disabled')) {
+			$('#mnutoolInlineEditRecordFind').toggleClass("toolbarButtonOn");
+			if ($('#mnutoolInlineEditRecordFind').hasClass("toolbarButtonOn")) {
+				$("#findGridTable_iledit").show();
+				$("#findGridTable_ilsave").show();
+				$("#findGridTable_ilcancel").show();
+				setinlineeditmode();
+			} else {
+				$("#findGridTable_iledit").hide();
+				$("#findGridTable_ilsave").hide();
+				$("#findGridTable_ilcancel").hide();
+			}
+		}
 		return false;
 	}
 
 
 	if (sToolName == "mnutoolAutoSaveRecordFind") {
-		$('#mnutoolAutoSaveRecordFind').toggleClass("toolbarButtonOn");
-		if ($('#mnutoolAutoSaveRecordFind').hasClass("toolbarButtonOn")) {
-			$('#mnutoolInlineEditRecordFind').addClass("toolbarButtonOn");
-		} else {
-			$('#mnutoolInlineEditRecordFind').removeClass("toolbarButtonOn"); 
+		if (!$('#mnutoolInlineEditRecordFind').hasClass('disabled')) {
+			$('#mnutoolAutoSaveRecordFind').toggleClass("toolbarButtonOn");
+			if ($('#mnutoolAutoSaveRecordFind').hasClass("toolbarButtonOn")) {
+				$('#mnutoolInlineEditRecordFind').addClass("toolbarButtonOn");
+			} else {
+				$('#mnutoolInlineEditRecordFind').removeClass("toolbarButtonOn");
+			}
 		}
-
-		setinlineeditmode();
+		if ($('#mnutoolInlineEditRecordFind').hasClass("toolbarButtonOn")) {
+			$("#findGridTable_iledit").show();
+			$("#findGridTable_ilsave").show();
+			$("#findGridTable_ilcancel").show();
+			setinlineeditmode();
+		} else {
+			$("#findGridTable_iledit").hide();
+			$("#findGridTable_ilsave").hide();
+			$("#findGridTable_ilcancel").hide();
+		}
 		return false;
 	}
 
@@ -5119,7 +5140,7 @@ function setinlineeditmode() {
 
 				$('#findGridTable').editRow(rowid); //Edit the current row
 			}
-		})
+		});
 	};
 
 	if (!$('#mnutoolInlineEditRecordFind').hasClass("toolbarButtonOn") || !$('#mnutoolAutoSaveRecordFind').hasClass("toolbarButtonOn")) {

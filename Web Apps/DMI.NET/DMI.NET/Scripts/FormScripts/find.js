@@ -65,6 +65,7 @@ function find_window_onload() {
 		var colDataArray;
 		var obj;
 		var iCount2;
+		var thereIsAtLeastOneEditableColumn = false;
 
 		if (sCurrentWorkPage == "FIND") {
 			sErrorMsg = frmFindForm.txtErrorDescription.value;
@@ -95,6 +96,16 @@ function find_window_onload() {
 							var sColumnDisplayName = dataCollection.item(i).getAttribute("data-colname");
 							var iColumnId = dataCollection.item(i).getAttribute("data-columnid");
 							var sColumnEditable = dataCollection.item(i).getAttribute("data-editable") == "1" ? true : false;
+							var ColumnDataType = dataCollection.item(i).getAttribute("data-datatype");
+							var ColumnControlType = dataCollection.item(i).getAttribute("data-controltype");
+							var ColumnSize = dataCollection.item(i).getAttribute("data-size");
+							var ColumnDecimals = dataCollection.item(i).getAttribute("data-decimals");
+							var ColumnLookupTableID = dataCollection.item(i).getAttribute("data-lookuptableid");
+							var ColumnLookupColumnID = dataCollection.item(i).getAttribute("data-lookupcolumnid");
+
+							if (sColumnEditable == true) {
+								thereIsAtLeastOneEditableColumn = true;
+							}
 
 							sColumnType = sColDef.substr(iIndex + 1);
 							colNames.push(sColumnName);
@@ -193,7 +204,6 @@ function find_window_onload() {
 					loadComplete: function () {
 						moveFirst();
 					},
-					gridComplete: function () {},
 					afterSearch: function () {
 						moveFirst();
 					}
@@ -213,19 +223,30 @@ function find_window_onload() {
 					cursor: 'pointer'
 				});
 
-				//Enable inline editing
-				$("#findGridTable").jqGrid('inlineNav', '#pager-coldata', {
-					edit: true,
-					add: false,
-					save: true,
-					cancel: true,
-					addParams: { useFormatter: false },
-					editParams: {
-						aftersavefunc: function (rowid, response, options) {
-							saveInlineRowToDatabase(rowid);
+				//Enable inline editing if there is at least one editable column
+				if (thereIsAtLeastOneEditableColumn) {
+					//Make grid editable
+					$("#findGridTable").jqGrid('inlineNav', '#pager-coldata', {
+						edit: true,
+						add: false,
+						save: true,
+						cancel: true,
+						addParams: { useFormatter: false },
+						editParams: {
+							aftersavefunc: function (rowid, response, options) {
+								saveInlineRowToDatabase(rowid);
+							}
 						}
-					}
-				});
+					});
+
+					//Enable inline edit and autosave buttons
+					menu_toolbarEnableItem('mnutoolInlineEditRecordFind', true);
+					menu_toolbarEnableItem('mnutoolAutoSaveRecordFind', true);
+				} else {
+					//Disable inline edit and autosave buttons
+					menu_toolbarEnableItem('mnutoolInlineEditRecordFind', false);
+					menu_toolbarEnableItem('mnutoolAutoSaveRecordFind', false);
+				}
 
 				//Hide the edit icons by default
 				$("#findGridTable_iledit").hide();

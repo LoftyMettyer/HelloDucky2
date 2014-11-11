@@ -206,7 +206,7 @@
 								sErrorDescription = "You do not have permission to read any of the selected order's find columns."
 							Else
 
-								rstFindDefinition = resultDataSet.Tables(2)
+								rstFindDefinition = resultDataSet.Tables(2)	'Get the columns information
 								
 								' Get the recordset parameters
 								sThousandColumns = resultDataSet.Tables(0).Rows(0)("ThousandColumns").ToString()
@@ -234,10 +234,16 @@
 												Response.Write(String.Format("<input type='hidden' id=txtFindColDef_{0} name=txtFindColDef_{0} value='{1}' data-colname='{2}' data-type='{3}'>" _
 														 , iloop, sColDef, rstFindRecords.Columns(iloop).ColumnName, "integer") & vbCrLf)
 											Else
-												Response.Write(String.Format("<input type='hidden' id='txtFindColDef_{0}' name='txtFindColDef_{0}' value='{1}' data-colname='{2}' data-type='{3}' data-columnid='{4}' data-editable='{5}'>" _
-														 , iloop, sColDef, rstFindRecords.Columns(iloop).ColumnName, "", _
+												Response.Write(String.Format("<input type='hidden' id='txtFindColDef_{0}' name='txtFindColDef_{0}' value='{1}' data-colname='{2}' data-datatype='{3}' data-columnid='{4}' data-editable='{5}' data-controltype='{6}' data-size='{7}' data-decimals='{8}' data-lookuptableid='{9}' data-lookupcolumnid='{10}'>" _
+														 , iloop, sColDef, rstFindRecords.Columns(iloop).ColumnName, _
+														 rstFindDefinition.Select("ColumnName='" & rstFindRecords.Columns(iloop).ColumnName & "'").FirstOrDefault.Item("datatype"), _
 														 rstFindDefinition.Select("ColumnName='" & rstFindRecords.Columns(iloop).ColumnName & "'").FirstOrDefault.Item("columnID"), _
-														 rstFindDefinition.Select("ColumnName='" & rstFindRecords.Columns(iloop).ColumnName & "'").FirstOrDefault.Item("updateGranted")) & vbCrLf)
+														 rstFindDefinition.Select("ColumnName='" & rstFindRecords.Columns(iloop).ColumnName & "'").FirstOrDefault.Item("updateGranted"), _
+														 rstFindDefinition.Select("ColumnName='" & rstFindRecords.Columns(iloop).ColumnName & "'").FirstOrDefault.Item("controltype"), _
+														 rstFindDefinition.Select("ColumnName='" & rstFindRecords.Columns(iloop).ColumnName & "'").FirstOrDefault.Item("size"), _
+														 rstFindDefinition.Select("ColumnName='" & rstFindRecords.Columns(iloop).ColumnName & "'").FirstOrDefault.Item("decimals"), _
+														 rstFindDefinition.Select("ColumnName='" & rstFindRecords.Columns(iloop).ColumnName & "'").FirstOrDefault.Item("LookupTableID"), _
+														 rstFindDefinition.Select("ColumnName='" & rstFindRecords.Columns(iloop).ColumnName & "'").FirstOrDefault.Item("LookupColumnID")) & vbCrLf)
 											End If
 										End If
 							
