@@ -93,7 +93,13 @@
 			}	
 
 			// Everything OK. Submit the form.
-			OpenHR.submitForm(frmPromptedValues);
+			if ($('#tmpDialog').dialog('isOpen') == true) {
+				//prompted Values for OpenHR.modalExpressionSelect screen.
+				OpenHR.submitForm(frmPromptedValues, 'tmpDialog');
+			} else {
+				OpenHR.submitForm(frmPromptedValues);
+			}
+			
 		}
 
 		function CancelClick()

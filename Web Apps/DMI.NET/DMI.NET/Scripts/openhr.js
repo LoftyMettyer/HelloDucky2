@@ -102,8 +102,8 @@
 
 		},
 
-		modalExpressionSelect = function (type, tableId, currentID, followOnFunctionName, screenwidth, screenheight) {
-
+		modalExpressionSelect = function (type, tableId, currentID, followOnFunctionName, screenwidth, screenheight, returnFilterResults) {
+			
 			var frame = $("#divExpressionSelection");
 			var capitalizedText = capitalizeMe(type);
 
@@ -111,7 +111,7 @@
 				capitalizedText = 'Calculations';
 			}
 			
-			$("#ExpressionsAvailable").jqGrid('GridUnload');
+			$("#ExpressionsAvailable").jqGrid('GridUnload');			
 			$("#ExpressionsAvailable").jqGrid({
 				url: 'Reports/GetExpressionsForTable?TableID=' + tableId + '&&selectionType=' + type,
 				datatype: 'json',
@@ -152,8 +152,52 @@
 					$("#ExpressionSelectOK").off('click').on('click', function() {
 						var rowid = $('#ExpressionsAvailable').jqGrid('getGridParam', 'selrow');
 						var gridData = $("#ExpressionsAvailable").getRowData(rowid);
-						followOnFunctionName(gridData.ID, gridData.Name, gridData.Access);
-						frame.dialog("close");
+
+						if (returnFilterResults) {
+							//launch promptedvalues to return filter result set.
+
+							$('body').append('<div id="tmpDialog"></div>');
+							$('#tmpDialog').dialog();
+
+							$.ajax({
+								url: "promptedValues",
+								type: "POST",
+								async: true,
+								data: { filterID: gridData.ID },
+								success: function(html) {
+
+									$('#tmpDialog').html('');
+
+									//OK
+									$('#tmpDialog').html(html);
+
+									//jQuery styling
+									$(function() {
+										$("input[type=submit], input[type=button], button").button();
+										$("input").addClass("ui-widget ui-corner-all");
+										$("input").removeClass("text");
+
+										$("textarea").addClass("ui-widget ui-corner-tl ui-corner-bl");
+										$("textarea").removeClass("text");
+
+										$("select").addClass("ui-widget ui-corner-tl ui-corner-bl");
+										$("select").removeClass("text");
+										$("input[type=submit], input[type=button], button").removeClass("ui-corner-all");
+										$("input[type=submit], input[type=button], button").addClass("ui-corner-tl ui-corner-br");
+
+									});
+								},
+								error: function() { alert('error!!!!!'); }
+							});
+
+							//followOnFunctionName(gridData.ID, gridData.Name, gridData.Access);
+							frame.dialog("close");
+
+						} else {
+							//Just return the filter name
+							followOnFunctionName(gridData.ID, gridData.Name, gridData.Access);
+							frame.dialog("close");
+						}
 					});
 
 					$("#ExpressionSelectCancel").off('click').on('click', function () {					

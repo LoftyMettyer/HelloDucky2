@@ -45,9 +45,12 @@ function getRecordGroup(groupType) {
 	var currentID = "";
 	var newHeight = (screen.height) / 2;
 	var newWidth = (screen.width) / 2;
+	var returnFilterResults = false;
+	if (groupType == "FILTER") returnFilterResults = true;
+	
 	OpenHR.modalExpressionSelect(groupType, tableID, currentID, function (id) {
 		makeSelection(groupType, id, '');
-	}, newWidth - 40, newHeight - 160);
+	}, newWidth - 40, newHeight - 160, returnFilterResults);
 	$('#ExpressionSelectNone').hide();
 }
 

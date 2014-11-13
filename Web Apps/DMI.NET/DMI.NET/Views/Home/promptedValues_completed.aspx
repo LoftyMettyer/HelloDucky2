@@ -9,7 +9,7 @@
 
 	<script type="text/javascript">
 		function promptedValues_completed_onload() {
-
+			
 			if (OpenHR.parentExists()) {
 
 				try {
@@ -25,11 +25,15 @@
 				window.parent.close();
 			}
 			else {
-				//jquery div option
-				try {
+				//jquery div option				
+				if ($('#tmpDialog').dialog('isOpen') == true) {
+					//prompted Values for OpenHR.modalExpressionSelect screen.
+					makeSelection('FILTER', '<%:Session("filterIDvalue")%>', '<%=Session("promptsvalue")%>');
+					//$('#tmpDialog').dialog('close').dialog('destroy');
+					$('#tmpDialog').remove();
+
+				} else {
 					picklistdef_makeSelection('FILTER', '<%=Session("filterIDvalue")%>', '<%=Session("promptsvalue")%>');
-				}
-				catch (e) {				
 				}
 			}
 		}
