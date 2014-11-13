@@ -797,9 +797,9 @@
 	<input type="hidden" id="txtPurgeFrequency" name="txtPurgeFrequency">
 	<input type="hidden" id="txtShowPurgeMSG" name="txtShowPurgeMSG" value='<%=Session("showPurgeMessage")%>'>
 	<input type="hidden" id="txtCurrentUsername" name="txtCurrentUsername">
-	<input type="hidden" id="txtPurgeType" name="txtCurrentType">
-	<input type="hidden" id="txtPurgeMode" name="txtCurrentMode">
-	<input type="hidden" id="txtPurgeStatus" name="txtCurrentStatus">
+	<input type="hidden" id="txtCurrentType" name="txtCurrentType">
+	<input type="hidden" id="txtCurrentMode" name="txtCurrentMode">
+	<input type="hidden" id="txtCurrentStatus" name="txtCurrentStatus">
 </form>
 
 <form id="frmDelete" name="frmDelete" method="post" style="visibility: hidden; display: none" action="eventLog">

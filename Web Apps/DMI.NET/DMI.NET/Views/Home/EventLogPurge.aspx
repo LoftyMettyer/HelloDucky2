@@ -1,17 +1,12 @@
-﻿<%@ Page Language="VB" Inherits="System.Web.Mvc.ViewPage" %>
+﻿<%@ OutputCache Duration="1" varyByParam="none"%>
+<%@ Page Language="VB" Inherits="System.Web.Mvc.ViewPage" %>
 <%@ Import Namespace="System.Data" %>
 <%@ Import Namespace="HR.Intranet.Server" %>
 
 <script type="text/javascript">
-	<%
-	Response.Cache.SetCacheability(System.Web.HttpCacheability.NoCache)
-	Response.Cache.SetNoStore()
-	%>
-
 		function eventlogpurge_window_onload() {
 			$('#optNoPurge').prop('checked', ($('#txtPurge').val() == 0));
-			$('#optPurge').prop('checked', ($('#txtPurge').val() == 1));
-			
+			$('#optPurge').prop('checked', ($('#txtPurge').val() == 1));			
 	
 			refreshControls();
 		}	
@@ -19,7 +14,7 @@
 		function okClick() {
 			var frmMainLog = OpenHR.getForm("workframe", "frmLog");
 			var frmOpenerPurge = OpenHR.getForm("workframe", "frmPurge");
-
+			
 			if (($('#cboPeriod').val() == 3) && ($('#txtPeriod').val() > 200)) {
 				OpenHR.modalPrompt("You cannot select a purge period of greater than 200 years.", 0, "Event Log");
 			}
@@ -244,7 +239,7 @@
 		</form>
 
 		<div id="divEventLogPurgeButtons" class="clearboth">
-			<input id="cmdOK" onclick=" okClick() " type="button" value="OK" />
+			<input id="cmdOK" onclick="okClick();" type="button" value="OK" />
 			<input id="okClick" onclick="cancelClick();" tabindex="1" type="button" value="Cancel" />
 		</div>
 	</div>
