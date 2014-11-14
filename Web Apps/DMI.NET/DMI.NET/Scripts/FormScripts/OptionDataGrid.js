@@ -53,13 +53,17 @@ $('#cmdCancel').click(function () {
 
 $('#cmdSelect').click(function () {
 	var frmGotoOption = document.getElementById("frmGotoOption");
-
+	
 	frmGotoOption.txtGotoOptionAction.value = $('#GotoOptionActionSelect').val();
 	frmGotoOption.txtGotoOptionRecordID.value = $('#RecordID').val();
 	var selRowId = $("#ssOleDBGridRecords").jqGrid('getGridParam', 'selrow');
 	var recordID = $("#ssOleDBGridRecords").jqGrid('getCell', selRowId, 'ID');
 	frmGotoOption.txtGotoOptionLinkRecordID.value = recordID;
 	frmGotoOption.txtGotoOptionPage.value = "emptyoption";
+
+	var optionDataForm = OpenHR.getForm("optiondataframe", "frmOptionData");
+	frmGotoOption.txtGotoOptionLookupValue.value = optionDataForm.txtStatus.value;
+
 	OpenHR.submitForm(frmGotoOption);
 });
 
