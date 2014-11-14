@@ -142,8 +142,15 @@
 				},
 				ondblClickRow: function (rowid) {
 					var gridData = $(this).getRowData(rowid);
-					followOnFunctionName(gridData.ID, gridData.Name, gridData.Access);
-					frame.dialog("close");
+
+					if (returnFilterResults) {
+						//launch promptedvalues to return filter result set.
+						returnFilterResults(gridData);
+						frame.dialog("close");
+					} else {
+						followOnFunctionName(gridData.ID, gridData.Name, gridData.Access);
+						frame.dialog("close");
+					}
 				},
 				loadComplete: function(json) {
 
@@ -155,44 +162,8 @@
 
 						if (returnFilterResults) {
 							//launch promptedvalues to return filter result set.
-
-							$('body').append('<div id="tmpDialog"></div>');
-							$('#tmpDialog').dialog();
-
-							$.ajax({
-								url: "promptedValues",
-								type: "POST",
-								async: true,
-								data: { filterID: gridData.ID },
-								success: function(html) {
-
-									$('#tmpDialog').html('');
-
-									//OK
-									$('#tmpDialog').html(html);
-
-									//jQuery styling
-									$(function() {
-										$("input[type=submit], input[type=button], button").button();
-										$("input").addClass("ui-widget ui-corner-all");
-										$("input").removeClass("text");
-
-										$("textarea").addClass("ui-widget ui-corner-tl ui-corner-bl");
-										$("textarea").removeClass("text");
-
-										$("select").addClass("ui-widget ui-corner-tl ui-corner-bl");
-										$("select").removeClass("text");
-										$("input[type=submit], input[type=button], button").removeClass("ui-corner-all");
-										$("input[type=submit], input[type=button], button").addClass("ui-corner-tl ui-corner-br");
-
-									});
-								},
-								error: function() { alert('error!!!!!'); }
-							});
-
-							//followOnFunctionName(gridData.ID, gridData.Name, gridData.Access);
+							returnFilterResults(gridData);
 							frame.dialog("close");
-
 						} else {
 							//Just return the filter name
 							followOnFunctionName(gridData.ID, gridData.Name, gridData.Access);
@@ -220,7 +191,7 @@
 
 			function capitalizeMe(val) {
 				return val.charAt(0).toUpperCase() + val.substr(1).toLowerCase();
-			}
+			}	
 
 			//jQuery styling
 			$(function () {
@@ -237,6 +208,47 @@
 				$("input[type=submit], input[type=button], button").addClass("ui-corner-tl ui-corner-br");
 			});
 
+
+			function returnFilterResults(gridData) {
+				//launch promptedvalues to return filter result set.
+
+				$('body').append('<div id="tmpDialog"></div>');
+				$('#tmpDialog').dialog({
+					width: 'auto',
+					height: 'auto'
+				});
+
+				$.ajax({
+					url: "promptedValues",
+					type: "POST",
+					async: true,
+					data: { filterID: gridData.ID },
+					success: function (html) {
+
+						$('#tmpDialog').html('').html(html);
+
+						//jQuery styling
+						$(function () {
+							$("input[type=submit], input[type=button], button").button();
+							$("input").addClass("ui-widget ui-corner-all");
+							$("input").removeClass("text");
+
+							$("textarea").addClass("ui-widget ui-corner-tl ui-corner-bl");
+							$("textarea").removeClass("text");
+
+							$("select").addClass("ui-widget ui-corner-tl ui-corner-bl");
+							$("select").removeClass("text");
+							$("input[type=submit], input[type=button], button").removeClass("ui-corner-all");
+							$("input[type=submit], input[type=button], button").addClass("ui-corner-tl ui-corner-br");
+
+						});
+
+						$('#tmpDialog').dialog("option", "position", ['center', 'center']);
+
+					},
+					error: function () { alert('error!!!!!'); }
+				});				
+			}
 
 		},
 

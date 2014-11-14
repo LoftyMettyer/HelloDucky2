@@ -59,6 +59,9 @@
 					//jquery div option
 				
 				}
+
+				$('[data-type="date"]').datepicker();
+
 			}
 		}
 	</script>
@@ -107,13 +110,18 @@
 			if(OpenHR.parentExists()) {
 				window.parent.self.close();
 			}
-			else {
-				$("#reportframeset").dialog('close');
+			else {				
+				if($('#tmpDialog').dialog('isOpen') == true) {
+					$("#tmpDialog").dialog('close');
+				}
+				else {
+					$("#reportframeset").dialog('close');
+				}
+				
 			}
 		}
 
-		function ValidatePrompt(pctlPrompt, piDataType)
-		{
+		function ValidatePrompt(pctlPrompt, piDataType) {			
 			// Validate the given prompt value.
 			var fOK;
 			var reBackSlash = new RegExp("\\\\", "gi");
@@ -453,7 +461,7 @@
 									' Date Prompted Value
 								ElseIf NullSafeString(rowPromptedValues("ValueType").ToString) = "4" Then
 
-									Response.Write("        <input type=text class=""text"" id=prompt_4_" & rowPromptedValues("componentID").ToString & " name=prompt_4_" & rowPromptedValues("componentID").ToString & " value=""")
+									Response.Write("        <input type=""text"" data-type=""date"" class=""text"" id=prompt_4_" & rowPromptedValues("componentID").ToString & " name=prompt_4_" & rowPromptedValues("componentID").ToString & " value=""")
 	
 									Dim iDay As Integer, iMonth As Integer, dtDate As DateTime
 	
