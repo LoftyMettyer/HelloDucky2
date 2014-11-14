@@ -55,7 +55,6 @@ function find_window_onload() {
 		var sColumnName;
 		var iCount;
 		var fRecordAdded;
-		var sColumnType;
 		var colModel;
 		var colNames;
 		var sColDef;
@@ -102,56 +101,80 @@ function find_window_onload() {
 							var ColumnDecimals = dataCollection.item(i).getAttribute("data-decimals");
 							var ColumnLookupTableID = dataCollection.item(i).getAttribute("data-lookuptableid");
 							var ColumnLookupColumnID = dataCollection.item(i).getAttribute("data-lookupcolumnid");
+							var ColumnSpinnerMinimum = parseInt(dataCollection.item(i).getAttribute("data-spinnerminimum"));
+							var ColumnSpinnerMaximum = parseInt(dataCollection.item(i).getAttribute("data-spinnermaximum"));
+							var ColumnSpinnerIncrement = parseInt(dataCollection.item(i).getAttribute("data-spinnerincrement"));
 
 							if (sColumnEditable == true) {
 								thereIsAtLeastOneEditableColumn = true;
 							}
 
-							sColumnType = sColDef.substr(iIndex + 1);
 							colNames.push(sColumnName);
 
 							if (sColumnName == "ID" || sColumnName == "Timestamp") {
 								colModel.push({ name: sColumnName, hidden: true });
 							} else {
-								switch (sColumnType.toLowerCase()) {
-									case "boolean": //checkbox - 11
-										colModel.push({ name: sColumnName, id: iColumnId, edittype: "checkbox", formatter: 'checkbox', editable: sColumnEditable, formatoptions: { disabled: true }, align: 'center', width: 100 });
-										break;
-									case "decimal": //Numeric - 131
+								//Determine the column type and set the colModel for this column accordingly
+								if (ColumnControlType == 1) { //Logic - checkbox
+									colModel.push({ name: sColumnName, id: iColumnId, edittype: "checkbox", formatter: 'checkbox', editable: sColumnEditable, formatoptions: { disabled: true }, align: 'center', width: 100 });
+								} else if (ColumnDataType == 4) { //Integer
+									if (ColumnControlType == 64) { //"Numeric" integer
 										colModel.push({ name: sColumnName, id: iColumnId, edittype: "text", sorttype: 'integer', formatter: 'numeric', editable: sColumnEditable, align: 'right', width: 100 });
-										break;
-									case "datetime": //Date - 135
+									} else { //Spinner integer
 										colModel.push({
 											name: sColumnName,
-											edittype: "text",
 											id: iColumnId,
-											sorttype: function(cellValue) { //Sort function that deals correctly with empty dates
-												if (Date.parse(cellValue)) {
-													var d = cellValue.split("/");
-													return new Date(d[2].toString() + "-" + d[1].toString() + "-" + d[0].toString());
-												} else {
-													return new Date("1901-01-01");
-												}
-											},
-											formatter: 'date',
-											formatoptions: { srcformat: srcFormat, newformat: newFormat, disabled: true },
-											align: 'left',
-											width: 100,
 											editable: sColumnEditable,
 											editoptions: {
-												size: 20,
+												size: 10,
 												maxlengh: 10,
-												dataInit: function(element) {
-													$(element).datepicker({
-														constrainInput: true,
-														showOn: 'focus'
-													});
+												min: ColumnSpinnerMinimum,
+												max: ColumnSpinnerMaximum,
+												step: ColumnSpinnerIncrement,
+												dataInit: function (element) { 
+													$(element).spinner({ });
 												}
 											}
 										});
-										break;
-									default:
-										colModel.push({ name: sColumnName, id: iColumnId, width: 100, editable: sColumnEditable, editoptions: { size: "20", maxlength: "30" }, label: sColumnDisplayName });
+									}
+								} else if (ColumnDataType == 11) { //Date
+									colModel.push({
+										name: sColumnName,
+										edittype: "text",
+										id: iColumnId,
+										sorttype: function (cellValue) { //Sort function that deals correctly with empty dates
+											if (Date.parse(cellValue)) {
+												var d = cellValue.split("/");
+												return new Date(d[2].toString() + "-" + d[1].toString() + "-" + d[0].toString());
+											} else {
+												return new Date("1901-01-01");
+											}
+										},
+										formatter: 'date',
+										formatoptions: { srcformat: srcFormat, newformat: newFormat, disabled: true },
+										align: 'left',
+										width: 100,
+										editable: sColumnEditable,
+										editoptions: {
+											size: 20,
+											maxlengh: 10,
+											dataInit: function (element) {
+												$(element).datepicker({
+													constrainInput: true,
+													showOn: 'focus'
+												});
+											}
+										}
+									});
+								} else if (ColumnControlType == 64 && ColumnSize > 2000000000) { //Multiline - Textarea
+									colModel.push({
+										name: sColumnName,
+										edittype: "textarea",
+										id: iColumnId,
+										editable: sColumnEditable
+									})
+								} else { //None of the above
+									colModel.push({ name: sColumnName, id: iColumnId, width: 100, editable: sColumnEditable, editoptions: { size: "20", maxlength: "30" }, label: sColumnDisplayName });
 								}
 							}
 						}

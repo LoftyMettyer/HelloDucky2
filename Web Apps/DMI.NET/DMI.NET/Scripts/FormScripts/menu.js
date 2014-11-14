@@ -5139,6 +5139,10 @@ function setinlineeditmode() {
 				}
 
 				$('#findGridTable').editRow(rowid); //Edit the current row
+
+				//Without "return true" below, any other "Select" events ("onSelectRow", "onCellSelect", etc) won't fire
+				//See http://stackoverflow.com/questions/16241155/jqgrid-using-beforeselectrow-it-disables-my-oncellselect-event
+				return true;
 			}
 		});
 	};

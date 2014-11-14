@@ -63,7 +63,16 @@
 					}
 				}
 			});
-			$('#findGridTable').jqGrid('bindKeys', { "onEnter": function () { menu_editRecord(); } });
+			$('#findGridTable').jqGrid('bindKeys', {
+				"onEnter": function (rowid) {
+					//If we are in "Inline-edit" mode and "Enter" was pressed then don't go into "Edit record" mode
+					if ($("#findGridTable_iledit").hasClass('ui-state-disabled')) {
+						return;
+				}
+
+					menu_editRecord();
+				}
+			});
 		}
 	}
 </script>
@@ -205,16 +214,13 @@
 							If prmSomeSelectable.Value = 0 Then
 								sErrorDescription = "You do not have permission to read any of the selected order's find columns."
 							Else
-
-								rstFindDefinition = resultDataSet.Tables(2)	'Get the columns information
-								
 								' Get the recordset parameters
 								sThousandColumns = resultDataSet.Tables(0).Rows(0)("ThousandColumns").ToString()
 								sBlankIfZeroColumns = resultDataSet.Tables(0).Rows(0)("BlankIfZeroColumns").ToString()
 									
-								' Get the actual data
-								rstFindRecords = resultDataSet.Tables(1)
-
+								rstFindRecords = resultDataSet.Tables(1) 'Get the actual data
+								rstFindDefinition = resultDataSet.Tables(2)	'Get the columns information
+								
 								' Instantiate and initialise the grid. 
 								Response.Write("<table class='outline' style='width : 100%; ' id='findGridTable'>" & vbCrLf)
 								Response.Write("<div id='pager-coldata'></div>" & vbCrLf)
@@ -234,16 +240,21 @@
 												Response.Write(String.Format("<input type='hidden' id=txtFindColDef_{0} name=txtFindColDef_{0} value='{1}' data-colname='{2}' data-type='{3}'>" _
 														 , iloop, sColDef, rstFindRecords.Columns(iloop).ColumnName, "integer") & vbCrLf)
 											Else
-												Response.Write(String.Format("<input type='hidden' id='txtFindColDef_{0}' name='txtFindColDef_{0}' value='{1}' data-colname='{2}' data-datatype='{3}' data-columnid='{4}' data-editable='{5}' data-controltype='{6}' data-size='{7}' data-decimals='{8}' data-lookuptableid='{9}' data-lookupcolumnid='{10}'>" _
+												Dim objRow = rstFindDefinition.Select("ColumnName='" & rstFindRecords.Columns(iloop).ColumnName & "'")
+												Response.Write(String.Format("<input type='hidden' id='txtFindColDef_{0}' name='txtFindColDef_{0}' value='{1}' data-colname='{2}' data-datatype='{3}' data-columnid='{4}' data-editable='{5}' data-controltype='{6}' data-size='{7}' data-decimals='{8}' data-lookuptableid='{9}' data-lookupcolumnid='{10}' data-spinnerminimum='{11}' data-spinnermaximum='{12}' data-spinnerincrement='{13}'>" _
 														 , iloop, sColDef, rstFindRecords.Columns(iloop).ColumnName, _
-														 rstFindDefinition.Select("ColumnName='" & rstFindRecords.Columns(iloop).ColumnName & "'").FirstOrDefault.Item("datatype"), _
-														 rstFindDefinition.Select("ColumnName='" & rstFindRecords.Columns(iloop).ColumnName & "'").FirstOrDefault.Item("columnID"), _
-														 rstFindDefinition.Select("ColumnName='" & rstFindRecords.Columns(iloop).ColumnName & "'").FirstOrDefault.Item("updateGranted"), _
-														 rstFindDefinition.Select("ColumnName='" & rstFindRecords.Columns(iloop).ColumnName & "'").FirstOrDefault.Item("controltype"), _
-														 rstFindDefinition.Select("ColumnName='" & rstFindRecords.Columns(iloop).ColumnName & "'").FirstOrDefault.Item("size"), _
-														 rstFindDefinition.Select("ColumnName='" & rstFindRecords.Columns(iloop).ColumnName & "'").FirstOrDefault.Item("decimals"), _
-														 rstFindDefinition.Select("ColumnName='" & rstFindRecords.Columns(iloop).ColumnName & "'").FirstOrDefault.Item("LookupTableID"), _
-														 rstFindDefinition.Select("ColumnName='" & rstFindRecords.Columns(iloop).ColumnName & "'").FirstOrDefault.Item("LookupColumnID")) & vbCrLf)
+														 objRow.FirstOrDefault.Item("datatype"), _
+														 objRow.FirstOrDefault.Item("columnID"), _
+														 objRow.FirstOrDefault.Item("updateGranted"), _
+														 objRow.FirstOrDefault.Item("controltype"), _
+														 objRow.FirstOrDefault.Item("size"), _
+														 objRow.FirstOrDefault.Item("decimals"), _
+														 objRow.FirstOrDefault.Item("LookupTableID"), _
+														 objRow.FirstOrDefault.Item("LookupColumnID"), _
+														 objRow.FirstOrDefault.Item("SpinnerMinimum"), _
+														 objRow.FirstOrDefault.Item("SpinnerMaximum"), _
+														 objRow.FirstOrDefault.Item("SpinnerIncrement") _
+														 ) & vbCrLf)
 											End If
 										End If
 							
