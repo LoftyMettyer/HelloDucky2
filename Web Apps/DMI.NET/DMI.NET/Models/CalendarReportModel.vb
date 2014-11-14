@@ -55,16 +55,16 @@ Namespace Models
 		Public Property EndCustomId As Integer = 0
 		Public Property EndCustomName As String
 
-		<DisplayName("Include Bank Holidays")> _
+		<DisplayName("Include Bank Holidays *")> _
 		Public Property IncludeBankHolidays As Boolean
 
-		<DisplayName("Working Days Only")> _
+		<DisplayName("Working Days Only *")> _
 		Public Property WorkingDaysOnly As Boolean
 
-		<DisplayName("Show Bank Holidays")> _
+		<DisplayName("Show Bank Holidays *")> _
 		Public Property ShowBankHolidays As Boolean
 
-		<DisplayName("Show Calendar Captions")> _
+		<DisplayName("Show Calendar Captions *")> _
 		Public Property ShowCaptions As Boolean
 
 		<DisplayName("Show Weekends")> _

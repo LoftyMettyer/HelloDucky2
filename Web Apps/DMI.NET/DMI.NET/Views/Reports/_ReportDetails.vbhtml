@@ -93,23 +93,19 @@
 <fieldset class="width100 floatleft">
 	<legend class="fontsmalltitle">Default Display Options :</legend>
 	<fieldset class="floatleft width25">
-		<div class="padbot5">
+		<div class="DataManagerOnly padbot5">
 			@Html.CheckBoxFor(Function(m) m.IncludeBankHolidays)
 			@Html.LabelFor(Function(m) m.IncludeBankHolidays)
 		</div>
-		<div class="padbot5">
+		<div class="DataManagerOnly padbot5">
 			@Html.CheckBoxFor(Function(m) m.WorkingDaysOnly)
 			@Html.LabelFor(Function(m) m.WorkingDaysOnly)
 		</div>
-		<div class="padbot5">
-			@Html.CheckBoxFor(Function(m) m.StartOnCurrentMonth)
-			@Html.LabelFor(Function(m) m.StartOnCurrentMonth)
-		</div>
-		<div class="padbot5">
+		<div class="DataManagerOnly padbot5">
 			@Html.CheckBoxFor(Function(m) m.ShowBankHolidays)
 			@Html.LabelFor(Function(m) m.ShowBankHolidays)
 		</div>
-		<div class="padbot5">
+		<div class="DataManagerOnly padbot5">
 			@Html.CheckBoxFor(Function(m) m.ShowCaptions)
 			@Html.LabelFor(Function(m) m.ShowCaptions)
 		</div>
@@ -117,11 +113,24 @@
 			@Html.CheckBoxFor(Function(m) m.ShowWeekends)
 			@Html.LabelFor(Function(m) m.ShowWeekends)
 		</div>
+		<div class="padbot5">
+			@Html.CheckBoxFor(Function(m) m.StartOnCurrentMonth)
+			@Html.LabelFor(Function(m) m.StartOnCurrentMonth)
+		</div>
+	</fieldset>
+	<fieldset class="DataManagerOnly width100">
+		* Not supported in OpenHR Web
 	</fieldset>
 </fieldset>
 
 <script>
 	$(function () {
+		//Initialise these as checked on new report
+		if ($('#txtReportID').val() == 0) {
+			$('#ShowCaptions').prop('checked', 'checked');
+			$('#ShowWeekends').prop('checked', 'checked');
+			$('#StartOnCurrentMonth').prop('checked', 'checked');
+		}		
 
 	    //add spinner functionality
 	    $('.spinner').each(function () {
