@@ -127,7 +127,7 @@
 
 	function centreMe(fSelf) {
 		try {
-			
+
 			var classToCentre = (fSelf ? '.node.ui-state-highlight' : '.node.ui-state-active');
 			var menuWidth = 0;
 			if (!window.menu_isSSIMode()) menuWidth = $('#menuframe').width();
@@ -141,7 +141,7 @@
 				myNodePos = $(classToCentre).offset().left;
 				workframeWidth = $('#workframeset').width();
 
-				var scrollLeftNewPos = myNodePos - workframeWidth + menuWidth + 48;
+				var scrollLeftNewPos = myNodePos - ((workframeWidth / 2) + menuWidth) + 48;
 				$('#workframeset').animate({ scrollLeft: scrollLeftNewPos }, 2000);
 			}
 
