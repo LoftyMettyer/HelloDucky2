@@ -467,7 +467,7 @@ Namespace Controllers
 			Dim objReport = objReportRepository.RetrieveCalendarReport(objModel.ReportID)
 
 			objModel.ChangeBaseTable()
-			objModel.AvailableTables = objReportRepository.GetChildTables(objReport.BaseTableID, True)
+			objModel.AvailableTables = objReportRepository.GetTablesWithEvents(objReport.BaseTableID)
 
 			ModelState.Clear()
 			Return PartialView("EditorTemplates\CalendarEventDetail", objModel)
