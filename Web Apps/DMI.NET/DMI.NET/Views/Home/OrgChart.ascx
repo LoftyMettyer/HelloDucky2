@@ -63,7 +63,7 @@
 			$('#workframe').attr('overflow', 'auto');
 			$("#org").jOrgChart({
 				chartElement: '#chart',
-				dragAndDrop: true
+				dragAndDrop: false
 			});
 
 			setTimeout('centreMe(true)', 500);
