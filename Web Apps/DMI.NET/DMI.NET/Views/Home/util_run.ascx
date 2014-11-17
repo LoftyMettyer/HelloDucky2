@@ -259,7 +259,7 @@
 			%>
 		</div>
 		<br/>
-		<div id="divReportButtons" style="margin: 30px 0 0 0; visibility: hidden; padding-top: 20px; float: right">
+		<div id="divReportButtons" style="margin: 0; visibility: hidden; padding-top: 0; float: right">
 			<%If Session("SSIMode") = True Then%>
 				<%If (Session("utiltype") = "2") Then%> 
 					<input class="btn minwidth100" type="button" id="cmdPrint" name="cmdPrint" value="<%=sPrintButtonLabel%>" onclick="outputOptionsPrintClick()" />
