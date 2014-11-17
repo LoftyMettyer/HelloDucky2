@@ -5,7 +5,8 @@ AS
 BEGIN
 
 	DECLARE @result bit = 0;
+	SELECT @result = ISNULL(settingValue,0) FROM dbo.[ASRSysSystemSettings] WHERE section = 'database' AND settingKey = 'updatingdatedependantcolumns';
 	
-    RETURN @result;
+  RETURN @result;
 
 END
