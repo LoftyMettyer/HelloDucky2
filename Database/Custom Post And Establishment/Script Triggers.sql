@@ -26,7 +26,31 @@ GO
 
 
 -- Some system triggers that need disabling/removing
+DISABLE TRIGGER trsys_Absence_Entry_i01 ON [dbo].[tbuser_Absence_Entry]
+GO
+
+DISABLE TRIGGER trsys_Absence_Entry_i02 ON [dbo].[tbuser_Absence_Entry]
+GO
+
+DISABLE TRIGGER trsys_Absence_Entry_u01 ON [dbo].[tbuser_Absence_Entry]
+GO
+
+DISABLE TRIGGER trsys_Absence_Entry_u02 ON [dbo].[tbuser_Absence_Entry]
+GO
+
 DISABLE TRIGGER trsys_Absence_Entry_d01 ON [dbo].[tbuser_Absence_Entry]
+GO
+
+DISABLE TRIGGER trsys_Appointment_Absence_Entry_i01 ON [dbo].[tbuser_Appointment_Absence_Entry]
+GO
+
+DISABLE TRIGGER trsys_Appointment_Absence_Entry_i02 ON [dbo].[tbuser_Appointment_Absence_Entry]
+GO
+
+DISABLE TRIGGER trsys_Appointment_Absence_Entry_u01 ON [dbo].[tbuser_Appointment_Absence_Entry]
+GO
+
+DISABLE TRIGGER trsys_Appointment_Absence_Entry_u02 ON [dbo].[tbuser_Appointment_Absence_Entry]
 GO
 
 DISABLE TRIGGER trsys_Appointment_Absence_Entry_d01 ON [dbo].[tbuser_Appointment_Absence_Entry]
@@ -37,14 +61,11 @@ IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[trsys_Abse
 GO
 
 
-
 CREATE TRIGGER [dbo].[trcustom_Absence_Entry_P&E] ON [dbo].[tbuser_Absence_Entry]
     AFTER INSERT, UPDATE, DELETE
 AS
 BEGIN
     SET NOCOUNT ON;
-
-PRINT '[trcustom_Absence_Entry_P&E]'
 
 	DECLARE	@employeeID		integer,
 			@absenceID		integer,
@@ -54,20 +75,23 @@ PRINT '[trcustom_Absence_Entry_P&E]'
 
     DELETE [dbo].[tbuser_Absence_Breakdown] WHERE [id_250] IN (SELECT DISTINCT [id] FROM deleted);
 
-	DECLARE AbsenceCursor CURSOR FOR SELECT [ID_1], [ID], [start_date], [end_date] FROM inserted
-    OPEN AbsenceCursor
-    FETCH NEXT FROM AbsenceCursor INTO @employeeID, @absenceID, @start_date, @end_date
-    WHILE @@FETCH_STATUS = 0
-    BEGIN
-
---		DELETE FROM Absence_Breakdown WHERE ID_250 = @AbsenceID;
-		INSERT Absence_Breakdown([source], ID_250, Absence_Date)
-			SELECT 'pers', @absenceID, dr.IndividualDate FROM [dbo].[udfsysDateRangeToTable]('d', @start_date, @end_date) dr
-
-		FETCH NEXT FROM AbsenceCursor INTO @employeeID, @absenceID, @start_date, @end_date
-    END
-    CLOSE AbsenceCursor
-    DEALLOCATE AbsenceCursor
+	INSERT Absence_Breakdown([source], ID_250, Payroll_Type_Code, Reason, Payroll_Reason_Code, Absence_In, Duration, Absence_Date, [Session]
+		, Day_Pattern_AM, Day_Pattern_PM, Hour_Pattern_AM, Hour_Pattern_PM)	
+		SELECT 'post', @absenceID, i.Payroll_Type_Code, i.Reason, i.Payroll_Reason_Code, i.Absence_In
+			, CASE 
+				WHEN DATEPART(dw,dr.IndividualDate) = 1 THEN wp.Sunday_Hours
+				WHEN DATEPART(dw,dr.IndividualDate) = 2 THEN wp.Monday_Hours
+				WHEN DATEPART(dw,dr.IndividualDate) = 3 THEN wp.Tuesday_Hours
+				WHEN DATEPART(dw,dr.IndividualDate) = 4 THEN wp.Wednesday_Hours
+				WHEN DATEPART(dw,dr.IndividualDate) = 5 THEN wp.Thursday_Hours
+				WHEN DATEPART(dw,dr.IndividualDate) = 6 THEN wp.Friday_Hours
+				WHEN DATEPART(dw,dr.IndividualDate) = 7 THEN wp.Saturday_Hours
+			END
+			, dr.IndividualDate, dr.SessionType
+			, wp.Payroll_WP_AM, wp.Payroll_WP_PM, '',''
+		FROM inserted i
+		CROSS APPLY [dbo].[udfsysDateRangeToTable] ('d', i.Start_Date, i.Start_Session,  i.End_Date, i.End_Session) dr
+		INNER JOIN Working_Patterns wp ON wp.ID_1 = i.ID_1
 
 END
 GO
@@ -86,19 +110,37 @@ BEGIN
 
     DELETE [dbo].[tbuser_Absence_Breakdown] WHERE [id_251] IN (SELECT DISTINCT [id] FROM deleted);
 
-	DECLARE AbsenceCursor CURSOR FOR SELECT [ID_3], [ID], [start_date], [end_date] FROM inserted
-    OPEN AbsenceCursor
-    FETCH NEXT FROM AbsenceCursor INTO @employeeID, @absenceID, @start_date, @end_date
-    WHILE @@FETCH_STATUS = 0
-    BEGIN
-
-		INSERT Absence_Breakdown([source], ID_251, Absence_Date)
-			SELECT 'post', @absenceID, dr.IndividualDate FROM [dbo].[udfsysDateRangeToTable]('d', @start_date, @end_date) dr
-
-		FETCH NEXT FROM AbsenceCursor INTO @employeeID, @absenceID, @start_date, @end_date
-    END
-    CLOSE AbsenceCursor
-    DEALLOCATE AbsenceCursor
+	INSERT Absence_Breakdown([source], ID_251, Payroll_Type_Code, Reason, Payroll_Reason_Code, Absence_In, Duration, Absence_Date, [Session]
+		, Day_Pattern_AM, Day_Pattern_PM, Hour_Pattern_AM, Hour_Pattern_PM)	
+		SELECT 'post', @absenceID, i.Payroll_Type_Code, i.Reason, i.Payroll_Reason_Code, i.Absence_In
+			, CASE 
+				WHEN DATEPART(dw,dr.IndividualDate) = 1 AND dr.SessionType = 'AM' THEN wp.Sunday_Hours_AM
+				WHEN DATEPART(dw,dr.IndividualDate) = 2 AND dr.SessionType = 'AM' THEN wp.Monday_Hours_AM
+				WHEN DATEPART(dw,dr.IndividualDate) = 3 AND dr.SessionType = 'AM' THEN wp.Tuesday_Hours_AM
+				WHEN DATEPART(dw,dr.IndividualDate) = 4 AND dr.SessionType = 'AM' THEN wp.Wednesday_Hours_AM
+				WHEN DATEPART(dw,dr.IndividualDate) = 5 AND dr.SessionType = 'AM' THEN wp.Thursday_Hours_AM
+				WHEN DATEPART(dw,dr.IndividualDate) = 6 AND dr.SessionType = 'AM' THEN wp.Friday_Hours_AM
+				WHEN DATEPART(dw,dr.IndividualDate) = 7 AND dr.SessionType = 'AM' THEN wp.Saturday_Hours_AM
+				WHEN DATEPART(dw,dr.IndividualDate) = 1 AND dr.SessionType = 'PM' THEN wp.Sunday_Hours_PM
+				WHEN DATEPART(dw,dr.IndividualDate) = 2 AND dr.SessionType = 'PM' THEN wp.Monday_Hours_PM
+				WHEN DATEPART(dw,dr.IndividualDate) = 3 AND dr.SessionType = 'PM' THEN wp.Tuesday_Hours_PM
+				WHEN DATEPART(dw,dr.IndividualDate) = 4 AND dr.SessionType = 'PM' THEN wp.Wednesday_Hours_PM
+				WHEN DATEPART(dw,dr.IndividualDate) = 5 AND dr.SessionType = 'PM' THEN wp.Thursday_Hours_PM
+				WHEN DATEPART(dw,dr.IndividualDate) = 6 AND dr.SessionType = 'PM' THEN wp.Friday_Hours_PM
+				WHEN DATEPART(dw,dr.IndividualDate) = 7 AND dr.SessionType = 'PM' THEN wp.Saturday_Hours_PM
+				WHEN DATEPART(dw,dr.IndividualDate) = 1 AND dr.SessionType = 'Day' THEN wp.Sunday_Hours_AM + Sunday_Hours_PM
+				WHEN DATEPART(dw,dr.IndividualDate) = 2 AND dr.SessionType = 'Day' THEN wp.Monday_Hours_AM + Monday_Hours_PM
+				WHEN DATEPART(dw,dr.IndividualDate) = 3 AND dr.SessionType = 'Day' THEN wp.Tuesday_Hours_AM + Tuesday_Hours_PM
+				WHEN DATEPART(dw,dr.IndividualDate) = 4 AND dr.SessionType = 'Day' THEN wp.Wednesday_Hours_AM + Wednesday_Hours_PM
+				WHEN DATEPART(dw,dr.IndividualDate) = 5 AND dr.SessionType = 'Day' THEN wp.Thursday_Hours_AM + Thursday_Hours_PM
+				WHEN DATEPART(dw,dr.IndividualDate) = 6 AND dr.SessionType = 'Day' THEN wp.Friday_Hours_AM + Friday_Hours_PM
+				WHEN DATEPART(dw,dr.IndividualDate) = 7 AND dr.SessionType = 'Day' THEN wp.Saturday_Hours_AM + Saturday_Hours_PM
+			END
+			, dr.IndividualDate, dr.SessionType
+			, wp.Day_Pattern_AM, wp.Day_Pattern_PM, wp.Hour_Pattern_AM, wp.Hour_Pattern_PM
+		FROM inserted i
+		CROSS APPLY [dbo].[udfsysDateRangeToTable] ('d', i.Start_Date, i.Start_Session,  i.End_Date, i.End_Session) dr
+		INNER JOIN  Appointment_Working_Patterns wp ON wp.ID_3 = i.ID_3
 
 END
 GO
@@ -175,8 +217,7 @@ END
 GO
 
 
-
-EXEC sp_settriggerorder @triggername=N'[dbo].[trcustom_Absence_Entry_P&E]', @order=N'Last', @stmttype=N'INSERT'
+--EXEC sp_settriggerorder @triggername=N'[dbo].[trcustom_Absence_Entry_P&E]', @order=N'Last', @stmttype=N'INSERT'
 --EXEC sp_settriggerorder @triggername=N'[dbo].[trcustom_Absence_Entry_P&E]', @order=N'Last', @stmttype=N'UPDATE'
 --EXEC sp_settriggerorder @triggername=N'[dbo].[trcustom_Absence_Entry_P&E]', @order=N'Last', @stmttype=N'DELETE'
 
