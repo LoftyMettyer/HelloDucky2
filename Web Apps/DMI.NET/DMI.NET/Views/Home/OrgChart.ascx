@@ -127,22 +127,25 @@
 
 	function centreMe(fSelf) {
 		try {
-
+			
 			var classToCentre = (fSelf ? '.node.ui-state-highlight' : '.node.ui-state-active');
 			var menuWidth = 0;
 			if (!window.menu_isSSIMode()) menuWidth = $('#menuframe').width();
+			var workframe = $('#workframeset');
+			if (window.currentLayout == "tiles") workframe = $('#chart');
 
 			var myNodePos = $(classToCentre).offset().left;
-			var workframeWidth = $('#workframeset').width();
+			var workframeWidth = workframe.width();
 			workframeWidth += menuWidth;
 
 			if ((myNodePos > workframeWidth) || (myNodePos < menuWidth)) {
-				$('#workframeset').animate({ scrollLeft: 0 }, 0);
+				workframe.animate({ scrollLeft: 0 }, 0);
 				myNodePos = $(classToCentre).offset().left;
-				workframeWidth = $('#workframeset').width();
+				workframeWidth = workframe.width();
 
 				var scrollLeftNewPos = myNodePos - ((workframeWidth / 2) + menuWidth) + 48;
-				$('#workframeset').animate({ scrollLeft: scrollLeftNewPos }, 2000);
+				workframe.animate({ scrollLeft: scrollLeftNewPos }, 2000);
+
 			}
 
 
