@@ -58,6 +58,7 @@
 
 			//Add a class to collapse all peer trees.
 			$("#org li.ui-state-highlight").siblings().addClass("collapsed");
+			$("#org li.ui-state-highlight").parents('li').siblings().addClass("collapsed");
 
 			$('#workframe').attr('overflow', 'auto');
 			$("#org").jOrgChart({
