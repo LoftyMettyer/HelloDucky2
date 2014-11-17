@@ -1497,6 +1497,9 @@
 		
 		showDefaultRibbon();
 
+		menu_setVisibleMenuItem('mnutoolFixedWorkflowOutOfOffice', "<%:ViewData("showOutOfOffice")%>");
+
+
 		//Hide DMI button for non-IE browsers					
 		if (('True' !== '<%=Session("MSBrowser")%>') && ('TRUE' == '<%=Session("AdminRequiresIE")%>')) {
 			$('#mnutoolFixedOpenHR').hide();

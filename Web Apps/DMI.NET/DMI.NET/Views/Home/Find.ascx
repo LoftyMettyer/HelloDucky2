@@ -25,6 +25,9 @@
 			menu_setVisibleMenuItem("mnutoolAccessLinksFind", true);
 			menu_setVisibleMenuItem("mnutoolCancelLinksFind", false);
 
+			if (menu_isSSIMode()) menu_setVisibleMenuItem('mnutoolFixedWorkflowOutOfOffice', "<%:ViewData("showOutOfOffice")%>");
+
+
 			setTimeout('gridBindKeys(true)', 300);
 
 

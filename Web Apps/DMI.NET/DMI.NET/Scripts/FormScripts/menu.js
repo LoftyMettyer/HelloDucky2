@@ -2332,9 +2332,6 @@ function menu_refreshMenu() {
 	menu_setVisibleMenuItem("mnutoolWorkflowOutOfOffice", frmMenuInfo.txtWFOutOfOfficeEnabled.value);
 	menu_enableMenuItem("mnutoolWorkflowOutOfOffice", frmMenuInfo.txtWFOutOfOfficeEnabled.value);
 	
-	var fShowOutOfOffice = (frmMenuInfo.txtWFShowOutOfOffice.value == "True");
-	menu_setVisibleMenuItem("mnutoolFixedWorkflowOutOfOffice", (fShowOutOfOffice && menu_isSSIMode()));
-	menu_enableMenuItem("mnutoolFixedWorkflowOutOfOffice", (fShowOutOfOffice && menu_isSSIMode()));
 
 	menu_enableMenuItem("mnutoolCalculations", $("#txtCalculationsGranted").val());
 	menu_enableMenuItem("mnutoolFilters", $("#txtFiltersGranted").val());

@@ -178,6 +178,9 @@
 			setTimeout(splitFunc, 50);
 		}
 
+
+		menu_setVisibleMenuItem('mnutoolFixedWorkflowOutOfOffice', "<%:ViewData("showOutOfOffice")%>");
+
 		resetTimeout(); //Site.master function.
 
 	});

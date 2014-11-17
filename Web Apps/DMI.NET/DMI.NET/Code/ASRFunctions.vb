@@ -236,4 +236,29 @@ Public Module ASRFunctions
 		Return If(value1.CompareTo(value2) < 0, value1, value2)
 	End Function
 
+	Public Function ShowOutOfOffice(tableID As Integer, viewID As Integer) As Boolean
+		
+		' Are we displaying the Workflow Out of Office Hyperlink for this view?
+		Dim fShowOooHyperlink As Boolean = False
+		Dim objDataAccess As clsDataAccess = CType(HttpContext.Current.Session("DatabaseAccess"), clsDataAccess)
+
+		Dim prmTableID2 = New SqlParameter("piTableID", SqlDbType.Int)
+		prmTableID2.Value = tableID
+
+		Dim prmViewID2 = New SqlParameter("piViewID", SqlDbType.Int)
+		prmViewID2.Value = viewID
+
+		Dim prmDisplayHyperlink = New SqlParameter("pfDisplayHyperlink", SqlDbType.Bit)
+		prmDisplayHyperlink.Direction = ParameterDirection.Output
+		Try
+			objDataAccess.ExecuteSP("spASRIntShowOutOfOfficeHyperlink", prmTableID2, prmViewID2, prmDisplayHyperlink)
+			fShowOooHyperlink = CBool(prmDisplayHyperlink.Value)
+		Catch ex As Exception
+
+		End Try
+
+		Return fShowOooHyperlink
+
+	End Function
+
 End Module

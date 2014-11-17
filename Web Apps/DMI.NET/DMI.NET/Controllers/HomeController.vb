@@ -395,6 +395,8 @@ Namespace Controllers
 
 			End Select
 
+			ViewData("showOutOfOffice") = ShowOutOfOffice(NullSafeInteger(Session("SingleRecordTableID")), NullSafeInteger(Session("SingleRecordViewID")))
+
 			If bOK Then
 				Return View()
 			Else
@@ -694,6 +696,8 @@ Namespace Controllers
 
 				ViewBag.pageTitle = ""
 			End If
+
+			ViewData("showOutOfOffice") = ShowOutOfOffice(NullSafeInteger(Session("tableID")), NullSafeInteger(Session("viewID")))
 
 			Return View()
 
@@ -1531,6 +1535,8 @@ Namespace Controllers
 
 			Dim viewModel = New NavLinksViewModel With {.NavigationLinks = objNavigation.GetAllLinks, .NumberOfLinks = objNavigation.GetAllLinks.Count, .DocumentDisplayLinkCount = objNavigation.GetLinks(LinkType.DocumentDisplay).Count}
 			Session("NavigationLinks") = objNavigation
+
+			ViewData("showOutOfOffice") = ShowOutOfOffice(NullSafeInteger(Session("SSILinkTableID")), NullSafeInteger(Session("SSILinkViewID")))
 
 			Return View(viewModel)
 		End Function
