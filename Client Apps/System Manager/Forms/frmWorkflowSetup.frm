@@ -53,9 +53,9 @@ Begin VB.Form frmWorkflowSetup
       TabCaption(1)   =   "&Personnel Identification"
       TabPicture(1)   =   "frmWorkflowSetup.frx":0028
       Tab(1).ControlEnabled=   0   'False
-      Tab(1).Control(0)=   "fraPersonnelTable"
+      Tab(1).Control(0)=   "fraDelegation"
       Tab(1).Control(0).Enabled=   0   'False
-      Tab(1).Control(1)=   "fraDelegation"
+      Tab(1).Control(1)=   "fraPersonnelTable"
       Tab(1).Control(1).Enabled=   0   'False
       Tab(1).ControlCount=   2
       TabCaption(2)   =   "&Service"
@@ -66,9 +66,9 @@ Begin VB.Form frmWorkflowSetup
       TabCaption(3)   =   "&Mobile Specifics"
       TabPicture(3)   =   "frmWorkflowSetup.frx":0060
       Tab(3).ControlEnabled=   0   'False
-      Tab(3).Control(0)=   "Frame1"
+      Tab(3).Control(0)=   "fraMobileKey"
       Tab(3).Control(0).Enabled=   0   'False
-      Tab(3).Control(1)=   "fraMobileKey"
+      Tab(3).Control(1)=   "Frame1"
       Tab(3).Control(1).Enabled=   0   'False
       Tab(3).ControlCount=   2
       Begin VB.Frame fraMobileKey 
@@ -969,20 +969,15 @@ Private Sub cmdOK_Click()
           If Len(sOldString) > 0 Then
             sOldString = IIf(Len(!queryString) > 0, sOldString & "?" & !queryString, "")
           End If
+
+          ' NPG20141118 - always regenerate querystrings if url changes
+          sNewQueryString = GetWorkflowQueryString(!ID * -1, -1, txtUID.Text, txtPWD.Tag)
           
-          If (msOriginalUser <> txtUID.Text) _
-            Or (msOriginalPassword <> txtPWD.Tag) Then
-          
-            sNewQueryString = GetWorkflowQueryString(!ID * -1, -1, txtUID.Text, txtPWD.Tag)
-            
-            sSQL = "UPDATE tmpWorkflows" & _
-              " SET changed = TRUE," & _
-              "   queryString = '" & Replace(sNewQueryString, "'", "''") & "'" & _
-              " WHERE ID = " & CStr(!ID)
-            daoDb.Execute sSQL
-          Else
-            sNewQueryString = !queryString
-          End If
+          sSQL = "UPDATE tmpWorkflows" & _
+            " SET changed = TRUE," & _
+            "   queryString = '" & Replace(sNewQueryString, "'", "''") & "'" & _
+            " WHERE ID = " & CStr(!ID)
+          daoDb.Execute sSQL
           
           If (msOriginalURL <> Trim(txtURL.Text)) Then
             sURL = Trim(txtURL.Text)
