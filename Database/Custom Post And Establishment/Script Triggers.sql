@@ -26,6 +26,22 @@ GO
 
 
 -- Some system triggers that need disabling/removing
+DISABLE TRIGGER trsys_Absence_i01 ON [dbo].[tbuser_Absence]
+GO
+
+DISABLE TRIGGER trsys_Absence_i02 ON [dbo].[tbuser_Absence]
+GO
+
+DISABLE TRIGGER trsys_Absence_u01 ON [dbo].[tbuser_Absence]
+GO
+
+DISABLE TRIGGER trsys_Absence_u02 ON [dbo].[tbuser_Absence]
+GO
+
+DISABLE TRIGGER trsys_Absence_d01 ON [dbo].[tbuser_Absence]
+GO
+
+
 DISABLE TRIGGER trsys_Absence_Entry_i01 ON [dbo].[tbuser_Absence_Entry]
 GO
 
@@ -163,16 +179,23 @@ AS
 BEGIN
     SET NOCOUNT ON;
 
-	PRINT '[trcustom_Absence_Breakdown_P&E_INSERT]'
-
 	DECLARE @AbsenceID	integer,
 			@startDate	datetime,
 			@endDate	datetime;
 
-	SELECT @startDate = MIN(absence_date), @endDate = MAX(absence_date) FROM inserted;
+	INSERT Absence(Absence_Type, Payroll_Code, Reason, Payroll_Reason, Start_Date, Start_Session, End_Date, End_Session, Absence_In, Duration_Days, Duration_Hours)
+		SELECT DISTINCT ab.Type, ab.Payroll_Type_Code, ab.Reason, ab.Payroll_Reason_Code
+			, m.startdate
+			, (SELECT DISTINCT CASE WHEN [Session] = 'Day' THEN 'AM' ELSE [Session] END FROM inserted WHERE (ID_250 = ab.ID_250 OR ID_251 = ab.ID_251) AND Absence_Date = m.startdate)
+			, m.enddate
+			, (SELECT DISTINCT CASE WHEN [Session] = 'Day' THEN 'PM' ELSE [Session] END FROM inserted WHERE (ID_250 = ab.ID_250 OR ID_251 = ab.ID_251) AND Absence_Date = m.enddate)
+			, '???' , 0, m.Duration
+		FROM inserted ab
+		CROSS APPLY (
+			SELECT MIN(range.Absence_Date) AS startdate, MAX(range.Absence_Date) AS enddate, SUM(Duration) AS Duration
+			FROM inserted range
+			WHERE ab.ID_250 = range.ID_250 OR ab.ID_251 = range.ID_251) m;
 
-	INSERT Absence(Start_Date, End_Date)
-		VALUES (@startDate, @endDate);
 
 	SELECT @AbsenceID = MAX(ID) FROM Absence
 
@@ -189,8 +212,6 @@ CREATE TRIGGER [dbo].[trcustom_Absence_Breakdown_P&E_D02] ON [dbo].[tbuser_Absen
 AS
 BEGIN
     SET NOCOUNT ON;
-
-	PRINT '[trcustom_Absence_Breakdown_P&E_D02]'
 
 	DECLARE @AbsenceID	integer,
 			@startDate	datetime,
