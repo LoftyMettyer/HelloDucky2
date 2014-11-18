@@ -466,7 +466,7 @@
 						}
 
 						if (action.toUpperCase().substr(0, 9) == "LINKSMAIN") {
-							resizeDashboard();
+							setTimeout('resizeDashboard()', 500);
 						}
 					} catch (e) {
 						$("#errorDialogTitle").text(e.toString);
