@@ -30,10 +30,10 @@ Public Class Forms
 		Dim db As New Database(App.Config.ConnectionString)
 
 		If Not db.CanConnect() Then
-			errors.Add("Unable to connect to the database specified (Error Code: CE001).")
+			errors.Add("Unable to connect to the OpenHR database<BR><BR>Contact your system administrator. (Error Code: CE001).")
 		Else
 			If db.IsUserProhibited() Then
-				errors.Add("Unable to connect to the database specified (Error Code: CE002).")
+				errors.Add("Unable to connect to the OpenHR database<BR><BR>Contact your system administrator. (Error Code: CE002).")
 			ElseIf Not db.IsMobileModuleLicensed() Then
 				errors.Add("You are not licensed for the OpenHR Mobile module. Please contact your Advanced Business Solutions Account Manager for details")
 			ElseIf Not db.IsIntranetFunctionInstalled() Then

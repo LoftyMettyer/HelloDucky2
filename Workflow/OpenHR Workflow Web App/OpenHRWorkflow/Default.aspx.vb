@@ -43,16 +43,21 @@ Public Class [Default]
 
 		_db = New Database(App.Config.ConnectionString)
 
+		' Validate the connection string
+		If Not _db.CanConnect() Then
+			message = "Unable to connect to the OpenHR database<BR><BR>Contact your system administrator. (Error Code: CE001)."
+		End If
+
 		' check that the stored username is allowed
-		If _db.IsUserProhibited() And Not IsPostBack Then
-			message = "Unable to connect to the database specified<BR><BR>Contact your system administrator. (Error Code: CE002)."
+		If message.IsNullOrEmpty() AndAlso _db.IsUserProhibited() And Not IsPostBack Then
+			message = "Unable to connect to the OpenHR database<BR><BR>Contact your system administrator. (Error Code: CE002)."
 		End If
 
 		'check to see if the database is locked
 		If message.IsNullOrEmpty And Not IsPostBack Then
 
 			If _db.IsSystemLocked() Then
-				message = "Database locked.<BR><BR>Contact your system administrator."
+				message = "Unable to connect to the OpenHR database<BR><BR>Contact your system administrator. (Error Code: CE003)."
 			End If
 		End If
 
@@ -74,7 +79,7 @@ Public Class [Default]
 #End If
 
 		'Activating mobile security. I've hijacked the InstanceID and populated it with the User ID that is to be activated.
-		If message.IsNullOrEmpty() And Not IsPostBack And _url.ElementId = -2 And _url.InstanceId > 0 Then
+		If message.IsNullOrEmpty() AndAlso Not IsPostBack AndAlso _url.ElementId = -2 AndAlso _url.InstanceId > 0 Then
 
 			message = _db.ActivateUser(_url.InstanceId)
 

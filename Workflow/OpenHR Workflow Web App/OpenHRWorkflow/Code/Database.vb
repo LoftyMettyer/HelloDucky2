@@ -27,6 +27,10 @@ Public Class Database
 		End Using
 	End Function
 
+	Public Function IsEmptyConnectionString() As Boolean
+		Return _connectionString <> vbNullString
+	End Function
+
 	Public Function IsIntranetFunctionInstalled() As Boolean
 		Return True
 	End Function
