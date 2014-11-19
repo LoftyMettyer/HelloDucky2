@@ -37,7 +37,6 @@ Public Class Config
 
 	Private Sub Load()
 
-		WorkflowUrl = GetSetting("WorkflowURL", "")
 		ColourThemeFolder = GetSetting("Theme", "Blanco").Trim
 		MessageFontSize = GetSetting("MessageFontSize", 10)
 		ValidationMessageFontSize = GetSetting("ValidationMessageFontSize", 8)

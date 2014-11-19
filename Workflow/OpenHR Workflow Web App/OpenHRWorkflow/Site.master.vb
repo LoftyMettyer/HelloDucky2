@@ -5,6 +5,8 @@ Partial Class Site
 
 	Protected Sub Page_Init(sender As Object, e As EventArgs) Handles Me.Init
 
+		App.Config.WorkflowUrl = HttpContext.Current.Request.Url.Scheme & "://" & HttpContext.Current.Request.Url.Authority & HttpContext.Current.Request.ApplicationPath.TrimEnd(CChar("/")) + "/"
+		
 		Forms.RedirectToNotConfigured()
 
 		Forms.RedirectIfNotLicensed()
