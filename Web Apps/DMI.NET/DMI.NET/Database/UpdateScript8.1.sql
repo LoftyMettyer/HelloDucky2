@@ -9955,7 +9955,7 @@ BEGIN
 
 	DECLARE @FindDefinition TABLE(tableID integer, columnID integer, columnName nvarchar(255), tableName nvarchar(255)
 									, ascending bit, type varchar(1), datatype integer, controltype integer, size integer, decimals integer, Use1000Separator bit, BlankIfZero bit, Editable bit
-									, LookupTableID integer, LookupColumnID integer, LookupFilterColumnID integer, LookupFilterValueID integer)
+									, LookupTableID integer, LookupColumnID integer, LookupFilterColumnID integer, LookupFilterValueID integer, SpinnerMinimum smallint, SpinnerMaximum smallint, SpinnerIncrement smallint)
 
 	
 	/* Clean the input string parameters. */
@@ -10429,7 +10429,10 @@ BEGIN
 			ISNULL(c.LookupTableID, 0) AS LookupTableID,
 			ISNULL(c.LookupColumnID, 0) AS LookupColumnID,
 			ISNULL(c.LookupFilterColumnID, 0) AS LookupFilterColumnID,
-			ISNULL(c.LookupFilterValueID, 0) AS LookupFilterValueID
+			ISNULL(c.LookupFilterValueID, 0) AS LookupFilterValueID,
+			c.SpinnerMinimum,
+			c.SpinnerMaximum,
+			c.SpinnerIncrement
 		FROM [dbo].[ASRSysOrderItems] o
 		INNER JOIN ASRSysColumns c ON o.columnID = c.columnID
 		INNER JOIN ASRSysTables t ON c.tableID = t.tableID
