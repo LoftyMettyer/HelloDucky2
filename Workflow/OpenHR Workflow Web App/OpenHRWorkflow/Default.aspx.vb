@@ -45,19 +45,19 @@ Public Class [Default]
 
 		' Validate the connection string
 		If Not _db.CanConnect() Then
-			message = "Unable to connect to the OpenHR database<BR><BR>Contact your system administrator. (Error Code: CE001)."
+			message = "Unable to connect to the OpenHR database<BR><BR>Please contact your system administrator. (Error Code: CE001)."
 		End If
 
 		' check that the stored username is allowed
 		If message.IsNullOrEmpty() AndAlso _db.IsUserProhibited() And Not IsPostBack Then
-			message = "Unable to connect to the OpenHR database<BR><BR>Contact your system administrator. (Error Code: CE002)."
+			message = "Unable to connect to the OpenHR database<BR><BR>Please contact your system administrator. (Error Code: CE002)."
 		End If
 
 		'check to see if the database is locked
 		If message.IsNullOrEmpty And Not IsPostBack Then
 
 			If _db.IsSystemLocked() Then
-				message = "Unable to connect to the OpenHR database<BR><BR>Contact your system administrator. (Error Code: CE003)."
+				message = "Unable to connect to the OpenHR database<BR><BR>Please contact your system administrator. (Error Code: CE003)."
 			End If
 		End If
 
@@ -73,7 +73,7 @@ Public Class [Default]
 			If dbVersion <> wsVersion Then
 
 				message = String.Format("The Workflow website version ({0}) is incompatible with the database version ({1})." &
-																"<BR><BR>Contact your system administrator.", wsVersion, If(dbVersion = Nothing, "&lt;unknown&gt;", dbVersion))
+																"<BR><BR>Please contact your system administrator.", wsVersion, If(dbVersion = Nothing, "&lt;unknown&gt;", dbVersion))
 			End If
 		End If
 #End If
