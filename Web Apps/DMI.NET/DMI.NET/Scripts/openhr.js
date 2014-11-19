@@ -102,7 +102,7 @@
 
 		},
 
-		modalExpressionSelect = function (type, tableId, currentID, followOnFunctionName, screenwidth, screenheight, returnFilterResults) {
+		modalExpressionSelect = function (type, tableId, currentID, followOnFunctionName, screenwidth, screenheight, returnResults) {
 			
 			var frame = $("#divExpressionSelection");
 			var capitalizedText = capitalizeMe(type);
@@ -143,7 +143,7 @@
 				ondblClickRow: function (rowid) {
 					var gridData = $(this).getRowData(rowid);
 
-					if (returnFilterResults) {
+					if (returnResults) {
 						//launch promptedvalues to return filter result set.
 						returnFilterResults(gridData);
 						frame.dialog("close");
@@ -160,7 +160,7 @@
 						var rowid = $('#ExpressionsAvailable').jqGrid('getGridParam', 'selrow');
 						var gridData = $("#ExpressionsAvailable").getRowData(rowid);
 
-						if (returnFilterResults) {
+						if (returnResults) {
 							//launch promptedvalues to return filter result set.
 							returnFilterResults(gridData);
 							frame.dialog("close");
