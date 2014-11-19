@@ -4,7 +4,8 @@
 
 DECLARE @newID integer;
 
-INSERT Appointment_Working_Patterns (Effective_Date, ID_3, Sunday_Hours_AM, Sunday_Hours_PM) VALUES (GETDATE(), 876, 9.2, 0.8)
+--INSERT Appointment_Working_Patterns (Effective_Date, End_Date, ID_3, Sunday_Hours_AM, Sunday_Hours_PM) VALUES (GETDATE()-3, GETDATE()+2,  876, 9.2, 0.8)
+INSERT Appointment_Working_Patterns (Effective_Date, End_Date, ID_3, Sunday_Hours_AM, Sunday_Hours_PM) VALUES (GETDATE()-3, GETDATE()+4,  876, 9.2, 0.7)
 
 SELECT TOP 1 @newID = ID FROM Appointment_Working_Patterns ORDER BY ID DESC
 
