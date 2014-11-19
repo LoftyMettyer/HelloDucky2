@@ -254,7 +254,7 @@ Public Module ASRFunctions
 			objDataAccess.ExecuteSP("spASRIntShowOutOfOfficeHyperlink", prmTableID2, prmViewID2, prmDisplayHyperlink)
 			fShowOooHyperlink = CBool(prmDisplayHyperlink.Value)
 		Catch ex As Exception
-
+			fShowOooHyperlink = False
 		End Try
 
 		Return fShowOooHyperlink
