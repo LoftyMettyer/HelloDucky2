@@ -216,6 +216,29 @@
 				close: function (event, ui) { }
 			});
 
+			$("#LookupForEditableGrid_Div").dialog({
+				autoOpen: false,
+				modal: true,
+				width: (screen.width) / 1.5,
+				height: (screen.height) / 1.5,
+				position: ['center'],
+				resizable: false,
+				buttons: [
+					{
+						text: "Cancel",
+						click: function () {
+							$(this).dialog("close");
+						},
+						"id": "LookupForEditableGridCancel",
+						"class": "width6em"
+					},
+					{
+						text: "OK",
+						"id": "LookupForEditableGridOK",
+						"class": "width6em"
+					}
+				]
+			});
 
 			$("#EventLogEmailSelect").dialog({
 				autoOpen: false,
@@ -567,6 +590,10 @@
 	<div id="EventLogDelete"></div>
 	<div id="EventLogPurge"></div>
 	<div id="EventLogViewDetails"></div>
+	<div id="LookupForEditableGrid_Div">
+		<span class="pageTitle" id="LookupForEditableGrid_Title"></span>
+		<table id="LookupForEditableGrid_Table"></table>
+	</div>
 
 	<div id="dialog-confirm">
 		<p><span class="ui-icon ui-icon-help" style="float: left; margin: 0 7px 20px 0;"></span></p>

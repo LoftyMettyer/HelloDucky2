@@ -214,6 +214,8 @@
 						Try
 							resultDataSet = objDataAccess.GetDataSet("spASRIntGetFindRecords", SPParameters)
 
+							Dim Lookups As New ArrayList
+														
 							If prmSomeSelectable.Value = 0 Then
 								sErrorDescription = "You do not have permission to read any of the selected order's find columns."
 							Else
@@ -258,6 +260,108 @@
 														 objRow.FirstOrDefault.Item("SpinnerMaximum"), _
 														 objRow.FirstOrDefault.Item("SpinnerIncrement") _
 														 ) & vbCrLf)
+																								
+												'If column is a Lookup, need to get its associated data
+												If objRow.FirstOrDefault.Item("datatype") = 12 And objRow.FirstOrDefault.Item("controltype") = 2 Then
+													Dim objDatabase As Database = CType(Session("DatabaseFunctions"), Database)
+													'Dim objDataAccess As clsDataAccess = CType(Session("DatabaseAccess"), clsDataAccess)
+
+													Dim objTable = objDatabase.GetTableFromColumnID(objRow.FirstOrDefault.Item("LookupColumnID"))
+													Dim fIsLookupTable = (objTable.TableType = TableTypes.tabLookup)
+
+													Dim _prmError = New SqlParameter("pfError", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
+													Dim _prmIsFirstPage = New SqlParameter("pfFirstPage", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
+													Dim _prmIsLastPage = New SqlParameter("pfLastPage", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
+													Dim _prmColumnType = New SqlParameter("piColumnType", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
+													Dim _prmTotalRecCount = New SqlParameter("piTotalRecCount", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
+													Dim _prmFirstRecPos = New SqlParameter("piFirstRecPos", SqlDbType.Int) With {.Direction = ParameterDirection.InputOutput, .Value = CleanNumeric(Session("optionFirstRecPos"))}
+													Dim _prmColumnSize = New SqlParameter("piColumnSize", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
+													Dim _prmColumnDecimals = New SqlParameter("piColumnDecimals", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
+													Dim _prmLookupColumnGridPosition = New SqlParameter("piLookupColumnGridNumber", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
+													
+													Dim rstLookup As New DataTable
+													
+													If Not fIsLookupTable Then
+														rstLookup = objDataAccess.GetFromSP("spASRIntGetLookupFindRecords2" _
+																, New SqlParameter("piTableID", SqlDbType.Int) With {.Value = objRow.FirstOrDefault.Item("LookupTableID")} _
+																, New SqlParameter("piViewID", SqlDbType.Int) With {.Value = 0} _
+																, New SqlParameter("piOrderID", SqlDbType.Int) With {.Value = CleanNumeric(Session("orderID"))} _
+																, New SqlParameter("piLookupColumnID", SqlDbType.Int) With {.Value = objRow.FirstOrDefault.Item("LookupColumnID")} _
+																, New SqlParameter("piRecordsRequired", SqlDbType.Int) With {.Value = 10000} _
+																, _prmIsFirstPage _
+																, _prmIsLastPage _
+																, New SqlParameter("psLocateValue", SqlDbType.VarChar, -1) With {.Value = ""} _
+																, _prmColumnType _
+																, _prmColumnSize _
+																, _prmColumnDecimals _
+																, New SqlParameter("psAction", SqlDbType.VarChar, 100) With {.Value = "LOAD"} _
+																, _prmTotalRecCount _
+																, _prmFirstRecPos _
+																, New SqlParameter("piCurrentRecCount", SqlDbType.Int) With {.Value = 0} _
+																, New SqlParameter("psFilterValue", SqlDbType.VarChar, -1) With {.Value = "True"} _
+																, New SqlParameter("piCallingColumnID", SqlDbType.Int) With {.Value = objRow.FirstOrDefault.Item("columnID")} _
+																, _prmLookupColumnGridPosition _
+																, New SqlParameter("pfOverrideFilter", SqlDbType.Bit) With {.Value = "False"})
+													Else
+														Dim _prmThousandColumns As New SqlParameter("@ps1000SeparatorCols", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
+														Try
+															objDataAccess.ExecuteSP("spASRIntGetLookupFindColumnInfo", _
+																					New SqlParameter("@piLookupColumnID", SqlDbType.Int) With {.Value = objRow.FirstOrDefault.Item("LookupColumnID")}, _
+																					_prmThousandColumns _
+															)
+														Catch ex As Exception
+															sErrorDescription = "The find records could not be retrieved." & vbCrLf & FormatError(ex.Message)
+														End Try
+
+														sThousandColumns = _prmThousandColumns.Value.ToString()
+														
+														rstLookup = objDataAccess.GetFromSP("spASRIntGetLookupFindRecords" _
+															, New SqlParameter("piLookupColumnID", SqlDbType.Int) With {.Value = objRow.FirstOrDefault.Item("LookupColumnID")} _
+															, New SqlParameter("piRecordsRequired", SqlDbType.Int) With {.Value = 10000} _
+															, _prmIsFirstPage _
+															, _prmIsLastPage _
+															, New SqlParameter("psLocateValue", SqlDbType.VarChar, -1) With {.Value = ""} _
+															, _prmColumnType _
+															, _prmColumnSize _
+															, _prmColumnDecimals _
+															, New SqlParameter("psAction", SqlDbType.VarChar, 100) With {.Value = "LOAD"} _
+															, _prmTotalRecCount _
+															, _prmFirstRecPos _
+															, New SqlParameter("piCurrentRecCount", SqlDbType.Int) With {.Value = 0} _
+															, New SqlParameter("psFilterValue", SqlDbType.VarChar, -1) With {.Value = "True"} _
+															, New SqlParameter("piCallingColumnID", SqlDbType.Int) With {.Value = objRow.FirstOrDefault.Item("columnID")} _
+															, New SqlParameter("pfOverrideFilter", SqlDbType.Bit) With {.Value = "False"})
+													End If
+													
+													'Place the lookup data in Javascript array
+													Dim strColData As String = String.Concat("var colData_", objRow.FirstOrDefault.Item("columnID"), " = [")
+													For Each r As DataRow In rstLookup.Rows
+														strColData = String.Concat(strColData, "[")
+														For Each c As DataColumn In rstLookup.Columns
+															strColData = String.Concat(strColData, "'", r(c).ToString, "',")
+														Next
+														strColData = strColData.TrimEnd(",")
+														strColData = String.Concat(strColData, "],")
+													Next
+													strColData = String.Concat(strColData.TrimEnd(","), "];")
+													
+													'Place the column names in Javascript array
+													Dim strColNames As String = String.Concat("var colNames_", objRow.FirstOrDefault.Item("columnID"), " = [")
+													For Each c As DataColumn In rstLookup.Columns
+														strColNames = String.Concat(strColNames, "'", c.ColumnName.Replace("_", " "), "',")
+													Next
+													strColNames = String.Concat(strColNames.TrimEnd(","), "];")
+													
+													'Place the Lookup Column Grid Position in a Javascript variable
+													Dim strLookupColumnGridPosition As String = String.Concat("var LookupColumnGridPosition_", objRow.FirstOrDefault.Item("columnID"), " = ")
+													If Not fIsLookupTable Then
+														strLookupColumnGridPosition = String.Concat(strLookupColumnGridPosition, _prmLookupColumnGridPosition.Value, ";")
+													Else
+														strLookupColumnGridPosition = String.Concat(strLookupColumnGridPosition, "0;")
+													End If
+													
+													Lookups.Add(strColData & vbCrLf & strColNames & strLookupColumnGridPosition) 
+												End If
 											End If
 										End If
 							
@@ -299,6 +403,13 @@
 
 							Response.Write("</table>")
 				
+							'Output the lookup array data
+							Response.Write("<script type='text/javascript'>" & vbCrLf)
+							For Each s As String In Lookups
+								Response.Write(s & vbCrLf)
+							Next
+							Response.Write("</script>" & vbCrLf)
+							
 							Response.Write("<input type='hidden' id=txtInsertGranted name=txtInsertGranted value=" & prmInsertGranted.Value & ">" & vbCrLf)
 							Response.Write("<input type='hidden' id=txtDeleteGranted name=txtDeleteGranted value=" & prmDeleteGranted.Value & ">" & vbCrLf)
 							Response.Write("<input type='hidden' id=txtIsFirstPage name=txtIsFirstPage value=" & prmIsFirstPage.Value & ">" & vbCrLf)

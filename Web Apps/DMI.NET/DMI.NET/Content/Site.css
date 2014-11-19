@@ -817,3 +817,9 @@ select.readonly {
 	background-image: none;
 	border: none;
 }
+
+#LookupForEditableGridOK, #LookupForEditableGridCancel
+ {
+	float: right;
+	margin: 10px 0 5px 0;
+}
