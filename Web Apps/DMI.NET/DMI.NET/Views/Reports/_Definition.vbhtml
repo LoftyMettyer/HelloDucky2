@@ -195,7 +195,7 @@
 
 	}
 
-	function changeRecordOption(psTable, psType) {
+	function changeRecordOption(psTable, psType) {		
 		if (psType == "ALL") {
 			button_disable($("#cmd" + psTable + "Picklist")[0], true);
 			button_disable($("#cmd" + psTable + "Filter")[0], true);
@@ -240,7 +240,7 @@
 
 	}
 
-	function refreshViewAccess() {
+		function refreshViewAccess() {
 
 		var bViewAccessEnabled = true;
 		var list;
@@ -383,6 +383,53 @@
 
 	}
 
+
+	function loadAvailableTablesForCalendarReport(baseTableChanged) {
+
+		$.ajax({
+			url: 'Reports/GetAvailableColumnsForTable?TableID=' + $("#BaseTableID").val(),
+			type: 'GET',
+			dataType: 'json',
+			cache: false,
+			success: function (json) {
+				// Clear the Parent1 and Parent2 table names only if the base table changed
+				if (baseTableChanged) {
+					$("#Description1ID").val(0);
+					$("#Description2ID").val(0);
+					$("#Description3ID").val(0);
+					$("#txtDescription3").val('');
+					$('#RegionID').val(0);
+					$('#Separator').val('None');
+					$('#chkGroupByDescription').prop('checked', false);
+
+					$('#IncludeBankHolidays').prop('checked', false);
+					$('#WorkingDaysOnly').prop('checked', false);
+					$('#ShowBankHolidays').prop('checked', false);
+					$('#ShowCaptions').prop('checked', 'checked');
+					$('#ShowWeekends').prop('checked', 'checked');
+					$('#StartOnCurrentMonth').prop('checked', 'checked');
+				}
+				var OptionNone = '<option value=0 data-datatype=0 data-decimals=0 selected>None</option>';
+				var optionDescription1 = "<option value='0'>None</option>";
+				var optionDescription2 = "<option value='0'>None</option>";
+				var optionDescription3 = "<option value='0'>None</option>";
+				var optionRegionID = "<option value='0'>None</option>";
+
+				var options = '';
+				for (var i = 0; i < json.length; i++) {
+					optionDescription1 += "<option value='" + json[i].ID + "'>" + json[i].Name + "</option>";
+					optionDescription2 += "<option value='" + json[i].ID + "'>" + json[i].Name + "</option>";
+					optionDescription3 += "<option value='" + json[i].ID + "'>" + json[i].Name + "</option>";
+					optionRegionID += "<option value='" + json[i].ID + "'>" + json[i].Name + "</option>";
+				}
+				$("select#Description1ID").html(optionDescription1);
+				$("select#Description2ID").html(optionDescription2);
+				$("select#Description3ID").html(optionDescription3);
+				$("select#RegionID").html(optionRegionID);
+			}
+		});
+	}
+
 	function loadAvailableTablesForReport(baseTableChanged) {
 
 		$.ajax({
@@ -430,7 +477,7 @@
 	}
 
 	function requestChangeReportBaseTable(target) {
-
+		
 		var tableCount = $("#ChildTables").getGridParam("reccount");
 		var columnCount = $("#SelectedColumns").getGridParam("reccount");
 		var eventCount = $("#CalendarEvents").getGridParam("reccount");
@@ -449,11 +496,9 @@
 		else {
 			changeReportBaseTable();
 		}
-
 	}
 
 	function changeReportBaseTable() {
-
 		// Post base table change to server
 		var dataSend = {
 			ReportID: '@Model.ID',
@@ -469,9 +514,7 @@
 	function changeReportBaseTableCompleted(json) {
 
 		$("#selectiontype_All").prop('checked', 'checked');
-
 		$("#ChildTablesAvailable").val(parseInt(json.childTablesAvailable));
-
 		changeRecordOption('Base', 'ALL');
 
 		if ($("#txtReportType").val() != '@UtilityType.utlCrossTab' && $("#txtReportType").val() != '@UtilityType.utlNineBoxGrid') {
@@ -483,7 +526,7 @@
 			resetParentDetails();
 		}
 
-		if ($("#txtReportType").val() == '@UtilityType.utlCustomReport' || $("#txtReportType").val() == '@UtilityType.utlMailMerge') {
+		if ($("#txtReportType").val() == '@UtilityType.utlCustomReport' || $("#txtReportType").val() == '@UtilityType.utlMailMerge') {			
 			removeAllSelectedColumns(false);
 			loadAvailableTablesForReport(true);
 		}
@@ -492,6 +535,7 @@
 			button_disable($("#btnSortOrderAdd")[0], false);
 			$("#SortOrdersAvailable").val(parseInt(json.sortOrdersAvailable));
 			$('#CalendarEvents').jqGrid('clearGridData');
+			loadAvailableTablesForCalendarReport(true);
 		}
 
 		if ($("#txtReportType").val() == '@UtilityType.utlCrossTab' || $("#txtReportType").val() == '@UtilityType.utlNineBoxGrid') {
