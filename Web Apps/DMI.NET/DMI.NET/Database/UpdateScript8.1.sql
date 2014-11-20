@@ -9848,6 +9848,21 @@ BEGIN
 END
 GO
 
+IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spASRIntGetColumnControlValues]') AND xtype in (N'P'))
+	DROP PROCEDURE [dbo].[spASRIntGetColumnControlValues];
+GO
+
+CREATE PROCEDURE [dbo].[spASRIntGetColumnControlValues]
+	@ColumnIDs nvarchar(100)
+AS
+BEGIN
+	SET NOCOUNT ON;
+	DECLARE @sql nvarchar(MAX);
+
+	SET @sql = 'SELECT columnID, Value, sequence FROM ASRSysColumnControlValues WHERE columnID IN (' + @ColumnIDs + ')'
+	EXECUTE sp_executeSQL @sql;
+END
+GO
 
 IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spASRIntGetFindRecords]') AND xtype in (N'P'))
 	DROP PROCEDURE [dbo].[spASRIntGetFindRecords];

@@ -214,8 +214,8 @@
 						Try
 							resultDataSet = objDataAccess.GetDataSet("spASRIntGetFindRecords", SPParameters)
 
-							Dim Lookups As New ArrayList
-														
+							Dim clientArrayData As New ArrayList
+							
 							If prmSomeSelectable.Value = 0 Then
 								sErrorDescription = "You do not have permission to read any of the selected order's find columns."
 							Else
@@ -262,7 +262,7 @@
 														 ) & vbCrLf)
 																								
 												'If column is a Lookup, need to get its associated data
-												If objRow.FirstOrDefault.Item("datatype") = 12 And objRow.FirstOrDefault.Item("controltype") = 2 Then
+												If objRow.FirstOrDefault.Item("datatype") = 12 And objRow.FirstOrDefault.Item("controltype") = 2 And objRow.FirstOrDefault.Item("LookupColumnID") <> 0 Then
 													Dim objDatabase As Database = CType(Session("DatabaseFunctions"), Database)
 													'Dim objDataAccess As clsDataAccess = CType(Session("DatabaseAccess"), clsDataAccess)
 
@@ -340,8 +340,7 @@
 														For Each c As DataColumn In rstLookup.Columns
 															strColData = String.Concat(strColData, "'", r(c).ToString, "',")
 														Next
-														strColData = strColData.TrimEnd(",")
-														strColData = String.Concat(strColData, "],")
+														strColData = String.Concat(strColData.TrimEnd(","), "],")
 													Next
 													strColData = String.Concat(strColData.TrimEnd(","), "];")
 													
@@ -360,7 +359,30 @@
 														strLookupColumnGridPosition = String.Concat(strLookupColumnGridPosition, "0;")
 													End If
 													
-													Lookups.Add(strColData & vbCrLf & strColNames & strLookupColumnGridPosition) 
+													clientArrayData.Add(strColData & vbCrLf & strColNames & strLookupColumnGridPosition)
+												End If
+												
+												'Get the data for Option Groups or Dropdown Lists
+												If ( _
+															((objRow.FirstOrDefault.Item("datatype") = 12 And objRow.FirstOrDefault.Item("controltype") = 2) Or (objRow.FirstOrDefault.Item("datatype") = 12 And objRow.FirstOrDefault.Item("controltype") = 16)) _
+															And (objRow.FirstOrDefault.Item("LookupColumnID") = 0)
+														) Then
+
+													Dim _prmColumnIDs = New SqlParameter("ColumnIDs", SqlDbType.NChar, 100) With {.Value = objRow.FirstOrDefault.Item("columnID")}
+													Dim rstOptionGroupOrDropDown As DataTable = objDataAccess.GetFromSP("spASRIntGetColumnControlValues", _prmColumnIDs)
+													Dim strOptionGroupOrDropDownData As String = String.Concat("var colOptionGroupOrDropDownData_", objRow.FirstOrDefault.Item("columnID"), " = [")
+													
+													For Each r As DataRow In rstOptionGroupOrDropDown.Rows
+														strOptionGroupOrDropDownData = String.Concat(strOptionGroupOrDropDownData, "[")
+														For Each c As DataColumn In rstOptionGroupOrDropDown.Columns
+															If c.ColumnName.ToLower <> "columnid" Then
+																strOptionGroupOrDropDownData = String.Concat(strOptionGroupOrDropDownData, "'", r(c).ToString, "',")
+															End If
+														Next
+														strOptionGroupOrDropDownData = String.Concat(strOptionGroupOrDropDownData.TrimEnd(","), "],")
+													Next
+													strOptionGroupOrDropDownData = String.Concat(strOptionGroupOrDropDownData.TrimEnd(","), "];")
+													clientArrayData.Add(strOptionGroupOrDropDownData & vbCrLf)
 												End If
 											End If
 										End If
@@ -403,9 +425,9 @@
 
 							Response.Write("</table>")
 				
-							'Output the lookup array data
+							'Output the lookup and option group/dropdown client array data
 							Response.Write("<script type='text/javascript'>" & vbCrLf)
-							For Each s As String In Lookups
+							For Each s As String In clientArrayData
 								Response.Write(s & vbCrLf)
 							Next
 							Response.Write("</script>" & vbCrLf)

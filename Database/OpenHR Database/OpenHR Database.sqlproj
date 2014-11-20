@@ -643,6 +643,7 @@
     <Build Include="Stored Procedures\Workflow\spASRMobileInstantiateWorkflow.sql" />
     <Build Include="Stored Procedures\Workflow\spASRGetStoredDataActionDetails.sql" />
     <Build Include="Stored Procedures\Workflow\spASRInstantiateWorkflow.sql" />
+    <Build Include="Stored Procedures\Web\spASRIntGetColumnControlValues.sql" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Stored Procedures\Other\sp_ASR_Bradford_CalculateDurations.sql" />

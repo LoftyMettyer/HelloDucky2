@@ -176,7 +176,8 @@ function find_window_onload() {
 										editable: sColumnEditable,
 										type: "textarea"
 									})
-								} else if (ColumnDataType == 12 && ColumnControlType == 2) { //Lookup
+								} else if (ColumnDataType == 12 && ColumnControlType == 2 && ColumnLookupColumnID != 0) { //Lookup
+
 									colModel.push({
 										name: sColumnName,
 										id: iColumnId,
@@ -188,6 +189,26 @@ function find_window_onload() {
 												$(element).on('click', function () { showLookupForColumn(element); });
 											}
 										}
+									});
+								} else if (((ColumnDataType == 12 && ColumnControlType == 2) || (ColumnDataType == 12 && ColumnControlType == 16))
+														&& (ColumnLookupColumnID == 0)
+													) { //Option Groups or Dropdown Lists
+
+									colModel.push({
+										name: sColumnName,
+										edittype: "select",
+										id: iColumnId,
+										editable: sColumnEditable,
+										type: "select",
+										editoptions: { value: getValuesForColumn(iColumnId) }
+									});
+								} else if (ColumnDataType == 12 && ColumnControlType == 16384) { //Navigation control, make it a hyperlink
+									colModel.push({
+										name: sColumnName,
+										id: iColumnId,
+										editable: sColumnEditable,
+										formatter: hyperLinkFormatter,
+										unformat: hyperLinkDeformatter
 									});
 								} else { //None of the above
 									colModel.push({ name: sColumnName, id: iColumnId, width: 100, editable: sColumnEditable, type: "other", editoptions: { size: "20", maxlength: "30" }, label: sColumnDisplayName });
@@ -509,4 +530,31 @@ function selectValue(lookupColumnGridPosition, elementId) {
 	document.getElementById(elementId).value = cellValue;
 	$('#LookupForEditableGrid_Div').dialog('close');
 	$("#LookupForEditableGrid_Table").jqGrid('GridUnload');
+}
+
+function getValuesForColumn(iColumnId) {
+	//Get the values for this column and return them as a json object that jqGrid will use to create a dropdown
+	try {
+		var data = eval('colOptionGroupOrDropDownData_' + iColumnId);
+	} catch (e) {
+		return;
+	}
+
+	var values = {};
+	for (i = 0; i <= data.length - 1; i++) {
+		values[data[i][0]] = data[i][0];
+	}
+
+	return values;
+}
+
+function hyperLinkFormatter(cellValue, options, rowdata, action) {
+	//Format as hyperlink
+	return "<a href='" + cellValue + "' title='" + cellValue + "'>Navigation</a>";
+}
+
+function hyperLinkDeformatter(cellvalue, options, cell) {
+	//Remove the HTML anchor part
+	var value = cell.innerHTML.replace('<a href="', '').replace('">Navigation</a>', '');
+	return value.substring(0, value.indexOf(' ') - 1);
 }
