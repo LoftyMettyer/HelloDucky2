@@ -126,6 +126,11 @@
 		}
 
 		function SubmitLoginDetails() {
+
+			if ($('#submitLoginDetails').prop('disabled')) {
+				return false;
+			}
+
 			/* Try to login to the OpenHR database. */
 			var frmLoginForm = document.getElementById('frmLoginForm');
 
