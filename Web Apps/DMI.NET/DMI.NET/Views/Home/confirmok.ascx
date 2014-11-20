@@ -6,18 +6,13 @@
 
 		$("#workframe").attr("data-framesource", "CONFIRMOK");
 
-		if (txtReloadMenu.value == 1) {
-			window.parent.location.href = "main";
+		if ($('#confirmOKParams #txtReloadMenu').val() == 1) {
+			location.href = "main";
 			return;
 		}
 
-		var sAction;
-		if (txtReaction.length > 1) {
-			sAction = txtReaction[0].value;
-		} else {
-			sAction = txtReaction.value;
-		}
-
+		var sAction = $('#confirmOKParams #txtReaction').val();
+		
 		if (sAction == "LOGOFF") {
 			menu_logoffIntranet();
 			return;
@@ -27,28 +22,24 @@
 			window.parent.close();
 		}
 
-		//if (txtUtilType.value > 0) {
-		//	window.parent.frames("menuframe").loadDefSelPage(txtUtilType.value, txtUtilID.value, true);
-		//}
-
 		if (sAction == "CROSSTABS" || sAction == "NINEBOXGRID") {
-			menu_loadDefSelPage(txtUtilType.value, txtUtilID.value, 0, true);
+			menu_loadDefSelPage($('#confirmOKParams #txtUtilType').val(), $('#confirmOKParams #txtUtilID').val(), 0, true);
 		}
 
 		if (sAction == "CUSTOMREPORTS") {
-			menu_loadDefSelPage(2, txtUtilID.value, 0, true);
+			menu_loadDefSelPage(2, $('#confirmOKParams #txtUtilID').val(), 0, true);
 		}
 
 		if (sAction == "CALENDARREPORTS") {
-			menu_loadDefSelPage(17, txtUtilID.value, 0, true);
+			menu_loadDefSelPage(17, $('#confirmOKParams #txtUtilID').val(), 0, true);
 		}
 
 		if (sAction == "MAILMERGE") {
-			menu_loadDefSelPage(9, txtUtilID.value, 0, true);
+			menu_loadDefSelPage(9, $('#confirmOKParams #txtUtilID').val(), 0, true);
 		}
 
 		if (sAction == "WORKFLOW") {
-			menu_loadDefSelPage(25, txtUtilID.value, 0, true);
+			menu_loadDefSelPage(25, $('#confirmOKParams #txtUtilID').val(), 0, true);
 		}
 
 		if (sAction == "WORKFLOWPENDINGSTEPS") {
@@ -60,21 +51,21 @@
 		}
 
 		if (sAction == "PICKLISTS") {
-			menu_loadDefSelPage(10, txtUtilID.value, txtUtilTableID.value, true);
+			menu_loadDefSelPage(10, $('#confirmOKParams #txtUtilID').val(), $('#confirmOKParams #txtUtilTableID').val(), true);
 		}
 
 		if (sAction == "FILTERS") {
-			menu_loadDefSelPage(11, txtUtilID.value, txtUtilTableID.value, true);
+			menu_loadDefSelPage(11, $('#confirmOKParams #txtUtilID').val(), $('#confirmOKParams #txtUtilTableID').val(), true);
 			clearTempDialog();
 		}
 
 		if (sAction == "CALCULATIONS") {
-			menu_loadDefSelPage(12, txtUtilID.value, txtUtilTableID.value, true);
+			menu_loadDefSelPage(12, $('#confirmOKParams #txtUtilID').val(), $('#confirmOKParams #txtUtilTableID').val(), true);
 			clearTempDialog();
 		}
 
 		if (sAction == "DEFAULT") {
-			window.location.href = "main";  // "default.asp";
+			window.location.href = "main";
 		}
 
 		if (sAction.substring(0, 7) == "mnutool") {
@@ -141,6 +132,7 @@
 
 </script>
 
+<div id="confirmOKParams">
 <%
 	Response.Write("<INPUT type='hidden' id=txtFollowPage name=txtFollowPage value=" & Session("followpage") & ">")
 	Response.Write("<INPUT type='hidden' id=txtReaction name=txtReaction value=""" & Session("reaction") & """>")
@@ -154,6 +146,7 @@
 	Session("reaction") = Nothing
 	Session("reloadMenu") = 0
 %>
+</div>
 
 <form action="default_Submit" method="post" id="frmGoto" name="frmGoto" style="visibility: hidden; display: none">
 		<%Html.RenderPartial("~/Views/Shared/gotoWork.ascx")%>
