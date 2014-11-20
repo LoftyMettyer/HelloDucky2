@@ -105,8 +105,7 @@
 			
 		}
 
-		function CancelClick()
-		{
+		function pv_cancelClick() {			
 			if(OpenHR.parentExists()) {
 				window.parent.self.close();
 			}
@@ -607,7 +606,7 @@
 							<td width="20"></td>
 							<td width="80">
 								<input type="button" class="btn" name="Cancel" value="Cancel" style="WIDTH: 80px"
-									onclick="CancelClick()" />
+									onclick="pv_cancelClick()" />
 								<%
 									Response.Write("							</td>" & vbCrLf)
 									Response.Write("						</table>" & vbCrLf)

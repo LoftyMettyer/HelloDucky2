@@ -8,27 +8,10 @@
 
 <!DOCTYPE html>
 
-<link href="<%: Url.LatestContent("~/Content/OpenHR.css")%>" rel="stylesheet" type="text/css" />
 
-	<%--External script resources--%>
-<script src="<%: Url.LatestContent("~/bundles/OpenHR_General")%>" type="text/javascript"></script>
+		<script type="text/javascript" >			
+			function util_test_expression_pval_onload() {				
 
-<script id="officebarscript" src="<%: Url.LatestContent("~/Scripts/officebar/jquery.officebar_MODIFIED.js")%>" type="text/javascript"></script>
-<link href="<%: Url.LatestContent("~/Content/OpenHR.css")%>" rel="stylesheet" type="text/css" />
-<link href="<%: Url.LatestContent("~/Content/Site.css")%>" rel="stylesheet" type="text/css" />
-<link href="<%: Url.LatestContent("~/Content/OpenHR.css")%>" rel="stylesheet" type="text/css" />
-<link id="DMIthemeLink" href="<%: Url.LatestContent("~/Content/themes/" & Session("ui-admin-theme").ToString() & "/jquery-ui.min.css")%>" rel="stylesheet" type="text/css" />
-<link href="<%= Url.LatestContent("~/Content/general_enclosed_foundicons.css")%>" rel="stylesheet" type="text/css" />
-<link href="<%= Url.LatestContent("~/Content/font-awesome.min.css")%>" rel="stylesheet" type="text/css" />
-<link href="<%= Url.LatestContent("~/Content/fonts/SSI80v194934/style.css")%>" rel="stylesheet" />
-
-<html>
-<head runat="server">
-		<title>OpenHR</title>
-
-		<script type="text/javascript" >
-
-		function util_test_expression_pval_onload() {
 			window.UserLocale = "<%:Session("LocaleCultureName").ToString().ToLower()%>";
 			window.parent.OpenHR.setDatepickerLanguage();
 	
@@ -51,7 +34,7 @@
 			});
 
 				if (frmPromptedValues.txtPromptCount.value == 0) {
-						OpenHR.submitForm(frmPromptedValues);
+						OpenHR.submitForm(frmPromptedValues, 'tmpDialog');
 				}
 				else {
 						// Set focus on the first prompt control.
@@ -114,8 +97,8 @@
 				OpenHR.submitForm(frmPromptedValues);
 		}
 
-		function CancelClick() {
-			self.close();
+		function ute_cancelClick() {			
+			clearTempDialog();
 		}
 
 		function ValidatePrompt(pctlPrompt, piDataType)
@@ -340,8 +323,6 @@
 
 		</script>
 
-</head>
-<body>
 		
 		<div data-framesource="util_test_expression_pval">
 
@@ -837,7 +818,7 @@
 		Response.Write("							<td width='20'></td>" & vbCrLf)
 		Response.Write("							<td width='80'>" & vbCrLf)
 		Response.Write("							    <input type='button' value='Cancel' name='Cancel' class='btn' value='Cancel' style='width: 80px'" & vbCrLf)
-		Response.Write("									    onclick='CancelClick();' />" & vbCrLf)
+		Response.Write("									    onclick='ute_cancelClick();' />" & vbCrLf)
 		Response.Write("							</td>" & vbCrLf)
 		Response.Write("						</table>" & vbCrLf)
 		Response.Write("					</td>" & vbCrLf)
@@ -860,8 +841,6 @@
 </form>
 		
 		</div>
-</body>
-</html>
 
 
 <script type="text/javascript">

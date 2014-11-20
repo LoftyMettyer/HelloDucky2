@@ -77,6 +77,9 @@ function buildjsTree() {
 
 	//set Initial Expanded Nodes
 	var tree;
+
+	var frmUseful = OpenHR.getForm("divDefExpression", "frmUseful");
+
 	switch (frmUseful.txtExprNodeMode.value) {
 		case "2":
 			//expand all
@@ -160,8 +163,8 @@ function util_def_expression_onload() {
 	$("#workframe").attr("data-framesource", "UTIL_DEF_EXPRESSION");
 
 	var fOK = true;
-	var frmUseful = OpenHR.getForm("workframe", "frmUseful");
-	var frmDefinition = OpenHR.getForm("workframe", "frmDefinition");
+	var frmUseful = OpenHR.getForm("divDefExpression", "frmUseful");
+	var frmDefinition = OpenHR.getForm("divDefExpression", "frmDefinition");
 	var sErrMsg = frmUseful.txtErrorDescription.value;
 	if (sErrMsg.length > 0) {
 		fOK = false;
@@ -217,7 +220,8 @@ function resizeGridToFit() {
 }
 
 function resetIDandTag(dataObj) {
-	
+	var frmUseful = OpenHR.getForm("divDefExpression", "frmUseful");
+
 	//do nothing if cutting///
 	if (frmUseful.txtCutCopyType.value == "CUT") {		
 		return true;
@@ -279,6 +283,9 @@ function resetsubIDandTags(parentObjID) {
 
 function loadDefinition() {
 	var sKey;
+	var frmOriginalDefinition = OpenHR.getForm("divDefExpression", "frmOriginalDefinition");
+	var frmUseful = OpenHR.getForm("divDefExpression", "frmUseful");
+	var frmDefinition = OpenHR.getForm("divDefExpression", "frmDefinition");
 
 	var dataCollection = frmOriginalDefinition.elements;
 	if (dataCollection != null) {
@@ -352,6 +359,8 @@ function loadComponentNodes(piExprID, pfVisible) {
 	var sControlName;
 	var sComponentDefn;
 
+	var frmOriginalDefinition = OpenHR.getForm("divDefExpression", "frmOriginalDefinition");
+
 	var dataCollection = frmOriginalDefinition.elements;
 	if (dataCollection != null) {
 		for (i = 0; i < dataCollection.length; i++) {
@@ -389,6 +398,7 @@ function loadSubExpressionsNodes(piComponentID, pfVisible) {
 	var sExprDefn;
 
 	var sParentKey = "C" + piComponentID;
+	var frmOriginalDefinition = OpenHR.getForm("divDefExpression", "frmOriginalDefinition");
 
 	var dataCollection = frmOriginalDefinition.elements;
 	if (dataCollection != null) {
@@ -424,6 +434,7 @@ function loadSubExpressionsNodes(piComponentID, pfVisible) {
 function getNodeColour(piLevel) {
 	var sColour;
 	var iModLevel;
+	var frmUseful = OpenHR.getForm("divDefExpression", "frmUseful");
 
 	sColour = 'rgb(0, 0, 0)'; //6697779;
 
@@ -715,6 +726,7 @@ function componentParameter(psDefnString, psParameter) {
 function componentDescription(psDefnString) {
 	var sDesc;
 	var reDecimalSeparator = new RegExp("\\.", "gi");
+	var frmUseful = OpenHR.getForm("divDefExpression", "frmUseful");
 
 	sDesc = "";
 
@@ -809,7 +821,8 @@ function refreshControls() {
 	var fDisableMoveUp;
 	var iNodesSelected;
 
-	var frmDefinition = document.getElementById('frmDefinition');
+	var frmDefinition = OpenHR.getForm("divDefExpression", "frmDefinition");
+	var frmUseful = OpenHR.getForm("divDefExpression", "frmUseful");
 
 	fViewing = (frmUseful.txtAction.value.toUpperCase() == "VIEW");
 	fIsNotOwner = (frmUseful.txtUserName.value.toUpperCase() != frmDefinition.txtOwner.value.toUpperCase());
@@ -939,17 +952,22 @@ function refreshControls() {
 }
 
 function changeName() {
+	var frmUseful = OpenHR.getForm("divDefExpression", "frmUseful");
+	var frmDefinition = OpenHR.getForm("divDefExpression", "frmDefinition");
+
 	$('#SSTree1').jstree('rename_node', '.root', frmDefinition.txtName.value);
 	frmUseful.txtChanged.value = 1;
 	refreshControls();
 }
 
 function changeDescription() {
+	var frmUseful = OpenHR.getForm("divDefExpression", "frmUseful");
 	frmUseful.txtChanged.value = 1;
 	refreshControls();
 }
 
 function changeAccess() {
+	var frmUseful = OpenHR.getForm("divDefExpression", "frmUseful");
 	frmUseful.txtChanged.value = 1;
 	refreshControls();
 }
@@ -960,6 +978,8 @@ function addClick() {
 	var sRelativeKey;
 
 	var frmOptionArea = OpenHR.getForm("optionframe", "frmGotoOption");
+	var frmUseful = OpenHR.getForm("divDefExpression", "frmUseful");
+
 	var iFunctionID = 0;
 	var iParamIndex = 0;
 	var nodParameter;
@@ -1027,6 +1047,7 @@ function insertClick() {
 	var fOK;
 	var frmOptionArea = OpenHR.getForm("optionframe", "frmGotoOption");
 	var frmRefresh = OpenHR.getForm("refreshframe", "frmRefresh");
+	var frmUseful = OpenHR.getForm("divDefExpression", "frmUseful");
 
 	var iFunctionID = 0;
 	var iParamIndex = 0;
@@ -1097,6 +1118,8 @@ function editClick() {
 	var fOK;
 	var frmOptionArea = OpenHR.getForm("optionframe", "frmGotoOption");
 	var frmRefresh = OpenHR.getForm("refreshframe", "frmRefresh");
+	var frmUseful = OpenHR.getForm("divDefExpression", "frmUseful");
+
 	var iFunctionID = 0;
 	var iParamIndex = 0;
 
@@ -1358,9 +1381,10 @@ function testClick() {
 	var sPromptDateType;
 	var sFiltersAndCalcs;
 	var sURL;
-
-	var frmSend = OpenHR.getForm("divDefExpression", "frmSend");	
 	
+	var frmSend = OpenHR.getForm("divDefExpression", "frmSend");	
+	var frmTest = OpenHR.getForm("divDefExpression", "frmTest");
+
 	if (validateExpression() == false) return;
 	if (populateSendForm() == false) return;
 
@@ -1423,14 +1447,49 @@ function testClick() {
 	frmTest.prompts.value = sPrompts;
 	frmTest.filtersAndCalcs.value = sFiltersAndCalcs;
 
-	sURL = "util_dialog_expression" + "?action=test";	
+	//sURL = "util_dialog_expression" + "?action=test";	
+	//openDialog(sURL, (screen.width) / 2, (screen.height) / 3);
 
-	openDialog(sURL, (screen.width) / 2, (screen.height) / 3);
+	$('body').append('<div id="tmpDialog"></div>');
+	$('#tmpDialog').dialog({
+		width: 300,
+		height: 'auto'
+	});
 
+	$.ajax({
+		url: "util_dialog_expression",
+		type: "POST",
+		async: true,
+		data: { action: "test" },
+		success: function (html) {
+
+			$('#tmpDialog').html('').html(html);
+
+			//jQuery styling
+			$(function () {
+				$("input[type=submit], input[type=button], button").button();
+				$("input").addClass("ui-widget ui-corner-all");
+				$("input").removeClass("text");
+
+				$("textarea").addClass("ui-widget ui-corner-tl ui-corner-bl");
+				$("textarea").removeClass("text");
+
+				$("select").addClass("ui-widget ui-corner-tl ui-corner-bl");
+				$("select").removeClass("text");
+				$("input[type=submit], input[type=button], button").removeClass("ui-corner-all");
+				$("input[type=submit], input[type=button], button").addClass("ui-corner-tl ui-corner-br");
+
+			});
+
+			$('#tmpDialog').dialog("option", "position", ['center', 'center']);
+
+		},
+		error: function () { alert('error'); }
+	});
 }
 
-function okClick() {
-
+function okClick() {	
+	var frmUseful = OpenHR.getForm("divDefExpression", "frmUseful");
 	var frmSend = OpenHR.getForm("divDefExpression", "frmSend");
 
 	menu_disableMenu();
@@ -1453,8 +1512,8 @@ function okClick() {
 	return true;
 }
 
-function cancelClick() {
-
+function cancelClick() {	
+	var frmUseful = OpenHR.getForm("divDefExpression", "frmUseful");
 	if (definitionChanged() == false) {
 		menu_loadDefSelPage(frmUseful.txtUtilType.value, frmUseful.txtUtilID.value, frmUseful.txtTableID.value, true);
 	}
@@ -1473,6 +1532,7 @@ function clipboardClick() {
 }
 
 function cutComponents() {
+	var frmUseful = OpenHR.getForm("divDefExpression", "frmUseful");
 	frmUseful.txtUndoType.value = "CUT";
 	frmUseful.txtCutCopyType.value = "CUT";
 	$('#' + tree_selectedNodeID()).css('opacity', 0.5);
@@ -1480,6 +1540,7 @@ function cutComponents() {
 }
 
 function copyComponents() {
+	var frmUseful = OpenHR.getForm("divDefExpression", "frmUseful");
 	frmUseful.txtUndoType.value = "COPY";
 	frmUseful.txtCutCopyType.value = "COPY";
 	$.jstree._focused().copy();
@@ -1488,7 +1549,7 @@ function copyComponents() {
 
 function pasteComponents() {
 	//NB Pasting is also bound to the resetIDandTag function
-	frmUseful = OpenHR.getForm("divDefExpression", "frmUseful");
+	var frmUseful = OpenHR.getForm("divDefExpression", "frmUseful");
 	if ((frmUseful.txtCutCopyType.value != "COPY") && (frmUseful.txtCutCopyType.value != "CUT")) return true;
 	
 	$('#SSTree1 .jstree-leaf').css('opacity', 1);
@@ -1528,7 +1589,8 @@ function moveComponentDown() {
 }
 
 function undoClick() {
-	
+	var frmUseful = OpenHR.getForm("divDefExpression", "frmUseful");
+
 	if ((frmUseful.txtUndoType.value == "CUT") || (frmUseful.txtUndoType.value == "COPY")) {
 		$('#SSTree1 .jstree-leaf').css('opacity', 1);
 	} else {
@@ -1551,17 +1613,19 @@ function undoClick() {
 }
 
 function createUndoView(psType) {
+	var frmUseful = OpenHR.getForm("divDefExpression", "frmUseful");
+
 	if ((psType != "CUT") && (psType != "COPY") && (psType != "PASTE")) frmUseful.txtCutCopyType.value = ""; //reset copy/paste values.
 	frmUseful.txtUndoType.value = psType;
 	window.SSTree1UndoData = $('#SSTree1').jstree('get_rollback');
 	frmUseful.txtChanged.value = 1;
 }
 
-function saveChanges() {
+function saveChanges() {	
 	cancelComponent();
 
 	if (definitionChanged() == false) {
-		$("workframe").attr("data-framesource", "UTIL_DEF_EXPRESSION");
+		$("#workframe").attr("data-framesource", "UTIL_DEF_EXPRESSION");
 		return 6; // No changes made. Continue navigation
 	} else {
 		return 0;
@@ -1569,6 +1633,7 @@ function saveChanges() {
 }
 
 function definitionChanged() {
+	var frmUseful = OpenHR.getForm("divDefExpression", "frmUseful");
 	if (frmUseful.txtAction.value.toUpperCase() == "VIEW") {
 		return false;
 	}
@@ -1588,6 +1653,8 @@ function submitDefinition() {
 	// first populate the validate fields
 	var frmValidate = OpenHR.getForm("divDefExpression", "frmValidate");
 	var frmSend = OpenHR.getForm("divDefExpression", "frmSend");
+	var frmUseful = OpenHR.getForm("divDefExpression", "frmUseful");
+	var frmOriginalDefinition = OpenHR.getForm("divDefExpression", "frmOriginalDefinition");
 
 	frmValidate.validatePass.value = 1;
 	frmValidate.validateName.value = frmDefinition.txtName.value;
@@ -1609,9 +1676,46 @@ function submitDefinition() {
 
 	//disableButtons(); 
 
-	var sURL = "util_dialog_expression" + "?action=validate";
+	//var sURL = "util_dialog_expression" + "?action=validate";
+	//openDialog(sURL, 600, 230);
 
-	openDialog(sURL, 600, 230);
+	$('body').append('<div id="tmpDialog"></div>');
+	$('#tmpDialog').dialog({
+		width: 300,
+		height: 'auto'
+	});
+
+	$.ajax({
+		url: "util_dialog_expression",
+		type: "POST",
+		async: true,
+		data: { action: "validate" },
+		success: function (html) {
+
+			$('#tmpDialog').html('').html(html);
+
+			//jQuery styling
+			$(function () {
+				$("input[type=submit], input[type=button], button").button();
+				$("input").addClass("ui-widget ui-corner-all");
+				$("input").removeClass("text");
+
+				$("textarea").addClass("ui-widget ui-corner-tl ui-corner-bl");
+				$("textarea").removeClass("text");
+
+				$("select").addClass("ui-widget ui-corner-tl ui-corner-bl");
+				$("select").removeClass("text");
+				$("input[type=submit], input[type=button], button").removeClass("ui-corner-all");
+				$("input[type=submit], input[type=button], button").addClass("ui-corner-tl ui-corner-br");
+
+			});
+
+			$('#tmpDialog').dialog("option", "position", ['center', 'center']);
+
+		},
+		error: function () { alert('error'); }
+	});
+
 
 	reEnableControls();
 	return true;
@@ -1619,6 +1723,9 @@ function submitDefinition() {
 }
 
 function disableButtons() {
+	var frmDefinition = OpenHR.getForm("divDefExpression", "frmDefinition");
+	var frmUseful = OpenHR.getForm("divDefExpression", "frmUseful");
+
 	text_disable(frmDefinition.txtName, true);
 	textarea_disable(frmDefinition.txtDescription, true);
 	radio_disable(frmDefinition.optAccessHD, true);
@@ -1642,6 +1749,9 @@ function disableButtons() {
 }
 
 function reEnableControls() {
+	var frmUseful = OpenHR.getForm("divDefExpression", "frmUseful");
+	var frmDefinition = OpenHR.getForm("divDefExpression", "frmDefinition");
+
 	if (frmUseful.txtAction.value.toUpperCase() != "VIEW") {
 		text_disable(frmDefinition.txtName, false);
 		textarea_disable(frmDefinition.txtDescription, false);
@@ -1664,6 +1774,8 @@ function reEnableControls() {
 function validateExpression() {
 	var sTypeName;
 	var sMsg;		
+	var frmUseful = OpenHR.getForm("divDefExpression", "frmUseful");
+	var frmDefinition = OpenHR.getForm("divDefExpression", "frmDefinition");
 
 	switch (frmUseful.txtUtilType.value) {
 		case "11":
@@ -1710,8 +1822,9 @@ function populateSendForm() {
 	var sNames = "";
 	var sComponents = "";
 	var reQuote = new RegExp("\"", "gi");
-
-	var frmSend = OpenHR.getForm("workframe", "frmSend");
+	
+	var frmSend = OpenHR.getForm("divDefExpression", "frmSend");
+	var frmUseful = OpenHR.getForm("divDefExpression", "frmUseful");
 	var frmDefinition = OpenHR.getForm("workframe", "frmDefinition");
 
 	// Copy all the header information to frmSend
@@ -1802,6 +1915,8 @@ function populateSendForm_names(psKey) {
 
 function createNew(pPopup) {
 	pPopup.close();
+	var frmUseful = OpenHR.getForm("divDefExpression", "frmUseful");
+	var frmDefinition = OpenHR.getForm("divDefExpression", "frmDefinition");
 
 	frmUseful.txtUtilID.value = 0;
 	frmDefinition.txtOwner.value = frmUseful.txtUserName.value;
@@ -1812,6 +1927,8 @@ function createNew(pPopup) {
 
 function makeHidden(pPopup) {
 	pPopup.close();
+	var frmDefinition = OpenHR.getForm("divDefExpression", "frmDefinition");
+
 	frmDefinition.optAccessHD.checked = true;
 	submitDefinition();
 }
@@ -1833,6 +1950,7 @@ function SSTree1_afterLabelEdit() {
 	var pfCancel = arguments[0];
 	var psNewText = arguments[1];
 	var sText = new String(psNewText);
+	var frmUseful = OpenHR.getForm("divDefExpression", "frmUseful");
 
 	// Remove leading spaces.
 	while (sText.substr(0, 1) == " ") {
@@ -1854,6 +1972,7 @@ function SSTree1_afterLabelEdit() {
 
 function SSTree1_dblClick() {
 	var sKey = tree_selectedNodeID();
+	var frmDefinition = OpenHR.getForm("divDefExpression", "frmDefinition");
 
 	if ((frmDefinition.cmdEdit.disabled == false) &&
 			(sKey.substr(0, 1) != "E")) {
@@ -2052,6 +2171,7 @@ function customMenu(node) {
 	var sKey;
 	var fModifiable;
 	var sUndoText;
+	var frmUseful = OpenHR.getForm("divDefExpression", "frmUseful");
 
 	sKey = $(node).attr('id');
 
@@ -2203,6 +2323,7 @@ function customMenu(node) {
 
 function abExprMenu_Click(pTool) {	
 	var sKey;
+	var frmUseful = OpenHR.getForm("divDefExpression", "frmUseful");
 
 	switch (pTool) {
 		case "ID_Add":
@@ -2400,6 +2521,13 @@ function tree_FirstSiblingID() {
 function tree_selectedNodeChildCount() {
 	return $.jstree._focused()._get_children().length;
 }
+
+function clearTempDialog() {
+	$('#tmpDialog').dialog('close');
+	$('#tmpDialog').dialog('destroy');
+	$('#tmpDialog').remove();
+}
+
 
 //For reference:
 //Select node : $('#SSTree1').jstree('select_node', '#E36896');

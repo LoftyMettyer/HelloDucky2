@@ -3835,7 +3835,8 @@ Namespace Controllers
 			Return View()
 		End Function
 
-		Function util_dialog_expression() As ActionResult
+		Function util_dialog_expression(Optional action As String = "") As ActionResult
+			ViewData("action") = action
 			Return View()
 		End Function
 

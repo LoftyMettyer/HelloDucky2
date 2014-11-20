@@ -195,7 +195,7 @@
 
 <form id="frmTest" name="frmTest" target="test" method="post" action="util_test_expression_pval" style="visibility: hidden; display: none">
 	<input type="hidden" id="type" name="type">
-	<input type="hidden" id="Hidden1" name="components1">
+	<input type="hidden" id="components1" name="components1">
 	<input type="hidden" id="tableID" name="tableID" value='<% =session("utiltableid")%>'>
 	<input type="hidden" id="prompts" name="prompts">
 	<input type="hidden" id="filtersAndCalcs" name="filtersAndCalcs">

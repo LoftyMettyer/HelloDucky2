@@ -2,19 +2,6 @@
 <%@ Import Namespace="DMI.NET" %>
 <%@ Import Namespace="HR.Intranet.Server" %>
 
-<!DOCTYPE html>
-
-<%--External script resources--%>
-<script src="<%: Url.LatestContent("~/bundles/jQuery")%>" type="text/javascript"></script>
-<script id="officebarscript" src="<%: Url.LatestContent("~/Scripts/officebar/jquery.officebar_MODIFIED.js")%>" type="text/javascript"></script>
-<link href="<%: Url.LatestContent("~/Content/OpenHR.css")%>" rel="stylesheet" type="text/css" />
-<link href="<%: Url.LatestContent("~/Content/Site.css")%>" rel="stylesheet" type="text/css" />
-<link href="<%: Url.LatestContent("~/Content/OpenHR.css")%>" rel="stylesheet" type="text/css" />
-<link id="DMIthemeLink" href="<%: Url.LatestContent("~/Content/themes/" & Session("ui-admin-theme").ToString() & "/jquery-ui.min.css")%>" rel="stylesheet" type="text/css" />
-<link href="<%= Url.LatestContent("~/Content/general_enclosed_foundicons.css")%>" rel="stylesheet" type="text/css" />
-<link href="<%= Url.LatestContent("~/Content/font-awesome.min.css")%>" rel="stylesheet" type="text/css" />
-<link href="<%= Url.LatestContent("~/Content/fonts/SSI80v194934/style.css")%>" rel="stylesheet" />
-
 
 <%
 		' Write the prompted values from the calling form into a session variable.
@@ -50,9 +37,6 @@
 		Session("TestPrompts") = aPrompts
 %>
 
-<html>
-<head runat="server">
-	<title>OpenHR</title>
 
 	<script type="text/javascript">
 		function util_test_expression_onload() {
@@ -72,41 +56,15 @@
 				trPleaseWait4.style.display = 'none';
 				trPleaseWait5.style.visibility = 'hidden';
 				trPleaseWait5.style.display = 'none';
-
-				var bdyMain = document.getElementById('bdyMain');
-				// Resize the grid to show all prompted values.
-				var iResizeBy = bdyMain.scrollWidth - bdyMain.clientWidth;
-				if (bdyMain.offsetWidth + iResizeBy > screen.width) {
-					window.outerWidth = new String(screen.width);
-				}
-				else {
-					iNewWidth = window.parent.outerWidth;
-					iNewWidth = iNewWidth + iResizeBy;
-					
-					window.outerWidth = new String(iNewWidth);
-				}
-
-				iResizeBy = bdyMain.scrollHeight - bdyMain.clientHeight;
-				if (bdyMain.offsetHeight + iResizeBy > screen.height) {
-					window.outerHeight = new String(screen.height);
-				}
-				else {
-					iNewHeight = window.parent.outerHeight;
-					iNewHeight = iNewHeight + iResizeBy;
-					window.outerHeight = new String(iNewHeight);
-				}
 			}
 			else {
-				self.close();
+				clearTempDialog();
 			}
 		}
 
 	</script>
 
 
-</head>
-
-<body>
 	<div  id="bdyMain">
 	<div data-framesource="util_test_expression">
 
@@ -157,7 +115,7 @@
 					<td width=20></td>
 					<td align=center colspan=3> 
 						<input id=Cancel name=Cancel class="btn" type=button value=OK style="WIDTH: 80px" width="80" 
-								onclick="self.close()" />
+								onclick="clearTempDialog();" />
 					</td>
 					<td width=20></td>
 				</tr>
@@ -242,7 +200,7 @@
 						Response.Write("			    <td align=center colspan=3> " & vbCrLf)
 %>
 				<input id="Button1" name="Cancel" type="button" class="btn" value="OK" style="WIDTH: 80px" width="80"
-					onclick="self.close()" />
+					onclick="clearTempDialog();" />
 <%
 		Response.Write("			    </td>" & vbCrLf)
 		Response.Write("					<td width=20></td>" & vbCrLf)
@@ -308,7 +266,7 @@ Response.Write("					<td width=20></td>" & vbCrLf)
 Response.Write("			    <td align=center colspan=3> " & vbCrLf)
 %>
 								<input id="Button2" name="Cancel" type="button" class="btn" value="OK" style="WIDTH: 80px" width="80"
-										onclick="self.close()"/>
+										onclick="clearTempDialog();"/>
 								<%
 										Response.Write("			    </td>" & vbCrLf)
 										Response.Write("					<td width=20></td>" & vbCrLf)
@@ -329,9 +287,7 @@ Response.Write("			    <td align=center colspan=3> " & vbCrLf)
 
 </div>
 		</div>
-</body>
 
-</html>
 
 <script type="text/javascript">
 		util_test_expression_onload();
