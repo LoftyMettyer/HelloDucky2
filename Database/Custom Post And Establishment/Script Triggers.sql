@@ -76,6 +76,20 @@ GO
 DISABLE TRIGGER trsys_Appointment_Absence_Entry_d01 ON [dbo].[tbuser_Appointment_Absence_Entry]
 GO
 
+
+DISABLE TRIGGER trsys_Absence_Breakdown_i01 ON [dbo].[tbuser_Absence_Breakdown]
+GO
+
+DISABLE TRIGGER trsys_Absence_Breakdown_i02 ON [dbo].[tbuser_Absence_Breakdown]
+GO
+
+DISABLE TRIGGER trsys_Absence_Breakdown_u01 ON [dbo].[tbuser_Absence_Breakdown]
+GO
+
+DISABLE TRIGGER trsys_Absence_Breakdown_u02 ON [dbo].[tbuser_Absence_Breakdown]
+GO
+
+
 IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[trsys_Absence_Breakdown]') AND xtype in (N'TR'))
 	DROP TRIGGER [dbo].[trsys_Absence_Breakdown];
 GO
