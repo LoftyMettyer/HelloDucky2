@@ -3,7 +3,7 @@
 <script type="text/javascript">
 
 	function confirmok_window_onload() {
-
+		
 		$("#workframe").attr("data-framesource", "CONFIRMOK");
 
 		if ($('#confirmOKParams #txtReloadMenu').val() == 1) {
@@ -128,6 +128,15 @@
 				return;
 			}
 		}
+
+
+		if ($('#confirmOKParams #txtErrorMessage').val().length > 0) {
+			// An error returned from the server
+			$('#errorMessages').html('').html($('#confirmOKParams #txtErrorMessage').val());
+			$('#errorMessages').append('<br/><br/><input type="button" value="Close" style="float: right; width: 80px;" onclick="clearTempDialog();"/>');
+		}
+		
+
 	}
 
 </script>
@@ -140,6 +149,7 @@
 	Response.Write("<INPUT type='hidden' id=txtUtilType name=txtUtilType value=" & Session("utiltype") & ">")
 	Response.Write("<INPUT type='hidden' id=txtUtilTableID name=txtUtilTableID value=" & Session("utilTableID") & ">")
 	Response.Write("<INPUT type='hidden' id=txtReloadMenu name=txtReloadMenu value=" & Session("reloadMenu") & ">")
+	Response.Write("<INPUT type='hidden' id='txtErrorMessage' name='txtErrorMessage' value='" & Session("errorMessage") & "'>")
 	Session("confirmtitle") = Nothing
 	Session("confirmtext") = Nothing
 	Session("followpage") = Nothing
@@ -147,6 +157,7 @@
 	Session("reloadMenu") = 0
 %>
 </div>
+<div id="errorMessages"></div>
 
 <form action="default_Submit" method="post" id="frmGoto" name="frmGoto" style="visibility: hidden; display: none">
 		<%Html.RenderPartial("~/Views/Shared/gotoWork.ascx")%>

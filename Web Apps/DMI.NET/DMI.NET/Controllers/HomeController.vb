@@ -3504,136 +3504,78 @@ Namespace Controllers
 			Dim objExpression As Expression
 			Dim iExprType As Integer
 			Dim iReturnType As Integer
-			Dim sUtilType As String
-			Dim sUtilType2 As String
+			Dim sUtilType As String		
 			Dim fok As Boolean
-
-			On Error Resume Next
+			Session("errorMessage") = ""
 
 			' Get the server DLL to save the expression definition
 
 			Dim objDataAccess As clsDataAccess = CType(Session("DatabaseAccess"), clsDataAccess)
 
 			Dim objContext = CType(Session("SessionContext"), SessionInfo)
-			objExpression = New Expression(objContext)
-
 			If Request.Form("txtSend_type") = 11 Then
 				iExprType = 11
 				iReturnType = 3
 				sUtilType = "Filter"
-				sUtilType2 = "filter"
 			Else
 				iExprType = 10
 				iReturnType = 0
 				sUtilType = "Calculation"
-				sUtilType2 = "calculation"
 			End If
 
-			fok = objExpression.Initialise(NullSafeInteger(Request.Form("txtSend_tableID")), _
-				NullSafeInteger(Request.Form("txtSend_ID")), CInt(iExprType), CInt(iReturnType))
+			Try
 
-			If fok Then
-				fok = objExpression.SetExpressionDefinition(CStr(Request.Form("txtSend_components1")), _
-					"", "", "", "", CStr(Request.Form("txtSend_names")))
-			End If
+				objExpression = New Expression(objContext)
 
-			If fok Then
-				fok = objExpression.SaveExpression(CStr(Request.Form("txtSend_name")), _
-					CStr(Request.Form("txtSend_userName")), _
-					CStr(Request.Form("txtSend_access")), _
-					CStr(Request.Form("txtSend_description")))
+				fok = objExpression.Initialise(NullSafeInteger(Request.Form("txtSend_tableID")), _
+					NullSafeInteger(Request.Form("txtSend_ID")), CInt(iExprType), CInt(iReturnType))
+				If Not fok Then Session("errorMessage") = "<h3>Error saving " & sUtilType.ToLower() & "</h3>Error initialising save definition."
 
 				If fok Then
-					If (Request.Form("txtSend_access") = "HD") And _
-						(Request.Form("txtSend_ID") > 0) Then
-						' Hide any utilities that use this filter/calc.
-						' NB. The check to see if we can do this has already been done as part of the filter/calc validation. */
-
-						objDataAccess.ExecuteSP("sp_ASRIntMakeUtilitiesHidden" _
-							, New SqlParameter("piUtilityType", SqlDbType.Int) With {.Value = CleanNumeric(Request.Form("txtSend_type"))} _
-							, New SqlParameter("piUtilityID", SqlDbType.Int) With {.Value = CleanNumeric(Request.Form("txtSend_ID"))})
-
-					End If
-
-					Session("confirmtext") = sUtilType & " has been saved successfully"
-					Session("confirmtitle") = sUtilType & "s"
-					Session("followpage") = "defsel"
-					Session("reaction") = Request.Form("txtSend_reaction")
-					Session("utilid") = objExpression.ExpressionID
-
-				Else
-
-					' TODO ERROR REPORTING
-					Response.Write("<HTML>" & vbCrLf)
-					Response.Write("	<HEAD>" & vbCrLf)
-					Response.Write("		<META NAME=""GENERATOR"" Content=""Microsoft Visual Studio 6.0"">" & vbCrLf)
-					Response.Write("		<LINK href=""OpenHR.css"" rel=stylesheet type=text/css >" & vbCrLf)
-					Response.Write("		<TITLE>" & vbCrLf)
-					Response.Write("			OpenHR" & vbCrLf)
-					Response.Write("		</TITLE>" & vbCrLf)
-					Response.Write("  <!--#INCLUDE FILE=""include/ctl_SetStyles.txt"" -->")
-					Response.Write("	</HEAD>" & vbCrLf)
-					Response.Write("	<BODY id=bdyMainBody name=""bdyMainBody"" " & Session("BodyTag") & ">" & vbCrLf)
-
-					Response.Write("	<table align=center class=""outline"" cellPadding=5 cellSpacing=0>" & vbCrLf)
-					Response.Write("		<TR>" & vbCrLf)
-					Response.Write("			<TD>" & vbCrLf)
-					Response.Write("				<table class=""invisible"" cellspacing=0 cellpadding=0>" & vbCrLf)
-					Response.Write("				  <tr> " & vbCrLf)
-					Response.Write("				    <td colspan=3 height=10></td>" & vbCrLf)
-					Response.Write("				  </tr>" & vbCrLf)
-					Response.Write("				  <tr> " & vbCrLf)
-					Response.Write("				    <td colspan=3 align=center> " & vbCrLf)
-					Response.Write("							<H3>Error</H3>" & vbCrLf)
-					Response.Write("				    </td>" & vbCrLf)
-					Response.Write("				  </tr>" & vbCrLf)
-					Response.Write("				  <tr> " & vbCrLf)
-					Response.Write("				    <td width=20 height=10></td> " & vbCrLf)
-					Response.Write("				    <td> " & vbCrLf)
-					Response.Write("							<H4>Error saving " & sUtilType2 & "</H4>" & vbCrLf)
-					Response.Write("				    </td>" & vbCrLf)
-					Response.Write("				    <td width=20></td> " & vbCrLf)
-					Response.Write("				  </tr>" & vbCrLf)
-					Response.Write("				  <tr> " & vbCrLf)
-					Response.Write("				    <td width=20 height=10></td> " & vbCrLf)
-					Response.Write("				    <td> " & vbCrLf)
-					Response.Write("							Unknown error" & vbCrLf)
-					Response.Write("			    </td>" & vbCrLf)
-					Response.Write("			    <td width=20></td> " & vbCrLf)
-					Response.Write("			  </tr>" & vbCrLf)
-					Response.Write("			  <tr> " & vbCrLf)
-					Response.Write("			    <td colspan=3 height=20></td>" & vbCrLf)
-					Response.Write("			  </tr>" & vbCrLf)
-					Response.Write("			  <tr> " & vbCrLf)
-					Response.Write("			    <td colspan=3 height=10 align=center>" & vbCrLf)
-					Response.Write("						<INPUT TYPE=button VALUE=""Retry"" NAME=""GoBack"" class=""btn"" OnClick=""window.history.back(1)"" style=""WIDTH: 80px"" width=80 id=cmdGoBack>" & vbCrLf)
-					Response.Write("                      onmouseover=""try{button_onMouseOver(this);}catch(e){}""" & vbCrLf)
-					Response.Write("                      onmouseout=""try{button_onMouseOut(this);}catch(e){}""" & vbCrLf)
-					Response.Write("		                  onfocus=""try{button_onFocus(this);}catch(e){}""" & vbCrLf)
-					Response.Write("                      onblur=""try{button_onBlur(this);}catch(e){}"" />" & vbCrLf)
-					Response.Write("			    </td>" & vbCrLf)
-					Response.Write("			  </tr>" & vbCrLf)
-					Response.Write("			  <tr>" & vbCrLf)
-					Response.Write("			    <td colspan=3 height=10></td>" & vbCrLf)
-					Response.Write("			  </tr>" & vbCrLf)
-					Response.Write("			</table>" & vbCrLf)
-					Response.Write("    </td>" & vbCrLf)
-					Response.Write("  </tr>" & vbCrLf)
-					Response.Write("</table>" & vbCrLf)
-					Response.Write("	</BODY>" & vbCrLf)
-					Response.Write("<HTML>" & vbCrLf)
+					fok = objExpression.SetExpressionDefinition(CStr(Request.Form("txtSend_components1")), _
+						"", "", "", "", CStr(Request.Form("txtSend_names")))
+					If Not fok Then Session("errorMessage") = "<h3>Error saving " & sUtilType.ToLower() & "</h3>Error setting expression definition."
 				End If
 
-			End If
+				If fok Then
+					fok = objExpression.SaveExpression(CStr(Request.Form("txtSend_name")), _
+						CStr(Request.Form("txtSend_userName")), _
+						CStr(Request.Form("txtSend_access")), _
+						CStr(Request.Form("txtSend_description")))
+					If Not fok Then Session("errorMessage") = "<h3>Error saving " & sUtilType.ToLower() & "</h3>Error saving expression definition."
 
-			objExpression = Nothing
+					If fok Then
+						If (Request.Form("txtSend_access") = "HD") And _
+							(Request.Form("txtSend_ID") > 0) Then
+							' Hide any utilities that use this filter/calc.
+							' NB. The check to see if we can do this has already been done as part of the filter/calc validation. */
 
-			'If fok Then
-			'Return RedirectToAction("DefSel")
-			' Else
-			'TODO - error message
+							objDataAccess.ExecuteSP("sp_ASRIntMakeUtilitiesHidden" _
+								, New SqlParameter("piUtilityType", SqlDbType.Int) With {.Value = CleanNumeric(Request.Form("txtSend_type"))} _
+								, New SqlParameter("piUtilityID", SqlDbType.Int) With {.Value = CleanNumeric(Request.Form("txtSend_ID"))})
+
+						End If
+
+						Session("confirmtext") = sUtilType & " has been saved successfully"
+						Session("confirmtitle") = sUtilType & "s"
+						Session("followpage") = "defsel"
+						Session("reaction") = Request.Form("txtSend_reaction")
+						Session("utilid") = objExpression.ExpressionID
+
+					Else
+
+						Session("errorMessage") = "Error saving " & sUtilType.ToLower()
+					
+					End If
+
+				End If
+
+			Catch ex As Exception
+				Session("errorMessage") = "<h3>Error saving " & sUtilType.ToLower() & "</h3>" & ex.Message
+			End Try
+
 			Return RedirectToAction("confirmok")
-			' End If
+
 
 		End Function
 
