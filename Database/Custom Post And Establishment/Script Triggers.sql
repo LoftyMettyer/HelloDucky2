@@ -7,6 +7,10 @@
 
 */
 
+IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[trsys_Absence_Breakdown_D01]') AND xtype in (N'TR'))
+	DROP TRIGGER [dbo].[trsys_Absence_Breakdown_D01]
+GO
+
 
 IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[trcustom_Absence_Entry_P&E]') AND xtype in (N'TR'))
 	DROP TRIGGER [dbo].[trcustom_Absence_Entry_P&E]
