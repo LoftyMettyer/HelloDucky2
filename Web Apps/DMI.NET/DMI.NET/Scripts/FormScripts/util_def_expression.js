@@ -1791,15 +1791,15 @@ function validateExpression() {
 	}
 
 	// Check name has been entered.
-	if (frmDefinition.txtName.value == "") {
-		OpenHR.messageBox("You must enter a name for this definition.");
+	if (frmDefinition.txtName.value == "") {		
+		OpenHR.modalMessage("You must enter a name for this definition.");
 		return false;
 	}
 
 	// Check the expression does have some components.      	
 	if ($('#SSTree1 li').length <= 1) {
 		sMsg = " The " + sTypeName + " must have some components.";
-		OpenHR.messageBox(sMsg);
+		OpenHR.modalMessage(sMsg);
 		return false;
 	}
 
@@ -1808,7 +1808,7 @@ function validateExpression() {
 
 	$('#SSTree1 li[id^="E"]').each(function () {
 		if ($(this).children().length == 0) {
-			OpenHR.messageBox("Function parameters must have components.");
+			OpenHR.modalMessage("Function parameters must have components.");
 			fOK = false;
 		}
 	});
