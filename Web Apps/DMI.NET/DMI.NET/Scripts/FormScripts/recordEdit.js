@@ -452,7 +452,7 @@ function insertUpdateDef() {
 						var workingPatternString = "";
 
 						$(objControl).children("input").each(function (itemIndex) {
-							if ($(this).attr("checked") == "checked") {
+							if ($(this).is(":checked") == true) {
 								workingPatternString += workingPatternTemplate[itemIndex];
 							} else {
 								workingPatternString += " ";
