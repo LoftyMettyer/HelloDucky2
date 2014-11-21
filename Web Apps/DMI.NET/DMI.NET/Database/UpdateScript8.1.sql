@@ -11300,6 +11300,7 @@ BEGIN
 		SELECT f.tableID, f.columnID, f.columnName, f.ascending, f.type, f.datatype, f.controltype, f.size, f.decimals, f.Use1000Separator, f.BlankIfZero
 			 , CASE WHEN f.Editable = 1 AND p.updateGranted = 1 THEN 1 ELSE 0 END AS updateGranted
 			 , LookupTableID, LookupColumnID, LookupFilterColumnID, LookupFilterValueID
+			 ,SpinnerMinimum, SpinnerMaximum, SpinnerIncrement
 			FROM @FindDefinition f
 				INNER JOIN @ColumnPermissions p ON p.columnName = f.columnName
 			WHERE f.[type] = 'F';
