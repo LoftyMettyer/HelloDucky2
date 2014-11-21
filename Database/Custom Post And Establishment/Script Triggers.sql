@@ -106,29 +106,7 @@ BEGIN
 	INSERT Absence_Breakdown([source], ID_250, Post_ID, [Type], Payroll_Type_Code, Reason, Payroll_Reason_Code, Absence_In, Duration, Absence_Date, [Session]
 		, Day_Pattern_AM, Day_Pattern_PM, Hour_Pattern_AM, Hour_Pattern_PM, Staff_Number, Payroll_Company_Code)	
 		SELECT 'pers', i.ID, ap.ID, i.Absence_Type, i.Payroll_Type_Code, i.Reason, i.Payroll_Reason_Code, wp.Absence_In
-			, CASE 
-				WHEN DATEPART(dw,dr.IndividualDate) = 1 AND dr.SessionType = 'AM' THEN wp.Sunday_Hours_AM
-				WHEN DATEPART(dw,dr.IndividualDate) = 2 AND dr.SessionType = 'AM' THEN wp.Monday_Hours_AM
-				WHEN DATEPART(dw,dr.IndividualDate) = 3 AND dr.SessionType = 'AM' THEN wp.Tuesday_Hours_AM
-				WHEN DATEPART(dw,dr.IndividualDate) = 4 AND dr.SessionType = 'AM' THEN wp.Wednesday_Hours_AM
-				WHEN DATEPART(dw,dr.IndividualDate) = 5 AND dr.SessionType = 'AM' THEN wp.Thursday_Hours_AM
-				WHEN DATEPART(dw,dr.IndividualDate) = 6 AND dr.SessionType = 'AM' THEN wp.Friday_Hours_AM
-				WHEN DATEPART(dw,dr.IndividualDate) = 7 AND dr.SessionType = 'AM' THEN wp.Saturday_Hours_AM
-				WHEN DATEPART(dw,dr.IndividualDate) = 1 AND dr.SessionType = 'PM' THEN wp.Sunday_Hours_PM
-				WHEN DATEPART(dw,dr.IndividualDate) = 2 AND dr.SessionType = 'PM' THEN wp.Monday_Hours_PM
-				WHEN DATEPART(dw,dr.IndividualDate) = 3 AND dr.SessionType = 'PM' THEN wp.Tuesday_Hours_PM
-				WHEN DATEPART(dw,dr.IndividualDate) = 4 AND dr.SessionType = 'PM' THEN wp.Wednesday_Hours_PM
-				WHEN DATEPART(dw,dr.IndividualDate) = 5 AND dr.SessionType = 'PM' THEN wp.Thursday_Hours_PM
-				WHEN DATEPART(dw,dr.IndividualDate) = 6 AND dr.SessionType = 'PM' THEN wp.Friday_Hours_PM
-				WHEN DATEPART(dw,dr.IndividualDate) = 7 AND dr.SessionType = 'PM' THEN wp.Saturday_Hours_PM
-				WHEN DATEPART(dw,dr.IndividualDate) = 1 AND dr.SessionType = 'Day' THEN wp.Sunday_Hours_AM + Sunday_Hours_PM
-				WHEN DATEPART(dw,dr.IndividualDate) = 2 AND dr.SessionType = 'Day' THEN wp.Monday_Hours_AM + Monday_Hours_PM
-				WHEN DATEPART(dw,dr.IndividualDate) = 3 AND dr.SessionType = 'Day' THEN wp.Tuesday_Hours_AM + Tuesday_Hours_PM
-				WHEN DATEPART(dw,dr.IndividualDate) = 4 AND dr.SessionType = 'Day' THEN wp.Wednesday_Hours_AM + Wednesday_Hours_PM
-				WHEN DATEPART(dw,dr.IndividualDate) = 5 AND dr.SessionType = 'Day' THEN wp.Thursday_Hours_AM + Thursday_Hours_PM
-				WHEN DATEPART(dw,dr.IndividualDate) = 6 AND dr.SessionType = 'Day' THEN wp.Friday_Hours_AM + Friday_Hours_PM
-				WHEN DATEPART(dw,dr.IndividualDate) = 7 AND dr.SessionType = 'Day' THEN wp.Saturday_Hours_AM + Saturday_Hours_PM
-			END
+			, dbo.udfDurationFromPattern(wp.Absence_In, dr.IndividualDate, dr.SessionType, wp.Sunday_Hours_AM, wp.Monday_Hours_AM, wp.Tuesday_Hours_AM, wp.Wednesday_Hours_AM, wp.Thursday_Hours_AM, wp.Friday_Hours_AM, wp.Saturday_Hours_AM, wp.Sunday_Hours_PM, wp.Monday_Hours_PM, wp.Tuesday_Hours_PM, wp.Wednesday_Hours_PM, wp.Thursday_Hours_PM, wp.Friday_Hours_PM, wp.Saturday_Hours_PM)
 			, dr.IndividualDate, dr.SessionType
 			, wp.Day_Pattern_AM, wp.Day_Pattern_PM, wp.Hour_Pattern_AM, wp.Hour_Pattern_PM
 			, pr.Staff_Number, pr.Payroll_Company_Code
@@ -137,7 +115,8 @@ BEGIN
 			INNER JOIN Appointments ap ON ap.ID_1 = i.ID_1
 			INNER JOIN Appointment_Working_Patterns wp ON wp.ID_3 = ap.ID
 			INNER JOIN Personnel_Records pr ON pr.ID = i.ID_1
-		WHERE wp.Effective_Date <= dr.IndividualDate AND (wp.End_Date >= dr.IndividualDate OR wp.End_Date IS NULL);
+		WHERE wp.Effective_Date <= dr.IndividualDate AND (wp.End_Date >= dr.IndividualDate OR wp.End_Date IS NULL)
+			AND dbo.udfDurationFromPattern(wp.Absence_In, dr.IndividualDate, dr.SessionType, wp.Sunday_Hours_AM, wp.Monday_Hours_AM, wp.Tuesday_Hours_AM, wp.Wednesday_Hours_AM, wp.Thursday_Hours_AM, wp.Friday_Hours_AM, wp.Saturday_Hours_AM, wp.Sunday_Hours_PM, wp.Monday_Hours_PM, wp.Tuesday_Hours_PM, wp.Wednesday_Hours_PM, wp.Thursday_Hours_PM, wp.Friday_Hours_PM, wp.Saturday_Hours_PM) > 0;
 
 END
 GO
@@ -153,29 +132,7 @@ BEGIN
 	INSERT Absence_Breakdown([source], ID_251, Post_ID, [Type], Payroll_Type_Code, Reason, Payroll_Reason_Code, Absence_In, Duration, Absence_Date, [Session]
 		, Day_Pattern_AM, Day_Pattern_PM, Hour_Pattern_AM, Hour_Pattern_PM, Staff_Number, Payroll_Company_Code)	
 		SELECT 'post', i.ID, wp.ID_3, i.Absence_Type, i.Payroll_Type_Code, i.Reason, i.Payroll_Reason_Code, wp.Absence_In
-			, CASE 
-				WHEN DATEPART(dw,dr.IndividualDate) = 1 AND dr.SessionType = 'AM' THEN wp.Sunday_Hours_AM
-				WHEN DATEPART(dw,dr.IndividualDate) = 2 AND dr.SessionType = 'AM' THEN wp.Monday_Hours_AM
-				WHEN DATEPART(dw,dr.IndividualDate) = 3 AND dr.SessionType = 'AM' THEN wp.Tuesday_Hours_AM
-				WHEN DATEPART(dw,dr.IndividualDate) = 4 AND dr.SessionType = 'AM' THEN wp.Wednesday_Hours_AM
-				WHEN DATEPART(dw,dr.IndividualDate) = 5 AND dr.SessionType = 'AM' THEN wp.Thursday_Hours_AM
-				WHEN DATEPART(dw,dr.IndividualDate) = 6 AND dr.SessionType = 'AM' THEN wp.Friday_Hours_AM
-				WHEN DATEPART(dw,dr.IndividualDate) = 7 AND dr.SessionType = 'AM' THEN wp.Saturday_Hours_AM
-				WHEN DATEPART(dw,dr.IndividualDate) = 1 AND dr.SessionType = 'PM' THEN wp.Sunday_Hours_PM
-				WHEN DATEPART(dw,dr.IndividualDate) = 2 AND dr.SessionType = 'PM' THEN wp.Monday_Hours_PM
-				WHEN DATEPART(dw,dr.IndividualDate) = 3 AND dr.SessionType = 'PM' THEN wp.Tuesday_Hours_PM
-				WHEN DATEPART(dw,dr.IndividualDate) = 4 AND dr.SessionType = 'PM' THEN wp.Wednesday_Hours_PM
-				WHEN DATEPART(dw,dr.IndividualDate) = 5 AND dr.SessionType = 'PM' THEN wp.Thursday_Hours_PM
-				WHEN DATEPART(dw,dr.IndividualDate) = 6 AND dr.SessionType = 'PM' THEN wp.Friday_Hours_PM
-				WHEN DATEPART(dw,dr.IndividualDate) = 7 AND dr.SessionType = 'PM' THEN wp.Saturday_Hours_PM
-				WHEN DATEPART(dw,dr.IndividualDate) = 1 AND dr.SessionType = 'Day' THEN wp.Sunday_Hours_AM + Sunday_Hours_PM
-				WHEN DATEPART(dw,dr.IndividualDate) = 2 AND dr.SessionType = 'Day' THEN wp.Monday_Hours_AM + Monday_Hours_PM
-				WHEN DATEPART(dw,dr.IndividualDate) = 3 AND dr.SessionType = 'Day' THEN wp.Tuesday_Hours_AM + Tuesday_Hours_PM
-				WHEN DATEPART(dw,dr.IndividualDate) = 4 AND dr.SessionType = 'Day' THEN wp.Wednesday_Hours_AM + Wednesday_Hours_PM
-				WHEN DATEPART(dw,dr.IndividualDate) = 5 AND dr.SessionType = 'Day' THEN wp.Thursday_Hours_AM + Thursday_Hours_PM
-				WHEN DATEPART(dw,dr.IndividualDate) = 6 AND dr.SessionType = 'Day' THEN wp.Friday_Hours_AM + Friday_Hours_PM
-				WHEN DATEPART(dw,dr.IndividualDate) = 7 AND dr.SessionType = 'Day' THEN wp.Saturday_Hours_AM + Saturday_Hours_PM
-			END
+			, dbo.udfDurationFromPattern(wp.Absence_In, dr.IndividualDate, dr.SessionType, wp.Sunday_Hours_AM, wp.Monday_Hours_AM, wp.Tuesday_Hours_AM, wp.Wednesday_Hours_AM, wp.Thursday_Hours_AM, wp.Friday_Hours_AM, wp.Saturday_Hours_AM, wp.Sunday_Hours_PM, wp.Monday_Hours_PM, wp.Tuesday_Hours_PM, wp.Wednesday_Hours_PM, wp.Thursday_Hours_PM, wp.Friday_Hours_PM, wp.Saturday_Hours_PM)
 			, dr.IndividualDate, dr.SessionType
 			, wp.Day_Pattern_AM, wp.Day_Pattern_PM, wp.Hour_Pattern_AM, wp.Hour_Pattern_PM
 			, pr.Staff_Number, pr.Payroll_Company_Code
@@ -184,8 +141,8 @@ BEGIN
 			INNER JOIN Appointments ap ON ap.ID = i.ID_3
 			INNER JOIN Appointment_Working_Patterns wp ON wp.ID_3 = i.ID_3
 			INNER JOIN Personnel_Records pr ON pr.ID = ap.ID_1
-		WHERE wp.Effective_Date <= dr.IndividualDate AND (wp.End_Date >= dr.IndividualDate OR wp.End_Date IS NULL);
-
+		WHERE wp.Effective_Date <= dr.IndividualDate AND (wp.End_Date >= dr.IndividualDate OR wp.End_Date IS NULL)
+			AND dbo.udfDurationFromPattern(wp.Absence_In, dr.IndividualDate, dr.SessionType, wp.Sunday_Hours_AM, wp.Monday_Hours_AM, wp.Tuesday_Hours_AM, wp.Wednesday_Hours_AM, wp.Thursday_Hours_AM, wp.Friday_Hours_AM, wp.Saturday_Hours_AM, wp.Sunday_Hours_PM, wp.Monday_Hours_PM, wp.Tuesday_Hours_PM, wp.Wednesday_Hours_PM, wp.Thursday_Hours_PM, wp.Friday_Hours_PM, wp.Saturday_Hours_PM) > 0;
 
 END
 GO
@@ -201,14 +158,38 @@ BEGIN
 			@startDate	datetime,
 			@endDate	datetime;
 
-	INSERT Absence(Absence_Type, Payroll_Code, Reason, Payroll_Reason, Start_Date, Start_Session, End_Date, End_Session, Absence_In, Duration_Days, Duration_Hours)
+		--SELECT DISTINCT ab.Type, ab.Payroll_Type_Code, ab.Reason, ab.Payroll_Reason_Code
+		--	, m.startdate
+		--	, (SELECT DISTINCT CASE WHEN [Session] = 'Day' THEN 'AM' ELSE [Session] END FROM inserted WHERE (ID_250 = ab.ID_250 OR ID_251 = ab.ID_251) AND Absence_Date = m.startdate)
+		--	, m.enddate
+		--	, (SELECT DISTINCT CASE WHEN [Session] = 'Day' THEN 'PM' ELSE [Session] END FROM inserted WHERE (ID_250 = ab.ID_250 OR ID_251 = ab.ID_251) AND Absence_Date = m.enddate)
+		--	, CASE WHEN  ab.Absence_In = 'Days' THEN m.Duration ELSE 0 END
+		--	, CASE WHEN  ab.Absence_In = 'Hours' THEN m.Duration ELSE 0 END
+		--	, CASE WHEN  ab.[source] = 'pers' THEN ae.ID_1 ELSE a.ID_1 END
+		--	, ab.Absence_In
+		--FROM inserted ab
+		--	LEFT JOIN Absence_Entry ae ON ae.ID = ab.ID_250
+		--	LEFT JOIN Appointment_Absence_Entry aae ON aae.ID = ab.ID_251
+		--	LEFT JOIN Appointments a ON a.ID = aae.ID_3
+		--CROSS APPLY (
+		--	SELECT MIN(range.Absence_Date) AS startdate, MAX(range.Absence_Date) AS enddate, SUM(Duration) AS Duration
+		--	FROM inserted range
+		--	WHERE ab.ID_250 = range.ID_250 OR ab.ID_251 = range.ID_251) m;
+
+	INSERT Absence(Absence_Type, Payroll_Code, Reason, Payroll_Reason, Start_Date, Start_Session, End_Date, End_Session, Duration_Days, Duration_Hours, ID_1, Absence_In)
 		SELECT DISTINCT ab.Type, ab.Payroll_Type_Code, ab.Reason, ab.Payroll_Reason_Code
 			, m.startdate
 			, (SELECT DISTINCT CASE WHEN [Session] = 'Day' THEN 'AM' ELSE [Session] END FROM inserted WHERE (ID_250 = ab.ID_250 OR ID_251 = ab.ID_251) AND Absence_Date = m.startdate)
 			, m.enddate
 			, (SELECT DISTINCT CASE WHEN [Session] = 'Day' THEN 'PM' ELSE [Session] END FROM inserted WHERE (ID_250 = ab.ID_250 OR ID_251 = ab.ID_251) AND Absence_Date = m.enddate)
-			, '???' , 0, m.Duration
+			, CASE WHEN  ab.Absence_In = 'Days' THEN m.Duration ELSE 0 END
+			, CASE WHEN  ab.Absence_In = 'Hours' THEN m.Duration ELSE 0 END
+			, CASE WHEN  ab.[source] = 'pers' THEN ae.ID_1 ELSE a.ID_1 END
+			, ab.Absence_In
 		FROM inserted ab
+			LEFT JOIN Absence_Entry ae ON ae.ID = ab.ID_250
+			LEFT JOIN Appointment_Absence_Entry aae ON aae.ID = ab.ID_251
+			LEFT JOIN Appointments a ON a.ID = aae.ID_3
 		CROSS APPLY (
 			SELECT MIN(range.Absence_Date) AS startdate, MAX(range.Absence_Date) AS enddate, SUM(Duration) AS Duration
 			FROM inserted range
