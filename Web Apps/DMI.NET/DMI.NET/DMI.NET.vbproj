@@ -202,12 +202,12 @@
   <ItemGroup>
     <Compile Include="App_Start\BundleConfig.vb" />
     <Compile Include="App_Start\DataAnnotationConfig.vb" />
-    <Compile Include="App_Start\DatabaseConfig.vb" />
     <Compile Include="App_Start\RouteConfig.vb" />
     <Compile Include="App_Start\SettingsConfig.vb" />
     <Compile Include="App_Start\Startup.vb" />
     <Compile Include="Classes\Licence.vb" />
     <Compile Include="Classes\ReportColumnCollection.vb" />
+    <Compile Include="Classes\ConfigurationError.vb" />
     <Compile Include="Code\ResetPassword.vb" />
     <Compile Include="Code\Hubs\LicenceHub.vb" />
     <Compile Include="Code\Attributes\ExcludeCharAttribute.vb" />
@@ -222,11 +222,12 @@
     <Compile Include="Code\Interfaces\IDataAccess.vb" />
     <Compile Include="Code\Interfaces\IReport.vb" />
     <Compile Include="Code\Interfaces\IReportDetail.vb" />
-    <Compile Include="Code\Hubs\NotificationHub.vb" />
+    <Compile Include="Code\Hubs\DatabaseHub.vb" />
     <Compile Include="Helpers\LabelHelper.vb" />
     <Compile Include="Models\CalendarEvent.vb" />
     <Compile Include="Models\StandardReportsConfigurationModel.vb" />
     <Compile Include="Models\NineBoxGridModel.vb" />
+    <Compile Include="ViewModels\Account\ConfigurationErrorsModel.vb" />
     <Compile Include="ViewModels\Home\BulkBookingSelectionViewModel.vb" />
     <Compile Include="ViewModels\Home\DefinitionPropertiesViewModel.vb" />
     <Compile Include="ViewModels\Home\BulkBookingViewModel.vb" />
@@ -310,6 +311,7 @@
     <Content Include="Content\images\ajax-loader.gif" />
     <Content Include="Content\images\anonymous.png" />
     <Content Include="Content\images\Chart_Popout.png" />
+    <Content Include="Content\images\error.jpg" />
     <Content Include="Content\images\minus.gif" />
     <Content Include="Content\images\OLEIcons\file_down_64.png" />
     <Content Include="Content\images\OLEIcons\folder_64.png" />
@@ -319,9 +321,11 @@
     <Content Include="Content\images\ProgressBar.gif" />
     <Content Include="Content\images\splitterLeft.bmp" />
     <Content Include="Content\images\splitterRight.bmp" />
+    <Content Include="Content\images\SystemError.jpg" />
     <Content Include="Content\images\TopLeftBannerImage.png" />
     <Content Include="Content\images\ui-bg_glass_75_d0e5f5_1x400.png" />
     <Content Include="Content\images\Utilities.gif" />
+    <Content Include="Content\images\warning.png" />
     <Content Include="Content\jquery.jqGrid\ellipsis-xbl.xml" />
     <Content Include="Content\jquery.jqGrid\ui.jqgrid.css" />
     <Content Include="Content\jquery.mCustomScrollbar.css" />
@@ -1754,6 +1758,7 @@
     <Content Include="Views\Reports\Util_Def_9BoxGrid.vbhtml" />
     <Content Include="Views\Reports\_OutputNineBoxGrid.vbhtml" />
     <Content Include="Views\Home\AbsenceBreakdownConfiguration.vbhtml" />
+    <Content Include="Views\Account\ConfigurationErrors.vbhtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Global.asax" />

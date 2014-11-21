@@ -113,6 +113,11 @@ Namespace App_Start
 			' BulkBookingSelection bundle
 			bundles.Add(New ScriptBundle("~/bundles/bulkbookingselection").Include(
 										 "~/Scripts/FormScripts/BulkBookingSelection.js"))
+
+			bundles.Add(New StyleBundle("~/bundles/stylesheets").Include(
+									"~/Content/Site.css",
+									"~/Content/OpenHR.css"))
+
 #If DEBUG Then
 
 			For Each bundle As Bundle In BundleTable.Bundles

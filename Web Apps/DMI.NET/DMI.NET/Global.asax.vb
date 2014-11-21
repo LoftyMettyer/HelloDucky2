@@ -21,14 +21,17 @@ Public Class MvcApplication
 		RouteConfig.RegisterRoutes(RouteTable.Routes)
 		BundleConfig.RegisterBundles(BundleTable.Bundles)
 		DataAnnotationConfig.RegisterDataAnnotations()
-		DatabaseConfig.Connect()
-		LicenceHub.RegisterLicence()
-		SettingsConfig.Register()
+		DatabaseHub.RegisterDatabase()
+
+		If DatabaseHub.ServiceBrokerOK And DatabaseHub.HeartbeatOK Then
+			LicenceHub.RegisterLicence()
+			SettingsConfig.Register()
+		End If
 
 	End Sub
 
 	Protected Sub Application_End()
-		DatabaseConfig.Disconnect()
+		DatabaseHub.Unregister()
 	End Sub
 
 	Sub Session_Start()

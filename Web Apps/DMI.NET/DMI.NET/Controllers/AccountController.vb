@@ -10,6 +10,7 @@ Imports HR.Intranet.Server.Structures
 Imports DMI.NET.Models
 Imports System.Security
 Imports DMI.NET.Code.Hubs
+Imports DMI.NET.ViewModels.Account
 
 Namespace Controllers
 	Public Class AccountController
@@ -143,13 +144,34 @@ Namespace Controllers
 
 		' GET: /Account/Login
 		Function Login() As ActionResult
+
 			Try
+
+				If Not DatabaseHub.DatabaseOK Then
+
+					Dim objErrors = New ConfigurationErrorsModel
+
+					If Not DatabaseHub.HeartbeatOK Then
+						objErrors.Errors.Add(New ConfigurationError With {.Code = "0001",
+																															.Message = "Database connectivity failure",
+																															.Detail = "The IIS server was unable to establish a heartbeat to the OpenHR database."})
+					Else
+
+						If Not DatabaseHub.ServiceBrokerOK Then
+							objErrors.Errors.Add(New ConfigurationError With {.Code = "0002",
+																																.Message = "SQL Service Broker not running",
+																																.Detail = "The SQL server is unable to instanciate the service broker."})
+						End If
+
+					End If
+
+					Return View("ConfigurationErrors", objErrors)
+
+				End If
 
 				Dim objServerSession As HR.Intranet.Server.SessionInfo = Session("sessionContext")
 
 				Session("ErrorText") = Nothing
-
-
 				Session("action") = ""
 				Session("selectSQL") = ""
 				Session("filterSQL") = ""
