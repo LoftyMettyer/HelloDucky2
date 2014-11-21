@@ -1,5 +1,5 @@
 
-ALTER FUNCTION dbo.udfsysDurationFromPattern(
+CREATE FUNCTION dbo.udfsysDurationFromPattern(
 	@Absence_In	varchar(5),
 	@IndividualDate datetime,
 	@SessionType varchar(3),
