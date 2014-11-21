@@ -195,7 +195,14 @@
 				resizable: false,
 				open: function() {
 					$(this).load($(this).data('sURLData'), function () {
-					$("input[type=submit], input[type=button], button").button();
+						$("input[type=submit], input[type=button], button").button();
+						//disable Email button based on permissions for Email on menubar
+						if ($("#txtEmailPermission").val() == 1) {
+							$('#divEventLogViewDetailsButtons #cmdEmail').button('enable');
+						}
+						else {
+							$('#divEventLogViewDetailsButtons #cmdEmail').button('disable');
+						}
 					});
 				},
 				close: function (event, ui) { }
