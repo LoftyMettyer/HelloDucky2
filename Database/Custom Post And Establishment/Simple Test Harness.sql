@@ -26,16 +26,16 @@ print 'iNSERT'
 --INSERT Appointment_Absence_Entry (ID_3, start_date, start_session, end_date, end_session, Reason, absence_type) values (825, getdate()-1, 'AM', getdate()-1, 'PM', 'just a single day off', 'MAT')
 --INSERT Appointment_Absence_Entry (ID_3, start_date, start_session, end_date, end_session, Reason, absence_type) values (825, getdate(), 'AM', getdate(), 'AM', 'morning', 'HOLS')
 --INSERT Appointment_Absence_Entry (ID_3, start_date, start_session, end_date, end_session, Reason, absence_type) values (825, getdate()+1, 'PM', getdate()+1, 'PM', 'afternoon', 'JURY')
---INSERT Appointment_Absence_Entry (ID_3, start_date, start_session, end_date, end_session, Reason, absence_type) values (876, getdate()-5, 'PM', getdate()-5, 'AM', 'afternoon', 'JURY')
+INSERT Appointment_Absence_Entry (ID_3, start_date, start_session, end_date, end_session, Reason, absence_type) values (876, getdate()-5, 'PM', getdate()-5, 'AM', 'malaria', 'Holiday')
 --INSERT Absence_Entry (ID_1, start_date, end_date, Reason, absence_type) values (105, getdate(), getdate(), 'SICK', 'felt bad')
 
 --INSERT Absence_Entry (ID_1, start_date, start_session, end_date, end_session, absence_type, Reason, Absence_In) values (116, getdate()-5, 'PM', getdate()-5, 'AM', 'SICK', 'Jody felt bad', 'Hours')
---INSERT Absence_Entry (ID_1, start_date, start_session, end_date, end_session, absence_type, Reason) values (116, getdate(), 'AM', getdate(), 'PM', 'SICK', 'Jody felt bad')
+INSERT Absence_Entry (ID_1, start_date, start_session, end_date, end_session, absence_type, Reason) values (116, getdate()-10, 'AM', getdate()+10, 'PM', 'sickness', 'bad back')
 
 PRINT 'UPDATE'
 --UPDATE Absence_Entry SET start_date = start_date - 1
 --UPDATE Appointment_Absence_Entry SET start_date = end_date - 1
- DELETE FROM Absence_Entry WHERE ID = 521
+-- DELETE FROM Absence_Entry WHERE ID = 521
 -- DELETE FROM Appointment_Absence_Entry --WHERE ID = 86
 --SELECT * FROM Absence_Entry
 --SELECT id,* FROM Appointment_Working_Patterns where id_3 in (835, 876)
@@ -44,10 +44,10 @@ PRINT 'UPDATE'
 
 SELECT * FROM Absence_Entry
 SELECT * FROM Absence_Breakdown
---SELECT id, Start_date, Start_Session, End_Date, End_Session, Reason, * FROM Absence
+SELECT id, Start_date, Start_Session, End_Date, End_Session, Reason, * FROM Absence
 
 
-SELECT * FROM ASRSysAccordTransactions
+--SELECT * FROM ASRSysAccordTransactions
 
 --select * from ASRSysTables order by tablename
 --select * from ASRSysAccordTransferTypes order by ASRBaseTableID

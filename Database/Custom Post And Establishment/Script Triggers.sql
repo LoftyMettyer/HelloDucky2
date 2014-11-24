@@ -105,7 +105,7 @@ BEGIN
 
 	INSERT Absence_Breakdown([source], ID_250, Post_ID, [Type], Payroll_Type_Code, Reason, Payroll_Reason_Code, Absence_In, Duration, Absence_Date, [Session]
 		, Day_Pattern_AM, Day_Pattern_PM, Hour_Pattern_AM, Hour_Pattern_PM, Staff_Number, Payroll_Company_Code)	
-		SELECT 'pers', i.ID, ap.ID, i.Absence_Type, i.Payroll_Type_Code, i.Reason, i.Payroll_Reason_Code, wp.Absence_In
+		SELECT 'pers', i.ID, ap.ID, i.Absence_Type, ISNULL(at.Payroll_Code, ''), i.Reason, ISNULL(ar.Payroll_Code, ''), wp.Absence_In
 			, dbo.udfsysDurationFromPattern(wp.Absence_In, dr.IndividualDate, dr.SessionType, wp.Sunday_Hours_AM, wp.Monday_Hours_AM, wp.Tuesday_Hours_AM, wp.Wednesday_Hours_AM, wp.Thursday_Hours_AM, wp.Friday_Hours_AM, wp.Saturday_Hours_AM, wp.Sunday_Hours_PM, wp.Monday_Hours_PM, wp.Tuesday_Hours_PM, wp.Wednesday_Hours_PM, wp.Thursday_Hours_PM, wp.Friday_Hours_PM, wp.Saturday_Hours_PM)
 			, dr.IndividualDate, dr.SessionType
 			, wp.Day_Pattern_AM, wp.Day_Pattern_PM, wp.Hour_Pattern_AM, wp.Hour_Pattern_PM
@@ -115,6 +115,8 @@ BEGIN
 			INNER JOIN Appointments ap ON ap.ID_1 = i.ID_1
 			INNER JOIN Appointment_Working_Patterns wp ON wp.ID_3 = ap.ID
 			INNER JOIN Personnel_Records pr ON pr.ID = i.ID_1
+			LEFT JOIN Absence_Type_Table at ON at.Absence_Type = i.Absence_Type
+			LEFT JOIN Absence_Reason_Table ar ON ar.Reason = i.Reason
 		WHERE wp.Effective_Date <= dr.IndividualDate AND (wp.End_Date >= dr.IndividualDate OR wp.End_Date IS NULL)
 			AND dbo.udfsysDurationFromPattern(wp.Absence_In, dr.IndividualDate, dr.SessionType, wp.Sunday_Hours_AM, wp.Monday_Hours_AM, wp.Tuesday_Hours_AM, wp.Wednesday_Hours_AM, wp.Thursday_Hours_AM, wp.Friday_Hours_AM, wp.Saturday_Hours_AM, wp.Sunday_Hours_PM, wp.Monday_Hours_PM, wp.Tuesday_Hours_PM, wp.Wednesday_Hours_PM, wp.Thursday_Hours_PM, wp.Friday_Hours_PM, wp.Saturday_Hours_PM) > 0;
 
@@ -131,7 +133,7 @@ BEGIN
 
 	INSERT Absence_Breakdown([source], ID_251, Post_ID, [Type], Payroll_Type_Code, Reason, Payroll_Reason_Code, Absence_In, Duration, Absence_Date, [Session]
 		, Day_Pattern_AM, Day_Pattern_PM, Hour_Pattern_AM, Hour_Pattern_PM, Staff_Number, Payroll_Company_Code)	
-		SELECT 'post', i.ID, wp.ID_3, i.Absence_Type, i.Payroll_Type_Code, i.Reason, i.Payroll_Reason_Code, wp.Absence_In
+		SELECT 'post', i.ID, wp.ID_3, i.Absence_Type, ISNULL(at.Payroll_Code, ''), i.Reason, ISNULL(ar.Payroll_Code, ''), wp.Absence_In
 			, dbo.udfsysDurationFromPattern(wp.Absence_In, dr.IndividualDate, dr.SessionType, wp.Sunday_Hours_AM, wp.Monday_Hours_AM, wp.Tuesday_Hours_AM, wp.Wednesday_Hours_AM, wp.Thursday_Hours_AM, wp.Friday_Hours_AM, wp.Saturday_Hours_AM, wp.Sunday_Hours_PM, wp.Monday_Hours_PM, wp.Tuesday_Hours_PM, wp.Wednesday_Hours_PM, wp.Thursday_Hours_PM, wp.Friday_Hours_PM, wp.Saturday_Hours_PM)
 			, dr.IndividualDate, dr.SessionType
 			, wp.Day_Pattern_AM, wp.Day_Pattern_PM, wp.Hour_Pattern_AM, wp.Hour_Pattern_PM
@@ -141,6 +143,8 @@ BEGIN
 			INNER JOIN Appointments ap ON ap.ID = i.ID_3
 			INNER JOIN Appointment_Working_Patterns wp ON wp.ID_3 = i.ID_3
 			INNER JOIN Personnel_Records pr ON pr.ID = ap.ID_1
+			LEFT JOIN Absence_Type_Table at ON at.Absence_Type = i.Absence_Type
+			LEFT JOIN Absence_Reason_Table ar ON ar.Reason = i.Reason
 		WHERE wp.Effective_Date <= dr.IndividualDate AND (wp.End_Date >= dr.IndividualDate OR wp.End_Date IS NULL)
 			AND dbo.udfsysDurationFromPattern(wp.Absence_In, dr.IndividualDate, dr.SessionType, wp.Sunday_Hours_AM, wp.Monday_Hours_AM, wp.Tuesday_Hours_AM, wp.Wednesday_Hours_AM, wp.Thursday_Hours_AM, wp.Friday_Hours_AM, wp.Saturday_Hours_AM, wp.Sunday_Hours_PM, wp.Monday_Hours_PM, wp.Tuesday_Hours_PM, wp.Wednesday_Hours_PM, wp.Thursday_Hours_PM, wp.Friday_Hours_PM, wp.Saturday_Hours_PM) > 0;
 
