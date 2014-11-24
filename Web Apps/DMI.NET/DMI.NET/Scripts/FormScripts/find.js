@@ -207,8 +207,17 @@ function find_window_onload() {
 										name: sColumnName,
 										id: iColumnId,
 										editable: sColumnEditable,
+										type: "navigation",
 										formatter: hyperLinkFormatter,
 										unformat: hyperLinkDeformatter
+									});
+								} else if (ColumnDataType == -1 && ColumnControlType == 4096) { //Working pattern
+									colModel.push({
+										name: sColumnName,
+										id: iColumnId,
+										editable: false, //Hardcoded to false, see Notes on TFS 12732 for reason why
+										type: "workingpattern",
+										formatter: workingPatternFormatter
 									});
 								} else { //None of the above
 									colModel.push({ name: sColumnName, id: iColumnId, width: 100, editable: sColumnEditable, type: "other", editoptions: { size: "20", maxlength: "30" }, label: sColumnDisplayName });
@@ -557,4 +566,8 @@ function hyperLinkDeformatter(cellvalue, options, cell) {
 	//Remove the HTML anchor part
 	var value = cell.innerHTML.replace('<a href="', '').replace('">Navigation</a>', '');
 	return value.substring(0, value.indexOf(' ') - 1);
+}
+
+function workingPatternFormatter(cellValue, options, rowdata, action) {
+	return cellValue.replace(/ /g, "&nbsp;"); //Replace all spaces with &nbsp; so the working patterns in the column are neatly aligned
 }
