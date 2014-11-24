@@ -99,6 +99,8 @@ CREATE TRIGGER [dbo].[trcustom_Absence_Entry_P&E] ON [dbo].[tbuser_Absence_Entry
     AFTER INSERT, UPDATE, DELETE
 AS
 BEGIN
+	--SYSTEM MANAGER AUTOMATICALLY UPGRADED TO 4.3
+
     SET NOCOUNT ON;
 
     DELETE [dbo].[tbuser_Absence_Breakdown] WHERE [id_250] IN (SELECT DISTINCT [id] FROM deleted);
@@ -127,6 +129,8 @@ CREATE TRIGGER [dbo].[trcustom_Appointment_Absence_Entry_P&E] ON [dbo].[tbuser_A
     AFTER INSERT, UPDATE, DELETE
 AS
 BEGIN
+	--SYSTEM MANAGER AUTOMATICALLY UPGRADED TO 4.3
+
     SET NOCOUNT ON;
 
     DELETE [dbo].[tbuser_Absence_Breakdown] WHERE [id_251] IN (SELECT DISTINCT [id] FROM deleted);
@@ -156,6 +160,8 @@ CREATE TRIGGER [dbo].[trcustom_Absence_Breakdown_P&E] ON [dbo].[tbuser_Absence_B
     AFTER INSERT
 AS
 BEGIN
+	--SYSTEM MANAGER AUTOMATICALLY UPGRADED TO 4.3
+
     SET NOCOUNT ON;
 
 	DECLARE @AbsenceID	integer,
@@ -313,6 +319,8 @@ CREATE TRIGGER [dbo].[trcustom_Absence_Breakdown_P&E_D02] ON [dbo].[tbuser_Absen
     INSTEAD OF DELETE
 AS
 BEGIN
+	--SYSTEM MANAGER AUTOMATICALLY UPGRADED TO 4.3
+
     SET NOCOUNT ON;
 
 	DECLARE @AbsenceID	integer,
