@@ -8,12 +8,13 @@
 
 	function picklistSelectionData_window_onload() {
 		$("#picklistdataframe").attr("data-framesource", "PICKLISTSELECTIONDATA");
-
+		
 		$(".popup").dialog({
-			resizable: false
+			resizable: false			
 		});
 
 		$(".popup").css('height', '540px');
+		$(".popup").dialog('option', 'position', 'center');
 
 		$("#reportframe").show();
 

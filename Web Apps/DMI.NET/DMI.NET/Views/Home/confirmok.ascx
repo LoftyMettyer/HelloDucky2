@@ -129,13 +129,13 @@
 			}
 		}
 
-
-		if ($('#confirmOKParams #txtErrorMessage').val().length > 0) {
-			// An error returned from the server
-			$('#errorMessages').html('').html($('#confirmOKParams #txtErrorMessage').val());
-			$('#errorMessages').append('<br/><br/><input type="button" value="Close" style="float: right; width: 80px;" onclick="clearTempDialog();"/>');
-		}
-		
+		try {
+			if ($('#confirmOKParams #txtErrorMessage').val().length > 0) {
+				// An error returned from the server
+				$('#errorMessages').html('').html($('#confirmOKParams #txtErrorMessage').val());
+				$('#errorMessages').append('<br/><br/><input type="button" value="Close" style="float: right; width: 80px;" onclick="clearTempDialog();"/>');
+			}
+		} catch (e) {}
 
 	}
 
