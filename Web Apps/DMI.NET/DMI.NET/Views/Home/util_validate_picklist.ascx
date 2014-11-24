@@ -66,8 +66,8 @@
 				nextPass();
 		}
 
-		function createNew() {
-				window.opener.OpenHR.createNew(self);
+		function uvp_createNew() {
+				udp_createNew();
 		}
 
 		function makeHidden() {
@@ -164,7 +164,7 @@
 											Response.Write("			    <td align=right> " & vbCrLf)
 								%>
 								<input type="button" value="Yes" class="btn" name="btnYes" style="WIDTH: 80px" width="80" id="btnYes"
-										onclick="createNew()" />
+										onclick="uvp_createNew()" />
 								<%
 										Response.Write("			    </td>" & vbCrLf)
 										Response.Write("					<td width=20></td>" & vbCrLf)

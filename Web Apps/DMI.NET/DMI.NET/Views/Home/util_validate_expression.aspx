@@ -22,8 +22,8 @@
 			nextPass();
 		}
 
-		function createNew(){
-			OpenHR.createNew(self);		
+		function uve_createNew() {
+			ude_createNew();		
 		}
 
 		function removeComponents(piIndex) {
@@ -220,7 +220,7 @@
 			Response.Write("<br/><br/>" & vbCrLf)
 
 			Response.Write("<input type='button' value='No' class='btn' name='btnNo' style='float: right; width: 80px;' id='btnNo' OnClick=""uve_cancelClick()""/>" & vbCrLf)
-			Response.Write("<input type='button' value='Yes' class='btn' name='btnYes' style='float: right; width: 80px; margin-right: 10px;' id='btnYes' OnClick=""createNew()""/>" & vbCrLf)
+			Response.Write("<input type='button' value='Yes' class='btn' name='btnYes' style='float: right; width: 80px; margin-right: 10px;' id='btnYes' OnClick=""ude_createNew()""/>" & vbCrLf)
 			
 		End If
 	

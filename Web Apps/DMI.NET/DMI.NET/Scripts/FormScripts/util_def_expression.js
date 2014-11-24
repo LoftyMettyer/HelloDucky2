@@ -77,7 +77,7 @@ function buildjsTree() {
 
 	//set Initial Expanded Nodes
 	var tree;
-
+	
 	var frmUseful = OpenHR.getForm("divDefExpression", "frmUseful");
 
 	switch (frmUseful.txtExprNodeMode.value) {
@@ -1447,9 +1447,12 @@ function testClick() {
 	frmTest.prompts.value = sPrompts;
 	frmTest.filtersAndCalcs.value = sFiltersAndCalcs;
 
-	//sURL = "util_dialog_expression" + "?action=test";	
-	//openDialog(sURL, (screen.width) / 2, (screen.height) / 3);
+	createTempDialog("test"); //yes, "test" is the correct parameter.
 
+}
+
+function createTempDialog(action) {
+	
 	$('body').append('<div id="tmpDialog"></div>');
 	$('#tmpDialog').dialog({
 		width: 300,
@@ -1460,7 +1463,7 @@ function testClick() {
 		url: "util_dialog_expression",
 		type: "POST",
 		async: true,
-		data: { action: "test" },
+		data: { action: action },
 		success: function (html) {
 
 			$('#tmpDialog').html('').html(html);
@@ -1486,6 +1489,7 @@ function testClick() {
 		},
 		error: function () { alert('error'); }
 	});
+
 }
 
 function okClick() {	
@@ -1674,49 +1678,8 @@ function submitDefinition() {
 		frmValidate.validateUtilID.value = 0;
 	}
 
-	//disableButtons(); 
-
-	//var sURL = "util_dialog_expression" + "?action=validate";
-	//openDialog(sURL, 600, 230);
-
-	$('body').append('<div id="tmpDialog"></div>');
-	$('#tmpDialog').dialog({
-		width: 300,
-		height: 'auto'
-	});
-
-	$.ajax({
-		url: "util_dialog_expression",
-		type: "POST",
-		async: true,
-		data: { action: "validate" },
-		success: function (html) {
-
-			$('#tmpDialog').html('').html(html);
-
-			//jQuery styling
-			$(function () {
-				$("input[type=submit], input[type=button], button").button();
-				$("input").addClass("ui-widget ui-corner-all");
-				$("input").removeClass("text");
-
-				$("textarea").addClass("ui-widget ui-corner-tl ui-corner-bl");
-				$("textarea").removeClass("text");
-
-				$("select").addClass("ui-widget ui-corner-tl ui-corner-bl");
-				$("select").removeClass("text");
-				$("input[type=submit], input[type=button], button").removeClass("ui-corner-all");
-				$("input[type=submit], input[type=button], button").addClass("ui-corner-tl ui-corner-br");
-
-			});
-
-			$('#tmpDialog').dialog("option", "position", ['center', 'center']);
-
-		},
-		error: function () { alert('error'); }
-	});
-
-
+	createTempDialog("validate");
+	
 	reEnableControls();
 	return true;
 
@@ -1913,8 +1876,11 @@ function populateSendForm_names(psKey) {
 	return sNames;
 }
 
-function createNew(pPopup) {
-	pPopup.close();
+function ude_createNew() {
+	
+	if ($('#tmpDialog').dialog('isOpen') == true) clearTempDialog();
+	if ($('.popup').dialog('isOpen')) $('.popup').dialog('close');
+
 	var frmUseful = OpenHR.getForm("divDefExpression", "frmUseful");
 	var frmDefinition = OpenHR.getForm("divDefExpression", "frmDefinition");
 

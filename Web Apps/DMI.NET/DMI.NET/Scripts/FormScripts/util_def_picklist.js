@@ -344,8 +344,10 @@ function validate() {
 	return (true);
 }
 
-function createNew(pPopup) {
-	pPopup.close();
+function udp_createNew() {
+	
+	if ($('#tmpDialog').dialog('isOpen') == true) clearTempDialog();
+	if ($('.popup').dialog('isOpen')) $('.popup').dialog('close');
 
 	frmUseful.txtUtilID.value = 0;
 	frmDefinition.txtOwner.value = frmUseful.txtUserName.value;
