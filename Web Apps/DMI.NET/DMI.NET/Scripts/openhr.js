@@ -215,7 +215,8 @@
 				$('body').append('<div id="tmpDialog"></div>');
 				$('#tmpDialog').dialog({
 					width: 'auto',
-					height: 'auto'
+					height: 'auto',
+					modal: true
 				});
 
 				$.ajax({

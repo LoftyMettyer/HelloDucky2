@@ -1456,7 +1456,8 @@ function createTempDialog(action) {
 	$('body').append('<div id="tmpDialog"></div>');
 	$('#tmpDialog').dialog({
 		width: 300,
-		height: 'auto'
+		height: 'auto',
+		modal: true
 	});
 
 	$.ajax({
