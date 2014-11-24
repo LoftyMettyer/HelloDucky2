@@ -4959,6 +4959,7 @@ function menu_loadSelectOrderFilter(psType) {
 			$("#" + itemId + " a").removeClass("disabled");
 			$("#" + itemId + " a h6").removeClass("disabled");
 			$('#' + itemId + " a h6").removeClass('ui-state-disabled');
+			$('#' + itemId).button({ disabled: false });
 		}
 	} else {
 		//apply disable icon
@@ -4968,7 +4969,7 @@ function menu_loadSelectOrderFilter(psType) {
 			$("#" + itemId + " a").addClass("disabled");
 			$("#" + itemId + " a h6").addClass("disabled");
 			$('#' + itemId + " a h6").addClass('ui-state-disabled');
-
+			$('#' + itemId).button({ disabled: true });
 		}
 	}
 }
