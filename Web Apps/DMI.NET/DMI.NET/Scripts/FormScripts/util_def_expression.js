@@ -1879,7 +1879,7 @@ function populateSendForm_names(psKey) {
 
 function ude_createNew() {
 	
-	if ($('#tmpDialog').dialog('isOpen') == true) clearTempDialog();
+	OpenHR.clearTmpDialog();
 	if ($('.popup').dialog('isOpen')) $('.popup').dialog('close');
 
 	var frmUseful = OpenHR.getForm("divDefExpression", "frmUseful");
@@ -2488,13 +2488,6 @@ function tree_FirstSiblingID() {
 function tree_selectedNodeChildCount() {
 	return $.jstree._focused()._get_children().length;
 }
-
-function clearTempDialog() {
-	$('#tmpDialog').dialog('close');
-	$('#tmpDialog').dialog('destroy');
-	$('#tmpDialog').remove();
-}
-
 
 //For reference:
 //Select node : $('#SSTree1').jstree('select_node', '#E36896');

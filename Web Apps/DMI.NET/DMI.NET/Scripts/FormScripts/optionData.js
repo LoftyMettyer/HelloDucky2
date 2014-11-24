@@ -501,7 +501,7 @@ function optiondata_onload() {
 		}
 
 		if (sCurrentWorkPage == "BULKBOOKING") {
-
+			
 			frmOptionData = document.getElementById("frmOptionData");
 
 			sAction = frmOptionData.txtOptionAction.value;
@@ -514,7 +514,7 @@ function optiondata_onload() {
 			// new bit for colmodel
 			colMode = [];
 			colNames = [];
-			
+
 			if (dataCollection != null) {
 				for (i = 0; i < dataCollection.length; i++) {
 					sControlName = dataCollection.item(i).name;
@@ -579,45 +579,46 @@ function optiondata_onload() {
 					}
 				}
 
-				//create the column layout:
-				var shrinkToFit = false;
-				if (colMode.length < 8) shrinkToFit = true;
-				var gridWidth = $('#FindGridRow').width();
+				if (colMode.length > 0) {
+					//create the column layout:
+					var shrinkToFit = false;
+					if (colMode.length < 8) shrinkToFit = true;
+					var gridWidth = $('#FindGridRow').width();
 
-				$("#ssOleDBGridFindRecords").jqGrid({
-					multiselect: true,
-					data: colData,
-					datatype: 'local',
-					colNames: colNames,
-					colModel: colMode,
-					rowNum: 1000,
-					width: gridWidth,
-					//autowidth: true,
-					shrinkToFit: shrinkToFit,
-					onSelectRow: function () {
-						tbrefreshControls();
-					},
-					editurl: 'clientArray',
-					afterShowForm: function ($form) {
-						$("#dData", $form.parent()).click();
-					},
-					loadComplete: function () {
-						grid_HideCheckboxes('ssOleDBGridFindRecords');
-					},
-					beforeSelectRow: handleMultiSelect // handle multi select
-				}).jqGrid('hideCol', 'cb');
+					$("#ssOleDBGridFindRecords").jqGrid({
+						multiselect: true,
+						data: colData,
+						datatype: 'local',
+						colNames: colNames,
+						colModel: colMode,
+						rowNum: 1000,
+						width: gridWidth,
+						//autowidth: true,
+						shrinkToFit: shrinkToFit,
+						onSelectRow: function () {
+							tbrefreshControls();
+						},
+						editurl: 'clientArray',
+						afterShowForm: function ($form) {
+							$("#dData", $form.parent()).click();
+						},
+						loadComplete: function () {
+							grid_HideCheckboxes('ssOleDBGridFindRecords');
+						},
+						beforeSelectRow: handleMultiSelect // handle multi select
+					}).jqGrid('hideCol', 'cb');
 
-				//resize the grid to the height of its container.
-				$("#ssOleDBGridFindRecords").jqGrid('setGridHeight', $("#FindGridRow").height());
+					//resize the grid to the height of its container.
+					$("#ssOleDBGridFindRecords").jqGrid('setGridHeight', $("#FindGridRow").height());
+				} 
+
+
+				// Select the top record.
+				if ((fRecordAdded == true) && (colMode.length > 0)) {
+					moveFirst();
+				}
 
 			}
-
-
-			// Select the top record.
-			if (fRecordAdded == true) {
-				moveFirst();
-			}
-
 			tbrefreshControls();
 
 			// Get menu.asp to refresh the menu.

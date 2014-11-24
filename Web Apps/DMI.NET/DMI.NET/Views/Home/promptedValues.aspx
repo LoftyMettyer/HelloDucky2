@@ -10,12 +10,16 @@
 %>
 
 <script type="text/javascript">
-	function promptedValues_onload() {			
-			
+	function promptedValues_onload() {
+		
 		var frmPromptedValues = document.getElementById("frmPromptedValues");
 		
 		if (frmPromptedValues.txtPromptCount.value == 0) {
-			OpenHR.submitForm(frmPromptedValues);
+			if ($('#tmpDialog').dialog('isOpen') == true) {
+				OpenHR.submitForm(frmPromptedValues, 'tmpDialog');
+			} else {
+				OpenHR.submitForm(frmPromptedValues);
+			}
 		} else {
 
 			$('#frmPromptedValues *[id^="prompt_"]:not([type="hidden"]), #frmPromptedValues *[id^="promptLookup_"]:not([type="hidden"])').first().focus();
@@ -331,7 +335,7 @@
 <script src="<%: Url.LatestContent("~/Scripts/ctl_SetStyles.js")%>" type="text/javascript"></script>
 
 
-<form name="frmPromptedValues" id="frmPromptedValues" method="POST" action="<%:Url.Action("promptedValues_submit")%>">
+<form name="frmPromptedValues" id="frmPromptedValues" method="POST" action="<%:Url.Action("promptedValues_Submit")%>">
 
 	<%		
 		Dim objSession As SessionInfo = CType(Session("SessionContext"), SessionInfo)	'Set session info

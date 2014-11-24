@@ -48,7 +48,7 @@
 
 		}
 		else {
-			clearTempDialog();
+			OpenHR.clearTmpDialog();
 		}
 	}
 
@@ -73,7 +73,7 @@
 			Loading...
 			<br />
 			<br />
-			<input id="Cancel" name="Cancel" class="btn" type="button" value="OK" style="width: 80px; float: right;" onclick="clearTempDialog();" />
+			<input id="Cancel" name="Cancel" class="btn" type="button" value="OK" style="width: 80px; float: right;" onclick="OpenHR.clearTmpDialog();" />
 		</div>
 
 		<%
@@ -132,7 +132,7 @@
 		%>
 		<br />
 		<br />
-		<input id="Button1" name="Cancel" type="button" class="btn" value="OK" style="width: 80px; float: right;" onclick="clearTempDialog();" />
+		<input id="Button1" name="Cancel" type="button" class="btn" value="OK" style="width: 80px; float: right;" onclick="OpenHR.clearTmpDialog();" />
 		<%
 		End If
 	End If
@@ -177,7 +177,7 @@
 		%>
 		<br />
 		<br />
-		<input id="Button2" name="Cancel" type="button" class="btn" value="OK" style="width:80px; float: right;" onclick="clearTempDialog();" />
+		<input id="Button2" name="Cancel" type="button" class="btn" value="OK" style="width:80px; float: right;" onclick="OpenHR.clearTmpDialog();" />
 		<%
 		End If		
 	

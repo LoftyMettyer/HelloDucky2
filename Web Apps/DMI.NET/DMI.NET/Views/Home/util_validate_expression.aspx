@@ -100,7 +100,7 @@
 			}
 			catch(e) {
 			}			
-			clearTempDialog();
+			OpenHR.clearTmpDialog();
 		}
 	</script>
 

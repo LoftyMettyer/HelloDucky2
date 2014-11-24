@@ -106,7 +106,7 @@
 	}
 
 	function ute_cancelClick() {
-		clearTempDialog();
+		OpenHR.clearTmpDialog();
 	}
 
 	function ValidatePrompt(pctlPrompt, piDataType) {

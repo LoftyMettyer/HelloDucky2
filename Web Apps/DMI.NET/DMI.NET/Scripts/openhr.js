@@ -211,7 +211,7 @@
 
 			function returnFilterResults(gridData) {
 				//launch promptedvalues to return filter result set.
-
+				OpenHR.clearTmpDialog();
 				$('body').append('<div id="tmpDialog"></div>');
 				$('#tmpDialog').dialog({
 					width: 'auto',
@@ -1290,7 +1290,17 @@
 			// not Google chrome 
 			return false;
 		}
-	};
+	},
+	clearTmpDialog = function () {
+		try {
+			if ($('#tmpDialog').dialog('isOpen') == true) {
+				$('#tmpDialog').dialog('close');
+				$('#tmpDialog').dialog('destroy');
+				$('#tmpDialog').remove();
+			}
+		}
+		catch (e) { }
+	}
 
 	window.OpenHR = {
 		version: version,
@@ -1336,7 +1346,8 @@
 		modalExpressionSelect: modalExpressionSelect,
 		parentExists: parentExists,
 		windowOpen: windowOpen,
-		isChrome: isChrome
+		isChrome: isChrome,
+		clearTmpDialog: clearTmpDialog
 	};
 
 })(window, jQuery);

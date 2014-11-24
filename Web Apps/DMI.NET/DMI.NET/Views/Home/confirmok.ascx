@@ -56,12 +56,12 @@
 
 		if (sAction == "FILTERS") {
 			menu_loadDefSelPage(11, $('#confirmOKParams #txtUtilID').val(), $('#confirmOKParams #txtUtilTableID').val(), true);
-			clearTempDialog();
+			OpenHR.clearTmpDialog();
 		}
 
 		if (sAction == "CALCULATIONS") {
 			menu_loadDefSelPage(12, $('#confirmOKParams #txtUtilID').val(), $('#confirmOKParams #txtUtilTableID').val(), true);
-			clearTempDialog();
+			OpenHR.clearTmpDialog();
 		}
 
 		if (sAction == "DEFAULT") {
@@ -133,7 +133,7 @@
 			if ($('#confirmOKParams #txtErrorMessage').val().length > 0) {
 				// An error returned from the server
 				$('#errorMessages').html('').html($('#confirmOKParams #txtErrorMessage').val());
-				$('#errorMessages').append('<br/><br/><input type="button" value="Close" style="float: right; width: 80px;" onclick="clearTempDialog();"/>');
+				$('#errorMessages').append('<br/><br/><input type="button" value="Close" style="float: right; width: 80px;" onclick="OpenHR.clearTmpDialog();"/>');
 			}
 		} catch (e) {}
 

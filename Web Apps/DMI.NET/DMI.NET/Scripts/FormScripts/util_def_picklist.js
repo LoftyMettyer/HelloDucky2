@@ -346,7 +346,7 @@ function validate() {
 
 function udp_createNew() {
 	
-	if ($('#tmpDialog').dialog('isOpen') == true) clearTempDialog();
+	OpenHR.clearTmpDialog();
 	if ($('.popup').dialog('isOpen')) $('.popup').dialog('close');
 
 	frmUseful.txtUtilID.value = 0;
