@@ -389,36 +389,36 @@
 										
 					If iCharIndex >= 0 Then
 						Select Case iParameterIndex
-							Case 1
+							Case ExpressionParameter.NodeKey
 								sNodeKey = Left(sPrompts, iCharIndex - 1)
-							Case 2
+							Case ExpressionParameter.PromptDescription
 								sPromptDescription = Left(sPrompts, iCharIndex - 1)
-							Case 3
+							Case ExpressionParameter.ValueType
 								iValueType = CType(IIf(Left(sPrompts, iCharIndex - 1) = "", 0, Left(sPrompts, iCharIndex - 1)), Integer)
-							Case 4
+							Case ExpressionParameter.PromptSize
 								iPromptSize = CType(IIf(Left(sPrompts, iCharIndex - 1) = "", 0, Left(sPrompts, iCharIndex - 1)), Integer)
-							Case 5
+							Case ExpressionParameter.PromptDecimals
 								iPromptDecimals = CType(IIf(Left(sPrompts, iCharIndex - 1) = "", 0, Left(sPrompts, iCharIndex - 1)), Integer)
-							Case 6
+							Case sPromptMask
 								sPromptMask = Left(sPrompts, iCharIndex - 1)
-							Case 7
+							Case ExpressionParameter.TableID
 								lngTableID = CType(IIf(Left(sPrompts, iCharIndex - 1) = "", 0, Left(sPrompts, iCharIndex - 1)), Long)
-							Case 8
+							Case ExpressionParameter.ColumnID
 								lngColumnID = CType(IIf(Left(sPrompts, iCharIndex - 1) = "", 0, Left(sPrompts, iCharIndex - 1)), Long)
-							Case 9
+							Case ExpressionParameter.ValueCharacter
 								sValueCharacter = Left(sPrompts, iCharIndex - 1)
-							Case 10
+							Case ExpressionParameter.ValueNumeric
 								dblValueNumeric = CType(IIf(Left(sPrompts, iCharIndex - 1) = "", 0, Left(sPrompts, iCharIndex - 1)), Double)
-							Case 11
+							Case ExpressionParameter.ValueLogic
 								fValueLogic = CType(IIf(Left(sPrompts, iCharIndex - 1) = "", False, Left(sPrompts, iCharIndex - 1)), Boolean)
-							Case 12
+							Case ExpressionParameter.ValueDate
 								sTemp = Left(sPrompts, iCharIndex - 1)
 								If sTemp = "null" Or sTemp = "12/30/1899" Or sTemp = "" Then
 									dtValueDate = Nothing
 								Else
 									dtValueDate = DateTime.Parse(Left(sPrompts, iCharIndex - 1), CultureInfo.CreateSpecificCulture("en-US"))
 								End If
-							Case 13
+							Case ExpressionParameter.PromptDateType
 								iParameterIndex = 0
 								iPromptDateType = CType(IIf(Left(sPrompts, iCharIndex - 1) = "", 0, Left(sPrompts, iCharIndex - 1)), Integer)
 						
@@ -431,7 +431,7 @@
 								
 								Response.Write("<div class='formField'>" & vbCrLf)
 								
-								If iValueType = 3 Then
+								If iValueType = ExpressionValueTypes.giEXPRVALUE_LOGIC Then
 									Response.Write(String.Format("<label for='prompt_3_{0}' class='checkbox' tabindex='0' style='width: 40%;'>", sNodeKey) & vbCrLf)
 								Else
 									Response.Write("<label style='width: 40%;'>")
@@ -441,18 +441,18 @@
 								Response.Write("</label>" & vbCrLf)
 																					
 								' Character Prompted Value
-								If iValueType = 1 Then
+								If iValueType = ExpressionValueTypes.giEXPRVALUE_CHARACTER Then
 									Response.Write("<input type='text' class='text' id='prompt_1_" & sNodeKey & "' name='prompt_1_" & sNodeKey & "' value='" & Replace(sValueCharacter, """", "&quot;") & "' maxlength='" & iPromptSize & "' style='width: 58%;'>" & vbCrLf)
 									Response.Write("<input type='hidden' id='PROMPTMASK_" & sNodeKey & "' name='PROMPTMASK_" & sNodeKey & "' value='" & Replace(sPromptMask, """", "&quot;") & "'>" & vbCrLf)
 
 									' Numeric Prompted Value
-								ElseIf iValueType = 2 Then
+								ElseIf iValueType = ExpressionValueTypes.giEXPRVALUE_NUMERIC Then
 									Response.Write(String.Format("<input type='text' class='text' id='prompt_2_{0}' name='prompt_2_{0}' value='{1}' style='width: 58%;'>", sNodeKey, Replace(dblValueNumeric.ToString, ".", Session("LocaleDecimalSeparator").ToString)) & vbCrLf)
 									Response.Write(String.Format("<input type='hidden' id='promptSize_{0}' name='promptSize_{0}' value='{1}'>", sNodeKey, iPromptSize) & vbCrLf)
 									Response.Write(String.Format("<input type='hidden' id='promptDecs_{0}' name='promptDecs_{0}' value='{1}'>", sNodeKey, iPromptDecimals) & vbCrLf)
 
 									' Logic Prompted Value
-								ElseIf iValueType = 3 Then
+								ElseIf iValueType = ExpressionValueTypes.giEXPRVALUE_LOGIC Then
 									Response.Write(String.Format("<input type='checkbox' id='prompt_3_{0}' name='prompt_3_{0}' style='width: 1em;' onclick='checkboxClick(""{0}"")'", sNodeKey))
 									If fValueLogic Then
 										Response.Write(" checked/>" & vbCrLf)
@@ -468,39 +468,39 @@
 									End If
 							 
 									' Date Prompted Value
-								ElseIf iValueType = 4 Then
+								ElseIf iValueType = ExpressionValueTypes.giEXPRVALUE_DATE Then
 									Response.Write(String.Format("<input type='text' class='datepicker' id='prompt_4_{0}' name='prompt_4_{0}' value='", sNodeKey))
 																												
 									Select Case iPromptDateType
-										Case 0
+										Case PromptedDateType.Explicit
 											' Explicit value
 											If Not dtValueDate = Nothing Then
 												Response.Write(ConvertSQLDateToLocale(dtValueDate))
 											End If
 																		
-										Case 1
+										Case PromptedDateType.Current
 											' Current date
 											Response.Write(ConvertSQLDateToLocale(Date.Now))
-										Case 2
+										Case PromptedDateType.MonthStart
 											' Start of current month
 											iDay = (Day(Date.Now) * -1) + 1
 											dtDate = DateAdd("d", iDay, Date.Now)
 											Response.Write(ConvertSQLDateToLocale(dtDate))
-										Case 3
+										Case PromptedDateType.MonthEnd
 											' End of current month
 											iDay = (Day(Date.Now) * -1) + 1
 											dtDate = DateAdd("d", iDay, Date.Now)
 											dtDate = DateAdd("m", 1, dtDate)
 											dtDate = DateAdd("d", -1, dtDate)
 											Response.Write(ConvertSQLDateToLocale(dtDate))
-										Case 4
+										Case PromptedDateType.YearStart
 											' Start of current year
 											iDay = (Day(Date.Now) * -1) + 1
 											iMonth = (Month(Date.Now) * -1) + 1
 											dtDate = DateAdd("d", iDay, Date.Now)
 											dtDate = DateAdd("m", iMonth, dtDate)
 											Response.Write(ConvertSQLDateToLocale(dtDate))
-										Case 5
+										Case PromptedDateType.YearEnd
 											' End of current year
 											iDay = (Day(Date.Now) * -1) + 1
 											iMonth = (Month(Date.Now) * -1) + 1
@@ -513,7 +513,7 @@
 									Response.Write("' style='width: 58%;'>" & vbCrLf)
 
 									' Lookup Prompted Value
-								ElseIf iValueType = 5 Then
+								ElseIf iValueType = ExpressionValueTypes.giEXPRVALUE_TABLEVALUE Then
 									Response.Write(String.Format("<select id='promptLookup_{0}' class='combo' name='promptLookup_{0}' style='width: 58%;' onchange=""comboChange('{0}')"">", sNodeKey) & vbCrLf)
 
 									fDefaultFound = False
@@ -637,14 +637,14 @@
 
 								' Character Prompted Value
 								If rowPromptedValues1("ValueType") = 1 Then
-									Response.Write(String.Format("<input type='text' class='text' id='prompt_1_C{0}' name='prompt_1_C{0}' value='" & Html.Encode(rowPromptedValues1("valuecharacter").ToString) & "' maxlength='" & rowPromptedValues1("promptsize").ToString & "' style='width: 58%;'>", componentID) & vbCrLf)
-									Response.Write(String.Format("<input type='hidden' id='promptMask_C{0}' name='promptMask_C{0}' value='" & Html.Encode(rowPromptedValues1("promptMask").ToString) & "'>", componentID) & vbCrLf)
+									Response.Write(String.Format("<input type='text' class='text' id='prompt_1_C{0}' name='prompt_1_C{0}' value='{1}' maxlength='" & rowPromptedValues1("promptsize").ToString & "' style='width: 58%;'>", componentID, Html.Encode(rowPromptedValues1("valuecharacter").ToString)) & vbCrLf)
+									Response.Write(String.Format("<input type='hidden' id='promptMask_C{0}' name='promptMask_C{0}' value='{1}'>", componentID, Html.Encode(rowPromptedValues1("promptMask").ToString)) & vbCrLf)
 
 									' Numeric Prompted Value
 								ElseIf rowPromptedValues1("ValueType") = 2 Then
-									Response.Write(String.Format("<input type='text' class='text' id='prompt_2_C{0}' name='prompt_2_C{0}' value='" & Replace(rowPromptedValues1("valuenumeric").ToString, ".", Session("LocaleDecimalSeparator").ToString) & "' style='width: 58%;'>", componentID) & vbCrLf)
-									Response.Write(String.Format("<input type='hidden' id='promptSize_C{0}' name='promptSize_C{0}' value='" & rowPromptedValues1("promptSize").ToString & "'>", componentID) & vbCrLf)
-									Response.Write(String.Format("<input type='hidden' id='promptDecs_C{0}' name='promptDecs_C{0}' value='" & rowPromptedValues1("promptDecimals").ToString & "'>", componentID) & vbCrLf)
+									Response.Write(String.Format("<input type='text' class='text' id='prompt_2_C{0}' name='prompt_2_C{0}' value='{1}' style='width: 58%;'>", componentID, Replace(rowPromptedValues1("valuenumeric").ToString, ".", Session("LocaleDecimalSeparator").ToString)) & vbCrLf)
+									Response.Write(String.Format("<input type='hidden' id='promptSize_C{0}' name='promptSize_C{0}' value='{1}'>", componentID, rowPromptedValues1("promptSize").ToString) & vbCrLf)
+									Response.Write(String.Format("<input type='hidden' id='promptDecs_C{0}' name='promptDecs_C{0}' value='{1}'>", componentID, rowPromptedValues1("promptDecimals").ToString) & vbCrLf)
 
 									' Logic Prompted Value
 								ElseIf rowPromptedValues1("ValueType") = 3 Then
@@ -655,7 +655,7 @@
 										Response.Write("/>" & vbCrLf)
 									End If
 							
-									Response.Write(String.Format("<input type='hidden' id='promptChk_C{0}' name='promptChk_C{0}' value='" & rowPromptedValues1("valuelogic").ToString & "'>", componentID) & vbCrLf)
+									Response.Write(String.Format("<input type='hidden' id='promptChk_C{0}' name='promptChk_C{0}' value='{1}'>", componentID, rowPromptedValues1("valuelogic").ToString) & vbCrLf)
 											 
 									' Date Prompted Value
 								ElseIf rowPromptedValues1("ValueType") = 4 Then

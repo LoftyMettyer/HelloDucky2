@@ -356,11 +356,11 @@
 				iPromptCount = iPromptCount + 1
 				
 				Dim componentID As String = rowPromptedValues("componentID").ToString
-				Dim valueType As String = rowPromptedValues("ValueType").ToString
+				Dim valueType As Integer = NullSafeInteger(rowPromptedValues("ValueType"))
 				
 				Response.Write("<div class='formField'>" & vbCrLf)
 								
-				If valueType = "3" Then
+				If valueType = ExpressionValueTypes.giEXPRVALUE_LOGIC Then
 					Response.Write(String.Format("<label for='prompt_3_{0}' class='checkbox' tabindex='0' style='width: 40%;'>", componentID) & vbCrLf)
 				Else
 					Response.Write("<label style='width:40%;'>")
@@ -370,26 +370,26 @@
 				Response.Write("</label>")
 								
 				Select Case valueType
-					Case "1"	' Character Prompted Value
+					Case ExpressionValueTypes.giEXPRVALUE_CHARACTER	' Character Prompted Value
 						Response.Write(String.Format("<input type='text' id='prompt_1_{0}' name='prompt_1_{0}' value='{1}' maxlength={2} style='width: 58%;'>", componentID, Html.Encode(rowPromptedValues("valuecharacter").ToString), rowPromptedValues("promptsize").ToString) & vbCrLf)
 						Response.Write(String.Format("<input type='hidden' id='promptMask_{0}' name='promptMask_{0}' value='{1}'>", componentID, Html.Encode(rowPromptedValues("promptMask").ToString)) & vbCrLf)
 					
-					Case "2"	' Numeric Prompted Value
+					Case ExpressionValueTypes.giEXPRVALUE_NUMERIC	' Numeric Prompted Value
 						Response.Write(String.Format("<input type='text' id='prompt_2_{0}' name='prompt_2_{0}' value='{1}' style=""width: 58%;"">", componentID, Replace(rowPromptedValues("valuenumeric").ToString, ".", Session("LocaleDecimalSeparator").ToString)) & vbCrLf)
-						Response.Write(String.Format("<input type='hidden' id='promptSize_{0}' name='promptSize{0}' value='{1}'>", componentID, rowPromptedValues("promptSize").ToString) & vbCrLf)						
+						Response.Write(String.Format("<input type='hidden' id='promptSize_{0}' name='promptSize{0}' value='{1}'>", componentID, rowPromptedValues("promptSize").ToString) & vbCrLf)
 						Response.Write(String.Format("<input type='hidden' id='promptDecs_{0}' name='promptDecs{0}' value='{1}'>", componentID, rowPromptedValues("promptDecimals").ToString) & vbCrLf)
 													 
-					Case "3"	' Logic Prompted Value
+					Case ExpressionValueTypes.giEXPRVALUE_LOGIC	' Logic Prompted Value
 						Response.Write(String.Format("<input type='checkbox' id='prompt_3_{0}' name='prompt_3_{0}' {1} onclick='checkboxClick({0})' style='width: 1em;'/>", componentID, IIf(CBool(rowPromptedValues("valuelogic")), "checked", "")))
 						Response.Write(String.Format("<input type='hidden' id='promptChk_{0}' name='promptChk_{0}' value='{1}'>", componentID, rowPromptedValues("valuelogic").ToString) & vbCrLf)
 						
-					Case "4"	' Date Prompted Value
+					Case ExpressionValueTypes.giEXPRVALUE_DATE	' Date Prompted Value
 						
 						Dim iDay As Integer, iMonth As Integer, dtDate As DateTime
 						Dim dateString As String = ""
 						
 						Select Case rowPromptedValues("promptDateType")
-							Case 0
+							Case PromptedDateType.Explicit
 								' Explicit value
 								'If the explicit value is 1899-12-30 00:00:00.000 we need to display an empty date
 								If ConvertSQLDateToLocale(rowPromptedValues("valuedate").ToString) = "30/12/1899" Then
@@ -397,29 +397,29 @@
 								Else 'Display the explicit value coming down from the database
 									dateString = ConvertSQLDateToLocale(rowPromptedValues("valuedate").ToString)
 								End If
-							Case 1
+							Case PromptedDateType.Current
 								' Current date
 								dateString = ConvertSQLDateToLocale(Now())
-							Case 2
+							Case PromptedDateType.MonthStart
 								' Start of current month
 								iDay = (Day(Now()) * -1) + 1
 								dtDate = DateAdd("d", iDay, Now())
 								dateString = ConvertSQLDateToLocale(dtDate)
-							Case 3
+							Case PromptedDateType.MonthEnd
 								' End of current month
 								iDay = (Day(Now()) * -1) + 1
 								dtDate = DateAdd("d", iDay, Now())
 								dtDate = DateAdd("m", 1, dtDate)
 								dtDate = DateAdd("d", -1, dtDate)
 								dateString = ConvertSQLDateToLocale(dtDate)
-							Case 4
+							Case PromptedDateType.YearStart
 								' Start of current year
 								iDay = (Day(Now()) * -1) + 1
 								iMonth = (Month(Now()) * -1) + 1
 								dtDate = DateAdd("d", iDay, Now())
 								dtDate = DateAdd("m", iMonth, dtDate)
 								dateString = ConvertSQLDateToLocale(dtDate)
-							Case 5
+							Case PromptedDateType.YearEnd
 								' End of current year
 								iDay = (Day(Now()) * -1) + 1
 								iMonth = (Month(Now()) * -1) + 1
@@ -427,12 +427,12 @@
 								dtDate = DateAdd("m", iMonth, dtDate)
 								dtDate = DateAdd("yyyy", 1, dtDate)
 								dtDate = DateAdd("d", -1, dtDate)
-								dateString = ConvertSQLDateToLocale(dtDate)							
+								dateString = ConvertSQLDateToLocale(dtDate)
 						End Select
 						
 						Response.Write(String.Format("<input type='text' data-type='date' id='prompt_4_{0}' name='prompt_4_{0}' value='{1}' style='width: 58%;'>", componentID, dateString) & vbCrLf)
 					
-					Case "5"
+					Case ExpressionValueTypes.giEXPRVALUE_TABLEVALUE
 						Response.Write(String.Format("<select id='promptLookup_{0}' name='promptLookup_{0}' style='width: 58%;' class='combo' onchange='comboChange({0})'>", componentID) & vbCrLf)
 
 						fDefaultFound = False
