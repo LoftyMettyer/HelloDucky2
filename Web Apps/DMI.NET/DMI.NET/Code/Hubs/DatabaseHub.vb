@@ -1,6 +1,7 @@
 ﻿Imports Microsoft.AspNet.SignalR.Hubs
 Imports Microsoft.AspNet.SignalR
 Imports System.Data.SqlClient
+Imports System.Threading.Tasks
 
 Namespace Code.Hubs
 
@@ -12,6 +13,12 @@ Namespace Code.Hubs
 
 		Public Shared ServiceBrokerOK As Boolean
 		Public Shared HeartbeatOK As Boolean
+		Public Shared SystemLockStatus As LockPriority = LockPriority.None
+
+		Public Overrides Function OnConnected() As Task
+			ToggleLoginButton(Not SystemLockStatus = LockPriority.None, "")
+			Return MyBase.OnConnected()
+		End Function
 
 		Public Shared ReadOnly Property DatabaseOK As Boolean
 			Get
@@ -65,6 +72,11 @@ Namespace Code.Hubs
 			allContext.Clients.All.SystemAdminMessage(messageFrom, message, forceLogout)
 		End Sub
 
+		Public Shared Sub ToggleLoginButton(disable As Boolean, message As String)
+			Dim allContext = GlobalHost.ConnectionManager.GetHubContext(Of DatabaseHub)()
+			allContext.Clients.All.ToggleLoginButton(disable, message)
+		End Sub
+
 		Private Shared Sub OnMessageChange(sender As Object, e As SqlNotificationEventArgs)
 			Dim Dependency As SqlDependency = CType(sender, SqlDependency)
 			RemoveHandler Dependency.OnChange, AddressOf OnMessageChange
@@ -80,6 +92,8 @@ Namespace Code.Hubs
 		Public Shared Sub GetLockStatus()
 
 			Try
+
+				Const DBDocked = "A system administrator has locked the database."
 
 				Dim dt As New DataTable()
 
@@ -101,13 +115,10 @@ Namespace Code.Hubs
 				dt.Load(cmd.ExecuteReader())
 				For Each objRow In dt.Rows
 					iPriority = CType(objRow("Priority"), LockPriority)
-					sMessageFrom = objRow("UserName").ToString()
-					sMessage += "The system administrator has initiated a system save. You will need to logout."
 				Next
 
-				If iPriority = LockPriority.Manual OrElse iPriority = LockPriority.Saving Then
-					SendMessage(sMessageFrom, sMessage, True)
-				End If
+				SystemLockStatus = iPriority
+				ToggleLoginButton(Not SystemLockStatus = LockPriority.None, DBDocked)
 
 			Catch ex As Exception
 				Throw

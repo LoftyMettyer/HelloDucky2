@@ -22,6 +22,8 @@
 		<p class="centered">Version <%=session("Version")%></p><br />
 
 		<p id="ancientBrowser" class="centered hidden">OpenHR Web can only be accessed using Microsoft Internet Explorer 10 or later.</p>
+		<p id="systemLocked" class="centered hidden">A system administrator has locked the database.</p>
+
 
 		<%If Len(Session("version")) = 0 Then%>
 		<p class="centered">
@@ -29,46 +31,49 @@
 			Ensure that a virtual directory has been configured on your web server.
 		</p>
 		<%Else%>
-		<div class="loginframeField">
-			<%=Html.LabelFor(Function(loginviewmodel) loginviewmodel.UserName)%>
-			<%=Html.TextBoxFor(Function(loginviewmodel) loginviewmodel.UserName, New With {.id = "txtUserName", .onkeypress = "CheckKeyPressed(event)"})%>
-			<%=Html.ValidationMessageFor(Function(loginviewmodel) loginviewmodel.UserName)%>
-		</div>
+		<div id="divLoginDetails">
 
-		<div class="loginframeField">
-			<%=Html.LabelFor(Function(loginviewmodel) loginviewmodel.Password)%>
-			<%=Html.PasswordFor(Function(loginviewmodel) loginviewmodel.Password, New With {.id = "txtPassword", .onkeypress = "CheckKeyPressed(event)"})%>
-			<%=Html.ValidationMessageFor(Function(loginviewmodel) loginviewmodel.Password)%>
-		</div>
+			<div class="loginframeField">
+				<%=Html.LabelFor(Function(loginviewmodel) loginviewmodel.UserName)%>
+				<%=Html.TextBoxFor(Function(loginviewmodel) loginviewmodel.UserName, New With {.id = "txtUserName", .onkeypress = "CheckKeyPressed(event)"})%>
+				<%=Html.ValidationMessageFor(Function(loginviewmodel) loginviewmodel.UserName)%>
+			</div>
+
+			<div class="loginframeField">
+				<%=Html.LabelFor(Function(loginviewmodel) loginviewmodel.Password)%>
+				<%=Html.PasswordFor(Function(loginviewmodel) loginviewmodel.Password, New With {.id = "txtPassword", .onkeypress = "CheckKeyPressed(event)"})%>
+				<%=Html.ValidationMessageFor(Function(loginviewmodel) loginviewmodel.Password)%>
+			</div>
 		
-		<%If Platform.IsWindowsAuthenicatedEnabled() Then%>
-		<div class="loginframeFieldWA">
-			<%=Html.CheckBoxFor(Function(loginviewmodel) loginviewmodel.WindowsAuthentication, New With {.id = "chkWindowsAuthentication", .onclick = "ToggleWindowsAuthentication()"})%>
-			<%=Html.LabelFor(Function(loginviewmodel) loginviewmodel.WindowsAuthentication)%>
-			<%=Html.ValidationMessageFor(Function(loginviewmodel) loginviewmodel.WindowsAuthentication)%>
+			<%If Platform.IsWindowsAuthenicatedEnabled() Then%>
+			<div class="loginframeFieldWA">
+				<%=Html.CheckBoxFor(Function(loginviewmodel) loginviewmodel.WindowsAuthentication, New With {.id = "chkWindowsAuthentication", .onclick = "ToggleWindowsAuthentication()"})%>
+				<%=Html.LabelFor(Function(loginviewmodel) loginviewmodel.WindowsAuthentication)%>
+				<%=Html.ValidationMessageFor(Function(loginviewmodel) loginviewmodel.WindowsAuthentication)%>
+			</div>
+			<%End If%>
+		
+			<div id="divDetails" style="display: none;">
+				<div class="loginframeField">
+					<%=Html.LabelFor(Function(loginviewmodel) loginviewmodel.Database)%>
+					<%=Html.TextBoxFor(Function(loginviewmodel) loginviewmodel.Database, New With {.id = "txtDatabase", .onkeypress = "CheckKeyPressed(event)"})%>
+					<%=Html.ValidationMessageFor(Function(loginviewmodel) loginviewmodel.Database)%>
+				</div>
+				<div class="loginframeField">
+					<%=Html.LabelFor(Function(loginviewmodel) loginviewmodel.Server)%>
+					<%=Html.TextBoxFor(Function(loginviewmodel) loginviewmodel.Server, New With {.id = "txtServer", .onkeypress = "CheckKeyPressed(event)"})%>
+					<%=Html.ValidationMessageFor(Function(loginviewmodel) loginviewmodel.Server)%>
+				</div>
+			</div>
+	
+			<div class="centered">
+				<input type="button" id="submitLoginDetails" name="submitLoginDetails" onclick="SubmitLoginDetails()" value="Login" />
+				<input type="button" id="btnToggleDetailsDiv" name="details" class="ui-button <%=IIf(Model.SetDetails, "", "hidden")%>" value="Details >>" />		
+			</div>
+
 		</div>
 		<%End If%>
-		
-		<div id="divDetails" style="display: none;">
-			<div class="loginframeField">
-				<%=Html.LabelFor(Function(loginviewmodel) loginviewmodel.Database)%>
-				<%=Html.TextBoxFor(Function(loginviewmodel) loginviewmodel.Database, New With {.id = "txtDatabase", .onkeypress = "CheckKeyPressed(event)"})%>
-				<%=Html.ValidationMessageFor(Function(loginviewmodel) loginviewmodel.Database)%>
-			</div>
-			<div class="loginframeField">
-				<%=Html.LabelFor(Function(loginviewmodel) loginviewmodel.Server)%>
-				<%=Html.TextBoxFor(Function(loginviewmodel) loginviewmodel.Server, New With {.id = "txtServer", .onkeypress = "CheckKeyPressed(event)"})%>
-				<%=Html.ValidationMessageFor(Function(loginviewmodel) loginviewmodel.Server)%>
-			</div>
-		</div>
-	
-		<div class="centered">
-			<input type="button" id="submitLoginDetails" name="submitLoginDetails" onclick="SubmitLoginDetails()" value="Login" />
-			<input type="button" id="btnToggleDetailsDiv" name="details" class="ui-button <%=IIf(Model.SetDetails, "", "hidden")%>" value="Details >>" />		
-		</div>
-
-		<%End If%>
-	
+			
 		<br />
 		<p id="ForgotPasswordLink" style="display: none; text-align: center"><%=Html.ActionLink("Forgot password", "ForgotPassword", "Account")%></p>
 	
@@ -98,6 +103,20 @@
 			var licence = $.connection['LicenceHub'];
 			licence['client'].activateLogin = function () {
 				$('#submitLoginDetails').button('enable');
+			};
+
+			var hubProxy = $.connection.NotificationHub;
+			hubProxy.client.ToggleLoginButton = function (disabled, message) {
+				$("#submitLoginDetails").button({ disabled: disabled });
+
+				if (disabled) {
+					$('#systemLocked').removeClass('hidden');
+					$('#divLoginDetails').hide();
+				}
+				else {
+					$('#systemLocked').addClass('hidden');
+					$('#divLoginDetails').show();
+				}
 			};
 
 			if (!window.isMobileBrowser) {
