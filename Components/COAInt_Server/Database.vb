@@ -47,6 +47,28 @@ Public Class Database
 
 	End Sub
 
+	''' <summary>
+	''' Saves the system settings
+	''' </summary>
+	''' <param name="strSection">The Section</param>
+	''' <param name="strKey">The Key</param>
+	''' <param name="varSetting">The Value to store</param>
+	Public Sub SaveSystemSetting(strSection As String, strKey As String, varSetting As Object)
+
+		Try
+
+			DB.ExecuteSP("spsys_setsystemsetting" _
+					, New SqlParameter("section", SqlDbType.VarChar, 255) With {.Value = LCase(strSection)} _
+					, New SqlParameter("settingkey", SqlDbType.VarChar, 255) With {.Value = LCase(strKey)} _
+					, New SqlParameter("settingvalue", SqlDbType.VarChar, -1) With {.Value = varSetting})
+
+		Catch ex As Exception
+			Throw
+
+		End Try
+
+	End Sub
+
 	Public Function GetUserSetting(strSection As String, strKey As String, varDefault As Object) As Object
 
 		Dim prmResult = New SqlParameter("psResult", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
@@ -58,6 +80,28 @@ Public Class Database
 					, New SqlParameter("psKey", SqlDbType.VarChar, -1) With {.Value = strKey} _
 					, New SqlParameter("psDefault", SqlDbType.VarChar, -1) With {.Value = varDefault} _
 					, New SqlParameter("pfUserSetting", SqlDbType.Bit) With {.Value = True} _
+					, prmResult)
+
+		Catch ex As Exception
+			Return varDefault
+
+		End Try
+
+		Return prmResult.Value
+
+	End Function
+
+	Public Function GetSystemSetting(strSection As String, strKey As String, varDefault As Object) As Object
+
+		Dim prmResult = New SqlParameter("psResult", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
+
+		Try
+
+			DB.ExecuteSP("sp_ASRIntGetSetting" _
+					, New SqlParameter("psSection", SqlDbType.VarChar, -1) With {.Value = strSection} _
+					, New SqlParameter("psKey", SqlDbType.VarChar, -1) With {.Value = strKey} _
+					, New SqlParameter("psDefault", SqlDbType.VarChar, -1) With {.Value = varDefault} _
+					, New SqlParameter("pfUserSetting", SqlDbType.Bit) With {.Value = False} _
 					, prmResult)
 
 		Catch ex As Exception

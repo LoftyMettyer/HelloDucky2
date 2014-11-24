@@ -3,7 +3,7 @@
 @Imports DMI.NET.Models
 @Imports HR.Intranet.Server.Enums
 @Imports DMI.NET.Code.Extensions
-@Inherits System.Web.Mvc.WebViewPage(Of Models.StandardReportsConfigurationModel)
+@Inherits System.Web.Mvc.WebViewPage(Of StandardReportsConfigurationModel)
 
 @Code
 	Layout = Nothing
@@ -11,115 +11,119 @@
 End Code
 
 <div>
-	@Using (Html.BeginForm("ABSENSE_BREAKDOWN_CONFIGURATION", "Home", New With {.id = "frmReportConfiguration",
+	@Using (Html.BeginForm("Absence_Breakdown_Configuration", "Home", FormMethod.Post, New With {.id = "frmReportConfiguration",
 																																					 .name = "frmReportConfiguration"}))
 	@<div id="tabs">
-		<ul>
-			<li><a href="#tabs-1">Definition</a></li>
-			<li><a href="#report_configuration_tab_output">Output</a></li>
-		</ul>
+	<ul>
+		<li><a href="#tabs-1">Definition</a></li>
+		<li><a href="#report_configuration_tab_output">Output</a></li>
+	</ul>
 
-	 	@Html.Hidden("recSelTableID", Model.TableId)
+	@Html.Hidden("recSelTableID", Model.TableId)
+	@Html.HiddenFor(Function(m) m.AbsenceTypesAsString, New With {.id = "txtAbsenceTypes"})
+	@Html.HiddenFor(Function(m) m.ReportType, New With {.id = "reportType"})
 
-		<div id="tabs-1">
 
-			<fieldset id="columnsAvailable">
-				<legend class="fontsmalltitle">Absence Types :</legend>
-				<table id="tblAbsenceTypes"></table>
-			</fieldset>
+	<div id="tabs-1">
 
-			<fieldset id="selectiontypeallrecords" class="floatleft bordered width100">
-				<legend class="fontsmalltitle">Date Range :</legend>
-				<div class="inner">
-					<fieldset class="floatleft overflowhidden width50">
+		<fieldset id="columnsAvailable">
+			<legend class="fontsmalltitle">Absence Types :</legend>
+			<table id="tblAbsenceTypes"></table>
+		</fieldset>
 
-						@Html.RadioButton("DateRange", Model.IsDefaultDate, Model.IsDefaultDate,
-							New With {.id = "rdbDefaultDate", .onclick = "changeDateRange('DEFAULT')"})<span> Default (12 months to end of last month)</span>
-					</fieldset>
+		<fieldset id="selectiontypeallrecords" class="floatleft bordered width100">
+			<legend class="fontsmalltitle">Date Range :</legend>
+			<div class="inner">
+				<fieldset class="floatleft overflowhidden width50">
 
-					<fieldset class="floatleft overflowhidden width50">
-						@Html.RadioButton("DateRange", Model.IsCustomDate, Model.IsCustomDate,
-							New With {.id = "rdbCustomDate", .onclick = "changeDateRange('CUSTOM')"})<span>Custom</span>
-					</fieldset>
+					@Html.RadioButton("DateRange", True, Model.IsDefaultDate, New With {.id = "rdbDefaultDate", .onclick = "changeDateRange('DEFAULT')"})<span> Default (12 months to end of last month)</span>
+				</fieldset>
 
-					<fieldset class="floatleft overflowhidden width50">
-						<div id="CustomStartDate" class="floatleft">
-							<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Start Date :</span>
+				<fieldset class="floatleft overflowhidden width50">
+					@Html.RadioButton("DateRange", True, Model.IsCustomDate, New With {.id = "rdbCustomDate", .onclick = "changeDateRange('CUSTOM')"})<span>Custom</span>
+					@Html.HiddenFor(Function(m) m.IsCustomDate, New With {.id = "CustomEndDate"})
+				</fieldset>
+
+				<fieldset class="floatleft overflowhidden width50">
+					<div id="CustomStartDate" class="floatleft">
+						<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Start Date :</span>
+					</div>
+					<div class="width70  floatright">
+						@Html.EllipseButton("cmdBaseStartDateCalc", "selectCustomStartDate()", Model.IsCustomDate)
+						<div class="ellipsistextbox">
+							@Html.TextBoxFor(Function(m) m.StartDate, New With {.id = "txtCustomStartDate", .readonly = "true"})
 						</div>
-						<div class="width70  floatright">
-							@Html.EllipseButton("cmdBaseStartDateCalc", "selectCustomStartDate()", Model.IsCustomDate)
-							<div class="ellipsistextbox">
-								@Html.TextBoxFor(Function(m) m.StartDate, New With {.id = "txtCustomStartDate", .readonly = "true"})
-							</div>
+					</div>
+					@Html.HiddenFor(Function(m) m.StartDateId, New With {.id = "txtStartDateCalcId"})
+				</fieldset>
+
+				<fieldset class="floatleft overflowhidden width50">
+					<div id="CustomEndDate" class="floatleft">
+						<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;End Date :</span>
+					</div>
+					<div class="width70  floatright">
+						@Html.EllipseButton("cmdBaseEndDateCalc", "selectCustomEndDate()", Model.IsCustomDate)
+						<div class="ellipsistextbox">
+							@Html.TextBoxFor(Function(m) m.EndDate, New With {.id = "txtCustomEndDate", .readonly = "true"})
 						</div>
-					</fieldset>
+					</div>
+					@Html.HiddenFor(Function(m) m.EndDateId, New With {.id = "txtEndDateCalcId"})
+				</fieldset>
+			</div>
+		</fieldset>
 
-					<fieldset class="floatleft overflowhidden width50">
-						<div id="CustomEndDate" class="floatleft">
-							<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;End Date :</span>
-						</div>
-						<div class="width70  floatright">
-							@Html.EllipseButton("cmdBaseEndDateCalc", "selectCustomEndDate()", Model.IsCustomDate)
-							<div class="ellipsistextbox">
-								@Html.TextBoxFor(Function(m) m.EndDate, New With {.id = "txtCustomEndDate", .readonly = "true"})
-							</div>
-						</div>
-					</fieldset>
-				</div>
-			</fieldset>
+		<fieldset id="selectiontypeallrecords" class="floatleft bordered width100">
+			<legend><label class="fontsmalltitle">Record Selection :</label> @Html.CheckBoxFor(Function(m) m.DisplayTitleInReportHeader, New With {.id = "chkDisplayTitleInReportHeader", .readonly = "true"})<label> Display filter or picklist title in the report header</label></legend>
+			<div class="inner">
 
-			<fieldset id="selectiontypeallrecords" class="floatleft bordered width100">
-				<legend><label class="fontsmalltitle">Record Selection :</label> @Html.CheckBoxFor(Function(m) m.DisplayTitleInReportHeader, New With {.id = "chkDisplayTitleInReportHeader", .readonly = "true"})<label> Display filter or picklist title in the report header</label></legend>
-				<div class="inner">
+				<fieldset class="floatleft overflowhidden width50">
 
-					<fieldset class="floatleft overflowhidden width50">
-
-						@Html.RadioButton("Selectiontype", RecordSelectionType.AllRecords, Model.SelectionType = RecordSelectionType.AllRecords,
+					@Html.RadioButton("Selectiontype", RecordSelectionType.AllRecords, Model.SelectionType = RecordSelectionType.AllRecords,
 								New With {.id = "rdbSelectAll", .onclick = "changeRecordOption('ALL')"})<span> All Records</span>
-					</fieldset>
+				</fieldset>
 
-					<fieldset id="selectiontypepicklistgroup" class="floatleft overflowhidden width50">
-						<div id="PicklistRadioDiv" class="floatleft">
-							@Html.RadioButton("SelectionType", RecordSelectionType.Picklist,
+				<fieldset id="selectiontypepicklistgroup" class="floatleft overflowhidden width50">
+					<div id="PicklistRadioDiv" class="floatleft">
+						@Html.RadioButton("SelectionType", RecordSelectionType.Picklist,
 														Model.SelectionType = RecordSelectionType.Picklist,
 									New With {.id = "rdpPicklistType", .onclick = "changeRecordOption('PICKLIST')"})
-							<span>Picklist</span>
+						<span>Picklist</span>
+					</div>
+					<div class="width70 floatright">
+						@Html.EllipseButton("cmdBasePicklist", "selectAbsencePicklist()", Model.SelectionType = RecordSelectionType.Picklist)
+						<div class="ellipsistextbox">
+							@Html.TextBoxFor(Function(m) m.PicklistName, New With {.id = "txtPicklistName", .readonly = "true"})
 						</div>
-						<div class="width70 floatright">
-							@Html.EllipseButton("cmdBasePicklist", "selectAbsencePicklist()", Model.SelectionType = RecordSelectionType.Picklist)
-							<div class="ellipsistextbox">
-								@Html.TextBoxFor(Function(m) m.PicklistName, New With {.id = "txtPicklistName", .readonly = "true"})
-							</div>
-						</div>
-						<input type="hidden" id="txtPicklistId" name="picklistID" value="@Model.PicklistId" />
-						@Html.ValidationMessageFor(Function(m) m.PicklistId)
-					</fieldset>
+					</div>
+					<input type="hidden" id="txtPicklistId" name="picklistID" value="@Model.PicklistId" />
+					@Html.ValidationMessageFor(Function(m) m.PicklistId)
+				</fieldset>
 
-					<fieldset id="selectiontypefiltergroup" class="floatleft overflowhidden width50">
-						<div id="FilterRadioDiv" class="floatleft">
-							@Html.RadioButton("SelectionType", RecordSelectionType.Filter, Model.SelectionType = RecordSelectionType.Filter _
+				<fieldset id="selectiontypefiltergroup" class="floatleft overflowhidden width50">
+					<div id="FilterRadioDiv" class="floatleft">
+						@Html.RadioButton("SelectionType", RecordSelectionType.Filter, Model.SelectionType = RecordSelectionType.Filter _
 									, New With {.id = "rdbFilterType", .onclick = "changeRecordOption('FILTER')"})
-							<span>Filter</span>
+						<span>Filter</span>
+					</div>
+					<div class="width70  floatright">
+						@Html.EllipseButton("cmdBaseFilter", "selectAbsenceFilter()", Model.SelectionType = RecordSelectionType.Filter)
+						<div class="ellipsistextbox">
+							@Html.TextBoxFor(Function(m) m.FilterName, New With {.id = "txtFilterName", .readonly = "true"})
 						</div>
-						<div class="width70  floatright">
-							@Html.EllipseButton("cmdBaseFilter", "selectAbsenceFilter()", Model.SelectionType = RecordSelectionType.Filter)
-							<div class="ellipsistextbox">
-								@Html.TextBoxFor(Function(m) m.FilterName, New With {.id = "txtFilterName", .readonly = "true"})
-							</div>
-						</div>
-						<input type="hidden" id="txtFilterId" name="filterID" value="@Model.FilterId" />
-						@Html.ValidationMessageFor(Function(m) m.FilterId)
-					</fieldset>
-				</div>
-			</fieldset>
-		</div>
-
-		<div id="report_configuration_tab_output">
-			output
-		</div>
+					</div>
+					<input type="hidden" id="txtFilterId" name="filterID" value="@Model.FilterId" />
+					@Html.ValidationMessageFor(Function(m) m.FilterId)
+				</fieldset>
+			</div>
+		</fieldset>
 	</div>
 
-End Using
+	<div id="report_configuration_tab_output">
+		output
+	</div>
+</div>
+
+ End Using
 
 	<form action="default_Submit" method="post" id="frmGoto" name="frmGoto" class="ui-helper-hidden">
 		@Code
@@ -148,6 +152,12 @@ End Using
 
 		fillAbenceTypes();
 
+		if('@Model.SelectionType' == 'AllRecords')
+		{
+			$("#chkDisplayTitleInReportHeader")[0].checked = false;
+			$("#chkDisplayTitleInReportHeader")[0].disabled = true;
+		}
+
 	});
 
 	function selectAbsencePicklist() {
@@ -158,6 +168,7 @@ End Using
 		OpenHR.modalExpressionSelect("PICKLIST", tableID, currentID, function (id, name) {
 			$("#txtPicklistId").val(id);
 			$("#txtPicklistName").val(name);
+			enableSaveButton();
 		}, 400, 400);
 
 	}
@@ -165,11 +176,12 @@ End Using
 	function selectAbsenceFilter() {
 
 		var tableID = $("#recSelTableID").val();
-		var currentID = $("#txtPicklistId").val();
+		var currentID = $("#txtFilterId").val();
 
 		OpenHR.modalExpressionSelect("FILTER", tableID, currentID, function (id, name) {
 			$("#txtFilterId").val(id);
 			$("#txtFilterName").val(name);
+			enableSaveButton();
 		}, 400, 400);
 
 	}
@@ -188,7 +200,7 @@ End Using
 			else {
 				$("#txtStartDateCalcId").val(id);
 				$("#txtCustomStartDate").val(name);
-				//setViewAccess('CALC', $("#StartCustomViewAccess"), access, "report start date");
+				enableSaveButton();
 			}
 		}, 400, 400);
 		}
@@ -207,7 +219,7 @@ End Using
 				else {
 					$("#txtEndDateCalcId").val(id);
 					$("#txtCustomEndDate").val(name);
-					//setViewAccess('CALC', $("#EndCustomViewAccess"), access, "report end date");
+					enableSaveButton();
 				}
 			}, 400, 400);
 
@@ -218,18 +230,18 @@ End Using
 			$("#tblAbsenceTypes").jqGrid({
 				datatype: 'jsonstring',
 				datastr: '@Model.AbsenceTypes.ToJsonResult',
-				mtype: 'GET',
+				"mtype" : "POST",
 				jsonReader: {
 					root: "rows", //array containing actual data
 					page: "page", //current page
 					total: "total", //total pages for the query
 					records: "records", //total number of records
 					repeatitems: false,
-					id: "ID"
+					id: "0"
 				},
-				colNames: ['ID', '', 'Name'],
+				rowNum:'@Model.AbsenceTypes.Count',
+				colNames: ['', 'Name'],
 				colModel: [
-										{ name: 'ID', width: 50, key: true, hidden: true, sorttype: 'integer' },
 										{
 											name: 'IsSelected', width: 40, align: "center", editable: true, edittype: 'checkbox', editoptions: { value: "True:False" }, formatter: "checkbox", formatoptions: { disabled: false }
 										},
@@ -288,8 +300,9 @@ End Using
 			}
 		}
 
-		function changeDateRange(psType) {
-			if (psType == "DEFAULT") {
+	function changeDateRange(psType) {
+		if (psType == "DEFAULT") {
+			$("#CustomEndDate").val(false);
 				$("#txtStartDateCalcId").val(0);
 				$("#txtEndDateCalcId").val(0);
 				$("#txtCustomStartDate").val("");
@@ -299,6 +312,7 @@ End Using
 			}
 
 			if (psType == "CUSTOM") {
+				$("#CustomEndDate").val(true);
 				button_disable($("#cmdBaseEndDateCalc")[0], false)
 				button_disable($("#cmdBaseStartDateCalc")[0], false)
 				$("#txtCustomStartDate").val("None");
@@ -310,35 +324,46 @@ End Using
 		function enableSaveButton() {
 			menu_toolbarEnableItem('mnutoolSaveStandardReportConfig', true);
 		}
+
 		function ReportConfiguration_okClick() {
-			saveConfiguration();
+			if ($("#mnutoolSaveStandardReportConfig")[0].className == 'button ui-corner-all ui-state-default ui-state-hover') {
+				saveConfiguration();
+			}
 		}
 
 		function saveChanges(psAction, pfPrompt, pfTBOverride) {
-			if ($("#mnutoolSaveStandardReportConfig").disabled == true) {
+			if ($("#mnutoolSaveStandardReportConfig")[0].className == 'button ui-corner-all ui-state-default disabled' ||
+				$("#mnutoolSaveStandardReportConfig")[0].className == 'button ui-corner-all ui-state-default ui-state-hover disabled') {
 				return 6; //No to saving the changes, as none have been made.
 			} else
 				return 0;
 		}
 
 		function saveConfiguration() {
-
 			var frmReportConfiguration = OpenHR.getForm("workframe", "frmReportConfiguration");
 
-			//menu_refreshMenu();
-			//var menuForm = OpenHR.getForm("menuframe", "frmMenuInfo");
+			var gridData = $("#tblAbsenceTypes").jqGrid('getRowData');
+			$('#txtAbsenceTypes').val(JSON.stringify(gridData));
 
+			var flagOk = true;
+			if ($("#CustomEndDate").val().toLowerCase() == "true") {
+				if ($("#txtStartDateCalcId").val() == "0" && $("#txtEndDateCalcId").val() == "0") {
+					alert("You must select Start and End Date calculation");
+					flagOk = false;
+				}
+				else if ($("#txtStartDateCalcId").val() != "0" && $("#txtEndDateCalcId").val() == "0") {
+					alert("You must select an End Date calculation");
+					flagOk = false;
+				}
+				else if ($("#txtStartDateCalcId").val() == "0" && $("#txtEndDateCalcId").val() != "0") {
+					alert("You must select Start Date calculation");
+					flagOk = false;
+				}
+			}
 
-			//if (frmConfiguration.chkOwner_Calculations.checked == true) frmConfiguration.txtOwner_Calculations.value = 1;
-			//if (frmConfiguration.chkOwner_CrossTabs.checked == true) frmConfiguration.txtOwner_CrossTabs.value = 1;
-			//if (frmConfiguration.chkOwner_NineBoxGrid.checked == true) frmConfiguration.txtOwner_NineBoxGrid.value = 1;
-			//if (frmConfiguration.chkOwner_CustomReports.checked == true) frmConfiguration.txtOwner_CustomReports.value = 1;
-			//if (frmConfiguration.chkOwner_Filters.checked == true) frmConfiguration.txtOwner_Filters.value = 1;
-			//if (frmConfiguration.chkOwner_MailMerge.checked == true) frmConfiguration.txtOwner_MailMerge.value = 1;
-			//if (frmConfiguration.chkOwner_Picklists.checked == true) frmConfiguration.txtOwner_Picklists.value = 1;
-			//if (frmConfiguration.chkOwner_CalendarReports.checked == true) frmConfiguration.txtOwner_CalendarReports.value = 1;
-
-			OpenHR.submitForm(frmReportConfiguration);
+			if (flagOk) {
+				OpenHR.submitForm(frmReportConfiguration);
+			}
 		}
 
 		$("#workframe").attr("data-framesource", "ABSENCE_BREAKDOWN_CONFIGURATION");

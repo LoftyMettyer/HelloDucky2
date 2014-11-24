@@ -85,6 +85,16 @@ Namespace Models
 		Public Property StartDate As String
 
 		''' <summary>
+		''' Gets OR Sets the custom start date id
+		''' </summary>
+		Public Property StartDateId As Int32
+
+		''' <summary>
+		''' Gets OR Sets the custom end date id
+		''' </summary>
+		Public Property EndDateId As Int32
+
+		''' <summary>
 		''' Gets OR Sets the value of end date
 		''' </summary>
 		''' <value></value>
@@ -138,6 +148,14 @@ Namespace Models
 		''' <returns>The list of absence type</returns>
 		''' <remarks></remarks>
 		Public Property AbsenceTypes As New List(Of AbsenceType)
+
+		''' <summary>
+		''' Gets OR Sets the absence types as string
+		''' </summary>
+		''' <value></value>
+		''' <returns></returns>
+		''' <remarks></remarks>
+		Public Property AbsenceTypesAsString As String
 
 		''' <summary>
 		''' Constructor

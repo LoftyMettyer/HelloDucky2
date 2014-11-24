@@ -132,6 +132,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="clsMultiAxisChart.vb" />
+    <Compile Include="StandardReport.vb" />
     <Compile Include="Constants.vb" />
     <Compile Include="Database.vb" />
     <Compile Include="Enums\CalendarEventEndType.vb" />

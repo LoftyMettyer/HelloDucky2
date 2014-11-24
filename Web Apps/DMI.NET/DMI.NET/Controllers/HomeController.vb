@@ -9,6 +9,7 @@ Imports System.Drawing
 Imports DMI.NET.Classes
 Imports DMI.NET.Code
 Imports DMI.NET.ViewModels.Home
+Imports System.Runtime.Serialization.Formatters
 Imports HR.Intranet.Server.Enums
 Imports HR.Intranet.Server
 Imports DMI.NET.Models
@@ -19,6 +20,7 @@ Imports DMI.NET.ViewModels
 Imports System.Collections.ObjectModel
 Imports System.Security
 Imports DMI.NET.Code.Hubs
+Imports System.Web.Script.Serialization
 
 Namespace Controllers
 	Public Class HomeController
@@ -3504,7 +3506,7 @@ Namespace Controllers
 			Dim objExpression As Expression
 			Dim iExprType As Integer
 			Dim iReturnType As Integer
-			Dim sUtilType As String		
+			Dim sUtilType As String
 			Dim fok As Boolean
 			Session("errorMessage") = ""
 
@@ -3565,7 +3567,7 @@ Namespace Controllers
 					Else
 
 						Session("errorMessage") = "Error saving " & sUtilType.ToLower()
-					
+
 					End If
 
 				End If
@@ -5619,15 +5621,12 @@ Namespace Controllers
 
 			Dim objModel As StandardReportsConfigurationModel = New StandardReportsConfigurationModel()
 
-			'Set the report type
-			Session("StandardReport_Type") = objModel.ReportType = UtilityType.utlAbsenceBreakdownConfiguration
-
-			Dim objDatabase As Database = CType(Session("DatabaseFunctions"), Database)
 			Dim objDataAccess As clsDataAccess = CType(Session("DatabaseAccess"), clsDataAccess)
+			Dim objDatabase As Database = CType(Session("DatabaseFunctions"), Database)
 
 			' Settings objects
-			Dim objSettings As New HR.Intranet.Server.clsSettings
-			objSettings.SessionInfo = CType(Session("SessionContext"), SessionInfo)
+			Dim standardReportSettings As New HR.Intranet.Server.StandardReport
+			standardReportSettings.SessionInfo = CType(Session("SessionContext"), SessionInfo)
 
 			' Set parent table id
 			objModel.TableId = SettingsConfig.Personnel_EmpTableID
@@ -5635,59 +5634,129 @@ Namespace Controllers
 			Dim absenceTypeTable = objDataAccess.GetDataTable("sp_ASRIntGetAbsenceTypes", CommandType.StoredProcedure)
 			Dim absenceType As New AbsenceType()
 
-			' Absence types
+			' Fill Absence types
 			For Each objRow As DataRow In absenceTypeTable.Rows
 				absenceType = New AbsenceType()
 				absenceType.Type = objRow(0).ToString()
-				absenceType.IsSelected = objSettings.GetSystemSetting(strReportType, "Absence Type " & objRow(0).ToString(), "0")
+				absenceType.IsSelected = objDatabase.GetSystemSetting(strReportType, "Absence Type " & objRow(0).ToString(), "0")
 				objModel.AbsenceTypes.Add(absenceType)
 			Next
 
-			' Report period	
-			Dim rstReportDates = objDataAccess.GetDataTable("spASRIntGetStandardReportDates", CommandType.StoredProcedure, _
-							New SqlParameter("piReportType", SqlDbType.Int) With {.Value = CInt(CleanNumeric(Session("StandardReport_Type")))})
+			' Is custom date
+			objModel.IsCustomDate = objDatabase.GetSystemSetting(strReportType, "Custom Dates", "0")
 
-			If rstReportDates.Rows.Count > 0 Then
-				objModel.StartDate = CalculatePromptedDate(rstReportDates.Rows(0))
-				objModel.EndDate = CalculatePromptedDate(rstReportDates.Rows(1))
-				objModel.IsCustomDate = True
+			If objModel.IsCustomDate Then
+				Dim strRecSelStatus As String
+				Dim customDateId As Long
+
+				customDateId = objDatabase.GetSystemSetting(strReportType, "Start Date", "0")
+				strRecSelStatus = standardReportSettings.IsCalculationValid(customDateId)
+				If (strRecSelStatus <> vbNullString) Then
+					objModel.StartDate = "None"
+					objModel.StartDateId = 0
+				Else
+					objModel.StartDate = standardReportSettings.GetFilterName(customDateId)
+					objModel.StartDateId = customDateId
+				End If
+
+				customDateId = objDatabase.GetSystemSetting(strReportType, "End Date", "0")
+				strRecSelStatus = standardReportSettings.IsCalculationValid(customDateId)
+				If (strRecSelStatus <> vbNullString) Then
+					objModel.EndDate = "None"
+					objModel.EndDateId = 0
+				Else
+					objModel.EndDate = standardReportSettings.GetFilterName(customDateId)
+					objModel.EndDateId = customDateId
+				End If
 			Else
 				objModel.IsDefaultDate = True
 			End If
 
-			Dim strType As String
-
-			' Record Selection
+			' Record type selection
 			If Session("optionRecordID") = "0" Then
 
-				strType = objSettings.GetSystemSetting(strReportType, "Type", "A").ToString()
+				Dim strType As String = objDatabase.GetSystemSetting(strReportType, "Type", "A").ToString()
 
 				Select Case strType
 					Case "A"
 						objModel.SelectionType = RecordSelectionType.AllRecords
 					Case "P"
 						objModel.SelectionType = RecordSelectionType.Picklist
-						objModel.PicklistName = objSettings.GetPicklistFilterName(strReportType, strType)
-						objModel.PicklistId = objSettings.GetSystemSetting(strReportType, "ID", "0")
+						objModel.PicklistId = objDatabase.GetSystemSetting(strReportType, "ID", "0")
+						objModel.PicklistName = standardReportSettings.GetPicklistFilterName(strReportType, strType, objModel.PicklistId)
+						If (objModel.PicklistName Is Nothing) Then
+							objModel.PicklistName = "None"
+						End If
 					Case "F"
 						objModel.SelectionType = RecordSelectionType.Filter
-						objModel.FilterName = objSettings.GetPicklistFilterName(strReportType, strType)
-						objModel.FilterId = objSettings.GetSystemSetting(strReportType, "ID", "0")
+						objModel.FilterId = objDatabase.GetSystemSetting(strReportType, "ID", "0")
+						objModel.FilterName = standardReportSettings.GetPicklistFilterName(strReportType, strType, objModel.FilterId)
+						If (objModel.FilterName Is Nothing) Then
+							objModel.FilterName = "None"
+						End If
 				End Select
 			End If
 
 			' Flag to identify that the display of the picklist and filter title in header allowed
-			objModel.DisplayTitleInReportHeader = objSettings.GetSystemSetting(strReportType, "PrintFilterHeader", "0")
+			objModel.DisplayTitleInReportHeader = objDatabase.GetSystemSetting(strReportType, "PrintFilterHeader", "0")
 
 			Return View(objModel)
 
 		End Function
 
-		<HttpPost, ValidateInput(False)>
-	 Sub ABSENSE_BREAKDOWN_CONFIGURATION(objModel As StandardReportsConfigurationModel)
-			''@TODO Save of configuration
+		''' <summary>
+		''' Saves report configuration
+		''' </summary>
+		''' <param name="objModel">The StandardReportsConfigurationModel model</param>
+		''' <returns></returns>
+		''' <remarks></remarks>
+		<HttpPost>
+	 Function Absence_Breakdown_Configuration(objModel As StandardReportsConfigurationModel) As ActionResult
 
-		End Sub
+			Dim deserializer = New JavaScriptSerializer()
+			Const strReportType As String = "AbsenceBreakdown"
+
+			Dim objDatabase As Database = CType(Session("DatabaseFunctions"), Database)
+
+			' Deserialize the absence list from string
+			If objModel.AbsenceTypesAsString IsNot Nothing Then
+				If objModel.AbsenceTypesAsString.Length > 0 Then
+					objModel.AbsenceTypes = deserializer.Deserialize(Of List(Of AbsenceType))(objModel.AbsenceTypesAsString)
+				End If
+			End If
+
+			' Save absence types
+			For Each absenceType As AbsenceType In objModel.AbsenceTypes
+				objDatabase.SaveSystemSetting(strReportType, ("Absence Type " & absenceType.Type), absenceType.IsSelected)
+			Next
+
+			objDatabase.SaveSystemSetting(strReportType, "Custom Dates", objModel.IsCustomDate)
+
+			If objModel.StartDate IsNot Nothing Then
+				objDatabase.SaveSystemSetting(strReportType, "Start Date", objModel.StartDateId)
+			End If
+
+			If objModel.EndDate IsNot Nothing Then
+				objDatabase.SaveSystemSetting(strReportType, "End Date", objModel.EndDateId)
+			End If
+
+			If objModel.SelectionType = RecordSelectionType.AllRecords Then
+				objDatabase.SaveSystemSetting(strReportType, "Type", "A")
+				objDatabase.SaveSystemSetting(strReportType, "ID", 0)
+			ElseIf objModel.SelectionType = RecordSelectionType.Picklist Then
+				objDatabase.SaveSystemSetting(strReportType, "Type", "P")
+				objDatabase.SaveSystemSetting(strReportType, "ID", objModel.PicklistId)
+
+			Else
+				objDatabase.SaveSystemSetting(strReportType, "Type", "F")
+				objDatabase.SaveSystemSetting(strReportType, "ID", objModel.FilterId)
+			End If
+
+			objDatabase.SaveSystemSetting(strReportType, ("PrintFilterHeader"), objModel.DisplayTitleInReportHeader)
+
+			Return RedirectToAction("AbsenceBreakdownConfiguration")
+
+		End Function
 
 #End Region
 
