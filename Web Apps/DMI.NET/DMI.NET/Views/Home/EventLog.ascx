@@ -87,12 +87,9 @@
 		frmLog.txtELViewAllPermission.value = menu_GetItemValue("txtSysPerm_EVENTLOG_VIEWALL");
 		frmLog.txtELPurgePermission.value = menu_GetItemValue("txtSysPerm_EVENTLOG_PURGE");
 		frmLog.txtELEmailPermission.value = menu_GetItemValue("txtSysPerm_EVENTLOG_EMAIL");
+
 		// Buttons are enabled/disabled in EventLog_refreshButtons();
-
 		// Visible buttons and tabs set in menu.js
-
-		$("#toolbarAdminConfig").parent().show();
-		$("#toolbarAdminConfig").click();
 
 		refreshUsers();
 
@@ -327,7 +324,7 @@
 
 	function EventLog_deleteEvent() {
 		var sURL = "eventLogSelection";
-
+		
 		$('#EventLogDelete').data('sURLData', sURL);
 		$('#EventLogDelete').dialog("open");
 
