@@ -22,10 +22,6 @@
 			nextPass();
 		}
 
-		function uve_createNew() {
-			ude_createNew();		
-		}
-
 		function removeComponents(piIndex) {
 
 			var sKeys;
