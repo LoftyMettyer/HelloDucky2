@@ -37,10 +37,6 @@ Public Class Database
 
 	Public Function IsUserProhibited() As Boolean
 		If App.Config.Login.ToUpper() = "SA" Then
-			' raise error in event log
-			Dim objEventLog As EventLog = New EventLog("Advanced Business Solutions", "OpenHR Workflow Website")
-			objEventLog.WriteEntry("Unable to connect to the database specified (Error Code: CE002). A prohibited username has been configured into the web config's connection string.", EventLogEntryType.Error)
-
 			Return True
 		Else
 			Return False

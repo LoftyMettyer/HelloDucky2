@@ -384,7 +384,6 @@
     <Compile Include="Code\Crypt.vb" />
     <Compile Include="Code\Database.vb" />
     <Compile Include="Code\Enums.vb" />
-    <Compile Include="Code\EventLog.vb" />
     <Compile Include="Code\Extensions.vb" />
     <Compile Include="Code\Forms.vb" />
     <Compile Include="Code\General.vb" />
