@@ -204,7 +204,12 @@ function removeAllClick() {
 		return;
 	}
 
-	var iAnswer = OpenHR.messageBox("Remove all records from the picklist. \n Are you sure ?", 36, "Confirmation");
+	OpenHR.modalPrompt("Remove all records from the picklist. \n Are you sure ?", 4, "Confirmation", removeAllClickFollowOn);
+
+}
+
+
+function removeAllClickFollowOn(iAnswer) {
 	if (iAnswer == 7) {
 		// cancel 
 		return;
@@ -222,6 +227,7 @@ function removeAllClick() {
 	button_disable(frmDefinition.cmdRemove, true); //Disable the "Remove" button
 	button_disable(frmDefinition.cmdRemoveAll, true); //Disable the "Remove All" button
 }
+
 
 function cancelClick() {
 	if ((frmUseful.txtAction.value.toUpperCase() == "VIEW") || (definitionChanged() == false)) {
