@@ -331,13 +331,13 @@ function definitionChanged() {
 function validate() {
 	// Check name has been entered.
 	if (frmDefinition.txtName.value == '') {
-		OpenHR.messageBox("You must enter a name for this definition.");
+		OpenHR.modalMessage("You must enter a name for this definition.");
 		return (false);
 	}
 
 	// Check the picklist list does have some records.      
 	if (($("#ssOleDBGrid").getGridParam('reccount') == 0) ||($("#ssOleDBGrid").getGridParam('reccount') == undefined)) {
-		OpenHR.messageBox("Picklists must contain at least one record.");
+		OpenHR.modalMessage("Picklists must contain at least one record.");
 		return (false);
 	}
 
