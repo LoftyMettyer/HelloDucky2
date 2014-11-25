@@ -399,7 +399,7 @@
 								iPromptSize = CType(IIf(Left(sPrompts, iCharIndex - 1) = "", 0, Left(sPrompts, iCharIndex - 1)), Integer)
 							Case ExpressionParameter.PromptDecimals
 								iPromptDecimals = CType(IIf(Left(sPrompts, iCharIndex - 1) = "", 0, Left(sPrompts, iCharIndex - 1)), Integer)
-							Case sPromptMask
+							Case ExpressionParameter.PromptMask
 								sPromptMask = Left(sPrompts, iCharIndex - 1)
 							Case ExpressionParameter.TableID
 								lngTableID = CType(IIf(Left(sPrompts, iCharIndex - 1) = "", 0, Left(sPrompts, iCharIndex - 1)), Long)
