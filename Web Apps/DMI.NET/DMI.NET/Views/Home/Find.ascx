@@ -265,7 +265,7 @@
 														 ) & vbCrLf)
 
 												'Save the default value for this column in an array
-												columnsDefaultValues = String.Concat(columnsDefaultValues, "'", objRow.FirstOrDefault.Item("columnID"), "':'", objRow.FirstOrDefault.Item("DefaultValue"), "',")
+												columnsDefaultValues = String.Concat(columnsDefaultValues, "'", objRow.FirstOrDefault.Item("columnID"), "':'", EncodeStringToJavascriptSpecialCharacters(objRow.FirstOrDefault.Item("DefaultValue")), "',")
 												
 												'If column is a Lookup, we need to get its associated data
 												If objRow.FirstOrDefault.Item("datatype") = 12 And objRow.FirstOrDefault.Item("controltype") = 2 And objRow.FirstOrDefault.Item("LookupColumnID") <> 0 Then
@@ -344,7 +344,7 @@
 													For Each r As DataRow In rstLookup.Rows
 														strColData = String.Concat(strColData, "[")
 														For Each c As DataColumn In rstLookup.Columns
-															strColData = String.Concat(strColData, """", r(c).ToString, """,")
+															strColData = String.Concat(strColData, """", EncodeStringToJavascriptSpecialCharacters(r(c).ToString), """,")
 														Next
 														strColData = String.Concat(strColData.TrimEnd(","), "],")
 													Next
@@ -353,7 +353,7 @@
 													'Place the column names in Javascript array
 													Dim strColNames As String = String.Concat("var colNames_", objRow.FirstOrDefault.Item("columnID"), " = [")
 													For Each c As DataColumn In rstLookup.Columns
-														strColNames = String.Concat(strColNames, """", c.ColumnName.Replace("_", " "), """,")
+														strColNames = String.Concat(strColNames, """", EncodeStringToJavascriptSpecialCharacters(c.ColumnName.Replace("_", " ")), """,")
 													Next
 													strColNames = String.Concat(strColNames.TrimEnd(","), "];")
 													
@@ -382,7 +382,7 @@
 														strOptionGroupOrDropDownData = String.Concat(strOptionGroupOrDropDownData, "[")
 														For Each c As DataColumn In rstOptionGroupOrDropDown.Columns
 															If c.ColumnName.ToLower <> "columnid" Then
-																strOptionGroupOrDropDownData = String.Concat(strOptionGroupOrDropDownData, """", r(c).ToString, """,")
+																strOptionGroupOrDropDownData = String.Concat(strOptionGroupOrDropDownData, """", EncodeStringToJavascriptSpecialCharacters(r(c).ToString), """,")
 															End If
 														Next
 														strOptionGroupOrDropDownData = String.Concat(strOptionGroupOrDropDownData.TrimEnd(","), "],")

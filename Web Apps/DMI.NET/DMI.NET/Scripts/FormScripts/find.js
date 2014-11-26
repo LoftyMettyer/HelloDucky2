@@ -615,7 +615,7 @@ function getValuesForColumn(iColumnId) {
 	try {
 		var data = eval('colOptionGroupOrDropDownData_' + iColumnId);
 	} catch (e) {
-		return;
+		return false;
 	}
 
 	var values = {};

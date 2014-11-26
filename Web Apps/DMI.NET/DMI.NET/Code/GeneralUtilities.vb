@@ -46,4 +46,16 @@ Public Module GeneralUtilities
 	Public Function IsValidEmailAddress(EmailAddress As String) As Boolean
 		Return Regex.IsMatch(EmailAddress, "^(?("")("".+?(?<!\\)""@)|(([0-9a-z]((\.(?!\.))|[-!#\$%&'\*\+/=\?\^`\{\}\|~\w])*)(?<=[0-9a-z])@))(?(\[)(\[(\d{1,3}\.){3}\d{1,3}\])|(([0-9a-z][-\w]*[0-9a-z]*\.)+[a-z0-9][\-a-z0-9]{0,22}[a-z0-9]))$", RegexOptions.IgnoreCase)
 	End Function
+
+	'Look at https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Values,_variables,_and_literals#Literals
+	'\xXX The character with the Latin-1 encoding specified by the two hexadecimal digits XX between 00 and FF
+	Public Function EncodeStringToJavascriptSpecialCharacters(s As String) As String
+	Dim retVal As String = ""
+
+	For i = 0 To s.Length - 1
+		retVal = String.Concat(retVal, "\x", AscW(s.Chars(i)).ToString("X"))
+	Next
+
+	Return retVal
+	End Function
 End Module
