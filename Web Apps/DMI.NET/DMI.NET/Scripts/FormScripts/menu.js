@@ -327,11 +327,13 @@ function menu_MenuClick(sTool) {
 		if (!$('#mnutoolInlineEditRecordFind').hasClass('disabled')) {
 			$('#mnutoolInlineEditRecordFind').toggleClass("toolbarButtonOn");
 			if ($('#mnutoolInlineEditRecordFind').hasClass("toolbarButtonOn")) {
+				$("#findGridTable_iladd").show();
 				$("#findGridTable_iledit").show();
 				$("#findGridTable_ilsave").show();
 				$("#findGridTable_ilcancel").show();
 				setinlineeditmode();
 			} else {
+				$("#findGridTable_iladd").hide();
 				$("#findGridTable_iledit").hide();
 				$("#findGridTable_ilsave").hide();
 				$("#findGridTable_ilcancel").hide();
@@ -351,14 +353,19 @@ function menu_MenuClick(sTool) {
 			}
 		}
 		if ($('#mnutoolInlineEditRecordFind').hasClass("toolbarButtonOn")) {
+			$("#findGridTable_iladd").show();
 			$("#findGridTable_iledit").show();
 			$("#findGridTable_ilsave").show();
 			$("#findGridTable_ilcancel").show();
 			setinlineeditmode();
 		} else {
+			$("#findGridTable_iladd").hide();
 			$("#findGridTable_iledit").hide();
 			$("#findGridTable_ilsave").hide();
 			$("#findGridTable_ilcancel").hide();
+		}
+		if ($('#mnutoolAutoSaveRecordFind').hasClass("toolbarButtonOn")) { //When AutoSave is on hide the Add button
+			$("#findGridTable_iladd").hide();
 		}
 		return false;
 	}
@@ -5118,6 +5125,7 @@ function menu_SetmnutoolButtonCaption(itemID, newCaption) {
 
 function setinlineeditmode() {
 	if ($('#mnutoolInlineEditRecordFind').hasClass("toolbarButtonOn")) {
+		$("#findGridTable_iladd").show();
 		$("#findGridTable_iledit").show();
 		$("#findGridTable_ilsave").show();
 		$("#findGridTable_ilcancel").show();
@@ -5157,7 +5165,7 @@ function setinlineeditmode() {
 }
 
 function saveInlineRowToDatabase(rowId) {
-	var sUpdate = "";
+	var sUpdateOrInsert = "";
 	var gridData = $("#findGridTable").getRowData(rowId);
 	var gridColumns = $("#findGridTable").jqGrid('getGridParam', 'colNames');
 	var gridModel = $("#findGridTable").jqGrid('getGridParam', 'colModel');
@@ -5180,7 +5188,7 @@ function saveInlineRowToDatabase(rowId) {
 					break;
 			}
 
-			sUpdate += gridModel[i].id + "\t" + columnValue + "\t";
+			sUpdateOrInsert += gridModel[i].id + "\t" + columnValue + "\t";
 		}
 	}
 
@@ -5190,10 +5198,28 @@ function saveInlineRowToDatabase(rowId) {
 	frmDataArea.txtCurrentViewID.value = $("#txtCurrentViewID").val();;
 	frmDataArea.txtCurrentTableID.value = $("#txtCurrentTableID").val();
 	frmDataArea.txtRealSource.value = $("#txtRealSource").val();
-	frmDataArea.txtRecordID.value = gridData.ID;
+	if (gridData.ID == "") { //New record
+		frmDataArea.txtRecordID.value = "0";
+		sUpdateOrInsert = eval("currentTableOrViewName") + "\t" + "0\t\t" + sUpdateOrInsert;
+	} else { //Update record
+		frmDataArea.txtRecordID.value = gridData.ID; 
+	}
 	frmDataArea.txtDefaultCalcCols.value = "";
-	frmDataArea.txtInsertUpdateDef.value = sUpdate;
+	frmDataArea.txtInsertUpdateDef.value = sUpdateOrInsert;
 	frmDataArea.txtTimestamp.value = gridData.Timestamp;
+	frmDataArea.txtOriginalRecordID.value = 0; //This is NOT a copied record
 
-	OpenHR.submitForm(frmDataArea);
+	OpenHR.submitForm(frmDataArea, null, false); //The "false" causes the ajax call to be synchronous; we need this to get the value in the next line
+
+	if (frmData.txtErrorMessage.value != "") { //There was an error while saving, put the selected row back into edit mode
+		$("#findGridTable").editRow(rowId); //Edit the row
+
+		//After a brief timeout, disable "Add" and "Edit" and enable "Save" and "Cancel"
+		setTimeout(function () {			
+			$("#findGridTable_iladd").addClass("ui-state-disabled");
+			$("#findGridTable_iledit").addClass("ui-state-disabled");
+			$("#findGridTable_ilsave").removeClass("ui-state-disabled");
+			$("#findGridTable_ilcancel").removeClass("ui-state-disabled");
+		}, 100);
+	}
 }

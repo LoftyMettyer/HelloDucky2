@@ -96,11 +96,14 @@ BEGIN
 		@sJoinSQL			nvarchar(max),
 		@psOriginalAction		varchar(255),
 		@sThousandColumns		varchar(255),
-		@sBlankIfZeroColumns	varchar(255);
+		@sBlankIfZeroColumns	varchar(255),
+		@sTableOrViewName varchar(255);
 
 	DECLARE @FindDefinition TABLE(tableID integer, columnID integer, columnName nvarchar(255), tableName nvarchar(255)
 									, ascending bit, type varchar(1), datatype integer, controltype integer, size integer, decimals integer, Use1000Separator bit, BlankIfZero bit, Editable bit
-									, LookupTableID integer, LookupColumnID integer, LookupFilterColumnID integer, LookupFilterValueID integer, SpinnerMinimum smallint, SpinnerMaximum smallint, SpinnerIncrement smallint)
+									, LookupTableID integer, LookupColumnID integer, LookupFilterColumnID integer, LookupFilterValueID integer, SpinnerMinimum smallint, SpinnerMaximum smallint, SpinnerIncrement smallint
+									, DefaultValue varchar(max)
+									)
 
 	
 	/* Clean the input string parameters. */
@@ -117,6 +120,7 @@ BEGIN
 	SET @bUse1000Separator = 0;
 	SET @bBlankIfZero = 0;
 	SET @sThousandColumns = '';
+	SET @sTableOrViewName = '';
 	SET @sBlankIfZeroColumns = '';
 
 	SET @sRealSource = '';
@@ -577,7 +581,8 @@ BEGIN
 			ISNULL(c.LookupFilterValueID, 0) AS LookupFilterValueID,
 			c.SpinnerMinimum,
 			c.SpinnerMaximum,
-			c.SpinnerIncrement
+			c.SpinnerIncrement,
+			c.defaultvalue AS DefaultValue
 		FROM [dbo].[ASRSysOrderItems] o
 		INNER JOIN ASRSysColumns c ON o.columnID = c.columnID
 		INNER JOIN ASRSysTables t ON c.tableID = t.tableID
@@ -1421,16 +1426,21 @@ BEGIN
 	-- Return a recordset of the required columns in the required order from the given table/view.
 	IF (@pfSomeSelectable = 1)
 	BEGIN
+		IF @piViewID <>0 BEGIN
+			SELECT @sTableOrViewName = ViewName FROM tbsys_views WHERE ViewID = @piViewID
+		END ELSE IF @piTableID <> 0 BEGIN
+			SELECT @sTableOrViewName = TableName FROM tbsys_tables WHERE TableID = @piTableID
+		END
 
 		SELECT @sBlankIfZeroColumns AS BlankIfZeroColumns
-			, @sThousandColumns AS ThousandColumns
+			, @sThousandColumns AS ThousandColumns, @sTableOrViewName AS TableOrViewName
 
 		EXECUTE sp_executeSQL @sExecString;
 
 		SELECT f.tableID, f.columnID, f.columnName, f.ascending, f.type, f.datatype, f.controltype, f.size, f.decimals, f.Use1000Separator, f.BlankIfZero
 			 , CASE WHEN f.Editable = 1 AND p.updateGranted = 1 THEN 1 ELSE 0 END AS updateGranted
 			 , LookupTableID, LookupColumnID, LookupFilterColumnID, LookupFilterValueID
-			 ,SpinnerMinimum, SpinnerMaximum, SpinnerIncrement
+			 ,SpinnerMinimum, SpinnerMaximum, SpinnerIncrement, DefaultValue
 			FROM @FindDefinition f
 				INNER JOIN @ColumnPermissions p ON p.columnName = f.columnName
 			WHERE f.[type] = 'F';

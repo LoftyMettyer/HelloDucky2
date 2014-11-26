@@ -111,30 +111,66 @@ function find_window_onload() {
 
 							colNames.push(sColumnName);
 
-							if (sColumnName == "ID" || sColumnName == "Timestamp") {
-								colModel.push({ name: sColumnName, hidden: true });
+							if (sColumnName == "ID") {
+								colModel.push({
+									name: sColumnName,
+									hidden: true,
+									editoptions: {
+										defaultValue: 0
+									}
+								});
+							} else if (sColumnName == "Timestamp") {
+								colModel.push({
+									name: sColumnName,
+									hidden: true
+								});
 							} else {
 								//Determine the column type and set the colModel for this column accordingly
 								if (ColumnControlType == 1) { //Logic - checkbox
-									colModel.push({ name: sColumnName, id: iColumnId, edittype: "checkbox", formatter: 'checkbox', editable: sColumnEditable, formatoptions: { disabled: true }, align: 'center', width: 100 });
+									colModel.push({
+										name: sColumnName,
+										id: iColumnId,
+										edittype: 'checkbox',
+										formatter: 'checkbox',
+										editable: sColumnEditable,
+										formatoptions: {
+											disabled: true,
+											defaultValue: getDefaultValueForColumn(iColumnId, "checkbox")
+										},
+										align: 'center',
+										width: 100									
+									});
 								} else if (ColumnDataType == 4) { //Integer
 									if (ColumnControlType == 64) { //"Numeric" integer
-										colModel.push({ name: sColumnName, id: iColumnId, edittype: "text", sorttype: 'integer', formatter: 'numeric', editable: sColumnEditable, align: 'right', width: 100 });
+										colModel.push({
+											name: sColumnName,
+											id: iColumnId,
+											edittype: 'text',
+											sorttype: 'integer',
+											formatter: 'numeric',
+											editable: sColumnEditable,
+											align: 'right',
+											width: 100,
+											editoptions: {
+												defaultValue: getDefaultValueForColumn(iColumnId, "integer")
+											}
+										});
 									} else { //Spinner integer
 										colModel.push({
 											name: sColumnName,
 											id: iColumnId,
 											editable: sColumnEditable,
-											type: "spinner",
+											type: 'spinner',
 											editoptions: {
 												size: 10,
 												maxlengh: 10,
 												min: ColumnSpinnerMinimum,
 												max: ColumnSpinnerMaximum,
 												step: ColumnSpinnerIncrement,
-												dataInit: function (element) { 
+												dataInit: function (element) {
 													$(element).spinner({ });
-												}
+												},
+												defaultValue: getDefaultValueForColumn(iColumnId, "spinner")
 											}
 										});
 									}
@@ -152,7 +188,11 @@ function find_window_onload() {
 											}
 										},
 										formatter: 'date',
-										formatoptions: { srcformat: srcFormat, newformat: newFormat, disabled: true },
+										formatoptions: {
+											srcformat: srcFormat,
+											newformat: newFormat,
+											disabled: true
+										},
 										align: 'left',
 										width: 100,
 										editable: sColumnEditable,
@@ -165,7 +205,8 @@ function find_window_onload() {
 													constrainInput: true,
 													showOn: 'focus'
 												});
-											}
+											},
+											defaultValue: getDefaultValueForColumn(iColumnId, "date")
 										}
 									});
 								} else if (ColumnControlType == 64 && ColumnSize > 2000000000) { //Multiline - Textarea
@@ -174,7 +215,11 @@ function find_window_onload() {
 										edittype: "textarea",
 										id: iColumnId,
 										editable: sColumnEditable,
-										type: "textarea"
+										type: 'textarea',
+										editoptions: {
+											dataInit: function (element) { },
+											defaultValue: getDefaultValueForColumn(iColumnId, "textarea")
+										}
 									})
 								} else if (ColumnDataType == 12 && ColumnControlType == 2 && ColumnLookupColumnID != 0) { //Lookup
 
@@ -187,7 +232,8 @@ function find_window_onload() {
 											dataInit: function (element) {
 												//On clicking any cell on the lookup column, popup the lookup dialog
 												$(element).on('click', function () { showLookupForColumn(element); });
-											}
+											},
+											defaultValue: getDefaultValueForColumn(iColumnId, "lookup")
 										}
 									});
 								} else if (((ColumnDataType == 12 && ColumnControlType == 2) || (ColumnDataType == 12 && ColumnControlType == 16))
@@ -200,7 +246,10 @@ function find_window_onload() {
 										id: iColumnId,
 										editable: sColumnEditable,
 										type: "select",
-										editoptions: { value: getValuesForColumn(iColumnId) }
+										editoptions: {
+											value: getValuesForColumn(iColumnId), //This populates the <select>
+											defaultValue: getDefaultValueForColumn(iColumnId, "select")
+										}
 									});
 								} else if (ColumnDataType == 12 && ColumnControlType == 16384) { //Navigation control, make it a hyperlink
 									colModel.push({
@@ -209,7 +258,11 @@ function find_window_onload() {
 										editable: sColumnEditable,
 										type: "navigation",
 										formatter: hyperLinkFormatter,
-										unformat: hyperLinkDeformatter
+										unformat: hyperLinkDeformatter,
+										editoptions: {
+											dataInit: function (element) { },
+											defaultValue: getDefaultValueForColumn(iColumnId, "navigation")
+										}
 									});
 								} else if (ColumnDataType == -1 && ColumnControlType == 4096) { //Working pattern
 									colModel.push({
@@ -217,10 +270,26 @@ function find_window_onload() {
 										id: iColumnId,
 										editable: false, //Hardcoded to false, see Notes on TFS 12732 for reason why
 										type: "workingpattern",
-										formatter: workingPatternFormatter
+										formatter: workingPatternFormatter,
+										unformat: workingPatternDeformatter,
+										editoptions: {
+											defaultValue: getDefaultValueForColumn(iColumnId, "workingpattern")
+										}
 									});
 								} else { //None of the above
-									colModel.push({ name: sColumnName, id: iColumnId, width: 100, editable: sColumnEditable, type: "other", editoptions: { size: "20", maxlength: "30" }, label: sColumnDisplayName });
+									colModel.push({
+										name: sColumnName,
+										id: iColumnId,
+										width: 100,
+										editable: sColumnEditable,
+										type: 'other',
+										editoptions: {
+											size: "20",
+											maxlength: "30",
+											defaultValue: getDefaultValueForColumn(iColumnId, "other")
+										},
+										label: sColumnDisplayName
+									});
 								}
 							}
 						}
@@ -297,10 +366,9 @@ function find_window_onload() {
 					//Make grid editable
 					$("#findGridTable").jqGrid('inlineNav', '#pager-coldata', {
 						edit: true,
-						add: false,
+						add: true,
 						save: true,
 						cancel: true,
-						addParams: { useFormatter: false },
 						editParams: {
 							aftersavefunc: function (rowid, response, options) {
 								saveInlineRowToDatabase(rowid);
@@ -318,6 +386,7 @@ function find_window_onload() {
 				}
 
 				//Hide the edit icons by default
+				$("#findGridTable_iladd").hide();
 				$("#findGridTable_iledit").hide();
 				$("#findGridTable_ilsave").hide();
 				$("#findGridTable_ilcancel").hide();
@@ -475,7 +544,7 @@ function showLookupForColumn(element) {
 	for (i = 0; i <= data.length - 1; i++) {
 		obj = {};
 		for (j = 0; j <= data[i].length - 1; j++) {
-			obj[colNamesLookup[j]] = data[i][j].toString().replace(" 00:00:00", ""); //TODO: Determine if value for this column is a data and format accordingly, taking into account locale
+			obj[colNamesLookup[j]] = data[i][j].toString().replace(" 00:00:00", ""); //TODO: Determine if value for this column is a date and format accordingly, taking into account locale
 		}
 		colDataLookup.push(obj);
 	}
@@ -488,7 +557,7 @@ function showLookupForColumn(element) {
 		datatype: "local",
 		colModel: colModelLookup,
 		colNames: colNamesLookup,
-		rowNum: 50,
+		rowNum: 10000,
 		ignoreCase: true,
 		multiselect: false,
 		shrinkToFit: (colModelLookup.length < 8)
@@ -569,5 +638,27 @@ function hyperLinkDeformatter(cellvalue, options, cell) {
 }
 
 function workingPatternFormatter(cellValue, options, rowdata, action) {
+	if (cellValue == undefined)
+		return "";
+
 	return cellValue.replace(/ /g, "&nbsp;"); //Replace all spaces with &nbsp; so the working patterns in the column are neatly aligned
+}
+
+function workingPatternDeformatter(cellvalue, options, cell) {
+	return cell.innerHTML.replace(/&nbsp;/g, " "); //Replace all the &nbsp; with a space so the user can edit the working pattern as a string of text
+}
+
+function getDefaultValueForColumn(columnId, columnType) {
+	//Some controls need a bit more logic applied to their default values
+	switch (columnType) {
+		case "checkbox":
+			return columnsDefaultValues[columnId].toString().toLowerCase() == "true" ? "yes" : "no";
+			break;
+		case "date":
+			var d = columnsDefaultValues[columnId].toString().split("/");
+			return new Date(d[2].toString() + "-" + d[0].toString() + "-" + d[1].toString());
+			break;
+	}
+
+	return columnsDefaultValues[columnId]
 }

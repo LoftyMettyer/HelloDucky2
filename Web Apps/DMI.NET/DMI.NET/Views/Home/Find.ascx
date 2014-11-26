@@ -124,6 +124,7 @@
 					Dim sTemp As String
 					Dim sThousandColumns As String = ""
 					Dim sBlankIfZeroColumns As String
+					Dim TableOrViewName As String = ""
 					Dim sColDef As String
 					Dim iCount As Integer
 					Dim sAddString As String
@@ -215,6 +216,7 @@
 							resultDataSet = objDataAccess.GetDataSet("spASRIntGetFindRecords", SPParameters)
 
 							Dim clientArrayData As New ArrayList
+							Dim columnsDefaultValues As String = "var columnsDefaultValues = {"	'Save the default values for the columns in an array that we can use client side
 							
 							If prmSomeSelectable.Value = 0 Then
 								sErrorDescription = "You do not have permission to read any of the selected order's find columns."
@@ -222,7 +224,8 @@
 								' Get the recordset parameters
 								sThousandColumns = resultDataSet.Tables(0).Rows(0)("ThousandColumns").ToString()
 								sBlankIfZeroColumns = resultDataSet.Tables(0).Rows(0)("BlankIfZeroColumns").ToString()
-									
+								TableOrViewName = String.Concat("var currentTableOrViewName = """, resultDataSet.Tables(0).Rows(0)("TableOrViewName").ToString(), """;", vbCrLf)
+
 								rstFindRecords = resultDataSet.Tables(1) 'Get the actual data
 								rstFindDefinition = resultDataSet.Tables(2)	'Get the columns information
 								
@@ -260,8 +263,11 @@
 														 objRow.FirstOrDefault.Item("SpinnerMaximum"), _
 														 objRow.FirstOrDefault.Item("SpinnerIncrement") _
 														 ) & vbCrLf)
-																								
-												'If column is a Lookup, need to get its associated data
+
+												'Save the default value for this column in an array
+												columnsDefaultValues = String.Concat(columnsDefaultValues, "'", objRow.FirstOrDefault.Item("columnID"), "':'", objRow.FirstOrDefault.Item("DefaultValue"), "',")
+												
+												'If column is a Lookup, we need to get its associated data
 												If objRow.FirstOrDefault.Item("datatype") = 12 And objRow.FirstOrDefault.Item("controltype") = 2 And objRow.FirstOrDefault.Item("LookupColumnID") <> 0 Then
 													Dim objDatabase As Database = CType(Session("DatabaseFunctions"), Database)
 													'Dim objDataAccess As clsDataAccess = CType(Session("DatabaseAccess"), clsDataAccess)
@@ -338,7 +344,7 @@
 													For Each r As DataRow In rstLookup.Rows
 														strColData = String.Concat(strColData, "[")
 														For Each c As DataColumn In rstLookup.Columns
-															strColData = String.Concat(strColData, "'", r(c).ToString, "',")
+															strColData = String.Concat(strColData, """", r(c).ToString, """,")
 														Next
 														strColData = String.Concat(strColData.TrimEnd(","), "],")
 													Next
@@ -347,12 +353,12 @@
 													'Place the column names in Javascript array
 													Dim strColNames As String = String.Concat("var colNames_", objRow.FirstOrDefault.Item("columnID"), " = [")
 													For Each c As DataColumn In rstLookup.Columns
-														strColNames = String.Concat(strColNames, "'", c.ColumnName.Replace("_", " "), "',")
+														strColNames = String.Concat(strColNames, """", c.ColumnName.Replace("_", " "), """,")
 													Next
 													strColNames = String.Concat(strColNames.TrimEnd(","), "];")
 													
 													'Place the Lookup Column Grid Position in a Javascript variable
-													Dim strLookupColumnGridPosition As String = String.Concat("var LookupColumnGridPosition_", objRow.FirstOrDefault.Item("columnID"), " = ")
+													Dim strLookupColumnGridPosition As String = String.Concat(vbCrLf, "var LookupColumnGridPosition_", objRow.FirstOrDefault.Item("columnID"), " = ")
 													If Not fIsLookupTable Then
 														strLookupColumnGridPosition = String.Concat(strLookupColumnGridPosition, _prmLookupColumnGridPosition.Value, ";")
 													Else
@@ -376,7 +382,7 @@
 														strOptionGroupOrDropDownData = String.Concat(strOptionGroupOrDropDownData, "[")
 														For Each c As DataColumn In rstOptionGroupOrDropDown.Columns
 															If c.ColumnName.ToLower <> "columnid" Then
-																strOptionGroupOrDropDownData = String.Concat(strOptionGroupOrDropDownData, "'", r(c).ToString, "',")
+																strOptionGroupOrDropDownData = String.Concat(strOptionGroupOrDropDownData, """", r(c).ToString, """,")
 															End If
 														Next
 														strOptionGroupOrDropDownData = String.Concat(strOptionGroupOrDropDownData.TrimEnd(","), "],")
@@ -425,7 +431,10 @@
 
 							Response.Write("</table>")
 				
-							'Output the lookup and option group/dropdown client array data
+							columnsDefaultValues = String.Concat(columnsDefaultValues.Trim(","), "};")
+							clientArrayData.Add(vbCrLf & TableOrViewName & vbCrLf & columnsDefaultValues)
+
+							'Output the client side array data
 							Response.Write("<script type='text/javascript'>" & vbCrLf)
 							For Each s As String In clientArrayData
 								Response.Write(s & vbCrLf)
