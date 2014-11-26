@@ -141,7 +141,7 @@
 			//resize the grid to the height of its container.		
 			var workPageHeight = $('.optiondatagridpage').outerHeight(true);
 			var pageTitleHeight = $('.optiondatagridpage .pageTitle').outerHeight(true);
-			var dropdownHeight = $('.optiondatagridpage .floatleft').outerHeight(true);
+			var dropdownHeight = $('.optiondatagridpage .nowrap').outerHeight(true);
 			var footerheight = $('.optiondatagridpage footer').outerHeight(true);
 
 			var newGridHeight = workPageHeight - pageTitleHeight - dropdownHeight - footerheight;

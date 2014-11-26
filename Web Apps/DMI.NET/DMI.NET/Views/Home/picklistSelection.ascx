@@ -17,6 +17,8 @@
 		var fOK = true;
 
 		var frmUseful = document.getElementById("frmpicklistSelectionUseful");
+		var selectView = document.getElementById("selectView");
+		var selectOrder = document.getElementById("selectOrder");
 
 		if ((frmUseful.txtSelectionType.value.toUpperCase() != "FILTER") &&
 				(frmUseful.txtSelectionType.value.toUpperCase() != "PICKLIST")) {
@@ -53,7 +55,7 @@
 
 			var newGridHeight = workPageHeight - pageTitleHeight - dropDownHeight - footerheight;
 
-			var SelectionType = frmUseful.txtSelectionType.value;
+			var selectionType = frmUseful.txtSelectionType.value;
 			tableToGrid("#ssOleDBGridSelRecords", {
 				height: newGridHeight,
 				autowidth: true,
@@ -64,9 +66,9 @@
 				ondblClickRow: function () {
 					makeSelection();
 				},
-				colNames: [SelectionType],
+				colNames: [selectionType],
 				colModel: [
-						{ name: 'name', label: SelectionType, index: 'name', sortable: false }
+						{ name: 'name', label: selectionType, index: 'name', sortable: false }
 				]
 			});
 
@@ -433,10 +435,12 @@
 		Else
 			' Select individual employee records.
 		%>
-		<div style="display: block;">
-			<div class="formField floatleft">
+		
+		
+		<div class="nowrap">
+			<div class="tablerow">
 				<label>View :</label>
-				<select id="selectView" name="selectView" class="combo" onchange="goView()">
+				<select id="selectView" name="selectView" class="combo" onchange="goView()" style="width:90%;">
 					<%
 						If Len(sErrorDescription) = 0 Then
 																
@@ -470,19 +474,17 @@
 						End If
 					%>
 				</select>
-			</div>
 
-			<div class="formField floatright">
 				<label>Order :</label>
-				<select id="selectOrder" name="selectOrder" class="combo" onchange="goOrder()">
+				<select id="selectOrder" name="selectOrder" class="combo" onchange="goOrder()" style="margin-left: 4px; width: 90%;" name="txtOwner">
 					<%
 						If Len(sErrorDescription) = 0 Then
 																
 							Dim rstTableOrderRecords = objDatabase.GetTableOrders(CInt(Session("selectionTableID")), 0)
 							For Each objRow As DataRow In rstTableOrderRecords.Rows
-								Response.Write("						<option value=" & objRow(1))
+								Response.Write("<option value=" & objRow(1))
 								If objRow(1) = CInt(Session("optionLinkOrderID")) Then
-									Response.Write(" SELECTED")
+									Response.Write(" selected")
 								End If
 								Response.Write(">" & Replace(objRow(0).ToString(), "_", " ") & "</option>" & vbCrLf)
 							Next
@@ -491,10 +493,10 @@
 					%>
 				</select>
 			</div>
-
+			<br/>
 		</div>
 	</div>
-
+	
 	<main>
 	<div class="clearboth">
 		<div id='ssOleDBGridSelRecordsDiv'>
