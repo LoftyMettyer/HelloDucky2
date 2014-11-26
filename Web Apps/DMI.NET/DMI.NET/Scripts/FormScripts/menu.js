@@ -207,7 +207,7 @@ function menu_abMainMenu_Click(pTool) {
 
 	
 	//reject disabled icon clicks
-	if ($("#" + pTool + " a:first").attr("disabled") == "disabled") return false;
+	if ($("#" + pTool + " a:first").hasClass("disabled") == true) return false;
 	menu_MenuClick(pTool);	
 	return true;
 }
@@ -4966,7 +4966,6 @@ function menu_loadSelectOrderFilter(psType) {
 			$("#" + itemId + " a").removeClass("disabled");
 			$("#" + itemId + " a h6").removeClass("disabled");
 			$('#' + itemId + " a h6").removeClass('ui-state-disabled');
-			$('#' + itemId).button({ disabled: false });
 		}
 	} else {
 		//apply disable icon
@@ -4976,7 +4975,6 @@ function menu_loadSelectOrderFilter(psType) {
 			$("#" + itemId + " a").addClass("disabled");
 			$("#" + itemId + " a h6").addClass("disabled");
 			$('#' + itemId + " a h6").addClass('ui-state-disabled');
-			$('#' + itemId).button({ disabled: true });
 		}
 	}
 }
