@@ -14,7 +14,7 @@
 			WHERE (TableID = @piTableID) 
 				AND (ViewID = @piViewID);
 
-		SELECT ISNULL(@pfDisplayHyperlink, 0);
+		SELECT @pfDisplayHyperlink = ISNULL(@pfDisplayHyperlink, 0);
 
 	END
 GO
