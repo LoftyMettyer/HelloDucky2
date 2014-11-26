@@ -160,7 +160,7 @@ Namespace Controllers
 						If Not DatabaseHub.ServiceBrokerOK Then
 							objErrors.Errors.Add(New ConfigurationError With {.Code = "0002",
 																																.Message = "SQL Service Broker not running",
-																																.Detail = "The SQL server is unable to instanciate the service broker."})
+																																.Detail = "The SQL server is unable to start the service broker."})
 						End If
 
 					End If

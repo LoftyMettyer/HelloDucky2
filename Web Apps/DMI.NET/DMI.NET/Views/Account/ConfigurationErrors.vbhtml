@@ -11,7 +11,7 @@
 
 		<div class="aligncenter">
 		@For Each item In Model.Errors 
- 			@<div class="@String.Format("{0}{1}", "SeverityType", item.Severity)">@item.Detail</div> 
+			@item.Detail
 		Next
 	</div>
 </div>

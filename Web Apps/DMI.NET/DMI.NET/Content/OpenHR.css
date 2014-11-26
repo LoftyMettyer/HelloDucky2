@@ -1506,25 +1506,3 @@ overflow-x : hidden !important;
 .toolbarButtonOn {
 	background: #d0e5f5 url("images/ui-bg_glass_75_d0e5f5_1x400.png") 50% 50% repeat-x !important;
 }
-
-/* System Error Messages*/
-
-.SeverityTypeInformation, .SeverityTypeWarning, .SeverityTypeError {
-	/*margin: 5px 0px;
-	padding: 20px 0px 15px 30px;*/
-	background-repeat: no-repeat;
-	/*float: left;*/
-	/*background-position: right;*/
-}
-
-.SeverityTypeWarning {
-	background-image: url('../../Content/images/warning.png');
-}
-
-.SeverityTypeInformation {
-	background-image: url('../../Content/images/warning.png');
-}
-
-.SeverityTypeError {
-	background-image: url('../../Content/images/warning.png');
-}
