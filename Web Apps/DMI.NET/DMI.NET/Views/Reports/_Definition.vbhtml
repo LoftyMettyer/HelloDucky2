@@ -164,9 +164,9 @@
 		return ($("#IsReadOnly").val() == "True");
 	}
 
-	function getBaseTableList() {
+	function getBaseTableList() {	    
 
-		$.ajax({
+	    $.ajax({
 			url: '@Url.Action("GetBaseTables", "Reports", New With {.ReportType = CInt(Model.ReportType)})',
 			type: 'GET',
 			dataType: 'json',
@@ -178,14 +178,14 @@
 
 				$('#BaseTableID').val("@Model.BaseTableID");
 				$("#OriginalBaseTableID").val($('#BaseTableID')[0].selectedIndex);
-
+				
 				if ('@CInt(Model.ReportType)' == '2' || '@CInt(Model.ReportType)' == '9') {
 					loadAvailableTablesForReport(false);
 					attachGridToSelectedColumns();
 				}
 
 			}
-		});
+		});	    
 	}
 
 	function setAllSecurityGroups() {
@@ -245,7 +245,7 @@
 		var bViewAccessEnabled = true;
 		var list;
 
-		$("#tblGroupAccess").removeAttr("disabled");
+		$('#tblGroupAccess').find('*').each(function () { $(this).removeAttr("disabled"); })
 
 		if ($("#BaseViewAccess").val() == 'HD') { bViewAccessEnabled = false; }
 		if ($("#Parent1ViewAccess").val() == 'HD') { bViewAccessEnabled = false; }
@@ -267,8 +267,8 @@
 		}
 
 		if (!bViewAccessEnabled) {
-			$("#IsForcedHidden").val(true);
-			$("#tblGroupAccess").attr("disabled", "disabled");
+			$("#IsForcedHidden").val(true);			
+			$('#tblGroupAccess').find('*').each(function () { $(this).attr("disabled", "disabled"); })
 		}
 	}
 
@@ -476,8 +476,8 @@
 		});
 	}
 
-	function requestChangeReportBaseTable(target) {
-		
+    function requestChangeReportBaseTable(target) {
+
 		var tableCount = $("#ChildTables").getGridParam("reccount");
 		var columnCount = $("#SelectedColumns").getGridParam("reccount");
 		var eventCount = $("#CalendarEvents").getGridParam("reccount");
@@ -628,8 +628,8 @@
 		gridData = $("#SortOrders").getRowData();
 		$('#txtSOAAS').val(JSON.stringify(gridData));
 
-		var $form = $("#frmReportDefintion");
-		$("#tblGroupAccess").removeAttr("disabled");
+		var $form = $("#frmReportDefintion");		
+		$('#tblGroupAccess').find('*').each(function () { $(this).removeAttr("disabled"); })
 
 		$.ajax({
 			url: $form.attr("action"),
@@ -666,8 +666,8 @@
 	}
 
 	function submitReportDefinition() {
-		$("#ValidityStatus").val('ServerCheckComplete');
-		$("#tblGroupAccess").removeAttr("disabled");
+		$("#ValidityStatus").val('ServerCheckComplete');		
+		$('#tblGroupAccess').find('*').each(function () { $(this).removeAttr("disabled"); })
 		var frmSubmit = $("#frmReportDefintion")[0];
 		OpenHR.submitForm(frmSubmit);
 	}
