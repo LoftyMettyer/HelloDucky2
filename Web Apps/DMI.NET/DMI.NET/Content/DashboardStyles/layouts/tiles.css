@@ -544,6 +544,7 @@ div.officetab li div.button
 div.officetab li div.button .disabled {
 	color: gray!important;
 	cursor: default;
+	width: 49px;
 }
 
 .officebar li { list-style: none;}

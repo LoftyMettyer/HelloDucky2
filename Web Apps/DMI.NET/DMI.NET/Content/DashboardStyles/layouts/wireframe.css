@@ -358,6 +358,12 @@ div.officetab li div.button
 	padding-top: 1px;
 }
 
+div.officetab li div.button .disabled {
+	color: gray!important;
+	cursor: default;
+	width: 49px;
+}
+
 .officebar li { list-style: none;}
 
 div.officebar ul li > a { display: none!important;}
