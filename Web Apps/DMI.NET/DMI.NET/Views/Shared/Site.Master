@@ -241,6 +241,7 @@
 					},
 					{
 						text: "OK",
+						click: function() {}, //This fixes a silly exception on IE10 when clicking a button that has its onclick event set somewhere else
 						"id": "LookupForEditableGridOK",
 						"class": "width6em"
 					}
