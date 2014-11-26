@@ -649,6 +649,10 @@ function workingPatternDeformatter(cellvalue, options, cell) {
 }
 
 function getDefaultValueForColumn(columnId, columnType) {
+	if (columnsDefaultValues[columnId] == "") {
+		return "";
+	}
+
 	//Some controls need a bit more logic applied to their default values
 	switch (columnType) {
 		case "checkbox":
