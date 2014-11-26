@@ -69,13 +69,14 @@
 			<div class="centered">
 				<input type="button" id="submitLoginDetails" name="submitLoginDetails" onclick="SubmitLoginDetails()" value="Login" />
 				<input type="button" id="btnToggleDetailsDiv" name="details" class="ui-button <%=IIf(Model.SetDetails, "", "hidden")%>" value="Details >>" />		
-			</div>
 
+				<br />
+				<p id="ForgotPasswordLink" style="display: none;"><%=Html.ActionLink("Forgot password", "ForgotPassword", "Account")%></p>
+			</div>
+				
 		</div>
+
 		<%End If%>
-			
-		<br />
-		<p id="ForgotPasswordLink" style="display: none; text-align: center"><%=Html.ActionLink("Forgot password", "ForgotPassword", "Account")%></p>
 	
 	</div>
 	
