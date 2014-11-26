@@ -2,7 +2,7 @@
 @Imports DMI.NET.Helpers
 @Inherits System.Web.Mvc.WebViewPage(Of SortOrderViewModel)
 
-@Code
+@Code	
 	Html.BeginForm("PostSortOrder", "Reports", FormMethod.Post, New With {.id = "frmPostSortOrder"})
 End Code
 
@@ -18,9 +18,8 @@ End Code
 		@Html.HiddenFor(Function(m) m.TableID, New With {.id = "SortOrderTableID"})
 		@Html.HiddenFor(Function(m) m.Sequence, New With {.id = "SortOrderSequence"})
 		@Html.HiddenFor(Function(m) m.IsNew)
-
-		@Html.LabelFor(Function(m) m.ColumnID)
-		@Html.ColumnDropdown("ColumnID", "SortOrderColumnID", Model.ColumnID, Model.AvailableColumns, "")
+		@Html.LabelFor(Function(m) m.ColumnID)		
+		@Html.ColumnDropdown("ColumnID", "SortOrderColumnID", Model.ColumnID, Model.AvailableColumns, "updateCheckBoxes();")
 	</div>
 
 	<div class="padbot10">
@@ -60,7 +59,6 @@ End Code
 End Code
 
 <script type="text/javascript">
-
 	// Initialise
 	$(function () {
 
@@ -75,9 +73,24 @@ End Code
 		}
 
 		button_disable($("#butSortOrderEditCancel")[0], false);
-
-
+		updateCheckBoxes();
 	});
+
+	function updateCheckBoxes() {		
+		if ($('#SortOrderColumnID').find(':selected').data('ishidden') == "True") {			
+			$("#SuppressRepeated").prop({ disabled: true });
+			$("#SuppressRepeated").prop('checked', false);
+			$("#ValueOnChange").prop({ disabled: true });
+			$("#ValueOnChange").prop('checked', false);
+			$("label[for='ValueOnChange']").css('opacity', '0.5');
+			$("label[for='SuppressRepeated']").css('opacity', '0.5');
+		} else {
+			$("#ValueOnChange").prop({ disabled: false });
+			$("#SuppressRepeated").prop({ disabled: false });
+			$("label[for='ValueOnChange']").css('opacity', '1');
+			$("label[for='SuppressRepeated']").css('opacity', '1');
+		}
+	}
 
 	function postThisSortOrder() {
 
@@ -93,7 +106,7 @@ End Code
 			BreakOnChange: $("#BreakOnChange").is(':checked'),
 			PageOnChange: $("#PageOnChange").is(':checked'),
 			ValueOnChange: $("#ValueOnChange").is(':checked'),
-			SuppressRepeated: $("#SuppressRepeated").is(':checked')
+			SuppressRepeated: $("#SuppressRepeated").is(':checked')	
 		};
 
 		// Post to server
@@ -114,7 +127,7 @@ End Code
 		$("#divPopupReportDefinition").dialog("close");
 		$("#divPopupReportDefinition").empty();
 
-    // enable save button
+		// enable save button
 		enableSaveButton();
 	}
 

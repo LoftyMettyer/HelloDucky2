@@ -103,8 +103,7 @@ Namespace Controllers
 
 				' Check the column heading has value.
 				For Each columnItem As ReportColumnItem In objModel.Columns
-					If String.IsNullOrEmpty(columnItem.Heading.Trim()) And
-							columnItem.IsHidden = False Then
+					If String.IsNullOrEmpty(columnItem.Heading.Trim()) And columnItem.IsHidden = False Then
 						ModelState.AddModelError("IsColumnHeaderEmpty", "The '" & columnItem.Name & "' column has a blank heading.")
 						Exit For
 					End If
@@ -126,15 +125,43 @@ Namespace Controllers
 					End If
 				Next
 
-					If objModel.IsSummary AndAlso objModel.Columns.Where(Function(m) m.IsAverage OrElse m.IsCount OrElse m.IsTotal).LongCount() = 0 Then
-						ModelState.AddModelError("IsSummaryOK", "There are no columns defined as aggregates for this summary report.")
+				If objModel.IsSummary AndAlso objModel.Columns.Where(Function(m) m.IsAverage OrElse m.IsCount OrElse m.IsTotal).LongCount() = 0 Then
+					ModelState.AddModelError("IsSummaryOK", "There are no columns defined as aggregates for this summary report.")
+				End If
+
+				' Validate Value On Change and Suppress Repeated Values checkboxes i.e. not checked if column is Hidden.
+				If objModel.SortOrdersString IsNot Nothing Then
+					If objModel.SortOrdersString.Length > 0 Then
+						objModel.SortOrders = deserializer.Deserialize(Of List(Of SortOrderViewModel))(objModel.SortOrdersString)
 					End If
 
-					If objModel.IgnoreZerosForAggregates AndAlso objModel.Columns.Where( _
-						Function(m) (m.DataType = ColumnDataType.sqlInteger OrElse m.DataType = ColumnDataType.sqlNumeric) AndAlso (m.IsAverage OrElse m.IsCount OrElse m.IsTotal) _
-							).LongCount() = 0 Then
-						ModelState.AddModelError("IsIgnoreZerosOK", "You have chosen to ignore zeros when calculating aggregates, but have not selected to show aggregates for any numeric columns.")
-					End If
+					For Each columnItem As ReportColumnItem In objModel.Columns
+						If columnItem.IsHidden = True Then
+							For Each sortorderitem In objModel.SortOrders
+								If sortorderitem.SuppressRepeated = True And columnItem.Name = sortorderitem.Name Then
+									ModelState.AddModelError("IsHidddenParmCorrect", "The column <strong>" & (columnItem.Name) & "</strong> has 'Suppress Repeated Values' ticked on the Sort Order tab. <br/><br/>Hidden columns can not have 'Suppress Repeated Values' or 'Value On Change' ticked.")
+									breakNestedLoop = True
+									Exit For
+								End If
+
+								If sortorderitem.ValueOnChange = True And columnItem.Name = sortorderitem.Name Then
+									ModelState.AddModelError("IsHidddenParmCorrect", "The column <strong>" & (columnItem.Name) & "</strong> has 'Value On Change' ticked on the Sort Order tab.   <br/><br/>Hidden columns can not have 'Suppress Repeated Values' or 'Value On Change' ticked.")
+									breakNestedLoop = True
+									Exit For
+								End If
+							Next
+						End If
+						If breakNestedLoop Then
+							Exit For
+						End If
+					Next
+				End If
+
+				If objModel.IgnoreZerosForAggregates AndAlso objModel.Columns.Where( _
+					Function(m) (m.DataType = ColumnDataType.sqlInteger OrElse m.DataType = ColumnDataType.sqlNumeric) AndAlso (m.IsAverage OrElse m.IsCount OrElse m.IsTotal) _
+						).LongCount() = 0 Then
+					ModelState.AddModelError("IsIgnoreZerosOK", "You have chosen to ignore zeros when calculating aggregates, but have not selected to show aggregates for any numeric columns.")
+				End If
 
 			End If
 
@@ -143,6 +170,7 @@ Namespace Controllers
 					objModel.ChildTables = deserializer.Deserialize(Of List(Of ChildTableViewModel))(objModel.ChildTablesString)
 				End If
 			End If
+
 
 			If objModel.SortOrdersString IsNot Nothing Then
 				If objModel.SortOrdersString.Length > 0 Then

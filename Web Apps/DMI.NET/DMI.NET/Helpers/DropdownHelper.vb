@@ -33,9 +33,8 @@ Namespace Helpers
 				Dim objType As Type = item.[GetType]()
 				Dim iID As Integer = CInt(objType.GetProperty("ID").GetValue(item, Nothing))
 
-				content.AppendFormat("<option value={0} data-datatype={4} data-size={2} data-decimals={3} {5}>{1}</option>" _
-																, iID.ToString(), item.Name, item.Size.ToString, item.Decimals.ToString _
-																, CInt(item.DataType), IIf(bindValue = iID, "selected", ""))
+				content.AppendFormat("<option value={0} data-ishidden={6} data-datatype={4} data-size={2} data-decimals={3} {5}>{1}</option>" _
+						, iID.ToString(), item.Name, item.Size.ToString, item.Decimals.ToString, CInt(item.DataType), IIf(bindValue = iID, "selected", ""), item.IsHidden)
 
 			Next
 
