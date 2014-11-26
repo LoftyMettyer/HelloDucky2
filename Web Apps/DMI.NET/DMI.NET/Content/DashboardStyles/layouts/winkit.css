@@ -594,7 +594,7 @@ div.officetab li div.button {
 	top: -87px;
 	left: 0px;
 	height: 66px;
-	width: 49px;
+	/*width: 49px;*/
 	overflow: hidden;
 	line-height: normal;
 	border: 1px solid transparent;
@@ -605,8 +605,7 @@ div.officetab li div.button {
 
 div.officetab li div.button.disabled {
 	cursor: default;
-	background-color: transparent;
-	width: 49px;
+	background-color: transparent;	
 }
 
 div.officetab li div.button:not(:hover) {
