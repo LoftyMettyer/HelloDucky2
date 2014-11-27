@@ -327,11 +327,18 @@ function menu_MenuClick(sTool) {
 		if (!$('#mnutoolInlineEditRecordFind').hasClass('disabled')) {
 			$('#mnutoolInlineEditRecordFind').toggleClass("toolbarButtonOn");
 			if ($('#mnutoolInlineEditRecordFind').hasClass("toolbarButtonOn")) {
-				$("#findGridTable_iladd").show();
+				setinlineeditmode();
+
+				//Can we add new records to this table/view?
+				if (insertGranted) { //The insertGranted variable is defined in Find.ascx line 443 (ish)
+					$("#findGridTable_iladd").show();
+				} else {
+					$("#findGridTable_iladd").hide();
+				}
+
 				$("#findGridTable_iledit").show();
 				$("#findGridTable_ilsave").show();
 				$("#findGridTable_ilcancel").show();
-				setinlineeditmode();
 			} else {
 				$("#findGridTable_iladd").hide();
 				$("#findGridTable_iledit").hide();
@@ -353,11 +360,18 @@ function menu_MenuClick(sTool) {
 			}
 		}
 		if ($('#mnutoolInlineEditRecordFind').hasClass("toolbarButtonOn")) {
-			$("#findGridTable_iladd").show();
+			setinlineeditmode();
+
+			//Can we add new records to this table/view?
+			if (insertGranted) { //The insertGranted variable is defined in Find.ascx line 443 (ish)
+				$("#findGridTable_iladd").show();
+			} else {
+				$("#findGridTable_iladd").hide();
+			}
+
 			$("#findGridTable_iledit").show();
 			$("#findGridTable_ilsave").show();
 			$("#findGridTable_ilcancel").show();
-			setinlineeditmode();
 		} else {
 			$("#findGridTable_iladd").hide();
 			$("#findGridTable_iledit").hide();

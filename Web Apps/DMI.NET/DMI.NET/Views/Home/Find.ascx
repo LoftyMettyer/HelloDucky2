@@ -265,7 +265,7 @@
 														 ) & vbCrLf)
 
 												'Save the default value for this column in an array
-												columnsDefaultValues = String.Concat(columnsDefaultValues, "'", objRow.FirstOrDefault.Item("columnID"), "':'", EncodeStringToJavascriptSpecialCharacters(objRow.FirstOrDefault.Item("DefaultValue")), "',")
+												columnsDefaultValues = String.Concat(columnsDefaultValues, """", objRow.FirstOrDefault.Item("columnID"), """:""", EncodeStringToJavascriptSpecialCharacters(objRow.FirstOrDefault.Item("DefaultValue")), """,")
 												
 												'If column is a Lookup, we need to get its associated data
 												If objRow.FirstOrDefault.Item("datatype") = 12 And objRow.FirstOrDefault.Item("controltype") = 2 And objRow.FirstOrDefault.Item("LookupColumnID") <> 0 Then
@@ -439,6 +439,9 @@
 							For Each s As String In clientArrayData
 								Response.Write(s & vbCrLf)
 							Next
+
+							'Can we add new records to this table/view?
+							Response.Write(String.Concat(vbCrLf, "var insertGranted = ", prmInsertGranted.Value.ToString.ToLower, ";"))
 							Response.Write("</script>" & vbCrLf)
 							
 							Response.Write("<input type='hidden' id=txtInsertGranted name=txtInsertGranted value=" & prmInsertGranted.Value & ">" & vbCrLf)
