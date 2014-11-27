@@ -387,18 +387,15 @@
 	function loadAvailableTablesForCalendarReport(baseTableChanged) {
 
 		$.ajax({
-			url: 'Reports/GetAvailableColumnsForTable?TableID=' + $("#BaseTableID").val(),
+			url: 'Reports/GetAvailableColumnsForTable',			
+			data: { TableID:$('#BaseTableID').val() },
 			type: 'GET',
 			dataType: 'json',
 			cache: false,
 			success: function (json) {
-				// Clear the Parent1 and Parent2 table names only if the base table changed
+				// Clear some values when the base table changed
 				if (baseTableChanged) {
-					$("#Description1ID").val(0);
-					$("#Description2ID").val(0);
-					$("#Description3ID").val(0);
 					$("#txtDescription3").val('');
-					$('#RegionID').val(0);
 					$('#Separator').val('None');
 					$('#chkGroupByDescription').prop('checked', false);
 
