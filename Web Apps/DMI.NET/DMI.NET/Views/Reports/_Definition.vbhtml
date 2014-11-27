@@ -541,35 +541,70 @@
 
 	}
 
+	//This function will be used to select the first row of provided grid control
+	function selectGridTopRow(gridControl)
+	{
+		// Highlight top row of selected columns grid
+		ids = gridControl.jqGrid("getDataIDs");
+		if (ids && ids.length > 0)
+			gridControl.jqGrid("setSelection", ids[0]);
+	}
+
 	function removeAllChildTablesCompleted() {
 
 		var childTables = $("#ChildTables").getDataIDs();
+		var sortColumnList = $("#SortOrders").getDataIDs();
+		var columnList = $("#SelectedColumns").getDataIDs();
 
 		for (i = 0; i < childTables.length; i++) {
 			thisTable = $("#ChildTables").getRowData(childTables[i]);
 
-			var columnList = $("#SelectedColumns").getDataIDs();
 			for (j = 0; j < columnList.length; j++) {
 				rowData = $("#SelectedColumns").getRowData(columnList[j]);
 
+				// Remove all columns from selected columns grid whose table id is same as deleting table id
 				if (rowData.TableID == thisTable.TableID) {
-					$('#SelectedColumns').jqGrid('delRowData', rowData.ID);
+
+					// Remove the matched sort columns where column id same
+					for (k = 0; k < sortColumnList.length; k++) {
+						var sortColumnRowId = sortColumnList[k];
+						var dataRowOfSortColumn = $("#SortOrders").getRowData(sortColumnRowId);
+						if (dataRowOfSortColumn.ColumnID == rowData.ID) {
+							$("#SortOrders").delRowData(sortColumnRowId);
+							break;
+						}
+					}
+
+					$('#SelectedColumns').delRowData(columnList[j]);
 				}
-
 			}
-
 		}
 
 		$('#ChildTables').jqGrid('clearGridData');
 
-		enableSaveButton();
+		loadAvailableTablesForReport(false);
 
+		// Reset row selection
+		$("#SelectedColumns").jqGrid('resetSelection');
+		$("#SortOrders").jqGrid('resetSelection');
+
+		// Set top row highlighted
+		selectGridTopRow($('#SelectedColumns'));
+		selectGridTopRow($('#SortOrders'));
+
+		// Disable sort grid buttons if no records found
+		if (($("#SortOrders").getGridParam("reccount") == 0) || ($("#SelectedColumns").getGridParam("reccount") == 0)) {
+			refreshSortButtons();
+		}
+
+		enableSaveButton();
 	}
 
 	function removeAllChildTables() {
 
 		var data = { ReportID: "@Model.ID", ReportType: "@Model.ReportType" }
 		OpenHR.postData("Reports/RemoveAllChildTables", data, removeAllChildTablesCompleted);
+		enableSaveButton();
 	}
 
 	function enableSaveButton() {

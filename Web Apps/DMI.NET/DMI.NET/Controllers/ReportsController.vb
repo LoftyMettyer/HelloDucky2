@@ -659,6 +659,12 @@ Namespace Controllers
 			objReport = CType(objReportRepository.RetrieveParent(objModel), CustomReportModel)
 
 			For Each objChildTable In objReport.ChildTables
+
+				'Remove sort columns
+				For Each iColumnID In objReport.Columns.Where(Function(m) m.TableID = objChildTable.TableID)
+					objReport.SortOrders.RemoveAll(Function(m) m.ColumnID = iColumnID.ID)
+				Next
+
 				objReport.Columns.RemoveAll(Function(m) m.TableID = objChildTable.TableID)
 			Next
 
@@ -673,6 +679,12 @@ Namespace Controllers
 			objReport = CType(objReportRepository.RetrieveParent(objModel), CustomReportModel)
 
 			objReport.ChildTables.RemoveAll(Function(m) m.ID = objModel.ID)
+
+			'Remove sort columns
+			For Each iColumnID In objReport.Columns.Where(Function(m) m.TableID = objModel.TableID)
+				objReport.SortOrders.RemoveAll(Function(m) m.ColumnID = iColumnID.ID)
+			Next
+
 			objReport.Columns.RemoveAll(Function(m) m.TableID = objModel.TableID)
 
 		End Sub

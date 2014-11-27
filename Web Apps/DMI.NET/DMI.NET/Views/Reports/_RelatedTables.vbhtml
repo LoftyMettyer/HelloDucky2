@@ -255,19 +255,40 @@
 		rowID = $('#ChildTables').jqGrid('getGridParam', 'selrow');
 		var gridData = $("#ChildTables").getRowData(rowID);
 		var columnList = $("#SelectedColumns").getDataIDs();
+		var sortColumnList = $("#SortOrders").getDataIDs();
 
 		$('#ChildTables').jqGrid('delRowData', rowID);
 		loadAvailableTablesForReport(false);
 
+		// Reset row selection for SelectedColumns and SortOrder grid
+		$("#SelectedColumns").jqGrid('resetSelection');
+		$("#SortOrders").jqGrid('resetSelection');
+
 		for (i = 0; i < columnList.length; i++) {
 			rowData = $("#SelectedColumns").getRowData(columnList[i]);
+
+			// Remove all columns from selected columns grid whose table id is same as deleting table id
 			if (rowData.TableID == gridData.TableID) {
-				$('#SelectedColumns').jqGrid('delRowData', rowData.ID);
-				$('#SortOrders').jqGrid('delRowData', rowData.ID);
+
+				// Remove the matched sort columns from sort order
+				for (j = 0; j < sortColumnList.length; j++) {
+					var sortColumnRowId = sortColumnList[j];
+					var dataRowOfSortColumn = $("#SortOrders").getRowData(sortColumnRowId);
+					if (dataRowOfSortColumn.ColumnID == rowData.ID) {
+						$("#SortOrders").delRowData(sortColumnRowId);
+						break;
+					}
+				}
+
+				// Remove the column from the selected column list
+				$("#SelectedColumns").delRowData(columnList[i]);
 			}
 		}
 
-		enableSaveButton();
+		// Highlight top row of childTable grid, selectedColumns grid and sortedOrders grid
+		selectGridTopRow($('#ChildTables'));
+		selectGridTopRow($('#SelectedColumns'));
+		selectGridTopRow($('#SortOrders'));
 	}
 
 
@@ -278,7 +299,7 @@
 		"<br/><br/>Are you sure you wish to continue ?", 4, "").then(function (answer) {
 			if (answer == 6) { // Yes
 				removeAllChildTables();
-				loadAvailableTablesForReport(true);
+				//loadAvailableTablesForReport(true);
 			}
 		});
 
@@ -294,6 +315,7 @@
 			rowData = $("#SelectedColumns").getRowData(columnList[i]);
 			if (rowData.TableID == gridData.TableID) {
 				iColumnCount = iColumnCount + 1;
+				break;
 			}
 		}
 
@@ -380,7 +402,7 @@
 				button_disable($("#btnChildRemove")[0], isDefinitionReadOnly());
 			},
 			gridComplete: function () {
-
+				
 				var tablesSelected = $(this).getGridParam("reccount");
 				var tablesAvailable = $("#ChildTablesAvailable").val() - tablesSelected;
 

@@ -351,7 +351,14 @@
 			resetRepeatOnChildRows();
 		}
 
+
 		$("#SelectedColumns").jqGrid("setSelection", ids[thisIndex], true);
+
+		// If records available and no row selected then select the first row
+		if (($("#SelectedColumns").getGridParam("records") > 0) && ($("#SelectedColumns").jqGrid('getGridParam', 'selrow') == null)) {
+			selectGridTopRow($('#SelectedColumns'));
+		}
+
 		refreshcolumnPropertiesPanel();
 
 	}
@@ -425,7 +432,7 @@
 				{ name: 'Size', index: 'Size', hidden: true },
 				{ name: 'Decimals', index: 'Decimals', hidden: true }],
 			viewrecords: true,
-				autowidth: false,
+			autowidth: false,
 			sortname: 'Name',
 			sortorder: "desc",
 			rowNum: 10000,
@@ -483,8 +490,8 @@
 
 		$("#AvailableColumns").jqGrid('hideCol', 'cb');
 
-			//if ($('#txtReportType').val() == "utlCustomReport")
-			resizeColumnGrids(); //should be in scope; this function resides in Util_Def_CustomReport.vbhtml
+		//if ($('#txtReportType').val() == "utlCustomReport")
+		resizeColumnGrids(); //should be in scope; this function resides in Util_Def_CustomReport.vbhtml
 
 	}
 
@@ -581,7 +588,7 @@
 		else {
 
 			if (!isReadOnly) {
-			$("#definitionColumnProperties :input").removeAttr("disabled");
+				$("#definitionColumnProperties :input").removeAttr("disabled");
 			}
 
 			var isThereChildColumns = (childColumnsCount() > 0);
@@ -695,7 +702,7 @@
 				{ name: 'ReportID', index: 'ReportID', hidden: true },
 				{ name: 'ReportType', index: 'ReportType', hidden: true }],
 			viewrecords: true,
-				autowidth: false,
+			autowidth: false,
 			sortname: 'Sequence',
 			sortorder: "asc",
 			rowNum: 10000,
