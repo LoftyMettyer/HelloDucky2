@@ -8,11 +8,12 @@
 
 <div class="ui-widget-content ui-corner-tl ui-corner-br loginframe">
 	<img class="loginframeImage" alt="loginimage" src="@Url.Content("~/Content/images/systemerror.jpg")">
-
-		<div class="aligncenter">
-		@For Each item In Model.Errors 
-			@item.Detail
-		Next
+	<div class="aligncenter">
+		<h3>
+			@For Each item In Model.Errors
+				@item.Detail
+			Next
+		</h3>
 	</div>
 </div>
 
