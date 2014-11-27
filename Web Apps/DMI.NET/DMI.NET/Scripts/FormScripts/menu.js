@@ -205,9 +205,10 @@ function menu_abMainMenu_DataReady() {
 
 function menu_abMainMenu_Click(pTool) {
 
-	
+
 	//reject disabled icon clicks
-	if ($("#" + pTool + " a:first").hasClass("disabled") == true) return false;
+	if ($("#" + pTool + " a:first").hasClass("disabled") == true) return false; // toolbar clicks
+	if ($("#" + pTool + " a:first").attr("disabled") == "disabled") return false;	// context menu clicks
 	menu_MenuClick(pTool);	
 	return true;
 }
