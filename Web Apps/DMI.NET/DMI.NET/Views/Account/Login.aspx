@@ -71,12 +71,12 @@
 				<input type="button" id="btnToggleDetailsDiv" name="details" class="ui-button <%=IIf(Model.SetDetails, "", "hidden")%>" value="Details >>" />		
 
 				<br />
-				<br />
 				<p id="ForgotPasswordLink" style="display: none;"><%=Html.ActionLink("Forgot password", "ForgotPassword", "Account")%></p>
 			</div>
 				
 		</div>
 
+		<br />
 		<%End If%>
 	
 	</div>
