@@ -137,6 +137,7 @@
 				crossTabHorizontalClick();
 				crossTabVerticalClick();
 				crossTabPageBreakClick();
+				crossTabIntersectionType();
 
 			}
 		});
@@ -148,7 +149,9 @@
 		var dropDown = $("#IntersectionID")[0];
 		var iDataType = dropDown.options[dropDown.selectedIndex].attributes["data-datatype"].value;
 		combo_disable($("#IntersectionType"), (iDataType == "0") || bReadOnly);
+		$('#IntersectionType').find('option:first').attr('selected', 'selected');
 		refreshTab2Controls();
+
 	}
 
 	function refreshCrossTabColumn(target, type) {
