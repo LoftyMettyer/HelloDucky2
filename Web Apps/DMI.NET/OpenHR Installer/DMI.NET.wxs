@@ -213,6 +213,9 @@
                     <Component Id="cmp16EDFE3CE25EC908A9BCF85056C16227" Guid="*">
                         <File Id="fil9246CB4E1080650A6187FBCDB9D4D20B" KeyPath="yes" Source="SourceDir\Content\images\Chart_Popout.png" />
                     </Component>
+                    <Component Id="cmpDA104BC76B802F5F96D9BE1FA7C3FAC4" Guid="*">
+                        <File Id="fil3D8D20EACC2BB2A78518824EF6AEB390" KeyPath="yes" Source="SourceDir\Content\images\error.jpg" />
+                    </Component>
                     <Component Id="cmpBC4DF2B3B1ADA901FF112721A0F14A11" Guid="*">
                         <File Id="fil7D74E36AA54CE72BD557BDAF628892E8" KeyPath="yes" Source="SourceDir\Content\images\Expand.png" />
                     </Component>
@@ -246,6 +249,9 @@
                     <Component Id="cmpD2AA46900C261A8B4E81A324E5F2C361" Guid="*">
                         <File Id="fil229439A6859082500D27D621C33FFC81" KeyPath="yes" Source="SourceDir\Content\images\splitterRight.bmp" />
                     </Component>
+                    <Component Id="cmpF23B3FD8E9AFAED1F74A5076D29BEE00" Guid="*">
+                        <File Id="fil5A89E05E26CEEFFF7B70C1F3CCA49D38" KeyPath="yes" Source="SourceDir\Content\images\SystemError.jpg" />
+                    </Component>
                     <Component Id="cmp4B6D6578F24F62D10F8AB822D12DAC1A" Guid="*">
                         <File Id="filBFD061A6B6FEF87C233F1F3888D767BD" KeyPath="yes" Source="SourceDir\Content\images\TopLeftBannerImage.png" />
                     </Component>
@@ -266,6 +272,9 @@
                     </Component>
                     <Component Id="cmpE5773F19F0801AE5EE34C3F93BB2D943" Guid="*">
                         <File Id="fil709E29F8767C851E5BF9788AE4164EAF" KeyPath="yes" Source="SourceDir\Content\images\ui-bg_glass_65_ffffff_1x400.png" />
+                    </Component>
+                    <Component Id="cmp70BF7D3BAB119F4BEF01CEC586748F8C" Guid="*">
+                        <File Id="fil0D66FCCAE6ABBCAE5057D4CB11E46FBD" KeyPath="yes" Source="SourceDir\Content\images\ui-bg_glass_75_d0e5f5_1x400.png" />
                     </Component>
                     <Component Id="cmpA2F15C4B0B70033E1CCDE94F07EB7951" Guid="*">
                         <File Id="fil6BA8EC01BF473B653BDDDE3910EE781D" KeyPath="yes" Source="SourceDir\Content\images\ui-bg_gloss-wave_35_f6a828_500x100.png" />
@@ -293,6 +302,9 @@
                     </Component>
                     <Component Id="cmp8A193E307C99D2FD3B01D6EE274E64F2" Guid="*">
                         <File Id="fil464E71D641A9870BA20739D4E3E4DBBA" KeyPath="yes" Source="SourceDir\Content\images\Utilities.gif" />
+                    </Component>
+                    <Component Id="cmp755BD48B11ADAB085A156C4CC04C7F1E" Guid="*">
+                        <File Id="filAD148AA52395E9713AEB9C1C40230B7B" KeyPath="yes" Source="SourceDir\Content\images\warning.png" />
                     </Component>
                     <Directory Id="dir5553BFC53F6A00E225DFB8AF587071D9" Name="ABSLogo">
                         <Component Id="cmp412783814FA08C52F9D7789F88414F42" Guid="*">
@@ -4143,6 +4155,9 @@
                         <Component Id="cmp89E1AEA3C349C1E2F582FF2F8F31D420" Guid="*">
                             <File Id="filB3EC189F5D9A21522ED74DA16E8DA21F" KeyPath="yes" Source="SourceDir\Scripts\officebar\winkit\Refresh64NORM.png" />
                         </Component>
+                        <Component Id="cmp02B71236028213C301DF442CCCD76763" Guid="*">
+                            <File Id="filC256C42A13D0C7175710856E92BAAC1A" KeyPath="yes" Source="SourceDir\Scripts\officebar\winkit\registry_64NORM.png" />
+                        </Component>
                         <Component Id="cmpA466A2B048DC61E06171D096CBDDEC02" Guid="*">
                             <File Id="fil8F85C8B16D5F09DF0D572CC3A9AD3492" KeyPath="yes" Source="SourceDir\Scripts\officebar\winkit\Run64DIS.png" />
                         </Component>
@@ -4245,6 +4260,9 @@
                     <Component Id="cmpFCF664996E952F5290C273F1ACEFF953" Guid="*">
                         <File Id="filD9CCECA77F74E2CB8B8102FF70D975E4" KeyPath="yes" Source="SourceDir\Views\Account\About.ascx" />
                     </Component>
+                    <Component Id="cmp2CF0576D4A9EAF37D4FFE824F32EBEA4" Guid="*">
+                        <File Id="filA169829472D9A30927EEA53C4A074FAA" KeyPath="yes" Source="SourceDir\Views\Account\ConfigurationErrors.vbhtml" />
+                    </Component>
                     <Component Id="cmp8B33084DF0DBCC14DE2FCA8AE0716626" Guid="*">
                         <File Id="fil8833F33E70CA12C46EF0B2F249462452" KeyPath="yes" Source="SourceDir\Views\Account\CurrentUsers.ascx" />
                     </Component>
@@ -4274,6 +4292,9 @@
                     </Component>
                 </Directory>
                 <Directory Id="dir88934B450FA42841EF447477A73B0881" Name="Home">
+                    <Component Id="cmp70A7805E158DEC3B216D162FC7E0D23B" Guid="*">
+                        <File Id="filDC1B51E3335BC910A6CBDEE48A6D0D3E" KeyPath="yes" Source="SourceDir\Views\Home\AbsenceBreakdownConfiguration.vbhtml" />
+                    </Component>
                     <Component Id="cmpF9E5E9097EBC0012EC28CE20ECF87DD7" Guid="*">
                         <File Id="fil50BA7D516603482864EE124FD09F76FE" KeyPath="yes" Source="SourceDir\Views\Home\BulkBooking.vbhtml" />
                     </Component>
@@ -4639,6 +4660,7 @@
             <ComponentRef Id="cmpD494A5D386024885C1A8F915470705EB" />
             <ComponentRef Id="cmp7D8E0261D81C134ADC5A1F5A6F635017" />
             <ComponentRef Id="cmp16EDFE3CE25EC908A9BCF85056C16227" />
+            <ComponentRef Id="cmpDA104BC76B802F5F96D9BE1FA7C3FAC4" />
             <ComponentRef Id="cmpBC4DF2B3B1ADA901FF112721A0F14A11" />
             <ComponentRef Id="cmp74DDB480A70EC2127E7D92072DBF8ED6" />
             <ComponentRef Id="cmp045E8A6E1F6561BF88D82A476343F05B" />
@@ -4650,6 +4672,7 @@
             <ComponentRef Id="cmp89BD9CC905EA8B27D9967221A8B65777" />
             <ComponentRef Id="cmp918036FC5BE75B565B7C60E15139FE49" />
             <ComponentRef Id="cmpD2AA46900C261A8B4E81A324E5F2C361" />
+            <ComponentRef Id="cmpF23B3FD8E9AFAED1F74A5076D29BEE00" />
             <ComponentRef Id="cmp4B6D6578F24F62D10F8AB822D12DAC1A" />
             <ComponentRef Id="cmp01C7602C2F96B75B459EA80A647D745B" />
             <ComponentRef Id="cmp82CA50A402DB5C6DE1C5B17EE80A30B5" />
@@ -4657,6 +4680,7 @@
             <ComponentRef Id="cmp07D68B34B31F319EFDF6DE39C7C92C44" />
             <ComponentRef Id="cmp03E3A5198CBA527CD932840E12D437D2" />
             <ComponentRef Id="cmpE5773F19F0801AE5EE34C3F93BB2D943" />
+            <ComponentRef Id="cmp70BF7D3BAB119F4BEF01CEC586748F8C" />
             <ComponentRef Id="cmpA2F15C4B0B70033E1CCDE94F07EB7951" />
             <ComponentRef Id="cmpF9D6A4DE6A98737AC09D75CCE57F38E7" />
             <ComponentRef Id="cmp2FF12380B07F1370822E7D718420ED54" />
@@ -4666,6 +4690,7 @@
             <ComponentRef Id="cmpF7E32AE94E7C1EAE5ABAEAA1DD109FB1" />
             <ComponentRef Id="cmp08568DD96E55FBAA42339FE5E03A54DE" />
             <ComponentRef Id="cmp8A193E307C99D2FD3B01D6EE274E64F2" />
+            <ComponentRef Id="cmp755BD48B11ADAB085A156C4CC04C7F1E" />
             <ComponentRef Id="cmp412783814FA08C52F9D7789F88414F42" />
             <ComponentRef Id="cmpC65B32896EB75F844DDCB5EA14D1DE62" />
             <ComponentRef Id="cmpF82C208B19C6A44C009430727F6DD037" />
@@ -5888,6 +5913,7 @@
             <ComponentRef Id="cmp01BAAD2C47CC2589EB01E9C273459450" />
             <ComponentRef Id="cmpBB1A395B4AC609B9B3E81845AA25E0FF" />
             <ComponentRef Id="cmp89E1AEA3C349C1E2F582FF2F8F31D420" />
+            <ComponentRef Id="cmp02B71236028213C301DF442CCCD76763" />
             <ComponentRef Id="cmpA466A2B048DC61E06171D096CBDDEC02" />
             <ComponentRef Id="cmpE02AA471BE60D304A263F1344CC00840" />
             <ComponentRef Id="cmp73B50374572FC0E9715DC41617250464" />
@@ -5919,6 +5945,7 @@
             <ComponentRef Id="cmpD52934463B3058E97CA0F816C5BE2784" />
             <ComponentRef Id="cmp59C1AF38179F0401D56B6149279A915F" />
             <ComponentRef Id="cmpFCF664996E952F5290C273F1ACEFF953" />
+            <ComponentRef Id="cmp2CF0576D4A9EAF37D4FFE824F32EBEA4" />
             <ComponentRef Id="cmp8B33084DF0DBCC14DE2FCA8AE0716626" />
             <ComponentRef Id="cmp1EB3E4751AF79A2D453EB3DAFCBA02EE" />
             <ComponentRef Id="cmp29DA8C91613440EED851C8EAC1EA7DAE" />
@@ -5928,6 +5955,7 @@
             <ComponentRef Id="cmpC3BD2195968A4B6727AD7E5374A73DE7" />
             <ComponentRef Id="cmp13B6C897B0844BEF1E6F2E879D413041" />
             <ComponentRef Id="cmp0BA3C629CF9AD12C48269A74F763DA4B" />
+            <ComponentRef Id="cmp70A7805E158DEC3B216D162FC7E0D23B" />
             <ComponentRef Id="cmpF9E5E9097EBC0012EC28CE20ECF87DD7" />
             <ComponentRef Id="cmp366D6E9F2BA9E57900BD286F5322373A" />
             <ComponentRef Id="cmpF5E50300B9DC12B995F89507F98E4EC3" />
