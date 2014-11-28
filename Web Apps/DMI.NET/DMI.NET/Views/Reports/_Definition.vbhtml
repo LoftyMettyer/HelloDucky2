@@ -245,7 +245,8 @@
 		var bViewAccessEnabled = true;
 		var list;
 
-		$('#tblGroupAccess').find('*').each(function () { $(this).removeAttr("disabled"); })
+		$(".reportViewAccessGroup").removeAttr('disabled');
+		$("#drpSetAllSecurityGroups").removeAttr('disabled');
 
 		if ($("#BaseViewAccess").val() == 'HD') { bViewAccessEnabled = false; }
 		if ($("#Parent1ViewAccess").val() == 'HD') { bViewAccessEnabled = false; }
@@ -268,7 +269,8 @@
 
 		if (!bViewAccessEnabled) {
 			$("#IsForcedHidden").val(true);			
-			$('#tblGroupAccess').find('*').each(function () { $(this).attr("disabled", "disabled"); })
+			$(".reportViewAccessGroup").attr('disabled', 'disabled');
+			$("#drpSetAllSecurityGroups").attr('disabled', 'disabled');
 		}
 	}
 
@@ -661,7 +663,8 @@
 		$('#txtSOAAS').val(JSON.stringify(gridData));
 
 		var $form = $("#frmReportDefintion");		
-		$('#tblGroupAccess').find('*').each(function () { $(this).removeAttr("disabled"); })
+		$(".reportViewAccessGroup").removeAttr('disabled');
+		$("#drpSetAllSecurityGroups").removeAttr('disabled');
 
 		$.ajax({
 			url: $form.attr("action"),
@@ -699,7 +702,8 @@
 
 	function submitReportDefinition() {
 		$("#ValidityStatus").val('ServerCheckComplete');		
-		$('#tblGroupAccess').find('*').each(function () { $(this).removeAttr("disabled"); })
+		$(".reportViewAccessGroup").removeAttr('disabled');
+		$("#drpSetAllSecurityGroups").removeAttr('disabled');
 		var frmSubmit = $("#frmReportDefintion")[0];
 		OpenHR.submitForm(frmSubmit);
 	}
