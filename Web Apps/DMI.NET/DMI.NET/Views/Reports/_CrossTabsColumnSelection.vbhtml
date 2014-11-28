@@ -149,7 +149,7 @@
 		var dropDown = $("#IntersectionID")[0];
 		var iDataType = dropDown.options[dropDown.selectedIndex].attributes["data-datatype"].value;
 		combo_disable($("#IntersectionType"), (iDataType == "0") || bReadOnly);
-		$('#IntersectionType').find('option:first').attr('selected', 'selected');
+		$("#IntersectionType")[0].selectedIndex = 0;
 		refreshTab2Controls();
 
 	}
