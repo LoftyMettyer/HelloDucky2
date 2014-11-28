@@ -87,12 +87,12 @@ Namespace Models
 		''' <summary>
 		''' Gets OR Sets the custom start date id
 		''' </summary>
-		Public Property StartDateId As Int32
+		Public Property StartDateId As Integer
 
 		''' <summary>
 		''' Gets OR Sets the custom end date id
 		''' </summary>
-		Public Property EndDateId As Int32
+		Public Property EndDateId As Integer
 
 		''' <summary>
 		''' Gets OR Sets the value of end date
@@ -162,7 +162,7 @@ Namespace Models
 		''' </summary>
 		''' <param name="reportType">The report type</param>
 		''' <remarks></remarks>
-		Public Sub New(ByVal reportType As UtilityType)
+		Public Sub New(reportType As UtilityType)
 			Me.ReportType = reportType
 		End Sub
 

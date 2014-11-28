@@ -24,7 +24,7 @@ Public Class StandardReport
 		Return isValid
 	End Function
 
-	Public Function GetPicklistFilterName(ByRef psReportType As String, ByRef pstrType As String, plngId As Int32) As String
+	Public Function GetPicklistFilterName(pstrType As String, plngId As Integer) As String
 
 		Dim strRecSelStatus As String
 		Dim strName As String

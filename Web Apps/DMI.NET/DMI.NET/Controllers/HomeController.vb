@@ -5630,14 +5630,14 @@ Namespace Controllers
 					Case "P"
 						objModel.SelectionType = RecordSelectionType.Picklist
 						objModel.PicklistId = objDatabase.GetSystemSetting(strReportType, "ID", "0")
-						objModel.PicklistName = standardReportSettings.GetPicklistFilterName(strReportType, strType, objModel.PicklistId)
+						objModel.PicklistName = standardReportSettings.GetPicklistFilterName(strType, objModel.PicklistId)
 						If (objModel.PicklistName Is Nothing) Then
 							objModel.PicklistName = "None"
 						End If
 					Case "F"
 						objModel.SelectionType = RecordSelectionType.Filter
 						objModel.FilterId = objDatabase.GetSystemSetting(strReportType, "ID", "0")
-						objModel.FilterName = standardReportSettings.GetPicklistFilterName(strReportType, strType, objModel.FilterId)
+						objModel.FilterName = standardReportSettings.GetPicklistFilterName(strType, objModel.FilterId)
 						If (objModel.FilterName Is Nothing) Then
 							objModel.FilterName = "None"
 						End If

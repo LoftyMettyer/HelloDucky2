@@ -230,7 +230,6 @@ End Code
 			$("#tblAbsenceTypes").jqGrid({
 				datatype: 'jsonstring',
 				datastr: '@Model.AbsenceTypes.ToJsonResult',
-				"mtype" : "POST",
 				jsonReader: {
 					root: "rows", //array containing actual data
 					page: "page", //current page
@@ -348,15 +347,15 @@ End Code
 			var flagOk = true;
 			if ($("#CustomEndDate").val().toLowerCase() == "true") {
 				if ($("#txtStartDateCalcId").val() == "0" && $("#txtEndDateCalcId").val() == "0") {
-					alert("You must select Start and End Date calculation");
+					OpenHR.modalPrompt("You must select Start and End Date calculation");
 					flagOk = false;
 				}
 				else if ($("#txtStartDateCalcId").val() != "0" && $("#txtEndDateCalcId").val() == "0") {
-					alert("You must select an End Date calculation");
+					OpenHR.modalPrompt("You must select an End Date calculation");
 					flagOk = false;
 				}
 				else if ($("#txtStartDateCalcId").val() == "0" && $("#txtEndDateCalcId").val() != "0") {
-					alert("You must select Start Date calculation");
+					OpenHR.modalPrompt("You must select Start Date calculation");
 					flagOk = false;
 				}
 			}
