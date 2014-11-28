@@ -289,6 +289,8 @@
 		selectGridTopRow($('#ChildTables'));
 		selectGridTopRow($('#SelectedColumns'));
 		selectGridTopRow($('#SortOrders'));
+
+		enableSaveButton();
 	}
 
 
