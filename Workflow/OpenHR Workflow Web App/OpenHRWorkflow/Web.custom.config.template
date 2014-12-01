@@ -8,7 +8,6 @@
   <add key="PhotographFolder" />
   <add key="SubmissionTimeout" value="120" />
   <add key="LookupRowsRange" value="100" />
-  <add key="WorkflowURL" value=""/>
   <add key="DefaultActiveDirectoryServer" value="" />
   <add key="TabletBackColour" value="lightgray"/>
 </appSettings>
