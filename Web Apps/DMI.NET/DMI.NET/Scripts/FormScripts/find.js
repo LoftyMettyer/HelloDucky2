@@ -104,6 +104,7 @@ function find_window_onload() {
 							var ColumnSpinnerMinimum = parseInt(dataCollection.item(i).getAttribute("data-spinnerminimum"));
 							var ColumnSpinnerMaximum = parseInt(dataCollection.item(i).getAttribute("data-spinnermaximum"));
 							var ColumnSpinnerIncrement = parseInt(dataCollection.item(i).getAttribute("data-spinnerincrement"));
+							var ColumnCSSClass = sColumnEditable == true ? "" : "ui-state-disabled";
 
 							if (sColumnEditable == true) {
 								thereIsAtLeastOneEditableColumn = true;
@@ -133,6 +134,7 @@ function find_window_onload() {
 										edittype: 'checkbox',
 										formatter: 'checkbox',
 										editable: sColumnEditable,
+										classes: ColumnCSSClass,
 										formatoptions: {
 											disabled: true,
 											defaultValue: getDefaultValueForColumn(iColumnId, "checkbox")
@@ -149,6 +151,7 @@ function find_window_onload() {
 											sorttype: 'integer',
 											formatter: 'numeric',
 											editable: sColumnEditable,
+											classes: ColumnCSSClass,
 											align: 'right',
 											width: 100,
 											editoptions: {
@@ -160,6 +163,7 @@ function find_window_onload() {
 											name: sColumnName,
 											id: iColumnId,
 											editable: sColumnEditable,
+											classes: ColumnCSSClass,
 											type: 'spinner',
 											editoptions: {
 												size: 10,
@@ -196,6 +200,7 @@ function find_window_onload() {
 										align: 'left',
 										width: 100,
 										editable: sColumnEditable,
+										classes: ColumnCSSClass,
 										type: "date",
 										editoptions: {
 											size: 20,
@@ -215,6 +220,7 @@ function find_window_onload() {
 										edittype: "textarea",
 										id: iColumnId,
 										editable: sColumnEditable,
+										classes: ColumnCSSClass,
 										type: 'textarea',
 										editoptions: {
 											dataInit: function (element) { },
@@ -227,6 +233,7 @@ function find_window_onload() {
 										name: sColumnName,
 										id: iColumnId,
 										editable: sColumnEditable,
+										classes: ColumnCSSClass,
 										type: "lookup",
 										editoptions: {
 											dataInit: function (element) {
@@ -245,6 +252,7 @@ function find_window_onload() {
 										edittype: "select",
 										id: iColumnId,
 										editable: sColumnEditable,
+										classes: ColumnCSSClass,
 										type: "select",
 										editoptions: {
 											value: getValuesForColumn(iColumnId), //This populates the <select>
@@ -256,6 +264,7 @@ function find_window_onload() {
 										name: sColumnName,
 										id: iColumnId,
 										editable: sColumnEditable,
+										classes: ColumnCSSClass,
 										type: "navigation",
 										formatter: hyperLinkFormatter,
 										unformat: hyperLinkDeformatter,
@@ -269,6 +278,7 @@ function find_window_onload() {
 										name: sColumnName,
 										id: iColumnId,
 										editable: false, //Hardcoded to false, see Notes on TFS 12732 for reason why
+										classes: ColumnCSSClass,
 										type: "workingpattern",
 										formatter: workingPatternFormatter,
 										unformat: workingPatternDeformatter,
@@ -282,6 +292,7 @@ function find_window_onload() {
 										id: iColumnId,
 										width: 100,
 										editable: sColumnEditable,
+										classes: ColumnCSSClass,
 										type: 'other',
 										editoptions: {
 											size: "20",

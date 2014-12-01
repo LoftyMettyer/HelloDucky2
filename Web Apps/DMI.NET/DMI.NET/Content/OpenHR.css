@@ -52,7 +52,7 @@ div.COAwallpapered
 									
 .logintext {
 	font-family: Verdana;
-	color: #333366;
+	color: red;
 	font-size: 8pt;
 	font-weight: normal;
 	font-style: normal;
@@ -1505,4 +1505,8 @@ overflow-x : hidden !important;
 
 .toolbarButtonOn {
 	background: #d0e5f5 url("images/ui-bg_glass_75_d0e5f5_1x400.png") 50% 50% repeat-x !important;
+}
+
+.nonEditableColumn {
+	color: fuchsia
 }
