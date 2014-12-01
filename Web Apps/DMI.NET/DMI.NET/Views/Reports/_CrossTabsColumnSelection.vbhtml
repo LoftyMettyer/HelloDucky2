@@ -163,7 +163,7 @@
 
 		var iDataType = target.options[target.selectedIndex].attributes["data-datatype"].value;
 		var iDecimals = target.options[target.selectedIndex].attributes["data-decimals"].value;
-
+		
 		$("#" + type + "DataType").val(iDataType);
 		switch (iDataType) {
 			case "2":
@@ -180,20 +180,24 @@
 
 			default:
 				$("#" + type + "Start").attr("disabled", "disabled");
-				$("#" + type + "Start").val(0);
+				$("#" + type + "Start").val("");
 				$("#" + type + "Stop").attr("disabled", "disabled");
-				$("#" + type + "Stop").val(0);
+				$("#" + type + "Stop").val("");
 				$("#" + type + "Increment").attr("disabled", "disabled");
-				$("#" + type + "Increment").val(0);
+				$("#" + type + "Increment").val("");
 		}
 
 		$("#" + type + "Start").autoNumeric('destroy');
 		$("#" + type + "Stop").autoNumeric('destroy');
 		$("#" + type + "Increment").autoNumeric('destroy');
-
-		$("#" + type + "Start").autoNumeric({ aSep: '', aNeg: '', mDec: iDecimals, mRound: 'S', mNum: 10, vMin: -999999999.99 });
-		$("#" + type + "Stop").autoNumeric({ aSep: '', aNeg: '', mDec: iDecimals, mRound: 'S', mNum: 10, vMin: -999999999.99 });
-		$("#" + type + "Increment").autoNumeric({ aSep: '', aNeg: '', mDec: iDecimals, mRound: 'S', mNum: 10, vMin: -999999999.99 });
+        
+	    // Use autoNumeric formatting only for interger and float value
+		if (iDataType == 2 || iDataType == 4)
+		{
+		    $("#" + type + "Start").autoNumeric({ aSep: '', aNeg: '', mDec: iDecimals, mRound: 'S', mNum: 10, vMin: -999999999.99 });
+		    $("#" + type + "Stop").autoNumeric({ aSep: '', aNeg: '', mDec: iDecimals, mRound: 'S', mNum: 10, vMin: -999999999.99 });
+		    $("#" + type + "Increment").autoNumeric({ aSep: '', aNeg: '', mDec: iDecimals, mRound: 'S', mNum: 10, vMin: -999999999.99 });
+		}
 
 	}
 
