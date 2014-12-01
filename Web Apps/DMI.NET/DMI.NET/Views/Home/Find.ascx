@@ -13,6 +13,7 @@
 	Dim resultDataSet As DataSet
 	Dim rstFindDefinition As DataTable
 	Dim rstFindRecords As DataTable
+	Dim rstOriginalColumns As DataTable
 	Dim resultsDataTable As DataTable
 %>
 <script src="<%: Url.LatestContent("~/bundles/recordedit")%>" type="text/javascript"></script>
@@ -228,7 +229,33 @@
 
 								rstFindRecords = resultDataSet.Tables(1) 'Get the actual data
 								rstFindDefinition = resultDataSet.Tables(2)	'Get the columns information
+								rstOriginalColumns = resultDataSet.Tables(3) 'Get the original columns information
 								
+								'We need this to fettle the columns information table
+								rstFindDefinition.Columns.Add("columnNameOriginal", GetType(String))
+								
+								For Each r As DataRow In rstFindDefinition.Rows
+									r("columnNameOriginal") = r("columnName")
+								Next
+								
+								Dim lastColumnName As String = ""
+								Dim ColumnNameCounter As Short = 1
+								For Each r As DataRow In rstOriginalColumns.Rows
+									If r("columnName") = lastColumnName Then
+										lastColumnName = r("columnName")
+										r("columnName") = r("columnName") & ColumnNameCounter
+										ColumnNameCounter += 1
+
+										'Rename the columns
+										For Each r1 In rstFindDefinition.Select("columnID = " & r("ColumnID"))
+											r1("columnName") = r("columnName")
+										Next
+									Else
+										ColumnNameCounter = 1
+										lastColumnName = r("columnName")
+									End If
+								Next
+
 								' Instantiate and initialise the grid. 
 								Response.Write("<table class='outline' style='width : 100%; ' id='findGridTable'>" & vbCrLf)
 								Response.Write("<div id='pager-coldata'></div>" & vbCrLf)
@@ -243,14 +270,15 @@
 										End If
 							
 										If iCount = 0 Then
-											sColDef = Replace(rstFindRecords.Columns(iloop).ColumnName, "_", " ") & "	" & rstFindRecords.Columns(iloop).DataType.ToString.Replace("System.", "")
 											If (rstFindRecords.Columns(iloop).ColumnName = "ID" OrElse rstFindRecords.Columns(iloop).ColumnName = "Timestamp") Then
+												sColDef = Replace(rstFindRecords.Columns(iloop).ColumnName, "_", " ") & "	" & rstFindRecords.Columns(iloop).DataType.ToString.Replace("System.", "")
 												Response.Write(String.Format("<input type='hidden' id=txtFindColDef_{0} name=txtFindColDef_{0} value='{1}' data-colname='{2}' data-type='{3}'>" _
 														 , iloop, sColDef, rstFindRecords.Columns(iloop).ColumnName, "integer") & vbCrLf)
 											Else
 												Dim objRow = rstFindDefinition.Select("ColumnName='" & rstFindRecords.Columns(iloop).ColumnName & "'")
+												sColDef = Replace(objRow.FirstOrDefault.Item("columnNameOriginal"), "_", " ") & "	" & rstFindRecords.Columns(iloop).DataType.ToString.Replace("System.", "")
 												Response.Write(String.Format("<input type='hidden' id='txtFindColDef_{0}' name='txtFindColDef_{0}' value='{1}' data-colname='{2}' data-datatype='{3}' data-columnid='{4}' data-editable='{5}' data-controltype='{6}' data-size='{7}' data-decimals='{8}' data-lookuptableid='{9}' data-lookupcolumnid='{10}' data-spinnerminimum='{11}' data-spinnermaximum='{12}' data-spinnerincrement='{13}'>" _
-														 , iloop, sColDef, rstFindRecords.Columns(iloop).ColumnName, _
+														 , iloop, sColDef, objRow.FirstOrDefault.Item("columnNameOriginal"), _
 														 objRow.FirstOrDefault.Item("datatype"), _
 														 objRow.FirstOrDefault.Item("columnID"), _
 														 objRow.FirstOrDefault.Item("updateGranted"), _

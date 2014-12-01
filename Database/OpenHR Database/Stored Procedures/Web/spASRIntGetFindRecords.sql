@@ -105,7 +105,8 @@ BEGIN
 									, DefaultValue varchar(max)
 									)
 
-	
+	DECLARE @OriginalColumns TABLE(columnID integer, columnName nvarchar(255))
+
 	/* Clean the input string parameters. */
 	IF len(@psLocateValue) > 0 SET @psLocateValue = replace(@psLocateValue, '''', '''''');
 	/* Initialise variables. */
@@ -574,7 +575,7 @@ BEGIN
 			c.decimals,
 			c.Use1000Separator,
 			c.BlankIfZero,
-			ISNULL(o.Editable, 0),
+			CASE WHEN ISNULL(o.Editable, 0) = 0 OR ISNULL(c.readonly, 1) = 1 THEN 0 ELSE 1 END,
 			ISNULL(c.LookupTableID, 0) AS LookupTableID,
 			ISNULL(c.LookupColumnID, 0) AS LookupColumnID,
 			ISNULL(c.LookupFilterColumnID, 0) AS LookupFilterColumnID,
@@ -630,6 +631,7 @@ BEGIN
 						@sRealSource + '.' + @sColumnName;
 
 					SET @sSelectSQL = @sSelectSQL + @sTempString;
+					INSERT INTO @OriginalColumns VALUES(@iColumnID, @sColumnName)
 					SET @sThousandColumns = @sThousandColumns + convert(varchar(1),@bUse1000Separator);
 					SET @sBlankIfZeroColumns = @sBlankIfZeroColumns + convert(varchar(1),@bBlankIfZero);
 					
@@ -713,6 +715,7 @@ BEGIN
 							ELSE '' 
 						END + @sColumnTableName + '.' + @sColumnName;
 					SET @sSelectSQL = @sSelectSQL + @sTempString;
+					INSERT INTO @OriginalColumns VALUES(@iColumnID, @sColumnName)
 				END
 				ELSE
 				BEGIN
@@ -803,6 +806,7 @@ BEGIN
 							
 						SET @sTempString = ' AS [' + @sColumnName + ']';
 						SET @sSelectSQL = @sSelectSQL + @sTempString;
+						INSERT INTO @OriginalColumns VALUES(@iColumnID, @sColumnName)
 						
 					END
 					ELSE
@@ -906,6 +910,8 @@ BEGIN
 	BEGIN
 		SET @sTempString = ',' + @sRealSource + '.ID, CONVERT(int, ' + @sRealSource + '.Timestamp) AS [Timestamp]';
 		SET @sSelectSQL = @sSelectSQL + @sTempString;
+		INSERT INTO @OriginalColumns VALUES(0, 'ID') -- We don't need the ID
+		INSERT INTO @OriginalColumns VALUES(0, 'Timestamp') -- We don't need the ID
 
 		SET @sExecString = 'SELECT ' 
 		IF @psAction = 'MOVEFIRST' OR @psAction = 'LOCATE' 
@@ -1437,14 +1443,20 @@ BEGIN
 
 		EXECUTE sp_executeSQL @sExecString;
 
+		DECLARE @IsSingleTable bit = 1;
+
+       SELECT @IsSingleTable = CASE WHEN COUNT(DISTINCT tableID) = 1 THEN 1 ELSE 0 END
+       FROM @FindDefinition;
+
 		SELECT f.tableID, f.columnID, f.columnName, f.ascending, f.type, f.datatype, f.controltype, f.size, f.decimals, f.Use1000Separator, f.BlankIfZero
-			 , CASE WHEN f.Editable = 1 AND p.updateGranted = 1 THEN 1 ELSE 0 END AS updateGranted
+			 , CASE WHEN f.Editable = 1 AND p.updateGranted = 1 THEN @IsSingleTable ELSE 0 END AS updateGranted
 			 , LookupTableID, LookupColumnID, LookupFilterColumnID, LookupFilterValueID
 			 ,SpinnerMinimum, SpinnerMaximum, SpinnerIncrement, DefaultValue
 			FROM @FindDefinition f
 				INNER JOIN @ColumnPermissions p ON p.columnName = f.columnName
 			WHERE f.[type] = 'F';
 
+		SELECT columnID, columnName FROM @OriginalColumns ORDER BY columnName
 	END
 
 END
