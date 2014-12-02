@@ -447,7 +447,13 @@ Public Module ASRIntranetFunctions
 			val1 = Value.Substring(0, Value.IndexOf(" - "))
 			val2 = Value.Substring(Value.IndexOf(" - ") + 3)
 		ElseIf Value.Contains(".") Then	'Single value, round up and return
-			Return Decimal.Round(CDec(Value), 2).ToString()
+
+			'If value is convertable to decimal then only convert it to two decimal (such as 12.50, 23,456.50) otherwise return as it is (such as I.T.,  > 20.10 , < 12.54)
+			If Decimal.TryParse(Value, 2) Then
+				Return Decimal.Round(CDec(Value), 2).ToString()
+			Else
+				Return Value
+			End If
 		Else 'Single value, no round up necessary, return
 			Return Value
 		End If
