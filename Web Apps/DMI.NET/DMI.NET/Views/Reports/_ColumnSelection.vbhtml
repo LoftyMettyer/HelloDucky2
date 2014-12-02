@@ -11,7 +11,7 @@
 
 	<div class="tablerow">
 		<fieldset id="selectedTable">
-			<legend class="fontsmalltitle width100">Base Table :</legend>
+			<legend class="fontsmalltitle width100">Table(s) :</legend>
 			<select name="SelectedTableID" id="SelectedTableID" class="enableSaveButtonOnComboChange" onchange="getAvailableTableColumnsCalcs();"></select>
 			<br />
 			@Html.RadioButton("columnSelectiontype", CInt(ColumnSelectionType.Columns), True,
