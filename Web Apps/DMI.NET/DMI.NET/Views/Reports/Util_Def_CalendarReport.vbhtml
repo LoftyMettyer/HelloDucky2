@@ -32,14 +32,14 @@ End Code
 				<fieldset>
 					@Html.LabelFor(Function(m) m.Description1ID)
 					<div class="width70 floatright">
-						@Html.ColumnDropdownFor(Function(m) m.Description1ID, New ColumnFilter() With {.TableID = Model.BaseTableID, .AddNone = True}, Nothing)
+						@Html.ColumnDropdownFor(Function(m) m.Description1ID, New ColumnFilter() With {.TableID = Model.BaseTableID, .AddNone = True}, New With {.class = "enableSaveButtonOnComboChange"})
 					</div> 
 				</fieldset>
 
 				<fieldset>
 					@Html.LabelFor(Function(m) m.Description2ID)
 					<div class="width70 floatright">
-					@Html.ColumnDropdownFor(Function(m) m.Description2ID, New ColumnFilter() With {.TableID = Model.BaseTableID, .AddNone = True}, Nothing)
+					@Html.ColumnDropdownFor(Function(m) m.Description2ID, New ColumnFilter() With {.TableID = Model.BaseTableID, .AddNone = True}, New With {.class = "enableSaveButtonOnComboChange"})
 					</div>
 				</fieldset>
 
@@ -61,14 +61,14 @@ End Code
 				<fieldset>
 						@Html.LabelFor(Function(m) m.RegionID)
 					<div class="width70 floatright">
-						@Html.ColumnDropdownFor(Function(m) m.RegionID, New ColumnFilter() With {.TableID = Model.BaseTableID, .AddNone = True, .DataType = ColumnDataType.sqlVarChar}, New With {.id = "cboRegionID", .class="width100 floatright"})
+						@Html.ColumnDropdownFor(Function(m) m.RegionID, New ColumnFilter() With {.TableID = Model.BaseTableID, .AddNone = True, .DataType = ColumnDataType.sqlVarChar}, New With {.id = "cboRegionID", .class = "width100 floatright enableSaveButtonOnComboChange"})
 					</div>
 				</fieldset>
 
 				<fieldset>
 					@Html.LabelFor(Function(m) m.Separator)
 					<div class="width70 floatright">
-						@Html.DropDownList("Separator", New SelectList(New List(Of String)() From {"None", "Space", ",", ".", "-", ":", ";", "/", "\", "#", "~", "^"}))
+						@Html.DropDownList("Separator", New SelectList(New List(Of String)() From {"None", "Space", ",", ".", "-", ":", ";", "/", "\", "#", "~", "^"}), New With {.class = "enableSaveButtonOnComboChange"})
 						@Html.CheckBoxFor(Function(m) m.GroupByDescription, New With {.id = "chkGroupByDescription", .onclick = "selectGroupByDescription()"})
 						@Html.LabelFor(Function(m) m.GroupByDescription)
 					</div>
@@ -133,6 +133,7 @@ End Code
 				$("#Description3ID").val(id);
 				$("#txtDescription3").val(name);
 				setViewAccess('CALC', $("#Description3ViewAccess"), access, "report description");
+				enableSaveButton();
 			}
 		}, 400, 400);
 

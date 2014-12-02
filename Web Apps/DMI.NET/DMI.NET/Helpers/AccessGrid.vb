@@ -76,9 +76,9 @@ Namespace Helpers
 			Else
 				If name = "drpSetAllSecurityGroups" Then
 					' cater for unselected option
-					sb.AppendFormat("<td><select style='width:95%' onchange='setAllSecurityGroups();' id='drpSetAllSecurityGroups' class='floatright' name='drpSetAllSecurityGroups'><option selected value=''></option><option value='RW'>Read / Write</option><option value='RO'>Read Only</option><option value='HD'>Hidden</option></select></td>")
+					sb.AppendFormat("<td><select style='width:95%' onchange='setAllSecurityGroups();' id='drpSetAllSecurityGroups' class='floatright enableSaveButtonOnComboChange' name='drpSetAllSecurityGroups'><option selected value=''></option><option value='RW'>Read / Write</option><option value='RO'>Read Only</option><option value='HD'>Hidden</option></select></td>")
 				Else
-					sb.AppendFormat("<td><select style='width:95%'  class='reportViewAccessGroup floatright' name='{0}.Access'><option {1} value='RW'>Read / Write</option><option {2} value='RO'>Read Only</option><option {3} value='HD'>Hidden</option></select></td>" _
+					sb.AppendFormat("<td><select style='width:95%'  class='reportViewAccessGroup floatright enableSaveButtonOnComboChange' name='{0}.Access'><option {1} value='RW'>Read / Write</option><option {2} value='RO'>Read Only</option><option {3} value='HD'>Hidden</option></select></td>" _
 						, sName, IIf(iSelected = 0, strSelected, ""), IIf(iSelected = 1, strSelected, ""), IIf(iSelected = 2, strSelected, ""))
 
 				End If

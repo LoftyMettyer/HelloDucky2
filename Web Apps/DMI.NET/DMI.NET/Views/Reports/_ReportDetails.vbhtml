@@ -30,7 +30,7 @@
 				<span>Offset</span>
 			</div>
 			@Html.TextBoxFor(Function(m) m.StartOffset, New With {.id = "StartOffset", .class = "spinner"})
-			@Html.EnumDropDownListFor(Function(m) m.StartOffsetPeriod, New With {.id = "StartOffsetPeriod"})
+			@Html.EnumDropDownListFor(Function(m) m.StartOffsetPeriod, New With {.id = "StartOffsetPeriod", .class = "enableSaveButtonOnComboChange"})
 		</div>
 
 		<div class="width100 ">
@@ -72,7 +72,7 @@
 				<span>Offset</span>
 			</div>
 			@Html.TextBoxFor(Function(m) m.EndOffset, New With {.id = "EndOffset", .class = "spinner"})
-			@Html.EnumDropDownListFor(Function(m) m.EndOffsetPeriod, New With {.id = "EndOffsetPeriod"})
+			@Html.EnumDropDownListFor(Function(m) m.EndOffsetPeriod, New With {.id = "EndOffsetPeriod", .class = "enableSaveButtonOnComboChange"})
 		</div>
 
 		<div class="width100 ">

@@ -541,6 +541,8 @@
 			refreshCrossTabColumnsAvailable();
 		}
 
+		// Enables save button
+		enableSaveButton();
 	}
 
 	//This function will be used to select the first row of provided grid control

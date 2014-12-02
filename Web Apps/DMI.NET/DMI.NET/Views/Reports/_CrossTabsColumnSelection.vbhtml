@@ -21,7 +21,7 @@
 			<tr>
 				<td style="padding-right: 20px;">Horizontal :</td>
 				<td>
-					@Html.ColumnDropdownFor(Function(m) m.HorizontalID, New ColumnFilter() With {.TableID = Model.BaseTableID}, New With {.onchange = "crossTabHorizontalChange()"})
+					@Html.ColumnDropdownFor(Function(m) m.HorizontalID, New ColumnFilter() With {.TableID = Model.BaseTableID}, New With {.onchange = "crossTabHorizontalChange()", .class = "enableSaveButtonOnComboChange"})
 					@Html.ValidationMessageFor(Function(m) m.HorizontalID)
 					@Html.Hidden("HorizontalDataType", CInt(Model.HorizontalDataType))
 				</td>
@@ -33,7 +33,7 @@
 			<tr>
 				<td>Vertical :</td>
 				<td>
-					@Html.ColumnDropdownFor(Function(m) m.VerticalID, New ColumnFilter() With {.TableID = Model.BaseTableID}, New With {.onchange = "crossTabVerticalChange()"})
+					@Html.ColumnDropdownFor(Function(m) m.VerticalID, New ColumnFilter() With {.TableID = Model.BaseTableID}, New With {.onchange = "crossTabVerticalChange()", .class = "enableSaveButtonOnComboChange"})
 					@Html.ValidationMessageFor(Function(m) m.VerticalID)
 					@Html.Hidden("VerticalDataType", CInt(Model.VerticalDataType))
 				</td>
@@ -45,7 +45,7 @@
 			<tr>
 				<td>Page Break :</td>
 				<td>
-					@Html.ColumnDropdownFor(Function(m) m.PageBreakID, New ColumnFilter() With {.TableID = Model.BaseTableID, .AddNone = True}, New With {.onchange = "crossTabPageBreakChange()"})
+					@Html.ColumnDropdownFor(Function(m) m.PageBreakID, New ColumnFilter() With {.TableID = Model.BaseTableID, .AddNone = True}, New With {.onchange = "crossTabPageBreakChange()", .class = "enableSaveButtonOnComboChange"})
 					@Html.Hidden("PageBreakDataType", CInt(Model.PageBreakDataType))
 				</td>
 				<td class="startstopincrementcol">@Html.TextBoxFor(Function(m) m.PageBreakStart, New With {.class = "selectFullText"})</td>
@@ -60,7 +60,7 @@
 			<tr>
 				<td>Column :</td>
 				<td colspan="1">
-					@Html.ColumnDropdownFor(Function(m) m.IntersectionID, New ColumnFilter() With {.TableID = Model.BaseTableID, .AddNone = True, .IsNumeric = True}, New With {.onchange = "crossTabIntersectionType();"})
+					@Html.ColumnDropdownFor(Function(m) m.IntersectionID, New ColumnFilter() With {.TableID = Model.BaseTableID, .AddNone = True, .IsNumeric = True}, New With {.onchange = "crossTabIntersectionType();", .class = "enableSaveButtonOnComboChange"})
 				</td>
 				<td colspan="3" rowspan="4" style="padding-left:20px;vertical-align:top ">
 					@Html.CheckBox("PercentageOfType", Model.PercentageOfType)
@@ -80,7 +80,7 @@
 			<tr>
 				<td>@Html.LabelFor(Function(m) m.IntersectionType)</td>
 				<td colspan="1">
-					@Html.EnumDropDownListFor(Function(m) m.IntersectionType)
+					@Html.EnumDropDownListFor(Function(m) m.IntersectionType, New With {.class = "enableSaveButtonOnComboChange"})
 				</td>
 			</tr>
 			<tr style="height:60px;"></tr>
