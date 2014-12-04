@@ -1307,6 +1307,97 @@
 			}
 		}
 		catch (e) { }
+	},
+	gridSelectTopRow = function (grid) {
+		var ids = grid.getDataIDs();
+		grid.jqGrid("setSelection", ids[0], true);
+	},
+	gridSelectLastRow = function (grid) {
+		grid.jqGrid('resetSelection');
+		var rowCount = grid.getGridParam("reccount");
+		var ids = grid.getDataIDs();		
+		grid.jqGrid("setSelection", ids[rowCount - 1], true);
+	},
+	gridPageDown = function (grid) {
+		//skips 18 rows at a time
+		var rowid = grid.jqGrid('getGridParam', 'selrow');
+		var rowNumber = grid.jqGrid('getInd', rowid) - 1; // zero based 
+		var rowCount = grid.getGridParam("reccount");
+		var ids = grid.getDataIDs();
+		if ((rowNumber + 18) >= rowCount) { gridSelectLastRow(grid); }
+		else { grid.jqGrid("setSelection", ids[rowNumber + 18], true); }
+	},
+	gridPageUp = function (grid) {
+		//skips 18 rows at a time
+		var rowid = grid.jqGrid('getGridParam', 'selrow');
+		var rowNumber = grid.jqGrid('getInd', rowid) - 1; // zero based 
+		var ids = grid.getDataIDs();
+		if ((rowNumber - 18) < 0) { gridSelectTopRow(grid); }
+		else { grid.jqGrid("setSelection", ids[rowNumber - 18], true); }
+	},
+	gridKeyboardEvent = function(keyPressed, grid) {
+		
+		if ((keyPressed != 40) && (keyPressed != 38) && (keyPressed != 13) && (keyPressed != 32) && (keyPressed != 33) && (keyPressed != 34) && (keyPressed != 35) && (keyPressed != 36)) {
+			//Character search
+			try {
+				var gridID = $(grid).attr('id');
+				var id = $('#' + gridID + ' td:visible').filter(function () {
+					return $(this).text().substring(0, 1).toLowerCase() == String.fromCharCode(event.which).toLowerCase();
+				}).first().closest('tr').attr('id');
+				if (Number(id) > 0)
+					grid.jqGrid('resetSelection');
+					grid.jqGrid('setSelection', id);
+			}
+			catch (e) { }
+		}
+		else {
+
+			//Get the current rowId
+			if ((grid.getGridParam("records") > 0) && (grid.jqGrid('getGridParam', 'selrow') != null)) {
+
+				var rowid = grid.jqGrid('getGridParam', 'selrow');
+
+				//Get the current row number
+				var rowNumber = grid.jqGrid('getInd', rowid) - 1; // zero based 
+				var rowCount = grid.getGridParam("reccount");
+				var ids = grid.getDataIDs();
+				grid.jqGrid('resetSelection');
+
+				//up arrow, down arrow, Enter, spacebar, home, end, pgup and pgdn.
+				switch (keyPressed) {
+					case 40:
+						//Down arrow
+						if ((rowNumber + 1) == rowCount) { OpenHR.gridSelectLastRow(grid); }
+						else { grid.jqGrid("setSelection", ids[rowNumber + 1], true); }
+						break;
+					case 38:
+						//Up arrow
+						if (rowNumber == 0) { OpenHR.gridSelectTopRow(grid); }
+						else { grid.jqGrid("setSelection", ids[rowNumber - 1], true); }
+						break;
+					case 33:
+						//Page Up
+						OpenHR.gridPageUp(grid);
+						break;
+					case 34:
+						//Page Down
+						OpenHR.gridPageDown(grid);
+						break;
+					case 35:
+						//End
+						OpenHR.gridSelectLastRow(grid);
+						break;
+					case 36:
+						//Home
+						OpenHR.gridSelectTopRow(grid);
+						break;
+
+				}
+			}
+			else { alert('nothing selected'); }
+
+		}
+
 	}
 
 	window.OpenHR = {
@@ -1354,7 +1445,13 @@
 		parentExists: parentExists,
 		windowOpen: windowOpen,
 		isChrome: isChrome,
-		clearTmpDialog: clearTmpDialog
+		clearTmpDialog: clearTmpDialog,
+		gridSelectTopRow: gridSelectTopRow,
+		gridSelectLastRow: gridSelectLastRow,
+		gridPageDown: gridPageDown,
+		gridPageUp: gridPageUp,
+		gridKeyboardEvent: gridKeyboardEvent
 	};
+	
 
 })(window, jQuery);

@@ -476,10 +476,7 @@
 				return true;
 			},
 			ondblClickRow: function (rowid) {
-				if (!isDefinitionReadOnly()) {
-					addColumnToSelected(rowid);
-					enableSaveButton();
-				}
+				doubleClickAvailableColumn();
 			},
 			loadComplete: function (data) {
 				var topID = $("#AvailableColumns").getDataIDs()[0]
@@ -490,9 +487,40 @@
 
 		$("#AvailableColumns").jqGrid('hideCol', 'cb');
 
-		//if ($('#txtReportType').val() == "utlCustomReport")
-		resizeColumnGrids(); //should be in scope; this function resides in Util_Def_CustomReport.vbhtml
+		$('#AvailableColumns').keydown(function (event) {
+			event.preventDefault(); //prevent grid scrolling.
+			var keyPressed = event.which;
+			var grid = $('#AvailableColumns');
+			//Enter key
+			if (keyPressed == 13) {
+				//handle this locally
+				doubleClickAvailableColumn();
+			}
+			else {
+				OpenHR.gridKeyboardEvent(keyPressed, grid);
+			}
+		});
 
+		resizeColumnGrids(); //should be in scope; this function resides in Util_Def_CustomReport.vbhtml
+	}
+
+
+	function doubleClickAvailableColumn() {
+		if (!isDefinitionReadOnly()) {
+			var grid = $('#AvailableColumns');
+			var currentScrollPos = grid.parent().parent().scrollTop();
+			var rowid = grid.jqGrid('getGridParam', 'selrow');
+			addColumnToSelected(rowid);
+			enableSaveButton();
+
+			if ((grid.getGridParam("records") > 0) && (grid.jqGrid('getGridParam', 'selrow') == null)) {
+				OpenHR.gridSelectLastRow(grid);	// assume last row has been removed from grid
+			}
+			grid.focus();
+			grid.parent().parent().scrollTop(currentScrollPos);
+
+			return false;
+	}
 	}
 
 	function changeColumnIsHidden() {
@@ -569,7 +597,7 @@
 			isBottomRow = (rowId == allRows[allRows.length - 1]);
 		}
 
-		if (rowCount > 1 || allRows.length == 0) {
+		if (rowCount > 1 || allRows.length == 0) {		    
 			$("#definitionColumnProperties :input").attr("disabled", true);
 			$("#SelectedColumnHeading").val("");
 			$("#SelectedColumnSize").val("");
@@ -601,12 +629,14 @@
 			var isHidden = $("#SelectedColumnIsHidden").is(':checked');
 			var isGroupWithNext = $("#SelectedColumnIsGroupWithNext").is(':checked');
 
-			$(".numericOnly :input").attr("disabled", !isNumeric || isHidden || isGroupWithNext || isReadOnly);
-			$(".cannotBeHidden :input").attr("disabled", isHidden || isGroupWithNext || isReadOnly);
-			$(".decimalsOnly :input").attr("disabled", !isDecimals || isReadOnly);
-			$(".baseTableOnly :input").attr("disabled", !isBaseOrParentTableColumn || !isThereChildColumns || isHidden || isReadOnly);
-			$(".canGroupWithNext :input").attr("disabled", isBottomRow || isHidden || isReadOnly);
-			$("#SelectedColumnIsHidden").attr("disabled", isGroupWithNext || isReadOnly);
+
+			$(".numericOnly").prop("disabled", !isNumeric || isHidden || isGroupWithNext || isReadOnly);
+			$(".cannotBeHidden").prop("disabled", isHidden || isGroupWithNext || isReadOnly);			
+			$(".decimalsOnly").prop("disabled", !isDecimals || isReadOnly);
+			$(".baseTableOnly").prop("disabled", !isBaseOrParentTableColumn || !isThereChildColumns || isHidden || isReadOnly);
+			$(".canGroupWithNext").prop("disabled", isBottomRow || isHidden || isReadOnly);
+			$("#SelectedColumnIsHidden").prop("disabled", isGroupWithNext || isReadOnly);
+			
 
 			if (!isNumeric || isHidden || isGroupWithNext || isReadOnly) {
 				$(".numericOnly").css("color", "#A59393");
@@ -789,6 +819,8 @@
 
 				refreshcolumnPropertiesPanel();
 
+				$('#SelectedColumns').focus();
+
 			},
 			loadComplete: function (data) {
 				var topID = $("#SelectedColumns").getDataIDs()[0]
@@ -805,6 +837,20 @@
 		}
 
 		$("#SelectedColumns").jqGrid('hideCol', 'cb');
+
+		$('#SelectedColumns').keydown(function (event) {
+			event.preventDefault(); //prevent grid scrolling.
+			var keyPressed = event.which;
+			var grid = $('#SelectedColumns');
+			//Enter key
+			if (keyPressed == 13) {
+				//handle this locally
+				requestRemoveSelectedColumns();
+			}
+			else {
+				OpenHR.gridKeyboardEvent(keyPressed, grid);
+			}
+		});
 
 	}
 
