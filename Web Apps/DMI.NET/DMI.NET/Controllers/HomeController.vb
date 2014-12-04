@@ -719,31 +719,43 @@ Namespace Controllers
 		<HttpPost()>
 		Function default_Submit()
 
-			' Save the required table/view and screen IDs in session variables.
-			Session("action") = Request.Form("txtAction")
-			Session("tableID") = Request.Form("txtGotoTableID")
-			Session("viewID") = Request.Form("txtGotoViewID")
-			Session("screenID") = Request.Form("txtGotoScreenID")
-			Session("orderID") = Request.Form("txtGotoOrderID")
-			Session("recordID") = Request.Form("txtGotoRecordID")
-			Session("parentTableID") = Request.Form("txtGotoParentTableID")
-			Session("parentRecordID") = Request.Form("txtGotoParentRecordID")
-			Session("realSource") = Request.Form("txtGotoRealSource")
-			Session("filterDef") = Request.Form("txtGotoFilterDef")
-			Session("filterSQL") = Request.Form("txtGotoFilterSQL")
-			Session("lineage") = Request.Form("txtGotoLineage")
-			Session("defseltype") = Request.Form("txtGotoDefSelType")
-			Session("utilID") = Request.Form("txtGotoUtilID")
-			Session("locateValue") = Request.Form("txtGotoLocateValue")
-			Session("firstRecPos") = Request.Form("txtGotoFirstRecPos")
-			Session("currentRecCount") = Request.Form("txtGotoCurrentRecCount")
-			Session("fromMenu") = Request.Form("txtGotoFromMenu")
-			Session("reset") = Request.Form("txtReset")
+			If Request.Form("txtGotoLineage") = "-1" Then
+				' We're flipping between histories, reuse session variables where possible.
+				Session("tableID") = Request.Form("txtGotoTableID")
+				Session("viewID") = Request.Form("txtGotoViewID")
+				Session("screenID") = Request.Form("txtGotoScreenID")
+				Session("orderID") = Request.Form("txtGotoOrderID")
+				Session("recordID") = Request.Form("txtGotoRecordID")
+				Session("firstRecPos") = Request.Form("txtGotoFirstRecPos")
+				Session("currentRecCount") = Request.Form("txtGotoCurrentRecCount")
+			Else
+				' Save the required table/view and screen IDs in session variables.
+				Session("action") = Request.Form("txtAction")
+				Session("tableID") = Request.Form("txtGotoTableID")
+				Session("viewID") = Request.Form("txtGotoViewID")
+				Session("screenID") = Request.Form("txtGotoScreenID")
+				Session("orderID") = Request.Form("txtGotoOrderID")
+				Session("recordID") = Request.Form("txtGotoRecordID")
+				Session("parentTableID") = Request.Form("txtGotoParentTableID")
+				Session("parentRecordID") = Request.Form("txtGotoParentRecordID")
+				Session("realSource") = Request.Form("txtGotoRealSource")
+				Session("filterDef") = Request.Form("txtGotoFilterDef")
+				Session("filterSQL") = Request.Form("txtGotoFilterSQL")
+				Session("lineage") = Request.Form("txtGotoLineage")
+				Session("defseltype") = Request.Form("txtGotoDefSelType")
+				Session("utilID") = Request.Form("txtGotoUtilID")
+				Session("locateValue") = Request.Form("txtGotoLocateValue")
+				Session("firstRecPos") = Request.Form("txtGotoFirstRecPos")
+				Session("currentRecCount") = Request.Form("txtGotoCurrentRecCount")
+				Session("fromMenu") = Request.Form("txtGotoFromMenu")
+				Session("reset") = Request.Form("txtReset")
 
-			Session("reloadMenu") = Request.Form("txtReloadMenu")
+				Session("reloadMenu") = Request.Form("txtReloadMenu")
 
-			Session("StandardReport_Type") = Request.Form("txtStandardReportType")
-			Session("singleRecordID") = CInt(Request.Form("txtGotoOptionDefSelRecordID"))
+				Session("StandardReport_Type") = Request.Form("txtStandardReportType")
+				Session("singleRecordID") = CInt(Request.Form("txtGotoOptionDefSelRecordID"))
+			End If
+
 			Session("optionRecordID") = 0
 			Session("optionAction") = ""
 

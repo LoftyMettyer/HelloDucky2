@@ -236,7 +236,7 @@
 	Response.Write("  if (fDone == false) {" & vbCrLf)
 	Response.Write("      $('#mnubandHistory').empty();" & vbCrLf & vbCrLf)		' hack!
 	Response.Write("	  $('#mnutoolHistory').hide();" & vbCrLf)
-	Response.Write("      $('#mnutoolDatabase').click();")
+	Response.Write("      showDatabaseMenuGroup();" & vbCrLf)
 	Response.Write("  }" & vbCrLf)
 	Response.Write("  else {" & vbCrLf)
 	Response.Write("	    // Disable the history menu for new records" & vbCrLf)

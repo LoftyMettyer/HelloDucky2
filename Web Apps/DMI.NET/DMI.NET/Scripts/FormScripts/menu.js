@@ -1494,7 +1494,7 @@ function menu_refreshMenu() {
 	var sDummyDate;
 	//Get the frmMenuInfo object for implicit use in this function (non-ie)
 	var frmMenuInfo = document.getElementById("frmMenuInfo");
-		
+	
 	// Standard reports
 	var fStdRptAbsenceCalendarEnabled;
 	var fStdRptAbsenceBreakdownEnabled;
@@ -1787,7 +1787,7 @@ function menu_refreshMenu() {
 
 		menu_setVisibleMenuItem("mnutoolRecordPosition", !menu_isSSIMode());
 		menu_SetmnutoolRecordPositionCaption(sCaption);
-
+		
 		menu_setVisibleMenuItem("mnutoolHistory", true);
 
 		//dynamically created function, found in menu.ascx...
@@ -1975,8 +1975,6 @@ function menu_refreshMenu() {
 			menu_setVisibleMenuItem("mnutoolPositionRecordFind", true);
 			menu_SetmnutoolRecordPositionCaption(sCaption);
 
-			menu_setVisibleMenuItem("mnutoolHistory", false);
-			$("#mnutoolDatabase").click();
 				
 				menu_setVisibletoolbarGroup("mnutoolCalendarReportsRecord", false);
 
@@ -2887,25 +2885,32 @@ function menu_saveChanges(psAction, pfPrompt, pfTBOverride) {
 	frmWorkArea.txtGotoCurrentRecCount.value = 0;
 
 	if (psToolName.substr(0, 3) == "HT_") {
-	frmRecEdit = OpenHR.getForm("workframe", "frmRecordEditForm");		//  window.parent.frames("workframe").document.forms("frmRecordEditForm");
-	frmWorkArea.txtGotoParentTableID.value = frmRecEdit.txtCurrentTableID.value;
-	frmData = OpenHR.getForm("dataframe", "frmData"); //  window.parent.frames("dataframe").document.forms("frmData");
-	frmWorkArea.txtGotoParentRecordID.value = frmData.txtRecordID.value;
+		frmRecEdit = OpenHR.getForm("workframe", "frmRecordEditForm");
 
-	sLineage = frmRecEdit.txtCurrentTableID.value +
-	"_" + frmRecEdit.txtCurrentViewID.value +
-	"_" + frmRecEdit.txtCurrentScreenID.value +
-	"_" + frmRecEdit.txtCurrentOrderID.value +
-	"_" + frmData.txtRecordID.value +
-	"_" + frmData.txtParentTableID.value +
-	"_" + frmData.txtParentRecordID.value + ":" +
-	frmRecEdit.txtLineage.value;
-}
+		if (frmRecEdit) {
+			frmWorkArea.txtGotoParentTableID.value = frmRecEdit.txtCurrentTableID.value;
+			frmData = OpenHR.getForm("dataframe", "frmData");
+			frmWorkArea.txtGotoParentRecordID.value = frmData.txtRecordID.value;
+
+			sLineage = frmRecEdit.txtCurrentTableID.value +
+			"_" + frmRecEdit.txtCurrentViewID.value +
+			"_" + frmRecEdit.txtCurrentScreenID.value +
+			"_" + frmRecEdit.txtCurrentOrderID.value +
+			"_" + frmData.txtRecordID.value +
+			"_" + frmData.txtParentTableID.value +
+			"_" + frmData.txtParentRecordID.value + ":" +
+			frmRecEdit.txtLineage.value;
+		} else {
+			//we're flipping between histories, so recedit is unavailable. Reuse previous values.
+			sLineage = "-1";	// flag to reuse session.
+		}
+
+	}
 	else {
-	frmWorkArea.txtGotoParentTableID.value = 0;
-	frmWorkArea.txtGotoParentRecordID.value = 0;
-	sLineage = "";
-}
+		frmWorkArea.txtGotoParentTableID.value = 0;
+		frmWorkArea.txtGotoParentRecordID.value = 0;
+		sLineage = "";
+	}
 
 	frmWorkArea.txtGotoRealSource.value = "";
 
@@ -5235,4 +5240,8 @@ function saveInlineRowToDatabase(rowId) {
 			$("#findGridTable_ilcancel").removeClass("ui-state-disabled");
 		}, 100);
 	}
+}
+
+function showDatabaseMenuGroup() {
+	setTimeout("$('#mnutoolDatabase').click()", 100);	
 }
