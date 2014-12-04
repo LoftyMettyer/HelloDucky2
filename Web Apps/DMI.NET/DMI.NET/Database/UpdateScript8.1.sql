@@ -11386,7 +11386,7 @@ BEGIN
 		ON Target.SessionID = Source.SessionID
 	WHEN MATCHED AND @TrackType = 1 THEN 
 		UPDATE SET webArea = @WebArea, Username = @UserName, HostName = @HostName, IISServer = @IISServer
-	WHEN MATCHED AND @TrackType IN (2, 3, 4, 5, 6) THEN
+	WHEN MATCHED AND @TrackType IN (2, 3, 4, 5, 6, 8) THEN
 		DELETE
 	WHEN NOT MATCHED BY TARGET AND @TrackType = 1 THEN 
 		INSERT (IISServer, SessionID, Username, HostName, WebArea)
@@ -11399,6 +11399,7 @@ BEGIN
 				WHEN 1 THEN 'Log In'
 				WHEN 2 THEN 'Log Out'
 				WHEN 3 THEN 'Forced Log Out'
+				WHEN 8 THEN 'Insufficient Licence'
 				ELSE 'Session Timeout'
 			END);
 

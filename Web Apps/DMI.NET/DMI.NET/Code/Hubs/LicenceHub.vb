@@ -257,15 +257,16 @@ Namespace Code.Hubs
 				Dim objLogin = Logins.First(Function(m) m.SessionId = objCurrentLogin.SessionId())
 				Dim allow As LicenceValidation = LicenceValidation.Ok
 
+				objLogin.UserName = objCurrentLogin.UserName
+				objLogin.SecurityGroup = objCurrentLogin.SecurityGroup
+
 				If Not objLogin.WebArea = targetWebArea Then
 					allow = AllowAccess(targetWebArea)
 					If allow = LicenceValidation.Insufficient Or allow = LicenceValidation.Expired Then
-						LogOff(objCurrentLogin.SessionId, TrackType.ManualLogOff)
+						LogOff(objCurrentLogin.SessionId, TrackType.InsufficientLicence)
 
 					Else
 						objLogin.IsLoggedIn = True
-						objLogin.UserName = objCurrentLogin.UserName
-						objLogin.SecurityGroup = objCurrentLogin.SecurityGroup
 						objLogin.WebArea = targetWebArea
 
 					End If
@@ -285,7 +286,7 @@ Namespace Code.Hubs
 		Public Shared Sub LogOff(SessionID As String, LogoffType As TrackType)
 
 			Try
-				Dim objLogin = Logins.FirstOrDefault(Function(m) m.SessionId = SessionID And m.IsLoggedIn)
+				Dim objLogin = Logins.FirstOrDefault(Function(m) m.SessionId = SessionID And (m.IsLoggedIn Or LogoffType = TrackType.InsufficientLicence))
 
 				If objLogin IsNot Nothing Then
 					DatabaseHub.TrackSession(objLogin, LogoffType)

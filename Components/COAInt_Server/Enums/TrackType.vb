@@ -7,5 +7,6 @@
 		SessionDisconnect = 5
 		IISShutdown = 6
 		SessionReConnect = 7
+		InsufficientLicence = 8
 	End Enum
 End Namespace

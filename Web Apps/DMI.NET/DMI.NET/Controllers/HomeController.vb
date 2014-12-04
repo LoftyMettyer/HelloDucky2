@@ -372,40 +372,41 @@ Namespace Controllers
 				targetWebArea = WebArea.DMI
 			End If
 
-			' Licence check
-			Dim objCurrentLogin = CType(Session("sessionCurrentUser"), LoginViewModel)
-			Dim licenceValidate = LicenceHub.NavigateWebArea(objCurrentLogin, targetWebArea)
-
-			Select Case licenceValidate
-				Case LicenceValidation.Failure
-					Session("ErrorText") = LicenceHub.ErrorMessage(licenceValidate)
-					bOK = False
-
-				Case LicenceValidation.Expired, LicenceValidation.Insufficient
-					Session("ErrorText") = LicenceHub.ErrorMessage(licenceValidate)
-					bOK = False
-
-				Case LicenceValidation.HeadcountWarning
-					If LicenceHub.DisplayWarningToUser(Session("Username").ToString(), WarningType.Headcount95Percent, 7) Then
-						Session("WarningText") = LicenceHub.ErrorMessage(licenceValidate)
-					End If
-					bOK = True
-
-				Case LicenceValidation.ExpiryWarning
-					If LicenceHub.DisplayWarningToUser(Session("Username").ToString(), WarningType.Licence5DayExpiry, 1) Then
-						Session("WarningText") = LicenceHub.ErrorMessage(licenceValidate)
-					End If
-					bOK = True
-
-				Case LicenceValidation.HeadcountExceeded
-					Session("WarningText") = LicenceHub.ErrorMessage(licenceValidate)
-					bOK = True
-
-			End Select
-
-			ViewData("showOutOfOffice") = ShowOutOfOffice(NullSafeInteger(Session("SingleRecordTableID")), NullSafeInteger(Session("SingleRecordViewID")))
-
 			If bOK Then
+
+				' Licence check
+				Dim objCurrentLogin = CType(Session("sessionCurrentUser"), LoginViewModel)
+				Dim licenceValidate = LicenceHub.NavigateWebArea(objCurrentLogin, targetWebArea)
+
+				Select Case licenceValidate
+					Case LicenceValidation.Failure
+						Session("ErrorText") = LicenceHub.ErrorMessage(licenceValidate)
+						bOK = False
+
+					Case LicenceValidation.Expired, LicenceValidation.Insufficient
+						Session("ErrorText") = LicenceHub.ErrorMessage(licenceValidate)
+						bOK = False
+
+					Case LicenceValidation.HeadcountWarning
+						If LicenceHub.DisplayWarningToUser(Session("Username").ToString(), WarningType.Headcount95Percent, 7) Then
+							Session("WarningText") = LicenceHub.ErrorMessage(licenceValidate)
+						End If
+						bOK = True
+
+					Case LicenceValidation.ExpiryWarning
+						If LicenceHub.DisplayWarningToUser(Session("Username").ToString(), WarningType.Licence5DayExpiry, 1) Then
+							Session("WarningText") = LicenceHub.ErrorMessage(licenceValidate)
+						End If
+						bOK = True
+
+					Case LicenceValidation.HeadcountExceeded
+						Session("WarningText") = LicenceHub.ErrorMessage(licenceValidate)
+						bOK = True
+
+				End Select
+
+				ViewData("showOutOfOffice") = ShowOutOfOffice(NullSafeInteger(Session("SingleRecordTableID")), NullSafeInteger(Session("SingleRecordViewID")))
+
 				Return View()
 			Else
 				Return RedirectToAction("LoginError", "Account")
