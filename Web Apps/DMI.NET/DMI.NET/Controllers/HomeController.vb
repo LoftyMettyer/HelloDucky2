@@ -373,8 +373,14 @@ Namespace Controllers
 			End If
 
 			' Licence check
-			Dim licenceValidate = LicenceHub.NavigateWebArea(Session.SessionID, Session("Username").ToString, targetWebArea)
+			Dim objCurrentLogin = CType(Session("sessionCurrentUser"), LoginViewModel)
+			Dim licenceValidate = LicenceHub.NavigateWebArea(objCurrentLogin, targetWebArea)
+
 			Select Case licenceValidate
+				Case LicenceValidation.Failure
+					Session("ErrorText") = LicenceHub.ErrorMessage(licenceValidate)
+					bOK = False
+
 				Case LicenceValidation.Expired, LicenceValidation.Insufficient
 					Session("ErrorText") = LicenceHub.ErrorMessage(licenceValidate)
 					bOK = False
@@ -2221,47 +2227,6 @@ Namespace Controllers
 			Return View()
 		End Function
 
-
-		Function sessionTimeOut() As ActionResult
-
-			Dim objMessageModel As New PollMessageModel With {.Body = ""}
-
-			Try
-				objMessageModel.IsTimedOut = True
-
-			Catch ex As Exception
-
-			End Try
-
-			Return PartialView("PollMessage", objMessageModel)
-
-		End Function
-
-		Function TimedOut() As ActionResult
-
-			Dim objMessageModel As New PollMessageModel With { _
-				.Body = "Your session has timed out. You will need to login again.", _
-				.IsTimedOut = True}
-
-			Try
-				Session("ErrorText") = Nothing
-
-				Session("avPrimaryMenuInfo") = Nothing
-				Session("avSubMenuInfo") = Nothing
-				Session("avQuickEntryMenuInfo") = Nothing
-				Session("avTableMenuInfo") = Nothing
-				Session("avTableHistoryMenuInfo") = Nothing
-
-				Session("sessionContext") = Nothing
-
-			Catch ex As Exception
-
-			End Try
-
-			Return PartialView("pollMessage", objMessageModel)
-
-		End Function
-
 #Region "Event Log Forms"
 
 		Function emailSelection() As ActionResult
@@ -2366,7 +2331,6 @@ Namespace Controllers
 		End Function
 
 #End Region
-
 
 #Region "Running Reports"
 

@@ -350,6 +350,7 @@ Namespace Controllers
 					Session("DatabaseFunctions") = objDatabase
 					Session("DatabaseAccess") = objDataAccess
 					Session("sessionContext") = objServerSession
+					Session("sessionCurrentUser") = objLogin
 
 					If Licence.IsModuleLicenced(SoftwareModule.Workflow) Then
 						PopulateWorkflowSessionVariables()
@@ -492,6 +493,12 @@ Namespace Controllers
 					Session("SSIMode") = True
 				End If
 
+				loginviewmodel.UserName = objLogin.Username
+				loginviewmodel.SecurityGroup = objLogin.UserGroup
+				loginviewmodel.SessionId = Session.SessionID
+
+				Session("sessionCurrentUser") = loginviewmodel
+
 			Catch ex As Exception
 				Throw
 
@@ -507,7 +514,7 @@ Namespace Controllers
 
 			Try
 
-				LicenceHub.LogOff(Session.SessionID)
+				LicenceHub.LogOff(Session.SessionID, TrackType.ManualLogOff)
 
 				Session("avPrimaryMenuInfo") = Nothing
 				Session("avSubMenuInfo") = Nothing
@@ -518,6 +525,7 @@ Namespace Controllers
 				Session("sessionContext") = Nothing
 
 			Catch ex As Exception
+				Throw
 
 			End Try
 
@@ -656,7 +664,10 @@ Namespace Controllers
 
 			Return View()
 		End Function
+
 	End Class
+
+
 
 	Public Class JsonData_DBValue
 		Public Property Caption() As String

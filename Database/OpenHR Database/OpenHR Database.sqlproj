@@ -616,8 +616,8 @@
     <Build Include="Stored Procedures\Web\spASRIntGetLookupTables.sql" />
     <Build Include="Stored Procedures\Auto Generated\sp_ASRLockCheck.sql" />
     <Build Include="Stored Procedures\Web\spASRIntGetLoginDetails.sql" />
-    <Build Include="Stored Procedures\Web\spASRTrackSession.sql" />
-    <Build Include="Tables\ASRSysCurrentLogins.sql" />
+    <Build Include="Stored Procedures\Web\spASRIntTrackSession.sql" />
+    <Build Include="Tables\ASRSysCurrentSessions.sql" />
     <Build Include="Stored Procedures\Web\spASRIntCopyRecordPostSave.sql" />
     <Build Include="Stored Procedures\System Manager\spASRDatabaseStatus.sql" />
     <Build Include="Stored Procedures\Auto Generated\spASRGetCurrentUsersFromMaster.sql" />
@@ -764,5 +764,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="OpenHR Database.publish.xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <RefactorLog Include="OpenHR Database.refactorlog" />
   </ItemGroup>
 </Project>

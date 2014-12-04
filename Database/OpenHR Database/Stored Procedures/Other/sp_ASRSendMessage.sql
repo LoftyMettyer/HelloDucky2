@@ -73,20 +73,9 @@ BEGIN
 	IF OBJECT_ID('tempdb..#tblCurrentUsers', N'U') IS NOT NULL
 		DROP TABLE #tblCurrentUsers;
 
-	-- Send message to all the web connections
-	MERGE INTO ASRSysMessages AS Target
-		USING (SELECT username, loginTime
-			FROM ASRSysCurrentLogins) AS SOURCE (LoginName, loginTime)
-	ON target.loginName = source.LoginName AND target.loginTime = source.loginTime
-	WHEN MATCHED THEN
-		UPDATE SET message = @psMessage
-	WHEN NOT MATCHED BY TARGET THEN
-		INSERT (LoginName, message, loginTime, messageTime, messageFrom, messageSource)
-		VALUES (LoginName, @psMessage, loginTime, @currentDate, @sCurrentUser, @sCurrentApp)
-	WHEN NOT MATCHED BY SOURCE THEN
-		DELETE;
-
 	-- Message to the Web Server
+	DELETE FROM ASRSysMessages WHERE loginname = 'OpenHR Web Server';
+
 	INSERT INTO ASRSysMessages 
 		(loginname, [message], loginTime, [dbid], [uid], spid, messageTime, messageFrom, messageSource) 
 		VALUES('OpenHR Web Server', @psMessage, @dtLoginTime, @iDBid, @iUid, @iSPid, @currentDate, @sCurrentUser, @sCurrentApp);

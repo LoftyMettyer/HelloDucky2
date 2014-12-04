@@ -1074,6 +1074,8 @@ Private Function CreateSP_GetCurrentUsersFromMaster() As Boolean
     "     AND    p.program_name NOT LIKE 'OpenHR Intranet Embedding%'" & vbNewLine & _
     "     AND    p.dbID = DB_ID()" & vbNewLine & _
     "     AND (p.login_Time < @login_time)" & vbNewLine & _
+    "UNION" & vbNewLine & _
+    "    SELECT DISTINCT HostName COLLATE SQL_Latin1_General_CP1_CI_AS, UserName COLLATE SQL_Latin1_General_CP1_CI_AS, 'OpenHR Web', 0, 0, null, 0, 0 FROM ASRSysCurrentSessions" & vbNewLine & _
     "   ORDER BY loginame;" & vbNewLine & vbNewLine & _
     "END"
   

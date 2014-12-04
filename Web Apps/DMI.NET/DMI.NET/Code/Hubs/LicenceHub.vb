@@ -1,5 +1,5 @@
 ﻿Option Explicit On
-Option Strict Off
+Option Strict On
 
 Imports System.Collections.Generic
 Imports DMI.NET.Classes
@@ -15,17 +15,17 @@ Namespace Code.Hubs
 
 	<HubName("LicenceHub")> _
 	Public Class LicenceHub
-		Inherits Hub
+		Inherits Hub(Of ILicenceHub)
 
 		Private Shared Property Connection As SqlConnection
 
 		Private Shared ReadOnly Licence As New Licence
 
-		Private Shared ReadOnly Sessions As New List(Of String)
+		Private Shared ReadOnly SessionIds As New List(Of String)
 		Private Shared ReadOnly Logins As New List(Of LoginViewModel)
 
-		Private Shared current_SSIUsers As Integer = 0
-		Private Shared current_DMIUsers As Integer = 0
+		Private Shared current_SSIUsers As Long = 0
+		Private Shared current_DMIUsers As Long = 0
 		Private Shared current_Headcount As Long = 0
 
 		Private Const HeadcountWarningThreshold = 0.95
@@ -80,19 +80,28 @@ Namespace Code.Hubs
 			current_SSIUsers = 0
 			current_DMIUsers = 0
 
-			For Each sSession In Sessions
-				current_DMIUsers += Logins.LongCount(Function(m) m.IsLoggedIn = True AndAlso m.SignalRClientID = sSession AndAlso m.WebArea = WebArea.DMI)
-				current_SSIUsers += Logins.LongCount(Function(m) m.IsLoggedIn = True AndAlso m.SignalRClientID = sSession AndAlso m.WebArea = WebArea.SSI)
+			For Each id In SessionIds
+				current_DMIUsers += Logins.LongCount(Function(m) m.IsLoggedIn = True AndAlso m.SessionId = id AndAlso m.WebArea = WebArea.DMI)
+				current_SSIUsers += Logins.LongCount(Function(m) m.IsLoggedIn = True AndAlso m.SessionId = id AndAlso m.WebArea = WebArea.SSI)
 			Next
 
 		End Sub
 
-		Private Sub UpdateUserList()
+		Private Sub TrackUsersInDB(SessionID As String, trackType As TrackType)
+
+			Dim objLogin = Logins.FirstOrDefault(Function(m) m.SessionId = SessionID And m.IsLoggedIn = True)
+			If objLogin IsNot Nothing Then
+				DatabaseHub.TrackSession(objLogin, trackType)
+			End If
+
+		End Sub
+
+		Private Shared Sub UpdateUserList()
 
 			Dim objLogins As New List(Of LoginViewModel)
 
-			For Each sSession In Sessions
-				objLogins.AddRange(Logins.Where(Function(m) m.IsLoggedIn = True AndAlso m.SignalRClientID = sSession))
+			For Each sSession In SessionIds
+				objLogins.AddRange(Logins.Where(Function(m) m.IsLoggedIn = True AndAlso m.SessionId = sSession))
 			Next
 
 			Dim results = New With {.total = 1, .page = 1, .records = objLogins.Count(), .rows = objLogins}
@@ -100,19 +109,17 @@ Namespace Code.Hubs
 			Dim objSerialize As New JavaScriptSerializer
 			Dim result = objSerialize.Serialize(results)
 
-			Dim myContext = GlobalHost.ConnectionManager.GetHubContext(Of LicenceHub)()
-			myContext.Clients.All.currentUserList(result)
+			Dim hubContext = GlobalHost.ConnectionManager.GetHubContext(Of LicenceHub, ILicenceHub)()
+			hubContext.Clients.All.CurrentUserList(result)
 
 		End Sub
 
-		Private Sub ActivateLogin(thisConnection As String)
+		Public Sub ActivateLogin()
 
-			Dim myContext = GlobalHost.ConnectionManager.GetHubContext(Of LicenceHub)()
-			'			myContext.Clients.Client(thisConnection).activateLogin()
-			myContext.Clients.All.activateLogin()
+			Dim connectionId = Context.ConnectionId
+			Clients.Client(connectionId).ActivateLogin()
 
 		End Sub
-
 
 		Friend Shared Function DisplayWarningToUser(userName As String, warningType As WarningType, warningRefreshRate As Integer) As Boolean
 
@@ -137,20 +144,25 @@ Namespace Code.Hubs
 		End Function
 
 		Public Overrides Function OnConnected() As Task
-			Dim clientId As String = GetClientId()
+			Dim sessionId As String = GetSessionID()
 
-			If Sessions.IndexOf(clientId) = -1 Then
-				Sessions.Add(clientId)
+			If SessionIds.IndexOf(sessionId) = -1 Then
+				SessionIds.Add(sessionId)
 			End If
 
-			If Not Logins.Exists(Function(m) m.SignalRClientID = clientId) Then
+			If Not Logins.Exists(Function(m) m.SessionId = sessionId) Then
 				Logins.Add(New LoginViewModel() With {
-				 .SignalRClientID = clientId})
+					.SignalRConnectionId = Context.ConnectionId,
+					.SessionId = sessionId})
+			Else
+				Logins.FirstOrDefault(Function(m) m.SessionId = sessionId).SignalRConnectionId = Context.ConnectionId
+
 			End If
 
 			' Send the current count of users
+			TrackUsersInDB(sessionId, TrackType.Login)
 			UpdateOnlineCount()
-			ActivateLogin(clientId)
+			ActivateLogin()
 			UpdateUserList()
 
 			Return MyBase.OnConnected()
@@ -158,20 +170,23 @@ Namespace Code.Hubs
 
 		Public Overrides Function OnReconnected() As Task
 
-			Dim clientId As String = GetClientId()
+			Dim sessionId As String = GetSessionID()
 
-			If Sessions.IndexOf(clientId) = -1 Then
-				Sessions.Add(clientId)
+			If SessionIds.IndexOf(sessionId) = -1 Then
+				SessionIds.Add(sessionId)
 			End If
 
-			If Not Logins.Exists(Function(m) m.SignalRClientID = clientId) Then
+			If Not Logins.Exists(Function(m) m.SessionId = sessionId) Then
 				Logins.Add(New LoginViewModel() With {
-				 .SignalRClientID = clientId})
+					.SignalRConnectionId = Context.ConnectionId,
+					.SessionId = sessionId})
+			Else
+				Logins.FirstOrDefault(Function(m) m.SessionId = sessionId).SignalRConnectionId = Context.ConnectionId
 			End If
 
 			' Send the current count of users
 			UpdateOnlineCount()
-			ActivateLogin(clientId)
+			ActivateLogin()
 			UpdateUserList()
 
 			Return MyBase.OnReconnected()
@@ -179,36 +194,23 @@ Namespace Code.Hubs
 
 		Public Overrides Function OnDisconnected(stopCalled As Boolean) As Task
 
-			Dim clientId As String = GetClientId()
+			Dim sessionId As String = GetSessionID()
 
-			If Sessions.IndexOf(clientId) > -1 Then
-				'For Each objLogin In Logins.Where(Function(m) m.SignalRClientID = clientId)
-				'	objLogin.IsLoggedIn = False
-				'Next
-				Sessions.Remove(clientId)
+			If SessionIds.IndexOf(sessionId) > -1 Then
+				SessionIds.Remove(sessionId)
 			End If
 
 			' Send the current count of users
 			UpdateOnlineCount()
 			UpdateUserList()
 
+			TrackUsersInDB(sessionId, TrackType.SessionDisconnect)
+
 			Return MyBase.OnDisconnected(stopCalled)
 		End Function
 
-		Private Function GetClientId() As String
-			Dim clientId As String
-			'If Context.QueryString("clientId") IsNot Nothing Then
-			'	' clientId passed from application 
-			'	clientId = Context.QueryString("clientId")
-			'End If
-
-			'If String.IsNullOrEmpty(clientId.Trim()) Then
-			'	clientId = Context.ConnectionId
-			'End If
-
-			clientId = Context.RequestCookies("ASP.NET_SessionId").Value ' HttpContext.Current.Session.SessionID
-
-			Return clientId
+		Private Function GetSessionID() As String
+			Return Context.RequestCookies("ASP.NET_SessionId").Value
 		End Function
 
 		Private Shared Function AllowAccess(targetWebArea As WebArea) As LicenceValidation
@@ -248,22 +250,24 @@ Namespace Code.Hubs
 
 		End Function
 
-		Public Shared Function NavigateWebArea(SessionID As String, loginName As String, webArea As WebArea) As LicenceValidation
+		Public Shared Function NavigateWebArea(objCurrentLogin As LoginViewModel, targetWebArea As WebArea) As LicenceValidation
 
 			Try
 
-				Dim objLogin = Logins.First(Function(m) m.SignalRClientID = SessionID)
+				Dim objLogin = Logins.First(Function(m) m.SessionId = objCurrentLogin.SessionId())
 				Dim allow As LicenceValidation = LicenceValidation.Ok
 
-				If Not objLogin.WebArea = webArea Then
-					allow = AllowAccess(webArea)
+				If Not objLogin.WebArea = targetWebArea Then
+					allow = AllowAccess(targetWebArea)
 					If allow = LicenceValidation.Insufficient Or allow = LicenceValidation.Expired Then
-						LogOff(SessionID)
+						LogOff(objCurrentLogin.SessionId, TrackType.ManualLogOff)
 
 					Else
 						objLogin.IsLoggedIn = True
-						objLogin.UserName = loginName
-						objLogin.WebArea = webArea
+						objLogin.UserName = objCurrentLogin.UserName
+						objLogin.SecurityGroup = objCurrentLogin.SecurityGroup
+						objLogin.WebArea = targetWebArea
+
 					End If
 
 					UpdateOnlineCount()
@@ -278,9 +282,32 @@ Namespace Code.Hubs
 
 		End Function
 
-		Public Shared Sub LogOff(SessionID As String)
-			Logins.RemoveAll(Function(m) m.SignalRClientID = SessionID)
-			UpdateOnlineCount()
+		Public Shared Sub LogOff(SessionID As String, LogoffType As TrackType)
+
+			Try
+				Dim objLogin = Logins.FirstOrDefault(Function(m) m.SessionId = SessionID And m.IsLoggedIn)
+
+				If objLogin IsNot Nothing Then
+					DatabaseHub.TrackSession(objLogin, LogoffType)
+				End If
+
+				Logins.RemoveAll(Function(m) m.SessionId = SessionID)
+				UpdateOnlineCount()
+				UpdateUserList()
+
+			Catch ex As Exception
+				Throw
+
+			End Try
+
+		End Sub
+
+		Public Shared Sub LogOffAll(LogoffType As TrackType)
+
+			For Each objSession In SessionIds
+				LogOff(objSession, LogoffType)
+			Next
+
 		End Sub
 
 		Public Shared Sub ValidateHeadCount()
@@ -375,6 +402,27 @@ Namespace Code.Hubs
 			RemoveHandler Dependency.OnChange, AddressOf LicenceKeyChange
 
 			RegisterLicence()
+		End Sub
+
+		Public Shared Sub ServerSessionTimeout(sessionID As String)
+
+			Try
+
+				Dim objLoginContext = Logins.FirstOrDefault(Function(m) m.SessionId = sessionID And m.IsLoggedIn)
+
+				If objLoginContext IsNot Nothing Then
+					Dim hubContext = GlobalHost.ConnectionManager.GetHubContext(Of LicenceHub, ILicenceHub)()
+					hubContext.Clients.Client(objLoginContext.SignalRConnectionId).SessionTimeout()
+
+					LogOff(sessionID, TrackType.SessionTimeout)
+
+				End If
+
+			Catch ex As Exception
+				Throw
+
+			End Try
+
 		End Sub
 
 	End Class

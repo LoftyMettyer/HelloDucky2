@@ -57,10 +57,5 @@ Namespace Code
 				Return ConfigurationManager.AppSettings("AdminRequiresIE")
 			End Get
 		End Property
-		Public Shared ReadOnly Property SessionTimeOutInMinutes As String
-			Get
-				Return HttpContext.Current.Session.Timeout.ToString()
-			End Get
-		End Property
 	End Class
 End Namespace

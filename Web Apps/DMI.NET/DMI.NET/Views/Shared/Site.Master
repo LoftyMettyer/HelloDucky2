@@ -126,17 +126,7 @@
 				height: 300,
 			    resizable: false
 			});
-
-			$("#divPollMessage").dialog({
-				title: 'OpenHR Web',
-				autoOpen: false,
-				modal: true,
-				width: 350,
-				height: 'auto',
-				resizable: false,
-				dialogClass: 'no-close'
-			});
-			
+		
 			$("#divSignalRMessage").dialog({
 				autoOpen: false,
 				modal: true,
@@ -407,20 +397,7 @@
 		//else {
 		//	window.isMobileBrowser = false;
 		//}
-
-		//Reset the session timeout everytime the user clicks the mouse
-		$(window).on('click', function() {
-			if ($('#frmLoginForm').length == 0) { //Don't reset the timeout if we are in the Login screen
-				resetTimeout();
-			}
-		});
-		
-		function resetTimeout() {			
-			window.clearTimeout(window.timeoutHandle);
-			window.timeoutHandle = window.setTimeout('OpenHR.SessionTimeout(1);', (Number('<%=Session("TimeoutSecs")%>') * 1000));
-			window.onbeforeunload = null;
-		}
-
+	
 		function getCookie(cName) {
 			var i, x, y, arrCookies = document.cookie.split(";");
 			for (i = 0; i < arrCookies.length; i++) {

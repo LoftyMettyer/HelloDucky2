@@ -208,6 +208,8 @@
     <Compile Include="Classes\Licence.vb" />
     <Compile Include="Classes\ReportColumnCollection.vb" />
     <Compile Include="Classes\ConfigurationError.vb" />
+    <Compile Include="Code\Interfaces\IDatabaseHub.vb" />
+    <Compile Include="Code\Interfaces\ILicenceHub.vb" />
     <Compile Include="Code\ResetPassword.vb" />
     <Compile Include="Code\Hubs\LicenceHub.vb" />
     <Compile Include="Code\Attributes\ExcludeCharAttribute.vb" />
@@ -289,7 +291,6 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <Compile Include="Models\PollMessageModel.vb" />
     <Compile Include="Repository\ReportRepository.vb" />
     <Compile Include="ViewModels\Home\OptionDataGridViewModel.vb" />
   </ItemGroup>
@@ -1280,7 +1281,6 @@
     <Content Include="Scripts\MvcFoolproofValidation.min.js" />
     <Content Include="Scripts\officebar\winkit\registry_64NORM.png" />
     <Content Include="Views\Account\CurrentUsers.ascx" />
-    <Content Include="Views\Home\pollMessage.aspx" />
     <Content Include="Views\Home\util_run_bradford_factor.ascx" />
     <Content Include="Views\Home\_showChart.ascx" />
     <Content Include="custom.config.template" />

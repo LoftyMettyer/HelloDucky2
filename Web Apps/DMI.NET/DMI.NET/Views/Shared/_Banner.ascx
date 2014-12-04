@@ -35,56 +35,46 @@
 
 	<script type="text/javascript">
 
-		function displaySignalRMessage(messageFrom, message, forceLogout) {
+		function displaySignalRMessage(messageFrom, message, forceLogout, loggedInUsersOnly) {
 
-			$("#SignalRDialogClick").val("Close");
-			$("#SignalRDialogTitle").html(messageFrom);
-			$("#SignalRDialogContentText").html(message);
-			$("#divSignalRMessage").dialog('open');
+			var isLoggedIn = ($('#frmLoginForm').length == 0) ;
+			if (loggedInUsersOnly && isLoggedIn) {
 
-			if (forceLogout == true) {
-				$("#SignalRDialogClick").val("Log Out");
-			}
-
-			$("#SignalRDialogClick").off('click').on('click', function () {
-				$("#divSignalRMessage").dialog("close");
+				$("#SignalRDialogClick").val("Close");
+				$("#SignalRDialogTitle").html(messageFrom);
+				$("#SignalRDialogContentText").html(message);
+				$("#divSignalRMessage").dialog('open');
 
 				if (forceLogout == true) {
-					menu_logoffIntranet();
+					$("#SignalRDialogClick").val("Log Out");
 				}
 
-			});
+				$("#SignalRDialogClick").off('click').on('click', function () {
+					$("#divSignalRMessage").dialog("close");
+
+					if (forceLogout == true) {
+						menu_logoffIntranet();
+					}
+
+				});
+
+			}
 
 		}
 
 
 		$(function () {
 
-			// Activity Hub
-			var licence = $.connection.LicenceHub;
-
 			// System Admin Message
-			var hubProxy = $.connection.NotificationHub;
-			hubProxy.client.SystemAdminMessage = function (messageFrom, message, forceLogout) {
-				displaySignalRMessage(messageFrom, message, forceLogout);
+			var notificationHub = $.connection.NotificationHub;
+			notificationHub.client.SystemAdminMessage = function (messageFrom, message, forceLogout, loggedInUsersOnly) {
+				displaySignalRMessage(messageFrom, message, forceLogout, loggedInUsersOnly);
 			};
 
-			// Session Timeout Message
-			hubProxy.client.SessionTimeOut = function () {
-
-				$("#SignalRDialogTitle").html("Message from Administrator");
-				$("#SignalRDialogContentText").html("Your session has timed out. You will need to login again");
-				$("#divSignalRMessage").dialog('open');
-
-				$("#SignalRDialogClick").off('click').on('click', function () {
-					window.onbeforeunload = null;
-					try {
-						window.location.href = "Main";
-					} catch (e) {
-					}
-					return false;
-				});
-
+			// Activity Hub
+			var licenceHub = $.connection.LicenceHub;
+			licenceHub.client.SessionTimeOut = function () {
+				OpenHR.SessionTimeout();
 			};
 
 			$.connection.hub.start()

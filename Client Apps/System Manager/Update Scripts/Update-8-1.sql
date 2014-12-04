@@ -49,6 +49,30 @@ BEGIN
 END
 
 
+/* ------------------------------------------------------- */
+PRINT 'Step - Web Messaging'
+/* ------------------------------------------------------- */
+
+-- Increase size of audit access 
+ALTER TABLE [ASRSysAuditAccess] ALTER COLUMN [HRProModule] varchar(20);
+
+
+IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[ASRSysCurrentLogins]') AND xtype in (N'U'))
+	DROP TABLE [dbo].[ASRSysCurrentLogins];
+
+IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[ASRSysCurrentSessions]') AND xtype in (N'U'))
+	DROP TABLE [dbo].[ASRSysCurrentSessions];
+
+SELECT @NVarCommand = 'CREATE TABLE ASRSysCurrentSessions(
+	[IISServer]		nvarchar(255),
+	[Username]		nvarchar(128),
+	[Hostname]		nvarchar(255),
+	[SessionID]		nvarchar(255),
+	[loginTime]		datetime,
+	[WebArea]	varchar(255))';
+EXEC sp_executesql @NVarCommand
+
+
 IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[sp_ASRSendMessage]') AND xtype = 'P')
 		DROP PROCEDURE [dbo].[sp_ASRSendMessage];
 EXECUTE sp_executeSQL N'CREATE PROCEDURE [dbo].[sp_ASRSendMessage] 
@@ -126,20 +150,9 @@ BEGIN
 	IF OBJECT_ID(''tempdb..#tblCurrentUsers'', N''U'') IS NOT NULL
 		DROP TABLE #tblCurrentUsers;
 
-	-- Send message to all the web connections
-	MERGE INTO ASRSysMessages AS Target
-		USING (SELECT username, loginTime
-			FROM ASRSysCurrentLogins) AS SOURCE (LoginName, loginTime)
-	ON target.loginName = source.LoginName AND target.loginTime = source.loginTime
-	WHEN MATCHED THEN
-		UPDATE SET message = @psMessage
-	WHEN NOT MATCHED BY TARGET THEN
-		INSERT (LoginName, message, loginTime, messageTime, messageFrom, messageSource)
-		VALUES (LoginName, @psMessage, loginTime, @currentDate, @sCurrentUser, @sCurrentApp)
-	WHEN NOT MATCHED BY SOURCE THEN
-		DELETE;
-
 	-- Message to the Web Server
+	DELETE FROM ASRSysMessages WHERE loginname = ''OpenHR Web Server'';
+
 	INSERT INTO ASRSysMessages 
 		(loginname, [message], loginTime, [dbid], [uid], spid, messageTime, messageFrom, messageSource) 
 		VALUES(''OpenHR Web Server'', @psMessage, @dtLoginTime, @iDBid, @iUid, @iSPid, @currentDate, @sCurrentUser, @sCurrentApp);

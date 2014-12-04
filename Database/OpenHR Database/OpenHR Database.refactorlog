@@ -1,0 +1,45 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Operations Version="1.0" xmlns="http://schemas.microsoft.com/sqlserver/dac/Serialization/2012/02">
+  <Operation Name="Rename Refactor" Key="97c748a9-1404-4748-9857-24f14f4031a7" ChangeDateTime="11/27/2014 12:09:01">
+    <Property Name="ElementName" Value="[dbo].[ASRSysCurrentLogins].[userSID]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[ASRSysCurrentLogins]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="SessionID" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="475d4d11-278f-4f65-9b3d-8d3bc664755b" ChangeDateTime="11/27/2014 12:09:15">
+    <Property Name="ElementName" Value="[dbo].[ASRSysCurrentLogins].[application]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[ASRSysCurrentLogins]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="WebArea" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="1a464798-8c14-46bd-bd74-0fced2504ded" ChangeDateTime="11/27/2014 12:09:33">
+    <Property Name="ElementName" Value="[dbo].[ASRSysCurrentLogins].[usergroup]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[ASRSysCurrentLogins]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="SecurityGroup" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="b2c72390-1256-4abc-818c-6b2eff7e8e0d" ChangeDateTime="11/27/2014 12:09:38">
+    <Property Name="ElementName" Value="[dbo].[ASRSysCurrentLogins].[username]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[ASRSysCurrentLogins]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="Username" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="76417d86-798e-4b3e-8b5f-17f12868bb06" ChangeDateTime="11/27/2014 12:21:18">
+    <Property Name="ElementName" Value="[dbo].[ASRSysCurrentSessions].[LoginType]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[ASRSysCurrentSessions]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="Type" />
+  </Operation>
+  <Operation Name="Rename Refactor" Key="475ac1b8-7cab-4e3b-93d2-2f037d6f89ff" ChangeDateTime="11/27/2014 17:10:41">
+    <Property Name="ElementName" Value="[dbo].[ASRSysCurrentSessions].[SecurityGroup]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[ASRSysCurrentSessions]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="Hostname" />
+  </Operation>
+</Operations>

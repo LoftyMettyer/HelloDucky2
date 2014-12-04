@@ -34,7 +34,10 @@ Namespace Models
 		Public Property Device As String
 		Public Property Browser As String
 		Public Property IsLoggedIn() As Boolean
-		Public Property SignalRClientID As String
+		Public Property SessionId As String
+		Public Property SignalRConnectionId As String
+
+		Public Property SecurityGroup As String
 
 		Public ReadOnly Property DeviceBrowser
 			Get

@@ -31,25 +31,16 @@ Public Class MvcApplication
 	End Sub
 
 	Protected Sub Application_End()
-		DatabaseHub.Unregister()
+		LicenceHub.LogOffAll(TrackType.IISShutdown)
+		DatabaseHub.UnRegister()
 	End Sub
 
 	Sub Session_Start()
 
 		'If the user isn't requesting the Login form, redirect them there.
 		Session("version") = My.Application.Info.Version.Major & "." & My.Application.Info.Version.Minor & "." & My.Application.Info.Version.Build
-		If ApplicationSettings.SessionTimeOutInMinutes Is Nothing Then
-			Session("TimeoutSecs") = (20 * 60) - 60	'No timeout setting, set to 20 minutes
-		Else
-			Session("TimeoutSecs") = (NullSafeInteger(ApplicationSettings.SessionTimeOutInMinutes) * 60) - 60
-		End If
-
-		If Session("TimeoutSecs") <= 0 Then
-			Session("TimeoutSecs") = (20 * 60) - 60	'Invalid timeout, set to 20 minutes
-		End If
 
 		Server.ScriptTimeout = 1000
-
 
 		Session("username") = Request.QueryString("username")
 		If Request.QueryString("username") = "" Then
@@ -155,7 +146,7 @@ Public Class MvcApplication
 
 		Try
 
-			LicenceHub.LogOff(Session.SessionID)
+			LicenceHub.ServerSessionTimeout(Session.SessionID)
 
 			' Clear up any temporary files from OLE functionality
 			Session("OLEObject") = Nothing

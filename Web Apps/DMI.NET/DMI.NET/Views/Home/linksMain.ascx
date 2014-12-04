@@ -1629,8 +1629,6 @@
 
 		$('header').show();
 
-		resetTimeout();	//Site.Master function.
-
 	});
 
 </script>

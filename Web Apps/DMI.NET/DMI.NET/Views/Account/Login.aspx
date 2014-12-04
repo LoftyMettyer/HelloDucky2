@@ -103,7 +103,7 @@
 			$('#submitLoginDetails').button('disable');
 
 			var licence = $.connection['LicenceHub'];
-			licence['client'].activateLogin = function () {
+			licence['client'].ActivateLogin = function () {
 				$('#submitLoginDetails').button('enable');
 			};
 
