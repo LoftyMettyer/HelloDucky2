@@ -502,6 +502,7 @@
 			$('#SelectedColumnIsCount').prop('checked', false);
 			$('#SelectedColumnIsTotal').prop('checked', false);
 			$('#SelectedColumnIsGroupWithNext').prop('checked', false);
+			$('#SelectedColumnIsRepeated').prop('checked', false);			
 		}
 
 		refreshcolumnPropertiesPanel();
@@ -567,7 +568,7 @@
 			isBottomRow = (rowId == allRows[allRows.length - 1]);
 		}
 
-		if (rowCount > 1 || allRows.length == 0) {
+		if (rowCount > 1 || allRows.length == 0) {		    
 			$("#definitionColumnProperties :input").attr("disabled", true);
 			$("#SelectedColumnHeading").val("");
 			$("#SelectedColumnSize").val("");
@@ -602,7 +603,7 @@
 			$(".numericOnly :input").attr("disabled", !isNumeric || isHidden || isGroupWithNext || isReadOnly);
 			$(".cannotBeHidden :input").attr("disabled", isHidden || isGroupWithNext || isReadOnly);
 			$(".decimalsOnly :input").attr("disabled", !isDecimals || isReadOnly);
-			$(".baseTableOnly :input").attr("disabled", !isBaseOrParentTableColumn || !isThereChildColumns || isReadOnly);
+			$(".baseTableOnly :input").attr("disabled", !isBaseOrParentTableColumn || !isThereChildColumns || isHidden || isReadOnly);
 			$(".canGroupWithNext :input").attr("disabled", isBottomRow || isHidden || isReadOnly);
 			$("#SelectedColumnIsHidden").attr("disabled", isGroupWithNext || isReadOnly);
 
@@ -630,7 +631,7 @@
 				$("#labelSelectedColumnIsHidden").css("color", "#000000");
 			}
 
-			if (isBaseOrParentTableColumn && isThereChildColumns && !isReadOnly) {
+			if (isBaseOrParentTableColumn && isThereChildColumns && !isReadOnly && !isHidden ) {
 				$(".baseTableOnly").css("color", "#000000");
 			} else {
 				$(".baseTableOnly").css("color", "#A59393");
