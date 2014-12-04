@@ -73,22 +73,20 @@ End Code
 		}
 
 		button_disable($("#butSortOrderEditCancel")[0], false);
-		updateCheckBoxes();
+
+		if ('@Model.ReportType' == '@UtilityType.utlCustomReport') {
+			updateCheckBoxes();
+		}
 	});
 
-	function updateCheckBoxes() {		
-		if ($('#SortOrderColumnID').find(':selected').data('ishidden') == "True") {			
-			$("#SuppressRepeated").prop({ disabled: true });
-			$("#SuppressRepeated").prop('checked', false);
-			$("#ValueOnChange").prop({ disabled: true });
-			$("#ValueOnChange").prop('checked', false);
-			$("label[for='ValueOnChange']").css('opacity', '0.5');
-			$("label[for='SuppressRepeated']").css('opacity', '0.5');
+	function updateCheckBoxes() {
+
+		if ($('#SortOrderColumnID').find('option:selected').attr('data-ishidden').toUpperCase() == "TRUE") {
+			$("#frmPostSortOrder  #SuppressRepeated, #frmPostSortOrder #ValueOnChange").prop({ checked: false, disabled: true });
+			$("#frmPostSortOrder label[for='ValueOnChange'], #frmPostSortOrder label[for='SuppressRepeated']").css('opacity', '0.5');
 		} else {
-			$("#ValueOnChange").prop({ disabled: false });
-			$("#SuppressRepeated").prop({ disabled: false });
-			$("label[for='ValueOnChange']").css('opacity', '1');
-			$("label[for='SuppressRepeated']").css('opacity', '1');
+			$("#frmPostSortOrder #SuppressRepeated, #frmPostSortOrder #ValueOnChange").prop({ disabled: false });
+			$("#frmPostSortOrder label[for='ValueOnChange'], #frmPostSortOrder label[for='SuppressRepeated']").css('opacity', '1');
 		}
 	}
 
@@ -98,15 +96,15 @@ End Code
 			ID: '@Model.ID',
 			ReportID: '@Model.ReportID',
 			ReportType: '@CInt(Model.ReportType)',
-			TableID: $("#SortOrderTableID").val(),
-			ColumnID: $("#SortOrderColumnID").val(),
-			Name: $("#SortOrderColumnID option:selected").text(),
-			Order: $("#SortOrderOrder:checked").val(),
-			Sequence: $("#SortOrderSequence").val(),
-			BreakOnChange: $("#BreakOnChange").is(':checked'),
-			PageOnChange: $("#PageOnChange").is(':checked'),
-			ValueOnChange: $("#ValueOnChange").is(':checked'),
-			SuppressRepeated: $("#SuppressRepeated").is(':checked')	
+			TableID: $("#frmPostSortOrder #SortOrderTableID").val(),
+			ColumnID: $("#frmPostSortOrder #SortOrderColumnID").val(),
+			Name: $("#frmPostSortOrder #SortOrderColumnID option:selected").text(),
+			Order: $("#frmPostSortOrder #SortOrderOrder:checked").val(),
+			Sequence: $("#frmPostSortOrder #SortOrderSequence").val(),
+			BreakOnChange: $("#frmPostSortOrder #BreakOnChange").is(':checked'),
+			PageOnChange: $("#frmPostSortOrder #PageOnChange").is(':checked'),
+			ValueOnChange: $("#frmPostSortOrder #ValueOnChange").is(':checked'),
+			SuppressRepeated: $("#frmPostSortOrder #SuppressRepeated").is(':checked')
 		};
 
 		// Post to server
@@ -115,26 +113,22 @@ End Code
 		// Update client
 		$('#SortOrders').jqGrid('delRowData', '@Model.ID')
 		var su = $("#SortOrders").jqGrid('addRowData', '@Model.ID', datarow);
-		$('#SortOrders').setGridParam({ sortname: 'Sequence' }).trigger('reloadGrid');
-		$('#SortOrders').jqGrid("setSelection", '@Model.ID');
+		
+		$('#SortOrders').setGridParam({ sortname: 'Sequence' }).trigger('reloadGrid');		
+		$('#SortOrders').jqGrid("setSelection", '@Model.ID');	
 
-		if ($("#IsNew").val() == "True") {
+		// Set rRowid back to what it was
+		if ($("#IsNew").val().toUpperCase() == "TRUE") {
 			$("#SortOrdersAvailable").val(parseInt($("#SortOrdersAvailable").val()) - 1);
 		}
 
 		button_disable($("#btnSortOrderAdd")[0], ($("#SortOrdersAvailable").val() == 0));
-
-		$("#divPopupReportDefinition").dialog("close");
-		$("#divPopupReportDefinition").empty();
-
-		// enable save button
-		enableSaveButton();
+		closeThisSortOrder();
 	}
 
 	function closeThisSortOrder() {
+		enableSaveButton();
 		$("#divPopupReportDefinition").dialog("close");
 		$("#divPopupReportDefinition").empty();
 	}
-
-
 </script>

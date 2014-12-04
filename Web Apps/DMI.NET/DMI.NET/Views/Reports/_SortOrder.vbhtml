@@ -29,13 +29,13 @@
 	<script type="text/javascript">
 
 		function refreshSortButtons() {
-
+		
 			var isReadonly = isDefinitionReadOnly();
 			var bDisableRemoveAll = ($("#SortOrders").getGridParam("reccount") == 0) || ($("#SelectedColumns").getGridParam("reccount") == 0);
 			var isTopRow = false;
 			var isBottomRow = false;
 			var isRowSelected = ($("#SortOrders").jqGrid('getGridParam', 'selrow') > 0);
-
+			
 			if (isRowSelected) {
 				var rowId = $("#SortOrders").jqGrid('getGridParam', 'selrow');
 				var allRows = $("#SortOrders")[0].rows;
@@ -92,10 +92,8 @@
 			refreshSortButtons();
 
 		}
-
-
+		
 		function attachGrid() {
-
 
 			$("#SortOrders").jqGrid({
 				datatype: 'jsonstring',
@@ -146,6 +144,7 @@
 				onSelectRow: function (id) {
 					refreshSortButtons();
 				},
+				afterInsertRow: function (rowID) { CheckBoxClick(); },
 				loadComplete: function (data) {
 
 					if ('@Model.ReportType' == '@UtilityType.utlCustomReport') {
@@ -155,13 +154,55 @@
 						$(this).showCol("SuppressRepeated");
 					}
 
-					$('#SortOrders input[type=checkbox]').on('click', function () { enableSaveButton(); });
-
 					var topID = $("#SortOrders").getDataIDs()[0]
 					$("#SortOrders").jqGrid("setSelection", topID);
 				}
 			});
+		}
 
+		function CheckBoxClick() {
+			$("#SortOrders").find('input[type=checkbox]').each(function () {				
+				$(this).change(function () {					
+					var colid = $(this).parents('tr:last').attr('id');
+					var PageOnChangeColumn = $(this).parents('td').attr('aria-describedby') != "SortOrders_PageOnChange";
+					var BreakOnChangeColumn = $(this).parents('td').attr('aria-describedby') != "SortOrders_BreakOnChange";
+					var chkCol = checkIsHiddenColumn(colid);
+
+					$("#SortOrders").jqGrid('setSelection', colid);
+
+					if ($(this).is(':checked')) {
+						if (chkCol && PageOnChangeColumn && BreakOnChangeColumn) {
+							// Tell the user this column is hidden											
+							OpenHR.modalMessage("This column is marked as hidden in the 'Columns / Calculated Selected' section under Columns Tab.");
+							$(this).prop('checked', false);
+						} else {
+							// Tick the column without asking as its not hidden																
+							$(this).prop('checked', true);
+						}
+					}
+				});
+			});
+		}
+
+		function checkIsHiddenColumn(colid) {
+			
+			var checkThisRowID = colid;
+			var gridData = $("#SortOrders").getRowData(checkThisRowID);
+			// If a Value On Change or Suppressed checkbox is checked at run time then before ticking it check if it is a hidden column			
+			var arraybob = $('#SelectedColumns tbody tr').map(function () {				
+				var $row = $(this);
+				return {
+					SelectedColumns_IsHidden: $row.find(':nth-child(14)').text(),
+					SelectedColumns_ID: $row.find(':nth-child(2)').text()
+				};
+			}).get();			
+
+			for (var i = 0; i < arraybob.length; i++) {
+				if ((arraybob[i].SelectedColumns_ID == gridData.ColumnID) && (arraybob[i].SelectedColumns_IsHidden.toUpperCase() == "TRUE")) {
+					return true;
+				}
+			}
+			return false;
 		}
 
 		function addSortOrder() {
@@ -176,7 +217,6 @@
 
 			var gridData = $("#SortOrders").getRowData(rowID);
 			OpenHR.OpenDialog("Reports/EditSortOrder", "divPopupReportDefinition", gridData, 'auto');
-
 		}
 
 		function moveSelectedOrder(direction) {

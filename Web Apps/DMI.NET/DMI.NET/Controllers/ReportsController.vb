@@ -139,13 +139,13 @@ Namespace Controllers
 						If columnItem.IsHidden = True Then
 							For Each sortorderitem In objModel.SortOrders
 								If sortorderitem.SuppressRepeated = True And columnItem.Name = sortorderitem.Name Then
-									ModelState.AddModelError("IsHidddenParmCorrect", "The column <strong>" & (columnItem.Name) & "</strong> has 'Suppress Repeated Values' ticked on the Sort Order tab. <br/><br/>Hidden columns can not have 'Suppress Repeated Values' or 'Value On Change' ticked.")
+									ModelState.AddModelError("IsHidddenParmCorrect", "The column '" & columnItem.Name & "' has 'Suppress Repeated Values' ticked on the Sort Order tab. <br/><br/>Hidden columns can not have 'Suppress Repeated Values' or 'Value On Change' ticked.")
 									breakNestedLoop = True
 									Exit For
 								End If
 
 								If sortorderitem.ValueOnChange = True And columnItem.Name = sortorderitem.Name Then
-									ModelState.AddModelError("IsHidddenParmCorrect", "The column <strong>" & (columnItem.Name) & "</strong> has 'Value On Change' ticked on the Sort Order tab.   <br/><br/>Hidden columns can not have 'Suppress Repeated Values' or 'Value On Change' ticked.")
+									ModelState.AddModelError("IsHidddenParmCorrect", "The column '" & columnItem.Name & "' has 'Value On Change' ticked on the Sort Order tab.   <br/><br/>Hidden columns can not have 'Suppress Repeated Values' or 'Value On Change' ticked.")
 									breakNestedLoop = True
 									Exit For
 								End If

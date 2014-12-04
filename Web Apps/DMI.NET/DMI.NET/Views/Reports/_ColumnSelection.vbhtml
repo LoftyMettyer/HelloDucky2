@@ -503,6 +503,7 @@
 			$('#SelectedColumnIsTotal').prop('checked', false);
 			$('#SelectedColumnIsGroupWithNext').prop('checked', false);
 			$('#SelectedColumnIsRepeated').prop('checked', false);			
+			UpdateSortOrderItem();
 		}
 
 		refreshcolumnPropertiesPanel();
@@ -568,7 +569,7 @@
 			isBottomRow = (rowId == allRows[allRows.length - 1]);
 		}
 
-		if (rowCount > 1 || allRows.length == 0) {		    
+		if (rowCount > 1 || allRows.length == 0) {
 			$("#definitionColumnProperties :input").attr("disabled", true);
 			$("#SelectedColumnHeading").val("");
 			$("#SelectedColumnSize").val("");
@@ -647,6 +648,25 @@
 		button_disable($("#btnColumnMoveUp")[0], isTopRow || isReadOnly || (rowCount > 1));
 		button_disable($("#btnColumnMoveDown")[0], isBottomRow || isReadOnly || (rowCount > 1));
 
+	}
+
+	function UpdateSortOrderItem() {
+		var rowId = $("#SelectedColumns").jqGrid('getGridParam', 'selrow');
+		var dataRow = $('#SelectedColumns').jqGrid('getRowData', rowId);
+		//Find row in Sort Order columns to see if Value On Change or Suppress Repeated Values is ticked.
+		var gridData = $("#SortOrders").getRowData();		
+		var columnList = $("#SortOrders").getDataIDs();
+
+		for (i = 0; i < columnList.length; i++) {
+			if (gridData[i].ColumnID == dataRow.ID) {				
+				if (gridData[i].SuppressRepeated.toUpperCase() == "TRUE" || gridData[i].ValueOnChange.toUpperCase() == "TRUE") {
+					OpenHR.modalMessage("Either 'Value On Change' or 'Suppress Repeated' values are ticked for this column in the Sort Order tab." + "<br/><br/>" +
+															"Please un-tick these values before making '" + gridData[i].Name + "' hidden.");
+					$("#SelectedColumnIsHidden").prop('checked', false);					
+					break
+				}
+			}
+		}
 	}
 
 	function updateColumnsSelectedGrid() {
