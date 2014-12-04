@@ -1,4 +1,7 @@
-﻿Imports System.ComponentModel.DataAnnotations
+﻿Option Explicit On
+Option Strict On
+
+Imports System.ComponentModel.DataAnnotations
 Imports System.Web.HttpContext
 Imports DMI.NET.Code
 Imports System.Data.SqlClient
@@ -39,7 +42,7 @@ Namespace Models
 
 		Public Property SecurityGroup As String
 
-		Public ReadOnly Property DeviceBrowser
+		Public ReadOnly Property DeviceBrowser As String
 			Get
 				Return String.Format("{0} ({1})", Device, Browser)
 			End Get
@@ -65,8 +68,14 @@ Namespace Models
 		Public Sub New()
 
 			Try
-				Dim objUserMachine = System.Net.Dns.GetHostEntry(Current.Request.UserHostName)
-				Device = objUserMachine.HostName
+
+				If Current.Request.Browser.IsMobileDevice Then
+					Device = "Mobile Device"
+				Else
+					Dim objUserMachine = System.Net.Dns.GetHostEntry(Current.Request.UserHostName)
+					Device = objUserMachine.HostName
+				End If
+
 				Browser = String.Format("{0} {1}", Current.Request.Browser.Browser, Current.Request.Browser.MajorVersion)
 
 			Catch ex As Exception
