@@ -1818,7 +1818,7 @@ Private Function ChangeConnectParam(strConString As String, strParameter As Stri
 End Function
 
 ' Loads which columns are displayed in the listviews
-Private Sub LoadShowWhichColumns()
+Public Sub LoadShowWhichColumns()
 
   gbRememberDBColumnsView = GetSystemSetting("General", "RememberColumnsView", False)
   

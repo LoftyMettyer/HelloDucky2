@@ -533,6 +533,7 @@ Private Sub cmdApply_Click()
         gbLicenceExpired = False
         CheckLicence
         
+        LoadShowWhichColumns
         CreateSP_CalculateHeadcount
         
         blnCorrectKey = True
