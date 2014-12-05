@@ -1,4 +1,5 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
+<%@ Import Namespace="DMI.NET.Classes" %>
 <%@ Import Namespace="DMI.NET" %>
 <%@ Import Namespace="HR.Intranet.Server" %>
 <%@ Import Namespace="System.Data" %>
@@ -90,46 +91,50 @@
 </script>
 
 <script runat="server">
-		Private ReadOnly _PendingWorkflowStepsHTMLTable As New StringBuilder 'Used to construct the (temporary) HTML table that will be transformed into a jQuey grid table
-		Private _StepCount As Integer = 0
-		Private _WorkflowGood As Boolean = True
+	Private ReadOnly _PendingWorkflowStepsHTMLTable As New StringBuilder 'Used to construct the (temporary) HTML table that will be transformed into a jQuery grid table
+	Private _StepCount As Integer = 0
+	Private _WorkflowEnabled As Boolean
 		
+	'Get the pendings workflow steps from the database
 	Private Sub GetPendingWorkflowSteps()
 		
 		Dim objSession As SessionInfo = CType(Session("SessionContext"), SessionInfo)
 		Dim objDataAccess As New clsDataAccess(objSession.LoginInfo)
 
-		'Get the pendings workflow steps from the database
-		Dim _rstDefSelRecords = objDataAccess.GetDataTable("spASRIntCheckPendingWorkflowSteps", CommandType.StoredProcedure)
-					
-		If Err.Number <> 0 Then
-			
-			' Workflow not licensed or configured. Go to default page.
-			_WorkflowGood = False
-		Else
-			With _PendingWorkflowStepsHTMLTable
-				.Append("<table id=""PendingStepsTable"">")
-				.Append("<tr>")
-				.Append("<th id=""Name"">Name</th>")
-				.Append("<th id=""URL"">URL</th>")
-				.Append("</tr>")
-			End With
-			'Loop over the records
-			For Each objRow As DataRow In _rstDefSelRecords.Rows
-				
-				_StepCount += 1
+		Try
+
+			If Licence.IsModuleLicenced(SoftwareModule.Workflow) Then
+				Dim _rstDefSelRecords = objDataAccess.GetDataTable("spASRIntCheckPendingWorkflowSteps", CommandType.StoredProcedure)
+
 				With _PendingWorkflowStepsHTMLTable
+					.Append("<table id=""PendingStepsTable"">")
 					.Append("<tr>")
-					.Append("<td>" & objRow("description").ToString() & "</td>")
-					.Append("<td>" & objRow("url").ToString() & "</td>")
+					.Append("<th id=""Name"">Name</th>")
+					.Append("<th id=""URL"">URL</th>")
 					.Append("</tr>")
 				End With
-			Next
+				'Loop over the records
+				For Each objRow As DataRow In _rstDefSelRecords.Rows
+				
+					_StepCount += 1
+					With _PendingWorkflowStepsHTMLTable
+						.Append("<tr>")
+						.Append("<td>" & objRow("description").ToString() & "</td>")
+						.Append("<td>" & objRow("url").ToString() & "</td>")
+						.Append("</tr>")
+					End With
+				Next
 						
-			_PendingWorkflowStepsHTMLTable.Append("</table>")
-						
-		End If
+				_PendingWorkflowStepsHTMLTable.Append("</table>")
+				_WorkflowEnabled = True
+				
+			End If
 			
+		Catch ex As Exception
+			_WorkflowEnabled = False
+			
+		End Try
+		
 
 	End Sub
 		
@@ -206,7 +211,7 @@
 <div <%=session("BodyTag")%>>
 
 	<form name="frmDefSel" method="post" id="frmDefSel">
-		<%If (_WorkflowGood = True) Or (Session("fromMenu") = 1) Then%>
+		<%If (_WorkflowEnabled = True) Or (Session("fromMenu") = 1) Then%>
 		<% If _StepCount > 0 Then%>
 		<div class="absolutefull">
 			<div id="row1" style="margin-left: 20px; margin-right: 20px">
@@ -260,7 +265,7 @@
 		<%							
 		Else
 			Dim sMessage As String
-			If _WorkflowGood = True Then
+			If _WorkflowEnabled = True Then
 				sMessage = "No Pending Workflow Steps"
 			Else
 				sMessage = "Error getting the pending workflow steps"

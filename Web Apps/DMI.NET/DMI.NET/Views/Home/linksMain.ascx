@@ -3,6 +3,7 @@
 	Response.AddHeader("Pragma", "no-cache")
 	Response.Expires = -1%>
 <%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl(Of HR.Intranet.Server.NavLinksViewModel)" %>
+<%@ Import Namespace="DMI.NET.Classes" %>
 <%@ Import Namespace="DMI.NET.Code" %>
 <%@ Import Namespace="DMI.NET" %>
 <%@ Import Namespace="HR.Intranet.Server.Enums" %>
@@ -24,49 +25,51 @@
 <%Session("recordID") = 0
 	Session("singleRecordID") = 0
 	
-	Dim fWFDisplayPendingSteps As Boolean = NullSafeInteger(Session("SSILinkViewID")) = NullSafeInteger(Session("SingleRecordViewID"))
+	Dim fWFDisplayPendingSteps As Boolean
 	Dim _PendingWorkflowStepsHTMLTable As New StringBuilder	'Used to construct the (temporary) HTML table that will be transformed into a jQuey grid table
 	Dim _StepCount As Integer = 0
-	Dim _WorkflowGood As Boolean = True
 
 	Dim objSession As SessionInfo = CType(Session("SessionContext"), SessionInfo)
 	Dim objDataAccess As New clsDataAccess(objSession.LoginInfo)
 	
-	'Get the pendings workflow steps from the database
-	Try
-		
-		Dim _rstDefSelRecords = objDataAccess.GetDataTable("spASRIntCheckPendingWorkflowSteps", CommandType.StoredProcedure)
-		
-		With _PendingWorkflowStepsHTMLTable
-			.Append("<table id=""PendingStepsTable_Dash"">")
-			.Append("<tr>")
-			.Append("<th id=""DescriptionHeader"">Description</th>")
-			.Append("<th id=""URLHeader"">URL</th>")
-			.Append("<th id=""NameHeader"">URL</th>")
-			.Append("</tr>")
-		End With
-		'Loop over the records
-		For Each objRow As DataRow In _rstDefSelRecords.Rows
+	'Get the pendings workflow steps from the database	
+	If Licence.IsModuleLicenced(SoftwareModule.Workflow) Then
+
+		Try
 			
-			_StepCount += 1
+			fWFDisplayPendingSteps = NullSafeInteger(Session("SSILinkViewID")) = NullSafeInteger(Session("SingleRecordViewID"))
+			
+			Dim _rstDefSelRecords = objDataAccess.GetDataTable("spASRIntCheckPendingWorkflowSteps", CommandType.StoredProcedure)
+		
 			With _PendingWorkflowStepsHTMLTable
+				.Append("<table id=""PendingStepsTable_Dash"">")
 				.Append("<tr>")
-				.Append("<td>" & objRow("description").ToString() & "</td>")
-				.Append("<td>" & objRow("url").ToString() & "</td>")
-				.Append("<td>" & objRow("name").ToString() & "</td>")
+				.Append("<th id=""DescriptionHeader"">Description</th>")
+				.Append("<th id=""URLHeader"">URL</th>")
+				.Append("<th id=""NameHeader"">URL</th>")
 				.Append("</tr>")
 			End With
-		Next
+			'Loop over the records
+			For Each objRow As DataRow In _rstDefSelRecords.Rows
+			
+				_StepCount += 1
+				With _PendingWorkflowStepsHTMLTable
+					.Append("<tr>")
+					.Append("<td>" & objRow("description").ToString() & "</td>")
+					.Append("<td>" & objRow("url").ToString() & "</td>")
+					.Append("<td>" & objRow("name").ToString() & "</td>")
+					.Append("</tr>")
+				End With
+			Next
 						
-		_PendingWorkflowStepsHTMLTable.Append("</table>")
+			_PendingWorkflowStepsHTMLTable.Append("</table>")
 				
 		
-	Catch ex As Exception
-		_WorkflowGood = False
+		Catch ex As Exception
+			Throw
 		
-		
-	End Try
-
+		End Try
+	End If
 		
 %>
 
@@ -706,8 +709,8 @@
 						</li>
 						<%iRowNum += 1%>
 
-						<%Case ElementType.PendingWorkflows
-								sText = "No pending workflow steps"								
+						<%Case ElementType.PendingWorkflows And Licence.IsModuleLicenced(SoftwareModule.Workflow)
+								sText = "No pending workflow steps"
 								sText = String.Format("{0} Pending workflow step{1}", _StepCount, IIf(_StepCount <> 1, "s", ""))
 								%>
 						<li data-col="<%=iColNum %>" data-row="<%=iRowNum %>" data-sizex="2" data-sizey="1" style="<%:sTileBackColourStyle%><%:sTileForeColourStyle%>" class="linkspagebuttontext <%=sTileColourClass%> displayonly pwfslink" onclick="relocateURL('WorkflowPendingSteps', 0)">

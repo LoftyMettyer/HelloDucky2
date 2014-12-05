@@ -535,6 +535,7 @@ Private Sub cmdApply_Click()
         
         LoadShowWhichColumns
         CreateSP_CalculateHeadcount
+        ConfigureWorkflowSpecifics
         
         blnCorrectKey = True
         frmSysMgr.RefreshMenu
