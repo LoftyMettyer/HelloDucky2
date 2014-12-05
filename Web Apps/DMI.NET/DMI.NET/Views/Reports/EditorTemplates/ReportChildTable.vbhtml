@@ -50,10 +50,10 @@ End Code
 				<div class="stretchyfixed">
 					@Html.LabelFor(Function(m) m.Records)
 				</div>
-				<div class="stretchyfill">
-                    @Html.TextBoxFor(Function(m) m.Records, New With {.id = "txtChildRecords", .class = "spinner"})
-				</div>
-			</div>
+				<div class="tablecell">
+          @Html.TextBoxFor(Function(m) m.Records, New With {.id = "txtChildRecords", .class = "spinner"})					
+				</div>				
+				<div class="tablecell vertalignmid padleft20" id="AllRecordsReminder">All Records</div>
 		</div>
 
 		<div id="divChildTablesButtons" class="clearboth">
@@ -61,55 +61,59 @@ End Code
 			<input type="button" value="Cancel" id="butEditChildTableCancel" onclick="closeThisChildTable();" />
 		</div>
 	</div>
-
+	</div>
 </div>
+
 @Code
 	Html.EndForm()
 End Code
 <script>
 
-    $(function () {
+	$(function () {
+	
+		//add spinner functionality
+		$('.spinner').each(function () {
+			var id = $(this).attr('id');
+			var minvalue = $(this).attr('data-minval');
+			var maxvalue = $(this).attr('data-maxval');
+			var increment = $(this).attr('data-increment');
+			var disabledflag = $(this).attr('data-disabled');
+			
+			$('#' + id).spinner({				
+				min: minvalue,
+				max: maxvalue,
+				step: increment,
+				disabled: disabledflag,
+				spin: function (event, ui) { enableSaveButton(); }
+			}).on('input', function () {
+				if (this.value == "") {					
+					return;
+				}
+				var val = parseInt(this.value, 10),
+				$this = $(this),
+				max = $this.spinner('option', 'max'),
+				min = $this.spinner('option', 'min');				
+				this.value = val > max ? max : val < min ? min : val;				
+			}).blur(function () {
+				if (this.value == "") this.value = 0;				
+			});		
+		});
 
-        //add spinner functionality
-        $('.spinner').each(function () {
-            var id = $(this).attr('id');
-            var minvalue = $(this).attr('data-minval');
-            var maxvalue = $(this).attr('data-maxval');
-            var increment = $(this).attr('data-increment');
-            var disabledflag = $(this).attr('data-disabled');
+		//set the records field to numeric
+		$('#txtChildRecords').numeric();
 
-            $('#' + id).spinner({
-                min: minvalue,
-                max: maxvalue,
-                step: increment,
-                disabled: disabledflag,
-                spin: function (event, ui) { enableSaveButton(); }
-            }).on('input', function () {
-                if (this.value == "") {
-                    return;
-                }
-                var val = parseInt(this.value, 10),
-                $this = $(this),
-                max = $this.spinner('option', 'max'),
-                min = $this.spinner('option', 'min');
-                //if (!val.match(/^\d+$/)) val = 0; //we want only number, no alpha			                
-                this.value = val > max ? max : val < min ? min : val;
-            }).blur(function () {
-                if (this.value == "") this.value = 0;
-            });
-        });
-
-        //set the records field to numeric
-        $('#txtChildRecords').numeric();
+		// initialise All Records text label
+		hideAllRecords();
 
 		//some styling
 		$(".spinner").spinner({
 			min: 0,
 			max: 999,
-			showOn: 'both'
+			showOn: 'both',
+			stop: hideAllRecords
 		}).css("width", "60px");
 
-        //set the fields to read only
+		//set the fields to read only
 		if (isDefinitionReadOnly()) {
 			$("#frmPostChildTable input").prop('disabled', "disabled");
 			$("#frmPostChildTable select").prop('disabled', "disabled");
@@ -118,7 +122,17 @@ End Code
 		}
 
 		button_disable($("#butEditChildTableCancel")[0], false);
-	})
+		})
+
+
+	function hideAllRecords() {
+		// Hide All Records if spinner is not 0		then toggle visibility		
+		if ($('#txtChildRecords').val() == 0) {
+			$('#AllRecordsReminder').text('All Records');
+		} else {
+			$('#AllRecordsReminder').text('');
+		}		
+	}
 
 	function changeChildTable() {
 		$("#txtChildFilterID").val(0);

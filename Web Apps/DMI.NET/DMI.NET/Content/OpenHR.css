@@ -1293,7 +1293,9 @@ div.displaytable {
 	width: 160px;
 }
 
-
+.vertalignmid {
+	vertical-align:middle;
+}
 
 #tblNineBox {
 	padding: 0;
