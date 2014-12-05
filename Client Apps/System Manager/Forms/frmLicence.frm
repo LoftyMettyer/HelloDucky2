@@ -524,6 +524,8 @@ Private Sub cmdApply_Click()
 
       .Show vbModal
       If Not .Cancelled Then
+      
+        Screen.MousePointer = vbHourglass
     
         SaveSystemSetting "Licence", "Customer Name", txtCustName.Text
         SaveSystemSetting "Licence", "Customer No", txtCustNo.Text
@@ -539,6 +541,9 @@ Private Sub cmdApply_Click()
         
         blnCorrectKey = True
         frmSysMgr.RefreshMenu
+        
+        Screen.MousePointer = vbDefault
+       
         MsgBox "Licence details amended successfully", vbExclamation, "Licence Key"
         
         UnLoad Me
