@@ -97,6 +97,14 @@ IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[sp_ASRIntG
 	DROP PROCEDURE [dbo].[sp_ASRIntGetFindRecords3];
 GO
 
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[sp_ASRIntGetSystemSetting]') AND type in (N'P', N'PC'))
+	DROP PROCEDURE [dbo].[sp_ASRIntGetSystemSetting]
+GO
+
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[sp_ASRIntGetSetting]') AND type in (N'P', N'PC'))
+	DROP PROCEDURE [dbo].[sp_ASRIntGetSetting]
+GO
+
 
 
 -- Functions we do want to keep
@@ -4918,10 +4926,6 @@ BEGIN
 
 	SET NOCOUNT ON;
 
-	DECLARE @licenseKey			varchar(MAX);
-
-	EXEC [dbo].[sp_ASRIntGetSystemSetting] 'Licence', 'Key', 'moduleCode', @licenseKey OUTPUT, 0, 0;
-
 	SELECT TableID, TableName, TableType, DefaultOrderID, RecordDescExprID FROM dbo.ASRSysTables;
 
 	SELECT ColumnID, TableID, ColumnName, DataType, ColumnType, Use1000Separator, Size, Decimals, LookupTableID, LookupColumnID FROM dbo.ASRSysColumns;
@@ -4942,7 +4946,6 @@ BEGIN
 	
 	-- Selected system settings
 	SELECT * FROM ASRSysSystemSettings;
-
 
 END
 GO
@@ -11406,6 +11409,149 @@ BEGIN
 END
 GO
 
+IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spASRIntGetSetting]') AND xtype in (N'P'))
+	DROP PROCEDURE [dbo].[spASRIntGetSetting];
+GO
+
+CREATE PROCEDURE [dbo].[spASRIntGetSetting] (
+	@psSection		varchar(MAX),
+	@psKey			varchar(MAX),
+	@psDefault		varchar(MAX),
+	@pfUserSetting	bit,
+	@psResult		varchar(MAX)	OUTPUT
+)
+AS
+BEGIN
+
+	SET NOCOUNT ON;
+
+	/* Return the required user or system setting. */
+	DECLARE	@iCount	integer;
+
+	IF @pfUserSetting = 1
+	BEGIN
+		SELECT @iCount = COUNT(userName)
+		FROM ASRSysUserSettings
+		WHERE userName = SYSTEM_USER
+			AND section = @psSection		
+			AND settingKey = @psKey;
+
+		SELECT @psResult = settingValue 
+		FROM ASRSysUserSettings
+		WHERE userName = SYSTEM_USER
+			AND section = @psSection		
+			AND settingKey = @psKey;
+	END
+	ELSE
+	BEGIN
+		SELECT @iCount = COUNT(settingKey)
+		FROM ASRSysSystemSettings
+		WHERE section = @psSection		
+			AND settingKey = @psKey;
+
+		SELECT @psResult = settingValue 
+		FROM ASRSysSystemSettings
+		WHERE section = @psSection		
+			AND settingKey = @psKey;
+	END
+
+	IF @iCount = 0
+	BEGIN
+		SET @psResult = @psDefault;	
+	END
+END
+GO
+
+IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spASRIntGetStandardReportDates]') AND xtype in (N'P'))
+	DROP PROCEDURE [dbo].[spASRIntGetStandardReportDates];
+GO
+
+CREATE PROCEDURE [dbo].[spASRIntGetStandardReportDates] (
+	@piReportType 		integer
+)
+AS
+BEGIN
+
+	SET NOCOUNT ON;
+
+	/* Return a recordset of the prompted values for the given utililty. */
+	DECLARE	@sComponents			varchar(MAX),
+			@vDateID				varchar(100),
+			@iStartDateID			integer,
+			@iEndDateID				integer,
+			@iStartDateComponentID	integer,
+			@iEndDateComponentID	integer;
+
+	/* Create a temp table to hold the propmted value details. */
+	DECLARE @promptedValues TABLE(
+		componentID			integer,
+		promptDescription	varchar(255),
+		valueType			integer,
+		promptMask			varchar(255),
+		promptSize			integer,
+		promptDecimals		integer,
+		valueCharacter		varchar(255),
+		valueNumeric		float,
+		valueLogic			bit,
+		valueDate			datetime,
+		promptDateType		integer, 
+		fieldColumnID		integer,
+		StartEndType		varchar(5)
+	)
+
+	-- Absence Breakdown	
+	IF @piReportType = 15
+	BEGIN
+		EXEC dbo.spASRIntGetSetting 'AbsenceBreakdown', 'Start Date', 0, 0, @vDateID OUTPUT;
+		SET @iStartDateID = convert(integer,@vDateID);
+
+		EXEC dbo.spASRIntGetSetting 'AbsenceBreakdown', 'End Date', 0, 0, @vDateID OUTPUT;
+		SET @iEndDateID = convert(integer,@vDateID);
+	END
+
+	-- Bradford Factor
+	IF @piReportType = 16
+	BEGIN
+		EXEC dbo.spASRIntGetSetting 'BradfordFactor', 'Start Date', 0, 0, @vDateID OUTPUT;
+		SET @iStartDateID = convert(integer,@vDateID);
+
+		EXEC dbo.spASRIntGetSetting 'BradfordFactor', 'End Date', 0, 0, @vDateID OUTPUT;
+		SET @iEndDateID = convert(integer,@vDateID);
+	END
+
+	/* Start Date prompted value. */		
+	IF @iStartDateID > 0
+	BEGIN
+		EXEC sp_ASRIntGetFilterPromptedValues @iStartDateID, @sComponents OUTPUT
+		SET @iStartDateComponentID = @sComponents
+
+		INSERT INTO @promptedValues
+			(componentID, promptDescription, valueType, promptMask, promptSize, promptDecimals, valueCharacter, valueNumeric, valueLogic, valueDate, promptDateType, fieldColumnID,StartEndType)
+		(SELECT componentID, promptDescription, valueType, promptMask, promptSize, promptDecimals, valueCharacter, valueNumeric, valueLogic, valueDate, promptDateType, fieldColumnID,'start'
+			FROM ASRSysExprComponents
+			WHERE componentID = @iStartDateComponentID)
+	END
+
+	/* End Date prompted value. */
+	IF @iEndDateID > 0
+	BEGIN
+		EXEC sp_ASRIntGetFilterPromptedValues @iEndDateID, @sComponents OUTPUT
+		SET @iEndDateComponentID = @sComponents
+
+		INSERT INTO @promptedValues
+			(componentID, promptDescription, valueType, promptMask, promptSize, promptDecimals, valueCharacter, valueNumeric, valueLogic, valueDate, promptDateType, fieldColumnID,StartEndType)
+		(SELECT componentID, promptDescription, valueType, promptMask, promptSize, promptDecimals, valueCharacter, valueNumeric, valueLogic, valueDate, promptDateType, fieldColumnID,'end'
+			FROM ASRSysExprComponents
+			WHERE componentID = @iEndDateComponentID)
+	END
+
+
+	SELECT DISTINCT * 
+	FROM @promptedValues
+	ORDER BY startEndType DESC;
+	
+END
+GO
 
 GO
 DECLARE @sSQL nvarchar(MAX),

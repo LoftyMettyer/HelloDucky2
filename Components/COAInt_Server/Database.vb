@@ -75,7 +75,7 @@ Public Class Database
 
 		Try
 
-			DB.ExecuteSP("sp_ASRIntGetSetting" _
+			DB.ExecuteSP("spASRIntGetSetting" _
 					, New SqlParameter("psSection", SqlDbType.VarChar, -1) With {.Value = strSection} _
 					, New SqlParameter("psKey", SqlDbType.VarChar, -1) With {.Value = strKey} _
 					, New SqlParameter("psDefault", SqlDbType.VarChar, -1) With {.Value = varDefault} _
@@ -97,7 +97,7 @@ Public Class Database
 
 		Try
 
-			DB.ExecuteSP("sp_ASRIntGetSetting" _
+			DB.ExecuteSP("spASRIntGetSetting" _
 					, New SqlParameter("psSection", SqlDbType.VarChar, -1) With {.Value = strSection} _
 					, New SqlParameter("psKey", SqlDbType.VarChar, -1) With {.Value = strKey} _
 					, New SqlParameter("psDefault", SqlDbType.VarChar, -1) With {.Value = varDefault} _

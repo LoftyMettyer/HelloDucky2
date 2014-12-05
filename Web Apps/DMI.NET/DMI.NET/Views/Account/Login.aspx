@@ -113,6 +113,7 @@
 
 				if (disabled) {
 					$('#systemLocked').removeClass('hidden');
+					$('#systemLocked')[0].innerHTML = message;
 					$('#divLoginDetails').hide();
 				}
 				else {

@@ -19,9 +19,10 @@ Namespace Code.Hubs
 		Public Shared ServiceBrokerOK As Boolean
 		Public Shared HeartbeatOK As Boolean
 		Public Shared SystemLockStatus As LockPriority = LockPriority.None
+		Public Shared LockMessage As String
 
 		Public Overrides Function OnConnected() As Task
-			ToggleLoginButton(Not SystemLockStatus = LockPriority.None, "")
+			ToggleLoginButton(Not SystemLockStatus = LockPriority.None, LockMessage)
 			Return MyBase.OnConnected()
 		End Function
 
@@ -120,7 +121,8 @@ Namespace Code.Hubs
 
 			Try
 
-				Const DBDocked = "A system administrator has locked the database."
+				Dim objDataAccess As New clsDataAccess(ConfigurationManager.ConnectionStrings("OpenHR").ConnectionString)
+				Dim prmResult = New SqlParameter("psResult", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
 
 				Dim dt As New DataTable()
 
@@ -145,7 +147,30 @@ Namespace Code.Hubs
 				Next
 
 				SystemLockStatus = iPriority
-				ToggleLoginButton(Not SystemLockStatus = LockPriority.None, DBDocked)
+
+				If SystemLockStatus = LockPriority.Manual Then
+					objDataAccess.ExecuteSP("spASRIntGetSetting" _
+							, New SqlParameter("psSection", SqlDbType.VarChar, -1) With {.Value = "messaging"} _
+							, New SqlParameter("psKey", SqlDbType.VarChar, -1) With {.Value = "lockmessage"} _
+							, New SqlParameter("psDefault", SqlDbType.VarChar, -1) With {.Value = "A system administrator has locked the database."} _
+							, New SqlParameter("pfUserSetting", SqlDbType.Bit) With {.Value = False} _
+							, prmResult)
+					LockMessage = prmResult.Value.ToString
+
+				ElseIf SystemLockStatus = LockPriority.Saving Then
+					objDataAccess.ExecuteSP("spASRIntGetSetting" _
+							, New SqlParameter("psSection", SqlDbType.VarChar, -1) With {.Value = "messaging"} _
+							, New SqlParameter("psKey", SqlDbType.VarChar, -1) With {.Value = "lockmessage"} _
+							, New SqlParameter("psDefault", SqlDbType.VarChar, -1) With {.Value = "A database system save is in progress."} _
+							, New SqlParameter("pfUserSetting", SqlDbType.Bit) With {.Value = False} _
+							, prmResult)
+					LockMessage = prmResult.Value.ToString
+				Else
+					LockMessage = "A system administrator has locked the database."
+
+				End If
+
+				ToggleLoginButton(Not SystemLockStatus = LockPriority.None, LockMessage)
 
 			Catch ex As Exception
 				Throw

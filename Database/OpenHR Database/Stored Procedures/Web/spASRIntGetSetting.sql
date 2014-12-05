@@ -1,4 +1,4 @@
-CREATE PROCEDURE [dbo].[sp_ASRIntGetSetting] (
+CREATE PROCEDURE [dbo].[spASRIntGetSetting] (
 	@psSection		varchar(MAX),
 	@psKey			varchar(MAX),
 	@psDefault		varchar(MAX),

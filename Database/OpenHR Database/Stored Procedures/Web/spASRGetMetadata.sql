@@ -5,10 +5,6 @@ BEGIN
 
 	SET NOCOUNT ON;
 
-	DECLARE @licenseKey			varchar(MAX);
-
-	EXEC [dbo].[sp_ASRIntGetSystemSetting] 'Licence', 'Key', 'moduleCode', @licenseKey OUTPUT, 0, 0;
-
 	SELECT TableID, TableName, TableType, DefaultOrderID, RecordDescExprID FROM dbo.ASRSysTables;
 
 	SELECT ColumnID, TableID, ColumnName, DataType, ColumnType, Use1000Separator, Size, Decimals, LookupTableID, LookupColumnID FROM dbo.ASRSysColumns;
@@ -29,7 +25,6 @@ BEGIN
 	
 	-- Selected system settings
 	SELECT * FROM ASRSysSystemSettings;
-
 
 END
 

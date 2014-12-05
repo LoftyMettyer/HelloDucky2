@@ -144,10 +144,9 @@
     <Build Include="Stored Procedures\Web\sp_ASRIntGetScreenDefinition.sql" />
     <Build Include="Stored Procedures\Web\sp_ASRIntGetScreenOrder.sql" />
     <Build Include="Stored Procedures\Web\sp_ASRIntGetSelectedPicklistRecords.sql" />
-    <Build Include="Stored Procedures\Web\sp_ASRIntGetSetting.sql" />
+    <Build Include="Stored Procedures\Web\spASRIntGetSetting.sql" />
     <Build Include="Stored Procedures\Web\sp_ASRIntGetSubExpressionsAndComponents.sql" />
     <Build Include="Stored Procedures\Web\sp_ASRIntGetSummaryFields.sql" />
-    <Build Include="Stored Procedures\Web\sp_ASRIntGetSystemSetting.sql" />
     <Build Include="Stored Procedures\Web\sp_ASRIntGetTableOrders.sql" />
     <Build Include="Stored Procedures\Web\sp_ASRIntGetTablesInfo.sql" />
     <Build Include="Stored Procedures\Web\sp_ASRIntGetTBEmployeeColumns.sql" />

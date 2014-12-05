@@ -34,21 +34,21 @@ BEGIN
 	-- Absence Breakdown	
 	IF @piReportType = 15
 	BEGIN
-		EXEC sp_ASRIntGetSetting 'AbsenceBreakdown', 'Start Date', 0, 0, @vDateID OUTPUT
-		SET @iStartDateID = convert(integer,@vDateID)
+		EXEC dbo.spASRIntGetSetting 'AbsenceBreakdown', 'Start Date', 0, 0, @vDateID OUTPUT;
+		SET @iStartDateID = convert(integer,@vDateID);
 
-		EXEC sp_ASRIntGetSetting 'AbsenceBreakdown', 'End Date', 0, 0, @vDateID OUTPUT
-		SET @iEndDateID = convert(integer,@vDateID)
+		EXEC dbo.spASRIntGetSetting 'AbsenceBreakdown', 'End Date', 0, 0, @vDateID OUTPUT;
+		SET @iEndDateID = convert(integer,@vDateID);
 	END
 
 	-- Bradford Factor
 	IF @piReportType = 16
 	BEGIN
-		EXEC sp_ASRIntGetSetting 'BradfordFactor', 'Start Date', 0, 0, @vDateID OUTPUT
-		SET @iStartDateID = convert(integer,@vDateID)
+		EXEC dbo.spASRIntGetSetting 'BradfordFactor', 'Start Date', 0, 0, @vDateID OUTPUT;
+		SET @iStartDateID = convert(integer,@vDateID);
 
-		EXEC sp_ASRIntGetSetting 'BradfordFactor', 'End Date', 0, 0, @vDateID OUTPUT
-		SET @iEndDateID = convert(integer,@vDateID)
+		EXEC dbo.spASRIntGetSetting 'BradfordFactor', 'End Date', 0, 0, @vDateID OUTPUT;
+		SET @iEndDateID = convert(integer,@vDateID);
 	END
 
 	/* Start Date prompted value. */		
