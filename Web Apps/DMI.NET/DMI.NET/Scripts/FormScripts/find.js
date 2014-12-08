@@ -205,6 +205,7 @@ function find_window_onload() {
 													constrainInput: true,
 													showOn: 'focus'
 												});
+												$(element).addClass('datepicker');
 											},
 											defaultValue: getDefaultValueForColumn(iColumnId, "date")
 										}
@@ -220,7 +221,7 @@ function find_window_onload() {
 											dataInit: function (element) { },
 											defaultValue: getDefaultValueForColumn(iColumnId, "textarea")
 										}
-									})
+									});
 								} else if (ColumnDataType == 12 && ColumnControlType == 2 && ColumnLookupColumnID != 0) { //Lookup
 
 									colModel.push({

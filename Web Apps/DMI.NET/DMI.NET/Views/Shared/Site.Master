@@ -75,6 +75,29 @@
 
 			OpenHR.setDatepickerLanguage();
 
+			//Set all datepickers to 
+			$(document).on('keydown', '.datepicker', function (event) {
+
+				switch (event.keyCode) {
+					case 113:    // F2 insert todays date
+						$(this).datepicker("setDate", new Date());
+						$(this).datepicker('widget').hide('true');
+						break;
+					case 37:    // LEFT --> -1 day
+						//todo
+						break;
+					case 38:    // UPP --> -7 day
+						//todo
+						break;
+					case 39:    // RIGHT --> +1 day
+						//todo
+						break;
+					case 40:    // DOWN --> +7 day
+						//todo
+						break;
+				}
+			});
+
 			if (!(window.jQuery.ui)) {
 				//no jQuery! so quit out - compatibility mode(?) should be a message on login.aspx...
 				return false;
