@@ -206,10 +206,10 @@
 						</li>
 						<li id="mnuSectionRecordFindInlineEdit"><span>Find Window</span>
 							<div id="mnutoolInlineEditRecordFind" class="button">
-								<a href="#" rel="table" title="Automatic Edit">
+								<a href="#" rel="table" title="Quick Edit">
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/GridEdit2NORM.png")%>" alt="" />
 									<i class="icon-table"></i>
-									<h6>In-line<br />Column Editing</h6>
+									<h6>Quick Edit</h6>
 								</a>
 							</div>						
 						</li>

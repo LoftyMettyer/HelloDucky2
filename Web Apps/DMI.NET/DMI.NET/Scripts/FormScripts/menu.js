@@ -330,7 +330,11 @@ function menu_MenuClick(sTool) {
 
 		if (!$('#mnutoolInlineEditRecordFind').hasClass('disabled')) {
 			$('#mnutoolInlineEditRecordFind').toggleClass("toolbarButtonOn");
+
 			if ($('#mnutoolInlineEditRecordFind').hasClass("toolbarButtonOn")) {
+
+				menu_disableFindMenu();
+
 				setinlineeditmode();
 
 				//Can we add new records to this table/view?
@@ -347,7 +351,9 @@ function menu_MenuClick(sTool) {
 				//disabled icons for inline editing.
 				$("#findGridTable_iledit").addClass('ui-state-disabled');
 				$("#findGridTable_iladd").addClass('ui-state-disabled');
-			} else {				
+
+			} else {
+				menu_enableFindMenu();
 				//save row
 				var rowID = $("#findGridTable").getGridParam('selrow');
 				$("#findGridTable").saveRow(rowID); //"unedit" the row
@@ -357,6 +363,11 @@ function menu_MenuClick(sTool) {
 				$("#findGridTable_iladd").toggle(insertGranted);
 				$("#findGridTable_iledit").removeClass('ui-state-disabled');
 				$("#findGridTable_iladd").removeClass('ui-state-disabled');
+
+				//remove inline edit function from grid....
+				$('#findGridTable').jqGrid('setGridParam', {
+					beforeSelectRow: function () { return true; }
+				});
 			}
 		}
 		return false;
@@ -2495,6 +2506,30 @@ function menu_disableFindMenu() {
 	}
 }
 
+function menu_enableFindMenu() {
+	if (menu_isSSIMode() && (window.currentLayout != "winkit")) {
+		//$("#officebar").hide('drop', { direction: 'right' }, 1000);
+		$("#officebar").fadeIn("fast");
+	}
+	else { //disable menu items on Record tab.
+		menu_toolbarEnableItem('mnutoolNewRecordFind', true);
+		menu_toolbarEnableItem('mnutoolEditRecordFind', true);
+		menu_toolbarEnableItem('mnutoolCopyRecordFind', true);
+		menu_toolbarEnableItem('mnutoolDeleteRecordFind', true);
+
+		menu_toolbarEnableItem('mnutoolParentRecordFind', true);
+		menu_toolbarEnableItem('mnutoolBackRecordFind', true);
+
+		menu_toolbarEnableItem('mnutoolChangeOrderRecordFind', true);
+		menu_toolbarEnableItem('mnutoolFilterRecordFind', true);
+		menu_toolbarEnableItem('mnutoolClearFilterRecordFind', true);
+
+		menu_toolbarEnableItem('mnutoolBulkBookingRecordFind', true);
+		menu_toolbarEnableItem('mnutoolAddFromWaitingListRecordFind', true);
+		menu_toolbarEnableItem('mnutoolTransferBookingRecordFind', true);
+		menu_toolbarEnableItem('mnutoolCancelBookingRecordFind', true);
+	}
+}
 
 function menu_saveChanges(psAction, pfPrompt, pfTBOverride) {
 	// Prompt the user to save changes if required.
@@ -5121,7 +5156,7 @@ function menu_SetmnutoolButtonCaption(itemID, newCaption) {
 
 
 function setinlineeditmode() {
-
+	
 	if ($('#mnutoolInlineEditRecordFind').hasClass("toolbarButtonOn")) {
 		$('#findGridTable').jqGrid('setGridParam', {
 			beforeSelectRow: function(rowid, e) {
@@ -5143,9 +5178,7 @@ function setinlineeditmode() {
 			}
 		});
 	} else {
-
-		$('#mnutoolInlineEditRecordFind').toggleClass("toolbarButtonOn");
-
+		$('#mnutoolInlineEditRecordFind').toggleClass("toolbarButtonOn");	
 	}
 }
 
