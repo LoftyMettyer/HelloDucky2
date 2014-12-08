@@ -360,6 +360,16 @@
 		$("#Parent2_SelectionTypeFilter").removeAttr("disabled");
 	}
 
+	function getColumnIndexByName(grid, columnName) {
+		var cm = grid.jqGrid('getGridParam', 'colModel'), i, l;		
+			for (i = 1, l = cm.length; i < l; i += 1) {
+				if (cm[i].name === columnName) {
+					return i; // return the index
+				}
+			}
+			return -1;
+		}	
+
 	$(function () {
 
 		$("#ChildTables").jqGrid('setGridWidth', $("#ChildTablesViewAccessdiv").width() - 50);
@@ -416,15 +426,24 @@
 				refreshViewAccess();
 			},
 			loadComplete: function(json) {
-
+				
 				// Highlight top row
 				var ids = $(this).jqGrid("getDataIDs");
 				if (ids && ids.length > 0)
 					$(this).jqGrid("setSelection", ids[0]);
 
-			}
+				debugger;
 
+				var iCol = getColumnIndexByName($(this), 'Records'), rows = this.rows, i,	c = rows.length;
+				for (i = 1; i < c; i += 1) {					
+					if ($(rows[i].cells[iCol])[0].innerText == 0 ) {
+						$(rows[i].cells[iCol])[0].innerText = "All Records"
+					}
+				}
+
+			}
 		});
+
 		$("#ChildTables").jqGrid('navGrid', '#pcrud', {});
 
 		//If Parent1 table does not exit then disabled the Parent1 radio buttons, because in IE browser the control shows as disabled but fires the click event while doing double click (i.e the fieldset control has disabled attribute in this scenario)

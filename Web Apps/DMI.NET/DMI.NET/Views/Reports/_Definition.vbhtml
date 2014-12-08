@@ -430,7 +430,7 @@
 	}
 
 	function loadAvailableTablesForReport(baseTableChanged) {
-
+		
 		$.ajax({
 			url: '@Html.Raw(Url.Action("GetAllTablesInReport", "Reports", New With {.ReportID = Model.ID, .ReportType = CInt(Model.ReportType)}))',
 			type: 'GET',
@@ -641,19 +641,30 @@
 		}
 
 		return 0;
+	}
 
+	function replaceChildTableTempText(grid, replacementText) {
+		if ($("#ChildTables").getGridParam('reccount') != 0) {
+			for (i = 0, l = grid.length; i < l; i += 1) {
+				if (grid[i].Records === replacementText) {
+					grid[i].Records = 0;
+				}
+			}			
+		}
 	}
 
 	function validateReportDefinition() {
 
 		var gridData;
-
 		// Columns selected
 		gridData = $("#SelectedColumns").getRowData();
 		$('#txtCSAAS').val(JSON.stringify(gridData));
 
 		// Related Tables
 		gridData = $("#ChildTables").getRowData();
+		if ($("#txtReportType").val() == '@UtilityType.utlCustomReport') {
+			replaceChildTableTempText($(gridData), 'All Records');
+		}
 		$('#txtCTAAS').val(JSON.stringify(gridData));
 
 		// Calendar Events

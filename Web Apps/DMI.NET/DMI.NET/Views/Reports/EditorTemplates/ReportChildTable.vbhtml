@@ -126,9 +126,10 @@ End Code
 
 
 	function hideAllRecords() {
-		// Hide All Records if spinner is not 0		then toggle visibility		
-		if ($('#txtChildRecords').val() == 0) {
+		// Hide All Records if spinner is not 0	then toggle visibility				
+		if ($('#txtChildRecords').val() == 'All Records' || $('#txtChildRecords').val() == 0) {
 			$('#AllRecordsReminder').text('All Records');
+			$('#txtChildRecords').val(0);
 		} else {
 			$('#AllRecordsReminder').text('');
 		}		
@@ -181,6 +182,11 @@ End Code
 	}
 
 	function addChildTableCompleted() {
+		
+		var sAll_Records = "All Records";
+		if ($("#txtChildRecords").val() != 0) {
+			sAll_Records = $("#txtChildRecords").val();
+		}
 
 		var datarow = {
 			ReportID: '@Model.ReportID',
@@ -193,7 +199,7 @@ End Code
 			TableName: $("#ChildTableID option:selected").text(),
 			FilterName: $("#txtChildFilter").val(),
 			OrderName: $("#txtFieldRecOrder").val(),
-			Records: $("#txtChildRecords").val()
+			Records: sAll_Records
 		};
 
 		setViewAccess('FILTER', $("#ChildTablesViewAccess"), $("#FilterViewAccess").val(), $("#ChildTableID option:selected").text());
