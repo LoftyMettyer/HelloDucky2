@@ -546,9 +546,6 @@ Private Function UpdateDatabase( _
   SetDatabaseCompatability
   gobjProgress.UpdateProgress False
 
-  ' Enable the SQL service broker
-  EnableServiceBroker
-
   'MH20010903 We don't know how old the database is so make
   'sure that the lock stuff in in there before we start...
   strScriptPath = gsApplicationPath & "\Update Scripts\"
@@ -792,6 +789,9 @@ Private Function UpdateDatabase( _
   Call CreateSP_GetCurrentUsers
   Call CreateSP_GetCurrentUsersFromMaster
  
+  ' Enable the SQL service broker
+  EnableServiceBroker
+  
   If glngSQLVersion > 8 Then
     ' AE20080229 Fault #12968
     If bOK And bRegenerateProc Then

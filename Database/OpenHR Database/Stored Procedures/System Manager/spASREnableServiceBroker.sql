@@ -21,7 +21,7 @@ BEGIN
 	-- Enable if required
 	IF @isBrokerEnabled = 0  OR (@isBrokerEnabled = 1 AND @uniqueBrokerCount > 1)
 	BEGIN
-		SET @sSQL = 'ALTER DATABASE ' + @dbName + ' SET NEW_BROKER WITH ROLLBACK IMMEDIATE;';
+		SET @sSQL = 'ALTER DATABASE [' + @dbName + '] SET NEW_BROKER WITH ROLLBACK IMMEDIATE;';
 		EXEC sp_executeSQL @sSQL;
 	END
 

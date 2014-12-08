@@ -20,8 +20,8 @@ TidyUpAndExit:
 LocalErr:
   bOK = False
   Screen.MousePointer = vbDefault
+  OutputError "Error enabling the service broker. (" & Err.Description & ")"
   Err.Clear
-  OutputError "Error enabled the service broker."
   GoTo TidyUpAndExit
   
 End Function
