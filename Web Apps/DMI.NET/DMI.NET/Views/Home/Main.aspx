@@ -81,7 +81,7 @@
 
 		var sMessage = '<%: HttpUtility.JavaScriptStringEncode(Session("WarningText").ToString)%>';
 		if (sMessage != '') {
-			displaySignalRMessage("Licence Warning", sMessage, false);
+			displaySignalRMessage("Licence Warning", sMessage, false, true);
 		}
 
 		$("#fixedlinksframe").show();

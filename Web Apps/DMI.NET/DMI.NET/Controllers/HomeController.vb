@@ -393,13 +393,13 @@ Namespace Controllers
 						End If
 						bOK = True
 
-					Case LicenceValidation.ExpiryWarning
+					Case LicenceValidation.ExpiryWarning, LicenceValidation.HeadcountAndExpiryWarning
 						If LicenceHub.DisplayWarningToUser(Session("Username").ToString(), WarningType.Licence5DayExpiry, 1) Then
 							Session("WarningText") = LicenceHub.ErrorMessage(licenceValidate)
 						End If
 						bOK = True
 
-					Case LicenceValidation.HeadcountExceeded
+					Case LicenceValidation.HeadcountExceeded, LicenceValidation.HeadcountExceededAndExpiryWarning
 						Session("WarningText") = LicenceHub.ErrorMessage(licenceValidate)
 						bOK = True
 

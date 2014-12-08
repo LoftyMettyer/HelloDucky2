@@ -7,5 +7,7 @@
 		HeadcountWarning = 4
 		HeadcountExceeded = 5
 		Failure = 6
+		HeadcountAndExpiryWarning = 7
+		HeadcountExceededAndExpiryWarning = 8
 	End Enum
 End Namespace

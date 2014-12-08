@@ -38,6 +38,7 @@ Namespace Code.Hubs
 
 		Friend Shared Function ErrorMessage(failureCode As LicenceValidation) As String
 
+			Dim sLocaleFormat = HttpContext.Current.Session("LocaleDateFormat").ToString()
 			Dim message As String = ""
 
 			Select Case failureCode
@@ -46,7 +47,6 @@ Namespace Code.Hubs
 																	"Please contact your Account Manager as soon as possible.")
 
 				Case LicenceValidation.ExpiryWarning
-					Dim sLocaleFormat = HttpContext.Current.Session("LocaleDateFormat").ToString()
 					message = String.Format("Your licence to use this product will expire on {0}.<br/><br/>" & _
 																	"Please contact your Account Manager as soon as possible.", _
 																 Licence.ExpiryDate.ToString(sLocaleFormat))
@@ -61,6 +61,18 @@ Namespace Code.Hubs
 																	"Once this limit is reached, you will no longer be able to add<br/>new employee records to the system.<br/><br/>" & _
 																	"If you wish to increase the headcount number, please<br/>contact your Account Manager as soon as possible.", _
 																	current_Headcount, Licence.Headcount)
+
+				Case LicenceValidation.HeadcountAndExpiryWarning
+					message = String.Format("Your licence to use this product will expire on {2}.<br/><br/>You are also within 95% ({0} of {1} employees) of reaching the<br/>headcount limit set within the terms of your licence agreement.<br/><br/>" & _
+																	"Once this limit is reached, you will no longer be able to add<br/>new employee records to the system.<br/><br/>" & _
+																	"Please contact your Account Manager as soon as possible.", _
+																	current_Headcount, Licence.Headcount, Licence.ExpiryDate.ToString(sLocaleFormat))
+
+				Case LicenceValidation.HeadcountExceededAndExpiryWarning
+					message = String.Format("Your licence to use this product will expire on {2}.<br/><br/>You have also reached or exceeded the headcount limit<br/>set within the terms of your licence agreement.<br/><br/>" & _
+																	"You are no longer able to add new employee records,<br/>but you may access the system for other purposes.<br/><br/>" & _
+																	"Please contact your Account Manager as soon as possible.", _
+																	current_Headcount, Licence.Headcount, Licence.ExpiryDate.ToString(sLocaleFormat))
 
 				Case LicenceValidation.Insufficient
 					message = "The maximum number of licenced users are currently<br/>logged into OpenHR - Please try again later.<br/><br/>" & _
@@ -215,36 +227,49 @@ Namespace Code.Hubs
 
 		Private Shared Function AllowAccess(targetWebArea As WebArea) As LicenceValidation
 
-			If (Now.Date > Licence.ExpiryDate) Then
-				Return LicenceValidation.Expired
-			End If
+			Try
 
-			If Licence.Type = LicenceType.Concurrency Then
-				If (targetWebArea = WebArea.DMI AndAlso current_DMIUsers >= Licence.DMIUsers) OrElse _
-						(targetWebArea = WebArea.SSI AndAlso current_SSIUsers >= Licence.SSIUsers) Then
-					Return LicenceValidation.Insufficient
-				Else
-					Return LicenceValidation.Ok
+				If (Now.Date > Licence.ExpiryDate) Then
+					Return LicenceValidation.Expired
 				End If
-			End If
 
-			If Licence.Type = LicenceType.DMIConcurrencyAndHeadcount OrElse Licence.Type = LicenceType.DMIConcurrencyAndHeadcount Then
-				If (targetWebArea = WebArea.DMI AndAlso current_DMIUsers >= Licence.DMIUsers) Then
-					Return LicenceValidation.Insufficient
+				If Licence.Type = LicenceType.Concurrency Then
+					If (targetWebArea = WebArea.DMI AndAlso current_DMIUsers >= Licence.DMIUsers) OrElse _
+							(targetWebArea = WebArea.SSI AndAlso current_SSIUsers >= Licence.SSIUsers) Then
+						Return LicenceValidation.Insufficient
+					Else
+						Return LicenceValidation.Ok
+					End If
 				End If
-			End If
 
-			If targetWebArea = WebArea.DMI Then
-				If current_Headcount > Licence.Headcount Then
-					Return LicenceValidation.HeadcountExceeded
-				ElseIf (current_Headcount >= Licence.Headcount * HeadcountWarningThreshold) AndAlso targetWebArea = WebArea.DMI Then
-					Return LicenceValidation.HeadcountWarning
+				If Licence.Type = LicenceType.DMIConcurrencyAndHeadcount OrElse Licence.Type = LicenceType.DMIConcurrencyAndHeadcount Then
+					If (targetWebArea = WebArea.DMI AndAlso current_DMIUsers >= Licence.DMIUsers) Then
+						Return LicenceValidation.Insufficient
+					End If
 				End If
-			End If
 
-			If (Now.Date > Licence.ExpiryDate.AddDays(-7) AndAlso targetWebArea = WebArea.DMI) Then
-				Return LicenceValidation.ExpiryWarning
-			End If
+				If targetWebArea = WebArea.DMI Then
+
+					If current_Headcount > Licence.Headcount AndAlso Now.Date > Licence.ExpiryDate.AddDays(-7) Then
+						Return LicenceValidation.HeadcountExceededAndExpiryWarning
+
+					ElseIf current_Headcount > Licence.Headcount Then
+						Return LicenceValidation.HeadcountExceeded
+
+					ElseIf (current_Headcount >= Licence.Headcount * HeadcountWarningThreshold) AndAlso Now.Date > Licence.ExpiryDate.AddDays(-7) Then
+						Return LicenceValidation.HeadcountAndExpiryWarning
+
+					ElseIf (current_Headcount >= Licence.Headcount * HeadcountWarningThreshold) Then
+						Return LicenceValidation.HeadcountWarning
+
+					End If
+
+				End If
+
+			Catch ex As Exception
+				Return LicenceValidation.Failure
+
+			End Try
 
 			Return LicenceValidation.Ok
 
