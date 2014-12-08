@@ -325,6 +325,9 @@ function menu_MenuClick(sTool) {
 	}
 
 	if (sToolName == "mnutoolInlineEditRecordFind") {
+		
+		var insertGranted = ($('#txtInsertGranted').val() == "True");
+
 		if (!$('#mnutoolInlineEditRecordFind').hasClass('disabled')) {
 			$('#mnutoolInlineEditRecordFind').toggleClass("toolbarButtonOn");
 			if ($('#mnutoolInlineEditRecordFind').hasClass("toolbarButtonOn")) {
@@ -340,50 +343,27 @@ function menu_MenuClick(sTool) {
 				$("#findGridTable_iledit").show();
 				$("#findGridTable_ilsave").show();
 				$("#findGridTable_ilcancel").show();
-			} else {
-				$("#findGridTable_iladd").hide();
-				$("#findGridTable_iledit").hide();
-				$("#findGridTable_ilsave").hide();
-				$("#findGridTable_ilcancel").hide();
+
+				//disabled icons for inline editing.
+				$("#findGridTable_iledit").addClass('ui-state-disabled');
+				$("#findGridTable_iladd").addClass('ui-state-disabled');
+			} else {				
+				//save row
+				var rowID = $("#findGridTable").getGridParam('selrow');
+				$("#findGridTable").saveRow(rowID); //"unedit" the row
+				saveInlineRowToDatabase(rowID);
+
+				//enable icons for inline editing.
+				$("#findGridTable_iladd").toggle(insertGranted);
+				$("#findGridTable_iledit").removeClass('ui-state-disabled');
+				$("#findGridTable_iladd").removeClass('ui-state-disabled');
 			}
 		}
 		return false;
 	}
 
 
-	if (sToolName == "mnutoolAutoSaveRecordFind") {
-		if (!$('#mnutoolInlineEditRecordFind').hasClass('disabled')) {
-			$('#mnutoolAutoSaveRecordFind').toggleClass("toolbarButtonOn");
-			if ($('#mnutoolAutoSaveRecordFind').hasClass("toolbarButtonOn")) {
-				$('#mnutoolInlineEditRecordFind').addClass("toolbarButtonOn");
-			} else {
-				$('#mnutoolInlineEditRecordFind').removeClass("toolbarButtonOn");
-			}
-		}
-		if ($('#mnutoolInlineEditRecordFind').hasClass("toolbarButtonOn")) {
-			setinlineeditmode();
 
-			//Can we add new records to this table/view?
-			if (insertGranted) { //The insertGranted variable is defined in Find.ascx line 443 (ish)
-				$("#findGridTable_iladd").show();
-			} else {
-				$("#findGridTable_iladd").hide();
-			}
-
-			$("#findGridTable_iledit").show();
-			$("#findGridTable_ilsave").show();
-			$("#findGridTable_ilcancel").show();
-		} else {
-			$("#findGridTable_iladd").hide();
-			$("#findGridTable_iledit").hide();
-			$("#findGridTable_ilsave").hide();
-			$("#findGridTable_ilcancel").hide();
-		}
-		if ($('#mnutoolAutoSaveRecordFind').hasClass("toolbarButtonOn")) { //When AutoSave is on hide the Add button
-			$("#findGridTable_iladd").hide();
-		}
-		return false;
-	}
 
 
 	if (sToolName == "mnutoolCurrentUsers") {
@@ -1913,7 +1893,6 @@ function menu_refreshMenu() {
 			menu_setVisibletoolbarGroupById("mnuSectionRecordFindNavigate", !(menu_isSSIMode() && ($("#mnutoolAccessLinksFind").hasClass("hidden"))));
 
 			$('#mnutoolInlineEditRecordFind').removeClass("toolbarButtonOn");
-			$('#mnutoolAutoSaveRecordFind').removeClass("toolbarButtonOn");
 
 			if (menu_isSSIMode()) {
 				menu_setVisibletoolbarGroupById('mnuSectionRecordFindOrder', false);
@@ -5142,16 +5121,10 @@ function menu_SetmnutoolButtonCaption(itemID, newCaption) {
 
 
 function setinlineeditmode() {
-	if ($('#mnutoolInlineEditRecordFind').hasClass("toolbarButtonOn")) {
-		$("#findGridTable_iladd").show();
-		$("#findGridTable_iledit").show();
-		$("#findGridTable_ilsave").show();
-		$("#findGridTable_ilcancel").show();
-	}
 
-	if ($('#mnutoolAutoSaveRecordFind').hasClass("toolbarButtonOn")) {
+	if ($('#mnutoolInlineEditRecordFind').hasClass("toolbarButtonOn")) {
 		$('#findGridTable').jqGrid('setGridParam', {
-			beforeSelectRow: function (rowid, e) {
+			beforeSelectRow: function(rowid, e) {
 				if (window.lastRowId == undefined) {
 					window.lastRowId = rowid;
 				}
@@ -5169,20 +5142,15 @@ function setinlineeditmode() {
 				return true;
 			}
 		});
-	};
+	} else {
 
-	if (!$('#mnutoolInlineEditRecordFind').hasClass("toolbarButtonOn") || !$('#mnutoolAutoSaveRecordFind').hasClass("toolbarButtonOn")) {
-		//Disable inline editing
-		$("#findGridTable").jqGrid('inlineNav', '#pager-coldata', {
-			edit: false,
-			add: false,
-			save: false,
-			cancel: false
-		});
+		$('#mnutoolInlineEditRecordFind').toggleClass("toolbarButtonOn");
+
 	}
 }
 
 function saveInlineRowToDatabase(rowId) {
+	
 	var sUpdateOrInsert = "";
 	var gridData = $("#findGridTable").getRowData(rowId);
 	var gridColumns = $("#findGridTable").jqGrid('getGridParam', 'colNames');
@@ -5227,18 +5195,30 @@ function saveInlineRowToDatabase(rowId) {
 	frmDataArea.txtTimestamp.value = gridData.Timestamp;
 	frmDataArea.txtOriginalRecordID.value = 0; //This is NOT a copied record
 
-	OpenHR.submitForm(frmDataArea, null, false); //The "false" causes the ajax call to be synchronous; we need this to get the value in the next line
+	window.savedRow = rowId;
+	OpenHR.submitForm(frmDataArea, null, true, null, null, submitFollowOn);
 
+}
+
+function submitFollowOn() {
+
+	var rowId = window.savedRow; //$("#findGridTable").getGridParam('selrow');
+	
 	if (frmData.txtErrorMessage.value != "") { //There was an error while saving, put the selected row back into edit mode
 		$("#findGridTable").editRow(rowId); //Edit the row
 
 		//After a brief timeout, disable "Add" and "Edit" and enable "Save" and "Cancel"
-		setTimeout(function () {			
+		setTimeout(function() {
 			$("#findGridTable_iladd").addClass("ui-state-disabled");
 			$("#findGridTable_iledit").addClass("ui-state-disabled");
 			$("#findGridTable_ilsave").removeClass("ui-state-disabled");
 			$("#findGridTable_ilcancel").removeClass("ui-state-disabled");
 		}, 100);
+	} else {
+		//Mark row as changed if we've successfully saved the record.
+		try {
+			$("#findGridTable #" + rowId + ">td:first").css('border-left', '4px solid green');
+		} catch (e) { }
 	}
 }
 

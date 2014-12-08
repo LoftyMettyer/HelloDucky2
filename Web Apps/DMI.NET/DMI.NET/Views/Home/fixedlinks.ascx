@@ -203,20 +203,15 @@
 									<h6>Delete</h6>
 								</a>
 							</div>
+						</li>
+						<li id="mnuSectionRecordFindInlineEdit"><span>Find Window</span>
 							<div id="mnutoolInlineEditRecordFind" class="button">
-								<a href="#" rel="table" title="In-Line Edit">
-									<img src="<%: Url.Content("~/Scripts/officebar/winkit/registry_64NORM.png")%>" alt="" />
+								<a href="#" rel="table" title="Automatic Edit">
+									<img src="<%: Url.Content("~/Scripts/officebar/winkit/GridEdit2NORM.png")%>" alt="" />
 									<i class="icon-table"></i>
-									<h6>In-Line<br/>Edit</h6>
+									<h6>In-line<br />Column Editing</h6>
 								</a>
-							</div>
-							<div id="mnutoolAutoSaveRecordFind" class="button">
-								<a href="#" rel="table" title="Auto Save">
-									<img src="<%: Url.Content("~/Scripts/officebar/winkit/diskette64HOVER.png")%>" alt="" />
-									<i class="icon-save"></i>
-									<h6>Auto-Save</h6>
-								</a>
-							</div>
+							</div>						
 						</li>
 						<li id="mnuSectionRecordFindNavigate"><span>Navigate</span>
 							<div id="mnutoolParentRecordFind" class="button">

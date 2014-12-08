@@ -371,25 +371,28 @@ function find_window_onload() {
 						cancel: true,
 						editParams: {
 							aftersavefunc: function (rowid, response, options) {
-								saveInlineRowToDatabase(rowid);
+								saveInlineRowToDatabase(rowid);																
 							}
 						}
 					});
 
 					//Enable inline edit and autosave buttons
-					menu_toolbarEnableItem('mnutoolInlineEditRecordFind', true);
-					menu_toolbarEnableItem('mnutoolAutoSaveRecordFind', true);
+					menu_toolbarEnableItem('mnutoolInlineEditRecordFind', true);					
+
+					$("#findGridTable_iladd").show();
+					$("#findGridTable_iledit").show();
+					$("#findGridTable_ilsave").show();
+					$("#findGridTable_ilcancel").show();
+
 				} else {
 					//Disable inline edit and autosave buttons
 					menu_toolbarEnableItem('mnutoolInlineEditRecordFind', false);
-					menu_toolbarEnableItem('mnutoolAutoSaveRecordFind', false);
-				}
-
-				//Hide the edit icons by default
-				$("#findGridTable_iladd").hide();
-				$("#findGridTable_iledit").hide();
-				$("#findGridTable_ilsave").hide();
-				$("#findGridTable_ilcancel").hide();
+					//Hide the edit icons by default
+					$("#findGridTable_iladd").hide();
+					$("#findGridTable_iledit").hide();
+					$("#findGridTable_ilsave").hide();
+					$("#findGridTable_ilcancel").hide();
+				}				
 
 				//resize the grid to the height of its container.
 				var gridRowHeight = $("#findGridRow").height();
