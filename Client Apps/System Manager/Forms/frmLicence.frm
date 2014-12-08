@@ -404,30 +404,30 @@ Begin VB.Form frmLicence
       End
       Begin VB.Label lblSSI 
          AutoSize        =   -1  'True
-         Caption         =   "Self-service :"
+         Caption         =   "Self-service Users :"
          Height          =   195
          Left            =   195
          TabIndex        =   15
          Top             =   2160
-         Width           =   1155
+         Width           =   1695
       End
       Begin VB.Label lblDMIM 
          AutoSize        =   -1  'True
-         Caption         =   "OpenHR Web :"
+         Caption         =   "OpenHR Web Users :"
          Height          =   195
          Left            =   195
          TabIndex        =   14
          Top             =   1755
-         Width           =   1260
+         Width           =   1800
       End
       Begin VB.Label lblDAT 
          AutoSize        =   -1  'True
-         Caption         =   "Data Manager :"
+         Caption         =   "Data Manager Users :"
          Height          =   195
          Left            =   195
          TabIndex        =   13
          Top             =   1350
-         Width           =   1335
+         Width           =   1875
       End
    End
    Begin VB.CommandButton cmdCancel 
