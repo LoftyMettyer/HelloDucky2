@@ -155,7 +155,7 @@
 				Dim bAddUploadTemplate As Boolean = (CType(Session("utiltype"), UtilityType) = UtilityType.utlMailMerge)
 				Dim iPromptCount = CInt(IIf(bAddUploadTemplate, 1, 0))
 				
-				rstPromptedValue = objDatabaseAccess.GetDataTable("sp_ASRIntGetUtilityPromptedValues", CommandType.StoredProcedure, _
+				rstPromptedValue = objDatabaseAccess.GetDataTable("spASRIntGetUtilityPromptedValues", CommandType.StoredProcedure, _
 										New SqlParameter("piUtilType", SqlDbType.Int) With {.Value = CInt(CleanNumeric(Session("utiltype")))}, _
 										New SqlParameter("piUtilID", SqlDbType.Int) With {.Value = CInt(CleanNumeric(Session("utilid")))}, _
 										New SqlParameter("piRecordID", SqlDbType.Int) With {.Value = Session("singleRecordID")})

@@ -1,4 +1,4 @@
-CREATE PROCEDURE [dbo].[sp_ASRIntGetUtilityPromptedValues] (
+CREATE PROCEDURE [dbo].[spASRIntGetUtilityPromptedValues] (
 	@piUtilType 	integer,
 	@piUtilID 		integer,
 	@piRecordID 	integer
@@ -45,7 +45,7 @@ BEGIN
 		fieldColumnID		integer);
 
 
-	IF @piUtilType = 1
+	IF @piUtilType = 1 OR @piUtilType = 35
 	BEGIN
 		/* Cross Tabs. */
 		SELECT @iFilterID = filterid

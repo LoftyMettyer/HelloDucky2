@@ -154,7 +154,7 @@
     <Build Include="Stored Procedures\Web\sp_ASRIntGetTransferBookingRecords.sql" />
     <Build Include="Stored Procedures\Web\sp_ASRIntGetTransferCourseRecords.sql" />
     <Build Include="Stored Procedures\Web\sp_ASRIntGetUniqueColumns.sql" />
-    <Build Include="Stored Procedures\Web\sp_ASRIntGetUtilityPromptedValues.sql" />
+    <Build Include="Stored Procedures\Web\spASRIntGetUtilityPromptedValues.sql" />
     <Build Include="Stored Procedures\Web\sp_ASRIntMakeBulkBookings.sql" />
     <Build Include="Stored Procedures\Web\sp_ASRIntMakeUtilitiesHidden.sql" />
     <Build Include="Stored Procedures\Web\sp_ASRIntNewUser.sql" />
