@@ -1372,7 +1372,7 @@ Public Function CheckLicence() As Boolean
   dToday = DateValue(Now)
     
   ' Expiry date checks
-  If gobjLicence.ExpiryDate <> "00:00:00" Then
+  If gobjLicence.HasExpiryDate Then
     If (dToday > gobjLicence.ExpiryDate) Then
       sMsg = "Your licence to use this product has expired." & vbNewLine & _
             "Please contact your Account Manager as soon as possible."

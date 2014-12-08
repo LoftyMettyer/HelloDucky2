@@ -19,6 +19,7 @@ Private mlngDMIM As Long
 Private mlngModules As Long
 Private mlngHeadcountSSI As Long
 Private mdExpiryDate As Date
+Private mlngDateValue As Long
 Private mlngLicenceType As Long
 
 Public IsValid As Boolean
@@ -48,8 +49,14 @@ Public Property Get Headcount()
   Headcount = IIf(mlngLicenceType > 0, mlngHeadcountSSI, 0)
 End Property
 
-Public Property Get ExpiryDate()
-  ExpiryDate = mdExpiryDate
+Public Property Get ExpiryDate() As Date
+  If mlngDateValue > 0 Then
+    ExpiryDate = CDate(mlngDateValue)
+  End If
+End Property
+
+Public Property Get HasExpiryDate() As Boolean
+  HasExpiryDate = mlngDateValue > 0
 End Property
 
 Public Property Get LicenceType()
@@ -71,7 +78,6 @@ Public Property Let LicenceKey(ByVal strNewValue As String)
   Dim strTemp As String
   Dim strInput As String
   Dim lngCount As Long
-  Dim lngDateValue As Long
   Dim strCheckSum As String
   Dim lngRandomDigit As Long
   Dim strGeneratedDay As String
@@ -113,10 +119,8 @@ Public Property Let LicenceKey(ByVal strNewValue As String)
     mlngHeadcountSSI = ConvertStringToNumber2(strRandomDigit & strSSIHeadcount)
     mlngModules = ConvertStringToNumber2(strModules)
     lngRandomDigit = Asc(strRandomDigit) - 64
-       
-    lngDateValue = ConvertStringToNumber2(strRandomDigit & strExpiryDate)
-    mdExpiryDate = CDate(lngDateValue)
-
+    mlngDateValue = ConvertStringToNumber2(strRandomDigit & strExpiryDate)
+        
     ' Validate checksum
     If ValidateCreationDate Then
       IsValid = (ConvertStringToNumber2(strRandomDigit & strGeneratedDay) = DayNumber(Now))
@@ -124,7 +128,7 @@ Public Property Let LicenceKey(ByVal strNewValue As String)
       IsValid = True
     End If
     
-    IsValid = IsValid And (ConvertNumberToString2(6, mlngCustomerNo + mlngLicenceType + mlngDAT + mlngDMIM + mlngHeadcountSSI + mlngModules + lngDateValue, lngRandomDigit) = strCheckSum)
+    IsValid = IsValid And (ConvertNumberToString2(6, mlngCustomerNo + mlngLicenceType + mlngDAT + mlngDMIM + mlngHeadcountSSI + mlngModules + mlngDateValue, lngRandomDigit) = strCheckSum)
 
   End If
 
