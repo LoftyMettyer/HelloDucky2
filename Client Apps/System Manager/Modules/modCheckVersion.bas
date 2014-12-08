@@ -546,6 +546,9 @@ Private Function UpdateDatabase( _
   SetDatabaseCompatability
   gobjProgress.UpdateProgress False
 
+  ' Enable the SQL service broker
+  EnableServiceBroker
+
   'MH20010903 We don't know how old the database is so make
   'sure that the lock stuff in in there before we start...
   strScriptPath = gsApplicationPath & "\Update Scripts\"

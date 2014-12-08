@@ -1,6 +1,31 @@
 Attribute VB_Name = "modSQLPlatform"
 Option Explicit
 
+Public Function EnableServiceBroker() As Boolean
+  
+  Dim sSQL As String
+  Dim bOK As Boolean
+  
+  On Error GoTo LocalErr
+  
+  bOK = True
+  
+  sSQL = "EXEC sp_ExecuteSQL spASREnableServiceBroker"
+  gADOCon.Execute sSQL, -1, adExecuteNoRecords
+  
+TidyUpAndExit:
+  EnableServiceBroker = bOK
+  Exit Function
+  
+LocalErr:
+  bOK = False
+  Screen.MousePointer = vbDefault
+  Err.Clear
+  OutputError "Error enabled the service broker."
+  GoTo TidyUpAndExit
+  
+End Function
+
 Public Function SetDatabaseCompatability() As Boolean
 
   Dim sSQL As String
