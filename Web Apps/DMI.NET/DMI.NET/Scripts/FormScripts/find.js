@@ -352,7 +352,7 @@ function find_window_onload() {
 
 				$("#findGridTable").jqGrid('navButtonAdd', "#pager-coldata", {
 					caption: '',
-					buttonicon: 'ui-icon-search',
+					buttonicon: 'icon-search',
 					onClickButton: function () {
 						$("#findGridTable").jqGrid('filterToolbar', { stringResult: true, searchOnEnter: false });
 					},
@@ -366,15 +366,41 @@ function find_window_onload() {
 					//Make grid editable
 					$("#findGridTable").jqGrid('inlineNav', '#pager-coldata', {
 						edit: true,
+						editicon: 'icon-pencil',
 						add: true,
+						addicon: 'icon-plus',
 						save: true,
+						saveicon: 'icon-save',
 						cancel: true,
+						cancelicon: 'icon-ban-circle',
 						editParams: {
 							aftersavefunc: function (rowid, response, options) {
 								saveInlineRowToDatabase(rowid);																
 							}
 						}
 					});
+
+					$("#pager-coldata .navtable .ui-pg-div>span.ui-icon-refresh").addClass("icon-refresh");
+					$("#pager-coldata .navtable .ui-pg-div>span").removeClass("ui-icon");
+
+					var $pager = $("#findGridTable").closest(".ui-jqgrid").find(".ui-pg-table");
+					$pager.find(".ui-pg-button>span.ui-icon-seek-first")
+							.removeClass("ui-icon ui-icon-seek-first")
+							.addClass("icon-step-backward")
+							.css('font-size', '20px');
+					$pager.find(".ui-pg-button>span.ui-icon-seek-prev")
+							.removeClass("ui-icon ui-icon-seek-prev")
+							.addClass("icon-backward")
+							.css('font-size', '20px');
+					$pager.find(".ui-pg-button>span.ui-icon-seek-next")
+							.removeClass("ui-icon ui-icon-seek-next")
+							.addClass("icon-forward")
+							.css('font-size', '20px');
+					$pager.find(".ui-pg-button>span.ui-icon-seek-end")
+							.removeClass("ui-icon ui-icon-seek-end")
+							.addClass("icon-step-forward")
+							.css('font-size', '20px');
+
 
 					//Enable inline edit and autosave buttons
 					menu_toolbarEnableItem('mnutoolInlineEditRecordFind', true);					

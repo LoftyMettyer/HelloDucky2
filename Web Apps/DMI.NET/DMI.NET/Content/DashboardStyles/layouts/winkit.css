@@ -965,3 +965,6 @@ div.officetab li div.textboxlist input {
 	text-align: left;
 }
 /* End of User dropdown menu */
+
+/* Find window grid - navigation icons. */
+.ui-jqgrid .ui-jqgrid-pager .ui-pg-div>span { margin: 0 5px; font-size: 20px; }
