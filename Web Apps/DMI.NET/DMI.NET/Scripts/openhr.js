@@ -1342,11 +1342,11 @@
 			try {
 				var gridID = $(grid).attr('id');
 				var id = $('#' + gridID + ' td:visible').filter(function () {
-					return $(this).text().substring(0, 1).toLowerCase() == String.fromCharCode(event.which).toLowerCase();
+					return $(this).text().substring(0, 1).toLowerCase() == String.fromCharCode(keyPressed).toLowerCase();
 				}).first().closest('tr').attr('id');
 				if (Number(id) > 0)
 					grid.jqGrid('resetSelection');
-					grid.jqGrid('setSelection', id);
+				grid.jqGrid('setSelection', id);
 			}
 			catch (e) { }
 		}
