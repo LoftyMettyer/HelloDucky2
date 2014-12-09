@@ -432,8 +432,6 @@
 				if (ids && ids.length > 0)
 					$(this).jqGrid("setSelection", ids[0]);
 
-				debugger;
-
 				var iCol = getColumnIndexByName($(this), 'Records'), rows = this.rows, i,	c = rows.length;
 				for (i = 1; i < c; i += 1) {					
 					if ($(rows[i].cells[iCol])[0].innerText == 0 ) {
