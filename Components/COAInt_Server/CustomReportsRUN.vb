@@ -744,6 +744,9 @@ GetCustomReportDefinition_ERROR:
 					objExpr.ConstructExpression()
 					objExpr.ValidateExpression(True)
 
+					'Sets the IsNumeric value for the calculated column. This will be used to display the content right alligned in the report preview
+					objReportItemDetail.IsNumeric = (objExpr.ReturnType = ExpressionValueTypes.giEXPRVALUE_NUMERIC)
+
 					lngTableID = objExpr.BaseTableID
 					objReportItemDetail.TableID = lngTableID
 					objReportItemDetail.TableName = objExpr.BaseTableName
