@@ -78,11 +78,11 @@
 					</div>
 					<div class="formfieldfill">
 						<label for="SelectedColumnSize">Size :</label>
-						<span><input class="" type='number' id="SelectedColumnSize" onchange="updateColumnsSelectedGrid();" /></span>
+						<span><input class="" id="SelectedColumnSize" onchange="updateColumnsSelectedGrid();" /></span>
 					</div>
 					<div class="formfieldfill decimalsOnly">
 						<label for="SelectedColumnDecimals">Decimals :</label>
-						<span><input class="" type='number' id="SelectedColumnDecimals" onchange="updateColumnsSelectedGrid();" /></span>
+						<span><input class="" id="SelectedColumnDecimals" onchange="updateColumnsSelectedGrid();" /></span>
 					</div>
 
 					<div class="tablelayout customReportsOnly colAggregates">
@@ -520,7 +520,7 @@
 			grid.parent().parent().scrollTop(currentScrollPos);
 
 			return false;
-	}
+		}
 	}
 
 	function changeColumnIsHidden() {
@@ -530,7 +530,7 @@
 			$('#SelectedColumnIsCount').prop('checked', false);
 			$('#SelectedColumnIsTotal').prop('checked', false);
 			$('#SelectedColumnIsGroupWithNext').prop('checked', false);
-			$('#SelectedColumnIsRepeated').prop('checked', false);			
+			$('#SelectedColumnIsRepeated').prop('checked', false);
 			UpdateSortOrderItem();
 		}
 
@@ -597,7 +597,7 @@
 			isBottomRow = (rowId == allRows[allRows.length - 1]);
 		}
 
-		if (rowCount > 1 || allRows.length == 0) {		    
+		if (rowCount > 1 || allRows.length == 0) {
 			$("#definitionColumnProperties :input").attr("disabled", true);
 			$("#SelectedColumnHeading").val("");
 			$("#SelectedColumnSize").val("");
@@ -631,12 +631,12 @@
 
 
 			$(".numericOnly").prop("disabled", !isNumeric || isHidden || isGroupWithNext || isReadOnly);
-			$(".cannotBeHidden").prop("disabled", isHidden || isGroupWithNext || isReadOnly);			
+			$(".cannotBeHidden").prop("disabled", isHidden || isGroupWithNext || isReadOnly);
 			$(".decimalsOnly").prop("disabled", !isDecimals || isReadOnly);
 			$(".baseTableOnly").prop("disabled", !isBaseOrParentTableColumn || !isThereChildColumns || isHidden || isReadOnly);
 			$(".canGroupWithNext").prop("disabled", isBottomRow || isHidden || isReadOnly);
 			$("#SelectedColumnIsHidden").prop("disabled", isGroupWithNext || isReadOnly);
-			
+
 
 			if (!isNumeric || isHidden || isGroupWithNext || isReadOnly) {
 				$(".numericOnly").css("color", "#A59393");
@@ -684,15 +684,15 @@
 		var rowId = $("#SelectedColumns").jqGrid('getGridParam', 'selrow');
 		var dataRow = $('#SelectedColumns').jqGrid('getRowData', rowId);
 		//Find row in Sort Order columns to see if Value On Change or Suppress Repeated Values is ticked.
-		var gridData = $("#SortOrders").getRowData();		
+		var gridData = $("#SortOrders").getRowData();
 		var columnList = $("#SortOrders").getDataIDs();
 
 		for (i = 0; i < columnList.length; i++) {
-			if (gridData[i].ColumnID == dataRow.ID) {				
+			if (gridData[i].ColumnID == dataRow.ID) {
 				if (gridData[i].SuppressRepeated.toUpperCase() == "TRUE" || gridData[i].ValueOnChange.toUpperCase() == "TRUE") {
 					OpenHR.modalMessage("Either 'Value On Change' or 'Suppress Repeated' values are ticked for this column in the Sort Order tab." + "<br/><br/>" +
 															"Please un-tick these values before making '" + gridData[i].Name + "' hidden.");
-					$("#SelectedColumnIsHidden").prop('checked', false);					
+					$("#SelectedColumnIsHidden").prop('checked', false);
 					break
 				}
 			}
@@ -856,6 +856,10 @@
 
 	// Initialise
 	$(function () {
+
+		// Sets Size and Decimals textbox to allow numeric only
+		$("#SelectedColumnSize").autoNumeric({ aSep: '', aNeg: '', mDec: "0", vMin: 0, wEmpty: 'zero' });
+		$("#SelectedColumnDecimals").autoNumeric({ aSep: '', aNeg: '', mDec: "0", vMax: 999, vMin: 0, wEmpty: 'zero' });
 
 		$(".spinner").spinner({
 			min: 0,
