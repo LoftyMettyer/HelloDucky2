@@ -207,7 +207,7 @@
 						<li id="mnuSectionRecordFindInlineEdit"><span>Find Window</span>
 							<div id="mnutoolInlineEditRecordFind" class="button">
 								<a href="#" rel="table" title="Quick Edit">
-									<img src="<%: Url.Content("~/Scripts/officebar/winkit/GridEdit2NORM.png")%>" alt="" />
+									<img src="<%: Url.Content("~/Scripts/officebar/winkit/GridEdit2HOVER.png")%>" alt="" />
 									<i class="icon-table"></i>
 									<h6>Quick Edit</h6>
 								</a>
