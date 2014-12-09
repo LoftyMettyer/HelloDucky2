@@ -65,7 +65,7 @@ function find_window_onload() {
 		var obj;
 		var iCount2;
 		var thereIsAtLeastOneEditableColumn = false;
-
+		
 		if (sCurrentWorkPage == "FIND") {
 			sErrorMsg = frmFindForm.txtErrorDescription.value;
 			if (sErrorMsg.length > 0) {
@@ -155,7 +155,23 @@ function find_window_onload() {
 												defaultValue: getDefaultValueForColumn(iColumnId, "integer")
 											}
 										});
-									} else { //Spinner integer
+									}
+									else if (ColumnControlType == 32768) { //"Colour picker" integer
+										colModel.push({
+											name: sColumnName,
+											id: iColumnId,
+											edittype: 'text',
+											sorttype: 'integer',
+											formatter: 'numeric',
+											editable: false,
+											align: 'right',
+											width: 100,
+											editoptions: {
+												defaultValue: getDefaultValueForColumn(iColumnId, "integer")
+											}
+										});
+									}
+									else { //Spinner integer
 										colModel.push({
 											name: sColumnName,
 											id: iColumnId,
@@ -276,7 +292,7 @@ function find_window_onload() {
 										editoptions: {
 											defaultValue: getDefaultValueForColumn(iColumnId, "workingpattern")
 										}
-									});
+									});								
 								} else { //None of the above
 									colModel.push({
 										name: sColumnName,
@@ -694,5 +710,5 @@ function getDefaultValueForColumn(columnId, columnType) {
 			break;
 	}
 
-	return columnsDefaultValues[columnId]
+	return columnsDefaultValues[columnId];
 }
