@@ -57,6 +57,7 @@ function find_window_onload() {
 		var fRecordAdded;
 		var colModel;
 		var colNames;
+		var colNamesOriginal;
 		var sColDef;
 		var iIndex;
 		var i;
@@ -81,6 +82,7 @@ function find_window_onload() {
 			dataCollection = frmFindForm.elements; // Configure the grid columns.
 			colModel = [];
 			colNames = [];
+			colNamesOriginal = [];
 
 			if (dataCollection != null) {
 				for (i = 0; i < dataCollection.length; i++) {
@@ -110,6 +112,7 @@ function find_window_onload() {
 							}
 
 							colNames.push(sColumnName);
+							colNamesOriginal.push(sColumnDisplayName);
 
 							if (sColumnName == "ID") {
 								colModel.push({
@@ -348,7 +351,7 @@ function find_window_onload() {
 				$("#findGridTable").jqGrid({
 					data: colData,
 					datatype: "local",
-					colNames: colNames,
+					colNames: colNamesOriginal,
 					colModel: colModel,
 					rowNum: 50,
 					width: gridWidth,
