@@ -1464,6 +1464,7 @@ Namespace ScriptDB
 								"            + 'You are no longer able to add new employee records, but you may access the system for all other purposes.' + char(13) + char(13)" & vbNewLine & _
 								"            + 'Please contact your Account Manager as soon as possible to increase the licence headcount number.'" & vbNewLine & _
 								"       RAISERROR(@headcountMessage , 16, 1);" & vbNewLine & _
+								"       RETURN;" & vbNewLine & _
 								"    END" & vbNewLine & vbNewLine
 			End If
 

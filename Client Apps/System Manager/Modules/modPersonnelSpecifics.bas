@@ -123,12 +123,12 @@ Public Function CreateSP_CalculateHeadcount() As Boolean
   
     If gobjLicence.LicenceType = LicenceType.Headcount Or gobjLicence.LicenceType = LicenceType.DMIConcurrencyAndHeadcount Then
       sProcSQL = sProcSQL & _
-        "  IF @HeadCount > " & gobjLicence.Headcount & vbNewLine & _
+        "  IF @HeadCount >= " & gobjLicence.Headcount & vbNewLine & _
         "    EXEC spsys_setsystemsetting 'overnight', 'PREnable', 0;" & vbNewLine
   
     ElseIf gobjLicence.LicenceType = LicenceType.P14Headcount Or gobjLicence.LicenceType = LicenceType.DMIConcurrencyAndP14 Then
       sProcSQL = sProcSQL & _
-        "  IF @p14CountHeadcount > " & gobjLicence.Headcount & vbNewLine & _
+        "  IF @p14CountHeadcount >= " & gobjLicence.Headcount & vbNewLine & _
         "    EXEC spsys_setsystemsetting 'overnight', 'PREnable', 0;" & vbNewLine
     
     Else
