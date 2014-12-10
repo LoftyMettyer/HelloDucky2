@@ -23,7 +23,8 @@ CREATE PROCEDURE [dbo].[spASRIntGetFindRecords] (
 	@piFirstRecPos			integer			OUTPUT,
 	@piCurrentRecCount		integer,
 	@psDecimalSeparator		varchar(255),
-	@psLocaleDateFormat		varchar(255)
+	@psLocaleDateFormat		varchar(255),
+	@RecordID				integer
 )
 AS
 BEGIN
@@ -1290,7 +1291,12 @@ BEGIN
 		END
 
 		/* Add the ORDER BY code to the find record selection string if required. */
-		SET @sTempString = ' ORDER BY ' + @sOrderSQL;
+		IF (@RecordID = -1) BEGIN --Return all records
+			SET @sTempString = ' ORDER BY ' + @sOrderSQL;
+		END ELSE BEGIN --Return only the requested record
+			SET @sTempString = ' WHERE ' + @sRealSource + '.ID = ' + CONVERT(varchar(100), @RecordID) + ' ORDER BY ' + @sOrderSQL;
+		END
+		
 		SET @sExecString = @sExecString + @sTempString;
 				
 	END

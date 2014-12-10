@@ -210,8 +210,10 @@
 				            prmFirstRecPos, _
 				            New SqlParameter("@piCurrentRecCount", SqlDbType.Int) With {.Value = CleanNumeric(Session("currentRecCount"))}, _
 				            New SqlParameter("@psDecimalSeparator", SqlDbType.VarChar, 255) With {.Value = Session("LocaleDecimalSeparator")}, _
-				            New SqlParameter("@psLocaleDateFormat", SqlDbType.VarChar, 255) With {.Value = Platform.LocaleDateFormatForSQL()} _
+				            New SqlParameter("@psLocaleDateFormat", SqlDbType.VarChar, 255) With {.Value = Platform.LocaleDateFormatForSQL()}, _
+				            New SqlParameter("@RecordID", SqlDbType.Int) With {.Value = -1} _
 				        }
+						'Parameter @RecordID = -1 above means "Return all records"
 
 						Try
 							resultDataSet = objDataAccess.GetDataSet("spASRIntGetFindRecords", SPParameters)

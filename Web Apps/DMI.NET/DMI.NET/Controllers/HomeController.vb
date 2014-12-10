@@ -21,6 +21,7 @@ Imports System.Collections.ObjectModel
 Imports System.Security
 Imports DMI.NET.Code.Hubs
 Imports System.Web.Script.Serialization
+Imports Newtonsoft.Json
 
 Namespace Controllers
 	Public Class HomeController
@@ -413,7 +414,67 @@ Namespace Controllers
 			End If
 
 		End Function
+		Function GetFindRecordByID(RecordID As Integer) As String
+			Dim objSession As SessionInfo = CType(Session("SessionContext"), SessionInfo)	 'Set session info
+			Dim objDataAccess As New clsDataAccess(objSession.LoginInfo) 'Instantiate DataAccess class
+			Dim SPParameters() As SqlParameter
+			Dim resultDataSet As DataSet
 
+			Dim prmError As New SqlParameter("@pfError", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
+			Dim prmSomeSelectable As New SqlParameter("@pfSomeSelectable", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
+			Dim prmSomeNotSelectable As New SqlParameter("@pfSomeNotSelectable", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
+			Dim prmRealSource As New SqlParameter("@psRealSource", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
+			Dim prmInsertGranted As New SqlParameter("@pfInsertGranted", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
+			Dim prmDeleteGranted As New SqlParameter("@pfDeleteGranted", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
+			Dim prmIsFirstPage As New SqlParameter("@pfFirstPage", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
+			Dim prmIsLastPage As New SqlParameter("@pfLastPage", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
+			Dim prmColumnType As New SqlParameter("@piColumnType", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
+			Dim prmColumnSize As New SqlParameter("@piColumnSize", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
+			Dim prmColumnDecimals As New SqlParameter("@piColumnDecimals", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
+			Dim prmTotalRecCount As New SqlParameter("@piTotalRecCount", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
+			Dim prmFirstRecPos As New SqlParameter("@piFirstRecPos", SqlDbType.Int) With {.Direction = ParameterDirection.InputOutput, .Value = CleanNumeric(Session("firstRecPos"))}
+
+			SPParameters = New SqlParameter() { _
+					prmError, _
+					prmSomeSelectable, _
+					prmSomeNotSelectable, _
+					prmRealSource, _
+					prmInsertGranted, _
+					prmDeleteGranted, _
+					New SqlParameter("@piTableID", SqlDbType.Int) With {.Value = CleanNumeric(Session("tableID"))}, _
+					New SqlParameter("@piViewID", SqlDbType.Int) With {.Value = CleanNumeric(Session("viewID"))}, _
+					New SqlParameter("@piOrderID ", SqlDbType.Int) With {.Value = CleanNumeric(Session("orderID"))}, _
+					New SqlParameter("@piParentTableID", SqlDbType.Int) With {.Value = CleanNumeric(Session("parentTableID"))}, _
+					New SqlParameter("@piParentRecordID", SqlDbType.Int) With {.Value = CleanNumeric(Session("parentRecordID"))}, _
+					New SqlParameter("@psFilterDef", SqlDbType.VarChar, -1) With {.Value = Session("filterDef")}, _
+					New SqlParameter("@piRecordsRequired", SqlDbType.Int) With {.Value = 10000000}, _
+					prmIsFirstPage, _
+					prmIsLastPage, _
+					New SqlParameter("@psLocateValue", SqlDbType.VarChar, -1) With {.Value = Session("locateValue")}, _
+					prmColumnType, _
+					prmColumnSize, _
+					prmColumnDecimals, _
+					New SqlParameter("@psAction", SqlDbType.VarChar) With {.Value = Session("action"), .Size = 255}, _
+					prmTotalRecCount, _
+					prmFirstRecPos, _
+					New SqlParameter("@piCurrentRecCount", SqlDbType.Int) With {.Value = CleanNumeric(Session("currentRecCount"))}, _
+					New SqlParameter("@psDecimalSeparator", SqlDbType.VarChar, 255) With {.Value = Session("LocaleDecimalSeparator")}, _
+					New SqlParameter("@psLocaleDateFormat", SqlDbType.VarChar, 255) With {.Value = Platform.LocaleDateFormatForSQL()}, _
+					New SqlParameter("@RecordID", SqlDbType.Int) With {.Value = RecordID} _
+					}
+			Try
+				resultDataSet = objDataAccess.GetDataSet("spASRIntGetFindRecords", SPParameters)
+
+				'If no data is returned then that means that the row is no longer part of the table/view
+				If resultDataSet.Tables(1).Rows.Count = 0 Then
+					Return JsonConvert.SerializeObject("")
+				End If
+
+				Return JsonConvert.SerializeObject(resultDataSet.Tables(1))
+			Catch ex As Exception
+				Throw New Exception("The find records could not be retrieved." & vbCrLf & FormatError(ex.Message))
+			End Try
+		End Function
 		Function Find(Optional sParameters As String = "") As ActionResult
 			'Data access variables
 			Dim objSession As SessionInfo = CType(Session("SessionContext"), SessionInfo)	'Set session info

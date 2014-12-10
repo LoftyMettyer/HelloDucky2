@@ -396,6 +396,7 @@ function find_window_onload() {
 						editParams: {
 							aftersavefunc: function (rowid, response, options) {
 								saveInlineRowToDatabase(rowid);																
+								updateRowFromDatabase(rowid);
 							}
 						}
 					});

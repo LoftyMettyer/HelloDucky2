@@ -358,6 +358,7 @@ function menu_MenuClick(sTool) {
 				var rowID = $("#findGridTable").getGridParam('selrow');
 				$("#findGridTable").saveRow(rowID); //"unedit" the row
 				saveInlineRowToDatabase(rowID);
+				updateRowFromDatabase(rowID);
 
 				//enable icons for inline editing.
 				$("#findGridTable_iladd").toggle(insertGranted);
@@ -372,9 +373,6 @@ function menu_MenuClick(sTool) {
 		}
 		return false;
 	}
-
-
-
 
 
 	if (sToolName == "mnutoolCurrentUsers") {
@@ -5167,6 +5165,7 @@ function setinlineeditmode() {
 				if (rowid !== window.lastRowId) {
 					$('#findGridTable').saveRow(window.lastRowId);
 					saveInlineRowToDatabase(window.lastRowId);
+					updateRowFromDatabase(window.lastRowId);
 					window.lastRowId = rowid;
 				}
 
@@ -5230,22 +5229,23 @@ function saveInlineRowToDatabase(rowId) {
 
 	window.savedRow = rowId;
 	OpenHR.submitForm(frmDataArea, null, true, null, null, submitFollowOn);
-
 }
 
 function submitFollowOn() {
-
 	var rowId = window.savedRow; //$("#findGridTable").getGridParam('selrow');
-	
-	if (frmData.txtErrorMessage.value != "") { //There was an error while saving, put the selected row back into edit mode
+
+	if (frmData.txtErrorMessage.value != "") { //There was an error while saving
+		$("#findGridTable").jqGrid('restoreRow', rowId, null); //Restore the row
+		updateRowFromDatabase(rowId); //Get the row data from the database
+
 		$("#findGridTable").editRow(rowId); //Edit the row
 
-		//After a brief timeout, disable "Add" and "Edit" and enable "Save" and "Cancel"
+		//After a brief timeout, enable "Add" and "Edit" and disable "Save" and "Cancel"
 		setTimeout(function() {
-			$("#findGridTable_iladd").addClass("ui-state-disabled");
-			$("#findGridTable_iledit").addClass("ui-state-disabled");
-			$("#findGridTable_ilsave").removeClass("ui-state-disabled");
-			$("#findGridTable_ilcancel").removeClass("ui-state-disabled");
+			$("#findGridTable_iladd").removeClass("ui-state-disabled");
+			$("#findGridTable_iledit").removeClass("ui-state-disabled");
+			$("#findGridTable_ilsave").addClass("ui-state-disabled");
+			$("#findGridTable_ilcancel").addClass("ui-state-disabled");
 		}, 100);
 	} else {
 		//Mark row as changed if we've successfully saved the record.
@@ -5257,4 +5257,60 @@ function submitFollowOn() {
 
 function showDatabaseMenuGroup() {
 	setTimeout("$('#mnutoolDatabase').click()", 100);	
+}
+
+function updateRowFromDatabase(rowid) {
+	//Get the row from the server
+	$.ajax({
+		url: "getfindrecordbyid",
+		type: "GET",
+		async: true,
+		data: { recordid: selectedRecordID(rowid) },
+		success: function (jsonstring) {
+			var jsondata = JSON.parse(jsonstring);
+			var currentRowId = $("#findGridTable").getGridParam('selrow'); //The row we need to update (or remove from the view/table)
+
+			//If no data is returned then that means that the row is no longer part of the table/view
+			if (jsondata.length == 0) {
+				alert('The record has been amended and is no longer in the current table/view');
+				$('#findGridTable').jqGrid('delRowData', currentRowId);
+
+				//Update the record count caption
+				var recCount = $("#findGridTable").getGridParam("reccount");
+				if (recCount  == 0) {
+					menu_SetmnutoolRecordPositionCaption("No Records"); 
+				} else {
+					menu_SetmnutoolRecordPositionCaption("Record(s) : " + recCount);
+				}
+
+				return false;
+			}
+
+			var colModel = $("#findGridTable").jqGrid("getGridParam", "colModel");
+			//Restore the row
+			$("#findGridTable").jqGrid('restoreRow', currentRowId, null);
+
+			//Loop over the colModel and update the current row
+			for (var i = 0; i <= colModel.length - 1; i++) {
+				var colNameForColmodel = colModel[i].name.replace(/ /g, '_'); //Replace space by '_' to match the column name in colModel
+				var colNameInternalData = colModel[i].name; //For the internal local data
+				var cellValue = jsondata[0][colNameForColmodel];
+
+				//Some datatypes need fettling, as always
+				switch (colModel[i].type) {
+					case "date":
+						var d = new Date(cellValue);
+						cellValue = d.toLocaleDateString();
+						break;
+				}
+
+				//Change each cell in the visible part of the row
+				$("#findGridTable").jqGrid('setCell', currentRowId, colNameInternalData, cellValue);
+
+				//Change the internal local data
+				$("#findGridTable").jqGrid('getLocalRow', currentRowId)[colNameInternalData] = cellValue;
+			}
+		},
+		error: function (e) {}
+	});
 }
