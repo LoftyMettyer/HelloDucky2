@@ -537,7 +537,10 @@ Private Sub cmdApply_Click()
         
         LoadShowWhichColumns
         CreateSP_CalculateHeadcount
-        ConfigureWorkflowSpecifics
+        
+        If Application.WorkflowModule Then
+          ConfigureWorkflowSpecifics
+        End If
         
         blnCorrectKey = True
         frmSysMgr.RefreshMenu
