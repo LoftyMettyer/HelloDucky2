@@ -407,7 +407,9 @@ Namespace Controllers
 				End Select
 
 				ViewData("showOutOfOffice") = ShowOutOfOffice(NullSafeInteger(Session("SingleRecordTableID")), NullSafeInteger(Session("SingleRecordViewID")))
+			End If
 
+			If bOK Then
 				Return View()
 			Else
 				Return RedirectToAction("LoginError", "Account")
