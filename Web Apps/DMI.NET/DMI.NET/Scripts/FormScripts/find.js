@@ -275,7 +275,7 @@ function find_window_onload() {
 									colModel.push({
 										name: sColumnName,
 										id: iColumnId,
-										editable: sColumnEditable,
+										editable: false, //Non-editable by design
 										type: "navigation",
 										formatter: hyperLinkFormatter,
 										unformat: hyperLinkDeformatter,
