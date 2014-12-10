@@ -678,13 +678,12 @@ function getValuesForColumn(iColumnId) {
 
 function hyperLinkFormatter(cellValue, options, rowdata, action) {
 	//Format as hyperlink
-	return "<a href='" + cellValue + "' title='" + cellValue + "'>Navigation</a>";
+	return "<a href='" + cellValue + "'>Navigation</a>";
 }
 
 function hyperLinkDeformatter(cellvalue, options, cell) {
 	//Remove the HTML anchor part
-	var value = cell.innerHTML.replace('<a href="', '').replace('">Navigation</a>', '');
-	return value.substring(0, value.indexOf(' ') - 1);
+	return cell.innerHTML.replace('<a href="', '').replace('">Navigation</a>', '');
 }
 
 function workingPatternFormatter(cellValue, options, rowdata, action) {

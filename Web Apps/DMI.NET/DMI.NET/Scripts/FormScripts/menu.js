@@ -5299,8 +5299,10 @@ function updateRowFromDatabase(rowid) {
 				//Some datatypes need fettling, as always
 				switch (colModel[i].type) {
 					case "date":
-						var d = new Date(cellValue);
-						cellValue = d.toLocaleDateString();
+						if (!cellValue == "") { //If the value is not empty then format it as the current date locale
+							var d = new Date(cellValue);
+							cellValue = d.toString(window.LocaleDateFormat);
+						}
 						break;
 				}
 
