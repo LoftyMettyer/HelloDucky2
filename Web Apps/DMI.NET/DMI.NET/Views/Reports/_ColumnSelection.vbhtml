@@ -628,11 +628,12 @@
 
 			var isHidden = $("#SelectedColumnIsHidden").is(':checked');
 			var isGroupWithNext = $("#SelectedColumnIsGroupWithNext").is(':checked');
+			var isSize = (dataRow.DataType == '4');
 
 
 			$(".numericOnly").prop("disabled", !isNumeric || isHidden || isGroupWithNext || isReadOnly);
 			$(".cannotBeHidden").prop("disabled", isHidden || isGroupWithNext || isReadOnly);
-			$(".decimalsOnly").prop("disabled", !isDecimals || isReadOnly);
+			$(".decimalsOnly").prop("disabled", !isDecimals || isReadOnly || isSize);
 			$(".baseTableOnly").prop("disabled", !isBaseOrParentTableColumn || !isThereChildColumns || isHidden || isReadOnly);
 			$(".canGroupWithNext").prop("disabled", isBottomRow || isHidden || isReadOnly);
 			$("#SelectedColumnIsHidden").prop("disabled", isGroupWithNext || isReadOnly);
