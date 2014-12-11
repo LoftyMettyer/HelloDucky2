@@ -8,7 +8,7 @@
 		var language = window.UserLocale || window.opener.window.UserLocale;
 
 		// No regional setting for US - assumed as the default.
-		if (language.toUpperCase() == "EN-US") {
+		if ((language.toUpperCase() == "EN-US") || (language.toUpperCase() == "EN")) {
 			$.datepicker.setDefaults($.datepicker.regional[""]);
 		}
 		else {
