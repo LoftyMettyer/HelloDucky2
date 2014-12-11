@@ -678,7 +678,7 @@ function getValuesForColumn(iColumnId) {
 
 function hyperLinkFormatter(cellValue, options, rowdata, action) {
 	//Format as hyperlink
-	return "<a href='" + cellValue + "'>Navigation</a>";
+	return "<a href='" + cellValue + "' target='_blank'>Navigation</a>";
 }
 
 function hyperLinkDeformatter(cellvalue, options, cell) {

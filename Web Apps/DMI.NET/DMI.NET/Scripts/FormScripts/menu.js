@@ -5268,7 +5268,7 @@ function updateRowFromDatabase(rowid) {
 		data: { recordid: selectedRecordID(rowid) },
 		success: function (jsonstring) {
 			var jsondata = JSON.parse(jsonstring);
-			var currentRowId = $("#findGridTable").getGridParam('selrow'); //The row we need to update (or remove from the view/table)
+			var currentRowId = rowid; //The row we need to update (or remove from the view/table)
 
 			//If no data is returned then that means that the row is no longer part of the table/view
 			if (jsondata.length == 0) {
