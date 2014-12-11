@@ -21,6 +21,21 @@ BEGIN
 	) ON [PRIMARY]
 END
 
+SELECT @iRecCount = count(sysobjects.id)
+	FROM sysobjects
+	WHERE name = 'ASRSysCurrentSessions'
+
+
+if @iRecCount = 0
+BEGIN
+	CREATE TABLE ASRSysCurrentSessions(
+		[IISServer]		nvarchar(255),
+		[Username]		nvarchar(128),
+		[Hostname]		nvarchar(255),
+		[SessionID]		nvarchar(255),
+		[loginTime]		datetime,
+		[WebArea]	varchar(255));
+END
 
 ---------------------------------------------------
 PRINT 'Procedure spASRGetCurrentUsers'
