@@ -407,7 +407,7 @@ Namespace ExClientCode
 						stlGeneral.VerticalAlignment = TextAlignmentType.Top
 						stlGeneral.HorizontalAlignment = TextAlignmentType.Left
 
-						stlDate.Number = 49	' Text style
+						stlDate.Number = 14	' Date style
 						stlDate.VerticalAlignment = TextAlignmentType.Top
 						stlDate.HorizontalAlignment = TextAlignmentType.Right
 
