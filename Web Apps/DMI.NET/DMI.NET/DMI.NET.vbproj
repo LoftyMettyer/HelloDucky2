@@ -1281,7 +1281,6 @@
     <Content Include="Scripts\MvcFoolproofValidation.min.js" />
     <Content Include="Scripts\officebar\winkit\GridEdit2DIS.png" />
     <Content Include="Scripts\officebar\winkit\GridEdit2HOVER.png" />
-    <Content Include="Scripts\officebar\winkit\registry_64NORM.png" />
     <Content Include="Views\Account\CurrentUsers.ascx" />
     <Content Include="Views\Home\util_run_bradford_factor.ascx" />
     <Content Include="Views\Home\_showChart.ascx" />
