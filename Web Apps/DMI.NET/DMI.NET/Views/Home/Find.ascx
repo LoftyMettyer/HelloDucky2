@@ -717,6 +717,10 @@ End If
 Response.Write("				<input type='hidden' id=txtErrorDescription name=txtErrorDescription value=""" & sErrorDescription & """>")
 			%>
 		</div>
+		
+		<input type="hidden" id="txtFindEditRowID" value=""/>
+		<input type="hidden" id="txtFindEditLastRowID" value=""/>
+		<input type="hidden" id="txtFindEditRowData" value=""/>
 	</form>
 
 	<form id="frmTBData" name="frmTBData">

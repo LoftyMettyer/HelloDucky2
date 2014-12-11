@@ -356,9 +356,7 @@ function menu_MenuClick(sTool) {
 				menu_enableFindMenu();
 				//save row
 				var rowID = $("#findGridTable").getGridParam('selrow');
-				$("#findGridTable").saveRow(rowID); //"unedit" the row
-				saveInlineRowToDatabase(rowID);
-				updateRowFromDatabase(rowID);
+				saveRowIfChanged(rowID, true);
 
 				//enable icons for inline editing.
 				$("#findGridTable_iladd").toggle(insertGranted);
@@ -5154,31 +5152,47 @@ function menu_SetmnutoolButtonCaption(itemID, newCaption) {
 
 
 function setinlineeditmode() {
-	
 	if ($('#mnutoolInlineEditRecordFind').hasClass("toolbarButtonOn")) {
 		$('#findGridTable').jqGrid('setGridParam', {
-			beforeSelectRow: function(rowid, e) {
-				if (window.lastRowId == undefined) {
-					window.lastRowId = rowid;
-				}
-
-				if (rowid !== window.lastRowId) {
-					$('#findGridTable').saveRow(window.lastRowId);
-					saveInlineRowToDatabase(window.lastRowId);
-					updateRowFromDatabase(window.lastRowId);
-					window.lastRowId = rowid;
-				}
-
-				$('#findGridTable').editRow(rowid); //Edit the current row
-
-				//Without "return true" below, any other "Select" events ("onSelectRow", "onCellSelect", etc) won't fire
-				//See http://stackoverflow.com/questions/16241155/jqgrid-using-beforeselectrow-it-disables-my-oncellselect-event
-				return true;
+			beforeSelectRow: function (rowid, e) {
+				saveRowIfChanged(rowid, false);
 			}
 		});
 	} else {
 		$('#mnutoolInlineEditRecordFind').toggleClass("toolbarButtonOn");	
 	}
+}
+
+function saveRowIfChanged(rowid, lastSave) {
+	var lastRowID = $('#frmFindForm #txtFindEditLastRowID').val();
+
+	if (lastRowID == "") {
+		//no previously selected row
+		lastRowID = rowid;
+		window.beforesaveRowData = JSON.stringify($("#findGridTable").getRowData(rowid));
+	}
+
+	if ((rowid !== lastRowID) || (lastSave)) {
+		$('#findGridTable').saveRow(lastRowID);
+
+		var aftersaveGridData = JSON.stringify($("#findGridTable").getRowData(lastRowID));
+		if (aftersaveGridData !== window.beforesaveRowData) {
+			//Changes made, save them.
+			saveInlineRowToDatabase(lastRowID);
+			updateRowFromDatabase(lastRowID);
+		} else {
+			//No changes made. Do nothing.
+		}
+
+		window.beforesaveRowData = JSON.stringify($("#findGridTable").getRowData(rowid));
+	}
+
+	$('#frmFindForm #txtFindEditLastRowID').val(rowid);
+	if(!lastSave) $('#findGridTable').editRow(rowid); //Edit the current row
+
+	//Without "return true" below, any other "Select" events ("onSelectRow", "onCellSelect", etc) won't fire
+	//See http://stackoverflow.com/questions/16241155/jqgrid-using-beforeselectrow-it-disables-my-oncellselect-event
+	return true;
 }
 
 function saveInlineRowToDatabase(rowId) {
@@ -5233,7 +5247,7 @@ function saveInlineRowToDatabase(rowId) {
 
 function submitFollowOn() {
 	var rowId = window.savedRow; //$("#findGridTable").getGridParam('selrow');
-
+	
 	if (frmData.txtErrorMessage.value != "") { //There was an error while saving
 		$("#findGridTable").jqGrid('restoreRow', rowId, null); //Restore the row
 		updateRowFromDatabase(rowId); //Get the row data from the database
@@ -5260,12 +5274,14 @@ function showDatabaseMenuGroup() {
 }
 
 function updateRowFromDatabase(rowid) {
+	var recordID = $("#findGridTable").jqGrid('getCell', rowid, 'ID');
+
 	//Get the row from the server
 	$.ajax({
 		url: "getfindrecordbyid",
 		type: "GET",
 		async: true,
-		data: { recordid: selectedRecordID(rowid) },
+		data: { recordid: recordID },
 		success: function (jsonstring) {
 			var jsondata = JSON.parse(jsonstring);
 			var currentRowId = rowid; //The row we need to update (or remove from the view/table)
