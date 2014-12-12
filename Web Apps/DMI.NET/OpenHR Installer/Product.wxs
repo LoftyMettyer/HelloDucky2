@@ -161,5 +161,7 @@
 			Schedule="afterInstallInitialize"
 			DowngradeErrorMessage="A newer version of [ProductName] is already installed. Setup will now exit." />
 
+		<!-- Set the installation directory to the value entered by the user -->
+		<SetDirectory Id="INSTALLLOCATION" Value="[WWWROOT][VIRTUAL_DIR_VAL]" Sequence="execute" />
 	</Product>
 </Wix>
