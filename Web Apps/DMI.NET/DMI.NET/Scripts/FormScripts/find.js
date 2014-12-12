@@ -267,7 +267,7 @@ function find_window_onload() {
 										editable: sColumnEditable,
 										type: "select",
 										editoptions: {
-											value: getValuesForColumn(iColumnId), //This populates the <select>
+											value: getValuesForColumn(iColumnId, (ColumnControlType == 2)), //This populates the <select>
 											defaultValue: getDefaultValueForColumn(iColumnId, "select")
 										}
 									});
@@ -319,7 +319,7 @@ function find_window_onload() {
 			
 			// Add the grid records.
 			fRecordAdded = false;
-			iCount = 0;
+			iCount = 0;			
 			if (dataCollection != null) {
 				colData = [];
 				for (i = 0; i < dataCollection.length; i++) {
@@ -660,7 +660,7 @@ function selectValue(lookupColumnGridPosition, elementId) {
 	$("#LookupForEditableGrid_Table").jqGrid('GridUnload');
 }
 
-function getValuesForColumn(iColumnId) {
+function getValuesForColumn(iColumnId, isDropdown) {	
 	//Get the values for this column and return them as a json object that jqGrid will use to create a dropdown
 	try {
 		var data = eval('colOptionGroupOrDropDownData_' + iColumnId);
@@ -669,21 +669,25 @@ function getValuesForColumn(iColumnId) {
 	}
 
 	var values = {};
-	for (i = 0; i <= data.length - 1; i++) {
+
+	if(isDropdown) values[""] = "";	//add empty first option for dropdown lists (not option groups)
+
+	for (var i = 0; i <= data.length - 1; i++) {
 		values[data[i][0]] = data[i][0];
 	}
 
 	return values;
 }
 
-function hyperLinkFormatter(cellValue, options, rowdata, action) {
+function hyperLinkFormatter(cellValue, options, rowdata, action) {	
 	//Format as hyperlink
-	return "<a href='" + cellValue + "' target='_blank'>Navigation</a>";
+	return "<a href='" + encodeURI(cellValue) + "' target='_blank'>Navigation</a>";
 }
 
-function hyperLinkDeformatter(cellvalue, options, cell) {
-	//Remove the HTML anchor part
-	return cell.innerHTML.replace('<a href="', '').replace('">Navigation</a>', '');
+function hyperLinkDeformatter(cellvalue, options, cell) {	
+	//Remove the HTML anchor part	
+	var cleanUri = cell.innerHTML.replace('<a href="', '').replace("<a href='", "").replace('" target="_blank">Navigation</a>', '').replace("' target='_blank'>Navigation</a>", "");
+	return decodeURI(cleanUri);
 }
 
 function workingPatternFormatter(cellValue, options, rowdata, action) {
