@@ -179,6 +179,13 @@
 							// Tick the column without asking as its not hidden																
 							$(this).prop('checked', true);
 						}
+
+						// Validates that either PageOnChange or BreakOnChange is checked but not both
+						if(validatePageAndBreakOnChange(colid, $(this).parents('td').attr('aria-describedby')) == false)
+						{
+							OpenHR.modalMessage("You cannot select both 'Break on Change' and 'Page on Change' for the same column.");
+							$(this).prop('checked', false);
+						}
 					}
 				});
 			});
@@ -203,6 +210,20 @@
 				}
 			}
 			return false;
+		}
+		
+		// Validates that either PageOnChange or BreakOnChange is checked but not both
+		function validatePageAndBreakOnChange(colid, checkedColumnName) {
+			var gridData = $("#SortOrders").getRowData(colid);
+			var retVal = true;
+
+			// Allow selection of either pageonchange or breakonchange but not both
+			if ((checkedColumnName == "SortOrders_PageOnChange" && gridData.BreakOnChange.toUpperCase() == "TRUE") ||
+				(checkedColumnName == "SortOrders_BreakOnChange" && gridData.PageOnChange.toUpperCase() == "TRUE"))
+			{
+				retVal = false;
+			}
+			return retVal;
 		}
 
 		function addSortOrder() {
