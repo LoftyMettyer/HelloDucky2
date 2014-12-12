@@ -60,45 +60,46 @@
 		}
 
 		function refreshToggleValues() {
-				// Show Captions setting
-				if (chkShowCaptions.checked == false) {
-						frmChangeDetails.txtShowCaptions.value = "hide";
-				}
-				else {
-						frmChangeDetails.txtShowCaptions.value = "show";
-				}
 
-				// Show Weekends setting
-				if (chkShowWeekends.checked == false) {
-						frmChangeDetails.txtShowWeekends.value = "unhighlighted";
-				}
-				else {
-						frmChangeDetails.txtShowWeekends.value = "highlighted";
-				}
+			// Show Captions setting
+			if (chkShowCaptions.checked == false) {
+				$("#txtShowCaptions").val("hide");
+			}
+			else {
+				$("#txtShowCaptions").val("show");
+			}
 
-				// Include Bank Holidays setting
-				if (chkIncludeBankHolidays.checked == false) {
-						frmChangeDetails.txtIncludeBankHolidays.value = "unincluded";
-				}
-				else {
-						frmChangeDetails.txtIncludeBankHolidays.value = "included";
-				}
+			// Show Weekends setting
+			if (chkShowWeekends.checked == false) {
+				$("#txtShowWeekends").val("unhighlighted");
+			}
+			else {
+				$("#txtShowWeekends").val("highlighted");
+			}
 
-				// Show Bank Holidays setting
-				if (chkShowBankHolidays.checked == false) {
-						frmChangeDetails.txtShowBankHolidays.value = "unhighlighted";
-				}
-				else {
-						frmChangeDetails.txtShowBankHolidays.value = "highlighted";
-				}
+			// Include Bank Holidays setting
+			if (chkIncludeBankHolidays.checked == false) {
+				$("#txtIncludeBankHolidays").val("unincluded");
+			}
+			else {
+				$("#txtIncludeBankHolidays").val("included");
+			}
 
-				// Working Days Only setting
-				if (chkIncludeWorkingDaysOnly.checked == false) {
-						frmChangeDetails.txtIncludeWorkingDaysOnly.value = "unincluded";
-				}
-				else {
-						frmChangeDetails.txtIncludeWorkingDaysOnly.value = "included";
-				}
+			// Show Bank Holidays setting
+			if (chkShowBankHolidays.checked == false) {
+				$("#txtShowBankHolidays").val("unhighlighted");
+			}
+			else {
+				$("#txtShowBankHolidays").val("highlighted");
+			}
+
+			// Working Days Only setting
+			if (chkIncludeWorkingDaysOnly.checked == false) {
+				$("#txtIncludeWorkingDaysOnly").val("unincluded");
+			}
+			else {
+				$("#txtIncludeWorkingDaysOnly").val("included");
+			}
 		}
 
 		function ShowDetails(pdStartDate, pstrStartSession, pdEndDate, pstrEndSession, intDuration, strType, strTypeCode, strCalCode, strReason, strRegion, strWorkingPattern) {
@@ -346,5 +347,9 @@ end if
 %>
 
 <script type="text/javascript">
+
+	$(document).ready(function () {
 		stdrpt_AbsenceCalendar_window_onload();
+	});
+
 </script>

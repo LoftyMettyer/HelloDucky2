@@ -7,6 +7,7 @@ Imports HR.Intranet.Server.Enums
 Imports HR.Intranet.Server.Metadata
 Imports System.Web
 Imports VB = Microsoft.VisualBasic
+Imports System.Text
 
 Public Class AbsenceCalendar
 	Inherits BaseForDMI
@@ -402,7 +403,8 @@ Public Class AbsenceCalendar
 			If iCount >= iEndNumber Or iCount < iStartNumber Then
 				strHtmlDays = "<TR><TD name=DateID_9999 id=DateID_9999 class=""calendar_nonday"" HEIGHT=" & CELLSIZE & " VALIGN=middle ALIGN=center WIDTH=" & CELLSIZE & " NOWRAP>&nbsp;</TD></TR>" & "<TR><TD name=DateID_9999 id=DateID_9999 class=""calendar_nonday"" HEIGHT=" & CELLSIZE & " VALIGN=middle ALIGN=center WIDTH=" & CELLSIZE & " NOWRAP>&nbsp;</TD></TR>"
 			Else
-				dTempDate = DateSerial(piYear, piMonthNumber, iCount + 1 - iStartNumber)
+				dTempDate = New Date(piYear, piMonthNumber, iCount + 1 - iStartNumber)
+
 				iIndexAM = CStr(GetCalIndex(dTempDate, False))
 				iIndexPM = CStr(GetCalIndex(dTempDate, True))
 
@@ -791,10 +793,9 @@ errLoadColourKey:
 		strHtml = strHtml & HTML_Calendar_Heading()
 
 		' HTML main code
-		For iCount = 1 To 12
-			iMonth = Month(DateAdd(Microsoft.VisualBasic.DateInterval.Month, iCount - 1, mdCalendarStartDate))
-			iYear = Year(DateAdd(Microsoft.VisualBasic.DateInterval.Month, iCount - 1, mdCalendarStartDate))
-
+		For iCount = 0 To 11
+			iMonth = mdCalendarStartDate.AddMonths(iCount).Month
+			iYear = mdCalendarStartDate.AddMonths(iCount).Year
 			strHtml = strHtml & HTML_Month(iMonth, iYear)
 		Next iCount
 
@@ -837,27 +838,28 @@ errLoadColourKey:
 				' JDM - Kak-Handed way of sorting out American settings on different versions of IIS
 				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
 				If IsDBNull(objRow("StartDate")) Then
-					mdAbsStartDate = DateSerial(Year(Now), Month(Now), Now.Day)
+					mdAbsStartDate = Now
 				Else
-					mdAbsStartDate = DateSerial(Year(objRow("StartDate")), Month(objRow("StartDate")), CDate(objRow("StartDate")).Day)
+					mdAbsStartDate = CDate(objRow("StartDate"))
 				End If
 
 				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
 				If IsDBNull(objRow("EndDate")) Then
-					mdAbsEndDate = DateSerial(Year(Now), Month(Now), Now.Day)
+					mdAbsEndDate = Now
 				Else
-					mdAbsEndDate = DateSerial(Year(objRow("EndDate")), Month(objRow("EndDate")), CDate(objRow("EndDate")).Day)
+					mdAbsEndDate = CDate(objRow("EndDate"))
 				End If
 
-				mstrAbsStartSession = CStr(objRow("StartSession")).ToUpper()
-				mstrAbsEndSession = CStr(objRow("EndSession")).ToUpper()
+
+				mstrAbsStartSession = objRow("StartSession").ToString.ToUpper()
+				mstrAbsEndSession = objRow("EndSession").ToString.ToUpper()
 
 				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
 				mstrAbsType = IIf(IsDBNull(objRow("Type")), "", objRow("Type"))
 
 				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
 				mstrAbsCalendarCode = IIf(IsDBNull(objRow("CalendarCode")), "", objRow("CalendarCode"))
-				mlngAbsDuration = objRow("Duration")
+				mlngAbsDuration = CLng(objRow("Duration"))
 				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
 				mstrAbsReason = IIf(IsDBNull(objRow("Reason")), "", objRow("Reason"))
 
@@ -907,11 +909,11 @@ errLoadColourKey:
 
 			If prstPersonnelData.Rows.Count > 0 Then
 				If Not IsDBNull(prstPersonnelData.Rows(0)("StartDate")) Then
-					mdStartDate = DateToString(prstPersonnelData.Rows(0)("StartDate"), RegionalSettings)
+					mdStartDate = CDate(prstPersonnelData.Rows(0)("StartDate"))
 				End If
 
 				If Not IsDBNull(prstPersonnelData.Rows(0)("LeavingDate")) Then
-					mdLeavingDate = DateToString(prstPersonnelData.Rows(0)("LeavingDate"), RegionalSettings)
+					mdLeavingDate = CDate(prstPersonnelData.Rows(0)("LeavingDate"))
 				End If
 
 			End If
@@ -1048,20 +1050,21 @@ PersonnelERROR:
 		Dim blnIsWeekend As Boolean
 		Dim blnHasEvent As Boolean
 		Dim blnIsWorkingDay As Boolean
-		Dim strHtmlRefresh As String
+		Dim strHtmlRefresh As New StringBuilder
+
 		Dim strCaption As String
 
 		' Create function header strings
 		strHtml = "<script type=""text/javascript"">" & vbNewLine
 
-		strHtmlRefresh = vbNullString
-		strHtmlRefresh = strHtmlRefresh & "function refreshDateSpecifics() {" & vbNewLine
-		strHtmlRefresh = strHtmlRefresh & " refreshToggleValues();" & vbNewLine
+		strHtmlRefresh.Append("function refreshDateSpecifics() {" & vbNewLine &
+														"refreshToggleValues();" & vbNewLine)
 
 		' Create option strings
 		For iCount = 0 To UBound(mavAbsences, 1)
 
 			dTempDate = GetCalDay(iCount)
+			Dim sDateObjectName = String.Format("$('#DateID_{0}')[0]", iCount.ToString.TrimStart)
 
 			If (dTempDate <= mdLeavingDate Or mdLeavingDate = DateTime.FromOADate(0)) And dTempDate >= mdStartDate And (dTempDate <= mdCalendarEndDate And dTempDate >= mdCalendarStartDate) Then
 
@@ -1079,66 +1082,175 @@ PersonnelERROR:
 				blnIsWorkingDay = mavAbsences(iCount, 4)
 
 				If (Not blnIsWeekend) And (Not blnHasEvent) And (Not blnIsBankHoliday) And (Not blnIsWorkingDay) Then
-					strHtmlRefresh = strHtmlRefresh & "DateID_" & LTrim(Str(iCount)) & ".className = 'calendar_day';" & vbNewLine
+					strHtmlRefresh.AppendFormat("{0}.className = 'calendar_day';" & vbNewLine, sDateObjectName)
 				End If
 
 				If blnIsWeekend And (Not blnHasEvent) And (Not blnIsBankHoliday) And (Not blnIsWorkingDay) Then
-					strHtmlRefresh = strHtmlRefresh & "if (frmChangeDetails.txtShowWeekends.value == ""highlighted"") " & vbNewLine & "   {" & vbNewLine & "   DateID_" & LTrim(Str(iCount)) & ".className = 'calendar_nonworkingday';" & vbNewLine & "   }" & vbNewLine & "else " & vbNewLine & "   {" & vbNewLine & "   DateID_" & LTrim(Str(iCount)) & ".className = 'calendar_day';" & vbNewLine & "   }" & vbNewLine
+					strHtmlRefresh.AppendFormat("if (frmChangeDetails.txtShowWeekends.value == 'highlighted') {{" & vbNewLine &
+						"   DateID_" & LTrim(Str(iCount)) & ".className = 'calendar_nonworkingday';" & vbNewLine & "   }}" & vbNewLine &
+						"else " & vbNewLine & "   {{" & vbNewLine &
+						"   DateID_" & LTrim(Str(iCount)) & ".className = 'calendar_day'; }}" & vbNewLine, sDateObjectName)
 				End If
 
 
 				'Has an event therefore deal with the Caption
 				If blnHasEvent And (Not blnIsWeekend) And (Not blnIsBankHoliday) And (Not blnIsWorkingDay) Then
-					strHtmlRefresh = strHtmlRefresh & "if (frmChangeDetails.txtIncludeWorkingDaysOnly.value == ""included"") " & vbNewLine & "   {" & vbNewLine & "   DateID_" & LTrim(Str(iCount)) & ".innerText = '';" & vbNewLine & "   DateID_" & LTrim(Str(iCount)) & ".className = 'calendar_day';" & vbNewLine & "   DateID_" & LTrim(Str(iCount)) & ".style.backgroundColor = """";" & vbNewLine & "   }" & vbNewLine & "else " & vbNewLine & "   {" & vbNewLine & "   if (frmChangeDetails.txtShowCaptions.value == 'show') " & vbNewLine & "     {" & vbNewLine & "     DateID_" & LTrim(Str(iCount)) & ".innerText = """ & strCaption & """;" & vbNewLine & "     }" & vbNewLine & "   else" & vbNewLine & "     {" & vbNewLine & "     DateID_" & LTrim(Str(iCount)) & ".innerText = '';" & vbNewLine & "     }" & vbNewLine & "   DateID_" & LTrim(Str(iCount)) & ".style.backgroundColor = """ & strColour & """;" & vbNewLine & "   }" & vbNewLine
+					strHtmlRefresh.AppendFormat("if (frmChangeDetails.txtIncludeWorkingDaysOnly.value == 'included') {{" & vbNewLine & _
+						"  {0}.innerHTML = '';" & vbNewLine & _
+						"  {0}.className = 'calendar_day';" & vbNewLine & _
+						"  {0}.style.backgroundColor = ''; }}" & vbNewLine & _
+						"else {{" & vbNewLine & _
+						"   if (frmChangeDetails.txtShowCaptions.value == 'show') {{" & vbNewLine & _
+						"     {0}.innerHTML = '{1}'; }}" & vbNewLine & _
+						"   else {{" & vbNewLine & _
+						"     {0}.innerHTML = ''; }}" & vbNewLine & _
+						"  {0}.style.backgroundColor = '{2}'; }}" & vbNewLine, sDateObjectName, strCaption, strColour)
+
 				End If
 
 				'Has an event therefore deal with the Caption
 				If blnHasEvent And (blnIsWeekend) And (Not blnIsBankHoliday) And (Not blnIsWorkingDay) Then
-					strHtmlRefresh = strHtmlRefresh & "if (frmChangeDetails.txtIncludeWorkingDaysOnly.value == ""included"" && frmChangeDetails.txtShowWeekends.value == ""highlighted"") " & vbNewLine & "   {" & vbNewLine & "   DateID_" & LTrim(Str(iCount)) & ".className = 'calendar_nonworkingday';" & vbNewLine & "   DateID_" & LTrim(Str(iCount)) & ".style.backgroundColor = """";" & vbNewLine & "   DateID_" & LTrim(Str(iCount)) & ".innerText = '';" & vbNewLine & "   }" & vbNewLine & "else if (frmChangeDetails.txtIncludeWorkingDaysOnly.value == ""included"" && frmChangeDetails.txtShowWeekends.value == ""unhighlighted"") " & vbNewLine & "   {" & vbNewLine & "   DateID_" & LTrim(Str(iCount)) & ".className = 'calendar_day';" & vbNewLine & "   DateID_" & LTrim(Str(iCount)) & ".style.backgroundColor = """";" & vbNewLine & "   DateID_" & LTrim(Str(iCount)) & ".innerText = '';" & vbNewLine & "   }" & vbNewLine & "else " & vbNewLine & "   {" & vbNewLine & "   DateID_" & LTrim(Str(iCount)) & ".style.backgroundColor = """ & strColour & """;" & vbNewLine & "   if (frmChangeDetails.txtShowCaptions.value == 'show') " & vbNewLine & "     {" & vbNewLine & "     DateID_" & LTrim(Str(iCount)) & ".innerText = """ & strCaption & """;" & vbNewLine & "     }" & vbNewLine & "   else" & vbNewLine & "     {" & vbNewLine & "     DateID_" & LTrim(Str(iCount)) & ".innerText = '';" & vbNewLine & "     }" & vbNewLine & "   }" & vbNewLine
+					strHtmlRefresh.AppendFormat("if (frmChangeDetails.txtIncludeWorkingDaysOnly.value == 'included' && frmChangeDetails.txtShowWeekends.value == 'highlighted') {{" & vbNewLine &
+						"   {0}.className = 'calendar_nonworkingday';" & vbNewLine &
+						"   {0}.style.backgroundColor = '';" & vbNewLine &
+						"   {0}.innerHTML = ''; }}" & vbNewLine &
+						"else if (frmChangeDetails.txtIncludeWorkingDaysOnly.value == 'included' && frmChangeDetails.txtShowWeekends.value == 'unhighlighted') {{" & vbNewLine &
+						"   {0}.className = 'calendar_day';" & vbNewLine &
+						"   {0}.style.backgroundColor = '';" & vbNewLine &
+						"   {0}.innerHTML = ''; }}" & vbNewLine &
+						"else {{" & vbNewLine &
+						"   {0}.style.backgroundColor = '{1}';" & vbNewLine &
+						"   if (frmChangeDetails.txtShowCaptions.value == 'show') {{" & vbNewLine &
+						"     {0}.innerHTML = '{2}'; }}" & vbNewLine &
+						"   else {{" & vbNewLine &
+						"     {0}.innerHTML = ''; }}" & vbNewLine &
+						"   }}" & vbNewLine, sDateObjectName, strColour, strCaption)
+
 				End If
 
 				'Has an event therefore deal with the Caption
 				If blnHasEvent And (blnIsWeekend) And (blnIsBankHoliday) And (Not blnIsWorkingDay) Then
-					strHtmlRefresh = strHtmlRefresh & "if (frmChangeDetails.txtIncludeBankHolidays.value == ""included"") " & vbNewLine & "   {" & vbNewLine & "   DateID_" & LTrim(Str(iCount)) & ".style.backgroundColor = """ & strColour & """;" & vbNewLine & "   if (frmChangeDetails.txtShowCaptions.value == 'show') " & vbNewLine & "     {" & vbNewLine & "     DateID_" & LTrim(Str(iCount)) & ".innerText = """ & strCaption & """;" & vbNewLine & "     }" & vbNewLine & "   else" & vbNewLine & "     {" & vbNewLine & "     DateID_" & LTrim(Str(iCount)) & ".innerText = '';" & vbNewLine & "     }" & vbNewLine & "   }" & vbNewLine
-					strHtmlRefresh = strHtmlRefresh & "else if (frmChangeDetails.txtIncludeBankHolidays.value == ""unincluded"" && frmChangeDetails.txtShowWeekends.value == ""highlighted"") " & vbNewLine & "   {" & vbNewLine & "   DateID_" & LTrim(Str(iCount)) & ".className = 'calendar_nonworkingday';" & vbNewLine & "   DateID_" & LTrim(Str(iCount)) & ".style.backgroundColor = """";" & vbNewLine & "   DateID_" & LTrim(Str(iCount)) & ".innerText = '';" & vbNewLine & "   }" & vbNewLine & "else if (frmChangeDetails.txtIncludeBankHolidays.value == ""unincluded"" && frmChangeDetails.txtShowBankHolidays.value == ""highlighted"") " & vbNewLine & "   {" & vbNewLine & "   DateID_" & LTrim(Str(iCount)) & ".className = 'calendar_nonworkingday';" & vbNewLine & "   DateID_" & LTrim(Str(iCount)) & ".style.backgroundColor = """";" & vbNewLine & "   DateID_" & LTrim(Str(iCount)) & ".innerText = '';" & vbNewLine & "   }" & vbNewLine
-					strHtmlRefresh = strHtmlRefresh & "else if (frmChangeDetails.txtIncludeBankHolidays.value == ""unincluded"" && frmChangeDetails.txtShowWeekends.value == ""unhighlighted"") " & vbNewLine & "   {" & vbNewLine & "   DateID_" & LTrim(Str(iCount)) & ".className = 'calendar_day';" & vbNewLine & "   DateID_" & LTrim(Str(iCount)) & ".style.backgroundColor = """";" & vbNewLine & "   DateID_" & LTrim(Str(iCount)) & ".innerText = '';" & vbNewLine & "   }" & vbNewLine & "else if (frmChangeDetails.txtIncludeBankHolidays.value == ""unincluded"" && frmChangeDetails.txtShowBankHolidays.value == ""unhighlighted"") " & vbNewLine & "   {" & vbNewLine & "   DateID_" & LTrim(Str(iCount)) & ".className = 'calendar_day';" & vbNewLine & "   DateID_" & LTrim(Str(iCount)) & ".style.backgroundColor = """";" & vbNewLine & "   DateID_" & LTrim(Str(iCount)) & ".innerText = '';" & vbNewLine & "   }" & vbNewLine
-					strHtmlRefresh = strHtmlRefresh & "else if (frmChangeDetails.txtIncludeWorkingDaysOnly.value == ""included"" && frmChangeDetails.txtShowBankHolidays.value == ""highlighted"") " & vbNewLine & "   {" & vbNewLine & "   DateID_" & LTrim(Str(iCount)) & ".className = 'calendar_nonworkingday';" & vbNewLine & "   DateID_" & LTrim(Str(iCount)) & ".style.backgroundColor = """";" & vbNewLine & "   DateID_" & LTrim(Str(iCount)) & ".innerText = '';" & vbNewLine & "   }" & vbNewLine & "else if (frmChangeDetails.txtIncludeWorkingDaysOnly.value == ""included"" && frmChangeDetails.txtShowWeekends.value == ""unhighlighted"") " & vbNewLine & "   {" & vbNewLine & "   DateID_" & LTrim(Str(iCount)) & ".className = 'calendar_day';" & vbNewLine & "   DateID_" & LTrim(Str(iCount)) & ".style.backgroundColor = """";" & vbNewLine & "   DateID_" & LTrim(Str(iCount)) & ".innerText = '';" & vbNewLine & "   }" & vbNewLine
-					strHtmlRefresh = strHtmlRefresh & "else if (frmChangeDetails.txtIncludeWorkingDaysOnly.value == ""included"" && frmChangeDetails.txtShowWeekends.value == ""highlighted"") " & vbNewLine & "   {" & vbNewLine & "   DateID_" & LTrim(Str(iCount)) & ".className = 'calendar_nonworkingday';" & vbNewLine & "   DateID_" & LTrim(Str(iCount)) & ".style.backgroundColor = """";" & vbNewLine & "   DateID_" & LTrim(Str(iCount)) & ".innerText = '';" & vbNewLine & "   }" & vbNewLine & "else if (frmChangeDetails.txtIncludeWorkingDaysOnly.value == ""included"" && frmChangeDetails.txtShowBankHolidays.value == ""unhighlighted"") " & vbNewLine & "   {" & vbNewLine & "   DateID_" & LTrim(Str(iCount)) & ".className = 'calendar_day';" & vbNewLine & "   DateID_" & LTrim(Str(iCount)) & ".style.backgroundColor = """";" & vbNewLine & "   DateID_" & LTrim(Str(iCount)) & ".innerText = '';" & vbNewLine & "   }" & vbNewLine & "else " & vbNewLine & "   {" & vbNewLine & "   DateID_" & LTrim(Str(iCount)) & ".style.backgroundColor = """ & strColour & """;" & vbNewLine & "   if (frmChangeDetails.txtShowCaptions.value == 'show') " & vbNewLine & "     {" & vbNewLine & "     DateID_" & LTrim(Str(iCount)) & ".innerText = """ & strCaption & """;" & vbNewLine & "     }" & vbNewLine & "   else" & vbNewLine & "     {" & vbNewLine & "     DateID_" & LTrim(Str(iCount)) & ".innerText = '';" & vbNewLine & "     }" & vbNewLine & "   }" & vbNewLine
+					strHtmlRefresh.AppendFormat("if (frmChangeDetails.txtIncludeBankHolidays.value == 'included') {{" & vbNewLine &
+						"   {0}.style.backgroundColor = '" & strColour & "';" & vbNewLine &
+						"   if (frmChangeDetails.txtShowCaptions.value == 'show')  {{" & vbNewLine &
+						"     {0}.innerHTML = '{1}'; }}" & vbNewLine &
+						"   else {{" & vbNewLine &
+						"     {0}.innerHTML = ''; }}" & vbNewLine & "   }}" & vbNewLine &
+					"else if (frmChangeDetails.txtIncludeBankHolidays.value == 'unincluded' && frmChangeDetails.txtShowWeekends.value == ""highlighted"") {{" & vbNewLine &
+					"   {0}.className = 'calendar_nonworkingday';" & vbNewLine &
+					"   {0}.style.backgroundColor = '';" & vbNewLine &
+					"   {0}.innerHTML = ''; }}" & vbNewLine &
+					"else if (frmChangeDetails.txtIncludeBankHolidays.value == 'unincluded' && frmChangeDetails.txtShowBankHolidays.value == ""highlighted"") {{" & vbNewLine &
+					"   {0}.className = 'calendar_nonworkingday';" & vbNewLine &
+					"   {0}.style.backgroundColor = '';" & vbNewLine &
+					"   {0}.innerHTML = ''; }}" & vbNewLine &
+					"else if (frmChangeDetails.txtIncludeBankHolidays.value == 'unincluded' && frmChangeDetails.txtShowWeekends.value == ""unhighlighted"")  {{" & vbNewLine &
+					"   {0}.className = 'calendar_day';" & vbNewLine &
+					"   {0}.style.backgroundColor = '';" & vbNewLine &
+					"   {0}.innerHTML = ''; }}" & vbNewLine &
+					"else if (frmChangeDetails.txtIncludeBankHolidays.value == 'unincluded' && frmChangeDetails.txtShowBankHolidays.value == ""unhighlighted"") {{" & vbNewLine &
+					"   {0}.className = 'calendar_day';" & vbNewLine &
+					"   {0}.style.backgroundColor = '';" & vbNewLine &
+					"   {0}.innerHTML = ''; }}" & vbNewLine &
+					"else if (frmChangeDetails.txtIncludeWorkingDaysOnly.value == 'included' && frmChangeDetails.txtShowBankHolidays.value == ""highlighted"") {{" & vbNewLine &
+					"   {0}.className = 'calendar_nonworkingday';" & vbNewLine &
+					"   {0}.style.backgroundColor = '';" & vbNewLine &
+					"   {0}.innerHTML = ''; }}" & vbNewLine &
+					"else if (frmChangeDetails.txtIncludeWorkingDaysOnly.value == 'included' && frmChangeDetails.txtShowWeekends.value == ""unhighlighted"") {{" & vbNewLine &
+					"   {0}.className = 'calendar_day';" & vbNewLine &
+					"   {0}.style.backgroundColor = '';" & vbNewLine &
+					"   {0}.innerHTML = ''; }}" & vbNewLine &
+					"else if (frmChangeDetails.txtIncludeWorkingDaysOnly.value == 'included' && frmChangeDetails.txtShowWeekends.value == ""highlighted"") " & vbNewLine & "   {{" & vbNewLine &
+					"   {0}.className = 'calendar_nonworkingday';" & vbNewLine &
+					"   {0}.style.backgroundColor = '';" & vbNewLine &
+					"   {0}.innerHTML = ''; }}" & vbNewLine &
+					"else if (frmChangeDetails.txtIncludeWorkingDaysOnly.value == 'included' && frmChangeDetails.txtShowBankHolidays.value == ""unhighlighted"")  {{" & vbNewLine &
+					"   {0}.className = 'calendar_day';" & vbNewLine &
+					"   {0}.style.backgroundColor = '';" & vbNewLine &
+					"   {0}.innerHTML = ''; }}" & vbNewLine &
+					"else {{" & vbNewLine &
+					"   {0}.style.backgroundColor = '{2}';" & vbNewLine &
+					"   if (frmChangeDetails.txtShowCaptions.value == 'show') {{" & vbNewLine &
+					"     {0}.innerHTML = '{1}'; }}" & vbNewLine &
+					"   else {{" & vbNewLine &
+					"     {0}.innerHTML = ''; }}" & vbNewLine & "   }}" & vbNewLine, sDateObjectName, strCaption, strColour)
 				End If
 
 				'Has an event therefore deal with the Caption
 				If blnHasEvent And (Not blnIsBankHoliday) And (blnIsWorkingDay) Then
-					strHtmlRefresh = strHtmlRefresh & "DateID_" & LTrim(Str(iCount)) & ".style.backgroundColor = """ & strColour & """;" & "   if (frmChangeDetails.txtShowCaptions.value == 'show') " & vbNewLine & "     {" & vbNewLine & "     DateID_" & LTrim(Str(iCount)) & ".innerText = """ & strCaption & """;" & vbNewLine & "     }" & vbNewLine & "   else" & vbNewLine & "     {" & vbNewLine & "     DateID_" & LTrim(Str(iCount)) & ".innerText = '';" & vbNewLine & "     }" & vbNewLine
+					strHtmlRefresh.AppendFormat("{0}.style.backgroundColor = '{1}';" & vbNewLine &
+						"if (frmChangeDetails.txtShowCaptions.value == 'show') {{" & vbNewLine &
+						"  {0}.innerHTML = '{2}'; }}" & vbNewLine &
+						"else {{" & vbNewLine &
+						"  {0}.innerHTML = ''; }}" & vbNewLine, sDateObjectName, strColour, strCaption)
 				End If
 
 				'Has an event therefore deal with the Caption
 				If blnHasEvent And blnIsBankHoliday And (Not blnIsWeekend) And (Not blnIsWorkingDay) Then
-					strHtmlRefresh = strHtmlRefresh & "if (frmChangeDetails.txtIncludeBankHolidays.value == ""included"") " & vbNewLine & "   {" & vbNewLine & "   DateID_" & LTrim(Str(iCount)) & ".style.backgroundColor = """ & strColour & """;" & vbNewLine & "   if (frmChangeDetails.txtShowCaptions.value == 'show') " & vbNewLine & "     {" & vbNewLine & "     DateID_" & LTrim(Str(iCount)) & ".innerText = """ & strCaption & """;" & vbNewLine & "     }" & vbNewLine & "   else" & vbNewLine & "     {" & vbNewLine & "     DateID_" & LTrim(Str(iCount)) & ".innerText = '';" & vbNewLine & "     }" & vbNewLine & "   }" & vbNewLine & "else if (frmChangeDetails.txtShowBankHolidays.value == ""highlighted"") " & vbNewLine & "   {" & vbNewLine & "   DateID_" & LTrim(Str(iCount)) & ".className = 'calendar_nonworkingday';" & vbNewLine & "   DateID_" & LTrim(Str(iCount)) & ".style.backgroundColor = """";" & vbNewLine & "   DateID_" & LTrim(Str(iCount)) & ".innerText = '';" & vbNewLine & "   }" & vbNewLine & "else " & vbNewLine & "   {" & vbNewLine & "   DateID_" & LTrim(Str(iCount)) & ".className = 'calendar_day';" & vbNewLine & "   DateID_" & LTrim(Str(iCount)) & ".style.backgroundColor = """";" & vbNewLine & "   DateID_" & LTrim(Str(iCount)) & ".innerText = '';" & vbNewLine & "   }" & vbNewLine
+					strHtmlRefresh.AppendFormat("if (frmChangeDetails.txtIncludeBankHolidays.value == 'included') {{" & vbNewLine &
+						"   {0}.style.backgroundColor = '{1}';" & vbNewLine &
+						"   if (frmChangeDetails.txtShowCaptions.value == 'show') {{" & vbNewLine &
+						"    {0}.innerHTML = '{2}'; }}" & vbNewLine &
+						"   else {{" & vbNewLine &
+						"     {0}.innerHTML = ''; }}" & vbNewLine & "   }}" & vbNewLine &
+						"else if (frmChangeDetails.txtShowBankHolidays.value == ""highlighted"") {{" & vbNewLine &
+						"   {0}.className = 'calendar_nonworkingday';" & vbNewLine &
+						"   {0}.style.backgroundColor = '';" & vbNewLine &
+						"   {0}.innerHTML = ''; }}" & vbNewLine &
+						"else  {{" & vbNewLine &
+						"   {0}.className = 'calendar_day';" & vbNewLine &
+						"   {0}.style.backgroundColor = '';" & vbNewLine &
+						"   {0}.innerHTML = ''; }}" & vbNewLine, sDateObjectName, strColour, strCaption)
 				End If
 
 				'Has an event therefore deal with the Caption
 				If blnHasEvent And blnIsBankHoliday And (Not blnIsWeekend) And (blnIsWorkingDay) Then
-					strHtmlRefresh = strHtmlRefresh & "if (frmChangeDetails.txtIncludeBankHolidays.value == ""included"") " & vbNewLine & "   {" & vbNewLine & "   DateID_" & LTrim(Str(iCount)) & ".style.backgroundColor = """ & strColour & """;" & vbNewLine & "   if (frmChangeDetails.txtShowCaptions.value == 'show') " & vbNewLine & "     {" & vbNewLine & "     DateID_" & LTrim(Str(iCount)) & ".innerText = """ & strCaption & """;" & vbNewLine & "     }" & vbNewLine & "   else" & vbNewLine & "     {" & vbNewLine & "     DateID_" & LTrim(Str(iCount)) & ".innerText = '';" & vbNewLine & "     }" & vbNewLine & "   }" & vbNewLine & "else if (frmChangeDetails.txtShowBankHolidays.value == ""highlighted"") " & vbNewLine & "   {" & vbNewLine & "   DateID_" & LTrim(Str(iCount)) & ".className = 'calendar_nonworkingday';" & vbNewLine & "   DateID_" & LTrim(Str(iCount)) & ".style.backgroundColor = """";" & vbNewLine & "   DateID_" & LTrim(Str(iCount)) & ".innerText = '';" & vbNewLine & "   }" & vbNewLine & "else " & vbNewLine & "   {" & vbNewLine & "   DateID_" & LTrim(Str(iCount)) & ".className = 'calendar_day';" & vbNewLine & "   DateID_" & LTrim(Str(iCount)) & ".style.backgroundColor = """";" & vbNewLine & "   DateID_" & LTrim(Str(iCount)) & ".innerText = '';" & vbNewLine & "   }" & vbNewLine
+					strHtmlRefresh.AppendFormat("if (frmChangeDetails.txtIncludeBankHolidays.value == 'included') {{" & vbNewLine &
+						"   {0}.style.backgroundColor = '{1}';" & vbNewLine &
+						"   if (frmChangeDetails.txtShowCaptions.value == 'show') {{" & vbNewLine &
+						"    {0}.innerHTML = '{2}'; }}" & vbNewLine &
+						"   else {{" & vbNewLine &
+						"     {0}.innerHTML = ''; }}" & vbNewLine & "   }}" & vbNewLine &
+						"else if (frmChangeDetails.txtShowBankHolidays.value == ""highlighted"") {{" & vbNewLine &
+						"   {0}.className = 'calendar_nonworkingday';" & vbNewLine &
+						"   {0}.style.backgroundColor = '';" & vbNewLine &
+						"   {0}.innerHTML = ''; }}" & vbNewLine &
+						"else {{" & vbNewLine &
+						"   {0}.className = 'calendar_day';" & vbNewLine &
+						"   {0}.style.backgroundColor = '';" & vbNewLine &
+						"   {0}.innerHTML = ''; }}" & vbNewLine, sDateObjectName, strColour, strCaption)
 				End If
 
 				If (Not blnHasEvent) And blnIsBankHoliday And (Not blnIsWeekend) And (Not blnIsWorkingDay) Then
-					strHtmlRefresh = strHtmlRefresh & "if (frmChangeDetails.txtShowBankHolidays.value == ""highlighted"") " & vbNewLine & "   {" & vbNewLine & "   DateID_" & LTrim(Str(iCount)) & ".style.backgroundColor = """";" & vbNewLine & "   DateID_" & LTrim(Str(iCount)) & ".className = 'calendar_nonworkingday';" & vbNewLine & "   }" & vbNewLine & "else " & vbNewLine & "   {" & vbNewLine & "   DateID_" & LTrim(Str(iCount)) & ".style.backgroundColor = """";" & vbNewLine & "   DateID_" & LTrim(Str(iCount)) & ".className = 'calendar_day';" & vbNewLine & "   }" & vbNewLine
+					strHtmlRefresh.AppendFormat("if (frmChangeDetails.txtShowBankHolidays.value == 'highlighted') {{" & vbNewLine & _
+						"  {0}.style.backgroundColor = '';" & vbNewLine &
+						"  {0}.className = 'calendar_nonworkingday';" & vbNewLine & "   }}" & vbNewLine &
+						"else {{" & vbNewLine & _
+						"  {0}.style.backgroundColor = '';" & vbNewLine & _
+						"  {0}.className = 'calendar_day'; }}" & vbNewLine, sDateObjectName)
 				End If
 
 				If (Not blnHasEvent) And blnIsBankHoliday And (blnIsWeekend) And (Not blnIsWorkingDay) Then
-					strHtmlRefresh = strHtmlRefresh & "if (frmChangeDetails.txtShowBankHolidays.value == ""highlighted"") " & vbNewLine & "   {" & vbNewLine & "   DateID_" & LTrim(Str(iCount)) & ".style.backgroundColor = """";" & vbNewLine & "   DateID_" & LTrim(Str(iCount)) & ".className = 'calendar_nonworkingday';" & vbNewLine & "   }" & vbNewLine & "else " & vbNewLine & "   {" & vbNewLine & "   DateID_" & LTrim(Str(iCount)) & ".style.backgroundColor = """";" & vbNewLine & "   DateID_" & LTrim(Str(iCount)) & ".className = 'calendar_day';" & vbNewLine & "   }" & vbNewLine
+					strHtmlRefresh.Append(String.Format("if (frmChangeDetails.txtShowBankHolidays.value == ""highlighted"") {{" & vbNewLine &
+						"   {0}.style.backgroundColor = '';" & vbNewLine &
+						"   {0}.className = 'calendar_nonworkingday'; }}" & vbNewLine &
+						"else {{" & vbNewLine &
+						"   {0}.style.backgroundColor = '';" & vbNewLine &
+						"   {0}.className = 'calendar_day'; }}" & vbNewLine, sDateObjectName))
 				End If
 			End If
 		Next iCount
 
 		For iCount = 0 To miStrAbsenceTypes Step 1
-			strHtmlRefresh = strHtmlRefresh & vbNewLine & vbNewLine & "   if (frmChangeDetails.txtShowCaptions.value == 'show') " & vbNewLine & "     {" & vbNewLine & "     KEY_" & LTrim(Str(iCount)) & ".innerHTML = """ & IIf(Trim(mastrAbsenceTypes(iCount, 3)) = vbNullString, "&nbsp", mastrAbsenceTypes(iCount, 3)) & """;" & vbNewLine & "     }" & vbNewLine & "   else" & vbNewLine & "     {" & vbNewLine & "     KEY_" & LTrim(Str(iCount)) & ".innerHTML = '&nbsp';" & vbNewLine & "     }" & vbNewLine
+			strHtmlRefresh.Append("   if (frmChangeDetails.txtShowCaptions.value == 'show') " & vbNewLine & "     {" & vbNewLine &
+				"     KEY_" & LTrim(Str(iCount)) & ".innerHTML = '" & IIf(Trim(mastrAbsenceTypes(iCount, 3)) = vbNullString, "&nbsp", mastrAbsenceTypes(iCount, 3)) & "'; }" & vbNewLine &
+				"   else" & vbNewLine & "     {" & vbNewLine & "     KEY_" & LTrim(Str(iCount)) & ".innerHTML = '&nbsp';" & vbNewLine & "     }" & vbNewLine)
 		Next iCount
 
-		strHtmlRefresh = strHtmlRefresh & " }" & vbNewLine
+		strHtmlRefresh.Append(" }" & vbNewLine)
 
 		' Concatenate functions into HTML string
-		Return strHtml & strHtmlRefresh & vbNewLine & "</script>" & vbNewLine
+		Return strHtml & strHtmlRefresh.ToString & vbNewLine & "</script>" & vbNewLine
 
 	End Function
 
@@ -1147,105 +1259,106 @@ PersonnelERROR:
 		' This function actually fills the cal boxes between the indexes specified
 		' according to the options selected by the user.
 
-		On Error GoTo Error_FillCalBoxes
+		Try
 
-		Dim iCount As Integer
-		Dim dtmCurrentDate As Date
-		Dim strColour As String
-		Dim iArrayCount As Integer
 
-		'Scroll forward in list to correct start working pattern for absence.
-		dtmCurrentDate = GetCalDay(intStart)
-		miWorkingPatternArray = 0
-		For iArrayCount = 0 To UBound(mavWorkingPatternChanges, 2)
-			'UPGRADE_WARNING: Couldn't resolve default property of object mavWorkingPatternChanges(0, miWorkingPatternArray). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			If dtmCurrentDate > mavWorkingPatternChanges(0, miWorkingPatternArray) Then
-				'UPGRADE_WARNING: Couldn't resolve default property of object mavWorkingPatternChanges(1, iArrayCount). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				mstrAbsWPattern = mavWorkingPatternChanges(1, iArrayCount)
-				miWorkingPatternArray = miWorkingPatternArray + 1
+			Dim iCount As Integer
+			Dim dtmCurrentDate As Date
+			Dim strColour As String
+			Dim iArrayCount As Integer
 
-				If miWorkingPatternArray > UBound(mavWorkingPatternChanges, 2) Then
-					miWorkingPatternArray = miWorkingPatternArray - 1
-					'UPGRADE_WARNING: Couldn't resolve default property of object mavWorkingPatternChanges(0, miWorkingPatternArray). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					mdtmWorkingPatternDate = mavWorkingPatternChanges(0, miWorkingPatternArray)
-				Else
-					'UPGRADE_WARNING: Couldn't resolve default property of object mavWorkingPatternChanges(0, miWorkingPatternArray). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					mdtmWorkingPatternDate = mavWorkingPatternChanges(0, miWorkingPatternArray)
+			'Scroll forward in list to correct start working pattern for absence.
+			dtmCurrentDate = GetCalDay(intStart)
+			miWorkingPatternArray = 0
+			For iArrayCount = 0 To UBound(mavWorkingPatternChanges, 2)
+				'UPGRADE_WARNING: Couldn't resolve default property of object mavWorkingPatternChanges(0, miWorkingPatternArray). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+				If dtmCurrentDate > mavWorkingPatternChanges(0, miWorkingPatternArray) Then
+					'UPGRADE_WARNING: Couldn't resolve default property of object mavWorkingPatternChanges(1, iArrayCount). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+					mstrAbsWPattern = mavWorkingPatternChanges(1, iArrayCount)
+					miWorkingPatternArray = miWorkingPatternArray + 1
+
+					If miWorkingPatternArray > UBound(mavWorkingPatternChanges, 2) Then
+						miWorkingPatternArray = miWorkingPatternArray - 1
+						'UPGRADE_WARNING: Couldn't resolve default property of object mavWorkingPatternChanges(0, miWorkingPatternArray). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+						mdtmWorkingPatternDate = mavWorkingPatternChanges(0, miWorkingPatternArray)
+					Else
+						'UPGRADE_WARNING: Couldn't resolve default property of object mavWorkingPatternChanges(0, miWorkingPatternArray). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+						mdtmWorkingPatternDate = mavWorkingPatternChanges(0, miWorkingPatternArray)
+					End If
 				End If
-			End If
-		Next iArrayCount
+			Next iArrayCount
 
-		' Loop through the indexes as specified.
-		For iCount = intStart To intEnd
+			' Loop through the indexes as specified.
+			For iCount = intStart To intEnd
 
-			' Set current date variable
-			dtmCurrentDate = GetCalDay(iCount)
+				' Set current date variable
+				dtmCurrentDate = GetCalDay(iCount)
 
 
-			'Calculate the working pattern for this day
-			If dtmCurrentDate >= mdtmWorkingPatternDate Then
+				'Calculate the working pattern for this day
+				If dtmCurrentDate >= mdtmWorkingPatternDate Then
 
-				'UPGRADE_WARNING: Couldn't resolve default property of object mavWorkingPatternChanges(1, miWorkingPatternArray). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				mstrAbsWPattern = mavWorkingPatternChanges(1, miWorkingPatternArray)
-				miWorkingPatternArray = miWorkingPatternArray + 1
+					'UPGRADE_WARNING: Couldn't resolve default property of object mavWorkingPatternChanges(1, miWorkingPatternArray). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+					mstrAbsWPattern = mavWorkingPatternChanges(1, miWorkingPatternArray)
+					miWorkingPatternArray = miWorkingPatternArray + 1
 
-				If miWorkingPatternArray <= UBound(mavWorkingPatternChanges, 2) Then
-					'UPGRADE_WARNING: Couldn't resolve default property of object mavWorkingPatternChanges(0, miWorkingPatternArray). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					mdtmWorkingPatternDate = mavWorkingPatternChanges(0, miWorkingPatternArray)
-				Else
-					mdtmWorkingPatternDate = DateTime.Parse("31/12/9999", CultureInfo.GetCultureInfo("en-GB")).ToShortDateString()
+					If miWorkingPatternArray <= UBound(mavWorkingPatternChanges, 2) Then
+						'UPGRADE_WARNING: Couldn't resolve default property of object mavWorkingPatternChanges(0, miWorkingPatternArray). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+						mdtmWorkingPatternDate = mavWorkingPatternChanges(0, miWorkingPatternArray)
+					Else
+						mdtmWorkingPatternDate = DateTime.MaxValue
+					End If
+
 				End If
 
-			End If
+				' Mark this day as having an absence
+				If Not mavAbsences(iCount, 0) Then
+					strColour = GetColour(mstrAbsType)
+					'UPGRADE_WARNING: Couldn't resolve default property of object mavAbsences(Count, 0). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+					mavAbsences(iCount, 0) = True
+					'UPGRADE_WARNING: Couldn't resolve default property of object mavAbsences(Count, 6). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+					mavAbsences(iCount, 6) = GetAbsenceCode(mstrAbsType) ' Absence type for this day
+					'UPGRADE_WARNING: Couldn't resolve default property of object mavAbsences(Count, 2). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+					mavAbsences(iCount, 2) = mstrAbsCalendarCode
+				Else
+					strColour = GetColour("Multiple")
+					'UPGRADE_WARNING: Couldn't resolve default property of object mavAbsences(Count, 6). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+					mavAbsences(iCount, 6) = GetAbsenceCode("Multiple")	' Absence type for this day
+					'UPGRADE_WARNING: Couldn't resolve default property of object mavAbsences(Count, 2). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+					mavAbsences(iCount, 2) = "."
+				End If
 
-			' Mark this day as having an absence
-			If Not mavAbsences(iCount, 0) Then
-				strColour = GetColour(mstrAbsType)
-				'UPGRADE_WARNING: Couldn't resolve default property of object mavAbsences(Count, 0). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				mavAbsences(iCount, 0) = True
-				'UPGRADE_WARNING: Couldn't resolve default property of object mavAbsences(Count, 6). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				mavAbsences(iCount, 6) = GetAbsenceCode(mstrAbsType) ' Absence type for this day
-				'UPGRADE_WARNING: Couldn't resolve default property of object mavAbsences(Count, 2). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				mavAbsences(iCount, 2) = mstrAbsCalendarCode
-			Else
-				strColour = GetColour("Multiple")
-				'UPGRADE_WARNING: Couldn't resolve default property of object mavAbsences(Count, 6). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				mavAbsences(iCount, 6) = GetAbsenceCode("Multiple")	' Absence type for this day
-				'UPGRADE_WARNING: Couldn't resolve default property of object mavAbsences(Count, 2). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				mavAbsences(iCount, 2) = "."
-			End If
+				' Is this day a working day
+				'UPGRADE_WARNING: Couldn't resolve default property of object mavAbsences(Count, 4). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+				mavAbsences(iCount, 4) = AbsCal_DoTheyWorkOnThisDay(Weekday(dtmCurrentDate, FirstDayOfWeek.Sunday), IIf(iCount Mod 2 = 0, "AM", "PM"))
 
-			' Is this day a working day
-			'UPGRADE_WARNING: Couldn't resolve default property of object mavAbsences(Count, 4). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			mavAbsences(iCount, 4) = AbsCal_DoTheyWorkOnThisDay(Weekday(dtmCurrentDate, FirstDayOfWeek.Sunday), IIf(iCount Mod 2 = 0, "AM", "PM"))
+				' Store the details for this day
+				'UPGRADE_WARNING: Couldn't resolve default property of object mavAbsences(Count, 5). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+				mavAbsences(iCount, 5) = strColour ' Absence display colour
+				'UPGRADE_WARNING: Couldn't resolve default property of object mavAbsences(Count, 7). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+				mavAbsences(iCount, 7) = Replace(mstrAbsReason, "'", "") ' Absence reason
+				'UPGRADE_WARNING: Couldn't resolve default property of object mavAbsences(Count, 8). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+				mavAbsences(iCount, 8) = mstrAbsWPattern ' Working pattern
+				'UPGRADE_WARNING: Couldn't resolve default property of object mavAbsences(Count, 9). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+				mavAbsences(iCount, 9) = LTrim(CStr(mlngAbsDuration))	' Duration
+				'UPGRADE_WARNING: Couldn't resolve default property of object mavAbsences(Count, 10). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+				mavAbsences(iCount, 10) = mdAbsStartDate 'Format(mdAbsStartDate, DateFormat) ' Start date of absence
+				'UPGRADE_WARNING: Couldn't resolve default property of object mavAbsences(Count, 11). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+				mavAbsences(iCount, 11) = mstrAbsStartSession	' Start session of absence
+				'UPGRADE_WARNING: Couldn't resolve default property of object mavAbsences(Count, 12). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+				mavAbsences(iCount, 12) = mdAbsEndDate 'Format(mdAbsEndDate, DateFormat)   ' End date of absence
+				'UPGRADE_WARNING: Couldn't resolve default property of object mavAbsences(Count, 13). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+				mavAbsences(iCount, 13) = mstrAbsEndSession	' End session of absence
+				'    mavAbsences(Count, 14) = Replace(mstrAbsRegion, "'", "''")    ' Region
 
-			' Store the details for this day
-			'UPGRADE_WARNING: Couldn't resolve default property of object mavAbsences(Count, 5). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			mavAbsences(iCount, 5) = strColour ' Absence display colour
-			'UPGRADE_WARNING: Couldn't resolve default property of object mavAbsences(Count, 7). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			mavAbsences(iCount, 7) = Replace(mstrAbsReason, "'", "") ' Absence reason
-			'UPGRADE_WARNING: Couldn't resolve default property of object mavAbsences(Count, 8). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			mavAbsences(iCount, 8) = mstrAbsWPattern ' Working pattern
-			'UPGRADE_WARNING: Couldn't resolve default property of object mavAbsences(Count, 9). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			mavAbsences(iCount, 9) = LTrim(CStr(mlngAbsDuration))	' Duration
-			'UPGRADE_WARNING: Couldn't resolve default property of object mavAbsences(Count, 10). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			mavAbsences(iCount, 10) = mdAbsStartDate 'Format(mdAbsStartDate, DateFormat) ' Start date of absence
-			'UPGRADE_WARNING: Couldn't resolve default property of object mavAbsences(Count, 11). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			mavAbsences(iCount, 11) = mstrAbsStartSession	' Start session of absence
-			'UPGRADE_WARNING: Couldn't resolve default property of object mavAbsences(Count, 12). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			mavAbsences(iCount, 12) = mdAbsEndDate 'Format(mdAbsEndDate, DateFormat)   ' End date of absence
-			'UPGRADE_WARNING: Couldn't resolve default property of object mavAbsences(Count, 13). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			mavAbsences(iCount, 13) = mstrAbsEndSession	' End session of absence
-			'    mavAbsences(Count, 14) = Replace(mstrAbsRegion, "'", "''")    ' Region
+			Next iCount
 
-		Next iCount
+			Return True
 
-		FillCalBoxes = True
-		Exit Function
+		Catch ex As Exception
+			Throw
 
-Error_FillCalBoxes:
-
-		FillCalBoxes = False
+		End Try
 
 	End Function
 
@@ -1274,37 +1387,7 @@ Error_FillCalBoxes:
 
 	End Function
 
-
-	Public Function HTML_HighlightAbsenceTypes() As String
-
-		'Build a function for highlighting the current absence type
-		Dim strHtml As String
-
-		' Create function header strings
-		strHtml = "<script type=""text/javascript"">" & vbNewLine & "function HighlightAbsenceTypes(pstrAbsenceType, pbWorkingDay){" & vbNewLine
-
-		strHtml = strHtml & "if (pbWorkingDay == true and frmChangeDetails.txtIncludeWorkingDaysOnly.value == ""included"")" & "{" & "opener.document.getElementById(pstrAbsenceType).style.visibility=""hidden""}" & vbNewLine
-
-
-		'UPGRADE_WARNING: Couldn't resolve default property of object HTML_HighlightAbsenceTypes. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		HTML_HighlightAbsenceTypes = strHtml & vbNewLine & "}" & vbNewLine & "</script>" & vbNewLine
-
-	End Function
-
-	Public Function HTML_UnHighlightAbsenceTypes() As String
-
-		'Build a function for highlighting the current absence type
-		Dim strHtml As String
-
-		' Create function header strings
-		strHtml = "<acript type""=javascript"">" & vbNewLine & "function UnHighlightAbsenceTypes(pstrAbsenceType, pbWorkingDay){" & vbNewLine
-
-		'UPGRADE_WARNING: Couldn't resolve default property of object HTML_UnHighlightAbsenceTypes. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		HTML_UnHighlightAbsenceTypes = strHtml & vbNewLine & "}" & vbNewLine & "</script>" & vbNewLine
-
-	End Function
-
-	Private Function GetAbsenceCode(ByRef strType As String) As String
+	Private Function GetAbsenceCode(strType As String) As String
 
 		' This function returns the colour for the specified absence type.
 		' Derived from the key. If it cannot be found, then it defaults to
@@ -1358,16 +1441,7 @@ Error_FillCalBoxes:
 
 	End Function
 
-	Public Function WeekDayMonthStart(ByRef dtInput As Date) As Object
-
-		'Pass a full date into this function and it will return the
-		'vb constant for the day of the week that month started
-
-		WeekDayMonthStart = Weekday(DateAdd(Microsoft.VisualBasic.DateInterval.Day, (VB.Day(dtInput) - 1) * -1, dtInput))
-
-	End Function
-
-	Public Function GetCalDay(ByRef intIndex As Integer) As Date
+	Public Function GetCalDay(intIndex As Integer) As Date
 
 		' This function returns the day value of the cal label for the specified index.
 		'
@@ -1380,17 +1454,17 @@ Error_FillCalBoxes:
 		' GetCalDay   - the day (integer)
 
 		'GetCalDay = mdCalendarStartDate + ((intIndex - 1) / 2)
-		GetCalDay = DateTime.FromOADate(mdCalendarStartDate.ToOADate + ((intIndex) / 2))
+		Return DateTime.FromOADate(mdCalendarStartDate.ToOADate + ((intIndex) / 2))
 
 	End Function
 
-	Public Function AbsCal_DoTheyWorkOnThisDay(ByVal intDay As Integer, ByVal strperiod As String) As Boolean
+	Public Function AbsCal_DoTheyWorkOnThisDay(intDay As Integer, strperiod As String) As Boolean
 
 		Dim bFound As Boolean = True
 
 		' Inputs  - 1 to 7 depending on the weekday 1 = sunday etc, "AM" or "PM"
 		' Outputs - True/False
-		Select Case UCase(strperiod)
+		Select Case strperiod.ToUpper
 			Case "AM"
 				If (Mid(mstrAbsWPattern, (intDay * 2) - 1, 1) = " ") Or (Mid(mstrAbsWPattern, (intDay * 2) - 1, 1) = "") Then
 					bFound = False
@@ -1405,7 +1479,7 @@ Error_FillCalBoxes:
 
 	End Function
 
-	Public Function GetCalIndex(ByVal dtmDate As Date, ByVal booSession As Boolean) As Integer
+	Public Function GetCalIndex(dtmDate As Date, booSession As Boolean) As Integer
 
 		' This function returns the index value of the cal label for the specified date.
 		'
@@ -1439,7 +1513,7 @@ Error_FillCalBoxes:
 
 	End Function
 
-	Public Function HTML_WorkingPattern(ByRef pstrWorkingPattern As String) As String
+	Public Function HTML_WorkingPattern(pstrWorkingPattern As String) As String
 
 		Dim strHtml As String
 		Dim iCount As Integer
@@ -1449,33 +1523,33 @@ Error_FillCalBoxes:
 		strHtml = "<table class='invisible' cellspacing=0 cellpadding=0 frame=0>" & vbNewLine
 
 		' Row 1 contains day names
-		strHtml = strHtml & "<TR align=middle>" & "<td>&nbsp;</td><TD>" & UCase(Left(VB6.Format(1, "ddd"), 1)) & "</TD>" & "<TD>" & UCase(Left(VB6.Format(2, "ddd"), 1)) & "</TD>" & "<TD>" & UCase(Left(VB6.Format(3, "ddd"), 1)) & "</TD>" & "<TD>" & UCase(Left(VB6.Format(4, "ddd"), 1)) & "</TD>" & "<TD>" & UCase(Left(VB6.Format(5, "ddd"), 1)) & "</TD>" & "<TD>" & UCase(Left(VB6.Format(6, "ddd"), 1)) & "</TD>" & "<TD>" & UCase(Left(VB6.Format(7, "ddd"), 1)) & "</TD></TR>" & vbNewLine
+		strHtml = strHtml & "<tr align=middle>" & "<td>&nbsp;</td><td>" & UCase(Left(VB6.Format(1, "ddd"), 1)) & "</td>" & "<td>" & UCase(Left(VB6.Format(2, "ddd"), 1)) & "</td>" & "<td>" & UCase(Left(VB6.Format(3, "ddd"), 1)) & "</td>" & "<td>" & UCase(Left(VB6.Format(4, "ddd"), 1)) & "</td>" & "<td>" & UCase(Left(VB6.Format(5, "ddd"), 1)) & "</td>" & "<td>" & UCase(Left(VB6.Format(6, "ddd"), 1)) & "</td>" & "<td>" & UCase(Left(VB6.Format(7, "ddd"), 1)) & "</td></tr>" & vbNewLine
 
 		' Row two contains the AM fields
-		strHtml = strHtml & "<TR><td>AM</td>"
+		strHtml = strHtml & "<tr><td>AM</td>"
 
 		For iCount = 1 To 13 Step 2
 			If Not Mid(pstrWorkingPattern, iCount, 1) = " " Then
-				strHtml = strHtml & "<TD><INPUT id=checkbox1 name=checkbox1 type=checkbox style=""HEIGHT: 14px; WIDTH: 14px"" checked disabled></TD>"
+				strHtml = strHtml & "<td><input id=checkbox1 name=checkbox1 type=checkbox style=""HEIGHT: 14px; WIDTH: 14px"" checked disabled></td>"
 			Else
-				strHtml = strHtml & "<TD><INPUT id=checkbox1 name=checkbox1 type=checkbox style=""HEIGHT: 14px; WIDTH: 14px"" disabled></TD>"
+				strHtml = strHtml & "<td><input id=checkbox1 name=checkbox1 type=checkbox style=""HEIGHT: 14px; WIDTH: 14px"" disabled></td>"
 			End If
 		Next iCount
-		strHtml = strHtml & "</TR>"
+		strHtml = strHtml & "</tr>"
 
 
 		' Row three contains the PM fields
-		strHtml = strHtml & "<TR><td>PM</td>"
+		strHtml = strHtml & "<tr><td>PM</td>"
 		For iCount = 2 To 14 Step 2
-			strHtml = strHtml & "<TD><INPUT id=checkbox1 name=checkbox1 type=checkbox style=""HEIGHT: 14px; WIDTH: 14px"""
+			strHtml = strHtml & "<td><input id=checkbox1 name=checkbox1 type=checkbox style=""HEIGHT: 14px; WIDTH: 14px"""
 			If Not Mid(pstrWorkingPattern, iCount, 1) = " " Then
 				strHtml = strHtml & " Checked"
 			End If
-			strHtml = strHtml & " disabled></TD>"
+			strHtml = strHtml & " disabled></td>"
 		Next iCount
-		strHtml = strHtml & "</TR></TABLE>"
+		strHtml = strHtml & "</tr></table>"
 
-		HTML_WorkingPattern = strHtml
+		Return strHtml
 	End Function
 
 	Public Function HTML_DisplayOptions() As String
@@ -1528,7 +1602,7 @@ Error_FillCalBoxes:
 
 					' Start working pattern for this employee
 					'UPGRADE_WARNING: Couldn't resolve default property of object mavWorkingPatternChanges(0, 0). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					mavWorkingPatternChanges(0, 0) = rstHistoricWPatterns.Rows(0)("Date")
+					mavWorkingPatternChanges(0, 0) = CDate(rstHistoricWPatterns.Rows(0)("Date"))
 
 					'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
 					mstrAbsWPattern = IIf(IsDBNull(rstHistoricWPatterns.Rows(0)("WP")), Space(14), rstHistoricWPatterns.Rows(0)("WP"))
@@ -1620,7 +1694,7 @@ Error_FillCalBoxes:
 		Dim sSQL As String
 		Dim lngCount As Integer
 
-		Dim dtDummyDate As Date = DateTime.Parse("31/12/9999", CultureInfo.GetCultureInfo("en-GB")).ToShortDateString()
+		Dim dtDummyDate As Date = DateTime.MaxValue
 
 		bNewRegionFound = False
 
