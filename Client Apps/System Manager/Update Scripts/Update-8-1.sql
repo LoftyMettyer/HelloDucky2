@@ -4239,6 +4239,14 @@ PRINT 'Step - Editable grids Enhancements'
 		EXEC sp_executesql N'ALTER TABLE ASRSysOrderItems ADD [Editable] bit NULL';
 
 
+/* --------------------------------------------------------- */
+PRINT 'Step - Cleanup metadata interim build issues'
+/* --------------------------------------------------------- */
+
+	EXEC sp_executesql N'UPDATE ASRSysCrossTab SET Selection = 0 WHERE (Selection = 1 AND PicklistID = 0) OR (Selection = 2 AND FilterID = 0);';
+	EXEC sp_executesql N'UPDATE ASRSysMailMergeName SET Selection = 0 WHERE (Selection = 1 AND PicklistID = 0) OR (Selection = 2 AND FilterID = 0);';
+
+
 /* ------------------------------------------------------------- */
 /* Update the database version flag in the ASRSysSettings table. */
 /* Dont Set the flag to refresh the stored procedures            */
