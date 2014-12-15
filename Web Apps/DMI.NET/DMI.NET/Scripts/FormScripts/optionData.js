@@ -714,8 +714,7 @@ function optiondata_onload() {
 					width: gridWidth,
 					shrinkToFit: shrinkToFit,
 					onSelectRow: function() {
-						button_disable(frmDefinition.cmdRemove, false); //Enable the "Remove" button
-						button_disable(frmDefinition.cmdRemoveAll, false); //Enable the "Remove All" button
+						refreshControls();
 					},
 					editurl: 'clientArray',
 					afterShowForm: function($form) {

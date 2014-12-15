@@ -440,9 +440,6 @@
 						// Enable the buttons
 						menu_toolbarEnableItem("mnutoolNewToolsFind", IsNewPermitted);
 						menu_toolbarEnableItem("mnutoolCopyToolsFind", true && IsNewPermitted && fFromMenu);
-						menu_toolbarEnableItem("mnutoolEditToolsFind", true && (IsEditPermitted || IsViewPermitted) && fFromMenu);
-						menu_SetmnutoolButtonCaption("mnutoolEditToolsFind", (IsEditPermitted == false ? 'View' : 'Edit'));
-						menu_toolbarEnableItem("mnutoolDeleteToolsFind", true && IsDeletePermitted && fFromMenu);
 						menu_toolbarEnableItem("mnutoolPropertiesToolsFind", fFromMenu);
 						menu_toolbarEnableItem("mnutoolRunToolsFind", false);
 						menu_setVisibleMenuItem('mnutoolRunToolsFind', false);
