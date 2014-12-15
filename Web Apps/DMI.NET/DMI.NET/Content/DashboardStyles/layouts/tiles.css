@@ -853,3 +853,6 @@ div#pwfs {
 #mnutoolPositionRecordFind {
 	margin: 10px 0 0 4px;
 }
+
+/* Find window grid - navigation icons. */
+.ui-jqgrid .ui-jqgrid-pager .ui-pg-div>span { margin: 0 5px; font-size: 20px; }

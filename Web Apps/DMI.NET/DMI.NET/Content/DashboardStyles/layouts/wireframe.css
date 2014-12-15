@@ -570,3 +570,5 @@ div.officetab div.panel > span { display: none;}
 	margin: 11px 0 0 4px;
 }
 
+/* Find window grid - navigation icons. */
+.ui-jqgrid .ui-jqgrid-pager .ui-pg-div>span { margin: 0 5px; font-size: 20px; }
