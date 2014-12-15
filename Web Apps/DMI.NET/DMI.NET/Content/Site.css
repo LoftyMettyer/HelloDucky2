@@ -588,7 +588,7 @@ select.readonly {
 #cmdBaseFilter, #cmdParent1Picklist, #cmdBasePicklist,
 #cmdParent1Filter, #cmdParent2Picklist, #cmdParent2Filter, 
 #cmdEmailGroup, #cmdCustomStart, #cmdCustomEnd,
-#cmdTemplateSelect, #cmdTemplateClear, #cmdFilename,
+#cmdFilename,
 #cmdBaseStartDateCalc,#cmdBaseEndDateCalc,
 #btnGoLinkOrder, #btnGoLinkView {
 	float: left;

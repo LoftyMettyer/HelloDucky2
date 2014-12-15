@@ -24,7 +24,7 @@ Namespace Models
 		<MinLength(3, ErrorMessage:="You must select at least one column for your mail merge.")> _
 		Public Overrides Property ColumnsAsString As String
 
-		<DisplayName("Template"), DisplayFormat(ConvertEmptyStringToNull:=False)>
+		<DisplayName("Template :"), DisplayFormat(ConvertEmptyStringToNull:=False)>
 		<Required(ErrorMessage:="No template name entered.")>
 		Public Property TemplateFileName As String
 

@@ -11,10 +11,8 @@
 				@Html.LabelFor(Function(m) m.TemplateFileName)
 			</div>
 
-			@Html.TextBoxFor(Function(m) m.TemplateFileName, New With {.id = "TemplateFileName", .class = "floatleft", .readonly = "true"})
-			
-			<input type="button" class="ui-state-disabled floatleft" style="margin-left:2px" id="cmdTemplateSelect" value="..." onclick="requestTemplateSelect()"  />
-			<input type="button" class="ui-state-disabled floatleft" id="cmdTemplateClear" value="Clear" onclick="TemplateClear()"  />
+			@Html.TextBoxFor(Function(m) m.TemplateFileName, New With {.id = "TemplateFileName", .class = "floatleft"})
+	
 		</div>
 	</fieldset>
 	
@@ -116,41 +114,8 @@
 	Note: Options marked in red are unavailable in OpenHR Web.
 </fieldset>
 
-<div style='height: 0;width:0; overflow:hidden;'>
-	<input type="file" name="cmdGetFilename" id="cmdGetFilename" onchange="templateSelect()" />
-</div>
 
 <script type="text/javascript">
-
-	function TemplateClear() {
-		$("#TemplateFileName").val("");
-		button_disable($('#cmdTemplateClear'), true);
-	}
-
-	function requestTemplateSelect() {
-
-		var dialog = document.getElementById("cmdGetFilename");
-		dialog.accept = "application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.document";
-		dialog.click();
-
-	}
-
-	function templateSelect() {
-
-		var dialog = document.getElementById("cmdGetFilename");
-		var sFileName = /([^\\]+)$/.exec(dialog.value)[1];
-
-		if (sFileName.length > 256) {
-			OpenHR.messageBox("Path and file name must not exceed 256 characters in length");
-			return;
-		}
-
-		if (sFileName != "") {
-			$("#TemplateFileName").val(sFileName);
-			button_disable($('#cmdTemplateClear'), false);
-		}
-
-	}
 
 	function setOutputToFile() {
 		var bSelected = $("#SaveToFile").prop("checked");
