@@ -143,8 +143,22 @@
 				},
 				onSelectRow: function (id) {
 					refreshSortButtons();
+					$("#SortOrders").find('input[type=checkbox]').each(function () {
+						$(this).change(function () {							
+							CheckBoxClick($(this));
+							enableSaveButton();
+						});
+					});
 				},
-				afterInsertRow: function (rowID) { CheckBoxClick(); },
+				afterInsertRow: function (rowID) {
+
+					$("#SortOrders").find('input[type=checkbox]').each(function () {
+						$(this).change(function () {							
+							CheckBoxClick($(this));
+							enableSaveButton();
+						});
+					});
+				},
 				loadComplete: function (data) {
 
 					if ('@Model.ReportType' == '@UtilityType.utlCustomReport') {
@@ -160,24 +174,24 @@
 			});
 		}
 
-		function CheckBoxClick() {
-			$("#SortOrders").find('input[type=checkbox]').each(function () {				
-				$(this).change(function () {					
-					var colid = $(this).parents('tr:last').attr('id');
-					var PageOnChangeColumn = $(this).parents('td').attr('aria-describedby') != "SortOrders_PageOnChange";
-					var BreakOnChangeColumn = $(this).parents('td').attr('aria-describedby') != "SortOrders_BreakOnChange";
-					var chkCol = checkIsHiddenColumn(colid);
+		function CheckBoxClick(obj) {
 
-					$("#SortOrders").jqGrid('setSelection', colid);
+			var colid = obj.parents('tr:last').attr('id');
+			var PageOnChangeColumn = $(obj).parents('td').attr('aria-describedby') != "SortOrders_PageOnChange";
+			var BreakOnChangeColumn = $(obj).parents('td').attr('aria-describedby') != "SortOrders_BreakOnChange";
 
-					if ($(this).is(':checked')) {
-						if (chkCol && PageOnChangeColumn && BreakOnChangeColumn) {
-							// Tell the user this column is hidden											
-							OpenHR.modalMessage("This column is marked as hidden in the 'Columns / Calculated Selected' section under Columns Tab.");
-							$(this).prop('checked', false);
+			if (obj.is(':checked')) {
+				var currentRowData = $("#SortOrders").getRowData(colid);
+				var colData = $("#SelectedColumns").getRowData();				
+				
+				for (var i = 0; i < colData.length; i++) {
+					if ((colData[i].ID == currentRowData.ColumnID)) {
+						if (colData[i].IsHidden.toUpperCase() == "TRUE") {
+							chkCol = true;
+							break;
 						} else {
-							// Tick the column without asking as its not hidden																
-							$(this).prop('checked', true);
+							chkCol = false;
+							break;
 						}
 
 						// Validates that either PageOnChange or BreakOnChange is checked but not both
@@ -187,29 +201,21 @@
 							$(this).prop('checked', false);
 						}
 					}
-				});
-			});
-		}
-
-		function checkIsHiddenColumn(colid) {
-			
-			var checkThisRowID = colid;
-			var gridData = $("#SortOrders").getRowData(checkThisRowID);
-			// If a Value On Change or Suppressed checkbox is checked at run time then before ticking it check if it is a hidden column			
-			var arraybob = $('#SelectedColumns tbody tr').map(function () {				
-				var $row = $(this);
-				return {
-					SelectedColumns_IsHidden: $row.find(':nth-child(14)').text(),
-					SelectedColumns_ID: $row.find(':nth-child(2)').text()
-				};
-			}).get();			
-
-			for (var i = 0; i < arraybob.length; i++) {
-				if ((arraybob[i].SelectedColumns_ID == gridData.ColumnID) && (arraybob[i].SelectedColumns_IsHidden.toUpperCase() == "TRUE")) {
-					return true;
 				}
+
+				if (chkCol && PageOnChangeColumn && BreakOnChangeColumn) {
+					// Tell the user this column is hidden											
+					OpenHR.modalMessage("This column is marked as hidden in the 'Columns / Calculated Selected' section under Columns Tab.");
+					obj.prop('checked', false);
+				} else {
+					// Tick the order chkbox without asking as its not hidden									
+					obj.prop('checked', true);					
+				}				
 			}
-			return false;
+
+			var topID = $("#SelectedColumns").getDataIDs()[0]
+			$('#SelectedColumns').jqGrid('resetSelection');
+			$("#SelectedColumns").jqGrid('setSelection', topID);
 		}
 		
 		// Validates that either PageOnChange or BreakOnChange is checked but not both
@@ -228,6 +234,9 @@
 
 		function addSortOrder() {
 			OpenHR.OpenDialog("Reports/AddSortOrder", "divPopupReportDefinition", { ReportID: "@Model.ID", ReportType: "@Model.ReportType" }, 'auto');
+			var topID = $("#SelectedColumns").getDataIDs()[0]
+			$('#SelectedColumns').jqGrid('resetSelection');
+			$("#SelectedColumns").jqGrid('setSelection', topID);
 		}
 
 		function editSortSorder(rowID) {
@@ -238,6 +247,9 @@
 
 			var gridData = $("#SortOrders").getRowData(rowID);
 			OpenHR.OpenDialog("Reports/EditSortOrder", "divPopupReportDefinition", gridData, 'auto');
+			var topID = $("#SelectedColumns").getDataIDs()[0]
+			$('#SelectedColumns').jqGrid('resetSelection');
+			$("#SelectedColumns").jqGrid('setSelection', topID);
 		}
 
 		function moveSelectedOrder(direction) {

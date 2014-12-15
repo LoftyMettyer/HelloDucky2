@@ -101,7 +101,6 @@
 							</div>
 						</div>
 
-
 						<div class="tablerow">
 							<div>
 								<input class="ui-widget ui-corner-all" id="SelectedColumnIsHidden" onchange="changeColumnIsHidden();" type="checkbox">
@@ -116,9 +115,7 @@
 								<label id="labelSelectedColumnRepeatOnChild" for="SelectedColumnIsRepeated">Repeat on child records</label>
 							</div>
 						</div>
-
 					</div>
-
 				</div>
 			</fieldset>
 		</div>
@@ -524,14 +521,13 @@
 	}
 
 	function changeColumnIsHidden() {
-
+		
 		if ($("#SelectedColumnIsHidden").is(':checked')) {
 			$('#SelectedColumnIsAverage').prop('checked', false);
 			$('#SelectedColumnIsCount').prop('checked', false);
 			$('#SelectedColumnIsTotal').prop('checked', false);
 			$('#SelectedColumnIsGroupWithNext').prop('checked', false);
 			$('#SelectedColumnIsRepeated').prop('checked', false);
-			UpdateSortOrderItem();
 		}
 
 		refreshcolumnPropertiesPanel();
@@ -625,19 +621,23 @@
 			var isNumeric = (dataRow.DataType == '2' || dataRow.DataType == '4');
 			var isDecimals = (isNumeric == true || dataRow.IsExpression == "true");
 			var isBaseOrParentTableColumn = (dataRow.TableID == $("#BaseTableID").val()) || (dataRow.TableID == $("#txtParent1ID").val()) || (dataRow.TableID == $("#txtParent2ID").val());
-
 			var isHidden = $("#SelectedColumnIsHidden").is(':checked');
 			var isGroupWithNext = $("#SelectedColumnIsGroupWithNext").is(':checked');
 			var isSize = (dataRow.DataType == '4');
-
-
-			$(".numericOnly *").prop("disabled", !isNumeric || isHidden || isGroupWithNext || isReadOnly);
-			$(".cannotBeHidden *").prop("disabled", isHidden || isGroupWithNext || isReadOnly);
-			$(".decimalsOnly *").prop("disabled", !isDecimals || isReadOnly || isSize);
-			$(".baseTableOnly *").prop("disabled", !isBaseOrParentTableColumn || !isThereChildColumns || isHidden || isReadOnly);
-			$(".canGroupWithNext *").prop("disabled", isBottomRow || isHidden || isReadOnly);
-			$("#SelectedColumnIsHidden").prop("disabled", isGroupWithNext || isReadOnly);
-
+			
+			$(".numericOnly").prop("disabled", !isNumeric || isHidden || isGroupWithNext || isReadOnly);
+			$(".cannotBeHidden").prop("disabled", isHidden || isGroupWithNext || isReadOnly);
+			$(".decimalsOnly").prop("disabled", !isDecimals || isReadOnly || isSize);
+			$(".baseTableOnly").prop("disabled", !isBaseOrParentTableColumn || !isThereChildColumns || isHidden || isReadOnly);
+			$(".canGroupWithNext").prop("disabled", isBottomRow || isHidden || isReadOnly);
+						
+			if ((checkSRPandVOC(rowId)) || isGroupWithNext || isReadOnly) {
+				$("#SelectedColumnIsHidden").prop("disabled", false);
+				$("#labelSelectedColumnIsHidden").css("color", "#000000");
+			} else {
+				$("#SelectedColumnIsHidden").prop("disabled", "disabled");
+				$("#labelSelectedColumnIsHidden").css("color", "#A59393");
+			}			
 
 			if (!isNumeric || isHidden || isGroupWithNext || isReadOnly) {
 				$(".numericOnly").css("color", "#A59393");
@@ -657,18 +657,11 @@
 				$(".canGroupWithNext").css("color", "#000000");
 			}
 
-			if (isGroupWithNext || isReadOnly) {
-				$("#labelSelectedColumnIsHidden").css("color", "#A59393");
-			} else {
-				$("#labelSelectedColumnIsHidden").css("color", "#000000");
-			}
-
 			if (isBaseOrParentTableColumn && isThereChildColumns && !isReadOnly && !isHidden ) {
 				$(".baseTableOnly").css("color", "#000000");
 			} else {
 				$(".baseTableOnly").css("color", "#A59393");
 			}
-
 		}
 
 		// Enable / Disable relevant buttons
@@ -678,23 +671,20 @@
 		button_disable($("#btnColumnRemoveAll")[0], !bRowSelected || isReadOnly);
 		button_disable($("#btnColumnMoveUp")[0], isTopRow || isReadOnly || (rowCount > 1));
 		button_disable($("#btnColumnMoveDown")[0], isBottomRow || isReadOnly || (rowCount > 1));
-
 	}
 
-	function UpdateSortOrderItem() {
-		var rowId = $("#SelectedColumns").jqGrid('getGridParam', 'selrow');
-		var dataRow = $('#SelectedColumns').jqGrid('getRowData', rowId);
-		//Find row in Sort Order columns to see if Value On Change or Suppress Repeated Values is ticked.
-		var gridData = $("#SortOrders").getRowData();
-		var columnList = $("#SortOrders").getDataIDs();
-
-		for (i = 0; i < columnList.length; i++) {
-			if (gridData[i].ColumnID == dataRow.ID) {
-				if (gridData[i].SuppressRepeated.toUpperCase() == "TRUE" || gridData[i].ValueOnChange.toUpperCase() == "TRUE") {
-					OpenHR.modalMessage("Either 'Value On Change' or 'Suppress Repeated' values are ticked for this column in the Sort Order tab." + "<br/><br/>" +
-															"Please un-tick these values before making '" + gridData[i].Name + "' hidden.");
-					$("#SelectedColumnIsHidden").prop('checked', false);
-					break
+	function checkSRPandVOC(rowId) {
+		// Check to see if Suppress Repeated Values or Value On change are ticked in Sort Order tab.
+		var fThisShouldBeEnabled = true
+		var gridData = $("#SortOrders").getRowData();		
+		// Loop through sort orders until we get a match and check SRV and VoC
+		for (j = 0; j < gridData.length; j++) {
+			if (rowId == gridData[j].ColumnID) {
+				if (gridData[j].SuppressRepeated.toUpperCase() == "TRUE" || gridData[j].ValueOnChange.toUpperCase() == "TRUE") {
+					fThisShouldBeEnabled = false;
+					return fThisShouldBeEnabled;
+				} else {
+					return fThisShouldBeEnabled;
 				}
 			}
 		}
@@ -761,7 +751,7 @@
 			scrollrows: true,
 			multiselect: true,
 			beforeSelectRow: function (rowid, e) {
-
+				
 				if ($('#SelectedColumns').jqGrid('getGridParam', 'selarrrow').length == 1) {
 					updateColumnsSelectedGrid();
 				}
@@ -806,7 +796,7 @@
 
 				var rowId = $("#SelectedColumns").jqGrid('getGridParam', 'selrow');
 				var dataRow = $("#SelectedColumns").getRowData(rowId)
-
+				
 				$("#SelectedColumnHeading").val(dataRow.Heading);
 
 				$("#SelectedColumnSize").val(dataRow.Size);
