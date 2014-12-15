@@ -175,6 +175,7 @@ Begin VB.Form frmWorkflowLog
          BeginProperty Panel1 {0713E89F-850A-101B-AFC0-4210102A8DA7} 
             AutoSize        =   1
             Object.Width           =   23230
+            Key             =   ""
             Object.Tag             =   ""
          EndProperty
       EndProperty
@@ -845,12 +846,13 @@ Private Function RefreshGrid() As Boolean
   ' Populate the grid using filter/sort criteria as set by the user
   Dim pstrSQL As String
   Dim strStatusBarText As String
+  Dim sWhereClause As String
   
   If mblnLoading = True Then GoTo TidyUpAndExit
   
   Screen.MousePointer = vbHourglass
   
-  pstrSQL = "SELECT WI.ID AS [ID]," & _
+  pstrSQL = "SELECT * FROM (SELECT WI.ID AS [ID]," & _
     "   WI.InitiationDateTime AS [InitiationDateTime]," & _
     "   WI.CompletionDateTime AS [CompletionDateTime]," & _
     "   CASE" & _
@@ -872,27 +874,29 @@ Private Function RefreshGrid() As Boolean
     " FROM ASRSysWorkflowInstances WI" & _
     " INNER JOIN ASRSysWorkflows WF ON WI.workflowID = WF.ID"
 
+  sWhereClause = vbNullString
+
   If cboType.ListIndex > 0 Then
-    pstrSQL = pstrSQL & " WHERE [Name] = '" & Replace(cboType.Text, "'", "''") & "'"
+    sWhereClause = sWhereClause & " WHERE [Name] = '" & Replace(cboType.Text, "'", "''") & "'"
   End If
 
   If cboStatus.ListIndex > 0 Then
-    pstrSQL = pstrSQL & IIf(InStr(pstrSQL, "WHERE") > 0, " AND ", " WHERE ") & _
-      "WI.status = " & CStr(cboStatus.ItemData(cboStatus.ListIndex))
+    sWhereClause = sWhereClause & IIf(InStr(sWhereClause, "WHERE") > 0, " AND ", " WHERE ") & _
+      "status = '" & cboStatus.Text & "'"
   End If
 
   If cboTargetName.ListIndex > 0 Then
-    pstrSQL = pstrSQL & IIf(InStr(pstrSQL, "WHERE") > 0, " AND ", " WHERE ") & _
-      "WI.TargetName = '" & Replace(cboTargetName.Text, "'", "''") & "'"
+    sWhereClause = sWhereClause & IIf(InStr(sWhereClause, "WHERE") > 0, " AND ", " WHERE ") & _
+      "TargetName = '" & Replace(cboTargetName.Text, "'", "''") & "'"
   End If
 
   If mblnViewAllEntries = False Then
-    pstrSQL = pstrSQL & IIf(InStr(pstrSQL, "WHERE") > 0, " AND ", " WHERE ") & _
-      "WI.Username = '" & Replace(gsUserName, "'", "''") & "'"
+    sWhereClause = sWhereClause & IIf(InStr(sWhereClause, "WHERE") > 0, " AND ", " WHERE ") & _
+      "Username = '" & Replace(gsUserName, "'", "''") & "'"
   Else
     If cboUser.Text <> "<All>" Then
-      pstrSQL = pstrSQL & IIf(InStr(pstrSQL, "WHERE") > 0, " AND ", " WHERE ") & _
-        "WI.Username = '" & Replace(cboUser.Text, "'", "''") & "'"
+      sWhereClause = sWhereClause & IIf(InStr(sWhereClause, "WHERE") > 0, " AND ", " WHERE ") & _
+        "Username = '" & Replace(cboUser.Text, "'", "''") & "'"
     End If
   End If
 
@@ -922,7 +926,9 @@ Private Function RefreshGrid() As Boolean
     End If
   End If
 
-  pstrSQL = pstrSQL & " ORDER BY [" & pstrOrderField & "] " & pstrOrderOrder
+  pstrSQL = pstrSQL & ") tableAllRecords " & _
+    sWhereClause & _
+    " ORDER BY [" & pstrOrderField & "] " & pstrOrderOrder
 
   Set mrstHeaders = mclsData.OpenPersistentRecordset(pstrSQL, adOpenKeyset, adLockReadOnly)
 
@@ -1046,7 +1052,8 @@ Private Sub Form_Load()
   ' Add all distinct target names
   With cboTargetName
     .AddItem "<All>"
-    
+    .AddItem "<System>"
+       
     Set rstWorkflows = mclsData.OpenRecordset("SELECT DISTINCT TargetName FROM ASRSysWorkflowInstances ORDER BY TargetName", adOpenForwardOnly, adLockReadOnly)
     Do Until rstWorkflows.EOF
       .AddItem IIf(IsNull(rstWorkflows.Fields("TargetName")), "", rstWorkflows.Fields("TargetName"))
