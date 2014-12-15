@@ -118,28 +118,14 @@ Namespace Models
 		<RegularExpression("True", ErrorMessage:="Vertical Maximum Value must be greater than its Minimum Value")>
 		Public ReadOnly Property IsVerticalStopOK As Boolean
 			Get
-				Return (VerticalStop > VerticalStart OrElse VerticalStart = 0)
+				Return (VerticalStop > VerticalStart)
 			End Get
 		End Property
 
 		<RegularExpression("True", ErrorMessage:="Horizontal Maximum Value must be greater than its Minimum Value")>
 		Public ReadOnly Property IsHorizontalStopOK As Boolean
 			Get
-				Return (HorizontalStop > HorizontalStart OrElse HorizontalStart = 0)
-			End Get
-		End Property
-
-		<RegularExpression("True", ErrorMessage:="Horizontal Maximum Value must be greater than zero")>
-		Public ReadOnly Property IsHorizontalMaximumValueOK As Boolean
-			Get
-				Return HorizontalStop > 0
-			End Get
-		End Property
-
-		<RegularExpression("True", ErrorMessage:="Vertical Maximum Value must be greater than zero")>
-		Public ReadOnly Property IsVerticalMaximumValueOK As Boolean
-			Get
-				Return VerticalStop > 0
+				Return (HorizontalStop > HorizontalStart)
 			End Get
 		End Property
 
