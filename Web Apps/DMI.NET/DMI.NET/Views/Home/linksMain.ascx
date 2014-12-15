@@ -1595,7 +1595,7 @@
 
 		// This replaces the big fat grey scrollbar with the nice thin dark one. (HRPRO-2952)
 		if (('<%=session("isMobileDevice")%>' !== "True") && (window.currentLayout == 'tiles')) {
-			setTimeout('$(".DashContent").mCustomScrollbar({ horizontalScroll: true, theme:"dark-thin", autoHideScrollbar: true, scrollInertia: 150 });', 500);
+			setTimeout('$(".DashContent").mCustomScrollbar({ horizontalScroll: true, theme:"dark-thin", autoHideScrollbar: true, scrollInertia: 150 });', 750);
 		} else {
 			$('.DashContent').attr('overflow', 'auto');
 		}

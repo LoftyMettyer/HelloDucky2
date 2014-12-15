@@ -522,12 +522,14 @@
 				var hlwidth = 0;
 				var buttonwidth = 0;
 				var dropdownlinkswidth = 0;
+				var docdisplaylinkswidth = 0;
 				
 				if ($('.pendingworkflowsframe').length > 0) pwfswidth = Number($('.pendingworkflowsframe').css('width').replace('px', ''));
 				if ($('.hypertextlinks').length > 0) hlwidth = Number(document.querySelector('.hypertextlinks').offsetWidth);
 				if ($('.linkspagebutton').length > 0) buttonwidth = Number($('.linkspagebutton').css('width').replace('px', ''));
 				if ($('.dropdownlinks').length > 0) dropdownlinkswidth = Number($('.dropdownlinks').css('width').replace('px', ''));
-				var requiredWidth = pwfswidth + hlwidth + buttonwidth + dropdownlinkswidth + 300 + 300;
+				if ($('.docdisplaylinks').length > 0) docdisplaylinkswidth = Number($('.docdisplaylinks').css('width').replace('px', ''));
+				var requiredWidth = pwfswidth + hlwidth + buttonwidth + dropdownlinkswidth + docdisplaylinkswidth + 300 + 300;
 				if(requiredWidth > 0)
 				{
 					requiredWidth += 'px';
