@@ -84,7 +84,7 @@ function find_window_onload() {
 			colNames = [];
 			colNamesOriginal = [];
 
-			if (dataCollection != null) {
+			if (dataCollection != null) {				
 				for (i = 0; i < dataCollection.length; i++) {
 					sControlName = dataCollection.item(i).name;
 					sControlName = sControlName.substr(0, 14);
@@ -143,8 +143,9 @@ function find_window_onload() {
 										align: 'center',
 										width: 100									
 									});
-								} else if (ColumnDataType == 4) { //Integer
-									if (ColumnControlType == 64) { //"Numeric" integer
+								} else if (ColumnDataType == 4) { //Integer	- NOT numerics								
+									if (ColumnControlType == 64) {
+										// Integer - not a spinner.
 										colModel.push({
 											name: sColumnName,
 											id: iColumnId,
@@ -155,7 +156,38 @@ function find_window_onload() {
 											align: 'right',
 											width: 100,
 											editoptions: {
-												defaultValue: getDefaultValueForColumn(iColumnId, "integer")
+												defaultValue: getDefaultValueForColumn(iColumnId, "integer"),
+												columnSize: ColumnSize,
+												columnDecimals: ColumnDecimals,
+												dataInit: function (element) {
+													var value = "";
+													var ColumnSize = $(element).attr('columnSize');
+													var ColumnDecimals = $(element).attr('columnDecimals');
+
+													element.setAttribute("data-a-dec", OpenHR.LocaleDecimalSeparator()); //Decimal separator
+													element.setAttribute("data-a-sep", ''); //No Thousand separator
+													element.setAttribute('data-m-dec', ColumnDecimals); //Decimal places
+													$(element).addClass("textalignright");
+													//Size of field includes decimals but not the decimal point; For example if Size=6 and Decimals=2 the maximum value to be allowed is 9999.99
+													if (ColumnSize == "0") { //No size specified, set a very long limit
+														element.setAttribute('data-v-min', '-2147483647'); //This is -Int32.MaxValue
+														element.setAttribute('data-v-max', '2147483647'); //This is Int32.MaxValue
+													} else {
+														//Determine the length we need and "translate" that to use it in the plugin
+														var n = Number(ColumnSize) - Number(ColumnDecimals); //Size minus decimal places
+														for (var x = n; x--;) value += "9"; //Create a string of the form "999"
+
+														if (ColumnDecimals != "0") { //If decimal places are specified, add a period and an appropriate number of "9"s
+															value += ".";
+															for (x = Number(ColumnDecimals) ; x--;) value += "9";
+														}
+
+														element.setAttribute('data-v-min', '-' + value);
+														element.setAttribute('data-v-max', value);
+													}
+
+													$(element).autoNumeric('init');
+												}
 											}
 										});
 									}
@@ -296,7 +328,68 @@ function find_window_onload() {
 											defaultValue: getDefaultValueForColumn(iColumnId, "workingpattern")
 										}
 									});								
-								} else { //None of the above
+								} else if (ColumnDataType == 12 && ColumnControlType == 64) {
+									//Character
+									colModel.push({
+										name: sColumnName,
+										id: iColumnId,
+										width: 100,
+										editable: sColumnEditable,
+										type: 'text',
+										editoptions: {
+											size: ColumnSize,
+											maxlength: ColumnSize,
+											defaultValue: getDefaultValueForColumn(iColumnId, "text")
+										},
+										label: sColumnDisplayName
+									});
+								}
+								else if (ColumnDataType == 2 && ColumnControlType == 64) {
+									//"Numeric"																		
+									colModel.push({
+										name: sColumnName,
+										id: iColumnId,
+										width: 100,
+										editable: sColumnEditable,
+										type: 'other',
+										align: 'right',
+										editoptions: {
+											columnSize: ColumnSize,
+											columnDecimals: ColumnDecimals,
+											defaultValue: getDefaultValueForColumn(iColumnId, "other"),											
+											dataInit: function (element) {												
+												var value = "";
+												var ColumnSize = $(element).attr('columnSize');
+												var ColumnDecimals = $(element).attr('columnDecimals');
+												element.setAttribute("data-a-dec", OpenHR.LocaleDecimalSeparator()); //Decimal separator
+												element.setAttribute("data-a-sep", OpenHR.LocaleThousandSeparator()); //Thousand separator
+												element.setAttribute('data-m-dec', ColumnDecimals); //Decimal places
+												$(element).addClass("textalignright");
+												//Size of field includes decimals but not the decimal point; For example if Size=6 and Decimals=2 the maximum value to be allowed is 9999.99
+												if (ColumnSize == "0") { //No size specified, set a very long limit
+													element.setAttribute('data-v-min', '-2147483647'); //This is -Int32.MaxValue
+													element.setAttribute('data-v-max', '2147483647'); //This is Int32.MaxValue
+												} else {
+													//Determine the length we need and "translate" that to use it in the plugin
+													var n = Number(ColumnSize) - Number(ColumnDecimals);
+													for (var x = n; x--;) value += "9"; //Create a string of the form "999"
+
+													if (ColumnDecimals != "0") { //If decimal places are specified, add a period and an appropriate number of "9"s
+														value += ".";
+														for (x = Number(ColumnDecimals); x--;) value += "9";
+													}
+
+													element.setAttribute('data-v-min', '-' + value);
+													element.setAttribute('data-v-max', value);
+												}
+
+												$(element).autoNumeric('init');
+											},
+										},
+										label: sColumnDisplayName
+									});
+								}
+								else { //None of the above
 									colModel.push({
 										name: sColumnName,
 										id: iColumnId,

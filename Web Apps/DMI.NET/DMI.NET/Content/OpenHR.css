@@ -1508,3 +1508,7 @@ overflow-x : hidden !important;
 .toolbarButtonOn {
 	background: #d0e5f5 url("images/ui-bg_glass_75_d0e5f5_1x400.png") 50% 50% repeat-x !important;
 }
+
+.textalignright {
+	text-align: right;
+}
