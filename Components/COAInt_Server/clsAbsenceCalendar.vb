@@ -1266,7 +1266,6 @@ PersonnelERROR:
 
 		Try
 
-
 			Dim iCount As Integer
 			Dim dtmCurrentDate As Date
 			Dim strColour As String
@@ -1587,46 +1586,35 @@ PersonnelERROR:
 		Dim iCount As Integer
 		Dim rstHistoricWPatterns As DataTable
 		Dim sSQL As String
-		Dim lngCount As Integer
 
-		' Define a blank working pattern array
-		ReDim mavWorkingPatternChanges(1, 0)
-		'UPGRADE_WARNING: Couldn't resolve default property of object mavWorkingPatternChanges(0, 0). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		mavWorkingPatternChanges(0, 0) = CDate("01/01/1899")
-		'UPGRADE_WARNING: Couldn't resolve default property of object mavWorkingPatternChanges(1, 0). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		mavWorkingPatternChanges(1, 0) = Space(14)
+		Try
 
-		If Not mblnDisableWPs Then
-			' If we are using historic WPattern, ensure we use the right WPattern for each day of absence
-			If PersonnelModule.gwptWorkingPatternType = WorkingPatternType.wptHistoricWPattern Then
+			' Define a blank working pattern array
+			ReDim mavWorkingPatternChanges(1, 0)
+			'UPGRADE_WARNING: Couldn't resolve default property of object mavWorkingPatternChanges(0, 0). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+			mavWorkingPatternChanges(0, 0) = DateTime.MinValue
+			'UPGRADE_WARNING: Couldn't resolve default property of object mavWorkingPatternChanges(1, 0). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+			mavWorkingPatternChanges(1, 0) = Space(14)
 
-				' Get the wpattern for the start of the absence period
-				rstHistoricWPatterns = DB.GetDataTable("SELECT TOP 1 " & PersonnelModule.gsPersonnelHWorkingPatternTableRealSource & "." & PersonnelModule.gsPersonnelHWorkingPatternDateColumnName & " AS 'Date', " & PersonnelModule.gsPersonnelHWorkingPatternTableRealSource & "." & PersonnelModule.gsPersonnelHWorkingPatternColumnName & " AS 'WP' " & "FROM " & PersonnelModule.gsPersonnelHWorkingPatternTableRealSource & " " & "WHERE " & PersonnelModule.gsPersonnelHWorkingPatternTableRealSource & "." & "ID_" & PersonnelModule.glngPersonnelTableID & " = " & mlngPersonnelRecordID & " " & "AND " & PersonnelModule.gsPersonnelHWorkingPatternTableRealSource & "." & PersonnelModule.gsPersonnelHWorkingPatternDateColumnName & " <= '" & VB6.Format(mdCalendarStartDate, "MM/dd/yyyy") & "' " & "ORDER BY " & PersonnelModule.gsPersonnelHWorkingPatternDateColumnName & " DESC")
+			If Not mblnDisableWPs Then
+				' If we are using historic WPattern, ensure we use the right WPattern for each day of absence
+				If PersonnelModule.gwptWorkingPatternType = WorkingPatternType.wptHistoricWPattern Then
 
-				If rstHistoricWPatterns.Rows.Count > 0 Then
+					sSQL = String.Format("SELECT  [{1}] AS [Date], [{2}] AS [WP] FROM (SELECT TOP 1 [{1}], [{2}] FROM {0} WHERE ID_{3} = {4} AND [{1}] <= '{5}' ORDER BY [{1}] DESC) AS firstWP " &
+						"UNION SELECT [{1}], [{2}] FROM {0} WHERE ID_{3} = {4} AND [{1}] > '{5}' " &
+						"ORDER BY [{1}] ASC",
+						PersonnelModule.gsPersonnelHWorkingPatternTableRealSource,
+						PersonnelModule.gsPersonnelHWorkingPatternDateColumnName,
+						PersonnelModule.gsPersonnelHWorkingPatternColumnName,
+						PersonnelModule.glngPersonnelTableID,
+						mlngPersonnelRecordID,
+						mdCalendarStartDate.ToString("yyyy-MM-dd"))
 
-					' Start working pattern for this employee
-					'UPGRADE_WARNING: Couldn't resolve default property of object mavWorkingPatternChanges(0, 0). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					mavWorkingPatternChanges(0, 0) = CDate(rstHistoricWPatterns.Rows(0)("Date"))
+					' Get the working patterns for the absence period
+					rstHistoricWPatterns = DB.GetDataTable(sSQL)
 
-					'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-					mstrAbsWPattern = IIf(IsDBNull(rstHistoricWPatterns.Rows(0)("WP")), Space(14), rstHistoricWPatterns.Rows(0)("WP"))
-					'UPGRADE_WARNING: Couldn't resolve default property of object mavWorkingPatternChanges(1, 0). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					mavWorkingPatternChanges(1, 0) = mstrAbsWPattern
+					ReDim mavWorkingPatternChanges(1, rstHistoricWPatterns.Rows.Count)
 
-				End If
-
-				' Now get the rest of the working patterns
-				Dim sSQLWorkingPatterns As String = String.Format("SELECT " & PersonnelModule.gsPersonnelHWorkingPatternTableRealSource & "." & PersonnelModule.gsPersonnelHWorkingPatternDateColumnName & " AS 'Date', " & PersonnelModule.gsPersonnelHWorkingPatternTableRealSource & "." & PersonnelModule.gsPersonnelHWorkingPatternColumnName & " AS 'WP' " & "FROM " & PersonnelModule.gsPersonnelHWorkingPatternTableRealSource & " " & "WHERE " & PersonnelModule.gsPersonnelHWorkingPatternTableRealSource & "." & "ID_" & PersonnelModule.glngPersonnelTableID & " = " & mlngPersonnelRecordID & " " & "AND " & PersonnelModule.gsPersonnelHWorkingPatternTableRealSource & "." & PersonnelModule.gsPersonnelHWorkingPatternDateColumnName & " > '" & VB6.Format(mdCalendarStartDate, "MM/dd/yyyy") & "' " & "ORDER BY " & PersonnelModule.gsPersonnelHWorkingPatternDateColumnName & " ASC")
-				rstHistoricWPatterns = DB.GetDataTable(sSQLWorkingPatterns)
-
-				If rstHistoricWPatterns.Rows.Count > 0 Then
-
-					' Size the array for the amount of working patterns this employee has.
-					ReDim Preserve mavWorkingPatternChanges(1, rstHistoricWPatterns.Rows.Count)
-
-					' Load all the working patterns into array
-					iCount = 0
 					For Each objRow As DataRow In rstHistoricWPatterns.Rows
 
 						'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
@@ -1635,7 +1623,7 @@ PersonnelERROR:
 
 						'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
 						'UPGRADE_WARNING: Couldn't resolve default property of object mavWorkingPatternChanges(0, iCount). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						mavWorkingPatternChanges(0, iCount) = IIf(IsDBNull(objRow("Date")), CDate("01/01/1899"), objRow("Date"))
+						mavWorkingPatternChanges(0, iCount) = IIf(IsDBNull(objRow("Date")), DateTime.MinValue, objRow("Date"))
 						'UPGRADE_WARNING: Couldn't resolve default property of object mavWorkingPatternChanges(1, iCount). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 						mavWorkingPatternChanges(1, iCount) = mstrAbsWPattern
 
@@ -1643,47 +1631,47 @@ PersonnelERROR:
 
 					Next
 
-				End If
+				Else
 
-				'UPGRADE_NOTE: Object rstHistoricWPatterns may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-				rstHistoricWPatterns = Nothing
+					' Its a static working pattern, get it from personnel
+					sSQL = "SELECT " & mstrSQLSelect_PersonnelStaticWP & "  AS 'WP'  " & vbNewLine
+					sSQL = sSQL & "FROM " & PersonnelModule.gsPersonnelTableName & vbNewLine
+					For iCount = 0 To UBound(mvarTableViews, 2) Step 1
+						'<Personnel CODE>
+						'UPGRADE_WARNING: Couldn't resolve default property of object mvarTableViews(0, lngCount). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+						If mvarTableViews(0, iCount) = PersonnelModule.glngPersonnelTableID Then
+							'UPGRADE_WARNING: Couldn't resolve default property of object mvarTableViews(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+							sSQL = sSQL & "     LEFT OUTER JOIN " & mvarTableViews(3, iCount) & vbNewLine
+							'UPGRADE_WARNING: Couldn't resolve default property of object mvarTableViews(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+							sSQL = sSQL & "     ON  " & PersonnelModule.gsPersonnelTableName & ".ID = " & mvarTableViews(3, iCount) & ".ID" & vbNewLine
+						End If
+					Next iCount
+					sSQL = sSQL & "WHERE " & PersonnelModule.gsPersonnelTableName & "." & "ID = " & mlngPersonnelRecordID
 
-			Else
+					rstHistoricWPatterns = DB.GetDataTable(sSQL)
 
-				' Its a static working pattern, get it from personnel
-				sSQL = vbNullString
-				sSQL = sSQL & "SELECT " & mstrSQLSelect_PersonnelStaticWP & "  AS 'WP'  " & vbNewLine
-				sSQL = sSQL & "FROM " & PersonnelModule.gsPersonnelTableName & vbNewLine
-				For lngCount = 0 To UBound(mvarTableViews, 2) Step 1
-					'<Personnel CODE>
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvarTableViews(0, lngCount). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					If mvarTableViews(0, lngCount) = PersonnelModule.glngPersonnelTableID Then
-						'UPGRADE_WARNING: Couldn't resolve default property of object mvarTableViews(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						sSQL = sSQL & "     LEFT OUTER JOIN " & mvarTableViews(3, lngCount) & vbNewLine
-						'UPGRADE_WARNING: Couldn't resolve default property of object mvarTableViews(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						sSQL = sSQL & "     ON  " & PersonnelModule.gsPersonnelTableName & ".ID = " & mvarTableViews(3, lngCount) & ".ID" & vbNewLine
+					' Stuff the working pattern into array
+					If rstHistoricWPatterns.Rows.Count > 0 Then
+						'UPGRADE_WARNING: Couldn't resolve default property of object mavWorkingPatternChanges(0, 0). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+						mavWorkingPatternChanges(0, 0) = DateTime.MinValue
+						'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
+						'UPGRADE_WARNING: Couldn't resolve default property of object mavWorkingPatternChanges(1, 0). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+						mavWorkingPatternChanges(1, 0) = Left(IIf(IsDBNull(rstHistoricWPatterns.Rows(0)("WP")), Space(14), rstHistoricWPatterns.Rows(0)("WP")) & Space(14), 14)
 					End If
-				Next lngCount
-				sSQL = sSQL & "WHERE " & PersonnelModule.gsPersonnelTableName & "." & "ID = " & mlngPersonnelRecordID
 
-				rstHistoricWPatterns = DB.GetDataTable(sSQL)
-
-				' Stuff the working pattern into array
-				If rstHistoricWPatterns.Rows.Count > 0 Then
-					'UPGRADE_WARNING: Couldn't resolve default property of object mavWorkingPatternChanges(0, 0). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					mavWorkingPatternChanges(0, 0) = CDate("01/01/1899")
-					'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-					'UPGRADE_WARNING: Couldn't resolve default property of object mavWorkingPatternChanges(1, 0). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					mavWorkingPatternChanges(1, 0) = Left(IIf(IsDBNull(rstHistoricWPatterns.Rows(0)("WP")), Space(14), rstHistoricWPatterns.Rows(0)("WP")) & Space(14), 14)
 				End If
-
+			Else
+				'UPGRADE_WARNING: Couldn't resolve default property of object mavWorkingPatternChanges(0, 0). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+				mavWorkingPatternChanges(0, 0) = DateTime.MinValue
+				'UPGRADE_WARNING: Couldn't resolve default property of object mavWorkingPatternChanges(1, 0). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+				mavWorkingPatternChanges(1, 0) = FULL_WP
 			End If
-		Else
-			'UPGRADE_WARNING: Couldn't resolve default property of object mavWorkingPatternChanges(0, 0). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			mavWorkingPatternChanges(0, 0) = CDate("01/01/1899")
-			'UPGRADE_WARNING: Couldn't resolve default property of object mavWorkingPatternChanges(1, 0). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			mavWorkingPatternChanges(1, 0) = FULL_WP
-		End If
+
+		Catch ex As Exception
+			Throw
+
+		End Try
+
 
 	End Sub
 
