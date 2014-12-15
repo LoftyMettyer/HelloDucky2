@@ -21,31 +21,29 @@ Namespace Models
 
 		Public Function LoadModel() As List(Of OrgChart)
 
-			Dim iTopLevelRecID As Integer = CInt(CleanNumeric(HttpContext.Current.Session("TopLevelRecID")))
+			Dim iLoggedInUser As Integer = CInt(CleanNumeric(HttpContext.Current.Session("LoggedInUserRecordID")))
 
 			Dim objSession As SessionInfo = CType(HttpContext.Current.Session("SessionContext"), SessionInfo)
 			Dim objDataAccess As New clsDataAccess(objSession.LoginInfo)
 
-			If iTopLevelRecID = 0 Then
-				If HttpContext.Current.Session("LoggedInUserRecordID") > 0 Then
-					iTopLevelRecID = HttpContext.Current.Session("LoggedInUserRecordID")
-				End If
-			End If
-
 			Dim orgCharts = New List(Of OrgChart)
 			Dim sErrorDescription = ""
 
+			' User record now been identified
+			If iLoggedInUser = 0 Then
+				HttpContext.Current.Session("ErrorText") = "Current user not identified."
+				Return orgCharts
+			End If
+
 			Try
 				Dim rstHierarchyRecords = objDataAccess.GetDataTable("spASRIntOrgChart", CommandType.StoredProcedure _
-							, New SqlParameter("RootID", SqlDbType.Int) With {.Value = iTopLevelRecID})
-
-
+							, New SqlParameter("RootID", SqlDbType.Int) With {.Value = iLoggedInUser})
 
 				Dim additionalClasses As String
 
 				If rstHierarchyRecords.Rows.Count = 0 Then
 					' No records returned
-					sErrorDescription = "Error generating Organisation Chart. No matching records found."
+					HttpContext.Current.Session("ErrorText") = "No matching records found."
 				Else
 
 					For Each objRow As DataRow In rstHierarchyRecords.Rows
@@ -53,7 +51,7 @@ Namespace Models
 						additionalClasses = " ui-corner-all"
 
 						' highlight the current user's node
-						If CInt(objRow(0)) = iTopLevelRecID Then
+						If CInt(objRow(0)) = iLoggedInUser Then
 							additionalClasses &= " ui-state-highlight"
 						Else
 							additionalClasses &= " ui-state-default"
@@ -113,21 +111,18 @@ Namespace Models
 				Select Case ex.Number
 					Case 2812
 						sErrorDescription = "The required setup for your organisation chart has not been completed."
-
 					Case 217
 						sErrorDescription = "There is a circular reference in your reporting structure."
 					Case Else
-						sErrorDescription = "Error generating Organisation Chart." & vbCrLf & ex.Message
+						sErrorDescription = ex.Message
 
 				End Select
 				HttpContext.Current.Session("ErrorText") = sErrorDescription
 
 			Catch ex As Exception
-				sErrorDescription = "Error generating Organisation Chart." & vbCrLf & ex.Message
-				HttpContext.Current.Session("ErrorText") = sErrorDescription
+				HttpContext.Current.Session("ErrorText") = ex.Message
 
 			End Try
-
 
 			Return orgCharts
 
