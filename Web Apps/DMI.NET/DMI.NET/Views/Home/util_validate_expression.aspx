@@ -48,7 +48,7 @@
 		}
 
 		function makeHidden() {
-			makeHidden(self);
+			ude_makeHidden();
 		}
 
 		function nextPass() {

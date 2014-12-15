@@ -1868,8 +1868,8 @@ function ude_createNew() {
 	submitDefinition();
 }
 
-function makeHidden(pPopup) {
-	pPopup.close();
+function ude_makeHidden() {
+	OpenHR.clearTmpDialog();
 	var frmDefinition = OpenHR.getForm("divDefExpression", "frmDefinition");
 
 	frmDefinition.optAccessHD.checked = true;
