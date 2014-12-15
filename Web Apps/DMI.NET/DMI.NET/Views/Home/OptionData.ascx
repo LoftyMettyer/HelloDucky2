@@ -964,7 +964,7 @@
 							Dim numberOfDecimals As Integer = 0
 							If indexOfDecimalPoint > 0 Then numberOfDecimals = numberAsString.Substring(indexOfDecimalPoint + 1).Length
 							
-							If rstFindRecords.Columns(0).DataType = GetType(DateTime) Then
+							If rstFindRecords.Columns(iloop).DataType = GetType(DateTime) Then
 								' Field is a date so format as such.
 								sAddString = sAddString & ConvertSQLDateToLocale(objRow(iloop))
 																
