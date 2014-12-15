@@ -158,13 +158,8 @@ Namespace Code.Hubs
 					LockMessage = prmResult.Value.ToString
 
 				ElseIf SystemLockStatus = LockPriority.Saving Then
-					objDataAccess.ExecuteSP("spASRIntGetSetting" _
-							, New SqlParameter("psSection", SqlDbType.VarChar, -1) With {.Value = "messaging"} _
-							, New SqlParameter("psKey", SqlDbType.VarChar, -1) With {.Value = "lockmessage"} _
-							, New SqlParameter("psDefault", SqlDbType.VarChar, -1) With {.Value = "A database system save is in progress."} _
-							, New SqlParameter("pfUserSetting", SqlDbType.Bit) With {.Value = False} _
-							, prmResult)
-					LockMessage = prmResult.Value.ToString
+					LockMessage = "A database system save is in progress."
+
 				Else
 					LockMessage = "A system administrator has locked the database."
 
