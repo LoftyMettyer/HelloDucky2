@@ -118,10 +118,10 @@
 			<![CDATA[Installed OR (IISMAJORVERSION AND (IISMAJORVERSION = "#7" OR IISMAJORVERSION = "#8"))]]>
 		</Condition>
 
-		<!-- Check if .NET 4.0 is installed -->
-		<PropertyRef Id="NETFRAMEWORK40FULL"/>
-		<Condition Message="OpenHR requires .NET Framework 4.0. Please download it from http://www.microsoft.com/en-gb/download/details.aspx?id=17851">
-			<![CDATA[Installed OR NETFRAMEWORK40FULL]]>
+		<!-- Check if .NET 4.5.1 is installed -->
+		<PropertyRef Id="NETFRAMEWORK45"/>
+		<Condition Message="OpenHR Web requires .NET Framework 4.5.1. Please download it from http://www.microsoft.com/en-gb/download/details.aspx?id=40779">
+			<![CDATA[Installed OR NETFRAMEWORK45]]>
 		</Condition>
 
 		<!-- Check that SQL Client is installed -->
