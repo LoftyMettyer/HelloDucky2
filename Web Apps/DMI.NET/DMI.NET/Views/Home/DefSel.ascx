@@ -177,23 +177,31 @@
 			if (gridData.Username != frmDefSel.txtusername.value) {
 				if (gridData.Access == 'ro') {
 					frmDefSel.cmdEdit.value = 'View';
+					menu_SetmnutoolButtonCaption("mnutoolEditToolsFind", "View");
 					button_disable(frmDefSel.cmdDelete, true);
+					menu_toolbarEnableItem("mnutoolDeleteToolsFind", false);
 				} else {
 					frmDefSel.cmdEdit.value = 'Edit';
+					menu_SetmnutoolButtonCaption("mnutoolEditToolsFind", "Edit");
 
 					if (frmpermissions.grantdelete.value == 1) {
 						button_disable(frmDefSel.cmdDelete, false);
+						menu_toolbarEnableItem("mnutoolDeleteToolsFind", true);
 					} else {
 						button_disable(frmDefSel.cmdDelete, true);
+						menu_toolbarEnableItem("mnutoolDeleteToolsFind", false);
 					}
 				}
 			} else {
 				frmDefSel.cmdEdit.value = 'Edit';
+				menu_SetmnutoolButtonCaption("mnutoolEditToolsFind", "Edit");
 
 				if (frmpermissions.grantdelete.value == 1) {
 					button_disable(frmDefSel.cmdDelete, false);
+					menu_toolbarEnableItem("mnutoolDeleteToolsFind", true);
 				} else {
 					button_disable(frmDefSel.cmdDelete, true);
+					menu_toolbarEnableItem("mnutoolDeleteToolsFind", false);
 				}
 			}
 			//fFromMenu = true;
@@ -451,9 +459,6 @@
 						// Enable the buttons
 						menu_toolbarEnableItem("mnutoolNewToolsFind", IsNewPermitted);
 						menu_toolbarEnableItem("mnutoolCopyToolsFind", true && IsNewPermitted && fFromMenu);
-						menu_toolbarEnableItem("mnutoolEditToolsFind", true && (IsEditPermitted || IsViewPermitted) && fFromMenu);
-						menu_SetmnutoolButtonCaption("mnutoolEditToolsFind", (IsEditPermitted == false ? 'View' : 'Edit'));
-						menu_toolbarEnableItem("mnutoolDeleteToolsFind", true && IsDeletePermitted && fFromMenu);
 						menu_toolbarEnableItem("mnutoolPropertiesToolsFind", fFromMenu);
 						menu_toolbarEnableItem("mnutoolRunToolsFind", false);
 						menu_setVisibleMenuItem('mnutoolRunToolsFind', false);
@@ -470,9 +475,6 @@
 						// Enable the buttons
 						menu_toolbarEnableItem("mnutoolNewToolsFind", IsNewPermitted);
 						menu_toolbarEnableItem("mnutoolCopyToolsFind", true && IsNewPermitted && fFromMenu);
-						menu_toolbarEnableItem("mnutoolEditToolsFind", true && (IsEditPermitted || IsViewPermitted) && fFromMenu);
-					menu_SetmnutoolButtonCaption("mnutoolEditToolsFind", (IsEditPermitted == false ? 'View' : 'Edit'));
-						menu_toolbarEnableItem("mnutoolDeleteToolsFind", true && IsDeletePermitted && fFromMenu);
 						menu_toolbarEnableItem("mnutoolPropertiesToolsFind", fFromMenu);
 						menu_toolbarEnableItem("mnutoolRunToolsFind", false);
 						menu_setVisibleMenuItem('mnutoolRunToolsFind', false);

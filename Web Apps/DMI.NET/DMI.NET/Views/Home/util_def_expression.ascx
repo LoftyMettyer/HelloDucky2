@@ -11,7 +11,7 @@
 <form id="frmDefinition">
 
 	<div class="absolutefull" style="margin-top:10px;">
-		<div class="nowrap">
+		<div class="nowrap" id="nav">
 			<div class="tablerow">
 				<label>Name :</label>
 				<input id="txtName" name="txtName" maxlength="50" onkeyup="changeName()" style="width:90%;">				

@@ -340,7 +340,7 @@ function loadDefinition() {
 
 	// If its read only, disable everything.
 	if (frmUseful.txtAction.value.toUpperCase() == "VIEW") {	
-		setTimeout('expr_disableAll()', 100);
+		setTimeout('expr_disableAllProps()', 100);
 	
 		button_disable(frmDefinition.cmdPrint, false);
 		if (frmUseful.txtUtilType.value == 11) {
@@ -349,8 +349,8 @@ function loadDefinition() {
 	}
 }
 
-function expr_disableAll() {
-	$('#frmDefinition input, #frmDefinition textarea').prop('disabled', true);
+function expr_disableAllProps() {
+	$('#frmDefinition #nav input, #frmDefinition #nav textarea').prop('disabled', true);
 }
 
 function loadComponentNodes(piExprID, pfVisible) {
@@ -1686,31 +1686,7 @@ function submitDefinition() {
 
 }
 
-function disableButtons() {
-	var frmDefinition = OpenHR.getForm("divDefExpression", "frmDefinition");
-	var frmUseful = OpenHR.getForm("divDefExpression", "frmUseful");
 
-	text_disable(frmDefinition.txtName, true);
-	textarea_disable(frmDefinition.txtDescription, true);
-	radio_disable(frmDefinition.optAccessHD, true);
-	radio_disable(frmDefinition.optAccessRO, true);
-	radio_disable(frmDefinition.optAccessRW, true);
-
-	button_disable(frmDefinition.cmdAdd, true);
-	button_disable(frmDefinition.cmdInsert, true);
-	button_disable(frmDefinition.cmdEdit, true);
-	button_disable(frmDefinition.cmdDelete, true);
-	button_disable(frmDefinition.cmdPrint, true);
-
-	if (frmUseful.txtUtilType.value == 11) {
-		button_disable(frmDefinition.cmdTest, true);
-	}
-
-	//button_disable(frmDefinition.cmdOK, true);
-	//button_disable(frmDefinition.cmdCancel, true);
-	menu_toolbarEnableItem('mnutoolSaveReport', false);
-	menu_toolbarEnableItem('mnutoolCancelReport', false);
-}
 
 function reEnableControls() {
 	var frmUseful = OpenHR.getForm("divDefExpression", "frmUseful");
