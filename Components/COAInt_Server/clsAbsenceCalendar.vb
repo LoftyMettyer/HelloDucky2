@@ -1053,6 +1053,7 @@ PersonnelERROR:
 		Dim strHtmlRefresh As New StringBuilder
 
 		Dim strCaption As String
+		Dim strKeyName As String
 
 		' Create function header strings
 		strHtml = "<script type=""text/javascript"">" & vbNewLine
@@ -1075,7 +1076,7 @@ PersonnelERROR:
 				'UPGRADE_WARNING: Couldn't resolve default property of object mavAbsences(iCount, 5). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 				strColour = mavAbsences(iCount, 5)
 				'UPGRADE_WARNING: Couldn't resolve default property of object mavAbsences(iCount, 2). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				strCaption = mavAbsences(iCount, 2)
+				strCaption = HttpUtility.HtmlEncode(mavAbsences(iCount, 2))
 				'UPGRADE_WARNING: Couldn't resolve default property of object mavAbsences(iCount, 0). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 				blnHasEvent = mavAbsences(iCount, 0)
 				'UPGRADE_WARNING: Couldn't resolve default property of object mavAbsences(iCount, 4). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
@@ -1242,9 +1243,13 @@ PersonnelERROR:
 		Next iCount
 
 		For iCount = 0 To miStrAbsenceTypes Step 1
-			strHtmlRefresh.Append("   if (frmChangeDetails.txtShowCaptions.value == 'show') " & vbNewLine & "     {" & vbNewLine &
-				"     KEY_" & LTrim(Str(iCount)) & ".innerHTML = '" & IIf(Trim(mastrAbsenceTypes(iCount, 3)) = vbNullString, "&nbsp", mastrAbsenceTypes(iCount, 3)) & "'; }" & vbNewLine &
-				"   else" & vbNewLine & "     {" & vbNewLine & "     KEY_" & LTrim(Str(iCount)) & ".innerHTML = '&nbsp';" & vbNewLine & "     }" & vbNewLine)
+			strKeyName = "KEY_" & LTrim(Str(iCount))
+			strCaption = IIf(Trim(mastrAbsenceTypes(iCount, 3)) = vbNullString, "&nbsp", HttpUtility.HtmlEncode(mastrAbsenceTypes(iCount, 3)))
+			strHtmlRefresh.AppendFormat("   if (frmChangeDetails.txtShowCaptions.value == 'show') {{" & vbNewLine &
+				"     {0}.innerHTML = '{1}'; }}" & vbNewLine &
+				"   else" & vbNewLine & "     {{" & vbNewLine &
+				"     {0}.innerHTML = '&nbsp'; }}" & vbNewLine,
+				strKeyName, strCaption)
 		Next iCount
 
 		strHtmlRefresh.Append(" }" & vbNewLine)
