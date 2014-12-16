@@ -5280,6 +5280,7 @@ function updateRowFromDatabase(rowid) {
 	$.ajax({
 		url: "getfindrecordbyid",
 		type: "GET",
+		cache: false,
 		async: true,
 		data: { recordid: recordID },
 		success: function (jsonstring) {
