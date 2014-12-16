@@ -40,10 +40,10 @@ Namespace Code.Hubs
 
 		Public Shared Sub RegisterDatabase()
 
-			Dim sConnection = ConfigurationManager.ConnectionStrings("OpenHR").ConnectionString
-
 			' Initialise the heartbeat
 			Try
+
+				Dim sConnection = ConfigurationManager.ConnectionStrings("OpenHR").ConnectionString
 
 				Connection = New SqlConnection(sConnection)
 				If Connection.State = ConnectionState.Closed Then
@@ -62,6 +62,8 @@ Namespace Code.Hubs
 
 			' Initialise the service broker
 			Try
+
+				Dim sConnection = ConfigurationManager.ConnectionStrings("OpenHR").ConnectionString
 
 				SqlDependency.Start(sConnection)
 				ClearTrackingTable()
