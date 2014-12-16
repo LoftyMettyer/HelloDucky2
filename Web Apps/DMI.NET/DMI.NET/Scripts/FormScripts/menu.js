@@ -5232,10 +5232,18 @@ function saveInlineRowToDatabase(rowId) {
 	frmDataArea.txtRealSource.value = $("#txtRealSource").val();
 	if (gridData.ID == "") { //New record
 		frmDataArea.txtRecordID.value = "0";
-		sUpdateOrInsert = eval("currentTableOrViewName") + "\t" + "0\t\t" + sUpdateOrInsert;
+		var realSource = $('#frmFindForm #txtRealSource').val();
+		sUpdateOrInsert = realSource + "\t" + "0\t\t" + sUpdateOrInsert;
 	} else { //Update record
 		frmDataArea.txtRecordID.value = gridData.ID; 
 	}
+
+	//	See if we are a history screen and if we are save away the id of the parent also
+	if (Number($("#frmFindForm #txtCurrentParentTableID").val()) > 0) {
+		sUpdateOrInsert += "ID_" + $.trim($("#frmFindForm #txtCurrentParentTableID").val());
+		sUpdateOrInsert += "\t" + $.trim($("#frmFindForm #txtCurrentParentRecordID").val()) + "\t";
+	}
+
 	frmDataArea.txtDefaultCalcCols.value = "";
 	frmDataArea.txtInsertUpdateDef.value = sUpdateOrInsert;
 	frmDataArea.txtTimestamp.value = gridData.Timestamp;
