@@ -10,7 +10,8 @@ Imports System.Data.SqlClient
 Public Class MailMerge
 	Inherits BaseForDMI
 
-	Private mrsMailMergeColumns As DataTable
+	Public Property Columns As List(Of MergeColumn)
+	Public Property OrderColumns As List(Of MergeColumn)
 	Private mrsMergeData As DataTable
 	Private mlngMailMergeID As Integer
 	Private mblnNoRecords As Boolean
@@ -73,28 +74,41 @@ Public Class MailMerge
 		End Get
 	End Property
 
-	Public ReadOnly Property Columns As List(Of MergeColumn)
-		Get
-			Dim objColumns As New List(Of MergeColumn)
+	Private Sub PopulateOrderColumns(dtOrders As DataTable)
 
-			For Each objRow As DataRow In mrsMailMergeColumns.Rows
-				Dim column As New MergeColumn
-				column.ID = CInt(objRow("colexpid"))
-				column.TableID = CInt(objRow("tableid"))
-				column.TableName = objRow("table").ToString()
-				column.Name = objRow("name").ToString()
-				column.DataType = objRow("type")
-				column.Use1000Separator = CBool(objRow("use1000separator"))
-				column.Size = CLng(objRow("size"))
-				column.Decimals = CInt(objRow("decimals"))
-				column.IsExpression = (objRow("colexp").ToString() = "Exp")
-				objColumns.Add(column)
-			Next
+		OrderColumns = New List(Of MergeColumn)
 
-			Return objColumns
+		For Each objRow As DataRow In dtOrders.Rows
+			Dim column As New MergeColumn
+			column.ID = CInt(objRow("colexpid"))
+			column.TableID = CInt(objRow("tableid"))
+			column.TableName = objRow("tablename").ToString()
+			column.Name = objRow("name").ToString()
+			column.SortOrder = objRow("sortorder").ToString()
+			OrderColumns.Add(column)
+		Next
 
-		End Get
-	End Property
+	End Sub
+
+	Private Sub PopulateColumns(dtColumns As DataTable)
+
+		Columns = New List(Of MergeColumn)
+
+		For Each objRow As DataRow In dtColumns.Rows
+			Dim column As New MergeColumn
+			column.ID = CInt(objRow("colexpid"))
+			column.TableID = CInt(objRow("tableid"))
+			column.TableName = objRow("tablename").ToString()
+			column.Name = objRow("name").ToString()
+			column.DataType = CType(objRow("type"), ColumnDataType)
+			column.Use1000Separator = CBool(objRow("use1000separator"))
+			column.Size = CLng(objRow("size"))
+			column.Decimals = CInt(objRow("decimals"))
+			column.IsExpression = CBool(objRow("colexp"))
+			Columns.Add(column)
+		Next
+
+	End Sub
 
 	Public ReadOnly Property DefName() As String
 		Get
@@ -383,7 +397,8 @@ Public Class MailMerge
 			' "E" is an express which has been selected by the user
 			' "X" is a system column required by the merge
 			'     (currently only used for the email field where required)
-			mrsMailMergeColumns = dsData.Tables(1)
+			PopulateColumns(dsData.Tables(1))
+			PopulateOrderColumns(dsData.Tables(2))
 
 			fOK = IsRecordSelectionValid()
 
@@ -407,59 +422,59 @@ Public Class MailMerge
 
 		Dim rsTemp As DataTable
 
-		On Error GoTo LocalErr
+		Try
 
-		If mlngSingleRecordID > 0 Then
-			GetPicklistFilterSelect = CStr(mlngSingleRecordID)
+			If mlngSingleRecordID > 0 Then
+				GetPicklistFilterSelect = CStr(mlngSingleRecordID)
 
-		ElseIf mlngDefPickListID > 0 Then
+			ElseIf mlngDefPickListID > 0 Then
 
-			mstrStatusMessage = IsPicklistValid(mlngDefPickListID)
-			If mstrStatusMessage <> vbNullString Then
-				fOK = False
-				Exit Function
+				mstrStatusMessage = IsPicklistValid(mlngDefPickListID)
+				If mstrStatusMessage <> vbNullString Then
+					fOK = False
+					Exit Function
+				End If
+
+				'Get List of IDs from Picklist
+				rsTemp = DB.GetDataTable("EXEC sp_ASRGetPickListRecords " & mlngDefPickListID)
+				fOK = (rsTemp.Rows.Count > 0)
+
+				If Not fOK Then
+					mstrStatusMessage = "The base table picklist contains no records."
+				Else
+					GetPicklistFilterSelect = vbNullString
+
+					For Each objRow As DataRow In rsTemp.Rows
+						GetPicklistFilterSelect = GetPicklistFilterSelect & IIf(Len(GetPicklistFilterSelect) > 0, ", ", "").ToString() & objRow(0).ToString()
+
+					Next
+				End If
+
+
+			ElseIf mlngDefFilterID > 0 Then
+
+				mstrStatusMessage = IsFilterValid(mlngDefFilterID)
+				If mstrStatusMessage <> vbNullString Then
+					fOK = False
+					Exit Function
+				End If
+
+				'Get list of IDs from Filter
+				fOK = FilteredIDs(mlngDefFilterID, GetPicklistFilterSelect, mastrUDFsRequired, mvarPrompts)
+
+				If Not fOK Then
+					' Permission denied on something in the filter.
+					mstrStatusMessage = "You do not have permission to use the '" & General.GetFilterName(mlngDefFilterID) & "' filter."
+				End If
+
 			End If
 
-			'Get List of IDs from Picklist
-			rsTemp = DB.GetDataTable("EXEC sp_ASRGetPickListRecords " & mlngDefPickListID)
-			fOK = (rsTemp.Rows.Count > 0)
+		Catch ex As Exception
+			mstrStatusMessage = "Error processing picklist"
+			Logs.AddDetailEntry(mstrStatusMessage)
+			fOK = False
 
-			If Not fOK Then
-				mstrStatusMessage = "The base table picklist contains no records."
-			Else
-				GetPicklistFilterSelect = vbNullString
-
-				For Each objRow As DataRow In rsTemp.Rows
-					GetPicklistFilterSelect = GetPicklistFilterSelect & IIf(Len(GetPicklistFilterSelect) > 0, ", ", "").ToString() & objRow(0).ToString()
-
-				Next
-			End If
-
-
-		ElseIf mlngDefFilterID > 0 Then
-
-			mstrStatusMessage = IsFilterValid(mlngDefFilterID)
-			If mstrStatusMessage <> vbNullString Then
-				fOK = False
-				Exit Function
-			End If
-
-			'Get list of IDs from Filter
-			fOK = FilteredIDs(mlngDefFilterID, GetPicklistFilterSelect, mastrUDFsRequired, mvarPrompts)
-
-			If Not fOK Then
-				' Permission denied on something in the filter.
-				mstrStatusMessage = "You do not have permission to use the '" & General.GetFilterName(mlngDefFilterID) & "' filter."
-			End If
-
-		End If
-
-		Exit Function
-
-LocalErr:
-		mstrStatusMessage = "Error processing picklist"
-		Logs.AddDetailEntry(mstrStatusMessage)
-		fOK = False
+		End Try
 
 	End Function
 
@@ -471,111 +486,99 @@ LocalErr:
 
 		fOK = True
 
-		On Error GoTo LocalErr
+		Try
 
-		mstrSQLSelect = ""
-		mstrSQLFrom = ""
-		mstrSQLJoin = ""
-		mstrSQLWhere = ""
-		mstrSQLOrder = ""
-		mstrWhereIDs = ""
+			mstrSQLSelect = ""
+			mstrSQLFrom = ""
+			mstrSQLJoin = ""
+			mstrSQLWhere = ""
+			mstrSQLOrder = ""
+			mstrWhereIDs = ""
 
-		ReDim mastrUDFsRequired(0)
+			ReDim mastrUDFsRequired(0)
 
-		ReDim mlngTableViews(2, 0)
+			ReDim mlngTableViews(2, 0)
 
-		intIndex = 0
+			intIndex = 0
 
-		' JPD20030219 Fault 5070
-		' Check the user has permission to read the base table.
-		fOK = False
-		For Each objTableView In gcoTablePrivileges.Collection
-			If (objTableView.TableID = mlngDefBaseTableID) And (objTableView.AllowSelect) Then
-				fOK = True
-				Exit For
+			' JPD20030219 Fault 5070
+			' Check the user has permission to read the base table.
+			fOK = False
+			For Each objTableView In gcoTablePrivileges.Collection
+				If (objTableView.TableID = mlngDefBaseTableID) And (objTableView.AllowSelect) Then
+					fOK = True
+					Exit For
+				End If
+			Next objTableView
+			'UPGRADE_NOTE: Object objTableView may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
+			objTableView = Nothing
+
+			If Not fOK Then
+				mstrStatusMessage = "You do not have permission to read the base table either directly or through any views."
+				Exit Function
 			End If
-		Next objTableView
-		'UPGRADE_NOTE: Object objTableView may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		objTableView = Nothing
 
-		If Not fOK Then
-			mstrStatusMessage = "You do not have permission to read the base table either directly or through any views."
-			Exit Function
-		End If
+			mstrSQLFrom = gcoTablePrivileges.Item(mstrDefBaseTable).RealSource
+			mstrSQLSelect = mstrSQLFrom & ".ID, '' AS [?Receipt]"
 
-		mstrSQLFrom = gcoTablePrivileges.Item(mstrDefBaseTable).RealSource
-		mstrSQLSelect = mstrSQLFrom & ".ID, '' AS [?Receipt]"
+			For Each objColumn In Columns
 
-		With mrsMailMergeColumns
-			fOK = (.Rows.Count > 0)
-			If fOK Then
+				intIndex += 1
 
-				For Each objRow As DataRow In .Rows
+				If objColumn.IsExpression Then
 
-					intIndex += 1
-
-					Select Case objRow("ColExp")
-						Case "Col"
-							SQLAddColumn(mstrSQLSelect, CInt(objRow("TableID")), objRow("Table").ToString(), objRow("Name").ToString(), objRow("Table").ToString() & "_" & objRow("Name").ToString())
-
-						Case "Exp"
-							'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-							If IsDBNull(objRow("Name")) Then
-								mstrStatusMessage = "This definition contains one or more calculation(s) which " & "have been deleted by another user."
-								fOK = False
-								Exit Function
-
-							ElseIf IsCalcValid(CInt(objRow("ColExpID"))) <> "" Then
-								mstrStatusMessage = "You cannot run this Mail Merge definition as it contains one or more calculation(s) which have been deleted or made hidden by another user. " & "Please re-visit your definition to remove the hidden calculations."
-								fOK = False
-								Exit Function
-
-							Else
-								SQLAddCalculation(CInt(objRow("ColExpID")), objRow("Table").ToString() & objRow("Name").ToString().ToString.Replace(" ", "_"), CInt(objRow("Size")), CInt(objRow("Decimals")))
-
-							End If
-
-					End Select
-
-					If fOK = False Then
+					If objColumn.Name = "" Then
+						mstrStatusMessage = "This definition contains one or more calculation(s) which have been deleted by another user."
+						fOK = False
 						Exit Function
+
+					ElseIf IsCalcValid(objColumn.ID) <> "" Then
+						mstrStatusMessage = "You cannot run this Mail Merge definition as it contains one or more calculation(s) which have been deleted or made hidden by another user. " & "Please re-visit your definition to remove the hidden calculations."
+						fOK = False
+						Exit Function
+
+					Else
+						SQLAddCalculation(objColumn.ID, objColumn.TableName & objColumn.TableName.Replace(" ", "_"), objColumn.Size, objColumn.Decimals)
+
 					End If
 
-				Next
+				Else
+					SQLAddColumn(mstrSQLSelect, objColumn, objColumn.TableName & "_" & objColumn.Name)
 
+				End If
+
+			Next
+
+			If mstrWhereIDs <> vbNullString Then
+				mstrSQLWhere = "(" & mstrWhereIDs & ")" & IIf(mstrSQLWhere <> vbNullString, " OR ", "").ToString() & mstrSQLWhere
 			End If
-		End With
 
-		If mstrWhereIDs <> vbNullString Then
-			mstrSQLWhere = "(" & mstrWhereIDs & ")" & IIf(mstrSQLWhere <> vbNullString, " OR ", "").ToString() & mstrSQLWhere
-		End If
+			strPicklistFilterSelect = GetPicklistFilterSelect()
+			If fOK = False Then
+				Exit Function
+			End If
+			If strPicklistFilterSelect <> vbNullString Then
+				mstrSQLWhere = mstrSQLWhere & IIf(mstrSQLWhere <> vbNullString, " AND ", "").ToString() & mstrSQLFrom & ".ID IN (" & strPicklistFilterSelect & ")"
+			End If
 
-		strPicklistFilterSelect = GetPicklistFilterSelect()
-		If fOK = False Then
-			Exit Function
-		End If
-		If strPicklistFilterSelect <> vbNullString Then
-			mstrSQLWhere = mstrSQLWhere & IIf(mstrSQLWhere <> vbNullString, " AND ", "").ToString() & mstrSQLFrom & ".ID IN (" & strPicklistFilterSelect & ")"
-		End If
+			If mstrSQLWhere <> vbNullString Then
+				mstrSQLWhere = " WHERE " & mstrSQLWhere
+			End If
 
-		If mstrSQLWhere <> vbNullString Then
-			mstrSQLWhere = " WHERE " & mstrSQLWhere
-		End If
+			SQLOrderByClause()
 
-		'UPGRADE_NOTE: Object mrsMailMergeColumns may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		mrsMailMergeColumns = Nothing
+		Catch ex As Exception
+			mstrStatusMessage = "Error processing calculation/column definitions."
+			Logs.AddDetailEntry(mstrStatusMessage)
+			fOK = False
 
-		Call SQLOrderByClause()
+		End Try
+
 		Return fOK
-
-LocalErr:
-		mstrStatusMessage = "Error processing calculation/column definitions."
-		Logs.AddDetailEntry(mstrStatusMessage)
-		Return False
 
 	End Function
 
-	Private Sub SQLAddColumn(ByRef sColumnList As String, lngTableID As Integer, sTableName As String, sColumnName As String, strColCode As String)
+	Private Sub SQLAddColumn(ByRef sColumnList As String, objColumn As MergeColumn, columnAlias As String)
 
 		Dim objTableView As TablePrivilege
 		Dim objColumnPrivileges As CColumnPrivileges
@@ -588,160 +591,166 @@ LocalErr:
 		Dim sCaseStatement As String
 		Dim sWhereColumn As String
 		Dim sBaseIDColumn As String
+		Dim sThisColumn As String
 
 		Dim asViews() As String
 
-		On Error GoTo LocalErr
+		Try
 
-
-		objColumnPrivileges = GetColumnPrivileges(sTableName)
-		fColumnOK = objColumnPrivileges.IsValid(sColumnName)
-		If fColumnOK Then
-			fColumnOK = objColumnPrivileges.Item(sColumnName).AllowSelect
-		End If
-
-		'UPGRADE_NOTE: Object objColumnPrivileges may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		objColumnPrivileges = Nothing
-
-		If fColumnOK Then
-			' The column can be read from the base table/view, or directly from a parent table.
-			' Add the column to the column list.
-
-			sRealSource = gcoTablePrivileges.Item(sTableName).RealSource
-
-			sColumnList = sColumnList & IIf(sColumnList <> vbNullString, ", ", "").ToString() & sRealSource & "." & sColumnName
-
-			If strColCode <> vbNullString Then
-				sColumnList = sColumnList & " AS " & "'" & strColCode & "'"
+			objColumnPrivileges = GetColumnPrivileges(objColumn.TableName)
+			fColumnOK = objColumnPrivileges.IsValid(objColumn.Name)
+			If fColumnOK Then
+				fColumnOK = objColumnPrivileges.Item(objColumn.Name).AllowSelect
 			End If
 
-			If sTableName <> mstrDefBaseTable Then
+			'UPGRADE_NOTE: Object objColumnPrivileges may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
+			objColumnPrivileges = Nothing
 
-				fFound = False
-				For iNextIndex = 1 To UBound(mlngTableViews, 2)
-					If mlngTableViews(1, iNextIndex) = 0 And mlngTableViews(2, iNextIndex) = lngTableID Then
-						fFound = True
-						Exit For
-					End If
-				Next iNextIndex
+			If fColumnOK Then
+				' The column can be read from the base table/view, or directly from a parent table.
+				' Add the column to the column list.
 
-				' if this column is not from the base table then it must be from a parent
-				' table, therefore include it in the join code
-				If Not fFound Then
-					iNextIndex = UBound(mlngTableViews, 2) + 1
-					ReDim Preserve mlngTableViews(2, iNextIndex)
-					mlngTableViews(1, iNextIndex) = 0
-					mlngTableViews(2, iNextIndex) = lngTableID
+				sRealSource = gcoTablePrivileges.Item(objColumn.TableName).RealSource
 
-
-					' The table has not yet been added to the join code, and it is
-					' not the base table so add it to the array and the join code.
-					mstrSQLJoin = mstrSQLJoin & " LEFT OUTER JOIN " & sRealSource & " ON " & mstrSQLFrom & ".ID_" & CStr(lngTableID) & " = " & sRealSource & ".ID"
+				If objColumn.Size > 0 And objColumn.DataType = ColumnDataType.sqlVarChar Then
+					sThisColumn = String.Format("SUBSTRING({0}.{1}, 1, {2})", sRealSource, objColumn.Name, objColumn.Size)
+				Else
+					sThisColumn = String.Format("{0}.{1}", sRealSource, objColumn.Name)
 				End If
 
-			End If
+				sColumnList &= IIf(sColumnList <> vbNullString, ", ", "").ToString() & sThisColumn
 
-		Else
+				If columnAlias <> vbNullString Then
+					sColumnList &= " AS " & "[" & columnAlias & "]"
+				End If
 
-			ReDim asViews(0)
-			For Each objTableView In gcoTablePrivileges.Collection
+				If objColumn.TableName <> mstrDefBaseTable Then
 
-				'Loop thru all of the views for this table where the user has select access
-				If (Not objTableView.IsTable) And (objTableView.TableID = lngTableID) And (objTableView.AllowSelect) Then
-
-					sSource = objTableView.ViewName
-
-					' Get the column permission for the view.
-					objColumnPrivileges = GetColumnPrivileges(sSource)
-
-					If objColumnPrivileges.IsValid(sColumnName) Then
-						If objColumnPrivileges.Item(sColumnName).AllowSelect Then
-							' Add the view info to an array to be put into the column list or order code below.
-							iNextIndex = UBound(asViews) + 1
-							ReDim Preserve asViews(iNextIndex)
-							asViews(iNextIndex) = sSource
-
-							'=== This is the join code section ===
-							' Add the view to the Join code.
-							' Check if the view has already been added to the join code.
-							fFound = False
-							For iNextIndex = 1 To UBound(mlngTableViews, 2)
-								If mlngTableViews(2, iNextIndex) = objTableView.ViewID Then
-									fFound = True
-									Exit For
-								End If
-							Next iNextIndex
-
-							If Not fFound Then
-								' The view has not yet been added to the join code, so add it to the array and the join code.
-
-								iNextIndex = UBound(mlngTableViews, 2) + 1
-								ReDim Preserve mlngTableViews(2, iNextIndex)
-								mlngTableViews(1, iNextIndex) = 1
-								mlngTableViews(2, iNextIndex) = objTableView.ViewID
-
-								If objTableView.TableID = mlngDefBaseTableID Then
-									sBaseIDColumn = mstrSQLFrom & ".ID"
-								Else
-									sBaseIDColumn = mstrSQLFrom & ".ID_" & CStr(objTableView.TableID)
-								End If
-
-								mstrSQLJoin = mstrSQLJoin & vbNewLine & " LEFT OUTER JOIN " & sSource & " ON " & sBaseIDColumn & " = " & sSource & ".ID"
-
-								mstrWhereIDs = mstrWhereIDs & IIf(mstrWhereIDs <> "", " OR ", "").ToString() & sBaseIDColumn & " IN (SELECT ID FROM " & sSource & ")" & " OR (ISNULL(" & sBaseIDColumn & ", 0) = 0)"
-
-							End If
+					fFound = False
+					For iNextIndex = 1 To UBound(mlngTableViews, 2)
+						If mlngTableViews(1, iNextIndex) = 0 And mlngTableViews(2, iNextIndex) = objColumn.TableID Then
+							fFound = True
+							Exit For
 						End If
-						'=== End of Join Code ===
+					Next iNextIndex
+
+					' if this column is not from the base table then it must be from a parent
+					' table, therefore include it in the join code
+					If Not fFound Then
+						iNextIndex = UBound(mlngTableViews, 2) + 1
+						ReDim Preserve mlngTableViews(2, iNextIndex)
+						mlngTableViews(1, iNextIndex) = 0
+						mlngTableViews(2, iNextIndex) = objColumn.TableID
 
 
-						'UPGRADE_NOTE: Object objColumnPrivileges may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-						objColumnPrivileges = Nothing
+						' The table has not yet been added to the join code, and it is
+						' not the base table so add it to the array and the join code.
+						mstrSQLJoin = mstrSQLJoin & " LEFT OUTER JOIN " & sRealSource & " ON " & mstrSQLFrom & ".ID_" & objColumn.TableID & " = " & sRealSource & ".ID"
 					End If
 
 				End If
-			Next objTableView
-			'UPGRADE_NOTE: Object objTableView may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-			objTableView = Nothing
-
-			' The current user does have permission to 'read' the column through a/some view(s) on the
-			' table.
-			If UBound(asViews) = 0 Then
-				mstrStatusMessage = "You do not have permission to see the column '" & sColumnName & "' " & "either directly or through any views."
-				fOK = False
-				Exit Sub
 
 			Else
-				' Add the column to the column list.
-				sCaseStatement = "CASE"
-				sWhereColumn = vbNullString
-				For iNextIndex = 1 To UBound(asViews)
-					sCaseStatement = sCaseStatement & " WHEN NOT " & asViews(iNextIndex) & "." & sColumnName & " IS NULL THEN " & asViews(iNextIndex) & "." & sColumnName & vbNewLine
-				Next iNextIndex
 
-				If Len(sCaseStatement) > 0 Then
-					sCaseStatement = sCaseStatement & " ELSE NULL END"
+				ReDim asViews(0)
+				For Each objTableView In gcoTablePrivileges.Collection
 
-					If strColCode <> vbNullString Then
-						sCaseStatement = sCaseStatement & " AS " & "'" & strColCode & "'"
+					'Loop thru all of the views for this table where the user has select access
+					If (Not objTableView.IsTable) And (objTableView.TableID = objColumn.TableID) And (objTableView.AllowSelect) Then
+
+						sSource = objTableView.ViewName
+
+						' Get the column permission for the view.
+						objColumnPrivileges = GetColumnPrivileges(sSource)
+
+						If objColumnPrivileges.IsValid(objColumn.Name) Then
+							If objColumnPrivileges.Item(objColumn.Name).AllowSelect Then
+								' Add the view info to an array to be put into the column list or order code below.
+								iNextIndex = UBound(asViews) + 1
+								ReDim Preserve asViews(iNextIndex)
+								asViews(iNextIndex) = sSource
+
+								'=== This is the join code section ===
+								' Add the view to the Join code.
+								' Check if the view has already been added to the join code.
+								fFound = False
+								For iNextIndex = 1 To UBound(mlngTableViews, 2)
+									If mlngTableViews(2, iNextIndex) = objTableView.ViewID Then
+										fFound = True
+										Exit For
+									End If
+								Next iNextIndex
+
+								If Not fFound Then
+									' The view has not yet been added to the join code, so add it to the array and the join code.
+
+									iNextIndex = UBound(mlngTableViews, 2) + 1
+									ReDim Preserve mlngTableViews(2, iNextIndex)
+									mlngTableViews(1, iNextIndex) = 1
+									mlngTableViews(2, iNextIndex) = objTableView.ViewID
+
+									If objTableView.TableID = mlngDefBaseTableID Then
+										sBaseIDColumn = mstrSQLFrom & ".ID"
+									Else
+										sBaseIDColumn = mstrSQLFrom & ".ID_" & CStr(objTableView.TableID)
+									End If
+
+									mstrSQLJoin = mstrSQLJoin & vbNewLine & " LEFT OUTER JOIN " & sSource & " ON " & sBaseIDColumn & " = " & sSource & ".ID"
+
+									mstrWhereIDs = mstrWhereIDs & IIf(mstrWhereIDs <> "", " OR ", "").ToString() & sBaseIDColumn & " IN (SELECT ID FROM " & sSource & ")" & " OR (ISNULL(" & sBaseIDColumn & ", 0) = 0)"
+
+								End If
+							End If
+							'=== End of Join Code ===
+
+
+							'UPGRADE_NOTE: Object objColumnPrivileges may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
+							objColumnPrivileges = Nothing
+						End If
+
 					End If
+				Next objTableView
+				'UPGRADE_NOTE: Object objTableView may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
+				objTableView = Nothing
 
-					sColumnList = sColumnList & IIf(Len(sColumnList) > 0, ", ", "").ToString() & vbNewLine & sCaseStatement
+				' The current user does have permission to 'read' the column through a/some view(s) on the
+				' table.
+				If UBound(asViews) = 0 Then
+					mstrStatusMessage = "You do not have permission to see the column '" & objColumn.Name & "' " & "either directly or through any views."
+					fOK = False
+					Exit Sub
 
-					If sWhereColumn <> vbNullString Then
-						mstrSQLWhere = mstrSQLWhere & IIf(Len(mstrSQLWhere) > 0, " AND ", vbNullString).ToString() & "((" & sWhereColumn & "))"
+				Else
+					' Add the column to the column list.
+					sCaseStatement = "CASE"
+					sWhereColumn = vbNullString
+					For iNextIndex = 1 To UBound(asViews)
+						sCaseStatement &= " WHEN NOT " & asViews(iNextIndex) & "." & objColumn.Name & " IS NULL THEN " & asViews(iNextIndex) & "." & objColumn.Name & vbNewLine
+					Next iNextIndex
+
+					If Len(sCaseStatement) > 0 Then
+						sCaseStatement &= " ELSE NULL END"
+
+						If columnAlias <> vbNullString Then
+							sCaseStatement &= " AS " & "[" & columnAlias & "]"
+						End If
+
+						sColumnList = sColumnList & IIf(Len(sColumnList) > 0, ", ", "").ToString() & vbNewLine & sCaseStatement
+
+						If sWhereColumn <> vbNullString Then
+							mstrSQLWhere &= IIf(Len(mstrSQLWhere) > 0, " AND ", vbNullString).ToString() & "((" & sWhereColumn & "))"
+						End If
+
 					End If
-
 				End If
 			End If
-		End If
 
-		Exit Sub
+		Catch ex As Exception
+			mstrStatusMessage = "Error building SQL Statement"
+			Logs.AddDetailEntry(mstrStatusMessage)
+			fOK = False
 
-LocalErr:
-		mstrStatusMessage = "Error building SQL Statement"
-		Logs.AddDetailEntry(mstrStatusMessage)
-		fOK = False
+		End Try
 
 	End Sub
 
@@ -752,21 +761,10 @@ LocalErr:
 
 		Try
 
-			strSQL = "SELECT ASRSysTables.TableID, ASRSysTables.TableName, ASRSysColumns.ColumnID, ASRSysColumns.ColumnName, ASRSysMailMergeColumns.SortOrder FROM ASRSysMailMergeColumns JOIN ASRSysColumns ON (ASRSysMailMergeColumns.ColumnID = ASRSysColumns.ColumnID) JOIN ASRSysTables ON (ASRSysColumns.TableID = ASRSysTables.TableID) WHERE ASRSysMailMergeColumns.MailMergeID = " & CStr(mlngMailMergeID) & " AND SortOrderSequence > 0 ORDER BY SortOrderSequence"
-			rsTemp = DB.GetDataTable(strSQL)
-
-			With rsTemp
-				For Each objRow As DataRow In .Rows
-
-					SQLAddColumn(mstrSQLOrder, CInt(objRow("TableID")), objRow("TableName").ToString(), objRow("ColumnName").ToString(), vbNullString)
-
-					mstrSQLOrder = mstrSQLOrder & IIf(Left(objRow("SortOrder").ToString(), 1) = "A", " ASC", " DESC").ToString()
-
-					If fOK = False Then
-						Exit Sub
-					End If
-				Next
-			End With
+			For Each objOrder In OrderColumns
+				SQLAddColumn(mstrSQLOrder, objOrder, vbNullString)
+				mstrSQLOrder = mstrSQLOrder & objOrder.SortOrder
+			Next
 
 			If mstrSQLOrder <> vbNullString Then
 				mstrSQLOrder = " ORDER BY " & mstrSQLOrder
@@ -780,7 +778,7 @@ LocalErr:
 
 	End Sub
 
-	Private Sub SQLAddCalculation(lngExpID As Integer, strColCode As String, Size As Integer, Decimals As Integer)
+	Private Sub SQLAddCalculation(lngExpID As Integer, strColCode As String, Size As Long, Decimals As Integer)
 
 		Dim lngCalcViews(,) As Integer
 		Dim objCalcExpr As clsExprExpression

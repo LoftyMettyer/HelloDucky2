@@ -17,7 +17,10 @@ Namespace Metadata
 				End If
 
 			End Get
+
 		End Property
+
+		Public SortOrder As String
 
 	End Class
 
