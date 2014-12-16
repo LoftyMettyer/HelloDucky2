@@ -709,6 +709,7 @@ GetCustomReportDefinition_ERROR:
 
 				'*************************************************************************
 
+				objReportItemDetail.DataType = CType(objRow("DataType"), ColumnDataType)
 				objReportItemDetail.Size = CInt(objRow("Size"))
 				objReportItemDetail.Decimals = CInt(objRow("dp"))
 				objReportItemDetail.IsNumeric = CBool(objRow("IsNumeric"))
@@ -2603,7 +2604,7 @@ CheckRecordSet_ERROR:
 							objReportItem = ColumnDetails.GetByIndex(iColumnIndex)
 
 							' The column breaks. Check if its changed.
-							vValue = PopulateGrid_FormatData(objReportItem, objRow(iColumnIndex), False, False)
+							vValue = PopulateGrid_FormatData(objReportItem, objRow(iColumnIndex), False, False, False)
 
 							'Now that we store the formatted value in position (11) of the mcolDetails
 							'Comparison made after adjusting the size of the field.
@@ -2746,7 +2747,7 @@ CheckRecordSet_ERROR:
 
 						Else
 							' Get the formatted data to display in the grid
-							vDisplayData = PopulateGrid_FormatData(objNextItem, objRow(iLoop), bSuppress, bBaseRecordChanged)
+							vDisplayData = PopulateGrid_FormatData(objNextItem, objRow(iLoop), bSuppress, bBaseRecordChanged, True)
 						End If
 
 						If blnSkipped Then
@@ -2917,7 +2918,7 @@ CheckRecordSet_ERROR:
 
 	End Function
 
-	Private Function PopulateGrid_FormatData(objReportItem As ReportDetailItem, vData As Object, mbSuppressRepeated As Boolean, pbNewBaseRecord As Boolean) As String
+	Private Function PopulateGrid_FormatData(objReportItem As ReportDetailItem, vData As Object, mbSuppressRepeated As Boolean, pbNewBaseRecord As Boolean, trimData As Boolean) As String
 		'Private Function PopulateGrid_FormatData(ByVal sfieldname As String, ByVal vData As Object, ByVal mbSuppressRepeated As Boolean, ByVal pbNewBaseRecord As Boolean) As Object
 		' Purpose : Format the data to the form the user has specified to see it
 		'           in the grid
@@ -2929,6 +2930,11 @@ CheckRecordSet_ERROR:
 		If IsDBNull(vData) Then Return ""
 
 		vOriginalData = vData
+
+		' Is it a string
+		If trimData And objReportItem.DataType = ColumnDataType.sqlVarChar And objReportItem.Size > 0 Then
+			vData = Strings.Left(vData, objReportItem.Size)
+		End If
 
 		' Is it a boolean calculation ? If so, change to Y or N
 		If objReportItem.IsBitColumn Then
@@ -3223,7 +3229,7 @@ CheckRecordSet_ERROR:
 						End If
 
 						If (fDoValue Or mbIsBradfordIndexReport) And bIsColumnVisible Then
-							aryAverageAddString.Add(PopulateGrid_FormatData(objReportItem, objReportItem.LastValue, False, True))
+							aryAverageAddString.Add(PopulateGrid_FormatData(objReportItem, objReportItem.LastValue, False, True, True))
 						ElseIf bIsColumnVisible Then
 							aryAverageAddString.Add("")
 						End If
@@ -3254,7 +3260,7 @@ CheckRecordSet_ERROR:
 						End If
 
 						If (fDoValue Or mbIsBradfordIndexReport) And bIsColumnVisible Then
-							aryCountAddString.Add(PopulateGrid_FormatData(objReportItem, objReportItem.LastValue, False, True))
+							aryCountAddString.Add(PopulateGrid_FormatData(objReportItem, objReportItem.LastValue, False, True, True))
 						ElseIf bIsColumnVisible Then
 							aryCountAddString.Add("")
 						End If
@@ -3287,7 +3293,7 @@ CheckRecordSet_ERROR:
 						End If
 
 						If (fDoValue Or mbIsBradfordIndexReport) And bIsColumnVisible Then
-							aryTotalAddString.Add(PopulateGrid_FormatData(objReportItem, objReportItem.LastValue, False, True))
+							aryTotalAddString.Add(PopulateGrid_FormatData(objReportItem, objReportItem.LastValue, False, True, True))
 						ElseIf bIsColumnVisible Then
 							aryTotalAddString.Add("")
 						End If

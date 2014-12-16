@@ -208,7 +208,7 @@
     <Compile Include="Enums\RecordSelectionValidityCodes.vb" />
     <Compile Include="Enums\RegionType.vb" />
     <Compile Include="Enums\RowType.vb" />
-    <Compile Include="Enums\SQLDataType.vb" />
+    <Compile Include="Enums\ColumnDataType.vb" />
     <Compile Include="Enums\TableTypes.vb" />
     <Compile Include="Enums\UtilityType.vb" />
     <Compile Include="Enums\WorkingPatternType.vb" />

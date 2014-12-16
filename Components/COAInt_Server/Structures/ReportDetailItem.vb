@@ -1,10 +1,12 @@
 ﻿Imports HR.Intranet.Server.Metadata
+Imports HR.Intranet.Server.Enums
 
 Namespace Structures
 	Public Class ReportDetailItem
 		Inherits Base
 
 		Public IDColumnName As String
+		Public DataType As ColumnDataType
 		Public Size As Integer
 		Public Decimals As Integer
 		Public IsNumeric As Boolean
@@ -28,6 +30,7 @@ Namespace Structures
 		Public Use1000Separator As Boolean
 		Public Mask As String
 		Public GroupWithNextColumn As Boolean
+
 	End Class
 
 End Namespace

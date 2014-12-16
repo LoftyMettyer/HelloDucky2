@@ -1,4 +1,4 @@
-﻿CREATE PROCEDURE spASRIntGetCustomReportDetails (@piCustomReportID integer)
+﻿CREATE PROCEDURE [dbo].[spASRIntGetCustomReportDetails] (@piCustomReportID integer)
 AS
 BEGIN
 
@@ -10,6 +10,7 @@ BEGIN
 			, ISNULL(t.tablename,'') AS [tablename]
 			, CASE c.datatype WHEN 11 THEN 1 ELSE 0 END AS [IsDateColumn]
 			, CASE c.datatype WHEN -7 THEN 1 ELSE 0 END AS [IsBooleanColumn]
+			, c.datatype AS [DataType]
 		FROM ASRSysCustomReportsDetails d
 		LEFT JOIN ASRSysColumns c ON c.columnid = d.ColExprID And d.Type = 'C'
 		LEFT JOIN ASRSysTables t ON c.tableid = t.tableid
