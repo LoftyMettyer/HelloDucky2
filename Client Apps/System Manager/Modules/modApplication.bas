@@ -136,7 +136,7 @@ ErrorTrap:
 
   gobjProgress.Visible = False
   MsgBox ODBC.FormatError(Err.Description), _
-    vbOKOnly + vbExclamation, Name
+    vbOKOnly + vbExclamation, Application.Name
   Err = False
 
 End Sub
@@ -1392,7 +1392,7 @@ ErrorTrap:
   CreateTempTables = False
   gobjProgress.Visible = False
   MsgBox ODBC.FormatError(Err.Description), _
-    vbOKOnly + vbExclamation, Name
+    vbOKOnly + vbExclamation, Application.Name
   Err = False
   
 End Function
@@ -1542,7 +1542,7 @@ ErrorTrap:
   DropTempTables = False
   gobjProgress.Visible = False
   MsgBox ODBC.FormatError(Err.Description), _
-    vbOKOnly + vbExclamation, Name
+    vbOKOnly + vbExclamation, Application.Name
   Err = False
   
 End Function
