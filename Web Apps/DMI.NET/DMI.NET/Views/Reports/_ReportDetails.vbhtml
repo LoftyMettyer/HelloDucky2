@@ -6,8 +6,8 @@
 <fieldset class="width100 floatleft">
 	<legend class="fontsmalltitle">Start Date :</legend>
 	<fieldset>
-		@Html.HiddenFor(Function(m) m.StartCustomViewAccess)
-		@Html.HiddenFor(Function(m) m.EndCustomViewAccess)
+		@Html.HiddenFor(Function(m) m.StartCustomViewAccess, New With {.class = "ViewAccess"})
+		@Html.HiddenFor(Function(m) m.EndCustomViewAccess, New With {.class = "ViewAccess"})
 
 		<div class="width100 " style="">
 			@Html.RadioButton("StartType", CalendarDataType.CurrentDate, Model.StartType = CalendarDataType.CurrentDate, New With {.onclick = "changeCalendarStartType('CurrentDate')"})

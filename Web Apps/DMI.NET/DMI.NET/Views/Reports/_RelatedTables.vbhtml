@@ -4,8 +4,8 @@
 @Imports DMI.NET.Code.Extensions
 @Inherits System.Web.Mvc.WebViewPage(Of Models.CustomReportModel)
 
-@Html.HiddenFor(Function(m) m.Parent1ViewAccess)
-@Html.HiddenFor(Function(m) m.Parent2ViewAccess)
+@Html.HiddenFor(Function(m) m.Parent1ViewAccess, New With {.class = "ViewAccess"})
+@Html.HiddenFor(Function(m) m.Parent2ViewAccess, New With {.class = "ViewAccess"})
 @Html.HiddenFor(Function(m) m.ChildTablesAvailable)
 @Html.HiddenFor(Function(m) m.ChildTablesString, New With {.id = "txtCTAAS"})
 
@@ -290,6 +290,7 @@
 		selectGridTopRow($('#SelectedColumns'));
 		selectGridTopRow($('#SortOrders'));
 
+		checkIfDefinitionNeedsToBeHidden(0);
 		enableSaveButton();
 	}
 
@@ -393,7 +394,7 @@
 				{ name: 'ReportType', index: 'ReportType', sorttype: 'int', hidden: true },
 				{ name: 'TableID', index: 'TableID', width: 100, hidden: true },
 				{ name: 'FilterID', index: 'FilterID', width: 100, hidden: true },
-				{ name: 'FilterViewAccess', index: 'Records', hidden: true },
+				{ name: 'FilterViewAccess', index: 'Records', hidden: true, classes: 'ViewAccess' },
 				{ name: 'OrderID', index: 'OrderID', width: 100, hidden: true },
 				{ name: 'TableName', index: 'TableName', width: 100 },
 				{ name: 'FilterName', index: 'FilterName', width: 100 },

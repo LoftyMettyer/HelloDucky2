@@ -8,7 +8,7 @@
 @Html.HiddenFor(Function(m) m.ReportType, New With {.id = "txtReportType"})
 @Html.HiddenFor(Function(m) m.Timestamp)
 @Html.HiddenFor(Function(m) m.ValidityStatus)
-@Html.HiddenFor(Function(m) m.BaseViewAccess)
+@Html.HiddenFor(Function(m) m.BaseViewAccess, New With {.class = "ViewAccess"})
 @Html.HiddenFor(Function(m) m.IsReadOnly)
 @Html.HiddenFor(Function(m) m.ActionType)
 
@@ -240,7 +240,7 @@
 
 	}
 
-		function refreshViewAccess() {
+	function refreshViewAccess() {
 
 		var bViewAccessEnabled = true;
 		var list;
@@ -248,24 +248,11 @@
 		$(".reportViewAccessGroup").removeAttr('disabled');
 		$("#drpSetAllSecurityGroups").removeAttr('disabled');
 
-		if ($("#BaseViewAccess").val() == 'HD') { bViewAccessEnabled = false; }
-		if ($("#Parent1ViewAccess").val() == 'HD') { bViewAccessEnabled = false; }
-		if ($("#Parent2ViewAccess").val() == 'HD') { bViewAccessEnabled = false; }
-		if ($("#StartCustomViewAccess").val() == 'HD') { bViewAccessEnabled = false; }
-		if ($("#EndCustomViewAccess").val() == 'HD') { bViewAccessEnabled = false; }
-		if ($("#Description3ViewAccess").val() == 'HD') { bViewAccessEnabled = false; }
-
-		list = $("#ChildTables").getDataIDs();
-		for (i = 0; i < list.length; i++) {
-			rowData = $("#ChildTables").getRowData(list[i]);
-			if (rowData.FilterViewAccess == "HD") { bViewAccessEnabled = false; }
-		}
-
-		list = $("#CalendarEvents").getDataIDs();
-		for (i = 0; i < list.length; i++) {
-			rowData = $("#CalendarEvents").getRowData(list[i]);
-			if (rowData.FilterViewAccess == "HD") { bViewAccessEnabled = false; }
-		}
+		$(".ViewAccess").each(function (index) {
+			if ((this).innerText == "HD" || (this).value == "HD") {
+				bViewAccessEnabled = false;
+			}
+		});
 
 		if (!bViewAccessEnabled) {
 			$("#IsForcedHidden").val(true);			
@@ -281,6 +268,7 @@
 		var displayType;
 
 		if (accessControl.val() != newAccess && newAccess == "HD") {
+			iObjectsHidden = 1;
 			bResetGroupsToHidden = true;
 		}
 
@@ -307,24 +295,29 @@
 			});
 		}
 		else {
-
-			$("[id$='ViewAccess']").each(function (index) {
-				if ((this).value == "HD") {
-					iObjectsHidden += 1;
-				}
-			});
-
-			if (iObjectsHidden == 0 && $("#IsForcedHidden").val() == "true") {
-				OpenHR.modalPrompt("This definition no longer has to be hidden.", 0, "Information").then(function (answer) {
-					$("#IsForcedHidden").val(false);
-				});
-			}
-
+			checkIfDefinitionNeedsToBeHidden(iObjectsHidden);
 		}
 
 		refreshViewAccess();
 
 	}
+
+	function checkIfDefinitionNeedsToBeHidden(iObjectsAlreadyHidden) {
+
+		$(".ViewAccess").each(function (index) {
+			if ((this).innerText == "HD" || (this).value == "HD") {
+				iObjectsAlreadyHidden += 1;
+			}
+		});
+
+		if (iObjectsAlreadyHidden == 0 && $("#IsForcedHidden").val() == "true") {
+			OpenHR.modalPrompt("This definition no longer has to be hidden.", 0, "Information").then(function (answer) {
+				$("#IsForcedHidden").val(false);
+			});
+		}
+
+	}
+
 
 	function selectBaseTableFilter() {
 
@@ -601,6 +594,7 @@
 			refreshSortButtons();
 		}
 
+		checkIfDefinitionNeedsToBeHidden(0);
 		enableSaveButton();
 	}
 

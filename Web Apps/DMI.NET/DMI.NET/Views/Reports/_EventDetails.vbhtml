@@ -10,7 +10,6 @@
 		<legend class="fontsmalltitle">Calendar Events :</legend>
 
 		<div id="divEventDetails" class="stretchyfill">
-			<input type="hidden" id="CalendarEventsViewAccess" />
 			<table id="CalendarEvents"></table>
 		</div>
 
@@ -79,7 +78,7 @@
 				{ name: 'EventDesc1ColumnID', index: 'EventDesc1ColumnID', sorttype: 'int', hidden: true },
 				{ name: 'EventDesc2ColumnID', index: 'EventDesc2ColumnID', sorttype: 'int', hidden: true },
 				{ name: 'FilterName', index: 'FilterName', sorttype: 'text' },
-				{ name: 'FilterViewAccess', index: 'FilterViewAccess', hidden: true },
+				{ name: 'FilterViewAccess', index: 'FilterViewAccess', hidden: true, classes: 'ViewAccess' },
 				{ name: 'EventStartDateName', index: 'EventStartDateName', sorttype: 'text' },
 				{ name: 'EventStartSessionName', index: 'EventStartSessionName', sorttype: 'text' },
 				{ name: 'EventEndDateName', index: 'EventEndDateName', sorttype: 'text' },
@@ -154,6 +153,7 @@
 		if (thisIndex >= recordCount) { thisIndex = 0; }
 		$("#CalendarEvents").jqGrid("setSelection", ids[thisIndex], true);
 
+		checkIfDefinitionNeedsToBeHidden(0);
 	}
 
 	function removeAllEvents() {
@@ -170,6 +170,7 @@
 		}
 
 		$('#CalendarEvents').jqGrid('clearGridData');
+		checkIfDefinitionNeedsToBeHidden(0);
 	}
 
 

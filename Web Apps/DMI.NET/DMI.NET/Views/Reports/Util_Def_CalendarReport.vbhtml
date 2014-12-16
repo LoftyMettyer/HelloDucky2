@@ -10,7 +10,7 @@ End Code
 <div>
 	@Using (Html.BeginForm("util_def_calendarreport", "Reports", FormMethod.Post, New With {.id = "frmReportDefintion", .name = "frmReportDefintion"}))
 	@Html.HiddenFor(Function(m) m.ID)
-	@Html.HiddenFor(Function(m) m.Description3ViewAccess)
+	@Html.HiddenFor(Function(m) m.Description3ViewAccess, New With {.class = "ViewAccess"})
 
 	@<div id="tabs">
 		<ul>
