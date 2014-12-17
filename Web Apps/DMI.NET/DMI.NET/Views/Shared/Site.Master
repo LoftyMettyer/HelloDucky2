@@ -611,9 +611,6 @@
 
 	<div id="divthemeRoller"></div>
 	
-	<div id="divPollMessage" style="display: block;">
-		<form id="frmPollMessage" action="pollMessage"></form>
-	</div>
 
 	<div id="divSignalRMessage" style="display: block;">
 		<div id="SignalRDialogTitleContent">
