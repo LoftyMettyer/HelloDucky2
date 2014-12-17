@@ -76,7 +76,7 @@
 						<label for="SelectedColumnHeading">Heading :</label>
 						<span><input type='text' id="SelectedColumnHeading" maxlength="50" onchange="updateColumnsSelectedGrid();" /></span>
 					</div>
-					<div class="formfieldfill">
+					<div class="formfieldfill sizeOnly">
 						<label for="SelectedColumnSize">Size :</label>
 						<span><input class="" id="SelectedColumnSize" onchange="updateColumnsSelectedGrid();" /></span>
 					</div>
@@ -111,7 +111,7 @@
 								<label id="labelSelectedColumnIsGroupWithNext" for="SelectedColumnIsGroupWithNext">Group with next</label>
 							</div>
 							<div class="tablecell baseTableOnly">
-								<input class="ui-widget ui-corner-all" id="SelectedColumnIsRepeated" onchange="updateColumnsSelectedGrid();" type="checkbox">
+								<input class="ui-widget ui-corner-all" id="SelectedColumnIsRepeated" onchange="changeColumnIsRepeated();" type="checkbox">
 								<label id="labelSelectedColumnRepeatOnChild" for="SelectedColumnIsRepeated">Repeat on child records</label>
 							</div>
 						</div>
@@ -521,7 +521,7 @@
 	}
 
 	function changeColumnIsHidden() {
-		
+
 		if ($("#SelectedColumnIsHidden").is(':checked')) {
 			$('#SelectedColumnIsAverage').prop('checked', false);
 			$('#SelectedColumnIsCount').prop('checked', false);
@@ -543,6 +543,14 @@
 			$('#SelectedColumnIsHidden').prop('checked', false);
 		}
 
+		refreshcolumnPropertiesPanel();
+		updateColumnsSelectedGrid();
+	}
+
+	function changeColumnIsRepeated() {
+		if ($("#SelectedColumnIsRepeated").is(':checked')) {
+			$('#SelectedColumnIsHidden').prop('checked', false);
+		}
 		refreshcolumnPropertiesPanel();
 		updateColumnsSelectedGrid();
 	}
@@ -623,20 +631,46 @@
 			var isBaseOrParentTableColumn = (dataRow.TableID == $("#BaseTableID").val()) || (dataRow.TableID == $("#txtParent1ID").val()) || (dataRow.TableID == $("#txtParent2ID").val());
 			var isHidden = $("#SelectedColumnIsHidden").is(':checked');
 			var isGroupWithNext = $("#SelectedColumnIsGroupWithNext").is(':checked');
+			var isRepeated = $("#SelectedColumnIsRepeated").is(':checked');
 			var isSize = (dataRow.DataType == '4');
-			
-			$(".numericOnly").prop("disabled", !isNumeric || isHidden || isGroupWithNext || isReadOnly);
-			$(".cannotBeHidden").prop("disabled", isHidden || isGroupWithNext || isReadOnly);
-			$(".decimalsOnly").prop("disabled", !isDecimals || isReadOnly || isSize);
-			$(".baseTableOnly").prop("disabled", !isBaseOrParentTableColumn || !isThereChildColumns || isHidden || isReadOnly);
-			$(".canGroupWithNext").prop("disabled", isBottomRow || isHidden || isReadOnly);
-						
-			if ((checkSRPandVOC(rowId)) || isGroupWithNext || isReadOnly) {
-				$("#SelectedColumnIsHidden").prop("disabled", false);
-				$("#labelSelectedColumnIsHidden").css("color", "#000000");
-			} else {
-				$("#SelectedColumnIsHidden").prop("disabled", "disabled");
-				$("#labelSelectedColumnIsHidden").css("color", "#A59393");
+
+
+			$(".numericOnly *").prop("disabled", !isNumeric || isHidden || isGroupWithNext || isReadOnly);
+			$(".cannotBeHidden *").prop("disabled", isHidden || isGroupWithNext || isReadOnly);
+			$(".decimalsOnly *").prop("disabled", !isDecimals || isReadOnly || isHidden || isSize);
+			$(".baseTableOnly *").prop("disabled", !isBaseOrParentTableColumn || !isThereChildColumns || isHidden || isReadOnly);
+			$(".canGroupWithNext *").prop("disabled", isBottomRow || isHidden || isReadOnly);			
+			$("#SelectedColumnHeading").prop("disabled", isReadOnly || isHidden);
+			$(".sizeOnly *").prop("disabled", !isNumeric || isReadOnly || isHidden);
+
+			//If Suppress Repeated Values is checked, then Hidden and Repeat on child records should not allowed to checked
+			if (checkSRPandVOC(rowId)) {				
+				//If 'Group with next' OR 'Repeat on child records' are checked, then 'Hidden' checkbox should be disabled.
+				if (isGroupWithNext || isReadOnly || isRepeated) {
+					$("#SelectedColumnIsHidden").prop("disabled", "disabled");
+					$("#labelSelectedColumnIsHidden").css("color", "#A59393");
+				}
+				else {
+					$("#SelectedColumnIsHidden").prop("disabled", false);
+					$("#labelSelectedColumnIsHidden").css("color", "#000000");
+				}
+
+			}	else {				
+						if (checkSRPandVOC(rowId) != undefined) {							
+							$("#SelectedColumnIsHidden").prop("disabled", "disabled");
+							$("#labelSelectedColumnIsHidden").css("color", "#A59393");
+							$(".baseTableOnly *").prop("disabled", "disabled");
+						}
+						else {							
+							if (isGroupWithNext || isReadOnly || isRepeated) {
+								$("#SelectedColumnIsHidden").prop("disabled", "disabled");
+								$("#labelSelectedColumnIsHidden").css("color", "#A59393");
+							}
+							else {
+								$("#SelectedColumnIsHidden").prop("disabled", false);
+								$("#labelSelectedColumnIsHidden").css("color", "#000000");
+							}
+						}
 			}			
 
 			if (!isNumeric || isHidden || isGroupWithNext || isReadOnly) {
@@ -657,9 +691,13 @@
 				$(".canGroupWithNext").css("color", "#000000");
 			}
 
-			if (isBaseOrParentTableColumn && isThereChildColumns && !isReadOnly && !isHidden ) {
+			if (isBaseOrParentTableColumn && isThereChildColumns && !isReadOnly && !isHidden && ( checkSRPandVOC(rowId) == undefined || (checkSRPandVOC(rowId)) )  ) 
+			{				
+				$(".baseTableOnly *").prop("disabled", false);
 				$(".baseTableOnly").css("color", "#000000");
+
 			} else {
+				$(".baseTableOnly *").prop("disabled", "disabled");
 				$(".baseTableOnly").css("color", "#A59393");
 			}
 		}
@@ -671,12 +709,12 @@
 		button_disable($("#btnColumnRemoveAll")[0], !bRowSelected || isReadOnly);
 		button_disable($("#btnColumnMoveUp")[0], isTopRow || isReadOnly || (rowCount > 1));
 		button_disable($("#btnColumnMoveDown")[0], isBottomRow || isReadOnly || (rowCount > 1));
-	}
+	}	
 
 	function checkSRPandVOC(rowId) {
 		// Check to see if Suppress Repeated Values or Value On change are ticked in Sort Order tab.
 		var fThisShouldBeEnabled = true
-		var gridData = $("#SortOrders").getRowData();		
+		var gridData = $("#SortOrders").getRowData();
 		// Loop through sort orders until we get a match and check SRV and VoC
 		for (j = 0; j < gridData.length; j++) {
 			if (rowId == gridData[j].ColumnID) {
@@ -751,7 +789,7 @@
 			scrollrows: true,
 			multiselect: true,
 			beforeSelectRow: function (rowid, e) {
-				
+
 				if ($('#SelectedColumns').jqGrid('getGridParam', 'selarrrow').length == 1) {
 					updateColumnsSelectedGrid();
 				}
@@ -796,7 +834,7 @@
 
 				var rowId = $("#SelectedColumns").jqGrid('getGridParam', 'selrow');
 				var dataRow = $("#SelectedColumns").getRowData(rowId)
-				
+
 				$("#SelectedColumnHeading").val(dataRow.Heading);
 
 				$("#SelectedColumnSize").val(dataRow.Size);
