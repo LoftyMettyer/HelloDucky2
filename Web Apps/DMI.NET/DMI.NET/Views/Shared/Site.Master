@@ -107,7 +107,23 @@
 				autoOpen: false,
 				modal: true,
 				width: 500,
-				resizable: false
+				resizable: false,
+				open: function (event, ui) {
+					$(this).load('<%:url.action("about", "account")%>', function () {
+						$(this).dialog("option", "position", "center");
+						$("#About input[type=submit], input[type=button], button").button();
+						$("#About input").addClass("ui-widget ui-corner-all");
+						$("#About input").removeClass("text");
+
+						$("#About textarea").addClass("ui-widget ui-corner-tl ui-corner-bl");
+						$("#About textarea").removeClass("text");
+
+						$("#About select").addClass("ui-widget ui-corner-tl ui-corner-bl");
+						$("#About select").removeClass("text");
+						$("#About input[type=submit], input[type=button], button").removeClass("ui-corner-all");
+						$("#About input[type=submit], input[type=button], button").addClass("ui-corner-tl ui-corner-br");
+					});
+				}
 			});
 
 			$("#divCurrentUsers").dialog({
@@ -565,7 +581,7 @@
 		</div>
 	</div>
 
-	<div id="About" style="display: none;"><%Html.RenderPartial("~/views/account/about.ascx")%></div>
+	<div id="About" style="display: none;"></div>
 	<div id="divCurrentUsers" style="display: none;"><%Html.RenderPartial("~/views/account/CurrentUsers.ascx")%></div>
 
 	<div id="errorDialog" title="AJAX call failed">
