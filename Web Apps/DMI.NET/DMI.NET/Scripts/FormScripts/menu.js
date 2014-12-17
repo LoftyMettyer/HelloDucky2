@@ -5202,9 +5202,9 @@ function saveInlineRowToDatabase(rowId) {
 	var gridColumns = $("#findGridTable").jqGrid('getGridParam', 'colNames');
 	var gridModel = $("#findGridTable").jqGrid('getGridParam', 'colModel');
 	var columnValue = "";
-
+	
 	for (var i = 0; i <= gridColumns.length - 1; i++) {
-		if (gridColumns[i] != '' && gridColumns[i] != 'ID' && gridColumns[i] != 'Timestamp') {
+		if (gridColumns[i] != '' && gridColumns[i] != 'ID' && gridColumns[i] != 'Timestamp' && gridModel[i].editable == true) {
 			columnValue = gridData[gridModel[i].name];
 
 			//If the formatter is undefined then we treat the value as text
