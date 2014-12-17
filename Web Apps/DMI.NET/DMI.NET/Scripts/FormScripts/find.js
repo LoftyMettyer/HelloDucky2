@@ -475,7 +475,8 @@ function find_window_onload() {
 				});
 
 				//Enable inline editing if there is at least one editable column
-				if (thereIsAtLeastOneEditableColumn) {
+				var editLicenced = ($("#txtEditableGridGranted").val() == 1);
+				if (thereIsAtLeastOneEditableColumn && editLicenced) {
 					//Make grid editable
 					$("#findGridTable").jqGrid('inlineNav', '#pager-coldata', {
 						edit: true,

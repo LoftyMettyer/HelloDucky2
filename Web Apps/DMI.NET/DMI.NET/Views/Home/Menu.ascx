@@ -299,11 +299,11 @@
 		If objSessionContext.LoginInfo.IsSystemOrSecurityAdmin Then iNewUserGranted = 1
 		If Left(objPermission.CategoryKey, 8) = "EVENTLOG" And objPermission.IsPermitted Then iEventLogGranted = 1
 		If Left(objPermission.CategoryKey, 11) = "NINEBOXGRID" AndAlso objPermission.IsPermitted AndAlso Licence.IsModuleLicenced(SoftwareModule.NineBoxGrid) Then iNineBoxGridGranted = 1
-		If Left(objPermission.CategoryKey, 8) = "INTRANET" AndAlso objPermission.Key = "CURRENTUSERS" AndAlso objPermission.IsPermitted Then iCurrentUsersGranted = 1
+		If Left(objPermission.CategoryKey, 8) = "INTRANET" AndAlso objPermission.Key = "CURRENTUSERS" AndAlso objPermission.IsPermitted Then iCurrentUsersGranted = 1	
 	Next
-	
-	
+		
 	Dim bAbsenceEnabled = Licence.IsModuleLicenced(SoftwareModule.Absence)
+	Dim bEditableGridEnabled = Licence.IsModuleLicenced(SoftwareModule.EditableGrids)
 
 	Response.Write("<input type='hidden' id=txtAbsenceEnabled name=txtAbsenceEnabled value=" & IIf(bAbsenceEnabled, "1", "0") & ">")
 	Response.Write("<input type='hidden' id=txtCustomReportsGranted name=txtCustomReportsGranted value=" & iCustomReportsGranted & ">")
@@ -319,7 +319,8 @@
 	Response.Write("<input type='hidden' id=txtEventLogGranted name=txtEventLogGranted value=" & iEventLogGranted & ">")
 	Response.Write("<input type='hidden' id=txtNineBoxGridGranted name=txtNineboxGridGranted value=" & iNineBoxGridGranted & ">")
 	Response.Write("<input type='hidden' id=txtQuickAccessGranted name=txtQuickAccessGranted value=" & IIf(avQuickEntryMenuInfo.Count > 0, "1", "0").ToString & ">")
-		
+	Response.Write("<input type='hidden' id=txtEditableGridGranted name=txtEditableGridGranted value=" & IIf(bEditableGridEnabled, "1", "0") & ">")
+	
 	Response.Write("<input type='hidden' id=txtErrorDescription name=txtErrorDescription value=""" & sErrorDescription & """>")
 %>
 
