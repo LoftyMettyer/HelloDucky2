@@ -4047,6 +4047,12 @@
                         <Component Id="cmp27046E8A824A01653E541BA0B9A0FB41" Guid="*">
                             <File Id="fil2BDA14AA6E91288C6CC0A13DA8BEA59F" KeyPath="yes" Source="SourceDir\Scripts\officebar\winkit\first64NORM.png" />
                         </Component>
+                        <Component Id="cmp1213EDE49E743D2FE77FDD7B92E1494D" Guid="*">
+                            <File Id="filECA63E6D97DC46278958A13612DD7B5E" KeyPath="yes" Source="SourceDir\Scripts\officebar\winkit\GridEdit2DIS.png" />
+                        </Component>
+                        <Component Id="cmpDA5C72FCB70CA6A072C8E9E9352E7A79" Guid="*">
+                            <File Id="fil5E9C09C833391FE63F27C194DB950526" KeyPath="yes" Source="SourceDir\Scripts\officebar\winkit\GridEdit2HOVER.png" />
+                        </Component>
                         <Component Id="cmpE2F8D0E9B8D50E2BC2367514D5BD89C8" Guid="*">
                             <File Id="fil151FEE35854A0ABD88959FCE45F13123" KeyPath="yes" Source="SourceDir\Scripts\officebar\winkit\help64DIS.png" />
                         </Component>
@@ -4154,9 +4160,6 @@
                         </Component>
                         <Component Id="cmp89E1AEA3C349C1E2F582FF2F8F31D420" Guid="*">
                             <File Id="filB3EC189F5D9A21522ED74DA16E8DA21F" KeyPath="yes" Source="SourceDir\Scripts\officebar\winkit\Refresh64NORM.png" />
-                        </Component>
-                        <Component Id="cmp02B71236028213C301DF442CCCD76763" Guid="*">
-                            <File Id="filC256C42A13D0C7175710856E92BAAC1A" KeyPath="yes" Source="SourceDir\Scripts\officebar\winkit\registry_64NORM.png" />
                         </Component>
                         <Component Id="cmpA466A2B048DC61E06171D096CBDDEC02" Guid="*">
                             <File Id="fil8F85C8B16D5F09DF0D572CC3A9AD3492" KeyPath="yes" Source="SourceDir\Scripts\officebar\winkit\Run64DIS.png" />
@@ -4393,9 +4396,6 @@
                     </Component>
                     <Component Id="cmp4E8703206A87C8ECDC4124C784B7A942" Guid="*">
                         <File Id="fil030CBF8C646B48F9FDCE0CC4C97FAFBB" KeyPath="yes" Source="SourceDir\Views\Home\picklistSelectionMain.ascx" />
-                    </Component>
-                    <Component Id="cmp4FF5875D1DF2EF74E7C94466E374DA61" Guid="*">
-                        <File Id="fil0009C1AF0A1A99A216B35309F0D6B293" KeyPath="yes" Source="SourceDir\Views\Home\pollMessage.aspx" />
                     </Component>
                     <Component Id="cmpC38AB6DE61810E28A7576DC832A720A9" Guid="*">
                         <File Id="filBC3B52CC1B0A8297C10FA35E3885F3A5" KeyPath="yes" Source="SourceDir\Views\Home\progress.ascx" />
@@ -5877,6 +5877,8 @@
             <ComponentRef Id="cmp1151AF5755623011918BF6AAEA2E8E87" />
             <ComponentRef Id="cmp8A20870330CC7B9D85A493B846175643" />
             <ComponentRef Id="cmp27046E8A824A01653E541BA0B9A0FB41" />
+            <ComponentRef Id="cmp1213EDE49E743D2FE77FDD7B92E1494D" />
+            <ComponentRef Id="cmpDA5C72FCB70CA6A072C8E9E9352E7A79" />
             <ComponentRef Id="cmpE2F8D0E9B8D50E2BC2367514D5BD89C8" />
             <ComponentRef Id="cmp5E565FC5B84199F052B4CE91CBD40C6C" />
             <ComponentRef Id="cmpAA862DA9AE87E94FA691EACD10D47814" />
@@ -5913,7 +5915,6 @@
             <ComponentRef Id="cmp01BAAD2C47CC2589EB01E9C273459450" />
             <ComponentRef Id="cmpBB1A395B4AC609B9B3E81845AA25E0FF" />
             <ComponentRef Id="cmp89E1AEA3C349C1E2F582FF2F8F31D420" />
-            <ComponentRef Id="cmp02B71236028213C301DF442CCCD76763" />
             <ComponentRef Id="cmpA466A2B048DC61E06171D096CBDDEC02" />
             <ComponentRef Id="cmpE02AA471BE60D304A263F1344CC00840" />
             <ComponentRef Id="cmp73B50374572FC0E9715DC41617250464" />
@@ -5989,7 +5990,6 @@
             <ComponentRef Id="cmpC0E3B458D6FE1AAC9EF5EF9B59FB5123" />
             <ComponentRef Id="cmp0E95E9EF0CC7F7EC6962763CD75C48B7" />
             <ComponentRef Id="cmp4E8703206A87C8ECDC4124C784B7A942" />
-            <ComponentRef Id="cmp4FF5875D1DF2EF74E7C94466E374DA61" />
             <ComponentRef Id="cmpC38AB6DE61810E28A7576DC832A720A9" />
             <ComponentRef Id="cmp5723B7485B0F3C585B476EFF7DB07AC3" />
             <ComponentRef Id="cmp35F9C445A085C313BD60B3A24194CF0F" />
