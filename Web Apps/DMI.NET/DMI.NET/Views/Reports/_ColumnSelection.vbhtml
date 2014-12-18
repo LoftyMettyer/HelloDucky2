@@ -521,7 +521,7 @@
 	}
 
 	function changeColumnIsHidden() {
-
+		
 		if ($("#SelectedColumnIsHidden").is(':checked')) {
 			$('#SelectedColumnIsAverage').prop('checked', false);
 			$('#SelectedColumnIsCount').prop('checked', false);
@@ -633,8 +633,8 @@
 			var isGroupWithNext = $("#SelectedColumnIsGroupWithNext").is(':checked');
 			var isRepeated = $("#SelectedColumnIsRepeated").is(':checked');
 			var isSize = (dataRow.DataType == '4');
-
-
+			
+						
 			$(".numericOnly *").prop("disabled", !isNumeric || isHidden || isGroupWithNext || isReadOnly);
 			$(".cannotBeHidden *").prop("disabled", isHidden || isGroupWithNext || isReadOnly);
 			$(".decimalsOnly *").prop("disabled", !isDecimals || isReadOnly || isHidden || isSize);
@@ -651,8 +651,8 @@
 					$("#labelSelectedColumnIsHidden").css("color", "#A59393");
 				}
 				else {
-					$("#SelectedColumnIsHidden").prop("disabled", false);
-					$("#labelSelectedColumnIsHidden").css("color", "#000000");
+				$("#SelectedColumnIsHidden").prop("disabled", false);
+				$("#labelSelectedColumnIsHidden").css("color", "#000000");
 				}
 
 			}	else {				
@@ -663,9 +663,9 @@
 						}
 						else {							
 							if (isGroupWithNext || isReadOnly || isRepeated) {
-								$("#SelectedColumnIsHidden").prop("disabled", "disabled");
-								$("#labelSelectedColumnIsHidden").css("color", "#A59393");
-							}
+				$("#SelectedColumnIsHidden").prop("disabled", "disabled");
+				$("#labelSelectedColumnIsHidden").css("color", "#A59393");
+			}			
 							else {
 								$("#SelectedColumnIsHidden").prop("disabled", false);
 								$("#labelSelectedColumnIsHidden").css("color", "#000000");
@@ -709,23 +709,21 @@
 		button_disable($("#btnColumnRemoveAll")[0], !bRowSelected || isReadOnly);
 		button_disable($("#btnColumnMoveUp")[0], isTopRow || isReadOnly || (rowCount > 1));
 		button_disable($("#btnColumnMoveDown")[0], isBottomRow || isReadOnly || (rowCount > 1));
-	}	
+	}
 
 	function checkSRPandVOC(rowId) {
 		// Check to see if Suppress Repeated Values or Value On change are ticked in Sort Order tab.
 		var fThisShouldBeEnabled = true
-		var gridData = $("#SortOrders").getRowData();
+		var gridData = $("#SortOrders").getRowData();		
 		// Loop through sort orders until we get a match and check SRV and VoC
 		for (j = 0; j < gridData.length; j++) {
 			if (rowId == gridData[j].ColumnID) {
 				if (gridData[j].SuppressRepeated.toUpperCase() == "TRUE" || gridData[j].ValueOnChange.toUpperCase() == "TRUE") {
-					fThisShouldBeEnabled = false;
-					return fThisShouldBeEnabled;
-				} else {
-					return fThisShouldBeEnabled;
+					return fThisShouldBeEnabled = false;					
 				}
 			}
 		}
+		return fThisShouldBeEnabled;
 	}
 
 	function updateColumnsSelectedGrid() {
@@ -789,7 +787,7 @@
 			scrollrows: true,
 			multiselect: true,
 			beforeSelectRow: function (rowid, e) {
-
+				
 				if ($('#SelectedColumns').jqGrid('getGridParam', 'selarrrow').length == 1) {
 					updateColumnsSelectedGrid();
 				}
@@ -834,7 +832,7 @@
 
 				var rowId = $("#SelectedColumns").jqGrid('getGridParam', 'selrow');
 				var dataRow = $("#SelectedColumns").getRowData(rowId)
-
+				
 				$("#SelectedColumnHeading").val(dataRow.Heading);
 
 				$("#SelectedColumnSize").val(dataRow.Size);

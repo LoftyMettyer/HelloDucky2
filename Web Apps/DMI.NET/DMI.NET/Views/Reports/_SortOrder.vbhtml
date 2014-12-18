@@ -142,82 +142,69 @@
 					editSortSorder(rowID);
 				},
 				onSelectRow: function (id) {
-					refreshSortButtons();
-					$("#SortOrders").find('input[type=checkbox]').each(function () {
-						$(this).change(function () {							
-							CheckBoxClick($(this));
-							enableSaveButton();
-						});
-					});
+					refreshSortButtons();					
+					CheckBoxClick();
+					enableSaveButton();
 				},
-				afterInsertRow: function (rowID) {
-
-					$("#SortOrders").find('input[type=checkbox]').each(function () {
-						$(this).change(function () {							
-							CheckBoxClick($(this));
-							enableSaveButton();
-						});
-					});
+				afterInsertRow: function (rowID) {										
+					enableSaveButton();
 				},
 				loadComplete: function (data) {
-
 					if ('@Model.ReportType' == '@UtilityType.utlCustomReport') {
 						$(this).showCol("BreakOnChange");
 						$(this).showCol("PageOnChange");
 						$(this).showCol("ValueOnChange");
 						$(this).showCol("SuppressRepeated");
 					}
-
 					var topID = $("#SortOrders").getDataIDs()[0]
 					$("#SortOrders").jqGrid("setSelection", topID);
 				}
 			});
 		}
 
-		function CheckBoxClick(obj) {
+		function CheckBoxClick() {
+			$("#SortOrders").find('input[type=checkbox]').each(function () {
+				$(this).change(function () {
+					var colid = $(this).parents('tr:last').attr('id');
+					var PageOnChangeColumn = $(this).parents('td').attr('aria-describedby') == "SortOrders_PageOnChange";
+					var BreakOnChangeColumn = $(this).parents('td').attr('aria-describedby') == "SortOrders_BreakOnChange";
+					highlightThisRow(colid, $("#SortOrders"));
+					
+					if ($(this).is(':checked')) {
+						var currentRowData = $("#SortOrders").getRowData(colid);
+						var colData = $("#SelectedColumns").getRowData();
 
-			var colid = obj.parents('tr:last').attr('id');
-			var PageOnChangeColumn = $(obj).parents('td').attr('aria-describedby') != "SortOrders_PageOnChange";
-			var BreakOnChangeColumn = $(obj).parents('td').attr('aria-describedby') != "SortOrders_BreakOnChange";
-
-			if (obj.is(':checked')) {
-				var currentRowData = $("#SortOrders").getRowData(colid);
-				var colData = $("#SelectedColumns").getRowData();				
-				
-				for (var i = 0; i < colData.length; i++) {
-					if ((colData[i].ID == currentRowData.ColumnID)) {
-						if (colData[i].IsHidden.toUpperCase() == "TRUE") {
-							chkCol = true;
-							break;
-						} else {
-							chkCol = false;
-							break;
-						}
-
-						// Validates that either PageOnChange or BreakOnChange is checked but not both
-						if(validatePageAndBreakOnChange(colid, $(this).parents('td').attr('aria-describedby')) == false)
-						{
+						if ((PageOnChangeColumn && currentRowData.BreakOnChange.toUpperCase() == "TRUE") || (BreakOnChangeColumn && currentRowData.PageOnChange.toUpperCase() == "TRUE")) {
+							// Validates that either PageOnChange or BreakOnChange is checked but not both
 							OpenHR.modalMessage("You cannot select both 'Break on Change' and 'Page on Change' for the same column.");
 							$(this).prop('checked', false);
 						}
+
+						for (var i = 0; i < colData.length; i++) {
+							if ((colData[i].ID == currentRowData.ColumnID)) {
+								if ((colData[i].IsHidden.toUpperCase() == "TRUE") && !PageOnChangeColumn && !BreakOnChangeColumn) {
+									// Hidden column
+									OpenHR.modalMessage("This column is marked as hidden in the 'Columns / Calculated Selected' section under Columns Tab.");
+									$(this).prop('checked', false);
+									break;
+								} else {
+									// Tick the order chkbox without asking as its not hidden							
+									$(this).prop('checked', true);
+									break;
+								}
+							}		
+						}
 					}
-				}
+				});
+			});
+		}		
 
-				if (chkCol && PageOnChangeColumn && BreakOnChangeColumn) {
-					// Tell the user this column is hidden											
-					OpenHR.modalMessage("This column is marked as hidden in the 'Columns / Calculated Selected' section under Columns Tab.");
-					obj.prop('checked', false);
-				} else {
-					// Tick the order chkbox without asking as its not hidden									
-					obj.prop('checked', true);					
-				}				
-			}
-
-			var topID = $("#SelectedColumns").getDataIDs()[0]
-			$('#SelectedColumns').jqGrid('resetSelection');
-			$("#SelectedColumns").jqGrid('setSelection', topID);
+		function highlightThisRow(rowId, obj) {
+			// Highlight the rowID in the grid obj						
+			obj.jqGrid('resetSelection');
+			obj.jqGrid('setSelection', rowId);
 		}
-		
+
 		// Validates that either PageOnChange or BreakOnChange is checked but not both
 		function validatePageAndBreakOnChange(colid, checkedColumnName) {
 			var gridData = $("#SortOrders").getRowData(colid);
