@@ -647,7 +647,7 @@
 			if (checkSRPandVOC(rowId)) {				
 				//If 'Group with next' OR 'Repeat on child records' are checked, then 'Hidden' checkbox should be disabled.
 				if (isGroupWithNext || isReadOnly || isRepeated) {
-					$("#SelectedColumnIsHidden").prop("disabled", "disabled");
+					$("#SelectedColumnIsHidden").prop("disabled", true);
 					$("#labelSelectedColumnIsHidden").css("color", "#A59393");
 				}
 				else {
@@ -657,13 +657,13 @@
 
 			}	else {				
 						if (checkSRPandVOC(rowId) != undefined) {							
-							$("#SelectedColumnIsHidden").prop("disabled", "disabled");
+							$("#SelectedColumnIsHidden").prop("disabled",true);
 							$("#labelSelectedColumnIsHidden").css("color", "#A59393");
-							$(".baseTableOnly *").prop("disabled", "disabled");
+							$(".baseTableOnly *").prop("disabled", true);
 						}
 						else {							
 							if (isGroupWithNext || isReadOnly || isRepeated) {
-				$("#SelectedColumnIsHidden").prop("disabled", "disabled");
+				$("#SelectedColumnIsHidden").prop("disabled", true);
 				$("#labelSelectedColumnIsHidden").css("color", "#A59393");
 			}			
 							else {
@@ -697,7 +697,7 @@
 				$(".baseTableOnly").css("color", "#000000");
 
 			} else {
-				$(".baseTableOnly *").prop("disabled", "disabled");
+				$(".baseTableOnly *").prop("disabled", true);
 				$(".baseTableOnly").css("color", "#A59393");
 			}
 		}
