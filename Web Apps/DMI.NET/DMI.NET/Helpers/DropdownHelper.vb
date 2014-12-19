@@ -104,8 +104,11 @@ Namespace Helpers
 			builder.MergeAttribute("id", fullHtmlFieldName)
 			builder.MergeAttributes(objAttributes)
 
+			'In calendar report region table should display 'Default' for base table
 			If filter.AddNone Then
 				content.AppendFormat("<option value=0 data-datatype={1} data-decimals=0 data-lookuptableID=0 {0}>None</option>", IIf(bindValue = 0, "selected", ""), CInt(ColumnDataType.sqlUnknown))
+			ElseIf filter.AddDefault Then
+				content.AppendFormat("<option value=0 data-datatype={1} data-decimals=0 data-lookuptableID=0 {0}>Default</option>", IIf(bindValue = 0, "selected", ""), CInt(ColumnDataType.sqlUnknown))
 			End If
 
 			Dim iParent1 As Integer

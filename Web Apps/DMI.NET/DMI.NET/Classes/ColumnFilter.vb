@@ -8,6 +8,7 @@ Namespace Classes
 		Public DataType As ColumnDataType = ColumnDataType.sqlUnknown
 		Public Size As Integer = 0
 		Public AddNone As Boolean = False
+		Public AddDefault As Boolean = False
 		Public ShowFullName As Boolean = False
 		Public IncludeParents As Boolean = False
 		Public IsNumeric As Boolean

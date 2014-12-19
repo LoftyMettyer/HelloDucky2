@@ -405,7 +405,16 @@
 				var optionDescription1 = "<option value='0'>None</option>";
 				var optionDescription2 = "<option value='0'>None</option>";
 				var optionDescription3 = "<option value='0'>None</option>";
-				var optionRegionID = "<option value='0'>None</option>";
+				
+				// Region table should display 'Default' for base table
+				var tableID = $("#BaseTableID option:selected").val();
+				var optionRegionID;
+				if (tableID == '@Model.BaseTableID') {					
+					optionRegionID = "<option value='0'>Default</option>";
+				}
+				else{
+					optionRegionID = "<option value='0'>None</option>";
+				}
 
 				var options = '';
 				for (var i = 0; i < json.length; i++) {

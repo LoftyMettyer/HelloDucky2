@@ -9,113 +9,135 @@ End Code
 
 <div>
 	@Using (Html.BeginForm("util_def_calendarreport", "Reports", FormMethod.Post, New With {.id = "frmReportDefintion", .name = "frmReportDefintion"}))
-	@Html.HiddenFor(Function(m) m.ID)
-	@Html.HiddenFor(Function(m) m.Description3ViewAccess, New With {.class = "ViewAccess"})
+		@Html.HiddenFor(Function(m) m.ID)
+		@Html.HiddenFor(Function(m) m.Description3ViewAccess, New With {.class = "ViewAccess"})
 
-	@<div id="tabs">
-		<ul>
-			<li><a href="#tabs-1">Definition</a></li>
-			<li><a href="#report_definition_tab_eventdetails">Event Details</a></li>
-			<li><a href="#report_definition_tab_reportdetails">Report Details</a></li>
-			<li><a href="#report_definition_tab_order">Sort Order</a></li>
-			<li><a href="#report_definition_tab_output">Output</a></li>
-		</ul>
+		@<div id="tabs">
+			<ul>
+				<li><a href="#tabs-1">Definition</a></li>
+				<li><a href="#report_definition_tab_eventdetails">Event Details</a></li>
+				<li><a href="#report_definition_tab_reportdetails">Report Details</a></li>
+				<li><a href="#report_definition_tab_order">Sort Order</a></li>
+				<li><a href="#report_definition_tab_output">Output</a></li>
+			</ul>
 
-	 	<div id="tabs-1">
-	 		@Code
-		 Html.RenderPartial("_Definition", Model)
-	 	End Code
+			<div id="tabs-1">
+				@Code
+				Html.RenderPartial("_Definition", Model)
+				End Code
 
-			<fieldset class="width50">
-				<legend class="fontsmalltitle">Report Options :</legend>
+				<fieldset class="width50">
+					<legend class="fontsmalltitle">Report Options :</legend>
 
-				<fieldset>
-					@Html.LabelFor(Function(m) m.Description1ID)
-					<div class="width70 floatright">
-						@Html.ColumnDropdownFor(Function(m) m.Description1ID, New ColumnFilter() With {.TableID = Model.BaseTableID, .AddNone = True}, New With {.class = "enableSaveButtonOnComboChange"})
-					</div> 
-				</fieldset>
-
-				<fieldset>
-					@Html.LabelFor(Function(m) m.Description2ID)
-					<div class="width70 floatright">
-					@Html.ColumnDropdownFor(Function(m) m.Description2ID, New ColumnFilter() With {.TableID = Model.BaseTableID, .AddNone = True}, New With {.class = "enableSaveButtonOnComboChange"})
-					</div>
-				</fieldset>
-
-				<fieldset>
-					<div id="" class="floatleft">
-						@Html.LabelFor(Function(m) m.Description3ID)
-						@Html.HiddenFor(Function(m) m.Description3ID)
-					</div>
-					<div class="width70 floatright">
-						<input class="floatright" type="button" id="cmdDescription3" value="..." onclick="selectDescription3()" />
-						<div class="ellipsistextbox">
-							<input class="floatleft" type="text" id="txtDescription3" value="@Model.Description3Name" disabled />
+					<fieldset>
+						@Html.LabelFor(Function(m) m.Description1ID)
+						<div class="width70 floatright">
+							@Html.ColumnDropdownFor(Function(m) m.Description1ID, New ColumnFilter() With {.TableID = Model.BaseTableID, .AddNone = True}, New With {.class = "enableSaveButtonOnComboChange", .onchange = "validateDescriptions()"})
 						</div>
-					</div>
-					<input type="hidden" id="txtBasePicklistID" name="picklistID" value="@Model.PicklistID" />
-				</fieldset>
+					</fieldset>
+
+					<fieldset>
+						@Html.LabelFor(Function(m) m.Description2ID)
+						<div class="width70 floatright">
+							@Html.ColumnDropdownFor(Function(m) m.Description2ID, New ColumnFilter() With {.TableID = Model.BaseTableID, .AddNone = True}, New With {.class = "enableSaveButtonOnComboChange", .onchange = "validateDescriptions()"})
+						</div>
+					</fieldset>
+
+					<fieldset>
+						<div id="" class="floatleft">
+							@Html.LabelFor(Function(m) m.Description3ID)
+							@Html.HiddenFor(Function(m) m.Description3ID)
+						</div>
+						<div class="width70 floatright">
+							<input class="floatright" type="button" id="cmdDescription3" value="..." onclick="selectDescription3()" />
+							<div class="ellipsistextbox">
+								<input class="floatleft" type="text" id="txtDescription3" value="@Model.Description3Name" disabled />
+							</div>
+						</div>
+						<input type="hidden" id="txtBasePicklistID" name="picklistID" value="@Model.PicklistID" />
+					</fieldset>
 
 
-				<fieldset>
+					<fieldset>					
 						@Html.LabelFor(Function(m) m.RegionID)
-					<div class="width70 floatright">
-						@Html.ColumnDropdownFor(Function(m) m.RegionID, New ColumnFilter() With {.TableID = Model.BaseTableID, .AddNone = True, .DataType = ColumnDataType.sqlVarChar}, New With {.id = "cboRegionID", .class = "width100 floatright enableSaveButtonOnComboChange"})
-					</div>
+						<div class="width70 floatright">
+							@Html.ColumnDropdownFor(Function(m) m.RegionID, New ColumnFilter() With {.TableID = Model.BaseTableID, .AddDefault = True, .DataType = ColumnDataType.sqlVarChar}, New With {.id = "cboRegionID", .class = "selectRegionID width100 floatright enableSaveButtonOnComboChange", .onchange = "regionChange()"})
+						</div>
+					</fieldset>
+
+					<fieldset>
+						@Html.LabelFor(Function(m) m.Separator)
+						<div class="width70 floatright">
+							@Html.DropDownList("Separator", New SelectList(New List(Of String)() From {"None", "Space", ",", ".", "-", ":", ";", "/", "\", "#", "~", "^"}), New With {.class = "enableSaveButtonOnComboChange"})
+							@Html.HiddenFor(Function(m) m.Separator, New With {.id = "ddlSeparator"})
+							@Html.CheckBoxFor(Function(m) m.GroupByDescription, New With {.id = "chkGroupByDescription", .onclick = "selectGroupByDescription()"})
+							@Html.LabelFor(Function(m) m.GroupByDescription)							
+						</div>
+					</fieldset>
 				</fieldset>
+			</div>
 
-				<fieldset>
-					@Html.LabelFor(Function(m) m.Separator)
-					<div class="width70 floatright">
-						@Html.DropDownList("Separator", New SelectList(New List(Of String)() From {"None", "Space", ",", ".", "-", ":", ";", "/", "\", "#", "~", "^"}), New With {.class = "enableSaveButtonOnComboChange"})
-						@Html.CheckBoxFor(Function(m) m.GroupByDescription, New With {.id = "chkGroupByDescription", .onclick = "selectGroupByDescription()"})
-						@Html.LabelFor(Function(m) m.GroupByDescription)
-					</div>
-				</fieldset>
-			</fieldset>
-	 </div>
+			<div id="report_definition_tab_eventdetails">
+				@Code
+				Html.RenderPartial("_EventDetails", Model)
+				End Code
+			</div>
 
-		<div id="report_definition_tab_eventdetails">
-			@Code
-			 Html.RenderPartial("_EventDetails", Model)
-			End Code
-		</div>
+			<div id="report_definition_tab_reportdetails">
+				@Code
+				Html.RenderPartial("_ReportDetails", Model)
+				End Code
+			</div>
 
-		<div id="report_definition_tab_reportdetails">
-			@Code
-			Html.RenderPartial("_ReportDetails", Model)
-			End Code
-		</div>
+			<div id="report_definition_tab_order">
+				@Code
+				Html.RenderPartial("_SortOrder", Model)
+				End Code
+			</div>
 
-		<div id="report_definition_tab_order">
-			@Code
-			Html.RenderPartial("_SortOrder", Model)
-			End Code
-		</div>
-
-		<div id="report_definition_tab_output">
-			@Code
+			<div id="report_definition_tab_output">
+				@Code
 				Html.RenderPartial("_Output", Model.Output)
-			End Code
+				End Code
+			</div>
 		</div>
-	</div>
 	End Using
 </div>
 
 <form action="default_Submit" method="post" id="frmGoto" name="frmGoto" style="visibility: hidden; display: none">
 	@Code
-			Html.RenderPartial("~/Views/Shared/gotoWork.ascx")
+		Html.RenderPartial("~/Views/Shared/gotoWork.ascx")
 	End Code
 </form>
 
 <script type="text/javascript">
 
 	function selectGroupByDescription() {
-
 		var bSelected = $("#chkGroupByDescription").prop('checked');
-		combo_disable($("#cboRegionID")[0], bSelected);
+		combo_disable((".selectRegionID"), bSelected);
+	}
 
+	function regionChange() {
+
+		var regionval = $("#RegionID").val();
+		if (regionval == 0) {
+			combo_disable("#chkGroupByDescription", false);
+		}
+		else {
+			combo_disable("#chkGroupByDescription", true);
+		};
+	}
+
+	//'Seperator' should only enable if at least 2 descriptions have been entered.
+	function validateDescriptions() {
+		if (($("#Description1ID").val() == 0) || ($("#Description2ID").val() == 0)) {			
+			$("#Separator").prop('disabled', true);
+			$("#Separator").val("None");
+			$('#ddlSeparator').val("None");			
+		}
+		else {
+			$("#Separator").prop('disabled', false);
+		}
 	}
 
 	function selectDescription3() {
@@ -152,7 +174,7 @@ End Code
 					var gridHeight = workPageHeight - gridTopPos - tabHeight - marginHeight;
 					$("#CalendarEvents").jqGrid('setGridHeight', gridHeight);
 				}
-				if (ui.newTab.text() == "Sort Order") {					
+				if (ui.newTab.text() == "Sort Order") {
 					//resize the Event Details grid to fit
 					var workPageHeight = $('#workframeset').height();
 					var gridTopPos = $('#divSortOrderDiv').position().top;
@@ -172,6 +194,7 @@ End Code
 		$('#description, #Name').css('width', $('#Description1ID').width());
 
 		selectGroupByDescription();
+		validateDescriptions();
 		button_disable($("#btnSortOrderAdd")[0], isDefinitionReadOnly());
 
 	});
