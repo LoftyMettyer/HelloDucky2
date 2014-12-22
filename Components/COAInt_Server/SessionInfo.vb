@@ -435,7 +435,6 @@ Public Class SessionInfo
 			' If the user is NOT a 'system manager' or 'security manager'
 			' read the table permissions from the server.
 			sSQL = "exec spASRIntAllTablePermissions '" & Replace(LoginInfo.Username, "'", "''") & "'"
-
 			dtInfo = objDataAccess.GetDataTable(sSQL, CommandType.Text)
 
 			colTablePermissions = New List(Of TablePermission)
@@ -444,10 +443,6 @@ Public Class SessionInfo
 				objTablePermission.Name = objRow("Name").ToString()
 				objTablePermission.Action = CInt(objRow("Action"))
 				objTablePermission.TableID = CInt(objRow("TableID"))
-				colTablePermissions.Add(objTablePermission)
-			Next
-
-			For Each objTablePermission In colTablePermissions
 
 				objTableView = Nothing
 
@@ -475,6 +470,9 @@ Public Class SessionInfo
 							objTableView.AllowUpdate = True
 					End Select
 				End If
+
+				colTablePermissions.Add(objTablePermission)
+
 			Next
 		End If
 

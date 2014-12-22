@@ -69,11 +69,11 @@ End Enum
 
 'CrossTabTypes for Crosstabs and Nine Box Grids
 Public Enum CrossTabType
-	cttNormal = 0
-	cttTurnover = 1
-	cttStability = 2
-	cttAbsenceBreakdown = 3
-	ctt9GridBox = 4
+        cttNormal = 0
+        cttTurnover = 1
+        cttStability = 2
+        cttAbsenceBreakdown = 3
+        ctt9GridBox = 4
 End Enum
 
 Public Enum AccessModes
@@ -105,6 +105,7 @@ Public Enum LockTypes
   lckSaving = 1
   lckManual = 2
   lckReadWrite = 3
+  lckSaveRequest = 4
 End Enum
 
 

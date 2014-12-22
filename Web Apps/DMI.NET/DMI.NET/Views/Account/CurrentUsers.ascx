@@ -23,7 +23,7 @@
 
 		var licence = $.connection['LicenceHub'];
 
-		licence['client'].currentUserList = function (userList) {
+		licence['client'].CurrentUserList = function (userList) {
 
 			$("#currentLoggedInUsers").jqGrid('GridUnload');
 

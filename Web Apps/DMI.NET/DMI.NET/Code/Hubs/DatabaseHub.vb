@@ -128,7 +128,7 @@ Namespace Code.Hubs
 
 				Dim dt As New DataTable()
 
-				Dim cmd As New SqlCommand("SELECT Priority, Username FROM dbo.ASRSysLock WHERE Priority IN (1,2) ", Connection)
+				Dim cmd As New SqlCommand(String.Format("SELECT Priority, Username FROM dbo.ASRSysLock WHERE Priority <> {0} ", CInt(LockPriority.ReadWrite)), Connection)
 				cmd.CommandType = CommandType.Text
 				cmd.Notification = Nothing
 
@@ -138,6 +138,7 @@ Namespace Code.Hubs
 				Dim iPriority As LockPriority
 				Dim sMessage As String = ""
 				Dim sMessageFrom As String = ""
+				Dim bForceLogout As Boolean = False
 
 				If Connection.State = ConnectionState.Closed Then
 					Connection.Open()
@@ -146,28 +147,42 @@ Namespace Code.Hubs
 				dt.Load(cmd.ExecuteReader())
 				For Each objRow As DataRow In dt.Rows
 					iPriority = CType(objRow("Priority"), LockPriority)
+
+					SystemLockStatus = iPriority
+
+					Select Case SystemLockStatus
+
+						Case LockPriority.Manual
+							objDataAccess.ExecuteSP("spASRIntGetSetting" _
+									, New SqlParameter("psSection", SqlDbType.VarChar, -1) With {.Value = "messaging"} _
+									, New SqlParameter("psKey", SqlDbType.VarChar, -1) With {.Value = "lockmessage"} _
+									, New SqlParameter("psDefault", SqlDbType.VarChar, -1) With {.Value = "A system administrator has locked the database."} _
+									, New SqlParameter("pfUserSetting", SqlDbType.Bit) With {.Value = False} _
+									, prmResult)
+							LockMessage = prmResult.Value.ToString
+
+						Case LockPriority.SaveRequest
+							LockMessage = "A database system save is in progress."
+							bForceLogout = True
+
+						Case LockPriority.Saving
+							LockMessage = "A database system save is in progress."
+							SendMessage("System Administrator", LockMessage, True, True)
+							bForceLogout = True
+
+						Case LockPriority.Manual
+							LockMessage = "A system administrator has locked the database."
+							bForceLogout = True
+
+						Case Else
+							bForceLogout = False
+
+					End Select
+
 				Next
 
-				SystemLockStatus = iPriority
+				ToggleLoginButton(bForceLogout, LockMessage)
 
-				If SystemLockStatus = LockPriority.Manual Then
-					objDataAccess.ExecuteSP("spASRIntGetSetting" _
-							, New SqlParameter("psSection", SqlDbType.VarChar, -1) With {.Value = "messaging"} _
-							, New SqlParameter("psKey", SqlDbType.VarChar, -1) With {.Value = "lockmessage"} _
-							, New SqlParameter("psDefault", SqlDbType.VarChar, -1) With {.Value = "A system administrator has locked the database."} _
-							, New SqlParameter("pfUserSetting", SqlDbType.Bit) With {.Value = False} _
-							, prmResult)
-					LockMessage = prmResult.Value.ToString
-
-				ElseIf SystemLockStatus = LockPriority.Saving Then
-					LockMessage = "A database system save is in progress."
-
-				Else
-					LockMessage = "A system administrator has locked the database."
-
-				End If
-
-				ToggleLoginButton(Not SystemLockStatus = LockPriority.None, LockMessage)
 
 			Catch ex As Exception
 				Throw

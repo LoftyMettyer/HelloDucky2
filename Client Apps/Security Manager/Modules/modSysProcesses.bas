@@ -1,7 +1,7 @@
 Attribute VB_Name = "modSysProcesses"
 Option Explicit
 
-Public Function CurrentUsersPopulate(grdTemp As SSDBGrid, Optional strUsersToLogOut As String) As Boolean
+Public Function CurrentUsersPopulate(grdTemp As SSDBGrid, strUsersToLogOut As String, ByRef WebUserCount As Integer) As Boolean
 
   Dim rsUsers As New ADODB.Recordset
   Dim sSQL As String
@@ -13,6 +13,7 @@ Public Function CurrentUsersPopulate(grdTemp As SSDBGrid, Optional strUsersToLog
 
   On Local Error GoTo LocalErr
 
+  WebUserCount = 0
   sSQL = "EXEC spASRGetCurrentUsers"
   rsUsers.Open sSQL, gADOCon, adOpenStatic, adLockReadOnly
 
@@ -35,6 +36,11 @@ Public Function CurrentUsersPopulate(grdTemp As SSDBGrid, Optional strUsersToLog
       End If
     End If
 
+    ' Count the web users
+    If rsUsers!program_name = "OpenHR Web" Then
+      WebUserCount = WebUserCount + 1
+    End If
+      
     rsUsers.MoveNext
   Loop
 

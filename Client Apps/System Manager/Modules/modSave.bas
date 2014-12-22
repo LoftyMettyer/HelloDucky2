@@ -114,7 +114,9 @@ Function SaveChanges(Optional pfRefreshDatabase As Boolean) As Boolean
   ' Check there are no other users in the system
   If fOK Then
     fOK = SaveChanges_LogoutCheck(True)
-    If Not fOK Then
+    If fOK Then
+      LockDatabase (lckSaving)
+    Else
       MsgBox "Save process cancelled.", vbOKOnly + vbExclamation, Application.Name
     End If
     gobjProgress.Visible = fOK
@@ -2066,14 +2068,14 @@ Private Function UpdateLockCheck() As Boolean
   
   If Not (rsTemp.BOF And rsTemp.EOF) Then
     'Ignore users own manual lock
-    If LCase(gsUserName) = LCase(rsTemp!userName) And rsTemp!Priority = lckManual Then
+    If LCase(gsUserName) = LCase(rsTemp!UserName) And rsTemp!Priority = lckManual Then
       rsTemp.MoveNext
     End If
     
     If Not (rsTemp.BOF And rsTemp.EOF) Then
   
       'If not locked by current app then can we get read only access...
-      strLockDetails = "User :  " & rsTemp!userName & vbNewLine & _
+      strLockDetails = "User :  " & rsTemp!UserName & vbNewLine & _
                        "Date/Time :  " & rsTemp!Lock_Time & vbNewLine & _
                        "Machine :  " & rsTemp!HostName & vbNewLine & _
                        "Type :  " & rsTemp!Description

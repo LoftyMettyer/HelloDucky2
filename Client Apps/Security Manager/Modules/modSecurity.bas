@@ -963,18 +963,18 @@ Function ApplyChanges() As Boolean
   For iCount = 0 To (Forms.Count - 1)
       Forms(iCount).Enabled = False
   Next iCount
-  
-  
+    
   'MH20010410
   If fOK Then
     DoEvents
     fOK = ApplyChanges_LogoutCheck
-    If Not fOK Then
+    If fOK Then
+      LockDatabase (lckSaving)
+    Else
       MsgBox "Save process cancelled.", vbOKOnly + vbExclamation, Application.Name
     End If
   End If
-  
-  
+   
   OutputCurrentProcess "Start of save process", True
   
   If fOK Then

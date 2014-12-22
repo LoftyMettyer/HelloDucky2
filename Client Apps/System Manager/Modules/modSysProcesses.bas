@@ -3,7 +3,7 @@ Option Explicit
 
 Public glngProcessMethod As SystemMgr.ProcessAdminConfig
 
-Public Function CurrentUsersPopulate(grdTemp As SSDBGrid, Optional strUsersToLogOut As String) As Boolean
+Public Function CurrentUsersPopulate(grdTemp As SSDBGrid, strUsersToLogOut As String, ByRef WebUserCount As Integer) As Boolean
 
   Dim rsUsers As New ADODB.Recordset
   Dim sSQL As String
@@ -15,6 +15,7 @@ Public Function CurrentUsersPopulate(grdTemp As SSDBGrid, Optional strUsersToLog
 
   On Error GoTo LocalErr
 
+  WebUserCount = 0
   sSQL = "EXEC spASRGetCurrentUsers"
   rsUsers.Open sSQL, gADOCon, adOpenStatic, adLockReadOnly
 
@@ -34,6 +35,11 @@ Public Function CurrentUsersPopulate(grdTemp As SSDBGrid, Optional strUsersToLog
          LCase(sProgName) <> LCase(Trim(App.ProductName)) Or _
          LCase(sLoginName) <> LCase(Trim(gsUserName)) Then
         grdTemp.AddItem sLoginName & vbTab & sHostName & vbTab & sProgName & vbTab & sSPID
+      End If
+
+      ' Count the web users
+      If rsUsers!program_name = "OpenHR Web" Then
+        WebUserCount = WebUserCount + 1
       End If
 
     End If

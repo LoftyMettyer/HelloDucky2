@@ -90,6 +90,7 @@ Public Enum LockTypes
   lckSaving = 1
   lckManual = 2
   lckReadWrite = 3
+  lckSaveRequest = 4
 End Enum
 
 ' Expression Type constants

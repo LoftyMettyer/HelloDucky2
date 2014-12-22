@@ -3,7 +3,7 @@ Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
 Begin VB.Form frmViewCurrentUsers 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "View Current Users"
-   ClientHeight    =   4650
+   ClientHeight    =   4950
    ClientLeft      =   45
    ClientTop       =   330
    ClientWidth     =   9210
@@ -23,10 +23,18 @@ Begin VB.Form frmViewCurrentUsers
    LockControls    =   -1  'True
    MaxButton       =   0   'False
    MinButton       =   0   'False
-   ScaleHeight     =   4650
+   ScaleHeight     =   4950
    ScaleWidth      =   9210
    ShowInTaskbar   =   0   'False
    StartUpPosition =   1  'CenterOwner
+   Begin VB.CheckBox chkKillWebUsers 
+      Caption         =   "&Forcibly disconnect all web users"
+      Height          =   330
+      Left            =   105
+      TabIndex        =   17
+      Top             =   4590
+      Width           =   3315
+   End
    Begin VB.CommandButton cmdSendMessage 
       Caption         =   "Send &Message"
       Enabled         =   0   'False
@@ -261,11 +269,21 @@ Private mblnSaving As Boolean
 Private mstrUsersToLogOut As String
 Private mblnCancelled As Boolean
 Private mintLockType As LockTypes
+Private mbKillWebUsers As Boolean
+Private mintWebUserCount As Integer
 
+Private Sub CheckEnableSave()
+  cmdSave.Enabled = (grdUsers.Rows = 0 Or _
+        (chkASRDevBypass.Visible = True And chkASRDevBypass.Value = vbChecked) Or _
+        (chkKillWebUsers.Value = vbChecked And mintWebUserCount = grdUsers.Rows))
+End Sub
 
 Private Sub chkASRDevBypass_Click()
-  cmdSave.Enabled = (grdUsers.Rows = 0 Or _
-        (chkASRDevBypass.Visible = True And chkASRDevBypass.Value = vbChecked))
+  CheckEnableSave
+End Sub
+
+Private Sub chkKillWebUsers_Click()
+  CheckEnableSave
 End Sub
 
 Private Sub cmdLock_Click()
@@ -380,18 +398,8 @@ End Sub
 Private Sub Form_Resize()
   'JPD 20030908 Fault 5756
   DisplayApplication
-
-'  If grdUsers.Rows > grdUsers.VisibleRows Then
-'    grdUsers.Columns("Module").Width = 1830
-'    grdUsers.ScrollBars = ssScrollBarsVertical
-'  Else
-'    grdUsers.Columns("Module").Width = 2075
-'    grdUsers.ScrollBars = ssScrollBarsNone
-'  End If
-
-  cmdSave.Enabled = (grdUsers.Rows = 0 Or _
-        (chkASRDevBypass.Visible = True And chkASRDevBypass.Value = vbChecked))
-
+  CheckEnableSave
+  
 End Sub
 
 Private Sub Form_Activate()
@@ -412,7 +420,7 @@ Private Function GetUsers() As Boolean
   intTempPointer = Screen.MousePointer
   Screen.MousePointer = vbHourglass
 
-  fOK = CurrentUsersPopulate(grdUsers, mstrUsersToLogOut)
+  fOK = CurrentUsersPopulate(grdUsers, mstrUsersToLogOut, mintWebUserCount)
   Form_Resize
   cmdSendMessage.Enabled = (grdUsers.Rows > 0)
 
@@ -513,18 +521,12 @@ Public Function OkayToSave(Optional strUsersToLogOut As String) As Boolean
   
   fOK = GetUsers
   If fOK Then
-    fOK = (fOK And grdUsers.Rows = 0 And LockDatabase(lckSaving))
+    fOK = (fOK And grdUsers.Rows = 0 And LockDatabase(lckSaveRequest))
   End If
   
   OkayToSave = fOK
 
 End Function
-
-'Public Function OkayToSave() As Boolean
-'  GetUsers
-'  OkayToSave = (grdUsers.Rows = 0 And LockDatabase("Lock Saving"))
-'End Function
-
 
 Private Sub cmdCancel_Click()
   mblnCancelled = True
@@ -533,9 +535,8 @@ End Sub
 
 Private Sub cmdSave_Click()
 
-  If mblnSaving And chkASRDevBypass.Value = False Then
+  If mblnSaving And Not (chkASRDevBypass.Value = vbChecked Or chkKillWebUsers.Value = vbChecked) Then
     If Not OkayToSave(mstrUsersToLogOut) Then
-    'If Not OkayToSave Then
       Exit Sub
     End If
   End If
@@ -548,6 +549,7 @@ End Sub
 Private Sub cmdRefresh_Click()
   GetUsers
   LockCheck
+  CheckEnableSave
 End Sub
 
 Public Property Get Cancelled() As Boolean
