@@ -301,8 +301,7 @@
 		OpenHR.modalPrompt("Removing all the child tables will remove all child table columns included in the report definition." +
 		"<br/><br/>Are you sure you wish to continue ?", 4, "").then(function (answer) {
 			if (answer == 6) { // Yes
-				removeAllChildTables();
-				//loadAvailableTablesForReport(true);
+				removeAllChildTables(false);
 			}
 		});
 

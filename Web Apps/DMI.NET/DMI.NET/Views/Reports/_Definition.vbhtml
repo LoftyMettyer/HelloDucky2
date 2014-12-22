@@ -523,13 +523,15 @@
 		}
 
 		if ($("#txtReportType").val() == '@UtilityType.utlCustomReport') {
-			removeAllChildTables(false);
+			removeAllChildTables(true);
 			resetParentDetails();
 		}
 
 		if ($("#txtReportType").val() == '@UtilityType.utlCustomReport' || $("#txtReportType").val() == '@UtilityType.utlMailMerge') {			
 			removeAllSelectedColumns(false);
-			loadAvailableTablesForReport(true);
+			if ($("#txtReportType").val() == '@UtilityType.utlMailMerge') {
+				loadAvailableTablesForReport(true);
+			}
 		}
 
 		if ($("#txtReportType").val() == '@UtilityType.utlCalendarReport') {
@@ -556,7 +558,7 @@
 			gridControl.jqGrid("setSelection", ids[0]);
 	}
 
-	function removeAllChildTablesCompleted() {
+	function removeAllChildTablesCompleted(baseTableChanged) {
 
 		var childTables = $("#ChildTables").getDataIDs();
 		var sortColumnList = $("#SortOrders").getDataIDs();
@@ -588,7 +590,7 @@
 
 		$('#ChildTables').jqGrid('clearGridData');
 
-		loadAvailableTablesForReport(false);
+		loadAvailableTablesForReport(baseTableChanged);
 
 		// Reset row selection
 		$("#SelectedColumns").jqGrid('resetSelection');
@@ -607,10 +609,10 @@
 		enableSaveButton();
 	}
 
-	function removeAllChildTables() {
+	function removeAllChildTables(baseTableChanged) {
 
 		var data = { ReportID: "@Model.ID", ReportType: "@Model.ReportType" }
-		OpenHR.postData("Reports/RemoveAllChildTables", data, removeAllChildTablesCompleted);
+		OpenHR.postData("Reports/RemoveAllChildTables", data, removeAllChildTablesCompleted(baseTableChanged));
 		enableSaveButton();
 	}
 
