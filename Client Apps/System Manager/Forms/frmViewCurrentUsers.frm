@@ -493,8 +493,8 @@ Private Sub LockCheck()
   mintLockType = lckNone
   
   If Not rsTemp.BOF And Not rsTemp.EOF Then
-    If Trim(rsTemp!UserName) <> vbNullString Then
-      txtLockUser.Text = rsTemp!UserName
+    If Trim(rsTemp!userName) <> vbNullString Then
+      txtLockUser.Text = rsTemp!userName
       txtLockType.Text = rsTemp!Description
       txtLockMachine.Text = rsTemp!HostName
       txtLockDateTime.Text = rsTemp!Lock_Time
@@ -538,6 +538,7 @@ Public Property Let Saving(ByVal blnNewValue As Boolean)
   cmdSave.Visible = mblnSaving
   cmdCancel.Visible = True
   cmdAutoRetrySave.Visible = mblnSaving
+  chkKillWebUsers.Visible = mblnSaving
 
   chkASRDevBypass.Visible = (ASRDEVELOPMENT And mblnSaving)
   chkASRDevBypass.value = vbChecked

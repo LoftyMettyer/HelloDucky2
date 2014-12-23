@@ -496,6 +496,7 @@ Public Property Let Saving(ByVal blnNewValue As Boolean)
   cmdLock.Visible = Not mblnSaving
   cmdSave.Visible = mblnSaving
   cmdCancel.Visible = True
+  chkKillWebUsers.Visible = mblnSaving
 
   chkASRDevBypass.Visible = (ASRDEVELOPMENT And mblnSaving)
   chkASRDevBypass.Value = vbChecked
