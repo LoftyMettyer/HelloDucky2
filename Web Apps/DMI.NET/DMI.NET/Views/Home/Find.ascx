@@ -318,10 +318,13 @@
 													Dim rstLookup As New DataTable
 													
 													If Not fIsLookupTable Then
+																										
+														Dim iOrderID = objSession.Tables.Where(Function(m) m.ID = objRow.FirstOrDefault.Item("LookupTableID")).FirstOrDefault.DefaultOrderID
+														
 														rstLookup = objDataAccess.GetFromSP("spASRIntGetLookupFindRecords2" _
 																, New SqlParameter("piTableID", SqlDbType.Int) With {.Value = objRow.FirstOrDefault.Item("LookupTableID")} _
 																, New SqlParameter("piViewID", SqlDbType.Int) With {.Value = 0} _
-																, New SqlParameter("piOrderID", SqlDbType.Int) With {.Value = CleanNumeric(Session("orderID"))} _
+																, New SqlParameter("piOrderID", SqlDbType.Int) With {.Value = iOrderID} _
 																, New SqlParameter("piLookupColumnID", SqlDbType.Int) With {.Value = objRow.FirstOrDefault.Item("LookupColumnID")} _
 																, New SqlParameter("piRecordsRequired", SqlDbType.Int) With {.Value = 10000} _
 																, _prmIsFirstPage _
