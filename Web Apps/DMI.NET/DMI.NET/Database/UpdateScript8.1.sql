@@ -11407,15 +11407,16 @@ BEGIN
 		VALUES (@IISServer, @SessionID, @UserName, @HostName, @WebArea);
 
 	-- Track in audit log
-	INSERT INTO [dbo].[ASRSysAuditAccess]	(DateTimeStamp, UserGroup, UserName, ComputerName, HRProModule, Action) 
-		VALUES (@LoginTime, @SecurityGroup, @UserName, @HostName, @WebArea
-			, CASE @TrackType
-				WHEN 1 THEN 'Log In'
-				WHEN 2 THEN 'Log Out'
-				WHEN 3 THEN 'Forced Log Out'
-				WHEN 8 THEN 'Insufficient Licence'
-				ELSE 'Session Timeout'
-			END);
+	IF @TrackType <> 5
+		INSERT INTO [dbo].[ASRSysAuditAccess]	(DateTimeStamp, UserGroup, UserName, ComputerName, HRProModule, Action) 
+			VALUES (@LoginTime, @SecurityGroup, @UserName, @HostName, @WebArea
+				, CASE @TrackType
+					WHEN 1 THEN 'Log In'
+					WHEN 2 THEN 'Log Out'
+					WHEN 3 THEN 'Forced Log Out'
+					WHEN 8 THEN 'Insufficient Licence'
+					ELSE 'Session Timeout'
+				END);
 
 END
 GO
