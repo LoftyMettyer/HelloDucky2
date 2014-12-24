@@ -3240,48 +3240,53 @@ Namespace Controllers
 							Dim trueRowCount As Integer = (From row In objReport.ReportDataTable.AsEnumerable() Where row(0).ToString() = "0" Where String.Join("", row.ItemArray) <> "0").Count()
 							ClientDLL.ArrayDim(UBound(arrayVisibleColumns, 2), trueRowCount)
 						Else
-							ClientDLL.ArrayDim(UBound(arrayVisibleColumns, 2), objReport.ReportDataTable.Rows.Count)
-						End If
-
-						If bBradfordFactor = True Then
-							ClientDLL.PageTitles = False
-							ClientDLL.AddPage("Bradford Factor", "Bradford Factor")
-						Else
-							ClientDLL.AddPage(objReport.ReportCaption, Replace(objReport.BaseTableName, "&&", "&"))
-						End If
-
-						For lngCol = 0 To UBound(arrayVisibleColumns, 2)
-							sColHeading = arrayVisibleColumns(0, lngCol)
-							iColDataType = arrayVisibleColumns(1, lngCol)
-							iColDecimals = arrayVisibleColumns(2, lngCol)
-							bIsCol1000 = arrayVisibleColumns(3, lngCol)
-							ClientDLL.AddColumn(sColHeading, iColDataType, iColDecimals, bIsCol1000)
-							ClientDLL.ArrayAddTo(lngCol, 0, sColHeading)
-						Next
-
-
-						lngDataRow = 1
-						For Each objRow As DataRow In objReport.ReportDataTable.Rows
-
-							If (lngOutputFormat = OutputFormats.ExcelGraph And Not objReport.CustomReportsSummaryReport) Or lngOutputFormat = OutputFormats.ExcelPivotTable Then
-								' Ignore non-data rows.
-								If objRow(0).ToString() <> "0" Then Continue For
-
-								' Ignore empty data rows
-								If String.Join("", objRow.ItemArray) = "0" Then Continue For
+							' if all columns are hidden then dont generate output
+							If (objReport.ReportDataTable.Columns.Count <= 1) Then
+								ClientDLL.ArrayDim(UBound(arrayVisibleColumns, 2), 0)
+							Else
+								ClientDLL.ArrayDim(UBound(arrayVisibleColumns, 2), objReport.ReportDataTable.Rows.Count)
 							End If
+					End If
 
-							For iCountColumns = 1 To objReport.ReportDataTable.Columns.Count - 1
-								ClientDLL.ArrayAddTo(iCountColumns - 1, lngDataRow, objRow(iCountColumns).ToString())
-							Next
+					If bBradfordFactor = True Then
+						ClientDLL.PageTitles = False
+						ClientDLL.AddPage("Bradford Factor", "Bradford Factor")
+					Else
+						ClientDLL.AddPage(objReport.ReportCaption, Replace(objReport.BaseTableName, "&&", "&"))
+					End If
 
-							lngDataRow += 1
+					For lngCol = 0 To UBound(arrayVisibleColumns, 2)
+						sColHeading = arrayVisibleColumns(0, lngCol)
+						iColDataType = arrayVisibleColumns(1, lngCol)
+						iColDecimals = arrayVisibleColumns(2, lngCol)
+						bIsCol1000 = arrayVisibleColumns(3, lngCol)
+						ClientDLL.AddColumn(sColHeading, iColDataType, iColDecimals, bIsCol1000)
+						ClientDLL.ArrayAddTo(lngCol, 0, sColHeading)
+					Next
 
+
+					lngDataRow = 1
+					For Each objRow As DataRow In objReport.ReportDataTable.Rows
+
+						If (lngOutputFormat = OutputFormats.ExcelGraph And Not objReport.CustomReportsSummaryReport) Or lngOutputFormat = OutputFormats.ExcelPivotTable Then
+							' Ignore non-data rows.
+							If objRow(0).ToString() <> "0" Then Continue For
+
+							' Ignore empty data rows
+							If String.Join("", objRow.ItemArray) = "0" Then Continue For
+						End If
+
+						For iCountColumns = 1 To objReport.ReportDataTable.Columns.Count - 1
+							ClientDLL.ArrayAddTo(iCountColumns - 1, lngDataRow, objRow(iCountColumns).ToString())
 						Next
 
-						ClientDLL.DataArray()
+						lngDataRow += 1
 
-					End If
+					Next
+
+					ClientDLL.DataArray()
+
+				End If
 
 				End If
 

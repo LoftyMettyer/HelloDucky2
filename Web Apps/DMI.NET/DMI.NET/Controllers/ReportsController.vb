@@ -93,6 +93,7 @@ Namespace Controllers
 
 			Dim objSaveWarning As SaveWarningModel
 			Dim deserializer = New JavaScriptSerializer()
+			Dim hiddenColumnsCount As Integer
 
 			objModel.Dependencies = objReportRepository.RetrieveDependencies(objModel.ID, UtilityType.utlCustomReport)
 
@@ -107,9 +108,14 @@ Namespace Controllers
 						ModelState.AddModelError("IsColumnHeaderEmpty", "The '" & columnItem.Name & "' column has a blank heading.")
 						Exit For
 					End If
+
+					' Count the hidden columns to validate if all columns are hidden or not
+					If (columnItem.IsHidden) Then
+						hiddenColumnsCount += 1
+					End If
 				Next
 
-				' Check the column headings are unique. Used the Goto statement to break the nested loop.
+				' Check the column headings are unique.
 				Dim breakNestedLoop As Boolean
 				For Each columnItem As ReportColumnItem In objModel.Columns
 					For Each columnItemHeaderToCheck As ReportColumnItem In objModel.Columns
@@ -192,6 +198,11 @@ Namespace Controllers
 			Else
 				If ModelState.IsValid Then
 					objSaveWarning = objReportRepository.ServerValidate(objModel)
+					' Check if all selected columns are hidden, if yes ask for the save confirmation
+					If (hiddenColumnsCount = objModel.Columns.Count) Then
+						objSaveWarning.ErrorCode = ReportValidationStatus.Overwrite
+						objSaveWarning.ErrorMessage = "All columns / calculations selected in this definition are defined as hidden.<br/><br/> Do you wish to continue?"
+					End If
 				Else
 					objSaveWarning = ModelState.ToWebMessage
 				End If

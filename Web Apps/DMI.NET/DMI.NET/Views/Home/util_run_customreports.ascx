@@ -155,9 +155,14 @@
 
 	Session("CustomReport") = objReport
 	
-	gridReportData.DataSource = objReport.ReportDataTable
-	gridReportData.DataBind()
-		
+	' Bind the data to the grid if atleast one non-hidden column available
+	If ((objReport.ReportDataTable IsNot Nothing) AndAlso (objReport.ReportDataTable.Columns.Count > 1)) Then
+		gridReportData.DataSource = objReport.ReportDataTable
+		gridReportData.DataBind()
+	Else
+		Response.Write("No output generated. Check your data.")
+	End If
+	
 	Dim fNoRecords As Boolean
 
 	fNoRecords = objReport.NoRecords
@@ -353,27 +358,27 @@ End If
 			ignoreCase: true,
 			colNames: [
 				<%Dim iColCount As Integer = 0
-	For Each objItem In objReport.DisplayColumns
-		Dim sColumnName = objReport.ReportDataTable.Columns(iColCount).ColumnName
-		Response.Write(String.Format("{0}'{1}'", IIf(iColCount > 0, ", ", ""), sColumnName))
-		iColCount += 1
-	Next%>
+		For Each objItem In objReport.DisplayColumns
+			Dim sColumnName = objReport.ReportDataTable.Columns(iColCount).ColumnName
+			Response.Write(String.Format("{0}'{1}'", IIf(iColCount > 0, ", ", ""), sColumnName))
+			iColCount += 1
+		Next%>
 			],
 			colModel: [
 				<%
 	iColCount = 0
-	For Each objItem In objReport.DisplayColumns
-		Dim sColumnName = objReport.ReportDataTable.Columns(iColCount).ColumnName.Replace(" ", "_")
-		Dim iColumnWidth As Integer = 100
-		If objItem.IsNumeric Then
-			Response.Write(String.Format("{0}{{name:'", IIf(iColCount > 0, ", ", "")) & sColumnName & "',align:'right', width: '" & iColumnWidth.ToString() & "'}")
-		ElseIf objItem.IsDateColumn Then			
-			Response.Write(String.Format("{0}{{name:'", IIf(iColCount > 0, ", ", "")) & sColumnName & "', edittype: 'date', align: 'center',  formatter: 'date', formatoptions: { srcformat: srcFormat, newformat: newFormat, disabled: true, width: '" & iColumnWidth.ToString() & "' }}")
-		Else
-			Response.Write(String.Format("{0}{{name:'", IIf(iColCount > 0, ", ", "")) & sColumnName & "', width: '" & iColumnWidth.ToString() & "'}")
-		End If
-		iColCount += 1
-	Next
+		For Each objItem In objReport.DisplayColumns
+			Dim sColumnName = objReport.ReportDataTable.Columns(iColCount).ColumnName.Replace(" ", "_")
+			Dim iColumnWidth As Integer = 100
+			If objItem.IsNumeric Then
+				Response.Write(String.Format("{0}{{name:'", IIf(iColCount > 0, ", ", "")) & sColumnName & "',align:'right', width: '" & iColumnWidth.ToString() & "'}")
+			ElseIf objItem.IsDateColumn Then
+				Response.Write(String.Format("{0}{{name:'", IIf(iColCount > 0, ", ", "")) & sColumnName & "', edittype: 'date', align: 'center',  formatter: 'date', formatoptions: { srcformat: srcFormat, newformat: newFormat, disabled: true, width: '" & iColumnWidth.ToString() & "' }}")
+			Else
+				Response.Write(String.Format("{0}{{name:'", IIf(iColCount > 0, ", ", "")) & sColumnName & "', width: '" & iColumnWidth.ToString() & "'}")
+			End If
+			iColCount += 1
+		Next
 	%>
 			],
 			cmTemplate: { sortable: false },
