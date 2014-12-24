@@ -107,13 +107,13 @@
 				<div class="tablerow">
 					<label>Access :</label>
 					@Html.AccessGrid("GroupAccess", Model.GroupAccess, New With {.id = "tblGroupAccess"})
-					<input type="hidden" id="IsForcedHidden" />
+					<input type="hidden" id="IsForcedHidden" />					
 				</div>
 			</div>
-
-		</fieldset>
+		
+				</fieldset>
 	</fieldset>
-</div>
+	</div>
 
 <script type="text/javascript">
 
@@ -129,8 +129,14 @@
 		getBaseTableList();
 		refreshViewAccess();
 
-		tableToGrid('#tblGroupAccess', { autoWidth: true, height: 150, cmTemplate: { sortable: false } });
-
+		tableToGrid('#tblGroupAccess', {
+			autoWidth: true, height: 150, cmTemplate: { sortable: false },
+			afterInsertRow: function (rowid, aData) {
+				// set empty tooltip for access dropdown			
+				$("#tblGroupAccess").setCell(rowid, 'Access', '', '', { title:'' })
+			}
+		});
+		
 		if ($('#selectiontype_All').prop('checked')) {
 			$('#DisplayTitleInReportHeader').prop('disabled', true);
 			$("#label_DisplayTitleInReportHeader").css("color", "#A59393");
@@ -244,9 +250,10 @@
 
 		var bViewAccessEnabled = true;
 		var list;
-
-		$(".reportViewAccessGroup").removeAttr('disabled');
-		$("#drpSetAllSecurityGroups").removeAttr('disabled');
+		
+		$(".reportViewAccessGroup").prop('disabled', false);
+		$("#drpSetAllSecurityGroups").prop('disabled', false);
+		$(".reportViewAccessGroup").removeClass('ui-state-disabled');
 
 		$(".ViewAccess").each(function (index) {
 			if ((this).innerText == "HD" || (this).value == "HD") {
@@ -256,8 +263,9 @@
 
 		if (!bViewAccessEnabled) {
 			$("#IsForcedHidden").val(true);			
-			$(".reportViewAccessGroup").attr('disabled', 'disabled');
-			$("#drpSetAllSecurityGroups").attr('disabled', 'disabled');
+			$(".reportViewAccessGroup").prop('disabled', true);
+			$("#drpSetAllSecurityGroups").prop('disabled', true);			
+			$(".reportViewAccessGroup").addClass('ui-state-disabled');			
 		}
 	}
 
@@ -681,8 +689,9 @@
 		$('#txtSOAAS').val(JSON.stringify(gridData));
 
 		var $form = $("#frmReportDefintion");		
-		$(".reportViewAccessGroup").removeAttr('disabled');
-		$("#drpSetAllSecurityGroups").removeAttr('disabled');
+		$(".reportViewAccessGroup").prop('disabled', false);
+		$("#drpSetAllSecurityGroups").prop('disabled', false);
+		$(".reportViewAccessGroup").removeClass('ui-state-disabled');
 
 		$.ajax({
 			url: $form.attr("action"),
@@ -720,8 +729,9 @@
 
 	function submitReportDefinition() {
 		$("#ValidityStatus").val('ServerCheckComplete');		
-		$(".reportViewAccessGroup").removeAttr('disabled');
-		$("#drpSetAllSecurityGroups").removeAttr('disabled');
+		$(".reportViewAccessGroup").prop('disabled', false);
+		$("#drpSetAllSecurityGroups").prop('disabled', false);
+		$(".reportViewAccessGroup").removeClass('ui-state-disabled');
 		var frmSubmit = $("#frmReportDefintion")[0];
 		OpenHR.submitForm(frmSubmit);
 	}
