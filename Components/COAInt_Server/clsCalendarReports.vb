@@ -4995,7 +4995,7 @@ Error_Trap:
 		'Get the Base ID column values so that these can be used in the group by clause when checking
 		'for multiple events in MultipleCheck().
 		mstrSQLCreateTable = "[LegendName] nvarchar(255), [BaseID] [Integer] NOT NULL, "
-		strColList = "'" & pstrDynamicName & "' AS [LegendName], [" & mstrBaseTableRealSource & "].[ID] AS 'BaseID', " & vbNewLine
+		strColList = "'" & Replace(pstrDynamicName, "'", "''") & "' AS [LegendName], [" & mstrBaseTableRealSource & "].[ID] AS 'BaseID', " & vbNewLine
 
 		If mlngDescription1 > 0 Then
 			If CheckColumnPermissions(mlngCalendarReportsBaseTable, mstrCalendarReportsBaseTableName, mstrDescription1, strTableColumn) Then
