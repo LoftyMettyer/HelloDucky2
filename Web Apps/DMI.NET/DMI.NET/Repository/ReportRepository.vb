@@ -163,9 +163,13 @@ Namespace Repository
 
 						objModel.TemplateFileName = row("TemplateFileName").ToString()
 						objModel.OutputFormat = CType(row("Format"), MailMergeOutputTypes)
+						If (objModel.OutputFormat = MailMergeOutputTypes.WordDocument) Then
+							objModel.WordDocumentPrinter = row("PrinterName").ToString()
+						ElseIf (objModel.OutputFormat = MailMergeOutputTypes.DocumentManagement) Then
+							objModel.DocumentManagementPrinter = row("PrinterName").ToString()
+						End If
 						objModel.DisplayOutputOnScreen = CBool(row("DisplayOutputOnScreen"))
 						objModel.SendToPrinter = CBool(row("SendToPrinter"))
-						objModel.PrinterName = row("PrinterName").ToString()
 						objModel.SaveToFile = CBool(row("SaveToFile"))
 						objModel.Filename = row("FileName").ToString
 						objModel.EmailGroupID = CInt(row("EmailGroupID"))
@@ -511,6 +515,12 @@ Namespace Repository
 
 				Dim sAccess = UtilityAccessAsString(objModel.GroupAccess)
 				Dim sColumns = MailMergeColumnsAsString(objModel.Columns, objModel.SortOrders)
+
+				If (objModel.OutputFormat = MailMergeOutputTypes.WordDocument) Then
+					objModel.PrinterName = objModel.WordDocumentPrinter
+				ElseIf (objModel.OutputFormat = MailMergeOutputTypes.DocumentManagement) Then
+					objModel.PrinterName = objModel.DocumentManagementPrinter
+				End If
 
 				objModel.EmailAttachmentName = If(objModel.EmailAttachmentName Is Nothing, "", objModel.EmailAttachmentName)
 				objModel.EmailSubject = If(objModel.EmailSubject Is Nothing, "", objModel.EmailSubject)

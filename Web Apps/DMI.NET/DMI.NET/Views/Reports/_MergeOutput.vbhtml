@@ -43,18 +43,18 @@
 	<legend class="fontsmalltitle">Word Document:</legend>
 	<fieldset>
 		<div class="padbot10">
-			@Html.CheckBoxFor(Function(m) m.DisplayOutputOnScreen)
+			@Html.CheckBoxFor(Function(m) m.DisplayOutputOnScreen, New With {.id = "WordDisplayOutputOnScreen"})
 			@Html.LabelFor(Function(m) m.DisplayOutputOnScreen)
 			<br />
 		</div>
 
 		<div class="reportdefprinter DataManagerOnly">
 			<div class="width30 floatleft">
-				@Html.CheckBoxFor(Function(m) m.SendToPrinter)
+				@Html.CheckBoxFor(Function(m) m.SendToPrinter, New With {.id = "SendToPrinter", .onclick = "setSendToPrinter();"})
 				@Html.LabelFor(Function(m) m.SendToPrinter)
 			</div>
-			<div class="width70 floatleft padbot5">
-				@Html.TextBox("PrinterName", Model.PrinterName, New With {.placeholder = "Default printer", .class = "DataManagerOnly readonly width100"})
+			<div class="width70 floatleft padbot5">						
+				@Html.TextBoxFor(Function(m) m.WordDocumentPrinter, New With {.placeholder = "Default printer", .class = "DataManagerOnly readonly width100"})				
 			</div>
 		</div>
 
@@ -100,13 +100,19 @@
 	<fieldset>
 		<div class="padbot5">
 			<div class="width30 floatleft">
-				@Html.CheckBoxFor(Function(m) m.DisplayOutputOnScreen)
-				@Html.LabelFor(Function(m) m.DisplayOutputOnScreen)
+				@Html.LabelFor(Function(m) m.PrinterName)
 			</div>
-			<div class="width70 floatleft">
-				@Html.TextBox("PrinterName", Model.PrinterName, New With {.placeholder = "Engine", .class = "width100"})
+			<div class="width70 floatleft padbot5">			
+				@Html.TextBoxFor(Function(m) m.DocumentManagementPrinter, New With {.placeholder = "Default printer", .class = "DataManagerOnly readonly width100"})			
 			</div>
 		</div>
+		<br />		
+		<br />		
+		<div class="padbot5">				
+			@Html.CheckBoxFor(Function(m) m.DisplayOutputOnScreen, New With {.id = "DocumentDisplayOutputOnScreen"})
+			@Html.LabelFor(Function(m) m.DisplayOutputOnScreen)			
+		</div>
+
 	</fieldset>
 </fieldset>
 
@@ -135,8 +141,26 @@
 	}
 
 	function selectMergeOutput(outputType) {
+		if (outputType == 'DocumentManagement')
+		{
+			$('#DocumentDisplayOutputOnScreen').prop('checked', true);
+			$('#WordDocumentPrinter').prop('disabled', true);			
+			$('#SendToPrinter').prop('checked', false);			
+		}		
 		$("[class^=outputmerge_]").hide();
 		$(".outputmerge_" + outputType).show(500);
+	}
+
+	function setSendToPrinter()
+	{
+		var bSelected = $("#SendToPrinter").prop("checked");		
+		if (bSelected) {
+			$('#WordDocumentPrinter').prop('disabled', false);
+		}
+		else
+		{
+			$('#WordDocumentPrinter').prop('disabled', true);
+		}
 	}
 
 	$(function () {
@@ -150,7 +174,8 @@
 		});
 
 		$('fieldset').css("border", "1");
-
+		$('#WordDisplayOutputOnScreen').prop('checked', true);
+		$('#WordDocumentPrinter').prop('disabled', true);
 	});
 
 </script>

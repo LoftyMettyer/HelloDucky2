@@ -41,6 +41,7 @@ Namespace Models
 		<DisplayName("Send to printer")>
 		Public Property SendToPrinter As Boolean
 
+		<DisplayName("Engine :")>
 		<DisplayFormat(ConvertEmptyStringToNull:=False)> _
 		Public Property PrinterName As String
 
@@ -70,6 +71,12 @@ Namespace Models
 		<DisplayName("Attach As :")>
 		<DisplayFormat(ConvertEmptyStringToNull:=False)>
 		Public Property EmailAttachmentName As String
+
+		<DisplayFormat(ConvertEmptyStringToNull:=False)> _
+		Public Property WordDocumentPrinter As String
+
+		<DisplayFormat(ConvertEmptyStringToNull:=False)> _
+		Public Property DocumentManagementPrinter As String
 
 		Public Overrides Sub SetBaseTable(TableID As Integer)
 		End Sub
