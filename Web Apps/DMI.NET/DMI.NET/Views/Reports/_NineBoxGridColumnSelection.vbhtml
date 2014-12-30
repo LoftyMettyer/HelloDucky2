@@ -178,13 +178,15 @@
 				var options = '';
 				for (var i = 0; i < json.length; i++) {
 
-					if (!json[i].IsNumeric) { //Only add numeric columns to dropdown
+					// Add all available columns to PageBreak dropdown
+					optionPageBreak += "<option value='" + json[i].ID + "' data-datatype='" + json[i].DataType + "' data-size='" + json[i].Size + "' data-decimals='" + json[i].Decimals + "'>" + json[i].Name + "</option>";
+
+					if (!json[i].IsNumeric) { //Only add numeric columns to Horizontal & Vertical dropdown
 						continue;
 					}
 
 					optionHorizontal += "<option value='" + json[i].ID + "' data-datatype='" + json[i].DataType + "' data-size='" + json[i].Size + "' data-decimals='" + json[i].Decimals + "'>" + json[i].Name + "</option>";
 					optionVertical += "<option value='" + json[i].ID + "' data-datatype='" + json[i].DataType + "' data-size='" + json[i].Size + "' data-decimals='" + json[i].Decimals + "'>" + json[i].Name + "</option>";
-					optionPageBreak += "<option value='" + json[i].ID + "' data-datatype='" + json[i].DataType + "' data-size='" + json[i].Size + "' data-decimals='" + json[i].Decimals + "'>" + json[i].Name + "</option>";
 
 					if (json[i].IsNumeric) {
 						optionIntersection += "<option value='" + json[i].ID + "' data-datatype='" + json[i].DataType + "' data-size='" + json[i].Size + "' data-decimals='" + json[i].Decimals + "'>" + json[i].Name + "</option>";
