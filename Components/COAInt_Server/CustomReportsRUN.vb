@@ -662,235 +662,137 @@ GetCustomReportDefinition_ERROR:
 		' Purpose : This function loads report details and sort details into
 		'           arrays and leaves the details recordset reference there
 		'           (dont remove it...used for summary info !)
+		Try
 
-		On Error GoTo GetDetailsRecordsets_ERROR
+			Dim strTempSQL As String
+			Dim prstCustomReportsSortOrder As DataTable
+			Dim lngTableID As Integer
+			Dim objReportItemDetail As ReportDetailItem
+			Dim objSortItem As ReportSortItem
 
-		Dim strTempSQL As String
-		Dim intTemp As Integer
-		Dim prstCustomReportsSortOrder As DataTable
-		Dim lngTableID As Integer
-		Dim sMask As String
-		Dim objReportItemDetail As ReportDetailItem
-		Dim objSortItem As ReportSortItem
+			' Get the column information from the Details table, in order
+			strTempSQL = "EXEC spASRIntGetCustomReportDetails " & mlngCustomReportID
+			mrstCustomReportsDetails = DB.GetDataTable((strTempSQL))
 
-		' Get the column information from the Details table, in order
-		strTempSQL = "EXEC spASRIntGetCustomReportDetails " & mlngCustomReportID
-		mrstCustomReportsDetails = DB.GetDataTable((strTempSQL))
-
-		Dim objExpr As clsExprExpression
-		With mrstCustomReportsDetails
-			If .Rows.Count = 0 Then
-				mstrErrorString = "No columns found in the specified Custom Report definition." & vbNewLine & "Please remove this definition and create a new one."
-				Return False
-			End If
-
-			If Not CheckCalcsStillExist() Then
-				Return False
-			End If
-
-
-			For Each objRow As DataRow In mrstCustomReportsDetails.Rows
-				objReportItemDetail = New ReportDetailItem
-
-				'*************************************************************************
-				'Now we need to decide on what the heading needs to be because QA want to
-				'be able to have similar headings for hidden columns...I warned them, but
-				'NO...they thought that the best move was to spend ages fixing faults in
-				'v2 and put HR Pro .NET on the back-burner so that we can release a
-				'Limited Edition of HR Pro called HR Pro .NET 2012 Olympic Edition.
-				'What twats!!!...Fault 10211.
-
-				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-				If IIf((IsDBNull(objRow("Hidden")) Or (objRow("Hidden"))), True, False) Then
-					objReportItemDetail.IDColumnName = "?ID_HD_" & objRow("Type") & "_" & objRow("ColExprID")
-				Else
-					objReportItemDetail.IDColumnName = objRow("Heading").ToString().Replace("'", "")
+			Dim objExpr As clsExprExpression
+			With mrstCustomReportsDetails
+				If .Rows.Count = 0 Then
+					mstrErrorString = "No columns found in the specified Custom Report definition." & vbNewLine & "Please remove this definition and create a new one."
+					Return False
 				End If
 
-				'*************************************************************************
+				If Not CheckCalcsStillExist() Then
+					Return False
+				End If
 
-				objReportItemDetail.DataType = CType(objRow("DataType"), ColumnDataType)
-				objReportItemDetail.Size = CInt(objRow("Size"))
-				objReportItemDetail.Decimals = CInt(objRow("dp"))
-				objReportItemDetail.IsNumeric = CBool(objRow("IsNumeric"))
-				objReportItemDetail.IsAverage = CBool(objRow("Avge"))
-				objReportItemDetail.IsCount = CBool(objRow("cnt"))
-				objReportItemDetail.IsTotal = CBool(objRow("tot"))
-				objReportItemDetail.IsBreakOnChange = CBool(objRow("boc"))
-				objReportItemDetail.IsPageOnChange = CBool(objRow("poc"))
-				objReportItemDetail.IsValueOnChange = CBool(objRow("voc"))
-				objReportItemDetail.SuppressRepeated = CBool(objRow("srv"))
-				objReportItemDetail.LastValue = ""
-				objReportItemDetail.ID = CInt(objRow("ColExprID"))
-				objReportItemDetail.ID = CInt(objRow("ColExprID"))
 
-				objReportItemDetail.Type = objRow("Type").ToString()
+				For Each objRow As DataRow In mrstCustomReportsDetails.Rows
+					objReportItemDetail = New ReportDetailItem
 
-				lngTableID = IIf(IsDBNull(objRow("TableID")), 0, objRow("TableID"))
-				objReportItemDetail.TableID = lngTableID
-				objReportItemDetail.TableName = objRow("TableName").ToString()
+					'*************************************************************************
+					'Now we need to decide on what the heading needs to be because QA want to
+					'be able to have similar headings for hidden columns...I warned them, but
+					'NO...they thought that the best move was to spend ages fixing faults in
+					'v2 and put HR Pro .NET on the back-burner so that we can release a
+					'Limited Edition of HR Pro called HR Pro .NET 2012 Olympic Edition.
+					'What twats!!!...Fault 10211.
 
-				If objRow("Type").ToString() = "C" Then
-					objReportItemDetail.ColumnName = objRow("ColumnName").ToString()
-					objReportItemDetail.IsDateColumn = CBool(objRow("IsDateColumn"))
-					objReportItemDetail.IsBitColumn = CBool(objRow("IsBooleanColumn"))
+					'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
+					If IIf((IsDBNull(objRow("Hidden")) Or (objRow("Hidden"))), True, False) Then
+						objReportItemDetail.IDColumnName = "?ID_HD_" & objRow("Type") & "_" & objRow("ColExprID")
+					Else
+						objReportItemDetail.IDColumnName = objRow("Heading").ToString().Replace("'", "")
+					End If
 
-				Else
-					objReportItemDetail.ColumnName = ""
+					'*************************************************************************
 
-					'MH20010307
-					objExpr = NewExpression()
+					objReportItemDetail.DataType = CType(objRow("DataType"), ColumnDataType)
+					objReportItemDetail.Size = CInt(objRow("Size"))
+					objReportItemDetail.Decimals = CInt(objRow("dp"))
+					objReportItemDetail.IsNumeric = CBool(objRow("IsNumeric"))
+					objReportItemDetail.IsAverage = CBool(objRow("Avge"))
+					objReportItemDetail.IsCount = CBool(objRow("cnt"))
+					objReportItemDetail.IsTotal = CBool(objRow("tot"))
+					objReportItemDetail.IsBreakOnChange = CBool(objRow("boc"))
+					objReportItemDetail.IsPageOnChange = CBool(objRow("poc"))
+					objReportItemDetail.IsValueOnChange = CBool(objRow("voc"))
+					objReportItemDetail.SuppressRepeated = CBool(objRow("srv"))
+					objReportItemDetail.LastValue = ""
+					objReportItemDetail.ID = CInt(objRow("ColExprID"))
+					objReportItemDetail.ID = CInt(objRow("ColExprID"))
 
-					objExpr.ExpressionID = CInt(objRow("ColExprID"))
-					objExpr.ConstructExpression()
-					objExpr.ValidateExpression(True)
+					objReportItemDetail.Type = objRow("Type").ToString()
 
-					'Sets the IsNumeric value for the calculated column. This will be used to display the content right alligned in the report preview
-					objReportItemDetail.IsNumeric = (objExpr.ReturnType = ExpressionValueTypes.giEXPRVALUE_NUMERIC)
-
-					lngTableID = objExpr.BaseTableID
+					lngTableID = IIf(IsDBNull(objRow("TableID")), 0, objRow("TableID"))
 					objReportItemDetail.TableID = lngTableID
-					objReportItemDetail.TableName = objExpr.BaseTableName
-					objReportItemDetail.ColumnName = ""
+					objReportItemDetail.TableName = objRow("TableName").ToString()
 
-					'UPGRADE_NOTE: Object objExpr may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-					objExpr = Nothing
+					If objRow("Type").ToString() = "C" Then
+						objReportItemDetail.ColumnName = objRow("ColumnName").ToString()
+						objReportItemDetail.IsDateColumn = CBool(objRow("IsDateColumn"))
+						objReportItemDetail.IsBitColumn = CBool(objRow("IsBooleanColumn"))
 
-					objReportItemDetail.IsDateColumn = IsDateColumn(objRow("Type"), lngTableID, objRow("ColExprID"))
-					objReportItemDetail.IsBitColumn = IsBitColumn(objRow("Type"), lngTableID, objRow("ColExprID"))
+					Else
+						objReportItemDetail.ColumnName = ""
 
-				End If
+						'MH20010307
+						objExpr = NewExpression()
 
-				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-				objReportItemDetail.IsHidden = IIf((IsDBNull(objRow("Hidden")) Or (objRow("Hidden"))), True, False)
-				objReportItemDetail.IsReportChildTable = IsReportChildTable(lngTableID)	'Indicates if column is a report child table.
-				objReportItemDetail.Repetition = IIf(objRow("repetition") = 1, True, False)
-				objReportItemDetail.Use1000Separator = CBool(objRow("Use1000separator"))
+						objExpr.ExpressionID = CInt(objRow("ColExprID"))
+						objExpr.ConstructExpression()
+						objExpr.ValidateExpression(True)
 
-				' Format for this numeric column
-				If objReportItemDetail.IsNumeric Then
-					sMask = ""
-					If objReportItemDetail.Use1000Separator Then sMask = ",0"
-					If objReportItemDetail.Decimals > 0 Then sMask = sMask & "." & New String("0", objReportItemDetail.Decimals)
-					objReportItemDetail.Mask = "{0:0" & sMask & ";-0" & sMask & ";0." & New String("0", objReportItemDetail.Decimals) & "}"
-				End If
+						'Sets the IsNumeric value for the calculated column. This will be used to display the content right alligned in the report preview
+						objReportItemDetail.IsNumeric = (objExpr.ReturnType = ExpressionValueTypes.giEXPRVALUE_NUMERIC)
 
-				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-				objReportItemDetail.GroupWithNextColumn = IIf((IsDBNull(objRow("GroupWithNextColumn")) Or (Not objRow("GroupWithNextColumn"))), False, True)
+						lngTableID = objExpr.BaseTableID
+						objReportItemDetail.TableID = lngTableID
+						objReportItemDetail.TableName = objExpr.BaseTableName
+						objReportItemDetail.ColumnName = ""
 
-				ColumnDetails.Add(objReportItemDetail)
+						'UPGRADE_NOTE: Object objExpr may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
+						objExpr = Nothing
 
-			Next
-		End With
+						objReportItemDetail.IsDateColumn = IsDateColumn(objRow("Type"), lngTableID, objRow("ColExprID"))
+						objReportItemDetail.IsBitColumn = IsBitColumn(objRow("Type"), lngTableID, objRow("ColExprID"))
 
-		'******************************************************************************
-		' Add the ID columns for the tables so that we can re-select the child records
-		' when we create the multiple child temp table.
-		' NB. Is called only when there is more than one child in the report.
-		'******************************************************************************
+					End If
 
-		objReportItemDetail = New ReportDetailItem
+					'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
+					objReportItemDetail.IsHidden = IIf((IsDBNull(objRow("Hidden")) Or (objRow("Hidden"))), True, False)
+					objReportItemDetail.IsReportChildTable = IsReportChildTable(lngTableID)	'Indicates if column is a report child table.
+					objReportItemDetail.Repetition = IIf(objRow("repetition") = 1, True, False)
+					objReportItemDetail.Use1000Separator = CBool(objRow("Use1000separator"))
 
-		objReportItemDetail.Size = 99
-		objReportItemDetail.Decimals = 0
-		objReportItemDetail.IsNumeric = False
-		objReportItemDetail.IsAverage = False
-		objReportItemDetail.IsCount = False
-		objReportItemDetail.IsTotal = False
-		objReportItemDetail.IsBreakOnChange = False
-		objReportItemDetail.IsPageOnChange = False
-		objReportItemDetail.IsValueOnChange = False
-		objReportItemDetail.SuppressRepeated = False
-		objReportItemDetail.LastValue = ""
-		objReportItemDetail.ID = -1
-		objReportItemDetail.Type = "C"
-		objReportItemDetail.TableID = mlngCustomReportsBaseTable
-		objReportItemDetail.TableName = GetTableName(objReportItemDetail.TableID)
-		objReportItemDetail.IDColumnName = "?ID"
-		objReportItemDetail.ColumnName = "ID"
-		objReportItemDetail.IsDateColumn = False
-		objReportItemDetail.IsBitColumn = False
-		objReportItemDetail.IsHidden = True
-		objReportItemDetail.IsReportChildTable = IsReportChildTable(lngTableID)	'Indicates if column is a report child table.
-		objReportItemDetail.Repetition = True
-		objReportItemDetail.Mask = "0"
-		objReportItemDetail.GroupWithNextColumn = False	'Group With Next Column.
-		ColumnDetails.Add(objReportItemDetail)
+					' Format for this numeric column
+					If objReportItemDetail.IsNumeric Then
 
-		Dim iChildCount As Integer
-		Dim lngChildTableID As Integer
-		If miChildTablesCount > 0 Then
-			For iChildCount = 0 To UBound(mvarChildTables, 2) Step 1
-				'TM20020409 Fault 3745 - only add the ID columns for tables that are actually used.
-				'UPGRADE_WARNING: Couldn't resolve default property of object mvarChildTables(0, iChildCount). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				lngChildTableID = mvarChildTables(0, iChildCount)
-				If IsChildTableUsed(lngChildTableID) Then
+						If objReportItemDetail.Use1000Separator Then
+							objReportItemDetail.Mask = "{0:#,0." & New String("0", objReportItemDetail.Decimals) & "}"
+						Else
+							objReportItemDetail.Mask = "{0:#0." & New String("0", objReportItemDetail.Decimals) & "}"
+						End If
+					End If
 
-					objReportItemDetail = New ReportDetailItem
-					objReportItemDetail.Size = 99
-					objReportItemDetail.Decimals = 0
-					objReportItemDetail.IsNumeric = False
-					objReportItemDetail.IsAverage = False
-					objReportItemDetail.IsCount = False
-					objReportItemDetail.IsTotal = False
-					objReportItemDetail.IsBreakOnChange = False
-					objReportItemDetail.IsPageOnChange = False
-					objReportItemDetail.IsValueOnChange = False
-					objReportItemDetail.SuppressRepeated = False
-					objReportItemDetail.LastValue = ""
-					objReportItemDetail.ID = -1
-					objReportItemDetail.Type = "C"
-					objReportItemDetail.TableID = mvarChildTables(0, iChildCount)
-					objReportItemDetail.TableName = mvarChildTables(3, iChildCount)
-					objReportItemDetail.IDColumnName = "?ID_" & objReportItemDetail.TableID
-					objReportItemDetail.ColumnName = "ID_" & mlngCustomReportsBaseTable
-					objReportItemDetail.IsDateColumn = False
-					objReportItemDetail.IsBitColumn = False
-					objReportItemDetail.IsHidden = True
-					objReportItemDetail.IsReportChildTable = True	'Indicates if column is a report child table.
-					objReportItemDetail.Repetition = True
-					objReportItemDetail.Mask = "0"
-					objReportItemDetail.GroupWithNextColumn = False	'Group With Next Column.
+					'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
+					objReportItemDetail.GroupWithNextColumn = IIf((IsDBNull(objRow("GroupWithNextColumn")) Or (Not objRow("GroupWithNextColumn"))), False, True)
+
 					ColumnDetails.Add(objReportItemDetail)
 
-					objReportItemDetail = New ReportDetailItem
-					objReportItemDetail.Size = 99
-					objReportItemDetail.Decimals = 0
-					objReportItemDetail.IsNumeric = False
-					objReportItemDetail.IsAverage = False
-					objReportItemDetail.IsCount = False
-					objReportItemDetail.IsTotal = False
-					objReportItemDetail.IsBreakOnChange = False
-					objReportItemDetail.IsPageOnChange = False
-					objReportItemDetail.IsValueOnChange = False
-					objReportItemDetail.SuppressRepeated = False
-					objReportItemDetail.LastValue = ""
-					objReportItemDetail.ID = -1
-					objReportItemDetail.Type = "C"
-					objReportItemDetail.TableID = mvarChildTables(0, iChildCount)
-					objReportItemDetail.TableName = mvarChildTables(3, iChildCount)
-					objReportItemDetail.IDColumnName = "?ID_" & objReportItemDetail.TableName
-					objReportItemDetail.ColumnName = "ID"
-					objReportItemDetail.IsDateColumn = False
-					objReportItemDetail.IsBitColumn = False
-					objReportItemDetail.IsHidden = True
-					objReportItemDetail.IsReportChildTable = True	'Indicates if column is a report child table.
-					objReportItemDetail.Repetition = True
+				Next
+			End With
 
-					objReportItemDetail.Mask = "0"
-					objReportItemDetail.GroupWithNextColumn = False	'Group With Next Column.
-					ColumnDetails.Add(objReportItemDetail)
+			'******************************************************************************
+			' Add the ID columns for the tables so that we can re-select the child records
+			' when we create the multiple child temp table.
+			' NB. Is called only when there is more than one child in the report.
+			'******************************************************************************
 
-				End If
-			Next iChildCount
-		End If
+			objReportItemDetail = New ReportDetailItem
 
-		If miChildTablesCount > 1 Then
-
-			objReportItemDetail = New ReportDetailItem()
 			objReportItemDetail.Size = 99
 			objReportItemDetail.Decimals = 0
-			objReportItemDetail.IsNumeric = True
+			objReportItemDetail.IsNumeric = False
 			objReportItemDetail.IsAverage = False
 			objReportItemDetail.IsCount = False
 			objReportItemDetail.IsTotal = False
@@ -901,81 +803,169 @@ GetCustomReportDefinition_ERROR:
 			objReportItemDetail.LastValue = ""
 			objReportItemDetail.ID = -1
 			objReportItemDetail.Type = "C"
-			objReportItemDetail.TableID = -1
-			objReportItemDetail.TableName = ""
-			objReportItemDetail.IDColumnName = lng_SEQUENCECOLUMNNAME
-			objReportItemDetail.ColumnName = ""
+			objReportItemDetail.TableID = mlngCustomReportsBaseTable
+			objReportItemDetail.TableName = GetTableName(objReportItemDetail.TableID)
+			objReportItemDetail.IDColumnName = "?ID"
+			objReportItemDetail.ColumnName = "ID"
 			objReportItemDetail.IsDateColumn = False
 			objReportItemDetail.IsBitColumn = False
 			objReportItemDetail.IsHidden = True
-			objReportItemDetail.IsReportChildTable = True	'Indicates if column is a report child table.
+			objReportItemDetail.IsReportChildTable = IsReportChildTable(lngTableID)	'Indicates if column is a report child table.
 			objReportItemDetail.Repetition = True
 			objReportItemDetail.Mask = "0"
 			objReportItemDetail.GroupWithNextColumn = False	'Group With Next Column.
 			ColumnDetails.Add(objReportItemDetail)
 
-		End If
+			Dim iChildCount As Integer
+			Dim lngChildTableID As Integer
+			If miChildTablesCount > 0 Then
+				For iChildCount = 0 To UBound(mvarChildTables, 2) Step 1
+					'TM20020409 Fault 3745 - only add the ID columns for tables that are actually used.
+					'UPGRADE_WARNING: Couldn't resolve default property of object mvarChildTables(0, iChildCount). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+					lngChildTableID = mvarChildTables(0, iChildCount)
+					If IsChildTableUsed(lngChildTableID) Then
 
-		'******************************************************************************
+						objReportItemDetail = New ReportDetailItem
+						objReportItemDetail.Size = 99
+						objReportItemDetail.Decimals = 0
+						objReportItemDetail.IsNumeric = False
+						objReportItemDetail.IsAverage = False
+						objReportItemDetail.IsCount = False
+						objReportItemDetail.IsTotal = False
+						objReportItemDetail.IsBreakOnChange = False
+						objReportItemDetail.IsPageOnChange = False
+						objReportItemDetail.IsValueOnChange = False
+						objReportItemDetail.SuppressRepeated = False
+						objReportItemDetail.LastValue = ""
+						objReportItemDetail.ID = -1
+						objReportItemDetail.Type = "C"
+						objReportItemDetail.TableID = mvarChildTables(0, iChildCount)
+						objReportItemDetail.TableName = mvarChildTables(3, iChildCount)
+						objReportItemDetail.IDColumnName = "?ID_" & objReportItemDetail.TableID
+						objReportItemDetail.ColumnName = "ID_" & mlngCustomReportsBaseTable
+						objReportItemDetail.IsDateColumn = False
+						objReportItemDetail.IsBitColumn = False
+						objReportItemDetail.IsHidden = True
+						objReportItemDetail.IsReportChildTable = True	'Indicates if column is a report child table.
+						objReportItemDetail.Repetition = True
+						objReportItemDetail.Mask = "0"
+						objReportItemDetail.GroupWithNextColumn = False	'Group With Next Column.
+						ColumnDetails.Add(objReportItemDetail)
 
-		' Calculate if we are going to need summary columns
-		For Each objItem In ColumnDetails
-			If objItem.IsAverage Or objItem.IsTotal Or objItem.IsCount Then
-				mblnReportHasSummaryInfo = True
-				Exit For
+						objReportItemDetail = New ReportDetailItem
+						objReportItemDetail.Size = 99
+						objReportItemDetail.Decimals = 0
+						objReportItemDetail.IsNumeric = False
+						objReportItemDetail.IsAverage = False
+						objReportItemDetail.IsCount = False
+						objReportItemDetail.IsTotal = False
+						objReportItemDetail.IsBreakOnChange = False
+						objReportItemDetail.IsPageOnChange = False
+						objReportItemDetail.IsValueOnChange = False
+						objReportItemDetail.SuppressRepeated = False
+						objReportItemDetail.LastValue = ""
+						objReportItemDetail.ID = -1
+						objReportItemDetail.Type = "C"
+						objReportItemDetail.TableID = mvarChildTables(0, iChildCount)
+						objReportItemDetail.TableName = mvarChildTables(3, iChildCount)
+						objReportItemDetail.IDColumnName = "?ID_" & objReportItemDetail.TableName
+						objReportItemDetail.ColumnName = "ID"
+						objReportItemDetail.IsDateColumn = False
+						objReportItemDetail.IsBitColumn = False
+						objReportItemDetail.IsHidden = True
+						objReportItemDetail.IsReportChildTable = True	'Indicates if column is a report child table.
+						objReportItemDetail.Repetition = True
+
+						objReportItemDetail.Mask = "0"
+						objReportItemDetail.GroupWithNextColumn = False	'Group With Next Column.
+						ColumnDetails.Add(objReportItemDetail)
+
+					End If
+				Next iChildCount
 			End If
-		Next
 
-		' Get those columns defined as a SortOrder and load into array
+			If miChildTablesCount > 1 Then
 
-		strTempSQL = "SELECT * FROM ASRSysCustomReportsDetails WHERE CustomReportID = " & mlngCustomReportID & " AND SortOrderSequence > 0 ORDER BY [SortOrderSequence]"
-		prstCustomReportsSortOrder = DB.GetDataTable(strTempSQL)
+				objReportItemDetail = New ReportDetailItem()
+				objReportItemDetail.Size = 99
+				objReportItemDetail.Decimals = 0
+				objReportItemDetail.IsNumeric = True
+				objReportItemDetail.IsAverage = False
+				objReportItemDetail.IsCount = False
+				objReportItemDetail.IsTotal = False
+				objReportItemDetail.IsBreakOnChange = False
+				objReportItemDetail.IsPageOnChange = False
+				objReportItemDetail.IsValueOnChange = False
+				objReportItemDetail.SuppressRepeated = False
+				objReportItemDetail.LastValue = ""
+				objReportItemDetail.ID = -1
+				objReportItemDetail.Type = "C"
+				objReportItemDetail.TableID = -1
+				objReportItemDetail.TableName = ""
+				objReportItemDetail.IDColumnName = lng_SEQUENCECOLUMNNAME
+				objReportItemDetail.ColumnName = ""
+				objReportItemDetail.IsDateColumn = False
+				objReportItemDetail.IsBitColumn = False
+				objReportItemDetail.IsHidden = True
+				objReportItemDetail.IsReportChildTable = True	'Indicates if column is a report child table.
+				objReportItemDetail.Repetition = True
+				objReportItemDetail.Mask = "0"
+				objReportItemDetail.GroupWithNextColumn = False	'Group With Next Column.
+				ColumnDetails.Add(objReportItemDetail)
 
-		colSortOrder = New List(Of ReportSortItem)
-
-		With prstCustomReportsSortOrder
-			If .Rows.Count = 0 Then
-				GetDetailsRecordsets = False
-				mstrErrorString = "No columns have been defined as a sort order for the specified Custom Report definition." & vbNewLine & "Please remove this definition and create a new one."
-				Exit Function
 			End If
 
-			For Each objRow As DataRow In .Rows
-				objSortItem = New ReportSortItem
-				objSortItem.TableID = GetTableIDFromColumn(CInt(objRow("ColExprID")))
-				objSortItem.ColExprID = objRow("ColExprID")
-				objSortItem.AscDesc = objRow("SortOrder")
-				colSortOrder.Add(objSortItem)
+			'******************************************************************************
+
+			' Calculate if we are going to need summary columns
+			For Each objItem In ColumnDetails
+				If objItem.IsAverage Or objItem.IsTotal Or objItem.IsCount Then
+					mblnReportHasSummaryInfo = True
+					Exit For
+				End If
 			Next
-		End With
 
-		'UPGRADE_NOTE: Object prstCustomReportsSortOrder may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		prstCustomReportsSortOrder = Nothing
+			' Get those columns defined as a SortOrder and load into array
+
+			strTempSQL = "SELECT * FROM ASRSysCustomReportsDetails WHERE CustomReportID = " & mlngCustomReportID & " AND SortOrderSequence > 0 ORDER BY [SortOrderSequence]"
+			prstCustomReportsSortOrder = DB.GetDataTable(strTempSQL)
+
+			colSortOrder = New List(Of ReportSortItem)
+
+			With prstCustomReportsSortOrder
+				If .Rows.Count = 0 Then
+					GetDetailsRecordsets = False
+					mstrErrorString = "No columns have been defined as a sort order for the specified Custom Report definition." & vbNewLine & "Please remove this definition and create a new one."
+					Exit Function
+				End If
+
+				For Each objRow As DataRow In .Rows
+					objSortItem = New ReportSortItem
+					objSortItem.TableID = GetTableIDFromColumn(CInt(objRow("ColExprID")))
+					objSortItem.ColExprID = objRow("ColExprID")
+					objSortItem.AscDesc = objRow("SortOrder")
+					colSortOrder.Add(objSortItem)
+				Next
+			End With
+
+			'UPGRADE_NOTE: Object prstCustomReportsSortOrder may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
+			prstCustomReportsSortOrder = Nothing
+
+
+		Catch ex As Exception
+			mstrErrorString = "Error retrieving the details recordsets'." & vbNewLine & ex.Message
+			Logs.AddDetailEntry(mstrErrorString)
+			Logs.ChangeHeaderStatus(EventLog_Status.elsFailed)
+			Return False
+
+		End Try
 
 		Return True
-
-
-GetDetailsRecordsets_ERROR:
-
-		GetDetailsRecordsets = False
-		mstrErrorString = "Error retrieving the details recordsets'." & vbNewLine & Err.Description
-		Logs.AddDetailEntry(mstrErrorString)
-		Logs.ChangeHeaderStatus(EventLog_Status.elsFailed)
 
 	End Function
 
 	Private Function IsChildTableUsed(iChildTableID As Integer) As Boolean
-
 		Return ColumnDetails.Any(Function(objItem) objItem.TableID = iChildTableID)
-
-		'For Each objItem In ColumnDetails
-		'	If objItem.TableID = iChildTableID Then
-		'		Return True
-		'	End If
-		'Next
-
-		'Return False
-
 	End Function
 
 	Public Function GenerateSQL() As Boolean
@@ -4163,11 +4153,9 @@ GenerateSQLBradford_ERROR:
 
 		On Error GoTo GetBradfordRecordSet_ERROR
 
-		'Dim intTemp As Short
 		Dim lngTableID As Integer
 		Dim iCount As Short
 		Dim lngColumnID As Integer
-		Dim sMask As String
 
 		Dim lbHideStaffNumber As Boolean
 
@@ -4353,10 +4341,12 @@ GenerateSQLBradford_ERROR:
 
 				' Format for this numeric column
 				If objReportItem.IsNumeric Then
-					sMask = ""
-					If objReportItem.Use1000Separator Then sMask = ",0"
-					If objReportItem.Decimals > 0 Then sMask = sMask & "." & New String("0", objReportItem.Decimals)
-					objReportItem.Mask = "{0:0" & sMask & ";-0" & sMask & ";0." & New String("0", objReportItem.Decimals) & "}"
+					If objReportItem.Use1000Separator Then
+						objReportItem.Mask = "{0:#,0." & New String("0", objReportItem.Decimals) & "}"
+					Else
+						objReportItem.Mask = "{0:#0." & New String("0", objReportItem.Decimals) & "}"
+					End If
+
 				End If
 
 				ColumnDetails.Add(objReportItem)
