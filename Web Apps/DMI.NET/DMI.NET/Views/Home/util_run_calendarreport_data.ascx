@@ -29,10 +29,19 @@
 	$('#StartYearDemo').monthpicker({
 		selectedYear: $("#txtYear").val(),
 		startYear: <% =objCalendar.ReportStartDate.Year%> - 0,
-		startMonth: <% =objCalendar.ReportStartDate.Month%>  - 0,
-		endMonth: <% =objCalendar.ReportEndDate.Month%>  - 0,		
-		endYear: <% =objCalendar.ReportEndDate.Year%> -0, 	
-		pattern: 'mm/yyyy'});
+		startMonth: <% =objCalendar.ReportStartDate.Month%> - 0,
+		endMonth: <% =objCalendar.ReportEndDate.Month%> - 0,
+		endYear: <% =objCalendar.ReportEndDate.Year%> - 0,
+		pattern: 'mm/yyyy',
+		openOnFocus: false
+	});
+
+	// Bind click event to the textbox to open the month picker
+	$('#StartYearDemo').bind('click', function () {
+		$(this).monthpicker('show');
+		// When a new value is set we need to disable invalid months.
+		$(this).monthpicker('disableMonths');
+	});
 
 	$('#StartYearDemo').monthpicker().bind('monthpicker-click-month', function (e, month) {
 		var sMonthYear = $('#StartYearDemo').val();
@@ -41,7 +50,6 @@
 		frmGetDataForm.txtYear.value = sMonthYear.substring(3, 7);
 		OpenHR.submitForm(frmGetDataForm);
 	});
-
 
 	function eventCalendarClick(eventID, eventType) {
 
@@ -52,7 +60,6 @@
 			$("#CalendarEvent").dialog("open");
 			$("#CalendarEvent").dialog("option", "position", ['center', 'center']); //Center popup in screen
 		}
-
 	}
 
 	function todayClick() {
@@ -192,7 +199,7 @@
 		DayPilotScheduler1.Days = DateTime.DaysInMonth(dStartDate.Year, dStartDate.Month)
 		Calendar_BindDataset(DayPilotScheduler1)
 		DataBind()
-		
+	
 	End Sub
 	
 	Protected Sub DayPilotScheduler1_BeforeEventRender(sender As Object, e As Events.Scheduler.BeforeEventRenderEventArgs)
