@@ -119,8 +119,7 @@ BEGIN
 			INNER JOIN Personnel_Records pr ON pr.ID = i.ID_1
 			LEFT JOIN Absence_Type_Table at ON at.Absence_Type = i.Absence_Type
 			LEFT JOIN Absence_Reason_Table ar ON ar.Reason = i.Reason
-		WHERE wp.Effective_Date <= dr.IndividualDate AND (wp.End_Date >= dr.IndividualDate OR wp.End_Date IS NULL)
-			AND dbo.udfsysDurationFromPattern(wp.Absence_In, dr.IndividualDate, dr.SessionType, wp.Sunday_Hours_AM, wp.Monday_Hours_AM, wp.Tuesday_Hours_AM, wp.Wednesday_Hours_AM, wp.Thursday_Hours_AM, wp.Friday_Hours_AM, wp.Saturday_Hours_AM, wp.Sunday_Hours_PM, wp.Monday_Hours_PM, wp.Tuesday_Hours_PM, wp.Wednesday_Hours_PM, wp.Thursday_Hours_PM, wp.Friday_Hours_PM, wp.Saturday_Hours_PM) > 0;
+		WHERE wp.Effective_Date <= dr.IndividualDate AND (wp.End_Date >= dr.IndividualDate OR wp.End_Date IS NULL);
 
 END
 GO
@@ -149,8 +148,7 @@ BEGIN
 			INNER JOIN Personnel_Records pr ON pr.ID = ap.ID_1
 			LEFT JOIN Absence_Type_Table at ON at.Absence_Type = i.Absence_Type
 			LEFT JOIN Absence_Reason_Table ar ON ar.Reason = i.Reason
-		WHERE wp.Effective_Date <= dr.IndividualDate AND (wp.End_Date >= dr.IndividualDate OR wp.End_Date IS NULL)
-			AND dbo.udfsysDurationFromPattern(wp.Absence_In, dr.IndividualDate, dr.SessionType, wp.Sunday_Hours_AM, wp.Monday_Hours_AM, wp.Tuesday_Hours_AM, wp.Wednesday_Hours_AM, wp.Thursday_Hours_AM, wp.Friday_Hours_AM, wp.Saturday_Hours_AM, wp.Sunday_Hours_PM, wp.Monday_Hours_PM, wp.Tuesday_Hours_PM, wp.Wednesday_Hours_PM, wp.Thursday_Hours_PM, wp.Friday_Hours_PM, wp.Saturday_Hours_PM) > 0;
+		WHERE wp.Effective_Date <= dr.IndividualDate AND (wp.End_Date >= dr.IndividualDate OR wp.End_Date IS NULL);
 
 END
 GO
