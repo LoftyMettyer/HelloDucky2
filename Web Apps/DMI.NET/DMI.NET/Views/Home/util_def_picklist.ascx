@@ -60,39 +60,13 @@
 			
 						Else
 							Response.Write("<INPUT type='hidden' id=txt1000SepCols name=txt1000SepCols value=""" & prm1000SepCols.Value & """>" & vbCrLf)
-							
-							Dim iCount As Integer
-							Dim sAddString As String
-							If Session("action") = "new" Then
-								sAddString = ""
-								If rstFindRecords.Rows.Count > 0 Then
-									For Each objRow As DataRow In rstFindRecords.Rows
-
-										sAddString = ""
-									
-										For iloop = 0 To (rstFindRecords.Columns.Count - 1)
-											If iloop > 0 Then
-												sAddString = sAddString & "	"
-											End If
-										
-											If Not IsDBNull(objRow(iloop)) Then
-												sAddString = sAddString & Replace(objRow(iloop).ToString(), """", "&quot;")
-											End If
-										Next
-										Response.Write("<INPUT type='hidden' id=txtOptionColDef_" & iCount & " name=txtOptionColDef_" & iCount & " value=""" & sAddString & """>" & vbCrLf)
-										
-										iCount += 1
-									Next
-								End If
-							End If
-							
 						End If
 
 					Catch ex As Exception
 						sErrorDescription = "The find columns could not be retrieved." & vbCrLf & FormatError(ex.Message)
 
 					End Try
-					
+
 				%>
 				<table id="ssOleDBGrid"></table>
 			</div>
@@ -214,7 +188,6 @@
 
 <script type="text/javascript">
 	util_def_picklist_onload();
-	BindDefaultGridOnNewDefinition();
 </script>
 
 
