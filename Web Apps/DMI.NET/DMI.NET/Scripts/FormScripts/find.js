@@ -699,7 +699,7 @@ function showLookupForColumn(element) {
 	}
 
 	if (!colModelContainsRequiredLookupColumn) {
-		alert("Find window contains at least one filtered lookup but not the columns on which those lookups depend");
+		OpenHR.modalMessage("Unable to display the filtered lookup records.<br/><br/>The lookup filter value is not present in this view.");
 		return false;
 	}
 

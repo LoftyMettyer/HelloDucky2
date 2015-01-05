@@ -79,7 +79,7 @@
 			if (!title || title.length == 0) title = 'OpenHR Web';
 			
 			$('#dialog-confirm').dialog('option', 'buttons', dialogButtons);
-			$('#dialog-confirm').dialog('option', 'title', title);
+			//$('#dialog-confirm').dialog('option', 'title', title);
 			$('#dialog-confirm p').html(prompt);
 			$('#dialog-confirm').dialog('open');
 			// If Any ActiveX controls are in the workframeset, move the dailog to the very top of the screen to avoid it being hidden behind the ActiveX
