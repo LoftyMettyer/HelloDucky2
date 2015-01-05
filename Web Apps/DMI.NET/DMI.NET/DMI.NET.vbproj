@@ -225,6 +225,7 @@
     <Compile Include="Code\Interfaces\IReport.vb" />
     <Compile Include="Code\Interfaces\IReportDetail.vb" />
     <Compile Include="Code\Hubs\DatabaseHub.vb" />
+    <Compile Include="Controllers\GenericController.vb" />
     <Compile Include="Helpers\LabelHelper.vb" />
     <Compile Include="Models\CalendarEvent.vb" />
     <Compile Include="Models\StandardReportsConfigurationModel.vb" />
