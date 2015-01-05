@@ -551,6 +551,14 @@ Function SaveChanges(Optional pfRefreshDatabase As Boolean) As Boolean
       SaveSystemSetting "Database", "UpdatingDateDependantColumns", 0
       SaveSystemSetting "Database", "SystemLastSaveDate", Format(Now, "dd/mm/yyyy")
   
+      SaveSystemSetting "ScreenDesigner", "FontName", gobjDefaultScreenFont.Name
+      SaveSystemSetting "ScreenDesigner", "FontSize", gobjDefaultScreenFont.Size
+      SaveSystemSetting "ScreenDesigner", "FontBold", gobjDefaultScreenFont.Bold
+      SaveSystemSetting "ScreenDesigner", "FontItalic", gobjDefaultScreenFont.Italic
+      SaveSystemSetting "ScreenDesigner", "FontUnderline", gobjDefaultScreenFont.Underline
+      SaveSystemSetting "ScreenDesigner", "FontStrikethrough", gobjDefaultScreenFont.Strikethrough
+      SaveSystemSetting "ScreenDesigner", "ForeColor", glngDefaultScreenForeColor
+   
     End If
   
     If fOK Then
@@ -2068,14 +2076,14 @@ Private Function UpdateLockCheck() As Boolean
   
   If Not (rsTemp.BOF And rsTemp.EOF) Then
     'Ignore users own manual lock
-    If LCase(gsUserName) = LCase(rsTemp!UserName) And rsTemp!Priority = lckManual Then
+    If LCase(gsUserName) = LCase(rsTemp!userName) And rsTemp!Priority = lckManual Then
       rsTemp.MoveNext
     End If
     
     If Not (rsTemp.BOF And rsTemp.EOF) Then
   
       'If not locked by current app then can we get read only access...
-      strLockDetails = "User :  " & rsTemp!UserName & vbNewLine & _
+      strLockDetails = "User :  " & rsTemp!userName & vbNewLine & _
                        "Date/Time :  " & rsTemp!Lock_Time & vbNewLine & _
                        "Machine :  " & rsTemp!HostName & vbNewLine & _
                        "Type :  " & rsTemp!Description

@@ -571,8 +571,8 @@ Public Function UnlockDatabase(intLockType As LockTypes, Optional blnForceUnlock
     rsTemp.Open "dbo.sp_ASRLockCheck", gADOCon, adOpenForwardOnly, adLockOptimistic
 
     If Not rsTemp.BOF And Not rsTemp.EOF Then
-      If LCase(rsTemp!UserName) <> LCase(gsUserName) And _
-         Trim(rsTemp!UserName) <> vbNullString Then
+      If LCase(rsTemp!userName) <> LCase(gsUserName) And _
+         Trim(rsTemp!userName) <> vbNullString Then
               UnlockDatabase = False
       End If
     End If
@@ -1088,5 +1088,46 @@ Dim hIconSmall As Long
    SendMessageLong hWnd, WM_SETICON, ICON_SMALL, hIconSmall
    
 End Sub
+
+Public Function GetFontDescription(pObjFont As StdFont) As String
+  ' Return the description of the given font for display.
+  On Error GoTo ErrorTrap
+  
+  Dim sFontDescription As String
+  
+  If Not pObjFont Is Nothing Then
+    With pObjFont
+      sFontDescription = .Name
+          
+      If .Bold Then
+        If .Italic Then
+          sFontDescription = sFontDescription & ", Bold Italic"
+        Else
+          sFontDescription = sFontDescription & ", Bold"
+        End If
+      Else
+        If .Italic Then
+          sFontDescription = sFontDescription & ", Italic"
+        Else
+          sFontDescription = sFontDescription & ", Regular"
+        End If
+      End If
+      
+      sFontDescription = sFontDescription & IIf(.Strikethrough, ", Strikethrough", "")
+      sFontDescription = sFontDescription & IIf(.Underline, ", Underline", "")
+    End With
+  Else
+    sFontDescription = ""
+  End If
+  
+TidyUpAndExit:
+  GetFontDescription = sFontDescription
+  Exit Function
+  
+ErrorTrap:
+  sFontDescription = "<unknown>"
+  Resume TidyUpAndExit
+  
+End Function
 
 

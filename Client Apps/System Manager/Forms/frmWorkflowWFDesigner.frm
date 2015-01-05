@@ -5134,8 +5134,8 @@ Public Function LoadTabPage(piPageNumber As Integer) As Boolean
               ' Font properties.
               If WebFormItemHasProperty(iCtrlType, WFITEMPROP_FONT) Then
                 Set objFont = New StdFont
-                objFont.Name = IIf(IsNull(.Fields("fontName").value), "Verdana", .Fields("fontName").value)
-                objFont.Size = IIf(IsNull(.Fields("fontSize").value), 8, .Fields("fontSize").value)
+                objFont.Name = IIf(IsNull(.Fields("fontName").value), gobjDefaultScreenFont.Name, .Fields("fontName").value)
+                objFont.Size = IIf(IsNull(.Fields("fontSize").value), gobjDefaultScreenFont.Size, .Fields("fontSize").value)
                 objFont.Bold = IIf(IsNull(.Fields("fontBold").value), False, .Fields("fontBold").value)
                 objFont.Italic = IIf(IsNull(.Fields("fontItalic").value), False, .Fields("fontItalic").value)
                 objFont.Strikethrough = IIf(IsNull(.Fields("fontStrikeThru").value), False, .Fields("fontStrikeThru").value)
@@ -6705,8 +6705,8 @@ Private Function SaveWebFormItems(pwfElement As COAWF_Webform) As Boolean
           asItems(24, iNewIndex) = objFont.Underline
           Set objFont = Nothing
         Else
-          asItems(19, iNewIndex) = "Verdana"
-          asItems(20, iNewIndex) = "8"
+          asItems(19, iNewIndex) = gobjDefaultScreenFont.Name
+          asItems(20, iNewIndex) = gobjDefaultScreenFont.Size
           asItems(21, iNewIndex) = False
           asItems(22, iNewIndex) = False
           asItems(23, iNewIndex) = False
@@ -6791,8 +6791,8 @@ Private Function SaveWebFormItems(pwfElement As COAWF_Webform) As Boolean
           asItems(42, iNewIndex) = objFont.Underline
           Set objFont = Nothing
         Else
-          asItems(37, iNewIndex) = "Verdana"
-          asItems(38, iNewIndex) = "8"
+          asItems(37, iNewIndex) = gobjDefaultScreenFont.Name
+          asItems(38, iNewIndex) = gobjDefaultScreenFont.Size
           asItems(39, iNewIndex) = False
           asItems(40, iNewIndex) = False
           asItems(41, iNewIndex) = False

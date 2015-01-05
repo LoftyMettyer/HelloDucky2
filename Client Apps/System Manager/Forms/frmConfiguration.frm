@@ -1,9 +1,9 @@
 VERSION 5.00
 Object = "{66A90C01-346D-11D2-9BC0-00A024695830}#1.0#0"; "timask6.ocx"
-Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "tabctl32.ocx"
-Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "comdlg32.ocx"
+Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
+Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "COMDLG32.OCX"
 Object = "{051CE3FC-5250-4486-9533-4E0723733DFA}#1.0#0"; "coa_colourpicker.ocx"
-Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "COA_Spinner.ocx"
+Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "coa_spinner.ocx"
 Begin VB.Form frmConfiguration 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Server Configuration"
@@ -67,7 +67,7 @@ Begin VB.Form frmConfiguration
    End
    Begin TabDlg.SSTab SSTab1 
       Height          =   5595
-      Left            =   105
+      Left            =   150
       TabIndex        =   23
       Top             =   105
       Width           =   6735
@@ -75,18 +75,16 @@ Begin VB.Form frmConfiguration
       _ExtentY        =   9869
       _Version        =   393216
       Style           =   1
-      Tabs            =   5
-      TabsPerRow      =   5
+      Tabs            =   6
+      Tab             =   5
+      TabsPerRow      =   7
       TabHeight       =   520
       TabCaption(0)   =   "&Email"
       TabPicture(0)   =   "frmConfiguration.frx":000C
-      Tab(0).ControlEnabled=   -1  'True
-      Tab(0).Control(0)=   "fraTestSQLMail"
-      Tab(0).Control(0).Enabled=   0   'False
+      Tab(0).ControlEnabled=   0   'False
+      Tab(0).Control(0)=   "fraEmailSetup"
       Tab(0).Control(1)=   "fraEmailOptions"
-      Tab(0).Control(1).Enabled=   0   'False
-      Tab(0).Control(2)=   "fraEmailSetup"
-      Tab(0).Control(2).Enabled=   0   'False
+      Tab(0).Control(2)=   "fraTestSQLMail"
       Tab(0).ControlCount=   3
       TabCaption(1)   =   "&Processing Account"
       TabPicture(1)   =   "frmConfiguration.frx":0028
@@ -96,23 +94,63 @@ Begin VB.Form frmConfiguration
       TabCaption(2)   =   "&Display"
       TabPicture(2)   =   "frmConfiguration.frx":0044
       Tab(2).ControlEnabled=   0   'False
-      Tab(2).Control(0)=   "frmBackgrounds"
+      Tab(2).Control(0)=   "frmExpressions"
       Tab(2).Control(1)=   "fraGeneral"
-      Tab(2).Control(2)=   "frmExpressions"
+      Tab(2).Control(2)=   "frmBackgrounds"
       Tab(2).ControlCount=   3
       TabCaption(3)   =   "Dev"
       TabPicture(3)   =   "frmConfiguration.frx":0060
       Tab(3).ControlEnabled=   0   'False
-      Tab(3).Control(0)=   "fraQuickAddress"
-      Tab(3).Control(1)=   "frmDeveloperAFD"
+      Tab(3).Control(0)=   "frmDeveloperAFD"
+      Tab(3).Control(1)=   "fraQuickAddress"
       Tab(3).ControlCount=   2
       TabCaption(4)   =   "&Advanced"
       TabPicture(4)   =   "frmConfiguration.frx":007C
       Tab(4).ControlEnabled=   0   'False
-      Tab(4).Control(0)=   "fraTime"
+      Tab(4).Control(0)=   "fraAdvancedSettings"
       Tab(4).Control(1)=   "fraOutlookCalendar"
-      Tab(4).Control(2)=   "fraAdvancedSettings"
+      Tab(4).Control(2)=   "fraTime"
       Tab(4).ControlCount=   3
+      TabCaption(5)   =   "Desi&gners"
+      TabPicture(5)   =   "frmConfiguration.frx":0098
+      Tab(5).ControlEnabled=   -1  'True
+      Tab(5).Control(0)=   "Frame1"
+      Tab(5).Control(0).Enabled=   0   'False
+      Tab(5).ControlCount=   1
+      Begin VB.Frame Frame1 
+         Caption         =   "Defaults :"
+         Height          =   5020
+         Left            =   150
+         TabIndex        =   84
+         Top             =   400
+         Width           =   6465
+         Begin VB.CommandButton cmdDefaultScreenFont 
+            Caption         =   "..."
+            Height          =   315
+            Left            =   3750
+            TabIndex        =   87
+            ToolTipText     =   "Select Path"
+            Top             =   285
+            Width           =   330
+         End
+         Begin VB.TextBox txtDefaultScreenFont 
+            BackColor       =   &H8000000F&
+            Enabled         =   0   'False
+            Height          =   300
+            Left            =   1065
+            TabIndex        =   86
+            Top             =   300
+            Width           =   2700
+         End
+         Begin VB.Label lblDefaultScreenFont 
+            Caption         =   "Font :"
+            Height          =   255
+            Left            =   195
+            TabIndex        =   85
+            Top             =   360
+            Width           =   885
+         End
+      End
       Begin VB.Frame fraAdvancedSettings 
          Caption         =   "Database Settings : "
          Height          =   2055
@@ -159,7 +197,7 @@ Begin VB.Form frmConfiguration
             Text            =   "8"
          End
          Begin VB.Label chkSpecialFunctions 
-            Caption         =   $"frmConfiguration.frx":0098
+            Caption         =   $"frmConfiguration.frx":00B4
             Height          =   795
             Left            =   615
             TabIndex        =   79
@@ -184,7 +222,7 @@ Begin VB.Form frmConfiguration
             _Version        =   65536
             _ExtentX        =   1667
             _ExtentY        =   529
-            Caption         =   "frmConfiguration.frx":0129
+            Caption         =   "frmConfiguration.frx":0145
             BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
                Name            =   "Verdana"
                Size            =   8.25
@@ -194,7 +232,7 @@ Begin VB.Form frmConfiguration
                Italic          =   0   'False
                Strikethrough   =   0   'False
             EndProperty
-            Keys            =   "frmConfiguration.frx":018E
+            Keys            =   "frmConfiguration.frx":01AA
             AlignHorizontal =   0
             AlignVertical   =   0
             Appearance      =   1
@@ -240,7 +278,7 @@ Begin VB.Form frmConfiguration
             _Version        =   65536
             _ExtentX        =   1826
             _ExtentY        =   529
-            Caption         =   "frmConfiguration.frx":01D0
+            Caption         =   "frmConfiguration.frx":01EC
             BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
                Name            =   "Verdana"
                Size            =   8.25
@@ -250,7 +288,7 @@ Begin VB.Form frmConfiguration
                Italic          =   0   'False
                Strikethrough   =   0   'False
             EndProperty
-            Keys            =   "frmConfiguration.frx":0235
+            Keys            =   "frmConfiguration.frx":0251
             AlignHorizontal =   0
             AlignVertical   =   0
             Appearance      =   1
@@ -296,7 +334,7 @@ Begin VB.Form frmConfiguration
             _Version        =   65536
             _ExtentX        =   1667
             _ExtentY        =   529
-            Caption         =   "frmConfiguration.frx":0277
+            Caption         =   "frmConfiguration.frx":0293
             BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
                Name            =   "Verdana"
                Size            =   8.25
@@ -306,7 +344,7 @@ Begin VB.Form frmConfiguration
                Italic          =   0   'False
                Strikethrough   =   0   'False
             EndProperty
-            Keys            =   "frmConfiguration.frx":02DC
+            Keys            =   "frmConfiguration.frx":02F8
             AlignHorizontal =   0
             AlignVertical   =   0
             Appearance      =   1
@@ -352,7 +390,7 @@ Begin VB.Form frmConfiguration
             _Version        =   65536
             _ExtentX        =   1826
             _ExtentY        =   529
-            Caption         =   "frmConfiguration.frx":031E
+            Caption         =   "frmConfiguration.frx":033A
             BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
                Name            =   "Verdana"
                Size            =   8.25
@@ -362,7 +400,7 @@ Begin VB.Form frmConfiguration
                Italic          =   0   'False
                Strikethrough   =   0   'False
             EndProperty
-            Keys            =   "frmConfiguration.frx":0383
+            Keys            =   "frmConfiguration.frx":039F
             AlignHorizontal =   0
             AlignVertical   =   0
             Appearance      =   1
@@ -460,7 +498,7 @@ Begin VB.Form frmConfiguration
             _Version        =   65536
             _ExtentX        =   1826
             _ExtentY        =   529
-            Caption         =   "frmConfiguration.frx":03C5
+            Caption         =   "frmConfiguration.frx":03E1
             BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
                Name            =   "Verdana"
                Size            =   8.25
@@ -470,7 +508,7 @@ Begin VB.Form frmConfiguration
                Italic          =   0   'False
                Strikethrough   =   0   'False
             EndProperty
-            Keys            =   "frmConfiguration.frx":042A
+            Keys            =   "frmConfiguration.frx":0446
             AlignHorizontal =   0
             AlignVertical   =   0
             Appearance      =   1
@@ -586,9 +624,9 @@ Begin VB.Form frmConfiguration
          Width           =   6465
          Begin VB.ComboBox cboNodeSize 
             Height          =   315
-            ItemData        =   "frmConfiguration.frx":046C
+            ItemData        =   "frmConfiguration.frx":0488
             Left            =   1920
-            List            =   "frmConfiguration.frx":046E
+            List            =   "frmConfiguration.frx":048A
             Style           =   2  'Dropdown List
             TabIndex        =   48
             Top             =   700
@@ -596,9 +634,9 @@ Begin VB.Form frmConfiguration
          End
          Begin VB.ComboBox cboColours 
             Height          =   315
-            ItemData        =   "frmConfiguration.frx":0470
+            ItemData        =   "frmConfiguration.frx":048C
             Left            =   1920
-            List            =   "frmConfiguration.frx":0472
+            List            =   "frmConfiguration.frx":048E
             Style           =   2  'Dropdown List
             TabIndex        =   46
             Top             =   300
@@ -687,9 +725,9 @@ Begin VB.Form frmConfiguration
          Width           =   6465
          Begin VB.ComboBox cboProcessMethod 
             Height          =   315
-            ItemData        =   "frmConfiguration.frx":0474
+            ItemData        =   "frmConfiguration.frx":0490
             Left            =   2010
-            List            =   "frmConfiguration.frx":0476
+            List            =   "frmConfiguration.frx":0492
             Style           =   2  'Dropdown List
             TabIndex        =   25
             Top             =   300
@@ -894,7 +932,7 @@ Begin VB.Form frmConfiguration
       Begin VB.Frame fraEmailSetup 
          Caption         =   "Setup :"
          Height          =   2535
-         Left            =   150
+         Left            =   -74850
          TabIndex        =   0
          Top             =   400
          Width           =   6465
@@ -908,9 +946,9 @@ Begin VB.Form frmConfiguration
          End
          Begin VB.ComboBox cboEmailMethod 
             Height          =   315
-            ItemData        =   "frmConfiguration.frx":0478
+            ItemData        =   "frmConfiguration.frx":0494
             Left            =   1875
-            List            =   "frmConfiguration.frx":047A
+            List            =   "frmConfiguration.frx":0496
             Style           =   2  'Dropdown List
             TabIndex        =   2
             Top             =   270
@@ -918,9 +956,9 @@ Begin VB.Form frmConfiguration
          End
          Begin VB.ComboBox cboEmailProfile 
             Height          =   315
-            ItemData        =   "frmConfiguration.frx":047C
+            ItemData        =   "frmConfiguration.frx":0498
             Left            =   1875
-            List            =   "frmConfiguration.frx":047E
+            List            =   "frmConfiguration.frx":049A
             Style           =   2  'Dropdown List
             TabIndex        =   4
             Top             =   700
@@ -984,7 +1022,7 @@ Begin VB.Form frmConfiguration
       Begin VB.Frame fraEmailOptions 
          Caption         =   "Options :"
          Height          =   1190
-         Left            =   150
+         Left            =   -74850
          TabIndex        =   14
          Top             =   4240
          Width           =   6465
@@ -1030,9 +1068,9 @@ Begin VB.Form frmConfiguration
          End
          Begin VB.ComboBox cboEmailDateFormat 
             Height          =   315
-            ItemData        =   "frmConfiguration.frx":0480
+            ItemData        =   "frmConfiguration.frx":049C
             Left            =   1875
-            List            =   "frmConfiguration.frx":0482
+            List            =   "frmConfiguration.frx":049E
             Style           =   2  'Dropdown List
             TabIndex        =   16
             Top             =   300
@@ -1062,7 +1100,7 @@ Begin VB.Form frmConfiguration
       Begin VB.Frame fraTestSQLMail 
          Caption         =   "Test :"
          Height          =   1190
-         Left            =   150
+         Left            =   -74850
          TabIndex        =   10
          Top             =   3000
          Width           =   6465
@@ -1471,7 +1509,7 @@ End Sub
 Private Sub cmdCancel_Click()
 'UnLoad Me
 Dim pintAnswer As Integer
-If Changed = True Or cmdOK.Enabled Then
+If Changed = True Or cmdOk.Enabled Then
   pintAnswer = MsgBox("You have made changes...do you wish to save these changes ?", vbQuestion + vbYesNoCancel, App.Title)
   If pintAnswer = vbYes Then
     'AE20071108 Fault #12551
@@ -1479,7 +1517,7 @@ If Changed = True Or cmdOK.Enabled Then
     'after its been unloaded in cmdOK_Click, changed to Screen.MousePointer
     'Me.MousePointer = vbHourglass
     Screen.MousePointer = vbHourglass
-    cmdOk_Click 'This is just like saving
+    cmdOK_Click 'This is just like saving
     Screen.MousePointer = vbDefault
     'Me.MousePointer = vbNormal
     Exit Sub
@@ -1524,7 +1562,52 @@ ErrorTrap:
 
 End Sub
 
-Private Sub cmdOk_Click()
+Private Sub cmdDefaultScreenFont_Click()
+
+  On Error GoTo ErrorTrap
+  
+  With comDlgBox
+    .FontName = gobjDefaultScreenFont.Name
+    .FontSize = gobjDefaultScreenFont.Size
+    .FontBold = gobjDefaultScreenFont.Bold
+    .FontItalic = gobjDefaultScreenFont.Italic
+    .FontUnderline = gobjDefaultScreenFont.Underline
+    .FontStrikethru = gobjDefaultScreenFont.Strikethrough
+    .Color = txtDefaultScreenFont.ForeColor
+       
+    .Flags = cdlCFScreenFonts Or cdlCFEffects
+    .ShowFont
+      
+    If gobjDefaultScreenFont.Name <> .FontName _
+      Or gobjDefaultScreenFont.Size <> .FontSize _
+      Or gobjDefaultScreenFont.Bold <> .FontBold _
+      Or gobjDefaultScreenFont.Italic <> .FontItalic _
+      Or gobjDefaultScreenFont.Underline <> .FontUnderline _
+      Or gobjDefaultScreenFont.Strikethrough <> .FontStrikethru _
+      Or txtDefaultScreenFont.ForeColor <> .Color Then
+      
+      gobjDefaultScreenFont.Name = .FontName
+      gobjDefaultScreenFont.Size = .FontSize
+      gobjDefaultScreenFont.Bold = .FontBold
+      gobjDefaultScreenFont.Italic = .FontItalic
+      gobjDefaultScreenFont.Underline = .FontUnderline
+      gobjDefaultScreenFont.Strikethrough = .FontStrikethru
+      glngDefaultScreenForeColor = .Color
+      
+      txtDefaultScreenFont.Text = GetFontDescription(gobjDefaultScreenFont)
+      txtDefaultScreenFont.ForeColor = glngDefaultScreenForeColor
+      
+      Changed = True
+
+    End If
+  End With
+
+ErrorTrap:
+  Err = False
+
+End Sub
+
+Private Sub cmdOK_Click()
 
   Dim lngMethod As Long
   Dim iTestProcess As ProcessAccountStatus
@@ -1825,7 +1908,6 @@ Private Function ValidateEmailMethod(lngMethod As Long) As Boolean
 
 End Function
 
-
 Private Sub Form_KeyDown(KeyCode As Integer, Shift As Integer)
 Select Case KeyCode
   Case vbKeyF1
@@ -1986,6 +2068,9 @@ Private Sub Form_Load()
     cmdAttachmentsPathClear.Enabled = ((txtAttachmentsPath.Text <> vbNullString) And (gbCurrentUserIsSysSecMgr))
     cmdAttachmentsPath.Enabled = (gbCurrentUserIsSysSecMgr)
   End If
+  
+  txtDefaultScreenFont.Text = GetFontDescription(gobjDefaultScreenFont)
+  txtDefaultScreenFont.ForeColor = glngDefaultScreenForeColor
   
   'Disable other non used frames to stop elements being tabbed to.
   SSTab1_Click (1)
@@ -2528,6 +2613,6 @@ End Property
 
 Private Property Let Changed(ByVal fNewValue As Boolean)
   mfChanged = fNewValue
-  cmdOK.Enabled = mfChanged
+  cmdOk.Enabled = mfChanged
 End Property
 

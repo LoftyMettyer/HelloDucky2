@@ -1,11 +1,12 @@
 VERSION 5.00
+Object = "{F9043C88-F6F2-101A-A3C9-08002B2F49FB}#1.2#0"; "COMDLG32.OCX"
 Begin VB.Form frmScrEdit 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Properties"
-   ClientHeight    =   6915
+   ClientHeight    =   6855
    ClientLeft      =   2595
    ClientTop       =   1515
-   ClientWidth     =   9510
+   ClientWidth     =   9630
    BeginProperty Font 
       Name            =   "Verdana"
       Size            =   8.25
@@ -22,8 +23,8 @@ Begin VB.Form frmScrEdit
    LockControls    =   -1  'True
    MaxButton       =   0   'False
    MinButton       =   0   'False
-   ScaleHeight     =   6915
-   ScaleWidth      =   9510
+   ScaleHeight     =   6855
+   ScaleWidth      =   9630
    ShowInTaskbar   =   0   'False
    StartUpPosition =   2  'CenterScreen
    Begin VB.Frame frmDefinition 
@@ -32,14 +33,32 @@ Begin VB.Form frmScrEdit
       Left            =   45
       TabIndex        =   18
       Top             =   90
-      Width           =   9375
+      Width           =   9510
+      Begin VB.TextBox txtDefaultScreenFont 
+         BackColor       =   &H8000000F&
+         Enabled         =   0   'False
+         Height          =   315
+         Left            =   5985
+         TabIndex        =   28
+         Top             =   1080
+         Width           =   2760
+      End
+      Begin VB.CommandButton cmdDefaultScreenFont 
+         Caption         =   "..."
+         Height          =   315
+         Left            =   8745
+         TabIndex        =   27
+         ToolTipText     =   "Select Path"
+         Top             =   1080
+         Width           =   315
+      End
       Begin VB.ComboBox cboCategory 
          Height          =   315
          Left            =   1335
          Style           =   2  'Dropdown List
          TabIndex        =   3
          Top             =   675
-         Width           =   3270
+         Width           =   3255
       End
       Begin VB.TextBox txtDescription 
          Height          =   1000
@@ -48,8 +67,8 @@ Begin VB.Form frmScrEdit
          MultiLine       =   -1  'True
          ScrollBars      =   2  'Vertical
          TabIndex        =   4
-         Top             =   1125
-         Width           =   3270
+         Top             =   1080
+         Width           =   3255
       End
       Begin VB.CommandButton cmdIconClear 
          Caption         =   "O"
@@ -64,7 +83,7 @@ Begin VB.Form frmScrEdit
             Strikethrough   =   0   'False
          EndProperty
          Height          =   315
-         Left            =   8895
+         Left            =   9060
          MaskColor       =   &H000000FF&
          TabIndex        =   7
          ToolTipText     =   "Clear Path"
@@ -76,18 +95,18 @@ Begin VB.Form frmScrEdit
          BackColor       =   &H8000000F&
          Enabled         =   0   'False
          Height          =   315
-         Left            =   5670
+         Left            =   5985
          Locked          =   -1  'True
          TabIndex        =   20
          TabStop         =   0   'False
          Text            =   "txtIcon"
          Top             =   675
-         Width           =   2910
+         Width           =   2760
       End
       Begin VB.CommandButton cmdIcon 
          Caption         =   "..."
          Height          =   315
-         Left            =   8580
+         Left            =   8745
          TabIndex        =   6
          Top             =   675
          UseMaskColor    =   -1  'True
@@ -96,17 +115,17 @@ Begin VB.Form frmScrEdit
       Begin VB.CheckBox chkSSIntranet 
          Caption         =   "Self-service &Intranet Screen"
          Height          =   315
-         Left            =   5670
+         Left            =   5985
          TabIndex        =   9
-         Top             =   1425
+         Top             =   1815
          Width           =   2985
       End
       Begin VB.CheckBox chkQuickEntry 
          Caption         =   "&Quick Access Screen"
          Height          =   315
-         Left            =   5670
+         Left            =   5985
          TabIndex        =   8
-         Top             =   1110
+         Top             =   1500
          Width           =   2385
       End
       Begin VB.TextBox txtName 
@@ -116,41 +135,49 @@ Begin VB.Form frmScrEdit
          TabIndex        =   2
          Text            =   "txtName"
          Top             =   270
-         Width           =   3270
+         Width           =   3255
       End
       Begin VB.TextBox txtOrder 
          BackColor       =   &H8000000F&
          Enabled         =   0   'False
          Height          =   315
-         Left            =   5655
+         Left            =   5985
          Locked          =   -1  'True
          TabIndex        =   19
          TabStop         =   0   'False
          Text            =   "txtOrder"
          Top             =   270
-         Width           =   2910
+         Width           =   2760
       End
       Begin VB.CommandButton cmdOrder 
          Caption         =   "..."
          Height          =   315
-         Left            =   8580
+         Left            =   8745
          TabIndex        =   5
          Top             =   270
          UseMaskColor    =   -1  'True
          Width           =   315
       End
+      Begin VB.Label lblDefaultScreenFont 
+         Caption         =   "Default Font :"
+         Height          =   195
+         Left            =   4725
+         TabIndex        =   26
+         Top             =   1140
+         Width           =   1275
+      End
       Begin VB.Label lblCategory 
          Caption         =   "Category :"
-         Height          =   240
+         Height          =   195
          Left            =   135
          TabIndex        =   25
-         Top             =   755
+         Top             =   720
          Width           =   1005
       End
       Begin VB.Label lblIcon 
          Caption         =   "Icon :"
-         Height          =   240
-         Left            =   4860
+         Height          =   195
+         Left            =   4725
          TabIndex        =   24
          Top             =   720
          Width           =   555
@@ -161,7 +188,7 @@ Begin VB.Form frmScrEdit
          Height          =   195
          Left            =   135
          TabIndex        =   23
-         Top             =   1170
+         Top             =   1140
          Width           =   1170
       End
       Begin VB.Label lblName 
@@ -171,18 +198,18 @@ Begin VB.Form frmScrEdit
          Height          =   195
          Left            =   135
          TabIndex        =   22
-         Top             =   330
-         Width           =   510
+         Top             =   315
+         Width           =   870
       End
       Begin VB.Label lblOrder 
          AutoSize        =   -1  'True
          BackStyle       =   0  'Transparent
          Caption         =   "Order :"
          Height          =   195
-         Left            =   4860
+         Left            =   4725
          TabIndex        =   21
-         Top             =   330
-         Width           =   615
+         Top             =   315
+         Width           =   645
       End
    End
    Begin VB.Frame fraHistoryScreens 
@@ -191,7 +218,7 @@ Begin VB.Form frmScrEdit
       Left            =   90
       TabIndex        =   17
       Top             =   2520
-      Width           =   9330
+      Width           =   9465
       Begin VB.CheckBox chkGroupByCategory 
          Caption         =   "&Group screens by category"
          Height          =   285
@@ -258,19 +285,28 @@ Begin VB.Form frmScrEdit
       Cancel          =   -1  'True
       Caption         =   "&Cancel"
       Height          =   400
-      Left            =   8220
+      Left            =   8355
       TabIndex        =   1
-      Top             =   6345
+      Top             =   6315
       Width           =   1200
    End
    Begin VB.CommandButton cmdOk 
       Caption         =   "&OK"
       Default         =   -1  'True
       Height          =   400
-      Left            =   6960
+      Left            =   7095
       TabIndex        =   0
-      Top             =   6345
+      Top             =   6315
       Width           =   1200
+   End
+   Begin MSComDlg.CommonDialog comDlgBox 
+      Left            =   105
+      Top             =   6285
+      _ExtentX        =   847
+      _ExtentY        =   847
+      _Version        =   393216
+      CancelError     =   -1  'True
+      FontName        =   "Verdana"
    End
 End
 Attribute VB_Name = "frmScrEdit"
@@ -289,6 +325,9 @@ Private lngScreenID As Long
 Private lngTableID As Long
 Private gfLockedTable As Boolean
 Private miTableType As enum_TableTypes
+
+Private mobjDefaultFont As New StdFont
+Private mlngDefaultScreenForeColor As Long
 
 Public Property Get Cancelled() As Boolean
   Cancelled = blnCancelled
@@ -368,6 +407,48 @@ Private Sub cmdCancel_Click()
   blnCancelled = True
   
   UnLoad Me
+End Sub
+
+Private Sub cmdDefaultScreenFont_Click()
+
+  On Error GoTo ErrorTrap
+  
+  With comDlgBox
+    .FontName = mobjDefaultFont.Name
+    .FontSize = mobjDefaultFont.Size
+    .FontBold = mobjDefaultFont.Bold
+    .FontItalic = mobjDefaultFont.Italic
+    .FontUnderline = mobjDefaultFont.Underline
+    .FontStrikethru = mobjDefaultFont.Strikethrough
+    .Color = mlngDefaultScreenForeColor
+       
+    .Flags = cdlCFScreenFonts Or cdlCFEffects
+    .ShowFont
+      
+    If mobjDefaultFont.Name <> .FontName _
+      Or mobjDefaultFont.Size <> .FontSize _
+      Or mobjDefaultFont.Bold <> .FontBold _
+      Or mobjDefaultFont.Italic <> .FontItalic _
+      Or mobjDefaultFont.Underline <> .FontUnderline _
+      Or mobjDefaultFont.Strikethrough <> .FontStrikethru _
+      Or txtDefaultScreenFont.ForeColor <> .Color Then
+      
+      mobjDefaultFont.Name = .FontName
+      mobjDefaultFont.Size = .FontSize
+      mobjDefaultFont.Bold = .FontBold
+      mobjDefaultFont.Italic = .FontItalic
+      mobjDefaultFont.Underline = .FontUnderline
+      mobjDefaultFont.Strikethrough = .FontStrikethru
+      mlngDefaultScreenForeColor = .Color
+            
+    End If
+  End With
+
+  txtDefaultFont_Refresh
+
+ErrorTrap:
+  Err = False
+
 End Sub
 
 Private Sub cmdDeselectAll_Click()
@@ -763,6 +844,12 @@ Private Sub Form_Activate()
           
           bGrouped = IIf(IsNull(.Fields("groupscreens").value), False, .Fields("groupscreens").value)
           chkGroupByCategory.value = IIf(bGrouped, vbChecked, vbUnchecked)
+                    
+          mobjDefaultFont.Name = .Fields("DfltFontName")
+          mobjDefaultFont.Size = .Fields("DfltFontSize")
+          mobjDefaultFont.Bold = .Fields("DfltFontBold")
+          mobjDefaultFont.Italic = .Fields("DfltFontItalic")
+          mlngDefaultScreenForeColor = .Fields("DfltForecolour")
           
         End If
       
@@ -773,12 +860,17 @@ Private Sub Form_Activate()
       GetObjectCategories cboCategory, utlScreen, 0
       cboCategory.ListIndex = 0
       Me.Caption = "Properties - New Screen"
+      
+      Set mobjDefaultFont = gobjDefaultScreenFont
+      mlngDefaultScreenForeColor = glngDefaultScreenForeColor
+           
     End If
         
     ' Populate the combos, textboxes and listboxes.
     txtOrder_Refresh
     listHistoryScreens_Refresh
     imgIcon_Refresh
+    txtDefaultFont_Refresh
     
     chkGroupByCategory.Enabled = (listHistoryScreens.ListCount > 0)
     
@@ -826,6 +918,13 @@ Private Sub Form_Load()
    
 End Sub
 
+Private Function txtDefaultFont_Refresh() As Boolean
+
+  txtDefaultScreenFont.Text = GetFontDescription(mobjDefaultFont)
+  txtDefaultScreenFont.ForeColor = mlngDefaultScreenForeColor
+
+End Function
+
 Private Function txtOrder_Refresh() As Boolean
   Dim objOrder As Order
   
@@ -857,49 +956,6 @@ Private Sub listHistoryScreens_KeyDown(KeyCode As Integer, Shift As Integer)
   If KeyCode = vbKeyEscape Then
     UnLoad Me
   End If
-End Sub
-
-Private Sub RefreshDefinitionTab()
-
-  If chkQuickEntry.value = vbChecked Then
-    chkSSIntranet.value = vbUnchecked
-  End If
-  
-  If chkSSIntranet.value = vbChecked Then
-    chkQuickEntry.value = vbUnchecked
-  End If
-  
-  'JPD 20030909 Fault 6210
-  If (Not Application.SelfServiceIntranetModule) Then
-    If chkSSIntranet.value Then
-      MsgBox "This screen cannot be a Self-service Intranet screen as you are not licenced to use the Intranet module.", _
-        vbOKOnly + vbExclamation, Application.Name
-          
-      chkSSIntranet.value = vbUnchecked
-    End If
-  End If
-  
-  'NPG20080421 Fault 12982
-  cmdOrder.Enabled = (chkSSIntranet.value = vbUnchecked)
-  
-  'JPD 20030909 Fault 6547
-  If chkSSIntranet.value = vbChecked Then
-    If IsParentScreen() = True Then
-      Me.OrderID = 0
-      txtOrder.Text = ""
-      cmdOrder.Enabled = False
-    Else
-      cmdOrder.Enabled = True
-    End If
-    
-    glngPictureID = 0
-  End If
-
-  cmdIcon.Enabled = (chkSSIntranet.value = vbUnchecked)
-  cmdIconClear.Enabled = (chkSSIntranet.value = vbUnchecked And Trim(txtIcon.Text) <> vbNullString)
-  chkSSIntranet.Enabled = (chkQuickEntry.value = vbUnchecked) And (Application.SelfServiceIntranetModule)
-  chkQuickEntry.Enabled = (chkSSIntranet.value = vbUnchecked)
-  
 End Sub
 
 Private Sub RefreshHistoryScreensTab()
@@ -1073,6 +1129,11 @@ Private Function SaveChanges() As Boolean
         !SSIntranet = (chkSSIntranet.value = vbChecked)
         .Fields("groupscreens").value = (chkGroupByCategory.value = vbChecked)
         .Fields("category").value = GetComboItem(cboCategory)
+        .Fields("DfltFontName").value = mobjDefaultFont.Name
+        .Fields("DfltFontSize").value = mobjDefaultFont.Size
+        .Fields("DfltFontBold").value = mobjDefaultFont.Bold
+        .Fields("DfltFontItalic").value = mobjDefaultFont.Italic
+        .Fields("DfltForeColour").value = txtDefaultScreenFont.ForeColor
         
         !Changed = True
         .Update
@@ -1095,11 +1156,12 @@ Private Function SaveChanges() As Boolean
       !AlignToGrid = True
     
       !dfltForeColour = vbBlack
-      !dfltFontName = "Verdana"
-      !dfltFontSize = 8
-      !dfltFontBold = False
-      !dfltFontItalic = False
-      
+      !dfltFontName = mobjDefaultFont.Name
+      !dfltFontSize = mobjDefaultFont.Size
+      !dfltFontBold = IIf(mobjDefaultFont.Bold, 1, 0)
+      !dfltFontItalic = IIf(mobjDefaultFont.Italic, 1, 0)
+      !dfltForeColour = txtDefaultScreenFont.ForeColor
+            
       !Height = 4900
       !Width = 7100
       !New = True

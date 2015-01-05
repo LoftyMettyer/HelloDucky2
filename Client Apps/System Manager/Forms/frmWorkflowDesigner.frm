@@ -13116,8 +13116,8 @@ Public Function LoadElementsAndLinks() As Boolean
             wfElement.WebFormHeight = IIf(IsNull(.Fields("WebFormHeight")), 5000, .Fields("WebFormHeight"))
             
             Set objFont = New StdFont
-            objFont.Name = IIf(IsNull(.Fields("WebFormDefaultFontName")), "Verdana", .Fields("WebFormDefaultFontName"))
-            objFont.Size = IIf(IsNull(.Fields("WebFormDefaultFontSize")), 8, .Fields("WebFormDefaultFontSize"))
+            objFont.Name = IIf(IsNull(.Fields("WebFormDefaultFontName")), gobjDefaultScreenFont.Name, .Fields("WebFormDefaultFontName"))
+            objFont.Size = IIf(IsNull(.Fields("WebFormDefaultFontSize")), gobjDefaultScreenFont.Size, .Fields("WebFormDefaultFontSize"))
             objFont.Bold = IIf(IsNull(.Fields("WebFormDefaultFontBold")), 0, .Fields("WebFormDefaultFontBold"))
             objFont.Italic = IIf(IsNull(.Fields("WebFormDefaultFontItalic")), 0, .Fields("WebFormDefaultFontItalic"))
             objFont.Strikethrough = IIf(IsNull(.Fields("WebFormDefaultFontStrikeThru")), 0, .Fields("WebFormDefaultFontStrikeThru"))
@@ -15649,8 +15649,8 @@ Private Function LoadNewElementOfType(piElementType) As VB.Control
     wfElement.WebFormBGColor = 16513017
     
     Set objFont = New StdFont
-    objFont.Name = "Verdana"
-    objFont.Size = 8
+    objFont.Name = gobjDefaultScreenFont.Name
+    objFont.Size = gobjDefaultScreenFont.Size
     objFont.Bold = False
     objFont.Italic = False
     objFont.Strikethrough = False

@@ -1,21 +1,21 @@
 VERSION 5.00
 Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "actbar.ocx"
 Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.ocx"
-Object = "{A48C54F8-25F4-4F50-9112-A9A3B0DBAD63}#1.0#0"; "COA_Label.ocx"
-Object = "{1EE59219-BC23-4BDF-BB08-D545C8A38D6D}#1.1#0"; "COA_Line.ocx"
-Object = "{98B2556E-F719-4726-9028-5F2EAB345800}#1.0#0"; "COASD_Checkbox.ocx"
-Object = "{3EBC9263-7DE3-4E87-8721-81ACE59CD84E}#1.2#0"; "COASD_Combo.ocx"
-Object = "{3CCEDCBE-4766-494F-84C9-95993D77BD56}#1.0#0"; "COASD_Command.ocx"
-Object = "{FFAE31F9-C18D-4C20-AAF7-74C1356185D9}#1.1#0"; "COASD_Frame.ocx"
-Object = "{5F165695-EDF2-40E1-BD8E-8D2E6325BDCF}#1.0#0"; "COASD_Image.ocx"
-Object = "{32648AC7-4D67-4E6A-A546-1B7783115C22}#1.0#0"; "COASD_OLE.ocx"
-Object = "{CE18FF03-F3BF-4C4F-81DC-192ED1E1B91F}#1.0#0"; "COASD_OptionGroup.ocx"
-Object = "{58F88252-94BB-43CE-9EF9-C971F73B93D4}#1.0#0"; "COASD_Selection.ocx"
-Object = "{714061F3-25A6-4821-B196-7D15DCCDE00E}#1.0#0"; "COASD_SelectionBox.ocx"
-Object = "{0BE8C79E-5090-4700-B420-B767D1E19561}#1.0#0"; "COASD_Spinner.ocx"
-Object = "{93EA589D-C793-4EE4-BE53-52A646038BAF}#1.0#0"; "COASD_WorkingPattern.ocx"
-Object = "{AD837810-DD1E-44E0-97C5-854390EA7D3A}#3.2#0"; "COA_Navigation.ocx"
-Object = "{C1ECF24D-7ECA-4C65-BBFD-DD76B98E3DF2}#1.0#0"; "COASD_ColourSelector.ocx"
+Object = "{A48C54F8-25F4-4F50-9112-A9A3B0DBAD63}#1.0#0"; "coa_label.ocx"
+Object = "{1EE59219-BC23-4BDF-BB08-D545C8A38D6D}#1.1#0"; "coa_line.ocx"
+Object = "{98B2556E-F719-4726-9028-5F2EAB345800}#1.0#0"; "coasd_checkbox.ocx"
+Object = "{3EBC9263-7DE3-4E87-8721-81ACE59CD84E}#1.2#0"; "coasd_combo.ocx"
+Object = "{3CCEDCBE-4766-494F-84C9-95993D77BD56}#1.0#0"; "coasd_command.ocx"
+Object = "{FFAE31F9-C18D-4C20-AAF7-74C1356185D9}#1.1#0"; "coasd_frame.ocx"
+Object = "{5F165695-EDF2-40E1-BD8E-8D2E6325BDCF}#1.0#0"; "coasd_image.ocx"
+Object = "{32648AC7-4D67-4E6A-A546-1B7783115C22}#1.0#0"; "coasd_ole.ocx"
+Object = "{CE18FF03-F3BF-4C4F-81DC-192ED1E1B91F}#1.0#0"; "coasd_optiongroup.ocx"
+Object = "{58F88252-94BB-43CE-9EF9-C971F73B93D4}#1.0#0"; "coasd_selection.ocx"
+Object = "{714061F3-25A6-4821-B196-7D15DCCDE00E}#1.0#0"; "coasd_selectionbox.ocx"
+Object = "{0BE8C79E-5090-4700-B420-B767D1E19561}#1.0#0"; "coasd_spinner.ocx"
+Object = "{93EA589D-C793-4EE4-BE53-52A646038BAF}#1.0#0"; "coasd_workingpattern.ocx"
+Object = "{AD837810-DD1E-44E0-97C5-854390EA7D3A}#3.2#0"; "coa_navigation.ocx"
+Object = "{C1ECF24D-7ECA-4C65-BBFD-DD76B98E3DF2}#1.0#0"; "coasd_colourselector.ocx"
 Begin VB.Form frmScrDesigner2 
    AutoRedraw      =   -1  'True
    Caption         =   "Screen Designer"
@@ -36,12 +36,34 @@ Begin VB.Form frmScrDesigner2
    Icon            =   "frmScrDesigner2.frx":0000
    KeyPreview      =   -1  'True
    LinkTopic       =   "Form1"
+   LockControls    =   -1  'True
    MaxButton       =   0   'False
    MDIChild        =   -1  'True
    ScaleHeight     =   7365
    ScaleWidth      =   13905
    ShowInTaskbar   =   0   'False
    Visible         =   0   'False
+   Begin SystemMgr.COASD_Label asrDummyTextBox 
+      Height          =   315
+      Index           =   0
+      Left            =   2550
+      TabIndex        =   14
+      Top             =   570
+      Visible         =   0   'False
+      Width           =   1005
+      _ExtentX        =   1773
+      _ExtentY        =   556
+      BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
+         Name            =   "Verdana"
+         Size            =   8.25
+         Charset         =   0
+         Weight          =   400
+         Underline       =   0   'False
+         Italic          =   0   'False
+         Strikethrough   =   0   'False
+      EndProperty
+      FontSize        =   8.25
+   End
    Begin COASDColSelector.COASD_ColourSelector ASRColourSelector 
       Height          =   315
       Index           =   0
@@ -317,6 +339,7 @@ Begin VB.Form frmScrDesigner2
       BeginProperty Tabs {0713E432-850A-101B-AFC0-4210102A8DA7} 
          NumTabs         =   1
          BeginProperty Tab1 {0713F341-850A-101B-AFC0-4210102A8DA7} 
+            Caption         =   ""
             Key             =   ""
             Object.Tag             =   ""
             ImageVarType    =   2
@@ -332,27 +355,6 @@ Begin VB.Form frmScrDesigner2
          Italic          =   0   'False
          Strikethrough   =   0   'False
       EndProperty
-   End
-   Begin COALabel.COA_Label asrDummyTextBox 
-      Height          =   315
-      Index           =   0
-      Left            =   2550
-      TabIndex        =   14
-      Top             =   570
-      Visible         =   0   'False
-      Width           =   1005
-      _ExtentX        =   1773
-      _ExtentY        =   556
-      BeginProperty Font {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
-         Name            =   "Verdana"
-         Size            =   8.25
-         Charset         =   0
-         Weight          =   400
-         Underline       =   0   'False
-         Italic          =   0   'False
-         Strikethrough   =   0   'False
-      EndProperty
-      FontSize        =   8.25
    End
    Begin COALabel.COA_Label asrDummyOLEContents2 
       Height          =   360
@@ -1827,9 +1829,9 @@ ErrorTrap:
   
 End Sub
 
-Public Property Set DefaultFont(pobjNewValue As Object)
+Public Property Set DefaultFont(pObjNewValue As Object)
   ' Set the screen's default font.
-  Set Me.Font = pobjNewValue
+  Set Me.Font = pObjNewValue
   
 End Property
 
@@ -3137,8 +3139,8 @@ Private Function LoadScreen() As Boolean
       ' Read the default foreground colour and font options.
       gDfltForeColour = IIf(IsNull(.Fields("dfltForeColour")), vbBlack, .Fields("dfltForeColour"))
             
-      Me.Font.Name = IIf(IsNull(.Fields("dfltFontName")), "Verdana", .Fields("dfltFontName"))
-      Me.Font.Size = IIf(IsNull(.Fields("dfltFontSize")), 8, .Fields("dfltFontSize"))
+      Me.Font.Name = IIf(IsNull(.Fields("dfltFontName")), gobjDefaultScreenFont.Name, .Fields("dfltFontName"))
+      Me.Font.Size = IIf(IsNull(.Fields("dfltFontSize")), gobjDefaultScreenFont.Size, .Fields("dfltFontSize"))
       Me.Font.Bold = IIf(IsNull(.Fields("dfltFontBold")), False, .Fields("dfltFontBold"))
       Me.Font.Italic = IIf(IsNull(.Fields("dfltFontItalic")), False, .Fields("dfltFontItalic"))
        
@@ -4578,7 +4580,7 @@ Public Function AutoSizeControl(pctlControl As VB.Control) As Boolean
               
               If .Fields("datatype") = dtVARCHAR Then
                 If .Fields("Multiline") Then
-                  pctlControl.Width = TextWidth(String(8000, "W")) + (2 * XFrame)
+                  pctlControl.Width = TextWidth(String(500, "W")) + (2 * XFrame)
                   pctlControl.Height = Me.TextHeight("W") * 3
                 Else
                   If Len(.Fields("Mask")) > 0 Then
@@ -6324,8 +6326,8 @@ Public Function LoadTabPage(piPageNumber As Integer) As Boolean
               ' Font properties.
               If ScreenControl_HasFont(iCtrlType) Then
                 Set objFont = New StdFont
-                objFont.Name = IIf(IsNull(.Fields("fontName").value), "Verdana", .Fields("fontName").value)
-                objFont.Size = IIf(IsNull(.Fields("fontSize").value), 8, .Fields("fontSize").value)
+                objFont.Name = IIf(IsNull(.Fields("fontName").value), gobjDefaultScreenFont.Name, .Fields("fontName").value)
+                objFont.Size = IIf(IsNull(.Fields("fontSize").value), gobjDefaultScreenFont.Size, .Fields("fontSize").value)
                 objFont.Bold = IIf(IsNull(.Fields("fontBold").value), False, .Fields("fontBold").value)
                 objFont.Italic = IIf(IsNull(.Fields("fontItalic").value), False, .Fields("fontItalic").value)
                 objFont.Strikethrough = IIf(IsNull(.Fields("fontStrikeThru").value), False, .Fields("fontStrikeThru").value)

@@ -175,3 +175,7 @@ Public gsApplicationPath As String
 
 Public gobjLicence As New clsLicence
 Public gbLicenceExpired As Boolean
+
+Public gobjDefaultScreenFont As New StdFont
+Public glngDefaultScreenForeColor As Long
+

@@ -4893,7 +4893,7 @@ Private Sub RefreshScreen()
   
   fOKToSave = mfChanged And (Not mfReadOnly)
   
-  cmdOK.Enabled = fOKToSave
+  cmdOk.Enabled = fOKToSave
 
 End Sub
 
@@ -5701,48 +5701,6 @@ Private Sub SaveProperties()
     lngNewParameter
 
 End Sub
-
-Private Function GetFontDescription(pObjFont As StdFont) As String
-  ' Return the description of the given font for display.
-  On Error GoTo ErrorTrap
-  
-  Dim sFontDescription As String
-  
-  If Not pObjFont Is Nothing Then
-    With pObjFont
-      sFontDescription = .Name
-          
-      If .Bold Then
-        If .Italic Then
-          sFontDescription = sFontDescription & ", Bold Italic"
-        Else
-          sFontDescription = sFontDescription & ", Bold"
-        End If
-      Else
-        If .Italic Then
-          sFontDescription = sFontDescription & ", Italic"
-        Else
-          sFontDescription = sFontDescription & ", Regular"
-        End If
-      End If
-      
-      sFontDescription = sFontDescription & IIf(.Strikethrough, ", Strikethrough", "")
-      sFontDescription = sFontDescription & IIf(.Underline, ", Underline", "")
-    End With
-  Else
-    sFontDescription = ""
-  End If
-  
-TidyUpAndExit:
-  GetFontDescription = sFontDescription
-  Exit Function
-  
-ErrorTrap:
-  sFontDescription = "<unknown>"
-  Resume TidyUpAndExit
-  
-End Function
-
 
 Private Function ValidateProperties() As Boolean
   On Error GoTo ErrorTrap
@@ -10896,13 +10854,13 @@ End Sub
 Private Sub txtControlValues_GotFocus()
   ' Disable the 'Default' property of the 'OK' button as the return key is
   ' used by this textbox.
-  cmdOK.Default = False
+  cmdOk.Default = False
 
 End Sub
 
 Private Sub txtControlValues_LostFocus()
   ' Enable the 'Default' property of the OK button.
-  cmdOK.Default = True
+  cmdOk.Default = True
 
 End Sub
 
@@ -11050,14 +11008,14 @@ End Sub
 Private Sub txtFileExtensions_GotFocus()
   ' Disable the 'Default' property of the 'OK' button as the return key is
   ' used by this textbox.
-  cmdOK.Default = False
+  cmdOk.Default = False
 
 End Sub
 
 
 Private Sub txtFileExtensions_LostFocus()
   ' Enable the 'Default' property of the OK button.
-  cmdOK.Default = True
+  cmdOk.Default = True
 
 End Sub
 

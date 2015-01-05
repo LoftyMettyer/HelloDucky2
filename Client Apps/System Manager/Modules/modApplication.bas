@@ -1660,7 +1660,15 @@ Public Sub ActivateModules()
   ' Column 0 = Workflow Name
   ' Column 1 = Original URL + QueryString
   ' Column 2 = New URL + QueryString
-    
+      
+  gobjDefaultScreenFont.Name = GetSystemSetting("ScreenDesigner", "FontName", "Verdana")
+  gobjDefaultScreenFont.Size = GetSystemSetting("ScreenDesigner", "FontSize", 8)
+  gobjDefaultScreenFont.Bold = GetSystemSetting("ScreenDesigner", "FontBold", False)
+  gobjDefaultScreenFont.Italic = GetSystemSetting("ScreenDesigner", "FontItalic", False)
+  gobjDefaultScreenFont.Underline = GetSystemSetting("ScreenDesigner", "FontUnderline", False)
+  gobjDefaultScreenFont.Strikethrough = GetSystemSetting("ScreenDesigner", "FontStrikethrough", False)
+  glngDefaultScreenForeColor = GetSystemSetting("ScreenDesigner", "ForeColor", vbBlack)
+        
   glngEmailMethod = GetSystemSetting("Email", "Method", 1)
   gstrEmailProfile = GetSystemSetting("Email", "Profile", "")
   gstrEmailServer = GetSystemSetting("Email", "Server", "")
