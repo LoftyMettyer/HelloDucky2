@@ -53,11 +53,7 @@
 		}
 
 		$(function () {
-			attachGrid();
-
-			$("#SortOrders").find('input[type=checkbox]').each(function () {
-				CheckBoxClick($(this));
-			});
+			attachGrid();			
 		})
 
 		function removeSortOrder() {
@@ -147,8 +143,11 @@
 				},
 				onSelectRow: function (id) {
 					refreshSortButtons();					
+					CheckBoxClick();
+					enableSaveButton();
 				},
 				afterInsertRow: function (rowID) {										
+					enableSaveButton();
 				},
 				loadComplete: function (data) {
 					if ('@Model.ReportType' == '@UtilityType.utlCustomReport') {
@@ -158,49 +157,47 @@
 						$(this).showCol("SuppressRepeated");
 					}
 					var topID = $("#SortOrders").getDataIDs()[0]
-					$("#SortOrders").jqGrid("setSelection", topID);					
+					$("#SortOrders").jqGrid("setSelection", topID);
 				}
 			});
 		}
 
-		function CheckBoxClick(obj) {
-			obj.change(function () {
-				var colid = $(this).parents('tr:last').attr('id');
-				var PageOnChangeColumn = $(this).parents('td').attr('aria-describedby') == "SortOrders_PageOnChange";
-				var BreakOnChangeColumn = $(this).parents('td').attr('aria-describedby') == "SortOrders_BreakOnChange";
-				
-				highlightThisRow(colid, $("#SortOrders"));
-				$("#SelectedColumns").jqGrid('resetSelection');
+		function CheckBoxClick() {
+			$("#SortOrders").find('input[type=checkbox]').each(function () {
+				$(this).change(function () {
+					var colid = $(this).parents('tr:last').attr('id');
+					var PageOnChangeColumn = $(this).parents('td').attr('aria-describedby') == "SortOrders_PageOnChange";
+					var BreakOnChangeColumn = $(this).parents('td').attr('aria-describedby') == "SortOrders_BreakOnChange";
+					highlightThisRow(colid, $("#SortOrders"));
+					
+					if ($(this).is(':checked')) {
+						var currentRowData = $("#SortOrders").getRowData(colid);
+						var colData = $("#SelectedColumns").getRowData();
 
-				if ($(this).is(':checked')) {
-					var currentRowData = $("#SortOrders").getRowData(colid);
-					var colData = $("#SelectedColumns").getRowData();
+						if ((PageOnChangeColumn && currentRowData.BreakOnChange.toUpperCase() == "TRUE") || (BreakOnChangeColumn && currentRowData.PageOnChange.toUpperCase() == "TRUE")) {
+							// Validates that either PageOnChange or BreakOnChange is checked but not both
+							OpenHR.modalMessage("You cannot select both 'Break on Change' and 'Page on Change' for the same column.");
+							$(this).prop('checked', false);
+						}
 
-					if ((PageOnChangeColumn && currentRowData.BreakOnChange.toUpperCase() == "TRUE") || (BreakOnChangeColumn && currentRowData.PageOnChange.toUpperCase() == "TRUE")) {
-						// Validates that either PageOnChange or BreakOnChange is checked but not both
-						OpenHR.modalMessage("You cannot select both 'Break on Change' and 'Page on Change' for the same column.");
-						$(this).prop('checked', false);
-						return;
-					}
-
-					for (var i = 0; i < colData.length; i++) {
-						if ((colData[i].ID == currentRowData.ColumnID)) {
-							if ((colData[i].IsHidden.toUpperCase() == "TRUE") && !PageOnChangeColumn && !BreakOnChangeColumn) {
-								// Hidden column
-								OpenHR.modalMessage("This column is marked as hidden in the 'Columns / Calculated Selected' section under Columns Tab.");
-								$(this).prop('checked', false);
-								break;
-							} else {
-								// Tick the order chkbox without asking as its not hidden							
-								$(this).prop('checked', true);								
-								enableSaveButton();
-								break;
-							}
+						for (var i = 0; i < colData.length; i++) {
+							if ((colData[i].ID == currentRowData.ColumnID)) {
+								if ((colData[i].IsHidden.toUpperCase() == "TRUE") && !PageOnChangeColumn && !BreakOnChangeColumn) {
+									// Hidden column
+									OpenHR.modalMessage("This column is marked as hidden in the 'Columns / Calculated Selected' section under Columns Tab.");
+									$(this).prop('checked', false);
+									break;
+								} else {
+									// Tick the order chkbox without asking as its not hidden							
+									$(this).prop('checked', true);
+									break;
+								}
+							}		
 						}
 					}
-				}						
+				});
 			});
-		}
+		}		
 
 		function highlightThisRow(rowId, obj) {
 			// Highlight the rowID in the grid obj						
@@ -208,17 +205,38 @@
 			obj.jqGrid('setSelection', rowId);
 		}
 
+		// Validates that either PageOnChange or BreakOnChange is checked but not both
+		function validatePageAndBreakOnChange(colid, checkedColumnName) {
+			var gridData = $("#SortOrders").getRowData(colid);
+			var retVal = true;
+
+			// Allow selection of either pageonchange or breakonchange but not both
+			if ((checkedColumnName == "SortOrders_PageOnChange" && gridData.BreakOnChange.toUpperCase() == "TRUE") ||
+				(checkedColumnName == "SortOrders_BreakOnChange" && gridData.PageOnChange.toUpperCase() == "TRUE"))
+			{
+				retVal = false;
+			}
+			return retVal;
+		}
+
 		function addSortOrder() {
 			OpenHR.OpenDialog("Reports/AddSortOrder", "divPopupReportDefinition", { ReportID: "@Model.ID", ReportType: "@Model.ReportType" }, 'auto');
+			var topID = $("#SelectedColumns").getDataIDs()[0]
+			$('#SelectedColumns').jqGrid('resetSelection');
+			$("#SelectedColumns").jqGrid('setSelection', topID);
 		}
 
 		function editSortSorder(rowID) {
+
 			if (rowID == 0) {
 				rowID = $('#SortOrders').jqGrid('getGridParam', 'selrow');
 			}
 
 			var gridData = $("#SortOrders").getRowData(rowID);
 			OpenHR.OpenDialog("Reports/EditSortOrder", "divPopupReportDefinition", gridData, 'auto');
+			var topID = $("#SelectedColumns").getDataIDs()[0]
+			$('#SelectedColumns').jqGrid('resetSelection');
+			$("#SelectedColumns").jqGrid('setSelection', topID);
 		}
 
 		function moveSelectedOrder(direction) {
