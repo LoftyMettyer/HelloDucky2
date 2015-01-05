@@ -69,14 +69,18 @@ End Code
 <script type="text/javascript">
 
 	$(function () {
-		$("#tabs").tabs({
+		$("#tabs").tabs({			
 			activate: function (event, ui) {
-				//Tab click event fired
+				//Tab click event fired				
 				if (ui.newTab.text() == "Columns") {
-					resizeColumnGrids();
+
+					var topID = $("#SelectedColumns").getDataIDs()[0]
+					$('#SelectedColumns').jqGrid('resetSelection');
+					$("#SelectedColumns").jqGrid('setSelection', topID);
+					resizeColumnGrids();					
 				}
 				if (ui.newTab.text() == "Sort Order") {
-					//resize the Event Details grid to fit
+					//resize the Event Details grid to fit					
 					var workPageHeight = $('#workframeset').height();
 					var gridTopPos = $('#divSortOrderDiv').position().top;
 					var tabHeight = $('#tabs>.ui-tabs-nav').outerHeight();
@@ -99,7 +103,7 @@ End Code
 	$('#tabs').bind('tabsshow', function (event, ui) {
 
 		var tabPage;
-
+		
 		if (ui.index == "0") {
 			tabPage = $("#frmCustomReportsTab1");
 		}
