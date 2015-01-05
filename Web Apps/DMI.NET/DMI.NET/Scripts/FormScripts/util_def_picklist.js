@@ -6,10 +6,10 @@ var frmUseful = OpenHR.getForm("workframe", "frmUseful");
 function util_def_picklist_onload() {
 
 	$("#workframe").attr("data-framesource", "UTIL_DEF_PICKLIST");
-	
+
 	// Expand the work frame and hide the option frame.
 	//            window.parent.document.all.item("workframeset").cols = "*, 0";
-	
+
 	if (frmUseful.txtAction.value.toUpperCase() == "NEW") {
 		frmDefinition.txtOwner.value = frmUseful.txtUserName.value;
 		frmDefinition.txtDescription.value = "";
@@ -67,12 +67,12 @@ function refreshControls() {
 	button_disable(frmDefinition.cmdRemoveAll, fRemoveAllDisabled);
 
 	menu_toolbarEnableItem('mnutoolSaveReport', (!((frmUseful.txtChanged.value == 0) || (fViewing == true))));
-	
+
 	// Get menu.asp to refresh the menu.
 	menu_refreshMenu();
 }
 
-function submitDefinition() {	
+function submitDefinition() {
 	if (validate() == false) { menu_refreshMenu(); return; }
 	if (populateSendForm() == false) { menu_refreshMenu(); return; }
 
@@ -186,7 +186,7 @@ function removeClick() {
 	};
 
 	grid.jqGrid('delGridRow', grid.jqGrid('getGridParam', 'selarrrow'), myDelOptions);
-	
+
 	$("#dData").click(); //To remove the "delete confirmation" dialog
 
 	frmUseful.txtChanged.value = 1;
@@ -255,7 +255,7 @@ function picklistdef_makeSelection(psType, piID, psPrompts) {
 	$("#workframeset").show();
 
 	/* Get the current selected delegate IDs. */
-		var sSelectedIDs = "0";
+	var sSelectedIDs = "0";
 
 	sSelectedIDs = $('#ssOleDBGrid').getDataIDs().join(",");
 
@@ -351,7 +351,7 @@ function validate() {
 }
 
 function udp_createNew() {
-	
+
 	OpenHR.clearTmpDialog();
 	if ($('.popup').dialog('isOpen')) $('.popup').dialog('close');
 
@@ -475,11 +475,21 @@ function disableAll() {
 function changeName() {
 	frmUseful.txtChanged.value = 1;
 	refreshControls();
+	if ($("#ssOleDBGrid").getGridParam('reccount') == 0)//If the grid is empty, disable the "Remove" and "Remove All" button
+	{
+		button_disable(frmDefinition.cmdRemove, true); //Disable the "Remove" button
+		button_disable(frmDefinition.cmdRemoveAll, true); //Disable the "Remove All" button
+	}
 }
 
 function changeDescription() {
 	frmUseful.txtChanged.value = 1;
 	refreshControls();
+	if ($("#ssOleDBGrid").getGridParam('reccount') == 0)//If the grid is empty, disable the "Remove" and "Remove All" button
+	{
+		button_disable(frmDefinition.cmdRemove, true); //Disable the "Remove" button
+		button_disable(frmDefinition.cmdRemoveAll, true); //Disable the "Remove All" button
+	}
 }
 
 function changeAccess() {
@@ -487,3 +497,86 @@ function changeAccess() {
 	refreshControls();
 }
 
+function BindDefaultGridOnNewDefinition() {
+	//Load empty grid when we clik new button
+	if (frmUseful.txtAction.value.toUpperCase() == "NEW") {
+		dataCollection = frmDefinition.elements; // Add the grid records.
+		fRecordAdded = false;
+		iCount = 0;
+
+		//need this as this grid won't accept live changes :/		
+		$("#ssOleDBGrid").jqGrid('GridUnload');
+
+		// new bit for colmodel
+		colMode = [];
+		colNames = [];
+
+		if (dataCollection != null) {
+			for (i = 0; i < dataCollection.length; i++) {
+				sControlName = dataCollection.item(i).name;
+				sControlName = sControlName.substr(0, 16);
+
+				if (sControlName == "txtOptionColDef_") {
+					// Get the column name and type from the control.
+					sColDef = dataCollection.item(i).value;
+
+					iIndex = sColDef.indexOf("	");
+					if (iIndex >= 0) {
+						sColumnName = sColDef.substr(0, iIndex);
+						sColumnType = sColDef.substr(iIndex + 1).replace('System.', '').toLowerCase();
+
+						colNames.push(sColumnName);
+
+						if (sColumnName.toUpperCase() == "ID") {
+							colMode.push({ name: sColumnName, hidden: true });
+						} else {
+							switch (sColumnType) {
+								case "boolean": // "11":
+									colMode.push({ name: sColumnName, edittype: "checkbox", formatter: 'checkbox', formatoptions: { disabled: true }, align: 'center', width: 100 });
+									break;
+								case "decimal":
+									colMode.push({ name: sColumnName, edittype: "numeric", sorttype: 'integer', formatter: 'numeric', formatoptions: { disabled: true }, align: 'right', width: 100 });
+									break;
+								case "datetime": //Date - 135
+									colMode.push({ name: sColumnName, edittype: "date", sorttype: 'date', formatter: 'date', formatoptions: { srcformat: dateFormat, newformat: dateFormat, disabled: true }, align: 'left', width: 100 });
+									break;
+								default:
+									colMode.push({ name: sColumnName, width: 100 });
+							}
+						}
+					}
+				}
+			}
+		}
+
+		//Determine if the grid already exists...
+		if ($("#ssOleDBGrid").getGridParam("reccount") == undefined) { //It doesn't exist, create it
+			var shrinkToFit = false;
+			if (colMode.length < 8) shrinkToFit = true;
+			var gridWidth = $('#PickListGrid').width();
+			$("#ssOleDBGrid").jqGrid({
+				multiselect: true,
+				datatype: 'local',
+				colNames: colNames,
+				colModel: colMode,
+				rowNum: 1000,
+				width: gridWidth,
+				shrinkToFit: shrinkToFit
+			}).jqGrid('hideCol', 'cb');
+
+			//resize the grid to the height of its container.
+			$("#ssOleDBGrid").jqGrid('setGridHeight', $("#PickListGrid").height());
+
+			if ($("#ssOleDBGrid").jqGrid().width() < $("#PickListGrid").width()) {
+				$("#ssOleDBGrid").parent().parent().addClass('jqgridHideHorScroll');
+			}
+		}
+
+		//Display the number of records
+		$('#RecordCountDIV').html($("#ssOleDBGrid").getGridParam('reccount') + " Record(s)");
+		//Hide Remove and RemoveAll button
+		button_disable(frmDefinition.cmdRemove, true); //Disable the "Remove" button
+		button_disable(frmDefinition.cmdRemoveAll, true); //Disable the "Remove All" button
+	}
+
+}
