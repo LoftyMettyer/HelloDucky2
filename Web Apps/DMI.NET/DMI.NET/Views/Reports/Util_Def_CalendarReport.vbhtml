@@ -113,19 +113,24 @@ End Code
 <script type="text/javascript">
 
 	function selectGroupByDescription() {
-		var bSelected = $("#chkGroupByDescription").prop('checked');
-		combo_disable((".selectRegionID"), bSelected);
+		var bSelected = $("#chkGroupByDescription").prop('checked');				
+		combo_disable((".selectRegionID"), bSelected);		
+		//disable Include Bank Holidays', 'Working Days Only' and 'Show Bank Holidays' checkbox
+		$('#IncludeBankHolidays').prop('checked', false);
+		$('#WorkingDaysOnly').prop('checked', false);
+		$('#ShowBankHolidays').prop('checked', false);
+		$('#IncludeBankHolidays').prop('disabled', bSelected);
+		$('#WorkingDaysOnly').prop('disabled', bSelected);
+		$('#ShowBankHolidays').prop('disabled', bSelected);
+		
 	}
 
 	function regionChange() {
-
-		var regionval = $("#RegionID").val();
-		if (regionval == 0) {
-			combo_disable("#chkGroupByDescription", false);
-		}
-		else {
-			combo_disable("#chkGroupByDescription", true);
-		};
+		//If 'Include Bank Holidays', 'Working Days Only' or 'Show Bank Holidays'  are ticked OR 'Region selected index not equal to 0' than 'Group by Description' should disable.
+		var regionval = $("#RegionID").val();		
+		var bSelected = $('#IncludeBankHolidays').prop('checked') || $('#WorkingDaysOnly').prop('checked') || $('#ShowBankHolidays').prop('checked') || (regionval != 0);
+		$('#chkGroupByDescription').prop('checked', false);
+		$('#chkGroupByDescription').prop('disabled', bSelected);
 	}
 
 	//'Seperator' should only enable if at least 2 descriptions have been entered.
@@ -193,7 +198,19 @@ End Code
 		$('#Description2ID,#Description1ID').css({ "width": "100%", "float": "right" });
 		$('#description, #Name').css('width', $('#Description1ID').width());
 
-		selectGroupByDescription();
+		// If 'Group by Description' is ticked then 'Include Bank Holidays', 'Working Days Only' ,'Show Bank Holidays' and Region  should disable.	Or  If 'Include Bank Holidays', 'Working Days Only' or 'Show Bank Holidays'  are ticked OR 'Region selected index not equal to 0' than 'Group by Description' should disable.
+		if ($('#chkGroupByDescription').prop('checked'))
+		{
+			combo_disable((".selectRegionID"), true);
+			$('#IncludeBankHolidays').prop('disabled', true);
+			$('#WorkingDaysOnly').prop('disabled', true);
+			$('#ShowBankHolidays').prop('disabled', true);
+		}
+		else
+		{
+			selectWorkingDaysOrHolidays();			
+		}
+
 		validateDescriptions();
 		button_disable($("#btnSortOrderAdd")[0], isDefinitionReadOnly());
 
@@ -202,6 +219,14 @@ End Code
 	function submitForm() {
 		var frmSubmit = $("#frmReportDefintion");
 		OpenHR.submitForm(frmSubmit);
+	}
+
+	function selectWorkingDaysOrHolidays() {
+		// If 'Include Bank Holidays', 'Working Days Only' or 'Show Bank Holidays'  are ticked OR 'Region selected index not equal to 0' than 'Group by Description' should disable.
+		var regionValue = $("#RegionID").val();
+		var bSelected = $('#IncludeBankHolidays').prop('checked') || $('#WorkingDaysOnly').prop('checked') || $('#ShowBankHolidays').prop('checked') || (regionValue != 0);
+		$('#chkGroupByDescription').prop('checked', false);
+		$('#chkGroupByDescription').prop('disabled', bSelected);
 	}
 
 	$("#workframe").attr("data-framesource", "UTIL_DEF_CALENDARREPORT");
