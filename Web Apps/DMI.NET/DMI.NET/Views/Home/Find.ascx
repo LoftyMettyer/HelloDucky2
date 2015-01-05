@@ -279,7 +279,7 @@
 											Else
 												Dim objRow = rstFindDefinition.Select("ColumnName='" & rstFindRecords.Columns(iloop).ColumnName & "'")
 												sColDef = Replace(rstFindRecords.Columns(iloop).ColumnName, "_", " ") & "	" & rstFindRecords.Columns(iloop).DataType.ToString.Replace("System.", "")
-												Response.Write(String.Format("<input type='hidden' id='txtFindColDef_{0}' name='txtFindColDef_{0}' value='{1}' data-colname='{2}' data-datatype='{3}' data-columnid='{4}' data-editable='{5}' data-controltype='{6}' data-size='{7}' data-decimals='{8}' data-lookuptableid='{9}' data-lookupcolumnid='{10}' data-spinnerminimum='{11}' data-spinnermaximum='{12}' data-spinnerincrement='{13}'>" _
+												Response.Write(String.Format("<input type='hidden' id='txtFindColDef_{0}' name='txtFindColDef_{0}' value='{1}' data-colname='{2}' data-datatype='{3}' data-columnid='{4}' data-editable='{5}' data-controltype='{6}' data-size='{7}' data-decimals='{8}' data-lookuptableid='{9}' data-lookupcolumnid='{10}' data-spinnerminimum='{11}' data-spinnermaximum='{12}' data-spinnerincrement='{13}' data-lookupfiltercolumnid='{14}' data-lookupfiltervalueid='{15}'>" _
 														 , iloop, sColDef, objRow.FirstOrDefault.Item("columnNameOriginal"), _
 														 objRow.FirstOrDefault.Item("datatype"), _
 														 objRow.FirstOrDefault.Item("columnID"), _
@@ -291,7 +291,9 @@
 														 objRow.FirstOrDefault.Item("LookupColumnID"), _
 														 objRow.FirstOrDefault.Item("SpinnerMinimum"), _
 														 objRow.FirstOrDefault.Item("SpinnerMaximum"), _
-														 objRow.FirstOrDefault.Item("SpinnerIncrement") _
+														 objRow.FirstOrDefault.Item("SpinnerIncrement"), _
+														 objRow.FirstOrDefault.Item("LookupFilterColumnID"), _
+														 objRow.FirstOrDefault.Item("LookupFilterValueID") _
 														 ) & vbCrLf)
 
 												'Save the default value for this column in an array
@@ -371,25 +373,7 @@
 															, New SqlParameter("piCallingColumnID", SqlDbType.Int) With {.Value = objRow.FirstOrDefault.Item("columnID")} _
 															, New SqlParameter("pfOverrideFilter", SqlDbType.Bit) With {.Value = "False"})
 													End If
-													
-													'Place the lookup data in Javascript array
-													Dim strColData As String = String.Concat("var colData_", objRow.FirstOrDefault.Item("columnID"), " = [")
-													For Each r As DataRow In rstLookup.Rows
-														strColData = String.Concat(strColData, "[")
-														For Each c As DataColumn In rstLookup.Columns
-															strColData = String.Concat(strColData, """", EncodeStringToJavascriptSpecialCharacters(r(c).ToString), """,")
-														Next
-														strColData = String.Concat(strColData.TrimEnd(","), "],")
-													Next
-													strColData = String.Concat(strColData.TrimEnd(","), "];")
-													
-													'Place the column names in Javascript array
-													Dim strColNames As String = String.Concat("var colNames_", objRow.FirstOrDefault.Item("columnID"), " = [")
-													For Each c As DataColumn In rstLookup.Columns
-														strColNames = String.Concat(strColNames, """", EncodeStringToJavascriptSpecialCharacters(c.ColumnName.Replace("_", " ")), """,")
-													Next
-													strColNames = String.Concat(strColNames.TrimEnd(","), "];")
-													
+
 													'Place the Lookup Column Grid Position in a Javascript variable
 													Dim strLookupColumnGridPosition As String = String.Concat(vbCrLf, "var LookupColumnGridPosition_", objRow.FirstOrDefault.Item("columnID"), " = ")
 													If Not fIsLookupTable Then
@@ -398,7 +382,7 @@
 														strLookupColumnGridPosition = String.Concat(strLookupColumnGridPosition, "0;")
 													End If
 													
-													clientArrayData.Add(strColData & vbCrLf & strColNames & strLookupColumnGridPosition)
+													clientArrayData.Add(strLookupColumnGridPosition)
 												End If
 												
 												'Get the data for Option Groups or Dropdown Lists

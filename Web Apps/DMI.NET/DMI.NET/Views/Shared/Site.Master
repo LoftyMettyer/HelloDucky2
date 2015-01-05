@@ -269,9 +269,17 @@
 						"class": "width6em"
 					},
 					{
-						text: "OK",
+						text: "Clear",
+						click: function () {
+							$(this).dialog("close");
+						},
+						"id": "LookupForEditableGridClear",
+						"class": "width6em"
+					},
+					{
+						text: "Select",
 						click: function() {}, //This fixes a silly exception on IE10 when clicking a button that has its onclick event set somewhere else
-						"id": "LookupForEditableGridOK",
+						"id": "LookupForEditableGridSelect",
 						"class": "width6em"
 					}
 				]

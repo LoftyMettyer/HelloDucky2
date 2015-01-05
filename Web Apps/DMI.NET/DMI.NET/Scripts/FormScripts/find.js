@@ -103,6 +103,8 @@ function find_window_onload() {
 							var ColumnDecimals = dataCollection.item(i).getAttribute("data-decimals");
 							var ColumnLookupTableID = dataCollection.item(i).getAttribute("data-lookuptableid");
 							var ColumnLookupColumnID = dataCollection.item(i).getAttribute("data-lookupcolumnid");
+							var ColumnLookupFilterColumnID = dataCollection.item(i).getAttribute("data-lookupfiltercolumnid");
+							var ColumnLookupFilterValueID = dataCollection.item(i).getAttribute("data-lookupfiltervalueid");
 							var ColumnSpinnerMinimum = parseInt(dataCollection.item(i).getAttribute("data-spinnerminimum"));
 							var ColumnSpinnerMaximum = parseInt(dataCollection.item(i).getAttribute("data-spinnermaximum"));
 							var ColumnSpinnerIncrement = parseInt(dataCollection.item(i).getAttribute("data-spinnerincrement"));
@@ -274,12 +276,15 @@ function find_window_onload() {
 										}
 									});
 								} else if (ColumnDataType == 12 && ColumnControlType == 2 && ColumnLookupColumnID != 0) { //Lookup
-
 									colModel.push({
 										name: sColumnName,
 										id: iColumnId,
 										editable: sColumnEditable,
 										type: "lookup",
+										columnLookupTableID: ColumnLookupTableID,
+										columnLookupColumnID: ColumnLookupColumnID,
+										columnLookupFilterColumnID: ColumnLookupFilterColumnID,
+										columnLookupFilterValueID: ColumnLookupFilterValueID,
 										editoptions: {
 											dataInit: function (element) {
 												//On clicking any cell on the lookup column, popup the lookup dialog
@@ -661,96 +666,138 @@ function showLookupForColumn(element) {
 
 	var el = $(element, $("#findGridTable").rows).closest("td");
 	var clickedColumnId = $("#findGridTable").jqGrid("getGridParam", "colModel")[$(el).index()].id;
-	var data;
-	var colNamesLookup;
-	var lookupColumnGridPosition;
+	var rowId = $("#findGridTable").getGridParam('selrow') - 1;
+	var columnLookupTableID = $("#findGridTable").jqGrid("getGridParam", "colModel")[$(el).index()].columnLookupTableID;
+	var columnLookupColumnID = $("#findGridTable").jqGrid("getGridParam", "colModel")[$(el).index()].columnLookupColumnID;
+	var columnLookupFilterColumnID = $("#findGridTable").jqGrid("getGridParam", "colModel")[$(el).index()].columnLookupFilterColumnID;
+	var columnLookupFilterValueID = $("#findGridTable").jqGrid("getGridParam", "colModel")[$(el).index()].columnLookupFilterValueID;
+	var filterCellValue = '';
+	var colModelContainsRequiredLookupColumn;
+	var thisLookupColumnIsNeededByAnother = false;
+	var colModel = $("#findGridTable").jqGrid("getGridParam", "colModel");
 
-	//Get the data
-	try {
-		data = eval('colData_' + clickedColumnId);
-		colNamesLookup = eval('colNames_' + clickedColumnId);
-		lookupColumnGridPosition = eval('LookupColumnGridPosition_' + clickedColumnId);
-	} catch (e) {
-		return;
-	}
-
-	var colModelLookup = [];
-	var colDataLookup = [];
-
-	//Create the columns 
-	for (i = 0; i <= colNamesLookup.length - 1; i++) {
-		colModelLookup.push({ name: colNamesLookup[i], id: (i + 1).toString(), hidden: (colNamesLookup[i].toLowerCase() == "id") });
-	}
-
-	//Populate the data
-	var obj;
-	for (i = 0; i <= data.length - 1; i++) {
-		obj = {};
-		for (j = 0; j <= data[i].length - 1; j++) {
-			obj[colNamesLookup[j]] = data[i][j].toString().replace(" 00:00:00", ""); //TODO: Determine if value for this column is a date and format accordingly, taking into account locale
+	for (var j = 0; j <= colModel.length - 1; j++) {
+		if (colModel[j].columnLookupFilterValueID == clickedColumnId) {
+			thisLookupColumnIsNeededByAnother = true;
 		}
-		colDataLookup.push(obj);
 	}
 
-	$("#LookupForEditableGrid_Table").jqGrid('GridUnload'); //Unload previous grid (if any)
+	//Determine if the lookup depends on the value of another column
+	if (columnLookupFilterColumnID == 0 && columnLookupFilterValueID == 0) { //It doesn't, i.e. it's not filtered
+		colModelContainsRequiredLookupColumn = true;
+	} else { // It does, i.e. it's filtered
+		columnLookupTableID = $("#findGridTable").jqGrid("getGridParam", "colModel")[$(el).index()].id;
+		var colModel = $("#findGridTable").jqGrid("getGridParam", "colModel");
+		colModelContainsRequiredLookupColumn = false;
+		for (var i = 0; i <= colModel.length - 1; i++) {
+			if (colModel[i].id == columnLookupFilterValueID) {
+				filterCellValue = $("#findGridTable").jqGrid("getGridParam", "data")[rowId][colModel[i].name];
+				colModelContainsRequiredLookupColumn = true;
+				break;
+			}
+		}
+	}
 
-	//jqGrid it
-	$("#LookupForEditableGrid_Table").jqGrid({
-		data: colDataLookup,
-		datatype: "local",
-		colModel: colModelLookup,
-		colNames: colNamesLookup,
-		rowNum: 10000,
-		ignoreCase: true,
-		multiselect: false,
-		shrinkToFit: (colModelLookup.length < 8)
+	if (!colModelContainsRequiredLookupColumn) {
+		alert("Find window contains at least one filtered lookup but not the columns on which those lookups depend");
+		return false;
+	}
+
+	$.ajax({
+		url: window.ROOT + 'generic/GetLookupFindRecords',
+		data: { piLookupColumnID: columnLookupColumnID, psFilterValue: filterCellValue, piCallingColumnID: columnLookupTableID, piFirstRecPos: 1 },
+		dataType: 'json',
+		type: 'GET',
+		success: function (jsondata) {
+			var colModelLookup = [];
+			var colNamesLookup = [];
+
+			var lookupColumnGridPosition = eval('LookupColumnGridPosition_' + clickedColumnId);
+
+			for (var k in jsondata.rows[0]) {
+				colModelLookup.push({ name: k });
+				colNamesLookup.push(k.replace("_", " "));
+			}
+
+			$("#LookupForEditableGrid_Table").jqGrid('GridUnload'); //Unload previous grid (if any)
+
+			//jqGrid it
+			$("#LookupForEditableGrid_Table").jqGrid({
+				data: jsondata.rows,
+				datatype: "local",
+				colModel: colModelLookup,
+				colNames: colNamesLookup,
+				rowNum: 10000,
+				ignoreCase: true,
+				multiselect: false,
+				shrinkToFit: (colModelLookup.length < 8)
+			});
+
+			//Set the dialog's title and open it (the dialog, not the title)
+			$("#LookupForEditableGrid_Title").html($("#findGridTable").jqGrid("getGridParam", "colModel")[$(el).index()].name);
+			$("#LookupForEditableGrid_Div").dialog("open");
+
+			//Resize the grid
+			$("#LookupForEditableGrid_Table").jqGrid("setGridHeight", $("#LookupForEditableGrid_Div").height() - 90);
+			$("#LookupForEditableGrid_Table").jqGrid("setGridWidth", $("#LookupForEditableGrid_Div").width() - 10);
+
+			//Set overflow-x to hidden 
+			if (colModelLookup.length < 8)
+				$("#LookupForEditableGrid_Table").parent().parent().css("overflow-x", "hidden");
+
+			//Search for the value that is currently selected in the find grid
+			var rowId = null;
+			for (i = 0; i <= jsondata.rows.length - 1; i++) {
+				if (jsondata.rows[i][colModelLookup[lookupColumnGridPosition].name] == $(element).val()) {
+					rowId = i;
+					break;
+				}
+			}
+
+			//If text found, select the row
+			if (rowId != null) {
+				$("#LookupForEditableGrid_Table").jqGrid('setSelection', rowId + 1, false);
+			}
+
+			//Assign a function call to the onclick event of the "Select" button
+			$('#LookupForEditableGridSelect').attr('onclick', 'selectValue("Select", "' + lookupColumnGridPosition + '","' + element.id + '",' + thisLookupColumnIsNeededByAnother + ')');
+			//Assign a function call to the onclick event of the "Clear" button
+			$('#LookupForEditableGridClear').attr('onclick', 'selectValue("Clear", "' + lookupColumnGridPosition + '","' + element.id + '",' + thisLookupColumnIsNeededByAnother + ')');
+		},
+		error: function (req, status, errorObj) {
+			//debugger;
+		}
 	});
-
-	//Set the dialog's title and open it (the dialog, not the title)
-	$("#LookupForEditableGrid_Title").html($("#findGridTable").jqGrid("getGridParam", "colModel")[$(el).index()].name);
-	$("#LookupForEditableGrid_Div").dialog("open");
-
-	//Resize the grid
-	$("#LookupForEditableGrid_Table").jqGrid("setGridHeight", $("#LookupForEditableGrid_Div").height() - 90);
-	$("#LookupForEditableGrid_Table").jqGrid("setGridWidth", $("#LookupForEditableGrid_Div").width() - 10);
-
-	//Set overflow-x to hidden 
-	if (colModelLookup.length < 8)
-		$("#LookupForEditableGrid_Table").parent().parent().css("overflow-x", "hidden");
-
-	//Search for the value that is currently selected in the find grid
-	var rowId = null;
-	for (i = 0; i <= colDataLookup.length - 1; i++) {
-		if (colDataLookup[i][colModelLookup[lookupColumnGridPosition].name] == $(element).val()) {
-			rowId = i;
-			break;
-		}
-	}
-
-	//If text found, select the row
-	if (rowId != null) {
-		$("#LookupForEditableGrid_Table").jqGrid('setSelection', rowId + 1, false);
-	}
-
-	//Assign a function call to the onclick event of the "OK" button
-	$('#LookupForEditableGridOK').attr('onclick', 'selectValue("' + lookupColumnGridPosition + '","' + element.id + '")');
 }
 
-function selectValue(lookupColumnGridPosition, elementId) {
+function selectValue(action, lookupColumnGridPosition, elementId, thisLookupColumnIsNeededByAnother) {
 	// Get the value selected by the user and update the corresponding value in the find grid
 	
 	var rowId = $("#LookupForEditableGrid_Table").getGridParam('selrow');
 
-	if (rowId == null) { //No row selected, show a message and return
-		OpenHR.modalMessage('Please select a value', 'OpenHR');
+	if (rowId == null && action == "Select") { //No row selected, show a message and return
+		OpenHR.modalMessage('Please select a value');
 		return;
 	}
 
 	var columnName = $("#LookupForEditableGrid_Table").getGridParam('colModel')[lookupColumnGridPosition].name;
-	var cellValue = $("#LookupForEditableGrid_Table").getRowData(rowId)[columnName];
+	var cellValue = ''; //Default for action="Clear"
+	
+	if (action == "Select") {
+		cellValue = $("#LookupForEditableGrid_Table").getRowData(rowId)[columnName];
+	}
+
 	document.getElementById(elementId).value = cellValue;
 	$('#LookupForEditableGrid_Div').dialog('close');
 	$("#LookupForEditableGrid_Table").jqGrid('GridUnload');
+
+	if (thisLookupColumnIsNeededByAnother) {
+		//Save the row to the grid (not the database), restore it and then set the row back into edit mode;
+		//this is necessary so any lookup column filtered by another column will pickup the correct value to filter on
+		var findGridRowId = $("#findGridTable").getGridParam('selrow');
+		$('#findGridTable').saveRow(findGridRowId);
+		$('#findGridTable').editRow(findGridRowId);
+	}
 }
 
 function getValuesForColumn(iColumnId, isDropdown) {	
