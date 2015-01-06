@@ -1294,11 +1294,17 @@ BEGIN
 		IF (@RecordID = -1) BEGIN --Return all records
 			SET @sTempString = ' ORDER BY ' + @sOrderSQL;
 		END ELSE BEGIN --Return only the requested record
-			SET @sTempString = ' WHERE ' + @sRealSource + '.ID = ' + CONVERT(varchar(100), @RecordID) + ' ORDER BY ' + @sOrderSQL;
+			IF charindex(' WHERE ', @sExecString) > 0 BEGIN --A WHERE clause may have been added for the filtering of records
+				SET @sTempString = ' AND '
+			END ELSE BEGIN
+				SET @sTempString = ' WHERE '
+			END
+
+			SET @sTempString = @sTempString + @sRealSource + '.ID = ' + CONVERT(varchar(100), @RecordID) + ' ORDER BY ' + @sOrderSQL;
 		END
 		
 		SET @sExecString = @sExecString + @sTempString;
-				
+
 	END
 
 	/* Check if the user has insert or delete permission on the table. */
