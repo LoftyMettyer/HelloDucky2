@@ -71,7 +71,7 @@ End Code
 							@Html.DropDownList("Separator", New SelectList(New List(Of String)() From {"None", "Space", ",", ".", "-", ":", ";", "/", "\", "#", "~", "^"}), New With {.class = "enableSaveButtonOnComboChange"})
 							@Html.HiddenFor(Function(m) m.Separator, New With {.id = "ddlSeparator"})
 							@Html.CheckBoxFor(Function(m) m.GroupByDescription, New With {.id = "chkGroupByDescription", .onclick = "selectGroupByDescription()"})
-							@Html.LabelFor(Function(m) m.GroupByDescription)							
+							@Html.LabelFor(Function(m) m.GroupByDescription, New With {.id = "label_GroupByDescription"})
 						</div>
 					</fieldset>
 				</fieldset>
@@ -113,24 +113,31 @@ End Code
 <script type="text/javascript">
 
 	function selectGroupByDescription() {
-		var bSelected = $("#chkGroupByDescription").prop('checked');				
-		combo_disable((".selectRegionID"), bSelected);		
+		var bGroupBySelected = $("#chkGroupByDescription").prop('checked');				
+		combo_disable((".selectRegionID"), bGroupBySelected);
 		//disable Include Bank Holidays', 'Working Days Only' and 'Show Bank Holidays' checkbox
 		$('#IncludeBankHolidays').prop('checked', false);
 		$('#WorkingDaysOnly').prop('checked', false);
 		$('#ShowBankHolidays').prop('checked', false);
-		$('#IncludeBankHolidays').prop('disabled', bSelected);
-		$('#WorkingDaysOnly').prop('disabled', bSelected);
-		$('#ShowBankHolidays').prop('disabled', bSelected);
-		
+		$('#IncludeBankHolidays').prop('disabled', bGroupBySelected);
+		$('#WorkingDaysOnly').prop('disabled', bGroupBySelected);
+		$('#ShowBankHolidays').prop('disabled', bGroupBySelected);
+
+		if (bGroupBySelected) {						
+			$("#label_IncludeBankHolidays").css('opacity', '0.5');
+			$("#label_WorkingDaysOnly").css('opacity', '0.5');
+			$("#label_ShowBankHolidays").css('opacity', '0.5');			
+		}
+		else
+		{			
+			$("#label_IncludeBankHolidays").css('opacity', '1');
+			$("#label_WorkingDaysOnly").css('opacity', '1');
+			$("#label_ShowBankHolidays").css('opacity', '1');
+		}
 	}
 
-	function regionChange() {
-		//If 'Include Bank Holidays', 'Working Days Only' or 'Show Bank Holidays'  are ticked OR 'Region selected index not equal to 0' than 'Group by Description' should disable.
-		var regionval = $("#RegionID").val();		
-		var bSelected = $('#IncludeBankHolidays').prop('checked') || $('#WorkingDaysOnly').prop('checked') || $('#ShowBankHolidays').prop('checked') || (regionval != 0);
-		$('#chkGroupByDescription').prop('checked', false);
-		$('#chkGroupByDescription').prop('disabled', bSelected);
+	function regionChange() {		
+		selectWorkingDaysOrHolidays();
 	}
 
 	//'Seperator' should only enable if at least 2 descriptions have been entered.
@@ -205,6 +212,9 @@ End Code
 			$('#IncludeBankHolidays').prop('disabled', true);
 			$('#WorkingDaysOnly').prop('disabled', true);
 			$('#ShowBankHolidays').prop('disabled', true);
+			$("#label_IncludeBankHolidays").css('opacity', '0.5');
+			$("#label_WorkingDaysOnly").css('opacity', '0.5');
+			$("#label_ShowBankHolidays").css('opacity', '0.5');
 		}
 		else
 		{
@@ -227,6 +237,14 @@ End Code
 		var bSelected = $('#IncludeBankHolidays').prop('checked') || $('#WorkingDaysOnly').prop('checked') || $('#ShowBankHolidays').prop('checked') || (regionValue != 0);
 		$('#chkGroupByDescription').prop('checked', false);
 		$('#chkGroupByDescription').prop('disabled', bSelected);
+		if (bSelected)
+		{			
+			$("#label_GroupByDescription").css("color", "#A59393");
+		}
+		else
+		{
+			$("#label_GroupByDescription").css("color", "#000000");
+		}		
 	}
 
 	$("#workframe").attr("data-framesource", "UTIL_DEF_CALENDARREPORT");

@@ -95,15 +95,15 @@
 	<fieldset class="floatleft width25">
 		<div class="DataManagerOnly padbot5">
 			@Html.CheckBoxFor(Function(m) m.IncludeBankHolidays, New With {.onclick = "selectWorkingDaysOrHolidays()"})
-			@Html.LabelFor(Function(m) m.IncludeBankHolidays)
+			@Html.LabelFor(Function(m) m.IncludeBankHolidays, New With {.id = "label_IncludeBankHolidays"})
 		</div>
 		<div class="DataManagerOnly padbot5">
 			@Html.CheckBoxFor(Function(m) m.WorkingDaysOnly, New With {.onclick = "selectWorkingDaysOrHolidays()"})
-			@Html.LabelFor(Function(m) m.WorkingDaysOnly)
+			@Html.LabelFor(Function(m) m.WorkingDaysOnly, New With {.id = "label_WorkingDaysOnly"})
 		</div>
 		<div class="DataManagerOnly padbot5">
 			@Html.CheckBoxFor(Function(m) m.ShowBankHolidays, New With {.onclick = "selectWorkingDaysOrHolidays()"})
-			@Html.LabelFor(Function(m) m.ShowBankHolidays)
+			@Html.LabelFor(Function(m) m.ShowBankHolidays, New With {.id = "label_ShowBankHolidays"})
 		</div>
 		<div class="DataManagerOnly padbot5">
 			@Html.CheckBoxFor(Function(m) m.ShowCaptions)
