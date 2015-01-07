@@ -109,6 +109,7 @@ function find_window_onload() {
 							var ColumnSpinnerMinimum = parseInt(dataCollection.item(i).getAttribute("data-spinnerminimum"));
 							var ColumnSpinnerMaximum = parseInt(dataCollection.item(i).getAttribute("data-spinnermaximum"));
 							var ColumnSpinnerIncrement = parseInt(dataCollection.item(i).getAttribute("data-spinnerincrement"));
+							var ColumnMask = dataCollection.item(i).getAttribute("data-Mask");
 
 							if (sColumnEditable == true) {
 								thereIsAtLeastOneEditableColumn = true;
@@ -350,7 +351,14 @@ function find_window_onload() {
 										editoptions: {
 											size: ColumnSize,
 											maxlength: ColumnSize,
-											defaultValue: getDefaultValueForColumn(iColumnId, "text")
+											mask: ColumnMask,
+											defaultValue: getDefaultValueForColumn(iColumnId, "text"),
+											dataInit: function(element) {
+												var ColumnMask = $(element).attr('mask');
+												if (ColumnMask == null) return false;
+												if (ColumnMask == "") return false;
+												$(element).mask(ColumnMask);
+											}
 										},
 										label: sColumnDisplayName
 									});

@@ -278,7 +278,7 @@
 											Else
 												Dim objRow = rstFindDefinition.Select("ColumnName='" & rstFindRecords.Columns(iloop).ColumnName & "'")
 												sColDef = Replace(rstFindRecords.Columns(iloop).ColumnName, "_", " ") & "	" & rstFindRecords.Columns(iloop).DataType.ToString.Replace("System.", "")
-												Response.Write(String.Format("<input type='hidden' id='txtFindColDef_{0}' name='txtFindColDef_{0}' value='{1}' data-colname='{2}' data-datatype='{3}' data-columnid='{4}' data-editable='{5}' data-controltype='{6}' data-size='{7}' data-decimals='{8}' data-lookuptableid='{9}' data-lookupcolumnid='{10}' data-spinnerminimum='{11}' data-spinnermaximum='{12}' data-spinnerincrement='{13}' data-lookupfiltercolumnid='{14}' data-lookupfiltervalueid='{15}'>" _
+												Response.Write(String.Format("<input type='hidden' id='txtFindColDef_{0}' name='txtFindColDef_{0}' value='{1}' data-colname='{2}' data-datatype='{3}' data-columnid='{4}' data-editable='{5}' data-controltype='{6}' data-size='{7}' data-decimals='{8}' data-lookuptableid='{9}' data-lookupcolumnid='{10}' data-spinnerminimum='{11}' data-spinnermaximum='{12}' data-spinnerincrement='{13}' data-lookupfiltercolumnid='{14}' data-lookupfiltervalueid='{15}' data-Mask='{16}'>" _
 														 , iloop, sColDef, objRow.FirstOrDefault.Item("columnNameOriginal"), _
 														 objRow.FirstOrDefault.Item("datatype"), _
 														 objRow.FirstOrDefault.Item("columnID"), _
@@ -292,7 +292,8 @@
 														 objRow.FirstOrDefault.Item("SpinnerMaximum"), _
 														 objRow.FirstOrDefault.Item("SpinnerIncrement"), _
 														 objRow.FirstOrDefault.Item("LookupFilterColumnID"), _
-														 objRow.FirstOrDefault.Item("LookupFilterValueID") _
+														 objRow.FirstOrDefault.Item("LookupFilterValueID"), _
+														 objRow.FirstOrDefault.Item("Mask") _
 														 ) & vbCrLf)
 
 												'Save the default value for this column in an array
