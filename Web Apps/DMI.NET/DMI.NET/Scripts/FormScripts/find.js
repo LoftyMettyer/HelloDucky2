@@ -351,7 +351,7 @@ function find_window_onload() {
 										label: sColumnDisplayName
 									});
 								}
-								else if (ColumnDataType == 2 && ColumnControlType == 64) {
+								else if ((ColumnDataType == 2 && ColumnControlType == 64) || (ColumnDataType == 2 && ColumnControlType == 2)) {
 									//"Numeric"		
 									colModel.push({
 										name: sColumnName,
