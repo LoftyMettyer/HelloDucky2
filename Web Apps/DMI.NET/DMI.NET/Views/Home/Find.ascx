@@ -124,7 +124,7 @@
 				<%
 					Dim sTemp As String
 					Dim sThousandColumns As String = ""
-					Dim sBlankIfZeroColumns As String
+					Dim sBlankIfZeroColumns As String = ""
 					Dim TableOrViewName As String = ""
 					Dim sColDef As String
 					Dim iCount As Integer
@@ -354,7 +354,7 @@
 															sErrorDescription = "The find records could not be retrieved." & vbCrLf & FormatError(ex.Message)
 														End Try
 
-														sThousandColumns = _prmThousandColumns.Value.ToString()
+														Dim sLookupThousandColumns = _prmThousandColumns.Value.ToString()
 														
 														rstLookup = objDataAccess.GetFromSP("spASRIntGetLookupFindRecords" _
 															, New SqlParameter("piLookupColumnID", SqlDbType.Int) With {.Value = objRow.FirstOrDefault.Item("LookupColumnID")} _
@@ -416,21 +416,17 @@
 										ElseIf GeneralUtilities.IsDataColumnDecimal(rstFindRecords.Columns(iloop)) Then
 											' Field is a numeric so format as such.
 											If Not IsDBNull(row(iloop)) Then
-												
-												Dim numberAsString As String = row(iloop).ToString()
-												Dim indexOfDecimalPoint As Integer = numberAsString.IndexOf(LocaleDecimalSeparator(), System.StringComparison.Ordinal)
-												Dim numberOfDecimals As Integer = 0
-												If indexOfDecimalPoint > 0 Then numberOfDecimals = numberAsString.Substring(indexOfDecimalPoint + 1).Length
-												
-												If Mid(sThousandColumns, iloop + 1, 1) = "1" Then
-													sTemp = FormatNumber(row(iloop), numberOfDecimals, TriState.True, TriState.False, TriState.True)
+												If Mid(sBlankIfZeroColumns, iloop + 1, 1) = "1" Then
+													' blank if zero
+													if row(iloop) > 0 then
+														sAddString &= row(iloop).ToString()
+													Else
+														sAddString &= ""
+													End If													
 												Else
-													sTemp = FormatNumber(row(iloop), numberOfDecimals, TriState.True, TriState.False, TriState.False)
+													sAddString &= row(iloop).ToString()
 												End If
-												'sTemp = Replace(sTemp, ".", "x")
-												'sTemp = Replace(sTemp, ",", Session("LocaleThousandSeparator"))
-												'sTemp = Replace(sTemp, "x", Session("LocaleDecimalSeparator"))
-												sAddString = sAddString & sTemp
+												
 											End If
 										Else
 											If Not IsDBNull(row(iloop)) Then
@@ -475,6 +471,8 @@
 							Response.Write("<input type='hidden' id=txtFirstColumnDecimals name=txtFirstColumnDecimals value=" & prmColumnDecimals.Value & ">" & vbCrLf)
 							Response.Write("<input type='hidden' id=txtCancelDateColumn name=txtCancelDateColumn value=" & fCancelDateColumn & ">" & vbCrLf)
 							Response.Write("<input type='hidden' id=txtGotoAction name=txtGotoAction value=" & Session("action") & ">" & vbCrLf)
+							Response.Write("<input type='hidden' id='txtThousandColumns' name='txtThousandColumns' value='" & sThousandColumns & "'>" & vbCrLf)
+							Response.Write("<input type='hidden' id='txtBlankIfZeroColumns' name='txtBlankIfZeroColumns' value='" & sBlankIfZeroColumns & "'>" & vbCrLf)
 			
 							Session("realSource") = prmRealSource.Value
 							

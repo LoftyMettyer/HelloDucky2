@@ -66,6 +66,7 @@ function find_window_onload() {
 		var obj;
 		var iCount2;
 		var thereIsAtLeastOneEditableColumn = false;
+		var columnCount = -1;
 		
 		if (sCurrentWorkPage == "FIND") {
 			sErrorMsg = frmFindForm.txtErrorDescription.value;
@@ -130,6 +131,7 @@ function find_window_onload() {
 									hidden: true
 								});
 							} else {
+								columnCount += 1;
 								//Determine the column type and set the colModel for this column accordingly
 								if (ColumnControlType == 1) { //Logic - checkbox
 									colModel.push({
@@ -350,7 +352,7 @@ function find_window_onload() {
 									});
 								}
 								else if (ColumnDataType == 2 && ColumnControlType == 64) {
-									//"Numeric"																		
+									//"Numeric"		
 									colModel.push({
 										name: sColumnName,
 										id: iColumnId,
@@ -358,16 +360,26 @@ function find_window_onload() {
 										editable: sColumnEditable,
 										type: 'other',
 										align: 'right',
+										sorttype: 'number',
+										formatter: 'number',
+										formatoptions: {
+											decimalSeparator: OpenHR.LocaleDecimalSeparator(),
+											thousandsSeparator: useThousandSeparator(columnCount) ? OpenHR.LocaleThousandSeparator() : "",
+											decimalPlaces: Number(ColumnDecimals),
+											defaultValue: useBlankIfZero(columnCount) ? '' : space("0", ColumnSize, ColumnDecimals)
+										},										
 										editoptions: {
 											columnSize: ColumnSize,
-											columnDecimals: ColumnDecimals,
+											columnDecimals: Number(ColumnDecimals),
+											decimalSeparator: OpenHR.LocaleDecimalSeparator(),
+											thousandsSeparator: useThousandSeparator(columnCount) ? OpenHR.LocaleThousandSeparator() : "",
 											defaultValue: getDefaultValueForColumn(iColumnId, "other"),											
 											dataInit: function (element) {												
 												var value = "";
 												var ColumnSize = $(element).attr('columnSize');
 												var ColumnDecimals = $(element).attr('columnDecimals');
 												element.setAttribute("data-a-dec", OpenHR.LocaleDecimalSeparator()); //Decimal separator
-												element.setAttribute("data-a-sep", OpenHR.LocaleThousandSeparator()); //Thousand separator
+												element.setAttribute("data-a-sep", ""); //Thousand separator - no thousand separator when editing!
 												element.setAttribute('data-m-dec', ColumnDecimals); //Decimal places
 												$(element).addClass("textalignright");
 												//Size of field includes decimals but not the decimal point; For example if Size=6 and Decimals=2 the maximum value to be allowed is 9999.99
@@ -375,14 +387,7 @@ function find_window_onload() {
 													element.setAttribute('data-v-min', '-2147483647'); //This is -Int32.MaxValue
 													element.setAttribute('data-v-max', '2147483647'); //This is Int32.MaxValue
 												} else {
-													//Determine the length we need and "translate" that to use it in the plugin
-													var n = Number(ColumnSize) - Number(ColumnDecimals);
-													for (var x = n; x--;) value += "9"; //Create a string of the form "999"
-
-													if (ColumnDecimals != "0") { //If decimal places are specified, add a period and an appropriate number of "9"s
-														value += ".";
-														for (x = Number(ColumnDecimals); x--;) value += "9";
-													}
+													value = space("9", ColumnSize, ColumnDecimals);
 
 													element.setAttribute('data-v-min', '-' + value);
 													element.setAttribute('data-v-max', value);
@@ -858,4 +863,39 @@ function getDefaultValueForColumn(columnId, columnType) {
 	}
 
 	return columnsDefaultValues[columnId];
+}
+
+function space(character, columnSize, columnDecimals) {
+	columnSize = columnSize - columnDecimals;
+	try {
+		//Determine the length we need and "translate" that to use it in the plugin
+		var n = Number(columnSize) - Number(columnDecimals);
+		var value = '';
+		for (var x = n; x--;) value += character; //Create a string of the form "999"
+
+		if (columnDecimals != "0") { //If decimal places are specified, add a period and an appropriate number of "9"s
+			value += ".";
+			for (x = Number(columnDecimals); x--;) value += character;
+		}
+	} catch (e) {
+		return '';
+	}
+
+	return value;
+}
+
+function useThousandSeparator(columnNumber) {
+	try {
+		return ($('#txtThousandColumns').val().substr(columnNumber, 1) == '1');
+	} catch (e) {
+		return false;
+	}
+}
+
+function useBlankIfZero(columnNumber) {
+	try {
+		return ($('#txtBlankIfZeroColumns').val().substr(columnNumber, 1) == '1');
+	} catch (e) {
+		return false;
+	}
 }
