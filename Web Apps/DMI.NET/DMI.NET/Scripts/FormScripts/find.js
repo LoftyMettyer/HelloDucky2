@@ -878,7 +878,6 @@ function getDefaultValueForColumn(columnId, columnType) {
 }
 
 function space(character, columnSize, columnDecimals) {
-	columnSize = columnSize - columnDecimals;
 	try {
 		//Determine the length we need and "translate" that to use it in the plugin
 		var n = Number(columnSize) - Number(columnDecimals);
