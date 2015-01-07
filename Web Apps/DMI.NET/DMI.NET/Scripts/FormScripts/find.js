@@ -277,7 +277,7 @@ function find_window_onload() {
 											defaultValue: getDefaultValueForColumn(iColumnId, "textarea")
 										}
 									});
-								} else if (ColumnDataType == 12 && ColumnControlType == 2 && ColumnLookupColumnID != 0) { //Lookup
+								} else if ((ColumnDataType == 12 || ColumnDataType == 2) && ColumnControlType == 2 && ColumnLookupColumnID != 0) { //Lookup
 									colModel.push({
 										name: sColumnName,
 										id: iColumnId,
@@ -708,9 +708,21 @@ function showLookupForColumn(element) {
 		return false;
 	}
 
+	var lookupUrl = window.ROOT;
+	var lookupParameters = '';
+
+	if (eval('isLookupTable_' + clickedColumnId) == true) {
+		lookupUrl += 'generic/GetLookupFindRecords';
+		lookupParameters = { piLookupColumnID: columnLookupColumnID, psFilterValue: filterCellValue, piCallingColumnID: columnLookupTableID, piFirstRecPos: 0 };
+	} else {
+		lookupUrl += 'generic/GetLookupFindRecords2';
+		//tableId and orderId below are defined in Find.ascx so they are be available here
+		lookupParameters = { piTableID: tableId, piOrderID: orderId, piLookupColumnID: columnLookupColumnID, psFilterValue: filterCellValue, piCallingColumnID: columnLookupTableID, piFirstRecPos: 0 };
+	}
+
 	$.ajax({
-		url: window.ROOT + 'generic/GetLookupFindRecords',
-		data: { piLookupColumnID: columnLookupColumnID, psFilterValue: filterCellValue, piCallingColumnID: columnLookupTableID, piFirstRecPos: 1 },
+		url: lookupUrl,
+		data: lookupParameters,
 		dataType: 'json',
 		type: 'GET',
 		success: function (jsondata) {

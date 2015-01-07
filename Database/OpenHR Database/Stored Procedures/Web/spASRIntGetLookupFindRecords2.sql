@@ -270,7 +270,7 @@ BEGIN
 		WHERE columnName = @sColumnTemp
 			AND selectGranted = 1
 
-		IF @iCount > 0
+		IF @iCount > 0 AND @psFilterValue <> ''
 		BEGIN
 			IF @iLookupFilterColumnDataType = -7 /* Boolean */
 			BEGIN

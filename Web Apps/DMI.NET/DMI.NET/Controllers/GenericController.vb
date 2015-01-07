@@ -51,7 +51,12 @@ Namespace Controllers
 											, _prmLookupColumnGridPosition _
 											, New SqlParameter("pfOverrideFilter", SqlDbType.Bit) With {.Value = "False"})
 
-			Return JsonConvert.SerializeObject(rstLookup)
+			If rstLookup Is Nothing Or rstLookup.Rows.Count = 0 Then
+				Return "{""total"":1,""page"":1,""records"":0,""rows"":""""}"
+			Else
+				 Return "{""total"":1,""page"":1,""records"":" & rstLookup.Rows.Count & ",""rows"":" & JsonConvert.SerializeObject(rstLookup) & "}"
+			End If
+
 		End Function
 
 		<HttpGet>

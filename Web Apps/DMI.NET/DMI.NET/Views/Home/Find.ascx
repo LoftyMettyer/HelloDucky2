@@ -130,7 +130,6 @@
 					Dim iCount As Integer
 					Dim sAddString As String
 								
-					Const AD_STATE_OPEN = 1
 					Const iNumberOfRecords As Integer = 100000
 					
 					Dim fCancelDateColumn = True
@@ -300,7 +299,7 @@
 												columnsDefaultValues = String.Concat(columnsDefaultValues, """", objRow.FirstOrDefault.Item("columnID"), """:""", EncodeStringToJavascriptSpecialCharacters(objRow.FirstOrDefault.Item("DefaultValue")), """,")
 												
 												'If column is a Lookup, we need to get its associated data
-												If objRow.FirstOrDefault.Item("datatype") = 12 And objRow.FirstOrDefault.Item("controltype") = 2 And objRow.FirstOrDefault.Item("LookupColumnID") <> 0 Then
+												If (objRow.FirstOrDefault.Item("datatype") = 12 Or objRow.FirstOrDefault.Item("datatype") = 2) And objRow.FirstOrDefault.Item("controltype") = 2 And objRow.FirstOrDefault.Item("LookupColumnID") <> 0 Then
 													Dim objDatabase As Database = CType(Session("DatabaseFunctions"), Database)
 													'Dim objDataAccess As clsDataAccess = CType(Session("DatabaseAccess"), clsDataAccess)
 
@@ -319,6 +318,8 @@
 													
 													Dim rstLookup As New DataTable
 													
+													clientArrayData.Add(String.Concat("var isLookupTable_", objRow.FirstOrDefault.Item("columnID"), " = ", fIsLookupTable.ToString.ToLower, ";"))
+
 													If Not fIsLookupTable Then
 																										
 														Dim iOrderID = objSession.Tables.Where(Function(m) m.ID = objRow.FirstOrDefault.Item("LookupTableID")).FirstOrDefault.DefaultOrderID
@@ -339,7 +340,7 @@
 																, _prmTotalRecCount _
 																, _prmFirstRecPos _
 																, New SqlParameter("piCurrentRecCount", SqlDbType.Int) With {.Value = 0} _
-																, New SqlParameter("psFilterValue", SqlDbType.VarChar, -1) With {.Value = "True"} _
+																, New SqlParameter("psFilterValue", SqlDbType.VarChar, -1) With {.Value = ""} _
 																, New SqlParameter("piCallingColumnID", SqlDbType.Int) With {.Value = objRow.FirstOrDefault.Item("columnID")} _
 																, _prmLookupColumnGridPosition _
 																, New SqlParameter("pfOverrideFilter", SqlDbType.Bit) With {.Value = "False"})
@@ -375,7 +376,7 @@
 													End If
 
 													'Place the Lookup Column Grid Position in a Javascript variable
-													Dim strLookupColumnGridPosition As String = String.Concat(vbCrLf, "var LookupColumnGridPosition_", objRow.FirstOrDefault.Item("columnID"), " = ")
+													Dim strLookupColumnGridPosition As String = String.Concat("var LookupColumnGridPosition_", objRow.FirstOrDefault.Item("columnID"), " = ")
 													If Not fIsLookupTable Then
 														strLookupColumnGridPosition = String.Concat(strLookupColumnGridPosition, _prmLookupColumnGridPosition.Value, ";")
 													Else
@@ -454,7 +455,11 @@
 							Next
 
 							'Can we add new records to this table/view?
-							Response.Write(String.Concat(vbCrLf, "var insertGranted = ", prmInsertGranted.Value.ToString.ToLower, ";"))
+							Response.Write(String.Concat(vbCrLf, "var insertGranted = ", prmInsertGranted.Value.ToString.ToLower, ";", vbCrLf))
+							
+							'We need TableID and OrderID in the client side
+							Response.Write(String.Concat(vbCrLf, "var tableId = ", Session("tableID"), ";", vbCrLf))
+							Response.Write(String.Concat(vbCrLf, "var orderId = ", Session("orderID"), ";", vbCrLf))
 							Response.Write("</script>" & vbCrLf)
 							
 							Response.Write("<input type='hidden' id=txtInsertGranted name=txtInsertGranted value=" & prmInsertGranted.Value & ">" & vbCrLf)
