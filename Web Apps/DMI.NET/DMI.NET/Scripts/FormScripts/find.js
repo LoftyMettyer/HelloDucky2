@@ -351,13 +351,15 @@ function find_window_onload() {
 										editoptions: {
 											size: ColumnSize,
 											maxlength: ColumnSize,
-											mask: ColumnMask,
+											mask: ColumnMask,											
 											defaultValue: getDefaultValueForColumn(iColumnId, "text"),
 											dataInit: function(element) {
 												var ColumnMask = $(element).attr('mask');
 												if (ColumnMask == null) return false;
 												if (ColumnMask == "") return false;
 												$(element).mask(ColumnMask);
+												var title = $(element).val() + ' (Input Mask: ' + ColumnMask + ')';
+												$(element).attr('title', title);
 											}
 										},
 										label: sColumnDisplayName
