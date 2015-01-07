@@ -1512,3 +1512,7 @@ overflow-x : hidden !important;
 .textalignright {
 	text-align: right;
 }
+
+.msClear::-ms-clear {
+	display: none;
+}

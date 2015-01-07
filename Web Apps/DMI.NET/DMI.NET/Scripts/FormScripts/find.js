@@ -289,6 +289,10 @@ function find_window_onload() {
 										columnLookupFilterValueID: ColumnLookupFilterValueID,
 										editoptions: {
 											dataInit: function (element) {
+												$(element).on('keydown', function () {return false;}); //Prevent the user from typing in lookups
+												$(element).attr('onpaste', 'return false;'); //Prevent the user from pasting into lookups
+												$(element).addClass('msClear'); //Remove the "x" that IE shows on the right side of input boxes
+
 												//On clicking any cell on the lookup column, popup the lookup dialog
 												$(element).on('click', function () { showLookupForColumn(element); });
 											},
