@@ -1,6 +1,7 @@
 ﻿@Imports DMI.NET
 @Imports DMI.NET.Helpers
 @Inherits System.Web.Mvc.WebViewPage(Of Models.MailMergeModel)
+@Html.HiddenFor(Function(m) m.ActionType)
 
 <fieldset class="width100">
 	<legend class="fontsmalltitle">Options:</legend>
@@ -28,13 +29,13 @@
 <fieldset class="width25 floatleft" style="">
 	<legend class="fontsmalltitle">Output Format:</legend>
 	<fieldset class="">
-		@Html.RadioButton("OutputFormat", 0, Model.OutputFormat = MailMergeOutputTypes.WordDocument, New With {.onclick = "selectMergeOutput('WordDocument')"})
+		@Html.RadioButton("OutputFormat", 0, Model.OutputFormat = MailMergeOutputTypes.WordDocument, New With {.onclick = "selectMergeOutputType('WordDocument')"})
 		Word Document
 		<br />
-		@Html.RadioButton("OutputFormat", 1, Model.OutputFormat = MailMergeOutputTypes.IndividualEmail, New With {.onclick = "selectMergeOutput('IndividualEmail')"})
+		@Html.RadioButton("OutputFormat", 1, Model.OutputFormat = MailMergeOutputTypes.IndividualEmail, New With {.onclick = "selectMergeOutputType('IndividualEmail')"})
 		Individual Emails
 		<br />
-		@Html.RadioButton("OutputFormat", 2, Model.OutputFormat = MailMergeOutputTypes.DocumentManagement, New With {.onclick = "selectMergeOutput('DocumentManagement')"})
+		@Html.RadioButton("OutputFormat", 2, Model.OutputFormat = MailMergeOutputTypes.DocumentManagement, New With {.onclick = "selectMergeOutputType('DocumentManagement')"})
 		<span class="DataManagerOnly">Document Management</span>
 	</fieldset>
 </fieldset>
@@ -64,7 +65,7 @@
 				@Html.LabelFor(Function(m) m.SaveToFile)
 			</div>
 			<div class="width70 floatleft">
-				@Html.TextBoxFor(Function(m) m.Filename, New With {.placeholder = "File Name", .class = "outputfile width100"})
+				@Html.TextBoxFor(Function(m) m.Filename, New With {.id = "Filename", .placeholder = "File Name", .class = "outputfile width100"})
 				@Html.ValidationMessageFor(Function(m) m.Filename)
 			</div>
 		</div>
@@ -128,7 +129,9 @@
 		$(".outputfile").children().attr("readonly", !bSelected);
 		if (!bSelected) {
 			$(".outputfile").children().val("");
+			$('#Filename').val("");
 		}
+		$('#Filename').prop('disabled', !bSelected);
 	}
 
 	function setOutputSendAsAttachment() {
@@ -140,20 +143,36 @@
 		}
 	}
 
-	function selectMergeOutput(outputType) {
-		if (outputType == 'DocumentManagement')
-		{
+	function selectMergeOutput(outputType) {		
+		$("[class^=outputmerge_]").hide();
+		$(".outputmerge_" + outputType).show(500);
+	}
+
+	function selectMergeOutputType(outputType) {
+		if (outputType == 'DocumentManagement') {
 			$('#DocumentDisplayOutputOnScreen').prop('checked', true);
-			$('#WordDocumentPrinter').prop('disabled', true);			
-			$('#SendToPrinter').prop('checked', false);			
-		}		
+			$('#WordDocumentPrinter').prop('disabled', true);
+			$('#SendToPrinter').prop('checked', false);
+		}
+		else if (outputType == 'WordDocument') {
+			$('#WordDisplayOutputOnScreen').prop('checked', true);
+			$('#SendToPrinter').prop('checked', false);
+			$('#SaveToFile').prop('checked', false);
+			$('#Filename').val("");
+			$('#Filename').prop('disabled', true);
+		}
+		else if (outputType == 'IndividualEmail') {
+			$('#EmailAsAttachment').prop('checked', false);
+			$('#EmailSubject').val("");
+		}
+
 		$("[class^=outputmerge_]").hide();
 		$(".outputmerge_" + outputType).show(500);
 	}
 
 	function setSendToPrinter()
 	{
-		var bSelected = $("#SendToPrinter").prop("checked");		
+		var bSelected = $("#SendToPrinter").prop("checked");
 		if (bSelected) {
 			$('#WordDocumentPrinter').prop('disabled', false);
 		}
@@ -164,6 +183,7 @@
 	}
 
 	$(function () {
+
 		selectMergeOutput('@Model.OutputFormat');
 		setOutputSendAsAttachment();
 		//styling for email address under Individual Emails section
@@ -176,6 +196,12 @@
 		$('fieldset').css("border", "1");
 		$('#WordDisplayOutputOnScreen').prop('checked', true);
 		$('#WordDocumentPrinter').prop('disabled', true);
-	});
+		
+		if ($("#ActionType").val() == '@UtilityActionType.New') {
+			$('#PauseBeforeMerge').prop('checked', true);
+			$('#SuppressBlankLines').prop('checked', true);
+		}
+
+		});
 
 </script>

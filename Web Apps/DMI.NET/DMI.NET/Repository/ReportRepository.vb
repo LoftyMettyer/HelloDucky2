@@ -516,6 +516,9 @@ Namespace Repository
 				Dim sAccess = UtilityAccessAsString(objModel.GroupAccess)
 				Dim sColumns = MailMergeColumnsAsString(objModel.Columns, objModel.SortOrders)
 
+
+
+				'objModel.SendToPrinter
 				If (objModel.OutputFormat = MailMergeOutputTypes.WordDocument) Then
 					objModel.PrinterName = objModel.WordDocumentPrinter
 				ElseIf (objModel.OutputFormat = MailMergeOutputTypes.DocumentManagement) Then
@@ -525,6 +528,9 @@ Namespace Repository
 				objModel.EmailAttachmentName = If(objModel.EmailAttachmentName Is Nothing, "", objModel.EmailAttachmentName)
 				objModel.EmailSubject = If(objModel.EmailSubject Is Nothing, "", objModel.EmailSubject)
 				objModel.TemplateFileName = If(objModel.TemplateFileName Is Nothing, "", objModel.TemplateFileName)
+				objModel.PrinterName = If(objModel.PrinterName Is Nothing, "", objModel.PrinterName)
+				objModel.Filename = If(objModel.Filename Is Nothing, "", objModel.Filename)
+
 
 				_objDataAccess.ExecuteSP("spASRIntSaveMailMerge" _
 					, New SqlParameter("@psName", SqlDbType.VarChar, 255) With {.Value = objModel.Name} _
