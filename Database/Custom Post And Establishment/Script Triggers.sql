@@ -167,7 +167,7 @@ INSERT ASRSysTableTriggers (TriggerID, TableID, Name, CodePosition, IsSystem, Co
 
 GO
 
-INSERT ASRSysTableTriggers (TriggerID, TableID, Name, CodePosition, IsSystem, Content) VALUES (6, 249, 'Slave from appointment working pattern', 0, 1, '    
+INSERT ASRSysTableTriggers (TriggerID, TableID, Name, CodePosition, IsSystem, Content) VALUES (6, 249, 'Slave to appointment working pattern', 0, 1, '    
 
 	DECLARE @persID integer;
 	DECLARE @changeDates TABLE(effectiveDate datetime, ID integer, PersID integer);
@@ -219,9 +219,9 @@ INSERT ASRSysTableTriggers (TriggerID, TableID, Name, CodePosition, IsSystem, Co
 			, ISNULL(SUM(wp.Thursday_Hours_AM),0), ISNULL(SUM(wp.Thursday_Hours_PM),0)
 			, ISNULL(SUM(wp.Friday_Hours_AM),0), ISNULL(SUM(wp.Friday_Hours_PM),0)
 			, ISNULL(SUM(wp.Saturday_Hours_AM),0), ISNULL(SUM(wp.Saturday_Hours_PM),0)
-
 		FROM Appointment_Working_Patterns wp
-			WHERE (@effectiveDate >= wp.Effective_Date AND (@effectiveDate <= wp.End_Date OR wp.End_Date IS NULL));
+			INNER JOIN Appointments a ON a.ID = wp.ID_3
+			WHERE (a.ID_1 = @persID	AND @effectiveDate >= wp.Effective_Date AND (@effectiveDate <= wp.End_Date OR wp.End_Date IS NULL));
 
 		FETCH NEXT FROM @cursRollupWorkingPatterns INTO @effectiveDate, @PersID
 	END
@@ -253,7 +253,7 @@ INSERT ASRSysTableTriggers (TriggerID, TableID, Name, CodePosition, IsSystem, Co
 	WHEN MATCHED 
 		THEN UPDATE SET Effective_Date = awp.Effective_Date, Sunday_Hours = awp.SunHours, Monday_Hours = awp.MonHours, Tuesday_Hours = awp.TuesHours, Wednesday_Hours = awp.WedHours
 			, Thursday_Hours = awp.ThursHours, Friday_Hours = awp.FriHours, Saturday_Hours = awp.SatHours, Working_Pattern = awp.workpatt
-	WHEN NOT MATCHED BY SOURCE
+	WHEN NOT MATCHED BY SOURCE AND wp.ID_1 IN(SELECT PersID FROM @employees)
 	    THEN DELETE ;');
 
 GO
