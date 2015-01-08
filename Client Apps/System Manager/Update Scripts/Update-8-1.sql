@@ -4247,6 +4247,189 @@ PRINT 'Step - Cleanup metadata interim build issues'
 	EXEC sp_executesql N'UPDATE ASRSysMailMergeName SET Selection = 0 WHERE (Selection = 1 AND PicklistID = 0) OR (Selection = 2 AND FilterID = 0);';
 
 
+/* --------------------------------------------------------- */
+PRINT 'Step - P&E Core functions'
+/* --------------------------------------------------------- */
+
+	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[udfsysDurationFromPattern]') AND xtype = 'FN')
+		DROP FUNCTION [dbo].[udfsysDurationFromPattern];
+
+	EXEC sp_executesql N'CREATE FUNCTION [dbo].[udfsysDurationFromPattern](
+		@Absence_In	varchar(5),
+		@IndividualDate datetime,
+		@SessionType varchar(3),
+		@Sunday_Hours_AM numeric(4,2),
+		@Monday_Hours_AM numeric(4,2),
+		@Tuesday_Hours_AM numeric(4,2),
+		@Wednesday_Hours_AM numeric(4,2),
+		@Thursday_Hours_AM numeric(4,2),
+		@Friday_Hours_AM numeric(4,2),
+		@Saturday_Hours_AM numeric(4,2),
+		@Sunday_Hours_PM numeric(4,2),
+		@Monday_Hours_PM numeric(4,2),
+		@Tuesday_Hours_PM numeric(4,2),
+		@Wednesday_Hours_PM numeric(4,2),
+		@Thursday_Hours_PM numeric(4,2),
+		@Friday_Hours_PM numeric(4,2),
+		@Saturday_Hours_PM numeric(4,2))
+	RETURNS numeric(5,2)
+	AS 
+	BEGIN
+
+		DECLARE @value numeric(5,2) = 0;
+
+		SET @value = ISNULL(CASE @Absence_In
+			WHEN ''Hours'' THEN
+				CASE WHEN DATEPART(dw, @IndividualDate) = 1 AND @SessionType = ''AM'' THEN @Sunday_Hours_AM
+					WHEN DATEPART(dw, @IndividualDate) = 2 AND @SessionType = ''AM'' THEN @Monday_Hours_AM
+					WHEN DATEPART(dw, @IndividualDate) = 3 AND @SessionType = ''AM'' THEN @Tuesday_Hours_AM
+					WHEN DATEPART(dw, @IndividualDate) = 4 AND @SessionType = ''AM'' THEN @Wednesday_Hours_AM
+					WHEN DATEPART(dw, @IndividualDate) = 5 AND @SessionType = ''AM'' THEN @Thursday_Hours_AM
+					WHEN DATEPART(dw, @IndividualDate) = 6 AND @SessionType = ''AM'' THEN @Friday_Hours_AM
+					WHEN DATEPART(dw, @IndividualDate) = 7 AND @SessionType = ''AM'' THEN @Saturday_Hours_AM
+					WHEN DATEPART(dw, @IndividualDate) = 1 AND @SessionType = ''PM'' THEN @Sunday_Hours_PM
+					WHEN DATEPART(dw, @IndividualDate) = 2 AND @SessionType = ''PM'' THEN @Monday_Hours_PM
+					WHEN DATEPART(dw, @IndividualDate) = 3 AND @SessionType = ''PM'' THEN @Tuesday_Hours_PM
+					WHEN DATEPART(dw, @IndividualDate) = 4 AND @SessionType = ''PM'' THEN @Wednesday_Hours_PM
+					WHEN DATEPART(dw, @IndividualDate) = 5 AND @SessionType = ''PM'' THEN @Thursday_Hours_PM
+					WHEN DATEPART(dw, @IndividualDate) = 6 AND @SessionType = ''PM'' THEN @Friday_Hours_PM
+					WHEN DATEPART(dw, @IndividualDate) = 7 AND @SessionType = ''PM'' THEN @Saturday_Hours_PM
+					WHEN DATEPART(dw, @IndividualDate) = 1 AND @SessionType = ''Day'' THEN @Sunday_Hours_AM + @Sunday_Hours_PM
+					WHEN DATEPART(dw, @IndividualDate) = 2 AND @SessionType = ''Day'' THEN @Monday_Hours_AM + @Monday_Hours_PM
+					WHEN DATEPART(dw, @IndividualDate) = 3 AND @SessionType = ''Day'' THEN @Tuesday_Hours_AM + @Tuesday_Hours_PM
+					WHEN DATEPART(dw, @IndividualDate) = 4 AND @SessionType = ''Day'' THEN @Wednesday_Hours_AM + @Wednesday_Hours_PM
+					WHEN DATEPART(dw, @IndividualDate) = 5 AND @SessionType = ''Day'' THEN @Thursday_Hours_AM + @Thursday_Hours_PM
+					WHEN DATEPART(dw, @IndividualDate) = 6 AND @SessionType = ''Day'' THEN @Friday_Hours_AM + @Friday_Hours_PM
+					WHEN DATEPART(dw, @IndividualDate) = 7 AND @SessionType = ''Day'' THEN @Saturday_Hours_AM + @Saturday_Hours_PM
+				END
+			WHEN ''Days'' THEN
+				CASE WHEN @SessionType = ''AM'' OR  @SessionType = ''PM'' THEN 0.5 ELSE 1 END 
+			END, 0)
+
+		RETURN @value
+
+	END';
+
+	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[udfsysDateRangeToTable]') AND xtype = 'TF')
+		DROP FUNCTION [dbo].[udfsysDateRangeToTable];
+
+	EXEC sp_executesql N'CREATE FUNCTION [dbo].[udfsysDateRangeToTable]
+	(     
+		  @Increment              char(1),
+		  @StartDate              datetime,
+		  @StartSession           char(2),
+		  @EndDate                datetime,
+		  @EndSession			  char(2)
+	)
+	RETURNS  
+		@SelectedRange	TABLE ([IndividualDate] datetime, [SessionType] char(3))
+	AS 
+	BEGIN
+		SET @StartDate = DATEADD(dd, 0, DATEDIFF(dd, 0, @StartDate));
+		SET @EndDate = DATEADD(dd, 0, DATEDIFF(dd, 0, @EndDate));
+
+		WITH cteRange (DateRange) AS (
+			SELECT @StartDate
+			UNION ALL
+			SELECT DATEADD(dd, 0, DATEDIFF(dd, 0, 
+					CASE
+						WHEN @Increment = ''d'' THEN DATEADD(dd, 1, DateRange)
+						WHEN @Increment = ''w'' THEN DATEADD(ww, 1, DateRange)
+						WHEN @Increment = ''m'' THEN DATEADD(mm, 1, DateRange)
+					END))
+			FROM cteRange
+			WHERE DateRange <= 
+					CASE
+						WHEN @Increment = ''d'' THEN DATEADD(dd, -1, @EndDate)
+						WHEN @Increment = ''w'' THEN DATEADD(ww, -1, @EndDate)
+						WHEN @Increment = ''m'' THEN DATEADD(mm, -1, @EndDate)
+					END)         
+		INSERT INTO @SelectedRange (IndividualDate, SessionType)
+		SELECT DateRange, 
+		CASE
+			WHEN @StartSession = ''PM'' AND DateRange = @StartDate THEN ''PM''
+			WHEN @EndSession = ''AM'' AND DateRange = @EndDate THEN ''AM''
+			ELSE ''Day''
+		END
+		FROM cteRange
+		OPTION (MAXRECURSION 3660);
+		RETURN;
+	END';
+
+
+/* ------------------------------------------------------- */
+PRINT 'Step - Table Triggers'
+/* ------------------------------------------------------- */
+
+	IF NOT EXISTS(SELECT id FROM syscolumns WHERE  id = OBJECT_ID('tbsys_Tables', 'U') AND name = 'InsertTriggerDisabled')
+	BEGIN
+		EXEC sp_executesql N'DROP VIEW ASRSysTables;';
+		EXEC sp_executesql N'ALTER TABLE tbsys_Tables ADD [InsertTriggerDisabled] bit NULL, UpdateTriggerDisabled bit NULL, DeleteTriggerDisabled bit NULL';
+		EXEC sp_executesql N'CREATE VIEW [dbo].[ASRSysTables]
+					WITH SCHEMABINDING
+					AS SELECT base.[tableid], base.[tabletype], base.[defaultorderid], base.[recorddescexprid], base.[defaultemailid], base.[tablename], base.[manualsummarycolumnbreaks], base.[auditinsert], base.[auditdelete]
+							, base.[inserttriggerdisabled], base.[updatetriggerdisabled], base.[deletetriggerdisabled]
+							, base.[isremoteview],  obj.[locked], obj.[lastupdated], obj.[lastupdatedby]
+						FROM dbo.[tbsys_tables] base
+						INNER JOIN dbo.[tbsys_scriptedobjects] obj ON obj.targetid = base.tableid AND obj.objecttype = 1
+						INNER JOIN dbo.[tbstat_effectivedates] dt ON dt.[type] = 1
+						WHERE obj.effectivedate <= dt.[date]';
+
+		EXEC sp_executesql N'CREATE TRIGGER [dbo].[INS_ASRSysTables] ON [dbo].[ASRSysTables]
+				INSTEAD OF INSERT
+				AS
+				BEGIN
+
+					SET NOCOUNT ON;
+
+					-- Update objects table
+					IF NOT EXISTS(SELECT [guid]
+						FROM dbo.[tbsys_scriptedobjects] o
+						INNER JOIN inserted i ON i.tableid = o.targetid AND o.objecttype = 1)
+					BEGIN
+						INSERT dbo.[tbsys_scriptedobjects] ([guid], [objecttype], [targetid], [ownerid], [effectivedate], [revision], [locked], [lastupdated])
+							SELECT NEWID(), 1, [tableid], dbo.[udfsys_getownerid](), ''01/01/1900'',1,0, GETDATE()
+								FROM inserted;
+					END
+
+					-- Update base table								
+					INSERT dbo.[tbsys_tables] ([TableID], [TableType], [DefaultOrderID], [RecordDescExprID], [DefaultEmailID], [TableName], [ManualSummaryColumnBreaks], [AuditInsert], [AuditDelete], [isremoteview], [inserttriggerdisabled], [updatetriggerdisabled], [deletetriggerdisabled]) 
+						SELECT [TableID], [TableType], [DefaultOrderID], [RecordDescExprID], [DefaultEmailID], [TableName], [ManualSummaryColumnBreaks], [AuditInsert], [AuditDelete], [isremoteview], [inserttriggerdisabled], [updatetriggerdisabled], [deletetriggerdisabled] FROM inserted;
+
+				END';
+
+		EXEC sp_executesql N'CREATE TRIGGER [dbo].[DEL_ASRSysTables] ON [dbo].[ASRSysTables]
+		INSTEAD OF DELETE
+		AS
+		BEGIN
+			SET NOCOUNT ON;
+
+			DELETE FROM [tbsys_tables] WHERE tableid IN (SELECT tableid FROM deleted);
+			DELETE FROM [tbsys_scriptedobjects] WHERE targetid IN (SELECT tableid FROM deleted) AND objecttype = 1;
+
+		END';
+
+		EXEC sp_executesql N'UPDATE [ASRSysTables] SET InsertTriggerDisabled = 0, UpdateTriggerDisabled = 0, DeleteTriggerDisabled = 0'; 
+
+		EXEC sp_executesql N'GRANT SELECT, UPDATE, INSERT, DELETE ON ASRSysTables TO ASRSysGroup;';
+
+	END
+
+
+	IF NOT EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[ASRSysTableTriggers]') AND xtype in (N'U'))
+	BEGIN
+		EXEC sp_executesql N'CREATE TABLE dbo.ASRSysTableTriggers(
+			[TriggerID]		integer NOT NULL,
+			[TableID]		integer,
+			[Name]			nvarchar(255) NOT NULL,
+			[Content]		nvarchar(MAX),
+			[CodePosition]	integer,
+			[IsSystem]		bit NOT NULL
+		 CONSTRAINT [PK_ASRSysTableTrigger] PRIMARY KEY CLUSTERED 
+			([TriggerID] ASC)) ON [PRIMARY]';
+	END
+
+
 /* ------------------------------------------------------------- */
 /* Update the database version flag in the ASRSysSettings table. */
 /* Dont Set the flag to refresh the stored procedures            */

@@ -102,6 +102,7 @@
     <Compile Include="Enums\Connection\DbType.vb" />
     <Compile Include="Enums\Connection\MetadataProvider.vb" />
     <Compile Include="Enums\Connection\Provider.vb" />
+    <Compile Include="Enums\TriggerCodePosition.vb" />
     <Compile Include="Interfaces\ICommitDB.vb" />
     <Compile Include="Interfaces\IConnection.vb" />
     <Compile Include="Interfaces\IErrors.vb" />
@@ -112,6 +113,7 @@
     <Compile Include="Interfaces\ISystemManager.vb" />
     <Compile Include="Interfaces\ITable.vb" />
     <Compile Include="Things\Collections\Errors.vb" />
+    <Compile Include="Things\Components\TriggerCode.vb" />
     <Compile Include="Things\Scripting\Option.vb" />
     <Compile Include="Things\Scripting\TuningReport.vb" />
     <Compile Include="Things\Scripting\Modifications.vb" />

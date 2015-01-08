@@ -47,8 +47,37 @@ Private mcolEmailLinks As Collection
 Private mcolOutlookLinks As Collection
 Private mcolWorkflowTriggeredLinks As Collection
 Private mcolTableValidations As Collection
+Private mcolTableTriggers As Collection
 Private mbIsRemoteView As Boolean
 Private mbLocked As Boolean
+
+Private mbInsertTriggerDisabled As Boolean
+Private mbUpdateTriggerDisabled As Boolean
+Private mbDeleteTriggerDisabled As Boolean
+
+Public Property Get InsertTriggerDisabled() As Boolean
+  InsertTriggerDisabled = mbInsertTriggerDisabled
+End Property
+
+Public Property Let InsertTriggerDisabled(ByVal bNewValue As Boolean)
+  mbInsertTriggerDisabled = bNewValue
+End Property
+
+Public Property Get UpdateTriggerDisabled() As Boolean
+  UpdateTriggerDisabled = mbUpdateTriggerDisabled
+End Property
+
+Public Property Let UpdateTriggerDisabled(ByVal bNewValue As Boolean)
+  mbUpdateTriggerDisabled = bNewValue
+End Property
+
+Public Property Get DeleteTriggerDisabled() As Boolean
+  DeleteTriggerDisabled = mbDeleteTriggerDisabled
+End Property
+
+Public Property Let DeleteTriggerDisabled(ByVal bNewValue As Boolean)
+  mbDeleteTriggerDisabled = bNewValue
+End Property
 
 Public Property Get PermissionsPrompted() As Boolean
     PermissionsPrompted = mbPermissionsPrompted
@@ -751,6 +780,10 @@ Public Function CloneTable(pavCloneRegister As Variant, pfCopyData As Boolean, p
       '.EmailDeleteID = mlngEmailDelete
       '.EmailInsertID = mlngEmailInsert
       .PrimaryEmailID = glngPrimaryEmailID
+      
+      .InsertTriggerDisabled = mbInsertTriggerDisabled
+      .UpdateTriggerDisabled = mbUpdateTriggerDisabled
+      .DeleteTriggerDisabled = mbDeleteTriggerDisabled
       
       ' Write the new table definition to the local tables.
       fOK = .WriteTable
@@ -2280,6 +2313,7 @@ Public Function CloneTable(pavCloneRegister As Variant, pfCopyData As Boolean, p
 
     objNewTable.ReadWorkflowLinks
     objNewTable.ReadTableValidations
+
   End If
 
 
@@ -2471,6 +2505,14 @@ Public Function ReadTable() As Boolean
         fOK = ReadTableValidations
       End If
       
+      If fOK Then
+        fOK = ReadTableTriggers
+      End If
+      
+      InsertTriggerDisabled = !InsertTriggerDisabled
+      UpdateTriggerDisabled = !UpdateTriggerDisabled
+      DeleteTriggerDisabled = !DeleteTriggerDisabled
+      
     End If
   End With
   
@@ -2639,6 +2681,10 @@ Public Function WriteTable() As Boolean
       !AuditDelete = mbAuditDelete
       '!EmailInsert = mlngEmailInsert
       '!EmailDelete = mlngEmailDelete
+      !InsertTriggerDisabled = InsertTriggerDisabled
+      !UpdateTriggerDisabled = UpdateTriggerDisabled
+      !DeleteTriggerDisabled = DeleteTriggerDisabled
+
       .Update
       
       'If this is a new table add an ID column
@@ -2696,6 +2742,7 @@ Public Function WriteTable() As Boolean
   WriteOutlookLinks
   WriteWorkflowLinks
   WriteTableValidations
+  WriteTableTriggers
 
 TidyUpAndExit:
   ' Restore original index.
@@ -5010,6 +5057,41 @@ ErrorTrap:
 
 End Function
 
+Private Function WriteTableTriggers() As Boolean
+
+  On Error GoTo ErrorTrap
+
+  Dim objTrigger As clsTableTrigger
+  Dim strSQL As String
+  Dim fOK As Boolean
+
+  fOK = True
+
+  strSQL = "DELETE FROM tmpTableTriggers WHERE tableID = " & CStr(gLngTableID)
+  daoDb.Execute strSQL, dbFailOnError
+
+  ' Write the column control values to the database.
+  If mcolTableTriggers.Count > 0 Then
+    For Each objTrigger In mcolTableTriggers
+      objTrigger.TableID = gLngTableID
+      fOK = objTrigger.WriteTrigger
+
+      If Not fOK Then
+        Exit For
+      End If
+    Next objTrigger
+    Set objTrigger = Nothing
+  End If
+  
+TidyUpAndExit:
+  WriteTableTriggers = fOK
+  Exit Function
+
+ErrorTrap:
+  fOK = False
+  Resume TidyUpAndExit
+
+End Function
 
 Private Function WriteWorkflowLinks() As Boolean
   On Error GoTo ErrorTrap
@@ -5141,6 +5223,10 @@ Public Property Get TableValidations() As Collection
   Set TableValidations = mcolTableValidations
 End Property
 
+Public Property Get TableTriggers() As Collection
+  Set TableTriggers = mcolTableTriggers
+End Property
+
 Public Property Let EmailLinks(ByVal colNewValue As Collection)
   Set mcolEmailLinks = colNewValue
 End Property
@@ -5157,6 +5243,9 @@ Public Property Let TableValidations(ByVal colNewValue As Collection)
   Set mcolTableValidations = colNewValue
 End Property
 
+Public Property Let TableTriggers(ByVal colNewValue As Collection)
+  Set mcolTableTriggers = colNewValue
+End Property
 
 Public Function ReadEmailLinks()
 
@@ -5317,6 +5406,45 @@ Public Function ReadTableValidations() As Boolean
 
 ErrorTrap:
   ReadTableValidations = False
+
+End Function
+
+
+Public Function ReadTableTriggers() As Boolean
+
+  Dim objTrigger As clsTableTrigger
+  
+  On Error GoTo ErrorTrap
+
+  Set mcolTableTriggers = New Collection
+
+  With recTableTriggerEdit
+    .Index = "idxTableID"
+    .Seek "=", gLngTableID
+
+    If Not .NoMatch Then
+      Do While !TableID = gLngTableID
+        If Not !Deleted Then
+          Set objTrigger = New clsTableTrigger
+          objTrigger.TriggerID = .Fields("TriggerID").value
+          objTrigger.ReadTrigger
+          mcolTableTriggers.Add objTrigger, "ID" & CStr(objTrigger.TriggerID)
+          Set objTrigger = Nothing
+        End If
+
+        .MoveNext
+        If .EOF Then
+          Exit Do
+        End If
+      Loop
+    End If
+  End With
+
+  ReadTableTriggers = True
+  Exit Function
+
+ErrorTrap:
+  ReadTableTriggers = False
 
 End Function
 

@@ -119,7 +119,7 @@ Partial Class MainForm
 		Me.txtDatabase.Name = "txtDatabase"
 		Me.txtDatabase.Size = New System.Drawing.Size(100, 20)
 		Me.txtDatabase.TabIndex = 2
-		Me.txtDatabase.Text = "OpenHR80_NFP"
+		Me.txtDatabase.Text = "OpenHR81PE"
 		'
 		'butScriptDB
 		'

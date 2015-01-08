@@ -29,6 +29,12 @@ Public Class Table
   Public Property DependsOnParentColumns As ICollection(Of Column)
   Public Property FusionMessages As ICollection(Of FusionMessage)
 
+	Public Property InsertTriggerDisabled As Boolean
+	Public Property UpdateTriggerDisabled As Boolean
+	Public Property DeleteTriggerDisabled As Boolean
+
+	Public Property CodeTriggers As ICollection(Of TriggerCode)
+
   Public Sub New()
     Indexes = New Collection(Of Index)
     Columns = New Collection(Of Column)
@@ -41,7 +47,8 @@ Public Class Table
     Masks = New Collection(Of Mask)
     DependsOnChildColumns = New Collection(Of Column)
     DependsOnParentColumns = New Collection(Of Column)
-    FusionMessages = New Collection(Of FusionMessage)
+		FusionMessages = New Collection(Of FusionMessage)
+		CodeTriggers = New Collection(Of TriggerCode)
   End Sub
 
   Public Overrides ReadOnly Property PhysicalName As String

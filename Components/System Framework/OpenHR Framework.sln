@@ -1,6 +1,8 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 11.00
-# Visual Studio 2010
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.21005.1
+MinimumVisualStudioVersion = 10.0.40219.1
 Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "System Framework", "Engine\System Framework.vbproj", "{C475177F-6A94-43B0-BAEE-427642923108}"
 EndProject
 Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "OpenHR Framework Setup", "Setup\HR Pro Engine Setup.vdproj", "{783E6446-B800-4FD0-8A15-295D047936A1}"
@@ -14,19 +16,23 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".nuget", ".nuget", "{87D18D
 		.nuget\NuGet.targets = .nuget\NuGet.targets
 	EndProjectSection
 EndProject
+Project("{F184B08F-C81C-45F6-A57F-5ABD9991F28F}") = "Test Harness", "Test Harness\Test Harness.vbproj", "{1D876F09-E9F9-41F2-ADF3-62666FC221D2}"
+EndProject
 Global
-	GlobalSection(SourceCodeControl) = preSolution
+	GlobalSection(TeamFoundationVersionControl) = preSolution
 		SccNumberOfProjects = 4
+		SccEnterpriseProvider = {4CA58AB2-18FA-4F8D-95D4-32DDF27D184C}
+		SccTeamFoundationServer = http://harptfs01:8080/tfs/defaultcollection
 		SccLocalPath0 = .
-		SccProjectUniqueName1 = Setup\\HR\u0020Pro\u0020Engine\u0020Setup.vdproj
-		SccProjectName1 = \u0022$/HR\u0020Pro/HR\u0020Pro\u0020Engine/Setup\u0022,\u0020LVGDAAAA
-		SccLocalPath1 = Setup
-		SccProjectUniqueName2 = Engine\\System\u0020Framework.vbproj
-		SccProjectName2 = \u0022$/HR\u0020Pro/HR\u0020Pro\u0020Engine/Engine\u0022,\u0020TKGDAAAA
-		SccLocalPath2 = Engine
-		SccProjectUniqueName3 = MobileDesigner\\MobileDesigner.csproj
-		SccProjectName3 = \u0022$/HR\u0020Pro/HR\u0020Pro\u0020Engine/MobileDesigner\u0022,\u0020JLTDAAAA
-		SccLocalPath3 = MobileDesigner
+		SccProjectUniqueName1 = Engine\\System\u0020Framework.vbproj
+		SccProjectName1 = Engine
+		SccLocalPath1 = Engine
+		SccProjectUniqueName2 = Setup\\HR\u0020Pro\u0020Engine\u0020Setup.vdproj
+		SccProjectName2 = Setup
+		SccLocalPath2 = Setup
+		SccProjectUniqueName3 = Test\u0020Harness\\Test\u0020Harness.vbproj
+		SccProjectName3 = Test\u0020Harness
+		SccLocalPath3 = Test\u0020Harness
 	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -68,6 +74,16 @@ Global
 		{6D7DBE8A-D215-4F00-9438-DD412B50E48B}.Release|Mixed Platforms.Build.0 = Release|x86
 		{6D7DBE8A-D215-4F00-9438-DD412B50E48B}.Release|x86.ActiveCfg = Release|x86
 		{6D7DBE8A-D215-4F00-9438-DD412B50E48B}.Release|x86.Build.0 = Release|x86
+		{1D876F09-E9F9-41F2-ADF3-62666FC221D2}.Debug|Any CPU.ActiveCfg = Debug|x86
+		{1D876F09-E9F9-41F2-ADF3-62666FC221D2}.Debug|Mixed Platforms.ActiveCfg = Debug|x86
+		{1D876F09-E9F9-41F2-ADF3-62666FC221D2}.Debug|Mixed Platforms.Build.0 = Debug|x86
+		{1D876F09-E9F9-41F2-ADF3-62666FC221D2}.Debug|x86.ActiveCfg = Debug|x86
+		{1D876F09-E9F9-41F2-ADF3-62666FC221D2}.Debug|x86.Build.0 = Debug|x86
+		{1D876F09-E9F9-41F2-ADF3-62666FC221D2}.Release|Any CPU.ActiveCfg = Release|x86
+		{1D876F09-E9F9-41F2-ADF3-62666FC221D2}.Release|Mixed Platforms.ActiveCfg = Release|x86
+		{1D876F09-E9F9-41F2-ADF3-62666FC221D2}.Release|Mixed Platforms.Build.0 = Release|x86
+		{1D876F09-E9F9-41F2-ADF3-62666FC221D2}.Release|x86.ActiveCfg = Release|x86
+		{1D876F09-E9F9-41F2-ADF3-62666FC221D2}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

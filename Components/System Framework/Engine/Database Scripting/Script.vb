@@ -331,6 +331,9 @@ Namespace ScriptDB
       Dim sSqlCodeAuditDelete As String
       Dim sSqlCodeAudit As String
 
+			Dim sSqlPostUpdateTriggerCode As String
+			Dim ssqlPostInsertTriggerCode As String
+
       Dim sSqlCodeBypass As String
 
       Dim sValidation As String
@@ -748,16 +751,19 @@ Namespace ScriptDB
 					sSqlCategoryUpdate = SpecialTrigger_Categories(objTable)
 					sSqlHeadcountCheck = SpecialTrigger_Personnel_HeadcountCheck(objTable)
 
+					ssqlPostInsertTriggerCode = SpecialTrigger_TriggerCode(objTable, TriggerCodePosition.AfterI02Insert)
+					sSqlPostUpdateTriggerCode = SpecialTrigger_TriggerCode(objTable, TriggerCodePosition.AfterU02Update)
+
 					' INSTEAD OF INSERT
 					sSql = sSqlHeadcountCheck & vbNewLine & vbNewLine & String.Format("    DECLARE @dChangeDate datetime," & vbNewLine & _
-						"            @sValidation nvarchar(MAX);" & vbNewLine & vbNewLine & _
-						"    SET @sValidation = '';" & vbNewLine & _
-						"    SET @dChangeDate = GETDATE();" & vbNewLine & vbNewLine & _
-						"    INSERT {5} ([tablefromid], [actiontype], [nestlevel]) VALUES ({2}, 1, @@NESTLEVEL);" & vbNewLine & vbNewLine & _
-						sQlInsteadOfInsertColumns _
-						, objTable.Name, "", objTable.Id _
-						, String.Join(",", aryAllWriteableColumns.ToArray()), String.Join("," & vbNewLine, aryAllWriteableFormatted.ToArray()), Consts.SysTriggerTransaction)
-					ScriptTrigger("dbo", objTable, TriggerType.InsteadOfInsert, sSql, existingTriggers)
+							"            @sValidation nvarchar(MAX);" & vbNewLine & vbNewLine & _
+							"    SET @sValidation = '';" & vbNewLine & _
+							"    SET @dChangeDate = GETDATE();" & vbNewLine & vbNewLine & _
+							"    INSERT {5} ([tablefromid], [actiontype], [nestlevel]) VALUES ({2}, 1, @@NESTLEVEL);" & vbNewLine & vbNewLine & _
+							sQlInsteadOfInsertColumns _
+							, objTable.Name, "", objTable.Id _
+							, String.Join(",", aryAllWriteableColumns.ToArray()), String.Join("," & vbNewLine, aryAllWriteableFormatted.ToArray()), Consts.SysTriggerTransaction)
+					ScriptTrigger("dbo", objTable, TriggerType.InsteadOfInsert, sSql, existingTriggers, objTable.InsertTriggerDisabled)
 
 					' AFTER INSERT
 					sSql = String.Format("    DECLARE @audit TABLE ([id] integer, [oldvalue] varchar(255), [newvalue] varchar(255), [tableid] integer, [tablename] varchar(255), [columnname] varchar(255), [columnid] integer, [recorddesc] nvarchar(255));" & vbNewLine & _
@@ -770,9 +776,10 @@ Namespace ScriptDB
 						sSqlCodeAudit & _
 						sValidation & vbNewLine & _
 						"    DELETE {5} WHERE [tablefromid] = {3};" & vbNewLine & vbNewLine & _
-						"{4}" & vbNewLine & vbNewLine _
-						, objTable.Name, "", sSqlCodeAuditInsert, objTable.Id, objTable.SysMgrInsertTrigger, Consts.SysTriggerTransaction)
-					ScriptTrigger("dbo", objTable, TriggerType.AfterInsert, sSql, existingTriggers)
+						"{4}" & vbNewLine & vbNewLine & _
+						"{1}" & vbNewLine & vbNewLine _
+						, objTable.Name, ssqlPostInsertTriggerCode, sSqlCodeAuditInsert, objTable.Id, objTable.SysMgrInsertTrigger, Consts.SysTriggerTransaction)
+					ScriptTrigger("dbo", objTable, TriggerType.AfterInsert, sSql, existingTriggers, False)
 
 					' INSTEAD OF UPDATE
 					sSql = String.Format("    DECLARE @dChangeDate datetime," & vbNewLine & _
@@ -788,7 +795,7 @@ Namespace ScriptDB
 						, objTable.Id _
 						, sSqlWriteableColumns _
 						, Consts.SysTriggerTransaction, objTable.Id)
-					ScriptTrigger("dbo", objTable, TriggerType.InsteadOfUpdate, sSql, existingTriggers)
+					ScriptTrigger("dbo", objTable, TriggerType.InsteadOfUpdate, sSql, existingTriggers, objTable.UpdateTriggerDisabled)
 
 					' AFTER UPDATE
 					sSql = String.Format("    DECLARE @audit TABLE ([id] integer, [oldvalue] varchar(255), [newvalue] varchar(255), tableid integer, [tablename] varchar(255), [columnname] varchar(255), [columnid] integer, [recorddesc] nvarchar(255));" & vbNewLine & _
@@ -806,12 +813,13 @@ Namespace ScriptDB
 						sSqlSpecialUpdate & _
 						"{7}" & vbNewLine & vbNewLine & _
 						"{8}" & vbNewLine & vbNewLine & _
-						"{9}" & vbNewLine & vbNewLine _
+						"{9}" & vbNewLine & vbNewLine & _
+						"{5}" & vbNewLine & vbNewLine _
 						, objTable.Name, "" _
 						, "", objTable.Id, Consts.SysTriggerTransaction _
-						, "" _
+						, sSqlPostUpdateTriggerCode _
 						, sSqlCodeAuditUpdate, sSqlPostAuditCalcs, objTable.SysMgrUpdateTrigger, sSqlFusionCode) & vbNewLine & vbNewLine
-					ScriptTrigger("dbo", objTable, TriggerType.AfterUpdate, sSql, existingTriggers)
+					ScriptTrigger("dbo", objTable, TriggerType.AfterUpdate, sSql, existingTriggers, objTable.UpdateTriggerDisabled)
 
 					' INSTEAD OF DELETE
 					sSql = String.Format("	   DECLARE @audit TABLE ([id] integer, [oldvalue] varchar(255), [newvalue] varchar(255), [tablename] varchar(255), [tableid] integer, [columnname] varchar(255), [columnid] integer, [recorddesc] nvarchar(255));" & vbNewLine & _
@@ -837,7 +845,7 @@ Namespace ScriptDB
 						"    DELETE [dbo].[{3}] WHERE [tablefromid] = {4};" & vbNewLine & vbNewLine _
 						, objTable.PhysicalName, sSqlCodeAuditDelete, sSqlParentColumnsDelete _
 						, Consts.SysTriggerTransaction, objTable.Id, objTable.SysMgrDeleteTrigger, sSqlCategoryUpdate)
-					ScriptTrigger("dbo", objTable, TriggerType.InsteadOfDelete, sSql, existingTriggers)
+					ScriptTrigger("dbo", objTable, TriggerType.InsteadOfDelete, sSql, existingTriggers, objTable.DeleteTriggerDisabled)
 
 					' AFTER DELETE
 					DropTrigger(objTable, TriggerType.AfterDelete, existingTriggers)
@@ -901,7 +909,7 @@ Namespace ScriptDB
 
 
 		Private Sub ScriptTrigger(role As String, table As Table, triggerType As TriggerType, bodyCode As String _
-																	 , existingTriggers As IDictionary(Of String, ScriptedMetadata))
+																	 , existingTriggers As IDictionary(Of String, ScriptedMetadata), dropOnly As Boolean)
 
 			Dim sSql As String = String.Empty
 			Dim sTriggerType As String = String.Empty
@@ -970,7 +978,10 @@ Namespace ScriptDB
 				Dim existingTrigger As ScriptedMetadata = Nothing
 				existingTriggers.TryGetValue(sTriggerName, existingTrigger)
 
-				If existingTrigger IsNot Nothing AndAlso existingTrigger.Definition = sSql Then
+				If dropOnly Then
+					DropTrigger(table, triggerType, existingTriggers)
+
+				ElseIf existingTrigger IsNot Nothing AndAlso existingTrigger.Definition = sSql Then
 					'trigger exists and is the same, do nothing
 				Else
 					If existingTrigger Is Nothing Then
@@ -1353,6 +1364,18 @@ Namespace ScriptDB
 					vbTab & vbTab & "WHERE cats.CategoryID = deleted.ID;" & vbNewLine & vbNewLine
 
 			End If
+
+			Return sSql
+
+		End Function
+
+		Private Function SpecialTrigger_TriggerCode(table As Table, position As TriggerCodePosition) As String
+
+			Dim sSql As String = ""
+
+			For Each objTrigger In table.CodeTriggers.Where(Function(m) m.CodePosition = position)
+				sSql &= String.Format("	   -- {0}{1}{2}{1}{1}", objTrigger.Name, vbNewLine, objTrigger.Content)
+			Next
 
 			Return sSql
 

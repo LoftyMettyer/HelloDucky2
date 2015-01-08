@@ -971,3 +971,8 @@ Public Enum WarningType
   Headcount95Percent = 0
   Licence5DayExpiry = 1
 End Enum
+
+Public Enum TriggerCodePosition
+  AfterU02Update = 0
+  AfterI02Insert = 1
+End Enum

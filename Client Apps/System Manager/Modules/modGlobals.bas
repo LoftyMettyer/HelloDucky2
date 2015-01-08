@@ -76,6 +76,8 @@ Public daoWS As DAO.Workspace
 Public daoDb As DAO.Database
 Public recTabEdit As DAO.Recordset
 Public recTableValidationEdit As DAO.Recordset
+Public recTableTriggerEdit As DAO.Recordset
+
 Public recSummaryEdit As DAO.Recordset
 Public recColEdit As DAO.Recordset
 Public recDiaryEdit As DAO.Recordset

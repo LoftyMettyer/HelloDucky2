@@ -23,10 +23,11 @@ Public Module PopulateObjects
 
     PopulateTableViews()
     PopulateTableViewItems()
-    PopulateTableValidations()
+		PopulateTableValidations()
+		PopulateTableTriggerCode()
     PopulateTableRecordDescriptions()
     PopulateTableMasks()
-    PopulateFusionMessages()
+		PopulateFusionMessages()
 
     _componentbase = Nothing
     _componentfunction = Nothing
@@ -154,7 +155,11 @@ Public Module PopulateObjects
       table.AuditInsert = row.Item("auditinsert").ToString
       table.AuditDelete = row.Item("auditdelete").ToString
       table.DefaultEmailId = row.Item("defaultemailid").ToString
-      table.DefaultOrderId = row.Item("defaultorderid").ToString
+			table.DefaultOrderId = row.Item("defaultorderid").ToString
+			table.InsertTriggerDisabled = row.Item("InsertTriggerDisabled").ToString
+			table.UpdateTriggerDisabled = row.Item("UpdateTriggerDisabled").ToString
+			table.DeleteTriggerDisabled = row.Item("DeleteTriggerDisabled").ToString
+
       table.State = row.Item("state")
 
       Tables.Add(table)
@@ -269,272 +274,290 @@ Public Module PopulateObjects
 
   End Sub
 
-  Private Sub PopulateTableRelations()
+	Private Sub PopulateTableTriggerCode()
 
-    Dim ds As DataSet = MetadataDb.ExecStoredProcedure("spadmin_getrelations", Nothing)
+		Dim ds = MetadataDb.ExecStoredProcedure("spadmin_gettriggercode", Nothing)
 
-    Dim table As Table
-    Dim relation As Relation
+		For Each row As DataRow In ds.Tables(0).Rows
 
-    For Each row As DataRow In ds.Tables(0).Rows
+			Dim table As Table = Tables.GetById(row.Item("tableid"))
 
-      'add the relationshop from the parents perspective
-      table = Tables.GetById(CInt(row.Item("parentid")))
+			Dim trigger As New TriggerCode
+			trigger.Name = row.Item("Name").ToString
+			trigger.CodePosition = CType(row.Item("CodePosition"), TriggerCodePosition)
+			trigger.Content = row.Item("Content").ToString
 
-      relation = New Relation
-      relation.RelationshipType = RelationshipType.Child
-      relation.ParentId = row.Item("parentid").ToString
-      relation.ChildId = row.Item("childid").ToString
-      relation.Name = row.Item("childname").ToString
+			table.CodeTriggers.Add(trigger)
+		Next
 
-      table.Relations.Add(relation)
+	End Sub
 
-      'add the relationshop from the childs perspective
-      table = Tables.GetById(CInt(row.Item("childid")))
+	Private Sub PopulateTableRelations()
 
-      relation = New Relation
-      relation.RelationshipType = RelationshipType.Parent
-      relation.ParentId = row.Item("parentid").ToString
-      relation.ChildId = row.Item("childid").ToString
-      relation.Name = row.Item("parentname").ToString
+		Dim ds As DataSet = MetadataDb.ExecStoredProcedure("spadmin_getrelations", Nothing)
 
-      table.Relations.Add(relation)
-    Next
+		Dim table As Table
+		Dim relation As Relation
 
-  End Sub
+		For Each row As DataRow In ds.Tables(0).Rows
 
-  Private Sub PopulateTableExpressions()
+			'add the relationshop from the parents perspective
+			table = Tables.GetById(CInt(row.Item("parentid")))
 
-    Dim ds As DataSet = MetadataDb.ExecStoredProcedure("spadmin_getexpressions", Nothing)
+			relation = New Relation
+			relation.RelationshipType = RelationshipType.Child
+			relation.ParentId = row.Item("parentid").ToString
+			relation.ChildId = row.Item("childid").ToString
+			relation.Name = row.Item("childname").ToString
 
-    For Each row As DataRow In ds.Tables(0).Rows
+			table.Relations.Add(relation)
 
-      Dim table As Table = Tables.GetById(CInt(row.Item("tableid")))
+			'add the relationshop from the childs perspective
+			table = Tables.GetById(CInt(row.Item("childid")))
 
-      Dim expression As New Expression
-      expression.Id = row.Item("id").ToString
-      expression.SubType = ComponentTypes.Expression
-      expression.TableId = CInt(row.Item("tableid"))
-      expression.Name = row.Item("name").ToString
-      expression.ExpressionType = row.Item("type").ToString
-      expression.SchemaName = "dbo"
-      expression.Description = row.Item("description").ToString
-      expression.State = row.Item("state")
-      expression.ReturnType = row.Item("returntype")
-      expression.Size = row.Item("size")
-      expression.Decimals = row.Item("decimals")
-      expression.BaseTable = table
-      expression.BaseExpression = expression
-      expression.Level = 1
+			relation = New Relation
+			relation.RelationshipType = RelationshipType.Parent
+			relation.ParentId = row.Item("parentid").ToString
+			relation.ChildId = row.Item("childid").ToString
+			relation.Name = row.Item("parentname").ToString
 
-      expression.Components = LoadComponents(expression, ComponentTypes.Expression)
+			table.Relations.Add(relation)
+		Next
 
-      table.Expressions.Add(expression)
+	End Sub
 
-      ' Copy of all the expressions (sometimes calcs get their table references screwed up in the System Manager after being table copied.
-      Expressions.Add(expression)
+	Private Sub PopulateTableExpressions()
 
-    Next
+		Dim ds As DataSet = MetadataDb.ExecStoredProcedure("spadmin_getexpressions", Nothing)
 
-  End Sub
+		For Each row As DataRow In ds.Tables(0).Rows
 
-  Private Sub PopulateTableViews()
+			Dim table As Table = Tables.GetById(CInt(row.Item("tableid")))
 
-    Dim ds As DataSet = MetadataDb.ExecStoredProcedure("spadmin_getviews", Nothing)
+			Dim expression As New Expression
+			expression.Id = row.Item("id").ToString
+			expression.SubType = ComponentTypes.Expression
+			expression.TableId = CInt(row.Item("tableid"))
+			expression.Name = row.Item("name").ToString
+			expression.ExpressionType = row.Item("type").ToString
+			expression.SchemaName = "dbo"
+			expression.Description = row.Item("description").ToString
+			expression.State = row.Item("state")
+			expression.ReturnType = row.Item("returntype")
+			expression.Size = row.Item("size")
+			expression.Decimals = row.Item("decimals")
+			expression.BaseTable = table
+			expression.BaseExpression = expression
+			expression.Level = 1
 
-    For Each row As DataRow In ds.Tables(0).Rows
+			expression.Components = LoadComponents(expression, ComponentTypes.Expression)
 
-      Dim table As Table = Tables.GetById(CInt(row.Item("tableid")))
+			table.Expressions.Add(expression)
 
-      Dim view As New View
-      view.Id = row.Item("id").ToString
-      view.Name = row.Item("name").ToString
-      view.Description = row.Item("description").ToString
+			' Copy of all the expressions (sometimes calcs get their table references screwed up in the System Manager after being table copied.
+			Expressions.Add(expression)
 
-      view.Table = table
-      view.Filter = table.Expressions.GetById(CInt(row.Item("filterid")))
+		Next
 
-      table.Views.Add(view)
-    Next
+	End Sub
 
-  End Sub
+	Private Sub PopulateTableViews()
 
-  Private Sub PopulateTableViewItems()
+		Dim ds As DataSet = MetadataDb.ExecStoredProcedure("spadmin_getviews", Nothing)
 
-    Dim objDataset As DataSet = MetadataDb.ExecStoredProcedure("spadmin_getviewitems", Nothing)
+		For Each row As DataRow In ds.Tables(0).Rows
 
-    For Each row As DataRow In objDataset.Tables(0).Rows
+			Dim table As Table = Tables.GetById(CInt(row.Item("tableid")))
 
-      Dim viewId As Integer = CInt(row.Item("viewid"))
-      Dim view As View = Tables.SelectMany(Function(t) t.Views).Where(Function(o) o.Id = viewId).FirstOrDefault
+			Dim view As New View
+			view.Id = row.Item("id").ToString
+			view.Name = row.Item("name").ToString
+			view.Description = row.Item("description").ToString
 
-      Dim column As Column = view.Table.Columns.GetById(CInt(row.Item("columnid")))
-      If column IsNot Nothing Then
-        view.Columns.Add(column)
-      End If
-    Next
-
-  End Sub
-
-  Private Sub PopulateTableRecordDescriptions()
-
-    Dim ds As DataSet = MetadataDb.ExecStoredProcedure("spadmin_getdescriptions", Nothing)
-
-    For Each row As DataRow In ds.Tables(0).Rows
-
-      Dim table As Table = Tables.GetById(CInt(row.Item("tableid")))
-
-      Dim description As New RecordDescription
-      description.Id = row.Item("id").ToString
-      description.Name = row.Item("name").ToString
-      description.SchemaName = "dbo"
-      description.Description = row.Item("description").ToString
-      description.State = row.Item("state")
-      description.ReturnType = row.Item("returntype")
-      description.Size = row.Item("size")
-      description.Decimals = row.Item("decimals")
-      description.BaseTable = table
-      description.BaseExpression = description
-
-      description.Components = LoadComponents(description, ComponentTypes.Expression)
-
-      table.RecordDescription = description
-    Next
-
-  End Sub
-
-  Private Function LoadComponents(ByVal expression As Component, ByVal type As ComponentTypes) As ICollection(Of Component)
+			view.Table = table
+			view.Filter = table.Expressions.GetById(CInt(row.Item("filterid")))
+
+			table.Views.Add(view)
+		Next
+
+	End Sub
+
+	Private Sub PopulateTableViewItems()
+
+		Dim objDataset As DataSet = MetadataDb.ExecStoredProcedure("spadmin_getviewitems", Nothing)
+
+		For Each row As DataRow In objDataset.Tables(0).Rows
+
+			Dim viewId As Integer = CInt(row.Item("viewid"))
+			Dim view As View = Tables.SelectMany(Function(t) t.Views).Where(Function(o) o.Id = viewId).FirstOrDefault
+
+			Dim column As Column = view.Table.Columns.GetById(CInt(row.Item("columnid")))
+			If column IsNot Nothing Then
+				view.Columns.Add(column)
+			End If
+		Next
+
+	End Sub
+
+	Private Sub PopulateTableRecordDescriptions()
+
+		Dim ds As DataSet = MetadataDb.ExecStoredProcedure("spadmin_getdescriptions", Nothing)
 
-    If _componentfunction Is Nothing Then
-      _componentfunction = MetadataDb.ExecStoredProcedure("spadmin_getcomponent_function", Nothing)
-    End If
+		For Each row As DataRow In ds.Tables(0).Rows
 
-    If _componentbase Is Nothing Then
-      _componentbase = MetadataDb.ExecStoredProcedure("spadmin_getcomponent_base", Nothing)
-    End If
+			Dim table As Table = Tables.GetById(CInt(row.Item("tableid")))
 
-    Dim rows As DataRow()
-
-    Select Case type
-      Case ComponentTypes.Function
-        rows = _componentfunction.Tables(0).Select("ExpressionID = " & expression.Id)
-      Case ComponentTypes.Calculation
-        rows = _componentbase.Tables(0).Select("ExpressionID = " & expression.CalculationId)
-      Case Else
-        rows = _componentbase.Tables(0).Select("ExpressionID = " & expression.Id)
-    End Select
-
-    Dim collection As New Collection(Of Component)
+			Dim description As New RecordDescription
+			description.Id = row.Item("id").ToString
+			description.Name = row.Item("name").ToString
+			description.SchemaName = "dbo"
+			description.Description = row.Item("description").ToString
+			description.State = row.Item("state")
+			description.ReturnType = row.Item("returntype")
+			description.Size = row.Item("size")
+			description.Decimals = row.Item("decimals")
+			description.BaseTable = table
+			description.BaseExpression = description
 
-    For Each row As DataRow In rows
+			description.Components = LoadComponents(description, ComponentTypes.Expression)
 
-      Dim component As New Component
-      component.Parent = expression
-      component.Id = row.Item("componentid").ToString
-      component.SubType = row.Item("subtype")
-      component.Name = row.Item("name")
-      component.ReturnType = row.Item("returntype")
-      component.FunctionId = row.Item("functionid").ToString
-      component.OperatorId = row.Item("operatorid").ToString
-      component.TableId = row.Item("tableid").ToString
-      component.ColumnId = row.Item("columnid").ToString
-      component.ChildRowDetails.RowSelection = row.Item("columnaggregiatetype").ToString
-      component.ChildRowDetails.RowNumber = row.Item("specificline").ToString
-      component.ChildRowDetails.FilterId = row.Item("columnfilterid").ToString
-      component.ChildRowDetails.OrderId = row.Item("columnorderid").ToString
-      component.IsColumnByReference = row.Item("iscolumnbyreference").ToString
-      component.CalculationId = row.Item("calculationid").ToString
-      component.FilterId = row.Item("filterid").ToString
-      component.ValueType = row.Item("valuetype").ToString
-      component.Level = expression.Level + 1
+			table.RecordDescription = description
+		Next
 
-      Select Case component.ValueType
-        Case ComponentValueTypes.Date
-          component.ValueDate = row.Item("valuedate")
-        Case ComponentValueTypes.Logic
-          component.ValueLogic = row.Item("valuelogic").ToString
-        Case ComponentValueTypes.Numeric
-          component.ValueNumeric = row.Item("valuenumeric").ToString
-        Case ComponentValueTypes.String
-          component.ValueString = row.Item("valuestring").ToString
-      End Select
+	End Sub
 
-      component.LookupTableId = row.Item("lookuptableid").ToString
-      component.LookupColumnId = row.Item("lookupcolumnid").ToString
+	Private Function LoadComponents(ByVal expression As Component, ByVal type As ComponentTypes) As ICollection(Of Component)
 
-      component.BaseExpression = expression.BaseExpression
+		If _componentfunction Is Nothing Then
+			_componentfunction = MetadataDb.ExecStoredProcedure("spadmin_getcomponent_function", Nothing)
+		End If
 
-      Select Case component.SubType
-        Case ComponentTypes.Function
-          component.Components = LoadComponents(component, ComponentTypes.Function)
-        Case ComponentTypes.Expression, ComponentTypes.Calculation
-          component.Components = LoadComponents(component, component.SubType)
-      End Select
+		If _componentbase Is Nothing Then
+			_componentbase = MetadataDb.ExecStoredProcedure("spadmin_getcomponent_base", Nothing)
+		End If
 
-      collection.Add(component)
-    Next
+		Dim rows As DataRow()
 
-    Return collection
+		Select Case type
+			Case ComponentTypes.Function
+				rows = _componentfunction.Tables(0).Select("ExpressionID = " & expression.Id)
+			Case ComponentTypes.Calculation
+				rows = _componentbase.Tables(0).Select("ExpressionID = " & expression.CalculationId)
+			Case Else
+				rows = _componentbase.Tables(0).Select("ExpressionID = " & expression.Id)
+		End Select
 
-  End Function
+		Dim collection As New Collection(Of Component)
 
-  Private Sub PopulateFusionMessages()
+		For Each row As DataRow In rows
 
-    Dim ds As DataSet = CommitDb.ExecStoredProcedure("fusion.spGetMessageDefinitions", Nothing)
+			Dim component As New Component
+			component.Parent = expression
+			component.Id = row.Item("componentid").ToString
+			component.SubType = row.Item("subtype")
+			component.Name = row.Item("name")
+			component.ReturnType = row.Item("returntype")
+			component.FunctionId = row.Item("functionid").ToString
+			component.OperatorId = row.Item("operatorid").ToString
+			component.TableId = row.Item("tableid").ToString
+			component.ColumnId = row.Item("columnid").ToString
+			component.ChildRowDetails.RowSelection = row.Item("columnaggregiatetype").ToString
+			component.ChildRowDetails.RowNumber = row.Item("specificline").ToString
+			component.ChildRowDetails.FilterId = row.Item("columnfilterid").ToString
+			component.ChildRowDetails.OrderId = row.Item("columnorderid").ToString
+			component.IsColumnByReference = row.Item("iscolumnbyreference").ToString
+			component.CalculationId = row.Item("calculationid").ToString
+			component.FilterId = row.Item("filterid").ToString
+			component.ValueType = row.Item("valuetype").ToString
+			component.Level = expression.Level + 1
 
-    For Each row As DataRow In ds.Tables(0).Rows
+			Select Case component.ValueType
+				Case ComponentValueTypes.Date
+					component.ValueDate = row.Item("valuedate")
+				Case ComponentValueTypes.Logic
+					component.ValueLogic = row.Item("valuelogic").ToString
+				Case ComponentValueTypes.Numeric
+					component.ValueNumeric = row.Item("valuenumeric").ToString
+				Case ComponentValueTypes.String
+					component.ValueString = row.Item("valuestring").ToString
+			End Select
 
-      Dim table As Table = Tables.GetById(CInt(row.Item("tableid")))
+			component.LookupTableId = row.Item("lookuptableid").ToString
+			component.LookupColumnId = row.Item("lookupcolumnid").ToString
 
-      If Not table Is Nothing Then
-        Dim message As New FusionMessage
-        message.Id = row.Item("id").ToString
-        message.Name = row.Item("name").ToString
-        message.StopDeletion = row.Item("stopdeletion").ToString
-        message.ByPassValidation = row.Item("bypassvalidation").ToString
+			component.BaseExpression = expression.BaseExpression
 
-        table.FusionMessages.Add(message)
-      End If
-    Next
+			Select Case component.SubType
+				Case ComponentTypes.Function
+					component.Components = LoadComponents(component, ComponentTypes.Function)
+				Case ComponentTypes.Expression, ComponentTypes.Calculation
+					component.Components = LoadComponents(component, component.SubType)
+			End Select
 
-  End Sub
+			collection.Add(component)
+		Next
 
-  Private Sub PopulateTableMasks()
+		Return collection
 
-    Dim ds As DataSet = MetadataDb.ExecStoredProcedure("spadmin_getmasks", Nothing)
+	End Function
 
-    For Each row As DataRow In ds.Tables(0).Rows
+	Private Sub PopulateFusionMessages()
 
-      Dim table As Table = Tables.GetById(CInt(row.Item("tableid")))
+		Dim ds As DataSet = CommitDb.ExecStoredProcedure("fusion.spGetMessageDefinitions", Nothing)
 
-      Dim mask As New Mask
-      mask.Id = row.Item("id").ToString
-      mask.Name = row.Item("name").ToString
-      mask.AssociatedColumn = table.Columns(0)              ' No need for masks to be aware of calling column!
-      mask.SchemaName = "dbo"
-      mask.Description = row.Item("description").ToString
-      mask.State = row.Item("state")
-      mask.ReturnType = row.Item("returntype")
-      mask.Size = row.Item("size")
-      mask.Decimals = row.Item("decimals")
-      mask.BaseTable = table
-      mask.BaseExpression = mask
+		For Each row As DataRow In ds.Tables(0).Rows
 
-      mask.Components = LoadComponents(mask, ComponentTypes.Expression)
+			Dim table As Table = Tables.GetById(CInt(row.Item("tableid")))
 
-      table.Masks.Add(mask)
-    Next
+			If Not table Is Nothing Then
+				Dim message As New FusionMessage
+				message.Id = row.Item("id").ToString
+				message.Name = row.Item("name").ToString
+				message.StopDeletion = row.Item("stopdeletion").ToString
+				message.ByPassValidation = row.Item("bypassvalidation").ToString
 
-  End Sub
+				table.FusionMessages.Add(message)
+			End If
+		Next
 
-  Private Function NullSafe(ByVal row As DataRow, ByVal columnName As String, ByVal defaultValue As Object) As Object
+	End Sub
 
-    If row.IsNull(columnName) Then
-      Return defaultValue
-    Else
-      Return row.Item(columnName)
-    End If
+	Private Sub PopulateTableMasks()
 
-  End Function
+		Dim ds As DataSet = MetadataDb.ExecStoredProcedure("spadmin_getmasks", Nothing)
+
+		For Each row As DataRow In ds.Tables(0).Rows
+
+			Dim table As Table = Tables.GetById(CInt(row.Item("tableid")))
+
+			Dim mask As New Mask
+			mask.Id = row.Item("id").ToString
+			mask.Name = row.Item("name").ToString
+			mask.AssociatedColumn = table.Columns(0)							' No need for masks to be aware of calling column!
+			mask.SchemaName = "dbo"
+			mask.Description = row.Item("description").ToString
+			mask.State = row.Item("state")
+			mask.ReturnType = row.Item("returntype")
+			mask.Size = row.Item("size")
+			mask.Decimals = row.Item("decimals")
+			mask.BaseTable = table
+			mask.BaseExpression = mask
+
+			mask.Components = LoadComponents(mask, ComponentTypes.Expression)
+
+			table.Masks.Add(mask)
+		Next
+
+	End Sub
+
+	Private Function NullSafe(ByVal row As DataRow, ByVal columnName As String, ByVal defaultValue As Object) As Object
+
+		If row.IsNull(columnName) Then
+			Return defaultValue
+		Else
+			Return row.Item(columnName)
+		End If
+
+	End Function
 
 End Module

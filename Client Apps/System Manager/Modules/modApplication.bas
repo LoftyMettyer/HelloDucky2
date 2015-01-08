@@ -218,6 +218,12 @@ Public Function CreateTempTables() As Boolean
       " INTO tmpTableValidations FROM ASRSysTableValidations IN " & sSource
     daoDb.Execute sSQL
     
+    ' Create the local Table Validations table.
+    sSQL = "SELECT ASRSysTableTriggers.*," & _
+      " FALSE AS changed, FALSE AS new, FALSE AS deleted" & _
+      " INTO tmpTableTriggers FROM ASRSysTableTriggers IN " & sSource
+    daoDb.Execute sSQL
+    
     ' Create the local History Screens table.
     sSQL = "SELECT ASRSysHistoryScreens.* INTO tmpHistoryScreens" & _
       " FROM ASRSysHistoryScreens IN " & sSource
@@ -502,6 +508,26 @@ Public Function CreateTempTables() As Boolean
       Set idxTemp = .CreateIndex("idxValidationID")
       With idxTemp
         .Fields.Append .CreateField("ValidationID")
+        .Unique = True
+      End With
+      .Indexes.Append idxTemp
+      
+      Set idxTemp = .CreateIndex("idxTableID")
+      With idxTemp
+        .Fields.Append .CreateField("tableID")
+        .Unique = False
+      End With
+      .Indexes.Append idxTemp
+     
+      .Indexes.Refresh
+    End With
+    
+    ' Create the indices for the local Table Validations table.
+    Set tbdTemp = daoDb.TableDefs("tmpTableTriggers")
+    With tbdTemp
+      Set idxTemp = .CreateIndex("idxTriggerID")
+      With idxTemp
+        .Fields.Append .CreateField("TriggerID")
         .Unique = True
       End With
       .Indexes.Append idxTemp
@@ -1332,6 +1358,7 @@ Public Function CreateTempTables() As Boolean
   Set recTabEdit = daoDb.OpenRecordset("tmpTables", dbOpenTable)
   Set recSummaryEdit = daoDb.OpenRecordset("tmpSummary", dbOpenTable)
   Set recTableValidationEdit = daoDb.OpenRecordset("tmpTableValidations", dbOpenTable)
+  Set recTableTriggerEdit = daoDb.OpenRecordset("tmpTableTriggers", dbOpenTable)
   Set recColEdit = daoDb.OpenRecordset("tmpColumns", dbOpenTable)
   Set recDiaryEdit = daoDb.OpenRecordset("tmpDiary", dbOpenTable)
   Set recContValEdit = daoDb.OpenRecordset("tmpControlValues", dbOpenTable)
@@ -1405,6 +1432,9 @@ Public Function DropTempTables() As Boolean
   
   recTableValidationEdit.Close
   daoDb.Execute "DROP TABLE tmpTableValidations"
+  
+  recTableTriggerEdit.Close
+  daoDb.Execute "DROP TABLE tmpTableTriggers"
   
   recSummaryEdit.Close
   daoDb.Execute "DROP TABLE tmpSummary"
@@ -1917,6 +1947,7 @@ Public Function CreateQueryDefs() As Boolean
       ", t.[AuditDelete] AS auditdelete" & _
       ", t.[DefaultEmailID] AS defaultemailid" & _
       ", t.[DefaultOrderID] AS defaultorderid" & _
+      ", t.[InsertTriggerdisabled] AS InsertTriggerdisabled, t.[UpdateTriggerdisabled] AS UpdateTriggerdisabled, t.[DeleteTriggerdisabled] AS DeleteTriggerdisabled" & _
       ", IIF(t.[deleted]=-1, 8 , IIF(t.[new]=-1,4 ,IIF(t.[changed]=-1,16, 2))) AS [state]" & _
       " FROM tmpTables t;"
   daoDb.CreateQueryDef "spadmin_gettables", sSQL
@@ -2038,6 +2069,10 @@ Public Function CreateQueryDefs() As Boolean
          " UNION " & _
          " SELECT 4 AS [ValidationType], * FROM tmpColumns WHERE [Mandatory] = -1;"
   daoDb.CreateQueryDef "spadmin_getvalidations", sSQL
+
+  ' spadmin_gettriggercode
+  sSQL = "SELECT [TableID], [Name], [CodePosition], [Content] FROM tmpTableTriggers;"
+  daoDb.CreateQueryDef "spadmin_gettriggercode", sSQL
 
   ' spadmin_getdescriptions
   sSQL = "SELECT tmpExpressions.[exprid] AS ID, tmpExpressions.[Name], tmpExpressions.[Type], tmpExpressions.[Description], tmpExpressions.[ReturnType], tmpExpressions.[ReturnSize] AS [size], tmpExpressions.[ReturnDecimals] AS decimals, IIf([tmpExpressions.deleted]=-1,8,IIf([tmpExpressions.new]=-1,4,IIf([tmpExpressions.changed]=-1,16,2))) AS state, tmpExpressions.[TableID] " & _

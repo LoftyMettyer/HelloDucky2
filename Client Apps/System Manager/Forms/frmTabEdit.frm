@@ -1,11 +1,11 @@
 VERSION 5.00
 Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.ocx"
-Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "tabctl32.ocx"
+Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
 Begin VB.Form frmTabEdit 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "New Table"
-   ClientHeight    =   5445
+   ClientHeight    =   6015
    ClientLeft      =   315
    ClientTop       =   1665
    ClientWidth     =   8130
@@ -26,7 +26,7 @@ Begin VB.Form frmTabEdit
    LockControls    =   -1  'True
    MaxButton       =   0   'False
    MinButton       =   0   'False
-   ScaleHeight     =   5445
+   ScaleHeight     =   6015
    ScaleWidth      =   8130
    ShowInTaskbar   =   0   'False
    StartUpPosition =   2  'CenterScreen
@@ -35,23 +35,23 @@ Begin VB.Form frmTabEdit
       Left            =   120
       Sorted          =   -1  'True
       TabIndex        =   58
-      Top             =   4920
+      Top             =   5505
       Visible         =   0   'False
       Width           =   1215
    End
    Begin TabDlg.SSTab ssTabTableProperties 
-      Height          =   4770
+      Height          =   5295
       Left            =   45
       TabIndex        =   0
       Top             =   45
       Width           =   7965
       _ExtentX        =   14049
-      _ExtentY        =   8414
+      _ExtentY        =   9340
       _Version        =   393216
       Style           =   1
-      Tabs            =   7
-      Tab             =   2
-      TabsPerRow      =   7
+      Tabs            =   8
+      Tab             =   6
+      TabsPerRow      =   10
       TabHeight       =   520
       TabCaption(0)   =   "De&finition"
       TabPicture(0)   =   "frmTabEdit.frx":000C
@@ -75,31 +75,30 @@ Begin VB.Form frmTabEdit
       TabCaption(1)   =   "Su&mmary"
       TabPicture(1)   =   "frmTabEdit.frx":0028
       Tab(1).ControlEnabled=   0   'False
-      Tab(1).Control(0)=   "chkManualColumnBreak"
-      Tab(1).Control(1)=   "cmdColumnBreak"
-      Tab(1).Control(2)=   "cboParentTable"
-      Tab(1).Control(3)=   "cmdInsertBreak"
-      Tab(1).Control(4)=   "fraSummaryFields"
-      Tab(1).Control(5)=   "cmdAdd"
-      Tab(1).Control(6)=   "cmdRemove"
-      Tab(1).Control(7)=   "cmdUp"
-      Tab(1).Control(8)=   "cmdDown"
-      Tab(1).Control(9)=   "cmdInsert"
-      Tab(1).Control(10)=   "fraColumns"
-      Tab(1).Control(11)=   "lblParentTable"
+      Tab(1).Control(0)=   "lblParentTable"
+      Tab(1).Control(1)=   "fraColumns"
+      Tab(1).Control(2)=   "cmdInsert"
+      Tab(1).Control(3)=   "cmdDown"
+      Tab(1).Control(4)=   "cmdUp"
+      Tab(1).Control(5)=   "cmdRemove"
+      Tab(1).Control(6)=   "cmdAdd"
+      Tab(1).Control(7)=   "fraSummaryFields"
+      Tab(1).Control(8)=   "cmdInsertBreak"
+      Tab(1).Control(9)=   "cboParentTable"
+      Tab(1).Control(10)=   "cmdColumnBreak"
+      Tab(1).Control(11)=   "chkManualColumnBreak"
       Tab(1).ControlCount=   12
-      TabCaption(2)   =   "Ema&il Links"
+      TabCaption(2)   =   "Ema&ils"
       TabPicture(2)   =   "frmTabEdit.frx":0044
-      Tab(2).ControlEnabled=   -1  'True
+      Tab(2).ControlEnabled=   0   'False
       Tab(2).Control(0)=   "fraEmail"
-      Tab(2).Control(0).Enabled=   0   'False
       Tab(2).ControlCount=   1
-      TabCaption(3)   =   "Calendar Lin&ks"
+      TabCaption(3)   =   "Calen&dars"
       TabPicture(3)   =   "frmTabEdit.frx":0060
       Tab(3).ControlEnabled=   0   'False
       Tab(3).Control(0)=   "fraCalendarLinks"
       Tab(3).ControlCount=   1
-      TabCaption(4)   =   "&Workflow Links"
+      TabCaption(4)   =   "&Workflows"
       TabPicture(4)   =   "frmTabEdit.frx":007C
       Tab(4).ControlEnabled=   0   'False
       Tab(4).Control(0)=   "fraWorkflowLinks"
@@ -107,18 +106,180 @@ Begin VB.Form frmTabEdit
       TabCaption(5)   =   "Audi&t"
       TabPicture(5)   =   "frmTabEdit.frx":0098
       Tab(5).ControlEnabled=   0   'False
-      Tab(5).Control(0)=   "fraAudit"
-      Tab(5).Control(1)=   "fraTableStats"
+      Tab(5).Control(0)=   "fraTableStats"
+      Tab(5).Control(1)=   "fraAudit"
       Tab(5).ControlCount=   2
       TabCaption(6)   =   "&Validation"
       TabPicture(6)   =   "frmTabEdit.frx":00B4
-      Tab(6).ControlEnabled=   0   'False
+      Tab(6).ControlEnabled=   -1  'True
       Tab(6).Control(0)=   "fraTableValidations"
+      Tab(6).Control(0).Enabled=   0   'False
       Tab(6).ControlCount=   1
+      TabCaption(7)   =   "Tri&ggers"
+      TabPicture(7)   =   "frmTabEdit.frx":00D0
+      Tab(7).ControlEnabled=   0   'False
+      Tab(7).Control(0)=   "fraTableTriggers"
+      Tab(7).Control(1)=   "fraSystemTriggers"
+      Tab(7).ControlCount=   2
+      Begin VB.Frame fraSystemTriggers 
+         Caption         =   "System Triggers :"
+         Height          =   1515
+         Left            =   -74820
+         TabIndex        =   71
+         Top             =   3570
+         Width           =   7560
+         Begin VB.CheckBox chkDisableDelete 
+            Caption         =   "Disable Instead of Delete"
+            Height          =   195
+            Left            =   225
+            TabIndex        =   74
+            Top             =   1110
+            Width           =   2505
+         End
+         Begin VB.CheckBox chkDisableUpdate 
+            Caption         =   "Disable Update"
+            Height          =   210
+            Left            =   225
+            TabIndex        =   73
+            Top             =   750
+            Width           =   2175
+         End
+         Begin VB.CheckBox chkDisableInsert 
+            Caption         =   "Disable Instead of Insert"
+            Height          =   195
+            Left            =   225
+            TabIndex        =   72
+            Top             =   390
+            Width           =   2610
+         End
+      End
+      Begin VB.Frame fraTableTriggers 
+         Caption         =   "Backbone Code :"
+         Height          =   3060
+         Left            =   -74800
+         TabIndex        =   65
+         Top             =   405
+         Width           =   7560
+         Begin VB.CommandButton cmdTableTriggerEdit 
+            Caption         =   "&Edit"
+            Enabled         =   0   'False
+            Height          =   400
+            Left            =   2190
+            TabIndex        =   69
+            Top             =   2340
+            Width           =   1200
+         End
+         Begin VB.CommandButton cmdTableTriggerDeleteAll 
+            Caption         =   "Delete &All"
+            Enabled         =   0   'False
+            Height          =   400
+            Left            =   6030
+            TabIndex        =   68
+            Top             =   2340
+            Width           =   1200
+         End
+         Begin VB.CommandButton cmdTableTriggerDelete 
+            Caption         =   "&Delete"
+            Enabled         =   0   'False
+            Height          =   400
+            Left            =   4140
+            TabIndex        =   67
+            Top             =   2340
+            Width           =   1200
+         End
+         Begin VB.CommandButton cmdTableTriggerNew 
+            Caption         =   "&New"
+            Enabled         =   0   'False
+            Height          =   400
+            Left            =   330
+            TabIndex        =   66
+            Top             =   2340
+            Width           =   1200
+         End
+         Begin SSDataWidgets_B.SSDBGrid ssGrdTableTriggers 
+            Height          =   1860
+            Left            =   330
+            TabIndex        =   70
+            Top             =   300
+            Width           =   6915
+            ScrollBars      =   2
+            _Version        =   196617
+            DataMode        =   2
+            RecordSelectors =   0   'False
+            Col.Count       =   3
+            DefColWidth     =   26458
+            AllowUpdate     =   0   'False
+            MultiLine       =   0   'False
+            AllowRowSizing  =   0   'False
+            AllowGroupSizing=   0   'False
+            AllowColumnSizing=   0   'False
+            AllowGroupMoving=   0   'False
+            AllowColumnMoving=   0
+            AllowGroupSwapping=   0   'False
+            AllowColumnSwapping=   0
+            AllowGroupShrinking=   0   'False
+            AllowColumnShrinking=   0   'False
+            AllowDragDrop   =   0   'False
+            SelectTypeCol   =   0
+            SelectTypeRow   =   1
+            SelectByCell    =   -1  'True
+            BalloonHelp     =   0   'False
+            RowNavigation   =   3
+            MaxSelectedRows =   1
+            ForeColorEven   =   0
+            BackColorEven   =   -2147483643
+            BackColorOdd    =   -2147483643
+            RowHeight       =   423
+            Columns.Count   =   3
+            Columns(0).Width=   26458
+            Columns(0).Visible=   0   'False
+            Columns(0).Caption=   "TriggerID"
+            Columns(0).Name =   "TriggerID"
+            Columns(0).DataField=   "Column 0"
+            Columns(0).DataType=   8
+            Columns(0).FieldLen=   256
+            Columns(1).Width=   12197
+            Columns(1).Caption=   "Name"
+            Columns(1).Name =   "TriggerName"
+            Columns(1).DataField=   "Column 1"
+            Columns(1).DataType=   8
+            Columns(1).FieldLen=   256
+            Columns(2).Width=   26458
+            Columns(2).Visible=   0   'False
+            Columns(2).Caption=   "Type"
+            Columns(2).Name =   "TriggerType"
+            Columns(2).DataField=   "Column 2"
+            Columns(2).DataType=   8
+            Columns(2).FieldLen=   256
+            UseDefaults     =   0   'False
+            TabNavigation   =   1
+            _ExtentX        =   12197
+            _ExtentY        =   3281
+            _StockProps     =   79
+            BeginProperty PageFooterFont {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
+               Name            =   "Verdana"
+               Size            =   8.25
+               Charset         =   0
+               Weight          =   400
+               Underline       =   0   'False
+               Italic          =   0   'False
+               Strikethrough   =   0   'False
+            EndProperty
+            BeginProperty PageHeaderFont {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
+               Name            =   "Verdana"
+               Size            =   8.25
+               Charset         =   0
+               Weight          =   400
+               Underline       =   0   'False
+               Italic          =   0   'False
+               Strikethrough   =   0   'False
+            EndProperty
+         End
+      End
       Begin VB.Frame fraTableValidations 
          Caption         =   "Overlapping Column Validations :"
-         Height          =   4150
-         Left            =   -74800
+         Height          =   4710
+         Left            =   200
          TabIndex        =   59
          Top             =   400
          Width           =   7560
@@ -128,7 +289,7 @@ Begin VB.Form frmTabEdit
             Height          =   400
             Left            =   330
             TabIndex        =   63
-            Top             =   3550
+            Top             =   4125
             Width           =   1200
          End
          Begin VB.CommandButton cmdTableValidationDelete 
@@ -137,7 +298,7 @@ Begin VB.Form frmTabEdit
             Height          =   400
             Left            =   4140
             TabIndex        =   62
-            Top             =   3550
+            Top             =   4125
             Width           =   1200
          End
          Begin VB.CommandButton cmdTableValidationDeleteAll 
@@ -146,7 +307,7 @@ Begin VB.Form frmTabEdit
             Height          =   400
             Left            =   6030
             TabIndex        =   61
-            Top             =   3550
+            Top             =   4125
             Width           =   1200
          End
          Begin VB.CommandButton cmdTableValidationEdit 
@@ -155,11 +316,11 @@ Begin VB.Form frmTabEdit
             Height          =   400
             Left            =   2190
             TabIndex        =   60
-            Top             =   3550
+            Top             =   4125
             Width           =   1200
          End
          Begin SSDataWidgets_B.SSDBGrid ssGrdTableValidations 
-            Height          =   3045
+            Height          =   3660
             Left            =   330
             TabIndex        =   64
             Top             =   300
@@ -208,8 +369,8 @@ Begin VB.Form frmTabEdit
             Columns(1).FieldLen=   256
             UseDefaults     =   0   'False
             TabNavigation   =   1
-            _ExtentX        =   12188
-            _ExtentY        =   5380
+            _ExtentX        =   12197
+            _ExtentY        =   6456
             _StockProps     =   79
             BeginProperty PageFooterFont {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
                Name            =   "Verdana"
@@ -233,8 +394,8 @@ Begin VB.Form frmTabEdit
       End
       Begin VB.Frame fraEmail 
          Caption         =   "Email Links :"
-         Height          =   4150
-         Left            =   200
+         Height          =   4710
+         Left            =   -74800
          TabIndex        =   30
          Top             =   400
          Width           =   7560
@@ -243,7 +404,7 @@ Begin VB.Form frmTabEdit
             Height          =   400
             Left            =   2190
             TabIndex        =   33
-            Top             =   3550
+            Top             =   4125
             Width           =   1200
          End
          Begin VB.CommandButton cmdRemoveAllEmailLinks 
@@ -251,7 +412,7 @@ Begin VB.Form frmTabEdit
             Height          =   400
             Left            =   6030
             TabIndex        =   35
-            Top             =   3550
+            Top             =   4125
             Width           =   1200
          End
          Begin VB.CommandButton cmdRemoveEmailLink 
@@ -259,7 +420,7 @@ Begin VB.Form frmTabEdit
             Height          =   400
             Left            =   4140
             TabIndex        =   34
-            Top             =   3550
+            Top             =   4125
             Width           =   1200
          End
          Begin VB.CommandButton cmdAddEmailLink 
@@ -268,11 +429,11 @@ Begin VB.Form frmTabEdit
             Height          =   400
             Left            =   330
             TabIndex        =   32
-            Top             =   3550
+            Top             =   4125
             Width           =   1200
          End
          Begin SSDataWidgets_B.SSDBGrid ssGrdEmailLinks 
-            Height          =   3045
+            Height          =   3660
             Left            =   330
             TabIndex        =   31
             Top             =   300
@@ -335,7 +496,7 @@ Begin VB.Form frmTabEdit
             UseDefaults     =   0   'False
             TabNavigation   =   1
             _ExtentX        =   12197
-            _ExtentY        =   5371
+            _ExtentY        =   6456
             _StockProps     =   79
             BeginProperty PageFooterFont {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
                Name            =   "Verdana"
@@ -383,7 +544,7 @@ Begin VB.Form frmTabEdit
       End
       Begin VB.Frame fraWorkflowLinks 
          Caption         =   "Workflow Links :"
-         Height          =   4150
+         Height          =   4710
          Left            =   -74800
          TabIndex        =   42
          Top             =   400
@@ -394,7 +555,7 @@ Begin VB.Form frmTabEdit
             Height          =   400
             Left            =   4140
             TabIndex        =   46
-            Top             =   3550
+            Top             =   4125
             Width           =   1200
          End
          Begin VB.CommandButton cmdAddWorkflowLink 
@@ -403,7 +564,7 @@ Begin VB.Form frmTabEdit
             Height          =   400
             Left            =   330
             TabIndex        =   44
-            Top             =   3550
+            Top             =   4125
             Width           =   1200
          End
          Begin VB.CommandButton cmdRemoveAllWorkflowLinks 
@@ -412,7 +573,7 @@ Begin VB.Form frmTabEdit
             Height          =   400
             Left            =   6030
             TabIndex        =   47
-            Top             =   3550
+            Top             =   4125
             Width           =   1200
          End
          Begin VB.CommandButton cmdWorkflowLinkProperties 
@@ -421,11 +582,11 @@ Begin VB.Form frmTabEdit
             Height          =   400
             Left            =   2190
             TabIndex        =   45
-            Top             =   3550
+            Top             =   4125
             Width           =   1200
          End
          Begin SSDataWidgets_B.SSDBGrid ssGrdWorkflowLinks 
-            Height          =   3045
+            Height          =   3660
             Left            =   330
             TabIndex        =   43
             Top             =   300
@@ -485,8 +646,8 @@ Begin VB.Form frmTabEdit
             Columns(2).BackColor=   -2147483633
             UseDefaults     =   0   'False
             TabNavigation   =   1
-            _ExtentX        =   12188
-            _ExtentY        =   5380
+            _ExtentX        =   12197
+            _ExtentY        =   6456
             _StockProps     =   79
             BeginProperty PageFooterFont {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
                Name            =   "Verdana"
@@ -572,7 +733,7 @@ Begin VB.Form frmTabEdit
       End
       Begin VB.Frame fraCalendarLinks 
          Caption         =   "Calendar Links :"
-         Height          =   4150
+         Height          =   4710
          Left            =   -74800
          TabIndex        =   36
          Top             =   400
@@ -583,7 +744,7 @@ Begin VB.Form frmTabEdit
             Height          =   400
             Left            =   2190
             TabIndex        =   39
-            Top             =   3550
+            Top             =   4125
             Width           =   1200
          End
          Begin VB.CommandButton cmdRemoveAllOutlookLinks 
@@ -592,7 +753,7 @@ Begin VB.Form frmTabEdit
             Height          =   400
             Left            =   6030
             TabIndex        =   41
-            Top             =   3550
+            Top             =   4125
             Width           =   1200
          End
          Begin VB.CommandButton cmdRemoveOutlookLink 
@@ -601,7 +762,7 @@ Begin VB.Form frmTabEdit
             Height          =   400
             Left            =   4140
             TabIndex        =   40
-            Top             =   3550
+            Top             =   4125
             Width           =   1200
          End
          Begin VB.CommandButton cmdAddOutlookLink 
@@ -610,11 +771,11 @@ Begin VB.Form frmTabEdit
             Height          =   400
             Left            =   330
             TabIndex        =   38
-            Top             =   3550
+            Top             =   4125
             Width           =   1200
          End
          Begin SSDataWidgets_B.SSDBGrid ssGrdOutlookLinks 
-            Height          =   3045
+            Height          =   3660
             Left            =   330
             TabIndex        =   37
             Top             =   300
@@ -669,8 +830,8 @@ Begin VB.Form frmTabEdit
             Columns(2).FieldLen=   256
             UseDefaults     =   0   'False
             TabNavigation   =   1
-            _ExtentX        =   12188
-            _ExtentY        =   5380
+            _ExtentX        =   12197
+            _ExtentY        =   6456
             _StockProps     =   79
             BeginProperty PageFooterFont {0BE35203-8F91-11CE-9DE3-00AA004BB851} 
                Name            =   "Verdana"
@@ -791,7 +952,7 @@ Begin VB.Form frmTabEdit
          Caption         =   "Move Down"
          Height          =   360
          Left            =   -71850
-         Picture         =   "frmTabEdit.frx":00D0
+         Picture         =   "frmTabEdit.frx":00EC
          TabIndex        =   27
          Top             =   4110
          UseMaskColor    =   -1  'True
@@ -964,7 +1125,7 @@ Begin VB.Form frmTabEdit
       Height          =   400
       Left            =   5520
       TabIndex        =   56
-      Top             =   4905
+      Top             =   5490
       Width           =   1200
    End
    Begin VB.CommandButton cmdCancel 
@@ -973,7 +1134,7 @@ Begin VB.Form frmTabEdit
       Height          =   400
       Left            =   6810
       TabIndex        =   57
-      Top             =   4905
+      Top             =   5490
       Width           =   1200
    End
 End
@@ -1021,6 +1182,7 @@ Private Enum TableProperties_TabStrips
   iTABLEPROPERTYTTAB_WORKFLOWLINKS = 4
   iTABLEPROPERTYTTAB_AUDIT = 5
   iTABLEPROPERTYTTAB_VALIDATION = 6
+  iTABLEPROPERTYTTAB_TRIGGERS = 7
 End Enum
 
 Private mfRebuildWorkflowLinks As Boolean
@@ -1157,6 +1319,7 @@ Public Property Set Table(pObjTable As Object)
   Dim objOutlookLink As clsOutlookLink
   Dim objWorkflowLink As clsWorkflowTriggeredLink
   Dim objTableValidation As clsTableValidation
+  Dim objTableTrigger As clsTableTrigger
   Dim fSaved As Boolean
   Dim sAddString As String
 
@@ -1222,9 +1385,23 @@ Public Property Set Table(pObjTable As Object)
     Next objTableValidation
     Set objTableValidation = Nothing
     
+    ssGrdTableTriggers.RemoveAll
+    For Each objTableTrigger In mobjTable.TableTriggers
+      With objTableTrigger
+        sAddString = GetTriggerString(objTableTrigger)
+        ssGrdTableTriggers.AddItem sAddString
+      End With
+    Next objTableTrigger
+    Set objTableTrigger = Nothing
+    
+   chkDisableInsert.value = IIf(mobjTable.InsertTriggerDisabled, vbChecked, vbUnchecked)
+   chkDisableUpdate.value = IIf(mobjTable.UpdateTriggerDisabled, vbChecked, vbUnchecked)
+   chkDisableDelete.value = IIf(mobjTable.DeleteTriggerDisabled, vbChecked, vbUnchecked)
+    
   End If
 
   RefreshTableValidationsButtons
+  RefreshTableTriggerButtons
   RefreshOutlookLinksButtons
   cboParentTable_Initialise
   mfLoading = False
@@ -1253,6 +1430,18 @@ End Sub
 
 Private Sub chkAuditInsertion_Click()
   Changed = True
+End Sub
+
+Private Sub chkDisableDelete_Click()
+Changed = True
+End Sub
+
+Private Sub chkDisableInsert_Click()
+Changed = True
+End Sub
+
+Private Sub chkDisableUpdate_Click()
+Changed = True
 End Sub
 
 Private Sub chkManualColumnBreak_Click()
@@ -1355,7 +1544,7 @@ Private Sub cmdCancel_Click()
   
   mblnUnloadForm = True
   If lngResponse = vbYes Then
-    cmdOk_Click
+    cmdOK_Click
   ElseIf lngResponse = vbNo Then
     gfCancelled = True
     UnLoad Me
@@ -1390,6 +1579,66 @@ Private Sub cmdColumnBreak_Click()
     
   End If
 
+End Sub
+
+Private Sub cmdTableTriggerDelete_Click()
+
+  Dim objTrigger As clsTableTrigger
+  Dim lngTriggerID As Long
+  Dim lngCount As Long
+  
+  lngTriggerID = ssGrdTableTriggers.Columns("TriggerID").value
+  
+  If DeleteRow("Table Trigger", ssGrdTableTriggers) Then
+    lngCount = 1
+    Do While lngCount <= mobjTable.TableTriggers.Count
+      Set objTrigger = mobjTable.TableTriggers(lngCount)
+      
+      If objTrigger.TriggerID = lngTriggerID Then
+        objTrigger.Deleted = True
+      End If
+      
+      lngCount = lngCount + 1
+    Loop
+
+    Changed = True
+    
+  End If
+
+  RefreshTableTriggerButtons
+
+End Sub
+
+Private Sub cmdTableTriggerDeleteAll_Click()
+
+  Dim strMBText As String
+  Dim intMBButtons As Integer
+  Dim strMBTitle As String
+  Dim intMBResponse As Integer
+  
+  strMBText = "Remove all table triggers for this table, are you sure ?"
+  intMBButtons = vbQuestion + vbYesNo
+  strMBTitle = "Confirm Remove All"
+  intMBResponse = MsgBox(strMBText, intMBButtons, strMBTitle)
+
+  If intMBResponse = vbYes Then
+
+    ssGrdTableTriggers.RemoveAll
+    mobjTable.TableTriggers = Nothing
+    mobjTable.TableTriggers = New Collection
+
+    RefreshTableTriggerButtons
+    Changed = True
+  End If
+  
+End Sub
+
+Private Sub cmdTableTriggerEdit_Click()
+  TableTrigger False
+End Sub
+
+Private Sub cmdTableTriggerNew_Click()
+  TableTrigger True
 End Sub
 
 Private Sub cmdDown_Click()
@@ -1586,7 +1835,7 @@ Private Sub cmdInsertBreak_Click()
 End Sub
 
 
-Private Sub cmdOk_Click()
+Private Sub cmdOK_Click()
   ' Save the changes and unload the form.
   On Error GoTo ErrorTrap
   
@@ -1872,6 +2121,10 @@ Private Sub cmdOk_Click()
   If mfRebuildWorkflowLinks Then
     Application.ChangedWorkflowLink = True
   End If
+  
+  mobjTable.InsertTriggerDisabled = (chkDisableInsert.value = vbChecked)
+  mobjTable.UpdateTriggerDisabled = (chkDisableUpdate.value = vbChecked)
+  mobjTable.DeleteTriggerDisabled = (chkDisableDelete.value = vbChecked)
 
   gfCancelled = False
   
@@ -2435,6 +2688,12 @@ Private Sub ssGrdEmailLinks_HeadClick(ByVal ColIndex As Integer)
 
 End Sub
 
+Private Sub ssGrdTableTriggers_DblClick()
+  If cmdTableTriggerEdit.Enabled Then
+    TableTrigger False
+  End If
+End Sub
+
 Private Sub ssGrdTableValidations_DblClick()
   If cmdTableValidationEdit.Enabled Then
     TableValidation False
@@ -2511,6 +2770,13 @@ Private Sub ssTabTableProperties_Click(PreviousTab As Integer)
   fraTableValidations.Enabled = (ssTabTableProperties.Tab = iTABLEPROPERTYTTAB_VALIDATION)
   RefreshTableValidationsButtons
   
+  ' --------------------------
+  ' TABLE TRIGGERS tab
+  ' --------------------------
+  fraTableTriggers.Enabled = (ssTabTableProperties.Tab = iTABLEPROPERTYTTAB_TRIGGERS)
+  fraSystemTriggers.Enabled = (ssTabTableProperties.Tab = iTABLEPROPERTYTTAB_TRIGGERS)
+  RefreshTableTriggerButtons
+   
   ' --------------------------
   ' STATISTICS tab
   ' --------------------------
@@ -3692,6 +3958,8 @@ Private Function GetNewTableValidationID() As Long
     lngNewID = lngNewID + 1
   Loop
 
+  GetNewTableValidationID = lngNewID
+
 Exit Function
 
 LocalErr:
@@ -4397,3 +4665,125 @@ Private Function GetValidationString(ByRef objValidation As clsTableValidation) 
   GetValidationString = objValidation.ValidationID & vbTab & objValidation.Message & vbTab
 
 End Function
+
+Private Sub RefreshTableTriggerButtons()
+  
+  Dim blnEnabled As Boolean
+  Dim bOnlyOneParent As Boolean
+  
+  ControlsDisableAll fraTableValidations, bOnlyOneParent
+  
+    With ssGrdTableTriggers
+      If .Rows > 0 And .SelBookmarks.Count = 0 Then
+        .SelBookmarks.Add .AddItemBookmark(0)
+      End If
+  
+      blnEnabled = (ssTabTableProperties.Tab = iTABLEPROPERTYTTAB_TRIGGERS And Not mblnReadOnly)
+  
+      cmdTableTriggerNew.Enabled = blnEnabled
+      cmdTableTriggerEdit.Enabled = (.SelBookmarks.Count > 0 And ssTabTableProperties.Tab = iTABLEPROPERTYTTAB_TRIGGERS)
+      cmdTableTriggerDelete.Enabled = (.SelBookmarks.Count > 0 And blnEnabled)
+      cmdTableTriggerDeleteAll.Enabled = (.Rows > 0 And blnEnabled)
+    End With
+
+End Sub
+
+Private Function GetTriggerString(ByRef objTrigger As clsTableTrigger) As String
+  GetTriggerString = objTrigger.TriggerID & vbTab & objTrigger.Name & vbTab
+End Function
+
+Private Function GetNewTableTriggerID() As Long
+  Dim objNewTrigger As clsTableTrigger
+  Dim lngNewID As Long
+  
+  On Local Error GoTo LocalErr
+  
+  lngNewID = UniqueColumnValue("tmpTableTrigger", "TriggerID")
+
+  Do While lngNewID < 99999
+    Set objNewTrigger = mobjTable.TableTriggers("ID" & lngNewID)
+    lngNewID = lngNewID + 1
+  Loop
+
+Exit Function
+
+LocalErr:
+  GetNewTableTriggerID = lngNewID
+
+End Function
+
+Private Sub TableTrigger(blnNew As Boolean)
+
+  Dim frmTrigger As frmTrigger
+  Dim objTrigger As clsTableTrigger
+  Dim strKey As String
+  Dim lngID As Long
+'  Dim iLoop As Integer
+  Dim lngRow As Long
+  Dim sAddString As String
+
+  Set frmTrigger = New frmTrigger
+  Set objTrigger = New clsTableTrigger
+
+  ' Set up defaults for new trigger
+  With objTrigger
+    If blnNew Then
+      .TriggerID = GetNewTableTriggerID
+      .TableID = mobjTable.TableID
+      .Name = vbNullString
+      .IsSystem = False
+      .CodePosition = TriggerCodePosition.AfterU02Update
+    Else
+      lngID = val(ssGrdTableTriggers.Columns(0).CellText(ssGrdTableTriggers.Bookmark))
+      Set objTrigger = mobjTable.TableTriggers("ID" & CStr(lngID))
+    End If
+  End With
+
+  frmTrigger.Locked = mobjTable.Locked
+  frmTrigger.TriggerObject = objTrigger
+
+  If frmTrigger.PopulateControls Then
+    frmTrigger.Show vbModal
+  End If
+
+  If Not frmTrigger.Cancelled Then
+
+    Set objTrigger = frmTrigger.TriggerObject
+    strKey = "ID" & objTrigger.TriggerID
+    If Not blnNew Then
+      mobjTable.TableTriggers.Remove strKey
+    End If
+    mobjTable.TableTriggers.Add objTrigger, strKey
+
+    With ssGrdTableTriggers
+      .Redraw = False
+
+      If Not blnNew Then
+        lngRow = .AddItemRowIndex(.Bookmark)
+        .RemoveItem lngRow
+      Else
+        lngRow = .Rows
+      End If
+
+      sAddString = GetTriggerString(objTrigger)
+      .AddItem sAddString, lngRow
+      .Redraw = True
+
+      .Redraw = False
+      .Bookmark = .AddItemBookmark(lngRow)
+      .SelBookmarks.RemoveAll
+      .SelBookmarks.Add .Bookmark
+      .Redraw = True
+    End With
+
+    RefreshTableTriggerButtons
+    Changed = True
+
+  End If
+
+  Set objTrigger = Nothing
+  UnLoad frmTrigger
+  Set frmTrigger = Nothing
+
+End Sub
+

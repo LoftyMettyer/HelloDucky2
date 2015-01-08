@@ -153,6 +153,11 @@ Private Function TableDelete() As Boolean
     " WHERE [TableID]=" & strTableID
   gADOCon.Execute sSQL, , adCmdText + adExecuteNoRecords
 
+  ' Delete table triggers for the table.
+  sSQL = "DELETE FROM [ASRSysTableTriggers]" & _
+    " WHERE [TableID]=" & strTableID
+  gADOCon.Execute sSQL, , adCmdText + adExecuteNoRecords
+
   ' Delete column definitions for this table from Columns
   sSQL = "DELETE FROM ASRSysColumns" & _
     " WHERE tableID=" & strTableID
@@ -253,6 +258,7 @@ Private Function TableNew() As Boolean
   Dim objTable As Table
   Dim objSummaryField As cSummaryField
   Dim objTableValidation As clsTableValidation
+  Dim objTableTrigger As clsTableTrigger
   Dim bEmbedded As Boolean
   Dim sTableCreate As SystemMgr.cStringBuilder
   Dim sCreateView As SystemMgr.cStringBuilder
@@ -289,7 +295,7 @@ Private Function TableNew() As Boolean
              "recordDescExprID, " & _
              "DefaultEmailID, " & _
              "AuditInsert, AuditDelete, " & _
-             "ManualSummaryColumnBreaks, IsRemoteView) " & _
+             "ManualSummaryColumnBreaks, IsRemoteView, InsertTriggerDisabled, UpdateTriggerDisabled, DeleteTriggerDisabled) " & _
            "VALUES (" & _
              lngTableID & ", '" & _
              sTableName & "', " & _
@@ -299,7 +305,8 @@ Private Function TableNew() As Boolean
              IIf(IsNull(recTabEdit!DefaultEmailID), 0, recTabEdit!DefaultEmailID) & ", " & _
              IIf(recTabEdit!AuditInsert = True, 1, 0) & ", " & _
              IIf(recTabEdit!AuditDelete = True, 1, 0) & ", " & _
-             IIf(recTabEdit!ManualSummaryColumnBreaks, 1, 0) & "," & IIf(recTabEdit!IsRemoteView, 1, 0) & ")"
+             IIf(recTabEdit!ManualSummaryColumnBreaks, 1, 0) & "," & IIf(recTabEdit!IsRemoteView, 1, 0) & "," & _
+             IIf(recTabEdit!InsertTriggerDisabled, 1, 0) & "," & IIf(recTabEdit!UpdateTriggerDisabled, 1, 0) & "," & IIf(recTabEdit!DeleteTriggerDisabled, 1, 0) & ")"
     gADOCon.Execute sSQL, , adCmdText + adExecuteNoRecords
 
     ' Add the Summary Field values.
@@ -340,6 +347,21 @@ Private Function TableNew() As Boolean
         gADOCon.Execute sSQL, , adCmdText + adExecuteNoRecords
       Next
       Set objTableValidation = Nothing
+          
+          
+      ' Commit the table triggers
+     For Each objTableTrigger In objTable.TableTriggers
+      sSQL = "INSERT INTO [ASRSysTableTriggers] ([TriggerID], [TableID], [Name], [CodePosition], [IsSystem], [Content]) " & _
+        " VALUES (" & objTableTrigger.TriggerID & ", " & _
+        objTableTrigger.TableID & ", " & _
+        "'" & objTableTrigger.Name & "', " & _
+        objTableTrigger.CodePosition & ", " & _
+        IIf(objTableTrigger.IsSystem, "1", "0") & ", " & _
+        "'" & Replace(objTableTrigger.Content, "'", "''") & "')"
+      gADOCon.Execute sSQL, , adCmdText + adExecuteNoRecords
+     
+     Next
+     Set objTableTrigger = Nothing
      
       
     End If
@@ -431,7 +453,7 @@ Private Function TableNew() As Boolean
             sColCreate = GetColCreateString(recColEdit!ColumnName, dtVARCHAR, 255, 0, False)
           ElseIf ((iDataType = dtBINARY) Or (iDataType = dtVARBINARY) Or (iDataType = dtLONGVARBINARY)) And bEmbedded Then
             sColCreate = GetColCreateString(recColEdit!ColumnName, dtLONGVARBINARY, 255, 0, False)
-          ElseIf (iDataType = dtlongvarchar) Then
+          ElseIf (iDataType = dtLONGVARCHAR) Then
             sColCreate = GetColCreateString(recColEdit!ColumnName, dtVARCHAR, 14, 0, recColEdit!MultiLine)
           Else
             sColCreate = GetColCreateString(recColEdit!ColumnName, iDataType, recColEdit!Size, recColEdit!Decimals, recColEdit!MultiLine)
@@ -451,11 +473,11 @@ Private Function TableNew() As Boolean
             ' Check if default required.
             If LenB(Trim(recColEdit!DefaultValue)) <> 0 Then
               Select Case iDataType
-                Case dtVARCHAR, dtlongvarchar
+                Case dtVARCHAR, dtLONGVARCHAR
                   'JPD 20041012 Fault 9293
                   'sSQL = sSQL & " DEFAULT '" & recColEdit!DefaultValue & "'"
                   sTableCreate.Append " DEFAULT '" & Replace(recColEdit!DefaultValue, "'", "''") & "'"
-                Case dtinteger, dtNUMERIC
+                Case dtINTEGER, dtNUMERIC
                   sTableCreate.Append " DEFAULT " & recColEdit!DefaultValue
                 Case dtBIT
                   sTableCreate.Append " DEFAULT " & IIf(recColEdit!DefaultValue = "TRUE", "1", "0")
@@ -797,7 +819,7 @@ Private Function TableSave(mfrmUse As frmUsage) As Boolean
                   Case dtVARCHAR
                     asValueList(iColumnList) = "CONVERT(varchar(MAX)," & sName & ")"
 
-                  Case dtlongvarchar
+                  Case dtLONGVARCHAR
                     asValueList(iColumnList) = "CONVERT(varchar(" & Trim(Str(14)) & ")," & sName & ")"
 
                   ' Convert numeric.
@@ -823,9 +845,9 @@ Private Function TableSave(mfrmUse As frmUsage) As Boolean
                 asColumnList(iColumnList) = sColumnName
                 Select Case !DataType
                   ' Convert data into character if possible.
-                  Case dtVARCHAR, dtlongvarchar
+                  Case dtVARCHAR, dtLONGVARCHAR
                     If (iDataType = dtTIMESTAMP) Or _
-                      (iDataType = dtinteger) Or _
+                      (iDataType = dtINTEGER) Or _
                       (iDataType = dtNUMERIC) Or _
                       (iDataType = dtBIT) Then
                         asValueList(iColumnList) = "CONVERT(varchar(MAX), " & sName & ")"
@@ -834,7 +856,7 @@ Private Function TableSave(mfrmUse As frmUsage) As Boolean
                     End If
 
                   ' Convert data into integer if possible.
-                  Case dtinteger
+                  Case dtINTEGER
                     If (iDataType = dtNUMERIC) Or (iDataType = dtBIT) Then
                       asValueList(iColumnList) = "CONVERT(int, " & sName & ")"
                     Else
@@ -843,7 +865,7 @@ Private Function TableSave(mfrmUse As frmUsage) As Boolean
 
                   ' Convert data into numeric if possible.
                   Case dtNUMERIC
-                    If (iDataType = dtinteger) Or (iDataType = dtBIT) Then
+                    If (iDataType = dtINTEGER) Or (iDataType = dtBIT) Then
                       asValueList(iColumnList) = "CONVERT(numeric(" & Trim(Str(!Size)) & "," & Trim(Str(!Decimals)) & "), " & sName & ")"
                     Else
                       asValueList(iColumnList) = "0"
@@ -1059,10 +1081,10 @@ Private Function GetColCreateString(ByVal psColumnName As String, ByVal plngData
       GetColCreateString = "[" & Trim$(psColumnName) & "] [VARCHAR] (" & plngSize & ")"
     End If
 
-    Case dtlongvarchar
+    Case dtLONGVARCHAR
       GetColCreateString = "[" & Trim$(psColumnName) & "] [VARCHAR] (14)"
 
-    Case dtinteger
+    Case dtINTEGER
       GetColCreateString = "[" & Trim$(psColumnName) & "] [INT]"
 
     Case dtNUMERIC
