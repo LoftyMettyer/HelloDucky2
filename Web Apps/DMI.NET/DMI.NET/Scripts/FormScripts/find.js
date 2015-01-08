@@ -484,42 +484,44 @@ function find_window_onload() {
 					}
 				});
 
-				//search options.
-				$("#findGridTable").jqGrid('navGrid', '#pager-coldata', { del: false, add: false, edit: false, search: false });
+				// Navbar options = i.e. search, edit, save etc 
+				$("#findGridTable").jqGrid('navGrid', '#pager-coldata', { del: false, add: false, edit: false, search: false, refresh: false }); // setup the buttons we want
+				$("#findGridTable").jqGrid('filterToolbar', {stringResult: true, searchOnEnter: false	});  //instantiate toolbar so we can use toggle.
+				$("#findGridTable")[0].toggleToolbar();  // Toggle it off at start up.
 
 				$("#findGridTable").jqGrid('navButtonAdd', "#pager-coldata", {
 					caption: '',
 					buttonicon: 'icon-search',
 					onClickButton: function () {
-						$("#findGridTable").jqGrid('filterToolbar', { stringResult: true, searchOnEnter: false });
+						$("#findGridTable")[0].toggleToolbar(); // Toggle toolbar on & off when Search button is pressed.
 					},
 					position: 'first',
 					title: 'Search',
 					cursor: 'pointer'
-				});
+			});
 
-				//Enable inline editing if there is at least one editable column
-				var editLicenced = ($("#txtEditableGridGranted").val() == 1);
+						//Enable inline editing if there is at least one editable column
+						var editLicenced = ($("#txtEditableGridGranted").val() == 1);
 				if (thereIsAtLeastOneEditableColumn && editLicenced) {
-					//Make grid editable
-					$("#findGridTable").jqGrid('inlineNav', '#pager-coldata', {
-						edit: true,
-						editicon: 'icon-pencil',
-						add: true,
-						addicon: 'icon-plus',
-						save: true,
-						saveicon: 'icon-save',
-						cancel: true,
-						cancelicon: 'icon-ban-circle',
-						editParams: {
-							aftersavefunc: function (rowid, response, options) {
+							//Make grid editable
+							$("#findGridTable").jqGrid('inlineNav', '#pager-coldata', {
+								edit: true,
+							editicon: 'icon-pencil',
+								add: true,
+							addicon: 'icon-plus',
+							save: true,
+								saveicon: 'icon-save',
+							cancel: true,
+							cancelicon: 'icon-ban-circle',
+								editParams: {
+						aftersavefunc: function (rowid, response, options) {
 								saveInlineRowToDatabase(rowid);																
 								updateRowFromDatabase(rowid);
-							}
-						}
+								}
+					}
 					});
 
-					//Enable inline edit and autosave buttons
+						//Enable inline edit and autosave buttons
 					menu_toolbarEnableItem('mnutoolInlineEditRecordFind', true);					
 
 					$("#findGridTable_iladd").show();
@@ -528,14 +530,14 @@ function find_window_onload() {
 					$("#findGridTable_ilcancel").show();
 
 				} else {
-					//Disable inline edit and autosave buttons
+						//Disable inline edit and autosave buttons
 					menu_toolbarEnableItem('mnutoolInlineEditRecordFind', false);
-					//Hide the edit icons by default
+				//Hide the edit icons by default
 					$("#findGridTable_iladd").hide();
 					$("#findGridTable_iledit").hide();
 					$("#findGridTable_ilsave").hide();
 					$("#findGridTable_ilcancel").hide();
-				}
+			}
 
 				$("#pager-coldata .navtable .ui-pg-div>span.ui-icon-refresh").addClass("icon-refresh");
 				$("#pager-coldata .navtable .ui-pg-div>span").removeClass("ui-icon");
@@ -554,7 +556,7 @@ function find_window_onload() {
 						.addClass("icon-forward")
 						.css('font-size', '20px');
 				$pager.find(".ui-pg-button>span.ui-icon-seek-end")
-						.removeClass("ui-icon ui-icon-seek-end")
+				.removeClass("ui-icon ui-icon-seek-end")
 						.addClass("icon-step-forward")
 						.css('font-size', '20px');
 
