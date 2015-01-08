@@ -641,7 +641,7 @@
 			$(".baseTableOnly *").prop("disabled", !isBaseOrParentTableColumn || !isThereChildColumns || isHidden || isReadOnly);
 			$(".canGroupWithNext *").prop("disabled", isBottomRow || isHidden || isReadOnly);			
 			$("#SelectedColumnHeading").prop("disabled", isReadOnly || isHidden);
-			$(".sizeOnly *").prop("disabled", !isNumeric || isReadOnly || isHidden);
+			$(".sizeOnly *").prop("disabled", isReadOnly || isHidden);
 
 			//If Suppress Repeated Values is checked, then Hidden and Repeat on child records should not allowed to checked
 			if (checkSRPandVOC(rowId)) {				
