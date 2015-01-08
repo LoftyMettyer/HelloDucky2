@@ -1209,6 +1209,19 @@
 		}
 		return returnvalue;
 	},
+	nullsafeInteger = function (arg) {
+		var returnvalue = 0; //default to 0
+		if ((arg == undefined) || (arg == 0) || arg.length <= 0) {
+			return returnvalue;
+		} else {
+			try {
+				returnvalue = Number(arg);
+			} catch (e) {
+				return returnvalue;
+			}
+		}
+		return returnvalue;
+	},
 	sessionTimeout = function () {
 
 		$("#SignalRDialogTitle").html("You are about to be logged out");
@@ -1435,6 +1448,7 @@
 		SessionTimeout: sessionTimeout,
 		printDiv: printDiv,
 		nullsafeString: nullsafeString,
+		nullsafeInteger: nullsafeInteger,
 		replaceAll: replaceAll,
 		getLocaleDateString: getLocaleDateString,
 		setDatepickerLanguage: setDatepickerLanguage,

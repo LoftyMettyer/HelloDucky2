@@ -110,6 +110,7 @@ function find_window_onload() {
 							var ColumnSpinnerMaximum = parseInt(dataCollection.item(i).getAttribute("data-spinnermaximum"));
 							var ColumnSpinnerIncrement = parseInt(dataCollection.item(i).getAttribute("data-spinnerincrement"));
 							var ColumnMask = dataCollection.item(i).getAttribute("data-Mask");
+							var iDefaultValueExprID = dataCollection.item(i).getAttribute("data-DefaultValueExprID");
 
 							if (sColumnEditable == true) {
 								thereIsAtLeastOneEditableColumn = true;
@@ -141,6 +142,8 @@ function find_window_onload() {
 										edittype: 'checkbox',
 										formatter: 'checkbox',
 										editable: sColumnEditable,
+										editoptions: {dataColumnId: iColumnId,
+										dataDefaultCalcExprID: iDefaultValueExprID},
 										formatoptions: {
 											disabled: true,
 											defaultValue: getDefaultValueForColumn(iColumnId, "checkbox")
@@ -164,6 +167,8 @@ function find_window_onload() {
 												defaultValue: getDefaultValueForColumn(iColumnId, "integer"),
 												columnSize: ColumnSize,
 												columnDecimals: ColumnDecimals,
+												dataColumnId: iColumnId,
+												dataDefaultCalcExprID: iDefaultValueExprID,
 												dataInit: function (element) {
 													var value = "";
 													var ColumnSize = $(element).attr('columnSize');
@@ -223,6 +228,8 @@ function find_window_onload() {
 												min: ColumnSpinnerMinimum,
 												max: ColumnSpinnerMaximum,
 												step: ColumnSpinnerIncrement,
+												dataColumnId: iColumnId,
+												dataDefaultCalcExprID: iDefaultValueExprID,
 												dataInit: function (element) {
 													$(element).spinner({ });
 												},
@@ -254,8 +261,10 @@ function find_window_onload() {
 										editable: sColumnEditable,
 										type: "date",
 										editoptions: {
+											dataColumnId: iColumnId,
+											dataDefaultCalcExprID: iDefaultValueExprID,
 											size: 20,
-											maxlengh: 10,
+											maxlength: 10,
 											dataInit: function (element) {
 												$(element).datepicker({
 													constrainInput: true,
@@ -274,6 +283,8 @@ function find_window_onload() {
 										editable: sColumnEditable,
 										type: 'textarea',
 										editoptions: {
+											dataColumnId: iColumnId,
+											dataDefaultCalcExprID: iDefaultValueExprID,
 											dataInit: function (element) { },
 											defaultValue: getDefaultValueForColumn(iColumnId, "textarea")
 										}
@@ -289,6 +300,8 @@ function find_window_onload() {
 										columnLookupFilterColumnID: ColumnLookupFilterColumnID,
 										columnLookupFilterValueID: ColumnLookupFilterValueID,
 										editoptions: {
+											dataColumnId: iColumnId,
+											dataDefaultCalcExprID: iDefaultValueExprID,
 											dataInit: function (element) {
 												$(element).on('keydown', function () {return false;}); //Prevent the user from typing in lookups
 												$(element).attr('onpaste', 'return false;'); //Prevent the user from pasting into lookups
@@ -311,6 +324,8 @@ function find_window_onload() {
 										editable: sColumnEditable,
 										type: "select",
 										editoptions: {
+											dataColumnId: iColumnId,
+											dataDefaultCalcExprID: iDefaultValueExprID,
 											value: getValuesForColumn(iColumnId, (ColumnControlType == 2)), //This populates the <select>
 											defaultValue: getDefaultValueForColumn(iColumnId, "select")
 										}
@@ -349,6 +364,8 @@ function find_window_onload() {
 										editable: sColumnEditable,
 										type: 'text',
 										editoptions: {
+											dataColumnId: iColumnId,
+											dataDefaultCalcExprID: iDefaultValueExprID,
 											size: ColumnSize,
 											maxlength: ColumnSize,
 											mask: ColumnMask,											
@@ -388,6 +405,8 @@ function find_window_onload() {
 											decimalSeparator: OpenHR.LocaleDecimalSeparator(),
 											thousandsSeparator: useThousandSeparator(columnCount) ? OpenHR.LocaleThousandSeparator() : "",
 											defaultValue: getDefaultValueForColumn(iColumnId, "other"),											
+											dataColumnId: iColumnId,
+											dataDefaultCalcExprID: iDefaultValueExprID,
 											dataInit: function (element) {												
 												var value = "";
 												var ColumnSize = $(element).attr('columnSize');
@@ -421,6 +440,8 @@ function find_window_onload() {
 										editable: sColumnEditable,
 										type: 'other',
 										editoptions: {
+											dataColumnId: iColumnId,
+											dataDefaultCalcExprID: iDefaultValueExprID,
 											size: "20",
 											maxlength: "30",
 											defaultValue: getDefaultValueForColumn(iColumnId, "other")
@@ -498,30 +519,76 @@ function find_window_onload() {
 					position: 'first',
 					title: 'Search',
 					cursor: 'pointer'
-			});
+				});
 
-						//Enable inline editing if there is at least one editable column
-						var editLicenced = ($("#txtEditableGridGranted").val() == 1);
+				//Enable inline editing if there is at least one editable column
+				var editLicenced = ($("#txtEditableGridGranted").val() == 1);
 				if (thereIsAtLeastOneEditableColumn && editLicenced) {
-							//Make grid editable
-							$("#findGridTable").jqGrid('inlineNav', '#pager-coldata', {
-								edit: true,
-							editicon: 'icon-pencil',
-								add: true,
-							addicon: 'icon-plus',
-							save: true,
-								saveicon: 'icon-save',
-							cancel: true,
-							cancelicon: 'icon-ban-circle',
-								editParams: {
-						aftersavefunc: function (rowid, response, options) {
+					//Make grid editable
+					$("#findGridTable").jqGrid('inlineNav', '#pager-coldata', {
+						edit: true,
+						editicon: 'icon-pencil',
+						add: true,
+						addicon: 'icon-plus',
+						save: true,
+						saveicon: 'icon-save',
+						cancel: true,
+						cancelicon: 'icon-ban-circle',
+						editParams: {
+							aftersavefunc: function (rowid, response, options) {
 								saveInlineRowToDatabase(rowid);																
 								updateRowFromDatabase(rowid);
-								}
-					}
+							}
+						},
+						addParams: {
+							useDefValues: true,
+							addRowParams: {
+								keys: true,
+								oneditfunc: function (rowid) {
+									//build a comma separated list of columns that have expression ID's on them.
+									var arrCalcColumnsString = [];
+									$('#' + rowid).find(':input[datadefaultcalcexprid]').each(function () {
+										if (Number(this.attributes['datadefaultcalcexprid'].value) > "0") {
+											arrCalcColumnsString.push(this.attributes['dataColumnId'].value);
+						}
 					});
 
-						//Enable inline edit and autosave buttons
+									var calcColumnsString = arrCalcColumnsString.join(",");
+
+									//Pass list to stored proc.
+									$.ajax({
+										url: "GetDefaultCalcValueForColumn",
+										data: { defaultCalcColumns: calcColumnsString },
+										async: false,
+										cache: false,
+										dataType: 'json',
+										type: 'GET'
+									}).done(function (jsondata) {
+										for (var rowCount = 0; rowCount <= jsondata.length - 1; rowCount++) {
+											var key = Object.keys(jsondata[rowCount])[0];
+											var value = jsondata[rowCount][key];
+
+											//Some controls need a bit more logic applied to their default values
+											if ($('#' + rowid + ' *[datacolumnid="' + key + '"]').hasClass('datepicker')) {
+												//Date control.
+												$('#' + rowid + ' *[datacolumnid="' + key + '"]').val(OpenHR.ConvertSQLDateToLocale(value));
+											}
+											else if ($('#' + rowid + ' *[datacolumnid="' + key + '"]').is(':checkbox')) {
+												//checkbox												
+												$('#' + rowid + ' *[datacolumnid="' + key + '"]').prop('checked', value.toString().toLowerCase() == "true" ? true : false);
+											}
+											else {
+												//covers textboxes, dropdowns and option groups
+												$('#' + rowid + ' *[datacolumnid="' + key + '"]').val(value);
+											}
+										}
+									});
+								}
+							}
+						},
+					});
+
+					//Enable inline edit and autosave buttons
 					menu_toolbarEnableItem('mnutoolInlineEditRecordFind', true);					
 
 					$("#findGridTable_iladd").show();
@@ -530,14 +597,14 @@ function find_window_onload() {
 					$("#findGridTable_ilcancel").show();
 
 				} else {
-						//Disable inline edit and autosave buttons
+					//Disable inline edit and autosave buttons
 					menu_toolbarEnableItem('mnutoolInlineEditRecordFind', false);
-				//Hide the edit icons by default
+					//Hide the edit icons by default
 					$("#findGridTable_iladd").hide();
 					$("#findGridTable_iledit").hide();
 					$("#findGridTable_ilsave").hide();
 					$("#findGridTable_ilcancel").hide();
-			}
+				}
 
 				$("#pager-coldata .navtable .ui-pg-div>span.ui-icon-refresh").addClass("icon-refresh");
 				$("#pager-coldata .navtable .ui-pg-div>span").removeClass("ui-icon");
@@ -556,7 +623,7 @@ function find_window_onload() {
 						.addClass("icon-forward")
 						.css('font-size', '20px');
 				$pager.find(".ui-pg-button>span.ui-icon-seek-end")
-				.removeClass("ui-icon ui-icon-seek-end")
+						.removeClass("ui-icon ui-icon-seek-end")
 						.addClass("icon-step-forward")
 						.css('font-size', '20px');
 

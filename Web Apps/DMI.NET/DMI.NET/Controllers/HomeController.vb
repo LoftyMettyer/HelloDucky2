@@ -5830,6 +5830,50 @@ Namespace Controllers
 
 		End Function
 
+		<HttpGet()>
+		Public Function GetDefaultCalcValueForColumn(defaultCalcColumns As String) As JsonResult
+
+			Dim objDataAccess As clsDataAccess = CType(Session("DatabaseAccess"), clsDataAccess)
+			Dim prmRecordCount As New SqlParameter("piRecordCount", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
+
+			Try
+				Dim sFromDef = Session("RealSource") & Chr(9)	' NPG: Really not sure if this is right. It's supposed to replicate the session('FromDef') in recedit.
+
+				Dim rstRecord = objDataAccess.GetDataTable("sp_ASRIntCalcDefaults", CommandType.StoredProcedure _
+						, prmRecordCount _
+						, New SqlParameter("psFromDef", SqlDbType.VarChar, -1) With {.Value = sFromDef} _
+						, New SqlParameter("psFilterDef", SqlDbType.VarChar, -1) With {.Value = Session("filterDef")} _
+						, New SqlParameter("piTableID", SqlDbType.Int) With {.Value = CleanNumeric(Session("tableID"))} _
+						, New SqlParameter("piParentTableID", SqlDbType.Int) With {.Value = CleanNumeric(Session("parentTableID"))} _
+						, New SqlParameter("piParentRecordID", SqlDbType.Int) With {.Value = CleanNumeric(Session("parentRecordID"))} _
+						, New SqlParameter("psDefaultCalcColumns", SqlDbType.VarChar, -1) With {.Value = defaultCalcColumns} _
+						, New SqlParameter("psDecimalSeparator", SqlDbType.VarChar, 255) With {.Value = Session("LocaleDecimalSeparator")} _
+						, New SqlParameter("psLocaleDateFormat", SqlDbType.VarChar, 255) With {.Value = Platform.LocaleDateFormatForSQL()})
+
+				Dim rows As New List(Of Dictionary(Of String, Object))()
+				Dim row As Dictionary(Of String, Object)
+
+				If Not rstRecord Is Nothing Then
+					If rstRecord.Rows.Count > 0 Then
+						For iloop = 0 To (rstRecord.Columns.Count - 1)
+							If Not IsDBNull(rstRecord(iloop)) Then
+								row = New Dictionary(Of String, Object)()
+								row.Add(rstRecord.Columns(iloop).ColumnName, Replace(rstRecord(0)(iloop).ToString(), """", "&quot;"))
+								rows.Add(row)
+							End If
+						Next
+					End If
+				End If
+
+				Return Json(rows, JsonRequestBehavior.AllowGet)
+
+			Catch ex As Exception
+				Throw
+			End Try
+
+		End Function
+
+
 	End Class
 
 	Public Class ErrMsgJsonAjaxResponse

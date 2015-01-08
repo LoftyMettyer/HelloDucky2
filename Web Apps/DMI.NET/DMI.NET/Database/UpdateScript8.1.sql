@@ -9981,7 +9981,7 @@ BEGIN
 	DECLARE @FindDefinition TABLE(tableID integer, columnID integer, columnName nvarchar(255), tableName nvarchar(255)
 									, ascending bit, type varchar(1), datatype integer, controltype integer, size integer, decimals integer, Use1000Separator bit, BlankIfZero bit, Editable bit
 									, LookupTableID integer, LookupColumnID integer, LookupFilterColumnID integer, LookupFilterValueID integer, SpinnerMinimum smallint, SpinnerMaximum smallint, SpinnerIncrement smallint
-									, DefaultValue varchar(max), Mask varchar(max)
+									, DefaultValue varchar(max), Mask varchar(max), DefaultValueExprID int
 									)
 
 	DECLARE @OriginalColumns TABLE(columnID integer, columnName nvarchar(255))
@@ -10463,7 +10463,8 @@ BEGIN
 			c.SpinnerMaximum,
 			c.SpinnerIncrement,
 			c.defaultvalue AS DefaultValue,
-			c.Mask
+			c.Mask,
+			c.dfltvalueexprid as DefaultValueExprID
 		FROM [dbo].[ASRSysOrderItems] o
 		INNER JOIN ASRSysColumns c ON o.columnID = c.columnID
 		INNER JOIN ASRSysTables t ON c.tableID = t.tableID
@@ -11342,7 +11343,7 @@ BEGIN
 		SELECT f.tableID, f.columnID, f.columnName, f.ascending, f.type, f.datatype, f.controltype, f.size, f.decimals, f.Use1000Separator, f.BlankIfZero
 			 , CASE WHEN f.Editable = 1 AND p.updateGranted = 1 THEN @IsSingleTable ELSE 0 END AS updateGranted
 			 , LookupTableID, LookupColumnID, LookupFilterColumnID, LookupFilterValueID
-			 ,SpinnerMinimum, SpinnerMaximum, SpinnerIncrement, DefaultValue, Mask
+			 ,SpinnerMinimum, SpinnerMaximum, SpinnerIncrement, DefaultValue, Mask, DefaultValueExprID
 			FROM @FindDefinition f
 				INNER JOIN @ColumnPermissions p ON p.columnName = f.columnName
 			WHERE f.[type] = 'F';
