@@ -5190,7 +5190,6 @@ function saveRowIfChanged(rowid, lastSave) {
 		if (aftersaveGridData !== window.beforesaveRowData) {
 			//Changes made, save them.
 			saveInlineRowToDatabase(lastRowID);
-			updateRowFromDatabase(lastRowID);
 		} else {
 			//No changes made. Do nothing.
 		}
@@ -5261,7 +5260,7 @@ function saveInlineRowToDatabase(rowId) {
 	frmDataArea.txtOriginalRecordID.value = 0; //This is NOT a copied record
 
 	window.savedRow = rowId;
-	OpenHR.submitForm(frmDataArea, null, false, null, null, submitFollowOn);
+	OpenHR.submitForm(frmDataArea, null, true, null, null, submitFollowOn);
 
 	rowWasModified = false; //The 'rowWasModified' variable is defined as global in Find.ascx
 	window.onbeforeunload = null;
@@ -5281,11 +5280,12 @@ function submitFollowOn() {
 			$("#findGridTable_iladd").removeClass("ui-state-disabled");
 			$("#findGridTable_iledit").removeClass("ui-state-disabled");
 			$("#findGridTable_ilsave").addClass("ui-state-disabled");
-			$("#findGridTable_ilcancel").addClass("ui-state-disabled");
+			$("#findGridTable_ilcancel").addClass("ui-state-disabled");		
 		}, 100);
 	} else {
 		//Mark row as changed if we've successfully saved the record.
 		try {
+			updateRowFromDatabase(rowId);	//Get the row data from the database (show calculated values etc)
 			$("#findGridTable #" + rowId + ">td:first").css('border-left', '4px solid green');
 		} catch (e) { }
 	}

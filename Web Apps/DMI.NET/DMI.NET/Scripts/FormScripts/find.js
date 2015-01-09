@@ -543,8 +543,7 @@ function find_window_onload() {
 						cancelicon: 'icon-ban-circle',
 						editParams: {
 							aftersavefunc: function (rowid, response, options) {								
-								saveInlineRowToDatabase(rowid);																
-								updateRowFromDatabase(rowid);
+								saveInlineRowToDatabase(rowid);																								
 							}
 						},
 						addParams: {
