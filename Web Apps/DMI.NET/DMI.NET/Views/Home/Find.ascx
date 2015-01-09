@@ -23,6 +23,7 @@
 		if ('<%=session("linktype")%>' == 'multifind') {
 			//for multifind (SSI views) show relevant buttons with applicable functions
 			menu_setVisibletoolbarGroupById("mnuSectionRecordFindEdit", false);
+			menu_setVisibletoolbarGroupById("mnuSectionRecordFindInlineEdit", false);
 			menu_setVisibleMenuItem("mnutoolAccessLinksFind", true);
 			menu_setVisibleMenuItem("mnutoolCancelLinksFind", false);
 
@@ -34,6 +35,7 @@
 
 		} else {
 			menu_setVisibletoolbarGroupById("mnuSectionRecordFindEdit", true);
+			menu_setVisibletoolbarGroupById("mnuSectionRecordFindInlineEdit", true);
 			menu_setVisibleMenuItem("mnutoolAccessLinksFind", false);
 			menu_setVisibleMenuItem("mnutoolCancelLinksFind", false);
 
@@ -120,7 +122,7 @@
 					End If
 				%>
 			</div>
-			<div id="findGridRow" style="height: <%If Session("parentTableID") <> "" AndAlso Session("parentTableID") > 0 Then%>65%<%Else%>85%<%End If%>; margin-right: 20px; margin-left: 20px;">
+			<div id="findGridRow" style="height: <%If Not String.IsNullOrEmpty(Session("parentTableID")) AndAlso Session("parentTableID") > 0 Then%>65%<%Else%>85%<%End If%>; margin-right: 20px; margin-left: 20px;">
 				<%
 					Dim sTemp As String
 					Dim sThousandColumns As String = ""
@@ -495,7 +497,7 @@
 			<%
 				If Len(sErrorDescription) = 0 Then
 					' Get the summary fields (if required).
-					If Session("parentTableID") <> "" AndAlso Session("parentTableID") > 0 Then
+					If Not String.IsNullOrEmpty(Session("parentTableID")) AndAlso Session("parentTableID") > 0 Then
 						Dim prmCanSelect As New SqlParameter("@pfCanSelect", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
 						SPParameters = New SqlParameter() { _
 									New SqlParameter("@piHistoryTableID", SqlDbType.Int) With {.Value = CleanNumeric(Session("tableID"))}, _
