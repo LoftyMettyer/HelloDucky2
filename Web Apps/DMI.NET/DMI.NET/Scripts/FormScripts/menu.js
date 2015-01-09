@@ -5261,7 +5261,7 @@ function saveInlineRowToDatabase(rowId) {
 	frmDataArea.txtOriginalRecordID.value = 0; //This is NOT a copied record
 
 	window.savedRow = rowId;
-	OpenHR.submitForm(frmDataArea, null, true, null, null, submitFollowOn);
+	OpenHR.submitForm(frmDataArea, null, false, null, null, submitFollowOn);
 
 	rowWasModified = false; //The 'rowWasModified' variable is defined as global in Find.ascx
 	window.onbeforeunload = null;
@@ -5340,7 +5340,7 @@ function updateRowFromDatabase(rowid) {
 					case "date":
 						if (!cellValue == "") { //If the value is not empty then format it as the current date locale
 							var d = new Date(cellValue);
-							cellValue = d.toString(window.LocaleDateFormat);
+							cellValue = d.toString(OpenHR.LocaleDateFormat());
 						}
 						break;
 				}

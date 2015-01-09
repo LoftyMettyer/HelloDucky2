@@ -738,7 +738,7 @@
 			"DA-DK" : "dd-MM-yyyy",
 			"DE-DE" : "dd.MM.yyyy",
 			"EL-GR" : "d/M/yyyy",
-			"EN-US" : "M/d/yyyy",
+			"EN-US" : "MM/dd/yyyy",
 			"FI-FI" : "d.M.yyyy",
 			"FR-FR" : "dd/MM/yyyy",
 			"HE-IL" : "dd/MM/yyyy",
