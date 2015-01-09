@@ -399,9 +399,10 @@
 				// Clear some values when the base table changed
 				if (baseTableChanged) {
 					$("#txtDescription3").val('');
-					$('#Separator').val('None');
-					$('#chkGroupByDescription').prop('checked', false);
-
+					$('#Separator').val('None');					
+					$('#Separator').prop('disabled', true);
+					$('#chkGroupByDescription').prop('disabled', false);
+					$("#label_GroupByDescription").css("color", "#000000");
 					$('#IncludeBankHolidays').prop('checked', false);
 					$('#WorkingDaysOnly').prop('checked', false);
 					$('#ShowBankHolidays').prop('checked', false);
@@ -417,7 +418,7 @@
 				// Region table should display 'Default' for base table
 				var tableID = $("#BaseTableID option:selected").val();
 				var optionRegionID;
-				if (tableID == '@Model.BaseTableID') {					
+				if (tableID == '@SettingsConfig.Personnel_EmpTableID') {
 					optionRegionID = "<option value='0'>Default</option>";
 				}
 				else{
