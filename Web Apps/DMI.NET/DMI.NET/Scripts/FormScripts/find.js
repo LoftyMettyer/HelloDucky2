@@ -142,8 +142,11 @@ function find_window_onload() {
 										edittype: 'checkbox',
 										formatter: 'checkbox',
 										editable: sColumnEditable,
-										editoptions: {dataColumnId: iColumnId,
-										dataDefaultCalcExprID: iDefaultValueExprID},
+										editoptions: {
+											dataColumnId: iColumnId,
+											dataDefaultCalcExprID: iDefaultValueExprID,
+											value: "1:0"
+										},
 										formatoptions: {
 											disabled: true,
 											defaultValue: getDefaultValueForColumn(iColumnId, "checkbox")
@@ -388,8 +391,9 @@ function find_window_onload() {
 										name: sColumnName,
 										id: iColumnId,
 										width: 100,
-										editable: sColumnEditable,
+										editable: sColumnEditable,										
 										type: 'other',
+										edittype:'custom',
 										align: 'right',
 										sorttype: 'number',
 										formatter: 'number',
@@ -400,34 +404,15 @@ function find_window_onload() {
 											defaultValue: useBlankIfZero(columnCount) ? '' : space("0", ColumnSize, ColumnDecimals)
 										},										
 										editoptions: {
+											custom_element: ABSNumber,
+											custom_value: ABSNumberValue,
 											columnSize: ColumnSize,
 											columnDecimals: Number(ColumnDecimals),
 											decimalSeparator: OpenHR.LocaleDecimalSeparator(),
 											thousandsSeparator: useThousandSeparator(columnCount) ? OpenHR.LocaleThousandSeparator() : "",
 											defaultValue: getDefaultValueForColumn(iColumnId, "other"),											
 											dataColumnId: iColumnId,
-											dataDefaultCalcExprID: iDefaultValueExprID,
-											dataInit: function (element) {												
-												var value = "";
-												var ColumnSize = $(element).attr('columnSize');
-												var ColumnDecimals = $(element).attr('columnDecimals');
-												element.setAttribute("data-a-dec", OpenHR.LocaleDecimalSeparator()); //Decimal separator
-												element.setAttribute("data-a-sep", ""); //Thousand separator - no thousand separator when editing!
-												element.setAttribute('data-m-dec', ColumnDecimals); //Decimal places
-												$(element).addClass("textalignright");
-												//Size of field includes decimals but not the decimal point; For example if Size=6 and Decimals=2 the maximum value to be allowed is 9999.99
-												if (ColumnSize == "0") { //No size specified, set a very long limit
-													element.setAttribute('data-v-min', '-2147483647'); //This is -Int32.MaxValue
-													element.setAttribute('data-v-max', '2147483647'); //This is Int32.MaxValue
-												} else {
-													value = space("9", ColumnSize, ColumnDecimals);
-
-													element.setAttribute('data-v-min', '-' + value);
-													element.setAttribute('data-v-max', value);
-												}
-
-												$(element).autoNumeric('init');
-											},
+											dataDefaultCalcExprID: iDefaultValueExprID										
 										},
 										label: sColumnDisplayName
 									});
@@ -535,7 +520,7 @@ function find_window_onload() {
 						cancel: true,
 						cancelicon: 'icon-ban-circle',
 						editParams: {
-							aftersavefunc: function (rowid, response, options) {
+							aftersavefunc: function (rowid, response, options) {								
 								saveInlineRowToDatabase(rowid);																
 								updateRowFromDatabase(rowid);
 							}
@@ -550,8 +535,8 @@ function find_window_onload() {
 									$('#' + rowid).find(':input[datadefaultcalcexprid]').each(function () {
 										if (Number(this.attributes['datadefaultcalcexprid'].value) > "0") {
 											arrCalcColumnsString.push(this.attributes['dataColumnId'].value);
-						}
-					});
+										}
+									});
 
 									var calcColumnsString = arrCalcColumnsString.join(",");
 
@@ -991,5 +976,43 @@ function useBlankIfZero(columnNumber) {
 		return ($('#txtBlankIfZeroColumns').val().substr(columnNumber, 1) == '1');
 	} catch (e) {
 		return false;
+	}
+}
+
+function ABSNumber(value, options) {
+	
+	var el = document.createElement("input");
+	el.type = "text";
+	el.value = value;
+
+	el.setAttribute("data-a-dec", OpenHR.LocaleDecimalSeparator()); //Decimal separator
+	el.setAttribute("data-a-sep", OpenHR.LocaleThousandSeparator()); //Thousand separator - no thousand separator when editing!
+	$(el).addClass("textalignright");
+	el.style.width = '98%';
+
+	el.setAttribute("defaultValue", options.dataColumnId);
+	el.setAttribute("dataColumnId", options.dataColumnId);
+	el.setAttribute("dataDefaultCalcExprID", options.dataDefaultCalcExprID);
+
+	//Size of field includes decimals but not the decimal point; For example if Size=6 and Decimals=2 the maximum value to be allowed is 9999.99
+	if (options.columnSize == "0") { //No size specified, set a very long limit
+		el.setAttribute('data-v-min', '-2147483647'); //This is -Int32.MaxValue
+		el.setAttribute('data-v-max', '2147483647'); //This is Int32.MaxValue
+	} else {
+		value = space("9", options.columnSize, options.columnDecimals);
+
+		el.setAttribute('data-v-min', '-' + value);
+		el.setAttribute('data-v-max', value);
+	}
+
+	$(el).autoNumeric('init');
+	return el;
+}
+
+function ABSNumberValue(elem, operation, value) {
+	if (operation === 'get') {
+		return $(elem).val().replace(OpenHR.LocaleThousandSeparator(), "");
+	} else if (operation === 'set') {
+		$('input', elem).val(value);
 	}
 }

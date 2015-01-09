@@ -5196,7 +5196,7 @@ function saveRowIfChanged(rowid, lastSave) {
 }
 
 function saveInlineRowToDatabase(rowId) {
-	
+
 	var sUpdateOrInsert = "";
 	var gridData = $("#findGridTable").getRowData(rowId);
 	var gridColumns = $("#findGridTable").jqGrid('getGridParam', 'colNames');
@@ -5210,7 +5210,7 @@ function saveInlineRowToDatabase(rowId) {
 			//If the formatter is undefined then we treat the value as text
 			switch (gridModel[i].formatter) {
 				case "checkbox":
-					if (columnValue == "No" || columnValue == null)
+					if (columnValue == "0" || columnValue == null)
 						columnValue = "0";
 					else
 						columnValue = "1";
