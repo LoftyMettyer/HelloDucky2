@@ -274,6 +274,13 @@ function find_window_onload() {
 													showOn: 'focus'
 												});
 												$(element).addClass('datepicker');
+
+												$(element).on('blur', function (sender) {
+													if (OpenHR.IsValidDate(sender.target.value) == false && sender.target.value != "") {
+														OpenHR.modalMessage("Invalid date value entered");
+														$(sender.target.id).focus();
+													}
+												});
 											},
 											defaultValue: getDefaultValueForColumn(iColumnId, "date")
 										}
