@@ -426,11 +426,14 @@
 				}
 
 				var options = '';
-				for (var i = 0; i < json.length; i++) {
+				for (var i = 0; i < json.length; i++) {					
 					optionDescription1 += "<option value='" + json[i].ID + "'>" + json[i].Name + "</option>";
 					optionDescription2 += "<option value='" + json[i].ID + "'>" + json[i].Name + "</option>";
-					optionDescription3 += "<option value='" + json[i].ID + "'>" + json[i].Name + "</option>";
-					optionRegionID += "<option value='" + json[i].ID + "'>" + json[i].Name + "</option>";
+					optionDescription3 += "<option value='" + json[i].ID + "'>" + json[i].Name + "</option>";					
+					if (json[i].DataType == 12)
+					{
+						optionRegionID += "<option value='" + json[i].ID + "'>" + json[i].Name + "</option>";
+					}
 				}
 				$("select#Description1ID").html(optionDescription1);
 				$("select#Description2ID").html(optionDescription2);
