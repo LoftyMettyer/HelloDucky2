@@ -145,7 +145,10 @@ function find_window_onload() {
 										editoptions: {
 											dataColumnId: iColumnId,
 											dataDefaultCalcExprID: iDefaultValueExprID,
-											value: "1:0"
+											value: "1:0",
+											dataInit: function (element) {
+												$(element).on('click', function () { indicateThatRowWasModified(); });
+											}
 										},
 										formatoptions: {
 											disabled: true,
@@ -155,8 +158,7 @@ function find_window_onload() {
 										width: 100									
 									});
 								} else if (ColumnDataType == 4) { //Integer	- NOT numerics								
-									if (ColumnControlType == 64) {
-										// Integer - not a spinner.
+									if (ColumnControlType == 64) { // Integer - not a spinner.
 										colModel.push({
 											name: sColumnName,
 											id: iColumnId,
@@ -176,6 +178,8 @@ function find_window_onload() {
 													var value = "";
 													var ColumnSize = $(element).attr('columnSize');
 													var ColumnDecimals = $(element).attr('columnDecimals');
+
+													$(element).on('keydown', function () { indicateThatRowWasModified(); });
 
 													element.setAttribute("data-a-dec", OpenHR.LocaleDecimalSeparator()); //Decimal separator
 													element.setAttribute("data-a-sep", ''); //No Thousand separator
@@ -219,7 +223,7 @@ function find_window_onload() {
 											}
 										});
 									}
-									else { //Spinner integer
+									else if (ColumnControlType == 32) { //Spinner integer
 										colModel.push({
 											name: sColumnName,
 											id: iColumnId,
@@ -234,12 +238,15 @@ function find_window_onload() {
 												dataColumnId: iColumnId,
 												dataDefaultCalcExprID: iDefaultValueExprID,
 												dataInit: function (element) {
-													$(element).spinner({ });
+													$(element).spinner({
+														spin: function (event, ui) { indicateThatRowWasModified(); }
+													});
 												},
 												defaultValue: getDefaultValueForColumn(iColumnId, "spinner")
 											}
 										});
 									}
+									else { } //Integer control not being catered for
 								} else if (ColumnDataType == 11) { //Date
 									colModel.push({
 										name: sColumnName,
@@ -274,6 +281,8 @@ function find_window_onload() {
 													showOn: 'focus'
 												});
 												$(element).addClass('datepicker');
+												$(element).on('keydown', function () { indicateThatRowWasModified(); });
+												$(element).on('change', function () { indicateThatRowWasModified(); });
 
 												$(element).on('blur', function (sender) {
 													if (OpenHR.IsValidDate(sender.target.value) == false && sender.target.value != "") {
@@ -285,7 +294,7 @@ function find_window_onload() {
 											defaultValue: getDefaultValueForColumn(iColumnId, "date")
 										}
 									});
-								} else if (ColumnControlType == 64 && ColumnSize > 2000000000) { //Multiline - Textarea
+								} else if (ColumnControlType == 64 && ColumnSize >= 2147483646) { //Multiline - Textarea
 									colModel.push({
 										name: sColumnName,
 										edittype: "textarea",
@@ -295,7 +304,10 @@ function find_window_onload() {
 										editoptions: {
 											dataColumnId: iColumnId,
 											dataDefaultCalcExprID: iDefaultValueExprID,
-											dataInit: function (element) { },
+											dataInit: function (element) {
+												$(element).on('keydown', function () { indicateThatRowWasModified(); });
+												$(element).attr('onpaste', 'indicateThatRowWasModified();');
+											},
 											defaultValue: getDefaultValueForColumn(iColumnId, "textarea")
 										}
 									});
@@ -336,6 +348,9 @@ function find_window_onload() {
 										editoptions: {
 											dataColumnId: iColumnId,
 											dataDefaultCalcExprID: iDefaultValueExprID,
+											dataInit: function (element) {
+												$(element).on('change', function () { indicateThatRowWasModified(); });
+											},
 											value: getValuesForColumn(iColumnId, (ColumnControlType == 2)), //This populates the <select>
 											defaultValue: getDefaultValueForColumn(iColumnId, "select")
 										}
@@ -365,8 +380,7 @@ function find_window_onload() {
 											defaultValue: getDefaultValueForColumn(iColumnId, "workingpattern")
 										}
 									});								
-								} else if (ColumnDataType == 12 && ColumnControlType == 64) {
-									//Character
+								} else if (ColumnDataType == 12 && ColumnControlType == 64) { //Character
 									colModel.push({
 										name: sColumnName,
 										id: iColumnId,
@@ -380,7 +394,9 @@ function find_window_onload() {
 											maxlength: ColumnSize,
 											mask: ColumnMask,											
 											defaultValue: getDefaultValueForColumn(iColumnId, "text"),
-											dataInit: function(element) {
+											dataInit: function (element) {
+												$(element).on('keydown', function () { indicateThatRowWasModified(); });
+												$(element).attr('onpaste', 'indicateThatRowWasModified();');
 												var ColumnMask = $(element).attr('mask');
 												if (ColumnMask == null) return false;
 												if (ColumnMask == "") return false;
@@ -392,13 +408,12 @@ function find_window_onload() {
 										label: sColumnDisplayName
 									});
 								}
-								else if ((ColumnDataType == 2 && ColumnControlType == 64) || (ColumnDataType == 2 && ColumnControlType == 2)) {
-									//"Numeric"		
+								else if ((ColumnDataType == 2 && ColumnControlType == 64) || (ColumnDataType == 2 && ColumnControlType == 2)) { //"Numeric"		
 									colModel.push({
 										name: sColumnName,
 										id: iColumnId,
 										width: 100,
-										editable: sColumnEditable,										
+										editable: sColumnEditable,
 										type: 'other',
 										edittype:'custom',
 										align: 'right',
@@ -597,6 +612,20 @@ function find_window_onload() {
 					$("#findGridTable_ilsave").hide();
 					$("#findGridTable_ilcancel").hide();
 				}
+
+				$('#findGridTable_iledit').on('click', function (e) {
+					$("#findGridTable_ilsave").addClass('ui-state-disabled'); //Disable the Save button until we have actually edited something
+				});
+
+				$('#findGridTable_ilsave').on('click', function (e) {
+					rowWasModified = false; //The 'rowWasModified' variable is defined as global in Find.ascx
+					window.onbeforeunload = null;
+				});
+
+				$('#findGridTable_ilcancel').on('click', function (e) {
+					rowWasModified = false; //The 'rowWasModified' variable is defined as global in Find.ascx
+					window.onbeforeunload = null;
+				});
 
 				$("#pager-coldata .navtable .ui-pg-div>span.ui-icon-refresh").addClass("icon-refresh");
 				$("#pager-coldata .navtable .ui-pg-div>span").removeClass("ui-icon");
@@ -883,6 +912,8 @@ function selectValue(action, lookupColumnGridPosition, elementId, thisLookupColu
 	$('#LookupForEditableGrid_Div').dialog('close');
 	$("#LookupForEditableGrid_Table").jqGrid('GridUnload');
 
+	indicateThatRowWasModified();
+
 	if (thisLookupColumnIsNeededByAnother) {
 		//Save the row to the grid (not the database), restore it and then set the row back into edit mode;
 		//this is necessary so any lookup column filtered by another column will pickup the correct value to filter on
@@ -986,11 +1017,24 @@ function useBlankIfZero(columnNumber) {
 	}
 }
 
+function indicateThatRowWasModified() {
+	$("#findGridTable_ilsave").removeClass('ui-state-disabled'); //Enable the Save button because we edited something
+	rowWasModified = true; //The 'rowWasModified' variable is defined as global in Find.ascx
+	window.onbeforeunload = warning;
+}
+
+function warning() {
+	return "You will lose your changes if you do not save before leaving this page.\n\nWhat do you want to do?";
+}
+
 function ABSNumber(value, options) {
 	
 	var el = document.createElement("input");
 	el.type = "text";
 	el.value = value;
+
+	$(el).on('keydown', function () { indicateThatRowWasModified(); });
+	$(el).attr('onpaste', 'indicateThatRowWasModified();');
 
 	el.setAttribute("data-a-dec", OpenHR.LocaleDecimalSeparator()); //Decimal separator
 	el.setAttribute("data-a-sep", OpenHR.LocaleThousandSeparator()); //Thousand separator - no thousand separator when editing!

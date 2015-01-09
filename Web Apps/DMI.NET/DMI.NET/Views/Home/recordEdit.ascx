@@ -6,6 +6,10 @@
 
 <script type="text/javascript">
 
+	//Global
+	if (typeof rowWasModified === 'undefined')
+		var rowWasModified = false;
+
 	//Fault HRPRO-2953
 	(function () {
 		if (document.selection && document.selection.empty) {
@@ -408,12 +412,14 @@
 			linksMainParams = null;
 		}
 
-		if (hasChanged == 6) { // 6 = No Change
+		if (hasChanged == 6 && !rowWasModified) { // 6 = No Change
 			loadPartialView("linksMain", "Home", "workframe", linksMainParams);
 			return false;
-		} else if (hasChanged == 0) { // 0 = Changed, allow prompted navigation.
+		} else if (hasChanged == 0 || rowWasModified) { // 0 = Changed, allow prompted navigation.
 			OpenHR.modalPrompt("You have made changes. Click 'OK' to discard your changes, or 'Cancel' to continue editing.", 1, "Confirm").then(function (answer) {
 				if (answer == 1) { // OK
+					rowWasModified = false;
+					window.onbeforeunload = null;
 					loadPartialView("linksMain", "Home", "workframe", linksMainParams);
 					return false;
 				} else {

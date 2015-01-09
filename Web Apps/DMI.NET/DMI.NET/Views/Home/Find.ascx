@@ -120,7 +120,7 @@
 					End If
 				%>
 			</div>
-			<div id="findGridRow" style="height: <%If Session("parentTableID") > 0 Then%>65%<%Else%>85%<%End If%>; margin-right: 20px; margin-left: 20px;">
+			<div id="findGridRow" style="height: <%If Session("parentTableID") <> "" AndAlso Session("parentTableID") > 0 Then%>65%<%Else%>85%<%End If%>; margin-right: 20px; margin-left: 20px;">
 				<%
 					Dim sTemp As String
 					Dim sThousandColumns As String = ""
@@ -421,11 +421,11 @@
 											If Not IsDBNull(row(iloop)) Then
 												If Mid(sBlankIfZeroColumns, iloop + 1, 1) = "1" Then
 													' blank if zero
-													if row(iloop) > 0 then
+													If row(iloop) > 0 Then
 														sAddString &= row(iloop).ToString()
 													Else
 														sAddString &= ""
-													End If													
+													End If
 												Else
 													sAddString &= row(iloop).ToString()
 												End If
@@ -462,6 +462,8 @@
 							'We need TableID and OrderID in the client side
 							Response.Write(String.Concat(vbCrLf, "var tableId = ", Session("tableID"), ";", vbCrLf))
 							Response.Write(String.Concat(vbCrLf, "var orderId = ", Session("orderID"), ";", vbCrLf))
+							Response.Write(String.Concat(vbCrLf, "var rowWasModified = false;", vbCrLf))
+
 							Response.Write("</script>" & vbCrLf)
 							
 							Response.Write("<input type='hidden' id=txtInsertGranted name=txtInsertGranted value=" & prmInsertGranted.Value & ">" & vbCrLf)
@@ -493,7 +495,7 @@
 			<%
 				If Len(sErrorDescription) = 0 Then
 					' Get the summary fields (if required).
-					If Session("parentTableID") > 0 Then
+					If Session("parentTableID") <> "" AndAlso Session("parentTableID") > 0 Then
 						Dim prmCanSelect As New SqlParameter("@pfCanSelect", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
 						SPParameters = New SqlParameter() { _
 									New SqlParameter("@piHistoryTableID", SqlDbType.Int) With {.Value = CleanNumeric(Session("tableID"))}, _

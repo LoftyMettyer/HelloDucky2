@@ -1,4 +1,10 @@
-﻿function menu_window_onload() {
+﻿//Global
+if (typeof rowWasModified === 'undefined') {
+	var rowWasModified = false;
+	window.onbeforeunload = null;
+}
+
+function menu_window_onload() {
 	var iLoop;
 	var iVisibleCount;
 
@@ -248,6 +254,11 @@ function menu_MenuClick(sTool) {
 
 	sToolName = sTool;
 	sCurrentWorkPage = OpenHR.currentWorkPage();
+
+	if (sCurrentWorkPage == "FIND" && rowWasModified) { //Inform the user that they have unsaved changes on the Find window
+		OpenHR.modalMessage("You have unsaved changes; please save of cancel them before navigating away from this screen.");
+		return false;
+	}
 
 	//Remapping of menu click ID's for menu refactor.
 
@@ -5251,6 +5262,9 @@ function saveInlineRowToDatabase(rowId) {
 
 	window.savedRow = rowId;
 	OpenHR.submitForm(frmDataArea, null, true, null, null, submitFollowOn);
+
+	rowWasModified = false; //The 'rowWasModified' variable is defined as global in Find.ascx
+	window.onbeforeunload = null;
 }
 
 function submitFollowOn() {
