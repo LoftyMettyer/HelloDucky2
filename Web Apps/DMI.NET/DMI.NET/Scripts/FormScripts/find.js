@@ -1019,6 +1019,7 @@ function useBlankIfZero(columnNumber) {
 
 function indicateThatRowWasModified() {
 	$("#findGridTable_ilsave").removeClass('ui-state-disabled'); //Enable the Save button because we edited something
+	$("#findGridTable_ilcancel").removeClass('ui-state-disabled'); //Enable the Cancel button because we edited something
 	rowWasModified = true; //The 'rowWasModified' variable is defined as global in Find.ascx
 	window.onbeforeunload = warning;
 }
