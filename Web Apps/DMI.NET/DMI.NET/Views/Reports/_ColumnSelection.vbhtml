@@ -277,7 +277,7 @@
 		}
 
 		if (sMessage.length > 0) {
-			OpenHR.modalPrompt("Removing the following column will also remove it from the report sort order.<br/>" + sMessage + "" +
+			OpenHR.modalPrompt("Removing the following column will also remove it from the report sort order.<br/><br/>" + sMessage + "<br/>" +
 					"Are you sure you wish to continue ?", 4, "").then(function (answer) {
 						if (answer == 6) {
 							removeSelectedColumns();
