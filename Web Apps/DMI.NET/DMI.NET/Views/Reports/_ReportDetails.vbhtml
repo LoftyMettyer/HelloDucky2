@@ -20,7 +20,7 @@
 				<span>Fixed</span>
 			</div>
 			<div class="formField">
-				@Html.TextBoxFor(Function(m) m.StartFixedDate, "{0:dd/MM/yyyy}", New With {.class = "datepicker"})
+				@Html.TextBoxFor(Function(m) m.StartFixedDate, "{0:" & Session("LocaleDateFormat").tostring() & "}", New With {.class = "datepicker"})
 			</div>
 		</div>
 
@@ -62,7 +62,7 @@
 				<span>Fixed</span>
 			</div>
 			<div class="formField">
-				@Html.TextBoxFor(Function(m) m.EndFixedDate, "{0:dd/MM/yyyy}", New With {.class = "datepicker"})
+				@Html.TextBoxFor(Function(m) m.EndFixedDate, "{0:" & Session("LocaleDateFormat").ToString() & "}", New With {.class = "datepicker"})
 			</div>
 		</div>
 

@@ -597,7 +597,14 @@ ErrorTrap:
 
 		Public ReadOnly Property LocaleDateFormat As String
 			Get
-				Return RegionalSettings.DateFormat.ShortDatePattern
+				If Globalization.CultureInfo.CurrentUICulture.ToString() = "en-US" Then
+					' Force 2-digit days and months
+					Return "MM/dd/yyyy"
+				Else
+					Return RegionalSettings.DateFormat.ShortDatePattern
+				End If
+
+
 			End Get
 		End Property
 

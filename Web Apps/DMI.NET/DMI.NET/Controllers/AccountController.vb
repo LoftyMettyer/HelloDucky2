@@ -341,10 +341,17 @@ Namespace Controllers
 					objServerSession.Initialise()
 					objServerSession.ReadModuleParameters()
 
-					Session("LocaleDateFormat") = objServerSession.RegionalSettings.DateFormat.ShortDatePattern
 					Session("LocaleDecimalSeparator") = sLocaleDecimalSeparator
 					Session("LocaleThousandSeparator") = sLocaleThousandSeparator
 					Session("LocaleCultureName") = sLocaleCultureName
+
+					If sLocaleCultureName = "en-US" Then
+						' Force 2-digit days and months
+						Session("LocaleDateFormat") = "MM/dd/yyyy"
+					Else
+						Session("LocaleDateFormat") = objServerSession.RegionalSettings.DateFormat.ShortDatePattern
+					End If
+
 
 					objDataAccess = New clsDataAccess(objServerSession.LoginInfo)
 					Session("DatabaseFunctions") = objDatabase
