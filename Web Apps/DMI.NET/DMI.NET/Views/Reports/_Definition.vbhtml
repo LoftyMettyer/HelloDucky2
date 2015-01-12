@@ -541,6 +541,7 @@
 
 		if ($("#txtReportType").val() == '@UtilityType.utlCustomReport' || $("#txtReportType").val() == '@UtilityType.utlMailMerge') {			
 			removeAllSelectedColumns(false);
+			setDefinitionAccessBasedOnSelectedCalculationColumns();
 			if ($("#txtReportType").val() == '@UtilityType.utlMailMerge') {
 				loadAvailableTablesForReport(true);
 			}

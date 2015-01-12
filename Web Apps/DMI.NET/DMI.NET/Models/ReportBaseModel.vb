@@ -63,6 +63,8 @@ Namespace Models
 		Public Overridable Property ColumnsAsString As String
 		Public Property SortOrders As New List(Of SortOrderViewModel) Implements IReport.SortOrders
 
+		Public Property DefinitionAccessBasedOnSelectedCalculationColumns As String
+
 		Public Overridable ReadOnly Property SortOrdersAvailable As Integer Implements IReport.SortOrdersAvailable
 			Get
 				If Columns IsNot Nothing Then

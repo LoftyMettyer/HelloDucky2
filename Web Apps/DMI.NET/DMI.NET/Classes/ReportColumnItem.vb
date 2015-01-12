@@ -30,6 +30,13 @@ Namespace Classes
 		Public Property IsGroupWithNext As Boolean
 		Public Property IsRepeated As Boolean
 
+		''' <summary>
+		''' Gets/Sets the access rights for the column (E.g. HD/RW/RO)
+		''' </summary>
+		''' <value>The column access value</value>
+		Public Property Access As String
+
+
 		Public ReadOnly Property IsNumeric As Boolean
 			Get
 				Return DataType = ColumnDataType.sqlInteger OrElse DataType = ColumnDataType.sqlNumeric

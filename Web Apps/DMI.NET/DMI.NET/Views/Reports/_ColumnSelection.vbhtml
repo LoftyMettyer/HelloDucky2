@@ -6,6 +6,7 @@
 @Inherits System.Web.Mvc.WebViewPage(Of ReportBaseModel)
 
 @Html.HiddenFor(Function(m) m.ColumnsAsString, New With {.id = "txtCSAAS"})
+@Html.HiddenFor(Function(m) m.DefinitionAccessBasedOnSelectedCalculationColumns, New With {.class = "ViewAccess"})
 
 <div class="nowrap">
 
@@ -173,6 +174,8 @@
 		$("#AvailableColumns").jqGrid("setSelection", ids[nextIndex], true);
 		refreshcolumnPropertiesPanel();
 
+		// Check the view access for the selected calcluation column. If hidden hide the defination.
+		setDefinitionAccessBasedOnSelectedCalculationColumns();
 	}
 
 	function getDatarowFromAvailable(index) {
@@ -239,13 +242,15 @@
 
 		refreshcolumnPropertiesPanel();
 
+		// Check the view access for the selected calcluation column. If hidden hide the defination.
+		setDefinitionAccessBasedOnSelectedCalculationColumns();
 	}
 
 	function requestRemoveAllSelectedColumns() {
 
 		if ($("#SortOrders").jqGrid('getGridParam', 'records') > 0) {
 			OpenHR.modalPrompt("Removing all the columns will also remove them from the report sort order." +
-					"<br/><br/>Are you sure you wish to continue ?", 4, "").then(function (answer) {
+					"<br/><br/>Are you sure you wish to continue ?", 4, "", setDefinitionAccessAfterModelPrompt).then(function (answer) {
 						if (answer == 6) {
 							removeAllSelectedColumns(true);
 						}
@@ -253,6 +258,9 @@
 		}
 		else {
 			removeAllSelectedColumns(true);
+
+			// Check the view access for the selected calcluation column. If hidden hide the defination.
+			setDefinitionAccessBasedOnSelectedCalculationColumns();
 		}
 	}
 
@@ -278,7 +286,7 @@
 
 		if (sMessage.length > 0) {
 			OpenHR.modalPrompt("Removing the following column will also remove it from the report sort order.<br/><br/>" + sMessage + "<br/>" +
-					"Are you sure you wish to continue ?", 4, "").then(function (answer) {
+					"Are you sure you wish to continue ?", 4, "", setDefinitionAccessAfterModelPrompt).then(function (answer) {
 						if (answer == 6) {
 							removeSelectedColumns();
 							enableSaveButton();
@@ -288,6 +296,9 @@
 		else {
 			removeSelectedColumns();
 			enableSaveButton();
+
+			// Check the view access for the selected calcluation column. If hidden hide the defination.
+			setDefinitionAccessBasedOnSelectedCalculationColumns();
 		}
 	}
 
@@ -420,14 +431,15 @@
 				repeatitems: false,
 				id: "ID"
 			},
-			colNames: ['ID', 'IsExpression', 'Name', 'DataType', 'Size', 'Decimals'],
+			colNames: ['ID', 'IsExpression', 'Name', 'DataType', 'Size', 'Decimals', 'Access'],
 			colModel: [
-				{ name: 'ID', index: 'ID', hidden: true },
-				{ name: 'IsExpression', index: 'IsExpression3', hidden: true },
-				{ name: 'Name', index: 'Name', width: 40, sortable: false },
-				{ name: 'DataType', index: 'DataType', hidden: true },
-				{ name: 'Size', index: 'Size', hidden: true },
-				{ name: 'Decimals', index: 'Decimals', hidden: true }],
+			{ name: 'ID', index: 'ID', hidden: true },
+			{ name: 'IsExpression', index: 'IsExpression3', hidden: true },
+			{ name: 'Name', index: 'Name', width: 40, sortable: false },
+			{ name: 'DataType', index: 'DataType', hidden: true },
+			{ name: 'Size', index: 'Size', hidden: true },
+			{ name: 'Decimals', index: 'Decimals', hidden: true },
+			{ name: 'Access', index: 'Access', hidden: true }],
 			viewrecords: true,
 			autowidth: false,
 			sortname: 'Name',
@@ -521,7 +533,7 @@
 	}
 
 	function changeColumnIsHidden() {
-		
+
 		if ($("#SelectedColumnIsHidden").is(':checked')) {
 			$('#SelectedColumnIsAverage').prop('checked', false);
 			$('#SelectedColumnIsCount').prop('checked', false);
@@ -633,45 +645,45 @@
 			var isGroupWithNext = $("#SelectedColumnIsGroupWithNext").is(':checked');
 			var isRepeated = $("#SelectedColumnIsRepeated").is(':checked');
 			var isSize = (dataRow.DataType == '4');
-			
-						
+
+
 			$(".numericOnly *").prop("disabled", !isNumeric || isHidden || isGroupWithNext || isReadOnly);
 			$(".cannotBeHidden *").prop("disabled", isHidden || isGroupWithNext || isReadOnly);
 			$(".decimalsOnly *").prop("disabled", !isDecimals || isReadOnly || isHidden || isSize);
 			$(".baseTableOnly *").prop("disabled", !isBaseOrParentTableColumn || !isThereChildColumns || isHidden || isReadOnly);
-			$(".canGroupWithNext *").prop("disabled", isBottomRow || isHidden || isReadOnly);			
+			$(".canGroupWithNext *").prop("disabled", isBottomRow || isHidden || isReadOnly);
 			$("#SelectedColumnHeading").prop("disabled", isReadOnly || isHidden);
 			$(".sizeOnly *").prop("disabled", isReadOnly || isHidden);
 
 			//If Suppress Repeated Values is checked, then Hidden and Repeat on child records should not allowed to checked
-			if (checkSRPandVOC(rowId)) {				
+			if (checkSRPandVOC(rowId)) {
 				//If 'Group with next' OR 'Repeat on child records' are checked, then 'Hidden' checkbox should be disabled.
 				if (isGroupWithNext || isReadOnly || isRepeated) {
 					$("#SelectedColumnIsHidden").prop("disabled", true);
 					$("#labelSelectedColumnIsHidden").css("color", "#A59393");
 				}
 				else {
-				$("#SelectedColumnIsHidden").prop("disabled", false);
-				$("#labelSelectedColumnIsHidden").css("color", "#000000");
+					$("#SelectedColumnIsHidden").prop("disabled", false);
+					$("#labelSelectedColumnIsHidden").css("color", "#000000");
 				}
 
-			}	else {				
-						if (checkSRPandVOC(rowId) != undefined) {							
-							$("#SelectedColumnIsHidden").prop("disabled",true);
-							$("#labelSelectedColumnIsHidden").css("color", "#A59393");
-							$(".baseTableOnly *").prop("disabled", true);
-						}
-						else {							
-							if (isGroupWithNext || isReadOnly || isRepeated) {
-				$("#SelectedColumnIsHidden").prop("disabled", true);
-				$("#labelSelectedColumnIsHidden").css("color", "#A59393");
-			}			
-							else {
-								$("#SelectedColumnIsHidden").prop("disabled", false);
-								$("#labelSelectedColumnIsHidden").css("color", "#000000");
-							}
-						}
-			}			
+			} else {
+				if (checkSRPandVOC(rowId) != undefined) {
+					$("#SelectedColumnIsHidden").prop("disabled", true);
+					$("#labelSelectedColumnIsHidden").css("color", "#A59393");
+					$(".baseTableOnly *").prop("disabled", true);
+				}
+				else {
+					if (isGroupWithNext || isReadOnly || isRepeated) {
+						$("#SelectedColumnIsHidden").prop("disabled", true);
+						$("#labelSelectedColumnIsHidden").css("color", "#A59393");
+					}
+					else {
+						$("#SelectedColumnIsHidden").prop("disabled", false);
+						$("#labelSelectedColumnIsHidden").css("color", "#000000");
+					}
+				}
+			}
 
 			if (!isNumeric || isHidden || isGroupWithNext || isReadOnly) {
 				$(".numericOnly").css("color", "#A59393");
@@ -691,8 +703,7 @@
 				$(".canGroupWithNext").css("color", "#000000");
 			}
 
-			if (isBaseOrParentTableColumn && isThereChildColumns && !isReadOnly && !isHidden && ( checkSRPandVOC(rowId) == undefined || (checkSRPandVOC(rowId)) )  ) 
-			{				
+			if (isBaseOrParentTableColumn && isThereChildColumns && !isReadOnly && !isHidden && (checkSRPandVOC(rowId) == undefined || (checkSRPandVOC(rowId)))) {
 				$(".baseTableOnly *").prop("disabled", false);
 				$(".baseTableOnly").css("color", "#000000");
 
@@ -714,12 +725,12 @@
 	function checkSRPandVOC(rowId) {
 		// Check to see if Suppress Repeated Values or Value On change are ticked in Sort Order tab.
 		var fThisShouldBeEnabled = true
-		var gridData = $("#SortOrders").getRowData();		
+		var gridData = $("#SortOrders").getRowData();
 		// Loop through sort orders until we get a match and check SRV and VoC
 		for (j = 0; j < gridData.length; j++) {
 			if (rowId == gridData[j].ColumnID) {
 				if (gridData[j].SuppressRepeated.toUpperCase() == "TRUE" || gridData[j].ValueOnChange.toUpperCase() == "TRUE") {
-					return fThisShouldBeEnabled = false;					
+					return fThisShouldBeEnabled = false;
 				}
 			}
 		}
@@ -760,7 +771,7 @@
 				id: "ID" //index of the column with the PK in it
 			},
 			colNames: ['ID', 'TableID', 'IsExpression', 'Name', 'Sequence', 'Heading', 'DataType',
-								'Size', 'Decimals', 'IsAverage', 'IsCount', 'IsTotal', 'IsHidden', 'IsGroupWithNext', 'IsRepeated', 'ReportID', 'ReportType'],
+								'Size', 'Decimals', 'IsAverage', 'IsCount', 'IsTotal', 'IsHidden', 'IsGroupWithNext', 'IsRepeated', 'ReportID', 'ReportType', 'Access'],
 			colModel: [
 				{ name: 'ID', index: 'ID', hidden: true },
 				{ name: 'TableID', index: 'TableID', hidden: true },
@@ -778,7 +789,8 @@
 				{ name: 'IsGroupWithNext', index: 'IsGroupWithNext', hidden: true },
 				{ name: 'IsRepeated', index: 'IsRepeated', hidden: true },
 				{ name: 'ReportID', index: 'ReportID', hidden: true },
-				{ name: 'ReportType', index: 'ReportType', hidden: true }],
+				{ name: 'ReportType', index: 'ReportType', hidden: true },
+				{ name: 'Access', index: 'Access', hidden: true }],
 			viewrecords: true,
 			autowidth: false,
 			sortname: 'Sequence',
@@ -787,7 +799,7 @@
 			scrollrows: true,
 			multiselect: true,
 			beforeSelectRow: function (rowid, e) {
-				
+
 				if ($('#SelectedColumns').jqGrid('getGridParam', 'selarrrow').length == 1) {
 					updateColumnsSelectedGrid();
 				}
@@ -832,7 +844,7 @@
 
 				var rowId = $("#SelectedColumns").jqGrid('getGridParam', 'selrow');
 				var dataRow = $("#SelectedColumns").getRowData(rowId)
-				
+
 				$("#SelectedColumnHeading").val(dataRow.Heading);
 
 				$("#SelectedColumnSize").val(dataRow.Size);
@@ -852,6 +864,9 @@
 			loadComplete: function (data) {
 				var topID = $("#SelectedColumns").getDataIDs()[0]
 				$("#SelectedColumns").jqGrid("setSelection", topID);
+
+				// Check the view access for the selected calcluation columns. If found any hidden then set the defination access to HD.
+				setDefinitionAccessBasedOnSelectedCalculationColumns();
 			}
 		});
 
@@ -879,6 +894,83 @@
 			}
 		});
 
+	}
+
+	// set defination view access. This function will be called after the confirmation of model prompt. 
+	// (E.g While user clicks on Remove/RemoveAll, asks for the confirmation. If user cliks on YES then only set the defination access.
+	// Note: This is required because opening one model prompt from the other won't open the popup.
+	function setDefinitionAccessAfterModelPrompt(userClickedNOButtonOnModelPrompt) {
+		// If user has clicked on NO button on the model prompt then return.
+		if (userClickedNOButtonOnModelPrompt == 7) {
+			return;
+		}
+		setDefinitionAccessBasedOnSelectedCalculationColumns();
+	}
+
+	// Check the view access for the selected grid calculation columns.
+	// If found any hidden calculation then hide the defination access rights and give warning message.
+	function setDefinitionAccessBasedOnSelectedCalculationColumns() {
+		var gridControl, dataRow, rowIDs;
+		var hiddenCalculationColumnFound = false;
+		var messageToDisplay, tempMessage = '';
+		var hiddenCalculatedColumnsCount = 0;
+
+		gridControl = $("#SelectedColumns");
+		rowIDs = gridControl.getDataIDs();
+
+		// Loop through all selected columns, find those calculation columns which are hidden and prepare the display message
+		for (i = 0; i < rowIDs.length; i++) {
+			dataRow = gridControl.getRowData(rowIDs[i]);
+			if (dataRow.IsExpression == "true" && dataRow.Access == "HD") {
+				if (tempMessage != '') {
+					tempMessage += '<BR />';
+				}
+				tempMessage += "'" + dataRow.Heading + "' calculation";
+				hiddenCalculatedColumnsCount++;
+				hiddenCalculationColumnFound = true;
+			}
+		}
+
+		// If no hidden calculation column found in selected columns grid then set the control value to RW
+		if (hiddenCalculationColumnFound == false) {
+			setViewAccessBasedOnSelectedCalculationColumns($("#DefinitionAccessBasedOnSelectedCalculationColumns"), 'RW', '');
+		}
+		else {
+			messageToDisplay = "This definition will now be made hidden as the " + tempMessage + " is hidden.";
+			if (hiddenCalculatedColumnsCount > 1) {
+				messageToDisplay = 'This definition will now be made hidden as the following parameters are hidden.' + '<BR /><BR />' + tempMessage;
+			}
+
+			// If found any hidden calculation column in selected columns grid then set the control value to HD
+			setViewAccessBasedOnSelectedCalculationColumns($("#DefinitionAccessBasedOnSelectedCalculationColumns"), 'HD', messageToDisplay);
+		}
+	}
+
+	// Set the defination view access based on the selected calculation columns
+	function setViewAccessBasedOnSelectedCalculationColumns(accessControl, newAccess, messageToDisplay) {
+
+		var bResetGroupsToHidden = false;
+		var iObjectsHidden = 0;
+
+		// Check if the control was already hidden. If not then set the value of iObjectsHidden & bResetGroupsToHidden
+		if (accessControl.val() != newAccess && newAccess == "HD") {
+			iObjectsHidden = 1;
+			bResetGroupsToHidden = true;
+		}
+
+		accessControl.val(newAccess);
+
+		if (bResetGroupsToHidden && $("#IsForcedHidden").val() != "true") {
+			OpenHR.modalPrompt(messageToDisplay, 0, "Information").then(function (answer) {
+				$(".reportViewAccessGroup").val("HD");
+				$("#IsForcedHidden").val(true);
+			});
+		}
+		else {
+			checkIfDefinitionNeedsToBeHidden(iObjectsHidden);
+		}
+
+		refreshViewAccess();
 	}
 
 	// Initialise

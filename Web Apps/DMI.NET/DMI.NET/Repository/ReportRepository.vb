@@ -1208,7 +1208,8 @@ Namespace Repository
 						.Heading = "",
 						.DataType = CType(objRow("DataType"), ColumnDataType),
 						.Size = CInt(objRow("Size")),
-						.Decimals = CInt(objRow("Decimals"))}
+						.Decimals = CInt(objRow("Decimals")),
+						.Access = objRow("Access").ToString}
 
 					objReturnData.Add(objToAdd)
 
@@ -1374,11 +1375,21 @@ Namespace Repository
 						.IsHidden = CBool(objRow("IsHidden")),
 						.IsGroupWithNext = CBool(objRow("IsGroupWithNext")),
 						.IsRepeated = CBool(objRow("IsRepeated"))}
-					outputModel.Columns.Add(objItem)
 
 					bContainsHiddenObject = bContainsHiddenObject OrElse CBool(objRow("AccessHidden"))
 
+					If (objItem.IsExpression = True AndAlso bContainsHiddenObject = True) Then
+						objItem.Access = "HD"
+					End If
+
+					outputModel.Columns.Add(objItem)
+
 				Next
+
+				' If found any selected calculation column hidden then set defination access rights to HD
+				If (bContainsHiddenObject) Then
+					outputModel.DefinitionAccessBasedOnSelectedCalculationColumns = "HD"
+				End If
 
 				'	outputModel.ContainsHiddenObjects = outputModel.ContainsHiddenObjects OrElse bContainsHiddenObject
 				outputModel.Columns = outputModel.Columns.OrderBy(Function(x) x.Sequence).ToList()
