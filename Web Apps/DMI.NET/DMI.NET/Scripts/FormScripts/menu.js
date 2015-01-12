@@ -5229,6 +5229,9 @@ function saveInlineRowToDatabase(rowId) {
 					columnValue = OpenHR.convertLocaleDateToSQL(columnValue);
 					break;
 			}
+			
+			//default empty lookup values to null. Bug 13879
+			if ((gridModel[i].type == "lookup") && (columnValue.length == 0)) columnValue = "null";
 
 			sUpdateOrInsert += gridModel[i].id + "\t" + columnValue + "\t";
 		}
