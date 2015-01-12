@@ -799,7 +799,15 @@ function showLookupForColumn(element) {
 		colModelContainsRequiredLookupColumn = false;
 		for (var i = 0; i <= colModel.length - 1; i++) {
 			if (colModel[i].id == columnLookupFilterValueID) {
-				filterCellValue = $("#findGridTable").jqGrid("getGridParam", "data")[rowId][colModel[i].name];
+				if (isNaN(rowId)) { //If this is a new row get the filterCellValue from the last row added (i.e. the new one)
+					filterCellValue = $("#findGridTable").jqGrid("getGridParam", "data")[$("#findGridTable").jqGrid("getGridParam", "reccount") - 1][colModel[i].name];
+					if (typeof filterCellValue == "undefined") {
+						filterCellValue = '';
+					}
+				} else {//Get the filterCellValue from the current row
+					filterCellValue = $("#findGridTable").jqGrid("getGridParam", "data")[rowId][colModel[i].name];
+				}
+
 				colModelContainsRequiredLookupColumn = true;
 				break;
 			}
@@ -879,8 +887,18 @@ function showLookupForColumn(element) {
 				$("#LookupForEditableGrid_Table").jqGrid('setSelection', rowId + 1, false);
 			}
 
-			//Assign a function call to the onclick event of the "Select" button
-			$('#LookupForEditableGridSelect').attr('onclick', 'selectValue("Select", "' + lookupColumnGridPosition + '","' + element.id + '",' + thisLookupColumnIsNeededByAnother + ')');
+			//If we don't have records in the grid, disable Select button
+			if ($("#LookupForEditableGrid_Table").getGridParam('reccount') == 0) {
+				$('#LookupForEditableGridSelect').attr('disabled', 'disabled');
+				$('#LookupForEditableGridSelect').addClass('disabled');
+				$('#LookupForEditableGridSelect').addClass('ui-state-disabled');
+			} else { //Enable Select button
+				$('#LookupForEditableGridSelect').removeAttr('disabled');
+				$('#LookupForEditableGridSelect').removeClass('disabled');
+				$('#LookupForEditableGridSelect').removeClass('ui-state-disabled');
+				//Assign a function call to the onclick event of the "Select" button
+				$('#LookupForEditableGridSelect').attr('onclick', 'selectValue("Select", "' + lookupColumnGridPosition + '","' + element.id + '",' + thisLookupColumnIsNeededByAnother + ')');
+			}
 			//Assign a function call to the onclick event of the "Clear" button
 			$('#LookupForEditableGridClear').attr('onclick', 'selectValue("Clear", "' + lookupColumnGridPosition + '","' + element.id + '",' + thisLookupColumnIsNeededByAnother + ')');
 		},
