@@ -530,7 +530,7 @@ function find_window_onload() {
 
 				//Enable inline editing if there is at least one editable column
 				var editLicenced = ($("#txtEditableGridGranted").val() == 1);
-				if (thereIsAtLeastOneEditableColumn && editLicenced) {
+				if (thereIsAtLeastOneEditableColumn && editLicenced && linktype != 'multifind') { //The "linktype" variable is defined in Find.ascx
 					//Make grid editable
 					$("#findGridTable").jqGrid('inlineNav', '#pager-coldata', {
 						edit: true,

@@ -465,6 +465,7 @@
 							Response.Write(String.Concat(vbCrLf, "var tableId = ", Session("tableID"), ";", vbCrLf))
 							Response.Write(String.Concat(vbCrLf, "var orderId = ", Session("orderID"), ";", vbCrLf))
 							Response.Write(String.Concat(vbCrLf, "var rowWasModified = false;", vbCrLf))
+ 							Response.Write(String.Concat(vbCrLf, "var linktype = '", Session("linktype"), "';", vbCr))
 
 							Response.Write("</script>" & vbCrLf)
 							
