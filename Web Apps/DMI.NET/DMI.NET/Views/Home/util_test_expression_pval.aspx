@@ -180,7 +180,6 @@
 			// Character column.
 			// Ensure that the value entered matches the required mask (if there is one).
 			var sMaskCtlName = "promptMask_" + pctlPrompt.name.substring(9, pctlPrompt.name.length);
-			sMaskCtlName = sMaskCtlName.toUpperCase();
 
 			var fFound = false;
 			var controlCollection = frmPromptedValues.elements;
@@ -194,7 +193,7 @@
 				}
 			}
 
-			if (fFound == true) {
+			if (fFound == true) {				
 				var sMask = frmPromptedValues.elements(sMaskCtlName).value;
 				sValue = pctlPrompt.value;
 				// Need to get rid of the backslash characters that precede literals.
@@ -443,7 +442,7 @@
 								' Character Prompted Value
 								If iValueType = ExpressionValueTypes.giEXPRVALUE_CHARACTER Then
 									Response.Write("<input type='text' class='text' id='prompt_1_" & sNodeKey & "' name='prompt_1_" & sNodeKey & "' value='" & Replace(sValueCharacter, """", "&quot;") & "' maxlength='" & iPromptSize & "' style='width: 58%;'>" & vbCrLf)
-									Response.Write("<input type='hidden' id='PROMPTMASK_" & sNodeKey & "' name='PROMPTMASK_" & sNodeKey & "' value='" & Replace(sPromptMask, """", "&quot;") & "'>" & vbCrLf)
+									Response.Write("<input type='hidden' id='promptMask_" & sNodeKey & "' name='promptMask_" & sNodeKey & "' value='" & Replace(sPromptMask, """", "&quot;") & "'>" & vbCrLf)
 
 									' Numeric Prompted Value
 								ElseIf iValueType = ExpressionValueTypes.giEXPRVALUE_NUMERIC Then

@@ -178,7 +178,6 @@
 			var frmPromptedValues = document.getElementById("frmPromptedValues");
 			
 			var sMaskCtlName = "promptMask_" + pctlPrompt.name.substring(9, pctlPrompt.name.length);
-			// sMaskCtlName = sMaskCtlName.toUpperCase();
 
 			var fFound = false;		
 			var controlCollection = frmPromptedValues.elements;

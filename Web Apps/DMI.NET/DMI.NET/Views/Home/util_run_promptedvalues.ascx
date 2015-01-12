@@ -462,7 +462,6 @@
 			// Character column.
 			// Ensure that the value entered matches the required mask (if there is one).
 			sMaskCtlName = "promptMask_" + pctlPrompt.name.substring(9, pctlPrompt.name.length);
-			//   sMaskCtlName = sMaskCtlName.toUpperCase();
 
 			fFound = false;
 			var controlCollection = frmPromptedValues.elements;
