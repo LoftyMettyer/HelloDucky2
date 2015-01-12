@@ -1060,9 +1060,9 @@ function ABSNumber(value, options) {
 	return el;
 }
 
-function ABSNumberValue(elem, operation, value) {
+function ABSNumberValue(elem, operation, value) {	
 	if (operation === 'get') {
-		return $(elem).val().replace(OpenHR.LocaleThousandSeparator(), "");
+		return OpenHR.replaceAll($(elem).val(), OpenHR.LocaleThousandSeparator(), "");
 	} else if (operation === 'set') {
 		$('input', elem).val(value);
 	}
