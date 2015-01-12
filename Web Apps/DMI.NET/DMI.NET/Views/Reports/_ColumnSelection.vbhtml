@@ -78,11 +78,11 @@
 					</div>
 					<div class="formfieldfill sizeOnly">
 						<label for="SelectedColumnSize">Size :</label>
-						<span><input class="" id="SelectedColumnSize" onchange="updateColumnsSelectedGrid();" /></span>
+						<span><input class="selectFullText" id="SelectedColumnSize" onchange="updateColumnsSelectedGrid();" /></span>
 					</div>
 					<div class="formfieldfill decimalsOnly">
 						<label for="SelectedColumnDecimals">Decimals :</label>
-						<span><input class="" id="SelectedColumnDecimals" onchange="updateColumnsSelectedGrid();" /></span>
+						<span><input class="selectFullText" id="SelectedColumnDecimals" onchange="updateColumnsSelectedGrid();" /></span>
 					</div>
 
 					<div class="tablelayout customReportsOnly colAggregates">
@@ -897,6 +897,23 @@
 		if ('@Model.ReportType' == '@UtilityType.utlMailMerge') {
 			$(".customReportsOnly").hide();
 		}
+
+		//Note:-
+		//This solution working in Firefox, Chrome and IE, both with keyboard focus and mouse focus.
+		//It also handles correctly clicks following the focus (it moves the caret and doesn't reselect the text):
+		//With keyboard focus, only onfocus triggers which selects the text because this.clicked is not set. With mouse focus, onmousedown triggers, then onfocus and then onclick which selects the text in onclick but not in onfocus (Chrome requires this).
+		//Mouse clicks when the field is already focused don't trigger onfocus which results in not selecting anything.
+		$(".selectFullText").bind({
+			click: function () {
+				if (this.clicked == 2) this.select(); this.clicked = 0;
+			},
+			mousedown: function () {
+				this.clicked = 1;
+			},
+			focus: function () {
+				if (!this.clicked) this.select(); else this.clicked = 2;
+			}
+		});
 	});
 
 </script>
