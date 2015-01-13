@@ -525,7 +525,8 @@ function find_window_onload() {
 					},
 					position: 'first',
 					title: 'Search',
-					cursor: 'pointer'
+					cursor: 'pointer',
+					id: 'findGridTable_searchButton'
 				});
 
 				//Enable inline editing if there is at least one editable column
@@ -612,18 +613,44 @@ function find_window_onload() {
 					$("#findGridTable_ilcancel").hide();
 				}
 
+				$('#findGridTable_iladd').on('click', function (e) {
+					$("#findGridTable_ilsave").addClass('ui-state-disabled'); //Disable the Save button until we have actually edited something
+					$('#findGridTable').jqGrid('setGridParam', { beforeSelectRow: function () { return false; } }); //Disable the selection of other rows
+					$('#findGridTable_searchButton').addClass('ui-state-disabled'); //Disable search
+					//Disable navigation buttons on the jqgrid toolbar
+					$('#first_pager-coldata').addClass('ui-state-disabled');
+					$('#prev_pager-coldata').addClass('ui-state-disabled');
+					$('#next_pager-coldata').addClass('ui-state-disabled');
+					$('#last_pager-coldata').addClass('ui-state-disabled');
+					$('#pager-coldata_center input').prop('readonly', 'true'); //Make Page textbox read only
+				});
+
 				$('#findGridTable_iledit').on('click', function (e) {
 					$("#findGridTable_ilsave").addClass('ui-state-disabled'); //Disable the Save button until we have actually edited something
+					$('#findGridTable').jqGrid('setGridParam', { beforeSelectRow: function () { return false; } });
+					$('#findGridTable_searchButton').addClass('ui-state-disabled'); //Disable search
+					//Disable navigation buttons on the jqgrid toolbar
+					$('#first_pager-coldata').addClass('ui-state-disabled');
+					$('#prev_pager-coldata').addClass('ui-state-disabled');
+					$('#next_pager-coldata').addClass('ui-state-disabled');
+					$('#last_pager-coldata').addClass('ui-state-disabled');
+					$('#pager-coldata_center input').prop('readonly', 'true'); //Make Page textbox read only
 				});
 
 				$('#findGridTable_ilsave').on('click', function (e) {
 					rowWasModified = false; //The 'rowWasModified' variable is defined as global in Find.ascx
 					window.onbeforeunload = null;
+					$('#findGridTable').jqGrid('setGridParam', { beforeSelectRow: function () { return true; } }); //Enable the selection of other rows
+					$('#findGridTable_searchButton').removeClass('ui-state-disabled'); //Enable search
+					$('#pager-coldata_center input').removeAttr('readonly'); //Remove read only attribute from Page textbox
 				});
 
 				$('#findGridTable_ilcancel').on('click', function (e) {
 					rowWasModified = false; //The 'rowWasModified' variable is defined as global in Find.ascx
 					window.onbeforeunload = null;
+					$('#findGridTable').jqGrid('setGridParam', { beforeSelectRow: function () { return true; } }); //Enable the selection of other rows
+					$('#findGridTable_searchButton').removeClass('ui-state-disabled'); //Enable search
+					$('#pager-coldata_center input').removeAttr('readonly'); //Remove read only attribute from Page textbox
 				});
 
 				$("#pager-coldata .navtable .ui-pg-div>span.ui-icon-refresh").addClass("icon-refresh");

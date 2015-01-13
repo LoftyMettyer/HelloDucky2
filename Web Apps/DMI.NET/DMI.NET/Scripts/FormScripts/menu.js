@@ -256,7 +256,7 @@ function menu_MenuClick(sTool) {
 	sCurrentWorkPage = OpenHR.currentWorkPage();
 
 	if (sCurrentWorkPage == "FIND" && rowWasModified) { //Inform the user that they have unsaved changes on the Find window
-		OpenHR.modalMessage("You have unsaved changes; please save of cancel them before navigating away from this screen.");
+		OpenHR.modalMessage("You have unsaved changes.<br/><br/>Please action them before navigating away.");
 		return false;
 	}
 
@@ -5281,11 +5281,11 @@ function submitFollowOn() {
 		$("#findGridTable").editRow(rowId); //Edit the row
 
 		//After a brief timeout, enable "Add" and "Edit" and disable "Save" and "Cancel"
-		setTimeout(function() {
-			$("#findGridTable_iladd").removeClass("ui-state-disabled");
-			$("#findGridTable_iledit").removeClass("ui-state-disabled");
-			$("#findGridTable_ilsave").addClass("ui-state-disabled");
-			$("#findGridTable_ilcancel").addClass("ui-state-disabled");		
+		setTimeout(function () {
+			$("#findGridTable_iladd").addClass("ui-state-disabled");
+			$("#findGridTable_iledit").addClass("ui-state-disabled");
+			$("#findGridTable_ilsave").removeClass("ui-state-disabled");
+			$("#findGridTable_ilcancel").removeClass("ui-state-disabled");
 		}, 100);
 	} else {
 		//Mark row as changed if we've successfully saved the record.
