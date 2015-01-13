@@ -58,7 +58,7 @@
 
 			<div class="padleft20 padbot10">
 				<div class="padbot10">
-					Please the select the entries you wish to delete from the options below : 
+					Please select the entries you wish to delete from the options below : 
 				</div>
 
 				<div class="padbot5">
