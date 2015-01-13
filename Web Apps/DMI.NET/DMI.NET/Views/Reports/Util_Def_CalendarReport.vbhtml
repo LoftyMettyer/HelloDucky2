@@ -10,7 +10,7 @@ End Code
 <div>
 	@Using (Html.BeginForm("util_def_calendarreport", "Reports", FormMethod.Post, New With {.id = "frmReportDefintion", .name = "frmReportDefintion"}))
 		@Html.HiddenFor(Function(m) m.ID)
-		@Html.HiddenFor(Function(m) m.Description3ViewAccess, New With {.class = "ViewAccess"})
+		@Html.HiddenFor(Function(m) m.Description3ViewAccess, New With {.class = "ViewAccess"})	  
 
 		@<div id="tabs">
 			<ul>
@@ -99,7 +99,7 @@ End Code
 				@Code
 				Html.RenderPartial("_Output", Model.Output)
 				End Code
-			</div>
+			</div>		 	
 		</div>
 	End Using
 </div>
@@ -113,39 +113,32 @@ End Code
 <script type="text/javascript">
 
 	function selectGroupByDescription() {
-		var bGroupBySelected = $("#chkGroupByDescription").prop('checked');				
+		var bGroupBySelected = $("#chkGroupByDescription").prop('checked');
 		combo_disable((".selectRegionID"), bGroupBySelected);
-		//disable Include Bank Holidays', 'Working Days Only' and 'Show Bank Holidays' checkbox
-		$('#IncludeBankHolidays').prop('checked', false);
-		$('#WorkingDaysOnly').prop('checked', false);
-		$('#ShowBankHolidays').prop('checked', false);
-		$('#IncludeBankHolidays').prop('disabled', bGroupBySelected);
-		$('#WorkingDaysOnly').prop('disabled', bGroupBySelected);
-		$('#ShowBankHolidays').prop('disabled', bGroupBySelected);
 
-		if (bGroupBySelected) {						
-			$("#label_IncludeBankHolidays").css('opacity', '0.5');
-			$("#label_WorkingDaysOnly").css('opacity', '0.5');
-			$("#label_ShowBankHolidays").css('opacity', '0.5');			
+		//If  the Base Table is anything other than Personnel Records then 'Include Bank Holidays', 'Working Days Only' and 'Show Bank Holidays' should disable.
+		var bIsPersonnelRecords = ($("#BaseTableID option:selected").text().toUpperCase() == 'PERSONNEL_RECORDS');
+		if (bIsPersonnelRecords && bGroupBySelected) {
+			enableDisableWorkingDaysOrHolidays(bGroupBySelected);
 		}
-		else
-		{			
-			$("#label_IncludeBankHolidays").css('opacity', '1');
-			$("#label_WorkingDaysOnly").css('opacity', '1');
-			$("#label_ShowBankHolidays").css('opacity', '1');
+		else if (bIsPersonnelRecords && bGroupBySelected == false) {
+			enableDisableWorkingDaysOrHolidays(bGroupBySelected);
+		}
+		else if (bIsPersonnelRecords == false) {
+			enableDisableWorkingDaysOrHolidays(!bIsPersonnelRecords);
 		}
 	}
 
-	function regionChange() {		
+	function regionChange() {
 		selectWorkingDaysOrHolidays();
 	}
 
 	//'Seperator' should only enable if at least 2 descriptions have been entered.
 	function validateDescriptions() {
-		if (($("#Description1ID").val() == 0) || ($("#Description2ID").val() == 0)) {			
+		if (($("#Description1ID").val() == 0) || ($("#Description2ID").val() == 0)) {
 			$("#Separator").prop('disabled', true);
 			$("#Separator").val("None");
-			$('#ddlSeparator').val("None");			
+			$('#ddlSeparator').val("None");
 		}
 		else {
 			$("#Separator").prop('disabled', false);
@@ -204,21 +197,23 @@ End Code
 		$('input[type=number]').numeric();
 		$('#Description2ID,#Description1ID').css({ "width": "100%", "float": "right" });
 		$('#description, #Name').css('width', $('#Description1ID').width());
-
-		// If 'Group by Description' is ticked then 'Include Bank Holidays', 'Working Days Only' ,'Show Bank Holidays' and Region  should disable.	Or  If 'Include Bank Holidays', 'Working Days Only' or 'Show Bank Holidays'  are ticked OR 'Region selected index not equal to 0' than 'Group by Description' should disable.
-		if ($('#chkGroupByDescription').prop('checked'))
+		
+		// If 'Group by Description' is ticked then 'Include Bank Holidays', 'Working Days Only' ,'Show Bank Holidays' and Region  should disable.	Or  If 'Include Bank Holidays', 'Working Days Only' or 'Show Bank Holidays'  are ticked OR 'Region selected index not equal to 0' than 'Group by Description' should disable.		
+		if ($("#ActionType").val() == '@UtilityActionType.Edit')
 		{
-			combo_disable((".selectRegionID"), true);
-			$('#IncludeBankHolidays').prop('disabled', true);
-			$('#WorkingDaysOnly').prop('disabled', true);
-			$('#ShowBankHolidays').prop('disabled', true);
-			$("#label_IncludeBankHolidays").css('opacity', '0.5');
-			$("#label_WorkingDaysOnly").css('opacity', '0.5');
-			$("#label_ShowBankHolidays").css('opacity', '0.5');
-		}
-		else
-		{
-			selectWorkingDaysOrHolidays();			
+			if ($('#chkGroupByDescription').prop('checked')) {
+				combo_disable((".selectRegionID"), true);
+				$('#IncludeBankHolidays').prop('disabled', true);
+				$('#WorkingDaysOnly').prop('disabled', true);
+				$('#ShowBankHolidays').prop('disabled', true);
+				$("#label_IncludeBankHolidays").css('opacity', '0.5');
+				$("#label_WorkingDaysOnly").css('opacity', '0.5');
+				$("#label_ShowBankHolidays").css('opacity', '0.5');
+			}
+			else
+			{								
+				enableDisableGroupByOrWorkingDaysOrHolidays();				
+			}
 		}
 
 		validateDescriptions();
@@ -231,21 +226,69 @@ End Code
 		OpenHR.submitForm(frmSubmit);
 	}
 
+	//If the Base Table is Personnel Records then 'Include Bank Holidays', 'Working Days Only' and 'Show Bank Holidays' should enable.
+	function enableDisableGroupByOrWorkingDaysOrHolidays() {
+		var regionValue = $("#RegionID").val();
+		var IsHolidaySelected = $('#IncludeBankHolidays').prop('checked') || $('#WorkingDaysOnly').prop('checked') || $('#ShowBankHolidays').prop('checked') || (regionValue != 0);
+		$('#chkGroupByDescription').prop('checked', false);
+		$('#chkGroupByDescription').prop('disabled', IsHolidaySelected);
+
+		if (IsHolidaySelected) {
+			$("#label_GroupByDescription").css("color", "#A59393");
+		}
+		else {
+			$("#label_GroupByDescription").css("color", "#000000");
+		}
+
+		var bIsPersonnelRecords = ('@Model.BaseTableName.ToUpper()' == 'PERSONNEL_RECORDS');
+		if (bIsPersonnelRecords == false) {
+			$('#IncludeBankHolidays').prop('disabled', !bIsPersonnelRecords);
+			$('#WorkingDaysOnly').prop('disabled', !bIsPersonnelRecords);
+			$('#ShowBankHolidays').prop('disabled', !bIsPersonnelRecords);
+			$("#label_IncludeBankHolidays").css('opacity', '0.5');
+			$("#label_WorkingDaysOnly").css('opacity', '0.5');
+			$("#label_ShowBankHolidays").css('opacity', '0.5');
+		}
+
+	}
+
 	function selectWorkingDaysOrHolidays() {
 		// If 'Include Bank Holidays', 'Working Days Only' or 'Show Bank Holidays'  are ticked OR 'Region selected index not equal to 0' than 'Group by Description' should disable.
 		var regionValue = $("#RegionID").val();
 		var bSelected = $('#IncludeBankHolidays').prop('checked') || $('#WorkingDaysOnly').prop('checked') || $('#ShowBankHolidays').prop('checked') || (regionValue != 0);
 		$('#chkGroupByDescription').prop('checked', false);
 		$('#chkGroupByDescription').prop('disabled', bSelected);
-		if (bSelected)
-		{			
+		if (bSelected) {
 			$("#label_GroupByDescription").css("color", "#A59393");
 		}
-		else
-		{
+		else {
 			$("#label_GroupByDescription").css("color", "#000000");
-		}		
+		}	
 	}
+
+	//If the Base Table is Personnel Records then 'Include Bank Holidays', 'Working Days Only' and 'Show Bank Holidays' should enable.
+	function enableDisableWorkingDaysOrHolidays(bDisabled) {
+		$('#IncludeBankHolidays').prop('checked', false);
+		$('#WorkingDaysOnly').prop('checked', false);
+		$('#ShowBankHolidays').prop('checked', false);
+
+		$('#IncludeBankHolidays').prop('disabled', bDisabled);
+		$('#WorkingDaysOnly').prop('disabled', bDisabled);
+		$('#ShowBankHolidays').prop('disabled', bDisabled);
+
+		if (bDisabled) {
+			$("#label_IncludeBankHolidays").css('opacity', '0.5');
+			$("#label_WorkingDaysOnly").css('opacity', '0.5');
+			$("#label_ShowBankHolidays").css('opacity', '0.5');
+		}
+		else {
+			$("#label_IncludeBankHolidays").css('opacity', '1');
+			$("#label_WorkingDaysOnly").css('opacity', '1');
+			$("#label_ShowBankHolidays").css('opacity', '1');
+		}
+	}
+
+	
 
 	$("#workframe").attr("data-framesource", "UTIL_DEF_CALENDARREPORT");
 

@@ -74,6 +74,7 @@ Namespace Models
 		Public Property StartOnCurrentMonth As Boolean
 
 		Public Property Output As New ReportOutputModel
+		Public Property BaseTableName As String
 
 		Public Overrides Sub SetBaseTable(TableID As Integer)
 

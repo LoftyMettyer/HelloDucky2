@@ -132,11 +132,11 @@
 		tableToGrid('#tblGroupAccess', {
 			autoWidth: true, height: 150, cmTemplate: { sortable: false },
 			afterInsertRow: function (rowid, aData) {
-				// set empty tooltip for access dropdown			
+				// set empty tooltip for access dropdown
 				$("#tblGroupAccess").setCell(rowid, 'Access', '', '', { title:'' })
 			}
 		});
-		
+
 		if ($('#selectiontype_All').prop('checked')) {
 			$('#DisplayTitleInReportHeader').prop('disabled', true);
 			$("#label_DisplayTitleInReportHeader").css("color", "#A59393");
@@ -170,9 +170,9 @@
 		return ($("#IsReadOnly").val() == "True");
 	}
 
-	function getBaseTableList() {	    
+	function getBaseTableList() {
 
-	    $.ajax({
+		$.ajax({
 			url: '@Url.Action("GetBaseTables", "Reports", New With {.ReportType = CInt(Model.ReportType)})',
 			type: 'GET',
 			dataType: 'json',
@@ -184,14 +184,19 @@
 
 				$('#BaseTableID').val("@Model.BaseTableID");
 				$("#OriginalBaseTableID").val($('#BaseTableID')[0].selectedIndex);
-				
+
 				if ('@CInt(Model.ReportType)' == '2' || '@CInt(Model.ReportType)' == '9') {
 					loadAvailableTablesForReport(false);
 					attachGridToSelectedColumns();
 				}
 
+				if ( ($("#txtReportType").val() == '@UtilityType.utlCalendarReport' ) && ($("#ActionType").val() == '@UtilityActionType.New') ) {
+					//If  the Base Table is anything other than Personnel Records then 'Include Bank Holidays', 'Working Days Only' and 'Show Bank Holidays' should disable
+					var bIsPersonnelRecords = ($("#BaseTableID option:selected").text().toUpperCase() == 'PERSONNEL_RECORDS');
+					disableEnableWorkingDaysOrHolidays(!bIsPersonnelRecords);
+				}
 			}
-		});	    
+		});
 	}
 
 	function setAllSecurityGroups() {
@@ -201,7 +206,7 @@
 
 	}
 
-	function changeRecordOption(psTable, psType) {		
+	function changeRecordOption(psTable, psType) {
 		if (psType == "ALL") {
 			button_disable($("#cmd" + psTable + "Picklist")[0], true);
 			button_disable($("#cmd" + psTable + "Filter")[0], true);
@@ -250,7 +255,7 @@
 
 		var bViewAccessEnabled = true;
 		var list;
-		
+
 		$(".reportViewAccessGroup").prop('disabled', false);
 		$("#drpSetAllSecurityGroups").prop('disabled', false);
 		$(".reportViewAccessGroup").removeClass('ui-state-disabled');
@@ -262,10 +267,10 @@
 		});
 
 		if (!bViewAccessEnabled) {
-			$("#IsForcedHidden").val(true);			
+			$("#IsForcedHidden").val(true);
 			$(".reportViewAccessGroup").prop('disabled', true);
-			$("#drpSetAllSecurityGroups").prop('disabled', true);			
-			$(".reportViewAccessGroup").addClass('ui-state-disabled');			
+			$("#drpSetAllSecurityGroups").prop('disabled', true);
+			$(".reportViewAccessGroup").addClass('ui-state-disabled');
 		}
 	}
 
@@ -390,7 +395,7 @@
 	function loadAvailableTablesForCalendarReport(baseTableChanged) {
 
 		$.ajax({
-			url: 'Reports/GetAvailableColumnsForTable',			
+			url: 'Reports/GetAvailableColumnsForTable',
 			data: { TableID:$('#BaseTableID').val() },
 			type: 'GET',
 			dataType: 'json',
@@ -399,7 +404,7 @@
 				// Clear some values when the base table changed
 				if (baseTableChanged) {
 					$("#txtDescription3").val('');
-					$('#Separator').val('None');					
+					$('#Separator').val('None');
 					$('#Separator').prop('disabled', true);
 					$('#chkGroupByDescription').prop('disabled', false);
 					$("#label_GroupByDescription").css("color", "#000000");
@@ -409,12 +414,21 @@
 					$('#ShowCaptions').prop('checked', 'checked');
 					$('#ShowWeekends').prop('checked', 'checked');
 					$('#StartOnCurrentMonth').prop('checked', 'checked');
+					//If  the Base Table is anything other than Personnel Records then 'Include Bank Holidays', 'Working Days Only' and 'Show Bank Holidays' should disable
+					var bIsPersonnelRecords = ($("#BaseTableID option:selected").text().toUpperCase() == 'PERSONNEL_RECORDS');
+					if ($('#chkGroupByDescription').prop('checked') && bIsPersonnelRecords) {
+						disableEnableWorkingDaysOrHolidays(bIsPersonnelRecords);
+					}
+					else
+					{
+						disableEnableWorkingDaysOrHolidays(!bIsPersonnelRecords);
+					}
 				}
 				var OptionNone = '<option value=0 data-datatype=0 data-decimals=0 selected>None</option>';
 				var optionDescription1 = "<option value='0'>None</option>";
 				var optionDescription2 = "<option value='0'>None</option>";
 				var optionDescription3 = "<option value='0'>None</option>";
-				
+
 				// Region table should display 'Default' for base table
 				var tableID = $("#BaseTableID option:selected").val();
 				var optionRegionID;
@@ -426,10 +440,10 @@
 				}
 
 				var options = '';
-				for (var i = 0; i < json.length; i++) {					
+				for (var i = 0; i < json.length; i++) {
 					optionDescription1 += "<option value='" + json[i].ID + "'>" + json[i].Name + "</option>";
 					optionDescription2 += "<option value='" + json[i].ID + "'>" + json[i].Name + "</option>";
-					optionDescription3 += "<option value='" + json[i].ID + "'>" + json[i].Name + "</option>";					
+					optionDescription3 += "<option value='" + json[i].ID + "'>" + json[i].Name + "</option>";
 					if (json[i].DataType == 12)
 					{
 						optionRegionID += "<option value='" + json[i].ID + "'>" + json[i].Name + "</option>";
@@ -444,7 +458,7 @@
 	}
 
 	function loadAvailableTablesForReport(baseTableChanged) {
-		
+
 		$.ajax({
 			url: '@Html.Raw(Url.Action("GetAllTablesInReport", "Reports", New With {.ReportID = Model.ID, .ReportType = CInt(Model.ReportType)}))',
 			type: 'GET',
@@ -489,7 +503,7 @@
 		});
 	}
 
-    function requestChangeReportBaseTable(target) {
+	function requestChangeReportBaseTable(target) {
 
 		var tableCount = $("#ChildTables").getGridParam("reccount");
 		var columnCount = $("#SelectedColumns").getGridParam("reccount");
@@ -539,7 +553,7 @@
 			resetParentDetails();
 		}
 
-		if ($("#txtReportType").val() == '@UtilityType.utlCustomReport' || $("#txtReportType").val() == '@UtilityType.utlMailMerge') {			
+		if ($("#txtReportType").val() == '@UtilityType.utlCustomReport' || $("#txtReportType").val() == '@UtilityType.utlMailMerge') {
 			removeAllSelectedColumns(false);
 			setDefinitionAccessBasedOnSelectedCalculationColumns();
 			if ($("#txtReportType").val() == '@UtilityType.utlMailMerge') {
@@ -667,7 +681,7 @@
 				if (grid[i].Records === replacementText) {
 					grid[i].Records = 0;
 				}
-			}			
+			}
 		}
 	}
 
@@ -693,7 +707,7 @@
 		gridData = $("#SortOrders").getRowData();
 		$('#txtSOAAS').val(JSON.stringify(gridData));
 
-		var $form = $("#frmReportDefintion");		
+		var $form = $("#frmReportDefintion");
 		$(".reportViewAccessGroup").prop('disabled', false);
 		$("#drpSetAllSecurityGroups").prop('disabled', false);
 		$(".reportViewAccessGroup").removeClass('ui-state-disabled');
@@ -733,7 +747,7 @@
 	}
 
 	function submitReportDefinition() {
-		$("#ValidityStatus").val('ServerCheckComplete');		
+		$("#ValidityStatus").val('ServerCheckComplete');
 		$(".reportViewAccessGroup").prop('disabled', false);
 		$("#drpSetAllSecurityGroups").prop('disabled', false);
 		$(".reportViewAccessGroup").removeClass('ui-state-disabled');
@@ -759,6 +773,24 @@
 		}
 
 		return false;
+	}
+
+	//If the Base Table is Personnel Records then 'Include Bank Holidays', 'Working Days Only' and 'Show Bank Holidays' should enable.
+	function disableEnableWorkingDaysOrHolidays(bDisabled) {		
+		$('#IncludeBankHolidays').prop('disabled', bDisabled);
+		$('#WorkingDaysOnly').prop('disabled', bDisabled);
+		$('#ShowBankHolidays').prop('disabled', bDisabled);
+
+		if (bDisabled) {
+			$("#label_IncludeBankHolidays").css('opacity', '0.5');
+			$("#label_WorkingDaysOnly").css('opacity', '0.5');
+			$("#label_ShowBankHolidays").css('opacity', '0.5');
+		}
+		else {
+			$("#label_IncludeBankHolidays").css('opacity', '1');
+			$("#label_WorkingDaysOnly").css('opacity', '1');
+			$("#label_ShowBankHolidays").css('opacity', '1');
+		}
 	}
 
 
