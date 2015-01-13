@@ -648,6 +648,7 @@
     <Build Include="User Defined Functions\udfsysDateRangeToTable.sql" />
     <Build Include="User Defined Functions\udfsysDurationFromPattern.sql" />
     <Build Include="User Defined Functions\udfsysPatternFromHours.sql" />
+    <Build Include="Stored Procedures\Other\spASRCopyChildRecords.sql" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Stored Procedures\Other\sp_ASR_Bradford_CalculateDurations.sql" />

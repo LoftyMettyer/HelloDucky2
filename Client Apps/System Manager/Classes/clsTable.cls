@@ -55,6 +55,16 @@ Private mbInsertTriggerDisabled As Boolean
 Private mbUpdateTriggerDisabled As Boolean
 Private mbDeleteTriggerDisabled As Boolean
 
+Private mbCopyWhenParentRecordIsCopied As Boolean
+
+Public Property Get CopyWhenParentRecordIsCopied() As Boolean
+  CopyWhenParentRecordIsCopied = mbCopyWhenParentRecordIsCopied
+End Property
+
+Public Property Let CopyWhenParentRecordIsCopied(ByVal bNewValue As Boolean)
+  mbCopyWhenParentRecordIsCopied = bNewValue
+End Property
+
 Public Property Get InsertTriggerDisabled() As Boolean
   InsertTriggerDisabled = mbInsertTriggerDisabled
 End Property
@@ -784,6 +794,7 @@ Public Function CloneTable(pavCloneRegister As Variant, pfCopyData As Boolean, p
       .InsertTriggerDisabled = mbInsertTriggerDisabled
       .UpdateTriggerDisabled = mbUpdateTriggerDisabled
       .DeleteTriggerDisabled = mbDeleteTriggerDisabled
+      .CopyWhenParentRecordIsCopied = mbCopyWhenParentRecordIsCopied
       
       ' Write the new table definition to the local tables.
       fOK = .WriteTable
@@ -2512,6 +2523,7 @@ Public Function ReadTable() As Boolean
       InsertTriggerDisabled = !InsertTriggerDisabled
       UpdateTriggerDisabled = !UpdateTriggerDisabled
       DeleteTriggerDisabled = !DeleteTriggerDisabled
+      CopyWhenParentRecordIsCopied = !CopyWhenParentRecordIsCopied
       
     End If
   End With
@@ -2684,6 +2696,7 @@ Public Function WriteTable() As Boolean
       !InsertTriggerDisabled = InsertTriggerDisabled
       !UpdateTriggerDisabled = UpdateTriggerDisabled
       !DeleteTriggerDisabled = DeleteTriggerDisabled
+      !CopyWhenParentRecordIsCopied = CopyWhenParentRecordIsCopied
 
       .Update
       

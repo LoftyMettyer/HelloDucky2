@@ -4402,59 +4402,65 @@ END';
 PRINT 'Step - Table Triggers'
 /* ------------------------------------------------------- */
 
+	EXEC sp_executesql N'DROP VIEW ASRSysTables;';
 	IF NOT EXISTS(SELECT id FROM syscolumns WHERE  id = OBJECT_ID('tbsys_Tables', 'U') AND name = 'InsertTriggerDisabled')
 	BEGIN
-		EXEC sp_executesql N'DROP VIEW ASRSysTables;';
 		EXEC sp_executesql N'ALTER TABLE tbsys_Tables ADD [InsertTriggerDisabled] bit NULL, UpdateTriggerDisabled bit NULL, DeleteTriggerDisabled bit NULL';
-		EXEC sp_executesql N'CREATE VIEW [dbo].[ASRSysTables]
-					WITH SCHEMABINDING
-					AS SELECT base.[tableid], base.[tabletype], base.[defaultorderid], base.[recorddescexprid], base.[defaultemailid], base.[tablename], base.[manualsummarycolumnbreaks], base.[auditinsert], base.[auditdelete]
-							, base.[inserttriggerdisabled], base.[updatetriggerdisabled], base.[deletetriggerdisabled]
-							, base.[isremoteview],  obj.[locked], obj.[lastupdated], obj.[lastupdatedby]
-						FROM dbo.[tbsys_tables] base
-						INNER JOIN dbo.[tbsys_scriptedobjects] obj ON obj.targetid = base.tableid AND obj.objecttype = 1
-						INNER JOIN dbo.[tbstat_effectivedates] dt ON dt.[type] = 1
-						WHERE obj.effectivedate <= dt.[date]';
-
-		EXEC sp_executesql N'CREATE TRIGGER [dbo].[INS_ASRSysTables] ON [dbo].[ASRSysTables]
-				INSTEAD OF INSERT
-				AS
-				BEGIN
-
-					SET NOCOUNT ON;
-
-					-- Update objects table
-					IF NOT EXISTS(SELECT [guid]
-						FROM dbo.[tbsys_scriptedobjects] o
-						INNER JOIN inserted i ON i.tableid = o.targetid AND o.objecttype = 1)
-					BEGIN
-						INSERT dbo.[tbsys_scriptedobjects] ([guid], [objecttype], [targetid], [ownerid], [effectivedate], [revision], [locked], [lastupdated])
-							SELECT NEWID(), 1, [tableid], dbo.[udfsys_getownerid](), ''01/01/1900'',1,0, GETDATE()
-								FROM inserted;
-					END
-
-					-- Update base table								
-					INSERT dbo.[tbsys_tables] ([TableID], [TableType], [DefaultOrderID], [RecordDescExprID], [DefaultEmailID], [TableName], [ManualSummaryColumnBreaks], [AuditInsert], [AuditDelete], [isremoteview], [inserttriggerdisabled], [updatetriggerdisabled], [deletetriggerdisabled]) 
-						SELECT [TableID], [TableType], [DefaultOrderID], [RecordDescExprID], [DefaultEmailID], [TableName], [ManualSummaryColumnBreaks], [AuditInsert], [AuditDelete], [isremoteview], [inserttriggerdisabled], [updatetriggerdisabled], [deletetriggerdisabled] FROM inserted;
-
-				END';
-
-		EXEC sp_executesql N'CREATE TRIGGER [dbo].[DEL_ASRSysTables] ON [dbo].[ASRSysTables]
-		INSTEAD OF DELETE
-		AS
-		BEGIN
-			SET NOCOUNT ON;
-
-			DELETE FROM [tbsys_tables] WHERE tableid IN (SELECT tableid FROM deleted);
-			DELETE FROM [tbsys_scriptedobjects] WHERE targetid IN (SELECT tableid FROM deleted) AND objecttype = 1;
-
-		END';
-
-		EXEC sp_executesql N'UPDATE [ASRSysTables] SET InsertTriggerDisabled = 0, UpdateTriggerDisabled = 0, DeleteTriggerDisabled = 0'; 
-
-		EXEC sp_executesql N'GRANT SELECT, UPDATE, INSERT, DELETE ON ASRSysTables TO ASRSysGroup;';
-
+		EXEC sp_executesql N'UPDATE [tbsys_Tables] SET InsertTriggerDisabled = 0, UpdateTriggerDisabled = 0, DeleteTriggerDisabled = 0'; 
 	END
+
+	IF NOT EXISTS(SELECT id FROM syscolumns WHERE  id = OBJECT_ID('tbsys_Tables', 'U') AND name = 'CopyWhenParentRecordIsCopied')
+	BEGIN
+		EXEC sp_executesql N'ALTER TABLE tbsys_Tables ADD [CopyWhenParentRecordIsCopied] bit NULL';
+		EXEC sp_executesql N'UPDATE [tbsys_Tables] SET [CopyWhenParentRecordIsCopied] = 0'; 
+	END
+
+	EXEC sp_executesql N'CREATE VIEW [dbo].[ASRSysTables]
+				WITH SCHEMABINDING
+				AS SELECT base.[tableid], base.[tabletype], base.[defaultorderid], base.[recorddescexprid], base.[defaultemailid], base.[tablename], base.[manualsummarycolumnbreaks], base.[auditinsert], base.[auditdelete]
+						, base.[isremoteview], base.[inserttriggerdisabled], base.[updatetriggerdisabled], base.[deletetriggerdisabled], base.[CopyWhenParentRecordIsCopied]
+						, obj.[locked], obj.[lastupdated], obj.[lastupdatedby]
+					FROM dbo.[tbsys_tables] base
+					INNER JOIN dbo.[tbsys_scriptedobjects] obj ON obj.targetid = base.tableid AND obj.objecttype = 1
+					INNER JOIN dbo.[tbstat_effectivedates] dt ON dt.[type] = 1
+					WHERE obj.effectivedate <= dt.[date]';
+
+	EXEC sp_executesql N'CREATE TRIGGER [dbo].[INS_ASRSysTables] ON [dbo].[ASRSysTables]
+			INSTEAD OF INSERT
+			AS
+			BEGIN
+
+				SET NOCOUNT ON;
+
+				-- Update objects table
+				IF NOT EXISTS(SELECT [guid]
+					FROM dbo.[tbsys_scriptedobjects] o
+					INNER JOIN inserted i ON i.tableid = o.targetid AND o.objecttype = 1)
+				BEGIN
+					INSERT dbo.[tbsys_scriptedobjects] ([guid], [objecttype], [targetid], [ownerid], [effectivedate], [revision], [locked], [lastupdated])
+						SELECT NEWID(), 1, [tableid], dbo.[udfsys_getownerid](), ''01/01/1900'',1,0, GETDATE()
+							FROM inserted;
+				END
+
+				-- Update base table								
+				INSERT dbo.[tbsys_tables] ([TableID], [TableType], [DefaultOrderID], [RecordDescExprID], [DefaultEmailID], [TableName], [ManualSummaryColumnBreaks], [AuditInsert], [AuditDelete], [isremoteview], [inserttriggerdisabled], [updatetriggerdisabled], [deletetriggerdisabled], [CopyWhenParentRecordIsCopied]) 
+					SELECT [TableID], [TableType], [DefaultOrderID], [RecordDescExprID], [DefaultEmailID], [TableName], [ManualSummaryColumnBreaks], [AuditInsert], [AuditDelete], [isremoteview], [inserttriggerdisabled], [updatetriggerdisabled], [deletetriggerdisabled], [CopyWhenParentRecordIsCopied] FROM inserted;
+
+			END';
+
+	EXEC sp_executesql N'CREATE TRIGGER [dbo].[DEL_ASRSysTables] ON [dbo].[ASRSysTables]
+	INSTEAD OF DELETE
+	AS
+	BEGIN
+		SET NOCOUNT ON;
+
+		DELETE FROM [tbsys_tables] WHERE tableid IN (SELECT tableid FROM deleted);
+		DELETE FROM [tbsys_scriptedobjects] WHERE targetid IN (SELECT tableid FROM deleted) AND objecttype = 1;
+
+	END';
+
+	EXEC sp_executesql N'GRANT SELECT, UPDATE, INSERT, DELETE ON ASRSysTables TO ASRSysGroup;';
+
 
 
 	IF NOT EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[ASRSysTableTriggers]') AND xtype in (N'U'))
@@ -4469,6 +4475,41 @@ PRINT 'Step - Table Triggers'
 		 CONSTRAINT [PK_ASRSysTableTrigger] PRIMARY KEY CLUSTERED 
 			([TriggerID] ASC)) ON [PRIMARY]';
 	END
+
+
+	IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spASRCopyChildRecords]') AND xtype = 'P')
+		DROP PROCEDURE [dbo].[spASRCopyChildRecords];
+	EXECUTE sp_executesql N'CREATE PROCEDURE dbo.spASRCopyChildRecords(
+		@iParentTableID integer,
+		@iNewRecordID integer,
+		@iOriginalRecordID integer)
+	WITH EXECUTE AS OWNER
+	AS
+	BEGIN
+
+		DECLARE @sqlCopyData nvarchar(MAX) = '''';
+		DECLARE @childDataColumns TABLE (TableID integer, TableName nvarchar(255), ColumnNames nvarchar(MAX));
+
+		INSERT @childDataColumns (TableID, TableName, ColumnNames)	
+			SELECT DISTINCT r.ParentID, t.tablename, d.StringValues
+				FROM ASRSysRelations r
+				INNER JOIN ASRSysTables t ON t.tableid = r.ChildID
+				INNER JOIN ASRSysColumns c ON c.tableid = t.tableid
+				CROSS APPLY ( SELECT '', '' + columnname
+								FROM ASRSysColumns v2
+								WHERE v2.tableid = c.tableid AND v2.datatype <> 4
+									FOR XML PATH('''') )  d ( StringValues )
+				WHERE r.ParentID = @iParentTableID AND t.CopyWhenParentRecordIsCopied = 1;
+
+		SELECT @sqlCopyData = @sqlCopyData + ''INSERT '' + TableName + ''(ID_'' + CONVERT(varchar(10), TableID) +  ColumnNames + '') SELECT '' 
+			+ CONVERT(varchar(10), @iNewRecordID) + ColumnNames 
+			+ '' FROM '' + TableName + '' WHERE ID_'' + CONVERT(varchar(10), TableID) + '' = '' + CONVERT(varchar(10), @iOriginalRecordID) + '';'' + CHAR(13)
+			FROM @childDataColumns;
+
+		EXECUTE sp_executesql @sqlCopyData;
+
+	END';
+
 
 
 /* ------------------------------------------------------------- */

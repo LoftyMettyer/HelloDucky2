@@ -1948,6 +1948,7 @@ Public Function CreateQueryDefs() As Boolean
       ", t.[DefaultEmailID] AS defaultemailid" & _
       ", t.[DefaultOrderID] AS defaultorderid" & _
       ", t.[InsertTriggerdisabled] AS InsertTriggerdisabled, t.[UpdateTriggerdisabled] AS UpdateTriggerdisabled, t.[DeleteTriggerdisabled] AS DeleteTriggerdisabled" & _
+      ", t.[CopyWhenParentRecordIsCopied] AS CopyWhenParentRecordIsCopied" & _
       ", IIF(t.[deleted]=-1, 8 , IIF(t.[new]=-1,4 ,IIF(t.[changed]=-1,16, 2))) AS [state]" & _
       " FROM tmpTables t;"
   daoDb.CreateQueryDef "spadmin_gettables", sSQL

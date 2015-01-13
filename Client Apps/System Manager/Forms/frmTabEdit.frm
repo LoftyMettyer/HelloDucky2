@@ -50,43 +50,65 @@ Begin VB.Form frmTabEdit
       _Version        =   393216
       Style           =   1
       Tabs            =   8
-      Tab             =   6
       TabsPerRow      =   10
       TabHeight       =   520
       TabCaption(0)   =   "De&finition"
       TabPicture(0)   =   "frmTabEdit.frx":000C
-      Tab(0).ControlEnabled=   0   'False
+      Tab(0).ControlEnabled=   -1  'True
       Tab(0).Control(0)=   "lblRecordDescription"
+      Tab(0).Control(0).Enabled=   0   'False
       Tab(0).Control(1)=   "lblOrder"
+      Tab(0).Control(1).Enabled=   0   'False
       Tab(0).Control(2)=   "lblTableName"
+      Tab(0).Control(2).Enabled=   0   'False
       Tab(0).Control(3)=   "lblEmail"
+      Tab(0).Control(3).Enabled=   0   'False
       Tab(0).Control(4)=   "cmdRecordDescription"
+      Tab(0).Control(4).Enabled=   0   'False
       Tab(0).Control(5)=   "txtRecordDescription"
       Tab(0).Control(5).Enabled=   0   'False
       Tab(0).Control(6)=   "txtOrder"
       Tab(0).Control(6).Enabled=   0   'False
       Tab(0).Control(7)=   "cmdOrder"
+      Tab(0).Control(7).Enabled=   0   'False
       Tab(0).Control(8)=   "fraTableType"
+      Tab(0).Control(8).Enabled=   0   'False
       Tab(0).Control(9)=   "txtTableName"
+      Tab(0).Control(9).Enabled=   0   'False
       Tab(0).Control(10)=   "cmdEmail"
+      Tab(0).Control(10).Enabled=   0   'False
       Tab(0).Control(11)=   "txtEmail"
       Tab(0).Control(11).Enabled=   0   'False
-      Tab(0).ControlCount=   12
+      Tab(0).Control(12)=   "chkCopyWhenParentRecordIsCopied"
+      Tab(0).Control(12).Enabled=   0   'False
+      Tab(0).ControlCount=   13
       TabCaption(1)   =   "Su&mmary"
       TabPicture(1)   =   "frmTabEdit.frx":0028
       Tab(1).ControlEnabled=   0   'False
-      Tab(1).Control(0)=   "lblParentTable"
-      Tab(1).Control(1)=   "fraColumns"
-      Tab(1).Control(2)=   "cmdInsert"
-      Tab(1).Control(3)=   "cmdDown"
-      Tab(1).Control(4)=   "cmdUp"
-      Tab(1).Control(5)=   "cmdRemove"
-      Tab(1).Control(6)=   "cmdAdd"
-      Tab(1).Control(7)=   "fraSummaryFields"
-      Tab(1).Control(8)=   "cmdInsertBreak"
-      Tab(1).Control(9)=   "cboParentTable"
-      Tab(1).Control(10)=   "cmdColumnBreak"
-      Tab(1).Control(11)=   "chkManualColumnBreak"
+      Tab(1).Control(0)=   "chkManualColumnBreak"
+      Tab(1).Control(0).Enabled=   0   'False
+      Tab(1).Control(1)=   "cmdColumnBreak"
+      Tab(1).Control(1).Enabled=   0   'False
+      Tab(1).Control(2)=   "cboParentTable"
+      Tab(1).Control(2).Enabled=   0   'False
+      Tab(1).Control(3)=   "cmdInsertBreak"
+      Tab(1).Control(3).Enabled=   0   'False
+      Tab(1).Control(4)=   "fraSummaryFields"
+      Tab(1).Control(4).Enabled=   0   'False
+      Tab(1).Control(5)=   "cmdAdd"
+      Tab(1).Control(5).Enabled=   0   'False
+      Tab(1).Control(6)=   "cmdRemove"
+      Tab(1).Control(6).Enabled=   0   'False
+      Tab(1).Control(7)=   "cmdUp"
+      Tab(1).Control(7).Enabled=   0   'False
+      Tab(1).Control(8)=   "cmdDown"
+      Tab(1).Control(8).Enabled=   0   'False
+      Tab(1).Control(9)=   "cmdInsert"
+      Tab(1).Control(9).Enabled=   0   'False
+      Tab(1).Control(10)=   "fraColumns"
+      Tab(1).Control(10).Enabled=   0   'False
+      Tab(1).Control(11)=   "lblParentTable"
+      Tab(1).Control(11).Enabled=   0   'False
       Tab(1).ControlCount=   12
       TabCaption(2)   =   "Ema&ils"
       TabPicture(2)   =   "frmTabEdit.frx":0044
@@ -111,16 +133,24 @@ Begin VB.Form frmTabEdit
       Tab(5).ControlCount=   2
       TabCaption(6)   =   "&Validation"
       TabPicture(6)   =   "frmTabEdit.frx":00B4
-      Tab(6).ControlEnabled=   -1  'True
+      Tab(6).ControlEnabled=   0   'False
       Tab(6).Control(0)=   "fraTableValidations"
-      Tab(6).Control(0).Enabled=   0   'False
       Tab(6).ControlCount=   1
       TabCaption(7)   =   "Tri&ggers"
       TabPicture(7)   =   "frmTabEdit.frx":00D0
       Tab(7).ControlEnabled=   0   'False
-      Tab(7).Control(0)=   "fraTableTriggers"
-      Tab(7).Control(1)=   "fraSystemTriggers"
+      Tab(7).Control(0)=   "fraSystemTriggers"
+      Tab(7).Control(1)=   "fraTableTriggers"
       Tab(7).ControlCount=   2
+      Begin VB.CheckBox chkCopyWhenParentRecordIsCopied 
+         Caption         =   "Cop&y when parent record is copied"
+         Enabled         =   0   'False
+         Height          =   315
+         Left            =   195
+         TabIndex        =   75
+         Top             =   3840
+         Width           =   4035
+      End
       Begin VB.Frame fraSystemTriggers 
          Caption         =   "System Triggers :"
          Height          =   1515
@@ -279,7 +309,7 @@ Begin VB.Form frmTabEdit
       Begin VB.Frame fraTableValidations 
          Caption         =   "Overlapping Column Validations :"
          Height          =   4710
-         Left            =   200
+         Left            =   -74800
          TabIndex        =   59
          Top             =   400
          Width           =   7560
@@ -874,7 +904,7 @@ Begin VB.Form frmTabEdit
          BackColor       =   &H8000000F&
          Enabled         =   0   'False
          Height          =   315
-         Left            =   -72900
+         Left            =   2100
          Locked          =   -1  'True
          TabIndex        =   14
          TabStop         =   0   'False
@@ -884,7 +914,7 @@ Begin VB.Form frmTabEdit
       Begin VB.CommandButton cmdEmail 
          Caption         =   "..."
          Height          =   315
-         Left            =   -67545
+         Left            =   7455
          TabIndex        =   15
          Top             =   3200
          UseMaskColor    =   -1  'True
@@ -985,7 +1015,7 @@ Begin VB.Form frmTabEdit
       End
       Begin VB.TextBox txtTableName 
          Height          =   315
-         Left            =   -74000
+         Left            =   1000
          MaxLength       =   30
          TabIndex        =   2
          Text            =   "txtTabName"
@@ -995,7 +1025,7 @@ Begin VB.Form frmTabEdit
       Begin VB.Frame fraTableType 
          Caption         =   "Type :"
          Height          =   800
-         Left            =   -74800
+         Left            =   200
          TabIndex        =   3
          Top             =   1100
          Width           =   7560
@@ -1030,7 +1060,7 @@ Begin VB.Form frmTabEdit
       Begin VB.CommandButton cmdOrder 
          Caption         =   "..."
          Height          =   315
-         Left            =   -67545
+         Left            =   7455
          TabIndex        =   9
          Top             =   2200
          UseMaskColor    =   -1  'True
@@ -1040,7 +1070,7 @@ Begin VB.Form frmTabEdit
          BackColor       =   &H8000000F&
          Enabled         =   0   'False
          Height          =   315
-         Left            =   -72900
+         Left            =   2100
          Locked          =   -1  'True
          TabIndex        =   8
          TabStop         =   0   'False
@@ -1051,7 +1081,7 @@ Begin VB.Form frmTabEdit
          BackColor       =   &H8000000F&
          Enabled         =   0   'False
          Height          =   315
-         Left            =   -72900
+         Left            =   2100
          Locked          =   -1  'True
          TabIndex        =   11
          TabStop         =   0   'False
@@ -1061,7 +1091,7 @@ Begin VB.Form frmTabEdit
       Begin VB.CommandButton cmdRecordDescription 
          Caption         =   "..."
          Height          =   315
-         Left            =   -67545
+         Left            =   7455
          TabIndex        =   12
          Top             =   2700
          UseMaskColor    =   -1  'True
@@ -1072,7 +1102,7 @@ Begin VB.Form frmTabEdit
          BackStyle       =   0  'Transparent
          Caption         =   "Default Email :"
          Height          =   195
-         Left            =   -74800
+         Left            =   200
          TabIndex        =   13
          Top             =   3255
          Width           =   1440
@@ -1091,7 +1121,7 @@ Begin VB.Form frmTabEdit
          BackStyle       =   0  'Transparent
          Caption         =   "Name :"
          Height          =   195
-         Left            =   -74800
+         Left            =   200
          TabIndex        =   1
          Top             =   660
          Width           =   510
@@ -1101,7 +1131,7 @@ Begin VB.Form frmTabEdit
          BackStyle       =   0  'Transparent
          Caption         =   "Primary Order :"
          Height          =   195
-         Left            =   -74800
+         Left            =   200
          TabIndex        =   7
          Top             =   2265
          Width           =   1515
@@ -1111,7 +1141,7 @@ Begin VB.Form frmTabEdit
          BackStyle       =   0  'Transparent
          Caption         =   "Record Description :"
          Height          =   195
-         Left            =   -74800
+         Left            =   200
          TabIndex        =   10
          Top             =   2760
          Width           =   1725
@@ -1192,11 +1222,11 @@ Private mblnEmailSortByActivation As Boolean
 Private mblnEmailSortDesc As Boolean
 
 Private Property Get Changed() As Boolean
-  Changed = cmdOK.Enabled
+  Changed = cmdOk.Enabled
 End Property
 
 Private Property Let Changed(ByVal blnNewValue As Boolean)
-  cmdOK.Enabled = blnNewValue
+  cmdOk.Enabled = blnNewValue
 End Property
 
 
@@ -1398,6 +1428,8 @@ Public Property Set Table(pObjTable As Object)
    chkDisableUpdate.value = IIf(mobjTable.UpdateTriggerDisabled, vbChecked, vbUnchecked)
    chkDisableDelete.value = IIf(mobjTable.DeleteTriggerDisabled, vbChecked, vbUnchecked)
     
+   chkCopyWhenParentRecordIsCopied.value = IIf(mobjTable.CopyWhenParentRecordIsCopied, vbChecked, vbUnchecked)
+    
   End If
 
   RefreshTableValidationsButtons
@@ -1432,16 +1464,20 @@ Private Sub chkAuditInsertion_Click()
   Changed = True
 End Sub
 
+Private Sub chkCopyWhenParentRecordIsCopied_Click()
+  Changed = True
+End Sub
+
 Private Sub chkDisableDelete_Click()
-Changed = True
+  Changed = True
 End Sub
 
 Private Sub chkDisableInsert_Click()
-Changed = True
+  Changed = True
 End Sub
 
 Private Sub chkDisableUpdate_Click()
-Changed = True
+  Changed = True
 End Sub
 
 Private Sub chkManualColumnBreak_Click()
@@ -2125,6 +2161,7 @@ Private Sub cmdOK_Click()
   mobjTable.InsertTriggerDisabled = (chkDisableInsert.value = vbChecked)
   mobjTable.UpdateTriggerDisabled = (chkDisableUpdate.value = vbChecked)
   mobjTable.DeleteTriggerDisabled = (chkDisableDelete.value = vbChecked)
+  mobjTable.CopyWhenParentRecordIsCopied = (chkCopyWhenParentRecordIsCopied.value = vbChecked)
 
   gfCancelled = False
   
@@ -2662,7 +2699,15 @@ End Sub
 
 
 Private Sub optTableType_Click(Index As Integer)
+  
+  chkCopyWhenParentRecordIsCopied.Enabled = (Index = 1)
+  
+  If Not chkCopyWhenParentRecordIsCopied.Enabled Then
+    chkCopyWhenParentRecordIsCopied.value = vbUnchecked
+  End If
+  
   Changed = True
+  
 End Sub
 
 Private Sub ssGrdEmailLinks_HeadClick(ByVal ColIndex As Integer)

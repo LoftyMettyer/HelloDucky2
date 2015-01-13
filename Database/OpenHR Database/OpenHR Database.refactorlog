@@ -42,4 +42,11 @@
     <Property Name="ParentElementType" Value="SqlTable" />
     <Property Name="NewName" Value="Hostname" />
   </Operation>
+  <Operation Name="Rename Refactor" Key="f4b23e85-ffc2-4b23-8eed-c25a85edd989" ChangeDateTime="01/13/2015 10:28:45">
+    <Property Name="ElementName" Value="[dbo].[tbsys_tables].[CopyWhenParentIsCopied]" />
+    <Property Name="ElementType" Value="SqlSimpleColumn" />
+    <Property Name="ParentElementName" Value="[dbo].[tbsys_tables]" />
+    <Property Name="ParentElementType" Value="SqlTable" />
+    <Property Name="NewName" Value="CopyWhenParentRecordIsCopied" />
+  </Operation>
 </Operations>

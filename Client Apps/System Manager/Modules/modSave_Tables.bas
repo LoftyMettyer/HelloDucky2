@@ -295,7 +295,7 @@ Private Function TableNew() As Boolean
              "recordDescExprID, " & _
              "DefaultEmailID, " & _
              "AuditInsert, AuditDelete, " & _
-             "ManualSummaryColumnBreaks, IsRemoteView, InsertTriggerDisabled, UpdateTriggerDisabled, DeleteTriggerDisabled) " & _
+             "ManualSummaryColumnBreaks, IsRemoteView, InsertTriggerDisabled, UpdateTriggerDisabled, DeleteTriggerDisabled, CopyWhenParentRecordIsCopied) " & _
            "VALUES (" & _
              lngTableID & ", '" & _
              sTableName & "', " & _
@@ -306,7 +306,8 @@ Private Function TableNew() As Boolean
              IIf(recTabEdit!AuditInsert = True, 1, 0) & ", " & _
              IIf(recTabEdit!AuditDelete = True, 1, 0) & ", " & _
              IIf(recTabEdit!ManualSummaryColumnBreaks, 1, 0) & "," & IIf(recTabEdit!IsRemoteView, 1, 0) & "," & _
-             IIf(recTabEdit!InsertTriggerDisabled, 1, 0) & "," & IIf(recTabEdit!UpdateTriggerDisabled, 1, 0) & "," & IIf(recTabEdit!DeleteTriggerDisabled, 1, 0) & ")"
+             IIf(recTabEdit!InsertTriggerDisabled, 1, 0) & "," & IIf(recTabEdit!UpdateTriggerDisabled, 1, 0) & "," & IIf(recTabEdit!DeleteTriggerDisabled, 1, 0) & "," & _
+             IIf(recTabEdit!CopyWhenParentRecordIsCopied, 1, 0) & ")"
     gADOCon.Execute sSQL, , adCmdText + adExecuteNoRecords
 
     ' Add the Summary Field values.
@@ -357,7 +358,7 @@ Private Function TableNew() As Boolean
         "'" & objTableTrigger.Name & "', " & _
         objTableTrigger.CodePosition & ", " & _
         IIf(objTableTrigger.IsSystem, "1", "0") & ", " & _
-        "'" & Replace(objTableTrigger.Content, "'", "''") & "')"
+        "'" & Replace(objTableTrigger.content, "'", "''") & "')"
       gADOCon.Execute sSQL, , adCmdText + adExecuteNoRecords
      
      Next

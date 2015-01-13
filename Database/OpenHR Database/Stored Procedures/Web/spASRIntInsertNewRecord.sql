@@ -1,6 +1,7 @@
 CREATE PROCEDURE [dbo].[spASRIntInsertNewRecord]
 (
 	@piNewRecordID	integer	OUTPUT,
+	@FromRecordID integer,
 	@psInsertDef		nvarchar(MAX),
 	@errorMessage	nvarchar(MAX) OUTPUT
 )
@@ -11,7 +12,7 @@ BEGIN
 	-- Check database status before saving
 	EXEC dbo.spASRDatabaseStatus @errorMessage OUTPUT;
 	IF LEN(@errorMessage) > 0 RETURN;
-
+	
 	DECLARE
 		@sTempString	nvarchar(MAX),
 		@sInsertString	nvarchar(MAX),
@@ -44,7 +45,6 @@ BEGIN
 	SET @sValue = replace(SUBSTRING(@psInsertDef, @iIndex1+1, @iIndex2-@iIndex1-1), '''', '''''');
 	SET @fCopyImageData = convert(bit, @sValue);
 	SET @sValue = replace(SUBSTRING(@psInsertDef, @iIndex2+1, @iIndex3-@iIndex2-1), '''', '''''');
-	SET @iCopiedRecordID = convert(integer, @sValue);
 
 	SET @psInsertDef = SUBSTRING(@psInsertDef, @iIndex3+1, LEN(@psInsertDef) - @iIndex3);
 
@@ -135,5 +135,21 @@ BEGIN
 
 	SET @sTempString = 'SELECT @ID = MAX(ID) FROM ' + @tablename;
 	EXECUTE sp_executesql @sTempString, N'@ID int OUTPUT', @ID = @piNewRecordID OUTPUT;
-						  
+
+
+	DECLARE @TableID integer = 0;
+
+	SELECT @TableID = viewtableid FROM ASRSysViews 
+		WHERE VIEWname = @sRealSource
+
+	IF ISNULL(@TABLEID, 0) = 0
+		selecT @TableID = Tableid FROM ASRSysTables where tablename = @sRealSource
+
+	DECLARE @sParamDefinition nvarchar(MAX);
+	SET @sParamDefinition = N'@iParentTableID integer, @iNewRecordID integer, @iOriginalRecordID integer';
+	EXECUTE sp_executesql N'spASRCopyChildRecords @iParentTableID, @iNewRecordID, @iOriginalRecordID', @sParamDefinition
+		, @iParentTableID = @TableID
+		, @iNewRecordID = @piNewRecordID
+		, @iOriginalRecordID = @FromRecordID;
+
 END

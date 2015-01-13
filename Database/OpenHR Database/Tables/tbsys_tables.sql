@@ -10,7 +10,11 @@
 	[AuditInsert] [bit] NULL,
 	[AuditDelete] [bit] NULL,
 	[isremoteview] [bit] NULL,
- CONSTRAINT [PK_ASRSysTables] PRIMARY KEY CLUSTERED 
+ [InsertTriggerDisabled] BIT NULL, 
+    [UpdateTriggerDisabled] BIT NULL, 
+    [DeleteTriggerDisabled] BIT NULL, 
+    [CopyWhenParentRecordIsCopied] BIT NULL, 
+    CONSTRAINT [PK_ASRSysTables] PRIMARY KEY CLUSTERED 
 (
 	[TableID] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]

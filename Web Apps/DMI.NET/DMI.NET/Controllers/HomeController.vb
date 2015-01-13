@@ -1199,6 +1199,7 @@ Namespace Controllers
 
 								objDataAccess.ExecuteSP("spASRIntInsertNewRecord" _
 									, prmRecordID _
+									, New SqlParameter("FromRecordID", SqlDbType.Int) With {.Value = lngOriginalRecordID} _
 									, New SqlParameter("psInsertDef", SqlDbType.VarChar, -1) With {.Value = sInsertUpdateDef} _
 									, prmErrorMessage)
 
