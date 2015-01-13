@@ -408,7 +408,8 @@ function find_window_onload() {
 										label: sColumnDisplayName
 									});
 								}
-								else if ((ColumnDataType == 2 && ColumnControlType == 64) || (ColumnDataType == 2 && ColumnControlType == 2)) { //"Numeric"		
+								else if ((ColumnDataType == 2 && ColumnControlType == 64) || (ColumnDataType == 2 && ColumnControlType == 2)) {
+									//"Numeric"		
 									colModel.push({
 										name: sColumnName,
 										id: iColumnId,
@@ -461,7 +462,7 @@ function find_window_onload() {
 					}
 				}
 			}
-			
+
 			// Add the grid records.
 			fRecordAdded = false;
 			iCount = 0;			
@@ -1027,15 +1028,15 @@ function getDefaultValueForColumn(columnId, columnType) {
 	return columnsDefaultValues[columnId];
 }
 
-function space(character, columnSize, columnDecimals) {
+function space(character, columnSize, columnDecimals, decimalCharacter) {
 	try {
 		//Determine the length we need and "translate" that to use it in the plugin
 		var n = Number(columnSize) - Number(columnDecimals);
 		var value = '';
 		for (var x = n; x--;) value += character; //Create a string of the form "999"
 
-		if (columnDecimals != "0") { //If decimal places are specified, add a period and an appropriate number of "9"s
-			value += ".";
+		if (columnDecimals != "0") { //If decimal places are specified, add a period and an appropriate number of "9"s			
+			value += (OpenHR.nullsafeString(decimalCharacter).length > 0) ? OpenHR.nullsafeString(decimalCharacter) : OpenHR.LocaleDecimalSeparator();
 			for (x = Number(columnDecimals); x--;) value += character;
 		}
 	} catch (e) {
@@ -1073,10 +1074,10 @@ function warning() {
 }
 
 function ABSNumber(value, options) {
-	
+
 	var el = document.createElement("input");
 	el.type = "text";
-	el.value = value;
+	el.value = value.replace(".", OpenHR.LocaleDecimalSeparator());
 
 	$(el).on('keydown', function () { indicateThatRowWasModified(); });
 	$(el).attr('onpaste', 'indicateThatRowWasModified();');
@@ -1095,19 +1096,21 @@ function ABSNumber(value, options) {
 		el.setAttribute('data-v-min', '-2147483647'); //This is -Int32.MaxValue
 		el.setAttribute('data-v-max', '2147483647'); //This is Int32.MaxValue
 	} else {
-		value = space("9", options.columnSize, options.columnDecimals);
+		value = space("9", options.columnSize, options.columnDecimals, ".");
 
 		el.setAttribute('data-v-min', '-' + value);
 		el.setAttribute('data-v-max', value);
 	}
-
+	
 	$(el).autoNumeric('init');
 	return el;
 }
 
 function ABSNumberValue(elem, operation, value) {	
-	if (operation === 'get') {
-		return OpenHR.replaceAll($(elem).val(), OpenHR.LocaleThousandSeparator(), "");
+	if (operation === 'get') {		
+		var returnVal = OpenHR.replaceAll($(elem).val(), OpenHR.LocaleThousandSeparator(), "");
+		returnVal = OpenHR.replaceAll(returnVal, OpenHR.LocaleDecimalSeparator(), ".");
+		return returnVal;
 	} else if (operation === 'set') {
 		$('input', elem).val(value);
 	}

@@ -421,15 +421,17 @@
 										ElseIf GeneralUtilities.IsDataColumnDecimal(rstFindRecords.Columns(iloop)) Then
 											' Field is a numeric so format as such.
 											If Not IsDBNull(row(iloop)) Then
+												Dim dec As Decimal = row(iloop)
+												
 												If Mid(sBlankIfZeroColumns, iloop + 1, 1) = "1" Then
 													' blank if zero
-													If row(iloop) > 0 Then
-														sAddString &= row(iloop).ToString()
+													If dec > 0 Then
+														sAddString &= dec.ToString(Globalization.CultureInfo.InvariantCulture)
 													Else
 														sAddString &= ""
 													End If
-												Else
-													sAddString &= row(iloop).ToString()
+												Else													
+													sAddString &= dec.ToString(Globalization.CultureInfo.InvariantCulture)
 												End If
 												
 											End If
