@@ -722,7 +722,7 @@
 
 						<tr>
 							<td colspan="6">
-								<input id="btnDiv2Restore" name="btnDiv2Restore" type="button" class="btn floatright" value="Restore Defaults" style="width: 150px" />
+								<input id="btnDiv2Restore" name="btnDiv2Restore" type="button" class="btn floatright" value="Restore Defaults" style="width: 150px"  onclick="restoreDefaults()" />
 								<input id="btnDiv2OK" name="btnDiv2OK" type="button" class="btn" value="OK" style="width: 75px" />
 								<input id="btnDiv2Cancel" name="btnDiv2Cancel" type="button" class="btn" value="Cancel" style="width: 75px" />
 							</td>
