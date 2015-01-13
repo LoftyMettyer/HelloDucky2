@@ -124,7 +124,7 @@ Public Module svrCleanup
 
     If IsDate(pobjDate) Then
 			'	Return pobjDate.ToShortDateString()
-			If Globalization.CultureInfo.CurrentUICulture.ToString() = "en-US" Then
+			If CultureInfo.CurrentUICulture.ToString() = "en-US" Or CultureInfo.CurrentUICulture.ToString() = "en" Then
 				Return CDate(pobjDate).ToString("MM/dd/yyyy")
 			Else
 				Return CDate(pobjDate).ToString(HttpContext.Current.Session("sessionContext").RegionalSettings.DateFormat.shortDatePattern)

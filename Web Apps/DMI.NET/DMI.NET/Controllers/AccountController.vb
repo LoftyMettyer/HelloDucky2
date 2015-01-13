@@ -345,7 +345,7 @@ Namespace Controllers
 					Session("LocaleThousandSeparator") = sLocaleThousandSeparator
 					Session("LocaleCultureName") = sLocaleCultureName
 
-					If sLocaleCultureName = "en-US" Then
+					If sLocaleCultureName = "en-US" Or sLocaleCultureName = "en" Then
 						' Force 2-digit days and months
 						Session("LocaleDateFormat") = "MM/dd/yyyy"
 					Else

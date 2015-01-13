@@ -1102,6 +1102,9 @@ function value_changeType() {
 		if (frmMainForm.cboValueType.options[frmMainForm.cboValueType.selectedIndex].value == 4) {
 			//Date value
 			$('#txtValue').datepicker();
+			$('#txtValue').on('change', function (sender) {
+				validateDate(sender);
+			});
 		} else {
 			$('#txtValue').datepicker('destroy');
 		}
@@ -1419,6 +1422,9 @@ function pVal_changeType() {
 
 	if (iPValType == 4) {
 		$('#txtPValDefault').datepicker();
+		$('#txtPValDefault').on('change', function (sender) {
+			validateDate(sender);
+		});
 	} else {
 		$('#txtPValDefault').datepicker('destroy');
 	}
@@ -1426,6 +1432,17 @@ function pVal_changeType() {
 	frmMainForm.txtPValDefault.value = "";
 
 	pVal_changePrompt();
+}
+
+function validateDate(sender) {
+	if (OpenHR.IsValidDate(sender.target.value) == false && sender.target.value != "") {
+		var exprid = sender.target.id;
+		OpenHR.modalPrompt("Invalid date value entered.", 0, "Error").then(function () {
+			setTimeout("$('#" + exprid + "').focus()", 100);
+			return false;
+		});
+	}
+	return true;
 }
 
 function pVal_refreshTable() {
@@ -1907,7 +1924,7 @@ function locateGridRecord(piID) {
 	}
 }
 
-function component_OKClick() {	
+function component_OKClick() {
 	var sDefn;
 	var sTemp;
 	var sKey;
@@ -2469,7 +2486,7 @@ function component_CancelClick() {
 	cancelComponent();
 }
 
-function validateComponent() {
+function validateComponent() {	
 	var sErrorMsg = "";
 	var sValue;
 	var sTemp;
@@ -2758,12 +2775,15 @@ function validateComponent() {
 				sValue = frmMainForm.txtPValDefault.value;
 
 				if (sValue.length > 0) {
+					if (!OpenHR.IsValidDate(sValue)) {
+						sErrorMsg = "Invalid default date value entered.";
+					}
 					// Convert the date to SQL format (use this as a validation check).
 					// An empty string is returned if the date is invalid.
 					sValue = OpenHR.convertLocaleDateToSQL(sValue);
 					if (sValue.length == 0) {
 						sErrorMsg = "Invalid default date value entered.";
-					}
+					}				
 				}
 			}
 		}
