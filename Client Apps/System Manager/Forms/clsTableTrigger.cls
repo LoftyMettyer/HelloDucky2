@@ -50,6 +50,7 @@ Public Function ReadTrigger() As Boolean
       Name = .Fields("Name").value
       content = .Fields("Content").value
       IsSystem = .Fields("IsSystem").value
+      CodePosition = .Fields("CodePosition").value
     Else
       fReadOk = False
     End If

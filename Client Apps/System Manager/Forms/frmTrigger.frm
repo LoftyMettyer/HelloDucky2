@@ -28,7 +28,7 @@ Begin VB.Form frmTrigger
       Caption         =   "Content :"
       Height          =   5610
       Left            =   60
-      TabIndex        =   3
+      TabIndex        =   7
       Top             =   2190
       Width           =   14500
       Begin VB.TextBox txtContent 
@@ -45,7 +45,7 @@ Begin VB.Form frmTrigger
          Left            =   150
          MultiLine       =   -1  'True
          ScrollBars      =   2  'Vertical
-         TabIndex        =   5
+         TabIndex        =   3
          Text            =   "frmTrigger.frx":000C
          Top             =   330
          Width           =   14175
@@ -55,18 +55,18 @@ Begin VB.Form frmTrigger
       Caption         =   "Details :"
       Height          =   2040
       Left            =   45
-      TabIndex        =   2
+      TabIndex        =   6
       Top             =   60
       Width           =   14500
       Begin VB.ComboBox cboCodePosition 
          Height          =   315
          ItemData        =   "frmTrigger.frx":0012
          Left            =   1650
-         List            =   "frmTrigger.frx":001C
+         List            =   "frmTrigger.frx":001F
          OLEDragMode     =   1  'Automatic
          Sorted          =   -1  'True
          Style           =   2  'Dropdown List
-         TabIndex        =   9
+         TabIndex        =   2
          Top             =   825
          Width           =   2985
       End
@@ -75,14 +75,14 @@ Begin VB.Form frmTrigger
          Enabled         =   0   'False
          Height          =   300
          Left            =   7110
-         TabIndex        =   7
+         TabIndex        =   1
          Top             =   315
          Width           =   2115
       End
       Begin VB.TextBox txtName 
          Height          =   330
          Left            =   1650
-         TabIndex        =   6
+         TabIndex        =   0
          Top             =   315
          Width           =   4395
       End
@@ -90,7 +90,7 @@ Begin VB.Form frmTrigger
          Caption         =   "Code Position :"
          Height          =   225
          Left            =   210
-         TabIndex        =   8
+         TabIndex        =   9
          Top             =   885
          Width           =   1335
       End
@@ -98,7 +98,7 @@ Begin VB.Form frmTrigger
          Caption         =   "Name :"
          Height          =   225
          Left            =   225
-         TabIndex        =   4
+         TabIndex        =   8
          Top             =   375
          Width           =   690
       End
@@ -108,7 +108,7 @@ Begin VB.Form frmTrigger
       Caption         =   "&Cancel"
       Height          =   400
       Left            =   13335
-      TabIndex        =   1
+      TabIndex        =   5
       Top             =   7935
       Width           =   1200
    End
@@ -118,7 +118,7 @@ Begin VB.Form frmTrigger
       Enabled         =   0   'False
       Height          =   400
       Left            =   12030
-      TabIndex        =   0
+      TabIndex        =   4
       Top             =   7935
       Width           =   1200
    End
@@ -189,6 +189,10 @@ ErrorTrap:
 
 End Function
 
+Private Sub cboCodePosition_Click()
+  Me.Changed = True
+End Sub
+
 Private Sub chkIsSystem_Click()
   Me.Changed = True
 End Sub
@@ -217,7 +221,7 @@ Private Sub SaveDefinition()
 
   TriggerObject.IsSystem = IIf(chkIsSystem.value = vbChecked, True, False)
   TriggerObject.Name = txtName.Text
-  TriggerObject.CodePosition = TriggerCodePosition.AfterU02Update
+  TriggerObject.CodePosition = cboCodePosition.ListIndex
   TriggerObject.content = txtContent.Text
 
 End Sub
