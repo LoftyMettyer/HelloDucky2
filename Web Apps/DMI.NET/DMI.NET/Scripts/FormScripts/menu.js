@@ -1913,6 +1913,7 @@ function menu_refreshMenu() {
 			$('#mnutoolInlineEditRecordFind').removeClass("toolbarButtonOn");
 			menu_setVisibletoolbarGroupById('mnuSectionRecordFindInlineEdit', false); // HC: 13327 etc. Hide the Quick Edit button for now
 
+
 			if (menu_isSSIMode()) {
 				menu_setVisibletoolbarGroupById('mnuSectionRecordFindOrder', false);
 			}
