@@ -1,22 +1,22 @@
 VERSION 5.00
-Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "ActBar.ocx"
+Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "actbar.ocx"
 Object = "{66A90C01-346D-11D2-9BC0-00A024695830}#1.0#0"; "timask6.ocx"
 Object = "{49CBFCC0-1337-11D2-9BBF-00A024695830}#1.0#0"; "tinumb6.ocx"
 Object = "{E2D000D0-2DA1-11D2-B358-00104B59D73D}#1.0#0"; "titext6.ocx"
-Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.Ocx"
+Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.ocx"
 Object = "{AB3877A8-B7B2-11CF-9097-444553540000}#1.0#0"; "gtdate32.ocx"
 Object = "{A8E5842E-102B-4289-9D57-3B3F5B5E15D3}#13.1#0"; "Codejock.Controls.v13.1.0.ocx"
-Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "COA_Spinner.ocx"
-Object = "{96E404DC-B217-4A2D-A891-C73A92A628CC}#1.0#0"; "COA_WorkingPattern.ocx"
-Object = "{1EE59219-BC23-4BDF-BB08-D545C8A38D6D}#1.1#0"; "COA_Line.ocx"
+Object = "{BE7AC23D-7A0E-4876-AFA2-6BAFA3615375}#1.0#0"; "coa_spinner.ocx"
+Object = "{96E404DC-B217-4A2D-A891-C73A92A628CC}#1.0#0"; "coa_workingpattern.ocx"
+Object = "{1EE59219-BC23-4BDF-BB08-D545C8A38D6D}#1.1#0"; "coa_line.ocx"
 Object = "{E28F058B-8430-42F1-9D74-4BEDD2F27CCE}#1.0#0"; "COA_OptionGroup.ocx"
 Object = "{4FD0EB05-F124-4460-A61D-CB587234FB75}#1.0#0"; "COA_Image.ocx"
 Object = "{EDB7B7A8-7908-4896-B964-57CE7262666E}#1.0#0"; "COA_OLE.ocx"
-Object = "{A48C54F8-25F4-4F50-9112-A9A3B0DBAD63}#1.0#0"; "COA_Label.ocx"
+Object = "{A48C54F8-25F4-4F50-9112-A9A3B0DBAD63}#1.0#0"; "coa_label.ocx"
 Object = "{3389D561-C8E1-4CB0-A73E-77582EA68D3C}#1.1#0"; "COA_Lookup.ocx"
-Object = "{AD837810-DD1E-44E0-97C5-854390EA7D3A}#3.2#0"; "COA_Navigation.ocx"
-Object = "{051CE3FC-5250-4486-9533-4E0723733DFA}#1.0#0"; "COA_ColourPicker.ocx"
-Object = "{19400013-2704-42FE-AAA4-45D1A725A895}#1.0#0"; "COA_ColourSelector.ocx"
+Object = "{AD837810-DD1E-44E0-97C5-854390EA7D3A}#3.2#0"; "coa_navigation.ocx"
+Object = "{051CE3FC-5250-4486-9533-4E0723733DFA}#1.0#0"; "coa_colourpicker.ocx"
+Object = "{19400013-2704-42FE-AAA4-45D1A725A895}#1.0#0"; "coa_colourselector.ocx"
 Begin VB.Form frmRecEdit4 
    BorderStyle     =   1  'Fixed Single
    ClientHeight    =   5835
@@ -627,6 +627,7 @@ Begin VB.Form frmRecEdit4
       BeginProperty Tabs {0713E432-850A-101B-AFC0-4210102A8DA7} 
          NumTabs         =   1
          BeginProperty Tab1 {0713F341-850A-101B-AFC0-4210102A8DA7} 
+            Caption         =   ""
             Key             =   ""
             Object.Tag             =   ""
             ImageVarType    =   2
@@ -808,6 +809,8 @@ Private mblnScreenHasAutoUpdate As Boolean
 Private mbDisableAURefresh As Boolean 'flag used to disable the refreshing of the auto update screens.
 Private mlngPictureID As Long
 
+Public OriginalRecordID As Long
+
 Public Property Get RequiresLocalCursor() As Boolean
   RequiresLocalCursor = mfRequiresLocalCursor
 End Property
@@ -948,6 +951,8 @@ Public Sub AddNewCopyOf()
           End If
         End If
       Next objOLEControl
+
+      OriginalRecordID = mlngRecordID
 
       ' JPD20021025 Fault 4647
       mlngTimeStamp = 0
@@ -5241,7 +5246,7 @@ Public Function Update(Optional pfDeactivating As Variant) As Boolean
                 If Len(Trim(Replace(objControl.Text, UI.GetSystemDateSeparator, ""))) <> 0 Then
                   If Not IsDate(objControl.DateValue) Or objControl.DateValue < #1/1/1753# Then
                     objControl.ForeColor = vbRed
-                    COAMsgBox "You have entered an invalid date.", vbOKOnly + vbExclamation, app.Title
+                    COAMsgBox "You have entered an invalid date.", vbOKOnly + vbExclamation, app.title
                     objControl.ForeColor = vbWindowText
                     objControl.DateValue = Null
                     If objControl.Visible And objControl.Enabled Then
@@ -5346,9 +5351,11 @@ Public Function Update(Optional pfDeactivating As Variant) As Boolean
         Next iLoop
         
         sSQL = "INSERT INTO " & mobjTableView.RealSource & " (" & sColumnList & ") VALUES (" & sValueList & ")"
-        'MH20031002 Fault 7082 Reference Property instead of object to trap errors
-        'fSavedOK = datGeneral.InsertTableRecord(sSQL, mobjTableView.TableID, lngCurrentID)
         fSavedOK = datGeneral.InsertTableRecord(sSQL, Me.TableID, lngCurrentID)
+
+        If fSavedOK Then
+          fSavedOK = CopyWhenParentRecordIsCopied(Me.TableID, lngCurrentID, OriginalRecordID)
+        End If
 
       Case Else
         ' Construct the SQL update string from the array of columns and values.
@@ -10808,7 +10815,7 @@ Private Function LostFocusCheck(pctlControl As Control) As Boolean
         If Not IsDate(.DateValue) Or .DateValue < #1/1/1753# Then
   
           .ForeColor = vbRed
-          COAMsgBox "You have entered an invalid date.", vbOKOnly + vbExclamation, app.Title
+          COAMsgBox "You have entered an invalid date.", vbOKOnly + vbExclamation, app.title
           .ForeColor = vbWindowText
           .DateValue = Null
           If .Visible And .Enabled Then
@@ -11417,7 +11424,7 @@ Dim fOK As Boolean
   End If
 
   If mlngRecordID = 0 Then
-    COAMsgBox "The Absence Breakdown report can only be produced for existing records." & vbNewLine & "If you are currently adding a new record, please save the record first.", vbInformation + vbOKOnly, app.Title
+    COAMsgBox "The Absence Breakdown report can only be produced for existing records." & vbNewLine & "If you are currently adding a new record, please save the record first.", vbInformation + vbOKOnly, app.title
     Exit Sub
   Else
 
@@ -11457,7 +11464,7 @@ Public Sub AbsenceCalendarClick()
   End If
   
   If mlngRecordID = 0 Then
-    COAMsgBox "The Absence Calendar can only be produced for existing records." & vbNewLine & "If you are currently adding a new record, please save the record first.", vbInformation + vbOKOnly, app.Title
+    COAMsgBox "The Absence Calendar can only be produced for existing records." & vbNewLine & "If you are currently adding a new record, please save the record first.", vbInformation + vbOKOnly, app.title
     Exit Sub
   Else
     ' JDM - 13/08/01 - Fault 2629 - Validate parameters before running calendar
@@ -11483,7 +11490,7 @@ Public Sub BradfordFactorClick()
   End If
 
   If mlngRecordID = 0 Then
-    COAMsgBox "The Bradford Factor can only be produced for existing records." & vbNewLine & "If you are currently adding a new record, please save the record first.", vbInformation + vbOKOnly, app.Title
+    COAMsgBox "The Bradford Factor can only be produced for existing records." & vbNewLine & "If you are currently adding a new record, please save the record first.", vbInformation + vbOKOnly, app.title
     Exit Sub
   Else
     'JDM - 24/07/01 - Fault 2478 - Not checking correct value
@@ -11575,10 +11582,6 @@ Public Property Get RecordID() As Long
   RecordID = mlngRecordID
   
 End Property
-
-
-
-
 
 Public Function RefreshRecordset() As Boolean
   ' Refresh the recordset. Return TRUE if the recordset was refreshed OK.
@@ -12176,7 +12179,7 @@ Public Sub AccordClick()
   End If
 
   If mlngRecordID = 0 Then
-    COAMsgBox "Payroll transactions can only be produced for existing records." & vbNewLine & "If you are currently adding a new record, please save the record first.", vbInformation + vbOKOnly, app.Title
+    COAMsgBox "Payroll transactions can only be produced for existing records." & vbNewLine & "If you are currently adding a new record, please save the record first.", vbInformation + vbOKOnly, app.title
     Exit Sub
   Else
   
@@ -12199,7 +12202,7 @@ Public Sub AccordClick()
       frmAccordViewTransfers.Show vbModal
       Set frmAccordViewTransfers = Nothing
     Else
-      COAMsgBox "Payroll transactions can only be viewed for defined transfer types.", vbInformation + vbOKOnly, app.Title
+      COAMsgBox "Payroll transactions can only be viewed for defined transfer types.", vbInformation + vbOKOnly, app.title
       Exit Sub
     End If
   
@@ -12335,3 +12338,46 @@ ErrorTrap:
 
 End Sub
 
+Private Function CopyWhenParentRecordIsCopied(ByVal iParentTableID As Integer, ByVal iNewRecordID As Integer, ByVal iOriginalRecordID As Integer) As Boolean
+
+  On Error GoTo ErrorTrap
+  
+  Dim bOK As Boolean
+  Dim cmADO As ADODB.Command
+  Dim pmADO As ADODB.Parameter
+
+  bOK = True
+
+  Set cmADO = New ADODB.Command
+  With cmADO
+    .CommandText = "dbo.spASRCopyChildRecords"
+    .CommandType = adCmdStoredProc
+    .CommandTimeout = 0
+    Set .ActiveConnection = gADOCon
+
+    Set pmADO = .CreateParameter("iParentTableID", adInteger, adParamInput)
+    .Parameters.Append pmADO
+    pmADO.Value = iParentTableID
+
+    Set pmADO = .CreateParameter("iParentTableID", adInteger, adParamInput)
+    .Parameters.Append pmADO
+    pmADO.Value = iNewRecordID
+
+    Set pmADO = .CreateParameter("iOriginalRecordID", adInteger, adParamInput)
+    .Parameters.Append pmADO
+    pmADO.Value = iOriginalRecordID
+
+    cmADO.Execute
+
+  End With
+  Set cmADO = Nothing
+
+TidyUpAndExit:
+  CopyWhenParentRecordIsCopied = bOK
+  Exit Function
+
+ErrorTrap:
+  bOK = False
+  GoTo TidyUpAndExit
+
+End Function
