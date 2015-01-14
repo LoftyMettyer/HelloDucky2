@@ -624,6 +624,7 @@ function find_window_onload() {
 					$('#next_pager-coldata').addClass('ui-state-disabled');
 					$('#last_pager-coldata').addClass('ui-state-disabled');
 					$('#pager-coldata_center input').prop('readonly', 'true'); //Make Page textbox read only
+					$("#findGridTable").jqGrid("setGridParam", { ondblClickRow: function (rowID) { return false; } }); //Disable double click on any row
 				});
 
 				$('#findGridTable_iledit').on('click', function (e) {
@@ -636,6 +637,7 @@ function find_window_onload() {
 					$('#next_pager-coldata').addClass('ui-state-disabled');
 					$('#last_pager-coldata').addClass('ui-state-disabled');
 					$('#pager-coldata_center input').prop('readonly', 'true'); //Make Page textbox read only
+					$("#findGridTable").jqGrid("setGridParam", { ondblClickRow: function (rowID) { return false; } }); //Disable double click on any row
 				});
 
 				$('#findGridTable_ilsave').on('click', function (e) {
@@ -644,6 +646,7 @@ function find_window_onload() {
 					$('#findGridTable').jqGrid('setGridParam', { beforeSelectRow: function () { return true; } }); //Enable the selection of other rows
 					$('#findGridTable_searchButton').removeClass('ui-state-disabled'); //Enable search
 					$('#pager-coldata_center input').removeAttr('readonly'); //Remove read only attribute from Page textbox
+					$("#findGridTable").jqGrid("setGridParam", { ondblClickRow: function (rowID) { menu_editRecord(); } }); //Enable double click on any row
 				});
 
 				$('#findGridTable_ilcancel').on('click', function (e) {
@@ -652,6 +655,7 @@ function find_window_onload() {
 					$('#findGridTable').jqGrid('setGridParam', { beforeSelectRow: function () { return true; } }); //Enable the selection of other rows
 					$('#findGridTable_searchButton').removeClass('ui-state-disabled'); //Enable search
 					$('#pager-coldata_center input').removeAttr('readonly'); //Remove read only attribute from Page textbox
+					$("#findGridTable").jqGrid("setGridParam", { ondblClickRow: function (rowID) { menu_editRecord(); } }); //Enable double click on any row
 				});
 
 				$("#pager-coldata .navtable .ui-pg-div>span.ui-icon-refresh").addClass("icon-refresh");
