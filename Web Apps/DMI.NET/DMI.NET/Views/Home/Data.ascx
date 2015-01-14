@@ -683,15 +683,24 @@
 
 							' Is column a embedded/linked OLE								
 							If rstRecord.Columns(iloop).DataType.ToString().ToLower = "system.byte[]" Then
-								Dim objColumnOLE As New OLEValue With {
-									.ColumnID = CInt(rstRecord.Columns(iloop).ColumnName), _
-									.Value = CType(objRow(iloop), Byte())}
-								oleColumnData.Add(objColumnOLE)
+								
+								Dim bytValue() As Byte = CType(objRow(iloop), Byte())
+								Dim oleVersion As String = Encoding.UTF8.GetString(bytValue, 0, 8)
+								
+								If oleVersion = "<<V002>>" Then
+									Dim objColumnOLE As New OLEValue With {
+										.ColumnID = CInt(rstRecord.Columns(iloop).ColumnName), _
+										.Value = bytValue}
+									oleColumnData.Add(objColumnOLE)
+								Else
+									' Incorrect header version for column. Treat as empty.
+									Response.Write("<input type='hidden' id='txtData_" & rstRecord.Columns(iloop).ColumnName & "' name='txtData_" & rstRecord.Columns(iloop).ColumnName & "' value=''>" & vbCrLf)
+								End If
 								
 							Else
 								Response.Write("<input type='hidden' id='txtData_" & rstRecord.Columns(iloop).ColumnName & "' name='txtData_" & rstRecord.Columns(iloop).ColumnName & "' value='" & Html.Encode(objRow(iloop).ToString()) & "'>" & vbCrLf)
 							End If
-						End If
+							End If
 					Next
 				Next
 
