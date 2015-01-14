@@ -973,7 +973,7 @@ Public Enum WarningType
 End Enum
 
 Public Enum TriggerCodePosition
-  AfterU02Update = 0
-  AfterI02Insert = 1
-  AfterD01Delete = 2
+  AfterI02Insert = 0
+  AfterU02Update = 1
+  InsteadOfD01Delete = 2
 End Enum

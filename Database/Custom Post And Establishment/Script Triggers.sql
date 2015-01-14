@@ -35,7 +35,7 @@ IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[trcustom_A
 	DROP TRIGGER [dbo].[trcustom_Appointments_P&E]
 GO
 
-INSERT ASRSysTableTriggers (TriggerID, TableID, Name, CodePosition, IsSystem, Content) VALUES (1, 251, 'Update Absence Breakdown', 1, 1, '	DELETE [dbo].[tbuser_Absence_Breakdown] WHERE [id_251] IN (SELECT DISTINCT [id] FROM deleted);
+INSERT ASRSysTableTriggers (TriggerID, TableID, Name, CodePosition, IsSystem, Content) VALUES (1, 251, 'Update Absence Breakdown', 1, 1, '		DELETE [dbo].[tbuser_Absence_Breakdown] WHERE [id_251] IN (SELECT DISTINCT [id] FROM deleted);
 
 	DECLARE @changeDates TABLE(Effective_Date datetime, AppointmentID integer, PersID integer);
 
@@ -43,12 +43,21 @@ INSERT ASRSysTableTriggers (TriggerID, TableID, Name, CodePosition, IsSystem, Co
 		SELECT awp.Effective_Date, a.ID, a.ID_1 FROM Appointments a
 			INNER JOIN inserted e ON e.ID_3 = a.ID
 			INNER JOIN Appointment_Working_Patterns awp ON awp.ID_3 = a.ID
-		WHERE awp.Effective_Date <= e.Start_Date
-	  UNION
+		WHERE awp.Effective_Date > a.Appointment_Start_Date
+		UNION
 		SELECT awp.End_Date + 1, a.ID, a.ID_1 FROM Appointments a
 			INNER JOIN inserted e ON e.ID_3 = a.ID
 			INNER JOIN Appointment_Working_Patterns awp ON awp.ID_3 = a.ID
-		WHERE awp.End_Date IS NOT NULL;
+		WHERE awp.End_Date IS NOT NULL
+		UNION
+		SELECT a.Appointment_Start_Date, a.ID, a.ID_1 FROM Appointments a
+			INNER JOIN inserted e ON e.ID_3 = a.ID
+		UNION
+		SELECT a.Appointment_End_Date + 1, a.ID, a.ID_1 FROM Appointments a
+			INNER JOIN inserted e ON e.ID_3 = a.ID
+		UNION 
+		SELECT ''1899-12-31'', a.ID, a.ID_1 FROM Appointments a
+			INNER JOIN inserted e ON e.ID_3 = a.ID;
 
 	DECLARE @working_patterns TABLE (PersID integer, Effective_Date datetime, End_Date datetime, AppointmentID integer
 							, Sunday_Hours_AM numeric(4,2), Sunday_Hours_PM numeric(4,2)
@@ -62,18 +71,17 @@ INSERT ASRSysTableTriggers (TriggerID, TableID, Name, CodePosition, IsSystem, Co
 							, Hour_Pattern_AM varchar(28), Hour_Pattern_PM varchar(28));
 
 	INSERT @working_patterns
-		SELECT cd.PersID, cd.Effective_Date, NULL, cd.AppointmentID
-			, ISNULL(SUM(wp.Sunday_Hours_AM),0), ISNULL(SUM(wp.Sunday_Hours_PM),0)
-			, ISNULL(SUM(wp.Monday_Hours_AM),0), ISNULL(SUM(wp.Monday_Hours_PM),0)
-			, ISNULL(SUM(wp.Tuesday_Hours_AM),0), ISNULL(SUM(wp.Tuesday_Hours_PM),0)
-			, ISNULL(SUM(wp.Wednesday_Hours_AM),0), ISNULL(SUM(wp.Wednesday_Hours_PM),0)
-			, ISNULL(SUM(wp.Thursday_Hours_AM),0), ISNULL(SUM(wp.Thursday_Hours_PM),0)
-			, ISNULL(SUM(wp.Friday_Hours_AM),0), ISNULL(SUM(wp.Friday_Hours_PM),0)
-			, ISNULL(SUM(wp.Saturday_Hours_AM),0), ISNULL(SUM(wp.Saturday_Hours_PM),0)
+		SELECT DISTINCT cd.PersID, cd.Effective_Date, NULL, cd.AppointmentID
+			, ISNULL(wp.Sunday_Hours_AM,0), ISNULL(wp.Sunday_Hours_PM,0)
+			, ISNULL(wp.Monday_Hours_AM,0), ISNULL(wp.Monday_Hours_PM,0)
+			, ISNULL(wp.Tuesday_Hours_AM,0), ISNULL(wp.Tuesday_Hours_PM,0)
+			, ISNULL(wp.Wednesday_Hours_AM,0), ISNULL(wp.Wednesday_Hours_PM,0)
+			, ISNULL(wp.Thursday_Hours_AM,0), ISNULL(wp.Thursday_Hours_PM,0)
+			, ISNULL(wp.Friday_Hours_AM,0), ISNULL(wp.Friday_Hours_PM,0)
+			, ISNULL(wp.Saturday_Hours_AM,0), ISNULL(wp.Saturday_Hours_PM,0)
 			, NULL, NULL, NULL, NULL
 		FROM @changeDates cd
-		LEFT JOIN Appointment_Working_Patterns wp ON cd.AppointmentID = wp.id_3 AND cd.Effective_Date >= wp.Effective_Date AND (cd.Effective_Date <= wp.End_Date OR wp.End_Date IS NULL)
-			GROUP BY  cd.AppointmentID, cd.PersID, cd.Effective_Date;
+		LEFT JOIN Appointment_Working_Patterns wp ON cd.AppointmentID = wp.id_3 AND cd.Effective_Date = wp.Effective_Date
 
 	UPDATE t 
 		SET End_Date = (SELECT top 1 m.Effective_Date - 1 FROM @working_patterns m WHERE m.Effective_Date > t.Effective_Date AND m.AppointmentID = t.AppointmentID ORDER BY m.Effective_Date),
@@ -112,11 +120,13 @@ INSERT ASRSysTableTriggers (TriggerID, TableID, Name, CodePosition, IsSystem, Co
 			INNER JOIN inserted e ON e.ID_1 = a.ID_1
 			INNER JOIN Appointment_Working_Patterns awp ON awp.ID_3 = a.ID
 		WHERE awp.Effective_Date <= e.Start_Date
+			AND (a.Appointment_End_Date >= e.Start_Date OR a.Appointment_End_Date IS NULL)
 	  UNION
 		SELECT awp.End_Date + 1, a.ID, e.ID_1 FROM Appointments a
 			INNER JOIN inserted e ON e.ID_1 = a.ID_1
 			INNER JOIN Appointment_Working_Patterns awp ON awp.ID_3 = a.ID
-		WHERE awp.End_Date IS NOT NULL;
+		WHERE awp.End_Date IS NOT NULL
+			AND (a.Appointment_End_Date >= e.Start_Date OR a.Appointment_End_Date IS NULL);
 
 	DECLARE @working_patterns TABLE (PersID integer, Effective_Date datetime, End_Date datetime, AppointmentID integer
 							, Sunday_Hours_AM numeric(4,2), Sunday_Hours_PM numeric(4,2)
@@ -266,7 +276,7 @@ INSERT ASRSysTableTriggers (TriggerID, TableID, Name, CodePosition, IsSystem, Co
 
 GO
 
-INSERT ASRSysTableTriggers (TriggerID, TableID, Name, CodePosition, IsSystem, Content) VALUES (6, 249, 'Slave to appointment working pattern', 0, 1, '    
+INSERT ASRSysTableTriggers (TriggerID, TableID, Name, CodePosition, IsSystem, Content) VALUES (6, 249, 'Slave to appointment working pattern', 1, 1, '    
 
 	DECLARE @persID integer;
 	DECLARE @changeDates TABLE(effectiveDate datetime, ID integer, PersID integer);

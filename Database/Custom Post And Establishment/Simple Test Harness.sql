@@ -28,17 +28,19 @@ print 'iNSERT'
 --INSERT Appointment_Absence_Entry (ID_3, start_date, start_session, end_date, end_session, Reason, absence_type) values (825, getdate(), 'AM', getdate(), 'AM', 'morning', 'HOLS')
 --INSERT Appointment_Absence_Entry (ID_3, start_date, start_session, end_date, end_session, Reason, absence_type) values (825, getdate()+1, 'PM', getdate()+1, 'PM', 'afternoon', 'JURY')
 
-INSERT Appointment_Absence_Entry (ID_3, start_date, start_session, end_date, end_session
-, Reason, absence_type) values (1101, '2014-12-31', 'PM', '2016-01-02', 'PM', 'malaria', 'Holiday2')
+SELECT id,* FROM Appointments where ID_1 = 116 
+--SELECT id,* FROM Appointment_Working_Patterns order by Effective_Date --where id_3 in (835, 876)
+select Effective_Date, *  from Appointment_Working_Patterns where id_3 = 1108
+
+--INSERT Appointment_Absence_Entry (ID_3, start_date, start_session, end_date, end_session, Reason, absence_type) values (1108, '2014-01-01', 'PM', '2014-04-30', 'PM', 'malaria', 'Holiday2')
 
 --INSERT Absence_Entry (ID_1, start_date, end_date, Reason, absence_type) values (116, getdate(), getdate()+2, 'SICK', 'felt bad')
 --INSERT Absence_Entry (ID_1, start_date, end_date, Reason, absence_type) values (116, getdate()-1, getdate()-1, 'SICK', 'felt yucky')
 
---INSERT Absence_Entry (ID_1, start_date, end_date, Reason, absence_type) values (116, getdate(), getdate(), 'HOLS', 'bit of jolly')
+INSERT Absence_Entry (ID_1, start_date, end_date, Reason, absence_type) values (116, getdate(), getdate(), 'HOLS', 'bit of jolly')
 --INSERT Absence_Entry (ID_1, start_date, end_date, Reason, absence_type) values (117, getdate()-10, getdate()-10, 'HOLS', 'bit of jolly')
 --INSERT Absence_Entry (ID_1, start_date, end_date, Reason, absence_type) values (116,'2016-01-01', '2016-01-07', 'HOLS', 'jolly16')
 --INSERT Absence_Entry (ID_1, start_date, end_date, Reason, absence_type) values (116,'2015-01-01', '2015-01-07', 'HOLS', 'bit of jolly')
-
 
 --INSERT Absence_Entry (ID_1, start_date, start_session, end_date, end_session, absence_type, Reason, Absence_In) values (116, getdate()-5, 'PM', getdate()-5, 'AM', 'SICK', 'Jody felt bad', 'Hours')
 --INSERT Absence_Entry (ID_1, start_date, start_session, end_date, end_session, absence_type, Reason) values (116, getdate()-10, 'AM', getdate()+10, 'PM', 'sickness', 'bad back')
@@ -50,9 +52,6 @@ PRINT 'UPDATE'
 -- DELETE FROM Appointment_Absence_Entry --WHERE ID = 86
 --SELECT * FROM Absence_Entry
 
---SELECT id,* FROM Appointments
---SELECT id,* FROM Appointment_Working_Patterns order by Effective_Date --where id_3 in (835, 876)
-select * from Appointment_Working_Patterns --where id_3 = 876
 --SELECT * FROM Appointment_Absence_Entry
 --SELECT * FROM Absence_Entry
 
@@ -62,6 +61,7 @@ SELECT * FROM Absence_Breakdown ORDER BY Absence_Date ASC
 --SELECT ID,Start_Date, Start_Session, End_Date, End_Session, Reason, Absence_Type, Duration_Days, Duration_Hours FROM Absence
 
 --SELECT * FROM ASRSysAccordTransactions
+SELECT Start_Date, End_Date, Duration_Hours, Duration_Days FROM Absence
 
 --select * from ASRSysTables order by tablename
 --select * from ASRSysAccordTransferTypes order by ASRBaseTableID
@@ -69,13 +69,8 @@ SELECT * FROM Absence_Breakdown ORDER BY Absence_Date ASC
 
 --WHERE wp.Effective_Date <= dr.IndividualDate AND (wp.End_Date >= dr.IndividualDate OR wp.End_Date IS NULL);
 
+--update Appointments set Absence_In = 'Days' where id = 1108
 
-
-
---UPDATE @merged
---		SET End_Date = newData.End_Date
---		FROM (SELECT TOP 1 m.Effective_Date - 1 AS End_Date FROM @merged m WHERE m.Effective_Date > Effective_Date 
---		ORDER BY m.Effective_Date) newData
 
 
 		
