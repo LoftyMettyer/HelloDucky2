@@ -188,14 +188,13 @@ INSERT ASRSysTableTriggers (TriggerID, TableID, Name, CodePosition, IsSystem, Co
 			@startDate	datetime,
 			@endDate	datetime;
 
-	INSERT Absence(Absence_Type, Payroll_Code, Reason, Payroll_Reason, Start_Date, Start_Session, End_Date, End_Session, Duration_Days, Duration_Hours, ID_1, Absence_In)
+	INSERT Absence(Absence_Type, Payroll_Code, Reason, Payroll_Reason, Start_Date, Start_Session, End_Date, End_Session, Duration, ID_1, Absence_In)
 		SELECT DISTINCT ab.Type, ab.Payroll_Type_Code, ab.Reason, ab.Payroll_Reason_Code
 			, m.startdate
 			, (SELECT DISTINCT CASE WHEN [Session] = ''Day'' THEN ''AM'' ELSE [Session] END FROM inserted WHERE (ID_250 = ab.ID_250 OR ID_251 = ab.ID_251) AND Absence_Date = m.startdate)
 			, m.enddate
 			, (SELECT DISTINCT CASE WHEN [Session] = ''Day'' THEN ''PM'' ELSE [Session] END FROM inserted WHERE (ID_250 = ab.ID_250 OR ID_251 = ab.ID_251) AND Absence_Date = m.enddate)
-			, CASE WHEN  ab.Absence_In = ''Days'' THEN m.Duration ELSE 0 END
-			, CASE WHEN  ab.Absence_In = ''Hours'' THEN m.Duration ELSE 0 END
+			, m.Duration
 			, CASE WHEN  ab.[source] = ''pers'' THEN ae.ID_1 ELSE a.ID_1 END
 			, ab.Absence_In
 		FROM inserted ab
