@@ -260,6 +260,14 @@ function menu_MenuClick(sTool) {
 		return false;
 	}
 
+	//close History menu if navigating away
+	if ($('#' + sTool).hasClass('jstree-leaf')) {
+		//context menu item clicked. What group is it in?
+		var clickGroup = $('#' + sTool).closest('div').prev().text();
+		//remove history menu if clicking away.
+		if ((clickGroup != "History") && ($('#mnutoolHistory:visible').length > 0)) menu_setVisibleMenuItem('mnutoolHistory', false);
+	}
+
 	//Remapping of menu click ID's for menu refactor.
 
 	// Fixed Links ---------------------------------------------------------------------------------------------------
@@ -762,16 +770,18 @@ function menu_MenuClick(sTool) {
 		return;
 	}
 
-	if (sToolName == "mnutoolFindRecord") {
+	if (sToolName == "mnutoolFindRecord") {		
 		hasChanged = menu_saveChanges(sTool, true, false);
 		if (hasChanged == 6) { // 6 = No Change
 			menu_disableMenu();
+			menu_refreshHistoryScreensMenu(0);
 			menu_loadFindPage();
 		}
 		else if (hasChanged == 0) {  // 0 = Changed, allow prompted navigation.
 			OpenHR.modalPrompt("You have made changes. Click 'OK' to discard your changes, or 'Cancel' to continue editing.", 1, "Confirm").then(function (answer) {
 				if (answer == 1) {  // OK
 					menu_disableMenu();
+					menu_refreshHistoryScreensMenu(0);
 					menu_loadFindPage();
 	}
 				else {
@@ -4983,11 +4993,11 @@ function menu_loadSelectOrderFilter(psType) {
 
 	function menu_enableMenuItem(itemId, fNewSetting) {
 		if (fNewSetting == "True" || fNewSetting == true || fNewSetting == 1) {
-			$("#" + itemId + " a:first").removeAttr("disabled");
+			$("#" + itemId + " a:first").prop("disabled", false);
 		} else {
-			$("#" + itemId + " a:first").attr("disabled", "disabled");
+			$("#" + itemId + " a:first").prop("disabled", true);
 			$("#" + itemId + " a:first").css({ cursor: "default" });
-			if ($("#" + itemId + " a:first").hasClass("ui-menu-item")) { //Apply lightgrey color to disabled items on the context mennu only, not on the ribbon
+			if (($("#" + itemId + " a:first").hasClass("ui-menu-item")) || (itemId.substr(0, 3) == "HT_")) { //Apply lightgrey color to disabled items on the context mennu only, not on the ribbon
 				$("#" + itemId + " a:first").css({ color: "lightgrey" });
 			}
 		}
