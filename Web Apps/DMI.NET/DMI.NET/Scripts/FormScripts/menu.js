@@ -1,8 +1,10 @@
-﻿//Global
+﻿//Global variables
 if (typeof rowWasModified === 'undefined') {
 	var rowWasModified = false;
 	window.onbeforeunload = null;
 }
+
+var saveThisRowToDatabase = true;
 
 function menu_window_onload() {
 	var iLoop;

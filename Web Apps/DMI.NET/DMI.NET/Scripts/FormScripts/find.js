@@ -544,8 +544,9 @@ function find_window_onload() {
 						cancel: true,
 						cancelicon: 'icon-ban-circle',
 						editParams: {
-							aftersavefunc: function (rowid, response, options) {								
-								saveInlineRowToDatabase(rowid);																								
+							aftersavefunc: function (rowid, response, options) {
+								if (saveThisRowToDatabase)
+									saveInlineRowToDatabase(rowid);
 							}
 						},
 						addParams: {
@@ -847,7 +848,7 @@ function showLookupForColumn(element) {
 	}
 
 	if (!colModelContainsRequiredLookupColumn) {
-		OpenHR.modalMessage("Unable to display the filtered lookup records.<br/><br/>The lookup filter value is not present in this view.");
+		OpenHR.modalMessage("Unable to display the filtered lookup records.<br/><br/>The lookup filter value is not present in this find window.");
 		return false;
 	}
 
@@ -950,10 +951,10 @@ function selectValue(action, lookupColumnGridPosition, elementId, thisLookupColu
 		return;
 	}
 
-	var columnName = $("#LookupForEditableGrid_Table").getGridParam('colModel')[lookupColumnGridPosition].name;
 	var cellValue = ''; //Default for action="Clear"
 	
 	if (action == "Select") {
+		var columnName = $("#LookupForEditableGrid_Table").getGridParam('colModel')[lookupColumnGridPosition].name;
 		cellValue = $("#LookupForEditableGrid_Table").getRowData(rowId)[columnName];
 	}
 
@@ -967,7 +968,11 @@ function selectValue(action, lookupColumnGridPosition, elementId, thisLookupColu
 		//Save the row to the grid (not the database), restore it and then set the row back into edit mode;
 		//this is necessary so any lookup column filtered by another column will pickup the correct value to filter on
 		var findGridRowId = $("#findGridTable").getGridParam('selrow');
+		//The .saveRow line below triggers the aftersavefunc event which saves the row to the database;
+		//when setting a lookup value on a cell we don't want the value to be saved to the database, so...
+		saveThisRowToDatabase = false; // ...don't save to the database
 		$('#findGridTable').saveRow(findGridRowId);
+		saveThisRowToDatabase = true; // ...save to the database again (this is the normal behaviour)
 		$('#findGridTable').editRow(findGridRowId);
 	}
 }
