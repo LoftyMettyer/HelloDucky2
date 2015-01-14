@@ -9103,7 +9103,7 @@ $.jgrid.extend({
 				if(cnt > 0) {
 					svr.id = rowid; $t.p.savedRow.push(svr);
 					$(ind).attr("editable","1");
-					$("td:eq("+focus+") input",ind).focus();
+					if(!$("td:eq(" + focus + ") input", ind).hasClass('datepicker')) $("td:eq("+focus+") input",ind).focus();
 					if(o.keys===true) {
 						$(ind).bind("keydown",function(e) {
 							if (e.keyCode === 27) {
