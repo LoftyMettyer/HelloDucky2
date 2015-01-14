@@ -2892,6 +2892,7 @@ function menu_saveChanges(psAction, pfPrompt, pfTBOverride) {
 	var sLineage;
 	var frmWorkArea;
 	var frmRecEdit;
+	var frmFindForm;
 	var frmData;
 	var iIndex;
 		
@@ -2919,6 +2920,7 @@ function menu_saveChanges(psAction, pfPrompt, pfTBOverride) {
 
 	if (psToolName.substr(0, 3) == "HT_") {
 		frmRecEdit = OpenHR.getForm("workframe", "frmRecordEditForm");
+		frmFindForm = OpenHR.getForm("workframe", "frmFindForm");
 
 		if (frmRecEdit) {
 			frmWorkArea.txtGotoParentTableID.value = frmRecEdit.txtCurrentTableID.value;
@@ -2934,8 +2936,15 @@ function menu_saveChanges(psAction, pfPrompt, pfTBOverride) {
 			"_" + frmData.txtParentRecordID.value + ":" +
 			frmRecEdit.txtLineage.value;
 		} else {
-			//we're flipping between histories, so recedit is unavailable. Reuse previous values.
-			sLineage = "-1";	// flag to reuse session.
+			if (frmFindForm) {
+				//we're flipping between histories, so recedit is unavailable. Reuse previous values.
+				sLineage = "-1"; // flag to reuse session.
+
+				//load up the parent table details, as they're lost after inline editing.
+				frmWorkArea.txtGotoParentTableID.value = frmFindForm.txtCurrentParentTableID.value;			
+				frmWorkArea.txtGotoParentRecordID.value = frmFindForm.txtCurrentParentRecordID.value;
+
+			}
 		}
 
 	}

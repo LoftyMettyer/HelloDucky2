@@ -792,6 +792,8 @@ Namespace Controllers
 				Session("recordID") = Request.Form("txtGotoRecordID")
 				Session("firstRecPos") = Request.Form("txtGotoFirstRecPos")
 				Session("currentRecCount") = Request.Form("txtGotoCurrentRecCount")
+				Session("parentTableID") = Request.Form("txtGotoParentTableID")
+				Session("parentRecordID") = Request.Form("txtGotoParentRecordID")
 			Else
 				' Save the required table/view and screen IDs in session variables.
 				Session("action") = Request.Form("txtAction")
