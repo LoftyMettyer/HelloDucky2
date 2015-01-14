@@ -1342,7 +1342,12 @@ function menu_Navigate_LoadPage(sTool, sToolName, frmMenuInfo)
 	var frmData;
 	var sToolNameKey;
 
-				frmData = OpenHR.getForm("dataframe", "frmData");
+	try {
+		//clear down optionframe dialog (as it's reused by other things)
+		if ($('#optionframe').dialog('destroy')); //this may well fail if the dialog isn't yet initialised, but as it's in a try/catch....
+	} catch (e) { }
+
+	frmData = OpenHR.getForm("dataframe", "frmData");
 				sToolNameKey = sToolName.substr(0, 3);
 
 				if ((sToolNameKey == "PT_") ||
