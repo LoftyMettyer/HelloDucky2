@@ -646,6 +646,11 @@ function find_window_onload() {
 					window.onbeforeunload = null;
 					$('#findGridTable').jqGrid('setGridParam', { beforeSelectRow: function () { return true; } }); //Enable the selection of other rows
 					$('#findGridTable_searchButton').removeClass('ui-state-disabled'); //Enable search
+					//Enable navigation buttons on the jqgrid toolbar
+					$('#first_pager-coldata').removeClass('ui-state-disabled');
+					$('#prev_pager-coldata').removeClass('ui-state-disabled');
+					$('#next_pager-coldata').removeClass('ui-state-disabled');
+					$('#last_pager-coldata').removeClass('ui-state-disabled');
 					$('#pager-coldata_center input').removeAttr('readonly'); //Remove read only attribute from Page textbox
 					$("#findGridTable").jqGrid("setGridParam", { ondblClickRow: function (rowID) { menu_editRecord(); } }); //Enable double click on any row
 				});
@@ -655,6 +660,11 @@ function find_window_onload() {
 					window.onbeforeunload = null;
 					$('#findGridTable').jqGrid('setGridParam', { beforeSelectRow: function () { return true; } }); //Enable the selection of other rows
 					$('#findGridTable_searchButton').removeClass('ui-state-disabled'); //Enable search
+					//Enable navigation buttons on the jqgrid toolbar
+					$('#first_pager-coldata').removeClass('ui-state-disabled');
+					$('#prev_pager-coldata').removeClass('ui-state-disabled');
+					$('#next_pager-coldata').removeClass('ui-state-disabled');
+					$('#last_pager-coldata').removeClass('ui-state-disabled');
 					$('#pager-coldata_center input').removeAttr('readonly'); //Remove read only attribute from Page textbox
 					$("#findGridTable").jqGrid("setGridParam", { ondblClickRow: function (rowID) { menu_editRecord(); } }); //Enable double click on any row
 				});
