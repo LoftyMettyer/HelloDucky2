@@ -87,7 +87,7 @@
 				<div class="formField">
 					<label>Column :</label>
 					<select id="cboFieldColumn" name="cboFieldColumn"></select>
-					<select id="cboFieldDummyColumn" name="cboFieldDummyColumn" style="display: none" disabled="disabled"></select>
+					<select id="cboFieldDummyColumn" name="cboFieldDummyColumn" style="display: none" disabled=""></select>
 				</div>
 				<%If iPassBy = 1 Then%>
 				<br/>
