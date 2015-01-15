@@ -213,11 +213,13 @@ function menu_abMainMenu_DataReady() {
 
 function menu_abMainMenu_Click(pTool) {
 
+	//Reject clicks from elements with disabled class.
+	if ($("#" + pTool + " a:first").hasClass("disabled") == true) {
+		$("#" + pTool + " a:first").removeClass("ui-state-active");	//don't highlight disabled items.
+		return false;
+	} 
 
-	//reject disabled icon clicks
-	if ($("#" + pTool + " a:first").hasClass("disabled") == true) return false; // toolbar clicks
-	if ($("#" + pTool + " a:first").attr("disabled") == "disabled") return false;	// context menu clicks
-	menu_MenuClick(pTool);	
+	menu_MenuClick(pTool);
 	return true;
 }
 
@@ -5008,10 +5010,13 @@ function menu_loadSelectOrderFilter(psType) {
 }
 
 	function menu_enableMenuItem(itemId, fNewSetting) {
+		// Note: we use class 'disabled' instead of actually disabling the elements because jsTree removes disabled attributes.
+		// the function 'menu_abMainMenu_Click' looks for the disabled class and rejects the click.
+
 		if (fNewSetting == "True" || fNewSetting == true || fNewSetting == 1) {
-			$("#" + itemId + " a:first").prop("disabled", false);
+			$("#" + itemId + " a:first").removeClass("disabled"); 
 		} else {
-			$("#" + itemId + " a:first").prop("disabled", true);
+			$("#" + itemId + " a:first").addClass("disabled");
 			$("#" + itemId + " a:first").css({ cursor: "default" });
 			if (($("#" + itemId + " a:first").hasClass("ui-menu-item")) || (itemId.substr(0, 3) == "HT_")) { //Apply lightgrey color to disabled items on the context mennu only, not on the ribbon
 				$("#" + itemId + " a:first").css({ color: "lightgrey" });
