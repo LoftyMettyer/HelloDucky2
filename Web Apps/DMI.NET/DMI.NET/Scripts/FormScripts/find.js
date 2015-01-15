@@ -523,6 +523,7 @@ function find_window_onload() {
 					buttonicon: 'icon-search',
 					onClickButton: function () {
 						$("#findGridTable")[0].toggleToolbar(); // Toggle toolbar on & off when Search button is pressed.
+						$("#findGridTable")[0].clearToolbar(); // clear menu
 					},
 					position: 'first',
 					title: 'Search',
