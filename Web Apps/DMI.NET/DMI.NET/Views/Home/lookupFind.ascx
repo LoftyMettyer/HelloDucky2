@@ -51,9 +51,9 @@
 				resize: function () { //resize the grid to the height/width of its container.		
 					//$("#ssOleDBGrid").jqGrid('setGridWidth', $("#optionframe").width() - 20);
 					$("#ssOleDBGrid").jqGrid('setGridWidth', $("#lookupFindGridRow").width() - 5);
-					$("#ssOleDBGrid").jqGrid('setGridHeight', $("#optionframe").height() - 227);
-					
-				}
+					$("#ssOleDBGrid").jqGrid('setGridHeight', $("#optionframe").height() - 227);					
+				},
+				modal: true
 			});
 
 			// Set focus onto one of the form controls. 
