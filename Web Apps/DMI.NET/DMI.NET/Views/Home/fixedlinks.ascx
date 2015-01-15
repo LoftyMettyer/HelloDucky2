@@ -124,7 +124,7 @@
 	}
 
 	function fixedlinks_mnutoolAboutHRPro() {
-		$("#About").dialog("open");		
+		OpenHR.showAboutPopup();
 	}
 
 	function showThemeEditor() {

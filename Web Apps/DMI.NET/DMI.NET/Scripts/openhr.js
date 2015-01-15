@@ -1412,6 +1412,36 @@
 
 		}
 
+	},
+	showAboutPopup = function () {
+		var aboutUrl = window.ROOT + "/account/about";
+		if (window.ROOT.slice(-1) == "/") aboutUrl = window.ROOT + "account/about";
+
+		$.ajax({
+			url: aboutUrl,
+			dataType: 'html',
+			cache: false,
+			success: function (html) {
+				$('#About').html(html);
+
+				$("#About input[type=submit], input[type=button], button").button();
+				$("#About input").addClass("ui-widget ui-corner-all");
+				$("#About input").removeClass("text");
+
+				$("#About textarea").addClass("ui-widget ui-corner-tl ui-corner-bl");
+				$("#About textarea").removeClass("text");
+
+				$("#About select").addClass("ui-widget ui-corner-tl ui-corner-bl");
+				$("#About select").removeClass("text");
+				$("#About input[type=submit], input[type=button], button").removeClass("ui-corner-all");
+				$("#About input[type=submit], input[type=button], button").addClass("ui-corner-tl ui-corner-br");
+
+				$("#About").dialog("open");
+			},
+			error: function () {
+				
+			}
+		});
 	}
 
 	window.OpenHR = {
@@ -1465,7 +1495,8 @@
 		gridSelectLastRow: gridSelectLastRow,
 		gridPageDown: gridPageDown,
 		gridPageUp: gridPageUp,
-		gridKeyboardEvent: gridKeyboardEvent
+		gridKeyboardEvent: gridKeyboardEvent,
+		showAboutPopup: showAboutPopup
 	};
 	
 

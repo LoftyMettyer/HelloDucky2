@@ -1,201 +1,56 @@
-﻿<%@ import Namespace="System.Web.Configuration" %>
-<%@ Import Namespace="DMI.NET.Code" %>
-<%
-	Dim iNumRows As Integer
-%>
-<html>
-<head>
-	<script type="text/javascript">
-		/* Return to the default page. */
-		function about_cancelClick() {
-			$("#About").dialog("close");
-			return false;
-		}
+﻿<%@ Import Namespace="DMI.NET.Code" %>
 
-		<%_txtLocalServerValue = ApplicationSettings.LoginPage_Server%>
-		<%_txtLocalDatabaseValue = ApplicationSettings.LoginPage_Database%>
-	</script>
-
-	<script runat="server">
-		Private _txtLocalServerValue As String
-		Private _txtLocalDatabaseValue As String
-</script>
-</head>
-<body>
-
-<form method="post" id="frmAboutForm" name="frmAboutForm">
 	<div class="pageTitleDiv" style="margin-bottom: 15px">
 		<span class="pageTitle" id="PopupReportDefinition_PageTitle">About OpenHR</span>
 	</div>
-
-	<table style="text-align: center; border-spacing: 5px; border-collapse: collapse;" class="outline">
-		<tr>
-			<td>
-				<table style="text-align: center; border-spacing: 5px; border-collapse: collapse;" class="invisible">
-					<tr>
-						<td width="40"></td>
-						<td colspan="4">
-							<h3 align="center"></h3>
-						</td>
-						<td width="40"></td>
-					</tr>
-					<%If Len(ApplicationSettings.LoginPage_Server) = 0 Then
-							iNumRows = 12
-						Else
-							iNumRows = 16
-						End If
-					%>
-					<tr>
-						<td width="40" rowspan="<%=iNumRows %>"></td>
-						<td width="20" rowspan="<%=iNumRows %>"></td>
-						<td style="vertical-align: top; text-align: left; white-space: nowrap; padding-right: 10px;">OpenHR :&nbsp;
-						</td>
-						<td style="vertical-align: top; text-align: left; white-space: nowrap;">Version <%=session("Version")%></td>
-						<td width="40" rowspan="<%=iNumRows %>"></td>
-					</tr>
-
-					<%If Len(ApplicationSettings.LoginPage_Server) > 0 Then%>
-						<tr>
-							<td style="vertical-align: top; text-align: left; white-space: nowrap; padding-right: 10px;">Server : 
-							</td>
-							<td style="vertical-align: top; text-align: left; white-space: nowrap;">
-								<%=ApplicationSettings.LoginPage_Server%>
-							</td>
-						</tr>
-						<tr>
-							<td style="vertical-align: top; text-align: left; white-space: nowrap; padding-right: 10px;">Database : 
-							</td>
-							<td style="vertical-align: top; text-align: left; white-space: nowrap;">
-								<%=ApplicationSettings.LoginPage_Database%>
-							</td>
-						</tr>
-						<tr>
-							<td style="vertical-align: top; text-align: left; white-space: nowrap; padding-right: 10px;">Current user :
-							</td>
-							<td style="vertical-align: top; text-align: left; white-space: nowrap;">
-								<%=session("Username")%>
-							</td>
-						</tr>
-						<tr>
-							<td style="vertical-align: top; text-align: left; white-space: nowrap; padding-right: 10px;">User Group :
-							</td>
-							<td style="vertical-align: top; text-align: left; white-space: nowrap;">
-								<%=session("Usergroup")%>
-							</td>
-						</tr>
-					<%Else%>
-						<%--Get Server and DB from web config--%>
-						<tr>
-							<td style="vertical-align: top; text-align: left; white-space: nowrap; padding-right: 10px;">Server : 
-							</td>
-							<td style="vertical-align: top; text-align: left; white-space: nowrap;">
-								<%=_txtLocalServerValue%>
-							</td>
-						</tr>
-						<tr>
-							<td style="vertical-align: top; text-align: left; white-space: nowrap; padding-right: 10px;">Database : 
-							</td>
-							<td style="vertical-align: top; text-align: left; white-space: nowrap;">
-								<%=_txtLocalDatabaseValue%>
-							</td>
-						</tr>
-					<%End If%>
-						<tr>
-							<td style="vertical-align: top; text-align: left; white-space: nowrap; padding-right: 10px;">User Locale :
-							</td>
-							<td style="vertical-align: top; text-align: left; white-space: nowrap;">
-								<span id="spnAbout_LocaleCultureName"></span>
-							</td>
-						</tr>
-					<tr>
-						<td colspan="2" style="vertical-align: top; text-align: left; white-space: nowrap;">
-							<br />
-							Copyright © Advanced Business Software and Solutions Ltd 2014
-						</td>
-					</tr>
-					<tr>
-						<td colspan="2" style="vertical-align: top; text-align: left; white-space: nowrap;">
-							<a target="Advanced Website" href="http://www.advancedcomputersoftware.com/abs" class="hypertext">
-								http://www.advancedcomputersoftware.com/abs
-							</a>
-						</td>
-					</tr>
-					<tr>
-						<td colspan="2" style="vertical-align: top; text-align: left; white-space: nowrap;">&nbsp;
-						</td>
-					</tr>
-					<tr>
-						<td colspan="2" style="vertical-align: top; text-align: left; white-space: nowrap;">Contacts for Customer Services : 
-						</td>
-					</tr>
-					<tr>
-						<td style="vertical-align: top; text-align: left; white-space: nowrap; padding-right: 10px;">Telephone :
-						</td>
-						<td style="vertical-align: top; text-align: left; white-space: nowrap;">
-							<%If Session("SupportTelNo") = "" Then%>
-                              08451 609 999
-                            <%Else
-                            		Response.Write(Session("SupportTelNo"))
-                            	End If%>
-						</td>
-					</tr>
-					<tr>
-						<td style="vertical-align: top; text-align: left; white-space: nowrap; padding-right: 10px;">Email :
-						</td>
-						<td style="vertical-align: top; text-align: left; white-space: nowrap;">
-							<%If Session("SupportEmail") = "" Then%>
-							<a href="mailto://service.delivery@advancedcomputersoftware.com?subject=OpenHR Support Query - Intranet Login" class="hypertext">
-								service.delivery@advancedcomputersoftware.com</a>
-							<%Else%>
-							<a href="mailto://<%=session("SupportEmail") %>?subject=OpenHR Support Query - Web Login" class="hypertext">
-								<%=session("SupportEmail") %></a>
-							<%End If%>
-						</td>
-					</tr>
-					<tr>
-						<td style="vertical-align: top; text-align: left; white-space: nowrap; padding-right: 10px;">Web site :
-						</td>
-						<td style="vertical-align: top; text-align: left; white-space: nowrap;">
-							<%If Session("SupportWebpage") = "" Then%>
-							<a target="AdvancedSupportWebsite" href="http://webfirst.advancedcomputersoftware.com" class="hypertext">
-								http://webfirst.advancedcomputersoftware.com</a>
-							<%Else%>
-							<a target="AdvancedSupportWebsite" href="<%=session("SupportWebpage") %>" class="hypertext">
-								<%=session("SupportWebpage") %></a>
-							<%End If%>
-						</td>
-					</tr>
-					<tr>
-						<td colspan="2" style="vertical-align: top; text-align: left; white-space: nowrap;">&nbsp;
-						</td>
-					</tr>
-					<tr>
-						<td colspan="2" style="vertical-align: top; text-align: left; white-space: nowrap;">
-							<a target="AdvancedConnectWebsite" href="http://www.advancedconnect.co.uk/" class="hypertext">
-								Visit Advanced Connect for the latest OpenHR news and events</a>
-						</td>
-					</tr>
-					<tr>
-						<td colspan="6" style="vertical-align: top; text-align: left; white-space: nowrap;">&nbsp;
-						</td>
-					</tr>
-					
-					<tr>
-						<td colspan="6" style="text-align: right">
-							<input id="btnCancel" name="btnCancel" type="button" class="btn" value="OK"  style="width: 75px" 
-								onclick="about_cancelClick()" />
-						</td>
-					</tr>
-					<tr>
-						<td colspan="7" height="10"></td>
-					</tr>
-				</table>
-			</td>
-		</tr>
-	</table>
 	
-</form></body>
-</html>
+	<div class="formField">
+		<label>OpenHR :</label>
+		<label>Version <%:session("Version")%></label>
+		<br />
+		<label>Server :</label>
+		<label><%:ApplicationSettings.LoginPage_Server%></label>
+		<br />
+		<label>Database :</label>
+		<label><%:ApplicationSettings.LoginPage_Database%></label>
+		<%If Len(Session("Username")) > 0 Then%>
+			<br />
+			<label>Current user :</label>
+			<label><%:session("Username")%></label>
+			<br />
+			<label>User Group :</label>
+			<label><%:session("Usergroup")%></label>
+		<%End If%>		
+		<br/>
+		<label>User Locale :</label>
+		<span id="spnAbout_LocaleCultureName"></span>		
+
+		<h4>Copyright © Advanced Business Software and Solutions Ltd 2015</h4>
+		<a target="Advanced Website" href="http://www.advancedcomputersoftware.com/abs" class="hypertext">http://www.advancedcomputersoftware.com/abs</a>
+		<h4>Contacts for Customer Services : </h4>
+		<label>Telephone :</label>
+		<%If Session("SupportTelNo") = "" Then%>
+		<label>08451 609 999</label>
+		<%Else%>
+		<label><%:Session("SupportTelNo")%></label>
+		<%End If%>
+		<br/>
+		<label>Email :</label>
+		<%If Session("SupportEmail") = "" Then%>
+		<a href="mailto://service.delivery@advancedcomputersoftware.com?subject=OpenHR Support Query - Intranet Login" class="hypertext">service.delivery@advancedcomputersoftware.com</a>
+		<%Else%>
+		<a href="mailto://<%:session("SupportEmail") %>?subject=OpenHR Support Query - Web Login" class="hypertext"><%:session("SupportEmail") %></a>
+		<%End If%>
+		<label>Web site :</label>
+		<%If Session("SupportWebpage") = "" Then%>
+		<a target="AdvancedSupportWebsite" href="http://webfirst.advancedcomputersoftware.com" class="hypertext">http://webfirst.advancedcomputersoftware.com</a>
+		<%Else%>
+		<a target="AdvancedSupportWebsite" href="<%:session("SupportWebpage") %>" class="hypertext"><%:session("SupportWebpage") %></a>
+		<%End If%>
+		<br/>
+		<br/>
+		<a target="AdvancedConnectWebsite" href="http://www.advancedconnect.co.uk/" class="hypertext">Visit Advanced Connect for the latest OpenHR news and events</a>		
+	</div>
 
 <script type="text/javascript">
 	$("#spnAbout_LocaleCultureName")[0].innerHTML = window.UserLocale;

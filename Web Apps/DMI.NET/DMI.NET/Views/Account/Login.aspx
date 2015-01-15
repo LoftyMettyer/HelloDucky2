@@ -133,7 +133,7 @@
 
 			//Set up button click events
 			$('.loginTitleBar img').click(function () {
-				$("#About").dialog("open");
+				OpenHR.showAboutPopup();
 			});
 
 			$('#btnToggleDetailsDiv').click(function () {

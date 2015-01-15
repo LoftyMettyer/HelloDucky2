@@ -132,7 +132,7 @@
 	Loginerror_window_onload();
 	//Set up button click events
 	$('.loginTitleBar img').click(function () {
-		$("#About").dialog("open");
+		OpenHR.showAboutPopup();
 	});
 </script>
 

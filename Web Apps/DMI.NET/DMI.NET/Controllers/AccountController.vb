@@ -531,6 +531,9 @@ Namespace Controllers
 
 				Session("sessionContext") = Nothing
 
+				Session("Username") = vbNullString
+				Session("Usergroup") = vbNullString
+
 			Catch ex As Exception
 				Throw
 
@@ -586,6 +589,8 @@ Namespace Controllers
 		End Function
 
 		Function Loginerror() As ActionResult
+			Session("Username") = vbNullString
+			Session("Usergroup") = vbNullString
 			Return View()
 		End Function
 

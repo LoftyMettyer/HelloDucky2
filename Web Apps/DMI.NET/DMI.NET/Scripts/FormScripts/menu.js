@@ -3592,8 +3592,8 @@ function menu_pausecomp(millis) {
 }
 
 	function menu_mnutoolAboutHRPro() {
-	$("#About").dialog("open");
-}
+		OpenHR.showAboutPopup();
+	}
 
 
 
