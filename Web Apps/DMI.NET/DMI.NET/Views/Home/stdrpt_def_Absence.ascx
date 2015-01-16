@@ -96,7 +96,7 @@
 
 	' Absence types
 	For iCount = 0 To UBound(aAbsenceTypes) - 1
-		If objSettings.GetSystemSetting(strReportType, "Absence Type " & aAbsenceTypes(iCount), "0") = "1" Then
+		If objDatabase.GetSystemSetting(strReportType, "Absence Type " & aAbsenceTypes(iCount), "0") = "1" Then
 			Response.Write("frmAbsenceDefinition.chkAbsenceType_" & iCount & ".checked = 1;" & vbCrLf)
 		End If
 	Next
@@ -121,7 +121,7 @@
 	' Record Selection
 	If Session("optionRecordID") = "0" Then
 
-		strType = objSettings.GetSystemSetting(strReportType, "Type", "A").ToString()
+		strType = objDatabase.GetSystemSetting(strReportType, "Type", "A").ToString()
 		
 		Select Case strType
 			Case "A"
@@ -134,38 +134,38 @@
 				Response.Write("frmAbsenceDefinition.optFilter.checked = 0;" & vbCrLf)
 				Response.Write("frmAbsenceDefinition.txtBasePicklist.value = " & """" & CleanStringForJavaScript(objSettings.GetPicklistFilterName(strReportType, strType)) & """" & ";" & vbCrLf)
 				Response.Write("button_disable(frmAbsenceDefinition.cmdBasePicklist, false);" & vbCrLf)
-				Response.Write("frmPostDefinition.txtBasePicklistID.value = " & CleanStringForJavaScript(objSettings.GetSystemSetting(strReportType, "ID", "0")) & ";" & vbCrLf)
+				Response.Write("frmPostDefinition.txtBasePicklistID.value = " & CleanStringForJavaScript(objDatabase.GetSystemSetting(strReportType, "ID", "0")) & ";" & vbCrLf)
 			Case "F"
 				Response.Write("frmAbsenceDefinition.optAllRecords.checked = 0;" & vbCrLf)
 				Response.Write("frmAbsenceDefinition.optPickList.checked = 0;" & vbCrLf)
 				Response.Write("frmAbsenceDefinition.optFilter.checked = 1;" & vbCrLf)
 				Response.Write("frmAbsenceDefinition.txtBaseFilter.value = " & """" & CleanStringForJavaScript(objSettings.GetPicklistFilterName(strReportType, strType)) & """" & ";" & vbCrLf)
 				Response.Write("button_disable(frmAbsenceDefinition.cmdBaseFilter, false);" & vbCrLf)
-				Response.Write("frmPostDefinition.txtBaseFilterID.value = " & CleanStringForJavaScript(objSettings.GetSystemSetting(strReportType, "ID", "0")) & ";" & vbCrLf)
+				Response.Write("frmPostDefinition.txtBaseFilterID.value = " & CleanStringForJavaScript(objDatabase.GetSystemSetting(strReportType, "ID", "0")) & ";" & vbCrLf)
 		End Select
 	Else
 		Response.Write("RecordSelection.style.visibility = ""hidden"";" & vbCrLf)
 	End If
 
 	' Display picklist in header
-	Response.Write("frmAbsenceDefinition.chkPrintInReportHeader.checked =  " & CleanStringForJavaScript(objSettings.GetSystemSetting(strReportType, "PrintFilterHeader", "0")) & vbCrLf)
+	Response.Write("frmAbsenceDefinition.chkPrintInReportHeader.checked =  " & CleanStringForJavaScript(objDatabase.GetSystemSetting(strReportType, "PrintFilterHeader", "0")) & vbCrLf)
 
 	' Bradford Factor specific stuff
 	If Session("StandardReport_Type") = UtilityType.utlBradfordFactor Then
-		Response.Write("frmAbsenceDefinition.chkSRV.checked = " & CleanStringForJavaScript(objSettings.GetSystemSetting(strReportType, "SRV", "0")) & ";" & vbCrLf)
-		Response.Write("frmAbsenceDefinition.chkShowDurations.checked = " & CleanStringForJavaScript(objSettings.GetSystemSetting(strReportType, "Show Totals", "1")) & ";" & vbCrLf)
-		Response.Write("frmAbsenceDefinition.chkShowInstances.checked = " & CleanStringForJavaScript(objSettings.GetSystemSetting(strReportType, "Show Count", "0")) & ";" & vbCrLf)
-		Response.Write("frmAbsenceDefinition.chkShowFormula.checked = " & CleanStringForJavaScript(objSettings.GetSystemSetting(strReportType, "Show Workings", "0")) & ";" & vbCrLf)
-		Response.Write("frmAbsenceDefinition.chkShowAbsenceDetails.checked = " & CleanStringForJavaScript(objSettings.GetSystemSetting(strReportType, "Display Absence Details", "1")) & ";" & vbCrLf)
-		Response.Write("frmAbsenceDefinition.chkOmitBeforeStart.checked = " & CleanStringForJavaScript(objSettings.GetSystemSetting(strReportType, "Omit Before", "0")) & ";" & vbCrLf)
-		Response.Write("frmAbsenceDefinition.chkOmitAfterEnd.checked = " & CleanStringForJavaScript(objSettings.GetSystemSetting(strReportType, "Omit After", "0")) & ";" & vbCrLf)
-		Response.Write("frmAbsenceDefinition.chkMinimumBradfordFactor.checked = " & CleanStringForJavaScript(objSettings.GetSystemSetting(strReportType, "Minimum Bradford Factor", "0")) & ";" & vbCrLf)
-		Response.Write("frmAbsenceDefinition.txtMinimumBradfordFactor.value = " & CleanStringForJavaScript(objSettings.GetSystemSetting(strReportType, "Minimum Bradford Factor Amount", "0")) & ";" & vbCrLf)
-		Response.Write("frmAbsenceDefinition.chkOrderBy1Asc.checked = " & CleanStringForJavaScript(objSettings.GetSystemSetting(strReportType, "Order By Asc", "1")) & ";" & vbCrLf)
-		Response.Write("frmAbsenceDefinition.chkOrderBy2Asc.checked = " & CleanStringForJavaScript(objSettings.GetSystemSetting(strReportType, "Group By Asc", "1")) & ";" & vbCrLf)
+		Response.Write("frmAbsenceDefinition.chkSRV.checked = " & CleanStringForJavaScript(objDatabase.GetSystemSetting(strReportType, "SRV", "0")) & ";" & vbCrLf)
+		Response.Write("frmAbsenceDefinition.chkShowDurations.checked = " & CleanStringForJavaScript(objDatabase.GetSystemSetting(strReportType, "Show Totals", "1")) & ";" & vbCrLf)
+		Response.Write("frmAbsenceDefinition.chkShowInstances.checked = " & CleanStringForJavaScript(objDatabase.GetSystemSetting(strReportType, "Show Count", "0")) & ";" & vbCrLf)
+		Response.Write("frmAbsenceDefinition.chkShowFormula.checked = " & CleanStringForJavaScript(objDatabase.GetSystemSetting(strReportType, "Show Workings", "0")) & ";" & vbCrLf)
+		Response.Write("frmAbsenceDefinition.chkShowAbsenceDetails.checked = " & CleanStringForJavaScript(objDatabase.GetSystemSetting(strReportType, "Display Absence Details", "1")) & ";" & vbCrLf)
+		Response.Write("frmAbsenceDefinition.chkOmitBeforeStart.checked = " & CleanStringForJavaScript(objDatabase.GetSystemSetting(strReportType, "Omit Before", "0")) & ";" & vbCrLf)
+		Response.Write("frmAbsenceDefinition.chkOmitAfterEnd.checked = " & CleanStringForJavaScript(objDatabase.GetSystemSetting(strReportType, "Omit After", "0")) & ";" & vbCrLf)
+		Response.Write("frmAbsenceDefinition.chkMinimumBradfordFactor.checked = " & CleanStringForJavaScript(objDatabase.GetSystemSetting(strReportType, "Minimum Bradford Factor", "0")) & ";" & vbCrLf)
+		Response.Write("frmAbsenceDefinition.txtMinimumBradfordFactor.value = " & CleanStringForJavaScript(objDatabase.GetSystemSetting(strReportType, "Minimum Bradford Factor Amount", "0")) & ";" & vbCrLf)
+		Response.Write("frmAbsenceDefinition.chkOrderBy1Asc.checked = " & CleanStringForJavaScript(objDatabase.GetSystemSetting(strReportType, "Order By Asc", "1")) & ";" & vbCrLf)
+		Response.Write("frmAbsenceDefinition.chkOrderBy2Asc.checked = " & CleanStringForJavaScript(objDatabase.GetSystemSetting(strReportType, "Group By Asc", "1")) & ";" & vbCrLf)
 			 
-		lngDefaultColumnID = CInt(objSettings.GetModuleParameter("MODULE_PERSONNEL", "Param_FieldsSurname"))
-		lngConfigColumnID = CInt(objSettings.GetSystemSetting(strReportType, "Order By", lngDefaultColumnID))
+		lngDefaultColumnID = CInt(objDatabase.GetModuleParameter("MODULE_PERSONNEL", "Param_FieldsSurname"))
+		lngConfigColumnID = CInt(objDatabase.GetSystemSetting(strReportType, "Order By", lngDefaultColumnID))
 		'Response.Write "frmAbsenceDefinition.cboOrderBy1.value = " & """" & sFieldName & """" & ";" & vbcrlf
 		Response.Write("for (var i=0; i<frmAbsenceDefinition.cboOrderBy1.options.length; i++)" & vbCrLf)
 		Response.Write("	{" & vbCrLf)
@@ -175,8 +175,8 @@
 		Response.Write("		}" & vbCrLf)
 		Response.Write("	}" & vbCrLf)
 		
-		lngDefaultColumnID = objSettings.GetModuleParameter("MODULE_PERSONNEL", "Param_FieldsForename")
-		lngConfigColumnID = objSettings.GetSystemSetting(strReportType, "Group By", lngDefaultColumnID)
+		lngDefaultColumnID = objDatabase.GetModuleParameter("MODULE_PERSONNEL", "Param_FieldsForename")
+		lngConfigColumnID = objDatabase.GetSystemSetting(strReportType, "Group By", lngDefaultColumnID)
 		'Response.Write "frmAbsenceDefinition.cboOrderBy2.value = " & """" & sFieldName & """" & ";" & vbcrlf
 		Response.Write("for (var i=0; i<frmAbsenceDefinition.cboOrderBy2.options.length; i++)" & vbCrLf)
 		Response.Write("	{" & vbCrLf)
@@ -188,7 +188,7 @@
 	End If
 
 	' Output Options
-	Select Case objSettings.GetSystemSetting(strReportType, "Format", 0)
+	Select Case objDatabase.GetSystemSetting(strReportType, "Format", 0)
 		Case "0"
 			Response.Write("frmAbsenceDefinition.optDefOutputFormat0.checked = 1;" & vbCrLf)
 		Case "1"
@@ -214,13 +214,13 @@
 			Response.Write("frmAbsenceDefinition.optDefOutputFormat0.checked = 1" & vbCrLf)
 	End Select
 	
-	Response.Write("frmAbsenceDefinition.chkPreview.checked = " & CleanStringForJavaScript(objSettings.GetSystemSetting(strReportType, "Preview", 0)) & ";" & vbCrLf)
+	Response.Write("frmAbsenceDefinition.chkPreview.checked = " & CleanStringForJavaScript(objDatabase.GetSystemSetting(strReportType, "Preview", 0)) & ";" & vbCrLf)
 
 	Response.Write("strPrinterName = '';" & vbCrLf)
-	Response.Write("frmAbsenceDefinition.chkDestination2.checked = " & CleanStringForJavaScript(objSettings.GetSystemSetting(strReportType, "Save", 0)) & ";" & vbCrLf)
-	Response.Write("frmAbsenceDefinition.txtFilename.value = " & """" & CleanStringForJavaScript(objSettings.GetSystemSetting(strReportType, "FileName", "")) & """" & ";" & vbCrLf)
-
-	Select Case objSettings.GetSystemSetting(strReportType, "SaveExisting", 0)
+	Response.Write("frmAbsenceDefinition.chkDestination2.checked = " & CleanStringForJavaScript(objDatabase.GetSystemSetting(strReportType, "Save", 0)) & ";" & vbCrLf)
+	Response.Write("frmAbsenceDefinition.txtFilename.value = " & """" & CleanStringForJavaScript(objDatabase.GetSystemSetting(strReportType, "FileName", "")) & """" & ";" & vbCrLf)
+	
+	Select Case objDatabase.GetSystemSetting(strReportType, "SaveExisting", 0)
 		Case 0
 			strSaveExisting = "Overwrite"
 			Response.Write("frmAbsenceDefinition.cboSaveExisting.selectedIndex = 0;" & vbCrLf)
@@ -238,11 +238,11 @@
 			Response.Write("frmAbsenceDefinition.cboSaveExisting.selectedIndex = 4;" & vbCrLf)
 	End Select
 
-	Response.Write("frmAbsenceDefinition.chkDestination3.checked = " & CleanStringForJavaScript(objSettings.GetSystemSetting(strReportType, "Email", 0)) & ";" & vbCrLf)
+	Response.Write("frmAbsenceDefinition.chkDestination3.checked = " & CleanStringForJavaScript(objDatabase.GetSystemSetting(strReportType, "Email", 0)) & ";" & vbCrLf)
 	Response.Write("frmAbsenceDefinition.txtAbsenceEmailGroup.value = " & """" & CleanStringForJavaScript(objSettings.GetEmailGroupName(objSettings.GetSystemSetting(strReportType, "EmailAddr", "0"))) & """" & ";" & vbCrLf)
-	Response.Write("frmAbsenceDefinition.txtAbsenceEmailGroupID.value = " & """" & CleanStringForJavaScript(objSettings.GetSystemSetting(strReportType, "EmailAddr", "")) & """" & ";" & vbCrLf)
-	Response.Write("frmAbsenceDefinition.txtEmailAttachAs.value = " & """" & CleanStringForJavaScript(objSettings.GetSystemSetting(strReportType, "EmailAttachAs", "")) & """" & ";" & vbCrLf)
-	Response.Write("frmAbsenceDefinition.txtEmailSubject.value = " & """" & CleanStringForJavaScript(objSettings.GetSystemSetting(strReportType, "EmailSubject", "")) & """" & ";" & vbCrLf)
+	Response.Write("frmAbsenceDefinition.txtAbsenceEmailGroupID.value = " & """" & CleanStringForJavaScript(objDatabase.GetSystemSetting(strReportType, "EmailAddr", "")) & """" & ";" & vbCrLf)
+	Response.Write("frmAbsenceDefinition.txtEmailAttachAs.value = " & """" & CleanStringForJavaScript(objDatabase.GetSystemSetting(strReportType, "EmailAttachAs", "")) & """" & ";" & vbCrLf)
+	Response.Write("frmAbsenceDefinition.txtEmailSubject.value = " & """" & CleanStringForJavaScript(objDatabase.GetSystemSetting(strReportType, "EmailSubject", "")) & """" & ";" & vbCrLf)
 
 	Response.Write(vbCrLf & "}")
 	Response.Write("</script>" & vbCrLf)
@@ -749,7 +749,13 @@
 								<label class="ui-state-error-text">If file exists :</label>
 							</td>
 							<td colspan="2">
-								<select  id="cboSaveExisting" name="cboSaveExisting"></select>
+								<select id="cboSaveExisting" name="cboSaveExisting">
+									<option value="Overwrite">Overwrite</option>
+									<option value="Do not overwrite">Do not overwrite</option>
+									<option value="Add sequential number to name">Add sequential number to name</option>
+									<option value="Append to file">Append to file</option>
+								</select>
+												
 							</td>
 							<td></td>
 						</tr>

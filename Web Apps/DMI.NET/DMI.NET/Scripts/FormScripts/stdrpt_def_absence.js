@@ -48,7 +48,6 @@ function formatAbsenceClick(index) {
 
 	if (index == 1) {
 		frmAbsenceDefinition.chkDestination2.checked = true;
-		frmAbsenceDefinition.cboSaveExisting.length = 0;
 		frmAbsenceDefinition.txtFilename.value = '';
 	}
 	absenceBreakdownRefreshTab3Controls();
@@ -573,7 +572,6 @@ function absenceBreakdownRefreshTab3Controls() {
 					chkDestination2.checked = false;
 						checkbox_disable(chkDestination2, true);
 						combo_disable(cboSaveExisting, true);
-						cboSaveExisting.length = 0;
 						txtFilename.value = '';
 						text_disable(txtFilename, true);
 						button_disable(cmdFilename, true);
@@ -603,7 +601,6 @@ function absenceBreakdownRefreshTab3Controls() {
 						}	
 						else
 						{
-								cboSaveExisting.length = 0;
 								combo_disable(cboSaveExisting, true);
 								text_disable(txtFilename, true);
 								txtFilename.value = '';
@@ -642,7 +639,6 @@ function absenceBreakdownRefreshTab3Controls() {
 						}	
 						else
 						{
-								cboSaveExisting.length = 0;
 								combo_disable(cboSaveExisting, true);
 								text_disable(txtFilename, true);
 								txtFilename.value = '';
@@ -681,7 +677,6 @@ function absenceBreakdownRefreshTab3Controls() {
 						}	
 						else
 						{
-								cboSaveExisting.length = 0;
 								combo_disable(cboSaveExisting,  true);
 								text_disable(txtFilename, true);
 								txtFilename.value = '';
@@ -722,7 +717,6 @@ function absenceBreakdownRefreshTab3Controls() {
 						}	
 						else
 						{
-								cboSaveExisting.length = 0;
 								combo_disable(cboSaveExisting, true);
 								text_disable(txtFilename, true);
 								txtFilename.value = '';
