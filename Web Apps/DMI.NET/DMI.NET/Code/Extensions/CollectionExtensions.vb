@@ -15,7 +15,7 @@ Namespace Code.Extensions
 
 			Dim results = New With {.total = 1, .page = 1, .records = 1, .rows = items}
 			Dim jsonSerialiser = New JavaScriptSerializer()
-			Dim json = jsonSerialiser.Serialize(results)
+			Dim json = HttpUtility.JavaScriptStringEncode(jsonSerialiser.Serialize(results))
 			Return MvcHtmlString.Create(json)
 
 		End Function
