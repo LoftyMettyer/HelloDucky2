@@ -5297,18 +5297,12 @@ function saveInlineRowToDatabase(rowId) {
 
 	window.savedRow = rowId;
 	OpenHR.submitForm(frmDataArea, null, true, null, null, submitFollowOn);
-
-	rowWasModified = false; //The 'rowWasModified' variable is defined as global in Find.ascx
-	window.onbeforeunload = null;
 }
 
 function submitFollowOn() {
 	var rowId = window.savedRow; //$("#findGridTable").getGridParam('selrow');
 	
 	if (frmData.txtErrorMessage.value != "") { //There was an error while saving
-		$("#findGridTable").jqGrid('restoreRow', rowId, null); //Restore the row
-		updateRowFromDatabase(rowId); //Get the row data from the database
-
 		$("#findGridTable").editRow(rowId); //Edit the row
 
 		//After a brief timeout, enable "Add" and "Edit" and disable "Save" and "Cancel"
@@ -5318,11 +5312,22 @@ function submitFollowOn() {
 			$("#findGridTable_ilsave").removeClass("ui-state-disabled");
 			$("#findGridTable_ilcancel").removeClass("ui-state-disabled");
 		}, 100);
+
+		indicateThatRowWasModified();
+		//Disable navigation buttons on the jqgrid toolbar
+		$('#first_pager-coldata').addClass('ui-state-disabled');
+		$('#prev_pager-coldata').addClass('ui-state-disabled');
+		$('#next_pager-coldata').addClass('ui-state-disabled');
+		$('#last_pager-coldata').addClass('ui-state-disabled');
+		$('#pager-coldata_center input').prop('readonly', 'true'); //Make Page textbox read only
+		$("#findGridTable").jqGrid("setGridParam", { ondblClickRow: function (rowID) { return false; } }); //Disable double click on any row
 	} else {
 		//Mark row as changed if we've successfully saved the record.
 		try {
 			updateRowFromDatabase(rowId);	//Get the row data from the database (show calculated values etc)
 			$("#findGridTable #" + rowId + ">td:first").css('border-left', '4px solid green');
+			rowWasModified = false; //The 'rowWasModified' variable is defined as global in Find.ascx
+			window.onbeforeunload = null;
 		} catch (e) { }
 	}
 }

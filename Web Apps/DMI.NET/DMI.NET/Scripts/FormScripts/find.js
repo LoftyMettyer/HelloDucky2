@@ -1,4 +1,5 @@
-﻿
+﻿var rowIsEditedOrNew = "";
+
 //todo remove this function!
 //New functionality - get the selected row's record ID from the hidden tag		
 function getRecordID(rowID) {
@@ -627,6 +628,7 @@ function find_window_onload() {
 					$('#last_pager-coldata').addClass('ui-state-disabled');
 					$('#pager-coldata_center input').prop('readonly', 'true'); //Make Page textbox read only
 					$("#findGridTable").jqGrid("setGridParam", { ondblClickRow: function (rowID) { return false; } }); //Disable double click on any row
+					rowIsEditedOrNew = "new";
 				});
 
 				$('#findGridTable_iledit').on('click', function (e) {
@@ -640,6 +642,7 @@ function find_window_onload() {
 					$('#last_pager-coldata').addClass('ui-state-disabled');
 					$('#pager-coldata_center input').prop('readonly', 'true'); //Make Page textbox read only
 					$("#findGridTable").jqGrid("setGridParam", { ondblClickRow: function (rowID) { return false; } }); //Disable double click on any row
+					rowIsEditedOrNew = "edited";
 				});
 
 				$('#findGridTable_ilsave').on('click', function (e) {
@@ -654,6 +657,7 @@ function find_window_onload() {
 					$('#last_pager-coldata').removeClass('ui-state-disabled');
 					$('#pager-coldata_center input').removeAttr('readonly'); //Remove read only attribute from Page textbox
 					$("#findGridTable").jqGrid("setGridParam", { ondblClickRow: function (rowID) { menu_editRecord(); } }); //Enable double click on any row
+					rowIsEditedOrNew = "";
 				});
 
 				$('#findGridTable_ilcancel').on('click', function (e) {
@@ -668,6 +672,13 @@ function find_window_onload() {
 					$('#last_pager-coldata').removeClass('ui-state-disabled');
 					$('#pager-coldata_center input').removeAttr('readonly'); //Remove read only attribute from Page textbox
 					$("#findGridTable").jqGrid("setGridParam", { ondblClickRow: function (rowID) { menu_editRecord(); } }); //Enable double click on any row
+
+					if (rowIsEditedOrNew != "add") { // i.e "edited" or ""
+						var rowId = $("#findGridTable").getGridParam('selrow');
+						updateRowFromDatabase(rowId); //Get the row data from the database
+						$("#findGridTable").jqGrid('restoreRow', rowId, null); //Restore the row
+					}
+					rowIsEditedOrNew = "";
 				});
 
 				$("#pager-coldata .navtable .ui-pg-div>span.ui-icon-refresh").addClass("icon-refresh");
