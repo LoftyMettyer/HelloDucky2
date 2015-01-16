@@ -386,8 +386,6 @@ Namespace Repository
 					objModel.BaseTableID = SettingsConfig.Personnel_EmpTableID
 					objModel.Owner = _username
 					objModel.Output.ToScreen = True
-					objModel.BaseTableName = String.Empty
-
 				Else
 
 					objModel.ID = ID
@@ -401,9 +399,6 @@ Namespace Repository
 					If dsDefinition.Tables(0).Rows.Count = 1 Then
 
 						Dim row As DataRow = dsDefinition.Tables(0).Rows(0)
-						Dim baseTableId = CInt(row("BaseTableID"))
-						Dim objBaseTable = _objSessionInfo.Tables.Where(Function(m) m.ID = baseTableId).FirstOrDefault
-						objModel.BaseTableName = objBaseTable.Name
 
 						objModel.Description1ID = CInt(row("Description1Id"))
 						objModel.Description2ID = CInt(row("Description2Id"))

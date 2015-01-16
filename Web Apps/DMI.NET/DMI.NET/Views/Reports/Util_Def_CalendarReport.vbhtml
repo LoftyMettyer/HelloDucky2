@@ -116,8 +116,8 @@ End Code
 		var bGroupBySelected = $("#chkGroupByDescription").prop('checked');
 		combo_disable((".selectRegionID"), bGroupBySelected);
 
-		//If  the Base Table is anything other than Personnel Records then 'Include Bank Holidays', 'Working Days Only' and 'Show Bank Holidays' should disable.
-		var bIsPersonnelRecords = ($("#BaseTableID option:selected").text().toUpperCase() == 'PERSONNEL_RECORDS');
+		//If  the Base Table value is anything other than Primary table value then 'Include Bank Holidays', 'Working Days Only' and 'Show Bank Holidays' should disable.
+		var bIsPersonnelRecords = ($("#BaseTableID option:selected").val() == '@SettingsConfig.Personnel_EmpTableID');
 		if (bIsPersonnelRecords && bGroupBySelected) {
 			enableDisableWorkingDaysOrHolidays(bGroupBySelected);
 		}
@@ -197,8 +197,8 @@ End Code
 		$('input[type=number]').numeric();
 		$('#Description2ID,#Description1ID').css({ "width": "100%", "float": "right" });
 		$('#description, #Name').css('width', $('#Description1ID').width());
-		
-		// If 'Group by Description' is ticked then 'Include Bank Holidays', 'Working Days Only' ,'Show Bank Holidays' and Region  should disable.	Or  If 'Include Bank Holidays', 'Working Days Only' or 'Show Bank Holidays'  are ticked OR 'Region selected index not equal to 0' than 'Group by Description' should disable.		
+
+		// If 'Group by Description' is ticked then 'Include Bank Holidays', 'Working Days Only' ,'Show Bank Holidays' and Region  should disable.	Or  If 'Include Bank Holidays', 'Working Days Only' or 'Show Bank Holidays'  are ticked OR 'Region selected index not equal to 0' than 'Group by Description' should disable.
 		if ($("#ActionType").val() == '@UtilityActionType.Edit')
 		{
 			if ($('#chkGroupByDescription').prop('checked')) {
@@ -211,8 +211,8 @@ End Code
 				$("#label_ShowBankHolidays").css('opacity', '0.5');
 			}
 			else
-			{								
-				enableDisableGroupByOrWorkingDaysOrHolidays();				
+			{
+				enableDisableGroupByOrWorkingDaysOrHolidays();
 			}
 		}
 
@@ -226,7 +226,7 @@ End Code
 		OpenHR.submitForm(frmSubmit);
 	}
 
-	//If the Base Table is Personnel Records then 'Include Bank Holidays', 'Working Days Only' and 'Show Bank Holidays' should enable.
+	//If the Base Table value is Primary table value then 'Include Bank Holidays', 'Working Days Only' and 'Show Bank Holidays' should enable.
 	function enableDisableGroupByOrWorkingDaysOrHolidays() {
 		var regionValue = $("#RegionID").val();
 		var IsHolidaySelected = $('#IncludeBankHolidays').prop('checked') || $('#WorkingDaysOnly').prop('checked') || $('#ShowBankHolidays').prop('checked') || (regionValue != 0);
@@ -240,8 +240,11 @@ End Code
 			$("#label_GroupByDescription").css("color", "#000000");
 		}
 
-		var bIsPersonnelRecords = ('@Model.BaseTableName.ToUpper()' == 'PERSONNEL_RECORDS');
+		var bIsPersonnelRecords = ('@Model.BaseTableID' == '@SettingsConfig.Personnel_EmpTableID');
 		if (bIsPersonnelRecords == false) {
+			$('#IncludeBankHolidays').prop('checked', false);
+			$('#WorkingDaysOnly').prop('checked', false);
+			$('#ShowBankHolidays').prop('checked', false);
 			$('#IncludeBankHolidays').prop('disabled', !bIsPersonnelRecords);
 			$('#WorkingDaysOnly').prop('disabled', !bIsPersonnelRecords);
 			$('#ShowBankHolidays').prop('disabled', !bIsPersonnelRecords);
@@ -263,10 +266,10 @@ End Code
 		}
 		else {
 			$("#label_GroupByDescription").css("color", "#000000");
-		}	
+		}
 	}
 
-	//If the Base Table is Personnel Records then 'Include Bank Holidays', 'Working Days Only' and 'Show Bank Holidays' should enable.
+	//If the Base Table value is Primary table value then 'Include Bank Holidays', 'Working Days Only' and 'Show Bank Holidays' should enable.
 	function enableDisableWorkingDaysOrHolidays(bDisabled) {
 		$('#IncludeBankHolidays').prop('checked', false);
 		$('#WorkingDaysOnly').prop('checked', false);
@@ -288,7 +291,7 @@ End Code
 		}
 	}
 
-	
+
 
 	$("#workframe").attr("data-framesource", "UTIL_DEF_CALENDARREPORT");
 

@@ -190,9 +190,9 @@
 					attachGridToSelectedColumns();
 				}
 
-				if ( ($("#txtReportType").val() == '@UtilityType.utlCalendarReport' ) && ($("#ActionType").val() == '@UtilityActionType.New') ) {
-					//If  the Base Table is anything other than Personnel Records then 'Include Bank Holidays', 'Working Days Only' and 'Show Bank Holidays' should disable
-					var bIsPersonnelRecords = ($("#BaseTableID option:selected").text().toUpperCase() == 'PERSONNEL_RECORDS');
+				if (($("#txtReportType").val() == '@UtilityType.utlCalendarReport') && ($("#ActionType").val() == '@UtilityActionType.New')) {
+				//If  the Base Table value is anything other than Primary table value then 'Include Bank Holidays', 'Working Days Only' and 'Show Bank Holidays' should disable
+					var bIsPersonnelRecords = ($("#BaseTableID option:selected").val() == '@SettingsConfig.Personnel_EmpTableID');
 					disableEnableWorkingDaysOrHolidays(!bIsPersonnelRecords);
 				}
 			}
@@ -414,8 +414,8 @@
 					$('#ShowCaptions').prop('checked', 'checked');
 					$('#ShowWeekends').prop('checked', 'checked');
 					$('#StartOnCurrentMonth').prop('checked', 'checked');
-					//If  the Base Table is anything other than Personnel Records then 'Include Bank Holidays', 'Working Days Only' and 'Show Bank Holidays' should disable
-					var bIsPersonnelRecords = ($("#BaseTableID option:selected").text().toUpperCase() == 'PERSONNEL_RECORDS');
+					//If  the Base Table value is anything other than Primary table value then 'Include Bank Holidays', 'Working Days Only' and 'Show Bank Holidays' should disable
+					var bIsPersonnelRecords = ($("#BaseTableID option:selected").val() == '@SettingsConfig.Personnel_EmpTableID');
 					if ($('#chkGroupByDescription').prop('checked') && bIsPersonnelRecords) {
 						disableEnableWorkingDaysOrHolidays(bIsPersonnelRecords);
 					}
@@ -776,7 +776,7 @@
 	}
 
 	//If the Base Table is Personnel Records then 'Include Bank Holidays', 'Working Days Only' and 'Show Bank Holidays' should enable.
-	function disableEnableWorkingDaysOrHolidays(bDisabled) {		
+	function disableEnableWorkingDaysOrHolidays(bDisabled) {
 		$('#IncludeBankHolidays').prop('disabled', bDisabled);
 		$('#WorkingDaysOnly').prop('disabled', bDisabled);
 		$('#ShowBankHolidays').prop('disabled', bDisabled);
