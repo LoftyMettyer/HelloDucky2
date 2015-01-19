@@ -334,6 +334,18 @@
 			return sTempValue;
 		}
 	}
+
+	function cancelSelection()
+	{	
+			if ($("#ssOleDBGrid").getGridParam('reccount') == 0) { 
+					//Hide Remove and RemoveAll button
+					button_disable(frmDefinition.cmdRemove, true); 
+					button_disable(frmDefinition.cmdRemoveAll, true); 
+					button_disable(frmDefinition.cmdFilteredAdd, false); 
+				}			
+			closeclick();
+	}
+
 </script>
 
 <div class="absolutefull optiondatagridpage">
@@ -511,7 +523,7 @@
 
 	<footer>
 		<button id="cmdSelectFilter" name="cmdSelectFilter" disabled="disabled" onclick="makeSelection()" style="width: 80px;">OK</button>
-		<button id="cmdCancelFilter" name="cmdCancelFilter" onclick="closeclick()" style="width: 80px;">Cancel</button>
+		<button id="cmdCancelFilter" name="cmdCancelFilter" onclick="cancelSelection()" style="width: 80px;">Cancel</button>
 	</footer>
 
 </div>
