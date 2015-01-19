@@ -115,6 +115,11 @@ Namespace Controllers
 					End If
 				Next
 
+				' Check if all selected columns / calculations are hidden
+				If (hiddenColumnsCount = objModel.Columns.Count) Then
+					ModelState.AddModelError("AreAllColumnsHiddden", "All columns / calculations selected in this definition are defined as hidden.")
+				End If
+
 				' Check the column headings are unique.
 				Dim breakNestedLoop As Boolean
 				For Each columnItem As ReportColumnItem In objModel.Columns
@@ -198,11 +203,6 @@ Namespace Controllers
 			Else
 				If ModelState.IsValid Then
 					objSaveWarning = objReportRepository.ServerValidate(objModel)
-					' Check if all selected columns are hidden, if yes ask for the save confirmation
-					If (hiddenColumnsCount = objModel.Columns.Count) Then
-						objSaveWarning.ErrorCode = ReportValidationStatus.Overwrite
-						objSaveWarning.ErrorMessage = "All columns / calculations selected in this definition are defined as hidden.<br/><br/> Do you wish to continue?"
-					End If
 				Else
 					objSaveWarning = ModelState.ToWebMessage
 				End If
