@@ -754,6 +754,7 @@
 									<option value="Do not overwrite">Do not overwrite</option>
 									<option value="Add sequential number to name">Add sequential number to name</option>
 									<option value="Append to file">Append to file</option>
+									<option value="CreateNewSheet">Create new sheet in workbook</option>
 								</select>
 												
 							</td>
