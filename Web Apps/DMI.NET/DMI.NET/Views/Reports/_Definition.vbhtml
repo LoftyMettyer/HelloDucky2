@@ -639,7 +639,7 @@
 	function removeAllChildTables(baseTableChanged) {
 
 		var data = { ReportID: "@Model.ID", ReportType: "@Model.ReportType" }
-		OpenHR.postData("Reports/RemoveAllChildTables", data, removeAllChildTablesCompleted(baseTableChanged));
+		OpenHR.postData("Reports/RemoveAllChildTables", data, function () { removeAllChildTablesCompleted(baseTableChanged) });
 		enableSaveButton();
 	}
 
