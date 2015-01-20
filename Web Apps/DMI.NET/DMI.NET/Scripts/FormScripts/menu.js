@@ -5350,7 +5350,7 @@ function showDatabaseMenuGroup() {
 
 function updateRowFromDatabase(rowid) {
 	var recordID = $("#findGridTable").jqGrid('getCell', rowid, 'ID');
-	alert(recordID);
+	
 	if (recordID == "")
 		return false; //It's a new row, we don't have its ID from the database, the call below would fail, so just return false
 
