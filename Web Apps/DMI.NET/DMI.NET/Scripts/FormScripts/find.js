@@ -498,7 +498,7 @@ function find_window_onload() {
 				$("#findGridTable").jqGrid({
 					data: colData,
 					datatype: "local",
-					colNames: colNamesOriginal,
+					colNames: colNames,
 					colModel: colModel,
 					rowNum: 50,
 					width: gridWidth,
