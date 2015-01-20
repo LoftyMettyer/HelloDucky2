@@ -462,9 +462,10 @@
 
 		//set up ROOT variable for use in external JS files.
 		window.ROOT = '<%= Url.Content("~/") %>';		
-
-		var language = window.navigator.userLanguage || window.navigator.language;
 		
+		var language = window.navigator.userLanguage || window.navigator.language;
+		if (navigator.browserLanguage) language = navigator.browserLanguage;
+				
 		//Set locale-related global variables
 		window.UserLocale = language;
 		window.LocaleThousandSeparator = "<%=LocaleThousandSeparator%>";
