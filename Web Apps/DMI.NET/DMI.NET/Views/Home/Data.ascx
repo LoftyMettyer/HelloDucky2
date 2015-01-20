@@ -13,7 +13,7 @@
 %>
 
 <script type="text/javascript">
-	function data_window_onload() {
+	function data_window_onload() {		
 		var frmData = document.getElementById("frmData");
 		var frmGetData = document.getElementById("frmGetData");
 		var frmMenuInfo = OpenHR.getForm("menuframe", "frmMenuInfo");
@@ -78,8 +78,8 @@
 				
 				if ((sAction == "LOAD")	
 					&& (frmData.txtOriginalRecordID.value != frmData.txtNewRecID.value)
-					&& (frmData.txtOriginalRecordID.value != 0))	{
-
+					&& (frmData.txtOriginalRecordID.value != 0)) {
+					
 					menu_refreshMenu();	
 					
 					if (recEditForm.txtRecEditFilterSQL.value == "") {
@@ -460,6 +460,18 @@
 					// Get menu to refresh the menu.
 					menu_refreshMenu();		  
 				}
+
+
+				if (frmData.txtAction.value == "REFRESHFINDAFTERINSERT") {
+					//we're reloading after creating an inline new record		
+					var newID = '<%:Session("recordID")%>';
+					if (Number(newID) > 0) {
+						var iRowId = $("#findGridTable").getGridParam('selrow');
+						$("#findGridTable").jqGrid('setCell', iRowId, 'ID', newID);
+					}
+				}
+
+
 			}
 			else if ((sCurrentWorkPage == "UTIL_DEF_CUSTOMREPORTS") ||
 					 (sCurrentWorkPage == "UTIL_DEF_CALENDARREPORT") ||

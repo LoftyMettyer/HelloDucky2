@@ -5272,6 +5272,11 @@ function saveInlineRowToDatabase(rowId) {
 	var frmDataArea = OpenHR.getForm("dataframe", "frmGetData");
 	frmDataArea.txtAction.value = "SAVE";
 
+	//get record id. if it's zero, get new.
+	if (selectedRecordID() == "") {
+		frmDataArea.txtReaction.value = "REFRESHFINDAFTERINSERT";
+	}
+
 	frmDataArea.txtCurrentViewID.value = $("#txtCurrentViewID").val();;
 	frmDataArea.txtCurrentTableID.value = $("#txtCurrentTableID").val();
 	frmDataArea.txtRealSource.value = $("#txtRealSource").val();
@@ -5323,7 +5328,7 @@ function submitFollowOn() {
 	} else {
 		//Mark row as changed if we've successfully saved the record.
 		try {
-			updateRowFromDatabase(rowId);	//Get the row data from the database (show calculated values etc)
+			updateRowFromDatabase(rowId); //Get the row data from the database (show calculated values etc)
 			$("#findGridTable #" + rowId + ">td:first").css('border-left', '4px solid green');
 			rowWasModified = false; //The 'rowWasModified' variable is defined as global in Find.ascx
 			window.onbeforeunload = null;
@@ -5345,7 +5350,7 @@ function showDatabaseMenuGroup() {
 
 function updateRowFromDatabase(rowid) {
 	var recordID = $("#findGridTable").jqGrid('getCell', rowid, 'ID');
-
+	alert(recordID);
 	if (recordID == "")
 		return false; //It's a new row, we don't have its ID from the database, the call below would fail, so just return false
 
