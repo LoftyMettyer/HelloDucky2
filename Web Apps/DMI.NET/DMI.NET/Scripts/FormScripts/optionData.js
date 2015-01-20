@@ -87,6 +87,9 @@ function optiondata_onload() {
 									case "decimal":
 										colMode.push({ name: sColumnName, edittype: "numeric", sorttype: 'integer', formatter: 'numeric', formatoptions: { disabled: true }, align: 'right', width: 100 });
 										break;
+									case "int32":
+										colMode.push({ name: sColumnName, edittype: "integer", sorttype: 'integer', formatter: 'integer', formatoptions: { disabled: true }, align: 'right', width: 100 });
+										break;
 									case "datetime": //Date - 135
 										colMode.push({ name: sColumnName, edittype: "date", sorttype: 'date', formatter: 'date', formatoptions: { srcformat: dateFormat, newformat: dateFormat, disabled: true }, align: 'left', width: 100 });
 										break;
