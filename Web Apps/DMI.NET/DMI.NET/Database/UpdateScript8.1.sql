@@ -664,7 +664,7 @@ BEGIN
 	END
 
 	-- Definition
-	SELECT @psReportName AS [Name], [description], userName AS [owner],		
+	SELECT @psReportName AS [Name], [description], @psReportOwner AS [owner],		
 		tableID AS BaseTableID,		
 		selection AS SelectionType,
 		picklistID,	
