@@ -262,7 +262,152 @@
 								' Instantiate and initialise the grid. 
 								Response.Write("<table class='outline' style='width : 100%; ' id='findGridTable'>" & vbCrLf)
 								Response.Write("<div id='pager-coldata'></div>" & vbCrLf)
-										
+
+								'Output the grid definition (i.e. columns)
+								For iloop = 0 To (rstFindRecords.Columns.Count - 1)
+									If (rstFindRecords.Columns(iloop).ColumnName = "ID" OrElse rstFindRecords.Columns(iloop).ColumnName = "Timestamp") Then
+										sColDef = Replace(rstFindRecords.Columns(iloop).ColumnName, "_", " ") & "	" & rstFindRecords.Columns(iloop).DataType.ToString.Replace("System.", "")
+										Response.Write(String.Format("<input type='hidden' id='txtFindColDef_{0}' name='txtFindColDef_{0}' value='{1}' data-colname='{2}' data-type='{3}'>" _
+												 , iloop, sColDef, rstFindRecords.Columns(iloop).ColumnName, "integer", vbCrLf))
+									Else
+										Dim objRow = rstFindDefinition.Select("ColumnName='" & rstFindRecords.Columns(iloop).ColumnName & "'")
+										sColDef = Replace(rstFindRecords.Columns(iloop).ColumnName, "_", " ") & "	" & rstFindRecords.Columns(iloop).DataType.ToString.Replace("System.", "")
+										Response.Write(String.Format("<input type='hidden' id='txtFindColDef_{0}' name='txtFindColDef_{0}' value='{1}' data-colname='{2}' data-datatype='{3}' data-columnid='{4}' data-editable='{5}' data-controltype='{6}' data-size='{7}' data-decimals='{8}' data-lookuptableid='{9}' data-lookupcolumnid='{10}' data-spinnerminimum='{11}' data-spinnermaximum='{12}' data-spinnerincrement='{13}' data-lookupfiltercolumnid='{14}' data-lookupfiltervalueid='{15}' data-Mask='{16}' data-DefaultValueExprID='{17}'>" _
+												 , iloop, sColDef, objRow.FirstOrDefault.Item("columnNameOriginal"), _
+												 objRow.FirstOrDefault.Item("datatype"), _
+												 objRow.FirstOrDefault.Item("columnID"), _
+												 objRow.FirstOrDefault.Item("updateGranted"), _
+												 objRow.FirstOrDefault.Item("controltype"), _
+												 objRow.FirstOrDefault.Item("size"), _
+												 objRow.FirstOrDefault.Item("decimals"), _
+												 objRow.FirstOrDefault.Item("LookupTableID"), _
+												 objRow.FirstOrDefault.Item("LookupColumnID"), _
+												 objRow.FirstOrDefault.Item("SpinnerMinimum"), _
+												 objRow.FirstOrDefault.Item("SpinnerMaximum"), _
+												 objRow.FirstOrDefault.Item("SpinnerIncrement"), _
+												 objRow.FirstOrDefault.Item("LookupFilterColumnID"), _
+												 objRow.FirstOrDefault.Item("LookupFilterValueID"), _
+												 objRow.FirstOrDefault.Item("Mask"),
+												 objRow.FirstOrDefault.Item("DefaultValueExprID") _
+												 , vbCrLf))
+
+										'Save the default value for this column in an array
+										columnsDefaultValues = String.Concat(columnsDefaultValues, """", objRow.FirstOrDefault.Item("columnID"), """:""", EncodeStringToJavascriptSpecialCharacters(objRow.FirstOrDefault.Item("DefaultValue")), """,")
+												
+										'If column is a Lookup, we need to get its associated data
+										If (objRow.FirstOrDefault.Item("datatype") = 12 Or objRow.FirstOrDefault.Item("datatype") = 2) And objRow.FirstOrDefault.Item("controltype") = 2 And objRow.FirstOrDefault.Item("LookupColumnID") <> 0 Then
+											Dim objDatabase As Database = CType(Session("DatabaseFunctions"), Database)
+											'Dim objDataAccess As clsDataAccess = CType(Session("DatabaseAccess"), clsDataAccess)
+
+											Dim objTable = objDatabase.GetTableFromColumnID(objRow.FirstOrDefault.Item("LookupColumnID"))
+											Dim fIsLookupTable = (objTable.TableType = TableTypes.tabLookup)
+
+											Dim _prmError = New SqlParameter("pfError", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
+											Dim _prmIsFirstPage = New SqlParameter("pfFirstPage", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
+											Dim _prmIsLastPage = New SqlParameter("pfLastPage", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
+											Dim _prmColumnType = New SqlParameter("piColumnType", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
+											Dim _prmTotalRecCount = New SqlParameter("piTotalRecCount", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
+											Dim _prmFirstRecPos = New SqlParameter("piFirstRecPos", SqlDbType.Int) With {.Direction = ParameterDirection.InputOutput, .Value = CleanNumeric(Session("optionFirstRecPos"))}
+											Dim _prmColumnSize = New SqlParameter("piColumnSize", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
+											Dim _prmColumnDecimals = New SqlParameter("piColumnDecimals", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
+											Dim _prmLookupColumnGridPosition = New SqlParameter("piLookupColumnGridNumber", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
+													
+											Dim rstLookup As New DataTable
+													
+											clientArrayData.Add(String.Concat("var isLookupTable_", objRow.FirstOrDefault.Item("columnID"), " = ", fIsLookupTable.ToString.ToLower, ";"))
+
+											If Not fIsLookupTable Then
+																										
+												Dim iOrderID = objSession.Tables.Where(Function(m) m.ID = objRow.FirstOrDefault.Item("LookupTableID")).FirstOrDefault.DefaultOrderID
+														
+												rstLookup = objDataAccess.GetFromSP("spASRIntGetLookupFindRecords2" _
+														, New SqlParameter("piTableID", SqlDbType.Int) With {.Value = objRow.FirstOrDefault.Item("LookupTableID")} _
+														, New SqlParameter("piViewID", SqlDbType.Int) With {.Value = 0} _
+														, New SqlParameter("piOrderID", SqlDbType.Int) With {.Value = iOrderID} _
+														, New SqlParameter("piLookupColumnID", SqlDbType.Int) With {.Value = objRow.FirstOrDefault.Item("LookupColumnID")} _
+														, New SqlParameter("piRecordsRequired", SqlDbType.Int) With {.Value = 10000} _
+														, _prmIsFirstPage _
+														, _prmIsLastPage _
+														, New SqlParameter("psLocateValue", SqlDbType.VarChar, -1) With {.Value = ""} _
+														, _prmColumnType _
+														, _prmColumnSize _
+														, _prmColumnDecimals _
+														, New SqlParameter("psAction", SqlDbType.VarChar, 100) With {.Value = "LOAD"} _
+														, _prmTotalRecCount _
+														, _prmFirstRecPos _
+														, New SqlParameter("piCurrentRecCount", SqlDbType.Int) With {.Value = 0} _
+														, New SqlParameter("psFilterValue", SqlDbType.VarChar, -1) With {.Value = ""} _
+														, New SqlParameter("piCallingColumnID", SqlDbType.Int) With {.Value = objRow.FirstOrDefault.Item("columnID")} _
+														, _prmLookupColumnGridPosition _
+														, New SqlParameter("pfOverrideFilter", SqlDbType.Bit) With {.Value = "False"})
+											Else
+												Dim _prmThousandColumns As New SqlParameter("@ps1000SeparatorCols", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
+												Try
+													objDataAccess.ExecuteSP("spASRIntGetLookupFindColumnInfo", _
+																			New SqlParameter("@piLookupColumnID", SqlDbType.Int) With {.Value = objRow.FirstOrDefault.Item("LookupColumnID")}, _
+																			_prmThousandColumns _
+													)
+												Catch ex As Exception
+													sErrorDescription = "The find records could not be retrieved." & vbCrLf & FormatError(ex.Message)
+												End Try
+
+												Dim sLookupThousandColumns = _prmThousandColumns.Value.ToString()
+														
+												rstLookup = objDataAccess.GetFromSP("spASRIntGetLookupFindRecords" _
+													, New SqlParameter("piLookupColumnID", SqlDbType.Int) With {.Value = objRow.FirstOrDefault.Item("LookupColumnID")} _
+													, New SqlParameter("piRecordsRequired", SqlDbType.Int) With {.Value = 10000} _
+													, _prmIsFirstPage _
+													, _prmIsLastPage _
+													, New SqlParameter("psLocateValue", SqlDbType.VarChar, -1) With {.Value = ""} _
+													, _prmColumnType _
+													, _prmColumnSize _
+													, _prmColumnDecimals _
+													, New SqlParameter("psAction", SqlDbType.VarChar, 100) With {.Value = "LOAD"} _
+													, _prmTotalRecCount _
+													, _prmFirstRecPos _
+													, New SqlParameter("piCurrentRecCount", SqlDbType.Int) With {.Value = 0} _
+													, New SqlParameter("psFilterValue", SqlDbType.VarChar, -1) With {.Value = "True"} _
+													, New SqlParameter("piCallingColumnID", SqlDbType.Int) With {.Value = objRow.FirstOrDefault.Item("columnID")} _
+													, New SqlParameter("pfOverrideFilter", SqlDbType.Bit) With {.Value = "False"})
+											End If
+
+											'Place the Lookup Column Grid Position in a Javascript variable
+											Dim strLookupColumnGridPosition As String = String.Concat("var LookupColumnGridPosition_", objRow.FirstOrDefault.Item("columnID"), " = ")
+											If Not fIsLookupTable Then
+												strLookupColumnGridPosition = String.Concat(strLookupColumnGridPosition, _prmLookupColumnGridPosition.Value, ";")
+											Else
+												strLookupColumnGridPosition = String.Concat(strLookupColumnGridPosition, "0;")
+											End If
+													
+											clientArrayData.Add(strLookupColumnGridPosition)
+										End If
+												
+										'Get the data for Option Groups or Dropdown Lists
+										If ( _
+													((objRow.FirstOrDefault.Item("datatype") = 12 And objRow.FirstOrDefault.Item("controltype") = 2) Or (objRow.FirstOrDefault.Item("datatype") = 12 And objRow.FirstOrDefault.Item("controltype") = 16)) _
+													And (objRow.FirstOrDefault.Item("LookupColumnID") = 0)
+												) Then
+
+											Dim _prmColumnIDs = New SqlParameter("ColumnIDs", SqlDbType.NChar, 100) With {.Value = objRow.FirstOrDefault.Item("columnID")}
+											Dim rstOptionGroupOrDropDown As DataTable = objDataAccess.GetFromSP("spASRIntGetColumnControlValues", _prmColumnIDs)
+											Dim strOptionGroupOrDropDownData As String = String.Concat("var colOptionGroupOrDropDownData_", objRow.FirstOrDefault.Item("columnID"), " = [")
+													
+											For Each r As DataRow In rstOptionGroupOrDropDown.Rows
+												strOptionGroupOrDropDownData = String.Concat(strOptionGroupOrDropDownData, "[")
+												For Each c As DataColumn In rstOptionGroupOrDropDown.Columns
+													If c.ColumnName.ToLower <> "columnid" Then
+														strOptionGroupOrDropDownData = String.Concat(strOptionGroupOrDropDownData, """", EncodeStringToJavascriptSpecialCharacters(r(c).ToString), """,")
+													End If
+												Next
+												strOptionGroupOrDropDownData = String.Concat(strOptionGroupOrDropDownData.TrimEnd(","), "],")
+											Next
+											strOptionGroupOrDropDownData = String.Concat(strOptionGroupOrDropDownData.TrimEnd(","), "];")
+											clientArrayData.Add(strOptionGroupOrDropDownData & vbCrLf)
+										End If
+									End If
+								Next
+
+								'Output the grid data, if any
 								iCount = 0
 								For Each row As DataRow In rstFindRecords.Rows
 									sAddString = ""
@@ -271,150 +416,7 @@
 										If iloop > 0 Then
 											sAddString &= "	"
 										End If
-							
-										If iCount = 0 Then
-											If (rstFindRecords.Columns(iloop).ColumnName = "ID" OrElse rstFindRecords.Columns(iloop).ColumnName = "Timestamp") Then
-												sColDef = Replace(rstFindRecords.Columns(iloop).ColumnName, "_", " ") & "	" & rstFindRecords.Columns(iloop).DataType.ToString.Replace("System.", "")
-												Response.Write(String.Format("<input type='hidden' id=txtFindColDef_{0} name=txtFindColDef_{0} value='{1}' data-colname='{2}' data-type='{3}'>" _
-														 , iloop, sColDef, rstFindRecords.Columns(iloop).ColumnName, "integer") & vbCrLf)
-											Else
-												Dim objRow = rstFindDefinition.Select("ColumnName='" & rstFindRecords.Columns(iloop).ColumnName & "'")
-												sColDef = Replace(rstFindRecords.Columns(iloop).ColumnName, "_", " ") & "	" & rstFindRecords.Columns(iloop).DataType.ToString.Replace("System.", "")
-												Response.Write(String.Format("<input type='hidden' id='txtFindColDef_{0}' name='txtFindColDef_{0}' value='{1}' data-colname='{2}' data-datatype='{3}' data-columnid='{4}' data-editable='{5}' data-controltype='{6}' data-size='{7}' data-decimals='{8}' data-lookuptableid='{9}' data-lookupcolumnid='{10}' data-spinnerminimum='{11}' data-spinnermaximum='{12}' data-spinnerincrement='{13}' data-lookupfiltercolumnid='{14}' data-lookupfiltervalueid='{15}' data-Mask='{16}' data-DefaultValueExprID='{17}'>" _
-														 , iloop, sColDef, objRow.FirstOrDefault.Item("columnNameOriginal"), _
-														 objRow.FirstOrDefault.Item("datatype"), _
-														 objRow.FirstOrDefault.Item("columnID"), _
-														 objRow.FirstOrDefault.Item("updateGranted"), _
-														 objRow.FirstOrDefault.Item("controltype"), _
-														 objRow.FirstOrDefault.Item("size"), _
-														 objRow.FirstOrDefault.Item("decimals"), _
-														 objRow.FirstOrDefault.Item("LookupTableID"), _
-														 objRow.FirstOrDefault.Item("LookupColumnID"), _
-														 objRow.FirstOrDefault.Item("SpinnerMinimum"), _
-														 objRow.FirstOrDefault.Item("SpinnerMaximum"), _
-														 objRow.FirstOrDefault.Item("SpinnerIncrement"), _
-														 objRow.FirstOrDefault.Item("LookupFilterColumnID"), _
-														 objRow.FirstOrDefault.Item("LookupFilterValueID"), _
-														 objRow.FirstOrDefault.Item("Mask"),
-														 objRow.FirstOrDefault.Item("DefaultValueExprID") _
-														 ) & vbCrLf)
 
-												'Save the default value for this column in an array
-												columnsDefaultValues = String.Concat(columnsDefaultValues, """", objRow.FirstOrDefault.Item("columnID"), """:""", EncodeStringToJavascriptSpecialCharacters(objRow.FirstOrDefault.Item("DefaultValue")), """,")
-												
-												'If column is a Lookup, we need to get its associated data
-												If (objRow.FirstOrDefault.Item("datatype") = 12 Or objRow.FirstOrDefault.Item("datatype") = 2) And objRow.FirstOrDefault.Item("controltype") = 2 And objRow.FirstOrDefault.Item("LookupColumnID") <> 0 Then
-													Dim objDatabase As Database = CType(Session("DatabaseFunctions"), Database)
-													'Dim objDataAccess As clsDataAccess = CType(Session("DatabaseAccess"), clsDataAccess)
-
-													Dim objTable = objDatabase.GetTableFromColumnID(objRow.FirstOrDefault.Item("LookupColumnID"))
-													Dim fIsLookupTable = (objTable.TableType = TableTypes.tabLookup)
-
-													Dim _prmError = New SqlParameter("pfError", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
-													Dim _prmIsFirstPage = New SqlParameter("pfFirstPage", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
-													Dim _prmIsLastPage = New SqlParameter("pfLastPage", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
-													Dim _prmColumnType = New SqlParameter("piColumnType", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
-													Dim _prmTotalRecCount = New SqlParameter("piTotalRecCount", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
-													Dim _prmFirstRecPos = New SqlParameter("piFirstRecPos", SqlDbType.Int) With {.Direction = ParameterDirection.InputOutput, .Value = CleanNumeric(Session("optionFirstRecPos"))}
-													Dim _prmColumnSize = New SqlParameter("piColumnSize", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
-													Dim _prmColumnDecimals = New SqlParameter("piColumnDecimals", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
-													Dim _prmLookupColumnGridPosition = New SqlParameter("piLookupColumnGridNumber", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
-													
-													Dim rstLookup As New DataTable
-													
-													clientArrayData.Add(String.Concat("var isLookupTable_", objRow.FirstOrDefault.Item("columnID"), " = ", fIsLookupTable.ToString.ToLower, ";"))
-
-													If Not fIsLookupTable Then
-																										
-														Dim iOrderID = objSession.Tables.Where(Function(m) m.ID = objRow.FirstOrDefault.Item("LookupTableID")).FirstOrDefault.DefaultOrderID
-														
-														rstLookup = objDataAccess.GetFromSP("spASRIntGetLookupFindRecords2" _
-																, New SqlParameter("piTableID", SqlDbType.Int) With {.Value = objRow.FirstOrDefault.Item("LookupTableID")} _
-																, New SqlParameter("piViewID", SqlDbType.Int) With {.Value = 0} _
-																, New SqlParameter("piOrderID", SqlDbType.Int) With {.Value = iOrderID} _
-																, New SqlParameter("piLookupColumnID", SqlDbType.Int) With {.Value = objRow.FirstOrDefault.Item("LookupColumnID")} _
-																, New SqlParameter("piRecordsRequired", SqlDbType.Int) With {.Value = 10000} _
-																, _prmIsFirstPage _
-																, _prmIsLastPage _
-																, New SqlParameter("psLocateValue", SqlDbType.VarChar, -1) With {.Value = ""} _
-																, _prmColumnType _
-																, _prmColumnSize _
-																, _prmColumnDecimals _
-																, New SqlParameter("psAction", SqlDbType.VarChar, 100) With {.Value = "LOAD"} _
-																, _prmTotalRecCount _
-																, _prmFirstRecPos _
-																, New SqlParameter("piCurrentRecCount", SqlDbType.Int) With {.Value = 0} _
-																, New SqlParameter("psFilterValue", SqlDbType.VarChar, -1) With {.Value = ""} _
-																, New SqlParameter("piCallingColumnID", SqlDbType.Int) With {.Value = objRow.FirstOrDefault.Item("columnID")} _
-																, _prmLookupColumnGridPosition _
-																, New SqlParameter("pfOverrideFilter", SqlDbType.Bit) With {.Value = "False"})
-													Else
-														Dim _prmThousandColumns As New SqlParameter("@ps1000SeparatorCols", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
-														Try
-															objDataAccess.ExecuteSP("spASRIntGetLookupFindColumnInfo", _
-																					New SqlParameter("@piLookupColumnID", SqlDbType.Int) With {.Value = objRow.FirstOrDefault.Item("LookupColumnID")}, _
-																					_prmThousandColumns _
-															)
-														Catch ex As Exception
-															sErrorDescription = "The find records could not be retrieved." & vbCrLf & FormatError(ex.Message)
-														End Try
-
-														Dim sLookupThousandColumns = _prmThousandColumns.Value.ToString()
-														
-														rstLookup = objDataAccess.GetFromSP("spASRIntGetLookupFindRecords" _
-															, New SqlParameter("piLookupColumnID", SqlDbType.Int) With {.Value = objRow.FirstOrDefault.Item("LookupColumnID")} _
-															, New SqlParameter("piRecordsRequired", SqlDbType.Int) With {.Value = 10000} _
-															, _prmIsFirstPage _
-															, _prmIsLastPage _
-															, New SqlParameter("psLocateValue", SqlDbType.VarChar, -1) With {.Value = ""} _
-															, _prmColumnType _
-															, _prmColumnSize _
-															, _prmColumnDecimals _
-															, New SqlParameter("psAction", SqlDbType.VarChar, 100) With {.Value = "LOAD"} _
-															, _prmTotalRecCount _
-															, _prmFirstRecPos _
-															, New SqlParameter("piCurrentRecCount", SqlDbType.Int) With {.Value = 0} _
-															, New SqlParameter("psFilterValue", SqlDbType.VarChar, -1) With {.Value = "True"} _
-															, New SqlParameter("piCallingColumnID", SqlDbType.Int) With {.Value = objRow.FirstOrDefault.Item("columnID")} _
-															, New SqlParameter("pfOverrideFilter", SqlDbType.Bit) With {.Value = "False"})
-													End If
-
-													'Place the Lookup Column Grid Position in a Javascript variable
-													Dim strLookupColumnGridPosition As String = String.Concat("var LookupColumnGridPosition_", objRow.FirstOrDefault.Item("columnID"), " = ")
-													If Not fIsLookupTable Then
-														strLookupColumnGridPosition = String.Concat(strLookupColumnGridPosition, _prmLookupColumnGridPosition.Value, ";")
-													Else
-														strLookupColumnGridPosition = String.Concat(strLookupColumnGridPosition, "0;")
-													End If
-													
-													clientArrayData.Add(strLookupColumnGridPosition)
-												End If
-												
-												'Get the data for Option Groups or Dropdown Lists
-												If ( _
-															((objRow.FirstOrDefault.Item("datatype") = 12 And objRow.FirstOrDefault.Item("controltype") = 2) Or (objRow.FirstOrDefault.Item("datatype") = 12 And objRow.FirstOrDefault.Item("controltype") = 16)) _
-															And (objRow.FirstOrDefault.Item("LookupColumnID") = 0)
-														) Then
-
-													Dim _prmColumnIDs = New SqlParameter("ColumnIDs", SqlDbType.NChar, 100) With {.Value = objRow.FirstOrDefault.Item("columnID")}
-													Dim rstOptionGroupOrDropDown As DataTable = objDataAccess.GetFromSP("spASRIntGetColumnControlValues", _prmColumnIDs)
-													Dim strOptionGroupOrDropDownData As String = String.Concat("var colOptionGroupOrDropDownData_", objRow.FirstOrDefault.Item("columnID"), " = [")
-													
-													For Each r As DataRow In rstOptionGroupOrDropDown.Rows
-														strOptionGroupOrDropDownData = String.Concat(strOptionGroupOrDropDownData, "[")
-														For Each c As DataColumn In rstOptionGroupOrDropDown.Columns
-															If c.ColumnName.ToLower <> "columnid" Then
-																strOptionGroupOrDropDownData = String.Concat(strOptionGroupOrDropDownData, """", EncodeStringToJavascriptSpecialCharacters(r(c).ToString), """,")
-															End If
-														Next
-														strOptionGroupOrDropDownData = String.Concat(strOptionGroupOrDropDownData.TrimEnd(","), "],")
-													Next
-													strOptionGroupOrDropDownData = String.Concat(strOptionGroupOrDropDownData.TrimEnd(","), "];")
-													clientArrayData.Add(strOptionGroupOrDropDownData & vbCrLf)
-												End If
-											End If
-										End If
-							
 										If rstFindRecords.Columns(iloop).DataType = GetType(System.DateTime) Then
 											' Field is a date so format as such.
 											sAddString = sAddString & ConvertSQLDateToLocale(row(iloop))
@@ -430,7 +432,7 @@
 													Else
 														sAddString &= ""
 													End If
-												Else													
+												Else
 													sAddString &= dec.ToString(Globalization.CultureInfo.InvariantCulture)
 												End If
 												
@@ -442,8 +444,8 @@
 										End If
 									Next
 
-									Response.Write("<input type='hidden' id=txtAddString_" & iCount & " name=txtAddString_" & iCount & " value=""" & sAddString & """>" & vbCrLf)
-					
+									Response.Write("<input type='hidden' id='txtAddString_" & iCount & "' name='txtAddString_" & iCount & "' value=""" & sAddString & """>" & vbCrLf)
+
 									iCount += 1
 								Next
 							

@@ -1,4 +1,5 @@
 ﻿var rowIsEditedOrNew = "";
+var thereIsAtLeastOneEditableColumn = false;
 
 //todo remove this function!
 //New functionality - get the selected row's record ID from the hidden tag		
@@ -66,7 +67,6 @@ function find_window_onload() {
 		var colDataArray;
 		var obj;
 		var iCount2;
-		var thereIsAtLeastOneEditableColumn = false;
 		var columnCount = -1;
 		
 		if (sCurrentWorkPage == "FIND") {
@@ -534,12 +534,12 @@ function find_window_onload() {
 
 				//Enable inline editing if there is at least one editable column
 				var editLicenced = ($("#txtEditableGridGranted").val() == 1);
-				if (thereIsAtLeastOneEditableColumn && editLicenced && linktype != 'multifind') { //The "linktype" variable is defined in Find.ascx
+				if (editLicenced && linktype != 'multifind') { //The "linktype" variable is defined in Find.ascx
 					//Make grid editable
 					$("#findGridTable").jqGrid('inlineNav', '#pager-coldata', {
-						edit: true,
+						edit: true, //Set it to always true, but the logic to show or hide the edit icon is now below as well as in menu.js
 						editicon: 'icon-pencil',
-						add: true,
+						add: insertGranted, //The insertGranted variable is defined in Find.ascx
 						addicon: 'icon-plus',
 						save: true,
 						saveicon: 'icon-save',
@@ -603,7 +603,14 @@ function find_window_onload() {
 					menu_toolbarEnableItem('mnutoolInlineEditRecordFind', true);					
 
 					$("#findGridTable_iladd").show();
-					$("#findGridTable_iledit").show();
+
+					var recCountInGrid = $("#findGridTable").getGridParam("reccount");
+					if (thereIsAtLeastOneEditableColumn && recCountInGrid > 0) {
+						$("#findGridTable_iledit").show();
+					} else {
+						$("#findGridTable_iledit").hide();
+					}
+
 					$("#findGridTable_ilsave").show();
 					$("#findGridTable_ilcancel").show();
 

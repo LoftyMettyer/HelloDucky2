@@ -348,8 +348,7 @@ function menu_MenuClick(sTool) {
 	}
 
 	if (sToolName == "mnutoolInlineEditRecordFind") {
-		
-		var insertGranted = ($('#txtInsertGranted').val() == "True");
+		//As I say below, the insertGranted variable is defined in Find.ascx, so we don't need the line this comment replaces
 
 		if (!$('#mnutoolInlineEditRecordFind').hasClass('disabled')) {
 			$('#mnutoolInlineEditRecordFind').toggleClass("toolbarButtonOn");
@@ -5328,6 +5327,14 @@ function submitFollowOn() {
 			$("#findGridTable #" + rowId + ">td:first").css('border-left', '4px solid green');
 			rowWasModified = false; //The 'rowWasModified' variable is defined as global in Find.ascx
 			window.onbeforeunload = null;
+
+			//Reevaluate the conditions for the grid's editability
+			var recCountInGrid = $("#findGridTable").getGridParam("reccount");
+			if (thereIsAtLeastOneEditableColumn && recCountInGrid > 0) {
+				$("#findGridTable_iledit").show();
+			} else {
+				$("#findGridTable_iledit").hide();
+			}
 		} catch (e) { }
 	}
 }
@@ -5338,6 +5345,9 @@ function showDatabaseMenuGroup() {
 
 function updateRowFromDatabase(rowid) {
 	var recordID = $("#findGridTable").jqGrid('getCell', rowid, 'ID');
+
+	if (recordID == "")
+		return false; //It's a new row, we don't have its ID from the database, the call below would fail, so just return false
 
 	//Get the row from the server
 	$.ajax({
