@@ -177,7 +177,7 @@
 				<h3>Calculation</h3>
 				<table id="ssOleDBGridCalculations"></table>
 				<br />
-				<textarea id="txtCalcDescription" name="txtCalcDescription" tabindex="-1" style="width: 100%;" wrap="VIRTUAL" disabled="disabled"></textarea>
+				<textarea id="txtCalcDescription" name="txtCalcDescription" tabindex="-1" style="width: 100%; white-space: normal !important;" wrap="VIRTUAL" disabled="disabled"></textarea>
 				<input <%	If Session("OnlyMine") Then Response.Write("checked")%> type="checkbox" name="chkOwnersCalcs" id="chkOwnersCalcs" value="chkOwnersCalcs" tabindex="0"
 					onclick="calculationAndFilter_refresh();" />
 				<label for="chkOwnersCalcs" class="checkbox" tabindex="-1" onkeypress="try{checkboxLabel_onKeyPress(this);}catch(e){}">
@@ -189,7 +189,7 @@
 				<h3>Filter</h3>
 				<table id="ssOleDBGridFilters"></table>
 				<br />
-				<textarea id="txtFilterDescription" name="txtFilterDescription" tabindex="-1" style="width: 100%;" wrap="VIRTUAL" disabled="disabled"></textarea>
+				<textarea id="txtFilterDescription" name="txtFilterDescription" tabindex="-1" style="width: 100%; white-space: normal !important;" wrap="VIRTUAL" disabled="disabled"></textarea>
 				<input <%	If Session("OnlyMine") Then Response.Write("checked")%> type="checkbox" name="chkOwnersFilters" id="chkOwnersFilters" value="chkOwnersFilters" tabindex="0"
 					onclick="calculationAndFilter_refresh();" />
 				<label for="chkOwnersFilters" class="checkbox" tabindex="-1">

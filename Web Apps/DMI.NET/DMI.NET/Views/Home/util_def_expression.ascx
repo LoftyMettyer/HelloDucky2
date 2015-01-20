@@ -21,7 +21,7 @@
 			<br/>
 			<div class="tablerow">
 				<label>Description :</label>
-				<textarea id="txtDescription" name="txtDescription" wrap="VIRTUAL" style="width:90%; height: 60px;" maxlength="255" onkeyup="changeDescription()"></textarea>
+				<textarea id="txtDescription" name="txtDescription" wrap="VIRTUAL" style="width:90%; height: 60px; white-space: normal !important;" maxlength="255" onkeyup="changeDescription()"></textarea>
 				<label>Access :</label>
 				<div>
 					<input class="inline-block" id="optAccessRW" name="optAccess" type="radio" onclick="changeAccess()" checked />
