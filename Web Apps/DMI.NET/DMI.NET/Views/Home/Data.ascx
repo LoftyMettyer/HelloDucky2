@@ -73,7 +73,10 @@
 						}
 					}					
 				}
-		
+				
+				//No errors and recordedit navigation. Reset warning 'Are you sure you want to leave this page?'.
+				window.onbeforeunload = null;
+
 				var sAction = frmData.txtAction.value;
 				
 				if ((sAction == "LOAD")	
@@ -588,16 +591,16 @@
 		
 			Try
 							
-                Dim rstRecord = objDataAccess.GetDataTable("sp_ASRIntCalcDefaults", CommandType.StoredProcedure _
-                    , prmRecordCount _
-                    , New SqlParameter("psFromDef", SqlDbType.VarChar, -1) With {.Value = Session("fromDef")} _
-                    , New SqlParameter("psFilterDef", SqlDbType.VarChar, -1) With {.Value = Session("filterDef")} _
-                    , New SqlParameter("piTableID", SqlDbType.Int) With {.Value = CleanNumeric(Session("tableID"))} _
-                    , New SqlParameter("piParentTableID", SqlDbType.Int) With {.Value = CleanNumeric(Session("parentTableID"))} _
-                    , New SqlParameter("piParentRecordID", SqlDbType.Int) With {.Value = CleanNumeric(Session("parentRecordID"))} _
-                    , New SqlParameter("psDefaultCalcColumns", SqlDbType.VarChar, -1) With {.Value = Session("defaultCalcColumns")} _
-                    , New SqlParameter("psDecimalSeparator", SqlDbType.VarChar, 255) With {.Value = Session("LocaleDecimalSeparator")} _
-                    , New SqlParameter("psLocaleDateFormat", SqlDbType.VarChar, 255) With {.Value = Platform.LocaleDateFormatForSQL()})
+				Dim rstRecord = objDataAccess.GetDataTable("sp_ASRIntCalcDefaults", CommandType.StoredProcedure _
+						, prmRecordCount _
+						, New SqlParameter("psFromDef", SqlDbType.VarChar, -1) With {.Value = Session("fromDef")} _
+						, New SqlParameter("psFilterDef", SqlDbType.VarChar, -1) With {.Value = Session("filterDef")} _
+						, New SqlParameter("piTableID", SqlDbType.Int) With {.Value = CleanNumeric(Session("tableID"))} _
+						, New SqlParameter("piParentTableID", SqlDbType.Int) With {.Value = CleanNumeric(Session("parentTableID"))} _
+						, New SqlParameter("piParentRecordID", SqlDbType.Int) With {.Value = CleanNumeric(Session("parentRecordID"))} _
+						, New SqlParameter("psDefaultCalcColumns", SqlDbType.VarChar, -1) With {.Value = Session("defaultCalcColumns")} _
+						, New SqlParameter("psDecimalSeparator", SqlDbType.VarChar, 255) With {.Value = Session("LocaleDecimalSeparator")} _
+						, New SqlParameter("psLocaleDateFormat", SqlDbType.VarChar, 255) With {.Value = Platform.LocaleDateFormatForSQL()})
 		
 				If Not rstRecord Is Nothing Then
 					If rstRecord.Rows.Count > 0 Then
@@ -671,7 +674,7 @@
 			Dim prmParentTableId = New SqlParameter("piParentTableID", SqlDbType.Int) With {.Value = CleanNumeric(Session("parentTableID"))}
 			Dim prmParentRecordId = New SqlParameter("piParentRecordID", SqlDbType.Int) With {.Value = CleanNumeric(Session("parentRecordID"))}
 			Dim prmDecSeparator = New SqlParameter("psDecimalSeparator", SqlDbType.VarChar, 100) With {.Value = Session("LocaleDecimalSeparator")}
-            Dim prmDateFormat = New SqlParameter("psLocaleDateFormat", SqlDbType.VarChar, 100) With {.Value = Platform.LocaleDateFormatForSQL()}
+			Dim prmDateFormat = New SqlParameter("psLocaleDateFormat", SqlDbType.VarChar, 100) With {.Value = Platform.LocaleDateFormatForSQL()}
 			Dim prmScreenId = New SqlParameter("piScreenID", SqlDbType.Int) With {.Value = CleanNumeric(Session("screenID"))}
 			Dim prmViewId = New SqlParameter("piViewID", SqlDbType.Int) With {.Value = CleanNumeric(Session("viewID"))}
 			Dim prmOrderId = New SqlParameter("piOrderID", SqlDbType.Int) With {.Value = CleanNumeric(Session("orderID"))}
@@ -712,7 +715,7 @@
 							Else
 								Response.Write("<input type='hidden' id='txtData_" & rstRecord.Columns(iloop).ColumnName & "' name='txtData_" & rstRecord.Columns(iloop).ColumnName & "' value='" & Html.Encode(objRow(iloop).ToString()) & "'>" & vbCrLf)
 							End If
-							End If
+						End If
 					Next
 				Next
 
