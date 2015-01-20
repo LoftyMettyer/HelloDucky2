@@ -891,29 +891,21 @@ function showLookupForColumn(element) {
 		data: lookupParameters,
 		dataType: 'json',
 		type: 'GET',
-		success: function (jsondata) {
-			var colModelLookup = [];
-			var colNamesLookup = [];
-
+		cache: false,
+		success: function (jsondata) {			
 			var lookupColumnGridPosition = eval('LookupColumnGridPosition_' + clickedColumnId);
-
-			for (var k in jsondata.rows[0]) {
-				colModelLookup.push({ name: k });
-				colNamesLookup.push(k.replace("_", " "));
-			}
-
+			
 			$("#LookupForEditableGrid_Table").jqGrid('GridUnload'); //Unload previous grid (if any)
 
 			//jqGrid it
 			$("#LookupForEditableGrid_Table").jqGrid({
 				data: jsondata.rows,
 				datatype: "local",
-				colModel: colModelLookup,
-				colNames: colNamesLookup,
+				colModel: jsondata.colmodel, 
 				rowNum: 10000,
 				ignoreCase: true,
 				multiselect: false,
-				shrinkToFit: (colModelLookup.length < 8)
+				shrinkToFit: (jsondata.colmodel.length < 8)
 			});
 
 			//Set the dialog's title and open it (the dialog, not the title)
@@ -924,14 +916,10 @@ function showLookupForColumn(element) {
 			$("#LookupForEditableGrid_Table").jqGrid("setGridHeight", $("#LookupForEditableGrid_Div").height() - 90);
 			$("#LookupForEditableGrid_Table").jqGrid("setGridWidth", $("#LookupForEditableGrid_Div").width() - 10);
 
-			//Set overflow-x to hidden 
-			if (colModelLookup.length < 8)
-				$("#LookupForEditableGrid_Table").parent().parent().css("overflow-x", "hidden");
-
 			//Search for the value that is currently selected in the find grid
-			var rowId = null;
+			rowId = null;
 			for (i = 0; i <= jsondata.rows.length - 1; i++) {
-				if (jsondata.rows[i][colModelLookup[lookupColumnGridPosition].name] == $(element).val()) {
+					if (jsondata.rows[i][jsondata.colmodel[0].name] == $(element).val()) {
 					rowId = i;
 					break;
 				}

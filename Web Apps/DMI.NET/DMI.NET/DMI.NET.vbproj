@@ -205,6 +205,7 @@
     <Compile Include="App_Start\RouteConfig.vb" />
     <Compile Include="App_Start\SettingsConfig.vb" />
     <Compile Include="App_Start\Startup.vb" />
+    <Compile Include="Classes\jqGridHelper.vb" />
     <Compile Include="Classes\Licence.vb" />
     <Compile Include="Classes\ReportColumnCollection.vb" />
     <Compile Include="Classes\ConfigurationError.vb" />
