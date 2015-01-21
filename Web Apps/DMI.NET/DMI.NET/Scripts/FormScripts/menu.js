@@ -5315,6 +5315,7 @@ function submitFollowOn() {
 			$("#findGridTable_iledit").addClass("ui-state-disabled");
 			$("#findGridTable_ilsave").removeClass("ui-state-disabled");
 			$("#findGridTable_ilcancel").removeClass("ui-state-disabled");
+			$("#findGridTable_searchButton").addClass("ui-state-disabled");
 		}, 100);
 
 		indicateThatRowWasModified();
