@@ -475,26 +475,27 @@ function disableAll() {
 function changeName() {
 	frmUseful.txtChanged.value = 1;
 	refreshControls();
-	if ($("#ssOleDBGrid").getGridParam('reccount') == 0)//If the grid is empty, disable the "Remove" and "Remove All" button
-	{
-		button_disable(frmDefinition.cmdRemove, true); //Disable the "Remove" button
-		button_disable(frmDefinition.cmdRemoveAll, true); //Disable the "Remove All" button
-	}
+	disableRemoveAndRemoveAllButton();
 }
 
 function changeDescription() {
 	frmUseful.txtChanged.value = 1;
 	refreshControls();
-	if ($("#ssOleDBGrid").getGridParam('reccount') == 0)//If the grid is empty, disable the "Remove" and "Remove All" button
-	{
-		button_disable(frmDefinition.cmdRemove, true); //Disable the "Remove" button
-		button_disable(frmDefinition.cmdRemoveAll, true); //Disable the "Remove All" button
-	}
+	disableRemoveAndRemoveAllButton();
 }
 
 function changeAccess() {
 	frmUseful.txtChanged.value = 1;
 	refreshControls();
+	disableRemoveAndRemoveAllButton();
+}
+
+function disableRemoveAndRemoveAllButton() {
+	if ($("#ssOleDBGrid").getGridParam('reccount') == 0)//If the grid is empty, disable the "Remove" and "Remove All" button
+	{
+		button_disable(frmDefinition.cmdRemove, true);
+		button_disable(frmDefinition.cmdRemoveAll, true);
+	}
 }
 
 function BindDefaultGridOnNewDefinition() {
@@ -578,5 +579,5 @@ function BindDefaultGridOnNewDefinition() {
 		button_disable(frmDefinition.cmdRemove, true); //Disable the "Remove" button
 		button_disable(frmDefinition.cmdRemoveAll, true); //Disable the "Remove All" button
 	}
-
+		
 }
