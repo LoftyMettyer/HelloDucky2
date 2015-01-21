@@ -144,6 +144,8 @@ Namespace Code.Hubs
 					Connection.Open()
 				End If
 
+				LockMessage = ""
+
 				dt.Load(cmd.ExecuteReader())
 				For Each objRow As DataRow In dt.Rows
 					iPriority = CType(objRow("Priority"), LockPriority)
