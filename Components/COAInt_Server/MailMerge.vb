@@ -104,7 +104,7 @@ Public Class MailMerge
 			column.Use1000Separator = CBool(objRow("use1000separator"))
 			column.Size = CLng(objRow("size"))
 			column.Decimals = CInt(objRow("decimals"))
-			column.IsExpression = CBool(objRow("colexp"))
+			column.IsExpression = CBool(objRow("IsExpression"))
 			Columns.Add(column)
 		Next
 
@@ -763,7 +763,7 @@ Public Class MailMerge
 
 			For Each objOrder In OrderColumns
 				SQLAddColumn(mstrSQLOrder, objOrder, vbNullString)
-				mstrSQLOrder = mstrSQLOrder & objOrder.SortOrder
+				mstrSQLOrder &= " " & objOrder.SortOrder
 			Next
 
 			If mstrSQLOrder <> vbNullString Then
