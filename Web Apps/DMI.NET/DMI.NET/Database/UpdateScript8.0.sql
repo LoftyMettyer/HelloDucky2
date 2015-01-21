@@ -88,20 +88,6 @@ DROP PROCEDURE [dbo].[spASRIntGetSelfServiceRecordID]
 DROP PROCEDURE [dbo].[sp_ASR_AbsenceBreakdown_Run]
 DROP PROCEDURE [dbo].[sp_ASR_Bradford_DeleteAbsences]
 
-IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[ASRSysCurrentLogins]') AND xtype in (N'U'))
-	DROP TABLE ASRSysCurrentLogins
-GO
-
-CREATE TABLE ASRSysCurrentLogins(
-	[username]		nvarchar(128),
-	[usergroup]		nvarchar(255),
-	[usergroupid]	integer,
-	[userSID]		uniqueidentifier,
-	[loginTime]		datetime,
-	[application]	varchar(255),
-	[clientmachine]		nvarchar(255))
-
-GO
 
 IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spASRDatabaseStatus]') AND xtype in (N'P'))
 	DROP PROCEDURE [dbo].[spASRDatabaseStatus]
