@@ -84,10 +84,6 @@ END
 
 GO
 
-DROP PROCEDURE [dbo].[spASRIntGetSelfServiceRecordID]
-DROP PROCEDURE [dbo].[sp_ASR_AbsenceBreakdown_Run]
-DROP PROCEDURE [dbo].[sp_ASR_Bradford_DeleteAbsences]
-
 
 IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spASRDatabaseStatus]') AND xtype in (N'P'))
 	DROP PROCEDURE [dbo].[spASRDatabaseStatus]
@@ -377,83 +373,6 @@ BEGIN
 END
 GO
 
-CREATE PROCEDURE [dbo].[spASRIntGetSelfServiceRecordID] (
-	@piRecordID		integer 		OUTPUT,
-	@piRecordCount	integer 		OUTPUT,
-	@piViewID		integer
-)
-AS
-BEGIN
-
-	SET NOCOUNT ON;
-
-	DECLARE	@sViewName		sysname,
-		@sCommand			nvarchar(MAX),
-		@sParamDefinition	nvarchar(500),
-		@iRecordID			integer,
-		@iRecordCount		integer, 
-		@fSysSecMgr			bit,
-		@fAccessGranted		bit;
-		
-	SET @iRecordID = 0;
-	SET @iRecordCount = 0;
-
-	SELECT @sViewName = viewName
-		FROM ASRSysViews
-		WHERE viewID = @piViewID;
-
-	IF len(@sViewName) > 0
-	BEGIN
-		/* Check if the user has permission to read the Self-service view. */
-		exec spASRIntSysSecMgr @fSysSecMgr OUTPUT;
-
-		IF @fSysSecMgr = 1
-		BEGIN
-			SET @fAccessGranted = 1;
-		END
-		ELSE
-		BEGIN
-		
-			SELECT @fAccessGranted =
-				CASE p.protectType
-					WHEN 205 THEN 1
-					WHEN 204 THEN 1
-					ELSE 0
-				END 
-			FROM #sysprotects p
-			INNER JOIN sysobjects ON p.id = sysobjects.id
-			INNER JOIN syscolumns ON p.id = syscolumns.id
-			WHERE p.action = 193 
-				AND syscolumns.name = 'ID'
-				AND sysobjects.name = @sViewName
-				AND (((convert(tinyint,substring(p.columns,1,1))&1) = 0
-				AND (convert(int,substring(p.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) != 0)
-				OR ((convert(tinyint,substring(p.columns,1,1))&1) != 0
-				AND (convert(int,substring(p.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) = 0));
-		END
-	
-		IF @fAccessGranted = 1
-		BEGIN
-			SET @sCommand = 'SELECT @iValue = COUNT(ID)' + 
-				' FROM ' + @sViewName;
-			SET @sParamDefinition = N'@iValue integer OUTPUT';
-			EXEC sp_executesql @sCommand,  @sParamDefinition, @iRecordCount OUTPUT;
-
-			IF @iRecordCount = 1 
-			BEGIN
-				SET @sCommand = 'SELECT @iValue = ' + @sViewName + '.ID ' + 
-					' FROM ' + @sViewName;
-				SET @sParamDefinition = N'@iValue integer OUTPUT';
-				EXEC sp_executesql @sCommand,  @sParamDefinition, @iRecordID OUTPUT;
-			END
-		END
-	END
-
-	SET @piRecordID = @iRecordID;
-	SET @piRecordCount = @iRecordCount;
-END
-GO
-
 
 
 CREATE PROCEDURE [dbo].[sp_ASRUniqueObjectName](
@@ -493,6 +412,11 @@ END
 
 
 GO
+
+IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[sp_ASR_AbsenceBreakdown_Run]') AND xtype in (N'P'))
+	DROP PROCEDURE [dbo].[sp_ASR_AbsenceBreakdown_Run];
+GO
+
 CREATE PROCEDURE [dbo].[sp_ASR_AbsenceBreakdown_Run]
 (
 	@pdReportStart      datetime,
@@ -683,55 +607,6 @@ BEGIN
 END
 GO
 
-CREATE PROCEDURE [dbo].[sp_ASR_Bradford_DeleteAbsences]
-(
-	@pdReportStart	  	datetime,
-	@pdReportEnd		datetime,
-	@pbOmitBeforeStart	bit,
-	@pbOmitAfterEnd	bit,
-	@pcReportTableName	char(30)
-)
-AS
-BEGIN
-
-	SET NOCOUNT ON;
-
-	declare @piID as integer;
-	declare @pdStartDate as datetime;
-	declare @pdEndDate as datetime;
-	declare @iDuration as float;
-	declare @pbDeleteThisAbsence as bit;
-	declare @sSQL as varchar(MAX);
-
-	set @sSQL = 'DECLARE BradfordIndexCursor CURSOR FOR SELECT Absence_ID, Start_Date, End_Date, Duration FROM ' + @pcReportTableName;
-	execute(@sSQL);
-	open BradfordIndexCursor;
-
-	Fetch Next From BradfordIndexCursor Into @piID, @pdStartDate, @pdEndDate, @iDuration;
-	while @@FETCH_STATUS = 0
-		begin
-			set @pbDeleteThisAbsence = 0;
-			if @pdEndDate < @pdReportStart set @pbDeleteThisAbsence = 1;
-			if @pdStartDate > @pdReportEnd set @pbDeleteThisAbsence = 1;
-			if @iDuration = 0 set @pbDeleteThisAbsence = 1;
-
-			if @pbOmitBeforeStart = 1 and (@pdStartDate < @pdReportStart)  set @pbDeleteThisAbsence = 1;
-			if @pbOmitAfterEnd = 1 and (@pdEndDate > @pdReportEnd)  set @pbDeleteThisAbsence = 1;
-
-			if @pbDeleteThisAbsence = 1
-				begin
-					set @sSQL = 'DELETE FROM ' + @pcReportTableName + ' Where Absence_ID = Convert(Int,' + Convert(char(10),@piId) + ')';
-					execute(@sSQL);
-				end
-
-			Fetch Next From BradfordIndexCursor Into @piID, @pdStartDate, @pdEndDate, @iDuration;
-		end
-
-	close BradfordIndexCursor;
-	deallocate BradfordIndexCursor;
-
-END
-GO
 
 CREATE PROCEDURE [dbo].[sp_ASRIntGetUserGroup]
 	( 
@@ -15528,10 +15403,6 @@ GO
 DROP PROCEDURE [dbo].[spASRIntGetSingleRecordViewID]
 GO
 
-/****** Object:  StoredProcedure [dbo].[spASRIntGetSelfServiceRecordID]    Script Date: 23/07/2013 11:19:27 ******/
-DROP PROCEDURE [dbo].[spASRIntGetSelfServiceRecordID]
-GO
-
 /****** Object:  StoredProcedure [dbo].[spASRIntGetScreenStrings]    Script Date: 23/07/2013 11:19:27 ******/
 DROP PROCEDURE [dbo].[spASRIntGetScreenStrings]
 GO
@@ -22095,90 +21966,6 @@ BEGIN
 END
 GO
 
-/****** Object:  StoredProcedure [dbo].[spASRIntGetSelfServiceRecordID]    Script Date: 23/07/2013 11:19:27 ******/
-SET ANSI_NULLS ON
-GO
-
-SET QUOTED_IDENTIFIER ON
-GO
-
-CREATE PROCEDURE [dbo].[spASRIntGetSelfServiceRecordID] (
-	@piRecordID		integer 		OUTPUT,
-	@piRecordCount	integer 		OUTPUT,
-	@piViewID		integer
-)
-AS
-BEGIN
-
-	SET NOCOUNT ON;
-
-	DECLARE	@sViewName		sysname,
-		@sCommand			nvarchar(MAX),
-		@sParamDefinition	nvarchar(500),
-		@iRecordID			integer,
-		@iRecordCount		integer, 
-		@fSysSecMgr			bit,
-		@fAccessGranted		bit;
-		
-	SET @iRecordID = 0;
-	SET @iRecordCount = 0;
-
-	SELECT @sViewName = viewName
-		FROM ASRSysViews
-		WHERE viewID = @piViewID;
-
-	IF len(@sViewName) > 0
-	BEGIN
-		/* Check if the user has permission to read the Self-service view. */
-		exec spASRIntSysSecMgr @fSysSecMgr OUTPUT;
-
-		IF @fSysSecMgr = 1
-		BEGIN
-			SET @fAccessGranted = 1;
-		END
-		ELSE
-		BEGIN
-		
-			SELECT @fAccessGranted =
-				CASE p.protectType
-					WHEN 205 THEN 1
-					WHEN 204 THEN 1
-					ELSE 0
-				END 
-			FROM #sysprotects p
-			INNER JOIN sysobjects ON p.id = sysobjects.id
-			INNER JOIN syscolumns ON p.id = syscolumns.id
-			WHERE p.action = 193 
-				AND syscolumns.name = 'ID'
-				AND sysobjects.name = @sViewName
-				AND (((convert(tinyint,substring(p.columns,1,1))&1) = 0
-				AND (convert(int,substring(p.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) != 0)
-				OR ((convert(tinyint,substring(p.columns,1,1))&1) != 0
-				AND (convert(int,substring(p.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) = 0));
-		END
-	
-		IF @fAccessGranted = 1
-		BEGIN
-			SET @sCommand = 'SELECT @iValue = COUNT(ID)' + 
-				' FROM ' + @sViewName;
-			SET @sParamDefinition = N'@iValue integer OUTPUT';
-			EXEC sp_executesql @sCommand,  @sParamDefinition, @iRecordCount OUTPUT;
-
-			IF @iRecordCount = 1 
-			BEGIN
-				SET @sCommand = 'SELECT @iValue = ' + @sViewName + '.ID ' + 
-					' FROM ' + @sViewName;
-				SET @sParamDefinition = N'@iValue integer OUTPUT';
-				EXEC sp_executesql @sCommand,  @sParamDefinition, @iRecordID OUTPUT;
-			END
-		END
-	END
-
-	SET @piRecordID = @iRecordID;
-	SET @piRecordCount = @iRecordCount;
-END
-GO
-
 /****** Object:  StoredProcedure [dbo].[spASRIntGetSingleRecordViewID]    Script Date: 23/07/2013 11:19:27 ******/
 SET ANSI_NULLS ON
 GO
@@ -22944,10 +22731,6 @@ GO
 
 /****** Object:  StoredProcedure [dbo].[spASRIntGetSingleRecordViewID]    Script Date: 13/09/2013 08:57:58 ******/
 DROP PROCEDURE [dbo].[spASRIntGetSingleRecordViewID]
-GO
-
-/****** Object:  StoredProcedure [dbo].[spASRIntGetSelfServiceRecordID]    Script Date: 13/09/2013 08:57:58 ******/
-DROP PROCEDURE [dbo].[spASRIntGetSelfServiceRecordID]
 GO
 
 /****** Object:  StoredProcedure [dbo].[spASRIntGetScreenStrings]    Script Date: 13/09/2013 08:57:58 ******/
@@ -30535,91 +30318,6 @@ END
 
 GO
 
-/****** Object:  StoredProcedure [dbo].[spASRIntGetSelfServiceRecordID]    Script Date: 13/09/2013 08:58:00 ******/
-SET ANSI_NULLS ON
-GO
-
-SET QUOTED_IDENTIFIER ON
-GO
-
-
-CREATE PROCEDURE [dbo].[spASRIntGetSelfServiceRecordID] (
-	@piRecordID		integer 		OUTPUT,
-	@piRecordCount	integer 		OUTPUT,
-	@piViewID		integer
-)
-AS
-BEGIN
-
-	SET NOCOUNT ON;
-
-	DECLARE	@sViewName		sysname,
-		@sCommand			nvarchar(MAX),
-		@sParamDefinition	nvarchar(500),
-		@iRecordID			integer,
-		@iRecordCount		integer, 
-		@fSysSecMgr			bit,
-		@fAccessGranted		bit;
-		
-	SET @iRecordID = 0;
-	SET @iRecordCount = 0;
-
-	SELECT @sViewName = viewName
-		FROM ASRSysViews
-		WHERE viewID = @piViewID;
-
-	IF len(@sViewName) > 0
-	BEGIN
-		/* Check if the user has permission to read the Self-service view. */
-		exec spASRIntSysSecMgr @fSysSecMgr OUTPUT;
-
-		IF @fSysSecMgr = 1
-		BEGIN
-			SET @fAccessGranted = 1;
-		END
-		ELSE
-		BEGIN
-		
-			SELECT @fAccessGranted =
-				CASE p.protectType
-					WHEN 205 THEN 1
-					WHEN 204 THEN 1
-					ELSE 0
-				END 
-			FROM #sysprotects p
-			INNER JOIN sysobjects ON p.id = sysobjects.id
-			INNER JOIN syscolumns ON p.id = syscolumns.id
-			WHERE p.action = 193 
-				AND syscolumns.name = 'ID'
-				AND sysobjects.name = @sViewName
-				AND (((convert(tinyint,substring(p.columns,1,1))&1) = 0
-				AND (convert(int,substring(p.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) != 0)
-				OR ((convert(tinyint,substring(p.columns,1,1))&1) != 0
-				AND (convert(int,substring(p.columns,sysColumns.colid/8+1,1))&power(2,sysColumns.colid&7)) = 0));
-		END
-	
-		IF @fAccessGranted = 1
-		BEGIN
-			SET @sCommand = 'SELECT @iValue = COUNT(ID)' + 
-				' FROM ' + @sViewName;
-			SET @sParamDefinition = N'@iValue integer OUTPUT';
-			EXEC sp_executesql @sCommand,  @sParamDefinition, @iRecordCount OUTPUT;
-
-			IF @iRecordCount = 1 
-			BEGIN
-				SET @sCommand = 'SELECT @iValue = ' + @sViewName + '.ID ' + 
-					' FROM ' + @sViewName;
-				SET @sParamDefinition = N'@iValue integer OUTPUT';
-				EXEC sp_executesql @sCommand,  @sParamDefinition, @iRecordID OUTPUT;
-			END
-		END
-	END
-
-	SET @piRecordID = @iRecordID;
-	SET @piRecordCount = @iRecordCount;
-END
-
-GO
 
 /****** Object:  StoredProcedure [dbo].[spASRIntGetSingleRecordViewID]    Script Date: 13/09/2013 08:58:00 ******/
 SET ANSI_NULLS ON
@@ -62050,10 +61748,6 @@ IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[sp_ASR_Bra
 	DROP PROCEDURE [dbo].[sp_ASR_Bradford_DeleteAbsences];
 GO
 
-
-
-GO
-
 CREATE PROCEDURE [dbo].[sp_ASR_Bradford_DeleteAbsences]
 (
 	@pdReportStart	  	datetime,
@@ -62237,9 +61931,6 @@ DROP PROCEDURE [dbo].[sp_ASRIntGetScreenControlsString2]
 GO
 
 DROP PROCEDURE [dbo].[spASRIntGetSummaryValues]
-GO
-
-DROP PROCEDURE [dbo].[spASRIntGetSelfServiceRecordID]
 GO
 
 DROP PROCEDURE [dbo].[spASRIntGetParentValues]
@@ -67162,12 +66853,11 @@ BEGIN
 END
 GO
 
-/****** Object:  StoredProcedure [dbo].[spASRIntGetSelfServiceRecordID]    Script Date: 02/01/2014 20:52:29 ******/
-SET ANSI_NULLS ON
+
+IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spASRIntGetSelfServiceRecordID]') AND xtype in (N'P'))
+	DROP PROCEDURE [dbo].[spASRIntGetSelfServiceRecordID];
 GO
 
-SET QUOTED_IDENTIFIER ON
-GO
 
 CREATE PROCEDURE [dbo].[spASRIntGetSelfServiceRecordID] (
 	@piRecordID		integer 		OUTPUT,
