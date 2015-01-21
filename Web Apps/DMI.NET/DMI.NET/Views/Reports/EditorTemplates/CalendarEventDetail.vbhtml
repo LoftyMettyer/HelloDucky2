@@ -188,7 +188,7 @@ End Code
 				</div>
 				<div class="tablecell">
 					@Html.ColumnDropdownFor(Function(m) m.EventDesc1ColumnID, New ColumnFilter() _
-													 With {.TableID = Model.TableID, .DataType = ColumnDataType.sqlVarChar, .AddNone = True, .ShowFullName = True, .IncludeParents = True}, Nothing)
+													 With {.TableID = Model.TableID, .AddNone = True, .ShowFullName = True, .IncludeParents = True}, Nothing)
 				</div>
 
 			</div>
@@ -198,7 +198,7 @@ End Code
 				</div>
 				<div class="tablecell">
 					@Html.ColumnDropdownFor(Function(m) m.EventDesc2ColumnID, New ColumnFilter() _
-													 With {.TableID = Model.TableID, .DataType = ColumnDataType.sqlVarChar, .AddNone = True, .ShowFullName = True, .IncludeParents = True}, Nothing)
+													 With {.TableID = Model.TableID, .AddNone = True, .ShowFullName = True, .IncludeParents = True}, Nothing)
 				</div>
 			</div>
 		</div>
