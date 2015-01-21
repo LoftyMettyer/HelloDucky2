@@ -329,7 +329,7 @@ End Code
 		$("#legendType_lookuptable").attr('disabled', (legendDropDown.length == 0));
 		if (legendType == "0") {
 			$(".eventLegendLookupDummy").show();
-			$(".eventLegendLookupLive").hide();
+			$(".eventLegendLookupLive").hide();			
 		}
 		else {
 			$(".eventLegendLookupLive").show();
@@ -391,6 +391,9 @@ End Code
 
 		var legendLookupCodeID = $("#LegendLookupCodeID").val()
 		if (legendLookupCodeID == null) { legendLookupCodeID = 0 }
+		
+		var legendEventColumnID = $("#LegendEventColumnID").val()
+		if (legendEventColumnID == null) { legendEventColumnID = 0 }
 
 		if ($("input[name='LegendType']:checked").val() == "1") {
 			legendTypeName = $("#LegendEventColumnID option:selected").text() + "." + $("#LegendLookupCodeID option:selected").text()
@@ -451,7 +454,7 @@ End Code
 			LegendLookupTableID: $("#LegendLookupTableID").val(),
 			LegendLookupColumnID: legendLookupColumnID,
 			LegendLookupCodeID: legendLookupCodeID,
-			LegendEventColumnID: $("#LegendEventColumnID").val(),
+			LegendEventColumnID: legendEventColumnID,
 			EventDesc1ColumnID: $("#EventDesc1ColumnID").val(),
 			EventDesc2ColumnID: $("#EventDesc2ColumnID").val(),
 			EventStartDateName: $("#EventStartDateID option:selected").text(),
