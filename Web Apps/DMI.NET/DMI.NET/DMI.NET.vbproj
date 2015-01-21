@@ -1287,6 +1287,7 @@
     <Content Include="Views\Home\util_run_bradford_factor.ascx" />
     <Content Include="Views\Home\_showChart.ascx" />
     <Content Include="custom.config.template" />
+    <Content Include="connectionStrings.config.template" />
     <Content Include="Web.config.diagnostics">
       <SubType>Designer</SubType>
     </Content>
