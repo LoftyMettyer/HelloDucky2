@@ -53,6 +53,9 @@ END
 PRINT 'Step - Web Messaging'
 /* ------------------------------------------------------- */
 
+IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[ASRSysCurrentLogins]') AND xtype in (N'U'))
+	DROP TABLE [dbo].[ASRSysCurrentLogins];
+
 -- Increase size of audit access 
 ALTER TABLE [ASRSysAuditAccess] ALTER COLUMN [HRProModule] varchar(20);
 
