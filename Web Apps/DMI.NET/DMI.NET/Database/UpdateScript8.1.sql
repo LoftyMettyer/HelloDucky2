@@ -139,6 +139,10 @@ IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[sp_ASRIntS
 	DROP PROCEDURE [dbo].[sp_ASRIntSaveMailMerge];
 GO
 
+IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[sp_ASRIntSaveCrossTab]') AND xtype in (N'P'))
+	DROP PROCEDURE [dbo].[sp_ASRIntSaveCrossTab];
+GO
+
 IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[sp_ASRIntSaveCustomReport]') AND xtype in (N'P'))
 	DROP PROCEDURE [dbo].[sp_ASRIntSaveCustomReport];
 GO
