@@ -245,7 +245,7 @@ Public Function CheckVersion(sConnect As String, fReRunScript As Boolean, bIsSQL
         Screen.MousePointer = iPointer
         
         If frmChangedPlatform.Choice = vbYes Then
-        
+               
           If bLicenceKeyRequired Then
             SaveSystemSetting "Licence", "Key", frmChangedPlatform.LicenceKey
             gobjLicence.ValidateCreationDate = False
@@ -256,6 +256,8 @@ Public Function CheckVersion(sConnect As String, fReRunScript As Boolean, bIsSQL
           'fOK = UpdateDatabase(sConnect, False)
           'fOK = UpdateDatabase(sConnect, True, True)
           fOK = UpdateDatabase(sConnect, blnReRunCurrent, True)
+          fOK = fOK And ClearDownCurrentSessions()
+
         ElseIf ASRDEVELOPMENT Then
           fOK = True
         Else
@@ -1423,4 +1425,23 @@ End Function
   
   End Function
 
+Private Function ClearDownCurrentSessions() As Boolean
+
+  On Error GoTo ErrorTrap
+
+  Dim sSQL As String
+  Dim bOK As Boolean
+    
+  bOK = True
+  sSQL = "DELETE FROM ASRSysCurrentSessions"
+  gADOCon.Execute sSQL, , adCmdText + adExecuteNoRecords
+
+TidyUpAndExit:
+  ClearDownCurrentSessions = bOK
+  Exit Function
+
+ErrorTrap:
+  bOK = False
+  
+End Function
 
