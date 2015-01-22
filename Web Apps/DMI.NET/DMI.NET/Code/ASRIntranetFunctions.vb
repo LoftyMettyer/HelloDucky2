@@ -23,6 +23,10 @@ Public Module ASRIntranetFunctions
 		Return Thread.CurrentThread.CurrentCulture.NumberFormat.NumberGroupSeparator
 	End Function
 
+	Function LocaleLanguage() As String
+		Return Thread.CurrentThread.CurrentCulture.ToString()
+	End Function
+
 	'****************************************************************
 	' NullSafeString
 	'****************************************************************
