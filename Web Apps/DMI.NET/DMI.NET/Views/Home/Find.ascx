@@ -683,9 +683,6 @@ If fCanSelect Then
 						sTemp = ""
 						sTemp = FormatNumber(sTempValue, , True, False, False)
 					End If
-					sTemp = Replace(sTemp, ".", "x")
-					sTemp = Replace(sTemp, ",", Session("LocaleThousandSeparator"))
-					sTemp = Replace(sTemp, "x", Session("LocaleDecimalSeparator"))
 							
 					Response.Write("			<INPUT type='hidden' id=txtSummaryData_" & resultsDataTable.Columns(iLoop).ColumnName & " name=txtSummaryData_" & resultsDataTable.Columns(iLoop).ColumnName & " value=""" & sTemp & """>" & vbCrLf)
 				Else

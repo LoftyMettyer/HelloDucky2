@@ -763,7 +763,7 @@ function find_window_onload() {
 											if (controlCollection.item(i).value == '') {
 												ctlSummaryControl.value = '';
 											} else {
-												ctlSummaryControl.value = controlCollection.item(i).value;
+												ctlSummaryControl.value = OpenHR.ConvertSQLDateToLocale(controlCollection.item(i).value);
 											}
 										} else {
 											ctlSummaryControl.value = controlCollection.item(i).value;

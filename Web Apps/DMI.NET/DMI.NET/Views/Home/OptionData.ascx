@@ -120,7 +120,7 @@
 										
 										
 										Dim numberAsString As String = objRow(iloop).ToString()
-										Dim indexOfDecimalPoint As Integer = numberAsString.IndexOf(".", System.StringComparison.Ordinal)
+										Dim indexOfDecimalPoint As Integer = numberAsString.IndexOf(LocaleDecimalSeparator(), System.StringComparison.Ordinal)
 										Dim numberOfDecimals As Integer = 0
 										If indexOfDecimalPoint > 0 Then numberOfDecimals = numberAsString.Substring(indexOfDecimalPoint + 1).Length
 										
@@ -129,9 +129,6 @@
 										Else
 											sTemp = FormatNumber(objRow(iloop), numberOfDecimals, TriState.True, TriState.False, TriState.False)
 										End If
-										sTemp = Replace(sTemp, ".", "x")
-										sTemp = Replace(sTemp, ",", Session("LocaleThousandSeparator"))
-										sTemp = Replace(sTemp, "x", Session("LocaleDecimalSeparator"))
 										sAddString = sAddString & sTemp
 									End If
 								Else
@@ -294,7 +291,7 @@
 									
 										
 									Dim numberAsString As String = objRow(iloop).ToString()
-									Dim indexOfDecimalPoint As Integer = numberAsString.IndexOf(".", System.StringComparison.Ordinal)
+									Dim indexOfDecimalPoint As Integer = numberAsString.IndexOf(LocaleDecimalSeparator(), System.StringComparison.Ordinal)
 									Dim numberOfDecimals As Integer = 0
 									If indexOfDecimalPoint > 0 Then numberOfDecimals = numberAsString.Substring(indexOfDecimalPoint + 1).Length
 									
@@ -303,10 +300,7 @@
 										sTemp = FormatNumber(objRow(iloop), numberOfDecimals, TriState.True, TriState.False, TriState.True)
 									Else
 										sTemp = FormatNumber(objRow(iloop), numberOfDecimals, TriState.True, TriState.False, TriState.False)
-									End If
-									sTemp = Replace(sTemp, ".", "x")
-									sTemp = Replace(sTemp, ",", Session("LocaleThousandSeparator"))
-									sTemp = Replace(sTemp, "x", Session("LocaleDecimalSeparator"))
+									End If									
 									sAddString = sAddString & sTemp
 								End If
 							Else
@@ -406,9 +400,6 @@
 								Else
 									sTemp = FormatNumber(objRow(iloop), , True, False, False)
 								End If
-								sTemp = Replace(sTemp, ".", "x")
-								sTemp = Replace(sTemp, ",", Session("LocaleThousandSeparator"))
-								sTemp = Replace(sTemp, "x", Session("LocaleDecimalSeparator"))
 								sAddString = sAddString & sTemp
 							End If
 						Else
@@ -494,9 +485,6 @@
 									Else
 										sTemp = FormatNumber(objRow(iloop), , True, False, False)
 									End If
-									sTemp = Replace(sTemp, ".", "x")
-									sTemp = Replace(sTemp, ",", Session("LocaleThousandSeparator"))
-									sTemp = Replace(sTemp, "x", Session("LocaleDecimalSeparator"))
 									sAddString = sAddString & sTemp
 								End If
 							Else
@@ -625,9 +613,6 @@
 										Else
 											sTemp = FormatNumber(objRow(iloop), , True, False, False)
 										End If
-										sTemp = Replace(sTemp, ".", "x")
-										sTemp = Replace(sTemp, ",", Session("LocaleThousandSeparator"))
-										sTemp = Replace(sTemp, "x", Session("LocaleDecimalSeparator"))
 										sAddString = sAddString & sTemp
 									End If
 								Else
@@ -714,7 +699,7 @@
 							End If
 							
 							Dim numberAsString As String = objRow(iloop).ToString()
-							Dim indexOfDecimalPoint As Integer = numberAsString.IndexOf(".", StringComparison.Ordinal)
+							Dim indexOfDecimalPoint As Integer = numberAsString.IndexOf(LocaleDecimalSeparator(), StringComparison.Ordinal)
 							Dim numberOfDecimals As Integer = 0
 							If indexOfDecimalPoint > 0 Then numberOfDecimals = numberAsString.Substring(indexOfDecimalPoint + 1).Length
 							
@@ -730,9 +715,6 @@
 									Else
 										sTemp = FormatNumber(objRow(iloop), numberOfDecimals, True, False, False)
 									End If
-									sTemp = Replace(sTemp, ".", "x")
-									sTemp = Replace(sTemp, ",", Session("LocaleThousandSeparator"))
-									sTemp = Replace(sTemp, "x", Session("LocaleDecimalSeparator"))
 									sAddString = sAddString & sTemp
 								End If
 							Else
@@ -862,9 +844,6 @@
 									Else
 										sTemp = FormatNumber(objRow(iloop), objRow(iloop).NumericScale, True, False, False)
 									End If
-									sTemp = Replace(sTemp, ".", "x")
-									sTemp = Replace(sTemp, ",", Session("LocaleThousandSeparator"))
-									sTemp = Replace(sTemp, "x", Session("LocaleDecimalSeparator"))
 									sAddString = sAddString & sTemp
 								End If
 							Else
@@ -960,7 +939,7 @@
 							End If
 
 							Dim numberAsString As String = objRow(iloop).ToString()
-							Dim indexOfDecimalPoint As Integer = numberAsString.IndexOf(".", StringComparison.Ordinal)
+							Dim indexOfDecimalPoint As Integer = numberAsString.IndexOf(LocaleDecimalSeparator(), StringComparison.Ordinal)
 							Dim numberOfDecimals As Integer = 0
 							If indexOfDecimalPoint > 0 Then numberOfDecimals = numberAsString.Substring(indexOfDecimalPoint + 1).Length
 							
@@ -977,9 +956,6 @@
 										sTemp = FormatNumber(objRow(iloop), numberOfDecimals, TriState.True, TriState.False, TriState.False)
 									End If
 									
-									sTemp = Replace(sTemp, ".", "x")
-									sTemp = Replace(sTemp, ",", Session("LocaleThousandSeparator"))
-									sTemp = Replace(sTemp, "x", Session("LocaleDecimalSeparator"))
 									sAddString = sAddString & sTemp
 								End If
 							Else

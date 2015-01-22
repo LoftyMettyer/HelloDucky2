@@ -93,7 +93,7 @@ function refreshGrid(jsonData) {
 						case "Decimal":
 							var numDecimals = Number(aColumnType[1]);
 							var sThousandSeparator = (aColumnType[2] === 'true') ? OpenHR.LocaleThousandSeparator() : "";
-						colMode.push({ name: sColumnName, edittype: "numeric", sorttype: 'integer', formatter: 'number', formatoptions: { thousandsSeparator: sThousandSeparator, decimalPlaces: numDecimals, disabled: true }, align: 'right', width: 100 });
+						colMode.push({ name: sColumnName, edittype: "numeric", sorttype: 'integer', formatter: 'number', formatoptions: { thousandsSeparator: sThousandSeparator, decimalSeparator: OpenHR.LocaleDecimalSeparator(), decimalPlaces: numDecimals, disabled: true }, align: 'right', width: 100 });
 							break;
 						case "DateTime":
 							colMode.push({ name: sColumnName, edittype: "date", sorttype: 'date', formatter: 'date', formatoptions: { srcformat: dateFormat, newformat: dateFormat, disabled: true }, align: 'left', width: 100 });

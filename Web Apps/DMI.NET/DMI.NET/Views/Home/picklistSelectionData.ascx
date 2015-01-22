@@ -49,7 +49,7 @@
 
 			colMode = [];
 			colNames = [];
-
+			
 			// Configure the grid columns.
 			if (dataCollection != null) {
 				for (i = 0; i < dataCollection.length; i++) {
@@ -255,10 +255,7 @@
 										sTemp = FormatNumber(objRow(iloop), , True, False, True)
 									Else
 										sTemp = FormatNumber(objRow(iloop), , True, False, False)
-									End If
-									sTemp = Replace(sTemp, ".", "x")
-									sTemp = Replace(sTemp, ",", Session("LocaleThousandSeparator"))
-									sTemp = Replace(sTemp, "x", Session("LocaleDecimalSeparator"))
+									End If									
 									sAddString = sAddString & sTemp
 								End If
 							Else
