@@ -29,12 +29,16 @@
 <fieldset class="width25 floatleft" style="">
 	<legend class="fontsmalltitle">Output Format:</legend>
 	<fieldset class="">
-		@Html.RadioButton("OutputFormat", 0, Model.OutputFormat = MailMergeOutputTypes.WordDocument, New With {.onclick = "selectMergeOutputType('WordDocument')"})
-		Word Document
-		<br />
-		@Html.RadioButton("OutputFormat", 1, Model.OutputFormat = MailMergeOutputTypes.IndividualEmail, New With {.onclick = "selectMergeOutputType('IndividualEmail')"})
-		Individual Emails
-		<br />
+		<div class="margebot10">
+			@Html.RadioButton("OutputFormat", 0, Model.OutputFormat = MailMergeOutputTypes.WordDocument, New With {.onclick = "selectMergeOutputType('WordDocument')"})
+			Word Document
+			<br />
+		</div>
+		<div class="margebot10">
+			@Html.RadioButton("OutputFormat", 1, Model.OutputFormat = MailMergeOutputTypes.IndividualEmail, New With {.onclick = "selectMergeOutputType('IndividualEmail')"})
+			Individual Emails
+			<br />
+		</div>
 		@Html.RadioButton("OutputFormat", 2, Model.OutputFormat = MailMergeOutputTypes.DocumentManagement, New With {.onclick = "selectMergeOutputType('DocumentManagement')"})
 		<span class="DataManagerOnly">Document Management</span>
 	</fieldset>
@@ -50,12 +54,12 @@
 		</div>
 
 		<div class="reportdefprinter DataManagerOnly">
-			<div class="width30 floatleft">
+			<div class="width30 floatleft margebot10">
 				@Html.CheckBoxFor(Function(m) m.SendToPrinter, New With {.id = "SendToPrinter", .onclick = "setSendToPrinter();"})
 				@Html.LabelFor(Function(m) m.SendToPrinter)
 			</div>
-			<div class="width70 floatleft padbot5">						
-				@Html.TextBoxFor(Function(m) m.WordDocumentPrinter, New With {.placeholder = "Default printer", .class = "DataManagerOnly readonly width100"})				
+			<div class="width70 floatleft padbot5 margebot10">
+				@Html.TextBoxFor(Function(m) m.WordDocumentPrinter, New With {.placeholder = "Default printer", .class = "DataManagerOnly readonly width100"})
 			</div>
 		</div>
 
@@ -86,8 +90,8 @@
 		@Html.CheckBoxFor(Function(m) m.EmailAsAttachment, New With {.id = "EmailAsAttachment", .onclick = "setOutputSendAsAttachment();"})
 		@Html.LabelFor(Function(m) m.EmailAsAttachment)
 		<br />
-		@Html.LabelFor(Function(m) m.EmailAttachmentName, New With {.class = "display-label_emails"})
-		@Html.TextBoxFor(Function(m) m.EmailAttachmentName, New With {.id = "EmailAttachmentName", .Name = "EmailAttachmentName", .class = "display-textbox-emails"})
+		@Html.LabelFor(Function(m) m.EmailAttachmentName, New With {.class = "display-label_emails margeTop10"})
+		@Html.TextBoxFor(Function(m) m.EmailAttachmentName, New With {.id = "EmailAttachmentName", .Name = "EmailAttachmentName", .class = "display-textbox-emails  margeTop10"})
 		<br />
 		@Html.ValidationMessageFor(Function(m) m.EmailAttachmentName)
 		<br />
@@ -143,12 +147,12 @@
 		}
 	}
 
-	function selectMergeOutput(outputType) {		
+	function selectMergeOutput(outputType) {
 		$("[class^=outputmerge_]").hide();
 		$(".outputmerge_" + outputType).show(500);
 	}
 
-	function selectMergeOutputType(outputType) {
+	function selectMergeOutputType(outputType) {		
 		if (outputType == 'DocumentManagement') {
 			$('#DocumentDisplayOutputOnScreen').prop('checked', true);
 			$('#WordDocumentPrinter').prop('disabled', true);
@@ -164,6 +168,7 @@
 		else if (outputType == 'IndividualEmail') {
 			$('#EmailAsAttachment').prop('checked', false);
 			$('#EmailSubject').val("");
+			$('#EmailAttachmentName').val("");
 		}
 
 		$("[class^=outputmerge_]").hide();
@@ -188,20 +193,23 @@
 		setOutputSendAsAttachment();
 		//styling for email address under Individual Emails section
 		$('#fieldsetsubjectemail select').css({
-			width: '70%',
-			marginBottom: '4px',
+			width: '60%',
+			marginBottom: '10px',
 			float: 'left'
 		});
 
 		$('fieldset').css("border", "1");
 		$('#WordDisplayOutputOnScreen').prop('checked', true);
 		$('#WordDocumentPrinter').prop('disabled', true);
-		
+		if ('@Model.Filename' == '')
+		{
+			$('#Filename').prop('disabled', true);
+		}
 		if ($("#ActionType").val() == '@UtilityActionType.New') {
 			$('#PauseBeforeMerge').prop('checked', true);
 			$('#SuppressBlankLines').prop('checked', true);
 		}
 
-		});
+	});
 
 </script>
