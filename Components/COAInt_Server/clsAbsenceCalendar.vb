@@ -8,6 +8,9 @@ Imports HR.Intranet.Server.Metadata
 Imports System.Web
 Imports VB = Microsoft.VisualBasic
 Imports System.Text
+Imports HR.Intranet.Server.Classes
+Imports System.Collections.Generic
+Imports System.Linq
 
 Public Class AbsenceCalendar
 	Inherits BaseForDMI
@@ -27,8 +30,7 @@ Public Class AbsenceCalendar
 	Private mstrRegion As String
 	Private mstrWorkingPattern As String
 
-	Private miWorkingPatternArray As Integer ' Location in the Working Pattern array
-	Private mdtmWorkingPatternDate As Date ' Next change date of the working pattern
+	'Private mdtmWorkingPatternDate As Date ' Next change date of the working pattern
 
 	Private mstrHexColour_OptionBoxes As String
 
@@ -40,7 +42,6 @@ Public Class AbsenceCalendar
 	Private mstrAbsEndSession As String
 	Private mstrAbsType As String
 	Private mstrAbsCalendarCode As String
-	Private mstrAbsWPattern As String
 	Private mlngAbsDuration As Double
 	Private mstrAbsReason As String
 
@@ -81,7 +82,8 @@ Public Class AbsenceCalendar
 	'13 = End session of absence
 	'14 = Region
 
-	Dim mavWorkingPatternChanges(,) As Object	' Stores the working pattern changes
+	Public mavWorkingPatternChanges As New List(Of WorkingPatternChange)
+
 	' 0 = Contains the date of change
 	' 1 = Contains the working pattern
 
@@ -288,7 +290,6 @@ Public Class AbsenceCalendar
 	Private Sub Class_Initialize_Renamed()
 
 		ReDim mvarTableViews(3, 0)
-		ReDim mavWorkingPatternChanges(1, 0)
 
 		mstrHexColour_OptionBoxes = "ThreeDFace"
 
@@ -826,8 +827,6 @@ errLoadColourKey:
 			Exit Sub
 		End If
 
-		mstrAbsWPattern = ""
-
 		With mrstAbsenceRecords
 
 			For Each objRow As DataRow In .Rows
@@ -882,6 +881,7 @@ errLoadColourKey:
 		Dim lngCount As Integer
 		Dim sSQL As String
 		Dim prstPersonnelData As DataTable
+		Dim strAbsWPattern As String
 
 		' Botch as we have a lot of rubbish code that does not handle nulls at all.
 		mdStartDate = DateTime.FromOADate(0)
@@ -989,7 +989,7 @@ errLoadColourKey:
 
 		Else
 			'WPs DISABLED
-			mstrAbsWPattern = "SSMMTTWWTTFFSS"
+			strAbsWPattern = "SSMMTTWWTTFFSS"
 
 		End If
 
@@ -1031,7 +1031,8 @@ PersonnelERROR:
 
 		If Not mblnDisableWPs Then
 			' Working Pattern Info
-			strHtml = strHtml & "<TR bordercolor=" & mstrHexColour_OptionBoxes & "><TD nowrap>&nbsp;Working Pattern :&nbsp;&nbsp;</TD><TD>" & HTML_WorkingPattern(mstrWorkingPattern) & "</TD></TR>" & vbNewLine
+			strHtml &= "<TR bordercolor=" & mstrHexColour_OptionBoxes & "><TD nowrap>&nbsp;&nbsp;&nbsp;</TD><TD></TD></TR><tr><td>Current Working Pattern :</td><td>" _
+				& HTML_WorkingPattern(mstrWorkingPattern) & "</td></tr>" & vbNewLine
 		End If
 
 		Return strHtml
@@ -1259,38 +1260,24 @@ PersonnelERROR:
 
 	End Function
 
-	Private Function FillCalBoxes(ByRef intStart As Integer, ByRef intEnd As Integer) As Boolean
+	Private Function FillCalBoxes(intStart As Integer, intEnd As Integer) As Boolean
 
 		' This function actually fills the cal boxes between the indexes specified
 		' according to the options selected by the user.
 
 		Try
 
-			Dim iCount As Integer
 			Dim dtmCurrentDate As Date
 			Dim strColour As String
-			Dim iArrayCount As Integer
+			Dim objCurrentWP As WorkingPatternChange
+			Dim objNextWP As WorkingPatternChange
 
 			'Scroll forward in list to correct start working pattern for absence.
 			dtmCurrentDate = GetCalDay(intStart)
-			miWorkingPatternArray = 0
-			For iArrayCount = 0 To UBound(mavWorkingPatternChanges, 2)
-				'UPGRADE_WARNING: Couldn't resolve default property of object mavWorkingPatternChanges(0, miWorkingPatternArray). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				If dtmCurrentDate > mavWorkingPatternChanges(0, miWorkingPatternArray) Then
-					'UPGRADE_WARNING: Couldn't resolve default property of object mavWorkingPatternChanges(1, iArrayCount). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					mstrAbsWPattern = mavWorkingPatternChanges(1, iArrayCount)
-					miWorkingPatternArray = miWorkingPatternArray + 1
 
-					If miWorkingPatternArray > UBound(mavWorkingPatternChanges, 2) Then
-						miWorkingPatternArray = miWorkingPatternArray - 1
-						'UPGRADE_WARNING: Couldn't resolve default property of object mavWorkingPatternChanges(0, miWorkingPatternArray). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						mdtmWorkingPatternDate = mavWorkingPatternChanges(0, miWorkingPatternArray)
-					Else
-						'UPGRADE_WARNING: Couldn't resolve default property of object mavWorkingPatternChanges(0, miWorkingPatternArray). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						mdtmWorkingPatternDate = mavWorkingPatternChanges(0, miWorkingPatternArray)
-					End If
-				End If
-			Next iArrayCount
+			' Get correct start working pattern for absence
+			objCurrentWP = mavWorkingPatternChanges.OrderBy(Function(m) m.ChangeDate).Where(Function(m) m.ChangeDate <= dtmCurrentDate).LastOrDefault
+			objNextWP = mavWorkingPatternChanges.OrderBy(Function(m) m.ChangeDate).Where(Function(m) m.ChangeDate > objCurrentWP.ChangeDate).FirstOrDefault
 
 			' Loop through the indexes as specified.
 			For iCount = intStart To intEnd
@@ -1298,21 +1285,12 @@ PersonnelERROR:
 				' Set current date variable
 				dtmCurrentDate = GetCalDay(iCount)
 
-
 				'Calculate the working pattern for this day
-				If dtmCurrentDate >= mdtmWorkingPatternDate Then
-
-					'UPGRADE_WARNING: Couldn't resolve default property of object mavWorkingPatternChanges(1, miWorkingPatternArray). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					mstrAbsWPattern = mavWorkingPatternChanges(1, miWorkingPatternArray)
-					miWorkingPatternArray = miWorkingPatternArray + 1
-
-					If miWorkingPatternArray <= UBound(mavWorkingPatternChanges, 2) Then
-						'UPGRADE_WARNING: Couldn't resolve default property of object mavWorkingPatternChanges(0, miWorkingPatternArray). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						mdtmWorkingPatternDate = mavWorkingPatternChanges(0, miWorkingPatternArray)
-					Else
-						mdtmWorkingPatternDate = DateTime.MaxValue
+				If objNextWP IsNot Nothing Then
+					If dtmCurrentDate >= objNextWP.ChangeDate Then
+						objCurrentWP = objNextWP
+						objNextWP = mavWorkingPatternChanges.OrderBy(Function(m) m.ChangeDate).Where(Function(m) m.ChangeDate > objCurrentWP.ChangeDate).FirstOrDefault
 					End If
-
 				End If
 
 				' Mark this day as having an absence
@@ -1334,7 +1312,7 @@ PersonnelERROR:
 
 				' Is this day a working day
 				'UPGRADE_WARNING: Couldn't resolve default property of object mavAbsences(Count, 4). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				mavAbsences(iCount, 4) = AbsCal_DoTheyWorkOnThisDay(Weekday(dtmCurrentDate, FirstDayOfWeek.Sunday), IIf(iCount Mod 2 = 0, "AM", "PM"))
+				mavAbsences(iCount, 4) = AbsCal_DoTheyWorkOnThisDay(Weekday(dtmCurrentDate, FirstDayOfWeek.Sunday), IIf(iCount Mod 2 = 0, "AM", "PM"), objCurrentWP.WorkingPattern)
 
 				' Store the details for this day
 				'UPGRADE_WARNING: Couldn't resolve default property of object mavAbsences(Count, 5). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
@@ -1342,7 +1320,7 @@ PersonnelERROR:
 				'UPGRADE_WARNING: Couldn't resolve default property of object mavAbsences(Count, 7). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 				mavAbsences(iCount, 7) = Replace(mstrAbsReason, "'", "") ' Absence reason
 				'UPGRADE_WARNING: Couldn't resolve default property of object mavAbsences(Count, 8). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				mavAbsences(iCount, 8) = mstrAbsWPattern ' Working pattern
+				mavAbsences(iCount, 8) = objCurrentWP.WorkingPattern
 				'UPGRADE_WARNING: Couldn't resolve default property of object mavAbsences(Count, 9). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 				mavAbsences(iCount, 9) = LTrim(CStr(mlngAbsDuration))	' Duration
 				'UPGRADE_WARNING: Couldn't resolve default property of object mavAbsences(Count, 10). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
@@ -1366,7 +1344,7 @@ PersonnelERROR:
 
 	End Function
 
-	Private Function GetColour(ByRef strType As String) As String
+	Private Function GetColour(strType As String) As String
 
 		' This function returns the colour for the specified absence type.
 		' Derived from the key. If it cannot be found, then it defaults to
@@ -1387,7 +1365,7 @@ PersonnelERROR:
 
 		Next iCount
 
-		GetColour = strColourString
+		Return strColourString
 
 	End Function
 
@@ -1462,7 +1440,7 @@ PersonnelERROR:
 
 	End Function
 
-	Public Function AbsCal_DoTheyWorkOnThisDay(intDay As Integer, strperiod As String) As Boolean
+	Public Function AbsCal_DoTheyWorkOnThisDay(intDay As Integer, strperiod As String, workingPattern As String) As Boolean
 
 		Dim bFound As Boolean = True
 
@@ -1470,11 +1448,11 @@ PersonnelERROR:
 		' Outputs - True/False
 		Select Case strperiod.ToUpper
 			Case "AM"
-				If (Mid(mstrAbsWPattern, (intDay * 2) - 1, 1) = " ") Or (Mid(mstrAbsWPattern, (intDay * 2) - 1, 1) = "") Then
+				If (Mid(workingPattern, (intDay * 2) - 1, 1) = " ") Or (Mid(workingPattern, (intDay * 2) - 1, 1) = "") Then
 					bFound = False
 				End If
 			Case "PM"
-				If (Mid(mstrAbsWPattern, intDay * 2, 1) = " ") Or (Mid(mstrAbsWPattern, intDay * 2, 1) = "") Then
+				If (Mid(workingPattern, intDay * 2, 1) = " ") Or (Mid(workingPattern, intDay * 2, 1) = "") Then
 					bFound = False
 				End If
 		End Select
@@ -1583,51 +1561,43 @@ PersonnelERROR:
 
 	Private Sub GetWorkingPatterns()
 
-		Dim iCount As Integer
 		Dim rstHistoricWPatterns As DataTable
 		Dim sSQL As String
+		Dim strAbsWPattern As String
 
 		Try
 
 			' Define a blank working pattern array
-			ReDim mavWorkingPatternChanges(1, 0)
-			'UPGRADE_WARNING: Couldn't resolve default property of object mavWorkingPatternChanges(0, 0). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			mavWorkingPatternChanges(0, 0) = DateTime.MinValue
-			'UPGRADE_WARNING: Couldn't resolve default property of object mavWorkingPatternChanges(1, 0). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			mavWorkingPatternChanges(1, 0) = Space(14)
+			mavWorkingPatternChanges.Add(
+				New WorkingPatternChange With {
+					.ChangeDate = DateTime.MinValue,
+					.WorkingPattern = Space(14)})
 
 			If Not mblnDisableWPs Then
 				' If we are using historic WPattern, ensure we use the right WPattern for each day of absence
 				If PersonnelModule.gwptWorkingPatternType = WorkingPatternType.wptHistoricWPattern Then
 
-					sSQL = String.Format("SELECT  [{1}] AS [Date], [{2}] AS [WP] FROM (SELECT TOP 1 [{1}], [{2}] FROM {0} WHERE ID_{3} = {4} AND [{1}] <= '{5}' ORDER BY [{1}] DESC) AS firstWP " &
-						"UNION SELECT [{1}], [{2}] FROM {0} WHERE ID_{3} = {4} AND [{1}] > '{5}' " &
-						"ORDER BY [{1}] ASC",
-						PersonnelModule.gsPersonnelHWorkingPatternTableRealSource,
-						PersonnelModule.gsPersonnelHWorkingPatternDateColumnName,
-						PersonnelModule.gsPersonnelHWorkingPatternColumnName,
-						PersonnelModule.glngPersonnelTableID,
-						mlngPersonnelRecordID,
-						mdCalendarStartDate.ToString("yyyy-MM-dd"))
+					sSQL = String.Format("SELECT  [{1}] AS [Date], [{2}] AS [WP] FROM {0} WHERE ID_{3} = {4}" &
+											"ORDER BY [{1}] ASC",
+											PersonnelModule.gsPersonnelHWorkingPatternTableRealSource,
+											PersonnelModule.gsPersonnelHWorkingPatternDateColumnName,
+											PersonnelModule.gsPersonnelHWorkingPatternColumnName,
+											PersonnelModule.glngPersonnelTableID,
+											mlngPersonnelRecordID)
 
 					' Get the working patterns for the absence period
 					rstHistoricWPatterns = DB.GetDataTable(sSQL)
 
-					ReDim mavWorkingPatternChanges(1, rstHistoricWPatterns.Rows.Count)
-
 					For Each objRow As DataRow In rstHistoricWPatterns.Rows
 
 						'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-						mstrAbsWPattern = IIf(IsDBNull(objRow("WP").ToString()), Space(14), objRow("WP").ToString())
-						mstrAbsWPattern = mstrAbsWPattern & Space(14 - Len(mstrAbsWPattern))
+						strAbsWPattern = IIf(IsDBNull(objRow("WP").ToString()), Space(14), objRow("WP").ToString())
+						strAbsWPattern &= Space(14 - Len(strAbsWPattern))
 
-						'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-						'UPGRADE_WARNING: Couldn't resolve default property of object mavWorkingPatternChanges(0, iCount). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						mavWorkingPatternChanges(0, iCount) = IIf(IsDBNull(objRow("Date")), DateTime.MinValue, objRow("Date"))
-						'UPGRADE_WARNING: Couldn't resolve default property of object mavWorkingPatternChanges(1, iCount). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						mavWorkingPatternChanges(1, iCount) = mstrAbsWPattern
-
-						iCount += 1
+						mavWorkingPatternChanges.Add(
+							New WorkingPatternChange With {
+								.ChangeDate = IIf(IsDBNull(objRow("Date")), DateTime.MinValue, objRow("Date")),
+								.WorkingPattern = strAbsWPattern})
 
 					Next
 
@@ -1652,19 +1622,16 @@ PersonnelERROR:
 
 					' Stuff the working pattern into array
 					If rstHistoricWPatterns.Rows.Count > 0 Then
-						'UPGRADE_WARNING: Couldn't resolve default property of object mavWorkingPatternChanges(0, 0). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						mavWorkingPatternChanges(0, 0) = DateTime.MinValue
-						'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-						'UPGRADE_WARNING: Couldn't resolve default property of object mavWorkingPatternChanges(1, 0). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						mavWorkingPatternChanges(1, 0) = Left(IIf(IsDBNull(rstHistoricWPatterns.Rows(0)("WP")), Space(14), rstHistoricWPatterns.Rows(0)("WP")) & Space(14), 14)
+						mavWorkingPatternChanges(0).ChangeDate = DateTime.MinValue
+						mavWorkingPatternChanges(0).WorkingPattern = Left(IIf(IsDBNull(rstHistoricWPatterns.Rows(0)("WP")), Space(14), rstHistoricWPatterns.Rows(0)("WP")) & Space(14), 14)
 					End If
 
 				End If
 			Else
-				'UPGRADE_WARNING: Couldn't resolve default property of object mavWorkingPatternChanges(0, 0). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				mavWorkingPatternChanges(0, 0) = DateTime.MinValue
-				'UPGRADE_WARNING: Couldn't resolve default property of object mavWorkingPatternChanges(1, 0). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				mavWorkingPatternChanges(1, 0) = FULL_WP
+
+				mavWorkingPatternChanges(0).ChangeDate = DateTime.MinValue
+				mavWorkingPatternChanges(0).WorkingPattern = FULL_WP
+
 			End If
 
 		Catch ex As Exception

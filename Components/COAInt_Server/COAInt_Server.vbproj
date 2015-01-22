@@ -119,6 +119,7 @@
     <Compile Include="BaseClasses\BaseModuleSpecific.vb" />
     <Compile Include="BaseClasses\BaseOutputFormat.vb" />
     <Compile Include="BaseClasses\BaseReport.vb" />
+    <Compile Include="Classes\WorkingPatternChange.vb" />
     <Compile Include="clsAbsenceCalendar.vb" />
     <Compile Include="clsBankHoliday.vb" />
     <Compile Include="clsBankHolidays.vb" />
