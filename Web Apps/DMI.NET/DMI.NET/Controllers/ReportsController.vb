@@ -115,11 +115,6 @@ Namespace Controllers
 					End If
 				Next
 
-				' Check if all selected columns / calculations are hidden
-				If (hiddenColumnsCount = objModel.Columns.Count) Then
-					ModelState.AddModelError("AreAllColumnsHiddden", "All columns / calculations selected in this definition are defined as hidden.")
-				End If
-
 				' Check the column headings are unique.
 				Dim breakNestedLoop As Boolean
 				For Each columnItem As ReportColumnItem In objModel.Columns
@@ -192,6 +187,13 @@ Namespace Controllers
 					ModelState.AddModelError("IsValueOnChangeOK", "There are no columns defined as 'value on change' for this summary report.")
 				End If
 
+			End If
+
+			' If above all validation passed then check if all selected columns are hidden, if yes then save of defination is not allowed
+			If ModelState.IsValid Then
+				If (hiddenColumnsCount = objModel.Columns.Count) Then
+					ModelState.AddModelError("AreAllColumnsHidden", "This definition cannot be saved as all columns / calculations selected are defined as hidden.")
+				End If
 			End If
 
 			If objModel.ValidityStatus = ReportValidationStatus.ServerCheckComplete Then
