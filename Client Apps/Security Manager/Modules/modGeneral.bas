@@ -74,6 +74,7 @@ Public Enum enum_Module
   mod3rdPartyTables = 2 ^ 15
   modNineBoxGrid = 2 ^ 16
   modEditableGrids = 2 ^ 17
+  modCustomisationPowerPack = 2 ^ 18
 End Enum
 
 Public Enum SQLServerAuthenticationType

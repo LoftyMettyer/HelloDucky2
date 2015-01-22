@@ -281,6 +281,9 @@ Public Enum Module
   modFusion = 8192
   modXMLExport = 16384
   mod3rdPartyTables = 32768
+  modNineBoxGrid = 2 ^ 16
+  modEditableGrids = 2 ^ 17
+  modCustomisationPowerPack = 2 ^ 18
 End Enum
 
 

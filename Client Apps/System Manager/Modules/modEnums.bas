@@ -729,6 +729,7 @@ Public Enum enum_Module
   mod3rdPartyTables = 32768
   modNineBoxGrid = 65536
   modEditableGrids = 131072
+  modCustomisationPowerPack = 2 ^ 18
 End Enum
 
 'System metrics constants

@@ -85,18 +85,18 @@ Begin VB.Form frmTabEdit
       TabCaption(1)   =   "Su&mmary"
       TabPicture(1)   =   "frmTabEdit.frx":0028
       Tab(1).ControlEnabled=   0   'False
-      Tab(1).Control(0)=   "lblParentTable"
-      Tab(1).Control(1)=   "fraColumns"
-      Tab(1).Control(2)=   "cmdInsert"
-      Tab(1).Control(3)=   "cmdDown"
-      Tab(1).Control(4)=   "cmdUp"
-      Tab(1).Control(5)=   "cmdRemove"
-      Tab(1).Control(6)=   "cmdAdd"
-      Tab(1).Control(7)=   "fraSummaryFields"
-      Tab(1).Control(8)=   "cmdInsertBreak"
-      Tab(1).Control(9)=   "cboParentTable"
-      Tab(1).Control(10)=   "cmdColumnBreak"
-      Tab(1).Control(11)=   "chkManualColumnBreak"
+      Tab(1).Control(0)=   "chkManualColumnBreak"
+      Tab(1).Control(1)=   "cmdColumnBreak"
+      Tab(1).Control(2)=   "cboParentTable"
+      Tab(1).Control(3)=   "cmdInsertBreak"
+      Tab(1).Control(4)=   "fraSummaryFields"
+      Tab(1).Control(5)=   "cmdAdd"
+      Tab(1).Control(6)=   "cmdRemove"
+      Tab(1).Control(7)=   "cmdUp"
+      Tab(1).Control(8)=   "cmdDown"
+      Tab(1).Control(9)=   "cmdInsert"
+      Tab(1).Control(10)=   "fraColumns"
+      Tab(1).Control(11)=   "lblParentTable"
       Tab(1).ControlCount=   12
       TabCaption(2)   =   "Ema&ils"
       TabPicture(2)   =   "frmTabEdit.frx":0044
@@ -116,8 +116,8 @@ Begin VB.Form frmTabEdit
       TabCaption(5)   =   "Audi&t"
       TabPicture(5)   =   "frmTabEdit.frx":0098
       Tab(5).ControlEnabled=   0   'False
-      Tab(5).Control(0)=   "fraAudit"
-      Tab(5).Control(1)=   "fraTableStats"
+      Tab(5).Control(0)=   "fraTableStats"
+      Tab(5).Control(1)=   "fraAudit"
       Tab(5).ControlCount=   2
       TabCaption(6)   =   "&Validation"
       TabPicture(6)   =   "frmTabEdit.frx":00B4
@@ -127,10 +127,8 @@ Begin VB.Form frmTabEdit
       TabCaption(7)   =   "Tri&ggers"
       TabPicture(7)   =   "frmTabEdit.frx":00D0
       Tab(7).ControlEnabled=   0   'False
-      Tab(7).Control(0)=   "fraTableTriggers"
-      Tab(7).Control(0).Enabled=   0   'False
-      Tab(7).Control(1)=   "fraSystemTriggers"
-      Tab(7).Control(1).Enabled=   0   'False
+      Tab(7).Control(0)=   "fraSystemTriggers"
+      Tab(7).Control(1)=   "fraTableTriggers"
       Tab(7).ControlCount=   2
       Begin VB.CheckBox chkCopyWhenParentRecordIsCopied 
          Caption         =   "Cop&y when parent record is copied"
@@ -1212,11 +1210,11 @@ Private mblnEmailSortByActivation As Boolean
 Private mblnEmailSortDesc As Boolean
 
 Private Property Get Changed() As Boolean
-  Changed = cmdOK.Enabled
+  Changed = cmdOk.Enabled
 End Property
 
 Private Property Let Changed(ByVal blnNewValue As Boolean)
-  cmdOK.Enabled = blnNewValue
+  cmdOk.Enabled = blnNewValue
 End Property
 
 
@@ -2634,6 +2632,7 @@ Private Sub Form_Load()
   End If
 
   ssTabTableProperties.TabVisible(iTABLEPROPERTYTTAB_WORKFLOWLINKS) = Application.WorkflowModule
+  ssTabTableProperties.TabVisible(iTABLEPROPERTYTTAB_TRIGGERS) = IsModuleEnabled(modCustomisationPowerPack)
 
   ' Set the maximum table name length.
   txtTableName.MaxLength = MaxTableNameLength
@@ -2690,7 +2689,7 @@ End Sub
 
 Private Sub optTableType_Click(Index As Integer)
   
-  chkCopyWhenParentRecordIsCopied.Enabled = (Index = 1)
+  chkCopyWhenParentRecordIsCopied.Enabled = (Index = 1) And IsModuleEnabled(modCustomisationPowerPack)
   
   If Not chkCopyWhenParentRecordIsCopied.Enabled Then
     chkCopyWhenParentRecordIsCopied.value = vbUnchecked
