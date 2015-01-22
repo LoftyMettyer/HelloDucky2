@@ -744,7 +744,9 @@
 
 		dataRow.Heading = $("#SelectedColumnHeading").val();
 		dataRow.Size = $("#SelectedColumnSize").val();
+		if (dataRow.Size == "") { dataRow.Size = 0 }; //If size is empty then set to 0
 		dataRow.Decimals = $("#SelectedColumnDecimals").val();
+		if (dataRow.Decimals == "") { dataRow.Decimals = 0 }; //If Decimals is empty then set to 0
 		dataRow.IsAverage = $('#SelectedColumnIsAverage').is(':checked');
 		dataRow.IsCount = $("#SelectedColumnIsCount").is(':checked');
 		dataRow.IsTotal = $("#SelectedColumnIsTotal").is(':checked');
@@ -977,8 +979,8 @@
 	$(function () {
 
 		// Sets Size and Decimals textbox to allow numeric only
-		$("#SelectedColumnSize").autoNumeric({ aSep: '', aNeg: '', mDec: "0", vMin: 0, wEmpty: 'zero' });
-		$("#SelectedColumnDecimals").autoNumeric({ aSep: '', aNeg: '', mDec: "0", vMax: 999, vMin: 0, wEmpty: 'zero' });
+		$("#SelectedColumnSize").autoNumeric({ aSep: '', aNeg: '', mDec: "0", vMin: 0 });
+		$("#SelectedColumnDecimals").autoNumeric({ aSep: '', aNeg: '', mDec: "0", vMax: 999, vMin: 0 });
 
 		$(".spinner").spinner({
 			min: 0,
@@ -1005,6 +1007,8 @@
 			focus: function () {
 				if (!this.clicked) this.select(); else this.clicked = 2;
 			}
+		}).blur(function () {
+			if (this.value == "") this.value = 0;
 		});
 	});
 
