@@ -148,10 +148,6 @@ IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spASRIntGe
 	DROP PROCEDURE [dbo].[spASRIntGetCustomReport];
 GO
 
-IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spASRIntGetCustomReportDetails]') AND xtype in (N'P'))
-	DROP PROCEDURE [dbo].[spASRIntGetCustomReportDetails];
-GO
-
 IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[sp_ASRIntGetSummaryFields]') AND xtype = 'P')
 	DROP PROCEDURE [dbo].[sp_ASRIntGetSummaryFields]
 GO
@@ -64493,42 +64489,8 @@ GO
 
 
 ---------------------------------------------------------------
--- Script 8.0.23
----------------------------------------------------------------
-
----------------------------------------------------------------
--- Script 8.0.24 (Not necessary)
----------------------------------------------------------------
-
----------------------------------------------------------------
--- Script 8.0.25 (Not necessary)
----------------------------------------------------------------
-
----------------------------------------------------------------
 -- Script 8.0.26 (And "ghost" items during script merge)
 ---------------------------------------------------------------
-
-CREATE PROCEDURE spASRIntGetCustomReportDetails (@piCustomReportID integer)
-AS
-BEGIN
-
-	SET NOCOUNT ON;
-
-	SELECT d.*, ISNULL(c.Use1000separator,0) AS Use1000separator
-			, ISNULL(c.columnname,'') AS [columnname]
-			, ISNULL(t.tableid,0) AS [tableid]
-			, ISNULL(t.tablename,'') AS [tablename]
-			, CASE c.datatype WHEN 11 THEN 1 ELSE 0 END AS [IsDateColumn]
-			, CASE c.datatype WHEN -7 THEN 1 ELSE 0 END AS [IsBooleanColumn]
-		FROM ASRSysCustomReportsDetails d
-		LEFT JOIN ASRSysColumns c ON c.columnid = d.ColExprID And d.Type = 'C'
-		LEFT JOIN ASRSysTables t ON c.tableid = t.tableid
-	WHERE CustomReportID = @piCustomReportID ORDER BY [Sequence];
-
-END
-
-
-GO
 
 IF NOT EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[spASRSysMobileCheckPendingWorkflowSteps]') AND xtype in (N'P'))
 BEGIN
