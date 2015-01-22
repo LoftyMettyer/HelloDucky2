@@ -256,7 +256,6 @@ Public Function CheckVersion(sConnect As String, fReRunScript As Boolean, bIsSQL
           'fOK = UpdateDatabase(sConnect, False)
           'fOK = UpdateDatabase(sConnect, True, True)
           fOK = UpdateDatabase(sConnect, blnReRunCurrent, True)
-          fOK = fOK And ClearDownCurrentSessions()
 
         ElseIf ASRDEVELOPMENT Then
           fOK = True
@@ -802,6 +801,8 @@ Private Function UpdateDatabase( _
     End If
   End If
     
+  ClearDownCurrentSessions
+        
   UnlockDatabase lckSaving
 
   gobjProgress.CloseProgress
