@@ -4966,6 +4966,10 @@ Private Function ApplyChanges_LogoutCheck() As Boolean
         .Show vbModal
       End If
   
+      If .ForciblyDisconnect Then
+        AuditAccess "Forcibly Disconnect Users", "Security"
+      End If
+  
       ApplyChanges_LogoutCheck = Not .Cancelled
   
     End With

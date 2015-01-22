@@ -1,7 +1,7 @@
 VERSION 5.00
-Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "ActBar.ocx"
+Object = "{0F987290-56EE-11D0-9C43-00A0C90F29FC}#1.0#0"; "actbar.ocx"
 Object = "{8D650141-6025-11D1-BC40-0000C042AEC0}#3.0#0"; "ssdw3b32.ocx"
-Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "mscomctl.OCX"
+Object = "{831FDD16-0C5C-11D2-A9FC-0000F8754DA1}#2.0#0"; "mscomctl.ocx"
 Begin VB.Form frmAudit 
    Caption         =   "Audit"
    ClientHeight    =   2745
@@ -102,7 +102,7 @@ Begin VB.Form frmAudit
       Columns(4).DataField=   "Column 4"
       Columns(4).DataType=   8
       Columns(4).FieldLen=   256
-      Columns(5).Width=   3200
+      Columns(5).Width=   4233
       Columns(5).Caption=   "Action"
       Columns(5).Name =   "Action"
       Columns(5).DataField=   "Column 5"

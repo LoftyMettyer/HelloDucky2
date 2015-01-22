@@ -55,6 +55,7 @@ PRINT 'Step - Web Messaging'
 
 -- Increase size of audit access 
 ALTER TABLE [ASRSysAuditAccess] ALTER COLUMN [HRProModule] varchar(20);
+ALTER TABLE [ASRSysAuditAccess] ALTER COLUMN [Action] varchar(30);
 
 IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[ASRSysCurrentLogins]') AND xtype in (N'U'))
 	DROP TABLE [dbo].[ASRSysCurrentLogins];

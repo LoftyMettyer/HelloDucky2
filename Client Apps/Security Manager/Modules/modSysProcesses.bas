@@ -37,7 +37,7 @@ Public Function CurrentUsersPopulate(grdTemp As SSDBGrid, strUsersToLogOut As St
     End If
 
     ' Count the web users
-    If rsUsers!program_name = "OpenHR Web" Then
+    If rsUsers!program_name = "OpenHR Web" Or rsUsers!program_name = "Self-service" Then
       WebUserCount = WebUserCount + 1
     End If
       

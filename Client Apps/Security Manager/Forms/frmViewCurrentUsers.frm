@@ -28,12 +28,12 @@ Begin VB.Form frmViewCurrentUsers
    ShowInTaskbar   =   0   'False
    StartUpPosition =   1  'CenterOwner
    Begin VB.CheckBox chkKillWebUsers 
-      Caption         =   "&Forcibly disconnect all web users"
+      Caption         =   "&Forcibly disconnect all OpenHR Web and Self-service users"
       Height          =   330
       Left            =   105
       TabIndex        =   17
       Top             =   4590
-      Width           =   3315
+      Width           =   5820
    End
    Begin VB.CommandButton cmdSendMessage 
       Caption         =   "Send &Message"
@@ -272,6 +272,12 @@ Private mintLockType As LockTypes
 Private mbKillWebUsers As Boolean
 Private mintWebUserCount As Integer
 
+Public ForciblyDisconnect As Boolean
+
+Private Sub CheckEnableKillUsers()
+  chkKillWebUsers.Enabled = mintWebUserCount = grdUsers.Rows
+End Sub
+
 Private Sub CheckEnableSave()
   cmdSave.Enabled = (grdUsers.Rows = 0 Or _
         (chkASRDevBypass.Visible = True And chkASRDevBypass.Value = vbChecked) Or _
@@ -399,6 +405,7 @@ Private Sub Form_Resize()
   'JPD 20030908 Fault 5756
   DisplayApplication
   CheckEnableSave
+  CheckEnableKillUsers
   
 End Sub
 
@@ -536,6 +543,8 @@ End Sub
 
 Private Sub cmdSave_Click()
 
+  ForciblyDisconnect = IIf(chkKillWebUsers.Value, vbChecked, vbUnchecked)
+  
   If mblnSaving And Not (chkASRDevBypass.Value = vbChecked Or chkKillWebUsers.Value = vbChecked) Then
     If Not OkayToSave(mstrUsersToLogOut) Then
       Exit Sub
@@ -551,6 +560,7 @@ Private Sub cmdRefresh_Click()
   GetUsers
   LockCheck
   CheckEnableSave
+  CheckEnableKillUsers
 End Sub
 
 Public Property Get Cancelled() As Boolean

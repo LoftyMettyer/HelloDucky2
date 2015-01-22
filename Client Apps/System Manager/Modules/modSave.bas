@@ -837,6 +837,10 @@ Public Function SaveChanges_LogoutCheck(blnSendMessageVisible As Boolean) As Boo
       Screen.MousePointer = vbHourglass
       fOK = Not .Cancelled
     
+      If .ForciblyDisconnect Then
+        AuditAccess "Forcibly Disconnect Users", "System"
+      End If
+    
       ' AE20080422 Fault #13121
       If fOK Then
         gobjProgress.Visible = True
