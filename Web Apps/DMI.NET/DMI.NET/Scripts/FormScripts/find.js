@@ -158,7 +158,7 @@ function find_window_onload() {
 										align: 'center',
 										width: 100									
 									});
-								} else if (ColumnDataType == 4) { //Integer	- NOT numerics								
+								} else if (ColumnDataType == 4 && ColumnControlType != 2) { //Integer - NOT numerics; the "ColumnControlType != 2" condition is so this if is NOT true for Integer lookups (they are covered below)
 									if (ColumnControlType == 64) { // Integer - not a spinner.
 										colModel.push({
 											name: sColumnName,
@@ -312,7 +312,7 @@ function find_window_onload() {
 											defaultValue: getDefaultValueForColumn(iColumnId, "textarea")
 										}
 									});
-								} else if ((ColumnDataType == 12 || ColumnDataType == 2) && ColumnControlType == 2 && ColumnLookupColumnID != 0) { //Lookup
+								} else if ((ColumnDataType == 12 || ColumnDataType == 2 || ColumnDataType == 4) && ColumnControlType == 2 && ColumnLookupColumnID != 0) { //Lookup
 									colModel.push({
 										name: sColumnName,
 										id: iColumnId,
@@ -539,7 +539,7 @@ function find_window_onload() {
 					$("#findGridTable").jqGrid('inlineNav', '#pager-coldata', {
 						edit: true, //Set it to always true, but the logic to show or hide the edit icon is now below as well as in menu.js
 						editicon: 'icon-pencil',
-						add: insertGranted, //The insertGranted variable is defined in Find.ascx
+						add: insertGranted && thereIsAtLeastOneEditableColumn, //Add row should only be enabled if insert is granted AND there is at least one editable column (The insertGranted variable is defined in Find.ascx)
 						addicon: 'icon-plus',
 						save: true,
 						saveicon: 'icon-save',
