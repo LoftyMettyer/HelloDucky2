@@ -295,7 +295,7 @@
 										columnsDefaultValues = String.Concat(columnsDefaultValues, """", objRow.FirstOrDefault.Item("columnID"), """:""", EncodeStringToJavascriptSpecialCharacters(objRow.FirstOrDefault.Item("DefaultValue")), """,")
 												
 										'If column is a Lookup, we need to get its associated data
-										If (objRow.FirstOrDefault.Item("datatype") = 12 Or objRow.FirstOrDefault.Item("datatype") = 2) And objRow.FirstOrDefault.Item("controltype") = 2 And objRow.FirstOrDefault.Item("LookupColumnID") <> 0 Then
+										If (objRow.FirstOrDefault.Item("datatype") = 12 Or objRow.FirstOrDefault.Item("datatype") = 2 Or objRow.FirstOrDefault.Item("datatype") = 4) And objRow.FirstOrDefault.Item("controltype") = 2 And objRow.FirstOrDefault.Item("LookupColumnID") <> 0 Then
 											Dim objDatabase As Database = CType(Session("DatabaseFunctions"), Database)
 											'Dim objDataAccess As clsDataAccess = CType(Session("DatabaseAccess"), clsDataAccess)
 
