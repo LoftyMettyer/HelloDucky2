@@ -533,6 +533,16 @@
 								</ul>
 							</div>
 						</li>
+						<li id="mnuSectionRecordMF"><span>Record Tools</span>
+							<div id="mnutoolMFRecord" class="button">
+								<a href="#" rel="table" title="Toggle Mandatory Fields">
+									<img src="<%: Url.Content("~/Scripts/officebar/winkit/Registry64HOVER.png")%>"
+										alt="" />
+									<i class="icon-th-list"></i>
+									<h6>Toggle Mandatory<br/>Fields</h6>
+								</a>
+							</div>
+						</li>
 					</ul>
 				</li>
 

@@ -934,7 +934,7 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
 
 	//TODO: move styling to classes?    
 	//TODO: move duplicated property setting blocks to separate functions
-
+	
 	var span;
 	var top;
 	var left;
@@ -1002,6 +1002,7 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
 			checkbox.setAttribute("data-columnID", columnID);
 			checkbox.setAttribute('data-controlType', controlItemArray[3]);
 			checkbox.setAttribute("data-control-tag", key);
+			checkbox.setAttribute("data-Mandatory", controlItemArray[32]);
 
 			if (!fControlEnabled) {
 				$(span).prop('disabled', true);
@@ -1029,6 +1030,8 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
 			selector.setAttribute("data-columnID", columnID);
 			selector.setAttribute('data-controlType', controlItemArray[3]);
 			selector.setAttribute("data-control-key", key);
+			selector.setAttribute("data-Mandatory", controlItemArray[32]);
+
 			if (controlItemArray[22] == 1) {
 				//column type = ---- LOOKUPS ----
 				selector.setAttribute("data-columntype", "lookup");
@@ -1036,8 +1039,7 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
 				selector.setAttribute("data-LookupTableID", controlItemArray[27]);
 				selector.setAttribute("data-LookupColumnID", controlItemArray[28]);
 				selector.setAttribute("data-LookupFilterColumnID", controlItemArray[53]);
-				selector.setAttribute("data-LookupFilterValueID", controlItemArray[54]);
-				selector.setAttribute("data-Mandatory", controlItemArray[32]);
+				selector.setAttribute("data-LookupFilterValueID", controlItemArray[54]);				
 			}
 
 			if (!fControlEnabled) $(selector).prop('disabled', true);
@@ -1065,6 +1067,7 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
 			image.setAttribute("data-columnID", columnID);
 			image.setAttribute('data-controlType', controlItemArray[3]);
 			image.setAttribute("data-control-key", key);
+			image.setAttribute("data-Mandatory", controlItemArray[32]);
 
 			if (!fControlEnabled) $(image).prop('disabled', true);
 
@@ -1086,7 +1089,7 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
 			button.setAttribute("data-columnID", columnID);
 			button.setAttribute('data-controlType', controlItemArray[3]);
 			button.setAttribute("data-control-key", key);
-			button.setAttribute('data-OleType', controlItemArray[55]); // == 2 ? 3 : controlItemArray[55]);
+			button.setAttribute('data-OleType', controlItemArray[55]); // == 2 ? 3 : controlItemArray[55]);			
 			button.setAttribute('data-maxEmbedSize', controlItemArray[57]);
 			button.setAttribute('data-readOnly', (!(fControlEnabled)));
 			button.style.overflow = 'hidden';
@@ -1157,6 +1160,7 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
 			fieldset.setAttribute('data-controlType', controlItemArray[3]);
 			fieldset.setAttribute("data-alignment", controlItemArray[20]);
 			fieldset.setAttribute("data-control-key", key);
+			fieldset.setAttribute("data-Mandatory", controlItemArray[32]);
 
 			if ((controlItemArray[19] != "0") && (controlItemArray[8].length > 0)) {
 				//has a border and a caption
@@ -1190,7 +1194,8 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
 				spinner.setAttribute("data-columnID", columnID);
 				spinner.setAttribute('data-controlType', controlItemArray[3]);
 				spinner.setAttribute("data-control-key", key);
-				
+				spinner.setAttribute("data-Mandatory", controlItemArray[32]);
+
 				//Add some attributes used by the autoNumeric plugin we are using to validate numeric text boxes
 				var x; //For the loop below
 				var value = "";
@@ -1251,6 +1256,7 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
 				spinner.setAttribute('data-minval', controlItemArray[29]);
 				spinner.setAttribute('data-maxval', controlItemArray[30]);
 				spinner.setAttribute('data-increment', controlItemArray[31]);
+				spinner.setAttribute("data-Mandatory", controlItemArray[32]);
 
 				if (tabIndex > 0) spinner.tabindex = tabIndex;
 				//if (!fControlEnabled) spinnerContainer.disabled = true;
@@ -1363,6 +1369,8 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
 			textbox.setAttribute("data-columnID", columnID);
 			textbox.setAttribute('data-controlType', controlItemArray[3]);
 			textbox.setAttribute("data-control-key", key);
+			textbox.setAttribute("data-Mandatory", controlItemArray[32]);
+
 			if (controlItemArray[25] > 0) {
 				//set maximum input length for this control
 				$(textbox).attr('maxlength', controlItemArray[25]);
@@ -1392,7 +1400,7 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
 				//textbox.setAttribute("disabled", "disabled");
 				//$(textbox).addClass("ui-state-disabled");
 				$(textbox).prop('disabled', true);
-			}
+			}		
 
 			//Add control to relevant tab, create if required.                
 			addControl(iPageNo, textbox);
@@ -1529,6 +1537,7 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
 			fieldset.setAttribute('data-controlType', controlItemArray[3]);
 			fieldset.setAttribute("data-datatype", "Working Pattern");
 			fieldset.setAttribute("data-control-key", key);
+			fieldset.setAttribute("data-Mandatory", controlItemArray[32]);
 
 			fieldset.style.position = "absolute";
 			fieldset.style.top = top + "px";
@@ -1837,7 +1846,8 @@ function AddHtmlControl(controlItem, txtcontrolID, key) {
 			textboxColorPicker.setAttribute("data-columnID", columnID);
 			textboxColorPicker.setAttribute('data-controlType', controlItemArray[3]);
 			textboxColorPicker.setAttribute("data-control-tag", key);
-			
+			textboxColorPicker.setAttribute("data-Mandatory", controlItemArray[32]);
+
 			//Set attributes that link both controls
 			textboxColorPicker.setAttribute("data-associated-control-id", textboxColorPickerPlugin.id);
 			textboxColorPickerPlugin.setAttribute("data-associated-control-id", textboxColorPicker.id);

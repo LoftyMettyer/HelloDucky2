@@ -342,6 +342,36 @@ function menu_MenuClick(sTool) {
 		}
 	}
 	
+	if (sToolName == "mnutoolMFRecord") {
+		$('#ctlRecordEdit *[data-Mandatory="1"]').each(function() {
+			
+			var controlType = $(this).attr('data-controlType');
+
+			if (controlType == "4096") {
+				//working pattern
+				if ($(this).children('input:enabled').length > 0) $(this).toggleClass('ui-state-highlight');
+			}
+			else if ((controlType == "32") && ($(this).is(':enabled'))) {
+				//Spinner
+				$(this).parent().toggleClass('ui-state-highlight');
+			}
+			else if ((controlType == "1") && ($(this).is(':enabled'))) {
+				//checkbox
+				$(this).parent().toggleClass('ui-state-highlight');
+			}
+			else if ((controlType == "16") && (!$(this).prop('disabled'))) {
+				//Option Group
+				$(this).toggleClass('ui-state-highlight');
+			} else {
+				if ($(this).is(':enabled')) {
+					$(this).toggleClass('ui-state-highlight');
+				}
+			}
+		});
+			
+		return false;
+	}
+
 	if ((sToolName == "mnutoolPasswordChange") || (sToolName == "mnutoolNewUser")) {
 		//showDefaultRibbon();
 		//$("#toolbarHome").click();
@@ -5341,7 +5371,9 @@ function submitFollowOn() {
 			} else {
 				$("#findGridTable_iledit").hide();
 			}
-		} catch (e) { }
+		} catch (e) {
+			OpenHR.modalMessage("Failed to reload data for this row.", "");
+		}
 	}
 }
 
