@@ -194,7 +194,9 @@ Session("utiltype = 17 		Calendar Report--%>
 					class="checkbox"
 					tabindex="0">
 					<%
-						If objCrossTab.CrossTabType <> CrossTabType.cttAbsenceBreakdown Then
+						If objCrossTab.CrossTabType = CrossTabType.ctt9GridBox Then
+							Response.Write(" Percentage of all data")
+						ElseIf objCrossTab.CrossTabType <> CrossTabType.cttAbsenceBreakdown Then
 							Response.Write(" Percentage of Type")
 						End If
 					%>
