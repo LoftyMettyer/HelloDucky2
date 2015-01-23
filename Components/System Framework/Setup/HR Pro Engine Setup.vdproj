@@ -76,13 +76,13 @@
         "Entry"
         {
         "MsmKey" = "8:_A0F45F34B8E0D3DF3CBFE46C6978C921"
-        "OwnerKey" = "8:_BE98E242D2684AD8FF05CFA6608967ED"
+        "OwnerKey" = "8:_8F9C4DA7A01643BC84613D7F8758514D"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
         {
         "MsmKey" = "8:_A0F45F34B8E0D3DF3CBFE46C6978C921"
-        "OwnerKey" = "8:_8F9C4DA7A01643BC84613D7F8758514D"
+        "OwnerKey" = "8:_BE98E242D2684AD8FF05CFA6608967ED"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -100,7 +100,7 @@
         "Entry"
         {
         "MsmKey" = "8:_BE98E242D2684AD8FF05CFA6608967ED"
-        "OwnerKey" = "8:_801012A9BF3221FE9DC817D12B89009A"
+        "OwnerKey" = "8:_49B1BA38015C58F49BDB46AD0A5404FF"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -112,7 +112,7 @@
         "Entry"
         {
         "MsmKey" = "8:_BE98E242D2684AD8FF05CFA6608967ED"
-        "OwnerKey" = "8:_49B1BA38015C58F49BDB46AD0A5404FF"
+        "OwnerKey" = "8:_801012A9BF3221FE9DC817D12B89009A"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -136,37 +136,7 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_790E3EA40D3704C9AEDF92F776CF5232"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_A0F45F34B8E0D3DF3CBFE46C6978C921"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_BE98E242D2684AD8FF05CFA6608967ED"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_FE169EE628C835E4DDAAE68F2F4A713A"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_801012A9BF3221FE9DC817D12B89009A"
-        "MsmSig" = "8:_UNDEFINED"
-        }
-        "Entry"
-        {
-        "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_00E7412CEF6CD096E30B4794B4F5C4D7"
+        "OwnerKey" = "8:_8F9C4DA7A01643BC84613D7F8758514D"
         "MsmSig" = "8:_UNDEFINED"
         }
         "Entry"
@@ -178,7 +148,37 @@
         "Entry"
         {
         "MsmKey" = "8:_UNDEFINED"
-        "OwnerKey" = "8:_8F9C4DA7A01643BC84613D7F8758514D"
+        "OwnerKey" = "8:_00E7412CEF6CD096E30B4794B4F5C4D7"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_801012A9BF3221FE9DC817D12B89009A"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_FE169EE628C835E4DDAAE68F2F4A713A"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_BE98E242D2684AD8FF05CFA6608967ED"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_A0F45F34B8E0D3DF3CBFE46C6978C921"
+        "MsmSig" = "8:_UNDEFINED"
+        }
+        "Entry"
+        {
+        "MsmKey" = "8:_UNDEFINED"
+        "OwnerKey" = "8:_790E3EA40D3704C9AEDF92F776CF5232"
         "MsmSig" = "8:_UNDEFINED"
         }
     }
@@ -595,15 +595,15 @@
         {
         "Name" = "8:Microsoft Visual Studio"
         "ProductName" = "8:OpenHR Framework 8.1"
-        "ProductCode" = "8:{589BAB66-4CB8-4788-8B9C-630DA9386FBE}"
-        "PackageCode" = "8:{AB162C84-4FEC-4810-8B29-FC3130CE1454}"
+        "ProductCode" = "8:{25E484E4-69AA-4970-9E6F-00CAA3A052F4}"
+        "PackageCode" = "8:{F274B5AB-7275-41F4-9AA1-A5B689BA91BA}"
         "UpgradeCode" = "8:{8137B836-C29D-4277-A581-3214A9DA8603}"
         "AspNetVersion" = "8:4.0.30319.0"
         "RestartWWWService" = "11:FALSE"
         "RemovePreviousVersions" = "11:FALSE"
         "DetectNewerInstalledVersion" = "11:FALSE"
         "InstallAllUsers" = "11:TRUE"
-        "ProductVersion" = "8:8.1.11"
+        "ProductVersion" = "8:8.1.12"
         "Manufacturer" = "8:Advanced Business Software and Solutions Limited"
         "ARPHELPTELEPHONE" = "8:"
         "ARPHELPLINK" = "8:"
