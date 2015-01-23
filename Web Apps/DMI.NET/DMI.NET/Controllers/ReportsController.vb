@@ -337,6 +337,7 @@ Namespace Controllers
 
 				If ModelState.IsValid Then
 					objSaveWarning = objReportRepository.ServerValidate(objModel)
+					DoesSortColumnsMatchToReflectGroupByDescription(objModel, objSaveWarning)
 				Else
 					objSaveWarning = ModelState.ToWebMessage
 				End If
@@ -738,6 +739,40 @@ Namespace Controllers
 			Return Json(results, JsonRequestBehavior.AllowGet)
 
 		End Function
+
+		''' <summary>
+		''' Validates that the description columns and sort order columns does match when Group by Description is ticked.
+		''' </summary>
+		''' <param name="objModel">The Model</param>
+		''' <param name="objSaveWarning">The save warning object</param>
+		Private Sub DoesSortColumnsMatchToReflectGroupByDescription(objModel As CalendarReportModel, objSaveWarning As SaveWarningModel)
+
+			' Validate only if group by description is checked and calculation description is not selected
+			If (objModel.GroupByDescription = True AndAlso objModel.Description3ID = 0) Then
+				Dim descriptionColumnsCount As Integer = 0
+
+				If objModel.Description1ID > 0 Then
+					'check if description column1 with id exist into sort order, if yes increment the count
+					If objModel.SortOrders.Exists(Function(f) f.ColumnID = objModel.Description1ID) Then
+						descriptionColumnsCount += 1
+					End If
+				End If
+
+				If objModel.Description2ID > 0 Then
+					'check if description column2 with id exist into sort order, if yes increment the count
+					If objModel.SortOrders.Exists(Function(f) f.ColumnID = objModel.Description2ID) Then
+						descriptionColumnsCount += 1
+					End If
+				End If
+
+				' Validates sort order columns count does match with the selected descriptions
+				If objModel.SortOrders.Count() <> descriptionColumnsCount Then
+					objSaveWarning.ErrorCode = ReportValidationStatus.Overwrite
+					objSaveWarning.ErrorMessage = "The sort order does not reflect the selected Group By Description columns.<BR/><BR/> Are you sure you wish to continue ?"
+				End If
+
+			End If
+		End Sub
 
 	End Class
 
