@@ -193,10 +193,15 @@
 		setOutputSendAsAttachment();
 		//styling for email address under Individual Emails section
 		$('#fieldsetsubjectemail select').css({
-			width: '60%',
+			width: '68%',
 			marginBottom: '10px',
 			float: 'left'
 		});
+
+		$('#EmailSubject, #EmailAttachmentName').css({
+			width: '68%',
+			float: 'left'
+		});		
 
 		$('fieldset').css("border", "1");
 		$('#WordDisplayOutputOnScreen').prop('checked', true);
