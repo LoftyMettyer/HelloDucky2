@@ -448,7 +448,7 @@ Namespace Controllers
 					New SqlParameter("@piOrderID ", SqlDbType.Int) With {.Value = CleanNumeric(Session("orderID"))}, _
 					New SqlParameter("@piParentTableID", SqlDbType.Int) With {.Value = CleanNumeric(Session("parentTableID"))}, _
 					New SqlParameter("@piParentRecordID", SqlDbType.Int) With {.Value = CleanNumeric(Session("parentRecordID"))}, _
-					New SqlParameter("@psFilterDef", SqlDbType.VarChar, -1) With {.Value = Session("filterDefPrevious")}, _
+					New SqlParameter("@psFilterDef", SqlDbType.VarChar, -1) With {.Value = If(Session("filterDefPrevious") Is Nothing, "", Session("filterDefPrevious")).ToString}, _
 					New SqlParameter("@piRecordsRequired", SqlDbType.Int) With {.Value = 10000000}, _
 					prmIsFirstPage, _
 					prmIsLastPage, _
