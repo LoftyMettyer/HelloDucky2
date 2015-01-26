@@ -145,6 +145,7 @@ Namespace Code.Hubs
 				End If
 
 				LockMessage = ""
+				SystemLockStatus = LockPriority.None
 
 				dt.Load(cmd.ExecuteReader())
 				For Each objRow As DataRow In dt.Rows
