@@ -7,6 +7,79 @@
 
 */
 
+IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[udfcustom_AbsenceDurationForAppointment]') AND xtype = 'TF')
+	DROP FUNCTION [dbo].[udfcustom_AbsenceDurationForAppointment];
+
+EXEC sp_executesql N'CREATE FUNCTION udfcustom_AbsenceDurationForAppointment(@startDate datetime, @startSession varchar(2), @endDate datetime, @endSession varchar(2), @appointmentID integer)
+RETURNS numeric(5,2)
+AS
+BEGIN
+
+	-- Get change dates for this appointment
+	DECLARE @changeDates TABLE(type varchar(1), Effective_Date datetime, AppointmentID integer);
+	DECLARE @working_patterns TABLE (type varchar(1),Effective_Date datetime, End_Date datetime
+							, Sunday_Hours_AM numeric(4,2), Sunday_Hours_PM numeric(4,2)
+							, Monday_Hours_AM numeric(4,2), Monday_Hours_PM numeric(4,2)
+							, Tuesday_Hours_AM numeric(4,2), Tuesday_Hours_PM numeric(4,2)
+							, Wednesday_Hours_AM numeric(4,2), Wednesday_Hours_PM numeric(4,2)
+							, Thursday_Hours_AM numeric(4,2), Thursday_Hours_PM numeric(4,2)
+							, Friday_Hours_AM numeric(4,2), Friday_Hours_PM numeric(4,2)
+							, Saturday_Hours_AM numeric(4,2), Saturday_Hours_PM numeric(4,2)
+							, Day_Pattern_AM varchar(28), Day_Pattern_PM varchar(28)
+							, Hour_Pattern_AM varchar(28), Hour_Pattern_PM varchar(28));
+	DECLARE @absenceIn varchar(5),
+			@duration numeric(5,2);
+
+	SELECT @absenceIn = Absence_In FROM Appointments WHERE ID = @appointmentID;
+
+	SET @startDate = DATEADD(dd, 0, DATEDIFF(dd, 0, @startDate));
+	SET @endDate = DATEADD(dd, 0, DATEDIFF(dd, 0, @endDate));
+
+	INSERT @changeDates 
+		SELECT ''a'', awp.Effective_Date, a.ID FROM Appointments a
+			INNER JOIN Appointment_Working_Patterns awp ON awp.ID_3 = a.ID
+		WHERE a.ID = @appointmentID 
+	  UNION
+		SELECT ''b'', awp.End_Date + 1, a.ID FROM Appointments a
+			INNER JOIN Appointment_Working_Patterns awp ON awp.ID_3 = a.ID
+		WHERE a.ID = @appointmentID 
+			AND awp.End_Date IS NOT NULL AND (a.Appointment_End_Date >= @startDate OR a.Appointment_End_Date IS NULL);
+
+	INSERT @working_patterns
+		SELECT cd.type, cd.Effective_Date, NULL
+			, ISNULL(SUM(wp.Sunday_Hours_AM),0), ISNULL(SUM(wp.Sunday_Hours_PM),0)
+			, ISNULL(SUM(wp.Monday_Hours_AM),0), ISNULL(SUM(wp.Monday_Hours_PM),0)
+			, ISNULL(SUM(wp.Tuesday_Hours_AM),0), ISNULL(SUM(wp.Tuesday_Hours_PM),0)
+			, ISNULL(SUM(wp.Wednesday_Hours_AM),0), ISNULL(SUM(wp.Wednesday_Hours_PM),0)
+			, ISNULL(SUM(wp.Thursday_Hours_AM),0), ISNULL(SUM(wp.Thursday_Hours_PM),0)
+			, ISNULL(SUM(wp.Friday_Hours_AM),0), ISNULL(SUM(wp.Friday_Hours_PM),0)
+			, ISNULL(SUM(wp.Saturday_Hours_AM),0), ISNULL(SUM(wp.Saturday_Hours_PM),0)
+			, NULL, NULL, NULL, NULL
+		FROM @changeDates cd
+		LEFT JOIN Appointment_Working_Patterns wp ON cd.AppointmentID = wp.id_3 AND cd.Effective_Date >= wp.Effective_Date AND (cd.Effective_Date <= wp.End_Date OR wp.End_Date IS NULL)
+			GROUP BY cd.Effective_Date, cd.type;
+
+	UPDATE t 
+		SET End_Date = (SELECT top 1 m.Effective_Date - 1 FROM @working_patterns m WHERE m.Effective_Date > t.Effective_Date ORDER BY m.Effective_Date),
+			Day_Pattern_AM = dbo.udfsysPatternFromHours (''Days'', Sunday_Hours_AM, Monday_Hours_AM, Tuesday_Hours_AM, Wednesday_Hours_AM, Thursday_Hours_AM, Friday_Hours_AM, Saturday_Hours_AM),
+			Day_Pattern_PM = dbo.udfsysPatternFromHours (''Days'', Sunday_Hours_PM, Monday_Hours_PM, Tuesday_Hours_PM, Wednesday_Hours_PM, Thursday_Hours_PM, Friday_Hours_PM, Saturday_Hours_PM),
+			Hour_Pattern_AM = dbo.udfsysPatternFromHours (''Hours'', Sunday_Hours_AM, Monday_Hours_AM, Tuesday_Hours_AM, Wednesday_Hours_AM, Thursday_Hours_AM, Friday_Hours_AM, Saturday_Hours_AM),
+			Hour_Pattern_PM = dbo.udfsysPatternFromHours (''Hours'', Sunday_Hours_PM, Monday_Hours_PM, Tuesday_Hours_PM, Wednesday_Hours_PM, Thursday_Hours_PM, Friday_Hours_PM, Saturday_Hours_PM)
+	FROM @working_patterns t;
+
+	SELECT @duration = SUM(dbo.udfsysDurationFromPattern(@absenceIn, dr.IndividualDate, dr.SessionType, wp.Sunday_Hours_AM, wp.Monday_Hours_AM, wp.Tuesday_Hours_AM
+			, wp.Wednesday_Hours_AM, wp.Thursday_Hours_AM, wp.Friday_Hours_AM, wp.Saturday_Hours_AM, wp.Sunday_Hours_PM, wp.Monday_Hours_PM, wp.Tuesday_Hours_PM
+			, wp.Wednesday_Hours_PM, wp.Thursday_Hours_PM, wp.Friday_Hours_PM, wp.Saturday_Hours_PM))
+	FROM [dbo].[udfsysDateRangeToTable] (''d'', @startDate, @startSession,  @endDate, @endSession) dr
+		LEFT JOIN @working_patterns wp ON dr.IndividualDate >= ISNULL(wp.Effective_Date, ''1899-12-31'') AND dr.IndividualDate <= ISNULL(wp.End_Date, ''9999-12-31'')
+	WHERE dr.IndividualDate >= @startDate AND dr.IndividualDate <= @endDate;
+
+	RETURN ISNULL(@duration, 0)
+
+END';
+
+
+
 DELETE FROM ASRSysTableTriggers
 UPDATE ASRSysTables SET deletetriggerdisabled = 1, inserttriggerdisabled = 1 WHERE tableid = 252;
 
@@ -110,12 +183,16 @@ INSERT ASRSysTableTriggers (TriggerID, TableID, Name, CodePosition, IsSystem, Co
 		WHERE wp.Effective_Date <= dr.IndividualDate AND (wp.End_Date >= dr.IndividualDate OR wp.End_Date IS NULL);')
 GO
 
-INSERT ASRSysTableTriggers (TriggerID, TableID, Name, CodePosition, IsSystem, Content) VALUES (2, 250, 'Split Absence Request for individual appointment approval', 0, 1, '    INSERT Appointment_Absence_Entry (ID_3, Start_Date, Start_Session, End_Date, End_Session, Absence_Type, Reason)
-		SELECT a.ID, ae.Start_Date, ae.Start_Session, ae.End_Date, ae.End_Session, ae.Absence_Type, ae.Reason
-			FROM inserted ae
-			INNER JOIN Appointments a ON ae.ID_1 = a.ID_1
-			WHERE ISNULL(Appointment_Start_Date, convert(datetime, ''1899-12-31'')) <= ae.Start_Date
-				AND ISNULL(Appointment_End_Date, convert(datetime, ''9999-12-31'')) >= ae.End_Date;')
+INSERT ASRSysTableTriggers (TriggerID, TableID, Name, CodePosition, IsSystem, Content) VALUES (2, 250, 'Split Absence Request for individual appointment approval', 0, 1, '    INSERT Appointment_Absence_Entry (ID_3, Start_Date, Start_Session, End_Date, End_Session, Absence_Type, Reason, Duration_Hours, Absence_In)
+		SELECT a.ID, ae.Start_Date, ae.Start_Session, ae.End_Date, ae.End_Session
+				, ae.Absence_Type, ae.Reason
+				, dbo.udf_ASRFn_AbsenceDurationForAppointment(ae.Start_Date, ae.Start_Session, ae.End_Date, ae.End_Session, a.ID)
+				, a.Absence_In
+		FROM inserted ae
+		INNER JOIN Appointments a ON ae.ID_1 = a.ID_1
+		WHERE ISNULL(Appointment_Start_Date, convert(datetime, ''1899-12-31'')) <= ae.Start_Date
+			AND ISNULL(Appointment_End_Date, convert(datetime, ''9999-12-31'')) >= ae.End_Date;
+')
 GO
 
 INSERT ASRSysTableTriggers (TriggerID, TableID, Name, CodePosition, IsSystem, Content) VALUES (3, 252, 'Absence Rollup', 1, 1, '	DECLARE @thisAbsenceID	integer,
