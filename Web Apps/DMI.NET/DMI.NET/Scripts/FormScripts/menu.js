@@ -1869,6 +1869,9 @@ function menu_refreshMenu() {
 				menu_setVisibletoolbarGroup("mnutoolRecordPosition", false);
 		}
 			
+		//Toggle Mandatory Fields button
+		menu_toolbarEnableItem('mnutoolMFRecord', true);
+
 		// Disable the history menu for new records.
 		if (frmRecEdit.txtCurrentRecordID.value <= 0) {
 			//menu_enableMenuItem("mnutoolHistory", false)
@@ -2520,6 +2523,7 @@ function menu_disableMenu() {
 		menu_toolbarEnableItem('mnutoolBradfordRecord', false);
 
 		menu_toolbarEnableItem('mnutoolMailMergeRecord', false);
+		menu_toolbarEnableItem('mnutoolMFRecord', false);
 	}
 
 //	var iLoop;
