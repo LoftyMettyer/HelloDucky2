@@ -110,78 +110,12 @@ INSERT ASRSysTableTriggers (TriggerID, TableID, Name, CodePosition, IsSystem, Co
 		WHERE wp.Effective_Date <= dr.IndividualDate AND (wp.End_Date >= dr.IndividualDate OR wp.End_Date IS NULL);')
 GO
 
-INSERT ASRSysTableTriggers (TriggerID, TableID, Name, CodePosition, IsSystem, Content) VALUES (2, 250, 'Update Absence Breakdown', 1, 1, '    DELETE [dbo].[tbuser_Absence_Breakdown] WHERE [id_250] IN (SELECT DISTINCT [id] FROM deleted);
-
-	DECLARE @persID integer;
-	DECLARE @changeDates TABLE(Effective_Date datetime, AppointmentID integer, PersID integer);
-
-	INSERT @changeDates 
-		SELECT awp.Effective_Date, a.ID, e.ID_1 FROM Appointments a
-			INNER JOIN inserted e ON e.ID_1 = a.ID_1
-			INNER JOIN Appointment_Working_Patterns awp ON awp.ID_3 = a.ID
-		WHERE awp.Effective_Date <= e.Start_Date
-			AND (a.Appointment_End_Date >= e.Start_Date OR a.Appointment_End_Date IS NULL)
-	  UNION
-		SELECT awp.End_Date + 1, a.ID, e.ID_1 FROM Appointments a
-			INNER JOIN inserted e ON e.ID_1 = a.ID_1
-			INNER JOIN Appointment_Working_Patterns awp ON awp.ID_3 = a.ID
-		WHERE awp.End_Date IS NOT NULL
-			AND (a.Appointment_End_Date >= e.Start_Date OR a.Appointment_End_Date IS NULL);
-
-	DECLARE @working_patterns TABLE (PersID integer, Effective_Date datetime, End_Date datetime, AppointmentID integer
-							, Sunday_Hours_AM numeric(4,2), Sunday_Hours_PM numeric(4,2)
-							, Monday_Hours_AM numeric(4,2), Monday_Hours_PM numeric(4,2)
-							, Tuesday_Hours_AM numeric(4,2), Tuesday_Hours_PM numeric(4,2)
-							, Wednesday_Hours_AM numeric(4,2), Wednesday_Hours_PM numeric(4,2)
-							, Thursday_Hours_AM numeric(4,2), Thursday_Hours_PM numeric(4,2)
-							, Friday_Hours_AM numeric(4,2), Friday_Hours_PM numeric(4,2)
-							, Saturday_Hours_AM numeric(4,2), Saturday_Hours_PM numeric(4,2)
-							, Day_Pattern_AM varchar(28), Day_Pattern_PM varchar(28)
-							, Hour_Pattern_AM varchar(28), Hour_Pattern_PM varchar(28));
-
-	INSERT @working_patterns
-		SELECT cd.PersID, cd.Effective_Date, NULL, cd.AppointmentID
-			, ISNULL(SUM(wp.Sunday_Hours_AM),0), ISNULL(SUM(wp.Sunday_Hours_PM),0)
-			, ISNULL(SUM(wp.Monday_Hours_AM),0), ISNULL(SUM(wp.Monday_Hours_PM),0)
-			, ISNULL(SUM(wp.Tuesday_Hours_AM),0), ISNULL(SUM(wp.Tuesday_Hours_PM),0)
-			, ISNULL(SUM(wp.Wednesday_Hours_AM),0), ISNULL(SUM(wp.Wednesday_Hours_PM),0)
-			, ISNULL(SUM(wp.Thursday_Hours_AM),0), ISNULL(SUM(wp.Thursday_Hours_PM),0)
-			, ISNULL(SUM(wp.Friday_Hours_AM),0), ISNULL(SUM(wp.Friday_Hours_PM),0)
-			, ISNULL(SUM(wp.Saturday_Hours_AM),0), ISNULL(SUM(wp.Saturday_Hours_PM),0)
-			, NULL, NULL, NULL, NULL
-		FROM @changeDates cd
-		LEFT JOIN Appointment_Working_Patterns wp ON cd.AppointmentID = wp.id_3 AND cd.Effective_Date >= wp.Effective_Date AND (cd.Effective_Date <= wp.End_Date OR wp.End_Date IS NULL)
-			GROUP BY  cd.AppointmentID, cd.PersID, cd.Effective_Date;
-
-	UPDATE t 
-		SET End_Date = (SELECT top 1 m.Effective_Date - 1 FROM @working_patterns m WHERE m.Effective_Date > t.Effective_Date AND m.AppointmentID = t.AppointmentID ORDER BY m.Effective_Date),
-			Day_Pattern_AM = dbo.udfsysPatternFromHours (''Days'', Sunday_Hours_AM, Monday_Hours_AM, Tuesday_Hours_AM, Wednesday_Hours_AM, Thursday_Hours_AM, Friday_Hours_AM, Saturday_Hours_AM),
-			Day_Pattern_PM = dbo.udfsysPatternFromHours (''Days'', Sunday_Hours_PM, Monday_Hours_PM, Tuesday_Hours_PM, Wednesday_Hours_PM, Thursday_Hours_PM, Friday_Hours_PM, Saturday_Hours_PM),
-			Hour_Pattern_AM = dbo.udfsysPatternFromHours (''Hours'', Sunday_Hours_AM, Monday_Hours_AM, Tuesday_Hours_AM, Wednesday_Hours_AM, Thursday_Hours_AM, Friday_Hours_AM, Saturday_Hours_AM),
-			Hour_Pattern_PM = dbo.udfsysPatternFromHours (''Hours'', Sunday_Hours_PM, Monday_Hours_PM, Tuesday_Hours_PM, Wednesday_Hours_PM, Thursday_Hours_PM, Friday_Hours_PM, Saturday_Hours_PM)
-	FROM @working_patterns t
-
-	   -- Update Absence Breakdown
-    DELETE [dbo].[tbuser_Absence_Breakdown] WHERE [id_250] IN (SELECT DISTINCT [id] FROM deleted);
-
-	INSERT Absence_Breakdown([source], ID_250, Post_ID, [Type], Payroll_Type_Code, Reason, Payroll_Reason_Code, Absence_In, Duration, Absence_Date, [Session]
-		, Day_Pattern_AM, Day_Pattern_PM, Hour_Pattern_AM, Hour_Pattern_PM, Staff_Number, Payroll_Company_Code)	
-		SELECT ''pers'', i.ID, ap.Post_ID, i.Absence_Type, ISNULL(at.Payroll_Code, ''''), i.Reason, ISNULL(ar.Payroll_Code, ''''), ap.Absence_In,
-			dbo.udfsysDurationFromPattern(ap.Absence_In, dr.IndividualDate, dr.SessionType, wp.Sunday_Hours_AM, wp.Monday_Hours_AM, wp.Tuesday_Hours_AM
-			, wp.Wednesday_Hours_AM, wp.Thursday_Hours_AM, wp.Friday_Hours_AM, wp.Saturday_Hours_AM, wp.Sunday_Hours_PM, wp.Monday_Hours_PM, wp.Tuesday_Hours_PM
-			, wp.Wednesday_Hours_PM, wp.Thursday_Hours_PM, wp.Friday_Hours_PM, wp.Saturday_Hours_PM)
-		AS Duration
-			, dr.IndividualDate, dr.SessionType
-			, wp.Day_Pattern_AM, wp.Day_Pattern_PM, wp.Hour_Pattern_AM, wp.Hour_Pattern_PM
-			, pr.Staff_Number, pr.Payroll_Company_Code
-		FROM inserted i
-			CROSS APPLY [dbo].[udfsysDateRangeToTable] (''d'', i.Start_Date, i.Start_Session,  i.End_Date, i.End_Session) dr
-			INNER JOIN Appointments ap ON ap.ID_1 = i.ID_1
-			INNER JOIN @working_patterns wp ON wp.AppointmentID = ap.ID
-			INNER JOIN Personnel_Records pr ON pr.ID = i.ID_1
-			LEFT JOIN Absence_Type_Table at ON at.Absence_Type = i.Absence_Type
-			LEFT JOIN Absence_Reason_Table ar ON ar.Reason = i.Reason
-		WHERE wp.Effective_Date <= dr.IndividualDate AND (wp.End_Date >= dr.IndividualDate OR wp.End_Date IS NULL);')
+INSERT ASRSysTableTriggers (TriggerID, TableID, Name, CodePosition, IsSystem, Content) VALUES (2, 250, 'Split Absence Request for individual appointment approval', 0, 1, '    INSERT Appointment_Absence_Entry (ID_3, Start_Date, Start_Session, End_Date, End_Session, Absence_Type, Reason)
+		SELECT a.ID, ae.Start_Date, ae.Start_Session, ae.End_Date, ae.End_Session, ae.Absence_Type, ae.Reason
+			FROM inserted ae
+			INNER JOIN Appointments a ON ae.ID_1 = a.ID_1
+			WHERE ISNULL(Appointment_Start_Date, convert(datetime, ''1899-12-31'')) <= ae.Start_Date
+				AND ISNULL(Appointment_End_Date, convert(datetime, ''9999-12-31'')) >= ae.End_Date;')
 GO
 
 INSERT ASRSysTableTriggers (TriggerID, TableID, Name, CodePosition, IsSystem, Content) VALUES (3, 252, 'Absence Rollup', 1, 1, '	DECLARE @thisAbsenceID	integer,
