@@ -166,6 +166,7 @@ End Code
 		OpenHR.modalExpressionSelect("EMAIL", tableID, currentID, function (id, name) {
 			$("#txtEmailGroupID").val(id);
 			$("#txtEmailGroup").val(name);
+			enableSaveButton();
 		},400,400);
 
 	}
