@@ -11,7 +11,7 @@ IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[udfcustom_
 	DROP FUNCTION [dbo].[udfcustom_AbsenceDurationForAppointment];
 
 EXEC sp_executesql N'CREATE FUNCTION udfcustom_AbsenceDurationForAppointment(@startDate datetime, @startSession varchar(2), @endDate datetime, @endSession varchar(2), @appointmentID integer)
-RETURNS numeric(5,2)
+RETURNS numeric(10,2)
 AS
 BEGIN
 
@@ -28,7 +28,7 @@ BEGIN
 							, Day_Pattern_AM varchar(28), Day_Pattern_PM varchar(28)
 							, Hour_Pattern_AM varchar(28), Hour_Pattern_PM varchar(28));
 	DECLARE @absenceIn varchar(5),
-			@duration numeric(5,2);
+			@duration numeric(10,2);
 
 	SELECT @absenceIn = Absence_In FROM Appointments WHERE ID = @appointmentID;
 
@@ -186,12 +186,13 @@ GO
 INSERT ASRSysTableTriggers (TriggerID, TableID, Name, CodePosition, IsSystem, Content) VALUES (2, 250, 'Split Absence Request for individual appointment approval', 0, 1, '    INSERT Appointment_Absence_Entry (ID_3, Start_Date, Start_Session, End_Date, End_Session, Absence_Type, Reason, Duration_Hours, Absence_In)
 		SELECT a.ID, ae.Start_Date, ae.Start_Session, ae.End_Date, ae.End_Session
 				, ae.Absence_Type, ae.Reason
-				, dbo.udf_ASRFn_AbsenceDurationForAppointment(ae.Start_Date, ae.Start_Session, ae.End_Date, ae.End_Session, a.ID)
+				, dbo.udfcustom_AbsenceDurationForAppointment(ae.Start_Date, ae.Start_Session, ae.End_Date, ae.End_Session, a.ID)
 				, a.Absence_In
 		FROM inserted ae
 		INNER JOIN Appointments a ON ae.ID_1 = a.ID_1
-		WHERE ISNULL(Appointment_Start_Date, convert(datetime, ''1899-12-31'')) <= ae.Start_Date
-			AND ISNULL(Appointment_End_Date, convert(datetime, ''9999-12-31'')) >= ae.End_Date;
+		WHERE ae.Start_Date <= ISNULL(Appointment_End_Date, convert(datetime, ''9999-12-31''))
+			AND ae.End_Date >= ISNULL(Appointment_Start_Date, convert(datetime, ''1899-12-31''));
+
 ')
 GO
 
