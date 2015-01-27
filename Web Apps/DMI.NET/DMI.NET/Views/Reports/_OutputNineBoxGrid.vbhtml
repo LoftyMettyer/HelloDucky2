@@ -77,7 +77,7 @@ End Code
 
 		var bSelected = $("#SaveToFile").prop('checked');
 
-		$(".reportdeffile").children().attr("readonly", !bSelected);
+		$(".reportdeffile").children().prop("readonly", !bSelected);
 
 		if (!bSelected) {
 			$("#Filename").val("");
@@ -87,12 +87,12 @@ End Code
 
 	}
 
-	function setOutputToEmail() {
+	function setOutputToEmail() {		
 		var bSelected = $("#SendToEmail").prop('checked');
 		var bReadOnly = isDefinitionReadOnly();
 
-		$(".reportdefemail").children().attr("readonly", !bSelected || bReadOnly);
-		$('#cmdEmailGroup').attr('disabled', !bSelected || bReadOnly);
+		$(".reportdefemail").children().prop("readonly", !bSelected || bReadOnly);
+		$('#cmdEmailGroup').prop('disabled', !bSelected || bReadOnly);
 		button_disable($("#cmdEmailGroup")[0], !bSelected || bReadOnly);
 
 		if (!bSelected) {
@@ -116,31 +116,31 @@ End Code
 
 	}
 
-	function selectOutputType(type) {
+	function selectOutputType(type) {		
 
-		$(".reportdefpreview").children().removeAttr("readonly");
-		$(".reportdefscreen").children().removeAttr("readonly");
-		$(".reportdeffile").children().attr("readonly", "readonly");
+		$(".reportdefpreview").children().prop("readonly", false);
+		$(".reportdefscreen").children().prop("readonly", false);
+		$(".reportdeffile").children().prop("readonly", true);
 
 		switch (type) {
 
 			case "DataOnly":
-				$(".reportdefpreview").children().attr("readonly", "readonly");
+				$(".reportdefpreview").children().prop("readonly", true);
 				break;
 
 			case "CSV":
-				$(".reportdefscreen").children().attr("readonly", "readonly");
-				$(".reportdeffile").children().removeAttr("readonly");
+				$(".reportdefscreen").children().prop("readonly", true);
+				$(".reportdeffile").children().prop("readonly", false);
 				break;
 
 			case "HTML": case "WordDoc":
-				$(".reportdeffile").children().removeAttr("readonly");
-				$(".reportdefemail").children().removeAttr("readonly");
+				$(".reportdeffile").children().prop("readonly", false);
+				$(".reportdefemail").children().prop("readonly", false);
 				break;
 
 			case "ExcelWorksheet": case "ExcelGraph": case "ExcelPivotTable":
-				$(".reportdeffile").children().removeAttr("readonly");
-				$(".reportdefemail").children().removeAttr("readonly");
+				$(".reportdeffile").children().prop("readonly", false);
+				$(".reportdefemail").children().prop("readonly", false);
 				break;
 
 		}
@@ -151,24 +151,25 @@ End Code
 
 		var bReadOnly = isDefinitionReadOnly();
 		var type = $('#outputformats :checked').val();
+		var bSendToEmail = $("#SendToEmail").prop('checked');
 
-		$(".reportdefpreview").children().removeAttr("readonly");
-		$(".reportdefscreen").children().removeAttr("readonly");
-		$(".reportdeffile").children().removeAttr("readonly");
-		$(".reportdefemail").children().removeAttr("readonly");
+		$(".reportdefpreview").children().prop("readonly", false);
+		$(".reportdefscreen").children().prop("readonly", false);
+		$(".reportdeffile").children().prop("readonly", false);
+		$(".reportdefemail").children().prop("readonly", false);
 
-		$(".reportdefpreview :checkbox").attr("disabled", (type == "0") || bReadOnly);
-		$(".reportdefemail :checkbox").attr("disabled", (type == "0") || bReadOnly);
-		$('#cmdEmailGroup').attr('disabled', (type == "0") || bReadOnly);
-		$(".reportdeffile :checkbox").attr("disabled", (type == "0") || bReadOnly);
+		$(".reportdefpreview :checkbox").prop("disabled", (type == "0") || bReadOnly);
+		$(".reportdefemail :checkbox").prop("disabled", (type == "0") || bReadOnly);
+		$('#cmdEmailGroup').prop('disabled', (type == "0") || bReadOnly || !bSendToEmail);
+		$(".reportdeffile :checkbox").prop("disabled", (type == "0") || bReadOnly);
 
-		$(".reportdefscreen :checkbox").attr("disabled", (type == "1") || bReadOnly);
-		$(".reportdefprinter :checkbox").attr("disabled", (type == "1" || type == "2" || bReadOnly));
+		$(".reportdefscreen :checkbox").prop("disabled", (type == "1") || bReadOnly);
+		$(".reportdefprinter :checkbox").prop("disabled", (type == "1" || type == "2" || bReadOnly));
 
 		if (type == "0") {
-			$(".reportdefpreview").children().attr("readonly", "readonly");
-			$(".reportdeffile").children().attr("readonly", "readonly");
-			$(".reportdefemail").children().attr("readonly", "readonly");
+			$(".reportdefpreview").children().prop("readonly", true);
+			$(".reportdeffile").children().prop("readonly", true);
+			$(".reportdefemail").children().prop("readonly", true);
 
 			$(".reportdefpreview").css("color", "#A59393");
 			$(".reportdefemail").css("color", "#A59393");
@@ -180,8 +181,8 @@ End Code
 		}
 
 		if (type == "1") {
-			$(".reportdefpreview").children().attr("readonly", "readonly");
-			$(".reportdefscreen").children().attr("readonly", "readonly");
+			$(".reportdefpreview").children().prop("readonly", true);
+			$(".reportdefscreen").children().prop("readonly", true);
 			$(".reportdefscreen").css("color", "#A59393");
 			$(".reportdefprinter").css("color", "#A59393");
 		} else {
@@ -190,7 +191,7 @@ End Code
 		}
 
 		if (type == "2") {
-			$(".reportdefprinter").children().attr("readonly", "readonly");
+			$(".reportdefprinter").children().prop("readonly", true);
 			$(".reportdefprinter").css("color", "#A59393");
 		}
 
@@ -231,13 +232,12 @@ End Code
 	function saveToFileChecked() {
 
 		var isChecked = $("#SaveToFile").prop('checked');
-		$("#SaveExisting").attr('disabled', !isChecked);
-		$("#Filename").removeAttr('readonly');
-
+		$("#SaveExisting").prop("disabled", !isChecked);
+		$("#Filename").prop("readonly", false);
 		if (isChecked) {
 			$(".display-label_file").css("color", "#ff0000");
 		} else {
-			$("#Filename").attr('readonly', 'readonly');
+			$("#Filename").prop("readonly", true);
 			$(".display-label_file").css("color", "#A59393");
 		}
 	}
@@ -245,19 +245,21 @@ End Code
 	function sendAsEmailChecked() {
 
 		var isReadonly = $("#SendToEmail").prop('checked') == false ? 'readonly' : '';
-		$("#Output_EmailSubject").removeAttr('readonly');
-		$("#EmailAttachmentName").removeAttr('readonly');
+		$("#Output_EmailSubject").prop("readonly", false);
+		$("#EmailAttachmentName").prop("readonly", false);
 
 		if (isReadonly == "readonly") {
-			$("#Output_EmailSubject").attr('readonly', isReadonly);
-			$("#EmailAttachmentName").attr('readonly', isReadonly);
+			$("#Output_EmailSubject").prop("readonly", true);
+			$("#EmailAttachmentName").prop("readonly", true);
 			$(".display-label_emails").css("color", "#A59393");
+			$(".display-textbox-emails").css("background", "#EEEEEE");
 			$("#Output_EmailSubject").val('');
 			$("#EmailAttachmentName").val('');
 			$("#txtEmailGroupID").val(0);
 			$("#txtEmailGroup").val('');
 		} else {
 			$(".display-label_emails").css("color", "#000000");
+			$(".display-textbox-emails").css("background", "#ffffff");
 		}
 
 	}
