@@ -7,7 +7,7 @@
 
 */
 
-IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[udfcustom_AbsenceDurationForAppointment]') AND xtype = 'TF')
+IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[udfcustom_AbsenceDurationForAppointment]') AND xtype = 'FN')
 	DROP FUNCTION [dbo].[udfcustom_AbsenceDurationForAppointment];
 
 EXEC sp_executesql N'CREATE FUNCTION udfcustom_AbsenceDurationForAppointment(@startDate datetime, @startSession varchar(2), @endDate datetime, @endSession varchar(2), @appointmentID integer)
