@@ -232,17 +232,18 @@
 
 			//search options.
 				$("#DefSelRecords").jqGrid('navGrid', '#pager-coldata', { del: false, add: false, edit: false, search: false });
-
-				$("#DefSelRecords").jqGrid('navButtonAdd', "#pager-coldata", {
-					caption: '',
-					buttonicon: 'ui-icon-search',
-					onClickButton: function () {
-						$("#DefSelRecords").jqGrid('filterToolbar', { stringResult: true, searchOnEnter: false, defaultSearch: 'cn' });
-					},
-					position: 'first',
-					title: '',
-					cursor: 'pointer'
-				});
+				if ($('#pager-coldata :has(".ui-icon-search")').length == 0) {
+					$("#DefSelRecords").jqGrid('navButtonAdd', "#pager-coldata", {
+						caption: '',
+						buttonicon: 'ui-icon-search',
+						onClickButton: function () {
+							$("#DefSelRecords").jqGrid('filterToolbar', { stringResult: true, searchOnEnter: false, defaultSearch: 'cn' });
+						},
+						position: 'first',
+						title: '',
+						cursor: 'pointer'
+					});
+				}
 
 				$("#findGridRow").height("60%");
 				$(window).bind('resize', function () {
