@@ -59,12 +59,17 @@ function refreshControls() {
 	var fAddAllDisabled = fViewing;
 	var fRemoveDisabled = (fViewing == true);
 	var fRemoveAllDisabled = (fViewing == true);
-
+	
 	button_disable(frmDefinition.cmdAdd, fAddDisabled);
 	button_disable(frmDefinition.cmdAddAll, fAddAllDisabled);
 	//button_disable(frmDefinition.cmdFilteredAdd, false);	
 	button_disable(frmDefinition.cmdRemove, fRemoveDisabled);
 	button_disable(frmDefinition.cmdRemoveAll, fRemoveAllDisabled);
+
+	// Check if, user has read/write access and the grid has any rows or not. If no rows, then disabled the remove & removeall button
+	if (fViewing == false) {
+		disableRemoveAndRemoveAllButton();
+	}
 
 	menu_toolbarEnableItem('mnutoolSaveReport', (!((frmUseful.txtChanged.value == 0) || (fViewing == true))));
 
@@ -119,7 +124,7 @@ function addAllClick() {
 	picklistdef_makeSelection("ALLRECORDS", 0, "");
 }
 
-function filteredAddClick() {
+function filteredAddClick() {	
 	/* Get the current selected delegate IDs. */
 	var sSelectedIDs1 = new String("0");
 
@@ -474,27 +479,24 @@ function disableAll() {
 
 function changeName() {
 	frmUseful.txtChanged.value = 1;
-	refreshControls();
-	disableRemoveAndRemoveAllButton();
+	refreshControls();	
 }
 
 function changeDescription() {
 	frmUseful.txtChanged.value = 1;
-	refreshControls();
-	disableRemoveAndRemoveAllButton();
+	refreshControls();	
 }
 
 function changeAccess() {
 	frmUseful.txtChanged.value = 1;
-	refreshControls();
-	disableRemoveAndRemoveAllButton();
+	refreshControls();	
 }
 
-function disableRemoveAndRemoveAllButton() {
+function disableRemoveAndRemoveAllButton() {	
 	if ($("#ssOleDBGrid").getGridParam('reccount') == 0)//If the grid is empty, disable the "Remove" and "Remove All" button
-	{
+	{		
 		button_disable(frmDefinition.cmdRemove, true);
-		button_disable(frmDefinition.cmdRemoveAll, true);
+		button_disable(frmDefinition.cmdRemoveAll, true);		
 	}
 }
 
