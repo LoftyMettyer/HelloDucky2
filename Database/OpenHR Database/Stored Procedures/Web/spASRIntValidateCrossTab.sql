@@ -117,12 +117,13 @@ BEGIN
 			FROM ASRSYSCrossTab
 			WHERE name = @psUtilName
 				AND CrossTabID <> @piUtilID
+				AND CrossTabType = 0
 		END
 		ELSE
 		BEGIN
 			SELECT @iCount = COUNT(*) 
 			FROM ASRSYSCrossTab
-			WHERE name = @psUtilName
+			WHERE name = @psUtilName AND CrossTabType = 0
 		END
 
 		IF @iCount > 0 

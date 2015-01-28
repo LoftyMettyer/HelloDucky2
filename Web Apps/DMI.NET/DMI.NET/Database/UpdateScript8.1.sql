@@ -66698,12 +66698,13 @@ BEGIN
 			FROM ASRSYSCrossTab
 			WHERE name = @psUtilName
 				AND CrossTabID <> @piUtilID
+				AND CrossTabType = 4
 		END
 		ELSE
 		BEGIN
 			SELECT @iCount = COUNT(*) 
 			FROM ASRSYSCrossTab
-			WHERE name = @psUtilName
+			WHERE name = @psUtilName AND CrossTabType = 4
 		END
 
 		IF @iCount > 0 
@@ -70719,12 +70720,13 @@ BEGIN
 			FROM ASRSYSCrossTab
 			WHERE name = @psUtilName
 				AND CrossTabID <> @piUtilID
+				AND CrossTabType = 0
 		END
 		ELSE
 		BEGIN
 			SELECT @iCount = COUNT(*) 
 			FROM ASRSYSCrossTab
-			WHERE name = @psUtilName
+			WHERE name = @psUtilName AND CrossTabType = 0
 		END
 
 		IF @iCount > 0 
