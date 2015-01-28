@@ -41,16 +41,6 @@
 			<td class="startstopincrementcol">@Html.TextBoxFor(Function(m) m.VerticalStop, New With {.class = "selectFullText"})</td>
 		</tr>
 		<tr style="height: 10px;"></tr>
-		<tr>
-			<td>Page Break :</td>
-			<td>
-				@Html.ColumnDropdownFor(Function(m) m.PageBreakID, New ColumnFilter() With {.TableID = Model.BaseTableID, .AddNone = True}, New With {.onchange = "crossTabPageBreakChange()", .class = "enableSaveButtonOnComboChange"})
-				@Html.Hidden("PageBreakDataType", CInt(Model.PageBreakDataType))
-			</td>
-			<td></td>
-			<td></td>
-		</tr>
-
 		<tr style="height:20px;"></tr>
 
 		<tr>
@@ -162,7 +152,6 @@
 <script type="text/javascript">
 
 	function refreshCrossTabColumnsAvailable() {
-
 		$.ajax({
 			url: 'Reports/GetAvailableColumnsForTable?TableID=' + $("#BaseTableID").val(),
 			datatype: 'json',
