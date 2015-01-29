@@ -494,13 +494,16 @@ function find_window_onload() {
 				var gridWidth = wfSetWidth - 100;
 				//var rowNum = (Number($('#txtFindRecords').val()) > 100) ? 100 : Number($('#txtFindRecords').val());
 
+				var rowNum = 50;
+				if (thereIsAtLeastOneEditableColumn) rowNum = 100000;	//disable paging for editable grids (TFS 13491)
+
 				//create the column layout:
 				$("#findGridTable").jqGrid({
 					data: colData,
 					datatype: "local",
 					colNames: colNames,
 					colModel: colModel,
-					rowNum: 50,
+					rowNum: rowNum,
 					width: gridWidth,
 					pager: $('#pager-coldata'),
 					editurl: 'clientArray',
