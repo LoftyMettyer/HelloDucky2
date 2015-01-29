@@ -166,6 +166,10 @@
 		var ids = $("#AvailableColumns").getDataIDs();
 		var nextIndex = $("#AvailableColumns").getInd(rowID);
 
+		// Position next selected column
+		var recordCount = $("#AvailableColumns").jqGrid('getGridParam', 'records')
+		if (nextIndex >= recordCount) { nextIndex = 0; }
+
 		// Remove selected columns from available
 		for (var i = selectedRows.length - 1; i >= 0; i--) {
 			$("#AvailableColumns").delRowData(selectedRows[i]);
