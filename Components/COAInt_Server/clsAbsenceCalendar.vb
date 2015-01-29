@@ -42,7 +42,7 @@ Public Class AbsenceCalendar
 	Private mstrAbsEndSession As String
 	Private mstrAbsType As String
 	Private mstrAbsCalendarCode As String
-	Private mlngAbsDuration As Double
+	Private mdblAbsDuration As Double
 	Private mstrAbsReason As String
 
 	Private mbDisplay_ShowBankHolidays As Boolean
@@ -65,22 +65,7 @@ Public Class AbsenceCalendar
 	'4 = Contains the calendar code
 	'5 = Contains the type code
 
-	Dim mavAbsences(,) As Object ' Stores each of the absence cells (redefined later as 733,6 so as to auto clear it)
-	'0 = Contains data (true / false)
-	'1 = Weekend (true / false)
-	'2 = Caption
-	'3 = Is a bank holiday (true / false)
-	'4 = Is a working day (true / false)
-	'5 = Display Colour
-	'6 = Absence Type(s) for this day
-	'7 = Reason
-	'8 = Working Pattern
-	'9 = Duration
-	'10 = Start date of absence
-	'11 = Start session of absence
-	'12 = End date of absence
-	'13 = End session of absence
-	'14 = Region
+	Dim mavAbsences(733) As AbsenceBreakdownDate	' Stores each of the absence cells
 
 	Public mavWorkingPatternChanges As New List(Of WorkingPatternChange)
 
@@ -281,7 +266,7 @@ Public Class AbsenceCalendar
 	End Property
 
 	' Converts RGB value into a hex code for IExplorer
-	Private Function GetHexColour(ByRef iRed As Integer, ByRef iGreen As Integer, ByRef iBlue As Integer) As String
+	Private Function GetHexColour(iRed As Integer, iGreen As Integer, iBlue As Integer) As String
 		Return "#" & Right("0" & Hex(iRed), 2) & Right("0" & Hex(iGreen), 2) & Right("0" & Hex(iBlue), 2)
 	End Function
 
@@ -357,7 +342,7 @@ Public Class AbsenceCalendar
 
 	End Function
 
-	Private Function HTML_Month(ByRef piMonthNumber As Integer, ByRef piYear As Integer) As String
+	Private Function HTML_Month(piMonthNumber As Integer, piYear As Integer) As String
 
 		Dim iCount As Integer
 		Dim strHtml As String
@@ -366,8 +351,8 @@ Public Class AbsenceCalendar
 		Dim iStartNumber As Integer
 		Dim iEndNumber As Integer
 		Dim dTempDate As Date
-		Dim iIndexAM As String
-		Dim iIndexPM As String
+		Dim iIndexAM As Integer
+		Dim iIndexPM As Integer
 		Dim strHtmlCellString As String
 
 		strHtml = "<SPAN id=Month" & LTrim(Str(piMonthNumber)) & ">" & vbNewLine & "<TR>" _
@@ -375,13 +360,9 @@ Public Class AbsenceCalendar
 			& "<TD> <TABLE class='invisible' cellPadding=0 cellSpacing=0 width=""100%"" height=""100%"">"
 
 		' Calculate month parameters
-
-		' JDM - 28/11/2002 - Fault 4772 - Problem if date inputted is in MMDDYY (stupid yank format)
-		dTempDate = DateSerial(piYear, piMonthNumber, 1)
-
+		dTempDate = New DateTime(piYear, piMonthNumber, 1)
 		iStartNumber = Weekday(dTempDate, FirstDayOfWeek.Sunday) - 1
-		'UPGRADE_WARNING: Couldn't resolve default property of object NumberOfDaysInMonth(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		iEndNumber = iStartNumber + NumberOfDaysInMonth(dTempDate)
+		iEndNumber = iStartNumber + DateTime.DaysInMonth(dTempDate.Year, dTempDate.Month)
 
 		' Draw the day numbers
 		strHtml = strHtml & "<TR>"
@@ -406,52 +387,39 @@ Public Class AbsenceCalendar
 			Else
 				dTempDate = New Date(piYear, piMonthNumber, iCount + 1 - iStartNumber)
 
-				iIndexAM = CStr(GetCalIndex(dTempDate, False))
-				iIndexPM = CStr(GetCalIndex(dTempDate, True))
+				iIndexAM = GetCalIndex(dTempDate, False)
+				iIndexPM = GetCalIndex(dTempDate, True)
 
 				' Is a weekend
-				'UPGRADE_WARNING: Couldn't resolve default property of object mavAbsences(iIndexAM, 1). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				mavAbsences(CInt(iIndexAM), 1) = (Weekday(dTempDate, FirstDayOfWeek.Monday) > 5)
-				'UPGRADE_WARNING: Couldn't resolve default property of object mavAbsences(iIndexPM, 1). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				mavAbsences(CInt(iIndexPM), 1) = (Weekday(dTempDate, FirstDayOfWeek.Monday) > 5)
+				mavAbsences(iIndexAM).IsWeekend = (Weekday(dTempDate, FirstDayOfWeek.Monday) > 5)
+				mavAbsences(iIndexPM).IsWeekend = (Weekday(dTempDate, FirstDayOfWeek.Monday) > 5)
 
 				'------------------------------------------------
 				'AM
 				'------------------------------------------------
 				If (dTempDate < mdStartDate) Or (dTempDate > mdLeavingDate And Not mdLeavingDate = DateTime.FromOADate(0)) Then
-					strHtmlCellString = "<TD name=DateID_" & LTrim(Str(CDbl(iIndexAM))) & " id=DateID_" & LTrim(Str(CDbl(iIndexAM))) & "class=""calendar_nonday"" HEIGHT=" & CELLSIZE & " VALIGN=middle ALIGN=center WIDTH=" & CELLSIZE & " NOWRAP>&nbsp;</TD>" & vbNewLine
+					strHtmlCellString = "<TD name=DateID_" & iIndexAM.ToString & " id=DateID_" & iIndexAM.ToString & "class=""calendar_nonday"" HEIGHT=" & CELLSIZE & " VALIGN=middle ALIGN=center WIDTH=" & CELLSIZE & " NOWRAP>&nbsp;</TD>" & vbNewLine
 				Else
 					'Build the cell string
 
 					' Build onclick event code
 					'UPGRADE_WARNING: Couldn't resolve default property of object mavAbsences(iIndexAM, 0). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					If mavAbsences(CInt(iIndexAM), 0) Then
-						'UPGRADE_WARNING: Couldn't resolve default property of object mavAbsences(iIndexAM, 2). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						'UPGRADE_WARNING: Couldn't resolve default property of object mavAbsences(iIndexAM, 8). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						'UPGRADE_WARNING: Couldn't resolve default property of object mavAbsences(iIndexAM, 14). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						'UPGRADE_WARNING: Couldn't resolve default property of object mavAbsences(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						'UPGRADE_WARNING: Couldn't resolve default property of object mavAbsences(iIndexAM, 9). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						'UPGRADE_WARNING: Couldn't resolve default property of object mavAbsences(iIndexAM, 13). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						'UPGRADE_WARNING: Couldn't resolve default property of object mavAbsences(iIndexAM, 11). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						'UPGRADE_WARNING: Couldn't resolve default property of object mavAbsences(iIndexAM, 6). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						'UPGRADE_WARNING: Couldn't resolve default property of object mavAbsences(iIndexAM, 5). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						strHtmlCellString = "<TD style='font-size: " & IIf(Len(mavAbsences(CInt(iIndexAM), 2)) < 2, "8", "6") & "pt;background-color:" & mavAbsences(CInt(iIndexAM), 5) & "' name=DateID_" _
-								& LTrim(Str(CDbl(iIndexAM))) & " id=DateID_" & LTrim(Str(CDbl(iIndexAM))) & " HEIGHT=" & CELLSIZE & " VALIGN=middle ALIGN=center WIDTH=" & CELLSIZE & " NOWRAP " _
-								& " onclick=""ShowDetails('" & VB6.Format(mavAbsences(CInt(iIndexAM), 10), mstrClientDateFormat) & "','" _
-								& mavAbsences(CInt(iIndexAM), 11) & "','" & VB6.Format(mavAbsences(CInt(iIndexAM), 12), mstrClientDateFormat) & "','" & mavAbsences(CInt(iIndexAM), 13) & "','" & mavAbsences(CInt(iIndexAM), 9) & "','" _
-								& Replace(mastrAbsenceTypes(mavAbsences(CInt(iIndexAM), 6), 0), "'", "") & "','" & Replace(mastrAbsenceTypes(mavAbsences(CInt(iIndexAM), 6), 5), "'", "") & "','" _
-								& Replace(mastrAbsenceTypes(mavAbsences(CInt(iIndexAM), 6), 4), "'", "") & "','" & HttpUtility.HtmlEncode(Left(mavAbsences(CInt(iIndexAM), 7), 100)) & "','" & mavAbsences(CInt(iIndexAM), 14) & "','" _
-								& mavAbsences(CInt(iIndexAM), 8) & "')"">" & "<FONT SIZE='1'>" & mavAbsences(CInt(iIndexAM), 2) & "</FONT>" & "</TD>" & vbNewLine
+					If mavAbsences(iIndexAM).ContainsData Then
+						strHtmlCellString = "<TD style='font-size: " & IIf(Len(mavAbsences(iIndexAM).Caption) < 2, "8", "6") & "pt;background-color:" & mavAbsences(iIndexAM).DisplayColor & "' name=DateID_" _
+								& iIndexAM.ToString & " id=DateID_" & iIndexAM.ToString & " HEIGHT=" & CELLSIZE & " VALIGN=middle ALIGN=center WIDTH=" & CELLSIZE & " NOWRAP " _
+								& " onclick=""ShowDetails('" & VB6.Format(mavAbsences(iIndexAM).StartDate, mstrClientDateFormat) & "','" _
+								& mavAbsences(iIndexAM).StartSession & "','" & VB6.Format(mavAbsences(iIndexAM).EndDate, mstrClientDateFormat) & "','" & mavAbsences(iIndexAM).EndSession & "','" & mavAbsences(iIndexAM).Duration & "','" _
+								& Replace(mastrAbsenceTypes(mavAbsences(iIndexAM).Type, 0), "'", "") & "','" & Replace(mastrAbsenceTypes(mavAbsences(iIndexAM).Type, 5), "'", "") & "','" _
+								& Replace(mastrAbsenceTypes(mavAbsences(iIndexAM).Type, 4), "'", "") & "','" & HttpUtility.HtmlEncode(Left(mavAbsences(iIndexAM).Reason, 100)) & "','" & mavAbsences(iIndexAM).Region & "','" _
+								& mavAbsences(iIndexAM).WorkingPattern & "'," & IIf(mavAbsences(iIndexAM).IsWorkingDay, "true", "false") & ")"">" & "<FONT SIZE='1'>" & mavAbsences(iIndexAM).Caption & "</FONT></TD>" & vbNewLine
 					Else
-						strHtmlCellString = "<TD name=DateID_" & LTrim(Str(CDbl(iIndexAM))) & " id=DateID_" & LTrim(Str(CDbl(iIndexAM))) & " class=""calendar_day"" HEIGHT=" & CELLSIZE & " VALIGN=middle ALIGN=center WIDTH=" _
+						strHtmlCellString = "<TD name=DateID_" & iIndexAM.ToString & " id=DateID_" & iIndexAM.ToString & " class=""calendar_day"" HEIGHT=" & CELLSIZE & " VALIGN=middle ALIGN=center WIDTH=" _
 								& CELLSIZE & " NOWRAP>&nbsp;</TD>" & vbNewLine
 					End If
 
 				End If
 
 				' Add current cell to the table
-				'strHTML_Days = "<TR" & strHTMLColourCode & " " & strHTMLMouseCode & strHTMLOnClickCode & " >" _
-				'& strHTMLCellString & "</TR>"
 				strHtmlDays = "<TR>" & strHtmlCellString & "</TR>"
 
 
@@ -459,30 +427,20 @@ Public Class AbsenceCalendar
 				'PM
 				'------------------------------------------------
 				If (dTempDate < mdStartDate) Or (dTempDate > mdLeavingDate And Not mdLeavingDate = DateTime.FromOADate(0)) Then
-					strHtmlCellString = "<TD name=DateID_" & LTrim(Str(CDbl(iIndexPM))) & " id=DateID_" & LTrim(Str(CDbl(iIndexPM))) & " HEIGHT=" & CELLSIZE & " VALIGN=middle ALIGN=center WIDTH=" & CELLSIZE & " NOWRAP></TD>" & vbNewLine
+					strHtmlCellString = "<TD name=DateID_" & iIndexPM.ToString & " id=DateID_" & iIndexPM.ToString & " HEIGHT=" & CELLSIZE & " VALIGN=middle ALIGN=center WIDTH=" & CELLSIZE & " NOWRAP></TD>" & vbNewLine
 				Else
 
 					' Build onclick event code
-					'UPGRADE_WARNING: Couldn't resolve default property of object mavAbsences(iIndexPM, 0). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					If mavAbsences(CInt(iIndexPM), 0) Then
-						'UPGRADE_WARNING: Couldn't resolve default property of object mavAbsences(iIndexAM, 2). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						'UPGRADE_WARNING: Couldn't resolve default property of object mavAbsences(iIndexPM, 8). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						'UPGRADE_WARNING: Couldn't resolve default property of object mavAbsences(iIndexPM, 14). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						'UPGRADE_WARNING: Couldn't resolve default property of object mavAbsences(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						'UPGRADE_WARNING: Couldn't resolve default property of object mavAbsences(iIndexPM, 9). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						'UPGRADE_WARNING: Couldn't resolve default property of object mavAbsences(iIndexPM, 13). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						'UPGRADE_WARNING: Couldn't resolve default property of object mavAbsences(iIndexPM, 11). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						'UPGRADE_WARNING: Couldn't resolve default property of object mavAbsences(iIndexPM, 6). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						'UPGRADE_WARNING: Couldn't resolve default property of object mavAbsences(iIndexPM, 5). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						strHtmlCellString = "<TD style='font-size: " & IIf(Len(mavAbsences(CInt(iIndexPM), 2)) < 2, "8", "6") & "pt;background-color:" & mavAbsences(CInt(iIndexPM), 5) & "' name=DateID_" & LTrim(Str(CDbl(iIndexPM))) & " id=DateID_" & LTrim(Str(CDbl(iIndexPM))) _
+					If mavAbsences(iIndexPM).ContainsData Then
+						strHtmlCellString = "<TD style='font-size: " & IIf(Len(mavAbsences(iIndexPM).Caption) < 2, "8", "6") & "pt;background-color:" & mavAbsences(iIndexPM).DisplayColor & "' name=DateID_" & LTrim(Str(iIndexPM)) & " id=DateID_" & LTrim(Str(CDbl(iIndexPM))) _
 								& " HEIGHT=" & CELLSIZE & " VALIGN=middle ALIGN=center WIDTH=" & CELLSIZE & " NOWRAP" _
-								& " onclick=""ShowDetails('" & VB6.Format(mavAbsences(CInt(iIndexPM), 10), mstrClientDateFormat) & "','" & mavAbsences(CInt(iIndexPM), 11) & "','" _
-								& VB6.Format(mavAbsences(CInt(iIndexPM), 12), mstrClientDateFormat) & "','" & mavAbsences(CInt(iIndexPM), 13) & "','" & mavAbsences(CInt(iIndexPM), 9) _
-								& "','" & Replace(mastrAbsenceTypes(mavAbsences(CInt(iIndexPM), 6), 0), "'", "") & "','" & Replace(mastrAbsenceTypes(mavAbsences(CInt(iIndexPM), 6), 5), "'", "") _
-								& "','" & Replace(mastrAbsenceTypes(mavAbsences(CInt(iIndexPM), 6), 4), "'", "") & "','" & HttpUtility.HtmlEncode(Left(mavAbsences(CInt(iIndexPM), 7), 100)) & "','" _
-								& mavAbsences(CInt(iIndexPM), 14) & "','" & mavAbsences(CInt(iIndexPM), 8) & "')"">" & "<FONT SIZE='1'>" & mavAbsences(CInt(iIndexAM), 2) & "</FONT>" & "</TD>" & vbNewLine
+								& " onclick=""ShowDetails('" & VB6.Format(mavAbsences(iIndexPM).StartDate, mstrClientDateFormat) & "','" & mavAbsences(iIndexPM).StartSession & "','" _
+								& VB6.Format(mavAbsences(iIndexPM).EndDate, mstrClientDateFormat) & "','" & mavAbsences(iIndexPM).EndSession & "','" & mavAbsences(iIndexPM).Duration _
+								& "','" & Replace(mastrAbsenceTypes(mavAbsences(iIndexPM).Type, 0), "'", "") & "','" & Replace(mastrAbsenceTypes(mavAbsences(iIndexPM).Type, 5), "'", "") _
+								& "','" & Replace(mastrAbsenceTypes(mavAbsences(iIndexPM).Type, 4), "'", "") & "','" & HttpUtility.HtmlEncode(Left(mavAbsences(iIndexPM).Reason, 100)) & "','" _
+								& mavAbsences(iIndexPM).WorkingPattern & "'," & IIf(mavAbsences(iIndexPM).IsWorkingDay, "true", "false") & ")"">" & "<FONT SIZE='1'>" & mavAbsences(iIndexPM).Caption & "</FONT></TD>" & vbNewLine
 					Else
-						strHtmlCellString = "<TD name=DateID_" & LTrim(Str(CDbl(iIndexPM))) & " id=DateID_" & LTrim(Str(CDbl(iIndexPM))) & " class=""calendar_day"" HEIGHT=" & CELLSIZE & " VALIGN=middle ALIGN=center WIDTH=" & CELLSIZE & " NOWRAP>&nbsp;</TD>"
+						strHtmlCellString = "<TD name=DateID_" & LTrim(Str(iIndexPM)) & " id=DateID_" & LTrim(Str(iIndexPM)) & " class=""calendar_day"" HEIGHT=" & CELLSIZE & " VALIGN=middle ALIGN=center WIDTH=" & CELLSIZE & " NOWRAP>&nbsp;</TD>"
 					End If
 
 				End If
@@ -501,10 +459,6 @@ Public Class AbsenceCalendar
 		' Finish off this month HTML code
 		Return strHtml & "   </TABLE>" & vbNewLine & "</TD>" & vbNewLine & "</TR>" & "</SPAN>"
 
-	End Function
-
-	Private Function NumberOfDaysInMonth(ByRef dtInput As Date) As Integer
-		Return DateTime.DaysInMonth(Year(dtInput), Month(dtInput))
 	End Function
 
 	Private Function GetAbsenceRecordSet() As Integer
@@ -572,8 +526,10 @@ GetAbsenceRecordSet_ERROR:
 		' Set the start day to 1
 		mdCalendarStartDate = DateSerial(Year(mdCalendarStartDate), Month(mdCalendarStartDate), 1)
 
-		' structure of absence types deocumented in declaration section
-		ReDim mavAbsences(733, 14)
+		' Populate the absence collection
+		For iCount = 0 To mavAbsences.Count - 1
+			mavAbsences(iCount) = New AbsenceBreakdownDate
+		Next
 
 		' Only load the records from the DB once
 		GetPersonnelRecordSet()
@@ -810,67 +766,71 @@ errLoadColourKey:
 
 	Private Sub FillGridWithData()
 
-		' Populate the grid with data
-		On Error Resume Next
+		Try
 
-		' Load the colour key variables
-		If Not LoadColourKey() Then
-			Exit Sub
-		End If
+			' Load the colour key variables
+			If Not LoadColourKey() Then
+				Exit Sub
+			End If
 
-		Dim intStart As Integer
-		Dim intEnd As Integer
+			Dim intStart As Integer
+			Dim intEnd As Integer
 
-		' If there are no absence records for the current employee then skip
-		' this bit (but still show the form)
-		If mrstAbsenceRecords.Rows.Count = 0 Then
-			Exit Sub
-		End If
+			' If there are no absence records for the current employee then skip
+			' this bit (but still show the form)
+			If mrstAbsenceRecords.Rows.Count = 0 Then
+				Exit Sub
+			End If
 
-		With mrstAbsenceRecords
+			With mrstAbsenceRecords
 
-			For Each objRow As DataRow In .Rows
+				For Each objRow As DataRow In .Rows
 
-				' Load each absence record data into variables
-				' (has to be done because start/end dates may be modified by code to fill grid correctly)
+					' Load each absence record data into variables
+					' (has to be done because start/end dates may be modified by code to fill grid correctly)
 
-				' JDM - Kak-Handed way of sorting out American settings on different versions of IIS
-				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-				If IsDBNull(objRow("StartDate")) Then
-					mdAbsStartDate = Now
-				Else
-					mdAbsStartDate = CDate(objRow("StartDate"))
-				End If
+					' JDM - Kak-Handed way of sorting out American settings on different versions of IIS
+					'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
+					If IsDBNull(objRow("StartDate")) Then
+						mdAbsStartDate = Now
+					Else
+						mdAbsStartDate = CDate(objRow("StartDate"))
+					End If
 
-				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-				If IsDBNull(objRow("EndDate")) Then
-					mdAbsEndDate = Now
-				Else
-					mdAbsEndDate = CDate(objRow("EndDate"))
-				End If
+					'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
+					If IsDBNull(objRow("EndDate")) Then
+						mdAbsEndDate = Now
+					Else
+						mdAbsEndDate = CDate(objRow("EndDate"))
+					End If
 
 
-				mstrAbsStartSession = objRow("StartSession").ToString.ToUpper()
-				mstrAbsEndSession = objRow("EndSession").ToString.ToUpper()
+					mstrAbsStartSession = objRow("StartSession").ToString.ToUpper()
+					mstrAbsEndSession = objRow("EndSession").ToString.ToUpper()
 
-				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-				mstrAbsType = IIf(IsDBNull(objRow("Type")), "", objRow("Type"))
+					'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
+					mstrAbsType = IIf(IsDBNull(objRow("Type")), "", objRow("Type"))
 
-				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-				mstrAbsCalendarCode = IIf(IsDBNull(objRow("CalendarCode")), "", objRow("CalendarCode"))
-				mlngAbsDuration = CLng(objRow("Duration"))
-				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-				mstrAbsReason = IIf(IsDBNull(objRow("Reason")), "", objRow("Reason"))
+					'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
+					mstrAbsCalendarCode = IIf(IsDBNull(objRow("CalendarCode")), "", objRow("CalendarCode"))
+					mdblAbsDuration = CDbl(objRow("Duration"))
+					'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
+					mstrAbsReason = IIf(IsDBNull(objRow("Reason")), "", objRow("Reason").ToString)
 
-				If mdAbsStartDate <= mdCalendarEndDate And mdAbsEndDate >= mdCalendarStartDate Then
-					intStart = GetCalIndex(mdAbsStartDate, mstrAbsStartSession = "PM")
-					intEnd = GetCalIndex(mdAbsEndDate, mstrAbsEndSession = "PM")
+					If mdAbsStartDate <= mdCalendarEndDate And mdAbsEndDate >= mdCalendarStartDate Then
+						intStart = GetCalIndex(mdAbsStartDate, mstrAbsStartSession = "PM")
+						intEnd = GetCalIndex(mdAbsEndDate, mstrAbsEndSession = "PM")
 
-					FillCalBoxes(intStart, intEnd)
-				End If
+						FillCalBoxes(intStart, intEnd)
+					End If
 
-			Next
-		End With
+				Next
+			End With
+
+		Catch ex As Exception
+			Throw
+
+		End Try
 
 	End Sub
 
@@ -982,7 +942,7 @@ errLoadColourKey:
 			End If
 
 			If prstPersonnelData.Rows.Count > 0 Then
-				mstrWorkingPattern = prstPersonnelData.Rows(0)("WP")
+				mstrWorkingPattern = prstPersonnelData.Rows(0)("WP").ToString
 			Else
 				mstrWorkingPattern = Space(14)
 			End If
@@ -1071,17 +1031,17 @@ PersonnelERROR:
 			If (dTempDate <= mdLeavingDate Or mdLeavingDate = DateTime.FromOADate(0)) And dTempDate >= mdStartDate And (dTempDate <= mdCalendarEndDate And dTempDate >= mdCalendarStartDate) Then
 
 				'UPGRADE_WARNING: Couldn't resolve default property of object mavAbsences(iCount, 3). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				blnIsBankHoliday = mavAbsences(iCount, 3)
+				blnIsBankHoliday = mavAbsences(iCount).IsBankHoliday
 				'UPGRADE_WARNING: Couldn't resolve default property of object mavAbsences(iCount, 1). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				blnIsWeekend = mavAbsences(iCount, 1)
+				blnIsWeekend = mavAbsences(iCount).IsWeekend
 				'UPGRADE_WARNING: Couldn't resolve default property of object mavAbsences(iCount, 5). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				strColour = mavAbsences(iCount, 5)
+				strColour = mavAbsences(iCount).DisplayColor
 				'UPGRADE_WARNING: Couldn't resolve default property of object mavAbsences(iCount, 2). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				strCaption = HttpUtility.HtmlEncode(mavAbsences(iCount, 2))
+				strCaption = HttpUtility.HtmlEncode(mavAbsences(iCount).Caption)
 				'UPGRADE_WARNING: Couldn't resolve default property of object mavAbsences(iCount, 0). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				blnHasEvent = mavAbsences(iCount, 0)
+				blnHasEvent = mavAbsences(iCount).ContainsData
 				'UPGRADE_WARNING: Couldn't resolve default property of object mavAbsences(iCount, 4). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				blnIsWorkingDay = mavAbsences(iCount, 4)
+				blnIsWorkingDay = mavAbsences(iCount).IsWorkingDay
 
 				If (Not blnIsWeekend) And (Not blnHasEvent) And (Not blnIsBankHoliday) And (Not blnIsWorkingDay) Then
 					strHtmlRefresh.AppendFormat("{0}.className = 'calendar_day';" & vbNewLine, sDateObjectName)
@@ -1294,44 +1254,27 @@ PersonnelERROR:
 				End If
 
 				' Mark this day as having an absence
-				If Not mavAbsences(iCount, 0) Then
+				If Not mavAbsences(iCount).ContainsData Then
 					strColour = GetColour(mstrAbsType)
-					'UPGRADE_WARNING: Couldn't resolve default property of object mavAbsences(Count, 0). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					mavAbsences(iCount, 0) = True
-					'UPGRADE_WARNING: Couldn't resolve default property of object mavAbsences(Count, 6). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					mavAbsences(iCount, 6) = GetAbsenceCode(mstrAbsType) ' Absence type for this day
-					'UPGRADE_WARNING: Couldn't resolve default property of object mavAbsences(Count, 2). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					mavAbsences(iCount, 2) = mstrAbsCalendarCode
+					mavAbsences(iCount).ContainsData = True
+					mavAbsences(iCount).Type = GetAbsenceCode(mstrAbsType)
+					mavAbsences(iCount).Caption = mstrAbsCalendarCode
 				Else
 					strColour = GetColour("Multiple")
-					'UPGRADE_WARNING: Couldn't resolve default property of object mavAbsences(Count, 6). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					mavAbsences(iCount, 6) = GetAbsenceCode("Multiple")	' Absence type for this day
-					'UPGRADE_WARNING: Couldn't resolve default property of object mavAbsences(Count, 2). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					mavAbsences(iCount, 2) = "."
+					mavAbsences(iCount).Type = GetAbsenceCode("Multiple")
+					mavAbsences(iCount).Caption = "."
 				End If
 
-				' Is this day a working day
-				'UPGRADE_WARNING: Couldn't resolve default property of object mavAbsences(Count, 4). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				mavAbsences(iCount, 4) = AbsCal_DoTheyWorkOnThisDay(Weekday(dtmCurrentDate, FirstDayOfWeek.Sunday), IIf(iCount Mod 2 = 0, "AM", "PM"), objCurrentWP.WorkingPattern)
-
 				' Store the details for this day
-				'UPGRADE_WARNING: Couldn't resolve default property of object mavAbsences(Count, 5). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				mavAbsences(iCount, 5) = strColour ' Absence display colour
-				'UPGRADE_WARNING: Couldn't resolve default property of object mavAbsences(Count, 7). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				mavAbsences(iCount, 7) = Replace(mstrAbsReason, "'", "") ' Absence reason
-				'UPGRADE_WARNING: Couldn't resolve default property of object mavAbsences(Count, 8). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				mavAbsences(iCount, 8) = objCurrentWP.WorkingPattern
-				'UPGRADE_WARNING: Couldn't resolve default property of object mavAbsences(Count, 9). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				mavAbsences(iCount, 9) = LTrim(CStr(mlngAbsDuration))	' Duration
-				'UPGRADE_WARNING: Couldn't resolve default property of object mavAbsences(Count, 10). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				mavAbsences(iCount, 10) = mdAbsStartDate 'Format(mdAbsStartDate, DateFormat) ' Start date of absence
-				'UPGRADE_WARNING: Couldn't resolve default property of object mavAbsences(Count, 11). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				mavAbsences(iCount, 11) = mstrAbsStartSession	' Start session of absence
-				'UPGRADE_WARNING: Couldn't resolve default property of object mavAbsences(Count, 12). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				mavAbsences(iCount, 12) = mdAbsEndDate 'Format(mdAbsEndDate, DateFormat)   ' End date of absence
-				'UPGRADE_WARNING: Couldn't resolve default property of object mavAbsences(Count, 13). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				mavAbsences(iCount, 13) = mstrAbsEndSession	' End session of absence
-				'    mavAbsences(Count, 14) = Replace(mstrAbsRegion, "'", "''")    ' Region
+				mavAbsences(iCount).IsWorkingDay = AbsCal_DoTheyWorkOnThisDay(Weekday(dtmCurrentDate, FirstDayOfWeek.Sunday), IIf(iCount Mod 2 = 0, "AM", "PM"), objCurrentWP.WorkingPattern)
+				mavAbsences(iCount).DisplayColor = strColour
+				mavAbsences(iCount).Reason = Replace(mstrAbsReason, "'", "")
+				mavAbsences(iCount).WorkingPattern = objCurrentWP.WorkingPattern
+				mavAbsences(iCount).Duration = mdblAbsDuration
+				mavAbsences(iCount).StartDate = mdAbsStartDate
+				mavAbsences(iCount).StartSession = mstrAbsStartSession
+				mavAbsences(iCount).EndDate = mdAbsEndDate
+				mavAbsences(iCount).EndSession = mstrAbsEndSession
 
 			Next iCount
 
@@ -1596,7 +1539,7 @@ PersonnelERROR:
 
 						mavWorkingPatternChanges.Add(
 							New WorkingPatternChange With {
-								.ChangeDate = IIf(IsDBNull(objRow("Date")), DateTime.MinValue, objRow("Date")),
+								.ChangeDate = IIf(IsDBNull(objRow("Date")), DateTime.MinValue, CDate(objRow("Date"))),
 								.WorkingPattern = strAbsWPattern})
 
 					Next
@@ -1722,9 +1665,9 @@ PersonnelERROR:
 
 					' Define the region for this period
 					'UPGRADE_WARNING: Couldn't resolve default property of object mavAbsences(intCount, 14). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					mavAbsences(intCount, 14) = Replace(strRegionAtCurrentDate, "'", "''")
+					mavAbsences(intCount).Region = Replace(strRegionAtCurrentDate, "'", "''")
 					'UPGRADE_WARNING: Couldn't resolve default property of object mavAbsences(intCount + 1, 14). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					mavAbsences(intCount + 1, 14) = Replace(strRegionAtCurrentDate, "'", "''")
+					mavAbsences(intCount + 1).Region = Replace(strRegionAtCurrentDate, "'", "''")
 
 					' If current region has changed
 					If bNewRegionFound Then
@@ -1764,9 +1707,9 @@ PersonnelERROR:
 								intTemp = GetCalIndex(CDate(objRow("Date")), False)
 
 								'UPGRADE_WARNING: Couldn't resolve default property of object mavAbsences(intTemp, 3). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-								mavAbsences(intTemp, 3) = True
+								mavAbsences(intTemp).IsBankHoliday = True
 								'UPGRADE_WARNING: Couldn't resolve default property of object mavAbsences(intTemp + 1, 3). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-								mavAbsences(intTemp + 1, 3) = True
+								mavAbsences(intTemp + 1).IsBankHoliday = True
 
 							Next
 
@@ -1813,9 +1756,9 @@ PersonnelERROR:
 						intTemp = GetCalIndex(CDate(objRow("Date")), False)
 
 						'UPGRADE_WARNING: Couldn't resolve default property of object mavAbsences(intTemp, 3). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						mavAbsences(intTemp, 3) = True
+						mavAbsences(intTemp).IsBankHoliday = True
 						'UPGRADE_WARNING: Couldn't resolve default property of object mavAbsences(intTemp + 1, 3). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						mavAbsences(intTemp + 1, 3) = True
+						mavAbsences(intTemp + 1).IsBankHoliday = True
 
 					Next
 
@@ -1823,9 +1766,9 @@ PersonnelERROR:
 					For intCount = LBound(mavAbsences, 1) To UBound(mavAbsences, 1) Step 2
 
 						'UPGRADE_WARNING: Couldn't resolve default property of object mavAbsences(intCount, 14). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						mavAbsences(intCount, 14) = Replace(strRegionAtCurrentDate, "'", "''")
+						mavAbsences(intCount).Region = Replace(strRegionAtCurrentDate, "'", "''")
 						'UPGRADE_WARNING: Couldn't resolve default property of object mavAbsences(intCount + 1, 14). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						mavAbsences(intCount + 1, 14) = Replace(strRegionAtCurrentDate, "'", "''")
+						mavAbsences(intCount + 1).Region = Replace(strRegionAtCurrentDate, "'", "''")
 
 					Next intCount
 
@@ -2324,7 +2267,7 @@ FailReport:
 
 	End Function
 
-	Private Function CheckPermission_Columns(ByRef plngTableID As Integer, ByRef pstrTableName As String, ByRef pstrColumnName As String, ByRef strSQLRef As String) As Boolean
+	Private Function CheckPermission_Columns(plngTableID As Integer, pstrTableName As String, pstrColumnName As String, ByRef strSQLRef As String) As Boolean
 
 		'This function checks if the current user has read(select) permissions
 		'on this column. If the user only has access through views then the

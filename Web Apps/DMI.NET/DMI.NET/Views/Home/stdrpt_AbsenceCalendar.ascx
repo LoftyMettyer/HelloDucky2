@@ -102,26 +102,28 @@
 			}
 		}
 
-		function ShowDetails(pdStartDate, pstrStartSession, pdEndDate, pstrEndSession, intDuration, strType, strTypeCode, strCalCode, strReason, strRegion, strWorkingPattern) {
+		function ShowDetails(pdStartDate, pstrStartSession, pdEndDate, pstrEndSession, intDuration, strType, strTypeCode, strCalCode, strReason, strRegion, strWorkingPattern, bIsWorkingDay) {
 
-			var frmAbsenceDetails = OpenHR.getForm("divAbsenceCalendarEventDetail", "frmAbsenceDetails");
+			if (bIsWorkingDay || !$("#chkIncludeWorkingDaysOnly")[0].checked) {
 
-			frmAbsenceDetails.txtStartDate.value = pdStartDate;
-			frmAbsenceDetails.txtStartSession.value = pstrStartSession;
-			frmAbsenceDetails.txtEndDate.value = pdEndDate;
-			frmAbsenceDetails.txtEndSession.value = pstrEndSession;
-			frmAbsenceDetails.txtDuration.value = intDuration;
-			frmAbsenceDetails.txtType.value = strType;
-			frmAbsenceDetails.txtTypeCode.value = strTypeCode;
-			frmAbsenceDetails.txtCalCode.value = strCalCode;
-			frmAbsenceDetails.txtReason.value = strReason;
-			frmAbsenceDetails.txtRegion.value = strRegion;
-			frmAbsenceDetails.txtWorkingPattern.value = strWorkingPattern;
+				var frmAbsenceDetails = OpenHR.getForm("divAbsenceCalendarEventDetail", "frmAbsenceDetails");
+				frmAbsenceDetails.txtStartDate.value = pdStartDate;
+				frmAbsenceDetails.txtStartSession.value = pstrStartSession;
+				frmAbsenceDetails.txtEndDate.value = pdEndDate;
+				frmAbsenceDetails.txtEndSession.value = pstrEndSession;
+				frmAbsenceDetails.txtDuration.value = intDuration;
+				frmAbsenceDetails.txtType.value = strType;
+				frmAbsenceDetails.txtTypeCode.value = strTypeCode;
+				frmAbsenceDetails.txtCalCode.value = strCalCode;
+				frmAbsenceDetails.txtReason.value = strReason;
+				frmAbsenceDetails.txtRegion.value = strRegion;
+				frmAbsenceDetails.txtWorkingPattern.value = strWorkingPattern;
 
-			OpenHR.submitForm(frmAbsenceDetails, "DisplayAbsenceCalendarEventDetail");
-			$("#DisplayAbsenceCalendarEventDetail").dialog("open");
-			$("#DisplayAbsenceCalendarEventDetail").dialog("option", "position", ['center', 'center']);
-			$("#DisplayAbsenceCalendarEventDetail").dialog("option", "height", 340);
+				OpenHR.submitForm(frmAbsenceDetails, "DisplayAbsenceCalendarEventDetail");
+				$("#DisplayAbsenceCalendarEventDetail").dialog("open");
+				$("#DisplayAbsenceCalendarEventDetail").dialog("option", "position", ['center', 'center']);
+				$("#DisplayAbsenceCalendarEventDetail").dialog("option", "height", 340);
+			}
 		}
 
 		// Returns to the recordedit screen
