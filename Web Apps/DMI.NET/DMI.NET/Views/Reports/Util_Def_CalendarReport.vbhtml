@@ -199,7 +199,7 @@ End Code
 		$('#description, #Name').css('width', $('#Description1ID').width());
 
 		// If 'Group by Description' is ticked then 'Include Bank Holidays', 'Working Days Only' ,'Show Bank Holidays' and Region  should disable.	Or  If 'Include Bank Holidays', 'Working Days Only' or 'Show Bank Holidays'  are ticked OR 'Region selected index not equal to 0' than 'Group by Description' should disable.
-		if ($("#ActionType").val() == '@UtilityActionType.Edit')
+		if (($("#ActionType").val() == '@UtilityActionType.Edit') || ($("#ActionType").val() == '@UtilityActionType.Copy' ) )
 		{
 			if ($('#chkGroupByDescription').prop('checked')) {
 				combo_disable((".selectRegionID"), true);
@@ -227,7 +227,7 @@ End Code
 	}
 
 	//If the Base Table value is Primary table value then 'Include Bank Holidays', 'Working Days Only' and 'Show Bank Holidays' should enable.
-	function enableDisableGroupByOrWorkingDaysOrHolidays() {
+	function enableDisableGroupByOrWorkingDaysOrHolidays() {		
 		var regionValue = $("#RegionID").val();
 		var IsHolidaySelected = $('#IncludeBankHolidays').prop('checked') || $('#WorkingDaysOnly').prop('checked') || $('#ShowBankHolidays').prop('checked') || (regionValue != 0);
 		$('#chkGroupByDescription').prop('checked', false);

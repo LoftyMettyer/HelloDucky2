@@ -124,13 +124,15 @@
 </fieldset>
 
 <script>
-	$(function () {
-		//Initialise these as checked on new report
-		if ($('#txtReportID').val() == 0) {
-			$('#ShowCaptions').prop('checked', 'checked');
-			$('#ShowWeekends').prop('checked', 'checked');
-			$('#StartOnCurrentMonth').prop('checked', 'checked');
-		}		
+	$(function () {		
+		if ($("#ActionType").val() == '@UtilityActionType.New') {
+			//Initialise these as checked on new report
+			if ($('#txtReportID').val() == 0) {
+				$('#ShowCaptions').prop('checked', 'checked');
+				$('#ShowWeekends').prop('checked', 'checked');
+				$('#StartOnCurrentMonth').prop('checked', 'checked');
+			}
+		}
 
 	    //add spinner functionality
 	    $('.spinner').each(function () {
@@ -154,7 +156,7 @@
                 $this = $(this),
                 max = $this.spinner('option', 'max'),
                 min = $this.spinner('option', 'min');
-	            //if (!val.match(/^\d+$/)) val = 0; //we want only number, no alpha			                
+	            //if (!val.match(/^\d+$/)) val = 0; //we want only number, no alpha
 	            this.value = val > max ? max : val < min ? min : val;
 	        }).blur(function () {
 	            if (this.value == "") this.value = 0;
@@ -175,148 +177,148 @@
 		changeCalendarStartType('@Model.StartType');
 	    changeCalendarEndType('@Model.EndType');
 
-	    //set the fields to read only
+			//set the fields to read only
 	    if (isDefinitionReadOnly()) {
-	        $("#frmReportDefintion input").prop('disabled', "disabled");
-	        $("#frmReportDefintion select").prop('disabled', "disabled");
-	        $("#frmReportDefintion .spinner").spinner("option", "disabled", true);
+	    	$("#frmReportDefintion input").prop('disabled', "disabled");
+	    	$("#frmReportDefintion select").prop('disabled', "disabled");
+	    	$("#frmReportDefintion .spinner").spinner("option", "disabled", true);
 	    }
-	});
+		});
 
 
-	function changeCalendarStartType(type) {
+		function changeCalendarStartType(type) {
 
-		$("#StartFixedDate").attr("disabled", "true");
-		$("#StartOffset").spinner("option", "disabled", true);
-		$("#StartOffsetPeriod").attr("disabled", "true");
-		button_disable($("#cmdCustomStart")[0], (type != "Custom"));
+			$("#StartFixedDate").attr("disabled", "true");
+			$("#StartOffset").spinner("option", "disabled", true);
+			$("#StartOffsetPeriod").attr("disabled", "true");
+			button_disable($("#cmdCustomStart")[0], (type != "Custom"));
 
-		switch (type) {
-			case "Fixed":
-				$("#StartFixedDate").removeAttr("disabled");
-				$("#StartCustomId").val(0);
-				$("#StartOffset").val(0);
-				$("#StartOffsetPeriod").val(0);
-				$("#StartCustomId").val(0);
-				$("#txtCustomStart").val("");
-				setViewAccess('CALC', $("#StartCustomViewAccess"), 'RW', '');
-				break;
+			switch (type) {
+				case "Fixed":
+					$("#StartFixedDate").removeAttr("disabled");
+					$("#StartCustomId").val(0);
+					$("#StartOffset").val(0);
+					$("#StartOffsetPeriod").val(0);
+					$("#StartCustomId").val(0);
+					$("#txtCustomStart").val("");
+					setViewAccess('CALC', $("#StartCustomViewAccess"), 'RW', '');
+					break;
 
-			case "CurrentDate":
-				$("#StartFixedDate").val('');
-				$("#StartCustomId").val(0);
-				$("#StartOffset").val(0);
-				$("#StartOffsetPeriod").val(0);
-				$("#StartCustomId").val(0);
-				$("#txtCustomStart").val("");
-				setViewAccess('CALC', $("#StartCustomViewAccess"), 'RW', '');
-				break;
+				case "CurrentDate":
+					$("#StartFixedDate").val('');
+					$("#StartCustomId").val(0);
+					$("#StartOffset").val(0);
+					$("#StartOffsetPeriod").val(0);
+					$("#StartCustomId").val(0);
+					$("#txtCustomStart").val("");
+					setViewAccess('CALC', $("#StartCustomViewAccess"), 'RW', '');
+					break;
 
-			case "Offset":
-				$("#StartFixedDate").val('');
-				$("#StartOffset").spinner("option", "disabled", false);
-				$("#StartOffsetPeriod").removeAttr("disabled");
-				$("#StartCustomId").val(0);
-				$("#txtCustomStart").val("");
-				setViewAccess('CALC', $("#StartCustomViewAccess"), 'RW', '');
-				break;
+				case "Offset":
+					$("#StartFixedDate").val('');
+					$("#StartOffset").spinner("option", "disabled", false);
+					$("#StartOffsetPeriod").removeAttr("disabled");
+					$("#StartCustomId").val(0);
+					$("#txtCustomStart").val("");
+					setViewAccess('CALC', $("#StartCustomViewAccess"), 'RW', '');
+					break;
 
-			default:
-				$("#StartFixedDate").val('');
-				$("#StartOffset").val(0);
-				$("#StartOffsetPeriod").val(0);
-				break;
+				default:
+					$("#StartFixedDate").val('');
+					$("#StartOffset").val(0);
+					$("#StartOffsetPeriod").val(0);
+					break;
+
+			}
+
 
 		}
 
+		function changeCalendarEndType(type) {
 
-	}
+			$("#EndFixedDate").attr("disabled", "true");
+			$("#EndOffset").spinner("option", "disabled", true);
+			$("#EndOffsetPeriod").attr("disabled", "true");
+			button_disable($("#cmdCustomEnd")[0], (type != "Custom"));
 
-	function changeCalendarEndType(type) {
+			switch (type) {
+				case "Fixed":
+					$("#EndFixedDate").removeAttr("disabled");
+					$("#EndCustomId").val(0);
+					$("#EndOffset").val(0);
+					$("#EndOffsetPeriod").val(0);
+					$("#EndCustomId").val(0);
+					$("#txtCustomEnd").val("");
+					setViewAccess('CALC', $("#EndCustomViewAccess"), 'RW', '');
+					break;
 
-		$("#EndFixedDate").attr("disabled", "true");
-		$("#EndOffset").spinner("option", "disabled", true);
-		$("#EndOffsetPeriod").attr("disabled", "true");
-		button_disable($("#cmdCustomEnd")[0], (type != "Custom"));
+				case "CurrentDate":
+					$("#EndFixedDate").val('');
+					$("#EndCustomId").val(0);
+					$("#EndOffset").val(0);
+					$("#EndOffsetPeriod").val(0);
+					$("#EndCustomId").val(0);
+					$("#txtCustomEnd").val("");
+					setViewAccess('CALC', $("#EndCustomViewAccess"), 'RW', '');
+					break;
 
-		switch (type) {
-			case "Fixed":
-				$("#EndFixedDate").removeAttr("disabled");
-				$("#EndCustomId").val(0);
-				$("#EndOffset").val(0);
-				$("#EndOffsetPeriod").val(0);
-				$("#EndCustomId").val(0);
-				$("#txtCustomEnd").val("");
-				setViewAccess('CALC', $("#EndCustomViewAccess"), 'RW', '');
-				break;
+				case "Offset":
+					$("#EndFixedDate").val('');
+					$("#EndOffset").spinner("option", "disabled", false);
+					$("#EndOffsetPeriod").removeAttr("disabled");
+					$("#EndCustomId").val(0);
+					$("#txtCustomEnd").val("");
+					setViewAccess('CALC', $("#EndCustomViewAccess"), 'RW', '');
+					break;
 
-			case "CurrentDate":
-				$("#EndFixedDate").val('');
-				$("#EndCustomId").val(0);
-				$("#EndOffset").val(0);
-				$("#EndOffsetPeriod").val(0);
-				$("#EndCustomId").val(0);
-				$("#txtCustomEnd").val("");
-				setViewAccess('CALC', $("#EndCustomViewAccess"), 'RW', '');
-				break;
+				default:
+					$("#EndFixedDate").val('');
+					$("#EndOffset").val(0);
+					$("#EndOffsetPeriod").val(0);
+					break;
 
-			case "Offset":
-				$("#EndFixedDate").val('');
-				$("#EndOffset").spinner("option", "disabled", false);
-				$("#EndOffsetPeriod").removeAttr("disabled");
-				$("#EndCustomId").val(0);
-				$("#txtCustomEnd").val("");
-				setViewAccess('CALC', $("#EndCustomViewAccess"), 'RW', '');
-				break;
+			}
 
-			default:
-				$("#EndFixedDate").val('');
-				$("#EndOffset").val(0);
-				$("#EndOffsetPeriod").val(0);
-				break;
 
 		}
 
+		function selectCustomStartDate() {
 
-	}
+			var tableID = $("#BaseTableID option:selected").val();
+			var currentID = $("#StartCustomId").val();
 
-	function selectCustomStartDate() {
+			OpenHR.modalExpressionSelect("CALC", 0, currentID, function (id, name, access) {
+				if (access == "HD" && $("#Owner").val().toLowerCase() != '@Session("Username").ToString.ToLower') {
+					$("#StartCustomId").val(0);
+					$("#txtCustomStart").val('None');
+					OpenHR.modalMessage("The report start date calculation will be removed from this definition as it is hidden and you do not have permission to make this definition hidden.");
+				}
+				else {
+					$("#StartCustomId").val(id);
+					$("#txtCustomStart").val(name);
+					setViewAccess('CALC', $("#StartCustomViewAccess"), access, "report start date");
+				}
+			}, 400, 400);
+		}
 
-		var tableID = $("#BaseTableID option:selected").val();
-		var currentID = $("#StartCustomId").val();
+		function selectCustomEndDate() {
 
-		OpenHR.modalExpressionSelect("CALC", 0, currentID, function (id, name, access) {
-			if (access == "HD" && $("#Owner").val().toLowerCase() != '@Session("Username").ToString.ToLower') {
-				$("#StartCustomId").val(0);
-				$("#txtCustomStart").val('None');
-				OpenHR.modalMessage("The report start date calculation will be removed from this definition as it is hidden and you do not have permission to make this definition hidden.");
-			}
-			else {
-				$("#StartCustomId").val(id);
-				$("#txtCustomStart").val(name);
-				setViewAccess('CALC', $("#StartCustomViewAccess"), access, "report start date");
-			}
-		}, 400, 400);
-	}
+			var tableID = $("#BaseTableID option:selected").val();
+			var currentID = $("#EndCustomId").val();
 
-	function selectCustomEndDate() {
+			OpenHR.modalExpressionSelect("CALC", 0, currentID, function (id, name, access) {
+				if (access == "HD" && $("#Owner").val().toLowerCase() != '@Session("Username").ToString.ToLower') {
+					$("#EndCustomId").val(0);
+					$("#txtCustomEnd").val('None');
+					OpenHR.modalMessage("The report end date calculation will be removed from this definition as it is hidden and you do not have permission to make this definition hidden.");
+				}
+				else {
+					$("#EndCustomId").val(id);
+					$("#txtCustomEnd").val(name);
+					setViewAccess('CALC', $("#EndCustomViewAccess"), access, "report end date");
+				}
+			}, 400, 400);
 
-		var tableID = $("#BaseTableID option:selected").val();
-		var currentID = $("#EndCustomId").val();
-
-		OpenHR.modalExpressionSelect("CALC", 0, currentID, function (id, name, access) {
-			if (access == "HD" && $("#Owner").val().toLowerCase() != '@Session("Username").ToString.ToLower') {
-				$("#EndCustomId").val(0);
-				$("#txtCustomEnd").val('None');
-				OpenHR.modalMessage("The report end date calculation will be removed from this definition as it is hidden and you do not have permission to make this definition hidden.");
-			}
-			else {
-				$("#EndCustomId").val(id);
-				$("#txtCustomEnd").val(name);
-				setViewAccess('CALC', $("#EndCustomViewAccess"), access, "report end date");
-			}
-		}, 400, 400);
-
-	}
+		}
 
 </script>
