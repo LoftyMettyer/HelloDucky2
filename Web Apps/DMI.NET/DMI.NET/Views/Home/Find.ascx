@@ -272,7 +272,7 @@
 									Else
 										Dim objRow = rstFindDefinition.Select("ColumnName='" & rstFindRecords.Columns(iloop).ColumnName & "'")
 										sColDef = Replace(rstFindRecords.Columns(iloop).ColumnName, "_", " ") & "	" & rstFindRecords.Columns(iloop).DataType.ToString.Replace("System.", "")
-										Response.Write(String.Format("<input type='hidden' id='txtFindColDef_{0}' name='txtFindColDef_{0}' value='{1}' data-colname='{2}' data-datatype='{3}' data-columnid='{4}' data-editable='{5}' data-controltype='{6}' data-size='{7}' data-decimals='{8}' data-lookuptableid='{9}' data-lookupcolumnid='{10}' data-spinnerminimum='{11}' data-spinnermaximum='{12}' data-spinnerincrement='{13}' data-lookupfiltercolumnid='{14}' data-lookupfiltervalueid='{15}' data-Mask='{16}' data-DefaultValueExprID='{17}'>" _
+										Response.Write(String.Format("<input type='hidden' id='txtFindColDef_{0}' name='txtFindColDef_{0}' value='{1}' data-colname='{2}' data-datatype='{3}' data-columnid='{4}' data-editable='{5}' data-controltype='{6}' data-size='{7}' data-decimals='{8}' data-lookuptableid='{9}' data-lookupcolumnid='{10}' data-spinnerminimum='{11}' data-spinnermaximum='{12}' data-spinnerincrement='{13}' data-lookupfiltercolumnid='{14}' data-lookupfiltervalueid='{15}' data-Mask='{16}' data-DefaultValueExprID='{17}' data-BlankIfZero='{18}'>" _
 												 , iloop, sColDef, objRow.FirstOrDefault.Item("columnNameOriginal"), _
 												 objRow.FirstOrDefault.Item("datatype"), _
 												 objRow.FirstOrDefault.Item("columnID"), _
@@ -287,8 +287,9 @@
 												 objRow.FirstOrDefault.Item("SpinnerIncrement"), _
 												 objRow.FirstOrDefault.Item("LookupFilterColumnID"), _
 												 objRow.FirstOrDefault.Item("LookupFilterValueID"), _
-												 objRow.FirstOrDefault.Item("Mask"),
-												 objRow.FirstOrDefault.Item("DefaultValueExprID") _
+												 objRow.FirstOrDefault.Item("Mask"), _
+												 objRow.FirstOrDefault.Item("DefaultValueExprID"), _
+												 IIf(objRow.FirstOrDefault.Item("BlankIfZero"), "1", "0") _
 												 , vbCrLf))
 
 										'Save the default value for this column in an array
@@ -342,10 +343,12 @@
 														, New SqlParameter("pfOverrideFilter", SqlDbType.Bit) With {.Value = "False"})
 											Else
 												Dim _prmThousandColumns As New SqlParameter("@ps1000SeparatorCols", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
+												Dim _prmBlankIfZeroColumns As New SqlParameter("@psBlanIfZeroCols", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
 												Try
 													objDataAccess.ExecuteSP("spASRIntGetLookupFindColumnInfo", _
 																			New SqlParameter("@piLookupColumnID", SqlDbType.Int) With {.Value = objRow.FirstOrDefault.Item("LookupColumnID")}, _
-																			_prmThousandColumns _
+																			_prmThousandColumns, _
+																			_prmBlankIfZeroColumns
 													)
 												Catch ex As Exception
 													sErrorDescription = "The find records could not be retrieved." & vbCrLf & FormatError(ex.Message)

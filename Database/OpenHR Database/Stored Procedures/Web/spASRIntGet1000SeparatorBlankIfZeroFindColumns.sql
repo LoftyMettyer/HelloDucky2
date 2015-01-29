@@ -1,9 +1,10 @@
-CREATE PROCEDURE [dbo].[spASRIntGet1000SeparatorFindColumns] (
+﻿CREATE PROCEDURE [dbo].[spASRIntGet1000SeparatorBlankIfZeroFindColumns] (
 	@pfError 				bit 			OUTPUT, 
 	@piTableID 				integer, 
 	@piViewID 				integer, 
 	@piOrderID 				integer, 
-	@ps1000SeparatorCols	varchar(MAX)	OUTPUT
+	@ps1000SeparatorCols	varchar(MAX)	OUTPUT,
+	@psBlankIfZeroCols		varchar(MAX)	OUTPUT
 )
 AS
 BEGIN
@@ -24,11 +25,13 @@ BEGIN
 		@fSelectGranted 	bit,
 		@iCount				integer,
 		@bUse1000Separator	bit,
+		@bBlankIfZero		bit,
 		@sActualLoginName	varchar(250);
 
 	/* Initialise variables. */
 	SET @pfError = 0;
 	SET @ps1000SeparatorCols = '';
+	SET @psBlankIfZeroCols = '';
 	SET @sRealSource = '';
 
 	/* Get the current user's group ID. */
@@ -175,7 +178,8 @@ BEGIN
 		ASRSysColumns.columnName,
 		ASRSysTables.tableName,
 		ASRSysOrderItems.type,
-		ASRSysColumns.Use1000Separator
+		ASRSysColumns.Use1000Separator,
+		ASRSysColumns.BlankIfZero
 	FROM ASRSysOrderItems
 	INNER JOIN ASRSysColumns ON ASRSysOrderItems.columnID = ASRSysColumns.columnId
 	INNER JOIN ASRSysTables ON ASRSysTables.tableID = ASRSysColumns.tableID
@@ -184,7 +188,7 @@ BEGIN
 	ORDER BY ASRSysOrderItems.sequence;
 
 	OPEN orderCursor;
-	FETCH NEXT FROM orderCursor INTO @iColumnTableId, @sColumnName, @sColumnTableName, @sType, @bUse1000Separator;
+	FETCH NEXT FROM orderCursor INTO @iColumnTableId, @sColumnName, @sColumnTableName, @sType, @bUse1000Separator, @bBlankIfZero;
 
 	/* Check if the order exists. */
 	IF  @@fetch_status <> 0
@@ -216,6 +220,11 @@ BEGIN
 						WHEN @bUse1000Separator = 1 THEN '1'
 						ELSE '0'
 					END;
+				SET @psBlankIfZeroCols = @psBlankIfZeroCols +
+					CASE
+						WHEN @bBlankIfZero = 1 THEN '1'
+						ELSE '0'
+					END;
 			END
 		END
 		ELSE
@@ -241,6 +250,11 @@ BEGIN
 						WHEN @bUse1000Separator = 1 THEN '1'
 						ELSE '0'
 					END;
+				SET @psBlankIfZeroCols = @psBlankIfZeroCols +
+					CASE
+						WHEN @bBlankIfZero = 1 THEN '1'
+						ELSE '0'
+					END;
 			END
 			ELSE	
 			BEGIN
@@ -258,11 +272,16 @@ BEGIN
 							WHEN @bUse1000Separator = 1 THEN '1'
 							ELSE '0'
 						END;
+					SET @psBlankIfZeroCols = @psBlankIfZeroCols +
+						CASE
+							WHEN @bBlankIfZero = 1 THEN '1'
+							ELSE '0'
+						END;
 				END
 			END
 		END
 
-		FETCH NEXT FROM orderCursor INTO @iColumnTableId, @sColumnName, @sColumnTableName, @sType, @bUse1000Separator;
+		FETCH NEXT FROM orderCursor INTO @iColumnTableId, @sColumnName, @sColumnTableName, @sType, @bUse1000Separator, @bBlankIfZero;
 	END
 
 	CLOSE orderCursor;

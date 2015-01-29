@@ -112,6 +112,7 @@ function find_window_onload() {
 							var ColumnSpinnerIncrement = parseInt(dataCollection.item(i).getAttribute("data-spinnerincrement"));
 							var ColumnMask = dataCollection.item(i).getAttribute("data-Mask");
 							var iDefaultValueExprID = dataCollection.item(i).getAttribute("data-DefaultValueExprID");
+							var BlankIfZero = dataCollection.item(i).getAttribute("data-BlankIfZero");
 
 							if (sColumnEditable == true) {
 								thereIsAtLeastOneEditableColumn = true;
@@ -170,7 +171,7 @@ function find_window_onload() {
 											align: 'right',
 											width: 100,
 											editoptions: {
-												defaultValue: getDefaultValueForColumn(iColumnId, "integer"),
+												defaultValue: BlankIfZero == '1' ? '' : '0',
 												columnSize: ColumnSize,
 												columnDecimals: ColumnDecimals,
 												dataColumnId: iColumnId,
@@ -181,6 +182,12 @@ function find_window_onload() {
 													var ColumnDecimals = $(element).attr('columnDecimals');
 
 													$(element).on('keydown', function () { indicateThatRowWasModified(); });
+
+													$(element).on('blur', function (sender) {
+														if ($(this).val() == 0) {
+															$(this).val(BlankIfZero == '1' ? '' : '0');
+														}
+													});
 
 													element.setAttribute("data-a-dec", OpenHR.LocaleDecimalSeparator()); //Decimal separator
 													element.setAttribute("data-a-sep", ''); //No Thousand separator
@@ -425,7 +432,7 @@ function find_window_onload() {
 											decimalSeparator: OpenHR.LocaleDecimalSeparator(),
 											thousandsSeparator: useThousandSeparator(columnCount) ? OpenHR.LocaleThousandSeparator() : "",
 											decimalPlaces: Number(ColumnDecimals),
-											defaultValue: useBlankIfZero(columnCount) ? '' : space("0", ColumnSize, ColumnDecimals)
+											defaultValue: BlankIfZero == '1' ? '' : space('0', ColumnSize, ColumnDecimals)
 										},										
 										editoptions: {
 											custom_element: ABSNumber,
@@ -436,7 +443,7 @@ function find_window_onload() {
 											thousandsSeparator: useThousandSeparator(columnCount) ? OpenHR.LocaleThousandSeparator() : "",
 											defaultValue: getDefaultValueForColumn(iColumnId, "other"),											
 											dataColumnId: iColumnId,
-											dataDefaultCalcExprID: iDefaultValueExprID										
+											dataDefaultCalcExprID: iDefaultValueExprID
 										},
 										label: sColumnDisplayName
 									});
@@ -1078,14 +1085,6 @@ function space(character, columnSize, columnDecimals, decimalCharacter) {
 function useThousandSeparator(columnNumber) {
 	try {
 		return ($('#txtThousandColumns').val().substr(columnNumber, 1) == '1');
-	} catch (e) {
-		return false;
-	}
-}
-
-function useBlankIfZero(columnNumber) {
-	try {
-		return ($('#txtBlankIfZeroColumns').val().substr(columnNumber, 1) == '1');
 	} catch (e) {
 		return false;
 	}

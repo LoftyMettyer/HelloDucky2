@@ -47,7 +47,8 @@
 			Dim sNonFatalErrorDescription As String = ""
 
 			Dim prmThousandColumns As SqlParameter
-			Dim sThousandColumns As String
+			Dim sThousandColumns As String = ""
+			Dim sBlankIfZeroColumns As String = ""
 		
 			Dim iCount As Integer
 			Dim sAddString As String
@@ -66,7 +67,7 @@
 			If Session("optionAction") = "LOADFIND" Then
 			
 				Try
-					sThousandColumns = Get1000SeparatorFindColumns(CleanNumeric(Session("optionTableID")), CleanNumeric(Session("optionViewID")), CleanNumeric(Session("optionOrderID")))
+					Get1000SeparatorBlankIfZeroFindColumns(CleanNumeric(Session("optionTableID")), CleanNumeric(Session("optionViewID")), CleanNumeric(Session("optionOrderID")), sThousandColumns, sBlankIfZeroColumns)
 
 					Dim prmError = New SqlParameter("pfError", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
 					Dim prmIsFirstPage = New SqlParameter("pfFirstPage", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
@@ -201,13 +202,12 @@
 				Dim prmColumnDecimals = New SqlParameter("piColumnDecimals", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
 				Dim prmLookupColumnGridPosition = New SqlParameter("piLookupColumnGridNumber", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
 		
-				
 				If Len(sErrorDescription) = 0 Then
 					sThousandColumns = ""
 
 					If Session("IsLookupTable") = "False" Then
 						Try
-							sThousandColumns = Get1000SeparatorFindColumns(CleanNumeric(Session("optionTableID")), CleanNumeric(Session("optionViewID")), CleanNumeric(Session("optionOrderID")))
+							Get1000SeparatorBlankIfZeroFindColumns(CleanNumeric(Session("optionTableID")), CleanNumeric(Session("optionViewID")), CleanNumeric(Session("optionOrderID")), sThousandColumns, sBlankIfZeroColumns)
 						Catch ex As Exception
 							sErrorDescription = "The find records could not be retrieved." & vbCrLf & FormatError(ex.Message)
 						End Try
@@ -236,10 +236,12 @@
 
 					Else
 						prmThousandColumns = New SqlParameter("@ps1000SeparatorCols", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
+						Dim prmBlankIfZeroColumns As New SqlParameter("@psBlanIfZeroCols", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
 						Try
 							objDataAccess.ExecuteSP("spASRIntGetLookupFindColumnInfo", _
 													New SqlParameter("@piLookupColumnID", SqlDbType.Int) With {.Value = CleanNumeric(Session("optionLookupColumnID"))}, _
-													prmThousandColumns _
+													prmThousandColumns, _
+													prmBlankIfZeroColumns
 							)
 						Catch ex As Exception
 							sErrorDescription = "The find records could not be retrieved." & vbCrLf & FormatError(ex.Message)
@@ -340,7 +342,7 @@
 				sThousandColumns = ""
 			
 				Try
-					sThousandColumns = Get1000SeparatorFindColumns(CleanNumeric(Session("optionTableID")), CleanNumeric(Session("optionViewID")), CleanNumeric(Session("optionOrderID")))
+					Get1000SeparatorBlankIfZeroFindColumns(CleanNumeric(Session("optionTableID")), CleanNumeric(Session("optionViewID")), CleanNumeric(Session("optionOrderID")), sThousandColumns, sBlankIfZeroColumns)
 				Catch ex As Exception
 					sErrorDescription = "The find records could not be retrieved." & vbCrLf & FormatError(ex.Message)
 				End Try
@@ -437,7 +439,7 @@
 				Dim prmColumnDecimals = New SqlParameter("piColumnDecimals", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
 
 				Try
-					sThousandColumns = Get1000SeparatorFindColumns(CleanNumeric(Session("optionTableID")), CleanNumeric(Session("optionViewID")), CleanNumeric(Session("optionOrderID")))
+					Get1000SeparatorBlankIfZeroFindColumns(CleanNumeric(Session("optionTableID")), CleanNumeric(Session("optionViewID")), CleanNumeric(Session("optionOrderID")), sThousandColumns, sBlankIfZeroColumns)
 				
 					Dim rstFindRecords = objDataAccess.GetFromSP("sp_ASRIntGetBookCourseRecords" _
 						, New SqlParameter("piTableID", SqlDbType.Int) With {.Value = CleanNumeric(Session("optionTableID"))} _
@@ -565,7 +567,7 @@
 				Dim prmStatus = New SqlParameter("psStatus", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
 
 				Try
-					sThousandColumns = Get1000SeparatorFindColumns(CleanNumeric(Session("optionTableID")), CleanNumeric(Session("optionViewID")), CleanNumeric(Session("optionOrderID")))
+					Get1000SeparatorBlankIfZeroFindColumns(CleanNumeric(Session("optionTableID")), CleanNumeric(Session("optionViewID")), CleanNumeric(Session("optionOrderID")), sThousandColumns, sBlankIfZeroColumns)
 		
 					Dim rstFindRecords = objDataAccess.GetFromSP("sp_ASRIntGetTransferBookingRecords" _
 						, New SqlParameter("piTableID", SqlDbType.Int) With {.Value = CleanNumeric(Session("optionTableID"))} _
@@ -652,7 +654,7 @@
 				sThousandColumns = ""
 			
 				Try
-					sThousandColumns = Get1000SeparatorFindColumns(CleanNumeric(Session("optionTableID")), CleanNumeric(Session("optionViewID")), CleanNumeric(Session("optionOrderID")))
+					Get1000SeparatorBlankIfZeroFindColumns(CleanNumeric(Session("optionTableID")), CleanNumeric(Session("optionViewID")), CleanNumeric(Session("optionOrderID")), sThousandColumns, sBlankIfZeroColumns)
 
 					Dim prmError = New SqlParameter("pfError", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
 					Dim prmIsFirstPage = New SqlParameter("pfFirstPage", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}

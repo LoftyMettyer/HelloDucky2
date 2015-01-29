@@ -32,10 +32,11 @@ Namespace Controllers
 			Dim _prmLookupColumnGridPosition = New SqlParameter("piLookupColumnGridNumber", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
 
 			Dim sThousandColumns As String = ""
+			Dim sBlankIfZeroColumns As String = ""
 			Dim sErrorDescription As String = ""
 			Try
-				sThousandColumns = Get1000SeparatorFindColumns(piTableID, 0, piOrderID)
-			Catch ex As Exception				
+				Get1000SeparatorBlankIfZeroFindColumns(piTableID, 0, piOrderID, sThousandColumns, sBlankIfZeroColumns)
+			Catch ex As Exception
 			End Try
 
 			rstLookup = objDataAccess.GetFromSP("spASRIntGetLookupFindRecords2" _
@@ -63,9 +64,25 @@ Namespace Controllers
 			If rstLookup Is Nothing Or rstLookup.Rows.Count = 0 Then
 				Return "{""total"":1,""page"":1,""records"":0,""rows"":"""",""colmodel"":""""}"
 			Else
-			
-				Dim colModel As List(Of Object) = jqGridColModel.CreateColModel(rstLookup, sThousandColumns)
-				
+				Dim colModel As List(Of Object) = JqGridColModel.CreateColModel(rstLookup, sThousandColumns, sBlankIfZeroColumns)
+
+				'We need to make some adjustements to the data, such as setting values on cells according to the "BlankIfZero" flag
+				Dim arrBlankIfZeroColumns = sBlankIfZeroColumns.ToCharArray()
+				Dim colCounter As Integer = -1
+				For Each c As DataColumn In rstLookup.Columns
+					If Not (c.ColumnName = "ID" Or String.Concat(c.ColumnName, "xxx").Substring(0, 3) = "ID_") Then
+						colCounter += 1
+					End If
+					'Blank if Zero only applies to Integer and Decimal columns
+					If c.DataType = GetType(Integer) Or c.DataType = GetType(Decimal) Then
+						For i As Integer = 0 To rstLookup.Rows.Count - 1
+							If Not IsDBNull(rstLookup(i)(c)) AndAlso rstLookup(i)(c) = 0 AndAlso arrBlankIfZeroColumns(colCounter) = "1" Then
+								rstLookup(i)(c) = DBNull.Value 'This shows as an empty string in the data grid
+							End If
+						Next
+					End If
+				Next
+
 				Return "{""total"":1,""page"":1,""records"":" & rstLookup.Rows.Count & ",""rows"":" & JsonConvert.SerializeObject(rstLookup) & ", ""colmodel"":" & JsonConvert.SerializeObject(colModel) & "}"
 			End If
 
@@ -87,16 +104,20 @@ Namespace Controllers
 			Dim _prmColumnDecimals = New SqlParameter("piColumnDecimals", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
 			Dim _prmLookupColumnGridPosition = New SqlParameter("piLookupColumnGridNumber", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
 			Dim sThousandColumns As String = ""
+			Dim sBlankIfZeroColumns As String = ""
 			Dim sErrorDescription As String = ""
 
 			Dim prmThousandColumns = New SqlParameter("@ps1000SeparatorCols", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
+			Dim prmBlankIfZeroColumns As New SqlParameter("@psBlanIfZeroCols", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
 			Try
 				objDataAccess.ExecuteSP("spASRIntGetLookupFindColumnInfo", _
 										New SqlParameter("@piLookupColumnID", SqlDbType.Int) With {.Value = piLookupColumnID}, _
-										prmThousandColumns _
+										prmThousandColumns, _
+										prmBlankIfZeroColumns
 				)
-				sThousandColumns = prmThousandColumns.Value.ToString()
-			Catch ex As Exception			
+				sThousandColumns = prmThousandColumns.Value
+				sBlankIfZeroColumns = prmBlankIfZeroColumns.Value
+			Catch ex As Exception
 			End Try
 
 			rstLookup = objDataAccess.GetFromSP("spASRIntGetLookupFindRecords" _
@@ -119,7 +140,24 @@ Namespace Controllers
 			If rstLookup Is Nothing Or rstLookup.Rows.Count = 0 Then
 				Return "{""total"":1,""page"":1,""records"":0,""rows"":"""",""colmodel"":""""}"
 			Else
-				Dim colModel As List(Of Object) = jqGridColModel.CreateColModel(rstLookup, sThousandColumns)
+				Dim colModel As List(Of Object) = JqGridColModel.CreateColModel(rstLookup, sThousandColumns, sBlankIfZeroColumns)
+
+				'We need to make some adjustements to the data, such as setting values on cells according to the "BlankIfZero" flag
+				Dim arrBlankIfZeroColumns = sBlankIfZeroColumns.ToCharArray()
+				Dim colCounter As Integer = -1
+				For Each c As DataColumn In rstLookup.Columns
+					If Not (c.ColumnName = "ID" Or String.Concat(c.ColumnName, "xxx").Substring(0, 3) = "ID_") Then
+						colCounter += 1
+					End If
+					'Blank if Zero only applies to Integer and Decimal columns
+					If c.DataType = GetType(Integer) Or c.DataType = GetType(Decimal) Then
+						For i As Integer = 0 To rstLookup.Rows.Count - 1
+							If Not IsDBNull(rstLookup(i)(c)) AndAlso rstLookup(i)(c) = 0 AndAlso arrBlankIfZeroColumns(colCounter) = "1" Then
+								rstLookup(i)(c) = DBNull.Value 'This shows as an empty string in the data grid
+							End If
+						Next
+					End If
+				Next
 
 				Return "{""total"":1,""page"":1,""records"":" & rstLookup.Rows.Count & ",""rows"":" &
 					JsonConvert.SerializeObject(rstLookup) & ", ""colmodel"":" & JsonConvert.SerializeObject(colModel) & "}"

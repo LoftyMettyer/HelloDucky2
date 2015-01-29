@@ -3,13 +3,13 @@ Namespace Classes
 
 	Public Class JqGridColModel
 		' Pass in a datatable and a jqGrid colmodel pops out the other end.
-		' USAGE:	Dim colModel As List(Of Object) = jqGridColModel.CreateColModel(rstLookup, sThousandColumns)
+		' USAGE:	Dim colModel As List(Of Object) = jqGridColModel.CreateColModel(rstLookup, sThousandColumns, sBlankIfZeroColumns)
 		'					Return "{""total"":1,""page"":1,""records"":" & rstLookup.Rows.Count & ",""rows"":" JsonConvert.SerializeObject(rstLookup) & ", ""colmodel"":" & JsonConvert.SerializeObject(colModel) & "}"
 		'	Javascript: colModel: jsondata.colmodel,
 		'							datatype: 'local',
 		'							data: jsondata.coldata
 
-		Public Shared Function CreateColModel(dataTable As DataTable, Optional thousandSeparators As String = "") As List(Of Object)
+		Public Shared Function CreateColModel(dataTable As DataTable, Optional thousandSeparators As String = "", Optional blankIfZeroColumns As String = "") As List(Of Object)
 
 			Dim arrCellProps(dataTable.Columns.Count)
 
@@ -35,12 +35,16 @@ Namespace Classes
 				Next
 			End If
 
-
 			Dim arrThousandSeparators = thousandSeparators.ToCharArray()
+			Dim arrBlankIfZeroColumns = blankIfZeroColumns.ToCharArray()
+			Dim colCounter As Integer = -1
 
 			Dim colModel = New List(Of Object)()
 
 			For Each col As DataColumn In dataTable.Columns
+				If Not (col.ColumnName = "ID" Or String.Concat(col.ColumnName, "xxx").Substring(0, 3) = "ID_") Then
+					colCounter += 1
+				End If
 
 				Select Case col.DataType
 
@@ -73,7 +77,7 @@ Namespace Classes
 					Case GetType(Int32)
 						Dim sThousandSeparator As String = ""
 						Try
-							If arrThousandSeparators(col.Ordinal) = "1" Then sThousandSeparator = LocaleThousandSeparator()
+							If arrThousandSeparators(colCounter) = "1" Then sThousandSeparator = LocaleThousandSeparator()
 						Catch ex As Exception
 						End Try
 
@@ -90,7 +94,7 @@ Namespace Classes
 								.thousandsSeparator = sThousandSeparator,
 								.decimalSeparator = "",
 								.decimalPlaces = 0,
-								.defaultValue = "0"
+								.defaultValue = IIf(arrBlankIfZeroColumns(colCounter) = "1", "", "0")
 									}
 						})
 
@@ -100,13 +104,17 @@ Namespace Classes
 						Dim defaultValue As String = "0"
 
 						Try
-							If arrThousandSeparators(col.Ordinal) = "1" Then sThousandSeparator = LocaleThousandSeparator()
+							If arrThousandSeparators(colCounter) = "1" Then sThousandSeparator = LocaleThousandSeparator()
 
 							If arrCellProps(col.Ordinal) > 0 Then
 								defaultValue &= LocaleDecimalSeparator()
 								For iloop = 1 To arrCellProps(col.Ordinal)
 									defaultValue &= "0"
 								Next
+							End If
+
+							If arrBlankIfZeroColumns(colCounter) = "1" Then
+								defaultValue = ""
 							End If
 
 						Catch ex As Exception
@@ -147,7 +155,6 @@ Namespace Classes
 			Return colModel
 
 		End Function
-
 	End Class
 
 	Public Class formatoptions
@@ -160,8 +167,4 @@ Namespace Classes
 		Property defaultValue() As String
 
 	End Class
-
-
-
-
 End Namespace

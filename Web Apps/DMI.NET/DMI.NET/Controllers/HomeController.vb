@@ -4475,10 +4475,11 @@ Namespace Controllers
 
 			Dim objDataAccess As clsDataAccess = CType(Session("DatabaseAccess"), clsDataAccess)
 
-			Dim sThousandColumns = ""
+			Dim sThousandColumns As String = ""
+			Dim sBlankIfZeroColumns As String = ""
 
 			Try
-				sThousandColumns = Get1000SeparatorFindColumns(CleanNumeric(tableID), CleanNumeric(viewID), CleanNumeric(orderID))
+				Get1000SeparatorBlankIfZeroFindColumns(CleanNumeric(tableID), CleanNumeric(viewID), CleanNumeric(orderID), sThousandColumns, sBlankIfZeroColumns)
 
 				Dim prmError = New SqlParameter("pfError", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
 				Dim prmIsFirstPage = New SqlParameter("pfFirstPage", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}

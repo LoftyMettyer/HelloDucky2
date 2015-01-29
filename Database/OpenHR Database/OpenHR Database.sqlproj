@@ -181,7 +181,6 @@
     <Build Include="Stored Procedures\Web\spASRIntCurrentUserAccess.sql" />
     <Build Include="Stored Procedures\Web\spASRIntDeleteCheck.sql" />
     <Build Include="Stored Procedures\Web\spASRIntDeleteEventLogRecords.sql" />
-    <Build Include="Stored Procedures\Web\spASRIntGet1000SeparatorFindColumns.sql" />
     <Build Include="Stored Procedures\Web\spASRIntGetActualLogin.sql" />
     <Build Include="Stored Procedures\Web\spASRIntGetActualUserDetails.sql" />
     <Build Include="Stored Procedures\Web\spASRIntGetActualUserDetailsForLogin.sql" />
@@ -649,6 +648,7 @@
     <Build Include="User Defined Functions\udfsysDurationFromPattern.sql" />
     <Build Include="User Defined Functions\udfsysPatternFromHours.sql" />
     <Build Include="Stored Procedures\Other\spASRCopyChildRecords.sql" />
+    <Build Include="Stored Procedures\Web\spASRIntGet1000SeparatorBlankIfZeroFindColumns.sql" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Stored Procedures\Other\sp_ASR_Bradford_CalculateDurations.sql" />
