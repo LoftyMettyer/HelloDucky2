@@ -1111,7 +1111,7 @@ function value_changeType() {
 	}
 
 	if ($('#frmMainForm #cboValueType').val() == "2") {
-		$('#frmMainForm #txtValue').autoNumeric('init', {vMax: 99999999.9999999, mDec: 7, aPad: false});
+		$('#frmMainForm #txtValue').autoNumeric('init', {vMin: -99999999.9999999,vMax: 99999999.9999999, mDec: 7, aPad: false});
 		$('#frmMainForm #txtValue').val(0);
 	} else {
 		frmMainForm.txtValue.value = "";
@@ -1337,7 +1337,7 @@ function pVal_changeType() {
 		text_disable(frmMainForm.txtPValDefault, false);
 		$('#frmMainForm #txtPValDefault').addClass('number');
 		$('#frmMainForm #txtPValDefault').autoNumeric('init', {
-			vMax: 99999999.9999, mDec: 4, aPad: false
+			vMin: -99999999.9999999, vMax: 99999999.9999, mDec: 4, aPad: false
 		});
 
 		//Change prompted value sizes to match default value
