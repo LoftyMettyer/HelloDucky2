@@ -122,8 +122,7 @@ function find_window_onload() {
 
 							if (sColumnName == "ID") {
 								colModel.push({
-									name: sColumnName,
-									key: true,
+									name: sColumnName,									
 									hidden: true,
 									editoptions: {
 										defaultValue: 0
