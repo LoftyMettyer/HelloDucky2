@@ -40,7 +40,7 @@
 				@Html.TextBoxFor(Function(m) m.Parent1.PicklistName, New With {.id = "txtParent1Picklist", .readonly = "true", .class = "floatright width99"})
 				@Html.ValidationMessageFor(Function(m) m.Parent1.PicklistID)
 			</div>
-			<div class="tablecell">
+			<div class="tablecell padbot5">
 				@Html.EllipseButton("cmdParent1Picklist", "selectParent1Picklist()", Model.Parent1.SelectionType = RecordSelectionType.Picklist)
 			</div>
 		</div>
@@ -95,7 +95,7 @@
 				@Html.TextBoxFor(Function(m) m.Parent2.PicklistName, New With {.id = "txtParent2Picklist", .readonly = "true", .class = "floatright width99"})
 				@Html.ValidationMessageFor(Function(m) m.Parent2.PicklistID)
 			</div>
-			<div class="tablecell">
+			<div class="tablecell padbot5">
 				@Html.EllipseButton("cmdParent2Picklist", "selectParent2Picklist()", Model.Parent2.SelectionType = RecordSelectionType.Picklist)
 			</div>
 		</div>
