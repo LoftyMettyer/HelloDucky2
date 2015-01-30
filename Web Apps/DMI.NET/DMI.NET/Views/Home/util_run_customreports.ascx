@@ -279,7 +279,8 @@ End If
 		If e.Row.RowType = DataControlRowType.Header Or e.Row.RowType = DataControlRowType.Footer Then
 			e.Row.CssClass = "header"			
 			For iCount = 1 To objReport.ReportDataTable.Columns.Count - 1
-				e.Row.Cells(iCount).Text = e.Row.Cells(iCount).Text.Replace(" ", "_")
+				e.Row.Cells(iCount).Text = e.Row.Cells(iCount).Text.Replace(" ", "_").Replace("&quot;", "_")
+				
 			Next
 		Else
 
@@ -349,8 +350,8 @@ End If
 	}
 
 		var newFormat = OpenHR.getLocaleDateString();
-		var srcFormat = newFormat;
-
+		var srcFormat = newFormat;	
+		
 		tableToGrid("#gridReportData", {
 			shrinkToFit: ShrinkToFit,
 			width: gridWidth,
@@ -368,7 +369,7 @@ End If
 				<%
 	iColCount = 0
 		For Each objItem In objReport.DisplayColumns
-			Dim sColumnName = objReport.ReportDataTable.Columns(iColCount).ColumnName.Replace(" ", "_")
+			Dim sColumnName = objReport.ReportDataTable.Columns(iColCount).ColumnName.Replace(" ", "_").Replace("""", "_")
 			Dim iColumnWidth As Integer = 100
 			If objItem.IsNumeric Then
 				Response.Write(String.Format("{0}{{name:'", IIf(iColCount > 0, ", ", "")) & sColumnName & "',align:'right', width: '" & iColumnWidth.ToString() & "'}")
