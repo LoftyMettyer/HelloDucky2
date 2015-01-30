@@ -187,7 +187,8 @@
 
 		
 		Dim sErrorDescription As String = ""
-		Dim sThousandColumns As String		
+		Dim sThousandColumns As String = ""
+		Dim sBlankIfZeroColumns As String = ""
 		Dim iCount As Integer
 		Dim sAddString As String
 		Dim sColDef As String
@@ -199,7 +200,7 @@
 		If Session("picklistSelectionDataLoading") = False Then
 			
 			Try
-				sThousandColumns = Get1000SeparatorFindColumns(CleanNumeric(Session("tableID")), CleanNumeric(Session("viewID")), CleanNumeric(Session("orderID")))
+				Get1000SeparatorBlankIfZeroFindColumns(CleanNumeric(Session("tableID")), CleanNumeric(Session("viewID")), CleanNumeric(Session("orderID")), sThousandColumns, sBlankIfZeroColumns)
 
 				Dim prmError = New SqlParameter("pfError", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
 				Dim prmIsFirstPage = New SqlParameter("pfFirstPage", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
