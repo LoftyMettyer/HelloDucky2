@@ -49,7 +49,7 @@
 </fieldset>
 
 <fieldset class="width100 floatleft">
-	<legend class="fontsmalltitle">End Dates :</legend>
+	<legend class="fontsmalltitle">End Date :</legend>
 	<fieldset>
 		<div class="width100 " style="">
 			@Html.RadioButton("EndType", CalendarDataType.CurrentDate, Model.EndType = CalendarDataType.CurrentDate, New With {.onclick = "changeCalendarEndType('CurrentDate')"})
