@@ -120,6 +120,9 @@
 					Session("confirmtext") = "'" & Session("utilname") & "' " & sUtilTypeName & " has been deleted."
 					Session("confirmtitle") = "Delete Confirmation"
 					Session("followpage") = "defsel"
+					
+					'Reset the utilid to 0
+					Session("utilid") = 0
 				End If
 
 				Response.Redirect("confirmok")
