@@ -62,7 +62,7 @@ $('#cmdSelect').click(function () {
 	frmGotoOption.txtGotoOptionPage.value = "emptyoption";
 
 	var optionDataForm = OpenHR.getForm("optiondataframe", "frmOptionData");
-	frmGotoOption.txtGotoOptionLookupValue.value = optionDataForm.txtStatus.value;
+	frmGotoOption.txtGotoOptionLookupValue.value = $('#selStatus').val();
 
 	OpenHR.submitForm(frmGotoOption);
 });
