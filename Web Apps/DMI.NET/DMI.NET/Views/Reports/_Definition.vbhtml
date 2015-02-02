@@ -400,7 +400,7 @@
 		}
 
 
-		function loadAvailableTablesForCalendarReport(baseTableChanged) {
+		function loadAvailableTablesForCalendarReport(baseTableChanged) {			
 
 			$.ajax({
 				url: 'Reports/GetAvailableColumnsForTable',
@@ -418,10 +418,7 @@
 						$("#label_GroupByDescription").css("color", "#000000");
 						$('#IncludeBankHolidays').prop('checked', false);
 						$('#WorkingDaysOnly').prop('checked', false);
-						$('#ShowBankHolidays').prop('checked', false);
-						$('#ShowCaptions').prop('checked', 'checked');
-						$('#ShowWeekends').prop('checked', 'checked');
-						$('#StartOnCurrentMonth').prop('checked', 'checked');
+						$('#ShowBankHolidays').prop('checked', false);						
 						//If  the Base Table value is anything other than Primary table value then 'Include Bank Holidays', 'Working Days Only' and 'Show Bank Holidays' should disable
 						var bIsPersonnelRecords = ($("#BaseTableID option:selected").val() == '@SettingsConfig.Personnel_EmpTableID');
 						if ($('#chkGroupByDescription').prop('checked') && bIsPersonnelRecords) {
