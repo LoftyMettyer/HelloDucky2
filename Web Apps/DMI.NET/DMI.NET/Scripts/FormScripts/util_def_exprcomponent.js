@@ -1420,9 +1420,9 @@ function pVal_changeType() {
 	$('#trPValDateOptions').toggle(sDateOptionsVisibility == 'visible');
 	$('#trPValDateOptions2').toggle(sDateOptionsVisibility == 'visible');
 
-	if (iPValType == 4) {
+	if (iPValType == 4) {		
 		$('#txtPValDefault').datepicker();
-		$('#txtPValDefault').on('change', function (sender) {
+		$('#txtPValDefault').on('blur', function (sender) {
 			validateDate(sender);
 		});
 	} else {
@@ -1434,7 +1434,7 @@ function pVal_changeType() {
 	pVal_changePrompt();
 }
 
-function validateDate(sender) {	
+function validateDate(sender) {
 	if (OpenHR.IsValidDate(sender.target.value) == false && sender.target.value != "") {
 		var exprid = sender.target.id;
 		OpenHR.modalPrompt("Invalid date value entered.", 0, "Error").then(function () {
