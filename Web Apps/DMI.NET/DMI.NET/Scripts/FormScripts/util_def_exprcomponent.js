@@ -1102,7 +1102,7 @@ function value_changeType() {
 		if (frmMainForm.cboValueType.options[frmMainForm.cboValueType.selectedIndex].value == 4) {
 			//Date value
 			$('#txtValue').datepicker();
-			$('#txtValue').on('change', function (sender) {
+			$('#txtValue').on('blur', function (sender) {				
 				validateDate(sender);
 			});
 		} else {
@@ -1434,7 +1434,7 @@ function pVal_changeType() {
 	pVal_changePrompt();
 }
 
-function validateDate(sender) {
+function validateDate(sender) {	
 	if (OpenHR.IsValidDate(sender.target.value) == false && sender.target.value != "") {
 		var exprid = sender.target.id;
 		OpenHR.modalPrompt("Invalid date value entered.", 0, "Error").then(function () {
@@ -1940,7 +1940,7 @@ function component_OKClick() {
 	if ($('#optionframe #cmdCancel').hasClass('ui-state-disabled')) {
 		return;
 	}
-
+	
 	if ((frmMainForm.optType_Function.checked == true) || (frmMainForm.optType_Operator.checked == true)) {
 		//Has user selected a valid item
 		if ($.jstree._focused().get_selected().hasClass('toplevelnode')) {
@@ -2596,7 +2596,7 @@ function validateComponent() {
 		if (frmMainForm.cboValueType.value == 4) {
 			// Date
 			// Convert the date to SQL format (use this as a validation check).
-			// An empty string is returned if the date is invalid.			
+			// An empty string is returned if the date is invalid.	
 			sValue = OpenHR.convertLocaleDateToSQL(sValue);
 			if ((sValue.length == 0) || (sValue == 'null')) {
 				sErrorMsg = "Invalid date value entered.";
