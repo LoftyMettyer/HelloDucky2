@@ -260,14 +260,6 @@
 
 				refreshControls();
 
-				//If the table is empty disable Copy, Edit, Delete and Properties buttons
-				if ($('#DefSelRecordsCount').val() == 0) {
-						menu_toolbarEnableItem("mnutoolCopyToolsFind", false);
-						menu_toolbarEnableItem("mnutoolEditToolsFind", false);
-						menu_toolbarEnableItem("mnutoolDeleteToolsFind", false);
-						menu_toolbarEnableItem("mnutoolPropertiesToolsFind", false);
-				}
-
 				if (rowCount() > 0) {
 
 						var fFromMenu = (Number(frmDefSel.txtSingleRecordID.value) <= 0);
@@ -281,8 +273,18 @@
 						}
 						$("#DefSelRecords").jqGrid("setSelection", gotoID);
 
-				}
+					  // If no row is selected then select first row
+						if ($("#DefSelRecords").getGridParam('selrow') == null) {
+								$("#DefSelRecords").jqGrid("setSelection", $("#DefSelRecords").getDataIDs()[0]);
+						}
 
+				} else {
+					 //If the table is empty disable Copy, Edit, Delete and Properties buttons
+						menu_toolbarEnableItem("mnutoolCopyToolsFind", false);
+						menu_toolbarEnableItem("mnutoolEditToolsFind", false);
+						menu_toolbarEnableItem("mnutoolDeleteToolsFind", false);
+						menu_toolbarEnableItem("mnutoolPropertiesToolsFind", false);
+				}
 		}
 
 		function rowCount() {
@@ -439,9 +441,10 @@
 						$("#toolbarEventLogFind").parent().hide();
 						$("#toolbarWFPendingStepsFind").parent().hide();
 						// Enable the buttons
-						menu_toolbarEnableItem("mnutoolNewToolsFind", IsNewPermitted);
-						menu_toolbarEnableItem("mnutoolCopyToolsFind", true && IsNewPermitted && fFromMenu);
-						menu_toolbarEnableItem("mnutoolPropertiesToolsFind", fFromMenu);
+						menu_toolbarEnableItem("mnutoolNewToolsFind", IsNewPermitted && fFromMenu);
+						menu_toolbarEnableItem("mnutoolCopyToolsFind", fHasRows && IsNewPermitted && fFromMenu);
+						menu_toolbarEnableItem("mnutoolEditToolsFind", fHasRows && (IsEditPermitted || IsViewPermitted) && fFromMenu);
+						menu_toolbarEnableItem("mnutoolPropertiesToolsFind", fHasRows && fFromMenu);
 						menu_toolbarEnableItem("mnutoolRunToolsFind", false);
 						menu_setVisibleMenuItem('mnutoolRunToolsFind', false);
 						// Show and select the tab
@@ -455,9 +458,10 @@
 						$("#toolbarEventLogFind").parent().hide();
 						$("#toolbarWFPendingStepsFind").parent().hide();
 						// Enable the buttons
-						menu_toolbarEnableItem("mnutoolNewToolsFind", IsNewPermitted);
-						menu_toolbarEnableItem("mnutoolCopyToolsFind", true && IsNewPermitted && fFromMenu);
-						menu_toolbarEnableItem("mnutoolPropertiesToolsFind", fFromMenu);
+						menu_toolbarEnableItem("mnutoolNewToolsFind", IsNewPermitted && fFromMenu);
+						menu_toolbarEnableItem("mnutoolCopyToolsFind", fHasRows && IsNewPermitted && fFromMenu);
+						menu_toolbarEnableItem("mnutoolEditToolsFind", fHasRows && (IsEditPermitted || IsViewPermitted) && fFromMenu);
+						menu_toolbarEnableItem("mnutoolPropertiesToolsFind", fHasRows && fFromMenu);
 						menu_toolbarEnableItem("mnutoolRunToolsFind", false);
 						menu_setVisibleMenuItem('mnutoolRunToolsFind', false);
 						// Show and select the tab
@@ -471,9 +475,10 @@
 						$("#toolbarEventLogFind").parent().hide();
 						$("#toolbarWFPendingStepsFind").parent().hide();
 						// Enable the buttons
-						menu_toolbarEnableItem("mnutoolNewToolsFind", IsNewPermitted);
-						menu_toolbarEnableItem("mnutoolCopyToolsFind", true && IsNewPermitted && fFromMenu);
-						menu_toolbarEnableItem("mnutoolPropertiesToolsFind", fFromMenu);
+						menu_toolbarEnableItem("mnutoolNewToolsFind", IsNewPermitted && fFromMenu);
+						menu_toolbarEnableItem("mnutoolCopyToolsFind", fHasRows && IsNewPermitted && fFromMenu);
+						menu_toolbarEnableItem("mnutoolEditToolsFind", fHasRows && (IsEditPermitted || IsViewPermitted) && fFromMenu);
+						menu_toolbarEnableItem("mnutoolPropertiesToolsFind", fHasRows && fFromMenu);
 						menu_toolbarEnableItem("mnutoolRunToolsFind", false);
 						menu_setVisibleMenuItem('mnutoolRunToolsFind', false);
 						// Show and select the tab
@@ -662,7 +667,6 @@
 		}
 
 		function ToggleCheck() {
-
 				var frmOnlyMine = document.getElementById('frmOnlyMine');
 				var frmDefSel = document.getElementById('frmDefSel');
 
@@ -1252,7 +1256,6 @@
 	}
 
 	$(function () {
-
 		attachDefSelGrid();
 
 		$("#selectTable").change(function () {
