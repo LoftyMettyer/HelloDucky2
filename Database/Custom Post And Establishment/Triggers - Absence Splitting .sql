@@ -80,9 +80,8 @@ BEGIN
 END';
 
 
-
 DELETE FROM ASRSysTableTriggers
-UPDATE ASRSysTables SET deletetriggerdisabled = 1, inserttriggerdisabled = 1 WHERE tableid = 252;
+UPDATE ASRSysTables SET deletetriggerdisabled = 0, inserttriggerdisabled = 0 WHERE tableid = 252;
 
 
 IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[trcustom_Absence_Entry_P&E]') AND xtype in (N'TR'))
@@ -124,9 +123,9 @@ INSERT ASRSysTableTriggers (TriggerID, TableID, Name, CodePosition, IsSystem, Co
 GO
 
 
-INSERT ASRSysTableTriggers (TriggerID, TableID, Name, CodePosition, IsSystem, Content) VALUES (3, 251, 'Breakdown absences into individual days', 0, 1, '   
+INSERT ASRSysTableTriggers (TriggerID, TableID, Name, CodePosition, IsSystem, Content) VALUES (3, 251, 'Breakdown absences into individual days', 0, 0, '   
 
-		DELETE [dbo].[tbuser_Absence_Breakdown] WHERE [id_251] IN (SELECT DISTINCT [id] FROM deleted);
+	DELETE [dbo].[tbuser_Absence_Breakdown] WHERE [id_251] IN (SELECT DISTINCT [id] FROM deleted);
 
 	DECLARE @changeDates TABLE(Effective_Date datetime, AppointmentID integer, PersID integer);
 
@@ -198,7 +197,19 @@ INSERT ASRSysTableTriggers (TriggerID, TableID, Name, CodePosition, IsSystem, Co
 			LEFT JOIN Absence_Type_Table at ON at.Absence_Type = i.Absence_Type
 			LEFT JOIN Absence_Reason_Table ar ON ar.Reason = i.Reason
 		WHERE wp.Effective_Date <= dr.IndividualDate AND (wp.End_Date >= dr.IndividualDate OR wp.End_Date IS NULL)
-			AND dbo.udfsysDurationFromPattern(ap.Absence_In, dr.IndividualDate, dr.SessionType, wp.Sunday_Hours_AM, wp.Monday_Hours_AM, wp.Tuesday_Hours_AM, wp.Wednesday_Hours_AM, wp.Thursday_Hours_AM, wp.Friday_Hours_AM, wp.Saturday_Hours_AM, wp.Sunday_Hours_PM, wp.Monday_Hours_PM, wp.Tuesday_Hours_PM, wp.Wednesday_Hours_PM, wp.Thursday_Hours_PM, wp.Friday_Hours_PM, wp.Saturday_Hours_PM) > 0;');
+			AND dbo.udfsysDurationFromPattern(ap.Absence_In, dr.IndividualDate, dr.SessionType, wp.Sunday_Hours_AM, wp.Monday_Hours_AM, wp.Tuesday_Hours_AM, wp.Wednesday_Hours_AM, wp.Thursday_Hours_AM, wp.Friday_Hours_AM, wp.Saturday_Hours_AM, wp.Sunday_Hours_PM, wp.Monday_Hours_PM, wp.Tuesday_Hours_PM, wp.Wednesday_Hours_PM, wp.Thursday_Hours_PM, wp.Friday_Hours_PM, wp.Saturday_Hours_PM) > 0;
+			
+	-- Update the duration
+	MERGE Appointment_Absence TARGET
+	USING (SELECT id_251, SUM(Duration) AS Duration FROM Absence_Breakdown
+		WHERE Id_251 in (SELECT id FROM inserted)
+		GROUP BY ID_251)
+	AS SOURCE ON SOURCE.ID_251 = TARGET.ID
+	WHEN MATCHED
+		THEN UPDATE SET Duration = SOURCE.Duration;
+	
+			
+	');
 		
 
 
