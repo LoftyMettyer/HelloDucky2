@@ -1454,6 +1454,11 @@ div.displaytable {
 	left: 7px;
 }
 
+	.sp-container.sp-input-disabled .sp-input-container {
+		display: block !important;
+		visibility:hidden !important;
+	}
+
 .sp-choose > span {
 	margin-top: -4px;
 }
