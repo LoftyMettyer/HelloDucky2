@@ -181,6 +181,15 @@ function removeClick() {
 				// reload grid to make the row from the next page visable.
 				grid.trigger("reloadGrid", [{ page: newPage }]);
 			}
+			else
+			{
+				//Reload the grid data again, after selected row is deleted and set the row selection to -1.
+				grid.trigger("reloadGrid", [{ current: true }]);
+				if (grid.getGridParam("reccount") > 0)
+				{
+					grid.jqGrid('setSelection', -1);
+				}
+			}
 
 			//Display the number of records
 			$('#RecordCountDIV').html($("#ssOleDBGrid").getGridParam('reccount') + " Record(s)");
@@ -496,7 +505,13 @@ function disableRemoveAndRemoveAllButton() {
 	if ($("#ssOleDBGrid").getGridParam('reccount') == 0)//If the grid is empty, disable the "Remove" and "Remove All" button
 	{		
 		button_disable(frmDefinition.cmdRemove, true);
-		button_disable(frmDefinition.cmdRemoveAll, true);		
+		button_disable(frmDefinition.cmdRemoveAll, true);
+	}
+	else if (($("#ssOleDBGrid").getGridParam('selrow') == null) && ($("#ssOleDBGrid").getGridParam('reccount') > 0))
+	{
+		//Remove button should not enables when no rows are selected.
+		button_disable(frmDefinition.cmdRemove, true);
+		button_disable(frmDefinition.cmdRemoveAll, false);
 	}
 }
 
