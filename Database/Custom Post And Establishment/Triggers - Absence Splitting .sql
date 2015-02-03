@@ -207,7 +207,23 @@ INSERT ASRSysTableTriggers (TriggerID, TableID, Name, CodePosition, IsSystem, Co
 	AS SOURCE ON SOURCE.ID_251 = TARGET.ID
 	WHEN MATCHED
 		THEN UPDATE SET Duration = SOURCE.Duration;
-	
+
+	-- Merge into the personnel absence table
+	MERGE Absence AS TARGET
+		USING (SELECT aa.Absence_Type, aa.Reason, aa.Absence_In, aa.start_date, aa.Start_Session, aa.end_date, aa.End_Session, aa.Duration
+				, a.Post_ID, a.id_1, aa.ID
+			FROM Appointment_Absence aa
+			INNER JOIN inserted i ON i.ID = aa.ID
+			INNER JOIN Appointments a ON a.ID = aa.ID_3)
+	AS ins ON ins.ID = TARGET.Appointment_Absence_ID
+	WHEN NOT MATCHED
+		THEN INSERT (Absence_Type, Reason, Absence_In, Start_Date, Start_Session, End_Date, End_Session, Duration, Post_ID, ID_1, Appointment_Absence_ID)		
+			VALUES(ins.Absence_Type, ins.Reason, ins.Absence_In, ins.Start_Date, ins.Start_Session, ins.End_Date, ins.End_Session, Duration, ins.Post_ID, ins.ID_1, ins.ID)
+	WHEN MATCHED 
+		THEN UPDATE SET Absence_Type = ins.Absence_Type, Reason = ins.Reason, Absence_in = ins.Absence_in, Start_Date = ins.Start_Date, Start_session = ins.Start_Session
+			, End_Date = ins.End_Date, Duration = ins.Duration, Post_ID = ins.Post_ID, ID_1 = ins.ID_1
+	WHEN NOT MATCHED BY SOURCE AND TARGET.Appointment_Absence_ID IN (SELECT id FROM inserted)
+		THEN DELETE;
 			
 	');
 		
