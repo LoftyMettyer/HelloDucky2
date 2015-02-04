@@ -5,6 +5,7 @@
 250	- Absence_Entry
 251	- Appointment_Absence_Entry
 252	- Absence_Breakdown
+254 - Appointment_Absence_Staging
 
 */
 
@@ -122,6 +123,23 @@ INSERT ASRSysTableTriggers (TriggerID, TableID, Name, CodePosition, IsSystem, Co
 ')
 GO
 
+INSERT ASRSysTableTriggers (TriggerID, TableID, Name, CodePosition, IsSystem, Content) VALUES (8, 254, 'Manual & Automatic Approval of absence based on type', 0, 1, '    
+	-- Automatically approve certain absences
+	INSERT Appointment_Absence (ID_3, Start_Date, End_Date, Start_Session, End_Session, Absence_In, Absence_Type, Reason, Post_ID, Staff_Number, Payroll_Company_Code)
+		SELECT i.ID_3, i.Start_Date, i.End_Date, i.Start_Session, i.End_Session, a.Absence_In, i.Absence_Type, i.Reason, a.Post_ID, a.Staff_Number, a.Payroll_Company_Code
+		FROM inserted i
+			INNER JOIN Appointments a ON a.ID = i.ID_3
+			INNER JOIN Absence_Type_Table at ON at.Type_Code = i.Absence_Type
+		WHERE at.Bookable = 0;
+
+	-- Move authorised absences
+	INSERT Appointment_Absence (ID_3, Start_Date, End_Date, Start_Session, End_Session, Absence_In, Absence_Type, Reason, Post_ID, Staff_Number, Payroll_Company_Code)
+		SELECT i.ID_3, i.Start_Date, i.End_Date, i.Start_Session, i.End_Session, a.Absence_In, i.Absence_Type, i.Reason, a.Post_ID, a.Staff_Number, a.Payroll_Company_Code
+		FROM inserted i
+			INNER JOIN Appointments a ON a.ID = i.ID_3
+		WHERE i.Authorised = 1;
+')
+GO
 
 INSERT ASRSysTableTriggers (TriggerID, TableID, Name, CodePosition, IsSystem, Content) VALUES (3, 251, 'Breakdown absences into individual days', 1, 1, '   
 
