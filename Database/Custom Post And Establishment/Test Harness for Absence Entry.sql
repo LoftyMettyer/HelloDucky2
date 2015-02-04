@@ -39,10 +39,11 @@ print 'iNSERT'
 
 --INSERT Absence_Entry (ID_1, start_date, end_date, Reason, absence_type) values (116, getdate(), getdate()+2, 'SICK', 'felt bad')
 --INSERT Absence_Entry (ID_1, start_date, end_date, Reason, absence_type) values (116, getdate()-1, getdate()-1, 'SICK', 'felt yucky')
-
-INSERT Absence_Entry (ID_1, start_date, end_date, absence_type, Reason) values (@persID, getdate(), getdate()+10, 'HOLS', 'bit of jolly')
-INSERT Absence_Entry (ID_1, start_date, end_date, absence_type, Reason) values (@persID, getdate(), getdate()+10, 'SICK', 'felt bad')
-INSERT Absence_Entry (ID_1, start_date, end_date, absence_type, Reason) values (@persID, getdate(), getdate()+10, 'MAT', 'mummy!')
+--select * from absence_type_table
+--INSERT Absence_Entry (ID_1, start_date, end_date, absence_type, Reason) values (@persID, getdate(), getdate()+10, 'HOLS', 'bit of jolly')
+INSERT Absence_Entry (ID_1, start_date, Start_Session, end_date, end_session, absence_type, Reason) values (@persID, getdate()-7, 'PM', NULL, '', 'Sickness', 'felt bad')
+--INSERT Absence_Entry (ID_1, start_date, end_date, absence_type, Reason) values (@persID, getdate(), getdate()+10, 'Maternity Leave', 'mummy!')
+--INSERT Absence_Entry (ID_1, start_date, end_date, absence_type, Reason) values (@persID, getdate(), getdate()+10, 'Holiday', 'Lots of sun')
 
 
 --INSERT Absence_Entry (ID_1, start_date, end_date, Reason, absence_type) values (117, getdate()-10, getdate()-10, 'HOLS', 'bit of jolly')
@@ -82,8 +83,12 @@ PRINT 'UPDATE'
 
 --UPDATE Appointment_Absence_Staging SET Authorised = 1 WHERE Absence_Type = 'HOLS'
 --UPDATE Appointment_Absence_Staging SET Authorised = 1 WHERE ID = 270 -- WHERE Absence_Type = 'HOLS'
+--update Appointment_Absence set End_Date = getdate() + 10 where id = 736
 
-SELECT * FROM Appointment_Absence_Staging
-SELECT * FROM Appointment_Absence
-SELECT * FROM Absence_Breakdown
-		
+SELECT Duration, * FROM Appointment_Absence_Staging
+SELECT Duration, * FROM Appointment_Absence
+SELECT * FROM Absence_Breakdown order by 1
+SELECT Duration, * FROM Absence
+
+--select dbo.udfcustom_AbsenceDurationForAppointment(GETDATE(), 'AM', getdate(), 'PM', 828)		
+--select dbo.udfcustom_AbsenceDurationForAppointment(GETDATE()-1, 'AM', getdate()+1, 'PM', 954)		

@@ -110,6 +110,8 @@ IF EXISTS (SELECT *	FROM dbo.sysobjects	WHERE id = object_id(N'[dbo].[trcustom_A
 GO
 
 INSERT ASRSysTableTriggers (TriggerID, TableID, Name, CodePosition, IsSystem, Content) VALUES (2, 250, 'Split Absence Request for individual appointment approval', 0, 1, '    
+	DECLARE @today datetime =  DATEADD(dd, 0, DATEDIFF(dd, 0, GETDATE()));
+
 	INSERT Appointment_Absence_Staging (ID_3, Start_Date, Start_Session, End_Date, End_Session, Absence_Type, Reason, Duration, Absence_In)
 		SELECT a.ID, ae.Start_Date, ae.Start_Session, ae.End_Date, ae.End_Session
 				, ae.Absence_Type, ae.Reason
@@ -118,9 +120,8 @@ INSERT ASRSysTableTriggers (TriggerID, TableID, Name, CodePosition, IsSystem, Co
 		FROM inserted ae
 		INNER JOIN Appointments a ON ae.ID_1 = a.ID_1 AND (a.post_ID = ae.post_ID OR ae.post_ID IS NULL OR ae.post_ID = '''')
 		WHERE ae.Start_Date <= ISNULL(Appointment_End_Date, convert(datetime, ''9999-12-31''))
-			AND ae.End_Date >= ISNULL(Appointment_Start_Date, convert(datetime, ''1899-12-31''));
-
-')
+			AND (ae.End_Date >= ISNULL(Appointment_Start_Date, convert(datetime, ''1899-12-31'')) OR ae.End_Date IS NULL)
+			AND dbo.udfcustom_AbsenceDurationForAppointment(ae.Start_Date, ae.Start_Session, ISNULL(ae.End_Date, @today), ae.End_Session, a.ID) > 0;')
 GO
 
 INSERT ASRSysTableTriggers (TriggerID, TableID, Name, CodePosition, IsSystem, Content) VALUES (8, 254, 'Manual & Automatic Approval of absence based on type', 1, 1, '    
@@ -142,6 +143,7 @@ INSERT ASRSysTableTriggers (TriggerID, TableID, Name, CodePosition, IsSystem, Co
 GO
 
 INSERT ASRSysTableTriggers (TriggerID, TableID, Name, CodePosition, IsSystem, Content) VALUES (3, 251, 'Breakdown absences into individual days', 1, 1, '   
+   	DECLARE @today datetime =  DATEADD(dd, 0, DATEDIFF(dd, 0, GETDATE()));
 
 	DELETE [dbo].[tbuser_Absence_Breakdown] WHERE [id_251] IN (SELECT DISTINCT [id] FROM deleted);
 
@@ -208,7 +210,7 @@ INSERT ASRSysTableTriggers (TriggerID, TableID, Name, CodePosition, IsSystem, Co
 			, dr.IndividualDate, dr.SessionType
 			, wp.Day_Pattern_AM, wp.Day_Pattern_PM, wp.Hour_Pattern_AM, wp.Hour_Pattern_PM
 		FROM inserted i
-			CROSS APPLY [dbo].[udfsysDateRangeToTable] (''d'', i.Start_Date, i.Start_Session,  i.End_Date, i.End_Session) dr
+			CROSS APPLY [dbo].[udfsysDateRangeToTable] (''d'', i.Start_Date, i.Start_Session, ISNULL(i.End_Date, @today), i.End_Session) dr
 			INNER JOIN Appointments ap ON ap.ID = i.ID_3
 			INNER JOIN @working_patterns wp ON wp.AppointmentID = ap.ID
 			INNER JOIN Personnel_Records pr ON pr.ID = ap.ID_1
