@@ -129,8 +129,8 @@ INSERT ASRSysTableTriggers (TriggerID, TableID, Name, CodePosition, IsSystem, Co
 		SELECT i.ID_3, i.Start_Date, i.End_Date, i.Start_Session, i.End_Session, a.Absence_In, i.Absence_Type, i.Reason, a.Post_ID, a.Staff_Number, a.Payroll_Company_Code
 		FROM inserted i
 			INNER JOIN Appointments a ON a.ID = i.ID_3
-			INNER JOIN Absence_Type_Table at ON at.Type_Code = i.Absence_Type
-		WHERE at.Bookable = 0;
+			INNER JOIN Absence_Type_Table at ON at.Absence_Type = i.Absence_Type
+		WHERE at.Requires_Authorisation = 0;
 
 	-- Move authorised absences
 	INSERT Appointment_Absence (ID_3, Start_Date, End_Date, Start_Session, End_Session, Absence_In, Absence_Type, Reason, Post_ID, Staff_Number, Payroll_Company_Code)
