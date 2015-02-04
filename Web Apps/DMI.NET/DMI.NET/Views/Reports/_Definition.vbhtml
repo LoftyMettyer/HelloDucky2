@@ -129,7 +129,7 @@
 
 		if ($("#txtReportType").val() == '@UtilityType.utlMailMerge') {
 			$(".displayTitleInReportHeader").hide();
-		} 
+		}
 
 		$('fieldset').css("border", "0");
 		$('table').css("border", "0");
@@ -174,629 +174,640 @@
 		}
 	});
 
-		function isDefinitionReadOnly() {
-			return ($("#IsReadOnly").val() == "True");
+	function isDefinitionReadOnly() {
+		return ($("#IsReadOnly").val() == "True");
+	}
+
+	function getBaseTableList() {
+
+		$.ajax({
+			url: '@Url.Action("GetBaseTables", "Reports", New With {.ReportType = CInt(Model.ReportType)})',
+			type: 'GET',
+			dataType: 'json',
+			success: function (json) {
+				$.each(json, function (i, table) {
+					var optionHtml = '<option value=' + table.id + '>' + table.Name + '</option>'
+					$('#BaseTableID').append(optionHtml);
+				});
+
+				$('#BaseTableID').val("@Model.BaseTableID");
+				$("#OriginalBaseTableID").val($('#BaseTableID')[0].selectedIndex);
+
+				if ('@CInt(Model.ReportType)' == '2' || '@CInt(Model.ReportType)' == '9') {
+					loadAvailableTablesForReport(false);
+					attachGridToSelectedColumns();
+				}
+
+				if (($("#txtReportType").val() == '@UtilityType.utlCalendarReport') && ($("#ActionType").val() == '@UtilityActionType.New')) {
+					//If  the Base Table value is anything other than Primary table value then 'Include Bank Holidays', 'Working Days Only' and 'Show Bank Holidays' should disable
+					var bIsPersonnelRecords = ($("#BaseTableID option:selected").val() == '@SettingsConfig.Personnel_EmpTableID');
+					disableEnableWorkingDaysOrHolidays(!bIsPersonnelRecords);
+				}
+			}
+		});
+	}
+
+	function setAllSecurityGroups() {
+
+		var setTo = $("#drpSetAllSecurityGroups").val();
+		if (setTo.length > 0) $(".reportViewAccessGroup").val(setTo);
+
+	}
+
+	function changeRecordOption(psTable, psType) {
+		if (psType == "ALL") {
+			button_disable($("#cmd" + psTable + "Picklist")[0], true);
+			button_disable($("#cmd" + psTable + "Filter")[0], true);
+			$("#txt" + psTable + "Filter").val("");
+			$("#txt" + psTable + "Picklist").val("");
+			$("#txt" + psTable + "PicklistID").val(0);
+			$("#txt" + psTable + "FilterID").val(0);
+			$('#DisplayTitleInReportHeader').prop('disabled', true);
+			$("#DisplayTitleInReportHeader").prop('checked', false);
+			$("#label_DisplayTitleInReportHeader").css("color", "#A59393");
+		}
+		else {
+			$('#DisplayTitleInReportHeader').prop('disabled', false);
+			$("#label_DisplayTitleInReportHeader").css("color", "#000000");
 		}
 
-		function getBaseTableList() {
+		if (psType == "PICKLIST") {
+			button_disable($("#cmd" + psTable + "Picklist")[0], false)
+			button_disable($("#cmd" + psTable + "Filter")[0], true)
+			$("#txt" + psTable + "Filter").val("");
+			$("#txt" + psTable + "FilterID").val(0);
 
-			$.ajax({
-				url: '@Url.Action("GetBaseTables", "Reports", New With {.ReportType = CInt(Model.ReportType)})',
-				type: 'GET',
-				dataType: 'json',
-				success: function (json) {
-					$.each(json, function (i, table) {
-						var optionHtml = '<option value=' + table.id + '>' + table.Name + '</option>'
-						$('#BaseTableID').append(optionHtml);
-					});
+			if ($("#txt" + psTable + "PicklistID").val() == 0) {
+				$("#txt" + psTable + "Picklist").val("None");
+			}
 
-					$('#BaseTableID').val("@Model.BaseTableID");
-					$("#OriginalBaseTableID").val($('#BaseTableID')[0].selectedIndex);
+		}
 
-					if ('@CInt(Model.ReportType)' == '2' || '@CInt(Model.ReportType)' == '9') {
-						loadAvailableTablesForReport(false);
-						attachGridToSelectedColumns();
+		if (psType == "FILTER") {
+			button_disable($("#cmd" + psTable + "Picklist")[0], true)
+			button_disable($("#cmd" + psTable + "Filter")[0], false)
+			$("#txt" + psTable + "Picklist").val("");
+			$("#txt" + psTable + "PicklistID").val(0);
+
+			if ($("#txt" + psTable + "FilterID").val() == 0) {
+				$("#txt" + psTable + "Filter").val("None");
+			}
+
+		}
+
+		setViewAccess(psType, $("#" + psTable + "ViewAccess"), 'RW', '');
+
+	}
+
+	function refreshViewAccess() {
+
+		var bViewAccessEnabled = true;
+		var list;
+
+		$(".reportViewAccessGroup").prop('disabled', false);
+		$("#drpSetAllSecurityGroups").prop('disabled', false);
+		$(".reportViewAccessGroup").removeClass('ui-state-disabled');
+
+		$(".ViewAccess").each(function (index) {
+			if ((this).innerText == "HD" || (this).value == "HD") {
+				bViewAccessEnabled = false;
+			}
+		});
+
+		if (!bViewAccessEnabled) {
+			$("#IsForcedHidden").val(true);
+			$(".reportViewAccessGroup").prop('disabled', true);
+			$("#drpSetAllSecurityGroups").prop('disabled', true);
+			$(".reportViewAccessGroup").addClass('ui-state-disabled');
+		}
+	}
+
+	function setViewAccess(type, accessControl, newAccess, tableName) {
+
+		var bResetGroupsToHidden = false;
+		var iObjectsHidden = 0;
+		var displayType;
+
+		if (accessControl.val() != newAccess && newAccess == "HD") {
+			iObjectsHidden = 1;
+			bResetGroupsToHidden = true;
+		}
+
+		switch (type) {
+			case "FILTER":
+				displayType = "filter";
+				break;
+
+			case "PICKLIST":
+				displayType = "picklist";
+				break;
+
+			default:
+				displayType = "calculation";
+
+		}
+
+		accessControl.val(newAccess);
+
+		if (bResetGroupsToHidden && $("#IsForcedHidden").val() != "true") {
+			OpenHR.modalPrompt("This definition will now be made hidden as the " + tableName + " table " + displayType + " is hidden.", 0, "Information").then(function (answer) {
+				$(".reportViewAccessGroup").val("HD");
+				$("#IsForcedHidden").val(true);
+			});
+		}
+		else {
+			checkIfDefinitionNeedsToBeHidden(iObjectsHidden);
+		}
+
+		refreshViewAccess();
+
+	}
+
+	function checkIfDefinitionNeedsToBeHidden(iObjectsAlreadyHidden) {
+
+		$(".ViewAccess").each(function (index) {
+			if ((this).innerText == "HD" || (this).value == "HD") {
+				iObjectsAlreadyHidden += 1;
+			}
+		});
+
+		if (iObjectsAlreadyHidden == 0 && $("#IsForcedHidden").val() == "true") {
+			OpenHR.modalPrompt("This definition no longer has to be hidden.", 0, "Information").then(function (answer) {
+				$("#IsForcedHidden").val(false);
+			});
+		}
+
+	}
+
+
+	function selectBaseTableFilter() {
+
+		var tableID = $("#BaseTableID option:selected").val();
+		var currentID = $("#txtBaseFilterID").val();
+		var tableName = $("#BaseTableID option:selected").text();
+
+		OpenHR.modalExpressionSelect("FILTER", tableID, currentID, function (id, name, access) {
+
+			if (access == "HD" && $("#Owner").val().toLowerCase() != '@Session("Username").ToString.ToLower') {
+				$("#txtBaseFilterID").val(0);
+				$("#txtBaseFilter").val('None');
+				OpenHR.modalMessage("The " + tableName + " table filter will be removed from this definition as it is hidden and you do not have permission to make this definition hidden.");
+			}
+			else {
+				$("#txtBaseFilterID").val(id);
+				$("#txtBaseFilter").val(name);
+				setViewAccess('FILTER', $("#BaseViewAccess"), access, tableName);
+				enableSaveButton();
+			}
+		}, 400, 400)
+	}
+
+	function selectBaseTablePicklist() {
+
+		var tableID = $("#BaseTableID option:selected").val();
+		var currentID = $("#txtBasePicklistID").val();
+		var tableName = $("#BaseTableID option:selected").text();
+
+		OpenHR.modalExpressionSelect("PICKLIST", tableID, currentID, function (id, name, access) {
+			if (access == "HD" && $("#Owner").val().toLowerCase() != '@Session("Username").ToString.ToLower') {
+				$("#txtBasePicklistID").val(0);
+				$("#txtBasePicklist").val('None');
+				OpenHR.modalMessage("The " + tableName + " table picklist will be removed from this definition as it is hidden and you do not have permission to make this definition hidden.");
+			}
+			else {
+				$("#txtBasePicklistID").val(id);
+				$("#txtBasePicklist").val(name);
+				setViewAccess('PICKLIST', $("#BaseViewAccess"), access, tableName);
+				enableSaveButton();
+			}
+
+		}, 400, 400);
+
+	}
+
+	function resetParentDetails() {
+
+		$("#RelatedTableParent1").attr("disabled", "disabled");
+		disableParent1RadioButtons();
+		$("#Parent1_SelectionTypeAll").prop('checked', 'checked');
+		changeRecordOption('Parent1', 'ALL');
+
+		$("#RelatedTableParent2").attr("disabled", "disabled");
+		disableParent2RadioButtons();
+		$("#Parent2_SelectionTypeAll").prop('checked', 'checked');
+		changeRecordOption('Parent2', 'ALL');
+
+	}
+
+
+	function loadAvailableTablesForCalendarReport(baseTableChanged) {
+
+		$.ajax({
+			url: 'Reports/GetAvailableColumnsForTable',
+			data: { TableID:$('#BaseTableID').val() },
+			type: 'GET',
+			dataType: 'json',
+			cache: false,
+			success: function (json) {
+				// Clear some values when the base table changed
+				if (baseTableChanged) {
+					$("#txtDescription3").val('');
+					$('#Separator').val('None');
+					$('#Separator').prop('disabled', true);
+					$('#chkGroupByDescription').prop('disabled', false);
+					$("#label_GroupByDescription").css("color", "#000000");
+					$('#IncludeBankHolidays').prop('checked', false);
+					$('#WorkingDaysOnly').prop('checked', false);
+					$('#ShowBankHolidays').prop('checked', false);
+					//If  the Base Table value is anything other than Primary table value then 'Include Bank Holidays', 'Working Days Only' and 'Show Bank Holidays' should disable
+					var bIsPersonnelRecords = ($("#BaseTableID option:selected").val() == '@SettingsConfig.Personnel_EmpTableID');
+					if ($('#chkGroupByDescription').prop('checked') && bIsPersonnelRecords) {
+						disableEnableWorkingDaysOrHolidays(bIsPersonnelRecords);
 					}
-
-					if (($("#txtReportType").val() == '@UtilityType.utlCalendarReport') && ($("#ActionType").val() == '@UtilityActionType.New')) {
-						//If  the Base Table value is anything other than Primary table value then 'Include Bank Holidays', 'Working Days Only' and 'Show Bank Holidays' should disable
-						var bIsPersonnelRecords = ($("#BaseTableID option:selected").val() == '@SettingsConfig.Personnel_EmpTableID');
+					else
+					{
 						disableEnableWorkingDaysOrHolidays(!bIsPersonnelRecords);
 					}
 				}
-			});
-		}
+				var OptionNone = '<option value=0 data-datatype=0 data-decimals=0 selected>None</option>';
+				var optionDescription1 = "<option value='0'>None</option>";
+				var optionDescription2 = "<option value='0'>None</option>";
+				var optionDescription3 = "<option value='0'>None</option>";
 
-		function setAllSecurityGroups() {
-
-			var setTo = $("#drpSetAllSecurityGroups").val();
-			if (setTo.length > 0) $(".reportViewAccessGroup").val(setTo);
-
-		}
-
-		function changeRecordOption(psTable, psType) {
-			if (psType == "ALL") {
-				button_disable($("#cmd" + psTable + "Picklist")[0], true);
-				button_disable($("#cmd" + psTable + "Filter")[0], true);
-				$("#txt" + psTable + "Filter").val("");
-				$("#txt" + psTable + "Picklist").val("");
-				$("#txt" + psTable + "PicklistID").val(0);
-				$("#txt" + psTable + "FilterID").val(0);
-				$('#DisplayTitleInReportHeader').prop('disabled', true);
-				$("#DisplayTitleInReportHeader").prop('checked', false);
-				$("#label_DisplayTitleInReportHeader").css("color", "#A59393");
-			}
-			else {
-				$('#DisplayTitleInReportHeader').prop('disabled', false);
-				$("#label_DisplayTitleInReportHeader").css("color", "#000000");
-			}
-
-			if (psType == "PICKLIST") {
-				button_disable($("#cmd" + psTable + "Picklist")[0], false)
-				button_disable($("#cmd" + psTable + "Filter")[0], true)
-				$("#txt" + psTable + "Filter").val("");
-				$("#txt" + psTable + "FilterID").val(0);
-
-				if ($("#txt" + psTable + "PicklistID").val() == 0) {
-					$("#txt" + psTable + "Picklist").val("None");
+				// Region table should display 'Default' for base table
+				var tableID = $("#BaseTableID option:selected").val();
+				var optionRegionID;
+				if (tableID == '@SettingsConfig.Personnel_EmpTableID') {
+					optionRegionID = "<option value='0'>Default</option>";
+				}
+				else{
+					optionRegionID = "<option value='0'>None</option>";
 				}
 
+				var options = '';
+				for (var i = 0; i < json.length; i++) {
+					optionDescription1 += "<option value='" + json[i].ID + "'>" + json[i].Name + "</option>";
+					optionDescription2 += "<option value='" + json[i].ID + "'>" + json[i].Name + "</option>";
+					optionDescription3 += "<option value='" + json[i].ID + "'>" + json[i].Name + "</option>";
+					if (json[i].DataType == 12)
+					{
+						optionRegionID += "<option value='" + json[i].ID + "'>" + json[i].Name + "</option>";
+					}
+				}
+				$("select#Description1ID").html(optionDescription1);
+				$("select#Description2ID").html(optionDescription2);
+				$("select#Description3ID").html(optionDescription3);
+				$("select#RegionID").html(optionRegionID);
 			}
+		});
+	}
 
-			if (psType == "FILTER") {
-				button_disable($("#cmd" + psTable + "Picklist")[0], true)
-				button_disable($("#cmd" + psTable + "Filter")[0], false)
-				$("#txt" + psTable + "Picklist").val("");
-				$("#txt" + psTable + "PicklistID").val(0);
+	function loadAvailableTablesForReport(baseTableChanged) {
 
-				if ($("#txt" + psTable + "FilterID").val() == 0) {
-					$("#txt" + psTable + "Filter").val("None");
+		$.ajax({
+			url: '@Html.Raw(Url.Action("GetAllTablesInReport", "Reports", New With {.ReportID = Model.ID, .ReportType = CInt(Model.ReportType)}))',
+			type: 'GET',
+			dataType: 'json',
+			cache: false,
+			success: function (json) {
+
+				$('#SelectedTableID').empty()
+
+				// Clear the Parent1 and Parent2 table names only if the base table changed
+				if (baseTableChanged) {
+					$("#txtParent1ID").val(0);
+					$("#txtParent2ID").val(0);
+					$("#Parent1_Name").val("");
+					$("#Parent2_Name").val("");
 				}
 
-			}
+				$.each(json, function (i, table) {
+					var optionHtml = '<option value=' + table.id + '>' + table.Name + '</option>'
+					$('#SelectedTableID').append(optionHtml);
 
-			setViewAccess(psType, $("#" + psTable + "ViewAccess"), 'RW', '');
+					if (table.Relation == 1 && baseTableChanged) {
+						$("#RelatedTableParent1").removeAttr("disabled");
+						enableParent1RadioButtons();
+						$("#txtParent1ID").val(table.id);
+						$("#Parent1_Name").val(table.Name);
+					}
 
-		}
+					if (table.Relation == 2 && baseTableChanged) {
+						$("#RelatedTableParent2").removeAttr("disabled");
+						enableParent2RadioButtons();
+						$("#txtParent2ID").val(table.id);
+						$("#Parent2_Name").val(table.Name);
+					}
 
-		function refreshViewAccess() {
-
-			var bViewAccessEnabled = true;
-			var list;
-
-			$(".reportViewAccessGroup").prop('disabled', false);
-			$("#drpSetAllSecurityGroups").prop('disabled', false);
-			$(".reportViewAccessGroup").removeClass('ui-state-disabled');
-
-			$(".ViewAccess").each(function (index) {
-				if ((this).innerText == "HD" || (this).value == "HD") {
-					bViewAccessEnabled = false;
-				}
-			});
-
-			if (!bViewAccessEnabled) {
-				$("#IsForcedHidden").val(true);
-				$(".reportViewAccessGroup").prop('disabled', true);
-				$("#drpSetAllSecurityGroups").prop('disabled', true);
-				$(".reportViewAccessGroup").addClass('ui-state-disabled');
-			}
-		}
-
-		function setViewAccess(type, accessControl, newAccess, tableName) {
-
-			var bResetGroupsToHidden = false;
-			var iObjectsHidden = 0;
-			var displayType;
-
-			if (accessControl.val() != newAccess && newAccess == "HD") {
-				iObjectsHidden = 1;
-				bResetGroupsToHidden = true;
-			}
-
-			switch (type) {
-				case "FILTER":
-					displayType = "filter";
-					break;
-
-				case "PICKLIST":
-					displayType = "picklist";
-					break;
-
-				default:
-					displayType = "calculation";
-
-			}
-
-			accessControl.val(newAccess);
-
-			if (bResetGroupsToHidden && $("#IsForcedHidden").val() != "true") {
-				OpenHR.modalPrompt("This definition will now be made hidden as the " + tableName + " table " + displayType + " is hidden.", 0, "Information").then(function (answer) {
-					$(".reportViewAccessGroup").val("HD");
-					$("#IsForcedHidden").val(true);
 				});
+
+				$("#SelectedTableID").val($("#BaseTableID").val());
+				getAvailableTableColumnsCalcs();
+
 			}
-			else {
-				checkIfDefinitionNeedsToBeHidden(iObjectsHidden);
-			}
+		});
+	}
 
-			refreshViewAccess();
+	function requestChangeReportBaseTable(target) {
 
-		}
+		var tableCount = $("#ChildTables").getGridParam("reccount");
+		var columnCount = $("#SelectedColumns").getGridParam("reccount");
+		var eventCount = $("#CalendarEvents").getGridParam("reccount");
+		var sortOrderCount = $("#SortOrders").getGridParam("reccount");
 
-		function checkIfDefinitionNeedsToBeHidden(iObjectsAlreadyHidden) {
-
-			$(".ViewAccess").each(function (index) {
-				if ((this).innerText == "HD" || (this).value == "HD") {
-					iObjectsAlreadyHidden += 1;
-				}
-			});
-
-			if (iObjectsAlreadyHidden == 0 && $("#IsForcedHidden").val() == "true") {
-				OpenHR.modalPrompt("This definition no longer has to be hidden.", 0, "Information").then(function (answer) {
-					$("#IsForcedHidden").val(false);
-				});
-			}
-
-		}
-
-
-		function selectBaseTableFilter() {
-
-			var tableID = $("#BaseTableID option:selected").val();
-			var currentID = $("#txtBaseFilterID").val();
-			var tableName = $("#BaseTableID option:selected").text();
-
-			OpenHR.modalExpressionSelect("FILTER", tableID, currentID, function (id, name, access) {
-
-				if (access == "HD" && $("#Owner").val().toLowerCase() != '@Session("Username").ToString.ToLower') {
-					$("#txtBaseFilterID").val(0);
-					$("#txtBaseFilter").val('None');
-					OpenHR.modalMessage("The " + tableName + " table filter will be removed from this definition as it is hidden and you do not have permission to make this definition hidden.");
+		if (tableCount > 0 || columnCount > 0 || eventCount > 0 || sortOrderCount > 0) {
+			OpenHR.modalPrompt("Changing the base table will result in all table/column specific aspects of this definition being cleared. <br/><br/>Are you sure you wish to continue ?", 4, "").then(function (answer) {
+				if (answer == 6) { // Yes
+					changeReportBaseTable();
 				}
 				else {
-					$("#txtBaseFilterID").val(id);
-					$("#txtBaseFilter").val(name);
-					setViewAccess('FILTER', $("#BaseViewAccess"), access, tableName);
-					enableSaveButton();
+					$('#BaseTableID')[0].selectedIndex = $("#OriginalBaseTableID").val();
 				}
-			}, 400, 400)
+			});
 		}
-
-		function selectBaseTablePicklist() {
-
-			var tableID = $("#BaseTableID option:selected").val();
-			var currentID = $("#txtBasePicklistID").val();
-			var tableName = $("#BaseTableID option:selected").text();
-
-			OpenHR.modalExpressionSelect("PICKLIST", tableID, currentID, function (id, name, access) {
-				if (access == "HD" && $("#Owner").val().toLowerCase() != '@Session("Username").ToString.ToLower') {
-					$("#txtBasePicklistID").val(0);
-					$("#txtBasePicklist").val('None');
-					OpenHR.modalMessage("The " + tableName + " table picklist will be removed from this definition as it is hidden and you do not have permission to make this definition hidden.");
+		else if ($("#txtReportType").val() == '@UtilityType.utlCrossTab' &&  $("#ActionType").val() == '@UtilityActionType.Edit' )
+		{			
+			OpenHR.modalPrompt("Changing the Base Table will reset all of the selected columns.<br/><br/>Are you sure you wish to continue ?", 4, "").then(function (answer) {
+				if (answer == 6) { // Yes
+					changeReportBaseTable();
 				}
 				else {
-					$("#txtBasePicklistID").val(id);
-					$("#txtBasePicklist").val(name);
-					setViewAccess('PICKLIST', $("#BaseViewAccess"), access, tableName);
-					enableSaveButton();
-				}
-
-			}, 400, 400);
-
-		}
-
-		function resetParentDetails() {
-
-			$("#RelatedTableParent1").attr("disabled", "disabled");
-			disableParent1RadioButtons();
-			$("#Parent1_SelectionTypeAll").prop('checked', 'checked');
-			changeRecordOption('Parent1', 'ALL');
-
-			$("#RelatedTableParent2").attr("disabled", "disabled");
-			disableParent2RadioButtons();
-			$("#Parent2_SelectionTypeAll").prop('checked', 'checked');
-			changeRecordOption('Parent2', 'ALL');
-
-		}
-
-
-		function loadAvailableTablesForCalendarReport(baseTableChanged) {			
-
-			$.ajax({
-				url: 'Reports/GetAvailableColumnsForTable',
-				data: { TableID:$('#BaseTableID').val() },
-				type: 'GET',
-				dataType: 'json',
-				cache: false,
-				success: function (json) {
-					// Clear some values when the base table changed
-					if (baseTableChanged) {
-						$("#txtDescription3").val('');
-						$('#Separator').val('None');
-						$('#Separator').prop('disabled', true);
-						$('#chkGroupByDescription').prop('disabled', false);
-						$("#label_GroupByDescription").css("color", "#000000");
-						$('#IncludeBankHolidays').prop('checked', false);
-						$('#WorkingDaysOnly').prop('checked', false);
-						$('#ShowBankHolidays').prop('checked', false);						
-						//If  the Base Table value is anything other than Primary table value then 'Include Bank Holidays', 'Working Days Only' and 'Show Bank Holidays' should disable
-						var bIsPersonnelRecords = ($("#BaseTableID option:selected").val() == '@SettingsConfig.Personnel_EmpTableID');
-						if ($('#chkGroupByDescription').prop('checked') && bIsPersonnelRecords) {
-							disableEnableWorkingDaysOrHolidays(bIsPersonnelRecords);
-						}
-						else
-						{
-							disableEnableWorkingDaysOrHolidays(!bIsPersonnelRecords);
-						}
-					}
-					var OptionNone = '<option value=0 data-datatype=0 data-decimals=0 selected>None</option>';
-					var optionDescription1 = "<option value='0'>None</option>";
-					var optionDescription2 = "<option value='0'>None</option>";
-					var optionDescription3 = "<option value='0'>None</option>";
-
-					// Region table should display 'Default' for base table
-					var tableID = $("#BaseTableID option:selected").val();
-					var optionRegionID;
-					if (tableID == '@SettingsConfig.Personnel_EmpTableID') {
-						optionRegionID = "<option value='0'>Default</option>";
-					}
-					else{
-						optionRegionID = "<option value='0'>None</option>";
-					}
-
-					var options = '';
-					for (var i = 0; i < json.length; i++) {
-						optionDescription1 += "<option value='" + json[i].ID + "'>" + json[i].Name + "</option>";
-						optionDescription2 += "<option value='" + json[i].ID + "'>" + json[i].Name + "</option>";
-						optionDescription3 += "<option value='" + json[i].ID + "'>" + json[i].Name + "</option>";
-						if (json[i].DataType == 12)
-						{
-							optionRegionID += "<option value='" + json[i].ID + "'>" + json[i].Name + "</option>";
-						}
-					}
-					$("select#Description1ID").html(optionDescription1);
-					$("select#Description2ID").html(optionDescription2);
-					$("select#Description3ID").html(optionDescription3);
-					$("select#RegionID").html(optionRegionID);
+					$('#BaseTableID')[0].selectedIndex = $("#OriginalBaseTableID").val();
 				}
 			});
 		}
+		else {
+			changeReportBaseTable();
+		}
+	}
 
-		function loadAvailableTablesForReport(baseTableChanged) {
+	function changeReportBaseTable() {
+		// Post base table change to server
+		var dataSend = {
+			ReportID: '@Model.ID',
+			ReportType: '@Model.ReportType',
+			BaseTableID: $("#BaseTableID option:selected").val()
+		};
 
-			$.ajax({
-				url: '@Html.Raw(Url.Action("GetAllTablesInReport", "Reports", New With {.ReportID = Model.ID, .ReportType = CInt(Model.ReportType)}))',
-				type: 'GET',
-				dataType: 'json',
-				cache: false,
-				success: function (json) {
+		OpenHR.postData("Reports/ChangeBaseTable", dataSend, changeReportBaseTableCompleted);
+		$("#OriginalBaseTableID").val($('#BaseTableID')[0].selectedIndex);
 
-					$('#SelectedTableID').empty()
+	}
 
-					// Clear the Parent1 and Parent2 table names only if the base table changed
-					if (baseTableChanged) {
-						$("#txtParent1ID").val(0);
-						$("#txtParent2ID").val(0);
-						$("#Parent1_Name").val("");
-						$("#Parent2_Name").val("");
-					}
+	function changeReportBaseTableCompleted(json) {
 
-					$.each(json, function (i, table) {
-						var optionHtml = '<option value=' + table.id + '>' + table.Name + '</option>'
-						$('#SelectedTableID').append(optionHtml);
+		$("#selectiontype_All").prop('checked', 'checked');
+		$("#ChildTablesAvailable").val(parseInt(json.childTablesAvailable));
+		changeRecordOption('Base', 'ALL');
 
-						if (table.Relation == 1 && baseTableChanged) {
-							$("#RelatedTableParent1").removeAttr("disabled");
-							enableParent1RadioButtons();
-							$("#txtParent1ID").val(table.id);
-							$("#Parent1_Name").val(table.Name);
-						}
-
-						if (table.Relation == 2 && baseTableChanged) {
-							$("#RelatedTableParent2").removeAttr("disabled");
-							enableParent2RadioButtons();
-							$("#txtParent2ID").val(table.id);
-							$("#Parent2_Name").val(table.Name);
-						}
-
-					});
-
-					$("#SelectedTableID").val($("#BaseTableID").val());
-					getAvailableTableColumnsCalcs();
-
-				}
-			});
+		if ($("#txtReportType").val() != '@UtilityType.utlCrossTab' && $("#txtReportType").val() != '@UtilityType.utlNineBoxGrid') {
+			removeAllSortOrders();
 		}
 
-		function requestChangeReportBaseTable(target) {
+		if ($("#txtReportType").val() == '@UtilityType.utlCustomReport') {
+			removeAllChildTables(true);
+			resetParentDetails();
+		}
 
-			var tableCount = $("#ChildTables").getGridParam("reccount");
-			var columnCount = $("#SelectedColumns").getGridParam("reccount");
-			var eventCount = $("#CalendarEvents").getGridParam("reccount");
-			var sortOrderCount = $("#SortOrders").getGridParam("reccount");
+		if ($("#txtReportType").val() == '@UtilityType.utlCustomReport' || $("#txtReportType").val() == '@UtilityType.utlMailMerge') {
+			removeAllSelectedColumns(false);
+			setDefinitionAccessBasedOnSelectedCalculationColumns();
+			if ($("#txtReportType").val() == '@UtilityType.utlMailMerge') {
+				loadAvailableTablesForReport(true);
+			}
+		}
 
-			if (tableCount > 0 || columnCount > 0 || eventCount > 0 || sortOrderCount > 0) {
-				OpenHR.modalPrompt("Changing the base table will result in all table/column specific aspects of this definition being cleared. <br/><br/>Are you sure you wish to continue ?", 4, "").then(function (answer) {
-					if (answer == 6) { // Yes
-						changeReportBaseTable();
+		if ($("#txtReportType").val() == '@UtilityType.utlCalendarReport') {
+			button_disable($("#btnSortOrderAdd")[0], false);
+			$("#SortOrdersAvailable").val(parseInt(json.sortOrdersAvailable));
+			$('#CalendarEvents').jqGrid('clearGridData');
+			loadAvailableTablesForCalendarReport(true);
+		}
+
+		if ($("#txtReportType").val() == '@UtilityType.utlCrossTab' || $("#txtReportType").val() == '@UtilityType.utlNineBoxGrid') {
+			refreshCrossTabColumnsAvailable();
+		}
+
+		// Enables save button
+		enableSaveButton();
+	}
+
+	//This function will be used to select the first row of provided grid control
+	function selectGridTopRow(gridControl)
+	{
+		// Highlight top row of selected columns grid
+		ids = gridControl.jqGrid("getDataIDs");
+		if (ids && ids.length > 0)
+			gridControl.jqGrid("setSelection", ids[0]);
+	}
+
+	function removeAllChildTablesCompleted(baseTableChanged) {
+
+		var childTables = $("#ChildTables").getDataIDs();
+		var sortColumnList = $("#SortOrders").getDataIDs();
+		var columnList = $("#SelectedColumns").getDataIDs();
+
+		for (i = 0; i < childTables.length; i++) {
+			thisTable = $("#ChildTables").getRowData(childTables[i]);
+
+			for (j = 0; j < columnList.length; j++) {
+				rowData = $("#SelectedColumns").getRowData(columnList[j]);
+
+				// Remove all columns from selected columns grid whose table id is same as deleting table id
+				if (rowData.TableID == thisTable.TableID) {
+
+					// Remove the matched sort columns where column id same
+					for (k = 0; k < sortColumnList.length; k++) {
+						var sortColumnRowId = sortColumnList[k];
+						var dataRowOfSortColumn = $("#SortOrders").getRowData(sortColumnRowId);
+						if (dataRowOfSortColumn.ColumnID == rowData.ID) {
+							$("#SortOrders").delRowData(sortColumnRowId);
+							break;
+						}
 					}
-					else {
-						$('#BaseTableID')[0].selectedIndex = $("#OriginalBaseTableID").val();
+
+					$('#SelectedColumns').delRowData(columnList[j]);
+				}
+			}
+		}
+
+		$('#ChildTables').jqGrid('clearGridData');
+
+		loadAvailableTablesForReport(baseTableChanged);
+
+		// Reset row selection
+		$("#SelectedColumns").jqGrid('resetSelection');
+		$("#SortOrders").jqGrid('resetSelection');
+
+		// Set top row highlighted
+		selectGridTopRow($('#SelectedColumns'));
+		selectGridTopRow($('#SortOrders'));
+
+		// Disable sort grid buttons if no records found
+		if (($("#SortOrders").getGridParam("reccount") == 0) || ($("#SelectedColumns").getGridParam("reccount") == 0)) {
+			refreshSortButtons();
+		}
+
+		checkIfDefinitionNeedsToBeHidden(0);
+		enableSaveButton();
+	}
+
+	function removeAllChildTables(baseTableChanged) {
+
+		var data = { ReportID: "@Model.ID", ReportType: "@Model.ReportType" }
+		OpenHR.postData("Reports/RemoveAllChildTables", data, function () { removeAllChildTablesCompleted(baseTableChanged) });
+		enableSaveButton();
+	}
+
+	function enableSaveButton() {
+
+		if (!isDefinitionReadOnly()) {
+			$("#ctl_DefinitionChanged").val("true");
+			menu_toolbarEnableItem('mnutoolSaveReport', true);
+		}
+	}
+
+	function saveReportDefinition(prompt) {
+
+		var bHasChanged = $("#ctl_DefinitionChanged").val();
+
+		if (prompt == true) {
+			if (bHasChanged == "true") {
+
+				OpenHR.modalPrompt("You have made changes. Click 'OK' to discard your changes, or 'Cancel' to continue editing.", 1, "Confirm").then(function (answer) {
+					if (answer == 1) {
+						validateReportDefinition();
 					}
 				});
 			}
 			else {
-				changeReportBaseTable();
+				return 6;
 			}
+
+		} else {
+			validateReportDefinition()
 		}
 
-		function changeReportBaseTable() {
-			// Post base table change to server
-			var dataSend = {
-				ReportID: '@Model.ID',
-				ReportType: '@Model.ReportType',
-				BaseTableID: $("#BaseTableID option:selected").val()
-			};
+		return 0;
+	}
 
-			OpenHR.postData("Reports/ChangeBaseTable", dataSend, changeReportBaseTableCompleted);
-			$("#OriginalBaseTableID").val($('#BaseTableID')[0].selectedIndex);
-
-		}
-
-		function changeReportBaseTableCompleted(json) {
-
-			$("#selectiontype_All").prop('checked', 'checked');
-			$("#ChildTablesAvailable").val(parseInt(json.childTablesAvailable));
-			changeRecordOption('Base', 'ALL');
-
-			if ($("#txtReportType").val() != '@UtilityType.utlCrossTab' && $("#txtReportType").val() != '@UtilityType.utlNineBoxGrid') {
-				removeAllSortOrders();
-			}
-
-			if ($("#txtReportType").val() == '@UtilityType.utlCustomReport') {
-				removeAllChildTables(true);
-				resetParentDetails();
-			}
-
-			if ($("#txtReportType").val() == '@UtilityType.utlCustomReport' || $("#txtReportType").val() == '@UtilityType.utlMailMerge') {
-				removeAllSelectedColumns(false);
-				setDefinitionAccessBasedOnSelectedCalculationColumns();
-				if ($("#txtReportType").val() == '@UtilityType.utlMailMerge') {
-					loadAvailableTablesForReport(true);
+	function replaceChildTableTempText(grid, replacementText) {
+		if ($("#ChildTables").getGridParam('reccount') != 0) {
+			for (i = 0, l = grid.length; i < l; i += 1) {
+				if (grid[i].Records === replacementText) {
+					grid[i].Records = 0;
 				}
 			}
-
-			if ($("#txtReportType").val() == '@UtilityType.utlCalendarReport') {
-				button_disable($("#btnSortOrderAdd")[0], false);
-				$("#SortOrdersAvailable").val(parseInt(json.sortOrdersAvailable));
-				$('#CalendarEvents').jqGrid('clearGridData');
-				loadAvailableTablesForCalendarReport(true);
-			}
-
-			if ($("#txtReportType").val() == '@UtilityType.utlCrossTab' || $("#txtReportType").val() == '@UtilityType.utlNineBoxGrid') {
-				refreshCrossTabColumnsAvailable();
-			}
-
-			// Enables save button
-			enableSaveButton();
 		}
+	}
 
-		//This function will be used to select the first row of provided grid control
-		function selectGridTopRow(gridControl)
-		{
-			// Highlight top row of selected columns grid
-			ids = gridControl.jqGrid("getDataIDs");
-			if (ids && ids.length > 0)
-				gridControl.jqGrid("setSelection", ids[0]);
+	function validateReportDefinition() {
+
+		var gridData;
+		// Columns selected
+		gridData = $("#SelectedColumns").getRowData();
+		$('#txtCSAAS').val(JSON.stringify(gridData));
+
+		// Related Tables
+		gridData = $("#ChildTables").getRowData();
+		if ($("#txtReportType").val() == '@UtilityType.utlCustomReport') {
+			replaceChildTableTempText($(gridData), 'All Records');
 		}
+		$('#txtCTAAS').val(JSON.stringify(gridData));
 
-		function removeAllChildTablesCompleted(baseTableChanged) {
+		// Calendar Events
+		gridData = $("#CalendarEvents").getRowData();
+		$('#txtCEAAS').val(JSON.stringify(gridData));
 
-			var childTables = $("#ChildTables").getDataIDs();
-			var sortColumnList = $("#SortOrders").getDataIDs();
-			var columnList = $("#SelectedColumns").getDataIDs();
+		// Sort Order columns
+		gridData = $("#SortOrders").getRowData();
+		$('#txtSOAAS').val(JSON.stringify(gridData));
 
-			for (i = 0; i < childTables.length; i++) {
-				thisTable = $("#ChildTables").getRowData(childTables[i]);
+		var $form = $("#frmReportDefintion");
+		$(".reportViewAccessGroup").prop('disabled', false);
+		$("#drpSetAllSecurityGroups").prop('disabled', false);
+		$(".reportViewAccessGroup").removeClass('ui-state-disabled');
 
-				for (j = 0; j < columnList.length; j++) {
-					rowData = $("#SelectedColumns").getRowData(columnList[j]);
+		$.ajax({
+			url: $form.attr("action"),
+			type: $form.attr("method"),
+			data: $form.serialize(),
+			async: true,
+			success: function (json) {
 
-					// Remove all columns from selected columns grid whose table id is same as deleting table id
-					if (rowData.TableID == thisTable.TableID) {
+				switch (json.ErrorCode) {
+					case 0:
+						submitReportDefinition();
+						break;
 
-						// Remove the matched sort columns where column id same
-						for (k = 0; k < sortColumnList.length; k++) {
-							var sortColumnRowId = sortColumnList[k];
-							var dataRowOfSortColumn = $("#SortOrders").getRowData(sortColumnRowId);
-							if (dataRowOfSortColumn.ColumnID == rowData.ID) {
-								$("#SortOrders").delRowData(sortColumnRowId);
-								break;
+					case 1:
+						OpenHR.modalPrompt(json.ErrorMessage, 0, "OpenHR");
+						break;
+
+					case -1:
+						OpenHR.modalPrompt(json.ErrorMessage, 0, "OpenHR");
+						break;
+
+					default:
+						OpenHR.modalPrompt(json.ErrorMessage, 4, "Confirm").then(function (answer) {
+							if (answer == 6) {
+								submitReportDefinition();
 							}
-						}
+						});
+						break;
 
-						$('#SelectedColumns').delRowData(columnList[j]);
-					}
 				}
+				refreshViewAccess();
 			}
+		});
+	}
 
-			$('#ChildTables').jqGrid('clearGridData');
+	function submitReportDefinition() {
+		$("#ValidityStatus").val('ServerCheckComplete');
+		$(".reportViewAccessGroup").prop('disabled', false);
+		$("#drpSetAllSecurityGroups").prop('disabled', false);
+		$(".reportViewAccessGroup").removeClass('ui-state-disabled');
+		var frmSubmit = $("#frmReportDefintion")[0];
+		OpenHR.submitForm(frmSubmit);
+	}
 
-			loadAvailableTablesForReport(baseTableChanged);
+	function cancelReportDefinition() {
 
-			// Reset row selection
-			$("#SelectedColumns").jqGrid('resetSelection');
-			$("#SortOrders").jqGrid('resetSelection');
+		var bHasChanged = $("#ctl_DefinitionChanged").val();
 
-			// Set top row highlighted
-			selectGridTopRow($('#SelectedColumns'));
-			selectGridTopRow($('#SortOrders'));
-
-			// Disable sort grid buttons if no records found
-			if (($("#SortOrders").getGridParam("reccount") == 0) || ($("#SelectedColumns").getGridParam("reccount") == 0)) {
-				refreshSortButtons();
-			}
-
-			checkIfDefinitionNeedsToBeHidden(0);
-			enableSaveButton();
-		}
-
-		function removeAllChildTables(baseTableChanged) {
-
-			var data = { ReportID: "@Model.ID", ReportType: "@Model.ReportType" }
-			OpenHR.postData("Reports/RemoveAllChildTables", data, function () { removeAllChildTablesCompleted(baseTableChanged) });
-			enableSaveButton();
-		}
-
-		function enableSaveButton() {
-
-			if (!isDefinitionReadOnly()) {
-				$("#ctl_DefinitionChanged").val("true");
-				menu_toolbarEnableItem('mnutoolSaveReport', true);
-			}
-		}
-
-		function saveReportDefinition(prompt) {
-
-			var bHasChanged = $("#ctl_DefinitionChanged").val();
-
-			if (prompt == true) {
-				if (bHasChanged == "true") {
-
-					OpenHR.modalPrompt("You have made changes. Click 'OK' to discard your changes, or 'Cancel' to continue editing.", 1, "Confirm").then(function (answer) {
-						if (answer == 1) {
-							validateReportDefinition();
-						}
-					});
-				}
-				else {
+		if (bHasChanged == "true") {
+			OpenHR.modalPrompt("You have made changes. Click 'OK' to discard your changes, or 'Cancel' to continue editing.", 1, "Confirm").then(function (answer) {
+				if (answer == 1) {  // OK
+					menu_loadDefSelPage('@CInt(Model.ReportType)', '@Model.ID', $("#BaseTableID option:selected").val(), true);
 					return 6;
 				}
+			})
+		}
+		else {
 
-			} else {
-				validateReportDefinition()
-			}
-
-			return 0;
+			menu_loadDefSelPage('@CInt(Model.ReportType)', '@Session("utilid")', $("#BaseTableID option:selected").val(), true);
 		}
 
-		function replaceChildTableTempText(grid, replacementText) {
-			if ($("#ChildTables").getGridParam('reccount') != 0) {
-				for (i = 0, l = grid.length; i < l; i += 1) {
-					if (grid[i].Records === replacementText) {
-						grid[i].Records = 0;
-					}
-				}
-			}
+		return false;
+	}
+
+	//If the Base Table is Personnel Records then 'Include Bank Holidays', 'Working Days Only' and 'Show Bank Holidays' should enable.
+	function disableEnableWorkingDaysOrHolidays(bDisabled) {
+		$('#IncludeBankHolidays').prop('disabled', bDisabled);
+		$('#WorkingDaysOnly').prop('disabled', bDisabled);
+		$('#ShowBankHolidays').prop('disabled', bDisabled);
+
+		if (bDisabled) {
+			$("#label_IncludeBankHolidays").css('opacity', '0.5');
+			$("#label_WorkingDaysOnly").css('opacity', '0.5');
+			$("#label_ShowBankHolidays").css('opacity', '0.5');
 		}
-
-		function validateReportDefinition() {
-
-			var gridData;
-			// Columns selected
-			gridData = $("#SelectedColumns").getRowData();
-			$('#txtCSAAS').val(JSON.stringify(gridData));
-
-			// Related Tables
-			gridData = $("#ChildTables").getRowData();
-			if ($("#txtReportType").val() == '@UtilityType.utlCustomReport') {
-				replaceChildTableTempText($(gridData), 'All Records');
-			}
-			$('#txtCTAAS').val(JSON.stringify(gridData));
-
-			// Calendar Events
-			gridData = $("#CalendarEvents").getRowData();
-			$('#txtCEAAS').val(JSON.stringify(gridData));
-
-			// Sort Order columns
-			gridData = $("#SortOrders").getRowData();
-			$('#txtSOAAS').val(JSON.stringify(gridData));
-
-			var $form = $("#frmReportDefintion");
-			$(".reportViewAccessGroup").prop('disabled', false);
-			$("#drpSetAllSecurityGroups").prop('disabled', false);
-			$(".reportViewAccessGroup").removeClass('ui-state-disabled');
-
-			$.ajax({
-				url: $form.attr("action"),
-				type: $form.attr("method"),
-				data: $form.serialize(),
-				async: true,
-				success: function (json) {
-
-					switch (json.ErrorCode) {
-						case 0:
-							submitReportDefinition();
-							break;
-
-						case 1:
-							OpenHR.modalPrompt(json.ErrorMessage, 0, "OpenHR");
-							break;
-
-						case -1:
-							OpenHR.modalPrompt(json.ErrorMessage, 0, "OpenHR");
-							break;
-
-						default:
-							OpenHR.modalPrompt(json.ErrorMessage, 4, "Confirm").then(function (answer) {
-								if (answer == 6) {
-									submitReportDefinition();
-								}
-							});
-							break;
-
-					}
-					refreshViewAccess();
-				}
-			});
+		else {
+			$("#label_IncludeBankHolidays").css('opacity', '1');
+			$("#label_WorkingDaysOnly").css('opacity', '1');
+			$("#label_ShowBankHolidays").css('opacity', '1');
 		}
-
-		function submitReportDefinition() {
-			$("#ValidityStatus").val('ServerCheckComplete');
-			$(".reportViewAccessGroup").prop('disabled', false);
-			$("#drpSetAllSecurityGroups").prop('disabled', false);
-			$(".reportViewAccessGroup").removeClass('ui-state-disabled');
-			var frmSubmit = $("#frmReportDefintion")[0];
-			OpenHR.submitForm(frmSubmit);
-		}
-
-		function cancelReportDefinition() {
-
-			var bHasChanged = $("#ctl_DefinitionChanged").val();
-
-			if (bHasChanged == "true") {
-				OpenHR.modalPrompt("You have made changes. Click 'OK' to discard your changes, or 'Cancel' to continue editing.", 1, "Confirm").then(function (answer) {
-					if (answer == 1) {  // OK
-						menu_loadDefSelPage('@CInt(Model.ReportType)', '@Model.ID', $("#BaseTableID option:selected").val(), true);
-						return 6;
-					}
-				})
-			}
-			else {
-
-				menu_loadDefSelPage('@CInt(Model.ReportType)', '@Session("utilid")', $("#BaseTableID option:selected").val(), true);
-			}
-
-			return false;
-		}
-
-		//If the Base Table is Personnel Records then 'Include Bank Holidays', 'Working Days Only' and 'Show Bank Holidays' should enable.
-		function disableEnableWorkingDaysOrHolidays(bDisabled) {
-			$('#IncludeBankHolidays').prop('disabled', bDisabled);
-			$('#WorkingDaysOnly').prop('disabled', bDisabled);
-			$('#ShowBankHolidays').prop('disabled', bDisabled);
-
-			if (bDisabled) {
-				$("#label_IncludeBankHolidays").css('opacity', '0.5');
-				$("#label_WorkingDaysOnly").css('opacity', '0.5');
-				$("#label_ShowBankHolidays").css('opacity', '0.5');
-			}
-			else {
-				$("#label_IncludeBankHolidays").css('opacity', '1');
-				$("#label_WorkingDaysOnly").css('opacity', '1');
-				$("#label_ShowBankHolidays").css('opacity', '1');
-			}
-		}
+	}
 
 
 
