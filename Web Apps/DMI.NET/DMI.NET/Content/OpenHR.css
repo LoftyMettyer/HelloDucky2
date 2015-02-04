@@ -1521,3 +1521,7 @@ overflow-x : hidden !important;
 .msClear::-ms-clear {
 	display: none;
 }
+
+.stretchyfixed600 {	
+	width: 600px;
+}

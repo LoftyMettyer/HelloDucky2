@@ -493,7 +493,7 @@
 				$frame.dialog('option', 'width', dialogWidth);
 
 				$frame.show();
-				$frame.dialog({ position: { 'my': 'top', 'at': 'center center', 'of': 'header' } });
+				$frame.dialog({ position: 'center' });
 				$frame.dialog("open");
 
 				//jQuery styling

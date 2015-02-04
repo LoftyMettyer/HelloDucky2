@@ -18,7 +18,7 @@ End Code
 		@Html.HiddenFor(Function(m) m.TableID, New With {.id = "SortOrderTableID"})
 		@Html.HiddenFor(Function(m) m.Sequence, New With {.id = "SortOrderSequence"})
 		@Html.HiddenFor(Function(m) m.IsNew)
-		@Html.LabelFor(Function(m) m.ColumnID)		
+		@Html.LabelFor(Function(m) m.ColumnID)
 		@Html.ColumnDropdown("ColumnID", "SortOrderColumnID", Model.ColumnID, Model.AvailableColumns, "updateCheckBoxes();")
 	</div>
 
@@ -80,6 +80,9 @@ End Code
 
 		updatePageAndBreakOnChangeCheckBox($("#BreakOnChange")[0]);
 		updatePageAndBreakOnChangeCheckBox($("#PageOnChange")[0]);
+
+		// Add width to column dropdown
+		$("#SortOrderColumnID").addClass('stretchyfixed600');
 	});
 
 	function updateCheckBoxes() {
