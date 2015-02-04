@@ -1067,6 +1067,10 @@ Namespace Repository
 					If objSessionInfo.Columns.LongCount(Function(m) m.TableID = objTable.ID AndAlso m.IsNumeric = True AndAlso m.IsVisible = True) > 1 Then
 						objItems.Add(objItem)
 					End If
+				ElseIf reportType = UtilityType.utlCalendarReport Then ' for calendar report fetch only those tables which have date columns
+					If objSessionInfo.Columns.LongCount(Function(m) m.TableID = objTable.ID AndAlso m.DataType = ColumnDataType.sqlDate) > 0 Then
+						objItems.Add(objItem)
+					End If
 				Else
 					objItems.Add(objItem)
 				End If
