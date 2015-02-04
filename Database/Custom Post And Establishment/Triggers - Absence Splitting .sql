@@ -115,7 +115,7 @@ INSERT ASRSysTableTriggers (TriggerID, TableID, Name, CodePosition, IsSystem, Co
 				, dbo.udfcustom_AbsenceDurationForAppointment(ae.Start_Date, ae.Start_Session, ae.End_Date, ae.End_Session, a.ID)
 				, a.Absence_In
 		FROM inserted ae
-		INNER JOIN Appointments a ON ae.ID_1 = a.ID_1 AND (a.post_ID = ae.post_ID OR ae.post_ID IS NULL)
+		INNER JOIN Appointments a ON ae.ID_1 = a.ID_1 AND (a.post_ID = ae.post_ID OR ae.post_ID IS NULL OR ae.post_ID = '''')
 		WHERE ae.Start_Date <= ISNULL(Appointment_End_Date, convert(datetime, ''9999-12-31''))
 			AND ae.End_Date >= ISNULL(Appointment_Start_Date, convert(datetime, ''1899-12-31''));
 
