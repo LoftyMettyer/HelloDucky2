@@ -123,7 +123,7 @@ INSERT ASRSysTableTriggers (TriggerID, TableID, Name, CodePosition, IsSystem, Co
 GO
 
 
-INSERT ASRSysTableTriggers (TriggerID, TableID, Name, CodePosition, IsSystem, Content) VALUES (3, 251, 'Breakdown absences into individual days', 0, 0, '   
+INSERT ASRSysTableTriggers (TriggerID, TableID, Name, CodePosition, IsSystem, Content) VALUES (3, 251, 'Breakdown absences into individual days', 1, 1, '   
 
 	DELETE [dbo].[tbuser_Absence_Breakdown] WHERE [id_251] IN (SELECT DISTINCT [id] FROM deleted);
 
@@ -229,7 +229,7 @@ INSERT ASRSysTableTriggers (TriggerID, TableID, Name, CodePosition, IsSystem, Co
 		
 
 
-INSERT ASRSysTableTriggers (TriggerID, TableID, Name, CodePosition, IsSystem, Content) VALUES (5, 3, 'Populate from Post Template', 1, 1, '    INSERT Appointment_Allowances(ID_3, Effective_Date, Type, Frequency, Amount, Currency)
+INSERT ASRSysTableTriggers (TriggerID, TableID, Name, CodePosition, IsSystem, Content) VALUES (5, 3, 'Populate from Post Template', 0, 1, '    INSERT Appointment_Allowances(ID_3, Effective_Date, Type, Frequency, Amount, Currency)
 		SELECT i.ID, i.Appointment_Start_Date, pa.Type, pa.Frequency, pa.Amount, pa.Currency
 			FROM inserted i
 			INNER JOIN Post_Allowances pa ON pa.ID_219 = i.ID_219;
@@ -273,7 +273,6 @@ INSERT ASRSysTableTriggers (TriggerID, TableID, Name, CodePosition, IsSystem, Co
 									, wp.Friday_Hours_AM, wp.Friday_Hours_PM, wp.Saturday_Hours_AM, wp.Saturday_Hours_PM
 			FROM inserted i
 			INNER JOIN Post_Working_Patterns wp ON wp.ID_219 = i.ID_219;');
-
 GO
 
 INSERT ASRSysTableTriggers (TriggerID, TableID, Name, CodePosition, IsSystem, Content) VALUES (6, 249, 'Slave to appointment working pattern', 1, 1, '    
@@ -367,7 +366,7 @@ INSERT ASRSysTableTriggers (TriggerID, TableID, Name, CodePosition, IsSystem, Co
 
 GO
 
-INSERT ASRSysTableTriggers (TriggerID, TableID, Name, CodePosition, IsSystem, Content) VALUES (7, 219, 'Transfer working pattern from appointment', 1, 1, '    INSERT Post_Holiday_Schemes (ID_219, Effective_Date, Holiday_Scheme)
+INSERT ASRSysTableTriggers (TriggerID, TableID, Name, CodePosition, IsSystem, Content) VALUES (7, 219, 'Transfer working pattern from appointment', 0, 1, '    INSERT Post_Holiday_Schemes (ID_219, Effective_Date, Holiday_Scheme)
 		SELECT i.ID, i.Effective_Date, chs.Holiday_Scheme
 			FROM inserted i
 			INNER JOIN Contract_Templates ct ON ct.Contract = i.Contract
