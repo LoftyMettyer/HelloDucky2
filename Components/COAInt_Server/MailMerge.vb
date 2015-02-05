@@ -538,7 +538,7 @@ Public Class MailMerge
 						Exit Function
 
 					Else
-						SQLAddCalculation(objColumn.ID, objColumn.TableName & objColumn.TableName.Replace(" ", "_"), objColumn.Size, objColumn.Decimals)
+						SQLAddCalculation(objColumn.ID, objColumn.MergeName, objColumn.Size, objColumn.Decimals)
 
 					End If
 
