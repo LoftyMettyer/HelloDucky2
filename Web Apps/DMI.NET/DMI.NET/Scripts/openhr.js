@@ -185,7 +185,12 @@
 				}
 			});
 
-			//$frame.html(html);
+			var dialogwidth = $("#ExpressionsAvailable").width();
+			frame.dialog({
+				width: dialogwidth + 50,					
+				modal: true
+			});
+
 			frame.show();
 			frame.dialog("open");
 
