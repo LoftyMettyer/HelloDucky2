@@ -156,6 +156,7 @@
 			url: 'Reports/GetAvailableColumnsForTable?TableID=' + $("#BaseTableID").val(),
 			datatype: 'json',
 			mtype: 'GET',
+			cache: false,
 			success: function (json) {
 
 				var OptionNone = '<option value=0 data-datatype=0 data-decimals=0 selected>None</option>';
