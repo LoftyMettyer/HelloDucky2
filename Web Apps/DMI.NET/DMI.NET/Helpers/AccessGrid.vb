@@ -27,8 +27,12 @@ Namespace Helpers
 
 			sb.AppendLine("<tr><th>User Group</th><th>Access</th></tr>")
 
-			' Add <apply to all groups> row.
-			BuildTableRow(sb, New GroupAccess() With {.Access = "", .IsReadOnly = False, .Name = "(All Groups)"}, "drpSetAllSecurityGroups", 0)
+			' Add <All Groups> row and  (All Groups) should not be enabled when editing another user's definition.
+			If (items(0).DefinitionOwner.ToLower() = items(0).LoggedInUser.ToLower()) Then
+				BuildTableRow(sb, New GroupAccess() With {.Access = "", .IsReadOnly = False, .Name = "(All Groups)"}, "drpSetAllSecurityGroups", 0)
+			Else
+				BuildTableRow(sb, New GroupAccess() With {.Access = "", .IsReadOnly = True, .Name = "(All Groups)"}, "drpSetAllSecurityGroups", 0)
+			End If
 
 			Dim iRow As Integer = 0
 			For Each item In items
@@ -71,8 +75,14 @@ Namespace Helpers
 			End Select
 
 			If obj.IsReadOnly Then
-				sb.AppendFormat("<td><select style='padding: 0!important;width:95%' class='floatright ui-state-disabled' name='{0}.Access'><option value='{1}'>{2}</option></select></td>" _
+
+				If name = "drpSetAllSecurityGroups" Then
+					'(All Groups) should be disable and empty value should be selected when editing another user's definition.
+					sb.AppendFormat("<td><select style='padding: 0!important;width:95%' class='floatright ui-state-disabled' name='drpSetAllSecurityGroups'><option selected value=''></option></select></td>")
+				Else
+					sb.AppendFormat("<td><select style='padding: 0!important;width:95%' class='floatright ui-state-disabled' name='{0}.Access'><option value='{1}'>{2}</option></select></td>" _
 												, sName, obj.Access.ToUpper, sNiceText)
+				End If
 			Else
 				If name = "drpSetAllSecurityGroups" Then
 					' cater for unselected option

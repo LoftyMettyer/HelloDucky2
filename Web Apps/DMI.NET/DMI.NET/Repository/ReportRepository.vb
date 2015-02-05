@@ -893,7 +893,10 @@ Namespace Repository
 					objAccess.Add(New GroupAccess() With {
 									.Access = objRow("access").ToString,
 									.Name = objRow("name").ToString,
-									.IsReadOnly = bIsOwnerGroup OrElse Not bIsReportOwner})
+									.IsReadOnly = bIsOwnerGroup OrElse Not bIsReportOwner,
+									.DefinitionOwner = objModel.Owner.ToString,
+									.LoggedInUser = _username.ToString
+									})
 				Next
 
 			Catch ex As Exception
