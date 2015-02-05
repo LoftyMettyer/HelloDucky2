@@ -452,41 +452,45 @@
 			scrollrows: true,
 			multiselect: true,
 			beforeSelectRow: function (rowid, e) {
-				var $this = $(this), rows = this.rows,
-						// get id of the previous selected row
-						startId = $this.jqGrid('getGridParam', 'selrow'),
-						startRow, endRow, iStart, iEnd, i, rowidIndex;
+				// If defination is readonly then skip this opertion and it will result in return false 
+				// which will stop calling onSelectRow
+				if (!isDefinitionReadOnly()) {
+					var $this = $(this), rows = this.rows,
+							// get id of the previous selected row
+							startId = $this.jqGrid('getGridParam', 'selrow'),
+							startRow, endRow, iStart, iEnd, i, rowidIndex;
 
-				if (!e.ctrlKey && !e.shiftKey) {
-					$this.jqGrid('resetSelection');
-				} else if (startId && e.shiftKey) {
-					$this.jqGrid('resetSelection');
+					if (!e.ctrlKey && !e.shiftKey) {
+						$this.jqGrid('resetSelection');
+					} else if (startId && e.shiftKey) {
+						$this.jqGrid('resetSelection');
 
-					// get DOM elements of the previous selected and the currect selected rows
-					startRow = rows.namedItem(startId);
-					endRow = rows.namedItem(rowid);
-					if (startRow && endRow) {
-						// get min and max from the indexes of the previous selected
-						// and the currect selected rows
-						iStart = Math.min(startRow.rowIndex, endRow.rowIndex);
-						rowidIndex = endRow.rowIndex;
-						iEnd = Math.max(startRow.rowIndex, rowidIndex);
-						for (i = iStart; i <= iEnd; i++) {
-							// the row with rowid will be selected by jqGrid, so:
-							if (i != rowidIndex) {
-								$this.jqGrid('setSelection', rows[i].id, false);
+						// get DOM elements of the previous selected and the currect selected rows
+						startRow = rows.namedItem(startId);
+						endRow = rows.namedItem(rowid);
+						if (startRow && endRow) {
+							// get min and max from the indexes of the previous selected
+							// and the currect selected rows
+							iStart = Math.min(startRow.rowIndex, endRow.rowIndex);
+							rowidIndex = endRow.rowIndex;
+							iEnd = Math.max(startRow.rowIndex, rowidIndex);
+							for (i = iStart; i <= iEnd; i++) {
+								// the row with rowid will be selected by jqGrid, so:
+								if (i != rowidIndex) {
+									$this.jqGrid('setSelection', rows[i].id, false);
+								}
 							}
 						}
-					}
 
-					// clear text selection
-					if (document.selection && document.selection.empty) {
-						document.selection.empty();
-					} else if (window.getSelection) {
-						window.getSelection().removeAllRanges();
+						// clear text selection
+						if (document.selection && document.selection.empty) {
+							document.selection.empty();
+						} else if (window.getSelection) {
+							window.getSelection().removeAllRanges();
+						}
 					}
+					return true;
 				}
-				return true;
 			},
 			ondblClickRow: function (rowid) {
 				doubleClickAvailableColumn();
@@ -495,6 +499,11 @@
 				var topID = $("#AvailableColumns").getDataIDs()[0]
 				$("#AvailableColumns").jqGrid("setSelection", topID);
 				refreshcolumnPropertiesPanel();
+
+				// Set the disabled effect to the grid when the defination is readonly
+				if (isDefinitionReadOnly()) {
+					$("#AvailableColumns").css('opacity', '0.5');
+				}
 			}
 		});
 
@@ -806,45 +815,49 @@
 			multiselect: true,
 			beforeSelectRow: function (rowid, e) {
 
-				if ($('#SelectedColumns').jqGrid('getGridParam', 'selarrrow').length == 1) {
-					updateColumnsSelectedGrid();
-				}
+				// If defination is readonly then skip this opertion and it will result in return false 
+				// which will stop calling onSelectRow
+				if (!isDefinitionReadOnly()) {
+					if ($('#SelectedColumns').jqGrid('getGridParam', 'selarrrow').length == 1) {
+						updateColumnsSelectedGrid();
+					}
 
-				var $this = $(this), rows = this.rows,
-						// get id of the previous selected row
-						startId = $this.jqGrid('getGridParam', 'selrow'),
-						startRow, endRow, iStart, iEnd, i, rowidIndex;
+					var $this = $(this), rows = this.rows,
+							// get id of the previous selected row
+							startId = $this.jqGrid('getGridParam', 'selrow'),
+							startRow, endRow, iStart, iEnd, i, rowidIndex;
 
-				if (!e.ctrlKey && !e.shiftKey) {
-					$this.jqGrid('resetSelection');
-				} else if (startId && e.shiftKey) {
-					$this.jqGrid('resetSelection');
+					if (!e.ctrlKey && !e.shiftKey) {
+						$this.jqGrid('resetSelection');
+					} else if (startId && e.shiftKey) {
+						$this.jqGrid('resetSelection');
 
-					// get DOM elements of the previous selected and the currect selected rows
-					startRow = rows.namedItem(startId);
-					endRow = rows.namedItem(rowid);
-					if (startRow && endRow) {
-						// get min and max from the indexes of the previous selected
-						// and the currect selected rows
-						iStart = Math.min(startRow.rowIndex, endRow.rowIndex);
-						rowidIndex = endRow.rowIndex;
-						iEnd = Math.max(startRow.rowIndex, rowidIndex);
-						for (i = iStart; i <= iEnd; i++) {
-							// the row with rowid will be selected by jqGrid, so:
-							if (i != rowidIndex) {
-								$this.jqGrid('setSelection', rows[i].id, false);
+						// get DOM elements of the previous selected and the currect selected rows
+						startRow = rows.namedItem(startId);
+						endRow = rows.namedItem(rowid);
+						if (startRow && endRow) {
+							// get min and max from the indexes of the previous selected
+							// and the currect selected rows
+							iStart = Math.min(startRow.rowIndex, endRow.rowIndex);
+							rowidIndex = endRow.rowIndex;
+							iEnd = Math.max(startRow.rowIndex, rowidIndex);
+							for (i = iStart; i <= iEnd; i++) {
+								// the row with rowid will be selected by jqGrid, so:
+								if (i != rowidIndex) {
+									$this.jqGrid('setSelection', rows[i].id, false);
+								}
 							}
 						}
-					}
 
-					// clear text selection
-					if (document.selection && document.selection.empty) {
-						document.selection.empty();
-					} else if (window.getSelection) {
-						window.getSelection().removeAllRanges();
+						// clear text selection
+						if (document.selection && document.selection.empty) {
+							document.selection.empty();
+						} else if (window.getSelection) {
+							window.getSelection().removeAllRanges();
+						}
 					}
+					return true;
 				}
-				return true;
 			},
 			onSelectRow: function (id) {
 
@@ -873,6 +886,11 @@
 
 				// Check the view access for the selected calcluation columns. If found any hidden then set the defination access to HD.
 				setDefinitionAccessBasedOnSelectedCalculationColumns();
+
+				// Set the disabled effect to the grid when the defination is readonly
+				if (isDefinitionReadOnly()) {
+					$("#SelectedColumns").css('opacity', '0.5');
+				}
 			}
 		});
 
@@ -881,7 +899,10 @@
 		}
 
 		if ('@Model.ReportType' == '@UtilityType.utlCustomReport') {
-			$("#SelectedColumns").jqGrid('sortableRows');
+			// If defination is readonly then don't allow drag and drop of selected columns
+			if (!isDefinitionReadOnly()) {
+				$("#SelectedColumns").jqGrid('sortableRows');
+			}
 		}
 
 		$("#SelectedColumns").jqGrid('hideCol', 'cb');
@@ -902,7 +923,7 @@
 
 	}
 
-	// set defination view access. This function will be called after the confirmation of model prompt. 
+	// set defination view access. This function will be called after the confirmation of model prompt.
 	// (E.g While user clicks on Remove/RemoveAll, asks for the confirmation. If user cliks on YES then only set the defination access.
 	// Note: This is required because opening one model prompt from the other won't open the popup.
 	function setDefinitionAccessAfterModelPrompt(userClickedNOButtonOnModelPrompt) {
