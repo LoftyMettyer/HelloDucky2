@@ -1,10 +1,12 @@
 ﻿Option Strict On
 Option Explicit On
 
+Imports DMI.NET.Code
 Imports DMI.NET.Classes
 Imports HR.Intranet.Server.Enums
 Imports HR.Intranet.Server
 Imports System.Data.SqlClient
+Imports System.Web.WebPages
 
 Public Module ASRFunctions
 
@@ -237,7 +239,7 @@ Public Module ASRFunctions
 	End Function
 
 	Public Function ShowOutOfOffice(tableID As Integer, viewID As Integer) As Boolean
-		
+
 		' Are we displaying the Workflow Out of Office Hyperlink for this view?
 		Dim fShowOooHyperlink As Boolean = False
 		Dim objDataAccess As clsDataAccess = CType(HttpContext.Current.Session("DatabaseAccess"), clsDataAccess)
@@ -260,5 +262,73 @@ Public Module ASRFunctions
 		Return fShowOooHyperlink
 
 	End Function
+
+
+	Public Function ValidateFormValue(inputValue As Object, expectedType As String) As Object
+
+		Try
+			If inputValue Is Nothing OrElse inputValue.ToString() = vbNullString OrElse inputValue.ToString() = "undefined" Then
+				Return inputValue
+			Else
+				Select Case expectedType
+					Case "string"
+						' erm... TODO
+
+					Case "integer"
+						Dim number As Integer
+						Dim result As Boolean = Int32.TryParse(inputValue.ToString(), number)
+						If Not result Then
+							Throw New Exception()
+						End If
+
+					Case "boolean"
+						Dim bool As Boolean
+						Dim result As Boolean = Boolean.TryParse(inputValue.ToString(), bool)
+						If Not result Then
+							Throw New Exception()
+						End If
+
+					Case "action"
+						If Not InputValidation.ListOfActions.Contains(inputValue.ToString().ToUpper()) Then
+							Throw New Exception()
+						End If
+
+					Case "utiltype"
+						Dim fOK As Boolean = False
+
+						' Numeric parameter is OK
+						Dim number As Integer
+						fOK = Int32.TryParse(inputValue.ToString(), number)
+
+						' and specific utiltypes are ok
+						If InputValidation.ListOfUtilTypes.Contains(inputValue.ToString().ToUpper()) Then fOK = True
+
+
+						If Not fOK Then Throw New Exception()
+
+					Case "lineage"
+						' allow integers and underscores only
+						Dim arrInput As String() = inputValue.ToString().Split(CChar("_"))
+						For Each inputchar As String In arrInput
+							If Not (inputchar.IsInt() Or inputchar.Contains(":")) Then
+								Throw New Exception()
+							End If
+						Next
+				End Select
+
+			End If
+
+		Catch ex As Exception
+			Throw New Exception()
+		End Try
+
+		If expectedType = "string" Then
+			Return HttpUtility.HtmlAttributeEncode(inputValue.ToString())
+		Else
+			Return inputValue
+		End If
+
+	End Function
+
 
 End Module

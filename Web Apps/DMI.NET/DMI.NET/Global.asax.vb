@@ -26,6 +26,7 @@ Public Class MvcApplication
 		If DatabaseHub.ServiceBrokerOK And DatabaseHub.HeartbeatOK Then
 			LicenceHub.RegisterLicence()
 			SettingsConfig.Register()
+			InputValidation.Initialise()
 		End If
 
 	End Sub
