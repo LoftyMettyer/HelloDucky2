@@ -499,11 +499,6 @@
 				var topID = $("#AvailableColumns").getDataIDs()[0]
 				$("#AvailableColumns").jqGrid("setSelection", topID);
 				refreshcolumnPropertiesPanel();
-
-				// Set the disabled effect to the grid when the defination is readonly
-				if (isDefinitionReadOnly()) {
-					$("#AvailableColumns").css('opacity', '0.5');
-				}
 			}
 		});
 
@@ -886,11 +881,6 @@
 
 				// Check the view access for the selected calcluation columns. If found any hidden then set the defination access to HD.
 				setDefinitionAccessBasedOnSelectedCalculationColumns();
-
-				// Set the disabled effect to the grid when the defination is readonly
-				if (isDefinitionReadOnly()) {
-					$("#SelectedColumns").css('opacity', '0.5');
-				}
 			}
 		});
 
