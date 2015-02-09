@@ -1,7 +1,6 @@
 ﻿@Imports DMI.NET
 @Imports DMI.NET.Helpers
 @Imports DMI.NET.Models
-@Imports DMI.NET.Classes
 @Inherits System.Web.Mvc.WebViewPage(Of ReportBaseModel)
 
 @Html.HiddenFor(Function(m) m.ID, New With {.id = "txtReportID"})
@@ -87,11 +86,6 @@
 					</div>
 				</fieldset>
 
-				<fieldset id="nineBoxPageBreakID" class="nineBoxGridItem">
-					Page Break :
-					@Html.ColumnDropdownFor(Function(m) m.PageBreakID, New ColumnFilter() With {.TableID = Model.BaseTableID, .AddNone = True}, New With {.onchange = "crossTabPageBreakChange()", .class = "enableSaveButtonOnComboChange width70 floatright"})
-					@Html.Hidden("PageBreakDataType", CInt(Model.PageBreakDataType))
-				</fieldset>
 			</div>
 
 			<input type="hidden" id="ctl_DefinitionChanged" name="HasChanged" value="false" />
@@ -122,11 +116,6 @@
 <script type="text/javascript">
 
 	$(function () {
-
-		if ($("#txtReportType").val() != '@UtilityType.utlNineBoxGrid') {
-			$(".nineBoxGridItem").css("display","none");
-		}
-
 		if ($("#txtReportType").val() == '@UtilityType.utlMailMerge') {
 			$(".displayTitleInReportHeader").hide();
 		}
@@ -702,7 +691,7 @@
 	}
 
 	function validateReportDefinition() {
-
+		
 		var gridData;
 		// Columns selected
 		gridData = $("#SelectedColumns").getRowData();

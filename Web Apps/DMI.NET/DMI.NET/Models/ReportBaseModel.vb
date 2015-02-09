@@ -14,11 +14,6 @@ Namespace Models
 		Implements IDataAccess
 		Implements IReport
 
-		Public Property PageBreakID As Integer
-
-		<HiddenInput>
-		Public Property PageBreakDataType As ColumnDataType
-
 		Public Property IsReadOnly As Boolean
 		Public MustOverride ReadOnly Property ReportType As UtilityType Implements IReport.ReportType
 

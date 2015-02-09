@@ -33,6 +33,8 @@ Namespace Models
 		<HiddenInput>
 		Public Property VerticalDataType As ColumnDataType
 
+		Public Property PageBreakID As Integer
+
 		<HiddenInput>
 		Public ReadOnly Property PageBreakStart As Double
 			Get
@@ -46,6 +48,8 @@ Namespace Models
 				Return 0
 			End Get
 		End Property
+		<HiddenInput>
+	Public Property PageBreakDataType As ColumnDataType
 
 		<HiddenInput>
 		Public ReadOnly Property IntersectionID As Integer
