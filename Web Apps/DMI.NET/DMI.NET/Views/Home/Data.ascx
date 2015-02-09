@@ -414,15 +414,15 @@
 
 				sErrorMsg = frmData.txtErrorMessage.value;
 				if (sErrorMsg.length > 0) {
-					// Get menu to refresh the menu.
-					menu_refreshMenu();		  
-
 					// We've got an error so don't update the find form.
 					OpenHR.messageBox(sErrorMsg);
 			
 					if (frmData.txtAction.value == "SAVEERROR") {
 						return;
 					}
+
+					// Get menu to refresh the menu.
+					menu_refreshMenu();
 				}
 				
 				if (frmData.txtAction.value == "CANCELBOOKING_1") {
