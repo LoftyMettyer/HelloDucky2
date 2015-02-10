@@ -17,7 +17,11 @@ function bookmarksCount() {
 }
 
 function moveFirst() {
-	$("#findGridTable").jqGrid('setSelection', 1);
+	try {
+		var firstRecordID = $("#findGridTable").jqGrid('getDataIDs')[0];
+		$("#findGridTable").jqGrid('setSelection', firstRecordID);
+	} catch (e) { }
+
 	menu_refreshMenu();
 }
 
@@ -125,6 +129,7 @@ function find_window_onload() {
 								colModel.push({
 									name: sColumnName,									
 									hidden: true,
+									key: true,
 									editoptions: {
 										defaultValue: 0
 									}
@@ -499,10 +504,7 @@ function find_window_onload() {
 				if (colModel.length < (wfSetWidth / 100)) shrinkToFit = true;
 				//var gridWidth = menu_isSSIMode() ? 'auto' : wfSetWidth - 100;
 				var gridWidth = wfSetWidth - 100;
-				//var rowNum = (Number($('#txtFindRecords').val()) > 100) ? 100 : Number($('#txtFindRecords').val());
-
 				var rowNum = 50;
-				if (thereIsAtLeastOneEditableColumn) rowNum = 100000;	//disable paging for editable grids (TFS 13491)
 
 				//create the column layout:
 				$("#findGridTable").jqGrid({
@@ -562,10 +564,12 @@ function find_window_onload() {
 							}
 						},
 						addParams: {
+							rowID: "0", //Default ID for New Record
 							useDefValues: true,
+							position: "last",
 							addRowParams: {
 								keys: true,
-								oneditfunc: function (rowid) {
+								oneditfunc: function (rowid) {									
 									//build a comma separated list of columns that have expression ID's on them.
 									var arrCalcColumnsString = [];
 									$('#' + rowid).find(':input[datadefaultcalcexprid]').each(function () {
@@ -613,6 +617,13 @@ function find_window_onload() {
 					menu_toolbarEnableItem('mnutoolInlineEditRecordFind', true);					
 
 					$("#findGridTable_iladd").show();
+
+					//assign click to add button (this will fire before the addrow function)
+					//Move to last page before adding new row.
+					$('#findGridTable_iladd div.ui-pg-div').on('click', function() {
+						var lastPage = $("#findGridTable").jqGrid('getGridParam', 'lastpage');
+						$("#findGridTable").trigger("reloadGrid", [{ page: lastPage }]);
+					});
 
 					var recCountInGrid = $("#findGridTable").getGridParam("reccount");
 					if (thereIsAtLeastOneEditableColumn && recCountInGrid > 0) {
@@ -732,7 +743,7 @@ function find_window_onload() {
 			//http://stackoverflow.com/questions/12572780/jqgrids-addrowdata-hangs-for-large-number-of-records
 
 			frmFindForm.txtRecordCount.value = iCount;
-
+			
 			if (fOk == true) {
 				var sControlPrefix;
 				var sColumnId;
@@ -829,13 +840,16 @@ function selectedRecordID() {
 
 /* Sequential search the grid for the required ID. */
 function locateRecord(psSearchFor, pfIdMatch) {
-	//select the grid row that contains the record with the passed in ID.
-	var rowNumber = $("#findGridTable input[value='" + psSearchFor + "']").parent().parent().attr("id");
-	if (rowNumber >= 0) {
-		$("#findGridTable").jqGrid('setSelection', rowNumber);
-	} else {
-		$("#findGridTable").jqGrid('setSelection', 1);
-	}
+	
+	var firstRecordID = $("#findGridTable").jqGrid('getDataIDs')[0];
+
+	//default to top row
+	if(Number(firstRecordID) > 0)
+		$("#findGridTable").jqGrid('setSelection', firstRecordID);
+
+	if(Number(psSearchFor) > 0)
+		$("#findGridTable").jqGrid('setSelection', psSearchFor);
+
 }
 
 function showLookupForColumn(element) {

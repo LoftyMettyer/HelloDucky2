@@ -3632,7 +3632,7 @@ function menu_pausecomp(millis) {
 
 
 
-	function menu_newRecord() {	
+	function menu_newRecord() {		
 	var sCurrentWorkPage;
 	var frmDataArea;
 	var frmRecEditArea;
@@ -3846,8 +3846,8 @@ function menu_pausecomp(millis) {
 	else {
 	if (sCurrentWorkPage == "FIND") {
 			
-	lngRecordID = selectedRecordID();	
-
+	lngRecordID = selectedRecordID();
+		
 	if (lngRecordID > 0) {
 	if (OpenHR.messageBox("Delete the current record, are you sure ?", 36) == 6) { // 36 = vbQuestion + vbYesNo, 6 = vbYes
 	// Get the data.asp to get the save the current record.
@@ -5277,7 +5277,7 @@ function saveInlineRowToDatabase(rowId) {
 	var gridData = $("#findGridTable").getRowData(rowId);
 	var gridColumns = $("#findGridTable").jqGrid('getGridParam', 'colNames');
 	var gridModel = $("#findGridTable").jqGrid('getGridParam', 'colModel');
-	var columnValue = "";
+	var columnValue = "";	
 	
 	for (var i = 0; i <= gridColumns.length - 1; i++) {
 		if (gridColumns[i] != '' && gridColumns[i] != 'ID' && gridColumns[i] != 'Timestamp' && gridModel[i].editable == true) {
@@ -5307,14 +5307,14 @@ function saveInlineRowToDatabase(rowId) {
 	frmDataArea.txtAction.value = "SAVE";
 
 	//get record id. if it's zero, get new.
-	if (selectedRecordID() == "") {
+	if (selectedRecordID() == "0") {
 		frmDataArea.txtReaction.value = "REFRESHFINDAFTERINSERT";
 	}
 
 	frmDataArea.txtCurrentViewID.value = $("#txtCurrentViewID").val();;
 	frmDataArea.txtCurrentTableID.value = $("#txtCurrentTableID").val();
 	frmDataArea.txtRealSource.value = $("#txtRealSource").val();
-	if (gridData.ID == "") { //New record
+	if (gridData.ID == "0") { //New record
 		frmDataArea.txtRecordID.value = "0";
 		var realSource = $('#frmFindForm #txtRealSource').val();
 		sUpdateOrInsert = realSource + "\t" + "0\t\t" + sUpdateOrInsert;
@@ -5337,9 +5337,9 @@ function saveInlineRowToDatabase(rowId) {
 	OpenHR.submitForm(frmDataArea, null, true, null, null, submitFollowOn);
 }
 
-function submitFollowOn() {
-	var rowId = window.savedRow; //$("#findGridTable").getGridParam('selrow');
-	
+function submitFollowOn() {	
+	var rowId = window.savedRow; //$("#findGridTable").getGridParam('selrow');	
+
 	if (frmData.txtErrorMessage.value != "") { //There was an error while saving
 		$("#findGridTable").editRow(rowId); //Edit the row
 
@@ -5385,12 +5385,12 @@ function showDatabaseMenuGroup() {
 	setTimeout("$('#mnutoolDatabase').click()", 100);	
 }
 
-function updateRowFromDatabase(rowid) {
+function updateRowFromDatabase(rowid) {	
 	var recordID = $("#findGridTable").jqGrid('getCell', rowid, 'ID');
 	
 	if (recordID == "")
 		return false; //It's a new row, we don't have its ID from the database, the call below would fail, so just return false
-
+	
 	//Get the row from the server
 	$.ajax({
 		url: "getfindrecordbyid",
@@ -5398,7 +5398,7 @@ function updateRowFromDatabase(rowid) {
 		cache: false,
 		async: true,
 		data: { recordid: recordID },
-		success: function (jsonstring) {
+		success: function (jsonstring) {			
 			var jsondata = JSON.parse(jsonstring);
 			var currentRowId = rowid; //The row we need to update (or remove from the view/table)
 
@@ -5421,7 +5421,7 @@ function updateRowFromDatabase(rowid) {
 			var colModel = $("#findGridTable").jqGrid("getGridParam", "colModel");
 			//Restore the row
 			$("#findGridTable").jqGrid('restoreRow', currentRowId, null);
-
+			
 			//Loop over the colModel and update the current row
 			for (var i = 0; i <= colModel.length - 1; i++) {
 				var colNameForColmodel = colModel[i].name.replace(/ /g, '_'); //Replace space by '_' to match the column name in colModel
@@ -5430,12 +5430,12 @@ function updateRowFromDatabase(rowid) {
 
 				//Some datatypes need fettling, as always
 				switch (colModel[i].type) {
-					case "date":
-						if (!cellValue == "") { //If the value is not empty then format it as the current date locale
-							var d = new Date(cellValue);
-							cellValue = d.toString(OpenHR.LocaleDateFormat());
-						}
-						break;
+				case "date":
+					if (!cellValue == "") { //If the value is not empty then format it as the current date locale
+						var d = new Date(cellValue);
+						cellValue = d.toString(OpenHR.LocaleDateFormat());
+					}
+					break;
 				}
 
 				//Change each cell in the visible part of the row
@@ -5444,6 +5444,8 @@ function updateRowFromDatabase(rowid) {
 				//Change the internal local data
 				$("#findGridTable").jqGrid('getLocalRow', currentRowId)[colNameInternalData] = cellValue;
 			}
+			//For 'NEW' records assign new ID to the row.
+			if(currentRowId == "0") $("#findGridTable #0").attr("ID", recordID);
 		},
 		error: function (e) {}
 	});
