@@ -814,7 +814,6 @@ Namespace Controllers
 				Session("firstRecPos") = ValidateFormValue(Request.Form("txtGotoFirstRecPos"), "integer")
 				Session("currentRecCount") = ValidateFormValue(Request.Form("txtGotoCurrentRecCount"), "integer")
 				Session("fromMenu") = ValidateFormValue(Request.Form("txtGotoFromMenu"), "integer")
-				Session("reset") = ValidateFormValue(Request.Form("txtReset"), "integer")
 
 				Session("reloadMenu") = ValidateFormValue(Request.Form("txtReloadMenu"), "integer")
 
@@ -5878,8 +5877,69 @@ Namespace Controllers
 
 		End Function
 
+		<HttpPost>
+		Function WorkflowOutOfOffice_Check() As JsonResult
+
+			Dim bOutOfOffice As Boolean
+			Dim iRecordCount As Integer = 0
+			Dim sErrorMessage As String = ""
+
+			Try
+
+				Dim objSession As SessionInfo = CType(Session("SessionContext"), SessionInfo)
+				Dim objDataAccess As New clsDataAccess(objSession.LoginInfo)
+
+				Dim prmOutOfOffice As SqlParameter = New SqlParameter("pfOutOfOffice", SqlDbType.Bit)
+				prmOutOfOffice.Direction = ParameterDirection.Output
+
+				Dim prmRecordCount As SqlParameter = New SqlParameter("piRecordCount", SqlDbType.Int)
+				prmRecordCount.Direction = ParameterDirection.Output
+
+				objDataAccess.ExecuteSP("spASRWorkflowOutOfOfficeCheck", prmOutOfOffice, prmRecordCount)
+
+				bOutOfOffice = CBool(prmOutOfOffice.Value)
+				iRecordCount = CInt(prmRecordCount.Value)
+
+			Catch ex As Exception
+				sErrorMessage = "Unable to set your out of office.<br/><br/>Your personnel record cannot be updated."
+
+			End Try
+
+			Dim result = New With {.outOfOfficeOn = bOutOfOffice, .recordCount = iRecordCount, .error = sErrorMessage}
+			Return Json(result, JsonRequestBehavior.AllowGet)
+
+		End Function
+
+		<HttpPost>
+		Function WorkflowOutOfOffice_Enable(enable As Boolean) As JsonResult
+
+			Dim iRecordCount As Integer = 0
+			Dim sErrorMessage As String = ""
+
+			Try
+
+				Dim objSession As SessionInfo = CType(Session("SessionContext"), SessionInfo)
+				Dim objDataAccess As New clsDataAccess(objSession.LoginInfo)
+
+				Dim prmSetOffice As SqlParameter = New SqlParameter("pfOutOfOffice", SqlDbType.Bit)
+				prmSetOffice.Value = enable
+				objDataAccess.ExecuteSP("spASRWorkflowOutOfOfficeSet", prmSetOffice)
+
+			Catch ex As Exception
+				sErrorMessage = "Unable to set your out of office.<br/>Your personnel record cannot be updated."
+
+			End Try
+
+			Dim result = New With {.outOfOfficeOn = enable, .error = sErrorMessage}
+			Return Json(result, JsonRequestBehavior.AllowGet)
+
+		End Function
+
 
 	End Class
+
+
+
 
 	Public Class ErrMsgJsonAjaxResponse
 

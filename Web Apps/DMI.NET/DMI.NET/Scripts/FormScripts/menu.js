@@ -147,68 +147,9 @@ function menu_abMainMenu_DataReady() {
 	menu_refreshMenu();
 
 	if (OpenHR.currentWorkPage() == "DEFAULT") {		
-		//window.parent.frames("workframe").hideMessage();
-		//window.hideMessage();
-		
-		var iReset = 0;
-		var wfOutOfOffice;
-		try {
-			wfOutOfOffice = $('#txtWf_OutOfOffice').val().toUpperCase();
-		} catch(e) {
-			wfOutOfOffice = "FALSE";
-		}
-		
-		if (("TRUE" == wfOutOfOffice) && (menu_isSSIMode())) {
-			//SSI Out of Office. (DMI uses pending steps which we don't)
-			menu_WorkflowOutOfOffice();
-		}
-
-		if (("TRUE" == wfOutOfOffice) && (!menu_isSSIMode())) {
-			var sMsg = "Workflow Out of Office is currently on.\nWould you like to turn it off";
-
-			var iWF_RecordCount;
-			if (isNaN(parseInt("<%=session('WF_RecordCount')%>"))) {
-				iWF_RecordCount = 0;
-			}
-			else {
-				iWF_RecordCount = parseInt("<%=session('WF_RecordCount')%>");
-			}
-
-			if (iWF_RecordCount > 1) {
-				if (iWF_RecordCount == 2) {
-					sMsg = sMsg.concat(" for both");
-				}
-				else {
-					sMsg = sMsg.concat(" for all ");
-					sMsg = sMsg.concat(iWF_RecordCount);
-				}
-
-				sMsg = sMsg.concat(" of your identified personnel records");
-			}
-
-			sMsg = sMsg.concat("?");
-
-			//answer = ASRIntranetFunctions.MessageBox(sMsg, 4); // 4 = Yes/No
-			var answer = confirm(sMsg);
-			//if (answer == 6) {
-			if (answer == true) {
-				// Yes
-				iReset = 1;
-			}
-		}
-
-		//Load Pending workflow steps if not in SSI mode.
-		// NHRD JIRA 3365 - f you can find a way to get the workflow STEPCOUNT here then the jira could be 100% fixed.
-		if (!menu_isSSIMode()) {
-			//frmWorkArea = window.parent.frames("workframe").document.forms("frmGoto");
-			var frmWorkArea = document.getElementById("frmGoto");
-			try {
-				frmWorkArea.txtReset.value = iReset;
-			} catch (e) { }
-			//short timeout, IE9 (maybe others) aren't loading the frmGoto partial view quick enough...
-			setTimeout('menu_autoLoadPage("workflowPendingSteps", true)', 100);
-		}
+		OpenHR.postData("WorkflowOutOfOffice_Check", null, menu_OutOfOfficeTurnOff);
 	}
+
 }
 
 function menu_abMainMenu_Click(pTool) {
@@ -1470,11 +1411,8 @@ function menu_CloseWait() {
 
 function showDefaultRibbon() {
 	// Hide all tabs except FixedLinks
-	if (('True' !== '<%=Session("MSBrowser")%>') && ('TRUE' == '<%=Session("AdminRequiresIE")%>')) {
-		$("#toolbarHome").parent().hide();
-	} else {
-		$("#toolbarHome").parent().show();
-	}
+	$("#toolbarHome").parent().show();
+
 	$("#toolbarRecordFind").parent().hide();
 	$("#toolbarRecord").parent().hide();
 	$("#toolbarRecordAbsence").parent().hide();
@@ -2709,14 +2647,66 @@ function menu_saveChanges(psAction, pfPrompt, pfTBOverride) {
 	return iResult;
 }
 
-	function menu_WorkflowOutOfOffice() {
-	var frmWorkArea;
-	// Submit the current "workframe" form, and then load the required page.
-	frmWorkArea = OpenHR.getForm("workframe", "frmGoto");
-	frmWorkArea.txtAction.value = "WORKFLOWOUTOFOFFICE_CHECK";
-	frmWorkArea.txtGotoPage.value = "_default";
-	OpenHR.submitForm(frmWorkArea);
+function menu_WorkflowOutOfOffice() {
+	OpenHR.postData("WorkflowOutOfOffice_Check", null, menu_OutOfOfficeToggle);
 }
+
+function menu_OutOfOfficeToggle(status) {
+
+	if (status.error.length > 0) {
+		OpenHR.modalPrompt(status.error, 0, "Out of Office Error", "");
+		return;
+	}
+
+	if (status.recordCount == 0) {
+		OpenHR.modalPrompt(sMsg, 0, "Unable to set Workflow Out of Office.<br/><br/>You do not have an identifiable personnel record.");
+		return;
+	}
+
+	if (status.outOfOfficeOn == true) {
+		var sMsg = "Workflow Out of Office is currently on.<br/><br/>Would you like to turn it off";
+	}
+	else {
+		sMsg = "Workflow Out of Office is currently off.<br/><br/>Would you like to turn it on";
+	}
+
+	if (status.recordCount > 1) {
+		if (status.recordCount == 2) {
+			sMsg = sMsg.concat(" for both");
+		}
+		else {
+			sMsg = sMsg.concat(" for all ");
+			sMsg = sMsg.concat(status.recordCount);
+		}
+
+		sMsg = sMsg.concat(" of your identified personnel records");
+	}
+
+	sMsg = sMsg.concat("?");
+
+	OpenHR.modalPrompt(sMsg, 4, "Out of Office").then(function (answer) {
+		if (answer == 6) {
+			OpenHR.postData("WorkflowOutOfOffice_Enable", { enable: !status.outOfOfficeOn }, null);
+		}
+
+	});
+
+}
+
+
+function menu_OutOfOfficeTurnOff(status) {
+
+	if (status.outOfOfficeOn) {
+		menu_OutOfOfficeToggle(status);
+	}
+
+	if (!menu_isSSIMode()) {
+		setTimeout('menu_autoLoadPage("workflowPendingSteps", true)', 100);
+	}
+
+}
+
+
 
 	function menu_loadPage(psPage) {
 	var frmWorkArea;

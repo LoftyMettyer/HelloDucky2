@@ -649,6 +649,8 @@
     <Build Include="User Defined Functions\udfsysPatternFromHours.sql" />
     <Build Include="Stored Procedures\Other\spASRCopyChildRecords.sql" />
     <Build Include="Stored Procedures\Web\spASRIntGet1000SeparatorBlankIfZeroFindColumns.sql" />
+    <Build Include="Stored Procedures\Auto Generated\spASRWorkflowOutOfOfficeCheck.sql" />
+    <Build Include="Stored Procedures\Auto Generated\spASRWorkflowOutOfOfficeSet.sql" />
   </ItemGroup>
   <ItemGroup>
     <Build Include="Stored Procedures\Other\sp_ASR_Bradford_CalculateDurations.sql" />

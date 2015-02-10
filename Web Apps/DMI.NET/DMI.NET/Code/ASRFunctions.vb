@@ -61,8 +61,6 @@ Public Module ASRFunctions
 			End If
 
 			HttpContext.Current.Session("WF_OutOfOfficeConfigured") = fWorkflowOutOfOfficeConfigured
-			HttpContext.Current.Session("WF_OutOfOffice") = fWorkflowOutOfOffice
-			HttpContext.Current.Session("WF_RecordCount") = iWorkflowRecordCount
 
 		Catch ex As Exception
 			Throw

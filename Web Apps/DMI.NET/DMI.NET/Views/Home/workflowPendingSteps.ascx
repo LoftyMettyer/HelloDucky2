@@ -145,22 +145,6 @@
 </script>
 
 <form id="frmSteps" name="frmSteps" style="visibility: hidden; display: none">
-	<%
-
-		Response.Expires = -1
-	
-		If (Session("fromMenu") = 0) And (Session("reset") = 1) Then
-
-			Dim objSession As SessionInfo = CType(Session("SessionContext"), SessionInfo)
-			Dim objDataAccess As New clsDataAccess(objSession.LoginInfo)
-
-			Dim prmSetOffice As SqlParameter = New SqlParameter("pfOutOfOffice", SqlDbType.Bit)
-			prmSetOffice.Value = 0
-			objDataAccess.ExecuteSP("spASRWorkflowOutOfOfficeSet", prmSetOffice)
-			
-			Session("reset") = 0
-		End If
-	%>
 	<input type='hidden' id="txtFromMenu" name="txtFromMenu" value="<%=Session("fromMenu")%>">
 </form>
 
