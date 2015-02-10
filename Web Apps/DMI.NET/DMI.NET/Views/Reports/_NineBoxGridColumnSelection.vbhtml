@@ -128,17 +128,18 @@
 			<td colspan="2" id="td9boxOptions">
 				<label style="font-weight: bold;">Display Options</label>
 				<br />
-				@Html.CheckBox("PercentageOfType", Model.PercentageOfType)
-				@Html.LabelFor(Function(m) m.PercentageOfType)
-				<br />
-				@Html.CheckBox("PercentageOfPage", Model.PercentageOfPage)
-				@Html.LabelFor(Function(m) m.PercentageOfPage)
-				<br />
 				@Html.CheckBox("SuppressZeros", Model.SuppressZeros)
 				@Html.LabelFor(Function(m) m.SuppressZeros)
 				<br />
 				@Html.CheckBox("UseThousandSeparators", Model.UseThousandSeparators)
 				@Html.LabelFor(Function(m) m.UseThousandSeparators)
+				<br />
+				@Html.CheckBox("PercentageOfType", Model.PercentageOfType)
+				@Html.LabelFor(Function(m) m.PercentageOfType)
+				<br />
+				@Html.CheckBox("PercentageOfPage", Model.PercentageOfPage)
+				@Html.LabelFor(Function(m) m.PercentageOfPage)
+
 			</td>
 		</tr>
 	</table>
@@ -246,21 +247,18 @@
 		$("#HorizontalStart").val(0);
 		$("#HorizontalStop").val(0);
 		crossTabHorizontalClick();
-		refreshTab2Controls();
 	}
 
 	function crossTabVerticalChange() {
 		$("#VerticalStart").val(0);
 		$("#VerticalStop").val(0);
 		crossTabVerticalClick();
-		refreshTab2Controls();
 	}
 
 	function crossTabPageBreakChange() {
 		$("#PageBreakStart").val(0);
 		$("#PageBreakStop").val(0);
 		crossTabPageBreakClick();
-		refreshTab2Controls();
 	}
 
 	function crossTabHorizontalClick() {
@@ -320,6 +318,7 @@
 	}
 
 	$(function () {
+		$('#PercentageOfType, label[for=PercentageOfType], #PercentageOfPage, label[for=PercentageOfPage]').css('display', 'none');
 
 		$("#CrossTabsColumnTab select").css("width", "100%");
 		$('table').attr('border', '0');
@@ -327,10 +326,6 @@
 		crossTabHorizontalClick();
 		crossTabVerticalClick();
 		crossTabPageBreakClick();
-
-		$('#PercentageOfType').click(function () { refreshTab2Controls(); });
-
-		refreshTab2Controls();
 
 		//Note:-
 		//This solution working in Firefox, Chrome and IE, both with keyboard focus and mouse focus.
@@ -350,19 +345,6 @@
 		});
 
 	});
-
-	function refreshTab2Controls() {
-
-		if (($('#PageBreakID :selected').text() == 'None') || ($('#PercentageOfType').prop('checked') == false)) {
-			$('input[name="PercentageOfPage"]').attr('disabled', true);
-			$('label[for="PercentageOfPage"]').addClass('ui-state-disabled');
-			$('#PercentageOfPage').prop('checked', false);
-		}
-		else {
-			$('input[name="PercentageOfPage"]').attr('disabled', false);
-			$('label[for="PercentageOfPage"]').removeClass('ui-state-disabled');
-		}
-	}
 
 	function initializeColorPicker(colorPickerId) {
 		var ID = "ColorDesc" + colorPickerId;

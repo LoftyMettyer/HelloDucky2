@@ -63,17 +63,17 @@
 					@Html.ColumnDropdownFor(Function(m) m.IntersectionID, New ColumnFilter() With {.TableID = Model.BaseTableID, .AddNone = True, .IsNumeric = True}, New With {.onchange = "crossTabIntersectionType();", .class = "enableSaveButtonOnComboChange"})
 				</td>
 				<td colspan="3" rowspan="4" style="padding-left:20px;vertical-align:top ">
-					@Html.CheckBox("PercentageOfType", Model.PercentageOfType)
-					@Html.LabelFor(Function(m) m.PercentageOfType)
-					<br />
-					@Html.CheckBox("PercentageOfPage", Model.PercentageOfPage)
-					@Html.LabelFor(Function(m) m.PercentageOfPage)
-					<br />
 					@Html.CheckBox("SuppressZeros", Model.SuppressZeros)
 					@Html.LabelFor(Function(m) m.SuppressZeros)
 					<br />
 					@Html.CheckBox("UseThousandSeparators", Model.UseThousandSeparators)
 					@Html.LabelFor(Function(m) m.UseThousandSeparators)
+					<br />
+					@Html.CheckBox("PercentageOfType", Model.PercentageOfType)
+					@Html.LabelFor(Function(m) m.PercentageOfType)
+					<br />
+					@Html.CheckBox("PercentageOfPage", Model.PercentageOfPage)
+					@Html.LabelFor(Function(m) m.PercentageOfPage)
 				</td>
 			</tr>
 			<tr style="height: 10px;"></tr>

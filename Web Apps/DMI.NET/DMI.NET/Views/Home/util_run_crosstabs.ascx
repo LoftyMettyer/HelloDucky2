@@ -1,5 +1,4 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
-<%@ Import Namespace="DMI.NET.Code" %>
 <%@ Import Namespace="DMI.NET" %>
 <%@ Import Namespace="HR.Intranet.Server.Enums" %>
 <%@ Import Namespace="HR.Intranet.Server" %>
@@ -10,12 +9,10 @@
 
 	$("#top").hide();
 
-	$(window).bind('resize', function () {
-		$("#ssOutputGrid").setGridWidth($('#main').width(), true);
-		//$("#ssOutputGrid").setGridHeight("230px", true);
-	}).trigger('resize');
+	$(window).bind("resize", function () {
+		$("#ssOutputGrid").setGridWidth($("#main").width(), true);		
+	}).trigger("resize");
 </script>
-
 
 <%
 	Dim objCrossTab As CrossTab
@@ -163,22 +160,16 @@ Session("utiltype = 17 		Calendar Report--%>
 		<div id="CrossTabCheckBoxes" style="float: left;width: 33%;">
 			<div style="font-weight: bold;
 				<%If objCrossTab.CrossTabType = CrossTabType.cttAbsenceBreakdown Then Response.Write(";margin-bottom: 8px;")%>">Options</div>
-			<div style="float: left; font-weight: normal;">
+			<div style="font-weight: normal">
 				<input type="checkbox" id="chkSuppressZeros" name="chkSuppressZeros" value="checkbox"
 					onclick="UpdateGrid()" />
-				<label
-					for="chkSuppressZeros"
-					class="checkbox"
-					tabindex="0">
+				<label class="checkbox" for="chkSuppressZeros" tabindex="0">
 					Suppress Zeros
 				</label>
 				<br />
 				<input type="checkbox" id="chkUse1000" name="chkUse1000" value="checkbox"
 					onclick="UpdateGrid()" />
-				<label
-					for="chkUse1000"
-					class="checkbox"
-					tabindex="0">
+				<label class="checkbox" for="chkUse1000" tabindex="0">
 					<%
 						If objCrossTab.CrossTabType <> CrossTabType.cttAbsenceBreakdown Then
 							Response.Write(" Use 1000 Separators")
@@ -186,17 +177,17 @@ Session("utiltype = 17 		Calendar Report--%>
 					%>
 				</label>
 			</div>
-			<div style="float: left;font-weight: normal;">
-				<input type="checkbox" id="chkPercentType" name="chkPercentType" value="checkbox"
-					onclick="chkPercentType_Click()" />
-				<label
-					for="chkPercentType"
-					class="checkbox"
-					tabindex="0">
+			<%	Dim noshowpercentages As String
+				noshowpercentages = ""
+				If objCrossTab.CrossTabType = CrossTabType.ctt9GridBox Then
+					noshowpercentages = "display: none"
+				End If%>
+
+			<div style="font-weight: normal;<%=noshowpercentages%>">			
+					<input id="chkPercentType" name="chkPercentType" onclick="chkPercentType_Click()" type="checkbox" value="checkbox" />
+				<label class="checkbox" for="chkPercentType" tabindex="0">
 					<%
-						If objCrossTab.CrossTabType = CrossTabType.ctt9GridBox Then
-							Response.Write(" Percentage of all data")
-						ElseIf objCrossTab.CrossTabType <> CrossTabType.cttAbsenceBreakdown Then
+						If objCrossTab.CrossTabType <> CrossTabType.cttAbsenceBreakdown Then
 							Response.Write(" Percentage of Type")
 						End If
 					%>
@@ -213,8 +204,8 @@ Session("utiltype = 17 		Calendar Report--%>
 							Response.Write(" Percentage of Page")
 						End If
 					%>
-				</label>
-			</div>
+				</label>				
+			</div>			
 		</div>
 	</div>
 </fieldset>
