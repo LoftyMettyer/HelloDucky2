@@ -128,23 +128,21 @@ BEGIN
 	-- Run the constructed SQL INSERT string
 	EXECUTE sp_executesql @sInsertString;
 
-	-- Calculate the ID
-	SET  @sInsertString = REPLACE(' ' + @sInsertString,' INSERT INTO ','')
-	SET  @sInsertString = REPLACE(' ' + @sInsertString,' INSERT ','')
-	SET @tablename = SUBSTRING(@sInsertString,0, CHARINDEX('(', @sInsertString));
-
-	SET @sTempString = 'SELECT @ID = MAX(ID) FROM ' + @tablename;
-	EXECUTE sp_executesql @sTempString, N'@ID int OUTPUT', @ID = @piNewRecordID OUTPUT;
-
 
 	DECLARE @TableID integer = 0;
 
 	SELECT @TableID = viewtableid FROM ASRSysViews 
-		WHERE VIEWname = @sRealSource
+		WHERE viewname = @sRealSource;
 
-	IF ISNULL(@TABLEID, 0) = 0
-		selecT @TableID = Tableid FROM ASRSysTables where tablename = @sRealSource
+	IF ISNULL(@TableID, 0) = 0
+		selecT @TableID = Tableid FROM ASRSysTables where tablename = @sRealSource;
 
+	-- Get the most recent inserted key
+	SELECT @tablename = 'tbuser_' + TableName FROM ASRSysTables	WHERE tableID = @TableID
+	SELECT @piNewRecordID = convert(int, i.last_value) FROM sys.tables t
+		INNER JOIN sys.identity_columns i on t.object_id = i.object_id where t.name = @tablename;
+
+	-- Copy any child data
 	DECLARE @sParamDefinition nvarchar(MAX);
 	SET @sParamDefinition = N'@iParentTableID integer, @iNewRecordID integer, @iOriginalRecordID integer';
 	EXECUTE sp_executesql N'spASRCopyChildRecords @iParentTableID, @iNewRecordID, @iOriginalRecordID', @sParamDefinition
