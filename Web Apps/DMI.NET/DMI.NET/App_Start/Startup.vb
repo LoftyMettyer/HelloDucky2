@@ -7,8 +7,13 @@ Imports System.Data.SqlClient
 Public Class Startup
 	Public Sub Configuration(app As IAppBuilder)
 
-		' SignalR configuration
-		app.MapSignalR()
+		Try
+			app.MapSignalR()
+
+		Catch ex As Exception
+			Throw
+
+		End Try
 
 	End Sub
 End Class

@@ -148,25 +148,7 @@ Namespace Controllers
 			Try
 
 				If Not DatabaseHub.DatabaseOK Then
-
-					Dim objErrors = New ConfigurationErrorsModel
-
-					If Not DatabaseHub.HeartbeatOK Then
-						objErrors.Errors.Add(New ConfigurationError With {.Code = "0001",
-																															.Message = "Database connectivity failure",
-																															.Detail = "The IIS server was unable to establish a heartbeat to the OpenHR database."})
-					Else
-
-						If Not DatabaseHub.ServiceBrokerOK Then
-							objErrors.Errors.Add(New ConfigurationError With {.Code = "0002",
-																																.Message = "SQL Service Broker not running",
-																																.Detail = "The SQL server is unable to start the service broker."})
-						End If
-
-					End If
-
-					Return View("ConfigurationErrors", objErrors)
-
+					Return RedirectToAction("Configuration", "Error")
 				End If
 
 				Dim objServerSession As HR.Intranet.Server.SessionInfo = Session("sessionContext")

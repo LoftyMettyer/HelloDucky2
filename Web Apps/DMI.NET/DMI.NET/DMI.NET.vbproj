@@ -227,6 +227,7 @@
     <Compile Include="Code\Interfaces\IReport.vb" />
     <Compile Include="Code\Interfaces\IReportDetail.vb" />
     <Compile Include="Code\Hubs\DatabaseHub.vb" />
+    <Compile Include="Controllers\ErrorController.vb" />
     <Compile Include="Controllers\GenericController.vb" />
     <Compile Include="Helpers\LabelHelper.vb" />
     <Compile Include="Models\CalendarEvent.vb" />
@@ -1766,7 +1767,9 @@
     <Content Include="Views\Reports\Util_Def_9BoxGrid.vbhtml" />
     <Content Include="Views\Reports\_OutputNineBoxGrid.vbhtml" />
     <Content Include="Views\Home\AbsenceBreakdownConfiguration.vbhtml" />
-    <Content Include="Views\Account\ConfigurationErrors.vbhtml" />
+    <Content Include="Views\Error\Configuration.vbhtml" />
+    <Content Include="Views\Error\PageNotFound.vbhtml" />
+    <Content Include="Views\Error\InternalServer.vbhtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Global.asax" />
