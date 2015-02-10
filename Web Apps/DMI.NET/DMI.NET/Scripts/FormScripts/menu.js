@@ -1910,7 +1910,7 @@ function menu_refreshMenu() {
 					(sRecEditDate == sDummyDate));				
 	}
 	else {
-		if (sCurrentWorkPage == "FIND") {						
+		if (sCurrentWorkPage == "FIND") {
 			//frmFind = window.parent.frames("workframe").document.forms("frmFindForm");
 
 			frmFind = document.getElementById("frmFindForm");	
@@ -5340,7 +5340,7 @@ function saveInlineRowToDatabase(rowId) {
 function submitFollowOn() {	
 	var rowId = window.savedRow; //$("#findGridTable").getGridParam('selrow');	
 
-	if (frmData.txtErrorMessage.value != "") { //There was an error while saving
+	if ($('#txtErrorMessage').val() != "") { //There was an error while saving
 		$("#findGridTable").editRow(rowId); //Edit the row
 
 		//After a brief timeout, enable "Add" and "Edit" and disable "Save" and "Cancel"
@@ -5445,7 +5445,13 @@ function updateRowFromDatabase(rowid) {
 				$("#findGridTable").jqGrid('getLocalRow', currentRowId)[colNameInternalData] = cellValue;
 			}
 			//For 'NEW' records assign new ID to the row.
-			if(currentRowId == "0") $("#findGridTable #0").attr("ID", recordID);
+			if (currentRowId == "0") $("#findGridTable #0").attr("ID", recordID);
+
+			//reload grid (to ascertain currently highlighted row)
+			$("#findGridTable").trigger("reloadGrid");
+			//refresh menu!
+			menu_refreshMenu();
+
 		},
 		error: function (e) {}
 	});
