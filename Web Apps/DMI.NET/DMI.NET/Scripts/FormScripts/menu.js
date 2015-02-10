@@ -4981,24 +4981,6 @@ function menu_loadSelectOrderFilter(psType) {
 
 //NEW FUNCTIONS.
 
-	function menu_loadFind(target) {
-
-	$.ajax({
-	url: "/dmi.net/home/find",
-	dataType: 'html',
-	type: "POST",
-	success: function (data) {
-	$("#workframe").html(data);
-	//show workframe
-	$("#workframeset").show();
-},
-	error: function (req, status, errorObj) {
-	alert(status);
-}
-});
-}
-
-
 	function menu_insertMenuItem(parentULID, NewLICaption, NewLIID) {
 	var insertRef = "#" + parentULID;
 	if ($(insertRef).length > 0) {
