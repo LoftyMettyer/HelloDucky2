@@ -56,12 +56,13 @@ End Code
 				End Code
 			</div>
 		</div>
-
+		@Html.AntiForgeryToken()
 	End Using
 
 	<form action="default_Submit" method="post" id="frmGoto" name="frmGoto" style="visibility: hidden; display: none">
 		@Code
 			Html.RenderPartial("~/Views/Shared/gotoWork.ascx")
+			Html.AntiForgeryToken()
 		End Code
 	</form>
 </div>

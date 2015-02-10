@@ -46,6 +46,7 @@ Namespace Controllers
 		End Function
 
 		<HttpPost()>
+		<ValidateAntiForgeryToken>
 		Function Configuration_Submit(value As FormCollection)
 			'If (Request.Form("txtPrimaryStartMode") = "") Then
 			'    Return View()
@@ -177,6 +178,7 @@ Namespace Controllers
 #End Region
 
 		<HttpPost()>
+		<ValidateAntiForgeryToken>
 		Function newUser_Submit(value As FormCollection) As JsonResult
 
 			Dim objDataAccess As clsDataAccess = CType(Session("DatabaseAccess"), clsDataAccess)
@@ -238,6 +240,7 @@ Namespace Controllers
 		End Function
 
 		<HttpPost()>
+		<ValidateAntiForgeryToken>
 		Function passwordChange_Submit(value As FormCollection) As JsonResult
 
 			Dim objDataAccess As clsDataAccess = CType(Session("DatabaseAccess"), clsDataAccess)
@@ -339,6 +342,7 @@ Namespace Controllers
 
 
 		' GET: /Home
+		<HttpGet>
 		Function Main() As ActionResult
 
 			Dim objSessionInfo = CType(Session("SessionContext"), SessionInfo)
@@ -781,6 +785,7 @@ Namespace Controllers
 
 
 		<HttpPost()>
+		<ValidateAntiForgeryToken>
 		Function default_Submit()
 
 			If ValidateFormValue(Request.Form("txtGotoLineage"), "lineage") = "-1" Then
@@ -831,6 +836,7 @@ Namespace Controllers
 
 
 		<HttpPost()>
+		<ValidateAntiForgeryToken>
 		Function emptyoption_Submit()
 
 			On Error Resume Next
@@ -898,6 +904,7 @@ Namespace Controllers
 		End Function
 
 		<HttpPost()>
+		<ValidateAntiForgeryToken>
 		Function DefSel(value As FormCollection)
 
 			Session("utilTableID") = CInt(Request.Form("txtTableID"))
@@ -906,6 +913,7 @@ Namespace Controllers
 		End Function
 
 		<HttpPost()>
+		<ValidateAntiForgeryToken>
 		Function DefSel_Submit(value As FormCollection)
 			' Set some session variables used by all the util pages
 			Session("utiltype") = Request.Form("utiltype")
@@ -1016,6 +1024,8 @@ Namespace Controllers
 			Return View()
 		End Function
 
+		<HttpPost>
+		<ValidateAntiForgeryToken>
 		Function optionData_Submit() As ActionResult
 
 			On Error Resume Next
@@ -1051,6 +1061,8 @@ Namespace Controllers
 
 		End Function
 
+		<HttpPost>
+		<ValidateAntiForgeryToken>
 		Function Data_Submit() As ActionResult
 			Dim sErrorMsg As String = ""
 			Dim fWarning As Boolean = False
@@ -2431,6 +2443,7 @@ Namespace Controllers
 		End Function
 
 		<HttpPost()>
+		<ValidateAntiForgeryToken>
 		Function util_run_crosstabsDataSubmit()
 
 			On Error Resume Next
@@ -2474,6 +2487,7 @@ Namespace Controllers
 		End Function
 
 		<HttpPost()>
+		<ValidateAntiForgeryToken>
 		Function util_run_uploadtemplate(TemplateFile As HttpPostedFileBase) As ActionResult
 
 			Try
@@ -2501,6 +2515,7 @@ Namespace Controllers
 		End Function
 
 		<HttpPost()>
+		<ValidateAntiForgeryToken>
 		Function util_run_promptedvalues_submit(TemplateFile As HttpPostedFileBase) As ActionResult
 
 			Session("utiltype") = Request.Form("utiltype")
@@ -2526,6 +2541,8 @@ Namespace Controllers
 			Return PartialView()
 		End Function
 
+		<HttpPost>
+		<ValidateAntiForgeryToken>
 		Public Function util_run_crosstab_downloadoutput() As FilePathResult
 
 			Dim lngOutputFormat As OutputFormats = Request("txtFormat")
@@ -2841,6 +2858,8 @@ Namespace Controllers
 
 		End Function
 
+		<HttpPost>
+		<ValidateAntiForgeryToken>
 		Public Function util_run_nineboxgrid_downloadoutput() As FilePathResult
 
 			Dim lngOutputFormat As OutputFormats = Request("txtFormat")
@@ -3045,6 +3064,9 @@ Namespace Controllers
 			End If
 
 		End Function
+
+		<HttpPost>
+		<ValidateAntiForgeryToken>
 		Public Function util_run_customreport_downloadoutput() As FilePathResult
 
 			Dim lngOutputFormat = CType(Request("txtFormat"), OutputFormats)
@@ -3361,6 +3383,8 @@ Namespace Controllers
 			Return View()
 		End Function
 
+		<HttpPost>
+		<ValidateAntiForgeryToken>
 		Public Function util_run_calendarreport_breakdown() As ActionResult
 
 			Dim objCalendarEvent As New Models.CalendarEvent
@@ -3400,6 +3424,8 @@ Namespace Controllers
 
 		End Function
 
+		<HttpPost>
+		<ValidateAntiForgeryToken>
 		Function util_run_calendarreport_download() As FileStreamResult
 
 			Dim objCalendar = CType(Session("objCalendar" & Session("UtilID")), CalendarReport)
@@ -3494,8 +3520,8 @@ Namespace Controllers
 
 		End Function
 
-
-
+		<HttpPost>
+		<ValidateAntiForgeryToken>
 		Function util_run_calendarreport_data_submit() As ActionResult
 
 			On Error Resume Next
@@ -3549,8 +3575,8 @@ Namespace Controllers
 		End Function
 
 		<HttpPost(), ValidateInput(False)>
+		<ValidateAntiForgeryToken>
 		Function util_def_expression_Submit()
-
 
 			Dim objExpression As Expression
 			Dim iExprType As Integer
@@ -3631,6 +3657,7 @@ Namespace Controllers
 		End Function
 
 		<HttpPost()>
+		<ValidateAntiForgeryToken>
 		Function quickfind_Submit(value As FormCollection)
 			Dim sErrorMsg = ""
 
@@ -3738,13 +3765,12 @@ Namespace Controllers
 
 		End Function
 
-
 		Function emptyoption() As ActionResult
 			Return View()
 		End Function
 
-
 		<HttpPost()>
+		<ValidateAntiForgeryToken>
 		Function util_def_exprcomponent_submit(value As FormCollection)
 
 			Dim sErrorMsg As String = ""
@@ -3993,8 +4019,8 @@ Namespace Controllers
 		End Function
 
 		<HttpPost()>
+		<ValidateAntiForgeryToken>
 		Function util_def_picklist_submit()
-
 			Try
 
 				Dim objDataAccess As clsDataAccess = CType(Session("DatabaseAccess"), clsDataAccess)
@@ -4041,6 +4067,8 @@ Namespace Controllers
 			Return View()
 		End Function
 
+		<HttpPost>
+		<ValidateAntiForgeryToken>
 		Function picklistSelectionData_Submit(value As FormCollection)
 
 			' Read the information from the calling form.
@@ -4074,6 +4102,7 @@ Namespace Controllers
 		End Function
 
 		<HttpPost()>
+		<ValidateAntiForgeryToken>
 		Function filterselect_Submit(value As FormCollection)
 			Dim sErrorMsg = ""
 
@@ -4367,6 +4396,7 @@ Namespace Controllers
 		End Function
 
 		<HttpPost()>
+		<ValidateAntiForgeryToken>
 		Function BulkBooking_Submit(value As FormCollection)
 
 			Dim objDataAccess As clsDataAccess = CType(Session("DatabaseAccess"), clsDataAccess)
@@ -4571,6 +4601,8 @@ Namespace Controllers
 
 		End Function
 
+		<HttpPost>
+		<ValidateAntiForgeryToken>
 		Public Function util_run_mailmerge_completed() As FileStreamResult
 
 			Dim downloadTokenValue As String = Request("download_token_value_id")
@@ -4599,8 +4631,8 @@ Namespace Controllers
 			Return View()
 		End Function
 
-
 		<HttpPost()>
+		<ValidateAntiForgeryToken>
 		Function promptedValues_Submit(value As FormCollection)
 			On Error Resume Next
 
@@ -4870,6 +4902,7 @@ Namespace Controllers
 		End Function
 
 		<HttpPost()>
+		<ValidateAntiForgeryToken>
 	 Function orderselect_Submit(value As FormCollection)
 
 			Dim objDataAccess As clsDataAccess = CType(Session("DatabaseAccess"), clsDataAccess)
@@ -4955,6 +4988,7 @@ Namespace Controllers
 		End Function
 
 		<HttpPost()>
+		<ValidateAntiForgeryToken>
 	 Function lookupFind_Submit(value As FormCollection)
 
 			On Error Resume Next
@@ -5027,6 +5061,7 @@ Namespace Controllers
 		End Function
 
 		<HttpPost()>
+		<ValidateAntiForgeryToken>
 		Function linkFind_Submit(value As FormCollection)
 			On Error Resume Next
 
@@ -5098,6 +5133,7 @@ Namespace Controllers
 		End Function
 
 		<HttpPost()>
+		<ValidateAntiForgeryToken>
 		Public Function importTheme_Submit(themeFile As HttpPostedFileBase) As ActionResult
 
 			If themeFile.ContentLength > 0 Then
@@ -5274,7 +5310,8 @@ Namespace Controllers
 		End Function
 
 
-		<HttpPost()> _
+		<HttpPost()>
+		<ValidateAntiForgeryToken>
 		Function oleFind_Submit(filSelectFile As HttpPostedFileBase) As PartialViewResult
 			' On Error Resume Next
 
@@ -5587,6 +5624,7 @@ Namespace Controllers
 		End Function
 
 		<HttpPost()>
+		<ValidateAntiForgeryToken>
 		Function stdrpt_AbsenceCalendar_submit(value As FormCollection)
 
 			Session("stdrpt_AbsenceCalendar_StartMonth") = Request.Form("txtStartMonth")
@@ -5708,6 +5746,7 @@ Namespace Controllers
 		''' <returns></returns>
 		''' <remarks></remarks>
 		<HttpPost>
+		<ValidateAntiForgeryToken>
 	 Function Absence_Breakdown_Configuration(objModel As StandardReportsConfigurationModel) As ActionResult
 
 			Dim deserializer = New JavaScriptSerializer()
@@ -5774,7 +5813,6 @@ Namespace Controllers
 
 		<HttpPost()>
 		Public Function ShowChart(model As PopoutChartModel) As PartialViewResult
-
 
 			Return PartialView("_showChart", model)
 

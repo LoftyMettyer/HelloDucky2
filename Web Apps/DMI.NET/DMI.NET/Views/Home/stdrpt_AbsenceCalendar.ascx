@@ -313,10 +313,12 @@ end if
 		<input type="hidden" id="txtErrorMSG" name="txtErrorMSG" value="<%Response.Write(objAbsenceCalendar.ErrorMSG)%>">
 		<input type="hidden" id="txtDisableRegions" name="txtDisableRegions" value="<%Response.Write(objAbsenceCalendar.DisableRegions)%>">
 		<input type="hidden" id="txtDisableWPs" name="txtDisableWPs" value="<%Response.Write(objAbsenceCalendar.DisableWPs)%>">
+		<%=Html.AntiForgeryToken()%>
 </form>
 
 <form action="emptyoption_submit" method="post" id="frmGotoOption" name="frmGotoOption" style="visibility: hidden; display: none">
 		<%Html.RenderPartial("~/Views/Shared/gotoOption.ascx")%>
+		<%=Html.AntiForgeryToken()%>
 </form>
 
 <!-- Form to return to record edit screen -->

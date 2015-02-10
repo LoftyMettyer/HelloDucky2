@@ -323,6 +323,7 @@
 
 <form action="util_def_exprComponent_Submit" method="post" id="frmGotoOption" name="frmGotoOption">
 	<%Html.RenderPartial("~/Views/Shared/gotoOption.ascx")%>
+	<%=Html.AntiForgeryToken()%>
 </form>
 
 <form id="util_def_exprcomponent_frmOriginalDefinition" name="util_def_exprcomponent_frmOriginalDefinition">

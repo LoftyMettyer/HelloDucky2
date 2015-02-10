@@ -334,11 +334,14 @@
 			<input type="hidden" id="txtLocaleDateFormat" name="txtLocaleDateFormat" value="">
 			<input type="hidden" id="txtLocaleDecimalSeparator" name="txtLocaleDecimalSeparator" value="">
 			<input type="hidden" id="txtLocaleThousandSeparator" name="txtLocaleThousandSeparator" value="">
+
+			<%=Html.AntiForgeryToken()%>
 		</form>
 		
 		<%If bAddUploadTemplate Then%>
 			<form name="frmTemplateFile" id="frmTemplateFile" method="post" enctype="multipart/form-data" action="util_run_uploadtemplate" target="submit-iframe">
 				Template File: <input style="width: 500px" type="file" id="TemplateFile" name="TemplateFile" onchange="SubmitTemplate();" />
+				<%=Html.AntiForgeryToken()%>
 			</form>		
 		<%End If%>
 		

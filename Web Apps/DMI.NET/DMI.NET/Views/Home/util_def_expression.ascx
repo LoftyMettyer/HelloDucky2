@@ -68,6 +68,7 @@
 
 <form action="default_Submit" method="post" id="frmGoto" name="frmGoto" style="visibility: hidden; display: none">
 	<%Html.RenderPartial("~/Views/Shared/gotoWork.ascx")%>
+	<%=Html.AntiForgeryToken()%>
 </form>
 
 <form id="frmOriginalDefinition" style="visibility: hidden; display: none">
@@ -191,6 +192,7 @@
 	<input type="hidden" id="txtSend_reaction" name="txtSend_reaction">
 	<input type="hidden" id="txtSend_tableID" name="txtSend_tableID" value='<% =session("utiltableid")%>'>
 	<input type="hidden" id="txtSend_names" name="txtSend_names" value="">
+	<%=Html.AntiForgeryToken()%>
 </form>
 
 <form id="frmTest" name="frmTest" target="test" method="post" action="util_test_expression_pval" style="visibility: hidden; display: none">

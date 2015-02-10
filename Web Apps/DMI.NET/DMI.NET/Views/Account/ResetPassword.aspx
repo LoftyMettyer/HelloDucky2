@@ -162,6 +162,9 @@
 	
 		<input type="hidden" id="txtQueryString" name="txtQueryString" value="<%=sQueryString%>"/>
 		<input type="hidden" id="txtUser" name="txtUser" value="<%=sUserName%>"/>      
+
+		<%=Html.AntiForgeryToken()%>
+
 	<%Html.EndForm()%>
 </div>
 

@@ -104,6 +104,9 @@
 				</td>
 			</tr>
 		</table>
+
+	<%=Html.AntiForgeryToken()%>
+
 	<%Html.EndForm()%>
 </div>
 	</div>

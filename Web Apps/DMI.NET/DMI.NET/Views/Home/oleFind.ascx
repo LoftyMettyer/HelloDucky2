@@ -1021,7 +1021,7 @@
 		<input type='hidden' id="txtOLEFileSize" name="txtOLEFileSize" value="<%=strFileSize%>">
 		<input type='hidden' id="txtOLEModifiedDate" name="txtOLEModifiedDate" value="<%=strDateModified%>">
 		<%Html.RenderPartial("~/Views/Shared/gotoOption.ascx")%>
-
+		<%=Html.AntiForgeryToken()%>
 	</form>
 
 	<input type="file" id="fileAddFile" name="fileAddFile" style="height: 22px; position: absolute; top: 0; left: -9999em;">

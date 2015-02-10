@@ -235,6 +235,7 @@
 		<input type="hidden" name="txtShowCaptions" id="txtShowCaptions" value="<%=Session("CALREP_ShowCaptions").ToString()%>">
 		<input type="hidden" name="txtShowWeekends" id="txtShowWeekends" value="<%=Session("CALREP_ShowWeekends").ToString()%>">
 		<input type="hidden" name="txtChangeOptions" id="txtChangeOptions"  value="<%=Session("CALREP_ChangeOptions").ToString()%>">
+		<%=Html.AntiForgeryToken()%>
 </form>
 
 <form id="frmCalendarData" name="frmCalendarData" style="visibility: visible; display: block">
@@ -305,6 +306,7 @@
 	<input type="hidden" id="txtUtilType" name="txtUtilType" value="<%=session("utilType")%>">
 	<input type="hidden" id="txtUtilID" name="txtUtilID" value="<%=Session("utilID")%>">
 	<input type="hidden" id="download_token_value_id" name="download_token_value_id"/>
+	<%=Html.AntiForgeryToken()%>
 </form>
 
 <form id="frmOriginalDefinition" style="visibility: hidden; display: none">
@@ -335,6 +337,7 @@
 		<input type="hidden" name="txtShowWorkingPattern" id="txtShowWorkingPattern">
 		<input type="hidden" name="txtBaseIndex" id="txtBaseIndex">
 		<input type="hidden" name="txtLabelIndex" id="txtLabelIndex">
+		<%=Html.AntiForgeryToken()%>
 	</form>
 </div>
 

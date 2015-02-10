@@ -128,6 +128,9 @@
 
 
 				</table>
+
+				<%=Html.AntiForgeryToken()%>
+
 			</form>
 
 

@@ -525,7 +525,8 @@
 		Response.Write(String.Format("<input type='hidden' id='filterID' name='filterID' value='{0}'>", Session("filterID")) & vbCrLf)
 		
 	%>
-
+	
+	<%=Html.AntiForgeryToken()%>
 </form>
 
 <script type="text/javascript">promptedValues_onload();</script>

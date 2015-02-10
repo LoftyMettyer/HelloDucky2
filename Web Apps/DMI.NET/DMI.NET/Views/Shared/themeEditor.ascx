@@ -173,6 +173,7 @@
 								</div>
 		</div>
 	</div>
+	<%=Html.AntiForgeryToken()%>
 </form>
 <!-- /themeroller -->
 

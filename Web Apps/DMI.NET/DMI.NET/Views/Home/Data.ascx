@@ -562,6 +562,7 @@
 		<input type="hidden" id="txtELAction" name="txtELAction">
 		<input type="hidden" id="txtELCurrRecCount" name="txtELCurrRecCount" value="0">
 		<input type="hidden" id="txtEL1stRecPos" name="txtEL1stRecPos" value="0">
+		<%=Html.AntiForgeryToken()%>
 </form>
 
 <form id="frmData" name="frmData">

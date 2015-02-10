@@ -1167,6 +1167,7 @@
 				<input type="hidden" id="txtTableID" name="txtTableID" value='<%=iBaseTableID%>'>
 				<input type="hidden" id="txtSingleRecordID" name="txtSingleRecordID" value='<%=session("singleRecordID")%>'>
 </div>
+			<%=Html.AntiForgeryToken()%>
 		</form>
 
 
@@ -1188,6 +1189,7 @@
 				<input type="hidden" id="OnlyMine" name="OnlyMine" value='<%=Session("OnlyMine")%>'>
 				<input type="hidden" id="txtTableID" name="txtTableID" value='<%=iBaseTableID%>'>
 				<input type="hidden" id="SelectedTableID" name="SelectedTableID">
+				<%=Html.AntiForgeryToken()%>
 		</form>
 
 
@@ -1198,10 +1200,12 @@
 
 	<form action="default_Submit" method="post" id="frmGoto" name="frmGoto" style="visibility: hidden; display: none">
 		<%Html.RenderPartial("~/Views/Shared/gotoWork.ascx")%>
+		<%=Html.AntiForgeryToken()%>
 	</form>
 
 	<form action="emptyoption_Submit" method="post" id="frmGotoOption" name="frmGotoOption" style="visibility: hidden; display: none">
 		<%Html.RenderPartial("~/Views/Shared/gotoOption.ascx")%>
+		<%=Html.AntiForgeryToken()%>
 	</form>
 
 </div>

@@ -491,6 +491,7 @@
 	
 	<form action="quickfind_Submit" method="post" id="frmGotoOption" name="frmGotoOption">
 		 <%Html.RenderPartial("~/Views/Shared/gotoOption.ascx")%>
+		 <%=Html.AntiForgeryToken()%>
 	</form>
 	
 

@@ -33,6 +33,7 @@
 		<input type="hidden" id="txtOptionParentTableID" name="txtOptionParentTableID">
 		<input type="hidden" id="txtOptionParentRecordID" name="txtOptionParentRecordID">
 		<input type="hidden" id="txtOption1000SepCols" name="txtOption1000SepCols">
+		<%=Html.AntiForgeryToken()%>
 </form>
 
 <form id="frmOptionData" name="frmOptionData">

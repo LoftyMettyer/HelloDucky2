@@ -175,6 +175,7 @@
 	<input type="hidden" id="txtFirstRecPos" name="txtFirstRecPos">
 	<input type="hidden" id="txtCurrentRecCount" name="txtCurrentRecCount">
 	<input type="hidden" id="txtGotoLocateValue" name="txtGotoLocateValue">
+	<%=Html.AntiForgeryToken()%>
 </form>
 
 <form id="frmSelectDataUseful" name="frmSelectDataUseful">

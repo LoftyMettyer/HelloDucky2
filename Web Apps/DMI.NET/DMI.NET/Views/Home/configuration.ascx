@@ -771,6 +771,8 @@
 	<input type="hidden" id="txtWarn_GlobalUpdate" name="txtWarn_GlobalUpdate" value="0">
 	<input type="hidden" id="txtWarn_GlobalDelete" name="txtWarn_GlobalDelete" value="0">
 	<input type="hidden" id="txtWarn_Import" name="txtWarn_Import" value="0">
+
+	<%=Html.AntiForgeryToken()%>
 </form>
 
 <form id="frmOriginalConfiguration" name="frmOriginalConfiguration">
@@ -815,6 +817,7 @@
 
 <form action="default_Submit" method="post" id="frmGoto" name="frmGoto" style="visibility: hidden; display: none">
 	<%Html.RenderPartial("~/Views/Shared/gotoWork.ascx")%>
+	<%=Html.AntiForgeryToken()%>
 </form>
 
 <script type="text/javascript">

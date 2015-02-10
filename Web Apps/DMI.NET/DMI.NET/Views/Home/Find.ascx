@@ -737,6 +737,7 @@ Response.Write("				<input type='hidden' id=txtErrorDescription name=txtErrorDes
 
 	<form action="default_Submit" method="post" id="frmGoto" name="frmGoto">
 		<%Html.RenderPartial("~/Views/Shared/gotoWork.ascx")%>
+		<%=Html.AntiForgeryToken()%>
 	</form>
 
 	<script type="text/javascript">

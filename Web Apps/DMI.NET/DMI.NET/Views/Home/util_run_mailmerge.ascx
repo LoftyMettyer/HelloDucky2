@@ -125,6 +125,7 @@
 	<input type="hidden" id="norecords" name="norecords" value="false">
 	<input type="hidden" id="nodefinition" name="nodefinition" value="false">
 	<input type="hidden" id="download_token_value_id" name="download_token_value_id"/>
+	<%=Html.AntiForgeryToken()%>
 </form>
 
 <script type="text/javascript">

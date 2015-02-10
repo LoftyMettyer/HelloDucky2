@@ -143,6 +143,7 @@ Namespace Controllers
 		End Function
 
 		' GET: /Account/Login
+		<HttpGet>
 		Function Login() As ActionResult
 
 			Try
@@ -177,6 +178,7 @@ Namespace Controllers
 		End Function
 
 		<HttpPost()>
+		<ValidateAntiForgeryToken>
 		Function Login(loginviewmodel As LoginViewModel, Optional isWidgetLogin As Boolean = False,
 					Optional widgetUser As String = "",
 					Optional widgetPassword As String = "",
@@ -527,6 +529,7 @@ Namespace Controllers
 
 
 		<HttpPost()>
+		<ValidateAntiForgeryToken>
 		Function ForcedPasswordChange_Submit(value As FormCollection) As ActionResult
 
 			Dim fSubmitPasswordChange = (Len(Request.Form("txtGotoPage")) = 0)
@@ -584,11 +587,13 @@ Namespace Controllers
 			Return View()
 		End Function
 
+		<HttpGet>
 		Function ForgotPassword() As ActionResult
 			Return View()
 		End Function
 
 		<HttpPost()>
+		<ValidateAntiForgeryToken>
 		Function ForgotPassword_Submit(value As FormCollection) As ActionResult
 			Dim protocol As String = "http"
 			Dim domainName As String
@@ -638,6 +643,7 @@ Namespace Controllers
 		End Function
 
 		<HttpPost()>
+		<ValidateAntiForgeryToken>
 		Function ResetPassword_Submit(value As FormCollection) As ActionResult
 			Dim Password As String = Request.Form("txtPassword1")
 			Dim QueryString As String = Request.Form("txtQueryString")
@@ -660,8 +666,6 @@ Namespace Controllers
 		End Function
 
 	End Class
-
-
 
 	Public Class JsonData_DBValue
 		Public Property Caption() As String

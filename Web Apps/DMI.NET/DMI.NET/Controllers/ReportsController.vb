@@ -89,6 +89,7 @@ Namespace Controllers
 		End Function
 
 		<HttpPost, ValidateInput(False)>
+		<ValidateAntiForgeryToken>
 	 Function util_def_customreport(objModel As CustomReportModel) As ActionResult
 
 			Dim objSaveWarning As SaveWarningModel
@@ -216,6 +217,7 @@ Namespace Controllers
 		End Function
 
 		<HttpPost, ValidateInput(False)>
+		<ValidateAntiForgeryToken>
 	 Function util_def_mailmerge(objModel As MailMergeModel) As ActionResult
 
 			Dim objSaveWarning As SaveWarningModel
@@ -256,6 +258,7 @@ Namespace Controllers
 		End Function
 
 		<HttpPost, ValidateInput(False)>
+		<ValidateAntiForgeryToken>
 		Function util_def_crosstab(objModel As CrossTabModel) As ActionResult
 
 			Dim objSaveWarning As SaveWarningModel
@@ -282,6 +285,7 @@ Namespace Controllers
 		End Function
 
 		<HttpPost, ValidateInput(False)>
+		<ValidateAntiForgeryToken>
 		Function util_def_9boxgrid(objModel As NineBoxGridModel) As ActionResult
 
 			Dim objSaveWarning As SaveWarningModel
@@ -308,6 +312,7 @@ Namespace Controllers
 		End Function
 
 		<HttpPost, ValidateInput(False)>
+		<ValidateAntiForgeryToken>
 		Function util_def_calendarreport(objModel As CalendarReportModel) As ActionResult
 
 			Dim objSaveWarning As SaveWarningModel

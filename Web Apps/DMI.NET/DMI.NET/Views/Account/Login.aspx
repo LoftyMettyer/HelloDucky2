@@ -92,6 +92,8 @@
 	<input type="hidden" id="txtExcelVer" name="txtExcelVer" value="12">
 	<input type="hidden" id="txtMSBrowser" name="txtMSBrowser" value="false" />
 
+	<%=Html.AntiForgeryToken()%>
+
 	<%Html.EndForm()%>
 	</div>
 		
