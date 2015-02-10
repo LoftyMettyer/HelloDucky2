@@ -112,7 +112,7 @@
 %>
 
 <script type="text/javascript">
-		function crosstab_loadAddRecords() {
+	function crosstab_loadAddRecords() {
 
 		var iCount;
 		iCount = new Number(txtLoadCount.value);
@@ -176,6 +176,15 @@
 
 <%If Not objCrossTab.NoRecords Then%>
 <script type="text/javascript">
+	$(document).on('keydown', function (e) {
+		if (e.currentTarget.activeElement.type == "checkbox") {
+			if (e.keyCode == 32) {
+				if (!/Firefox[\/\s](\d+\.\d+)/.test(navigator.userAgent)) { //test for Firefox
+					e.currentTarget.activeElement.click();
+				}
+			}
+		}
+	});
 
 	util_run_crosstabs_window_onload();
 
