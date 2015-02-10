@@ -7,7 +7,6 @@
 <form id="frmpicklistSelectionUseful" name="frmpicklistSelectionUseful" style="visibility: hidden; display: none">
 	<input type='hidden' id="txtSelectionType" name="txtSelectionType" value='<%=session("selectionType")%>'>
 	<input type='hidden' id="txtTableID" name="txtTableID" value='<%=session("selectionTableID")%>'>
-	<input type="hidden" id="txtMenuSaved" name="txtMenuSaved" value="0">
 </form>
 
 <script type="text/javascript">

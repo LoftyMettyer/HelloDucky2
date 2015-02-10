@@ -4679,63 +4679,6 @@ function menu_loadSelectOrderFilter(psType) {
 	data_refreshData();
 }
 
-	function menu_openPersonnelRecEdit() {
-//	var i;
-//	var iindex;
-//	var sName;
-//	var sTemp;
-//	var sToolNameKey;
-//	var sToolNameTable;
-//	var sSubBand;
-//	
-//	if ((frmMenuInfo.txtUserType.value == 1) && 
-//		(frmMenuInfo.txtDoneSelfServiceStart.value == 0)) 
-//	{
-//		
-//		frmMenuInfo.txtDoneSelfServiceStart.value = 1;
-//		
-//		refreshDatabaseMenu();
-//		for(i=0; i<abMainMenu.Bands.Item("mnubandDatabase").Tools.Count(); i++){
-//			sName = abMainMenu.Bands.Item("mnubandDatabase").Tools.Item(i).name;
-//			sToolNameKey = sName.substr(0, 3);
-//			sTemp = sName.substr(3, sName.length - 3);
-//			
-//			iIndex = sTemp.indexOf("_");
-//			if (iIndex >= 0) {
-//				sToolNameTable = sTemp.substr(0, iIndex);
-
-//				if ((frmMenuInfo.txtPersonnel_EmpTableID.value == sToolNameTable) &&
-//					((sToolNameKey == "PT_") ||	(sToolNameKey == "PV_"))) {
-
-//					loadRecordEditPage(sName);								
-//					return;
-//				}
-//			}
-//			else {
-//				sToolNameTable = sTemp;
-
-//				if ((frmMenuInfo.txtPersonnel_EmpTableID.value == sToolNameTable) &&
-//					(sToolNameKey == "PS_")) {
-//					
-//					sSubBand = abMainMenu.Bands.Item("mnubandDatabase").Tools.Item(i).SubBand;
-//					if (sSubBand.length > 0) {
-//						if(abMainMenu.Bands.Item(sSubBand).Tools.Count() > 0) {
-//						
-//							sName = abMainMenu.Bands.Item(sSubBand).Tools.Item(0).Name;
-//							loadRecordEditPage(sName);								
-//							return;
-//						}
-//					}
-//				}			
-//			}
-//		}		
-//	}	
-//	else
-//	{
-//		loadPage("default");
-//	}
-}
-
 	function menu_loadRecordDefSelPage(piDefSelType) {
 	
 	var frmOptionArea;

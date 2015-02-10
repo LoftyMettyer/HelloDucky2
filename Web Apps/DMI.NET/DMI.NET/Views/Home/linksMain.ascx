@@ -1435,9 +1435,7 @@
 	<input type="hidden" id="txtDoneDatabaseMenu" name="txtDoneDatabaseMenu" value="0">
 	<input type="hidden" id="txtDoneQuickEntryMenu" name="txtDoneQuickEntryMenu" value="0">
 	<input type="hidden" id="txtDoneTableScreensMenu" name="txtDoneTableScreensMenu" value="0">
-	<input type="hidden" id="txtDoneSelfServiceStart" name="txtDoneSelfServiceStart" value="0">
 
-	<input type="hidden" id="txtMenuSaved" name="txtMenuSaved" value="0">
 </form>
 
 <div id="utilities">

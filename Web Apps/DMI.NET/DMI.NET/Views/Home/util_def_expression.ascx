@@ -144,8 +144,6 @@
 	<input type="hidden" id="txtLocaleDecimal" name="txtLocaleDecimal" value='<% =session("LocaleDecimalSeparator")%>'>
 	<input type="hidden" id="txtExprColourMode" name="txtExprColourMode" value='<% =session("ExprColourMode")%>'>
 	<input type="hidden" id="txtExprNodeMode" name="txtExprNodeMode" value='<% =session("ExprNodeMode")%>'>
-	<input type="hidden" id="txtLastNode" name="txtLastNode">
-	<input type="hidden" id="txtMenuSaved" name="txtMenuSaved" value="0">
 
 	<%
 		Dim sErrorDescription As String
