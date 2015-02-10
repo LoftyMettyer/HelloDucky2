@@ -614,7 +614,23 @@
 				(frmpermissions.grantdelete.value == 0) &&
 				(frmpermissions.grantrun.value == 0))));
 		button_disable(frmDefSel.cmdRun, (fNoneSelected || (frmpermissions.grantrun.value == 0)));
+
+			// If delete permission is given for the report but the 'Read Only' permission has been given in Group Access then disable the delete button
+			if (fHasRows && IsDeletePermitted && fFromMenu) {
+				DisableDeleteButtonIfDefinationHasReadOnlyAccess('mnutoolDeleteReportFind');
+			}
 		}
+
+	// If the selected record has Read Only permission given in the Group Access then disable the delete button
+	function DisableDeleteButtonIfDefinationHasReadOnlyAccess(menuItem) {
+		var rowId = $("#DefSelRecords").getGridParam('selrow');
+		if (rowId != null) {
+			var gridData = $("#DefSelRecords").getRowData(rowId);
+			if (gridData.Access == 'ro') {
+				menu_toolbarEnableItem(menuItem, false);
+			}
+		}
+	}
 
 	function showproperties() {
 
