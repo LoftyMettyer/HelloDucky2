@@ -54,10 +54,6 @@
 
 		$(function () {
 			attachGrid();
-
-			$("#SortOrders").find('input[type=checkbox]').each(function () {
-				CheckBoxClick($(this));
-			});
 		})
 
 		function removeSortOrder() {
@@ -148,7 +144,11 @@
 				onSelectRow: function (id) {
 					refreshSortButtons();					
 				},
-				afterInsertRow: function (rowID) {										
+				afterInsertRow: function (rowID) {
+					// Bind checkbox's onchange event after insert row
+					$("tr.jqgrow#" + rowID + ' input[type=checkbox]').each(function () {
+						CheckBoxClick($(this));
+					});
 				},
 				loadComplete: function (data) {
 					if ('@Model.ReportType' == '@UtilityType.utlCustomReport') {
