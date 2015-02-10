@@ -77204,6 +77204,7 @@ CREATE PROCEDURE [dbo].[spASRIntInsertNewRecord]
 (
 	@piNewRecordID	integer	OUTPUT,
 	@FromRecordID integer,
+	@piTableID integer,
 	@psInsertDef		nvarchar(MAX),
 	@errorMessage	nvarchar(MAX) OUTPUT
 )
@@ -77328,19 +77329,10 @@ BEGIN
 	END
 
 	-- Run the constructed SQL INSERT string
-	EXECUTE sp_executesql @sInsertString;
-
-
-	DECLARE @TableID integer = 0;
-
-	SELECT @TableID = viewtableid FROM ASRSysViews 
-		WHERE viewname = @sRealSource;
-
-	IF ISNULL(@TableID, 0) = 0
-		selecT @TableID = Tableid FROM ASRSysTables where tablename = @sRealSource;
+	EXECUTE sp_executesql @sInsertString;	
 
 	-- Get the most recent inserted key
-	SELECT @tablename = 'tbuser_' + TableName FROM ASRSysTables	WHERE tableID = @TableID
+	SELECT @tablename = 'tbuser_' + TableName FROM ASRSysTables	WHERE tableID = @piTableID
 	SELECT @piNewRecordID = convert(int, i.last_value) FROM sys.tables t
 		INNER JOIN sys.identity_columns i on t.object_id = i.object_id where t.name = @tablename;
 
@@ -77348,7 +77340,7 @@ BEGIN
 	DECLARE @sParamDefinition nvarchar(MAX);
 	SET @sParamDefinition = N'@iParentTableID integer, @iNewRecordID integer, @iOriginalRecordID integer';
 	EXECUTE sp_executesql N'spASRCopyChildRecords @iParentTableID, @iNewRecordID, @iOriginalRecordID', @sParamDefinition
-		, @iParentTableID = @TableID
+		, @iParentTableID = @piTableID
 		, @iNewRecordID = @piNewRecordID
 		, @iOriginalRecordID = @FromRecordID;
 

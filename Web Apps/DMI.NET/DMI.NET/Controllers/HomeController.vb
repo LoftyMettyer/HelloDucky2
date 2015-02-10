@@ -1196,11 +1196,12 @@ Namespace Controllers
 							Try
 								Dim lngOriginalRecordID = CInt(ValidateFormValue(Request.Form("txtOriginalRecordID"), "integer"))
 
-								Dim prmRecordID As New SqlParameter("piNewRecordID", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
+								Dim prmRecordID As New SqlParameter("piNewRecordID", SqlDbType.Int) With {.Direction = ParameterDirection.Output}								
 								Dim prmErrorMessage As New SqlParameter("errorMessage", SqlDbType.NVarChar, -1) With {.Direction = ParameterDirection.Output}
 
 								objDataAccess.ExecuteSP("spASRIntInsertNewRecord" _
 									, prmRecordID _
+									, New SqlParameter("piTableID", SqlDbType.Int) With {.Value = lngTableID} _
 									, New SqlParameter("FromRecordID", SqlDbType.Int) With {.Value = lngOriginalRecordID} _
 									, New SqlParameter("psInsertDef", SqlDbType.VarChar, -1) With {.Value = sInsertUpdateDef} _
 									, prmErrorMessage)
