@@ -1098,12 +1098,13 @@ function value_changeType() {
 	else {
 		$('#frmMainForm #txtValue').show();
 		$('#frmMainForm #selectValue').hide();
-
+		
 		if (frmMainForm.cboValueType.options[frmMainForm.cboValueType.selectedIndex].value == 4) {
 			//Date value
 			$('#txtValue').datepicker();
-			$('#txtValue').on('blur', function (sender) {				
+			$('#txtValue').on('change', function (sender) {
 				validateDate(sender);
+				$('#txtPValDefault').datepicker('widget').hide('true');
 			});
 		} else {
 			$('#txtValue').datepicker('destroy');
@@ -1424,9 +1425,11 @@ function pVal_changeType() {
 		$('#txtPValDefault').datepicker();
 		$('#txtPValDefault').on('blur', function (sender) {
 			validateDate(sender);
+			$('#txtPValDefault').datepicker('widget').hide('true');
 		});
 	} else {
 		$('#txtPValDefault').datepicker('destroy');
+		$('#txtPValDefault').off('blur');
 	}
 
 	frmMainForm.txtPValDefault.value = "";
