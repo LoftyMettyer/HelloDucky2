@@ -551,6 +551,9 @@ function find_window_onload() {
 					onClickButton: function () {
 						$("#findGridTable")[0].toggleToolbar(); // Toggle toolbar on & off when Search button is pressed.
 						$("#findGridTable")[0].clearToolbar(); // clear menu
+
+						$("#findGridTable_iledit").toggleClass('ui-state-disabled', $('#frmFindForm .ui-search-toolbar').is(':visible'));
+						$("#findGridTable_iladd").toggleClass('ui-state-disabled', $('#frmFindForm .ui-search-toolbar').is(':visible'));
 					},
 					position: 'first',
 					title: 'Search',
