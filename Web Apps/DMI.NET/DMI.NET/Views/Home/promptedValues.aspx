@@ -395,7 +395,8 @@
 							Case PromptedDateType.Explicit
 								' Explicit value
 								'If the explicit value is 1899-12-30 00:00:00.000 we need to display an empty date
-								If ConvertSQLDateToLocale(rowPromptedValues("valuedate").ToString) = "30/12/1899" Then
+								Dim is1899 As Boolean = rowPromptedValues("valuedate").Year.ToString() = "1899"
+								If is1899 Then
 									dateString = ""
 								Else 'Display the explicit value coming down from the database
 									dateString = ConvertSQLDateToLocale(rowPromptedValues("valuedate").ToString)
@@ -434,7 +435,7 @@
 						End Select
 						
 						Response.Write(String.Format("<input type='text' data-type='date' id='prompt_4_{0}' name='prompt_4_{0}' value='{1}' style='width: 58%;'>", componentID, dateString) & vbCrLf)
-					
+						
 					Case ExpressionValueTypes.giEXPRVALUE_TABLEVALUE
 						Response.Write(String.Format("<select id='promptLookup_{0}' name='promptLookup_{0}' style='width: 58%;' class='combo' onchange='comboChange({0})'>", componentID) & vbCrLf)
 
