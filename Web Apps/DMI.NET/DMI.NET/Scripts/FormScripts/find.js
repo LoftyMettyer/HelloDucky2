@@ -326,10 +326,14 @@ function find_window_onload() {
 										}
 									});
 								} else if ((ColumnDataType == 12 || ColumnDataType == 2 || ColumnDataType == 4) && ColumnControlType == 2 && ColumnLookupColumnID != 0) { //Lookup
+									var sAlignment = 'left';
+									if (ColumnDataType == 2) sAlignment = 'right';
+
 									colModel.push({
 										name: sColumnName,
 										id: iColumnId,
 										editable: true,
+										align: sAlignment,
 										type: "lookup",
 										columnLookupTableID: ColumnLookupTableID,
 										columnLookupColumnID: ColumnLookupColumnID,
@@ -337,12 +341,15 @@ function find_window_onload() {
 										columnLookupFilterValueID: ColumnLookupFilterValueID,
 										editoptions: {
 											readonly: sReadOnly,
+											align: sAlignment,
 											dataColumnId: iColumnId,
 											dataDefaultCalcExprID: iDefaultValueExprID,
 											dataInit: function (element) {
 												$(element).on('keydown', function () {return false;}); //Prevent the user from typing in lookups
 												$(element).attr('onpaste', 'return false;'); //Prevent the user from pasting into lookups
 												$(element).addClass('msClear'); //Remove the "x" that IE shows on the right side of input boxes
+												var sAlignment = $(element).attr('align');
+												$(element).css('text-align', sAlignment);
 
 												//On clicking any cell on the lookup column, popup the lookup dialog
 												$(element).on('click', function () { showLookupForColumn(element); });
