@@ -1394,7 +1394,7 @@
 
 <div id="pwfs"><%Response.Write(_PendingWorkflowStepsHTMLTable.ToString())%></div>
 
-<form action="" method="POST" id="frmMenuInfo" name="frmMenuInfo">
+<div id="frmMenuInfo" >
 	<%
 		Response.Write("<INPUT type=""hidden"" id=txtDefaultStartPage name=txtDefaultStartPage value=""" & Replace(Session("DefaultStartPage"), """", "&quot;") & """>")
 	%>
@@ -1436,7 +1436,7 @@
 	<input type="hidden" id="txtDoneQuickEntryMenu" name="txtDoneQuickEntryMenu" value="0">
 	<input type="hidden" id="txtDoneTableScreensMenu" name="txtDoneTableScreensMenu" value="0">
 
-</form>
+</div>
 
 <div id="utilities">
 	<form name="frmUtilityPrompt" method="post" action="util_run_promptedValues" id="frmUtilityPrompt" style="visibility: hidden; display: none">

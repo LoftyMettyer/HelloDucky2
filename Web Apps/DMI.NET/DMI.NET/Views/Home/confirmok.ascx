@@ -76,7 +76,7 @@
 		else {
 
 			var frmData = OpenHR.getForm("dataframe", "frmData");
-			var frmMenuInfo = OpenHR.getForm("menuframe", "frmMenuInfo");
+			var frmMenuInfo = $("#frmMenuInfo")[0].children;
 
 			if ((sAction.substring(0, 3) == "PT_") ||
 			(sAction.substring(0, 3) == "PV_")) {

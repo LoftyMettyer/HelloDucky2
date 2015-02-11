@@ -36,7 +36,7 @@
 		Response.Write("  var objFileTool;" & vbCrLf)
 		Response.Write("  var sLastToolName;" & vbCrLf)
 		Response.Write("  var lngLastScreenID;" & vbCrLf & vbCrLf)
-		Response.Write("  var frmMenuInfo = document.getElementById('frmMenuInfo');" & vbCrLf)
+		Response.Write("  	var frmMenuInfo = $(""#frmMenuInfo"")[0].children;" & vbCrLf)
 		Response.Write("  if (frmMenuInfo.txtDoneDatabaseMenu.value == 1) {" & vbCrLf)
 		Response.Write("    return;" & vbCrLf)
 		Response.Write("  }" & vbCrLf & vbCrLf)
@@ -127,7 +127,7 @@
 	Response.Write("function refreshTableScreensMenu() {" & vbCrLf)
 	Response.Write("  var objFileTool;" & vbCrLf)
 	Response.Write("  var lngTableScreensCount;" & vbCrLf & vbCrLf)
-	Response.Write("  var frmMenuInfo = document.getElementById('frmMenuInfo');" & vbCrLf)
+	Response.Write("  	var frmMenuInfo = $(""#frmMenuInfo"")[0].children;" & vbCrLf)
 	Response.Write("  if (frmMenuInfo.txtDoneTableScreensMenu.value == 1) {" & vbCrLf)
 	Response.Write("	  return;" & vbCrLf)
 	Response.Write("  }" & vbCrLf & vbCrLf)
@@ -469,7 +469,7 @@
 	});
 </script>
 
-<FORM action="" method=POST id=frmMenuInfo name=frmMenuInfo>
+<div id="frmMenuInfo" >
 <%
 	Response.Write("<INPUT type=""hidden"" id=txtDefaultStartPage name=txtDefaultStartPage value=""" & Replace(Session("DefaultStartPage"), """", "&quot;") & """>")
 	Response.Write("<INPUT type=""hidden"" id=txtDatabase name=txtDatabase value=""" & Replace(ApplicationSettings.LoginPage_Database, """", "&quot;") & """>")
@@ -513,7 +513,7 @@
 	<input type="hidden" id="txtDoneTableScreensMenu" name="txtDoneTableScreensMenu" value="0">
 	
 	<input type="hidden" id="txtProgressMessage" name="txtProgressMessage" value="Loading..."/>
-</FORM>
+</div>
 
 <script type="text/javascript">
 

@@ -195,7 +195,7 @@ function menu_MenuClick(sTool) {
 	hasChanged = -1;
 	
 	//added for non-IE compatibility
-	var frmMenuInfo = document.getElementById("frmMenuInfo");
+	var frmMenuInfo = $("#frmMenuInfo")[0].children;
 
 	sToolName = sTool;
 	sCurrentWorkPage = OpenHR.currentWorkPage();
@@ -1477,7 +1477,7 @@ function menu_refreshMenu() {
 	var sRecEditDate;
 	var sDummyDate;
 	//Get the frmMenuInfo object for implicit use in this function (non-ie)
-	var frmMenuInfo = document.getElementById("frmMenuInfo");
+	var frmMenuInfo = $("#frmMenuInfo")[0].children;
 	
 	// Standard reports
 	var fStdRptAbsenceCalendarEnabled;
@@ -2773,8 +2773,8 @@ function menu_OutOfOfficeTurnOff(status) {
 	var frmData;
 	var iIndex;
 	var sToolKey;
-	var frmMenuInfo = document.getElementById('frmMenuInfo');
-	
+	var frmMenuInfo = $("#frmMenuInfo")[0].children;
+
 	menu_ShowWait("Loading screen...");
 	menu_disableMenu();
 	
@@ -3073,7 +3073,7 @@ function menu_OutOfOfficeTurnOff(status) {
 	
 	frmRecEditArea = OpenHR.getForm("workframe", "frmRecordEditForm");
 	frmOptionArea = OpenHR.getForm("optionframe", "frmGotoOption");
-	var frmMenuInfo = document.getElementById("frmMenuInfo");
+	var frmMenuInfo = $("#frmMenuInfo")[0].children;
 
 	frmOptionArea.txtGotoOptionScreenID.value = frmRecEditArea.txtCurrentScreenID.value;
 	frmOptionArea.txtGotoOptionTableID.value = frmRecEditArea.txtCurrentTableID.value;
@@ -4469,7 +4469,7 @@ function menu_loadSelectOrderFilter(psType) {
 			menu_disableFindMenu();
 
 			frmOptionArea = OpenHR.getForm("optionframe", "frmGotoOption");
-			var frmMenuInfo = OpenHR.getForm("menuframe", "frmMenuInfo");
+			var frmMenuInfo = $("#frmMenuInfo")[0].children;
 
 			frmOptionArea.txtGotoOptionScreenID.value = 0;
 			frmOptionArea.txtGotoOptionTableID.value = 0;
@@ -4507,8 +4507,8 @@ function menu_loadSelectOrderFilter(psType) {
 	menu_disableMenu();
 
 	frmOptionArea = OpenHR.getForm("optionframe", "frmGotoOption");
-	var frmMenuInfo = document.getElementById("frmMenuInfo");
-		
+	var frmMenuInfo = $("#frmMenuInfo")[0].children;
+
 	frmOptionArea.txtGotoOptionScreenID.value = 0;
 	frmOptionArea.txtGotoOptionTableID.value = 0;
 	frmOptionArea.txtGotoOptionViewID.value = 0;
@@ -4539,7 +4539,7 @@ function menu_loadSelectOrderFilter(psType) {
 	var frmDataArea;
 	var iUserChoice;
 	lngRecordID = selectedRecordID();
-	var frmMenuInfo = document.getElementById("frmMenuInfo");
+	var frmMenuInfo = $("#frmMenuInfo")[0].children;
 
 	if (lngRecordID > 0) {
 	if ((frmMenuInfo.txtTB_WaitListTableInsert.value.toUpperCase() == "TRUE") &&
@@ -4605,8 +4605,8 @@ function menu_loadSelectOrderFilter(psType) {
 	frmFindArea = OpenHR.getForm("workframe", "frmFindForm");
 	lngRecordID = frmFindArea.txtCurrentParentRecordID.value;
 
-	var frmMenuInfo = document.getElementById("frmMenuInfo");
-	
+	var frmMenuInfo = $("#frmMenuInfo")[0].children;
+
 	if (lngRecordID > 0) {
 	menu_ShowWait("Loading matching employees...");
 	menu_disableFindMenu();
@@ -4639,8 +4639,8 @@ function menu_loadSelectOrderFilter(psType) {
 	var iResult;
 	var frmDataArea;
 	var frmRecEditArea;
-	var frmMenuInfo = document.getElementById("frmMenuInfo");
-	
+	var frmMenuInfo = $("#frmMenuInfo")[0].children;
+
 	// Get the number of course bookings 
 	// (to see if we need to prompt for them to be transferred).
 	menu_disableMenu();

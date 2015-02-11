@@ -16,7 +16,7 @@
 	function data_window_onload() {		
 		var frmData = document.getElementById("frmData");
 		var frmGetData = document.getElementById("frmGetData");
-		var frmMenuInfo = OpenHR.getForm("menuframe", "frmMenuInfo");
+		var frmMenuInfo = $("#frmMenuInfo")[0].children;
 		var frmOptionArea = OpenHR.getForm("optionframe", "frmGotoOption");
 		var frmRecEditArea = OpenHR.getForm("workframe", "frmRecordEditForm");
 		var frmFindForm = OpenHR.getForm("workframe", "frmFindForm");

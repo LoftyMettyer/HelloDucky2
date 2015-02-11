@@ -81,7 +81,8 @@
 		}
 
 		if (fOK == true) {
-			var frmMenuInfo = document.getElementById('frmMenuInfo');
+			var frmMenuInfo = $("#frmMenuInfo")[0].children;
+
 			var sKey = new String("photoPath_");
 			sKey = sKey.concat(frmMenuInfo.txtDatabase.value);
 			var sPath = OpenHR.GetRegistrySetting("HR Pro", "DataPaths", sKey);
@@ -540,7 +541,7 @@
 		var psFile = $(clickObj).attr('data-fileName');
 		var plngMaxEmbedSize = $(clickObj).attr('data-maxEmbedSize');
 		var pbIsReadOnly = $(clickObj).attr('data-readOnly');
-		var frmMenuInfo = document.getElementById('frmMenuInfo');
+		var frmMenuInfo = $("#frmMenuInfo")[0].children;
 		var isPhoto = ($(clickObj).attr('data-controlType') == '1024');
 
 		if ($("#txtCurrentRecordID").val() == 0) {
