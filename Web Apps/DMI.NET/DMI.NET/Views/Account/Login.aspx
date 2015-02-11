@@ -52,20 +52,7 @@
 				<%=Html.ValidationMessageFor(Function(loginviewmodel) loginviewmodel.WindowsAuthentication)%>
 			</div>
 			<%End If%>
-		
-			<div id="divDetails" style="display: none;">
-				<div class="loginframeField">
-					<%=Html.LabelFor(Function(loginviewmodel) loginviewmodel.Database)%>
-					<%=Html.TextBoxFor(Function(loginviewmodel) loginviewmodel.Database, New With {.id = "txtDatabase", .onkeypress = "CheckKeyPressed(event)"})%>
-					<%=Html.ValidationMessageFor(Function(loginviewmodel) loginviewmodel.Database)%>
-				</div>
-				<div class="loginframeField">
-					<%=Html.LabelFor(Function(loginviewmodel) loginviewmodel.Server)%>
-					<%=Html.TextBoxFor(Function(loginviewmodel) loginviewmodel.Server, New With {.id = "txtServer", .onkeypress = "CheckKeyPressed(event)"})%>
-					<%=Html.ValidationMessageFor(Function(loginviewmodel) loginviewmodel.Server)%>
-				</div>
-			</div>
-	
+			
 			<div class="centered">
 				<input type="button" id="submitLoginDetails" name="submitLoginDetails" onclick="SubmitLoginDetails()" value="Login" />
 				<input type="button" id="btnToggleDetailsDiv" name="details" class="ui-button <%=IIf(Model.SetDetails, "", "hidden")%>" value="Details >>" />		
@@ -80,21 +67,18 @@
 		<%End If%>
 	
 	</div>
-	
-	<input type="hidden" id="txtSetDetails" name="txtSetDetails" value="<%=Session("showLoginDetails")%>">
-	
+		
 	<input type="hidden" id="txtLocaleCulture" name="txtLocaleCulture" value="">
 
 	<input type="hidden" id="txtLocaleDecimalSeparator" name="txtLocaleDecimalSeparator" value="<%=LocaleDecimalSeparator()%>">
 	<input type="hidden" id="txtLocaleThousandSeparator" name="txtLocaleThousandSeparator" value="<%: Html.Raw(LocaleThousandSeparator())%>">
-	<input type="hidden" id="txtSystemUser" name="txtSystemUser" value="<%=replace(Request.ServerVariables("LOGON_USER"),"/","\")%>">
-	<input type="hidden" id="txtWordVer" name="txtWordVer" value="12">
-	<input type="hidden" id="txtExcelVer" name="txtExcelVer" value="12">
-	<input type="hidden" id="txtMSBrowser" name="txtMSBrowser" value="false" />
 
 	<%=Html.AntiForgeryToken()%>
 
 	<%Html.EndForm()%>
+	
+	<input type="hidden" id="txtSystemUser" name="txtSystemUser" value="<%=replace(Request.ServerVariables("LOGON_USER"),"/","\")%>">
+
 	</div>
 		
 	<script type="text/javascript">
@@ -171,7 +155,6 @@
 			$('#txtPassword').css('color', pfDisable ? 'lightgray' : '').prop('readonly', pfDisable);
 		}
 
-
 		function ToggleWindowsAuthentication() {
 			if ($('#chkWindowsAuthentication').prop('checked') == true) {
 				DisableUsernamePassword(true);
@@ -197,10 +180,6 @@
 				$('#divDetails').hide();
 			}
 		}
-
-
-		//Set MS browser flag
-		if ("ActiveXObject" in window) document.getElementById("txtMSBrowser").value = 'true';
 
 		//Is this a browser that supports file API; which is OK for all modern browsers (IE10+ etc)
 		if (!(window.File && window.FileReader && window.FileList && window.Blob)) {

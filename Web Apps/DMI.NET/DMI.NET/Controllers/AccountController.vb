@@ -161,7 +161,6 @@ Namespace Controllers
 				Session("filterDef") = ""
 				Session("optionAction") = ""
 
-				Session("showLoginDetails") = Request.QueryString("Details")
 			Catch ex As Exception
 				Session("ErrorText") = FormatError(ex.Message)
 				Return RedirectToAction("Loginerror")
@@ -171,7 +170,6 @@ Namespace Controllers
 
 			Dim objLoginView As New LoginViewModel
 			objLoginView.ReadFromCookie()
-			objLoginView.ReadSystemConnection()
 
 			Return View(objLoginView)
 
@@ -200,13 +198,6 @@ Namespace Controllers
 					Return View(loginviewmodel)
 				End If
 
-				If loginviewmodel.Database.Contains("'") Then
-					ModelState.AddModelError("Database", "The database name contains an apostrophe.")
-					loginviewmodel.SetDetails = True
-					loginviewmodel.ReadFromCookie()
-					Return View(loginviewmodel)
-				End If
-
 				'Dim sReferringPage
 				Dim sUserName As String
 				Dim sPassword As String
@@ -225,8 +216,6 @@ Namespace Controllers
 					' Read the User Name and Password from the Login form.
 					sUserName = loginviewmodel.UserName
 					sPassword = loginviewmodel.Password
-					sDatabaseName = loginviewmodel.Database
-					sServerName = loginviewmodel.Server
 					If loginviewmodel.WindowsAuthentication Then
 						bWindowsAuthentication = True
 					End If
@@ -236,31 +225,22 @@ Namespace Controllers
 					sLocaleDecimalSeparator = Request.Form("txtLocaleDecimalSeparator")
 					sLocaleThousandSeparator = Request.Form("txtLocaleThousandSeparator")
 
-					Session("WordVer") = Request.Form("txtWordVer")
-					Session("ExcelVer") = Request.Form("txtExcelVer")
 				Else
 					' Read the User Name and Password from the Login form.
 					sUserName = widgetUser
 					sPassword = widgetPassword
-					sDatabaseName = widgetDatabase
-					sServerName = ".\sql2012"
 					' widgetServer
 					bWindowsAuthentication = False
 
 					sLocaleDecimalSeparator = "."
 					sLocaleThousandSeparator = ","
 
-					Session("WordVer") = "12"
-					Session("ExcelVer") = "12"
 				End If
 
 				Session("isMobileDevice") = (Platform.IsMobileDevice() = True)
 
 				' Store the username, for use in forcedchangepassword.
 				Session("Username") = LCase(sUserName)
-
-				' HRPRO-3531
-				Session("MSBrowser") = (Request.Form("txtMSBrowser") = "true")
 
 				Dim objLogin As LoginInfo
 				Dim objServerSession As New SessionInfo
@@ -269,6 +249,11 @@ Namespace Controllers
 				Dim objDataAccess As clsDataAccess
 
 				Try
+
+					' Read the database/server from the configuration
+					Dim systemConnection = New SqlConnection(ConfigurationManager.ConnectionStrings("OpenHR").ConnectionString)
+					sDatabaseName = systemConnection.Database
+					sServerName = systemConnection.DataSource
 
 					' Is the DB the correct version
 					Dim objAppVersion As Version = Assembly.GetExecutingAssembly().GetName().Version

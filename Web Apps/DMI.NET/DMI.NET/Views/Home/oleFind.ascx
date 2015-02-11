@@ -142,7 +142,8 @@
 					$('#tdDescription h6').text('');
 					$('#oleCaption h3').html('Empty');
 				} else {
-					if ('<%=Session("MSBrowser")%>' == 'True') {
+
+					if ("ActiveXObject" in window){
 						$('#tdDescription h6').text('Right-click the link below and choose \'Save As...\' to download this file.');
 						$('#oleCaption h3').html('<a title="(Right-click this link and choose \'Save As...\' to download this file.)" target="submit-iframe" href="' + $('#txtOLEFile').val() + '">Linked file: ' + newFilename + '</a>');
 					} else {

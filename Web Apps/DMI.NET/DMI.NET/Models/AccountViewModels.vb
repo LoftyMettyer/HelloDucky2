@@ -21,14 +21,6 @@ Namespace Models
 		<Display(Name:="Password :")>
 		Public Property Password As String
 
-		<Required(ErrorMessage:="The database is not valid.")> _
-		<Display(Name:="Database :")>
-		Public Property Database As String
-
-		<Required(ErrorMessage:="The server is not valid.")> _
-		<Display(Name:="Server :")>
-		Public Property Server As String
-
 		<Display(Name:="Use Windows Authentication")>
 		Public Property WindowsAuthentication As Boolean
 
@@ -90,9 +82,6 @@ Namespace Models
 
 			Try
 
-				Database = ApplicationSettings.LoginPage_Database
-				Server = ApplicationSettings.LoginPage_Server
-
 				' -- USER NAME --
 				If Current.Request.QueryString("user") <> "" Then
 					UserName = CleanStringForJavaScript(Current.Request.QueryString("user").ToString())
@@ -108,15 +97,6 @@ Namespace Models
 			Catch ex As Exception
 
 			End Try
-
-		End Sub
-
-		Public Sub ReadSystemConnection()
-
-			Dim systemConnection = New SqlConnection(ConfigurationManager.ConnectionStrings("OpenHR").ConnectionString)
-
-			Database = systemConnection.Database
-			Server = systemConnection.DataSource
 
 		End Sub
 
