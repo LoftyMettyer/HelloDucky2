@@ -11,11 +11,6 @@ function rowCount() {
 	return $("#findGridTable tr").length - 1;
 }
 
-function bookmarksCount() {
-	var selRowIds = $('#findGridTable').jqGrid('getGridParam', 'selarrrow');
-	return selRowIds.length;
-}
-
 function moveFirst() {
 	try {
 		var firstRecordID = $("#findGridTable").jqGrid('getDataIDs')[0];
@@ -102,7 +97,7 @@ function find_window_onload() {
 							sColumnName = sColDef.substr(0, iIndex);
 							var sColumnDisplayName = dataCollection.item(i).getAttribute("data-colname");
 							var iColumnId = dataCollection.item(i).getAttribute("data-columnid");
-							var sColumnEditable = dataCollection.item(i).getAttribute("data-editable") == "1" ? true : false;
+							var sReadOnly = dataCollection.item(i).getAttribute("data-editable") == "1" ? false : true;
 							var ColumnDataType = dataCollection.item(i).getAttribute("data-datatype");
 							var ColumnControlType = dataCollection.item(i).getAttribute("data-controltype");
 							var ColumnSize = dataCollection.item(i).getAttribute("data-size");
@@ -118,7 +113,7 @@ function find_window_onload() {
 							var iDefaultValueExprID = dataCollection.item(i).getAttribute("data-DefaultValueExprID");
 							var BlankIfZero = dataCollection.item(i).getAttribute("data-BlankIfZero");
 
-							if (sColumnEditable == true) {
+							if (sReadOnly == false) {
 								thereIsAtLeastOneEditableColumn = true;
 							}
 
@@ -148,8 +143,9 @@ function find_window_onload() {
 										id: iColumnId,
 										edittype: 'checkbox',
 										formatter: 'checkbox',
-										editable: sColumnEditable,
+										editable: true,
 										editoptions: {
+											readonly: sReadOnly,
 											dataColumnId: iColumnId,
 											dataDefaultCalcExprID: iDefaultValueExprID,
 											value: "1:0",
@@ -172,10 +168,11 @@ function find_window_onload() {
 											edittype: 'text',
 											sorttype: 'integer',
 											formatter: 'numeric',
-											editable: sColumnEditable,
+											editable: true,
 											align: 'right',
 											width: 100,
 											editoptions: {
+												readonly: sReadOnly,
 												defaultValue: BlankIfZero == '1' ? '' : '0',
 												columnSize: ColumnSize,
 												columnDecimals: ColumnDecimals,
@@ -228,10 +225,11 @@ function find_window_onload() {
 											edittype: 'text',
 											sorttype: 'integer',
 											formatter: 'numeric',
-											editable: false,
+											editable: true,
 											align: 'right',
 											width: 100,
 											editoptions: {
+												readonly: true,
 												defaultValue: getDefaultValueForColumn(iColumnId, "integer")
 											}
 										});
@@ -240,9 +238,10 @@ function find_window_onload() {
 										colModel.push({
 											name: sColumnName,
 											id: iColumnId,
-											editable: sColumnEditable,
+											editable: true,
 											type: 'spinner',
 											editoptions: {
+												readonly: sReadOnly,
 												size: 10,
 												maxlengh: 10,
 												min: ColumnSpinnerMinimum,
@@ -281,9 +280,10 @@ function find_window_onload() {
 										},
 										align: 'left',
 										width: 100,
-										editable: sColumnEditable,
+										editable: true,
 										type: "date",
 										editoptions: {
+											readonly: sReadOnly,
 											dataColumnId: iColumnId,
 											dataDefaultCalcExprID: iDefaultValueExprID,
 											size: 20,
@@ -312,9 +312,10 @@ function find_window_onload() {
 										name: sColumnName,
 										edittype: "textarea",
 										id: iColumnId,
-										editable: sColumnEditable,
+										editable: true,
 										type: 'textarea',
 										editoptions: {
+											readonly: sReadOnly,
 											dataColumnId: iColumnId,
 											dataDefaultCalcExprID: iDefaultValueExprID,
 											dataInit: function (element) {
@@ -328,13 +329,14 @@ function find_window_onload() {
 									colModel.push({
 										name: sColumnName,
 										id: iColumnId,
-										editable: sColumnEditable,
+										editable: true,
 										type: "lookup",
 										columnLookupTableID: ColumnLookupTableID,
 										columnLookupColumnID: ColumnLookupColumnID,
 										columnLookupFilterColumnID: ColumnLookupFilterColumnID,
 										columnLookupFilterValueID: ColumnLookupFilterValueID,
 										editoptions: {
+											readonly: sReadOnly,
 											dataColumnId: iColumnId,
 											dataDefaultCalcExprID: iDefaultValueExprID,
 											dataInit: function (element) {
@@ -356,9 +358,10 @@ function find_window_onload() {
 										name: sColumnName,
 										edittype: "select",
 										id: iColumnId,
-										editable: sColumnEditable,
+										editable: true,
 										type: "select",
 										editoptions: {
+											readonly: sReadOnly,
 											dataColumnId: iColumnId,
 											dataDefaultCalcExprID: iDefaultValueExprID,
 											dataInit: function (element) {
@@ -385,11 +388,12 @@ function find_window_onload() {
 									colModel.push({
 										name: sColumnName,
 										id: iColumnId,
-										editable: false, //Hardcoded to false, see Notes on TFS 12732 for reason why
+										editable: true, //Hardcoded to false, see Notes on TFS 12732 for reason why
 										type: "workingpattern",
 										formatter: workingPatternFormatter,
 										unformat: workingPatternDeformatter,
 										editoptions: {
+											readonly: sReadOnly,
 											defaultValue: getDefaultValueForColumn(iColumnId, "workingpattern")
 										}
 									});								
@@ -398,9 +402,10 @@ function find_window_onload() {
 										name: sColumnName,
 										id: iColumnId,
 										width: 100,
-										editable: sColumnEditable,
+										editable: true,
 										type: 'text',
 										editoptions: {
+											readonly: sReadOnly,
 											dataColumnId: iColumnId,
 											dataDefaultCalcExprID: iDefaultValueExprID,
 											size: ColumnSize,
@@ -427,7 +432,7 @@ function find_window_onload() {
 										name: sColumnName,
 										id: iColumnId,
 										width: 100,
-										editable: sColumnEditable,
+										editable: true,
 										type: 'other',
 										edittype:'custom',
 										align: 'right',
@@ -440,6 +445,7 @@ function find_window_onload() {
 											defaultValue: BlankIfZero == '1' ? '' : space('0', ColumnSize, ColumnDecimals)
 										},										
 										editoptions: {
+											readonly: sReadOnly,
 											custom_element: ABSNumber,
 											custom_value: ABSNumberValue,
 											columnSize: ColumnSize,
@@ -458,9 +464,10 @@ function find_window_onload() {
 										name: sColumnName,
 										id: iColumnId,
 										width: 100,
-										editable: sColumnEditable,
+										editable: true,
 										type: 'other',
 										editoptions: {
+											readonly: sReadOnly,
 											dataColumnId: iColumnId,
 											dataDefaultCalcExprID: iDefaultValueExprID,
 											size: "20",
@@ -830,12 +837,7 @@ function find_window_onload() {
 
 /* Return the ID of the record selected in the find form. */
 function selectedRecordID() {
-	var iRecordId;
-
-	iRecordId = $("#findGridTable").getGridParam('selrow');
-	iRecordId = $("#findGridTable").jqGrid('getCell', iRecordId, 'ID');
-
-	return (iRecordId);
+	return $("#findGridTable").getGridParam('selrow');
 }
 
 /* Sequential search the grid for the required ID. */
@@ -856,11 +858,12 @@ function showLookupForColumn(element) {
 	//If we are editing a lookup cell we need to popup a window with its values
 
 	if (!$("#findGridTable_iledit").hasClass('ui-state-disabled')) //If we are not in edit mode then return
-		return;
-
+		return false;
+	
 	var el = $(element, $("#findGridTable").rows).closest("td");
 	var clickedColumnId = $("#findGridTable").jqGrid("getGridParam", "colModel")[$(el).index()].id;
-	var rowId = $("#findGridTable").getGridParam('selrow') - 1;
+	var rowId = $("#findGridTable").getGridParam('selrow');
+	var rowNumber = $("#findGridTable").jqGrid("getDataIDs").indexOf(rowId);
 	var columnLookupTableID = $("#findGridTable").jqGrid("getGridParam", "colModel")[$(el).index()].columnLookupTableID;
 	var columnLookupColumnID = $("#findGridTable").jqGrid("getGridParam", "colModel")[$(el).index()].columnLookupColumnID;
 	var columnLookupFilterColumnID = $("#findGridTable").jqGrid("getGridParam", "colModel")[$(el).index()].columnLookupFilterColumnID;
@@ -880,18 +883,18 @@ function showLookupForColumn(element) {
 	if (columnLookupFilterColumnID == 0 && columnLookupFilterValueID == 0) { //It doesn't, i.e. it's not filtered
 		colModelContainsRequiredLookupColumn = true;
 	} else { // It does, i.e. it's filtered
-		columnLookupTableID = $("#findGridTable").jqGrid("getGridParam", "colModel")[$(el).index()].id;
+		//columnLookupTableID = $("#findGridTable").jqGrid("getGridParam", "colModel")[$(el).index()].id;
 		var colModel = $("#findGridTable").jqGrid("getGridParam", "colModel");
 		colModelContainsRequiredLookupColumn = false;
 		for (var i = 0; i <= colModel.length - 1; i++) {
 			if (colModel[i].id == columnLookupFilterValueID) {
-				if (isNaN(rowId)) { //If this is a new row get the filterCellValue from the last row added (i.e. the new one)
+				if ((isNaN(rowId)) || (rowId == 0)) { //If this is a new row get the filterCellValue from the last row added (i.e. the new one)
 					filterCellValue = $("#findGridTable").jqGrid("getGridParam", "data")[$("#findGridTable").jqGrid("getGridParam", "reccount") - 1][colModel[i].name];
 					if (typeof filterCellValue == "undefined") {
 						filterCellValue = '';
 					}
 				} else {//Get the filterCellValue from the current row
-					filterCellValue = $("#findGridTable").jqGrid("getGridParam", "data")[rowId][colModel[i].name];
+					filterCellValue = $("#findGridTable").jqGrid("getGridParam", "data")[rowNumber][colModel[i].name];
 				}
 
 				colModelContainsRequiredLookupColumn = true;
@@ -910,11 +913,11 @@ function showLookupForColumn(element) {
 
 	if (eval('isLookupTable_' + clickedColumnId) == true) {
 		lookupUrl += 'generic/GetLookupFindRecords';
-		lookupParameters = { piLookupColumnID: columnLookupColumnID, psFilterValue: filterCellValue, piCallingColumnID: columnLookupTableID, piFirstRecPos: 0 };
+		lookupParameters = { piLookupColumnID: columnLookupColumnID, psFilterValue: filterCellValue, piCallingColumnID: clickedColumnId, piFirstRecPos: 0 };
 	} else {
 		lookupUrl += 'generic/GetLookupFindRecords2';
 		//tableId and orderId below are defined in Find.ascx so they are be available here
-		lookupParameters = { piTableID: tableId, piOrderID: orderId, piLookupColumnID: columnLookupColumnID, psFilterValue: filterCellValue, piCallingColumnID: columnLookupTableID, piFirstRecPos: 0 };
+		lookupParameters = { piTableID: tableId, piOrderID: orderId, piLookupColumnID: columnLookupColumnID, psFilterValue: filterCellValue, piCallingColumnID: clickedColumnId, piFirstRecPos: 0 };
 	}
 
 	$.ajax({
