@@ -124,12 +124,22 @@
 	}
 
 	function fixedlinks_mnutoolAboutHRPro() {
+
+		if (OpenHR.currentWorkPage() == "FIND" && rowWasModified) { //Inform the user that they have unsaved changes on the Find window
+			OpenHR.modalMessage("You have unsaved changes.<br/><br/>Please action them before navigating away.");
+			return false;
+		}
+
 		OpenHR.showAboutPopup();
 	}
 
 	function showThemeEditor() {
-		$("#divthemeRoller").dialog("open");
-		//$("#themeeditoraccordion").accordion("resize");
+		if (OpenHR.currentWorkPage() == "FIND" && rowWasModified) { //Inform the user that they have unsaved changes on the Find window
+			OpenHR.modalMessage("You have unsaved changes.<br/><br/>Please action them before navigating away.");
+			return false;
+		}
+
+		$("#divthemeRoller").dialog("open");		
 		
 		//load the themeeditor form now
 		loadPartialView("themeEditor", "home", "divthemeRoller", null);
@@ -1194,13 +1204,13 @@
 					</li>
 					<%If UCase(Session("ui-layout-selectable")) = "TRUE" Then%>
 					<li class="linkspagebuttontext" id="userDropdownmenu_Layout">
-						<a href="javascript: showThemeEditor();">
+						<a onclick="javascript: showThemeEditor();">
 							<span>Layout</span>
 						</a>
 					</li>
 					<%End If%>
 					<li class="linkspagebuttontext">
-						<a id="mnutoolFixedAbout" href="javascript:fixedlinks_mnutoolAboutHRPro()" rel="table" title="">
+						<a id="mnutoolFixedAbout" onclick="javascript:fixedlinks_mnutoolAboutHRPro();" rel="table" title="">
 							<span>About</span>
 						</a>
 					</li>

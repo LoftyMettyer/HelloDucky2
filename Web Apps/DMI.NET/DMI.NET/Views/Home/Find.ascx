@@ -109,14 +109,14 @@
 						
 						If Len(sErrorDescription) = 0 Then
 							Dim homelinkURL = "javascript:loadPartialView(""linksMain"", ""Home"", ""workframe"", null);"
-							Response.Write(String.Format("<div class='pageTitleDiv'><a href='{0}' title='Back'><i class='pageTitleIcon icon-circle-arrow-left'></i></a><span class='pageTitle'>Find - " & _
+							Response.Write(String.Format("<div class='pageTitleDiv'><a onclick='{0}' title='Back'><i class='pageTitleIcon icon-circle-arrow-left'></i></a><span class='pageTitle'>Find - " & _
 											Replace(prm_psTitle.Value.ToString, "_", " ") & "</span>" & vbCrLf, homelinkURL))
 							Response.Write("<INPUT type='hidden' id=txtQuickEntry name=txtQuickEntry value=" & prm_pfQuickEntry.Value.ToString & "></div>" & vbCrLf)
 						End If
 					Else
 						' SSI View.
 						Dim homelinkURL = "javascript:loadPartialView(""linksMain"", ""Home"", ""workframe"", null);"
-						Response.Write(String.Format("<div class='pageTitleDiv'><a href='{0}' title='Back'><i class='pageTitleIcon icon-circle-arrow-left'></i></a><span class='pageTitle'>" & _
+						Response.Write(String.Format("<div class='pageTitleDiv'><a onclick='{0}' title='Back'><i class='pageTitleIcon icon-circle-arrow-left'></i></a><span class='pageTitle'>" & _
 								ViewBag.pageTitle & "</span>" & vbCrLf, homelinkURL))
 						Response.Write("<INPUT type='hidden' id=txtQuickEntry name=txtQuickEntry value=" & ViewBag.pageTitle & "></div>" & vbCrLf)
 					End If

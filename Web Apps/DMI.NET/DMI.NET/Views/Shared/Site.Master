@@ -479,6 +479,13 @@
 		window.LocaleDecimalSeparator = "<%:Html.Raw(LocaleDecimalSeparator())%>";
 
 		function loadPartialView(action, controller, targetDiv, params) {
+
+			if (OpenHR.currentWorkPage() == "FIND" && rowWasModified) { //Inform the user that they have unsaved changes on the Find window
+				OpenHR.modalMessage("You have unsaved changes.<br/><br/>Please action them before navigating away.");
+				return false;
+			}
+
+
 			$.ajax({
 				url: window.ROOT + controller + "/" + action,
 				data: { psScreenInfo: params },
