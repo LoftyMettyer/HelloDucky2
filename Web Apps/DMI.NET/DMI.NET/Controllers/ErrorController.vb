@@ -20,7 +20,6 @@ Namespace Controllers
 		End Function
 
 		Public Function InternalServer() As ActionResult
-			Response.StatusCode = 200
 			Return View("InternalServer")
 		End Function
 
