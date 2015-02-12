@@ -412,160 +412,52 @@ INSERT ASRSysTableTriggers (TriggerID, TableID, Name, CodePosition, IsSystem, Co
 
 GO
 
-INSERT ASRSysTableTriggers (TriggerID, TableID, Name, CodePosition, IsSystem, Content) VALUES (9, 242, 'Transfer Appointment Allowances to Personnel', 0, 1, ' 	MERGE INTO [dbo].[tbuser_Allowances] AS Target
-		USING (SELECT a.[ID_1], i.[Type], i.[Effective_Date], i.[End_Date], i.[Frequency], i.[Amount], i.[Currency], a.[Post_ID], i.[ApptAllID], i.[_deleted], i.[_deleteddate]
-			FROM [dbo].[tbuser_Appointment_Allowances] aa
-			INNER JOIN inserted i ON i.[ID] = aa.[ID]
-			INNER JOIN [dbo].[Appointments] a ON a.[ID] = i.[ID_3]
-			WHERE i.[ApptAllID] > 0)
-		AS Source ([ID_1], [Type], [Effective_Date], [End_Date], [Frequency], [Amount], [Currency], [Post_ID], [ApptAllID], [_deleted], [_deleteddate])
-		ON Target.[ID_1] = Source.[ID_1] AND Target.[ApptAllID] = Source.[ApptAllID] AND Target.[Post_ID] = Source.[Post_ID]
-	WHEN MATCHED THEN
-		UPDATE SET [Type] = Source.[Type], [Effective_Date] = Source.[Effective_Date], [End_Date] = Source.[End_Date], [Frequency] = Source.[Frequency], [Amount] = Source.[Amount], [Currency] = Source.[Currency]
-			, [_deleted] = Source.[_deleted], [_deleteddate] = Source.[_deleteddate]
-	WHEN NOT MATCHED BY TARGET THEN
-		INSERT ([ID_1], [Type], [Effective_Date], [End_Date], [Frequency], [Amount], [Currency], [Post_ID], [ApptAllID])
-		VALUES ([ID_1], [Type], [Effective_Date], [End_Date], [Frequency], [Amount], [Currency], [Post_ID], [ApptAllID]);');
-
-GO
-
-INSERT ASRSysTableTriggers (TriggerID, TableID, Name, CodePosition, IsSystem, Content) VALUES (10, 242, 'Update Appointment Allowances to Personnel', 1, 1, ' 	MERGE INTO [dbo].[tbuser_Allowances] AS Target
-		USING (SELECT a.[ID_1], i.[Type], i.[Effective_Date], i.[End_Date], i.[Frequency], i.[Amount], i.[Currency], a.[Post_ID], i.[ApptAllID], i.[_deleted], i.[_deleteddate]
-			FROM [dbo].[tbuser_Appointment_Allowances] aa
-			INNER JOIN inserted i ON i.[ID] = aa.[ID]
-			INNER JOIN [dbo].[Appointments] a ON a.[ID] = i.[ID_3]
-			WHERE i.[ApptAllID] > 0)
-		AS Source ([ID_1], [Type], [Effective_Date], [End_Date], [Frequency], [Amount], [Currency], [Post_ID], [ApptAllID], [_deleted], [_deleteddate])
-		ON Target.[ID_1] = Source.[ID_1] AND Target.[ApptAllID] = Source.[ApptAllID] AND Target.[Post_ID] = Source.[Post_ID]
-	WHEN MATCHED THEN
-		UPDATE SET [Type] = Source.[Type], [Effective_Date] = Source.[Effective_Date], [End_Date] = Source.[End_Date], [Frequency] = Source.[Frequency], [Amount] = Source.[Amount], [Currency] = Source.[Currency]
-			, [_deleted] = Source.[_deleted], [_deleteddate] = Source.[_deleteddate]
-	WHEN NOT MATCHED BY TARGET THEN
-		INSERT ([ID_1], [Type], [Effective_Date], [End_Date], [Frequency], [Amount], [Currency], [Post_ID], [ApptAllID])
-		VALUES ([ID_1], [Type], [Effective_Date], [End_Date], [Frequency], [Amount], [Currency], [Post_ID], [ApptAllID]);');
-
-GO
-
-INSERT ASRSysTableTriggers (TriggerID, TableID, Name, CodePosition, IsSystem, Content) VALUES (11, 243, 'Transfer Appointment Benefits to Personnel', 0, 1, ' 	MERGE INTO [dbo].[tbuser_Benefits] AS Target
-		USING (SELECT a.[ID_1], i.[Type], i.[Effective_Date], i.[End_Date], i.[Frequency], i.[Cost], i.[Currency], i.[Provider], i.[Level_of_Cover], i.[Reference_Number]
-			, i.[Percentage_to_Employer], i.[Annual_Cost_to_Employer], a.[Post_ID], i.[ApptBenID], i.[_deleted], i.[_deleteddate]
-			FROM [dbo].[tbuser_Appointment_Benefits] ab
-			INNER JOIN inserted i ON i.[ID] = ab.[ID]
-			INNER JOIN [dbo].[Appointments] a ON a.[ID] = i.[ID_3]
-			WHERE i.[ApptBenID] > 0)
-		AS Source ([ID_1], [Type], [Effective_Date], [End_Date], [Frequency], [Cost], [Currency], [Provider], [Level_of_Cover], [Reference_Number]
-			, [Percentage_to_Employer], [Annual_Cost_to_Employer], [Post_ID], [ApptBenID], [_deleted], [_deleteddate])
-		ON Target.[ID_1] = Source.[ID_1] AND Target.[ApptBenID] = Source.[ApptBenID] AND Target.[Post_ID] = Source.[Post_ID]
-	WHEN MATCHED THEN
-		UPDATE SET [Type] = Source.[Type], [Effective_Date] = Source.[Effective_Date], [End_Date] = Source.[End_Date], [Frequency] = Source.[Frequency], [Cost] = Source.[Cost], [Currency] = Source.[Currency]
-			, [Provider] = Source.[Provider], [Level_of_Cover] = Source.[Level_of_Cover], [Reference_Number] = Source.[Reference_Number], [Percentage_to_Employer] = Source.[Percentage_to_Employer]
-			, [Annual_Cost_to_Employer] = Source.[Annual_Cost_to_Employer], [_deleted] = Source.[_deleted], [_deleteddate] = Source.[_deleteddate]
-	WHEN NOT MATCHED BY TARGET THEN
-		INSERT ([ID_1], [Type], [Effective_Date], [End_Date], [Frequency], [Cost], [Currency], [Provider], [Level_of_Cover], [Reference_Number], [Percentage_to_Employer], [Annual_Cost_to_Employer], [Post_ID], [ApptBenID])
-		VALUES ([ID_1], [Type], [Effective_Date], [End_Date], [Frequency], [Cost], [Currency], [Provider], [Level_of_Cover], [Reference_Number], [Percentage_to_Employer], [Annual_Cost_to_Employer], [Post_ID], [ApptBenID]);');
-
-GO
-
-INSERT ASRSysTableTriggers (TriggerID, TableID, Name, CodePosition, IsSystem, Content) VALUES (12, 243, 'Update Appointment Benefits to Personnel', 1, 1, ' 	MERGE INTO [dbo].[tbuser_Benefits] AS Target
-		USING (SELECT a.[ID_1], i.[Type], i.[Effective_Date], i.[End_Date], i.[Frequency], i.[Cost], i.[Currency], i.[Provider], i.[Level_of_Cover], i.[Reference_Number]
-			, i.[Percentage_to_Employer], i.[Annual_Cost_to_Employer], a.[Post_ID], i.[ApptBenID], i.[_deleted], i.[_deleteddate]
-			FROM [dbo].[tbuser_Appointment_Benefits] ab
-			INNER JOIN inserted i ON i.[ID] = ab.[ID]
-			INNER JOIN [dbo].[Appointments] a ON a.[ID] = i.[ID_3]
-			WHERE i.[ApptBenID] > 0)
-		AS Source ([ID_1], [Type], [Effective_Date], [End_Date], [Frequency], [Cost], [Currency], [Provider], [Level_of_Cover], [Reference_Number]
-			, [Percentage_to_Employer], [Annual_Cost_to_Employer], [Post_ID], [ApptBenID], [_deleted], [_deleteddate])
-		ON Target.[ID_1] = Source.[ID_1] AND Target.[ApptBenID] = Source.[ApptBenID] AND Target.[Post_ID] = Source.[Post_ID]
-	WHEN MATCHED THEN
-		UPDATE SET [Type] = Source.[Type], [Effective_Date] = Source.[Effective_Date], [End_Date] = Source.[End_Date], [Frequency] = Source.[Frequency], [Cost] = Source.[Cost], [Currency] = Source.[Currency]
-			, [Provider] = Source.[Provider], [Level_of_Cover] = Source.[Level_of_Cover], [Reference_Number] = Source.[Reference_Number], [Percentage_to_Employer] = Source.[Percentage_to_Employer]
-			, [Annual_Cost_to_Employer] = Source.[Annual_Cost_to_Employer], [_deleted] = Source.[_deleted], [_deleteddate] = Source.[_deleteddate]
-	WHEN NOT MATCHED BY TARGET THEN
-		INSERT ([ID_1], [Type], [Effective_Date], [End_Date], [Frequency], [Cost], [Currency], [Provider], [Level_of_Cover], [Reference_Number], [Percentage_to_Employer], [Annual_Cost_to_Employer], [Post_ID], [ApptBenID])
-		VALUES ([ID_1], [Type], [Effective_Date], [End_Date], [Frequency], [Cost], [Currency], [Provider], [Level_of_Cover], [Reference_Number], [Percentage_to_Employer], [Annual_Cost_to_Employer], [Post_ID], [ApptBenID]);');
-
-GO
-
-INSERT ASRSysTableTriggers (TriggerID, TableID, Name, CodePosition, IsSystem, Content) VALUES (13, 244, 'Transfer Appointment Deductions to Personnel', 0, 1, ' 	MERGE INTO [dbo].[tbuser_Deductions] AS Target
-		USING (SELECT a.[ID_1], i.[Type], i.[Effective_Date], i.[End_Date], i.[Frequency], i.[Amount], i.[Currency], i.[Reference], a.[Post_ID], i.[ApptDedID], i.[_deleted], i.[_deleteddate]
-			FROM [dbo].[tbuser_Appointment_Deductions] ad
-			INNER JOIN inserted i ON i.[ID] = ad.[ID]
-			INNER JOIN [dbo].[Appointments] a ON a.[ID] = i.[ID_3]
-			WHERE i.[ApptDedID] > 0)
-		AS Source ([ID_1], [Type], [Effective_Date], [End_Date], [Frequency], [Amount], [Currency], [Reference], [Post_ID], [ApptDedID], [_deleted], [_deleteddate])
-		ON Target.[ID_1] = Source.[ID_1] AND Target.[ApptDedID] = Source.[ApptDedID] AND Target.[Post_ID] = Source.[Post_ID]
-	WHEN MATCHED THEN
-		UPDATE SET [Type] = Source.[Type], [Effective_Date] = Source.[Effective_Date], [End_Date] = Source.[End_Date], [Frequency] = Source.[Frequency], [Amount] = Source.[Amount], [Currency] = Source.[Currency]
-			, [Reference] = Source.[Reference], [_deleted] = Source.[_deleted], [_deleteddate] = Source.[_deleteddate]
-	WHEN NOT MATCHED BY TARGET THEN
-		INSERT ([ID_1], [Type], [Effective_Date], [End_Date], [Frequency], [Amount], [Currency], [Reference], [Post_ID], [ApptDedID])
-		VALUES ([ID_1], [Type], [Effective_Date], [End_Date], [Frequency], [Amount], [Currency], [Reference], [Post_ID], [ApptDedID]);');
-
-GO
-
-INSERT ASRSysTableTriggers (TriggerID, TableID, Name, CodePosition, IsSystem, Content) VALUES (14, 244, 'Update Appointment Deductions to Personnel', 1, 1, ' 	MERGE INTO [dbo].[tbuser_Deductions] AS Target
-		USING (SELECT a.[ID_1], i.[Type], i.[Effective_Date], i.[End_Date], i.[Frequency], i.[Amount], i.[Currency], i.[Reference], a.[Post_ID], i.[ApptDedID], i.[_deleted], i.[_deleteddate]
-			FROM [dbo].[tbuser_Appointment_Deductions] ad
-			INNER JOIN inserted i ON i.[ID] = ad.[ID]
-			INNER JOIN [dbo].[Appointments] a ON a.[ID] = i.[ID_3]
-			WHERE i.[ApptDedID] > 0)
-		AS Source ([ID_1], [Type], [Effective_Date], [End_Date], [Frequency], [Amount], [Currency], [Reference], [Post_ID], [ApptDedID], [_deleted], [_deleteddate])
-		ON Target.[ID_1] = Source.[ID_1] AND Target.[ApptDedID] = Source.[ApptDedID] AND Target.[Post_ID] = Source.[Post_ID]
-	WHEN MATCHED THEN
-		UPDATE SET [Type] = Source.[Type], [Effective_Date] = Source.[Effective_Date], [End_Date] = Source.[End_Date], [Frequency] = Source.[Frequency], [Amount] = Source.[Amount], [Currency] = Source.[Currency]
-			, [Reference] = Source.[Reference], [_deleted] = Source.[_deleted], [_deleteddate] = Source.[_deleteddate]
-	WHEN NOT MATCHED BY TARGET THEN
-		INSERT ([ID_1], [Type], [Effective_Date], [End_Date], [Frequency], [Amount], [Currency], [Reference], [Post_ID], [ApptDedID])
-		VALUES ([ID_1], [Type], [Effective_Date], [End_Date], [Frequency], [Amount], [Currency], [Reference], [Post_ID], [ApptDedID]);');
-
-GO
-
 INSERT ASRSysTableTriggers (TriggerID, TableID, Name, CodePosition, IsSystem, Content) VALUES (15, 228, 'Transfer child information based on contract type', 1, 1, ' 	-- Insert holiday schemes based on contract type
 	INSERT Post_Holiday_Schemes (ID_219, Effective_Date, End_Date, Holiday_Scheme, Notes)
-		SELECT i.ID_219, chs.Effective_Date, chs.End_Date, chs.Holiday_Scheme, chs.Notes
+		SELECT i.ID_219, i.Effective_Date, chs.End_Date, chs.Holiday_Scheme, chs.Notes
 			FROM Contract_Holiday_Schemes chs
 			INNER JOIN Contract_Templates ct ON ct.ID = chs.ID_215
 			INNER JOIN inserted i ON i.Contract = ct.Contract
 			INNER JOIN deleted d ON i.id = d.id
-			WHERE i.Contract <> d.Contract OR @startingtrigger = 1;
+			WHERE i.Contract <> d.Contract OR @startingtrigger = 1 AND chs.Effective_Date <= GETDATE() AND (chs.End_Date IS NULL OR chs.End_Date >= GETDATE());
 
 	-- Insert OMP Schemes based on contract type
 	INSERT Post_OMP_Schemes (ID_219, Effective_Date, End_Date, OMP_Scheme, Notes, Description)
-		SELECT i.ID_219, cms.Effective_Date, cms.End_Date, cms.OMP_Scheme, cms.Notes, cms.Description
+		SELECT i.ID_219, i.Effective_Date, cms.End_Date, cms.OMP_Scheme, cms.Notes, cms.Description
 			FROM Contract_OMP_Schemes cms
 			INNER JOIN Contract_Templates ct ON ct.ID = cms.ID_215
 			INNER JOIN inserted i ON i.Contract = ct.Contract
 			INNER JOIN deleted d ON i.id = d.id
-			WHERE i.Contract <> d.Contract OR @startingtrigger = 1;
+			WHERE i.Contract <> d.Contract OR @startingtrigger = 1 AND cms.Effective_Date <= GETDATE() AND (cms.End_Date IS NULL OR cms.End_Date >= GETDATE());
 
 	-- Insert OSP Schemes based on contract type
 	INSERT Post_OSP_Schemes (ID_219, Effective_Date, End_Date, OSP_Scheme, Notes, Description)
-		SELECT i.ID_219, css.Effective_Date, css.End_Date, css.OSP_Scheme, css.Notes, css.Description
+		SELECT i.ID_219, i.Effective_Date, css.End_Date, css.OSP_Scheme, css.Notes, css.Description
 			FROM Contract_OSP_Schemes css
 			INNER JOIN Contract_Templates ct ON ct.ID = css.ID_215
 			INNER JOIN inserted i ON i.Contract = ct.Contract
 			INNER JOIN deleted d ON i.id = d.id
-			WHERE i.Contract <> d.Contract OR @startingtrigger = 1;
+			WHERE i.Contract <> d.Contract OR @startingtrigger = 1 AND css.Effective_Date <= GETDATE() AND (css.End_Date IS NULL OR css.End_Date >= GETDATE());
 
 	-- Insert OSP Schemes based on contract type
 	INSERT Post_Pension_Schemes (ID_219, Effective_Date, End_Date, Pension_Scheme, Scheme_Number, Notes)
-		SELECT i.ID_219, cps.Effective_Date, cps.End_Date, cps.Pension_Scheme, cps.Scheme_Number, cps.Notes
+		SELECT i.ID_219, i.Effective_Date, cps.End_Date, cps.Pension_Scheme, cps.Scheme_Number, cps.Notes
 			FROM Contract_Pension_Schemes cps
 			INNER JOIN Contract_Templates ct ON ct.ID = cps.ID_215
 			INNER JOIN inserted i ON i.Contract = ct.Contract
 			INNER JOIN deleted d ON i.id = d.id
-			WHERE i.Contract <> d.Contract OR @startingtrigger = 1;
+			WHERE i.Contract <> d.Contract OR @startingtrigger = 1 AND cps.Effective_Date <= GETDATE() AND (cps.End_Date IS NULL OR cps.End_Date >= GETDATE());
 
 	-- Insert Working Pattern Schemes based on contract type
-	INSERT Post_Working_Patterns (ID_219, Effective_Date, Regional_ID, Absence_In, Day_Pattern, Sunday_Hours_AM, Sunday_Hours_PM, Monday_Hours_AM, Monday_Hours_PM
+	INSERT Post_Working_Patterns (ID_219, Effective_Date, Regional_ID, Absence_In, Sunday_Hours_AM, Sunday_Hours_PM, Monday_Hours_AM, Monday_Hours_PM
 									, Tuesday_Hours_AM, Tuesday_Hours_PM, Wednesday_Hours_AM, Wednesday_Hours_PM, Thursday_Hours_AM, Thursday_Hours_PM
 									, Friday_Hours_AM, Friday_Hours_PM, Saturday_Hours_AM, Saturday_Hours_PM)
-		SELECT i.ID, i.Effective_Date, cws.Regional_ID, cws.Absence_In, cws.Day_Pattern, cws.Sunday_Hours_AM, cws.Sunday_Hours_PM, cws.Monday_Hours_AM,cws.Monday_Hours_PM
+		SELECT i.ID_219, i.Effective_Date, cws.Regional_ID, cws.Absence_In, cws.Sunday_Hours_AM, cws.Sunday_Hours_PM, cws.Monday_Hours_AM,cws.Monday_Hours_PM
 									, cws.Tuesday_Hours_AM, cws.Tuesday_Hours_PM, cws.Wednesday_Hours_AM, cws.Wednesday_Hours_PM, cws.Thursday_Hours_AM, cws.Thursday_Hours_PM
 									, cws.Friday_Hours_AM, cws.Friday_Hours_PM, cws.Saturday_Hours_AM, cws.Saturday_Hours_PM
 			FROM Contract_Working_Patterns cws
 			INNER JOIN Contract_Templates ct ON ct.ID = cws.ID_215
 			INNER JOIN inserted i ON i.Contract = ct.Contract
 			INNER JOIN deleted d ON i.id = d.id
-			WHERE i.Contract <> d.Contract OR @startingtrigger = 1;');
+			WHERE i.Contract <> d.Contract OR @startingtrigger = 1 AND cws.Effective_Date <= GETDATE() AND (cws.End_Date IS NULL OR cws.End_Date >= GETDATE());');
 
