@@ -24,7 +24,7 @@ function util_def_exprcomponent_onload() {
 	};
 
 
-	$("#SSOperatorTree").bind("loaded.jstree", function () {
+		$("#SSOperatorTree").bind("loaded.jstree", function () {
 		_OperatorTreeLoaded = true;
 		checkTreesLoaded();
 	})
@@ -1102,10 +1102,6 @@ function value_changeType() {
 		if (frmMainForm.cboValueType.options[frmMainForm.cboValueType.selectedIndex].value == 4) {
 			//Date value
 			$('#txtValue').datepicker();
-			$('#txtValue').on('change', function (sender) {
-				validateDate(sender);
-				$('#txtPValDefault').datepicker('widget').hide('true');
-			});
 		} else {
 			$('#txtValue').datepicker('destroy');
 		}
@@ -1423,13 +1419,14 @@ function pVal_changeType() {
 
 	if (iPValType == 4) {		
 		$('#txtPValDefault').datepicker();
-		$('#txtPValDefault').on('blur', function (sender) {
-			validateDate(sender);
-			$('#txtPValDefault').datepicker('widget').hide('true');
+		$('#txtPValDefault').on('change', function (sender) {
+			if (OpenHR.IsValidDate(sender.target.value) == false && sender.target.value != "") {
+				OpenHR.modalMessage("Invalid date value entered.");
+			}
 		});
 	} else {
 		$('#txtPValDefault').datepicker('destroy');
-		$('#txtPValDefault').off('blur');
+		$('#txtPValDefault').off('change');
 	}
 
 	frmMainForm.txtPValDefault.value = "";
