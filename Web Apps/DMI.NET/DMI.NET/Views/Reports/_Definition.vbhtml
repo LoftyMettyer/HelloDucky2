@@ -474,18 +474,21 @@
 					var optionHtml = '<option value=' + table.id + '>' + table.Name + '</option>'
 					$('#SelectedTableID').append(optionHtml);
 
-					if (table.Relation == 1 && baseTableChanged) {
-						$("#RelatedTableParent1").removeAttr("disabled");
-						enableParent1RadioButtons();
-						$("#txtParent1ID").val(table.id);
-						$("#Parent1_Name").val(table.Name);
-					}
+					// If the report type is custom report then only set Relatedtable1 and Relatedtable2 relation
+					if ('@Model.ReportType' == '@UtilityType.utlCustomReport') {
+						if (table.Relation == 1 && baseTableChanged) {
+							$("#RelatedTableParent1").removeAttr("disabled");
+							enableParent1RadioButtons();
+							$("#txtParent1ID").val(table.id);
+							$("#Parent1_Name").val(table.Name);
+						}
 
-					if (table.Relation == 2 && baseTableChanged) {
-						$("#RelatedTableParent2").removeAttr("disabled");
-						enableParent2RadioButtons();
-						$("#txtParent2ID").val(table.id);
-						$("#Parent2_Name").val(table.Name);
+						if (table.Relation == 2 && baseTableChanged) {
+							$("#RelatedTableParent2").removeAttr("disabled");
+							enableParent2RadioButtons();
+							$("#txtParent2ID").val(table.id);
+							$("#Parent2_Name").val(table.Name);
+						}
 					}
 
 				});
