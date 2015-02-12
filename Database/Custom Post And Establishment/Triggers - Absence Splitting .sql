@@ -1,6 +1,7 @@
 
 /* Required Tables
 
+228 - Establishment_Posts
 242 - Appointment Allowances
 243 - Appointment Benefits
 244 - Appointment Deductions
@@ -518,3 +519,53 @@ INSERT ASRSysTableTriggers (TriggerID, TableID, Name, CodePosition, IsSystem, Co
 		VALUES ([ID_1], [Type], [Effective_Date], [End_Date], [Frequency], [Amount], [Currency], [Reference], [Post_ID], [ApptDedID]);');
 
 GO
+
+INSERT ASRSysTableTriggers (TriggerID, TableID, Name, CodePosition, IsSystem, Content) VALUES (15, 228, 'Transfer child information based on contract type', 1, 1, ' 	-- Insert holiday schemes based on contract type
+	INSERT Post_Holiday_Schemes (ID_219, Effective_Date, End_Date, Holiday_Scheme, Notes)
+		SELECT i.ID_219, chs.Effective_Date, chs.End_Date, chs.Holiday_Scheme, chs.Notes
+			FROM Contract_Holiday_Schemes chs
+			INNER JOIN Contract_Templates ct ON ct.ID = chs.ID_215
+			INNER JOIN inserted i ON i.Contract = ct.Contract
+			INNER JOIN deleted d ON i.id = d.id
+			WHERE i.Contract <> d.Contract OR @startingtrigger = 1;
+
+	-- Insert OMP Schemes based on contract type
+	INSERT Post_OMP_Schemes (ID_219, Effective_Date, End_Date, OMP_Scheme, Notes, Description)
+		SELECT i.ID_219, cms.Effective_Date, cms.End_Date, cms.OMP_Scheme, cms.Notes, cms.Description
+			FROM Contract_OMP_Schemes cms
+			INNER JOIN Contract_Templates ct ON ct.ID = cms.ID_215
+			INNER JOIN inserted i ON i.Contract = ct.Contract
+			INNER JOIN deleted d ON i.id = d.id
+			WHERE i.Contract <> d.Contract OR @startingtrigger = 1;
+
+	-- Insert OSP Schemes based on contract type
+	INSERT Post_OSP_Schemes (ID_219, Effective_Date, End_Date, OSP_Scheme, Notes, Description)
+		SELECT i.ID_219, css.Effective_Date, css.End_Date, css.OSP_Scheme, css.Notes, css.Description
+			FROM Contract_OSP_Schemes css
+			INNER JOIN Contract_Templates ct ON ct.ID = css.ID_215
+			INNER JOIN inserted i ON i.Contract = ct.Contract
+			INNER JOIN deleted d ON i.id = d.id
+			WHERE i.Contract <> d.Contract OR @startingtrigger = 1;
+
+	-- Insert OSP Schemes based on contract type
+	INSERT Post_Pension_Schemes (ID_219, Effective_Date, End_Date, Pension_Scheme, Scheme_Number, Notes)
+		SELECT i.ID_219, cps.Effective_Date, cps.End_Date, cps.Pension_Scheme, cps.Scheme_Number, cps.Notes
+			FROM Contract_Pension_Schemes cps
+			INNER JOIN Contract_Templates ct ON ct.ID = cps.ID_215
+			INNER JOIN inserted i ON i.Contract = ct.Contract
+			INNER JOIN deleted d ON i.id = d.id
+			WHERE i.Contract <> d.Contract OR @startingtrigger = 1;
+
+	-- Insert Working Pattern Schemes based on contract type
+	INSERT Post_Working_Patterns (ID_219, Effective_Date, Regional_ID, Absence_In, Day_Pattern, Sunday_Hours_AM, Sunday_Hours_PM, Monday_Hours_AM, Monday_Hours_PM
+									, Tuesday_Hours_AM, Tuesday_Hours_PM, Wednesday_Hours_AM, Wednesday_Hours_PM, Thursday_Hours_AM, Thursday_Hours_PM
+									, Friday_Hours_AM, Friday_Hours_PM, Saturday_Hours_AM, Saturday_Hours_PM)
+		SELECT i.ID, i.Effective_Date, cws.Regional_ID, cws.Absence_In, cws.Day_Pattern, cws.Sunday_Hours_AM, cws.Sunday_Hours_PM, cws.Monday_Hours_AM,cws.Monday_Hours_PM
+									, cws.Tuesday_Hours_AM, cws.Tuesday_Hours_PM, cws.Wednesday_Hours_AM, cws.Wednesday_Hours_PM, cws.Thursday_Hours_AM, cws.Thursday_Hours_PM
+									, cws.Friday_Hours_AM, cws.Friday_Hours_PM, cws.Saturday_Hours_AM, cws.Saturday_Hours_PM
+			FROM Contract_Working_Patterns cws
+			INNER JOIN Contract_Templates ct ON ct.ID = cws.ID_215
+			INNER JOIN inserted i ON i.Contract = ct.Contract
+			INNER JOIN deleted d ON i.id = d.id
+			WHERE i.Contract <> d.Contract OR @startingtrigger = 1;');
+
