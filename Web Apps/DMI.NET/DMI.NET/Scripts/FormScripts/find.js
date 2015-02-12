@@ -243,16 +243,28 @@ function find_window_onload() {
 											editoptions: {
 												readonly: sReadOnly,
 												size: 10,
-												maxlengh: 10,
+												maxlength: 10,
+												editrules: {integer: true},
 												min: ColumnSpinnerMinimum,
 												max: ColumnSpinnerMaximum,
 												step: ColumnSpinnerIncrement,
 												dataColumnId: iColumnId,
 												dataDefaultCalcExprID: iDefaultValueExprID,
 												dataInit: function (element) {
+													var valueBeforeChange = $(element).val();
 													$(element).spinner({
 														spin: function (event, ui) { indicateThatRowWasModified(); }
 													});
+													$(element).on('keydown', function () { indicateThatRowWasModified(); });
+													$(element).on('change', function () {
+														indicateThatRowWasModified();														
+													});
+													$(element).on('blur', function (sender) {
+														if ((isNaN(sender.target.value) === true) || (sender.target.value.indexOf(".") >= 0)) {															
+															OpenHR.modalMessage("Invalid integer value entered: " + sender.target.value);
+															sender.target.value = valueBeforeChange;
+													}
+												});
 												},
 												defaultValue: getDefaultValueForColumn(iColumnId, "spinner")
 											}
@@ -289,6 +301,7 @@ function find_window_onload() {
 											size: 20,
 											maxlength: 10,
 											dataInit: function (element) {
+												var valueBeforeChange = $(element).val();
 												$(element).datepicker({
 													constrainInput: true,
 													showOn: 'focus'
@@ -299,7 +312,8 @@ function find_window_onload() {
 
 												$(element).on('blur', function (sender) {
 													if (OpenHR.IsValidDate(sender.target.value) == false && sender.target.value != "") {
-														OpenHR.modalMessage("Invalid date value entered");
+														OpenHR.modalMessage("Invalid date value entered: " + sender.target.value);
+														sender.target.value = valueBeforeChange;
 														$(sender.target.id).focus();
 													}
 												});
