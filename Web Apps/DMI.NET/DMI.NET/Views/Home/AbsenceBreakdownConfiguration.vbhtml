@@ -170,7 +170,7 @@ End Code
 			$("#txtPicklistId").val(id);
 			$("#txtPicklistName").val(name);
 			enableSaveButton();
-		}, 400, 400);
+		}, getPopupWidth(), getPopupHeight());
 
 	}
 
@@ -183,7 +183,7 @@ End Code
 			$("#txtFilterId").val(id);
 			$("#txtFilterName").val(name);
 			enableSaveButton();
-		}, 400, 400);
+		}, getPopupWidth(), getPopupHeight());
 
 	}
 
@@ -203,7 +203,7 @@ End Code
 				$("#txtCustomStartDate").val(name);
 				enableSaveButton();
 			}
-		}, 400, 400);
+		}, getPopupWidth(), getPopupHeight());
 		}
 
 		function selectCustomEndDate() {
@@ -222,7 +222,7 @@ End Code
 					$("#txtCustomEndDate").val(name);
 					enableSaveButton();
 				}
-			}, 400, 400);
+			}, getPopupWidth(), getPopupHeight());
 
 		}
 

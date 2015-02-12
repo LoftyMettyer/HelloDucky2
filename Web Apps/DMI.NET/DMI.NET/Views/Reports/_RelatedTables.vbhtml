@@ -163,7 +163,7 @@
 				setViewAccess('PICKLIST', $("#Parent1ViewAccess"), access, tableName);
 				enableSaveButton();
 			}
-		}, 400, 400);
+		}, getPopupWidth(), getPopupHeight());
 
 	}
 
@@ -185,7 +185,7 @@
 				setViewAccess('PICKLIST', $("#Parent2ViewAccess"), access, tableName);
 				enableSaveButton();
 			}
-		}, 400, 400);
+		}, getPopupWidth(), getPopupHeight());
 
 	}
 
@@ -207,7 +207,7 @@
 				setViewAccess('FILTER', $("#Parent1ViewAccess"), access, tableName);
 				enableSaveButton();
 			}
-		}, 400, 400);
+		}, getPopupWidth(), getPopupHeight());
 
 	}
 
@@ -229,7 +229,7 @@
 				setViewAccess('FILTER', $("#Parent2ViewAccess"), access, tableName);
 				enableSaveButton();
 			}
-		}, 400, 400);
+		}, getPopupWidth(), getPopupHeight());
 
 	}
 

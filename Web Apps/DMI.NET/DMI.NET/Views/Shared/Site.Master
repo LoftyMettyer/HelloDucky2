@@ -433,6 +433,16 @@
 			$('.progressMessage span').text($('#txtProgressMessage').val());
 		}
 		
+		// Gets width for the popup selector
+		function getPopupWidth() {
+			return screen.width / 3;
+		}
+
+		// Gets height for the popup selector
+		function getPopupHeight() {
+			return screen.height / 2;
+		}
+
 	</script>
 
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -577,6 +587,7 @@
 				$('.linkspagebuttonbox').css('width', width + 50);
 			}
 		}
+
 	</script>
 
 </head>

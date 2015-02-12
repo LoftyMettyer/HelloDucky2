@@ -348,7 +348,7 @@
 				setViewAccess('FILTER', $("#BaseViewAccess"), access, tableName);
 				enableSaveButton();
 			}
-		}, 400, 400)
+		}, getPopupWidth(), getPopupHeight());
 	}
 
 	function selectBaseTablePicklist() {
@@ -370,7 +370,7 @@
 				enableSaveButton();
 			}
 
-		}, 400, 400);
+		}, getPopupWidth(), getPopupHeight());
 
 	}
 

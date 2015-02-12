@@ -368,7 +368,7 @@ function selectAbsencePicklist() {
 	OpenHR.modalExpressionSelect("PICKLIST", tableID, currentID, function (id, name) {
 		$("#txtBasePicklistID").val(id);
 		$("#txtBasePicklist").val(name);
-},400,400);
+	}, getPopupWidth(), getPopupHeight());
 
 }
 
@@ -380,7 +380,7 @@ function selectAbsenceFilter() {
 	OpenHR.modalExpressionSelect("FILTER", tableID, currentID, function (id, name) {
 		$("#txtBaseFilterID").val(id);
 		$("#txtBaseFilter").val(name);
-},400,400);
+	}, getPopupWidth(), getPopupHeight());
 
 }
 

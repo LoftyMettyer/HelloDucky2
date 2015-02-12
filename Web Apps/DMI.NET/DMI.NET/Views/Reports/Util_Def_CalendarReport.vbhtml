@@ -164,7 +164,7 @@ End Code
 				setViewAccess('CALC', $("#Description3ViewAccess"), access, "report description");
 				enableSaveButton();
 			}
-		}, 400, 400);
+		}, getPopupWidth(), getPopupHeight());
 
 	}
 

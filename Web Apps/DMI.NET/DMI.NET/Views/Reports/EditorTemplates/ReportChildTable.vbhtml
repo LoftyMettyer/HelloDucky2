@@ -161,7 +161,7 @@ End Code
 				$("#txtChildFilter").val(name);
 				$("#FilterViewAccess").val(access);
 			}
-		}, 400, 200);
+		}, getPopupWidth(), getPopupHeight());
 
 	}
 

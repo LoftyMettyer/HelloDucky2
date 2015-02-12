@@ -295,7 +295,7 @@ End Code
 				$("#FilterViewAccess").val(access);
 			}
 
-		}, 400, 400);
+		}, getPopupWidth(), getPopupHeight());
 
 	}
 
