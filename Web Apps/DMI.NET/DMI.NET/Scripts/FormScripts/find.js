@@ -590,8 +590,7 @@ function find_window_onload() {
 						cancelicon: 'icon-ban-circle',
 						editParams: {
 							aftersavefunc: function (rowid, response, options) {
-								if (saveThisRowToDatabase)
-									saveInlineRowToDatabase(rowid);
+									saveRowToDatabase(rowid);
 							}
 						},
 						addParams: {
@@ -600,6 +599,10 @@ function find_window_onload() {
 							position: "last",
 							addRowParams: {
 								keys: true,
+								aftersavefunc: function(rowid, response, options) {
+									// For enter key press only in add mode.
+									saveRowToDatabase(rowid);
+								},
 								oneditfunc: function (rowid) {									
 									//build a comma separated list of columns that have expression ID's on them.
 									var arrCalcColumnsString = [];
@@ -857,6 +860,12 @@ function find_window_onload() {
 			$('#txtLocateRecordFind').focus();
 	});
 
+}
+
+
+function saveRowToDatabase(rowid) {
+	if (saveThisRowToDatabase)
+		saveInlineRowToDatabase(rowid);
 }
 
 /* Return the ID of the record selected in the find form. */
