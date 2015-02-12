@@ -922,12 +922,12 @@ function showLookupForColumn(element) {
 		for (var i = 0; i <= colModel.length - 1; i++) {
 			if (colModel[i].id == columnLookupFilterValueID) {
 				if ((isNaN(rowId)) || (rowId == 0)) { //If this is a new row get the filterCellValue from the last row added (i.e. the new one)
-					filterCellValue = $("#findGridTable").jqGrid("getGridParam", "data")[$("#findGridTable").jqGrid("getGridParam", "reccount") - 1][colModel[i].name];
+					filterCellValue = $("#findGridTable").jqGrid("getGridParam", "data")[$("#findGridTable").jqGrid("getGridParam", "data").length - 1][colModel[i].name];
 					if (typeof filterCellValue == "undefined") {
 						filterCellValue = '';
 					}
 				} else {//Get the filterCellValue from the current row
-					filterCellValue = $("#findGridTable").jqGrid("getGridParam", "data")[rowNumber][colModel[i].name];
+					filterCellValue = $("#findGridTable").jqGrid("getGridParam", "data").filter(function(rownum) { return rownum.ID == rowId })[0][colModel[i].name];
 				}
 
 				colModelContainsRequiredLookupColumn = true;
