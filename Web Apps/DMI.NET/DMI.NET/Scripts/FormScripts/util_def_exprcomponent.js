@@ -1091,19 +1091,26 @@ function calculationsAndFilters_load() {
 }
 
 function value_changeType() {
-	if (frmMainForm.cboValueType.options[frmMainForm.cboValueType.selectedIndex].value == 3) {
+
+	if ($('#frmMainForm #cboValueType').val() == "3") {
 		$('#frmMainForm #txtValue').hide();
 		$('#frmMainForm #selectValue').show();
 	}
 	else {
 		$('#frmMainForm #txtValue').show();
 		$('#frmMainForm #selectValue').hide();
-		
-		if (frmMainForm.cboValueType.options[frmMainForm.cboValueType.selectedIndex].value == 4) {
+
+		if($('#frmMainForm #cboValueType').val() == "4") {
 			//Date value
 			$('#txtValue').datepicker();
+			$('#txtValue').on('change', function(sender) {
+				if (OpenHR.IsValidDate(sender.target.value) == false && sender.target.value != "") {
+					OpenHR.modalMessage("Invalid date value entered.");
+				}
+			});
 		} else {
 			$('#txtValue').datepicker('destroy');
+			$('#txtValue').off('change');
 		}
 	}
 
