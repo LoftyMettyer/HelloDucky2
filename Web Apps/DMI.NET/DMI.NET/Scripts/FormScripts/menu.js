@@ -5254,7 +5254,7 @@ function saveInlineRowToDatabase(rowId) {
 
 function submitFollowOn() {	
 	var rowId = window.savedRow; //$("#findGridTable").getGridParam('selrow');	
-
+	
 	if ($('#frmData #txtErrorMessage').val() !== "") { //There was an error while saving
 		$("#findGridTable").editRow(rowId); //Edit the row
 
@@ -5290,6 +5290,10 @@ function submitFollowOn() {
 			} else {
 				$("#findGridTable_iledit").hide();
 			}
+
+			//finally: post save function (was separate click event)..
+			postSaveFunc();
+
 		} catch (e) {
 			OpenHR.modalMessage("Failed to reload data for this row.", "");
 		}
@@ -5304,8 +5308,8 @@ function updateRowFromDatabase(rowid) {
 	var recordID = $("#findGridTable").jqGrid('getCell', rowid, 'ID');
 	
 	if (recordID == "")
-		return false; //It's a new row, we don't have its ID from the database, the call below would fail, so just return false
-	
+		return false; //It's a new row, we don't have its ID from the database, the call below would fail, so just return false	
+
 	//Get the row from the server
 	$.ajax({
 		url: "getfindrecordbyid",
