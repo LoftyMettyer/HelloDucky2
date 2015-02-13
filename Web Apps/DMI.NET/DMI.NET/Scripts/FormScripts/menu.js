@@ -218,20 +218,23 @@ function menu_MenuClick(sTool) {
 	// Fixed Links ---------------------------------------------------------------------------------------------------
 
 	if (sToolName == "mnutoolFixedSelfService") {
-		hasChanged = menu_saveChanges(sToolName, true, false);
-		if (hasChanged == 0) { // Prompt for navigation
 
-			OpenHR.modalPrompt("You have made changes. Click 'OK' to discard your changes, or 'Cancel' to continue editing.", 1, "Confirm").then(function (answer) {
-				if (answer == 1) { // OK
-					window.location.href = "MainSSI";
-					return false;
-				} else {
-					return false;
-				}
-			});
-		} else {
-			window.location.href = "MainSSI";
-		}
+		saveChangesPrompt('mnutoolFixedSelfService', 'window.location.href = "MainSSI"');
+
+		//hasChanged = menu_saveChanges(sToolName, true, false);
+		//if (hasChanged == 0) { // Prompt for navigation
+
+		//	OpenHR.modalPrompt("You have made changes. Click 'OK' to discard your changes, or 'Cancel' to continue editing.", 1, "Confirm").then(function (answer) {
+		//		if (answer == 1) { // OK
+		//			window.location.href = "MainSSI";
+		//			return false;
+		//		} else {
+		//			return false;
+		//		}
+		//	});
+		//} else {
+		//	window.location.href = "MainSSI";
+		//}
 		return false;
 	}
 
@@ -240,20 +243,21 @@ function menu_MenuClick(sTool) {
 	}
 
 	if (sToolName == "mnutoolFixedOpenHR") { 
-		hasChanged = menu_saveChanges(sToolName, true, false);
-		if (hasChanged == 0) { // Prompt for navigation
+		saveChangesPrompt(sToolName, 'window.location.href = "MainDMI"');
+		//hasChanged = menu_saveChanges(sToolName, true, false);
+		//if (hasChanged == 0) { // Prompt for navigation
 
-			OpenHR.modalPrompt("You have made changes. Click 'OK' to discard your changes, or 'Cancel' to continue editing.", 1, "Confirm").then(function (answer) {
-				if (answer == 1) { // OK
-					window.location.href = "MainDMI";
-					return false;
-				} else {
-					return false;
-				}
-			});
-		} else {
-			window.location.href = "MainDMI";
-		}
+		//	OpenHR.modalPrompt("You have made changes. Click 'OK' to discard your changes, or 'Cancel' to continue editing.", 1, "Confirm").then(function (answer) {
+		//		if (answer == 1) { // OK
+		//			window.location.href = "MainDMI";
+		//			return false;
+		//		} else {
+		//			return false;
+		//		}
+		//	});
+		//} else {
+		//	window.location.href = "MainDMI";
+		//}
 		return false;
 	}
 
@@ -577,20 +581,21 @@ function menu_MenuClick(sTool) {
 	}
 
 	if (sToolName == "mnutoolLogoff") {
-		hasChanged = menu_saveChanges(sToolName, true, false);
-		if (hasChanged == 0) { // Prompt for navigation
+		saveChangesPrompt(sToolName, 'menu_logoffIntranet()');
+		//	hasChanged = menu_saveChanges(sToolName, true, false);
+		//	if (hasChanged == 0) { // Prompt for navigation
 
-			OpenHR.modalPrompt("You have made changes. Click 'OK' to discard your changes, or 'Cancel' to continue editing.", 1, "Confirm").then(function(answer) {
-				if (answer == 1) { // OK
-		menu_logoffIntranet();
-					return false;
-				} else {
-					return false;
-	}
-			});
-		} else {
-			menu_logoffIntranet();
-		}
+		//		OpenHR.modalPrompt("You have made changes. Click 'OK' to discard your changes, or 'Cancel' to continue editing.", 1, "Confirm").then(function(answer) {
+		//			if (answer == 1) { // OK
+		//	menu_logoffIntranet();
+		//				return false;
+		//			} else {
+		//				return false;
+		//}
+		//		});
+		//	} else {
+		//		menu_logoffIntranet();
+		//	}
 		return false;
 	}
 
@@ -744,41 +749,43 @@ function menu_MenuClick(sTool) {
 		return;
 	}
 
-	if (sToolName == "mnutoolFindRecord") {		
-		hasChanged = menu_saveChanges(sTool, true, false);
-		if (hasChanged == 6) { // 6 = No Change
-			menu_disableMenu();
-			menu_refreshHistoryScreensMenu(0);
-			menu_loadFindPage();
-		}
-		else if (hasChanged == 0) {  // 0 = Changed, allow prompted navigation.
-			OpenHR.modalPrompt("You have made changes. Click 'OK' to discard your changes, or 'Cancel' to continue editing.", 1, "Confirm").then(function (answer) {
-				if (answer == 1) {  // OK
-					menu_disableMenu();
-					menu_refreshHistoryScreensMenu(0);
-					menu_loadFindPage();
-	}
-				else {
-				}
-			});
-		}
+	if (sToolName == "mnutoolFindRecord") {
+		saveChangesPrompt(sTool, 'menu_disableMenu(); menu_refreshHistoryScreensMenu(0); menu_loadFindPage()');
+		//	hasChanged = menu_saveChanges(sTool, true, false);
+		//	if (hasChanged == 6) { // 6 = No Change
+		//		menu_disableMenu();
+		//		menu_refreshHistoryScreensMenu(0);
+		//		menu_loadFindPage();
+		//	}
+		//	else if (hasChanged == 0) {  // 0 = Changed, allow prompted navigation.
+		//		OpenHR.modalPrompt("You have made changes. Click 'OK' to discard your changes, or 'Cancel' to continue editing.", 1, "Confirm").then(function (answer) {
+		//			if (answer == 1) {  // OK
+		//				menu_disableMenu();
+		//				menu_refreshHistoryScreensMenu(0);
+		//				menu_loadFindPage();
+		//}
+		//			else {
+		//			}
+		//		});
+		//	}
 		return false;
 	}
 
 	if (sToolName == "mnutoolQuickFindRecord") {
-		hasChanged = menu_saveChanges("QUICKFIND", true, false);
-		if (hasChanged == 6) { // 6 = No Change
-			menu_loadQuickFindNoSaveCheck();
-	}
-		else if (hasChanged == 0) {  // 0 = Changed, allow prompted navigation.
-			OpenHR.modalPrompt("You have made changes. Click 'OK' to discard your changes, or 'Cancel' to continue editing.", 1, "Confirm").then(function (answer) {
-				if (answer == 1) {  // OK
-					menu_loadQuickFindNoSaveCheck();
-				}
-				else {
-				}
-			});
-		}
+		saveChangesPrompt('QUICKFIND', 'menu_loadQuickFindNoSaveCheck()');
+		//	hasChanged = menu_saveChanges("QUICKFIND", true, false);
+		//	if (hasChanged == 6) { // 6 = No Change
+		//		menu_loadQuickFindNoSaveCheck();
+		//}
+		//	else if (hasChanged == 0) {  // 0 = Changed, allow prompted navigation.
+		//		OpenHR.modalPrompt("You have made changes. Click 'OK' to discard your changes, or 'Cancel' to continue editing.", 1, "Confirm").then(function (answer) {
+		//			if (answer == 1) {  // OK
+		//				menu_loadQuickFindNoSaveCheck();
+		//			}
+		//			else {
+		//			}
+		//		});
+		//	}
 		return false;
 	}
 
@@ -799,91 +806,96 @@ function menu_MenuClick(sTool) {
 		
 		// Calendar Reports  (from record menu)
 	if (sToolName == "mnutoolCalendarReportsRecord") {
-		hasChanged = menu_saveChanges("CALENDAR", true, false);
-		if (hasChanged == 6) { // 6 = No Change
-		menu_loadRecordDefSelPage(17, 0, 0, true);
-		}
-		else if (hasChanged == 0) {  // 0 = Changed, allow prompted navigation.
-			OpenHR.modalPrompt("You have made changes. Click 'OK' to discard your changes, or 'Cancel' to continue editing.", 1, "Confirm").then(function (answer) {
-				if (answer == 1) {  // OK
-					menu_loadRecordDefSelPage(17, 0, 0, true);
-				}
-				else {
-				}
-			});
-		}
+		saveChangesPrompt("CALENDAR", 'menu_loadRecordDefSelPage(17, 0, 0, true)');
+		//hasChanged = menu_saveChanges("CALENDAR", true, false);
+		//if (hasChanged == 6) { // 6 = No Change
+		//menu_loadRecordDefSelPage(17, 0, 0, true);
+		//}
+		//else if (hasChanged == 0) {  // 0 = Changed, allow prompted navigation.
+		//	OpenHR.modalPrompt("You have made changes. Click 'OK' to discard your changes, or 'Cancel' to continue editing.", 1, "Confirm").then(function (answer) {
+		//		if (answer == 1) {  // OK
+		//			menu_loadRecordDefSelPage(17, 0, 0, true);
+		//		}
+		//		else {
+		//		}
+		//	});
+		//}
 		return false;
 	}
 	
 		// Individual Absence Breakdown (from record menu)
 	if (sToolName == "mnutoolAbsenceBreakdownRecord") {
-		hasChanged = menu_saveChanges("ABSENCEBREAKDOWN", true, false);
-		if (hasChanged == 6) { // 6 = No Change
-			menu_LoadStandardReport("ABSENCEBREAKDOWN", "REC");
-	}
-		else if (hasChanged == 0) {  // 0 = Changed, allow prompted navigation.
-			OpenHR.modalPrompt("You have made changes. Click 'OK' to discard your changes, or 'Cancel' to continue editing.", 1, "Confirm").then(function (answer) {
-				if (answer == 1) {  // OK
-					menu_LoadStandardReport("ABSENCEBREAKDOWN", "REC");
-				}
-				else {
-				}
-			});
-		}
+		saveChangesPrompt("ABSENCEBREAKDOWN", 'menu_LoadStandardReport("ABSENCEBREAKDOWN", "REC")');
+		//	hasChanged = menu_saveChanges("ABSENCEBREAKDOWN", true, false);
+		//	if (hasChanged == 6) { // 6 = No Change
+		//		menu_LoadStandardReport("ABSENCEBREAKDOWN", "REC");
+		//}
+		//	else if (hasChanged == 0) {  // 0 = Changed, allow prompted navigation.
+		//		OpenHR.modalPrompt("You have made changes. Click 'OK' to discard your changes, or 'Cancel' to continue editing.", 1, "Confirm").then(function (answer) {
+		//			if (answer == 1) {  // OK
+		//				menu_LoadStandardReport("ABSENCEBREAKDOWN", "REC");
+		//			}
+		//			else {
+		//			}
+		//		});
+		//	}
 		return false;
 	}
 
 	// Individual Absence Calendar (from record menu)
 	if (sToolName == "mnutoolAbsenceCalendarRecord") {
-		hasChanged = menu_saveChanges("STDRPT_ABSENCECALENDAR", true, false);
-		if (hasChanged == 6) { // 6 = No Change
-			menu_LoadAbsenceCalendar();
-	}
-		else if (hasChanged == 0) {  // 0 = Changed, allow prompted navigation.
-			OpenHR.modalPrompt("You have made changes. Click 'OK' to discard your changes, or 'Cancel' to continue editing.", 1, "Confirm").then(function (answer) {
-				if (answer == 1) {  // OK
-					menu_LoadAbsenceCalendar();
-				}
-				else {
-				}
-			});
-		}
+		saveChangesPrompt("STDRPT_ABSENCECALENDAR", 'menu_LoadAbsenceCalendar()');
+		//	hasChanged = menu_saveChanges("STDRPT_ABSENCECALENDAR", true, false);
+		//	if (hasChanged == 6) { // 6 = No Change
+		//		menu_LoadAbsenceCalendar();
+		//}
+		//	else if (hasChanged == 0) {  // 0 = Changed, allow prompted navigation.
+		//		OpenHR.modalPrompt("You have made changes. Click 'OK' to discard your changes, or 'Cancel' to continue editing.", 1, "Confirm").then(function (answer) {
+		//			if (answer == 1) {  // OK
+		//				menu_LoadAbsenceCalendar();
+		//			}
+		//			else {
+		//			}
+		//		});
+		//	}
 		return false;
 	}
 
 		// Individual Bradford Factor (from record menu)
 	if (sToolName == "mnutoolBradfordRecord") {
-		hasChanged = menu_saveChanges("BRADFORDFACTOR", true, false);
-		if (hasChanged == 6) { // 6 = No Change
-			menu_LoadStandardReport("BRADFORDFACTOR", "REC");
-	}
-		else if (hasChanged == 0) {  // 0 = Changed, allow prompted navigation.
-			OpenHR.modalPrompt("You have made changes. Click 'OK' to discard your changes, or 'Cancel' to continue editing.", 1, "Confirm").then(function (answer) {
-				if (answer == 1) {  // OK
-					menu_LoadStandardReport("BRADFORDFACTOR", "REC");
-				}
-				else {
-				}
-			});
-		}
+		saveChangesPrompt("BRADFORDFACTOR", 'menu_LoadStandardReport("BRADFORDFACTOR", "REC")');
+		//	hasChanged = menu_saveChanges("BRADFORDFACTOR", true, false);
+		//	if (hasChanged == 6) { // 6 = No Change
+		//		menu_LoadStandardReport("BRADFORDFACTOR", "REC");
+		//}
+		//	else if (hasChanged == 0) {  // 0 = Changed, allow prompted navigation.
+		//		OpenHR.modalPrompt("You have made changes. Click 'OK' to discard your changes, or 'Cancel' to continue editing.", 1, "Confirm").then(function (answer) {
+		//			if (answer == 1) {  // OK
+		//				menu_LoadStandardReport("BRADFORDFACTOR", "REC");
+		//			}
+		//			else {
+		//			}
+		//		});
+		//	}
 		return false;
 	}
 
 		// Mail Merge  (from record menu)
 	if (sToolName == "mnutoolMailMergeRecord") {
-		hasChanged = menu_saveChanges("MAILMERGE", true, false);
-		if (hasChanged == 6) { // 6 = No Change
-		menu_loadRecordDefSelPage(9, 0, 0, true);
-		}
-		else if (hasChanged == 0) {  // 0 = Changed, allow prompted navigation.
-			OpenHR.modalPrompt("You have made changes. Click 'OK' to discard your changes, or 'Cancel' to continue editing.", 1, "Confirm").then(function (answer) {
-				if (answer == 1) {  // OK
-					menu_loadRecordDefSelPage(9, 0, 0, true);
-				}
-				else {
-				}
-			});
-		}
+		saveChangesPrompt("MAILMERGE", 'menu_loadRecordDefSelPage(9, 0, 0, true)');
+		//hasChanged = menu_saveChanges("MAILMERGE", true, false);
+		//if (hasChanged == 6) { // 6 = No Change
+		//menu_loadRecordDefSelPage(9, 0, 0, true);
+		//}
+		//else if (hasChanged == 0) {  // 0 = Changed, allow prompted navigation.
+		//	OpenHR.modalPrompt("You have made changes. Click 'OK' to discard your changes, or 'Cancel' to continue editing.", 1, "Confirm").then(function (answer) {
+		//		if (answer == 1) {  // OK
+		//			menu_loadRecordDefSelPage(9, 0, 0, true);
+		//		}
+		//		else {
+		//		}
+		//	});
+		//}
 		return false;		
 	}
 
@@ -893,6 +905,7 @@ function menu_MenuClick(sTool) {
 		OpenHR.modalPrompt("Are you sure you want to cancel this course?", 4, "Confirm").then(function(answer) {
 			if (answer == 6) { // Yes
 				if (menu_saveChanges("CANCELCOURSE", true, false) != 2) { // 2 = vbCancel
+					window.onbeforeunload = null;
 					menu_cancelCourse(); // HC: TODO - Tab and buttons needs to be enabled
 				}
 				return false;
@@ -911,199 +924,198 @@ function menu_MenuClick(sTool) {
 			//	menu_loadDefSelPage(1, 0, 0, true);
 			//}
 			//return;
-			hasChanged = menu_saveChanges("CROSSTABS", true, false);
-			if (hasChanged == 6) { // 6 = No Change
-				menu_loadDefSelPage(1, 0, 0, true);
-			}
-			else if (hasChanged == 0) {  // 0 = Changed, allow prompted navigation.
-				OpenHR.modalPrompt("You have made changes. Click 'OK' to discard your changes, or 'Cancel' to continue editing.", 1, "Confirm").then(function (answer) {
-					if (answer == 1) {  // OK
-						menu_loadDefSelPage(1, 0, 0, true);
-		}
-					else {
-					}
-				});
-			}
+			saveChangesPrompt("CROSSTABS", 'menu_loadDefSelPage(1, 0, 0, true)');
+	
 			return false;
 		}
 
 	// Nine box grid Reports
 		if (sToolName == "mnutoolNineBox") {
-			hasChanged = menu_saveChanges("NINEBOXGRID", true, false);
-			if (hasChanged == 6) { // 6 = No Change
-				menu_loadDefSelPage(35, 0, 0, true);
-			}
-			else if (hasChanged == 0) {  // 0 = Changed, allow prompted navigation.
-				OpenHR.modalPrompt("You have made changes. Click 'OK' to discard your changes, or 'Cancel' to continue editing.", 1, "Confirm").then(function (answer) {
-					if (answer == 1) {  // OK
-						menu_loadDefSelPage(35, 0, 0, true);
-					}
-					else {
-					}
-				});
-			}
+			saveChangesPrompt("NINEBOXGRID", 'menu_loadDefSelPage(35, 0, 0, true)');
+			//hasChanged = menu_saveChanges("NINEBOXGRID", true, false);
+			//if (hasChanged == 6) { // 6 = No Change
+			//	menu_loadDefSelPage(35, 0, 0, true);
+			//}
+			//else if (hasChanged == 0) {  // 0 = Changed, allow prompted navigation.
+			//	OpenHR.modalPrompt("You have made changes. Click 'OK' to discard your changes, or 'Cancel' to continue editing.", 1, "Confirm").then(function (answer) {
+			//		if (answer == 1) {  // OK
+			//			menu_loadDefSelPage(35, 0, 0, true);
+			//		}
+			//		else {
+			//		}
+			//	});
+			//}
 			return false;
 		}
 
 		// Custom Reports
 		if (sToolName == "mnutoolCustomReports") {
-			hasChanged = menu_saveChanges("CUSTOMREPORTS", true, false);
-			if (hasChanged == 6) { // 6 = No Change
-				menu_loadDefSelPage(2, 0, 0, true);
-			}
-			else if (hasChanged == 0) {  // 0 = Changed, allow prompted navigation.
-				OpenHR.modalPrompt("You have made changes. Click 'OK' to discard your changes, or 'Cancel' to continue editing.", 1, "Confirm").then(function (answer) {
-					if (answer == 1) {  // OK
-						menu_loadDefSelPage(2, 0, 0, true);
-		}
-					else {
-					}
-				});
-			}
+			saveChangesPrompt("CUSTOMREPORTS", 'menu_loadDefSelPage(2, 0, 0, true)');
+			//	hasChanged = menu_saveChanges("CUSTOMREPORTS", true, false);
+			//	if (hasChanged == 6) { // 6 = No Change
+			//		menu_loadDefSelPage(2, 0, 0, true);
+			//	}
+			//	else if (hasChanged == 0) {  // 0 = Changed, allow prompted navigation.
+			//		OpenHR.modalPrompt("You have made changes. Click 'OK' to discard your changes, or 'Cancel' to continue editing.", 1, "Confirm").then(function (answer) {
+			//			if (answer == 1) {  // OK
+			//				menu_loadDefSelPage(2, 0, 0, true);
+			//}
+			//			else {
+			//			}
+			//		});
+			//	}
 			return false;
 		}
 		
 		// Calendar Reports
 		if (sToolName == "mnutoolCalendarReports") {
-			hasChanged = menu_saveChanges("CALENDAR", true, false);
-			if (hasChanged == 6) { // 6 = No Change
-				menu_loadDefSelPage(17, 0, 0, true);
-			}
-			else if (hasChanged == 0) {  // 0 = Changed, allow prompted navigation.
-				OpenHR.modalPrompt("You have made changes. Click 'OK' to discard your changes, or 'Cancel' to continue editing.", 1, "Confirm").then(function (answer) {
-					if (answer == 1) {  // OK
-						menu_loadDefSelPage(17, 0, 0, true);
-		}
-					else {
-					}
-				});
-			}
+			saveChangesPrompt("CALENDAR", 'menu_loadDefSelPage(17, 0, 0, true)');
+			//	hasChanged = menu_saveChanges("CALENDAR", true, false);
+			//	if (hasChanged == 6) { // 6 = No Change
+			//		menu_loadDefSelPage(17, 0, 0, true);
+			//	}
+			//	else if (hasChanged == 0) {  // 0 = Changed, allow prompted navigation.
+			//		OpenHR.modalPrompt("You have made changes. Click 'OK' to discard your changes, or 'Cancel' to continue editing.", 1, "Confirm").then(function (answer) {
+			//			if (answer == 1) {  // OK
+			//				menu_loadDefSelPage(17, 0, 0, true);
+			//}
+			//			else {
+			//			}
+			//		});
+			//	}
 			return false;
 		}
 		
 
 		// Absence Breakdown (from reports menu)
 		if (sToolName == "mnutoolStdRpt_AbsenceBreakdown") {
-			hasChanged = menu_saveChanges("ABSENCEBREAKDOWN", true, false);
-			if (hasChanged == 6) { // 6 = No Change
-				menu_LoadStandardReport("ABSENCEBREAKDOWN", "ALL");
-			}
-			else if (hasChanged == 0) {  // 0 = Changed, allow prompted navigation.
-				OpenHR.modalPrompt("You have made changes. Click 'OK' to discard your changes, or 'Cancel' to continue editing.", 1, "Confirm").then(function (answer) {
-					if (answer == 1) {  // OK
-						menu_LoadStandardReport("ABSENCEBREAKDOWN", "ALL");
-					}
-					else {
-					}
-				});
-			}
+			saveChangesPrompt("ABSENCEBREAKDOWN", 'menu_LoadStandardReport("ABSENCEBREAKDOWN", "ALL")');
+			//hasChanged = menu_saveChanges("ABSENCEBREAKDOWN", true, false);
+			//if (hasChanged == 6) { // 6 = No Change
+			//	menu_LoadStandardReport("ABSENCEBREAKDOWN", "ALL");
+			//}
+			//else if (hasChanged == 0) {  // 0 = Changed, allow prompted navigation.
+			//	OpenHR.modalPrompt("You have made changes. Click 'OK' to discard your changes, or 'Cancel' to continue editing.", 1, "Confirm").then(function (answer) {
+			//		if (answer == 1) {  // OK
+			//			menu_LoadStandardReport("ABSENCEBREAKDOWN", "ALL");
+			//		}
+			//		else {
+			//		}
+			//	});
+			//}
 			return false;
 		}
 
 		// Bradford Factor (from reports menu)
 		if (sToolName == "mnutoolStdRpt_BradfordFactor") {
-			hasChanged = menu_saveChanges("BRADFORDFACTOR", true, false);
-			if (hasChanged == 6) { // 6 = No Change
-				menu_LoadStandardReport("BRADFORDFACTOR", "ALL");
-			}
-			else if (hasChanged == 0) {  // 0 = Changed, allow prompted navigation.
-				OpenHR.modalPrompt("You have made changes. Click 'OK' to discard your changes, or 'Cancel' to continue editing.", 1, "Confirm").then(function (answer) {
-					if (answer == 1) {  // OK
-						menu_LoadStandardReport("BRADFORDFACTOR", "ALL");
-					}
-					else {
-					}
-				});
-			}
+			saveChangesPrompt("BRADFORDFACTOR", 'menu_LoadStandardReport("BRADFORDFACTOR", "ALL")');
+			//hasChanged = menu_saveChanges("BRADFORDFACTOR", true, false);
+			//if (hasChanged == 6) { // 6 = No Change
+			//	menu_LoadStandardReport("BRADFORDFACTOR", "ALL");
+			//}
+			//else if (hasChanged == 0) {  // 0 = Changed, allow prompted navigation.
+			//	OpenHR.modalPrompt("You have made changes. Click 'OK' to discard your changes, or 'Cancel' to continue editing.", 1, "Confirm").then(function (answer) {
+			//		if (answer == 1) {  // OK
+			//			menu_LoadStandardReport("BRADFORDFACTOR", "ALL");
+			//		}
+			//		else {
+			//		}
+			//	});
+			//}
 			return false;
 		}
 	
 		// Utilities Menu -------------------------------------------------------------------------------------------------------------------
 
 		if (sToolName == "mnutoolMailMerge") {
-			hasChanged = menu_saveChanges("MAILMERGE", true, false);
-			if (hasChanged == 6) { // 6 = No Change
-			menu_loadDefSelPage(9, 0, 0, true);
-			}
-			else if (hasChanged == 0) {  // 0 = Changed, allow prompted navigation.
-				OpenHR.modalPrompt("You have made changes. Click 'OK' to discard your changes, or 'Cancel' to continue editing.", 1, "Confirm").then(function (answer) {
-					if (answer == 1) {  // OK
-						menu_loadDefSelPage(9, 0, 0, true);
-		}
-					else {
-					}
-				});
-			}
-		return false;
+			saveChangesPrompt("MAILMERGE", 'menu_loadDefSelPage(9, 0, 0, true)');
+			//	hasChanged = menu_saveChanges("MAILMERGE", true, false);
+			//	if (hasChanged == 6) { // 6 = No Change
+			//	menu_loadDefSelPage(9, 0, 0, true);
+			//	}
+			//	else if (hasChanged == 0) {  // 0 = Changed, allow prompted navigation.
+			//		OpenHR.modalPrompt("You have made changes. Click 'OK' to discard your changes, or 'Cancel' to continue editing.", 1, "Confirm").then(function (answer) {
+			//			if (answer == 1) {  // OK
+			//				menu_loadDefSelPage(9, 0, 0, true);
+			//}
+			//			else {
+			//			}
+			//		});
+			//	}
+			return false;
 		}
 
 		if (sToolName == "mnutoolWorkflow") {
-			hasChanged = menu_saveChanges("WORKFLOW", true, false);
-			if (hasChanged == 6) { // 6 = No Change
-			menu_loadDefSelPage(25, 0, 0, true);
-			}
-			else if (hasChanged == 0) {  // 0 = Changed, allow prompted navigation.
-				OpenHR.modalPrompt("You have made changes. Click 'OK' to discard your changes, or 'Cancel' to continue editing.", 1, "Confirm").then(function (answer) {
-					if (answer == 1) {  // OK
-						menu_loadDefSelPage(25, 0, 0, true);
-		}
-					else {
-					}
-				});
-			}
+			saveChangesPrompt("WORKFLOW", 'menu_loadDefSelPage(25, 0, 0, true)');
+			//	hasChanged = menu_saveChanges("WORKFLOW", true, false);
+			//	if (hasChanged == 6) { // 6 = No Change
+			//	menu_loadDefSelPage(25, 0, 0, true);
+			//	}
+			//	else if (hasChanged == 0) {  // 0 = Changed, allow prompted navigation.
+			//		OpenHR.modalPrompt("You have made changes. Click 'OK' to discard your changes, or 'Cancel' to continue editing.", 1, "Confirm").then(function (answer) {
+			//			if (answer == 1) {  // OK
+			//				menu_loadDefSelPage(25, 0, 0, true);
+			//}
+			//			else {
+			//			}
+			//		});
+			//	}
 			return false;
 		}
 
 		// Utilities Menu -------------------------------------------------------------------------------------------------------------------
 		
 		if (sToolName == "mnutoolCalculations") {
-			hasChanged = menu_saveChanges("CALCULATIONS", true, false);
-			if (hasChanged == 6) { // 6 = No Change
-				menu_loadDefSelPage(12, 0, 0, true);
-			}
-			else if (hasChanged == 0) {  // 0 = Changed, allow prompted navigation.
-				OpenHR.modalPrompt("You have made changes. Click 'OK' to discard your changes, or 'Cancel' to continue editing.", 1, "Confirm").then(function (answer) {
-					if (answer == 1) {  // OK
-			menu_loadDefSelPage(12, 0, 0, true);
-			}
-					else {
-					}
-				});
-			}
+			saveChangesPrompt("CALCULATIONS", 'menu_loadDefSelPage(12, 0, 0, true)');
+			//hasChanged = menu_saveChanges("CALCULATIONS", true, false);
+			//if (hasChanged == 6) { // 6 = No Change
+			//	menu_loadDefSelPage(12, 0, 0, true);
+			//}
+			//else if (hasChanged == 0) {  // 0 = Changed, allow prompted navigation.
+			//	OpenHR.modalPrompt("You have made changes. Click 'OK' to discard your changes, or 'Cancel' to continue editing.", 1, "Confirm").then(function (answer) {
+			//		if (answer == 1) {  // OK
+			//menu_loadDefSelPage(12, 0, 0, true);
+			//}
+			//		else {
+			//		}
+			//	});
+			//}
 			return false;
 		}
 
 		if (sToolName == "mnutoolFilters") {
-			hasChanged = menu_saveChanges("FILTERS", true, false);
-			if (hasChanged == 6) { // 6 = No Change
-				menu_loadDefSelPage(11, 0, 0, true);
-			}
-			else if (hasChanged == 0) {  // 0 = Changed, allow prompted navigation.
-				OpenHR.modalPrompt("You have made changes. Click 'OK' to discard your changes, or 'Cancel' to continue editing.", 1, "Confirm").then(function (answer) {
-					if (answer == 1) {  // OK
-			menu_loadDefSelPage(11, 0, 0, true);
-			}
-					else {
-					}
-				});
-			}
+			saveChangesPrompt("FILTERS", 'menu_loadDefSelPage(11, 0, 0, true)');
+			//hasChanged = menu_saveChanges("FILTERS", true, false);
+			//if (hasChanged == 6) { // 6 = No Change
+			//	menu_loadDefSelPage(11, 0, 0, true);
+			//}
+			//else if (hasChanged == 0) {  // 0 = Changed, allow prompted navigation.
+			//	OpenHR.modalPrompt("You have made changes. Click 'OK' to discard your changes, or 'Cancel' to continue editing.", 1, "Confirm").then(function (answer) {
+			//		if (answer == 1) {  // OK
+			//menu_loadDefSelPage(11, 0, 0, true);
+			//}
+			//		else {
+			//		}
+			//	});
+			//}
 			return false;
 		}
 
 		if (sToolName == "mnutoolPicklists") {
-			hasChanged = menu_saveChanges("PICKLISTS", true, false);
-			if (hasChanged == 6) { // 6 = No Change
-				menu_loadDefSelPage(10, 0, 0, true);
-			}
-			else if (hasChanged == 0) {  // 0 = Changed, allow prompted navigation.
-				OpenHR.modalPrompt("You have made changes. Click 'OK' to discard your changes, or 'Cancel' to continue editing.", 1, "Confirm").then(function (answer) {
-					if (answer == 1) {  // OK
-			menu_loadDefSelPage(10, 0, 0, true);
-			}
-					else {
-					}
-				});
-			}
+			saveChangesPrompt("PICKLISTS", 'menu_loadDefSelPage(10, 0, 0, true)');
+			//hasChanged = menu_saveChanges("PICKLISTS", true, false);
+			//if (hasChanged == 6) { // 6 = No Change
+			//	menu_loadDefSelPage(10, 0, 0, true);
+			//}
+			//else if (hasChanged == 0) {  // 0 = Changed, allow prompted navigation.
+			//	OpenHR.modalPrompt("You have made changes. Click 'OK' to discard your changes, or 'Cancel' to continue editing.", 1, "Confirm").then(function (answer) {
+			//		if (answer == 1) {  // OK
+			//menu_loadDefSelPage(10, 0, 0, true);
+			//}
+			//		else {
+			//		}
+			//	});
+			//}
 			return false;
 		}
 
@@ -1112,40 +1124,42 @@ function menu_MenuClick(sTool) {
 	
 	  // Loads the Absence Breakdown report configuration
 		if (sToolName == "mnutoolStdRpt_AbsenceBreakdownConfiguration") {
+			saveChangesPrompt("ABSENCEBREAKDOWNCONFIGURATION", 'menu_loadPage("AbsenceBreakdownConfiguration")');
 
-			hasChanged = menu_saveChanges("ABSENCEBREAKDOWNCONFIGURATION", true, false);
-			if (hasChanged == 6) { // 6 = No Change
-				menu_loadPage("AbsenceBreakdownConfiguration");
-			}
-			else if (hasChanged == 0) {  // 0 = Changed, allow prompted navigation.
-				OpenHR.modalPrompt("You have made changes. Click 'OK' to discard your changes, or 'Cancel' to continue editing.", 1, "Confirm").then(function (answer) {
-					if (answer == 1) {  // OK
-						menu_loadPage("AbsenceBreakdownConfiguration");
-					}
-					else {
-					}
-				});
-			}
+			//hasChanged = menu_saveChanges("ABSENCEBREAKDOWNCONFIGURATION", true, false);
+			//if (hasChanged == 6) { // 6 = No Change
+			//	menu_loadPage("AbsenceBreakdownConfiguration");
+			//}
+			//else if (hasChanged == 0) {  // 0 = Changed, allow prompted navigation.
+			//	OpenHR.modalPrompt("You have made changes. Click 'OK' to discard your changes, or 'Cancel' to continue editing.", 1, "Confirm").then(function (answer) {
+			//		if (answer == 1) {  // OK
+			//			menu_loadPage("AbsenceBreakdownConfiguration");
+			//		}
+			//		else {
+			//		}
+			//	});
+			//}
 			return false;
 		}
 
 	// Event Log
 	
 		if (sToolName == "mnutoolEventLog") {
-			menu_setVisibletoolbarGroupById("mnuSectionNavigateRecords", false) //Hide the navigate section of the ribbon
-			hasChanged = menu_saveChanges("EVENTLOG", true, false);
-			if (hasChanged == 6) { // 6 = No Change
-				menu_loadPage("eventLog");
-			}
-			else if (hasChanged == 0) {  // 0 = Changed, allow prompted navigation.
-				OpenHR.modalPrompt("You have made changes. Click 'OK' to discard your changes, or 'Cancel' to continue editing.", 1, "Confirm").then(function (answer) {
-					if (answer == 1) {  // OK
-				menu_loadPage("eventLog");
-			}
-					else {
-					}
-				});
-			}
+			menu_setVisibletoolbarGroupById("mnuSectionNavigateRecords", false); //Hide the navigate section of the ribbon
+			saveChangesPrompt("EVENTLOG", 'menu_loadPage("eventLog")');
+			//hasChanged = menu_saveChanges("EVENTLOG", true, false);
+			//if (hasChanged == 6) { // 6 = No Change
+			//	menu_loadPage("eventLog");
+			//}
+			//else if (hasChanged == 0) {  // 0 = Changed, allow prompted navigation.
+			//	OpenHR.modalPrompt("You have made changes. Click 'OK' to discard your changes, or 'Cancel' to continue editing.", 1, "Confirm").then(function (answer) {
+			//		if (answer == 1) {  // OK
+			//	menu_loadPage("eventLog");
+			//}
+			//		else {
+			//		}
+			//	});
+			//}
 			return false;
 		}
 
@@ -1171,25 +1185,26 @@ function menu_MenuClick(sTool) {
 
 
 		if (sToolName == "mnutoolWorkflowPendingSteps") {
-			hasChanged = menu_saveChanges("WORKFLOWPENDINGSTEPS", true, false);
-			if (hasChanged == 6) { // 6 = No Change
-				showDefaultRibbon();
-				$("#toolbarWFPendingStepsFind").parent().show();
-				$("#toolbarWFPendingStepsFind").click();
-				menu_autoLoadPage("workflowPendingSteps", false);
-			}
-			else if (hasChanged == 0) {  // 0 = Changed, allow prompted navigation.
-				OpenHR.modalPrompt("You have made changes. Click 'OK' to discard your changes, or 'Cancel' to continue editing.", 1, "Confirm").then(function (answer) {
-					if (answer == 1) {  // OK
-						showDefaultRibbon();
-						$("#toolbarWFPendingStepsFind").parent().show();
-						$("#toolbarWFPendingStepsFind").click();
-						menu_autoLoadPage("workflowPendingSteps", false);
-					}
-					else {
-					}
-				});
-			}
+			saveChangesPrompt("WORKFLOWPENDINGSTEPS", 'showDefaultRibbon(); $("#toolbarWFPendingStepsFind").parent().show(); $("#toolbarWFPendingStepsFind").click(); menu_autoLoadPage("workflowPendingSteps", false)');
+			//hasChanged = menu_saveChanges("WORKFLOWPENDINGSTEPS", true, false);
+			//if (hasChanged == 6) { // 6 = No Change
+			//	showDefaultRibbon();
+			//	$("#toolbarWFPendingStepsFind").parent().show();
+			//	$("#toolbarWFPendingStepsFind").click();
+			//	menu_autoLoadPage("workflowPendingSteps", false);
+			//}
+			//else if (hasChanged == 0) {  // 0 = Changed, allow prompted navigation.
+			//	OpenHR.modalPrompt("You have made changes. Click 'OK' to discard your changes, or 'Cancel' to continue editing.", 1, "Confirm").then(function (answer) {
+			//		if (answer == 1) {  // OK
+			//			showDefaultRibbon();
+			//			$("#toolbarWFPendingStepsFind").parent().show();
+			//			$("#toolbarWFPendingStepsFind").click();
+			//			menu_autoLoadPage("workflowPendingSteps", false);
+			//		}
+			//		else {
+			//		}
+			//	});
+			//}
 			return false;
 		}
 
@@ -1233,19 +1248,20 @@ function menu_MenuClick(sTool) {
 		
 
 		if ((sToolName == "mnutoolWorkflowOutOfOffice") || (sToolName == "mnutoolFixedWorkflowOutOfOffice")) {
-		hasChanged = menu_saveChanges("WORKFLOWOUTOFOFFICE", true, false);
-		if (hasChanged == 6) { // 6 = No Change
-				menu_WorkflowOutOfOffice();
-		} else if (hasChanged == 0) { // 0 = Changed, allow prompted navigation.
-			OpenHR.modalPrompt("You have made changes. Click 'OK' to discard your changes, or 'Cancel' to continue editing.", 1, "Confirm").then(function(answer) {
-				if (answer == 1) { // OK
-					menu_WorkflowOutOfOffice();
-			return;
-				} else {
-		}
-			});
-		}
-		return false;
+			saveChangesPrompt("WORKFLOWOUTOFOFFICE", 'menu_WorkflowOutOfOffice()');
+			//	hasChanged = menu_saveChanges("WORKFLOWOUTOFOFFICE", true, false);
+			//if (hasChanged == 6) { // 6 = No Change
+			//		menu_WorkflowOutOfOffice();
+			//} else if (hasChanged == 0) { // 0 = Changed, allow prompted navigation.
+			//	OpenHR.modalPrompt("You have made changes. Click 'OK' to discard your changes, or 'Cancel' to continue editing.", 1, "Confirm").then(function(answer) {
+			//		if (answer == 1) { // OK
+			//			menu_WorkflowOutOfOffice();
+			//	return;
+			//		} else {
+			//}
+			//	});
+			//}
+			return false;
 	}
 	
 	if (sTool == 'mnutoolOrgChartExpand') {
@@ -1281,10 +1297,11 @@ function menu_MenuClick(sTool) {
 				
 			OpenHR.modalPrompt("You have made changes. Click 'OK' to discard your changes, or 'Cancel' to continue editing.", 1, "Confirm").then(function (answer) {
 				if (answer == 1) {  // OK
-				//not an expandable menu item, so continue.
-				menu_loadPage(sToolName.substr(7));
-			}
-			else {
+					//not an expandable menu item, so continue.
+					window.onbeforeunload = null;
+					menu_loadPage(sToolName.substr(7));
+				}
+				else {
 				}
 			});
 			return false;
@@ -1293,6 +1310,7 @@ function menu_MenuClick(sTool) {
 				//frmData = window.parent.frames("dataframe").document.forms("frmData");
 			OpenHR.modalPrompt("You have made changes. Click 'OK' to discard your changes, or 'Cancel' to continue editing.", 1, "Confirm").then(function (answer) {
 				if (answer == 1) {  // OK
+					window.onbeforeunload = null;
 					menu_Navigate_LoadPage(sTool, sToolName, frmMenuInfo);
 				}
 				else {
@@ -1304,12 +1322,44 @@ function menu_MenuClick(sTool) {
 	else if (hasChanged == 6) {  // Free navigation
 		if (sToolName.substr(0, 7) == "mnutool") {
 			menu_loadPage(sToolName.substr(7));
-		} else {
+		}
+		else {
 			menu_Navigate_LoadPage(sTool, sToolName, frmMenuInfo);
 		}
 		return false;
 	}
 }
+
+
+function saveChangesPrompt(sToolName, followonfunction) {
+
+	var hasChanged = menu_saveChanges(sToolName, true, false);
+	if (hasChanged === 0) { // Prompt for navigation
+		OpenHR.modalPrompt("You have made changes. Click 'OK' to discard your changes, or 'Cancel' to continue editing.", 1, "Confirm").then(function(answer) {
+			if (answer === 1) { // OK			
+				window.onbeforeunload = null;
+				runPostSaveChangesPrompt(followonfunction);
+			}
+		});
+	}
+	else {
+		runPostSaveChangesPrompt(followonfunction);
+	}	
+	return false;
+}
+
+
+function runPostSaveChangesPrompt(followonfunction) {
+	try {
+		setTimeout(followonfunction, 0);
+	}
+	catch (e) {
+		alert("Function call failed.");
+	}
+
+	return false;
+}
+
 
 function menu_Navigate_LoadPage(sTool, sToolName, frmMenuInfo)
 {
@@ -2627,7 +2677,6 @@ function menu_saveChanges(psAction, pfPrompt, pfTBOverride) {
 					(sCurrentPage == "UTIL_DEF_9BOXGRID") ||
 					(sCurrentPage == "UTIL_DEF_CALENDARREPORT") ||
 					(sCurrentPage == "UTIL_DEF_MAILMERGE")) {
-
 		iResult = saveReportDefinition(true);
 		}
 
@@ -3656,19 +3705,21 @@ function menu_pausecomp(millis) {
 	}
 	
 	if (sCurrentWorkPage == "RECORDEDIT") {
-		if (menu_saveChanges("NEW", true, false) == 0) { // Prompt to cancel
-			OpenHR.modalPrompt("You have made changes. Click 'OK' to discard your changes and create a new record, or 'Cancel' to continue editing.", 1, "Confirm").then(function(answer) {
-				if (answer == 1) { // OK - Ignore changes
-					new_RecordEdit();
-					return false;
-				} else {
-					return false;
-				}
-			});
-		} else {  // Don't prompt
-			new_RecordEdit();
-			return false;
-		}
+		saveChangesPrompt('NEW', 'new_RecordEdit()');
+		//if (menu_saveChanges("NEW", true, false) == 0) { // Prompt to cancel
+		//	OpenHR.modalPrompt("You have made changes. Click 'OK' to discard your changes and create a new record, or 'Cancel' to continue editing.", 1, "Confirm").then(function(answer) {
+		//		if (answer == 1) { // OK - Ignore changes
+		//			new_RecordEdit();
+		//			return false;
+		//		} else {
+		//			return false;
+		//		}
+		//	});
+		//} else {  // Don't prompt
+		//	new_RecordEdit();
+		//	return false;
+		//}
+		return false;
 	}
 	else {
 		if (sCurrentWorkPage == "FIND") {
@@ -3718,20 +3769,22 @@ function menu_pausecomp(millis) {
 	};
 	
 	if (sCurrentWorkPage == "RECORDEDIT") {
-		if (menu_saveChanges("COPY", true, false) == 0) { // 2 = vbCancel
-			OpenHR.modalPrompt("You have unsaved changes. Click 'OK' to copy these changes, or 'Cancel' to continue editing.", 1, "Confirm").then(function (answer) {
-				if (answer == 1) { // OK - Ignore changes
-					copy_RecordEdit();
-					return false;
-				} else {
-					return false;
-				}
-			});
-		} else {  // Don't prompt
-			copy_RecordEdit();
-			return false;
-}
-}
+		saveChangesPrompt('COPY', 'copy_RecordEdit()');
+		//		if (menu_saveChanges("COPY", true, false) == 0) { // 2 = vbCancel
+		//			OpenHR.modalPrompt("You have unsaved changes. Click 'OK' to copy these changes, or 'Cancel' to continue editing.", 1, "Confirm").then(function (answer) {
+		//				if (answer == 1) { // OK - Ignore changes
+		//					copy_RecordEdit();
+		//					return false;
+		//				} else {
+		//					return false;
+		//				}
+		//			});
+		//		} else {  // Don't prompt
+		//			copy_RecordEdit();
+		//			return false;
+		//}
+		return false;
+	}
 	else {
 	if (sCurrentWorkPage == "FIND") {			
 	// Submit the current "workframe" form, and then load the required record Edit page.
@@ -3892,20 +3945,22 @@ function menu_pausecomp(millis) {
 	frmWorkArea = OpenHR.getForm("workframe", "frmGoto");
 	
 	if (sCurrentWorkPage == "RECORDEDIT") {
-		if (menu_saveChanges("PARENT", true, false) == 0) { // 0 = Prompt for navigation
-			OpenHR.modalPrompt("You have made changes. Click 'OK' to discard your changes, or 'Cancel' to continue editing.", 1, "Confirm").then(function(answer) {
-				if (answer == 1) { // OK - Ignore changes
-					menu_loadParent();
-					return false;
-				} else {
-					return false;
-				}
-			});
-		} else {  // Don't prompt
-	menu_loadParent();
-			return false;
-}
-}
+		saveChangesPrompt('PARENT', 'menu_loadParent()');
+		//		if (menu_saveChanges("PARENT", true, false) == 0) { // 0 = Prompt for navigation
+		//			OpenHR.modalPrompt("You have made changes. Click 'OK' to discard your changes, or 'Cancel' to continue editing.", 1, "Confirm").then(function(answer) {
+		//				if (answer == 1) { // OK - Ignore changes
+		//					menu_loadParent();
+		//					return false;
+		//				} else {
+		//					return false;
+		//				}
+		//			});
+		//		} else {  // Don't prompt
+		//	menu_loadParent();
+		//			return false;
+		//}
+		return false;
+	}
 	else {
 	if (sCurrentWorkPage == "FIND") {
 	menu_ShowWait("Loading screen...");
@@ -4063,45 +4118,45 @@ function menu_pausecomp(millis) {
 	sAction = psMovement;
 	
 		function move_RecordEdit() {
-	// Get the data.asp to get the move to the FIRST record.
+			// Get the data.asp to get the move to the FIRST record.
 			menu_ShowWait("Locating record...");
-	menu_disableMenu();
+			menu_disableMenu();
 					
-	frmDataArea = OpenHR.getForm("dataframe", "frmGetData");
-	frmRecEditArea = OpenHR.getForm("workframe", "frmRecordEditForm");
+			frmDataArea = OpenHR.getForm("dataframe", "frmGetData");
+			frmRecEditArea = OpenHR.getForm("workframe", "frmRecordEditForm");
 			
-	if ((psMovement == "MOVEPREVIOUS") &&
-	(frmRecEditArea.txtCurrentRecordID.value == 0)) {
-	sAction = "MOVELAST";
-}
+			if ((psMovement == "MOVEPREVIOUS") && (frmRecEditArea.txtCurrentRecordID.value == 0)) {
+				sAction = "MOVELAST";
+			}
 			
-	frmDataArea.txtAction.value = sAction;
+			frmDataArea.txtAction.value = sAction;
 			
-	frmDataArea.txtCurrentTableID.value = frmRecEditArea.txtCurrentTableID.value;
-	frmDataArea.txtCurrentScreenID.value = frmRecEditArea.txtCurrentScreenID.value;
-	frmDataArea.txtCurrentViewID.value = frmRecEditArea.txtCurrentViewID.value;
-	frmDataArea.txtSelectSQL.value = frmRecEditArea.txtRecEditSelectSQL.value;
-	frmDataArea.txtFromDef.value = frmRecEditArea.txtRecEditFromDef.value;
-	frmDataArea.txtFilterSQL.value = frmRecEditArea.txtRecEditFilterSQL.value;
-	frmDataArea.txtFilterDef.value = frmRecEditArea.txtRecEditFilterDef.value;
-	frmDataArea.txtRealSource.value = frmRecEditArea.txtRecEditRealSource.value;
-	frmDataArea.txtRecordID.value = frmRecEditArea.txtCurrentRecordID.value;
-	frmDataArea.txtOriginalRecordID.value = frmRecEditArea.txtCurrentRecordID.value;
-	frmDataArea.txtParentTableID.value = frmRecEditArea.txtCurrentParentTableID.value;
-	frmDataArea.txtParentRecordID.value = frmRecEditArea.txtCurrentParentRecordID.value;
-	data_refreshData();
-}
+			frmDataArea.txtCurrentTableID.value = frmRecEditArea.txtCurrentTableID.value;
+			frmDataArea.txtCurrentScreenID.value = frmRecEditArea.txtCurrentScreenID.value;
+			frmDataArea.txtCurrentViewID.value = frmRecEditArea.txtCurrentViewID.value;
+			frmDataArea.txtSelectSQL.value = frmRecEditArea.txtRecEditSelectSQL.value;
+			frmDataArea.txtFromDef.value = frmRecEditArea.txtRecEditFromDef.value;
+			frmDataArea.txtFilterSQL.value = frmRecEditArea.txtRecEditFilterSQL.value;
+			frmDataArea.txtFilterDef.value = frmRecEditArea.txtRecEditFilterDef.value;
+			frmDataArea.txtRealSource.value = frmRecEditArea.txtRecEditRealSource.value;
+			frmDataArea.txtRecordID.value = frmRecEditArea.txtCurrentRecordID.value;
+			frmDataArea.txtOriginalRecordID.value = frmRecEditArea.txtCurrentRecordID.value;
+			frmDataArea.txtParentTableID.value = frmRecEditArea.txtCurrentParentTableID.value;
+			frmDataArea.txtParentRecordID.value = frmRecEditArea.txtCurrentParentRecordID.value;
+			data_refreshData();
+		}
 		
 
 		if (sCurrentWorkPage == "EVENTLOG") {
 			EventLog_moveRecord(psMovement);  //should be in scope.
-	return;
-}
+			return;
+		}
 
 		if (sCurrentWorkPage == "RECORDEDIT") {
 			if (menu_saveChanges(sSaveChangesTag, true, false) == 0) { // 0 = Prompt
 				OpenHR.modalPrompt("You have made changes. Click 'OK' to discard your changes, or 'Cancel' to continue editing.", 1, "Confirm").then(function (answer) {
 					if (answer == 1) { // OK - Ignore changes
+						window.onbeforeunload = null;
 						move_RecordEdit();
 						return false;
 					} else {
@@ -4112,6 +4167,7 @@ function menu_pausecomp(millis) {
 				move_RecordEdit();
 				return false;
 			}
+			return false;
 		}
 
 	if (sCurrentWorkPage == "FIND") {
@@ -4288,6 +4344,7 @@ function menu_loadSelectOrderFilter(psType) {
 		if (menu_saveChanges(sSaveChangesTag, true, false) == 0) { // 0 = Prompt
 			OpenHR.modalPrompt("You have made changes. Click 'OK' to discard your changes, or 'Cancel' to continue editing.", 1, "Confirm").then(function (answer) {
 				if (answer == 1) { // OK - Ignore changes
+					window.onbeforeunload = null;
 					orderfilter_RecordEdit();
 					return false;
 				} else {
@@ -5254,8 +5311,8 @@ function saveInlineRowToDatabase(rowId) {
 
 function submitFollowOn() {	
 	var rowId = window.savedRow; //$("#findGridTable").getGridParam('selrow');	
-	
-	if ($('#frmData #txtErrorMessage').val() !== "") { //There was an error while saving
+
+	if ($('#txtErrorMessage').val() != "") { //There was an error while saving
 		$("#findGridTable").editRow(rowId); //Edit the row
 
 		//After a brief timeout, enable "Add" and "Edit" and disable "Save" and "Cancel"
@@ -5290,10 +5347,6 @@ function submitFollowOn() {
 			} else {
 				$("#findGridTable_iledit").hide();
 			}
-
-			//finally: post save function (was separate click event)..
-			postSaveFunc();
-
 		} catch (e) {
 			OpenHR.modalMessage("Failed to reload data for this row.", "");
 		}
@@ -5308,8 +5361,8 @@ function updateRowFromDatabase(rowid) {
 	var recordID = $("#findGridTable").jqGrid('getCell', rowid, 'ID');
 	
 	if (recordID == "")
-		return false; //It's a new row, we don't have its ID from the database, the call below would fail, so just return false	
-
+		return false; //It's a new row, we don't have its ID from the database, the call below would fail, so just return false
+	
 	//Get the row from the server
 	$.ajax({
 		url: "getfindrecordbyid",
