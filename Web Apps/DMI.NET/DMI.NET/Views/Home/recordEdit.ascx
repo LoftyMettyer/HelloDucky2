@@ -863,6 +863,9 @@
 			//$("#ctlRecordEdit").css("transform-origin", "50% top");
 		}
 
+		var toolMfRecord = getCookie('toolMFRecord');
+		$('#mnutoolMFRecord').removeClass('toolbarButtonOn');
+		if (toolMfRecord == 'true') toggleMandatoryColumns(true);
 	});
 
 </script>

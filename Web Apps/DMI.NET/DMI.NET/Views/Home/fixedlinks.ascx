@@ -549,7 +549,7 @@
 									<img src="<%: Url.Content("~/Scripts/officebar/winkit/Registry64HOVER.png")%>"
 										alt="" />
 									<i class="icon-th-list"></i>
-									<h6>Toggle Mandatory<br/>Fields</h6>
+									<h6>Highlight Mandatory<br/>Columns</h6>
 								</a>
 							</div>
 						</li>
