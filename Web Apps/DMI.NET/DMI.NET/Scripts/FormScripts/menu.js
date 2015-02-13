@@ -5289,7 +5289,7 @@ function saveInlineRowToDatabase(rowId) {
 function submitFollowOn() {	
 	var rowId = window.savedRow; //$("#findGridTable").getGridParam('selrow');	
 	
-	if ($('#txtErrorMessage').val() != "") { //There was an error while saving
+	if ($('#frmData #txtErrorMessage').val() !== "") { //There was an error while saving
 		$("#findGridTable").editRow(rowId); //Edit the row
 
 		//After a brief timeout, enable "Add" and "Edit" and disable "Save" and "Cancel"
@@ -5324,6 +5324,10 @@ function submitFollowOn() {
 			} else {
 				$("#findGridTable_iledit").hide();
 			}
+
+			//finally: post save function (was separate click event)..
+			postSaveFunc();
+
 		} catch (e) {
 			OpenHR.modalMessage("Failed to reload data for this row.", "");
 		}
