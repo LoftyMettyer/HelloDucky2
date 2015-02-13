@@ -235,8 +235,8 @@ function menu_MenuClick(sTool) {
 		//} else {
 		//	window.location.href = "MainSSI";
 		//}
-					return false;
-				}
+		return false;
+	}
 
 	if (sToolName == "mnutoolFixedLogoff") {
 		return false;
@@ -258,8 +258,8 @@ function menu_MenuClick(sTool) {
 		//} else {
 		//	window.location.href = "MainDMI";
 		//}
-					return false;
-				}
+		return false;
+	}
 
 	if (sToolName == "mnutoolFixedLayout") { // This already has an href target defined in fixedlinks. No action here
 		return false;
@@ -290,7 +290,7 @@ function menu_MenuClick(sTool) {
 	if (sToolName == "mnutoolMFRecord") {
 			
 		toggleMandatoryColumns();			
-
+			
 		return false;
 	}
 
@@ -573,7 +573,7 @@ function menu_MenuClick(sTool) {
 		//	} else {
 		//		menu_logoffIntranet();
 		//	}
-					return false;
+		return false;
 	}
 
 
@@ -726,7 +726,7 @@ function menu_MenuClick(sTool) {
 		return;
 	}
 
-	if (sToolName == "mnutoolFindRecord") {		
+	if (sToolName == "mnutoolFindRecord") {
 		saveChangesPrompt(sTool, 'menu_disableMenu(); menu_refreshHistoryScreensMenu(0); menu_loadFindPage()');
 		//	hasChanged = menu_saveChanges(sTool, true, false);
 		//	if (hasChanged == 6) { // 6 = No Change
@@ -1019,7 +1019,7 @@ function menu_MenuClick(sTool) {
 			//			}
 			//		});
 			//	}
-		return false;
+			return false;
 		}
 
 		if (sToolName == "mnutoolWorkflow") {
@@ -1238,7 +1238,7 @@ function menu_MenuClick(sTool) {
 			//}
 			//	});
 			//}
-		return false;
+			return false;
 	}
 	
 	if (sTool == 'mnutoolOrgChartExpand') {
@@ -1274,11 +1274,11 @@ function menu_MenuClick(sTool) {
 				
 			OpenHR.modalPrompt("You have made changes. Click 'OK' to discard your changes, or 'Cancel' to continue editing.", 1, "Confirm").then(function (answer) {
 				if (answer == 1) {  // OK
-				//not an expandable menu item, so continue.
+					//not an expandable menu item, so continue.
 					window.onbeforeunload = null;
-				menu_loadPage(sToolName.substr(7));
-			}
-			else {
+					menu_loadPage(sToolName.substr(7));
+				}
+				else {
 				}
 			});
 			return false;
@@ -1323,7 +1323,7 @@ function saveChangesPrompt(sToolName, followonfunction) {
 		runPostSaveChangesPrompt(followonfunction);
 	}	
 	return false;
-	}
+}
 
 
 function runPostSaveChangesPrompt(followonfunction) {
@@ -3682,22 +3682,22 @@ function menu_pausecomp(millis) {
 	}
 	
 	if (sCurrentWorkPage == "RECORDEDIT") {
-		saveChangesPrompt('NEW', 'new_RecordEdit()');
-		//if (menu_saveChanges("NEW", true, false) == 0) { // Prompt to cancel
-		//	OpenHR.modalPrompt("You have made changes. Click 'OK' to discard your changes and create a new record, or 'Cancel' to continue editing.", 1, "Confirm").then(function(answer) {
-		//		if (answer == 1) { // OK - Ignore changes
-		//			new_RecordEdit();
-		//			return false;
-		//		} else {
-		//			return false;
-		//		}
-		//	});
-		//} else {  // Don't prompt
-		//	new_RecordEdit();
-		//	return false;
-		//}
+		//saveChangesPrompt('NEW', 'new_RecordEdit()');
+		if (menu_saveChanges("NEW", true, false) == 0) { // Prompt to cancel
+			OpenHR.modalPrompt("You have made changes. Click 'OK' to discard your changes and create a new record, or 'Cancel' to continue editing.", 1, "Confirm").then(function(answer) {
+				if (answer == 1) { // OK - Ignore changes
+					window.onbeforeunload = null;
+					new_RecordEdit();
+		return false;
+				} else {
+					return false;
+	}
+			});
+		} else {  // Don't prompt
+			new_RecordEdit();
 			return false;
 		}
+	}
 	else {
 		if (sCurrentWorkPage == "FIND") {
 			// Submit the current "workframe" form, and then load the required record Edit page.
@@ -3746,22 +3746,22 @@ function menu_pausecomp(millis) {
 	};
 	
 	if (sCurrentWorkPage == "RECORDEDIT") {
-		saveChangesPrompt('COPY', 'copy_RecordEdit()');
-		//		if (menu_saveChanges("COPY", true, false) == 0) { // 2 = vbCancel
-		//			OpenHR.modalPrompt("You have unsaved changes. Click 'OK' to copy these changes, or 'Cancel' to continue editing.", 1, "Confirm").then(function (answer) {
-		//				if (answer == 1) { // OK - Ignore changes
-		//					copy_RecordEdit();
-		//					return false;
-		//				} else {
-		//					return false;
-		//				}
-		//			});
-		//		} else {  // Don't prompt
-		//			copy_RecordEdit();
-		//			return false;
-		//}
-			return false;
-}
+		//saveChangesPrompt('COPY', 'copy_RecordEdit()');
+		if (menu_saveChanges("COPY", true, false) == 0) { // 2 = vbCancel
+			OpenHR.modalPrompt("You have unsaved changes. Click 'OK' to copy these changes, or 'Cancel' to continue editing.", 1, "Confirm").then(function (answer) {
+				if (answer == 1) { // OK - Ignore changes
+					window.onbeforeunload = null;
+					copy_RecordEdit();
+					return false;
+				} else {
+					return false;
+				}
+			});
+		} else {  // Don't prompt
+			copy_RecordEdit();
+		return false;
+	}
+	}
 	else {
 	if (sCurrentWorkPage == "FIND") {			
 	// Submit the current "workframe" form, and then load the required record Edit page.
@@ -3936,8 +3936,8 @@ function menu_pausecomp(millis) {
 		//	menu_loadParent();
 		//			return false;
 		//}
-			return false;
-}
+		return false;
+	}
 	else {
 	if (sCurrentWorkPage == "FIND") {
 	menu_ShowWait("Loading screen...");
@@ -4095,39 +4095,39 @@ function menu_pausecomp(millis) {
 	sAction = psMovement;
 	
 		function move_RecordEdit() {
-	// Get the data.asp to get the move to the FIRST record.
+			// Get the data.asp to get the move to the FIRST record.
 			menu_ShowWait("Locating record...");
-	menu_disableMenu();
+			menu_disableMenu();
 					
-	frmDataArea = OpenHR.getForm("dataframe", "frmGetData");
-	frmRecEditArea = OpenHR.getForm("workframe", "frmRecordEditForm");
+			frmDataArea = OpenHR.getForm("dataframe", "frmGetData");
+			frmRecEditArea = OpenHR.getForm("workframe", "frmRecordEditForm");
 			
 			if ((psMovement == "MOVEPREVIOUS") && (frmRecEditArea.txtCurrentRecordID.value == 0)) {
-	sAction = "MOVELAST";
-}
+				sAction = "MOVELAST";
+			}
 			
-	frmDataArea.txtAction.value = sAction;
+			frmDataArea.txtAction.value = sAction;
 			
-	frmDataArea.txtCurrentTableID.value = frmRecEditArea.txtCurrentTableID.value;
-	frmDataArea.txtCurrentScreenID.value = frmRecEditArea.txtCurrentScreenID.value;
-	frmDataArea.txtCurrentViewID.value = frmRecEditArea.txtCurrentViewID.value;
-	frmDataArea.txtSelectSQL.value = frmRecEditArea.txtRecEditSelectSQL.value;
-	frmDataArea.txtFromDef.value = frmRecEditArea.txtRecEditFromDef.value;
-	frmDataArea.txtFilterSQL.value = frmRecEditArea.txtRecEditFilterSQL.value;
-	frmDataArea.txtFilterDef.value = frmRecEditArea.txtRecEditFilterDef.value;
-	frmDataArea.txtRealSource.value = frmRecEditArea.txtRecEditRealSource.value;
-	frmDataArea.txtRecordID.value = frmRecEditArea.txtCurrentRecordID.value;
-	frmDataArea.txtOriginalRecordID.value = frmRecEditArea.txtCurrentRecordID.value;
-	frmDataArea.txtParentTableID.value = frmRecEditArea.txtCurrentParentTableID.value;
-	frmDataArea.txtParentRecordID.value = frmRecEditArea.txtCurrentParentRecordID.value;
-	data_refreshData();
-}
+			frmDataArea.txtCurrentTableID.value = frmRecEditArea.txtCurrentTableID.value;
+			frmDataArea.txtCurrentScreenID.value = frmRecEditArea.txtCurrentScreenID.value;
+			frmDataArea.txtCurrentViewID.value = frmRecEditArea.txtCurrentViewID.value;
+			frmDataArea.txtSelectSQL.value = frmRecEditArea.txtRecEditSelectSQL.value;
+			frmDataArea.txtFromDef.value = frmRecEditArea.txtRecEditFromDef.value;
+			frmDataArea.txtFilterSQL.value = frmRecEditArea.txtRecEditFilterSQL.value;
+			frmDataArea.txtFilterDef.value = frmRecEditArea.txtRecEditFilterDef.value;
+			frmDataArea.txtRealSource.value = frmRecEditArea.txtRecEditRealSource.value;
+			frmDataArea.txtRecordID.value = frmRecEditArea.txtCurrentRecordID.value;
+			frmDataArea.txtOriginalRecordID.value = frmRecEditArea.txtCurrentRecordID.value;
+			frmDataArea.txtParentTableID.value = frmRecEditArea.txtCurrentParentTableID.value;
+			frmDataArea.txtParentRecordID.value = frmRecEditArea.txtCurrentParentRecordID.value;
+			data_refreshData();
+		}
 		
 
 		if (sCurrentWorkPage == "EVENTLOG") {
 			EventLog_moveRecord(psMovement);  //should be in scope.
-	return;
-}
+			return;
+		}
 
 		if (sCurrentWorkPage == "RECORDEDIT") {
 			if (menu_saveChanges(sSaveChangesTag, true, false) == 0) { // 0 = Prompt
@@ -5288,7 +5288,7 @@ function saveInlineRowToDatabase(rowId) {
 
 function submitFollowOn() {	
 	var rowId = window.savedRow; //$("#findGridTable").getGridParam('selrow');	
-	
+
 	if ($('#frmData #txtErrorMessage').val() !== "") { //There was an error while saving
 		$("#findGridTable").editRow(rowId); //Edit the row
 
@@ -5342,8 +5342,8 @@ function updateRowFromDatabase(rowid) {
 	var recordID = $("#findGridTable").jqGrid('getCell', rowid, 'ID');
 	
 	if (recordID == "")
-		return false; //It's a new row, we don't have its ID from the database, the call below would fail, so just return false	
-
+		return false; //It's a new row, we don't have its ID from the database, the call below would fail, so just return false
+	
 	//Get the row from the server
 	$.ajax({
 		url: "getfindrecordbyid",
