@@ -1276,8 +1276,12 @@
 	}
 
 	$(function () {
-
 		attachDefSelGrid();
+
+		$("#selectTable").change(function () {
+			$('#SelectedTableID').val(($('#selectTable').val()));
+			ToggleCheck();
+		});
 	});
 		
 </script>
