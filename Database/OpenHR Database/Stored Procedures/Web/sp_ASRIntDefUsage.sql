@@ -95,7 +95,7 @@ BEGIN
 			IF (@sUserName <> @sCurrentUser)
 				AND (@sAccess = 'HD') AND (@fSysSecMgr = 0)
 			BEGIN
-				SET @sDescription = @sDescription + '<Hidden by ' + @sUserName + '>'
+				SET @sDescription = @sDescription + '&lt;Hidden by ' + @sUserName + '&gt;'
 			END
 			ELSE
 			BEGIN
@@ -244,7 +244,7 @@ BEGIN
 			IF (@sUserName <>@sCurrentUser)
 				AND (@sAccess = 'HD') AND (@fSysSecMgr = 0)
 			BEGIN
-				SET @sDescription = @sDescription + '<Hidden by ' + @sUserName + '>'
+				SET @sDescription = @sDescription + '&lt;Hidden by ' + @sUserName + '&gt;'
 			END
 			ELSE
 			BEGIN
@@ -403,7 +403,7 @@ BEGIN
 			IF (@sUserName <>@sCurrentUser)
 				AND (@sAccess = 'HD') AND (@fSysSecMgr = 0)
 			BEGIN
-				SET @sDescription = @sDescription + '<Hidden by ' + @sUserName + '>'
+				SET @sDescription = @sDescription + '&lt;Hidden by ' + @sUserName + '&gt;'
 			END
 			ELSE
 			BEGIN
@@ -507,7 +507,7 @@ BEGIN
 			IF (@sUserName <>@sCurrentUser)
 				AND (@sAccess = 'HD') AND (@fSysSecMgr = 0)
 			BEGIN
-				SET @sDescription = @sDescription + '<Hidden by ' + @sUserName + '>'
+				SET @sDescription = @sDescription + '&lt;Hidden by ' + @sUserName + '&gt;'
 			END
 			ELSE
 			BEGIN
