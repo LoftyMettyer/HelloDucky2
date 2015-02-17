@@ -14,6 +14,7 @@ Public Class CalendarReport
 	Inherits BaseReport
 
 	Public rsPersonnelBHols As DataTable
+	Public rsTempPersonnelBHols As DataTable
 
 	Public Legend As List(Of CalendarLegend)
 	Public LegendColors As List(Of LegendColor)
@@ -3790,6 +3791,10 @@ ErrorTrap:
 		Dim INPUT_STRING As String
 		Dim intRecordBHol As Short
 
+		rsPersonnelBHols = New DataTable("rsPersonnelBHols")
+		'Create a second DataTable identical to the first.
+		rsTempPersonnelBHols = rsPersonnelBHols.Clone()
+
 		intRecordBHol = 0
 		mstrBHolFormString = New StringBuilder()
 		mstrBHolFormString.Append("<FORM id=frmBHol name=frmBHol style=""visibility:hidden;display:none"">" & vbNewLine)
@@ -4009,8 +4014,11 @@ ErrorTrap:
 				strSQLAllBHols = Left(strSQLAllBHols, Len(strSQLAllBHols) - 11)
 				strSQLOrder = " ORDER BY 'ID', 'Region' " & vbNewLine
 				strSQLAllBHols = strSQLAllBHols & strSQLOrder
-
-				rsPersonnelBHols = DB.GetDataTable(strSQLAllBHols)
+				
+				rsTempPersonnelBHols = DB.GetDataTable(strSQLAllBHols)
+				rsPersonnelBHols.Merge(rsTempPersonnelBHols)
+				'Accept changes.
+				rsPersonnelBHols.AcceptChanges()
 
 				lngBaseRecordID = -1
 				blnNewBaseRecord = False
@@ -4018,7 +4026,7 @@ ErrorTrap:
 
 				'##############################################################################
 				'populate collections with new data
-				With rsPersonnelBHols
+				With rsTempPersonnelBHols
 
 					INPUT_STRING = vbNullString
 
