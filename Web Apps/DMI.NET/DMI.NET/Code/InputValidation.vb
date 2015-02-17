@@ -74,6 +74,7 @@
 				"MOVEPREVIOUS", _
 				"NEW", _
 				"PARENT", _
+				"PICKLIST", _
 				"QUICKFIND", _
 				"REFRESHFINDAFTERDELETE", _
 				"REFRESHFINDAFTERINSERT", _
