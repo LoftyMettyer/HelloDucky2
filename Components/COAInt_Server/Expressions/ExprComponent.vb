@@ -256,7 +256,7 @@ ErrorTrap:
 				End If
 
 			Catch ex As Exception
-				Return False
+				Throw
 
 			End Try
 

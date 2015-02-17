@@ -77414,9 +77414,9 @@ CREATE PROCEDURE spASRIntSaveExpression (
 	@returnDecimals integer,
 	@type integer,
 	@parentComponentID integer,
-	@Username varchar(50),
-	@access varchar(2),
-	@description varchar(255))
+	@Username varchar(50) = '',
+	@access varchar(2) = '',
+	@description varchar(255) = '')
 AS
 BEGIN
 
