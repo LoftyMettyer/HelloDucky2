@@ -556,7 +556,9 @@
 
 	function changeColumnIsGroupWithNext() {
 
-		if ($("#SelectedColumnIsGroupWithNext").is(':checked')) {
+		var isGroupWithNextChecked = $("#SelectedColumnIsGroupWithNext").is(':checked');
+
+		if (isGroupWithNextChecked) {
 			$('#SelectedColumnIsAverage').prop('checked', false);
 			$('#SelectedColumnIsCount').prop('checked', false);
 			$('#SelectedColumnIsTotal').prop('checked', false);
@@ -565,6 +567,69 @@
 
 		refreshcolumnPropertiesPanel();
 		updateColumnsSelectedGrid();
+
+		// Uncheck all the column options for the next row and update the row to the grid
+		if (isGroupWithNextChecked) {
+			disableColumnOptionsWhenGroupWithNextChecked();
+		}
+	}
+
+	// Disabled the column options for the current row and uncheck all the column options for the next row 
+	// when GroupWithNext is checked for the current row.
+	function disableColumnOptionsWhenGroupWithNextChecked() {
+
+		var rowId = $("#SelectedColumns").jqGrid('getGridParam', 'selrow');
+
+		// Gets all row ID'S of selected columns. Here the index begin with zero.
+		var allRows = $('#SelectedColumns').jqGrid('getDataIDs');
+		var isBottomRow = (rowId == allRows[allRows.length - 1]);
+		var currentRowIndex = $("#SelectedColumns").getInd(rowId);
+
+		// Gets the previous row data 
+		var prevDataRow = $('#SelectedColumns').jqGrid('getRowData', allRows[currentRowIndex - 2]);
+
+		// If previous row has a GroupWithNext checked then disabled the column options except GroupWithNext for the current row 
+		if (prevDataRow != null && prevDataRow.IsGroupWithNext == "true") {
+			$('#SelectedColumnIsAverage').prop('checked', false);
+			$('#SelectedColumnIsCount').prop('checked', false);
+			$('#SelectedColumnIsTotal').prop('checked', false);
+			$('#SelectedColumnIsHidden').prop('checked', false);
+			$('#SelectedColumnIsRepeated').prop('checked', false);
+
+			$(".baseTableOnly").css("color", "#A59393");
+			$(".numericOnly").css("color", "#A59393");
+			$(".cannotBeHidden").css("color", "#A59393");
+			$("#labelSelectedColumnIsHidden").css("color", "#A59393");
+
+			$(".baseTableOnly *").prop("disabled", true);
+			$(".numericOnly *").prop("disabled", true);
+			$(".cannotBeHidden *").prop("disabled", true);
+			$("#SelectedColumnIsHidden").prop("disabled", true);
+
+			// If last row then disabled the GroupWithNext checkbox else not
+			if (isBottomRow) {
+				$(".canGroupWithNext *").prop("disabled", true);
+			}
+			else {
+				$(".canGroupWithNext *").prop("disabled", false);
+			}
+			updateColumnsSelectedGrid();
+		}
+
+		// If the current row is not the last row, Uncheck all the column options for the next row and update the row to the grid
+		if (!isBottomRow && $("#SelectedColumnIsGroupWithNext").is(':checked')) {
+
+			//Gets the next selected columns grid row
+			var nextDataRow = $('#SelectedColumns').jqGrid('getRowData', allRows[currentRowIndex]);
+
+			nextDataRow.IsAverage = false;
+			nextDataRow.IsCount = false;
+			nextDataRow.IsTotal = false;
+			nextDataRow.IsHidden = false;
+			nextDataRow.IsRepeated = false;
+
+			$('#SelectedColumns').jqGrid('setRowData', allRows[currentRowIndex], nextDataRow);
+		}
 	}
 
 	function changeColumnIsRepeated() {
@@ -871,6 +936,8 @@
 				$('#SelectedColumnIsRepeated').prop('checked', JSON.parse(dataRow.IsRepeated));
 
 				refreshcolumnPropertiesPanel();
+
+				disableColumnOptionsWhenGroupWithNextChecked();
 
 				$('#SelectedColumns').focus();
 
