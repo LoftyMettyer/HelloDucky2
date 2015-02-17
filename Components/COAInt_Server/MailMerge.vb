@@ -6,6 +6,7 @@ Imports HR.Intranet.Server.BaseClasses
 Imports HR.Intranet.Server.Enums
 Imports HR.Intranet.Server.Metadata
 Imports System.Data.SqlClient
+Imports HR.Intranet.Server.Expressions
 
 Public Class MailMerge
 	Inherits BaseForDMI

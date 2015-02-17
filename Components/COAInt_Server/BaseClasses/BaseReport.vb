@@ -5,6 +5,7 @@ Imports HR.Intranet.Server.Enums
 Imports System.IO
 Imports System.Text.RegularExpressions
 Imports System.Text.RegularExpressions.Regex
+Imports HR.Intranet.Server.Expressions
 
 Namespace BaseClasses
 	Public Class BaseReport

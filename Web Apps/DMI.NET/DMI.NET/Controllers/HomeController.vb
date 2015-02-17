@@ -22,6 +22,7 @@ Imports System.Security
 Imports DMI.NET.Code.Hubs
 Imports System.Web.Script.Serialization
 Imports Newtonsoft.Json
+Imports HR.Intranet.Server.Expressions
 
 Namespace Controllers
 	Public Class HomeController
@@ -1035,11 +1036,11 @@ Namespace Controllers
 			Session("optionTableID") = ValidateFormValue(Request.Form("txtOptionTableID"), "integer")
 			Session("optionViewID") = ValidateFormValue(Request.Form("txtOptionViewID"), "integer")
 			Session("optionOrderID") = ValidateFormValue(Request.Form("txtOptionOrderID"), "integer")
-			Session("optionColumnID") = ValidateFormValue(Request.Form("txtOptionColumnID"), "integer")
+			Session("optionColumnID") = ValidateFormValue(Request.Form("txtOptionColumnID"), "string")
 			Session("optionPageAction") = ValidateFormValue(Request.Form("txtOptionPageAction"), "action")
 			Session("optionFirstRecPos") = ValidateFormValue(Request.Form("txtOptionFirstRecPos"), "integer")
 			Session("optionCurrentRecCount") = ValidateFormValue(Request.Form("txtOptionCurrentRecCount"), "integer")
-			Session("optionLocateValue") = ValidateFormValue(Request.Form("txtGotoLocateValue"), "integer")
+			Session("optionLocateValue") = ValidateFormValue(Request.Form("txtGotoLocateValue"), "string")
 			Session("optionCourseTitle") = ValidateFormValue(Request.Form("txtOptionCourseTitle"), "string")
 			Session("optionRecordID") = ValidateFormValue(Request.Form("txtOptionRecordID"), "integer")
 			Session("optionLinkRecordID") = ValidateFormValue(Request.Form("txtOptionLinkRecordID"), "integer")
@@ -1207,7 +1208,7 @@ Namespace Controllers
 							Try
 								Dim lngOriginalRecordID = CInt(ValidateFormValue(Request.Form("txtOriginalRecordID"), "integer"))
 
-								Dim prmRecordID As New SqlParameter("piNewRecordID", SqlDbType.Int) With {.Direction = ParameterDirection.Output}								
+								Dim prmRecordID As New SqlParameter("piNewRecordID", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
 								Dim prmErrorMessage As New SqlParameter("errorMessage", SqlDbType.NVarChar, -1) With {.Direction = ParameterDirection.Output}
 
 								objDataAccess.ExecuteSP("spASRIntInsertNewRecord" _
@@ -3272,47 +3273,47 @@ Namespace Controllers
 							Else
 								ClientDLL.ArrayDim(UBound(arrayVisibleColumns, 2), objReport.ReportDataTable.Rows.Count)
 							End If
-					End If
-
-					If bBradfordFactor = True Then
-						ClientDLL.PageTitles = False
-						ClientDLL.AddPage("Bradford Factor", "Bradford Factor")
-					Else
-						ClientDLL.AddPage(objReport.ReportCaption, Replace(objReport.BaseTableName, "&&", "&"))
-					End If
-
-					For lngCol = 0 To UBound(arrayVisibleColumns, 2)
-						sColHeading = arrayVisibleColumns(0, lngCol)
-						iColDataType = arrayVisibleColumns(1, lngCol)
-						iColDecimals = arrayVisibleColumns(2, lngCol)
-						bIsCol1000 = arrayVisibleColumns(3, lngCol)
-						ClientDLL.AddColumn(sColHeading, iColDataType, iColDecimals, bIsCol1000)
-						ClientDLL.ArrayAddTo(lngCol, 0, sColHeading)
-					Next
-
-
-					lngDataRow = 1
-					For Each objRow As DataRow In objReport.ReportDataTable.Rows
-
-						If (lngOutputFormat = OutputFormats.ExcelGraph And Not objReport.CustomReportsSummaryReport) Or lngOutputFormat = OutputFormats.ExcelPivotTable Then
-							' Ignore non-data rows.
-							If objRow(0).ToString() <> "0" Then Continue For
-
-							' Ignore empty data rows
-							If String.Join("", objRow.ItemArray) = "0" Then Continue For
 						End If
 
-						For iCountColumns = 1 To objReport.ReportDataTable.Columns.Count - 1
-							ClientDLL.ArrayAddTo(iCountColumns - 1, lngDataRow, objRow(iCountColumns).ToString())
+						If bBradfordFactor = True Then
+							ClientDLL.PageTitles = False
+							ClientDLL.AddPage("Bradford Factor", "Bradford Factor")
+						Else
+							ClientDLL.AddPage(objReport.ReportCaption, Replace(objReport.BaseTableName, "&&", "&"))
+						End If
+
+						For lngCol = 0 To UBound(arrayVisibleColumns, 2)
+							sColHeading = arrayVisibleColumns(0, lngCol)
+							iColDataType = arrayVisibleColumns(1, lngCol)
+							iColDecimals = arrayVisibleColumns(2, lngCol)
+							bIsCol1000 = arrayVisibleColumns(3, lngCol)
+							ClientDLL.AddColumn(sColHeading, iColDataType, iColDecimals, bIsCol1000)
+							ClientDLL.ArrayAddTo(lngCol, 0, sColHeading)
 						Next
 
-						lngDataRow += 1
 
-					Next
+						lngDataRow = 1
+						For Each objRow As DataRow In objReport.ReportDataTable.Rows
 
-					ClientDLL.DataArray()
+							If (lngOutputFormat = OutputFormats.ExcelGraph And Not objReport.CustomReportsSummaryReport) Or lngOutputFormat = OutputFormats.ExcelPivotTable Then
+								' Ignore non-data rows.
+								If objRow(0).ToString() <> "0" Then Continue For
 
-				End If
+								' Ignore empty data rows
+								If String.Join("", objRow.ItemArray) = "0" Then Continue For
+							End If
+
+							For iCountColumns = 1 To objReport.ReportDataTable.Columns.Count - 1
+								ClientDLL.ArrayAddTo(iCountColumns - 1, lngDataRow, objRow(iCountColumns).ToString())
+							Next
+
+							lngDataRow += 1
+
+						Next
+
+						ClientDLL.DataArray()
+
+					End If
 
 				End If
 

@@ -9,6 +9,7 @@ Imports System.Text
 Imports HR.Intranet.Server.Metadata
 Imports HR.Intranet.Server.Structures
 Imports VB = Microsoft.VisualBasic
+Imports HR.Intranet.Server.Expressions
 
 Public Class CalendarReport
 	Inherits BaseReport

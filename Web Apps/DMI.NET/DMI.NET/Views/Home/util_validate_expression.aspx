@@ -3,6 +3,7 @@
 <%@ Import Namespace="HR.Intranet.Server" %>
 <%@ Import Namespace="System.Data" %>
 <%@ Import Namespace="System.Data.SqlClient" %>
+<%@ Import Namespace="HR.Intranet.Server.Expressions" %>
 
 	<script type="text/javascript">
 
@@ -385,7 +386,7 @@
 			If Request.Form("validateUtilID") > 0 Then
 				objExpression = New Expression(objSessionInfo)
 
-				iOriginalReturnType = objExpression.ExistingExpressionReturnType(CLng(Request.Form("validateUtilID")))
+				iOriginalReturnType = objExpression.ExistingExpressionReturnType(CInt(Request.Form("validateUtilID")))
 				objExpression = Nothing
 					
 				If iReturnType <> iOriginalReturnType Then

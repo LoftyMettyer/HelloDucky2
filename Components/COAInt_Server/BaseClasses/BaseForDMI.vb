@@ -3,6 +3,7 @@ Option Explicit On
 
 Imports System.Collections.Generic
 Imports HR.Intranet.Server.Enums
+Imports HR.Intranet.Server.Expressions
 Imports HR.Intranet.Server.Structures
 Imports HR.Intranet.Server.Metadata
 

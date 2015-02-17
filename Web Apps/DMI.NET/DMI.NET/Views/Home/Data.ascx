@@ -4,6 +4,7 @@
 <%@ Import Namespace="HR.Intranet.Server" %>
 <%@ Import Namespace="System.Data.SqlClient" %>
 <%@ Import Namespace="System.Data" %>
+<%@ Import Namespace="HR.Intranet.Server.Expressions" %>
 <%@ Import Namespace="HR.Intranet.Server.Structures" %>
 
 <%		

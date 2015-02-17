@@ -9,6 +9,7 @@ Imports HR.Intranet.Server.Metadata
 Imports HR.Intranet.Server.BaseClasses
 Imports System.Data.SqlClient
 Imports System.Linq
+Imports HR.Intranet.Server.Expressions
 
 Public Class Report
 	Inherits BaseReport

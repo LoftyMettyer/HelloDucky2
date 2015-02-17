@@ -77348,6 +77348,110 @@ BEGIN
 END
 
 GO
+
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[spASRIntSaveComponent]') AND type in (N'P', N'PC'))
+	DROP PROCEDURE [dbo].[spASRIntSaveComponent]
+GO
+
+CREATE PROCEDURE dbo.spASRIntSaveComponent(
+	@componentID integer,
+	@expressionID integer,
+	@type tinyint,
+	@calculationID integer = 0,
+	@filterID integer = 0,
+	@functionID integer = 0,
+	@operatorID integer = 0,
+	@valueType tinyint = 0,
+	@valueCharacter varchar(255) = '',
+	@valueNumeric float = 0,
+	@valueLogic bit = 0,
+	@valuedate datetime = null,
+	@LookupTableID integer = 0,
+	@LookupColumnID integer = 0,
+	@fieldTableID integer = 0,
+	@fieldColumnID integer = 0,
+	@fieldPassBy tinyint = 0,
+	@fieldSelectionRecord tinyint = 0,
+	@fieldSelectionLine integer = 0,
+	@fieldSelectionOrderID integer = 0,
+	@fieldSelectionFilter integer = 0,
+	@promptDescription varchar(255) = '',
+	@promptSize smallint = 0,
+	@promptDecimals smallint = 0,
+	@promptMask varchar(255) = '',
+	@promptDateType integer = 0)
+AS
+BEGIN 
+
+	SET NOCOUNT ON;
+
+	INSERT INTO ASRSysExprComponents (componentID, exprID, [type]
+					, calculationID, filterID, FunctionID, operatorID
+					, ValueType, ValueCharacter, ValueNumeric, ValueLogic, ValueDate
+					, LookupTableID, LookupColumnID
+					, fieldTableID, fieldColumnID, fieldPassBy, fieldSelectionRecord, fieldSelectionLine, fieldSelectionOrderID, fieldSelectionFilter
+					, promptDescription, promptSize, promptDecimals, promptMask, promptDateType)
+				VALUES (@componentID, @expressionID, @type
+					, @calculationID, @filterID, @functionID, @operatorID
+					, @valueType, @valueCharacter, @valueNumeric, @valueLogic, @valuedate
+					, @LookupTableID, @LookupColumnID
+					, @fieldTableID, @fieldColumnID, @fieldPassBy, @fieldSelectionRecord, @fieldSelectionLine, @fieldSelectionOrderID, @fieldSelectionFilter
+					, @promptDescription,	@promptSize, @promptDecimals, @promptMask, @promptDateType);
+
+END
+GO
+
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[spASRIntSaveExpression]') AND type in (N'P', N'PC'))
+	DROP PROCEDURE [dbo].[spASRIntSaveExpression]
+GO
+
+CREATE PROCEDURE spASRIntSaveExpression (
+	@expressionID integer = 0 OUTPUT,
+	@name varchar(255),
+	@TableID integer,
+	@returnType integer,
+	@returnSize integer,
+	@returnDecimals integer,
+	@type integer,
+	@parentComponentID integer,
+	@Username varchar(50),
+	@access varchar(2),
+	@description varchar(255))
+AS
+BEGIN
+
+	SET NOCOUNT ON;
+
+	IF @expressionID = 0
+	BEGIN
+
+		-- Keep a manual record of allocated IDs in case users in SYS MGR have created expressions but not yet saved changes
+		SELECT @expressionID = ISNULL([SettingValue], 1) FROM [asrsyssystemsettings] WHERE [Section] = 'AUTOID' AND [SettingKey] = 'expressions';
+		IF @expressionID = 1
+			INSERT ASRSysSystemSettings([Section], [SettingKey], [SettingValue]) VALUES ('AUTOID', 'ExprID', 1);	
+		ELSE
+		BEGIN
+			SET @expressionID = @expressionID + 1;
+			UPDATE ASRSysSystemSettings SET [SettingValue] = @expressionID WHERE [Section] ='AUTOID' AND [SettingKey] = 'expressions';
+		END
+
+		INSERT ASRSysExpressions (exprID, name, TableID, returnType, returnSize, returnDecimals, [type], parentComponentID, Username, access, [description])
+			VALUES(@expressionID, @name, @TableID, @returnType, @returnSize, @returnDecimals, @type, @parentComponentID, @Username, @access, @description);
+	END
+	ELSE
+	BEGIN
+		UPDATE ASRSysExpressions SET name = @name, TableID = @TableID, returnType = @returnType, returnSize = @returnSize, returnDecimals = @returnDecimals,
+				[type] = @type, parentComponentID = @parentComponentID, Username = @Username, access = @access, [description] = @description
+					WHERE ExprID = @expressionID;
+	END
+
+END
+GO
+
+
+
+
+GO
 DECLARE @sSQL nvarchar(MAX),
 		@sGroup sysname,
 		@sObject sysname,

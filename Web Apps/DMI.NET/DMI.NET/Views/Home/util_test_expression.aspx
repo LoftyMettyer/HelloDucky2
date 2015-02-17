@@ -2,6 +2,7 @@
 
 <%@ Import Namespace="DMI.NET" %>
 <%@ Import Namespace="HR.Intranet.Server" %>
+<%@ Import Namespace="HR.Intranet.Server.Expressions" %>
 
 <%
 	' Write the prompted values from the calling form into a session variable.
