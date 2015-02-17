@@ -87,7 +87,7 @@
 <script type="text/javascript">
 	function configuration_window_onload() {
 		////        var frmOriginalConfiguration = OpenHR.getForm("workframe", "frmOriginalConfiguration");
-		var frmMenu = OpenHR.getForm("menuframe", "frmMenuInfo");
+		var frmMenu = $("#frmMenuInfo")[0].children;
 		$("#workframe").attr("data-framesource", "CONFIGURATION");
 		showDefaultRibbon();
 
@@ -217,7 +217,7 @@
 		frmConfiguration.txtExprNodeMode.value = frmConfiguration.cboExpandNodes.options[frmConfiguration.cboExpandNodes.options.selectedIndex].value;
 
 		menu_refreshMenu();
-		var menuForm = OpenHR.getForm("menuframe", "frmMenuInfo");
+		var menuForm = $("#frmMenuInfo")[0].children;
 		menuForm.txtPrimaryStartMode.value = frmConfiguration.txtPrimaryStartMode.value;
 		menuForm.txtHistoryStartMode.value = frmConfiguration.txtHistoryStartMode.value;
 		menuForm.txtLookupStartMode.value = frmConfiguration.txtLookupStartMode.value;

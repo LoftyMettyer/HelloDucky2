@@ -16,8 +16,7 @@
 	function emptyoption_onload() {		
 		var fNoAction;
 		var sCurrentWorkFramePage = $("#workframe").attr("data-framesource"); //OpenHR.currentWorkPage();
-		var frmMenu = OpenHR.getForm("menuframe", "frmMenuInfo");
-
+		var frmMenu = $("#frmMenuInfo")[0].children;
 		// Do nothing if the menu controls are not yet instantiated.
 		if (frmMenu != null) {
 			if (OpenHR.currentWorkPage() != "DEFAULT") {
