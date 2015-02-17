@@ -31,7 +31,7 @@
 			// Set focus onto one of the form controls. 
 			// NB. This needs to be done before making any reference to the grid
 			frmFindForm.cmdCancel.focus();
-			var frmMenu = OpenHR.getForm("menuframe", "frmMenuInfo");
+			var frmMenu = $("#frmMenuInfo")[0].children;
 			var frmGotoOption = document.getElementById('frmFindForm');
 			var sKey = '';
 			var sPath = '';
