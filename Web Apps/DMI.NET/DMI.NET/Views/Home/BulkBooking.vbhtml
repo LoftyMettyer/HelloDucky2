@@ -38,7 +38,7 @@ End Using
 
 @Using (Html.BeginForm("BulkBooking_Submit", "Home", FormMethod.Post, New With {.id = "frmGotoOption", .name = "frmGotoOption", .defaultbutton = "cmdOK"}))
 	Html.RenderPartial("~/Views/Shared/gotoOption.ascx")
-	Html.AntiForgeryToken()
+	@Html.AntiForgeryToken()
 End Using
 
 @Html.HiddenFor(Function(m) m.TableID)
