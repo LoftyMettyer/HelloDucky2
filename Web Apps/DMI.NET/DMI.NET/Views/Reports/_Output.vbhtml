@@ -313,6 +313,7 @@ End Code
 			$("#txtEmailGroup").val('');
 		} else {
 			$(".display-label_emails").css("color", "#000000");
+			$("#txtEmailGroup").val('None');
 		}
 
 	}

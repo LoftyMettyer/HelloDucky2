@@ -624,7 +624,7 @@
 
 	<div id="divExpressionSelection" style="display: none;">
 		<div class="pageTitleDiv" style="margin-bottom: 15px">
-			<span class="pageTitle" id="ExpressionSelection_PageTitle"></span>
+			<span class="pageTitleModalExpression" id="ExpressionSelection_PageTitle"></span>
 		</div>
 		<div>
 			<table id="ExpressionsAvailable"></table>

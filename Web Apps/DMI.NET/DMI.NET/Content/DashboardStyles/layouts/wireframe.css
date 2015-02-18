@@ -389,10 +389,14 @@ div.officetab div.panel > span { display: none;}
 }
 
 .pageTitle {
-	/*color: white;*/
 	font-weight: lighter;
 	font-size: 26pt;
 	padding-left: 30px!important;
+}
+
+.pageTitleModalExpression {
+	font-weight: lighter;
+	font-size: 26pt;
 }
 
 .pageTitleIcon {

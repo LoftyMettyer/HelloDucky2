@@ -260,6 +260,7 @@ End Code
 		} else {
 			$(".display-label_emails").css("color", "#000000");
 			$(".display-textbox-emails").css("background", "#ffffff");
+			$("#txtEmailGroup").val('None');
 		}
 
 	}

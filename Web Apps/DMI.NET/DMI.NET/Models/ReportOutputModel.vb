@@ -45,7 +45,7 @@ Namespace Models
 		<DisplayName("Send as email")>
 		Public Property SendToEmail As Boolean
 
-		<NonZeroIf("SendToEmail", True, ErrorMessage:="No email group selected.")>
+		<NoneAttribute("EmailGroupName", "None", ErrorMessage:="No email group selected.")>
 		Public Property EmailGroupID As Integer
 
 		<DisplayName("Email Group :")>

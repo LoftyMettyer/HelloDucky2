@@ -196,6 +196,7 @@
 					text_disable(txtEmailSubject, false);
 					button_disable(cmdEmailGroup, false);
 					text_disable(txtEmailAttachAs, false);
+					txtEmailGroup.value = 'None';
 				}
 				else {
 					txtEmailGroup.value = '';
@@ -238,6 +239,7 @@
 					text_disable(txtEmailSubject, false);
 					button_disable(cmdEmailGroup, false);
 					text_disable(txtEmailAttachAs, false);
+					txtEmailGroup.value = 'None';
 				}
 				else {
 					txtEmailGroup.value = '';
@@ -285,6 +287,7 @@
 					text_disable(txtEmailSubject, false);
 					button_disable(cmdEmailGroup, false);
 					text_disable(txtEmailAttachAs, false);
+					txtEmailGroup.value = 'None';
 				}
 				else {
 					txtEmailGroup.value = '';
@@ -342,6 +345,7 @@
 					text_disable(txtEmailAttachAs, false);
 					$('#frmOutputDef #txtEmailAttachAs').removeClass('ui-state-disabled');
 					$('#frmOutputDef #lblEmailAttachAs').removeClass('ui-state-disabled');
+					txtEmailGroup.value = 'None';
 				}
 				else {
 					//text_disable(txtEmailGroup, true);
@@ -544,8 +548,8 @@
 					return;
 			}
 	
-		if ((frmOutputDef.chkDestination3.checked)
-				&& (frmOutputDef.txtEmailGroup.value == "")) {
+			if ((frmOutputDef.chkDestination3.checked)
+				&& (frmOutputDef.txtEmailGroup.value == "" || frmOutputDef.txtEmailGroup.value == "None")) {
 			OpenHR.messageBox("You must select an email group", 48, "Output Options");
 			window.focus();
 			return;

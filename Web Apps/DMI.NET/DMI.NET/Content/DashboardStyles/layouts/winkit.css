@@ -46,12 +46,16 @@ body
 }
 
 .pageTitle {
-	/*display: none!important;*/
 	margin-top: 0;
 	font-size: 24pt;
 	margin-bottom: 20px;
 }
 
+.pageTitleModalExpression {
+	margin-top: 0;
+	font-size: 24pt;
+	margin-bottom: 20px;
+}
 
 .DMI .pageTitleIcon {
 	display: none!important;
@@ -80,7 +84,6 @@ body
 	line-height: 50px;
 	float: left;
 }
-
 
 .SSI .pageTitleIcon:hover {
 	color: orange;

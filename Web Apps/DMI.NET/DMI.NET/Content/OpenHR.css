@@ -866,6 +866,10 @@ header {
 	font-weight: normal;
 }
 
+.pageTitleModalExpression {
+	font-weight: normal;
+}
+
 .pageTitleSmaller {
 	font-size: x-large;
 	line-height: 50px;

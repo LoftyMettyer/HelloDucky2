@@ -209,6 +209,7 @@
     <Compile Include="Classes\Licence.vb" />
     <Compile Include="Classes\ReportColumnCollection.vb" />
     <Compile Include="Classes\ConfigurationError.vb" />
+    <Compile Include="Code\Attributes\NoneAttribute.vb" />
     <Compile Include="Code\InputValidation.vb" />
     <Compile Include="Code\Interfaces\IDatabaseHub.vb" />
     <Compile Include="Code\Interfaces\ILicenceHub.vb" />
