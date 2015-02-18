@@ -414,7 +414,7 @@ function find_window_onload() {
 										formatter: workingPatternFormatter,
 										unformat: workingPatternDeformatter,
 										editoptions: {
-											readonly: sReadOnly,
+											readonly: true,
 											defaultValue: getDefaultValueForColumn(iColumnId, "workingpattern")
 										}
 									});								
