@@ -84,7 +84,7 @@ function find_window_onload() {
 			colModel = [];
 			colNames = [];
 			colNamesOriginal = [];
-
+			
 			if (dataCollection != null) {				
 				for (i = 0; i < dataCollection.length; i++) {
 					sControlName = dataCollection.item(i).name;
@@ -134,7 +134,7 @@ function find_window_onload() {
 									name: sColumnName,
 									hidden: true
 								});
-							} else {
+							} else {								
 								columnCount += 1;
 								//Determine the column type and set the colModel for this column accordingly
 								if (ColumnControlType == 1) { //Logic - checkbox
@@ -1164,7 +1164,7 @@ function warning() {
 }
 
 function ABSNumber(value, options) {
-
+	
 	var el = document.createElement("input");
 	el.type = "text";
 	el.value = value.replace(".", OpenHR.LocaleDecimalSeparator());
@@ -1180,6 +1180,7 @@ function ABSNumber(value, options) {
 	el.setAttribute("defaultValue", options.dataColumnId);
 	el.setAttribute("dataColumnId", options.dataColumnId);
 	el.setAttribute("dataDefaultCalcExprID", options.dataDefaultCalcExprID);
+if (options.readonly) el.setAttribute("readonly", "readonly");
 
 	//Size of field includes decimals but not the decimal point; For example if Size=6 and Decimals=2 the maximum value to be allowed is 9999.99
 	if (options.columnSize == "0") { //No size specified, set a very long limit
