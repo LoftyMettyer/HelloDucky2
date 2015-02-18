@@ -122,7 +122,7 @@
 					End If
 				%>
 			</div>
-			<div id="findGridRow" style="height: <%If Not String.IsNullOrEmpty(Session("parentTableID")) AndAlso Session("parentTableID") > 0 Then%>65%<%Else%>85%<%End If%>; margin-right: 20px; margin-left: 20px;">
+			<div id="findGridRow" style="margin-right: 20px; margin-left: 20px;">
 				<%
 					Dim sTemp As String
 					Dim sThousandColumns As String = ""

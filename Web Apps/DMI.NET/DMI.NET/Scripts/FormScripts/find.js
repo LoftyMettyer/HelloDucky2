@@ -750,10 +750,21 @@ function find_window_onload() {
 						.css('font-size', '20px');
 
 				//resize the grid to the height of its container.
-				var gridRowHeight = $("#findGridRow").height();
-				var gridHeaderHeight = $('#findGridRow .ui-jqgrid-hdiv').height();
-				var gridFooterHeight = $('#findGridRow .ui-jqgrid-pager').height();
-				var newHeight = gridRowHeight - gridHeaderHeight - gridFooterHeight;
+				var gridRowHeight = $('#workframeset').height();
+				var pageTitleHeight = $('#row1').outerHeight();
+				var gridHeaderHeight = $('#findGridRow .ui-jqgrid-hdiv').outerHeight();
+				var gridFooterHeight = $('#findGridRow .ui-jqgrid-pager').outerHeight();
+				var footerMargin = 30;
+				var summaryRowHeight = 0;
+
+				try {
+					summaryRowHeight = $('#row3').outerHeight();
+					if(summaryRowHeight > 0) summaryRowHeight += 30;
+					if (summaryRowHeight > (gridRowHeight * 0.35)) summaryRowHeight = (gridRowHeight * 0.35);
+				} catch (e) {
+					
+				}
+				var newHeight = gridRowHeight - pageTitleHeight - gridHeaderHeight - gridFooterHeight - footerMargin - summaryRowHeight;
 
 				$("#findGridTable").jqGrid('setGridHeight', newHeight);
 			}
