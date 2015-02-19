@@ -30,7 +30,7 @@ Namespace Code
 
 				skey = ENCRYPTIONKEY
 
-				sSourceString = Username & vbTab & CStr(Timestamp) & vbTab & _db.Server & vbTab & _db.Database
+				sSourceString = Username & vbTab & Timestamp.ToOADate() & vbTab & "" & vbTab & ""
 
 				sEncryptedString = objCrypt.EncryptString(sSourceString, skey, True)
 				sEncryptedString = objCrypt.CompactString(sEncryptedString)
@@ -64,7 +64,7 @@ Namespace Code
 			Dim values() As String
 
 			Dim tmpUser As String
-			Dim tmpDateTimeStamp As String
+			Dim tmpDateTimeStamp As Double
 
 			Try
 
@@ -77,10 +77,11 @@ Namespace Code
 				values = Split(Value, vbTab)
 
 				tmpUser = values(0)
-				tmpDateTimeStamp = values(1)
+				tmpDateTimeStamp = CDbl(values(1))
 
 				' Only links less than 4 hours old are valid.
-				If DateDiff(Microsoft.VisualBasic.DateInterval.Minute, CDate(tmpDateTimeStamp), Now) < 241 Then
+				Dim timestamp = Date.FromOADate(tmpDateTimeStamp)
+				If DateDiff(DateInterval.Minute, timestamp, Now) < 241 Then
 					Return tmpUser
 				End If
 
@@ -93,20 +94,43 @@ Namespace Code
 
 		End Function
 
-		Public Function ResetPassword(psEncryptedKey As String, psNewPassword As String) As String
+		Public Function ResetPassword(encryptedKey As String, newPassword As String) As String
+			
+			Dim sSQL As String
+			Dim sUsername As String
+			Dim values As String()
+
+			Dim crypt As New clsCrypt
+			encryptedKey = crypt.DecompactString(encryptedKey)
+			encryptedKey = crypt.DecryptString(encryptedKey, "", True)
+
+			'Extract the required parameters from the decrypted queryString.
+			values = encryptedKey.Split(vbTab(0))
+			sUsername = values(0)
 
 			Try
-				Dim prmMessage As New SqlParameter("ErrorMessage", SqlDbType.VarChar, 4000) With {.Direction = ParameterDirection.Output}
 
-				_db.ExecuteSP("spadmin_commitresetpassword", _
-											New SqlParameter("code", SqlDbType.NVarChar, 4000) With {.Value = psEncryptedKey}, _
-											New SqlParameter("NewPassword", SqlDbType.NVarChar, 4000) With {.Value = psNewPassword}, _
-											prmMessage)
+				sSQL = String.Format("SELECT COUNT(*) FROM master..sysprocesses p" & _
+						" WHERE    p.program_name LIKE 'OpenHR%'" & _
+										" AND p.program_name NOT LIKE 'OpenHR Workflow%'" & _
+										" AND p.program_name NOT LIKE 'OpenHR Outlook%'" & _
+										" AND p.program_name NOT LIKE 'OpenHR Server.Net%'" & _
+										" AND p.program_name NOT LIKE 'OpenHR Intranet Embedding%'" & _
+										" AND p.loginame = '{0}'", sUsername.Replace("'", "''"))
+				Dim bLoggedIn = (CInt(_db.GetDataTable(sSQL).Rows(0)(0)) > 0)
 
-				Return prmMessage.Value.ToString()
+				If Not bLoggedIn Then
+					sSQL = String.Format("IF EXISTS (SELECT * FROM sys.server_principals WHERE name = N'{0}')" & _
+					"ALTER LOGIN [{0}] WITH PASSWORD = '{1}'", sUsername, newPassword.Replace("'", "''"))
+
+					_db.ExecuteSql(sSQL)
+					Return "Password changed successfully"
+				Else
+					Return "User is currently logged in"
+				End If
 
 			Catch ex As Exception
-				Return ""
+				Return ex.Message
 
 			End Try
 

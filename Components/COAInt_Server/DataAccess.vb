@@ -2,6 +2,7 @@ Option Strict On
 Option Explicit On
 
 Imports System.Data.SqlClient
+Imports System.Security
 Imports HR.Intranet.Server.Structures
 
 Public Class clsDataAccess
@@ -10,22 +11,7 @@ Public Class clsDataAccess
 
 	Private ReadOnly _objLogin As LoginInfo
 	Private ReadOnly _connectionString As String
-
-	Public ReadOnly Property Database As String
-		Get
-			Using sqlConnection As New SqlConnection(_connectionString)
-				Return sqlConnection.Database
-			End Using
-		End Get
-	End Property
-
-	Public ReadOnly Property Server As String
-		Get
-			Using sqlConnection As New SqlConnection(_connectionString)
-				Return sqlConnection.DataSource
-			End Using
-		End Get
-	End Property
+	Private ReadOnly _sqlCredential As SqlCredential
 
 	Public Sub New()
 		MyBase.New()
@@ -35,6 +21,11 @@ Public Class clsDataAccess
 		_objLogin = value
 		_connectionString = GetConnectionString(_objLogin)
 
+		Dim objPassword As SecureString
+		objPassword = value.Password.ToSecureString()
+		objPassword.MakeReadOnly()
+
+		_sqlCredential = New SqlCredential(value.Username, objPassword)
 	End Sub
 
 	Public Sub New(connectionString As String)
@@ -66,7 +57,7 @@ Public Class clsDataAccess
 
 		Try
 
-			Using sqlConnection As New SqlConnection(_connectionString)
+			Using sqlConnection As New SqlConnection(_connectionString, _sqlCredential)
 				Using objCommand = New SqlCommand(sSQL, sqlConnection)
 
 					objCommand.CommandType = CommandType.Text
@@ -96,8 +87,8 @@ Public Class clsDataAccess
 													 , LoginDetail.Server, LoginDetail.Database, _AppName, _ConnectionTimeOut)
 
 		Else
-			Return String.Format("Data Source={0};Initial Catalog={1};User Id={2};Password={3};Application Name={4};Connection Timeout={5}" _
-													 , LoginDetail.Server, LoginDetail.Database, LoginDetail.Username, LoginDetail.Password, _AppName, _ConnectionTimeOut)
+			Return String.Format("Data Source={0};Initial Catalog={1};Application Name={2};Connection Timeout={3}" _
+													 , LoginDetail.Server, LoginDetail.Database, _AppName, _ConnectionTimeOut)
 
 		End If
 
@@ -126,7 +117,7 @@ Public Class clsDataAccess
 		Dim retryCount = 5
 		Dim success As Boolean = False
 
-		Using sqlConnection As New SqlConnection(_connectionString)
+		Using sqlConnection As New SqlConnection(_connectionString, _sqlCredential)
 
 			Using objCommand = New SqlCommand(ProcedureName, sqlConnection)
 
@@ -209,7 +200,7 @@ Public Class clsDataAccess
 
 		Try
 
-			Using sqlConnection As New SqlConnection(_connectionString)
+			Using sqlConnection As New SqlConnection(_connectionString, _sqlCredential)
 				objAdaptor.SelectCommand = New SqlCommand(procedureName, sqlConnection)
 				objAdaptor.SelectCommand.CommandType = CommandType.StoredProcedure
 				objAdaptor.SelectCommand.CommandTimeout = _CommandTimeOut
@@ -236,7 +227,7 @@ Public Class clsDataAccess
 	Public Function CallToStoredProcedure(sProcedureName As String, ParamArray args() As SqlParameter) As String
 
 
-		Using sqlConnection As New SqlConnection(_connectionString)
+		Using sqlConnection As New SqlConnection(_connectionString, _sqlCredential)
 			Dim sqlCommand As New SqlCommand(sProcedureName, sqlConnection)
 			For Each sqlParm In args
 				sqlCommand.Parameters.Add(sqlParm)
@@ -320,7 +311,7 @@ Public Class clsDataAccess
 
 			Try
 
-				Using sqlConnection As New SqlConnection(_connectionString)
+				Using sqlConnection As New SqlConnection(_connectionString, _sqlCredential)
 
 					objAdaptor.SelectCommand = New SqlCommand(sProcedureName, sqlConnection)
 					objAdaptor.SelectCommand.CommandType = CommandType
@@ -353,24 +344,5 @@ Public Class clsDataAccess
 		Return objDataSet
 
 	End Function
-
-	Public Sub CloseConnection()
-
-		Dim strConn As String = GetConnectionString(_objLogin)
-
-		Using sqlConnection As New SqlConnection(strConn)
-			sqlConnection.Close()
-		End Using
-
-	End Sub
-
-	Public ReadOnly Property Connection As SqlConnection
-		Get
-
-			Dim strConn As String = GetConnectionString(_objLogin)
-			Return New SqlConnection(strConn)
-
-		End Get
-	End Property
 
 End Class
