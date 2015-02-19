@@ -65,6 +65,8 @@ Namespace Models
 
 		Public Property DefinitionAccessBasedOnSelectedCalculationColumns As String
 
+		Public Property IsSystemOrSecurityAdmin As Boolean
+
 		Public Overridable ReadOnly Property SortOrdersAvailable As Integer Implements IReport.SortOrdersAvailable
 			Get
 				If Columns IsNot Nothing Then

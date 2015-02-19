@@ -10,6 +10,7 @@
 @Html.HiddenFor(Function(m) m.BaseViewAccess, New With {.class = "ViewAccess"})
 @Html.HiddenFor(Function(m) m.IsReadOnly)
 @Html.HiddenFor(Function(m) m.ActionType)
+@Html.HiddenFor(Function(m) m.IsSystemOrSecurityAdmin)
 
 <div class="width100">
 	<fieldset class="floatleft width50 bordered">
@@ -336,8 +337,8 @@
 		var tableName = $("#BaseTableID option:selected").text();
 
 		OpenHR.modalExpressionSelect("FILTER", tableID, currentID, function (id, name, access) {
-
-			if (access == "HD" && $("#Owner").val().toLowerCase() != '@Session("Username").ToString.ToLower') {
+			//If current user is System Manager/Security Manager, we allow them to add or edit the filter hidden by another user
+			if (access == "HD" && $("#Owner").val().toLowerCase() != '@Session("Username").ToString.ToLower' && $("#IsSystemOrSecurityAdmin").val().toLowerCase() == "false") {				
 				$("#txtBaseFilterID").val(0);
 				$("#txtBaseFilter").val('None');
 				OpenHR.modalMessage("The " + tableName + " table filter will be removed from this definition as it is hidden and you do not have permission to make this definition hidden.");
@@ -358,10 +359,11 @@
 		var tableName = $("#BaseTableID option:selected").text();
 
 		OpenHR.modalExpressionSelect("PICKLIST", tableID, currentID, function (id, name, access) {
-			if (access == "HD" && $("#Owner").val().toLowerCase() != '@Session("Username").ToString.ToLower') {
-				$("#txtBasePicklistID").val(0);
-				$("#txtBasePicklist").val('None');
-				OpenHR.modalMessage("The " + tableName + " table picklist will be removed from this definition as it is hidden and you do not have permission to make this definition hidden.");
+			//If current user is System Manager/Security Manager, we allow them to add or edit the picklist hidden by another user
+			if (access == "HD" && $("#Owner").val().toLowerCase() != '@Session("Username").ToString.ToLower' && $("#IsSystemOrSecurityAdmin").val().toLowerCase() == "false") {				
+					$("#txtBasePicklistID").val(0);
+					$("#txtBasePicklist").val('None');
+					OpenHR.modalMessage("The " + tableName + " table picklist will be removed from this definition as it is hidden and you do not have permission to make this definition hidden.");				
 			}
 			else {
 				$("#txtBasePicklistID").val(id);
