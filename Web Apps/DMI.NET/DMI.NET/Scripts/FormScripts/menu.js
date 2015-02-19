@@ -299,54 +299,6 @@ function menu_MenuClick(sTool) {
 		//$("#toolbarHome").click();
 	}
 
-	if (sToolName == "mnutoolInlineEditRecordFind") {
-		//As I say below, the insertGranted variable is defined in Find.ascx, so we don't need the line this comment replaces
-
-		if (!$('#mnutoolInlineEditRecordFind').hasClass('disabled')) {
-			$('#mnutoolInlineEditRecordFind').toggleClass("toolbarButtonOn");
-
-			if ($('#mnutoolInlineEditRecordFind').hasClass("toolbarButtonOn")) {
-
-				menu_disableFindMenu();
-
-				setinlineeditmode();
-
-				//Can we add new records to this table/view?
-				if (insertGranted) { //The insertGranted variable is defined in Find.ascx line 443 (ish)
-					$("#findGridTable_iladd").show();
-				} else {
-					$("#findGridTable_iladd").hide();
-				}
-
-				$("#findGridTable_iledit").show();
-				$("#findGridTable_ilsave").show();
-				$("#findGridTable_ilcancel").show();
-
-				//disabled icons for inline editing.
-				$("#findGridTable_iledit").addClass('ui-state-disabled');
-				$("#findGridTable_iladd").addClass('ui-state-disabled');
-
-			} else {
-				menu_enableFindMenu();
-				//save row
-				var rowID = $("#findGridTable").getGridParam('selrow');
-				saveRowIfChanged(rowID, true);
-
-				//enable icons for inline editing.
-				$("#findGridTable_iladd").toggle(insertGranted);
-				$("#findGridTable_iledit").removeClass('ui-state-disabled');
-				$("#findGridTable_iladd").removeClass('ui-state-disabled');
-
-				//remove inline edit function from grid....
-				$('#findGridTable').jqGrid('setGridParam', {
-					beforeSelectRow: function () { return true; }
-				});
-			}
-		}
-		return false;
-	}
-
-
 	if (sToolName == "mnutoolCurrentUsers") {
 		$("#divCurrentUsers").dialog("open");
 		return false;
@@ -1925,10 +1877,6 @@ function menu_refreshMenu() {
 
 			menu_toolbarEnableItem("mnutoolAccessLinksFind", (menu_isSSIMode() && (lngRecordID > 0)));
 			menu_setVisibletoolbarGroupById("mnuSectionRecordFindNavigate", !(menu_isSSIMode() && ($("#mnutoolAccessLinksFind").hasClass("hidden"))));
-
-			$('#mnutoolInlineEditRecordFind').removeClass("toolbarButtonOn");
-			menu_setVisibletoolbarGroupById('mnuSectionRecordFindInlineEdit', false); // HC: 13327 etc. Hide the Quick Edit button for now
-
 
 			if (menu_isSSIMode()) {
 				menu_setVisibletoolbarGroupById('mnuSectionRecordFindOrder', false);

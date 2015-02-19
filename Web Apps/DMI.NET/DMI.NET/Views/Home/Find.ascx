@@ -23,19 +23,16 @@
 		if ('<%=session("linktype")%>' == 'multifind') {
 			//for multifind (SSI views) show relevant buttons with applicable functions
 			menu_setVisibletoolbarGroupById("mnuSectionRecordFindEdit", false);
-			menu_setVisibletoolbarGroupById("mnuSectionRecordFindInlineEdit", false);
 			menu_setVisibleMenuItem("mnutoolAccessLinksFind", true);
 			menu_setVisibleMenuItem("mnutoolCancelLinksFind", false);
 
 			if (menu_isSSIMode()) menu_setVisibleMenuItem('mnutoolFixedWorkflowOutOfOffice', "<%:ViewData("showOutOfOffice")%>");
-
 
 			setTimeout('gridBindKeys(true)', 300);
 
 
 		} else {
 			menu_setVisibletoolbarGroupById("mnuSectionRecordFindEdit", true);
-			menu_setVisibletoolbarGroupById("mnuSectionRecordFindInlineEdit", true);
 			menu_setVisibleMenuItem("mnutoolAccessLinksFind", false);
 			menu_setVisibleMenuItem("mnutoolCancelLinksFind", false);
 
@@ -62,11 +59,7 @@
 		} else {
 			$("#findGridTable").jqGrid("setGridParam", {
 				ondblClickRow: function(rowID) {
-					if ($('#mnutoolInlineEditRecordFind').hasClass("toolbarButtonOn")) {
-						$('#findGridTable').editRow(rowID); //Edit the current row
-					} else {
-						menu_editRecord();
-					}
+					menu_editRecord();
 				}
 			});
 			$('#findGridTable').jqGrid('bindKeys', {
