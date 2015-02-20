@@ -465,38 +465,37 @@ Public Class AbsenceCalendar
 
 		Dim sSQL As String
 
-		On Error GoTo GetAbsenceRecordSet_ERROR
+		Try
 
-		' Get Recordset Containing Absence info for the current employee
-		sSQL = "SELECT " & mstrSQLSelect_AbsenceStartDate & " as 'StartDate', " & vbNewLine & mstrSQLSelect_AbsenceStartSession & " as 'StartSession', " & vbNewLine
 
-		If Not IsDBNull(mdLeavingDate) Then
-			sSQL = sSQL & "isnull(" & mstrSQLSelect_AbsenceEndDate & ",'" & Replace(VB6.Format(mdLeavingDate, "MM/dd/yyyy"), CultureInfo.CurrentCulture.DateTimeFormat.DateSeparator, "/") & "') as 'EndDate', " & vbNewLine
-		Else
-			sSQL = sSQL & "isnull(" & mstrSQLSelect_AbsenceEndDate & ",'" & Replace(VB6.Format(Now, "MM/dd/yyyy"), CultureInfo.CurrentCulture.DateTimeFormat.DateSeparator, "/") & "') as 'EndDate', " & vbNewLine
-		End If
+			' Get Recordset Containing Absence info for the current employee
+			sSQL = "SELECT " & mstrSQLSelect_AbsenceStartDate & " as 'StartDate', " & vbNewLine & mstrSQLSelect_AbsenceStartSession & " as 'StartSession', " & vbNewLine
 
-		sSQL = sSQL & mstrSQLSelect_AbsenceEndSession & " as 'EndSession', " & vbNewLine & mstrSQLSelect_AbsenceType & " as 'Type', " & vbNewLine & mstrSQLSelect_AbsenceTypeCalCode & " as 'CalendarCode', " & vbNewLine & mstrSQLSelect_AbsenceTypeCode & " as 'Code', " & vbNewLine & mstrSQLSelect_AbsenceReason & " as 'Reason', " & vbNewLine & mstrSQLSelect_AbsenceDuration & " as 'Duration' " & vbNewLine
+			If Not IsDBNull(mdLeavingDate) Then
+				sSQL = sSQL & "isnull(" & mstrSQLSelect_AbsenceEndDate & ",'" & Replace(VB6.Format(mdLeavingDate, "MM/dd/yyyy"), CultureInfo.CurrentCulture.DateTimeFormat.DateSeparator, "/") & "') as 'EndDate', " & vbNewLine
+			Else
+				sSQL = sSQL & "isnull(" & mstrSQLSelect_AbsenceEndDate & ",'" & Replace(VB6.Format(Now, "MM/dd/yyyy"), CultureInfo.CurrentCulture.DateTimeFormat.DateSeparator, "/") & "') as 'EndDate', " & vbNewLine
+			End If
 
-		sSQL = sSQL & "FROM " & mstrAbsenceTableRealSource & vbNewLine
-		sSQL = sSQL & "           INNER JOIN " & AbsenceModule.gsAbsenceTypeTableName & vbNewLine
-		sSQL = sSQL & "           ON " & mstrAbsenceTableRealSource & "." & AbsenceModule.gsAbsenceTypeColumnName & " = " & AbsenceModule.gsAbsenceTypeTableName & "." & AbsenceModule.gsAbsenceTypeTypeColumnName & vbNewLine
+			sSQL = sSQL & mstrSQLSelect_AbsenceEndSession & " as 'EndSession', " & vbNewLine & mstrSQLSelect_AbsenceType & " as 'Type', " & vbNewLine & mstrSQLSelect_AbsenceTypeCalCode & " as 'CalendarCode', " & vbNewLine & mstrSQLSelect_AbsenceTypeCode & " as 'Code', " & vbNewLine & mstrSQLSelect_AbsenceReason & " as 'Reason', " & vbNewLine & mstrSQLSelect_AbsenceDuration & " as 'Duration' " & vbNewLine
 
-		sSQL = sSQL & "WHERE " & mstrAbsenceTableRealSource & "." & "ID_" & PersonnelModule.glngPersonnelTableID & " = " & mlngPersonnelRecordID & vbNewLine
-		sSQL = sSQL & " AND (" & mstrSQLSelect_AbsenceStartDate & " IS NOT NULL) " & vbNewLine
-		sSQL = sSQL & "ORDER BY 'StartDate' ASC"
+			sSQL = sSQL & "FROM " & mstrAbsenceTableRealSource & vbNewLine
+			sSQL = sSQL & "           INNER JOIN " & AbsenceModule.gsAbsenceTypeTableName & vbNewLine
+			sSQL = sSQL & "           ON " & mstrAbsenceTableRealSource & "." & AbsenceModule.gsAbsenceTypeColumnName & " = " & AbsenceModule.gsAbsenceTypeTableName & "." & AbsenceModule.gsAbsenceTypeTypeColumnName & vbNewLine
 
-		mrstAbsenceRecords = DB.GetDataTable(sSQL)
+			sSQL = sSQL & "WHERE " & mstrAbsenceTableRealSource & "." & "ID_" & PersonnelModule.glngPersonnelTableID & " = " & mlngPersonnelRecordID & vbNewLine
+			sSQL = sSQL & " AND (" & mstrSQLSelect_AbsenceStartDate & " IS NOT NULL) " & vbNewLine
+			sSQL = sSQL & "ORDER BY 'StartDate' ASC"
 
-		' Set amount of absence records found
-		Return mrstAbsenceRecords.Rows.Count
+			mrstAbsenceRecords = DB.GetDataTable(sSQL)
 
-GetAbsenceRecordSet_ERROR:
+			' Set amount of absence records found
+			Return mrstAbsenceRecords.Rows.Count
 
-		'MsgBox "Error retrieving the Absence recordset." & vbNewLine & Err.Description, vbExclamation + vbOKOnly, App.Title
-		'UPGRADE_NOTE: Object mrstAbsenceRecords may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		mrstAbsenceRecords = Nothing
-		Return 0
+		Catch ex As Exception
+			Return 0
+
+		End Try
 
 	End Function
 
@@ -555,88 +554,90 @@ GetAbsenceRecordSet_ERROR:
 			Return True
 		End If
 
-		On Error GoTo errLoadColourKey
+		Try
 
-		Dim rstColourKey As DataTable
-		Dim strColourKeySQL As String
-		Dim intCounter As Integer
-		Dim strHexColour As String
 
-		strColourKeySQL = "SELECT DISTINCT " & AbsenceModule.gsAbsenceTypeTypeColumnName & " AS Type, " & AbsenceModule.gsAbsenceTypeCalCodeColumnName & " AS CalCode," & AbsenceModule.gsAbsenceTypeCodeColumnName & " AS TypeCode" & " FROM " & AbsenceModule.gsAbsenceTypeTableName & " ORDER BY " & AbsenceModule.gsAbsenceTypeTypeColumnName
-		rstColourKey = DB.GetDataTable(strColourKeySQL)
+			Dim rstColourKey As DataTable
+			Dim strColourKeySQL As String
+			Dim intCounter As Integer
+			Dim strHexColour As String
 
-		If rstColourKey.Rows.Count = 0 Then
-			Return False
-		End If
+			strColourKeySQL = "SELECT DISTINCT " & AbsenceModule.gsAbsenceTypeTypeColumnName & " AS Type, " & AbsenceModule.gsAbsenceTypeCalCodeColumnName & " AS CalCode," & AbsenceModule.gsAbsenceTypeCodeColumnName & " AS TypeCode" & " FROM " & AbsenceModule.gsAbsenceTypeTableName & " ORDER BY " & AbsenceModule.gsAbsenceTypeTypeColumnName
+			rstColourKey = DB.GetDataTable(strColourKeySQL)
 
-		'ReDim Preserve mastrAbsenceTypes(rstColourKey.RecordCount + 1, 5)
-		ReDim Preserve mastrAbsenceTypes(20, 5)
+			If rstColourKey.Rows.Count = 0 Then
+				Return False
+			End If
 
-		intCounter = 0
+			'ReDim Preserve mastrAbsenceTypes(rstColourKey.RecordCount + 1, 5)
+			ReDim Preserve mastrAbsenceTypes(20, 5)
 
-		For Each objRow As DataRow In rstColourKey.Rows
+			intCounter = 0
 
-			If intCounter <= 18 Then
+			For Each objRow As DataRow In rstColourKey.Rows
 
-				' Set the colour box caption and show the label
-				mastrAbsenceTypes(intCounter, 0) = objRow(0).ToString()
+				If intCounter <= 18 Then
 
-				Select Case intCounter Mod 5
-					Case 0
-						strHexColour = GetHexColour(255, 192, 192)
-					Case 1
-						strHexColour = GetHexColour(192, 255, 192)
-					Case 2
-						strHexColour = GetHexColour(255, 255, 192)
-					Case 3
-						strHexColour = GetHexColour(255, 224, 192)
-					Case 4
-						strHexColour = GetHexColour(192, 255, 255)
-				End Select
+					' Set the colour box caption and show the label
+					mastrAbsenceTypes(intCounter, 0) = objRow(0).ToString()
 
-				mastrAbsenceTypes(intCounter, 1) = strHexColour
-				mastrAbsenceTypes(intCounter, 2) = CStr(intCounter)
-				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-				mastrAbsenceTypes(intCounter, 3) = UCase(Left(IIf(IsDBNull(objRow("CalCode")), "", objRow("CalCode")), 2))
-				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-				mastrAbsenceTypes(intCounter, 4) = Replace(IIf(IsDBNull(objRow("CalCode")), "", objRow("CalCode")), "'", "")
-				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-				mastrAbsenceTypes(intCounter, 5) = Replace(IIf(IsDBNull(objRow("TypeCode")), "", objRow("TypeCode")), "'", "")
+					Select Case intCounter Mod 5
+						Case 0
+							strHexColour = GetHexColour(255, 192, 192)
+						Case 1
+							strHexColour = GetHexColour(192, 255, 192)
+						Case 2
+							strHexColour = GetHexColour(255, 255, 192)
+						Case 3
+							strHexColour = GetHexColour(255, 224, 192)
+						Case 4
+							strHexColour = GetHexColour(192, 255, 255)
+					End Select
+
+					mastrAbsenceTypes(intCounter, 1) = strHexColour
+					mastrAbsenceTypes(intCounter, 2) = CStr(intCounter)
+					'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
+					mastrAbsenceTypes(intCounter, 3) = UCase(Left(IIf(IsDBNull(objRow("CalCode")), "", objRow("CalCode")), 2))
+					'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
+					mastrAbsenceTypes(intCounter, 4) = Replace(IIf(IsDBNull(objRow("CalCode")), "", objRow("CalCode")), "'", "")
+					'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
+					mastrAbsenceTypes(intCounter, 5) = Replace(IIf(IsDBNull(objRow("TypeCode")), "", objRow("TypeCode")), "'", "")
+
+				End If
+
+				intCounter = intCounter + 1
+			Next
+
+			' Now add the 'Other' box (if needed)
+			If intCounter > 17 Then
+				intCounter = IIf(intCounter > 17, 18, intCounter)
+				mastrAbsenceTypes(intCounter, 0) = "Other"
+				mastrAbsenceTypes(intCounter, 1) = "black"
+				mastrAbsenceTypes(intCounter, 2) = LTrim(Str(intCounter))
+				mastrAbsenceTypes(intCounter, 3) = "&nbsp"
+				intCounter = intCounter + 1
+
+				ReDim Preserve mastrAbsenceTypes(20, 5)
 
 			End If
 
-			intCounter = intCounter + 1
-		Next
-
-		' Now add the 'Other' box (if needed)
-		If intCounter > 17 Then
-			intCounter = IIf(intCounter > 17, 18, intCounter)
-			mastrAbsenceTypes(intCounter, 0) = "Other"
-			mastrAbsenceTypes(intCounter, 1) = "black"
+			' Now add the multiple box
+			mastrAbsenceTypes(intCounter, 0) = "Multiple"
+			mastrAbsenceTypes(intCounter, 1) = "white"
 			mastrAbsenceTypes(intCounter, 2) = LTrim(Str(intCounter))
-			mastrAbsenceTypes(intCounter, 3) = "&nbsp"
-			intCounter = intCounter + 1
+			mastrAbsenceTypes(intCounter, 3) = "."
 
-			ReDim Preserve mastrAbsenceTypes(20, 5)
+			' If we are here, then notify calling procedure of success and exit
+			LoadColourKey = True
+			mbColourKeyLoaded = True
+			miStrAbsenceTypes = intCounter
 
-		End If
+		Catch ex As Exception
+			Return False
 
-		' Now add the multiple box
-		mastrAbsenceTypes(intCounter, 0) = "Multiple"
-		mastrAbsenceTypes(intCounter, 1) = "white"
-		mastrAbsenceTypes(intCounter, 2) = LTrim(Str(intCounter))
-		mastrAbsenceTypes(intCounter, 3) = "."
+		End Try
 
-		' If we are here, then notify calling procedure of success and exit
-		LoadColourKey = True
-		mbColourKeyLoaded = True
-		miStrAbsenceTypes = intCounter
-
-		Exit Function
-
-errLoadColourKey:
-
-		LoadColourKey = False
+		Return True
 
 	End Function
 
@@ -834,93 +835,23 @@ errLoadColourKey:
 
 	End Sub
 
-	Private Function GetPersonnelRecordSet() As Boolean
-
-		On Error GoTo PersonnelERROR
+	Private Sub GetPersonnelRecordSet()
 
 		Dim lngCount As Integer
 		Dim sSQL As String
 		Dim prstPersonnelData As DataTable
 		Dim strAbsWPattern As String
 
-		' Botch as we have a lot of rubbish code that does not handle nulls at all.
-		mdStartDate = DateTime.FromOADate(0)
-		mdLeavingDate = DateTime.FromOADate(0)
+		Try
 
-		If Not mblnFailReport Then
-			sSQL = vbNullString
-			sSQL = sSQL & "SELECT " & mstrSQLSelect_PersonnelStartDate & " AS 'StartDate', " & vbNewLine
-			sSQL = sSQL & "      " & mstrSQLSelect_PersonnelLeavingDate & " AS 'LeavingDate' " & vbNewLine
-			sSQL = sSQL & "FROM " & PersonnelModule.gsPersonnelTableName & vbNewLine
-			For lngCount = 0 To UBound(mvarTableViews, 2) Step 1
-				'<Personnel CODE>
-				'UPGRADE_WARNING: Couldn't resolve default property of object mvarTableViews(0, lngCount). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				If mvarTableViews(0, lngCount) = PersonnelModule.glngPersonnelTableID Then
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvarTableViews(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					sSQL = sSQL & "     LEFT OUTER JOIN " & mvarTableViews(3, lngCount) & vbNewLine
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvarTableViews(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					sSQL = sSQL & "     ON  " & PersonnelModule.gsPersonnelTableName & ".ID = " & mvarTableViews(3, lngCount) & ".ID" & vbNewLine
-				End If
-			Next lngCount
-			sSQL = sSQL & "WHERE " & PersonnelModule.gsPersonnelTableName & "." & "ID = " & mlngPersonnelRecordID
+			' Botch as we have a lot of rubbish code that does not handle nulls at all.
+			mdStartDate = DateTime.FromOADate(0)
+			mdLeavingDate = DateTime.FromOADate(0)
 
-			' Get the start and leaving date
-			prstPersonnelData = DB.GetDataTable(sSQL)
-
-			If prstPersonnelData.Rows.Count > 0 Then
-				If Not IsDBNull(prstPersonnelData.Rows(0)("StartDate")) Then
-					mdStartDate = CDate(prstPersonnelData.Rows(0)("StartDate"))
-				End If
-
-				If Not IsDBNull(prstPersonnelData.Rows(0)("LeavingDate")) Then
-					mdLeavingDate = CDate(prstPersonnelData.Rows(0)("LeavingDate"))
-				End If
-
-			End If
-		Else
-			GoTo PersonnelERROR
-		End If
-
-		If Not mblnDisableRegions Then
-			' Get the employees current region
-			If PersonnelModule.grtRegionType = RegionType.rtStaticRegion Then
-				' Its a static region, get it from personnel
-				sSQL = "SELECT " & mstrSQLSelect_PersonnelStaticRegion & "  AS 'Region'  " & vbNewLine
-				sSQL = sSQL & "FROM " & PersonnelModule.gsPersonnelTableName & vbNewLine
-				For lngCount = 0 To UBound(mvarTableViews, 2) Step 1
-					'<Personnel CODE>
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvarTableViews(0, lngCount). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					If mvarTableViews(0, lngCount) = PersonnelModule.glngPersonnelTableID Then
-						'UPGRADE_WARNING: Couldn't resolve default property of object mvarTableViews(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						sSQL = sSQL & "     LEFT OUTER JOIN " & mvarTableViews(3, lngCount) & vbNewLine
-						'UPGRADE_WARNING: Couldn't resolve default property of object mvarTableViews(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						sSQL = sSQL & "     ON  " & PersonnelModule.gsPersonnelTableName & ".ID = " & mvarTableViews(3, lngCount) & ".ID" & vbNewLine
-					End If
-				Next lngCount
-				sSQL = sSQL & "WHERE " & PersonnelModule.gsPersonnelTableName & "." & "ID = " & mlngPersonnelRecordID
-				prstPersonnelData = DB.GetDataTable(sSQL)
-			Else
-				' Its a historic region, so get topmost from the history
-				prstPersonnelData = DB.GetDataTable("SELECT TOP 1 " & PersonnelModule.gsPersonnelHRegionTableRealSource & "." & PersonnelModule.gsPersonnelHRegionColumnName & " AS 'Region' " & "FROM " & PersonnelModule.gsPersonnelHRegionTableRealSource & " " & "WHERE " & PersonnelModule.gsPersonnelHRegionTableRealSource & "." & "ID_" & PersonnelModule.glngPersonnelTableID & " = " & mlngPersonnelRecordID & " ORDER BY " & PersonnelModule.gsPersonnelHRegionDateColumnName & " DESC")
-			End If
-
-			If prstPersonnelData.Rows.Count > 0 Then
-				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-				mstrRegion = Replace(IIf(IsDBNull(prstPersonnelData.Rows(0)("Region")), "", IIf(prstPersonnelData.Rows(0)("Region") = "", "", prstPersonnelData.Rows(0)("Region"))), "&", "&&")
-			Else
-				mstrRegion = "&lt;None&gt;"
-			End If
-		Else
-			'Regions DISABLED
-			mstrRegion = vbNullString
-		End If
-
-		If Not mblnDisableWPs Then
-			' Get the employees current working pattern
-			If PersonnelModule.gwptWorkingPatternType = WorkingPatternType.wptStaticWPattern Then
-				' Its a static working pattern, get it from personnel
+			If Not mblnFailReport Then
 				sSQL = vbNullString
-				sSQL = sSQL & "SELECT " & mstrSQLSelect_PersonnelStaticWP & "  AS 'WP'  " & vbNewLine
+				sSQL = sSQL & "SELECT " & mstrSQLSelect_PersonnelStartDate & " AS 'StartDate', " & vbNewLine
+				sSQL = sSQL & "      " & mstrSQLSelect_PersonnelLeavingDate & " AS 'LeavingDate' " & vbNewLine
 				sSQL = sSQL & "FROM " & PersonnelModule.gsPersonnelTableName & vbNewLine
 				For lngCount = 0 To UBound(mvarTableViews, 2) Step 1
 					'<Personnel CODE>
@@ -933,35 +864,104 @@ errLoadColourKey:
 					End If
 				Next lngCount
 				sSQL = sSQL & "WHERE " & PersonnelModule.gsPersonnelTableName & "." & "ID = " & mlngPersonnelRecordID
+
+				' Get the start and leaving date
 				prstPersonnelData = DB.GetDataTable(sSQL)
 
-			Else
-				' Its a historic working pattern, so get topmost from the history
-				prstPersonnelData = DB.GetDataTable("SELECT TOP 1 " & PersonnelModule.gsPersonnelHWorkingPatternTableRealSource & "." & PersonnelModule.gsPersonnelHWorkingPatternColumnName & " AS 'WP' " & "FROM " & PersonnelModule.gsPersonnelHWorkingPatternTableRealSource & " " & "WHERE " & PersonnelModule.gsPersonnelHWorkingPatternTableRealSource & "." & "ID_" & PersonnelModule.glngPersonnelTableID & " = " & mlngPersonnelRecordID & "AND " & PersonnelModule.gsPersonnelHWorkingPatternTableRealSource & "." & PersonnelModule.gsPersonnelHWorkingPatternDateColumnName & " <= '" _
-																									& Replace(VB6.Format(Now, "MM/dd/yy"), CultureInfo.CurrentCulture.DateTimeFormat.DateSeparator, "/") & "' " & "ORDER BY " & PersonnelModule.gsPersonnelHWorkingPatternDateColumnName & " DESC")
+				If prstPersonnelData.Rows.Count > 0 Then
+					If Not IsDBNull(prstPersonnelData.Rows(0)("StartDate")) Then
+						mdStartDate = CDate(prstPersonnelData.Rows(0)("StartDate"))
+					End If
+
+					If Not IsDBNull(prstPersonnelData.Rows(0)("LeavingDate")) Then
+						mdLeavingDate = CDate(prstPersonnelData.Rows(0)("LeavingDate"))
+					End If
+
+				End If
+
 			End If
 
-			If prstPersonnelData.Rows.Count > 0 Then
-				mstrWorkingPattern = prstPersonnelData.Rows(0)("WP").ToString
+			If Not mblnDisableRegions Then
+				' Get the employees current region
+				If PersonnelModule.grtRegionType = RegionType.rtStaticRegion Then
+					' Its a static region, get it from personnel
+					sSQL = "SELECT " & mstrSQLSelect_PersonnelStaticRegion & "  AS 'Region'  " & vbNewLine
+					sSQL = sSQL & "FROM " & PersonnelModule.gsPersonnelTableName & vbNewLine
+					For lngCount = 0 To UBound(mvarTableViews, 2) Step 1
+						'<Personnel CODE>
+						'UPGRADE_WARNING: Couldn't resolve default property of object mvarTableViews(0, lngCount). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+						If mvarTableViews(0, lngCount) = PersonnelModule.glngPersonnelTableID Then
+							'UPGRADE_WARNING: Couldn't resolve default property of object mvarTableViews(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+							sSQL = sSQL & "     LEFT OUTER JOIN " & mvarTableViews(3, lngCount) & vbNewLine
+							'UPGRADE_WARNING: Couldn't resolve default property of object mvarTableViews(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+							sSQL = sSQL & "     ON  " & PersonnelModule.gsPersonnelTableName & ".ID = " & mvarTableViews(3, lngCount) & ".ID" & vbNewLine
+						End If
+					Next lngCount
+					sSQL = sSQL & "WHERE " & PersonnelModule.gsPersonnelTableName & "." & "ID = " & mlngPersonnelRecordID
+					prstPersonnelData = DB.GetDataTable(sSQL)
+				Else
+					' Its a historic region, so get topmost from the history
+					prstPersonnelData = DB.GetDataTable("SELECT TOP 1 " & PersonnelModule.gsPersonnelHRegionTableRealSource & "." & PersonnelModule.gsPersonnelHRegionColumnName & " AS 'Region' " & "FROM " & PersonnelModule.gsPersonnelHRegionTableRealSource & " " & "WHERE " & PersonnelModule.gsPersonnelHRegionTableRealSource & "." & "ID_" & PersonnelModule.glngPersonnelTableID & " = " & mlngPersonnelRecordID & " ORDER BY " & PersonnelModule.gsPersonnelHRegionDateColumnName & " DESC")
+				End If
+
+				If prstPersonnelData.Rows.Count > 0 Then
+					'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
+					mstrRegion = Replace(IIf(IsDBNull(prstPersonnelData.Rows(0)("Region")), "", IIf(prstPersonnelData.Rows(0)("Region") = "", "", prstPersonnelData.Rows(0)("Region"))), "&", "&&")
+				Else
+					mstrRegion = "&lt;None&gt;"
+				End If
 			Else
-				mstrWorkingPattern = Space(14)
+				'Regions DISABLED
+				mstrRegion = vbNullString
 			End If
 
-		Else
-			'WPs DISABLED
-			strAbsWPattern = "SSMMTTWWTTFFSS"
+			If Not mblnDisableWPs Then
+				' Get the employees current working pattern
+				If PersonnelModule.gwptWorkingPatternType = WorkingPatternType.wptStaticWPattern Then
+					' Its a static working pattern, get it from personnel
+					sSQL = vbNullString
+					sSQL = sSQL & "SELECT " & mstrSQLSelect_PersonnelStaticWP & "  AS 'WP'  " & vbNewLine
+					sSQL = sSQL & "FROM " & PersonnelModule.gsPersonnelTableName & vbNewLine
+					For lngCount = 0 To UBound(mvarTableViews, 2) Step 1
+						'<Personnel CODE>
+						'UPGRADE_WARNING: Couldn't resolve default property of object mvarTableViews(0, lngCount). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+						If mvarTableViews(0, lngCount) = PersonnelModule.glngPersonnelTableID Then
+							'UPGRADE_WARNING: Couldn't resolve default property of object mvarTableViews(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+							sSQL = sSQL & "     LEFT OUTER JOIN " & mvarTableViews(3, lngCount) & vbNewLine
+							'UPGRADE_WARNING: Couldn't resolve default property of object mvarTableViews(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+							sSQL = sSQL & "     ON  " & PersonnelModule.gsPersonnelTableName & ".ID = " & mvarTableViews(3, lngCount) & ".ID" & vbNewLine
+						End If
+					Next lngCount
+					sSQL = sSQL & "WHERE " & PersonnelModule.gsPersonnelTableName & "." & "ID = " & mlngPersonnelRecordID
+					prstPersonnelData = DB.GetDataTable(sSQL)
 
-		End If
+				Else
+					' Its a historic working pattern, so get topmost from the history
+					prstPersonnelData = DB.GetDataTable("SELECT TOP 1 " & PersonnelModule.gsPersonnelHWorkingPatternTableRealSource & "." & PersonnelModule.gsPersonnelHWorkingPatternColumnName & " AS 'WP' " & "FROM " & PersonnelModule.gsPersonnelHWorkingPatternTableRealSource & " " & "WHERE " & PersonnelModule.gsPersonnelHWorkingPatternTableRealSource & "." & "ID_" & PersonnelModule.glngPersonnelTableID & " = " & mlngPersonnelRecordID & "AND " & PersonnelModule.gsPersonnelHWorkingPatternTableRealSource & "." & PersonnelModule.gsPersonnelHWorkingPatternDateColumnName & " <= '" _
+																										& Replace(VB6.Format(Now, "MM/dd/yy"), CultureInfo.CurrentCulture.DateTimeFormat.DateSeparator, "/") & "' " & "ORDER BY " & PersonnelModule.gsPersonnelHWorkingPatternDateColumnName & " DESC")
+				End If
 
-		'UPGRADE_NOTE: Object prstPersonnelData may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		prstPersonnelData = Nothing
-		Return True
+				If prstPersonnelData.Rows.Count > 0 Then
+					mstrWorkingPattern = prstPersonnelData.Rows(0)("WP").ToString
+				Else
+					mstrWorkingPattern = Space(14)
+				End If
 
-PersonnelERROR:
+			Else
+				'WPs DISABLED
+				strAbsWPattern = "SSMMTTWWTTFFSS"
 
-		Return False
+			End If
 
-	End Function
+			'UPGRADE_NOTE: Object prstPersonnelData may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
+			prstPersonnelData = Nothing
+
+		Catch ex As Exception
+			Throw
+
+		End Try
+
+	End Sub
 
 	Public Function HTML_EmployeeInformation() As String
 

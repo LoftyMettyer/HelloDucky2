@@ -49,17 +49,12 @@ Namespace Controllers
 		<HttpPost()>
 		<ValidateAntiForgeryToken>
 		Function Configuration_Submit(value As FormCollection)
-			'If (Request.Form("txtPrimaryStartMode") = "") Then
-			'    Return View()
-			'End If
-			On Error Resume Next
 
 			Dim sTemp
 			Dim sType = ""
 			Dim sControlName
 
 			If (Request.Form("txtPrimaryStartMode") <> "") Then
-
 
 				' Save the user configuration settings.
 				Dim objDatabase As Database = CType(Session("DatabaseFunctions"), Database)
@@ -840,7 +835,7 @@ Namespace Controllers
 		<ValidateAntiForgeryToken>
 		Function emptyoption_Submit()
 
-			On Error Resume Next
+
 
 			' Save the required information in session variables.
 			Session("optionScreenID") = Request.Form("txtGotoOptionScreenID")
@@ -1029,7 +1024,7 @@ Namespace Controllers
 		<ValidateAntiForgeryToken>
 		Function optionData_Submit() As ActionResult
 
-			On Error Resume Next
+
 
 			' Read the information from the calling form.
 			Session("optionAction") = ValidateFormValue(Request.Form("txtOptionAction"), "action")
@@ -2447,7 +2442,7 @@ Namespace Controllers
 		<ValidateAntiForgeryToken>
 		Function util_run_crosstabsDataSubmit()
 
-			On Error Resume Next
+
 
 			Session("CT_Mode") = Request.Form("txtMode")
 			Session("CT_EmailGroupID") = Request.Form("txtEmailGroupID")
@@ -3525,7 +3520,7 @@ Namespace Controllers
 		<ValidateAntiForgeryToken>
 		Function util_run_calendarreport_data_submit() As ActionResult
 
-			On Error Resume Next
+
 
 			Session("CALREP_Action") = Request.Form("txtAction")
 			Session("CALREP_Month") = Request.Form("txtMonth")
@@ -3778,7 +3773,7 @@ Namespace Controllers
 			Dim sNextPage As String
 			Dim sAction As String
 
-			On Error Resume Next
+
 
 			' Read the information from the calling form.
 			sNextPage = Request.Form("txtGotoOptionPage")
@@ -4635,7 +4630,7 @@ Namespace Controllers
 		<HttpPost()>
 		<ValidateAntiForgeryToken>
 		Function promptedValues_Submit(value As FormCollection)
-			On Error Resume Next
+
 
 			Session("filterID") = Request.Form("filterID")
 			'Response.Write("<input type=""hidden"" id=filterID name=filterID value=" & Request.Form("filterID") & ">" & vbCrLf)
@@ -4992,7 +4987,7 @@ Namespace Controllers
 		<ValidateAntiForgeryToken>
 	 Function lookupFind_Submit(value As FormCollection)
 
-			On Error Resume Next
+
 
 			Dim sErrorMsg = ""
 
@@ -5064,7 +5059,7 @@ Namespace Controllers
 		<HttpPost()>
 		<ValidateAntiForgeryToken>
 		Function linkFind_Submit(value As FormCollection)
-			On Error Resume Next
+
 
 			Dim sErrorMsg As String = ""
 			Dim sNextPage As String, sAction As String
@@ -5314,7 +5309,7 @@ Namespace Controllers
 		<HttpPost()>
 		<ValidateAntiForgeryToken>
 		Function oleFind_Submit(filSelectFile As HttpPostedFileBase) As PartialViewResult
-			' On Error Resume Next
+			' 
 
 			'Dim objOLE
 			Dim filesize As Integer = 0

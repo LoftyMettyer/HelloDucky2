@@ -369,7 +369,7 @@ LocalErr:
 	End Function
 
 	Public Function AddPage(strDefTitle As String, Optional mstrSheetName As String = "") As Object
-		On Error Resume Next
+
 		'UPGRADE_WARNING: Couldn't resolve default property of object mobjOutputType.AddPage. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 		mobjOutputType.AddPage(strDefTitle, mstrSheetName, mcolStyles)
 	End Function
@@ -407,7 +407,7 @@ LocalErr:
 	Public WriteOnly Property FileDelimiter() As String
 		Set(ByVal Value As String)
 			'clsOutputCSV only
-			On Error Resume Next
+
 			'UPGRADE_WARNING: Couldn't resolve default property of object mobjOutputType.FileDelimiter. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 			mobjOutputType.FileDelimiter = Value
 		End Set
@@ -416,7 +416,7 @@ LocalErr:
 	Public WriteOnly Property EncloseInQuotes() As Boolean
 		Set(ByVal Value As Boolean)
 			'clsOutputCSV only
-			On Error Resume Next
+
 			'UPGRADE_WARNING: Couldn't resolve default property of object mobjOutputType.EncloseInQuotes. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 			mobjOutputType.EncloseInQuotes = Value
 		End Set
@@ -424,7 +424,7 @@ LocalErr:
 
 	Public WriteOnly Property ApplyStyles() As Boolean
 		Set(ByVal Value As Boolean)
-			On Error Resume Next
+
 			'UPGRADE_WARNING: Couldn't resolve default property of object mobjOutputType.ApplyStyles. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 			mobjOutputType.ApplyStyles = Value
 		End Set
@@ -554,7 +554,7 @@ LocalErr:
 	Public Sub Complete()
 
 		If mstrErrorMessage = vbNullString Then
-			On Error Resume Next
+
 			'UPGRADE_WARNING: Couldn't resolve default property of object mobjOutputType.Complete. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 			mobjOutputType.Complete()
 		End If
@@ -563,7 +563,7 @@ LocalErr:
 	End Sub
 
 	Public Sub ClearUp()
-		On Error Resume Next
+
 		'UPGRADE_WARNING: Couldn't resolve default property of object mobjOutputType.ClearUp. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
 		mobjOutputType.ClearUp()
 	End Sub
