@@ -1,11 +1,11 @@
-﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %><%@ Import Namespace="DMI.NET" %>
+﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
+<%@ Import Namespace="DMI.NET" %>
 <%@ Import Namespace="HR.Intranet.Server.Enums" %>
 <%@ Import Namespace="HR.Intranet.Server" %>
 
 <script src="<%:Url.Content("~/Scripts/jquery/jquery.cookie.js")%>"></script>
 
 <%
-	
 	Dim fok As Boolean = True
 	Dim blnSuccess As Boolean
 	Dim bDownloadFile As Boolean
@@ -145,6 +145,7 @@
 		objMailMerge.FailedMessage = sErrorMessage
 		sErrorMessage = HttpUtility.JavaScriptStringEncode(sErrorMessage)
 		Response.Write(String.Format("OpenHR.modalPrompt(""{0}"",2,""{1}"");", sErrorMessage, objMailMerge.DefName))
+		Session("mailmergefail") = True
 		
 	Else
 		objMailMerge.EventLogChangeHeaderStatus(EventLog_Status.elsSuccessful)
@@ -191,8 +192,6 @@
 		menu_ShowWait('Loading...');		
 	}
 
-
-
 	var frmMailMergeOutput = document.getElementById("frmMailMergeOutput");
 	$(frmMailMergeOutput).submit(function () {
 		blockUIForDownload();
@@ -207,7 +206,4 @@
 	if (menu_isSSIMode()) {
 		loadPartialView("linksMain", "Home", "workframe", null);
 	}
-
-
-
 </script>

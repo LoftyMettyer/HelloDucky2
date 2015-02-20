@@ -365,7 +365,12 @@
 	
 	function SubmitPrompts() {
 		var frmPromptedValues = document.getElementById('frmPromptedValues');
-		
+
+		if ($('#TemplateFile').val() == "") {
+			OpenHR.modalMessage("No template file selected");
+			return;
+		}
+
 		// Validate the prompt values before submitting the form.
 		var controlCollection = frmPromptedValues.elements;
 		if (controlCollection != null) {

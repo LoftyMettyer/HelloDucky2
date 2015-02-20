@@ -133,7 +133,6 @@
 		$("#optionsframeset").show();
 		$("#reportframe").show();
 		$("#reportworkframe").show();
-
 	}
 
 	function outputOptionsPrintClick() {
@@ -274,23 +273,23 @@
 	</div>
 
 <script type="text/javascript">
+	
+	<%If Session("mailmergefail") Then%>
+		closeclick();
+	<%Else%>
 
 	var isMobileDevice = ('<%=Session("isMobileDevice")%>' == 'True');
 	// first get the size from the window
 	// if that didn't work, get it from the body
 	var size = {};
-
+	
 	<%If Session("utiltype") = UtilityType.utlNineBoxGrid Then%>
-	size.width = (screen.width) / 2;
-	size.height = (window.innerHeight || document.body.clientHeight) - 100;
+		size.width = (screen.width) / 2;
+		size.height = (window.innerHeight || document.body.clientHeight) - 100;
 	<%Else%>
-	size.width = (window.innerWidth || document.body.clientWidth) - 200;
-	size.height = (window.innerHeight || document.body.clientHeight) - 200;
+		size.width = (window.innerWidth || document.body.clientWidth) - 200;
+		size.height = (window.innerHeight || document.body.clientHeight) - 200;
 	<%End If%>
-
-	
-
-	
 
 	if ($('#txtNoRecs').val() == "True") {
 		OpenHR.modalPrompt($("#txtDefn_ErrMsg").val(), 2, $("#txtDefn_Name").val(), "");
@@ -365,11 +364,6 @@
 			];
 
 			$('.popup').dialog('option', 'buttons', newButtons);
-			//<input class="btn minwidth100" type="button" id="cmdOK" name="cmdOK" value="Export" onclick="outputOptionsOKClick()" />
-			//<input class="btn minwidth100" type="button" id="cmdOutput" name="cmdOutput" value="Output" onclick="ExportDataPrompt();" />
-			//<input class="btn minwidth100" type="button" id="cmdCancel" name="cmdCancel" value="Preview" onclick="ShowDataFrame();" />
-			//<input class="btn minwidth100" type="button" id="cmdBack" name="cmdBack" value="Back" style="WIDTH: 80px; display: none;"  onclick="ShowDataFrame();" />
-			//<input class="btn minwidth100" type="button" id="cmdClose" name="cmdClose" value="Close" onclick="closeclick();" />
 
 			function resizeGrid() {
 				var newHeight = $('#reportworkframe').height();
@@ -405,7 +399,6 @@
 			ShowDataFrame();
 
 		} else {
-
 			doExport();
 
 			if (menu_isSSIMode()) {
@@ -415,5 +408,5 @@
 			}
 		}
 	}
-	
+	<%End If%>
 </script>
