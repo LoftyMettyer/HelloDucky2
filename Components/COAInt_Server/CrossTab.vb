@@ -461,74 +461,70 @@ Public Class CrossTab
 
 		' Purpose : This function calls the individual functions that
 		'           generate the components of the main SQL string.
-		On Error GoTo ErrorTrap
-
-		Dim fOK As Boolean
-		Dim iLoop As Short
+		Dim iLoop As Integer
 		Dim iDataType As Short
 		Dim lngComponentID As Integer
 
-		fOK = True
+		Try
 
-		ReDim mvarPrompts(1, 0)
+			ReDim mvarPrompts(1, 0)
 
-		If IsArray(pavPromptedValues) Then
-			ReDim mvarPrompts(1, UBound(pavPromptedValues, 2))
+			If IsArray(pavPromptedValues) Then
+				ReDim mvarPrompts(1, UBound(pavPromptedValues, 2))
 
-			For iLoop = 0 To UBound(pavPromptedValues, 2)
-				' Get the prompt data type.
-				'UPGRADE_WARNING: Couldn't resolve default property of object pavPromptedValues(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				If Len(Trim(Mid(pavPromptedValues(0, iLoop), 10))) > 0 Then
+				For iLoop = 0 To UBound(pavPromptedValues, 2)
+					' Get the prompt data type.
 					'UPGRADE_WARNING: Couldn't resolve default property of object pavPromptedValues(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					lngComponentID = CInt(Mid(pavPromptedValues(0, iLoop), 10))
-					'UPGRADE_WARNING: Couldn't resolve default property of object pavPromptedValues(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					iDataType = CShort(Mid(pavPromptedValues(0, iLoop), 8, 1))
+					If Len(Trim(Mid(pavPromptedValues(0, iLoop), 10))) > 0 Then
+						'UPGRADE_WARNING: Couldn't resolve default property of object pavPromptedValues(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+						lngComponentID = CInt(Mid(pavPromptedValues(0, iLoop), 10))
+						'UPGRADE_WARNING: Couldn't resolve default property of object pavPromptedValues(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+						iDataType = CShort(Mid(pavPromptedValues(0, iLoop), 8, 1))
 
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvarPrompts(0, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					mvarPrompts(0, iLoop) = lngComponentID
+						'UPGRADE_WARNING: Couldn't resolve default property of object mvarPrompts(0, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+						mvarPrompts(0, iLoop) = lngComponentID
 
-					' NB. Locale to server conversions are done on the client.
-					Select Case iDataType
-						Case 2
-							' Numeric.
-							'UPGRADE_WARNING: Couldn't resolve default property of object pavPromptedValues(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-							'UPGRADE_WARNING: Couldn't resolve default property of object mvarPrompts(1, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-							mvarPrompts(1, iLoop) = CDbl(pavPromptedValues(1, iLoop))
-						Case 3
-							' Logic.
-							'UPGRADE_WARNING: Couldn't resolve default property of object pavPromptedValues(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-							'UPGRADE_WARNING: Couldn't resolve default property of object mvarPrompts(1, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-							mvarPrompts(1, iLoop) = (UCase(CStr(pavPromptedValues(1, iLoop))) = "TRUE")
-						Case 4
-							' Date.
-							' JPD 20040212 Fault 8082 - DO NOT CONVERT DATE PROMPTED VALUES
-							' THEY ARE PASSED IN FROM THE ASPs AS STRING VALUES IN THE CORRECT
-							' FORMAT (mm/dd/yyyy) AND DOING ANY KIND OF CONVERSION JUST SCREWS
-							' THINGS UP.
-							'mvarPrompts(1, iLoop) = CDate(pavPromptedValues(1, iLoop))
-							'UPGRADE_WARNING: Couldn't resolve default property of object pavPromptedValues(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-							'UPGRADE_WARNING: Couldn't resolve default property of object mvarPrompts(1, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-							mvarPrompts(1, iLoop) = pavPromptedValues(1, iLoop)
-						Case Else
-							'UPGRADE_WARNING: Couldn't resolve default property of object pavPromptedValues(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-							'UPGRADE_WARNING: Couldn't resolve default property of object mvarPrompts(1, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-							mvarPrompts(1, iLoop) = CStr(pavPromptedValues(1, iLoop))
-					End Select
-				Else
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvarPrompts(0, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					mvarPrompts(0, iLoop) = 0
-				End If
-			Next iLoop
-		End If
+						' NB. Locale to server conversions are done on the client.
+						Select Case iDataType
+							Case 2
+								' Numeric.
+								'UPGRADE_WARNING: Couldn't resolve default property of object pavPromptedValues(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+								'UPGRADE_WARNING: Couldn't resolve default property of object mvarPrompts(1, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+								mvarPrompts(1, iLoop) = CDbl(pavPromptedValues(1, iLoop))
+							Case 3
+								' Logic.
+								'UPGRADE_WARNING: Couldn't resolve default property of object pavPromptedValues(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+								'UPGRADE_WARNING: Couldn't resolve default property of object mvarPrompts(1, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+								mvarPrompts(1, iLoop) = (UCase(CStr(pavPromptedValues(1, iLoop))) = "TRUE")
+							Case 4
+								' Date.
+								' JPD 20040212 Fault 8082 - DO NOT CONVERT DATE PROMPTED VALUES
+								' THEY ARE PASSED IN FROM THE ASPs AS STRING VALUES IN THE CORRECT
+								' FORMAT (mm/dd/yyyy) AND DOING ANY KIND OF CONVERSION JUST SCREWS
+								' THINGS UP.
+								'mvarPrompts(1, iLoop) = CDate(pavPromptedValues(1, iLoop))
+								'UPGRADE_WARNING: Couldn't resolve default property of object pavPromptedValues(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+								'UPGRADE_WARNING: Couldn't resolve default property of object mvarPrompts(1, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+								mvarPrompts(1, iLoop) = pavPromptedValues(1, iLoop)
+							Case Else
+								'UPGRADE_WARNING: Couldn't resolve default property of object pavPromptedValues(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+								'UPGRADE_WARNING: Couldn't resolve default property of object mvarPrompts(1, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+								mvarPrompts(1, iLoop) = CStr(pavPromptedValues(1, iLoop))
+						End Select
+					Else
+						'UPGRADE_WARNING: Couldn't resolve default property of object mvarPrompts(0, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+						mvarPrompts(0, iLoop) = 0
+					End If
+				Next iLoop
+			End If
 
-		SetPromptedValues = fOK
+		Catch ex As Exception
+			mstrStatusMessage = "Error whilst setting prompted values. " & ex.Message.RemoveSensitive()
+			Return False
 
-		Exit Function
+		End Try
 
-ErrorTrap:
-		mstrStatusMessage = "Error whilst setting prompted values. " & Err.Description
-		fOK = False
-		SetPromptedValues = False
+		Return True
 
 	End Function
 
@@ -940,175 +936,176 @@ ErrorTrap:
 		Dim strColumn As String
 		Dim blnCharColumn As Boolean
 
-		On Error GoTo LocalErr
 
-		fOK = True
-		ReDim alngTableViews(2, 0)
+		Try
 
-		mstrSQLFrom = gcoTablePrivileges.Item(mstrBaseTable).RealSource
-		mstrSQLSelect = vbNullString
-		mstrSQLJoin = vbNullString
-		Dim asViews(0) As Object
+			fOK = True
+			ReDim alngTableViews(2, 0)
 
-		blnCharColumn = (Val(mlngColDataType(lngCount)) = ColumnDataType.sqlVarChar)
+			mstrSQLFrom = gcoTablePrivileges.Item(mstrBaseTable).RealSource
+			mstrSQLSelect = vbNullString
+			mstrSQLJoin = vbNullString
+			Dim asViews(0) As Object
+
+			blnCharColumn = (Val(mlngColDataType(lngCount)) = ColumnDataType.sqlVarChar)
 
 
-		For lngCount = 0 To UBound(strCol, 2)
+			For lngCount = 0 To UBound(strCol, 2)
 
-			objColumnPrivileges = GetColumnPrivileges(mstrBaseTable)
-			fColumnOK = objColumnPrivileges.IsValid(strCol(1, lngCount))
-			If fColumnOK Then
-				fColumnOK = objColumnPrivileges.Item(strCol(1, lngCount)).AllowSelect
+				objColumnPrivileges = GetColumnPrivileges(mstrBaseTable)
+				fColumnOK = objColumnPrivileges.IsValid(strCol(1, lngCount))
+				If fColumnOK Then
+					fColumnOK = objColumnPrivileges.Item(strCol(1, lngCount)).AllowSelect
+
+					If fColumnOK Then
+						fColumnOK = gcoTablePrivileges.Item(mstrBaseTable).AllowSelect
+					End If
+
+				End If
+
+				'UPGRADE_NOTE: Object objColumnPrivileges may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
+				objColumnPrivileges = Nothing
+
+				If lngCount <= UBound(mlngColDataType) Then
+					blnCharColumn = (Val(mlngColDataType(lngCount)) = ColumnDataType.sqlVarChar)
+				End If
 
 				If fColumnOK Then
-					fColumnOK = gcoTablePrivileges.Item(mstrBaseTable).AllowSelect
-				End If
+					' The column can be read from the base table/view, or directly from a parent table.
+					' Add the column to the column list.
 
-			End If
+					If strSelectedRecords = vbNullString And mstrPicklistFilter <> vbNullString Then
 
-			'UPGRADE_NOTE: Object objColumnPrivileges may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-			objColumnPrivileges = Nothing
-
-			If lngCount <= UBound(mlngColDataType) Then
-				blnCharColumn = (Val(mlngColDataType(lngCount)) = ColumnDataType.sqlVarChar)
-			End If
-
-			If fColumnOK Then
-				' The column can be read from the base table/view, or directly from a parent table.
-				' Add the column to the column list.
-
-				If strSelectedRecords = vbNullString And mstrPicklistFilter <> vbNullString Then
-
-					If mlngCrossTabType = Enums.CrossTabType.cttAbsenceBreakdown Then
-						strSelectedRecords = mstrSQLFrom & ".ID_" & Trim(Str(PersonnelModule.glngPersonnelTableID)) & " IN (" & mstrPicklistFilter & ")"
-					Else
-						strSelectedRecords = mstrSQLFrom & ".ID IN (" & mstrPicklistFilter & ")"
-					End If
-
-				End If
-
-				strColumn = mstrSQLFrom & "." & strCol(1, lngCount)
-				If blnCharColumn Then
-					strColumn = FormatSQLColumn(strColumn)
-				End If
-
-				mstrSQLSelect = mstrSQLSelect & IIf(Len(mstrSQLSelect) > 0, ", ", "").ToString() & strColumn & " AS '" & strCol(2, lngCount) & "'"
-
-			Else
-
-				ReDim asViews(0)
-				For Each objTableView In gcoTablePrivileges.Collection
-
-					'Loop thru all of the views for this table where the user has select access
-					If (Not objTableView.IsTable) And (objTableView.TableID = mlngBaseTableID) And (objTableView.AllowSelect) Then
-
-						sSource = objTableView.ViewName
-
-						' Get the column permission for the view.
-						objColumnPrivileges = GetColumnPrivileges(sSource)
-
-						If objColumnPrivileges.IsValid(strCol(1, lngCount)) Then
-							If objColumnPrivileges.Item(strCol(1, lngCount)).AllowSelect Then
-								' Add the view info to an array to be put into the column list or order code below.
-								iNextIndex = UBound(asViews) + 1
-								ReDim Preserve asViews(iNextIndex)
-								'UPGRADE_WARNING: Couldn't resolve default property of object asViews(iNextIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-								asViews(iNextIndex) = sSource
-
-
-								'=== This is the join code section ===
-								' Add the view to the Join code.
-								' Check if the view has already been added to the join code.
-								fFound = False
-								For iNextIndex = 1 To UBound(alngTableViews, 2)
-									If alngTableViews(2, iNextIndex) = objTableView.ViewID Then
-										fFound = True
-										Exit For
-									End If
-								Next iNextIndex
-
-								If Not fFound Then
-									' The view has not yet been added to the join code, so add it to the array and the join code.
-									' (also include the picklist info)
-
-									iNextIndex = UBound(alngTableViews, 2) + 1
-									ReDim Preserve alngTableViews(2, iNextIndex)
-									alngTableViews(1, iNextIndex) = 1
-									alngTableViews(2, iNextIndex) = objTableView.ViewID
-
-									mstrSQLJoin = mstrSQLJoin & vbNewLine & " LEFT OUTER JOIN " & sSource & " ON " & mstrSQLFrom & ".ID = " & sSource & ".ID"
-
-									sWhereIDs = sWhereIDs & IIf(sWhereIDs <> vbNullString, " OR ", vbNullString) & mstrSQLFrom & ".ID IN (SELECT ID FROM " & sSource & ")"
-
-									'If mstrPicklistFilter <> vbNullString Then
-									strSelectedRecords = strSelectedRecords & IIf(strSelectedRecords <> vbNullString, " OR ", vbNullString) & "(" & IIf(mstrPicklistFilter <> vbNullString, sSource & ".ID IN (" & mstrPicklistFilter & ") AND ", vbNullString) & sSource & ".ID > 0)"
-									'End If
-
-								End If
-							End If
-							'=== End of Join Code ===
-
-
-							'UPGRADE_NOTE: Object objColumnPrivileges may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-							objColumnPrivileges = Nothing
+						If mlngCrossTabType = Enums.CrossTabType.cttAbsenceBreakdown Then
+							strSelectedRecords = mstrSQLFrom & ".ID_" & Trim(Str(PersonnelModule.glngPersonnelTableID)) & " IN (" & mstrPicklistFilter & ")"
+						Else
+							strSelectedRecords = mstrSQLFrom & ".ID IN (" & mstrPicklistFilter & ")"
 						End If
 
 					End If
-				Next objTableView
-				'UPGRADE_NOTE: Object objTableView may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-				objTableView = Nothing
 
-				' The current user does have permission to 'read' the column through a/some view(s) on the
-				' table.
-				If UBound(asViews) = 0 Then
-					fOK = False
-					'MH20010716 Fault 2497
-					'If its the ID column they they don't have any access to the table.
-					'mstrStatusMessage = "You do not have permission to see the column '" & strCol(1, lngCount) & "' " & _
-					'"either directly or through any views." & vbNewLine
-					mstrStatusMessage = "You do not have permission to see the " & IIf(strCol(1, lngCount) = "ID", "table '" & mstrBaseTable, "column '" & strCol(1, lngCount)) & "' either directly or through any views." & vbNewLine
-					Exit Sub
+					strColumn = mstrSQLFrom & "." & strCol(1, lngCount)
+					If blnCharColumn Then
+						strColumn = FormatSQLColumn(strColumn)
+					End If
+
+					mstrSQLSelect = mstrSQLSelect & IIf(Len(mstrSQLSelect) > 0, ", ", "").ToString() & strColumn & " AS '" & strCol(2, lngCount) & "'"
+
 				Else
 
-					sCaseStatement = ""
-					For iNextIndex = 1 To UBound(asViews)
-						'UPGRADE_WARNING: Couldn't resolve default property of object asViews(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						sCaseStatement = sCaseStatement & IIf(sCaseStatement <> "", vbCrLf & " , ", "").ToString() & asViews(iNextIndex).ToString() & "." & strCol(1, lngCount)
-					Next iNextIndex
+					ReDim asViews(0)
+					For Each objTableView In gcoTablePrivileges.Collection
 
-					If Len(sCaseStatement) > 0 Then
-						strColumn = "COALESCE(" & sCaseStatement & ", NULL)"
+						'Loop thru all of the views for this table where the user has select access
+						If (Not objTableView.IsTable) And (objTableView.TableID = mlngBaseTableID) And (objTableView.AllowSelect) Then
 
-						If blnCharColumn Then
-							strColumn = FormatSQLColumn(strColumn)
+							sSource = objTableView.ViewName
+
+							' Get the column permission for the view.
+							objColumnPrivileges = GetColumnPrivileges(sSource)
+
+							If objColumnPrivileges.IsValid(strCol(1, lngCount)) Then
+								If objColumnPrivileges.Item(strCol(1, lngCount)).AllowSelect Then
+									' Add the view info to an array to be put into the column list or order code below.
+									iNextIndex = UBound(asViews) + 1
+									ReDim Preserve asViews(iNextIndex)
+									'UPGRADE_WARNING: Couldn't resolve default property of object asViews(iNextIndex). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+									asViews(iNextIndex) = sSource
+
+
+									'=== This is the join code section ===
+									' Add the view to the Join code.
+									' Check if the view has already been added to the join code.
+									fFound = False
+									For iNextIndex = 1 To UBound(alngTableViews, 2)
+										If alngTableViews(2, iNextIndex) = objTableView.ViewID Then
+											fFound = True
+											Exit For
+										End If
+									Next iNextIndex
+
+									If Not fFound Then
+										' The view has not yet been added to the join code, so add it to the array and the join code.
+										' (also include the picklist info)
+
+										iNextIndex = UBound(alngTableViews, 2) + 1
+										ReDim Preserve alngTableViews(2, iNextIndex)
+										alngTableViews(1, iNextIndex) = 1
+										alngTableViews(2, iNextIndex) = objTableView.ViewID
+
+										mstrSQLJoin = mstrSQLJoin & vbNewLine & " LEFT OUTER JOIN " & sSource & " ON " & mstrSQLFrom & ".ID = " & sSource & ".ID"
+
+										sWhereIDs = sWhereIDs & IIf(sWhereIDs <> vbNullString, " OR ", vbNullString) & mstrSQLFrom & ".ID IN (SELECT ID FROM " & sSource & ")"
+
+										'If mstrPicklistFilter <> vbNullString Then
+										strSelectedRecords = strSelectedRecords & IIf(strSelectedRecords <> vbNullString, " OR ", vbNullString) & "(" & IIf(mstrPicklistFilter <> vbNullString, sSource & ".ID IN (" & mstrPicklistFilter & ") AND ", vbNullString) & sSource & ".ID > 0)"
+										'End If
+
+									End If
+								End If
+								'=== End of Join Code ===
+
+
+								'UPGRADE_NOTE: Object objColumnPrivileges may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
+								objColumnPrivileges = Nothing
+							End If
+
+						End If
+					Next objTableView
+					'UPGRADE_NOTE: Object objTableView may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
+					objTableView = Nothing
+
+					' The current user does have permission to 'read' the column through a/some view(s) on the
+					' table.
+					If UBound(asViews) = 0 Then
+						fOK = False
+						'MH20010716 Fault 2497
+						'If its the ID column they they don't have any access to the table.
+						'mstrStatusMessage = "You do not have permission to see the column '" & strCol(1, lngCount) & "' " & _
+						'"either directly or through any views." & vbNewLine
+						mstrStatusMessage = "You do not have permission to see the " & IIf(strCol(1, lngCount) = "ID", "table '" & mstrBaseTable, "column '" & strCol(1, lngCount)) & "' either directly or through any views." & vbNewLine
+						Exit Sub
+					Else
+
+						sCaseStatement = ""
+						For iNextIndex = 1 To UBound(asViews)
+							'UPGRADE_WARNING: Couldn't resolve default property of object asViews(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+							sCaseStatement = sCaseStatement & IIf(sCaseStatement <> "", vbCrLf & " , ", "").ToString() & asViews(iNextIndex).ToString() & "." & strCol(1, lngCount)
+						Next iNextIndex
+
+						If Len(sCaseStatement) > 0 Then
+							strColumn = "COALESCE(" & sCaseStatement & ", NULL)"
+
+							If blnCharColumn Then
+								strColumn = FormatSQLColumn(strColumn)
+							End If
+
+							mstrSQLSelect = mstrSQLSelect & IIf(Len(mstrSQLSelect) > 0, ", ", "").ToString() & vbCrLf & strColumn & "AS '" & strCol(2, lngCount) & "'"
 						End If
 
-						mstrSQLSelect = mstrSQLSelect & IIf(Len(mstrSQLSelect) > 0, ", ", "").ToString() & vbCrLf & strColumn & "AS '" & strCol(2, lngCount) & "'"
 					End If
-
 				End If
+			Next
+
+			If mlngCrossTabType = Enums.CrossTabType.cttAbsenceBreakdown And Not msAbsenceBreakdownTypes = vbNullString Then
+				mstrSQLWhere = mstrSQLWhere & IIf(mstrSQLWhere <> vbNullString, " AND ", " WHERE ") & "(UPPER(" & AbsenceModule.gsAbsenceTypeColumnName & ") IN " & msAbsenceBreakdownTypes & ")"
 			End If
-		Next
 
-		If mlngCrossTabType = Enums.CrossTabType.cttAbsenceBreakdown And Not msAbsenceBreakdownTypes = vbNullString Then
-			mstrSQLWhere = mstrSQLWhere & IIf(mstrSQLWhere <> vbNullString, " AND ", " WHERE ") & "(UPPER(" & AbsenceModule.gsAbsenceTypeColumnName & ") IN " & msAbsenceBreakdownTypes & ")"
-		End If
+			If mlngCrossTabType = Enums.CrossTabType.cttAbsenceBreakdown Then
+				Dim sReportStartDate As String = CDate(mdReportStartDate).ToString(SQLDateFormat)
+				Dim sReportEndDate As String = CDate(mdReportEndDate).ToString(SQLDateFormat)
+				mstrSQLWhere &= IIf(mstrSQLWhere <> vbNullString, " AND ", " WHERE ") & "( " & AbsenceModule.gsAbsenceStartDateColumnName & " <= CONVERT(datetime, '" & sReportEndDate & "'))" & "And (" & AbsenceModule.gsAbsenceEndDateColumnName & " >= CONVERT(datetime, '" & sReportStartDate & "') OR " & AbsenceModule.gsAbsenceEndDateColumnName & " IS NULL)"
+			End If
 
-		If mlngCrossTabType = Enums.CrossTabType.cttAbsenceBreakdown Then
-			Dim sReportStartDate As String = CDate(mdReportStartDate).ToString(SQLDateFormat)
-			Dim sReportEndDate As String = CDate(mdReportEndDate).ToString(SQLDateFormat)
-			mstrSQLWhere &= IIf(mstrSQLWhere <> vbNullString, " AND ", " WHERE ") & "( " & AbsenceModule.gsAbsenceStartDateColumnName & " <= CONVERT(datetime, '" & sReportEndDate & "'))" & "And (" & AbsenceModule.gsAbsenceEndDateColumnName & " >= CONVERT(datetime, '" & sReportStartDate & "') OR " & AbsenceModule.gsAbsenceEndDateColumnName & " IS NULL)"
-		End If
+			If strSelectedRecords <> vbNullString Then
+				mstrSQLWhere = mstrSQLWhere & IIf(mstrSQLWhere <> vbNullString, " AND ", " WHERE ") & "(" & strSelectedRecords & ")"
+			End If
 
-		If strSelectedRecords <> vbNullString Then
-			mstrSQLWhere = mstrSQLWhere & IIf(mstrSQLWhere <> vbNullString, " AND ", " WHERE ") & "(" & strSelectedRecords & ")"
-		End If
+		Catch ex As Exception
+			mstrStatusMessage = "Error retrieving data"
+			fOK = False
 
-		Exit Sub
-
-LocalErr:
-		mstrStatusMessage = "Error retrieving data"
-		fOK = False
+		End Try
 
 	End Sub
 
@@ -1683,101 +1680,103 @@ LocalErr:
 		Dim sngAverage As Single
 		Dim iAverageColumn As Integer
 
-		On Error GoTo LocalErr
+		Try
 
-		lngNumCols = UBound(mvarHeadings(HOR))
-		lngNumRows = UBound(mvarHeadings(VER))
-		lngNumPages = IIf(mblnPageBreak, UBound(mvarHeadings(PGB)), 0)
-		iAverageColumn = lngNumCols - 1
+			lngNumCols = UBound(mvarHeadings(HOR))
+			lngNumRows = UBound(mvarHeadings(VER))
+			lngNumPages = IIf(mblnPageBreak, UBound(mvarHeadings(PGB)), 0)
+			iAverageColumn = lngNumCols - 1
 
-		' JDM - 22/06/01 - Fault 2476 - Display totals instead
-		If mlngCrossTabType <> Enums.CrossTabType.cttAbsenceBreakdown Then
-			lngTYPE = mlngType
-		Else
-			lngTYPE = TYPETOTAL
-		End If
-
-		'mdblPercentageFactor will be used in FORMATCELL, if required
-		GetPercentageFactor(lngSinglePage, lngTYPE)
-
-		ReDim mstrOutput(lngNumRows + 2)
-
-		'Add First Column details (Vertical headings)
-		mstrOutput(0) = strDelim & mstrOutput(0)
-		For lngRow = 0 To lngNumRows
-			'UPGRADE_WARNING: Couldn't resolve default property of object mvarHeadings()(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			mstrOutput(lngRow + 1) = Trim(mvarHeadings(VER)(lngRow)) & strDelim & mstrOutput(lngRow + 1)
-		Next
-		mstrOutput(lngNumRows + 2) = IIf(mlngCrossTabType = Enums.CrossTabType.cttNormal, mstrType(mlngType), "Total") & strDelim & mstrOutput(lngNumRows + 2)
-
-		If mblnShowAllPagesTogether Then
-
-			'Now add the main row data
-			For lngPage = 0 To lngNumPages
-				For lngCol = 0 To lngNumCols
-
-					strTempDelim = IIf(lngCol < lngNumCols Or lngPage < lngNumPages, strDelim, "")
-
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvarHeadings()(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					mstrOutput(0) = mstrOutput(0) & Trim(mvarHeadings(0)(lngCol)) & strTempDelim
-
-
-					For lngRow = 0 To lngNumRows
-						mstrOutput(lngRow + 1) = mstrOutput(lngRow + 1) & FormatCell(mdblDataArray(lngCol, lngRow, lngPage, lngTYPE), lngCol) & strTempDelim
-					Next
-
-					mstrOutput(lngNumRows + 2) = mstrOutput(lngNumRows + 2) & FormatCell(mdblHorTotal(lngCol, lngPage, lngTYPE), lngCol) & strTempDelim
-
-				Next
-			Next
-
-
-			If mblnPageBreak Then
-				For lngCol = 0 To lngNumCols
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvarHeadings()(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					mstrOutput(0) = mstrOutput(0) & strDelim & Trim(mvarHeadings(0)(lngCol))
-
-					For lngRow = 0 To lngNumRows + 1
-						mstrOutput(lngRow + 1) = mstrOutput(lngRow + 1) & strDelim & FormatCell(mdblPgbTotal(lngCol, lngRow, lngTYPE), lngCol)
-					Next
-				Next
+			' JDM - 22/06/01 - Fault 2476 - Display totals instead
+			If mlngCrossTabType <> Enums.CrossTabType.cttAbsenceBreakdown Then
+				lngTYPE = mlngType
+			Else
+				lngTYPE = TYPETOTAL
 			End If
 
-		Else
-			'Now add the main row data
-			For lngCol = 0 To lngNumCols
+			'mdblPercentageFactor will be used in FORMATCELL, if required
+			GetPercentageFactor(lngSinglePage, lngTYPE)
 
+			ReDim mstrOutput(lngNumRows + 2)
+
+			'Add First Column details (Vertical headings)
+			mstrOutput(0) = strDelim & mstrOutput(0)
+			For lngRow = 0 To lngNumRows
 				'UPGRADE_WARNING: Couldn't resolve default property of object mvarHeadings()(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				mstrOutput(0) = mstrOutput(0) & Trim(mvarHeadings(0)(lngCol)) & IIf(lngCol <> lngNumCols, strDelim, "")
-				For lngRow = 0 To lngNumRows
-					mstrOutput(lngRow + 1) = mstrOutput(lngRow + 1) & FormatCell(mdblDataArray(lngCol, lngRow, lngSinglePage, lngTYPE)) & IIf(lngCol <> lngNumCols, strDelim, "")
+				mstrOutput(lngRow + 1) = Trim(mvarHeadings(VER)(lngRow)) & strDelim & mstrOutput(lngRow + 1)
+			Next
+			mstrOutput(lngNumRows + 2) = IIf(mlngCrossTabType = Enums.CrossTabType.cttNormal, mstrType(mlngType), "Total") & strDelim & mstrOutput(lngNumRows + 2)
+
+			If mblnShowAllPagesTogether Then
+
+				'Now add the main row data
+				For lngPage = 0 To lngNumPages
+					For lngCol = 0 To lngNumCols
+
+						strTempDelim = IIf(lngCol < lngNumCols Or lngPage < lngNumPages, strDelim, "")
+
+						'UPGRADE_WARNING: Couldn't resolve default property of object mvarHeadings()(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+						mstrOutput(0) = mstrOutput(0) & Trim(mvarHeadings(0)(lngCol)) & strTempDelim
+
+
+						For lngRow = 0 To lngNumRows
+							mstrOutput(lngRow + 1) = mstrOutput(lngRow + 1) & FormatCell(mdblDataArray(lngCol, lngRow, lngPage, lngTYPE), lngCol) & strTempDelim
+						Next
+
+						mstrOutput(lngNumRows + 2) = mstrOutput(lngNumRows + 2) & FormatCell(mdblHorTotal(lngCol, lngPage, lngTYPE), lngCol) & strTempDelim
+
+					Next
 				Next
 
-				' JDM - 10/09/2003 - Fault 7048 - Make the average column not total up.
-				If mlngCrossTabType = Enums.CrossTabType.cttAbsenceBreakdown And lngCol = iAverageColumn Then
-					sngAverage = mdblHorTotal(lngCol - 1, lngSinglePage, TYPETOTAL) / mdblHorTotal(lngCol, lngSinglePage, TYPECOUNT)
-					mstrOutput(lngNumRows + 2) = mstrOutput(lngNumRows + 2) & FormatCell(sngAverage) & IIf(lngCol <> lngNumCols, strDelim, "")
-				Else
-					mstrOutput(lngNumRows + 2) = mstrOutput(lngNumRows + 2) & FormatCell(mdblHorTotal(lngCol, lngSinglePage, lngTYPE)) & IIf(lngCol <> lngNumCols, strDelim, "")
+
+				If mblnPageBreak Then
+					For lngCol = 0 To lngNumCols
+						'UPGRADE_WARNING: Couldn't resolve default property of object mvarHeadings()(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+						mstrOutput(0) = mstrOutput(0) & strDelim & Trim(mvarHeadings(0)(lngCol))
+
+						For lngRow = 0 To lngNumRows + 1
+							mstrOutput(lngRow + 1) = mstrOutput(lngRow + 1) & strDelim & FormatCell(mdblPgbTotal(lngCol, lngRow, lngTYPE), lngCol)
+						Next
+					Next
 				End If
 
-			Next
+			Else
+				'Now add the main row data
+				For lngCol = 0 To lngNumCols
 
-			'Add the last column details (Vertical totals)
-			If mlngCrossTabType = Enums.CrossTabType.cttNormal Then
-				mstrOutput(0) = mstrOutput(0) & strDelim & mstrType(mlngType)
-				For lngRow = 0 To lngNumRows
-					mstrOutput(lngRow + 1) = mstrOutput(lngRow + 1) & strDelim & FormatCell(mdblVerTotal(lngRow, lngSinglePage, lngTYPE))
+					'UPGRADE_WARNING: Couldn't resolve default property of object mvarHeadings()(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+					mstrOutput(0) = mstrOutput(0) & Trim(mvarHeadings(0)(lngCol)) & IIf(lngCol <> lngNumCols, strDelim, "")
+					For lngRow = 0 To lngNumRows
+						mstrOutput(lngRow + 1) = mstrOutput(lngRow + 1) & FormatCell(mdblDataArray(lngCol, lngRow, lngSinglePage, lngTYPE)) & IIf(lngCol <> lngNumCols, strDelim, "")
+					Next
+
+					' JDM - 10/09/2003 - Fault 7048 - Make the average column not total up.
+					If mlngCrossTabType = Enums.CrossTabType.cttAbsenceBreakdown And lngCol = iAverageColumn Then
+						sngAverage = mdblHorTotal(lngCol - 1, lngSinglePage, TYPETOTAL) / mdblHorTotal(lngCol, lngSinglePage, TYPECOUNT)
+						mstrOutput(lngNumRows + 2) = mstrOutput(lngNumRows + 2) & FormatCell(sngAverage) & IIf(lngCol <> lngNumCols, strDelim, "")
+					Else
+						mstrOutput(lngNumRows + 2) = mstrOutput(lngNumRows + 2) & FormatCell(mdblHorTotal(lngCol, lngSinglePage, lngTYPE)) & IIf(lngCol <> lngNumCols, strDelim, "")
+					End If
+
 				Next
-				mstrOutput(lngNumRows + 2) = mstrOutput(lngNumRows + 2) & strDelim & FormatCell(mdblPageTotal(lngSinglePage, lngTYPE))
-			End If
+
+				'Add the last column details (Vertical totals)
+				If mlngCrossTabType = Enums.CrossTabType.cttNormal Then
+					mstrOutput(0) = mstrOutput(0) & strDelim & mstrType(mlngType)
+					For lngRow = 0 To lngNumRows
+						mstrOutput(lngRow + 1) = mstrOutput(lngRow + 1) & strDelim & FormatCell(mdblVerTotal(lngRow, lngSinglePage, lngTYPE))
+					Next
+					mstrOutput(lngNumRows + 2) = mstrOutput(lngNumRows + 2) & strDelim & FormatCell(mdblPageTotal(lngSinglePage, lngTYPE))
+				End If
 			End If
 
 			Exit Sub
 
-LocalErr:
-			mstrStatusMessage = "Error building output strings (" & Err.Description & ")"
+		Catch ex As Exception
+			mstrStatusMessage = "Error building output strings (" & ex.Message.RemoveSensitive() & ")"
 			fOK = False
+
+		End Try
 
 	End Sub
 
@@ -1980,62 +1979,64 @@ LocalErr:
 		Dim lngNumRows As Integer
 		Dim lngNumPages As Integer
 
-		On Error GoTo LocalErr
+		Try
 
-		lngNumCols = UBound(mvarHeadings(0))
-		lngNumRows = UBound(mvarHeadings(1))
-		lngNumPages = IIf(mblnPageBreak, UBound(mvarHeadings(2)), 0)
+			lngNumCols = UBound(mvarHeadings(0))
+			lngNumRows = UBound(mvarHeadings(1))
+			lngNumPages = IIf(mblnPageBreak, UBound(mvarHeadings(2)), 0)
 
-		ReDim mdblDataArray(lngNumCols, lngNumRows, lngNumPages, 4)
-		ReDim mdblHorTotal(lngNumCols, lngNumPages, 4)
-		ReDim mdblVerTotal(lngNumRows, lngNumPages, 4)
-		ReDim mdblPgbTotal(lngNumCols, lngNumRows + 1, 4)	'+1 for totals !
-		ReDim mdblPageTotal(lngNumPages, 4)
-		ReDim mdblGrandTotal(4)
+			ReDim mdblDataArray(lngNumCols, lngNumRows, lngNumPages, 4)
+			ReDim mdblHorTotal(lngNumCols, lngNumPages, 4)
+			ReDim mdblVerTotal(lngNumRows, lngNumPages, 4)
+			ReDim mdblPgbTotal(lngNumCols, lngNumRows + 1, 4)	'+1 for totals !
+			ReDim mdblPageTotal(lngNumPages, 4)
+			ReDim mdblGrandTotal(4)
 
-		' Because the stored procedure has run we need to requery the recordset
+			' Because the stored procedure has run we need to requery the recordset
 
-		If rsCrossTabData.Rows.Count = 0 Then
+			If rsCrossTabData.Rows.Count = 0 Then
+				Return False
+			End If
+
+			For Each objRow As DataRow In rsCrossTabData.Rows
+
+				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
+				strTempValue = IIf(Not IsDBNull(objRow("HOR")), objRow("HOR").ToString().Trim(), vbNullString)
+				lngCol = GetGroupNumber(strTempValue, HOR)
+
+				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
+				strTempValue = IIf(Not IsDBNull(objRow("VER")), objRow("VER").ToString().Trim(), vbNullString)
+				lngRow = GetGroupNumber(strTempValue, VER)
+
+				'Count
+				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
+				mdblDataArray(lngCol, lngRow, 0, TYPECOUNT) = mdblDataArray(lngCol, lngRow, 0, TYPECOUNT) + IIf(Not IsDBNull(objRow("VALUE")), objRow("VALUE"), 143)
+				mdblHorTotal(lngCol, 0, TYPECOUNT) = mdblHorTotal(lngCol, 0, TYPECOUNT) + 1
+				mdblVerTotal(lngRow, 0, TYPECOUNT) = mdblVerTotal(lngRow, 0, TYPECOUNT) + 1
+
+				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
+				mdblDataArray(lngCol, lngRow, 0, TYPETOTAL) = mdblDataArray(lngCol, lngRow, 0, TYPETOTAL) + IIf(Not IsDBNull(objRow("VALUE")), objRow("VALUE"), 143)
+				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
+				mdblHorTotal(lngCol, 0, TYPETOTAL) = mdblHorTotal(lngCol, 0, TYPETOTAL) + IIf(Not IsDBNull(objRow("VALUE")), objRow("VALUE"), 0)
+				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
+				mdblVerTotal(lngRow, 0, TYPETOTAL) = mdblVerTotal(lngRow, 0, TYPETOTAL) + IIf(Not IsDBNull(objRow("VALUE")), objRow("VALUE"), 0)
+
+				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
+				mdblDataArray(lngCol, lngRow, lngPage, TYPEAVERAGE) = mdblDataArray(lngCol, lngRow, lngPage, TYPEAVERAGE) + IIf(Not IsDBNull(objRow("VALUE")), objRow("VALUE"), 143)
+				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
+				mdblHorTotal(lngCol, lngPage, TYPEAVERAGE) = mdblHorTotal(lngCol, lngPage, TYPEAVERAGE) + IIf(Not IsDBNull(objRow("VALUE")), objRow("VALUE"), 0)
+				'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
+				mdblVerTotal(lngRow, lngPage, TYPEAVERAGE) = mdblVerTotal(lngRow, lngPage, TYPEAVERAGE) + IIf(Not IsDBNull(objRow("VALUE")), objRow("VALUE"), 0)
+
+			Next
+
+		Catch ex As Exception
+			mstrStatusMessage = "Error processing data"
 			Return False
-		End If
 
-		For Each objRow As DataRow In rsCrossTabData.Rows
-
-			'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-			strTempValue = IIf(Not IsDBNull(objRow("HOR")), objRow("HOR").ToString().Trim(), vbNullString)
-			lngCol = GetGroupNumber(strTempValue, HOR)
-
-			'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-			strTempValue = IIf(Not IsDBNull(objRow("VER")), objRow("VER").ToString().Trim(), vbNullString)
-			lngRow = GetGroupNumber(strTempValue, VER)
-
-			'Count
-			'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-			mdblDataArray(lngCol, lngRow, 0, TYPECOUNT) = mdblDataArray(lngCol, lngRow, 0, TYPECOUNT) + IIf(Not IsDBNull(objRow("VALUE")), objRow("VALUE"), 143)
-			mdblHorTotal(lngCol, 0, TYPECOUNT) = mdblHorTotal(lngCol, 0, TYPECOUNT) + 1
-			mdblVerTotal(lngRow, 0, TYPECOUNT) = mdblVerTotal(lngRow, 0, TYPECOUNT) + 1
-
-			'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-			mdblDataArray(lngCol, lngRow, 0, TYPETOTAL) = mdblDataArray(lngCol, lngRow, 0, TYPETOTAL) + IIf(Not IsDBNull(objRow("VALUE")), objRow("VALUE"), 143)
-			'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-			mdblHorTotal(lngCol, 0, TYPETOTAL) = mdblHorTotal(lngCol, 0, TYPETOTAL) + IIf(Not IsDBNull(objRow("VALUE")), objRow("VALUE"), 0)
-			'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-			mdblVerTotal(lngRow, 0, TYPETOTAL) = mdblVerTotal(lngRow, 0, TYPETOTAL) + IIf(Not IsDBNull(objRow("VALUE")), objRow("VALUE"), 0)
-
-			'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-			mdblDataArray(lngCol, lngRow, lngPage, TYPEAVERAGE) = mdblDataArray(lngCol, lngRow, lngPage, TYPEAVERAGE) + IIf(Not IsDBNull(objRow("VALUE")), objRow("VALUE"), 143)
-			'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-			mdblHorTotal(lngCol, lngPage, TYPEAVERAGE) = mdblHorTotal(lngCol, lngPage, TYPEAVERAGE) + IIf(Not IsDBNull(objRow("VALUE")), objRow("VALUE"), 0)
-			'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-			mdblVerTotal(lngRow, lngPage, TYPEAVERAGE) = mdblVerTotal(lngRow, lngPage, TYPEAVERAGE) + IIf(Not IsDBNull(objRow("VALUE")), objRow("VALUE"), 0)
-
-		Next
+		End Try
 
 		Return True
-
-LocalErr:
-		mstrStatusMessage = "Error processing data"
-		AbsenceBreakdownBuildDataArrays = False
 
 	End Function
 

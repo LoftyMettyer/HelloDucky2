@@ -898,72 +898,70 @@ Public Class MailMerge
 
 		' Purpose : This function calls the individual functions that
 		'           generate the components of the main SQL string.
-		On Error GoTo ErrorTrap
-
-		Dim fOK As Boolean
 		Dim iLoop As Short
 		Dim iDataType As Short
 		Dim lngComponentID As Integer
 
-		fOK = True
+		Try
+			ReDim mvarPrompts(1, 0)
 
-		ReDim mvarPrompts(1, 0)
+			If IsArray(pavPromptedValues) Then
+				ReDim mvarPrompts(1, UBound(pavPromptedValues, 2))
 
-		If IsArray(pavPromptedValues) Then
-			ReDim mvarPrompts(1, UBound(pavPromptedValues, 2))
-
-			For iLoop = 0 To UBound(pavPromptedValues, 2)
-				' Get the prompt data type.
-				'UPGRADE_WARNING: Couldn't resolve default property of object pavPromptedValues(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				If Len(Trim(Mid(pavPromptedValues(0, iLoop), 10))) > 0 Then
+				For iLoop = 0 To UBound(pavPromptedValues, 2)
+					' Get the prompt data type.
 					'UPGRADE_WARNING: Couldn't resolve default property of object pavPromptedValues(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					lngComponentID = CInt(Mid(pavPromptedValues(0, iLoop), 10))
-					'UPGRADE_WARNING: Couldn't resolve default property of object pavPromptedValues(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					iDataType = CShort(Mid(pavPromptedValues(0, iLoop), 8, 1))
+					If Len(Trim(Mid(pavPromptedValues(0, iLoop), 10))) > 0 Then
+						'UPGRADE_WARNING: Couldn't resolve default property of object pavPromptedValues(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+						lngComponentID = CInt(Mid(pavPromptedValues(0, iLoop), 10))
+						'UPGRADE_WARNING: Couldn't resolve default property of object pavPromptedValues(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+						iDataType = CShort(Mid(pavPromptedValues(0, iLoop), 8, 1))
 
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvarPrompts(0, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					mvarPrompts(0, iLoop) = lngComponentID
+						'UPGRADE_WARNING: Couldn't resolve default property of object mvarPrompts(0, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+						mvarPrompts(0, iLoop) = lngComponentID
 
-					' NB. Locale to server conversions are done on the client.
-					Select Case iDataType
-						Case 2
-							' Numeric.
-							'UPGRADE_WARNING: Couldn't resolve default property of object pavPromptedValues(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-							'UPGRADE_WARNING: Couldn't resolve default property of object mvarPrompts(1, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-							mvarPrompts(1, iLoop) = CDbl(pavPromptedValues(1, iLoop))
-						Case 3
-							' Logic.
-							'UPGRADE_WARNING: Couldn't resolve default property of object pavPromptedValues(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-							'UPGRADE_WARNING: Couldn't resolve default property of object mvarPrompts(1, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-							mvarPrompts(1, iLoop) = (UCase(CStr(pavPromptedValues(1, iLoop))) = "TRUE")
-						Case 4
-							' Date.
-							' JPD 20040212 Fault 8082 - DO NOT CONVERT DATE PROMPTED VALUES
-							' THEY ARE PASSED IN FROM THE ASPs AS STRING VALUES IN THE CORRECT
-							' FORMAT (mm/dd/yyyy) AND DOING ANY KIND OF CONVERSION JUST SCREWS
-							' THINGS UP.
-							'mvarPrompts(1, iLoop) = CDate(pavPromptedValues(1, iLoop))
-							'UPGRADE_WARNING: Couldn't resolve default property of object pavPromptedValues(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-							'UPGRADE_WARNING: Couldn't resolve default property of object mvarPrompts(1, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-							mvarPrompts(1, iLoop) = pavPromptedValues(1, iLoop)
-						Case Else
-							'UPGRADE_WARNING: Couldn't resolve default property of object pavPromptedValues(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-							'UPGRADE_WARNING: Couldn't resolve default property of object mvarPrompts(1, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-							mvarPrompts(1, iLoop) = CStr(pavPromptedValues(1, iLoop))
-					End Select
-				Else
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvarPrompts(0, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					mvarPrompts(0, iLoop) = 0
-				End If
-			Next iLoop
-		End If
+						' NB. Locale to server conversions are done on the client.
+						Select Case iDataType
+							Case 2
+								' Numeric.
+								'UPGRADE_WARNING: Couldn't resolve default property of object pavPromptedValues(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+								'UPGRADE_WARNING: Couldn't resolve default property of object mvarPrompts(1, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+								mvarPrompts(1, iLoop) = CDbl(pavPromptedValues(1, iLoop))
+							Case 3
+								' Logic.
+								'UPGRADE_WARNING: Couldn't resolve default property of object pavPromptedValues(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+								'UPGRADE_WARNING: Couldn't resolve default property of object mvarPrompts(1, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+								mvarPrompts(1, iLoop) = (UCase(CStr(pavPromptedValues(1, iLoop))) = "TRUE")
+							Case 4
+								' Date.
+								' JPD 20040212 Fault 8082 - DO NOT CONVERT DATE PROMPTED VALUES
+								' THEY ARE PASSED IN FROM THE ASPs AS STRING VALUES IN THE CORRECT
+								' FORMAT (mm/dd/yyyy) AND DOING ANY KIND OF CONVERSION JUST SCREWS
+								' THINGS UP.
+								'mvarPrompts(1, iLoop) = CDate(pavPromptedValues(1, iLoop))
+								'UPGRADE_WARNING: Couldn't resolve default property of object pavPromptedValues(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+								'UPGRADE_WARNING: Couldn't resolve default property of object mvarPrompts(1, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+								mvarPrompts(1, iLoop) = pavPromptedValues(1, iLoop)
+							Case Else
+								'UPGRADE_WARNING: Couldn't resolve default property of object pavPromptedValues(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+								'UPGRADE_WARNING: Couldn't resolve default property of object mvarPrompts(1, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+								mvarPrompts(1, iLoop) = CStr(pavPromptedValues(1, iLoop))
+						End Select
+					Else
+						'UPGRADE_WARNING: Couldn't resolve default property of object mvarPrompts(0, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+						mvarPrompts(0, iLoop) = 0
+					End If
+				Next iLoop
+			End If
 
-		Return fOK
+		Catch ex As Exception
+			mstrStatusMessage = "Error whilst setting prompted values. " & ex.Message.RemoveSensitive()
+			Logs.AddDetailEntry(mstrStatusMessage)
+			Return False
 
-ErrorTrap:
-		mstrStatusMessage = "Error whilst setting prompted values. " & Err.Description
-		Logs.AddDetailEntry(mstrStatusMessage)
-		Return False
+		End Try
+
+		Return True
 
 	End Function
 

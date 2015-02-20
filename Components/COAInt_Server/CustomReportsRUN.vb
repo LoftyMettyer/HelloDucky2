@@ -405,75 +405,72 @@ Public Class Report
 
 		' Purpose : This function calls the individual functions that
 		'           generate the components of the main SQL string.
-		On Error GoTo ErrorTrap
 
-		Dim fOK As Boolean
 		Dim iLoop As Short
 		Dim iDataType As Short
 		Dim lngComponentID As Integer
 
-		fOK = True
+		Try
+			ReDim mvarPrompts(1, 0)
 
-		ReDim mvarPrompts(1, 0)
+			If IsArray(pavPromptedValues) Then
+				ReDim mvarPrompts(1, UBound(pavPromptedValues, 2))
 
-		If IsArray(pavPromptedValues) Then
-			ReDim mvarPrompts(1, UBound(pavPromptedValues, 2))
-
-			For iLoop = 0 To UBound(pavPromptedValues, 2)
-				' Get the prompt data type.
-				'UPGRADE_WARNING: Couldn't resolve default property of object pavPromptedValues(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				If Len(Trim(Mid(pavPromptedValues(0, iLoop), 10))) > 0 Then
+				For iLoop = 0 To UBound(pavPromptedValues, 2)
+					' Get the prompt data type.
 					'UPGRADE_WARNING: Couldn't resolve default property of object pavPromptedValues(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					lngComponentID = CInt(Mid(pavPromptedValues(0, iLoop), 10))
-					'UPGRADE_WARNING: Couldn't resolve default property of object pavPromptedValues(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					iDataType = CShort(Mid(pavPromptedValues(0, iLoop), 8, 1))
+					If Len(Trim(Mid(pavPromptedValues(0, iLoop), 10))) > 0 Then
+						'UPGRADE_WARNING: Couldn't resolve default property of object pavPromptedValues(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+						lngComponentID = CInt(Mid(pavPromptedValues(0, iLoop), 10))
+						'UPGRADE_WARNING: Couldn't resolve default property of object pavPromptedValues(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+						iDataType = CShort(Mid(pavPromptedValues(0, iLoop), 8, 1))
 
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvarPrompts(0, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					mvarPrompts(0, iLoop) = lngComponentID
+						'UPGRADE_WARNING: Couldn't resolve default property of object mvarPrompts(0, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+						mvarPrompts(0, iLoop) = lngComponentID
 
-					' NB. Locale to server conversions are done on the client.
-					Select Case iDataType
-						Case 2
-							' Numeric.
-							'UPGRADE_WARNING: Couldn't resolve default property of object pavPromptedValues(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-							'UPGRADE_WARNING: Couldn't resolve default property of object mvarPrompts(1, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-							mvarPrompts(1, iLoop) = CDbl(pavPromptedValues(1, iLoop))
-						Case 3
-							' Logic.
-							'UPGRADE_WARNING: Couldn't resolve default property of object pavPromptedValues(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-							'UPGRADE_WARNING: Couldn't resolve default property of object mvarPrompts(1, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-							mvarPrompts(1, iLoop) = (UCase(CStr(pavPromptedValues(1, iLoop))) = "TRUE")
-						Case 4
-							' Date.
-							' JPD 20040212 Fault 8082 - DO NOT CONVERT DATE PROMPTED VALUES
-							' THEY ARE PASSED IN FROM THE ASPs AS STRING VALUES IN THE CORRECT
-							' FORMAT (mm/dd/yyyy) AND DOING ANY KIND OF CONVERSION JUST SCREWS
-							' THINGS UP.
-							'mvarPrompts(1, iLoop) = CDate(pavPromptedValues(1, iLoop))
-							'UPGRADE_WARNING: Couldn't resolve default property of object pavPromptedValues(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-							'UPGRADE_WARNING: Couldn't resolve default property of object mvarPrompts(1, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-							mvarPrompts(1, iLoop) = pavPromptedValues(1, iLoop)
-						Case Else
-							'UPGRADE_WARNING: Couldn't resolve default property of object pavPromptedValues(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-							'UPGRADE_WARNING: Couldn't resolve default property of object mvarPrompts(1, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-							mvarPrompts(1, iLoop) = CStr(pavPromptedValues(1, iLoop))
-					End Select
-				Else
-					'UPGRADE_WARNING: Couldn't resolve default property of object mvarPrompts(0, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					mvarPrompts(0, iLoop) = 0
-				End If
-			Next iLoop
-		End If
+						' NB. Locale to server conversions are done on the client.
+						Select Case iDataType
+							Case 2
+								' Numeric.
+								'UPGRADE_WARNING: Couldn't resolve default property of object pavPromptedValues(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+								'UPGRADE_WARNING: Couldn't resolve default property of object mvarPrompts(1, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+								mvarPrompts(1, iLoop) = CDbl(pavPromptedValues(1, iLoop))
+							Case 3
+								' Logic.
+								'UPGRADE_WARNING: Couldn't resolve default property of object pavPromptedValues(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+								'UPGRADE_WARNING: Couldn't resolve default property of object mvarPrompts(1, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+								mvarPrompts(1, iLoop) = (UCase(CStr(pavPromptedValues(1, iLoop))) = "TRUE")
+							Case 4
+								' Date.
+								' JPD 20040212 Fault 8082 - DO NOT CONVERT DATE PROMPTED VALUES
+								' THEY ARE PASSED IN FROM THE ASPs AS STRING VALUES IN THE CORRECT
+								' FORMAT (mm/dd/yyyy) AND DOING ANY KIND OF CONVERSION JUST SCREWS
+								' THINGS UP.
+								'mvarPrompts(1, iLoop) = CDate(pavPromptedValues(1, iLoop))
+								'UPGRADE_WARNING: Couldn't resolve default property of object pavPromptedValues(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+								'UPGRADE_WARNING: Couldn't resolve default property of object mvarPrompts(1, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+								mvarPrompts(1, iLoop) = pavPromptedValues(1, iLoop)
+							Case Else
+								'UPGRADE_WARNING: Couldn't resolve default property of object pavPromptedValues(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+								'UPGRADE_WARNING: Couldn't resolve default property of object mvarPrompts(1, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+								mvarPrompts(1, iLoop) = CStr(pavPromptedValues(1, iLoop))
+						End Select
+					Else
+						'UPGRADE_WARNING: Couldn't resolve default property of object mvarPrompts(0, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+						mvarPrompts(0, iLoop) = 0
+					End If
+				Next iLoop
+			End If
 
-		SetPromptedValues = fOK
+		Catch ex As Exception
+			mstrErrorString = "Error setting prompted values." & vbNewLine & ex.Message.RemoveSensitive()
+			Logs.AddDetailEntry(mstrErrorString)
+			Logs.ChangeHeaderStatus(EventLog_Status.elsFailed)
+			Return False
 
-		Exit Function
+		End Try
 
-ErrorTrap:
-		mstrErrorString = "Error setting prompted values." & vbNewLine & Err.Description
-		Logs.AddDetailEntry(mstrErrorString)
-		Logs.ChangeHeaderStatus(EventLog_Status.elsFailed)
-		SetPromptedValues = False
+		Return True
 
 	End Function
 
@@ -502,21 +499,20 @@ ErrorTrap:
 
 	Public Function AddTempTableToSQL() As Boolean
 
-		On Error GoTo AddTempTableToSQL_ERROR
+		Try
 
-		mstrTempTableName = General.UniqueSQLObjectName("ASRSysTempCustomReport", 3)
+			mstrTempTableName = General.UniqueSQLObjectName("ASRSysTempCustomReport", 3)
+			mstrSQLSelect = mstrSQLSelect & " INTO [" & mstrTempTableName & "]"
 
-		mstrSQLSelect = mstrSQLSelect & " INTO [" & mstrTempTableName & "]"
+		Catch ex As Exception
+			mstrErrorString = "Error retrieving unique temp table name." & vbNewLine & ex.Message.RemoveSensitive()
+			Logs.AddDetailEntry(mstrErrorString)
+			Logs.ChangeHeaderStatus(EventLog_Status.elsFailed)
+			Return False
 
-		AddTempTableToSQL = True
-		Exit Function
+		End Try
 
-AddTempTableToSQL_ERROR:
-
-		AddTempTableToSQL = False
-		mstrErrorString = "Error retrieving unique temp table name." & vbNewLine & Err.Description
-		Logs.AddDetailEntry(mstrErrorString)
-		Logs.ChangeHeaderStatus(EventLog_Status.elsFailed)
+		Return True
 
 	End Function
 
@@ -547,114 +543,108 @@ AddTempTableToSQL_ERROR:
 
 	Public Function GetCustomReportDefinition() As Boolean
 
-		On Error GoTo GetCustomReportDefinition_ERROR
-
 		Dim objData As DataSet
 		Dim rsDefinition As DataTable
 		Dim prmID As New SqlParameter("ReportID", SqlDbType.Int)
 
 		Dim i As Integer
 
-		mbIsBradfordIndexReport = False
+		Try
 
-		prmID.Value = mlngCustomReportID
-		objData = DB.GetDataSet("spASRIntGetCustomReport", prmID)
-		rsDefinition = objData.Tables(0)
+			mbIsBradfordIndexReport = False
 
-		With rsDefinition
+			prmID.Value = mlngCustomReportID
+			objData = DB.GetDataSet("spASRIntGetCustomReport", prmID)
+			rsDefinition = objData.Tables(0)
 
-			' Dont run if its been deleted by another user.
-			If .Rows.Count = 0 Then
-				mstrErrorString = "Report has been deleted by another user."
+			With rsDefinition
+
+				' Dont run if its been deleted by another user.
+				If .Rows.Count = 0 Then
+					mstrErrorString = "Report has been deleted by another user."
+					Return False
+				End If
+
+				Dim rowData = rsDefinition.Rows(0)
+
+				' RH 29/05/01 - Dont run if its been made hidden by another user.
+				If LCase(rowData("Username").ToString()) <> LCase(_login.Username) And CurrentUserAccess(UtilityType.utlCustomReport, mlngCustomReportID) = ACCESS_HIDDEN Then
+					mstrErrorString = "Report has been made hidden by another user."
+					Return False
+				End If
+
+				Name = rowData("Name").ToString()
+				mlngCustomReportsBaseTable = CInt(rowData("BaseTable"))
+				mstrCustomReportsBaseTableName = rowData("TableName").ToString()
+				mlngCustomReportsPickListID = CInt(rowData("picklist"))
+				mlngCustomReportsFilterID = CInt(rowData("Filter"))
+				mlngCustomReportsParent1Table = CInt(rowData("parent1table"))
+				mlngCustomReportsParent1FilterID = CInt(rowData("parent1filter"))
+				mlngCustomReportsParent2Table = CInt(rowData("parent2table"))
+				mlngCustomReportsParent2FilterID = CInt(rowData("parent2filter"))
+
+				mblnCustomReportsSummaryReport = CBool(rowData("Summary"))
+				mblnIgnoreZerosInAggregates = CBool(rowData("IgnoreZeros"))
+				mblnCustomReportsPrintFilterHeader = CBool(rowData("PrintFilterHeader"))
+				mlngCustomReportsParent1PickListID = CInt(rowData("parent1Picklist"))
+				mlngCustomReportsParent2PickListID = CInt(rowData("parent2Picklist"))
+
+				'New Default Output Variables
+				OutputFormat = CInt(rowData("OutputFormat"))
+				OutputScreen = CBool(rowData("OutputScreen"))
+				mblnOutputPrinter = CBool(rowData("OutputPrinter"))
+				mstrOutputPrinterName = rowData("OutputPrinterName").ToString()
+				mblnOutputSave = CBool(rowData("OutputSave"))
+				mlngOutputSaveExisting = CInt(rowData("OutputSaveExisting"))
+				mblnOutputEmail = CBool(rowData("OutputEmail"))
+				mlngOutputEmailID = CInt(rowData("OutputEmailAddr"))
+				mstrOutputEmailName = rowData("EmailGroupName").ToString()
+				mstrOutputEmailSubject = rowData("OutputEmailSubject").ToString()
+				mstrOutputEmailAttachAs = rowData("OutputEmailAttachAs").ToString()
+				OutputFilename = rowData("OutputFilename").ToString()
+				OutputPreview = CBool(rowData("OutputPreview"))
+
+			End With
+
+			' Child data recordset
+			rsDefinition = objData.Tables(1)
+
+			i = 0
+			For Each rowData As DataRow In rsDefinition.Rows
+				ReDim Preserve mvarChildTables(5, i)
+				'UPGRADE_WARNING: Couldn't resolve default property of object mvarChildTables(0, i). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+				mvarChildTables(0, i) = rowData("ChildTable")	'Childs Table ID
+				'UPGRADE_WARNING: Couldn't resolve default property of object mvarChildTables(1, i). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+				mvarChildTables(1, i) = rowData("childFilter") 'Childs Filter ID (if any)
+				'UPGRADE_WARNING: Couldn't resolve default property of object mvarChildTables(2, i). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+				mvarChildTables(2, i) = rowData("ChildMaxRecords") 'Number of records to take from child
+				'UPGRADE_WARNING: Couldn't resolve default property of object mvarChildTables(3, i). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+				mvarChildTables(3, i) = rowData("TableName") 'Child Table Name
+				'UPGRADE_WARNING: Couldn't resolve default property of object mvarChildTables(4, i). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+				mvarChildTables(4, i) = False	'Boolean - True if table is used, False if not
+				'UPGRADE_WARNING: Couldn't resolve default property of object mvarChildTables(5, i). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+				mvarChildTables(5, i) = rowData("ChildOrder")	'Childs Order ID (if any)
+				i = i + 1
+			Next
+
+			miChildTablesCount = i
+
+			If Not IsRecordSelectionValid() Then
 				Return False
 			End If
 
-			Dim rowData = rsDefinition.Rows(0)
 
-			' RH 29/05/01 - Dont run if its been made hidden by another user.
-			If LCase(rowData("Username").ToString()) <> LCase(_login.Username) And CurrentUserAccess(UtilityType.utlCustomReport, mlngCustomReportID) = ACCESS_HIDDEN Then
-				mstrErrorString = "Report has been made hidden by another user."
-				Return False
-			End If
+			Logs.AddHeader(EventLog_Type.eltCustomReport, Name)
 
-			Name = rowData("Name").ToString()
-			mlngCustomReportsBaseTable = CInt(rowData("BaseTable"))
-			mstrCustomReportsBaseTableName = rowData("TableName").ToString()
-			mlngCustomReportsPickListID = CInt(rowData("picklist"))
-			mlngCustomReportsFilterID = CInt(rowData("Filter"))
-			mlngCustomReportsParent1Table = CInt(rowData("parent1table"))
-			mlngCustomReportsParent1FilterID = CInt(rowData("parent1filter"))
-			mlngCustomReportsParent2Table = CInt(rowData("parent2table"))
-			mlngCustomReportsParent2FilterID = CInt(rowData("parent2filter"))
-
-			mblnCustomReportsSummaryReport = CBool(rowData("Summary"))
-			mblnIgnoreZerosInAggregates = CBool(rowData("IgnoreZeros"))
-			mblnCustomReportsPrintFilterHeader = CBool(rowData("PrintFilterHeader"))
-			mlngCustomReportsParent1PickListID = CInt(rowData("parent1Picklist"))
-			mlngCustomReportsParent2PickListID = CInt(rowData("parent2Picklist"))
-
-			'New Default Output Variables
-			OutputFormat = CInt(rowData("OutputFormat"))
-			OutputScreen = CBool(rowData("OutputScreen"))
-			mblnOutputPrinter = CBool(rowData("OutputPrinter"))
-			mstrOutputPrinterName = rowData("OutputPrinterName").ToString()
-			mblnOutputSave = CBool(rowData("OutputSave"))
-			mlngOutputSaveExisting = CInt(rowData("OutputSaveExisting"))
-			mblnOutputEmail = CBool(rowData("OutputEmail"))
-			mlngOutputEmailID = CInt(rowData("OutputEmailAddr"))
-			mstrOutputEmailName = rowData("EmailGroupName").ToString()
-			mstrOutputEmailSubject = rowData("OutputEmailSubject").ToString()
-			mstrOutputEmailAttachAs = rowData("OutputEmailAttachAs").ToString()
-			OutputFilename = rowData("OutputFilename").ToString()
-			OutputPreview = CBool(rowData("OutputPreview"))
-
-		End With
-
-		' Child data recordset
-		rsDefinition = objData.Tables(1)
-
-		i = 0
-		For Each rowData As DataRow In rsDefinition.Rows
-			ReDim Preserve mvarChildTables(5, i)
-			'UPGRADE_WARNING: Couldn't resolve default property of object mvarChildTables(0, i). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			mvarChildTables(0, i) = rowData("ChildTable")	'Childs Table ID
-			'UPGRADE_WARNING: Couldn't resolve default property of object mvarChildTables(1, i). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			mvarChildTables(1, i) = rowData("childFilter") 'Childs Filter ID (if any)
-			'UPGRADE_WARNING: Couldn't resolve default property of object mvarChildTables(2, i). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			mvarChildTables(2, i) = rowData("ChildMaxRecords") 'Number of records to take from child
-			'UPGRADE_WARNING: Couldn't resolve default property of object mvarChildTables(3, i). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			mvarChildTables(3, i) = rowData("TableName") 'Child Table Name
-			'UPGRADE_WARNING: Couldn't resolve default property of object mvarChildTables(4, i). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			mvarChildTables(4, i) = False	'Boolean - True if table is used, False if not
-			'UPGRADE_WARNING: Couldn't resolve default property of object mvarChildTables(5, i). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			mvarChildTables(5, i) = rowData("ChildOrder")	'Childs Order ID (if any)
-			i = i + 1
-		Next
-
-		miChildTablesCount = i
-
-		If Not IsRecordSelectionValid() Then
+		Catch ex As Exception
+			mstrErrorString = "Error reading the Custom Report definition !" & vbNewLine & ex.Message.RemoveSensitive()
+			Logs.AddDetailEntry(mstrErrorString)
+			Logs.ChangeHeaderStatus(EventLog_Status.elsFailed)
 			Return False
-		End If
 
+		End Try
 
-		Logs.AddHeader(EventLog_Type.eltCustomReport, Name)
 		Return True
-
-TidyAndExit:
-
-		'UPGRADE_NOTE: Object rsTemp_Definition may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		rsDefinition = Nothing
-
-		Exit Function
-
-GetCustomReportDefinition_ERROR:
-
-		GetCustomReportDefinition = False
-		mstrErrorString = "Error reading the Custom Report definition !" & vbNewLine & Err.Description
-		Logs.AddDetailEntry(mstrErrorString)
-		Logs.ChangeHeaderStatus(EventLog_Status.elsFailed)
-		Resume TidyAndExit
 
 	End Function
 
@@ -995,8 +985,6 @@ GetCustomReportDefinition_ERROR:
 
 	Private Function GenerateSQLSelect() As Boolean
 
-		On Error GoTo GenerateSQLSelect_ERROR
-
 		Dim plngTempTableID As Integer
 		Dim pstrTempTableName As String
 		Dim pstrTempColumnName As String
@@ -1019,329 +1007,331 @@ GetCustomReportDefinition_ERROR:
 		Dim objCalcExpr As clsExprExpression
 		Dim objTableView As TablePrivilege
 
+		Try
 
-		' Set flags with their starting values
-		pblnOK = True
-		pblnNoSelect = False
+			' Set flags with their starting values
+			pblnOK = True
+			pblnNoSelect = False
 
-		ReDim mastrUDFsRequired(0)
+			ReDim mastrUDFsRequired(0)
 
-		' JPD20030219 Fault 5068
-		' Check the user has permission to read the base table.
-		pblnOK = False
-		For Each objTableView In gcoTablePrivileges.Collection
-			If (objTableView.TableID = mlngCustomReportsBaseTable) And (objTableView.AllowSelect) Then
-				pblnOK = True
-				Exit For
+			' JPD20030219 Fault 5068
+			' Check the user has permission to read the base table.
+			pblnOK = False
+			For Each objTableView In gcoTablePrivileges.Collection
+				If (objTableView.TableID = mlngCustomReportsBaseTable) And (objTableView.AllowSelect) Then
+					pblnOK = True
+					Exit For
+				End If
+			Next objTableView
+			'UPGRADE_NOTE: Object objTableView may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
+			objTableView = Nothing
+
+			If Not pblnOK Then
+				GenerateSQLSelect = False
+				mstrErrorString = "You do not have permission to read the base table" & vbNewLine & "either directly or through any views."
+				Exit Function
 			End If
-		Next objTableView
-		'UPGRADE_NOTE: Object objTableView may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		objTableView = Nothing
 
-		If Not pblnOK Then
-			GenerateSQLSelect = False
-			mstrErrorString = "You do not have permission to read the base table" & vbNewLine & "either directly or through any views."
-			Exit Function
-		End If
+			' Start off the select statement
+			mstrSQLSelect = "SELECT TOP 1000000000000 "
 
-		' Start off the select statement
-		mstrSQLSelect = "SELECT TOP 1000000000000 "
+			' Dimension an array of tables/views joined to the base table/view
+			' Column 1 = 0 if this row is for a table, 1 if it is for a view
+			' Column 2 = table/view ID
+			' (should contain everything which needs to be joined to the base tbl/view)
+			ReDim mlngTableViews(2, 0)
 
-		' Dimension an array of tables/views joined to the base table/view
-		' Column 1 = 0 if this row is for a table, 1 if it is for a view
-		' Column 2 = table/view ID
-		' (should contain everything which needs to be joined to the base tbl/view)
-		ReDim mlngTableViews(2, 0)
+			' Loop thru the columns collection creating the SELECT and JOIN code
+			For Each objReportItem In ColumnDetails
 
-		' Loop thru the columns collection creating the SELECT and JOIN code
-		For Each objReportItem In ColumnDetails
+				' Clear temp vars
+				plngTempTableID = 0
+				pstrTempTableName = vbNullString
+				pstrTempColumnName = vbNullString
 
-			' Clear temp vars
-			plngTempTableID = 0
-			pstrTempTableName = vbNullString
-			pstrTempColumnName = vbNullString
+				' If its a COLUMN then...
+				If objReportItem.Type = "C" Then
+					If objReportItem.IDColumnName <> lng_SEQUENCECOLUMNNAME Then
+						' Load the temp variables
+						plngTempTableID = objReportItem.TableID
+						pstrTempTableName = objReportItem.TableName
+						pstrTempColumnName = objReportItem.ColumnName
 
-			' If its a COLUMN then...
-			If objReportItem.Type = "C" Then
-				If objReportItem.IDColumnName <> lng_SEQUENCECOLUMNNAME Then
-					' Load the temp variables
-					plngTempTableID = objReportItem.TableID
-					pstrTempTableName = objReportItem.TableName
-					pstrTempColumnName = objReportItem.ColumnName
+						' Check permission on that column
+						mobjColumnPrivileges = GetColumnPrivileges(pstrTempTableName)
+						mstrRealSource = gcoTablePrivileges.Item(pstrTempTableName).RealSource
 
-					' Check permission on that column
-					mobjColumnPrivileges = GetColumnPrivileges(pstrTempTableName)
-					mstrRealSource = gcoTablePrivileges.Item(pstrTempTableName).RealSource
-
-					If mbIsBradfordIndexReport Then
-						If plngTempTableID <> mlngCustomReportsBaseTable Then
-							mstrAbsenceRealSource = mstrRealSource
-						End If
-					End If
-
-					pblnColumnOK = mobjColumnPrivileges.IsValid(pstrTempColumnName)
-
-					If pblnColumnOK Then
-						pblnColumnOK = mobjColumnPrivileges.Item(pstrTempColumnName).AllowSelect
-					End If
-
-					If pblnColumnOK Then
-
-						' this column can be read direct from the tbl/view or from a parent table
-						' JDM - 16/05/2005 - Fault 10018 - Pad out the duration field because it may not be long enough
-						If mbIsBradfordIndexReport And (pintLoop = 12 Or pintLoop = 13) Then
-							pstrColumnList = pstrColumnList & IIf(Len(pstrColumnList) > 0, ",", "") & "convert(numeric(10,2)," & mstrRealSource & "." & Trim(pstrTempColumnName) & ")" & " AS [" & objReportItem.IDColumnName & "]"
-						Else
-							pstrColumnList = pstrColumnList & IIf(Len(pstrColumnList) > 0, ",", "") & mstrRealSource & "." & Trim(pstrTempColumnName) & " AS [" & objReportItem.IDColumnName & "]"
-						End If
-
-
-						' If the table isnt the base table (or its realsource) then
-						' Check if it has already been added to the array. If not, add it.
-						If plngTempTableID <> mlngCustomReportsBaseTable Then
-							pblnFound = False
-							For pintNextIndex = 1 To UBound(mlngTableViews, 2)
-								If mlngTableViews(1, pintNextIndex) = 0 And mlngTableViews(2, pintNextIndex) = plngTempTableID Then
-									pblnFound = True
-									Exit For
-								End If
-							Next pintNextIndex
-
-							If Not pblnFound Then
-								pintNextIndex = UBound(mlngTableViews, 2) + 1
-								ReDim Preserve mlngTableViews(2, pintNextIndex)
-								mlngTableViews(1, pintNextIndex) = 0
-								mlngTableViews(2, pintNextIndex) = plngTempTableID
+						If mbIsBradfordIndexReport Then
+							If plngTempTableID <> mlngCustomReportsBaseTable Then
+								mstrAbsenceRealSource = mstrRealSource
 							End If
 						End If
-					Else
 
-						' this column cannot be read direct. If its from a parent, try parent views
-						' Loop thru the views on the table, seeing if any have read permis for the column
+						pblnColumnOK = mobjColumnPrivileges.IsValid(pstrTempColumnName)
 
-						ReDim mstrViews(0)
-						For Each mobjTableView In gcoTablePrivileges.Collection
-							If (Not mobjTableView.IsTable) And (mobjTableView.TableID = plngTempTableID) And (mobjTableView.AllowSelect) Then
+						If pblnColumnOK Then
+							pblnColumnOK = mobjColumnPrivileges.Item(pstrTempColumnName).AllowSelect
+						End If
 
-								pstrSource = mobjTableView.ViewName
-								mstrRealSource = gcoTablePrivileges.Item(pstrSource).RealSource
+						If pblnColumnOK Then
 
-								' Get the column permission for the view
-								mobjColumnPrivileges = GetColumnPrivileges(pstrSource)
+							' this column can be read direct from the tbl/view or from a parent table
+							' JDM - 16/05/2005 - Fault 10018 - Pad out the duration field because it may not be long enough
+							If mbIsBradfordIndexReport And (pintLoop = 12 Or pintLoop = 13) Then
+								pstrColumnList = pstrColumnList & IIf(Len(pstrColumnList) > 0, ",", "") & "convert(numeric(10,2)," & mstrRealSource & "." & Trim(pstrTempColumnName) & ")" & " AS [" & objReportItem.IDColumnName & "]"
+							Else
+								pstrColumnList = pstrColumnList & IIf(Len(pstrColumnList) > 0, ",", "") & mstrRealSource & "." & Trim(pstrTempColumnName) & " AS [" & objReportItem.IDColumnName & "]"
+							End If
 
-								' If we can see the column from this view
-								If mobjColumnPrivileges.IsValid(pstrTempColumnName) Then
-									If mobjColumnPrivileges.Item(pstrTempColumnName).AllowSelect Then
 
-										ReDim Preserve mstrViews(UBound(mstrViews) + 1)
-										mstrViews(UBound(mstrViews)) = mobjTableView.ViewName
+							' If the table isnt the base table (or its realsource) then
+							' Check if it has already been added to the array. If not, add it.
+							If plngTempTableID <> mlngCustomReportsBaseTable Then
+								pblnFound = False
+								For pintNextIndex = 1 To UBound(mlngTableViews, 2)
+									If mlngTableViews(1, pintNextIndex) = 0 And mlngTableViews(2, pintNextIndex) = plngTempTableID Then
+										pblnFound = True
+										Exit For
+									End If
+								Next pintNextIndex
 
-										' Check if view has already been added to the array
-										pblnFound = False
-										For pintNextIndex = 1 To UBound(mlngTableViews, 2)
-											If mlngTableViews(1, pintNextIndex) = 1 And mlngTableViews(2, pintNextIndex) = mobjTableView.ViewID Then
-												pblnFound = True
-												Exit For
+								If Not pblnFound Then
+									pintNextIndex = UBound(mlngTableViews, 2) + 1
+									ReDim Preserve mlngTableViews(2, pintNextIndex)
+									mlngTableViews(1, pintNextIndex) = 0
+									mlngTableViews(2, pintNextIndex) = plngTempTableID
+								End If
+							End If
+						Else
+
+							' this column cannot be read direct. If its from a parent, try parent views
+							' Loop thru the views on the table, seeing if any have read permis for the column
+
+							ReDim mstrViews(0)
+							For Each mobjTableView In gcoTablePrivileges.Collection
+								If (Not mobjTableView.IsTable) And (mobjTableView.TableID = plngTempTableID) And (mobjTableView.AllowSelect) Then
+
+									pstrSource = mobjTableView.ViewName
+									mstrRealSource = gcoTablePrivileges.Item(pstrSource).RealSource
+
+									' Get the column permission for the view
+									mobjColumnPrivileges = GetColumnPrivileges(pstrSource)
+
+									' If we can see the column from this view
+									If mobjColumnPrivileges.IsValid(pstrTempColumnName) Then
+										If mobjColumnPrivileges.Item(pstrTempColumnName).AllowSelect Then
+
+											ReDim Preserve mstrViews(UBound(mstrViews) + 1)
+											mstrViews(UBound(mstrViews)) = mobjTableView.ViewName
+
+											' Check if view has already been added to the array
+											pblnFound = False
+											For pintNextIndex = 1 To UBound(mlngTableViews, 2)
+												If mlngTableViews(1, pintNextIndex) = 1 And mlngTableViews(2, pintNextIndex) = mobjTableView.ViewID Then
+													pblnFound = True
+													Exit For
+												End If
+											Next pintNextIndex
+
+											If Not pblnFound Then
+
+												' View hasnt yet been added, so add it !
+												pintNextIndex = UBound(mlngTableViews, 2) + 1
+												ReDim Preserve mlngTableViews(2, pintNextIndex)
+												mlngTableViews(1, pintNextIndex) = 1
+												mlngTableViews(2, pintNextIndex) = mobjTableView.ViewID
+
 											End If
-										Next pintNextIndex
-
-										If Not pblnFound Then
-
-											' View hasnt yet been added, so add it !
-											pintNextIndex = UBound(mlngTableViews, 2) + 1
-											ReDim Preserve mlngTableViews(2, pintNextIndex)
-											mlngTableViews(1, pintNextIndex) = 1
-											mlngTableViews(2, pintNextIndex) = mobjTableView.ViewID
-
 										End If
 									End If
 								End If
-							End If
 
-						Next mobjTableView
+							Next mobjTableView
 
-						'UPGRADE_NOTE: Object mobjTableView may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-						mobjTableView = Nothing
+							'UPGRADE_NOTE: Object mobjTableView may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
+							mobjTableView = Nothing
 
-						' Does the user have select permission thru ANY views ?
-						If UBound(mstrViews) = 0 Then
-							pblnNoSelect = True
-						Else
+							' Does the user have select permission thru ANY views ?
+							If UBound(mstrViews) = 0 Then
+								pblnNoSelect = True
+							Else
 
-							' Add the column to the column list
-							pstrColumnCode = ""
-							For pintNextIndex = 1 To UBound(mstrViews)
-								If pintNextIndex = 1 Then
-									pstrColumnCode = "CASE"
+								' Add the column to the column list
+								pstrColumnCode = ""
+								For pintNextIndex = 1 To UBound(mstrViews)
+									If pintNextIndex = 1 Then
+										pstrColumnCode = "CASE"
+									End If
+
+									pstrColumnCode = pstrColumnCode & " WHEN NOT " & mstrViews(pintNextIndex) & "." & pstrTempColumnName & " IS NULL THEN " & mstrViews(pintNextIndex) & "." & pstrTempColumnName
+
+								Next pintNextIndex
+
+								If Len(pstrColumnCode) > 0 Then
+									pstrColumnCode = pstrColumnCode & " ELSE NULL" & " END AS [" & objReportItem.IDColumnName & "]"
+									pstrColumnList = pstrColumnList & IIf(Len(pstrColumnList) > 0, ",", "") & pstrColumnCode
 								End If
 
-								pstrColumnCode = pstrColumnCode & " WHEN NOT " & mstrViews(pintNextIndex) & "." & pstrTempColumnName & " IS NULL THEN " & mstrViews(pintNextIndex) & "." & pstrTempColumnName
+							End If
 
-							Next pintNextIndex
+							' If we cant see a column, then get outta here
+							If pblnNoSelect Then
+								GenerateSQLSelect = False
+								mstrErrorString = vbNewLine & vbNewLine & "You do not have permission to see the column '" & objReportItem.ColumnName & "'" & vbNewLine & "either directly or through any views."
+								Exit Function
+							End If
 
-							If Len(pstrColumnCode) > 0 Then
-								pstrColumnCode = pstrColumnCode & " ELSE NULL" & " END AS [" & objReportItem.IDColumnName & "]"
-								pstrColumnList = pstrColumnList & IIf(Len(pstrColumnList) > 0, ",", "") & pstrColumnCode
+
+							If Not pblnOK Then
+								GenerateSQLSelect = False
+								Exit Function
 							End If
 
 						End If
-
-						' If we cant see a column, then get outta here
-						If pblnNoSelect Then
-							GenerateSQLSelect = False
-							mstrErrorString = vbNewLine & vbNewLine & "You do not have permission to see the column '" & objReportItem.ColumnName & "'" & vbNewLine & "either directly or through any views."
-							Exit Function
-						End If
-
-
-						If Not pblnOK Then
-							GenerateSQLSelect = False
-							Exit Function
-						End If
+					Else
+						'Add the column which can store the sequence the records are added to the Temp table
+						'when more than one Child table is selected.
+						pstrColumnList = pstrColumnList & IIf(Len(pstrColumnList) > 0, ",", "") & 0 & " AS [" & objReportItem.IDColumnName & "] "
 
 					End If
+
 				Else
-					'Add the column which can store the sequence the records are added to the Temp table
-					'when more than one Child table is selected.
-					pstrColumnList = pstrColumnList & IIf(Len(pstrColumnList) > 0, ",", "") & 0 & " AS [" & objReportItem.IDColumnName & "] "
 
-				End If
+					' UH OH ! Its an expression rather than a column
 
-			Else
-
-				' UH OH ! Its an expression rather than a column
-
-				' Get the calculation SQL, and the array of tables/views that are used to create it.
-				' Column 1 = 0 if this row is for a table, 1 if it is for a view.
-				' Column 2 = table/view ID.
-				ReDim alngSourceTables(2, 0)
-				objCalcExpr = NewExpression()
-				blnOK = objCalcExpr.Initialise(mlngCustomReportsBaseTable, objReportItem.ID, ExpressionTypes.giEXPR_RUNTIMECALCULATION, ExpressionValueTypes.giEXPRVALUE_UNDEFINED)
-				If blnOK Then
-					blnOK = objCalcExpr.RuntimeCalculationCode(alngSourceTables, sCalcCode, mastrUDFsRequired, True, False, mvarPrompts)
-
-
-				End If
-
-				'TM20030422 Fault 5244 - The "SELECT ... INTO..." statement errors when it trys to create a column for
-				'and empty string. Therefore wrap this empty sting in a CONVERT(varchar... clause if an sql empty string
-				'is returned.
-				'TM20030521 Fault 5702 - Compare the empty string with the calc code value converted to varchar
-				sCalcCode = "CASE WHEN CONVERT(varchar," & sCalcCode & ") = '' " & "THEN CONVERT(varchar," & sCalcCode & ") " & "ELSE " & sCalcCode & " END"
-
-				'**************************************************************************
-				'TM20020730 Fault 4253
-				'
-				'If there are no Table/View IDs returned in the alngSourceTables array and
-				'the RuntimeCalculation code returned successfully (i.e. True) then the
-				'current user can see all columns required by the calc on the CALC's basetable,
-				'therefore must add the CALC'S BaseTableID to the mlngTableViews array so it
-				'can be added to the SQLs Join code.
-				'
-				'NOTE: The above only applies to the REPORT'S parent tables 1 & 2 as the
-				'expression code does not return the calc's BaseTableID in the alngSourceTables
-				'array.
-				'**************************************************************************
-
-				If mlngCustomReportsParent1Table > 0 Or mlngCustomReportsParent2Table > 0 Then
+					' Get the calculation SQL, and the array of tables/views that are used to create it.
+					' Column 1 = 0 if this row is for a table, 1 if it is for a view.
+					' Column 2 = table/view ID.
+					ReDim alngSourceTables(2, 0)
+					objCalcExpr = NewExpression()
+					blnOK = objCalcExpr.Initialise(mlngCustomReportsBaseTable, objReportItem.ID, ExpressionTypes.giEXPR_RUNTIMECALCULATION, ExpressionValueTypes.giEXPRVALUE_UNDEFINED)
 					If blnOK Then
-						If objCalcExpr.BaseTableID = mlngCustomReportsParent1Table Or objCalcExpr.BaseTableID = mlngCustomReportsParent2Table Then
-							' Check if table has already been added to the array
-							pblnFound = False
-							For pintNextIndex = 1 To UBound(mlngTableViews, 2)
-								If mlngTableViews(1, pintNextIndex) = 0 And mlngTableViews(2, pintNextIndex) = objCalcExpr.BaseTableID Then
-									pblnFound = True
-									Exit For
-								End If
-							Next pintNextIndex
+						blnOK = objCalcExpr.RuntimeCalculationCode(alngSourceTables, sCalcCode, mastrUDFsRequired, True, False, mvarPrompts)
 
-							If Not pblnFound Then
-								' View hasnt yet been added, so add it !
-								pintNextIndex = UBound(mlngTableViews, 2) + 1
-								ReDim Preserve mlngTableViews(2, pintNextIndex)
-								mlngTableViews(1, pintNextIndex) = 0
-								mlngTableViews(2, pintNextIndex) = objCalcExpr.BaseTableID
+
+					End If
+
+					'TM20030422 Fault 5244 - The "SELECT ... INTO..." statement errors when it trys to create a column for
+					'and empty string. Therefore wrap this empty sting in a CONVERT(varchar... clause if an sql empty string
+					'is returned.
+					'TM20030521 Fault 5702 - Compare the empty string with the calc code value converted to varchar
+					sCalcCode = "CASE WHEN CONVERT(varchar," & sCalcCode & ") = '' " & "THEN CONVERT(varchar," & sCalcCode & ") " & "ELSE " & sCalcCode & " END"
+
+					'**************************************************************************
+					'TM20020730 Fault 4253
+					'
+					'If there are no Table/View IDs returned in the alngSourceTables array and
+					'the RuntimeCalculation code returned successfully (i.e. True) then the
+					'current user can see all columns required by the calc on the CALC's basetable,
+					'therefore must add the CALC'S BaseTableID to the mlngTableViews array so it
+					'can be added to the SQLs Join code.
+					'
+					'NOTE: The above only applies to the REPORT'S parent tables 1 & 2 as the
+					'expression code does not return the calc's BaseTableID in the alngSourceTables
+					'array.
+					'**************************************************************************
+
+					If mlngCustomReportsParent1Table > 0 Or mlngCustomReportsParent2Table > 0 Then
+						If blnOK Then
+							If objCalcExpr.BaseTableID = mlngCustomReportsParent1Table Or objCalcExpr.BaseTableID = mlngCustomReportsParent2Table Then
+								' Check if table has already been added to the array
+								pblnFound = False
+								For pintNextIndex = 1 To UBound(mlngTableViews, 2)
+									If mlngTableViews(1, pintNextIndex) = 0 And mlngTableViews(2, pintNextIndex) = objCalcExpr.BaseTableID Then
+										pblnFound = True
+										Exit For
+									End If
+								Next pintNextIndex
+
+								If Not pblnFound Then
+									' View hasnt yet been added, so add it !
+									pintNextIndex = UBound(mlngTableViews, 2) + 1
+									ReDim Preserve mlngTableViews(2, pintNextIndex)
+									mlngTableViews(1, pintNextIndex) = 0
+									mlngTableViews(2, pintNextIndex) = objCalcExpr.BaseTableID
+								End If
 							End If
 						End If
 					End If
+
+					'**************************************************************************
+
+					'UPGRADE_NOTE: Object objCalcExpr may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
+					objCalcExpr = Nothing
+
+					If blnOK Then
+						pstrColumnList = pstrColumnList & IIf(Len(pstrColumnList) > 0, ",", "") & sCalcCode & " AS [" & objReportItem.IDColumnName & "]"
+
+						' Add the required views to the JOIN code.
+						For iLoop1 = 1 To UBound(alngSourceTables, 2)
+							If alngSourceTables(1, iLoop1) = 1 Then
+								' Check if view has already been added to the array
+								pblnFound = False
+								For pintNextIndex = 1 To UBound(mlngTableViews, 2)
+									If mlngTableViews(1, pintNextIndex) = 1 And mlngTableViews(2, pintNextIndex) = alngSourceTables(2, iLoop1) Then
+										pblnFound = True
+										Exit For
+									End If
+								Next pintNextIndex
+
+								If Not pblnFound Then
+
+									' View hasnt yet been added, so add it !
+									pintNextIndex = UBound(mlngTableViews, 2) + 1
+									ReDim Preserve mlngTableViews(2, pintNextIndex)
+									mlngTableViews(1, pintNextIndex) = 1
+									mlngTableViews(2, pintNextIndex) = alngSourceTables(2, iLoop1)
+
+								End If
+								'********************************************************************************
+							ElseIf alngSourceTables(1, iLoop1) = 0 Then
+								' Check if table has already been added to the array
+								pblnFound = False
+								For pintNextIndex = 1 To UBound(mlngTableViews, 2)
+									If mlngTableViews(1, pintNextIndex) = 0 And mlngTableViews(2, pintNextIndex) = alngSourceTables(2, iLoop1) Then
+										pblnFound = True
+										Exit For
+									End If
+								Next pintNextIndex
+
+								' JPD20020514 Fault 3883 - Only want to check if the source table is the base table
+								' if we have NOT just found the source table in the array of joined tables.
+								If Not pblnFound Then
+									pblnFound = (alngSourceTables(2, iLoop1) = mlngCustomReportsBaseTable)
+								End If
+
+								If Not pblnFound Then
+									' table hasnt yet been added, so add it !
+									pintNextIndex = UBound(mlngTableViews, 2) + 1
+									ReDim Preserve mlngTableViews(2, pintNextIndex)
+									mlngTableViews(1, pintNextIndex) = 0
+									mlngTableViews(2, pintNextIndex) = alngSourceTables(2, iLoop1)
+								End If
+								'********************************************************************************
+							End If
+						Next iLoop1
+					Else
+						' Permission denied on something in the calculation.
+						mstrErrorString = "You do not have permission to use the '" & objReportItem.IDColumnName & "' calculation."
+						Return False
+					End If
+
 				End If
 
-				'**************************************************************************
+			Next
 
-				'UPGRADE_NOTE: Object objCalcExpr may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-				objCalcExpr = Nothing
+			mstrSQLSelect = mstrSQLSelect & pstrColumnList
 
-				If blnOK Then
-					pstrColumnList = pstrColumnList & IIf(Len(pstrColumnList) > 0, ",", "") & sCalcCode & " AS [" & objReportItem.IDColumnName & "]"
+		Catch ex As Exception
+			mstrErrorString = "Error generating SQL Select statement." & vbNewLine & ex.Message.RemoveSensitive()
+			Logs.AddDetailEntry(mstrErrorString)
+			Logs.ChangeHeaderStatus(EventLog_Status.elsFailed)
+			Return False
 
-					' Add the required views to the JOIN code.
-					For iLoop1 = 1 To UBound(alngSourceTables, 2)
-						If alngSourceTables(1, iLoop1) = 1 Then
-							' Check if view has already been added to the array
-							pblnFound = False
-							For pintNextIndex = 1 To UBound(mlngTableViews, 2)
-								If mlngTableViews(1, pintNextIndex) = 1 And mlngTableViews(2, pintNextIndex) = alngSourceTables(2, iLoop1) Then
-									pblnFound = True
-									Exit For
-								End If
-							Next pintNextIndex
+		End Try
 
-							If Not pblnFound Then
-
-								' View hasnt yet been added, so add it !
-								pintNextIndex = UBound(mlngTableViews, 2) + 1
-								ReDim Preserve mlngTableViews(2, pintNextIndex)
-								mlngTableViews(1, pintNextIndex) = 1
-								mlngTableViews(2, pintNextIndex) = alngSourceTables(2, iLoop1)
-
-							End If
-							'********************************************************************************
-						ElseIf alngSourceTables(1, iLoop1) = 0 Then
-							' Check if table has already been added to the array
-							pblnFound = False
-							For pintNextIndex = 1 To UBound(mlngTableViews, 2)
-								If mlngTableViews(1, pintNextIndex) = 0 And mlngTableViews(2, pintNextIndex) = alngSourceTables(2, iLoop1) Then
-									pblnFound = True
-									Exit For
-								End If
-							Next pintNextIndex
-
-							' JPD20020514 Fault 3883 - Only want to check if the source table is the base table
-							' if we have NOT just found the source table in the array of joined tables.
-							If Not pblnFound Then
-								pblnFound = (alngSourceTables(2, iLoop1) = mlngCustomReportsBaseTable)
-							End If
-
-							If Not pblnFound Then
-								' table hasnt yet been added, so add it !
-								pintNextIndex = UBound(mlngTableViews, 2) + 1
-								ReDim Preserve mlngTableViews(2, pintNextIndex)
-								mlngTableViews(1, pintNextIndex) = 0
-								mlngTableViews(2, pintNextIndex) = alngSourceTables(2, iLoop1)
-							End If
-							'********************************************************************************
-						End If
-					Next iLoop1
-				Else
-					' Permission denied on something in the calculation.
-					mstrErrorString = "You do not have permission to use the '" & objReportItem.IDColumnName & "' calculation."
-					Return False
-				End If
-
-			End If
-
-		Next
-
-		mstrSQLSelect = mstrSQLSelect & pstrColumnList
 		Return True
-
-
-GenerateSQLSelect_ERROR:
-
-		GenerateSQLSelect = False
-		mstrErrorString = "Error generating SQL Select statement." & vbNewLine & Err.Description
-		Logs.AddDetailEntry(mstrErrorString)
-		Logs.ChangeHeaderStatus(EventLog_Status.elsFailed)
 
 	End Function
 
@@ -1368,26 +1358,28 @@ GenerateSQLSelect_ERROR:
 		Dim iMostChildRecords As Integer
 		Dim iChildRecordCount As Integer
 
-		On Error GoTo Error_Trap
+		Try
 
-		iMostChildRecords = 0
-		iChildRecordCount = 0
+			iMostChildRecords = 0
+			iChildRecordCount = 0
 
-		For i = 0 To UBound(avChildRecs, 2) Step 1
-			If (avChildRecs(iParentCount, i).Rows.Count = 0) Then
-				iChildRecordCount = 0
-			Else
-				iChildRecordCount = avChildRecs(iParentCount, i).Rows.Count
-			End If
-			If iChildRecordCount > iMostChildRecords Then
-				iMostChildRecords = iChildRecordCount
-			End If
-		Next i
+			For i = 0 To UBound(avChildRecs, 2) Step 1
+				If (avChildRecs(iParentCount, i).Rows.Count = 0) Then
+					iChildRecordCount = 0
+				Else
+					iChildRecordCount = avChildRecs(iParentCount, i).Rows.Count
+				End If
+				If iChildRecordCount > iMostChildRecords Then
+					iMostChildRecords = iChildRecordCount
+				End If
+			Next i
+
+		Catch ex As Exception
+			Return 0
+
+		End Try
 
 		Return iMostChildRecords
-
-Error_Trap:
-		Return 0
 
 	End Function
 
@@ -1736,8 +1728,6 @@ Error_Trap:
 		' Purpose : Add the join strings for parent/child/views.
 		'           Also adds filter clauses to the joins if used
 
-		On Error GoTo GenerateSQLJoin_ERROR
-
 		Dim pobjTableView As TablePrivilege
 		Dim objChildTable As TablePrivilege
 		Dim pintLoop As Integer
@@ -1756,142 +1746,146 @@ Error_Trap:
 		Dim sOtherParentJoinCode As String
 		Dim iLoop2 As Integer
 
-		' Get the base table real source
-		mstrBaseTableRealSource = mstrSQLFrom
+		Try
 
-		sOtherParentJoinCode = ""
 
-		' First, do the join for all the views etc...
+			' Get the base table real source
+			mstrBaseTableRealSource = mstrSQLFrom
 
-		For pintLoop = 1 To UBound(mlngTableViews, 2)
+			sOtherParentJoinCode = ""
 
-			' Get the table/view object from the id stored in the array
-			If mlngTableViews(1, pintLoop) = 0 Then
-				pobjTableView = gcoTablePrivileges.FindTableID(mlngTableViews(2, pintLoop))
-			Else
-				pobjTableView = gcoTablePrivileges.FindViewID(mlngTableViews(2, pintLoop))
-			End If
+			' First, do the join for all the views etc...
 
-			' Dont add a join here if its the child table...do that later
-			'If pobjTableView.TableID <> mlngCustomReportsChildTable Then
-			If Not IsReportChildTable((pobjTableView.TableID)) Then
-				If pobjTableView.TableID <> mlngCustomReportsParent1Table Then
-					If pobjTableView.TableID <> mlngCustomReportsParent2Table Then
+			For pintLoop = 1 To UBound(mlngTableViews, 2)
 
-						If (pobjTableView.TableID = mlngCustomReportsBaseTable) Then
-							If (pobjTableView.ViewName <> mstrBaseTableRealSource) Then
-								mstrSQLJoin = mstrSQLJoin & " LEFT OUTER JOIN " & pobjTableView.RealSource & " ON " & mstrBaseTableRealSource & ".ID = " & pobjTableView.RealSource & ".ID"
-							End If
-						Else
-							'JPD 20031119 Fault 7660
-							' This is a parent of a child of the report base table, not explicitly
-							' included in the report, but referred to by a child table calculation.
-							For iLoop2 = 1 To UBound(mlngTableViews, 2)
-								If mlngTableViews(1, iLoop2) = 0 Then
-									If IsAChildOf(mlngTableViews(2, iLoop2), (pobjTableView.TableID)) Then
-										objChildTable = gcoTablePrivileges.FindTableID(mlngTableViews(2, iLoop2))
+				' Get the table/view object from the id stored in the array
+				If mlngTableViews(1, pintLoop) = 0 Then
+					pobjTableView = gcoTablePrivileges.FindTableID(mlngTableViews(2, pintLoop))
+				Else
+					pobjTableView = gcoTablePrivileges.FindViewID(mlngTableViews(2, pintLoop))
+				End If
 
-										sOtherParentJoinCode = sOtherParentJoinCode & " LEFT OUTER JOIN " & pobjTableView.RealSource & " ON " & objChildTable.RealSource & ".ID_" & CStr(pobjTableView.TableID) & " = " & pobjTableView.RealSource & ".ID"
-										Exit For
-									End If
+				' Dont add a join here if its the child table...do that later
+				'If pobjTableView.TableID <> mlngCustomReportsChildTable Then
+				If Not IsReportChildTable((pobjTableView.TableID)) Then
+					If pobjTableView.TableID <> mlngCustomReportsParent1Table Then
+						If pobjTableView.TableID <> mlngCustomReportsParent2Table Then
+
+							If (pobjTableView.TableID = mlngCustomReportsBaseTable) Then
+								If (pobjTableView.ViewName <> mstrBaseTableRealSource) Then
+									mstrSQLJoin = mstrSQLJoin & " LEFT OUTER JOIN " & pobjTableView.RealSource & " ON " & mstrBaseTableRealSource & ".ID = " & pobjTableView.RealSource & ".ID"
 								End If
-							Next iLoop2
-						End If
-					End If
-				End If
-			End If
-
-			If (pobjTableView.TableID = mlngCustomReportsParent1Table) Or (pobjTableView.TableID = mlngCustomReportsParent2Table) Then
-				mstrSQLJoin = mstrSQLJoin & " LEFT OUTER JOIN " & pobjTableView.RealSource & " ON " & mstrBaseTableRealSource & ".ID_" & pobjTableView.TableID & " = " & pobjTableView.RealSource & ".ID"
-			End If
-		Next pintLoop
-
-		'Now do the childview(s) bit, if required
-
-		lngTempChildID = 0
-		lngTempMaxRecords = 0
-		lngTempFilterID = 0
-
-		'  If mlngCustomReportsChildTable > 0 Then
-		If miChildTablesCount > 0 Then
-			For i = 0 To UBound(mvarChildTables, 2) Step 1
-				'UPGRADE_WARNING: Couldn't resolve default property of object mvarChildTables(0, i). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				lngTempChildID = mvarChildTables(0, i)
-				'UPGRADE_WARNING: Couldn't resolve default property of object mvarChildTables(1, i). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				lngTempFilterID = mvarChildTables(1, i)
-				'UPGRADE_WARNING: Couldn't resolve default property of object mvarChildTables(5, i). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				lngTempOrderID = mvarChildTables(5, i)
-				'UPGRADE_WARNING: Couldn't resolve default property of object mvarChildTables(2, i). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				lngTempMaxRecords = mvarChildTables(2, i)
-
-				' Only do the join if columns from the table are used.
-				pblnChildUsed = IsChildTableUsed(lngTempChildID)
-
-				'UPGRADE_WARNING: Couldn't resolve default property of object mvarChildTables(4, i). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				mvarChildTables(4, i) = pblnChildUsed
-				If pblnChildUsed Then miUsedChildCount = miUsedChildCount + 1
-
-				If pblnChildUsed = True Then
-
-					objChildTable = gcoTablePrivileges.FindTableID(lngTempChildID)
-
-					If objChildTable.AllowSelect Then
-						sChildJoinCode = sChildJoinCode & " LEFT OUTER JOIN " & objChildTable.RealSource & " ON " & mstrBaseTableRealSource & ".ID = " & objChildTable.RealSource & ".ID_" & mlngCustomReportsBaseTable
-
-						sChildJoinCode = sChildJoinCode & " AND " & objChildTable.RealSource & ".ID IN"
-
-						'TM20020328 Fault 3714 - ensure the maxrecords is >= zero.
-						sChildJoinCode = sChildJoinCode & " (SELECT TOP" & IIf(lngTempMaxRecords < 1, " 100 PERCENT", " " & lngTempMaxRecords) & " " & objChildTable.RealSource & ".ID FROM " & objChildTable.RealSource
-
-						' Now the child order by bit - done here in case tables need to be joined.
-						If lngTempOrderID > 0 Then
-							rsTemp = GetOrderDefinition(lngTempOrderID)
-						Else
-							rsTemp = GetOrderDefinition(GetDefaultOrder(lngTempChildID))
-						End If
-
-						sChildOrderString = DoChildOrderString(rsTemp, sChildJoin, lngTempChildID)
-						'UPGRADE_NOTE: Object rsTemp may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-						rsTemp = Nothing
-
-						sChildJoinCode = sChildJoinCode & sChildJoin
-
-						sChildJoinCode = sChildJoinCode & " WHERE (" & objChildTable.RealSource & ".ID_" & mlngCustomReportsBaseTable & " = " & mstrBaseTableRealSource & ".ID)"
-
-						' is the child filtered ?
-
-						If lngTempFilterID > 0 Then
-							blnOK = FilteredIDs(lngTempFilterID, strFilterIDs, mastrUDFsRequired, mvarPrompts)
-
-							If blnOK Then
-								sChildJoinCode = sChildJoinCode & " AND " & objChildTable.RealSource & ".ID IN (" & strFilterIDs & ")"
 							Else
-								' Permission denied on something in the filter.
-								mstrErrorString = "You do not have permission to use the '" & General.GetFilterName(lngTempFilterID) & "' filter."
-								GenerateSQLJoin = False
-								Exit Function
+								'JPD 20031119 Fault 7660
+								' This is a parent of a child of the report base table, not explicitly
+								' included in the report, but referred to by a child table calculation.
+								For iLoop2 = 1 To UBound(mlngTableViews, 2)
+									If mlngTableViews(1, iLoop2) = 0 Then
+										If IsAChildOf(mlngTableViews(2, iLoop2), (pobjTableView.TableID)) Then
+											objChildTable = gcoTablePrivileges.FindTableID(mlngTableViews(2, iLoop2))
+
+											sOtherParentJoinCode = sOtherParentJoinCode & " LEFT OUTER JOIN " & pobjTableView.RealSource & " ON " & objChildTable.RealSource & ".ID_" & CStr(pobjTableView.TableID) & " = " & pobjTableView.RealSource & ".ID"
+											Exit For
+										End If
+									End If
+								Next iLoop2
 							End If
 						End If
+					End If
+				End If
+
+				If (pobjTableView.TableID = mlngCustomReportsParent1Table) Or (pobjTableView.TableID = mlngCustomReportsParent2Table) Then
+					mstrSQLJoin = mstrSQLJoin & " LEFT OUTER JOIN " & pobjTableView.RealSource & " ON " & mstrBaseTableRealSource & ".ID_" & pobjTableView.TableID & " = " & pobjTableView.RealSource & ".ID"
+				End If
+			Next pintLoop
+
+			'Now do the childview(s) bit, if required
+
+			lngTempChildID = 0
+			lngTempMaxRecords = 0
+			lngTempFilterID = 0
+
+			'  If mlngCustomReportsChildTable > 0 Then
+			If miChildTablesCount > 0 Then
+				For i = 0 To UBound(mvarChildTables, 2) Step 1
+					'UPGRADE_WARNING: Couldn't resolve default property of object mvarChildTables(0, i). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+					lngTempChildID = mvarChildTables(0, i)
+					'UPGRADE_WARNING: Couldn't resolve default property of object mvarChildTables(1, i). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+					lngTempFilterID = mvarChildTables(1, i)
+					'UPGRADE_WARNING: Couldn't resolve default property of object mvarChildTables(5, i). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+					lngTempOrderID = mvarChildTables(5, i)
+					'UPGRADE_WARNING: Couldn't resolve default property of object mvarChildTables(2, i). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+					lngTempMaxRecords = mvarChildTables(2, i)
+
+					' Only do the join if columns from the table are used.
+					pblnChildUsed = IsChildTableUsed(lngTempChildID)
+
+					'UPGRADE_WARNING: Couldn't resolve default property of object mvarChildTables(4, i). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+					mvarChildTables(4, i) = pblnChildUsed
+					If pblnChildUsed Then miUsedChildCount = miUsedChildCount + 1
+
+					If pblnChildUsed = True Then
+
+						objChildTable = gcoTablePrivileges.FindTableID(lngTempChildID)
+
+						If objChildTable.AllowSelect Then
+							sChildJoinCode = sChildJoinCode & " LEFT OUTER JOIN " & objChildTable.RealSource & " ON " & mstrBaseTableRealSource & ".ID = " & objChildTable.RealSource & ".ID_" & mlngCustomReportsBaseTable
+
+							sChildJoinCode = sChildJoinCode & " AND " & objChildTable.RealSource & ".ID IN"
+
+							'TM20020328 Fault 3714 - ensure the maxrecords is >= zero.
+							sChildJoinCode = sChildJoinCode & " (SELECT TOP" & IIf(lngTempMaxRecords < 1, " 100 PERCENT", " " & lngTempMaxRecords) & " " & objChildTable.RealSource & ".ID FROM " & objChildTable.RealSource
+
+							' Now the child order by bit - done here in case tables need to be joined.
+							If lngTempOrderID > 0 Then
+								rsTemp = GetOrderDefinition(lngTempOrderID)
+							Else
+								rsTemp = GetOrderDefinition(GetDefaultOrder(lngTempChildID))
+							End If
+
+							sChildOrderString = DoChildOrderString(rsTemp, sChildJoin, lngTempChildID)
+							'UPGRADE_NOTE: Object rsTemp may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
+							rsTemp = Nothing
+
+							sChildJoinCode = sChildJoinCode & sChildJoin
+
+							sChildJoinCode = sChildJoinCode & " WHERE (" & objChildTable.RealSource & ".ID_" & mlngCustomReportsBaseTable & " = " & mstrBaseTableRealSource & ".ID)"
+
+							' is the child filtered ?
+
+							If lngTempFilterID > 0 Then
+								blnOK = FilteredIDs(lngTempFilterID, strFilterIDs, mastrUDFsRequired, mvarPrompts)
+
+								If blnOK Then
+									sChildJoinCode = sChildJoinCode & " AND " & objChildTable.RealSource & ".ID IN (" & strFilterIDs & ")"
+								Else
+									' Permission denied on something in the filter.
+									mstrErrorString = "You do not have permission to use the '" & General.GetFilterName(lngTempFilterID) & "' filter."
+									GenerateSQLJoin = False
+									Exit Function
+								End If
+							End If
+
+						End If
+
+						sChildJoinCode = sChildJoinCode & IIf(Len(sChildOrderString) > 0, " ORDER BY " & sChildOrderString & ")", "")
 
 					End If
+				Next i
+			End If
 
-					sChildJoinCode = sChildJoinCode & IIf(Len(sChildOrderString) > 0, " ORDER BY " & sChildOrderString & ")", "")
+			mstrSQLJoin = mstrSQLJoin & sChildJoinCode
+			mstrSQLJoin = mstrSQLJoin & sOtherParentJoinCode
 
-				End If
-			Next i
-		End If
+		Catch ex As Exception
+			mstrErrorString = "Error in GenerateSQLJoin." & vbNewLine & Err.Description
+			Logs.AddDetailEntry(mstrErrorString)
+			Logs.ChangeHeaderStatus(EventLog_Status.elsFailed)
+			Return False
 
-		mstrSQLJoin = mstrSQLJoin & sChildJoinCode
-		mstrSQLJoin = mstrSQLJoin & sOtherParentJoinCode
+		End Try
 
 		Return True
-
-GenerateSQLJoin_ERROR:
-
-		GenerateSQLJoin = False
-		mstrErrorString = "Error in GenerateSQLJoin." & vbNewLine & Err.Description
-		Logs.AddDetailEntry(mstrErrorString)
-		Logs.ChangeHeaderStatus(EventLog_Status.elsFailed)
 
 	End Function
 
@@ -1901,8 +1895,7 @@ GenerateSQLJoin_ERROR:
 		' checking if the user has privileges. If they do, add to the order string
 		' if not, leave it out.
 
-		On Error GoTo DoChildOrderString_ERROR
-
+		Dim sChildOrderString As String
 		Dim fColumnOK As Boolean
 		Dim fFound As Boolean
 		Dim iNextIndex As Integer
@@ -1917,154 +1910,155 @@ GenerateSQLJoin_ERROR:
 		Dim asViews() As String
 		Dim iTempCounter As Integer
 
-		' Dimension an array of tables/views joined to the base table/view.
-		' Column 1 = 0 if this row is for a table, 1 if it is for a view.
-		' Column 2 = table/view ID.
-		ReDim alngTableViews(2, 0)
+		Try
 
-		pobjOrderCol = gcoTablePrivileges.FindTableID(plngChildID)
-		sCurrentTableViewName = pobjOrderCol.RealSource
-		'UPGRADE_NOTE: Object pobjOrderCol may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		pobjOrderCol = Nothing
+			' Dimension an array of tables/views joined to the base table/view.
+			' Column 1 = 0 if this row is for a table, 1 if it is for a view.
+			' Column 2 = table/view ID.
+			ReDim alngTableViews(2, 0)
 
-		For Each objRow As DataRow In rsTemp.Rows
+			pobjOrderCol = gcoTablePrivileges.FindTableID(plngChildID)
+			sCurrentTableViewName = pobjOrderCol.RealSource
+			'UPGRADE_NOTE: Object pobjOrderCol may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
+			pobjOrderCol = Nothing
 
-			If objRow("Type") = "O" Then
-				' Check if the user can read the column.
-				pobjOrderCol = gcoTablePrivileges.FindTableID(objRow("TableID"))
-				objColumnPrivileges = GetColumnPrivileges((pobjOrderCol.TableName))
-				fColumnOK = objColumnPrivileges.Item(objRow("ColumnName")).AllowSelect
-				'UPGRADE_NOTE: Object objColumnPrivileges may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-				objColumnPrivileges = Nothing
+			For Each objRow As DataRow In rsTemp.Rows
 
-				If fColumnOK Then
-					'        If rsTemp!TableID = mlngCustomReportsChildTable Then
-					If objRow("TableID") = plngChildID Then
-						DoChildOrderString = DoChildOrderString & IIf(Len(DoChildOrderString) > 0, ",", "") & pobjOrderCol.RealSource & "." & objRow("ColumnName") & IIf(objRow("Ascending"), "", " DESC")
-					Else
-						' If the column comes from a parent table, then add the table to the Join code.
-						' Check if the table has already been added to the join code.
-						fFound = False
-						iTempCounter = 0
-						For iNextIndex = 1 To UBound(alngTableViews, 2)
-							If alngTableViews(1, iNextIndex) = 0 And alngTableViews(2, iNextIndex) = objRow("TableID") Then
-								iTempCounter = iNextIndex
-								fFound = True
-								Exit For
-							End If
-						Next iNextIndex
+				If objRow("Type") = "O" Then
+					' Check if the user can read the column.
+					pobjOrderCol = gcoTablePrivileges.FindTableID(objRow("TableID"))
+					objColumnPrivileges = GetColumnPrivileges((pobjOrderCol.TableName))
+					fColumnOK = objColumnPrivileges.Item(objRow("ColumnName")).AllowSelect
+					'UPGRADE_NOTE: Object objColumnPrivileges may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
+					objColumnPrivileges = Nothing
 
-						If Not fFound Then
-							' The table has not yet been added to the join code, so add it to the array and the join code.
-							iNextIndex = UBound(alngTableViews, 2) + 1
-							ReDim Preserve alngTableViews(2, iNextIndex)
-							alngTableViews(1, iNextIndex) = 0
-							alngTableViews(2, iNextIndex) = objRow("TableID")
-
-							iTempCounter = iNextIndex
-
-							psJoinCode = psJoinCode & " LEFT OUTER JOIN " & pobjOrderCol.RealSource & " ASRSysTemp_" & Trim(Str(iTempCounter)) & " ON " & sCurrentTableViewName & ".ID_" & Trim(Str(objRow("TableID"))) & " = ASRSysTemp_" & Trim(Str(iTempCounter)) & ".ID"
-						End If
-
-						DoChildOrderString = DoChildOrderString & IIf(Len(DoChildOrderString) > 0, ",", "") & "ASRSysTemp_" & Trim(Str(iTempCounter)) & "." & objRow("ColumnName").ToString() & IIf(objRow("Ascending"), "", " DESC")
-					End If
-				Else
-					' The column cannot be read from the base table/view, or directly from a parent table.
-					' If it is a column from a prent table, then try to read it from the views on the parent table.
-					'        If rsTemp!TableID <> mlngCustomReportsChildTable Then
-					If objRow("TableID") <> plngChildID Then
-						' Loop through the views on the column's table, seeing if any have 'read' permission granted on them.
-						ReDim asViews(0)
-						For Each objTableView In gcoTablePrivileges.Collection
-							If (Not objTableView.IsTable) And (objTableView.TableID = objRow("TableID")) And (objTableView.AllowSelect) Then
-
-								sSource = objTableView.ViewName
-								sRealSource = gcoTablePrivileges.Item(sSource).RealSource
-
-								' Get the column permission for the view.
-								objColumnPrivileges = GetColumnPrivileges(sSource)
-
-								If objColumnPrivileges.IsValid(objRow("ColumnName").ToString()) Then
-									If objColumnPrivileges.Item(objRow("ColumnName").ToString()).AllowSelect Then
-										' Add the view info to an array to be put into the column list or order code below.
-										iNextIndex = UBound(asViews) + 1
-										ReDim Preserve asViews(iNextIndex)
-										asViews(iNextIndex) = objTableView.ViewName
-
-										' Add the view to the Join code.
-										' Check if the view has already been added to the join code.
-										fFound = False
-										iTempCounter = 0
-										For iNextIndex = 1 To UBound(alngTableViews, 2)
-											If alngTableViews(1, iNextIndex) = 1 And alngTableViews(2, iNextIndex) = objTableView.ViewID Then
-												fFound = True
-												iTempCounter = iNextIndex
-												Exit For
-											End If
-										Next iNextIndex
-
-										If Not fFound Then
-											' The view has not yet been added to the join code, so add it to the array and the join code.
-											iNextIndex = UBound(alngTableViews, 2) + 1
-											ReDim Preserve alngTableViews(2, iNextIndex)
-											alngTableViews(1, iNextIndex) = 1
-											alngTableViews(2, iNextIndex) = objTableView.ViewID
-
-											iTempCounter = iNextIndex
-
-											psJoinCode = psJoinCode & " LEFT OUTER JOIN " & sRealSource & " ASRSysTemp_" & Trim(Str(iTempCounter)) & " ON " & sCurrentTableViewName & ".ID_" & Trim(Str(objTableView.TableID)) & " = ASRSysTemp_" & Trim(Str(iTempCounter)) & ".ID"
-										End If
-									End If
+					If fColumnOK Then
+						'        If rsTemp!TableID = mlngCustomReportsChildTable Then
+						If objRow("TableID") = plngChildID Then
+							sChildOrderString &= IIf(Len(sChildOrderString) > 0, ",", "") & pobjOrderCol.RealSource & "." & objRow("ColumnName") & IIf(objRow("Ascending"), "", " DESC")
+						Else
+							' If the column comes from a parent table, then add the table to the Join code.
+							' Check if the table has already been added to the join code.
+							fFound = False
+							iTempCounter = 0
+							For iNextIndex = 1 To UBound(alngTableViews, 2)
+								If alngTableViews(1, iNextIndex) = 0 And alngTableViews(2, iNextIndex) = objRow("TableID") Then
+									iTempCounter = iNextIndex
+									fFound = True
+									Exit For
 								End If
-								'UPGRADE_NOTE: Object objColumnPrivileges may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-								objColumnPrivileges = Nothing
-							End If
-						Next objTableView
-						'UPGRADE_NOTE: Object objTableView may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-						objTableView = Nothing
-
-						' The current user does have permission to 'read' the column through a/some view(s) on the
-						' table.
-						If UBound(asViews) > 0 Then
-							' Add the column to the column list.
-							sColumnCode = ""
-							For iNextIndex = 1 To UBound(asViews)
-								If iNextIndex = 1 Then
-									sColumnCode = "CASE "
-								End If
-
-								sColumnCode = sColumnCode & " WHEN NOT ASRSysTemp_" & Trim(Str(iNextIndex)) & "." & objRow("ColumnName").ToString & " IS NULL THEN ASRSysTemp_" & Trim(Str(iNextIndex)) & "." & objRow("ColumnName").ToString()
 							Next iNextIndex
 
-							If Len(sColumnCode) > 0 Then
-								sColumnCode = sColumnCode & " ELSE NULL" & " END"
+							If Not fFound Then
+								' The table has not yet been added to the join code, so add it to the array and the join code.
+								iNextIndex = UBound(alngTableViews, 2) + 1
+								ReDim Preserve alngTableViews(2, iNextIndex)
+								alngTableViews(1, iNextIndex) = 0
+								alngTableViews(2, iNextIndex) = objRow("TableID")
 
-								' Add the column to the order string.
-								DoChildOrderString = DoChildOrderString & IIf(Len(DoChildOrderString) > 0, ", ", "") & sColumnCode & IIf(objRow("Ascending").ToString(), "", " DESC")
+								iTempCounter = iNextIndex
+
+								psJoinCode = psJoinCode & " LEFT OUTER JOIN " & pobjOrderCol.RealSource & " ASRSysTemp_" & Trim(Str(iTempCounter)) & " ON " & sCurrentTableViewName & ".ID_" & Trim(Str(objRow("TableID"))) & " = ASRSysTemp_" & Trim(Str(iTempCounter)) & ".ID"
+							End If
+
+							sChildOrderString &= IIf(Len(sChildOrderString) > 0, ",", "") & "ASRSysTemp_" & Trim(Str(iTempCounter)) & "." & objRow("ColumnName").ToString() & IIf(objRow("Ascending"), "", " DESC")
+						End If
+					Else
+						' The column cannot be read from the base table/view, or directly from a parent table.
+						' If it is a column from a prent table, then try to read it from the views on the parent table.
+						'        If rsTemp!TableID <> mlngCustomReportsChildTable Then
+						If objRow("TableID") <> plngChildID Then
+							' Loop through the views on the column's table, seeing if any have 'read' permission granted on them.
+							ReDim asViews(0)
+							For Each objTableView In gcoTablePrivileges.Collection
+								If (Not objTableView.IsTable) And (objTableView.TableID = objRow("TableID")) And (objTableView.AllowSelect) Then
+
+									sSource = objTableView.ViewName
+									sRealSource = gcoTablePrivileges.Item(sSource).RealSource
+
+									' Get the column permission for the view.
+									objColumnPrivileges = GetColumnPrivileges(sSource)
+
+									If objColumnPrivileges.IsValid(objRow("ColumnName").ToString()) Then
+										If objColumnPrivileges.Item(objRow("ColumnName").ToString()).AllowSelect Then
+											' Add the view info to an array to be put into the column list or order code below.
+											iNextIndex = UBound(asViews) + 1
+											ReDim Preserve asViews(iNextIndex)
+											asViews(iNextIndex) = objTableView.ViewName
+
+											' Add the view to the Join code.
+											' Check if the view has already been added to the join code.
+											fFound = False
+											iTempCounter = 0
+											For iNextIndex = 1 To UBound(alngTableViews, 2)
+												If alngTableViews(1, iNextIndex) = 1 And alngTableViews(2, iNextIndex) = objTableView.ViewID Then
+													fFound = True
+													iTempCounter = iNextIndex
+													Exit For
+												End If
+											Next iNextIndex
+
+											If Not fFound Then
+												' The view has not yet been added to the join code, so add it to the array and the join code.
+												iNextIndex = UBound(alngTableViews, 2) + 1
+												ReDim Preserve alngTableViews(2, iNextIndex)
+												alngTableViews(1, iNextIndex) = 1
+												alngTableViews(2, iNextIndex) = objTableView.ViewID
+
+												iTempCounter = iNextIndex
+
+												psJoinCode = psJoinCode & " LEFT OUTER JOIN " & sRealSource & " ASRSysTemp_" & Trim(Str(iTempCounter)) & " ON " & sCurrentTableViewName & ".ID_" & Trim(Str(objTableView.TableID)) & " = ASRSysTemp_" & Trim(Str(iTempCounter)) & ".ID"
+											End If
+										End If
+									End If
+									'UPGRADE_NOTE: Object objColumnPrivileges may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
+									objColumnPrivileges = Nothing
+								End If
+							Next objTableView
+							'UPGRADE_NOTE: Object objTableView may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
+							objTableView = Nothing
+
+							' The current user does have permission to 'read' the column through a/some view(s) on the
+							' table.
+							If UBound(asViews) > 0 Then
+								' Add the column to the column list.
+								sColumnCode = ""
+								For iNextIndex = 1 To UBound(asViews)
+									If iNextIndex = 1 Then
+										sColumnCode = "CASE "
+									End If
+
+									sColumnCode = sColumnCode & " WHEN NOT ASRSysTemp_" & Trim(Str(iNextIndex)) & "." & objRow("ColumnName").ToString & " IS NULL THEN ASRSysTemp_" & Trim(Str(iNextIndex)) & "." & objRow("ColumnName").ToString()
+								Next iNextIndex
+
+								If Len(sColumnCode) > 0 Then
+									sColumnCode = sColumnCode & " ELSE NULL" & " END"
+
+									' Add the column to the order string.
+									sChildOrderString &= IIf(Len(sChildOrderString) > 0, ", ", "") & sColumnCode & IIf(objRow("Ascending").ToString(), "", " DESC")
+								End If
 							End If
 						End If
 					End If
+
+					'UPGRADE_NOTE: Object pobjOrderCol may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
+					pobjOrderCol = Nothing
 				End If
 
-				'UPGRADE_NOTE: Object pobjOrderCol may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-				pobjOrderCol = Nothing
-			End If
+			Next
 
-		Next
+			' JIRA 3180 - Force the ID to be part of the sort order because the UDFs sort by ID too
+			sChildOrderString &= "," & sCurrentTableViewName & ".ID"
 
-		' JIRA 3180 - Force the ID to be part of the sort order because the UDFs sort by ID too
-		DoChildOrderString = DoChildOrderString & "," & sCurrentTableViewName & ".ID"
+		Catch ex As Exception
+			mstrErrorString = "Error while generating child order string" & vbNewLine & ex.Message
+			Logs.AddDetailEntry(mstrErrorString)
+			Logs.ChangeHeaderStatus(EventLog_Status.elsFailed)
+			Return ""
 
-		Exit Function
+		End Try
 
-DoChildOrderString_ERROR:
-
-		'UPGRADE_NOTE: Object pobjOrderCol may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		pobjOrderCol = Nothing
-		mstrErrorString = "Error while generating child order string" & vbNewLine & Err.Description
-		DoChildOrderString = ""
-		Logs.AddDetailEntry(mstrErrorString)
-		Logs.ChangeHeaderStatus(EventLog_Status.elsFailed)
+		Return sChildOrderString
 
 	End Function
 
@@ -2072,8 +2066,6 @@ DoChildOrderString_ERROR:
 
 		' Purpose : Generate the where clauses that cope with the joins
 		'           NB Need to add the where clauses for filters/picklists etc
-
-		On Error GoTo GenerateSQLWhere_ERROR
 
 		Dim pintLoop As Integer
 		Dim pobjTableView As TablePrivilege
@@ -2084,136 +2076,139 @@ DoChildOrderString_ERROR:
 		Dim pstrParent1PickListIDs As String
 		Dim pstrParent2PickListIDs As String
 
-		pobjTableView = gcoTablePrivileges.FindTableID(mlngCustomReportsBaseTable)
-		If pobjTableView.AllowSelect = False Then
+		Try
 
-			' First put the where clauses in for the joins...only if base table is a top level table
-			If UCase(Left(mstrBaseTableRealSource, 6)) <> "ASRSYS" Then
+			pobjTableView = gcoTablePrivileges.FindTableID(mlngCustomReportsBaseTable)
+			If pobjTableView.AllowSelect = False Then
 
-				For pintLoop = 1 To UBound(mlngTableViews, 2)
-					' Get the table/view object from the id stored in the array
-					If mlngTableViews(1, pintLoop) = 0 Then
-						pobjTableView = gcoTablePrivileges.FindTableID(mlngTableViews(2, pintLoop))
-					Else
-						pobjTableView = gcoTablePrivileges.FindViewID(mlngTableViews(2, pintLoop))
-					End If
+				' First put the where clauses in for the joins...only if base table is a top level table
+				If UCase(Left(mstrBaseTableRealSource, 6)) <> "ASRSYS" Then
 
-					' dont add where clause for the base/chil/p1/p2 TABLES...only add views here
-					' JPD20030207 Fault 5034
-					If (mlngTableViews(1, pintLoop) = 1) Then
-						mstrSQLWhere = mstrSQLWhere & IIf(Len(mstrSQLWhere) > 0, " OR ", " WHERE (") & mstrBaseTableRealSource & ".ID IN (SELECT ID FROM " & pobjTableView.RealSource & ")"
-					End If
+					For pintLoop = 1 To UBound(mlngTableViews, 2)
+						' Get the table/view object from the id stored in the array
+						If mlngTableViews(1, pintLoop) = 0 Then
+							pobjTableView = gcoTablePrivileges.FindTableID(mlngTableViews(2, pintLoop))
+						Else
+							pobjTableView = gcoTablePrivileges.FindViewID(mlngTableViews(2, pintLoop))
+						End If
 
-				Next pintLoop
+						' dont add where clause for the base/chil/p1/p2 TABLES...only add views here
+						' JPD20030207 Fault 5034
+						If (mlngTableViews(1, pintLoop) = 1) Then
+							mstrSQLWhere = mstrSQLWhere & IIf(Len(mstrSQLWhere) > 0, " OR ", " WHERE (") & mstrBaseTableRealSource & ".ID IN (SELECT ID FROM " & pobjTableView.RealSource & ")"
+						End If
 
-				If Len(mstrSQLWhere) > 0 Then mstrSQLWhere = mstrSQLWhere & ")"
+					Next pintLoop
+
+					If Len(mstrSQLWhere) > 0 Then mstrSQLWhere = mstrSQLWhere & ")"
+
+				End If
 
 			End If
 
-		End If
+			' Parent 1 filter
+			' Parent 1 filter and picklist
+			If mlngCustomReportsParent1PickListID > 0 Then
+				pstrParent1PickListIDs = ""
+				prstTemp = DB.GetDataTable("EXEC sp_ASRGetPickListRecords " & mlngCustomReportsParent1PickListID)
 
-		' Parent 1 filter
-		' Parent 1 filter and picklist
-		If mlngCustomReportsParent1PickListID > 0 Then
-			pstrParent1PickListIDs = ""
-			prstTemp = DB.GetDataTable("EXEC sp_ASRGetPickListRecords " & mlngCustomReportsParent1PickListID)
+				If prstTemp.Rows.Count = 0 Then
+					mstrErrorString = "The first parent table picklist contains no records."
+					Return False
+				End If
 
-			If prstTemp.Rows.Count = 0 Then
-				mstrErrorString = "The first parent table picklist contains no records."
-				Return False
+				For Each objRow As DataRow In prstTemp.Rows
+					pstrParent1PickListIDs = pstrParent1PickListIDs & IIf(Len(pstrParent1PickListIDs) > 0, ", ", "") & objRow(0)
+				Next
+
+
+				mstrSQLWhere = mstrSQLWhere & IIf(Len(mstrSQLWhere) > 0, " AND ", " WHERE ") & mstrBaseTableRealSource & ".ID_" & mlngCustomReportsParent1Table & " IN (" & pstrParent1PickListIDs & ") "
+			ElseIf mlngCustomReportsParent1FilterID > 0 Then
+				blnOK = FilteredIDs(mlngCustomReportsParent1FilterID, strFilterIDs, mastrUDFsRequired, mvarPrompts)
+
+				If blnOK Then
+					mstrSQLWhere = mstrSQLWhere & IIf(Len(mstrSQLWhere) > 0, " AND ", " WHERE ") & mstrBaseTableRealSource & ".ID_" & mlngCustomReportsParent1Table & " IN (" & strFilterIDs & ") "
+				Else
+					mstrErrorString = "You do not have permission to use the '" & General.GetFilterName(mlngCustomReportsParent1FilterID) & "' filter."
+					Return False
+				End If
 			End If
 
-			For Each objRow As DataRow In prstTemp.Rows
-				pstrParent1PickListIDs = pstrParent1PickListIDs & IIf(Len(pstrParent1PickListIDs) > 0, ", ", "") & objRow(0)
-			Next
+			' Parent 2 filter and picklist
+			If mlngCustomReportsParent2PickListID > 0 Then
+				pstrParent2PickListIDs = ""
+				prstTemp = DB.GetDataTable("EXEC sp_ASRGetPickListRecords " & mlngCustomReportsParent2PickListID)
 
+				If prstTemp.Rows.Count = 0 Then
+					mstrErrorString = "The second parent table picklist contains no records."
+					Return False
+				End If
 
-			mstrSQLWhere = mstrSQLWhere & IIf(Len(mstrSQLWhere) > 0, " AND ", " WHERE ") & mstrBaseTableRealSource & ".ID_" & mlngCustomReportsParent1Table & " IN (" & pstrParent1PickListIDs & ") "
-		ElseIf mlngCustomReportsParent1FilterID > 0 Then
-			blnOK = FilteredIDs(mlngCustomReportsParent1FilterID, strFilterIDs, mastrUDFsRequired, mvarPrompts)
+				For Each objRow As DataRow In prstTemp.Rows
+					pstrParent2PickListIDs = pstrParent2PickListIDs & IIf(Len(pstrParent2PickListIDs) > 0, ", ", "") & objRow(0)
+				Next
 
-			If blnOK Then
-				mstrSQLWhere = mstrSQLWhere & IIf(Len(mstrSQLWhere) > 0, " AND ", " WHERE ") & mstrBaseTableRealSource & ".ID_" & mlngCustomReportsParent1Table & " IN (" & strFilterIDs & ") "
-			Else
-				mstrErrorString = "You do not have permission to use the '" & General.GetFilterName(mlngCustomReportsParent1FilterID) & "' filter."
-				Return False
-			End If
-		End If
+				mstrSQLWhere = mstrSQLWhere & IIf(Len(mstrSQLWhere) > 0, " AND ", " WHERE ") & mstrBaseTableRealSource & ".ID_" & mlngCustomReportsParent2Table & " IN (" & pstrParent2PickListIDs & ") "
+			ElseIf mlngCustomReportsParent2FilterID > 0 Then
+				blnOK = FilteredIDs(mlngCustomReportsParent2FilterID, strFilterIDs, mastrUDFsRequired, mvarPrompts)
 
-		' Parent 2 filter and picklist
-		If mlngCustomReportsParent2PickListID > 0 Then
-			pstrParent2PickListIDs = ""
-			prstTemp = DB.GetDataTable("EXEC sp_ASRGetPickListRecords " & mlngCustomReportsParent2PickListID)
-
-			If prstTemp.Rows.Count = 0 Then
-				mstrErrorString = "The second parent table picklist contains no records."
-				Return False
-			End If
-
-			For Each objRow As DataRow In prstTemp.Rows
-				pstrParent2PickListIDs = pstrParent2PickListIDs & IIf(Len(pstrParent2PickListIDs) > 0, ", ", "") & objRow(0)
-			Next
-
-			mstrSQLWhere = mstrSQLWhere & IIf(Len(mstrSQLWhere) > 0, " AND ", " WHERE ") & mstrBaseTableRealSource & ".ID_" & mlngCustomReportsParent2Table & " IN (" & pstrParent2PickListIDs & ") "
-		ElseIf mlngCustomReportsParent2FilterID > 0 Then
-			blnOK = FilteredIDs(mlngCustomReportsParent2FilterID, strFilterIDs, mastrUDFsRequired, mvarPrompts)
-
-			If blnOK Then
-				mstrSQLWhere = mstrSQLWhere & IIf(Len(mstrSQLWhere) > 0, " AND ", " WHERE ") & mstrBaseTableRealSource & ".ID_" & mlngCustomReportsParent2Table & " IN (" & strFilterIDs & ") "
-			Else
-				mstrErrorString = "You do not have permission to use the '" & General.GetFilterName(mlngCustomReportsParent2FilterID) & "' filter."
-				Return False
-			End If
-		End If
-
-		If mlngSingleRecordID > 0 Then
-			mstrSQLWhere = mstrSQLWhere & IIf(Len(mstrSQLWhere) > 0, " AND ", " WHERE ") & mstrSQLFrom & ".ID IN (" & CStr(mlngSingleRecordID) & ")"
-
-		ElseIf mlngCustomReportsPickListID > 0 Then
-			' Now if we are using a picklist, add a where clause for that
-			'Get List of IDs from Picklist
-			prstTemp = DB.GetDataTable("EXEC sp_ASRGetPickListRecords " & mlngCustomReportsPickListID)
-
-			If prstTemp.Rows.Count = 0 Then
-				mstrErrorString = "The selected picklist contains no records."
-				Return False
+				If blnOK Then
+					mstrSQLWhere = mstrSQLWhere & IIf(Len(mstrSQLWhere) > 0, " AND ", " WHERE ") & mstrBaseTableRealSource & ".ID_" & mlngCustomReportsParent2Table & " IN (" & strFilterIDs & ") "
+				Else
+					mstrErrorString = "You do not have permission to use the '" & General.GetFilterName(mlngCustomReportsParent2FilterID) & "' filter."
+					Return False
+				End If
 			End If
 
-			For Each objRow As DataRow In prstTemp.Rows
-				pstrPickListIDs = pstrPickListIDs & IIf(Len(pstrPickListIDs) > 0, ", ", "") & objRow(0).ToString()
-			Next
+			If mlngSingleRecordID > 0 Then
+				mstrSQLWhere = mstrSQLWhere & IIf(Len(mstrSQLWhere) > 0, " AND ", " WHERE ") & mstrSQLFrom & ".ID IN (" & CStr(mlngSingleRecordID) & ")"
 
-			mstrSQLWhere = mstrSQLWhere & IIf(Len(mstrSQLWhere) > 0, " AND ", " WHERE ") & mstrSQLFrom & ".ID IN (" & pstrPickListIDs & ")"
+			ElseIf mlngCustomReportsPickListID > 0 Then
+				' Now if we are using a picklist, add a where clause for that
+				'Get List of IDs from Picklist
+				prstTemp = DB.GetDataTable("EXEC sp_ASRGetPickListRecords " & mlngCustomReportsPickListID)
 
-			' If we are running a Bradford Report on an individual person
-		ElseIf mbIsBradfordIndexReport = True And mlngPersonnelID > 0 Then
+				If prstTemp.Rows.Count = 0 Then
+					mstrErrorString = "The selected picklist contains no records."
+					Return False
+				End If
 
-			mstrSQLWhere = mstrSQLWhere & IIf(Len(mstrSQLWhere) > 0, " AND ", " WHERE ") & mstrSQLFrom & ".ID IN (" & mlngPersonnelID & ")"
+				For Each objRow As DataRow In prstTemp.Rows
+					pstrPickListIDs = pstrPickListIDs & IIf(Len(pstrPickListIDs) > 0, ", ", "") & objRow(0).ToString()
+				Next
 
-		ElseIf mlngCustomReportsFilterID > 0 Then
+				mstrSQLWhere = mstrSQLWhere & IIf(Len(mstrSQLWhere) > 0, " AND ", " WHERE ") & mstrSQLFrom & ".ID IN (" & pstrPickListIDs & ")"
 
-			blnOK = FilteredIDs(mlngCustomReportsFilterID, strFilterIDs, mastrUDFsRequired, mvarPrompts)
+				' If we are running a Bradford Report on an individual person
+			ElseIf mbIsBradfordIndexReport = True And mlngPersonnelID > 0 Then
 
-			If blnOK Then
-				mstrSQLWhere = mstrSQLWhere & IIf(Len(mstrSQLWhere) > 0, " AND ", " WHERE ") & mstrSQLFrom & ".ID IN (" & strFilterIDs & ")"
-			Else
-				' Permission denied on something in the filter.
-				mstrErrorString = "You do not have permission to use the '" & General.GetFilterName(mlngCustomReportsFilterID) & "' filter."
-				Return False
+				mstrSQLWhere = mstrSQLWhere & IIf(Len(mstrSQLWhere) > 0, " AND ", " WHERE ") & mstrSQLFrom & ".ID IN (" & mlngPersonnelID & ")"
+
+			ElseIf mlngCustomReportsFilterID > 0 Then
+
+				blnOK = FilteredIDs(mlngCustomReportsFilterID, strFilterIDs, mastrUDFsRequired, mvarPrompts)
+
+				If blnOK Then
+					mstrSQLWhere = mstrSQLWhere & IIf(Len(mstrSQLWhere) > 0, " AND ", " WHERE ") & mstrSQLFrom & ".ID IN (" & strFilterIDs & ")"
+				Else
+					' Permission denied on something in the filter.
+					mstrErrorString = "You do not have permission to use the '" & General.GetFilterName(mlngCustomReportsFilterID) & "' filter."
+					Return False
+				End If
 			End If
-		End If
 
-		'UPGRADE_NOTE: Object prstTemp may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		prstTemp = Nothing
+			'UPGRADE_NOTE: Object prstTemp may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
+			prstTemp = Nothing
+
+		Catch ex As Exception
+			mstrErrorString = "Error in GenerateSQLWhere." & vbNewLine & ex.Message.RemoveSensitive()
+			Logs.AddDetailEntry(mstrErrorString)
+			Logs.ChangeHeaderStatus(EventLog_Status.elsFailed)
+			Return False
+
+		End Try
 
 		Return True
-
-GenerateSQLWhere_ERROR:
-
-		GenerateSQLWhere = False
-		mstrErrorString = "Error in GenerateSQLWhere." & vbNewLine & Err.Description
-		Logs.AddDetailEntry(mstrErrorString)
-		Logs.ChangeHeaderStatus(EventLog_Status.elsFailed)
 
 	End Function
 
@@ -2227,188 +2222,189 @@ GenerateSQLWhere_ERROR:
 		Dim pstrSource As String
 		Dim pintNextIndex As Integer
 
-		On Error GoTo GenerateSQLOrderBy_ERROR
+		Try
 
-		' Bradford Factor has it own sort order code
-		If mbIsBradfordIndexReport Then
-			'*********************************************************************************
-			'TM20020605 Fault 3912 - check that the current user has permission to
-			' see and therefore order by the selected order columns on the table.
+			' Bradford Factor has it own sort order code
+			If mbIsBradfordIndexReport Then
+				'*********************************************************************************
+				'TM20020605 Fault 3912 - check that the current user has permission to
+				' see and therefore order by the selected order columns on the table.
 
-			'First Order Column - Check the user has select access through a table or view.
-			If mlngOrderByColumnID > 0 Then
-				mobjColumnPrivileges = GetColumnPrivileges(mstrCustomReportsBaseTableName)
-				pblnColumnOK = mobjColumnPrivileges.IsValid(mstrOrderByColumn)
-				If pblnColumnOK Then
-					pblnColumnOK = mobjColumnPrivileges.Item(mstrOrderByColumn).AllowSelect
-				End If
-
-				If Not pblnColumnOK Then
-					' this column cannot be read direct. If its from a parent, try parent views
-					' Loop thru the views on the table, seeing if any have read permis for the column
-					ReDim mstrViews(0)
-					For Each mobjTableView In gcoTablePrivileges.Collection
-						If (Not mobjTableView.IsTable) And (mobjTableView.TableID = mlngCustomReportsBaseTable) And (mobjTableView.AllowSelect) Then
-
-							pstrSource = mobjTableView.ViewName
-
-							' Get the column permission for the view
-							mobjColumnPrivileges = GetColumnPrivileges(pstrSource)
-
-							' If we can see the column from this view
-							If mobjColumnPrivileges.IsValid(mstrOrderByColumn) Then
-								If mobjColumnPrivileges.Item(mstrOrderByColumn).AllowSelect Then
-
-									ReDim Preserve mstrViews(UBound(mstrViews) + 1)
-									mstrViews(UBound(mstrViews)) = mobjTableView.ViewName
-
-									' Check if view has already been added to the array
-									pblnFound = False
-									For pintNextIndex = 1 To UBound(mlngTableViews, 2)
-										If mlngTableViews(1, pintNextIndex) = 1 And mlngTableViews(2, pintNextIndex) = mobjTableView.ViewID Then
-											pblnFound = True
-											Exit For
-										End If
-									Next pintNextIndex
-
-									If Not pblnFound Then
-
-										' View hasnt yet been added, so add it !
-										pintNextIndex = UBound(mlngTableViews, 2) + 1
-										ReDim Preserve mlngTableViews(2, pintNextIndex)
-										mlngTableViews(1, pintNextIndex) = 1
-										mlngTableViews(2, pintNextIndex) = mobjTableView.ViewID
-										Exit For
-									End If
-								End If
-							End If
-						End If
-
-					Next mobjTableView
-
-					'UPGRADE_NOTE: Object mobjTableView may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-					mobjTableView = Nothing
-
-					' Does the user have select permission thru ANY views ?
-					If UBound(mstrViews) = 0 Then
-						pblnNoSelect = True
-					End If
-
-				End If
-
-				If pblnNoSelect Then
-					GenerateSQLOrderBy = False
-					mstrErrorString = vbNewLine & "You do not have permission to see the column '" & mstrOrderByColumn & "' " & vbNewLine & "either directly or through any views."
-					Exit Function
-				End If
-			End If
-
-			'Second Order Column - Check the user has select access through a table or view.
-			If mlngGroupByColumnID > 0 Then
-				pblnNoSelect = False
-				mobjColumnPrivileges = GetColumnPrivileges(mstrCustomReportsBaseTableName)
-				pblnColumnOK = mobjColumnPrivileges.IsValid(mstrGroupByColumn)
-				If pblnColumnOK Then
-					pblnColumnOK = mobjColumnPrivileges.Item(mstrGroupByColumn).AllowSelect
-				End If
-
-				If Not pblnColumnOK Then
-					' this column cannot be read direct. If its from a parent, try parent views
-					' Loop thru the views on the table, seeing if any have read permis for the column
-					ReDim mstrViews(0)
-					For Each mobjTableView In gcoTablePrivileges.Collection
-						If (Not mobjTableView.IsTable) And (mobjTableView.TableID = mlngCustomReportsBaseTable) And (mobjTableView.AllowSelect) Then
-
-							pstrSource = mobjTableView.ViewName
-
-							' Get the column permission for the view
-							mobjColumnPrivileges = GetColumnPrivileges(pstrSource)
-
-							' If we can see the column from this view
-							If mobjColumnPrivileges.IsValid(mstrOrderByColumn) Then
-								If mobjColumnPrivileges.Item(mstrOrderByColumn).AllowSelect Then
-
-									ReDim Preserve mstrViews(UBound(mstrViews) + 1)
-									mstrViews(UBound(mstrViews)) = mobjTableView.ViewName
-
-									' Check if view has already been added to the array
-									pblnFound = False
-									For pintNextIndex = 1 To UBound(mlngTableViews, 2)
-										If mlngTableViews(1, pintNextIndex) = 1 And mlngTableViews(2, pintNextIndex) = mobjTableView.ViewID Then
-											pblnFound = True
-											Exit For
-										End If
-									Next pintNextIndex
-
-									If Not pblnFound Then
-
-										' View hasnt yet been added, so add it !
-										pintNextIndex = UBound(mlngTableViews, 2) + 1
-										ReDim Preserve mlngTableViews(2, pintNextIndex)
-										mlngTableViews(1, pintNextIndex) = 1
-										mlngTableViews(2, pintNextIndex) = mobjTableView.ViewID
-										Exit For
-									End If
-								End If
-							End If
-						End If
-
-					Next mobjTableView
-
-					'UPGRADE_NOTE: Object mobjTableView may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-					mobjTableView = Nothing
-
-					' Does the user have select permission thru ANY views ?
-					If UBound(mstrViews) = 0 Then
-						pblnNoSelect = True
-					End If
-
-				End If
-
-				If pblnNoSelect Then
-					GenerateSQLOrderBy = False
-					mstrErrorString = vbNewLine & "You do not have permission to see the column '" & mstrGroupByColumn & "' " & vbNewLine & "either directly or through any views."
-					Exit Function
-				End If
-			End If
-			'*********************************************************************************
-
-			If mlngOrderByColumnID > 0 Then
-				strOrder = "[Order_1] " & IIf(mbOrderBy1Asc = True, "Asc", "Desc")
-			End If
-			If mlngGroupByColumnID > 0 And (mlngOrderByColumnID <> mlngGroupByColumnID) Then
+				'First Order Column - Check the user has select access through a table or view.
 				If mlngOrderByColumnID > 0 Then
-					strOrder = strOrder & ", "
-					strOrder = strOrder & "[Order_2] " & IIf(mbOrderBy2Asc = True, "Asc", "Desc")
-				Else
-					strOrder = strOrder & "[Order_1] " & IIf(mbOrderBy2Asc = True, "Asc", "Desc")
+					mobjColumnPrivileges = GetColumnPrivileges(mstrCustomReportsBaseTableName)
+					pblnColumnOK = mobjColumnPrivileges.IsValid(mstrOrderByColumn)
+					If pblnColumnOK Then
+						pblnColumnOK = mobjColumnPrivileges.Item(mstrOrderByColumn).AllowSelect
+					End If
+
+					If Not pblnColumnOK Then
+						' this column cannot be read direct. If its from a parent, try parent views
+						' Loop thru the views on the table, seeing if any have read permis for the column
+						ReDim mstrViews(0)
+						For Each mobjTableView In gcoTablePrivileges.Collection
+							If (Not mobjTableView.IsTable) And (mobjTableView.TableID = mlngCustomReportsBaseTable) And (mobjTableView.AllowSelect) Then
+
+								pstrSource = mobjTableView.ViewName
+
+								' Get the column permission for the view
+								mobjColumnPrivileges = GetColumnPrivileges(pstrSource)
+
+								' If we can see the column from this view
+								If mobjColumnPrivileges.IsValid(mstrOrderByColumn) Then
+									If mobjColumnPrivileges.Item(mstrOrderByColumn).AllowSelect Then
+
+										ReDim Preserve mstrViews(UBound(mstrViews) + 1)
+										mstrViews(UBound(mstrViews)) = mobjTableView.ViewName
+
+										' Check if view has already been added to the array
+										pblnFound = False
+										For pintNextIndex = 1 To UBound(mlngTableViews, 2)
+											If mlngTableViews(1, pintNextIndex) = 1 And mlngTableViews(2, pintNextIndex) = mobjTableView.ViewID Then
+												pblnFound = True
+												Exit For
+											End If
+										Next pintNextIndex
+
+										If Not pblnFound Then
+
+											' View hasnt yet been added, so add it !
+											pintNextIndex = UBound(mlngTableViews, 2) + 1
+											ReDim Preserve mlngTableViews(2, pintNextIndex)
+											mlngTableViews(1, pintNextIndex) = 1
+											mlngTableViews(2, pintNextIndex) = mobjTableView.ViewID
+											Exit For
+										End If
+									End If
+								End If
+							End If
+
+						Next mobjTableView
+
+						'UPGRADE_NOTE: Object mobjTableView may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
+						mobjTableView = Nothing
+
+						' Does the user have select permission thru ANY views ?
+						If UBound(mstrViews) = 0 Then
+							pblnNoSelect = True
+						End If
+
+					End If
+
+					If pblnNoSelect Then
+						GenerateSQLOrderBy = False
+						mstrErrorString = vbNewLine & "You do not have permission to see the column '" & mstrOrderByColumn & "' " & vbNewLine & "either directly or through any views."
+						Exit Function
+					End If
 				End If
-			End If
-			If (mlngOrderByColumnID = 0) And (mlngGroupByColumnID = 0) Then
-				mstrSQLOrderBy = " ORDER BY [Personnel_ID] Asc"
+
+				'Second Order Column - Check the user has select access through a table or view.
+				If mlngGroupByColumnID > 0 Then
+					pblnNoSelect = False
+					mobjColumnPrivileges = GetColumnPrivileges(mstrCustomReportsBaseTableName)
+					pblnColumnOK = mobjColumnPrivileges.IsValid(mstrGroupByColumn)
+					If pblnColumnOK Then
+						pblnColumnOK = mobjColumnPrivileges.Item(mstrGroupByColumn).AllowSelect
+					End If
+
+					If Not pblnColumnOK Then
+						' this column cannot be read direct. If its from a parent, try parent views
+						' Loop thru the views on the table, seeing if any have read permis for the column
+						ReDim mstrViews(0)
+						For Each mobjTableView In gcoTablePrivileges.Collection
+							If (Not mobjTableView.IsTable) And (mobjTableView.TableID = mlngCustomReportsBaseTable) And (mobjTableView.AllowSelect) Then
+
+								pstrSource = mobjTableView.ViewName
+
+								' Get the column permission for the view
+								mobjColumnPrivileges = GetColumnPrivileges(pstrSource)
+
+								' If we can see the column from this view
+								If mobjColumnPrivileges.IsValid(mstrOrderByColumn) Then
+									If mobjColumnPrivileges.Item(mstrOrderByColumn).AllowSelect Then
+
+										ReDim Preserve mstrViews(UBound(mstrViews) + 1)
+										mstrViews(UBound(mstrViews)) = mobjTableView.ViewName
+
+										' Check if view has already been added to the array
+										pblnFound = False
+										For pintNextIndex = 1 To UBound(mlngTableViews, 2)
+											If mlngTableViews(1, pintNextIndex) = 1 And mlngTableViews(2, pintNextIndex) = mobjTableView.ViewID Then
+												pblnFound = True
+												Exit For
+											End If
+										Next pintNextIndex
+
+										If Not pblnFound Then
+
+											' View hasnt yet been added, so add it !
+											pintNextIndex = UBound(mlngTableViews, 2) + 1
+											ReDim Preserve mlngTableViews(2, pintNextIndex)
+											mlngTableViews(1, pintNextIndex) = 1
+											mlngTableViews(2, pintNextIndex) = mobjTableView.ViewID
+											Exit For
+										End If
+									End If
+								End If
+							End If
+
+						Next mobjTableView
+
+						'UPGRADE_NOTE: Object mobjTableView may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
+						mobjTableView = Nothing
+
+						' Does the user have select permission thru ANY views ?
+						If UBound(mstrViews) = 0 Then
+							pblnNoSelect = True
+						End If
+
+					End If
+
+					If pblnNoSelect Then
+						GenerateSQLOrderBy = False
+						mstrErrorString = vbNewLine & "You do not have permission to see the column '" & mstrGroupByColumn & "' " & vbNewLine & "either directly or through any views."
+						Exit Function
+					End If
+				End If
+				'*********************************************************************************
+
+				If mlngOrderByColumnID > 0 Then
+					strOrder = "[Order_1] " & IIf(mbOrderBy1Asc = True, "Asc", "Desc")
+				End If
+				If mlngGroupByColumnID > 0 And (mlngOrderByColumnID <> mlngGroupByColumnID) Then
+					If mlngOrderByColumnID > 0 Then
+						strOrder = strOrder & ", "
+						strOrder = strOrder & "[Order_2] " & IIf(mbOrderBy2Asc = True, "Asc", "Desc")
+					Else
+						strOrder = strOrder & "[Order_1] " & IIf(mbOrderBy2Asc = True, "Asc", "Desc")
+					End If
+				End If
+				If (mlngOrderByColumnID = 0) And (mlngGroupByColumnID = 0) Then
+					mstrSQLOrderBy = " ORDER BY [Personnel_ID] Asc"
+				Else
+					mstrSQLOrderBy = " ORDER BY " & strOrder & ", [Personnel_ID] Asc"
+				End If
+
 			Else
-				mstrSQLOrderBy = " ORDER BY " & strOrder & ", [Personnel_ID] Asc"
+
+				If colSortOrder.Count > 0 Then
+					' Columns have been defined, so use these for the base table/view
+					mstrSQLOrderBy = DoDefinedOrderBy()
+				End If
+
+				If Len(mstrSQLOrderBy) > 0 Then mstrSQLOrderBy = " ORDER BY " & mstrSQLOrderBy
+
 			End If
 
-		Else
+		Catch ex As Exception
+			mstrErrorString = "Error in GenerateSQLOrderBy." & vbNewLine & ex.Message.RemoveSensitive()
+			Logs.AddDetailEntry(mstrErrorString)
+			Logs.ChangeHeaderStatus(EventLog_Status.elsFailed)
+			Return False
 
-			If colSortOrder.Count > 0 Then
-				' Columns have been defined, so use these for the base table/view
-				mstrSQLOrderBy = DoDefinedOrderBy()
-			End If
-
-			If Len(mstrSQLOrderBy) > 0 Then mstrSQLOrderBy = " ORDER BY " & mstrSQLOrderBy
-
-		End If
+		End Try
 
 		Return True
-
-GenerateSQLOrderBy_ERROR:
-
-		GenerateSQLOrderBy = False
-		mstrErrorString = "Error in GenerateSQLOrderBy." & vbNewLine & Err.Description
-		Logs.AddDetailEntry(mstrErrorString)
-		Logs.ChangeHeaderStatus(EventLog_Status.elsFailed)
 
 	End Function
 
@@ -2441,55 +2437,54 @@ GenerateSQLOrderBy_ERROR:
 	Public Function CheckRecordSet() As Boolean
 
 		' Purpose : To get recordset from temptable and show recordcount
-
 		Dim sSQL As String
 
-		On Error GoTo CheckRecordSet_ERROR
+		Try
 
-		'TM20020429 Fault 3764
-		If mbUseSequence Then
-			sSQL = "SELECT * FROM [" & mstrTempTableName & "]"
-			sSQL = sSQL & " ORDER BY [" & lng_SEQUENCECOLUMNNAME & "] ASC"
-		Else
-			sSQL = "SELECT * FROM " & mstrTempTableName
+			'TM20020429 Fault 3764
+			If mbUseSequence Then
+				sSQL = "SELECT * FROM [" & mstrTempTableName & "]"
+				sSQL = sSQL & " ORDER BY [" & lng_SEQUENCECOLUMNNAME & "] ASC"
+			Else
+				sSQL = "SELECT * FROM " & mstrTempTableName
 
-			If mbIsBradfordIndexReport Then
-				sSQL = sSQL & mstrSQLOrderBy
+				If mbIsBradfordIndexReport Then
+					sSQL = sSQL & mstrSQLOrderBy
+				End If
+
 			End If
 
-		End If
+			mrstCustomReportsOutput = DB.GetDataTable(sSQL)
 
-		mrstCustomReportsOutput = DB.GetDataTable(sSQL)
-
-		If mrstCustomReportsOutput.Rows.Count = 0 Then
-			CheckRecordSet = False
-			mstrErrorString = "No records meet the selection criteria."
-			Logs.AddDetailEntry("Completed successfully. " & mstrErrorString)
-			Logs.ChangeHeaderStatus(EventLog_Status.elsSuccessful)
-			mblnNoRecords = True
-			Exit Function
-		End If
-
-		If mlngColumnLimit > 0 Then
-			If mrstCustomReportsOutput.Columns.Count > mlngColumnLimit Then
+			If mrstCustomReportsOutput.Rows.Count = 0 Then
 				CheckRecordSet = False
-				mstrErrorString = "Report contains more than " & mlngColumnLimit & " columns. It is not possible to run this report via the intranet."
-				Logs.AddDetailEntry("Failed. " & mstrErrorString)
-				Logs.ChangeHeaderStatus(EventLog_Status.elsFailed)
-				mblnNoRecords = False
+				mstrErrorString = "No records meet the selection criteria."
+				Logs.AddDetailEntry("Completed successfully. " & mstrErrorString)
+				Logs.ChangeHeaderStatus(EventLog_Status.elsSuccessful)
+				mblnNoRecords = True
 				Exit Function
 			End If
-		End If
 
-		CheckRecordSet = True
-		Exit Function
+			If mlngColumnLimit > 0 Then
+				If mrstCustomReportsOutput.Columns.Count > mlngColumnLimit Then
+					CheckRecordSet = False
+					mstrErrorString = "Report contains more than " & mlngColumnLimit & " columns. It is not possible to run this report via the intranet."
+					Logs.AddDetailEntry("Failed. " & mstrErrorString)
+					Logs.ChangeHeaderStatus(EventLog_Status.elsFailed)
+					mblnNoRecords = False
+					Exit Function
+				End If
+			End If
 
-CheckRecordSet_ERROR:
+		Catch ex As Exception
+			mstrErrorString = "Error while checking returned recordset." & vbNewLine & "(" & ex.Message.RemoveSensitive() & ")"
+			Logs.AddDetailEntry(mstrErrorString)
+			Logs.ChangeHeaderStatus(EventLog_Status.elsFailed)
+			Return False
 
-		mstrErrorString = "Error while checking returned recordset." & vbNewLine & "(" & Err.Description & ")"
-		CheckRecordSet = False
-		Logs.AddDetailEntry(mstrErrorString)
-		Logs.ChangeHeaderStatus(EventLog_Status.elsFailed)
+		End Try
+
+		Return True
 
 	End Function
 
@@ -3832,30 +3827,31 @@ CheckRecordSet_ERROR:
 		Dim pstrBadCalcs As String
 		Dim prstTemp As DataTable
 
-		On Error GoTo Check_ERROR
+		Try
 
-		For Each objRow As DataRow In mrstCustomReportsDetails.Rows
+			For Each objRow As DataRow In mrstCustomReportsDetails.Rows
 
-			If objRow("Type").ToString() = "E" Then
-				prstTemp = DB.GetDataTable("SELECT * FROM AsrSysExpressions WHERE ExprID = " & objRow("ColExprID"))
-				If prstTemp.Rows.Count = 0 Then
-					pstrBadCalcs = "One or more calculation(s) used in this report have been deleted" & vbNewLine & "by another user."
-					Exit For
+				If objRow("Type").ToString() = "E" Then
+					prstTemp = DB.GetDataTable("SELECT * FROM AsrSysExpressions WHERE ExprID = " & objRow("ColExprID"))
+					If prstTemp.Rows.Count = 0 Then
+						pstrBadCalcs = "One or more calculation(s) used in this report have been deleted" & vbNewLine & "by another user."
+						Exit For
+					End If
 				End If
-			End If
-		Next
+			Next
 
-		If Len(pstrBadCalcs) > 0 Then
-			mstrErrorString = pstrBadCalcs
+			If Len(pstrBadCalcs) > 0 Then
+				mstrErrorString = pstrBadCalcs
+				Return False
+			End If
+
+		Catch ex As Exception
+			mstrErrorString = "Error checking if calcs still exist." & vbNewLine & ex.Message.RemoveSensitive()
 			Return False
-		End If
+
+		End Try
 
 		Return True
-
-Check_ERROR:
-
-		mstrErrorString = "Error checking if calcs still exist." & vbNewLine & Err.Description
-		CheckCalcsStillExist = False
 
 	End Function
 
@@ -3944,96 +3940,98 @@ Check_ERROR:
 		' NOTE: Checks are made elsewhere to ensure that from and to dates are not blank
 		' NOTE: Put in some code to handle blank end dates (do we include as an option on the main screen ?)
 
-		On Error GoTo GenerateSQLBradford_ERROR
 		Dim strAbsenceType As String
 		Dim iCount As Short
 		Dim astrIncludeTypes() As String
 		Dim objBradfordDetail As ReportDetailItem
 
-		' Get the absence start/end field details
-		strAbsenceType = mstrAbsenceRealSource & "." & GetColumnName(Val(GetModuleParameter(gsMODULEKEY_ABSENCE, gsPARAMETERKEY_ABSENCETYPE)))
+		Try
 
-		' Force the inputted string into an array
-		'UPGRADE_WARNING: Couldn't resolve default property of object pstrIncludeTypes. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		astrIncludeTypes = Split(pstrIncludeTypes, ",")
+			' Get the absence start/end field details
+			strAbsenceType = mstrAbsenceRealSource & "." & GetColumnName(Val(GetModuleParameter(gsMODULEKEY_ABSENCE, gsPARAMETERKEY_ABSENCETYPE)))
 
-		' Add the different reason types
-		If UBound(astrIncludeTypes) > 0 Then
-			mstrSQLWhere = IIf(mstrSQLWhere = vbNullString, "WHERE (", mstrSQLWhere & " AND (") & "UPPER(" & strAbsenceType & ") IN ("
-			For iCount = 0 To UBound(astrIncludeTypes) - 1
-				astrIncludeTypes(iCount) = Replace(astrIncludeTypes(iCount), "'", "''")
-				mstrSQLWhere = mstrSQLWhere & "'" & UCase(astrIncludeTypes(iCount)) & "'"
-				mstrSQLWhere = mstrSQLWhere & IIf(Not iCount = UBound(astrIncludeTypes) - 1, ",", "")
-			Next iCount
-			mstrSQLWhere = mstrSQLWhere & "))"
-		End If
+			' Force the inputted string into an array
+			'UPGRADE_WARNING: Couldn't resolve default property of object pstrIncludeTypes. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+			astrIncludeTypes = Split(pstrIncludeTypes, ",")
 
-		' Add the ID to the select string
-		' This is needed to re-calculate the duration amounts
-		mstrSQLSelect = mstrSQLSelect & "," & mstrSQLFrom & ".ID AS 'Personnel_ID'," & mstrAbsenceRealSource & ".ID as 'Absence_ID'"
+			' Add the different reason types
+			If UBound(astrIncludeTypes) > 0 Then
+				mstrSQLWhere = IIf(mstrSQLWhere = vbNullString, "WHERE (", mstrSQLWhere & " AND (") & "UPPER(" & strAbsenceType & ") IN ("
+				For iCount = 0 To UBound(astrIncludeTypes) - 1
+					astrIncludeTypes(iCount) = Replace(astrIncludeTypes(iCount), "'", "''")
+					mstrSQLWhere = mstrSQLWhere & "'" & UCase(astrIncludeTypes(iCount)) & "'"
+					mstrSQLWhere = mstrSQLWhere & IIf(Not iCount = UBound(astrIncludeTypes) - 1, ",", "")
+				Next iCount
+				mstrSQLWhere = mstrSQLWhere & "))"
+			End If
+
+			' Add the ID to the select string
+			' This is needed to re-calculate the duration amounts
+			mstrSQLSelect = mstrSQLSelect & "," & mstrSQLFrom & ".ID AS 'Personnel_ID'," & mstrAbsenceRealSource & ".ID as 'Absence_ID'"
 
 
-		'Personel ID
-		objBradfordDetail = New ReportDetailItem
-		objBradfordDetail.IDColumnName = "Personnel_ID"
-		objBradfordDetail.Size = 99
-		objBradfordDetail.Decimals = 0
-		objBradfordDetail.IsNumeric = False
-		objBradfordDetail.IsAverage = False
-		objBradfordDetail.IsCount = False
-		objBradfordDetail.IsTotal = False
-		objBradfordDetail.IsBreakOnChange = True
-		objBradfordDetail.IsPageOnChange = False
-		objBradfordDetail.IsValueOnChange = True
-		objBradfordDetail.SuppressRepeated = False
-		objBradfordDetail.LastValue = ""
-		objBradfordDetail.ID = -1
-		objBradfordDetail.Type = "C"
-		objBradfordDetail.TableID = 0
-		objBradfordDetail.TableName = ""
-		objBradfordDetail.ColumnName = ""
-		objBradfordDetail.IsDateColumn = False
-		objBradfordDetail.IsBitColumn = False
-		objBradfordDetail.IsHidden = True	' Is column hidden
-		objBradfordDetail.IsReportChildTable = False
-		objBradfordDetail.Repetition = False
-		ColumnDetails.Add(objBradfordDetail)
+			'Personel ID
+			objBradfordDetail = New ReportDetailItem
+			objBradfordDetail.IDColumnName = "Personnel_ID"
+			objBradfordDetail.Size = 99
+			objBradfordDetail.Decimals = 0
+			objBradfordDetail.IsNumeric = False
+			objBradfordDetail.IsAverage = False
+			objBradfordDetail.IsCount = False
+			objBradfordDetail.IsTotal = False
+			objBradfordDetail.IsBreakOnChange = True
+			objBradfordDetail.IsPageOnChange = False
+			objBradfordDetail.IsValueOnChange = True
+			objBradfordDetail.SuppressRepeated = False
+			objBradfordDetail.LastValue = ""
+			objBradfordDetail.ID = -1
+			objBradfordDetail.Type = "C"
+			objBradfordDetail.TableID = 0
+			objBradfordDetail.TableName = ""
+			objBradfordDetail.ColumnName = ""
+			objBradfordDetail.IsDateColumn = False
+			objBradfordDetail.IsBitColumn = False
+			objBradfordDetail.IsHidden = True	' Is column hidden
+			objBradfordDetail.IsReportChildTable = False
+			objBradfordDetail.Repetition = False
+			ColumnDetails.Add(objBradfordDetail)
 
-		'Absence ID
-		objBradfordDetail = New ReportDetailItem
-		objBradfordDetail.IDColumnName = "Absence_ID"
-		objBradfordDetail.Size = 99
-		objBradfordDetail.Decimals = 0
-		objBradfordDetail.IsNumeric = False
-		objBradfordDetail.IsAverage = False
-		objBradfordDetail.IsCount = False
-		objBradfordDetail.IsTotal = False
-		objBradfordDetail.IsBreakOnChange = True
-		objBradfordDetail.IsPageOnChange = False
-		objBradfordDetail.IsValueOnChange = True
-		objBradfordDetail.SuppressRepeated = False
-		objBradfordDetail.LastValue = ""
-		objBradfordDetail.ID = -1
-		objBradfordDetail.Type = "C"
-		objBradfordDetail.TableID = 0
-		objBradfordDetail.TableName = ""
-		objBradfordDetail.ColumnName = ""
-		objBradfordDetail.IsDateColumn = False
-		objBradfordDetail.IsBitColumn = False
-		objBradfordDetail.IsHidden = True	' Is column hidden
-		objBradfordDetail.IsReportChildTable = False
-		objBradfordDetail.Repetition = False
-		ColumnDetails.Add(objBradfordDetail)
+			'Absence ID
+			objBradfordDetail = New ReportDetailItem
+			objBradfordDetail.IDColumnName = "Absence_ID"
+			objBradfordDetail.Size = 99
+			objBradfordDetail.Decimals = 0
+			objBradfordDetail.IsNumeric = False
+			objBradfordDetail.IsAverage = False
+			objBradfordDetail.IsCount = False
+			objBradfordDetail.IsTotal = False
+			objBradfordDetail.IsBreakOnChange = True
+			objBradfordDetail.IsPageOnChange = False
+			objBradfordDetail.IsValueOnChange = True
+			objBradfordDetail.SuppressRepeated = False
+			objBradfordDetail.LastValue = ""
+			objBradfordDetail.ID = -1
+			objBradfordDetail.Type = "C"
+			objBradfordDetail.TableID = 0
+			objBradfordDetail.TableName = ""
+			objBradfordDetail.ColumnName = ""
+			objBradfordDetail.IsDateColumn = False
+			objBradfordDetail.IsBitColumn = False
+			objBradfordDetail.IsHidden = True	' Is column hidden
+			objBradfordDetail.IsReportChildTable = False
+			objBradfordDetail.Repetition = False
+			ColumnDetails.Add(objBradfordDetail)
 
-		' All done correctly
+			' All done correctly
+
+		Catch ex As Exception
+			mstrErrorString = "Error in GenerateSQLBradford." & vbNewLine & ex.Message.RemoveSensitive()
+			Return False
+
+		End Try
+
 		Return True
 
-
-GenerateSQLBradford_ERROR:
-
-		'UPGRADE_WARNING: Couldn't resolve default property of object GenerateSQLBradford. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-		GenerateSQLBradford = False
-		mstrErrorString = "Error in GenerateSQLBradford." & vbNewLine & Err.Description
 
 	End Function
 
@@ -4152,7 +4150,6 @@ GenerateSQLBradford_ERROR:
 		'           arrays and leaves the details recordset reference there
 		'           (dont remove it...used for summary info !)
 
-		On Error GoTo GetBradfordRecordSet_ERROR
 
 		Dim lngTableID As Integer
 		Dim iCount As Short
@@ -4162,231 +4159,234 @@ GenerateSQLBradford_ERROR:
 
 		Dim aStrRequiredFields(15, 1) As String
 
-		aStrRequiredFields(1, 1) = GetModuleParameter(gsMODULEKEY_PERSONNEL, gsPARAMETERKEY_EMPLOYEENUMBER)
-		aStrRequiredFields(2, 1) = GetModuleParameter(gsMODULEKEY_PERSONNEL, gsPARAMETERKEY_SURNAME)
-		aStrRequiredFields(3, 1) = GetModuleParameter(gsMODULEKEY_PERSONNEL, gsPARAMETERKEY_FORENAME)
-		aStrRequiredFields(4, 1) = GetModuleParameter(gsMODULEKEY_PERSONNEL, gsPARAMETERKEY_DEPARTMENT)
+		Try
 
-		aStrRequiredFields(5, 1) = GetModuleParameter(gsMODULEKEY_ABSENCE, gsPARAMETERKEY_ABSENCETYPE)
-		aStrRequiredFields(6, 1) = GetModuleParameter(gsMODULEKEY_ABSENCE, gsPARAMETERKEY_ABSENCESTARTDATE)
-		aStrRequiredFields(7, 1) = GetModuleParameter(gsMODULEKEY_ABSENCE, gsPARAMETERKEY_ABSENCESTARTSESSION)
-		aStrRequiredFields(8, 1) = GetModuleParameter(gsMODULEKEY_ABSENCE, gsPARAMETERKEY_ABSENCEENDDATE)
-		aStrRequiredFields(9, 1) = GetModuleParameter(gsMODULEKEY_ABSENCE, gsPARAMETERKEY_ABSENCEENDSESSION)
-		aStrRequiredFields(10, 1) = GetModuleParameter(gsMODULEKEY_ABSENCE, gsPARAMETERKEY_ABSENCEREASON)
-		aStrRequiredFields(11, 1) = GetModuleParameter(gsMODULEKEY_ABSENCE, gsPARAMETERKEY_ABSENCECONTINUOUS)
-		aStrRequiredFields(12, 1) = GetModuleParameter(gsMODULEKEY_ABSENCE, gsPARAMETERKEY_ABSENCEDURATION)
+			aStrRequiredFields(1, 1) = GetModuleParameter(gsMODULEKEY_PERSONNEL, gsPARAMETERKEY_EMPLOYEENUMBER)
+			aStrRequiredFields(2, 1) = GetModuleParameter(gsMODULEKEY_PERSONNEL, gsPARAMETERKEY_SURNAME)
+			aStrRequiredFields(3, 1) = GetModuleParameter(gsMODULEKEY_PERSONNEL, gsPARAMETERKEY_FORENAME)
+			aStrRequiredFields(4, 1) = GetModuleParameter(gsMODULEKEY_PERSONNEL, gsPARAMETERKEY_DEPARTMENT)
 
-		'This field is later recalculated for the included days
-		aStrRequiredFields(13, 1) = GetModuleParameter(gsMODULEKEY_ABSENCE, gsPARAMETERKEY_ABSENCEDURATION)
+			aStrRequiredFields(5, 1) = GetModuleParameter(gsMODULEKEY_ABSENCE, gsPARAMETERKEY_ABSENCETYPE)
+			aStrRequiredFields(6, 1) = GetModuleParameter(gsMODULEKEY_ABSENCE, gsPARAMETERKEY_ABSENCESTARTDATE)
+			aStrRequiredFields(7, 1) = GetModuleParameter(gsMODULEKEY_ABSENCE, gsPARAMETERKEY_ABSENCESTARTSESSION)
+			aStrRequiredFields(8, 1) = GetModuleParameter(gsMODULEKEY_ABSENCE, gsPARAMETERKEY_ABSENCEENDDATE)
+			aStrRequiredFields(9, 1) = GetModuleParameter(gsMODULEKEY_ABSENCE, gsPARAMETERKEY_ABSENCEENDSESSION)
+			aStrRequiredFields(10, 1) = GetModuleParameter(gsMODULEKEY_ABSENCE, gsPARAMETERKEY_ABSENCEREASON)
+			aStrRequiredFields(11, 1) = GetModuleParameter(gsMODULEKEY_ABSENCE, gsPARAMETERKEY_ABSENCECONTINUOUS)
+			aStrRequiredFields(12, 1) = GetModuleParameter(gsMODULEKEY_ABSENCE, gsPARAMETERKEY_ABSENCEDURATION)
 
-		'****************************************************************************
-		If mlngOrderByColumnID > 0 Then
-			aStrRequiredFields(14, 1) = CStr(mlngOrderByColumnID)
-		Else
-			aStrRequiredFields(14, 1) = CStr(-1)
-		End If
+			'This field is later recalculated for the included days
+			aStrRequiredFields(13, 1) = GetModuleParameter(gsMODULEKEY_ABSENCE, gsPARAMETERKEY_ABSENCEDURATION)
 
-		If mlngGroupByColumnID > 0 Then
-			aStrRequiredFields(15, 1) = CStr(mlngGroupByColumnID)
-		Else
-			aStrRequiredFields(15, 1) = CStr(-1)
-		End If
-		'****************************************************************************
-
-		' Allow the staff number to be undefined (Let system read the surname field)
-		lbHideStaffNumber = False
-		If aStrRequiredFields(1, 1) = "0" Then
-			aStrRequiredFields(1, 1) = GetModuleParameter(gsMODULEKEY_PERSONNEL, gsPARAMETERKEY_SURNAME)
-			lbHideStaffNumber = True
-		End If
-
-		' Allow the continuous field to be undefined (Let system read the absence reason)
-		If aStrRequiredFields(11, 1) = "0" Then
-			aStrRequiredFields(11, 1) = GetModuleParameter(gsMODULEKEY_ABSENCE, gsPARAMETERKEY_ABSENCEDURATION)
-		End If
-
-		' Ensure that module setup has been run
-		For iCount = 1 To UBound(aStrRequiredFields, 1)
-			If aStrRequiredFields(iCount, 1) = "0" Then
-				GetBradfordRecordSet = False
-				mstrErrorString = "Module setup has not been completed."
-				Exit Function
+			'****************************************************************************
+			If mlngOrderByColumnID > 0 Then
+				aStrRequiredFields(14, 1) = CStr(mlngOrderByColumnID)
+			Else
+				aStrRequiredFields(14, 1) = CStr(-1)
 			End If
-		Next iCount
 
-		mblnCustomReportsSummaryReport = (Not mbDisplayBradfordDetail)
+			If mlngGroupByColumnID > 0 Then
+				aStrRequiredFields(15, 1) = CStr(mlngGroupByColumnID)
+			Else
+				aStrRequiredFields(15, 1) = CStr(-1)
+			End If
+			'****************************************************************************
 
-		' Load the field list
-		Dim objReportItem As ReportDetailItem
+			' Allow the staff number to be undefined (Let system read the surname field)
+			lbHideStaffNumber = False
+			If aStrRequiredFields(1, 1) = "0" Then
+				aStrRequiredFields(1, 1) = GetModuleParameter(gsMODULEKEY_PERSONNEL, gsPARAMETERKEY_SURNAME)
+				lbHideStaffNumber = True
+			End If
 
-		ColumnDetails = New List(Of ReportDetailItem)
-		For iCount = 1 To UBound(aStrRequiredFields, 1)
+			' Allow the continuous field to be undefined (Let system read the absence reason)
+			If aStrRequiredFields(11, 1) = "0" Then
+				aStrRequiredFields(11, 1) = GetModuleParameter(gsMODULEKEY_ABSENCE, gsPARAMETERKEY_ABSENCEDURATION)
+			End If
 
-			If CInt(aStrRequiredFields(iCount, 1)) <> -1 Then
-
-				objReportItem = New ReportDetailItem
-
-				lngColumnID = CInt(aStrRequiredFields(iCount, 1))
-				lngTableID = GetTableIDFromColumn(lngColumnID)
-
-				objReportItem.IsBreakOnChange = False
-				objReportItem.Size = 99
-				objReportItem.Decimals = 0
-				objReportItem.IsNumeric = (GetDataType(lngTableID, lngColumnID) = 2)
-				objReportItem.IsAverage = False
-				objReportItem.IsCount = False
-				objReportItem.IsTotal = False
-
-
-				' Specify the column names and whether they are visible or not
-				Select Case iCount
-					Case 1
-						objReportItem.IDColumnName = "Staff_No"
-						objReportItem.IsHidden = lbHideStaffNumber
-						objReportItem.IsBreakOnChange = True
-					Case 2
-						objReportItem.IDColumnName = "Surname"
-						objReportItem.IsHidden = False
-					Case 3
-						objReportItem.IDColumnName = "Forenames"
-						objReportItem.IsHidden = False
-					Case 4
-						objReportItem.IDColumnName = "Department"
-						objReportItem.IsHidden = False
-					Case 5
-						objReportItem.IDColumnName = "Type"
-						objReportItem.IsHidden = Not mbDisplayBradfordDetail
-					Case 6
-						objReportItem.IDColumnName = "Start_Date"
-						objReportItem.IsHidden = Not mbDisplayBradfordDetail
-					Case 7
-						objReportItem.IDColumnName = "Start_Session"
-						objReportItem.IsHidden = Not mbDisplayBradfordDetail
-					Case 8
-						objReportItem.IDColumnName = "End_Date"
-						objReportItem.IsHidden = Not mbDisplayBradfordDetail
-					Case 9
-						objReportItem.IDColumnName = "End_Session"
-						objReportItem.IsHidden = Not mbDisplayBradfordDetail
-					Case 10
-						If mbDisplayBradfordDetail Then
-							objReportItem.IDColumnName = "Reason"
-							objReportItem.IsHidden = False
-						Else
-							objReportItem.IDColumnName = "Summary"
-							objReportItem.IsHidden = False
-						End If
-					Case 11
-						objReportItem.IDColumnName = "Continuous"
-						objReportItem.IsHidden = Not mbDisplayBradfordDetail
-					Case 12
-						objReportItem.IDColumnName = "Duration"
-						objReportItem.IsHidden = False
-						objReportItem.IsCount = True
-						objReportItem.IsTotal = True
-						objReportItem.Decimals = 1
-						objReportItem.IsNumeric = True
-					Case 13
-						objReportItem.IDColumnName = "Included_Days"
-						objReportItem.IsHidden = False
-						objReportItem.IsCount = True
-						objReportItem.IsTotal = True
-						objReportItem.Decimals = 1
-						objReportItem.IsNumeric = True
-						'**********************************************************************
-					Case 14
-						objReportItem.IDColumnName = "Order_1"
-						objReportItem.IsHidden = True
-
-					Case 15
-						objReportItem.IDColumnName = "Order_2"
-						objReportItem.IsHidden = True
-						'**********************************************************************
-
-					Case Else
-
-						If lngTableID = mlngCustomReportsBaseTable Then
-							'Personnel
-							objReportItem.IDColumnName = mstrSQLFrom & "." & GetColumnName(lngColumnID)
-						Else
-							'Absence
-							objReportItem.IDColumnName = mstrRealSource & "." & GetColumnName(lngColumnID)
-						End If
-
-				End Select
-
-
-				objReportItem.IsPageOnChange = False	'Page break on change
-				If mblnCustomReportsSummaryReport Then
-					objReportItem.IsValueOnChange = True	'Value on change
-				Else
-					objReportItem.IsValueOnChange = False	'Value on change
+			' Ensure that module setup has been run
+			For iCount = 1 To UBound(aStrRequiredFields, 1)
+				If aStrRequiredFields(iCount, 1) = "0" Then
+					GetBradfordRecordSet = False
+					mstrErrorString = "Module setup has not been completed."
+					Exit Function
 				End If
-				objReportItem.SuppressRepeated = IIf(iCount < 5 And mbBradfordSRV, True, False)	'Suppress repeated values
-				objReportItem.LastValue = ""
-				objReportItem.ID = lngColumnID
+			Next iCount
 
-				' Set the expression/column type of this column
-				objReportItem.Type = "C"
-				objReportItem.TableID = lngTableID
-				objReportItem.TableName = GetTableName(lngTableID)
-				objReportItem.ColumnName = GetColumnName(objReportItem.ID)
-				objReportItem.IsDateColumn = IsDateColumn("C", lngTableID, lngColumnID)	'??? - check these out 22/03/01
-				objReportItem.IsBitColumn = IsBitColumn("C", lngTableID, lngColumnID)
-				objReportItem.Use1000Separator = DoesColumnUseSeparators(lngColumnID)	'Does this column use 1000 separators?
+			mblnCustomReportsSummaryReport = (Not mbDisplayBradfordDetail)
 
-				'Adjust the size of the field if digit separator is used
-				If objReportItem.Use1000Separator Then
-					objReportItem.Size = objReportItem.Size + Int((objReportItem.Size - objReportItem.Decimals) / 3)
-				End If
+			' Load the field list
+			Dim objReportItem As ReportDetailItem
 
-				' Format for this numeric column
-				If objReportItem.IsNumeric Then
-					If objReportItem.Use1000Separator Then
-						objReportItem.Mask = "{0:#,0." & New String("0", objReportItem.Decimals) & "}"
+			ColumnDetails = New List(Of ReportDetailItem)
+			For iCount = 1 To UBound(aStrRequiredFields, 1)
+
+				If CInt(aStrRequiredFields(iCount, 1)) <> -1 Then
+
+					objReportItem = New ReportDetailItem
+
+					lngColumnID = CInt(aStrRequiredFields(iCount, 1))
+					lngTableID = GetTableIDFromColumn(lngColumnID)
+
+					objReportItem.IsBreakOnChange = False
+					objReportItem.Size = 99
+					objReportItem.Decimals = 0
+					objReportItem.IsNumeric = (GetDataType(lngTableID, lngColumnID) = 2)
+					objReportItem.IsAverage = False
+					objReportItem.IsCount = False
+					objReportItem.IsTotal = False
+
+
+					' Specify the column names and whether they are visible or not
+					Select Case iCount
+						Case 1
+							objReportItem.IDColumnName = "Staff_No"
+							objReportItem.IsHidden = lbHideStaffNumber
+							objReportItem.IsBreakOnChange = True
+						Case 2
+							objReportItem.IDColumnName = "Surname"
+							objReportItem.IsHidden = False
+						Case 3
+							objReportItem.IDColumnName = "Forenames"
+							objReportItem.IsHidden = False
+						Case 4
+							objReportItem.IDColumnName = "Department"
+							objReportItem.IsHidden = False
+						Case 5
+							objReportItem.IDColumnName = "Type"
+							objReportItem.IsHidden = Not mbDisplayBradfordDetail
+						Case 6
+							objReportItem.IDColumnName = "Start_Date"
+							objReportItem.IsHidden = Not mbDisplayBradfordDetail
+						Case 7
+							objReportItem.IDColumnName = "Start_Session"
+							objReportItem.IsHidden = Not mbDisplayBradfordDetail
+						Case 8
+							objReportItem.IDColumnName = "End_Date"
+							objReportItem.IsHidden = Not mbDisplayBradfordDetail
+						Case 9
+							objReportItem.IDColumnName = "End_Session"
+							objReportItem.IsHidden = Not mbDisplayBradfordDetail
+						Case 10
+							If mbDisplayBradfordDetail Then
+								objReportItem.IDColumnName = "Reason"
+								objReportItem.IsHidden = False
+							Else
+								objReportItem.IDColumnName = "Summary"
+								objReportItem.IsHidden = False
+							End If
+						Case 11
+							objReportItem.IDColumnName = "Continuous"
+							objReportItem.IsHidden = Not mbDisplayBradfordDetail
+						Case 12
+							objReportItem.IDColumnName = "Duration"
+							objReportItem.IsHidden = False
+							objReportItem.IsCount = True
+							objReportItem.IsTotal = True
+							objReportItem.Decimals = 1
+							objReportItem.IsNumeric = True
+						Case 13
+							objReportItem.IDColumnName = "Included_Days"
+							objReportItem.IsHidden = False
+							objReportItem.IsCount = True
+							objReportItem.IsTotal = True
+							objReportItem.Decimals = 1
+							objReportItem.IsNumeric = True
+							'**********************************************************************
+						Case 14
+							objReportItem.IDColumnName = "Order_1"
+							objReportItem.IsHidden = True
+
+						Case 15
+							objReportItem.IDColumnName = "Order_2"
+							objReportItem.IsHidden = True
+							'**********************************************************************
+
+						Case Else
+
+							If lngTableID = mlngCustomReportsBaseTable Then
+								'Personnel
+								objReportItem.IDColumnName = mstrSQLFrom & "." & GetColumnName(lngColumnID)
+							Else
+								'Absence
+								objReportItem.IDColumnName = mstrRealSource & "." & GetColumnName(lngColumnID)
+							End If
+
+					End Select
+
+
+					objReportItem.IsPageOnChange = False	'Page break on change
+					If mblnCustomReportsSummaryReport Then
+						objReportItem.IsValueOnChange = True	'Value on change
 					Else
-						objReportItem.Mask = "{0:#0." & New String("0", objReportItem.Decimals) & "}"
+						objReportItem.IsValueOnChange = False	'Value on change
+					End If
+					objReportItem.SuppressRepeated = IIf(iCount < 5 And mbBradfordSRV, True, False)	'Suppress repeated values
+					objReportItem.LastValue = ""
+					objReportItem.ID = lngColumnID
+
+					' Set the expression/column type of this column
+					objReportItem.Type = "C"
+					objReportItem.TableID = lngTableID
+					objReportItem.TableName = GetTableName(lngTableID)
+					objReportItem.ColumnName = GetColumnName(objReportItem.ID)
+					objReportItem.IsDateColumn = IsDateColumn("C", lngTableID, lngColumnID)	'??? - check these out 22/03/01
+					objReportItem.IsBitColumn = IsBitColumn("C", lngTableID, lngColumnID)
+					objReportItem.Use1000Separator = DoesColumnUseSeparators(lngColumnID)	'Does this column use 1000 separators?
+
+					'Adjust the size of the field if digit separator is used
+					If objReportItem.Use1000Separator Then
+						objReportItem.Size = objReportItem.Size + Int((objReportItem.Size - objReportItem.Decimals) / 3)
 					End If
 
+					' Format for this numeric column
+					If objReportItem.IsNumeric Then
+						If objReportItem.Use1000Separator Then
+							objReportItem.Mask = "{0:#,0." & New String("0", objReportItem.Decimals) & "}"
+						Else
+							objReportItem.Mask = "{0:#0." & New String("0", objReportItem.Decimals) & "}"
+						End If
+
+					End If
+
+					ColumnDetails.Add(objReportItem)
+
 				End If
 
-				ColumnDetails.Add(objReportItem)
+			Next iCount
 
-			End If
+			' Get those columns defined as a SortOrder and load into array
+			Dim objSortItem As ReportSortItem
+			colSortOrder = New List(Of ReportSortItem)()
 
-		Next iCount
+			'Employee surname
+			objSortItem = New ReportSortItem
+			objSortItem.ColExprID = aStrRequiredFields(2, 1) ' mstrOrderByColumn
+			objSortItem.AscDesc = "Asc"
+			colSortOrder.Add(objSortItem)
 
-		' Get those columns defined as a SortOrder and load into array
-		Dim objSortItem As ReportSortItem
-		colSortOrder = New List(Of ReportSortItem)()
+			'Employee forename
+			objSortItem = New ReportSortItem
+			objSortItem.ColExprID = aStrRequiredFields(3, 1)	'mstrGroupByColumn
+			objSortItem.AscDesc = "Asc"
+			colSortOrder.Add(objSortItem)
 
-		'Employee surname
-		objSortItem = New ReportSortItem
-		objSortItem.ColExprID = aStrRequiredFields(2, 1) ' mstrOrderByColumn
-		objSortItem.AscDesc = "Asc"
-		colSortOrder.Add(objSortItem)
+			'Employee staff number
+			objSortItem = New ReportSortItem
+			objSortItem.ColExprID = aStrRequiredFields(1, 1)	'mstrGroupByColumn
+			objSortItem.AscDesc = "Asc"
+			colSortOrder.Add(objSortItem)
 
-		'Employee forename
-		objSortItem = New ReportSortItem
-		objSortItem.ColExprID = aStrRequiredFields(3, 1)	'mstrGroupByColumn
-		objSortItem.AscDesc = "Asc"
-		colSortOrder.Add(objSortItem)
+			' Force duration and included days to be numeric format in Excel
+			iCount = 11 - IIf(lbHideStaffNumber = True, 1, 0)
 
-		'Employee staff number
-		objSortItem = New ReportSortItem
-		objSortItem.ColExprID = aStrRequiredFields(1, 1)	'mstrGroupByColumn
-		objSortItem.AscDesc = "Asc"
-		colSortOrder.Add(objSortItem)
+		Catch ex As Exception
+			mstrErrorString = "Error whilst retrieving the details recordsets'." & vbNewLine & ex.Message.RemoveSensitive()
+			Return False
 
-		' Force duration and included days to be numeric format in Excel
-		iCount = 11 - IIf(lbHideStaffNumber = True, 1, 0)
+		End Try
 
 		Return True
-
-GetBradfordRecordSet_ERROR:
-
-		GetBradfordRecordSet = False
-		mstrErrorString = "Error whilst retrieving the details recordsets'." & vbNewLine & Err.Description
 
 	End Function
 

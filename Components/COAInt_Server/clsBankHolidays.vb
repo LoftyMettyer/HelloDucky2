@@ -37,15 +37,10 @@ Friend Class clsBankHolidays
 		End Set
 	End Property
 	
-	Public ReadOnly Property Item(ByVal sColTypeAndID As String) As clsBankHoliday
+	Public ReadOnly Property Item(sColTypeAndID As String) As clsBankHoliday
 		Get
-			
 			' Provide a reference to a specific item in the collection
-			
-			On Error Resume Next
-			
-			Item = mCol.Item(sColTypeAndID)
-			
+			Return mCol.Item(sColTypeAndID)
 		End Get
 	End Property
 	
