@@ -121,13 +121,9 @@ Friend Class clsCalendarEvents
 
 	Public ReadOnly Property Item(ByVal pstrEventName As String) As clsCalendarEvent
 		Get
-
 			' Provide a reference to a specific item in the collection
 
-			On Error Resume Next
-
 			Item = mCol.Item(pstrEventName)
-
 		End Get
 	End Property
 

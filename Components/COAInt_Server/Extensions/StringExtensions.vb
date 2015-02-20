@@ -27,6 +27,14 @@ Namespace Extensions
 			End If
 		End Function
 
+		<Extension> _
+		Public Function RemoveSensitive(Source As String) As String
+
+			Return Source
+
+		End Function
+
+
 	End Module
 
 End Namespace
