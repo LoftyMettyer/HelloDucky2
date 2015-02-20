@@ -2,6 +2,7 @@
 var thereIsAtLeastOneEditableColumn = false;
 var lastRowEdited = 0;
 var followOnRow = 0;
+var gridDefaultHeight;
 
 //todo remove this function!
 //New functionality - get the selected row's record ID from the hidden tag		
@@ -568,8 +569,17 @@ function find_window_onload() {
 						$("#findGridTable")[0].toggleToolbar(); // Toggle toolbar on & off when Search button is pressed.
 						$("#findGridTable")[0].clearToolbar(); // clear menu
 
-						$("#findGridTable_iledit").toggleClass('ui-state-disabled', $('#frmFindForm .ui-search-toolbar').is(':visible'));
-						$("#findGridTable_iladd").toggleClass('ui-state-disabled', $('#frmFindForm .ui-search-toolbar').is(':visible'));
+						var isSearching = $('#frmFindForm .ui-search-toolbar').is(':visible');
+
+						$("#findGridTable_iledit").toggleClass('ui-state-disabled', isSearching);
+						$("#findGridTable_iladd").toggleClass('ui-state-disabled', isSearching);
+
+						if (isSearching) {
+							var currentHeight = $('#findGridRow div.ui-jqgrid-bdiv').outerHeight();
+							$("#findGridTable").jqGrid('setGridHeight', currentHeight - 31);
+						} else {
+							$("#findGridTable").jqGrid('setGridHeight', gridDefaultHeight);
+						}
 					},
 					position: 'first',
 					title: 'Search',
@@ -744,9 +754,9 @@ function find_window_onload() {
 				} catch (e) {
 					
 				}
-				var newHeight = gridRowHeight - pageTitleHeight - gridHeaderHeight - gridFooterHeight - footerMargin - summaryRowHeight;
+				gridDefaultHeight = gridRowHeight - pageTitleHeight - gridHeaderHeight - gridFooterHeight - footerMargin - summaryRowHeight;
 
-				$("#findGridTable").jqGrid('setGridHeight', newHeight);
+				$("#findGridTable").jqGrid('setGridHeight', gridDefaultHeight);
 			}
 
 			//NOTE: may come in useful.
