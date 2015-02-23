@@ -66,52 +66,12 @@ Module modExpression
 		End Select
 
 	End Function
-
-	Public Function ValidNameChar(ByVal piAsciiCode As Integer, ByVal piPosition As Short) As Integer
-		' Validate the characters used to create table and column names.
-		On Error GoTo ErrorTrap
-
-		If piAsciiCode = Asc(" ") Then
-			' Substitute underscores for spaces.
-			If piPosition <> 0 Then
-				piAsciiCode = Asc("_")
-			Else
-				piAsciiCode = 0
-			End If
-		Else
-			' Allow only pure alpha-numerics and underscores.
-			' Do not allow numerics in the first chracter position.
-			'    If Not (piAsciiCode = 8 Or piAsciiCode = Asc("_") Or _
-			''      (piAsciiCode >= Asc("0") And piAsciiCode <= Asc("9") And piPosition <> 0) Or _
-			''      (piAsciiCode >= Asc("A") And piAsciiCode <= Asc("Z")) Or _
-			''      (piAsciiCode >= Asc("a") And piAsciiCode <= Asc("z"))) Then
-			'      piAsciiCode = 0
-			'    End If
-			'  End If
-
-			' RH 15/08/2000 - BUG...we should be able to start filter/calcs with a number char
-			If Not (piAsciiCode = 8 Or piAsciiCode = Asc("_") Or (piAsciiCode >= Asc("0") And piAsciiCode <= Asc("9")) Or (piAsciiCode >= Asc("A") And piAsciiCode <= Asc("Z")) Or (piAsciiCode >= Asc("a") And piAsciiCode <= Asc("z"))) Then
-				piAsciiCode = 0
-			End If
-		End If
-
-		Return piAsciiCode
-
-ErrorTrap:
-		ValidNameChar = 0
-		Err.Clear()
-
-	End Function
-
-
-	Public Function ValidateOperatorParameters(ByRef plngOperatorID As Integer, ByRef piResultType As ExpressionValueTypes, ByRef piParam1Type As Short, ByRef piParam2Type As Short) As Boolean
+	
+	Public Function ValidateOperatorParameters(plngOperatorID As Integer, ByRef piResultType As ExpressionValueTypes, ByRef piParam1Type As Short, ByRef piParam2Type As Short) As Boolean
 		' Validate the given operator with the given parameters.
 		' Return the result type in the piResultType parameter.
-		On Error GoTo ErrorTrap
 
 		Dim fOK As Boolean
-
-		fOK = True
 
 		' Validate the parameter types for the given operator.
 		Select Case plngOperatorID
@@ -187,28 +147,19 @@ ErrorTrap:
 				fOK = False
 		End Select
 
-TidyUpAndExit:
 		If Not fOK Then
 			piResultType = ExpressionTypes.giEXPR_UNKNOWNTYPE
 		End If
 
-		ValidateOperatorParameters = fOK
-		Exit Function
-
-ErrorTrap:
-		fOK = False
-		Resume TidyUpAndExit
+		Return fOK
 
 	End Function
 
 	Public Function ValidateFunctionParameters(ByRef plngFunctionID As Integer, ByRef piResultType As ExpressionValueTypes, Optional ByRef piParam1Type As Integer = 0, Optional ByRef piParam2Type As Integer = 0, Optional ByRef piParam3Type As Integer = 0, Optional ByRef piParam4Type As Integer = 0, Optional ByRef piParam5Type As Integer = 0, Optional ByRef piParam6Type As Integer = 0) As Boolean
 		' Validate the given function with the given parameters.
 		' Return the result type in the piResultType parameter.
-		On Error GoTo ErrorTrap
 
 		Dim fOK As Boolean
-
-		fOK = True
 
 		' Get the parameter types.
 		'UPGRADE_NOTE: IsMissing() was changed to IsNothing(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="8AE1CB93-37AB-439A-A4FF-BE3B6760BB23"'
@@ -569,17 +520,11 @@ ErrorTrap:
 				fOK = False
 		End Select
 
-TidyUpAndExit:
 		If Not fOK Then
 			piResultType = ExpressionTypes.giEXPR_UNKNOWNTYPE
 		End If
 
-		ValidateFunctionParameters = fOK
-		Exit Function
-
-ErrorTrap:
-		fOK = False
-		Resume TidyUpAndExit
+		Return fOK
 
 	End Function
 

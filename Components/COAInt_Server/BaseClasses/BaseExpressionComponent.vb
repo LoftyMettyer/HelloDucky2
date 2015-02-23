@@ -46,6 +46,9 @@ Namespace BaseClasses
 
 		End Function
 
+		Public Overridable Function PrintComponent(piLevel As Integer) As Boolean
+			Return False
+		End Function
 
 #Region "From modExpression"
 

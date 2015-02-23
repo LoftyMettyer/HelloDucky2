@@ -21,27 +21,30 @@ Namespace Expressions
 			MyBase.New(Value)
 		End Sub
 
-		Public Function ContainsExpression(ByRef plngExprID As Integer) As Boolean
+		Public Function ContainsExpression(plngExprID As Integer) As Boolean
 			' Retrun TRUE if the current expression (or any of its sub expressions)
 			' contains the given expression. This ensures no cyclic expressions get created.
 			'JPD 20040507 Fault 8600
-			On Error GoTo ErrorTrap
 
-			' Check if the calc component IS the one we're checking for.
-			ContainsExpression = (plngExprID = mlngCalculationID)
+			Dim bContains As Boolean
 
-			If Not ContainsExpression Then
-				' The calc component IS NOT the one we're checking for.
-				' Check if it contains the one we're looking for.
-				ContainsExpression = HasExpressionComponent(mlngCalculationID, plngExprID)
-			End If
+			Try
 
-TidyUpAndExit:
-			Exit Function
+				' Check if the calc component IS the one we're checking for.
+				bContains = (plngExprID = mlngCalculationID)
 
-ErrorTrap:
-			ContainsExpression = True
-			Resume TidyUpAndExit
+				If Not bContains Then
+					' The calc component IS NOT the one we're checking for.
+					' Check if it contains the one we're looking for.
+					bContains = HasExpressionComponent(mlngCalculationID, plngExprID)
+				End If
+
+			Catch ex As Exception
+				Return True
+
+			End Try
+
+			Return bContains
 
 		End Function
 
@@ -67,10 +70,6 @@ ErrorTrap:
 
 			End If
 
-		End Function
-
-		Public Function PrintComponent(piLevel As Short) As Boolean
-			Return True
 		End Function
 
 		Public Function CopyComponent() As Object

@@ -32,41 +32,38 @@ Namespace Expressions
 																, psUDFs() As String _
 																, Optional plngFixedExprID As Integer = 0, Optional psFixedSQLCode As String = "") As Boolean
 			' Return the SQL code for the component.
-			On Error GoTo ErrorTrap
-
 			Dim fOK As Boolean = True
 			Dim sCode As String = ""
 
-			Select Case miType
-				Case ExpressionValueTypes.giEXPRVALUE_CHARACTER
-					sCode = "'" & Replace(msCharacterValue, "'", "''") & "'"
-				Case ExpressionValueTypes.giEXPRVALUE_NUMERIC
-					sCode = Trim(Str(mdblNumericValue))
-				Case ExpressionValueTypes.giEXPRVALUE_LOGIC
-					sCode = IIf(mfLogicValue, "1", "0").ToString()
-				Case ExpressionValueTypes.giEXPRVALUE_DATE
-					'UPGRADE_WARNING: Couldn't resolve default property of object mdtDateValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-					sCode = IIf(IsDBNull(mdtDateValue), "null", "convert(datetime, '" & VB6.Format(mdtDateValue, "MM/dd/yyyy") & "')").ToString()
-			End Select
+			Try
 
-TidyUpAndExit:
-			If fOK Then
-				psRuntimeCode = sCode
-			Else
-				psRuntimeCode = ""
-			End If
+				Select Case miType
+					Case ExpressionValueTypes.giEXPRVALUE_CHARACTER
+						sCode = "'" & Replace(msCharacterValue, "'", "''") & "'"
+					Case ExpressionValueTypes.giEXPRVALUE_NUMERIC
+						sCode = Trim(Str(mdblNumericValue))
+					Case ExpressionValueTypes.giEXPRVALUE_LOGIC
+						sCode = IIf(mfLogicValue, "1", "0").ToString()
+					Case ExpressionValueTypes.giEXPRVALUE_DATE
+						'UPGRADE_WARNING: Couldn't resolve default property of object mdtDateValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+						'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
+						sCode = IIf(IsDBNull(mdtDateValue), "null", "convert(datetime, '" & VB6.Format(mdtDateValue, "MM/dd/yyyy") & "')").ToString()
+				End Select
+
+			Catch ex As Exception
+				fOK = False
+
+			Finally
+				If fOK Then
+					psRuntimeCode = sCode
+				Else
+					psRuntimeCode = ""
+				End If
+
+			End Try
 
 			Return fOK
 
-ErrorTrap:
-			fOK = False
-			Resume TidyUpAndExit
-
-		End Function
-
-		Public Function PrintComponent(piLevel As Short) As Boolean
-			Return True
 		End Function
 
 		Public Function WriteComponent() As Boolean

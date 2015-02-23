@@ -41,102 +41,71 @@ Namespace Expressions
 																, psUDFs() As String _
 																, Optional plngFixedExprID As Integer = 0, Optional psFixedSQLCode As String = "") As Boolean
 
-			On Error GoTo ErrorTrap
-
-			Dim fOK As Boolean
+			Dim fOK As Boolean = True
 			Dim fFound As Boolean
 			Dim iLoop As Short
-			Dim sCode As String
+			Dim sCode As String = ""
 
-			fOK = True
-			sCode = ""
+			Try
 
-			' Do not display the prompt form if we are just validating the expression.
-			If pfValidating Then
-				Select Case ReturnType
-					Case ExpressionValueTypes.giEXPRVALUE_CHARACTER
-						sCode = "'" & gsDUMMY_CHARACTER & "'"
-					Case ExpressionValueTypes.giEXPRVALUE_NUMERIC
-						sCode = Trim(Str(gsDUMMY_NUMERIC))
-					Case ExpressionValueTypes.giEXPRVALUE_LOGIC
-						sCode = IIf(gsDUMMY_LOGIC, "1", "0").ToString()
-					Case ExpressionValueTypes.giEXPRVALUE_DATE
-						sCode = "convert(datetime, '" & VB6.Format(CDate(gsDUMMY_DATE), "MM/dd/yyyy") & "')"
-				End Select
-			Else
+				' Do not display the prompt form if we are just validating the expression.
+				If pfValidating Then
+					Select Case ReturnType
+						Case ExpressionValueTypes.giEXPRVALUE_CHARACTER
+							sCode = "'" & gsDUMMY_CHARACTER & "'"
+						Case ExpressionValueTypes.giEXPRVALUE_NUMERIC
+							sCode = Trim(Str(gsDUMMY_NUMERIC))
+						Case ExpressionValueTypes.giEXPRVALUE_LOGIC
+							sCode = IIf(gsDUMMY_LOGIC, "1", "0").ToString()
+						Case ExpressionValueTypes.giEXPRVALUE_DATE
+							sCode = "convert(datetime, '" & VB6.Format(CDate(gsDUMMY_DATE), "MM/dd/yyyy") & "')"
+					End Select
+				Else
 
-				fFound = False
-				For iLoop = 0 To UBound(pavPromptedValues, 2)
-					'UPGRADE_WARNING: Couldn't resolve default property of object pavPromptedValues(0, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					If pavPromptedValues(0, iLoop) = mobjBaseComponent.ComponentID Then
-						Select Case ReturnType
-							Case ExpressionValueTypes.giEXPRVALUE_CHARACTER
-								'UPGRADE_WARNING: Couldn't resolve default property of object pavPromptedValues(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-								sCode = "'" & Replace(pavPromptedValues(1, iLoop), "'", "''") & "'"
-							Case ExpressionValueTypes.giEXPRVALUE_NUMERIC
-								'UPGRADE_WARNING: Couldn't resolve default property of object pavPromptedValues(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-								sCode = Trim(Str(pavPromptedValues(1, iLoop)))
-							Case ExpressionValueTypes.giEXPRVALUE_LOGIC
-								'UPGRADE_WARNING: Couldn't resolve default property of object pavPromptedValues(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-								sCode = IIf(pavPromptedValues(1, iLoop), "1", "0")
-							Case ExpressionValueTypes.giEXPRVALUE_DATE
-								' JPD 20040212 Fault 8082 - DO NOT CONVERT DATE PROMPTED VALUES
-								' THEY ARE PASSED IN FROM THE ASPs AS STRING VALUES IN THE CORRECT
-								' FORMAT (mm/dd/yyyy) AND DOING ANY KIND OF CONVERSION JUST SCREWS
-								' THINGS UP.
-								'sCode = "convert(datetime, '" & Format(pavPromptedValues(1, iLoop), "MM/dd/yyyy") & "')"
-								'UPGRADE_WARNING: Couldn't resolve default property of object pavPromptedValues(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-								sCode = "convert(datetime, '" & pavPromptedValues(1, iLoop) & "')"
-						End Select
+					fFound = False
+					For iLoop = 0 To UBound(pavPromptedValues, 2)
+						'UPGRADE_WARNING: Couldn't resolve default property of object pavPromptedValues(0, iLoop). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+						If pavPromptedValues(0, iLoop) = mobjBaseComponent.ComponentID Then
+							Select Case ReturnType
+								Case ExpressionValueTypes.giEXPRVALUE_CHARACTER
+									'UPGRADE_WARNING: Couldn't resolve default property of object pavPromptedValues(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+									sCode = "'" & Replace(pavPromptedValues(1, iLoop), "'", "''") & "'"
+								Case ExpressionValueTypes.giEXPRVALUE_NUMERIC
+									'UPGRADE_WARNING: Couldn't resolve default property of object pavPromptedValues(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+									sCode = Trim(Str(pavPromptedValues(1, iLoop)))
+								Case ExpressionValueTypes.giEXPRVALUE_LOGIC
+									'UPGRADE_WARNING: Couldn't resolve default property of object pavPromptedValues(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+									sCode = IIf(pavPromptedValues(1, iLoop), "1", "0")
+								Case ExpressionValueTypes.giEXPRVALUE_DATE
+									' JPD 20040212 Fault 8082 - DO NOT CONVERT DATE PROMPTED VALUES
+									' THEY ARE PASSED IN FROM THE ASPs AS STRING VALUES IN THE CORRECT
+									' FORMAT (mm/dd/yyyy) AND DOING ANY KIND OF CONVERSION JUST SCREWS
+									' THINGS UP.
+									'sCode = "convert(datetime, '" & Format(pavPromptedValues(1, iLoop), "MM/dd/yyyy") & "')"
+									'UPGRADE_WARNING: Couldn't resolve default property of object pavPromptedValues(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+									sCode = "convert(datetime, '" & pavPromptedValues(1, iLoop) & "')"
+							End Select
 
-						fFound = True
-					End If
-				Next iLoop
-				fOK = fFound
+							fFound = True
+						End If
+					Next iLoop
+					fOK = fFound
 
+				End If
 
-			End If
+			Catch ex As Exception
+				fOK = False
 
-TidyUpAndExit:
-			If fOK Then
-				psRuntimeCode = sCode
-			Else
-				psRuntimeCode = ""
-			End If
+			Finally
+				If fOK Then
+					psRuntimeCode = sCode
+				Else
+					psRuntimeCode = ""
+				End If
+
+			End Try
 
 			Return fOK
-
-ErrorTrap:
-			fOK = False
-			Resume TidyUpAndExit
-
-		End Function
-
-
-		Public Function PrintComponent(ByRef piLevel As Short) As Boolean
-			'Dim Printer As New Printing.PrinterSettings
-			' Print the component definition to the printer object.
-			On Error GoTo ErrorTrap
-
-			Dim fOK As Boolean
-
-			fOK = True
-
-			' Position the printing.
-			' TODO: Implement printing
-			'With Printer
-			'	.CurrentX = giPRINT_XINDENT + (piLevel * giPRINT_XSPACE)
-			'	.CurrentY = .CurrentY + giPRINT_YSPACE
-			'	Printer.Print(ComponentDescription)
-			'End With
-
-TidyUpAndExit:
-			PrintComponent = fOK
-			Exit Function
-
-ErrorTrap:
-			fOK = False
-			Resume TidyUpAndExit
 
 		End Function
 

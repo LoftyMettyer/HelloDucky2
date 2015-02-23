@@ -29,59 +29,32 @@ Namespace Expressions
 
 		Private mstrUDFRuntimeCode As String = ""
 
-		Public Function ContainsExpression(ByRef plngExprID As Integer) As Boolean
+		Public Function ContainsExpression(plngExprID As Integer) As Boolean
 			' Retrun TRUE if the current expression (or any of its sub expressions)
 			' contains the given expression. This ensures no cyclic expressions get created.
 			'JPD 20040507 Fault 8600
-			On Error GoTo ErrorTrap
 
-			ContainsExpression = False
+			Dim bContainsExpression = False
 
-			If mlngSelFilterID > 0 Then
-				' Check if the calc component IS the one we're checking for.
-				ContainsExpression = (plngExprID = mlngSelFilterID)
+			Try
 
-				If Not ContainsExpression Then
-					' The calc component IS NOT the one we're checking for.
-					' Check if it contains the one we're looking for.
-					ContainsExpression = HasExpressionComponent(mlngSelFilterID, plngExprID)
+				If mlngSelFilterID > 0 Then
+					' Check if the calc component IS the one we're checking for.
+					bContainsExpression = (plngExprID = mlngSelFilterID)
+
+					If Not bContainsExpression Then
+						' The calc component IS NOT the one we're checking for.
+						' Check if it contains the one we're looking for.
+						bContainsExpression = HasExpressionComponent(mlngSelFilterID, plngExprID)
+					End If
 				End If
-			End If
 
-TidyUpAndExit:
-			Exit Function
+			Catch ex As Exception
+				Return True
 
-ErrorTrap:
-			ContainsExpression = True
-			Resume TidyUpAndExit
+			End Try
 
-		End Function
-
-		Public Function PrintComponent(piLevel As Short) As Boolean
-			'Dim Printer As New Printing.PrinterSettings
-
-			' Print the component definition to the printer object.
-			On Error GoTo ErrorTrap
-
-			Dim fOK As Boolean
-
-			fOK = True
-
-			' Position the printing.
-			' TODO: Implement printing
-			'With Printer
-			'	.CurrentX = giPRINT_XINDENT + (piLevel * giPRINT_XSPACE)
-			'	.CurrentY = .CurrentY + giPRINT_YSPACE
-			'	Printer.Print(ComponentDescription)
-			'End With
-
-TidyUpAndExit:
-			PrintComponent = fOK
-			Exit Function
-
-ErrorTrap:
-			fOK = False
-			Resume TidyUpAndExit
+			Return bContainsExpression
 
 		End Function
 
@@ -174,7 +147,6 @@ ErrorTrap:
 		Public ReadOnly Property ComponentDescription() As String
 			Get
 				' Return a description of the field component.
-				On Error GoTo ErrorTrap
 
 				Dim fOK As Boolean
 				Dim fChildField As Boolean
@@ -184,99 +156,98 @@ ErrorTrap:
 				Dim sSelectionType As String = ""
 				Dim rsInfo As DataTable
 
-				' Get the column and table name.
-				sSQL = "SELECT ASRSysColumns.columnName, ASRSysTables.tableName FROM ASRSysColumns INNER JOIN ASRSysTables ON ASRSysColumns.tableID = ASRSysTables.tableID WHERE ASRSysColumns.columnID = " & Trim(Str(mlngColumnID))
-				rsInfo = DB.GetDataTable(sSQL)
-				With rsInfo
-					fOK = (.Rows.Count > 0)
+				Try
+
+					' Get the column and table name.
+					sSQL = "SELECT ASRSysColumns.columnName, ASRSysTables.tableName FROM ASRSysColumns INNER JOIN ASRSysTables ON ASRSysColumns.tableID = ASRSysTables.tableID WHERE ASRSysColumns.columnID = " & Trim(Str(mlngColumnID))
+					rsInfo = DB.GetDataTable(sSQL)
+					With rsInfo
+						fOK = (.Rows.Count > 0)
+
+						If fOK Then
+							sColumnName = .Rows(0)("ColumnName").ToString()
+							sTableName = .Rows(0)("TableName").ToString()
+						Else
+							sColumnName = "<unknown>"
+							sTableName = "<unknown>"
+						End If
+
+					End With
+					'UPGRADE_NOTE: Object rsInfo may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
+					rsInfo = Nothing
 
 					If fOK Then
-						sColumnName = .Rows(0)("ColumnName").ToString()
-						sTableName = .Rows(0)("TableName").ToString()
-					Else
-						sColumnName = "<unknown>"
-						sTableName = "<unknown>"
-					End If
+						' Add the selection type description if required.
+						If (miFieldPassType = FieldPassTypes.ByValue) Then
+							' Only give the full description if the field is in a child table of the
+							' expression's parent table.
 
-				End With
-				'UPGRADE_NOTE: Object rsInfo may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-				rsInfo = Nothing
+							sSQL = "SELECT * FROM ASRSysRelations WHERE parentID = " & Trim(Str(mobjBaseComponent.ParentExpression.BaseTableID)) & " AND childID = " & Trim(Str(mlngTableID))
+							rsInfo = DB.GetDataTable(sSQL)
 
-				If fOK Then
-					' Add the selection type description if required.
-					If (miFieldPassType = FieldPassTypes.ByValue) Then
-						' Only give the full description if the field is in a child table of the
-						' expression's parent table.
+							fChildField = (rsInfo.Rows.Count > 0)
 
-						sSQL = "SELECT * FROM ASRSysRelations WHERE parentID = " & Trim(Str(mobjBaseComponent.ParentExpression.BaseTableID)) & " AND childID = " & Trim(Str(mlngTableID))
-						rsInfo = DB.GetDataTable(sSQL)
+							'UPGRADE_NOTE: Object rsInfo may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
+							rsInfo = Nothing
 
-						fChildField = (rsInfo.Rows.Count > 0)
+							If fChildField Then
+								Select Case miSelectionType
+									Case FieldSelectionTypes.giSELECT_FIRSTRECORD
+										sSelectionType = "(first record"
+									Case FieldSelectionTypes.giSELECT_LASTRECORD
+										sSelectionType = "(last record"
+									Case FieldSelectionTypes.giSELECT_SPECIFICRECORD
+										sSelectionType = "(line " & Trim(Str(mlngSelectionLine))
+									Case FieldSelectionTypes.giSELECT_RECORDTOTAL
+										sSelectionType = "(total"
+									Case FieldSelectionTypes.giSELECT_RECORDCOUNT
+										sSelectionType = "(record count"
+									Case Else
+										sSelectionType = "(<unknown>"
+								End Select
 
-						'UPGRADE_NOTE: Object rsInfo may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-						rsInfo = Nothing
+								If mlngSelOrderID > 0 Then
+									' Get the order name.
+									sSQL = "SELECT name FROM ASRSysOrders WHERE orderID = " & Trim(Str(mlngSelOrderID))
+									rsInfo = DB.GetDataTable(sSQL)
 
-						If fChildField Then
-							Select Case miSelectionType
-								Case FieldSelectionTypes.giSELECT_FIRSTRECORD
-									sSelectionType = "(first record"
-								Case FieldSelectionTypes.giSELECT_LASTRECORD
-									sSelectionType = "(last record"
-								Case FieldSelectionTypes.giSELECT_SPECIFICRECORD
-									sSelectionType = "(line " & Trim(Str(mlngSelectionLine))
-								Case FieldSelectionTypes.giSELECT_RECORDTOTAL
-									sSelectionType = "(total"
-								Case FieldSelectionTypes.giSELECT_RECORDCOUNT
-									sSelectionType = "(record count"
-								Case Else
-									sSelectionType = "(<unknown>"
-							End Select
+									With rsInfo
+										If (.Rows.Count > 0) Then
+											sSelectionType = sSelectionType & ", order by '" & .Rows(0)("Name").ToString() & "'"
+										End If
+									End With
+									'UPGRADE_NOTE: Object rsInfo may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
+									rsInfo = Nothing
+								End If
 
-							If mlngSelOrderID > 0 Then
-								' Get the order name.
-								sSQL = "SELECT name FROM ASRSysOrders WHERE orderID = " & Trim(Str(mlngSelOrderID))
-								rsInfo = DB.GetDataTable(sSQL)
+								If mlngSelFilterID > 0 Then
+									' Get the filter name.
+									sSQL = "SELECT name FROM ASRSysExpressions WHERE exprID = " & Trim(Str(mlngSelFilterID))
+									rsInfo = DB.GetDataTable(sSQL)
+									With rsInfo
+										If (.Rows.Count > 0) Then
+											sSelectionType = sSelectionType & ", filter by '" & .Rows(0)("Name").ToString() & "'"
+										End If
+									End With
+									'UPGRADE_NOTE: Object rsInfo may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
+									rsInfo = Nothing
+								End If
 
-								With rsInfo
-									If (.Rows.Count > 0) Then
-										sSelectionType = sSelectionType & ", order by '" & .Rows(0)("Name").ToString() & "'"
-									End If
-								End With
-								'UPGRADE_NOTE: Object rsInfo may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-								rsInfo = Nothing
+								sSelectionType = sSelectionType & ")"
 							End If
-
-							If mlngSelFilterID > 0 Then
-								' Get the filter name.
-								sSQL = "SELECT name FROM ASRSysExpressions WHERE exprID = " & Trim(Str(mlngSelFilterID))
-								rsInfo = DB.GetDataTable(sSQL)
-								With rsInfo
-									If (.Rows.Count > 0) Then
-										sSelectionType = sSelectionType & ", filter by '" & .Rows(0)("Name").ToString() & "'"
-									End If
-								End With
-								'UPGRADE_NOTE: Object rsInfo may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-								rsInfo = Nothing
-							End If
-
-							sSelectionType = sSelectionType & ")"
+						Else
+							sSelectionType = " (by reference)"
 						End If
-					Else
-						sSelectionType = " (by reference)"
 					End If
-				End If
 
-TidyUpAndExit:
-				' Return the component description (to be displayed in the expression treeview).
-				ComponentDescription = sTableName & " : " & sColumnName & " " & sSelectionType
-				Exit Property
+				Catch ex As Exception
+					sTableName = "<unknown>"
+					sColumnName = "<unknown>"
+					sSelectionType = "<unknown>"
 
-ErrorTrap:
-				sTableName = "<unknown>"
-				sColumnName = "<unknown>"
-				sSelectionType = "<unknown>"
-				fOK = False
-				Resume TidyUpAndExit
+				End Try
+
+				Return sTableName & " : " & sColumnName & " " & sSelectionType
 
 			End Get
 		End Property

@@ -23,21 +23,10 @@ Namespace Expressions
 			MyBase.New(Value)
 		End Sub
 
-		Public Function ContainsExpression(ByRef plngExprID As Integer) As Boolean
+		Public Function ContainsExpression(plngExprID As Integer) As Boolean
 			' Retrun TRUE if the current expression (or any of its sub expressions)
 			' contains the given expression. This ensures no cyclic expressions get created.
-			'JPD 20040507 Fault 8600
-			On Error GoTo ErrorTrap
-
-			'UPGRADE_WARNING: Couldn't resolve default property of object mvComponent.ContainsExpression. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			ContainsExpression = mvComponent.ContainsExpression(plngExprID)
-
-TidyUpAndExit:
-			Exit Function
-
-ErrorTrap:
-			ContainsExpression = True
-			Resume TidyUpAndExit
+			Return mvComponent.ContainsExpression(plngExprID)
 
 		End Function
 
@@ -203,30 +192,6 @@ ErrorTrap:
 
 		End Function
 
-
-
-
-		Public Function PrintComponent(ByRef piLevel As Short) As Boolean
-			' Print the component definition.
-			On Error GoTo ErrorTrap
-
-			Dim fOK As Boolean
-
-			'UPGRADE_WARNING: Couldn't resolve default property of object Component.PrintComponent. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			fOK = Component.PrintComponent(piLevel)
-
-TidyUpAndExit:
-			PrintComponent = fOK
-			Exit Function
-
-ErrorTrap:
-			fOK = False
-			Resume TidyUpAndExit
-
-		End Function
-
-
-
 		Public Function WriteComponent() As Boolean
 			' Write the component definition to the component recordset.
 
@@ -265,26 +230,20 @@ ErrorTrap:
 		End Function
 
 		Public Function NewComponent() As Boolean
-			' Define a new component.
-			On Error GoTo ErrorTrap
 
-			Dim fOK As Boolean
-			'  Dim frmEdit As frmExprComponent
+			Try
 
-			fOK = True
+				' Initialize the properties for a new component.
+				mlngComponentID = 0
+				ComponentType = ExpressionComponentTypes.giCOMPONENT_FIELD
+				'	'UPGRADE_WARNING: Couldn't resolve default property of object mvComponent.BaseComponent. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+				mvComponent.BaseComponent = Me
+				Return True
 
-			' Initialize the properties for a new expression.
-			InitializeComponent()
+			Catch ex As Exception
+				Return False
 
-TidyUpAndExit:
-			' Disassociate object variables.
-			'  Set frmEdit = Nothing
-			NewComponent = fOK
-			Exit Function
-
-ErrorTrap:
-			fOK = False
-			Resume TidyUpAndExit
+			End Try
 
 		End Function
 
@@ -295,55 +254,52 @@ ErrorTrap:
 			' and edit the copy. If the changes are confirmed then the copy
 			' replaces the original. If the changes are cancelled then the
 			' copy is discarded.
-			On Error GoTo ErrorTrap
 
 			Dim fOK As Boolean
 			Dim objCopyComponent As New clsExprComponent(SessionInfo)
 
-			' Copy the component's basic properties.
-			With objCopyComponent
-				.ComponentType = miComponentType
-				.ParentExpression = mobjParentExpression
-
-				' Instruct the original component to copy itself.
-				'UPGRADE_WARNING: Couldn't resolve default property of object mvComponent.CopyComponent. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				.Component = mvComponent.CopyComponent
-				'UPGRADE_WARNING: Couldn't resolve default property of object objCopyComponent.Component.BaseComponent. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-				.Component.BaseComponent = objCopyComponent
-
-				fOK = Not .Component Is Nothing
-			End With
-
-			'Copy whether this object is in expanded mode.
-			objCopyComponent.ExpandedNode = mbExpanded
+			Try
 
 
-TidyUpAndExit:
+				' Copy the component's basic properties.
+				With objCopyComponent
+					.ComponentType = miComponentType
+					.ParentExpression = mobjParentExpression
+
+					' Instruct the original component to copy itself.
+					'UPGRADE_WARNING: Couldn't resolve default property of object mvComponent.CopyComponent. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+					.Component = mvComponent.CopyComponent
+					'UPGRADE_WARNING: Couldn't resolve default property of object objCopyComponent.Component.BaseComponent. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+					.Component.BaseComponent = objCopyComponent
+
+					fOK = Not .Component Is Nothing
+				End With
+
+				'Copy whether this object is in expanded mode.
+				objCopyComponent.ExpandedNode = mbExpanded
+
+			Catch ex As Exception
+				Return Nothing
+
+			End Try
+
 			If fOK Then
-				CopyComponent = objCopyComponent
+				Return objCopyComponent
 			Else
-				'UPGRADE_NOTE: Object CopyComponent may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-				CopyComponent = Nothing
+				Return Nothing
 			End If
-			'UPGRADE_NOTE: Object objCopyComponent may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-			objCopyComponent = Nothing
-			Exit Function
-
-ErrorTrap:
-			fOK = False
-			Resume TidyUpAndExit
 
 		End Function
 
 
-		Private Sub InitializeComponent()
-			' Initialize the properties for a new component.
-			mlngComponentID = 0
-			ComponentType = ExpressionComponentTypes.giCOMPONENT_FIELD
-			'UPGRADE_WARNING: Couldn't resolve default property of object mvComponent.BaseComponent. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-			mvComponent.BaseComponent = Me
+		'Private Sub InitializeComponent()
+		'	' Initialize the properties for a new component.
+		'	mlngComponentID = 0
+		'	ComponentType = ExpressionComponentTypes.giCOMPONENT_FIELD
+		'	'UPGRADE_WARNING: Couldn't resolve default property of object mvComponent.BaseComponent. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+		'	mvComponent.BaseComponent = Me
 
-		End Sub
+		'End Sub
 
 		Public Function ConstructComponent(ByRef prsComponents As DataRow) As Boolean
 			' Read the component definition from the datarow.
@@ -471,8 +427,7 @@ ErrorTrap:
 			' Return the id of the expression which contains this component.
 			' NB. We are not returning the id of the immediate parent expression;
 			' rather the top-level parent expression. Return 0 if we are unable to
-			' determine the root expression.
-			On Error GoTo ErrorTrap
+			' determine the root expression.			
 
 			Dim fOK As Boolean
 			Dim lngRootExprID As Integer
@@ -481,45 +436,42 @@ ErrorTrap:
 			Dim rsExpressions As DataTable
 			Dim objRow As DataRow
 
-			sSQL = "SELECT ASRSysExpressions.parentComponentID, ASRSysExpressions.exprID FROM ASRSysExpressions JOIN ASRSysExprComponents ON ASRSysExpressions.exprID = ASRSysExprComponents.exprID WHERE ASRSysExprComponents.componentID = " & Trim(Str(mlngComponentID))
-			rsExpressions = DB.GetDataTable(sSQL)
-			With rsExpressions
-				fOK = (.Rows.Count > 0)
+			Try
 
-				If fOK Then
-					objRow = .Rows(0)
+				sSQL = "SELECT ASRSysExpressions.parentComponentID, ASRSysExpressions.exprID FROM ASRSysExpressions JOIN ASRSysExprComponents ON ASRSysExpressions.exprID = ASRSysExprComponents.exprID WHERE ASRSysExprComponents.componentID = " & Trim(Str(mlngComponentID))
+				rsExpressions = DB.GetDataTable(sSQL)
+				With rsExpressions
+					fOK = (.Rows.Count > 0)
 
-					' See if the parent expression is a top level expression.
-					If CInt(objRow("ParentComponentID")) = 0 Then
-						lngRootExprID = CInt(.Rows(0)("ExprID"))
-					Else
-						' If the parent expression is not a top-level expression then
-						' find the parent expression's parent expression. Confused yet ?
-						objComp = New clsExprComponent(SessionInfo)
-						objComp.ComponentID = CInt(objRow("ParentComponentID"))
-						lngRootExprID = objComp.RootExpressionID
-						'UPGRADE_NOTE: Object objComp may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-						objComp = Nothing
+					If fOK Then
+						objRow = .Rows(0)
+
+						' See if the parent expression is a top level expression.
+						If CInt(objRow("ParentComponentID")) = 0 Then
+							lngRootExprID = CInt(.Rows(0)("ExprID"))
+						Else
+							' If the parent expression is not a top-level expression then
+							' find the parent expression's parent expression. Confused yet ?
+							objComp = New clsExprComponent(SessionInfo)
+							objComp.ComponentID = CInt(objRow("ParentComponentID"))
+							lngRootExprID = objComp.RootExpressionID
+							'UPGRADE_NOTE: Object objComp may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
+							objComp = Nothing
+						End If
 					End If
-				End If
 
-			End With
+				End With
 
-TidyUpAndExit:
-			'UPGRADE_NOTE: Object rsExpressions may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-			rsExpressions = Nothing
-			'UPGRADE_NOTE: Object objComp may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-			objComp = Nothing
+			Catch ex As Exception
+				Return 0
+
+			End Try
+
 			If fOK Then
-				RootExpressionID = lngRootExprID
+				Return lngRootExprID
 			Else
-				RootExpressionID = 0
+				Return 0
 			End If
-			Exit Function
-
-ErrorTrap:
-			fOK = False
-			Resume TidyUpAndExit
 
 		End Function
 	End Class

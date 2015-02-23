@@ -53,33 +53,6 @@ Namespace Expressions
 
 		End Function
 
-		Public Function PrintComponent(ByRef piLevel As Short) As Boolean
-			'Dim Printer As New Printing.PrinterSettings
-			' Print the component definition to the printer object.
-			On Error GoTo ErrorTrap
-
-			Dim fOK As Boolean
-
-			fOK = True
-
-			' Position the printing.
-			' TODO: Implement printing
-			'With Printer
-			'	.CurrentX = giPRINT_XINDENT + (piLevel * giPRINT_XSPACE)
-			'	.CurrentY = .CurrentY + giPRINT_YSPACE
-			'	Printer.Print("Filter : " & ComponentDescription)
-			'End With
-
-TidyUpAndExit:
-			PrintComponent = fOK
-			Exit Function
-
-ErrorTrap:
-			fOK = False
-			Resume TidyUpAndExit
-
-		End Function
-
 		Public Function CopyComponent() As Object
 			' Copies the selected component.
 			' When editting a component we actually copy the component first
@@ -170,27 +143,28 @@ ErrorTrap:
 		End Property
 
 
-		Public Function ContainsExpression(ByRef plngExprID As Integer) As Boolean
+		Public Function ContainsExpression(plngExprID As Integer) As Boolean
 			' Retrun TRUE if the current expression (or any of its sub expressions)
 			' contains the given expression. This ensures no cyclic expressions get created.
 			'JPD 20040507 Fault 8600
-			On Error GoTo ErrorTrap
 
 			' Check if the calc component IS the one we're checking for.
-			ContainsExpression = (plngExprID = mlngFilterID)
+			Dim bContainsExpression = (plngExprID = mlngFilterID)
 
-			If Not ContainsExpression Then
-				' The calc component IS NOT the one we're checking for.
-				' Check if it contains the one we're looking for.
-				ContainsExpression = HasExpressionComponent(mlngFilterID, plngExprID)
-			End If
+			Try
 
-TidyUpAndExit:
-			Exit Function
+				If Not bContainsExpression Then
+					' The calc component IS NOT the one we're checking for.
+					' Check if it contains the one we're looking for.
+					bContainsExpression = HasExpressionComponent(mlngFilterID, plngExprID)
+				End If
 
-ErrorTrap:
-			ContainsExpression = True
-			Resume TidyUpAndExit
+			Catch ex As Exception
+				Return True
+
+			End Try
+
+			Return bContainsExpression
 
 		End Function
 
@@ -236,36 +210,33 @@ ErrorTrap:
 
 		Private Sub ReadFilter()
 			' Read the filter definition from the database.
-			On Error GoTo ErrorTrap
 
 			Dim fOK As Boolean
 			Dim sSQL As String
 			Dim rsFilter As DataTable
 
-			' Set default values.
-			msFilterName = "<unknown>"
+			Try
 
-			' Get the filter definition.
-			sSQL = "SELECT name, returnType FROM ASRSysExpressions WHERE exprID = " & Trim(Str(mlngFilterID))
-			rsFilter = DB.GetDataTable(sSQL)
-			With rsFilter
-				fOK = (.Rows.Count > 0)
+				' Set default values.
+				msFilterName = "<unknown>"
 
-				If fOK Then
-					msFilterName = .Rows(0)("Name").ToString()
-					miReturnType = CType(.Rows(0)("ReturnType"), ExpressionValueTypes)
-				End If
+				' Get the filter definition.
+				sSQL = "SELECT name, returnType FROM ASRSysExpressions WHERE exprID = " & Trim(Str(mlngFilterID))
+				rsFilter = DB.GetDataTable(sSQL)
+				With rsFilter
+					fOK = (.Rows.Count > 0)
 
-			End With
+					If fOK Then
+						msFilterName = .Rows(0)("Name").ToString()
+						miReturnType = CType(.Rows(0)("ReturnType"), ExpressionValueTypes)
+					End If
 
-TidyUpAndExit:
-			'UPGRADE_NOTE: Object rsFilter may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-			rsFilter = Nothing
-			Exit Sub
+				End With
 
-ErrorTrap:
-			fOK = False
-			Resume TidyUpAndExit
+			Catch ex As Exception
+				Throw
+
+			End Try
 
 		End Sub
 

@@ -29,22 +29,8 @@ Namespace Expressions
 			MyBase.New(Value)
 		End Sub
 
-
-		Public Function ContainsExpression(ByRef plngExprID As Integer) As Boolean
-			' Retrun TRUE if the current expression (or any of its sub expressions)
-			' contains the given expression. This ensures no cyclic expressions get created.
-			'JPD 20040507 Fault 8600
-			On Error GoTo ErrorTrap
-
-			ContainsExpression = False
-
-TidyUpAndExit:
-			Exit Function
-
-ErrorTrap:
-			ContainsExpression = True
-			Resume TidyUpAndExit
-
+		Public Function ContainsExpression(plngExprID As Integer) As Boolean
+			Return False
 		End Function
 
 		Public Function RuntimeCode(ByRef psRuntimeCode As String, palngSourceTables(,) As Integer, pfApplyPermissions As Boolean _
@@ -52,74 +38,40 @@ ErrorTrap:
 																, psUDFs() As String _
 																, Optional plngFixedExprID As Integer = 0, Optional psFixedSQLCode As String = "") As Boolean
 			' Return the SQL code for the component.
-			On Error GoTo ErrorTrap
 
-			Dim fOK As Boolean
-			Dim sCode As String
+			Dim fOK As Boolean = True
+			Dim sCode As String = ""
 
-			fOK = True
-			sCode = ""
+			Try
 
-			Select Case miType
-				Case ExpressionValueTypes.giEXPRVALUE_CHARACTER
-					sCode = "'" & Replace(msCharacterValue, "'", "''") & "'"
-				Case ExpressionValueTypes.giEXPRVALUE_NUMERIC
-					sCode = Trim(Str(mdblNumericValue))
-				Case ExpressionValueTypes.giEXPRVALUE_LOGIC
-					sCode = IIf(mfLogicValue, "1", "0").ToString()
-				Case ExpressionValueTypes.giEXPRVALUE_DATE
-					'MH20010201 Fault 1576
-					'sCode = "convert(datetime, '" & Format(mdtDateValue, "MM/dd/yyyy") & "')"
-					'UPGRADE_WARNING: Couldn't resolve default property of object mdtDateValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-					'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
-					sCode = IIf(IsDBNull(mdtDateValue), "null", "convert(datetime, '" & VB6.Format(mdtDateValue, "MM/dd/yyyy") & "')").ToString()
-			End Select
+				Select Case miType
+					Case ExpressionValueTypes.giEXPRVALUE_CHARACTER
+						sCode = "'" & Replace(msCharacterValue, "'", "''") & "'"
+					Case ExpressionValueTypes.giEXPRVALUE_NUMERIC
+						sCode = Trim(Str(mdblNumericValue))
+					Case ExpressionValueTypes.giEXPRVALUE_LOGIC
+						sCode = IIf(mfLogicValue, "1", "0").ToString()
+					Case ExpressionValueTypes.giEXPRVALUE_DATE
+						'MH20010201 Fault 1576
+						'sCode = "convert(datetime, '" & Format(mdtDateValue, "MM/dd/yyyy") & "')"
+						'UPGRADE_WARNING: Couldn't resolve default property of object mdtDateValue. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+						'UPGRADE_WARNING: Use of Null/IsNull() detected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="2EED02CB-5C0E-4DC1-AE94-4FAA3A30F51A"'
+						sCode = IIf(IsDBNull(mdtDateValue), "null", "convert(datetime, '" & VB6.Format(mdtDateValue, "MM/dd/yyyy") & "')").ToString()
+				End Select
 
-TidyUpAndExit:
-			If fOK Then
-				psRuntimeCode = sCode
-			Else
-				psRuntimeCode = ""
-			End If
+			Catch ex As Exception
+				fOK = False
 
-			RuntimeCode = fOK
-			Exit Function
+			Finally
+				If fOK Then
+					psRuntimeCode = sCode
+				Else
+					psRuntimeCode = ""
+				End If
 
-ErrorTrap:
-			fOK = False
-			Resume TidyUpAndExit
+			End Try
 
-		End Function
-
-
-
-
-
-
-		Public Function PrintComponent(ByRef piLevel As Short) As Boolean
-			'Dim Printer As New Printing.PrinterSettings
-			' Print the component definition to the printer object.
-			On Error GoTo ErrorTrap
-
-			Dim fOK As Boolean
-
-			fOK = True
-
-			' Position the printing.
-			' TODO: Implement printing
-			'With Printer
-			'	.CurrentX = giPRINT_XINDENT + (piLevel * giPRINT_XSPACE)
-			'	.CurrentY = .CurrentY + giPRINT_YSPACE
-			'	Printer.Print(ComponentDescription)
-			'End With
-
-TidyUpAndExit:
-			PrintComponent = fOK
-			Exit Function
-
-ErrorTrap:
-			fOK = False
-			Resume TidyUpAndExit
+			Return fOK
 
 		End Function
 

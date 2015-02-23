@@ -180,30 +180,6 @@ Namespace Expressions
 			End Set
 		End Property
 
-
-		Public Function PrintComponent(piLevel As Short) As Boolean
-
-			Try
-
-				'Dim Printer As New Printing.PrinterSettings
-
-				' Position the printing.
-				' TODO: Implement printing
-				'With Printer
-				'	.CurrentX = giPRINT_XINDENT + (piLevel * giPRINT_XSPACE)
-				'	.CurrentY = .CurrentY + giPRINT_YSPACE
-				'	Printer.Print(ComponentDescription)
-				'End With
-
-			Catch ex As Exception
-				Return False
-
-			End Try
-
-			Return True
-
-		End Function
-
 		Public Function WriteComponent() As Boolean
 
 			Try
