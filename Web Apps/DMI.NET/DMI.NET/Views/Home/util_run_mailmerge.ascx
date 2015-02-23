@@ -132,7 +132,7 @@
 	
 	<%
 	Dim sErrorMessage As String
-	
+	Session("mailmergefail") = False
 	' Errors during the merge
 	If Len(objMailMerge.ErrorString) > 0 Then
 		sErrorMessage = HttpUtility.JavaScriptStringEncode(objMailMerge.ErrorString)
