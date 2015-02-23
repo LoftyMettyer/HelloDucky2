@@ -454,59 +454,43 @@ Public Class clsDiary
 	End Function
 
 
-	Public Function ShowAlarmedEvents(ByRef intFilterPastPresent As Short, ByRef intViewMode As Short) As Boolean
+	Public Function ShowAlarmedEvents(intFilterPastPresent As Short, intViewMode As Short) As Boolean
 
-		Dim lngErrorNumber As Integer
+		Try
 
-		On Error GoTo LocalErr
-
-		lngErrorNumber = 0
-		Me.ViewingAlarms = True	'This need to be done here in case
-		'you don't view alarms (filter will be saved!)
-
-		'Set filter to all alarmed events in the past
-		Me.FilterEventType = 0 'All
-		Me.FilterAlarmStatus = 1 'Alarmed
-		Me.FilterPastPresent = intFilterPastPresent
-		'Me.DateSelected = Now
-		mintCurrentView = intViewMode
-
-
-		If GetRecordCount() > 0 Then
-			'NHRD07102004 Fault 4436 Adds a Bell resource icon to the System Tray
-
-			'strMBText = "There are alarmed events " & _
-			'IIf(intFilterPastPresent = 1, "prior to", "for the") & _
-			'" current date and time" & vbCr & _
-			'"Would you like to view these now?"
-			'intMBButtons = vbYesNo + vbQuestion
-			'strMBTitle = "Alarmed Diary Events"
-			'intMBResponse = COAMsgBox(strMBText, intMBButtons, strMBTitle)
+			Me.ViewingAlarms = True	'This need to be done here in case
+			'you don't view alarms (filter will be saved!)
 
 			'Set filter to all alarmed events in the past
-			'(These seem to be getting reset in the exe so ensure that they are set)
 			Me.FilterEventType = 0 'All
-			Me.FilterPastPresent = intFilterPastPresent
 			Me.FilterAlarmStatus = 1 'Alarmed
-			Me.DateSelected = Now
+			Me.FilterPastPresent = intFilterPastPresent
+			'Me.DateSelected = Now
 			mintCurrentView = intViewMode
 
-			'This is only if you a diary event pops up during the day
-			If mintCurrentView = mintVIEWBYDAY Then
-				Me.FilterPastPresent = 0 'All (incase the minute has ticked over).
+			If GetRecordCount() > 0 Then
+
+				'Set filter to all alarmed events in the past
+				'(These seem to be getting reset in the exe so ensure that they are set)
+				Me.FilterEventType = 0 'All
+				Me.FilterPastPresent = intFilterPastPresent
+				Me.FilterAlarmStatus = 1 'Alarmed
+				Me.DateSelected = Now
+				mintCurrentView = intViewMode
+
+				'This is only if you a diary event pops up during the day
+				If mintCurrentView = mintVIEWBYDAY Then
+					Me.FilterPastPresent = 0 'All (incase the minute has ticked over).
+				End If
+
 			End If
 
-			'      frmDiary.Initialise
-			'      frmDiary.Show vbModal
-			'      Unload frmDiary
-			'      Set frmDiary = Nothing
+		Catch ex As Exception
+			Return False
 
-		End If
+		End Try
 
-		Return (lngErrorNumber = 0)
-
-LocalErr:
-		Return False
+		Return True
 
 	End Function
 

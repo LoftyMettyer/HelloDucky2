@@ -300,60 +300,60 @@ Public Class Menu
 
 	End Function
 
-	Private Function ViewQuickEntry(ByVal plngScreenID As Integer) As Boolean
+	Private Function ViewQuickEntry(plngScreenID As Integer) As Boolean
 		' Return TRUE if the current user can see at least one parent table (or view of a parent table)
 		' of given quick view screen.
-		On Error GoTo ErrorTrap
-
 		Dim rsTables As DataTable
 		Dim rsViews As DataTable
 
-		' Get the list of parent tables used in the quick entry screen.
-		rsTables = GetQuickEntryTables(plngScreenID)
+		Try
 
-		With rsTables
-			If .Rows.Count > 0 Then
-				Return True
-			End If
+			' Get the list of parent tables used in the quick entry screen.
+			rsTables = GetQuickEntryTables(plngScreenID)
 
-			' Loop through parent tables, seeing if we have select permissions on these tables.
-			For Each objTableRow As DataRow In rsTables.Rows
-
-				' Check if the current user has 'select' permission on the given table.
-				If gcoTablePrivileges.Item(UCase(objTableRow("TableName").ToString())).AllowSelect Then
+			With rsTables
+				If .Rows.Count > 0 Then
 					Return True
-				Else
-					' No select permissions, can we use a view instead ???
-					rsViews = GetQuickEntryViews(CInt(objTableRow("TableID")))
-
-					Dim objTableView As TablePrivilege
-
-					'Loop through the views, and see if we have permission on these
-					For Each objViewRow As DataRow In rsViews.Rows
-
-						objTableView = gcoTablePrivileges.Item(UCase(objViewRow("ViewName").ToString()))
-
-						If objTableView.AllowSelect Then
-							'We have a view we can use, let's get outta here
-							Return True
-						End If
-
-					Next
 				End If
 
-			Next
-		End With
+				' Loop through parent tables, seeing if we have select permissions on these tables.
+				For Each objTableRow As DataRow In rsTables.Rows
+
+					' Check if the current user has 'select' permission on the given table.
+					If gcoTablePrivileges.Item(UCase(objTableRow("TableName").ToString())).AllowSelect Then
+						Return True
+					Else
+						' No select permissions, can we use a view instead ???
+						rsViews = GetQuickEntryViews(CInt(objTableRow("TableID")))
+
+						Dim objTableView As TablePrivilege
+
+						'Loop through the views, and see if we have permission on these
+						For Each objViewRow As DataRow In rsViews.Rows
+
+							objTableView = gcoTablePrivileges.Item(UCase(objViewRow("ViewName").ToString()))
+
+							If objTableView.AllowSelect Then
+								'We have a view we can use, let's get outta here
+								Return True
+							End If
+
+						Next
+					End If
+
+				Next
+			End With
+
+		Catch ex As Exception
+			Return False
+
+		End Try
 
 		Return False
 
-ErrorTrap:
-		If Err.Number = 457 Then
-			Resume Next
-		End If
-
 	End Function
 
-	Private Function GetQuickEntryTables(ByVal plngScreenID As Integer) As DataTable
+	Private Function GetQuickEntryTables(plngScreenID As Integer) As DataTable
 		' Return a recordset of all the table id's of the controls which aren't related to the base table
 		' in the given screen.
 		Dim sSQL As String = "exec sp_ASRGetQuickEntryTables " & plngScreenID
@@ -361,7 +361,7 @@ ErrorTrap:
 
 	End Function
 
-	Private Function GetQuickEntryViews(ByVal plngTableID As Integer) As DataTable
+	Private Function GetQuickEntryViews(plngTableID As Integer) As DataTable
 		' Return a recordset of the user defined views on the given table.
 		Dim sSQL As String = "SELECT viewID, viewName FROM ASRSysViews WHERE viewTableID = " & Trim(Str(plngTableID))
 		Return DB.GetDataTable(sSQL, CommandType.Text)

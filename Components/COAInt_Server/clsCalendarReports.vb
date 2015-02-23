@@ -3206,7 +3206,7 @@ DisableWPs:
 			End With
 
 		Catch ex As Exception
-			mstrErrorString = "Error whilst retrieving the event details recordsets'." & vbNewLine & Err.Description.RemoveSensitive()
+			mstrErrorString = "Error whilst retrieving the event details recordsets'." & vbNewLine & ex.Message.RemoveSensitive()
 			Return False
 
 		End Try

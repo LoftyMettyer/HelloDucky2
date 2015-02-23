@@ -1046,8 +1046,8 @@ Namespace ReportOutput
 					End If
 				Next objMerge
 
-			Catch
-				_mstrErrorMessage = Err.Description
+			Catch ex As Exception
+				_mstrErrorMessage = ex.Message.RemoveSensitive()
 
 			End Try
 
@@ -1126,7 +1126,7 @@ Namespace ReportOutput
 				ClearUp()
 
 			Catch ex As Exception
-				_mstrErrorMessage = _mstrErrorMessage & IIf(Err.Description <> vbNullString, vbCrLf & " (" & Err.Description & ")", vbNullString).ToString()
+				_mstrErrorMessage &= ex.Message.RemoveSensitive()
 
 			End Try
 

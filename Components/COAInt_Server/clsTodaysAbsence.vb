@@ -64,8 +64,6 @@ Public Class clsTodaysAbsence
 
 	Private Function GenerateSQLSelect() As Boolean
 
-		On Error GoTo GenerateSQLSelect_ERROR
-
 		Dim plngTempTableID As Integer
 		Dim pstrTempTableName As String
 		Dim pstrTempColumnName As String
@@ -82,173 +80,173 @@ Public Class clsTodaysAbsence
 		Dim objTableView As TablePrivilege
 		Dim pintNextColLoop As Short
 
-		' Set flags with their starting values
-		pblnOK = True
-		pblnNoSelect = False
+		Try
 
-		' JPD20030219 Fault 5068
-		' Check the user has permission to read the base table.
-		pblnOK = False
-		For Each objTableView In gcoTablePrivileges.Collection
-			If (objTableView.TableID = PersonnelModule.glngPersonnelTableID) And (objTableView.AllowSelect) Then
-				pblnOK = True
-				Exit For
-			End If
-		Next objTableView
-		'UPGRADE_NOTE: Object objTableView may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-		objTableView = Nothing
+			' Set flags with their starting values
+			pblnNoSelect = False
 
-		If Not pblnOK Then
-			GenerateSQLSelect = False
-			mstrErrorString = "You do not have permission to read the base table either directly or through any views."
-			Exit Function
-		End If
-
-		mstrSQLString = ""
-
-		' Dimension an array of tables/views joined to the base table/view
-		' Column 1 = 0 if this row is for a table, 1 if it is for a view
-		' Column 2 = table/view ID
-		' (should contain everything which needs to be joined to the base tbl/view)
-		ReDim mlngTableViews(2, 0)
-
-		' Load the temp variables
-		plngTempTableID = PersonnelModule.glngPersonnelTableID
-		pstrTempTableName = PersonnelModule.gsPersonnelTableName
-
-		' Fault HRPRO-1362 - changed "forename surname" to "surname, forename"
-		For pintNextColLoop = 1 To 2
-			If pintNextColLoop = 1 Then
-				pstrTempColumnName = PersonnelModule.gsPersonnelSurnameColumnName
-			ElseIf pintNextColLoop = 2 Then
-				pstrTempColumnName = PersonnelModule.gsPersonnelForenameColumnName
-			End If
-
-			' Check permission on that column
-			mobjColumnPrivileges = GetColumnPrivileges(pstrTempTableName)
-			mstrRealSource = gcoTablePrivileges.Item(pstrTempTableName).RealSource
-			pblnColumnOK = mobjColumnPrivileges.IsValid(pstrTempColumnName)
-
-			If pblnColumnOK Then
-				pblnColumnOK = mobjColumnPrivileges.Item(pstrTempColumnName).AllowSelect
-			End If
-
-			If pblnColumnOK Then
-
-				' this column can be read direct from the tbl/view or from a parent table
-				pstrColumnList = pstrColumnList & IIf(Len(pstrColumnList) > 0, " + ' ' + ", "") & mstrRealSource & "." & Trim(pstrTempColumnName)
-
-				' If the table isnt the base table (or its realsource) then
-				' Check if it has already been added to the array. If not, add it.
-				If plngTempTableID <> PersonnelModule.glngPersonnelTableID Then
-					pblnFound = False
-					For pintNextIndex = 1 To UBound(mlngTableViews, 2)
-						If mlngTableViews(1, pintNextIndex) = 0 And mlngTableViews(2, pintNextIndex) = plngTempTableID Then
-							pblnFound = True
-							Exit For
-						End If
-					Next pintNextIndex
-
-					If Not pblnFound Then
-						pintNextIndex = UBound(mlngTableViews, 2) + 1
-						ReDim Preserve mlngTableViews(2, pintNextIndex)
-						mlngTableViews(1, pintNextIndex) = 0
-						mlngTableViews(2, pintNextIndex) = plngTempTableID
-					End If
+			' JPD20030219 Fault 5068
+			' Check the user has permission to read the base table.
+			pblnOK = False
+			For Each objTableView In gcoTablePrivileges.Collection
+				If (objTableView.TableID = PersonnelModule.glngPersonnelTableID) And (objTableView.AllowSelect) Then
+					pblnOK = True
+					Exit For
 				End If
-			Else
+			Next objTableView
+			'UPGRADE_NOTE: Object objTableView may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
+			objTableView = Nothing
 
-				' this column cannot be read direct. If its from a parent, try parent views
-				' Loop thru the views on the table, seeing if any have read permis for the column
+			If Not pblnOK Then
+				GenerateSQLSelect = False
+				mstrErrorString = "You do not have permission to read the base table either directly or through any views."
+				Exit Function
+			End If
 
-				Dim mstrViews(0) As Object
-				For Each mobjTableView In gcoTablePrivileges.Collection
-					If (Not mobjTableView.IsTable) And (mobjTableView.TableID = PersonnelModule.glngPersonnelTableID) And (mobjTableView.AllowSelect) Then
+			mstrSQLString = ""
 
-						pstrSource = mobjTableView.ViewName
-						mstrRealSource = gcoTablePrivileges.Item(pstrSource).RealSource
+			' Dimension an array of tables/views joined to the base table/view
+			' Column 1 = 0 if this row is for a table, 1 if it is for a view
+			' Column 2 = table/view ID
+			' (should contain everything which needs to be joined to the base tbl/view)
+			ReDim mlngTableViews(2, 0)
 
-						' Get the column permission for the view
-						mobjColumnPrivileges = GetColumnPrivileges(pstrSource)
+			' Load the temp variables
+			plngTempTableID = PersonnelModule.glngPersonnelTableID
+			pstrTempTableName = PersonnelModule.gsPersonnelTableName
 
-						' If we can see the column from this view
-						If mobjColumnPrivileges.IsValid(pstrTempColumnName) Then
-							If mobjColumnPrivileges.Item(pstrTempColumnName).AllowSelect Then
+			' Fault HRPRO-1362 - changed "forename surname" to "surname, forename"
+			For pintNextColLoop = 1 To 2
+				If pintNextColLoop = 1 Then
+					pstrTempColumnName = PersonnelModule.gsPersonnelSurnameColumnName
+				ElseIf pintNextColLoop = 2 Then
+					pstrTempColumnName = PersonnelModule.gsPersonnelForenameColumnName
+				End If
 
-								ReDim Preserve mstrViews(UBound(mstrViews) + 1)
-								'UPGRADE_WARNING: Couldn't resolve default property of object mstrViews(UBound()). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-								mstrViews(UBound(mstrViews)) = mobjTableView.ViewName
+				' Check permission on that column
+				mobjColumnPrivileges = GetColumnPrivileges(pstrTempTableName)
+				mstrRealSource = gcoTablePrivileges.Item(pstrTempTableName).RealSource
+				pblnColumnOK = mobjColumnPrivileges.IsValid(pstrTempColumnName)
 
-								' Check if view has already been added to the array
-								pblnFound = False
-								For pintNextIndex = 1 To UBound(mlngTableViews, 2)
-									If mlngTableViews(1, pintNextIndex) = 1 And mlngTableViews(2, pintNextIndex) = mobjTableView.ViewID Then
-										pblnFound = True
-										Exit For
+				If pblnColumnOK Then
+					pblnColumnOK = mobjColumnPrivileges.Item(pstrTempColumnName).AllowSelect
+				End If
+
+				If pblnColumnOK Then
+
+					' this column can be read direct from the tbl/view or from a parent table
+					pstrColumnList = pstrColumnList & IIf(Len(pstrColumnList) > 0, " + ' ' + ", "") & mstrRealSource & "." & Trim(pstrTempColumnName)
+
+					' If the table isnt the base table (or its realsource) then
+					' Check if it has already been added to the array. If not, add it.
+					If plngTempTableID <> PersonnelModule.glngPersonnelTableID Then
+						pblnFound = False
+						For pintNextIndex = 1 To UBound(mlngTableViews, 2)
+							If mlngTableViews(1, pintNextIndex) = 0 And mlngTableViews(2, pintNextIndex) = plngTempTableID Then
+								pblnFound = True
+								Exit For
+							End If
+						Next pintNextIndex
+
+						If Not pblnFound Then
+							pintNextIndex = UBound(mlngTableViews, 2) + 1
+							ReDim Preserve mlngTableViews(2, pintNextIndex)
+							mlngTableViews(1, pintNextIndex) = 0
+							mlngTableViews(2, pintNextIndex) = plngTempTableID
+						End If
+					End If
+				Else
+
+					' this column cannot be read direct. If its from a parent, try parent views
+					' Loop thru the views on the table, seeing if any have read permis for the column
+
+					Dim mstrViews(0) As Object
+					For Each mobjTableView In gcoTablePrivileges.Collection
+						If (Not mobjTableView.IsTable) And (mobjTableView.TableID = PersonnelModule.glngPersonnelTableID) And (mobjTableView.AllowSelect) Then
+
+							pstrSource = mobjTableView.ViewName
+							mstrRealSource = gcoTablePrivileges.Item(pstrSource).RealSource
+
+							' Get the column permission for the view
+							mobjColumnPrivileges = GetColumnPrivileges(pstrSource)
+
+							' If we can see the column from this view
+							If mobjColumnPrivileges.IsValid(pstrTempColumnName) Then
+								If mobjColumnPrivileges.Item(pstrTempColumnName).AllowSelect Then
+
+									ReDim Preserve mstrViews(UBound(mstrViews) + 1)
+									'UPGRADE_WARNING: Couldn't resolve default property of object mstrViews(UBound()). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+									mstrViews(UBound(mstrViews)) = mobjTableView.ViewName
+
+									' Check if view has already been added to the array
+									pblnFound = False
+									For pintNextIndex = 1 To UBound(mlngTableViews, 2)
+										If mlngTableViews(1, pintNextIndex) = 1 And mlngTableViews(2, pintNextIndex) = mobjTableView.ViewID Then
+											pblnFound = True
+											Exit For
+										End If
+									Next pintNextIndex
+
+									If Not pblnFound Then
+
+										' View hasnt yet been added, so add it !
+										pintNextIndex = UBound(mlngTableViews, 2) + 1
+										ReDim Preserve mlngTableViews(2, pintNextIndex)
+										mlngTableViews(1, pintNextIndex) = 1
+										mlngTableViews(2, pintNextIndex) = mobjTableView.ViewID
+
 									End If
-								Next pintNextIndex
-
-								If Not pblnFound Then
-
-									' View hasnt yet been added, so add it !
-									pintNextIndex = UBound(mlngTableViews, 2) + 1
-									ReDim Preserve mlngTableViews(2, pintNextIndex)
-									mlngTableViews(1, pintNextIndex) = 1
-									mlngTableViews(2, pintNextIndex) = mobjTableView.ViewID
-
 								End If
 							End If
 						End If
+
+					Next mobjTableView
+
+					'UPGRADE_NOTE: Object mobjTableView may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
+					mobjTableView = Nothing
+
+					' Does the user have select permission thru ANY views ?
+					If UBound(mstrViews) = 0 Then
+						pblnNoSelect = True
+					Else
+
+						' Add the column to the column list
+						pstrColumnCode = "COALESCE("
+						For pintNextIndex = 1 To UBound(mstrViews)
+							'UPGRADE_WARNING: Couldn't resolve default property of object mstrViews(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+							pstrColumnCode = pstrColumnCode & IIf(pintNextIndex = 1, "", ", ") & mstrViews(pintNextIndex) & "." & pstrTempColumnName
+						Next pintNextIndex
+
+						pstrColumnCode = pstrColumnCode & ", NULL)"
+
+						pstrColumnList = pstrColumnList & IIf(Len(pstrColumnList) > 0, " + ', ' + ", "") & pstrColumnCode
+
 					End If
 
-				Next mobjTableView
+					' If we cant see a column, then get outta here
+					If pblnNoSelect Then
+						GenerateSQLSelect = False
+						mstrErrorString = "You do not have permission to see the column '" & pstrTempColumnName & "' either directly or through any views."
+						Exit Function
+					End If
 
-				'UPGRADE_NOTE: Object mobjTableView may not be destroyed until it is garbage collected. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6E35BFF6-CD74-4B09-9689-3E1A43DF8969"'
-				mobjTableView = Nothing
-
-				' Does the user have select permission thru ANY views ?
-				If UBound(mstrViews) = 0 Then
-					pblnNoSelect = True
-				Else
-
-					' Add the column to the column list
-					pstrColumnCode = "COALESCE("
-					For pintNextIndex = 1 To UBound(mstrViews)
-						'UPGRADE_WARNING: Couldn't resolve default property of object mstrViews(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
-						pstrColumnCode = pstrColumnCode & IIf(pintNextIndex = 1, "", ", ") & mstrViews(pintNextIndex) & "." & pstrTempColumnName
-					Next pintNextIndex
-
-					pstrColumnCode = pstrColumnCode & ", NULL)"
-
-					pstrColumnList = pstrColumnList & IIf(Len(pstrColumnList) > 0, " + ', ' + ", "") & pstrColumnCode
+					If Not pblnOK Then
+						GenerateSQLSelect = False
+						Exit Function
+					End If
 
 				End If
 
-				' If we cant see a column, then get outta here
-				If pblnNoSelect Then
-					GenerateSQLSelect = False
-					mstrErrorString = "You do not have permission to see the column '" & pstrTempColumnName & "' either directly or through any views."
-					Exit Function
-				End If
+				mstrSQLString = pstrColumnList
+			Next pintNextColLoop
 
-				If Not pblnOK Then
-					GenerateSQLSelect = False
-					Exit Function
-				End If
+		Catch ex As Exception
+			mstrErrorString = "Error generating SQL Select statement." & vbNewLine & ex.Message.RemoveSensitive()
+			Return False
 
-			End If
+		End Try
 
-			mstrSQLString = pstrColumnList
-		Next pintNextColLoop
-
-		GenerateSQLSelect = True
-
-		Exit Function
-
-GenerateSQLSelect_ERROR:
-
-		GenerateSQLSelect = False
-		mstrErrorString = "Error generating SQL Select statement." & vbNewLine & Err.Description
+		Return True
 
 	End Function
 
@@ -263,46 +261,46 @@ GenerateSQLSelect_ERROR:
 
 		' Purpose : Add the join strings for parent/child/views.
 		'           Also adds filter clauses to the joins if used
-
-		On Error GoTo GenerateSQLJoin_ERROR
-
 		Dim pobjTableView As TablePrivilege
 		Dim pintLoop As Integer
 
-		' Get the base table real source
-		mstrBaseTableRealSource = mstrSQLFrom
+		Try
 
-		For pintLoop = 1 To UBound(mlngTableViews, 2)
+			' Get the base table real source
+			mstrBaseTableRealSource = mstrSQLFrom
 
-			' Get the table/view object from the id stored in the array
-			If mlngTableViews(1, pintLoop) = 0 Then
-				pobjTableView = gcoTablePrivileges.FindTableID(mlngTableViews(2, pintLoop))
-			Else
-				pobjTableView = gcoTablePrivileges.FindViewID(mlngTableViews(2, pintLoop))
-			End If
+			For pintLoop = 1 To UBound(mlngTableViews, 2)
 
-			If (pobjTableView.TableID = lngTableID) Then
-				If (pobjTableView.ViewName <> mstrBaseTableRealSource) Then
-					mstrSQLJoin = mstrSQLJoin & " LEFT OUTER JOIN " & pobjTableView.RealSource & " ON " & mstrBaseTableRealSource & ".ID = " & pobjTableView.RealSource & ".ID"
-				End If
-			Else
-				If (pobjTableView.ViewName <> mstrBaseTableRealSource) Then
-					mstrSQLJoin = mstrSQLJoin & " LEFT OUTER JOIN " & pobjTableView.RealSource & " ON " & mstrBaseTableRealSource & ".ID_" & CStr(pobjTableView.TableID) & " = " & pobjTableView.RealSource & ".ID"
+				' Get the table/view object from the id stored in the array
+				If mlngTableViews(1, pintLoop) = 0 Then
+					pobjTableView = gcoTablePrivileges.FindTableID(mlngTableViews(2, pintLoop))
+				Else
+					pobjTableView = gcoTablePrivileges.FindViewID(mlngTableViews(2, pintLoop))
 				End If
 
-			End If
+				If (pobjTableView.TableID = lngTableID) Then
+					If (pobjTableView.ViewName <> mstrBaseTableRealSource) Then
+						mstrSQLJoin = mstrSQLJoin & " LEFT OUTER JOIN " & pobjTableView.RealSource & " ON " & mstrBaseTableRealSource & ".ID = " & pobjTableView.RealSource & ".ID"
+					End If
+				Else
+					If (pobjTableView.ViewName <> mstrBaseTableRealSource) Then
+						mstrSQLJoin = mstrSQLJoin & " LEFT OUTER JOIN " & pobjTableView.RealSource & " ON " & mstrBaseTableRealSource & ".ID_" & CStr(pobjTableView.TableID) & " = " & pobjTableView.RealSource & ".ID"
+					End If
 
-		Next pintLoop
+				End If
 
-		' Append the absence table
-		mstrSQLJoin = mstrSQLJoin & " JOIN " & mstrAbsenceRealSource & " ON " & mstrAbsenceRealSource & ".ID_" & CStr(PersonnelModule.glngPersonnelTableID) & " = " & mstrBaseTableRealSource & ".ID"
+			Next pintLoop
+
+			' Append the absence table
+			mstrSQLJoin = mstrSQLJoin & " JOIN " & mstrAbsenceRealSource & " ON " & mstrAbsenceRealSource & ".ID_" & CStr(PersonnelModule.glngPersonnelTableID) & " = " & mstrBaseTableRealSource & ".ID"
+
+		Catch ex As Exception
+			mstrErrorString = "Error in GenerateSQLJoin." & vbNewLine & ex.Message.RemoveSensitive()
+			Return False
+
+		End Try
 
 		Return True
-
-GenerateSQLJoin_ERROR:
-
-		mstrErrorString = "Error in GenerateSQLJoin." & vbNewLine & Err.Description
-		Return False
 
 	End Function
 

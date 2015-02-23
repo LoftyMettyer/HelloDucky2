@@ -1316,7 +1316,7 @@ Namespace Expressions
 		End Function
 
 		Private Function ValidateSQLCode(Optional ByRef plngFixedExprID As Integer = 0, Optional ByRef psFixedSQLCode As String = "") As ExprValidationCodes
-			' Validate the expression's SQL code. This picks up on errors such as too many nested levels of the CASE statement.
+			' Validate the expression's SQL code. This picks up on exceptions such as too many nested levels of the CASE statement.
 
 			Dim lngCalcViews(,) As Integer
 			Dim intCount As Integer
@@ -1435,7 +1435,7 @@ Namespace Expressions
 
 		Private Function ValidateAssociatedExpressionsSQLCode(ByRef plngFixedExpressionID As Integer, ByRef psFixedSQLCode As String) As ExprValidationCodes
 			' Validate the SQL code for any expressions that use this expression.
-			' This picks up on errors such as too many nested levels of the CASE statement.
+			' This picks up on exceptions such as too many nested levels of the CASE statement.
 			Dim iValidationCode As ExprValidationCodes
 			Dim sSQL As String
 			Dim rsTemp As DataTable

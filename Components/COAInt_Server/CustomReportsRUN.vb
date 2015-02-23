@@ -1878,7 +1878,7 @@ Public Class Report
 			mstrSQLJoin = mstrSQLJoin & sOtherParentJoinCode
 
 		Catch ex As Exception
-			mstrErrorString = "Error in GenerateSQLJoin." & vbNewLine & Err.Description
+			mstrErrorString = "Error in GenerateSQLJoin." & vbNewLine & ex.Message.RemoveSensitive()
 			Logs.AddDetailEntry(mstrErrorString)
 			Logs.ChangeHeaderStatus(EventLog_Status.elsFailed)
 			Return False
