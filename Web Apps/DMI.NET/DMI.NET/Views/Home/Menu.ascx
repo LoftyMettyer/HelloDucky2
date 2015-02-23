@@ -263,7 +263,6 @@
 	Dim objOLE As New HR.Intranet.Server.Ole
 	objOLE.SessionInfo = CType(Session("SessionContext"), SessionInfo)
 
-	objOLE.TempLocationPhysical = "\\" & Request.ServerVariables("SERVER_NAME") & "\HRProTemp$\"
 	Session("OLEObject") = objOLE
 	objOLE = Nothing
 			

@@ -5306,22 +5306,22 @@ Namespace Controllers
 
 		End Function
 
-
 		<HttpPost()>
 		<ValidateAntiForgeryToken>
 		Function oleFind_Submit(filSelectFile As HttpPostedFileBase) As PartialViewResult
-			' 
 
 			'Dim objOLE
 			Dim filesize As Integer = 0
 			Dim buffer As Byte()
+			Dim iOLEType As OLEType
 
 			Dim sErrorMsg = ""
 			' Read the information from the calling form.
-			Dim sNextPage = Request.Form("txtGotoOptionPage")
 			Dim sAction = Request.Form("txtGotoOptionAction")
 
-			If CInt(Request.Form("txtOLEType")) < 2 And sAction = "" Then
+			iOLEType = CType(Request.Form("txtOLEType"), OLEType)
+
+			If (iOLEType = OLEType.Local Or iOLEType = OLEType.Server) And sAction = "" Then
 				' We're just copying a file from client to server.
 				' Read custom attributes
 				Dim fileName As String = Request.Form("txtOLEJustFileName")
@@ -5366,28 +5366,25 @@ Namespace Controllers
 					End If
 
 					' The file will (should) have already been copied from the client to the temp path
-					Dim objOLE = Session("OLEObject")
+					Dim objOLE As Ole = Session("OLEObject")
 					With objOLE
-						.UseEncryption = Request.Form("txtOLEEncryption")
-						.OLEType = Request.Form("txtOLEType")
+						.OLEType = CType(Request.Form("txtOLEType"), OLEType)
 						.FileName = Request.Form("txtOLEFile")
 						.DisplayFilename = Request.Form("txtOLEJustFileName")
 						.OLEFileSize = filesize	' Request.Form("txtOLEFileSize")
-						.OLEModifiedDate = Request.Form("txtOLEModifiedDate")
-						Dim oleErrorResponse As String = .SaveStream(Session("optionRecordID"), Session("optionColumnID"), Session("realSource"), False, buffer)
+						Dim oleErrorResponse As String = .SaveStream(Session("optionRecordID"), Session("optionColumnID"), buffer)
 
 						If oleErrorResponse.Length > 0 Then
 							oleErrorResponse = Server.HtmlEncode("Unable to embed file:" & vbCrLf & oleErrorResponse)
 						End If
 						Session("errorMessage") = oleErrorResponse
 
-						If .OLEType = 2 Then
+						If .OLEType = OLEType.Embedded Then
 							Session("optionFileValue") = .ExtractPhotoToBase64(Session("optionRecordID"), Session("optionColumnID"), Session("realSource"))
 						Else
 							Session("optionFileValue") = .FileName
 						End If
 
-						' .DeleteTempFile()
 					End With
 					Session("OLEObject") = objOLE
 					objOLE = Nothing
@@ -5443,15 +5440,6 @@ Namespace Controllers
 
 				If sAction = "CANCEL" Then
 
-					' Clear up any temp files
-					If Request.Form("txtOLEType") > 1 Then
-						' No temp files, so skip this bit.
-						' objOLE = Session("OLEObject")
-						' objOLE.DeleteTempFile()
-						' Session("OLEObject") = objOLE
-						' objOLE = Nothing
-					End If
-
 					' Go to the requested page.
 					Session("errorMessage") = sErrorMsg
 					' Return PartialView(sNextPage)		' Moved to oleFind.ascx, after .submit()
@@ -5497,85 +5485,10 @@ Namespace Controllers
 			'Return RedirectToAction("Index")
 		End Function
 
-		'<HttpPost()> _
-		'Public Function EmbedFile(filSelectFile As HttpPostedFileBase) As JsonResult
-
-		'	' Commit changes to the database		
-		'	' The file will (should) have already been copied from the client to the temp path
-
-		'	Try
-		'		' Read input stream from request
-		'		Dim buffer As Byte() = New Byte(Request.InputStream.Length - 1) {}
-		'		Dim offset As Integer = 0
-		'		Dim cnt As Integer = 0
-
-		'		While (InlineAssignHelper(cnt, Request.InputStream.Read(buffer, offset, 10))) > 0
-		'			offset += cnt
-		'		End While
-
-		'		Dim objOLE = Session("OLEObject")
-		'		With objOLE
-		'			.UseEncryption = Request("HTTP_X_USEENCRYPTION")
-		'			.OLEType = Request("HTTP_X_OLETYPE")
-		'			.FileName = Request("HTTP_X_FILE_NAME")
-		'			.DisplayFilename = Request("HTTP_X_DISPLAYFILENAME")
-		'			.OLEFileSize = Request("HTTP_X_FILE_SIZE")
-		'			.OLEModifiedDate = Request("HTTP_X_OLEMODIFIEDDATE")
-
-		'			.SaveStream(Session("optionRecordID"), Session("optionColumnID"), Session("realSource"), False, buffer)
-		'			'.DeleteTempFile()
-		'		End With
-		'		Session("OLEObject") = objOLE
-		'		objOLE = Nothing
-
-		'		Dim objDatabase As Database = CType(Session("DatabaseFunctions"), Database)
-		'		Session("timestamp") = objDatabase.GetRecordTimestamp(CleanNumeric(Session("optionRecordID")), Session("realSource"))
-
-		'	Catch generatedExceptionName As Exception
-		'		Session("ErrorTitle") = "File upload"
-		'		Session("ErrorText") = "You could not upload the file because of the following error:<p>" & FormatError(Err.Description)
-		'		Dim data1 = New ErrMsgJsonAjaxResponse() With {.ErrorTitle = Session("ErrorTitle"), .ErrorMessage = Session("ErrorText"), .Redirect = ""}
-		'		Return Json(data1, JsonRequestBehavior.AllowGet)
-		'	End Try
-
-		'End Function
-
-		'<HttpPost()>
-		'Public Function UploadFile() As JsonResult
-
-		'	' Read custom attributes
-		'	Dim fileName As String = Request("HTTP_X_FILE_NAME")
-		'	Dim fileSize As String = Request("HTTP_X_FILE_SIZE")
-		'	Dim serverPath As String = Request("HTTP_X_OLE_PATH")
-		'	If serverPath.Substring(serverPath.Length - 1) <> "\" And serverPath.Length > 0 Then
-		'		serverPath &= "\"
-		'	End If
-
-		'	Try
-		'		' Read input stream from request
-		'		Dim buffer As Byte() = New Byte(Request.InputStream.Length - 1) {}
-		'		Dim offset As Integer = 0
-		'		Dim cnt As Integer = 0
-		'		While (InlineAssignHelper(cnt, Request.InputStream.Read(buffer, offset, 10))) > 0
-		'			offset += cnt
-		'		End While
-
-		'		IO.File.WriteAllBytes(serverPath + fileName, buffer)
-
-		'	Catch generatedExceptionName As Exception
-		'		Session("ErrorTitle") = "File upload"
-		'		Session("ErrorText") = "You could not upload the file because of the following error:<p>" & FormatError(Err.Description)
-		'		Dim data1 = New ErrMsgJsonAjaxResponse() With {.ErrorTitle = Session("ErrorTitle"), .ErrorMessage = Session("ErrorText"), .Redirect = ""}
-		'		Return Json(data1, JsonRequestBehavior.AllowGet)
-		'	End Try
-
-		'End Function
-
 		Private Shared Function InlineAssignHelper(Of T)(ByRef target As T, value As T) As T
 			target = value
 			Return value
 		End Function
-
 
 		Public Function DownloadFile(filename As String, serverpath As String) As ActionResult
 

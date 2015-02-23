@@ -92,18 +92,6 @@ Module modSettings
 
 	End Function
 
-	Public Sub ProgramError(ByVal strProcedureName As String, ByVal objErr As ErrObject, ByVal lngErrLine As Integer)
-
-		On Error GoTo 0
-
-		Dim strErrorText As String
-
-		With objErr
-			strErrorText = vbCrLf & vbCrLf & "Runtime error in COAInt_Server.DLL" & vbCrLf & "Error number: " & Err.Number & vbCrLf & "Error description: " & Err.Description & vbCrLf & vbCrLf & "Procedure: " & strProcedureName & vbCrLf & "Line: " & lngErrLine & vbCrLf & "Thread Id: " & System.Threading.Thread.CurrentThread.ManagedThreadId
-			'My.Application.Log.WriteEntry(strErrorText, System.Diagnostics.TraceEventType.Error)
-		End With
-	End Sub
-
 	Public Function DateToString(sDate As String, Region As RegionalSettings) As String
 
 		If sDate = Nothing Then

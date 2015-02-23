@@ -338,7 +338,6 @@
 				if (frmGotoOption.txtOLECommit.value == 1) {
 					try {
 						frmGotoOption.txtOLEFile.value = $('#filSelectFile').val();
-						frmGotoOption.txtOLEEncryption.value = true;
 
 					} catch (e) {
 						OpenHR.messageBox("Unable to save your document.\nContact your system administrator.", 16);
@@ -463,7 +462,6 @@
 			frmGotoOption.txtOLEFile.value = OpenHR.ConvertToUNC(filSelectFile.value);
 			frmGotoOption.txtOLEFileUNCPath.value = OpenHR.GetPathOnly(frmGotoOption.txtOLEFile.value, false);
 			frmGotoOption.txtOLEType.value = plngOleType;
-			frmGotoOption.txtOLEEncryption.value = false;
 			frmGotoOption.txtOLECommit.value = 1;
 
 			var datelastmodified;
@@ -545,8 +543,6 @@
 		else {
 			sCaption = "Embedded File properties";
 		}
-
-		sPropertiesMsg = sPropertiesMsg + "\nLast Modified : " + frmGotoOption.txtOLEModifiedDate.value; // window.parent.frames("menuframe").ASRIntranetFunctions.FileLastModified(frmGotoOption.txtOLEFile.value);
 
 		if (sPropertiesMsg.length > 0) {
 			OpenHR.messageBox(sPropertiesMsg, 64, sCaption);
@@ -649,8 +645,6 @@
 
 			// Embedded
 		else if (lngOleType == 2) {
-			//sFile = frmGotoOption.txtOLEJustFileName.value; // frmFindForm.ASRIntOLE1.FileName;
-			//bFileEncrypted = frmGotoOption.txtOLEEncryption.value;
 			frmGotoOption.txtOLECommit.value = 1;
 		}
 
@@ -664,11 +658,7 @@
 			return false;
 		}
 
-		//window.parent.frames("menuframe").ASRIntranetFunctions.CurrentSessionKey = frmGotoOption.txtOLESession.value
-		//ShowWait("System Locked...");
-		//window.parent.frames("menuframe").ASRIntranetFunctions.editFile(sFile, bFileEncrypted, frmGotoOption.txtOLEJustFileName.value, bIsReadOnly);
-		//extract and download the file.
-		
+		//extract and download the file.	
 		path = '<%: Html.Raw(Url.Action("EditFile", "Home", New With {.plngRecordID = CInt(Session("optionRecordID")), .plngColumnID = CInt(Session("optionColumnID")), .pstrRealSource = Session("realSource")}))%>';
 
 		window.location.href = path;
@@ -955,10 +945,9 @@
 			Response.Write("<INPUT type='hidden' id='txtIsPhoto' name='txtIsPhoto' value='" & Session("optionIsPhoto") & "'>" & vbCrLf)
 			
 			' Create the document from the database into the temporary UNC path
-			Dim strUploadPath As String
 			Dim strFullFileName As String
 			Dim strJustFileName As String
-			Dim bEncryption As Boolean
+			'	Dim bEncryption As Boolean
 			Dim strFileUncPath As String
 			Dim bIsNew As Boolean
 			Dim strFileSize As String
@@ -967,11 +956,9 @@
 
 			bIsReadOnly = False
 			bIsNew = True
-			bEncryption = True
 			strFullFileName = ""
 			strJustFileName = ""
 			strFileUncPath = ""
-			strUploadPath = "\\" & Request.ServerVariables("SERVER_NAME") & "\HRProTemp$\"
 			strFileSize = ""
 			strDateModified = ""
 
@@ -979,19 +966,11 @@
 				Dim objOLE As HR.Intranet.Server.Ole = Session("OLEObject")
 				' The following are now set using getpropertiesfromstream.
 				objOLE.FileName = ""
-				objOLE.TempLocationPhysical = strUploadPath
-				objOLE.TempLocationUNC = strUploadPath
-				objOLE.CurrentSessionKey = Session.SessionID
-				objOLE.CurrentUser = Request.ServerVariables("LOGON_USER")
-				objOLE.UseFileSecurity = True
-				objOLE.UseEncryption = bEncryption
-				objOLE.UseFileSecurity = False
 				objOLE.CreateOLEDocument(Session("optionRecordID"), Session("optionColumnID"), Session("realSource"))
-				bEncryption = (objOLE.OLEType = 2)
 				Session("optionOLEType") = objOLE.OLEType
 				strFullFileName = objOLE.FileName
-				If objOLE.OLEType = 3 Then
-					strJustFileName = objOLE.Filename
+				If objOLE.OLEType = OLEType.Linked Then
+					strJustFileName = objOLE.FileName
 				Else
 					strJustFileName = objOLE.DisplayFilename
 				End If
@@ -1010,15 +989,13 @@
 		<input type='hidden' id="txtOLELocalPath" name="txtOLELocalPath" value="">
 		<input type='hidden' id="txtPicturePath" name="txtPicturePath" value="">
 
-		<input type="hidden" id="txtOLEType" name="txtOLEType" value='<%=session("optionOLEType")%>'>
+		<input type="hidden" id="txtOLEType" name="txtOLEType" value='<%=CInt(Session("optionOLEType"))%>'>
 		<input type="hidden" id="txtOLEFile" name="txtOLEFile" value="<%=strJustFileName%>">
 		<input type="hidden" id="txtOLEFileUNCPath" name="txtOLEFileUNCPath" value="<%=strFileUncPath%>">
 		<input type="hidden" id="txtOLEJustFileName" name="txtOLEJustFileName" value="<%=strJustFileName%>">
-		<input type="hidden" id="txtOLEEncryption" name="txtOLEEncryption" value="<%=bEncryption%>">
 		<input type="hidden" id="txtOLESession" name="txtOLESession" value="<%=session.SessionID%>">
 		<input type="hidden" id="txtOLEIsNew" name="txtOLEIsNew" value="<%=bIsNew%>">
 		<input type="hidden" id="txtOLECommit" name="txtOLECommit" value="0">
-		<input type='hidden' id="txtOLEUploadPath" name="txtOLEUploadPath" value="<%=strUploadPath%>">
 		<input type='hidden' id="txtOLEFileSize" name="txtOLEFileSize" value="<%=strFileSize%>">
 		<input type='hidden' id="txtOLEModifiedDate" name="txtOLEModifiedDate" value="<%=strDateModified%>">
 		<%Html.RenderPartial("~/Views/Shared/gotoOption.ascx")%>

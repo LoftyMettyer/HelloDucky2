@@ -1,4 +1,5 @@
-﻿Imports System.Runtime.CompilerServices
+﻿Imports System.IO
+Imports System.Runtime.CompilerServices
 Imports System.Security
 
 Namespace Extensions
@@ -29,11 +30,16 @@ Namespace Extensions
 
 		<Extension> _
 		Public Function RemoveSensitive(Source As String) As String
-
 			Return Source
-
 		End Function
 
+		<Extension> _
+		Public Function GetDirectoryNameOnly(filename As String) As String
+
+			Dim sPath = Path.GetDirectoryName(filename)
+			Return Mid(sPath, Len(Path.GetPathRoot(filename)))
+
+		End Function
 
 	End Module
 
