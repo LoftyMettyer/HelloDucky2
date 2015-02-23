@@ -4,13 +4,12 @@ Option Explicit On
 Imports Aspose.Cells.Charts
 Imports System.Collections.Generic
 Imports Aspose.Cells.Drawing
-Imports HR.Intranet.Server.BaseClasses
 Imports HR.Intranet.Server.Enums
 Imports Aspose.Cells
 Imports Aspose.Cells.Pivot
 Imports System.Linq
 
-Namespace ExClientCode
+Namespace ReportOutput
 
 	Friend Class clsOutputExcel
 		Inherits BaseOutputFormat
@@ -34,7 +33,7 @@ Namespace ExClientCode
 		Private _mblnPrinter As Boolean
 		Private _mstrPrinterName As String
 		Private _mblnSave As Boolean
-		Private _mlngSaveExisting As Integer
+		Private _mlngSaveExisting As ExistingFile
 		Private _mblnEmail As Boolean
 		Private _mstrFileName As String
 		Private _mblnSizeColumnsIndependently As Boolean
@@ -210,20 +209,28 @@ Namespace ExClientCode
 			If Dir(_mstrFileName) <> vbNullString And _mstrFileName <> vbNullString Then
 				' TODO: We only create new now - no append to file or saveas or owt like that...
 				Select Case _mlngSaveExisting
-					Case 0 'Overwrite
-						If Not objParent.KillFile(_mstrFileName) Then
-							GetFile = False
-							Exit Function
-						End If
-						GetWorkBook(strWorkbook:="New", strWorksheet:="New")
-					Case 1 'Do not overwrite (fail)
+					Case ExistingFile.Overwrite
+
+						Try
+							Kill(_mstrFileName)
+							GetWorkBook(strWorkbook:="New", strWorksheet:="New")
+
+						Catch ex As Exception
+							Return False
+
+						End Try
+
+					Case ExistingFile.DoNotOverwrite
 						_mstrErrorMessage = "File already exists."
-					Case 2 'Add Sequential number to file
+
+					Case ExistingFile.AddSequentialToName
 						_mstrFileName = _mobjParent.GetSequentialNumberedFile(_mstrFileName)
 						GetWorkBook(strWorkbook:="New", strWorksheet:="New")
-					Case 3 'Append to existing file
+
+					Case ExistingFile.AppendToFile
 						GetWorkBook(strWorkbook:="Open", strWorksheet:="Existing")
-					Case 4 'Create new worksheet within existing workbook...
+
+					Case ExistingFile.CreateNewSheet
 						GetWorkBook(strWorkbook:="Open", strWorksheet:="New")
 				End Select
 			Else
@@ -240,13 +247,6 @@ Namespace ExClientCode
 			Dim objCellsLicense As New License
 			objCellsLicense.SetLicense("Aspose.Cells.lic")
 
-			If _mblnApplyStyles And _mstrXlTemplate <> "" And Dir(_mstrXlTemplate) <> "" Then
-				If Not IsFileCompatibleWithExcelVersion(_mstrXlTemplate, OfficeVersion) Then
-					_mstrErrorMessage = "Your User Configuration Output Options are set to use a template file which is not compatible with your version of Microsoft Office."
-					Exit Sub
-				End If
-			End If
-
 			_mstrSheetMode = strWorksheet
 			Select Case strWorkbook
 				Case "New"
@@ -262,11 +262,6 @@ Namespace ExClientCode
 					End If
 
 				Case "Open"
-					If Not IsFileCompatibleWithExcelVersion(_mstrFileName, OfficeVersion) Then
-						_mstrErrorMessage = "This definition is set to append to a file which is not compatible with your version of Microsoft Office."
-						Exit Sub
-					End If
-
 					_mxlWorkBook = New Workbook(_mstrFileName)
 
 			End Select
@@ -1305,8 +1300,8 @@ Namespace ExClientCode
 
 		Private Sub SetCellBorders(ByRef stlGeneral As Style)
 			stlGeneral.SetBorder(BorderType.TopBorder, CellBorderType.Thin, Color.Black) 'Top border
-			stlGeneral.SetBorder(BorderType.BottomBorder, CellBorderType.Thin, Color.Black) 'Bottom border
-			stlGeneral.SetBorder(BorderType.LeftBorder, CellBorderType.Thin, Color.Black) 'Left border
+			stlGeneral.SetBorder(BorderType.BottomBorder, CellBorderType.Thin, Color.Black)	'Bottom border
+			stlGeneral.SetBorder(BorderType.LeftBorder, CellBorderType.Thin, Color.Black)	'Left border
 			stlGeneral.SetBorder(BorderType.RightBorder, CellBorderType.Thin, Color.Black) 'Right border
 		End Sub
 	End Class

@@ -152,7 +152,7 @@ Public Class Ole
 				End If
 
 				fFileOK = (abtImage.GetLength(0) > 0)
-				strTempFile = GetTmpFName()
+				strTempFile = Path.GetTempFileName()
 
 				Dim b As Byte() = rsDocument(strColumnName)
 
@@ -171,7 +171,7 @@ Public Class Ole
 
 				_miOLEType = Val(Mid(strProperties, 9, 2))
 				_mstrDisplayFileName = Trim(Path.GetFileName(Mid(strProperties, 11, 70)))
-				_mstrFileName = IIf(_miOLEType = 2, GetTmpFName, _mstrDisplayFileName)
+				_mstrFileName = IIf(_miOLEType = 2, Path.GetTempFileName(), _mstrDisplayFileName)
 				_mstrPath = Trim(Mid(strProperties, 81, 210))
 				_mstrUnc = Trim(Mid(strProperties, 291, 60))
 				_mstrDocumentSize = Trim(Mid(strProperties, 351, 10))
@@ -220,7 +220,7 @@ Public Class Ole
 			Return ""
 		End If
 
-		strTempFile = GetTmpFName()
+		strTempFile = Path.GetTempFileName()
 		_misPhoto = IsPhotoDataType(plngColumnID)
 
 		strColumnName = GetColumnName(plngColumnID)
@@ -483,7 +483,7 @@ Public Class Ole
 		Return strErrMessage
 
 	End Function
-	
+
 	' Extracts just the filename from a path
 	Private Function GetFileNameOnly(ByRef pstrFilePath As String) As String
 

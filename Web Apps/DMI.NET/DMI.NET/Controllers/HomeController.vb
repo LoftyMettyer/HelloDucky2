@@ -23,6 +23,7 @@ Imports DMI.NET.Code.Hubs
 Imports System.Web.Script.Serialization
 Imports Newtonsoft.Json
 Imports HR.Intranet.Server.Expressions
+Imports HR.Intranet.Server.ReportOutput
 
 Namespace Controllers
 	Public Class HomeController
@@ -2561,7 +2562,7 @@ Namespace Controllers
 
 			Dim objCrossTab As CrossTab = CType(Session("objCrossTab" & sUtilID), CrossTab)
 
-			Dim ClientDLL As New HR.Intranet.Server.clsOutputRun
+			Dim ClientDLL As New clsOutputRun
 			ClientDLL.SessionInfo = CType(Session("SessionContext"), SessionInfo)
 
 			Dim objUser As New HR.Intranet.Server.clsSettings
@@ -2878,7 +2879,7 @@ Namespace Controllers
 
 			Dim objCrossTab As CrossTab = CType(Session("objCrossTab" & sUtilID), CrossTab)
 
-			Dim ClientDLL As New HR.Intranet.Server.clsOutputRun
+			Dim ClientDLL As New clsOutputRun
 			ClientDLL.SessionInfo = CType(Session("SessionContext"), SessionInfo)
 
 			Dim objUser As New HR.Intranet.Server.clsSettings

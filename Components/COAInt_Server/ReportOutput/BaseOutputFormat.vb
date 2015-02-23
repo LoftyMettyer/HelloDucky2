@@ -1,4 +1,7 @@
-﻿Namespace BaseClasses
+﻿Option Strict On
+Option Explicit On
+
+Namespace ReportOutput
 	Public Class BaseOutputFormat
 
 		Public DownloadExtension As String

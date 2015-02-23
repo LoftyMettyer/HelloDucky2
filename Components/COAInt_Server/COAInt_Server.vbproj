@@ -117,7 +117,7 @@
     <Compile Include="BaseClasses\BaseExpressionComponent.vb" />
     <Compile Include="BaseClasses\BaseForDMI.vb" />
     <Compile Include="BaseClasses\BaseModuleSpecific.vb" />
-    <Compile Include="BaseClasses\BaseOutputFormat.vb" />
+    <Compile Include="ReportOutput\BaseOutputFormat.vb" />
     <Compile Include="BaseClasses\BaseReport.vb" />
     <Compile Include="Classes\AbsenceBreakdownDate.vb" />
     <Compile Include="Classes\WorkingPatternChange.vb" />
@@ -214,14 +214,9 @@
     <Compile Include="Enums\TableTypes.vb" />
     <Compile Include="Enums\UtilityType.vb" />
     <Compile Include="Enums\WorkingPatternType.vb" />
-    <Compile Include="ExClientCode\clsOutputCSV.vb" />
-    <Compile Include="ExClientCode\clsOutputExcel.vb" />
-    <Compile Include="ExClientCode\clsOutputGrid.vb" />
-    <Compile Include="ExClientCode\clsOutputHTML.vb" />
-    <Compile Include="ExClientCode\clsOutputRun.vb" />
-    <Compile Include="ExClientCode\clsOutputStyle.vb" />
-    <Compile Include="ExClientCode\clsOutputWord.vb" />
-    <Compile Include="ExClientCode\modIntClient.vb" />
+    <Compile Include="ReportOutput\clsOutputExcel.vb" />
+    <Compile Include="ReportOutput\clsOutputRun.vb" />
+    <Compile Include="ReportOutput\clsOutputStyle.vb" />
     <Compile Include="ExClientCode\modUserSettings.vb" />
     <Compile Include="Expressions\ExprCalculation.vb">
       <SubType>Code</SubType>

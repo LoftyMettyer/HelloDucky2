@@ -8,10 +8,6 @@ Module modSettings
 
   Public Const VARCHAR_MAX_Size As Integer = 2147483646 'Yup one below the actual max, needs to be otherwise things go so awfully wrong, you don't believe me, well go on then, change it, see if I care!!!)
 
-  Declare Function GetTempFileName Lib "kernel32" Alias "GetTempFileNameA" (ByVal lpszPath As String, ByVal lpPrefixString As String, ByVal wUnique As Integer, ByVal lpTempFileName As String) As Integer
-  Declare Function GetTempPath Lib "kernel32" Alias "GetTempPathA" (ByVal nBufferLength As Integer, ByVal lpBuffer As String) As Integer
-
-
 	Public Function DateFormat() As String
 		' Returns the date format.
 		' NB. Windows allows the user to configure totally stupid
@@ -96,44 +92,16 @@ Module modSettings
 
 	End Function
 
-  Public Function GetTmpFName() As String
+	Public Sub ProgramError(ByVal strProcedureName As String, ByVal objErr As ErrObject, ByVal lngErrLine As Integer)
 
-    Dim strTmpPath, strTmpName As String
+		On Error GoTo 0
 
-    strTmpPath = Space(1024)
-    strTmpName = Space(1024)
+		Dim strErrorText As String
 
-    Call GetTempPath(1024, strTmpPath)
-    Call GetTempFileName(strTmpPath, "_T", 0, strTmpName)
-
-    strTmpName = Trim(strTmpName)
-    If Len(strTmpName) > 0 Then
-      strTmpName = Left(strTmpName, Len(strTmpName) - 1)
-
-      'MH20021227 For some reason a zero byte file is created... ANNOYING!
-      'UPGRADE_WARNING: Dir has a new behavior. Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="9B7D5ADD-D8FE-4819-A36C-6DEDAF088CC7"'
-      If Dir(strTmpName) <> vbNullString Then
-        Kill(strTmpName)
-      End If
-
-    Else
-      strTmpName = vbNullString
-    End If
-
-    GetTmpFName = Trim(strTmpName)
-
-  End Function
-
-  Public Sub ProgramError(ByVal strProcedureName As String, ByVal objErr As ErrObject, ByVal lngErrLine As Integer)
-
-    On Error GoTo 0
-
-    Dim strErrorText As String
-
-    With objErr
-      strErrorText = vbCrLf & vbCrLf & "Runtime error in COAInt_Server.DLL" & vbCrLf & "Error number: " & Err.Number & vbCrLf & "Error description: " & Err.Description & vbCrLf & vbCrLf & "Procedure: " & strProcedureName & vbCrLf & "Line: " & lngErrLine & vbCrLf & "Thread Id: " & System.Threading.Thread.CurrentThread.ManagedThreadId
+		With objErr
+			strErrorText = vbCrLf & vbCrLf & "Runtime error in COAInt_Server.DLL" & vbCrLf & "Error number: " & Err.Number & vbCrLf & "Error description: " & Err.Description & vbCrLf & vbCrLf & "Procedure: " & strProcedureName & vbCrLf & "Line: " & lngErrLine & vbCrLf & "Thread Id: " & System.Threading.Thread.CurrentThread.ManagedThreadId
 			'My.Application.Log.WriteEntry(strErrorText, System.Diagnostics.TraceEventType.Error)
-    End With
+		End With
 	End Sub
 
 	Public Function DateToString(sDate As String, Region As RegionalSettings) As String
