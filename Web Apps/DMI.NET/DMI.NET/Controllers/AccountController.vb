@@ -7,10 +7,9 @@ Imports HR.Intranet.Server
 Imports System.Data.SqlClient
 Imports System.Reflection
 Imports HR.Intranet.Server.Structures
+Imports HR.Intranet.Server.Extensions
 Imports DMI.NET.Models
-Imports System.Security
 Imports DMI.NET.Code.Hubs
-Imports DMI.NET.ViewModels.Account
 
 Namespace Controllers
 	Public Class AccountController
@@ -152,8 +151,6 @@ Namespace Controllers
 					Return RedirectToAction("Configuration", "Error")
 				End If
 
-				Dim objServerSession As HR.Intranet.Server.SessionInfo = Session("sessionContext")
-
 				Session("ErrorText") = Nothing
 				Session("action") = ""
 				Session("selectSQL") = ""
@@ -163,7 +160,7 @@ Namespace Controllers
 
 			Catch ex As Exception
 				Session("ErrorText") = FormatError(ex.Message)
-				Return RedirectToAction("Loginerror")
+				Return RedirectToAction("LoginMessage")
 			End Try
 
 			Session("dfltTempMenuFilePath") = "<NONE>"
@@ -186,14 +183,12 @@ Namespace Controllers
 			Try
 
 				If Not ModelState.IsValid Then
-					loginviewmodel.SetDetails = True
 					loginviewmodel.ReadFromCookie()
 					Return View(loginviewmodel)
 				End If
 
 				If loginviewmodel.UserName.ToLower() = "sa" Then
-					ModelState.AddModelError("Username", "The System Administrator cannot use the OpenHR Web module.")
-					loginviewmodel.SetDetails = True
+					ModelState.AddModelError(Function(i As LoginViewModel) i.UserName, "The System Administrator cannot use the OpenHR Web module.")
 					loginviewmodel.ReadFromCookie()
 					Return View(loginviewmodel)
 				End If
@@ -201,16 +196,13 @@ Namespace Controllers
 				'Dim sReferringPage
 				Dim sUserName As String
 				Dim sPassword As String
-				Dim sDatabaseName As String
-				Dim sServerName As String
+
 				Dim sLocaleCultureName As String = "en-GB"
 
 				Dim sLocaleDecimalSeparator As String
 				Dim sLocaleThousandSeparator As String
-				Dim fForcePasswordChange As Boolean
 				Dim bWindowsAuthentication As Boolean = False
-
-				fForcePasswordChange = False
+				Dim sErrorMessage As String
 
 				If Not isWidgetLogin Then
 					' Read the User Name and Password from the Login form.
@@ -252,20 +244,19 @@ Namespace Controllers
 
 					' Read the database/server from the configuration
 					Dim systemConnection = New SqlConnection(ConfigurationManager.ConnectionStrings("OpenHR").ConnectionString)
-					sDatabaseName = systemConnection.Database
-					sServerName = systemConnection.DataSource
 
 					' Is the DB the correct version
 					Dim objAppVersion As Version = Assembly.GetExecutingAssembly().GetName().Version
 
 					If Not Licence.IsValid Then
-						Session("ErrorText") = String.Format("The database licence is invalid.<BR>Please ask the System Administrator to update the database for use with version {0}.{1}.{2}" _
+						sErrorMessage = String.Format("The database licence is invalid.<BR>Please ask the System Administrator to update the database for use with version {0}.{1}.{2}" _
 								, objAppVersion.Major, objAppVersion.Minor, objAppVersion.Build)
-						Return RedirectToAction("Loginerror")
+						ModelState.AddModelError(Function(i As LoginViewModel) i.LoginStatus, sErrorMessage)
+						Return View(loginviewmodel)
 					End If
 
 					' Validate the login
-					objLogin = objServerSession.SessionLogin(sUserName, sPassword, sDatabaseName, sServerName, bWindowsAuthentication)
+					objLogin = objServerSession.SessionLogin(sUserName, sPassword, systemConnection.Database, systemConnection.DataSource, bWindowsAuthentication)
 
 					' Has the password expired? Cannot log in until they've successfully changed it.
 					If objLogin.MustChangePassword Then
@@ -275,34 +266,34 @@ Namespace Controllers
 
 					' Generic login fail.
 					If objLogin.LoginFailReason.Length <> 0 Then
-						Session("ErrorText") = FormatError(objServerSession.LoginInfo.LoginFailReason)
-						Return RedirectToAction("Loginerror")
+						ModelState.AddModelError(Function(i As LoginViewModel) i.LoginStatus, objServerSession.LoginInfo.LoginFailReason)
+						Return View(loginviewmodel)
 					End If
 
 					' Database update in progress
 					If objServerSession.DatabaseStatus.IsUpdateInProgress Then
-						Session("ErrorText") = "A database update is in progress."
-						Return RedirectToAction("Loginerror")
+						ModelState.AddModelError(Function(i As LoginViewModel) i.LoginStatus, "A database update is in progress.")
+						Return View(loginviewmodel)
 					End If
 
 					' Users that are assigned certain server roles cannot log in (I think its dodgy because we rely too heavily on dbo)
 					If objLogin.IsServerRole Then
-						Session("ErrorText") = "Users assigned to fixed SQL Server roles cannot use OpenHR web."
-						FormatError(objServerSession.LoginInfo.LoginFailReason)
-						Return RedirectToAction("Loginerror")
+						ModelState.AddModelError(Function(i As LoginViewModel) i.UserName, "Users assigned to fixed SQL Server roles cannot use OpenHR web.")
+						Return View(loginviewmodel)
 					End If
 
 					If Not CompareVersion(objServerSession.DatabaseStatus.IntranetVersion, objAppVersion, False) _
 						Or Not CompareVersion(objServerSession.DatabaseStatus.SysMgrVersion, objAppVersion, True) Then
-						Session("ErrorText") = String.Format("The database is out of date.<BR>Please ask the System Administrator to update the database for use with version {0}.{1}.{2}" _
+						sErrorMessage = String.Format("The database is out of date.<BR>Please ask the System Administrator to update the database for use with version {0}.{1}.{2}" _
 								, objAppVersion.Major, objAppVersion.Minor, objAppVersion.Build)
-						Return RedirectToAction("Loginerror")
+						ModelState.AddModelError(Function(i As LoginViewModel) i.LoginStatus, sErrorMessage)
+						Return View(loginviewmodel)
 					End If
 
 					' Valid login, but do we have any kind of access?
 					If Not (objLogin.IsSSIUser OrElse objLogin.IsDMIUser) Then
-						Session("ErrorText") = "You are not permitted to use OpenHR Web with this user name."
-						Return RedirectToAction("Loginerror")
+						ModelState.AddModelError(Function(i As LoginViewModel) i.LoginStatus, "You are not permitted to use OpenHR Web with this user name.")
+						Return View(loginviewmodel)
 					End If
 
 					' User is allowed into OpenHR, now populate some metadata
@@ -321,12 +312,10 @@ Namespace Controllers
 						Session("LocaleDateFormat") = objServerSession.RegionalSettings.DateFormat.ShortDatePattern
 					End If
 
-
 					objDataAccess = New clsDataAccess(objServerSession.LoginInfo)
 					Session("DatabaseFunctions") = objDatabase
 					Session("DatabaseAccess") = objDataAccess
 					Session("sessionContext") = objServerSession
-					Session("sessionCurrentUser") = objLogin
 
 					If Licence.IsModuleLicenced(SoftwareModule.Workflow) Then
 						PopulateWorkflowSessionVariables()
@@ -352,8 +341,8 @@ Namespace Controllers
 					objDatabase.SessionInfo = objServerSession
 
 				Catch ex As Exception
-					Session("ErrorText") = FormatError(ex.Message)
-					Return RedirectToAction("Loginerror")
+					ModelState.AddModelError(Function(i As LoginViewModel) i.LoginStatus, ex.Message.RemoveSensitive())
+					Return View(loginviewmodel)
 
 				End Try
 
@@ -419,7 +408,7 @@ Namespace Controllers
 							, New SqlParameter("piWelcomeColumnID", SqlDbType.Int) With {.Value = lngSSIWelcomeColumnID} _
 							, New SqlParameter("piPhotographColumnID", SqlDbType.Int) With {.Value = lngSSIPhotographColumnID} _
 							, New SqlParameter("piSingleRecordViewID", SqlDbType.Int) With {.Value = Session("SingleRecordViewID")} _
-							, New SqlParameter("psUserName", SqlDbType.VarChar, 255) With {.Value = Session("username")} _
+							, New SqlParameter("psUserName", SqlDbType.VarChar, 255) With {.Value = objLogin.Username} _
 							, prmWelcomeMessage _
 							, prmSelfServiceWelcomeColumn _
 							, prmSelfServicePhotograph)
@@ -543,7 +532,7 @@ Namespace Controllers
 				Catch ex As Exception
 					Session("ErrorTitle") = "Change Password Page"
 					Session("ErrorText") = ex.Message
-					Return RedirectToAction("Loginerror", "Account")
+					Return RedirectToAction("LoginMessage", "Account")
 
 				End Try
 
@@ -555,12 +544,6 @@ Namespace Controllers
 		End Function
 
 		Function ForcedPasswordChange() As ActionResult
-			Return View()
-		End Function
-
-		Function Loginerror() As ActionResult
-			Session("Username") = vbNullString
-			Session("Usergroup") = vbNullString
 			Return View()
 		End Function
 

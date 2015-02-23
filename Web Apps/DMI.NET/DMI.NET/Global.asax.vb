@@ -43,11 +43,6 @@ Public Class MvcApplication
 
 		Server.ScriptTimeout = 1000
 
-		Session("username") = Request.QueryString("username")
-		If Request.QueryString("username") = "" Then
-			Session("username") = Request.QueryString("user")
-		End If
-
 		' get the LAYOUT_SELECTABLE setting from web config.
 		Session("ui-layout-selectable") = ApplicationSettings.UI_Layout_Selectable
 		If Session("ui-layout-selectable") Is Nothing Or Len(Session("ui-layout-selectable")) <= 0 Then Session("ui-layout-selectable") = "false"

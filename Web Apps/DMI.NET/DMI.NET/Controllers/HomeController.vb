@@ -292,7 +292,6 @@ Namespace Controllers
 						sErrorText = sErrorText & " in the system."
 						Session("ErrorText") = sErrorText
 
-						' Return RedirectToAction("Loginerror", "Account")
 					End If
 				Else
 					' Save the required table/view and screen IDs in session variables.
@@ -413,7 +412,7 @@ Namespace Controllers
 			If bOK Then
 				Return View()
 			Else
-				Return RedirectToAction("LoginError", "Account")
+				Return RedirectToAction("LoginMessage", "Account")
 			End If
 
 		End Function

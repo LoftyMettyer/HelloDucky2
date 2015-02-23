@@ -271,7 +271,7 @@
     <Compile Include="Helpers\DisabledIf.vb" />
     <Compile Include="Helpers\EnumDropdown.vb" />
     <Compile Include="Helpers\TableFor.vb" />
-    <Compile Include="Models\AccountViewModels.vb" />
+    <Compile Include="Models\LoginViewModel.vb" />
     <Compile Include="Models\CalendarReportModel.vb" />
     <Compile Include="Models\CrossTabModel.vb" />
     <Compile Include="Models\CustomReportModel.vb" />
@@ -1672,7 +1672,6 @@
     <Content Include="Views\Account\ForgotPassword_Submit.aspx" />
     <Content Include="Views\Account\ResetPassword.aspx" />
     <Content Include="Views\Account\ForgotPassword.aspx" />
-    <Content Include="Views\Account\Loginerror.aspx" />
     <Content Include="Views\Account\ForcedPasswordChange.aspx" />
     <Content Include="Views\Account\Login.aspx" />
     <Content Include="Views\Account\Loginmessage.aspx" />

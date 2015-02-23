@@ -52,10 +52,13 @@
 				<%=Html.ValidationMessageFor(Function(loginviewmodel) loginviewmodel.WindowsAuthentication)%>
 			</div>
 			<%End If%>
+
+			<div class="loginframeField">
+				<%=Html.ValidationMessageFor(Function(loginviewmodel) loginviewmodel.LoginStatus)%>
+			</div>
 			
 			<div class="centered">
 				<input type="button" id="submitLoginDetails" name="submitLoginDetails" onclick="SubmitLoginDetails()" value="Login" />
-				<input type="button" id="btnToggleDetailsDiv" name="details" class="ui-button <%=IIf(Model.SetDetails, "", "hidden")%>" value="Details >>" />		
 
 				<br />
 				<p id="ForgotPasswordLink" style="display: none;"><%=Html.ActionLink("Forgot password", "ForgotPassword", "Account")%></p>
@@ -122,11 +125,6 @@
 				OpenHR.showAboutPopup();
 			});
 
-			$('#btnToggleDetailsDiv').click(function () {
-				setDetailsDisplay(!($('#divDetails').is(':visible')));
-				if ($('#divDetails').is(':visible')) $('#txtDatabase').focus();
-			});
-
 		});
 
 		function CheckKeyPressed(e) {
@@ -166,18 +164,6 @@
 				DisableUsernamePassword(false);
 				$('#txtPassword').val('');
 				$("#ForgotPasswordLink").show();
-			}
-		}
-
-		function setDetailsDisplay(pfShow) {
-			if (pfShow == true) {
-				$('#btnToggleDetailsDiv').prop("value", "Details <<");
-				$('#divDetails').show();
-				$('#btnToggleDetailsDiv').removeClass('hidden');
-			}
-			else {
-				$('#btnToggleDetailsDiv').prop("value", "Details >>");
-				$('#divDetails').hide();
 			}
 		}
 

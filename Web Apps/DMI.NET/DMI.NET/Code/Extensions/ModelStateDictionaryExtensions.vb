@@ -1,6 +1,7 @@
 ﻿Option Strict On
 Option Explicit On
 
+Imports System.Linq.Expressions
 Imports System.Runtime.CompilerServices
 Imports DMI.NET.ViewModels.Reports
 
@@ -22,6 +23,11 @@ Namespace Code.Extensions
 			Return objWarning
 
 		End Function
+
+		<Extension> _
+		Public Sub AddModelError(Of TModel, TValue)(dictionary As ModelStateDictionary, expression As Expression(Of Func(Of TModel, TValue)), errorMessage As String)
+			dictionary.AddModelError(ExpressionHelper.GetExpressionText(expression), errorMessage)
+		End Sub
 
 	End Module
 End Namespace

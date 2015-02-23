@@ -3,8 +3,6 @@ Option Strict On
 
 Imports System.ComponentModel.DataAnnotations
 Imports System.Web.HttpContext
-Imports DMI.NET.Code
-Imports System.Data.SqlClient
 
 Namespace Models
 
@@ -24,8 +22,6 @@ Namespace Models
 		<Display(Name:="Use Windows Authentication")>
 		Public Property WindowsAuthentication As Boolean
 
-		Public Property SetDetails As Boolean
-
 		Public Property Device As String
 		Public Property Browser As String
 		Public Property IsLoggedIn() As Boolean
@@ -33,6 +29,8 @@ Namespace Models
 		Public Property SignalRConnectionId As String
 
 		Public Property SecurityGroup As String
+
+		Public Property LoginStatus As String
 
 		Public ReadOnly Property DeviceBrowser As String
 			Get

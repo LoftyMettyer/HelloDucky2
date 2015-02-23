@@ -5,7 +5,7 @@ Imports System.Security
 Namespace Extensions
 
 	<HideModuleName()> _
-	Friend Module StringExtensions
+	Public Module StringExtensions
 
 		<Extension> _
 		Public Function ReplaceMultiple(s As String, separators As Char(), newVal As String) As String
@@ -18,7 +18,7 @@ Namespace Extensions
 		<Extension> _
 		Public Function ToSecureString(Source As String) As SecureString
 			If String.IsNullOrWhiteSpace(Source) Then
-				Return Nothing
+				Return New SecureString()
 			Else
 				Dim Result As New SecureString()
 				For Each c As Char In Source.ToCharArray()
