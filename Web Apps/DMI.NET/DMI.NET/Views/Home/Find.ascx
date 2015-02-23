@@ -104,6 +104,7 @@
 							Dim homelinkURL = "javascript:loadPartialView(""linksMain"", ""Home"", ""workframe"", null);"
 							Response.Write(String.Format("<div class='pageTitleDiv'><a onclick='{0}' title='Back'><i class='pageTitleIcon icon-circle-arrow-left'></i></a><span class='pageTitle'>" & _
 											Replace(prm_psTitle.Value.ToString, "_", " ") & "</span>" & vbCrLf, homelinkURL))
+							response.write("<label id='txtRIE' style='float: right;'></label>")
 							Response.Write("<INPUT type='hidden' id=txtQuickEntry name=txtQuickEntry value=" & prm_pfQuickEntry.Value.ToString & "></div>" & vbCrLf)
 						End If
 					Else

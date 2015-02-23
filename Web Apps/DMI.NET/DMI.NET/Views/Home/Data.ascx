@@ -419,7 +419,7 @@
 					OpenHR.messageBox(sErrorMsg);
 			
 					if (frmData.txtAction.value == "SAVEERROR") {
-						return;
+						return false;
 					}
 
 					// Get menu to refresh the menu.
@@ -467,11 +467,11 @@
 
 
 				if (frmData.txtAction.value == "REFRESHFINDAFTERINSERT") {
-					//we're reloading after creating an inline new record		
+					
+					//we're reloading after creating an inline new record							
 					var newID = '<%:Session("recordID")%>';
-					if (Number(newID) > 0) {
-						var iRowId = $("#findGridTable").getGridParam('selrow');
-						$("#findGridTable").jqGrid('setCell', iRowId, 'ID', newID);
+					if (Number(newID) > 0) {										
+						$("#findGridTable").jqGrid('setCell', '0', 'ID', newID);
 					}
 				}
 

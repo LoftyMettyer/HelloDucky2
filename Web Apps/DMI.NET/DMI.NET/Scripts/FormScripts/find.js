@@ -1,14 +1,9 @@
 ﻿var rowIsEditedOrNew = "";
 var thereIsAtLeastOneEditableColumn = false;
-var lastRowEdited = 0;
+var lastRowEdited = "0";
 var followOnRow = 0;
 var gridDefaultHeight;
-
-//todo remove this function!
-//New functionality - get the selected row's record ID from the hidden tag		
-function getRecordID(rowID) {
-	return $("#findGridTable").find("#" + rowID + " input[type=hidden]").val();
-}
+var addparameters;
 
 function rowCount() {
 	return $("#findGridTable tr").length - 1;
@@ -70,7 +65,7 @@ function find_window_onload() {
 		var obj;
 		var iCount2;
 		var columnCount = -1;
-		
+
 		if (sCurrentWorkPage == "FIND") {
 			sErrorMsg = frmFindForm.txtErrorDescription.value;
 			if (sErrorMsg.length > 0) {
@@ -82,13 +77,13 @@ function find_window_onload() {
 			var newFormat = OpenHR.getLocaleDateString();
 			var srcFormat = newFormat;
 			if (newFormat.toLowerCase().indexOf('y.m.d') >= 0) srcFormat = 'd/m/Y';
-			
+
 			dataCollection = frmFindForm.elements; // Configure the grid columns.
 			colModel = [];
 			colNames = [];
 			colNamesOriginal = [];
-			
-			if (dataCollection != null) {				
+
+			if (dataCollection != null) {
 				for (i = 0; i < dataCollection.length; i++) {
 					sControlName = dataCollection.item(i).name;
 					sControlName = sControlName.substr(0, 14);
@@ -125,7 +120,7 @@ function find_window_onload() {
 
 							if (sColumnName == "ID") {
 								colModel.push({
-									name: sColumnName,									
+									name: sColumnName,
 									hidden: true,
 									key: true,
 									editoptions: {
@@ -137,7 +132,7 @@ function find_window_onload() {
 									name: sColumnName,
 									hidden: true
 								});
-							} else {								
+							} else {
 								columnCount += 1;
 								//Determine the column type and set the colModel for this column accordingly
 								if (ColumnControlType == 1) { //Logic - checkbox
@@ -161,7 +156,7 @@ function find_window_onload() {
 											defaultValue: getDefaultValueForColumn(iColumnId, "checkbox")
 										},
 										align: 'center',
-										width: 100									
+										width: 100
 									});
 								} else if (ColumnDataType == 4 && ColumnControlType != 2) { //Integer - NOT numerics; the "ColumnControlType != 2" condition is so this if is NOT true for Integer lookups (they are covered below)
 									if (ColumnControlType == 64) { // Integer - not a spinner.
@@ -247,7 +242,7 @@ function find_window_onload() {
 												readonly: sReadOnly,
 												size: 10,
 												maxlength: 10,
-												editrules: {integer: true},
+												editrules: { integer: true },
 												min: ColumnSpinnerMinimum,
 												max: ColumnSpinnerMaximum,
 												step: ColumnSpinnerIncrement,
@@ -260,14 +255,14 @@ function find_window_onload() {
 													});
 													$(element).on('keydown', function () { indicateThatRowWasModified(); });
 													$(element).on('change', function () {
-														indicateThatRowWasModified();														
+														indicateThatRowWasModified();
 													});
 													$(element).on('blur', function (sender) {
-														if ((isNaN(sender.target.value) === true) || (sender.target.value.indexOf(".") >= 0)) {															
+														if ((isNaN(sender.target.value) === true) || (sender.target.value.indexOf(".") >= 0)) {
 															OpenHR.modalMessage("Invalid integer value entered: " + sender.target.value);
 															sender.target.value = valueBeforeChange;
-													}
-												});
+														}
+													});
 												},
 												defaultValue: getDefaultValueForColumn(iColumnId, "spinner")
 											}
@@ -362,7 +357,7 @@ function find_window_onload() {
 											dataColumnId: iColumnId,
 											dataDefaultCalcExprID: iDefaultValueExprID,
 											dataInit: function (element) {
-												$(element).on('keydown', function () {return false;}); //Prevent the user from typing in lookups
+												$(element).on('keydown', function () { return false; }); //Prevent the user from typing in lookups
 												$(element).attr('onpaste', 'return false;'); //Prevent the user from pasting into lookups
 												$(element).addClass('msClear'); //Remove the "x" that IE shows on the right side of input boxes
 												var sAlignment = $(element).attr('align');
@@ -420,7 +415,7 @@ function find_window_onload() {
 											readonly: true,
 											defaultValue: getDefaultValueForColumn(iColumnId, "workingpattern")
 										}
-									});								
+									});
 								} else if (ColumnDataType == 12 && ColumnControlType == 64) { //Character
 									colModel.push({
 										name: sColumnName,
@@ -434,7 +429,7 @@ function find_window_onload() {
 											dataDefaultCalcExprID: iDefaultValueExprID,
 											size: ColumnSize,
 											maxlength: ColumnSize,
-											mask: ColumnMask,											
+											mask: ColumnMask,
 											defaultValue: getDefaultValueForColumn(iColumnId, "text"),
 											dataInit: function (element) {
 												$(element).on('keydown', function () { indicateThatRowWasModified(); });
@@ -458,7 +453,7 @@ function find_window_onload() {
 										width: 100,
 										editable: true,
 										type: 'other',
-										edittype:'custom',
+										edittype: 'custom',
 										align: 'right',
 										sorttype: 'number',
 										formatter: 'number',
@@ -467,7 +462,7 @@ function find_window_onload() {
 											thousandsSeparator: useThousandSeparator(columnCount) ? OpenHR.LocaleThousandSeparator() : "",
 											decimalPlaces: Number(ColumnDecimals),
 											defaultValue: BlankIfZero == '1' ? '' : space('0', ColumnSize, ColumnDecimals)
-										},										
+										},
 										editoptions: {
 											readonly: sReadOnly,
 											custom_element: ABSNumber,
@@ -476,7 +471,7 @@ function find_window_onload() {
 											columnDecimals: Number(ColumnDecimals),
 											decimalSeparator: OpenHR.LocaleDecimalSeparator(),
 											thousandsSeparator: useThousandSeparator(columnCount) ? OpenHR.LocaleThousandSeparator() : "",
-											defaultValue: getDefaultValueForColumn(iColumnId, "other"),											
+											defaultValue: getDefaultValueForColumn(iColumnId, "other"),
 											dataColumnId: iColumnId,
 											dataDefaultCalcExprID: iDefaultValueExprID
 										},
@@ -509,7 +504,7 @@ function find_window_onload() {
 
 			// Add the grid records.
 			fRecordAdded = false;
-			iCount = 0;			
+			iCount = 0;
 			if (dataCollection != null) {
 				colData = [];
 				for (i = 0; i < dataCollection.length; i++) {
@@ -518,7 +513,7 @@ function find_window_onload() {
 					if (sControlName == "txtAddString_") {
 						colDataArray = dataCollection.item(i).value.split("\t");
 						obj = {};
-						for (iCount2 = 0; iCount2 < (colNames.length); iCount2++) {
+						for (iCount2 = 0; iCount2 < (colNames.length) ; iCount2++) {
 							//loop through columns and add each one to the 'obj' object
 							obj[colNames[iCount2]] = colDataArray[iCount2];
 						}
@@ -559,7 +554,7 @@ function find_window_onload() {
 
 				// Navbar options = i.e. search, edit, save etc 
 				$("#findGridTable").jqGrid('navGrid', '#pager-coldata', { del: false, add: false, edit: false, search: false, refresh: false }); // setup the buttons we want
-				$("#findGridTable").jqGrid('filterToolbar', {stringResult: true, searchOnEnter: false	});  //instantiate toolbar so we can use toggle.
+				$("#findGridTable").jqGrid('filterToolbar', { stringResult: true, searchOnEnter: false });  //instantiate toolbar so we can use toggle.
 				$("#findGridTable")[0].toggleToolbar();  // Toggle it off at start up.
 
 				$("#findGridTable").jqGrid('navButtonAdd', "#pager-coldata", {
@@ -587,6 +582,62 @@ function find_window_onload() {
 					id: 'findGridTable_searchButton'
 				});
 
+
+				addparameters = {
+					rowID: "0", //Default ID for New Record
+					useDefValues: true,
+					position: "last",
+					addRowParams: {
+						keys: true,
+						aftersavefunc: function (rowid, response, options) {
+							return afterSaveFindGridRow(rowid);
+						},
+						oneditfunc: function (rowid) {
+							//build a comma separated list of columns that have expression ID's on them.
+							var arrCalcColumnsString = [];
+							lastRowEdited = "0";
+							$('#' + rowid).find(':input[datadefaultcalcexprid]').each(function () {
+								if (Number(this.attributes['datadefaultcalcexprid'].value) > "0") {
+									arrCalcColumnsString.push(this.attributes['dataColumnId'].value);
+								}
+							});
+
+							var calcColumnsString = arrCalcColumnsString.join(",");
+
+							//Pass list to stored proc.
+							$.ajax({
+								url: "GetDefaultCalcValueForColumn",
+								data: { defaultCalcColumns: calcColumnsString },
+								async: false,
+								cache: false,
+								dataType: 'json',
+								type: 'GET'
+							}).done(function (jsondata) {
+								for (var rowCount = 0; rowCount <= jsondata.length - 1; rowCount++) {
+									var key = Object.keys(jsondata[rowCount])[0];
+									var value = jsondata[rowCount][key];
+
+									//Some controls need a bit more logic applied to their default values
+									if ($('#' + rowid + ' *[datacolumnid="' + key + '"]').hasClass('datepicker')) {
+										//Date control.
+										$('#' + rowid + ' *[datacolumnid="' + key + '"]').val(OpenHR.ConvertSQLDateToLocale(value));
+									} else if ($('#' + rowid + ' *[datacolumnid="' + key + '"]').is(':checkbox')) {
+										//checkbox												
+										$('#' + rowid + ' *[datacolumnid="' + key + '"]').prop('checked', value.toString().toLowerCase() == "true" ? true : false);
+									} else {
+										//covers textboxes, dropdowns and option groups
+										$('#' + rowid + ' *[datacolumnid="' + key + '"]').val(value);
+									}
+								}
+							});
+
+							return addFindGridRow(rowid);
+
+						}
+					}
+				};
+
+
 				//Enable inline editing if there is at least one editable column
 				var editLicenced = ($("#txtEditableGridGranted").val() == 1);
 				if (editLicenced && linktype != 'multifind') { //The "linktype" variable is defined in Find.ascx
@@ -599,81 +650,58 @@ function find_window_onload() {
 						save: true,
 						saveicon: 'icon-save',
 						cancel: true,
-						cancelicon: 'icon-ban-circle',						
+						cancelicon: 'icon-ban-circle',
 						editParams: {
-							oneditfunc: function(rowid) {
+							oneditfunc: function (rowid) {
 								lastRowEdited = rowid;
-								editFindGridRow(rowid);
+								return editFindGridRow(rowid);
 							},
-							aftersavefunc: function (rowid, response, options) {	//save button clicked in edit mode.
-								saveRowToDatabase(rowid);								
+							aftersavefunc: function (rowid, response, options) {	//save button clicked in edit mode. NB: row has been 'saved' locally by this time.
+								return afterSaveFindGridRow(rowid);
+							},
+							afterrestorefunc: function (rowid) {	//Cancel button clicked in edit mode.
+								return cancelFindGridRow(rowid);
 							}
-						},						
-						addParams: {
-							rowID: "0", //Default ID for New Record
-							useDefValues: true,
-							position: "last",
-							addRowParams: {
-								keys: true,
-								aftersavefunc: function (rowid, response, options) {
-									// For enter key press only in add mode.
-									saveRowToDatabase(rowid);
-								},
-								oneditfunc: function (rowid) {
-									//build a comma separated list of columns that have expression ID's on them.
-									var arrCalcColumnsString = [];
-									$('#' + rowid).find(':input[datadefaultcalcexprid]').each(function () {
-										if (Number(this.attributes['datadefaultcalcexprid'].value) > "0") {
-											arrCalcColumnsString.push(this.attributes['dataColumnId'].value);
-										}
-									});
-
-									var calcColumnsString = arrCalcColumnsString.join(",");
-
-									//Pass list to stored proc.
-									$.ajax({
-										url: "GetDefaultCalcValueForColumn",
-										data: { defaultCalcColumns: calcColumnsString },
-										async: false,
-										cache: false,
-										dataType: 'json',
-										type: 'GET'
-									}).done(function (jsondata) {
-										for (var rowCount = 0; rowCount <= jsondata.length - 1; rowCount++) {
-											var key = Object.keys(jsondata[rowCount])[0];
-											var value = jsondata[rowCount][key];
-
-											//Some controls need a bit more logic applied to their default values
-											if ($('#' + rowid + ' *[datacolumnid="' + key + '"]').hasClass('datepicker')) {
-												//Date control.
-												$('#' + rowid + ' *[datacolumnid="' + key + '"]').val(OpenHR.ConvertSQLDateToLocale(value));
-											}
-											else if ($('#' + rowid + ' *[datacolumnid="' + key + '"]').is(':checkbox')) {
-												//checkbox												
-												$('#' + rowid + ' *[datacolumnid="' + key + '"]').prop('checked', value.toString().toLowerCase() == "true" ? true : false);
-											}
-											else {
-												//covers textboxes, dropdowns and option groups
-												$('#' + rowid + ' *[datacolumnid="' + key + '"]').val(value);
-											}
-										}
-									});
-
-									addFindGridRow(rowid);
-
-								}
-							}
-						}
+						},
+						addParams: addparameters
 					});
 
 
 					$("#findGridTable_iladd").show();
 
+					//assign click to pager buttons - these fire first and will be rejected if we're editing.
+					$('#last_pager-coldata>span, #next_pager-coldata>span, #prev_pager-coldata>span, #first_pager-coldata>span').on('click', function (event) {
+						if (rowIsEditedOrNew == "edited") return false;
+					});
+
+
 					//assign click to add button (this will fire before the addrow function)
 					//Move to last page before adding new row.
-					$('#findGridTable_iladd div.ui-pg-div').on('click', function () {
-						var lastPage = $("#findGridTable").jqGrid('getGridParam', 'lastpage');
-						$("#findGridTable").trigger("reloadGrid", [{ page: lastPage }]);
+					$('#findGridTable_iladd div.ui-pg-div').on('click', function (event) {
+
+						if (rowIsEditedOrNew != "new") { //are we in quick edit quick-add mode.							
+							if (rowIsEditedOrNew == "edited") { //todo: and row is changed...
+								//save current row before moving on...
+								rowIsEditedOrNew = "quick-add mode";
+
+								$('#findGridTable').saveRow(lastRowEdited);
+
+								saveRowToDatabase(lastRowEdited);
+
+
+							}
+							var lastPage = $("#findGridTable").jqGrid('getGridParam', 'lastpage');
+							$("#findGridTable").trigger("reloadGrid", [{ page: lastPage }]);
+						}
+						else {
+							rowIsEditedOrNew = "quick-add mode";
+
+							$('#findGridTable').saveRow(lastRowEdited);
+
+							saveRowToDatabase(lastRowEdited);
+							event.preventDefault();	//prevent addrow function being called too early.
+							return false;
+						}
 					});
 
 					var recCountInGrid = $("#findGridTable").getGridParam("reccount");
@@ -686,7 +714,7 @@ function find_window_onload() {
 					$("#findGridTable_ilsave").show();
 					$("#findGridTable_ilcancel").show();
 
-				} else {					
+				} else {
 					//Hide the edit icons by default
 					$("#findGridTable_iladd").hide();
 					$("#findGridTable_iledit").hide();
@@ -694,29 +722,6 @@ function find_window_onload() {
 					$("#findGridTable_ilcancel").hide();
 				}
 
-
-
-				$('#findGridTable_ilcancel').on('click', function (e) {
-					//TODO: bounce if cancelled.
-					rowWasModified = false; //The 'rowWasModified' variable is defined as global in Find.ascx
-					window.onbeforeunload = null;
-					//$('#findGridTable').jqGrid('setGridParam', { beforeSelectRow: function () { return true; } }); //Enable the selection of other rows
-					$('#findGridTable_searchButton').removeClass('ui-state-disabled'); //Enable search
-					//Enable navigation buttons on the jqgrid toolbar
-					$('#first_pager-coldata').removeClass('ui-state-disabled');
-					$('#prev_pager-coldata').removeClass('ui-state-disabled');
-					$('#next_pager-coldata').removeClass('ui-state-disabled');
-					$('#last_pager-coldata').removeClass('ui-state-disabled');
-					$('#pager-coldata_center input').removeAttr('readonly'); //Remove read only attribute from Page textbox
-					$("#findGridTable").jqGrid("setGridParam", { ondblClickRow: function (rowID) { menu_editRecord(); } }); //Enable double click on any row
-					
-					if (rowIsEditedOrNew != "new") { // i.e "edited" or ""
-						var rowId = $("#findGridTable").getGridParam('selrow');
-						updateRowFromDatabase(rowId); //Get the row data from the database
-						$("#findGridTable").jqGrid('restoreRow', rowId, null); //Restore the row
-					}
-					rowIsEditedOrNew = "";
-				});
 
 				$("#pager-coldata .navtable .ui-pg-div>span.ui-icon-refresh").addClass("icon-refresh");
 				$("#pager-coldata .navtable .ui-pg-div>span").removeClass("ui-icon");
@@ -749,10 +754,10 @@ function find_window_onload() {
 
 				try {
 					summaryRowHeight = $('#row3').outerHeight();
-					if(summaryRowHeight > 0) summaryRowHeight += 30;
+					if (summaryRowHeight > 0) summaryRowHeight += 30;
 					if (summaryRowHeight > (gridRowHeight * 0.35)) summaryRowHeight = (gridRowHeight * 0.35);
 				} catch (e) {
-					
+
 				}
 				gridDefaultHeight = gridRowHeight - pageTitleHeight - gridHeaderHeight - gridFooterHeight - footerMargin - summaryRowHeight;
 
@@ -763,7 +768,7 @@ function find_window_onload() {
 			//http://stackoverflow.com/questions/12572780/jqgrids-addrowdata-hangs-for-large-number-of-records
 
 			frmFindForm.txtRecordCount.value = iCount;
-			
+
 			if (fOk == true) {
 				var sControlPrefix;
 				var sColumnId;
@@ -855,19 +860,6 @@ function saveRowToDatabase(rowid) {
 }
 
 
-function postSaveFunc() {
-	rowWasModified = false; //The 'rowWasModified' variable is defined as global in Find.ascx
-	window.onbeforeunload = null;	
-	$('#findGridTable_searchButton').removeClass('ui-state-disabled'); //Enable search
-	//Enable navigation buttons on the jqgrid toolbar
-	$('#first_pager-coldata').removeClass('ui-state-disabled');
-	$('#prev_pager-coldata').removeClass('ui-state-disabled');
-	$('#next_pager-coldata').removeClass('ui-state-disabled');
-	$('#last_pager-coldata').removeClass('ui-state-disabled');
-	$('#pager-coldata_center input').removeAttr('readonly'); //Remove read only attribute from Page textbox
-	$("#findGridTable").jqGrid("setGridParam", { ondblClickRow: function (rowID) { menu_editRecord(); } }); //Enable double click on any row	
-}
-
 /* Return the ID of the record selected in the find form. */
 function selectedRecordID() {
 	return $("#findGridTable").getGridParam('selrow');
@@ -875,14 +867,14 @@ function selectedRecordID() {
 
 /* Sequential search the grid for the required ID. */
 function locateRecord(psSearchFor, pfIdMatch) {
-	
+
 	var firstRecordID = $("#findGridTable").jqGrid('getDataIDs')[0];
 
 	//default to top row
-	if(Number(firstRecordID) > 0)
+	if (Number(firstRecordID) > 0)
 		$("#findGridTable").jqGrid('setSelection', firstRecordID);
 
-	if(Number(psSearchFor) > 0)
+	if (Number(psSearchFor) > 0)
 		$("#findGridTable").jqGrid('setSelection', psSearchFor);
 
 }
@@ -892,7 +884,7 @@ function showLookupForColumn(element) {
 
 	if (!$("#findGridTable_iledit").hasClass('ui-state-disabled')) //If we are not in edit mode then return
 		return false;
-	
+
 	var el = $(element, $("#findGridTable").rows).closest("td");
 	var clickedColumnId = $("#findGridTable").jqGrid("getGridParam", "colModel")[$(el).index()].id;
 	var rowId = $("#findGridTable").getGridParam('selrow');
@@ -927,7 +919,7 @@ function showLookupForColumn(element) {
 						filterCellValue = '';
 					}
 				} else {//Get the filterCellValue from the current row
-					filterCellValue = $("#findGridTable").jqGrid("getGridParam", "data").filter(function(rownum) { return rownum.ID == rowId })[0][colModel[i].name];
+					filterCellValue = $("#findGridTable").jqGrid("getGridParam", "data").filter(function (rownum) { return rownum.ID == rowId })[0][colModel[i].name];
 				}
 
 				colModelContainsRequiredLookupColumn = true;
@@ -959,16 +951,16 @@ function showLookupForColumn(element) {
 		dataType: 'json',
 		type: 'GET',
 		cache: false,
-		success: function (jsondata) {			
+		success: function (jsondata) {
 			var lookupColumnGridPosition = eval('LookupColumnGridPosition_' + clickedColumnId);
-			
+
 			$("#LookupForEditableGrid_Table").jqGrid('GridUnload'); //Unload previous grid (if any)
 
 			//jqGrid it
 			$("#LookupForEditableGrid_Table").jqGrid({
 				data: jsondata.rows,
 				datatype: "local",
-				colModel: jsondata.colmodel, 
+				colModel: jsondata.colmodel,
 				rowNum: 10000,
 				ignoreCase: true,
 				multiselect: false,
@@ -986,7 +978,7 @@ function showLookupForColumn(element) {
 			//Search for the value that is currently selected in the find grid
 			rowId = null;
 			for (i = 0; i <= jsondata.rows.length - 1; i++) {
-					if (jsondata.rows[i][jsondata.colmodel[0].name] == $(element).val()) {
+				if (jsondata.rows[i][jsondata.colmodel[0].name] == $(element).val()) {
 					rowId = i;
 					break;
 				}
@@ -1020,7 +1012,7 @@ function showLookupForColumn(element) {
 
 function selectValue(action, lookupColumnGridPosition, elementId, thisLookupColumnIsNeededByAnother) {
 	// Get the value selected by the user and update the corresponding value in the find grid
-	
+
 	var rowId = $("#LookupForEditableGrid_Table").getGridParam('selrow');
 
 	if (rowId == null && action == "Select") { //No row selected, show a message and return
@@ -1029,7 +1021,7 @@ function selectValue(action, lookupColumnGridPosition, elementId, thisLookupColu
 	}
 
 	var cellValue = ''; //Default for action="Clear"
-	
+
 	if (action == "Select") {
 		var columnName = $("#LookupForEditableGrid_Table").getGridParam('colModel')[lookupColumnGridPosition].name;
 		cellValue = $("#LookupForEditableGrid_Table").getRowData(rowId)[columnName];
@@ -1054,7 +1046,7 @@ function selectValue(action, lookupColumnGridPosition, elementId, thisLookupColu
 	}
 }
 
-function getValuesForColumn(iColumnId, isDropdown) {	
+function getValuesForColumn(iColumnId, isDropdown) {
 	//Get the values for this column and return them as a json object that jqGrid will use to create a dropdown
 	try {
 		var data = eval('colOptionGroupOrDropDownData_' + iColumnId);
@@ -1064,7 +1056,7 @@ function getValuesForColumn(iColumnId, isDropdown) {
 
 	var values = {};
 
-	if(isDropdown) values[""] = "";	//add empty first option for dropdown lists (not option groups)
+	if (isDropdown) values[""] = "";	//add empty first option for dropdown lists (not option groups)
 
 	for (var i = 0; i <= data.length - 1; i++) {
 		values[data[i][0]] = data[i][0];
@@ -1073,12 +1065,12 @@ function getValuesForColumn(iColumnId, isDropdown) {
 	return values;
 }
 
-function hyperLinkFormatter(cellValue, options, rowdata, action) {	
+function hyperLinkFormatter(cellValue, options, rowdata, action) {
 	//Format as hyperlink
 	return "<a href='" + encodeURI(cellValue) + "' target='_blank'>Navigation</a>";
 }
 
-function hyperLinkDeformatter(cellvalue, options, cell) {	
+function hyperLinkDeformatter(cellvalue, options, cell) {
 	//Remove the HTML anchor part	
 	var cleanUri = cell.innerHTML.replace('<a href="', '').replace("<a href='", "").replace('" target="_blank">Navigation</a>', '').replace("' target='_blank'>Navigation</a>", "");
 	return decodeURI(cleanUri);
@@ -1123,7 +1115,7 @@ function space(character, columnSize, columnDecimals, decimalCharacter) {
 
 		if (columnDecimals != "0") { //If decimal places are specified, add a period and an appropriate number of "9"s			
 			value += (OpenHR.nullsafeString(decimalCharacter).length > 0) ? OpenHR.nullsafeString(decimalCharacter) : OpenHR.LocaleDecimalSeparator();
-			for (x = Number(columnDecimals); x--;) value += character;
+			for (x = Number(columnDecimals) ; x--;) value += character;
 		}
 	} catch (e) {
 		return '';
@@ -1141,8 +1133,9 @@ function useThousandSeparator(columnNumber) {
 }
 
 function indicateThatRowWasModified() {
-	$("#findGridTable_ilsave").removeClass('ui-state-disabled'); //Enable the Save button because we edited something
-	$("#findGridTable_ilcancel").removeClass('ui-state-disabled'); //Enable the Cancel button because we edited something
+	//$("#findGridTable_ilsave").removeClass('ui-state-disabled'); //Enable the Save button because we edited something
+	//$("#findGridTable_ilcancel").removeClass('ui-state-disabled'); //Enable the Cancel button because we edited something
+	//$("#findGridTable_iledit").addClass('ui-state-disabled'); //Enable the Cancel button because we edited something
 	rowWasModified = true; //The 'rowWasModified' variable is defined as global in Find.ascx
 	window.onbeforeunload = warning;
 }
@@ -1152,7 +1145,7 @@ function warning() {
 }
 
 function ABSNumber(value, options) {
-	
+
 	var el = document.createElement("input");
 	el.type = "text";
 	el.value = value.replace(".", OpenHR.LocaleDecimalSeparator());
@@ -1168,7 +1161,7 @@ function ABSNumber(value, options) {
 	el.setAttribute("defaultValue", options.dataColumnId);
 	el.setAttribute("dataColumnId", options.dataColumnId);
 	el.setAttribute("dataDefaultCalcExprID", options.dataDefaultCalcExprID);
-if (options.readonly) el.setAttribute("readonly", "readonly");
+	if (options.readonly) el.setAttribute("readonly", "readonly");
 
 	//Size of field includes decimals but not the decimal point; For example if Size=6 and Decimals=2 the maximum value to be allowed is 9999.99
 	if (options.columnSize == "0") { //No size specified, set a very long limit
@@ -1180,13 +1173,13 @@ if (options.readonly) el.setAttribute("readonly", "readonly");
 		el.setAttribute('data-v-min', '-' + value);
 		el.setAttribute('data-v-max', value);
 	}
-	
+
 	$(el).autoNumeric('init');
 	return el;
 }
 
-function ABSNumberValue(elem, operation, value) {	
-	if (operation === 'get') {		
+function ABSNumberValue(elem, operation, value) {
+	if (operation === 'get') {
 		var returnVal = OpenHR.replaceAll($(elem).val(), OpenHR.LocaleThousandSeparator(), "");
 		returnVal = OpenHR.replaceAll(returnVal, OpenHR.LocaleDecimalSeparator(), ".");
 		return returnVal;
@@ -1200,8 +1193,8 @@ function saveInlineRowToDatabase(rowId) {
 	var gridData = $("#findGridTable").getRowData(rowId);
 	var gridColumns = $("#findGridTable").jqGrid('getGridParam', 'colNames');
 	var gridModel = $("#findGridTable").jqGrid('getGridParam', 'colModel');
-	var columnValue = "";	
-	
+	var columnValue = "";
+
 	for (var i = 0; i <= gridColumns.length - 1; i++) {
 		if (gridColumns[i] != '' && gridColumns[i] != 'ID' && gridColumns[i] != 'Timestamp' && gridModel[i].editable == true) {
 			columnValue = gridData[gridModel[i].name];
@@ -1218,7 +1211,7 @@ function saveInlineRowToDatabase(rowId) {
 					columnValue = OpenHR.convertLocaleDateToSQL(columnValue);
 					break;
 			}
-			
+
 			//default empty lookup values to null. Bug 13879
 			if ((gridModel[i].type == "lookup") && (columnValue.length == 0)) columnValue = "null";
 
@@ -1242,7 +1235,7 @@ function saveInlineRowToDatabase(rowId) {
 		var realSource = $('#frmFindForm #txtRealSource').val();
 		sUpdateOrInsert = realSource + "\t" + "0\t\t" + sUpdateOrInsert;
 	} else { //Update record
-		frmDataArea.txtRecordID.value = gridData.ID; 
+		frmDataArea.txtRecordID.value = gridData.ID;
 	}
 
 	//	See if we are a history screen and if we are save away the id of the parent also
@@ -1261,27 +1254,25 @@ function saveInlineRowToDatabase(rowId) {
 }
 
 function submitFollowOn() {
-	var rowId = window.savedRow; //$("#findGridTable").getGridParam('selrow');	
 
+	var rowId = window.savedRow; //$("#findGridTable").getGridParam('selrow');	
 	if ($('#frmData #txtErrorMessage').val() !== "") { //There was an error while saving		
-		$("#findGridTable").editRow(rowId); //Edit the row
+		indicateThatRowWasModified();		
 
 		//After a brief timeout, enable "Add" and "Edit" and disable "Save" and "Cancel"
 		setTimeout(function () {
-			$("#findGridTable_iladd").addClass("ui-state-disabled");
-			$("#findGridTable_iledit").addClass("ui-state-disabled");
-			$("#findGridTable_ilsave").removeClass("ui-state-disabled");
-			$("#findGridTable_ilcancel").removeClass("ui-state-disabled");
+			$("#findGridTable").jqGrid('setSelection', "0", true);
+			$("#findGridTable").editRow(rowId); //Edit the row
+
+			$("#findGridTable_ilsave").removeClass('ui-state-disabled'); //Enable the Save button because we edited something
+			$("#findGridTable_ilcancel").removeClass('ui-state-disabled'); //Enable the Cancel button because we edited something
+			$("#findGridTable_iledit").addClass('ui-state-disabled'); //Enable the Cancel button because we edited something
+
 			$("#findGridTable_searchButton").addClass("ui-state-disabled");
 		}, 100);
-
-		indicateThatRowWasModified();
+	
 		//Disable navigation buttons on the jqgrid toolbar
-		$('#first_pager-coldata').addClass('ui-state-disabled');
-		$('#prev_pager-coldata').addClass('ui-state-disabled');
-		$('#next_pager-coldata').addClass('ui-state-disabled');
-		$('#last_pager-coldata').addClass('ui-state-disabled');
-		$('#pager-coldata_center input').prop('readonly', 'true'); //Make Page textbox read only
+		$('#pager-coldata_center input').prop('disabled', true); //Make Page textbox read only
 		$("#findGridTable").jqGrid("setGridParam", { ondblClickRow: function (rowID) { return false; } }); //Disable double click on any row
 	} else {
 		//Mark row as changed if we've successfully saved the record.
@@ -1290,6 +1281,7 @@ function submitFollowOn() {
 			$("#findGridTable #" + rowId + ">td:first").css('border-left', '4px solid green');
 			rowWasModified = false; //The 'rowWasModified' variable is defined as global in Find.ascx
 			window.onbeforeunload = null;
+			$("#findGridTable").jqGrid("setGridParam", { ondblClickRow: function (rowID) { menu_editRecord(); } }); //Enable double click on any row
 
 			//Reevaluate the conditions for the grid's editability
 			var recCountInGrid = $("#findGridTable").getGridParam("reccount");
@@ -1298,9 +1290,6 @@ function submitFollowOn() {
 			} else {
 				$("#findGridTable_iledit").hide();
 			}
-
-			//finally: post save function (was separate click event)..
-			postSaveFunc();
 
 		} catch (e) {
 			OpenHR.modalMessage("Failed to reload data for this row.", "");
@@ -1322,18 +1311,17 @@ function submitFollowOn() {
 
 function updateRowFromDatabase(rowid) {
 	var recordID = $("#findGridTable").jqGrid('getCell', rowid, 'ID');
-	
-	if (recordID == "")
-		return false; //It's a new row, we don't have its ID from the database, the call below would fail, so just return false
-	
+
+	if (Number(recordID) === 0) alert('There was an error reloading the grid.');
+
 	//Get the row from the server
 	$.ajax({
 		url: "getfindrecordbyid",
 		type: "GET",
 		cache: false,
-		async: true,
+		async: false,
 		data: { recordid: recordID },
-		success: function (jsonstring) {			
+		success: function (jsonstring) {
 			var jsondata = JSON.parse(jsonstring);
 			var currentRowId = rowid; //The row we need to update (or remove from the view/table)
 
@@ -1344,8 +1332,8 @@ function updateRowFromDatabase(rowid) {
 
 				//Update the record count caption
 				var recCount = $("#findGridTable").getGridParam("reccount");
-				if (recCount  == 0) {
-					menu_SetmnutoolRecordPositionCaption("No Records"); 
+				if (recCount == 0) {
+					menu_SetmnutoolRecordPositionCaption("No Records");
 				} else {
 					menu_SetmnutoolRecordPositionCaption("Record(s) : " + recCount);
 				}
@@ -1355,8 +1343,8 @@ function updateRowFromDatabase(rowid) {
 
 			var colModel = $("#findGridTable").jqGrid("getGridParam", "colModel");
 			//Restore the row
-			$("#findGridTable").jqGrid('restoreRow', currentRowId, null);
-			
+			//$("#findGridTable").jqGrid('restoreRow', currentRowId, null);
+
 			//Loop over the colModel and update the current row
 			for (var i = 0; i <= colModel.length - 1; i++) {
 				var colNameForColmodel = colModel[i].name.replace(/ /g, '_'); //Replace space by '_' to match the column name in colModel
@@ -1365,12 +1353,12 @@ function updateRowFromDatabase(rowid) {
 
 				//Some datatypes need fettling, as always
 				switch (colModel[i].type) {
-				case "date":
-					if (!cellValue == "") { //If the value is not empty then format it as the current date locale
-						var d = new Date(cellValue);
-						cellValue = d.toString(OpenHR.LocaleDateFormat());
-					}
-					break;
+					case "date":
+						if (!cellValue == "") { //If the value is not empty then format it as the current date locale
+							var d = new Date(cellValue);
+							cellValue = d.toString(OpenHR.LocaleDateFormat());
+						}
+						break;
 				}
 
 				//Change each cell in the visible part of the row
@@ -1380,55 +1368,142 @@ function updateRowFromDatabase(rowid) {
 				$("#findGridTable").jqGrid('getLocalRow', currentRowId)[colNameInternalData] = cellValue;
 			}
 			//For 'NEW' records assign new ID to the row.
-			if (currentRowId == "0") $("#findGridTable #0").attr("ID", recordID);
+			if (currentRowId == "0") {
+				$("#findGridTable #0").attr("ID", recordID);
+				lastRowEdited = recordID;
+				if (rowIsEditedOrNew == "quick-add mode") {
+					//quick-add mode
+					try {
+						$("#findGridTable").jqGrid('addRow', addparameters);
+						lastRowEdited = "0";
+					} catch (e) {
+						alert('couldnt do it!');
+					}
+				}
+
+				var frmDataArea = OpenHR.getForm("dataframe", "frmGetData");
+				frmDataArea.txtReaction.value = "";
+
+				locateRecord(recordID);
+
+			}
 
 			//refresh menu!
 			menu_refreshMenu();
 
 		},
-		error: function (e) {}
+		error: function (e) {
+			alert('error updating row from database.');
+		}
 	});
 }
 
-function editFindGridRow(rowid) {	
-	$("#findGridTable_ilsave").addClass('ui-state-disabled'); //Disable the Save button until we have actually edited something	
+function editFindGridRow(rowid) {
 
-	$('#findGridTable').jqGrid('setGridParam', { beforeSelectRow: function(newRowid) {
-		if (lastRowEdited == newRowid) return true; //click in same row.
-
-		$('#findGridTable').saveRow(lastRowEdited);
-
-		rowIsEditedOrNew = "quickedit_" + newRowid;
-
-		saveRowToDatabase(lastRowEdited);
-		
-		return false;
-	}	});
+	$('#findGridTable').jqGrid('setGridParam', {
+		beforeSelectRow: function (newRowid) {
+			return beforeSelectFindGridRow(newRowid);
+		}
+	});
 
 
 	$('#findGridTable_searchButton').addClass('ui-state-disabled'); //Disable search
 	//Disable navigation buttons on the jqgrid toolbar
-	$('#first_pager-coldata').addClass('ui-state-disabled');
-	$('#prev_pager-coldata').addClass('ui-state-disabled');
-	$('#next_pager-coldata').addClass('ui-state-disabled');
-	$('#last_pager-coldata').addClass('ui-state-disabled');
-	$('#pager-coldata_center input').prop('readonly', 'true'); //Make Page textbox read only
+	$('#pager-coldata_center input').prop('disabled', true); //Make Page textbox read only
 	$("#findGridTable").jqGrid("setGridParam", { ondblClickRow: function (rowID) { return false; } }); //Disable double click on any row
-	rowIsEditedOrNew = "edited";		
+
+	if (Number(rowid) == 0) {
+		//we're re-editing a newly created row where the save failed
+		rowIsEditedOrNew = "new";
+	} else {
+		rowIsEditedOrNew = "edited";
+		//re-enable add button and highlight new row.
+		setTimeout(function () {
+			$('#findGridTable_iladd').removeClass('ui-state-disabled');
+		}
+	, 100);
+
+	}
 }
 
 
 function addFindGridRow(rowid) {
-		//$('#findGridTable').jqGrid('setGridParam', { beforeSelectRow: function () { return false; } }); //Disable the selection of other rows
-		$('#findGridTable_searchButton').addClass('ui-state-disabled'); //Disable search
-		//Disable navigation buttons on the jqgrid toolbar
-		$('#first_pager-coldata').addClass('ui-state-disabled');
-		$('#prev_pager-coldata').addClass('ui-state-disabled');
-		$('#next_pager-coldata').addClass('ui-state-disabled');
-		$('#last_pager-coldata').addClass('ui-state-disabled');
-		$('#pager-coldata_center input').prop('readonly', 'true'); //Make Page textbox read only
-		$("#findGridTable").jqGrid("setGridParam", { ondblClickRow: function (rowID) { return false; } }); //Disable double click on any row
-		rowIsEditedOrNew = "new";	
+	//$('#findGridTable').jqGrid('setGridParam', { beforeSelectRow: function () { return false; } }); //Disable the selection of other rows
+
+	$('#findGridTable').jqGrid('setGridParam', {
+		beforeSelectRow: function (newRowid) {
+			return beforeSelectFindGridRow(newRowid);
+		}
+
+	});
+
+	$('#findGridTable_searchButton').addClass('ui-state-disabled'); //Disable search
+	//Disable navigation buttons on the jqgrid toolbar
+	$('#pager-coldata_center input').prop('disabled', 'true'); //Make Page textbox read only
+	$("#findGridTable").jqGrid("setGridParam", { ondblClickRow: function (rowID) { return false; } }); //Disable double click on any row
+	rowIsEditedOrNew = "new";
+
+	//re-enable add button and highlight new row.
+	setTimeout(function () {
+		$('#findGridTable_iladd').removeClass('ui-state-disabled');
+		$("#findGridTable").jqGrid('setSelection', "0", true);
+	}
+, 100);
+
+	return true;
+}
+
+function cancelFindGridRow(rowid) {
+
+	if (rowIsEditedOrNew != "new") { // i.e "edited" or ""
+		var rowId = $("#findGridTable").getGridParam('selrow');
+		updateRowFromDatabase(rowId); //Get the row data from the database
+	}
+
+	//TODO: bounce if cancelled.
+	rowWasModified = false; //The 'rowWasModified' variable is defined as global in Find.ascx
+	window.onbeforeunload = null;
+
+	$('#findGridTable_searchButton').removeClass('ui-state-disabled'); //Enable search
+	//Enable navigation buttons on the jqgrid toolbar
+	$('#pager-coldata_center input').prop('disabled', false); //Remove read only attribute from Page textbox
+	$("#findGridTable").jqGrid("setGridParam", { ondblClickRow: function (rowID) { menu_editRecord(); } }); //Enable double click on any row
+
+	rowIsEditedOrNew = "";
+
+}
+
+function beforeSelectFindGridRow(newRowid) {	//AKA quick edit mode.
+	if (lastRowEdited == newRowid) return true; //click in same row: allowed.
+	if (rowIsEditedOrNew == "") return true;	// not in edit mode: allowed.
+
+
+	//All checks done, ready to move into Quick Edit mode.
+	//Save previous row, then move on to newly clicked row.
+
+	//disable aftersavefunc being called by 'saverow'. We save manually.
+	var saveparameters = {
+		"successfunc": null,
+		"url": null,
+		"extraparam": {},
+		"aftersavefunc": null,
+		"errorfunc": null,
+		"afterrestorefunc": null,
+		"restoreAfterError": true,
+		"mtype": "POST"
+	}
+
+	$('#findGridTable').saveRow(lastRowEdited, saveparameters);	//bug this doesn't fire aftersavefunc until after cancel click has been fired.
+	rowIsEditedOrNew = "quickedit_" + newRowid;
+	saveRowToDatabase(lastRowEdited);	//bug this should come from the aftersavefunc call...
+
+	return true;	//always allow row change.
+}
+
+function afterSaveFindGridRow(rowid) {
+	saveRowToDatabase(rowid);
+	rowIsEditedOrNew = "";
+	return true;
 }
 
 
