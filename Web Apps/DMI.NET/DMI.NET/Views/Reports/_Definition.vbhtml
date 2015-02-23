@@ -669,7 +669,7 @@
 			if (bHasChanged == "true") {
 
 				OpenHR.modalPrompt("You have made changes. Click 'OK' to discard your changes, or 'Cancel' to continue editing.", 1, "Confirm").then(function (answer) {
-					if (answer == 1) {
+					if (answer == 1) {										
 						validateReportDefinition();
 					}
 				});
@@ -678,7 +678,7 @@
 				return 6;
 			}
 
-		} else {
+		} else {			 
 			validateReportDefinition()
 		}
 
@@ -698,6 +698,9 @@
 	function validateReportDefinition() {
 		
 		var gridData;
+
+		menu_ShowWait("Saving...");
+
 		// Columns selected
 		gridData = $("#SelectedColumns").getRowData();
 		$('#txtCSAAS').val(JSON.stringify(gridData));
