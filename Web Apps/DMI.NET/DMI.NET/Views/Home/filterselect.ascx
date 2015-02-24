@@ -651,17 +651,14 @@
 				//window.parent.frames("workframe").document.forms("frmFindForm").ssOleDBGridFindRecords.style.visibility = "visible";
 			}
 		}
-		var frmGotoOption = document.getElementById("frmGotoOption");
+		var frmSubmitForm = document.getElementById("frmFilterFormSubmit");
+	
+		frmSubmitForm.txtGotoOptionFilterSQL.value = sFilterSQL;
+		frmSubmitForm.txtGotoOptionFilterDef.value = sFilterDef;
+		frmSubmitForm.txtGotoOptionPage.value = "emptyoption";
+		frmSubmitForm.txtGotoOptionAction.value = "SELECTFILTER";
 		
-		frmGotoOption.txtGotoOptionScreenID.value = frmFilterForm.txtOptionScreenID.value;
-		frmGotoOption.txtGotoOptionTableID.value = frmFilterForm.txtOptionTableID.value;
-		frmGotoOption.txtGotoOptionViewID.value = frmFilterForm.txtOptionViewID.value;
-		frmGotoOption.txtGotoOptionFilterSQL.value = sFilterSQL;
-		frmGotoOption.txtGotoOptionFilterDef.value = sFilterDef;
-		frmGotoOption.txtGotoOptionPage.value = "emptyoption";
-		frmGotoOption.txtGotoOptionAction.value = "SELECTFILTER";
-		
-		OpenHR.submitForm(frmGotoOption);
+		OpenHR.submitForm(frmSubmitForm);
 
 	}
 
@@ -685,15 +682,12 @@
 			}
 		}
 
+		var frmSubmitForm = document.getElementById("frmFilterFormSubmit");
 
-
-		var frmGotoOption = document.getElementById("frmGotoOption");
-
-		frmGotoOption.txtGotoOptionAction.value = "CANCEL";
-		frmGotoOption.txtGotoOptionPage.value = "emptyoption";
-		OpenHR.submitForm(frmGotoOption);
+		frmSubmitForm.txtGotoOptionAction.value = "CANCEL";
+		frmSubmitForm.txtGotoOptionPage.value = "emptyoption";
+		OpenHR.submitForm(frmSubmitForm);
 		
-
 	}
 
 	function AddToList() {
@@ -1391,15 +1385,19 @@
 
 
 		<%
-	Response.Write("<INPUT type='hidden' id=txtErrorDescription name=txtErrorDescription value=""" & sErrorDescription & """>" & vbcrlf)
-	Response.Write("<INPUT type='hidden' id=txtOptionScreenID name=txtOptionScreenID value=" & session("optionScreenID") & ">" & vbcrlf)
-	Response.Write("<INPUT type='hidden' id=txtOptionTableID name=txtOptionTableID value=" & session("optionTableID") & ">" & vbcrlf)
-	Response.Write("<INPUT type='hidden' id=txtOptionViewID name=txtOptionViewID value=" & session("optionViewID") & ">" & vbcrlf)
-	Response.Write("<INPUT type='hidden' id=txtOptionFilterDef name=txtOptionFilterDef value=""" & replace(session("optionFilterDef"), """", "&quot;") & """>" & vbcrlf)
+			Response.Write("<INPUT type='hidden' id=txtErrorDescription name=txtErrorDescription value=""" & sErrorDescription & """>" & vbCrLf)
+			Response.Write("<INPUT type='hidden' id=txtOptionFilterDef name=txtOptionFilterDef value=""" & Replace(Session("optionFilterDef"), """", "&quot;") & """>" & vbCrLf)
 		%>
 	</form>
-	<form action="filterselect_Submit" method="post" id="frmGotoOption" name="frmGotoOption">
-		<%Html.RenderPartial("~/Views/Shared/gotoOption.ascx")%>
+	
+	<form action="filterselect_Submit" method="post" id="frmFilterFormSubmit">
+		<input type="hidden" id="txtGotoOptionScreenID" name="txtGotoOptionScreenID" value="<%=Session("optionScreenID")%>">
+		<input type="hidden" id="txtGotoOptionTableID" name="txtGotoOptionTableID" value="<%=Session("optionTableID")%>">
+		<input type="hidden" id="txtGotoOptionViewID" name="txtGotoOptionViewID" value="<%=Session("optionViewID")%>">
+		<input type="hidden" id="txtGotoOptionFilterDef" name="txtGotoOptionFilterDef">
+		<input type="hidden" id="txtGotoOptionFilterSQL" name="txtGotoOptionFilterSQL">
+		<input type="hidden" id="txtGotoOptionPage" name="txtGotoOptionPage">
+		<input type="hidden" id="txtGotoOptionAction" name="txtGotoOptionAction">
 		<%=Html.AntiForgeryToken()%>
 	</form>
 
