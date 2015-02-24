@@ -1211,7 +1211,7 @@ function saveInlineRowToDatabase(rowId) {
 	var columnValue = "";
 
 	for (var i = 0; i <= gridColumns.length - 1; i++) {
-		if (gridColumns[i] != '' && gridColumns[i] != 'ID' && gridColumns[i] != 'Timestamp' && gridModel[i].editable == true) {
+		if (gridColumns[i] != '' && gridColumns[i] != 'ID' && gridColumns[i] != 'Timestamp' && gridModel[i].editoptions.readonly == false) {
 			columnValue = gridData[gridModel[i].name];
 
 			//If the formatter is undefined then we treat the value as text
@@ -1259,7 +1259,7 @@ function saveInlineRowToDatabase(rowId) {
 		sUpdateOrInsert += "\t" + $.trim($("#frmFindForm #txtCurrentParentRecordID").val()) + "\t";
 	}
 
-	frmDataArea.txtDefaultCalcCols.value = "";
+	frmDataArea.txtDefaultCalcCols.value = "";	
 	frmDataArea.txtInsertUpdateDef.value = sUpdateOrInsert;
 	frmDataArea.txtTimestamp.value = gridData.Timestamp;
 	frmDataArea.txtOriginalRecordID.value = 0; //This is NOT a copied record
