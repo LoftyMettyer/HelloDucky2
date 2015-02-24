@@ -528,7 +528,6 @@ function find_window_onload() {
 				var shrinkToFit = false;
 				var wfSetWidth = $('#workframeset').width();
 				if (colModel.length < (wfSetWidth / 100)) shrinkToFit = true;
-				//var gridWidth = menu_isSSIMode() ? 'auto' : wfSetWidth - 100;
 				var gridWidth = wfSetWidth - 100;
 				var rowNum = 50;
 
@@ -674,36 +673,42 @@ function find_window_onload() {
 						if (rowIsEditedOrNew == "edited") return false;
 					});
 
-
 					//assign click to add button (this will fire before the addrow function)
 					//Move to last page before adding new row.
-					$('#findGridTable_iladd div.ui-pg-div').on('click', function (event) {
+					$('#findGridTable_iladd div.ui-pg-div').off('click').on('click', function (event) {
 
-						if (rowIsEditedOrNew != "new") { //are we in quick edit quick-add mode.							
-							if (rowIsEditedOrNew == "edited") { //todo: and row is changed...
-								//save current row before moving on...
-								rowIsEditedOrNew = "quick-add mode";
-
-								$('#findGridTable').saveRow(lastRowEdited);
-
-								saveRowToDatabase(lastRowEdited);
-
-
-							}
+						if (rowIsEditedOrNew == "") {
+							//Not editing, no need to save, just scroll to end of grid before adding new row.
+							//New row is added by jqGrid's default action of clicking the add button.
 							var lastPage = $("#findGridTable").jqGrid('getGridParam', 'lastpage');
 							$("#findGridTable").trigger("reloadGrid", [{ page: lastPage }]);
-						}
-						else {
-							rowIsEditedOrNew = "quick-add mode";
+						} else {
+							//we need to save the current row before moving on...
+							//we'll also manually add the new row (i.e. prevent default addrow click)
+							rowIsEditedOrNew = "new";
 
-							$('#findGridTable').saveRow(lastRowEdited);
+							//disable aftersavefunc being called by 'saverow'. We save manually.
+							var saveparameters = {
+								"successfunc": null,
+								"url": null,
+								"extraparam": {},
+								"aftersavefunc": null,
+								"errorfunc": null,
+								"afterrestorefunc": null,
+								"restoreAfterError": true,
+								"mtype": "POST"
+						}
+
+							$('#findGridTable').saveRow(lastRowEdited, saveparameters);
 
 							saveRowToDatabase(lastRowEdited);
-							event.preventDefault();	//prevent addrow function being called too early.
+
+							//Actual adding of row done in submitForm (after server-side validation)
 							return false;
 						}
 					});
 
+					//continuing with window.onload function now....
 					var recCountInGrid = $("#findGridTable").getGridParam("reccount");
 					if (thereIsAtLeastOneEditableColumn && recCountInGrid > 0) {
 						$("#findGridTable_iledit").show();
@@ -751,6 +756,8 @@ function find_window_onload() {
 				var gridFooterHeight = $('#findGridRow .ui-jqgrid-pager').outerHeight();
 				var footerMargin = 30;
 				var summaryRowHeight = 0;
+
+				if (menu_isSSIMode()) pageTitleHeight += 40; //bottom margin for SSI.
 
 				try {
 					summaryRowHeight = $('#row3').outerHeight();
@@ -850,7 +857,6 @@ function find_window_onload() {
 		if ((keyPressed != 40) && (keyPressed != 38) && (keyPressed != 13) && (keyPressed != 32) && (keyPressed != 33) && (keyPressed != 34) && (keyPressed != 35) && (keyPressed != 36))
 			$('#txtLocateRecordFind').focus();
 	});
-
 }
 
 
@@ -864,6 +870,7 @@ function saveRowToDatabase(rowid) {
 function selectedRecordID() {
 	return $("#findGridTable").getGridParam('selrow');
 }
+
 
 /* Sequential search the grid for the required ID. */
 function locateRecord(psSearchFor, pfIdMatch) {
@@ -1133,9 +1140,6 @@ function useThousandSeparator(columnNumber) {
 }
 
 function indicateThatRowWasModified() {
-	//$("#findGridTable_ilsave").removeClass('ui-state-disabled'); //Enable the Save button because we edited something
-	//$("#findGridTable_ilcancel").removeClass('ui-state-disabled'); //Enable the Cancel button because we edited something
-	//$("#findGridTable_iledit").addClass('ui-state-disabled'); //Enable the Cancel button because we edited something
 	rowWasModified = true; //The 'rowWasModified' variable is defined as global in Find.ascx
 	window.onbeforeunload = warning;
 }
@@ -1189,6 +1193,7 @@ function ABSNumberValue(elem, operation, value) {
 }
 
 function saveInlineRowToDatabase(rowId) {
+
 	var sUpdateOrInsert = "";
 	var gridData = $("#findGridTable").getRowData(rowId);
 	var gridColumns = $("#findGridTable").jqGrid('getGridParam', 'colNames');
@@ -1250,18 +1255,21 @@ function saveInlineRowToDatabase(rowId) {
 	frmDataArea.txtOriginalRecordID.value = 0; //This is NOT a copied record
 
 	window.savedRow = rowId;
-	OpenHR.submitForm(frmDataArea, null, true, null, null, submitFollowOn);
+
+	//NB: submitform frmData will set a new ID for a new record. 
+	OpenHR.submitForm(frmDataArea, null, true, null, null, submitFollowOn);	//leave as async=true to enable the spinner.
+	
 }
 
 function submitFollowOn() {
 
 	var rowId = window.savedRow; //$("#findGridTable").getGridParam('selrow');	
-	if ($('#frmData #txtErrorMessage').val() !== "") { //There was an error while saving		
+	if ($('#frmData #txtErrorMessage').val() !== "") { //There was an error while saving (AKA server side validation fail)		
 		indicateThatRowWasModified();		
 
 		//After a brief timeout, enable "Add" and "Edit" and disable "Save" and "Cancel"
 		setTimeout(function () {
-			$("#findGridTable").jqGrid('setSelection', "0", true);
+			$("#findGridTable").jqGrid('setSelection', rowId, true);
 			$("#findGridTable").editRow(rowId); //Edit the row
 
 			$("#findGridTable_ilsave").removeClass('ui-state-disabled'); //Enable the Save button because we edited something
@@ -1271,6 +1279,7 @@ function submitFollowOn() {
 			$("#findGridTable_searchButton").addClass("ui-state-disabled");
 		}, 100);
 	
+		
 		//Disable navigation buttons on the jqgrid toolbar
 		$('#pager-coldata_center input').prop('disabled', true); //Make Page textbox read only
 		$("#findGridTable").jqGrid("setGridParam", { ondblClickRow: function (rowID) { return false; } }); //Disable double click on any row
@@ -1309,6 +1318,7 @@ function submitFollowOn() {
 	}
 }
 
+
 function updateRowFromDatabase(rowid) {
 	var recordID = $("#findGridTable").jqGrid('getCell', rowid, 'ID');
 
@@ -1342,8 +1352,6 @@ function updateRowFromDatabase(rowid) {
 			}
 
 			var colModel = $("#findGridTable").jqGrid("getGridParam", "colModel");
-			//Restore the row
-			//$("#findGridTable").jqGrid('restoreRow', currentRowId, null);
 
 			//Loop over the colModel and update the current row
 			for (var i = 0; i <= colModel.length - 1; i++) {
@@ -1371,21 +1379,11 @@ function updateRowFromDatabase(rowid) {
 			if (currentRowId == "0") {
 				$("#findGridTable #0").attr("ID", recordID);
 				lastRowEdited = recordID;
-				if (rowIsEditedOrNew == "quick-add mode") {
-					//quick-add mode
-					try {
-						$("#findGridTable").jqGrid('addRow', addparameters);
-						lastRowEdited = "0";
-					} catch (e) {
-						alert('couldnt do it!');
-					}
-				}
 
 				var frmDataArea = OpenHR.getForm("dataframe", "frmGetData");
 				frmDataArea.txtReaction.value = "";
 
 				locateRecord(recordID);
-
 			}
 
 			//refresh menu!
@@ -1396,6 +1394,29 @@ function updateRowFromDatabase(rowid) {
 			alert('error updating row from database.');
 		}
 	});
+
+
+	if (rowIsEditedOrNew == "new") {
+		//quick-add mode
+		try {
+			var lastPage = $("#findGridTable").jqGrid('getGridParam', 'lastpage');
+			$("#findGridTable").trigger("reloadGrid", [{ page: lastPage }]);
+
+			$("#findGridTable").jqGrid('addRow', addparameters);
+			lastRowEdited = "0";
+
+			//show editing buttons.
+			setTimeout(function () {
+				$("#findGridTable_ilsave").removeClass('ui-state-disabled'); //Enable the Save button because we edited something
+				$("#findGridTable_ilcancel").removeClass('ui-state-disabled'); //Enable the Cancel button because we edited something
+				$("#findGridTable_iledit").addClass('ui-state-disabled'); //Enable the Cancel button because we edited something
+				$("#findGridTable_searchButton").addClass("ui-state-disabled");
+			}, 100);
+
+		} catch (e) {
+		}
+	}
+
 }
 
 function editFindGridRow(rowid) {
@@ -1420,21 +1441,18 @@ function editFindGridRow(rowid) {
 		//re-enable add button and highlight new row.
 		setTimeout(function () {
 			$('#findGridTable_iladd').removeClass('ui-state-disabled');
-		}
-	, 100);
+		}, 100);
 
 	}
 }
 
 
 function addFindGridRow(rowid) {
-	//$('#findGridTable').jqGrid('setGridParam', { beforeSelectRow: function () { return false; } }); //Disable the selection of other rows
 
 	$('#findGridTable').jqGrid('setGridParam', {
 		beforeSelectRow: function (newRowid) {
 			return beforeSelectFindGridRow(newRowid);
 		}
-
 	});
 
 	$('#findGridTable_searchButton').addClass('ui-state-disabled'); //Disable search
@@ -1447,20 +1465,18 @@ function addFindGridRow(rowid) {
 	setTimeout(function () {
 		$('#findGridTable_iladd').removeClass('ui-state-disabled');
 		$("#findGridTable").jqGrid('setSelection', "0", true);
-	}
-, 100);
+	}, 100);
 
 	return true;
+
 }
 
 function cancelFindGridRow(rowid) {
 
-	if (rowIsEditedOrNew != "new") { // i.e "edited" or ""
-		var rowId = $("#findGridTable").getGridParam('selrow');
-		updateRowFromDatabase(rowId); //Get the row data from the database
+	if ((rowIsEditedOrNew != "new") && (rowIsEditedOrNew.substr(0, 5) != "quick")) { // Not in new record mode.
+		updateRowFromDatabase(rowid); //Get the row data from the database
 	}
 
-	//TODO: bounce if cancelled.
 	rowWasModified = false; //The 'rowWasModified' variable is defined as global in Find.ascx
 	window.onbeforeunload = null;
 
@@ -1471,12 +1487,14 @@ function cancelFindGridRow(rowid) {
 
 	rowIsEditedOrNew = "";
 
+
+	//todo: set selection
 }
 
-function beforeSelectFindGridRow(newRowid) {	//AKA quick edit mode.
+function beforeSelectFindGridRow(newRowid) {
+
 	if (lastRowEdited == newRowid) return true; //click in same row: allowed.
 	if (rowIsEditedOrNew == "") return true;	// not in edit mode: allowed.
-
 
 	//All checks done, ready to move into Quick Edit mode.
 	//Save previous row, then move on to newly clicked row.
@@ -1493,9 +1511,9 @@ function beforeSelectFindGridRow(newRowid) {	//AKA quick edit mode.
 		"mtype": "POST"
 	}
 
-	$('#findGridTable').saveRow(lastRowEdited, saveparameters);	//bug this doesn't fire aftersavefunc until after cancel click has been fired.
+	$('#findGridTable').saveRow(lastRowEdited, saveparameters);
 	rowIsEditedOrNew = "quickedit_" + newRowid;
-	saveRowToDatabase(lastRowEdited);	//bug this should come from the aftersavefunc call...
+	saveRowToDatabase(lastRowEdited);	
 
 	return true;	//always allow row change.
 }
@@ -1503,6 +1521,7 @@ function beforeSelectFindGridRow(newRowid) {	//AKA quick edit mode.
 function afterSaveFindGridRow(rowid) {
 	saveRowToDatabase(rowid);
 	rowIsEditedOrNew = "";
+
 	return true;
 }
 
