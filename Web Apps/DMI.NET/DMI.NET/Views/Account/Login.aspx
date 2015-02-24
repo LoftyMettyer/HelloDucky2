@@ -145,6 +145,9 @@
 			frmLoginForm.txtLocaleDecimalSeparator.value = OpenHR.LocaleDecimalSeparator();
 			frmLoginForm.txtLocaleThousandSeparator.value = OpenHR.LocaleThousandSeparator();
 
+			$('.progressMessage span').text("Please wait...");
+			$("body").addClass("loading");
+
 			frmLoginForm.submit();			
 		}
 
