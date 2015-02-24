@@ -1151,6 +1151,7 @@ function useThousandSeparator(columnNumber) {
 
 function indicateThatRowWasModified() {
 	rowWasModified = true; //The 'rowWasModified' variable is defined as global in Find.ascx
+	$("#findGridTable_ilsave").removeClass('ui-state-disabled'); //Enable the Save button because we edited something
 	window.onbeforeunload = warning;
 }
 
@@ -1209,9 +1210,9 @@ function saveInlineRowToDatabase(rowId) {
 	var gridColumns = $("#findGridTable").jqGrid('getGridParam', 'colNames');
 	var gridModel = $("#findGridTable").jqGrid('getGridParam', 'colModel');
 	var columnValue = "";
-
+	
 	for (var i = 0; i <= gridColumns.length - 1; i++) {
-		if (gridColumns[i] != '' && gridColumns[i] != 'ID' && gridColumns[i] != 'Timestamp' && gridModel[i].editoptions.readonly == false) {
+		if (gridColumns[i] != '' && gridColumns[i] != 'ID' && gridColumns[i] != 'Timestamp' && gridModel[i].editoptions.readonly == false && gridModel[i].editable == true) {
 			columnValue = gridData[gridModel[i].name];
 
 			//If the formatter is undefined then we treat the value as text
@@ -1299,6 +1300,7 @@ function submitFollowOn() {
 			updateRowFromDatabase(rowId); //Get the row data from the database (show calculated values etc)
 			$("#findGridTable #" + rowId + ">td:first").css('border-left', '4px solid green');
 			rowWasModified = false; //The 'rowWasModified' variable is defined as global in Find.ascx
+			$("#findGridTable_ilsave").addClass('ui-state-disabled'); //Disable the Save button.
 			window.onbeforeunload = null;
 			$("#findGridTable").jqGrid("setGridParam", { ondblClickRow: function (rowID) { menu_editRecord(); } }); //Enable double click on any row
 
@@ -1488,6 +1490,7 @@ function cancelFindGridRow(rowid) {
 	}
 
 	rowWasModified = false; //The 'rowWasModified' variable is defined as global in Find.ascx
+	$("#findGridTable_ilsave").addClass('ui-state-disabled'); //Disable the Save button.
 	window.onbeforeunload = null;
 
 	$('#findGridTable_searchButton').removeClass('ui-state-disabled'); //Enable search
