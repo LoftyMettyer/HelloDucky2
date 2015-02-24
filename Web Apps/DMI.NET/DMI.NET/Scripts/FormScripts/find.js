@@ -1472,8 +1472,8 @@ function addFindGridRow(rowid) {
 }
 
 function cancelFindGridRow(rowid) {
-
-	if ((rowIsEditedOrNew != "new") && (rowIsEditedOrNew.substr(0, 5) != "quick")) { // Not in new record mode.
+	
+	if (rowIsEditedOrNew != "new") { // Not in new record mode.
 		updateRowFromDatabase(rowid); //Get the row data from the database
 	}
 
