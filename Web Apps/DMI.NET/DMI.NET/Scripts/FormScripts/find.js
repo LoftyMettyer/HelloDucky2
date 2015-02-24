@@ -1565,7 +1565,9 @@ function addNextRow() {
 
 function refreshInlineNavIcons() {
 	//needs the delay; jqGrid may be slow to load.
-	setTimeout(function() {
-		$("#findGridTable_iledit").toggleClass('ui-state-disabled', (Number(selectedRecordID()) <= 0));
+	setTimeout(function () {
+		var selectionMade = (Number(selectedRecordID()) > 0);
+		var isSearching = $('#frmFindForm .ui-search-toolbar').is(':visible');
+		$("#findGridTable_iledit").toggleClass('ui-state-disabled', (isSearching || !selectionMade));
 	}, 100);
 }
