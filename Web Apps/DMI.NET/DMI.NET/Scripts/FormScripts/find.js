@@ -590,7 +590,7 @@ function find_window_onload() {
 						keys: true,
 						aftersavefunc: function (rowid, response, options) {
 							return afterSaveFindGridRow(rowid);
-						},
+						},						
 						oneditfunc: function (rowid) {
 							//build a comma separated list of columns that have expression ID's on them.
 							var arrCalcColumnsString = [];
@@ -1497,8 +1497,17 @@ function cancelFindGridRow(rowid) {
 
 	rowIsEditedOrNew = "";
 
-
-	//todo: set selection
+	if (rowid == "0") {
+		//set selection to last row in grid as the 'new' record has now been removed.
+		var recCount = $("#findGridTable").getGridParam("reccount") - 1;
+		if (recCount > 0) {
+			var lastRowID = $("#findGridTable").jqGrid('getDataIDs')[recCount - 1];
+			setTimeout(function() { $("#findGridTable").jqGrid('setSelection', lastRowID, true); }, 200);
+		}
+	} else {
+		//set selection to current row.
+		$("#findGridTable").jqGrid('setSelection', rowid, true);
+	}
 }
 
 function beforeSelectFindGridRow(newRowid) {
