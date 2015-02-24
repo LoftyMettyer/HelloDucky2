@@ -720,12 +720,14 @@ function find_window_onload() {
 					var recCountInGrid = $("#findGridTable").getGridParam("reccount");
 					if (thereIsAtLeastOneEditableColumn && recCountInGrid > 0) {
 						$("#findGridTable_iledit").show();
+						$("#findGridTable_ilsave").show();
+						$("#findGridTable_ilcancel").show();
 					} else {
 						$("#findGridTable_iledit").hide();
+						$("#findGridTable_ilsave").hide();
+						$("#findGridTable_ilcancel").hide();
 					}
 
-					$("#findGridTable_ilsave").show();
-					$("#findGridTable_ilcancel").show();
 
 				} else {
 					//Hide the edit icons by default
