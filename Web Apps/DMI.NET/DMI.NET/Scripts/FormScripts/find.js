@@ -1327,7 +1327,7 @@ function updateRowFromDatabase(rowid) {
 
 			//If no data is returned then that means that the row is no longer part of the table/view
 			if (jsondata.length == 0) {
-				alert('The record has been amended and is no longer in the current table/view');
+				alert('The record saved is no longer in the current view.');
 				$('#findGridTable').jqGrid('delRowData', currentRowId);
 
 				//Update the record count caption
