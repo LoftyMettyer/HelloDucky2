@@ -784,7 +784,7 @@ Namespace Controllers
 		<ValidateAntiForgeryToken>
 		Function default_Submit()
 
-			If ValidateFormValue(Request.Form("txtGotoLineage"), "lineage") = "-1" Then
+			If ValidateLineageValue(Request.Form("txtGotoLineage")) = "-1" Then
 				' We're flipping between histories, reuse session variables where possible.
 				Session("tableID") = Request.Form("txtGotoTableID")
 				Session("viewID") = Request.Form("txtGotoViewID")
@@ -797,36 +797,34 @@ Namespace Controllers
 				Session("parentRecordID") = Request.Form("txtGotoParentRecordID")
 			Else
 				' Save the required table/view and screen IDs in session variables.
-				Session("action") = ValidateFormValue(Request.Form("txtAction"), "action")
-				Session("tableID") = ValidateFormValue(Request.Form("txtGotoTableID"), "integer")
-				Session("viewID") = ValidateFormValue(Request.Form("txtGotoViewID"), "integer")
-				Session("screenID") = ValidateFormValue(Request.Form("txtGotoScreenID"), "integer")
-				Session("orderID") = ValidateFormValue(Request.Form("txtGotoOrderID"), "integer")
-				Session("recordID") = ValidateFormValue(Request.Form("txtGotoRecordID"), "integer")
-				Session("parentTableID") = ValidateFormValue(Request.Form("txtGotoParentTableID"), "integer")
-				Session("parentRecordID") = ValidateFormValue(Request.Form("txtGotoParentRecordID"), "integer")
-				Session("realSource") = ValidateFormValue(Request.Form("txtGotoRealSource"), "string")
-				Session("filterDef") = ValidateFormValue(Request.Form("txtGotoFilterDef"), "string")
-				Session("filterSQL") = ValidateFormValue(Request.Form("txtGotoFilterSQL"), "string")
-				Session("lineage") = ValidateFormValue(Request.Form("txtGotoLineage"), "lineage")
-				Session("defseltype") = ValidateFormValue(Request.Form("txtGotoDefSelType"), "utiltype")
-				Session("utilID") = ValidateFormValue(Request.Form("txtGotoUtilID"), "integer")
-				Session("locateValue") = ValidateFormValue(Request.Form("txtGotoLocateValue"), "integer")
-				Session("firstRecPos") = ValidateFormValue(Request.Form("txtGotoFirstRecPos"), "integer")
-				Session("currentRecCount") = ValidateFormValue(Request.Form("txtGotoCurrentRecCount"), "integer")
-				Session("fromMenu") = ValidateFormValue(Request.Form("txtGotoFromMenu"), "integer")
-
-				Session("reloadMenu") = ValidateFormValue(Request.Form("txtReloadMenu"), "integer")
-
-				Session("StandardReport_Type") = ValidateFormValue(Request.Form("txtStandardReportType"), "utiltype")
-				Session("singleRecordID") = ValidateFormValue(CInt(Request.Form("txtGotoOptionDefSelRecordID")), "integer")
+				Session("action") = ValidateFromWhiteList(Request.Form("txtAction"), InputValidation.WhiteListCollections.Actions)
+				Session("tableID") = ValidateIntegerValue(Request.Form("txtGotoTableID"))
+				Session("viewID") = ValidateIntegerValue(Request.Form("txtGotoViewID"))
+				Session("screenID") = ValidateIntegerValue(Request.Form("txtGotoScreenID"))
+				Session("orderID") = ValidateIntegerValue(Request.Form("txtGotoOrderID"))
+				Session("recordID") = ValidateIntegerValue(Request.Form("txtGotoRecordID"))
+				Session("parentTableID") = ValidateIntegerValue(Request.Form("txtGotoParentTableID"))
+				Session("parentRecordID") = ValidateIntegerValue(Request.Form("txtGotoParentRecordID"))
+				Session("realSource") = ValidateStringValue(Request.Form("txtGotoRealSource"), InputValidation.StringSanitiseLevel.HTMLEncode)
+				Session("filterDef") = ValidateStringValue(Request.Form("txtGotoFilterDef"), InputValidation.StringSanitiseLevel.HTMLEncode)
+				Session("filterSQL") = ValidateStringValue(Request.Form("txtGotoFilterSQL"), InputValidation.StringSanitiseLevel.None)
+				Session("lineage") = ValidateLineageValue(Request.Form("txtGotoLineage"))
+				Session("defseltype") = ValidateFromWhiteList(Request.Form("txtGotoDefSelType"), InputValidation.WhiteListCollections.UtilTypes)
+				Session("utilID") = ValidateIntegerValue(Request.Form("txtGotoUtilID"))
+				Session("locateValue") = ValidateIntegerValue(Request.Form("txtGotoLocateValue"))
+				Session("firstRecPos") = ValidateIntegerValue(Request.Form("txtGotoFirstRecPos"))
+				Session("currentRecCount") = ValidateIntegerValue(Request.Form("txtGotoCurrentRecCount"))
+				Session("fromMenu") = ValidateIntegerValue(Request.Form("txtGotoFromMenu"))
+				Session("reloadMenu") = ValidateIntegerValue(Request.Form("txtReloadMenu"))
+				Session("StandardReport_Type") = ValidateFromWhiteList(Request.Form("txtStandardReportType"), InputValidation.WhiteListCollections.UtilTypes)
+				Session("singleRecordID") = ValidateIntegerValue(CInt(Request.Form("txtGotoOptionDefSelRecordID")))
 			End If
 
 			Session("optionRecordID") = 0
 			Session("optionAction") = ""
 
 			' Go to the requested page.
-			Return RedirectToAction(ValidateFormValue(Request.Form("txtGotoPage"), "string"))
+			Return RedirectToAction(ValidateStringValue(Request.Form("txtGotoPage"), InputValidation.StringSanitiseLevel.None))
 
 		End Function
 
@@ -1027,30 +1025,30 @@ Namespace Controllers
 
 
 			' Read the information from the calling form.
-			Session("optionAction") = ValidateFormValue(Request.Form("txtOptionAction"), "action")
-			Session("optionTableID") = ValidateFormValue(Request.Form("txtOptionTableID"), "integer")
-			Session("optionViewID") = ValidateFormValue(Request.Form("txtOptionViewID"), "integer")
-			Session("optionOrderID") = ValidateFormValue(Request.Form("txtOptionOrderID"), "integer")
-			Session("optionColumnID") = ValidateFormValue(Request.Form("txtOptionColumnID"), "string")
-			Session("optionPageAction") = ValidateFormValue(Request.Form("txtOptionPageAction"), "action")
-			Session("optionFirstRecPos") = ValidateFormValue(Request.Form("txtOptionFirstRecPos"), "integer")
-			Session("optionCurrentRecCount") = ValidateFormValue(Request.Form("txtOptionCurrentRecCount"), "integer")
-			Session("optionLocateValue") = ValidateFormValue(Request.Form("txtGotoLocateValue"), "string")
-			Session("optionCourseTitle") = ValidateFormValue(Request.Form("txtOptionCourseTitle"), "string")
-			Session("optionRecordID") = ValidateFormValue(Request.Form("txtOptionRecordID"), "integer")
-			Session("optionLinkRecordID") = ValidateFormValue(Request.Form("txtOptionLinkRecordID"), "integer")
-			Session("optionValue") = ValidateFormValue(Request.Form("txtOptionValue"), "integer")
-			Session("optionSQL") = ValidateFormValue(Request.Form("txtOptionSQL"), "string")
-			Session("optionPromptSQL") = ValidateFormValue(Request.Form("txtOptionPromptSQL"), "string")
-			Session("optionOnlyNumerics") = ValidateFormValue(Request.Form("txtOptionOnlyNumerics"), "integer")
-			Session("optionLookupColumnID") = ValidateFormValue(Request.Form("txtOptionLookupColumnID"), "integer")
-			Session("optionFilterValue") = ValidateFormValue(Request.Form("txtOptionLookupFilterValue"), "string")
-			Session("IsLookupTable") = ValidateFormValue(Request.Form("txtOptionIsLookupTable"), "boolean")
-			Session("optionParentTableID") = ValidateFormValue(Request.Form("txtOptionParentTableID"), "integer")
-			Session("optionParentRecordID") = ValidateFormValue(Request.Form("txtOptionParentRecordID"), "integer")
-			Session("option1000SepCols") = ValidateFormValue(Request.Form("txtOption1000SepCols"), "integer")
+			Session("optionAction") = ValidateFromWhiteList(Request.Form("txtOptionAction"), InputValidation.WhiteListCollections.Actions)
+			Session("optionTableID") = ValidateIntegerValue(Request.Form("txtOptionTableID"))
+			Session("optionViewID") = ValidateIntegerValue(Request.Form("txtOptionViewID"))
+			Session("optionOrderID") = ValidateIntegerValue(Request.Form("txtOptionOrderID"))
+			Session("optionColumnID") = ValidateStringValue(Request.Form("txtOptionColumnID"), InputValidation.StringSanitiseLevel.None)
+			Session("optionPageAction") = ValidateFromWhiteList(Request.Form("txtOptionPageAction"), InputValidation.WhiteListCollections.Actions)
+			Session("optionFirstRecPos") = ValidateIntegerValue(Request.Form("txtOptionFirstRecPos"))
+			Session("optionCurrentRecCount") = ValidateIntegerValue(Request.Form("txtOptionCurrentRecCount"))
+			Session("optionLocateValue") = ValidateStringValue(Request.Form("txtGotoLocateValue"), InputValidation.StringSanitiseLevel.HTMLEncode)
+			Session("optionCourseTitle") = ValidateStringValue(Request.Form("txtOptionCourseTitle"), InputValidation.StringSanitiseLevel.HTMLEncode)
+			Session("optionRecordID") = ValidateIntegerValue(Request.Form("txtOptionRecordID"))
+			Session("optionLinkRecordID") = ValidateIntegerValue(Request.Form("txtOptionLinkRecordID"))
+			Session("optionValue") = ValidateIntegerValue(Request.Form("txtOptionValue"))
+			Session("optionSQL") = ValidateStringValue(Request.Form("txtOptionSQL"), InputValidation.StringSanitiseLevel.None)
+			Session("optionPromptSQL") = ValidateStringValue(Request.Form("txtOptionPromptSQL"), InputValidation.StringSanitiseLevel.None)
+			Session("optionOnlyNumerics") = ValidateIntegerValue(Request.Form("txtOptionOnlyNumerics"))
+			Session("optionLookupColumnID") = ValidateIntegerValue(Request.Form("txtOptionLookupColumnID"))
+			Session("optionFilterValue") = ValidateStringValue(Request.Form("txtOptionLookupFilterValue"), InputValidation.StringSanitiseLevel.HTMLEncode)
+			Session("IsLookupTable") = ValidateBooleanValue(Request.Form("txtOptionIsLookupTable"))
+			Session("optionParentTableID") = ValidateIntegerValue(Request.Form("txtOptionParentTableID"))
+			Session("optionParentRecordID") = ValidateIntegerValue(Request.Form("txtOptionParentRecordID"))
+			Session("option1000SepCols") = ValidateIntegerValue(Request.Form("txtOption1000SepCols"))
 
-			Session("StandardReport_Type") = ValidateFormValue(Request.Form("txtStandardReportType"), "integer")
+			Session("StandardReport_Type") = ValidateIntegerValue(Request.Form("txtStandardReportType"))
 
 			' Go to the requested page.
 			Return RedirectToAction("OptionData")
@@ -1071,24 +1069,24 @@ Namespace Controllers
 			Dim objDataAccess As clsDataAccess = CType(Session("DatabaseAccess"), clsDataAccess)
 
 			' Read the information from the calling form.
-			Dim sRealSource = ValidateFormValue(Request.Form("txtRealSource"), "string")
-			Dim lngTableID = ValidateFormValue(Request.Form("txtCurrentTableID"), "integer")
-			Dim lngScreenID = ValidateFormValue(Request.Form("txtCurrentScreenID"), "integer")
-			Dim lngViewID = ValidateFormValue(Request.Form("txtCurrentViewID"), "integer")
-			Dim lngRecordID = ValidateFormValue(Request.Form("txtRecordID"), "integer")
-			Dim sAction = ValidateFormValue(Request.Form("txtAction"), "action")
-			Dim sReaction = ValidateFormValue(Request.Form("txtReaction"), "action")
-			Dim sInsertUpdateDef = ValidateFormValue(Request.Form("txtInsertUpdateDef"), "string")
-			Dim iTimestamp = ValidateFormValue(Request.Form("txtTimestamp"), "string")
-			Dim iTBEmployeeRecordID = ValidateFormValue(Request.Form("txtTBEmployeeRecordID"), "integer")
-			Dim iTBCourseRecordID = ValidateFormValue(Request.Form("txtTBCourseRecordID"), "integer")
-			Dim sTBBookingStatusValue = ValidateFormValue(Request.Form("txtTBBookingStatusValue"), "string")
-			Dim fUserChoice = ValidateFormValue(Request.Form("txtUserChoice"), "string")
+			Dim sRealSource = ValidateStringValue(Request.Form("txtRealSource"), InputValidation.StringSanitiseLevel.HTMLEncode)
+			Dim lngTableID = ValidateIntegerValue(Request.Form("txtCurrentTableID"))
+			Dim lngScreenID = ValidateIntegerValue(Request.Form("txtCurrentScreenID"))
+			Dim lngViewID = ValidateIntegerValue(Request.Form("txtCurrentViewID"))
+			Dim lngRecordID = ValidateIntegerValue(Request.Form("txtRecordID"))
+			Dim sAction = ValidateFromWhiteList(Request.Form("txtAction"), InputValidation.WhiteListCollections.Actions)
+			Dim sReaction = ValidateFromWhiteList(Request.Form("txtReaction"), InputValidation.WhiteListCollections.Actions)
+			Dim sInsertUpdateDef = ValidateStringValue(Request.Form("txtInsertUpdateDef"), InputValidation.StringSanitiseLevel.None)
+			Dim iTimestamp = ValidateStringValue(Request.Form("txtTimestamp"), InputValidation.StringSanitiseLevel.HTMLEncode)
+			Dim iTBEmployeeRecordID = ValidateIntegerValue(Request.Form("txtTBEmployeeRecordID"))
+			Dim iTBCourseRecordID = ValidateIntegerValue(Request.Form("txtTBCourseRecordID"))
+			Dim sTBBookingStatusValue = ValidateStringValue(Request.Form("txtTBBookingStatusValue"), InputValidation.StringSanitiseLevel.HTMLEncode)
+			Dim fUserChoice = ValidateStringValue(Request.Form("txtUserChoice"), InputValidation.StringSanitiseLevel.HTMLEncode)
 
-			If ValidateFormValue(Request.Form("txtTBOverride"), "string") = "" Then
+			If ValidateStringValue(Request.Form("txtTBOverride"), InputValidation.StringSanitiseLevel.HTMLEncode) = "" Then
 				fTBOverride = False
 			Else
-				fTBOverride = CBool(ValidateFormValue(Request.Form("txtTBOverride"), "string"))
+				fTBOverride = CBool(ValidateStringValue(Request.Form("txtTBOverride"), InputValidation.StringSanitiseLevel.HTMLEncode))
 			End If
 
 			If sAction = "SAVE" Then
@@ -1201,7 +1199,7 @@ Namespace Controllers
 						If lngRecordID = 0 Then
 							' Inserting.
 							Try
-								Dim lngOriginalRecordID = CInt(ValidateFormValue(Request.Form("txtOriginalRecordID"), "integer"))
+								Dim lngOriginalRecordID = CInt(ValidateIntegerValue(Request.Form("txtOriginalRecordID")))
 
 								Dim prmRecordID As New SqlParameter("piNewRecordID", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
 								Dim prmErrorMessage As New SqlParameter("errorMessage", SqlDbType.NVarChar, -1) With {.Direction = ParameterDirection.Output}
@@ -1419,7 +1417,7 @@ Namespace Controllers
 						, New SqlParameter("pfWaitListTableInsert", SqlDbType.Bit) With {.Value = CleanBoolean(Session("TB_WaitListTableInsert"))} _
 						, New SqlParameter("piWaitListCourseTitleColumnID", SqlDbType.Int) With {.Value = CleanNumeric(Session("TB_WaitListCourseTitleColumnID"))} _
 						, New SqlParameter("pfWaitListCourseTitleColumnUpdate", SqlDbType.Bit) With {.Value = CleanBoolean(Session("TB_WaitListCourseTitleColumnUpdate"))} _
-						, New SqlParameter("pfCreateWaitListRecords", SqlDbType.Bit) With {.Value = CleanBoolean(ValidateFormValue(Request.Form("txtTBCreateWLRecords"), "string"))} _
+						, New SqlParameter("pfCreateWaitListRecords", SqlDbType.Bit) With {.Value = CleanBoolean(ValidateStringValue(Request.Form("txtTBCreateWLRecords"), InputValidation.StringSanitiseLevel.HTMLEncode))} _
 						, prmErrorMessage)
 
 					sErrorMsg = prmErrorMessage.Value.ToString()
@@ -1463,11 +1461,11 @@ Namespace Controllers
 
 			End If
 
-			Session("selectSQL") = ValidateFormValue(Request.Form("txtSelectSQL"), "string")
-			Session("fromDef") = ValidateFormValue(Request.Form("txtFromDef"), "string")
-			Session("filterSQL") = ValidateFormValue(Request.Form("txtFilterSQL"), "string")
+			Session("selectSQL") = ValidateStringValue(Request.Form("txtSelectSQL"), InputValidation.StringSanitiseLevel.None)
+			Session("fromDef") = ValidateStringValue(Request.Form("txtFromDef"), InputValidation.StringSanitiseLevel.HTMLEncode)
+			Session("filterSQL") = ValidateStringValue(Request.Form("txtFilterSQL"), InputValidation.StringSanitiseLevel.None)
 			Session("filterDefPrevious") = Session("filterDef")
-			Session("filterDef") = ValidateFormValue(Request.Form("txtFilterDef"), "string")
+			Session("filterDef") = ValidateStringValue(Request.Form("txtFilterDef"), InputValidation.StringSanitiseLevel.HTMLEncode)
 			Session("realSource") = sRealSource
 			Session("tableID") = lngTableID
 			Session("screenID") = lngScreenID
@@ -1476,16 +1474,16 @@ Namespace Controllers
 			Session("action") = sAction
 			Session("reaction") = ""
 			Session("warningFlag") = fWarning
-			Session("parentTableID") = ValidateFormValue(Request.Form("txtParentTableID"), "integer")
-			Session("parentRecordID") = ValidateFormValue(Request.Form("txtParentRecordID"), "integer")
-			Session("defaultCalcColumns") = ValidateFormValue(Request.Form("txtDefaultCalcCols"), "string")
+			Session("parentTableID") = ValidateIntegerValue(Request.Form("txtParentTableID"))
+			Session("parentRecordID") = ValidateIntegerValue(Request.Form("txtParentRecordID"))
+			Session("defaultCalcColumns") = ValidateStringValue(Request.Form("txtDefaultCalcCols"), InputValidation.StringSanitiseLevel.HTMLEncode)
 			Session("insertUpdateDef") = sInsertUpdateDef
 			Session("errorMessage") = sErrorMsg
-			Session("ReportBaseTableID") = ValidateFormValue(Request.Form("txtReportBaseTableID"), "integer")
-			Session("ReportParent1TableID") = ValidateFormValue(Request.Form("txtReportParent1TableID"), "integer")
-			Session("ReportParent2TableID") = ValidateFormValue(Request.Form("txtReportParent2TableID"), "integer")
-			Session("ReportChildTableID") = ValidateFormValue(Request.Form("txtReportChildTableID"), "integer")
-			Session("Param1") = ValidateFormValue(Request.Form("txtParam1"), "string")
+			Session("ReportBaseTableID") = ValidateIntegerValue(Request.Form("txtReportBaseTableID"))
+			Session("ReportParent1TableID") = ValidateIntegerValue(Request.Form("txtReportParent1TableID"))
+			Session("ReportParent2TableID") = ValidateIntegerValue(Request.Form("txtReportParent2TableID"))
+			Session("ReportChildTableID") = ValidateIntegerValue(Request.Form("txtReportChildTableID"))
+			Session("Param1") = ValidateStringValue(Request.Form("txtParam1"), InputValidation.StringSanitiseLevel.HTMLEncode)
 
 			'JDM - 24/07/02 - Fault 3917 - Reset year for absence calendar
 			Session("stdrpt_AbsenceCalendar_StartYear") = Year(DateTime.Now())
@@ -1494,21 +1492,21 @@ Namespace Controllers
 			Session("stdrpt_AbsenceCalendar_StartMonth") = ""
 
 			'TM - 05/09/02 - Store the event log parameters in session vaiables.
-			Session("ELFilterUser") = ValidateFormValue(Request.Form("txtELFilterUser"), "string")
-			Session("ELFilterType") = ValidateFormValue(Request.Form("txtELFilterType"), "string")
-			Session("ELFilterStatus") = ValidateFormValue(Request.Form("txtELFilterStatus"), "string")
-			Session("ELFilterMode") = ValidateFormValue(Request.Form("txtELFilterMode"), "string")
-			Session("ELOrderColumn") = ValidateFormValue(Request.Form("txtELOrderColumn"), "string")
-			Session("ELOrderOrder") = ValidateFormValue(Request.Form("txtELOrderOrder"), "string")
+			Session("ELFilterUser") = ValidateStringValue(Request.Form("txtELFilterUser"), InputValidation.StringSanitiseLevel.HTMLEncode)
+			Session("ELFilterType") = ValidateStringValue(Request.Form("txtELFilterType"), InputValidation.StringSanitiseLevel.HTMLEncode)
+			Session("ELFilterStatus") = ValidateStringValue(Request.Form("txtELFilterStatus"), InputValidation.StringSanitiseLevel.HTMLEncode)
+			Session("ELFilterMode") = ValidateStringValue(Request.Form("txtELFilterMode"), InputValidation.StringSanitiseLevel.HTMLEncode)
+			Session("ELOrderColumn") = ValidateStringValue(Request.Form("txtELOrderColumn"), InputValidation.StringSanitiseLevel.HTMLEncode)
+			Session("ELOrderOrder") = ValidateStringValue(Request.Form("txtELOrderOrder"), InputValidation.StringSanitiseLevel.HTMLEncode)
 
-			Session("ELAction") = ValidateFormValue(Request.Form("txtELAction"), "string")
+			Session("ELAction") = ValidateStringValue(Request.Form("txtELAction"), InputValidation.StringSanitiseLevel.HTMLEncode)
 
-			Session("ELCurrentRecCount") = ValidateFormValue(Request.Form("txtELCurrRecCount"), "string")
+			Session("ELCurrentRecCount") = ValidateStringValue(Request.Form("txtELCurrRecCount"), InputValidation.StringSanitiseLevel.HTMLEncode)
 			If Session("ELCurrentRecCount") < 1 Or Len(Session("ELCurrentRecCount")) < 1 Then
 				Session("ELCurrentRecCount") = 0
 			End If
 
-			Session("ELFirstRecPos") = ValidateFormValue(Request.Form("txtEL1stRecPos"), "string")
+			Session("ELFirstRecPos") = ValidateStringValue(Request.Form("txtEL1stRecPos"), InputValidation.StringSanitiseLevel.HTMLEncode)
 			If Session("ELFirstRecPos") < 1 Or Len(Session("ELFirstRecPos")) < 1 Then
 				Session("ELFirstRecPos") = 1
 			End If

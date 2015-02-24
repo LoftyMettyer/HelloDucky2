@@ -7,6 +7,7 @@ Imports HR.Intranet.Server.Enums
 Imports HR.Intranet.Server
 Imports System.Data.SqlClient
 Imports System.Web.WebPages
+Imports org.owasp.validator.html
 
 Public Module ASRFunctions
 
@@ -261,72 +262,87 @@ Public Module ASRFunctions
 
 	End Function
 
-
-	Public Function ValidateFormValue(inputValue As Object, expectedType As String) As Object
-
-		Try
-			If inputValue Is Nothing OrElse inputValue.ToString() = vbNullString OrElse inputValue.ToString() = "undefined" Then
-				Return inputValue
-			Else
-				Select Case expectedType
-					Case "string"
-						' erm... TODO
-
-					Case "integer"
-						Dim number As Integer
-						Dim result As Boolean = Int32.TryParse(inputValue.ToString(), number)
-						If Not result Then
-							Throw New Exception()
-						End If
-
-					Case "boolean"
-						Dim bool As Boolean
-						Dim result As Boolean = Boolean.TryParse(inputValue.ToString(), bool)
-						If Not result Then
-							Throw New Exception()
-						End If
-
-					Case "action"
-						If Not InputValidation.ListOfActions.Contains(inputValue.ToString().ToUpper()) Then
-							Throw New Exception()
-						End If
-
-					Case "utiltype"
-						Dim fOK As Boolean = False
-
-						' Numeric parameter is OK
-						Dim number As Integer
-						fOK = Int32.TryParse(inputValue.ToString(), number)
-
-						' and specific utiltypes are ok
-						If InputValidation.ListOfUtilTypes.Contains(inputValue.ToString().ToUpper()) Then fOK = True
-
-
-						If Not fOK Then Throw New Exception()
-
-					Case "lineage"
-						' allow integers and underscores only
-						Dim arrInput As String() = inputValue.ToString().Split(CChar("_"))
-						For Each inputchar As String In arrInput
-							If Not (inputchar.IsInt() Or inputchar.Contains(":")) Then
-								Throw New Exception()
-							End If
-						Next
-				End Select
-
-			End If
-
-		Catch ex As Exception
-			Throw New Exception()
-		End Try
-
-		If expectedType = "string" Then
-			Return HttpUtility.HtmlAttributeEncode(inputValue.ToString())
-		Else
+	Public Function ValidateStringValue(inputValue As String, sanitiseLevel As InputValidation.StringSanitiseLevel) As String
+		If inputValue Is Nothing OrElse inputValue.ToString() = vbNullString OrElse inputValue.ToString() = "undefined" Then
 			Return inputValue
 		End If
 
+		Select Case sanitiseLevel
+			Case InputValidation.StringSanitiseLevel.HTMLEncode
+				inputValue = HttpUtility.HtmlAttributeEncode(inputValue)
+			Case InputValidation.StringSanitiseLevel.None 'Don't do any sanitisation of the string
+			Case InputValidation.StringSanitiseLevel.FullOWASP
+				'inputValue = Globals.AntiSamyInstance.scan(inputValue, Globals.AntiSamyPolicy).getCleanHTML
+		End Select
+
+		Return inputValue
 	End Function
+	Public Function ValidateIntegerValue(inputValue As String) As Integer
+		If inputValue Is Nothing OrElse inputValue.ToString() = vbNullString OrElse inputValue.ToString() = "undefined" Then
+			Return 0 'By convention return 0; is this correct?
+		End If
+
+		Dim number As Integer
+		Dim result As Boolean = Int32.TryParse(inputValue.ToString(), number)
+		If Not result Then
+			Throw New Exception()
+		End If
+
+		Return number
+	End Function
+	Public Function ValidateBooleanValue(inputValue As String) As Boolean
+		If inputValue Is Nothing OrElse inputValue.ToString() = vbNullString OrElse inputValue.ToString() = "undefined" Then
+			Return Nothing
+		End If
+
+		Dim bool As Boolean
+		Dim result As Boolean = Boolean.TryParse(inputValue.ToString(), bool)
+		If Not result Then
+			Throw New Exception()
+		End If
+
+		Return bool
+	End Function
+	Public Function ValidateFromWhiteList(inputValue As String, whiteList As InputValidation.WhiteListCollections) As String
+		If inputValue Is Nothing OrElse inputValue.ToString() = vbNullString OrElse inputValue.ToString() = "undefined" Then
+			Return inputValue
+		End If
+
+		Select Case whiteList
+			Case InputValidation.WhiteListCollections.Actions
+				If Not InputValidation.ListOfActions.Contains(inputValue.ToString().ToUpper()) Then
+					Throw New Exception()
+				End If
+
+			Case InputValidation.WhiteListCollections.UtilTypes
+				Dim fOK As Boolean = False
+
+				' Numeric parameter is OK
+				Dim number As Integer
+				fOK = Int32.TryParse(inputValue.ToString(), number)
+
+				' and specific utiltypes are ok
+				If InputValidation.ListOfUtilTypes.Contains(inputValue.ToString().ToUpper()) Then fOK = True
 
 
+				If Not fOK Then Throw New Exception()
+		End Select
+
+		Return inputValue
+	End Function
+	Public Function ValidateLineageValue(inputValue As String) As String
+		If inputValue Is Nothing OrElse inputValue.ToString() = vbNullString OrElse inputValue.ToString() = "undefined" Then
+			Return inputValue
+		End If
+
+		'Allow integers and underscores only
+		Dim arrInput As String() = inputValue.ToString().Split(CChar("_"))
+		For Each inputchar As String In arrInput
+			If Not (inputchar.IsInt() Or inputchar.Contains(":")) Then
+				Throw New Exception()
+			End If
+		Next
+
+		Return inputValue
+	End Function
 End Module
