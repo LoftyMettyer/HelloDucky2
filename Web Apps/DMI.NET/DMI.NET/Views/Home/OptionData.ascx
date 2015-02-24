@@ -188,7 +188,7 @@
 						Session("flagOverrideFilter") = prmADOError.Value
 						
 					Catch ex As Exception
-						sErrorDescription = "Error reading the lookup filter value." & vbCrLf & FormatError(Err.Description)
+						sErrorDescription = "Error reading the lookup filter value." & vbCrLf & ex.Message.RemoveSensitive
 					End Try
 					
 				End If

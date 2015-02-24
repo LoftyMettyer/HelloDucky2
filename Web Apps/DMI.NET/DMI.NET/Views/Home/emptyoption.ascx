@@ -559,7 +559,7 @@
 				End If
 
 			Catch ex As Exception
-				sErrorDescription = "The link values could not be retrieved." & vbCrLf & FormatError(Err.Description)
+				sErrorDescription = "The link values could not be retrieved." & vbCrLf & ex.Message.RemoveSensitive
 
 			End Try
 

@@ -23,6 +23,7 @@ Imports DMI.NET.Code.Hubs
 Imports System.Web.Script.Serialization
 Imports Newtonsoft.Json
 Imports HR.Intranet.Server.Expressions
+Imports HR.Intranet.Server.Extensions
 Imports HR.Intranet.Server.ReportOutput
 
 Namespace Controllers
@@ -1562,7 +1563,6 @@ Namespace Controllers
 						Response.Redirect("FormError")
 					End If
 
-					Err.Clear()
 				Catch ex As Exception
 
 					Session("ErrorTitle") = "Login Page"
@@ -1723,183 +1723,182 @@ Namespace Controllers
 											title As String,
 											showLabels As Boolean) As FileContentResult
 
-			Err.Clear()
-
 			Dim mrstChartData As DataTable
 			Dim sErrorDescription As String
 
 			Dim objChart = New HR.Intranet.Server.clsChart
 			objChart.SessionInfo = CType(Session("SessionContext"), SessionInfo)
 
-			mrstChartData = objChart.GetChartData(tableID, columnID, filterID, aggregateType, elementType, 0, 0, 0, 0, sortOrderID, sortDirection, colourID)
+			Try
 
-			If Err.Number <> 0 Then
-				sErrorDescription = "The Chart field values could not be retrieved." & vbCrLf & FormatError(Err.Description)
-			Else
-				sErrorDescription = ""
-			End If
+				mrstChartData = objChart.GetChartData(tableID, columnID, filterID, aggregateType, elementType, 0, 0, 0, 0, sortOrderID, sortDirection, colourID)
 
-			If Not mrstChartData Is Nothing Then
-				If mrstChartData.Rows.Count > 500 Then mrstChartData = Nothing ' limit to 500 rows as get row buffer limit exceeded error.
-			End If
+				If Not mrstChartData Is Nothing Then
+					If mrstChartData.Rows.Count > 500 Then mrstChartData = Nothing ' limit to 500 rows as get row buffer limit exceeded error.
+				End If
 
-			If Len(sErrorDescription) = 0 And Not mrstChartData Is Nothing Then
+				If Len(sErrorDescription) = 0 And Not mrstChartData Is Nothing Then
 
-				If mrstChartData.Rows.Count > 0 Then
-					Dim objRow1 = mrstChartData.Rows(0)
+					If mrstChartData.Rows.Count > 0 Then
+						Dim objRow1 = mrstChartData.Rows(0)
 
-					If objRow1(0).ToString() <> "No Access" Then
-						If objRow1(0).ToString() <> "No Data" Then
+						If objRow1(0).ToString() <> "No Access" Then
+							If objRow1(0).ToString() <> "No Data" Then
 
-							Dim chart1 As New Chart()
+								Dim chart1 As New Chart()
 
-							chart1.Width = Unit.Pixel(width)
-							chart1.Height = Unit.Pixel(height)
+								chart1.Width = Unit.Pixel(width)
+								chart1.Height = Unit.Pixel(height)
 
-							' Set Legend's visual attributes
-							If showLegend = True Then
-								chart1.Legends.Add("Default")
-								chart1.Legends("Default").Enabled = True
-								chart1.Legends("Default").BackColor = Color.Transparent
-								chart1.Legends("Default").ShadowOffset = 2
-								chart1.Legends("Default").BackColor = ColorTranslator.FromHtml("#D3DFF0")
-							End If
-							' kill the title
-							title = ""
-							If Not String.IsNullOrEmpty(title) Then
-								chart1.Titles.Add("MainTitle")
-								chart1.Titles(0).Text = title
-								chart1.Titles(0).Font = New Font(chart1.Titles(0).Font.Name, 20) 'Set the font size without changing the font family
-							End If
-
-							chart1.ChartAreas.Add("ChartArea1")
-
-							chart1.ChartAreas("ChartArea1").BackSecondaryColor = Color.Transparent
-							chart1.ChartAreas("ChartArea1").ShadowColor = Color.Transparent
-
-							chart1.ChartAreas("ChartArea1").AxisY.LineColor = Color.FromArgb(64, 64, 64, 64)
-							chart1.ChartAreas("ChartArea1").AxisY.MajorGrid.LineColor = Color.FromArgb(64, 64, 64, 64)
-							chart1.ChartAreas("ChartArea1").AxisX.LineColor = Color.FromArgb(64, 64, 64, 64)
-							chart1.ChartAreas("ChartArea1").AxisX.MajorGrid.LineColor = Color.FromArgb(64, 64, 64, 64)
-
-							chart1.ChartAreas("ChartArea1").AxisX.LabelStyle.Enabled = showLabels
-							chart1.ChartAreas("ChartArea1").AxisY.LabelStyle.Enabled = showLabels
-
-							' Gridlines
-							If dottedGrid = True Then
-								chart1.ChartAreas("ChartArea1").AxisX.LineDashStyle = ChartDashStyle.Dot
-								chart1.ChartAreas("ChartArea1").AxisY.LineDashStyle = ChartDashStyle.Dot
-								chart1.ChartAreas("ChartArea1").AxisX.MajorGrid.LineDashStyle = ChartDashStyle.Dot
-								chart1.ChartAreas("ChartArea1").AxisY.MajorGrid.LineDashStyle = ChartDashStyle.Dot
-							Else
-								chart1.ChartAreas("ChartArea1").AxisX.LineDashStyle = ChartDashStyle.NotSet
-								chart1.ChartAreas("ChartArea1").AxisY.LineDashStyle = ChartDashStyle.NotSet
-								chart1.ChartAreas("ChartArea1").AxisX.MajorGrid.LineDashStyle = ChartDashStyle.NotSet
-								chart1.ChartAreas("ChartArea1").AxisY.MajorGrid.LineDashStyle = ChartDashStyle.NotSet
-							End If
-
-
-							If chartType = 0 Or chartType = 2 Or chartType = 4 Or chartType = 6 Then
-								' 3D Settings
-								chart1.ChartAreas("ChartArea1").Area3DStyle.Enable3D = True
-								chart1.ChartAreas("ChartArea1").Area3DStyle.Perspective = 10
-								chart1.ChartAreas("ChartArea1").Area3DStyle.Inclination = 15
-								chart1.ChartAreas("ChartArea1").Area3DStyle.Rotation = 10
-								chart1.ChartAreas("ChartArea1").Area3DStyle.IsRightAngleAxes = False
-								chart1.ChartAreas("ChartArea1").Area3DStyle.WallWidth = 0
-								chart1.ChartAreas("ChartArea1").Area3DStyle.IsClustered = False
-							End If
-
-							' Series - just one series as multiaxis = false.
-							chart1.Series.Add("Default")
-							chart1.Series("Default").IsVisibleInLegend = False
-							chart1.Series("Default").BorderColor = Color.FromArgb(180, 26, 59, 105)
-							chart1.Series("Default").Color = Color.FromArgb(220, 65, 140, 240)
-
-							' Show Values/Percentages
-							If showValues = True Then
-								chart1.Series("Default")("LabelStyle") = "Top"
-								chart1.Series("Default").IsValueShownAsLabel = True
-
-								If showPercent = True Then
-									chart1.Series("Default").Label = "#PERCENT{P2}"
+								' Set Legend's visual attributes
+								If showLegend = True Then
+									chart1.Legends.Add("Default")
+									chart1.Legends("Default").Enabled = True
+									chart1.Legends("Default").BackColor = Color.Transparent
+									chart1.Legends("Default").ShadowOffset = 2
+									chart1.Legends("Default").BackColor = ColorTranslator.FromHtml("#D3DFF0")
 								End If
-							End If
+								' kill the title
+								title = ""
+								If Not String.IsNullOrEmpty(title) Then
+									chart1.Titles.Add("MainTitle")
+									chart1.Titles(0).Text = title
+									chart1.Titles(0).Font = New Font(chart1.Titles(0).Font.Name, 20) 'Set the font size without changing the font family
+								End If
 
-							Select Case chartType
-								Case 0, 1
-									If stack = True Then
-										chart1.Series("Default").ChartType = SeriesChartType.StackedColumn
-									Else
-										chart1.Series("Default").ChartType = SeriesChartType.Column
+								chart1.ChartAreas.Add("ChartArea1")
+
+								chart1.ChartAreas("ChartArea1").BackSecondaryColor = Color.Transparent
+								chart1.ChartAreas("ChartArea1").ShadowColor = Color.Transparent
+
+								chart1.ChartAreas("ChartArea1").AxisY.LineColor = Color.FromArgb(64, 64, 64, 64)
+								chart1.ChartAreas("ChartArea1").AxisY.MajorGrid.LineColor = Color.FromArgb(64, 64, 64, 64)
+								chart1.ChartAreas("ChartArea1").AxisX.LineColor = Color.FromArgb(64, 64, 64, 64)
+								chart1.ChartAreas("ChartArea1").AxisX.MajorGrid.LineColor = Color.FromArgb(64, 64, 64, 64)
+
+								chart1.ChartAreas("ChartArea1").AxisX.LabelStyle.Enabled = showLabels
+								chart1.ChartAreas("ChartArea1").AxisY.LabelStyle.Enabled = showLabels
+
+								' Gridlines
+								If dottedGrid = True Then
+									chart1.ChartAreas("ChartArea1").AxisX.LineDashStyle = ChartDashStyle.Dot
+									chart1.ChartAreas("ChartArea1").AxisY.LineDashStyle = ChartDashStyle.Dot
+									chart1.ChartAreas("ChartArea1").AxisX.MajorGrid.LineDashStyle = ChartDashStyle.Dot
+									chart1.ChartAreas("ChartArea1").AxisY.MajorGrid.LineDashStyle = ChartDashStyle.Dot
+								Else
+									chart1.ChartAreas("ChartArea1").AxisX.LineDashStyle = ChartDashStyle.NotSet
+									chart1.ChartAreas("ChartArea1").AxisY.LineDashStyle = ChartDashStyle.NotSet
+									chart1.ChartAreas("ChartArea1").AxisX.MajorGrid.LineDashStyle = ChartDashStyle.NotSet
+									chart1.ChartAreas("ChartArea1").AxisY.MajorGrid.LineDashStyle = ChartDashStyle.NotSet
+								End If
+
+
+								If chartType = 0 Or chartType = 2 Or chartType = 4 Or chartType = 6 Then
+									' 3D Settings
+									chart1.ChartAreas("ChartArea1").Area3DStyle.Enable3D = True
+									chart1.ChartAreas("ChartArea1").Area3DStyle.Perspective = 10
+									chart1.ChartAreas("ChartArea1").Area3DStyle.Inclination = 15
+									chart1.ChartAreas("ChartArea1").Area3DStyle.Rotation = 10
+									chart1.ChartAreas("ChartArea1").Area3DStyle.IsRightAngleAxes = False
+									chart1.ChartAreas("ChartArea1").Area3DStyle.WallWidth = 0
+									chart1.ChartAreas("ChartArea1").Area3DStyle.IsClustered = False
+								End If
+
+								' Series - just one series as multiaxis = false.
+								chart1.Series.Add("Default")
+								chart1.Series("Default").IsVisibleInLegend = False
+								chart1.Series("Default").BorderColor = Color.FromArgb(180, 26, 59, 105)
+								chart1.Series("Default").Color = Color.FromArgb(220, 65, 140, 240)
+
+								' Show Values/Percentages
+								If showValues = True Then
+									chart1.Series("Default")("LabelStyle") = "Top"
+									chart1.Series("Default").IsValueShownAsLabel = True
+
+									If showPercent = True Then
+										chart1.Series("Default").Label = "#PERCENT{P2}"
 									End If
-								Case 2, 3
-									chart1.Series("Default").ChartType = SeriesChartType.Line
-								Case 4, 5
-									If stack = True Then
-										chart1.Series("Default").ChartType = SeriesChartType.StackedArea
-									Else
-										chart1.Series("Default").ChartType = SeriesChartType.Area
-									End If
-								Case 6, 7
-									chart1.Series("Default").ChartType = SeriesChartType.StepLine
-								Case 14
-									chart1.Series("Default").ChartType = SeriesChartType.Pie
+								End If
 
-									chart1.ChartAreas("ChartArea1").BackColor = Color.Transparent
-									chart1.ChartAreas("ChartArea1").BackSecondaryColor = Color.Transparent
-									chart1.ChartAreas("ChartArea1").ShadowColor = Color.Transparent
+								Select Case chartType
+									Case 0, 1
+										If stack = True Then
+											chart1.Series("Default").ChartType = SeriesChartType.StackedColumn
+										Else
+											chart1.Series("Default").ChartType = SeriesChartType.Column
+										End If
+									Case 2, 3
+										chart1.Series("Default").ChartType = SeriesChartType.Line
+									Case 4, 5
+										If stack = True Then
+											chart1.Series("Default").ChartType = SeriesChartType.StackedArea
+										Else
+											chart1.Series("Default").ChartType = SeriesChartType.Area
+										End If
+									Case 6, 7
+										chart1.Series("Default").ChartType = SeriesChartType.StepLine
+									Case 14
+										chart1.Series("Default").ChartType = SeriesChartType.Pie
 
-							End Select
+										chart1.ChartAreas("ChartArea1").BackColor = Color.Transparent
+										chart1.ChartAreas("ChartArea1").BackSecondaryColor = Color.Transparent
+										chart1.ChartAreas("ChartArea1").ShadowColor = Color.Transparent
 
-							'See Color Palette details here:http://blogs.msdn.com/b/alexgor/archive/2009/10/06/setting-chart-series-colors.aspx
-							Dim brightPastelColorPalette As Integer() = {15764545, 4306172, 671968, 9593861, 12566463, 6896410, 8578047, 14523410, 4942794, 14375936, 8966899, 8479568, 11057649, 689120, 12489592}
-							Dim pointNum As Integer
+								End Select
 
-							For Each objRow As DataRow In mrstChartData.Rows
-								If objRow(0).ToString() <> "No Access" And objRow(0).ToString() <> "No Data" Then
+								'See Color Palette details here:http://blogs.msdn.com/b/alexgor/archive/2009/10/06/setting-chart-series-colors.aspx
+								Dim brightPastelColorPalette As Integer() = {15764545, 4306172, 671968, 9593861, 12566463, 6896410, 8578047, 14523410, 4942794, 14375936, 8966899, 8479568, 11057649, 689120, 12489592}
+								Dim pointNum As Integer
 
-									Dim pointBackColor As Color
-									If objRow(2) = 16777215 Then
-										pointBackColor = ColorTranslator.FromWin32(brightPastelColorPalette(pointNum Mod 15))
-									Else
-										Try
-											pointBackColor = ColorTranslator.FromWin32(objRow(2))
-										Catch ex As Exception
+								For Each objRow As DataRow In mrstChartData.Rows
+									If objRow(0).ToString() <> "No Access" And objRow(0).ToString() <> "No Data" Then
+
+										Dim pointBackColor As Color
+										If objRow(2) = 16777215 Then
 											pointBackColor = ColorTranslator.FromWin32(brightPastelColorPalette(pointNum Mod 15))
-										End Try
+										Else
+											Try
+												pointBackColor = ColorTranslator.FromWin32(objRow(2))
+											Catch ex As Exception
+												pointBackColor = ColorTranslator.FromWin32(brightPastelColorPalette(pointNum Mod 15))
+											End Try
+										End If
+
+										If showLabels Then
+											chart1.Series("Default").Points.Add(New DataPoint() With {.AxisLabel = objRow(0).ToString(), .YValues = New Double() {objRow(1)}, .Color = pointBackColor})
+										Else
+											chart1.Series("Default").Points.Add(New DataPoint() With {.Label = " ", .YValues = New Double() {objRow(1)}, .Color = pointBackColor})
+										End If
+
+										If showLegend = True Then
+											chart1.Legends("Default").CustomItems.Add(New LegendItem(objRow(0).ToString(), pointBackColor, ""))
+										End If
 									End If
 
-									If showLabels Then
-										chart1.Series("Default").Points.Add(New DataPoint() With {.AxisLabel = objRow(0).ToString(), .YValues = New Double() {objRow(1)}, .Color = pointBackColor})
-									Else
-										chart1.Series("Default").Points.Add(New DataPoint() With {.Label = " ", .YValues = New Double() {objRow(1)}, .Color = pointBackColor})
-									End If
+									pointNum += 1
+								Next
 
-									If showLegend = True Then
-										chart1.Legends("Default").CustomItems.Add(New LegendItem(objRow(0).ToString(), pointBackColor, ""))
-									End If
-								End If
+								Using ms = New MemoryStream()
+									chart1.SaveImage(ms, ChartImageFormat.Png)
+									ms.Seek(0, SeekOrigin.Begin)
 
-								pointNum += 1
-							Next
-
-							Using ms = New MemoryStream()
-								chart1.SaveImage(ms, ChartImageFormat.Png)
-								ms.Seek(0, SeekOrigin.Begin)
-
-								Return File(ms.ToArray(), "image/png", "mychart.png")
-							End Using
+									Return File(ms.ToArray(), "image/png", "mychart.png")
+								End Using
+							Else
+								' No Data						
+							End If
 						Else
-							' No Data						
+							' No Access
 						End If
-					Else
-						' No Access
+
 					End If
 
 				End If
 
-			End If
+			Catch ex As Exception
+				sErrorDescription = "The Chart field values could not be retrieved." & vbCrLf & ex.Message.RemoveSensitive()
+
+			End Try
 
 		End Function
 
@@ -2003,8 +2002,6 @@ Namespace Controllers
 											title As String,
 											showLabels As Boolean) As FileContentResult
 
-			Err.Clear()
-
 			Dim RotateX As Integer = HttpContext.Request.QueryString("rotateX")
 			If RotateX = 0 Then RotateX = 15
 			Dim RotateY As Integer = HttpContext.Request.QueryString("rotateY")
@@ -2013,295 +2010,296 @@ Namespace Controllers
 			Dim mrstChartData As DataTable
 			Dim sErrorDescription As String
 
-			Dim objChart = New HR.Intranet.Server.clsMultiAxisChart
-			objChart.SessionInfo = CType(Session("SessionContext"), SessionInfo)
+			Try
 
-			' Pass required info to the DLL
-			mrstChartData = objChart.GetChartData(tableID, columnID, filterID, aggregateType, elementType, tableID_2, columnID_2, tableID_3, columnID_3, sortOrderID, sortDirection, colourID)
+				Dim objChart = New HR.Intranet.Server.clsMultiAxisChart
+				objChart.SessionInfo = CType(Session("SessionContext"), SessionInfo)
 
-			If Err.Number <> 0 Then
-				sErrorDescription = "The Chart field values could not be retrieved." & vbCrLf & FormatError(Err.Description)
-			Else
-				sErrorDescription = ""
-			End If
+				' Pass required info to the DLL
+				mrstChartData = objChart.GetChartData(tableID, columnID, filterID, aggregateType, elementType, tableID_2, columnID_2, tableID_3, columnID_3, sortOrderID, sortDirection, colourID)
 
-			If Not mrstChartData Is Nothing Then
-				If mrstChartData.Rows.Count > 500 Then mrstChartData = Nothing ' limit to 500 rows as get row buffer limit exceeded error.
-			End If
+				If Not mrstChartData Is Nothing Then
+					If mrstChartData.Rows.Count > 500 Then mrstChartData = Nothing ' limit to 500 rows as get row buffer limit exceeded error.
+				End If
 
-			If Len(sErrorDescription) = 0 And Not mrstChartData Is Nothing Then
-				Dim seriesName As String
+				If Len(sErrorDescription) = 0 And Not mrstChartData Is Nothing Then
+					Dim seriesName As String
 
-				If mrstChartData.Rows.Count > 0 Then
+					If mrstChartData.Rows.Count > 0 Then
 
-					Dim objRow1 = mrstChartData.Rows(0)
+						Dim objRow1 = mrstChartData.Rows(0)
 
-					If TryCast(objRow1(0), String) <> "No Access" Then
-						If TryCast(objRow1(0), String) <> "No Data" Then
-							MultiAxisChart.Width = Unit.Pixel(width)
-							MultiAxisChart.Height = Unit.Pixel(height)
+						If TryCast(objRow1(0), String) <> "No Access" Then
+							If TryCast(objRow1(0), String) <> "No Data" Then
+								MultiAxisChart.Width = Unit.Pixel(width)
+								MultiAxisChart.Height = Unit.Pixel(height)
 
-							' Set Legend's visual attributes
-							If showLegend = True Then
-								MultiAxisChart.Legends.Add("Default")
-								MultiAxisChart.Legends("Default").Enabled = True
-								MultiAxisChart.Legends("Default").BackColor = Color.Transparent
-								MultiAxisChart.Legends("Default").ShadowOffset = 2
-								MultiAxisChart.Legends("Default").BackColor = ColorTranslator.FromHtml("#D3DFF0")
-							End If
-							' kill the title
-							title = ""
-							If Not String.IsNullOrEmpty(title) Then
-								MultiAxisChart.Titles.Add("MainTitle")
-								MultiAxisChart.Titles(0).Text = title
-								MultiAxisChart.Titles(0).Font = New Font(MultiAxisChart.Titles(0).Font.Name, 20) 'Set the font size without changing the font family
-							End If
+								' Set Legend's visual attributes
+								If showLegend = True Then
+									MultiAxisChart.Legends.Add("Default")
+									MultiAxisChart.Legends("Default").Enabled = True
+									MultiAxisChart.Legends("Default").BackColor = Color.Transparent
+									MultiAxisChart.Legends("Default").ShadowOffset = 2
+									MultiAxisChart.Legends("Default").BackColor = ColorTranslator.FromHtml("#D3DFF0")
+								End If
+								' kill the title
+								title = ""
+								If Not String.IsNullOrEmpty(title) Then
+									MultiAxisChart.Titles.Add("MainTitle")
+									MultiAxisChart.Titles(0).Text = title
+									MultiAxisChart.Titles(0).Font = New Font(MultiAxisChart.Titles(0).Font.Name, 20) 'Set the font size without changing the font family
+								End If
 
-							Dim seriesNames As String = ""
-							'See Color Palette details here:http://blogs.msdn.com/b/alexgor/archive/2009/10/06/setting-chart-series-colors.aspx
-							Dim brightPastelColorPalette As Integer() = {15764545, 4306172, 671968, 9593861, 12566463, 6896410, 8578047, 14523410, 4942794, 14375936, 8966899, 8479568, 11057649, 689120, 12489592}
-							Dim pointNum As Integer
+								Dim seriesNames As String = ""
+								'See Color Palette details here:http://blogs.msdn.com/b/alexgor/archive/2009/10/06/setting-chart-series-colors.aspx
+								Dim brightPastelColorPalette As Integer() = {15764545, 4306172, 671968, 9593861, 12566463, 6896410, 8578047, 14523410, 4942794, 14375936, 8966899, 8479568, 11057649, 689120, 12489592}
+								Dim pointNum As Integer
 
-							'Fill missing data
-							Dim i As Integer
-							Dim j As Integer
-							Dim r As DataRow
+								'Fill missing data
+								Dim i As Integer
+								Dim j As Integer
+								Dim r As DataRow
 
-							'Determine the verticals and horizontals we have in the datatable; once we get them, we can fill the missing gaps in the data
+								'Determine the verticals and horizontals we have in the datatable; once we get them, we can fill the missing gaps in the data
 
-							'Verticals
-							Dim MultiAxisChartVerticals As New List(Of MultiAxisChartVertical)
-							Dim MinVerticalID As Integer = Convert.ToInt32(mrstChartData.Compute("min(VERTICAL_ID)", String.Empty))	'Get the minimum vertical ID
-							Dim MaxVerticalID As Integer = Convert.ToInt32(mrstChartData.Compute("max(VERTICAL_ID)", String.Empty))	'Get the maximum vertical ID
-							For i = MinVerticalID To MaxVerticalID
-								r = mrstChartData.Select("VERTICAL_ID = " & i).FirstOrDefault
-								MultiAxisChartVerticals.Add(New MultiAxisChartVertical With {.Vertical_ID = r("VERTICAL_ID"), .Vertical = r("VERTICAL")})
-							Next
-
-							'Horizontals
-							Dim MultiAxisChartHorizontals As New List(Of MultiAxisChartHorizontal)
-							Dim MinHorizontalID As Integer = Convert.ToInt32(mrstChartData.Compute("min(HORIZONTAL_ID)", String.Empty))	'Get the minimum horizontal ID
-							Dim MaxHorizontalID As Integer = Convert.ToInt32(mrstChartData.Compute("max(HORIZONTAL_ID)", String.Empty))	'Get the maximum horizontal ID
-							For i = MinHorizontalID To MaxHorizontalID
-								r = mrstChartData.Select("HORIZONTAL_ID = " & i).FirstOrDefault
-								MultiAxisChartHorizontals.Add(New MultiAxisChartHorizontal With {.Horizontal_ID = r("HORIZONTAL_ID"), .Horizontal = r("HORIZONTAL"), .Colour = r("COLOUR")})
-							Next
-
-							'Compare and fill the gaps
-							Dim newRow As DataRow
-							Dim Vertical As MultiAxisChartVertical
-							Dim Horizontal As MultiAxisChartHorizontal
-							For i = 0 To MultiAxisChartHorizontals.Count - 1
-								Horizontal = MultiAxisChartHorizontals(i)
-								For j = 0 To MultiAxisChartVerticals.Count - 1
-									Vertical = MultiAxisChartVerticals(j)
-									If mrstChartData.Select("HORIZONTAL_ID = " & Horizontal.Horizontal_ID & " AND VERTICAL_ID = " & Vertical.Vertical_ID).FirstOrDefault Is Nothing Then 'This combination doesn't exist...
-										'Insert a new row
-										newRow = mrstChartData.NewRow
-										newRow("HORIZONTAL_ID") = Horizontal.Horizontal_ID
-										newRow("HORIZONTAL") = Horizontal.Horizontal
-										newRow("VERTICAL_ID") = Vertical.Vertical_ID
-										newRow("VERTICAL") = Vertical.Vertical
-										newRow("Aggregate") = 0
-										newRow("COLOUR") = Horizontal.Colour
-										mrstChartData.Rows.Add(newRow)
-									End If
+								'Verticals
+								Dim MultiAxisChartVerticals As New List(Of MultiAxisChartVertical)
+								Dim MinVerticalID As Integer = Convert.ToInt32(mrstChartData.Compute("min(VERTICAL_ID)", String.Empty))	'Get the minimum vertical ID
+								Dim MaxVerticalID As Integer = Convert.ToInt32(mrstChartData.Compute("max(VERTICAL_ID)", String.Empty))	'Get the maximum vertical ID
+								For i = MinVerticalID To MaxVerticalID
+									r = mrstChartData.Select("VERTICAL_ID = " & i).FirstOrDefault
+									MultiAxisChartVerticals.Add(New MultiAxisChartVertical With {.Vertical_ID = r("VERTICAL_ID"), .Vertical = r("VERTICAL")})
 								Next
-							Next
 
-							Dim dv As DataView = mrstChartData.AsDataView	'Copy the datatable to a dataview so we can sort it
-							dv.Sort = "VERTICAL_ID DESC, HORIZONTAL_ID ASC"	'Sort
-							For Each objRow As DataRow In dv.ToTable.Rows	'Loop over the dataview's rows
-								If TryCast(objRow("HORIZONTAL_ID"), String) <> "No Access" And TryCast(objRow("HORIZONTAL_ID"), String) <> "No Data" Then
-									seriesName = objRow("VERTICAL").ToString()
-									If seriesName = "" Then
-										seriesName = "(No name)"
-									End If
-									Dim columnName As String = objRow("HORIZONTAL").ToString()
-									Dim yVal As Integer = CInt(objRow("Aggregate"))
-									Dim pointBackColor As Color
-									If objRow("COLOUR") = 16777215 Then
-										pointBackColor = ColorTranslator.FromWin32(brightPastelColorPalette(pointNum Mod 15))
-									Else
-										Try
-											pointBackColor = ColorTranslator.FromWin32(objRow("COLOUR"))
-										Catch ex As Exception
+								'Horizontals
+								Dim MultiAxisChartHorizontals As New List(Of MultiAxisChartHorizontal)
+								Dim MinHorizontalID As Integer = Convert.ToInt32(mrstChartData.Compute("min(HORIZONTAL_ID)", String.Empty))	'Get the minimum horizontal ID
+								Dim MaxHorizontalID As Integer = Convert.ToInt32(mrstChartData.Compute("max(HORIZONTAL_ID)", String.Empty))	'Get the maximum horizontal ID
+								For i = MinHorizontalID To MaxHorizontalID
+									r = mrstChartData.Select("HORIZONTAL_ID = " & i).FirstOrDefault
+									MultiAxisChartHorizontals.Add(New MultiAxisChartHorizontal With {.Horizontal_ID = r("HORIZONTAL_ID"), .Horizontal = r("HORIZONTAL"), .Colour = r("COLOUR")})
+								Next
+
+								'Compare and fill the gaps
+								Dim newRow As DataRow
+								Dim Vertical As MultiAxisChartVertical
+								Dim Horizontal As MultiAxisChartHorizontal
+								For i = 0 To MultiAxisChartHorizontals.Count - 1
+									Horizontal = MultiAxisChartHorizontals(i)
+									For j = 0 To MultiAxisChartVerticals.Count - 1
+										Vertical = MultiAxisChartVerticals(j)
+										If mrstChartData.Select("HORIZONTAL_ID = " & Horizontal.Horizontal_ID & " AND VERTICAL_ID = " & Vertical.Vertical_ID).FirstOrDefault Is Nothing Then 'This combination doesn't exist...
+											'Insert a new row
+											newRow = mrstChartData.NewRow
+											newRow("HORIZONTAL_ID") = Horizontal.Horizontal_ID
+											newRow("HORIZONTAL") = Horizontal.Horizontal
+											newRow("VERTICAL_ID") = Vertical.Vertical_ID
+											newRow("VERTICAL") = Vertical.Vertical
+											newRow("Aggregate") = 0
+											newRow("COLOUR") = Horizontal.Colour
+											mrstChartData.Rows.Add(newRow)
+										End If
+									Next
+								Next
+
+								Dim dv As DataView = mrstChartData.AsDataView	'Copy the datatable to a dataview so we can sort it
+								dv.Sort = "VERTICAL_ID DESC, HORIZONTAL_ID ASC"	'Sort
+								For Each objRow As DataRow In dv.ToTable.Rows	'Loop over the dataview's rows
+									If TryCast(objRow("HORIZONTAL_ID"), String) <> "No Access" And TryCast(objRow("HORIZONTAL_ID"), String) <> "No Data" Then
+										seriesName = objRow("VERTICAL").ToString()
+										If seriesName = "" Then
+											seriesName = "(No name)"
+										End If
+										Dim columnName As String = objRow("HORIZONTAL").ToString()
+										Dim yVal As Integer = CInt(objRow("Aggregate"))
+										Dim pointBackColor As Color
+										If objRow("COLOUR") = 16777215 Then
 											pointBackColor = ColorTranslator.FromWin32(brightPastelColorPalette(pointNum Mod 15))
-										End Try
-									End If
-
-									If Not seriesNames.Contains("<" & seriesName & ">") Then
-										' Add the series - ONLY if not already added.
-										MultiAxisChart.Series.Add(seriesName)
-
-										MultiAxisChart.Series(seriesName).IsVisibleInLegend = False
-
-										seriesNames &= "<" & seriesName & ">"
-
-										' Show Values/Percentages
-										If showValues = True Then
-											MultiAxisChart.Series(seriesName)("LabelStyle") = "Top"
-											MultiAxisChart.Series(seriesName).IsValueShownAsLabel = True
-
-											If showPercent = True Then
-												MultiAxisChart.Series(seriesName).Label = "#PERCENT{P2}"
-											End If
+										Else
+											Try
+												pointBackColor = ColorTranslator.FromWin32(objRow("COLOUR"))
+											Catch ex As Exception
+												pointBackColor = ColorTranslator.FromWin32(brightPastelColorPalette(pointNum Mod 15))
+											End Try
 										End If
 
-										Select Case chartType
-											Case 0, 1
-												If stack = True Then
-													MultiAxisChart.Series(seriesName).ChartType = SeriesChartType.StackedColumn
-												Else
-													MultiAxisChart.Series(seriesName).ChartType = SeriesChartType.Column
-												End If
-											Case 2, 3
-												MultiAxisChart.Series(seriesName).ChartType = SeriesChartType.Line
-											Case 4, 5
-												If stack = True Then
-													MultiAxisChart.Series(seriesName).ChartType = SeriesChartType.StackedArea
-												Else
-													MultiAxisChart.Series(seriesName).ChartType = SeriesChartType.Area
-												End If
-											Case 6, 7
-												MultiAxisChart.Series(seriesName).ChartType = SeriesChartType.StepLine
-											Case 14
-												MultiAxisChart.Series(seriesName).ChartType = SeriesChartType.Pie
-										End Select
-									End If
+										If Not seriesNames.Contains("<" & seriesName & ">") Then
+											' Add the series - ONLY if not already added.
+											MultiAxisChart.Series.Add(seriesName)
 
-									If showLabels Then
-										MultiAxisChart.Series(seriesName).Points.Add(New DataPoint() With {
-																																											 .AxisLabel = columnName,
+											MultiAxisChart.Series(seriesName).IsVisibleInLegend = False
+
+											seriesNames &= "<" & seriesName & ">"
+
+											' Show Values/Percentages
+											If showValues = True Then
+												MultiAxisChart.Series(seriesName)("LabelStyle") = "Top"
+												MultiAxisChart.Series(seriesName).IsValueShownAsLabel = True
+
+												If showPercent = True Then
+													MultiAxisChart.Series(seriesName).Label = "#PERCENT{P2}"
+												End If
+											End If
+
+											Select Case chartType
+												Case 0, 1
+													If stack = True Then
+														MultiAxisChart.Series(seriesName).ChartType = SeriesChartType.StackedColumn
+													Else
+														MultiAxisChart.Series(seriesName).ChartType = SeriesChartType.Column
+													End If
+												Case 2, 3
+													MultiAxisChart.Series(seriesName).ChartType = SeriesChartType.Line
+												Case 4, 5
+													If stack = True Then
+														MultiAxisChart.Series(seriesName).ChartType = SeriesChartType.StackedArea
+													Else
+														MultiAxisChart.Series(seriesName).ChartType = SeriesChartType.Area
+													End If
+												Case 6, 7
+													MultiAxisChart.Series(seriesName).ChartType = SeriesChartType.StepLine
+												Case 14
+													MultiAxisChart.Series(seriesName).ChartType = SeriesChartType.Pie
+											End Select
+										End If
+
+										If showLabels Then
+											MultiAxisChart.Series(seriesName).Points.Add(New DataPoint() With {
+																																												 .AxisLabel = columnName,
+																																												 .YValues = New Double() {yVal},
+																																												 .Color = pointBackColor,
+																																												 .IsEmpty = (yVal = 0)
+																																												 })
+										Else
+											MultiAxisChart.Series(seriesName).Points.Add(New DataPoint() With {
+																																											 .Label = " ",
 																																											 .YValues = New Double() {yVal},
 																																											 .Color = pointBackColor,
 																																											 .IsEmpty = (yVal = 0)
 																																											 })
-									Else
-										MultiAxisChart.Series(seriesName).Points.Add(New DataPoint() With {
-																																										 .Label = " ",
-																																										 .YValues = New Double() {yVal},
-																																										 .Color = pointBackColor,
-																																										 .IsEmpty = (yVal = 0)
-																																										 })
+										End If
+
+										If showLegend = True Then
+											Dim legendAdded As Boolean = False
+											For Each legItem As LegendItem In MultiAxisChart.Legends("Default").CustomItems
+												If legItem.Name = objRow("HORIZONTAL") Then legendAdded = True
+											Next
+
+											If Not legendAdded Then
+												MultiAxisChart.Legends("Default").CustomItems.Add(New LegendItem(objRow("HORIZONTAL"), pointBackColor, ""))
+											End If
+										End If
+
 									End If
+									pointNum += 1
+								Next
 
-									If showLegend = True Then
-										Dim legendAdded As Boolean = False
-										For Each legItem As LegendItem In MultiAxisChart.Legends("Default").CustomItems
-											If legItem.Name = objRow("HORIZONTAL") Then legendAdded = True
-										Next
-
-										If Not legendAdded Then
-											MultiAxisChart.Legends("Default").CustomItems.Add(New LegendItem(objRow("HORIZONTAL"), pointBackColor, ""))
+								'For 2D pie charts with more than one series we need to add a chart area for each series
+								Dim thisSeries As String
+								For Each s As Series In MultiAxisChart.Series
+									'Add a chart area for the series and set its properties
+									thisSeries = s.Name
+									If chartType = 14 And MultiAxisChart.Series.Count > 1 Then '2D pie
+										MultiAxisChart.ChartAreas.Add(thisSeries)
+									Else
+										thisSeries = "Default"
+										If MultiAxisChart.ChartAreas.Count = 0 Then
+											MultiAxisChart.ChartAreas.Add(thisSeries)
 										End If
 									End If
 
-								End If
-								pointNum += 1
-							Next
+									MultiAxisChart.ChartAreas(thisSeries).BackSecondaryColor = Color.Transparent
+									MultiAxisChart.ChartAreas(thisSeries).ShadowColor = Color.Transparent
+									MultiAxisChart.ChartAreas(thisSeries).AxisY.LineColor = Color.FromArgb(64, 64, 64, 64)
+									MultiAxisChart.ChartAreas(thisSeries).AxisY.MajorGrid.LineColor = Color.FromArgb(64, 64, 64, 64)
+									MultiAxisChart.ChartAreas(thisSeries).AxisX.LineColor = Color.FromArgb(64, 64, 64, 64)
+									MultiAxisChart.ChartAreas(thisSeries).AxisX.MajorGrid.LineColor = Color.FromArgb(64, 64, 64, 64)
 
-							'For 2D pie charts with more than one series we need to add a chart area for each series
-							Dim thisSeries As String
-							For Each s As Series In MultiAxisChart.Series
-								'Add a chart area for the series and set its properties
-								thisSeries = s.Name
-								If chartType = 14 And MultiAxisChart.Series.Count > 1 Then '2D pie
-									MultiAxisChart.ChartAreas.Add(thisSeries)
-								Else
-									thisSeries = "Default"
-									If MultiAxisChart.ChartAreas.Count = 0 Then
-										MultiAxisChart.ChartAreas.Add(thisSeries)
+									MultiAxisChart.ChartAreas(thisSeries).AxisX.LabelStyle.Enabled = showLabels
+									MultiAxisChart.ChartAreas(thisSeries).AxisY.LabelStyle.Enabled = showLabels
+
+									' Gridlines
+									If dottedGrid = True Then
+										MultiAxisChart.ChartAreas(thisSeries).AxisX.LineDashStyle = ChartDashStyle.Dot
+										MultiAxisChart.ChartAreas(thisSeries).AxisY.LineDashStyle = ChartDashStyle.Dot
+										MultiAxisChart.ChartAreas(thisSeries).AxisX.MajorGrid.LineDashStyle = ChartDashStyle.Dot
+										MultiAxisChart.ChartAreas(thisSeries).AxisY.MajorGrid.LineDashStyle = ChartDashStyle.Dot
+									Else
+										MultiAxisChart.ChartAreas(thisSeries).AxisX.LineDashStyle = ChartDashStyle.NotSet
+										MultiAxisChart.ChartAreas(thisSeries).AxisY.LineDashStyle = ChartDashStyle.NotSet
+										MultiAxisChart.ChartAreas(thisSeries).AxisX.MajorGrid.LineDashStyle = ChartDashStyle.NotSet
+										MultiAxisChart.ChartAreas(thisSeries).AxisY.MajorGrid.LineDashStyle = ChartDashStyle.NotSet
 									End If
-								End If
 
-								MultiAxisChart.ChartAreas(thisSeries).BackSecondaryColor = Color.Transparent
-								MultiAxisChart.ChartAreas(thisSeries).ShadowColor = Color.Transparent
-								MultiAxisChart.ChartAreas(thisSeries).AxisY.LineColor = Color.FromArgb(64, 64, 64, 64)
-								MultiAxisChart.ChartAreas(thisSeries).AxisY.MajorGrid.LineColor = Color.FromArgb(64, 64, 64, 64)
-								MultiAxisChart.ChartAreas(thisSeries).AxisX.LineColor = Color.FromArgb(64, 64, 64, 64)
-								MultiAxisChart.ChartAreas(thisSeries).AxisX.MajorGrid.LineColor = Color.FromArgb(64, 64, 64, 64)
+									' 3D Settings
+									If chartType = 0 Or chartType = 2 Or chartType = 4 Or chartType = 6 Then
+										MultiAxisChart.ChartAreas(thisSeries).Area3DStyle.Enable3D = True
+										MultiAxisChart.ChartAreas(thisSeries).Area3DStyle.Perspective = 10
+										MultiAxisChart.ChartAreas(thisSeries).Area3DStyle.Inclination = RotateX
+										MultiAxisChart.ChartAreas(thisSeries).Area3DStyle.Rotation = RotateY
+										MultiAxisChart.ChartAreas(thisSeries).Area3DStyle.IsRightAngleAxes = False
+										MultiAxisChart.ChartAreas(thisSeries).Area3DStyle.WallWidth = 0
+										MultiAxisChart.ChartAreas(thisSeries).Area3DStyle.IsClustered = False
+									End If
 
-								MultiAxisChart.ChartAreas(thisSeries).AxisX.LabelStyle.Enabled = showLabels
-								MultiAxisChart.ChartAreas(thisSeries).AxisY.LabelStyle.Enabled = showLabels
+									If chartType = 14 And MultiAxisChart.Series.Count > 1 Then '2D pie
+										'Add an annotation (legend) to the chart area
+										Dim chartLegend As New RectangleAnnotation
+										chartLegend.Text = thisSeries
+										chartLegend.AxisX = MultiAxisChart.ChartAreas(thisSeries).AxisX
+										chartLegend.AxisY = MultiAxisChart.ChartAreas(thisSeries).AxisY
+										chartLegend.AnchorX = MultiAxisChart.ChartAreas(thisSeries).Position.X
+										chartLegend.AnchorY = MultiAxisChart.ChartAreas(thisSeries).Position.Y
+										MultiAxisChart.Annotations.Add(chartLegend)
+									End If
 
-								' Gridlines
-								If dottedGrid = True Then
-									MultiAxisChart.ChartAreas(thisSeries).AxisX.LineDashStyle = ChartDashStyle.Dot
-									MultiAxisChart.ChartAreas(thisSeries).AxisY.LineDashStyle = ChartDashStyle.Dot
-									MultiAxisChart.ChartAreas(thisSeries).AxisX.MajorGrid.LineDashStyle = ChartDashStyle.Dot
-									MultiAxisChart.ChartAreas(thisSeries).AxisY.MajorGrid.LineDashStyle = ChartDashStyle.Dot
-								Else
-									MultiAxisChart.ChartAreas(thisSeries).AxisX.LineDashStyle = ChartDashStyle.NotSet
-									MultiAxisChart.ChartAreas(thisSeries).AxisY.LineDashStyle = ChartDashStyle.NotSet
-									MultiAxisChart.ChartAreas(thisSeries).AxisX.MajorGrid.LineDashStyle = ChartDashStyle.NotSet
-									MultiAxisChart.ChartAreas(thisSeries).AxisY.MajorGrid.LineDashStyle = ChartDashStyle.NotSet
-								End If
+									MultiAxisChart.Series(s.Name).ChartArea = thisSeries 'Assign the series to the chart area
 
-								' 3D Settings
-								If chartType = 0 Or chartType = 2 Or chartType = 4 Or chartType = 6 Then
-									MultiAxisChart.ChartAreas(thisSeries).Area3DStyle.Enable3D = True
-									MultiAxisChart.ChartAreas(thisSeries).Area3DStyle.Perspective = 10
-									MultiAxisChart.ChartAreas(thisSeries).Area3DStyle.Inclination = RotateX
-									MultiAxisChart.ChartAreas(thisSeries).Area3DStyle.Rotation = RotateY
-									MultiAxisChart.ChartAreas(thisSeries).Area3DStyle.IsRightAngleAxes = False
-									MultiAxisChart.ChartAreas(thisSeries).Area3DStyle.WallWidth = 0
-									MultiAxisChart.ChartAreas(thisSeries).Area3DStyle.IsClustered = False
-								End If
-
-								If chartType = 14 And MultiAxisChart.Series.Count > 1 Then '2D pie
-									'Add an annotation (legend) to the chart area
-									Dim chartLegend As New RectangleAnnotation
-									chartLegend.Text = thisSeries
-									chartLegend.AxisX = MultiAxisChart.ChartAreas(thisSeries).AxisX
-									chartLegend.AxisY = MultiAxisChart.ChartAreas(thisSeries).AxisY
-									chartLegend.AnchorX = MultiAxisChart.ChartAreas(thisSeries).Position.X
-									chartLegend.AnchorY = MultiAxisChart.ChartAreas(thisSeries).Position.Y
-									MultiAxisChart.Annotations.Add(chartLegend)
-								End If
-
-								MultiAxisChart.Series(s.Name).ChartArea = thisSeries 'Assign the series to the chart area
+									If showLabels Then
+										MultiAxisChart.ChartAreas(thisSeries).AxisX.Interval = 1 'Show all X axis legends (labels?)
+									End If
+								Next
 
 								If showLabels Then
-									MultiAxisChart.ChartAreas(thisSeries).AxisX.Interval = 1 'Show all X axis legends (labels?)
+									Try
+										'The "AlignDataPointsByAxisLabel" method below, "Aligns data points along the X axis using their axis labels. Applicable when multiple series are indexed and their X-values are strings."
+										'according to MSDN (http://msdn.microsoft.com/en-us/library/system.web.ui.datavisualization.charting.chart.aligndatapointsbyaxislabel(v=vs.100).aspx)
+										'Instead of checking that all series are indexed and their X-values are strings, I decided to put a Try-Catch and be done with it
+										MultiAxisChart.AlignDataPointsByAxisLabel()
+									Catch ex As Exception
+
+									End Try
 								End If
-							Next
 
-							If showLabels Then
-								Try
-									'The "AlignDataPointsByAxisLabel" method below, "Aligns data points along the X axis using their axis labels. Applicable when multiple series are indexed and their X-values are strings."
-									'according to MSDN (http://msdn.microsoft.com/en-us/library/system.web.ui.datavisualization.charting.chart.aligndatapointsbyaxislabel(v=vs.100).aspx)
-									'Instead of checking that all series are indexed and their X-values are strings, I decided to put a Try-Catch and be done with it
-									MultiAxisChart.AlignDataPointsByAxisLabel()
-								Catch ex As Exception
-
-								End Try
-							End If
-
-							'Make all the datapoints semi-transparent							
-							MultiAxisChart.ApplyPaletteColors()
-							For Each series As Series In MultiAxisChart.Series
-								For Each point As DataPoint In series.Points
-									point.Color = Color.FromArgb(180, point.Color)
+								'Make all the datapoints semi-transparent							
+								MultiAxisChart.ApplyPaletteColors()
+								For Each series As Series In MultiAxisChart.Series
+									For Each point As DataPoint In series.Points
+										point.Color = Color.FromArgb(180, point.Color)
+									Next
 								Next
-							Next
 
-							'Helpful for debugging: save the chart data as XML
-							'MultiAxisChart.Serializer.Save(Server.MapPath("/") & "Chart.xml")
-							Using ms = New MemoryStream()
-								MultiAxisChart.SaveImage(ms, ChartImageFormat.Png)
-								ms.Seek(0, SeekOrigin.Begin)
+								'Helpful for debugging: save the chart data as XML
+								'MultiAxisChart.Serializer.Save(Server.MapPath("/") & "Chart.xml")
+								Using ms = New MemoryStream()
+									MultiAxisChart.SaveImage(ms, ChartImageFormat.Png)
+									ms.Seek(0, SeekOrigin.Begin)
 
-								Return File(ms.ToArray(), "image/png", "mychart.png")
-							End Using
+									Return File(ms.ToArray(), "image/png", "mychart.png")
+								End Using
+							Else
+								' No Data
+							End If
 						Else
-							' No Data
+							' No access
 						End If
-					Else
-						' No access
 					End If
 				End If
-			End If
+
+			Catch ex As Exception
+				sErrorDescription = "The Chart field values could not be retrieved." & vbCrLf & ex.Message.RemoveSensitive
+
+			End Try
 
 		End Function
 
@@ -3739,7 +3737,7 @@ Namespace Controllers
 
 
 				Catch ex As Exception
-					sErrorMsg = "Error trying to run 'quick find'." & vbCrLf & FormatError(Err.Description)
+					sErrorMsg = "Error trying to run 'quick find'." & vbCrLf & ex.Message.RemoveSensitive
 
 				End Try
 
@@ -4310,7 +4308,7 @@ Namespace Controllers
 						End If
 
 					Catch ex As Exception
-						sErrorMsg = "Error getting employee ID." & vbCrLf & FormatError(Err.Description)
+						sErrorMsg = "Error getting employee ID." & vbCrLf & ex.Message.RemoveSensitive
 
 					End Try
 
@@ -4924,7 +4922,7 @@ Namespace Controllers
 					Session("fromDef") = prmFromDef.Value
 
 				Catch ex As Exception
-					sErrorMsg = "Error retrieving the new order definition." & vbCrLf & FormatError(Err.Description)
+					sErrorMsg = "Error retrieving the new order definition." & vbCrLf & ex.Message.RemoveSensitive
 					Session("errorMessage") = sErrorMsg
 
 				End Try
@@ -5300,9 +5298,9 @@ Namespace Controllers
 
 					IO.File.WriteAllBytes(serverPath + fileName, buffer)
 
-				Catch generatedExceptionName As Exception
+				Catch ex As Exception
 					Session("ErrorTitle") = "File upload"
-					Session("ErrorText") = "You could not upload the file because of the following error:<p>" & FormatError(Err.Description)
+					Session("ErrorText") = "You could not upload the file because of the following error:<p>" & ex.Message.RemoveSensitive
 					Dim data1 = New ErrMsgJsonAjaxResponse() With {.ErrorTitle = Session("ErrorTitle"), .ErrorMessage = Session("ErrorText"), .Redirect = ""}
 					'Return Json(data1, JsonRequestBehavior.AllowGet)
 				End Try

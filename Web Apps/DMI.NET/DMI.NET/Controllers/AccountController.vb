@@ -111,14 +111,15 @@ Namespace Controllers
 
 			Dim mrstDBValueData As DataTable
 
-			mrstDBValueData = objChart.GetChartData(iChartTableID, iChartColumnID, iChartFilterID, iChartAggregateType,
-				iChartElementType, 0, 0, 0, 0, iChartSortOrderID, iChartSortDirection, iChartColourID)
+			Try
+				mrstDBValueData = objChart.GetChartData(iChartTableID, iChartColumnID, iChartFilterID, iChartAggregateType,
+					iChartElementType, 0, 0, 0, 0, iChartSortOrderID, iChartSortDirection, iChartColourID)
 
-			If (Err.Number <> 0) Then
-				Session("ErrorTitle") = "The Database Values could not be retrieved." & vbCrLf & FormatError(Err.Description)
-			Else
-				Session("ErrorTitle") = ""
-			End If
+			Catch ex As Exception
+				Session("ErrorTitle") = "The Database Values could not be retrieved." & vbCrLf & ex.Message.RemoveSensitive()
+
+			End Try
+
 			Dim sText As String = ""
 
 			If Len(Session("ErrorTitle")) = 0 Then

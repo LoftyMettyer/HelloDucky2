@@ -173,6 +173,7 @@
     <Import Include="DMI.NET.Code.Extensions" />
     <Import Include="DMI.NET.Code.Interfaces" />
     <Import Include="HR.Intranet.Server.Enums" />
+    <Import Include="HR.Intranet.Server.Extensions" />
     <Import Include="Microsoft.VisualBasic" />
     <Import Include="System" />
     <Import Include="System.Collections" />

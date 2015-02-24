@@ -916,7 +916,7 @@
 
 			
 		Catch ex As Exception
-			sErrorDescription = "Error getting the event log users." & vbCrLf & FormatError(Err.Description)
+			sErrorDescription = "Error getting the event log users." & vbCrLf & ex.Message.RemoveSensitive
 
 		End Try
 

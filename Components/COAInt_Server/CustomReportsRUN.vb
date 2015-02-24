@@ -1685,7 +1685,7 @@ Public Class Report
 
 		Catch ex As Exception
 
-			mstrErrorString = "Error creating temporary table for multiple childs." & vbNewLine & Err.Number & vbNewLine & ex.Message
+			mstrErrorString = "Error creating temporary table for multiple childs." & vbNewLine & ex.Message.RemoveSensitive
 			Logs.AddDetailEntry(mstrErrorString)
 			Logs.ChangeHeaderStatus(EventLog_Status.elsFailed)
 
