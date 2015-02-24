@@ -594,6 +594,7 @@ function find_window_onload() {
 						oneditfunc: function (rowid) {
 							//build a comma separated list of columns that have expression ID's on them.
 							var arrCalcColumnsString = [];
+							rowWasModified = true;
 							lastRowEdited = "0";
 							$('#' + rowid).find(':input[datadefaultcalcexprid]').each(function () {
 								if (Number(this.attributes['datadefaultcalcexprid'].value) > "0") {
@@ -872,7 +873,9 @@ function find_window_onload() {
 
 function saveRowToDatabase(rowid) {
 	if (saveThisRowToDatabase)
-		saveInlineRowToDatabase(rowid);
+		if (rowWasModified) saveInlineRowToDatabase(rowid);
+		else if (rowIsEditedOrNew.substr(0, 9) == 'quickedit') editNextRow();
+		else if (rowIsEditedOrNew == "new") addNextRow();
 }
 
 
@@ -1316,20 +1319,10 @@ function submitFollowOn() {
 			OpenHR.modalMessage("Failed to reload data for this row.", "");
 		}
 
-		//set the newly selected row to 'edit' mode.
-		if (rowIsEditedOrNew.substr(0, 9) == 'quickedit') {
-			try {
-				var newRowId = rowIsEditedOrNew.substr(10);
-				$("#findGridTable").jqGrid('editRow', newRowId);
-				lastRowEdited = newRowId;
-			} catch (e) {
-				alert('couldnt do it!');
-			}
-		}
+		editNextRow();
 
 	}
 }
-
 
 function updateRowFromDatabase(rowid) {
 	var recordID = $("#findGridTable").jqGrid('getCell', rowid, 'ID');
@@ -1408,26 +1401,7 @@ function updateRowFromDatabase(rowid) {
 	});
 
 
-	if (rowIsEditedOrNew == "new") {
-		//quick-add mode
-		try {
-			var lastPage = $("#findGridTable").jqGrid('getGridParam', 'lastpage');
-			$("#findGridTable").trigger("reloadGrid", [{ page: lastPage }]);
-
-			$("#findGridTable").jqGrid('addRow', addparameters);
-			lastRowEdited = "0";
-
-			//show editing buttons.
-			setTimeout(function () {
-				$("#findGridTable_ilsave").removeClass('ui-state-disabled'); //Enable the Save button because we edited something
-				$("#findGridTable_ilcancel").removeClass('ui-state-disabled'); //Enable the Cancel button because we edited something
-				$("#findGridTable_iledit").addClass('ui-state-disabled'); //Enable the Cancel button because we edited something
-				$("#findGridTable_searchButton").addClass("ui-state-disabled");
-			}, 100);
-
-		} catch (e) {
-		}
-	}
+	addNextRow();
 
 }
 
@@ -1547,5 +1521,41 @@ function afterSaveFindGridRow(rowid) {
 	return true;
 }
 
+
+function editNextRow() {
+	//set the newly selected row to 'edit' mode.
+	if (rowIsEditedOrNew.substr(0, 9) == 'quickedit') {
+		try {
+			var newRowId = rowIsEditedOrNew.substr(10);
+			$("#findGridTable").jqGrid('editRow', newRowId);
+			lastRowEdited = newRowId;
+		} catch (e) {
+			alert('couldnt do it!');
+		}
+	}
+}
+
+function addNextRow() {
+	if (rowIsEditedOrNew == "new") {
+		//quick-add mode
+		try {
+			var lastPage = $("#findGridTable").jqGrid('getGridParam', 'lastpage');
+			$("#findGridTable").trigger("reloadGrid", [{ page: lastPage }]);
+
+			$("#findGridTable").jqGrid('addRow', addparameters);
+			lastRowEdited = "0";
+
+			//show editing buttons.
+			setTimeout(function () {
+				$("#findGridTable_ilsave").removeClass('ui-state-disabled'); //Enable the Save button because we edited something
+				$("#findGridTable_ilcancel").removeClass('ui-state-disabled'); //Enable the Cancel button because we edited something
+				$("#findGridTable_iledit").addClass('ui-state-disabled'); //Enable the Cancel button because we edited something
+				$("#findGridTable_searchButton").addClass("ui-state-disabled");
+			}, 100);
+
+		} catch (e) {
+		}
+	}
+}
 
 
