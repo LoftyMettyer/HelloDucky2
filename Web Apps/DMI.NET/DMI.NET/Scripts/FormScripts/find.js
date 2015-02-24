@@ -1319,6 +1319,8 @@ function submitFollowOn() {
 				$("#findGridTable_iledit").hide();
 			}
 
+			refreshRecordCount();
+
 		} catch (e) {
 			OpenHR.modalMessage("Failed to reload data for this row.", "");
 		}
@@ -1349,13 +1351,7 @@ function updateRowFromDatabase(rowid) {
 				alert('The record saved is no longer in the current view.');
 				$('#findGridTable').jqGrid('delRowData', currentRowId);
 
-				//Update the record count caption
-				var recCount = $("#findGridTable").getGridParam("reccount");
-				if (recCount == 0) {
-					menu_SetmnutoolRecordPositionCaption("No Records");
-				} else {
-					menu_SetmnutoolRecordPositionCaption("Record(s) : " + recCount);
-				}
+				refreshRecordCount();
 
 				return false;
 			}
@@ -1570,4 +1566,16 @@ function refreshInlineNavIcons() {
 		var isSearching = $('#frmFindForm .ui-search-toolbar').is(':visible');
 		$("#findGridTable_iledit").toggleClass('ui-state-disabled', (isSearching || !selectionMade));
 	}, 100);
+}
+
+function refreshRecordCount() {
+	
+	//Update the record count caption
+	var recCount = $("#findGridTable").getGridParam("reccount");
+	$('#txtTotalRecordCount').val(recCount);
+	if (recCount == 0) {
+		menu_SetmnutoolRecordPositionCaption("No Records");
+	} else {
+		menu_SetmnutoolRecordPositionCaption("Record(s) : " + recCount);
+	}
 }
