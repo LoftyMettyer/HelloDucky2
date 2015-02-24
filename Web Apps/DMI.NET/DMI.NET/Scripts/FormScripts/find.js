@@ -13,6 +13,7 @@ function moveFirst() {
 	try {
 		var firstRecordID = $("#findGridTable").jqGrid('getDataIDs')[0];
 		$("#findGridTable").jqGrid('setSelection', firstRecordID);
+		refreshInlineNavIcons();
 	} catch (e) { }
 
 	menu_refreshMenu();
@@ -719,7 +720,7 @@ function find_window_onload() {
 
 					//continuing with window.onload function now....
 					var recCountInGrid = $("#findGridTable").getGridParam("reccount");
-					if (thereIsAtLeastOneEditableColumn && recCountInGrid > 0) {
+					if (thereIsAtLeastOneEditableColumn) {
 						$("#findGridTable_iledit").show();
 						$("#findGridTable_ilsave").show();
 						$("#findGridTable_ilcancel").show();
@@ -868,6 +869,9 @@ function find_window_onload() {
 		if ((keyPressed != 40) && (keyPressed != 38) && (keyPressed != 13) && (keyPressed != 32) && (keyPressed != 33) && (keyPressed != 34) && (keyPressed != 35) && (keyPressed != 36))
 			$('#txtLocateRecordFind').focus();
 	});
+
+	$('#findGridTable_iledit').addClass('ui-state-disabled');
+
 }
 
 
@@ -1559,3 +1563,9 @@ function addNextRow() {
 }
 
 
+function refreshInlineNavIcons() {
+	//needs the delay; jqGrid may be slow to load.
+	setTimeout(function() {
+		$("#findGridTable_iledit").toggleClass('ui-state-disabled', (Number(selectedRecordID()) <= 0));
+	}, 100);
+}
