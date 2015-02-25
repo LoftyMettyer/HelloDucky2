@@ -2385,7 +2385,7 @@ function TBCourseRecordID() {
 	var iLoop;
 
 	var TBCourseRecordID = 0;
-	var mlngCourseTableID = $("#txtRecEditCourseTableID").val();
+	var mlngCourseTableID = $("#txtTB_CourseTableID").val();
 	var mlngParentTableID = $("#txtCurrentParentTableID").val();
 	var mlngParentRecordID = $("#txtCurrentParentRecordID").val();
 
@@ -2411,7 +2411,7 @@ function TBEmployeeRecordID() {
 	var iLoop;
 
 	var TBEmployeeRecordID = 0;
-	var mlngEmployeeTableID = $("#txtRecEditEmpTableID").val();
+	var mlngEmployeeTableID = $("#txtTB_EmpTableID").val();
 	var mlngParentTableID = $("#txtCurrentParentTableID").val();
 	var mlngParentRecordID = $("#txtCurrentParentRecordID").val();
 

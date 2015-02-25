@@ -103,38 +103,6 @@
 			sPath = OpenHR.GetRegistrySetting("HR Pro", "DataPaths", sKey);
 			frmRecordEditForm.txtOLELocalPath.value = sPath;
 
-			// Set the recEdit control properties.               
-			//TODO: initialise clears the recordDMI activeX object and sets the module variables as below.
-			//fOK = recEditCtl.initialise(
-			//    frmRecordEditForm.txtRecEditTableID.value,
-			//    frmRecordEditForm.txtRecEditHeight.value,
-			//    frmRecordEditForm.txtRecEditWidth.value + 1,
-			//    frmRecordEditForm.txtRecEditTabCount.value,
-			//    frmRecordEditForm.txtRecEditTabCaptions.value,
-			//    frmRecordEditForm.txtRecEditFontName.value,
-			//    frmRecordEditForm.txtRecEditFontSize.value,
-			//    frmRecordEditForm.txtRecEditFontBold.value,
-			//    frmRecordEditForm.txtRecEditFontItalic.value,
-			//    frmRecordEditForm.txtRecEditFontUnderline.value,
-			//    frmRecordEditForm.txtRecEditFontStrikethru.value,
-			//    frmRecordEditForm.txtRecEditRealSource.value,
-			//    frmRecordEditForm.txtPicturePath.value,
-			//    frmRecordEditForm.txtRecEditEmpTableID.value,
-			//    frmRecordEditForm.txtRecEditCourseTableID.value,
-			//    frmRecordEditForm.txtRecEditTBStatusColumnID.value,
-			//    frmRecordEditForm.txtRecEditCourseCancelDateColumnID.value
-			//);
-
-
-
-			//Overview of upgrade from classic ASP for reference.
-			//We used to load the recordDMI activeX control in 3 stages:
-			//  .addControl (created an array of properties), .addControlValues (added option group and DDL options) and .formatScreen (rendered controls onto the form).
-			//  Now the controls are created and set up using the following javascript functions. 
-			//  The addHtmlControl loop below replaces .addControl AND .formatScreen, combining both functions
-			//  The addHTMLControlValues function replaces the addControlValues method.
-			//  NB The controlItemArray is the array that totally replaced the .addControl function.
-
 			//Create all tabs first...
 			if (fOK == true) {
 				var tabsList = $('#txtRecEditTabCaptions').val();
@@ -713,15 +681,8 @@
 						sErrorDescription = "The screen definition could not be read." & vbCrLf & FormatError(ex.Message)
 			
 					End Try
-				
-
+			
 				End If
-	
-				Response.Write("<input type='hidden' id=txtRecEditEmpTableID name=txtRecEditEmpTableID value=" & Session("TB_EmpTableID") & ">" & vbCrLf)
-				Response.Write("<input type='hidden' id=txtRecEditCourseTableID name=txtRecEditCourseTableID value=" & Session("TB_CourseTableID") & ">" & vbCrLf)
-				Response.Write("<input type='hidden' id=txtRecEditTBTableID name=txtRecEditTBTableID value=" & Session("TB_TBTableID") & ">" & vbCrLf)
-				Response.Write("<input type='hidden' id=txtRecEditTBStatusColumnID name=txtRecEditTBStatusColumnID value=" & Session("TB_TBStatusColumnID") & ">" & vbCrLf)
-				Response.Write("<input type='hidden' id=txtRecEditCourseCancelDateColumnID name=txtRecEditCourseCancelDateColumnID value=" & Session("TB_CourseCancelDateColumnID") & ">" & vbCrLf)
 
 				If Len(sErrorDescription) = 0 Then
 		

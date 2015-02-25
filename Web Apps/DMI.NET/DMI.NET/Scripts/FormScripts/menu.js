@@ -1807,7 +1807,7 @@ function menu_refreshMenu() {
 		//this used to call a function in the ctlRecordEdit activeX control...
 		//sRecEditDate = String(frmRecEdit.ctlRecordEdit.TBCourseCancelDateValue());		
 
-		var TB_CourseCancelDateColumnID = $("#txtRecEditCourseCancelDateColumnID").val();
+		var TB_CourseCancelDateColumnID = $("#txtTB_CourseCancelDateColumnID").val();
 		sRecEditDate = $("[data-columnID='" + TB_CourseCancelDateColumnID + "']").val();		
 		if (sRecEditDate) {
 			sRecEditDate = sRecEditDate.toUpperCase();
