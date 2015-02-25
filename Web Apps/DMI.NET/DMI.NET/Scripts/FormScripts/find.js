@@ -260,7 +260,7 @@ function find_window_onload() {
 													});
 													$(element).on('blur', function (sender) {
 														if ((isNaN(sender.target.value) === true) || (sender.target.value.indexOf(".") >= 0)) {
-															OpenHR.modalMessage("Invalid integer value entered: " + sender.target.value);
+															OpenHR.modalMessage("Invalid integer value entered: " + encodeURIComponent(sender.target.value));
 															sender.target.value = valueBeforeChange;
 														}
 													});
@@ -311,7 +311,7 @@ function find_window_onload() {
 
 												$(element).on('blur', function (sender) {
 													if (OpenHR.IsValidDate(sender.target.value) == false && sender.target.value != "") {
-														OpenHR.modalMessage("Invalid date value entered: " + sender.target.value);
+														OpenHR.modalMessage("Invalid date value entered: " + encodeURIComponent(sender.target.value));
 														sender.target.value = valueBeforeChange;
 														$(sender.target.id).focus();
 													}
