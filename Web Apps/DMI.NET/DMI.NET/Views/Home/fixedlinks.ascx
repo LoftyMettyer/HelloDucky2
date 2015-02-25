@@ -125,26 +125,40 @@
 
 	function fixedlinks_mnutoolAboutHRPro() {
 
-		if (OpenHR.currentWorkPage() == "FIND" && rowWasModified) { //Inform the user that they have unsaved changes on the Find window
-			OpenHR.modalMessage("You have unsaved changes.<br/><br/>Please action them before navigating away.");
-			return false;
-		}
+		if (OpenHR.currentWorkPage() == "FIND") {
+			try {
+				if ((rowIsEditedOrNew != "") || (rowWasModified)) {
+					//Inform the user that they have unsaved changes on the Find window
+					OpenHR.modalMessage("You have unsaved changes.<br/><br/>Please action them before navigating away.");
+					return false;
+				}
+			}
+			catch (e) { //continue with navigation 
+			}
 
-		OpenHR.showAboutPopup();
+			OpenHR.showAboutPopup();
+		}		
 	}
 
 	function showThemeEditor() {
-		if (OpenHR.currentWorkPage() == "FIND" && rowWasModified) { //Inform the user that they have unsaved changes on the Find window
-			OpenHR.modalMessage("You have unsaved changes.<br/><br/>Please action them before navigating away.");
-			return false;
-		}
 
-		$("#divthemeRoller").dialog("open");		
-		
-		//load the themeeditor form now
-		loadPartialView("themeEditor", "home", "divthemeRoller", null);
+		if (OpenHR.currentWorkPage() == "FIND") {
+			try {
+				if ((rowIsEditedOrNew != "") || (rowWasModified)) {
+					//Inform the user that they have unsaved changes on the Find window
+					OpenHR.modalMessage("You have unsaved changes.<br/><br/>Please action them before navigating away.");
+					return false;
+				}
+			} catch (e) { //continue with navigation 
+			}
+
+			$("#divthemeRoller").dialog("open");
+
+			//load the themeeditor form now
+			loadPartialView("themeEditor", "home", "divthemeRoller", null);
+		}
 	}
-	
+
 	//why was this here?...
 	//$("#officebar").tabs();
 

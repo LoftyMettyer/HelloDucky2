@@ -200,10 +200,18 @@ function menu_MenuClick(sTool) {
 	sToolName = sTool;
 	sCurrentWorkPage = OpenHR.currentWorkPage();
 
-	if (sCurrentWorkPage == "FIND" && rowWasModified) { //Inform the user that they have unsaved changes on the Find window
-		OpenHR.modalMessage("You have unsaved changes.<br/><br/>Please action them before navigating away.");
-		return false;
+	if (sCurrentWorkPage == "FIND") {
+		try {
+			if ((rowIsEditedOrNew != "") || (rowWasModified)) {
+				//Inform the user that they have unsaved changes on the Find window
+				OpenHR.modalMessage("You have unsaved changes.<br/><br/>Please action them before navigating away.");
+				return false;
+			}
+		}
+		catch (e) { //continue with navigation 
+		}
 	}
+
 
 	//close History menu if navigating away
 	if ($('#' + sTool).hasClass('jstree-leaf')) {

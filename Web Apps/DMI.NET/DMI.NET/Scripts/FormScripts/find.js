@@ -590,6 +590,7 @@ function find_window_onload() {
 					addRowParams: {
 						keys: true,
 						aftersavefunc: function (rowid, response, options) {
+							window.onbeforeunload = null;
 							return afterSaveFindGridRow(rowid);
 						},						
 						oneditfunc: function (rowid) {
@@ -597,6 +598,7 @@ function find_window_onload() {
 							var arrCalcColumnsString = [];
 							rowWasModified = true;
 							lastRowEdited = "0";
+							window.onbeforeunload = warning;
 							$('#' + rowid).find(':input[datadefaultcalcexprid]').each(function () {
 								if (Number(this.attributes['datadefaultcalcexprid'].value) > "0") {
 									arrCalcColumnsString.push(this.attributes['dataColumnId'].value);
@@ -655,12 +657,15 @@ function find_window_onload() {
 						editParams: {
 							oneditfunc: function (rowid) {
 								lastRowEdited = rowid;
+								window.onbeforeunload = warning;
 								return editFindGridRow(rowid);
 							},
 							aftersavefunc: function (rowid, response, options) {	//save button clicked in edit mode. NB: row has been 'saved' locally by this time.
+								window.onbeforeunload = null;
 								return afterSaveFindGridRow(rowid);
 							},
 							afterrestorefunc: function (rowid) {	//Cancel button clicked in edit mode.
+								window.onbeforeunload = null;
 								return cancelFindGridRow(rowid);
 							}
 						},
@@ -1159,7 +1164,6 @@ function useThousandSeparator(columnNumber) {
 function indicateThatRowWasModified() {
 	rowWasModified = true; //The 'rowWasModified' variable is defined as global in Find.ascx
 	$("#findGridTable_ilsave").removeClass('ui-state-disabled'); //Enable the Save button because we edited something
-	window.onbeforeunload = warning;
 }
 
 function warning() {
