@@ -1038,7 +1038,7 @@ Namespace Controllers
 			Session("optionCourseTitle") = ValidateStringValue(Request.Form("txtOptionCourseTitle"), InputValidation.StringSanitiseLevel.HTMLEncode)
 			Session("optionRecordID") = ValidateIntegerValue(Request.Form("txtOptionRecordID"))
 			Session("optionLinkRecordID") = ValidateIntegerValue(Request.Form("txtOptionLinkRecordID"))
-			Session("optionValue") = ValidateIntegerValue(Request.Form("txtOptionValue"))
+			Session("optionValue") = ValidateStringValue(Request.Form("txtOptionValue"), InputValidation.StringSanitiseLevel.None)
 			Session("optionSQL") = ValidateStringValue(Request.Form("txtOptionSQL"), InputValidation.StringSanitiseLevel.None)
 			Session("optionPromptSQL") = ValidateStringValue(Request.Form("txtOptionPromptSQL"), InputValidation.StringSanitiseLevel.None)
 			Session("optionOnlyNumerics") = ValidateIntegerValue(Request.Form("txtOptionOnlyNumerics"))
@@ -1047,7 +1047,7 @@ Namespace Controllers
 			Session("IsLookupTable") = ValidateBooleanValue(Request.Form("txtOptionIsLookupTable"))
 			Session("optionParentTableID") = ValidateIntegerValue(Request.Form("txtOptionParentTableID"))
 			Session("optionParentRecordID") = ValidateIntegerValue(Request.Form("txtOptionParentRecordID"))
-			Session("option1000SepCols") = ValidateIntegerValue(Request.Form("txtOption1000SepCols"))
+			Session("option1000SepCols") = ValidateStringValue(Request.Form("txtOption1000SepCols"), InputValidation.StringSanitiseLevel.None)
 
 			Session("StandardReport_Type") = ValidateIntegerValue(Request.Form("txtStandardReportType"))
 
