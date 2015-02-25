@@ -1515,6 +1515,7 @@ function beforeSelectFindGridRow(newRowid) {
 }
 
 function afterSaveFindGridRow(rowid) {
+	menu_ShowWait("Saving record...");
 	saveRowToDatabase(rowid);
 	rowIsEditedOrNew = "";
 
