@@ -1489,6 +1489,8 @@ function cancelFindGridRow(rowid) {
 		//set selection to current row.
 		$("#findGridTable").jqGrid('setSelection', rowid, true);
 	}
+
+	refreshInlineNavIcons();
 }
 
 function beforeSelectFindGridRow(newRowid) {
