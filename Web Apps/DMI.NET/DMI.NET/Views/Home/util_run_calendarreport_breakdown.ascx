@@ -1,62 +1,60 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl(Of DMI.NET.Models.CalendarEvent)" %>
 
+<div class="pageTitleDiv" style="margin-bottom: 15px">
+	<span class="pageTitle">Calendar Breakdown</span>
+</div>
+
+<div class="clearboth">
+	<%: Html.LabelFor(Function(m) m.EventName)%>
+	<%: Html.TextBoxFor(Function(m) m.EventName, New With {.disabled = True, .class = "inputProperty"})%>
+</div>
+<div class="clearboth">
+	<%: Html.LabelFor(Function(m) m.Description)%>
+	<%: Html.TextBoxFor(Function(m) m.Description, New With {.disabled = True, .class = "inputProperty"})%>
+</div>
+<div class="clearboth">
+	<%: Html.LabelFor(Function(m) m.StartDate)%>
+	<%: Html.TextBox("EndDate", Model.StartDate.ToLongDateString() + " " + Model.StartSession.ToString(), New With {.disabled = True, .class = "inputProperty"})%>
+</div>
+<div class="clearboth">
+	<%: Html.LabelFor(Function(m) m.EndDate)%>
+	<%: Html.TextBox("EndDate", Model.EndDate.ToLongDateString() + " " + Model.EndSession.ToString(), New With {.disabled = True, .class = "inputProperty"})%>
+</div>
+<div class="clearboth">
+	<%: Html.LabelFor(Function(m) m.Duration)%>
+	<%: Html.TextBoxFor(Function(m) m.Duration, New With {.disabled = True, .class = "inputProperty"})%>
+</div>
+<div class="clearboth">
+	<%: Html.DisplayFor(Function(m) m.Description1Column)%>
+	<%: Html.TextBoxFor(Function(m) m.Description1, New With {.disabled = True, .class = "inputProperty"})%>
+</div>
+<div class="clearboth">
+	<%: Html.DisplayFor(Function(m) m.Description2Column)%>
+	<%: Html.TextBoxFor(Function(m) m.Description2, New With {.disabled = True, .class = "inputProperty"})%>
+</div>
+<div class="clearboth">
+	<%: Html.LabelFor(Function(m) m.Region)%>
+	<%: Html.TextBoxFor(Function(m) m.Region, New With {.disabled = True, .class = "inputProperty"})%>
+</div>
+<div class="clearboth">
+	<%: Html.LabelFor(Function(m) m.WorkingPattern) %>
+	<%: Html.TextBoxFor(Function(m) m.WorkingPattern, New With {.disabled = True, .class = "inputProperty"})%>
+</div>
+
+<div id="divCalendarBreakDownButtons" class="clearboth">
+	<input type="button" value="OK" class="button" name="cmdCloseEvent" onclick="closeCalendarEvent();" />
+</div>
+
 <script type="text/javascript">
-	
 	$(document).ready(function () {
-		$("#CalendarEvent").dialog('option', 'title', "Calendar Breakdown");
-		$("#CalendarEvent").dialog("option", "height", 340);
+		$("#CalendarEvent").dialog("option", "height", "auto");
+		$("#CalendarEvent").dialog("option", "width", "500px");
+		$('.inputProperty').css("float", "right");
+		$('.inputProperty').css("width", "60%");
+		$('.inputProperty').css("margin-bottom", "5px");
 	});
-		
-		
+
 	function closeCalendarEvent() {
 		$("#CalendarEvent").dialog("close");
 	}
 </script>
-
-<table>
-	<tr>
-		<td style="width:150px" >Event Name :</td>
-		<td><%: Html.DisplayFor(Function(m) m.EventName)%></td>
-	</tr>
-	<tr>
-		<td>Description :</td>
-		<td><%: Html.DisplayFor(Function(m) m.Description)%></td>
-	</tr>
-
-	<tr>
-		<td>Start Date :</td>
-		<td><%: Html.Label("StartDate", Model.StartDate.ToLongDateString())%> <%: Html.DisplayFor(Function(m) m.StartSession)%></td>
-	</tr>
-	<tr>
-		<td>End Date :</td>
-		<td><%: Html.Label("EndDate", Model.EndDate.ToLongDateString())%> <%: Html.DisplayFor(Function(m) m.EndSession)%></td>
-	</tr>
-
-	<tr>
-		<td>Duration :</td>
-		<td><%: Html.DisplayFor(Function(m) m.Duration)%></td>
-	</tr>
-	<tr>
-		<td>Reason :</td>
-		<td><%: Html.DisplayFor(Function(m) m.Reason)%></td>
-
-	</tr>
-	<tr>
-		<td>Calendar Code :</td>
-		<td><%: Html.DisplayFor(Function(m) m.CalendarCode)%></td>
-	</tr>
-	<tr>
-		<td>Region :</td>
-		<td><%: Html.DisplayFor(Function(m) m.Region)%></td>
-	</tr>
-	<tr>
-		<td>Working Pattern :</td>
-		<td><%: Html.DisplayFor(Function(m) m.WorkingPattern)%></td>
-	</tr>
-
-</table>
-
-<div style="text-align: center;padding-top: 20px">
-<input id="cmdCloseEvent" type="button" value="OK" class="btn" name="cmdCloseEvent" onclick="closeCalendarEvent();" />
-	</div>
-

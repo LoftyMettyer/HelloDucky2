@@ -964,6 +964,12 @@ input[type=button].Embedded, input[type=button].Linked {
 	width: 100px;
 }
 
+#divCalendarBreakDownButtons .button {
+	float: right;
+	margin: 15px 5px 5px 10px;
+	width: 100px;
+}
+
 .CrossTabsColumndiv {
 	margin-bottom:10px;
 	width:50%;

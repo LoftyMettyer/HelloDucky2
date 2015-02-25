@@ -3397,8 +3397,12 @@ Namespace Controllers
 			objCalendarEvent.StartSession = objRow.Item("StartSession").ToString()
 			objCalendarEvent.EndDate = objRow.Item("EndDate").ToString()
 			objCalendarEvent.EndSession = objRow.Item("EndSession").ToString()
-			objCalendarEvent.Duration = objRow.Item("Duration").ToString()
 			objCalendarEvent.Reason = objRow.Item("EventDescription1").ToString()
+			objCalendarEvent.Duration = objRow.Item("Duration").ToString()
+			objCalendarEvent.Description1 = objRow.Item("EventDescription1").ToString()
+			objCalendarEvent.Description2 = objRow.Item("EventDescription2").ToString()
+			objCalendarEvent.Description1Column = objRow.Item("EventDescription1Column").ToString() + " :"
+			objCalendarEvent.Description2Column = objRow.Item("EventDescription2Column").ToString() + " :"
 			objCalendarEvent.Region = objRow.Item("Region").ToString()
 			objCalendarEvent.CalendarCode = objRow.Item("Legend").ToString()
 
@@ -3408,7 +3412,7 @@ Namespace Controllers
 				objRow = datWorkingPatterns.Select(sSQL, "[WP_Date]").FirstOrDefault()
 
 				If Not objRow Is Nothing Then
-					objCalendarEvent.WorkingPattern = objRow.Item("WP_Pattern").ToString()
+					objCalendarEvent.WorkingPattern = Trim(objRow.Item("WP_Pattern").ToString())
 				End If
 			End If
 
