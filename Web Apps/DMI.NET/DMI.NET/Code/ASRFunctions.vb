@@ -267,13 +267,13 @@ Public Module ASRFunctions
 			Return inputValue
 		End If
 
-		Select Case sanitiseLevel
-			Case InputValidation.StringSanitiseLevel.HTMLEncode
-				inputValue = HttpUtility.HtmlAttributeEncode(inputValue)
-			Case InputValidation.StringSanitiseLevel.None 'Don't do any sanitisation of the string
-			Case InputValidation.StringSanitiseLevel.FullOWASP
-				'inputValue = Globals.AntiSamyInstance.scan(inputValue, Globals.AntiSamyPolicy).getCleanHTML
-		End Select
+		'Select Case sanitiseLevel
+		'	Case InputValidation.StringSanitiseLevel.HTMLEncode
+		'		inputValue = HttpUtility.HtmlAttributeEncode(inputValue)
+		'	Case InputValidation.StringSanitiseLevel.None 'Don't do any sanitisation of the string
+		'	Case InputValidation.StringSanitiseLevel.FullOWASP
+		'		'inputValue = Globals.AntiSamyInstance.scan(inputValue, Globals.AntiSamyPolicy).getCleanHTML
+		'End Select
 
 		Return inputValue
 	End Function

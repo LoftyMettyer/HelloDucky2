@@ -208,6 +208,8 @@
     <Compile Include="App_Start\Startup.vb" />
     <Compile Include="Classes\jqGridHelper.vb" />
     <Compile Include="Classes\Licence.vb" />
+    <Compile Include="Models\Responses\SaveRecordRespone.vb" />
+    <Compile Include="Models\Responses\PostResponse.vb" />
     <Compile Include="Classes\ReportColumnCollection.vb" />
     <Compile Include="Classes\ConfigurationError.vb" />
     <Compile Include="Code\Attributes\NoneAttribute.vb" />
@@ -229,10 +231,13 @@
     <Compile Include="Code\Interfaces\IReport.vb" />
     <Compile Include="Code\Interfaces\IReportDetail.vb" />
     <Compile Include="Code\Hubs\DatabaseHub.vb" />
+    <Compile Include="Controllers\RecordController.vb" />
     <Compile Include="Controllers\ErrorController.vb" />
     <Compile Include="Controllers\GenericController.vb" />
+    <Compile Include="Controllers\TrainingController.vb" />
     <Compile Include="Helpers\LabelHelper.vb" />
     <Compile Include="Models\CalendarEvent.vb" />
+    <Compile Include="Models\Responses\TrainingBookingResponse.vb" />
     <Compile Include="Models\StandardReportsConfigurationModel.vb" />
     <Compile Include="Models\NineBoxGridModel.vb" />
     <Compile Include="ViewModels\Account\ConfigurationErrorsModel.vb" />

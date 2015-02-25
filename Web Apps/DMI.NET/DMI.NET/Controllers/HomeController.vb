@@ -30,6 +30,9 @@ Namespace Controllers
 	Public Class HomeController
 		Inherits Controller
 
+		Private _controllerRecord As New RecordController
+		Private _controllerTraining As New TrainingController
+
 		Private MultiAxisChart As New Chart
 
 		Private Structure MultiAxisChartVertical
@@ -1067,7 +1070,6 @@ Namespace Controllers
 			Dim sTBResultCode As String = "000"	'Validation OK
 			Dim sCourseOverbooked As String = ""
 
-			Dim objDataAccess As clsDataAccess = CType(Session("DatabaseAccess"), clsDataAccess)
 
 			' Read the information from the calling form.
 			Dim sRealSource = ValidateStringValue(Request.Form("txtRealSource"), InputValidation.StringSanitiseLevel.HTMLEncode)
@@ -1078,11 +1080,12 @@ Namespace Controllers
 			Dim sAction = ValidateFromWhiteList(Request.Form("txtAction"), InputValidation.WhiteListCollections.Actions)
 			Dim sReaction = ValidateFromWhiteList(Request.Form("txtReaction"), InputValidation.WhiteListCollections.Actions)
 			Dim sInsertUpdateDef = ValidateStringValue(Request.Form("txtInsertUpdateDef"), InputValidation.StringSanitiseLevel.None)
-			Dim iTimestamp = ValidateStringValue(Request.Form("txtTimestamp"), InputValidation.StringSanitiseLevel.HTMLEncode)
+			Dim iTimestamp = ValidateIntegerValue(Request.Form("txtTimestamp"))
 			Dim iTBEmployeeRecordID = ValidateIntegerValue(Request.Form("txtTBEmployeeRecordID"))
 			Dim iTBCourseRecordID = ValidateIntegerValue(Request.Form("txtTBCourseRecordID"))
 			Dim sTBBookingStatusValue = ValidateStringValue(Request.Form("txtTBBookingStatusValue"), InputValidation.StringSanitiseLevel.HTMLEncode)
 			Dim fUserChoice = ValidateStringValue(Request.Form("txtUserChoice"), InputValidation.StringSanitiseLevel.HTMLEncode)
+
 
 			If ValidateStringValue(Request.Form("txtTBOverride"), InputValidation.StringSanitiseLevel.HTMLEncode) = "" Then
 				fTBOverride = False
@@ -1091,374 +1094,47 @@ Namespace Controllers
 			End If
 
 			If sAction = "SAVE" Then
-				Dim sTBErrorMsg = ""
-				Dim sTBWarningMsg = ""
-				Dim sCode = ""
+				Dim lngOriginalRecordID = CInt(ValidateIntegerValue(Request.Form("txtOriginalRecordID")))
+				Dim result = _controllerRecord.data_submit_SAVE(lngTableID, lngRecordID, sReaction, fTBOverride, iTBEmployeeRecordID, iTBCourseRecordID, sTBBookingStatusValue, sInsertUpdateDef, sRealSource, iTimestamp, lngOriginalRecordID)
+				lngRecordID = result.RecordID
+				sAction = result.Action
+				sErrorMsg = result.Message
+				sTBResultCode = result.TBResultCode
+				sCourseOverbooked = result.CourseOverbooked
+				fWarning = result.Warning
+				fOk = result.OK
 
-				If Not fTBOverride AndAlso (NullSafeInteger(lngTableID) = NullSafeInteger(Session("TB_TBTableID")) AndAlso Licence.IsModuleLicenced(SoftwareModule.Training)) Then
-					' Training Booking check.
-					Try
-						Dim prmResult = New SqlParameter("@piResultCode", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
-						Dim prmCourseOverbooked = New SqlParameter("@psCourseOverbooked", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
-
-						objDataAccess.ExecuteSP("sp_ASRIntValidateTrainingBooking" _
-							, prmResult _
-							, New SqlParameter("piEmpRecID", SqlDbType.Int) With {.Value = CleanNumeric(iTBEmployeeRecordID)} _
-							, New SqlParameter("piCourseRecID", SqlDbType.Int) With {.Value = CleanNumeric(iTBCourseRecordID)} _
-							, New SqlParameter("psBookingStatus", SqlDbType.VarChar, -1) With {.Value = sTBBookingStatusValue} _
-							, New SqlParameter("piTBRecID", SqlDbType.Int) With {.Value = CleanNumeric(lngRecordID)} _
-							, prmCourseOverbooked)
-
-						sTBResultCode = prmResult.Value
-						sCourseOverbooked = prmCourseOverbooked.Value
-					Catch ex As Exception
-						sErrorMsg = "Error validating training booking." & vbCrLf & FormatError(ex.Message)
-					End Try
-
-					If Len(sErrorMsg) = 0 Then
-						If CInt(sTBResultCode) > 0 Then
-							If Len(sTBResultCode) = 4 Then
-								' Get the overbooking check code.
-								sCode = Left(sTBResultCode, 1)
-								If sCode = "1" Then
-									sTBErrorMsg = "The course is already fully booked. Unable to make the booking."
-								Else
-									If sCode = "2" Then
-										sTBWarningMsg = "The course is already fully booked. Unable to make the booking."
-									End If
-								End If
-							End If
-
-							If Len(sTBResultCode) >= 3 Then
-								' Get the pre-requisite check code.
-								sCode = Mid(sTBResultCode, Len(sTBResultCode) - 2, 1)
-								If sCode = "1" Then
-									If Len(sTBErrorMsg) > 0 Then
-										sTBErrorMsg = sTBErrorMsg & vbCrLf
-									End If
-									sTBErrorMsg = sTBErrorMsg & "The delegate has not met the pre-requisites for the course. Unable to make the booking."
-								Else
-									If sCode = "2" Then
-										If Len(sTBWarningMsg) > 0 Then
-											sTBWarningMsg = sTBWarningMsg & vbCrLf
-										End If
-										sTBWarningMsg = sTBWarningMsg & "The delegate has not met the pre-requisites for the course."
-									End If
-								End If
-							End If
-
-							If Len(sTBResultCode) >= 2 Then
-								' Get the availability check code.
-								sCode = Mid(sTBResultCode, Len(sTBResultCode) - 1, 1)
-								If sCode = "1" Then
-									If Len(sTBErrorMsg) > 0 Then
-										sTBErrorMsg = sTBErrorMsg & vbCrLf
-									End If
-									sTBErrorMsg = sTBErrorMsg & "The delegate is unavailable for the course."
-								Else
-									If sCode = "2" Then
-										If Len(sTBWarningMsg) > 0 Then
-											sTBWarningMsg = sTBWarningMsg & vbCrLf
-										End If
-										sTBWarningMsg = sTBWarningMsg & "The delegate is unavailable for the course."
-									End If
-								End If
-							End If
-
-							If Len(sTBResultCode) >= 1 Then
-								' Get the Overlapped Booking check code.
-								sCode = Mid(sTBResultCode, Len(sTBResultCode), 1)
-								If sCode = "1" Then
-									If Len(sTBErrorMsg) > 0 Then
-										sTBErrorMsg = sTBErrorMsg & vbCrLf
-									End If
-									sTBErrorMsg = sTBErrorMsg & "The delegate is already booked on a course that overlaps with this course. Unable to make the booking."
-								Else
-									If sCode = "2" Then
-										If Len(sTBWarningMsg) > 0 Then
-											sTBWarningMsg = sTBWarningMsg & vbCrLf
-										End If
-										sTBWarningMsg = sTBWarningMsg & "The delegate is already booked on a course that overlaps with this course. Unable to make the booking."
-									End If
-								End If
-							End If
-						End If
-					End If
-				End If
-
-				If Len(sTBErrorMsg) > 0 Then
-					' Training Booking validation failure.	
-					sErrorMsg = sTBErrorMsg
-					sAction = "SAVEERROR"
-				Else
-					If Len(sTBWarningMsg) > 0 Then
-						sErrorMsg = sTBWarningMsg
-						sAction = sReaction
-						fWarning = True
-					Else
-						' Check if we're inserting or updating.
-						If lngRecordID = 0 Then
-							' Inserting.
-							Try
-								Dim lngOriginalRecordID = CInt(ValidateIntegerValue(Request.Form("txtOriginalRecordID")))
-
-								Dim prmRecordID As New SqlParameter("piNewRecordID", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
-								Dim prmErrorMessage As New SqlParameter("errorMessage", SqlDbType.NVarChar, -1) With {.Direction = ParameterDirection.Output}
-
-								objDataAccess.ExecuteSP("spASRIntInsertNewRecord" _
-									, prmRecordID _
-									, New SqlParameter("piTableID", SqlDbType.Int) With {.Value = lngTableID} _
-									, New SqlParameter("FromRecordID", SqlDbType.Int) With {.Value = lngOriginalRecordID} _
-									, New SqlParameter("psInsertDef", SqlDbType.VarChar, -1) With {.Value = sInsertUpdateDef} _
-									, prmErrorMessage)
-
-								If prmErrorMessage.Value.ToString().Length > 0 Then
-									sAction = "SAVEERROR"
-									sErrorMsg = prmErrorMessage.Value.ToString()
-								Else
-
-									lngRecordID = prmRecordID.Value
-
-									' This was a copied record - ensure that OLE columns are also copied
-									If lngOriginalRecordID > 0 Then
-
-										objDataAccess.ExecuteSP("spasrIntCopyRecordPostSave" _
-											, New SqlParameter("tableID", SqlDbType.Int) With {.Value = lngTableID} _
-											, New SqlParameter("FromRecordID", SqlDbType.Int) With {.Value = lngOriginalRecordID} _
-											, New SqlParameter("ToRecordID", SqlDbType.Int) With {.Value = lngRecordID})
-									End If
-
-									If Len(sReaction) > 0 Then
-										sAction = sReaction
-									Else
-										sAction = "LOAD"
-									End If
-
-									objDataAccess.ExecuteSP("spASREmailImmediate", New SqlParameter("@Username", SqlDbType.VarChar, 255) With {.Value = Session("Username")})
-								End If
-
-							Catch ex As SqlException
-								If ex.Number.Equals(50000) Then
-									If ex.Message.IndexOf("The transaction ended in the trigger", StringComparison.Ordinal) > 0 Then
-										sErrorMsg = Trim(Mid(ex.Message, 1, (InStr(ex.Message, "The transaction ended in the trigger")) - 1))
-									ElseIf ex.Message.IndexOf("Invalid object name", StringComparison.Ordinal) > 0 Then
-										sErrorMsg = Trim(Mid(ex.Message, 1, (InStr(ex.Message, "Invalid object name")) - 1))
-									Else
-										sErrorMsg = sErrorMsg & FormatError(ex.Message)
-									End If
-								Else
-									sErrorMsg = sErrorMsg & FormatError(ex.Message)
-								End If
-
-								fOk = False
-
-								Dim sRecDescExists = ""
-								If Mid(sErrorMsg, 3, 5) <> "-----" Then
-									sRecDescExists = vbCrLf
-								End If
-
-								sErrorMsg = "The new record could not be created." & sRecDescExists & sErrorMsg
-								sAction = "SAVEERROR"
-							End Try
-						Else
-							' Updating.
-							Try
-								Dim prmResult As New SqlParameter("piResult", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
-								Dim prmErrorMessage As New SqlParameter("errorMessage", SqlDbType.NVarChar, -1) With {.Direction = ParameterDirection.Output}
-
-								objDataAccess.ExecuteSP("spASRIntUpdateRecord" _
-									, prmResult _
-									, New SqlParameter("psUpdateDef", SqlDbType.VarChar, -1) With {.Value = sInsertUpdateDef} _
-									, New SqlParameter("piTableID", SqlDbType.Int) With {.Value = NullSafeInteger(CleanNumeric(lngTableID))} _
-									, New SqlParameter("psRealSource", SqlDbType.VarChar, 255) With {.Value = sRealSource} _
-									, New SqlParameter("piID", SqlDbType.Int) With {.Value = CleanNumeric(lngRecordID)} _
-									, New SqlParameter("piTimestamp", SqlDbType.Int) With {.Value = CleanNumeric(iTimestamp)} _
-									, prmErrorMessage)
-
-								If prmErrorMessage.Value.ToString().Length > 0 Then
-									sAction = "SAVEERROR"
-									sErrorMsg = prmErrorMessage.Value.ToString()
-								Else
-
-									Select Case prmResult.Value
-										Case 1 ' Record changed by another user, and is no longer in the current table/view.
-											sErrorMsg = "The record has been amended by another user and will be refreshed."
-										Case 2 ' Record changed by another user, and still in the current table/view.
-											sErrorMsg = "The record has been amended by another user and will be refreshed."
-										Case 3 ' Record deleted by another user.
-											sErrorMsg = "The record has been deleted by another user."
-									End Select
-
-									If Len(sReaction) > 0 Then
-										sAction = sReaction
-									Else
-										sAction = "LOAD"
-									End If
-
-									objDataAccess.ExecuteSP("spASREmailImmediate", _
-											New SqlParameter("@Username", SqlDbType.VarChar, 255) With {.Value = Session("Username")})
-
-								End If
-
-							Catch ex As SqlException
-								If ex.Number.Equals(50000) Then
-									If InStr(ex.Message, "The transaction ended in the trigger") > 0 Then
-										sErrorMsg = sErrorMsg & FormatError(Trim(Mid(ex.Message, 1, (InStr(ex.Message, "The transaction ended in the trigger")) - 1)))
-									ElseIf InStr(ex.Message, "Invalid object name") > 0 Then
-										sErrorMsg = sErrorMsg & FormatError(Trim(Mid(ex.Message, 1, (InStr(ex.Message, "Invalid object name")) - 1)))
-									Else
-										sErrorMsg = sErrorMsg & FormatError(ex.Message)
-									End If
-								Else
-									sErrorMsg = sErrorMsg & FormatError(ex.Message)
-								End If
-
-								fOk = False
-
-								Dim sRecDescExists = ""
-								If Mid(sErrorMsg, 3, 5) <> "-----" Then
-									sRecDescExists = vbCrLf
-								End If
-
-								sErrorMsg = "The record could not be updated." & sRecDescExists & sErrorMsg
-								sAction = "SAVEERROR"
-
-							End Try
-
-
-						End If
-					End If
-				End If
 			ElseIf sAction = "DELETE" Then
-				' Deleting.
-
-				Try
-
-					Dim prmResult As New SqlParameter("piResult", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
-					objDataAccess.ExecuteSP("sp_ASRDeleteRecord" _
-							, prmResult _
-							, New SqlParameter("piTableID", SqlDbType.Int) With {.Value = NullSafeInteger(CleanNumeric(lngTableID))} _
-							, New SqlParameter("psRealSource", SqlDbType.VarChar, 255) With {.Value = sRealSource} _
-							, New SqlParameter("piID", SqlDbType.Int) With {.Value = CleanNumeric(lngRecordID)})
-
-					Select Case prmResult.Value
-						Case 2 ' Record changed by another user, and is no longer in the current table/view.
-							sErrorMsg = "The record has been amended by another user and will be refreshed."
-					End Select
-
-					lngRecordID = 0
-
-					If Len(sReaction) > 0 Then
-						sAction = sReaction
-					Else
-						sAction = "LOAD"
-					End If
-
-					objDataAccess.ExecuteSP("spASREmailImmediate" _
-							, New SqlParameter("@Username", SqlDbType.VarChar, 255) With {.Value = Session("Username")})
-
-
-				Catch ex As Exception
-					sErrorMsg = "The record could not be deleted." & vbCrLf & FormatError(ex.Message)
-					sAction = "SAVEERROR"
-
-
-				End Try
-
+				Dim result = _controllerRecord.data_submit_DELETE(lngTableID, sRealSource, lngRecordID, sReaction)
+				lngRecordID = result.RecordID
+				sAction = result.Action
+				sErrorMsg = result.Message
 
 			ElseIf sAction = "CANCELCOURSE" Then
-
-				Try
-
-					' Check number of bookings made.
-					Dim prmNumberOfBookings = New SqlParameter("piNumberOfBookings", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
-					Dim prmErrorMessage = New SqlParameter("psErrorMessage", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
-					Dim prmCourseTitle = New SqlParameter("psCourseTitle", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
-
-					objDataAccess.ExecuteSP("sp_ASRIntCancelCourse" _
-						, prmNumberOfBookings _
-						, New SqlParameter("piCourseRecordID", SqlDbType.Int) With {.Value = CleanNumeric(lngRecordID)} _
-						, New SqlParameter("piTrainBookTableID", SqlDbType.Int) With {.Value = CleanNumeric(Session("TB_TBTableID"))} _
-						, New SqlParameter("piCourseTableID", SqlDbType.Int) With {.Value = CleanNumeric(Session("TB_CourseTableID"))} _
-						, New SqlParameter("piTrainBookStatusColumnID", SqlDbType.Int) With {.Value = CleanNumeric(Session("TB_TBStatusColumnID"))} _
-						, New SqlParameter("psCourseRealSource", SqlDbType.VarChar, -1) With {.Value = sRealSource} _
-					, prmErrorMessage _
-					, prmCourseTitle)
-
-					sAction = "CANCELCOURSE_1"
-					Session("numberOfBookings") = prmNumberOfBookings.Value
-					Session("tbErrorMessage") = prmErrorMessage.Value
-					Session("tbCourseTitle") = prmCourseTitle.Value
-
-				Catch ex As Exception
-					sErrorMsg = "Error cancelling the course." & vbCrLf & FormatError(ex.Message)
-					sAction = "SAVEERROR"
-
-				End Try
+				Dim result = _controllerTraining.data_submit_CancelCourse(lngRecordID, sRealSource)
+				sAction = result.Action
+				Session("numberOfBookings") = result.NumberOfBookings
+				Session("tbErrorMessage") = result.Message
+				Session("tbCourseTitle") = result.CourseTitle
 
 			ElseIf sAction = "CANCELCOURSE_2" Then
-
-				Try
-
-					Dim prmErrorMessage = New SqlParameter("psErrorMessage", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
-
-					objDataAccess.ExecuteSP("sp_ASRIntCancelCoursePart2" _
-						, New SqlParameter("piEmployeeTableID", SqlDbType.Int) With {.Value = CleanNumeric(Session("TB_EmpTableID"))} _
-						, New SqlParameter("piCourseTableID", SqlDbType.Int) With {.Value = CleanNumeric(Session("TB_CourseTableID"))} _
-						, New SqlParameter("psCourseRealSource", SqlDbType.VarChar, -1) With {.Value = sRealSource} _
-						, New SqlParameter("piCourseRecordID", SqlDbType.Int) With {.Value = CleanNumeric(lngRecordID)} _
-						, New SqlParameter("piTransferCourseRecordID", SqlDbType.Int) With {.Value = CleanNumeric(iTBCourseRecordID)} _
-						, New SqlParameter("piCourseCancelDateColumnID", SqlDbType.Int) With {.Value = CleanNumeric(Session("TB_CourseCancelDateColumnID"))} _
-						, New SqlParameter("psCourseTitle", SqlDbType.VarChar, -1) With {.Value = Session("tbCourseTitle")} _
-						, New SqlParameter("piTrainBookTableID", SqlDbType.Int) With {.Value = CleanNumeric(Session("TB_TBTableID"))} _
-						, New SqlParameter("pfTrainBookTableInsert", SqlDbType.Bit) With {.Value = CleanBoolean(Session("TB_TBTableInsert"))} _
-						, New SqlParameter("piTrainBookStatusColumnID", SqlDbType.Int) With {.Value = CleanNumeric(Session("TB_TBStatusColumnID"))} _
-						, New SqlParameter("piTrainBookCancelDateColumnID", SqlDbType.Int) With {.Value = CleanNumeric(Session("TB_TBCancelDateColumnID"))} _
-						, New SqlParameter("piWaitListTableID", SqlDbType.Int) With {.Value = CleanNumeric(Session("TB_WaitListTableID"))} _
-						, New SqlParameter("pfWaitListTableInsert", SqlDbType.Bit) With {.Value = CleanBoolean(Session("TB_WaitListTableInsert"))} _
-						, New SqlParameter("piWaitListCourseTitleColumnID", SqlDbType.Int) With {.Value = CleanNumeric(Session("TB_WaitListCourseTitleColumnID"))} _
-						, New SqlParameter("pfWaitListCourseTitleColumnUpdate", SqlDbType.Bit) With {.Value = CleanBoolean(Session("TB_WaitListCourseTitleColumnUpdate"))} _
-						, New SqlParameter("pfCreateWaitListRecords", SqlDbType.Bit) With {.Value = CleanBoolean(ValidateStringValue(Request.Form("txtTBCreateWLRecords"), InputValidation.StringSanitiseLevel.HTMLEncode))} _
-						, prmErrorMessage)
-
-					sErrorMsg = prmErrorMessage.Value.ToString()
-
-					If Len(sErrorMsg) > 0 Then
-						sAction = "SAVEERROR"
-					Else
-						sAction = "LOAD"
-					End If
-
-				Catch ex As Exception
-					sErrorMsg = "Error cancelling the course." & vbCrLf & FormatError(ex.Message)
-					sAction = "SAVEERROR"
-
-				End Try
-
+				Dim txtTBCreateWLRecords = CleanBoolean(ValidateStringValue(Request.Form("txtTBCreateWLRecords"), InputValidation.StringSanitiseLevel.HTMLEncode))
+				Dim result = _controllerTraining.data_submit_CancelCourse2(lngRecordID, sRealSource, iTBCourseRecordID, txtTBCreateWLRecords)
+				sErrorMsg = result.Message
+				sAction = result.Action
 
 			ElseIf sAction = "CANCELBOOKING" Then
+				Dim result = _controllerTraining.data_submit_CancelBooking(fUserChoice, lngRecordID)
+				sErrorMsg = result.Message
+				sAction = result.Action
 
-				Try
 
-					Dim prmErrorMessage = New SqlParameter("psErrorMessage", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
+			Else
+				' randomly called for no obvious reason! (but it happens... a lot...)
 
-					objDataAccess.ExecuteSP("sp_ASRIntCancelBooking" _
-						, New SqlParameter("pfTransferBookings", SqlDbType.Bit) With {.Value = CleanBoolean(fUserChoice)} _
-						, New SqlParameter("piTBRecordID", SqlDbType.Int) With {.Value = CleanNumeric(lngRecordID)} _
-						, prmErrorMessage)
 
-					If Len(prmErrorMessage.Value.ToString()) > 0 Then
-						sErrorMsg = prmErrorMessage.Value.ToString()
-						sAction = "SAVEERROR"
-					Else
-						sAction = "CANCELBOOKING_1"
-					End If
 
-				Catch ex As Exception
-					sErrorMsg = "Error cancelling the booking." & vbCrLf & FormatError(ex.Message)
-					sAction = "SAVEERROR"
 
-				End Try
 
 			End If
 
@@ -1516,6 +1192,7 @@ Namespace Controllers
 			Return RedirectToAction("Data", "Home")
 
 		End Function
+
 
 		<HttpPost()>
 		Function LinksMain(Optional psScreenInfo As String = "") As ActionResult
