@@ -1058,6 +1058,7 @@ Namespace Controllers
 
 		<HttpPost>
 		<ValidateAntiForgeryToken>
+		<ValidateInput(False)>
 		Function Data_Submit() As ActionResult
 			Dim sErrorMsg As String = ""
 			Dim fWarning As Boolean = False
@@ -1066,7 +1067,6 @@ Namespace Controllers
 			Dim sTBResultCode As String = "000"	'Validation OK
 			Dim sCourseOverbooked As String = ""
 
-			Dim objSessionInfo = CType(Session("SessionContext"), SessionInfo)
 			Dim objDataAccess As clsDataAccess = CType(Session("DatabaseAccess"), clsDataAccess)
 
 			' Read the information from the calling form.
