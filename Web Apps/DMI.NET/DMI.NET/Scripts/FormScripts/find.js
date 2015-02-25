@@ -260,7 +260,7 @@ function find_window_onload() {
 													});
 													$(element).on('blur', function (sender) {
 														if ((isNaN(sender.target.value) === true) || (sender.target.value.indexOf(".") >= 0)) {
-															OpenHR.modalMessage("Invalid integer value entered: " + encodeURIComponent(sender.target.value));
+															OpenHR.modalMessage("Invalid integer value entered: " + escapeHTML(sender.target.value));
 															sender.target.value = valueBeforeChange;
 														}
 													});
@@ -311,7 +311,7 @@ function find_window_onload() {
 
 												$(element).on('blur', function (sender) {
 													if (OpenHR.IsValidDate(sender.target.value) == false && sender.target.value != "") {
-														OpenHR.modalMessage("Invalid date value entered: " + encodeURIComponent(sender.target.value));
+														OpenHR.modalMessage("Invalid date value entered: " + escapeHTML(sender.target.value));
 														sender.target.value = valueBeforeChange;
 														$(sender.target.id).focus();
 													}
@@ -1585,4 +1585,26 @@ function refreshRecordCount() {
 	} else {
 		menu_SetmnutoolRecordPositionCaption("Record(s) : " + recCount);
 	}
+}
+
+
+function escapeHTML(str) {
+	str = str + "";
+	var out = "";
+	for (var i = 0; i < str.length; i++) {
+		if (str[i] === '<') {
+			out += '&lt;';
+		} else if (str[i] === '>') {
+			out += '&gt;';
+		} else if (str[i] === "'") {
+			out += '&#39;';
+		} else if (str[i] === '"') {
+			out += '&quot;';
+		} else if (str[i] === '&') {
+			out += '&amp;';
+		} else {
+			out += str[i];
+		}
+	}
+	return out;
 }
