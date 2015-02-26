@@ -1277,14 +1277,14 @@ function saveInlineRowToDatabase(rowId) {
 	frmDataArea.txtOriginalRecordID.value = 0; //This is NOT a copied record
 
 	window.savedRow = rowId;
-
+	
 	//NB: submitform frmData will set a new ID for a new record. 
 	OpenHR.submitForm(frmDataArea, null, true, null, null, submitFollowOn);	//leave as async=true to enable the spinner.
 	
 }
 
 function submitFollowOn() {
-
+	
 	var rowId = window.savedRow; //$("#findGridTable").getGridParam('selrow');	
 	if ($('#frmData #txtErrorMessage').val() !== "") { //There was an error while saving (AKA server side validation fail)		
 		indicateThatRowWasModified();		
@@ -1293,6 +1293,8 @@ function submitFollowOn() {
 		setTimeout(function () {
 			$("#findGridTable").jqGrid('setSelection', rowId, true);
 			$("#findGridTable").editRow(rowId); //Edit the row
+
+			if (rowId == "0") rowIsEditedOrNew = "new"; //revert state as it could have been changed
 
 			$("#findGridTable_ilsave").removeClass('ui-state-disabled'); //Enable the Save button because we edited something
 			$("#findGridTable_ilcancel").removeClass('ui-state-disabled'); //Enable the Cancel button because we edited something
@@ -1309,6 +1311,7 @@ function submitFollowOn() {
 		//Mark row as changed if we've successfully saved the record.
 		try {
 			updateRowFromDatabase(rowId); //Get the row data from the database (show calculated values etc)
+			if (rowId == "0") rowId = selectedRecordID();
 			$("#findGridTable #" + rowId + ">td:first").css('border-left', '4px solid green');
 			rowWasModified = false; //The 'rowWasModified' variable is defined as global in Find.ascx
 			$("#findGridTable_ilsave").addClass('ui-state-disabled'); //Disable the Save button.
@@ -1322,7 +1325,7 @@ function submitFollowOn() {
 			} else {
 				$("#findGridTable_iledit").hide();
 			}
-
+			
 			refreshRecordCount();
 
 		} catch (e) {
@@ -1483,14 +1486,15 @@ function cancelFindGridRow(rowid) {
 		var recCount = $("#findGridTable").getGridParam("reccount") - 1;
 		if (recCount > 0) {
 			var lastRowID = $("#findGridTable").jqGrid('getDataIDs')[recCount - 1];
-			setTimeout(function() { $("#findGridTable").jqGrid('setSelection', lastRowID, true); }, 200);
+			setTimeout(function () { $("#findGridTable").jqGrid('setSelection', lastRowID, true); refreshInlineNavIcons(); }, 200);
 		}
 	} else {
 		//set selection to current row.
 		$("#findGridTable").jqGrid('setSelection', rowid, true);
+		refreshInlineNavIcons();
 	}
 
-	refreshInlineNavIcons();
+	
 }
 
 function beforeSelectFindGridRow(newRowid) {
@@ -1569,7 +1573,7 @@ function addNextRow() {
 function refreshInlineNavIcons() {
 	//needs the delay; jqGrid may be slow to load.
 	setTimeout(function () {
-		var selectionMade = (Number(selectedRecordID()) > 0);
+		var selectionMade = (Number(selectedRecordID()) > 0);		
 		var isSearching = $('#frmFindForm .ui-search-toolbar').is(':visible');
 		$("#findGridTable_iledit").toggleClass('ui-state-disabled', (isSearching || !selectionMade));
 	}, 100);
