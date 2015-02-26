@@ -601,6 +601,7 @@ function find_window_onload() {
 							var arrCalcColumnsString = [];
 							rowWasModified = true;
 							lastRowEdited = "0";
+							
 							window.onbeforeunload = warning;
 							$('#' + rowid).find(':input[datadefaultcalcexprid]').each(function () {
 								if (Number(this.attributes['datadefaultcalcexprid'].value) > "0") {
@@ -681,7 +682,11 @@ function find_window_onload() {
 					//assign click to pager buttons - these fire first and will be rejected if we're editing.
 					$('#last_pager-coldata>span, #next_pager-coldata>span, #prev_pager-coldata>span, #first_pager-coldata>span').on('click', function (event) {
 						if (rowIsEditedOrNew == "edited") return false;
-					});
+				});
+
+				$('#last_pager-coldata, #next_pager-coldata, #prev_pager-coldata, #first_pager-coldata').on('click', function (event) {
+					if (rowIsEditedOrNew == "edited") return false;
+				});
 
 					//assign click to add button (this will fire before the addrow function)
 
@@ -1490,8 +1495,11 @@ function cancelFindGridRow(rowid) {
 		var recCount = $("#findGridTable").getGridParam("reccount") - 1;
 		if (recCount > 0) {
 			var lastRowID = $("#findGridTable").jqGrid('getDataIDs')[recCount - 1];
-			setTimeout(function () { $("#findGridTable").jqGrid('setSelection', lastRowID, true); refreshInlineNavIcons(); }, 200);
-		}
+			setTimeout(function() {
+				$("#findGridTable").jqGrid('setSelection', lastRowID, true);
+				refreshInlineNavIcons();
+			}, 200);
+		} else refreshInlineNavIcons();
 	} else {
 		//set selection to current row.
 		$("#findGridTable").jqGrid('setSelection', rowid, true);
