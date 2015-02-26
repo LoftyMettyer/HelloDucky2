@@ -230,20 +230,29 @@
 					}
 				});
 
-			//search options.
-				$("#DefSelRecords").jqGrid('navGrid', '#pager-coldata', { del: false, add: false, edit: false, search: false });
-				if ($('#pager-coldata :has(".ui-icon-search")').length == 0) {
-					$("#DefSelRecords").jqGrid('navButtonAdd', "#pager-coldata", {
-						caption: '',
-						buttonicon: 'ui-icon-search',
-						onClickButton: function () {
-							$("#DefSelRecords").jqGrid('filterToolbar', { stringResult: true, searchOnEnter: false, defaultSearch: 'cn' });
-						},
-						position: 'first',
-						title: '',
-						cursor: 'pointer'
-					});
-				}
+			// Navbar options = i.e. search, edit, save etc 
+			$("#DefSelRecords").jqGrid('navGrid', '#pager-coldata', { del: false, add: false, edit: false, search: false, refresh: false }); // setup the buttons we want
+			$("#DefSelRecords").jqGrid('filterToolbar', {stringResult: true, searchOnEnter: false	});  //instantiate toolbar so we can use toggle.
+			
+			if ($('#pager-coldata :has(".ui-icon-search")').length == 0) {
+				$("#DefSelRecords").jqGrid('navButtonAdd', "#pager-coldata", {
+					caption: '',
+					buttonicon: 'ui-icon-search',
+					position: 'first',
+					onClickButton: function () {
+						this.clearToolbar();
+						this.toggleToolbar();
+            if ($('.ui-search-toolbar', this.grid.hDiv).is(':visible'))
+						{
+							$('.ui-search-toolbar', this.grid.fhDiv).show();
+						} else {
+							$('.ui-search-toolbar', this.grid.fhDiv).hide();
+						}},
+					title: 'Search',
+					cursor: 'pointer'
+				});
+				$('.ui-search-toolbar').hide(); // Hide it on setting up the grid - NB Remove this line to have it open on setup
+			}
 
 				$("#findGridRow").height("60%");
 				$(window).bind('resize', function () {
@@ -1252,7 +1261,7 @@
 			viewrecords: false,
 			width: 600,
 			sortname: 'Name',
-			sortorder: "desc",
+			sortorder: "asc",
 			rowNum: 10000,
 			cmTemplate: { sortable: false },
 			ignoreCase: true,
