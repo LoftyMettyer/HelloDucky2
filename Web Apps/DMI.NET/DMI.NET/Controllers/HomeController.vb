@@ -1094,7 +1094,7 @@ Namespace Controllers
 			End If
 
 			If sAction = "SAVE" Then
-				Dim lngOriginalRecordID = CInt(ValidateIntegerValue(Request.Form("txtOriginalRecordID")))
+				Dim lngOriginalRecordID = ValidateIntegerValue(Request.Form("txtOriginalRecordID"))
 				Dim result = _controllerRecord.data_submit_SAVE(lngTableID, lngRecordID, sReaction, fTBOverride, iTBEmployeeRecordID, iTBCourseRecordID, sTBBookingStatusValue, sInsertUpdateDef, sRealSource, iTimestamp, lngOriginalRecordID)
 				lngRecordID = result.RecordID
 				sAction = result.Action
@@ -1142,7 +1142,7 @@ Namespace Controllers
 			Session("fromDef") = ValidateStringValue(Request.Form("txtFromDef"), InputValidation.StringSanitiseLevel.HTMLEncode)
 			Session("filterSQL") = ValidateStringValue(Request.Form("txtFilterSQL"), InputValidation.StringSanitiseLevel.None)
 			Session("filterDefPrevious") = Session("filterDef")
-			Session("filterDef") = ValidateStringValue(Request.Form("txtFilterDef"), InputValidation.StringSanitiseLevel.HTMLEncode)
+			Session("filterDef") = ValidateStringValue(Request.Form("txtFilterDef"), InputValidation.StringSanitiseLevel.None)
 			Session("realSource") = sRealSource
 			Session("tableID") = lngTableID
 			Session("screenID") = lngScreenID
