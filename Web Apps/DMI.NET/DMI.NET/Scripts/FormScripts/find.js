@@ -552,6 +552,13 @@ function find_window_onload() {
 					},
 					afterSearch: function () {
 						moveFirst();
+					},
+					localReader: {
+						page: function (obj) {
+							if (obj.rows <= 0) {
+								return obj.page !== undefined ? obj.page : "0";	
+							}							
+						}
 					}
 				});
 
@@ -681,12 +688,12 @@ function find_window_onload() {
 
 					//assign click to pager buttons - these fire first and will be rejected if we're editing.
 					$('#last_pager-coldata>span, #next_pager-coldata>span, #prev_pager-coldata>span, #first_pager-coldata>span').on('click', function (event) {
-						if (rowIsEditedOrNew == "edited") return false;
-				});
+						if ((rowIsEditedOrNew.indexOf("edit") >= 0) || (rowIsEditedOrNew == "new")) return false;
+					});
 
-				$('#last_pager-coldata, #next_pager-coldata, #prev_pager-coldata, #first_pager-coldata').on('click', function (event) {
-					if (rowIsEditedOrNew == "edited") return false;
-				});
+					$('#last_pager-coldata, #next_pager-coldata, #prev_pager-coldata, #first_pager-coldata').on('click', function (event) {
+						if ((rowIsEditedOrNew.indexOf("edit") >= 0) || (rowIsEditedOrNew == "new")) return false;
+					});
 
 					//assign click to add button (this will fire before the addrow function)
 
