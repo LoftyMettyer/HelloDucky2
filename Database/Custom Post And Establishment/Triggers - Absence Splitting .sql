@@ -142,7 +142,7 @@ INSERT ASRSysTableTriggers (TriggerID, TableID, Name, CodePosition, IsSystem, Co
 		SELECT i.ID_3, i.Start_Date, i.End_Date, i.Start_Session, i.End_Session, a.Absence_In, i.Absence_Type, i.Reason, a.Post_ID, a.Staff_Number, a.Payroll_Company_Code
 		FROM inserted i
 			INNER JOIN Appointments a ON a.ID = i.ID_3
-		WHERE i.Authorised = 1;
+		WHERE i.Status = ''Authorised'';
 ')
 GO
 
