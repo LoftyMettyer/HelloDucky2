@@ -687,13 +687,14 @@ function find_window_onload() {
 
 					//Ensure nothing fires if the button is disabled.
 					$('#findGridTable_ilsave div.ui-pg-div, #findGridTable_ilcancel div.ui-pg-div, #findGridTable_iledit div.ui-pg-div').off('click').on('click', function (event) {
-						if ($(this).parent().is(":disabled")) {
+						if ($(this).parent().hasClass("ui-state-disabled")) {
 							return false;
 						}
 					});
 
 					//Move to last page before adding new row.
 					$('#findGridTable_iladd div.ui-pg-div').off('click').on('click', function (event) {
+						if ($(this).parent().hasClass("ui-state-disabled")) return false;
 
 						if (rowIsEditedOrNew == "") {
 							//Not editing, no need to save, just scroll to end of grid before adding new row.

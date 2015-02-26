@@ -1990,7 +1990,8 @@ $.fn.jqGrid = function( pin ) {
 					this.style.cursor= "default";
 				}
 			});
-			$("#first"+$.jgrid.jqID(tp)+", #prev"+$.jgrid.jqID(tp)+", #next"+$.jgrid.jqID(tp)+", #last"+$.jgrid.jqID(tp)).click( function() {
+			$("#first" + $.jgrid.jqID(tp) + ", #prev" + $.jgrid.jqID(tp) + ", #next" + $.jgrid.jqID(tp) + ", #last" + $.jgrid.jqID(tp)).click(function () {
+				if ($(this).hasClass("ui-state-disabled")) return false;
 				var cp = intNum(ts.p.page,1),
 				last = intNum(ts.p.lastpage,1), selclick = false,
 				fp=true, pp=true, np=true,lp=true;
@@ -9510,7 +9511,8 @@ $.jgrid.extend({
 					title : o.addtitle,
 					buttonicon : o.addicon,
 					id : $t.p.id+"_iladd",
-					onClickButton : function () {
+					onClickButton: function () {						
+						if ($(this).hasClass("ui-state-disabled")) return false;
 						$($t).jqGrid('addRow', o.addParams);
 						if(!o.addParams.useFormatter) {
 							$("#"+gID+"_ilsave").removeClass('ui-state-disabled');
@@ -9527,7 +9529,8 @@ $.jgrid.extend({
 					title : o.edittitle,
 					buttonicon : o.editicon,
 					id : $t.p.id+"_iledit",
-					onClickButton : function () {
+					onClickButton: function () {
+						if ($(this).hasClass("ui-state-disabled")) return false;
 						var sr = $($t).jqGrid('getGridParam','selrow');
 						if(sr) {
 							$($t).jqGrid('editRow', sr, o.editParams);
