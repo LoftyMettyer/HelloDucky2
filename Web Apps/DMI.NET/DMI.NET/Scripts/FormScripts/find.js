@@ -358,7 +358,10 @@ function find_window_onload() {
 											dataColumnId: iColumnId,
 											dataDefaultCalcExprID: iDefaultValueExprID,
 											dataInit: function (element) {
-												$(element).on('keydown', function () { return false; }); //Prevent the user from typing in lookups
+												$(element).on('keydown', function (event) {
+													if (event.which == 32) showLookupForColumn(element);
+													 if(event.which != 9) return false;
+												}); //Prevent the user from typing in lookups
 												$(element).attr('onpaste', 'return false;'); //Prevent the user from pasting into lookups
 												$(element).addClass('msClear'); //Remove the "x" that IE shows on the right side of input boxes
 												var sAlignment = $(element).attr('align');
