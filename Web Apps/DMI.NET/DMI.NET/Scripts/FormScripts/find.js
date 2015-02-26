@@ -1576,6 +1576,7 @@ function refreshInlineNavIcons() {
 		var selectionMade = (Number(selectedRecordID()) > 0);		
 		var isSearching = $('#frmFindForm .ui-search-toolbar').is(':visible');
 		$("#findGridTable_iledit").toggleClass('ui-state-disabled', (isSearching || !selectionMade));
+		$("#findGridTable_iladd").toggleClass('ui-state-disabled', (isSearching || !selectionMade));
 	}, 100);
 }
 
