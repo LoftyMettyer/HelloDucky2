@@ -2144,8 +2144,6 @@ TidyUpAndExit:
 		Try
 
 			rsPersonnelBHols = New DataTable("rsPersonnelBHols")
-			'Create a second DataTable identical to the first.
-			rsTempPersonnelBHols = rsPersonnelBHols.Clone()
 
 			intRecordBHol = 0
 			mstrBHolFormString = New StringBuilder()
