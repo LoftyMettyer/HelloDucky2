@@ -511,7 +511,7 @@
 	<input type="hidden" id="txtDoneQuickEntryMenu" name="txtDoneQuickEntryMenu" value="0">
 	<input type="hidden" id="txtDoneTableScreensMenu" name="txtDoneTableScreensMenu" value="0">
 	
-	<input type="hidden" id="txtProgressMessage" name="txtProgressMessage" value="Loading..."/>
+	<input type="hidden" id="txtProgressMessage" name="txtProgressMessage" value="Please wait..."/>
 </div>
 
 <script type="text/javascript">

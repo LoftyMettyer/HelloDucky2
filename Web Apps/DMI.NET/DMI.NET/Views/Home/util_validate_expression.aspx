@@ -105,18 +105,22 @@
 	<div id="PleaseWaitDiv">
 		<h3>
 			<%
-				If Request.Form("validateUtilType") = 11 Then
-					Response.Write("Validating Filter")
-				Else
-					If Request.Form("validateUtilType") = 12 Then
-						Response.Write("Validating Calculation")
-					Else
-						Response.Write("Validating Expression")
-					End If
-				End If
+			  
+	If Request.Form("validateUtilType") = 11 Then
+			  
+		Response.Write("Validating Filter")
+			  
+	Else
+			  
+		If Request.Form("validateUtilType") = 12 Then
+			  			Response.Write("Validating Calculation")
+			  		Else
+			  			Response.Write("Validating Expression")
+			  		End If
+			  	End If
 			%>				
 		</h3>
-		Loading...
+		Please wait...
 		<br />
 		<br />
 		<input type="button" value="Cancel" class="btn" name="Cancel" style="float: right; width: 80px" id="Cancel" onclick="uve_cancelClick()" />

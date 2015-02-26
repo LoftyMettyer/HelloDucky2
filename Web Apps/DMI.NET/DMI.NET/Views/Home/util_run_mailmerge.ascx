@@ -189,7 +189,7 @@
 		window.clearInterval(fileDownloadCheckTimer);
 		$.removeCookie('fileDownloadToken'); //clears this cookie value		
 		$("body").removeClass("loading");
-		menu_ShowWait('Loading...');		
+		menu_ShowWait('Please wait...');		
 	}
 
 	var frmMailMergeOutput = document.getElementById("frmMailMergeOutput");

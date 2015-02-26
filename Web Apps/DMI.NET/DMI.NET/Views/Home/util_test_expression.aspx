@@ -71,7 +71,7 @@
 					End If
 				End If
 			%>						
-			Loading...
+			Please wait...
 			<br />
 			<br />
 			<input id="Cancel" name="Cancel" class="btn" type="button" value="OK" style="width: 80px; float: right;" onclick="OpenHR.clearTmpDialog();" />

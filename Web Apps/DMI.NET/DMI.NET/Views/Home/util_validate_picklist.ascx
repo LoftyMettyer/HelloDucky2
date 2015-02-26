@@ -52,7 +52,7 @@
 <div id="divUtil_validate_picklist">
 	<h3 id="trPleaseWait1">Validating Picklist</h3>
 	<h3 id="trPleaseWait4"></h3>
-	<h3 id="trPleaseWait2">Loading...</h3>
+	<h3 id="trPleaseWait2">Please wait...</h3>
 	<h3 id="trPleaseWait5"></h3>
 	<h3 id="trPleaseWait3"><input type="button" value="Cancel" class="btn" name="Cancel" style="width: 80px; float: right;" id="Cancel" /></h3>
 

@@ -422,7 +422,7 @@
 			});
 
 			$(document).ajaxStop(function () {
-				$('#txtProgressMessage').val('Loading...');
+				$('#txtProgressMessage').val('Please wait...');
 				$("body").removeClass("loading");
 				setTimeout('updateProgressMsg()', 50);
 			});
@@ -608,7 +608,7 @@
 	<div class="modal">
 		<!-- AJAX please wait spinner -->
 		<div class="divProgressMessage">			
-			<p class="progressMessage"><span class="ui-state-highlight ui-corner-all">Loading...</span></p>
+			<p class="progressMessage"><span class="ui-state-highlight ui-corner-all">Please wait...</span></p>
 		</div>
 	</div>
 
