@@ -235,7 +235,7 @@ Public Class Ole
 
 					ExtractPhotoToBase64 = Convert.ToBase64String(binaryData, 0, binaryData.Length)
 
-
+					sExtracted = ExtractPhotoToBase64
 				Catch exp As ArgumentNullException
 					Console.WriteLine("Binary data array is null.")
 
