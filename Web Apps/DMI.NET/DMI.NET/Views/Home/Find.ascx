@@ -718,13 +718,6 @@ Response.Write("				<input type='hidden' id=txtErrorDescription name=txtErrorDes
 		<input type="hidden" id="txtFindEditRowData" value=""/>
 	</form>
 
-	<form id="frmTBData" name="frmTBData">
-		<%
-			If CLng(Session("tableID")) = CLng(Session("TB_TBTableID")) Then
-				Response.Write("				<input type='hidden' id=txtTBCancelCourseDate name=txtTBCancelCourseDate value=""" & Session("lineage") & """>")
-			End If
-		%>
-	</form>
 
 	<input type='hidden' id="txtTicker" name="txtTicker" value="0">
 	<input type='hidden' id="txtLastKeyFind" name="txtLastKeyFind" value="">
