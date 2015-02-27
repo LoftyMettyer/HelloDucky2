@@ -153,7 +153,7 @@
 
 		OpenHR.modalExpressionSelect("PICKLIST", tableID, currentID, function (id, name, access) {
 			//If current user is System Manager/Security Manager, we allow them to add or edit the filter/picklist hidden by another user
-			if (access == "HD" && $("#Owner").val().toLowerCase() != '@Session("Username").ToString.ToLower' && $("#IsSystemOrSecurityAdmin").val().toLowerCase() == "false") {
+			if (access == "HD" && $("#Owner").val().toLowerCase() != '@Session("Username").ToString.ToLower' && '@Model.CanEditSecurityGroups.ToString.ToLower' == "false") {
 				$("#txtParent1PicklistID").val(0);
 				$("#txtParent1Picklist").val('None');
 				OpenHR.modalMessage("The " + tableName + " table picklist will be removed from this definition as it is hidden and you do not have permission to make this definition hidden.");
@@ -175,7 +175,7 @@
 		var tableName = $("#Parent2_Name").val();
 
 		OpenHR.modalExpressionSelect("PICKLIST", tableID, currentID, function (id, name, access) {			
-			if (access == "HD" && $("#Owner").val().toLowerCase() != '@Session("Username").ToString.ToLower' && $("#IsSystemOrSecurityAdmin").val().toLowerCase() == "false") {
+			if (access == "HD" && $("#Owner").val().toLowerCase() != '@Session("Username").ToString.ToLower' && '@Model.CanEditSecurityGroups.ToString.ToLower' == "false") {
 				$("#txtParent2PicklistID").val(0);
 				$("#txtParent2Picklist").val('None');
 				OpenHR.modalMessage("The " + tableName + " table picklist will be removed from this definition as it is hidden and you do not have permission to make this definition hidden.");
@@ -198,7 +198,7 @@
 
 		OpenHR.modalExpressionSelect("FILTER", tableID, currentID, function (id, name, access) {
 			//If current user is System Manager/Security Manager, we allow them to add or edit the filter/picklist hidden by another user
-			if (access == "HD" && $("#Owner").val().toLowerCase() != '@Session("Username").ToString.ToLower' && $("#IsSystemOrSecurityAdmin").val().toLowerCase() == "false") {
+			if (access == "HD" && $("#Owner").val().toLowerCase() != '@Session("Username").ToString.ToLower' && '@Model.CanEditSecurityGroups.ToString.ToLower' == "false") {
 				$("#txtParent1FilterID").val(0);
 				$("#txtParent1Filter").val('None');
 				OpenHR.modalMessage("The " + tableName + " table filter will be removed from this definition as it is hidden and you do not have permission to make this definition hidden.");
@@ -220,7 +220,7 @@
 		var tableName = $("#Parent2_Name").val();
 
 		OpenHR.modalExpressionSelect("FILTER", tableID, currentID, function (id, name, access) {
-			if (access == "HD" && $("#Owner").val().toLowerCase() != '@Session("Username").ToString.ToLower' && $("#IsSystemOrSecurityAdmin").val().toLowerCase() == "false") {
+			if (access == "HD" && $("#Owner").val().toLowerCase() != '@Session("Username").ToString.ToLower' && '@Model.CanEditSecurityGroups.ToString.ToLower' == "false") {
 				$("#txtParent2FilterID").val(0);
 				$("#txtParent2Filter").val('None');
 				OpenHR.modalMessage("The " + tableName + " table filter will be removed from this definition as it is hidden and you do not have permission to make this definition hidden.");

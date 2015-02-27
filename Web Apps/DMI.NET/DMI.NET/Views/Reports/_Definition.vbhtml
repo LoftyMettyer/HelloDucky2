@@ -10,7 +10,6 @@
 @Html.HiddenFor(Function(m) m.BaseViewAccess, New With {.class = "ViewAccess"})
 @Html.HiddenFor(Function(m) m.IsReadOnly)
 @Html.HiddenFor(Function(m) m.ActionType)
-@Html.HiddenFor(Function(m) m.IsSystemOrSecurityAdmin)
 
 <div class="width100">
 	<fieldset class="floatleft width50 bordered">
@@ -338,7 +337,7 @@
 
 		OpenHR.modalExpressionSelect("FILTER", tableID, currentID, function (id, name, access) {
 			//If current user is System Manager/Security Manager, we allow them to add or edit the filter hidden by another user
-			if (access == "HD" && $("#Owner").val().toLowerCase() != '@Session("Username").ToString.ToLower' && $("#IsSystemOrSecurityAdmin").val().toLowerCase() == "false") {				
+			if (access == "HD" && $("#Owner").val().toLowerCase() != '@Session("Username").ToString.ToLower' && '@Model.CanEditSecurityGroups.ToString.ToLower' == "false") {
 				$("#txtBaseFilterID").val(0);
 				$("#txtBaseFilter").val('None');
 				OpenHR.modalMessage("The " + tableName + " table filter will be removed from this definition as it is hidden and you do not have permission to make this definition hidden.");
@@ -360,10 +359,10 @@
 
 		OpenHR.modalExpressionSelect("PICKLIST", tableID, currentID, function (id, name, access) {
 			//If current user is System Manager/Security Manager, we allow them to add or edit the picklist hidden by another user
-			if (access == "HD" && $("#Owner").val().toLowerCase() != '@Session("Username").ToString.ToLower' && $("#IsSystemOrSecurityAdmin").val().toLowerCase() == "false") {				
-					$("#txtBasePicklistID").val(0);
-					$("#txtBasePicklist").val('None');
-					OpenHR.modalMessage("The " + tableName + " table picklist will be removed from this definition as it is hidden and you do not have permission to make this definition hidden.");				
+			if (access == "HD" && $("#Owner").val().toLowerCase() != '@Session("Username").ToString.ToLower' && '@Model.CanEditSecurityGroups.ToString.ToLower' == "false") {
+				$("#txtBasePicklistID").val(0);
+				$("#txtBasePicklist").val('None');
+				OpenHR.modalMessage("The " + tableName + " table picklist will be removed from this definition as it is hidden and you do not have permission to make this definition hidden.");
 			}
 			else {
 				$("#txtBasePicklistID").val(id);
@@ -520,7 +519,7 @@
 			});
 		}
 		else if ($("#txtReportType").val() == '@UtilityType.utlCrossTab' &&  $("#ActionType").val() == '@UtilityActionType.Edit' )
-		{			
+		{
 			OpenHR.modalPrompt("Changing the Base Table will reset all of the selected columns.<br/><br/>Are you sure you wish to continue ?", 4, "").then(function (answer) {
 				if (answer == 6) { // Yes
 					changeReportBaseTable();
@@ -669,7 +668,7 @@
 			if (bHasChanged == "true") {
 
 				OpenHR.modalPrompt("You have made changes. Click 'OK' to discard your changes, or 'Cancel' to continue editing.", 1, "Confirm").then(function (answer) {
-					if (answer == 1) {										
+					if (answer == 1) {
 						validateReportDefinition();
 					}
 				});
@@ -678,7 +677,7 @@
 				return 6;
 			}
 
-		} else {			 
+		} else {
 			validateReportDefinition()
 		}
 
@@ -696,7 +695,7 @@
 	}
 
 	function validateReportDefinition() {
-		
+
 		var gridData;
 
 		menu_ShowWait("Saving...");

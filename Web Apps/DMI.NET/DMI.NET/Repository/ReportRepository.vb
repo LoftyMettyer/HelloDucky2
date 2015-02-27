@@ -117,7 +117,6 @@ Namespace Repository
 				objModel.IsReadOnly = (action = UtilityActionType.View)
 				objModel.ID = If(action = UtilityActionType.Copy, 0, objModel.ID)
 				objModel.Owner = If(action = UtilityActionType.Copy, _username, objModel.Owner)
-				objModel.IsSystemOrSecurityAdmin = _objSessionInfo.LoginInfo.IsSystemOrSecurityAdmin
 
 				_customreports.Remove(objModel.ID)
 				_customreports.Add(objModel)
@@ -193,7 +192,6 @@ Namespace Repository
 				objModel.IsReadOnly = (action = UtilityActionType.View)
 				objModel.ID = If(action = UtilityActionType.Copy, 0, objModel.ID)
 				objModel.Owner = If(action = UtilityActionType.Copy, _username, objModel.Owner)
-				objModel.IsSystemOrSecurityAdmin = _objSessionInfo.LoginInfo.IsSystemOrSecurityAdmin
 
 				_mailmerges.Remove(objModel.ID)
 				_mailmerges.Add(objModel)
@@ -270,7 +268,6 @@ Namespace Repository
 				objModel.IsReadOnly = (action = UtilityActionType.View)
 				objModel.ID = If(action = UtilityActionType.Copy, 0, objModel.ID)
 				objModel.Owner = If(action = UtilityActionType.Copy, _username, objModel.Owner)
-				objModel.IsSystemOrSecurityAdmin = _objSessionInfo.LoginInfo.IsSystemOrSecurityAdmin
 
 				_crosstabs.Remove(objModel.ID)
 				_crosstabs.Add(objModel)
@@ -365,7 +362,6 @@ Namespace Repository
 				objModel.IsReadOnly = (action = UtilityActionType.View)
 				objModel.ID = If(action = UtilityActionType.Copy, 0, objModel.ID)
 				objModel.Owner = If(action = UtilityActionType.Copy, _username, objModel.Owner)
-				objModel.IsSystemOrSecurityAdmin = _objSessionInfo.LoginInfo.IsSystemOrSecurityAdmin
 
 				_nineboxgrids.Remove(objModel.ID)
 				_nineboxgrids.Add(objModel)
@@ -500,7 +496,6 @@ Namespace Repository
 				objModel.IsReadOnly = (action = UtilityActionType.View)
 				objModel.ID = If(action = UtilityActionType.Copy, 0, objModel.ID)
 				objModel.Owner = If(action = UtilityActionType.Copy, _username, objModel.Owner)
-				objModel.IsSystemOrSecurityAdmin = _objSessionInfo.LoginInfo.IsSystemOrSecurityAdmin
 
 				_calendarreports.Remove(objModel.ID)
 				_calendarreports.Add(objModel)

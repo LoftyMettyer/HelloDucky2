@@ -65,8 +65,6 @@ Namespace Models
 
 		Public Property DefinitionAccessBasedOnSelectedCalculationColumns As String
 
-		Public Property IsSystemOrSecurityAdmin As Boolean
-
 		Public Overridable ReadOnly Property SortOrdersAvailable As Integer Implements IReport.SortOrdersAvailable
 			Get
 				If Columns IsNot Nothing Then
@@ -141,6 +139,14 @@ Namespace Models
 		End Sub
 
 		Public Property Dependencies As New ReportDependencies Implements IReport.Dependencies
+
+		Public ReadOnly Property CanEditSecurityGroups As Boolean
+			Get
+				If SessionInfo IsNot Nothing Then
+					Return SessionInfo.LoginInfo.IsSystemOrSecurityAdmin
+				End If
+			End Get
+		End Property
 
 	End Class
 End Namespace
