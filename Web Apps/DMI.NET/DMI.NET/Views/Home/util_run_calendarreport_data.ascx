@@ -309,27 +309,6 @@
 	<%=Html.AntiForgeryToken()%>
 </form>
 
-<form id="frmOriginalDefinition" style="visibility: hidden; display: none">
-		<%
-			Dim sReportName = objCalendar.Name
-			Dim sErrMsg As String = ""
-			Response.Write("	<input type='hidden' id=txtDefn_Name name=txtDefn_Name value=""" & Replace(sReportName, """", "&quot;") & """>" & vbCrLf)
-			Response.Write("	<input type='hidden' id=txtDefn_ErrMsg name=txtDefn_ErrMsg value=""" & sErrMsg & """>" & vbCrLf)
-		%>
-		<input type="hidden" id="txtUserName" name="txtUserName" value="<%=session("username")%>">
-		<input type="hidden" id="txtDateFormat" name="txtDateFormat" value="<%=session("LocaleDateFormat")%>">
-
-		<input type="hidden" id="txtCancelPrint" name="txtCancelPrint">
-		<input type="hidden" id="txtOptionsDone" name="txtOptionsDone">
-		<input type="hidden" id="txtOptionsPortrait" name="txtOptionsPortrait">
-		<input type="hidden" id="txtOptionsMarginLeft" name="txtOptionsMarginLeft">
-		<input type="hidden" id="txtOptionsMarginRight" name="txtOptionsMarginRight">
-		<input type="hidden" id="txtOptionsMarginTop" name="txtOptionsMarginTop">
-		<input type="hidden" id="txtOptionsMarginBottom" name="txtOptionsMarginBottom">
-		<input type="hidden" id="txtOptionsCopies" name="txtOptionsCopies">
-		<input type="hidden" id="txtCalRep_UtilID" name="txtCalRep_UtilID" value='<%=Request("CalRepUtilID")%>'>
-</form>
-
 <div id="divEventDetail">
 	<form id="frmEventDetails" name="frmEventDetails" action="util_run_calendarreport_breakdown" method="post" style="visibility: hidden; display: none">
 		<input type="hidden" name="txtBreakdownCaption" id="txtBreakdownCaption">

@@ -327,33 +327,13 @@
 	Response.Write("      </div>")
 	Response.Write("</form>" & vbCrLf)
 
-				Response.Write("<input type=hidden id=txtSuccessFlag name=txtSuccessFlag value=2>" & vbCrLf)
-Else%>
-
-<input type="hidden" id="txtSuccessFlag" name="txtSuccessFlag" value="3">
-<%
 End If
 %>
 
+<input type='hidden' id="txtDefn_Name" name="txtDefn_Name" value="<%=objReport.ReportCaption.ToString()%>">
+<input type='hidden' id="txtDefn_ErrMsg" name="txtDefn_ErrMsg" value="<%=objReport.ErrorString%>">
 <input type='hidden' id="txtNoRecs" name="txtNoRecs" value="<%=objReport.NoRecords%>">
 
-		<form id="frmOriginalDefinition" style="visibility: hidden; display: none">
-				<%
-					Response.Write("	<input type='hidden' id='txtDefn_Name' name='txtDefn_Name' value='" & objReport.ReportCaption.ToString() & "'>" & vbCrLf)
-					Response.Write("	<input type='hidden' id=txtDefn_ErrMsg name=txtDefn_ErrMsg value=""" & objReport.ErrorString & """>" & vbCrLf)
-				%>
-				<input type="hidden" id="txtUserName" name="txtUserName" value="<%Session("username").ToString()%>">
-				<input type="hidden" id="txtDateFormat" name="txtDateFormat" value="<%Session("LocaleDateFormat").ToString()%>">
-
-				<input type="hidden" id="txtCancelPrint" name="txtCancelPrint">
-				<input type="hidden" id="txtOptionsDone" name="txtOptionsDone">
-				<input type="hidden" id="txtOptionsPortrait" name="txtOptionsPortrait">
-				<input type="hidden" id="txtOptionsMarginLeft" name="txtOptionsMarginLeft">
-				<input type="hidden" id="txtOptionsMarginRight" name="txtOptionsMarginRight">
-				<input type="hidden" id="txtOptionsMarginTop" name="txtOptionsMarginTop">
-				<input type="hidden" id="txtOptionsMarginBottom" name="txtOptionsMarginBottom">
-				<input type="hidden" id="txtOptionsCopies" name="txtOptionsCopies">
-		</form>
 
 		<script runat="server">
 

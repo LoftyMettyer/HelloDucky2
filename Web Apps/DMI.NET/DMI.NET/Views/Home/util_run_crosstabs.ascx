@@ -209,24 +209,11 @@ Session("utiltype = 17 		Calendar Report--%>
 		</div>
 	</div>
 </fieldset>
-<form id="frmOriginalDefinition">
-	<%
-		Response.Write("	<input type='hidden' id='txtDefn_Name' name='txtDefn_Name' value='" & objCrossTab.CrossTabName.ToString() & "'>" & vbCrLf)
-		Response.Write("	<input type='hidden' id=txtDefn_ErrMsg name=txtDefn_ErrMsg value=""" & objCrossTab.ErrorString & """>" & vbCrLf)
-	%>
-	<input type="hidden" id="txtUserName" name="txtUserName" value="<%=session("username")%>">
-	<input type="hidden" id="txtDateFormat" name="txtDateFormat" value="<%=session("LocaleDateFormat")%>">
 
-	<input type="hidden" id="txtCurrentPrintPage" name="txtCurrentPrintPage">
 	<input type="hidden" id="txtCancelPrint" name="txtCancelPrint">
-	<input type="hidden" id="txtOptionsDone" name="txtOptionsDone">
-	<input type="hidden" id="txtOptionsPortrait" name="txtOptionsPortrait">
-	<input type="hidden" id="txtOptionsMarginLeft" name="txtOptionsMarginLeft">
-	<input type="hidden" id="txtOptionsMarginRight" name="txtOptionsMarginRight">
-	<input type="hidden" id="txtOptionsMarginTop" name="txtOptionsMarginTop">
-	<input type="hidden" id="txtOptionsMarginBottom" name="txtOptionsMarginBottom">
-	<input type="hidden" id="txtOptionsCopies" name="txtOptionsCopies">
-</form>
+	<input type='hidden' id="txtDefn_Name" name="txtDefn_Name" value="<%= objCrossTab.CrossTabName.ToString()%>">
+	<input type='hidden' id="txtDefn_ErrMsg" name="txtDefn_ErrMsg" value="<%=objCrossTab.ErrorString%>">
+
 
 <select style="visibility: hidden; display: none" id="cboDummy" name="cboDummy">
 </select>

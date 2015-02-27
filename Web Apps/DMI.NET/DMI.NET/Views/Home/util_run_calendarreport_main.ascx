@@ -125,20 +125,5 @@ End If
 
 <input type='hidden' id="txtNoRecs" name="txtNoRecs" value="<%=objCalendar.NoRecords%>">
 
-<form id="frmOriginalDefinition" style="visibility: hidden; display: none">
-	<%
-		Response.Write("	<input type='hidden' id=txtDefn_Name name=txtDefn_Name value=""" & Replace(Session("utilname").ToString(), """", "&quot;") & """>" & vbCrLf)
-		Response.Write("	<input type='hidden' id=txtDefn_ErrMsg name=txtDefn_ErrMsg value=""" & objCalendar.ErrorString & """>" & vbCrLf)
-	%>
-	<input type="hidden" id="txtUserName" name="txtUserName" value="<%Session("username").ToString()%>">
-	<input type="hidden" id="txtDateFormat" name="txtDateFormat" value="<%Session("LocaleDateFormat").ToString()%>">
-	<input type="hidden" id="txtCancelPrint" name="txtCancelPrint">
-	<input type="hidden" id="txtOptionsDone" name="txtOptionsDone">
-	<input type="hidden" id="txtOptionsPortrait" name="txtOptionsPortrait">
-	<input type="hidden" id="txtOptionsMarginLeft" name="txtOptionsMarginLeft">
-	<input type="hidden" id="txtOptionsMarginRight" name="txtOptionsMarginRight">
-	<input type="hidden" id="txtOptionsMarginTop" name="txtOptionsMarginTop">
-	<input type="hidden" id="txtOptionsMarginBottom" name="txtOptionsMarginBottom">
-	<input type="hidden" id="txtOptionsCopies" name="txtOptionsCopies">
-	<input type="hidden" id="txtCalRep_UtilID" name="txtCalRep_UtilID" value="<%Session("UtilID").ToString()%>">
-</form>
+	<input type='hidden' id="txtDefn_Name" name="txtDefn_Name" value="<%= objCalendar.Name.ToString()%>">
+	<input type='hidden' id="txtDefn_ErrMsg" name="txtDefn_ErrMsg" value="<%=objCalendar.ErrorString%>">

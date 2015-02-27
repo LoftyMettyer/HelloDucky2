@@ -228,7 +228,7 @@
 		
 		If Session("CT_Mode") = "OUTPUTRUNTHENCLOSE" Then
 			Response.Write("  try {" & vbCrLf)
-			Response.Write("    if (frmOriginalDefinition.txtCancelPrint.value == 1) {" & vbCrLf)
+			Response.Write("    if ( $(""#txtCancelPrint"").val() == 1) {" & vbCrLf)
 			Response.Write("      window.parent.parent.raiseError('',false,true);" & vbCrLf)
 			Response.Write("    }" & vbCrLf)
 			Response.Write("    else if (ClientDLL.ErrorMessage != """") {" & vbCrLf)
@@ -242,7 +242,7 @@
 			Response.Write("  }" & vbCrLf)
 		Else
 			Response.Write("  sUtilTypeDesc = frmPopup.txtUtilTypeDesc.value;" & vbCrLf)
-			Response.Write("  if (frmOriginalDefinition.txtCancelPrint.value == 1) {" & vbCrLf)
+			Response.Write("  if ($(""#txtCancelPrint"").val() == 1) {" & vbCrLf)
 			Response.Write("    OpenHR.messageBox(sUtilTypeDesc+"" output failed.\n\nCancelled by user."",64,sUtilTypeDesc);" & vbCrLf)
 			Response.Write("  }" & vbCrLf)
 			Response.Write("  else if (ClientDLL.ErrorMessage == """") {" & vbCrLf)
