@@ -304,7 +304,7 @@
 	</div>
 </form>
 
-<form id="util_def_exprcomponent_frmUseful" name="util_def_exprcomponent_frmUseful" style="visibility: hidden; display: none">
+<div id="util_def_exprcomponent_frmUseful">
 	<input type="hidden" id="txtUserName" name="txtUserName" value="<%=session("username")%>">
 	<input type="hidden" id="txtExprType" name="txtExprType" value='<%=session("optionExprType")%>'>
 	<input type="hidden" id="txtExprID" name="txtExprID" value='<%=session("optionExprID")%>'>
@@ -319,7 +319,7 @@
 	<input type="hidden" id="txtOperatorsLoaded" name="txtOperatorsLoaded" value="0">
 	<input type="hidden" id="txtLookupTablesLoaded" name="txtLookupTablesLoaded" value="0">
 	<input type="hidden" id="txtPValLookupTablesLoaded" name="txtPValLookupTablesLoaded" value="0">
-</form>
+</div>
 
 <form action="util_def_exprComponent_Submit" method="post" id="frmGotoOption" name="frmGotoOption">
 	<%Html.RenderPartial("~/Views/Shared/gotoOption.ascx")%>

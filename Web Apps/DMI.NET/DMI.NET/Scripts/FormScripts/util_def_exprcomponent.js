@@ -1,6 +1,5 @@
 ﻿
 var frmMainForm = OpenHR.getForm("optionframe", "frmMainForm");
-var util_def_exprcomponent_frmUseful = OpenHR.getForm("optionframe", "util_def_exprcomponent_frmUseful");
 var util_def_exprcomponent_frmOriginalDefinition = OpenHR.getForm("optionframe", "util_def_exprcomponent_frmOriginalDefinition");
 var frmFieldRec = OpenHR.getForm("workframe", "frmFieldRec");
 var _FunctionTreeLoaded = false;
@@ -82,6 +81,8 @@ function onload2() {
 
 	var sUdfFunctionVisibility;
 	var sUdfFunctionDisplay;
+
+	var util_def_exprcomponent_frmUseful = $("#util_def_exprcomponent_frmUseful")[0].children;
 	
 	$("#optionframe").attr("data-framesource", "UTIL_DEF_EXPRCOMPONENT");
 
@@ -158,6 +159,8 @@ function formatComponentTypeFrame() {
 	sTypeFilterVisibility = "visible";
 	sTypeFilterDisplay = "inline-block";
 
+	var util_def_exprcomponent_frmUseful = $("#util_def_exprcomponent_frmUseful")[0].children;
+
 	switch (util_def_exprcomponent_frmUseful.txtExprType.value) {
 		case "10":
 			// Runtime Calculation
@@ -192,6 +195,9 @@ function loadComponentDefinition() {
 	var iType;
 	var i;
 	var iIndex;
+
+	var util_def_exprcomponent_frmUseful = $("#util_def_exprcomponent_frmUseful")[0].children;
+
 	iType = new Number(util_def_exprcomponent_frmOriginalDefinition.txtType.value);
 
 	if (iType == 1) {
@@ -515,6 +521,8 @@ function initializeComponentControls(piType) {
 	//button_disable(frmMainForm.cmdOK, false);
 	$('#cmdOK').button('enable');
 
+	var util_def_exprcomponent_frmUseful = $("#util_def_exprcomponent_frmUseful")[0].children;
+
 	switch (piType) {
 		case 1:
 			// Field
@@ -564,6 +572,8 @@ function initializeComponentControls(piType) {
 }
 
 function field_refreshTable() {
+
+	var util_def_exprcomponent_frmUseful = $("#util_def_exprcomponent_frmUseful")[0].children;
 	var oOption;
 	var sTableName;
 	var sTableID;
@@ -637,6 +647,7 @@ function field_refreshTable() {
 function field_refreshColumn() {
 
 	var sDefaultColumnID;
+	var util_def_exprcomponent_frmUseful = $("#util_def_exprcomponent_frmUseful")[0].children;
 	var fInitialise = util_def_exprcomponent_frmUseful.txtInitialising.value;
 
 	sDefaultColumnID = util_def_exprcomponent_frmOriginalDefinition.txtFieldColumnID.value;
@@ -698,6 +709,8 @@ function field_refreshColumn() {
 }
 
 function field_refreshChildFrame() {
+
+	var util_def_exprcomponent_frmUseful = $("#util_def_exprcomponent_frmUseful")[0].children;
 	var tableCollection = $("#frmExprTables")[0].elements;
 	var i;
 	var fIsChild;
@@ -800,12 +813,15 @@ function field_changeTable() {
 		frmMainForm.txtFieldRecOrder.value = "";
 	}
 
+	var util_def_exprcomponent_frmUseful = $("#util_def_exprcomponent_frmUseful")[0].children;
 	util_def_exprcomponent_frmUseful.txtChildFieldFilterID.value = 0;
 	util_def_exprcomponent_frmUseful.txtChildFieldFilterHidden.value = "N";
 	util_def_exprcomponent_frmUseful.txtChildFieldOrderID.value = 0;
 }
 
 function field_selectRecOrder() {
+
+	var util_def_exprcomponent_frmUseful = $("#util_def_exprcomponent_frmUseful")[0].children;
 	var tableID = frmMainForm.cboFieldTable.options[frmMainForm.cboFieldTable.selectedIndex].Value;
 	var currentID = util_def_exprcomponent_frmUseful.txtChildFieldOrderID.value;
 	var newHeight = (screen.height) / 2;
@@ -815,9 +831,9 @@ function field_selectRecOrder() {
 	}, newWidth - 40, newHeight - 160);
 }
 
-
 function field_selectRecFilter() {
 
+	var util_def_exprcomponent_frmUseful = $("#util_def_exprcomponent_frmUseful")[0].children;
 	var tableID = frmMainForm.cboFieldTable.options[frmMainForm.cboFieldTable.selectedIndex].Value;
 	var currentID = util_def_exprcomponent_frmUseful.txtChildFieldFilterID.value;
 	var newHeight = (screen.height) / 2;
@@ -862,8 +878,6 @@ function makeSelection(psType, psSelectedID, psSelectedName, psSelectedAccess) {
 	return false;
 }
 
-
-
 function functionAndOperator_refresh() {
 	// Load the function treeview with the functions.
 	var i;
@@ -876,6 +890,7 @@ function functionAndOperator_refresh() {
 	var sRootKey;
 	var ctlLoadedFlag;
 	var treeID;
+	var util_def_exprcomponent_frmUseful = $("#util_def_exprcomponent_frmUseful")[0].children;
 
 	if (frmMainForm.optType_Function.checked == true) {
 		trvTreeView = document.getElementById('SSFunctionTree');
@@ -938,6 +953,7 @@ function componentRefreshControls() {
 function calculationAndFilter_refresh() {
 	var iCurrentID;
 	var grdGrid;
+	var util_def_exprcomponent_frmUseful = $("#util_def_exprcomponent_frmUseful")[0].children;
 
 	iCurrentID = 0;
 
@@ -983,6 +999,9 @@ function calculationAndFilter_refresh() {
 }
 
 function calculationsAndFilters_load() {
+
+	var util_def_exprcomponent_frmUseful = $("#util_def_exprcomponent_frmUseful")[0].children;
+
 	// Load the calculations/filters grid with the calcs.
 	var i;
 	var colCollection;
@@ -1128,6 +1147,8 @@ function value_changeType() {
 }
 
 function lookupValue_refreshTable() {
+
+	var util_def_exprcomponent_frmUseful = $("#util_def_exprcomponent_frmUseful")[0].children;
 	var oOption;
 	var sTableName;
 	var sTableID;
@@ -1190,6 +1211,8 @@ function lookupValue_refreshTable() {
 }
 
 function lookupValue_refreshColumn() {
+
+	var util_def_exprcomponent_frmUseful = $("#util_def_exprcomponent_frmUseful")[0].children;
 	var sDefaultColumnID;
 	var fInitialise = util_def_exprcomponent_frmUseful.txtInitialising.value;
 
@@ -1228,6 +1251,8 @@ function lookupValue_refreshColumn() {
 }
 
 function lookupValue_refreshValues() {
+
+	var util_def_exprcomponent_frmUseful = $("#util_def_exprcomponent_frmUseful")[0].children;
 	var sDefaultValue = "";
 	var fInitialise = util_def_exprcomponent_frmUseful.txtInitialising.value;
 	var iDataType;
@@ -1286,6 +1311,7 @@ function lookupValue_changeTable() {
 }
 
 function lookupValue_changeColumn() {
+	var util_def_exprcomponent_frmUseful = $("#util_def_exprcomponent_frmUseful")[0].children;
 	util_def_exprcomponent_frmUseful.txtInitialising.value = 1;
 	lookupValue_refreshValues();
 }
@@ -1453,6 +1479,7 @@ function validateDate(sender) {
 }
 
 function pVal_refreshTable() {
+	var util_def_exprcomponent_frmUseful = $("#util_def_exprcomponent_frmUseful")[0].children;
 	var oOption;
 	var sTableName;
 	var sTableID;
@@ -1514,6 +1541,7 @@ function pVal_refreshTable() {
 }
 
 function pVal_refreshColumn() {
+	var util_def_exprcomponent_frmUseful = $("#util_def_exprcomponent_frmUseful")[0].children;
 	var sDefaultColumnID;
 	var fInitialise = util_def_exprcomponent_frmUseful.txtInitialising.value;
 
@@ -1551,6 +1579,7 @@ function pVal_refreshColumn() {
 }
 
 function pVal_refreshValues() {
+	var util_def_exprcomponent_frmUseful = $("#util_def_exprcomponent_frmUseful")[0].children;
 	var sDefaultValue = "";
 	var fInitialise = util_def_exprcomponent_frmUseful.txtInitialising.value;
 	var iDataType;
@@ -1628,6 +1657,7 @@ function pVal_changeTable() {
 }
 
 function pVal_changeColumn() {
+	var util_def_exprcomponent_frmUseful = $("#util_def_exprcomponent_frmUseful")[0].children;
 	util_def_exprcomponent_frmUseful.txtInitialising.value = 1;
 	pVal_refreshValues();
 }
@@ -1659,6 +1689,8 @@ function component_addColumn(psDefn) {
 }
 
 function component_setColumn(piColumnID) {
+
+	var util_def_exprcomponent_frmUseful = $("#util_def_exprcomponent_frmUseful")[0].children;
 	var iIndex;
 	var i;
 	var cboCombo;
@@ -1932,6 +1964,8 @@ function locateGridRecord(piID) {
 }
 
 function component_OKClick() {
+
+	var util_def_exprcomponent_frmUseful = $("#util_def_exprcomponent_frmUseful")[0].children;
 	var sDefn;
 	var sTemp;
 	var sKey;
@@ -2493,7 +2527,9 @@ function component_CancelClick() {
 	cancelComponent();
 }
 
-function validateComponent() {	
+function validateComponent() {
+
+	var util_def_exprcomponent_frmUseful = $("#util_def_exprcomponent_frmUseful")[0].children;
 	var sErrorMsg = "";
 	var sValue;
 	var sTemp;
@@ -2812,7 +2848,6 @@ function component_saveChanges(psAction, pfPrompt, pfTbOverride) {
 	// Pass the component definition back to the expression page.        
 	saveChanges(psAction, pfPrompt, pfTbOverride);
 }
-
 
 function ssOleDBGridCalculations_rowcolchange() {
 
