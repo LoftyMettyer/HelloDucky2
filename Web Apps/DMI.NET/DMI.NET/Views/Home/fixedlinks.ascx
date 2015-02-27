@@ -132,12 +132,11 @@
 					OpenHR.modalMessage("You have unsaved changes.<br/><br/>Please action them before navigating away.");
 					return false;
 				}
+			} catch (e) { //continue with navigation 
 			}
-			catch (e) { //continue with navigation 
-			}
-
+		} else {
 			OpenHR.showAboutPopup();
-		}		
+		}
 	}
 
 	function showThemeEditor() {
