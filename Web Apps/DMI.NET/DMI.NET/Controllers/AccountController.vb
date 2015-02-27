@@ -250,7 +250,7 @@ Namespace Controllers
 					Dim objAppVersion As Version = Assembly.GetExecutingAssembly().GetName().Version
 
 					If Not Licence.IsValid Then
-						sErrorMessage = String.Format("The database licence is invalid.<BR>Please ask the System Administrator to update the database for use with version {0}.{1}.{2}" _
+						sErrorMessage = String.Format("The database licence is invalid. Please ask the System Administrator to update the database for use with version {0}.{1}.{2}" _
 								, objAppVersion.Major, objAppVersion.Minor, objAppVersion.Build)
 						ModelState.AddModelError(Function(i As LoginViewModel) i.LoginStatus, sErrorMessage)
 						Return View(loginviewmodel)
@@ -285,7 +285,7 @@ Namespace Controllers
 
 					If Not CompareVersion(objServerSession.DatabaseStatus.IntranetVersion, objAppVersion, False) _
 						Or Not CompareVersion(objServerSession.DatabaseStatus.SysMgrVersion, objAppVersion, True) Then
-						sErrorMessage = String.Format("The database is out of date.<BR>Please ask the System Administrator to update the database for use with version {0}.{1}.{2}" _
+						sErrorMessage = String.Format("The database is out of date. Please ask the System Administrator to update the database for use with version {0}.{1}.{2}" _
 								, objAppVersion.Major, objAppVersion.Minor, objAppVersion.Build)
 						ModelState.AddModelError(Function(i As LoginViewModel) i.LoginStatus, sErrorMessage)
 						Return View(loginviewmodel)
