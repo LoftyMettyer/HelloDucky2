@@ -821,7 +821,7 @@ Namespace Controllers
 				Session("fromMenu") = ValidateIntegerValue(Request.Form("txtGotoFromMenu"))
 				Session("reloadMenu") = ValidateIntegerValue(Request.Form("txtReloadMenu"))
 				Session("StandardReport_Type") = ValidateFromWhiteList(Request.Form("txtStandardReportType"), InputValidation.WhiteListCollections.UtilTypes)
-				Session("singleRecordID") = ValidateIntegerValue(CInt(Request.Form("txtGotoOptionDefSelRecordID")))
+				Session("singleRecordID") = ValidateIntegerValue(Request.Form("txtGotoOptionDefSelRecordID"))
 			End If
 
 			Session("optionRecordID") = 0
@@ -837,63 +837,66 @@ Namespace Controllers
 		<ValidateAntiForgeryToken>
 		Function emptyoption_Submit()
 
+			Try
 
+				' Save the required information in session variables.
+				Session("optionScreenID") = Request.Form("txtGotoOptionScreenID")
+				Session("optionTableID") = Request.Form("txtGotoOptionTableID")
+				Session("optionViewID") = Request.Form("txtGotoOptionViewID")
+				Session("optionOrderID") = Request.Form("txtGotoOptionOrderID")
+				Session("optionRecordID") = Request.Form("txtGotoOptionRecordID")
+				Session("optionFilterDef") = Request.Form("txtGotoOptionFilterDef")
+				Session("optionFilterSQL") = Request.Form("txtGotoOptionFilterSQL")
+				Session("optionValue") = Request.Form("txtGotoOptionValue")
+				Session("optionLinkTableID") = Request.Form("txtGotoOptionLinkTableID")
+				Session("optionLinkOrderID") = Request.Form("txtGotoOptionLinkOrderID")
+				Session("optionLinkViewID") = Request.Form("txtGotoOptionLinkViewID")
+				Session("optionLinkRecordID") = Request.Form("txtGotoOptionLinkRecordID")
+				Session("optionColumnID") = Request.Form("txtGotoOptionColumnID")
+				Session("optionLookupColumnID") = Request.Form("txtGotoOptionLookupColumnID")
+				Session("optionLookupMandatory") = Request.Form("txtGotoOptionLookupMandatory")
+				Session("optionLookupValue") = Request.Form("txtGotoOptionLookupValue")
+				Session("optionLookupFilterValue") = Request.Form("txtGotoOptionLookupFilterValue")
+				Session("optionFile") = Request.Form("txtGotoOptionFile")
+				Session("optionExtension") = Request.Form("txtGotoOptionExtension")
+				'Session("optionOLEOnServer") = Request.Form("txtGotoOptionOLEOnServer")
+				Session("optionAction") = Request.Form("txtGotoOptionAction")
+				Session("optionPageAction") = Request.Form("txtGotoOptionPageAction")
+				Session("optionCourseTitle") = Request.Form("txtGotoOptionCourseTitle")
+				Session("optionFirstRecPos") = Request.Form("txtGotoOptionFirstRecPos")
+				Session("optionCurrentRecCount") = Request.Form("txtGotoOptionCurrentRecCount")
+				Session("optionExprType") = Request.Form("txtGotoOptionExprType")
+				Session("optionExprID") = Request.Form("txtGotoOptionExprID")
+				Session("optionFunctionID") = Request.Form("txtGotoOptionFunctionID")
+				Session("optionParameterIndex") = Request.Form("txtGotoOptionParameterIndex")
+				Session("OptionRealsource") = Request.Form("txtGotoOptionRealsource")
+				Session("StandardReport_Type") = Request.Form("txtStandardReportType")
+				Session("optionDefSelType") = Request.Form("txtGotoOptionDefSelType")
+				Session("singleRecordID") = ValidateIntegerValue(Request.Form("txtGotoOptionDefSelRecordID"))
+				Session("optionOLEType") = Request.Form("txtGotoOptionOLEType")
+				Session("optionOLEMaxEmbedSize") = Request.Form("txtGotoOptionOLEMaxEmbedSize")
+				Session("optionOLEReadOnly") = Request.Form("txtGotoOptionOLEReadOnly")
+				Session("optionIsPhoto") = Request.Form("txtGotoOptionIsPhoto")
+				Session("optionOnlyNumerics") = Request.Form("txtOptionOnlyNumerics")
+				Session("StandardReport_Type") = Request.Form("txtStandardReportType")
 
-			' Save the required information in session variables.
-			Session("optionScreenID") = Request.Form("txtGotoOptionScreenID")
-			Session("optionTableID") = Request.Form("txtGotoOptionTableID")
-			Session("optionViewID") = Request.Form("txtGotoOptionViewID")
-			Session("optionOrderID") = Request.Form("txtGotoOptionOrderID")
-			Session("optionRecordID") = Request.Form("txtGotoOptionRecordID")
-			Session("optionFilterDef") = Request.Form("txtGotoOptionFilterDef")
-			Session("optionFilterSQL") = Request.Form("txtGotoOptionFilterSQL")
-			Session("optionValue") = Request.Form("txtGotoOptionValue")
-			Session("optionLinkTableID") = Request.Form("txtGotoOptionLinkTableID")
-			Session("optionLinkOrderID") = Request.Form("txtGotoOptionLinkOrderID")
-			Session("optionLinkViewID") = Request.Form("txtGotoOptionLinkViewID")
-			Session("optionLinkRecordID") = Request.Form("txtGotoOptionLinkRecordID")
-			Session("optionColumnID") = Request.Form("txtGotoOptionColumnID")
-			Session("optionLookupColumnID") = Request.Form("txtGotoOptionLookupColumnID")
-			Session("optionLookupMandatory") = Request.Form("txtGotoOptionLookupMandatory")
-			Session("optionLookupValue") = Request.Form("txtGotoOptionLookupValue")
-			Session("optionLookupFilterValue") = Request.Form("txtGotoOptionLookupFilterValue")
-			Session("optionFile") = Request.Form("txtGotoOptionFile")
-			Session("optionExtension") = Request.Form("txtGotoOptionExtension")
-			'Session("optionOLEOnServer") = Request.Form("txtGotoOptionOLEOnServer")
-			Session("optionAction") = Request.Form("txtGotoOptionAction")
-			Session("optionPageAction") = Request.Form("txtGotoOptionPageAction")
-			Session("optionCourseTitle") = Request.Form("txtGotoOptionCourseTitle")
-			Session("optionFirstRecPos") = Request.Form("txtGotoOptionFirstRecPos")
-			Session("optionCurrentRecCount") = Request.Form("txtGotoOptionCurrentRecCount")
-			Session("optionExprType") = Request.Form("txtGotoOptionExprType")
-			Session("optionExprID") = Request.Form("txtGotoOptionExprID")
-			Session("optionFunctionID") = Request.Form("txtGotoOptionFunctionID")
-			Session("optionParameterIndex") = Request.Form("txtGotoOptionParameterIndex")
-			Session("OptionRealsource") = Request.Form("txtGotoOptionRealsource")
-			Session("StandardReport_Type") = Request.Form("txtStandardReportType")
-			Session("optionDefSelType") = Request.Form("txtGotoOptionDefSelType")
-			Session("singleRecordID") = CInt(Request.Form("txtGotoOptionDefSelRecordID"))
-			Session("optionOLEType") = Request.Form("txtGotoOptionOLEType")
-			Session("optionOLEMaxEmbedSize") = Request.Form("txtGotoOptionOLEMaxEmbedSize")
-			Session("optionOLEReadOnly") = Request.Form("txtGotoOptionOLEReadOnly")
-			Session("optionIsPhoto") = Request.Form("txtGotoOptionIsPhoto")
-			Session("optionOnlyNumerics") = Request.Form("txtOptionOnlyNumerics")
-			Session("StandardReport_Type") = Request.Form("txtStandardReportType")
+				' Go to the requested page.
+				Dim GotoOptionPage As String = Request.Form("txtGotoOptionPage")
+				If GotoOptionPage = "tbTransferCourseFind" _
+					Or GotoOptionPage = "tbTransferBookingFind" _
+					Or GotoOptionPage = "tbBookCourseFind" _
+					Or GotoOptionPage = "tbAddFromWaitingListFind" Then
 
-			' Go to the requested page.
-			Dim GotoOptionPage As String = Request.Form("txtGotoOptionPage")
-			If GotoOptionPage = "tbTransferCourseFind" _
-				Or GotoOptionPage = "tbTransferBookingFind" _
-				Or GotoOptionPage = "tbBookCourseFind" _
-				Or GotoOptionPage = "tbAddFromWaitingListFind" Then
+					Return RedirectToAction("OptionDataGrid", "Home", New With {.GotoOptionPage = GotoOptionPage})
 
-				Return RedirectToAction("OptionDataGrid", "Home", New With {.GotoOptionPage = GotoOptionPage})
+				Else
+					Return RedirectToAction(Request.Form("txtGotoOptionPage"))
+				End If
 
-			Else
-				Return RedirectToAction(Request.Form("txtGotoOptionPage"))
-			End If
+			Catch ex As Exception
+				Throw
 
-
+			End Try
 
 		End Function
 
@@ -905,7 +908,7 @@ Namespace Controllers
 		<ValidateAntiForgeryToken>
 		Function DefSel(value As FormCollection)
 
-			Session("utilTableID") = CInt(Request.Form("txtTableID"))
+			Session("utilTableID") = ValidateIntegerValue(Request.Form("txtTableID"))
 			Return View()
 
 		End Function
@@ -913,61 +916,69 @@ Namespace Controllers
 		<HttpPost()>
 		<ValidateAntiForgeryToken>
 		Function DefSel_Submit(value As FormCollection)
-			' Set some session variables used by all the util pages
-			Session("utiltype") = Request.Form("utiltype")
-			Session("utilid") = Request.Form("utilid")
-			Session("utilname") = Request.Form("utilname")
-			Session("action") = Request.Form("action")
 
-			' Now examine what we are doing and redirect as appropriate
-			If (Session("action") = "new") Or _
-			 (Session("action") = "edit") Or _
-			 (Session("action") = "view") Or _
-			 (Session("action") = "copy") Then
-				Select Case Session("utiltype")
-					Case 1 ' CROSS TABS
-						Return RedirectToAction("util_def_crosstab", "reports")
-					Case 2 ' CUSTOM REPORTS
-						Return RedirectToAction("util_def_customreport", "reports")
-					Case 9 ' MAIL MERGE
-						Return RedirectToAction("util_def_mailmerge", "reports")
-					Case 10	' PICKLISTS
-						Return RedirectToAction("util_def_picklist")
-					Case 11	' FILTERS
-						Return RedirectToAction("util_def_expression")
-					Case 12	' CALCULATIONS
-						Return RedirectToAction("util_def_expression")
-					Case 17	' CALENDAR REPORTS
-						Return RedirectToAction("util_def_calendarreport", "reports")
-						'Case 25	' WORKFLOW 
-						'Return RedirectToAction("util_run_workflow")
-					Case 35	' NINE BOX
-						Return RedirectToAction("util_def_9boxgrid", "reports")
-				End Select
+			Try
 
-			ElseIf Session("action") = "delete" Then
-				Select Case Session("utiltype")
-					Case 1	' CROSS TABS
-						Session("reaction") = "CROSSTABS"
-					Case 2	' CUSTOM REPORTS
-						Session("reaction") = "CUSTOMREPORTS"
-					Case 9	' MAIL MERGE
-						Session("reaction") = "MAILMERGE"
-					Case 10	' PICKLISTS
-						Session("reaction") = "PICKLISTS"
-					Case 11	' FILTERS
-						Session("reaction") = "FILTERS"
-					Case 12	' CALCULATIONS
-						Session("reaction") = "CALCULATIONS"
-					Case 17	' CALENDAR REPORTS
-						Session("reaction") = "CALENDARREPORTS"
-						'Case 25	' WORKFLOW 
-						'	Session("reaction") = "WORKFLOWS"
-					Case 35	' NINE BOX
-						Session("reaction") = "NINEBOXGRID"
-				End Select
-				Return RedirectToAction("checkforusage")
-			End If
+				' Set some session variables used by all the util pages
+				Session("utiltype") = Request.Form("utiltype")
+				Session("utilid") = Request.Form("utilid")
+				Session("utilname") = Request.Form("utilname")
+				Session("action") = Request.Form("action")
+
+				' Now examine what we are doing and redirect as appropriate
+				If (Session("action") = "new") Or _
+				 (Session("action") = "edit") Or _
+				 (Session("action") = "view") Or _
+				 (Session("action") = "copy") Then
+					Select Case Session("utiltype")
+						Case 1 ' CROSS TABS
+							Return RedirectToAction("util_def_crosstab", "reports")
+						Case 2 ' CUSTOM REPORTS
+							Return RedirectToAction("util_def_customreport", "reports")
+						Case 9 ' MAIL MERGE
+							Return RedirectToAction("util_def_mailmerge", "reports")
+						Case 10	' PICKLISTS
+							Return RedirectToAction("util_def_picklist")
+						Case 11	' FILTERS
+							Return RedirectToAction("util_def_expression")
+						Case 12	' CALCULATIONS
+							Return RedirectToAction("util_def_expression")
+						Case 17	' CALENDAR REPORTS
+							Return RedirectToAction("util_def_calendarreport", "reports")
+							'Case 25	' WORKFLOW 
+							'Return RedirectToAction("util_run_workflow")
+						Case 35	' NINE BOX
+							Return RedirectToAction("util_def_9boxgrid", "reports")
+					End Select
+
+				ElseIf Session("action") = "delete" Then
+					Select Case Session("utiltype")
+						Case 1	' CROSS TABS
+							Session("reaction") = "CROSSTABS"
+						Case 2	' CUSTOM REPORTS
+							Session("reaction") = "CUSTOMREPORTS"
+						Case 9	' MAIL MERGE
+							Session("reaction") = "MAILMERGE"
+						Case 10	' PICKLISTS
+							Session("reaction") = "PICKLISTS"
+						Case 11	' FILTERS
+							Session("reaction") = "FILTERS"
+						Case 12	' CALCULATIONS
+							Session("reaction") = "CALCULATIONS"
+						Case 17	' CALENDAR REPORTS
+							Session("reaction") = "CALENDARREPORTS"
+							'Case 25	' WORKFLOW 
+							'	Session("reaction") = "WORKFLOWS"
+						Case 35	' NINE BOX
+							Session("reaction") = "NINEBOXGRID"
+					End Select
+					Return RedirectToAction("checkforusage")
+				End If
+
+			Catch ex As Exception
+				Throw
+
+			End Try
 
 		End Function
 
@@ -1090,7 +1101,7 @@ Namespace Controllers
 			If ValidateStringValue(Request.Form("txtTBOverride"), InputValidation.StringSanitiseLevel.HTMLEncode) = "" Then
 				fTBOverride = False
 			Else
-				fTBOverride = CBool(ValidateStringValue(Request.Form("txtTBOverride"), InputValidation.StringSanitiseLevel.HTMLEncode))
+				fTBOverride = ValidateBooleanValue(Request.Form("txtTBOverride"))
 			End If
 
 			If sAction = "SAVE" Then
@@ -1178,12 +1189,12 @@ Namespace Controllers
 
 			Session("ELAction") = ValidateStringValue(Request.Form("txtELAction"), InputValidation.StringSanitiseLevel.HTMLEncode)
 
-			Session("ELCurrentRecCount") = ValidateStringValue(Request.Form("txtELCurrRecCount"), InputValidation.StringSanitiseLevel.HTMLEncode)
+			Session("ELCurrentRecCount") = ValidateIntegerValue(Request.Form("txtELCurrRecCount"))
 			If Session("ELCurrentRecCount") < 1 Or Len(Session("ELCurrentRecCount")) < 1 Then
 				Session("ELCurrentRecCount") = 0
 			End If
 
-			Session("ELFirstRecPos") = ValidateStringValue(Request.Form("txtEL1stRecPos"), InputValidation.StringSanitiseLevel.HTMLEncode)
+			Session("ELFirstRecPos") = ValidateIntegerValue(Request.Form("txtEL1stRecPos"))
 			If Session("ELFirstRecPos") < 1 Or Len(Session("ELFirstRecPos")) < 1 Then
 				Session("ELFirstRecPos") = 1
 			End If
@@ -2146,11 +2157,18 @@ Namespace Controllers
 		<ValidateInput(False)>
 		Function util_run_promptedvalues() As ActionResult
 
-			Session("utiltype") = Request.Form("utiltype")
-			Session("utilid") = Request.Form("utilid")
-			Session("utilname") = Request.Form("utilname")
-			Session("action") = Request.Form("action")
-			Session("MailMerge_Template") = Nothing
+			Try
+
+				Session("utiltype") = Request.Form("utiltype")
+				Session("utilid") = Request.Form("utilid")
+				Session("utilname") = Request.Form("utilname")
+				Session("action") = Request.Form("action")
+				Session("MailMerge_Template") = Nothing
+
+			Catch ex As Exception
+				Throw
+
+			End Try
 
 			Return View()
 		End Function
@@ -2187,10 +2205,16 @@ Namespace Controllers
 		<ValidateAntiForgeryToken>
 		Function util_run_promptedvalues_submit(TemplateFile As HttpPostedFileBase) As ActionResult
 
-			Session("utiltype") = Request.Form("utiltype")
-			Session("utilid") = Request.Form("utilid")
-			Session("utilname") = Request.Form("utilname")
-			Session("action") = Request.Form("action")
+			Try
+				Session("utiltype") = Request.Form("utiltype")
+				Session("utilid") = Request.Form("utilid")
+				Session("utilname") = Request.Form("utilname")
+				Session("action") = Request.Form("action")
+
+			Catch ex As Exception
+				Throw
+
+			End Try
 
 			Return View("util_run")
 		End Function
@@ -4421,19 +4445,26 @@ Namespace Controllers
 		<ValidateInput(False)>
 		Function util_run_outputoptions() As ActionResult
 
-			Session("CT_Mode") = Request("txtMode")
-			Session("OutputOptions_Format") = Request("txtFormat")
-			Session("OutputOptions_Screen") = Request("txtScreen")
-			Session("OutputOptions_Save") = Request("txtSave")
-			Session("OutputOptions_SaveExisting") = Request("txtSaveExisting")
-			Session("OutputOptions_Email") = Request("txtEmail")
-			Session("OutputOptions_EmailGroupID") = Request("txtEmailGroupID")
-			Session("OutputOptions_EmailGroup") = Request("txtEmailGroup")
-			Session("OutputOptions_EmailSubject") = Request("txtEmailSubject")
-			Session("OutputOptions_EmailAttachAs") = Request("txtEmailAttachAs")
-			Session("OutputOptions_Filename") = Request("txtFilename")
+			Try
 
-			Session("utiltype") = Request.Form("txtUtilType")
+				Session("CT_Mode") = Request("txtMode")
+				Session("OutputOptions_Format") = Request("txtFormat")
+				Session("OutputOptions_Screen") = Request("txtScreen")
+				Session("OutputOptions_Save") = Request("txtSave")
+				Session("OutputOptions_SaveExisting") = Request("txtSaveExisting")
+				Session("OutputOptions_Email") = Request("txtEmail")
+				Session("OutputOptions_EmailGroupID") = Request("txtEmailGroupID")
+				Session("OutputOptions_EmailGroup") = Request("txtEmailGroup")
+				Session("OutputOptions_EmailSubject") = Request("txtEmailSubject")
+				Session("OutputOptions_EmailAttachAs") = Request("txtEmailAttachAs")
+				Session("OutputOptions_Filename") = Request("txtFilename")
+
+				Session("utiltype") = Request.Form("txtUtilType")
+
+			Catch ex As Exception
+				Throw
+
+			End Try
 
 			Return View()
 		End Function

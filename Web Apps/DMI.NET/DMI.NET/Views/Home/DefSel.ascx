@@ -16,7 +16,7 @@
 	Session("objCalendar" & Session("UtilID")) = Nothing
 	
 	If Not String.IsNullOrEmpty(Request.Form("OnlyMine")) Then
-		Session("OnlyMine") = Request.Form("OnlyMine")
+		Session("OnlyMine") = ValidateIntegerValue(Request.Form("OnlyMine"))
 	Else
 		If Session("fromMenu") = 1 Then
 			' Read the defSel 'only mine' setting from the database.
