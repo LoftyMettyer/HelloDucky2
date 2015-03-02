@@ -164,7 +164,7 @@
 		}
 
 		function CheckBoxClick(obj) {
-			obj.change(function () {
+			obj.change(function () {				
 				var colid = $(this).parents('tr:last').attr('id');
 				var PageOnChangeColumn = $(this).parents('td').attr('aria-describedby') == "SortOrders_PageOnChange";
 				var BreakOnChangeColumn = $(this).parents('td').attr('aria-describedby') == "SortOrders_BreakOnChange";
@@ -198,6 +198,10 @@
 							}
 						}
 					}
+				}
+				else
+				{
+					enableSaveButton();					
 				}
 			});
 		}
