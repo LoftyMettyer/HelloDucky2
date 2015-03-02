@@ -779,11 +779,6 @@ Namespace Controllers
 
 		End Function
 
-		Function _default() As ActionResult
-			Return View()
-		End Function
-
-
 		<HttpPost()>
 		<ValidateAntiForgeryToken>
 		Function default_Submit()

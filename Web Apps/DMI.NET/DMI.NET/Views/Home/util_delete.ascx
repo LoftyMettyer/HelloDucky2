@@ -135,8 +135,6 @@
 				
 			End Try
 
-		Else
-			Response.Redirect("_default")
 		End If
 	%>
 </div>

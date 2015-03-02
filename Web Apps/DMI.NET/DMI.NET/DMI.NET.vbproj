@@ -1688,7 +1688,6 @@
     <Content Include="Views\Home\documentDisplay.ascx" />
     <Content Include="Views\Home\linkFind.ascx" />
     <Content Include="Views\Home\Data.ascx" />
-    <Content Include="Views\Home\_default.ascx" />
     <Content Include="Views\Home\DefSel.ascx" />
     <Content Include="Views\Home\emailSelection.aspx" />
     <Content Include="Views\Home\emptyoption.ascx" />

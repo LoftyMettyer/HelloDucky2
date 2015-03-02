@@ -801,10 +801,7 @@
 						$("#toolbarRecord").click();
 					
 						menu_refreshMenu();
-				}
-				else {
-						window.location.href = "_default";
-				}
+				}			
 		}
 
 
