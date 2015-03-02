@@ -124,7 +124,6 @@
 	}
 
 	function fixedlinks_mnutoolAboutHRPro() {
-
 		if (OpenHR.currentWorkPage() == "FIND") {
 			try {
 				if ((rowIsEditedOrNew != "") || (rowWasModified)) {
@@ -140,7 +139,6 @@
 	}
 
 	function showThemeEditor() {
-
 		if (OpenHR.currentWorkPage() == "FIND") {
 			try {
 				if ((rowIsEditedOrNew != "") || (rowWasModified)) {
@@ -150,7 +148,8 @@
 				}
 			} catch (e) { //continue with navigation 
 			}
-
+		}
+		else {
 			$("#divthemeRoller").dialog("open");
 
 			//load the themeeditor form now
