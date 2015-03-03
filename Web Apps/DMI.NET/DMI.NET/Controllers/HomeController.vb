@@ -1046,7 +1046,7 @@ Namespace Controllers
 			Session("optionLocateValue") = ValidateStringValue(Request.Form("txtGotoLocateValue"), InputValidation.StringSanitiseLevel.HTMLEncode)
 			Session("optionCourseTitle") = ValidateStringValue(Request.Form("txtOptionCourseTitle"), InputValidation.StringSanitiseLevel.HTMLEncode)
 			Session("optionRecordID") = ValidateIntegerValue(Request.Form("txtOptionRecordID"))
-			Session("optionLinkRecordID") = ValidateIntegerValue(Request.Form("txtOptionLinkRecordID"))
+			Session("optionLinkRecordID") = ValidateStringValue(Request.Form("txtOptionLinkRecordID"), InputValidation.StringSanitiseLevel.None)
 			Session("optionValue") = ValidateStringValue(Request.Form("txtOptionValue"), InputValidation.StringSanitiseLevel.None)
 			Session("optionSQL") = ValidateStringValue(Request.Form("txtOptionSQL"), InputValidation.StringSanitiseLevel.None)
 			Session("optionPromptSQL") = ValidateStringValue(Request.Form("txtOptionPromptSQL"), InputValidation.StringSanitiseLevel.None)
