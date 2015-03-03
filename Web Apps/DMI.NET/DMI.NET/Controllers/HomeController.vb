@@ -5511,6 +5511,9 @@ Namespace Controllers
 				bOutOfOffice = CBool(prmOutOfOffice.Value)
 				iRecordCount = CInt(prmRecordCount.Value)
 
+				If iRecordCount = 0 Then
+					sErrorMessage = "Unable to set Workflow Out of Office.<br/>You do not have an identifiable personnel record."
+				End If
 			Catch ex As Exception
 				sErrorMessage = "Unable to set your out of office.<br/><br/>Your personnel record cannot be updated."
 
