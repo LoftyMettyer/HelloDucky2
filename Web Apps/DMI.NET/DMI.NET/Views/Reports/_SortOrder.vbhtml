@@ -95,6 +95,8 @@
 		
 		function attachGrid() {
 
+			var isReadonlyDefinition = isDefinitionReadOnly();
+
 			$("#SortOrders").jqGrid({
 				datatype: 'jsonstring',
 				datastr: '@Model.SortOrders.ToJsonResult',
@@ -121,19 +123,19 @@
 										{ name: 'Order', index: 'Order', width: 90, editable: true, formatter: "select", edittype: "select", editoptions: { value: "0:Ascending;1:Descending" } },
 										{
 											name: 'BreakOnChange', index: 'BreakOnChange', width: 120, align: "center", hidden: true,
-											editable: true, edittype: 'checkbox', editoptions: { value: "True:False" }, formatter: "checkbox", formatoptions: { disabled: false }
+											editable: true, edittype: 'checkbox', editoptions: { value: "True:False" }, formatter: "checkbox", formatoptions: { disabled: isReadonlyDefinition }
 										},
 										{
 											name: 'PageOnChange', index: 'PageOnChange', width: 120, align: "center", hidden: true,
-											editable: true, edittype: 'checkbox', editoptions: { value: "True:False" }, formatter: "checkbox", formatoptions: { disabled: false }
+											editable: true, edittype: 'checkbox', editoptions: { value: "True:False" }, formatter: "checkbox", formatoptions: { disabled: isReadonlyDefinition }
 										},
 										{
 											name: 'ValueOnChange', index: 'ValueOnChange', width: 120, align: "center", hidden: true,
-											editable: true, edittype: 'checkbox', editoptions: { value: "True:False" }, formatter: "checkbox", formatoptions: { disabled: false }
+											editable: true, edittype: 'checkbox', editoptions: { value: "True:False" }, formatter: "checkbox", formatoptions: { disabled: isReadonlyDefinition }
 										},
 										{
 											name: 'SuppressRepeated', index: 'SuppressRepeated', width: 120, align: "center", hidden: true,
-											editable: true, edittype: 'checkbox', editoptions: { value: "True:False" }, formatter: "checkbox", formatoptions: { disabled: false }
+											editable: true, edittype: 'checkbox', editoptions: { value: "True:False" }, formatter: "checkbox", formatoptions: { disabled: isReadonlyDefinition }
 										}
 				],
 				viewrecords: true,
@@ -145,10 +147,12 @@
 					refreshSortButtons();					
 				},
 				afterInsertRow: function (rowID) {
-					// Bind checkbox's onchange event after insert row
-					$("tr.jqgrow#" + rowID + ' input[type=checkbox]').each(function () {
-						CheckBoxClick($(this));
-					});
+					// Bind checkbox's onchange event for the inserted row only if the defination is not read only
+					if (!isReadonlyDefinition) {
+						$("tr.jqgrow#" + rowID + ' input[type=checkbox]').each(function () {
+							CheckBoxClick($(this));
+						});
+					}
 				},
 				loadComplete: function (data) {
 					if ('@Model.ReportType' == '@UtilityType.utlCustomReport') {

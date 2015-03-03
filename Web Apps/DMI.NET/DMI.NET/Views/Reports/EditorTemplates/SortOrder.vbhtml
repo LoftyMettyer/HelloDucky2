@@ -66,14 +66,6 @@ End Code
 			$(".customReportsOnly").hide();
 		}
 
-		if (isDefinitionReadOnly()) {
-			$("#frmPostSortOrder input").prop('disabled', "disabled");
-			$("#frmPostSortOrder select").prop('disabled', "disabled");
-			$("#frmPostSortOrder :button").prop('disabled', "disabled");
-		}
-
-		button_disable($("#butSortOrderEditCancel")[0], false);
-
 		if ('@Model.ReportType' == '@UtilityType.utlCustomReport') {
 			updateCheckBoxes();
 		}
@@ -83,6 +75,14 @@ End Code
 
 		// Add width to column dropdown
 		$("#SortOrderColumnID").addClass('stretchyfixed600');
+
+		if (isDefinitionReadOnly()) {
+			$("#frmPostSortOrder input").prop('disabled', "disabled");
+			$("#frmPostSortOrder select").prop('disabled', "disabled");
+			$("#frmPostSortOrder :button").prop('disabled', "disabled");
+		}
+
+		button_disable($("#butSortOrderEditCancel")[0], false);
 	});
 
 	function updateCheckBoxes() {
