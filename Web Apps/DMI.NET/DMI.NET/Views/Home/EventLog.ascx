@@ -760,10 +760,6 @@
 		</div>
 	</fieldset>
 </div>
-<form action="default_Submit" method="post" id="frmGoto" name="frmGoto">
-	<%Html.RenderPartial("~/Views/Shared/gotoWork.ascx")%>
-	<%=Html.AntiForgeryToken()%>
-</form>
 
 <form id="frmDetails" name="frmDetails" method="post" style="visibility: hidden; display: none">
 	<input type="hidden" id="txtEventID" name="txtEventID">

@@ -78,7 +78,4 @@
 <form name="frmUsage" method="post" action="defsel" id="frmUsage">
 </form>
 
-<form action="default_Submit" method="post" id="frmGoto" name="frmGoto">
-	<%Html.RenderPartial("~/Views/Shared/gotoWork.ascx")%>
-</form>
 </div>

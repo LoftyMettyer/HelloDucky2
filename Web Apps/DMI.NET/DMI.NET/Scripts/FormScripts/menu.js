@@ -2694,19 +2694,18 @@ function menu_OutOfOfficeTurnOff(status) {
 	var frmWorkArea;
 	showDefaultRibbon();
 	// Submit the current "workframe" form, and then load the required page.
-	frmWorkArea = OpenHR.getForm("workframe", "frmGoto");
+	frmWorkArea = OpenHR.getForm("workframeset", "frmWorkAreaRefresh");
 	frmWorkArea.txtGotoTableID.value = 0;
 	frmWorkArea.txtGotoViewID.value = 0;
 	frmWorkArea.txtGotoScreenID.value = 0;
 	frmWorkArea.txtGotoPage.value = psPage;
-	OpenHR.submitForm(frmWorkArea);
+	OpenHR.submitForm(frmWorkArea, "workframe");
 }
 
 	function menu_autoLoadPage(psPage, pfAuto) {
 	var frmWorkArea;
 	// Submit the current "workframe" form, and then load the required page.
-	//frmWorkArea = window.parent.frames("workframe").document.forms("frmGoto");
-	frmWorkArea = OpenHR.getForm("workframe", "frmGoto");
+	frmWorkArea = OpenHR.getForm("workframeset", "frmWorkAreaRefresh");
 	frmWorkArea.txtGotoTableID.value = 0;
 	frmWorkArea.txtGotoViewID.value = 0;
 	frmWorkArea.txtGotoScreenID.value = 0;
@@ -2718,31 +2717,31 @@ function menu_OutOfOfficeTurnOff(status) {
 	else {
 	frmWorkArea.txtGotoFromMenu.value = 1;
 }
-	OpenHR.submitForm(frmWorkArea);
+	OpenHR.submitForm(frmWorkArea, "workframe");
 }
 
 	function menu_loadDefSelPage(piDefSelType, piUtilID, piTableID, pfFromMenu) {
 
-	// Submit the current "workframe" form, and then load the required page.
-	var frmWorkArea = OpenHR.getForm("workframe", "frmGoto");
-	showDefaultRibbon();
-	frmWorkArea.txtGotoTableID.value = piTableID;
-	frmWorkArea.txtGotoViewID.value = 0;
-	frmWorkArea.txtGotoScreenID.value = 0;
-	frmWorkArea.txtGotoDefSelType.value = piDefSelType;
-	frmWorkArea.txtGotoUtilID.value = piUtilID;
-	frmWorkArea.txtGotoPage.value = "defsel";
-	
-	if (pfFromMenu == true) {
-	frmWorkArea.txtGotoFromMenu.value = 1;
-	OpenHR.submitForm(frmWorkArea, 'workframe');
-}
-	else {
-	frmWorkArea.txtGotoFromMenu.value = 0;
-	frmWorkArea.txtGotoOptionDefSelRecordID.value = $('#txtCurrentRecordID').val();
-	OpenHR.submitForm(frmWorkArea, 'optionframe');
-}
-}
+		// Submit the current "workframe" form, and then load the required page.
+		var frmWorkArea = OpenHR.getForm("workframeset", "frmWorkAreaRefresh");
+		showDefaultRibbon();
+		frmWorkArea.txtGotoTableID.value = piTableID;
+		frmWorkArea.txtGotoViewID.value = 0;
+		frmWorkArea.txtGotoScreenID.value = 0;
+		frmWorkArea.txtGotoDefSelType.value = piDefSelType;
+		frmWorkArea.txtGotoUtilID.value = piUtilID;
+		frmWorkArea.txtGotoPage.value = "defsel";
+
+		if (pfFromMenu == true) {
+			frmWorkArea.txtGotoFromMenu.value = 1;
+			OpenHR.submitForm(frmWorkArea, "workframe");
+		}
+		else {
+			frmWorkArea.txtGotoFromMenu.value = 0;
+			frmWorkArea.txtGotoOptionDefSelRecordID.value = $('#txtCurrentRecordID').val();
+			OpenHR.submitForm(frmWorkArea, "optionframe");
+		}
+	}
 
 	function menu_loadRecordEditPage(psToolName) {
 	var lngTableID;
@@ -2770,7 +2769,7 @@ function menu_OutOfOfficeTurnOff(status) {
 	lngScreenID = sSubString.substr(iIndex + 1);
 
 	// Submit the current "workframe" form, and then load the required record Edit page.
-	frmWorkArea = OpenHR.getForm("workframe", "frmGoto");
+	frmWorkArea = OpenHR.getForm("workframeset", "frmWorkAreaRefresh");
 	frmWorkArea.txtGotoTableID.value = lngTableID;
 	frmWorkArea.txtGotoViewID.value = lngViewID;
 	frmWorkArea.txtGotoScreenID.value = lngScreenID;
@@ -2852,7 +2851,7 @@ function menu_OutOfOfficeTurnOff(status) {
 	frmWorkArea.txtGotoLineage.value = sLineage;
 	frmWorkArea.txtGotoPage.value = "recordEdit";
 
-	OpenHR.submitForm(frmWorkArea);
+	OpenHR.submitForm(frmWorkArea, "workframe");
 }
 
 	function menu_loadFindPage() {
@@ -2863,7 +2862,7 @@ function menu_OutOfOfficeTurnOff(status) {
 	menu_disableMenu();   // HC: Is this correct? It will only disable RecEdit buttons
 	
 	// Submit the current "workframe" form, and then load the required record Edit page.
-	frmWorkArea = OpenHR.getForm("workframe", "frmGoto");
+	frmWorkArea = OpenHR.getForm("workframeset", "frmWorkAreaRefresh");
 	frmRecEdit = OpenHR.getForm("workframe", "frmRecordEditForm");
 	
 	frmWorkArea.txtGotoTableID.value = frmRecEdit.txtCurrentTableID.value;
@@ -2895,7 +2894,7 @@ function menu_OutOfOfficeTurnOff(status) {
 	frmWorkArea.txtGotoLineage.value = frmRecEdit.txtLineage.value;
 	frmWorkArea.txtGotoPage.value = "find";
 
-	OpenHR.submitForm(frmWorkArea);
+	OpenHR.submitForm(frmWorkArea, "workframe");
 }
 
 	function menu_loadFindPageFirst(psToolName) {
@@ -2923,7 +2922,7 @@ function menu_OutOfOfficeTurnOff(status) {
 	lngScreenID = sSubString.substr(iIndex + 1);
 
 	// Submit the current "workframe" form, and then load the required record Edit page.
-	frmWorkArea = OpenHR.getForm("workframe", "frmGoto");	//  window.parent.frames("workframe").document.forms("frmGoto");
+	frmWorkArea = OpenHR.getForm("workframeset", "frmWorkAreaRefresh");
 	frmWorkArea.txtGotoTableID.value = lngTableID;
 	frmWorkArea.txtGotoViewID.value = lngViewID;
 	frmWorkArea.txtGotoScreenID.value = lngScreenID;
@@ -2972,7 +2971,7 @@ function menu_OutOfOfficeTurnOff(status) {
 
 	frmWorkArea.txtGotoLineage.value = sLineage;
 	frmWorkArea.txtGotoPage.value = "find";
-	OpenHR.submitForm(frmWorkArea); //  frmWorkArea.submit();
+	OpenHR.submitForm(frmWorkArea, "workframe");
 
 }
 
@@ -3347,7 +3346,7 @@ function menu_OutOfOfficeTurnOff(status) {
 	if (psPage == "FIND") {
 	
 	// Submit the current "workframe" form, and then load the required record Edit page.
-	var frmWorkArea = OpenHR.getForm("workframe", "frmGoto");
+	var frmWorkArea = OpenHR.getForm("workframeset", "frmWorkAreaRefresh");
 	
 	frmWorkArea.txtAction.value = psAction;
 	frmWorkArea.txtGotoTableID.value = frmFindForm.txtCurrentTableID.value;
@@ -3379,7 +3378,7 @@ function menu_OutOfOfficeTurnOff(status) {
 	// Clear the locate value from the menu.
 	menu_SetmnutoolLocateRecordsText("");
 
-	OpenHR.submitForm(frmWorkArea);
+	OpenHR.submitForm(frmWorkArea, "workframe");
 }
 
 	if (psPage == "LOOKUP") {
@@ -3661,7 +3660,7 @@ function menu_pausecomp(millis) {
 					menu_ShowWait("Loading screen...");
 			menu_disableMenu(); // HC: Is this correct? It will only disable RecEdit buttons
 				
-			frmWorkArea = OpenHR.getForm("workframe", "frmGoto");
+			frmWorkArea = OpenHR.getForm("workframeset", "frmWorkAreaRefresh");
 			frmFindArea = OpenHR.getForm("workframe", "frmFindForm");
 			frmWorkArea.txtAction.value = "NEW";
 			frmWorkArea.txtGotoTableID.value = frmFindArea.txtCurrentTableID.value;
@@ -3674,7 +3673,7 @@ function menu_pausecomp(millis) {
 			frmWorkArea.txtGotoLineage.value = frmFindArea.txtLineage.value;
 
 			frmWorkArea.txtGotoPage.value = "recordEdit";
-			OpenHR.submitForm(frmWorkArea);
+			OpenHR.submitForm(frmWorkArea, "workframe");
 		}
 	}
 }
@@ -3727,7 +3726,7 @@ function menu_pausecomp(millis) {
 				
 	lngRecordID = selectedRecordID();	// function in find.aspx
 
-	frmWorkArea = OpenHR.getForm("workframe", "frmGoto");
+	frmWorkArea = OpenHR.getForm("workframeset", "frmWorkAreaRefresh");
 	frmFindArea = OpenHR.getForm("workframe", "frmFindForm");
 	frmWorkArea.txtAction.value = "COPY";
 	frmWorkArea.txtGotoTableID.value = frmFindArea.txtCurrentTableID.value;
@@ -3742,7 +3741,7 @@ function menu_pausecomp(millis) {
 	frmWorkArea.txtGotoFilterSQL.value = frmFindArea.txtFilterSQL.value;
 
 	frmWorkArea.txtGotoPage.value = "recordEdit";
-	OpenHR.submitForm(frmWorkArea);
+	OpenHR.submitForm(frmWorkArea, "workframe");
 }
 }
 }
@@ -3761,7 +3760,7 @@ function menu_pausecomp(millis) {
 	menu_disableMenu();
 
 	// Submit the current "workframe" form, and then load the required record Edit page.
-	frmWorkArea = OpenHR.getForm("workframe", "frmGoto");
+	frmWorkArea = OpenHR.getForm("workframeset", "frmWorkAreaRefresh");
 	frmFindArea = OpenHR.getForm("workframe", "frmFindForm");
 
 	frmWorkArea.txtGotoTableID.value = frmFindArea.txtCurrentTableID.value;
@@ -3778,7 +3777,7 @@ function menu_pausecomp(millis) {
 
 	frmWorkArea.txtGotoPage.value = "recordEdit";
 	//frmWorkArea.submit();
-	OpenHR.submitForm(frmWorkArea);		
+	OpenHR.submitForm(frmWorkArea, "workframe");
 }
 }
 
@@ -3875,7 +3874,7 @@ function menu_pausecomp(millis) {
 	sCurrentWorkPage = OpenHR.currentWorkPage();
 
 	// Submit the current "workframe" form, and then load the required Record Edit page.
-	frmWorkArea = OpenHR.getForm("workframe", "frmGoto");
+	frmWorkArea = OpenHR.getForm("workframeset", "frmWorkAreaRefresh");
 	
 	if (sCurrentWorkPage == "RECORDEDIT") {
 		saveChangesPrompt('PARENT', 'menu_loadParent()');
@@ -3938,7 +3937,7 @@ function menu_pausecomp(millis) {
 	frmWorkArea.txtGotoLineage.value = sLineage;
 
 	frmWorkArea.txtGotoPage.value = "recordEdit";
-	OpenHR.submitForm(frmWorkArea);
+	OpenHR.submitForm(frmWorkArea, "workframe");
 }
 }
 }
@@ -3960,7 +3959,7 @@ function menu_pausecomp(millis) {
 	menu_ShowWait("Loading screen...");
 	menu_disableMenu(); // HC: Is this correct? It will only disable RecEdit buttons
 					
-	frmWorkArea = OpenHR.getForm("workframe", "frmGoto");
+	frmWorkArea = OpenHR.getForm("workframeset", "frmWorkAreaRefresh");
 	frmRecEditArea = OpenHR.getForm("workframe", "frmRecordEditForm");
 				
 	// Get the table, view and screen info from the tool name.
@@ -3998,7 +3997,7 @@ function menu_pausecomp(millis) {
 	frmWorkArea.txtGotoLineage.value = sLineage;
 
 	frmWorkArea.txtGotoPage.value = "recordEdit";
-	OpenHR.submitForm(frmWorkArea);
+	OpenHR.submitForm(frmWorkArea, "workframe");
 }
 
 	function menu_loadBackPage() {
@@ -4018,7 +4017,7 @@ function menu_pausecomp(millis) {
 	
 	
 	// Submit the current "workframe" form, and then load the required record Edit page.
-	frmWorkArea = OpenHR.getForm("workframe", "frmGoto");
+	frmWorkArea = OpenHR.getForm("workframeset", "frmWorkAreaRefresh");
 	frmWorkArea.txtGotoTableID.value = frmFindArea.txtCurrentTableID.value;
 	frmWorkArea.txtGotoViewID.value = frmFindArea.txtCurrentViewID.value;
 	frmWorkArea.txtGotoScreenID.value = frmFindArea.txtCurrentScreenID.value;
@@ -4031,7 +4030,7 @@ function menu_pausecomp(millis) {
 	frmWorkArea.txtGotoFilterSQL.value = frmFindArea.txtFilterSQL.value;
 
 	frmWorkArea.txtGotoPage.value = "recordEdit";
-	OpenHR.submitForm(frmWorkArea);
+	OpenHR.submitForm(frmWorkArea, "workframe");
 }
 }
 
@@ -4806,12 +4805,12 @@ function menu_loadSelectOrderFilter(psType) {
 	frmSendArea.txtGotoOptionAction.value = "STDREPORT_DATEPROMPT";
 	bOK = true;
 }
-}
-		else {  // Arrived from the menu
-				frmSendArea = OpenHR.getForm("workframe", "frmGoto");
-	frmSendArea.txtGotoPage.value = sPage;			
-	frmSendArea.txtAction.value = "STDREPORT_DATEPROMPT";
-	bOK = true;
+	}
+	else {  // Arrived from the menu
+		frmSendArea = OpenHR.getForm("workframeset", "frmWorkAreaRefresh");
+		frmSendArea.txtGotoPage.value = sPage;
+		frmSendArea.txtAction.value = "STDREPORT_DATEPROMPT";
+		bOK = true;
 }
 
 		if (bOK == true) {

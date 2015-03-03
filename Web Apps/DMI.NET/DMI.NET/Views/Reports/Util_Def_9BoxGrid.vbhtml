@@ -41,13 +41,6 @@ End Code
 		@Html.AntiForgeryToken()
 	End Using
 
-	<form action="default_Submit" method="post" id="frmGoto" name="frmGoto" class="ui-helper-hidden">
-		@Code
-			Html.RenderPartial("~/Views/Shared/gotoWork.ascx")
-		End Code
-		@Html.AntiForgeryToken()
-	</form>
-
 </div>
 
 <script type="text/javascript">

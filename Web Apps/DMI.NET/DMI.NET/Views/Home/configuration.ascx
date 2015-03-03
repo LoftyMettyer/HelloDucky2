@@ -815,11 +815,6 @@
 	<input type="hidden" id="txtUtilWarnImport" name="txtUtilWarnImport" value='<%=session("warning Import")%>'>
 </form>
 
-<form action="default_Submit" method="post" id="frmGoto" name="frmGoto" style="visibility: hidden; display: none">
-	<%Html.RenderPartial("~/Views/Shared/gotoWork.ascx")%>
-	<%=Html.AntiForgeryToken()%>
-</form>
-
 <script type="text/javascript">
 	configuration_window_onload();
 

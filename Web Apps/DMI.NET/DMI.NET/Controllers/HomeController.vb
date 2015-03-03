@@ -781,7 +781,7 @@ Namespace Controllers
 
 		<HttpPost()>
 		<ValidateAntiForgeryToken>
-		Function default_Submit()
+		Function WorkAreaRefresh()
 
 			If ValidateLineageValue(Request.Form("txtGotoLineage")) = "-1" Then
 				' We're flipping between histories, reuse session variables where possible.

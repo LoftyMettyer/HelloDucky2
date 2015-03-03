@@ -1458,7 +1458,7 @@
 	<iframe id="externalContentFrame" style="width: 90%; margin: 0 auto;"></iframe>
 </div>
 
-<form action="default_Submit" method="post" id="frmGoto" name="frmGoto" style="visibility: hidden; display: none">
+<form action="WorkAreaRefresh" method="post" id="frmGoto" name="frmGoto" style="visibility: hidden; display: none">
 		<%Html.RenderPartial("~/Views/Shared/gotoWork.ascx")%>
 		<%=Html.AntiForgeryToken()%>
 </form>

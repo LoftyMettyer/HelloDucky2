@@ -221,16 +221,17 @@
 	</div>
 
 	<div id="mainframeset">
+	
 
 		<div id="workframeset" style="display: block;" class="ui-widget ui-widget-content">
-			<div id="SSILinksFrame" style="display: none"></div>
-			<div id="workframe" data-framesource="DEFAULT">		
-				<form action="default_Submit" method="post" id="frmGoto" name="frmGoto">
-					<%Html.RenderPartial("~/Views/Shared/gotoWork.ascx")%>
-					<%=Html.AntiForgeryToken()%>
-				</form>				
 
-			</div>
+			<form action="WorkAreaRefresh" method="post" id="frmWorkAreaRefresh" name="frmWorkAreaRefresh">
+				<%Html.RenderPartial("~/Views/Shared/gotoWork.ascx")%>
+					<%=Html.AntiForgeryToken()%>
+			</form>			
+
+			<div id="SSILinksFrame" style="display: none"></div>
+			<div id="workframe" data-framesource="DEFAULT"></div>		
 			<div id="optionframe" data-framesource="emptyoption.asp" style="display: none"><%Html.RenderPartial("~/views/home/emptyoption.ascx")%></div>
 		</div>
 

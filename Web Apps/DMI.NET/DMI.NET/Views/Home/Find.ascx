@@ -722,11 +722,6 @@ Response.Write("				<input type='hidden' id=txtErrorDescription name=txtErrorDes
 	<input type='hidden' id="txtTicker" name="txtTicker" value="0">
 	<input type='hidden' id="txtLastKeyFind" name="txtLastKeyFind" value="">
 
-	<form action="default_Submit" method="post" id="frmGoto" name="frmGoto">
-		<%Html.RenderPartial("~/Views/Shared/gotoWork.ascx")%>
-		<%=Html.AntiForgeryToken()%>
-	</form>
-
 	<script type="text/javascript">
 		find_window_onload();
 		

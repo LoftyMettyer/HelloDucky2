@@ -272,10 +272,6 @@
 		<%=Html.AntiForgeryToken()%>
 	</form>
 
-	<form action="default_Submit" method="post" id="frmGoto" name="frmGoto" style="visibility: hidden; display: none">
-		<%Html.RenderPartial("~/Views/Shared/gotoWork.ascx")%>
-		<%=Html.AntiForgeryToken()%>
-	</form>
 </div>
 
 <script type="text/javascript">

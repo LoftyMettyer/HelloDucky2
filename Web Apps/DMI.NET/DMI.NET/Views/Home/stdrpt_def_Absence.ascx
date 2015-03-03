@@ -878,11 +878,6 @@
 	<input id="cmdGetFilename" name="cmdGetFilename" type="file" />
 </div>
 
-<form action="default_submit" method="post" id="frmGoto" name="frmGoto" style="visibility: hidden; display: none">
-	<%Html.RenderPartial("~/Views/Shared/gotoWork.ascx")%>
-	<%=Html.AntiForgeryToken()%>
-</form>
-
 <form action="emptyoption_submit" method="post" id="frmGotoOption" name="frmGotoOption">
 	<%Html.RenderPartial("~/Views/Shared/gotoOption.ascx")%>
 	<%=Html.AntiForgeryToken()%>
