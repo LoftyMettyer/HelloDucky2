@@ -28,7 +28,7 @@
 			ondblClickRow: function (rowID) {
 			},
 			cmTemplate: { sortable: false },
-			rowNum: 1000   //TODO set this to blocksize...
+			rowNum: 1000   //TODO set this to blocksize...			
 		});
 		//Select the first row
 		refreshControls();
@@ -82,8 +82,11 @@
 		$("#toolbarWFPendingStepsFind").parent().show();
 		setTimeout('$("#toolbarWFPendingStepsFind").click()', 50);
 
-		var newGridHeight = $("#findGridRow").height() - 50;
+		var newGridHeight = $("#workframeset").height() - 150;
 		$("#PendingStepsTable").jqGrid('setGridHeight', newGridHeight, true);
+
+		var newGridWidth = $('#workframeset').width() - 75;
+		$("#PendingStepsTable").jqGrid('setGridWidth', newGridWidth, true);
 		
 		$("#optionframe").hide();
 		$("#workframe").show();
