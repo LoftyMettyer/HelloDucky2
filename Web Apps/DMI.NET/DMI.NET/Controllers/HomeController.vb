@@ -2931,6 +2931,7 @@ Namespace Controllers
 								lngDataPageRow = 0
 
 								iBreakCount += 1
+								If iBreakCount = arrayPageBreakValues.length Then Exit For
 							Else
 
 								blnBreakCheck = False
