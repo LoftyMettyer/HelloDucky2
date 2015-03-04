@@ -569,11 +569,6 @@
 	%>
 </form>
 
-<form action="emptyoption_Submit" method="post" id="frmGotoOption" name="frmGotoOption">
-	<%Html.RenderPartial("~/Views/Shared/gotoOption.ascx")%>
-	<%=Html.AntiForgeryToken()%>
-</form>
-
 <script type="text/javascript">
 	emptyoption_onload();    
 </script>

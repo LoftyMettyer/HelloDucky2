@@ -18,7 +18,7 @@
 		var frmData = document.getElementById("frmData");
 		var frmGetData = document.getElementById("frmGetData");
 		var frmMenuInfo = $("#frmMenuInfo")[0].children;
-		var frmOptionArea = OpenHR.getForm("optionframe", "frmGotoOption");
+		var frmOptionArea = OpenHR.getForm("optionframeset", "frmGotoOption");
 		var frmRecEditArea = OpenHR.getForm("workframe", "frmRecordEditForm");
 		var frmFindForm = OpenHR.getForm("workframe", "frmFindForm");
 		var recEditForm = OpenHR.getForm("workframe", "frmRecordEditForm");
@@ -398,8 +398,9 @@
 					frmOptionArea.txtGotoOptionOrderID.value = frmRecEditArea.txtCurrentOrderID.value;
 					frmOptionArea.txtGotoOptionFilterDef.value = frmRecEditArea.txtRecEditFilterDef.value;
 					frmOptionArea.txtGotoOptionPage.value = "filterselect";
-					//frmOptionArea.submit();
-					OpenHR.submitForm(frmOptionArea);
+
+					frmOptionArea.action = "emptyoption_Submit";
+					OpenHR.submitForm(frmOptionArea, "optionframe");
 					return;
 				}				
 				

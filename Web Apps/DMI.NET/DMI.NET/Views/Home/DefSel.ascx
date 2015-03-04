@@ -1204,11 +1204,6 @@
 	
 	<input type="hidden" id="lastSelectedID" name="lastSelectedID" value='<%=Session("utilid")%>'>
 
-	<form action="emptyoption_Submit" method="post" id="frmGotoOption" name="frmGotoOption" style="visibility: hidden; display: none">
-		<%Html.RenderPartial("~/Views/Shared/gotoOption.ascx")%>
-		<%=Html.AntiForgeryToken()%>
-	</form>
-
 </div>
 
 

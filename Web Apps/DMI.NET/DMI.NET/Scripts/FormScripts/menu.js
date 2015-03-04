@@ -2983,7 +2983,7 @@ function menu_OutOfOfficeTurnOff(status) {
 	menu_disableMenu(); // HC: Is this correct? It will only disable RecEdit buttons
 	
 	frmRecEditArea = OpenHR.getForm("workframe", "frmRecordEditForm");
-	frmOptionArea = OpenHR.getForm("optionframe", "frmGotoOption");
+	frmOptionArea = OpenHR.getForm("optionframeset", "frmGotoOption");
 
 	frmOptionArea.txtGotoOptionScreenID.value = frmRecEditArea.txtCurrentScreenID.value;
 	frmOptionArea.txtGotoOptionTableID.value = frmRecEditArea.txtCurrentTableID.value;
@@ -3007,7 +3007,8 @@ function menu_OutOfOfficeTurnOff(status) {
 	frmOptionArea.txtGotoOptionFirstRecPos.value = 1;
 	frmOptionArea.txtGotoOptionCurrentRecCount.value = 0;
 
-	OpenHR.submitForm(frmOptionArea);
+	frmOptionArea.action = "emptyoption_Submit";
+	OpenHR.submitForm(frmOptionArea, "optionframe");
 }
 
 	function menu_loadLinkPage(plngLinkTableID, plngLinkOrderID, plngLinkViewID, plngLinkRecordID) {
@@ -3019,7 +3020,7 @@ function menu_OutOfOfficeTurnOff(status) {
 	menu_disableMenu(); // HC: Is this correct? It will only disable RecEdit buttons
 	
 	frmRecEditArea = OpenHR.getForm("workframe", "frmRecordEditForm");
-	frmOptionArea = OpenHR.getForm("optionframe", "frmGotoOption");
+	frmOptionArea = OpenHR.getForm("optionframeset", "frmGotoOption");
 
 	frmOptionArea.txtGotoOptionScreenID.value = frmRecEditArea.txtCurrentScreenID.value;
 	frmOptionArea.txtGotoOptionTableID.value = frmRecEditArea.txtCurrentTableID.value;
@@ -3038,7 +3039,8 @@ function menu_OutOfOfficeTurnOff(status) {
 	frmOptionArea.txtGotoOptionFirstRecPos.value = 1;
 	frmOptionArea.txtGotoOptionCurrentRecCount.value = 0;
 
-	OpenHR.submitForm(frmOptionArea);
+	frmOptionArea.action = "emptyoption_Submit";
+	OpenHR.submitForm(frmOptionArea, "optionframe");
 }
 
 	function menu_loadTransferCoursePage(psCourseTitle) {
@@ -3053,7 +3055,7 @@ function menu_OutOfOfficeTurnOff(status) {
 	menu_setVisibletoolbarGroupById('mnuSectionRecordMailmerge', false);
 	
 	frmRecEditArea = OpenHR.getForm("workframe", "frmRecordEditForm");
-	frmOptionArea = OpenHR.getForm("optionframe", "frmGotoOption");
+	frmOptionArea = OpenHR.getForm("optionframeset", "frmGotoOption");
 	var frmMenuInfo = $("#frmMenuInfo")[0].children;
 
 	frmOptionArea.txtGotoOptionScreenID.value = frmRecEditArea.txtCurrentScreenID.value;
@@ -3075,7 +3077,7 @@ function menu_OutOfOfficeTurnOff(status) {
 	frmOptionArea.txtGotoOptionFirstRecPos.value = 1;
 	frmOptionArea.txtGotoOptionCurrentRecCount.value = 0;
 
-	OpenHR.submitForm(frmOptionArea);
+	OpenHR.submitForm(frmOptionArea, "optionframe", null, null, "tbTransferCourseFind");
 }
 
 	function menu_loadOLEPage(plngColumnID, psFile, plngOLEType, plngMaxEmbedSize, pbIsReadOnly, pbIsPhoto) {
@@ -3095,7 +3097,7 @@ function menu_OutOfOfficeTurnOff(status) {
 	menu_disableMenu();
 	
 	frmRecEditArea = OpenHR.getForm("workframe", "frmRecordEditForm");
-	frmOptionArea = OpenHR.getForm("optionframe", "frmGotoOption");
+	frmOptionArea = OpenHR.getForm("optionframeset", "frmGotoOption");
 	frmOptionArea.txtGotoOptionRecordID.value = frmRecEditArea.txtCurrentRecordID.value;
 	frmOptionArea.txtGotoOptionScreenID.value = frmRecEditArea.txtCurrentScreenID.value;
 	frmOptionArea.txtGotoOptionTableID.value = frmRecEditArea.txtCurrentTableID.value;
@@ -3123,7 +3125,8 @@ function menu_OutOfOfficeTurnOff(status) {
 	frmOptionArea.txtGotoOptionFirstRecPos.value = 1;
 	frmOptionArea.txtGotoOptionCurrentRecCount.value = 0;
 
-	OpenHR.submitForm(frmOptionArea);
+	frmOptionArea.action = "emptyoption_Submit";
+	OpenHR.submitForm(frmOptionArea, "optionframe");
 	
 }
 
@@ -4209,7 +4212,7 @@ function menu_loadQuickFindNoSaveCheck()
 	menu_disableMenu();	
 	
 	frmRecEditArea = OpenHR.getForm("workframe", "frmRecordEditForm");
-	frmOptionArea = OpenHR.getForm("optionframe", "frmGotoOption");
+	frmOptionArea = OpenHR.getForm("optionframeset", "frmGotoOption");
 
 	frmOptionArea.txtGotoOptionScreenID.value = frmRecEditArea.txtCurrentScreenID.value;
 	frmOptionArea.txtGotoOptionTableID.value = frmRecEditArea.txtCurrentTableID.value;
@@ -4221,7 +4224,8 @@ function menu_loadQuickFindNoSaveCheck()
 	frmOptionArea.txtGotoOptionPage.value = "quickfind";
 	frmOptionArea.txtGotoOptionAction.value = "";
 
-	OpenHR.submitForm(frmOptionArea);
+	frmOptionArea.action = "emptyoption_Submit";
+	OpenHR.submitForm(frmOptionArea, "optionframe");
 }
 
 function menu_loadSelectOrderFilter(psType) {
@@ -4234,7 +4238,7 @@ function menu_loadSelectOrderFilter(psType) {
 	
 	function orderfilter_RecordEdit() {
 		frmRecEditArea = OpenHR.getForm("workframe", "frmRecordEditForm");
-		frmOptionArea = OpenHR.getForm("optionframe", "frmGotoOption");
+		frmOptionArea = OpenHR.getForm("optionframeset", "frmGotoOption");
 
 		frmOptionArea.txtGotoOptionScreenID.value = frmRecEditArea.txtCurrentScreenID.value;
 		frmOptionArea.txtGotoOptionTableID.value = frmRecEditArea.txtCurrentTableID.value;
@@ -4250,7 +4254,8 @@ function menu_loadSelectOrderFilter(psType) {
 		frmOptionArea.txtGotoOptionPage.value = sOptionPage;
 		frmOptionArea.txtGotoOptionAction.value = "";
 
-		OpenHR.submitForm(frmOptionArea);
+		frmOptionArea.action = "emptyoption_Submit";
+		OpenHR.submitForm(frmOptionArea, "optionframe");
 	}
 	
 	//disable the menu
@@ -4292,7 +4297,7 @@ function menu_loadSelectOrderFilter(psType) {
 	else {
 		if (sCurrentWorkPage == "FIND") {
 			frmFindArea = OpenHR.getForm("workframe", "frmFindForm");
-			frmOptionArea = OpenHR.getForm("optionframe", "frmGotoOption");
+			frmOptionArea = OpenHR.getForm("optionframeset", "frmGotoOption");
 
 			frmOptionArea.txtGotoOptionScreenID.value = frmFindArea.txtCurrentScreenID.value;
 			frmOptionArea.txtGotoOptionTableID.value = frmFindArea.txtCurrentTableID.value;
@@ -4304,7 +4309,8 @@ function menu_loadSelectOrderFilter(psType) {
 			frmOptionArea.txtGotoOptionPage.value = sOptionPage;
 			frmOptionArea.txtGotoOptionAction.value = "";
 
-			OpenHR.submitForm(frmOptionArea);
+			frmOptionArea.action = "emptyoption_Submit";
+			OpenHR.submitForm(frmOptionArea, "optionframe");
 		}
 	}	
 }
@@ -4457,7 +4463,7 @@ function menu_loadSelectOrderFilter(psType) {
 			menu_ShowWait("Loading matching courses...");
 			menu_disableFindMenu();
 
-			frmOptionArea = OpenHR.getForm("optionframe", "frmGotoOption");
+			frmOptionArea = OpenHR.getForm("optionframeset", "frmGotoOption");
 			var frmMenuInfo = $("#frmMenuInfo")[0].children;
 
 			frmOptionArea.txtGotoOptionScreenID.value = 0;
@@ -4478,7 +4484,7 @@ function menu_loadSelectOrderFilter(psType) {
 			frmOptionArea.txtGotoOptionFirstRecPos.value = 1;
 			frmOptionArea.txtGotoOptionCurrentRecCount.value = 0;
 
-			OpenHR.submitForm(frmOptionArea);
+			OpenHR.submitForm(frmOptionArea, "optionframe", null, null, "tbBookCourseFind");
 		}
 		else {
 			OpenHR.messageBox("You must select a course to book.");
@@ -4495,7 +4501,7 @@ function menu_loadSelectOrderFilter(psType) {
 	menu_ShowWait("Loading matching courses...");
 	menu_disableMenu();
 
-	frmOptionArea = OpenHR.getForm("optionframe", "frmGotoOption");
+	frmOptionArea = OpenHR.getForm("optionframeset", "frmGotoOption");
 	var frmMenuInfo = $("#frmMenuInfo")[0].children;
 
 	frmOptionArea.txtGotoOptionScreenID.value = 0;
@@ -4516,7 +4522,7 @@ function menu_loadSelectOrderFilter(psType) {
 	frmOptionArea.txtGotoOptionFirstRecPos.value = 1;
 	frmOptionArea.txtGotoOptionCurrentRecCount.value = 0;
 
-	OpenHR.submitForm(frmOptionArea);
+	OpenHR.submitForm(frmOptionArea, "optionframe", null, null, "tbTransferBookingFind");
 }
 	else {
 	OpenHR.messageBox("You must select a booking to transfer.");
@@ -4567,24 +4573,20 @@ function menu_loadSelectOrderFilter(psType) {
 
 
 	function menu_bulkBooking() {
-	var lngRecordID;
-	var frmFindArea;
-	var frmOptionArea;
-	
-	frmFindArea = OpenHR.getForm("workframe", "frmFindForm");
-	lngRecordID = frmFindArea.txtCurrentParentRecordID.value;
 
-	if (lngRecordID > 0) {
-	menu_disableMenu();
+		var frmFindArea = OpenHR.getForm("workframe", "frmFindForm");
+		var lngRecordID = frmFindArea.txtCurrentParentRecordID.value;
 
-	frmOptionArea = OpenHR.getForm("optionframe", "frmGotoOption");
+		if (lngRecordID > 0) {
+			menu_disableMenu();
 
-	frmOptionArea.txtGotoOptionRecordID.value = lngRecordID;
-	frmOptionArea.txtGotoOptionPage.value = "BulkBooking";
+			var frmOptionArea = OpenHR.getForm("optionframeset", "frmGotoOption");
+			frmOptionArea.txtGotoOptionRecordID.value = lngRecordID;
 
-	OpenHR.submitForm(frmOptionArea);
-}
-}
+			OpenHR.submitForm(frmOptionArea, "optionframe", null, null, "BulkBooking");
+
+		}
+	}
 
 	function menu_addFromWaitingList() {
 	var lngRecordID;
@@ -4600,7 +4602,7 @@ function menu_loadSelectOrderFilter(psType) {
 	menu_ShowWait("Loading matching employees...");
 	menu_disableFindMenu();
 
-	frmOptionArea = OpenHR.getForm("optionframe", "frmGotoOption");
+	frmOptionArea = OpenHR.getForm("optionframeset", "frmGotoOption");
 
 	frmOptionArea.txtGotoOptionScreenID.value = 0;
 	frmOptionArea.txtGotoOptionTableID.value = 0;
@@ -4620,7 +4622,7 @@ function menu_loadSelectOrderFilter(psType) {
 	frmOptionArea.txtGotoOptionFirstRecPos.value = 1;
 	frmOptionArea.txtGotoOptionCurrentRecCount.value = 0;
 
-	OpenHR.submitForm(frmOptionArea);		
+	OpenHR.submitForm(frmOptionArea, "optionframe", null, null, "tbAddFromWaitingListFind");
 }
 }
 
@@ -4681,7 +4683,7 @@ function menu_loadSelectOrderFilter(psType) {
 	menu_disableMenu();
 		
 	// Submit the current "workframe" form, and then load the required page.
-	frmOptionArea = OpenHR.getForm("optionframe", "frmGotoOption");
+	frmOptionArea = OpenHR.getForm("optionframeset", "frmGotoOption");
 
 	strRealSource = $('#txtRecEditRealSource').val();	
 	lngTableID = $('#txtCurrentTableID').val();
@@ -4694,8 +4696,9 @@ function menu_loadSelectOrderFilter(psType) {
 	frmOptionArea.txtGotoOptionUtilID.value = 0;
 	frmOptionArea.txtGotoOptionPage.value = "defsel";
 	frmOptionArea.txtGotoOptionAction.value = "";
-		
-	OpenHR.submitForm(frmOptionArea);
+
+	frmOptionArea.action = "emptyoption_Submit";
+	OpenHR.submitForm(frmOptionArea, "optionframe");
 }
 }
 
@@ -4710,7 +4713,7 @@ function menu_loadSelectOrderFilter(psType) {
 	menu_disableMenu();
 		
 	// Submit the current "workframe" form, and then load the required page.
-	frmOptionArea = OpenHR.getForm("optionframe", "frmGotoOption");
+	frmOptionArea = OpenHR.getForm("optionframeset", "frmGotoOption");
 
 	strRealSource = $('#txtRecEditRealSource').val();
 	lngTableID = $('#txtCurrentTableID').val();
@@ -4723,8 +4726,9 @@ function menu_loadSelectOrderFilter(psType) {
 	frmOptionArea.txtGotoOptionUtilID.value = 0;
 	frmOptionArea.txtGotoOptionPage.value = "defsel";
 	frmOptionArea.txtGotoOptionAction.value = "";
-		
-	OpenHR.submitForm(frmOptionArea);
+
+	frmOptionArea.action = "emptyoption_Submit";
+	OpenHR.submitForm(frmOptionArea, "optionframe");
 }
 
 	function menu_LoadAbsenceCalendar() {
@@ -4738,7 +4742,7 @@ function menu_loadSelectOrderFilter(psType) {
 	OpenHR.disableMenu();
 
 	// Submit the current "workframe" form, and then load the required page.
-	frmOptionArea = OpenHR.getForm("optionframe", "frmGotoOption");
+	frmOptionArea = OpenHR.getForm("optionframeset", "frmGotoOption");
 	frmRecEdit = OpenHR.getForm("workframe", "frmRecordEditForm");
 
 	lngRecordID = frmRecEdit.txtCurrentRecordID.value;
@@ -4749,7 +4753,9 @@ function menu_loadSelectOrderFilter(psType) {
 
 	frmOptionArea.txtGotoOptionPage.value = "stdrpt_AbsenceCalendar";
 	frmOptionArea.txtGotoOptionAction.value = "";
-	OpenHR.submitForm(frmOptionArea);
+
+	frmOptionArea.action = "emptyoption_Submit";
+	OpenHR.submitForm(frmOptionArea, "optionframe");
 
 }
 
@@ -4765,7 +4771,7 @@ function menu_loadSelectOrderFilter(psType) {
 	menu_disableMenu();
 
 	// Submit the current "workframe" form, and then load the required page.
-	frmOptionArea = OpenHR.getForm("optionframe", "frmGotoOption");
+	frmOptionArea = OpenHR.getForm("optionframeset", "frmGotoOption");
 
 	lngRecordID = $('#txtCurrentRecordID').val();
 	frmOptionArea.txtGotoOptionRecordID.value = lngRecordID;
@@ -4775,8 +4781,10 @@ function menu_loadSelectOrderFilter(psType) {
 		
 	frmOptionArea.txtGotoOptionPage.value = "stdrpt_AbsenceCalendar";
 	frmOptionArea.txtGotoOptionAction.value = "";
-	OpenHR.submitForm(frmOptionArea);
-	//CloseWait();
+
+	frmOptionArea.action = "emptyoption_Submit";
+	OpenHR.submitForm(frmOptionArea, "optionframe");
+
 }
 
 	function menu_LoadStandardReport(psReportType, psRecordSelection) {
@@ -4799,7 +4807,7 @@ function menu_loadSelectOrderFilter(psType) {
 	if (psRecordSelection == "REC") {
 			//if (menu_saveChanges(psReportType + psRecordSelection, true, false) != 2)     // HC: Todo: This needs to be tested
 			{
-	frmSendArea = OpenHR.getForm("optionframe", "frmGotoOption");
+	frmSendArea = OpenHR.getForm("optionframeset", "frmGotoOption");
 	frmSendArea.txtGotoOptionRecordID.value = $('#txtCurrentRecordID')[0].value;
 	frmSendArea.txtGotoOptionPage.value = sPage;
 	frmSendArea.txtGotoOptionAction.value = "STDREPORT_DATEPROMPT";

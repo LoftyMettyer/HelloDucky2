@@ -878,11 +878,6 @@
 	<input id="cmdGetFilename" name="cmdGetFilename" type="file" />
 </div>
 
-<form action="emptyoption_submit" method="post" id="frmGotoOption" name="frmGotoOption">
-	<%Html.RenderPartial("~/Views/Shared/gotoOption.ascx")%>
-	<%=Html.AntiForgeryToken()%>
-</form>
-
 <!-- Form to return to record edit screen -->
 <form action="emptyoption" method="post" id="frmRecordEdit" name="frmRecordEdit">
 </form>

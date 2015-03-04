@@ -285,7 +285,7 @@
 
 		if (fOK == true) {
 			//window.parent.frames("workframe").document.forms("frmRecordEditForm").ctlRecordEdit.style.visibility = "visible";
-			var frmGotoOption = OpenHR.getForm("optionframe", "frmGotoOption");
+			var frmGotoOption = OpenHR.getForm("optionframeset", "frmGotoOption");
 
 			frmGotoOption.txtGotoOptionAction.value = "QUICKFIND";
 			frmGotoOption.txtGotoOptionScreenID.value = frmQuickFindForm.txtOptionScreenID.value;
@@ -314,7 +314,7 @@
 		refreshData();	//recedit
 
 
-		var frmGotoOption = OpenHR.getForm("optionframe", "frmGotoOption");
+		var frmGotoOption = OpenHR.getForm("optionframeset", "frmGotoOption");
 		frmGotoOption.txtGotoOptionAction.value = "CANCEL";
 		frmGotoOption.txtGotoOptionPage.value = "emptyoption";
 		OpenHR.submitForm(frmGotoOption);

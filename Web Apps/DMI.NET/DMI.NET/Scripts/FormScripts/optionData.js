@@ -837,7 +837,7 @@ function grid_HideCheckboxes(gridID) {
 
 function refreshOptionData() {
 	var frmGetOptionData = document.getElementById("frmGetOptionData");
-	OpenHR.submitForm(frmGetOptionData);
+	OpenHR.submitForm(frmGetOptionData, "optiondataframe");
 }
 
 

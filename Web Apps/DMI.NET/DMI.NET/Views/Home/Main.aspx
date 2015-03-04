@@ -227,8 +227,8 @@
 
 			<form action="WorkAreaRefresh" method="post" id="frmWorkAreaRefresh" name="frmWorkAreaRefresh">
 				<%Html.RenderPartial("~/Views/Shared/gotoWork.ascx")%>
-					<%=Html.AntiForgeryToken()%>
-			</form>			
+				<%=Html.AntiForgeryToken()%>
+			</form>
 
 			<div id="SSILinksFrame" style="display: none"></div>
 			<div id="workframe" data-framesource="DEFAULT"></div>		
@@ -236,6 +236,12 @@
 		</div>
 
 		<div id="optionframeset">
+
+			<form method="post" id="frmGotoOption" name="frmGotoOption" style="visibility: hidden; display: none">
+				<%Html.RenderPartial("~/Views/Shared/gotoOption.ascx")%>
+				<%=Html.AntiForgeryToken()%>
+			</form>
+		
 			<div id="dataframe" data-framesource="data.asp" style="display: none"><%Html.RenderPartial("~/views/home/data.ascx")%></div>
 			<div id="optiondataframe" data-framesource="optionData.asp" style="display: none"><%Html.RenderPartial("~/views/home/optiondata.ascx")%></div>
 		</div>

@@ -977,7 +977,7 @@ function addClick() {
 	var sKey;
 	var sRelativeKey;
 
-	var frmOptionArea = OpenHR.getForm("optionframe", "frmGotoOption");
+	var frmOptionArea = OpenHR.getForm("optionframeset", "frmGotoOption");
 	var frmUseful = OpenHR.getForm("divDefExpression", "frmUseful");
 
 	var iFunctionID = 0;
@@ -1039,13 +1039,14 @@ function addClick() {
 	}
 
 	if (fOK == true) {
-		OpenHR.submitForm(frmOptionArea);
+		frmOptionArea.action = "emptyoption_Submit";
+		OpenHR.submitForm(frmOptionArea, "optionframe");
 	}
 }
 
 function insertClick() {
 	var fOK;
-	var frmOptionArea = OpenHR.getForm("optionframe", "frmGotoOption");
+	var frmOptionArea = OpenHR.getForm("optionframeset", "frmGotoOption");
 	var frmRefresh = OpenHR.getForm("refreshframe", "frmRefresh");
 	var frmUseful = OpenHR.getForm("divDefExpression", "frmUseful");
 
@@ -1110,13 +1111,14 @@ function insertClick() {
 	}
 
 	if (fOK == true) {
-		OpenHR.submitForm(frmOptionArea);
+		frmOptionArea.action = "emptyoption_Submit";
+		OpenHR.submitForm(frmOptionArea, "optionframe");
 	}
 }
 
 function editClick() {	
 	var fOK;
-	var frmOptionArea = OpenHR.getForm("optionframe", "frmGotoOption");
+	var frmOptionArea = OpenHR.getForm("optionframeset", "frmGotoOption");
 	var frmRefresh = OpenHR.getForm("refreshframe", "frmRefresh");
 	var frmUseful = OpenHR.getForm("divDefExpression", "frmUseful");
 
@@ -1181,7 +1183,8 @@ function editClick() {
 	}
 
 	if (fOK == true) {
-		OpenHR.submitForm(frmOptionArea);
+		frmOptionArea.action = "emptyoption_Submit";
+		OpenHR.submitForm(frmOptionArea, "optionframe");
 	}
 }
 

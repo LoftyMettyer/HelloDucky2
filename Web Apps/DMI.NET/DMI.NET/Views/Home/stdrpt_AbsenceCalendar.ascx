@@ -316,11 +316,6 @@ end if
 		<%=Html.AntiForgeryToken()%>
 </form>
 
-<form action="emptyoption_submit" method="post" id="frmGotoOption" name="frmGotoOption" style="visibility: hidden; display: none">
-		<%Html.RenderPartial("~/Views/Shared/gotoOption.ascx")%>
-		<%=Html.AntiForgeryToken()%>
-</form>
-
 <!-- Form to return to record edit screen -->
 <form action="emptyoption" method="post" id="frmRecordEdit" name="frmRecordEdit">
 </form>
