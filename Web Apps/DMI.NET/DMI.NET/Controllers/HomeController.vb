@@ -1218,7 +1218,6 @@ Namespace Controllers
 		End Function
 
 		<HttpPost()>
-		<ValidateAntiForgeryToken>
 		Function LinksMain(Optional psScreenInfo As String = "") As ActionResult
 			' Get dashboard items
 			Dim sParameters As String = psScreenInfo
