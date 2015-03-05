@@ -1182,6 +1182,7 @@
 				<input type="hidden" id="utilid" name="utilid" value='<%=Session("utilid")%>'>
 				<input type="hidden" id="utilname" name="utilname">
 				<input type="hidden" id="action" name="action">
+				<%=Html.AntiForgeryToken()%>
 		</form>
 
 		<form name="frmWorkflow" method="post" action="util_run_workflow" id="frmWorkflow" style="visibility: hidden; display: none">

@@ -244,7 +244,7 @@
 		$.ajax({
 			type: "POST",
 			url: "SendEmail",
-			data: { 'to': sTo, 'cc': SCc, 'bcc': SBcc, 'subject': sSubject, 'body': sBody },
+			data: { 'to': sTo, 'cc': SCc, 'bcc': SBcc, 'subject': sSubject, 'body': sBody, __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val() },
 			dataType: "text",
 			success: function (a, b, c) {
 				OpenHR.modalPrompt(c.statusText, 0, "Event Log");

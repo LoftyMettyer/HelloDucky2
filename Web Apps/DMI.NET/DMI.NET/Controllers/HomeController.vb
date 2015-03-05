@@ -1052,9 +1052,6 @@ Namespace Controllers
 		<HttpPost>
 		<ValidateAntiForgeryToken>
 		Function optionData_Submit() As ActionResult
-
-
-
 			' Read the information from the calling form.
 			Session("optionAction") = ValidateFromWhiteList(Request.Form("txtOptionAction"), InputValidation.WhiteListCollections.Actions)
 			Session("optionTableID") = ValidateIntegerValue(Request.Form("txtOptionTableID"))
@@ -1220,8 +1217,8 @@ Namespace Controllers
 
 		End Function
 
-
 		<HttpPost()>
+		<ValidateAntiForgeryToken>
 		Function LinksMain(Optional psScreenInfo As String = "") As ActionResult
 			' Get dashboard items
 			Dim sParameters As String = psScreenInfo
@@ -2037,7 +2034,9 @@ Namespace Controllers
 			Return View()
 		End Function
 
-		<AcceptVerbs(HttpVerbs.Post), ValidateInput(False)> _
+		<HttpPost>
+		<ValidateInput(False)>
+		<ValidateAntiForgeryToken>
 		Function SendEmail() As ActionResult
 			Dim emailTo As String = Request.Form("To")
 			Dim emailCC As String = Request.Form("CC")
@@ -2141,9 +2140,6 @@ Namespace Controllers
 		<HttpPost()>
 		<ValidateAntiForgeryToken>
 		Function util_run_crosstabsDataSubmit()
-
-
-
 			Session("CT_Mode") = Request.Form("txtMode")
 			Session("CT_EmailGroupID") = Request.Form("txtEmailGroupID")
 			Session("CT_EmailGroupAddr") = Request.Form("txtEmailGroupAddr")
@@ -2171,8 +2167,8 @@ Namespace Controllers
 		End Function
 
 		<ValidateInput(False)>
+		<ValidateAntiForgeryToken>
 		Function util_run_promptedvalues() As ActionResult
-
 			Try
 
 				Session("utiltype") = Request.Form("utiltype")
@@ -2192,7 +2188,6 @@ Namespace Controllers
 		<HttpPost()>
 		<ValidateAntiForgeryToken>
 		Function util_run_uploadtemplate(TemplateFile As HttpPostedFileBase) As ActionResult
-
 			Try
 
 				If Not TemplateFile Is Nothing Then
@@ -3237,9 +3232,6 @@ Namespace Controllers
 		<HttpPost>
 		<ValidateAntiForgeryToken>
 		Function util_run_calendarreport_data_submit() As ActionResult
-
-
-
 			Session("CALREP_Action") = Request.Form("txtAction")
 			Session("CALREP_Month") = Request.Form("txtMonth")
 			Session("CALREP_Year") = Request.Form("txtYear")
@@ -3486,12 +3478,9 @@ Namespace Controllers
 		<HttpPost()>
 		<ValidateAntiForgeryToken>
 		Function util_def_exprcomponent_submit(value As FormCollection)
-
 			Dim sErrorMsg As String = ""
 			Dim sNextPage As String
 			Dim sAction As String
-
-
 
 			' Read the information from the calling form.
 			sNextPage = Request.Form("txtGotoOptionPage")
@@ -3603,18 +3592,11 @@ Namespace Controllers
 
 				' Order not important.
 				Session("orderID") = 0
-
-
-
-
 			End If
-
-
 
 			Return PartialView()
 		End Function
 
-		<HttpPost()>
 		Function recordEditMain(psScreenInfo As String) As ActionResult
 
 			Dim sErrorDescription As String = ""
@@ -4304,8 +4286,6 @@ Namespace Controllers
 		<HttpPost()>
 		<ValidateAntiForgeryToken>
 		Function promptedValues_Submit(value As FormCollection)
-
-
 			Session("filterID") = Request.Form("filterID")
 			'Response.Write("<input type=""hidden"" id=filterID name=filterID value=" & Request.Form("filterID") & ">" & vbCrLf)
 
@@ -4456,7 +4436,6 @@ Namespace Controllers
 
 		<ValidateInput(False)>
 		Function util_run_outputoptions() As ActionResult
-
 			Try
 
 				Session("CT_Mode") = Request("txtMode")
@@ -4667,9 +4646,6 @@ Namespace Controllers
 		<HttpPost()>
 		<ValidateAntiForgeryToken>
 	 Function lookupFind_Submit(value As FormCollection)
-
-
-
 			Dim sErrorMsg = ""
 
 			' Read the information from the calling form.
@@ -4740,8 +4716,6 @@ Namespace Controllers
 		<HttpPost()>
 		<ValidateAntiForgeryToken>
 		Function linkFind_Submit(value As FormCollection)
-
-
 			Dim sErrorMsg As String = ""
 			Dim sNextPage As String, sAction As String
 
@@ -5232,7 +5206,6 @@ Namespace Controllers
 			Return View()
 		End Function
 
-		<HttpPost()>
 		Public Function stdrpt_run_AbsenceBreakdown() As ActionResult
 			Return View()
 		End Function
@@ -5408,7 +5381,6 @@ Namespace Controllers
 
 		End Function
 
-
 		<HttpGet()>
 		Function GetDefinitionsForType(UtilityType As Integer, TableID As Integer, OnlyMine As Boolean) As JsonResult
 
@@ -5569,9 +5541,6 @@ Namespace Controllers
 
 	End Class
 
-
-
-
 	Public Class ErrMsgJsonAjaxResponse
 
 		Public Property ErrorTitle As String
@@ -5585,7 +5554,3 @@ Namespace Controllers
 	End Class
 
 End Namespace
-
-
-
-

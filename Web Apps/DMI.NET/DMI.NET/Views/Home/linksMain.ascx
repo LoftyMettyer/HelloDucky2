@@ -1444,6 +1444,7 @@
 		<input type="hidden" id="utilid" name="utilid" value="">
 		<input type="hidden" id="utilname" name="utilname" value="">
 		<input type="hidden" id="action" name="action" value="run">
+		<%=Html.AntiForgeryToken()%>
 	</form>
 </div>
 

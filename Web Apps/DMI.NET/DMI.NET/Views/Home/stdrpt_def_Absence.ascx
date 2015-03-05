@@ -866,6 +866,7 @@
 	<input type="hidden" id="txtSend_OutputFilename" name="txtSend_OutputFilename">
 	<input type="hidden" id="txtFilterName" name="txtFilterName">
 	<input type="hidden" id="txtPicklistName" name="txtPicklistName">
+	<%=Html.AntiForgeryToken()%>
 	<% 	
 		Dim sParameterValue As String = objDatabase.GetModuleParameter("MODULE_PERSONNEL", "Param_TablePersonnel")
 		Response.Write("<input type='hidden' id='txtPersonnelTableID' name='txtPersonnelTableID' value=" & sParameterValue & ">" & vbCrLf)
