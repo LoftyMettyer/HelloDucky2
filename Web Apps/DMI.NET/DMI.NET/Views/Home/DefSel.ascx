@@ -16,7 +16,7 @@
 	Session("objCalendar" & Session("UtilID")) = Nothing
 	
 	If Not String.IsNullOrEmpty(Request.Form("OnlyMine")) Then
-		Session("OnlyMine") = ValidateIntegerValue(Request.Form("OnlyMine"))
+		Session("OnlyMine") = ValidateBooleanValue(Request.Form("OnlyMine"))
 	Else
 		If Session("fromMenu") = 1 Then
 			' Read the defSel 'only mine' setting from the database.
@@ -1222,10 +1222,13 @@
 	});
 
 	function attachDefSelGrid() {
-
-		var onlyMine = frmOnlyMine.OnlyMine.value;
-
-	//	$("#DefSelRecords").jqGrid('GridUnload');
+		var onlyMine;
+		//In certain cases (see TFS 15914) when we reach this point we have two instances of the frmOnlyMine form !!!
+		try {
+			onlyMine = frmOnlyMine.OnlyMine.value;
+		} catch (e) {
+			onlyMine = frmOnlyMine[1].OnlyMine.value;
+		} 
 
 		$("#DefSelRecords").jqGrid({
 			url: 'GetDefinitionsForType?UtilityType=' + <%=Session("defseltype")%> + '&&TableID=' + <%=iBaseTableID%> + '&&OnlyMine=' + onlyMine,
