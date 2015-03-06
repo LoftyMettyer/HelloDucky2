@@ -82,6 +82,8 @@
 			<div id="row1" style="margin-left: 20px; margin-right: 20px">
 				<%
 					Dim sErrorDescription As String = ""
+					Dim sThousSepSummaryFields As String
+					
 					If ViewBag.pageTitle.ToString().Length = 0 Then
 						' DMI View.
 						' Display the appropriate page title.
@@ -513,8 +515,7 @@
 						Catch ex As Exception
 							sErrorDescription = "The summary field definition could not be retrieved." & vbCrLf & FormatError(ex.Message)
 						End Try
-						
-						Dim sThousSepSummaryFields As String
+												
 						Dim aSummaryFields(0, 0) As String
 						Dim iTotalCount As Integer
 								
@@ -707,6 +708,7 @@ Response.Write("				<input type='hidden' id=txtRealSource name=txtRealSource val
 Response.Write("				<input type='hidden' id=txtLineage name=txtLineage value=" & Session("lineage") & ">" & vbCrLf)
 Response.Write("				<input type='hidden' id=txtFilterDef name=txtFilterDef value=""" & Replace(Session("filterDef"), """", "&quot;") & """>" & vbCrLf)
 Response.Write("				<input type='hidden' id=txtFilterSQL name=txtFilterSQL value=""" & Replace(Session("filterSQL"), """", "&quot;") & """>" & vbCrLf)
+Response.Write("				<input type='hidden' id='txtThousSepSummary' name='txtThousSepSummary' value='" & sThousSepSummaryFields & "'>" & vbCrLf)
 End If
 
 Response.Write("				<input type='hidden' id=txtErrorDescription name=txtErrorDescription value=""" & sErrorDescription & """>")

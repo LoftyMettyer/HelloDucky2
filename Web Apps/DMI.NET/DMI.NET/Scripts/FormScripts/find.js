@@ -828,57 +828,12 @@ function find_window_onload() {
 			frmFindForm.txtRecordCount.value = iCount;
 
 			if (fOk == true) {
-				var sControlPrefix;
-				var sColumnId;
-				var ctlSummaryControl;
-				var sSummaryControlName;
-				var sDataType;
+			
 
 				// Need to dim focus on the grid before adding the items.
 				$("#findGridTable").focus();
 
-				var controlCollection = frmFindForm.elements;
-				if (controlCollection !== null) {
-					for (i = 0; i < controlCollection.length; i++) {
-						sControlName = controlCollection.item(i).name;
-						sControlPrefix = sControlName.substr(0, 15);
-
-						if (sControlPrefix == "txtSummaryData_") {
-							sColumnId = sControlName.substr(15);
-							sSummaryControlName = "ctlSummary_";
-							sSummaryControlName = sSummaryControlName.concat(sColumnId);
-							sSummaryControlName = sSummaryControlName.concat("_");
-
-							for (var j = 0; j < controlCollection.length; j++) {
-								sControlName = controlCollection.item(j).name;
-								sControlPrefix = sControlName.substr(0, sSummaryControlName.length);
-
-								if (sControlPrefix == sSummaryControlName) {
-									ctlSummaryControl = controlCollection.item(j);
-
-									if (ctlSummaryControl.type == "checkbox") {
-										ctlSummaryControl.checked = (controlCollection.item(i).value.toUpperCase() == "TRUE");
-									} else {
-										// Check if the control is for a datevalue.
-										sDataType = sControlName.substr(sSummaryControlName.length);
-
-										if (sDataType == "11") {
-											// Format dates for the locale setting.							
-											if (controlCollection.item(i).value == '') {
-												ctlSummaryControl.value = '';
-											} else {
-												ctlSummaryControl.value = OpenHR.ConvertSQLDateToLocale(controlCollection.item(i).value);
-											}
-										} else {
-											ctlSummaryControl.value = controlCollection.item(i).value;
-										}
-									}
-									break;
-								}
-							}
-						}
-					}
-				}
+				refreshSummaryColumns();
 
 				// Select the current record in the grid if its there, else select the top record if there is one.
 				if (rowCount() > 0) {
@@ -1495,9 +1450,11 @@ function updateRowFromDatabase(rowid) {
 			//refresh menu!
 			menu_refreshMenu();
 
+			getSummaryColumns();
+
 		},
 		error: function (e) {
-			alert('error updating row from database.');
+			alert('error updating row from database.' + e);
 		}
 	});
 
@@ -1793,11 +1750,73 @@ function commitEmbeddedFile(fileobject, columnID, deleteflag, isPhoto) {
 }
 
 function preChecks() {
-
 	if (selectedRecordID() == "0") {
 		OpenHR.modalMessage("Unable to edit photo fields until the record has been saved.");
 		return false;
 	}
 	return true;
+}
 
+function getSummaryColumns() {	
+
+	$.ajax({
+		url: "GetSummaryColumns",
+		type: "GET",
+		data: {"parentTableID": $('#txtCurrentParentTableID').val(), "parentRecordID": $("#txtCurrentParentRecordID").val() },
+		cache: false,
+		async: true,
+		success: function (jsonstring) {
+			var jsondata = JSON.parse(jsonstring);
+			var aThousSepSummary = $("#txtThousSepSummary").val().split(",");
+
+			for (var rowCount = 0; rowCount <= jsondata.length - 1; rowCount++) {
+				//update each summary column
+				var key = Object.keys(jsondata[rowCount])[0];
+				var value = jsondata[rowCount][key];
+				var control = $("input[id^='txtSummaryData_" + key + "']");
+				
+				if (aThousSepSummary.indexOf(key) >= 0) {
+					//thousand separator applies					
+					$(control).val(Number(value).toLocaleString().split(",").join(OpenHR.LocaleThousandSeparator()));	//todo comma separate it!
+				}
+				else {
+					$(control).val(value);
+				}
+			}
+
+			refreshSummaryColumns();
+
+		},
+		error: function() {
+			alert('An error occurred reloading the summary columns.');
+	}
+	});
+	
+}
+
+
+function refreshSummaryColumns() {
+	
+	$("input[id^='txtSummaryData_'").each(function () {
+		
+		var indexNumber = this.id.substr(15);
+
+		var ctlSummary = $("input[id^='ctlSummary_" + indexNumber + "']");
+		var ctlDataType = $(ctlSummary).attr("id").substr(indexNumber.length + 12); //ctlSummary_xxxxx
+
+		if ($(ctlSummary).is(":checkbox")) {
+			$(ctlSummary).prop("checked", ($(this).val() == "TRUE"));
+		} else {
+			if (ctlDataType == "11") {
+				// Format dates for the locale setting.							
+				if ($(this).val() == '') {
+					$(ctlSummary).val("");
+				} else {
+					$(ctlSummary).val(OpenHR.ConvertSQLDateToLocale($(this).val()));
+				}
+			} else {
+				$(ctlSummary).val($(this).val());
+			}
+		}
+	});
 }

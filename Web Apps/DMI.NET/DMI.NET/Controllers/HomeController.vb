@@ -481,6 +481,39 @@ Namespace Controllers
 				Throw New Exception("The find records could not be retrieved." & vbCrLf & FormatError(ex.Message))
 			End Try
 		End Function
+
+
+		Function GetSummaryColumns(parentTableID As String, parentRecordID As String) As String
+
+			Dim SPParameters() As SqlParameter
+			Dim resultsDataTable As New DataTable
+			parentTableID = CleanNumeric(parentTableID)
+			parentRecordID = CleanNumeric(parentRecordID)
+
+			Dim objSession As SessionInfo = CType(Session("SessionContext"), SessionInfo)	'Set session info
+			Dim objDataAccess As New clsDataAccess(objSession.LoginInfo) 'Instantiate DataAccess class
+			SPParameters = New SqlParameter() { _
+				New SqlParameter("@piHistoryTableID", SqlDbType.Int) With {.Value = CleanNumeric(Session("tableID"))}, _
+				New SqlParameter("@piParentTableID", SqlDbType.Int) With {.Value = parentTableID}, _
+				New SqlParameter("@piParentRecordID", SqlDbType.Int) With {.Value = parentRecordID} _
+			}
+
+			Try
+				resultsDataTable = objDataAccess.GetDataTable("spASRIntGetSummaryValues", CommandType.StoredProcedure, SPParameters)
+			Catch
+			End Try
+
+			If resultsDataTable.Rows.Count = 0 Then
+				Return JsonConvert.SerializeObject("")
+			End If
+
+			Return JsonConvert.SerializeObject(resultsDataTable)
+
+
+		End Function
+
+
+
 		Function Find(Optional sParameters As String = "") As ActionResult
 			'Data access variables
 			Dim objSession As SessionInfo = CType(Session("SessionContext"), SessionInfo)	'Set session info
