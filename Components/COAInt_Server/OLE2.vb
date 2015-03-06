@@ -331,8 +331,14 @@ Public Class Ole
 				sb.Append("<<V002>>")
 				sb.Append(strOLEType & Space(2 - Len(strOLEType)))
 				sb.Append(Path.GetFileName(_mstrFileName).PadRight(70))
-				sb.Append(_mstrFileName.GetDirectoryNameOnly().PadRight(210))
-				sb.Append(Path.GetPathRoot(_mstrFileName).PadRight(60))
+				If _miOLEType = OLEType.Embedded Then
+					' Pad the folder and root variables for embedded files.
+					sb.Append(Space(210))
+					sb.Append(Space(60))
+				Else
+					sb.Append(_mstrFileName.GetDirectoryNameOnly().PadRight(210))
+					sb.Append(Path.GetPathRoot(_mstrFileName).PadRight(60))
+				End If
 
 				sb.Append(_mstrFileSize & Space(10 - Len(_mstrFileSize)))
 				sb.Append(Space(20))

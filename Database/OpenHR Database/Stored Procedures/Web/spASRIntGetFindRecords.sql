@@ -627,11 +627,23 @@ BEGIN
 				IF @sType = 'F'
 				BEGIN
 					/* Find column. */
+					IF @iDataType = -4 OR @iDataType = -3
+					BEGIN
+					SET @sTempString = CASE 
+							WHEN (len(@sSelectSQL) > 0) THEN ',' 
+							ELSE '' 
+						END + 
+						'RTRIM(SUBSTRING(CONVERT(VARCHAR(max),' + @sRealSource + '.' + @sColumnName + '), 11, 69)) AS [' + @sColumnName + ']';
+					END
+					ELSE
+					BEGIN
 					SET @sTempString = CASE 
 							WHEN (len(@sSelectSQL) > 0) THEN ',' 
 							ELSE '' 
 						END + 
 						@sRealSource + '.' + @sColumnName;
+
+					END
 
 					SET @sSelectSQL = @sSelectSQL + @sTempString;
 					INSERT INTO @OriginalColumns VALUES(@iColumnID, @sColumnName)
@@ -713,12 +725,25 @@ BEGIN
 				IF @sType = 'F'
 				BEGIN
 					/* Find column. */
+					IF @iDataType = -4 OR @iDataType = -3
+					BEGIN
+					SET @sTempString = CASE 
+							WHEN (len(@sSelectSQL) > 0) THEN ',' 
+							ELSE '' 
+						END + 
+						'RTRIM(SUBSTRING(CONVERT(VARCHAR(max),' + @sRealSource + '.' + @sColumnName + '), 11, 69)) AS [' + @sColumnName + ']';						
+					END
+					ELSE
+					BEGIN
 					SET @sTempString = CASE 
 							WHEN (len(@sSelectSQL) > 0) THEN ',' 
 							ELSE '' 
 						END + @sColumnTableName + '.' + @sColumnName;
+					END
+
 					SET @sSelectSQL = @sSelectSQL + @sTempString;
 					INSERT INTO @OriginalColumns VALUES(@iColumnID, @sColumnName)
+					
 				END
 				ELSE
 				BEGIN
@@ -796,20 +821,32 @@ BEGIN
 					SET @sSubString = @sSubString +	' ELSE NULL END';
 					IF @sType = 'F'
 					BEGIN
-						/* Find column. */
-						SET @sTempString = CASE 
-								WHEN (len(@sSelectSQL) > 0) THEN ',' 
-								ELSE '' 
+					/* Find column. */
+					IF @iDataType = -4 OR @iDataType = -3
+					BEGIN
+					SET @sTempString = CASE 
+							WHEN (len(@sSelectSQL) > 0) THEN ',' 
+							ELSE '' 
+						END + 
+						'RTRIM(SUBSTRING(CONVERT(VARCHAR(max),' + @sRealSource + '.' + @sColumnName + '), 11, 69)) AS [' + @sColumnName + ']';						
+					END
+					ELSE
+					BEGIN
+					SET @sTempString = CASE 
+							WHEN (len(@sSelectSQL) > 0) THEN ',' 
+							ELSE '' 
 							END + 
 							CASE
 								WHEN @iDataType = 11 THEN 'convert(datetime, ' + @sSubString + ')'
 								ELSE @sSubString 
 							END;
-						SET @sSelectSQL = @sSelectSQL + @sTempString;
-							
-						SET @sTempString = ' AS [' + @sColumnName + ']';
-						SET @sSelectSQL = @sSelectSQL + @sTempString;
-						INSERT INTO @OriginalColumns VALUES(@iColumnID, @sColumnName)
+					END
+					
+					SET @sSelectSQL = @sSelectSQL + @sTempString;
+						
+					SET @sTempString = ' AS [' + @sColumnName + ']';
+					SET @sSelectSQL = @sSelectSQL + @sTempString;
+					INSERT INTO @OriginalColumns VALUES(@iColumnID, @sColumnName)
 						
 					END
 					ELSE
@@ -1304,9 +1341,9 @@ BEGIN
 
 			SET @sTempString = @sTempString + @sRealSource + '.ID = ' + CONVERT(varchar(100), @RecordID) + ' ORDER BY ' + @sOrderSQL;
 		END
-		
-		SET @sExecString = @sExecString + @sTempString;
 
+		SET @sExecString = @sExecString + @sTempString;
+				
 	END
 
 	/* Check if the user has insert or delete permission on the table. */
@@ -1459,8 +1496,8 @@ BEGIN
 
 		DECLARE @IsSingleTable bit = 1;
 
-       SELECT @IsSingleTable = CASE WHEN COUNT(DISTINCT tableID) = 1 THEN 1 ELSE 0 END
-       FROM @FindDefinition;
+    	SELECT @IsSingleTable = CASE WHEN COUNT(DISTINCT tableID) = 1 THEN 1 ELSE 0 END
+        FROM @FindDefinition;
 
 		SELECT f.tableID, f.columnID, f.columnName, f.ascending, f.type, f.datatype, f.controltype, f.size, f.decimals, f.Use1000Separator, f.BlankIfZero
 			 , CASE WHEN f.Editable = 1 AND p.updateGranted = 1 THEN @IsSingleTable ELSE 0 END AS updateGranted

@@ -5138,6 +5138,86 @@ Namespace Controllers
 			'Return RedirectToAction("Index")
 		End Function
 
+		<HttpPost> _
+	 Public Function AjaxFileUpload(form As FormCollection) As String
+
+			If Request.Files.Count > 0 Then
+				For Each file As String In Request.Files
+
+					' The file will (should) have already been copied from the client to the temp path
+					Dim objOLE As Ole = Session("OLEObject")
+					Session("errorMessage") = ""
+					Dim fileContent = Request.Files(file)
+					Dim columnID = form.Item("columnID")
+					Dim recordID = form.Item("recordID")
+
+					If Not fileContent Is Nothing And fileContent.ContentLength > 0 Then
+						Dim buffer As Byte()
+						buffer = New Byte(fileContent.InputStream.Length - 1) {}
+						Dim offset As Integer = 0
+						Dim cnt As Integer = 0
+						While (InlineAssignHelper(cnt, fileContent.InputStream.Read(buffer, offset, 10))) > 0
+							offset += cnt
+						End While
+
+						With objOLE
+							.OLEType = OLEType.Embedded
+							.FileName = fileContent.FileName
+							.DisplayFilename = Path.GetFileName(fileContent.FileName)
+							.OLEFileSize = fileContent.ContentLength.ToString()
+
+							Dim oleErrorResponse As String = .SaveStream(recordID, columnID, buffer)
+
+							If oleErrorResponse.Length > 0 Then
+								oleErrorResponse = Server.HtmlEncode("Unable to embed file:" & vbCrLf & oleErrorResponse)
+							End If
+							Session("errorMessage") = oleErrorResponse
+
+
+						End With
+						Session("OLEObject") = objOLE
+						objOLE = Nothing
+
+					End If
+
+				Next
+			Else
+				' deleting
+				' The file will (should) have already been copied from the client to the temp path
+				Dim objOLE As Ole = Session("OLEObject")
+				Session("errorMessage") = ""
+				Dim fileContent = Nothing
+				Dim columnID = form.Item("columnID")
+				Dim recordID = form.Item("recordID")
+
+				Dim buffer As Byte()
+
+				With objOLE
+					.OLEType = OLEType.Embedded
+					.FileName = ""
+					.DisplayFilename = ""
+					.OLEFileSize = 0
+
+					Dim oleErrorResponse As String = .SaveStream(recordID, columnID, buffer)
+
+					If oleErrorResponse.Length > 0 Then
+						oleErrorResponse = Server.HtmlEncode("Unable to embed file:" & vbCrLf & oleErrorResponse)
+					End If
+					Session("errorMessage") = oleErrorResponse
+
+
+				End With
+				Session("OLEObject") = objOLE
+				objOLE = Nothing
+
+
+			End If
+
+
+			Return Session("errorMessage").ToString()
+
+		End Function
+
 		Private Shared Function InlineAssignHelper(Of T)(ByRef target As T, value As T) As T
 			target = value
 			Return value

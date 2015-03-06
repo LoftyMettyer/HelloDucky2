@@ -1535,3 +1535,7 @@ overflow-x : hidden !important;
 .stretchyfixed600 {	
 	width: 600px;
 }
+
+.fileinputhide {
+	display: none;
+}

@@ -79,7 +79,7 @@ function find_window_onload() {
 			colModel = [];
 			colNames = [];
 			colNamesOriginal = [];
-
+			
 			if (dataCollection != null) {
 				for (i = 0; i < dataCollection.length; i++) {
 					sControlName = dataCollection.item(i).name;
@@ -478,6 +478,28 @@ function find_window_onload() {
 										label: sColumnDisplayName
 									});
 								}
+								else if ((ColumnDataType == -4 && ColumnControlType == 8) || (ColumnDataType == -3 && ColumnControlType == 1024)) {
+									//OLE 									
+									colModel.push({
+										name: sColumnName,
+										id: iColumnId,
+										edittype: "custom",
+										width: 100,
+										editable: true,
+										type: "other",
+										editoptions: {
+											readonly: sReadOnly,
+											dataColumnId: iColumnId,
+											dataOriginalValue: "",
+											dataType: ColumnDataType,
+											dataIsPhoto: (ColumnDataType == -3),
+											dataDefaultCalcExprID: iDefaultValueExprID,
+											size: "20",
+											custom_element: ABSFileInput,
+											custom_value: ABSFileInputValue											
+										}
+									});
+								}					
 								else { //None of the above
 									colModel.push({
 										name: sColumnName,
@@ -667,7 +689,7 @@ function find_window_onload() {
 								window.onbeforeunload = warning;
 								return editFindGridRow(rowid);
 							},
-							aftersavefunc: function (rowid, response, options) {	//save button clicked in edit mode. NB: row has been 'saved' locally by this time.
+							aftersavefunc: function (rowid, response, options) {	//save button clicked in edit mode. NB: row has been 'saved' locally by this time.								
 								window.onbeforeunload = null;
 								return afterSaveFindGridRow(rowid);
 							},
@@ -892,7 +914,7 @@ function find_window_onload() {
 }
 
 
-function saveRowToDatabase(rowid) {
+function saveRowToDatabase(rowid) {	
 	if (saveThisRowToDatabase)
 		if (rowWasModified) saveInlineRowToDatabase(rowid);
 		else if (rowIsEditedOrNew.substr(0, 9) == 'quickedit') editNextRow();
@@ -1182,6 +1204,63 @@ function warning() {
 	return "You will lose your changes if you do not save before leaving this page.\n\nWhat do you want to do?";
 }
 
+
+function ABSFileInput(value, options) {
+
+	//Creates a file upload control, and styles it.
+	var el;
+
+	if (!options.readonly) {
+		var fileInputID = "FI_" + options.id;
+
+		el = document.createElement("div");
+		var fileInput = document.createElement("input");
+		$(fileInput).addClass("fileinputhide");
+		$(fileInput).attr("name", fileInputID);
+		$(fileInput).attr("id", fileInputID);
+		fileInput.type = "file";
+		$(fileInput).on("change", function() { commitEmbeddedFile(this, options.dataColumnId, false, options.dataIsPhoto); });
+		var fileImg = document.createElement("img");
+		$(fileImg).attr("src", window.ROOT + "Content/images/OLEIcons/delete-icon.png");
+		$(fileImg).attr("title", "Delete this file");
+		$(fileImg).on("click", function() { clearOLE(options.dataColumnId); });
+		$(fileImg).css({ "margin-right": "2px", "vertical-align": "middle", "cursor": "pointer", "height": "16px" });
+
+		var fileLabel = document.createElement("label");
+		$(fileLabel).attr("for", fileInputID);
+		$(fileLabel).addClass("btn btn-large");
+		$(fileLabel).on('click', function() { return preChecks(); });
+		if (value == "") value = "Add...";
+		$(fileLabel).text(value);
+		$(fileLabel).button();
+		$(fileLabel).find('span').css('font-weight', 'normal');
+		el.appendChild(fileInput);
+		el.appendChild(fileImg);
+		el.appendChild(fileLabel);
+	} else {
+		el = document.createElement("input");
+		$(el).prop("disabled", true);
+		$(el).val(value);
+	}
+
+	return $(el);
+
+}
+
+function ABSFileInputValue(elem, operation, value) {
+	
+	if ($(elem).children().length == 0) return $(elem).val();	//readonly mode.
+
+	var returnVal = $(elem).text();
+	try {
+		returnVal = elem[0].children.egInput.files['0'].name;
+	} catch (e) { }
+
+	if (returnVal == "Add...") returnVal = "";
+
+	return returnVal;
+}
+
 function ABSNumber(value, options) {
 
 	var el = document.createElement("input");
@@ -1227,7 +1306,7 @@ function ABSNumberValue(elem, operation, value) {
 }
 
 function saveInlineRowToDatabase(rowId) {
-
+	
 	var sUpdateOrInsert = "";
 	var gridData = $("#findGridTable").getRowData(rowId);
 	var gridColumns = $("#findGridTable").jqGrid('getGridParam', 'colNames');
@@ -1236,6 +1315,9 @@ function saveInlineRowToDatabase(rowId) {
 	
 	for (var i = 0; i <= gridColumns.length - 1; i++) {
 		if (gridColumns[i] != '' && gridColumns[i] != 'ID' && gridColumns[i] != 'Timestamp' && gridModel[i].editoptions.readonly == false && gridModel[i].editable == true) {
+
+			if ((gridModel[i].editoptions.dataType == -3) || (gridModel[i].editoptions.dataType == -4)) continue;	//OLEs already saved.
+
 			columnValue = gridData[gridModel[i].name];
 
 			//If the formatter is undefined then we treat the value as text
@@ -1296,7 +1378,7 @@ function saveInlineRowToDatabase(rowId) {
 }
 
 function submitFollowOn() {
-	
+
 	var rowId = window.savedRow; //$("#findGridTable").getGridParam('selrow');	
 	if ($('#frmData #txtErrorMessage').val() !== "") { //There was an error while saving (AKA server side validation fail)		
 		indicateThatRowWasModified();		
@@ -1361,7 +1443,7 @@ function updateRowFromDatabase(rowid) {
 		cache: false,
 		async: false,
 		data: { recordid: recordID },
-		success: function (jsonstring) {
+		success: function (jsonstring) {			
 			var jsondata = JSON.parse(jsonstring);
 			var currentRowId = rowid; //The row we need to update (or remove from the view/table)
 
@@ -1518,7 +1600,7 @@ function beforeSelectFindGridRow(newRowid) {
 	if (rowIsEditedOrNew == "") return true;	// not in edit mode: allowed.
 
 	//All checks done, ready to move into Quick Edit mode.
-	//Save previous row, then move on to newly clicked row.
+	//Save previous row, then move on to newly clicked row.	
 
 	//disable aftersavefunc being called by 'saverow'. We save manually.
 	var saveparameters = {
@@ -1540,7 +1622,7 @@ function beforeSelectFindGridRow(newRowid) {
 }
 
 function afterSaveFindGridRow(rowid) {
-	menu_ShowWait("Saving record...");
+	menu_ShowWait("Saving record...");	
 	saveRowToDatabase(rowid);
 	rowIsEditedOrNew = "";
 
@@ -1627,4 +1709,95 @@ function escapeHTML(str) {
 		}
 	}
 	return out;
+}
+
+function clearOLE(columnID) {
+	OpenHR.modalPrompt("Do you want to delete this embedded file?<br/><br/>This cannot be undone.", 4, "Confirm").then(function (answer) {
+		if (answer == 6) { // Yes
+
+			//clear the OLE!
+			commitEmbeddedFile(null, columnID, true);
+			return false;
+		}
+		return false;
+
+	});
+}
+
+function commitEmbeddedFile(fileobject, columnID, deleteflag, isPhoto) {
+	var data = new FormData();
+	var recordID = selectedRecordID();
+	var file = "";
+
+	data.append("columnID", columnID);
+	data.append("recordID", recordID);
+	
+	if (!deleteflag) {
+		file = fileobject.files[0];
+		data.append("file", file);
+	} else {
+		//Delete flag = true
+		data.append("file", "");
+	}
+
+	if (isPhoto && !deleteflag) {
+		//validate Photo Picture Types
+		//VB6 types only :(		
+		var fileExtension = OpenHR.GetFileExtension(file.name).toLocaleLowerCase();
+		var validFileExtensions = ["jpg", "bmp", "gif"];
+		if (validFileExtensions.indexOf(fileExtension) == -1) {
+			//invalid extension
+			OpenHR.modalMessage("Invalid image type.\n\nOnly .JPG, .BMP and .GIF images are accepted.");
+			return false;
+		}
+	}
+
+	$.ajax({
+		type: "POST",
+		url: "AjaxFileUpload",
+		contentType: false,
+		processData: false,
+		data: data,
+		success: function (result) {
+			//disable aftersavefunc being called by 'saverow'. We save manually.
+			var saveparameters = {
+				"successfunc": null,
+				"url": null,
+				"extraparam": {},
+				"aftersavefunc": null,
+				"errorfunc": null,
+				"afterrestorefunc": null,
+				"restoreAfterError": true,
+				"mtype": "POST"
+			}
+
+			$('#findGridTable').saveRow(recordID, saveparameters);
+
+			updateRowFromDatabase(recordID); //Get the row data from the database (show calculated values etc)
+
+			$('#findGridTable').editRow(recordID);
+
+			if (result.length > 0) OpenHR.modalMessage(result);
+
+		},
+		error: function (xhr, status, p3, p4) {
+			var err = "Error " + " " + status + " " + p3 + " " + p4;
+			if (xhr.responseText && xhr.responseText[0] == "{")
+				err = JSON.parse(xhr.responseText).Message;
+			OpenHR.modalMessage(err);
+		}
+	});
+
+	return true;
+
+}
+
+function preChecks() {
+
+	if (selectedRecordID() == "0") {
+		OpenHR.modalMessage("Unable to edit photo fields until the record has been saved.");
+		return false;
+	}
+	return true;
+
 }

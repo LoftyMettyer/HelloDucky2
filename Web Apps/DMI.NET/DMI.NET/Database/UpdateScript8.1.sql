@@ -42794,288 +42794,6 @@ END
 
 GO
 
-/****** Object:  StoredProcedure [dbo].[sp_ASRIntGetFindRecords]    Script Date: 13/09/2013 08:59:33 ******/
-SET ANSI_NULLS ON
-GO
-
-SET QUOTED_IDENTIFIER ON
-GO
-
-CREATE PROCEDURE [dbo].[sp_ASRIntGetFindRecords] (
-	@pfError 		bit OUTPUT, 
-	@pfSomeSelectable 	bit OUTPUT, 
-	@pfSomeNotSelectable 	bit OUTPUT, 
-	@plngRecordCount 	int OUTPUT, 
-	@plngTableID 		int, 
-	@plngViewID 		int, 
-	@plngOrderID 		int, 
-	@psWhereString 	varchar(8000),
-	@pfValidateOnly		bit)
-AS
-BEGIN
-	/* Return a recordset of the find records for the current user, given the table/view and order IDs.
-		@pfError = 1 if errors occured in getting the find records. Else 0.
-		@pfSomeSelectable = 1 if some find columns were selectable. Else 0.
-		@pfSomeNotSelectable = 1 if some find columns were NOT selectable. Else 0.
-		@plngTableID = the ID of the table on which the find is based (0 if the find is based on a view).
-		@plngViewID = the ID of the view on which the find is based (0 if the find is based on a table).
-		@plngOrderID = the ID of the order we are using.
-		@psWhereString = any filter code already set up by the user, or the relationship criteria if the find is based on a history table/view.
-	*/
-	DECLARE @lngRootTableID	int,
-		@lngTableViewObjectID	int,
-		@sTableViewName	sysname,
-		@lngCurrentRoleID	int,
-		@sType		varchar(5),
-		@fAscending		bit,
-		@sColumnName		sysname,
-		@lngTableID		int,
-		@sTableName		sysname,
-		@fSelectDenied		bit,
-		@sSelectString		varchar(8000),
-		@sOrderString		varchar(8000),
-		@sJoinString		varchar(8000),
-		@sExecString		nvarchar(4000),
-		@sParamDefinition	nvarchar(500),
-		@lngRecordCount	int
-	
-	/* Initialise variables. */
-	SET @pfError = 0
-	SET @pfSomeSelectable = 0
-	SET @pfSomeNotSelectable = 0
-	SET @plngRecordCount = 0
-	SET @fSelectDenied = 0
-	SET @sSelectString = ''
-	SET @sOrderString = ''
-	SET @sJoinString = ''
-	/* Get the given table/view's object id. */
-	IF @plngTableID > 0 
-	BEGIN
-		/* Get the ID of the base table. */
-		SET @lngRootTableID = @plngTableID
-		/* Get the table's name, and its object id in the databse. */
-		SELECT @lngTableViewObjectID = sysobjects.id, 
-			@sTableViewName = ASRSysTables.tableName
-		FROM sysobjects
-		INNER JOIN ASRSysTables 
-			ON sysobjects.name = ASRSysTables.tableName
-		WHERE ASRSysTables.tableID = @plngTableID	
-		/* Check that the given table ID is valid. */
-		IF @lngTableViewObjectID IS NULL
-		BEGIN
-			SET @pfError = 1
-		END
-	END
-	ELSE
-	BEGIN
-		/* Get the ID of the view's base table. */
-		SELECT @lngRootTableID = viewTableID
-		FROM ASRSysViews
-		WHERE viewID = @plngViewID
-		/* Get the view's name, and its object id in the databse. */
-		SELECT @lngTableViewObjectID = sysobjects.id, 
-			@sTableViewName = ASRSysViews.viewName
-		FROM sysobjects
-		INNER JOIN ASRSysViews 
-			ON sysobjects.name = ASRSysViews.viewName
-		WHERE ASRSysViews.viewID = @plngViewID	
-		/* Check that the given view ID is valid. */
-		IF (@lngTableViewObjectID IS NULL) 
-			OR (@lngRootTableID IS NULL)
-		BEGIN
-			SET @pfError = 1
-		END
-	END
-	/* Exit the stored procedure if an error has occurred. */
-	IF @pfError = 1
-	BEGIN
-		RETURN
-	END
-	/* Get the current user's role name and ID. */
-	SELECT @lngCurrentRoleID = a.uid
-	FROM sysusers a
-	INNER JOIN sysusers b 
-		ON a.uid = b.gid
-	WHERE b.name = CURRENT_USER
-	/* Get a cursor of the order items for the given order. */
-	DECLARE orderItems_cursor CURSOR LOCAL FAST_FORWARD FOR 
-		SELECT ASRSysOrderItems.type,
-			ASRSysOrderItems.ascending,
-			ASRSysColumns.columnName,
-			ASRSysColumns.tableID, 
-			ASRSysTables.tableName
-		FROM ASRSysOrderItems
-		INNER JOIN ASRSysColumns 
-			ON ASRSysOrderItems.columnID = ASRSysColumns.columnID
-		INNER JOIN ASRSysTables 
-			ON ASRSysColumns.tableID = ASRSysTables.tableID
-		WHERE ASRSysOrderItems.orderID = @plngOrderID
-		ORDER BY ASRSysOrderItems.type, 
-			ASRSysOrderItems.sequence
-	OPEN orderItems_cursor
-	FETCH NEXT FROM orderItems_cursor INTO @sType, @fAscending, @sColumnName, @lngTableID, @sTableName
-	/* Check if the order ID is valid for the given table/view, */
-	IF  @@fetch_status <> 0
-	BEGIN
-		SET @pfError = 1
-	END
-	WHILE (@@fetch_status = 0)
-	BEGIN
-		/* Check if the column is in a parent table or the base table/view. */
-		IF @lngTableID = @lngRootTableID
-		BEGIN
-			/* Check if the current user has SELECT permission on the column in the current table/view. */
-			IF permissions(@lngTableViewObjectID, @sColumnName) & 0x1=0x1
-			BEGIN
-				/* The user DOES have SELECT permission on the column in the current table/view. */
-				IF @sType = 'F'
-				BEGIN
-					/* Find column. */
-					IF len(@sSelectString) > 0
-					BEGIN
-						SET @sSelectString = @sSelectString + ', '
-					END
-					SET @sSelectString = @sSelectString + @sTableViewName + '.' + @sColumnName
-				END
-				ELSE
-				BEGIN
-					/* Order column. */
-					IF len(@sOrderString) > 0
-					BEGIN
-						SET @sOrderString = @sOrderString + ', '
-					END
-					SET @sOrderString = @sOrderString + @sTableViewName + '.' + @sColumnName
-					IF @fAscending = 0 
-					BEGIN
-						SET @sOrderString = @sOrderString + ' DESC'
-					END
-				END
-			END
-			ELSE
-			BEGIN
-				/* The user does NOT have SELECT permission on the column in thecurrent table/view. */
-				SET @fSelectDenied = 1
-			END	
-		END
-		ELSE
-			/* Check if the current user has SELECT permission on the column in the parent table. */
-			IF permissions(object_id(@sTableName), @sColumnName) & 0x1=0x1
-			BEGIN
-				/* The user DOES have SELECT permission on the column in the parent table. */
-				IF @sType = 'F'
-				BEGIN
-					/* Find column. */
-					IF len(@sSelectString) > 0
-					BEGIN
-						SET @sSelectString = @sSelectString + ', '
-					END
-					SET @sSelectString = @sSelectString + @sTableName + '.' + @sColumnName
-				END
-				ELSE
-				BEGIN
-					/* Order column. */
-					IF len(@sOrderString) > 0
-					BEGIN
-						SET @sOrderString = @sOrderString + ', '
-					END
-					SET @sOrderString = @sOrderString + @sTableName + '.' + @sColumnName
-					IF @fAscending = 0 
-					BEGIN
-						SET @sOrderString = @sOrderString + ' DESC'
-
-					END
-				END
-				/* Add the parent table to the JOIN string if it is not already there. */
-				IF charindex('JOIN ' + @sTableName + ' ON', @sJoinString) <= 0
-				BEGIN
-					IF len(@sJoinString) > 0
-					BEGIN
-						SET @sJoinString = @sJoinString + ' '
-					END
-					SET @sJoinString = @sJoinString + 'LEFT OUTER JOIN ' + @sTableName +
-						' ON ' + @sTableViewName + '.ID_' + convert(varchar(100), @lngTableID) + ' = ' + @sTableName + '.ID'
-				END
-			END
-			ELSE
-			BEGIN
-				/* The user does NOT have SELECT permission on the column in the parent table. */
-				SET @fSelectDenied = 1
-			END	
-		FETCH NEXT FROM orderItems_cursor INTO @sType, @fAscending, @sColumnName, @lngTableID, @sTableName
-	END
-	CLOSE orderItems_cursor
-	DEALLOCATE orderItems_cursor
-	/* Exit the stored procedure if an error has occurred. */
-	IF @pfError = 1
-	BEGIN
-		RETURN
-	END
-	/* Set the flags that show if no order columns could be selected, or if only some of them could be selected. */
-	IF len(@sSelectString) > 0 
-	BEGIN
-		SET @pfSomeSelectable = 1
-	END
-	ELSE
-	BEGIN
-		SET @pfSomeSelectable = 0
-	END
-	SET @pfSomeNotSelectable = @fSelectDenied
-	
-	/* Create the find record selection string. */
-	IF len(@sSelectString) > 0
-	BEGIN
-		/* Append the ID column onto the select string. */
-		SET @sSelectString = @sSelectString + ', ' + @sTableViewName + '.ID'
-		SET @sExecString = 'SELECT ' + @sSelectString + 
-			' FROM ' + @sTableViewName
-		/* Add the JOIN code to the find record selection string if required. */
-		IF len(@sJoinString) > 0 
-		BEGIN
-			SET @sExecString = @sExecString + ' ' + @sJoinString
-		END
-		/* Add the WHERE code to the find record selection string if required. */
-		IF len(@psWhereString) > 0 
-		BEGIN
-			SET @sExecString = @sExecString + ' WHERE ' + @psWhereString
-		END
-		/* Add the ORDER BY code to the find record selection string if required. */
-		IF len(@sOrderString) > 0 
-		BEGIN
-			SET @sExecString = @sExecString + ' ORDER BY ' + @sOrderString
-		END
-	END
-	/* Return a recordset of the required columns in the required order from the given table/view. */
-	IF @pfValidateOnly = 0
-	BEGIN
-		IF (@pfSomeSelectable = 1)
-		BEGIN
-			EXEC (@sExecString)
-		END
-	END
-	ELSE
-	BEGIN
-		IF (@pfSomeSelectable = 1)
-		BEGIN
-			SET @sExecString = 'SELECT @recordCount = COUNT(id)' + 
-				' FROM ' + @sTableViewName
-			/* Add the WHERE code to the find record selection string if required. */
-			IF len(@psWhereString) > 0 
-			BEGIN
-				SET @sExecString = @sExecString + ' WHERE ' + @psWhereString
-			END
-			SET @sParamDefinition = N'@recordCount int OUTPUT'
-			EXEC sp_executesql @sExecString,  @sParamDefinition, @lngRecordCount OUTPUT
-			SET @plngRecordCount = @lngRecordCount
-		END
-		ELSE
-		BEGIN
-			SET @plngRecordCount = 0
-		END
-	END
-END
-
-GO
-
 /****** Object:  StoredProcedure [dbo].[sp_ASRIntGetFindWindowInfo]    Script Date: 13/09/2013 08:59:33 ******/
 SET ANSI_NULLS ON
 GO
@@ -74605,11 +74323,23 @@ BEGIN
 				IF @sType = 'F'
 				BEGIN
 					/* Find column. */
+					IF @iDataType = -4 OR @iDataType = -3
+					BEGIN
+					SET @sTempString = CASE 
+							WHEN (len(@sSelectSQL) > 0) THEN ',' 
+							ELSE '' 
+						END + 
+						'RTRIM(SUBSTRING(CONVERT(VARCHAR(max),' + @sRealSource + '.' + @sColumnName + '), 11, 69)) AS [' + @sColumnName + ']';
+					END
+					ELSE
+					BEGIN
 					SET @sTempString = CASE 
 							WHEN (len(@sSelectSQL) > 0) THEN ',' 
 							ELSE '' 
 						END + 
 						@sRealSource + '.' + @sColumnName;
+
+					END
 
 					SET @sSelectSQL = @sSelectSQL + @sTempString;
 					INSERT INTO @OriginalColumns VALUES(@iColumnID, @sColumnName)
@@ -74691,12 +74421,25 @@ BEGIN
 				IF @sType = 'F'
 				BEGIN
 					/* Find column. */
+					IF @iDataType = -4 OR @iDataType = -3
+					BEGIN
+					SET @sTempString = CASE 
+							WHEN (len(@sSelectSQL) > 0) THEN ',' 
+							ELSE '' 
+						END + 
+						'RTRIM(SUBSTRING(CONVERT(VARCHAR(max),' + @sRealSource + '.' + @sColumnName + '), 11, 69)) AS [' + @sColumnName + ']';						
+					END
+					ELSE
+					BEGIN
 					SET @sTempString = CASE 
 							WHEN (len(@sSelectSQL) > 0) THEN ',' 
 							ELSE '' 
 						END + @sColumnTableName + '.' + @sColumnName;
+					END
+
 					SET @sSelectSQL = @sSelectSQL + @sTempString;
 					INSERT INTO @OriginalColumns VALUES(@iColumnID, @sColumnName)
+					
 				END
 				ELSE
 				BEGIN
@@ -74774,20 +74517,32 @@ BEGIN
 					SET @sSubString = @sSubString +	' ELSE NULL END';
 					IF @sType = 'F'
 					BEGIN
-						/* Find column. */
-						SET @sTempString = CASE 
-								WHEN (len(@sSelectSQL) > 0) THEN ',' 
-								ELSE '' 
+					/* Find column. */
+					IF @iDataType = -4 OR @iDataType = -3
+					BEGIN
+					SET @sTempString = CASE 
+							WHEN (len(@sSelectSQL) > 0) THEN ',' 
+							ELSE '' 
+						END + 
+						'RTRIM(SUBSTRING(CONVERT(VARCHAR(max),' + @sRealSource + '.' + @sColumnName + '), 11, 69)) AS [' + @sColumnName + ']';						
+					END
+					ELSE
+					BEGIN
+					SET @sTempString = CASE 
+							WHEN (len(@sSelectSQL) > 0) THEN ',' 
+							ELSE '' 
 							END + 
 							CASE
 								WHEN @iDataType = 11 THEN 'convert(datetime, ' + @sSubString + ')'
 								ELSE @sSubString 
 							END;
-						SET @sSelectSQL = @sSelectSQL + @sTempString;
-							
-						SET @sTempString = ' AS [' + @sColumnName + ']';
-						SET @sSelectSQL = @sSelectSQL + @sTempString;
-						INSERT INTO @OriginalColumns VALUES(@iColumnID, @sColumnName)
+					END
+					
+					SET @sSelectSQL = @sSelectSQL + @sTempString;
+						
+					SET @sTempString = ' AS [' + @sColumnName + ']';
+					SET @sSelectSQL = @sSelectSQL + @sTempString;
+					INSERT INTO @OriginalColumns VALUES(@iColumnID, @sColumnName)
 						
 					END
 					ELSE
@@ -75449,10 +75204,11 @@ BEGIN
 			WHERE f.[type] = 'F';
 
 		SELECT columnID, columnName FROM @OriginalColumns ORDER BY columnName
-
 	END
 
 END
+
+
 GO
 
 
