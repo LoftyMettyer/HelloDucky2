@@ -1,6 +1,6 @@
 VERSION 5.00
 Object = "{6B7E6392-850A-101B-AFC0-4210102A8DA7}#1.3#0"; "comctl32.ocx"
-Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "TABCTL32.OCX"
+Object = "{BDC217C8-ED16-11CD-956C-0000C04E4C0A}#1.1#0"; "tabctl32.ocx"
 Begin VB.Form frmOrdEdit 
    BorderStyle     =   3  'Fixed Dialog
    Caption         =   "Order Definition"
@@ -69,26 +69,25 @@ Begin VB.Form frmOrdEdit
       _Version        =   393216
       Style           =   1
       Tabs            =   2
-      Tab             =   1
       TabsPerRow      =   2
       TabHeight       =   520
       TabCaption(0)   =   "&Find Window Columns"
       TabPicture(0)   =   "frmOrdEdit.frx":0596
-      Tab(0).ControlEnabled=   0   'False
+      Tab(0).ControlEnabled=   -1  'True
       Tab(0).Control(0)=   "fraPageContainer(0)"
+      Tab(0).Control(0).Enabled=   0   'False
       Tab(0).ControlCount=   1
       TabCaption(1)   =   "&Sort Order Columns"
       TabPicture(1)   =   "frmOrdEdit.frx":05B2
-      Tab(1).ControlEnabled=   -1  'True
+      Tab(1).ControlEnabled=   0   'False
       Tab(1).Control(0)=   "fraPageContainer(1)"
-      Tab(1).Control(0).Enabled=   0   'False
       Tab(1).ControlCount=   1
       Begin VB.Frame fraPageContainer 
          BackColor       =   &H80000010&
          BorderStyle     =   0  'None
          Height          =   6800
          Index           =   1
-         Left            =   150
+         Left            =   -74850
          TabIndex        =   23
          Top             =   450
          Width           =   10545
@@ -213,7 +212,7 @@ Begin VB.Form frmOrdEdit
          BorderStyle     =   0  'None
          Height          =   6800
          Index           =   0
-         Left            =   -74850
+         Left            =   150
          TabIndex        =   19
          Top             =   450
          Width           =   10545
@@ -440,8 +439,8 @@ Public Property Set Order(pobjOrder As Order)
                     
           With lstSelectedFindColumns
             .AddItem objOrdItem.FullColumnName
-            .ItemData(.newIndex) = objOrdItem.ColumnID
-            .Selected(.newIndex) = objOrdItem.Editable
+            .ItemData(.NewIndex) = objOrdItem.ColumnID
+            .Selected(.NewIndex) = objOrdItem.Editable
           End With
       
           ' Remove the item from the Find Coumns treeview.
@@ -486,7 +485,7 @@ Private Sub cmdCancel_Click()
     intAnswer = MsgBox("The order definition has changed.  Save changes ?", vbQuestion + vbYesNoCancel + vbDefaultButton1, App.ProductName)
     If intAnswer = vbYes Then
       If Me.cmdOK.Enabled Then
-        Call cmdOk_Click
+        Call cmdOK_Click
         Exit Sub
       Else
         If (Len(Me.txtOrderName(0).Text) = 0) Then
@@ -508,7 +507,7 @@ Private Sub cmdCancel_Click()
   
 End Sub
 
-Private Sub cmdOk_Click()
+Private Sub cmdOK_Click()
   ' Confirm the order.
   On Error GoTo ErrorTrap
   
@@ -653,7 +652,7 @@ Private Sub Form_QueryUnload(Cancel As Integer, UnloadMode As Integer)
       intAnswer = MsgBox("The order definition has changed.  Save changes ?", vbQuestion + vbYesNoCancel + vbDefaultButton1, App.ProductName)
       If intAnswer = vbYes Then
         If Me.cmdOK.Enabled Then
-          Call cmdOk_Click
+          Call cmdOK_Click
           If mfCancelled = True Then Cancel = 1
         Else
           If (Len(Me.txtOrderName(0).Text) = 0) Then
@@ -680,7 +679,7 @@ Private Sub PopulateTreeViews()
   ' Populate the Find Columns treeview.
   Dim lngTableID As Long
   Dim sSQL As String
-  Dim rsInfo As dao.Recordset
+  Dim rsInfo As DAO.Recordset
   Dim objNode As ComctlLib.Node
   
   lngTableID = 0
@@ -690,17 +689,16 @@ Private Sub PopulateTreeViews()
   trvSortColumns.Nodes.Clear
   
   ' Get the list of columns for the order's base table.
-  sSQL = "SELECT tmpColumns.tableID, tmpColumns.columnID, tmpColumns.columnName, tmpTables.tableName" & _
+  sSQL = "SELECT tmpColumns.tableID, tmpColumns.columnID, tmpColumns.columnName, tmpTables.tableName, tmpColumns.MaxOleSizeEnabled, tmpColumns.OLEType, tmpColumns.DataType" & _
     " FROM tmpColumns, tmpTables" & _
     " WHERE tmpColumns.tableID = " & Trim(Str(mobjOrder.TableID)) & _
     " AND tmpColumns.deleted = FALSE" & _
     " AND tmpColumns.ColumnType <> " & Trim(Str(giCOLUMNTYPE_SYSTEM)) & _
     " AND tmpColumns.ColumnType <> " & Trim(Str(giCOLUMNTYPE_LINK)) & _
-    " AND tmpColumns.DataType <> " & Trim(Str(dtLONGVARBINARY)) & _
-    " AND tmpColumns.DataType <> " & Trim(Str(dtVARBINARY)) & _
     " AND tmpTables.tableID = tmpColumns.tableID"
   Set rsInfo = daoDb.OpenRecordset(sSQL, dbOpenForwardOnly, dbReadOnly)
-    
+  
+
   Do While Not rsInfo.EOF
     ' Add the table root node if it hasn't already been added.
     If lngTableID <> rsInfo!TableID Then
@@ -720,6 +718,10 @@ Private Sub PopulateTreeViews()
     End If
     
     ' Add items to the treeview for each column in the order's base table.
+    If rsInfo!DataType = -3 Or rsInfo!DataType = -4 Then
+      If rsInfo!OLEType <> 2 Or rsInfo!MaxOleSizeEnabled <> True Then GoTo continueloop
+    End If
+    
     Set objNode = trvFindColumns.Nodes.Add("T" & Trim(Str(rsInfo!TableID)), _
       tvwChild, "C" & Trim(Str(rsInfo!ColumnID)), _
       rsInfo!ColumnName, "IMG_COLUMN", "IMG_COLUMN")
@@ -731,6 +733,10 @@ Private Sub PopulateTreeViews()
       rsInfo!ColumnName, "IMG_COLUMN", "IMG_COLUMN")
     objNode.Tag = rsInfo!ColumnID
     Set objNode = Nothing
+    
+continueloop:
+  
+    
     
     rsInfo.MoveNext
   Loop
@@ -745,8 +751,6 @@ Private Sub PopulateTreeViews()
     " AND tmpColumns.deleted = FALSE" & _
     " AND tmpColumns.ColumnType <> " & Trim(Str(giCOLUMNTYPE_SYSTEM)) & _
     " AND tmpColumns.ColumnType <> " & Trim(Str(giCOLUMNTYPE_LINK)) & _
-    " AND tmpColumns.DataType <> " & Trim(Str(dtLONGVARBINARY)) & _
-    " AND tmpColumns.DataType <> " & Trim(Str(dtVARBINARY)) & _
     " AND tmpTables.tableID = tmpColumns.tableID" & _
     " ORDER BY tmpTables.tableName, tmpColumns.columnName"
   Set rsInfo = daoDb.OpenRecordset(sSQL, dbOpenForwardOnly, dbReadOnly)
@@ -931,7 +935,7 @@ Private Sub lstSelectedFindColumns_ItemCheck(Item As Integer)
   mfChanged = True
 End Sub
 
-Private Sub lstSelectedFindColumns_MouseDown(Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub lstSelectedFindColumns_MouseDown(Button As Integer, Shift As Integer, x As Single, y As Single)
   FindColumns_RefreshControls
 End Sub
 
@@ -955,7 +959,7 @@ Private Sub sscmdAddFindColumn_Click()
   ' Add the selected column to the Find Columns listview.
   With lstSelectedFindColumns
     .AddItem nodSelection.Parent.Text & "." & nodSelection.Text
-    .ItemData(.newIndex) = nodSelection.Tag
+    .ItemData(.NewIndex) = nodSelection.Tag
   End With
 
   ' Remove the column from the treeview.
@@ -1031,11 +1035,11 @@ Private Sub sscmdInsertFindColumn_Click()
   ' Add the selected column to the Find Columns listview.
   With lstSelectedFindColumns
     .AddItem nodSelection.Parent.Text & "." & nodSelection.Text
-    .ItemData(.newIndex) = nodSelection.Tag
+    .ItemData(.NewIndex) = nodSelection.Tag
   End With
 
   ' Ensure that it appears inserted
-  MoveItemInListBox lstSelectedFindColumns, lstSelectedFindColumns.newIndex, lstSelectedFindColumns.ListIndex
+  MoveItemInListBox lstSelectedFindColumns, lstSelectedFindColumns.NewIndex, lstSelectedFindColumns.ListIndex
 
   ' Remove the column from the treeview.
   trvFindColumns.Nodes.Remove "C" & Trim(Str(nodSelection.Tag))
@@ -1181,7 +1185,7 @@ Private Sub sscmdRemoveFindColumn_Click()
   Dim lngColumnID As Long
   Dim sSQL As String
   Dim objNode As ComctlLib.Node
-  Dim rsInfo As dao.Recordset
+  Dim rsInfo As DAO.Recordset
   
   lngColumnID = lstSelectedFindColumns.ItemData(lstSelectedFindColumns.ListIndex)
   lstSelectedFindColumns.RemoveItem (lstSelectedFindColumns.ListIndex)
@@ -1211,7 +1215,7 @@ Private Sub sscmdRemoveSortColumn_Click()
   Dim lngColumnID As Long
   Dim sSQL As String
   Dim objNode As ComctlLib.Node
-  Dim rsInfo As dao.Recordset
+  Dim rsInfo As DAO.Recordset
   
   With trvSelectedSortColumns
     If Not .SelectedItem Is Nothing Then
@@ -1270,11 +1274,11 @@ Private Sub trvFindColumns_DblClick()
   End If
 End Sub
 
-Private Sub trvFindColumns_MouseDown(Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub trvFindColumns_MouseDown(Button As Integer, Shift As Integer, x As Single, y As Single)
   FindColumns_RefreshControls
 End Sub
 
-Private Sub trvFindColumns_MouseUp(Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub trvFindColumns_MouseUp(Button As Integer, Shift As Integer, x As Single, y As Single)
   FindColumns_RefreshControls
 End Sub
 
@@ -1288,7 +1292,7 @@ Private Sub trvSelectedSortColumns_DblClick()
   End If
 End Sub
 
-Private Sub trvSelectedSortColumns_DragDrop(Source As Control, X As Single, Y As Single)
+Private Sub trvSelectedSortColumns_DragDrop(Source As Control, x As Single, y As Single)
   ' Drop a selected item from the columns treeview into the selected columns treeview.
   Dim fDropOk As Boolean
   Dim objHighlightNode As ComctlLib.Node
@@ -1359,7 +1363,7 @@ Private Sub trvSelectedSortColumns_DragDrop(Source As Control, X As Single, Y As
 
 End Sub
 
-Private Sub trvSelectedSortColumns_DragOver(Source As Control, X As Single, Y As Single, State As Integer)
+Private Sub trvSelectedSortColumns_DragOver(Source As Control, x As Single, y As Single, State As Integer)
   Dim objNode As ComctlLib.Node
 
   If mblnReadOnly Then
@@ -1367,7 +1371,7 @@ Private Sub trvSelectedSortColumns_DragOver(Source As Control, X As Single, Y As
   End If
 
   'Get the item at the mouse's coordinates.
-  Set objNode = trvSelectedSortColumns.HitTest(X, Y)
+  Set objNode = trvSelectedSortColumns.HitTest(x, y)
 
   'TM20010921 Fault 2030 & 'TM20010921 Fault 2031
   'The following lines were off-centring the items
@@ -1397,7 +1401,7 @@ Private Sub trvSelectedSortColumns_KeyUp(KeyCode As Integer, Shift As Integer)
 
 End Sub
 
-Private Sub trvSelectedSortColumns_MouseDown(Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub trvSelectedSortColumns_MouseDown(Button As Integer, Shift As Integer, x As Single, y As Single)
   Dim objNode As ComctlLib.Node
 
   If mblnReadOnly Then
@@ -1406,7 +1410,7 @@ Private Sub trvSelectedSortColumns_MouseDown(Button As Integer, Shift As Integer
   
   If Button = vbLeftButton Then
     ' Get the item at the mouse position
-    Set objNode = trvSelectedSortColumns.HitTest(X, Y)
+    Set objNode = trvSelectedSortColumns.HitTest(x, y)
     If Not objNode Is Nothing Then
       ' If this node is not the selected node, make it
       If Not objNode Is trvSelectedSortColumns.SelectedItem Then
@@ -1425,7 +1429,7 @@ Private Sub trvSelectedSortColumns_MouseDown(Button As Integer, Shift As Integer
 
 End Sub
 
-Private Sub trvSelectedSortColumns_MouseUp(Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub trvSelectedSortColumns_MouseUp(Button As Integer, Shift As Integer, x As Single, y As Single)
   
   If mblnReadOnly Then
     Exit Sub
@@ -1459,7 +1463,7 @@ Private Sub trvSortColumns_DblClick()
   End If
 End Sub
 
-Private Sub trvSortColumns_DragDrop(Source As Control, X As Single, Y As Single)
+Private Sub trvSortColumns_DragDrop(Source As Control, x As Single, y As Single)
   
   If Not mblnReadOnly Then
     ' Remove the selected item from the columns listview.
@@ -1471,7 +1475,7 @@ Private Sub trvSortColumns_DragDrop(Source As Control, X As Single, Y As Single)
 
 End Sub
 
-Private Sub trvSortColumns_MouseDown(Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub trvSortColumns_MouseDown(Button As Integer, Shift As Integer, x As Single, y As Single)
   ' Start the drag-drop operation.
   Dim fGoodColumn As Boolean
   Dim objItem As ComctlLib.ListItem
@@ -1483,7 +1487,7 @@ Private Sub trvSortColumns_MouseDown(Button As Integer, Shift As Integer, X As S
 
   If Button = vbLeftButton Then
     'Get the item at the mouse position
-    Set nodSelection = trvSortColumns.HitTest(X, Y)
+    Set nodSelection = trvSortColumns.HitTest(x, y)
     If Not nodSelection Is Nothing Then
       'If this item is not the selected item, make it
       If Not nodSelection Is trvSortColumns.SelectedItem Then
@@ -1510,7 +1514,7 @@ Private Sub trvSortColumns_MouseDown(Button As Integer, Shift As Integer, X As S
   
 End Sub
 
-Private Sub trvSortColumns_MouseUp(Button As Integer, Shift As Integer, X As Single, Y As Single)
+Private Sub trvSortColumns_MouseUp(Button As Integer, Shift As Integer, x As Single, y As Single)
   
   If mblnReadOnly Then
     Exit Sub
@@ -1577,7 +1581,7 @@ Private Sub txtOrderName_KeyPress(Index As Integer, KeyAscii As Integer)
 
 End Sub
 
-Private Sub MoveItemInListBox(ByRef objListbox As listbox, iOldIndex As Integer, iNewIndex As Integer)
+Private Sub MoveItemInListBox(ByRef objListbox As ListBox, iOldIndex As Integer, iNewIndex As Integer)
   
   Dim sItem As String
   Dim iItemData As Integer
