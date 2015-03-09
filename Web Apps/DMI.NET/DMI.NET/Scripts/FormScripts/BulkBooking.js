@@ -32,12 +32,12 @@ function cancel() {
 
 	menu_refreshMenu();
 
-	var frmGotoOption = document.getElementById("frmGotoOption");
+	var postData = {
+		Action: optionActionType.CANCEL,
+		__RequestVerificationToken: $('[name="__RequestVerificationToken"]').val()
+	};
+	OpenHR.submitForm(null, "optionframe", null, postData, "BulkBooking_Submit");
 
-	frmGotoOption.txtGotoOptionAction.value = "CANCEL";
-	frmGotoOption.txtGotoOptionLinkRecordID.value = 0;
-	frmGotoOption.txtGotoOptionPage.value = "emptyoption";
-	OpenHR.submitForm(frmGotoOption);
 }
 
 function getRecordGroup(groupType) {
@@ -55,6 +55,7 @@ function getRecordGroup(groupType) {
 }
 
 function makeSelection(psType, piID, psPrompts) {
+
 	/* Get the current selected delegate IDs. */
 	var sSelectedIDs;
 
@@ -70,7 +71,7 @@ function makeSelection(psType, piID, psPrompts) {
 
 	// Get the optionData.asp to get the required records.
 	var optionDataForm = OpenHR.getForm("optiondataframe", "frmGetOptionData");
-	optionDataForm.txtOptionAction.value = "GETBULKBOOKINGSELECTION";
+	optionDataForm.txtOptionAction.value = optionActionType.GETBULKBOOKINGSELECTION;
 	optionDataForm.txtOptionPageAction.value = psType;
 	optionDataForm.txtOptionRecordID.value = piID;
 	optionDataForm.txtOptionValue.value = sSelectedIDs;
@@ -81,23 +82,23 @@ function makeSelection(psType, piID, psPrompts) {
 
 
 function ok() {
-	var sSelectedIDs;
-	
-	sSelectedIDs = $('#ssOleDBGridFindRecords').getDataIDs().join(",");
 
-	var frmGotoOption = document.getElementById("frmGotoOption");
-	frmGotoOption.txtGotoOptionAction.value = "SELECTBULKBOOKINGS";
-	frmGotoOption.txtGotoOptionRecordID.value = $("#txtOptionRecordID").val();
-	frmGotoOption.txtGotoOptionLinkRecordID.value = sSelectedIDs;
+	var bookingStatus = "B";
+	var sSelectedIDs = $('#ssOleDBGridFindRecords').getDataIDs().join(",");
 
 	if ($('#TbStatusPExists').val() == 'True') {
-		frmGotoOption.txtGotoOptionLookupValue.value = $('#selStatus').val();
-	} else {
-		frmGotoOption.txtGotoOptionLookupValue.value = "B";
-	}
+		bookingStatus = $('#selStatus').val();
+	} 
 
-	frmGotoOption.txtGotoOptionPage.value = "emptyoption";
-	OpenHR.submitForm(frmGotoOption);
+	var postData = {
+		Action: optionActionType.SELECTBULKBOOKINGS,
+		BookingStatus: bookingStatus,
+		CourseID: $("#txtOptionRecordID").val(),
+		EmployeeIDs: sSelectedIDs,
+		__RequestVerificationToken: $('[name="__RequestVerificationToken"]').val()
+	};
+	OpenHR.submitForm(null, "optionframe", null, postData, "BulkBooking_Submit");
+
 }
 
 function remove() {

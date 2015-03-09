@@ -43,32 +43,32 @@ Namespace ViewModels
 				Case "tbTransferCourseFind"
 					DataFrameSource = "TBTRANSFERCOURSEFIND"
 					OptionAction = "LOADTRANSFERCOURSE"
-					GotoOptionActionSelect = "SELECTTRANSFERCOURSE"
-					GotoOptionActionCancel = "SELECTTRANSFERCOURSE"
+					GotoOptionActionSelect = OptionActionType.SELECTTRANSFERCOURSE
+					GotoOptionActionCancel = OptionActionType.SELECTTRANSFERCOURSE
 					PageTitle = "Find Course Record"
 					SubmitAction = "tbTransferCourseFind_Submit"
 
 				Case "tbTransferBookingFind"
 					DataFrameSource = "TBTRANSFERBOOKINGFIND"
 					OptionAction = "LOADTRANSFERBOOKING"
-					GotoOptionActionSelect = "SELECTTRANSFERBOOKING_1"
-					GotoOptionActionCancel = "CANCEL"
+					GotoOptionActionSelect = OptionActionType.SELECTTRANSFERBOOKING_1
+					GotoOptionActionCancel = OptionActionType.CANCEL
 					PageTitle = "Transfer Booking"
 					SubmitAction = "tbTransferBookingFind_Submit"
 
 				Case "tbBookCourseFind"
 					DataFrameSource = "TBBOOKCOURSEFIND"
 					OptionAction = "LOADBOOKCOURSE"
-					GotoOptionActionSelect = "SELECTBOOKCOURSE_1"
-					GotoOptionActionCancel = "CANCEL"
+					GotoOptionActionSelect = OptionActionType.SELECTBOOKCOURSE_1
+					GotoOptionActionCancel = OptionActionType.CANCEL
 					PageTitle = "Book Course"
 					SubmitAction = "tbBookCourseFind_Submit"
 
 				Case "tbAddFromWaitingListFind"
 					DataFrameSource = "TBADDFROMWAITINGLISTFIND"
 					OptionAction = "LOADADDFROMWAITINGLIST"
-					GotoOptionActionSelect = "SELECTADDFROMWAITINGLIST_1"
-					GotoOptionActionCancel = "CANCEL"
+					GotoOptionActionSelect = OptionActionType.SELECTADDFROMWAITINGLIST_1
+					GotoOptionActionCancel = OptionActionType.CANCEL
 					PageTitle = "Add From Waiting List"
 					SubmitAction = "tbAddFromWaitingListFind_Submit"
 

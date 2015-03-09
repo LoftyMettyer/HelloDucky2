@@ -208,6 +208,17 @@
     <Compile Include="App_Start\Startup.vb" />
     <Compile Include="Classes\jqGridHelper.vb" />
     <Compile Include="Classes\Licence.vb" />
+    <Compile Include="Helpers\AntiForgeryTokenHelper.vb" />
+    <Compile Include="Models\GotoOptionDataModel.vb" />
+    <Compile Include="Models\ObjectRequests\FilterSelectModel.vb" />
+    <Compile Include="Models\ObjectRequests\GotoOptionBaseModel.vb" />
+    <Compile Include="Models\ObjectRequests\LinkFindModel.vb" />
+    <Compile Include="Models\ObjectRequests\LookupFindModel.vb" />
+    <Compile Include="Models\ObjectRequests\SelectOrderModel.vb" />
+    <Compile Include="Models\ObjectRequests\QuickFindModel.vb" />
+    <Compile Include="Models\ObjectRequests\DelegateBookingModel.vb" />
+    <Compile Include="Models\ObjectRequests\StandardReportModel.vb" />
+    <Compile Include="Models\OptionDataModel.vb" />
     <Compile Include="Models\Responses\SaveRecordRespone.vb" />
     <Compile Include="Models\Responses\PostResponse.vb" />
     <Compile Include="Classes\ReportColumnCollection.vb" />
@@ -1298,6 +1309,7 @@
     <Content Include="Scripts\officebar\winkit\registry64HOVER.png" />
     <Content Include="Scripts\officebar\winkit\registry64NORM.png" />
     <Content Include="Views\Account\CurrentUsers.ascx" />
+    <Content Include="Views\Home\deletme.html" />
     <Content Include="Views\Home\util_run_bradford_factor.ascx" />
     <Content Include="Views\Home\_showChart.ascx" />
     <Content Include="custom.config.template" />

@@ -1,4 +1,4 @@
-﻿CREATE PROCEDURE spASRIntSaveExpression (
+﻿CREATE PROCEDURE dbo.spASRIntSaveExpression (
 	@expressionID integer = 0 OUTPUT,
 	@name varchar(255),
 	@TableID integer,

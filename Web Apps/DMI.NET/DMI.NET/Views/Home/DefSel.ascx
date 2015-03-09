@@ -89,9 +89,9 @@
 		End If
 	End If
 	
-	If CStr(Session("optionDefSelType")) <> "" Then
-		Session("defseltype") = Session("optionDefSelType")
-	End If
+	'If CStr(Session("optionDefSelType")) <> "" Then
+	'	Session("defseltype") = Session("optionDefSelType")
+	'End If
 	
 	If Session("singleRecordID") = 0 Then
 		If CStr(Session("optionTableID")) <> "" Then
@@ -102,7 +102,7 @@
 		Session("tableID") = Session("utilTableID")
 	End If
 	
-	Session("optionDefSelType") = ""
+	'Session("optionDefSelType") = ""
 	Session("optionTableID") = ""
 	
 	If (Session("defseltype") = UtilityType.utlPicklist) Or (Session("defseltype") = UtilityType.utlFilter) Or (Session("defseltype") = UtilityType.utlCalculation) Then

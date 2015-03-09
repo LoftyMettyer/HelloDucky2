@@ -4,43 +4,36 @@
 <%@ Import Namespace="System.Data" %>
 <%@ Import Namespace="HR.Intranet.Server" %>
 
-<%
-
-	If Len(Session("timestamp")) = 0 Then
-		Session("timestamp") = 0
-	End If
-
-%>
-
 <script type="text/javascript">
-	function emptyoption_onload() {		
+	function emptyoption_onload() {
+
 		var fNoAction;
 		var sCurrentWorkFramePage = $("#workframe").attr("data-framesource"); //OpenHR.currentWorkPage();
 		var frmMenu = $("#frmMenuInfo")[0].children;
 		// Do nothing if the menu controls are not yet instantiated.
 		if (frmMenu != null) {
 			if (OpenHR.currentWorkPage() != "DEFAULT") {
-				fNoAction = true;				
-					var div = document.getElementById("emptyoption_vars");
-					var txtAction = div.querySelector("#txtAction");
-					var txtFromDef = div.querySelector("#txtFromDef");
-					var txtOrderID = div.querySelector("#txtOrderID");
-					var txtFilterSQL = div.querySelector("#txtFilterSQL");
-					var txtFilterDef = div.querySelector("#txtFilterDef");
-					var txtRecordID = div.querySelector("#txtRecordID");
-					var txtColumnID = div.querySelector("#txtColumnID");
-					var txtValue = div.querySelector("#txtValue");
-					var txtFile = div.querySelector("#txtFile");
-					var txtFileValue = div.querySelector("#txtFileValue");
-					var txtResultCode = div.querySelector("#txtResultCode");
-					var txtPreReqFailsCount = div.querySelector("#txtPreReqFails");
-					var txtUnAvailFailsCount = div.querySelector("#txtUnAvailFails");
-					var txtOverlapFailsCount = div.querySelector("#txtOverlapFails");
-					var txtCourseOverbooked = div.querySelector("#txtOverBooked");
-					var txtLinkRecordID = div.querySelector("#txtLinkRecordID");
-					var txtErrorMessage = div.querySelector("#txtErrorMessage");
-				
-				if (txtAction.value == "SELECTORDER") {
+				fNoAction = true;
+				var div = document.getElementById("emptyoption_vars");
+				var iAction = parseInt(div.querySelector("#txtAction").value);
+				var txtFromDef = div.querySelector("#txtFromDef");
+				var txtOrderID = div.querySelector("#txtOrderID");
+				var txtFilterSQL = div.querySelector("#txtFilterSQL");
+				var txtFilterDef = div.querySelector("#txtFilterDef");
+				var txtRecordID = div.querySelector("#txtRecordID");
+				var txtColumnID = div.querySelector("#txtColumnID");
+				var txtValue = div.querySelector("#txtValue");
+				var txtFile = div.querySelector("#txtFile");
+				var txtFileValue = div.querySelector("#txtFileValue");
+				var txtResultCode = div.querySelector("#txtResultCode");
+				var txtPreReqFailsCount = div.querySelector("#txtPreReqFails");
+				var txtUnAvailFailsCount = div.querySelector("#txtUnAvailFails");
+				var txtOverlapFailsCount = div.querySelector("#txtOverlapFails");
+				var txtCourseOverbooked = div.querySelector("#txtOverBooked");
+				var txtLinkRecordID = div.querySelector("#txtLinkRecordID");
+				var txtErrorMessage = div.querySelector("#txtErrorMessage");
+
+				if (iAction === optionActionType.SELECTORDER) {
 					fNoAction = false;
 
 					if (sCurrentWorkFramePage == "RECORDEDIT") {						
@@ -58,7 +51,7 @@
 					}
 				}
 
-				if (txtAction.value == "SELECTFILTER") {
+				if (iAction === optionActionType.SELECTFILTER) {
 					fNoAction = false;
 					if (sCurrentWorkFramePage == "RECORDEDIT") {
 						frmRecEdit = OpenHR.getForm("workframe","frmRecordEditForm");
@@ -78,7 +71,7 @@
 					}
 				}
 
-				if (txtAction.value == "QUICKFIND") {					
+				if (iAction === optionActionType.QUICKFIND) {					
 					fNoAction = false;
 					var frmData = OpenHR.getForm("dataframe","frmData");
 					frmData.txtRecordID.value = txtRecordID.value;					
@@ -89,7 +82,7 @@
 					refreshData();	//recedit
 				}
 					var recEditControl;
-					if (txtAction.value == "SELECTLINK") {
+					if (iAction === optionActionType.SELECTLINK) {
 					fNoAction = false;
 					recEditControl = OpenHR.getForm("workframe", "frmRecordEditForm").ctlRecordEdit;
 						
@@ -117,7 +110,7 @@
 					//window.setTimeout("window.parent.frames('menuframe').refreshMenu()", 100);
 				}
 
-				if (txtAction.value == "SELECTLOOKUP") {
+				if (iAction === optionActionType.SELECTLOOKUP) {
 					fNoAction = false;
 					recEditControl = OpenHR.getForm("workframe","frmRecordEditForm").ctlRecordEdit;
 					recEdit_setData(txtColumnID.value, txtValue.value);
@@ -128,7 +121,7 @@
 					menu_refreshMenu();
 				}
 
-				if ((txtAction.value == "SELECTIMAGE") || (txtAction.value == "SELECTOLE")) {
+				if ((iAction === optionActionType.SELECTIMAGE) || (iAction === optionActionType.SELECTOLE)) {
 					fNoAction = false;
 					recEditControl = OpenHR.getForm("workframe", "frmRecordEditForm").ctlRecordEdit;
 						recEdit_setData(txtColumnID.value, txtFile.value);
@@ -141,7 +134,7 @@
 					menu_refreshMenu();
 				}
 
-				if (txtAction.value == "LINKOLE") {
+				if (iAction === optionActionType.LINKOLE) {
 					if (txtErrorMessage.value == "") {
 						fNoAction = false;
 						recEditControl = OpenHR.getForm("workframe", "frmRecordEditForm").ctlRecordEdit;
@@ -162,21 +155,20 @@
 					}
 				}
 
-
-				if ((txtAction.value == "SELECTTRANSFERCOURSE") ||
-						(txtAction.value == "SELECTBOOKCOURSE_2") ||
-						(txtAction.value == "SELECTTRANSFERBOOKING_1") ||
-						(txtAction.value == "SELECTADDFROMWAITINGLIST_2") ||
-						(txtAction.value == "SELECTBULKBOOKINGS")) {
-						var sPrefix;
-						var sPrefix2;
-						if ((txtAction.value == "SELECTBOOKCOURSE_2") ||
-							(txtAction.value == "SELECTTRANSFERBOOKING_1") ||
-							(txtAction.value == "SELECTADDFROMWAITINGLIST_2")) {
+				if ((iAction === optionActionType.SELECTTRANSFERCOURSE) ||
+					(iAction === optionActionType.SELECTBOOKCOURSE_2) ||
+					(iAction === optionActionType.SELECTTRANSFERBOOKING_1) ||
+					(iAction === optionActionType.SELECTADDFROMWAITINGLIST_2) ||
+					(iAction === optionActionType.SELECTBULKBOOKINGS)) {
+					var sPrefix;
+					var sPrefix2;
+					if ((iAction === optionActionType.SELECTBOOKCOURSE_2) ||
+						(iAction === optionActionType.SELECTTRANSFERBOOKING_1) ||
+						(iAction === optionActionType.SELECTADDFROMWAITINGLIST_2)) {
 						sPrefix = "The employee";
 						sPrefix2 = "The employee is";
 					} else {
-						if (txtAction.value == "SELECTBULKBOOKINGS") {
+				if (iAction === optionActionType.SELECTBULKBOOKINGS) {
 							sPrefix = "A delegate";
 							sPrefix2 = "Some delegates are";
 						} else {
@@ -329,6 +321,7 @@
 						//-------------------------------------------------
 
 					} else {
+
 						// -------------  Results come from sp_ASRIntValidateTransfers, NOT sp_ASRIntValidateBulkBookings --------------
 						
 						var iResultCode = txtResultCode.value;
@@ -397,12 +390,12 @@
 
 					if (sTransferErrorMsg.length > 0) {
 							/* Error - not over-ridable. */
-							if ((txtAction.value == "SELECTBOOKCOURSE_2") ||
-									(txtAction.value == "SELECTTRANSFERBOOKING_1") ||
-									(txtAction.value == "SELECTADDFROMWAITINGLIST_2")) {
+						if ((iAction === optionActionType.SELECTBOOKCOURSE_2) ||
+									(iAction === optionActionType.SELECTTRANSFERBOOKING_1) ||
+									(iAction === optionActionType.SELECTADDFROMWAITINGLIST_2)) {
 								sTransferErrorMsg = sTransferErrorMsg + "\n\nUnable to make the booking.";
 							} else {
-								if (txtAction.value == "SELECTBULKBOOKINGS") {
+						if (iAction === optionActionType.SELECTBULKBOOKINGS) {
 									sTransferErrorMsg = sTransferErrorMsg + "\n\nUnable to make the bookings.";
 								} else {
 									sTransferErrorMsg = sTransferErrorMsg + "\n\nUnable to transfer the bookings.";
@@ -413,12 +406,12 @@
 														
 						} else if (sTransferWarningMsg.length > 0) {
 							/* Error - but over-ridable. */
-							if ((txtAction.value == "SELECTBOOKCOURSE_2") ||
-									(txtAction.value == "SELECTTRANSFERBOOKING_1") ||
-									(txtAction.value == "SELECTADDFROMWAITINGLIST_2")) {
+							if ((iAction === optionActionType.SELECTBOOKCOURSE_2) ||
+									(iAction === optionActionType.SELECTTRANSFERBOOKING_1) ||
+									(iAction === optionActionType.SELECTADDFROMWAITINGLIST_2)) {
 								sTransferWarningMsg = sTransferWarningMsg + "\nDo you still want to make the booking ?";
 							} else {
-								if (txtAction.value == "SELECTBULKBOOKINGS") {
+							if (iAction === optionActionType.SELECTBULKBOOKINGS) {
 									sTransferWarningMsg = sTransferWarningMsg + "\nDo you still want to make the bookings ?";
 								} else {
 									sTransferWarningMsg = sTransferWarningMsg + "\nDo you still want to transfer the bookings ?";
@@ -432,11 +425,11 @@
 						}
 					
 						var optionDataForm;
-						if (txtAction.value == "SELECTBOOKCOURSE_2") {
+						if (iAction === optionActionType.SELECTBOOKCOURSE_2) {
 						if (fTransferOK == true) {
 							// Go ahead and book the course.
-								optionDataForm = OpenHR.getForm("optiondataframe","frmGetOptionData");
-								optionDataForm.txtOptionAction.value = "SELECTBOOKCOURSE_3";
+							optionDataForm = OpenHR.getForm("optiondataframe","frmGetOptionData");
+							optionDataForm.txtOptionAction.value = optionActionType.SELECTBOOKCOURSE_3;
 							optionDataForm.txtOptionRecordID.value = txtRecordID.value;
 							optionDataForm.txtOptionLinkRecordID.value = txtLinkRecordID.value;
 							optionDataForm.txtOptionValue.value = txtValue.value;
@@ -444,22 +437,23 @@
 							refreshOptionData(); //is in scope and unique anyhoo.
 						}
 					} else {
-						if (txtAction.value == "SELECTTRANSFERBOOKING_1") {
+					if (iAction === optionActionType.SELECTTRANSFERBOOKING_1) {
 							if (fTransferOK == true) {
 								// Go ahead and book the course.
 									optionDataForm = OpenHR.getForm("optiondataframe","frmGetOptionData");
-									optionDataForm.txtOptionAction.value = "SELECTTRANSFERBOOKING_2";
+									optionDataForm.txtOptionAction.value = optionActionType.SELECTTRANSFERBOOKING_2;
 								optionDataForm.txtOptionRecordID.value = txtRecordID.value;
 								optionDataForm.txtOptionLinkRecordID.value = txtLinkRecordID.value;
 
 								refreshOptionData();
 							}
 						} else {
-							if (txtAction.value == "SELECTADDFROMWAITINGLIST_2") {
+						if (iAction === optionActionType.SELECTADDFROMWAITINGLIST_2) {
+
 								if (fTransferOK == true) {
 									// Go ahead and book the course.
 										optionDataForm = OpenHR.getForm("optiondataframe", "frmGetOptionData");
-										optionDataForm.txtOptionAction.value = "SELECTADDFROMWAITINGLIST_3";
+										optionDataForm.txtOptionAction.value = optionActionType.SELECTADDFROMWAITINGLIST_3;
 									optionDataForm.txtOptionRecordID.value = txtRecordID.value;
 									optionDataForm.txtOptionLinkRecordID.value = txtLinkRecordID.value;
 									optionDataForm.txtOptionValue.value = txtValue.value;
@@ -467,11 +461,11 @@
 									refreshOptionData(); //should be in scope!
 								}
 							} else {
-								if (txtAction.value == "SELECTBULKBOOKINGS") {
+							if (iAction === optionActionType.SELECTBULKBOOKINGS) {
 									if (fTransferOK == true) {
 										// Go ahead and make the bookings.
 											optionDataForm = OpenHR.getForm("optiondataframe", "frmGetOptionData");
-											optionDataForm.txtOptionAction.value = "SELECTBULKBOOKINGS_2";
+											optionDataForm.txtOptionAction.value = optionActionType.SELECTBULKBOOKINGS_2;
 										optionDataForm.txtOptionRecordID.value = txtRecordID.value;
 										optionDataForm.txtOptionLinkRecordID.value = txtLinkRecordID.value;
 										optionDataForm.txtOptionValue.value = txtValue.value;
@@ -512,7 +506,7 @@
 
 <%
 	Response.Write("<div id='emptyoption_vars'>" & vbCrLf)
-	Response.Write("<input type='hidden' id='txtAction' name='txtAction' value='" & Replace(Session("optionAction"), """", "&quot;") & "'>" & vbCrLf)
+	Response.Write("<input type='hidden' id='txtAction' name='txtAction' value='" & Session("optionAction") & "'>" & vbCrLf)
 	Response.Write("<input type='hidden' id='txtErrorMessage' name='txtErrorMessage' value='" & Replace(Session("errorMessage"), """", "&quot;") & "'>" & vbCrLf)
 	Response.Write("<input type='hidden' id='txtFromDef' name='txtFromDef' value='" & Replace(Session("fromDef"), """", "&quot;") & "'>" & vbCrLf)
 	Response.Write("<input type='hidden' id='txtOrderID' name='txtOrderID' value='" & Session("orderID") & "'>" & vbCrLf)
@@ -539,7 +533,7 @@
 		Dim objDatabase As Database = CType(Session("DatabaseFunctions"), Database)
 		Dim sErrorDescription As String = ""
 			
-		If Session("optionAction") = "SELECTLINK" Then
+		If Session("optionAction") = OptionActionType.SELECTLINK Then
 			
 			Try
 			

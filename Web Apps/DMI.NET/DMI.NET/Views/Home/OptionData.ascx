@@ -65,7 +65,7 @@
 
 			' Get the required record count if we have a query.
 			'	if len(session("selectSQL")) > 0 then
-			If Session("optionAction") = "LOADFIND" Then
+			If Session("optionAction") = OptionActionType.LOADFIND Then
 			
 				Try
 					Get1000SeparatorBlankIfZeroFindColumns(CleanNumeric(Session("optionTableID")), CleanNumeric(Session("optionViewID")), CleanNumeric(Session("optionOrderID")), sThousandColumns, sBlankIfZeroColumns)
@@ -158,7 +158,7 @@
 					sErrorDescription = "The find records could not be retrieved." & vbCrLf & FormatError(ex.Message)
 				End Try
 
-			ElseIf Session("optionAction") = "LOADLOOKUPFIND" Then
+			ElseIf Session("optionAction") = OptionActionType.LOADLOOKUPFIND Then
 				' StoredProc defaults to 1000 if no value set.
 				Dim iLookupFindRecords As Integer = 10000	' replaces CleanNumeric(Session("FindRecords")
 						
@@ -303,7 +303,7 @@
 										sTemp = FormatNumber(objRow(iloop), numberOfDecimals, TriState.True, TriState.False, TriState.True)
 									Else
 										sTemp = FormatNumber(objRow(iloop), numberOfDecimals, TriState.True, TriState.False, TriState.False)
-									End If									
+									End If
 									sAddString = sAddString & sTemp
 								End If
 							Else
@@ -339,7 +339,7 @@
 				End If
 				
 				
-			ElseIf Session("optionAction") = "LOADTRANSFERCOURSE" Then
+			ElseIf Session("optionAction") = OptionActionType.LOADTRANSFERCOURSE Then
 				sThousandColumns = ""
 			
 				Try
@@ -428,7 +428,7 @@
 				Response.Write("<input type='hidden' id=txtFirstColumnDecimals name=txtFirstColumnDecimals value=" & prmColumnDecimals.Value & ">" & vbCrLf)
 			
 				
-			ElseIf Session("optionAction") = "LOADBOOKCOURSE" Then
+			ElseIf Session("optionAction") = OptionActionType.LOADBOOKCOURSE Then
 
 				Dim prmError = New SqlParameter("pfError", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
 				Dim prmIsFirstPage = New SqlParameter("pfFirstPage", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
@@ -520,7 +520,7 @@
 			
 				
 				
-			ElseIf Session("optionAction") = "SELECTBOOKCOURSE_3" Then
+			ElseIf Session("optionAction") = OptionActionType.SELECTBOOKCOURSE_3 Then
 				
 				Try
 					objDataAccess.ExecuteSP("sp_ASRIntBookCourse" _
@@ -528,15 +528,15 @@
 						, New SqlParameter("piCourseRecordID", SqlDbType.Int) With {.Value = CleanNumeric(Session("optionLinkRecordID"))} _
 						, New SqlParameter("psStatus", SqlDbType.VarChar, -1) With {.Value = Session("optionValue")})
 					
-					Session("optionAction") = "BOOKCOURSESUCCESS"
+					Session("optionAction") = OptionActionType.BOOKCOURSESUCCESS
 					
 				Catch ex As Exception
 					sNonFatalErrorDescription = "The booking could not be made." & vbCrLf & sNonFatalErrorDescription
-					Session("optionAction") = "BOOKCOURSEERROR"
+					Session("optionAction") = OptionActionType.BOOKCOURSEERROR
 				End Try
 
 
-			ElseIf Session("optionAction") = "SELECTADDFROMWAITINGLIST_3" Then
+			ElseIf Session("optionAction") = OptionActionType.SELECTADDFROMWAITINGLIST_3 Then
 				
 				Try
 					objDataAccess.ExecuteSP("sp_ASRIntAddFromWaitingList" _
@@ -544,16 +544,16 @@
 						, New SqlParameter("piCourseRecordID", SqlDbType.Int) With {.Value = CleanNumeric(Session("optionRecordID"))} _
 						, New SqlParameter("psStatus", SqlDbType.VarChar - 1) With {.Value = Session("optionValue")})
 					
-					Session("optionAction") = "ADDFROMWAITINGLISTSUCCESS"
+					Session("optionAction") = OptionActionType.ADDFROMWAITINGLISTSUCCESS
 					
 				Catch ex As Exception
 					sNonFatalErrorDescription = "The booking could not be made." & vbCrLf & sNonFatalErrorDescription
-					Session("optionAction") = "ADDFROMWAITINGLISTERROR"
+					Session("optionAction") = OptionActionType.ADDFROMWAITINGLISTERROR
 					
 				End Try
 							
 
-			ElseIf Session("optionAction") = "LOADTRANSFERBOOKING" Then
+			ElseIf Session("optionAction") = OptionActionType.LOADTRANSFERBOOKING Then
 				sThousandColumns = ""
 
 				Dim prmError = New SqlParameter("pfError", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
@@ -651,7 +651,7 @@
 				Response.Write("<input type='hidden' id=txtStatus name=txtStatus value=""" & Replace(prmStatus.Value, """", "&quot;") & """>" & vbCrLf)
 			
 				
-			ElseIf Session("optionAction") = "LOADADDFROMWAITINGLIST" Then
+			ElseIf Session("optionAction") = OptionActionType.LOADADDFROMWAITINGLIST Then
 				sThousandColumns = ""
 			
 				Try
@@ -749,22 +749,22 @@
 				End Try
 
 
-			ElseIf Session("optionAction") = "SELECTTRANSFERBOOKING_2" Then
+			ElseIf Session("optionAction") = OptionActionType.SELECTTRANSFERBOOKING_2 Then
 						
 				Try
 					objDataAccess.ExecuteSP("sp_ASRIntTransferCourse" _
 						, New SqlParameter("piTBRecordID", SqlDbType.Int) With {.Value = CleanNumeric(Session("optionRecordID"))} _
 						, New SqlParameter("piCourseRecordID", SqlDbType.Int) With {.Value = CleanNumeric(Session("optionLinkRecordID"))})
 					
-					Session("optionAction") = "TRANSFERBOOKINGSUCCESS"
+					Session("optionAction") = OptionActionType.TRANSFERBOOKINGSUCCESS
 					
 				Catch ex As Exception
 					sNonFatalErrorDescription = "The booking could not be transferred." & vbCrLf & sNonFatalErrorDescription
-					Session("optionAction") = "TRANSFERBOOKINGERROR"
+					Session("optionAction") = OptionActionType.TRANSFERBOOKINGERROR
 				End Try
 
 
-			ElseIf Session("optionAction") = "GETBULKBOOKINGSELECTION" Then
+			ElseIf Session("optionAction") = OptionActionType.GETBULKBOOKINGSELECTION Then
 				If UCase(Session("optionPageAction")) = "FILTER" Then
 					objUtilities = Session("UtilitiesObject")
 
@@ -867,7 +867,7 @@
 				End Try
 			
 				
-			ElseIf Session("optionAction") = "GETPICKLISTSELECTION" Then
+			ElseIf Session("optionAction") = OptionActionType.GETPICKLISTSELECTION Then
 				If UCase(Session("optionPageAction")) = "FILTER" Then
 					objUtilities = Session("UtilitiesObject")
 
@@ -981,7 +981,7 @@
 				End Try
 
 
-			ElseIf Session("optionAction") = "SELECTBULKBOOKINGS_2" Then
+			ElseIf Session("optionAction") = OptionActionType.SELECTBULKBOOKINGS_2 Then
 				
 				Try
 					objDataAccess.ExecuteSP("sp_ASRIntMakeBulkBookings" _
@@ -989,22 +989,22 @@
 						, New SqlParameter("psEmployeeRecordIDs", SqlDbType.VarChar, -1) With {.Value = Session("optionLinkRecordID")} _
 						, New SqlParameter("psStatus", SqlDbType.VarChar, -1) With {.Value = Session("optionValue")})
 					
-					Session("optionAction") = "BULKBOOKINGSUCCESS"
+					Session("optionAction") = OptionActionType.BULKBOOKINGSUCCESS
 					
 				Catch ex As Exception
 					sNonFatalErrorDescription = "Unable to create booking record." & vbCrLf & sNonFatalErrorDescription
-					Session("optionAction") = "BULKBOOKINGERROR"
+					Session("optionAction") = OptionActionType.BULKBOOKINGERROR
 				End Try
 
 				
 
-			ElseIf (Session("optionAction") = "LOADEXPRFIELDCOLUMNS") Or _
-					(Session("optionAction") = "LOADEXPRLOOKUPCOLUMNS") Then
+			ElseIf Session("optionAction") = OptionActionType.LOADEXPRFIELDCOLUMNS Or _
+					Session("optionAction") = OptionActionType.LOADEXPRLOOKUPCOLUMNS Then
 				
 				Try
 
 					Dim prmComponentType = New SqlParameter("piComponentType", SqlDbType.Int)
-					If Session("optionAction") = "LOADEXPRFIELDCOLUMNS" Then
+					If Session("optionAction") = OptionActionType.LOADEXPRFIELDCOLUMNS Then
 						prmComponentType.Value = 1
 					Else
 						prmComponentType.Value = 0
@@ -1027,7 +1027,7 @@
 				End Try
 				
 
-			ElseIf Session("optionAction") = "LOADEXPRLOOKUPVALUES" Then
+			ElseIf Session("optionAction") = OptionActionType.LOADEXPRLOOKUPVALUES Then
 		
 				Try
 										
@@ -1050,11 +1050,11 @@
 								
 			End If
 
-			Response.Write("<input type='hidden' id=txtOptionAction name=txtOptionAction value=" & Session("optionAction") & ">" & vbCrLf)
-			Response.Write("<input type='hidden' id=txtOptionTableID name=txtOptionTableID value=" & Session("optionTableID") & ">" & vbCrLf)
-			Response.Write("<input type='hidden' id=txtOptionViewID name=txtOptionViewID value=" & Session("optionViewID") & ">" & vbCrLf)
-			Response.Write("<input type='hidden' id=txtOptionOrderID name=txtOptionOrderID value=" & Session("optionOrderID") & ">" & vbCrLf)
-			Response.Write("<input type='hidden' id=txtOptionColumnID name=txtOptionColumnID value=" & Session("optionColumnID") & ">" & vbCrLf)
+			Response.Write("<input type='hidden' id=txtOptionAction name=txtOptionAction value='" & Session("optionAction") & "'>" & vbCrLf)
+			Response.Write("<input type='hidden' id=txtOptionTableID name=txtOptionTableID value='" & CInt(Session("optionTableID")) & "'>" & vbCrLf)
+			Response.Write("<input type='hidden' id=txtOptionViewID name=txtOptionViewID value='" & CInt(Session("optionViewID")) & "'>" & vbCrLf)
+			Response.Write("<input type='hidden' id=txtOptionOrderID name=txtOptionOrderID value='" & CInt(Session("optionOrderID")) & "'>" & vbCrLf)
+			Response.Write("<input type='hidden' id=txtOptionColumnID name=txtOptionColumnID value='" & CInt(Session("optionColumnID")) & "'>" & vbCrLf)
 			Response.Write("<input type='hidden' id=txtOptionLocateValue name=txtOptionLocateValue value=""" & Replace(Session("optionLocateValue"), """", "&quot;") & """>" & vbCrLf)
 			Response.Write("<input type='hidden' id=txtErrorDescription name=txtErrorDescription value=""" & sErrorDescription & """>")
 			Response.Write("<input type='hidden' id=txtNonFatalErrorDescription name=txtNonFatalErrorDescription value=""" & sNonFatalErrorDescription & """>")
@@ -1063,5 +1063,5 @@
 
 
 <script type="text/javascript">
-		optiondata_onload()
+	optiondata_onload();
 </script>

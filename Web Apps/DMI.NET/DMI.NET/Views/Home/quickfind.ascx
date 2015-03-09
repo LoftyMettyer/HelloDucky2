@@ -2,6 +2,7 @@
 <%@ import namespace="DMI.NET" %>
 <%@ Import Namespace="System.Data.SqlClient" %>
 <%@ Import Namespace="System.Data" %>
+<%@ Import Namespace="DMI.NET.Helpers" %>
 <%@ Import Namespace="HR.Intranet.Server" %>
 
 <%
@@ -40,12 +41,6 @@
 			} else {
 				frmQuickFindForm.selectField.focus();
 			}
-
-			//window.parent.frames("workframe").document.forms("frmRecordEditForm").ctlRecordEdit.style.visibility = "hidden";
-
-			// Get menu.asp to refresh the menu.
-			// NPG20100824 Fault HRPRO1065 - leave menus disabled in these modal screens		
-			//window.parent.frames("menuframe").refreshMenu();
 		}
 	}
 
@@ -284,46 +279,41 @@
 		}
 
 		if (fOK == true) {
-			//window.parent.frames("workframe").document.forms("frmRecordEditForm").ctlRecordEdit.style.visibility = "visible";
-			var frmGotoOption = OpenHR.getForm("optionframeset", "frmGotoOption");
 
-			frmGotoOption.txtGotoOptionAction.value = "QUICKFIND";
-			frmGotoOption.txtGotoOptionScreenID.value = frmQuickFindForm.txtOptionScreenID.value;
-			frmGotoOption.txtGotoOptionTableID.value = frmQuickFindForm.txtOptionTableID.value;
-			frmGotoOption.txtGotoOptionViewID.value = frmQuickFindForm.txtOptionViewID.value;
-			frmGotoOption.txtGotoOptionFilterSQL.value = frmQuickFindForm.txtOptionFilterSQL.value;
-			frmGotoOption.txtGotoOptionFilterDef.value = frmQuickFindForm.txtOptionFilterDef.value;
-			frmGotoOption.txtGotoOptionValue.value = sModifiedValue;
-			frmGotoOption.txtGotoOptionColumnID.value = frmQuickFindForm.selectField.options[frmQuickFindForm.selectField.selectedIndex].value;
+			var postData = {
+				Action: optionActionType.QUICKFIND,
+				TableID: frmQuickFindForm.txtOptionTableID.value,
+				ViewID: frmQuickFindForm.txtOptionViewID.value,
+				FilterSQL: frmQuickFindForm.txtOptionFilterSQL.value,
+				FilterDef: frmQuickFindForm.txtOptionFilterDef.value,
+				Value: sModifiedValue,
+				ColumnID: frmQuickFindForm.selectField.options[frmQuickFindForm.selectField.selectedIndex].value,
+				<%:Html.AntiForgeryTokenForAjaxPost() %>
+			};
+			OpenHR.submitForm(null, "optionframe", null, postData, "quickfind_Submit");
 
-			frmGotoOption.txtGotoOptionPage.value = "emptyoption";
-			OpenHR.submitForm(frmGotoOption);
 		}
 	}
 
 	function CancelQuickFind() {
 		// Redisplay the workframe recedit control. 
-		//window.parent.frames("workframe").document.forms("frmRecordEditForm").ctlRecordEdit.style.visibility = "visible";
-
-		//window.parent.document.all.item("workframeset").cols = "*, 0";			
 		$("#workframe").attr("data-framesource", "RECORDEDIT");
 		$("#optionframe").hide();
 		$("#workframe").show();
 
-		//OpenHR.getFrame("workframe").refreshData();
 		refreshData();	//recedit
 
+		var postData = {
+			Action: optionActionType.CANCEL,
+				<%:Html.AntiForgeryTokenForAjaxPost() %>
+			};
+		OpenHR.submitForm(null, "optionframe", null, postData, "quickfind_Submit");
 
-		var frmGotoOption = OpenHR.getForm("optionframeset", "frmGotoOption");
-		frmGotoOption.txtGotoOptionAction.value = "CANCEL";
-		frmGotoOption.txtGotoOptionPage.value = "emptyoption";
-		OpenHR.submitForm(frmGotoOption);
 	}
 
 </script>
 
-<div <%=session("BodyTag")%>>
-	<form action="" method="POST" id="frmQuickFindForm" name="frmQuickFindForm" onsubmit="return false;">
+<form action="" method="POST" id="frmQuickFindForm" name="frmQuickFindForm" onsubmit="return false;">
 
 		<table style="margin: 0 auto; text-align: center; border-spacing: 5px; border-collapse: collapse;" class="outline">
 			<tr>
@@ -488,13 +478,5 @@
 		<input type='hidden' id="txtOptionFilterDef" name="txtOptionFilterDef" value="<%=replace(session("optionFilterDef"), """", "&quot;")%>">
 		<input type='hidden' id="txtOptionMessage" name="txtOptionMessage" value="<%=replace(session("errorMessage"), """", "&quot;")%>">
 	</form>
-	
-	<form action="quickfind_Submit" method="post" id="frmGotoOption" name="frmGotoOption">
-		 <%Html.RenderPartial("~/Views/Shared/gotoOption.ascx")%>
-		 <%=Html.AntiForgeryToken()%>
-	</form>
-	
-
-</div>
 
 <script type="text/javascript"> quickfind_window_onload();</script>

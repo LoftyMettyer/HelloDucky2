@@ -44,27 +44,55 @@ $('#cmdCancel').click(function () {
 	$("#workframe").show();
 
 	var frmGotoOption = document.getElementById("frmGotoOption");
+	var sPostAction = $("#SubmitAction").val();
 
 	frmGotoOption.txtGotoOptionAction.value = $('#GotoOptionActionCancel').val();
 	frmGotoOption.txtGotoOptionLinkRecordID.value = 0;
-	frmGotoOption.txtGotoOptionPage.value = "emptyoption";
-	OpenHR.submitForm(frmGotoOption);
+	OpenHR.submitForm(frmGotoOption, "optionframe", null, null, sPostAction);
+
 });
 
 $('#cmdSelect').click(function () {
-	var frmGotoOption = document.getElementById("frmGotoOption");
-	
-	frmGotoOption.txtGotoOptionAction.value = $('#GotoOptionActionSelect').val();
-	frmGotoOption.txtGotoOptionRecordID.value = $('#RecordID').val();
+
+//	var frmGotoOption = document.getElementById("frmGotoOption");
+	var sPostAction = $("#SubmitAction").val();
+	var postData = {};
+
+	var iAction = parseInt($('#GotoOptionActionSelect').val());
+	//frmGotoOption.txtGotoOptionRecordID.value = $('#RecordID').val();
 	var selRowId = $("#ssOleDBGridRecords").jqGrid('getGridParam', 'selrow');
 	var recordID = $("#ssOleDBGridRecords").jqGrid('getCell', selRowId, 'ID');
-	frmGotoOption.txtGotoOptionLinkRecordID.value = recordID;
-	frmGotoOption.txtGotoOptionPage.value = "emptyoption";
+	//frmGotoOption.txtGotoOptionLinkRecordID.value = recordID;
+	//frmGotoOption.txtGotoOptionLookupValue.value = $('#selStatus').val();
+	//OpenHR.submitForm(frmGotoOption, "optionframe", null, null, sPostAction);
 
-	var optionDataForm = OpenHR.getForm("optiondataframe", "frmOptionData");
-	frmGotoOption.txtGotoOptionLookupValue.value = $('#selStatus').val();
+	if (iAction === optionActionType.SELECTADDFROMWAITINGLIST_1) {
+		postData = {
+			Action: iAction,
+			CourseID: $('#RecordID').val(),
+			EmployeeIDs: recordID,
+			BookingStatus: $('#selStatus').val(),
+			__RequestVerificationToken: $('[name="__RequestVerificationToken"]').val()
+		};
 
-	OpenHR.submitForm(frmGotoOption);
+		OpenHR.submitForm(null, "optionframe", null, postData, sPostAction);
+
+	} else {
+
+		var frmGotoOption = document.getElementById("frmGotoOption");
+		sPostAction = $("#SubmitAction").val();
+
+		frmGotoOption.txtGotoOptionAction.value = $('#GotoOptionActionSelect').val();
+		frmGotoOption.txtGotoOptionRecordID.value = $('#RecordID').val();
+
+		frmGotoOption.txtGotoOptionLinkRecordID.value = recordID;
+		frmGotoOption.txtGotoOptionLookupValue.value = $('#selStatus').val();
+		OpenHR.submitForm(frmGotoOption, "optionframe", null, null, sPostAction);
+
+	}
+
+
+
 });
 
 function tbrefreshControls() {	

@@ -330,7 +330,7 @@
 			<input type="hidden" id="utilname" name="utilname" value="<%=Replace(Session("utilname").ToString(), """", "&quot;")%>">
 			<input type="hidden" id="action" name="action" value='<%=Session("action")%>'>
 			<input type="hidden" id="lastPrompt" name="lastPrompt" value="">
-			<input type="hidden" id="RunInOptionFrame" name="RunInOptionFrame" value='<%=(Session("optionAction") = "STDREPORT_DATEPROMPT") %>'>
+			<input type="hidden" id="RunInOptionFrame" name="RunInOptionFrame" value='<%=(Session("optionAction") = OptionActionType.STDREPORT_DATEPROMPT)%>'>
 			<input type="hidden" id="txtLocaleDateFormat" name="txtLocaleDateFormat" value="">
 			<input type="hidden" id="txtLocaleDecimalSeparator" name="txtLocaleDecimalSeparator" value="">
 			<input type="hidden" id="txtLocaleThousandSeparator" name="txtLocaleThousandSeparator" value="">

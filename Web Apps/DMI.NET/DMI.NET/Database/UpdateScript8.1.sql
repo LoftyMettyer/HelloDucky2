@@ -77162,7 +77162,7 @@ IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[spASRIntSave
 	DROP PROCEDURE [dbo].[spASRIntSaveExpression]
 GO
 
-CREATE PROCEDURE spASRIntSaveExpression (
+CREATE PROCEDURE dbo.spASRIntSaveExpression (
 	@expressionID integer = 0 OUTPUT,
 	@name varchar(255),
 	@TableID integer,

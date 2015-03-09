@@ -14,7 +14,8 @@
 %>
 
 <script type="text/javascript">
-	function data_window_onload() {		
+	function data_window_onload() {
+
 		var frmData = document.getElementById("frmData");
 		var frmGetData = document.getElementById("frmGetData");
 		var frmMenuInfo = $("#frmMenuInfo")[0].children;
@@ -397,10 +398,7 @@
 					frmOptionArea.txtGotoOptionViewID.value = frmRecEditArea.txtCurrentViewID.value;
 					frmOptionArea.txtGotoOptionOrderID.value = frmRecEditArea.txtCurrentOrderID.value;
 					frmOptionArea.txtGotoOptionFilterDef.value = frmRecEditArea.txtRecEditFilterDef.value;
-					frmOptionArea.txtGotoOptionPage.value = "filterselect";
-
-					frmOptionArea.action = "emptyoption_Submit";
-					OpenHR.submitForm(frmOptionArea, "optionframe");
+					OpenHR.submitForm(frmOptionArea, "optionframe", null, null, "data_window_onload");
 					return;
 				}				
 				
@@ -517,7 +515,8 @@
 		}
 
 
-	function data_refreshData() {		
+	function data_refreshData() {
+
 		var f = document.getElementById("frmGetData");
 		OpenHR.submitForm(f);
 	}

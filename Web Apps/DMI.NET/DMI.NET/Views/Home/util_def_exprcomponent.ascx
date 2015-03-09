@@ -321,11 +321,6 @@
 	<input type="hidden" id="txtPValLookupTablesLoaded" name="txtPValLookupTablesLoaded" value="0">
 </div>
 
-<form action="util_def_exprComponent_Submit" method="post" id="frmGotoOption" name="frmGotoOption">
-	<%Html.RenderPartial("~/Views/Shared/gotoOption.ascx")%>
-	<%=Html.AntiForgeryToken()%>
-</form>
-
 <form id="util_def_exprcomponent_frmOriginalDefinition" name="util_def_exprcomponent_frmOriginalDefinition">
 	<%
 		Dim sDefnString As String
@@ -334,7 +329,7 @@
 		Dim sLookupTableID As String
 		Dim sLookupColumnID As String
 	
-		If Session("optionAction") = "EDITEXPRCOMPONENT" Then
+		If Session("optionAction") = OptionActionType.EDITEXPRCOMPONENT Then
 			sDefnString = Session("optionExtension").ToString()
 
 			Response.Write("<INPUT type='hidden' id=txtComponentID name=txtComponentID value=" & ComponentParameter(sDefnString, "COMPONENTID") & ">" & vbCrLf)

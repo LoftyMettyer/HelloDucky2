@@ -118,6 +118,7 @@
     <Compile Include="BaseClasses\BaseForDMI.vb" />
     <Compile Include="BaseClasses\BaseModuleSpecific.vb" />
     <Compile Include="Enums\OLEType.vb" />
+    <Compile Include="Enums\OptionActionType.vb" />
     <Compile Include="Enums\SaveResponse.vb" />
     <Compile Include="ReportOutput\BaseOutputFormat.vb" />
     <Compile Include="BaseClasses\BaseReport.vb" />

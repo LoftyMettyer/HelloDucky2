@@ -2,6 +2,7 @@
 <%@ Import Namespace="DMI.NET" %>
 <%@ Import Namespace="HR.Intranet.Server" %>
 <%@ Import Namespace="System.Data" %>
+<%@ Import Namespace="DMI.NET.Helpers" %>
 
 <script type="text/javascript">
 
@@ -66,23 +67,22 @@
 		}
 	}
 
-
-
 	function SelectOrder() {
 		//return selected orderID off to calling form.
 		$("#optionframe").hide();
 		$("#workframe").show();
 
-		var frmGotoOption = document.getElementById("frmGotoOption");
 		var frmOrderForm = document.getElementById("frmOrderForm");
 
-		frmGotoOption.txtGotoOptionScreenID.value = frmOrderForm.txtOptionScreenID.value;
-		frmGotoOption.txtGotoOptionTableID.value = frmOrderForm.txtOptionTableID.value;
-		frmGotoOption.txtGotoOptionViewID.value = frmOrderForm.txtOptionViewID.value;
-		frmGotoOption.txtGotoOptionOrderID.value = orderselect_selectedRecordID();
-		frmGotoOption.txtGotoOptionPage.value = "emptyoption";
-		frmGotoOption.txtGotoOptionAction.value = "SELECTORDER";
-		OpenHR.submitForm(frmGotoOption);
+		var postData = {		
+			Action: optionActionType.SELECTORDER,
+			ScreenID: frmOrderForm.txtOptionScreenID.value,
+			TableID: frmOrderForm.txtOptionTableID.value,
+			ViewID: frmOrderForm.txtOptionViewID.value,
+			OrderID: orderselect_selectedRecordID(),
+			<%:Html.AntiForgeryTokenForAjaxPost() %>};
+		OpenHR.submitForm(null, "optionframe", false, postData, "orderselect_Submit");
+
 	}
 
 
@@ -95,11 +95,12 @@
 		if (sWorkPage == "RECORDEDIT") {
 			refreshData(); //should be in scope!
 		}
-		var frmGotoOption = document.getElementById("frmGotoOption");
 
-		frmGotoOption.txtGotoOptionAction.value = "CANCEL";
-		frmGotoOption.txtGotoOptionPage.value = "emptyoption";
-		OpenHR.submitForm(frmGotoOption);
+		var postData = {
+			Action: optionActionType.CANCEL,
+			<%:Html.AntiForgeryTokenForAjaxPost() %>};
+		OpenHR.submitForm(null, "optionframe", false, postData, "orderselect_Submit");
+
 	}
 
 
@@ -309,11 +310,6 @@
 	</form>
 	<input type='hidden' id="txtTicker" name="txtTicker" value="0">
 	<input type='hidden' id="txtLastKeyFind" name="txtLastKeyFind" value="">
-
-	<form action="orderselect_Submit" method="post" id="frmGotoOption" name="frmGotoOption">
-		<%Html.RenderPartial("~/Views/Shared/gotoOption.ascx")%>
-		<%=Html.AntiForgeryToken()%>
-	</form>
 
 </div>
 

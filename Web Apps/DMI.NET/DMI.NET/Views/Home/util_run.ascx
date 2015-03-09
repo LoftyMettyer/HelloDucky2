@@ -201,7 +201,7 @@
 			</a>
 			<span class="pageTitleSmaller" id="PageDivTitle">
 				<% 
-					If Session("StandardReport_Type") <> "" Then
+					If Session("StandardReport_Type") > 0 Then
 						Response.Write(GetReportNameByReportType(Session("StandardReport_Type")))
 						If Not Session("stdReport_StartDate") Is Nothing And Not Session("stdReport_EndDate") Is Nothing Then
 							Response.Write(" (" & Session("stdReport_StartDate").ToString.Replace(" ", "") & " -> " & Session("stdReport_EndDate").ToString.Replace(" ", "") & ")")

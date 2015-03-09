@@ -4,6 +4,7 @@
 <%@ Import Namespace="HR.Intranet.Server" %>
 <%@ Import Namespace="System.Data" %>
 <%@ Import Namespace="System.Data.SqlClient" %>
+<%@ Import Namespace="DMI.NET.Helpers" %>
 
 <script type="text/javascript">
 
@@ -95,38 +96,35 @@
 
 	function SelectLookup() {		
 		var frmLookupFindForm = document.getElementById("frmLookupFindForm");
-		var frmGotoOption = document.getElementById("frmGotoOption");
 
 		var selRowId = $("#ssOleDBGrid").jqGrid('getGridParam', 'selrow');
 		if (selRowId > 0) {
-			//$("#optionframe").hide();
-			//$("#workframe").show();
 			$("#optionframe").dialog("destroy");
 
-			frmGotoOption.txtGotoOptionColumnID.value = frmLookupFindForm.txtOptionColumnID.value;
-			frmGotoOption.txtGotoOptionLookupColumnID.value = frmLookupFindForm.txtOptionLookupColumnID.value;
-			frmGotoOption.txtGotoOptionLookupValue.value = selectedValue(selRowId);
-			frmGotoOption.txtGotoOptionAction.value = "SELECTLOOKUP";
-			frmGotoOption.txtGotoOptionPage.value = "emptyoption";
-			OpenHR.submitForm(frmGotoOption);
+			var postData = {
+				Action: optionActionType.SELECTLOOKUP,
+				ColumnID: frmLookupFindForm.txtOptionColumnID.value,
+				LookupColumnID: frmLookupFindForm.txtOptionLookupColumnID.value,
+				LookupValue: selectedValue(selRowId),
+				<%:Html.AntiForgeryTokenForAjaxPost() %> };
+			OpenHR.submitForm(null, "optionframe", null, postData, "lookupFind_Submit");
+
 		}
 	}
 
 	function ClearLookup() {
 		var frmLookupFindForm = document.getElementById("frmLookupFindForm");
-		var frmGotoOption = document.getElementById("frmGotoOption");
-		// Fault 3503
-		//TODO: ?window.parent.frames("workframe").document.forms("frmRecordEditForm").ctlRecordEdit.style.visibility = "visible";
-		//$("#optionframe").hide();
-		//$("#workframe").show();
+
 		$("#optionframe").dialog("destroy");
 
-		frmGotoOption.txtGotoOptionColumnID.value = frmLookupFindForm.txtOptionColumnID.value;
-		frmGotoOption.txtGotoOptionLookupColumnID.value = frmLookupFindForm.txtOptionLookupColumnID.value;
-		frmGotoOption.txtGotoOptionLookupValue.value = "";
-		frmGotoOption.txtGotoOptionAction.value = "SELECTLOOKUP";
-		frmGotoOption.txtGotoOptionPage.value = "emptyoption";
-		OpenHR.submitForm(frmGotoOption);
+		var postData = {
+			Action: optionActionType.SELECTLOOKUP,
+			ColumnID: frmLookupFindForm.txtOptionColumnID.value,
+			LookupColumnID: frmLookupFindForm.txtOptionLookupColumnID.value,
+			LookupValue: "",
+			<%:Html.AntiForgeryTokenForAjaxPost() %> };
+		OpenHR.submitForm(null, "optionframe", null, postData, "lookupFind_Submit");
+
 	}
 
 	function CancelLookup() {
@@ -136,11 +134,11 @@
 		//$("#workframe").show();
 		$("#optionframe").dialog("destroy");
 
-		var frmGotoOption = document.getElementById("frmGotoOption");
+		var postData = {
+			Action: optionActionType.CANCEL,
+			<%:Html.AntiForgeryTokenForAjaxPost() %> };
+		OpenHR.submitForm(null, "optionframe", null, postData, "lookupFind_Submit");
 
-		frmGotoOption.txtGotoOptionAction.value = "CANCEL";
-		frmGotoOption.txtGotoOptionPage.value = "emptyoption";
-		OpenHR.submitForm(frmGotoOption);
 	}
 
 	/* Return the value of the record selected in the find form. */
@@ -427,11 +425,6 @@
 
 	<input type='hidden' id="txtTicker" name="txtTicker" value="0">
 	<input type='hidden' id="txtLastKeyFind" name="txtLastKeyFind" value="">
-
-	<form action="lookupFind_Submit" method="post" id="frmGotoOption" name="frmGotoOption">
-		<%Html.RenderPartial("~/Views/Shared/gotoOption.ascx")%>
-		<%=Html.AntiForgeryToken()%>
-	</form>
 
 </div>
 

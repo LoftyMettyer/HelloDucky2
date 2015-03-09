@@ -25,6 +25,7 @@ Imports Newtonsoft.Json
 Imports HR.Intranet.Server.Expressions
 Imports HR.Intranet.Server.Extensions
 Imports HR.Intranet.Server.ReportOutput
+Imports DMI.NET.Models.ObjectRequests
 
 Namespace Controllers
 	Public Class HomeController
@@ -329,7 +330,6 @@ Namespace Controllers
 			Return View()
 		End Function
 
-
 		Function MainSSI() As ActionResult
 			Session("SSIMode") = True
 			Return RedirectToAction("Main")
@@ -339,7 +339,6 @@ Namespace Controllers
 			Session("SSIMode") = False
 			Return RedirectToAction("Main")
 		End Function
-
 
 		' GET: /Home
 		<HttpGet>
@@ -420,6 +419,7 @@ Namespace Controllers
 			End If
 
 		End Function
+
 		Function GetFindRecordByID(RecordID As Integer) As String
 			Dim objSession As SessionInfo = CType(Session("SessionContext"), SessionInfo)	 'Set session info
 			Dim objDataAccess As New clsDataAccess(objSession.LoginInfo) 'Instantiate DataAccess class
@@ -858,100 +858,212 @@ Namespace Controllers
 			End If
 
 			Session("optionRecordID") = 0
-			Session("optionAction") = ""
+			Session("optionAction") = OptionActionType.Empty
 
 			' Go to the requested page.
 			Return RedirectToAction(ValidateStringValue(Request.Form("txtGotoPage"), InputValidation.StringSanitiseLevel.None))
 
 		End Function
 
+#Region "Split Out EmptyOption"
 
-		<HttpPost()>
-		<ValidateAntiForgeryToken>
-		Function emptyoption_Submit()
-
-			emptyoption_Submit_BASE()
-			Return RedirectToAction(Request.Form("txtGotoOptionPage"))
-
-		End Function
-
-		Private Sub emptyoption_Submit_BASE()
+		Private Sub emptyoption_Submit_BASE(form As GotoOptionDataModel)
 
 			' Save the required information in session variables.
-			Session("optionScreenID") = Request.Form("txtGotoOptionScreenID")
-			Session("optionTableID") = Request.Form("txtGotoOptionTableID")
-			Session("optionViewID") = Request.Form("txtGotoOptionViewID")
-			Session("optionOrderID") = Request.Form("txtGotoOptionOrderID")
-			Session("optionRecordID") = Request.Form("txtGotoOptionRecordID")
-			Session("optionFilterDef") = Request.Form("txtGotoOptionFilterDef")
-			Session("optionFilterSQL") = Request.Form("txtGotoOptionFilterSQL")
-			Session("optionValue") = Request.Form("txtGotoOptionValue")
-			Session("optionLinkTableID") = Request.Form("txtGotoOptionLinkTableID")
-			Session("optionLinkOrderID") = Request.Form("txtGotoOptionLinkOrderID")
-			Session("optionLinkViewID") = Request.Form("txtGotoOptionLinkViewID")
-			Session("optionLinkRecordID") = Request.Form("txtGotoOptionLinkRecordID")
-			Session("optionColumnID") = Request.Form("txtGotoOptionColumnID")
-			Session("optionLookupColumnID") = Request.Form("txtGotoOptionLookupColumnID")
-			Session("optionLookupMandatory") = Request.Form("txtGotoOptionLookupMandatory")
-			Session("optionLookupValue") = Request.Form("txtGotoOptionLookupValue")
-			Session("optionLookupFilterValue") = Request.Form("txtGotoOptionLookupFilterValue")
-			Session("optionFile") = Request.Form("txtGotoOptionFile")
-			Session("optionExtension") = Request.Form("txtGotoOptionExtension")
-			'Session("optionOLEOnServer") = Request.Form("txtGotoOptionOLEOnServer")
-			Session("optionAction") = Request.Form("txtGotoOptionAction")
-			Session("optionPageAction") = Request.Form("txtGotoOptionPageAction")
-			Session("optionCourseTitle") = Request.Form("txtGotoOptionCourseTitle")
-			Session("optionFirstRecPos") = Request.Form("txtGotoOptionFirstRecPos")
-			Session("optionCurrentRecCount") = Request.Form("txtGotoOptionCurrentRecCount")
-			Session("optionExprType") = Request.Form("txtGotoOptionExprType")
-			Session("optionExprID") = Request.Form("txtGotoOptionExprID")
-			Session("optionFunctionID") = Request.Form("txtGotoOptionFunctionID")
-			Session("optionParameterIndex") = Request.Form("txtGotoOptionParameterIndex")
-			Session("OptionRealsource") = Request.Form("txtGotoOptionRealsource")
-			Session("StandardReport_Type") = Request.Form("txtStandardReportType")
-			Session("optionDefSelType") = Request.Form("txtGotoOptionDefSelType")
-			Session("singleRecordID") = ValidateIntegerValue(Request.Form("txtGotoOptionDefSelRecordID"))
-			Session("optionOLEType") = Request.Form("txtGotoOptionOLEType")
-			Session("optionOLEMaxEmbedSize") = Request.Form("txtGotoOptionOLEMaxEmbedSize")
-			Session("optionOLEReadOnly") = Request.Form("txtGotoOptionOLEReadOnly")
-			Session("optionIsPhoto") = Request.Form("txtGotoOptionIsPhoto")
-			Session("optionOnlyNumerics") = Request.Form("txtOptionOnlyNumerics")
-			Session("StandardReport_Type") = Request.Form("txtStandardReportType")
+			Session("optionScreenID") = form.txtGotoOptionScreenID
+			Session("optionTableID") = form.txtGotoOptionTableID
+			Session("optionViewID") = form.txtGotoOptionViewID
+			Session("optionOrderID") = form.txtGotoOptionOrderID
+			Session("optionRecordID") = form.txtGotoOptionRecordID
+			Session("optionFilterDef") = form.txtGotoOptionFilterDef
+			Session("optionFilterSQL") = form.txtGotoOptionFilterSQL
+			Session("optionValue") = form.txtGotoOptionValue
+			Session("optionLinkTableID") = form.txtGotoOptionLinkTableID
+			Session("optionLinkOrderID") = form.txtGotoOptionLinkOrderID
+			Session("optionLinkViewID") = form.txtGotoOptionLinkViewID
+			Session("optionLinkRecordID") = form.txtGotoOptionLinkRecordID
+			Session("optionColumnID") = form.txtGotoOptionColumnID
+			Session("optionLookupColumnID") = form.txtGotoOptionLookupColumnID
+			Session("optionLookupMandatory") = form.txtGotoOptionLookupMandatory
+			Session("optionLookupValue") = form.txtGotoOptionLookupValue
+			Session("optionLookupFilterValue") = form.txtGotoOptionLookupFilterValue
+			Session("optionFile") = form.txtGotoOptionFile
+			Session("optionExtension") = form.txtGotoOptionExtension
+			Session("optionAction") = form.txtGotoOptionAction
+			Session("optionPageAction") = form.txtGotoOptionPageAction
+			Session("optionCourseTitle") = form.txtGotoOptionCourseTitle
+			Session("optionFirstRecPos") = form.txtGotoOptionFirstRecPos
+			Session("optionCurrentRecCount") = form.txtGotoOptionCurrentRecCount
+			Session("optionExprType") = form.txtGotoOptionExprType
+			Session("optionExprID") = form.txtGotoOptionExprID
+			Session("optionFunctionID") = form.txtGotoOptionFunctionID
+			Session("optionParameterIndex") = form.txtGotoOptionParameterIndex
+			Session("OptionRealsource") = form.txtGotoOptionRealsource
+			Session("StandardReport_Type") = form.txtStandardReportType
+			Session("defseltype") = form.txtGotoOptionDefSelType
+			Session("singleRecordID") = form.txtGotoOptionDefSelRecordID
+
+
 
 		End Sub
 
 		<HttpPost()>
 		<ValidateAntiForgeryToken>
-		Function tbTransferCourseFind() As RedirectToRouteResult
-			emptyoption_Submit_BASE()
+		Function tbTransferCourseFind(form As GotoOptionDataModel) As RedirectToRouteResult
+			emptyoption_Submit_BASE(form)
 			Return RedirectToAction("OptionDataGrid", "Home", New With {.GotoOptionPage = "tbTransferCourseFind"})
 		End Function
 
 		<HttpPost()>
 		<ValidateAntiForgeryToken>
-		Function tbBookCourseFind() As RedirectToRouteResult
-			emptyoption_Submit_BASE()
+		Function tbBookCourseFind(form As GotoOptionDataModel) As RedirectToRouteResult
+			emptyoption_Submit_BASE(form)
 			Return RedirectToAction("OptionDataGrid", "Home", New With {.GotoOptionPage = "tbBookCourseFind"})
 		End Function
 
 		<HttpPost()>
 		<ValidateAntiForgeryToken>
-		Function tbTransferBookingFind() As RedirectToRouteResult
-			emptyoption_Submit_BASE()
+		Function tbTransferBookingFind(form As GotoOptionDataModel) As RedirectToRouteResult
+			emptyoption_Submit_BASE(form)
 			Return RedirectToAction("OptionDataGrid", "Home", New With {.GotoOptionPage = "tbTransferBookingFind"})
 		End Function
 
-		Function BulkBooking() As ActionResult
+		Function BulkBooking(form As GotoOptionDataModel) As ActionResult
+			emptyoption_Submit_BASE(form)
 			Dim m As New BulkBookingViewModel()
 			Return PartialView("BulkBooking", m)
 		End Function
 
 		<HttpPost()>
 		<ValidateAntiForgeryToken>
-		Function tbAddFromWaitingListFind() As RedirectToRouteResult
-			emptyoption_Submit_BASE()
+		Function tbAddFromWaitingListFind(form As GotoOptionDataModel) As RedirectToRouteResult
+			emptyoption_Submit_BASE(form)
 			Return RedirectToAction("OptionDataGrid", "Home", New With {.GotoOptionPage = "tbAddFromWaitingListFind"})
 		End Function
+
+		<HttpPost()>
+		<ValidateAntiForgeryToken>
+		Function menu_loadLookupPage(form As GotoOptionDataModel) As RedirectToRouteResult
+			emptyoption_Submit_BASE(form)
+			Return RedirectToAction("lookupFind")
+		End Function
+
+		<HttpPost()>
+		<ValidateAntiForgeryToken>
+		Function menu_loadLinkPage(form As GotoOptionDataModel) As RedirectToRouteResult
+			emptyoption_Submit_BASE(form)
+			Return RedirectToAction("linkfind")
+		End Function
+
+		<HttpPost()>
+		<ValidateAntiForgeryToken>
+		Function menu_oleFind(form As GotoOptionDataModel) As RedirectToRouteResult
+			emptyoption_Submit_BASE(form)
+			Return RedirectToAction("olefind")
+		End Function
+
+		<HttpPost()>
+		<ValidateAntiForgeryToken>
+		Function menu_loadQuickFindNoSaveCheck(form As GotoOptionDataModel) As RedirectToRouteResult
+			emptyoption_Submit_BASE(form)
+			Return RedirectToAction("Quickfind")
+		End Function
+
+		<HttpPost()>
+	<ValidateAntiForgeryToken>
+		Function orderfilter_RecordEdit(form As GotoOptionDataModel) As RedirectToRouteResult
+			emptyoption_Submit_BASE(form)
+			Return RedirectToAction(Request.Form("txtGotoOptionPage"))
+		End Function
+
+		<HttpPost()>
+	<ValidateAntiForgeryToken>
+		Function menu_loadSelectOrderFilter(form As GotoOptionDataModel) As RedirectToRouteResult
+			emptyoption_Submit_BASE(form)
+			Return RedirectToAction(Request.Form("txtGotoOptionPage"))
+		End Function
+
+		<HttpPost()>
+	<ValidateAntiForgeryToken>
+		Function menu_loadRecordDefSelPage(form As GotoOptionDataModel) As RedirectToRouteResult
+			emptyoption_Submit_BASE(form)
+			Return RedirectToAction("DefSel")
+		End Function
+
+		<HttpPost()>
+	<ValidateAntiForgeryToken>
+		Function menu_loadRecordDefSelPageNoSaveCheck(form As GotoOptionDataModel) As RedirectToRouteResult
+			emptyoption_Submit_BASE(form)
+			Return RedirectToAction("DefSel")
+		End Function
+
+		<HttpPost()>
+<ValidateAntiForgeryToken>
+		Function menu_LoadAbsenceCalendar(form As GotoOptionDataModel) As RedirectToRouteResult
+			emptyoption_Submit_BASE(form)
+			Return RedirectToAction("stdrpt_AbsenceCalendar")
+		End Function
+
+		<HttpPost()>
+<ValidateAntiForgeryToken>
+		Function menu_LoadAbsenceCalendarNoSaveCheck(form As GotoOptionDataModel) As RedirectToRouteResult
+			emptyoption_Submit_BASE(form)
+			Return RedirectToAction("stdrpt_AbsenceCalendar")
+		End Function
+
+		<HttpPost()>
+<ValidateAntiForgeryToken>
+		Function expression_addClick(form As GotoOptionDataModel) As RedirectToRouteResult
+			emptyoption_Submit_BASE(form)
+			Return RedirectToAction("util_def_exprComponent")
+		End Function
+
+		<HttpPost()>
+<ValidateAntiForgeryToken>
+		Function expression_insertClick(form As GotoOptionDataModel) As RedirectToRouteResult
+			emptyoption_Submit_BASE(form)
+			Return RedirectToAction("util_def_exprComponent")
+		End Function
+
+		<HttpPost()>
+<ValidateAntiForgeryToken>
+		Function expression_editClick(form As GotoOptionDataModel) As RedirectToRouteResult
+			emptyoption_Submit_BASE(form)
+			Return RedirectToAction("util_def_exprComponent")
+		End Function
+
+		<HttpPost()>
+<ValidateAntiForgeryToken>
+		Function data_window_onload(form As GotoOptionDataModel) As RedirectToRouteResult
+			emptyoption_Submit_BASE(form)
+			Return RedirectToAction("filterselect")
+		End Function
+
+		<HttpPost()>
+		<ValidateAntiForgeryToken>
+		Function LoadStandardReport(postData As StandardReportModel) As ViewResult
+
+			Session("optionAction") = postData.Action
+			Session("optionRecordID") = postData.EmployeeID
+			Session("StandardReport_Type") = postData.StandardReportType
+
+			Return View("stdrpt_def_absence")
+		End Function
+
+		<HttpPost()>
+		<ValidateAntiForgeryToken>
+		Function linkFind_submit(postData As LinkFindModel) As RedirectToRouteResult
+
+			' Save the required information in session variables.
+			Session("optionAction") = postData.Action
+			Session("optionScreenID") = postData.ScreenID
+			Session("optionLinkTableID") = postData.LinkTableID
+			Session("optionRecordID") = postData.LinkRecordID
+
+			Return RedirectToAction("emptyoption")
+		End Function
+
+#End Region
 
 
 		Function DefSel() As ActionResult
@@ -1089,32 +1201,33 @@ Namespace Controllers
 
 		<HttpPost>
 		<ValidateAntiForgeryToken>
-		Function optionData_Submit() As ActionResult
-			' Read the information from the calling form.
-			Session("optionAction") = ValidateFromWhiteList(Request.Form("txtOptionAction"), InputValidation.WhiteListCollections.Actions)
-			Session("optionTableID") = ValidateIntegerValue(Request.Form("txtOptionTableID"))
-			Session("optionViewID") = ValidateIntegerValue(Request.Form("txtOptionViewID"))
-			Session("optionOrderID") = ValidateIntegerValue(Request.Form("txtOptionOrderID"))
-			Session("optionColumnID") = ValidateStringValue(Request.Form("txtOptionColumnID"), InputValidation.StringSanitiseLevel.None)
-			Session("optionPageAction") = ValidateFromWhiteList(Request.Form("txtOptionPageAction"), InputValidation.WhiteListCollections.Actions)
-			Session("optionFirstRecPos") = ValidateIntegerValue(Request.Form("txtOptionFirstRecPos"))
-			Session("optionCurrentRecCount") = ValidateIntegerValue(Request.Form("txtOptionCurrentRecCount"))
-			Session("optionLocateValue") = ValidateStringValue(Request.Form("txtGotoLocateValue"), InputValidation.StringSanitiseLevel.HTMLEncode)
-			Session("optionCourseTitle") = ValidateStringValue(Request.Form("txtOptionCourseTitle"), InputValidation.StringSanitiseLevel.HTMLEncode)
-			Session("optionRecordID") = ValidateIntegerValue(Request.Form("txtOptionRecordID"))
-			Session("optionLinkRecordID") = ValidateStringValue(Request.Form("txtOptionLinkRecordID"), InputValidation.StringSanitiseLevel.None)
-			Session("optionValue") = ValidateStringValue(Request.Form("txtOptionValue"), InputValidation.StringSanitiseLevel.None)
-			Session("optionSQL") = ValidateStringValue(Request.Form("txtOptionSQL"), InputValidation.StringSanitiseLevel.None)
-			Session("optionPromptSQL") = ValidateStringValue(Request.Form("txtOptionPromptSQL"), InputValidation.StringSanitiseLevel.None)
-			Session("optionOnlyNumerics") = ValidateIntegerValue(Request.Form("txtOptionOnlyNumerics"))
-			Session("optionLookupColumnID") = ValidateIntegerValue(Request.Form("txtOptionLookupColumnID"))
-			Session("optionFilterValue") = ValidateStringValue(Request.Form("txtOptionLookupFilterValue"), InputValidation.StringSanitiseLevel.HTMLEncode)
-			Session("IsLookupTable") = ValidateBooleanValue(Request.Form("txtOptionIsLookupTable"))
-			Session("optionParentTableID") = ValidateIntegerValue(Request.Form("txtOptionParentTableID"))
-			Session("optionParentRecordID") = ValidateIntegerValue(Request.Form("txtOptionParentRecordID"))
-			Session("option1000SepCols") = ValidateStringValue(Request.Form("txtOption1000SepCols"), InputValidation.StringSanitiseLevel.None)
+		Function optionData_Submit(form As OptionDataModel) As ActionResult
 
-			Session("StandardReport_Type") = ValidateIntegerValue(Request.Form("txtStandardReportType"))
+			' Read the information from the calling form.
+			Session("optionAction") = form.txtOptionAction
+			Session("optionTableID") = form.txtoptionTableID
+			Session("optionViewID") = form.txtOptionViewID
+			Session("optionOrderID") = form.txtOptionOrderID
+			Session("optionColumnID") = form.txtOptionColumnID
+			Session("optionPageAction") = form.txtOptionPageAction
+			Session("optionFirstRecPos") = form.txtOptionFirstRecPos
+			Session("optionCurrentRecCount") = form.txtOptionCurrentRecCount
+			Session("optionLocateValue") = ValidateStringValue(form.txtGotoLocateValue, InputValidation.StringSanitiseLevel.HTMLEncode)
+			Session("optionCourseTitle") = ValidateStringValue(form.txtOptionCourseTitle, InputValidation.StringSanitiseLevel.HTMLEncode)
+			Session("optionRecordID") = form.txtOptionRecordID
+			Session("optionLinkRecordID") = form.txtOptionLinkRecordID
+			Session("optionValue") = form.txtOptionValue
+			Session("optionSQL") = form.txtOptionSQL
+			Session("optionPromptSQL") = form.txtOptionPromptSQL
+			Session("optionOnlyNumerics") = form.txtOptionOnlyNumerics
+			Session("optionLookupColumnID") = form.txtOptionLookupColumnID
+			Session("optionFilterValue") = ValidateStringValue(form.txtOptionLookupFilterValue, InputValidation.StringSanitiseLevel.HTMLEncode)
+			Session("IsLookupTable") = form.txtOptionIsLookupTable
+			Session("optionParentTableID") = form.txtOptionParentTableID
+			Session("optionParentRecordID") = form.txtOptionParentRecordID
+			Session("option1000SepCols") = form.txtOption1000SepCols
+
+			Session("StandardReport_Type") = form.txtStandardReportType
 
 			' Go to the requested page.
 			Return RedirectToAction("OptionData")
@@ -3401,76 +3514,31 @@ Namespace Controllers
 
 		<HttpPost()>
 		<ValidateAntiForgeryToken>
-		Function quickfind_Submit(value As FormCollection)
-			Dim sErrorMsg = ""
+		Function quickfind_Submit(postData As QuickFindModel)
 
-			Dim objDataAccess As clsDataAccess = CType(Session("DatabaseAccess"), clsDataAccess)
+			Dim lngRecordID As Integer
+			Dim sErrorMsg As String
 
-			' Only process the form submission if the referring page was the default page.
-			' If it wasn't then redirect to the login page.
+			Session("optionAction") = postData.Action
 
-			Dim sFilterSQL = Request.Form("txtGotoOptionFilterSQL")
-			Dim sFilterDef = Request.Form("txtGotoOptionFilterDef")
-			Dim sValue = Request.Form("txtGotoOptionValue")
-			Dim sNextPage = Request.Form("txtGotoOptionPage")
-			Dim sAction = Request.Form("txtGotoOptionAction")
-
-			Dim lngRecordID = 0
-
-			Session("optionScreenID") = Request.Form("txtGotoOptionScreenID")
-			Session("optionTableID") = Request.Form("txtGotoOptionTableID")
-			Session("optionViewID") = Request.Form("txtGotoOptionViewID")
-			Session("optionOrderID") = Request.Form("txtGotoOptionOrderID")
-			Session("optionRecordID") = Request.Form("txtGotoOptionRecordID")
-			Session("optionFilterDef") = Request.Form("txtGotoOptionFilterDef")
-			Session("optionFilterSQL") = sFilterSQL
-			Session("optionFilterDef") = sFilterDef
-			Session("optionValue") = sValue
-			Session("optionLinkTableID") = Request.Form("txtGotoOptionLinkTableID")
-			Session("optionLinkOrderID") = Request.Form("txtGotoOptionLinkOrderID")
-			Session("optionLinkViewID") = Request.Form("txtGotoOptionLinkViewID")
-			Session("optionLinkRecordID") = Request.Form("txtGotoOptionLinkRecordID")
-			Session("optionColumnID") = Request.Form("txtGotoOptionColumnID")
-			Session("optionLookupColumnID") = Request.Form("txtGotoOptionLookupColumnID")
-			Session("optionLookupMandatory") = Request.Form("txtGotoOptionLookupMandatory")
-			Session("optionLookupValue") = Request.Form("txtGotoOptionLookupValue")
-			Session("optionFile") = Request.Form("txtGotoOptionFile")
-			Session("optionExtension") = Request.Form("txtGotoOptionExtension")
-			'Session("optionOLEOnServer") = Request.Form("txtGotoOptionOLEOnServer")
-			Session("optionOLEType") = Request.Form("txtGotoOptionOLEType")
-			Session("optionAction") = sAction
-			Session("optionFirstRecPos") = Request.Form("txtGotoOptionFirstRecPos")
-			Session("optionCurrentRecCount") = Request.Form("txtGotoOptionCurrentRecCount")
-			Session("optionPageAction") = Request.Form("txtGotoOptionPageAction")
-			Session("optionCourseTitle") = Request.Form("txtGotoOptionCourseTitle")
-			Session("optionExprType") = Request.Form("txtGotoOptionExprType")
-			Session("optionExprID") = Request.Form("txtGotoOptionExprID")
-			Session("optionFunctionID") = Request.Form("txtGotoOptionFunctionID")
-			Session("optionParameterIndex") = Request.Form("txtGotoOptionParameterIndex")
-
-			If sAction = "" Then
-				' Go to the requested page.
-				Return RedirectToAction(sNextPage)
+			If postData.Action = OptionActionType.CANCEL Then
+				Session("errorMessage") = ""
+				Return RedirectToAction("emptyoption")
 			End If
 
-			If sAction = "CANCEL" Then
-				' Go to the requested page.
-				Session("errorMessage") = sErrorMsg
-				Return RedirectToAction(sNextPage)
-			End If
+			If postData.Action = OptionActionType.QUICKFIND Then
 
-			If sAction = "QUICKFIND" Then
-
+				Dim objDataAccess As clsDataAccess = CType(Session("DatabaseAccess"), clsDataAccess)
 				Dim prmResult = New SqlParameter("@plngRecordID", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
 
 				Try
 
 					objDataAccess.ExecuteSP("spASRIntGetQuickFindRecord" _
-							, New SqlParameter("@plngTableID", SqlDbType.Int) With {.Value = CleanNumeric(Session("optionTableID"))} _
-							, New SqlParameter("@plngViewID", SqlDbType.Int) With {.Value = CleanNumeric(Session("optionViewID"))} _
-							, New SqlParameter("@plngColumnID", SqlDbType.Int) With {.Value = CleanNumeric(Session("optionColumnID"))} _
-							, New SqlParameter("@psValue", SqlDbType.VarChar, -1) With {.Value = sValue} _
-							, New SqlParameter("@psFilterDef", SqlDbType.VarChar, -1) With {.Value = sFilterDef} _
+							, New SqlParameter("@plngTableID", SqlDbType.Int) With {.Value = postData.TableID} _
+							, New SqlParameter("@plngViewID", SqlDbType.Int) With {.Value = postData.ViewID} _
+							, New SqlParameter("@plngColumnID", SqlDbType.Int) With {.Value = postData.ColumnID} _
+							, New SqlParameter("@psValue", SqlDbType.VarChar, -1) With {.Value = postData.Value} _
+							, New SqlParameter("@psFilterDef", SqlDbType.VarChar, -1) With {.Value = postData.FilterDef} _
 							, prmResult _
 							, New SqlParameter("@psDecimalSeparator", SqlDbType.VarChar, 100) With {.Value = Session("LocaleDecimalSeparator")} _
 							, New SqlParameter("@psLocaleDateFormat", SqlDbType.VarChar, 100) With {.Value = Platform.LocaleDateFormatForSQL()})
@@ -3478,7 +3546,7 @@ Namespace Controllers
 					If (CInt(prmResult.Value) = 0) Then
 						sErrorMsg = "No records match the criteria."
 
-						If Len(sFilterDef) > 0 Then
+						If Len(postData.FilterDef) > 0 Then
 							sErrorMsg = sErrorMsg & vbCrLf & "Try removing the filter."
 						End If
 					Else
@@ -3486,12 +3554,10 @@ Namespace Controllers
 						lngRecordID = CInt(prmResult.Value)
 					End If
 
-
 				Catch ex As Exception
 					sErrorMsg = "Error trying to run 'quick find'." & vbCrLf & ex.Message.RemoveSensitive
 
 				End Try
-
 
 				Session("errorMessage") = sErrorMsg
 
@@ -3504,70 +3570,17 @@ Namespace Controllers
 
 			' Go to the requested page.
 			Session("optionRecordID") = lngRecordID
-			Return RedirectToAction(sNextPage)
+			Return RedirectToAction("emptyoption")
 
 		End Function
 
 		Function emptyoption() As ActionResult
+
+			If Len(Session("timestamp")) = 0 Then
+				Session("timestamp") = 0
+			End If
+
 			Return View()
-		End Function
-
-		<HttpPost()>
-		<ValidateAntiForgeryToken>
-		Function util_def_exprcomponent_submit(value As FormCollection)
-			Dim sErrorMsg As String = ""
-			Dim sNextPage As String
-			Dim sAction As String
-
-			' Read the information from the calling form.
-			sNextPage = Request.Form("txtGotoOptionPage")
-			sAction = Request.Form("txtGotoOptionAction")
-
-			Session("optionScreenID") = Request.Form("txtGotoOptionScreenID")
-			Session("optionTableID") = Request.Form("txtGotoOptionTableID")
-			Session("optionViewID") = Request.Form("txtGotoOptionViewID")
-			Session("optionOrderID") = Request.Form("txtGotoOptionOrderID")
-			Session("optionRecordID") = Request.Form("txtGotoOptionRecordID")
-			Session("optionFilterDef") = Request.Form("txtGotoOptionFilterDef")
-			Session("optionFilterSQL") = Request.Form("txtGotoOptionFilterSQL")
-			Session("optionValue") = Request.Form("txtGotoOptionValue")
-			Session("optionLinkTableID") = Request.Form("txtGotoOptionLinkTableID")
-			Session("optionLinkOrderID") = Request.Form("txtGotoOptionLinkOrderID")
-			Session("optionLinkViewID") = Request.Form("txtGotoOptionLinkViewID")
-			Session("optionLinkRecordID") = Request.Form("txtGotoOptionLinkRecordID")
-			Session("optionColumnID") = Request.Form("txtGotoOptionColumnID")
-			Session("optionLookupColumnID") = Request.Form("txtGotoOptionLookupColumnID")
-			Session("optionLookupMandatory") = Request.Form("txtGotoOptionLookupMandatory")
-			Session("optionLookupValue") = Request.Form("txtGotoOptionLookupValue")
-			Session("optionFile") = Request.Form("txtGotoOptionFile")
-			Session("optionExtension") = Request.Form("txtGotoOptionExtension")
-			'Session("optionOLEOnServer") = Request.Form("txtGotoOptionOLEOnServer")
-			Session("optionOLEType") = Request.Form("txtGotoOptionOLEType")
-			Session("optionAction") = sAction
-			Session("optionPageAction") = Request.Form("txtGotoOptionPageAction")
-			Session("optionCourseTitle") = Request.Form("txtGotoOptionCourseTitle")
-			Session("optionFirstRecPos") = Request.Form("txtGotoOptionFirstRecPos")
-			Session("optionCurrentRecCount") = Request.Form("txtGotoOptionCurrentRecCount")
-			Session("optionExprType") = Request.Form("txtGotoOptionExprType")
-			Session("optionExprID") = Request.Form("txtGotoOptionExprID")
-			Session("optionFunctionID") = Request.Form("txtGotoOptionFunctionID")
-			Session("optionParameterIndex") = Request.Form("txtGotoOptionParameterIndex")
-			Session("optionDefSelType") = Request.Form("txtGotoOptionDefSelType")
-
-			If sAction = "CANCEL" Then
-				' Go to the requested page.
-
-				Session("errorMessage") = sErrorMsg
-			End If
-
-			If sAction = "SELECTCOMPONENT" Then
-				Session("errorMessage") = sErrorMsg
-			End If
-
-			' Go to the requested page.
-			Return RedirectToAction(sNextPage)
-
-
 		End Function
 
 		Function util_def_exprcomponent() As ActionResult
@@ -3836,26 +3849,24 @@ Namespace Controllers
 
 		<HttpPost()>
 		<ValidateAntiForgeryToken>
-		Function filterselect_Submit(value As FormCollection)
+		Function filterselect_Submit(postData As FilterSelectModel) As RedirectToRouteResult
 
-			' Read the information from the calling form.
-			Dim sNextPage = Request.Form("txtGotoOptionPage")
-			Dim sAction = Request.Form("txtGotoOptionAction")
+			Session("optionScreenID") = postData.ScreenID
+			Session("optionTableID") = postData.TableID
+			Session("optionViewID") = postData.ViewID
+			Session("optionFilterDef") = postData.FilterDef
+			Session("optionFilterSQL") = postData.FilterSQL
+			Session("optionAction") = postData.Action
 
-			Session("optionScreenID") = Request.Form("txtGotoOptionScreenID")
-			Session("optionTableID") = Request.Form("txtGotoOptionTableID")
-			Session("optionViewID") = Request.Form("txtGotoOptionViewID")
-			Session("optionFilterDef") = Request.Form("txtGotoOptionFilterDef")
-			Session("optionFilterSQL") = Request.Form("txtGotoOptionFilterSQL")
-
-			Session("optionAction") = sAction
-
-			Return RedirectToAction(sNextPage)
+			Return RedirectToAction("emptyoption")
 
 		End Function
 
 		<HttpPost()>
-	 Function tbAddFromWaitingListFind_Submit(value As FormCollection)
+		<ValidateAntiForgeryToken>
+		Function tbAddFromWaitingListFind_Submit(postData As DelegateBookingModel)
+
+			Session("optionAction") = postData.Action
 
 			Dim objDataAccess As clsDataAccess = CType(Session("DatabaseAccess"), clsDataAccess)
 
@@ -3864,62 +3875,24 @@ Namespace Controllers
 			Dim sCourseOverbooked As String = ""
 			Dim sPreReqFails As String = ""
 
-			' Only process the form submission if the referring page was the default page.
-			' If it wasn't then redirect to the login page.
+			Session("optionLinkRecordID") = postData.EmployeeIDs
 
-			' Read the information from the calling form.
-			Dim sNextPage = Request.Form("txtGotoOptionPage")
-
-			Dim sAction = Request.Form("txtGotoOptionAction")
-
-			Session("optionScreenID") = Request.Form("txtGotoOptionScreenID")
-			Session("optionTableID") = Request.Form("txtGotoOptionTableID")
-			Session("optionViewID") = Request.Form("txtGotoOptionViewID")
-			Session("optionOrderID") = Request.Form("txtGotoOptionOrderID")
-			Session("optionRecordID") = Request.Form("txtGotoOptionRecordID")
-			Session("optionFilterDef") = Request.Form("txtGotoOptionFilterDef")
-			Session("optionFilterSQL") = Request.Form("txtGotoOptionFilterSQL")
-			Session("optionValue") = Request.Form("txtGotoOptionValue")
-			Session("optionLinkTableID") = Request.Form("txtGotoOptionLinkTableID")
-			Session("optionLinkOrderID") = Request.Form("txtGotoOptionLinkOrderID")
-			Session("optionLinkViewID") = Request.Form("txtGotoOptionLinkViewID")
-			Session("optionLinkRecordID") = Request.Form("txtGotoOptionLinkRecordID")
-			Session("optionColumnID") = Request.Form("txtGotoOptionColumnID")
-			Session("optionLookupColumnID") = Request.Form("txtGotoOptionLookupColumnID")
-			Session("optionLookupMandatory") = Request.Form("txtGotoOptionLookupMandatory")
-			Session("optionLookupValue") = Request.Form("txtGotoOptionLookupValue")
-			Session("optionFile") = Request.Form("txtGotoOptionFile")
-			Session("optionExtension") = Request.Form("txtGotoOptionExtension")
-			'Session("optionOLEOnServer") = Request.Form("txtGotoOptionOLEOnServer")
-			Session("optionOLEType") = Request.Form("txtGotoOptionOLEType")
-			Session("optionAction") = sAction
-			Session("optionPageAction") = Request.Form("txtGotoOptionPageAction")
-			Session("optionCourseTitle") = Request.Form("txtGotoOptionCourseTitle")
-			Session("optionFirstRecPos") = Request.Form("txtGotoOptionFirstRecPos")
-			Session("optionCurrentRecCount") = Request.Form("txtGotoOptionCurrentRecCount")
-			Session("optionExprType") = Request.Form("txtGotoOptionExprType")
-			Session("optionExprID") = Request.Form("txtGotoOptionExprID")
-			Session("optionFunctionID") = Request.Form("txtGotoOptionFunctionID")
-			Session("optionParameterIndex") = Request.Form("txtGotoOptionParameterIndex")
-			Session("optionDefSelType") = Request.Form("txtGotoOptionDefSelType")
-
-			If (sAction = "SELECTADDFROMWAITINGLIST_1") Then
-				If NullSafeInteger(Session("optionRecordID")) > 0 Then
+			If postData.Action = OptionActionType.SELECTADDFROMWAITINGLIST_1 Then
+				If postData.CourseID > 0 Then
 					' First pass after selecting the employee to book.
 					' Get the user to choose whether to make the booking 'provisional'
 					' or confirmed.
 					If Session("TB_TBStatusPExists") Then
 						Return RedirectToAction("tbStatusPrompt")
 					Else
-						sAction = "SELECTADDFROMWAITINGLIST_2"
-						Session("optionAction") = sAction
+						Session("optionAction") = OptionActionType.SELECTADDFROMWAITINGLIST_2
 						Session("optionLookupValue") = "B"
 					End If
 				End If
 			End If
 
-			If (sAction = "SELECTADDFROMWAITINGLIST_2") Then
-				If NullSafeInteger(Session("optionRecordID")) > 0 Then
+			If postData.Action = OptionActionType.SELECTADDFROMWAITINGLIST_2 Then
+				If postData.CourseID > 0 Then
 					If Len(sErrorMsg) = 0 Then
 						' Validate the booking.					
 						Try
@@ -3929,16 +3902,16 @@ Namespace Controllers
 
 							objDataAccess.ExecuteSP("sp_ASRIntValidateTrainingBooking" _
 								, prmResult _
-								, New SqlParameter("piEmpRecID", SqlDbType.Int) With {.Value = CleanNumeric(Session("optionLinkRecordID"))} _
-								, New SqlParameter("piCourseRecID", SqlDbType.Int) With {.Value = CleanNumeric(Session("optionRecordID"))} _
-								, New SqlParameter("psBookingStatus", SqlDbType.VarChar, -1) With {.Value = Session("optionLookupValue")} _
+								, New SqlParameter("piEmpRecID", SqlDbType.Int) With {.Value = postData.EmployeeIDs} _
+								, New SqlParameter("piCourseRecID", SqlDbType.Int) With {.Value = postData.CourseID} _
+								, New SqlParameter("psBookingStatus", SqlDbType.VarChar, -1) With {.Value = postData.BookingStatus} _
 								, New SqlParameter("piTBRecID", SqlDbType.Int) With {.Value = 0} _
 								, prmCourseOverbooked)
 
 							sTBResultCode = prmResult.Value
 							sCourseOverbooked = prmCourseOverbooked.Value
 						Catch ex As Exception
-							sErrorMsg = "Error validating training booking." & vbCrLf & FormatError(ex.Message)
+							sErrorMsg = "Error validating training booking." & vbCrLf & ex.Message.RemoveSensitive()
 						End Try
 					End If
 				End If
@@ -3951,17 +3924,7 @@ Namespace Controllers
 			Session("Overbooked") = sCourseOverbooked
 
 			' Go to the requested page.
-			Dim GotoOptionPage As String = Request.Form("txtGotoOptionPage")
-			If GotoOptionPage = "tbTransferCourseFind" _
-				Or GotoOptionPage = "tbTransferBookingFind" _
-				Or GotoOptionPage = "tbBookCourseFind" _
-				Or GotoOptionPage = "tbAddFromWaitingListFind" Then
-
-				Return RedirectToAction("OptionDataGrid", "Home", New With {.GotoOptionPage = GotoOptionPage})
-
-			Else
-				Return RedirectToAction(sNextPage)
-			End If
+			Return RedirectToAction("emptyoption")
 
 		End Function
 
@@ -3970,68 +3933,32 @@ Namespace Controllers
 		End Function
 
 		<HttpPost()>
-		Function tbBookCourseFind_Submit(value As FormCollection)
+		<ValidateAntiForgeryToken>
+		Function tbBookCourseFind_Submit(postData As DelegateBookingModel)
 
 			Dim objDataAccess As clsDataAccess = CType(Session("DatabaseAccess"), clsDataAccess)
-
 			Dim sErrorMsg As String = ""
 			Dim sTBResultCode As String = "000"	'Validation OK
 			Dim sCourseOverbooked As String = ""
 
-			' Only process the form submission if the referring page was the default page.
-			' If it wasn't then redirect to the login page.
-			' Read the information from the calling form.
-			Dim sNextPage = Request.Form("txtGotoOptionPage")
-			Dim sAction = Request.Form("txtGotoOptionAction")
+			Session("optionAction") = postData.Action
 
-			Session("optionScreenID") = Request.Form("txtGotoOptionScreenID")
-			Session("optionTableID") = Request.Form("txtGotoOptionTableID")
-			Session("optionViewID") = Request.Form("txtGotoOptionViewID")
-			Session("optionOrderID") = Request.Form("txtGotoOptionOrderID")
-			Session("optionRecordID") = Request.Form("txtGotoOptionRecordID")
-			Session("optionFilterDef") = Request.Form("txtGotoOptionFilterDef")
-			Session("optionFilterSQL") = Request.Form("txtGotoOptionFilterSQL")
-			Session("optionValue") = Request.Form("txtGotoOptionValue")
-			Session("optionLinkTableID") = Request.Form("txtGotoOptionLinkTableID")
-			Session("optionLinkOrderID") = Request.Form("txtGotoOptionLinkOrderID")
-			Session("optionLinkViewID") = Request.Form("txtGotoOptionLinkViewID")
-			Session("optionLinkRecordID") = Request.Form("txtGotoOptionLinkRecordID")
-			Session("optionColumnID") = Request.Form("txtGotoOptionColumnID")
-			Session("optionLookupColumnID") = Request.Form("txtGotoOptionLookupColumnID")
-			Session("optionLookupMandatory") = Request.Form("txtGotoOptionLookupMandatory")
-			Session("optionLookupValue") = Request.Form("txtGotoOptionLookupValue")
-			Session("optionFile") = Request.Form("txtGotoOptionFile")
-			Session("optionExtension") = Request.Form("txtGotoOptionExtension")
-			'Session("optionOLEOnServer") = Request.Form("txtGotoOptionOLEOnServer")
-			Session("optionOLEType") = Request.Form("txtGotoOptionOLEType")
-			Session("optionAction") = sAction
-			Session("optionPageAction") = Request.Form("txtGotoOptionPageAction")
-			Session("optionCourseTitle") = Request.Form("txtGotoOptionCourseTitle")
-			Session("optionFirstRecPos") = Request.Form("txtGotoOptionFirstRecPos")
-			Session("optionCurrentRecCount") = Request.Form("txtGotoOptionCurrentRecCount")
-			Session("optionExprType") = Request.Form("txtGotoOptionExprType")
-			Session("optionExprID") = Request.Form("txtGotoOptionExprID")
-			Session("optionFunctionID") = Request.Form("txtGotoOptionFunctionID")
-			Session("optionParameterIndex") = Request.Form("txtGotoOptionParameterIndex")
-			Session("optionDefSelType") = Request.Form("txtGotoOptionDefSelType")
-
-			If (sAction = "SELECTBOOKCOURSE_1") Then
-				If NullSafeInteger(Session("optionRecordID")) > 0 Then
+			If postData.Action = OptionActionType.SELECTBOOKCOURSE_1 Then
+				If postData.CourseID > 0 Then
 					' First pass after selecting the course to book.
 					' Get the user to choose whether to make the booking 'provisional'
 					' or confirmed.
 					If Session("TB_TBStatusPExists") Then
 						Return RedirectToAction("tbStatusPrompt")
 					Else
-						sAction = "SELECTBOOKCOURSE_2"
-						Session("optionAction") = sAction
+						Session("optionAction") = OptionActionType.SELECTBOOKCOURSE_2
 						Session("optionLookupValue") = "B"
 					End If
 				End If
 			End If
 
-			If (sAction = "SELECTBOOKCOURSE_2") Then
-				If NullSafeInteger(Session("optionRecordID")) > 0 Then
+			If postData.Action = OptionActionType.SELECTBOOKCOURSE_2 Then
+				If postData.CourseID > 0 Then
 					' Get the employee record ID from the given Waiting List record.
 					Dim iEmpRecID = 0
 
@@ -4040,7 +3967,7 @@ Namespace Controllers
 						Dim prmTBEmployeeRecordID = New SqlParameter("piEmpRecordID", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
 						objDataAccess.ExecuteSP("sp_ASRIntGetEmpIDFromWLID", _
 								prmTBEmployeeRecordID, _
-								New SqlParameter("@piWLRecordID", SqlDbType.Int) With {.Value = CleanNumeric(NullSafeInteger(Session("optionRecordID")))})
+								New SqlParameter("@piWLRecordID", SqlDbType.Int) With {.Value = postData.CourseID})
 
 						iEmpRecID = CInt(prmTBEmployeeRecordID.Value)
 
@@ -4061,16 +3988,16 @@ Namespace Controllers
 
 							objDataAccess.ExecuteSP("sp_ASRIntValidateTrainingBooking" _
 								, prmResult _
-								, New SqlParameter("piEmpRecID", SqlDbType.Int) With {.Value = CleanNumeric(iEmpRecID)} _
-								, New SqlParameter("piCourseRecID", SqlDbType.Int) With {.Value = CleanNumeric(Session("optionLinkRecordID"))} _
-								, New SqlParameter("psBookingStatus", SqlDbType.VarChar, -1) With {.Value = Session("optionLookupValue")} _
+								, New SqlParameter("piEmpRecID", SqlDbType.Int) With {.Value = iEmpRecID} _
+								, New SqlParameter("piCourseRecID", SqlDbType.Int) With {.Value = postData.EmployeeIDs} _
+								, New SqlParameter("psBookingStatus", SqlDbType.VarChar, -1) With {.Value = postData.BookingStatus} _
 								, New SqlParameter("piTBRecID", SqlDbType.Int) With {.Value = 0} _
 								, prmCourseOverbooked)
 
 							sTBResultCode = prmResult.Value
 							sCourseOverbooked = prmCourseOverbooked.Value
 						Catch ex As Exception
-							sErrorMsg = "Error validating training booking." & vbCrLf & FormatError(ex.Message)
+							sErrorMsg = "Error validating training booking." & vbCrLf & ex.Message.RemoveSensitive
 						End Try
 					End If
 				End If
@@ -4081,12 +4008,13 @@ Namespace Controllers
 			Session("errorMessage") = sErrorMsg
 			Session("Overbooked") = sCourseOverbooked
 
-			Return RedirectToAction(sNextPage)
+			Return RedirectToAction("emptyoption")
+
 		End Function
 
 		<HttpPost()>
 		<ValidateAntiForgeryToken>
-		Function BulkBooking_Submit(value As FormCollection)
+		Function BulkBooking_Submit(postData As DelegateBookingModel)
 
 			Dim objDataAccess As clsDataAccess = CType(Session("DatabaseAccess"), clsDataAccess)
 
@@ -4098,42 +4026,13 @@ Namespace Controllers
 			Dim sTBResults As String = ""
 
 			' Read the information from the calling form.
-			Dim sNextPage = Request.Form("txtGotoOptionPage")
-			Dim sAction = Request.Form("txtGotoOptionAction")
+			Session("optionAction") = postData.Action
+			Session("optionRecordID") = postData.CourseID
+			Session("optionLinkRecordID") = postData.EmployeeIDs
+			Session("optionValue") = postData.BookingStatus
 
-			Session("optionScreenID") = Request.Form("txtGotoOptionScreenID")
-			Session("optionTableID") = Request.Form("txtGotoOptionTableID")
-			Session("optionViewID") = Request.Form("txtGotoOptionViewID")
-			Session("optionOrderID") = Request.Form("txtGotoOptionOrderID")
-			Session("optionRecordID") = Request.Form("txtGotoOptionRecordID")
-			Session("optionFilterDef") = Request.Form("txtGotoOptionFilterDef")
-			Session("optionFilterSQL") = Request.Form("txtGotoOptionFilterSQL")
-			Session("optionValue") = Request.Form("txtGotoOptionValue")
-			Session("optionLinkTableID") = Request.Form("txtGotoOptionLinkTableID")
-			Session("optionLinkOrderID") = Request.Form("txtGotoOptionLinkOrderID")
-			Session("optionLinkViewID") = Request.Form("txtGotoOptionLinkViewID")
-			Session("optionLinkRecordID") = Request.Form("txtGotoOptionLinkRecordID")
-			Session("optionColumnID") = Request.Form("txtGotoOptionColumnID")
-			Session("optionLookupColumnID") = Request.Form("txtGotoOptionLookupColumnID")
-			Session("optionLookupMandatory") = Request.Form("txtGotoOptionLookupMandatory")
-			Session("optionLookupValue") = Request.Form("txtGotoOptionLookupValue")
-			Session("optionFile") = Request.Form("txtGotoOptionFile")
-			Session("optionExtension") = Request.Form("txtGotoOptionExtension")
-			'Session("optionOLEOnServer") = Request.Form("txtGotoOptionOLEOnServer")
-			Session("optionOLEType") = Request.Form("txtGotoOptionOLEType")
-			Session("optionAction") = sAction
-			Session("optionPageAction") = Request.Form("txtGotoOptionPageAction")
-			Session("optionCourseTitle") = Request.Form("txtGotoOptionCourseTitle")
-			Session("optionFirstRecPos") = Request.Form("txtGotoOptionFirstRecPos")
-			Session("optionCurrentRecCount") = Request.Form("txtGotoOptionCurrentRecCount")
-			Session("optionExprType") = Request.Form("txtGotoOptionExprType")
-			Session("optionExprID") = Request.Form("txtGotoOptionExprID")
-			Session("optionFunctionID") = Request.Form("txtGotoOptionFunctionID")
-			Session("optionParameterIndex") = Request.Form("txtGotoOptionParameterIndex")
-			Session("optionDefSelType") = Request.Form("txtGotoOptionDefSelType")
-
-			If (sAction = "SELECTBULKBOOKINGS") Then
-				If Len(Session("optionLinkRecordID")) > 0 Then
+			If postData.Action = OptionActionType.SELECTBULKBOOKINGS Then
+				If Len(postData.EmployeeIDs) > 0 Then
 
 					Try
 						Dim prmErrorMsg = New SqlParameter("psErrorMessage", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
@@ -4143,9 +4042,9 @@ Namespace Controllers
 						Dim prmCourseOverbooked = New SqlParameter("psCourseOverbooked", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
 
 						Dim dt As DataTable = objDataAccess.GetDataTable("sp_ASRIntValidateBulkBookings", CommandType.StoredProcedure _
-							, New SqlParameter("piCourseRecordID", SqlDbType.Int) With {.Value = CleanNumeric(Session("optionRecordID"))} _
-							, New SqlParameter("psEmployeeRecordIDs", SqlDbType.VarChar, -1) With {.Value = Session("optionLinkRecordID")} _
-							, New SqlParameter("psBookingStatus", SqlDbType.VarChar, -1) With {.Value = Session("optionLookupValue")} _
+							, New SqlParameter("piCourseRecordID", SqlDbType.Int) With {.Value = postData.CourseID} _
+							, New SqlParameter("psEmployeeRecordIDs", SqlDbType.VarChar, -1) With {.Value = postData.EmployeeIDs} _
+							, New SqlParameter("psBookingStatus", SqlDbType.VarChar, -1) With {.Value = postData.BookingStatus} _
 							, prmErrorMsg _
 							, prmPreRequisitesFailsCount _
 							, prmAvailabilityFailsCount _
@@ -4165,7 +4064,7 @@ Namespace Controllers
 						Next
 						sTBResults = sTBResults.TrimEnd("|") 'Trim the last separator
 					Catch ex As Exception
-						sErrorMsg = "Error validating training booking transfers." & vbCrLf & FormatError(ex.Message)
+						sErrorMsg = "Error validating training booking transfers." & vbCrLf & ex.Message.RemoveSensitive()
 					End Try
 
 				End If
@@ -4179,7 +4078,7 @@ Namespace Controllers
 			Session("OverlapFails") = sOverlapFailsCount
 			Session("Overbooked") = sCourseOverbooked
 
-			Return RedirectToAction(sNextPage)
+			Return RedirectToAction("emptyoption")
 
 		End Function
 
@@ -4374,7 +4273,10 @@ Namespace Controllers
 		End Function
 
 		<HttpPost()>
-		Function tbTransferBookingFind_Submit(value As FormCollection)
+		<ValidateAntiForgeryToken>
+		Function tbTransferBookingFind_Submit(form As GotoOptionDataModel)
+
+			emptyoption_Submit_BASE(form)
 
 			Dim objDataAccess As clsDataAccess = CType(Session("DatabaseAccess"), clsDataAccess)
 
@@ -4382,42 +4284,7 @@ Namespace Controllers
 			Dim sTBResultCode As String = "000"	'Validation OK
 			Dim sCourseOverbooked As String = ""
 
-			' Read the information from the calling form.
-			Dim sNextPage = Request.Form("txtGotoOptionPage")
-			Dim sAction = Request.Form("txtGotoOptionAction")
-
-			Session("optionScreenID") = Request.Form("txtGotoOptionScreenID")
-			Session("optionTableID") = Request.Form("txtGotoOptionTableID")
-			Session("optionViewID") = Request.Form("txtGotoOptionViewID")
-			Session("optionOrderID") = Request.Form("txtGotoOptionOrderID")
-			Session("optionRecordID") = Request.Form("txtGotoOptionRecordID")
-			Session("optionFilterDef") = Request.Form("txtGotoOptionFilterDef")
-			Session("optionFilterSQL") = Request.Form("txtGotoOptionFilterSQL")
-			Session("optionValue") = Request.Form("txtGotoOptionValue")
-			Session("optionLinkTableID") = Request.Form("txtGotoOptionLinkTableID")
-			Session("optionLinkOrderID") = Request.Form("txtGotoOptionLinkOrderID")
-			Session("optionLinkViewID") = Request.Form("txtGotoOptionLinkViewID")
-			Session("optionLinkRecordID") = Request.Form("txtGotoOptionLinkRecordID")
-			Session("optionColumnID") = Request.Form("txtGotoOptionColumnID")
-			Session("optionLookupColumnID") = Request.Form("txtGotoOptionLookupColumnID")
-			Session("optionLookupMandatory") = Request.Form("txtGotoOptionLookupMandatory")
-			Session("optionLookupValue") = Request.Form("txtGotoOptionLookupValue")
-			Session("optionFile") = Request.Form("txtGotoOptionFile")
-			Session("optionExtension") = Request.Form("txtGotoOptionExtension")
-			'Session("optionOLEOnServer") = Request.Form("txtGotoOptionOLEOnServer")
-			Session("optionOLEType") = Request.Form("txtGotoOptionOLEType")
-			Session("optionAction") = sAction
-			Session("optionPageAction") = Request.Form("txtGotoOptionPageAction")
-			Session("optionCourseTitle") = Request.Form("txtGotoOptionCourseTitle")
-			Session("optionFirstRecPos") = Request.Form("txtGotoOptionFirstRecPos")
-			Session("optionCurrentRecCount") = Request.Form("txtGotoOptionCurrentRecCount")
-			Session("optionExprType") = Request.Form("txtGotoOptionExprType")
-			Session("optionExprID") = Request.Form("txtGotoOptionExprID")
-			Session("optionFunctionID") = Request.Form("txtGotoOptionFunctionID")
-			Session("optionParameterIndex") = Request.Form("txtGotoOptionParameterIndex")
-			Session("optionDefSelType") = Request.Form("txtGotoOptionDefSelType")
-
-			If (sAction = "SELECTTRANSFERBOOKING_1") Then
+			If form.txtGotoOptionAction = OptionActionType.SELECTTRANSFERBOOKING_1 Then
 				If NullSafeInteger(Session("optionRecordID")) > 0 Then
 					' Get the employee record ID from the given Training Booking record.
 					Dim iEmpRecID As Integer = 0
@@ -4439,7 +4306,6 @@ Namespace Controllers
 
 					End Try
 
-
 					If Len(sErrorMsg) = 0 Then
 						' Validate the booking.
 						Try
@@ -4448,7 +4314,7 @@ Namespace Controllers
 
 							objDataAccess.ExecuteSP("sp_ASRIntValidateTrainingBooking" _
 								, prmResult _
-								, New SqlParameter("piEmpRecID", SqlDbType.Int) With {.Value = CleanNumeric(iEmpRecID)} _
+								, New SqlParameter("piEmpRecID", SqlDbType.Int) With {.Value = iEmpRecID} _
 								, New SqlParameter("piCourseRecID", SqlDbType.Int) With {.Value = CleanNumeric(Session("optionLinkRecordID"))} _
 								, New SqlParameter("psBookingStatus", SqlDbType.VarChar, -1) With {.Value = Session("optionLookupValue")} _
 								, New SqlParameter("piTBRecID", SqlDbType.Int) With {.Value = 0} _
@@ -4468,7 +4334,7 @@ Namespace Controllers
 			Session("errorMessage") = sErrorMsg
 			Session("Overbooked") = sCourseOverbooked
 
-			Return RedirectToAction(sNextPage)
+			Return RedirectToAction("emptyoption")
 		End Function
 
 		<ValidateInput(False)>
@@ -4503,57 +4369,19 @@ Namespace Controllers
 		End Function
 
 		<HttpPost()>
-	 Function tbTransferCourseFind_Submit(value As FormCollection)
+		<ValidateAntiForgeryToken>
+	 Function tbTransferCourseFind_Submit(form As GotoOptionDataModel)
 
 			Dim sErrorMsg = ""
 			Dim iTBResultCode = 0
 
+			emptyoption_Submit_BASE(form)
+
 			Dim objDataAccess As clsDataAccess = CType(Session("DatabaseAccess"), clsDataAccess)
 
-			' Read the information from the calling form.
-			Dim sNextPage = Request.Form("txtGotoOptionPage")
-			Dim sAction = Request.Form("txtGotoOptionAction")
-
-			Session("optionScreenID") = Request.Form("txtGotoOptionScreenID")
-			Session("optionTableID") = Request.Form("txtGotoOptionTableID")
-			Session("optionViewID") = Request.Form("txtGotoOptionViewID")
-			Session("optionOrderID") = Request.Form("txtGotoOptionOrderID")
-			Session("optionRecordID") = Request.Form("txtGotoOptionRecordID")
-			Session("optionFilterDef") = Request.Form("txtGotoOptionFilterDef")
-			Session("optionFilterSQL") = Request.Form("txtGotoOptionFilterSQL")
-			Session("optionValue") = Request.Form("txtGotoOptionValue")
-			Session("optionLinkTableID") = Request.Form("txtGotoOptionLinkTableID")
-			Session("optionLinkOrderID") = Request.Form("txtGotoOptionLinkOrderID")
-			Session("optionLinkViewID") = Request.Form("txtGotoOptionLinkViewID")
-			Session("optionLinkRecordID") = Request.Form("txtGotoOptionLinkRecordID")
-			Session("optionColumnID") = Request.Form("txtGotoOptionColumnID")
-			Session("optionLookupColumnID") = Request.Form("txtGotoOptionLookupColumnID")
-			Session("optionLookupMandatory") = Request.Form("txtGotoOptionLookupMandatory")
-			Session("optionLookupValue") = Request.Form("txtGotoOptionLookupValue")
-			Session("optionFile") = Request.Form("txtGotoOptionFile")
-			Session("optionExtension") = Request.Form("txtGotoOptionExtension")
-			'Session("optionOLEOnServer") = Request.Form("txtGotoOptionOLEOnServer")
-			Session("optionOLEType") = Request.Form("txtGotoOptionOLEType")
-			Session("optionAction") = sAction
-			Session("optionFirstRecPos") = Request.Form("txtGotoOptionFirstRecPos")
-			Session("optionCurrentRecCount") = Request.Form("txtGotoOptionCurrentRecCount")
-			Session("optionPageAction") = Request.Form("txtGotoOptionPageAction")
-			Session("optionCourseTitle") = Request.Form("txtGotoOptionCourseTitle")
-			Session("optionExprType") = Request.Form("txtGotoOptionExprType")
-			Session("optionExprID") = Request.Form("txtGotoOptionExprID")
-			Session("optionFunctionID") = Request.Form("txtGotoOptionFunctionID")
-			Session("optionParameterIndex") = Request.Form("txtGotoOptionParameterIndex")
-			Session("optionDefSelType") = Request.Form("txtGotoOptionDefSelType")
-
-			If sAction = "" Then
-				' Go to the requested page.
-				Return RedirectToAction(sNextPage)
-			End If
-
-			If sAction = "SELECTTRANSFERCOURSE" Then
+			If form.txtGotoOptionAction = OptionActionType.SELECTTRANSFERCOURSE Then
 
 				If Session("optionLinkRecordID") > 0 Then
-					' Validate the booking transfers.
 
 					Try
 
@@ -4585,7 +4413,7 @@ Namespace Controllers
 
 				Session("TBResultCode") = iTBResultCode
 				Session("errorMessage") = sErrorMsg
-				Return RedirectToAction(sNextPage)
+				Return RedirectToAction("emptyoption")
 			End If
 
 		End Function
@@ -4596,85 +4424,44 @@ Namespace Controllers
 
 		<HttpPost()>
 		<ValidateAntiForgeryToken>
-	 Function orderselect_Submit(value As FormCollection)
+		Function orderselect_Submit(postData As SelectOrderModel)
 
-			Dim objDataAccess As clsDataAccess = CType(Session("DatabaseAccess"), clsDataAccess)
+			Session("optionScreenID") = postData.ScreenID
+			Session("optionTableID") = postData.TableID
+			Session("optionViewID") = postData.ViewID
+			Session("optionAction") = postData.Action
 
-			Dim sErrorMsg = ""
+			' Do we need both session variables set?
+			Session("optionOrderID") = postData.OrderID
+			Session("orderID") = postData.OrderID
 
-			' Read the information from the calling form.
-			Dim lngScreenID = CleanNumeric(Request.Form("txtGotoOptionScreenID"))
-			Dim lngViewID = CleanNumeric(Request.Form("txtGotoOptionViewID"))
-			Dim lngOrderID = CleanNumeric(Request.Form("txtGotoOptionOrderID"))
-			Dim sNextPage = Request.Form("txtGotoOptionPage")
-			Dim sAction = Request.Form("txtGotoOptionAction")
+			If postData.Action = OptionActionType.CANCEL Then
+				Session("errorMessage") = ""
 
-			Session("optionScreenID") = lngScreenID
-			Session("optionTableID") = Request.Form("txtGotoOptionTableID")
-			Session("optionViewID") = lngViewID
-			Session("optionOrderID") = lngOrderID
-			Session("optionRecordID") = Request.Form("txtGotoOptionRecordID")
-			Session("optionFilterDef") = Request.Form("txtGotoOptionFilterDef")
-			Session("optionFilterSQL") = Request.Form("txtGotoOptionFilterSQL")
-			Session("optionValue") = Request.Form("txtGotoOptionValue")
-			Session("optionLinkTableID") = Request.Form("txtGotoOptionLinkTableID")
-			Session("optionLinkOrderID") = Request.Form("txtGotoOptionLinkOrderID")
-			Session("optionLinkViewID") = Request.Form("txtGotoOptionLinkViewID")
-			Session("optionLinkRecordID") = Request.Form("txtGotoOptionLinkRecordID")
-			Session("optionColumnID") = Request.Form("txtGotoOptionColumnID")
-			Session("optionLookupColumnID") = Request.Form("txtGotoOptionLookupColumnID")
-			Session("optionLookupMandatory") = Request.Form("txtGotoOptionLookupMandatory")
-			Session("optionLookupValue") = Request.Form("txtGotoOptionLookupValue")
-			Session("optionFile") = Request.Form("txtGotoOptionFile")
-			Session("optionExtension") = Request.Form("txtGotoOptionExtension")
-			'Session("optionOLEOnServer") = Request.Form("txtGotoOptionOLEOnServer")
-			Session("optionOLEType") = Request.Form("txtGotoOptionOLEType")
-			Session("optionAction") = sAction
-			Session("optionPageAction") = Request.Form("txtGotoOptionPageAction")
-			Session("optionCourseTitle") = Request.Form("txtGotoOptionCourseTitle")
-			Session("optionAction") = sAction
-			Session("orderID") = lngOrderID
-			Session("optionFirstRecPos") = Request.Form("txtGotoOptionFirstRecPos")
-			Session("optionCurrentRecCount") = Request.Form("txtGotoOptionCurrentRecCount")
-			Session("optionExprType") = Request.Form("txtGotoOptionExprType")
-			Session("optionExprID") = Request.Form("txtGotoOptionExprID")
-			Session("optionFunctionID") = Request.Form("txtGotoOptionFunctionID")
-			Session("optionParameterIndex") = Request.Form("txtGotoOptionParameterIndex")
-
-
-			If sAction = "CANCEL" Then
-				' Go to the requested page.
-				Session("errorMessage") = sErrorMsg
-				Return RedirectToAction(sNextPage)
-			End If
-
-			If sAction = "SELECTORDER" Then
+			ElseIf postData.Action = OptionActionType.SELECTORDER Then
 
 				Try
+					Dim objDataAccess As clsDataAccess = CType(Session("DatabaseAccess"), clsDataAccess)
 					Dim prmFromDef = New SqlParameter("psFromDef", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
 
 					objDataAccess.ExecuteSP("sp_ASRIntGetOrderSQL" _
-							, New SqlParameter("piScreenID", SqlDbType.Int) With {.Value = lngScreenID} _
-							, New SqlParameter("piViewID", SqlDbType.Int) With {.Value = lngViewID} _
-							, New SqlParameter("piOrderID", SqlDbType.Int) With {.Value = lngOrderID} _
+							, New SqlParameter("piScreenID", SqlDbType.Int) With {.Value = postData.ScreenID} _
+							, New SqlParameter("piViewID", SqlDbType.Int) With {.Value = postData.ViewID} _
+							, New SqlParameter("piOrderID", SqlDbType.Int) With {.Value = postData.OrderID} _
 							, prmFromDef)
 
 					Session("fromDef") = prmFromDef.Value
 
 				Catch ex As Exception
-					sErrorMsg = "Error retrieving the new order definition." & vbCrLf & ex.Message.RemoveSensitive
-					Session("errorMessage") = sErrorMsg
+					Session("errorMessage") = "Error retrieving the new order definition." & vbCrLf & ex.Message.RemoveSensitive
 
 				End Try
 
-				' Go to the requested page.
-				Return RedirectToAction(sNextPage)
 			End If
 
-			Return RedirectToAction(sNextPage)
+			Return RedirectToAction("emptyoption")
 
 		End Function
-
 
 		Function lookupFind() As ActionResult
 			Return View()
@@ -4682,64 +4469,12 @@ Namespace Controllers
 
 		<HttpPost()>
 		<ValidateAntiForgeryToken>
-	 Function lookupFind_Submit(value As FormCollection)
-			Dim sErrorMsg = ""
-
-			' Read the information from the calling form.
-			Dim sNextPage = Request.Form("txtGotoOptionPage")
-			Dim sAction = Request.Form("txtGotoOptionAction")
-
-			Session("optionScreenID") = Request.Form("txtGotoOptionScreenID")
-			Session("optionTableID") = Request.Form("txtGotoOptionTableID")
-			Session("optionViewID") = Request.Form("txtGotoOptionViewID")
-			Session("optionOrderID") = Request.Form("txtGotoOptionOrderID")
-			Session("optionRecordID") = Request.Form("txtGotoOptionRecordID")
-			Session("optionFilterDef") = Request.Form("txtGotoOptionFilterDef")
-			Session("optionFilterSQL") = Request.Form("txtGotoOptionFilterSQL")
-			Session("optionValue") = Request.Form("txtGotoOptionValue")
-			Session("optionLinkTableID") = Request.Form("txtGotoOptionLinkTableID")
-			Session("optionLinkOrderID") = Request.Form("txtGotoOptionLinkOrderID")
-			Session("optionLinkViewID") = Request.Form("txtGotoOptionLinkViewID")
-			Session("optionRecordID") = Request.Form("txtGotoOptionLinkRecordID")
-			Session("optionColumnID") = Request.Form("txtGotoOptionColumnID")
-			Session("optionLookupColumnID") = Request.Form("txtGotoOptionLookupColumnID")
-			Session("optionLookupMandatory") = Request.Form("txtGotoOptionLookupMandatory")
-			Session("optionLookupValue") = Request.Form("txtGotoOptionLookupValue")
-			Session("optionFile") = Request.Form("txtGotoOptionFile")
-			Session("optionExtension") = Request.Form("txtGotoOptionExtension")
-			'Session("optionOLEOnServer") = Request.Form("txtGotoOptionOLEOnServer")
-			Session("optionOLEType") = Request.Form("txtGotoOptionOLEType")
-			Session("optionAction") = sAction
-			Session("optionPageAction") = Request.Form("txtGotoOptionPageAction")
-			Session("optionCourseTitle") = Request.Form("txtGotoOptionCourseTitle")
-			Session("optionFirstRecPos") = Request.Form("txtGotoOptionFirstRecPos")
-			Session("optionCurrentRecCount") = Request.Form("txtGotoOptionCurrentRecCount")
-			Session("optionExprType") = Request.Form("txtGotoOptionExprType")
-			Session("optionExprID") = Request.Form("txtGotoOptionExprID")
-			Session("optionFunctionID") = Request.Form("txtGotoOptionFunctionID")
-			Session("optionParameterIndex") = Request.Form("txtGotoOptionParameterIndex")
-
-			If sAction = "" Then
-				' Go to the requested page.
-				'Return RedirectToAction(sNextPage)
-			End If
-
-			If sAction = "CANCEL" Then
-				' Go to the requested page.
-				Session("errorMessage") = sErrorMsg
-				'Return RedirectToAction(sNextPage)
-			End If
-
-			If sAction = "SELECTLOOKUP" Then
-				Session("errorMessage") = sErrorMsg
-
-				' Go to the requested page.
-				'Return RedirectToAction(sNextPage)
-			End If
-
-			' Go to the requested page.
-			Return RedirectToAction(sNextPage)
-
+		Function lookupFind_Submit(postData As LookupFindModel) As RedirectToRouteResult
+			Session("optionAction") = postData.Action
+			Session("optionColumnID") = postData.ColumnID
+			Session("optionLookupColumnID") = postData.LookupColumnID
+			Session("optionLookupValue") = postData.LookupValue
+			Return RedirectToAction("emptyoption")
 		End Function
 
 		Function themeEditor() As PartialViewResult
@@ -4748,55 +4483,6 @@ Namespace Controllers
 
 		Function linkFind() As ActionResult
 			Return View()
-		End Function
-
-		<HttpPost()>
-		<ValidateAntiForgeryToken>
-		Function linkFind_Submit(value As FormCollection)
-			Dim sErrorMsg As String = ""
-			Dim sNextPage As String, sAction As String
-
-			' Read the information from the calling form.
-			sNextPage = Request.Form("txtGotoOptionPage")
-			sAction = Request.Form("txtGotoOptionAction")
-
-			Session("optionScreenID") = Request.Form("txtGotoOptionScreenID")
-			Session("optionTableID") = Request.Form("txtGotoOptionTableID")
-			Session("optionViewID") = Request.Form("txtGotoOptionViewID")
-			Session("optionOrderID") = Request.Form("txtGotoOptionOrderID")
-			Session("optionRecordID") = Request.Form("txtGotoOptionRecordID")
-			Session("optionFilterDef") = Request.Form("txtGotoOptionFilterDef")
-			Session("optionFilterSQL") = Request.Form("txtGotoOptionFilterSQL")
-			Session("optionValue") = Request.Form("txtGotoOptionValue")
-			Session("optionLinkTableID") = Request.Form("txtGotoOptionLinkTableID")
-			Session("optionLinkOrderID") = Request.Form("txtGotoOptionLinkOrderID")
-			Session("optionLinkViewID") = Request.Form("txtGotoOptionLinkViewID")
-			Session("optionRecordID") = Request.Form("txtGotoOptionLinkRecordID")
-			Session("optionColumnID") = Request.Form("txtGotoOptionColumnID")
-			Session("optionLookupColumnID") = Request.Form("txtGotoOptionLookupColumnID")
-			Session("optionLookupMandatory") = Request.Form("txtGotoOptionLookupMandatory")
-			Session("optionLookupValue") = Request.Form("txtGotoOptionLookupValue")
-			Session("optionFile") = Request.Form("txtGotoOptionFile")
-			Session("optionExtension") = Request.Form("txtGotoOptionExtension")
-			'Session("optionOLEOnServer") = Request.Form("txtGotoOptionOLEOnServer")
-			Session("optionOLEType") = Request.Form("txtGotoOptionOLEType")
-			Session("optionAction") = sAction
-			Session("optionPageAction") = Request.Form("txtGotoOptionPageAction")
-			Session("optionCourseTitle") = Request.Form("txtGotoOptionCourseTitle")
-			Session("optionFirstRecPos") = Request.Form("txtGotoOptionFirstRecPos")
-			Session("optionCurrentRecCount") = Request.Form("txtGotoOptionCurrentRecCount")
-			Session("optionExprType") = Request.Form("txtGotoOptionExprType")
-			Session("optionExprID") = Request.Form("txtGotoOptionExprID")
-			Session("optionFunctionID") = Request.Form("txtGotoOptionFunctionID")
-			Session("optionParameterIndex") = Request.Form("txtGotoOptionParameterIndex")
-
-			If sAction = "CANCEL" Or sAction = "SELECTLINK" Then
-				' Go to the requested page.
-				Session("errorMessage") = sErrorMsg
-			End If
-
-			Return RedirectToAction(sNextPage)
-
 		End Function
 
 		Function oleFind() As ActionResult
@@ -5149,7 +4835,6 @@ Namespace Controllers
 			End If
 
 		End Function
-
 
 		Public Function FolderList(folderPath As String) As ActionResult
 

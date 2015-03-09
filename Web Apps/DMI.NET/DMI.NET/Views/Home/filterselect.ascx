@@ -3,6 +3,7 @@
 <%@ Import Namespace="System.Data" %>
 <%@ Import Namespace="HR.Intranet.Server" %>
 <%@ Import Namespace="System.Data.SqlClient" %>
+<%@ Import Namespace="DMI.NET.Helpers" %>
 
 <script type="text/javascript">
 	var colMode = [];
@@ -641,24 +642,15 @@
 			}
 		}
 
-		// Redisplay the workframe recedit control. 
-		var sWorkPage = currentWorkFramePage();
-		if (sWorkPage == "RECORDEDIT") {
-			//window.parent.frames("workframe").document.forms("frmRecordEditForm").ctlRecordEdit.style.visibility = "visible";
-		}
-		else {
-			if (sWorkPage == "FIND") {
-				//window.parent.frames("workframe").document.forms("frmFindForm").ssOleDBGridFindRecords.style.visibility = "visible";
-			}
-		}
-		var frmSubmitForm = document.getElementById("frmFilterFormSubmit");
-	
-		frmSubmitForm.txtGotoOptionFilterSQL.value = sFilterSQL;
-		frmSubmitForm.txtGotoOptionFilterDef.value = sFilterDef;
-		frmSubmitForm.txtGotoOptionPage.value = "emptyoption";
-		frmSubmitForm.txtGotoOptionAction.value = "SELECTFILTER";
-		
-		OpenHR.submitForm(frmSubmitForm);
+		var postData = {
+			Action: optionActionType.SELECTFILTER,
+			ScreenID: <%:Session("optionScreenID")%>,
+			TableID: <%:Session("optionTableID")%>,
+			ViewID: <%:Session("optionViewID")%>,
+			FilterSQL: sFilterSQL,
+			FilterDef: sFilterDef,
+			<%:Html.AntiForgeryTokenForAjaxPost() %> };
+		OpenHR.submitForm(null, "optionframe", null, postData, "filterselect_Submit");
 
 	}
 
@@ -682,11 +674,10 @@
 			}
 		}
 
-		var frmSubmitForm = document.getElementById("frmFilterFormSubmit");
-
-		frmSubmitForm.txtGotoOptionAction.value = "CANCEL";
-		frmSubmitForm.txtGotoOptionPage.value = "emptyoption";
-		OpenHR.submitForm(frmSubmitForm);
+		var postData = {
+			Action: optionActionType.CANCEL,
+			<%:Html.AntiForgeryTokenForAjaxPost() %> };
+		OpenHR.submitForm(null, "optionframe", null, postData, "filterselect_Submit");
 		
 	}
 
@@ -1388,17 +1379,6 @@
 			Response.Write("<INPUT type='hidden' id=txtErrorDescription name=txtErrorDescription value=""" & sErrorDescription & """>" & vbCrLf)
 			Response.Write("<INPUT type='hidden' id=txtOptionFilterDef name=txtOptionFilterDef value=""" & Replace(Session("optionFilterDef"), """", "&quot;") & """>" & vbCrLf)
 		%>
-	</form>
-	
-	<form action="filterselect_Submit" method="post" id="frmFilterFormSubmit">
-		<input type="hidden" id="txtGotoOptionScreenID" name="txtGotoOptionScreenID" value="<%=Session("optionScreenID")%>">
-		<input type="hidden" id="txtGotoOptionTableID" name="txtGotoOptionTableID" value="<%=Session("optionTableID")%>">
-		<input type="hidden" id="txtGotoOptionViewID" name="txtGotoOptionViewID" value="<%=Session("optionViewID")%>">
-		<input type="hidden" id="txtGotoOptionFilterDef" name="txtGotoOptionFilterDef">
-		<input type="hidden" id="txtGotoOptionFilterSQL" name="txtGotoOptionFilterSQL">
-		<input type="hidden" id="txtGotoOptionPage" name="txtGotoOptionPage">
-		<input type="hidden" id="txtGotoOptionAction" name="txtGotoOptionAction">
-		<%=Html.AntiForgeryToken()%>
 	</form>
 
 	<script type="text/javascript">

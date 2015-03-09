@@ -806,17 +806,19 @@ function optiondata_onload() {
 		}
 
 		if (sCurrentWorkPage == "FIND") {
-			sAction = frmOptionData.txtOptionAction.value;
-			if ((sAction == "BOOKCOURSEERROR") ||
-						(sAction == "TRANSFERBOOKINGERROR") ||
-						(sAction == "ADDFROMWAITINGLISTERROR") ||
-						(sAction == "BULKBOOKINGERROR")) {
+
+			sAction = parseInt(frmOptionData.txtOptionAction.value);
+			if ((sAction === optionActionType.BOOKCOURSEERROR) ||
+						(sAction === optionActionType.TRANSFERBOOKINGERROR) ||
+						(sAction === optionActionType.ADDFROMWAITINGLISTERROR) ||
+						(sAction === optionActionType.BULKBOOKINGERROR)) {
 				OpenHR.messageBox(frmOptionData.txtNonFatalErrorDescription.value);
 			}
-			if ((sAction == "BOOKCOURSESUCCESS") ||
-					(sAction == "TRANSFERBOOKINGSUCCESS") ||
-					(sAction == "ADDFROMWAITINGLISTSUCCESS") ||
-					(sAction == "BULKBOOKINGSUCCESS")) {
+
+			if ((sAction === optionActionType.BOOKCOURSESUCCESS) ||
+					(sAction === optionActionType.TRANSFERBOOKINGSUCCESS) ||
+					(sAction === optionActionType.ADDFROMWAITINGLISTSUCCESS) ||
+					(sAction === optionActionType.BULKBOOKINGSUCCESS)) {
 				// Reload the find records.
 				OpenHR.messageBox("Booking(s) made successfully.");
 				menu_reloadFindPage("MOVEFIRST", "");

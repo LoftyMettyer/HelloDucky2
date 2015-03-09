@@ -20,6 +20,7 @@
 
 <script type="text/javascript">
 	$(document).ready(function () {
+
 		if ('<%=session("linktype")%>' == 'multifind') {
 			//for multifind (SSI views) show relevant buttons with applicable functions
 			menu_setVisibletoolbarGroupById("mnuSectionRecordFindEdit", false);

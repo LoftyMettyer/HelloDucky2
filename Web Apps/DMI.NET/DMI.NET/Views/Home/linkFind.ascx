@@ -3,6 +3,7 @@
 <%@ Import Namespace="System.Data" %>
 <%@ Import Namespace="HR.Intranet.Server" %>
 <%@ Import Namespace="System.Data.SqlClient" %>
+<%@ Import Namespace="DMI.NET.Helpers" %>
 
 <script type="text/javascript">
 	
@@ -90,36 +91,33 @@
 	}
 
 	function SelectLink() {
-		
-		// Fault 3503
-		//window.parent.frames("workframe").document.forms("frmRecordEditForm").ctlRecordEdit.style.visibility = "visible";
+	
 		var selRowId = $("#ssOleDBGridLinkRecords").jqGrid('getGridParam', 'selrow');
 		if (selRowId > 0) {
 			$("#optionframe").dialog("destroy");
-			var frmGotoOption = document.getElementById('frmGotoOption');
 			var frmLinkFindForm = document.getElementById('frmLinkFindForm');
-
 			var recordID = $("#ssOleDBGridLinkRecords").jqGrid('getCell', selRowId, 'ID');
 
+			var postData = {
+				Action: optionActionType.SELECTLINK,
+				LinkRecordID: recordID,
+				ScreenID: frmLinkFindForm.txtOptionScreenID.value,
+				LinkTableID: frmLinkFindForm.txtOptionLinkTableID.value,
+				<%:Html.AntiForgeryTokenForAjaxPost() %> };
+			OpenHR.submitForm(null, "optionframe", null, postData, "linkFind_submit");
 
-			frmGotoOption.txtGotoOptionLinkRecordID.value = recordID;	//selectedRecordID();
-			frmGotoOption.txtGotoOptionScreenID.value = frmLinkFindForm.txtOptionScreenID.value;
-			frmGotoOption.txtGotoOptionLinkTableID.value = frmLinkFindForm.txtOptionLinkTableID.value;
-			frmGotoOption.txtGotoOptionAction.value = "SELECTLINK";
-			frmGotoOption.txtGotoOptionPage.value = "emptyoption";
-			OpenHR.submitForm(frmGotoOption);
 		}
 	}
 
 	function CancelLink() {
-		// Fault 3503
-		//window.parent.frames("workframe").document.forms("frmRecordEditForm").ctlRecordEdit.style.visibility = "visible";
-		$("#optionframe").dialog("destroy");
-		var frmGotoOption = document.getElementById('frmGotoOption');
 
-		frmGotoOption.txtGotoOptionAction.value = "CANCEL";
-		frmGotoOption.txtGotoOptionPage.value = "emptyoption";
-		OpenHR.submitForm(frmGotoOption);
+		$("#optionframe").dialog("destroy");
+
+		var postData = {
+			Action: optionActionType.CANCEL,
+			<%:Html.AntiForgeryTokenForAjaxPost() %> };
+		OpenHR.submitForm(null, "optionframe", null, postData, "linkFind_submit");
+
 	}
 	/* Sequential search the grid for the required ID. */
 	function locateRecord(psSearchFor, pfIDMatch) {
@@ -397,11 +395,6 @@
 	</form>
 	<input type="hidden" id="txtTicker" name="txtTicker" value="0">
 	<input type="hidden" id="txtLastKeyFind" name="txtLastKeyFind" value="">
-
-	<form action="linkFind_Submit" method="post" id="frmGotoOption" name="frmGotoOption">
-		<%Html.RenderPartial("~/Views/Shared/gotoOption.ascx")%>
-		<%=Html.AntiForgeryToken()%>
-	</form>
 
 </div>
 

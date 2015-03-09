@@ -13,7 +13,7 @@
 		
 	' Clear the session action which is used to botch the prompted values screen in
 	Session("action") = ""
-	Session("optionaction") = ""
+	Session("optionaction") = OptionActionType.Empty
 
 	Dim objDatabase As Database = CType(Session("DatabaseFunctions"), Database)
 	Dim objDataAccess As clsDataAccess = CType(Session("DatabaseAccess"), clsDataAccess)

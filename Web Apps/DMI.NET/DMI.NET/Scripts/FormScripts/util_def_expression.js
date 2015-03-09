@@ -986,7 +986,6 @@ function addClick() {
 
 	fOK = true;
 
-	frmOptionArea.txtGotoOptionPage.value = "util_def_exprComponent";
 	frmOptionArea.txtGotoOptionAction.value = "ADDEXPRCOMPONENT";
 	frmOptionArea.txtGotoOptionTableID.value = frmUseful.txtTableID.value;
 	frmOptionArea.txtGotoOptionExprID.value = frmUseful.txtUtilID.value;
@@ -1039,8 +1038,7 @@ function addClick() {
 	}
 
 	if (fOK == true) {
-		frmOptionArea.action = "emptyoption_Submit";
-		OpenHR.submitForm(frmOptionArea, "optionframe");
+		OpenHR.submitForm(frmOptionArea, "optionframe", null, null, "expression_addClick");
 	}
 }
 
@@ -1111,15 +1109,13 @@ function insertClick() {
 	}
 
 	if (fOK == true) {
-		frmOptionArea.action = "emptyoption_Submit";
-		OpenHR.submitForm(frmOptionArea, "optionframe");
+		OpenHR.submitForm(frmOptionArea, "optionframe", null, null, "expression_insertClick");
 	}
 }
 
 function editClick() {	
 	var fOK;
 	var frmOptionArea = OpenHR.getForm("optionframeset", "frmGotoOption");
-	var frmRefresh = OpenHR.getForm("refreshframe", "frmRefresh");
 	var frmUseful = OpenHR.getForm("divDefExpression", "frmUseful");
 
 	var iFunctionID = 0;
@@ -1127,7 +1123,6 @@ function editClick() {
 
 	fOK = true;
 
-	frmOptionArea.txtGotoOptionPage.value = "util_def_exprComponent";
 	frmOptionArea.txtGotoOptionAction.value = "EDITEXPRCOMPONENT";
 	frmOptionArea.txtGotoOptionTableID.value = frmUseful.txtTableID.value;
 	frmOptionArea.txtGotoOptionLinkRecordID.value = tree_SelectedItemKey();
@@ -1183,8 +1178,7 @@ function editClick() {
 	}
 
 	if (fOK == true) {
-		frmOptionArea.action = "emptyoption_Submit";
-		OpenHR.submitForm(frmOptionArea, "optionframe");
+		OpenHR.submitForm(frmOptionArea, "optionframe", null, null, "expression_insertClick");
 	}
 }
 

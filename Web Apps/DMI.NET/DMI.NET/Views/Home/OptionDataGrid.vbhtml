@@ -30,11 +30,7 @@
 	</footer>
 </div>
 
-@Using (Html.BeginForm(Model.SubmitAction, "Home", FormMethod.Post,
-											New With {.id = "frmGotoOption", .name = "frmGotoOption", .defaultbutton = "cmdSelect"}))
-	Html.RenderPartial("~/Views/Shared/gotoOption.ascx")
-End Using
-
+@Html.HiddenFor(Function(m) m.SubmitAction)
 @Html.HiddenFor(Function(m) m.RecordID)
 @Html.HiddenFor(Function(m) m.TableID)
 @Html.HiddenFor(Function(m) m.CourseTitle)

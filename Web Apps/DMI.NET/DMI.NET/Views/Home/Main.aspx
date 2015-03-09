@@ -1,7 +1,4 @@
 ﻿<%@ Page Title="" Language="VB" MasterPageFile="~/Views/Shared/Site.Master" Inherits="System.Web.Mvc.ViewPage" %>
-<%@ Import Namespace="System.Data" %>
-<%@ Import Namespace="System.Data.SqlClient" %>
-<%@ Import Namespace="HR.Intranet.Server" %>
 
 <asp:Content ID="Content1" ContentPlaceHolderID="TitleContent" runat="server">	
 <%=DMI.NET.svrCleanup.GetPageTitle("") %>
@@ -222,7 +219,6 @@
 
 	<div id="mainframeset">
 	
-
 		<div id="workframeset" style="display: block;" class="ui-widget ui-widget-content">
 
 			<form action="WorkAreaRefresh" method="post" id="frmWorkAreaRefresh" name="frmWorkAreaRefresh">

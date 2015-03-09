@@ -552,6 +552,11 @@
 			data = $form.serialize();
 		}	else {
 			data = jsonData;
+			method = "POST";  // bit trigger happy this, maybe some of the the controller actions should be gets???
+
+			//	var globalToken = $('#__AjaxAntiForgeryForm');
+			//		var token = $('input[name="__RequestVerificationToken"]', globalToken).val();
+			//		data.push(token);
 		}
 	
 

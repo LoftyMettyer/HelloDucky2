@@ -1,5 +1,6 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
 <%@Import namespace="DMI.NET" %>
+<%@ Import Namespace="DMI.NET.Helpers" %>
 
 <SCRIPT type="text/javascript">
 	function tbStatusPrompt_onload() {
@@ -19,32 +20,36 @@
 
 <script type="text/javascript">
 	function Select() {
-		
+
 		var frmForm = document.getElementById("frmForm");
-		var frmGotoOption = document.getElementById("frmGotoOption");
+		var sSubmitAction;
+		var iActionType;
+		var bookingStatus;
 
 		if (frmForm.txtOptionAction.value == "SELECTADDFROMWAITINGLIST_1") {
-			frmGotoOption.txtGotoOptionAction.value = "SELECTADDFROMWAITINGLIST_2";
-			frmGotoOption.action = "tbAddFromWaitingListFind_Submit";
+			iActionType = optionActionType.SELECTADDFROMWAITINGLIST_2;
+			sSubmitAction = "tbAddFromWaitingListFind_Submit";
 		}
 		else {
-			frmGotoOption.txtGotoOptionAction.value = "SELECTBOOKCOURSE_2";
-			frmGotoOption.action = "tbBookCourseFind_Submit";
+			iActionType = optionActionType.SELECTBOOKCOURSE_2;
+			sSubmitAction = "tbBookCourseFind_Submit";
 		}
 	
 		if (frmForm.optStatus_Provisional.checked) {
-			frmGotoOption.txtGotoOptionLookupValue.value = "P";
+			bookingStatus = "P";
 		}
 		else {
-			frmGotoOption.txtGotoOptionLookupValue.value = "B";
+			bookingStatus = "B";
 		}
 
-		//TODO: window.parent.frames("workframe").document.forms("frmFindForm").ssOleDBGridFindRecords.style.visibility = "visible";
+		var postData = {
+			Action: iActionType,
+			CourseID: frmForm.txtOptionRecordID.value,
+			EmployeeIDs: frmForm.txtOptionLinkRecordID.value,
+			BookingStatus: bookingStatus,
+			<%:Html.AntiForgeryTokenForAjaxPost() %> };
+		OpenHR.submitForm(null, "optionframe", null, postData, sSubmitAction);
 
-		frmGotoOption.txtGotoOptionRecordID.value = frmForm.txtOptionRecordID.value;
-		frmGotoOption.txtGotoOptionLinkRecordID.value = frmForm.txtOptionLinkRecordID.value;
-		frmGotoOption.txtGotoOptionPage.value = "emptyoption";
-		OpenHR.submitForm(frmGotoOption);
 	}
 
 	function Cancel()
@@ -52,13 +57,11 @@
 		$("#optionframe").hide();
 		$("#workframe").show();
 
-		var frmGotoOption = document.getElementById("frmGotoOption");
-		
-		frmGotoOption.txtGotoOptionAction.value = "CANCEL";
-		frmGotoOption.txtGotoOptionRecordID.value = 0;
-		frmGotoOption.txtGotoOptionLinkRecordID.value = 0;
-		frmGotoOption.txtGotoOptionPage.value = "emptyoption";
-		OpenHR.submitForm(frmGotoOption);
+		var postData = {
+			Action: optionActionType.CANCEL,
+			<%:Html.AntiForgeryTokenForAjaxPost() %> };
+		OpenHR.submitForm(null, "optionframe", null, postData, "tbBookCourseFind_Submit");
+
 	}
 	
 </script>
@@ -179,8 +182,5 @@
 <INPUT type='hidden' id="txtOptionAction" name="txtOptionAction" value=<%=session("optionAction")%>>
 </FORM>
 
-<FORM action="tbBookCourseFind_Submit" method=post id=frmGotoOption name=frmGotoOption style="visibility:hidden;display:none">
-<%Html.RenderPartial("~/Views/Shared/gotoOption.ascx")%>
-</FORM>
 
 </div>
