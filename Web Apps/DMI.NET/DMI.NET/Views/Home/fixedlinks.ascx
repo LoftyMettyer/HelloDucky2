@@ -126,7 +126,7 @@
 	function fixedlinks_mnutoolAboutHRPro() {
 		if (OpenHR.currentWorkPage() == "FIND") {
 			try {
-				if ((rowIsEditedOrNew != "") || (rowWasModified)) {
+				if (rowWasModified) {
 					//Inform the user that they have unsaved changes on the Find window
 					OpenHR.modalMessage("You have unsaved changes.<br/><br/>Please action them before navigating away.");
 					return false;
@@ -141,7 +141,7 @@
 	function showThemeEditor() {
 		if (OpenHR.currentWorkPage() == "FIND") {
 			try {
-				if ((rowIsEditedOrNew != "") || (rowWasModified)) {
+				if (rowWasModified) {
 					//Inform the user that they have unsaved changes on the Find window
 					OpenHR.modalMessage("You have unsaved changes.<br/><br/>Please action them before navigating away.");
 					return false;
