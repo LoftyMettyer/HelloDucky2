@@ -1765,39 +1765,38 @@ function getSummaryColumns() {
 		data: {"parentTableID": $('#txtCurrentParentTableID').val(), "parentRecordID": $("#txtCurrentParentRecordID").val() },
 		cache: false,
 		async: true,
-		success: function (jsonstring) {
-			var jsondata = JSON.parse(jsonstring);
+		success: function (jsonstring) {		
 			var aThousSepSummary = $("#txtThousSepSummary").val().split(",");
 
-			for (var rowCount = 0; rowCount <= jsondata.length - 1; rowCount++) {
-				//update each summary column
-				var key = Object.keys(jsondata[rowCount])[0];
-				var value = jsondata[rowCount][key];
+			$.each(JSON.parse(jsonstring), function (key, value) {
 				var control = $("input[id^='txtSummaryData_" + key + "']");
-				
+
 				if (aThousSepSummary.indexOf(key) >= 0) {
 					//thousand separator applies					
-					$(control).val(Number(value).toLocaleString().split(",").join(OpenHR.LocaleThousandSeparator()));	//todo comma separate it!
+					$(control).val(numberWithCommas(value));
 				}
 				else {
 					$(control).val(value);
 				}
-			}
+			});								
 
 			refreshSummaryColumns();
 
 		},
-		error: function() {
+		error: function (req, status, errorObj) {			
 			alert('An error occurred reloading the summary columns.');
 	}
 	});
 	
 }
 
+function numberWithCommas(x) {
+	return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, OpenHR.LocaleThousandSeparator());
+}
 
 function refreshSummaryColumns() {
 	
-	$("input[id^='txtSummaryData_'").each(function () {
+	$("input[id^='txtSummaryData_']").each(function () {
 		
 		var indexNumber = this.id.substr(15);
 

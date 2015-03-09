@@ -503,12 +503,17 @@ Namespace Controllers
 			Catch
 			End Try
 
-			If resultsDataTable.Rows.Count = 0 Then
+			If resultsDataTable Is Nothing OrElse resultsDataTable.Rows.Count = 0 Then
 				Return JsonConvert.SerializeObject("")
 			End If
 
-			Return JsonConvert.SerializeObject(resultsDataTable)
+			'Convert the integers to strings otherwise we lose the precision when reading in JS.
+			Dim resultsAsString As New Dictionary(Of String, String)
+			For Each col As DataColumn In resultsDataTable.Columns
+				resultsAsString.Add(col.ColumnName, resultsDataTable.Rows(0).Item(col.ColumnName).ToString())
+			Next
 
+			Return JsonConvert.SerializeObject(resultsAsString)
 
 		End Function
 
