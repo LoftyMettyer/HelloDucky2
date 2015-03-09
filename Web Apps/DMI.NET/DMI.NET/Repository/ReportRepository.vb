@@ -1210,7 +1210,11 @@ Namespace Repository
 
 				For Each objRow As DataRow In dtDefinition.Rows
 
-					Dim objToAdd = New ReportColumnItem With {
+					' If the hidden calculation is not created by the Loggedin user, then don't add it to "Columns / Calculations Available" grid
+					If (objRow("Access").ToString().ToUpper() <> "HD" AndAlso _username.ToUpper() <> objRow("Username").ToString().ToUpper()) Or
+						_username.ToUpper() = objRow("Username").ToString().ToUpper() Then
+
+						Dim objToAdd = New ReportColumnItem With {
 						.ID = CInt(objRow("ID")),
 						.Name = objRow("Name").ToString,
 						.IsExpression = True,
@@ -1220,7 +1224,9 @@ Namespace Repository
 						.Decimals = CInt(objRow("Decimals")),
 						.Access = objRow("Access").ToString}
 
-					objReturnData.Add(objToAdd)
+						objReturnData.Add(objToAdd)
+
+					End If
 
 				Next
 
