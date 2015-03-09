@@ -684,11 +684,12 @@ function find_window_onload() {
 						cancelicon: 'icon-ban-circle',
 						editParams: {
 							oneditfunc: function (rowid) {
+								rowWasModified = false;
 								lastRowEdited = rowid;								
 								return editFindGridRow(rowid);
 							},
 							aftersavefunc: function (rowid, response, options) {	//save button clicked in edit mode. NB: row has been 'saved' locally by this time.								
-								window.onbeforeunload = null;
+								window.onbeforeunload = null;								
 								return afterSaveFindGridRow(rowid);
 							},
 							afterrestorefunc: function (rowid) {	//Cancel button clicked in edit mode.
@@ -1364,10 +1365,6 @@ function submitFollowOn() {
 			updateRowFromDatabase(rowId); //Get the row data from the database (show calculated values etc)
 			if (rowId == "0") rowId = selectedRecordID();
 			$("#findGridTable #" + rowId + ">td:first").css('border-left', '4px solid green');
-			rowWasModified = false; //The 'rowWasModified' variable is defined as global in Find.ascx
-			$("#findGridTable_ilsave").addClass('ui-state-disabled'); //Disable the Save button.
-			window.onbeforeunload = null;
-			$("#findGridTable").jqGrid("setGridParam", { ondblClickRow: function (rowID) { menu_editRecord(); } }); //Enable double click on any row
 
 			//Reevaluate the conditions for the grid's editability
 			var recCountInGrid = $("#findGridTable").getGridParam("reccount");
@@ -1557,7 +1554,7 @@ function beforeSelectFindGridRow(newRowid) {
 
 	if (lastRowEdited == newRowid) return true; //click in same row: allowed.
 	if (rowIsEditedOrNew == "") return true;	// not in edit mode: allowed.
-
+	
 	//All checks done, ready to move into Quick Edit mode.
 	//Save previous row, then move on to newly clicked row.	
 
@@ -1584,7 +1581,7 @@ function afterSaveFindGridRow(rowid) {
 	menu_ShowWait("Saving record...");	
 	saveRowToDatabase(rowid);
 	rowIsEditedOrNew = "";
-
+	
 	return true;
 }
 
@@ -1597,7 +1594,7 @@ function editNextRow() {
 			$("#findGridTable").jqGrid('editRow', newRowId);
 			lastRowEdited = newRowId;
 		} catch (e) {
-			alert('couldnt do it!');
+			alert("Unable to edit the next row. Please reload the page.");
 		}
 	}
 }
