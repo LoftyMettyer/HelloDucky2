@@ -1213,7 +1213,7 @@
 					</li>
 					<%End If%>
 					<li class="linkspagebuttontext">
-						<a id="mnutoolFixedAbout" onclick="javascript:fixedlinks_mnutoolAboutHRPro();" rel="table" title="">
+						<a id="mnutoolFixedAbout" onclick="javascript: fixedlinks_mnutoolAboutHRPro();" href="#">
 							<span>About</span>
 						</a>
 					</li>
