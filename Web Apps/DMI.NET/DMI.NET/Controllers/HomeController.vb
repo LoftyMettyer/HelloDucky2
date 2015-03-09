@@ -3922,6 +3922,7 @@ Namespace Controllers
 			Session("errorMessage") = sErrorMsg
 			Session("PreReqFails") = sPreReqFails	' This will be a sp output in the future along the lines of Bulkbooking
 			Session("Overbooked") = sCourseOverbooked
+			Session("optionLookupValue") = postData.BookingStatus
 
 			' Go to the requested page.
 			Return RedirectToAction("emptyoption")
@@ -4029,7 +4030,7 @@ Namespace Controllers
 			Session("optionAction") = postData.Action
 			Session("optionRecordID") = postData.CourseID
 			Session("optionLinkRecordID") = postData.EmployeeIDs
-			Session("optionValue") = postData.BookingStatus
+			Session("optionLookupValue") = postData.BookingStatus
 
 			If postData.Action = OptionActionType.SELECTBULKBOOKINGS Then
 				If Len(postData.EmployeeIDs) > 0 Then
