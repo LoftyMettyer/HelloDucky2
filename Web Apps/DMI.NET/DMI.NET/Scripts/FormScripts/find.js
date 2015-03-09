@@ -178,7 +178,7 @@ function find_window_onload() {
 													var ColumnSize = $(element).attr('columnSize');
 													var ColumnDecimals = $(element).attr('columnDecimals');
 
-													$(element).on('keydown', function () { indicateThatRowWasModified(); });
+													$(element).on('keydown', function (event) { indicateThatRowWasModified(event.which); });
 
 													$(element).on('blur', function (sender) {
 														if ($(this).val() == 0) {
@@ -250,7 +250,7 @@ function find_window_onload() {
 													$(element).spinner({
 														spin: function (event, ui) { indicateThatRowWasModified(); }
 													});
-													$(element).on('keydown', function () { indicateThatRowWasModified(); });
+													$(element).on('keydown', function (event) { indicateThatRowWasModified(event.which); });
 													$(element).on('change', function () {
 														indicateThatRowWasModified();
 													});
@@ -302,7 +302,7 @@ function find_window_onload() {
 													showOn: 'focus'
 												});
 												$(element).addClass('datepicker');
-												$(element).on('keydown', function () { indicateThatRowWasModified(); });
+												$(element).on('keydown', function (event) { indicateThatRowWasModified(event.which); });
 												$(element).on('change', function () { indicateThatRowWasModified(); });
 
 												$(element).on('blur', function (sender) {
@@ -328,7 +328,7 @@ function find_window_onload() {
 											dataColumnId: iColumnId,
 											dataDefaultCalcExprID: iDefaultValueExprID,
 											dataInit: function (element) {
-												$(element).on('keydown', function () { indicateThatRowWasModified(); });
+												$(element).on('keydown', function (event) { indicateThatRowWasModified(event.which); });
 												$(element).attr('onpaste', 'indicateThatRowWasModified();');
 											},
 											defaultValue: getDefaultValueForColumn(iColumnId, "textarea")
@@ -432,7 +432,7 @@ function find_window_onload() {
 											mask: ColumnMask,
 											defaultValue: getDefaultValueForColumn(iColumnId, "text"),
 											dataInit: function (element) {
-												$(element).on('keydown', function () { indicateThatRowWasModified(); });
+												$(element).on('keydown', function (event) { indicateThatRowWasModified(event.which); });
 												$(element).attr('onpaste', 'indicateThatRowWasModified();');
 												var ColumnMask = $(element).attr('mask');
 												if (ColumnMask == null) return false;
@@ -1150,7 +1150,8 @@ function useThousandSeparator(columnNumber) {
 	}
 }
 
-function indicateThatRowWasModified() {
+function indicateThatRowWasModified(keycode) {
+	if (keycode == 9) return true;
 	rowWasModified = true; //The 'rowWasModified' variable is defined as global in Find.ascx
 	$("#findGridTable_ilsave").removeClass('ui-state-disabled'); //Enable the Save button because we edited something
 }
@@ -1224,7 +1225,7 @@ function ABSNumber(value, options) {
 	el.type = "text";
 	el.value = value.replace(".", OpenHR.LocaleDecimalSeparator());
 
-	$(el).on('keydown', function () { indicateThatRowWasModified(); });
+	$(el).on('keydown', function (event) { indicateThatRowWasModified(event.which); });
 	$(el).attr('onpaste', 'indicateThatRowWasModified();');
 
 	el.setAttribute("data-a-dec", OpenHR.LocaleDecimalSeparator()); //Decimal separator
