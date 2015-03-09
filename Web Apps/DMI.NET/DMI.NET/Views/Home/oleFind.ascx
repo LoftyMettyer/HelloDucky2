@@ -246,7 +246,7 @@
 			$("#optionframe").dialog("destroy");
 			frmGotoOption.txtGotoOptionColumnID.value = frmFindForm.txtOptionColumnID.value;
 			frmGotoOption.txtGotoOptionFile.value = selectedValue();
-			frmGotoOption.txtGotoOptionAction.value = "SELECTOLE";
+			frmGotoOption.txtGotoOptionAction.value = optionActionType.SELECTOLE;
 			frmGotoOption.txtGotoOptionPage.value = "emptyoption";
 			OpenHR.submitForm(frmGotoOption);
 
@@ -265,7 +265,7 @@
 
 		frmGotoOption.txtGotoOptionColumnID.value = frmFindForm.txtOptionColumnID.value;
 		frmGotoOption.txtGotoOptionFile.value = "";
-		frmGotoOption.txtGotoOptionAction.value = "SELECTOLE";
+		frmGotoOption.txtGotoOptionAction.value = optionActionType.SELECTOLE;
 		frmGotoOption.txtGotoOptionPage.value = "emptyoption";
 		OpenHR.submitForm(frmGotoOption);
 		
@@ -295,7 +295,7 @@
 			//window.parent.frames("workframe").document.forms("frmRecordEditForm").ctlRecordEdit.style.visibility = "visible";
 			$("#optionframe").dialog("destroy");
 
-			frmGotoOption.txtGotoOptionAction.value = "CANCEL";
+			frmGotoOption.txtGotoOptionAction.value = optionActionType.CANCEL;
 			frmGotoOption.txtGotoOptionPage.value = "emptyoption";
 			OpenHR.submitForm(frmGotoOption);
 
@@ -360,9 +360,9 @@
 				frmGotoOption.txtGotoOptionColumnID.value = frmFindForm.txtOptionColumnID.value;
 
 				if (frmGotoOption.txtOLECommit.value == 1) {
-					frmGotoOption.txtGotoOptionAction.value = "LINKOLE";
+					frmGotoOption.txtGotoOptionAction.value = optionActionType.LINKOLE;
 				} else {
-					frmGotoOption.txtGotoOptionAction.value = "";
+					frmGotoOption.txtGotoOptionAction.value = optionActionType.SELECTOLE.EMPTY;
 				}
 
 				frmGotoOption.txtGotoOptionPage.value = "emptyoption";
@@ -938,7 +938,7 @@
 		<%
 			Response.Write("<INPUT type='hidden' id='txtErrorDescription' name='txtErrorDescription' value=''>" & vbCrLf)
 			Response.Write("<INPUT type='hidden' id='txtOptionColumnID' name='txtOptionColumnID' value='" & Session("optionColumnID") & "'>" & vbCrLf)
-			Response.Write("<INPUT type='hidden' id='txtFile' name='txtFile' value=""" & Replace(Session("optionFile").ToString(), """", "&quot;") & """>" & vbCrLf)
+			Response.Write("<INPUT type='hidden' id='txtFile' name='txtFile' value=""" & Replace(NullSafeString(Session("optionFile")), """", "&quot;") & """>" & vbCrLf)
 			Response.Write("<INPUT type='hidden' id='txtFFOLEType' name='txtFFOLEType' value='" & Session("optionOLEType") & "'>" & vbCrLf)
 			Response.Write("<INPUT type='hidden' id='txtOLEMaxEmbedSize' name='txtOLEMaxEmbedSize' value='" & Session("optionOLEMaxEmbedSize") & "'>" & vbCrLf)
 			Response.Write("<INPUT type='hidden' id='txtOLEReadOnly' name='txtOLEReadOnly' value='" & Session("optionOLEReadOnly") & "'>" & vbCrLf)

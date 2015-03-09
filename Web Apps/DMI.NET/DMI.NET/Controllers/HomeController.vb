@@ -959,6 +959,12 @@ Namespace Controllers
 		<ValidateAntiForgeryToken>
 		Function menu_oleFind(form As GotoOptionDataModel) As RedirectToRouteResult
 			emptyoption_Submit_BASE(form)
+
+			Session("optionOLEType") = Request.Form("txtGotoOptionOLEType")
+			Session("optionOLEMaxEmbedSize") = Request.Form("txtGotoOptionOLEMaxEmbedSize")
+			Session("optionOLEReadOnly") = Request.Form("txtGotoOptionOLEReadOnly")
+			Session("optionIsPhoto") = Request.Form("txtGotoOptionIsPhoto")
+
 			Return RedirectToAction("olefind")
 		End Function
 
@@ -4695,11 +4701,11 @@ Namespace Controllers
 
 			Dim sErrorMsg = ""
 			' Read the information from the calling form.
-			Dim sAction = Request.Form("txtGotoOptionAction")
+			Dim sAction = CType(Request.Form("txtGotoOptionAction"), OptionActionType)
 
 			iOLEType = CType(Request.Form("txtOLEType"), OLEType)
 
-			If (iOLEType = OLEType.Local Or iOLEType = OLEType.Server) And sAction = "" Then
+			If (iOLEType = OLEType.Local Or iOLEType = OLEType.Server) And sAction = OptionActionType.Empty Then
 				' We're just copying a file from client to server.
 				' Read custom attributes
 				Dim fileName As String = Request.Form("txtOLEJustFileName")
@@ -4730,7 +4736,7 @@ Namespace Controllers
 			Else
 				' Moved to embedfile:
 				' Commit changes to the database		
-				If sAction = "LINKOLE" Then
+				If sAction = OptionActionType.LINKOLE Then
 
 					If Not filSelectFile Is Nothing Then
 						filesize = filSelectFile.InputStream.Length
@@ -4811,28 +4817,10 @@ Namespace Controllers
 				Session("optionOLEType") = Request.Form("txtGotoOptionOLEType")
 				Session("optionOLEMaxEmbedSize") = Request.Form("txtGotoOptionOLEMaxEmbedSize")
 
-				If sAction = "" Then
-					' Go to the requested page.
-					'Return PartialView(sNextPage)	' Moved to oleFind.ascx, after .submit()
-				End If
-
-				If sAction = "CANCEL" Then
-
-					' Go to the requested page.
+				If sAction = OptionActionType.CANCEL Then
 					Session("errorMessage") = sErrorMsg
-					' Return PartialView(sNextPage)		' Moved to oleFind.ascx, after .submit()
 				End If
 
-				If sAction = "SELECTOLE" Then
-					' Go to the requested page.
-					'Return PartialView(sNextPage)		' Moved to oleFind.ascx, after .submit()
-				End If
-
-				' Commit changes to the database		
-				If sAction = "LINKOLE" Then
-					' Go to the requested page.
-					'Return PartialView(sNextPage)		' Moved to oleFind.ascx, after .submit()
-				End If
 			End If
 
 		End Function
