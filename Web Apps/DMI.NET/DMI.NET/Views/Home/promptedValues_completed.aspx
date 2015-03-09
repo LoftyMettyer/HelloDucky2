@@ -5,9 +5,9 @@
 <script type="text/javascript">
 	if ($('#tmpDialog').dialog('isOpen') == true) {
 		//prompted Values for OpenHR.modalExpressionSelect screen.
-		makeSelection('FILTER', '<%:Session("filterIDvalue")%>', '<%:Session("promptsvalue")%>');
+		makeSelection('FILTER', '<%:Session("filterIDvalue")%>', '<%=Session("promptsvalue")%>');
 		OpenHR.clearTmpDialog();
 	} else {
-		picklistdef_makeSelection('FILTER', '<%:Session("filterIDvalue")%>', '<%:Session("promptsvalue")%>');
+		picklistdef_makeSelection('FILTER', '<%:Session("filterIDvalue")%>', '<%=Session("promptsvalue")%>');
 	}
 </script>
