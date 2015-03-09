@@ -1167,16 +1167,18 @@ function ABSFileInput(value, options) {
 
 	if (!options.readonly) {
 		var fileInputID = "FI_" + options.id;
-
+		
 		el = document.createElement("div");
 		var fileInput = document.createElement("input");
 		$(fileInput).addClass("fileinputhide");
 		$(fileInput).attr("name", fileInputID);
 		$(fileInput).attr("id", fileInputID);
 		fileInput.type = "file";
-		$(fileInput).on("change", function() { commitEmbeddedFile(this, options.dataColumnId, false, options.dataIsPhoto); });
+		$(fileInput).on("change", function() { commitEmbeddedFile(this, options.dataColumnId, false, options.dataIsPhoto, options.id); });
 		var fileImg = document.createElement("img");
-		$(fileImg).attr("src", window.ROOT + "Content/images/OLEIcons/delete-icon.png");
+		$(fileImg).attr("id", "IMG_" + options.id);
+		if (value == "") $(fileImg).attr("src", window.ROOT + "Content/images/OLEIcons/delete-iconDIS.png").prop("disabled", true);
+		else $(fileImg).attr("src", window.ROOT + "Content/images/OLEIcons/delete-icon.png").prop("disabled", false);
 		$(fileImg).attr("title", "Delete this file");
 		$(fileImg).on("click", function() { clearOLE(options.dataColumnId); });
 		$(fileImg).css({ "margin-right": "2px", "vertical-align": "middle", "cursor": "pointer", "height": "16px" });
@@ -1191,7 +1193,7 @@ function ABSFileInput(value, options) {
 		$(fileLabel).find('span').css('font-weight', 'normal');
 		el.appendChild(fileInput);
 		el.appendChild(fileImg);
-		el.appendChild(fileLabel);
+		el.appendChild(fileLabel);		
 	} else {
 		el = document.createElement("input");
 		$(el).prop("disabled", true);
@@ -1681,7 +1683,7 @@ function clearOLE(columnID) {
 	});
 }
 
-function commitEmbeddedFile(fileobject, columnID, deleteflag, isPhoto) {
+function commitEmbeddedFile(fileobject, columnID, deleteflag, isPhoto, uniqueID) {
 	var data = new FormData();
 	var recordID = selectedRecordID();
 	var file = "";
@@ -1735,6 +1737,8 @@ function commitEmbeddedFile(fileobject, columnID, deleteflag, isPhoto) {
 			$('#findGridTable').editRow(recordID);
 
 			if (result.length > 0) OpenHR.modalMessage(result);
+			
+			refreshImgDeleteIcon(uniqueID, (fileobject == null));
 
 		},
 		error: function (xhr, status, p3, p4) {
@@ -1818,4 +1822,10 @@ function refreshSummaryColumns() {
 			}
 		}
 	});
+}
+
+function refreshImgDeleteIcon(uniqueID, fDisabled) {	
+	//disable icon if file is empty.
+	if(fDisabled)	$("[id='IMG_" + uniqueID + "']").prop("disabled", true).attr("src", window.ROOT + "Content/images/OLEIcons/delete-iconDIS.png");
+	else $("[id='IMG_" + uniqueID + "']").prop("disabled", false).attr("src", window.ROOT + "Content/images/OLEIcons/delete-icon.png");
 }
