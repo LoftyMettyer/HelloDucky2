@@ -4432,20 +4432,19 @@ Namespace Controllers
 		<HttpPost()>
 		<ValidateAntiForgeryToken>
 		Function orderselect_Submit(postData As SelectOrderModel)
-
-			Session("optionScreenID") = postData.ScreenID
-			Session("optionTableID") = postData.TableID
-			Session("optionViewID") = postData.ViewID
-			Session("optionAction") = postData.Action
-
-			' Do we need both session variables set?
-			Session("optionOrderID") = postData.OrderID
-			Session("orderID") = postData.OrderID
-
 			If postData.Action = OptionActionType.CANCEL Then
 				Session("errorMessage") = ""
 
 			ElseIf postData.Action = OptionActionType.SELECTORDER Then
+
+				Session("optionScreenID") = postData.ScreenID
+				Session("optionTableID") = postData.TableID
+				Session("optionViewID") = postData.ViewID
+				Session("optionAction") = postData.Action
+
+				' Do we need both session variables set?
+				Session("optionOrderID") = postData.OrderID
+				Session("orderID") = postData.OrderID
 
 				Try
 					Dim objDataAccess As clsDataAccess = CType(Session("DatabaseAccess"), clsDataAccess)

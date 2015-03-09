@@ -1389,7 +1389,7 @@ function updateRowFromDatabase(rowid) {
 	var recordID = $("#findGridTable").jqGrid('getCell', rowid, 'ID');
 
 	if (Number(recordID) === 0) alert('There was an error reloading the grid.');
-
+	
 	//Get the row from the server
 	$.ajax({
 		url: "getfindrecordbyid",
@@ -1452,8 +1452,8 @@ function updateRowFromDatabase(rowid) {
 			getSummaryColumns();
 
 		},
-		error: function (e) {
-			alert('error updating row from database.' + e);
+		error: function (e) {			
+			alert('error updating row from database.\n' + e.statusText);
 		}
 	});
 
