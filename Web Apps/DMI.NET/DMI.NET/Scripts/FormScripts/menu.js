@@ -206,6 +206,10 @@ function menu_MenuClick(sTool) {
 				//Inform the user that they have unsaved changes on the Find window
 				OpenHR.modalMessage("You have unsaved changes.<br/><br/>Please action them before navigating away.");
 				return false;
+			} else {
+				if (rowIsEditedOrNew != "") {
+					$('#findGridTable_ilcancel').click();
+				}
 			}
 		}
 		catch (e) { //continue with navigation 
