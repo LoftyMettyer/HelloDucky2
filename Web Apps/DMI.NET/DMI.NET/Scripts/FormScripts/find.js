@@ -1364,13 +1364,13 @@ function submitFollowOn() {
 		//Disable navigation buttons on the jqgrid toolbar
 		$('#pager-coldata_center input').prop('disabled', true); //Make Page textbox read only
 		$("#findGridTable").jqGrid("setGridParam", { ondblClickRow: function (rowID) { return false; } }); //Disable double click on any row
-	} else {
+	} else {		
 		//Mark row as changed if we've successfully saved the record.
+		$("#findGridTable #" + rowId + ">td:first").css('border-left', '4px solid green');
 		try {
-			updateRowFromDatabase(rowId); //Get the row data from the database (show calculated values etc)
-			if (rowId == "0") rowId = selectedRecordID();
-			$("#findGridTable #" + rowId + ">td:first").css('border-left', '4px solid green');
-
+			updateRowFromDatabase(rowId); //Get the row data from the database (show calculated values etc)			
+			if (rowId == "0") rowId = selectedRecordID();			
+			
 			//Reevaluate the conditions for the grid's editability
 			var recCountInGrid = $("#findGridTable").getGridParam("reccount");
 			if (thereIsAtLeastOneEditableColumn && recCountInGrid > 0) {
@@ -1393,8 +1393,8 @@ function submitFollowOn() {
 function updateRowFromDatabase(rowid) {
 	var recordID = $("#findGridTable").jqGrid('getCell', rowid, 'ID');
 
-	if (Number(recordID) === 0) alert('There was an error reloading the grid.');
-	
+	if (Number(recordID) === 0) alert('There was an error reloading the grid.');	
+
 	//Get the row from the server
 	$.ajax({
 		url: "getfindrecordbyid",
