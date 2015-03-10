@@ -684,8 +684,13 @@ function find_window_onload() {
 						cancelicon: 'icon-ban-circle',
 						editParams: {
 							oneditfunc: function (rowid) {
-								rowWasModified = false;
-								lastRowEdited = rowid;								
+								if (rowid == "0") {
+									indicateThatRowWasModified();
+									lastRowEdited = "0";
+								} else {
+									rowWasModified = false;
+									lastRowEdited = rowid;
+								}
 								return editFindGridRow(rowid);
 							},
 							aftersavefunc: function (rowid, response, options) {	//save button clicked in edit mode. NB: row has been 'saved' locally by this time.								
@@ -722,7 +727,7 @@ function find_window_onload() {
 					});
 
 					//Move to last page before adding new row.
-					$('#findGridTable_iladd div.ui-pg-div').off('click').on('click', function (event) {
+					$('#findGridTable_iladd div.ui-pg-div').off('click').on('click', function (event) {						
 						if ($(this).parent().hasClass("ui-state-disabled")) return false;
 
 						if (rowIsEditedOrNew == "") {
@@ -1264,7 +1269,7 @@ function ABSNumberValue(elem, operation, value) {
 }
 
 function saveInlineRowToDatabase(rowId) {
-	
+
 	var sUpdateOrInsert = "";
 	var gridData = $("#findGridTable").getRowData(rowId);
 	var gridColumns = $("#findGridTable").jqGrid('getGridParam', 'colNames');
@@ -1339,12 +1344,12 @@ function submitFollowOn() {
 
 	var rowId = window.savedRow; //$("#findGridTable").getGridParam('selrow');	
 	if ($('#frmData #txtErrorMessage').val() !== "") { //There was an error while saving (AKA server side validation fail)		
-		indicateThatRowWasModified();		
-
+		indicateThatRowWasModified();
+		
 		//After a brief timeout, enable "Add" and "Edit" and disable "Save" and "Cancel"
 		setTimeout(function () {
 			$("#findGridTable").jqGrid('setSelection', rowId, true);
-			$("#findGridTable").editRow(rowId); //Edit the row
+			$("#findGridTable").editRow(rowId); //Edit the row		
 
 			if (rowId == "0") rowIsEditedOrNew = "new"; //revert state as it could have been changed
 
