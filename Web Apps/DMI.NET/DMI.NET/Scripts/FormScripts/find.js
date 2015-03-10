@@ -694,7 +694,7 @@ function find_window_onload() {
 								return editFindGridRow(rowid);
 							},
 							aftersavefunc: function (rowid, response, options) {	//save button clicked in edit mode. NB: row has been 'saved' locally by this time.								
-								window.onbeforeunload = null;								
+								window.onbeforeunload = null;
 								return afterSaveFindGridRow(rowid);
 							},
 							afterrestorefunc: function (rowid) {	//Cancel button clicked in edit mode.
@@ -1586,6 +1586,7 @@ function afterSaveFindGridRow(rowid) {
 	menu_ShowWait("Saving record...");	
 	saveRowToDatabase(rowid);
 	rowIsEditedOrNew = "";
+	rowWasModified = false;
 	
 	return true;
 }
@@ -1598,6 +1599,7 @@ function editNextRow() {
 			var newRowId = rowIsEditedOrNew.substr(10);
 			$("#findGridTable").jqGrid('editRow', newRowId);
 			lastRowEdited = newRowId;
+			rowWasModified = false;
 		} catch (e) {
 			alert("Unable to edit the next row. Please reload the page.");
 		}
