@@ -1597,6 +1597,7 @@ function editNextRow() {
 	if (rowIsEditedOrNew.substr(0, 9) == 'quickedit') {
 		try {
 			var newRowId = rowIsEditedOrNew.substr(10);
+			$("#findGridTable").jqGrid('setSelection', newRowId, true);
 			$("#findGridTable").jqGrid('editRow', newRowId);
 			lastRowEdited = newRowId;
 			rowWasModified = false;
