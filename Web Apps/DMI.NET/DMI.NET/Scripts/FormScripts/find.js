@@ -1358,6 +1358,7 @@ function submitFollowOn() {
 			$("#findGridTable_iledit").addClass('ui-state-disabled'); //Enable the Cancel button because we edited something
 
 			$("#findGridTable_searchButton").addClass("ui-state-disabled");
+			$("#pager-coldata_center").hide();
 		}, 100);
 	
 		
@@ -1477,6 +1478,7 @@ function editFindGridRow(rowid) {
 
 
 	$('#findGridTable_searchButton').addClass('ui-state-disabled'); //Disable search
+	$("#pager-coldata_center").hide();
 	//Disable navigation buttons on the jqgrid toolbar
 	$('#pager-coldata_center input').prop('disabled', true); //Make Page textbox read only
 	$("#findGridTable").jqGrid("setGridParam", { ondblClickRow: function (rowID) { return false; } }); //Disable double click on any row
@@ -1504,6 +1506,7 @@ function addFindGridRow(rowid) {
 	});
 
 	$('#findGridTable_searchButton').addClass('ui-state-disabled'); //Disable search
+	$("#pager-coldata_center").hide();
 	//Disable navigation buttons on the jqgrid toolbar
 	$('#pager-coldata_center input').prop('disabled', 'true'); //Make Page textbox read only
 	$("#findGridTable").jqGrid("setGridParam", { ondblClickRow: function (rowID) { return false; } }); //Disable double click on any row
@@ -1530,6 +1533,7 @@ function cancelFindGridRow(rowid) {
 	window.onbeforeunload = null;
 
 	$('#findGridTable_searchButton').removeClass('ui-state-disabled'); //Enable search
+	$("#pager-coldata_center").show();
 	//Enable navigation buttons on the jqgrid toolbar
 	$('#pager-coldata_center input').prop('disabled', false); //Remove read only attribute from Page textbox
 	$("#findGridTable").jqGrid("setGridParam", { ondblClickRow: function (rowID) { menu_editRecord(); } }); //Enable double click on any row
@@ -1623,6 +1627,7 @@ function addNextRow() {
 				$("#findGridTable_ilcancel").removeClass('ui-state-disabled'); //Enable the Cancel button because we edited something
 				$("#findGridTable_iledit").addClass('ui-state-disabled'); //Enable the Cancel button because we edited something
 				$("#findGridTable_searchButton").addClass("ui-state-disabled");
+				$("#pager-coldata_center").hide();
 			}, 100);
 
 		} catch (e) {
