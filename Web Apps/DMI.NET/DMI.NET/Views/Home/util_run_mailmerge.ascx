@@ -159,7 +159,7 @@
 			Response.Write(String.Format("OpenHR.modalPrompt(""{0}"",2,""{1}"");", sErrorMessage, objMailMerge.DefName))
 		End If
         
-		
+		Session("mailmergefail") = True
 	End If
 	%>
 
