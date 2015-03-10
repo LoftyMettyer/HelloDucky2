@@ -55,8 +55,6 @@ function optiondata_onload() {
 				//menu_refreshMenu();
 				OpenHR.messageBox(sErrorMsg);
 			}
-			sAction = frmOptionData.txtOptionAction.value; // Refresh the link find grid with the data if required.
-			//var grdLinkFind = OpenHR.getForm("optionframe", "frmLinkFindForm").ssOleDBGridLinkRecords;
 
 			linkFind_removeAll('ssOleDBGridLinkRecords');	// Clear the grid.
 
@@ -191,7 +189,6 @@ function optiondata_onload() {
 			{
 				OpenHR.messageBox("You do not have 'read' permission on the lookup filter value column. No filter will be applied.");
 			}
-			sAction = frmOptionData.txtOptionAction.value;
 			OpenHR.getForm("optionframe", "frmLookupFindForm").txtLookupColumnGridPosition.value = frmOptionData.txtLookupColumnGridPosition.value;
 
 			// Refresh the link find grid with the data if required.
@@ -363,7 +360,6 @@ function optiondata_onload() {
 					return false;
 				}
 			}
-			sAction = frmOptionData.txtOptionAction.value; // Refresh the link find grid with the data if required.
 
 			//need this as this grid won't accept live changes :/		
 			$("#ssOleDBGridRecords").jqGrid('GridUnload');
@@ -507,8 +503,6 @@ function optiondata_onload() {
 			
 			frmOptionData = document.getElementById("frmOptionData");
 
-			sAction = frmOptionData.txtOptionAction.value;
-
 			//need this as this grid won't accept live changes :/		
 			$("#ssOleDBGridFindRecords").jqGrid('GridUnload');
 
@@ -629,7 +623,6 @@ function optiondata_onload() {
 		}
 
 		if (sCurrentWorkPage == "UTIL_DEF_PICKLIST") {
-			sAction = frmOptionData.txtOptionAction.value; // Refresh the link find grid with the data if required.
 
 			dataCollection = frmOptionData.elements; // Add the grid records.
 			fRecordAdded = false;
@@ -769,9 +762,11 @@ function optiondata_onload() {
 		}
 
 		if (sCurrentWorkPage == "UTIL_DEF_EXPRCOMPONENT") {
-			sAction = frmOptionData.txtOptionAction.value;
-			if ((sAction == "LOADEXPRFIELDCOLUMNS") ||
-						(sAction == "LOADEXPRLOOKUPCOLUMNS")) {
+			
+			sAction = parseInt(frmOptionData.txtOptionAction.value);
+			if (sAction === optionActionType.LOADEXPRFIELDCOLUMNS ||
+					sAction === optionActionType.LOADEXPRLOOKUPCOLUMNS) {
+
 				dataCollection = frmOptionData.elements;
 				if (dataCollection != null) {
 					for (i = 0; i < dataCollection.length; i++) {
@@ -786,7 +781,7 @@ function optiondata_onload() {
 				component_setColumn(frmOptionData.txtOptionColumnID.value);
 			}
 
-			if (sAction == "LOADEXPRLOOKUPVALUES") {
+			if (sAction === optionActionType.LOADEXPRLOOKUPVALUES) {
 				dataCollection = frmOptionData.elements;
 				if (dataCollection != null) {
 					for (i = 0; i < dataCollection.length; i++) {
