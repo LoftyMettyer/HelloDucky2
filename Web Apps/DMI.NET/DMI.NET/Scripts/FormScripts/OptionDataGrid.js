@@ -54,44 +54,20 @@ $('#cmdCancel').click(function () {
 
 $('#cmdSelect').click(function () {
 
-//	var frmGotoOption = document.getElementById("frmGotoOption");
 	var sPostAction = $("#SubmitAction").val();
-	var postData = {};
-
 	var iAction = parseInt($('#GotoOptionActionSelect').val());
-	//frmGotoOption.txtGotoOptionRecordID.value = $('#RecordID').val();
 	var selRowId = $("#ssOleDBGridRecords").jqGrid('getGridParam', 'selrow');
 	var recordID = $("#ssOleDBGridRecords").jqGrid('getCell', selRowId, 'ID');
-	//frmGotoOption.txtGotoOptionLinkRecordID.value = recordID;
-	//frmGotoOption.txtGotoOptionLookupValue.value = $('#selStatus').val();
-	//OpenHR.submitForm(frmGotoOption, "optionframe", null, null, sPostAction);
 
-	if (iAction === optionActionType.SELECTADDFROMWAITINGLIST_1) {
-		postData = {
-			Action: iAction,
-			CourseID: $('#RecordID').val(),
-			EmployeeIDs: recordID,
-			BookingStatus: $('#selStatus').val(),
-			__RequestVerificationToken: $('[name="__RequestVerificationToken"]').val()
-		};
+	var postData = {
+		Action: iAction,
+		CourseID: $('#RecordID').val(),
+		EmployeeIDs: recordID,
+		BookingStatus: $('#selStatus').val(),
+		__RequestVerificationToken: $('[name="__RequestVerificationToken"]').val()
+	};
 
-		OpenHR.submitForm(null, "optionframe", null, postData, sPostAction);
-
-	} else {
-
-		var frmGotoOption = document.getElementById("frmGotoOption");
-		sPostAction = $("#SubmitAction").val();
-
-		frmGotoOption.txtGotoOptionAction.value = $('#GotoOptionActionSelect').val();
-		frmGotoOption.txtGotoOptionRecordID.value = $('#RecordID').val();
-
-		frmGotoOption.txtGotoOptionLinkRecordID.value = recordID;
-		frmGotoOption.txtGotoOptionLookupValue.value = $('#selStatus').val();
-		OpenHR.submitForm(frmGotoOption, "optionframe", null, null, sPostAction);
-
-	}
-
-
+	OpenHR.submitForm(null, "optionframe", null, postData, sPostAction);
 
 });
 

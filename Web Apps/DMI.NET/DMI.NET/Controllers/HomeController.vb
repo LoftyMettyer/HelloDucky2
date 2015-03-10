@@ -3996,13 +3996,16 @@ Namespace Controllers
 							objDataAccess.ExecuteSP("sp_ASRIntValidateTrainingBooking" _
 								, prmResult _
 								, New SqlParameter("piEmpRecID", SqlDbType.Int) With {.Value = iEmpRecID} _
-								, New SqlParameter("piCourseRecID", SqlDbType.Int) With {.Value = postData.EmployeeIDs} _
+								, New SqlParameter("piCourseRecID", SqlDbType.Int) With {.Value = postData.CourseID} _
 								, New SqlParameter("psBookingStatus", SqlDbType.VarChar, -1) With {.Value = postData.BookingStatus} _
 								, New SqlParameter("piTBRecID", SqlDbType.Int) With {.Value = 0} _
 								, prmCourseOverbooked)
 
 							sTBResultCode = prmResult.Value
 							sCourseOverbooked = prmCourseOverbooked.Value
+							Session("optionLinkRecordID") = iEmpRecID
+							Session("optionLookupValue") = postData.BookingStatus
+
 						Catch ex As Exception
 							sErrorMsg = "Error validating training booking." & vbCrLf & ex.Message.RemoveSensitive
 						End Try

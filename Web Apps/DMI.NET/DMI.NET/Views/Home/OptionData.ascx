@@ -505,7 +505,7 @@
 	
 
 				Catch ex As Exception
-					sErrorDescription = "The find records could not be retrieved." & vbCrLf & FormatError(ex.Message)
+					sErrorDescription = "The find records could not be retrieved." & vbCrLf & ex.Message.RemoveSensitive
 	
 				End Try
 						
@@ -531,7 +531,7 @@
 					Session("optionAction") = OptionActionType.BOOKCOURSESUCCESS
 					
 				Catch ex As Exception
-					sNonFatalErrorDescription = "The booking could not be made." & vbCrLf & sNonFatalErrorDescription
+					sNonFatalErrorDescription = "The booking could not be made." & vbCrLf & ex.Message.RemoveSensitive
 					Session("optionAction") = OptionActionType.BOOKCOURSEERROR
 				End Try
 
