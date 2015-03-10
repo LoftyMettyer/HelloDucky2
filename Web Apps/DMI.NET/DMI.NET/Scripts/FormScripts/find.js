@@ -1523,7 +1523,7 @@ function addFindGridRow(rowid) {
 }
 
 function cancelFindGridRow(rowid) {
-	
+
 	if (rowIsEditedOrNew != "new") { // Not in new record mode.
 		updateRowFromDatabase(rowid); //Get the row data from the database
 	}
@@ -1586,12 +1586,13 @@ function beforeSelectFindGridRow(newRowid) {
 	return true;	//always allow row change.
 }
 
-function afterSaveFindGridRow(rowid) {
-	menu_ShowWait("Saving record...");	
+function afterSaveFindGridRow(rowid) {	
+	menu_ShowWait("Saving record...");
 	saveRowToDatabase(rowid);
 	rowIsEditedOrNew = "";
 	rowWasModified = false;
-	
+	$("#findGridTable").jqGrid("setGridParam", { ondblClickRow: function (rowID) { menu_editRecord(); } }); //Enable double click on any row
+
 	return true;
 }
 
