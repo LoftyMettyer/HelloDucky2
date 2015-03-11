@@ -77249,7 +77249,7 @@ DEALLOCATE curObjects
 GO
 
 		
-DECLARE @sVersion varchar(10) = '8.1.18'
+DECLARE @sVersion varchar(10) = '8.1.19'
 
 EXEC spsys_setsystemsetting 'database', 'version', '8.1';
 EXEC spsys_setsystemsetting 'intranet', 'version', @sVersion;
