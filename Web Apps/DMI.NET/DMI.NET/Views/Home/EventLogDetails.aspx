@@ -353,14 +353,12 @@
 
 			function printEvent() {
 				//Hide the buttons before printing...
-				$("#cmdEmail").hide();
-				$("#cmdPrint").hide();
-				$("#cmdOK").hide();
+				$("#divEventLogViewDetailsButtons").hide();
+
 				OpenHR.printDiv("popout_Wrapper");
+				
 				//... and show them again
-				$("#cmdEmail").show();
-				$("#cmdPrint").show();	
-				$("#cmdOK").show();
+				$("#divEventLogViewDetailsButtons").show();
 			}
 
 			function populateEventInfo() {
