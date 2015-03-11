@@ -145,11 +145,11 @@
 						%>
 						<tr style="height:10px">
 							<td>
-								<table class="invisible"  style="padding: 4px; border-collapse: collapse">
+								<table class="invisible"  style="width: 100%; padding: 4px; border-collapse: collapse">
 									<tr>
 										<td class="fontsmalltitle">Name : </td>
 										<td id="tdName" colspan="3"></td>
-										<td class="fontsmalltitle" style="width: 8%">Mode : </td>
+										<td class="fontsmalltitle" style="width: 11%">Mode : </td>
 										<td style="width: 35%"  id="tdMode"></td>
 									</tr>
 
