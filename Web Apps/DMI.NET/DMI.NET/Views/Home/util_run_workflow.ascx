@@ -1,8 +1,8 @@
 ﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
-<%@ Import Namespace="DMI.NET" %>
 <%@ Import Namespace="HR.Intranet.Server" %>
 <%@ Import Namespace="System.Data.SqlClient" %>
 <%@ Import Namespace="System.Data" %>
+<%@ Import Namespace="DMI.NET.Models.ObjectRequests" %>
 
 <%-- For other devs: Do not remove below line. --%>
 <%="" %>
@@ -10,6 +10,8 @@
 
 <% 
 	Response.Expires = 0
+
+	Dim workflowModel = CType(Session("util_run_workflowModel"), WorkflowRunModel)
 
 	Dim objDatabase As Database = CType(Session("DatabaseFunctions"), Database)
 	Dim objDataAccess As clsDataAccess = CType(Session("DatabaseAccess"), clsDataAccess)
@@ -20,11 +22,6 @@
 	Dim sInstanceID = ""
 	Dim iInstanceID As Integer
 	
-	Session("utiltype") = Request.Form("utiltype")
-	Session("utilid") = Request.Form("utilid")
-	Session("action") = "RUN"
-	Session("utilname") = Request.Form("utilname")
-	
 	If Len(sURL) > 0 Then
 		
 		Try
@@ -33,7 +30,7 @@
 			Dim prmMessage = New SqlParameter("psMessage", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
 
 			objDataAccess.ExecuteSP("spASRInstantiateWorkflow", _
-						New SqlParameter("piWorkflowID", SqlDbType.Int) With {.Value = CleanNumeric(CType(Session("utilid"), String))}, _
+						New SqlParameter("piWorkflowID", SqlDbType.Int) With {.Value = workflowModel.ID}, _
 						prmInstanceID, prmFormElements, prmMessage)
 
 			sInstanceID = prmInstanceID.Value.ToString()
@@ -47,6 +44,7 @@
 		
 	End If
 %>
+
 <script type="text/JavaScript">
 
 	//Show optionframe and hide workframe
@@ -111,7 +109,6 @@ End If
 		catch (e) { }
 	}
 	
-
 	function util_run_workflow_okClick() {
 		if (menu_isSSIMode()) {
 			
@@ -170,10 +167,10 @@ End If
 		%>
 		<input type="hidden" id="utilformcount" name="utilformcount" value="<%=iFormCount%>">
 		<input type="hidden" id="utilinstance" name="utilinstance" value="<%=iInstanceID%>">
-		<input type="hidden" id="utiltype" name="utiltype" value="<%=Session("utiltype")%>">
-		<input type="hidden" id="utilid" name="utilid" value='<%=Session("utilid")%>'>
-		<input type="hidden" id="utilname" name="utilname" value="<%=replace(CType(Session("utilname"), String), """", "&quot;")%>">
-		<input type="hidden" id="action" name="action" value='<%=Session("action")%>'>
+		<input type="hidden" id="utiltype" name="utiltype" value="<%:workflowModel.utiltype%>">
+		<input type="hidden" id="utilid" name="utilid" value='<%:workflowModel.ID%>'>
+		<input type="hidden" id="utilname" name="utilname" value="<%=Replace(workflowModel.Name, """", "&quot;")%>">
+		<input type="hidden" id="action" name="action" value="RUN">
 
 		<table align="center" class="outline" cellpadding="5" cellspacing="0">
 			<tr>
@@ -184,7 +181,7 @@ End If
 						</tr>
 						<tr>
 							<td width="20" height="10"></td>
-							<td align="center">Workflow '<%=replace(CType(session("utilname"), String), """", "&quot;")%>'
+							<td align="center">Workflow '<%=Replace(workflowModel.Name, """", "&quot;")%>'
 								<%
 									If Len(sURL) = 0 Then
 								%>

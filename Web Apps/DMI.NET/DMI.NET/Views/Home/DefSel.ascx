@@ -727,16 +727,15 @@
 
 						if (frmDefSel.utiltype.value == 25) {
 								// Workflow
-								var frmWorkflow = document.getElementById('frmWorkflow');
-								frmWorkflow.utiltype.value = frmDefSel.utiltype.value;
-								frmWorkflow.utilid.value = frmDefSel.utilid.value;
-								frmWorkflow.utilname.value = frmDefSel.utilname.value;
-								frmWorkflow.action.value = frmDefSel.action.value;
-								sUtilId = new String(frmDefSel.utilid.value);
+								var postData = {
+									utiltype: frmDefSel.utiltype.value,
+									ID: frmDefSel.utilid.value,
+									Name: frmDefSel.utilname.value,
+									__RequestVerificationToken: $('[name="__RequestVerificationToken"]').val()
+								}
 
-								frmWorkflow.target = sUtilId;
-								//NewWindow('', sUtilId, '500', '200', 'yes');
-								OpenHR.submitForm(frmWorkflow, 'optionframe', false);
+								OpenHR.submitForm(null, "optionframe", null, postData, "util_run_workflow");
+
 						} else {
 
 								var frmPrompt = document.getElementById('frmPrompt');
@@ -1185,13 +1184,6 @@
 				<%=Html.AntiForgeryToken()%>
 		</form>
 
-		<form name="frmWorkflow" method="post" action="util_run_workflow" id="frmWorkflow" style="visibility: hidden; display: none">
-				<input type="hidden" id="utiltype" name="utiltype">
-				<input type="hidden" id="utilid" name="utilid">
-				<input type="hidden" id="utilname" name="utilname">
-				<input type="hidden" id="action" name="action">
-		</form>
-
 		<form action="defsel" method="post" id="frmOnlyMine" name="frmOnlyMine" style="visibility: hidden; display: none">
 				<input type="hidden" id="OnlyMine" name="OnlyMine" value='<%=Session("OnlyMine")%>'>
 				<input type="hidden" id="txtTableID" name="txtTableID" value='<%=iBaseTableID%>'>
@@ -1270,7 +1262,8 @@
 			pager: $('#pager-coldata'),
 			pgbuttons: false,
 			pgtext: null,
-			loadonce: true
+			loadonce: true,
+			autoencode: true
 		});
 
 	}

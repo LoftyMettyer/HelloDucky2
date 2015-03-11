@@ -239,21 +239,20 @@ function goUtility(sUtilityType, sUtilityID, sUtilityName, sUtilityBaseTable) {
 		}
 
 		if (sUtilityType == "25") {
-			// Workflow
-			var frmWorkflow = document.getElementById('frmUtilityPrompt');
-			frmWorkflow.utiltype.value = sUtilityType;
-			frmWorkflow.utilid.value = sUtilityID;
-			frmWorkflow.utilname.value = sUtilityName;
-			frmWorkflow.action.value = "run";
 
-			var sUtilId = new String(sUtilityID);
-			frmWorkflow.target = sUtilId;
-			frmWorkflow.action = "util_run_workflow";				
-					
-			//submit but leave hidden - no point showing the message.
-			OpenHR.submitForm(frmWorkflow, 'workframe', false);
-			$('#SSILinksFrame').hide();
-			$('#optionframe').show();
+			// Workflow
+			var postData = {
+				utiltype: sUtilityType,
+				utilid: sUtilityID,
+				utilname: sUtilityName,
+				__RequestVerificationToken: $('[name="__RequestVerificationToken"]').val()
+			}
+
+			OpenHR.submitForm(null, "workframe", null, postData, "util_run_workflow"
+				, function () {
+					$('#SSILinksFrame').hide();
+					$('#optionframe').show();
+				});
 					
 		} else {
 			

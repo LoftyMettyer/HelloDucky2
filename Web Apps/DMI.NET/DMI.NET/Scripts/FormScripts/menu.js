@@ -1126,26 +1126,7 @@ function menu_MenuClick(sTool) {
 
 
 		if (sToolName == "mnutoolWorkflowPendingSteps") {
-			saveChangesPrompt("WORKFLOWPENDINGSTEPS", 'showDefaultRibbon(); $("#toolbarWFPendingStepsFind").parent().show(); $("#toolbarWFPendingStepsFind").click(); menu_autoLoadPage("workflowPendingSteps", false)');
-			//hasChanged = menu_saveChanges("WORKFLOWPENDINGSTEPS", true, false);
-			//if (hasChanged == 6) { // 6 = No Change
-			//	showDefaultRibbon();
-			//	$("#toolbarWFPendingStepsFind").parent().show();
-			//	$("#toolbarWFPendingStepsFind").click();
-			//	menu_autoLoadPage("workflowPendingSteps", false);
-			//}
-			//else if (hasChanged == 0) {  // 0 = Changed, allow prompted navigation.
-			//	OpenHR.modalPrompt("You have made changes. Click 'OK' to discard your changes, or 'Cancel' to continue editing.", 1, "Confirm").then(function (answer) {
-			//		if (answer == 1) {  // OK
-			//			showDefaultRibbon();
-			//			$("#toolbarWFPendingStepsFind").parent().show();
-			//			$("#toolbarWFPendingStepsFind").click();
-			//			menu_autoLoadPage("workflowPendingSteps", false);
-			//		}
-			//		else {
-			//		}
-			//	});
-			//}
+			saveChangesPrompt("WORKFLOWPENDINGSTEPS", 'showDefaultRibbon(); $("#toolbarWFPendingStepsFind").parent().show(); $("#toolbarWFPendingStepsFind").click(); menu_loadWorkflowPendingSteps(false)');
 			return false;
 		}
 
@@ -2687,7 +2668,7 @@ function menu_OutOfOfficeTurnOff(status) {
 	}
 
 	if (!menu_isSSIMode()) {
-		setTimeout('menu_autoLoadPage("workflowPendingSteps", true)', 100);
+		setTimeout('menu_loadWorkflowPendingSteps(true)', 100);
 	}
 
 }
@@ -2706,22 +2687,8 @@ function menu_OutOfOfficeTurnOff(status) {
 	OpenHR.submitForm(frmWorkArea, "workframe");
 }
 
-	function menu_autoLoadPage(psPage, pfAuto) {
-	var frmWorkArea;
-	// Submit the current "workframe" form, and then load the required page.
-	frmWorkArea = OpenHR.getForm("workframeset", "frmWorkAreaRefresh");
-	frmWorkArea.txtGotoTableID.value = 0;
-	frmWorkArea.txtGotoViewID.value = 0;
-	frmWorkArea.txtGotoScreenID.value = 0;
-	frmWorkArea.txtGotoPage.value = psPage;
-
-	if (pfAuto == true) {
-	frmWorkArea.txtGotoFromMenu.value = 0;
-}
-	else {
-	frmWorkArea.txtGotoFromMenu.value = 1;
-}
-	OpenHR.submitForm(frmWorkArea, "workframe");
+	function menu_loadWorkflowPendingSteps(pfAuto) {
+		OpenHR.submitForm(null, "workframe", null, null, "WorkflowPendingSteps");
 }
 
 	function menu_loadDefSelPage(piDefSelType, piUtilID, piTableID, pfFromMenu) {

@@ -1117,8 +1117,6 @@ Namespace Controllers
 							Return RedirectToAction("util_def_expression")
 						Case 17	' CALENDAR REPORTS
 							Return RedirectToAction("util_def_calendarreport", "reports")
-							'Case 25	' WORKFLOW 
-							'Return RedirectToAction("util_run_workflow")
 						Case 35	' NINE BOX
 							Return RedirectToAction("util_def_9boxgrid", "reports")
 					End Select
@@ -2191,14 +2189,14 @@ Namespace Controllers
 		End Function
 
 		<HttpPost>
-		<ValidateInput(False)>
 		<ValidateAntiForgeryToken>
-		Function SendEmail() As ActionResult
-			Dim emailTo As String = Request.Form("To")
-			Dim emailCC As String = Request.Form("CC")
-			Dim emailBCC As String = Request.Form("BCC")
-			Dim emailSubject As String = Request.Form("Subject")
-			Dim emailBody As String = Request.Form("Body")
+		Function SendEmail(postData As SendEmailModel) As ActionResult
+
+			Dim emailTo As String = postData.To
+			Dim emailCC As String = postData.CC
+			Dim emailBCC As String = postData.BCC
+			Dim emailSubject As String = postData.Subject
+			Dim emailBody As String = postData.Body
 
 			Try
 				Dim message As New MailMessage()
@@ -2322,7 +2320,6 @@ Namespace Controllers
 
 		End Function
 
-		<ValidateInput(False)>
 		<ValidateAntiForgeryToken>
 		Function util_run_promptedvalues() As ActionResult
 			Try
@@ -2377,6 +2374,7 @@ Namespace Controllers
 				Session("utilid") = Request.Form("utilid")
 				Session("utilname") = Request.Form("utilname")
 				Session("action") = Request.Form("action")
+				Session("MailMerge_Template") = Nothing
 
 			Catch ex As Exception
 				Throw
@@ -2384,21 +2382,7 @@ Namespace Controllers
 			End Try
 
 			Return View("util_run")
-		End Function
 
-		<ValidateInput(False)>
-		Function util_run() As ActionResult
-			Session("MailMerge_Template") = Nothing
-			Return PartialView()
-		End Function
-
-		<ValidateInput(False)>
-		Function util_run_customreports() As ActionResult
-			Return PartialView()
-		End Function
-
-		Function util_run_calendarreport_main() As ActionResult
-			Return PartialView()
 		End Function
 
 		<HttpPost>
@@ -3409,18 +3393,14 @@ Namespace Controllers
 
 		End Function
 
-		<ValidateInput(False)>
-		Function util_run_workflow() As ActionResult
+		<ValidateAntiForgeryToken>
+		Function util_run_workflow(postData As WorkflowRunModel) As ActionResult
+			Session("util_run_workflowModel") = postData
 			Return PartialView()
 		End Function
 
-		<ValidateInput(False)>
+		<OutputCache(NoStore:=True, Duration:=0, VaryByParam:="None")>
 		Function WorkflowPendingSteps() As ActionResult
-			Return PartialView()
-		End Function
-
-		<ValidateInput(False)>
-		Function util_run_customreportsMain() As ActionResult
 			Return PartialView()
 		End Function
 
@@ -3601,11 +3581,6 @@ Namespace Controllers
 		<ValidateInput(False)>
 		Function util_test_expression_pval() As ActionResult
 			Return View()
-		End Function
-
-		<ValidateInput(False)>
-		Function util_test_expression_submit(value As FormCollection)
-			Return RedirectToAction("util_def_expression")
 		End Function
 
 		<ValidateInput(False)>
@@ -4345,32 +4320,6 @@ Namespace Controllers
 			Session("Overbooked") = sCourseOverbooked
 
 			Return RedirectToAction("emptyoption")
-		End Function
-
-		<ValidateInput(False)>
-		Function util_run_outputoptions() As ActionResult
-			Try
-
-				Session("CT_Mode") = Request("txtMode")
-				Session("OutputOptions_Format") = Request("txtFormat")
-				Session("OutputOptions_Screen") = Request("txtScreen")
-				Session("OutputOptions_Save") = Request("txtSave")
-				Session("OutputOptions_SaveExisting") = Request("txtSaveExisting")
-				Session("OutputOptions_Email") = Request("txtEmail")
-				Session("OutputOptions_EmailGroupID") = Request("txtEmailGroupID")
-				Session("OutputOptions_EmailGroup") = Request("txtEmailGroup")
-				Session("OutputOptions_EmailSubject") = Request("txtEmailSubject")
-				Session("OutputOptions_EmailAttachAs") = Request("txtEmailAttachAs")
-				Session("OutputOptions_Filename") = Request("txtFilename")
-
-				Session("utiltype") = Request.Form("txtUtilType")
-
-			Catch ex As Exception
-				Throw
-
-			End Try
-
-			Return View()
 		End Function
 
 		Function OptionDataGrid(GotoOptionPage As String) As PartialViewResult

@@ -43,7 +43,7 @@
 		}
 
 		if (sAction == "WORKFLOWPENDINGSTEPS") {
-			menu_autoLoadPage("workflowPendingSteps", false);
+			menu_loadWorkflowPendingSteps(false);
 		}
 
 		if (sAction == "WORKFLOWOUTOFOFFICE") {

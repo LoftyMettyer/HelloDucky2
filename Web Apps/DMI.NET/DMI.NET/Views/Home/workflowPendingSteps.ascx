@@ -161,9 +161,9 @@
 	function setrefresh() {
 		OpenHR.submitForm("frmRefresh");
 		<%If Session("fromMenu") = 0 Then%>
-		menu_autoLoadPage("workflowPendingSteps", true);
+		menu_loadWorkflowPendingSteps(true);
 		<%Else%>
-		menu_autoLoadPage("workflowPendingSteps", false);
+		menu_loadWorkflowPendingSteps(false);
 		<%End If%>
 	}
 	

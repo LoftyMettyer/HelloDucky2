@@ -217,7 +217,9 @@
     <Compile Include="Models\ObjectRequests\SelectOrderModel.vb" />
     <Compile Include="Models\ObjectRequests\QuickFindModel.vb" />
     <Compile Include="Models\ObjectRequests\DelegateBookingModel.vb" />
+    <Compile Include="Models\ObjectRequests\SendEmailModel.vb" />
     <Compile Include="Models\ObjectRequests\StandardReportModel.vb" />
+    <Compile Include="Models\ObjectRequests\WorkflowRunModel.vb" />
     <Compile Include="Models\OptionDataModel.vb" />
     <Compile Include="Models\Responses\SaveRecordRespone.vb" />
     <Compile Include="Models\Responses\PostResponse.vb" />
@@ -337,7 +339,6 @@
     <Content Include="Content\images\error.jpg" />
     <Content Include="Content\images\minus.gif" />
     <Content Include="Content\images\OLEIcons\delete-icon.png" />
-    <Content Include="Content\images\OLEIcons\delete-iconDIS.png" />
     <Content Include="Content\images\OLEIcons\file_down_64.png" />
     <Content Include="Content\images\OLEIcons\folder_64.png" />
     <Content Include="Content\images\OpenHR_Icon.ico" />
