@@ -3,23 +3,23 @@
 <%@ Import Namespace="DMI.NET" %>
 <%@ Import Namespace="DMI.NET.Code" %>
 
-<asp:Content ID="Content1" ContentPlaceHolderID="TitleContent" runat="server"><%= GetPageTitle("Login") %></asp:Content>
+<asp:Content ID="Content1" ContentPlaceHolderID="TitleContent" runat="server"><%: GetPageTitle("Login") %></asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="MainContent" runat="server">
 		
 	<%Html.EnableClientValidation()%>
 <div class="divLogin">
 	<%Html.BeginForm("Login", "Account", FormMethod.Post, New With {.id = "frmLoginForm", .defaultbutton = "submitLoginDetails"})%>
 	<div class="ui-dialog-titlebar ui-widget-header loginTitleBar">
-		<img alt="about OpenHR" title="About OpenHR Web" src="<%= Url.Content("~/Content/images/help32.png")%>" />
+		<img alt="about OpenHR" title="About OpenHR Web" src="<%: Url.Content("~/Content/images/help32.png")%>" />
 	</div>
 	
 	<div class="verticalpadding200"></div>
 						
 	<div class="ui-widget-content ui-corner-tl ui-corner-br loginframe">
 
-		<img alt="loginimage" class="loginframeImage" src="<%= Url.Content("~/Content/images/OpenHRWeb_Splash.png")%>">
+		<img alt="loginimage" class="loginframeImage" src="<%: Url.Content("~/Content/images/OpenHRWeb_Splash.png")%>">
 
-		<p class="centered">Version <%=session("Version")%></p><br />
+		<p class="centered">Version <%:session("Version")%></p><br />
 
 		<p id="ancientBrowser" class="centered hidden">OpenHR Web can only be accessed using Microsoft Internet Explorer 10 or later.</p>
 		<p id="systemLocked" class="centered hidden">A system administrator has locked the database.</p>
@@ -34,34 +34,34 @@
 		<div id="divLoginDetails">
 
 			<div class="loginframeField">
-				<%=Html.LabelFor(Function(loginviewmodel) loginviewmodel.UserName)%>
-				<%=Html.TextBoxFor(Function(loginviewmodel) loginviewmodel.UserName, New With {.id = "txtUserName", .onkeypress = "CheckKeyPressed(event)"})%>
-				<%=Html.ValidationMessageFor(Function(loginviewmodel) loginviewmodel.UserName)%>
+				<%:Html.LabelFor(Function(loginviewmodel) loginviewmodel.UserName)%>
+				<%:Html.TextBoxFor(Function(loginviewmodel) loginviewmodel.UserName, New With {.id = "txtUserName", .onkeypress = "CheckKeyPressed(event)"})%>
+				<%:Html.ValidationMessageFor(Function(loginviewmodel) loginviewmodel.UserName)%>
 			</div>
 
 			<div class="loginframeField">
-				<%=Html.LabelFor(Function(loginviewmodel) loginviewmodel.Password)%>
-				<%=Html.PasswordFor(Function(loginviewmodel) loginviewmodel.Password, New With {.id = "txtPassword", .onkeypress = "CheckKeyPressed(event)"})%>
-				<%=Html.ValidationMessageFor(Function(loginviewmodel) loginviewmodel.Password)%>
+				<%:Html.LabelFor(Function(loginviewmodel) loginviewmodel.Password)%>
+				<%:Html.PasswordFor(Function(loginviewmodel) loginviewmodel.Password, New With {.id = "txtPassword", .onkeypress = "CheckKeyPressed(event)", .autocomplete = "off"})%>
+				<%:Html.ValidationMessageFor(Function(loginviewmodel) loginviewmodel.Password)%>
 			</div>
 		
 			<%If Platform.IsWindowsAuthenicatedEnabled() Then%>
 			<div class="loginframeFieldWA">
-				<%=Html.CheckBoxFor(Function(loginviewmodel) loginviewmodel.WindowsAuthentication, New With {.id = "chkWindowsAuthentication", .onclick = "ToggleWindowsAuthentication()"})%>
-				<%=Html.LabelFor(Function(loginviewmodel) loginviewmodel.WindowsAuthentication)%>
-				<%=Html.ValidationMessageFor(Function(loginviewmodel) loginviewmodel.WindowsAuthentication)%>
+				<%:Html.CheckBoxFor(Function(loginviewmodel) loginviewmodel.WindowsAuthentication, New With {.id = "chkWindowsAuthentication", .onclick = "ToggleWindowsAuthentication()"})%>
+				<%:Html.LabelFor(Function(loginviewmodel) loginviewmodel.WindowsAuthentication)%>
+				<%:Html.ValidationMessageFor(Function(loginviewmodel) loginviewmodel.WindowsAuthentication)%>
 			</div>
 			<%End If%>
 
 			<div class="loginframeField">
-				<%=Html.ValidationMessageFor(Function(loginviewmodel) loginviewmodel.LoginStatus)%>
+				<%:Html.ValidationMessageFor(Function(loginviewmodel) loginviewmodel.LoginStatus)%>
 			</div>
 			
 			<div class="centered">
 				<input type="button" id="submitLoginDetails" name="submitLoginDetails" onclick="SubmitLoginDetails()" value="Login" />
 
 				<br />
-				<p id="ForgotPasswordLink" style="display: none;"><%=Html.ActionLink("Forgot password", "ForgotPassword", "Account")%></p>
+				<p id="ForgotPasswordLink" style="display: none;"><%:Html.ActionLink("Forgot password", "ForgotPassword", "Account")%></p>
 			</div>
 				
 		</div>
@@ -73,14 +73,14 @@
 		
 	<input type="hidden" id="txtLocaleCulture" name="txtLocaleCulture" value="">
 
-	<input type="hidden" id="txtLocaleDecimalSeparator" name="txtLocaleDecimalSeparator" value="<%=LocaleDecimalSeparator()%>">
+	<input type="hidden" id="txtLocaleDecimalSeparator" name="txtLocaleDecimalSeparator" value="<%:LocaleDecimalSeparator()%>">
 	<input type="hidden" id="txtLocaleThousandSeparator" name="txtLocaleThousandSeparator" value="<%: Html.Raw(LocaleThousandSeparator())%>">
 
-	<%=Html.AntiForgeryToken()%>
+	<%:Html.AntiForgeryToken()%>
 
 	<%Html.EndForm()%>
 	
-	<input type="hidden" id="txtSystemUser" name="txtSystemUser" value="<%=replace(Request.ServerVariables("LOGON_USER"),"/","\")%>">
+	<input type="hidden" id="txtSystemUser" name="txtSystemUser" value="<%:replace(Request.ServerVariables("LOGON_USER"),"/","\")%>">
 
 	</div>
 		
@@ -112,10 +112,11 @@
 			};
 
 			if (!window.isMobileBrowser) {
-				if ('<%=Model.UserName%>'.length > 0) $('#txtPassword').focus();
-				if ('<%=Model.UserName%>'.length == 0) $('#txtUser').focus();
+				//hello!
+				if ('<%:Model.UserName%>'.length > 0) $('#txtPassword').focus();
+				if ('<%:Model.UserName%>'.length == 0) $('#txtUser').focus();
 			}
-			if ('<%=Model.WindowsAuthentication.ToString().ToLower()%>' == 'true') {
+			if ('<%:Model.WindowsAuthentication.ToString().ToLower()%>' == 'true') {
 				$('#chkWindowsAuthentication').prop('checked', true);
 				ToggleWindowsAuthentication();
 			}
