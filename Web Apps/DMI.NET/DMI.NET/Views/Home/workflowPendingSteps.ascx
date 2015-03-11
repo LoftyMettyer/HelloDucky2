@@ -147,10 +147,6 @@
 
 </script>
 
-<form id="frmSteps" name="frmSteps" style="visibility: hidden; display: none">
-	<input type='hidden' id="txtFromMenu" name="txtFromMenu" value="<%=Session("fromMenu")%>">
-</form>
-
 <script type="text/javascript">
 	function refreshControls() {
 		var sSelectionList = jQuery("#PendingStepsTable").jqGrid('getGridParam', 'selarrrow');
