@@ -210,6 +210,7 @@
     <Compile Include="Classes\Licence.vb" />
     <Compile Include="Helpers\AntiForgeryTokenHelper.vb" />
     <Compile Include="Models\GotoOptionDataModel.vb" />
+    <Compile Include="Models\ObjectRequests\DefSelModel.vb" />
     <Compile Include="Models\ObjectRequests\FilterSelectModel.vb" />
     <Compile Include="Models\ObjectRequests\GotoOptionBaseModel.vb" />
     <Compile Include="Models\ObjectRequests\LinkFindModel.vb" />
@@ -1698,7 +1699,6 @@
     <Content Include="Views\Account\ResetPassword_Submit.aspx" />
     <Content Include="Views\Home\CheckForUsage.ascx" />
     <Content Include="Views\Home\configuration.ascx" />
-    <Content Include="Views\Home\confirmok.ascx" />
     <Content Include="Views\Home\documentDisplay.ascx" />
     <Content Include="Views\Home\linkFind.ascx" />
     <Content Include="Views\Home\Data.ascx" />

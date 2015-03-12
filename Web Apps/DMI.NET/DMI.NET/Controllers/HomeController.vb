@@ -164,13 +164,6 @@ Namespace Controllers
 
 				Next
 
-				'--------------------------------------------
-				' Redirect to the save confirmation page.
-				'--------------------------------------------
-				'Session("confirmtext") = "User Configuration has been saved successfully."
-				'Session("confirmtitle") = "User Configuration"
-				'Session("followpage") = "default"
-				'Session("reaction") = Request.Form("txtReaction")
 			End If
 
 			Return RedirectToAction("CONFIGURATION")
@@ -227,7 +220,6 @@ Namespace Controllers
 				Session("filterDef") = Request.Form("txtGotoFilterDef")
 				Session("filterSQL") = Request.Form("txtGotoFilterSQL")
 				Session("lineage") = Request.Form("txtGotoLineage")
-				Session("defseltype") = Request.Form("txtGotoDefSelType")
 				Session("utilID") = Request.Form("txtGotoUtilID")
 				Session("locateValue") = Request.Form("txtGotoLocateValue")
 				Session("firstRecPos") = Request.Form("txtGotoFirstRecPos")
@@ -312,7 +304,6 @@ Namespace Controllers
 					Session("filterDef") = Request.Form("txtGotoFilterDef")
 					Session("filterSQL") = Request.Form("txtGotoFilterSQL")
 					Session("lineage") = Request.Form("txtGotoLineage")
-					Session("defseltype") = Request.Form("txtGotoDefSelType")
 					Session("utilID") = Request.Form("txtGotoUtilID")
 					Session("locateValue") = Request.Form("txtGotoLocateValue")
 					Session("firstRecPos") = Request.Form("txtGotoFirstRecPos")
@@ -324,10 +315,6 @@ Namespace Controllers
 					Session("txtGotoPage") = Request.Form("txtGotoPage")
 				End If
 			End If
-		End Function
-
-		Function ConfirmOK() As ActionResult
-			Return View()
 		End Function
 
 		Function MainSSI() As ActionResult
@@ -852,7 +839,6 @@ Namespace Controllers
 				Session("firstRecPos") = ValidateIntegerValue(Request.Form("txtGotoFirstRecPos"))
 				Session("currentRecCount") = ValidateIntegerValue(Request.Form("txtGotoCurrentRecCount"))
 				Session("fromMenu") = ValidateIntegerValue(Request.Form("txtGotoFromMenu"))
-				Session("reloadMenu") = ValidateIntegerValue(Request.Form("txtReloadMenu"))
 				Session("StandardReport_Type") = ValidateFromWhiteList(Request.Form("txtStandardReportType"), InputValidation.WhiteListCollections.UtilTypes)
 				Session("singleRecordID") = ValidateIntegerValue(Request.Form("txtGotoOptionDefSelRecordID"))
 			End If
@@ -900,10 +886,7 @@ Namespace Controllers
 			Session("optionParameterIndex") = form.txtGotoOptionParameterIndex
 			Session("OptionRealsource") = form.txtGotoOptionRealsource
 			Session("StandardReport_Type") = form.txtStandardReportType
-			Session("defseltype") = form.txtGotoOptionDefSelType
 			Session("singleRecordID") = form.txtGotoOptionDefSelRecordID
-
-
 
 		End Sub
 
@@ -1087,15 +1070,15 @@ Namespace Controllers
 
 		<HttpPost()>
 		<ValidateAntiForgeryToken>
-		Function DefSel_Submit(value As FormCollection)
+		Function DefSel_Submit(value As DefSelModel)
 
 			Try
 
 				' Set some session variables used by all the util pages
-				Session("utiltype") = Request.Form("utiltype")
-				Session("utilid") = Request.Form("utilid")
-				Session("utilname") = Request.Form("utilname")
-				Session("action") = Request.Form("action")
+				Session("utiltype") = value.utiltype
+				Session("utilid") = value.utilID
+				Session("utilname") = value.utilName
+				Session("action") = value.Action
 
 				' Now examine what we are doing and redirect as appropriate
 				If (Session("action") = "new") Or _
@@ -1137,8 +1120,6 @@ Namespace Controllers
 							Session("reaction") = "CALCULATIONS"
 						Case 17	' CALENDAR REPORTS
 							Session("reaction") = "CALENDARREPORTS"
-							'Case 25	' WORKFLOW 
-							'	Session("reaction") = "WORKFLOWS"
 						Case 35	' NINE BOX
 							Session("reaction") = "NINEBOXGRID"
 					End Select
@@ -3493,8 +3474,7 @@ Namespace Controllers
 				Session("errorMessage") = "<h3>Error saving " & sUtilType.ToLower() & "</h3>" & ex.Message
 			End Try
 
-			Return RedirectToAction("confirmok")
-
+			Return RedirectToAction("DefSel")
 
 		End Function
 
@@ -3766,7 +3746,6 @@ Namespace Controllers
 				Session("confirmtext") = "Picklist has been saved successfully"
 				Session("confirmtitle") = "Picklists"
 				Session("followpage") = "defsel"
-				Session("reaction") = "PICKLISTS"
 				Session("utilid") = prmID.Value
 
 			Catch ex As Exception
@@ -3778,7 +3757,7 @@ Namespace Controllers
 
 			End Try
 
-			Return RedirectToAction("ConfirmOK")
+			Return RedirectToAction("DefSel")
 
 		End Function
 

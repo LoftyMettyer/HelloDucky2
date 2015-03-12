@@ -9,6 +9,7 @@ Imports System.Web.Script.Serialization
 Imports DMI.NET.ViewModels.Reports
 Imports DMI.NET.Code
 Imports DMI.NET.Code.Extensions
+Imports DMI.NET.Models.ObjectRequests
 
 Namespace Controllers
 
@@ -199,9 +200,10 @@ Namespace Controllers
 
 			If objModel.ValidityStatus = ReportValidationStatus.ServerCheckComplete Then
 				objReportRepository.SaveReportDefinition(objModel)
-				Session("reaction") = "CUSTOMREPORTS"
+
 				Session("utilid") = objModel.ID
-				Return RedirectToAction("confirmok", "home")
+				Return RedirectToAction("Defsel", "Home")
+
 
 			Else
 				If ModelState.IsValid Then
@@ -239,9 +241,8 @@ Namespace Controllers
 
 			If objModel.ValidityStatus = ReportValidationStatus.ServerCheckComplete Then
 				objReportRepository.SaveReportDefinition(objModel)
-				Session("reaction") = "MAILMERGE"
 				Session("utilid") = objModel.ID
-				Return RedirectToAction("confirmok", "home")
+				Return RedirectToAction("Defsel", "Home")
 
 			Else
 
@@ -266,9 +267,8 @@ Namespace Controllers
 
 			If objModel.ValidityStatus = ReportValidationStatus.ServerCheckComplete Then
 				objReportRepository.SaveReportDefinition(objModel)
-				Session("reaction") = "CROSSTABS"
 				Session("utilid") = objModel.ID
-				Return RedirectToAction("confirmok", "home")
+				Return RedirectToAction("DefSel", "Home")
 
 			Else
 
@@ -293,9 +293,9 @@ Namespace Controllers
 
 			If objModel.ValidityStatus = ReportValidationStatus.ServerCheckComplete Then
 				objReportRepository.SaveReportDefinition(objModel)
-				Session("reaction") = "NINEBOXGRID"
 				Session("utilid") = objModel.ID
-				Return RedirectToAction("confirmok", "home")
+				Return RedirectToAction("DefSel", "Home")
+
 
 			Else
 
@@ -334,9 +334,8 @@ Namespace Controllers
 
 			If objModel.ValidityStatus = ReportValidationStatus.ServerCheckComplete Then
 				objReportRepository.SaveReportDefinition(objModel)
-				Session("reaction") = "CALENDARREPORTS"
 				Session("utilid") = objModel.ID
-				Return RedirectToAction("confirmok", "home")
+				Return RedirectToAction("DefSel", "Home")
 
 			Else
 

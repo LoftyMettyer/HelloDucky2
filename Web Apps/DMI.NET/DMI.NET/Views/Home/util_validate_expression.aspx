@@ -44,6 +44,7 @@
 
 		function returnToDefSel() {
 
+			debugger;
 			OpenHR.returnToDefSel();		  
 			uve_cancelClick();
 		}
@@ -65,8 +66,11 @@
 				OpenHR.submitForm(frmValidate2, 'tmpDialog');
 			}
 			else {
+
 				var frmSend = OpenHR.getForm("divDefExpression", "frmSend");
-				OpenHR.submitForm(frmSend, 'tmpDialog');				
+				OpenHR.submitForm(frmSend, 'workframe');
+				OpenHR.clearTmpDialog();
+
 			}
 		}
 

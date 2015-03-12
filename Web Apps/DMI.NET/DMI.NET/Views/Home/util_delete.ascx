@@ -125,8 +125,8 @@
 					Session("utilid") = 0
 				End If
 
-				Response.Redirect("confirmok")
-
+				Response.Redirect("DefSel")
+				
 			Catch ex As Exception
 
 				Session("ErrorTitle") = "Login Page"
