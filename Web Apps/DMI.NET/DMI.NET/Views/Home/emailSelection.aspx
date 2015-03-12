@@ -148,33 +148,34 @@
 						If iLastEventID <> CInt(objRow("ID")) Then
 							eventCounter = eventCounter + 1
 							Response.Write(CStr(eventCounter))
-							sEmailInfo = sEmailInfo & StrDup(Len(objRow("Name").ToString()) + 30, "-") & vbCrLf
-							sEmailInfo = sEmailInfo & "Event Name : " & objRow("Name").ToString() & vbCrLf
-							sEmailInfo = sEmailInfo & StrDup(Len(objRow("Name").ToString()) + 30, "-") & vbCrLf
-							sEmailInfo = sEmailInfo & "Mode :		" & objRow("Mode").ToString() & vbCrLf & vbCrLf
-							sEmailInfo = sEmailInfo & "Start Time :	" & ConvertSQLDateToLocale(objRow("DateTime")) & " " & ConvertSqlDateToTime(objRow("DateTime")) & vbCrLf
+							sEmailInfo = sEmailInfo & StrDup(Len(objRow("Name").ToString()) + 60, "-") & "\n" & vbCrLf
+							sEmailInfo = sEmailInfo & "Event Name : " & objRow("Name").ToString() & "\n" & vbCrLf
+							sEmailInfo = sEmailInfo & StrDup(Len(objRow("Name").ToString()) + 60, "-") & "\n" & vbCrLf
+							sEmailInfo = sEmailInfo & "Mode :		" & objRow("Mode").ToString() & "\n\n" & vbCrLf & vbCrLf
+							sEmailInfo = sEmailInfo & "Start Time :	" & ConvertSQLDateToLocale(objRow("DateTime")) & " " & ConvertSqlDateToTime(objRow("DateTime")) & "\n" & vbCrLf
 							If IsDBNull(objRow("EndTime")) Then
-								sEmailInfo = sEmailInfo & "End Time :	" & vbCrLf
+								sEmailInfo = sEmailInfo & "End Time :	" & "\n" & vbCrLf
 							Else
-								sEmailInfo = sEmailInfo & "End Time :	" & ConvertSQLDateToLocale(objRow("DateTime")) & " " & ConvertSqlDateToTime(objRow("EndTime")) & vbCrLf
+								sEmailInfo = sEmailInfo & "End Time :	" & ConvertSQLDateToLocale(objRow("DateTime")) & " " & ConvertSqlDateToTime(objRow("EndTime")) & "\n" & vbCrLf
 							End If
-							sEmailInfo = sEmailInfo & "Duration :	" & FormatEventDuration(CInt(objRow("Duration"))) & vbCrLf
-							sEmailInfo = sEmailInfo & "Type :		" & objRow("Type").ToString() & vbCrLf
-							sEmailInfo = sEmailInfo & "Status :		" & objRow("Status").ToString() & vbCrLf
-							sEmailInfo = sEmailInfo & "User name :	" & objRow("Username").ToString() & vbCrLf & vbCrLf
+							sEmailInfo = sEmailInfo & "Duration :	" & FormatEventDuration(CInt(objRow("Duration"))) & "\n\n" & vbCrLf & vbCrLf
+							sEmailInfo = sEmailInfo & "Type :		" & objRow("Type").ToString() & "\n" & vbCrLf
+							sEmailInfo = sEmailInfo & "Status :		" & objRow("Status").ToString() & "\n" & vbCrLf
+							sEmailInfo = sEmailInfo & "User name :	" & objRow("Username").ToString() & "\n\n" & vbCrLf & vbCrLf
 							If Request("txtFromMain") = 0 Then
 								If Request("txtBatchy") Then
-									sEmailInfo = sEmailInfo & Request("txtBatchInfo") & vbCrLf
+									sEmailInfo = sEmailInfo & Request("txtBatchInfo") & "\n" & vbCrLf
 								End If
 							Else
 								If (Not IsDBNull(objRow("BatchName"))) And (Len(objRow("BatchName").ToString()) > 0) Then
-									sEmailInfo = sEmailInfo & "Batch Job Name	: " & objRow("BatchName").ToString() & vbCrLf & vbCrLf
+									sEmailInfo = sEmailInfo & "Batch Job Name	: " & objRow("BatchName").ToString() & "\n\n" & vbCrLf & vbCrLf
 								End If
 							End If
 										
-							sEmailInfo = sEmailInfo & "Records Successful :	" & objRow("SuccessCount").ToString() & vbCrLf
-							sEmailInfo = sEmailInfo & "Records Failed :		" & objRow("FailCount").ToString() & vbCrLf & vbCrLf
-							sEmailInfo = sEmailInfo & "Details : " & vbCrLf & vbCrLf
+							sEmailInfo = sEmailInfo & "Records Successful :	" & objRow("SuccessCount").ToString() & "\n" & vbCrLf
+							sEmailInfo = sEmailInfo & "Records Failed :		" & objRow("FailCount").ToString() & "\n\n" & vbCrLf & vbCrLf
+							sEmailInfo = sEmailInfo & "Details : " & "\n" & vbCrLf
+							sEmailInfo = sEmailInfo & StrDup(Len(objRow("Name").ToString()) + 60, "-") & "\n" & vbCrLf
 							iLastEventID = CInt(objRow("ID"))
 							iDetailCount = 0
 						End If
@@ -183,17 +184,17 @@
 				
 						If objRow("count") > 0 Then
 							If (Not IsDBNull(objRow("Notes"))) And (Len(objRow("Notes")) > 0) Then
-								sEmailInfo = sEmailInfo & "*** Log Entry " & CStr(iDetailCount) & " of " & CStr(objRow("count")) & " ***" & vbCrLf
+								sEmailInfo = sEmailInfo & "*** Log Entry " & CStr(iDetailCount) & " of " & CStr(objRow("count")) & " ***" & "\n" & vbCrLf
 								sEmailInfo = sEmailInfo & objRow("Notes").ToString()
 							End If
 						Else
-							sEmailInfo = sEmailInfo & "There are no details for this event log entry" & vbCrLf
+							sEmailInfo = sEmailInfo & "There are no details for this event log entry" & "\n" & vbCrLf
 						End If
-						sEmailInfo = sEmailInfo & vbCrLf & vbCrLf & vbCrLf
+						sEmailInfo = sEmailInfo & "\n\n" & vbCrLf & vbCrLf 
 					Next
-					Response.Write("<input  name=txtEventDeleted id=txtEventDeleted value=0>" & vbCrLf)
+					Response.Write("<input  name=txtEventDeleted id=txtEventDeleted value=0>" & "\n" & vbCrLf)
 				Else
-					Response.Write("<input  name=txtEventDeleted id=txtEventDeleted value=1>" & vbCrLf)
+					Response.Write("<input  name=txtEventDeleted id=txtEventDeleted value=1>" & "\n" & vbCrLf)
 				End If
 
 				Response.Write("<input  name=txtBody id=txtBody value=""" & Replace(sEmailInfo, """", "&quot;") & """>" & vbCrLf)
@@ -203,7 +204,7 @@
 			End Try
 		%>
 	</form>
-
+	
 	<form class="displaynone" id="frmFromOpener" name="frmFromOpener">
 		<input id="calcEmailCurrentID" name="calcEmailCurrentID" type="hidden" value='<%= Request("emailSelCurrentID") %>'>
 	</form>

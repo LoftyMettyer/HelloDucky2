@@ -2182,7 +2182,7 @@ Namespace Controllers
 			Try
 				Dim message As New MailMessage()
 				message.Subject = emailSubject
-				message.Body = emailBody
+				message.Body = Replace(emailBody.ToString(), "\n", vbCrLf)
 
 				If Not emailTo = "" Then
 					If emailTo.Contains(";") = True Then
