@@ -568,10 +568,8 @@
 		refreshcolumnPropertiesPanel();
 		updateColumnsSelectedGrid();
 
-		// Uncheck all the column options for the next row and update the row to the grid
-		if (isGroupWithNextChecked) {
-			disableColumnOptionsWhenGroupWithNextChecked();
-		}
+		disableColumnOptionsWhenGroupWithNextChecked();
+
 	}
 
 	// Disabled the column options for the current row and uncheck all the column options for the next row 
