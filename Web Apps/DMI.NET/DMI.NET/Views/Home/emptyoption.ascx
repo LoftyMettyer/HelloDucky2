@@ -88,7 +88,8 @@
 						
 					var sControlName;
 					var sColumnID;
-					var dataCollection = window.frmEmptyOption.elements;
+					var dataCollection = window.frmEmptyOption.children;
+
 					if (dataCollection != null) {
 						// Need to hide the popup in case setdata causes
 						// the intrecedit control to display an error message.
@@ -527,7 +528,7 @@
 	Response.Write("</div>" & vbCrLf)
 %>
 
-<form id="frmEmptyOption" name="frmEmptyOption">
+<div id="frmEmptyOption" name="frmEmptyOption">
 	<%
 		
 		Dim objDatabase As Database = CType(Session("DatabaseFunctions"), Database)
@@ -561,7 +562,7 @@
 	
 		Response.Write("<input type='hidden' id='txtErrorDescription' name='txtErrorDescription' value='" & sErrorDescription & "'>")
 	%>
-</form>
+</div>
 
 <script type="text/javascript">
 	emptyoption_onload();    

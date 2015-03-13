@@ -1182,7 +1182,7 @@
 </script>
 
 <div <%=session("BodyTag")%> style="padding: 10px 0px 0px 20px;">
-	<form action="" method="POST" id="frmFilterForm" name="frmFilterForm">
+	<form id="frmFilterForm" name="frmFilterForm">
 
 		<div class="pageTitleDiv" style="margin-bottom: 15px">
 			<span class="pageTitle" id="PopupReportDefinition_PageTitle">Define Filter</span>
