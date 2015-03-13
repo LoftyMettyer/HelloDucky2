@@ -1224,6 +1224,9 @@
     <Content Include="Content\themes\vader\jquery.ui.theme.min.css" />
     <Content Include="Content\themes\vader\jquery.ui.tooltip.min.css" />
     <Content Include="Database\UpdateScript8.1.sql" />
+    <Content Include="Scripts\ESAPIScripts\Base.esapi.properties.js" />
+    <Content Include="Scripts\ESAPIScripts\esapi.js" />
+    <Content Include="Scripts\ESAPIScripts\log4js.js" />
     <Content Include="Scripts\FormScripts\crosstab.js" />
     <Content Include="Scripts\FormScripts\customreport.js" />
     <None Include="Scripts\jquery-2.1.1.intellisense.js" />

@@ -1423,6 +1423,22 @@
 		}
 
 	},
+
+	// Check invalid characters 
+	checkInvalidCharacters = function (input) {
+		return !openhrBlackListValidator.IsBlackListPattern(input, new RegExp($ESAPI.properties.openHRValidationBlackList.AllInvalidCharacters));
+	},
+
+	// Validate integer value 
+	validateInteger = function (input) {
+		return openhrBlackListValidator.IsValidIntegerValue(input);
+	},
+
+	// Validate numeric value 
+	validateNumeric = function (input) {
+		return openhrBlackListValidator.IsValidNumericValue(input);
+	},
+
 	showAboutPopup = function () {
 		var aboutUrl = window.ROOT + "/account/about";
 		if (window.ROOT.slice(-1) == "/") aboutUrl = window.ROOT + "account/about";
@@ -1506,7 +1522,10 @@
 		gridPageDown: gridPageDown,
 		gridPageUp: gridPageUp,
 		gridKeyboardEvent: gridKeyboardEvent,
-		showAboutPopup: showAboutPopup
+		showAboutPopup: showAboutPopup,
+		checkInvalidCharacters: checkInvalidCharacters,
+		validateInteger: validateInteger,
+		validateNumeric: validateNumeric
 	};
 	
 

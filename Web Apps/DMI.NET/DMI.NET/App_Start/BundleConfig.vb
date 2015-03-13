@@ -118,6 +118,12 @@ Namespace App_Start
 									"~/Content/Site.css",
 									"~/Content/OpenHR.css"))
 
+			' ESAPIScripts
+			bundles.Add(New ScriptBundle("~/bundles/ESAPI").Include(
+				"~/Scripts/ESAPIScripts/esapi.js",
+				"~/Scripts/ESAPIScripts/Base.esapi.properties.js",
+				"~/Scripts/ESAPIScripts/log4js.js"))
+
 #If DEBUG Then
 
 			For Each bundle As Bundle In BundleTable.Bundles

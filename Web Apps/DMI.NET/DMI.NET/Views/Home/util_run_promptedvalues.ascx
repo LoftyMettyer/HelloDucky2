@@ -594,6 +594,14 @@
 					sMessage = "The entered value does not match the required format (" + sMask + ").";
 				}
 			}
+			else {
+						sValue = pctlPrompt.value;
+						if (!OpenHR.checkInvalidCharacters(sValue)) {
+							OpenHR.modalMessage($ESAPI.properties.openHRValidationMessages.AllInvalidCharacters);
+							fOK = false;
+							return fOK;
+						}
+				}
 		}
 
 		if (fOK == false) {

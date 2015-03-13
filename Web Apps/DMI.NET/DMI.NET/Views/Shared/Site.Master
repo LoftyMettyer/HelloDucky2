@@ -10,7 +10,7 @@
 	</title>
 
 	<link rel="Icon" href="~/pictures/logo.ico" type="image/x-icon" />
-
+	
 	<%
 		' Mobiles. Fix as tiles display.
 		Dim ua As String = Request.UserAgent
@@ -55,6 +55,7 @@
 	<script src="<%: Url.LatestContent("~/bundles/Microsoft")%>" type="text/javascript"></script>
 	<script src="<%: Url.LatestContent("~/bundles/OpenHR_General")%>" type="text/javascript"></script>
 	<script src="<%: Url.LatestContent("~/bundles/SignalR")%>" type="text/javascript"></script>
+	<script src="<%: Url.LatestContent("~/bundles/ESAPI")%>" type="text/javascript"></script>
 	
 	<script src="<%: ResolveUrl("~/signalr/hubs") %>" type="text/javascript"></script>
 					
@@ -459,7 +460,11 @@
 		//else {
 		//	window.isMobileBrowser = false;
 		//}
-	
+
+		// Initialise the ESAPI to validate the black list filter
+		org.owasp.esapi.ESAPI.initialize();
+		var openhrBlackListValidator = new org.owasp.esapi.reference.validation.StringValidationRule("OpenhrBlackListValidator", null, null);
+
 		function getCookie(cName) {
 			var i, x, y, arrCookies = document.cookie.split(";");
 			for (i = 0; i < arrCookies.length; i++) {
