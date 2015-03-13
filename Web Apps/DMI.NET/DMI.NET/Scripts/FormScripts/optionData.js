@@ -264,14 +264,13 @@ function optiondata_onload() {
 				//create the column layout:
 				shrinkToFit = false;
 				if (colMode.length < 8) shrinkToFit = true;
-				
+
 				$("#ssOleDBGrid").jqGrid({
 					data: colData,
 					datatype: "local",
 					colNames: colNames,
 					colModel: colMode,
 					rowNum: 30,
-					//autowidth: true,
 					width: 700,
 					ignoreCase: true,
 					pager: $('#ssOLEDBPager'),
@@ -284,21 +283,25 @@ function optiondata_onload() {
 					}
 				});
 
-				//search options.
-				$("#ssOleDBGrid").jqGrid('navGrid', '#ssOLEDBPager', { del: false, add: false, edit: false, search: false });
-				
+				// Navbar options = i.e. search, edit, save etc 
+				$("#ssOleDBGrid").jqGrid('navGrid', '#ssOLEDBPager', { del: false, add: false, edit: false, search: false, refresh: false }); // setup the buttons we want
+				$("#ssOleDBGrid").jqGrid('filterToolbar', { stringResult: true, searchOnEnter: false });  //instantiate toolbar so we can use toggle.
+				$("#ssOleDBGrid")[0].toggleToolbar();  // Toggle it off at start up.
+
 				$("#ssOleDBGrid").jqGrid('navButtonAdd', "#ssOLEDBPager", {
 					caption: '',
 					buttonicon: 'ui-icon-search',
 					onClickButton: function () {
-						$("#ssOleDBGrid").jqGrid('filterToolbar', { stringResult: true, searchOnEnter: false });
+						$("#ssOleDBGrid")[0].toggleToolbar(); // Toggle toolbar on & off when Search button is pressed.
+						$("#ssOleDBGrid")[0].clearToolbar();  // clear menu
+						var isSearching = $('#frmLookupFindForm .ui-search-toolbar').is(':visible');
+						$("#ssOleDBGrid_iledit").toggleClass('ui-state-disabled', isSearching);
+						$("#ssOleDBGrid_iladd").toggleClass('ui-state-disabled', isSearching);
 					},
 					position: 'first',
 					title: '',
 					cursor: 'pointer'
 				});
-
-				//$("#ssOleDBGrid").jqGrid('filterToolbar', { stringResult: true, searchOnEnter: false });
 
 				$("#ssOleDBGrid").jqGrid('bindKeys', {
 					"onEnter": function () {
@@ -308,9 +311,6 @@ function optiondata_onload() {
 
 				//resize the grid to the height of its container.
 				$("#ssOleDBGrid").jqGrid('setGridHeight', $("#lookupFindGridRow").height());
-				//var y = $("#gbox_ssOleDBGrid").height();
-				//var z = $('#gbox_ssOleDBGrid .ui-jqgrid-bdiv').height();
-
 			}
 
 			//NOTE: may come in useful.
@@ -333,9 +333,7 @@ function optiondata_onload() {
 					// Select the top row.
 					lookupFind_moveFirst();
 			}
-
 		}
-
 
 		if ((sCurrentWorkPage == "TBTRANSFERCOURSEFIND") ||
 				(sCurrentWorkPage == "TBBOOKCOURSEFIND") ||
@@ -363,8 +361,6 @@ function optiondata_onload() {
 
 			//need this as this grid won't accept live changes :/		
 			$("#ssOleDBGridRecords").jqGrid('GridUnload');
-
-			//jqGrid_removeAll('ssOleDBGridRecords');	// clear the grid
 			
 			dataCollection = frmOptionData.elements; // Configure the grid columns.
 			colMode = [];
