@@ -4732,9 +4732,9 @@ Namespace Controllers
 				End If
 
 				Session("optionScreenID") = Request.Form("txtGotoOptionScreenID")
-				Session("optionTableID") = Request.Form("txtGotoOptionTableID")
-				Session("optionViewID") = Request.Form("txtGotoOptionViewID")
-				Session("optionOrderID") = Request.Form("txtGotoOptionOrderID")
+				'Session("optionTableID") = Request.Form("txtGotoOptionTableID")
+				'Session("optionViewID") = Request.Form("txtGotoOptionViewID")
+				'Session("optionOrderID") = Request.Form("txtGotoOptionOrderID")
 				Session("optionRecordID") = Request.Form("txtGotoOptionRecordID")
 				Session("optionFilterDef") = Request.Form("txtGotoOptionFilterDef")
 				Session("optionFilterSQL") = Request.Form("txtGotoOptionFilterSQL")
@@ -4743,7 +4743,7 @@ Namespace Controllers
 				Session("optionLinkOrderID") = Request.Form("txtGotoOptionLinkOrderID")
 				Session("optionLinkViewID") = Request.Form("txtGotoOptionLinkViewID")
 				Session("optionLinkRecordID") = Request.Form("txtGotoOptionLinkRecordID")
-				Session("optionColumnID") = Request.Form("txtGotoOptionColumnID")
+				'Session("optionColumnID") = Request.Form("txtGotoOptionColumnID")
 				Session("optionLookupColumnID") = Request.Form("txtGotoOptionLookupColumnID")
 				Session("optionLookupMandatory") = Request.Form("txtGotoOptionLookupMandatory")
 				Session("optionLookupValue") = Request.Form("txtGotoOptionLookupValue")
