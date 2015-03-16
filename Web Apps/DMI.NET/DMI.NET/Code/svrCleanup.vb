@@ -117,7 +117,10 @@ Public Module svrCleanup
       FormatError = Trim(Mid(psErrMsg, iStart + 1))
     Else
       FormatError = psErrMsg
-    End If
+		End If
+
+		FormatError = HttpUtility.HtmlEncode(FormatError)
+
   End Function
 
   Function ConvertSQLDateToLocale(pobjDate As Object) As String

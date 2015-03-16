@@ -1177,7 +1177,8 @@ Namespace Controllers
 		End Function
 
 		Function Data() As ActionResult
-			Return View()
+			Dim m As New DataViewModel
+			Return View(m)
 		End Function
 
 		Function OptionData() As ActionResult
@@ -1221,8 +1222,7 @@ Namespace Controllers
 
 		<HttpPost>
 		<ValidateAntiForgeryToken>
-		<ValidateInput(False)>
-		Function Data_Submit() As ActionResult
+		Function Data_Submit(dataViewModel As DataViewModel) As ActionResult
 			Dim sErrorMsg As String = ""
 			Dim fWarning As Boolean = False
 			Dim fOk As Boolean = False
@@ -1232,29 +1232,29 @@ Namespace Controllers
 
 
 			' Read the information from the calling form.
-			Dim sRealSource = Request.Form("txtRealSource")
-			Dim lngTableID = ValidateIntegerValue(Request.Form("txtCurrentTableID"))
-			Dim lngScreenID = ValidateIntegerValue(Request.Form("txtCurrentScreenID"))
-			Dim lngViewID = ValidateIntegerValue(Request.Form("txtCurrentViewID"))
-			Dim lngRecordID = ValidateIntegerValue(Request.Form("txtRecordID"))
-			Dim sAction = ValidateFromWhiteList(Request.Form("txtAction"), InputValidation.WhiteListCollections.Actions)
-			Dim sReaction = ValidateFromWhiteList(Request.Form("txtReaction"), InputValidation.WhiteListCollections.Actions)
-			Dim sInsertUpdateDef = Request.Form("txtInsertUpdateDef")
-			Dim iTimestamp = ValidateIntegerValue(Request.Form("txtTimestamp"))
-			Dim iTBEmployeeRecordID = ValidateIntegerValue(Request.Form("txtTBEmployeeRecordID"))
-			Dim iTBCourseRecordID = ValidateIntegerValue(Request.Form("txtTBCourseRecordID"))
-			Dim sTBBookingStatusValue = Request.Form("txtTBBookingStatusValue")
-			Dim fUserChoice = Request.Form("txtUserChoice")
+			Dim sRealSource = dataViewModel.txtRealSource
+			Dim lngTableID = ValidateIntegerValue(dataViewModel.txtCurrentTableID)
+			Dim lngScreenID = ValidateIntegerValue(dataViewModel.txtCurrentScreenID)
+			Dim lngViewID = ValidateIntegerValue(dataViewModel.txtCurrentViewID)
+			Dim lngRecordID = ValidateIntegerValue(dataViewModel.txtRecordID)
+			Dim sAction = ValidateFromWhiteList(dataViewModel.txtAction, InputValidation.WhiteListCollections.Actions)
+			Dim sReaction = ValidateFromWhiteList(dataViewModel.txtReaction, InputValidation.WhiteListCollections.Actions)
+			Dim sInsertUpdateDef = dataViewModel.txtInsertUpdateDef
+			Dim iTimestamp = ValidateIntegerValue(dataViewModel.txtTimestamp)
+			Dim iTBEmployeeRecordID = ValidateIntegerValue(dataViewModel.txtTBEmployeeRecordID)
+			Dim iTBCourseRecordID = ValidateIntegerValue(dataViewModel.txtTBCourseRecordID)
+			Dim sTBBookingStatusValue = dataViewModel.txtTBBookingStatusValue
+			Dim fUserChoice = dataViewModel.txtUserChoice
 
 
-			If Request.Form("txtTBOverride") = "" Then
+			If dataViewModel.txtTBOverride = "" Then
 				fTBOverride = False
 			Else
-				fTBOverride = ValidateBooleanValue(Request.Form("txtTBOverride"))
+				fTBOverride = ValidateBooleanValue(dataViewModel.txtTBOverride)
 			End If
 
 			If sAction = "SAVE" Then
-				Dim lngOriginalRecordID = ValidateIntegerValue(Request.Form("txtOriginalRecordID"))
+				Dim lngOriginalRecordID = ValidateIntegerValue(dataViewModel.txtOriginalRecordID)
 				Dim result = _controllerRecord.data_submit_SAVE(lngTableID, lngRecordID, sReaction, fTBOverride, iTBEmployeeRecordID, iTBCourseRecordID, sTBBookingStatusValue, sInsertUpdateDef, sRealSource, iTimestamp, lngOriginalRecordID)
 				lngRecordID = result.RecordID
 				sAction = result.Action
@@ -1278,7 +1278,7 @@ Namespace Controllers
 				Session("tbCourseTitle") = result.CourseTitle
 
 			ElseIf sAction = "CANCELCOURSE_2" Then
-				Dim txtTBCreateWLRecords = CleanBoolean(Request.Form("txtTBCreateWLRecords"))
+				Dim txtTBCreateWLRecords = CleanBoolean(dataViewModel.txtTBCreateWLRecords)
 				Dim result = _controllerTraining.data_submit_CancelCourse2(lngRecordID, sRealSource, iTBCourseRecordID, txtTBCreateWLRecords)
 				sErrorMsg = result.Message
 				sAction = result.Action
@@ -1298,11 +1298,11 @@ Namespace Controllers
 
 			End If
 
-			Session("selectSQL") = Request.Form("txtSelectSQL")
-			Session("fromDef") = Request.Form("txtFromDef")
-			Session("filterSQL") = Request.Form("txtFilterSQL")
+			Session("selectSQL") = dataViewModel.txtSelectSQL
+			Session("fromDef") = dataViewModel.txtFromDef
+			Session("filterSQL") = dataViewModel.txtFilterSQL
 			Session("filterDefPrevious") = Session("filterDef")
-			Session("filterDef") = Request.Form("txtFilterDef")
+			Session("filterDef") = dataViewModel.txtFilterDef
 			Session("realSource") = sRealSource
 			Session("tableID") = lngTableID
 			Session("screenID") = lngScreenID
@@ -1311,16 +1311,16 @@ Namespace Controllers
 			Session("action") = sAction
 			Session("reaction") = ""
 			Session("warningFlag") = fWarning
-			Session("parentTableID") = ValidateIntegerValue(Request.Form("txtParentTableID"))
-			Session("parentRecordID") = ValidateIntegerValue(Request.Form("txtParentRecordID"))
-			Session("defaultCalcColumns") = Request.Form("txtDefaultCalcCols")
+			Session("parentTableID") = ValidateIntegerValue(dataViewModel.txtParentTableID)
+			Session("parentRecordID") = ValidateIntegerValue(dataViewModel.txtParentRecordID)
+			Session("defaultCalcColumns") = dataViewModel.txtDefaultCalcCols
 			Session("insertUpdateDef") = sInsertUpdateDef
 			Session("errorMessage") = sErrorMsg
-			Session("ReportBaseTableID") = ValidateIntegerValue(Request.Form("txtReportBaseTableID"))
-			Session("ReportParent1TableID") = ValidateIntegerValue(Request.Form("txtReportParent1TableID"))
-			Session("ReportParent2TableID") = ValidateIntegerValue(Request.Form("txtReportParent2TableID"))
-			Session("ReportChildTableID") = ValidateIntegerValue(Request.Form("txtReportChildTableID"))
-			Session("Param1") = Request.Form("txtParam1")
+			Session("ReportBaseTableID") = ValidateIntegerValue(dataViewModel.txtReportBaseTableID)
+			Session("ReportParent1TableID") = ValidateIntegerValue(dataViewModel.txtReportParent1TableID)
+			Session("ReportParent2TableID") = ValidateIntegerValue(dataViewModel.txtReportParent2TableID)
+			Session("ReportChildTableID") = ValidateIntegerValue(dataViewModel.txtReportChildTableID)
+			Session("Param1") = dataViewModel.txtParam1
 
 			'JDM - 24/07/02 - Fault 3917 - Reset year for absence calendar
 			Session("stdrpt_AbsenceCalendar_StartYear") = Year(DateTime.Now())
@@ -1329,21 +1329,21 @@ Namespace Controllers
 			Session("stdrpt_AbsenceCalendar_StartMonth") = ""
 
 			'TM - 05/09/02 - Store the event log parameters in session vaiables.
-			Session("ELFilterUser") = Request.Form("txtELFilterUser")
-			Session("ELFilterType") = Request.Form("txtELFilterType")
-			Session("ELFilterStatus") = Request.Form("txtELFilterStatus")
-			Session("ELFilterMode") = Request.Form("txtELFilterMode")
-			Session("ELOrderColumn") = Request.Form("txtELOrderColumn")
-			Session("ELOrderOrder") = Request.Form("txtELOrderOrder")
+			Session("ELFilterUser") = dataViewModel.txtELFilterUser
+			Session("ELFilterType") = dataViewModel.txtELFilterType
+			Session("ELFilterStatus") = dataViewModel.txtELFilterStatus
+			Session("ELFilterMode") = dataViewModel.txtELFilterMode
+			Session("ELOrderColumn") = dataViewModel.txtELOrderColumn
+			Session("ELOrderOrder") = dataViewModel.txtELOrderOrder
 
-			Session("ELAction") = Request.Form("txtELAction")
+			Session("ELAction") = dataViewModel.txtELAction
 
-			Session("ELCurrentRecCount") = ValidateIntegerValue(Request.Form("txtELCurrRecCount"))
+			Session("ELCurrentRecCount") = ValidateIntegerValue(dataViewModel.txtELCurrRecCount)
 			If Session("ELCurrentRecCount") < 1 Or Len(Session("ELCurrentRecCount")) < 1 Then
 				Session("ELCurrentRecCount") = 0
 			End If
 
-			Session("ELFirstRecPos") = ValidateIntegerValue(Request.Form("txtEL1stRecPos"))
+			Session("ELFirstRecPos") = ValidateIntegerValue(dataViewModel.txtEL1stRecPos)
 			If Session("ELFirstRecPos") < 1 Or Len(Session("ELFirstRecPos")) < 1 Then
 				Session("ELFirstRecPos") = 1
 			End If

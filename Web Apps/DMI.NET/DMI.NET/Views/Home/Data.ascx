@@ -1,4 +1,4 @@
-﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
+﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl(of DMI.NET.ViewModels.Home.DataViewModel)" %>
 <%@ Import Namespace="DMI.NET.Code" %>
 <%@ Import Namespace="DMI.NET" %>
 <%@ Import Namespace="HR.Intranet.Server" %>
@@ -526,47 +526,49 @@
 <div>
 
 <form action="data_submit" method="post" id="frmGetData" name="frmGetData" data-formname="data.ascx">
-		<input type="hidden" id="txtAction" name="txtAction">
-		<input type="hidden" id="txtReaction" name="txtReaction">
-		<input type="hidden" id="txtCurrentTableID" name="txtCurrentTableID">
-		<input type="hidden" id="txtCurrentScreenID" name="txtCurrentScreenID">
-		<input type="hidden" id="txtCurrentViewID" name="txtCurrentViewID">
-		<input type="hidden" id="txtSelectSQL" name="txtSelectSQL">
-		<input type="hidden" id="txtFromDef" name="txtFromDef">
-		<input type="hidden" id="txtFilterSQL" name="txtFilterSQL">
-		<input type="hidden" id="txtFilterDef" name="txtFilterDef">
-		<input type="hidden" id="txtRealSource" name="txtRealSource">
-		<input type="hidden" id="txtOriginalRecordID" name="txtOriginalRecordID">
-		<input type="hidden" id="txtRecordID" name="txtRecordID">
-		<input type="hidden" id="txtParentTableID" name="txtParentTableID">
-		<input type="hidden" id="txtParentRecordID" name="txtParentRecordID">
-		<input type="hidden" id="txtDefaultCalcCols" name="txtDefaultCalcCols">
-		<input type="hidden" id="txtInsertUpdateDef" name="txtInsertUpdateDef">
-		<input type="hidden" id="txtTimestamp" name="txtTimestamp">
-		<input type="hidden" id="txtTBCourseRecordID" name="txtTBCourseRecordID">
-		<input type="hidden" id="txtTBEmployeeRecordID" name="txtTBEmployeeRecordID">
-		<input type="hidden" id="txtTBBookingStatusValue" name="txtTBBookingStatusValue">
-		<input type="hidden" id="txtTBOverride" name="txtTBOverride">
-		<input type="hidden" id="txtTBCreateWLRecords" name="txtTBCreateWLRecords">
-		<input type="hidden" id="txtReportBaseTableID" name="txtReportBaseTableID">
-		<input type="hidden" id="txtReportParent1TableID" name="txtReportParent1TableID">
-		<input type="hidden" id="txtReportParent2TableID" name="txtReportParent2TableID">
-		<input type="hidden" id="txtReportChildTableID" name="txtReportChildTableID">
-		<input type="hidden" id="txtUserChoice" name="txtUserChoice">
-		<input type="hidden" id="txtParam1" name="txtParam1">
-		<input type="hidden" id="txtELFilterUser" name="txtELFilterUser">
-		<input type="hidden" id="txtELFilterType" name="txtELFilterType">
-		<input type="hidden" id="txtELFilterStatus" name="txtELFilterStatus">
-		<input type="hidden" id="txtELFilterMode" name="txtELFilterMode">
-		<input type="hidden" id="txtELOrderColumn" name="txtELOrderColumn">
-		<input type="hidden" id="txtELOrderOrder" name="txtELOrderOrder">
-		<input type="hidden" id="txtELAction" name="txtELAction">
-		<input type="hidden" id="txtELCurrRecCount" name="txtELCurrRecCount" value="0">
-		<input type="hidden" id="txtEL1stRecPos" name="txtEL1stRecPos" value="0">
-		<%=Html.AntiForgeryToken()%>
-</form>
+	
+	<%:Html.HiddenFor(Function(dataViewModel) dataViewModel.txtAction)%>
+	<%:Html.HiddenFor(Function(dataViewModel) dataViewModel.txtReaction)%>
+	<%:Html.HiddenFor(Function(dataViewModel) dataViewModel.txtCurrentTableID)%>
+	<%:Html.HiddenFor(Function(dataViewModel) dataViewModel.txtCurrentScreenID)%>
+	<%:Html.HiddenFor(Function(dataViewModel) dataViewModel.txtCurrentViewID)%>
+	<%:Html.HiddenFor(Function(dataViewModel) dataViewModel.txtSelectSQL)%>
+	<%:Html.HiddenFor(Function(dataViewModel) dataViewModel.txtFromDef)%>
+	<%:Html.HiddenFor(Function(dataViewModel) dataViewModel.txtFilterSQL)%>
+	<%:Html.HiddenFor(Function(dataViewModel) dataViewModel.txtFilterDef)%>
+	<%:Html.HiddenFor(Function(dataViewModel) dataViewModel.txtRealSource)%>
+	<%:Html.HiddenFor(Function(dataViewModel) dataViewModel.txtOriginalRecordID)%>
+	<%:Html.HiddenFor(Function(dataViewModel) dataViewModel.txtRecordID)%>
+	<%:Html.HiddenFor(Function(dataViewModel) dataViewModel.txtParentTableID)%>
+	<%:Html.HiddenFor(Function(dataViewModel) dataViewModel.txtParentRecordID)%>
+	<%:Html.HiddenFor(Function(dataViewModel) dataViewModel.txtDefaultCalcCols)%>
+	<%:Html.HiddenFor(Function(dataViewModel) dataViewModel.txtInsertUpdateDef)%>
+	<%:Html.HiddenFor(Function(dataViewModel) dataViewModel.txtTimestamp)%>
+	<%:Html.HiddenFor(Function(dataViewModel) dataViewModel.txtTBCourseRecordID)%>
+	<%:Html.HiddenFor(Function(dataViewModel) dataViewModel.txtTBEmployeeRecordID)%>
+	<%:Html.HiddenFor(Function(dataViewModel) dataViewModel.txtTBBookingStatusValue)%>
+	<%:Html.HiddenFor(Function(dataViewModel) dataViewModel.txtTBOverride)%>
+	<%:Html.HiddenFor(Function(dataViewModel) dataViewModel.txtTBCreateWLRecords)%>
+	<%:Html.HiddenFor(Function(dataViewModel) dataViewModel.txtReportBaseTableID)%>
+	<%:Html.HiddenFor(Function(dataViewModel) dataViewModel.txtReportParent1TableID)%>
+	<%:Html.HiddenFor(Function(dataViewModel) dataViewModel.txtReportParent2TableID)%>
+	<%:Html.HiddenFor(Function(dataViewModel) dataViewModel.txtReportChildTableID)%>
+	<%:Html.HiddenFor(Function(dataViewModel) dataViewModel.txtUserChoice)%>
+	<%:Html.HiddenFor(Function(dataViewModel) dataViewModel.txtParam1)%>
+	<%:Html.HiddenFor(Function(dataViewModel) dataViewModel.txtELFilterUser)%>
+	<%:Html.HiddenFor(Function(dataViewModel) dataViewModel.txtELFilterType)%>
+	<%:Html.HiddenFor(Function(dataViewModel) dataViewModel.txtELFilterStatus)%>
+	<%:Html.HiddenFor(Function(dataViewModel) dataViewModel.txtELFilterMode)%>
+	<%:Html.HiddenFor(Function(dataViewModel) dataViewModel.txtELOrderColumn)%>
+	<%:Html.HiddenFor(Function(dataViewModel) dataViewModel.txtELOrderOrder)%>
+	<%:Html.HiddenFor(Function(dataViewModel) dataViewModel.txtELAction)%>
+	<%:Html.HiddenFor(Function(dataViewModel) dataViewModel.txtELCurrRecCount)%>
+	<%:Html.HiddenFor(Function(dataViewModel) dataViewModel.txtEL1stRecPos)%>
 
-<form id="frmData" name="frmData">
+	<%=Html.AntiForgeryToken()%>
+	</form>
+
+	<form id="frmData" name="frmData">
 <%
 	
 	Dim lngRecordID As Long
