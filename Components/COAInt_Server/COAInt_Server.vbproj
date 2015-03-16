@@ -120,6 +120,7 @@
     <Compile Include="Enums\OLEType.vb" />
     <Compile Include="Enums\OptionActionType.vb" />
     <Compile Include="Enums\SaveResponse.vb" />
+    <Compile Include="Extensions\UtilityTypeExtension.vb" />
     <Compile Include="ReportOutput\BaseOutputFormat.vb" />
     <Compile Include="BaseClasses\BaseReport.vb" />
     <Compile Include="Classes\AbsenceBreakdownDate.vb" />

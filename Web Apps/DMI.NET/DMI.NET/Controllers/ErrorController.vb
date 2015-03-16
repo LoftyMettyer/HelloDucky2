@@ -45,5 +45,10 @@ Namespace Controllers
 
 		End Function
 
+		Public Function PermissionsError() As ActionResult
+			Return View()
+		End Function
+
+
 	End Class
 End Namespace

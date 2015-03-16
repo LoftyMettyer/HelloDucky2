@@ -74,7 +74,6 @@ Namespace Models
 		Public Property txtGotoOptionRealsource As String
 
 		Public Property txtGotoOptionDefSelType As Integer
-		Public Property txtGotoOptionDefSelRecordID As Integer
 		Public Property txtGotoOptionOLEType As Integer
 		Public Property txtGotoOptionOLEMaxEmbedSize As Integer
 		Public Property txtGotoOptionOLEReadOnly As Boolean

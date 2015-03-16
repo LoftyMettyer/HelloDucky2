@@ -4,6 +4,7 @@ Imports HR.Intranet.Server.Metadata
 Imports HR.Intranet.Server.Structures
 Imports System.Collections.ObjectModel
 Imports System.Data.SqlClient
+Imports System.Linq
 Imports System.Web
 Imports System.Security
 
@@ -40,8 +41,18 @@ Public Class SessionInfo
 		End Get
 	End Property
 
+	Public Function IsCategoryGranted(Category As UtilityType) As Boolean
+
+		For Each objPermission In Permissions.Where(Function(m) m.CategoryKey = Category.ToSecurityPrefix())
+			If objPermission.IsPermitted Then Return True
+		Next
+
+		Return False
+	End Function
+
+
 	Public Function IsPermissionGranted(Category As String, Key As String) As Boolean
-		Return Permissions.IsPermitted(Category, Key)
+		Return Permissions.IsPermitted(Category, Key.ToUpper())
 	End Function
 
 	Public Function IsPhotoDataType(lngColumnID As Integer) As Boolean

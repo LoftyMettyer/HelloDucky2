@@ -224,7 +224,6 @@ Namespace Controllers
 				Session("locateValue") = Request.Form("txtGotoLocateValue")
 				Session("firstRecPos") = Request.Form("txtGotoFirstRecPos")
 				Session("currentRecCount") = Request.Form("txtGotoCurrentRecCount")
-				Session("fromMenu") = Request.Form("txtGotoFromMenu")
 
 				' Go to the requested page.
 				' Response.Redirect(Request.Form("txtGotoPage"))
@@ -308,7 +307,6 @@ Namespace Controllers
 					Session("locateValue") = Request.Form("txtGotoLocateValue")
 					Session("firstRecPos") = Request.Form("txtGotoFirstRecPos")
 					Session("currentRecCount") = Request.Form("txtGotoCurrentRecCount")
-					Session("fromMenu") = Request.Form("txtGotoFromMenu")
 
 					' Go to the requested page.
 					' Return RedirectToAction(Request.Form("txtGotoPage"))
@@ -833,14 +831,11 @@ Namespace Controllers
 				Session("filterDef") = Request.Form("txtGotoFilterDef")
 				Session("filterSQL") = Request.Form("txtGotoFilterSQL")
 				Session("lineage") = ValidateLineageValue(Request.Form("txtGotoLineage"))
-				Session("defseltype") = ValidateFromWhiteList(Request.Form("txtGotoDefSelType"), InputValidation.WhiteListCollections.UtilTypes)
 				Session("utilID") = ValidateIntegerValue(Request.Form("txtGotoUtilID"))
 				Session("locateValue") = ValidateIntegerValue(Request.Form("txtGotoLocateValue"))
 				Session("firstRecPos") = ValidateIntegerValue(Request.Form("txtGotoFirstRecPos"))
 				Session("currentRecCount") = ValidateIntegerValue(Request.Form("txtGotoCurrentRecCount"))
-				Session("fromMenu") = ValidateIntegerValue(Request.Form("txtGotoFromMenu"))
 				Session("StandardReport_Type") = ValidateFromWhiteList(Request.Form("txtStandardReportType"), InputValidation.WhiteListCollections.UtilTypes)
-				Session("singleRecordID") = ValidateIntegerValue(Request.Form("txtGotoOptionDefSelRecordID"))
 			End If
 
 			Session("optionRecordID") = 0
@@ -886,7 +881,6 @@ Namespace Controllers
 			Session("optionParameterIndex") = form.txtGotoOptionParameterIndex
 			Session("OptionRealsource") = form.txtGotoOptionRealsource
 			Session("StandardReport_Type") = form.txtStandardReportType
-			Session("singleRecordID") = form.txtGotoOptionDefSelRecordID
 
 		End Sub
 
@@ -973,20 +967,6 @@ Namespace Controllers
 		End Function
 
 		<HttpPost()>
-	<ValidateAntiForgeryToken>
-		Function menu_loadRecordDefSelPage(form As GotoOptionDataModel) As RedirectToRouteResult
-			emptyoption_Submit_BASE(form)
-			Return RedirectToAction("DefSel")
-		End Function
-
-		<HttpPost()>
-	<ValidateAntiForgeryToken>
-		Function menu_loadRecordDefSelPageNoSaveCheck(form As GotoOptionDataModel) As RedirectToRouteResult
-			emptyoption_Submit_BASE(form)
-			Return RedirectToAction("DefSel")
-		End Function
-
-		<HttpPost()>
 <ValidateAntiForgeryToken>
 		Function menu_LoadAbsenceCalendar(form As GotoOptionDataModel) As RedirectToRouteResult
 			emptyoption_Submit_BASE(form)
@@ -1054,16 +1034,32 @@ Namespace Controllers
 
 #End Region
 
-
 		Function DefSel() As ActionResult
 			Return View()
 		End Function
 
 		<HttpPost()>
 		<ValidateAntiForgeryToken>
-		Function DefSel(value As FormCollection)
+		Function DefSel(value As DefSelModel) As ActionResult
 
-			Session("utilTableID") = ValidateIntegerValue(Request.Form("txtTableID"))
+			Dim objSession = CType(Session("SessionContext"), SessionInfo)
+
+			' Validate permission (should only be hit if user "hacked" the accordian)
+			If Not objSession.IsCategoryGranted(value.utiltype) Then
+				Return RedirectToAction("PermissionsError", "Error")
+			End If
+
+			Session("defseltype") = value.utiltype
+			Session("utilTableID") = value.txtTableID
+			Session("fromMenu") = IIf(value.txtGotoFromMenu, "1", "0") ' No idea what this is doing, just placed for backward compatability. Candidate for removal!
+			Session("singleRecordID") = value.RecordID
+
+			If value.txtGotoFromMenu Then
+				Session("OnlyMine") = CBool(objSession.GetUserSetting("defsel", "onlymine " + value.utiltype.ToSecurityPrefix, False))
+			Else
+				Session("OnlyMine") = value.OnlyMine
+			End If
+
 			Return View()
 
 		End Function
@@ -1073,6 +1069,13 @@ Namespace Controllers
 		Function DefSel_Submit(value As DefSelModel)
 
 			Try
+
+				Dim objSession = CType(Session("SessionContext"), SessionInfo)
+
+				' Validate permission (should only be hit if user "hacked" the button properties)
+				If Not objSession.IsPermissionGranted(value.utiltype.ToSecurityPrefix, value.Action) Then
+					Return RedirectToAction("PermissionsError", "Error")
+				End If
 
 				' Set some session variables used by all the util pages
 				Session("utiltype") = value.utiltype
@@ -2144,7 +2147,16 @@ Namespace Controllers
 		End Function
 
 		Function NewUser() As ActionResult
-			Return View()
+
+			' Validate permission (should only be hit if user "hacked" the button properties)
+			Dim objSession = CType(Session("SessionContext"), SessionInfo)
+
+			If objSession.IsCategoryGranted(UtilityType.NewUser) Then
+				Return View()
+			Else
+				Return RedirectToAction("PermissionsError", "Error")
+			End If
+
 		End Function
 
 #Region "Event Log Forms"

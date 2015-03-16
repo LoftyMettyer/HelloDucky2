@@ -38,6 +38,7 @@
 		utlColumn = 34
 		utlNineBoxGrid = 35
 		utlAbsenceBreakdownConfiguration = 36
+		NewUser = 37
 	End Enum
 	'There is also a list in DAT Manager - 
 	'ModEnums.bas which has to be kept in sync with this one

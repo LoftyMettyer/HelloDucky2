@@ -1793,6 +1793,7 @@
     <Content Include="Views\Error\Configuration.vbhtml" />
     <Content Include="Views\Error\PageNotFound.vbhtml" />
     <Content Include="Views\Error\InternalServer.vbhtml" />
+    <Content Include="Views\Error\PermissionsError.vbhtml" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Global.asax" />

@@ -34,7 +34,6 @@
 	<INPUT type="hidden" id=txtGotoOptionParameterIndex name=txtGotoOptionParameterIndex value="">
 	<INPUT type="hidden" id=txtGotoOptionDefSelType name=txtGotoOptionDefSelType>
 	<INPUT type="hidden" id=txtGotoOptionUtilID name=txtGotoOptionUtilID>
-	<INPUT type="hidden" id=txtGotoOptionDefSelRecordID name=txtGotoOptionDefSelRecordID value=0>
 	<INPUT type="hidden" id=txtGotoOptionOLEType name=txtGotoOptionOLEType>
 	<INPUT type="hidden" id=txtGotoOptionOLEMaxEmbedSize name=txtGotoOptionOLEMaxEmbedSize>
 	<INPUT type="hidden" id=txtGotoOptionOLEReadOnly name=txtGotoOptionOLEReadOnly>
