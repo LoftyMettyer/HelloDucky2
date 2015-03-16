@@ -78,7 +78,7 @@
 
 			//Set all datepickers to 
 			$(document).on('keydown', '.datepicker', function (event) {
-
+				
 				switch (event.keyCode) {
 					case 113:    // F2 insert todays date
 						$(this).datepicker("setDate", new Date());
@@ -120,7 +120,7 @@
 				
 				if ((ctrlKey || cmdKey) || (shiftKey)) {
 					switch (kdCode) {
-					case 113: // Ctrl F2 now logs you out of system
+					case 114: // Ctrl F3 now logs you out of system
 						saveChangesPrompt('mnutoolLogoff', 'menu_logoffIntranet()');
 						break;
 					}
