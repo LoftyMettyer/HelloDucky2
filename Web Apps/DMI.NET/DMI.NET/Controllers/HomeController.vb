@@ -829,9 +829,9 @@ Namespace Controllers
 				Session("recordID") = ValidateIntegerValue(Request.Form("txtGotoRecordID"))
 				Session("parentTableID") = ValidateIntegerValue(Request.Form("txtGotoParentTableID"))
 				Session("parentRecordID") = ValidateIntegerValue(Request.Form("txtGotoParentRecordID"))
-				Session("realSource") = ValidateStringValue(Request.Form("txtGotoRealSource"), InputValidation.StringSanitiseLevel.HTMLEncode)
-				Session("filterDef") = ValidateStringValue(Request.Form("txtGotoFilterDef"), InputValidation.StringSanitiseLevel.HTMLEncode)
-				Session("filterSQL") = ValidateStringValue(Request.Form("txtGotoFilterSQL"), InputValidation.StringSanitiseLevel.None)
+				Session("realSource") = Request.Form("txtGotoRealSource")
+				Session("filterDef") = Request.Form("txtGotoFilterDef")
+				Session("filterSQL") = Request.Form("txtGotoFilterSQL")
 				Session("lineage") = ValidateLineageValue(Request.Form("txtGotoLineage"))
 				Session("defseltype") = ValidateFromWhiteList(Request.Form("txtGotoDefSelType"), InputValidation.WhiteListCollections.UtilTypes)
 				Session("utilID") = ValidateIntegerValue(Request.Form("txtGotoUtilID"))
@@ -847,7 +847,7 @@ Namespace Controllers
 			Session("optionAction") = OptionActionType.Empty
 
 			' Go to the requested page.
-			Return RedirectToAction(ValidateStringValue(Request.Form("txtGotoPage"), InputValidation.StringSanitiseLevel.None))
+			Return RedirectToAction(Request.Form("txtGotoPage"))
 
 		End Function
 
@@ -1197,8 +1197,8 @@ Namespace Controllers
 			Session("optionPageAction") = form.txtOptionPageAction
 			Session("optionFirstRecPos") = form.txtOptionFirstRecPos
 			Session("optionCurrentRecCount") = form.txtOptionCurrentRecCount
-			Session("optionLocateValue") = ValidateStringValue(form.txtGotoLocateValue, InputValidation.StringSanitiseLevel.HTMLEncode)
-			Session("optionCourseTitle") = ValidateStringValue(form.txtOptionCourseTitle, InputValidation.StringSanitiseLevel.HTMLEncode)
+			Session("optionLocateValue") = form.txtGotoLocateValue
+			Session("optionCourseTitle") = form.txtOptionCourseTitle
 			Session("optionRecordID") = form.txtOptionRecordID
 			Session("optionLinkRecordID") = form.txtOptionLinkRecordID
 			Session("optionValue") = form.txtOptionValue
@@ -1206,7 +1206,7 @@ Namespace Controllers
 			Session("optionPromptSQL") = form.txtOptionPromptSQL
 			Session("optionOnlyNumerics") = form.txtOptionOnlyNumerics
 			Session("optionLookupColumnID") = form.txtOptionLookupColumnID
-			Session("optionFilterValue") = ValidateStringValue(form.txtOptionLookupFilterValue, InputValidation.StringSanitiseLevel.HTMLEncode)
+			Session("optionFilterValue") = form.txtOptionLookupFilterValue
 			Session("IsLookupTable") = form.txtOptionIsLookupTable
 			Session("optionParentTableID") = form.txtOptionParentTableID
 			Session("optionParentRecordID") = form.txtOptionParentRecordID
@@ -1232,22 +1232,22 @@ Namespace Controllers
 
 
 			' Read the information from the calling form.
-			Dim sRealSource = ValidateStringValue(Request.Form("txtRealSource"), InputValidation.StringSanitiseLevel.HTMLEncode)
+			Dim sRealSource = Request.Form("txtRealSource")
 			Dim lngTableID = ValidateIntegerValue(Request.Form("txtCurrentTableID"))
 			Dim lngScreenID = ValidateIntegerValue(Request.Form("txtCurrentScreenID"))
 			Dim lngViewID = ValidateIntegerValue(Request.Form("txtCurrentViewID"))
 			Dim lngRecordID = ValidateIntegerValue(Request.Form("txtRecordID"))
 			Dim sAction = ValidateFromWhiteList(Request.Form("txtAction"), InputValidation.WhiteListCollections.Actions)
 			Dim sReaction = ValidateFromWhiteList(Request.Form("txtReaction"), InputValidation.WhiteListCollections.Actions)
-			Dim sInsertUpdateDef = ValidateStringValue(Request.Form("txtInsertUpdateDef"), InputValidation.StringSanitiseLevel.None)
+			Dim sInsertUpdateDef = Request.Form("txtInsertUpdateDef")
 			Dim iTimestamp = ValidateIntegerValue(Request.Form("txtTimestamp"))
 			Dim iTBEmployeeRecordID = ValidateIntegerValue(Request.Form("txtTBEmployeeRecordID"))
 			Dim iTBCourseRecordID = ValidateIntegerValue(Request.Form("txtTBCourseRecordID"))
-			Dim sTBBookingStatusValue = ValidateStringValue(Request.Form("txtTBBookingStatusValue"), InputValidation.StringSanitiseLevel.HTMLEncode)
-			Dim fUserChoice = ValidateStringValue(Request.Form("txtUserChoice"), InputValidation.StringSanitiseLevel.HTMLEncode)
+			Dim sTBBookingStatusValue = Request.Form("txtTBBookingStatusValue")
+			Dim fUserChoice = Request.Form("txtUserChoice")
 
 
-			If ValidateStringValue(Request.Form("txtTBOverride"), InputValidation.StringSanitiseLevel.HTMLEncode) = "" Then
+			If Request.Form("txtTBOverride") = "" Then
 				fTBOverride = False
 			Else
 				fTBOverride = ValidateBooleanValue(Request.Form("txtTBOverride"))
@@ -1278,7 +1278,7 @@ Namespace Controllers
 				Session("tbCourseTitle") = result.CourseTitle
 
 			ElseIf sAction = "CANCELCOURSE_2" Then
-				Dim txtTBCreateWLRecords = CleanBoolean(ValidateStringValue(Request.Form("txtTBCreateWLRecords"), InputValidation.StringSanitiseLevel.HTMLEncode))
+				Dim txtTBCreateWLRecords = CleanBoolean(Request.Form("txtTBCreateWLRecords"))
 				Dim result = _controllerTraining.data_submit_CancelCourse2(lngRecordID, sRealSource, iTBCourseRecordID, txtTBCreateWLRecords)
 				sErrorMsg = result.Message
 				sAction = result.Action
@@ -1298,11 +1298,11 @@ Namespace Controllers
 
 			End If
 
-			Session("selectSQL") = ValidateStringValue(Request.Form("txtSelectSQL"), InputValidation.StringSanitiseLevel.None)
-			Session("fromDef") = ValidateStringValue(Request.Form("txtFromDef"), InputValidation.StringSanitiseLevel.HTMLEncode)
-			Session("filterSQL") = ValidateStringValue(Request.Form("txtFilterSQL"), InputValidation.StringSanitiseLevel.None)
+			Session("selectSQL") = Request.Form("txtSelectSQL")
+			Session("fromDef") = Request.Form("txtFromDef")
+			Session("filterSQL") = Request.Form("txtFilterSQL")
 			Session("filterDefPrevious") = Session("filterDef")
-			Session("filterDef") = ValidateStringValue(Request.Form("txtFilterDef"), InputValidation.StringSanitiseLevel.None)
+			Session("filterDef") = Request.Form("txtFilterDef")
 			Session("realSource") = sRealSource
 			Session("tableID") = lngTableID
 			Session("screenID") = lngScreenID
@@ -1313,14 +1313,14 @@ Namespace Controllers
 			Session("warningFlag") = fWarning
 			Session("parentTableID") = ValidateIntegerValue(Request.Form("txtParentTableID"))
 			Session("parentRecordID") = ValidateIntegerValue(Request.Form("txtParentRecordID"))
-			Session("defaultCalcColumns") = ValidateStringValue(Request.Form("txtDefaultCalcCols"), InputValidation.StringSanitiseLevel.HTMLEncode)
+			Session("defaultCalcColumns") = Request.Form("txtDefaultCalcCols")
 			Session("insertUpdateDef") = sInsertUpdateDef
 			Session("errorMessage") = sErrorMsg
 			Session("ReportBaseTableID") = ValidateIntegerValue(Request.Form("txtReportBaseTableID"))
 			Session("ReportParent1TableID") = ValidateIntegerValue(Request.Form("txtReportParent1TableID"))
 			Session("ReportParent2TableID") = ValidateIntegerValue(Request.Form("txtReportParent2TableID"))
 			Session("ReportChildTableID") = ValidateIntegerValue(Request.Form("txtReportChildTableID"))
-			Session("Param1") = ValidateStringValue(Request.Form("txtParam1"), InputValidation.StringSanitiseLevel.HTMLEncode)
+			Session("Param1") = Request.Form("txtParam1")
 
 			'JDM - 24/07/02 - Fault 3917 - Reset year for absence calendar
 			Session("stdrpt_AbsenceCalendar_StartYear") = Year(DateTime.Now())
@@ -1329,14 +1329,14 @@ Namespace Controllers
 			Session("stdrpt_AbsenceCalendar_StartMonth") = ""
 
 			'TM - 05/09/02 - Store the event log parameters in session vaiables.
-			Session("ELFilterUser") = ValidateStringValue(Request.Form("txtELFilterUser"), InputValidation.StringSanitiseLevel.HTMLEncode)
-			Session("ELFilterType") = ValidateStringValue(Request.Form("txtELFilterType"), InputValidation.StringSanitiseLevel.HTMLEncode)
-			Session("ELFilterStatus") = ValidateStringValue(Request.Form("txtELFilterStatus"), InputValidation.StringSanitiseLevel.HTMLEncode)
-			Session("ELFilterMode") = ValidateStringValue(Request.Form("txtELFilterMode"), InputValidation.StringSanitiseLevel.HTMLEncode)
-			Session("ELOrderColumn") = ValidateStringValue(Request.Form("txtELOrderColumn"), InputValidation.StringSanitiseLevel.HTMLEncode)
-			Session("ELOrderOrder") = ValidateStringValue(Request.Form("txtELOrderOrder"), InputValidation.StringSanitiseLevel.HTMLEncode)
+			Session("ELFilterUser") = Request.Form("txtELFilterUser")
+			Session("ELFilterType") = Request.Form("txtELFilterType")
+			Session("ELFilterStatus") = Request.Form("txtELFilterStatus")
+			Session("ELFilterMode") = Request.Form("txtELFilterMode")
+			Session("ELOrderColumn") = Request.Form("txtELOrderColumn")
+			Session("ELOrderOrder") = Request.Form("txtELOrderOrder")
 
-			Session("ELAction") = ValidateStringValue(Request.Form("txtELAction"), InputValidation.StringSanitiseLevel.HTMLEncode)
+			Session("ELAction") = Request.Form("txtELAction")
 
 			Session("ELCurrentRecCount") = ValidateIntegerValue(Request.Form("txtELCurrRecCount"))
 			If Session("ELCurrentRecCount") < 1 Or Len(Session("ELCurrentRecCount")) < 1 Then

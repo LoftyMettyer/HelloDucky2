@@ -575,7 +575,7 @@ Namespace Controllers
 
 				Dim objResetPwd As New Code.ResetPassword
 
-				objResetPwd.Username = ValidateStringValue(Request.Form("txtUserName"), InputValidation.StringSanitiseLevel.None)
+				objResetPwd.Username = Request.Form("txtUserName")
 
 				' Force password change only if there are no other users logged in with the same name.
 				If Request.ServerVariables("HTTPS").ToLower = "on" Then protocol = "https"
