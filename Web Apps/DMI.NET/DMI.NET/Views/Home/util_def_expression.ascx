@@ -173,6 +173,7 @@
 	<input type="hidden" id="components1" name="components1" value="">
 	<input type="hidden" id="validateBaseTableID" name="validateBaseTableID" value='<%=session("utiltableid")%>'>
 	<input type="hidden" id="validateOriginalAccess" name="validateOriginalAccess" value="RW">
+	<%=Html.AntiForgeryToken()%>
 </form>
 
 <form id="frmSend" name="frmSend" method="post" action="util_def_expression_Submit" style="visibility: hidden; display: none">

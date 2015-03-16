@@ -43,8 +43,6 @@
 		}
 
 		function returnToDefSel() {
-
-			debugger;
 			OpenHR.returnToDefSel();		  
 			uve_cancelClick();
 		}
@@ -117,11 +115,16 @@
 	Else
 			  
 		If Request.Form("validateUtilType") = 12 Then
-			  			Response.Write("Validating Calculation")
-			  		Else
-			  			Response.Write("Validating Expression")
-			  		End If
-			  	End If
+			  
+			Response.Write("Validating Calculation")
+			  
+		Else
+			  
+			Response.Write("Validating Expression")
+			  
+		End If
+			  
+	End If
 			%>				
 		</h3>
 		Please wait...
@@ -490,14 +493,15 @@
 
 	<form id="frmValidate2" name="frmValidate2" method="post" action="util_validate_expression" style="visibility: hidden; display: none">
 		<input type="hidden" id="validatePass" name="validatePass" value='<%=Request.form("validatePass")%>'>
-		<input type="hidden" id="validateUtilID" name="validateUtilID" value='<%=Request.form("validateUtilID")%>'>
+		<input type="hidden" id="validateUtilID" name="validateUtilID" value='<%= ValidateIntegerValue(Request.Form("validateUtilID"))%>'>
 		<input type="hidden" id="validateUtilType" name="validateUtilType" value='<%=Request.form("validateUtilType")%>'>
-		<input type="hidden" id="validateAccess" name="validateAccess" value='<%=Request.form("validateAccess")%>'>
-		<input type="hidden" id="validateOriginalAccess" name="validateOriginalAccess" value='<%=Request.form("validateOriginalAccess")%>'>
-		<input type="hidden" id="validateOwner" name="validateOwner" value='<%=Request.form("validateOwner")%>'>
+		<input type="hidden" id="validateAccess" name="validateAccess" value='<%= ValidateStringValue(Request.form("validateAccess"), Code.InputValidation.StringSanitiseLevel.HTMLEncode)%>'>
+		<input type="hidden" id="validateOriginalAccess" name="validateOriginalAccess" value='<%= ValidateStringValue(Request.Form("validateOriginalAccess"), Code.InputValidation.StringSanitiseLevel.HTMLEncode)%>'>
+		<input type="hidden" id="validateOwner" name="validateOwner" value='<%= ValidateStringValue(Request.form("validateOwner"), Code.InputValidation.StringSanitiseLevel.HTMLEncode)%>'>
 
-		<input type="hidden" id="components1" name="components1" value="<%=Request.form("components1")%>">
-		<input type="hidden" id="validateBaseTableID" name="validateBaseTableID" value='<%=Request.form("validateBaseTableID")%>'>
+		<input type="hidden" id="components1" name="components1" value="<%= ValidateStringValue(Request.Form("components1"), Code.InputValidation.StringSanitiseLevel.HTMLEncode)%>">
+		<input type="hidden" id="validateBaseTableID" name="validateBaseTableID" value='<%= ValidateIntegerValue(Request.Form("validateBaseTableID"))%>'>
+		<%=Html.AntiForgeryToken()%>
 	</form>
 </div>
 

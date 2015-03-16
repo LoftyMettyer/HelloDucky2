@@ -14,7 +14,8 @@
 						<input type="hidden" id="validateAccess" name="validateAccess">
 						<input type="hidden" id="components1" name="components1">
 						<input type="hidden" id="validateBaseTableID" name="validateBaseTableID">>
-					<input type="hidden" id="validateOriginalAccess" name="validateOriginalAccess">
+						<input type="hidden" id="validateOriginalAccess" name="validateOriginalAccess">
+						<%=Html.AntiForgeryToken()%>
 				</form>
 
 				<form id="frmTest" name="frmTest" method="post" action="<%:Url.Action("util_test_expression_pval", "Home")%>" style="visibility: hidden; display: none">

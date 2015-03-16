@@ -3563,7 +3563,8 @@ Namespace Controllers
 			Return View()
 		End Function
 
-		<ValidateInput(False)>
+		<HttpPost>
+		<ValidateAntiForgeryToken>
 		Function util_validate_expression() As ActionResult
 			Return View()
 		End Function
