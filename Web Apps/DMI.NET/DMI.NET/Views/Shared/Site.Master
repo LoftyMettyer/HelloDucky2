@@ -112,6 +112,22 @@
 				catch(e) {}
 			});
 			
+			$(document).on('keyup', function(e) {
+				var kdCode = e.keyCode;
+				var ctrlKey = e.ctrlKey;
+				var cmdKey = e.cmdKey;
+				var shiftKey = e.shiftKey;
+				
+				if ((ctrlKey || cmdKey) || (shiftKey)) {
+					switch (kdCode) {
+					case 113: // Ctrl F2 now logs you out of system
+						saveChangesPrompt('mnutoolLogoff', 'menu_logoffIntranet()');
+						break;
+					}
+				}
+				return true;
+			});
+
 			if (!(window.jQuery.ui)) {
 				//no jQuery! so quit out - compatibility mode(?) should be a message on login.aspx...
 				return false;
