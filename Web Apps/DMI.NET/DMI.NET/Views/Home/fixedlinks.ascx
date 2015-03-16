@@ -1207,7 +1207,7 @@
 					</li>
 					<%If UCase(Session("ui-layout-selectable")) = "TRUE" Then%>
 					<li class="linkspagebuttontext" id="userDropdownmenu_Layout">
-						<a onclick="javascript: showThemeEditor();">
+						<a onclick="javascript: showThemeEditor();" href="#">
 							<span>Layout</span>
 						</a>
 					</li>
