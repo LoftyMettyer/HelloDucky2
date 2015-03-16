@@ -967,7 +967,7 @@ Namespace Controllers
 		End Function
 
 		<HttpPost()>
-<ValidateAntiForgeryToken>
+	<ValidateAntiForgeryToken>
 		Function menu_LoadAbsenceCalendar(form As GotoOptionDataModel) As RedirectToRouteResult
 			emptyoption_Submit_BASE(form)
 			Return RedirectToAction("stdrpt_AbsenceCalendar")
@@ -3558,7 +3558,9 @@ Namespace Controllers
 				Session("timestamp") = 0
 			End If
 
-			Return View()
+			Dim m As New EmptyOptionViewModel
+			Return View(m)
+
 		End Function
 
 		Function util_def_exprcomponent() As ActionResult

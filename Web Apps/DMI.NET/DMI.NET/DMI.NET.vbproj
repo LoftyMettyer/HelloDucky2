@@ -256,6 +256,7 @@
     <Compile Include="Models\NineBoxGridModel.vb" />
     <Compile Include="ViewModels\Account\ConfigurationErrorsModel.vb" />
     <Compile Include="ViewModels\Home\BulkBookingSelectionViewModel.vb" />
+    <Compile Include="ViewModels\Home\EmptyOptionViewModel.vb" />
     <Compile Include="ViewModels\Home\DataViewModel.vb" />
     <Compile Include="ViewModels\Home\DefinitionPropertiesViewModel.vb" />
     <Compile Include="ViewModels\Home\BulkBookingViewModel.vb" />

@@ -1,4 +1,4 @@
-﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
+﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl(of DMI.NET.ViewModels.Home.EmptyOptionViewModel)" %>
 <%@ Import Namespace="DMI.NET" %>
 <%@ Import Namespace="System.Data.SqlClient" %>
 <%@ Import Namespace="System.Data" %>
@@ -505,28 +505,27 @@
 </script>
 
 
-<%
-	Response.Write("<div id='emptyoption_vars'>" & vbCrLf)
-	Response.Write("<input type='hidden' id='txtAction' name='txtAction' value='" & Session("optionAction") & "'>" & vbCrLf)
-	Response.Write("<input type='hidden' id='txtErrorMessage' name='txtErrorMessage' value='" & Replace(Session("errorMessage"), """", "&quot;") & "'>" & vbCrLf)
-	Response.Write("<input type='hidden' id='txtFromDef' name='txtFromDef' value='" & Replace(Session("fromDef"), """", "&quot;") & "'>" & vbCrLf)
-	Response.Write("<input type='hidden' id='txtOrderID' name='txtOrderID' value='" & Session("orderID") & "'>" & vbCrLf)
-	Response.Write("<input type='hidden' id='txtFilterSQL' name='txtFilterSQL' value='" & Replace(Session("optionFilterSQL"), """", "&quot;") & "'>" & vbCrLf)
-	Response.Write("<input type='hidden' id='txtFilterDef' name='txtFilterDef' value='" & Replace(Replace(Session("optionFilterDef"), """", "&quot;"), "'", "&#39;") & "'>" & vbCrLf)
-	Response.Write("<input type='hidden' id='txtRecordID' name='txtRecordID' value='" & Session("optionRecordID") & "'>" & vbCrLf)
-	Response.Write("<input type='hidden' id='txtLinkRecordID' name='txtLinkRecordID' value='" & Session("optionLinkRecordID") & "'>" & vbCrLf)
-	Response.Write("<input type='hidden' id='txtLookupColumnID' name='txtLookupColumnID' value='" & Session("optionLookupColumnID") & "'>" & vbCrLf)
-	Response.Write("<input type='hidden' id='txtColumnID' name='txtColumnID' value='" & Session("optionColumnID") & "'>" & vbCrLf)
-	Response.Write("<input type='hidden' id='txtValue' name='txtValue' value='" & Replace(Session("optionLookupValue"), """", "&quot;") & "'>" & vbCrLf)
-	Response.Write("<input type='hidden' id='txtFile' name='txtFile' value='" & Replace(Session("optionFile"), """", "&quot;") & "'>" & vbCrLf)
-	Response.Write("<input type='hidden' id='txtFileValue' name='txtFileValue' value='" & Replace(Session("optionFileValue"), """", "&quot;") & "'>" & vbCrLf)
-	Response.Write("<input type='hidden' id='txtResultCode' name='txtResultCode' value='" & Replace(Session("TBResultCode"), "'", "&#39;") & "'>" & vbCrLf)
-	Response.Write("<input type='hidden' id='txtPreReqFails' name='txtPreReqFails' value='" & Replace(Session("PreReqFails"), """", "&quot;") & "'>" & vbCrLf)
-	Response.Write("<input type='hidden' id='txtUnAvailFails' name='txtUnAvailFails' value='" & Replace(Session("UnAvailFails"), """", "&quot;") & "'>" & vbCrLf)
-	Response.Write("<input type='hidden' id='txtOverlapFails' name='txtOverlapFails' value='" & Replace(Session("OverlapFails"), """", "&quot;") & "'>" & vbCrLf)
-	Response.Write("<input type='hidden' id='txtOverBooked' name='txtOverBooked' value='" & Replace(Session("Overbooked"), """", "&quot;") & "'>" & vbCrLf)
-	Response.Write("</div>" & vbCrLf)
-%>
+<div id="emptyoption_vars">
+	<%:Html.HiddenFor(Function(emptyoptionViewModel) emptyoptionViewModel.txtAction)%>
+	<%:Html.HiddenFor(Function(emptyoptionViewModel) emptyoptionViewModel.txtErrorMessage)%>
+	<%:Html.HiddenFor(Function(emptyoptionViewModel) emptyoptionViewModel.txtFromDef)%>
+	<%:Html.HiddenFor(Function(emptyoptionViewModel) emptyoptionViewModel.txtOrderID)%>
+	<%:Html.HiddenFor(Function(emptyoptionViewModel) emptyoptionViewModel.txtFilterSQL)%>
+	<%:Html.HiddenFor(Function(emptyoptionViewModel) emptyoptionViewModel.txtFilterDef)%>
+	<%:Html.HiddenFor(Function(emptyoptionViewModel) emptyoptionViewModel.txtRecordID)%>
+	<%:Html.HiddenFor(Function(emptyoptionViewModel) emptyoptionViewModel.txtLinkRecordID)%>
+	<%:Html.HiddenFor(Function(emptyoptionViewModel) emptyoptionViewModel.txtLookupColumnID)%>
+	<%:Html.HiddenFor(Function(emptyoptionViewModel) emptyoptionViewModel.txtColumnID)%>
+	<%:Html.HiddenFor(Function(emptyoptionViewModel) emptyoptionViewModel.txtValue)%>
+	<%:Html.HiddenFor(Function(emptyoptionViewModel) emptyoptionViewModel.txtFile)%>
+	<%:Html.HiddenFor(Function(emptyoptionViewModel) emptyoptionViewModel.txtFileValue)%>
+	<%:Html.HiddenFor(Function(emptyoptionViewModel) emptyoptionViewModel.txtResultCode)%>
+	<%:Html.HiddenFor(Function(emptyoptionViewModel) emptyoptionViewModel.txtPreReqFails)%>
+	<%:Html.HiddenFor(Function(emptyoptionViewModel) emptyoptionViewModel.txtUnAvailFails)%>
+	<%:Html.HiddenFor(Function(emptyoptionViewModel) emptyoptionViewModel.txtOverlapFails)%>
+	<%:Html.HiddenFor(Function(emptyoptionViewModel) emptyoptionViewModel.txtOverBooked)%>
+</div>
+
 
 <div id="frmEmptyOption" name="frmEmptyOption">
 	<%

@@ -228,7 +228,7 @@
 
 			<div id="SSILinksFrame" style="display: none"></div>
 			<div id="workframe" data-framesource="DEFAULT"></div>		
-			<div id="optionframe" data-framesource="emptyoption.asp" style="display: none"><%Html.RenderPartial("~/views/home/emptyoption.ascx")%></div>
+			<div id="optionframe" data-framesource="emptyoption.asp" style="display: none"><%Html.RenderAction("emptyoption", "home")%></div>
 		</div>
 
 		<div id="optionframeset">
