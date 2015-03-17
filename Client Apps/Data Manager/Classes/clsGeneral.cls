@@ -489,14 +489,14 @@ Public Function CheckLicence() As Boolean
   ' Expiry date checks
   If gobjLicence.ExpiryDate <> "00:00:00" Then
     If (dToday > gobjLicence.ExpiryDate) Then
-      sMsg = "Your licence to use this product has expired." & vbNewLine & _
-            "Please contact your Account Manager as soon as possible."
+      sMsg = "Your licence to use this product has expired." & vbNewLine & vbNewLine & _
+            "Please contact OpenHR Customer Services on 08451 609 999 as soon as possible."
       GoTo Exit_Fail
     End If
             
     If (dToday > DateAdd("d", -7, gobjLicence.ExpiryDate)) Then
       sMsg = "Your licence to use this product will expire on " & gobjLicence.ExpiryDate & "." & vbNewLine & vbNewLine & _
-            "Please contact your Account Manager as soon as possible."
+            "Please contact OpenHR Customer Services on 08451 609 999 as soon as possible."
       COAMsgBox sMsg, vbInformation
     End If
   End If
@@ -508,7 +508,7 @@ Public Function CheckLicence() As Boolean
     
     If lActualCount > gobjLicence.DATUsers Then
       sMsg = "The maximum number of licenced users are currently" & vbNewLine & "logged into OpenHR - Please try again later." & vbNewLine & vbNewLine & _
-             "If you wish to increase the number of licenced users, please" & vbNewLine & "contact your Account Manager as soon as possible."
+             "If you wish to increase the number of licenced users, please" & vbNewLine & "contact OpenHR Customer Services on 08451 609 999 as soon as possible."
       GoTo Exit_Fail
     End If
   End If
@@ -528,7 +528,7 @@ Public Function CheckLicence() As Boolean
     If lngCurrentHeadcount >= gobjLicence.Headcount Then
       sMsg = "You have reached or exceeded the headcount limit set within the terms of your licence agreement." & vbNewLine & vbNewLine & _
                             "You are no longer able to add new employee records, but you may access the system for other purposes." & vbNewLine & vbNewLine & _
-                            "Please contact your Account Manager as soon as possible to increase the licence headcount number."
+                            "Please contact OpenHR Customer Services on 08451 609 999 as soon as possible to increase the licence headcount number."
       COAMsgBox sMsg, vbCritical
     
     ElseIf lngCurrentHeadcount >= gobjLicence.Headcount * 0.95 Then
@@ -536,7 +536,8 @@ Public Function CheckLicence() As Boolean
       If DisplayWarningToUser(gsUserName, Headcount95Percent, 7) Then
         sMsg = "You are currently within 95% (" & lngCurrentHeadcount & " of " & gobjLicence.Headcount & " employees) of reaching the headcount limit set within the terms of your licence agreement." & vbNewLine & vbNewLine & _
                               "Once this limit is reached, you will no longer be able to add new employee records to the system." & vbNewLine & vbNewLine & _
-                              "If you wish to increase the headcount number, please contact your Account Manager as soon as possible."
+                              "If you wish to increase the headcount number, please contact" & vbNewLine & vbNewLine & _
+                              "OpenHR Customer Services on 08451 609 999 as soon as possible."
         COAMsgBox sMsg, vbInformation
       End If
     
@@ -5987,7 +5988,7 @@ ExitPoint:
   
 ErrTrap:
   
-  COAMsgBox "Error determining Access rights of selected calc:" & vbCrLf & Err.Description, vbExclamation + vbOKOnly, app.title
+  COAMsgBox "Error determining Access rights of selected calc:" & vbCrLf & Err.Description, vbExclamation + vbOKOnly, app.Title
   Resume ExitPoint
 End Function
 

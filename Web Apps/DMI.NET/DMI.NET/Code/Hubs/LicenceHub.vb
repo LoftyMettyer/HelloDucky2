@@ -38,45 +38,57 @@ Namespace Code.Hubs
 
 		Friend Shared Function ErrorMessage(failureCode As LicenceValidation) As String
 
+			Dim currentServicesPhoneNo As String = HttpContext.Current.Session("SupportTelNo").ToString()
 			Dim sLocaleFormat = HttpContext.Current.Session("LocaleDateFormat").ToString()
 			Dim message As String = ""
+
+
+			If currentServicesPhoneNo = "" Then
+				currentServicesPhoneNo = "08451 609 999"
+			End If
+
 
 			Select Case failureCode
 				Case LicenceValidation.Expired
 					message = String.Format("Your licence to use this product has expired.<br/><br/>" & _
-																	"Please contact your Account Manager as soon as possible.")
+																	"Please contact OpenHR Customer Services on {0} as soon as possible.", _
+																	currentServicesPhoneNo)
 
 				Case LicenceValidation.ExpiryWarning
 					message = String.Format("Your licence to use this product will expire on {0}.<br/><br/>" & _
-																	"Please contact your Account Manager as soon as possible.", _
-																 Licence.ExpiryDate.ToString(sLocaleFormat))
+																	"Please contact OpenHR Customer Services on {1}</br>as soon as possible.", _
+																 Licence.ExpiryDate.ToString(sLocaleFormat), currentServicesPhoneNo)
 
 				Case LicenceValidation.HeadcountExceeded
-					message = String.Format("You have reached or exceeded the headcount limit<br/>set within the terms of your licence agreement.<br/><br/>" & _
-																	"You are no longer able to add new employee records,<br/>but you may access the system for other purposes.<br/><br/>" & _
-																	"Please contact your Account Manager as soon as possible<br/>to increase the licence headcount number.")
+					message = String.Format("You have reached or exceeded the headcount limit set within</br>the terms of your licence agreement.<br/><br/>" & _
+																	"You are no longer able to add new employee records, but you</br>may access the system for other purposes.<br/><br/>" & _
+																	"Please contact OpenHR Customer Services on {0}<br/>as soon as possible to increase the licence headcount number.", _
+																	currentServicesPhoneNo)
 
 				Case LicenceValidation.HeadcountWarning
 					message = String.Format("You are currently within 95% ({0} of {1} employees) of reaching the<br/>headcount limit set within the terms of your licence agreement.<br/><br/>" & _
 																	"Once this limit is reached, you will no longer be able to add<br/>new employee records to the system.<br/><br/>" & _
-																	"If you wish to increase the headcount number, please<br/>contact your Account Manager as soon as possible.", _
-																	current_Headcount, Licence.Headcount)
+																	"If you wish to increase the headcount number, please contact</br>OpenHR Customer Services on {2} as soon as possible.", _
+																	current_Headcount, Licence.Headcount, currentServicesPhoneNo)
 
 				Case LicenceValidation.HeadcountAndExpiryWarning
-					message = String.Format("Your licence to use this product will expire on {2}.<br/><br/>You are also within 95% ({0} of {1} employees) of reaching the<br/>headcount limit set within the terms of your licence agreement.<br/><br/>" & _
-																	"Once this limit is reached, you will no longer be able to add<br/>new employee records to the system.<br/><br/>" & _
-																	"Please contact your Account Manager as soon as possible.", _
-																	current_Headcount, Licence.Headcount, Licence.ExpiryDate.ToString(sLocaleFormat))
+					message = String.Format("Your licence to use this product will expire on {2}.<br/><br/>You are also within 95% ({0} of {1} employees) of reaching the<br/>" & _
+																	"headcount limit set within the terms of your licence agreement.<br/><br/>" & _
+																	"Once this limit is reached, you will no longer be able to add<br/>" & _
+																	"new employee records to the system.<br/><br/>" & _
+																	"Please contact OpenHR Customer Services on {3}</br>as soon as possible.", _
+																	current_Headcount, Licence.Headcount, Licence.ExpiryDate.ToString(sLocaleFormat), currentServicesPhoneNo)
 
 				Case LicenceValidation.HeadcountExceededAndExpiryWarning
-					message = String.Format("Your licence to use this product will expire on {2}.<br/><br/>You have also reached or exceeded the headcount limit<br/>set within the terms of your licence agreement.<br/><br/>" & _
-																	"You are no longer able to add new employee records,<br/>but you may access the system for other purposes.<br/><br/>" & _
-																	"Please contact your Account Manager as soon as possible.", _
-																	current_Headcount, Licence.Headcount, Licence.ExpiryDate.ToString(sLocaleFormat))
+					message = String.Format("Your licence to use this product will expire on {2}.<br/><br/>You have also reached or exceeded the headcount limit set</br> within the terms of your licence agreement.<br/><br/>" & _
+																	"You are no longer able to add new employee records, but you</br>may access the system for other purposes.<br/><br/>" & _
+																	"Please contact OpenHR Customer Services on {3}</br>as soon as possible.", _
+																	current_Headcount, Licence.Headcount, Licence.ExpiryDate.ToString(sLocaleFormat), currentServicesPhoneNo)
 
 				Case LicenceValidation.Insufficient
-					message = "The maximum number of licenced users are currently<br/>logged into OpenHR - Please try again later.<br/><br/>" & _
-																	"If you wish to increase the number of licenced users, please<br/>contact your Account Manager as soon as possible."
+					message = String.Format("The maximum number of licenced users are currently logged into OpenHR</br></br>Please try again later.<br/><br/>" & _
+																	"If you wish to increase the number of licenced users, please contact</br>OpenHR Customer Services on {0} as soon as possible." _
+																	, currentServicesPhoneNo)
 
 				Case LicenceValidation.Failure
 					message = "An error has occured connecting to the database<br/>Please contact your system administrator.<br/><br/>"
