@@ -400,6 +400,8 @@ Namespace Controllers
 			If bOK Then
 				Return View()
 			Else
+				Session("MessageTitle") = "" 'You could put a title here in the future if it is decided.
+				Session("MessageText") = Session("ErrorText")
 				Return RedirectToAction("LoginMessage", "Account")
 			End If
 
