@@ -313,7 +313,6 @@ Public Module ASRFunctions
 				If Not InputValidation.ListOfActions.Contains(inputValue.ToString().ToUpper()) Then
 					Throw New Exception()
 				End If
-
 			Case InputValidation.WhiteListCollections.UtilTypes
 				Dim fOK As Boolean = False
 
@@ -324,8 +323,11 @@ Public Module ASRFunctions
 				' and specific utiltypes are ok
 				If InputValidation.ListOfUtilTypes.Contains(inputValue.ToString().ToUpper()) Then fOK = True
 
-
 				If Not fOK Then Throw New Exception()
+			Case InputValidation.WhiteListCollections.CT_Modes
+				If Not InputValidation.ListOfCT_Modes.Contains(inputValue.ToString().ToUpper()) Then
+					Throw New Exception()
+				End If
 		End Select
 
 		Return inputValue

@@ -3,9 +3,11 @@
 
 		Public Shared ListOfActions As List(Of String)
 		Public Shared ListOfUtilTypes As List(Of String)
+		Public Shared ListOfCT_Modes As List(Of String)
 		Public Enum WhiteListCollections
 			Actions
 			UtilTypes
+			CT_Modes
 		End Enum
 		Public Enum StringSanitiseLevel
 			None
@@ -160,6 +162,20 @@
 				.Add("UTLCOLUMN")
 				.Add("UTLNINEBOXGRID")
 				.Add("UTLABSENCEBREAKDOWNCONFIGURATION")
+			End With
+
+			ListOfCT_Modes = New List(Of String)
+			With ListOfCT_Modes
+				.Add("NONE")
+				.Add("BREAKDOWN")
+				.Add("LOAD")
+				.Add("REFRESH")
+				.Add("OUTPUTRUN")
+				.Add("OUTPUTRUNTHENCLOSE")
+				.Add("OUTPUTPROMPT")
+				.Add("OUTPUTRUNTHENCLOSE")
+				.Add("EMAILGROUP")
+				.Add("EMAILGROUPTHENCLOSE")
 			End With
 		End Sub
 	End Class
