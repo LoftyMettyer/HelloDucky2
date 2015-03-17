@@ -137,7 +137,7 @@
 			/>
 		
 
-		<input class="btn" type="button" id="cmdToday" name="cmdToday" value="Today" onclick="todayClick()" />
+		<input class="btn" type="button" id="cmdToday" name="cmdToday" value="Current Month" onclick="todayClick()" />
 
 		<p></p>
 
