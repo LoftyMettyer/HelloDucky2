@@ -33,12 +33,12 @@ Begin VB.Form frmSSIntranetView
       Top             =   6105
       Width           =   6000
       Begin VB.CheckBox chkWFOutOfOffice 
-         Caption         =   "Display &Workflow Out Of Office Hypertext Link"
+         Caption         =   "Display &Workflow Out Of Office In ID Badge Dropdown"
          Height          =   255
          Left            =   200
          TabIndex        =   21
          Top             =   300
-         Width           =   4380
+         Width           =   5500
       End
    End
    Begin VB.ComboBox cboTable 
