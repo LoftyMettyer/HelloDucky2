@@ -44,16 +44,13 @@
 	End If
 	
 	If Session("singleRecordID") = 0 Then
-		If CStr(Session("optionTableID")) <> "" Then
-			If Session("optionTableID") > 0 Then
-				iBaseTableID = Session("optionTableID")
-			End If
+		If Session("optionTableID") > 0 Then
+			iBaseTableID = Session("optionTableID")
 		End If
 		Session("tableID") = Session("utilTableID")
 	End If
 	
-	'Session("optionDefSelType") = ""
-	Session("optionTableID") = ""
+	Session("optionTableID") = 0
 	
 	If iDefSelType = UtilityType.utlPicklist Or iDefSelType = UtilityType.utlFilter Or iDefSelType = UtilityType.utlCalculation Then
 		iBaseTableID = CInt(Session("utilTableID"))
