@@ -4380,28 +4380,19 @@ function menu_loadSelectOrderFilter(psType) {
 
 	function menu_LoadStandardReport(psReportType, psRecordSelection) {
 
-		var sUtilReportType = "";
 		var iCurrentRecordID = 0;
 		var displayDiv = "workframe";
 
-		if (psReportType == "ABSENCEBREAKDOWN") {
-			sUtilReportType = "15";
-		}
-
-		if (psReportType == "BRADFORDFACTOR") {
-			sUtilReportType = "16";
-		}
-
 		// If we came from an individual record
-		if (psRecordSelection == "REC") {
+		if (psRecordSelection === "REC") {
 			iCurrentRecordID = $('#txtCurrentRecordID')[0].value;
 			displayDiv = "optionframe";
 		}
 
 		var postData = {
 			Action: optionActionType.STDREPORT_DATEPROMPT,
+			UtilType: ((psReportType === "ABSENCEBREAKDOWN") ? utilityType.AbsenceBreakdown : utilityType.BradfordFactor),
 			EmployeeID: iCurrentRecordID,
-			StandardReportType: sUtilReportType,
 			__RequestVerificationToken: $('[name="__RequestVerificationToken"]').val()
 		};
 		OpenHR.submitForm(null, displayDiv, null, postData, "LoadStandardReport");
@@ -4410,63 +4401,6 @@ function menu_loadSelectOrderFilter(psType) {
 
 	function menu_LoadStandardReportNoSaveCheck(psReportType, psRecordSelection)
 	{
-//	var sUtilReportType;
-//	var sPage;
-//	var frmSendArea;
-//	var sLoadCaption;
-//	var bOK;
-
-//	bOK = false;
-
-//	if (psReportType == "ABSENCEBREAKDOWN")
-//		{
-//		sUtilReportType = "15";
-//		sPage = "stdrpt_def_Absence.asp";
-//		sLoadCaption = "Loading Absence Breakdown. Please wait...";
-//		}
-
-//	if (psReportType == "BRADFORDFACTOR")
-//		{
-//		sUtilReportType = "16";
-//		sPage = "stdrpt_def_Absence.asp";
-//		sLoadCaption = "Loading Bradford Factor. Please wait...";
-//		}
-
-//	sPage = "util_run_promptedValues.asp"
-
-//	// If we came from an individual record
-//	if (psRecordSelection == "REC")
-//	{
-//		frmSendArea = window.parent.frames("optionframe").document.forms("frmGotoOption");
-//		frmSendArea.txtGotoOptionRecordID.value = window.parent.frames("workframe").frmRecordEditForm.txtCurrentRecordID.value;
-//		frmSendArea.txtGotoOptionPage.value = sPage;
-//		frmSendArea.txtGotoOptionAction.value = "STDREPORT_DATEPROMPT";
-//		bOK = true;
-//	}
-//	else
-//	{
-//		frmSendArea = window.parent.frames("workframe").document.forms("frmGoto");
-//		frmSendArea.txtGotoPage.value = sPage;			
-//		frmSendArea.txtAction.value = "STDREPORT_DATEPROMPT";
-//		bOK = true;
-//	}
-
-//	if (bOK == true)
-//	{
-//		// Show friendly popup
-//		ShowWait(sLoadCaption);
-
-//		//frmSendArea.txtGotoOptionTableID.value = 0;
-//		//frmSendArea.txtGotoOptionViewID.value = 0;
-//		//frmSendArea.txtGotoOptionScreenID.value = 0;
-//		frmSendArea.txtStandardReportType.value = sUtilReportType;
-//		//frmSendArea.txtGotoOptionAction.value = "";
-//		//frmSendArea.txtStandardReportPage.value = sPage;
-//		
-//		//frmSendArea.txtGotoPage.value = sPage;
-
-//		frmSendArea.submit();
-//	}
 }
 
 	function menu_displayVersionInfo()

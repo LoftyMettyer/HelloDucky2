@@ -5,6 +5,20 @@ var actionType = {
 	Save: 12
 };
 
+var utilityType = {
+	CrossTab: 1,
+	CustomReport: 2,
+	MailMerge: 9,
+	Picklist: 10,
+	Filter: 11,
+	Calculation: 12,
+	AbsenceBreakdown: 15,
+	BradfordFactor: 16,
+	CalendarReport: 17,
+	Workflow: 25,
+	NineBoxGrid: 35
+};
+
 var optionActionType = {
 	Empty : 0,
 	ABSENCEBREAKDOWNALL : 5,

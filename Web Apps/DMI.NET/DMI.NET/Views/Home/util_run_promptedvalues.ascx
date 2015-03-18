@@ -5,7 +5,6 @@
 <%@ Import Namespace="System.Data" %>
 <%@ Import Namespace="System.Data.SqlClient" %>
 
-
 <script type="text/javascript">
 
 	function promptedvalues_window_onload() {
@@ -54,11 +53,8 @@
 
 		if (frmPromptedValues.txtPromptCount.value == 0) {
 
-			if (menu_isSSIMode() == true) {
-				OpenHR.submitForm(frmPromptedValues, "workframe", true);
-			} else {
-				OpenHR.showInReportFrame(frmPromptedValues, true);
-			}
+			var outputDiv = ((menu_isSSIMode() === true) ? "workframe" : "reportframe");
+			OpenHR.submitForm(frmPromptedValues, outputDiv, true, null, "util_run_promptedvalues_submit");
 
 		} else {
 
@@ -104,7 +100,7 @@
 
 		<p tabindex="1"></p>
 
-		<form name="frmPromptedValues" id="frmPromptedValues" method="POST" action="util_run_promptedvalues_submit">
+		<form id="frmPromptedValues" method="POST">
 
 			<%
 				' Get variables for Absence Breakdown / Bradford Factor
@@ -325,16 +321,15 @@
 	Response.Write("<input type=""hidden"" id=""txtPromptCount"" name=""txtPromptCount"" value=" & iPromptCount & ">" & vbCrLf)
 	%>
 
-			<input type="hidden" id="utiltype" name="utiltype" value="<%=Session("utiltype")%>">
-			<input type="hidden" id="utilid" name="utilid" value='<%=Session("utilid")%>'>
-			<input type="hidden" id="utilname" name="utilname" value="<%=Replace(Session("utilname").ToString(), """", "&quot;")%>">
-			<input type="hidden" id="action" name="action" value='<%=Session("action")%>'>
+			<input type="hidden" id="utiltype" name="utiltype" value="<%:Session("utiltype")%>">
+			<input type="hidden" id="utilid" name="utilid" value='<%:Session("utilid")%>'>
+			<input type="hidden" id="utilname" name="utilname" value="<%:Replace(Session("utilname").ToString(), """", "&quot;")%>">
+			<input type="hidden" id="action" name="action" value='<%:Session("action")%>'>
 			<input type="hidden" id="lastPrompt" name="lastPrompt" value="">
 			<input type="hidden" id="RunInOptionFrame" name="RunInOptionFrame" value='<%=(Session("optionAction") = OptionActionType.STDREPORT_DATEPROMPT)%>'>
 			<input type="hidden" id="txtLocaleDateFormat" name="txtLocaleDateFormat" value="">
 			<input type="hidden" id="txtLocaleDecimalSeparator" name="txtLocaleDecimalSeparator" value="">
 			<input type="hidden" id="txtLocaleThousandSeparator" name="txtLocaleThousandSeparator" value="">
-
 			<%=Html.AntiForgeryToken()%>
 		</form>
 		
@@ -392,14 +387,13 @@
 			}
 		}
 
-		// Everything OK. Submit the form.
-		if (menu_isSSIMode() == true) {
-			OpenHR.submitForm(frmPromptedValues, "workframe", true);
-		} else {
+		if (menu_isSSIMode() === true) {
 			$(".popup").dialog("close");
-			OpenHR.showInReportFrame(frmPromptedValues, true);
 		}
 
+		// Everything OK. Submit the form.
+		var outputDiv = ((menu_isSSIMode() === true) ? "workframe" : "reportframe");
+		OpenHR.submitForm(frmPromptedValues, outputDiv, true, null, "util_run_promptedvalues_submit");
 
 	}
 

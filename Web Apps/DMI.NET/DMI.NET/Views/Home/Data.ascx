@@ -144,6 +144,7 @@
 				if (sAction == "CANCELCOURSE") {
 					menu_cancelCourse();
 				}
+
 				if (sAction == "ABSENCEBREAKDOWNREC") {
 					menu_LoadStandardReportNoSaveCheck("ABSENCEBREAKDOWN","REC");
 				}

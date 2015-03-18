@@ -837,7 +837,6 @@ Namespace Controllers
 				Session("locateValue") = ValidateIntegerValue(Request.Form("txtGotoLocateValue"))
 				Session("firstRecPos") = ValidateIntegerValue(Request.Form("txtGotoFirstRecPos"))
 				Session("currentRecCount") = ValidateIntegerValue(Request.Form("txtGotoCurrentRecCount"))
-				Session("StandardReport_Type") = ValidateFromWhiteList(Request.Form("txtStandardReportType"), InputValidation.WhiteListCollections.UtilTypes)
 			End If
 
 			Session("optionRecordID") = 0
@@ -882,7 +881,6 @@ Namespace Controllers
 			Session("optionFunctionID") = form.txtGotoOptionFunctionID
 			Session("optionParameterIndex") = form.txtGotoOptionParameterIndex
 			Session("OptionRealsource") = form.txtGotoOptionRealsource
-			Session("StandardReport_Type") = form.txtStandardReportType
 
 		End Sub
 
@@ -1012,13 +1010,35 @@ Namespace Controllers
 
 		<HttpPost()>
 		<ValidateAntiForgeryToken>
-		Function LoadStandardReport(postData As StandardReportModel) As ViewResult
+		Function LoadStandardReport(postData As StandardReportModel) As ActionResult
 
-			Session("optionAction") = postData.Action
-			Session("optionRecordID") = postData.EmployeeID
-			Session("StandardReport_Type") = postData.StandardReportType
+			Dim objSession = CType(Session("SessionContext"), SessionInfo)
+			Dim bPermitted As Boolean
+			Dim sUtilName As String
 
-			Return View("stdrpt_def_absence")
+			Select Case postData.utiltype
+				Case UtilityType.utlAbsenceBreakdown
+					sUtilName = "Absence Breakdown"
+					bPermitted = objSession.IsPermissionGranted("STANDARDREPORTS", "RUN_AB")
+				Case Else
+					sUtilName = "Bradford Factor"
+					bPermitted = objSession.IsPermissionGranted("STANDARDREPORTS", "RUN_BF")
+			End Select
+
+			' Validate permission (should only be hit if user "hacked" the accordian)
+			If Not bPermitted Then
+				Return RedirectToAction("PermissionsError", "Error")
+			Else
+
+				Session("optionAction") = postData.Action
+				Session("optionRecordID") = postData.EmployeeID
+				Session("singleRecordID") = postData.EmployeeID
+				Session("utiltype") = postData.utiltype
+				Session("utilname") = sUtilName
+
+				Return View("stdrpt_def_absence")
+			End If
+
 		End Function
 
 		<HttpPost()>
@@ -1217,8 +1237,6 @@ Namespace Controllers
 			Session("optionParentTableID") = form.txtOptionParentTableID
 			Session("optionParentRecordID") = form.txtOptionParentRecordID
 			Session("option1000SepCols") = form.txtOption1000SepCols
-
-			Session("StandardReport_Type") = form.txtStandardReportType
 
 			' Go to the requested page.
 			Return RedirectToAction("OptionData")
@@ -2288,26 +2306,25 @@ Namespace Controllers
 
 		<HttpPost()>
 		<ValidateAntiForgeryToken>
-		Function util_run_crosstabsDataSubmit()
-			Session("CT_Mode") = Request.Form("txtMode")
-			Session("CT_EmailGroupID") = Request.Form("txtEmailGroupID")
-			Session("CT_EmailGroupAddr") = Request.Form("txtEmailGroupAddr")
-			Session("CT_UtilID") = Request.Form("txtUtilID")
+		Function util_run_crosstabsDataSubmit(value As CrossTabDataSubmitModel)
+			Session("CT_Mode") = value.txtMode
+			Session("CT_EmailGroupID") = value.txtEmailGroupID
+			Session("CT_UtilID") = value.txtUtilID
 
-			If Session("CT_Mode") = "BREAKDOWN" Then
-				Session("CT_Hor") = Request.Form("txtHor")
-				Session("CT_Ver") = Request.Form("txtVer")
-				Session("CT_Pgb") = Request.Form("txtPgb")
-				Session("CT_IntersectionType") = Request.Form("txtIntersectionType")
-				Session("CT_CellValue") = Request.Form("txtCellValue")
-				Session("CT_Use1000") = Request.Form("txtUse1000")
+			If value.txtMode = "BREAKDOWN" Then
+				Session("CT_Hor") = value.txtHor
+				Session("CT_Ver") = value.txtVer
+				Session("CT_Pgb") = value.txtPgb
+				Session("CT_IntersectionType") = value.txtIntersectionType
+				Session("CT_CellValue") = value.txtCellValue
+				Session("CT_Use1000") = value.txtUse1000
 			Else
-				Session("CT_PageNumber") = Request.Form("txtPageNumber")
-				Session("CT_IntersectionType") = Request.Form("txtIntersectionType")
-				Session("CT_ShowPercentage") = Request.Form("txtShowPercentage")
-				Session("CT_PercentageOfPage") = Request.Form("txtPercentageOfPage")
-				Session("CT_SuppressZeros") = Request.Form("txtSuppressZeros")
-				Session("CT_Use1000") = Request.Form("txtUse1000")
+				Session("CT_PageNumber") = value.txtPageNumber
+				Session("CT_IntersectionType") = value.txtIntersectionType
+				Session("CT_ShowPercentage") = value.txtShowPercentage
+				Session("CT_PercentageOfPage") = value.txtPercentageOfPage
+				Session("CT_SuppressZeros") = value.txtSuppressZeros
+				Session("CT_Use1000") = value.txtUse1000
 			End If
 
 			' Go to the requested page.
@@ -2315,14 +2332,35 @@ Namespace Controllers
 
 		End Function
 
+		' This is passes through to the utili run prompted values, but is called from a standard report. 
+		' This is because we set some settings which are later called in cross tabs and custom reports
+		' This could be improved with proper modelling!
 		<ValidateAntiForgeryToken>
-		Function util_run_promptedvalues() As ActionResult
+		Function util_run_standardreport_promptedvalues(value As StandardReportRunModel) As ActionResult
 			Try
 
-				Session("utiltype") = Request.Form("utiltype")
-				Session("utilid") = Request.Form("utilid")
-				Session("utilname") = Request.Form("utilname")
-				Session("action") = Request.Form("action")
+				Session("utiltype") = CInt(value.UtilType)
+				Session("utilid") = value.utilid
+				Session("utilname") = value.utilname
+				Session("action") = "run"
+				Session("MailMerge_Template") = Nothing
+
+			Catch ex As Exception
+				Throw
+
+			End Try
+
+			Return View("util_run_promptedvalues")
+		End Function
+
+		<ValidateAntiForgeryToken>
+		Function util_run_promptedvalues(value As PromptedValuesModel) As ActionResult
+			Try
+
+				Session("utiltype") = CInt(value.UtilType)
+				Session("utilid") = value.ID
+				Session("utilname") = value.Name
+				Session("action") = "run"
 				Session("MailMerge_Template") = Nothing
 
 			Catch ex As Exception

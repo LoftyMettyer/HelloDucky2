@@ -19,7 +19,9 @@
 	Session("OutputOptions_Screen") = "true"
 	Session("OutputOptions_Save") = "false"
 	Session("OutputOptions_SaveExisting") = 0
-		
+
+	Dim iUtilType = CType(Session("utiltype"), UtilityType)
+	
 	' following sessions vars:
 	'
 	' UtilType    - 0-13 (see UtilityType code in DATMGR .exe
@@ -201,8 +203,9 @@
 			</a>
 			<span class="pageTitleSmaller" id="PageDivTitle">
 				<% 
-					If Session("StandardReport_Type") <> "" Then
-						Response.Write(GetReportNameByReportType(Session("StandardReport_Type")))
+					
+					If iUtilType = UtilityType.utlAbsenceBreakdown Or iUtilType = UtilityType.utlBradfordFactor Then
+						Response.Write(GetReportNameByReportType(iUtilType))
 						If Not Session("stdReport_StartDate") Is Nothing And Not Session("stdReport_EndDate") Is Nothing Then
 							Response.Write(" (" & Session("stdReport_StartDate").ToString.Replace(" ", "") & " -> " & Session("stdReport_EndDate").ToString.Replace(" ", "") & ")")
 						End If
@@ -226,41 +229,27 @@
 		<div id="main" data-framesource="util_run" style="height: 80%; margin: 0 0 0 0; visibility: hidden">
 			<%   
 				Dim sPrintButtonLabel As String = "Print"
-				If Session("utiltype") = "1" Then
+				If iUtilType = UtilityType.utlCrossTab Then
 					Html.RenderPartial("~/Views/Home/util_run_crosstabsMain.ascx")
-				ElseIf Session("utiltype") = "2" Then
+				ElseIf iUtilType = UtilityType.utlCustomReport Then
 					Html.RenderPartial("~/Views/Home/util_run_customreportsMain.ascx")
-				ElseIf Session("utiltype") = "3" Then
-					'Html.RenderPartial("~/Views/Home/util_run_datatransfer.ascx")
-				ElseIf Session("utiltype") = "4" Then
-					'Html.RenderPartial("~/Views/Home/util_run_export.ascx")
-				ElseIf Session("utiltype") = "5" Then
-					'Html.RenderPartial("~/Views/Home/util_run_globaladd.ascx")
-				ElseIf Session("utiltype") = "6" Then
-					'Html.RenderPartial("~/Views/Home/util_run_globalupdate.ascx")
-				ElseIf Session("utiltype") = "7" Then
-					'Html.RenderPartial("~/Views/Home/util_run_globaldelete.ascx")
-				ElseIf Session("utiltype") = "8" Then
-					'Html.RenderPartial("~/Views/Home/util_run_import.ascx")
-				ElseIf Session("utiltype") = "9" Then
+				ElseIf iUtilType = UtilityType.utlMailMerge Then
 					Html.RenderPartial("~/Views/Home/util_run_mailmerge.ascx")
-				ElseIf Session("utiltype") = "15" Then
+				ElseIf iUtilType = UtilityType.utlAbsenceBreakdown Then
 					Html.RenderPartial("~/Views/Home/stdrpt_run_AbsenceBreakdown.ascx")
-				ElseIf Session("utiltype") = "16" Then
+				ElseIf iUtilType = UtilityType.utlBradfordFactor Then
 					Html.RenderPartial("~/Views/Home/util_run_customreportsMain.ascx")
-				ElseIf Session("utiltype") = "17" Then
+				ElseIf iUtilType = UtilityType.utlCalendarReport Then
 					Html.RenderPartial("~/Views/Home/util_run_calendarreport_main.ascx")
-				ElseIf Session("utiltype") = "35" Then
+				ElseIf iUtilType = UtilityType.utlNineBoxGrid Then
 					Html.RenderPartial("~/Views/Home/util_run_crosstabsMain.ascx")
-				Else
-					' blah.
 				End If
 			%>
 		</div>
 		<br/>
 		<div id="divReportButtons" style="margin: 0; visibility: hidden; padding-top: 0; float: right">
 			<%If Session("SSIMode") = True Then%>
-				<%If (Session("utiltype") = "2") Then%> 
+				<%If iUtilType = UtilityType.utlCustomReport Then%> 
 					<input class="btn minwidth100" type="button" id="cmdPrint" name="cmdPrint" value="<%=sPrintButtonLabel%>" onclick="outputOptionsPrintClick()" />
 				<%End If%>
 				<input class="btn minwidth100" type="button" id="cmdOK" name="cmdOK" value="Export" onclick="outputOptionsOKClick()" />
@@ -273,7 +262,7 @@
 	</div>
 
 <script type="text/javascript">
-	
+
 	<%If Session("mailmergefail") Then%>
 		closeclick();
 	<%Else%>
@@ -283,7 +272,7 @@
 	// if that didn't work, get it from the body
 	var size = {};
 	
-	<%If Session("utiltype") = UtilityType.utlNineBoxGrid Then%>
+	<%If iUtilType = UtilityType.utlNineBoxGrid Then%>
 		size.width = (screen.width) / 2;
 		size.height = (window.innerHeight || document.body.clientHeight) - 100;
 	<%Else%>
@@ -303,7 +292,7 @@
 		
 		if ($("#txtPreview").val() == "True") {
 
-			<%If Session("utiltype") = UtilityType.utlCalendarReport Then%>
+			<%If iUtilType = UtilityType.utlCalendarReport Then%>
 			$(".popup").dialog({
 				width: 1100,
 				height: 720,
@@ -326,9 +315,8 @@
 
 			<%End If%>
 
-
 			var newButtons = [
-				<%If (Session("utiltype") = "2") Then%> 
+				<%If iUtilType = UtilityType.utlCustomReport Then%> 
 				{
 					text: "<%=sPrintButtonLabel%>",
 					click: function() { outputOptionsPrintClick(); },
@@ -369,7 +357,7 @@
 				var newHeight = $('#reportworkframe').height();
 				var newWidth = window.innerWidth || document.body.clientWidth;
 				$('#gridReportData').setGridHeight(newHeight);
-				$('#gridReportData').setGridWidth($('#reportframeset').width() * 0.95);
+				$('#gridReportData').setGridWidth($('#reportframe').width() * 0.95);
 			}
 			
 
@@ -380,6 +368,8 @@
 			});
 
 			if (menu_isSSIMode() == false) {
+				$(".popup").dialog("open");
+				$(".popup").dialog({ dialogClass: 'no-close' });
 				$('#main').css('marginTop', '30px'); //.css('borderTop', '1px solid rgb(206, 206, 206)');
 			}
 

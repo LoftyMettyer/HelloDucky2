@@ -98,11 +98,11 @@
 
 		Session("objCrossTab" & Session("utilid")) = Nothing
 	Session("CT_Mode") = ""
-	Session("CT_PageNumber") = ""
+	Session("CT_PageNumber") = 0
 	Session("CT_IntersectionType") = ""
-	Session("CT_ShowPercentage") = ""
-	Session("CT_PercentageOfPage") = ""
-	Session("CT_SupressZeros") = ""
+	Session("CT_ShowPercentage") = False
+	Session("CT_PercentageOfPage") = False
+	Session("CT_SupressZeros") = False
 
 	if session("utiltype") = "" or _ 
 		 session("utilname") = "" or _ 

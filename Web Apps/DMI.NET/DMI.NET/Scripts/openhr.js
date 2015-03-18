@@ -332,79 +332,7 @@
 			displayModalDialog(prompt, dialogButtons, title);
 			return defer.promise();
 		},
-		
-		showInReportFrame = function (form, asyncFlag) {
-
-			var $form = $(form),
-				$frame = $("#reportframe"),
-				url = $form.attr("action"),
-				data = $form.serialize();
-
-			if ((asyncFlag == undefined) || (asyncFlag.length == 0) || (asyncFlag == true)) {
-				asyncFlag = true;
-			} else {
-				asyncFlag = false;
-			}
-
-			$.ajax({
-				url: url,
-				dataType: 'html',
-				type: "POST",
-				data: data,
-				async: asyncFlag,
-				
-				success: function (html) {
-					try {
-
-						if ((html.ErrorMessage != null) && (html.ErrorMessage != undefined) && (html.ErrorMessage != "undefined")) {
-							if (html.ErrorMessage.length > 0) {
-								//A handled error was returned. Display error message, then redirect accordingly...
-								handleAjaxError(html);
-								return false;
-							}
-						}
-						
-					} catch (e) {
-					}
-
-					//clear the frame...
-					$frame.html('');
-
-					if (asyncFlag == true) {
-						$(".popup").dialog("open");
-						//$(".popup").dialog('option', 'title', '');
-						$(".popup").dialog({ dialogClass: 'no-close' });
-					}
-
-					//OK
-					$frame.html(html);
-
-
-					//jQuery styling
-					$(function () {
-						$("input[type=submit], input[type=button], button").button();
-						$("input").addClass("ui-widget ui-corner-all");
-						$("input").removeClass("text");
-
-						$("textarea").addClass("ui-widget ui-corner-tl ui-corner-bl");
-						$("textarea").removeClass("text");
-
-						$("select").addClass("ui-widget ui-corner-tl ui-corner-bl");
-						$("select").removeClass("text");
-						$("input[type=submit], input[type=button], button").removeClass("ui-corner-all");
-						$("input[type=submit], input[type=button], button").addClass("ui-corner-tl ui-corner-br");
-
-					});
-
-				},
-				error: function (req, status, errorObj) {
-					$("#errorDialogTitle").text(errorObj);
-					$("#errorDialogContentText").html(req.responseText);
-					$("#errorDialog").dialog("open");
-				}
-			});
-		},
-
+	
 		getFrame = function (frameId) {
 			return document.frames[frameId];
 		},
@@ -566,13 +494,15 @@
 				asyncFlag = false;
 			}
 
-			$.ajax({
+
+		$.ajax({
 				url: url,
 				type: method,
 				dataType: 'html',
 				data: data,
 				async: asyncFlag,
 				success: function (html) {
+
 					try {
 						var jsonResponse = $.parseJSON(html);
 						if (jsonResponse.ErrorMessage.length > 0) {
@@ -605,6 +535,13 @@
 
 						//$frame = $form.closest("div[" + targetWin + "]").first();
 						$frame = $("#" + targetWin);
+						
+						if ($("#" + targetWin).hasClass("reportoutput") === true && asyncFlag === true) {
+							$frame.html('');
+							$(".popup").dialog("open");
+							$(".popup").dialog({ dialogClass: 'no-close' });
+						}
+
 						$frame.html(html);
 						$frame.show();
 
@@ -1479,7 +1416,6 @@
 		getForm: getForm,
 		postData: postData,
 		submitForm: submitForm,
-		showInReportFrame: showInReportFrame,
 		addActiveXHandler: addActiveXHandler,
 		refreshMenu: refreshMenu,
 		disableMenu: disableMenu,

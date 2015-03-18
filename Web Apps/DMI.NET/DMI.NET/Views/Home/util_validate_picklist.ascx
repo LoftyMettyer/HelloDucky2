@@ -137,7 +137,7 @@
 	%>
 </div>
 
-<form id="frmValidatePicklist" name="frmValidatePicklist" method="post" action="util_validate_picklist" style="display: none;">
+<form id="frmValidatePicklist" name="frmValidatePicklist" method="post" style="display: none;">
 		<input type="hidden" id="validatePass" name="validatePass" value='<%:Request("validatePass")%>'>
 		<input type="hidden" id="validateName" name="validateName" value="<%:replace(Request("validateName"), """", "&quot;")%>">
 		<input type="hidden" id="validateTimestamp" name="validateTimestamp" value='<%:Request("validateTimestamp")%>'>

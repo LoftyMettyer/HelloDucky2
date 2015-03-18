@@ -1438,16 +1438,6 @@
 
 </div>
 
-<div id="utilities">
-	<form name="frmUtilityPrompt" method="post" action="util_run_promptedValues" id="frmUtilityPrompt" style="visibility: hidden; display: none">
-		<input type="hidden" id="utiltype" name="utiltype" value="">
-		<input type="hidden" id="utilid" name="utilid" value="">
-		<input type="hidden" id="utilname" name="utilname" value="">
-		<input type="hidden" id="action" name="action" value="run">
-		<%=Html.AntiForgeryToken()%>
-	</form>
-</div>
-
 <div id="workflowDisplay" class="absolutefull" style="display: none; background-color: transparent; text-align: center;">
 	<div class="pageTitleDiv" style="text-align: left;">		
 		<a href='<%=Url.Action("MainSSI", "Home")%>' title='Back'>

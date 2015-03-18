@@ -161,7 +161,7 @@ Public Module ASRIntranetFunctions
 
 	End Function
 
-	Public Function GetReportNameByReportType(ReportType As Integer) As String
+	Public Function GetReportNameByReportType(ReportType As UtilityType) As String
 		Select Case ReportType
 			Case UtilityType.utlAbsenceBreakdown
 				Return "Absence Breakdown"

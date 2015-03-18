@@ -26,7 +26,8 @@
 	Dim aAbsenceTypes() As String
 	Dim sErrorDescription As String
 	Dim iCount As Integer
-		
+	Dim iUtilType = CType(Session("utiltype"), UtilityType)
+	
 	' Load Absence Types and Personnel columns into array
 	ReDim aColumnNames(1, 0)
 	ReDim aAbsenceTypes(0)
@@ -85,11 +86,11 @@
 	Response.Write("   	var frmPostDefinition = $('#frmPostDefinition')[0];" & vbCrLf)
 	
 	' Type of standard report being run
-	If Session("StandardReport_Type") = UtilityType.utlBradfordFactor Then
+	If iUtilType = UtilityType.utlBradfordFactor Then
 		strReportType = "BradfordFactor"
 	End If
 
-	If Session("StandardReport_Type") = UtilityType.utlAbsenceBreakdown Then
+	If iUtilType = UtilityType.utlAbsenceBreakdown Then
 		strReportType = "AbsenceBreakdown"
 		Response.Write("frmAbsenceDefinition.btnTab2.style.visibility = ""hidden"";" & vbCrLf)
 	End If
@@ -103,7 +104,7 @@
 
 	' Report period	
 	Dim rstReportDates = objDataAccess.GetDataTable("spASRIntGetStandardReportDates", CommandType.StoredProcedure, _
-					New SqlParameter("piReportType", SqlDbType.Int) With {.Value = CInt(CleanNumeric(Session("StandardReport_Type")))})
+					New SqlParameter("piReportType", SqlDbType.Int) With {.Value = iUtilType})
 
 	If rstReportDates.Rows.Count > 0 Then
 		dtStartDate = CalculatePromptedDate(rstReportDates.Rows(0))
@@ -151,7 +152,7 @@
 	Response.Write("frmAbsenceDefinition.chkPrintInReportHeader.checked =  " & CleanStringForJavaScript(objDatabase.GetSystemSetting(strReportType, "PrintFilterHeader", "0")) & vbCrLf)
 
 	' Bradford Factor specific stuff
-	If Session("StandardReport_Type") = UtilityType.utlBradfordFactor Then
+	If iUtilType = UtilityType.utlBradfordFactor Then
 		Response.Write("frmAbsenceDefinition.chkSRV.checked = " & CleanStringForJavaScript(objDatabase.GetSystemSetting(strReportType, "SRV", "0")) & ";" & vbCrLf)
 		Response.Write("frmAbsenceDefinition.chkShowDurations.checked = " & CleanStringForJavaScript(objDatabase.GetSystemSetting(strReportType, "Show Totals", "1")) & ";" & vbCrLf)
 		Response.Write("frmAbsenceDefinition.chkShowInstances.checked = " & CleanStringForJavaScript(objDatabase.GetSystemSetting(strReportType, "Show Count", "0")) & ";" & vbCrLf)
@@ -204,7 +205,7 @@
 		Case "6"
 			'MH20031211 Fault 7787
 			'If Bradford then disallow Pivot (make it worksheet instead)
-			If Session("StandardReport_Type") = UtilityType.utlBradfordFactor Then
+			If iUtilType = UtilityType.utlBradfordFactor Then
 				Response.Write("frmAbsenceDefinition.optDefOutputFormat4.checked = 1;" & vbCrLf)
 			Else
 				Response.Write("frmAbsenceDefinition.optDefOutputFormat6.checked = 1;" & vbCrLf)
@@ -259,7 +260,7 @@
 				<input type="button" class="btn" value="Definition" id="btnTab1" name="btnTab1" disabled="disabled"
 					onclick="display_Absence_Page(1);" />
 				<%
-					If Session("StandardReport_Type") = UtilityType.utlBradfordFactor Then
+					If iUtilType = UtilityType.utlBradfordFactor Then
 				%>
 				<input class="btn" id="btnTab2" name="btnTab2" onclick="display_Absence_Page(2);" type="button" value="Options" />
 				<%
@@ -271,7 +272,7 @@
 					onclick="display_Absence_Page(3);" />
 				<%
 					' Causes problems if button isn't there
-					If Session("StandardReport_Type") <> UtilityType.utlBradfordFactor Then
+					If iUtilType <> UtilityType.utlBradfordFactor Then
 				%>
 				<input class="btn" id="btnTab2" name="btnTab2" onclick="display_Absence_Page(2);" type="button" value="Options" />
 				<%
@@ -487,7 +488,7 @@
 											<td class="width10">Order By :</td>
 											<td class="width90">
 												<select id="cboOrderBy1" name="cboOrderBy1" onchange="absenceBreakdownRefreshTab2Controls();">
-													<option value="0">&lt;None&gt;</option>
+													<option value="0">None</option>
 													<%
 														For iCount = 0 To UBound(aColumnNames, 2) - 1
 															Response.Write("<OPTION VALUE = " & """" & aColumnNames(0, iCount) & """" & ">" & aColumnNames(1, iCount) & "</OPTION>")
@@ -506,7 +507,7 @@
 											<td>Then : </td>
 											<td>
 												<select id="cboOrderBy2" name="cboOrderBy2"  onchange="absenceBreakdownRefreshTab2Controls();">
-													<option value="0">&lt;None&gt;</option>
+													<option value="0">None</option>
 													<%
 														For iCount = 0 To UBound(aColumnNames, 2) - 1
 															Response.Write("<OPTION VALUE = " & """" & aColumnNames(0, iCount) & """" & ">" & aColumnNames(1, iCount) & "</OPTION>")
@@ -567,7 +568,7 @@
 											<%
 												'MH20040705
 												'Don't allow CSV for Bradford
-												If Session("StandardReport_Type") = UtilityType.utlBradfordFactor Then
+												If iUtilType = UtilityType.utlBradfordFactor Then
 											%>
 											<input id="optDefOutputFormat1" name="optDefOutputFormat" onclick="formatAbsenceClick(1);" style="width: 20px" type="hidden" value="1" />
 											<%
@@ -669,7 +670,7 @@
 											<%
 												'MH20031211 Fault 7787
 												'Don't allow Pivot for Bradford
-												If Session("StandardReport_Type") = UtilityType.utlBradfordFactor Then
+												If iUtilType = UtilityType.utlBradfordFactor Then
 											%>
 											<input id="optDefOutputFormat6" name="optDefOutputFormat" onclick="formatAbsenceClick(6);" style="width: 20px" type="hidden" value="6" />
 											<%
@@ -822,7 +823,7 @@
 	</form>
 </div>
 
-<form action="util_run_promptedvalues" target="string(15)" method="post" id="frmPostDefinition" name="frmPostDefinition">
+<form method="post" id="frmPostDefinition" name="frmPostDefinition">
 	<input type="hidden" id="txtRecordSelectionType" name="txtRecordSelectionType">
 	<input type="hidden" id="txtFromDate" name="txtFromDate">
 	<input type="hidden" id="txtToDate" name="txtToDate">
@@ -847,9 +848,9 @@
 	<input type="hidden" id="txtMinimumBradfordFactorAmount" name="txtMinimumBradfordFactorAmount">
 	<input type="hidden" id="txtDisplayBradfordDetail" name="txtDisplayBradfordDetail">
 	<input type="hidden" id="txtPrintFPinReportHeader" name="txtPrintFPinReportHeader">
-	<input type="hidden" id="txtRecSelCurrentID" name="txtRecSelCurrentID" value='<%=Session("optionRecordID")%>'>
-	<input type="hidden" id="utiltype" name="utiltype" value='<%=Session("StandardReport_Type")%>'>
-	<input type="hidden" id="utilid" name="utilid" value='<%=session("utilid")%>'>
+	<input type="hidden" id="txtRecSelCurrentID" name="txtRecSelCurrentID" value='<%:Session("optionRecordID")%>'>
+	<input type="hidden" id="utiltype" name="utiltype" value='<%:iUtilType%>'>
+	<input type="hidden" id="utilid" name="utilid" value='<%:session("utilid")%>'>
 	<input type="hidden" id="utilname" name="utilname" value="Standard Report">
 	<input type="hidden" id="action" name="action" value="run">
 	<input type="hidden" id="txtSend_OutputPreview" name="txtSend_OutputPreview">

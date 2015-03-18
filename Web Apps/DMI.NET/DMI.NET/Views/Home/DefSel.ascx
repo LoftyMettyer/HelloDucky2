@@ -666,16 +666,15 @@
 		}
 
 		function setrun() {
-				if (!$("#mnutillRunUtil").hasClass("disabled")) {
+
+			var postData;
+
+			if (!$("#mnutillRunUtil").hasClass("disabled")) {
 						var frmDefSel = document.getElementById('frmDefSel');
-
-						frmDefSel.action.value = "run";
-
-						var sUtilId;
 
 						if (frmDefSel.utiltype.value == 25) {
 								// Workflow
-								var postData = {
+								postData = {
 									utiltype: frmDefSel.utiltype.value,
 									ID: frmDefSel.utilid.value,
 									Name: frmDefSel.utilname.value,
@@ -686,13 +685,13 @@
 
 						} else {
 
-								var frmPrompt = document.getElementById('frmPrompt');
-
-								frmPrompt.utilid.value = frmDefSel.utilid.value;
-								frmPrompt.utilname.value = frmDefSel.utilname.value;
-								frmPrompt.action.value = frmDefSel.action.value;
-
-								OpenHR.showInReportFrame(frmPrompt, false);
+							postData = {
+								UtilType: frmDefSel.utiltype.value,
+								ID: frmDefSel.utilid.value,
+								Name: frmDefSel.utilname.value,
+								__RequestVerificationToken: $('[name="__RequestVerificationToken"]').val()
+							}
+							OpenHR.submitForm(null, "reportframe", false, postData, "util_run_promptedValues");
 
 						}
 				}
@@ -1047,14 +1046,6 @@
 			<%=Html.AntiForgeryToken()%>
 		</form>
 
-
-		<form name="frmPrompt" method="post" action="util_run_promptedValues" id="frmPrompt" style="visibility: hidden; display: none">
-				<input type="hidden" id="utiltype" name="utiltype" value="<%:CInt(iDefSelType)%>">
-				<input type="hidden" id="utilid" name="utilid" value='<%=Session("utilid")%>'>
-				<input type="hidden" id="utilname" name="utilname">
-				<input type="hidden" id="action" name="action">
-				<%=Html.AntiForgeryToken()%>
-		</form>
 
 	<input type="hidden" id="txtSingleRecordID" name="txtSingleRecordID" value='<%:session("singleRecordID")%>'>
 	<input type="hidden" id="txtTicker" name="txtTicker" value="0">

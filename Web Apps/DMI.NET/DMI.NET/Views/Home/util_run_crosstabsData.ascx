@@ -405,11 +405,11 @@
 
 <form action="util_run_crosstabsDataSubmit" method="post" id="frmGetReportData" name="frmGetReportData">
 	<input type="hidden" id="txtMode" name="txtMode" value="<%=ValidateFromWhiteList(Session("CT_Mode"), Code.InputValidation.WhiteListCollections.CT_Modes)%>">
-	<input type="hidden" id="txtPageNumber" name="txtPageNumber" value="<%=ValidateIntegerValue(Session("CT_PageNumber"))%>">
-	<input type="hidden" id="txtShowPercentage" name="txtShowPercentage" value="<%=ValidateBooleanValue(Session("CT_ShowPercentage"))%>">
-	<input type="hidden" id="txtPercentageOfPage" name="txtPercentageOfPage" value="<%=ValidateBooleanValue(Session("CT_PercentageOfPage"))%>">
-	<input type="hidden" id="txtSuppressZeros" name="txtSuppressZeros" value="<%=ValidateBooleanValue(Session("CT_SuppressZeros"))%>">
-	<input type="hidden" id="txtUse1000" name="txtUse1000" value="<%=ValidateBooleanValue(Session("CT_Use1000"))%>">
+	<input type="hidden" id="txtPageNumber" name="txtPageNumber" value="<%:Session("CT_PageNumber")%>">
+	<input type="hidden" id="txtShowPercentage" name="txtShowPercentage" value="<%:Session("CT_ShowPercentage")%>">
+	<input type="hidden" id="txtPercentageOfPage" name="txtPercentageOfPage" value="<%:Session("CT_PercentageOfPage")%>">
+	<input type="hidden" id="txtSuppressZeros" name="txtSuppressZeros" value="<%:Session("CT_SuppressZeros")%>">
+	<input type="hidden" id="txtUse1000" name="txtUse1000" value="<%:Session("CT_Use1000")%>">
 	<input type="hidden" id="txtHor" name="txtHor" value="<%=Session("CT_Hor")%>">
 	<input type="hidden" id="txtVer" name="txtVer" value="<%=Session("CT_Ver")%>">
 	<input type="hidden" id="txtPgb" name="txtPgb" value="<%=Session("CT_Pgb")%>">

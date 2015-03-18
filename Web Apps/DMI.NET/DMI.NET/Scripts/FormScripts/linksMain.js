@@ -258,12 +258,16 @@ function goUtility(sUtilityType, sUtilityID, sUtilityName, sUtilityBaseTable) {
 			
 			//Not a workflow!
 			$('#SSILinksFrame').fadeOut();
-			$('#SSILinksFrame').promise().done(function () {
-				var frmPrompt = OpenHR.getForm("utilities", "frmUtilityPrompt");
-				frmPrompt.utiltype.value = sUtilityType;
-				frmPrompt.utilid.value = sUtilityID;
-				frmPrompt.utilname.value = sUtilityName;
-				OpenHR.submitForm(frmPrompt, "workframe", false);
+			$('#SSILinksFrame').promise().done(function() {
+
+				var postData = {
+					UtilType: sUtilityType,
+					ID: sUtilityID,
+					Name: sUtilityName,
+					__RequestVerificationToken: $('[name="__RequestVerificationToken"]').val()
+				};
+				OpenHR.submitForm(null, "workframe", null, postData, "util_run_promptedValues");
+
 				$('#workframe').fadeIn();
 			});
 		}

@@ -351,9 +351,7 @@ function absence_okClick() {
 		frmPostDefinition.txtSend_OutputFilename.value = frmAbsenceDefinition.txtFilename.value;
 
 		if (fOK == true) {
-			var sUtilID = new String(16);
-			frmPostDefinition.target = sUtilID;
-			OpenHR.showInReportFrame(frmPostDefinition);
+			OpenHR.submitForm(frmPostDefinition, "reportframe", null, null, "util_run_standardreport_promptedvalues");
 		}
 
 		return;

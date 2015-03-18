@@ -243,7 +243,7 @@
 		</div>
 
 		<div id="reportframeset" class="popup" data-framesource="util_run" style="">
-			<div id="reportframe" style="height: 100%"></div>
+			<div id="reportframe" class="reportoutput" style="height: 100%"></div>
 		</div>
 
 	</div>

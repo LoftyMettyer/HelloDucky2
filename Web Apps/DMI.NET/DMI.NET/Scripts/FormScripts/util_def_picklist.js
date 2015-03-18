@@ -96,7 +96,7 @@ function submitDefinition() {
 		frmValidate.validateUtilID.value = 0;
 	}
 
-	OpenHR.showInReportFrame(frmValidate);
+	OpenHR.submitForm(frmValidate, "reportframe", null, null, "util_validate_picklist");
 
 }
 
@@ -112,8 +112,8 @@ function addClick() {
 	frmSend.selectedIDs1.value = sSelectedIDs1;
 
 	$("#workframeset").show();
+	OpenHR.submitForm(frmSend, "reportframe", null, null, "picklistSelectionMain");
 
-	OpenHR.showInReportFrame(frmSend);
 }
 
 function addAllClick() {
@@ -137,7 +137,8 @@ function filteredAddClick() {
 	frmSend.selectionType.value = "FILTER";
 	frmSend.selectedIDs1.value = sSelectedIDs1;
 
-	OpenHR.showInReportFrame(frmSend);
+	OpenHR.submitForm(frmSend, "reportframe", null, null, "picklistSelectionMain");
+
 }
 
 function removeClick() {
