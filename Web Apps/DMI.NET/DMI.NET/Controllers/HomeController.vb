@@ -1119,9 +1119,13 @@ Namespace Controllers
 			Try
 
 				Dim objSession = CType(Session("SessionContext"), SessionInfo)
-				
+
+				Dim sRequiredPermission = value.Action
+
+				If value.Action = "copy" Then sRequiredPermission = "NEW"
+
 				' Validate permission (should only be hit if user "hacked" the button properties)
-				If Not objSession.IsPermissionGranted(value.utiltype.ToSecurityPrefix, value.Action) Then
+				If Not objSession.IsPermissionGranted(value.utiltype.ToSecurityPrefix, sRequiredPermission) Then
 					Return RedirectToAction("PermissionsError", "Error")
 				End If
 
