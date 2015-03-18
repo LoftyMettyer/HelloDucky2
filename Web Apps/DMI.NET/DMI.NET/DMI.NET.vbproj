@@ -223,6 +223,7 @@
     <Compile Include="Models\ObjectRequests\SendEmailModel.vb" />
     <Compile Include="Models\ObjectRequests\StandardReportModel.vb" />
     <Compile Include="Models\ObjectRequests\StandardReportRunModel.vb" />
+    <Compile Include="Models\ObjectRequests\ValidatePicklistModel.vb" />
     <Compile Include="Models\ObjectRequests\WorkflowRunModel.vb" />
     <Compile Include="Models\OptionDataModel.vb" />
     <Compile Include="Models\Responses\SaveRecordRespone.vb" />

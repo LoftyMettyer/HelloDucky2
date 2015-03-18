@@ -81,22 +81,28 @@ function submitDefinition() {
 	if (validate() == false) { menu_refreshMenu(); return; }
 	if (populateSendForm() == false) { menu_refreshMenu(); return; }
 
-	// first populate the validate fields
-	var frmValidate = document.getElementById("frmValidate");
-	frmValidate.validatePass.value = 1;
-	frmValidate.validateName.value = frmDefinition.txtName.value;
-	frmValidate.validateAccess.value = frmSend.txtSend_access.value;
+	var sTimeStamp;
+	var sUtilID;
 
 	if (frmUseful.txtAction.value.toUpperCase() == "EDIT") {
-		frmValidate.validateTimestamp.value = frmOriginalDefinition.txtDefn_Timestamp.value;
-		frmValidate.validateUtilID.value = frmUseful.txtUtilID.value;
-	}
+		sTimeStamp = frmOriginalDefinition.txtDefn_Timestamp.value;
+		sUtilID = frmUseful.txtUtilID.value;
+		}
 	else {
-		frmValidate.validateTimestamp.value = 0;
-		frmValidate.validateUtilID.value = 0;
+		sTimeStamp = 0;
+		sUtilID = 0;
 	}
 
-	OpenHR.submitForm(frmValidate, "reportframe", null, null, "util_validate_picklist");
+	var postData = {
+			validatePass: 1,
+			validateName: frmDefinition.txtName.value,
+			validateTimestamp: sTimeStamp,
+			validateUtilID: sUtilID,
+			validateBaseTableID: frmSend.txtSend_tableID.value,
+			validateAccess: frmSend.txtSend_access.value
+			};
+
+	OpenHR.submitForm(null, "reportframe", null, postData, "util_validate_picklist");
 
 }
 
@@ -259,6 +265,7 @@ function cancelClick() {
 }
 
 function okClick() {
+
 	menu_refreshMenu();
 
 	frmSend.txtSend_reaction.value = "PICKLISTS";

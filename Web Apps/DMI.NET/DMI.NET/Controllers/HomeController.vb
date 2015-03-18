@@ -1098,7 +1098,7 @@ Namespace Controllers
 			End If
 
 			Session("defseltype") = value.utiltype
-			Session("utilTableID") = value.txtTableID
+			Session("utilTableID") = IIf(value.txtTableID = 0, SettingsConfig.Personnel_EmpTableID, value.txtTableID)
 			Session("fromMenu") = IIf(value.txtGotoFromMenu, "1", "0") ' No idea what this is doing, just placed for backward compatability. Candidate for removal!
 			Session("singleRecordID") = value.RecordID
 
@@ -1119,7 +1119,7 @@ Namespace Controllers
 			Try
 
 				Dim objSession = CType(Session("SessionContext"), SessionInfo)
-
+				
 				' Validate permission (should only be hit if user "hacked" the button properties)
 				If Not objSession.IsPermissionGranted(value.utiltype.ToSecurityPrefix, value.Action) Then
 					Return RedirectToAction("PermissionsError", "Error")
@@ -1130,6 +1130,7 @@ Namespace Controllers
 				Session("utilid") = value.utilID
 				Session("utilname") = value.utilName
 				Session("action") = value.Action
+				Session("utilTableID") = value.txtTableID
 
 				' Now examine what we are doing and redirect as appropriate
 				If (Session("action") = "new") Or _
@@ -3874,8 +3875,8 @@ Namespace Controllers
 
 		End Function
 
-		Function util_validate_picklist() As ActionResult
-			Return View()
+		Function util_validate_picklist(model As ValidatePicklistModel) As ActionResult
+			Return View(model)
 		End Function
 
 #End Region

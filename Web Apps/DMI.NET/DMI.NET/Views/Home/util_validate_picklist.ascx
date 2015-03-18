@@ -1,4 +1,5 @@
-﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
+﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl(Of DMI.NET.Models.ObjectRequests.ValidatePicklistModel)" %>
+
 <%@ Import Namespace="DMI.NET" %>
 <%@ Import Namespace="System.Data.SqlClient" %>
 <%@ Import Namespace="System.Data" %>
@@ -23,21 +24,31 @@
 	}
 
 	function nextPass() {
-		var frmValidate = OpenHR.getForm("reportframe", "frmValidatePicklist");
 
-		var iNextPass = new Number(frmValidate.validatePass.value);
+		var iNextPass = new Number(<%:Model.validatePass%>);
 		iNextPass = iNextPass + 1;
 
-		if (iNextPass == 2) {
-			frmValidate.validatePass.value = iNextPass;
-			OpenHR.submitForm(frmValidate);
-		}
-		else {
-			var frmSend = OpenHR.getForm("workframe", "frmSend");
-			OpenHR.submitForm(frmSend);
-			closeclick();
-		}
+		if (iNextPass === 2) {
+
+			var postData = {
+				validatePass: iNextPass,
+				validateName: '<%:Model.validateName%>',
+				validateTimestamp: '<%:Model.validateTimestamp%>',
+				validateUtilID: <%:Model.validateUtilID%>,
+				validateBaseTableID: <%:Model.validateBaseTableID%>,
+				validateAccess: '<%:Model.validateAccess%>'
+			};
+
+		OpenHR.submitForm(null, "reportframe", null, postData, "util_validate_picklist");
+
 	}
+	else {
+
+		var frmSend = OpenHR.getForm("workframe", "frmSend");
+		OpenHR.submitForm(frmSend);
+		closeclick();
+	}
+}
 
 	function overwrite() {
 		nextPass();
@@ -70,12 +81,12 @@
 		Dim prmErrorCode As New SqlParameter("piErrorCode", SqlDbType.VarChar, 255)
 		Dim prmBaseTableID As New SqlParameter("piBaseTableID", SqlDbType.Int)
 									
-		If Request("validatePass") = 1 Then
+		If Model.validatePass = 1 Then
 
-			prmUtilName.Value = Request("validateName")
-			prmUtilID.Value = CleanNumeric(Request("validateUtilID"))
-			prmTimestamp.Value = CleanNumeric(Request("validateTimestamp"))
-			prmAccess.Value = Request("validateAccess")
+			prmUtilName.Value = Model.validateName
+			prmUtilID.Value = Model.validateUtilID
+			prmTimestamp.Value = Model.validateTimestamp
+			prmAccess.Value = Model.validateAccess
 			prmErrorMsg.Direction = ParameterDirection.Output
 			prmErrorCode.Direction = ParameterDirection.Output
 
@@ -100,12 +111,12 @@
 			End If
 
 		Else
-			If Request("validatePass") = 2 Then
+			If Model.validatePass = 2 Then
 
-				prmUtilName.Value = Request("validateName")
-				prmUtilID.Value = CleanNumeric(Request("validateUtilID"))
-				prmAccess.Value = Request("validateAccess")
-				prmBaseTableID.Value = CleanNumeric(Request("validateBaseTableID"))
+				prmUtilName.Value = Model.validateName
+				prmUtilID.Value = Model.validateUtilID
+				prmAccess.Value = Model.validateAccess
+				prmBaseTableID.Value = Model.validateBaseTableID
 				prmErrorMsg.Direction = ParameterDirection.Output
 				prmErrorCode.Direction = ParameterDirection.Output
 
@@ -137,15 +148,6 @@
 	%>
 </div>
 
-<form id="frmValidatePicklist" name="frmValidatePicklist" method="post" style="display: none;">
-		<input type="hidden" id="validatePass" name="validatePass" value='<%:Request("validatePass")%>'>
-		<input type="hidden" id="validateName" name="validateName" value="<%:replace(Request("validateName"), """", "&quot;")%>">
-		<input type="hidden" id="validateTimestamp" name="validateTimestamp" value='<%:Request("validateTimestamp")%>'>
-		<input type="hidden" id="validateUtilID" name="validateUtilID" value='<%:Request("validateUtilID")%>'>
-		<input type="hidden" id="validateAccess" name="validateAccess" value='<%:Request("validateAccess")%>'>
-		<input type="hidden" id="validateBaseTableID" name="validateBaseTableID" value='<%:Request("validateBaseTableID")%>'>
-		<input type="hidden" id="test" name="test" value="<%:Request.QueryString%>">
-</form>
 
 <script type="text/javascript">
 		util_validate_picklist_window_onload();

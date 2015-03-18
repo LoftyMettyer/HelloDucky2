@@ -178,14 +178,6 @@
 	%>
 </form>
 
-<form id="frmValidate" name="frmValidate" method="post" action="util_validate_picklist" style="visibility: hidden; display: none">
-	<input type="hidden" id="validatePass" name="validatePass" value="0">
-	<input type="hidden" id="validateName" name="validateName" value=''>
-	<input type="hidden" id="validateTimestamp" name="validateTimestamp" value=''>
-	<input type="hidden" id="validateUtilID" name="validateUtilID" value=''>
-	<input type="hidden" id="validateAccess" name="validateAccess" value=''>
-	<input type="hidden" id="validateBaseTableID" name="validateBaseTableID" value='<%=session("utiltableid")%>'>
-</form>
 
 <form id="frmSend" name="frmSend" method="post" action="util_def_picklist_Submit" style="visibility: hidden; display: none">
 	<input type="hidden" id="txtSend_ID" name="txtSend_ID">
