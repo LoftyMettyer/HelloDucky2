@@ -1,12 +1,16 @@
 ﻿Option Explicit On
 Option Strict On
 
+Imports System.Collections.Generic
 Imports HR.Intranet.Server.Enums
 Imports HR.Intranet.Server.BaseClasses
 Imports System.Data.SqlClient
+Imports HR.Intranet.Server.Metadata
 
 Public Class Database
 	Inherits BaseForDMI
+
+	Friend UserSettings As ICollection(Of UserSetting)
 
 	Public Function GetEmailAddress(lngRecordID As Integer, lngEmailAddrCalc As Integer) As String
 
@@ -39,6 +43,12 @@ Public Class Database
 					, New SqlParameter("psKey", SqlDbType.VarChar, 255) With {.Value = strKey} _
 					, New SqlParameter("pfUserSetting", SqlDbType.Bit) With {.Value = True} _
 					, New SqlParameter("psValue", SqlDbType.VarChar, -1) With {.Value = varSetting})
+
+			' Update UserSettings collection as this is what's actually used post-login.
+			UserSettings = SessionInfo.UserSettings
+
+			Dim objSetting As UserSetting = UserSettings.GetUserSetting(strSection, strKey)
+			objSetting.Value = varSetting.ToString()
 
 		Catch ex As Exception
 			Throw

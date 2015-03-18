@@ -409,7 +409,7 @@
 	}
 </script>
 
-<form action="configuration_Submit" onsubmit="return false;" method="post" id="frmConfiguration" name="frmConfiguration">
+<form action="Configuration_Submit" onsubmit="return false;" method="post" id="frmConfiguration" name="frmConfiguration">
 	<div class="pageTitleDiv" style="margin: 10px">
 		<span class="pageTitle" id="PopupReportDefinition_PageTitle">Configuration</span>
 	</div>

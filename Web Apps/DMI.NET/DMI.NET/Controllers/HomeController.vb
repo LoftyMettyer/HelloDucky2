@@ -59,27 +59,47 @@ Namespace Controllers
 			Dim sTemp
 			Dim sType = ""
 			Dim sControlName
+			Dim fOK As Boolean = True
 
 			If (Request.Form("txtPrimaryStartMode") <> "") Then
 
 				' Save the user configuration settings.
 				Dim objDatabase As Database = CType(Session("DatabaseFunctions"), Database)
 
-				objDatabase.SaveUserSetting("RecordEditing", "Primary", Request.Form("txtPrimaryStartMode"))
-				objDatabase.SaveUserSetting("RecordEditing", "History", Request.Form("txtHistoryStartMode"))
-				objDatabase.SaveUserSetting("RecordEditing", "LookUp", Request.Form("txtLookupStartMode"))
-				objDatabase.SaveUserSetting("RecordEditing", "QuickAccess", Request.Form("txtQuickAccessStartMode"))
-				objDatabase.SaveUserSetting("ExpressionBuilder", "ViewColours", Request.Form("txtExprColourMode"))
-				objDatabase.SaveUserSetting("ExpressionBuilder", "NodeSize", Request.Form("txtExprNodeMode"))
-				objDatabase.SaveUserSetting("IntranetFindWindow", "BlockSize", Request.Form("txtFindSize"))
+				' Some XSS/Injection defiant checks.
+				Dim primary As String = NullSafeString(Request.Form("txtPrimaryStartMode"))
+				If primary <> "1" And primary <> "2" And primary <> "3" Then fOK = False
+				Dim history As String = NullSafeString(Request.Form("txtHistoryStartMode"))
+				If history <> "1" And history <> "2" And history <> "3" Then fOK = False
+				Dim lookup As String = NullSafeString(Request.Form("txtLookupStartMode"))
+				If lookup <> "1" And lookup <> "2" And lookup <> "3" Then fOK = False
+				Dim quickaccess As String = NullSafeString(Request.Form("txtQuickAccessStartMode"))
+				If quickaccess <> "1" And quickaccess <> "2" And quickaccess <> "3" Then fOK = False
 
-				Session("PrimaryStartMode") = Request.Form("txtPrimaryStartMode")
-				Session("HistoryStartMode") = Request.Form("txtHistoryStartMode")
-				Session("LookupStartMode") = Request.Form("txtLookupStartMode")
-				Session("QuickAccessStartMode") = Request.Form("txtQuickAccessStartMode")
-				Session("ExprColourMode") = Request.Form("txtExprColourMode")
-				Session("ExprNodeMode") = Request.Form("txtExprNodeMode")
-				Session("FindRecords") = Request.Form("txtFindSize")
+				Dim viewcolours As String = NullSafeString(Request.Form("txtExprColourMode"))
+				If viewcolours <> "1" And viewcolours <> "2" Then fOK = False
+				Dim nodesize As String = NullSafeString(Request.Form("txtExprNodeMode"))
+				If nodesize <> "1" And nodesize <> "2" And nodesize <> "4" Then fOK = False
+				Dim blocksize As String = NullSafeString(Request.Form("txtFindSize"))
+				If Not IsNumeric(blocksize) Then fOK = False
+
+				If fOK = False Then Throw New Exception("The user configuration settings could not be saved.")
+
+				objDatabase.SaveUserSetting("RecordEditing", "Primary", primary)
+				objDatabase.SaveUserSetting("RecordEditing", "History", history)
+				objDatabase.SaveUserSetting("RecordEditing", "LookUp", lookup)
+				objDatabase.SaveUserSetting("RecordEditing", "QuickAccess", quickaccess)
+				objDatabase.SaveUserSetting("ExpressionBuilder", "ViewColours", viewcolours)
+				objDatabase.SaveUserSetting("ExpressionBuilder", "NodeSize", nodesize)
+				objDatabase.SaveUserSetting("IntranetFindWindow", "BlockSize", blocksize)
+
+				Session("PrimaryStartMode") = primary
+				Session("HistoryStartMode") = history
+				Session("LookupStartMode") = lookup
+				Session("QuickAccessStartMode") = quickaccess
+				Session("ExprColourMode") = viewcolours
+				Session("ExprNodeMode") = nodesize
+				Session("FindRecords") = blocksize
 
 				'--------------------------------------------
 				' Save the DefSel 'only mine' settings.
@@ -136,7 +156,10 @@ Namespace Controllers
 					sControlName = "txtOwner_" & sType
 					sTemp = "onlymine " & sType
 
-					objDatabase.SaveUserSetting("defsel", sTemp, Request.Form(sControlName))
+					Dim controlValue As String = Request.Form(sControlName)
+					If controlValue <> "0" And controlValue <> "1" Then Throw New Exception("The user configuration settings could not be saved.")
+
+					objDatabase.SaveUserSetting("defsel", sTemp, controlValue)
 
 				Next
 
@@ -160,7 +183,10 @@ Namespace Controllers
 					sControlName = "txtWarn_" & sType
 					sTemp = "warning " & sType
 
-					objDatabase.SaveUserSetting("warningmsg", sTemp, Request.Form(sControlName))
+					Dim controlValue As String = Request.Form(sControlName)
+					If controlValue <> "0" And controlValue <> "1" Then Throw New Exception("The user configuration settings could not be saved.")
+
+					objDatabase.SaveUserSetting("warningmsg", sTemp, controlValue)
 
 				Next
 
