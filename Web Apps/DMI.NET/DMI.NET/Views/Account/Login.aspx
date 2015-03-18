@@ -112,7 +112,6 @@
 			};
 
 			if (!window.isMobileBrowser) {
-				//hello!
 				if ('<%:Model.UserName%>'.length > 0) $('#txtPassword').focus();
 				if ('<%:Model.UserName%>'.length == 0) $('#txtUser').focus();
 			}
