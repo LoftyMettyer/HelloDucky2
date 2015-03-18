@@ -3475,7 +3475,7 @@ Namespace Controllers
 			Return PartialView()
 		End Function
 
-		<HttpPost(), ValidateInput(False)>
+		<HttpPost()>
 		<ValidateAntiForgeryToken>
 		Function util_def_expression_Submit()
 
