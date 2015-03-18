@@ -692,7 +692,7 @@
 				SPParameters = New SqlParameter() {prmRecordId, prmRecordCount, prmRecordPosition, prmFilterDef, _
 						prmAction, prmParentTableId, prmParentRecordId, prmDecSeparator, prmDateFormat, prmScreenId, prmViewId, prmOrderId}
 
-				Dim rstRecord = objDataAccess.GetFromSP("sp_ASRIntGetRecord", SPParameters)
+				Dim rstRecord = objDataAccess.GetFromSP("spASRIntGetRecord", SPParameters)
 					
 				For Each objRow As DataRow In rstRecord.Rows
 					For iloop = 0 To (rstRecord.Columns.Count - 1)

@@ -1,4 +1,4 @@
-CREATE PROCEDURE [dbo].[sp_ASRIntGetRecord] (
+CREATE PROCEDURE [dbo].[spASRIntGetRecord] (
 	@piRecordID			integer 		OUTPUT,
 	@piRecordCount		integer 		OUTPUT,
 	@piRecordPosition	integer 		OUTPUT,
@@ -49,7 +49,6 @@ BEGIN
 		@dtDateValue				datetime,
 		@sTempTableName				sysname,
 		@sTempTablePrefix			sysname,
-		@iLoop						integer,
 		@iSpaceIndex 				integer,
 		@fDescending				integer,
 		@fAddedToPositionString		bit,
@@ -419,7 +418,7 @@ BEGIN
 	IF (@psAction = 'MOVEFIRST') OR (@psAction = 'MOVELAST')
 	BEGIN
 		SET @fPositionKnown = 1;
-		SET @sLongCommand = 'SELECT TOP 1000000000 ' + @sRealSource + '.id' + ' FROM ' + @sFromSQL;
+		SET @sLongCommand = 'SELECT TOP 1 @recordID = ' + @sRealSource + '.id' + ' FROM ' + @sFromSQL;
 		IF @piParentTableID > 0
 		BEGIN
 			SET @sLongCommand = @sLongCommand +
@@ -440,15 +439,8 @@ BEGIN
 				ELSE @sReverseOrderSQL
 			END;
 
-		EXECUTE ('CREATE TABLE ##ASRSysTempIntRecordID (recordID INT)');
-		EXEC ('INSERT INTO ##ASRSysTempIntRecordID ' + @sLongCommand);
-
-		SET @sCommand = 'SELECT TOP 1 @recordID = recordID FROM ##ASRSysTempIntRecordID';
-
 		SET @sParamDefinition = N'@recordID integer OUTPUT';
-		EXEC sp_executesql @sCommand,  @sParamDefinition, @iRecordID OUTPUT;
-
-		EXEC ('DROP TABLE ##ASRSysTempIntRecordID');
+		EXEC sp_executesql @sLongCommand,  @sParamDefinition, @iRecordID OUTPUT;
 
 		IF @iRecordID IS NULL 
 		BEGIN
@@ -464,21 +456,8 @@ BEGIN
 	/* Get the required record ID and record position values if we're moving to the next or previous records. */
 	IF (@psAction = 'MOVENEXT') OR (@psAction = 'MOVEPREVIOUS')
 	BEGIN
-		/* Create a temporary table to hold the required record ID. 
-		We do this using a temporary table as the @sMoveCommand string may get too long to use sp_executeSQL (the parameters of which must be nvarchar type and hence a maximum of 4000 characters). */
-		SET @iLoop = 1;
-		SET @sTempTablePrefix = '##ASRSysTempIntMove_';
-		SET @sTempTableName = @sTempTablePrefix + CONVERT(varchar(100), @iLoop);
 
-		WHILE EXISTS (SELECT * FROM tempdb..sysobjects WHERE name = @sTempTableName AND xType = 'U')
-		BEGIN
-			SET @iLoop = @iLoop + 1;
-			SET @sTempTableName = @sTempTablePrefix + CONVERT(varchar(100), @iLoop);
-		END
-
-		EXECUTE ('CREATE TABLE ' + @sTempTableName + ' (recordID INT)');
-
-		SET @sMoveCommand = 'INSERT INTO ' + convert(varchar(255), @sTempTableName) + ' SELECT TOP 1 ' + @sRealSource + '.id' +
+		SET @sMoveCommand = 'SELECT TOP 1 @recordID = ' + @sRealSource + '.id' +
 			' FROM ' + @sFromSQL + 
 			' WHERE ';
 
@@ -532,18 +511,11 @@ BEGIN
 
 			IF @iDataType = 104	/* bit */
 			BEGIN
-				SET @sLongCommand = 'SELECT ' + @sOrderItem +
+				SET @sLongCommand = 'SELECT TOP 1 @fValue = ' + @sOrderItem +
 					' FROM ' + @sFromSQL +
 					' WHERE ' + @sRealSource + '.id = ' + convert(varchar(100), @iRecordID);
-				EXECUTE ('CREATE TABLE ##ASRSysTempIntValue (value bit)');
-				EXEC ('INSERT INTO ##ASRSysTempIntValue ' + @sLongCommand);
-
-				SET @sSubCommand = 'SELECT TOP 1 @fValue = value FROM ##ASRSysTempIntValue';
-
 				SET @sSubParamDefinition = N'@fValue bit OUTPUT';
-				EXEC sp_executesql @sSubCommand,  @sSubParamDefinition, @fBitValue OUTPUT;
-
-				EXEC ('DROP TABLE ##ASRSysTempIntValue');
+				EXEC sp_executesql @sLongCommand,  @sSubParamDefinition, @fBitValue OUTPUT;
 
 				IF @fBitValue IS NULL
 				BEGIN
@@ -597,18 +569,11 @@ BEGIN
 
 			IF @iDataType = 167	/* varchar */
 			BEGIN
-				SET @sLongCommand = 'SELECT ' + @sOrderItem +
+				SET @sLongCommand = 'SELECT TOP 1 @sValue = ' + @sOrderItem +
 					' FROM ' + @sFromSQL +
 					' WHERE ' + @sRealSource + '.id = ' + convert(varchar(100), @iRecordID);
-				EXECUTE ('CREATE TABLE ##ASRSysTempIntValue (value varchar(MAX))');
-				EXEC ('INSERT INTO ##ASRSysTempIntValue ' + @sLongCommand);
-
-				SET @sSubCommand = 'SELECT TOP 1 @sValue = value FROM ##ASRSysTempIntValue';
-
 				SET @sSubParamDefinition = N'@sValue varchar(MAX) OUTPUT';
-				EXEC sp_executesql @sSubCommand,  @sSubParamDefinition, @sVarCharValue OUTPUT;
-
-				EXEC ('DROP TABLE ##ASRSysTempIntValue');
+				EXEC sp_executesql @sLongCommand,  @sSubParamDefinition, @sVarCharValue OUTPUT;
 
 				IF @sVarCharValue IS NULL
 				BEGIN
@@ -662,18 +627,11 @@ BEGIN
 
 			IF @iDataType = 56	/* integer */
 			BEGIN
-				SET @sLongCommand = 'SELECT ' + @sOrderItem +
+				SET @sLongCommand = 'SELECT TOP 1 @iValue = ' + @sOrderItem +
 					' FROM ' + @sFromSQL +
 					' WHERE ' + @sRealSource + '.id = ' + convert(varchar(100), @iRecordID);
-				EXECUTE ('CREATE TABLE ##ASRSysTempIntValue (value integer)');
-				EXEC ('INSERT INTO ##ASRSysTempIntValue ' + @sLongCommand);
-
-				SET @sSubCommand = 'SELECT TOP 1 @iValue = value FROM ##ASRSysTempIntValue';
-
 				SET @sSubParamDefinition = N'@iValue integer OUTPUT';
-				EXEC sp_executesql @sSubCommand,  @sSubParamDefinition, @iIntValue OUTPUT;
-
-				EXEC ('DROP TABLE ##ASRSysTempIntValue');
+				EXEC sp_executesql @sLongCommand,  @sSubParamDefinition, @iIntValue OUTPUT;
 
 				IF @iIntValue IS NULL
 				BEGIN
@@ -727,18 +685,11 @@ BEGIN
 
 			IF @iDataType = 108	/* numeric */
 			BEGIN
-				SET @sLongCommand = 'SELECT ' + @sOrderItem +
+				SET @sLongCommand = 'SELECT TOP 1 @dblValue = ' + @sOrderItem +
 					' FROM ' + @sFromSQL +
 					' WHERE ' + @sRealSource + '.id = ' + convert(varchar(100), @iRecordID);
-				EXECUTE ('CREATE TABLE ##ASRSysTempIntValue (value float)');
-				EXEC ('INSERT INTO ##ASRSysTempIntValue ' + @sLongCommand);
-
-				SET @sSubCommand = 'SELECT TOP 1 @dblValue = value FROM ##ASRSysTempIntValue';
-
 				SET @sSubParamDefinition = N'@dblValue float OUTPUT';
-				EXEC sp_executesql @sSubCommand,  @sSubParamDefinition, @dblNumValue OUTPUT;
-
-				EXEC ('DROP TABLE ##ASRSysTempIntValue');
+				EXEC sp_executesql @sLongCommand,  @sSubParamDefinition, @dblNumValue OUTPUT;
 
 				IF @dblNumValue IS NULL
 				BEGIN
@@ -792,18 +743,11 @@ BEGIN
 
 			IF @iDataType = 61	/* datetime */
 			BEGIN
-				SET @sLongCommand = 'SELECT ' + @sOrderItem +
+				SET @sLongCommand = 'SELECT TOP 1 @dtValue = ' + @sOrderItem +
 					' FROM ' + @sFromSQL +
 					' WHERE ' + @sRealSource + '.id = ' + convert(varchar(100), @iRecordID);
-				EXECUTE ('CREATE TABLE ##ASRSysTempIntValue (value datetime)');
-				EXEC ('INSERT INTO ##ASRSysTempIntValue ' + @sLongCommand);
-
-				SET @sSubCommand = 'SELECT TOP 1 @dtValue = value FROM ##ASRSysTempIntValue';
-
 				SET @sSubParamDefinition = N'@dtValue datetime OUTPUT';
-				EXEC sp_executesql @sSubCommand,  @sSubParamDefinition, @dtDateValue OUTPUT;
-
-				EXEC ('DROP TABLE ##ASRSysTempIntValue');
+				EXEC sp_executesql @sLongCommand,  @sSubParamDefinition, @dtDateValue OUTPUT;
 
 				IF @dtDateValue IS NULL
 				BEGIN
@@ -896,15 +840,9 @@ BEGIN
 		SET @sTemp = ' ORDER BY ' + @sRelevantOrderSQL;
 		SET @sMoveCommand = @sMoveCommand + @sTemp;
 		SET @fAddedToMoveString = 1;
-		EXECUTE sp_executeSQL @sMoveCommand;
 
-		/* Get the result from the temporary table. */
-		SET @sCommand = 'SELECT @recordID = recordID FROM ' + @sTempTableName;
 		SET @sParamDefinition = N'@recordID integer OUTPUT';
-		EXEC sp_executesql @sCommand,  @sParamDefinition, @iRecordID OUTPUT;
-
-		/* Drop the temporary table. */
-		EXEC ('DROP TABLE ' + @sTempTableName);
+		EXEC sp_executesql @sMoveCommand,  @sParamDefinition, @iRecordID OUTPUT;
 
 		IF @iRecordID IS NULL 
 			SET @iRecordID = 0;
@@ -970,18 +908,11 @@ BEGIN
 
 			IF @iDataType = 104	/* bit */
 			BEGIN
-				SET @sLongCommand = 'SELECT ' + @sOrderItem +
+				SET @sLongCommand = 'SELECT TOP 1 @fValue = ' + @sOrderItem +
 					' FROM ' + @sFromSQL +
 					' WHERE ' + @sRealSource + '.id = ' + convert(varchar(100), @iRecordID)
-				EXECUTE ('CREATE TABLE ##ASRSysTempIntValue (value bit)')
-				EXEC ('INSERT INTO ##ASRSysTempIntValue ' + @sLongCommand)
-
-				SET @sSubCommand = 'SELECT TOP 1 @fValue = value FROM ##ASRSysTempIntValue'
-
 				SET @sSubParamDefinition = N'@fValue bit OUTPUT'
-				EXEC sp_executesql @sSubCommand,  @sSubParamDefinition, @fBitValue OUTPUT
-
-				EXEC ('DROP TABLE ##ASRSysTempIntValue')
+				EXEC sp_executesql @sLongCommand,  @sSubParamDefinition, @fBitValue OUTPUT
 
 				IF @fBitValue IS NULL
 				BEGIN
@@ -1054,18 +985,11 @@ BEGIN
 
 			IF @iDataType = 167	/* varchar */
 			BEGIN
-				SET @sLongCommand = 'SELECT ' + @sOrderItem +
+				SET @sLongCommand = 'SELECT TOP 1 @sValue = ' + @sOrderItem +
 					' FROM ' + @sFromSQL +
 					' WHERE ' + @sRealSource + '.id = ' + convert(varchar(100), @iRecordID)
-				EXECUTE ('CREATE TABLE ##ASRSysTempIntValue (value varchar(MAX))')
-				EXEC ('INSERT INTO ##ASRSysTempIntValue ' + @sLongCommand)
-
-				SET @sSubCommand = 'SELECT TOP 1 @sValue = value FROM ##ASRSysTempIntValue'
-
 				SET @sSubParamDefinition = N'@sValue varchar(MAX) OUTPUT'
-				EXEC sp_executesql @sSubCommand,  @sSubParamDefinition, @sVarCharValue OUTPUT
-
-				EXEC ('DROP TABLE ##ASRSysTempIntValue')
+				EXEC sp_executesql @sLongCommand,  @sSubParamDefinition, @sVarCharValue OUTPUT
 
 				IF @sVarCharValue IS NULL
 				BEGIN
@@ -1139,18 +1063,11 @@ BEGIN
 
 			IF @iDataType = 56	/* integer */
 			BEGIN
-				SET @sLongCommand = 'SELECT ' + @sOrderItem +
+				SET @sLongCommand = 'SELECT TOP 1 @iValue = ' + @sOrderItem +
 					' FROM ' + @sFromSQL +
 					' WHERE ' + @sRealSource + '.id = ' + convert(varchar(100), @iRecordID);
-				EXECUTE ('CREATE TABLE ##ASRSysTempIntValue (value integer)');
-				EXEC ('INSERT INTO ##ASRSysTempIntValue ' + @sLongCommand);
-
-				SET @sSubCommand = 'SELECT TOP 1 @iValue = value FROM ##ASRSysTempIntValue';
-
 				SET @sSubParamDefinition = N'@iValue integer OUTPUT';
-				EXEC sp_executesql @sSubCommand,  @sSubParamDefinition, @iIntValue OUTPUT;
-
-				EXEC ('DROP TABLE ##ASRSysTempIntValue');
+				EXEC sp_executesql @sLongCommand,  @sSubParamDefinition, @iIntValue OUTPUT;
 
 				IF @iIntValue IS NULL
 				BEGIN
@@ -1222,18 +1139,11 @@ BEGIN
 
 			IF @iDataType = 108	/* numeric */
 			BEGIN
-				SET @sLongCommand = 'SELECT ' + @sOrderItem +
+				SET @sLongCommand = 'SELECT TOP 1 @dblValue = ' + @sOrderItem +
 					' FROM ' + @sFromSQL +
 					' WHERE ' + @sRealSource + '.id = ' + convert(varchar(100), @iRecordID);
-				EXECUTE ('CREATE TABLE ##ASRSysTempIntValue (value float)');
-				EXEC ('INSERT INTO ##ASRSysTempIntValue ' + @sLongCommand);
-
-				SET @sSubCommand = 'SELECT TOP 1 @dblValue = value FROM ##ASRSysTempIntValue';
-
 				SET @sSubParamDefinition = N'@dblValue float OUTPUT';
-				EXEC sp_executesql @sSubCommand,  @sSubParamDefinition, @dblNumValue OUTPUT;
-
-				EXEC ('DROP TABLE ##ASRSysTempIntValue');
+				EXEC sp_executesql @sLongCommand,  @sSubParamDefinition, @dblNumValue OUTPUT;
 
 				IF @dblNumValue IS NULL
 				BEGIN
@@ -1307,18 +1217,11 @@ BEGIN
 
 			IF @iDataType = 61	/* datetime */
 			BEGIN
-				SET @sLongCommand = 'SELECT ' + @sOrderItem +
+				SET @sLongCommand = 'SELECT TOP 1 @dtValue = ' + @sOrderItem +
 					' FROM ' + @sFromSQL +
 					' WHERE ' + @sRealSource + '.id = ' + convert(varchar(100), @iRecordID);
-				EXECUTE ('CREATE TABLE ##ASRSysTempIntValue (value datetime)');
-				EXEC ('INSERT INTO ##ASRSysTempIntValue ' + @sLongCommand);
-
-				SET @sSubCommand = 'SELECT TOP 1 @dtValue = value FROM ##ASRSysTempIntValue';
-
 				SET @sSubParamDefinition = N'@dtValue datetime OUTPUT';
-				EXEC sp_executesql @sSubCommand,  @sSubParamDefinition, @dtDateValue OUTPUT;
-
-				EXEC ('DROP TABLE ##ASRSysTempIntValue');
+				EXEC sp_executesql @sLongCommand,  @sSubParamDefinition, @dtDateValue OUTPUT;
 
 				IF @dtDateValue IS NULL
 				BEGIN
