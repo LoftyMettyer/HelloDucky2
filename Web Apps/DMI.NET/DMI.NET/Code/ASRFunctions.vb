@@ -7,22 +7,22 @@ Imports HR.Intranet.Server.Enums
 Imports HR.Intranet.Server
 Imports System.Data.SqlClient
 Imports System.Web.WebPages
-Imports org.owasp.validator.html
 
 Public Module ASRFunctions
 
 	Public Function GetCurrentUsersCountOnServer(LoginName As String) As Integer
-		Dim objSession As SessionInfo = CType(HttpContext.Current.Session("SessionContext"), SessionInfo)	'Set session info
-		Dim objDataAccess As New clsDataAccess(objSession.LoginInfo) 'Instantiate DataAccess class
-		Dim iLoginCount As New SqlParameter("@iLoginCount", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
 
-		objDataAccess.ExecuteSP(
-					"spASRGetCurrentUsersCountOnServer", _
-					iLoginCount, _
-					New SqlParameter("@psLoginName", SqlDbType.VarChar, -1) With {.Value = LoginName} _
-		)
+		Dim objDataAccess = New clsDataAccess(ConfigurationManager.ConnectionStrings("OpenHR").ConnectionString)
+		Dim iLoginCount = 0
 
-		Return CInt(iLoginCount.Value)
+		Dim drUsers = objDataAccess.GetFromSP("spASRGetCurrentUsers")
+		For Each objRow As DataRow In drUsers.Rows
+			If objRow("loginame").ToString().Trim() = LoginName.Trim() Then
+				iLoginCount += 1
+			End If
+		Next
+
+		Return iLoginCount
 
 	End Function
 
@@ -71,7 +71,6 @@ Public Module ASRFunctions
 
 
 	End Sub
-
 
 	Public Sub PopulateTrainingBookingSessionVariables()
 
@@ -136,9 +135,6 @@ Public Module ASRFunctions
 		End Try
 
 	End Sub
-
-
-
 
 	Public Function CalculatePromptedDate(objRow As DataRow) As Date
 

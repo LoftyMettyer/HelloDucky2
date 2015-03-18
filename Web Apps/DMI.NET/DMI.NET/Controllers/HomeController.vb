@@ -2202,7 +2202,7 @@ Namespace Controllers
 			' Validate permission (should only be hit if user "hacked" the button properties)
 			Dim objSession = CType(Session("SessionContext"), SessionInfo)
 
-			If objSession.IsCategoryGranted(UtilityType.NewUser) Then
+			If objSession.IsPermissionGranted("INTRANET", "NEW USER") Then
 				Return View()
 			Else
 				Return RedirectToAction("PermissionsError", "Error")
@@ -4803,9 +4803,6 @@ Namespace Controllers
 				End If
 
 				Session("optionScreenID") = Request.Form("txtGotoOptionScreenID")
-				'Session("optionTableID") = Request.Form("txtGotoOptionTableID")
-				'Session("optionViewID") = Request.Form("txtGotoOptionViewID")
-				'Session("optionOrderID") = Request.Form("txtGotoOptionOrderID")
 				Session("optionRecordID") = Request.Form("txtGotoOptionRecordID")
 				Session("optionFilterDef") = Request.Form("txtGotoOptionFilterDef")
 				Session("optionFilterSQL") = Request.Form("txtGotoOptionFilterSQL")
@@ -4814,13 +4811,11 @@ Namespace Controllers
 				Session("optionLinkOrderID") = Request.Form("txtGotoOptionLinkOrderID")
 				Session("optionLinkViewID") = Request.Form("txtGotoOptionLinkViewID")
 				Session("optionLinkRecordID") = Request.Form("txtGotoOptionLinkRecordID")
-				'Session("optionColumnID") = Request.Form("txtGotoOptionColumnID")
 				Session("optionLookupColumnID") = Request.Form("txtGotoOptionLookupColumnID")
 				Session("optionLookupMandatory") = Request.Form("txtGotoOptionLookupMandatory")
 				Session("optionLookupValue") = Request.Form("txtGotoOptionLookupValue")
 				Session("optionFile") = Request.Form("txtGotoOptionFile")
 				Session("optionExtension") = Request.Form("txtGotoOptionExtension")
-				'Session("optionOLEOnServer") = Request.Form("txtGotoOptionOLEOnServer")
 				Session("optionAction") = sAction
 				Session("optionPageAction") = Request.Form("txtGotoOptionPageAction")
 				Session("optionCourseTitle") = Request.Form("txtGotoOptionCourseTitle")
