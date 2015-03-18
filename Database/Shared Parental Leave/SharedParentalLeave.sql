@@ -657,6 +657,7 @@ BEGIN
 		, @screenFontSize int
 		, @screenLabelHeight int
 		, @screenColumnHeight int
+		, @screenCheckboxHeight int
 		, @enablePayType varchar (6)
 		, @cnameID_Pers varchar(6)
 		, @cnameShPLA_ID varchar(6)
@@ -683,11 +684,13 @@ BEGIN
 	IF @screenFontSize = 8
 	BEGIN
 		SET @screenLabelHeight = 195;
+		SET @screenCheckboxHeight = 285;
 		SET @screenColumnHeight = 315;
 	END
 	ELSE
 	BEGIN
 		SET @screenLabelHeight = 315;
+		SET @screenCheckboxHeight = 315;
 		SET @screenColumnHeight = 435;
 	END;		
 	
@@ -831,7 +834,7 @@ BEGIN
 			, (@screenID, 2, 3, NULL, 0, 256, 0, 800, 280, @screenLabelHeight, 2400, 'Partner''s Surname :', -2147483633, 0, @screenFontName, @screenFontSize, 0, 0, 0, 0, NULL, NULL, NULL, NULL, 30, NULL, NULL, 0, NULL, NULL, 0)
 			, (@screenID, 2, 4, NULL, 0, 256, 0, 1280, 280, @screenLabelHeight, 2190, 'Partner''s Address :', -2147483633, 0, @screenFontName, @screenFontSize, 0, 0, 0, 0, NULL, NULL, NULL, NULL, 31, NULL, NULL, 0, NULL, NULL, 0)
 			, (@screenID, 2, 5, NULL, 0, 256, 0, 3200, 280, @screenLabelHeight, 1320, 'Postcode :', -2147483633, 0, @screenFontName, @screenFontSize, 0, 0, 0, 0, NULL, NULL, NULL, NULL, 32, NULL, NULL, 0, NULL, NULL, 0)
-			, (@screenID, 2, 6, @tabShPL_Adoption, @colA_No_NI_Number_Declaration, 1, 0, 4120, 4200, @screenLabelHeight, 3500, 'No NI Number Declaration', -2147483633, 0, @screenFontName, @screenFontSize, 0, 0, 0, 0, NULL, NULL, NULL, NULL, 27, NULL, 0, 0, NULL, NULL, 0)
+			, (@screenID, 2, 6, @tabShPL_Adoption, @colA_No_NI_Number_Declaration, 1, 0, 4120, 4200, @screenCheckboxHeight, 3500, 'No NI Number Declaration', -2147483633, 0, @screenFontName, @screenFontSize, 0, 0, 0, 0, NULL, NULL, NULL, NULL, 27, NULL, 0, 0, NULL, NULL, 0)
 			, (@screenID, 2, 7, @tabShPL_Adoption, @colA_Partner_NI_Number, 64, 0, 3640, 4200, @screenColumnHeight, 1600, 'ShPL_Adoption.Partner_NI_Number', 16777215, 0, @screenFontName, @screenFontSize, 0, 0, 0, 0, NULL, NULL, NULL, NULL, 26, NULL, NULL, 0, NULL, NULL, 0)
 			, (@screenID, 2, 8, @tabShPL_Adoption, @colA_Partner_Postcode, 64, 0, 3160, 4200, @screenColumnHeight, 1400, 'ShPL_Adoption.Partner_Postcode', 16777215, 0, @screenFontName, @screenFontSize, 0, 0, 0, 0, NULL, NULL, NULL, NULL, 25, NULL, NULL, 0, NULL, NULL, 0)
 			, (@screenID, 2, 9, @tabShPL_Adoption, @colA_Partner_Address_4, 64, 0, 2680, 4200, @screenColumnHeight, 4200, 'ShPL_Adoption.Partner_Address_4', 16777215, 0, @screenFontName, @screenFontSize, 0, 0, 0, 0, NULL, NULL, NULL, NULL, 24, NULL, NULL, 0, NULL, NULL, 0)
@@ -851,12 +854,12 @@ BEGIN
 			, (@screenID, 3, 9, @tabShPL_Adoption, @colA_Partner_Employer_Address_2, 64, 0, 1240, 4200, @screenColumnHeight, 4200, 'ShPL_Adoption.Partner_Employer_Address_2', 16777215, 0, @screenFontName, @screenFontSize, 0, 0, 0, 0, NULL, NULL, NULL, NULL, 10, NULL, NULL, 0, NULL, NULL, 0)
 			, (@screenID, 3, 10, @tabShPL_Adoption, @colA_Partner_Employer_Address_1, 64, 0, 760, 4200, @screenColumnHeight, 4200, 'ShPL_Adoption.Partner_Employer_Address_1', 16777215, 0, @screenFontName, @screenFontSize, 0, 0, 0, 0, NULL, NULL, NULL, NULL, 9, NULL, NULL, 0, NULL, NULL, 0)
 			, (@screenID, 3, 11, @tabShPL_Adoption, @colA_Partner_Employer_Name, 64, 0, 280, 4200, @screenColumnHeight, 4200, 'ShPL_Adoption.Partner_Employer_Name', 16777215, 0, @screenFontName, @screenFontSize, 0, 0, 0, 0, NULL, NULL, NULL, NULL, 8, NULL, NULL, 0, NULL, NULL, 0)
-			, (@screenID, 4, 1, NULL, 0, 256, 0, 640, 640, @screenLabelHeight * 3, 10170, 'That he/she is the main adopter of the child or the partner of the main adopter, that entitlement criteria for ShPP is satisfied and he/she agrees to inform the company immediately if conditions for entitlement to ShPP cease to be met.', -2147483633, 0, @screenFontName, @screenFontSize, 0, 0, 0, 0, NULL, NULL, NULL, NULL, 5, NULL, NULL, 0, NULL, NULL, 0)
-			, (@screenID, 4, 2, NULL, 0, 256, 0, 2200, 640, @screenLabelHeight * 4, 10170, 'That he/she has at least 26 weeks employment (employed or self-employed) out of the 66 weeks prior to the 15th week before the relevant matching week, has average earnings of at least £30 during at least 13 of the 66 weeks prior to the relevant week, has curtailed SAP and consents to the employee''s claim to ShPP (as above).', -2147483633, 0, @screenFontName, @screenFontSize, 0, 0, 0, 0, NULL, NULL, NULL, NULL, 6, NULL, NULL, 0, NULL, NULL, 0)
+			, (@screenID, 4, 1, NULL, 0, 256, 0, 680, 640, @screenLabelHeight * 3, 10170, 'That he/she is the main adopter of the child or the partner of the main adopter, that entitlement criteria for ShPP is satisfied and he/she agrees to inform the company immediately if conditions for entitlement to ShPP cease to be met.', -2147483633, 0, @screenFontName, @screenFontSize, 0, 0, 0, 0, NULL, NULL, NULL, NULL, 5, NULL, NULL, 0, NULL, NULL, 0)
+			, (@screenID, 4, 2, NULL, 0, 256, 0, 2240, 640, @screenLabelHeight * 4, 10170, 'That he/she has at least 26 weeks employment (employed or self-employed) out of the 66 weeks prior to the 15th week before the relevant matching week, has average earnings of at least £30 during at least 13 of the 66 weeks prior to the relevant week, has curtailed SAP and consents to the employee''s claim to ShPP (as above).', -2147483633, 0, @screenFontName, @screenFontSize, 0, 0, 0, 0, NULL, NULL, NULL, NULL, 6, NULL, NULL, 0, NULL, NULL, 0)
 			, (@screenID, 4, 3, NULL, 0, 256, 0, 3680, 280, @screenLabelHeight, 3330, 'Date Notification Received :', -2147483633, 0, @screenFontName, @screenFontSize, 0, 0, 0, 0, NULL, NULL, NULL, NULL, 7, NULL, NULL, 0, NULL, NULL, 0)
 			, (@screenID, 4, 4, @tabShPL_Adoption, @colA_Date_Notification_Received, 64, 0, 3640, 4200, @screenColumnHeight, 1755, 'ShPL_Adoption.Date_Notification_Received', 16777215, 0, @screenFontName, @screenFontSize, 0, 0, 0, 0, NULL, NULL, NULL, NULL, 4, NULL, NULL, 0, NULL, NULL, 0)
-			, (@screenID, 4, 5, @tabShPL_Adoption, @colA_Declaration_from_Other_Adopter, 1, 0, 1880, 280, @screenLabelHeight, 3900, 'Declaration from Other Adopter', -2147483633, 0, @screenFontName, @screenFontSize, 0, 0, 0, 0, NULL, NULL, NULL, NULL, 3, NULL, 0, 0, NULL, NULL, 0)
-			, (@screenID, 4, 6, @tabShPL_Adoption, @colA_Declaration_from_Employee, 1, 0, 320, 280, @screenLabelHeight, 3495, 'Declaration from Employee', -2147483633, 0, @screenFontName, @screenFontSize, 0, 0, 0, 0, NULL, NULL, NULL, NULL, 2, NULL, 0, 0, NULL, NULL, 0)
+			, (@screenID, 4, 5, @tabShPL_Adoption, @colA_Declaration_from_Other_Adopter, 1, 0, 1880, 280, @screenCheckboxHeight, 3900, 'Declaration from Other Adopter', -2147483633, 0, @screenFontName, @screenFontSize, 0, 0, 0, 0, NULL, NULL, NULL, NULL, 3, NULL, 0, 0, NULL, NULL, 0)
+			, (@screenID, 4, 6, @tabShPL_Adoption, @colA_Declaration_from_Employee, 1, 0, 320, 280, @screenCheckboxHeight, 3495, 'Declaration from Employee', -2147483633, 0, @screenFontName, @screenFontSize, 0, 0, 0, 0, NULL, NULL, NULL, NULL, 2, NULL, 0, 0, NULL, NULL, 0)
 			, (@screenID, 5, 1, @tabShPL_Adoption, @colA_Notes, 64, 0, 280, 280, 4245, 10600, 'ShPL_Adoption.Notes', 16777215, 0, @screenFontName, @screenFontSize, 0, 0, 0, 0, NULL, NULL, NULL, NULL, 1, NULL, NULL, 0, NULL, NULL, 0);
 
 	INSERT INTO [dbo].[ASRSysPageCaptions]
@@ -928,9 +931,9 @@ BEGIN
 			, (@screenID, 1, 2, NULL, 0, 256, 0, 1280, 280, @screenLabelHeight, 2430, 'Date Requested To :', -2147483633, 0, @screenFontName, @screenFontSize, 0, 0, 0, 0, NULL, NULL, NULL, NULL, 10, NULL, NULL, 0, NULL, NULL, 0)
 			, (@screenID, 1, 3, NULL, 0, 256, 0, 800, 280, @screenLabelHeight, 2745, 'Date Requested From :', -2147483633, 0, @screenFontName, @screenFontSize, 0, 0, 0, 0, NULL, NULL, NULL, NULL, 11, NULL, NULL, 0, NULL, NULL, 0)
 			, (@screenID, 1, 4, NULL, 0, 256, 0, 320, 280, @screenLabelHeight, 2175, 'Date of Request :', -2147483633, 0, @screenFontName, @screenFontSize, 0, 0, 0, 0, NULL, NULL, NULL, NULL, 12, NULL, NULL, 0, NULL, NULL, 0)
-			, (@screenID, 1, 5, @tabShPLA_Leave_Requests, @colAR_Request_Cancelled, 1, 0, 3200, 4200, @screenLabelHeight, 2490, 'Request Cancelled', -2147483633, 0, @screenFontName, @screenFontSize, 0, 0, 0, 0, NULL, NULL, NULL, NULL, 8, NULL, 0, 0, NULL, NULL, 0)
-			, (@screenID, 1, 6, @tabShPLA_Leave_Requests, @colAR_Consent_from_Other_Adopter, 1, 0, 2720, 4200, @screenLabelHeight, 3645, 'Consent from Other Adopter', -2147483633, 0, @screenFontName, @screenFontSize, 0, 0, 0, 0, NULL, NULL, NULL, NULL, 7, NULL, 0, 0, NULL, NULL, 0)
-			, (@screenID, 1, 7, @tabShPLA_Leave_Requests, @colAR_Binding_Request, 1, 0, 2240, 4200, @screenLabelHeight, 4185, 'Binding Request from Employee', -2147483633, 0, @screenFontName, @screenFontSize, 0, 0, 0, 0, NULL, NULL, NULL, NULL, 6, NULL, 0, 0, NULL, NULL, 0)
+			, (@screenID, 1, 5, @tabShPLA_Leave_Requests, @colAR_Request_Cancelled, 1, 0, 3200, 4200, @screenCheckboxHeight, 2490, 'Request Cancelled', -2147483633, 0, @screenFontName, @screenFontSize, 0, 0, 0, 0, NULL, NULL, NULL, NULL, 8, NULL, 0, 0, NULL, NULL, 0)
+			, (@screenID, 1, 6, @tabShPLA_Leave_Requests, @colAR_Consent_from_Other_Adopter, 1, 0, 2720, 4200, @screenCheckboxHeight, 3645, 'Consent from Other Adopter', -2147483633, 0, @screenFontName, @screenFontSize, 0, 0, 0, 0, NULL, NULL, NULL, NULL, 7, NULL, 0, 0, NULL, NULL, 0)
+			, (@screenID, 1, 7, @tabShPLA_Leave_Requests, @colAR_Binding_Request, 1, 0, 2240, 4200, @screenCheckboxHeight, 4185, 'Binding Request from Employee', -2147483633, 0, @screenFontName, @screenFontSize, 0, 0, 0, 0, NULL, NULL, NULL, NULL, 6, NULL, 0, 0, NULL, NULL, 0)
 			, (@screenID, 1, 8, @tabShPLA_Leave_Requests, @colAR_ShPP_Weeks, 64, 0, 1720, 4200, @screenColumnHeight, 620, 'ShPLA_Requests.ShPP_Weeks', 16777215, 0, @screenFontName, @screenFontSize, 0, 0, 0, 0, NULL, NULL, NULL, NULL, 5, NULL, NULL, 0, NULL, NULL, 0)
 			, (@screenID, 1, 9, @tabShPLA_Leave_Requests, @colAR_Date_Requested_To, 64, 0, 1240, 4200, @screenColumnHeight, 1755, 'ShPLA_Requests.Date_Requested_To', 16777215, 0, @screenFontName, @screenFontSize, 0, 0, 0, 0, NULL, NULL, NULL, NULL, 4, NULL, NULL, 0, NULL, NULL, 0)
 			, (@screenID, 1, 10, @tabShPLA_Leave_Requests, @colAR_Date_Requested_From, 64, 0, 760, 4200, @screenColumnHeight, 1755, 'ShPLA_Requests.Date_Requested_From', 16777215, 0, @screenFontName, @screenFontSize, 0, 0, 0, 0, NULL, NULL, NULL, NULL, 3, NULL, NULL, 0, NULL, NULL, 0)
@@ -1110,7 +1113,7 @@ BEGIN
 			, (@screenID, 2, 3, NULL, 0, 256, 0, 800, 280, @screenLabelHeight, 2400, 'Partner''s Surname :', -2147483633, 0, @screenFontName, @screenFontSize, 0, 0, 0, 0, NULL, NULL, NULL, NULL, 32, NULL, NULL, 0, NULL, NULL, 0)
 			, (@screenID, 2, 4, NULL, 0, 256, 0, 320, 280, @screenLabelHeight, 2610, 'Partner''s Forename :', -2147483633, 0, @screenFontName, @screenFontSize, 0, 0, 0, 0, NULL, NULL, NULL, NULL, 33, NULL, NULL, 0, NULL, NULL, 0)
 			, (@screenID, 2, 5, NULL, 0, 256, 0, 3680, 280, @screenLabelHeight, 2625, 'Partner''s NI Number :', -2147483633, 0, @screenFontName, @screenFontSize, 0, 0, 0, 0, NULL, NULL, NULL, NULL, 34, NULL, NULL, 0, NULL, NULL, 0)
-			, (@screenID, 2, 6, @tabShPL_Birth, @colB_No_NI_Number_Declaration, 1, 0, 4120, 4200, @screenLabelHeight, 3500, 'No NI Number Declaration', -2147483633, 0, @screenFontName, @screenFontSize, 0, 0, 0, 0, NULL, NULL, NULL, NULL, 29, NULL, 0, 0, NULL, NULL, 0)
+			, (@screenID, 2, 6, @tabShPL_Birth, @colB_No_NI_Number_Declaration, 1, 0, 4120, 4200, @screenCheckboxHeight, 3500, 'No NI Number Declaration', -2147483633, 0, @screenFontName, @screenFontSize, 0, 0, 0, 0, NULL, NULL, NULL, NULL, 29, NULL, 0, 0, NULL, NULL, 0)
 			, (@screenID, 2, 7, @tabShPL_Birth, @colB_Partner_NI_Number, 64, 0, 3640, 4200, @screenColumnHeight, 1600, 'ShPL_Birth.Partner_NI_Number', 16777215, 0, @screenFontName, @screenFontSize, 0, 0, 0, 0, NULL, NULL, NULL, NULL, 28, NULL, NULL, 0, NULL, NULL, 0)
 			, (@screenID, 2, 8, @tabShPL_Birth, @colB_Partner_Postcode, 64, 0, 3160, 4200, @screenColumnHeight, 1400, 'ShPL_Birth.Partner_Postcode', 16777215, 0, @screenFontName, @screenFontSize, 0, 0, 0, 0, NULL, NULL, NULL, NULL, 27, NULL, NULL, 0, NULL, NULL, 0)
 			, (@screenID, 2, 9, @tabShPL_Birth, @colB_Partner_Address_4, 64, 0, 2680, 4200, @screenColumnHeight, 4200, 'ShPL_Birth.Partner_Address_4', 16777215, 0, @screenFontName, @screenFontSize, 0, 0, 0, 0, NULL, NULL, NULL, NULL, 26, NULL, NULL, 0, NULL, NULL, 0)
@@ -1133,11 +1136,11 @@ BEGIN
 			, (@screenID, 3, 12, @tabShPL_Birth, @colB_Partner_Employer_Address_1, 64, 0, 760, 4200, @screenColumnHeight, 4200, 'ShPL_Birth.Partner_Employer_Address_1', 16777215, 0, @screenFontName, @screenFontSize, 0, 0, 0, 0, NULL, NULL, NULL, NULL, 9, NULL, NULL, 0, NULL, NULL, 0)
 			, (@screenID, 3, 13, @tabShPL_Birth, @colB_Partner_Employer_Name, 64, 0, 280, 4200, @screenColumnHeight, 4200, 'ShPL_Birth.Partner_Employer_Name', 16777215, 0, @screenFontName, @screenFontSize, 0, 0, 0, 0, NULL, NULL, NULL, NULL, 8, NULL, NULL, 0, NULL, NULL, 0)
 			, (@screenID, 4, 1, NULL, 0, 256, 0, 3680, 280, @screenLabelHeight, 3330, 'Date Notification Received :', -2147483633, 0, @screenFontName, @screenFontSize, 0, 0, 0, 0, NULL, NULL, NULL, NULL, 5, NULL, NULL, 0, NULL, NULL, 0)
-			, (@screenID, 4, 2, NULL, 0, 256, 0, 2200, 640, @screenLabelHeight * 4, 10410, 'That he/she has at least 26 weeks employment (employed or self-employed) out of the 66 weeks prior to the 15th week before the expected week of birth, has average earnings of at least £30 during at least 13 of the 66 weeks prior to the relevant week, has curtailed SMP/MA and consents to the employee''s claim to ShPP (as above).', -2147483633, 0, @screenFontName, @screenFontSize, 0, 0, 0, 0, NULL, NULL, NULL, NULL, 6, NULL, NULL, 0, NULL, NULL, 0)
-			, (@screenID, 4, 3, NULL, 0, 256, 0, 640, 640, @screenLabelHeight * 3, 10230, 'That he/she is the mother or father of the child or the partner of the mother, that entitlement criteria for ShPP is satisfied and he/she agrees to inform the company immediately if conditions for entitlement to ShPP cease to be met.', -2147483633, 0, @screenFontName, @screenFontSize, 0, 0, 0, 0, NULL, NULL, NULL, NULL, 7, NULL, NULL, 0, NULL, NULL, 0)
+			, (@screenID, 4, 2, NULL, 0, 256, 0, 2240, 640, @screenLabelHeight * 4, 10410, 'That he/she has at least 26 weeks employment (employed or self-employed) out of the 66 weeks prior to the 15th week before the expected week of birth, has average earnings of at least £30 during at least 13 of the 66 weeks prior to the relevant week, has curtailed SMP/MA and consents to the employee''s claim to ShPP (as above).', -2147483633, 0, @screenFontName, @screenFontSize, 0, 0, 0, 0, NULL, NULL, NULL, NULL, 6, NULL, NULL, 0, NULL, NULL, 0)
+			, (@screenID, 4, 3, NULL, 0, 256, 0, 680, 640, @screenLabelHeight * 3, 10230, 'That he/she is the mother or father of the child or the partner of the mother, that entitlement criteria for ShPP is satisfied and he/she agrees to inform the company immediately if conditions for entitlement to ShPP cease to be met.', -2147483633, 0, @screenFontName, @screenFontSize, 0, 0, 0, 0, NULL, NULL, NULL, NULL, 7, NULL, NULL, 0, NULL, NULL, 0)
 			, (@screenID, 4, 4, @tabShPL_Birth, @colB_Date_Notification_Received, 64, 0, 3640, 4200, @screenColumnHeight, 1755, 'ShPL_Birth.Date_Notification_Received', 16777215, 0, @screenFontName, @screenFontSize, 0, 0, 0, 0, NULL, NULL, NULL, NULL, 4, NULL, NULL, 0, NULL, NULL, 0)
-			, (@screenID, 4, 5, @tabShPL_Birth, @colB_Declaration_from_Other_Parent, 1, 0, 1880, 280, @screenLabelHeight, 3900, 'Declaration from Other Parent', -2147483633, 0, @screenFontName, @screenFontSize, 0, 0, 0, 0, NULL, NULL, NULL, NULL, 3, NULL, 0, 0, NULL, NULL, 0)
-			, (@screenID, 4, 6, @tabShPL_Birth, @colB_Declaration_from_Employee, 1, 0, 320, 280, @screenLabelHeight, 3495, 'Declaration from Employee', -2147483633, 0, @screenFontName, @screenFontSize, 0, 0, 0, 0, NULL, NULL, NULL, NULL, 2, NULL, 0, 0, NULL, NULL, 0)
+			, (@screenID, 4, 5, @tabShPL_Birth, @colB_Declaration_from_Other_Parent, 1, 0, 1880, 280, @screenCheckboxHeight, 3900, 'Declaration from Other Parent', -2147483633, 0, @screenFontName, @screenFontSize, 0, 0, 0, 0, NULL, NULL, NULL, NULL, 3, NULL, 0, 0, NULL, NULL, 0)
+			, (@screenID, 4, 6, @tabShPL_Birth, @colB_Declaration_from_Employee, 1, 0, 320, 280, @screenCheckboxHeight, 3495, 'Declaration from Employee', -2147483633, 0, @screenFontName, @screenFontSize, 0, 0, 0, 0, NULL, NULL, NULL, NULL, 2, NULL, 0, 0, NULL, NULL, 0)
 			, (@screenID, 5, 1, @tabShPL_Birth, @colB_Notes, 64, 0, 280, 280, 4665, 10600, 'ShPL_Birth.Notes', 16777215, 0, @screenFontName, @screenFontSize, 0, 0, 0, 0, NULL, NULL, NULL, NULL, 1, NULL, NULL, 0, NULL, NULL, 0);
 
 	INSERT INTO [dbo].[ASRSysPageCaptions]
@@ -1209,9 +1212,9 @@ BEGIN
 			, (@screenID, 1, 2, NULL, 0, 256, 0, 800, 280, @screenLabelHeight, 2745, 'Date Requested From :', -2147483633, 0, @screenFontName, @screenFontSize, 0, 0, 0, 0, NULL, NULL, NULL, NULL, 10, NULL, NULL, 0, NULL, NULL, 0)
 			, (@screenID, 1, 3, NULL, 0, 256, 0, 1280, 280, @screenLabelHeight, 2430, 'Date Requested To :', -2147483633, 0, @screenFontName, @screenFontSize, 0, 0, 0, 0, NULL, NULL, NULL, NULL, 11, NULL, NULL, 0, NULL, NULL, 0)
 			, (@screenID, 1, 4, NULL, 0, 256, 0, 1760, 280, @screenLabelHeight, 1755, 'ShPP Weeks :', -2147483633, 0, @screenFontName, @screenFontSize, 0, 0, 0, 0, NULL, NULL, NULL, NULL, 12, NULL, NULL, 0, NULL, NULL, 0)
-			, (@screenID, 1, 5, @tabShPLB_Leave_Requests, @colBR_Request_Cancelled, 1, 0, 3200, 4200, @screenLabelHeight, 2490, 'Request Cancelled', -2147483633, 0, @screenFontName, @screenFontSize, 0, 0, 0, 0, NULL, NULL, NULL, NULL, 8, NULL, 0, 0, NULL, NULL, 0)
-			, (@screenID, 1, 6, @tabShPLB_Leave_Requests, @colBR_Consent_from_Other_Parent, 1, 0, 2720, 4200, @screenLabelHeight, 3645, 'Consent from Other Parent', -2147483633, 0, @screenFontName, @screenFontSize, 0, 0, 0, 0, NULL, NULL, NULL, NULL, 7, NULL, 0, 0, NULL, NULL, 0)
-			, (@screenID, 1, 7, @tabShPLB_Leave_Requests, @colBR_Binding_Request, 1, 0, 2240, 4200, @screenLabelHeight, 4185, 'Binding Request from Employee', -2147483633, 0, @screenFontName, @screenFontSize, 0, 0, 0, 0, NULL, NULL, NULL, NULL, 6, NULL, 0, 0, NULL, NULL, 0)
+			, (@screenID, 1, 5, @tabShPLB_Leave_Requests, @colBR_Request_Cancelled, 1, 0, 3200, 4200, @screenCheckboxHeight, 2490, 'Request Cancelled', -2147483633, 0, @screenFontName, @screenFontSize, 0, 0, 0, 0, NULL, NULL, NULL, NULL, 8, NULL, 0, 0, NULL, NULL, 0)
+			, (@screenID, 1, 6, @tabShPLB_Leave_Requests, @colBR_Consent_from_Other_Parent, 1, 0, 2720, 4200, @screenCheckboxHeight, 3645, 'Consent from Other Parent', -2147483633, 0, @screenFontName, @screenFontSize, 0, 0, 0, 0, NULL, NULL, NULL, NULL, 7, NULL, 0, 0, NULL, NULL, 0)
+			, (@screenID, 1, 7, @tabShPLB_Leave_Requests, @colBR_Binding_Request, 1, 0, 2240, 4200, @screenCheckboxHeight, 4185, 'Binding Request from Employee', -2147483633, 0, @screenFontName, @screenFontSize, 0, 0, 0, 0, NULL, NULL, NULL, NULL, 6, NULL, 0, 0, NULL, NULL, 0)
 			, (@screenID, 1, 8, @tabShPLB_Leave_Requests, @colBR_ShPP_Weeks, 64, 0, 1720, 4200, @screenColumnHeight, 620, 'ShPLB_Leave_Requests.ShPP_Weeks', 16777215, 0, @screenFontName, @screenFontSize, 0, 0, 0, 0, NULL, NULL, NULL, NULL, 5, NULL, NULL, 0, NULL, NULL, 0)
 			, (@screenID, 1, 9, @tabShPLB_Leave_Requests, @colBR_Date_Requested_To, 64, 0, 1240, 4200, @screenColumnHeight, 1755, 'ShPLB_Leave_Requests.Date_Requested_To', 16777215, 0, @screenFontName, @screenFontSize, 0, 0, 0, 0, NULL, NULL, NULL, NULL, 4, NULL, NULL, 0, NULL, NULL, 0)
 			, (@screenID, 1, 10, @tabShPLB_Leave_Requests, @colBR_Date_Requested_From, 64, 0, 760, 4200, @screenColumnHeight, 1755, 'ShPLB_Leave_Requests.Date_Requested_From', 16777215, 0, @screenFontName, @screenFontSize, 0, 0, 0, 0, NULL, NULL, NULL, NULL, 3, NULL, NULL, 0, NULL, NULL, 0)
