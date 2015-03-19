@@ -216,6 +216,7 @@
     <Compile Include="Models\ObjectRequests\GotoOptionBaseModel.vb" />
     <Compile Include="Models\ObjectRequests\LinkFindModel.vb" />
     <Compile Include="Models\ObjectRequests\LookupFindModel.vb" />
+    <Compile Include="Models\ObjectRequests\NewUserModel.vb" />
     <Compile Include="Models\ObjectRequests\PromptedValuesModel.vb" />
     <Compile Include="Models\ObjectRequests\SelectOrderModel.vb" />
     <Compile Include="Models\ObjectRequests\QuickFindModel.vb" />

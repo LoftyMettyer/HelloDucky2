@@ -2,18 +2,18 @@
 <%@ Import Namespace="DMI.NET" %>
 <%@ Import Namespace="HR.Intranet.Server" %>
 <%@ Import Namespace="System.Data" %>
+<%@ Import Namespace="DMI.NET.Helpers" %>
 
 <script type="text/javascript">
 	function newUser_window_onload() {
-		//window.parent.document.all.item("workframeset").cols = "*, 0";
+
 		$("#workframe").attr("data-framesource", "NEWUSER");
 		
 		// Get menu to refresh the menu.
-		//window.parent.frames("menuframe").refreshMenu();
 		menu_refreshMenu();
 
 		//Set focus on the dropdown list of users if it exists.
-		var ctlNewUsers = frmNewUserForm.selNewUser;
+		var ctlNewUsers = $("#selNewUser");
 		if (ctlNewUsers != null) {
 			ctlNewUsers.focus();
 		}
@@ -26,21 +26,27 @@
 <script type="text/javascript">
 	/* Submit the new user login. */
 	function SubmitNewUserDetails() {
-		//frmNewUserForm.submit();
-		OpenHR.submitForm(frmNewUserForm);
-	}
-	/* Return to the default page. */
-	function cancelClick() {
-		window.location.href = "main";  // "default.asp";
-	}
-	/* Go to the default page. */
-	function okClick() {
-		window.location.href = "main";  // "default.asp";
-	}
-</script>
 
-<div <%=session("BodyTag")%>>
-	<form action="newUser_Submit" method="post" id="frmNewUserForm" name="frmNewUserForm">
+		var postData = {
+			Login: $("#selNewUser").val(),
+			<%:Html.AntiForgeryTokenForAjaxPost() %>
+		};
+		OpenHR.postData("newUser_Submit", postData, NewLoginStatus);
+
+	}
+
+	function NewLoginStatus(json) {
+
+		if (json.Action === "success") {
+			var currentUser = $("#selNewUser").val();		
+			$("#selNewUser option[value='" + currentUser + "']").remove();
+		}
+
+		OpenHR.modalMessage(json.Message);
+
+	}
+
+</script>
 
 <%
 			
@@ -177,10 +183,5 @@
 	End Try
 
 		%>
-
-		<%=Html.AntiForgeryToken()%>
-	</form>
-
-</div>
 
 <script type="text/javascript">newUser_window_onload();</script>

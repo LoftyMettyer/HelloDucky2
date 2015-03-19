@@ -26,6 +26,7 @@ Imports HR.Intranet.Server.Expressions
 Imports HR.Intranet.Server.Extensions
 Imports HR.Intranet.Server.ReportOutput
 Imports DMI.NET.Models.ObjectRequests
+Imports DMI.NET.Models.Responses
 
 Namespace Controllers
 	Public Class HomeController
@@ -200,61 +201,23 @@ Namespace Controllers
 
 		<HttpPost()>
 		<ValidateAntiForgeryToken>
-		Function newUser_Submit(value As FormCollection) As JsonResult
+		Function newUser_Submit(value As NewUserModel) As JsonResult
 
 			Dim objDataAccess As clsDataAccess = CType(Session("DatabaseAccess"), clsDataAccess)
+			Dim objResponse As PostResponse
 
-			Dim fSubmitNewUser = (Len(Request.Form("txtGotoPage")) = 0)
+			' Create an OpenHR user associated with the given SQL Server login.
+			Try
+				objDataAccess.ExecuteSP("sp_ASRIntNewUser", _
+						New SqlParameter("@psUserName", SqlDbType.VarChar, 128) With {.Value = value.Login})
+				objResponse = New PostResponse With {.Action = "success", .Message = "User added successfully."}
 
-			If fSubmitNewUser Then
-				' Read the Password details from the Password form.
-				Dim sNewUserLogin = Request.Form("selNewUser")
+			Catch ex As Exception
+				objResponse = New PostResponse With {.Action = "fail", .Message = "You could not add the user because of the following error:" & vbNewLine & ex.Message.RemoveSensitive()}
 
-				' Create an OpenHR user associated with the
-				' given SQL Server login.
+			End Try
 
-				Try
-					objDataAccess.ExecuteSP("sp_ASRIntNewUser", _
-							New SqlParameter("@psUserName", SqlDbType.VarChar, 128) With {.Value = sNewUserLogin})
-
-
-				Catch ex As Exception
-					Session("ErrorTitle") = "New User Page"
-					Session("ErrorText") = "You could not add the user because of the following error:<p>" & FormatError(ex.Message)
-					Dim data1 = New ErrMsgJsonAjaxResponse() With {.ErrorTitle = Session("ErrorTitle"), .ErrorMessage = Session("ErrorText"), .Redirect = ""}
-					Return Json(data1, JsonRequestBehavior.AllowGet)
-
-				End Try
-
-				Session("ErrorTitle") = "New User Page"
-				Session("ErrorText") = "User added successfully."
-				Dim data = New ErrMsgJsonAjaxResponse() With {.ErrorTitle = Session("ErrorTitle"), .ErrorMessage = Session("ErrorText"), .Redirect = ""}
-				Return Json(data, JsonRequestBehavior.AllowGet)
-
-			Else
-				' Read the information from the calling form.
-				' Save the required table/view and screen IDs in session variables.
-				Session("action") = Request.Form("txtAction")
-				Session("tableID") = Request.Form("txtGotoTableID")
-				Session("viewID") = Request.Form("txtGotoViewID")
-				Session("screenID") = Request.Form("txtGotoScreenID")
-				Session("orderID") = Request.Form("txtGotoOrderID")
-				Session("recordID") = Request.Form("txtGotoRecordID")
-				Session("parentTableID") = Request.Form("txtGotoParentTableID")
-				Session("parentRecordID") = Request.Form("txtGotoParentRecordID")
-				Session("realSource") = Request.Form("txtGotoRealSource")
-				Session("filterDef") = Request.Form("txtGotoFilterDef")
-				Session("filterSQL") = Request.Form("txtGotoFilterSQL")
-				Session("lineage") = Request.Form("txtGotoLineage")
-				Session("utilID") = Request.Form("txtGotoUtilID")
-				Session("locateValue") = Request.Form("txtGotoLocateValue")
-				Session("firstRecPos") = Request.Form("txtGotoFirstRecPos")
-				Session("currentRecCount") = Request.Form("txtGotoCurrentRecCount")
-
-				' Go to the requested page.
-				' Response.Redirect(Request.Form("txtGotoPage"))
-				Session("txtGotoPage") = Request.Form("txtGotoPage")
-			End If
+			Return Json(objResponse, JsonRequestBehavior.AllowGet)
 
 		End Function
 
@@ -2370,7 +2333,7 @@ Namespace Controllers
 		Function util_run_standardreport_promptedvalues(value As StandardReportRunModel) As ActionResult
 			Try
 
-				Session("utiltype") = CInt(value.UtilType)
+				Session("utiltype") = CInt(value.utiltype)
 				Session("utilid") = value.utilid
 				Session("utilname") = value.utilname
 				Session("action") = "run"
