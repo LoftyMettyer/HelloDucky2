@@ -13,30 +13,30 @@ Namespace Helpers
  Public Module MVCExtensions
 
 		<Extension()> _
-		Public Function AccessGrid(helper As HtmlHelper, name As String, items As IList(Of GroupAccess), htmlAttributes As Object) As MvcHtmlString
+		Public Function AccessGrid(helper As HtmlHelper, name As String, items As IList(Of GroupAccess), isGroupAccessHiddenWhenCopyTheDefinition As Boolean, htmlAttributes As Object) As MvcHtmlString
 			If items Is Nothing OrElse items.Count = 0 OrElse String.IsNullOrEmpty(name) Then
 				Return MvcHtmlString.Empty
 			End If
 
-			Return MvcHtmlString.Create(BuildTable(name, items, HtmlHelper.AnonymousObjectToHtmlAttributes(htmlAttributes)).ToString)
+			Return MvcHtmlString.Create(BuildTable(name, items, isGroupAccessHiddenWhenCopyTheDefinition, HtmlHelper.AnonymousObjectToHtmlAttributes(htmlAttributes)).ToString)
 
 		End Function
 
-		Private Function BuildTable(name As String, items As IEnumerable(Of GroupAccess), attributes As IDictionary(Of String, Object)) As String
+		Private Function BuildTable(name As String, items As IEnumerable(Of GroupAccess), isGroupAccessHiddenWhenCopyTheDefinition As Boolean, attributes As IDictionary(Of String, Object)) As String
 			Dim sb As New StringBuilder()
 
 			sb.AppendLine("<tr><th>User Group</th><th>Access</th></tr>")
 
 			' Add <All Groups> row and  (All Groups) should not be enabled when editing another user's definition.
 			If (items(0).DefinitionOwner.ToLower() = items(0).LoggedInUser.ToLower()) Then
-				BuildTableRow(sb, New GroupAccess() With {.Access = "", .IsReadOnly = False, .Name = "(All Groups)"}, "drpSetAllSecurityGroups", 0)
+				BuildTableRow(sb, New GroupAccess() With {.Access = "", .IsReadOnly = False, .Name = "(All Groups)"}, "drpSetAllSecurityGroups", 0, isGroupAccessHiddenWhenCopyTheDefinition)
 			Else
-				BuildTableRow(sb, New GroupAccess() With {.Access = "", .IsReadOnly = True, .Name = "(All Groups)"}, "drpSetAllSecurityGroups", 0)
+				BuildTableRow(sb, New GroupAccess() With {.Access = "", .IsReadOnly = True, .Name = "(All Groups)"}, "drpSetAllSecurityGroups", 0, isGroupAccessHiddenWhenCopyTheDefinition)
 			End If
 
 			Dim iRow As Integer = 0
 			For Each item In items
-				BuildTableRow(sb, item, name, iRow)
+				BuildTableRow(sb, item, name, iRow, isGroupAccessHiddenWhenCopyTheDefinition)
 				iRow += 1
 			Next
 
@@ -48,7 +48,7 @@ Namespace Helpers
 
 		End Function
 
-		Private Sub BuildTableRow(sb As StringBuilder, obj As GroupAccess, name As String, rownumber As Integer)
+		Private Sub BuildTableRow(sb As StringBuilder, obj As GroupAccess, name As String, rownumber As Integer, isGroupAccessHiddenWhenCopyTheDefinition As Boolean)
 
 			Dim iSelected As Integer
 			Dim sNiceText As String
@@ -62,17 +62,23 @@ Namespace Helpers
 				sb.AppendFormat("<td><input type='hidden' style='width:100%'  name='{0}.Name' value='{1}' readonly='true'/><label>{1}</label></td>", sName, obj.Name)
 			End If
 
-			Select Case obj.Access.ToUpper
-				Case "RW"
-					iSelected = 0
-					sNiceText = "Read / Write"
-				Case "RO"
-					iSelected = 1
-					sNiceText = "Read Only"
-				Case Else
-					iSelected = 2
-					sNiceText = "Hidden"
-			End Select
+			' If copying the defination then check the property value and if it's HD and also if the user group belongs to non amdin group then set the dropdown values to Hidden
+			If obj.IsReadOnly = False AndAlso isGroupAccessHiddenWhenCopyTheDefinition = True Then
+				iSelected = 2
+				sNiceText = "Hidden"
+			Else
+				Select Case obj.Access.ToUpper
+					Case "RW"
+						iSelected = 0
+						sNiceText = "Read / Write"
+					Case "RO"
+						iSelected = 1
+						sNiceText = "Read Only"
+					Case Else
+						iSelected = 2
+						sNiceText = "Hidden"
+				End Select
+			End If
 
 			If obj.IsReadOnly Then
 

@@ -64,6 +64,8 @@ Namespace Models
 		Public Property SortOrders As New List(Of SortOrderViewModel) Implements IReport.SortOrders
 
 		Public Property DefinitionAccessBasedOnSelectedCalculationColumns As String
+		Public Property IsGroupAccessHiddenWhenCopyTheDefinition As Boolean
+
 
 		Public Overridable ReadOnly Property SortOrdersAvailable As Integer Implements IReport.SortOrdersAvailable
 			Get

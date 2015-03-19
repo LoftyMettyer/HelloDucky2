@@ -112,6 +112,17 @@ Namespace Repository
 
 				End If
 
+				' if copy the defination then check if group access needs to be hidden
+				If objModel.ActionType = UtilityActionType.Copy Then
+					If objModel.BaseViewAccess = "HD" Or
+						objModel.DefinitionAccessBasedOnSelectedCalculationColumns = "HD" Or
+						objModel.Parent1ViewAccess = "HD" Or
+						objModel.Parent2ViewAccess = "HD" Or
+						(Not objModel.ChildTables.Find(Function(n) n.FilterViewAccess = "HD") Is Nothing) Then
+						objModel.IsGroupAccessHiddenWhenCopyTheDefinition = True
+					End If
+				End If
+
 				objModel.ChildTablesAvailable = CInt(_objSessionInfo.Relations.LongCount(Function(m) m.ParentID = objModel.BaseTableID))
 				objModel.GroupAccess = GetUtilityAccess(objModel, action)
 				objModel.IsReadOnly = (action = UtilityActionType.View)
@@ -184,6 +195,14 @@ Namespace Repository
 
 					End If
 
+				End If
+
+				' if copy the defination then check if group access needs to be hidden
+				If objModel.ActionType = UtilityActionType.Copy Then
+					If objModel.BaseViewAccess = "HD" Or
+						objModel.DefinitionAccessBasedOnSelectedCalculationColumns = "HD" Then
+						objModel.IsGroupAccessHiddenWhenCopyTheDefinition = True
+					End If
 				End If
 
 				objModel.AvailableEmails = GetAvailableEmails(objModel.BaseTableID)
@@ -261,6 +280,13 @@ Namespace Repository
 					' Output Tab
 					PopulateOutput(objModel.ReportType, objModel.Output, dtDefinition)
 
+				End If
+
+				' if copy the defination then check if group access needs to be hidden
+				If objModel.ActionType = UtilityActionType.Copy Then
+					If objModel.BaseViewAccess = "HD" Then
+						objModel.IsGroupAccessHiddenWhenCopyTheDefinition = True
+					End If
 				End If
 
 				objModel.AvailableColumns = GetColumnsForTable(objModel.BaseTableID)
@@ -355,6 +381,13 @@ Namespace Repository
 					' Output Tab
 					PopulateOutput(objModel.ReportType, objModel.Output, dtDefinition)
 
+				End If
+
+				' if copy the defination then check if group access needs to be hidden
+				If objModel.ActionType = UtilityActionType.Copy Then
+					If objModel.BaseViewAccess = "HD" Then
+						objModel.IsGroupAccessHiddenWhenCopyTheDefinition = True
+					End If
 				End If
 
 				objModel.AvailableColumns = GetColumnsForTable(objModel.BaseTableID)
@@ -490,6 +523,15 @@ Namespace Repository
 					PopulateSortOrder(objModel, dsDefinition.Tables(2))
 					PopulateOutput(objModel.ReportType, objModel.Output, dsDefinition.Tables(0))
 
+				End If
+
+				' if copy the defination then check if group access needs to be hidden
+				If objModel.ActionType = UtilityActionType.Copy Then
+					If objModel.BaseViewAccess = "HD" Or
+						objModel.DefinitionAccessBasedOnSelectedCalculationColumns = "HD" Or
+						(Not objModel.Events.ToList().Find(Function(n) n.FilterViewAccess = "HD") Is Nothing) Then
+						objModel.IsGroupAccessHiddenWhenCopyTheDefinition = True
+					End If
 				End If
 
 				objModel.GroupAccess = GetUtilityAccess(objModel, action)

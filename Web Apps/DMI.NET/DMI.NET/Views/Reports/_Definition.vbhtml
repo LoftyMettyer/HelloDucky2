@@ -105,7 +105,7 @@
 				<br />
 				<div class="tablerow">
 					<label>Access :</label>
-					@Html.AccessGrid("GroupAccess", Model.GroupAccess, New With {.id = "tblGroupAccess"})
+					@Html.AccessGrid("GroupAccess", Model.GroupAccess, Model.IsGroupAccessHiddenWhenCopyTheDefinition, New With {.id = "tblGroupAccess"})
 					<input type="hidden" id="IsForcedHidden" />
 				</div>
 			</div>
