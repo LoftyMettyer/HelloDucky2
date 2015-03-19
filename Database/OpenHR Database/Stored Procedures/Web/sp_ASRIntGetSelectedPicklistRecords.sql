@@ -209,6 +209,8 @@ BEGIN
 	INNER JOIN ASRSysTables ON ASRSysTables.tableID = ASRSysColumns.tableID
 	WHERE ASRSysOrderItems.orderID = @iOrderID
 		AND ASRSysOrderItems.type = 'F'
+		AND ASRSysColumns.datatype <> -3
+		AND ASRSysColumns.datatype <> -4
 	ORDER BY ASRSysOrderItems.sequence;
 
 	OPEN orderCursor;
