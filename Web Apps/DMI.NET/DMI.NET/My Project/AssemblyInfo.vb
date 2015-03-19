@@ -8,7 +8,7 @@ Imports System.Runtime.InteropServices
 
 ' Review the values of the assembly attributes
 <Assembly: AssemblyTitle("DMI.NET")> 
-<Assembly: AssemblyDescription("OpenHR Data Manager Intranet")> 
+<Assembly: AssemblyDescription("OpenHR Web")> 
 <Assembly: AssemblyCompany("Advanced Computer Software Ltd.")> 
 <Assembly: AssemblyProduct("DMI.NET")> 
 <Assembly: AssemblyCopyright("Copyright © 2015")> 
@@ -30,5 +30,5 @@ Imports System.Runtime.InteropServices
 ' by using the '*' as shown below:
 ' <Assembly: AssemblyVersion("1.0.*")> 
 
-<Assembly: AssemblyVersion("8.1.19")> 
-<Assembly: AssemblyFileVersion("8.1.19")> 
+<Assembly: AssemblyVersion("8.1.20")> 
+<Assembly: AssemblyFileVersion("8.1.20")> 
