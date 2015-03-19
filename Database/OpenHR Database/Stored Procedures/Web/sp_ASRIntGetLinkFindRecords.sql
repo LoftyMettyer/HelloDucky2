@@ -252,6 +252,8 @@ BEGIN
 	INNER JOIN ASRSysColumns ON ASRSysOrderItems.columnID = ASRSysColumns.columnId
 	INNER JOIN ASRSysTables ON ASRSysTables.tableID = ASRSysColumns.tableID
 	WHERE ASRSysOrderItems.orderID = @piOrderID
+	AND ASRSysColumns.datatype <> -3
+	AND ASRSysColumns.datatype <> -4
 	ORDER BY ASRSysOrderItems.sequence
 
 	OPEN orderCursor
