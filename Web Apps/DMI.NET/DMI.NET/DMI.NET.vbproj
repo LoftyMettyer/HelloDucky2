@@ -1320,6 +1320,9 @@
     <Content Include="Scripts\officebar\winkit\registry64DIS.png" />
     <Content Include="Scripts\officebar\winkit\registry64HOVER.png" />
     <Content Include="Scripts\officebar\winkit\registry64NORM.png" />
+    <Content Include="Scripts\officebar\winkit\sign_out_64DIS.png" />
+    <Content Include="Scripts\officebar\winkit\sign_out_64HOVER.png" />
+    <Content Include="Scripts\officebar\winkit\sign_out_64NORM.png" />
     <Content Include="Views\Account\CurrentUsers.ascx" />
     <Content Include="Views\Home\util_run_bradford_factor.ascx" />
     <Content Include="Views\Home\_showChart.ascx" />

@@ -112,21 +112,24 @@
 				catch(e) {}
 			});
 			
-			$(document).on('keyup', function(e) {
-				var kdCode = e.keyCode;
-				var ctrlKey = e.ctrlKey;
-				var cmdKey = e.cmdKey;
-				var shiftKey = e.shiftKey;
+
+			// NHRD19032015 - this code not needed for TFS 15004 but could come in useful 
+			// in the future so will leave the skeleton of it in.
+			//$(document).on('keyup', function(e) {
+			//	var kdCode = e.keyCode;
+			//	var ctrlKey = e.ctrlKey;
+			//	var cmdKey = e.cmdKey;
+			//	var shiftKey = e.shiftKey;
 				
-				if ((ctrlKey || cmdKey) || (shiftKey)) {
-					switch (kdCode) {
-					case 114: // Ctrl F3 now logs you out of system
-						saveChangesPrompt('mnutoolLogoff', 'menu_logoffIntranet()');
-						break;
-					}
-				}
-				return true;
-			});
+			//	if ((ctrlKey || cmdKey) || (shiftKey)) {
+			//		switch (kdCode) {
+			//		case 114: // Ctrl F3 now logs you out of system
+			//			saveChangesPrompt('mnutoolLogoff', 'menu_logoffIntranet()');
+			//			break;
+			//		}
+			//	}
+			//	return true;
+			//});
 
 			if (!(window.jQuery.ui)) {
 				//no jQuery! so quit out - compatibility mode(?) should be a message on login.aspx...

@@ -191,9 +191,9 @@
 							</div>
 							
 							<div id="mnutoolLogoff" class="button">
-								<a href="#" rel="table" title="Log Off - Ctrl+F3">
-									<img alt="" src="<%: Url.Content("~/Scripts/officebar/winkit/Logoff64NORM.png")%>" />
-									<i class="icon-external-link icon-5x"></i>
+								<a href="#" rel="table" title="Log Off">
+									<img alt="" src="<%: Url.Content("~/Scripts/officebar/winkit/sign_out_64NORM.png")%>" />
+									<i class="icon-signout  icon-5x"></i>
 									<h6>Log<br />Off</h6>
 								</a>
 							</div>
