@@ -105,7 +105,7 @@
 					End If
 				End With
 	
-				Response.Write("<input type='hidden' Name='txtOriginalEventID' id='txtOriginalEventID' value='" & Request("txtEventID") & "'>" & vbCrLf)
+				Response.Write("<input type='hidden' Name='txtOriginalEventID' id='txtOriginalEventID' value='" & CleanNumeric(Request("txtEventID")) & "'>" & vbCrLf)
 			%>
 
 			<div id="findGridRow" style="height: 30%; margin-right: 20px; margin-left: 20px;">
@@ -240,7 +240,7 @@
 						<input id="cmdOK" type="button"  value="Close" name="cmdOK" onclick="okClick();" />
 					</div>
 				</div>
-			</div>
+			</div>			
 		</form>
 			<%--This is the popout for email selection--%>
 			<div id="EventDetailEmailSelect"></div>

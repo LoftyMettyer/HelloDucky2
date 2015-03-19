@@ -313,11 +313,11 @@
 		frmDetails.txtEmailPermission.value = frmLog.txtELEmailPermission.value;
 
 		sURL = "eventLogDetails" +
-			"?txtEventID=" + frmDetails.txtEventID.value +
-			"&txtEventName=" + escape(frmDetails.txtEventName.value) +
-			"&txtEventBatchRunID=" + frmDetails.txtEventBatchRunID.value +
-			"&txtEventMode=" + escape(frmDetails.txtEventMode.value);
-
+						"?txtEventID=" + OpenHR.validateInteger(frmDetails.txtEventID.value) +
+						"&txtEventName=" + escape(frmDetails.txtEventName.value) +
+						"&txtEventBatchRunID=" + frmDetails.txtEventBatchRunID.value +
+						"&txtEventMode=" + escape(frmDetails.txtEventMode.value);
+		
 		$('#EventLogViewDetails').data('sURLData', sURL);
 		$('#EventLogViewDetails').dialog("open");
 	}
@@ -752,6 +752,7 @@
 			<input type='hidden' id="txtELSortColumnIndex" name="txtELSortColumnIndex" value="1">
 			<input type='hidden' id="txtELLoaded" name="txtELLoaded" value="0">
 			<input type="hidden" id="txtCurrUserFilter" name="txtCurrUserFilter" value='<%=Session("CurrentUsername")%>'>
+			<%=Html.AntiForgeryToken()%>
 		</form>
 
 		<div id="gridContainer" style="height: 450px">
@@ -783,6 +784,7 @@
 	<input type="hidden" id="txtEventBatchRunID" name="txtEventBatchRunID">
 
 	<input type="hidden" id="txtEmailPermission" name="txtEmailPermission">
+	<%=Html.AntiForgeryToken()%>
 </form>
 
 <form id="frmPurge" name="frmPurge" method="post" style="visibility: hidden; display: none" action="eventLog">
@@ -793,7 +795,8 @@
 	<input type="hidden" id="txtCurrentUsername" name="txtCurrentUsername">
 	<input type="hidden" id="txtCurrentType" name="txtCurrentType">
 	<input type="hidden" id="txtCurrentMode" name="txtCurrentMode">
-	<input type="hidden" id="txtCurrentStatus" name="txtCurrentStatus">
+	<input type="hidden" id="txtCurrentStatus" name="txtCurrentStatus">	
+	<%=Html.AntiForgeryToken()%>
 </form>
 
 <form id="frmDelete" name="frmDelete" method="post" style="visibility: hidden; display: none" action="eventLog">
@@ -804,6 +807,7 @@
 	<input type="hidden" id="txtCurrentType" name="txtCurrentType">
 	<input type="hidden" id="txtCurrentMode" name="txtCurrentMode">
 	<input type="hidden" id="txtCurrentStatus" name="txtCurrentStatus">
+	<%=Html.AntiForgeryToken()%>
 </form>
 
 <form id="frmEmail" name="frmEmail" method="post" style="visibility: hidden; display: none" action="emailSelection">
@@ -811,6 +815,7 @@
 	<input type="hidden" id="txtFromMain" name="txtFromMain" value="1">
 	<input type="hidden" id="txtEmailOrderColumn" name="txtEmailOrderColumn">
 	<input type="hidden" id="txtEmailOrderOrder" name="txtEmailOrderOrder">
+	<%=Html.AntiForgeryToken()%>
 </form>
 
 <form id="frmRefresh" name="frmRefresh" method="post" style="visibility: hidden; display: none" action="eventLog">
@@ -819,6 +824,7 @@
 	<input type="hidden" id="txtCurrentType" name="txtCurrentType">
 	<input type="hidden" id="txtCurrentMode" name="txtCurrentMode">
 	<input type="hidden" id="txtCurrentStatus" name="txtCurrentStatus">
+	<%=Html.AntiForgeryToken()%>
 </form>
 
 <form id="frmEventUseful" name="frmEventUseful" style="visibility: hidden; display: none">
@@ -835,7 +841,7 @@
 		Session("CurrentType") = ""
 		Session("CurrentMode") = ""
 		Session("CurrentStatus") = ""
-	%>
+	%>	
 </form>
 
 <input type='hidden' id="txtTicker" name="txtTicker" value="0">
