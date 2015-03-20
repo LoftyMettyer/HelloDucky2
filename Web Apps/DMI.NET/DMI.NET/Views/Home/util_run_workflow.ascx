@@ -30,10 +30,10 @@
 			Dim prmMessage = New SqlParameter("psMessage", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
 
 			objDataAccess.ExecuteSP("spASRInstantiateWorkflow", _
-						New SqlParameter("piWorkflowID", SqlDbType.Int) With {.Value = workflowModel.ID}, _
+						New SqlParameter("piWorkflowID", SqlDbType.Int) With {.Value = workflowModel.utilid}, _
 						prmInstanceID, prmFormElements, prmMessage)
 
-			sInstanceID = prmInstanceID.Value.ToString()
+			sInstanceID = prmInstanceID.Value.ToString()work
 			sFormElements = prmFormElements.Value.ToString()
 			sMessage = prmMessage.Value.ToString()
 
@@ -168,8 +168,8 @@ End If
 		<input type="hidden" id="utilformcount" name="utilformcount" value="<%=iFormCount%>">
 		<input type="hidden" id="utilinstance" name="utilinstance" value="<%=iInstanceID%>">
 		<input type="hidden" id="utiltype" name="utiltype" value="<%:workflowModel.utiltype%>">
-		<input type="hidden" id="utilid" name="utilid" value='<%:workflowModel.ID%>'>
-		<input type="hidden" id="utilname" name="utilname" value="<%=Replace(workflowModel.Name, """", "&quot;")%>">
+		<input type="hidden" id="utilid" name="utilid" value='<%:workflowModel.utilid%>'>
+		<input type="hidden" id="utilname" name="utilname" value="<%=Replace(workflowModel.utilname, """", "&quot;")%>">
 		<input type="hidden" id="action" name="action" value="RUN">
 
 		<table align="center" class="outline" cellpadding="5" cellspacing="0">
@@ -181,7 +181,7 @@ End If
 						</tr>
 						<tr>
 							<td width="20" height="10"></td>
-							<td align="center">Workflow '<%=Replace(workflowModel.Name, """", "&quot;")%>'
+							<td align="center">Workflow '<%=Replace(workflowModel.utilname, """", "&quot;")%>'
 								<%
 									If Len(sURL) = 0 Then
 								%>
