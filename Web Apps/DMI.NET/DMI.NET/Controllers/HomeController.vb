@@ -3268,10 +3268,12 @@ Namespace Controllers
 			objCalendarEvent.Description1 = objRow.Item("EventDescription1").ToString()
 			objCalendarEvent.Description2 = objRow.Item("EventDescription2").ToString()
 			objCalendarEvent.Description1Column = objRow.Item("EventDescription1Column").ToString() + " :"
+			If objCalendarEvent.Description1Column.ToString().Substring(1, 1) = ":" Then objCalendarEvent.Description1Column = "<Undefined>"
 			objCalendarEvent.Description2Column = objRow.Item("EventDescription2Column").ToString() + " :"
+			If objCalendarEvent.Description2Column.ToString().Substring(1, 1) = ":" Then objCalendarEvent.Description2Column = "<Undefined>"
 			objCalendarEvent.Region = objRow.Item("Region").ToString()
 			objCalendarEvent.CalendarCode = objRow.Item("Legend").ToString()
-
+			
 			Dim datWorkingPatterns As DataTable = objCalendar.rsCareerChange
 			If Not datWorkingPatterns Is Nothing Then
 				sSQL = String.Format("BaseID = {0} AND [WP_Date] <= '{1}'", objCalendarEvent.BaseID, objCalendarEvent.StartDate)
