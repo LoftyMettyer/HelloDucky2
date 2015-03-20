@@ -99,7 +99,7 @@
 <input type='hidden' id="txtOK" name="txtOK" value="True">
 <%
 		
-	Session("CalRepUtilID") = Request.Form("utilid")
+	Session("CalRepUtilID") = Session("utilid")
 		
 	Response.Write("<input type='hidden' id=txtPreview name=txtPreview value=" & blnShowCalendar & ">" & vbCrLf)
 		
