@@ -104,24 +104,24 @@
 	Session("CT_PercentageOfPage") = False
 	Session("CT_SupressZeros") = False
 
-	if session("utiltype") = "" or _ 
-		 session("utilname") = "" or _ 
-		 session("utilid") = "" or _ 
-		 session("action") = "" then 
+	If Session("utiltype") Is Nothing Or _
+		 Session("utilname") Is Nothing Or _
+		 Session("utilid") Is Nothing Or _
+		 Session("action") Is Nothing Then
 				
-				Response.Write("Error : Not all session variables found...<HR>")
-				Response.Write("Type = " & Session("utiltype") & "<BR>")
-				Response.Write("UtilName = " & Session("utilname") & "<BR>")
-				Response.Write("UtilID = " & Session("utilid") & "<BR>")
-				Response.Write("Action = " & Session("action") & "<BR>")
-				Response.End()
-	end if
+		Response.Write("Error : Not all session variables found...<HR>")
+		Response.Write("Type = " & Session("utiltype") & "<BR>")
+		Response.Write("UtilName = " & Session("utilname") & "<BR>")
+		Response.Write("UtilID = " & Session("utilid") & "<BR>")
+		Response.Write("Action = " & Session("action") & "<BR>")
+		Response.End()
+	End If
 
 	' Pass required info to the DLL
 	objCrossTab.CrossTabID = Session("utilid")
 
-	fok = true
-	blnNoDefinition = true
+	fok = True
+	blnNoDefinition = True
 
 	Dim aPrompts
 	Dim fModuleOk As Boolean
@@ -129,38 +129,38 @@
 	Dim strEmailGroupName As String = ""
 	If plngOutputEmailID > 0 Then strEmailGroupName = objCrossTab.GetEmailGroupName(plngOutputEmailID)
 	
-		aPrompts = Session("Prompts_" & Session("utiltype") & "_" & Session("utilid"))
+	aPrompts = Session("Prompts_" & Session("utiltype") & "_" & Session("utilid"))
 
-		fModuleOk = True
-		If lngStartDateColID = 0 Or _
-			lngStartSessionColID = 0 Or _
-			lngEndDateColID = 0 Or _
-			lngEndSessionColID = 0 Or _
-			lngTypeColID = 0 Or _
-			lngReasonColID = 0 Or _
-			lngDurationColID = 0 Then
+	fModuleOk = True
+	If lngStartDateColID = 0 Or _
+		lngStartSessionColID = 0 Or _
+		lngEndDateColID = 0 Or _
+		lngEndSessionColID = 0 Or _
+		lngTypeColID = 0 Or _
+		lngReasonColID = 0 Or _
+		lngDurationColID = 0 Then
 		
-			fok = False
-			fModuleOk = False
-		End If
+		fok = False
+		fModuleOk = False
+	End If
 	
-		If fok Then
-			fok = objCrossTab.SetPromptedValues(aPrompts)
-			fNotCancelled = Response.IsClientConnected
-			If fok Then fok = fNotCancelled
-		End If
+	If fok Then
+		fok = objCrossTab.SetPromptedValues(aPrompts)
+		fNotCancelled = Response.IsClientConnected
+		If fok Then fok = fNotCancelled
+	End If
 
-		If fok Then
-			fok = objCrossTab.SetAbsenceBreakDownDisplayOptions(bPrintFilterPickList)
-			fNotCancelled = Response.IsClientConnected
-			If fok Then fok = fNotCancelled
-		End If
+	If fok Then
+		fok = objCrossTab.SetAbsenceBreakDownDisplayOptions(bPrintFilterPickList)
+		fNotCancelled = Response.IsClientConnected
+		If fok Then fok = fNotCancelled
+	End If
 
-		If fok Then
-			fok = objCrossTab.SetAbsenceBreakDownDisplayOptions(bPrintFilterPickList)
-			fNotCancelled = Response.IsClientConnected
-			If fok Then fok = fNotCancelled
-		End If
+	If fok Then
+		fok = objCrossTab.SetAbsenceBreakDownDisplayOptions(bPrintFilterPickList)
+		fNotCancelled = Response.IsClientConnected
+		If fok Then fok = fNotCancelled
+	End If
 
 	If fok Then
 		fok = objCrossTab.AbsenceBreakdownRetreiveDefinition(dtStartDate, dtEndDate, lngHorColID, lngVerColID, lngPicklistID, lngFilterID, lngPersonnelID, strAbsenceTypes)

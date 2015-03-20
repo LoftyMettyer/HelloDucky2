@@ -2395,21 +2395,7 @@ Namespace Controllers
 		<HttpPost()>
 		<ValidateAntiForgeryToken>
 		Function util_run_promptedvalues_submit(TemplateFile As HttpPostedFileBase) As ActionResult
-
-			Try
-				Session("utiltype") = Request.Form("utiltype")
-				Session("utilid") = Request.Form("utilid")
-				Session("utilname") = Request.Form("utilname")
-				Session("action") = Request.Form("action")
-				Session("MailMerge_Template") = Nothing
-
-			Catch ex As Exception
-				Throw
-
-			End Try
-
 			Return View("util_run")
-
 		End Function
 
 		<HttpPost>

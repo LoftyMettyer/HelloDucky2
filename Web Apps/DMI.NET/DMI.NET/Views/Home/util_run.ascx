@@ -62,7 +62,7 @@
 			j = j + 1
 		End If
 	Next
-	sKey = "Prompts_" & Request.Form("utiltype") & "_" & Request.Form("utilid")
+	sKey = "Prompts_" & iUtilType & "_" & CStr(Session("utilid"))
 	Session(sKey) = aPrompts
 %>
 

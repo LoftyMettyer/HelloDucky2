@@ -20,10 +20,10 @@
 	Session("CT_SupressZeros") = False
 	Session("CT_Use1000") = False
 
-	If Session("utiltype") = "" Or _
-		 Session("utilname") = "" Or _
-		 Session("utilid") = "" Or _
-		 Session("action") = "" Then
+	If Session("utiltype") Is Nothing Or _
+		 Session("utilname") Is Nothing Or _
+		 Session("utilid") Is Nothing Or _
+		 Session("action") Is Nothing Then
 				
 		Response.Write("Error : Not all session variables found...<HR>")
 		Response.Write("Type = " & Session("utiltype") & "<BR>")
