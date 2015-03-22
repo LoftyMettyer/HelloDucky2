@@ -2397,11 +2397,6 @@ Namespace Controllers
 		Function util_run_promptedvalues_submit(value As PromptedValuesModel) As ActionResult
 
 			Try
-				Session("utiltype") = value.utiltype
-				Session("utilid") = value.ID
-				'		Session("utilname") = value.Name
-				Session("action") = "run"
-				Session("MailMerge_Template") = Nothing
 
 				Dim sKey As String
 
