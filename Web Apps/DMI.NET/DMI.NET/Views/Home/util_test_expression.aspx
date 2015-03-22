@@ -1,55 +1,30 @@
-﻿<%@ Page Language="VB" Inherits="System.Web.Mvc.ViewPage" %>
+﻿<%@ Page Language="VB" Inherits="System.Web.Mvc.ViewPage(of DMI.NET.Models.ObjectRequests.TestPromptedValuesModel)" %>
 
-<%@ Import Namespace="DMI.NET" %>
 <%@ Import Namespace="HR.Intranet.Server" %>
 <%@ Import Namespace="HR.Intranet.Server.Expressions" %>
 
-<%
-	' Write the prompted values from the calling form into a session variable.
-	Dim j As Integer
-	Dim aPrompts(1, 0) As String
-	Dim sKey As String
-	j = 0
-	ReDim Preserve aPrompts(1, 0)
-	For i = 0 To (Request.Form.Count) - 1
-		sKey = Request.Form.Keys(i)
-		If ((UCase(Left(sKey, 7)) = "PROMPT_") And (Mid(sKey, 8, 1) <> "3")) Or _
-				(UCase(Left(sKey, 10)) = "PROMPTCHK_") Then
-			ReDim Preserve aPrompts(1, j)
-			If (UCase(Left(sKey, 10)) = "PROMPTCHK_") Then
-				aPrompts(0, j) = "prompt_3_" & Mid(sKey, 11)
-				aPrompts(1, j) = UCase(Request.Form.Item(i))
-			Else
-				aPrompts(0, j) = sKey
-				Select Case Mid(sKey, 8, 1)
-					Case "2"
-						' Numeric. Replace locale decimal point with '.'
-						aPrompts(1, j) = Replace(Request.Form.Item(i), Session("LocaleDecimalSeparator").ToString(), ".")
-					Case "4"
-						' Date. Reformat to match SQL's mm/dd/yyyy format.
-						aPrompts(1, j) = ConvertLocaleDateToSQL(Request.Form.Item(i))
-					Case Else
-						aPrompts(1, j) = Request.Form.Item(i)
-				End Select
-			End If
-			j = j + 1
-		End If
-	Next
-	Session("TestPrompts") = aPrompts
-%>
-
 <script type="text/javascript">
+	
+	function util_test_expression_close() {
+
+		// Close the popup
+		if ($('#divValidateExpression').dialog('isOpen') == true) {
+			$('#divValidateExpression').dialog('close');
+		}
+
+	}
+
 	function util_test_expression_onload() {
 
 		if ($('#util_test_expression #txtDisplay').val() != "False") {
 			// Hide the 'please wait' message.
 			$('#PleaseWaitDiv').hide();
 			var dialogWidth = screen.width / 3;
-			$('#tmpDialog').dialog("option", "width", dialogWidth);
+			$('#divValidateExpression').dialog("option", "width", dialogWidth);
 
 		}
 		else {
-			OpenHR.clearTmpDialog();
+			util_test_expression_close();
 		}
 	}
 
@@ -61,20 +36,18 @@
 
 		<div id="PleaseWaitDiv">
 			<%
-				If Request.Form("type") = 11 Then
+				If Model.UtilType = UtilityType.utlFilter Then
 					Response.Write("<h3>Testing Filter</h3>")
+				ElseIf Model.UtilType = UtilityType.utlCalculation Then
+					Response.Write("<h3>Testing Calculation</h3>")
 				Else
-					If Request.Form("type") = 12 Then
-						Response.Write("<h3>Testing Calculation</h3>")
-					Else
-						Response.Write("<h3>Testing Expression</h3>")
-					End If
+					Response.Write("<h3>Testing Expression</h3>")
 				End If
 			%>						
 			Please wait...
 			<br />
 			<br />
-			<input id="Cancel" name="Cancel" class="btn" type="button" value="OK" style="width: 80px; float: right;" onclick="OpenHR.clearTmpDialog();" />
+			<input id="Cancel" name="Cancel" class="btn" type="button" value="OK" style="width: 80px; float: right;" onclick="util_test_expression_close();" />
 		</div>
 
 		<%
@@ -95,17 +68,19 @@
 			fOK = True
 			fDisplay = False
 	
-			If Request.Form("type") = "11" Then
+			If Model.UtilType = UtilityType.utlFilter Then
 				sUtilType = "Filter"
 			Else
 				sUtilType = "Calculation"
 			End If
+			
+			Dim aPrompts = Session("TestPrompts")
 		
 			' Get the server DLL to test the expression definition
 			objExpression = New Expression(objSessionInfo)
 	
 			If fOK Then
-				If Request.Form("type") = 11 Then
+				If Model.UtilType = UtilityType.utlFilter Then
 					iExprType = 11
 					iReturnType = 3
 				Else
@@ -113,11 +88,11 @@
 					iReturnType = 0
 				End If
 				
-				fOK = objExpression.Initialise(CInt(Request.Form("tableID")), 0, CShort(iExprType), CType(iReturnType, ExpressionValueTypes))
+				fOK = objExpression.Initialise(Model.TableID, 0, CShort(iExprType), CType(iReturnType, ExpressionValueTypes))
 			End If
 
 			If fOK Then
-				fOK = objExpression.SetExpressionDefinition(CStr(Request.Form("components1")), "", "", "", "", "")
+				fOK = objExpression.SetExpressionDefinition(HttpUtility.HtmlDecode(Model.components1), "", "", "", "", "")
 			End If
 
 			If fOK Then
@@ -133,7 +108,7 @@
 		%>
 		<br />
 		<br />
-		<input id="Button1" name="Cancel" type="button" class="btn" value="OK" style="width: 80px; float: right;" onclick="OpenHR.clearTmpDialog();" />
+		<input id="Button1" name="Cancel" type="button" class="btn" value="OK" style="width: 80px; float: right;" onclick="util_test_expression_close();" />
 		<%
 		End If
 	End If
@@ -178,7 +153,7 @@
 		%>
 		<br />
 		<br />
-		<input id="Button2" name="Cancel" type="button" class="btn" value="OK" style="width:80px; float: right;" onclick="OpenHR.clearTmpDialog();" />
+		<input id="Button2" name="Cancel" type="button" class="btn" value="OK" style="width:80px; float: right;" onclick="util_test_expression_close();" />
 		<%
 		End If		
 	

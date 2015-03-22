@@ -202,6 +202,7 @@ function util_def_expression_onload() {
 		menu_refreshMenu();
 		refreshControls();
 		$('#cmdCancel').hide();
+
 	}
 
 
@@ -327,7 +328,8 @@ function loadDefinition() {
 					sKey = "E" + expressionParameter(sExprDefn, "EXPRID");
 
 					//Add the title node
-					$('#SSTree1').append('<ul><li class="root" data-nodetype="root" id="' + sKey + '"><a style="font-weight: bold;" href="#">' + frmDefinition.txtName.value + '</a></li></ul>');
+					$('#SSTree1').append('<ul><li class="root" data-nodetype="root" id="' + sKey + '"><a style="font-weight: bold;" href="#"> </a></li></ul>');
+
 					$('#' + sKey).attr('data-tag', sExprDefn);
 					// Load the expression definition into the treeview.
 					loadComponentNodes(expressionParameter(sExprDefn, "EXPRID"), true);
@@ -1439,54 +1441,18 @@ function testClick() {
 		}
 	});
 	
-	frmTest.type.value = frmSend.txtSend_type.value;
-	frmTest.components1.value = frmSend.txtSend_components1.value;
-	frmTest.prompts.value = sPrompts;
-	frmTest.filtersAndCalcs.value = sFiltersAndCalcs;
+	var postData = {
+		type: frmSend.txtSend_type.value,
+		components1: frmSend.txtSend_components1.value,
+		tableID: frmUseful.txtTableID.value,
+		prompts: sPrompts,
+		filtersAndCalcs: sFiltersAndCalcs,
+		__RequestVerificationToken: $('[name="__RequestVerificationToken"]').val()
+	}
 
-	createTempDialog("test"); //yes, "test" is the correct parameter.
-
-}
-
-function createTempDialog(action) {
-	
-	$('body').append('<div id="tmpDialog"></div>');
-	$('#tmpDialog').dialog({
-		width: 300,
-		height: 'auto',
-		modal: true
-	});
-
-	$.ajax({
-		url: "util_dialog_expression",
-		type: "POST",
-		async: true,
-		data: { action: action },
-		success: function (html) {
-
-			$('#tmpDialog').html('').html(html);
-
-			//jQuery styling
-			$(function () {
-				$("input[type=submit], input[type=button], button").button();
-				$("input").addClass("ui-widget ui-corner-all");
-				$("input").removeClass("text");
-
-				$("textarea").addClass("ui-widget ui-corner-tl ui-corner-bl");
-				$("textarea").removeClass("text");
-
-				$("select").addClass("ui-widget ui-corner-tl ui-corner-bl");
-				$("select").removeClass("text");
-				$("input[type=submit], input[type=button], button").removeClass("ui-corner-all");
-				$("input[type=submit], input[type=button], button").addClass("ui-corner-tl ui-corner-br");
-
-			});
-
-			$('#tmpDialog').dialog("option", "position", ['center', 'center']);
-
-		},
-		error: function () { alert('error'); }
-	});
+	$('#divValidateExpression').dialog("open");
+	OpenHR.submitForm(null, "divValidateExpression", null, postData, "util_test_expression_pval");
+	return true;
 
 }
 
@@ -1653,32 +1619,27 @@ function submitDefinition() {
 	if (populateSendForm() == false) { menu_refreshMenu(); return false; }
 
 	// first populate the validate fields
-	var frmValidate = OpenHR.getForm("divDefExpression", "frmValidate");
 	var frmSend = OpenHR.getForm("divDefExpression", "frmSend");
 	var frmUseful = OpenHR.getForm("divDefExpression", "frmUseful");
 	var frmOriginalDefinition = OpenHR.getForm("divDefExpression", "frmOriginalDefinition");
 
-	frmValidate.validatePass.value = 1;
-	frmValidate.validateName.value = frmDefinition.txtName.value;
-	frmValidate.validateAccess.value = frmSend.txtSend_access.value;
-	frmValidate.validateUtilType.value = frmSend.txtSend_type.value;
-	frmValidate.validateAccess.value = frmSend.txtSend_access.value;
-	frmValidate.validateOwner.value = frmDefinition.txtOwner.value;
-	frmValidate.components1.value = frmSend.txtSend_components1.value;
-	frmValidate.validateOriginalAccess.value = frmOriginalDefinition.txtOriginalAccess.value;
-
-	if (frmUseful.txtAction.value.toUpperCase() == "EDIT") {
-		frmValidate.validateTimestamp.value = frmOriginalDefinition.txtDefn_Timestamp.value;
-		frmValidate.validateUtilID.value = frmUseful.txtUtilID.value;
-	}
-	else {
-		frmValidate.validateTimestamp.value = 0;
-		frmValidate.validateUtilID.value = 0;
+	var postData = {
+		Action: "validate",
+		validatePass: 1,
+		validateName: frmDefinition.txtName.value,
+		validateOwner: frmDefinition.txtOwner.value,
+		validateTimestamp: ((frmUseful.txtAction.value.toUpperCase() === "EDIT") ? frmOriginalDefinition.txtDefn_Timestamp.value : 0),
+		validateUtilID: ((frmUseful.txtAction.value.toUpperCase() === "EDIT") ? frmUseful.txtUtilID.value : 0),
+		validateUtilType: frmSend.txtSend_type.value,
+		validateAccess: frmSend.txtSend_access.value,
+		components1: frmSend.txtSend_components1.value,
+		validateBaseTableID: frmUseful.txtTableID.value,
+		validateOriginalAccess: frmOriginalDefinition.txtOriginalAccess.value,
+		__RequestVerificationToken: $('[name="__RequestVerificationToken"]').val()
 	}
 
-	createTempDialog("validate");
-	
-	reEnableControls();
+	$('#divValidateExpression').dialog("open");
+	OpenHR.submitForm(null, "divValidateExpression", null, postData, "util_validate_expression");
 	return true;
 
 }
@@ -1686,6 +1647,7 @@ function submitDefinition() {
 
 
 function reEnableControls() {
+
 	var frmUseful = OpenHR.getForm("divDefExpression", "frmUseful");
 	var frmDefinition = OpenHR.getForm("divDefExpression", "frmDefinition");
 
@@ -1804,7 +1766,6 @@ function populateSendForm() {
 	frmSend.txtSend_names.value = sNames;
 
 	frmSend.txtSend_components1.value = frmSend.txtSend_components1.value.replace(reQuote, '&quot;');
-
 	return true;
 
 }
@@ -1852,9 +1813,6 @@ function populateSendForm_names(psKey) {
 
 function ude_createNew() {
 	
-	OpenHR.clearTmpDialog();
-	if ($('.popup').dialog('isOpen')) $('.popup').dialog('close');
-
 	var frmUseful = OpenHR.getForm("divDefExpression", "frmUseful");
 	var frmDefinition = OpenHR.getForm("divDefExpression", "frmDefinition");
 
@@ -1866,23 +1824,11 @@ function ude_createNew() {
 }
 
 function ude_makeHidden() {
-	OpenHR.clearTmpDialog();
+
 	var frmDefinition = OpenHR.getForm("divDefExpression", "frmDefinition");
 
 	frmDefinition.optAccessHD.checked = true;
 	submitDefinition();
-}
-
-function openDialog(pDestination, pWidth, pHeight) {
-	var dlgwinprops = "center:yes," +
-			"height=" + pHeight + "px," +
-			"width=" + pWidth + "px," +
-			"resizable=yes," +
-			"scroll=yes," +
-			"status=no";
-	var newWin = window.open(pDestination, self, dlgwinprops);
-	$(newWin).bind('blur', function() { $(this).focus(); });
-	newWin.focus();
 }
 
 function SSTree1_afterLabelEdit() {
@@ -2420,6 +2366,7 @@ function tree_GetNode1() {
 }
 
 function tree_SelectRootNode() {
+	$('#SSTree1').jstree('rename_node', '.root', frmDefinition.txtName.value);
 	$(".root>a").click();
 	return true;
 }

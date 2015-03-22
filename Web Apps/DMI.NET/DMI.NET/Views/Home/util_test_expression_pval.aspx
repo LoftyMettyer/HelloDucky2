@@ -1,10 +1,11 @@
-﻿<%@ Page Language="VB" Inherits="System.Web.Mvc.ViewPage"%>
+﻿<%@ Page Language="VB" Inherits="System.Web.Mvc.ViewPage(of DMI.NET.Models.ObjectRequests.TestExpressionModel)"%>
 
 <%@ Import Namespace="System.Globalization" %>
 <%@ Import Namespace="DMI.NET" %>
 <%@ Import Namespace="HR.Intranet.Server" %>
 <%@ Import Namespace="System.Data.SqlClient" %>
 <%@ Import Namespace="System.Data" %>
+<%@ Import Namespace="DMI.NET.Helpers" %>
 
 <!DOCTYPE html>
 
@@ -36,7 +37,14 @@
 		});
 
 		if (frmPromptedValues.txtPromptCount.value == 0) {
-			OpenHR.submitForm(frmPromptedValues, 'tmpDialog');
+
+			var postData = {
+				UtilType: <%:CInt(Model.type)%>,
+				components1: "<%:Model.components1%>",
+				TableID: <%:Model.tableID%>,
+				<%:Html.AntiForgeryTokenForAjaxPost() %> };
+			OpenHR.submitForm(null, "divValidateExpression", null, postData, "util_test_expression");
+
 		}
 		else {
 			// Set focus on the first prompt control.
@@ -66,11 +74,11 @@
 				window.parent.outerHeight = new String(iNewHeight);
 			}
 
-			if ($('#tmpDialog').dialog('isOpen')) {
+			if ($('#divValidateExpression').dialog('isOpen')) {
 				var dialogWidth = screen.width / 3;
 
-				$('#tmpDialog').dialog('option', 'height', 'auto');
-				$('#tmpDialog').dialog('option', 'width', dialogWidth);
+				$('#divValidateExpression').dialog('option', 'height', 'auto');
+				$('#divValidateExpression').dialog('option', 'width', dialogWidth);
 			}
 		}
 	}
@@ -81,6 +89,7 @@
 
 		// Validate the prompt values before submitting the form.
 		var controlCollection = frmPromptedValues.elements;
+		var submitElements = [];
 		if (controlCollection != null) {
 			for (var i = 0; i < controlCollection.length; i++) {
 				var sControlName = controlCollection.item(i).name;
@@ -97,16 +106,32 @@
 							return;
 						}
 					}
+
+					submitElements.push({
+						Key: controlCollection.item(i).name,
+						Type: iType,
+						Value: controlCollection.item(i).value
+					});
+
 				}
 			}
 		}
 
 		// Everything OK. Submit the form.
-		OpenHR.submitForm(frmPromptedValues);
+		var postData = {
+			UtilType: <%:CInt(Model.type)%>,
+			components1: "<%:Model.components1%>",
+			TableID: <%:Model.tableID%>,
+			PromptValues: submitElements,
+			<%:Html.AntiForgeryTokenForAjaxPost() %> };
+		OpenHR.submitForm(null, "divValidateExpression", null, postData, "util_test_expression");
+
 	}
 
 	function ute_cancelClick() {
-		OpenHR.clearTmpDialog();
+		if ($('#divValidateExpression').dialog('isOpen') == true) {
+			$('#divValidateExpression').dialog('close');
+		}
 	}
 
 	function ValidatePrompt(pctlPrompt, piDataType) {
@@ -377,8 +402,8 @@
 			Dim objDataAccess As New clsDataAccess(objSession.LoginInfo) 'Instantiate DataAccess class
 
 			iPromptCount = 0
-			sPrompts = Request.Form("prompts")
-			sFiltersAndCalcs = Request.Form("filtersAndCalcs")
+			sPrompts = Model.prompts
+			sFiltersAndCalcs = Model.filtersAndCalcs
 	
 			If Len(sPrompts) > 0 Then
 				iParameterIndex = 0
@@ -796,9 +821,9 @@
 
 			Response.Write(String.Format("<input type='hidden' id='txtPromptCount' name='txtPromptCount' value='{0}'>", iPromptCount) & vbCrLf)
 		%>
-		<input type="hidden" id="type" name="type" value="<%:Request.Form("type")%>" />
-		<input type="hidden" id="components1" name="components1" value="<%:Request.Form("components1")%>" />
-		<input type="hidden" id="tableID" name="tableID" value="<%:Request.Form("tableID")%>" />
+		<input type="hidden" id="type" name="type" value="<%:Model.type%>" />
+		<input type="hidden" id="components1" name="components1" value="<%:Model.components1%>" />
+		<input type="hidden" id="tableID" name="tableID" value="<%:Model.tableID%>" />
 	</form>
 
 </div>

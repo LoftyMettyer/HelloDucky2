@@ -675,7 +675,7 @@ Namespace Expressions
 
 		End Function
 
-		Public Function ValidityMessage(ByRef piValidityCode As ExprValidationCodes) As String
+		Public Function ValidityMessage(piValidityCode As ExprValidationCodes) As String
 			Return mobjBaseExpr.ValidityMessage(piValidityCode)
 		End Function
 

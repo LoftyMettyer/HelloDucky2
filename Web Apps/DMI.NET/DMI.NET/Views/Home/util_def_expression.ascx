@@ -130,16 +130,16 @@
 </form>
 
 <form id="frmUseful" name="frmUseful" style="visibility: hidden; display: none">
-	<input type="hidden" id="txtUserName" name="txtUserName" value="<%=session("username")%>">
+	<input type="hidden" id="txtUserName" name="txtUserName" value="<%:session("username")%>">
 	<input type="hidden" id="txtLoading" name="txtLoading" value="Y">
 	<input type="hidden" id="txtChanged" name="txtChanged" value="0">
-	<input type="hidden" id="txtUtilID" name="txtUtilID" value='<% =session("utilid")%>'>
-	<input type="hidden" id="txtTableID" name="txtTableID" value='<% =session("utiltableid")%>'>
-	<input type="hidden" id="txtAction" name="txtAction" value='<% =session("action")%>'>
+	<input type="hidden" id="txtUtilID" name="txtUtilID" value='<%:session("utilid")%>'>
+	<input type="hidden" id="txtTableID" name="txtTableID" value='<%:session("utiltableid")%>'>
+	<input type="hidden" id="txtAction" name="txtAction" value='<%:session("action")%>'>
 	<input type="hidden" id="txtUtilType" name="txtUtilType" value='<%:CInt(Session("utiltype"))%>'>
-	<input type="hidden" id="txtLocaleDecimal" name="txtLocaleDecimal" value='<% =session("LocaleDecimalSeparator")%>'>
-	<input type="hidden" id="txtExprColourMode" name="txtExprColourMode" value='<% =session("ExprColourMode")%>'>
-	<input type="hidden" id="txtExprNodeMode" name="txtExprNodeMode" value='<% =session("ExprNodeMode")%>'>
+	<input type="hidden" id="txtLocaleDecimal" name="txtLocaleDecimal" value='<%:session("LocaleDecimalSeparator")%>'>
+	<input type="hidden" id="txtExprColourMode" name="txtExprColourMode" value='<%:session("ExprColourMode")%>'>
+	<input type="hidden" id="txtExprNodeMode" name="txtExprNodeMode" value='<%:session("ExprNodeMode")%>'>
 
 	<%
 		Dim sErrorDescription As String
@@ -162,21 +162,8 @@
 	<input type="hidden" id="txtOldText" name="txtOldText" value="">
 </form>
 
-<form id="frmValidate" name="frmValidate" target="validate" method="post" action="util_validate_expression" style="visibility: hidden; display: none">
-	<input type="hidden" id="validatePass" name="validatePass" value="0">
-	<input type="hidden" id="validateName" name="validateName" value=''>
-	<input type="hidden" id="validateOwner" name="validateOwner" value=''>
-	<input type="hidden" id="validateTimestamp" name="validateTimestamp" value=''>
-	<input type="hidden" id="validateUtilID" name="validateUtilID" value=''>
-	<input type="hidden" id="validateUtilType" name="validateUtilType" value=''>
-	<input type="hidden" id="validateAccess" name="validateAccess" value=''>
-	<input type="hidden" id="components1" name="components1" value="">
-	<input type="hidden" id="validateBaseTableID" name="validateBaseTableID" value='<%=session("utiltableid")%>'>
-	<input type="hidden" id="validateOriginalAccess" name="validateOriginalAccess" value="RW">
-	<%=Html.AntiForgeryToken()%>
-</form>
 
-<form id="frmSend" name="frmSend" method="post" action="util_def_expression_Submit" style="visibility: hidden; display: none">
+<form id="frmSend" method="POST" name="frmSend" style="visibility: hidden; display: none">
 	<input type="hidden" id="txtSend_ID" name="txtSend_ID">
 	<input type="hidden" id="txtSend_type" name="txtSend_type">
 	<input type="hidden" id="txtSend_name" name="txtSend_name">
@@ -185,17 +172,9 @@
 	<input type="hidden" id="txtSend_userName" name="txtSend_userName">
 	<input type="hidden" id="txtSend_components1" name="txtSend_components1">
 	<input type="hidden" id="txtSend_reaction" name="txtSend_reaction">
-	<input type="hidden" id="txtSend_tableID" name="txtSend_tableID" value='<% =session("utiltableid")%>'>
+	<input type="hidden" id="txtSend_tableID" name="txtSend_tableID" value='<%:session("utiltableid")%>'>
 	<input type="hidden" id="txtSend_names" name="txtSend_names" value="">
 	<%=Html.AntiForgeryToken()%>
-</form>
-
-<form id="frmTest" name="frmTest" target="test" method="post" action="util_test_expression_pval" style="visibility: hidden; display: none">
-	<input type="hidden" id="type" name="type">
-	<input type="hidden" id="components1" name="components1">
-	<input type="hidden" id="tableID" name="tableID" value='<% =session("utiltableid")%>'>
-	<input type="hidden" id="prompts" name="prompts">
-	<input type="hidden" id="filtersAndCalcs" name="filtersAndCalcs">
 </form>
 
 <input type='hidden' id="txtTicker" name="txtTicker" value="0">
@@ -237,5 +216,5 @@
 </div>
 
 <script type="text/javascript">	
-	util_def_expression_onload();	
+	util_def_expression_onload();
 </script>

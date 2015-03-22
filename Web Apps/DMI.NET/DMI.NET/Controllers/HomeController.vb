@@ -3477,10 +3477,9 @@ Namespace Controllers
 			Return PartialView()
 		End Function
 
-		<ValidateInput(False)>
 		<HttpPost()>
 		<ValidateAntiForgeryToken>
-		Function util_def_expression_Submit()
+		Function util_def_expression_Submit(value As SubmitExpressionModel)
 
 			Dim objExpression As Expression
 			Dim iExprType As Integer
@@ -3490,11 +3489,10 @@ Namespace Controllers
 			Session("errorMessage") = ""
 
 			' Get the server DLL to save the expression definition
-
 			Dim objDataAccess As clsDataAccess = CType(Session("DatabaseAccess"), clsDataAccess)
 
 			Dim objContext = CType(Session("SessionContext"), SessionInfo)
-			If Request.Form("txtSend_type") = 11 Then
+			If value.txtSend_type = UtilityType.utlFilter Then
 				iExprType = 11
 				iReturnType = 3
 				sUtilType = "Filter"
@@ -3508,39 +3506,34 @@ Namespace Controllers
 
 				objExpression = New Expression(objContext)
 
-				fok = objExpression.Initialise(NullSafeInteger(Request.Form("txtSend_tableID")), _
-					NullSafeInteger(Request.Form("txtSend_ID")), CInt(iExprType), CInt(iReturnType))
+				fok = objExpression.Initialise(value.txtSend_tableID, value.txtSend_ID, iExprType, iReturnType)
 				If Not fok Then Session("errorMessage") = "<h3>Error saving " & sUtilType.ToLower() & "</h3>Error initialising save definition."
 
 				If fok Then
-					fok = objExpression.SetExpressionDefinition(CStr(Request.Form("txtSend_components1")), _
-						"", "", "", "", CStr(Request.Form("txtSend_names")))
+					fok = objExpression.SetExpressionDefinition(value.txtSend_components1, "", "", "", "", value.txtSend_names)
 					If Not fok Then Session("errorMessage") = "<h3>Error saving " & sUtilType.ToLower() & "</h3>Error setting expression definition."
 				End If
 
 				If fok Then
-					fok = objExpression.SaveExpression(CStr(Request.Form("txtSend_name")), _
-						CStr(Request.Form("txtSend_userName")), _
-						CStr(Request.Form("txtSend_access")), _
-						CStr(Request.Form("txtSend_description")))
+					fok = objExpression.SaveExpression(value.txtSend_name, value.txtSend_userName, value.txtSend_access, value.txtSend_description)
 					If Not fok Then Session("errorMessage") = "<h3>Error saving " & sUtilType.ToLower() & "</h3>Error saving expression definition."
 
 					If fok Then
-						If (Request.Form("txtSend_access") = "HD") And _
-							(Request.Form("txtSend_ID") > 0) Then
+						If (value.txtSend_access = "HD") And _
+							(value.txtSend_ID > 0) Then
 							' Hide any utilities that use this filter/calc.
 							' NB. The check to see if we can do this has already been done as part of the filter/calc validation. */
 
 							objDataAccess.ExecuteSP("sp_ASRIntMakeUtilitiesHidden" _
-								, New SqlParameter("piUtilityType", SqlDbType.Int) With {.Value = CleanNumeric(Request.Form("txtSend_type"))} _
-								, New SqlParameter("piUtilityID", SqlDbType.Int) With {.Value = CleanNumeric(Request.Form("txtSend_ID"))})
+								, New SqlParameter("piUtilityType", SqlDbType.Int) With {.Value = value.txtSend_type} _
+								, New SqlParameter("piUtilityID", SqlDbType.Int) With {.Value = value.txtSend_ID})
 
 						End If
 
 						Session("confirmtext") = sUtilType & " has been saved successfully"
 						Session("confirmtitle") = sUtilType & "s"
 						Session("followpage") = "defsel"
-						Session("reaction") = Request.Form("txtSend_reaction")
+						Session("reaction") = value.txtSend_reaction
 						Session("utilid") = objExpression.ExpressionID
 
 					Else
@@ -3636,26 +3629,64 @@ Namespace Controllers
 			Return PartialView()
 		End Function
 
-		<ValidateInput(False)>
-		Function util_test_expression() As ActionResult
-			Return View()
+		<HttpPost()>
+		<ValidateAntiForgeryToken>
+		Function util_test_expression(value As TestPromptedValuesModel) As ActionResult
+
+			Try
+
+				Dim sKey As String
+
+				Dim aPrompts(1, 0) As String
+				Dim j = 0
+				ReDim Preserve aPrompts(1, 0)
+
+				If value.PromptValues IsNot Nothing Then
+					For Each objPrompt In value.PromptValues
+						sKey = objPrompt.Key
+						If ((UCase(Left(sKey, 7)) = "PROMPT_") And (Mid(sKey, 8, 1) <> "3")) Or _
+								(UCase(Left(sKey, 10)) = "PROMPTCHK_") Then
+							ReDim Preserve aPrompts(1, j)
+
+							If (UCase(Left(sKey, 10)) = "PROMPTCHK_") Then
+								aPrompts(0, j) = "prompt_3_" & Mid(sKey, 11)
+								aPrompts(1, j) = UCase(objPrompt.Value)
+							Else
+								aPrompts(0, j) = sKey
+								Select Case objPrompt.Type
+									Case ExpressionValueTypes.giEXPRVALUE_NUMERIC
+										' Numeric. Replace locale decimal point with '.'
+										aPrompts(1, j) = Replace(objPrompt.Value, CType(Session("LocaleDecimalSeparator"), String), ".")
+									Case ExpressionValueTypes.giEXPRVALUE_DATE
+										' Date. Reformat to match SQL's mm/dd/yyyy format.
+										aPrompts(1, j) = ConvertLocaleDateToSQL(objPrompt.Value)
+									Case Else
+										aPrompts(1, j) = objPrompt.Value
+								End Select
+							End If
+							j = j + 1
+						End If
+					Next
+				End If
+
+				Session("TestPrompts") = aPrompts
+
+			Catch ex As Exception
+				Throw
+
+			End Try
+
+			Return View(value)
 		End Function
 
-		<ValidateInput(False)>
-		Function util_test_expression_pval() As ActionResult
-			Return View()
+		Function util_test_expression_pval(value As TestExpressionModel) As ActionResult
+			Return View(value)
 		End Function
 
-		<ValidateInput(False)>
 		<HttpPost>
 		<ValidateAntiForgeryToken>
-		Function util_validate_expression() As ActionResult
-			Return View()
-		End Function
-
-		Function util_dialog_expression(Optional action As String = "") As ActionResult
-			ViewData("action") = action
-			Return View()
+		Function util_validate_expression(value As ValidateExpressionModel) As ActionResult
+			Return View(value)
 		End Function
 
 #End Region

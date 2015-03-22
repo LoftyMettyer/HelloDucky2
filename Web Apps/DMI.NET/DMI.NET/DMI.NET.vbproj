@@ -226,6 +226,10 @@
     <Compile Include="Models\ObjectRequests\SendEmailModel.vb" />
     <Compile Include="Models\ObjectRequests\StandardReportModel.vb" />
     <Compile Include="Models\ObjectRequests\StandardReportRunModel.vb" />
+    <Compile Include="Models\ObjectRequests\SubmitExpressionModel.vb" />
+    <Compile Include="Models\ObjectRequests\TestExpressionModel.vb" />
+    <Compile Include="Models\ObjectRequests\TestPromptedValuesModel.vb" />
+    <Compile Include="Models\ObjectRequests\ValidateExpressionModel.vb" />
     <Compile Include="Models\ObjectRequests\ValidatePicklistModel.vb" />
     <Compile Include="Models\ObjectRequests\WorkflowRunModel.vb" />
     <Compile Include="Models\OptionDataModel.vb" />
@@ -1755,7 +1759,6 @@
     <Content Include="Views\Home\util_def_expression.ascx" />
     <Content Include="Views\Home\util_def_picklist.ascx" />
     <Content Include="Views\Home\util_delete.ascx" />
-    <Content Include="Views\Home\util_dialog_expression.aspx" />
     <Content Include="Views\Home\util_run.ascx" />
     <Content Include="Views\Home\util_run_calendarreport_data.ascx" />
     <Content Include="Views\Home\util_run_calendarreport_main.ascx" />

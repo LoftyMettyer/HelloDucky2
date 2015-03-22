@@ -1,8 +1,9 @@
-﻿<%@ Page Language="VB" Inherits="System.Web.Mvc.ViewPage" %>
+﻿<%@ Page Language="VB" Inherits="System.Web.Mvc.ViewPage(of DMI.NET.Models.ObjectRequests.ValidateExpressionModel)" %>
 <%@ Import Namespace="DMI.NET" %>
 <%@ Import Namespace="HR.Intranet.Server" %>
-<%@ Import Namespace="System.Data" %>
+<%@ Import Namespace="System.Data" %> 
 <%@ Import Namespace="System.Data.SqlClient" %>
+<%@ Import Namespace="DMI.NET.Helpers" %>
 <%@ Import Namespace="HR.Intranet.Server.Expressions" %>
 
 	<script type="text/javascript">
@@ -12,7 +13,7 @@
 			if ($('#util_validate_expression #txtDisplay').val() != "False") {
 				$('#PleaseWaitDiv').hide();
 				var dialogWidth = screen.width / 3;
-				$('#tmpDialog').dialog("option", "width", dialogWidth);
+				$('#divValidateExpression').dialog("option", "width", dialogWidth);
 			}
 			else {
 				nextPass();
@@ -52,22 +53,31 @@
 		}
 
 		function nextPass() {
-			var iNextPass;
 			
-			var frmValidate2 = OpenHR.getForm('util_validate_expression', 'frmValidate2');
-
-			iNextPass = new Number($(frmValidate2).find('#validatePass').val());
-			iNextPass = iNextPass + 1;
+			var iNextPass = parseInt($("#validatePass").val());
+			iNextPass += 1;
 
 			if (iNextPass <= 3) {
-				$(frmValidate2).find('#validatePass').val(iNextPass);
-				OpenHR.submitForm(frmValidate2, 'tmpDialog');
+				$("#validatePass").val(iNextPass);
+
+				var postData = {
+					validatePass: iNextPass,
+					validateUtilID: <%:Model.validateUtilID%>,
+					validateUtilType: <%:CInt(Model.validateUtilType)%>,
+					validateAccess: '<%:Model.validateAccess%>',
+					validateOriginalAccess: '<%:Model.validateOriginalAccess%>',
+					validateOwner: '<%:Model.validateOwner%>',
+					components1: '<%:Model.components1%>',
+					validateBaseTableID: <%:Model.validateBaseTableID%>, 
+					<%:Html.AntiForgeryTokenForAjaxPost() %>
+				}
+
+				OpenHR.submitForm(null, 'divValidateExpression', null, postData, "util_validate_expression");
 			}
 			else {
 
 				var frmSend = OpenHR.getForm("divDefExpression", "frmSend");
-				OpenHR.submitForm(frmSend, 'workframe');
-				OpenHR.clearTmpDialog();
+				OpenHR.submitForm(frmSend, 'workframe', null, null, "util_def_expression_Submit", uve_cancelClick);
 
 			}
 		}
@@ -98,8 +108,13 @@
 				}
 			}
 			catch(e) {
-			}			
-			OpenHR.clearTmpDialog();
+			}
+
+			// Close the popup
+			if ($('#divValidateExpression').dialog('isOpen') == true) {
+				$('#divValidateExpression').dialog('close');
+			}
+
 		}
 	</script>
 
@@ -108,23 +123,13 @@
 		<h3>
 			<%
 			  
-	If Request.Form("validateUtilType") = 11 Then
-			  
-		Response.Write("Validating Filter")
-			  
-	Else
-			  
-		If Request.Form("validateUtilType") = 12 Then
-			  
-			Response.Write("Validating Calculation")
-			  
-		Else
-			  
-			Response.Write("Validating Expression")
-			  
-		End If
-			  
-	End If
+				If Model.validateUtilType = UtilityType.utlFilter Then
+					Response.Write("Validating Filter")
+				ElseIf Model.validateUtilType = UtilityType.utlCalculation Then
+					Response.Write("Validating Calculation")
+				Else
+					Response.Write("Validating Expression")
+				End If
 			%>				
 		</h3>
 		Please wait...
@@ -155,7 +160,7 @@
 	Dim objExpression As Expression
 	Dim iReturnType As Integer
 			
-	Dim iValidityCode As Integer
+	Dim iValidityCode As ExprValidationCodes
 	Dim sValidityMessage As String
 	Dim iOriginalReturnType As Integer
 	Dim sDescription As String
@@ -166,7 +171,7 @@
 	fOK = True
 	fDisplay = False
 	
-	If Request.Form("validateUtilType") = "11" Then
+	If Model.validateUtilType = UtilityType.utlFilter Then
 		sUtilType = "Filter"
 		iExprType = 11
 	Else
@@ -174,7 +179,7 @@
 		iExprType = 10
 	End If
 		
-	If Request.Form("validatePass") = 1 Then
+	If Model.validatePass = 1 Then
 
 		Dim prmDeletedKeys = New SqlParameter("psDeletedKeys", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
 		Dim prmHiddenOwnerKeys = New SqlParameter("psHiddenOwnerKeys", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
@@ -187,13 +192,13 @@
 		Try
 
 			objDataAccess.ExecuteSP("sp_ASRIntValidateExpression" _
-				, New SqlParameter("psUtilName", SqlDbType.VarChar, 255) With {.Value = Request.Form("validateName")} _
-				, New SqlParameter("piUtilID", SqlDbType.Int) With {.Value = CleanNumeric(Request.Form("validateUtilID"))} _
-				, New SqlParameter("piUtilType", SqlDbType.Int) With {.Value = CleanNumeric(iExprType)} _
-				, New SqlParameter("psUtilOwner", SqlDbType.VarChar, 128) With {.Value = Request.Form("validateOwner")} _
-				, New SqlParameter("piBaseTableID", SqlDbType.Int) With {.Value = CleanNumeric(Request.Form("validateBaseTableID"))} _
-				, New SqlParameter("psComponentDefn", SqlDbType.VarChar, -1) With {.Value = Request.Form("components1")} _
-				, New SqlParameter("piTimestamp", SqlDbType.Int) With {.Value = CleanNumeric(Request.Form("validateTimestamp"))} _
+				, New SqlParameter("psUtilName", SqlDbType.VarChar, 255) With {.Value = Model.validateName} _
+				, New SqlParameter("piUtilID", SqlDbType.Int) With {.Value = Model.validateUtilID} _
+				, New SqlParameter("piUtilType", SqlDbType.Int) With {.Value = iExprType} _
+				, New SqlParameter("psUtilOwner", SqlDbType.VarChar, 128) With {.Value = Model.validateOwner} _
+				, New SqlParameter("piBaseTableID", SqlDbType.Int) With {.Value = Model.validateBaseTableID} _
+				, New SqlParameter("psComponentDefn", SqlDbType.VarChar, -1) With {.Value = HttpUtility.HtmlDecode(Model.components1)} _
+				, New SqlParameter("piTimestamp", SqlDbType.Int) With {.Value = Model.validateTimestamp} _
 				, prmDeletedKeys, prmHiddenOwnerKeys, prmHiddenNotOwnerKeys, prmDeletedDescs _
 				, prmHiddenOwnerDescs, prmHiddenNotOwnerDescs, prmErrorCode)
 
@@ -238,7 +243,7 @@
 			
 			Response.Write("<div>")
 			Response.Write("<h3>Error Saving " & sUtilType & "</h3>" & vbCrLf)
-			Response.Write("A " & sUtilType.ToLower & " called '" & Request.Form("validateName") & "' already exists.<br/><br/>")
+			Response.Write("A " & sUtilType.ToLower & " called '" & Model.validateName & "' already exists.<br/><br/>")
 			Response.Write("<input type='button' value='Close' class='btn' name='Cancel' style='float: right; width: 80px' id='Cancel' OnClick='uve_cancelClick()'/>" & vbCrLf)
 			Response.Write("</div>")
 		End If
@@ -263,7 +268,7 @@
 			Else
 				If (Len(sHiddenOwnerKeys) > 0) Or (Len(sHiddenNotOwnerKeys) > 0) Then
 
-					If (UCase(Request.Form("validateOwner")) = UCase(Session("Username"))) Then
+					If (UCase(Model.validateOwner) = UCase(Session("Username"))) Then
 						' Current user IS the owner of the filter/calc.
 						If (Len(sHiddenNotOwnerKeys) > 0) Then
 							' There are hidden components in the expression that are NOT owned by the current user.
@@ -284,7 +289,7 @@
 						Else
 							' There are hidden components in the expression that ARE owned by the current user.
 							' Need to make the expression hidden too.
-							If (Request.Form("validateAccess") <> "HD") Then
+							If (Model.validateAccess <> "HD") Then
 								fDisplay = True
 								
 								Response.Write("<div>")
@@ -355,11 +360,11 @@
 	End If
 	
 		
-	If Request.Form("validatePass") = 2 Then
+	If Model.validatePass = 2 Then
 		' Get the server DLL to validate the expression definition
 		objExpression = New Expression(objSessionInfo)
 			
-		If Request.Form("validateUtilType") = 11 Then
+		If Model.validateUtilType = UtilityType.utlFilter Then
 			iExprType = 11
 			iReturnType = 3
 		Else
@@ -367,24 +372,24 @@
 			iReturnType = 0
 		End If
 				
-		fOK = objExpression.Initialise(CLng(Request.Form("validateBaseTableID")), CLng(Request.Form("validateUtilID")), CInt(iExprType), CInt(iReturnType))
+		fOK = objExpression.Initialise(Model.validateBaseTableID, Model.validateUtilID, iExprType, CInt(iReturnType))
 
 		If fOK Then
-			fOK = objExpression.SetExpressionDefinition(CStr(Request.Form("components1")), "", "", "", "", "")
+			fOK = objExpression.SetExpressionDefinition(HttpUtility.HtmlDecode(Model.components1), "", "", "", "", "")			
 		End If
 
 		If fOK Then
 			iValidityCode = objExpression.ValidateExpression
-			If iValidityCode > 0 Then
+			If iValidityCode = ExprValidationCodes.giEXPRVALIDATION_NOERRORS Then
+				iReturnType = objExpression.ReturnType
+			Else
 				fDisplay = True
 				Response.Write("<h3>Error Saving " & sUtilType & "</h3>" & vbCrLf)
-				sValidityMessage = objExpression.ValidityMessage(CInt(iValidityCode))
+				sValidityMessage = objExpression.ValidityMessage(iValidityCode)
 				sValidityMessage = Replace(sValidityMessage, vbCr, "<BR>")
 				Response.Write(sValidityMessage & vbCrLf)
 				Response.Write("<br/><br/>" & vbCrLf)
 				Response.Write("<input type='button' value='Close' class='btn' name='Cancel' style='float: right; width: 80px' id='Cancel' OnClick=""uve_cancelClick()""/>" & vbCrLf)
-			Else
-				iReturnType = objExpression.ReturnType
 			End If
 		End If
 			
@@ -394,15 +399,15 @@
 			' Check if the expression return type has changed. 
 			' If so, check if it can be.
 
-			If Request.Form("validateUtilID") > 0 Then
+			If Model.validateUtilID > 0 Then
 				objExpression = New Expression(objSessionInfo)
 
-				iOriginalReturnType = objExpression.ExistingExpressionReturnType(CInt(Request.Form("validateUtilID")))
+				iOriginalReturnType = objExpression.ExistingExpressionReturnType(Model.validateUtilID)
 				objExpression = Nothing
 					
 				If iReturnType <> iOriginalReturnType Then
 										
-					Dim rsUsage = objDatabase.GetUtilityUsage(CInt(CleanNumeric(Request.Form("validateUtilType"))), CInt(CleanNumeric(Request.Form("validateUtilID"))))
+					Dim rsUsage = objDatabase.GetUtilityUsage(Model.validateUtilType, Model.validateUtilID)
 					 
 					If rsUsage.Rows.Count > 0 Then
 						fDisplay = True
@@ -428,19 +433,19 @@
 		End If
 	End If
 		
-	If Request.Form("validatePass") = 3 Then
-		If (Request.Form("validateUtilID") > 0) And _
-				(UCase(Request.Form("validateOwner")) = UCase(Session("username"))) And _
-				(Request.Form("validateAccess") = "HD") And _
-				(Request.Form("validateOriginalAccess") <> "HD") Then
+	If Model.validatePass = 3 Then
+		If (Model.validateUtilID > 0) And _
+				(UCase(Model.validateOwner) = UCase(Session("username"))) And _
+				(Model.validateAccess = "HD") And _
+				(Model.validateOriginalAccess <> "HD") Then
 			' Check if the expression can be made hidden.
 
 			Dim prmResult = New SqlParameter("piResult", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
 			Dim prmMsg = New SqlParameter("psMessage", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
 
 			objDataAccess.ExecuteSP("sp_ASRIntCheckCanMakeHidden" _
-							, New SqlParameter("piUtilityType", SqlDbType.Int) With {.Value = CleanNumeric(Request.Form("validateUtilType"))} _
-							, New SqlParameter("piUtilityID", SqlDbType.VarChar, 255) With {.Value = CleanNumeric(Request.Form("validateUtilID"))} _
+							, New SqlParameter("piUtilityType", SqlDbType.Int) With {.Value = Model.validateUtilType} _
+							, New SqlParameter("piUtilityID", SqlDbType.VarChar, 255) With {.Value = Model.validateUtilID} _
 							, prmResult, prmMsg)
 
 			If prmResult.Value = 1 Then
@@ -491,18 +496,7 @@
 	Response.Write("<input type='hidden' id='txtDisplay' name='txtDisplay' value='" & fDisplay & "'>" & vbCrLf)
 %>
 
-	<form id="frmValidate2" name="frmValidate2" method="post" action="util_validate_expression" style="visibility: hidden; display: none">
-		<input type="hidden" id="validatePass" name="validatePass" value='<%=Request.form("validatePass")%>'>
-		<input type="hidden" id="validateUtilID" name="validateUtilID" value='<%= ValidateIntegerValue(Request.Form("validateUtilID"))%>'>
-		<input type="hidden" id="validateUtilType" name="validateUtilType" value='<%=Request.form("validateUtilType")%>'>
-		<input type="hidden" id="validateAccess" name="validateAccess" value='<%= ValidateStringValue(Request.form("validateAccess"), Code.InputValidation.StringSanitiseLevel.HTMLEncode)%>'>
-		<input type="hidden" id="validateOriginalAccess" name="validateOriginalAccess" value='<%= ValidateStringValue(Request.Form("validateOriginalAccess"), Code.InputValidation.StringSanitiseLevel.HTMLEncode)%>'>
-		<input type="hidden" id="validateOwner" name="validateOwner" value='<%= ValidateStringValue(Request.form("validateOwner"), Code.InputValidation.StringSanitiseLevel.HTMLEncode)%>'>
-
-		<input type="hidden" id="components1" name="components1" value="<%= ValidateStringValue(Request.Form("components1"), Code.InputValidation.StringSanitiseLevel.HTMLEncode)%>">
-		<input type="hidden" id="validateBaseTableID" name="validateBaseTableID" value='<%= ValidateIntegerValue(Request.Form("validateBaseTableID"))%>'>
-		<%=Html.AntiForgeryToken()%>
-	</form>
+	<input type="hidden" id="validatePass" name="validatePass" value='<%:Model.validatePass%>'>
 </div>
 
 <script type="text/javascript">

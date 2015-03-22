@@ -375,7 +375,7 @@ Namespace Expressions
 		Public Function DeleteExpression() As Boolean
 		End Function
 
-		Public Function ValidityMessage(ByRef piInvalidityCode As ExprValidationCodes) As String
+		Public Function ValidityMessage(piInvalidityCode As ExprValidationCodes) As String
 			' Return the text nmessage that describes the given expression invalidity code.
 
 			Select Case piInvalidityCode

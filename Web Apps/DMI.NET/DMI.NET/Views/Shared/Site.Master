@@ -159,6 +159,13 @@
 				resizable: false
 			});
 
+			$('#divValidateExpression').dialog({
+				autoOpen: false,
+				width: 300,
+				height: 'auto',
+				modal: true
+			});
+
 			$("#errorDialog").dialog({
 				autoOpen: false,
 				modal: true,			
@@ -669,7 +676,7 @@
 		</div>
 	</div>
 	<div id="BulkBookingSelect"></div>
-
+	<div id="divValidateExpression"></div>
 	<div id="EventLogEmailSelect"></div>
 	<div id="EventLogDelete"></div>
 	<div id="EventLogPurge"></div>
