@@ -22,48 +22,6 @@
 
 	Dim iUtilType = CType(Session("utiltype"), UtilityType)
 	
-	' following sessions vars:
-	'
-	' UtilType    - 0-13 (see UtilityType code in DATMGR .exe
-	' UtilName    - <the name of the utility>
-	' UtilID      - <the id of the utility>
-	' Action      - run/delete
-
-	' Write the prompted values from the calling form into a session variable.
-	' NB. The prompts are written into an array and this array is written to a 
-	' session variables with the name 'Prompts_<util type>_<util id>.
-	Dim sKey As String
-
-	Dim aPrompts(1, 0) As String
-	Dim j = 0
-	ReDim Preserve aPrompts(1, 0)
-	For i = 0 To (Request.Form.Count) - 1
-		sKey = Request.Form.Keys(i)
-		If ((UCase(Left(sKey, 7)) = "PROMPT_") And (Mid(sKey, 8, 1) <> "3")) Or _
-				(UCase(Left(sKey, 10)) = "PROMPTCHK_") Then
-			ReDim Preserve aPrompts(1, j)
-		
-			If (UCase(Left(sKey, 10)) = "PROMPTCHK_") Then
-				aPrompts(0, j) = "prompt_3_" & Mid(sKey, 11)
-				aPrompts(1, j) = UCase(Request.Form.Item(i))
-			Else
-				aPrompts(0, j) = sKey
-				Select Case Mid(sKey, 8, 1)
-					Case "2"
-						' Numeric. Replace locale decimal point with '.'
-						aPrompts(1, j) = Replace(Request.Form.Item(i), CType(Session("LocaleDecimalSeparator"), String), ".")
-					Case "4"
-						' Date. Reformat to match SQL's mm/dd/yyyy format.
-						aPrompts(1, j) = ConvertLocaleDateToSQL(Request.Form.Item(i))
-					Case Else
-						aPrompts(1, j) = Request.Form.Item(i)
-				End Select
-			End If
-			j = j + 1
-		End If
-	Next
-	sKey = "Prompts_" & iUtilType & "_" & CStr(Session("utilid"))
-	Session(sKey) = aPrompts
 %>
 
 <script type="text/javascript">
@@ -373,7 +331,7 @@
 				$('#main').css('marginTop', '30px'); //.css('borderTop', '1px solid rgb(206, 206, 206)');
 			}
 
-			$("#PageDivTitle").html($("#txtDefn_Name").val());
+			$("#PageDivTitle").val($("#txtDefn_Name").val());
 			$(".popup").dialog('option', 'title', $("#txtDefn_Name").val());
 			$("#outputoptions").hide();
 

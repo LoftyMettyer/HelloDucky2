@@ -89,7 +89,7 @@ Namespace Controllers
 
 		End Function
 
-		<HttpPost, ValidateInput(False)>
+		<HttpPost>
 		<ValidateAntiForgeryToken>
 	 Function util_def_customreport(objModel As CustomReportModel) As ActionResult
 
@@ -218,7 +218,7 @@ Namespace Controllers
 
 		End Function
 
-		<HttpPost, ValidateInput(False)>
+		<HttpPost>
 		<ValidateAntiForgeryToken>
 	 Function util_def_mailmerge(objModel As MailMergeModel) As ActionResult
 
@@ -258,7 +258,7 @@ Namespace Controllers
 
 		End Function
 
-		<HttpPost, ValidateInput(False)>
+		<HttpPost>
 		<ValidateAntiForgeryToken>
 		Function util_def_crosstab(objModel As CrossTabModel) As ActionResult
 
@@ -284,7 +284,7 @@ Namespace Controllers
 
 		End Function
 
-		<HttpPost, ValidateInput(False)>
+		<HttpPost>
 		<ValidateAntiForgeryToken>
 		Function util_def_9boxgrid(objModel As NineBoxGridModel) As ActionResult
 
@@ -311,7 +311,7 @@ Namespace Controllers
 
 		End Function
 
-		<HttpPost, ValidateInput(False)>
+		<HttpPost>
 		<ValidateAntiForgeryToken>
 		Function util_def_calendarreport(objModel As CalendarReportModel) As ActionResult
 
@@ -507,7 +507,7 @@ Namespace Controllers
 
 		End Sub
 
-		<HttpPost, ValidateInput(False)>
+		<HttpPost>
 	 Function ChangeEventBaseTable(objModel As CalendarEventDetailViewModel) As ActionResult
 
 			Dim objReport = objReportRepository.RetrieveCalendarReport(objModel.ReportID)
@@ -707,7 +707,7 @@ Namespace Controllers
 
 		End Sub
 
-		<HttpPost, ValidateInput(False)>
+		<HttpPost>
 		Sub RemoveReportColumn(objModel As ReportColumnCollection)
 
 			Dim objReport As ReportBaseModel

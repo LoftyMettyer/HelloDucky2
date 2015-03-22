@@ -163,6 +163,7 @@
 			cmTemplate: { sortable: true },
 			pager: $('#pager-coldata'),
 			ignoreCase: true,
+			autoencode: true,
 			shrinkToFit: false,
 			rowNum: 500,
 			beforeSelectRow: function (rowid, e) { // handle jqGrid multiselect => thanks to solution from Byron Cobb on http://goo.gl/UvGku
@@ -312,14 +313,15 @@
 		frmDetails.txtEventBatchRunID.value = rowData["Batch Run ID"];
 		frmDetails.txtEmailPermission.value = frmLog.txtELEmailPermission.value;
 
-		sURL = "eventLogDetails" +
-						"?txtEventID=" + OpenHR.validateInteger(frmDetails.txtEventID.value) +
-						"&txtEventName=" + escape(frmDetails.txtEventName.value) +
-						"&txtEventBatchRunID=" + frmDetails.txtEventBatchRunID.value +
-						"&txtEventMode=" + escape(frmDetails.txtEventMode.value);
-		
-		$('#EventLogViewDetails').data('sURLData', sURL);
+		var postData = {
+			ID: rowData["ID"],
+			Mode: rowData["Mode"],
+			BatchRunID: rowData["Batch Run ID"]
+		}
+
 		$('#EventLogViewDetails').dialog("open");
+		OpenHR.submitForm(null, "EventLogViewDetails", null, postData, "EventLogDetails");
+
 	}
 
 	function EventLog_deleteEvent() {

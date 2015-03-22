@@ -10,6 +10,8 @@ Namespace Models.ObjectRequests
 
 		Public Property utiltype As UtilityType
 		Public Property utilID As Integer
+
+		<AllowHtml>
 		Public Property utilName As String
 
 		Public Property Action As String

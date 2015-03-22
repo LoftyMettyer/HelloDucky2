@@ -411,7 +411,7 @@ function menu_MenuClick(sTool) {
 			if (OpenHR.currentWorkPage() == "STDRPT_DEF_ABSENCE" || OpenHR.currentWorkPage() == "UTIL_RUN_PROMPTEDVALUES") {
 				absence_okClick();
 			} else {
-				setrun();
+				setrun(6);
 			}
 		} catch(e) {
 		} finally {

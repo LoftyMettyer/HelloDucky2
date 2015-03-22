@@ -69,7 +69,6 @@
 
 	If fok Then
 		fok = objReport.GetCustomReportDefinition
-		Session("utilname") = objReport.Name
 		fNotCancelled = Response.IsClientConnected
 		If fok Then fok = fNotCancelled
 	End If
@@ -245,9 +244,9 @@
 End If
 %>
 
-<input type='hidden' id="txtNoRecs" name="txtNoRecs" value="<%=objReport.NoRecords%>">
-<input type='hidden' id="txtDefn_Name" name="txtDefn_Name" value="<%=objReport.ReportCaption.ToString()%>">
-<input type='hidden' id="txtDefn_ErrMsg" name="txtDefn_ErrMsg" value="<%=objReport.ErrorString%>">
+<input type='hidden' id="txtNoRecs" name="txtNoRecs" value="<%:objReport.NoRecords%>">
+<input type='hidden' id="txtDefn_Name" name="txtDefn_Name" value="<%:objReport.ReportCaption.ToString()%>">
+<input type='hidden' id="txtDefn_ErrMsg" name="txtDefn_ErrMsg" value="<%:objReport.ErrorString%>">
 
 
 <script runat="server">

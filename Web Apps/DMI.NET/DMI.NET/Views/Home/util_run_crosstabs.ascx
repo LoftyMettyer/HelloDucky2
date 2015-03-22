@@ -211,8 +211,8 @@ Session("utiltype = 17 		Calendar Report--%>
 </fieldset>
 
 	<input type="hidden" id="txtCancelPrint" name="txtCancelPrint">
-	<input type='hidden' id="txtDefn_Name" name="txtDefn_Name" value="<%= objCrossTab.CrossTabName.ToString()%>">
-	<input type='hidden' id="txtDefn_ErrMsg" name="txtDefn_ErrMsg" value="<%=objCrossTab.ErrorString%>">
+	<input type='hidden' id="txtDefn_Name" name="txtDefn_Name" value="<%:objCrossTab.CrossTabName()%>">
+	<input type='hidden' id="txtDefn_ErrMsg" name="txtDefn_ErrMsg" value="<%:objCrossTab.ErrorString%>">
 
 
 <select style="visibility: hidden; display: none" id="cboDummy" name="cboDummy">

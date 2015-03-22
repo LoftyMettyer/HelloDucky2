@@ -56,6 +56,7 @@
 		pager: '#pcrud',
 		sortname: 'Name',
 		loadonce: true,
+		autoencode: true,
 		viewrecords: true,
 		sortorder: "asc",
 		cmTemplate: { sortable: false }

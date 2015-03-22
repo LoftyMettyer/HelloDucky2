@@ -2183,8 +2183,8 @@ Namespace Controllers
 			Return View()
 		End Function
 
-		Function EventLogDetails() As ActionResult
-			Return View()
+		Function EventLogDetails(value As EventDetailModel) As ActionResult
+			Return View(value)
 		End Function
 
 		Function EventLogPurge() As ActionResult
@@ -2394,8 +2394,59 @@ Namespace Controllers
 
 		<HttpPost()>
 		<ValidateAntiForgeryToken>
-		Function util_run_promptedvalues_submit(TemplateFile As HttpPostedFileBase) As ActionResult
+		Function util_run_promptedvalues_submit(value As PromptedValuesModel) As ActionResult
+
+			Try
+				Session("utiltype") = value.utiltype
+				Session("utilid") = value.ID
+				'		Session("utilname") = value.Name
+				Session("action") = "run"
+				Session("MailMerge_Template") = Nothing
+
+				Dim sKey As String
+
+				Dim aPrompts(1, 0) As String
+				Dim j = 0
+				ReDim Preserve aPrompts(1, 0)
+
+				If value.PromptValues IsNot Nothing Then
+					For Each objPrompt In value.PromptValues
+						sKey = objPrompt.Key
+						If ((UCase(Left(sKey, 7)) = "PROMPT_") And (Mid(sKey, 8, 1) <> "3")) Or _
+								(UCase(Left(sKey, 10)) = "PROMPTCHK_") Then
+							ReDim Preserve aPrompts(1, j)
+
+							If (UCase(Left(sKey, 10)) = "PROMPTCHK_") Then
+								aPrompts(0, j) = "prompt_3_" & Mid(sKey, 11)
+								aPrompts(1, j) = UCase(objPrompt.Value)
+							Else
+								aPrompts(0, j) = sKey
+								Select Case objPrompt.Type
+									Case ExpressionValueTypes.giEXPRVALUE_NUMERIC
+										' Numeric. Replace locale decimal point with '.'
+										aPrompts(1, j) = Replace(objPrompt.Value, CType(Session("LocaleDecimalSeparator"), String), ".")
+									Case ExpressionValueTypes.giEXPRVALUE_DATE
+										' Date. Reformat to match SQL's mm/dd/yyyy format.
+										aPrompts(1, j) = ConvertLocaleDateToSQL(objPrompt.Value)
+									Case Else
+										aPrompts(1, j) = objPrompt.Value
+								End Select
+							End If
+							j = j + 1
+						End If
+					Next
+				End If
+
+				sKey = "Prompts_" & CInt(value.UtilType) & "_" & value.ID.ToString
+				Session(sKey) = aPrompts
+
+			Catch ex As Exception
+				Throw
+
+			End Try
+
 			Return View("util_run")
+
 		End Function
 
 		<HttpPost>
@@ -3273,7 +3324,7 @@ Namespace Controllers
 			If objCalendarEvent.Description2Column.ToString().Substring(1, 1) = ":" Then objCalendarEvent.Description2Column = "<Undefined>"
 			objCalendarEvent.Region = objRow.Item("Region").ToString()
 			objCalendarEvent.CalendarCode = objRow.Item("Legend").ToString()
-			
+
 			Dim datWorkingPatterns As DataTable = objCalendar.rsCareerChange
 			If Not datWorkingPatterns Is Nothing Then
 				sSQL = String.Format("BaseID = {0} AND [WP_Date] <= '{1}'", objCalendarEvent.BaseID, objCalendarEvent.StartDate)

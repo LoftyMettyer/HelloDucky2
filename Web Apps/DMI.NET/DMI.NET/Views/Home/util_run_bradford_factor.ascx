@@ -330,9 +330,9 @@
 End If
 %>
 
-<input type='hidden' id="txtDefn_Name" name="txtDefn_Name" value="<%=objReport.ReportCaption.ToString()%>">
-<input type='hidden' id="txtDefn_ErrMsg" name="txtDefn_ErrMsg" value="<%=objReport.ErrorString%>">
-<input type='hidden' id="txtNoRecs" name="txtNoRecs" value="<%=objReport.NoRecords%>">
+<input type='hidden' id="txtDefn_Name" name="txtDefn_Name" value="<%:objReport.ReportCaption.ToString()%>">
+<input type='hidden' id="txtDefn_ErrMsg" name="txtDefn_ErrMsg" value="<%:objReport.ErrorString%>">
+<input type='hidden' id="txtNoRecs" name="txtNoRecs" value="<%:objReport.NoRecords%>">
 
 
 		<script runat="server">

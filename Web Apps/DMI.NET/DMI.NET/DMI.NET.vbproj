@@ -208,7 +208,9 @@
     <Compile Include="App_Start\Startup.vb" />
     <Compile Include="Classes\jqGridHelper.vb" />
     <Compile Include="Classes\Licence.vb" />
+    <Compile Include="Classes\PromptedValue.vb" />
     <Compile Include="Helpers\AntiForgeryTokenHelper.vb" />
+    <Compile Include="Models\EventDetailModel.vb" />
     <Compile Include="Models\GotoOptionDataModel.vb" />
     <Compile Include="Models\ObjectRequests\CrossTabDataSubmitModel.vb" />
     <Compile Include="Models\ObjectRequests\DefSelModel.vb" />

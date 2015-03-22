@@ -31,6 +31,7 @@ Namespace Models
 		<Required(ErrorMessage:="Definition name is required.")>
 		<MaxLength(50, ErrorMessage:="Definition name cannot be longer than 50 characters.")>
 		<DisplayName("Name :")>
+		<AllowHtml>
 		Public Property Name As String
 
 		<MaxLength(255, ErrorMessage:="Description cannot be longer than 255 characters.")>
@@ -53,7 +54,10 @@ Namespace Models
 		<NonZeroIf("SelectionType", RecordSelectionType.Picklist, ErrorMessage:="No picklist selected for base table.")>
 		Public Property PicklistID As Integer
 
+		<AllowHtml>
 		Public Property FilterName As String
+
+		<AllowHtml>
 		Public Property PicklistName As String
 
 		<DisplayName("Display filter or picklist title in the report header")>

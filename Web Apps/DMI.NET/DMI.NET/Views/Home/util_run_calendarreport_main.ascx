@@ -123,7 +123,7 @@ End If
 
 %>
 
-<input type='hidden' id="txtNoRecs" name="txtNoRecs" value="<%=objCalendar.NoRecords%>">
+<input type='hidden' id="txtNoRecs" name="txtNoRecs" value="<%:objCalendar.NoRecords%>">
 
-	<input type='hidden' id="txtDefn_Name" name="txtDefn_Name" value="<%= objCalendar.Name.ToString()%>">
-	<input type='hidden' id="txtDefn_ErrMsg" name="txtDefn_ErrMsg" value="<%=objCalendar.ErrorString%>">
+	<input type='hidden' id="txtDefn_Name" name="txtDefn_Name" value="<%:objCalendar.Name.ToString()%>">
+	<input type='hidden' id="txtDefn_ErrMsg" name="txtDefn_ErrMsg" value="<%:objCalendar.ErrorString%>">

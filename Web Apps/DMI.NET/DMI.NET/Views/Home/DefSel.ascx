@@ -74,30 +74,31 @@
 						}
 
 						var answer = 0;
+					var sCaption = "";
 
-						if (frmDefSel.utiltype.value == 1) {
-								answer = OpenHR.messageBox("Are you sure you want to run the '" + $.trim(frmDefSel.utilname.value) + "' Cross Tab ?", 36, "Confirmation...");
+					if (frmDefSel.utiltype.value == 1) {
+						sCaption = "Cross Tab";
 						}
 
 						if (frmDefSel.utiltype.value == 2) {
-								answer = OpenHR.messageBox("Are you sure you want to run the '" + $.trim(frmDefSel.utilname.value) + "' Custom Report ?", 36, "Confirmation...");
+							sCaption = "Custom Report";
 						}
 						if (frmDefSel.utiltype.value == 9) {
-								answer = OpenHR.messageBox("Are you sure you want to run the '" + $.trim(frmDefSel.utilname.value) + "' Mail Merge ?", 36, "Confirmation...");
+							sCaption = "Mail Merge";
 						}
 						if (frmDefSel.utiltype.value == 17) {
-								answer = OpenHR.messageBox("Are you sure you want to run the '" + $.trim(frmDefSel.utilname.value) + "' Calendar Report ?", 36, "Confirmation...");
+							sCaption = "Calendar Report";
 						}
 						if (frmDefSel.utiltype.value == 25) {
-								answer = OpenHR.messageBox("Are you sure you want to run the '" + $.trim(frmDefSel.utilname.value) + "' Workflow ?", 36, "Confirmation...");
+							sCaption = " Workflow";
 						}
 						if (frmDefSel.utiltype.value == 35) {
-							answer = OpenHR.messageBox("Are you sure you want to run the '" + $.trim(frmDefSel.utilname.value) + "' 9-Box Grid Report ?", 36, "Confirmation...");
+							sCaption = "9-Box Grid Report";
 						}
 
-						if (answer == 6) {
-								setrun();
-						}
+					var sMessage = "Are you sure you want to run " + $("#utilname").text() + " ?";
+					OpenHR.modalPrompt(sMessage, 4, sCaption, setrun);
+
 				}
 				return false;
 		}
@@ -112,7 +113,7 @@
 
 			// Populate the hidden fields with the selected utils information       
 			frmDefSel.utilid.value = $("#DefSelRecords").getGridParam('selrow');
-			frmDefSel.utilname.value = gridData.Name;
+			$("#utilname").text(gridData.Name);
 
 			var IsNewPermitted = eval("<%:objSession.IsPermissionGranted(iDefSelType.ToSecurityPrefix, "NEW").ToString.ToLower%>");
 			var IsEditPermitted = eval("<%:objSession.IsPermissionGranted(iDefSelType.ToSecurityPrefix, "EDIT").ToString.ToLower%>");
@@ -580,10 +581,9 @@
 	function showproperties() {
 
 			if (!$("#mnutoolPropertiesUtil").hasClass("disabled")) {
-
 				var id = $("#DefSelRecords").getGridParam('selrow');
 				var type = $("#utiltype").val();
-				var name = $("#utilname").val();
+				var name = $("#utilname").text();
 				OpenHR.OpenDialog("DefinitionProperties", "divPopupReportDefinition", { ID: id, Type: type, Name: name }, '900px');
 
 			}
@@ -662,36 +662,39 @@
 				}
 		}
 
-		function setrun() {
+		function setrun(answer) {
 
-			var postData;
+			if (answer === 6) {
 
-			if (!$("#mnutillRunUtil").hasClass("disabled")) {
-						var frmDefSel = document.getElementById('frmDefSel');
+				var postData;
 
-						if (frmDefSel.utiltype.value == 25) {
-								// Workflow
-								postData = {
-									utiltype: frmDefSel.utiltype.value,
-									ID: frmDefSel.utilid.value,
-									Name: frmDefSel.utilname.value,
-									__RequestVerificationToken: $('[name="__RequestVerificationToken"]').val()
-								}
+				if (!$("#mnutillRunUtil").hasClass("disabled")) {
+					var frmDefSel = document.getElementById('frmDefSel');
 
-								OpenHR.submitForm(null, "optionframe", null, postData, "util_run_workflow");
-
-						} else {
-
-							postData = {
-								UtilType: frmDefSel.utiltype.value,
-								ID: frmDefSel.utilid.value,
-								Name: frmDefSel.utilname.value,
-								__RequestVerificationToken: $('[name="__RequestVerificationToken"]').val()
-							}
-							OpenHR.submitForm(null, "reportframe", false, postData, "util_run_promptedValues");
-
+					if (frmDefSel.utiltype.value == 25) {
+						// Workflow
+						postData = {
+							utiltype: frmDefSel.utiltype.value,
+							ID: frmDefSel.utilid.value,
+							Name: $("#utilname").text(),
+							__RequestVerificationToken: $('[name="__RequestVerificationToken"]').val()
 						}
+
+						OpenHR.submitForm(null, "optionframe", null, postData, "util_run_workflow");
+
+					} else {
+
+						postData = {
+							UtilType: frmDefSel.utiltype.value,
+							ID: frmDefSel.utilid.value,
+							Name: $("#utilname").text(),
+							__RequestVerificationToken: $('[name="__RequestVerificationToken"]').val()
+						}
+						OpenHR.submitForm(null, "reportframe", false, postData, "util_run_promptedValues");
+
+					}
 				}
+			}
 		}
 
 		function setnew() {
@@ -984,7 +987,7 @@
 																								Response.Write(" style=""visibility:hidden""")
 																							End If
 %>
-																								onclick="setrun();" />
+																								onclick="setrun(6);" />
 																				</td>
 																		</tr>
 																		<tr height="10">

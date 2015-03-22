@@ -1,11 +1,12 @@
-﻿<%@ Page Language="VB" Inherits="System.Web.Mvc.ViewPage" %>
+﻿<%@ Page Language="VB" Inherits="System.Web.Mvc.ViewPage(of DMI.NET.Models.EventDetailModel)" %>
 
 <%@ Import Namespace="DMI.NET" %>
 <%@ Import Namespace="HR.Intranet.Server" %>
 <%@ Import Namespace="System.Data.SqlClient" %>
 <%@ Import Namespace="System.Data" %>
+<%@ Import Namespace="DMI.NET.Models" %>
 
-	<div id="popout_Wrapper">
+<div id="popout_Wrapper">
 		<div class="pageTitleDiv margebot10">
 			<span class="pageTitle" id="PopupEventDetail">Event Detail</span>
 		</div>
@@ -14,19 +15,15 @@
 			<%
 				Dim objDataAccess As clsDataAccess = CType(Session("DatabaseAccess"), clsDataAccess)
 				Dim i As Integer
-				Dim sValue As String
 				Dim detailsLabel1 As String = ""
 				Dim detailsLabel2 As String = ""
 				
-				Session("eventName") = Request("txtEventName")
-				Session("eventID") = Request("txtEventID")
 				Session("cboString") = vbNullString
 
-				If Request("txtEventMode") = "Batch" Or Request("txtEventMode") = "Pack" Then
-					Session("eventBatch") = True
+				If Model.IsBatch Then
 					Response.Write("<input type='hidden' Name='txtEventBatch' ID='txtEventBatch' value='1'>" & vbCrLf)
 					
-					If Request("txtEventMode") = "Batch" Then
+					If Model.Mode = "Batch" Then
 						detailsLabel1 = "Batch Job Name"
 						detailsLabel2 = "All Jobs in Batch"
 						Session("txtEventMode") = "Batch"
@@ -36,14 +33,13 @@
 						Session("txtEventMode") = "Pack"
 					End If
 				Else
-					Session("eventBatch") = False
 					Session("txtEventMode") = "Manual"
 					Response.Write("<input type='hidden' Name='txtEventBatch' ID='txtEventBatch' value='0'>" & vbCrLf)
 				End If
 				
 				Dim rsAllBatchJobs = objDataAccess.GetDataTable("spASRIntGetEventLogBatchDetails", CommandType.StoredProcedure _
-					, New SqlParameter("piBatchRunID", SqlDbType.Int) With {.Value = CleanNumeric(Request("txtEventBatchRunID"))} _
-					, New SqlParameter("piEventID", SqlDbType.Int) With {.Value = CleanNumeric(Request("txtEventID"))})
+					, New SqlParameter("piBatchRunID", SqlDbType.Int) With {.Value = Model.BatchRunID} _
+					, New SqlParameter("piEventID", SqlDbType.Int) With {.Value = Model.ID})
 				
 				With rsAllBatchJobs
 					i = 0
@@ -52,13 +48,7 @@
 						i += 1
 
 						Response.Write("<input type='hidden' Name='txtEventID_" & objRow("ID") & "' id='txtEventID_" & objRow("ID") & "' value='" & Replace(CType(objRow("ID"), String), """", "&quot;") & "'>" & vbCrLf)
-				
-						sValue = objRow("Name").ToString()					'original value
-						sValue = Replace(sValue, """", "&quot;")		'escape quotes
-						sValue = Replace(sValue, "<", "&lt;")				'escape left angle bracket
-						sValue = Replace(sValue, ">", "&gt;")				'escape right angle bracket
-				
-						Response.Write("<input type='hidden' Name='txtEventName_" & objRow("ID") & "' id='txtEventName_" & objRow("ID") & "' value='" & sValue.ToString.Replace("'", "&#39;") & "'>" & vbCrLf)
+						Response.Write("<input type='hidden' Name='txtEventName_" & objRow("ID") & "' id='txtEventName_" & objRow("ID") & "' value='" & Html.Encode(objRow("Name")) & "'>" & vbCrLf)
 						Response.Write("<input type='hidden' Name='txtEventMode_" & objRow("ID") & "' id='txtEventMode_" & objRow("ID") & "' value='" & Replace(CType(objRow("Mode"), String), """", "&quot;") & "'>" & vbCrLf)
 				
 						Response.Write("<input type='hidden' Name='txtEventStartTime_" & objRow("ID") & "' id='txtEventStartTime_" & objRow("ID") & "' value='" & ConvertSQLDateToLocale(objRow("DateTime")) & " " & ConvertSqlDateToTime(objRow("DateTime")) & "'>" & vbCrLf)
@@ -82,8 +72,8 @@
 						Response.Write("<input type='hidden' Name='txtEventBatchName_" & objRow("ID") & "' id='txtEventBatchName_" & objRow("ID") & "' value='" & Replace(CType(objRow("BatchName"), String), """", "&quot;") & "'>" & vbCrLf)
 						Response.Write("<input type='hidden' Name='txtEventBatchJobID_" & objRow("ID") & "' id='txtEventBatchJobID_" & objRow("ID") & "' value='" & Replace(CType(objRow("BatchJobID"), String), """", "&quot;") & "'>" & vbCrLf)
 				
-						If Session("eventBatch") = True Then
-							If Session("eventID") = objRow("ID") Then
+						If Model.IsBatch Then
+							If Model.ID = objRow("ID") Then
 								Session("cboString") = Session("cboString") & "<option selected='selected' name='" & objRow("Name") & "' value='" & objRow("ID") & "'>" & objRow("Type") & " - " & objRow("Name") & "</option>" & vbCrLf
 							Else
 								Session("cboString") = Session("cboString") & "<option name='" & objRow("Name") & "' value='" & objRow("ID") & "'>" & objRow("Type") & " - " & objRow("Name") & "</option>" & vbCrLf
@@ -105,7 +95,7 @@
 					End If
 				End With
 	
-				Response.Write("<input type='hidden' Name='txtOriginalEventID' id='txtOriginalEventID' value='" & CleanNumeric(Request("txtEventID")) & "'>" & vbCrLf)
+				Response.Write("<input type='hidden' Name='txtOriginalEventID' id='txtOriginalEventID' value='" & Model.ID & "'>" & vbCrLf)
 			%>
 
 			<div id="findGridRow" style="height: 30%; margin-right: 20px; margin-left: 20px;">
@@ -113,7 +103,7 @@
 					<table class="width100" style="padding: 4px; border-collapse: collapse">
 						<%					
 
-							If Session("eventBatch") = True Then
+							If Model.IsBatch Then
 								Response.Write("										<tr height='20'> " & vbCrLf)
 								Response.Write("												<td>" & vbCrLf)
 								Response.Write("													<table width='100%' class='invisible' cellspacing='0' cellpadding='4'>" & vbCrLf)
@@ -203,21 +193,16 @@
 
 										Dim prmEventExists = New SqlParameter("piExists", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
 										Dim rsEventDetails = objDataAccess.GetDataTable("spASRIntGetEventLogDetails", CommandType.StoredProcedure _
-											, New SqlParameter("piBatchRunID", SqlDbType.Int) With {.Value = CleanNumeric(Request("txtEventBatchRunID"))} _
-											, New SqlParameter("piEventID", SqlDbType.Int) With {.Value = CleanNumeric(Request("txtEventID"))} _
+											, New SqlParameter("piBatchRunID", SqlDbType.Int) With {.Value = Model.BatchRunID} _
+											, New SqlParameter("piEventID", SqlDbType.Int) With {.Value = Model.ID} _
 											, prmEventExists)
 		
 										For Each objRow As DataRow In rsEventDetails.Rows
 											iDetailCount = iDetailCount + 1
-				
-											sValue = objRow("Notes").ToString()
-											If sValue.Length > 0 Then
-												sValue = Replace(sValue, """", "&quot;").Replace("'", "&#39;").Replace("<", "&lt;").Replace(">", "&gt;")	'Escape some characters
-											End If
 
 											Response.Write("<tr disabled='disabled'>")
 											Response.Write("<td><input type='radio' value='row_" & objRow("EventLogID") & "'></td>")
-											Response.Write("<td class='findGridCell' id='col_" & iDetailCount.ToString() & "'>" & sValue & "<input id='detail_" & objRow("EventLogID") & "' type='hidden' value='" & sValue & "'></td>")
+											Response.Write("<td class='findGridCell' id='col_" & iDetailCount.ToString() & "'>" & Html.Encode(objRow("Notes")) & "<input id='detail_" & objRow("EventLogID") & "' type='hidden' value='" & Html.Encode(objRow("Notes")) & "'></td>")
 											Response.Write("</tr>")
 																			
 										Next
@@ -371,7 +356,7 @@
 					sNumber = $('#txtOriginalEventID').val();
 				}
 
-				$('#tdName').html($('#txtEventName_' + sNumber).val());
+				$('#tdName').text($('#txtEventName_' + sNumber).val());
 				$('#tdMode').html('<%:Session("txtEventMode")%>');
 				$('#tdStartTime').html($('#txtEventStartTime_' + sNumber).val());
 				$('#tdEndTime').html($('#txtEventEndTime_' + sNumber).val());

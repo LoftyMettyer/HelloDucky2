@@ -4,6 +4,7 @@
 <%@ Import Namespace="HR.Intranet.Server" %>
 <%@ Import Namespace="System.Data" %>
 <%@ Import Namespace="System.Data.SqlClient" %>
+<%@ Import Namespace="DMI.NET.Helpers" %>
 
 <script type="text/javascript">
 
@@ -54,7 +55,14 @@
 		if (frmPromptedValues.txtPromptCount.value == 0) {
 
 			var outputDiv = ((menu_isSSIMode() === true) ? "workframe" : "reportframe");
-			OpenHR.submitForm(frmPromptedValues, outputDiv, true, null, "util_run_promptedvalues_submit");
+
+			var postData = {
+				utiltype: <%:Session("utiltype")%>,
+				ID: <%:Session("utilid")%>, 
+				Name: '<%:Session("utilname")%>',
+				PromptValues: {},
+				<%:Html.AntiForgeryTokenForAjaxPost() %> }		
+			OpenHR.submitForm(null, outputDiv, true, postData, "util_run_promptedvalues_submit");
 
 		} else {
 
@@ -92,7 +100,7 @@
 			<a href='javascript:loadPartialView("linksMain", "Home", "workframe", null);' title='Back'>
 				<i class='pageTitleIcon icon-circle-arrow-left'></i>
 			</a>
-			<span class="pageTitle"><% =Session("utilname")%></span>
+			<span class="pageTitle"><%:Session("utilname")%></span>
 		</div>
 		<br/>
 
@@ -320,12 +328,11 @@
 
 	Response.Write("<input type=""hidden"" id=""txtPromptCount"" name=""txtPromptCount"" value=" & iPromptCount & ">" & vbCrLf)
 	%>
-  		<input type="hidden" id="lastPrompt" name="lastPrompt" value="">
+			<input type="hidden" id="lastPrompt" name="lastPrompt" value="">
 			<input type="hidden" id="RunInOptionFrame" name="RunInOptionFrame" value='<%=(Session("optionAction") = OptionActionType.STDREPORT_DATEPROMPT)%>'>
 			<input type="hidden" id="txtLocaleDateFormat" name="txtLocaleDateFormat" value="">
 			<input type="hidden" id="txtLocaleDecimalSeparator" name="txtLocaleDecimalSeparator" value="">
 			<input type="hidden" id="txtLocaleThousandSeparator" name="txtLocaleThousandSeparator" value="">
-			<%=Html.AntiForgeryToken()%>
 		</form>
 		
 		<%If bAddUploadTemplate Then%>
@@ -363,6 +370,7 @@
 
 		// Validate the prompt values before submitting the form.
 		var controlCollection = frmPromptedValues.elements;
+		var submitElements = [];
 		if (controlCollection != null) {
 			for (var i = 0; i < controlCollection.length; i++) {
 				var sControlName = controlCollection.item(i).name;
@@ -377,6 +385,12 @@
 						if (ValidatePrompt(controlCollection.item(i), iType) == false) {
 							return;
 						}
+
+						submitElements.push({
+							Key: controlCollection.item(i).name,
+							Type: iType,
+							Value: controlCollection.item(i).value
+						});
 					}
 				}
 			}
@@ -388,7 +402,14 @@
 
 		// Everything OK. Submit the form.
 		var outputDiv = ((menu_isSSIMode() === true) ? "workframe" : "reportframe");
-		OpenHR.submitForm(frmPromptedValues, outputDiv, true, null, "util_run_promptedvalues_submit");
+		var postData = {
+			utiltype: <%:Session("utiltype")%>,
+			ID: <%:Session("utilid")%>, 
+			Name: '<%:Session("utilname")%>',
+			PromptValues: submitElements,
+			<%:Html.AntiForgeryTokenForAjaxPost() %> }
+
+		OpenHR.submitForm(null, outputDiv, true, postData, "util_run_promptedvalues_submit");
 
 	}
 
