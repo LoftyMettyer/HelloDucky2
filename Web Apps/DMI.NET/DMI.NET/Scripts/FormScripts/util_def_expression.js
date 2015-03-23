@@ -975,24 +975,16 @@ function changeAccess() {
 }
 
 function addClick() {
-	var fOK;
-	var sKey;
+
 	var sRelativeKey;
 
-	var frmOptionArea = OpenHR.getForm("optionframeset", "frmGotoOption");
 	var frmUseful = OpenHR.getForm("divDefExpression", "frmUseful");
 
 	var iFunctionID = 0;
 	var iParamIndex = 0;
 	var nodParameter;
 
-	fOK = true;
-
-	frmOptionArea.txtGotoOptionAction.value = "ADDEXPRCOMPONENT";
-	frmOptionArea.txtGotoOptionTableID.value = frmUseful.txtTableID.value;
-	frmOptionArea.txtGotoOptionExprID.value = frmUseful.txtUtilID.value;
-
-	sKey = tree_SelectedItemKey();	
+	var sKey = tree_SelectedItemKey();	
 	if (sKey.substr(0, 1) == "E") {
 		sRelativeKey = sKey;
 		nodParameter = $('#' + sRelativeKey);
@@ -1001,7 +993,6 @@ function addClick() {
 		sRelativeKey = tree_SelectedItemParentKey();
 		nodParameter = $('#' + sRelativeKey);
 	}
-	frmOptionArea.txtGotoOptionLinkRecordID.value = sRelativeKey;
 
 	if ((sRelativeKey.substr(0, 1) == "E") &&
 			(tree_SelectedItemLevel('#' + sRelativeKey) > 1)) {
@@ -1023,30 +1014,23 @@ function addClick() {
 		}
 	}
 
-	frmOptionArea.txtGotoOptionFunctionID.value = iFunctionID;
-	frmOptionArea.txtGotoOptionParameterIndex.value = iParamIndex;
+	var postData = {
+		txtGotoOptionAction: "ADDEXPRCOMPONENT",
+		txtGotoOptionTableID: frmUseful.txtTableID.value,
+		txtGotoOptionLinkRecordID: sRelativeKey,
+		txtGotoOptionExprType: ((frmUseful.txtUtilType.value === "11") ? 11 : 10),
+		txtGotoOptionExprID: frmUseful.txtUtilID.value,
+		txtGotoOptionFunctionID: iFunctionID,
+		txtGotoOptionParameterIndex: iParamIndex,
+		__RequestVerificationToken: $('[name="__RequestVerificationToken"]').val()
+	};
 
-	switch (frmUseful.txtUtilType.value) {
-		case "11":
-			// Filter
-			frmOptionArea.txtGotoOptionExprType.value = 11;
-			break;
-		case "12":
-			// Calculation
-			frmOptionArea.txtGotoOptionExprType.value = 10;
-			break;
-		default:
-			fOK = false;
-	}
+	OpenHR.submitForm(null, "optionframe", null, postData, "expression_addClick");
 
-	if (fOK == true) {
-		OpenHR.submitForm(frmOptionArea, "optionframe", null, null, "expression_addClick");
-	}
 }
 
 function insertClick() {
-	var fOK;
-	var frmOptionArea = OpenHR.getForm("optionframeset", "frmGotoOption");
+
 	var frmRefresh = OpenHR.getForm("refreshframe", "frmRefresh");
 	var frmUseful = OpenHR.getForm("divDefExpression", "frmUseful");
 
@@ -1054,13 +1038,11 @@ function insertClick() {
 	var iParamIndex = 0;
 
 	fOK = true;
+
+	//???
 	OpenHR.submitForm(frmRefresh);
 
-	frmOptionArea.txtGotoOptionPage.value = "util_def_exprComponent";
-	frmOptionArea.txtGotoOptionAction.value = "INSERTEXPRCOMPONENT";
-	frmOptionArea.txtGotoOptionTableID.value = frmUseful.txtTableID.value;
-	frmOptionArea.txtGotoOptionLinkRecordID.value = tree_SelectedItemKey();
-	frmOptionArea.txtGotoOptionExprID.value = frmUseful.txtUtilID.value;
+
 
 	var sRelativeKey;
 	var nodParameter;
@@ -1094,42 +1076,29 @@ function insertClick() {
 			});
 		}
 	}
-	frmOptionArea.txtGotoOptionFunctionID.value = iFunctionID;
-	frmOptionArea.txtGotoOptionParameterIndex.value = iParamIndex;
 
-	switch (frmUseful.txtUtilType.value) {
-		case "11":
-			// Filter
-			frmOptionArea.txtGotoOptionExprType.value = 11;
-			break;
-		case "12":
-			// Calculation
-			frmOptionArea.txtGotoOptionExprType.value = 10;
-			break;
-		default:
-			fOK = false;
-	}
+	var postData = {
+		txtGotoOptionAction: "INSERTEXPRCOMPONENT",
+		txtGotoOptionTableID: frmUseful.txtTableID.value,
+		txtGotoOptionLinkRecordID: tree_SelectedItemKey(),
+		txtGotoOptionExprType: ((frmUseful.txtUtilType.value === "11") ? 11: 10),
+		txtGotoOptionExprID: frmUseful.txtUtilID.value,
+		txtGotoOptionFunctionID: iFunctionID,
+		txtGotoOptionParameterIndex : iParamIndex,
+		__RequestVerificationToken: $('[name="__RequestVerificationToken"]').val()
+	};
+	OpenHR.submitForm(null, "optionframe", null, postData, "expression_insertClick");
 
-	if (fOK == true) {
-		OpenHR.submitForm(frmOptionArea, "optionframe", null, null, "expression_insertClick");
-	}
+
 }
 
 function editClick() {	
-	var fOK;
-	var frmOptionArea = OpenHR.getForm("optionframeset", "frmGotoOption");
+
 	var frmUseful = OpenHR.getForm("divDefExpression", "frmUseful");
 
 	var iFunctionID = 0;
 	var iParamIndex = 0;
 
-	fOK = true;
-
-	frmOptionArea.txtGotoOptionAction.value = "EDITEXPRCOMPONENT";
-	frmOptionArea.txtGotoOptionTableID.value = frmUseful.txtTableID.value;
-	frmOptionArea.txtGotoOptionLinkRecordID.value = tree_SelectedItemKey();
-	frmOptionArea.txtGotoOptionExprID.value = frmUseful.txtUtilID.value;
-	frmOptionArea.txtGotoOptionExtension.value = tree_SelectedItemTag();
 	var sRelativeKey;
 	var nodParameter;
 	var iType;
@@ -1163,25 +1132,21 @@ function editClick() {
 			});
 		}
 	}
-	frmOptionArea.txtGotoOptionFunctionID.value = iFunctionID;
-	frmOptionArea.txtGotoOptionParameterIndex.value = iParamIndex;
 
-	switch (frmUseful.txtUtilType.value) {
-		case "11":
-			// Filter
-			frmOptionArea.txtGotoOptionExprType.value = 11;
-			break;
-		case "12":
-			// Calculation
-			frmOptionArea.txtGotoOptionExprType.value = 10;
-			break;
-		default:
-			fOK = false;
-	}
+	var postData = {
+		txtGotoOptionAction: "EDITEXPRCOMPONENT",
+		txtGotoOptionTableID: frmUseful.txtTableID.value,
+		txtGotoOptionLinkRecordID: tree_SelectedItemKey(),
+		txtGotoOptionExtension: tree_SelectedItemTag(),
+		txtGotoOptionExprType : ((frmUseful.txtUtilType.value === "11") ? 11: 10),
+		txtGotoOptionExprID: frmUseful.txtUtilID.value,
+		txtGotoOptionFunctionID : iFunctionID,
+		txtGotoOptionParameterIndex: iParamIndex,
+		__RequestVerificationToken: $('[name="__RequestVerificationToken"]').val()
+	};
+	OpenHR.submitForm(null, "optionframe", null, postData, "expression_insertClick");
 
-	if (fOK == true) {
-		OpenHR.submitForm(frmOptionArea, "optionframe", null, null, "expression_insertClick");
-	}
+
 }
 
 function setComponent(psComponentDefn, psAction, psLinkComponentID, psFunctionParameters) {	
@@ -1765,7 +1730,6 @@ function populateSendForm() {
 	frmSend.txtSend_components1.value = sComponents;
 	frmSend.txtSend_names.value = sNames;
 
-	frmSend.txtSend_components1.value = frmSend.txtSend_components1.value.replace(reQuote, '&quot;');
 	return true;
 
 }

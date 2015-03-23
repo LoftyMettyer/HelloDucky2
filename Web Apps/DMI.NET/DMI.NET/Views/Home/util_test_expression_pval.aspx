@@ -461,7 +461,7 @@
 									Response.Write("<label style='width: 40%;'>")
 								End If
 						
-								Response.Write(sPromptDescription & vbCrLf)
+								Response.Write(HttpUtility.HtmlEncode(sPromptDescription) & vbCrLf)
 								Response.Write("</label>" & vbCrLf)
 																					
 								' Character Prompted Value

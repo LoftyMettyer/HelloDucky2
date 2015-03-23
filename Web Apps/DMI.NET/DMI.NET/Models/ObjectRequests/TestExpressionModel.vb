@@ -4,6 +4,8 @@ Option Explicit On
 Namespace Models.ObjectRequests
 	Public Class TestExpressionModel
 		Public Property type As UtilityType
+
+		<AllowHtml>
 		Public Property components1 As String
 
 		Public Property TableID As Integer

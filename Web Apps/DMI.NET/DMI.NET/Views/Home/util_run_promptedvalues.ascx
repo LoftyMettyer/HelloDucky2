@@ -182,7 +182,7 @@
 							Response.Write("        tabindex=0>" & vbCrLf)
 						End If
 
-						Response.Write("        " & objRow("PromptDescription") & vbCrLf)
+						Response.Write("        " & HttpUtility.HtmlEncode(objRow("PromptDescription")) & vbCrLf)
 
 						If iValueType = 3 Then
 							Response.Write("      </label>" & vbCrLf)
@@ -194,8 +194,8 @@
 
 						' Character Prompted Value
 						If objRow("ValueType") = 1 Then
-							Response.Write("        <input type=text class=""text"" id=prompt_1_" & objRow("componentID") & " name=prompt_1_" & objRow("componentID") & " value=""" & Replace(CType(objRow("valuecharacter"), String), """", "&quot;") & """ maxlength=" & objRow("promptsize") & " style=""WIDTH: 100%"">" & vbCrLf)
-							Response.Write("        <input type=hidden id=promptMask_" & objRow("componentID") & " name=promptMask_" & objRow("componentID") & " value=""" & Replace(CType(objRow("promptMask"), String), """", "&quot;") & """>" & vbCrLf)
+							Response.Write("        <input type=text class=""text"" id=prompt_1_" & objRow("componentID") & " name=prompt_1_" & objRow("componentID") & " value=""" & HttpUtility.HtmlEncode(objRow("valuecharacter")) & """ maxlength=" & objRow("promptsize") & " style=""WIDTH: 100%"">" & vbCrLf)
+							Response.Write("        <input type=hidden id=promptMask_" & objRow("componentID") & " name=promptMask_" & objRow("componentID") & " value=""" & HttpUtility.HtmlEncode(objRow("promptMask")) & """>" & vbCrLf)
 
 							' Numeric Prompted Value
 						ElseIf objRow("ValueType") = 2 Then
@@ -304,7 +304,7 @@
 									Response.Write("        <input type=hidden id=prompt_3_" & objRow("componentID") & " name=prompt_3_" & objRow("componentID") & " value=" & sDefaultValue & ">" & vbCrLf)
 									
 								Case Else
-									Response.Write("        <input type=hidden id=prompt_1_" & objRow("componentID") & " name=prompt_1_" & objRow("componentID") & " value=""" & Replace(sDefaultValue, """", "&quot;") & """>" & vbCrLf)
+									Response.Write("        <input type=hidden id=prompt_1_" & objRow("componentID") & " name=prompt_1_" & objRow("componentID") & " value=""" & HttpUtility.HtmlEncode(sDefaultValue) & """>" & vbCrLf)
 									
 							End Select
 							

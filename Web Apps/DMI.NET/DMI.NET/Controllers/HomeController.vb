@@ -859,16 +859,11 @@ Namespace Controllers
 			Session("optionLookupValue") = form.txtGotoOptionLookupValue
 			Session("optionLookupFilterValue") = form.txtGotoOptionLookupFilterValue
 			Session("optionFile") = form.txtGotoOptionFile
-			Session("optionExtension") = form.txtGotoOptionExtension
 			Session("optionAction") = form.txtGotoOptionAction
 			Session("optionPageAction") = form.txtGotoOptionPageAction
 			Session("optionCourseTitle") = form.txtGotoOptionCourseTitle
 			Session("optionFirstRecPos") = form.txtGotoOptionFirstRecPos
 			Session("optionCurrentRecCount") = form.txtGotoOptionCurrentRecCount
-			Session("optionExprType") = form.txtGotoOptionExprType
-			Session("optionExprID") = form.txtGotoOptionExprID
-			Session("optionFunctionID") = form.txtGotoOptionFunctionID
-			Session("optionParameterIndex") = form.txtGotoOptionParameterIndex
 			Session("OptionRealsource") = form.txtGotoOptionRealsource
 
 		End Sub
@@ -970,24 +965,21 @@ Namespace Controllers
 		End Function
 
 		<HttpPost()>
-<ValidateAntiForgeryToken>
-		Function expression_addClick(form As GotoOptionDataModel) As RedirectToRouteResult
-			emptyoption_Submit_BASE(form)
-			Return RedirectToAction("util_def_exprComponent")
+		<ValidateAntiForgeryToken>
+		Function expression_addClick(value As ExpressionComponentModel) As ActionResult
+			Return View("util_def_exprComponent", value)
 		End Function
 
 		<HttpPost()>
-<ValidateAntiForgeryToken>
-		Function expression_insertClick(form As GotoOptionDataModel) As RedirectToRouteResult
-			emptyoption_Submit_BASE(form)
-			Return RedirectToAction("util_def_exprComponent")
+		<ValidateAntiForgeryToken>
+		Function expression_insertClick(value As ExpressionComponentModel) As ActionResult
+			Return View("util_def_exprComponent", value)
 		End Function
 
 		<HttpPost()>
-<ValidateAntiForgeryToken>
-		Function expression_editClick(form As GotoOptionDataModel) As RedirectToRouteResult
-			emptyoption_Submit_BASE(form)
-			Return RedirectToAction("util_def_exprComponent")
+		<ValidateAntiForgeryToken>
+		Function expression_editClick(value As ExpressionComponentModel) As ActionResult
+			Return View("util_def_exprComponent", value)
 		End Function
 
 		<HttpPost()>
@@ -3625,10 +3617,6 @@ Namespace Controllers
 
 		End Function
 
-		Function util_def_exprcomponent() As ActionResult
-			Return PartialView()
-		End Function
-
 		<HttpPost()>
 		<ValidateAntiForgeryToken>
 		Function util_test_expression(value As TestPromptedValuesModel) As ActionResult
@@ -4845,16 +4833,11 @@ Namespace Controllers
 				Session("optionLookupMandatory") = Request.Form("txtGotoOptionLookupMandatory")
 				Session("optionLookupValue") = Request.Form("txtGotoOptionLookupValue")
 				Session("optionFile") = Request.Form("txtGotoOptionFile")
-				Session("optionExtension") = Request.Form("txtGotoOptionExtension")
 				Session("optionAction") = sAction
 				Session("optionPageAction") = Request.Form("txtGotoOptionPageAction")
 				Session("optionCourseTitle") = Request.Form("txtGotoOptionCourseTitle")
 				Session("optionFirstRecPos") = Request.Form("txtGotoOptionFirstRecPos")
 				Session("optionCurrentRecCount") = Request.Form("txtGotoOptionCurrentRecCount")
-				Session("optionExprType") = Request.Form("txtGotoOptionExprType")
-				Session("optionExprID") = Request.Form("txtGotoOptionExprID")
-				Session("optionFunctionID") = Request.Form("txtGotoOptionFunctionID")
-				Session("optionParameterIndex") = Request.Form("txtGotoOptionParameterIndex")
 				Session("optionOLEType") = Request.Form("txtGotoOptionOLEType")
 				Session("optionOLEMaxEmbedSize") = Request.Form("txtGotoOptionOLEMaxEmbedSize")
 

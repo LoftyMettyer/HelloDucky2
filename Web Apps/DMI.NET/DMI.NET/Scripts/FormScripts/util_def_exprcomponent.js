@@ -1063,6 +1063,7 @@ function calculationsAndFilters_load() {
 		autowidth: true,
 		height: gridHeight,
 		caption: '',
+		autoencode: true,
 		onSelectRow: function () {
 			ssOleDBGridCalculations_rowcolchange();
 		},

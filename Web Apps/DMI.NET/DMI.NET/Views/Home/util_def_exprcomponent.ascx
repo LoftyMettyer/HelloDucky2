@@ -1,4 +1,4 @@
-﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
+﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl(of DMI.NET.Models.ObjectRequests.ExpressionComponentModel)" %>
 <%@ Import Namespace="DMI.NET.Classes" %>
 <%@ Import Namespace="DMI.NET" %>
 <%@ Import Namespace="HR.Intranet.Server" %>
@@ -14,15 +14,15 @@
 		Dim sErrMsg As String
 		
 		iPassBy = 1
-		If Session("optionFunctionID") > 0 Then
+		If Model.txtGotoOptionFunctionID > 0 Then
 		
 			Try
 
 				Dim prmPassByType As New SqlParameter("piResult", SqlDbType.Int) With {.Direction = ParameterDirection.Output}
 
 				objDataAccess.ExecuteSP("spASRIntGetParameterPassByType" _
-					, New SqlParameter("piFunctionID", SqlDbType.Int) With {.Value = CleanNumeric(CInt(Session("optionFunctionID")))} _
-					, New SqlParameter("piParamIndex", SqlDbType.Int) With {.Value = CleanNumeric(CInt(Session("optionParameterIndex")))} _
+					, New SqlParameter("piFunctionID", SqlDbType.Int) With {.Value = Model.txtGotoOptionFunctionID} _
+					, New SqlParameter("piParamIndex", SqlDbType.Int) With {.Value = Model.txtGotoOptionParameterIndex} _
 					, prmPassByType)
 
 				iPassBy = CInt(prmPassByType.Value)
@@ -306,11 +306,11 @@
 
 <div id="util_def_exprcomponent_frmUseful">
 	<input type="hidden" id="txtUserName" name="txtUserName" value="<%=session("username")%>">
-	<input type="hidden" id="txtExprType" name="txtExprType" value='<%=session("optionExprType")%>'>
-	<input type="hidden" id="txtExprID" name="txtExprID" value='<%=session("optionExprID")%>'>
-	<input type="hidden" id="txtAction" name="txtAction" value='<%=session("optionAction")%>'>
-	<input type="hidden" id="txtLinkRecordID" name="txtLinkRecordID" value='<%=session("optionLinkRecordID")%>'>
-	<input type="hidden" id="txtTableID" name="txtTableID" value='<%=session("optionTableID")%>'>
+	<input type="hidden" id="txtExprType" name="txtExprType" value='<%:Model.txtGotoOptionExprType%>'>
+	<input type="hidden" id="txtExprID" name="txtExprID" value='<%:Model.txtGotoOptionExprID%>'>
+	<input type="hidden" id="txtAction" name="txtAction" value='<%:Model.txtGotoOptionAction%>'>
+	<input type="hidden" id="txtLinkRecordID" name="txtLinkRecordID" value='<%:Model.txtGotoOptionLinkRecordID%>'>
+	<input type="hidden" id="txtTableID" name="txtTableID" value='<%:Model.txtGotoOptionTableID%>'>
 	<input type="hidden" id="txtInitialising" name="txtInitialising" value="0">
 	<input type="hidden" id="txtChildFieldOrderID" name="txtChildFieldOrderID" value="0">
 	<input type="hidden" id="txtChildFieldFilterID" name="txtChildFieldFilterID" value="0">
@@ -329,8 +329,8 @@
 		Dim sLookupTableID As String
 		Dim sLookupColumnID As String
 	
-		If Session("optionAction") = OptionActionType.EDITEXPRCOMPONENT Then
-			sDefnString = Session("optionExtension").ToString()
+		If Model.txtGotoOptionAction = OptionActionType.EDITEXPRCOMPONENT Then
+			sDefnString = HttpUtility.HtmlDecode(Model.txtGotoOptionExtension)
 
 			Response.Write("<INPUT type='hidden' id=txtComponentID name=txtComponentID value=" & ComponentParameter(sDefnString, "COMPONENTID") & ">" & vbCrLf)
 			Response.Write("<INPUT type='hidden' id=txtType name=txtType value=" & ComponentParameter(sDefnString, "TYPE") & ">" & vbCrLf)
@@ -363,7 +363,7 @@
 			Response.Write("<INPUT type='hidden' id=txtPromptDateType name=txtPromptDateType value=" & ComponentParameter(sDefnString, "PROMPTDATETYPE") & ">" & vbCrLf)
 		Else
 			Response.Write("<INPUT type='hidden' id=txtComponentID name=txtComponentID value=0>" & vbCrLf)
-			sFieldTableID = Session("optionTableID").ToString()
+			sFieldTableID = Model.txtGotoOptionTableID
 			sFieldColumnID = "0"
 			sLookupTableID = "0"
 			sLookupColumnID = "0"
@@ -390,7 +390,7 @@
 			
 			Try
 				Dim rstTables = objDataAccess.GetFromSP("sp_ASRIntGetExprTables" _
-					, New SqlParameter("piTableID", SqlDbType.Int) With {.Value = CleanNumeric(Session("optionTableID"))})
+					, New SqlParameter("piTableID", SqlDbType.Int) With {.Value = Model.txtGotoOptionTableID})
 
 				iCount = 0
 				For Each objRow As DataRow In rstTables.Rows
@@ -413,7 +413,7 @@
 			
 			Try
 				Dim rstFunctions = objDataAccess.GetFromSP("spASRIntGetExprFunctions" _
-						, New SqlParameter("piTableID", SqlDbType.Int) With {.Value = CleanNumeric(Session("optionTableID"))} _
+						, New SqlParameter("piTableID", SqlDbType.Int) With {.Value = Model.txtGotoOptionTableID} _
 						, New SqlParameter("@pbAbsenceEnabled", SqlDbType.Bit) With {.Value = Licence.IsModuleLicenced(SoftwareModule.Absence)})
 
 				iCount = 0
@@ -484,8 +484,8 @@
 
 			Try
 				Dim rstCalcs = objDataAccess.GetFromSP("sp_ASRIntGetExprCalcs" _
-					, New SqlParameter("piCurrentExprID", SqlDbType.Int) With {.Value = CleanNumeric(CInt(Session("optionExprID")))} _
-					, New SqlParameter("piBaseTableID", SqlDbType.Int) With {.Value = CleanNumeric(CInt(Session("optionTableID")))})
+					, New SqlParameter("piCurrentExprID", SqlDbType.Int) With {.Value = Model.txtGotoOptionExprID} _
+					, New SqlParameter("piBaseTableID", SqlDbType.Int) With {.Value = Model.txtGotoOptionTableID})
 
 				iCount = 0
 				
@@ -512,8 +512,8 @@
 			Try
 				
 				Dim rstFilters = objDataAccess.GetFromSP("sp_ASRIntGetExprFilters" _
-					, New SqlParameter("piCurrentExprID", SqlDbType.Int) With {.Value = CleanNumeric(CInt(Session("optionExprID")))} _
-					, New SqlParameter("piBaseTableID", SqlDbType.Int) With {.Value = CleanNumeric(CInt(Session("optionTableID")))})
+					, New SqlParameter("piCurrentExprID", SqlDbType.Int) With {.Value = Model.txtGotoOptionExprID} _
+					, New SqlParameter("piBaseTableID", SqlDbType.Int) With {.Value = Model.txtGotoOptionTableID})
 
 				iCount = 0
 				

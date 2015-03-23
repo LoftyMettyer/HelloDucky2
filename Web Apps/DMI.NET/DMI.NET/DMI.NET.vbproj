@@ -214,6 +214,7 @@
     <Compile Include="Models\GotoOptionDataModel.vb" />
     <Compile Include="Models\ObjectRequests\CrossTabDataSubmitModel.vb" />
     <Compile Include="Models\ObjectRequests\DefSelModel.vb" />
+    <Compile Include="Models\ObjectRequests\ExpressionComponentModel.vb" />
     <Compile Include="Models\ObjectRequests\FilterSelectModel.vb" />
     <Compile Include="Models\ObjectRequests\GotoOptionBaseModel.vb" />
     <Compile Include="Models\ObjectRequests\LinkFindModel.vb" />

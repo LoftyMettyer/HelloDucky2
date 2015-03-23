@@ -65,12 +65,7 @@ Namespace Models
 		Public Property txtGotoOptionLookupValue As String
 
 		Public Property txtGotoOptionFile As String
-		Public Property txtGotoOptionExtension As String
 
-		Public Property txtGotoOptionExprType As Integer
-		Public Property txtGotoOptionExprID As Integer
-		Public Property txtGotoOptionFunctionID As Integer
-		Public Property txtGotoOptionParameterIndex As Integer
 		Public Property txtGotoOptionRealsource As String
 
 		Public Property txtGotoOptionDefSelType As Integer
@@ -78,8 +73,6 @@ Namespace Models
 		Public Property txtGotoOptionOLEMaxEmbedSize As Integer
 		Public Property txtGotoOptionOLEReadOnly As Boolean
 		Public Property txtGotoOptionIsPhoto As Boolean
-
-
 
 	End Class
 End Namespace

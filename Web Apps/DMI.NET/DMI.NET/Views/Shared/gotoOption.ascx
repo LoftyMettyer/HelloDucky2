@@ -18,7 +18,6 @@
 	<INPUT type="hidden" id=txtGotoOptionLookupValue name=txtGotoOptionLookupValue>
 	<INPUT type="hidden" id=txtGotoOptionLookupFilterValue name=txtGotoOptionLookupFilterValue>	
 	<INPUT type="hidden" id=txtGotoOptionFile name=txtGotoOptionFile>
-	<INPUT type="hidden" id=txtGotoOptionExtension name=txtGotoOptionExtension>
 	<INPUT type="hidden" id=txtGotoOptionOLEOnServer name=txtGotoOptionOLEOnServer>
 	<INPUT type="hidden" id=txtGotoOptionPage name=txtGotoOptionPage>
 	<INPUT type="hidden" id=txtGotoOptionAction name=txtGotoOptionAction> 
@@ -26,12 +25,8 @@
 	<INPUT type="hidden" id=txtGotoOptionCourseTitle name=txtGotoOptionCourseTitle>
 	<INPUT type="hidden" id=txtGotoOptionFirstRecPos name=txtGotoOptionFirstRecPos>
 	<INPUT type="hidden" id=txtGotoOptionCurrentRecCount name=txtGotoOptionCurrentRecCount>
-	<INPUT type="hidden" id=txtGotoOptionExprType name=txtGotoOptionExprType>
-	<INPUT type="hidden" id=txtGotoOptionExprID name=txtGotoOptionExprID>
 	<INPUT type="hidden" id=txtGotoOptionRealsource name=txtGotoOptionRealsource>
 	<INPUT type="hidden" id=txtStandardReportType name=txtStandardReportType value="">
-	<INPUT type="hidden" id=txtGotoOptionFunctionID name=txtGotoOptionFunctionID value="">
-	<INPUT type="hidden" id=txtGotoOptionParameterIndex name=txtGotoOptionParameterIndex value="">
 	<INPUT type="hidden" id=txtGotoOptionDefSelType name=txtGotoOptionDefSelType>
 	<INPUT type="hidden" id=txtGotoOptionUtilID name=txtGotoOptionUtilID>
 	<INPUT type="hidden" id=txtGotoOptionOLEType name=txtGotoOptionOLEType>

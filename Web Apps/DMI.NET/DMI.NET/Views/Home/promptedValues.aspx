@@ -369,7 +369,7 @@
 					Response.Write("<label style='width:40%;'>")
 				End If
 				
-				Response.Write(rowPromptedValues("PromptDescription").ToString)
+				Response.Write(HttpUtility.HtmlEncode(rowPromptedValues("PromptDescription")))
 				Response.Write("</label>")
 								
 				Select Case valueType
