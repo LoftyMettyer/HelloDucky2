@@ -38,12 +38,20 @@ Public Class clsDataAccess
 		End Get
 	End Property
 
-	Public Shared Sub ChangePassword(Login As LoginInfo, sNewPassword As String)
+	Public Sub ChangePassword(objLogin As LoginInfo, sNewPassword As String)
 
 		Dim strConn As String = GetConnectionString(Login)
 
 		Try
-			SqlConnection.ChangePassword(strConn, sNewPassword.ToString())
+			Dim newPassword = sNewPassword.ToSecureString
+			newPassword.MakeReadOnly()
+
+			Dim currentPassword = objLogin.Password.ToSecureString
+			currentPassword.MakeReadOnly()
+
+			Dim objCredential = New SqlCredential(objLogin.Username, currentPassword)
+
+			SqlConnection.ChangePassword(strConn, objCredential, newPassword)
 
 		Catch ex As Exception
 			Throw

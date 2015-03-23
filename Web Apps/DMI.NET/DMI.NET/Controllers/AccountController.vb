@@ -506,6 +506,8 @@ Namespace Controllers
 		<ValidateAntiForgeryToken>
 		Function ForcedPasswordChange_Submit(value As FormCollection) As ActionResult
 
+			Dim objDataAccess As clsDataAccess = CType(Session("DatabaseAccess"), clsDataAccess)
+
 			Dim fSubmitPasswordChange = (Len(Request.Form("txtGotoPage")) = 0)
 
 			If fSubmitPasswordChange Then
@@ -517,7 +519,7 @@ Namespace Controllers
 					Dim objLogin = CType(Session("sessionChangePassword"), LoginInfo)
 
 					objLogin.Password = Request.Form("txtCurrentPassword")
-					clsDataAccess.ChangePassword(objLogin, sNewPassword)
+					objDataAccess.ChangePassword(objLogin, sNewPassword)
 					objLogin.Password = sNewPassword
 
 					Session("MessageTitle") = "Change Password Page"

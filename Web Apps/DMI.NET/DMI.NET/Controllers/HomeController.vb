@@ -27,6 +27,7 @@ Imports HR.Intranet.Server.Extensions
 Imports HR.Intranet.Server.ReportOutput
 Imports DMI.NET.Models.ObjectRequests
 Imports DMI.NET.Models.Responses
+Imports HR.Intranet.Server.Structures
 
 Namespace Controllers
 	Public Class HomeController
@@ -248,7 +249,7 @@ Namespace Controllers
 						Dim sNewPassword As String = Request.Form("txtPassword1")
 
 						Try
-							clsDataAccess.ChangePassword(objDataAccess.Login, sNewPassword)
+							objDataAccess.ChangePassword(New LoginInfo With {.Username = Session("Username"), .Password = sCurrentPassword}, sNewPassword)
 							objDataAccess.Login.Password = sNewPassword
 
 							' Tell the user that the password was changed okay.
@@ -260,7 +261,7 @@ Namespace Controllers
 
 						Catch ex As Exception
 							Session("ErrorTitle") = "Change Password Page"
-							Session("ErrorText") = "You could not change your password because of the following error:<p>" & FormatError(ex.Message)
+							Session("ErrorText") = "Your password cannot be changed. Please contact your administrator for assistance."
 							Dim data = New ErrMsgJsonAjaxResponse() With {.ErrorTitle = Session("ErrorTitle"), .ErrorMessage = Session("ErrorText"), .Redirect = "Main"}
 							Return Json(data, JsonRequestBehavior.AllowGet)
 
