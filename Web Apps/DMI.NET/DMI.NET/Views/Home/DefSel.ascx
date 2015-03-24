@@ -688,7 +688,6 @@
 					if (frmDefSel.utiltype.value == 25) {
 						// Workflow
 						postData = {
-							utiltype: frmDefSel.utiltype.value,
 							ID: frmDefSel.utilid.value,
 							Name: $("#utilname").text(),
 							__RequestVerificationToken: $('[name="__RequestVerificationToken"]').val()

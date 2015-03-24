@@ -3515,8 +3515,7 @@ Namespace Controllers
 
 		<ValidateAntiForgeryToken>
 		Function util_run_workflow(postData As WorkflowRunModel) As ActionResult
-			Session("util_run_workflowModel") = postData
-			Return PartialView()
+			Return PartialView(postData)
 		End Function
 
 		<OutputCache(NoStore:=True, Duration:=0, VaryByParam:="None")>

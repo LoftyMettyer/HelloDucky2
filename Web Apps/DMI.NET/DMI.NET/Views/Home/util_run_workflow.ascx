@@ -1,8 +1,7 @@
-﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
+﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl(of DMI.NET.Models.ObjectRequests.WorkflowRunModel)" %>
 <%@ Import Namespace="HR.Intranet.Server" %>
 <%@ Import Namespace="System.Data.SqlClient" %>
 <%@ Import Namespace="System.Data" %>
-<%@ Import Namespace="DMI.NET.Models.ObjectRequests" %>
 
 <%-- For other devs: Do not remove below line. --%>
 <%="" %>
@@ -10,8 +9,6 @@
 
 <% 
 	Response.Expires = 0
-
-	Dim workflowModel = CType(Session("util_run_workflowModel"), WorkflowRunModel)
 
 	Dim objDatabase As Database = CType(Session("DatabaseFunctions"), Database)
 	Dim objDataAccess As clsDataAccess = CType(Session("DatabaseAccess"), clsDataAccess)
@@ -30,10 +27,10 @@
 			Dim prmMessage = New SqlParameter("psMessage", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
 
 			objDataAccess.ExecuteSP("spASRInstantiateWorkflow", _
-						New SqlParameter("piWorkflowID", SqlDbType.Int) With {.Value = workflowModel.utilid}, _
+						New SqlParameter("piWorkflowID", SqlDbType.Int) With {.Value = Model.ID}, _
 						prmInstanceID, prmFormElements, prmMessage)
 
-			sInstanceID = prmInstanceID.Value.ToString()work
+			sInstanceID = prmInstanceID.Value.ToString()
 			sFormElements = prmFormElements.Value.ToString()
 			sMessage = prmMessage.Value.ToString()
 
@@ -159,17 +156,16 @@ End If
 					
 
 		%>
-		<input type="hidden" id="utilform_<%=iFormCount%>" name="utilform_<%=iFormCount%>" value="<%=sTemp%>">
+		<input type="hidden" id="utilform_<%=iFormCount%>" name="utilform_<%:iFormCount%>" value="<%=sTemp%>">
 		<%
 			sFormElements = Mid(sFormElements, iIndex + 1)
 		Loop
 	End If
 		%>
-		<input type="hidden" id="utilformcount" name="utilformcount" value="<%=iFormCount%>">
-		<input type="hidden" id="utilinstance" name="utilinstance" value="<%=iInstanceID%>">
-		<input type="hidden" id="utiltype" name="utiltype" value="<%:workflowModel.utiltype%>">
-		<input type="hidden" id="utilid" name="utilid" value='<%:workflowModel.utilid%>'>
-		<input type="hidden" id="utilname" name="utilname" value="<%=Replace(workflowModel.utilname, """", "&quot;")%>">
+		<input type="hidden" id="utilformcount" name="utilformcount" value="<%:iFormCount%>">
+		<input type="hidden" id="utilinstance" name="utilinstance" value="<%:iInstanceID%>">
+		<input type="hidden" id="utilid" name="utilid" value='<%:Model.ID%>'>
+		<input type="hidden" id="utilname" name="utilname" value="<%:Model.Name%>">
 		<input type="hidden" id="action" name="action" value="RUN">
 
 		<table align="center" class="outline" cellpadding="5" cellspacing="0">
@@ -181,7 +177,7 @@ End If
 						</tr>
 						<tr>
 							<td width="20" height="10"></td>
-							<td align="center">Workflow '<%=Replace(workflowModel.utilname, """", "&quot;")%>'
+							<td align="center">Workflow '<%:Model.Name%>'
 								<%
 									If Len(sURL) = 0 Then
 								%>

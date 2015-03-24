@@ -242,9 +242,8 @@ function goUtility(sUtilityType, sUtilityID, sUtilityName, sUtilityBaseTable) {
 
 			// Workflow
 			var postData = {
-				utiltype: sUtilityType,
-				utilid: sUtilityID,
-				utilname: sUtilityName,
+				ID: sUtilityID,
+				Name: sUtilityName,
 				__RequestVerificationToken: $('[name="__RequestVerificationToken"]').val()
 			}
 
