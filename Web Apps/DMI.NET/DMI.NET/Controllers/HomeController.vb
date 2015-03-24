@@ -2242,6 +2242,7 @@ Namespace Controllers
 			Return View()
 		End Function
 
+		<ValidateAntiForgeryToken>
 		Function EventLogDetails(value As EventDetailModel) As ActionResult
 			Return View(value)
 		End Function

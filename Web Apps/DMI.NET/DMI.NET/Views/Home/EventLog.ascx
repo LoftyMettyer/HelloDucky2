@@ -4,6 +4,7 @@
 <%@ Import Namespace="HR.Intranet.Server" %>
 <%@ Import Namespace="System.Data.SqlClient" %>
 <%@ Import Namespace="System.Data" %>
+<%@ Import Namespace="DMI.NET.Helpers" %>
 
 <%
 
@@ -316,8 +317,8 @@
 		var postData = {
 			ID: rowData["ID"],
 			Mode: rowData["Mode"],
-			BatchRunID: rowData["Batch Run ID"]
-		}
+			BatchRunID: rowData["Batch Run ID"],
+			<%:Html.AntiForgeryTokenForAjaxPost() %> };
 
 		$('#EventLogViewDetails').dialog("open");
 		OpenHR.submitForm(null, "EventLogViewDetails", null, postData, "EventLogDetails");
