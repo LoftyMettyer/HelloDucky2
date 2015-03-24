@@ -132,20 +132,17 @@
 	
 	<%
 	Dim sErrorMessage As String
-	Session("mailmergefail") = False
+
 	' Errors during the merge
 	If Len(objMailMerge.ErrorString) > 0 Then
-		sErrorMessage = HttpUtility.JavaScriptStringEncode(objMailMerge.ErrorString)
-		Response.Write(String.Format("OpenHR.modalPrompt(""{0}"",2,""{1}"");", sErrorMessage, objMailMerge.DefName))
+		sErrorMessage = HttpUtility.HtmlEncode(objMailMerge.ErrorString)
+		Response.Write(String.Format("OpenHR.modalPrompt(""{0}"",2,""{1}"");", sErrorMessage, HttpUtility.HtmlEncode(objMailMerge.DefName)))
 	
 	ElseIf objMailMergeOutput.Errors.Count > 0 Then
 		objMailMerge.EventLogChangeHeaderStatus(EventLog_Status.elsFailed)
-
-		sErrorMessage = Join(objMailMergeOutput.Errors.ToArray())
+		sErrorMessage = HttpUtility.HtmlEncode(Join(objMailMergeOutput.Errors.ToArray()))
 		objMailMerge.FailedMessage = sErrorMessage
-		sErrorMessage = HttpUtility.JavaScriptStringEncode(sErrorMessage)
-		Response.Write(String.Format("OpenHR.modalPrompt(""{0}"",2,""{1}"");", sErrorMessage, objMailMerge.DefName))
-		Session("mailmergefail") = True
+		Response.Write(String.Format("OpenHR.modalPrompt(""{0}"",2,""{1}"");", sErrorMessage, HttpUtility.HtmlEncode(objMailMerge.DefName)))
 		
 	Else
 		objMailMerge.EventLogChangeHeaderStatus(EventLog_Status.elsSuccessful)
@@ -153,13 +150,12 @@
 		' No data in result set
 		If objMailMerge.NoRecords Then
 			sErrorMessage = "Completed successfully, however there were no records that meet the selection criteria. No document has been produced."
-			Response.Write(String.Format("OpenHR.modalPrompt(""{0}"",2,""{1}"");", sErrorMessage, objMailMerge.DefName))
+			Response.Write(String.Format("OpenHR.modalPrompt(""{0}"",2,""{1}"");", sErrorMessage, HttpUtility.HtmlEncode(objMailMerge.DefName)))
 		Else
 			sErrorMessage = "Mail merge completed successfully."
-			Response.Write(String.Format("OpenHR.modalPrompt(""{0}"",2,""{1}"");", sErrorMessage, objMailMerge.DefName))
+			Response.Write(String.Format("OpenHR.modalPrompt(""{0}"",2,""{1}"");", sErrorMessage, HttpUtility.HtmlEncode(objMailMerge.DefName)))
 		End If
         
-		Session("mailmergefail") = True
 	End If
 	%>
 

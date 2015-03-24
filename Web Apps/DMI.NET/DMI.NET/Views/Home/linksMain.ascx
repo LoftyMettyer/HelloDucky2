@@ -506,7 +506,7 @@
 							' Drilldown?
 							If navlink.UtilityID > 0 Then
 								' sOnclick = "goUtilityDash('" & navlink.UtilityType & "_" & navlink.UtilityID.ToString() & "_" & navlink.BaseTable
-								sOnClick = "goUtility(" & navlink.UtilityType & ", " & navlink.UtilityID & ", '" & navlink.Text & "', " & navlink.BaseTableID & ")"
+								sOnClick = "goUtility(" & navlink.UtilityType & ", " & navlink.UtilityID & ", '" & HttpUtility.HtmlEncode(navlink.Text) & "', " & navlink.BaseTableID & ")"
 							Else
 								sOnClick = ""
 							End If

@@ -233,12 +233,12 @@ function goScreen(psScreenInfo) {
 function goUtility(sUtilityType, sUtilityID, sUtilityName, sUtilityBaseTable) {	
 	if (!dragged) {
 
-		if ((window.isMobileBrowser == "true") && (sUtilityType == "9")) {
+		if ((window.isMobileBrowser == "true") && (sUtilityType === utilityType.Workflow)) {
 			//No mailmerges for mobiles - see JIRA 3969
 			return false;
 		}
 
-		if (sUtilityType == "25") {
+		if (sUtilityType === utilityType.Workflow) {
 
 			// Workflow
 			var postData = {

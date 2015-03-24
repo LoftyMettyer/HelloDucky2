@@ -221,7 +221,7 @@
 
 <script type="text/javascript">
 
-	<%If Session("mailmergefail") Then%>
+	<%If iUtilType = UtilityType.utlMailMerge Then%>
 		closeclick();
 	<%Else%>
 
@@ -239,6 +239,7 @@
 	<%End If%>
 
 	if ($('#txtNoRecs').val() == "True") {
+
 		OpenHR.modalPrompt($("#txtDefn_ErrMsg").val(), 2, $("#txtDefn_Name").val(), "");
 		closeclick();
 		
