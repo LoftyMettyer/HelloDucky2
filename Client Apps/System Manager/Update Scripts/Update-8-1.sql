@@ -4550,6 +4550,14 @@ PRINT 'Step - Table Triggers'
 				ASRSysOrderItems.sequence
 	END';
 
+
+PRINT 'Optimise indexes'
+
+	IF EXISTS(SELECT Name FROM sysindexes WHERE id = object_id(N'ASRSysSummaryFields') AND name = N'IDX_HistoryTableSequenceID')
+		DROP INDEX ASRSysSummaryFields.[IDX_HistoryTableSequenceID];
+	EXEC sp_executesql N'CREATE NONCLUSTERED INDEX [IDX_HistoryTableSequenceID] ON ASRSysSummaryFields ([HistoryTableID],[Sequence])';
+
+
 /* ------------------------------------------------------------- */
 /* Update the database version flag in the ASRSysSettings table. */
 /* Dont Set the flag to refresh the stored procedures            */
