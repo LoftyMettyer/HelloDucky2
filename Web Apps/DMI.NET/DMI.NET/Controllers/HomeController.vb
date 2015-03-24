@@ -1074,6 +1074,7 @@ Namespace Controllers
 
 			Try
 
+				Dim objDatabase As Database = CType(Session("DatabaseFunctions"), Database)
 				Dim objSession = CType(Session("SessionContext"), SessionInfo)
 
 				Dim sRequiredPermission = value.Action
@@ -1117,25 +1118,22 @@ Namespace Controllers
 					End Select
 
 				ElseIf Session("action") = "delete" Then
-					Select Case Session("utiltype")
-						Case 1	' CROSS TABS
-							Session("reaction") = "CROSSTABS"
-						Case 2	' CUSTOM REPORTS
-							Session("reaction") = "CUSTOMREPORTS"
-						Case 9	' MAIL MERGE
-							Session("reaction") = "MAILMERGE"
-						Case 10	' PICKLISTS
-							Session("reaction") = "PICKLISTS"
-						Case 11	' FILTERS
-							Session("reaction") = "FILTERS"
-						Case 12	' CALCULATIONS
-							Session("reaction") = "CALCULATIONS"
-						Case 17	' CALENDAR REPORTS
-							Session("reaction") = "CALENDARREPORTS"
-						Case 35	' NINE BOX
-							Session("reaction") = "NINEBOXGRID"
-					End Select
-					Return RedirectToAction("checkforusage")
+
+					Dim rstUsage = objDatabase.GetUtilityUsage(value.utiltype, value.utilID)
+
+					If rstUsage.Rows.Count = 0 Then
+						Return RedirectToAction("util_delete", value)
+					Else
+
+						value.Usage = New Collection(Of DefinitionPropertiesViewModel)
+						For Each objRow As DataRow In rstUsage.Rows
+							Dim objUsage As New DefinitionPropertiesViewModel With {.Name = objRow("description").ToString}
+							value.Usage.Add(objUsage)
+						Next
+
+						Return View("checkforusage", value)
+					End If
+
 				End If
 
 			Catch ex As Exception
@@ -1180,12 +1178,80 @@ Namespace Controllers
 
 		End Function
 
-		Function CheckForUsage() As ActionResult
-			Return View()
-		End Function
+		Function util_delete(value As DefSelModel) As ActionResult
 
-		Function util_delete() As ActionResult
-			Return View()
+			Dim objDataAccess As clsDataAccess = CType(Session("DatabaseAccess"), clsDataAccess)
+
+			Dim sCheckStatus As String = ""
+
+			Dim sUtilTypeName As String = ""
+
+			Select Case value.utiltype
+
+				Case UtilityType.utlCrossTab
+					sUtilTypeName = "cross tab"
+
+				Case UtilityType.utlCustomReport
+					sUtilTypeName = "report"
+
+				Case UtilityType.utlMailMerge
+					sUtilTypeName = "mail merge"
+
+				Case UtilityType.utlPicklist
+					sUtilTypeName = "picklist"
+
+				Case UtilityType.utlFilter
+					sUtilTypeName = "filter"
+
+				Case UtilityType.utlCalculation
+					sUtilTypeName = "calculation"
+
+				Case UtilityType.utlCalendarReport
+					sUtilTypeName = "calendar report"
+
+				Case UtilityType.utlNineBoxGrid
+					sUtilTypeName = "9-box grid report"
+
+			End Select
+
+			Try
+
+				Dim prmDeleted = New SqlParameter("pfDeleted", SqlDbType.Bit) With {.Direction = ParameterDirection.Output}
+				Dim prmAccess = New SqlParameter("psAccess", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
+
+				objDataAccess.ExecuteSP("spASRIntDeleteCheck" _
+							, New SqlParameter("piUtilityType", SqlDbType.Int) With {.Value = value.utiltype} _
+							, New SqlParameter("plngID", SqlDbType.Int) With {.Value = value.utilID} _
+							, prmDeleted _
+							, prmAccess)
+
+				If CBool(prmDeleted.Value) = True Then
+					sCheckStatus = value.utilName & " " & sUtilTypeName & " has been deleted by another user."
+				ElseIf prmAccess.Value.ToString() = "HD" Then
+					sCheckStatus = value.utilName & " " & sUtilTypeName & " has been made hidden by another user."
+				ElseIf prmAccess.Value.ToString() = "RO" Then
+					sCheckStatus = value.utilName & " " & sUtilTypeName & " has been made read only by another user."
+				End If
+
+				If Len(sCheckStatus) > 0 Then
+					value.Status = sCheckStatus
+
+				Else
+
+					objDataAccess.ExecuteSP("sp_ASRIntDeleteUtility" _
+											, New SqlParameter("piUtilType", SqlDbType.Int) With {.Value = value.utiltype} _
+											, New SqlParameter("piUtilID", SqlDbType.Int) With {.Value = value.utilID})
+
+					value.Status = value.utilName & " " & sUtilTypeName & " has been deleted."
+					Return View("CheckForUsage", value)
+
+				End If
+
+			Catch ex As Exception
+				Throw
+
+			End Try
+
 		End Function
 
 		Function Data() As ActionResult

@@ -1,6 +1,9 @@
 ﻿Option Strict On
 Option Explicit On
 
+Imports System.Collections.ObjectModel
+Imports DMI.NET.ViewModels
+
 Namespace Models.ObjectRequests
 	Public Class DefSelModel
 
@@ -19,6 +22,9 @@ Namespace Models.ObjectRequests
 		Public Property txtGotoFromMenu As Boolean
 		Public Property RecordID As Integer
 		Public Property OnlyMine As Boolean
+
+		Public Property Usage As Collection(Of DefinitionPropertiesViewModel)
+		Public Property Status As String
 
 	End Class
 End Namespace

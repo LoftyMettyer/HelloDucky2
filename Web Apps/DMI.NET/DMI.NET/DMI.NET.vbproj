@@ -1759,7 +1759,6 @@
     <Content Include="Views\Home\util_def_exprcomponent.ascx" />
     <Content Include="Views\Home\util_def_expression.ascx" />
     <Content Include="Views\Home\util_def_picklist.ascx" />
-    <Content Include="Views\Home\util_delete.ascx" />
     <Content Include="Views\Home\util_run.ascx" />
     <Content Include="Views\Home\util_run_calendarreport_data.ascx" />
     <Content Include="Views\Home\util_run_calendarreport_main.ascx" />

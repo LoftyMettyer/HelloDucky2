@@ -1,81 +1,77 @@
-﻿
+﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl(Of DMI.NET.Models.ObjectRequests.DefselModel)" %>
+<%@ Import Namespace="DMI.NET.Code.Extensions" %>
 
-<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
-<%@ Import Namespace="DMI.NET" %>
-<%@ Import Namespace="HR.Intranet.Server" %>
-<%@ Import Namespace="System.Data" %>
-
-
-<%
-	
-	Dim objDatabase As Database = CType(Session("DatabaseFunctions"), Database)
-	
-	Dim rstUsage = objDatabase.GetUtilityUsage(CInt(CleanNumeric(Session("utiltype"))), CInt(CleanNumeric(Session("utilid"))))
-		
-	' The utility isnt used in any batch jobs, so we can delete it
-	If rstUsage.Rows.Count = 0 Then
-		Response.Redirect("util_delete")
-	End If
-%>
-
-<div <%=session("BodyTag")%>>
-<table align=center class="outline" cellPadding=5 cellSpacing=0>
-	<TR>
-		<TD>
-			<table class="invisible" cellspacing="0" cellpadding=0>
-					<tr> 
-							<td colspan=3 height=10></td>
-					</tr>
-				
-					<tr> 
-							<td colspan=3 align=center> 
-							<H3>Usage Check</H3>
-							</td>
-					</tr>
-				
-					<tr height=10> 
-					<td width=20>&nbsp;</td>
-							<td>
-									Could not <%=session("action")%> '<%=session("utilname")%>' because it is used in the following:<BR><BR>
-<%
-	
-
-	For Each objRow As DataRow In rstUsage.Rows
-
-		Dim sDescription As String = objRow("description").ToString()
-		sDescription = Replace(sDescription, "<", "&lt;")
-		sDescription = Replace(sDescription, ">", "&gt;")
-
-		Response.Write(sDescription & "<BR>" & vbCrLf)
-
-	Next
-%>
-							</td>
-					<td width=20>&nbsp;</td>
-					</tr>
-
-					<tr>
-					<td height=10 colspan=3></td>
-				</tr>
-				 
-					<tr> 
-							<td colspan=3 height=10 align=center> 
-									<input id="cmdOK" name="cmdOK" type="button" value="OK" style="WIDTH: 75px" class="btn" onclick="OpenHR.submitForm(frmUsage);" />
-							</td>
-					</tr>
-					<tr>
-					<td height=10 colspan=3></td>
-				</tr>
-
-			</table>
-		</TD>
-	</TR>
-</table>
-	
-<form name="frmDelete" method="post" action="util_delete" id="frmDelete">
-</form>
-
-<form name="frmUsage" method="post" action="defsel" id="frmUsage">
-</form>
-
+<div class="pageTitleDiv" style="margin-bottom: 15px">
+	<span class="pageTitle" id="PopupReportDefinition_PageTitle">'<%:Model.utilName%>' is in use</span>
 </div>
+
+<fieldset id="definitionusagediv">
+	<table id="definitionUsage"></table>
+</fieldset>
+
+<fieldset class="genericbuttonpopupalignment" id="defselPropertiesPopup">
+	<input type="button" value="Close" onclick="closeThisPopup();" />
+</fieldset>
+
+<script type="text/javascript">
+
+	$("#definitionUsage").jqGrid({
+		datatype: "jsonstring",
+		datastr: '<%:Model.Usage.ToJsonResult%>',
+		mtype: 'GET',
+		jsonReader: {
+			root: "rows", //array containing actual data
+			page: "page", //current page
+			total: "total", //total pages for the query
+			records: "records", //total number of records
+			repeatitems: false,
+			id: "Name" //index of the column with the PK in it
+		},
+		colNames: ['Name'],
+		colModel: [
+		{ name: 'Name', index: 'Name', align: "left" }],
+		rowNum: 10000,
+		width: 'auto',
+		height: '300px',
+		autowidth: true,
+		rowTotal: 50,
+		rowList: [10, 20, 30],
+		shrinkToFit: true,
+		pager: '#pcrud',
+		sortname: 'Name',
+		loadonce: true,
+		autoencode: true,
+		viewrecords: true,
+		sortorder: "asc",
+		cmTemplate: { sortable: false },
+		loadComplete: function (data) {
+			$('fieldset').css("border", "0");
+		}
+	});
+
+
+	function closeThisPopup() {
+		$("#divPopupReportDefinition").dialog("close");
+		$("#divPopupReportDefinition").empty();
+	}
+
+	$(function() {
+
+		<%If Model.Usage Is Nothing Then%>
+			OpenHR.modalPrompt("<%:Model.Status%>", 0, "Confirm").then(function(answer) {
+				if (answer === 1) {
+					menu_loadDefSelPage(<%:CInt(Model.utiltype)%>, 0, 0, true);
+				}
+			});
+		<%Else%>
+			$('#divPopupReportDefinition').dialog("open");
+			var dialogWidth = screen.width / 2;
+			$('#divPopupReportDefinition').dialog("option", "width", dialogWidth);
+			$("#definitionUsage").jqGrid('setGridWidth', 820);		
+		<%End If%>
+
+	});
+
+</script>
+
+

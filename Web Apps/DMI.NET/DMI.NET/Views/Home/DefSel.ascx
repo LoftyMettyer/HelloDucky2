@@ -652,13 +652,27 @@
 
 		function setdelete() {
 				if (!$("#mnutoolDeleteUtil").hasClass("disabled")) {
-						var frmDefSel = document.getElementById('frmDefSel');
-						var answer = OpenHR.messageBox("Delete this definition. Are you sure ?", 36, "Confirmation");
+					var frmDefSel = document.getElementById('frmDefSel');
 
-						if (answer == 6) {
-								frmDefSel.action.value = "delete";
-								OpenHR.submitForm(frmDefSel);
+					OpenHR.modalPrompt("Delete '" + $("#utilname").text() + "'. Are you sure ?", 4, "Confirm").then(function (answer) {
+						if (answer === 6) { 
+
+							var postData = {
+								Action: "delete",
+								utiltype: frmDefSel.utiltype.value,
+								utilID: frmDefSel.utilid.value,
+								utilName: $("#utilname").text(),
+								__RequestVerificationToken: $('[name="__RequestVerificationToken"]').val()
+							}
+
+									OpenHR.submitForm(null, "divPopupReportDefinition", null, postData, "defsel_submit");
+							//debugger;
+							//OpenHR.OpenDialog("defsel_submit", "divPopupReportDefinition", postData, '900px');
+
+
 						}
+					});
+
 				}
 		}
 
