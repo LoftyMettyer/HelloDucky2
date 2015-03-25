@@ -1,6 +1,7 @@
 ﻿<%@ Page Language="VB" Inherits="System.Web.Mvc.ViewPage(of DMI.NET.Models.EventDetailModel)" %>
 
 <%@ Import Namespace="DMI.NET" %>
+<%@ Import Namespace="DMI.NET.Helpers" %>
 <%@ Import Namespace="HR.Intranet.Server" %>
 <%@ Import Namespace="System.Data.SqlClient" %>
 <%@ Import Namespace="System.Data" %>
@@ -323,17 +324,19 @@
 				
 				$("#txtBatchInfo").val(sBatchInfo);
 
-				sURL = "emailSelection" +
-					"?txtSelectedEventIDs=" + $('#txtSelectedEventIDs').val() +
-					"&txtEmailOrderColumn=" +
-					"&txtEmailOrderOrder=" +
-					"&txtFromMain=" + $("#txtFromMain").val() +
-					"&txtBatchInfo=" + escape($("#txtBatchInfo").val()) +
-					"&txtBatchy=" + $("#txtBatchy").val();
-
-				var sURLString = sURL;
-				$('#EventLogEmailSelect').data('sURLData', sURLString);
+				var postData = {
+					SelectedEventIDs: parseInt($('#txtSelectedEventIDs').val()),
+					EmailOrderColumn: "",
+					EmailOrderOrder: "",
+					IsFromMain: $("#txtFromMain").val(),
+					BatchInfo: escape($("#txtBatchInfo").val()),
+					IsBatchy: $("#txtBatchy").val(),
+					<%:Html.AntiForgeryTokenForAjaxPost() %> 
+				};
+			
 				$('#EventLogEmailSelect').dialog("open");
+				OpenHR.submitForm(null, "EventLogEmailSelect", null, postData, "EmailSelection");
+
 			}			
 
 			function printEvent() {

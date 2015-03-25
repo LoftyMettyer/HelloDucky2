@@ -2234,8 +2234,9 @@ Namespace Controllers
 
 #Region "Event Log Forms"
 
-		Function emailSelection() As ActionResult
-			Return View()
+		<ValidateAntiForgeryToken>
+		Function EmailSelection(value As EmailSelectionModel) As ActionResult
+			Return View(value)
 		End Function
 
 		Function EventLog() As ActionResult

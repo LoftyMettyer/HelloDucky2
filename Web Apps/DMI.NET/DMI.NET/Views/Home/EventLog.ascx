@@ -53,7 +53,6 @@
 <script type="text/javascript">
 	var frmEventUseful = OpenHR.getForm("workframe", "frmEventUseful");
 	var frmPurge = OpenHR.getForm("workframe", "frmPurge");
-	var frmEmail = OpenHR.getForm("workframe", "frmEmail");
 	
 	var frmDetails = OpenHR.getForm("workframe", "frmDetails");
 	var frmRefresh = OpenHR.getForm("workframe", "frmRefresh");
@@ -345,7 +344,6 @@
 		var sEventList = new String("");
 		var sURL;
 		var selectedRows = $("#LogEvents").jqGrid('getGridParam', 'selarrrow');
-		var frmLog = OpenHR.getForm("workframe", "frmLog");
 
 		//populate the txtSelectedIDs list
 		for (var i = 0; i <= selectedRows.length - 1; i++) {
@@ -354,16 +352,16 @@
 			sEventList = sEventList + eventID + ",";
 		}
 
-		frmEmail.txtSelectedEventIDs.value = sEventList.substr(0, sEventList.length - 1);
-		
-		sURL = "emailSelection" +
-				"?txtSelectedEventIDs=" + frmEmail.txtSelectedEventIDs.value +
-				"&txtFromMain=" + frmEmail.txtFromMain.value +
-				"&txtEmailOrderColumn=" + frmLog.txtELOrderColumn.value +
-				"&txtEmailOrderOrder=" + frmLog.txtELOrderOrder.value;
-		
-		$('#EventLogEmailSelect').data('sURLData', sURL);
+		var postData = {
+			SelectedEventIDs: parseInt(sEventList.substr(0, sEventList.length - 1)),
+			IsFromMain: 1,
+			EmailOrderColumn: frmLog.txtELOrderColumn.value,
+			EmailOrderOrder: frmLog.txtELOrderOrder.value,
+			<%:Html.AntiForgeryTokenForAjaxPost() %>
+		};
+
 		$('#EventLogEmailSelect').dialog("open");
+		OpenHR.submitForm(null, "EventLogEmailSelect", null, postData, "EmailSelection");
 	}
 	
 	function EventLog_refreshButtons() {
@@ -810,14 +808,6 @@
 	<input type="hidden" id="txtCurrentType" name="txtCurrentType">
 	<input type="hidden" id="txtCurrentMode" name="txtCurrentMode">
 	<input type="hidden" id="txtCurrentStatus" name="txtCurrentStatus">
-	<%=Html.AntiForgeryToken()%>
-</form>
-
-<form id="frmEmail" name="frmEmail" method="post" style="visibility: hidden; display: none" action="emailSelection">
-	<input type="hidden" id="txtSelectedEventIDs" name="txtSelectedEventIDs">
-	<input type="hidden" id="txtFromMain" name="txtFromMain" value="1">
-	<input type="hidden" id="txtEmailOrderColumn" name="txtEmailOrderColumn">
-	<input type="hidden" id="txtEmailOrderOrder" name="txtEmailOrderOrder">
 	<%=Html.AntiForgeryToken()%>
 </form>
 

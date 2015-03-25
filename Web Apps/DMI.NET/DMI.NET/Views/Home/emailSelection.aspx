@@ -1,4 +1,4 @@
-﻿<%@ Page Language="VB" Inherits="System.Web.Mvc.ViewPage" %>
+﻿<%@ Page Language="VB" Inherits="System.Web.Mvc.ViewPage(of DMI.NET.Models.EmailSelectionModel)" %>
 <%@ Import Namespace="DMI.NET" %>
 <%@ Import Namespace="HR.Intranet.Server" %>
 <%@ Import Namespace="System.Data.SqlClient" %>
@@ -85,33 +85,9 @@
 		$('#EmailSelectionTable tr td:nth-child(1)').hide();
 	};
 
-	function setForm() {
-		var frmPopup = document.getElementById("frmPopup");
-		
-		if (document.getElementById('txtAbsenceEmailGroup') != null) {
-			document.getElementById('txtAbsenceEmailGroup').value = frmPopup.txtSelectedName.value;
-			document.getElementById('txtAbsenceEmailGroupID').value = frmPopup.txtSelectedID.value;
-		}
-
-		if (document.getElementById('txtEmailGroup') != null) {
-			document.getElementById('txtEmailGroup').value = frmPopup.txtSelectedName.value;
-			document.getElementById('txtEmailGroupID').value = frmPopup.txtSelectedID.value;
-		}
-
-		closeEmailSelect();
-		return false;
-	};
-
 </script>
 
 <div>
-	<form class="displaynone" id="frmPopup" name="frmPopup" onsubmit="return setForm();">
-		<input id="txtSelectedID" name="txtSelectedID" type="hidden">
-		<input id="txtSelectedName" name="txtSelectedName" type="hidden">
-		<input id="txtSelectedAccess" name="txtSelectedAccess" type="hidden">
-		<input id="txtSelectedUserName" name="txtSelectedUserName" type="hidden">
-	</form>
-
 	<div class="absolutefull">
 		<div class="pageTitleDiv padbot15 margeTop10">
 			<span class="pageTitle" id="EventLogEmailTitle">Email Selection</span>
@@ -125,7 +101,7 @@
 		</div>
 	</div>
 
-	<form class="displaynone" id="frmEmailDetails" name="frmEmailDetails">
+	<div class="displaynone" id="frmEmailDetails">
 		<%
 			'Get the required Email information
 			Dim sErrorDescription As String
@@ -138,10 +114,10 @@
 			Try
 				Dim prmSubject = New SqlParameter("psSubject", SqlDbType.VarChar, -1) With {.Direction = ParameterDirection.Output}
 				Dim rsEmailDetails = objDataAccess.GetFromSP("spASRIntGetEventLogEmailInfo" _
-				, New SqlParameter("psSelectedIDs", SqlDbType.VarChar, -1) With {.Value = Request("txtSelectedEventIDs")} _
+				, New SqlParameter("psSelectedIDs", SqlDbType.VarChar, -1) With {.Value = Model.SelectedEventIDs} _
 				, prmSubject _
-				, New SqlParameter("psOrderColumn", SqlDbType.VarChar, -1) With {.Value = CStr(Request("txtEmailOrderColumn"))} _
-				, New SqlParameter("psOrderOrder", SqlDbType.VarChar, -1) With {.Value = CStr(Request("txtEmailOrderOrder"))})
+				, New SqlParameter("psOrderColumn", SqlDbType.VarChar, -1) With {.Value = Model.EmailOrderColumn} _
+				, New SqlParameter("psOrderOrder", SqlDbType.VarChar, -1) With {.Value = Model.EmailOrderOrder})
 			
 				If rsEmailDetails.Rows.Count > 0 Then
 					For Each objRow As DataRow In rsEmailDetails.Rows
@@ -162,9 +138,9 @@
 							sEmailInfo = sEmailInfo & "Type :		" & objRow("Type").ToString() & "\n" & vbCrLf
 							sEmailInfo = sEmailInfo & "Status :		" & objRow("Status").ToString() & "\n" & vbCrLf
 							sEmailInfo = sEmailInfo & "User name :	" & objRow("Username").ToString() & "\n\n" & vbCrLf & vbCrLf
-							If Request("txtFromMain") = 0 Then
-								If Request("txtBatchy") Then
-									sEmailInfo = sEmailInfo & Request("txtBatchInfo") & "\n" & vbCrLf
+							If Model.IsFromMain Then
+								If Model.IsBatchy Then
+									sEmailInfo = sEmailInfo & Model.BatchInfo & "\n" & vbCrLf
 								End If
 							Else
 								If (Not IsDBNull(objRow("BatchName"))) And (Len(objRow("BatchName").ToString()) > 0) Then
@@ -203,12 +179,8 @@
 				sErrorDescription = "Error getting the event log records." & vbCrLf & FormatError(ex.Message)
 			End Try
 		%>
-	</form>
+	</div>
 	
-	<form class="displaynone" id="frmFromOpener" name="frmFromOpener">
-		<input id="calcEmailCurrentID" name="calcEmailCurrentID" type="hidden" value='<%= Request("emailSelCurrentID") %>'>
-	</form>
-
 	<input id="txtTicker" name="txtTicker" type="hidden" value="0">
 	<input id="txtLastKeyFind" name="txtLastKeyFind" type="hidden" value="">
 </div>
@@ -235,7 +207,6 @@
 	});
 
 	function emailSelectionEvent() {
-	
 		var sTo = getEmails(4);
 		var SCc = getEmails(5);
 		var SBcc = getEmails(6);
