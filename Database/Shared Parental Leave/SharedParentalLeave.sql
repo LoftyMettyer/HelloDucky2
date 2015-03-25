@@ -2700,7 +2700,8 @@ BEGIN
 				, (4, 96, 1, 'Request To Date', 1, 0, 0, 0, 2, 0, @tabShPLB_Leave_Requests, @colBR_Date_Requested_To, 0, 'null', 0, 0, 0, 0, 0, 0, 0)
 				, (5, 96, 0, 'Request Binding', 1, 0, 0, 0, 2, 0, @tabShPLB_Leave_Requests, @colBR_Binding_Request, 0, 'null', 0, 0, 0, 0, 0, 0, 0)
 				, (6, 96, 0, 'Consent from Other Parent', 1, 0, 0, 0, 2, 0, @tabShPLB_Leave_Requests, @colBR_Consent_from_Other_Parent, 0, 'null', 0, 0, 0, 0, 0, 0, 0)
-				, (7, 96, 0, 'Request Cancelled', 1, 0, 0, 0, 2, 0, @tabShPLB_Leave_Requests, @colBR_Request_Cancelled, 0, 'null', 0, 0, 0, 0, 0, 0, 0);
+				, (7, 96, 0, 'Request Cancelled', 1, 0, 0, 0, 2, 0, @tabShPLB_Leave_Requests, @colBR_Request_Cancelled, 0, 'null', 0, 0, 0, 0, 0, 0, 0)
+				, (8, 96, 1, 'Expected Birth Date', 1, 1, 0, 0, 2, 0, @tabShPL_Birth, @colB_Expected_Birth_Date, 0, 'null', 0, 0, 0, 0, 0, 0, 0);
 
 		-- ShPL (Birth) SPLIT Days
 		INSERT INTO [dbo].[ASRSysAccordTransferFieldDefinitions]
@@ -2710,7 +2711,8 @@ BEGIN
 				, (1, 97, 1, 'Employee Code', 1, 1, 0, 1, 2, 0, @tabShPL_Birth, @colB_Staff_Number, 0, 'null', 0, 0, 0, 0, 0, 0, 0)
 				, (2, 97, 1, 'Start Date', 1, 1, 0, 0, 2, 0, @tabShPLB_SPLIT_Days, @colBS_Start_Date, 0, 'null', 0, 0, 0, 0, 0, 0, 0)
 				, (3, 97, 1, 'End Date', 1, 0, 0, 0, 2, 0, @tabShPLB_SPLIT_Days, @colBS_End_Date, 0, 'null', 0, 0, 0, 0, 0, 0, 0)
-				, (4, 97, 1, 'Reason', 1, 0, 0, 0, 2, 0, @tabShPLB_SPLIT_Days, @colBS_Reason, 0, 'null', 0, 0, 0, 0, 0, 0, 0);
+				, (4, 97, 1, 'Reason', 1, 0, 0, 0, 2, 0, @tabShPLB_SPLIT_Days, @colBS_Reason, 0, 'null', 0, 0, 0, 0, 0, 0, 0)
+				, (5, 97, 1, 'Expected Birth Date', 1, 1, 0, 0, 2, 0, @tabShPL_Birth, @colB_Expected_Birth_Date, 0, 'null', 0, 0, 0, 0, 0, 0, 0);
 
 		-- ShPL (Adoption)
 		INSERT INTO [dbo].[ASRSysAccordTransferFieldDefinitions]
@@ -2756,7 +2758,8 @@ BEGIN
 				, (4, 99, 1, 'Request To Date', 1, 0, 0, 0, 2, 0, @tabShPLA_Leave_Requests, @colAR_Date_Requested_To, 0, 'null', 0, 0, 0, 0, 0, 0, 0)
 				, (5, 99, 0, 'Request Binding', 1, 0, 0, 0, 2, 0, @tabShPLA_Leave_Requests, @colAR_Binding_Request, 0, 'null', 0, 0, 0, 0, 0, 0, 0)
 				, (6, 99, 0, 'Consent from Other Adopter', 1, 0, 0, 0, 2, 0, @tabShPLA_Leave_Requests, @colAR_Consent_from_Other_Adopter, 0, 'null', 0, 0, 0, 0, 0, 0, 0)
-				, (7, 99, 0, 'Request Cancelled', 1, 0, 0, 0, 2, 0, @tabShPLA_Leave_Requests, @colAR_Request_Cancelled, 0, 'null', 0, 0, 0, 0, 0, 0, 0);
+				, (7, 99, 0, 'Request Cancelled', 1, 0, 0, 0, 2, 0, @tabShPLA_Leave_Requests, @colAR_Request_Cancelled, 0, 'null', 0, 0, 0, 0, 0, 0, 0)
+				, (8, 99, 1, 'Placement Date', 1, 1, 0, 0, 2, 0, @tabShPL_Adoption, @colA_Placement_Date, 0, 'null', 0, 0, 0, 0, 0, 0, 0);
 
 		-- ShPL (Adoption) SPLIT Days
 		INSERT INTO [dbo].[ASRSysAccordTransferFieldDefinitions]
@@ -2766,7 +2769,8 @@ BEGIN
 				, (1, 100, 1, 'Employee Code', 1, 1, 0, 1, 2, 0, @tabShPL_Adoption, @colA_Staff_Number, 0, 'null', 0, 0, 0, 0, 0, 0, 0)
 				, (2, 100, 1, 'Start Date', 1, 1, 0, 0, 2, 0, @tabShPLA_SPLIT_Days, @colAS_Start_Date, 0, 'null', 0, 0, 0, 0, 0, 0, 0)
 				, (3, 100, 1, 'End Date', 1, 0, 0, 0, 2, 0, @tabShPLA_SPLIT_Days, @colAS_End_Date, 0, 'null', 0, 0, 0, 0, 0, 0, 0)
-				, (4, 100, 1, 'Reason', 1, 0, 0, 0, 2, 0, @tabShPLA_SPLIT_Days, @colAS_Reason, 0, 'null', 0, 0, 0, 0, 0, 0, 0);
+				, (4, 100, 1, 'Reason', 1, 0, 0, 0, 2, 0, @tabShPLA_SPLIT_Days, @colAS_Reason, 0, 'null', 0, 0, 0, 0, 0, 0, 0)
+				, (5, 100, 1, 'Placement Date', 1, 1, 0, 0, 2, 0, @tabShPL_Adoption, @colA_Placement_Date, 0, 'null', 0, 0, 0, 0, 0, 0, 0);
 
 		-- Translations
 		INSERT INTO [dbo].[ASRSysAccordTransferFieldMappings]
@@ -2836,7 +2840,8 @@ BEGIN
 				, (4, 96, 1, 'Request To Date', 0, 0, 2, 0, 1)
 				, (5, 96, 0, 'Request Binding', 0, 0, 2, 0, 1)
 				, (6, 96, 0, 'Consent from Other Parent', 0, 0, 2, 0, 1)
-				, (7, 96, 0, 'Request Cancelled', 0, 0, 2, 0, 1);
+				, (7, 96, 0, 'Request Cancelled', 0, 0, 2, 0, 1)
+				, (8, 96, 1, 'Expected Birth Date', 0, 0, 2, 1, 1);
 
 		-- ShPL (Birth) SPLIT Days
 		INSERT INTO [dbo].[ASRSysAccordTransferFieldDefinitions]
@@ -2845,7 +2850,8 @@ BEGIN
 				, (1, 97, 1, 'Employee Code', 0, 1, 2, 1, 1)
 				, (2, 97, 1, 'Start Date', 0, 0, 2, 1, 1)
 				, (3, 97, 1, 'End Date', 0, 0, 2, 0, 1)
-				, (4, 97, 1, 'Reason', 0, 0, 2, 0, 1);
+				, (4, 97, 1, 'Reason', 0, 0, 2, 0, 1)
+				, (5, 97, 1, 'Expected Birth Date', 0, 0, 2, 1, 1);
 
 		-- ShPL (Adoption)
 		INSERT INTO [dbo].[ASRSysAccordTransferFieldDefinitions]
@@ -2889,7 +2895,8 @@ BEGIN
 				, (4, 99, 1, 'Request To Date', 0, 0, 2, 0, 1)
 				, (5, 99, 0, 'Request Binding', 0, 0, 2, 0, 1)
 				, (6, 99, 0, 'Consent from Other Adopter', 0, 0, 2, 0, 1)
-				, (7, 99, 0, 'Request Cancelled', 0, 0, 2, 0, 1);
+				, (7, 99, 0, 'Request Cancelled', 0, 0, 2, 0, 1)
+				, (8, 99, 1, 'Placement Date', 0, 0, 2, 1, 1);
 
 		-- ShPL (Adoption) SPLIT Days
 		INSERT INTO [dbo].[ASRSysAccordTransferFieldDefinitions]
@@ -2898,7 +2905,8 @@ BEGIN
 				, (1, 100, 1, 'Employee Code', 0, 1, 2, 1, 1)
 				, (2, 100, 1, 'Start Date', 0, 0, 2, 1, 1)
 				, (3, 100, 1, 'End Date', 0, 0, 2, 0, 1)
-				, (4, 100, 1, 'Reason', 0, 0, 2, 0, 1);
+				, (4, 100, 1, 'Reason', 0, 0, 2, 0, 1)
+				, (5, 100, 1, 'Placement Date', 0, 0, 2, 1, 1);
 
 	END;
 
