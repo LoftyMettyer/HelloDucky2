@@ -10,6 +10,7 @@ Imports System.Linq.Expressions
 Imports HR.Intranet.Server
 Imports HR.Intranet.Server.Metadata
 Imports System.Collections.ObjectModel
+Imports System.Threading
 
 Namespace Helpers
 	<HideModuleName> _
@@ -141,15 +142,28 @@ Namespace Helpers
 																		).OrderBy(Function(m) m.TableID).ThenBy(Function(m) m.Name)
 			End If
 
-			For Each item In objColumns
+			If filter.ExcludeOle Then
+				For Each item In objColumns
+					If item.DataType <> ColumnDataType.sqlOle Then
+						content.AppendFormat("<option value={0} data-datatype={4} data-size={2} data-decimals={3} data-lookuptableID={6} {5}>{1}</option>" _
+																				 , item.ID _
+																				 , IIf(filter.ShowFullName, item.TableName & "." & item.Name, item.Name) _
+																				 , item.Size.ToString, item.Decimals.ToString _
+																				 , CInt(item.DataType), IIf(bindValue = item.ID, "selected", "") _
+																				 , item.LookupTableID)
+					End If
+				Next
+			Else
+				For Each item In objColumns
 
-				content.AppendFormat("<option value={0} data-datatype={4} data-size={2} data-decimals={3} data-lookuptableID={6} {5}>{1}</option>" _
-																, item.ID _
-																, IIf(filter.ShowFullName, item.TableName & "." & item.Name, item.Name) _
-																, item.Size.ToString, item.Decimals.ToString _
-																, CInt(item.DataType), IIf(bindValue = item.ID, "selected", "") _
-																, item.LookupTableID)
-			Next
+					content.AppendFormat("<option value={0} data-datatype={4} data-size={2} data-decimals={3} data-lookuptableID={6} {5}>{1}</option>" _
+																			 , item.ID _
+																			 , IIf(filter.ShowFullName, item.TableName & "." & item.Name, item.Name) _
+																			 , item.Size.ToString, item.Decimals.ToString _
+																			 , CInt(item.DataType), IIf(bindValue = item.ID, "selected", "") _
+																			 , item.LookupTableID)
+				Next
+			End If
 
 			builder.InnerHtml = content.ToString
 			Return MvcHtmlString.Create(builder.ToString())

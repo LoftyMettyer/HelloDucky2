@@ -22,7 +22,7 @@
 		<tr>
 			<td style="padding-right: 20px;">Horizontal :</td>
 			<td>
-				@Html.ColumnDropdownFor(Function(m) m.HorizontalID, New ColumnFilter() With {.TableID = Model.BaseTableID, .IsNumeric = True}, New With {.onchange = "crossTabHorizontalChange()", .class = "enableSaveButtonOnComboChange"})
+				@Html.ColumnDropdownFor(Function(m) m.HorizontalID, New ColumnFilter() With {.TableID = Model.BaseTableID, .IsNumeric = True, .ExcludeOle = True}, New With {.onchange = "crossTabHorizontalChange()", .class = "enableSaveButtonOnComboChange"})
 				@Html.ValidationMessageFor(Function(m) m.HorizontalID)
 				@Html.Hidden("HorizontalDataType", CInt(Model.HorizontalDataType))
 			</td>
@@ -33,7 +33,7 @@
 		<tr>
 			<td>Vertical :</td>
 			<td>
-				@Html.ColumnDropdownFor(Function(m) m.VerticalID, New ColumnFilter() With {.TableID = Model.BaseTableID, .IsNumeric = True}, New With {.onchange = "crossTabVerticalChange()", .class = "enableSaveButtonOnComboChange"})
+				@Html.ColumnDropdownFor(Function(m) m.VerticalID, New ColumnFilter() With {.TableID = Model.BaseTableID, .IsNumeric = True, .ExcludeOle = True}, New With {.onchange = "crossTabVerticalChange()", .class = "enableSaveButtonOnComboChange"})
 				@Html.ValidationMessageFor(Function(m) m.VerticalID)
 				@Html.Hidden("VerticalDataType", CInt(Model.VerticalDataType))
 			</td>
@@ -44,7 +44,7 @@
 		<tr>
 			<td>Page Break :</td>
 			<td>
-				@Html.ColumnDropdownFor(Function(m) m.PageBreakID, New ColumnFilter() With {.TableID = Model.BaseTableID, .AddNone = True}, New With {.onchange = "crossTabPageBreakChange()", .class = "enableSaveButtonOnComboChange"})
+				@Html.ColumnDropdownFor(Function(m) m.PageBreakID, New ColumnFilter() With {.TableID = Model.BaseTableID, .AddNone = True, .ExcludeOle = True}, New With {.onchange = "crossTabPageBreakChange()", .class = "enableSaveButtonOnComboChange"})
 				@Html.Hidden("PageBreakDataType", CInt(Model.PageBreakDataType))
 			</td>
 			<td></td>

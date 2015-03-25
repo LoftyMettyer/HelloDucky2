@@ -89,8 +89,10 @@ Namespace Models
 
 			For Each objColumn In SessionInfo.Columns.Where(Function(m) m.TableID = BaseTableID AndAlso m.IsVisible).OrderBy(Function(m) m.Name)
 				Dim objForEachSafety = objColumn
-				If Not SortOrders.Any((Function(m) m.ColumnID = objForEachSafety.ID)) Then
-					objItems.Add(New ReportColumnItem With {.ID = objColumn.ID, .Name = objColumn.Name})
+				If objForEachSafety.DataType <> ColumnDataType.sqlOle Then
+					If Not SortOrders.Any((Function(m) m.ColumnID = objForEachSafety.ID)) Then
+						objItems.Add(New ReportColumnItem With {.ID = objColumn.ID, .Name = objColumn.Name})
+					End If
 				End If
 			Next
 

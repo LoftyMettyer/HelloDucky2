@@ -353,8 +353,9 @@ Namespace Controllers
 
 		<HttpGet>
 		Function GetAvailableColumnsForTable(TableID As Integer) As JsonResult
-
 			Dim objResults = objReportRepository.GetColumnsForTable(TableID)
+			
+			objResults.RemoveAll(Function(m) m.IsExpression OrElse m.DataType = ColumnDataType.sqlOle)
 			Return Json(objResults, JsonRequestBehavior.AllowGet)
 
 		End Function
@@ -375,16 +376,10 @@ Namespace Controllers
 
 			If selectionType = "C" Then
 				objAvailable = objReportRepository.GetColumnsForTable(TableID)
-				For Each objItem In objReport.Columns.Where(Function(m) Not m.IsExpression)
-					objAvailable.RemoveAll(Function(m) m.ID = objItem.ID)
-				Next
-
+				objAvailable.RemoveAll(Function(m) m.IsExpression OrElse m.DataType = ColumnDataType.sqlOle)
 			Else
 				objAvailable = objReportRepository.GetCalculationsForTable(TableID)
-				For Each objItem In objReport.Columns.Where(Function(m) m.IsExpression)
-					objAvailable.RemoveAll(Function(m) m.ID = objItem.ID)
-				Next
-
+				objAvailable.RemoveAll(Function(m) Not m.IsExpression)
 			End If
 
 			Dim results = New With {.total = 1, .page = 1, .records = 0, .rows = objAvailable}
@@ -514,7 +509,7 @@ Namespace Controllers
 
 			objModel.ChangeBaseTable()
 			objModel.AvailableTables = objReportRepository.GetTablesWithEvents(objReport.BaseTableID)
-
+			
 			ModelState.Clear()
 			Return PartialView("EditorTemplates\CalendarEventDetail", objModel)
 

@@ -188,7 +188,7 @@ End Code
 				</div>
 				<div class="tablecell">
 					@Html.ColumnDropdownFor(Function(m) m.EventDesc1ColumnID, New ColumnFilter() _
-													 With {.TableID = Model.TableID, .AddNone = True, .ShowFullName = True, .IncludeParents = True}, Nothing)
+													 With {.TableID = Model.TableID, .AddNone = True, .ShowFullName = True, .IncludeParents = True, .ExcludeOle = True}, Nothing)
 				</div>
 
 			</div>
@@ -198,7 +198,7 @@ End Code
 				</div>
 				<div class="tablecell">
 					@Html.ColumnDropdownFor(Function(m) m.EventDesc2ColumnID, New ColumnFilter() _
-													 With {.TableID = Model.TableID, .AddNone = True, .ShowFullName = True, .IncludeParents = True}, Nothing)
+													 With {.TableID = Model.TableID, .AddNone = True, .ShowFullName = True, .IncludeParents = True, .ExcludeOle = True}, Nothing)
 				</div>
 			</div>
 		</div>
@@ -217,15 +217,7 @@ End Code
 <script type="text/javascript">
 
 	$(function () {
-		refreshCalendarEventDisplay();
-
-		//some styling - alter with caution
-		//$('#LegendCharacter').width('30');
-		//$('#frmPostCalendarEvent fieldset').css('border', '0');
-		//$('#frmPostCalendarEvent select, #EventName ').css('width', '100%');
-		//$('#frmPostCalendarEvent #EventName ').css('width', '99%');
-		//$('#frmPostCalendarEvent #txtEventFilter ').css('width', '86%');
-		//$('#frmPostCalendarEvent .tablecell').css('padding-bottom', '5px');		
+		refreshCalendarEventDisplay();		
 
 		if (isDefinitionReadOnly()) {
 			$("#frmPostCalendarEvent input").prop('disabled', "disabled");
