@@ -1375,14 +1375,14 @@ Public Function CheckLicence() As Boolean
   If gobjLicence.HasExpiryDate Then
     If (dToday > gobjLicence.ExpiryDate) Then
       sMsg = "Your licence to use this product has expired." & vbNewLine & _
-            "Please contact your Account Manager as soon as possible."
+            "Please contact OpenHR Customer Services on 08451 609 999 as soon as possible."
       GoTo Exit_Fail:
       
     End If
             
     If (dToday > DateAdd("d", -7, gobjLicence.ExpiryDate)) Then
       sMsg = "Your licence to use this product will expire on " & gobjLicence.ExpiryDate & "." & vbNewLine & vbNewLine & _
-            "Please contact your Account Manager as soon as possible."
+            "Please contact OpenHR Customer Services on 08451 609 999 as soon as possible."
       MsgBox sMsg, vbInformation
     End If
   End If
@@ -1402,7 +1402,7 @@ Public Function CheckLicence() As Boolean
     If lngCurrentHeadcount >= gobjLicence.Headcount Then
       sMsg = "You have reached or exceeded the headcount limit set within the terms of your licence agreement." & vbNewLine & vbNewLine & _
                             "You are no longer able to add new employee records, but you may access the system for other purposes." & vbNewLine & vbNewLine & _
-                            "Please contact your Account Manager as soon as possible to increase the licence headcount number."
+                            "Please contact OpenHR Customer Services on 08451 609 999 as soon as possible to increase the licence headcount number."
       MsgBox sMsg, vbCritical
     
     ElseIf lngCurrentHeadcount >= gobjLicence.Headcount * 0.95 Then
@@ -1410,7 +1410,7 @@ Public Function CheckLicence() As Boolean
       If DisplayWarningToUser(gsUserName, Headcount95Percent, 7) Then
         sMsg = "You are currently within 95% (" & lngCurrentHeadcount & " of " & gobjLicence.Headcount & " employees) of reaching the headcount limit set within the terms of your licence agreement." & vbNewLine & vbNewLine & _
                               "Once this limit is reached, you will no longer be able to add new employee records to the system." & vbNewLine & vbNewLine & _
-                              "If you wish to increase the headcount number, please contact your Account Manager as soon as possible."
+                              "If you wish to increase the headcount number, please contact OpenHR Customer Services on 08451 609 999 as soon as possible."
         MsgBox sMsg, vbInformation
       End If
     
