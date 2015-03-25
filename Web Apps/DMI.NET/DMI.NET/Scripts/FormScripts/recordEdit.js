@@ -63,7 +63,7 @@ function applyDefaultValues() {
 	//Populate the screen contrls with the defined column default values.
 	//NB calculated default values are handled elsewhere
 	//this method also clears all other controls
-
+	
 	$('input[id^="txtRecEditControl_"]').each(function (index) {
 		var objScreenControl = getScreenControl_Collection($(this).val());
 
@@ -2134,7 +2134,7 @@ function updateControl(lngColumnID, value) {
 					$(this).val(Number(value));
 					break;
 				case "checkbox":
-					$(this).prop("checked", value == "True" ? true : false);
+					$(this).prop("checked", value.toLowerCase() == "true" ? true : false);
 					break;							
 				case "button":
 					if (controlType == 8) {						

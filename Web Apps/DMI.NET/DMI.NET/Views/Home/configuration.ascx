@@ -6,7 +6,7 @@
 	Dim sTemp As String
 	
 	Dim objDatabase As Database = CType(Session("DatabaseFunctions"), Database)
-   	
+		
 	' Get the DefSel 'only mine' settings.
 	For i = 0 To 21
 		sTemp = "onlymine "
@@ -634,8 +634,8 @@
 							<td></td>
 							<td style="width: 20px"></td>
 							<td align="left" nowrap>
-								<input type="checkbox" id="chkOwner_CustomReports" name="chkOwner_CustomReports" tabindex="-1" />
-								<label for="chkOwner_CustomReports" class="checkbox" tabindex="0">Custom Reports</label>
+								<input type="checkbox" id="chkOwner_CustomReports" name="chkOwner_CustomReports"/>
+								<label for="chkOwner_CustomReports" class="checkbox">Custom Reports</label>
 							</td>
 							<td colspan="4"></td>
 						</tr>
@@ -644,8 +644,8 @@
 							<td></td>
 							<td style="width: 20px"></td>
 							<td align="left" nowrap>
-								<input type="checkbox" id="chkOwner_CalendarReports" name="chkOwner_CalendarReports" tabindex="-1" />
-								<label for="chkOwner_CalendarReports" class="checkbox" tabindex="0">Calendar Reports</label>
+								<input type="checkbox" id="chkOwner_CalendarReports" name="chkOwner_CalendarReports" />
+								<label for="chkOwner_CalendarReports" class="checkbox">Calendar Reports</label>
 							</td>
 							<td colspan="4"></td>
 						</tr>
@@ -654,8 +654,8 @@
 							<td></td>
 							<td style="width: 20px"></td>
 							<td align="left" nowrap>
-								<input type="checkbox" id="chkOwner_MailMerge" name="chkOwner_MailMerge" tabindex="-1" />
-								<label for="chkOwner_MailMerge" class="checkbox" tabindex="0">Mail Merge</label>
+								<input type="checkbox" id="chkOwner_MailMerge" name="chkOwner_MailMerge" />
+								<label for="chkOwner_MailMerge" class="checkbox">Mail Merge</label>
 							</td>
 							<td colspan="4"></td>
 						</tr>
@@ -664,8 +664,8 @@
 							<td></td>
 							<td style="width: 20px"></td>
 							<td align="left" nowrap>
-								<input type="checkbox" id="chkOwner_CrossTabs" name="chkOwner_CrossTabs" tabindex="-1" />
-								<label for="chkOwner_CrossTabs" class="checkbox" tabindex="0">Cross Tabs</label>
+								<input type="checkbox" id="chkOwner_CrossTabs" name="chkOwner_CrossTabs" />
+								<label for="chkOwner_CrossTabs" class="checkbox">Cross Tabs</label>
 							</td>
 							<td colspan="4"></td>
 						</tr>
@@ -674,8 +674,8 @@
 							<td></td>
 							<td style="width: 20px"></td>
 							<td align="left" nowrap>
-								<input type="checkbox" id="chkOwner_NineBoxGrid" name="chkOwner_NineBoxGrid" tabindex="-1" />
-								<label for="chkOwner_NineBoxGrid" class="checkbox" tabindex="0">9-Box Grid Reports</label>
+								<input type="checkbox" id="chkOwner_NineBoxGrid" name="chkOwner_NineBoxGrid" />
+								<label for="chkOwner_NineBoxGrid" class="checkbox">9-Box Grid Reports</label>
 							</td>
 							<td colspan="4"></td>
 						</tr>
@@ -692,8 +692,8 @@
 							<td></td>
 							<td style="width: 20px"></td>
 							<td align="left" nowrap>
-								<input type="checkbox" id="chkOwner_Calculations" name="chkOwner_Calculations" tabindex="-1" />
-								<label for="chkOwner_Calculations" class="checkbox" tabindex="0">Calculations</label>
+								<input type="checkbox" id="chkOwner_Calculations" name="chkOwner_Calculations" />
+								<label for="chkOwner_Calculations" class="checkbox">Calculations</label>
 							</td>
 							<td colspan="4"></td>
 						</tr>
@@ -702,8 +702,8 @@
 							<td></td>
 							<td style="width: 20px"></td>
 							<td align="left" nowrap>
-								<input type="checkbox" id="chkOwner_Filters" name="chkOwner_Filters" tabindex="-1" />
-								<label for="chkOwner_Filters" class="checkbox" tabindex="0">Filters</label>
+								<input type="checkbox" id="chkOwner_Filters" name="chkOwner_Filters" />
+								<label for="chkOwner_Filters" class="checkbox">Filters</label>
 							</td>
 							<td colspan="4"></td>
 						</tr>
@@ -712,8 +712,8 @@
 							<td></td>
 							<td style="width: 20px"></td>
 							<td align="left" nowrap>
-								<input type="checkbox" id="chkOwner_Picklists" name="chkOwner_Picklists" tabindex="-1" />
-								<label for="chkOwner_Picklists" class="checkbox" tabindex="0">Picklists</label>
+								<input type="checkbox" id="chkOwner_Picklists" name="chkOwner_Picklists" />
+								<label for="chkOwner_Picklists" class="checkbox">Picklists</label>
 							</td>
 							<td colspan="4"></td>
 						</tr>
