@@ -123,19 +123,19 @@
 										{ name: 'Order', index: 'Order', width: 90, editable: true, formatter: "select", edittype: "select", editoptions: { value: "0:Ascending;1:Descending" } },
 										{
 											name: 'BreakOnChange', index: 'BreakOnChange', width: 120, align: "center", hidden: true,
-											editable: true, edittype: 'checkbox', editoptions: { value: "True:False" }, formatter: "checkbox", formatoptions: { disabled: isReadonlyDefinition }
+											editable: true, edittype: 'checkbox', editoptions: { value: "True:False" }, formatter: "checkbox", formatoptions: { disabled: true }
 										},
 										{
 											name: 'PageOnChange', index: 'PageOnChange', width: 120, align: "center", hidden: true,
-											editable: true, edittype: 'checkbox', editoptions: { value: "True:False" }, formatter: "checkbox", formatoptions: { disabled: isReadonlyDefinition }
+											editable: true, edittype: 'checkbox', editoptions: { value: "True:False" }, formatter: "checkbox", formatoptions: { disabled: true }
 										},
 										{
 											name: 'ValueOnChange', index: 'ValueOnChange', width: 120, align: "center", hidden: true,
-											editable: true, edittype: 'checkbox', editoptions: { value: "True:False" }, formatter: "checkbox", formatoptions: { disabled: isReadonlyDefinition }
+											editable: true, edittype: 'checkbox', editoptions: { value: "True:False" }, formatter: "checkbox", formatoptions: { disabled: true }
 										},
 										{
 											name: 'SuppressRepeated', index: 'SuppressRepeated', width: 120, align: "center", hidden: true,
-											editable: true, edittype: 'checkbox', editoptions: { value: "True:False" }, formatter: "checkbox", formatoptions: { disabled: isReadonlyDefinition }
+											editable: true, edittype: 'checkbox', editoptions: { value: "True:False" }, formatter: "checkbox", formatoptions: { disabled: true }
 										}
 				],
 				viewrecords: true,
