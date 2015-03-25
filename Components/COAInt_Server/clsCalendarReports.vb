@@ -4405,4 +4405,41 @@ DisableWPs:
 
 	End Function
 
+	Public Function GetDefaultRegion(plngBaseRecordID As Integer, pdtDate As Date) As String
+
+		Dim intCount As Integer
+
+		Try
+
+			For intCount = 1 To UBound(mavCareerRanges, 2) Step 1
+				'UPGRADE_WARNING: Couldn't resolve default property of object mavCareerRanges(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+				If plngBaseRecordID = CInt(mavCareerRanges(0, intCount)) Then
+					'UPGRADE_WARNING: Couldn't resolve default property of object mavCareerRanges(2, intCount). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+					If (Not String.IsNullOrEmpty(mavCareerRanges(2, intCount))) Then
+						'has a career change in the past
+						'UPGRADE_WARNING: Couldn't resolve default property of object mavCareerRanges(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+						If (pdtDate >= CDate(mavCareerRanges(1, intCount))) And (pdtDate < CDate(mavCareerRanges(2, intCount))) Then
+							'UPGRADE_WARNING: Couldn't resolve default property of object mavCareerRanges(3, intCount). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+							Return mavCareerRanges(3, intCount)
+						End If
+					Else
+						'has a effective start date but has no end date. (most recent career change)
+						'UPGRADE_WARNING: Couldn't resolve default property of object mavCareerRanges(). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+						If (pdtDate >= CDate(mavCareerRanges(1, intCount))) Then
+							'UPGRADE_WARNING: Couldn't resolve default property of object mavCareerRanges(3, intCount). Click for more: 'ms-help://MS.VSCC.v90/dv_commoner/local/redirect.htm?keyword="6A50421D-15FE-4896-8A1B-2EC21E9037B2"'
+							Return mavCareerRanges(3, intCount)
+						End If
+					End If
+				End If
+			Next intCount
+
+		Catch ex As Exception
+			Return ""
+
+		End Try
+
+		Return ""
+
+	End Function
+
 End Class
