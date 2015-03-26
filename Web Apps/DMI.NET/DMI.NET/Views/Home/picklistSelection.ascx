@@ -98,10 +98,10 @@
 	}
 
 	function makeSelection() {
-		
+
+	
 		var frmUseful = document.getElementById("frmpicklistSelectionUseful");
 		var frmParentUseful = OpenHR.getForm("workframe", "frmUseful");
-		var frmPrompt = document.getElementById("frmPrompt");
 
 		if (frmUseful.txtSelectionType.value.toUpperCase() == "FILTER") {
 			try {
@@ -109,9 +109,15 @@
 			}
 			catch (e) {
 			}
+
 			// Go to the prompted values form to get any required prompts. 
-			frmPrompt.filterID.value = selectedRecordID();
-			OpenHR.submitForm(frmPrompt);
+			var postData = {
+				UtilType: utilityType.Filter,
+				ID: selectedRecordID(),
+			__RequestVerificationToken: $('[name="__RequestVerificationToken"]').val()
+			}
+			OpenHR.submitForm(null, "picklistworkframe", null, postData, "util_run_promptedValues");
+
 		}
 		else {
 			if (frmUseful.txtSelectionType.value.toUpperCase() == "PICKLIST") {
@@ -420,7 +426,7 @@
 			
 					For iLoop = 0 To (rstSelRecords.Columns.Count - 1)
 				
-						Dim sColumnValue As String = Replace(Replace(objRow(iLoop).ToString(), "_", " "), """", "&quot;")
+						Dim sColumnValue As String = HttpUtility.HtmlEncode((objRow(iLoop).ToString()))
 				
 						If rstSelRecords.Columns(iLoop).ColumnName <> "name" Then
 							' ID column; store value
@@ -529,8 +535,4 @@
 
 <input type='hidden' id="txtTicker" name="txtTicker" value="0">
 <input type='hidden' id="txtLastKeyFind" name="txtLastKeyFind" value="">
-
-<form name="frmPrompt" method="post" action="promptedValues" id="frmPrompt" style="visibility: hidden; display: none">
-	<input type="hidden" id="filterID" name="filterID">
-</form>
 

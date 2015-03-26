@@ -110,15 +110,16 @@ function addClick() {
 	/* Get the current selected delegate IDs. */
 	picklistdef_moveFirst();
 
-	var sSelectedIDs1 = $('#ssOleDBGrid').getDataIDs().join(",");
-
-	var frmSend = OpenHR.getForm("workframe", "frmPicklistSelection");
-	frmSend.selectionAction = "add";
-	frmSend.selectionType.value = "ALL";
-	frmSend.selectedIDs1.value = sSelectedIDs1;
-
 	$("#workframeset").show();
-	OpenHR.submitForm(frmSend, "reportframe", null, null, "picklistSelectionMain");
+
+	var postData = {
+		TableID: $("#txtTableID").val(),
+		Action: "add",
+		Type: "ALL",
+		IDs1: $('#ssOleDBGrid').getDataIDs().join(","),
+		__RequestVerificationToken: $('[name="__RequestVerificationToken"]').val()
+	}
+	OpenHR.submitForm(null, "reportframe", null, postData, "picklistSelectionMain");
 
 }
 
@@ -132,18 +133,16 @@ function addAllClick() {
 
 function filteredAddClick() {	
 	/* Get the current selected delegate IDs. */
-	var sSelectedIDs1 = new String("0");
-
 	picklistdef_moveFirst();
 
-	sSelectedIDs1 = $('#ssOleDBGrid').getDataIDs().join(",");
-
-	var frmSend = OpenHR.getForm("workframe", "frmPicklistSelection");
-	frmSend.selectionAction = "add";
-	frmSend.selectionType.value = "FILTER";
-	frmSend.selectedIDs1.value = sSelectedIDs1;
-
-	OpenHR.submitForm(frmSend, "reportframe", null, null, "picklistSelectionMain");
+	var postData = {
+		TableID: $("#txtTableID").val(),
+		Action: "add",
+		Type: "FILTER",
+		IDs1: $('#ssOleDBGrid').getDataIDs().join(","),
+		__RequestVerificationToken: $('[name="__RequestVerificationToken"]').val()
+	}
+	OpenHR.submitForm(null, "reportframe", null, postData, "picklistSelectionMain");
 
 }
 
@@ -373,9 +372,6 @@ function validate() {
 }
 
 function udp_createNew() {
-
-	OpenHR.clearTmpDialog();
-	if ($('.popup').dialog('isOpen')) $('.popup').dialog('close');
 
 	frmUseful.txtUtilID.value = 0;
 	frmDefinition.txtOwner.value = frmUseful.txtUserName.value;

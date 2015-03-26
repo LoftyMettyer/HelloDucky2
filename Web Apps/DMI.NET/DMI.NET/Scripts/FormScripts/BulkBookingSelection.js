@@ -167,7 +167,7 @@ function tbBBS_OKClick() {
 		}
 		sSelectedIDs = sSelectedIDs + sRecordID;
 	}
-	makeSelection("ALL", 0, sSelectedIDs);
+	bulkbooking_makeSelection("ALL", 0, sSelectedIDs);
 
 	$('#BulkBookingSelect').dialog("close");
 }

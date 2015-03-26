@@ -217,44 +217,53 @@
 
 			function returnFilterResults(gridData) {
 				//launch promptedvalues to return filter result set.
-				OpenHR.clearTmpDialog();
-				$('body').append('<div id="tmpDialog"></div>');
-				$('#tmpDialog').dialog({
-					width: 'auto',
-					height: 'auto',
-					modal: true
-				});
+				//OpenHR.clearTmpDialog();
+				//$('body').append('<div id="tmpDialog"></div>');
+				//$('#tmpDialog').dialog({
+				//	width: 'auto',
+				//	height: 'auto',
+				//	modal: true
+				//});
 
-				$.ajax({
-					url: "promptedValues",
-					type: "POST",
-					async: true,
-					data: { filterID: gridData.ID },
-					success: function (html) {
+				var postData = {
+					ID: gridData.ID,
+					UtilType: utilityType.Filter,
+					IsBulkBooking: true,
+					__RequestVerificationToken: $('[name="__RequestVerificationToken"]').val()
+					};
+				OpenHR.submitForm(null, "reportframe", null, postData, "util_run_promptedValues");
 
-						$('#tmpDialog').html('').html(html);
 
-						//jQuery styling
-						$(function () {
-							$("input[type=submit], input[type=button], button").button();
-							$("input").addClass("ui-widget ui-corner-all");
-							$("input").removeClass("text");
+				//$.ajax({
+				//	url: "util_run_promptedValues",
+				//	type: "POST",
+				//	async: true,
+				//	data: { ID: gridData.ID, UtilType: utilityType.Filter, __RequestVerificationToken: $('[name="__RequestVerificationToken"]').val() },
+				//	success: function (html) {
 
-							$("textarea").addClass("ui-widget ui-corner-tl ui-corner-bl");
-							$("textarea").removeClass("text");
+				//		$('#tmpDialog').html('').html(html);
 
-							$("select").addClass("ui-widget ui-corner-tl ui-corner-bl");
-							$("select").removeClass("text");
-							$("input[type=submit], input[type=button], button").removeClass("ui-corner-all");
-							$("input[type=submit], input[type=button], button").addClass("ui-corner-tl ui-corner-br");
+				//		//jQuery styling
+				//		$(function () {
+				//			$("input[type=submit], input[type=button], button").button();
+				//			$("input").addClass("ui-widget ui-corner-all");
+				//			$("input").removeClass("text");
 
-						});
+				//			$("textarea").addClass("ui-widget ui-corner-tl ui-corner-bl");
+				//			$("textarea").removeClass("text");
 
-						$('#tmpDialog').dialog("option", "position", ['center', 'center']);
+				//			$("select").addClass("ui-widget ui-corner-tl ui-corner-bl");
+				//			$("select").removeClass("text");
+				//			$("input[type=submit], input[type=button], button").removeClass("ui-corner-all");
+				//			$("input[type=submit], input[type=button], button").addClass("ui-corner-tl ui-corner-br");
 
-					},
-					error: function () { alert('error!!!!!'); }
-				});				
+				//		});
+
+				//		$('#tmpDialog').dialog("option", "position", ['center', 'center']);
+
+				//	},
+				//	error: function () { alert('error!!!!!'); }
+				//});				
 			}
 
 		},

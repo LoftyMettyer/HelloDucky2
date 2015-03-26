@@ -221,6 +221,7 @@
     <Compile Include="Models\ObjectRequests\LinkFindModel.vb" />
     <Compile Include="Models\ObjectRequests\LookupFindModel.vb" />
     <Compile Include="Models\ObjectRequests\NewUserModel.vb" />
+    <Compile Include="Models\ObjectRequests\PicklistSelectionModel.vb" />
     <Compile Include="Models\ObjectRequests\PromptedValuesModel.vb" />
     <Compile Include="Models\ObjectRequests\SelectOrderModel.vb" />
     <Compile Include="Models\ObjectRequests\QuickFindModel.vb" />
@@ -1738,8 +1739,6 @@
     <Content Include="Views\Home\oleFind.ascx" />
     <Content Include="Views\Home\orderselect.ascx" />
     <Content Include="Views\Home\OrgChart.ascx" />
-    <Content Include="Views\Home\promptedValues.aspx" />
-    <Content Include="Views\Home\promptedValues_completed.aspx" />
     <Content Include="Views\Home\stdrpt_AbsenceCalendar.ascx" />
     <Content Include="Views\Home\stdrpt_AbsenceCalendar_details.aspx" />
     <Content Include="Views\Home\stdrpt_run_AbsenceBreakdown.ascx" />

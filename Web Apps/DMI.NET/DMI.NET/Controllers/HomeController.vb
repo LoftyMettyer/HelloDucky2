@@ -2423,7 +2423,7 @@ Namespace Controllers
 
 			End Try
 
-			Return View()
+			Return View(value)
 		End Function
 
 		<HttpPost()>
@@ -2460,6 +2460,7 @@ Namespace Controllers
 			Try
 
 				Dim sKey As String
+				Dim sPrompts As String = ""
 
 				Dim aPrompts(1, 0) As String
 				Dim j = 0
@@ -2488,12 +2489,15 @@ Namespace Controllers
 										aPrompts(1, j) = objPrompt.Value
 								End Select
 							End If
-							j = j + 1
+
+							sPrompts = sPrompts & aPrompts(0, j) & vbTab & aPrompts(1, j) & vbTab
+							j += 1
 						End If
 					Next
 				End If
 
 				sKey = "Prompts_" & CInt(value.UtilType) & "_" & value.ID.ToString
+				Session("promptsvalue") = sPrompts
 				Session(sKey) = aPrompts
 
 			Catch ex As Exception
@@ -2501,7 +2505,7 @@ Namespace Controllers
 
 			End Try
 
-			Return View("util_run")
+			Return View("util_run", value)
 
 		End Function
 
@@ -3937,21 +3941,14 @@ Namespace Controllers
 
 		End Function
 
-		Function picklistSelectionMain() As ActionResult
-			Return View()
-		End Function
-
-		Function picklistSelection() As ActionResult
-			Return View()
-		End Function
-
-		Function picklistSelectionData() As ActionResult
-			Return View()
+		<ValidateAntiForgeryToken>
+		Function picklistSelectionMain(value As PicklistSelectionModel) As ActionResult
+			Return View(value)
 		End Function
 
 		<HttpPost>
 		<ValidateAntiForgeryToken>
-		Function picklistSelectionData_Submit(value As FormCollection)
+		Function picklistSelectionData_Submit(value As FormCollection) As ActionResult
 
 			' Read the information from the calling form.
 			Session("tableID") = Request.Form("txtTableID")
@@ -3965,7 +3962,7 @@ Namespace Controllers
 			Session("picklistSelectionDataLoading") = False
 
 			' Go to the requested page.
-			Return RedirectToAction("picklistSelectionData")
+			Return View("picklistSelectionData")
 
 		End Function
 
@@ -4353,63 +4350,6 @@ Namespace Controllers
 				Response.AppendCookie(New HttpCookie("fileDownloadToken", downloadTokenValue)) ' marks the download as complete on the client	
 			End Try
 
-		End Function
-
-		Function promptedValues() As ActionResult
-			Return View()
-		End Function
-
-		<HttpPost()>
-		<ValidateAntiForgeryToken>
-		Function promptedValues_Submit(value As FormCollection)
-			Session("filterID") = Request.Form("filterID")
-			'Response.Write("<input type=""hidden"" id=filterID name=filterID value=" & Request.Form("filterID") & ">" & vbCrLf)
-
-			Dim sPrompts
-			Dim aPrompts(1, 0)
-			Dim j = 0
-			sPrompts = ""
-			' ReDim Preserve aPrompts(1, 0)
-			For i = 0 To Request.Form.Count - 1
-				Dim sKey = Request.Form.Keys(i)
-				If ((UCase(Left(sKey, 7)) = "PROMPT_") And (Mid(sKey, 8, 1) <> "3")) Or _
-					(UCase(Left(sKey, 10)) = "PROMPTCHK_") Then
-					ReDim Preserve aPrompts(1, j)
-
-					If (UCase(Left(sKey, 10)) = "PROMPTCHK_") Then
-						aPrompts(0, j) = "prompt_3_" & Mid(sKey, 11)
-						aPrompts(1, j) = UCase(Request.Form.Item(i))
-					Else
-						aPrompts(0, j) = sKey
-						Select Case Mid(sKey, 8, 1)
-							Case "2"
-								' Numeric. Replace locale decimal point with '.'
-								aPrompts(1, j) = Replace(Request.Form.Item(i), Session("LocaleDecimalSeparator"), ".")
-							Case "4"
-								' Date. Reformat to match SQL's mm/dd/yyyy format.
-								aPrompts(1, j) = ConvertLocaleDateToSQL(Request.Form.Item(i))
-							Case Else
-								aPrompts(1, j) = Request.Form.Item(i)
-						End Select
-					End If
-
-					sPrompts = sPrompts & aPrompts(0, j) & vbTab & aPrompts(1, j) & vbTab
-
-					j += 1
-				End If
-			Next
-
-			Session("filterIDvalue") = Request.Form("filterID")
-			Session("promptsvalue") = sPrompts
-
-			'Response.Write("<input type=""hidden"" id=prompts name=prompts value=""" & sPrompts & """>" & vbCrLf)
-
-			Return RedirectToAction("promptedValues_completed")
-
-		End Function
-
-		Function promptedValues_completed() As ActionResult
-			Return View()
 		End Function
 
 		<HttpPost()>

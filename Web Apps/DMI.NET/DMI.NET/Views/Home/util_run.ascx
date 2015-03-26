@@ -1,4 +1,4 @@
-﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
+﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl(of DMI.NET.Models.ObjectRequests.PromptedValuesModel)" %>
 <%@ Import Namespace="DMI.NET" %>
 <%@ Import Namespace="HR.Intranet.Server.Enums" %>
 
@@ -19,8 +19,6 @@
 	Session("OutputOptions_Screen") = "true"
 	Session("OutputOptions_Save") = "false"
 	Session("OutputOptions_SaveExisting") = 0
-
-	Dim iUtilType = CType(Session("utiltype"), UtilityType)
 	
 %>
 
@@ -162,8 +160,8 @@
 			<span class="pageTitleSmaller" id="PageDivTitle">
 				<% 
 					
-					If iUtilType = UtilityType.utlAbsenceBreakdown Or iUtilType = UtilityType.utlBradfordFactor Then
-						Response.Write(GetReportNameByReportType(iUtilType))
+					If Model.UtilType = UtilityType.utlAbsenceBreakdown Or Model.UtilType = UtilityType.utlBradfordFactor Then
+						Response.Write(GetReportNameByReportType(Model.UtilType))
 						If Not Session("stdReport_StartDate") Is Nothing And Not Session("stdReport_EndDate") Is Nothing Then
 							Response.Write(" (" & Session("stdReport_StartDate").ToString.Replace(" ", "") & " -> " & Session("stdReport_EndDate").ToString.Replace(" ", "") & ")")
 						End If
@@ -187,19 +185,19 @@
 		<div id="main" data-framesource="util_run" style="height: 80%; margin: 0 0 0 0; visibility: hidden">
 			<%   
 				Dim sPrintButtonLabel As String = "Print"
-				If iUtilType = UtilityType.utlCrossTab Then
+				If Model.UtilType = UtilityType.utlCrossTab Then
 					Html.RenderPartial("~/Views/Home/util_run_crosstabsMain.ascx")
-				ElseIf iUtilType = UtilityType.utlCustomReport Then
+				ElseIf Model.UtilType = UtilityType.utlCustomReport Then
 					Html.RenderPartial("~/Views/Home/util_run_customreportsMain.ascx")
-				ElseIf iUtilType = UtilityType.utlMailMerge Then
+				ElseIf Model.UtilType = UtilityType.utlMailMerge Then
 					Html.RenderPartial("~/Views/Home/util_run_mailmerge.ascx")
-				ElseIf iUtilType = UtilityType.utlAbsenceBreakdown Then
+				ElseIf Model.UtilType = UtilityType.utlAbsenceBreakdown Then
 					Html.RenderPartial("~/Views/Home/stdrpt_run_AbsenceBreakdown.ascx")
-				ElseIf iUtilType = UtilityType.utlBradfordFactor Then
+				ElseIf Model.UtilType = UtilityType.utlBradfordFactor Then
 					Html.RenderPartial("~/Views/Home/util_run_customreportsMain.ascx")
-				ElseIf iUtilType = UtilityType.utlCalendarReport Then
+				ElseIf Model.UtilType = UtilityType.utlCalendarReport Then
 					Html.RenderPartial("~/Views/Home/util_run_calendarreport_main.ascx")
-				ElseIf iUtilType = UtilityType.utlNineBoxGrid Then
+				ElseIf Model.UtilType = UtilityType.utlNineBoxGrid Then
 					Html.RenderPartial("~/Views/Home/util_run_crosstabsMain.ascx")
 				End If
 			%>
@@ -207,7 +205,7 @@
 		<br/>
 		<div id="divReportButtons" style="margin: 0; visibility: hidden; padding-top: 0; float: right">
 			<%If Session("SSIMode") = True Then%>
-				<%If iUtilType = UtilityType.utlCustomReport Then%> 
+				<%If Model.UtilType = UtilityType.utlCustomReport Then%> 
 					<input class="btn minwidth100" type="button" id="cmdPrint" name="cmdPrint" value="<%=sPrintButtonLabel%>" onclick="outputOptionsPrintClick()" />
 				<%End If%>
 				<input class="btn minwidth100" type="button" id="cmdOK" name="cmdOK" value="Export" onclick="outputOptionsOKClick()" />
@@ -221,16 +219,24 @@
 
 <script type="text/javascript">
 
-	<%If iUtilType = UtilityType.utlMailMerge Then%>
-		closeclick();
-	<%Else%>
+
+<%If Model.UtilType = UtilityType.utlMailMerge Then%>
+	closeclick();
+
+<%ElseIf Model.UtilType = UtilityType.utlFilter And Model.IsBulkBooking Then%>
+	bulkbooking_makeSelection('FILTER', <%:Model.ID%>, '<%=Session("promptsvalue")%>');
+
+<%ElseIf Model.UtilType = UtilityType.utlFilter Then%>
+	picklistdef_makeSelection('FILTER', <%:Model.ID%>, '<%=Session("promptsvalue")%>');
+
+<%Else%>
 
 	var isMobileDevice = ('<%=Session("isMobileDevice")%>' == 'True');
 	// first get the size from the window
 	// if that didn't work, get it from the body
 	var size = {};
 	
-	<%If iUtilType = UtilityType.utlNineBoxGrid Then%>
+	<%If Model.UtilType = UtilityType.utlNineBoxGrid Then%>
 		size.width = (screen.width) / 2;
 		size.height = (window.innerHeight || document.body.clientHeight) - 100;
 	<%Else%>
@@ -247,11 +253,13 @@
 			loadPartialView("linksMain", "Home", "workframe", null);
 		}
 
-	} else {
+	} 
+
+	else {
 		
 		if ($("#txtPreview").val() == "True") {
 
-			<%If iUtilType = UtilityType.utlCalendarReport Then%>
+			<%If Model.UtilType = UtilityType.utlCalendarReport Then%>
 			$(".popup").dialog({
 				width: 1100,
 				height: 720,
@@ -275,7 +283,7 @@
 			<%End If%>
 
 			var newButtons = [
-				<%If iUtilType = UtilityType.utlCustomReport Then%> 
+				<%If Model.UtilType = UtilityType.utlCustomReport Then%> 
 				{
 					text: "<%=sPrintButtonLabel%>",
 					click: function() { outputOptionsPrintClick(); },
@@ -357,5 +365,5 @@
 			}
 		}
 	}
-	<%End If%>
+<%End If%>
 </script>

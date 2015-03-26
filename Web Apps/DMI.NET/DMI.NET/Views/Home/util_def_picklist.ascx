@@ -188,18 +188,13 @@
 	<input type="hidden" id="txtSend_columns" name="txtSend_columns">
 	<input type="hidden" id="txtSend_columns2" name="txtSend_columns2">
 	<input type="hidden" id="txtSend_reaction" name="txtSend_reaction">
-	<input type="hidden" id="txtSend_tableID" name="txtSend_tableID" value='<% =session("utiltableid")%>'>
+	<input type="hidden" id="txtSend_tableID" name="txtSend_tableID" value='<%: Session("utiltableid")%>'>
 	<%=Html.AntiForgeryToken()%>
 </form>
 
 <input type='hidden' id="txtTicker" name="txtTicker" value="0">
 <input type='hidden' id="txtLastKeyFind" name="txtLastKeyFind" value="">
 
-<form id="frmPicklistSelection" name="frmPicklistSelection" action="picklistSelectionMain" method="post" style="visibility: hidden; display: none">
-	<input type="hidden" id="selectionType" name="selectionType">
-	<input type="hidden" id="txtTableID" name="txtTableID" value='<% =session("utiltableid")%>'>
-	<input type="hidden" id="selectedIDs1" name="selectedIDs1">
-</form>
 
 <script type="text/javascript">
 	util_def_picklist_onload();

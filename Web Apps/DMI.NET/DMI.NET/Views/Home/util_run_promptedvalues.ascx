@@ -1,4 +1,4 @@
-﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
+﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl(of DMI.NET.Models.ObjectRequests.PromptedValuesModel)" %>
 <%@ Import Namespace="HR.Intranet.Server.Enums" %>
 <%@ Import Namespace="DMI.NET" %>
 <%@ Import Namespace="HR.Intranet.Server" %>
@@ -57,11 +57,12 @@
 			var outputDiv = ((menu_isSSIMode() === true) ? "workframe" : "reportframe");
 
 			var postData = {
-				utiltype: <%:Session("utiltype")%>,
-				ID: <%:Session("utilid")%>, 
-				Name: '<%:Session("utilname")%>',
+				utiltype: <%:CInt(Model.UtilType)%>,
+				ID: <%:Model.ID%>, 
+				Name: '<%:Model.Name%>',
+				IsBulkBooking:  <%:Json.Encode(Model.IsBulkBooking)%>,
 				PromptValues: {},
-				<%:Html.AntiForgeryTokenForAjaxPost() %> }		
+				<%:Html.AntiForgeryTokenForAjaxPost()%> }		
 			OpenHR.submitForm(null, outputDiv, true, postData, "util_run_promptedvalues_submit");
 
 		} else {
@@ -69,6 +70,14 @@
 			if (menu_isSSIMode() == false) {
 				$(".popup").dialog('option', 'title', "Prompted Value"); 
 				$(".popup").dialog("open");
+
+			//	if ($('.popup').dialog('isOpen')) {
+					var dialogWidth = screen.width / 3;
+
+					$('.popup').dialog('option', 'height', 'auto');
+					$('.popup').dialog('option', 'width', dialogWidth);
+			//	}
+
 			}
 
 			// Set focus on the first prompt control.
@@ -100,7 +109,7 @@
 			<a href='javascript:loadPartialView("linksMain", "Home", "workframe", null);' title='Back'>
 				<i class='pageTitleIcon icon-circle-arrow-left'></i>
 			</a>
-			<span class="pageTitle"><%:Session("utilname")%></span>
+			<span class="pageTitle"><%:Model.Name%></span>
 		</div>
 		<br/>
 
@@ -160,9 +169,9 @@
 				Dim iPromptCount = CInt(IIf(bAddUploadTemplate, 1, 0))
 				
 				rstPromptedValue = objDatabaseAccess.GetDataTable("spASRIntGetUtilityPromptedValues", CommandType.StoredProcedure, _
-										New SqlParameter("piUtilType", SqlDbType.Int) With {.Value = CInt(CleanNumeric(Session("utiltype")))}, _
-										New SqlParameter("piUtilID", SqlDbType.Int) With {.Value = CInt(CleanNumeric(Session("utilid")))}, _
-										New SqlParameter("piRecordID", SqlDbType.Int) With {.Value = Session("singleRecordID")})
+										New SqlParameter("piUtilType", SqlDbType.Int) With {.Value = Model.UtilType}, _
+										New SqlParameter("piUtilID", SqlDbType.Int) With {.Value = Model.ID}, _
+										New SqlParameter("piRecordID", SqlDbType.Int) With {.Value = CInt(Session("singleRecordID"))})
 				
 				If rstPromptedValue.Rows.Count > 0 Then
 
@@ -403,10 +412,11 @@
 		// Everything OK. Submit the form.
 		var outputDiv = ((menu_isSSIMode() === true) ? "workframe" : "reportframe");
 		var postData = {
-			utiltype: <%:Session("utiltype")%>,
-			ID: <%:Session("utilid")%>, 
-			Name: '<%:Session("utilname")%>',
+			utiltype: <%:CInt(Model.UtilType)%>,
+			ID: <%:Model.ID%>, 
+			Name: '<%:Model.Name%>',
 			PromptValues: submitElements,
+			IsBulkBooking:  <%:Json.Encode(Model.IsBulkBooking)%>,
 			<%:Html.AntiForgeryTokenForAjaxPost() %> }
 
 		OpenHR.submitForm(null, outputDiv, true, postData, "util_run_promptedvalues_submit");

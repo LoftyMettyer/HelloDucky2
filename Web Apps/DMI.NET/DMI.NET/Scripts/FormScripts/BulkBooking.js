@@ -49,12 +49,12 @@ function getRecordGroup(groupType) {
 	if (groupType == "FILTER") returnFilterResults = true;
 	
 	OpenHR.modalExpressionSelect(groupType, tableID, currentID, function (id) {
-		makeSelection(groupType, id, '');
+		bulkbooking_makeSelection(groupType, id, '');
 	}, newWidth - 40, newHeight - 160, returnFilterResults);
 	$('#ExpressionSelectNone').hide();
 }
 
-function makeSelection(psType, piID, psPrompts) {
+function bulkbooking_makeSelection(psType, piID, psPrompts) {
 
 	/* Get the current selected delegate IDs. */
 	var sSelectedIDs;
@@ -67,6 +67,8 @@ function makeSelection(psType, piID, psPrompts) {
 		}
 		sSelectedIDs = sSelectedIDs + psPrompts;
 	}
+
+	if ($(".popup").dialog("isOpen")) $(".popup").dialog("close");
 
 
 	// Get the optionData.asp to get the required records.

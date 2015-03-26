@@ -765,7 +765,7 @@
 
 
 			ElseIf Session("optionAction") = OptionActionType.GETBULKBOOKINGSELECTION Then
-				If UCase(Session("optionPageAction")) = "FILTER" Then
+				If UCase(Session("optionPageAction")) = OptionActionType.FILTER Then
 					objUtilities = Session("UtilitiesObject")
 
 					j = 0
@@ -868,7 +868,7 @@
 			
 				
 			ElseIf Session("optionAction") = OptionActionType.GETPICKLISTSELECTION Then
-				If UCase(Session("optionPageAction")) = "FILTER" Then
+				If Session("optionPageAction") = OptionActionType.FILTER Then
 					objUtilities = Session("UtilitiesObject")
 
 					j = 0

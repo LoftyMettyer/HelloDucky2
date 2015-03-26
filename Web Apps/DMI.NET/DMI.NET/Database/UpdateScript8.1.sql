@@ -742,10 +742,6 @@ DROP PROCEDURE [dbo].[sp_ASRIntGetFindWindowInfo]
 GO
 
 
-/****** Object:  StoredProcedure [dbo].[sp_ASRIntGetFilterPromptedValuesRecordset]    Script Date: 23/07/2013 11:18:30 ******/
-DROP PROCEDURE [dbo].[sp_ASRIntGetFilterPromptedValuesRecordset]
-GO
-
 /****** Object:  StoredProcedure [dbo].[sp_ASRIntGetFilterPromptedValues]    Script Date: 23/07/2013 11:18:30 ******/
 DROP PROCEDURE [dbo].[sp_ASRIntGetFilterPromptedValues]
 GO
@@ -7541,88 +7537,6 @@ BEGIN
 END
 GO
 
-/****** Object:  StoredProcedure [dbo].[sp_ASRIntGetFilterPromptedValuesRecordset]    Script Date: 23/07/2013 11:18:30 ******/
-SET ANSI_NULLS ON
-GO
-
-SET QUOTED_IDENTIFIER ON
-GO
-
-CREATE PROCEDURE [dbo].[sp_ASRIntGetFilterPromptedValuesRecordset] (
-	@piFilterID 		integer
-)
-AS
-BEGIN
-
-	SET NOCOUNT ON;
-
-	/* Return a recordset of the prompted values for the given filter. */
-	DECLARE	@iComponentID		integer,
-			@sComponents		varchar(MAX),
-			@sAllComponents		varchar(MAX),
-			@iIndex				integer;
-	
-	SET @sAllComponents = '';
-
-	/* Create a temp table to hold the propmted value details. */
-	DECLARE @promptedValues TABLE(
-		componentID			integer,
-		promptDescription	varchar(255),
-		valueType			integer,
-		promptMask			varchar(255),
-		promptSize			integer,
-		promptDecimals		integer,
-		valueCharacter		varchar(255),
-		valueNumeric		float,
-		valueLogic			bit,
-		valueDate			datetime,
-		promptDateType		integer, 
-		fieldColumnID		integer);
-	
-	EXEC [dbo].[sp_ASRIntGetFilterPromptedValues] @piFilterID, @sComponents OUTPUT;
-
-	IF LEN(@sComponents) > 0
-	BEGIN
-		SET @sAllComponents = @sAllComponents + 
-			CASE
-				WHEN LEN(@sAllComponents) > 0 THEN ','
-				ELSE ''
-			END + 
-			@sComponents;
-	END
-
-
-	/* We now have a string of all of the prompted value components that are used in the filter. */
-	WHILE LEN(@sAllComponents) > 0 
-	BEGIN
-		/* Get the individual component IDs from the comma-delimited string. */
-		SET @iIndex = CHARINDEX(',', @sAllComponents);
-
-		IF @iIndex > 0 
-		BEGIN
-			SET @iComponentID = convert(integer, SUBSTRING(@sAllComponents, 1, @iIndex - 1));
-			SET @sAllComponents = SUBSTRING(@sAllComponents, @iIndex + 1, LEN(@sAllComponents) - @iIndex);
-		END
-		ELSE
-		BEGIN
-			/* No comma, must be dealing with the last component in the list. */
-			SET @iComponentID = convert(integer, @sAllComponents);
-			SET @sAllComponents = '';
-		END
-
-		/* Get the parameters of the prompted values. */
-		INSERT INTO @promptedValues
-			(componentID, promptDescription, valueType, promptMask, promptSize, promptDecimals, valueCharacter, valueNumeric, valueLogic, valueDate, promptDateType, fieldColumnID)
-		(SELECT componentID, promptDescription, valueType, promptMask, promptSize, promptDecimals, valueCharacter, valueNumeric, valueLogic, valueDate, promptDateType, fieldColumnID
-			FROM ASRSysExprComponents
-			WHERE componentID = @iComponentID);
-	END
-
-	SELECT DISTINCT * 
-		FROM @promptedValues
-		ORDER BY promptDescription;
-END
-GO
 
 /****** Object:  StoredProcedure [dbo].[sp_ASRIntGetFindWindowInfo]    Script Date: 23/07/2013 11:18:30 ******/
 SET ANSI_NULLS ON
@@ -28361,10 +28275,6 @@ GO
 DROP PROCEDURE [dbo].[sp_ASRIntGetFindWindowInfo]
 GO
 
-/****** Object:  StoredProcedure [dbo].[sp_ASRIntGetFilterPromptedValuesRecordset]    Script Date: 13/09/2013 08:59:32 ******/
-DROP PROCEDURE [dbo].[sp_ASRIntGetFilterPromptedValuesRecordset]
-GO
-
 /****** Object:  StoredProcedure [dbo].[sp_ASRIntGetFilterPromptedValues]    Script Date: 13/09/2013 08:59:32 ******/
 DROP PROCEDURE [dbo].[sp_ASRIntGetFilterPromptedValues]
 GO
@@ -40401,90 +40311,6 @@ END
 
 GO
 
-/****** Object:  StoredProcedure [dbo].[sp_ASRIntGetFilterPromptedValuesRecordset]    Script Date: 13/09/2013 08:59:33 ******/
-SET ANSI_NULLS ON
-GO
-
-SET QUOTED_IDENTIFIER ON
-GO
-
-
-CREATE PROCEDURE [dbo].[sp_ASRIntGetFilterPromptedValuesRecordset] (
-	@piFilterID 		integer
-)
-AS
-BEGIN
-
-	SET NOCOUNT ON;
-
-	/* Return a recordset of the prompted values for the given filter. */
-	DECLARE	@iComponentID		integer,
-			@sComponents		varchar(MAX),
-			@sAllComponents		varchar(MAX),
-			@iIndex				integer;
-	
-	SET @sAllComponents = '';
-
-	/* Create a temp table to hold the propmted value details. */
-	DECLARE @promptedValues TABLE(
-		componentID			integer,
-		promptDescription	varchar(255),
-		valueType			integer,
-		promptMask			varchar(255),
-		promptSize			integer,
-		promptDecimals		integer,
-		valueCharacter		varchar(255),
-		valueNumeric		float,
-		valueLogic			bit,
-		valueDate			datetime,
-		promptDateType		integer, 
-		fieldColumnID		integer);
-	
-	EXEC [dbo].[sp_ASRIntGetFilterPromptedValues] @piFilterID, @sComponents OUTPUT;
-
-	IF LEN(@sComponents) > 0
-	BEGIN
-		SET @sAllComponents = @sAllComponents + 
-			CASE
-				WHEN LEN(@sAllComponents) > 0 THEN ','
-				ELSE ''
-			END + 
-			@sComponents;
-	END
-
-
-	/* We now have a string of all of the prompted value components that are used in the filter. */
-	WHILE LEN(@sAllComponents) > 0 
-	BEGIN
-		/* Get the individual component IDs from the comma-delimited string. */
-		SET @iIndex = CHARINDEX(',', @sAllComponents);
-
-		IF @iIndex > 0 
-		BEGIN
-			SET @iComponentID = convert(integer, SUBSTRING(@sAllComponents, 1, @iIndex - 1));
-			SET @sAllComponents = SUBSTRING(@sAllComponents, @iIndex + 1, LEN(@sAllComponents) - @iIndex);
-		END
-		ELSE
-		BEGIN
-			/* No comma, must be dealing with the last component in the list. */
-			SET @iComponentID = convert(integer, @sAllComponents);
-			SET @sAllComponents = '';
-		END
-
-		/* Get the parameters of the prompted values. */
-		INSERT INTO @promptedValues
-			(componentID, promptDescription, valueType, promptMask, promptSize, promptDecimals, valueCharacter, valueNumeric, valueLogic, valueDate, promptDateType, fieldColumnID)
-		(SELECT componentID, promptDescription, valueType, promptMask, promptSize, promptDecimals, valueCharacter, valueNumeric, valueLogic, valueDate, promptDateType, fieldColumnID
-			FROM ASRSysExprComponents
-			WHERE componentID = @iComponentID);
-	END
-
-	SELECT DISTINCT * 
-		FROM @promptedValues
-		ORDER BY promptDescription;
-END
-
-GO
 
 /****** Object:  StoredProcedure [dbo].[sp_ASRIntGetFindWindowInfo]    Script Date: 13/09/2013 08:59:33 ******/
 SET ANSI_NULLS ON
@@ -54505,6 +54331,9 @@ IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[sp_ASR
 	DROP PROCEDURE [dbo].[sp_ASRIntGetFindRecords3]
 GO
 
+IF EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[sp_ASRIntGetFilterPromptedValuesRecordset]') AND type in (N'P', N'PC'))
+	DROP PROCEDURE [dbo].[sp_ASRIntGetFilterPromptedValuesRecordset]
+GO
 
 
 

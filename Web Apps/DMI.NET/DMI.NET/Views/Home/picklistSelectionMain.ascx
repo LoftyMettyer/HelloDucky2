@@ -1,15 +1,16 @@
-﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl" %>
+﻿<%@ Control Language="VB" Inherits="System.Web.Mvc.ViewUserControl(of DMI.NET.Models.ObjectRequests.PicklistSelectionModel)" %>
 
 <%
-	Session("selectionType") = Request.Form("selectionType")
-	Session("selectionTableID") = Request.Form("txtTableID")
-	Session("selectedIDs1") = Request.Form("selectedIDs1")
+	Session("selectionType") = Model.Type
+	Session("selectionTableID") = Model.TableID
+	Session("selectedIDs1") = Model.IDs1
 	Session("picklistSelectionDataLoading") = True
 %>
 
 <script type="text/javascript">
 
 	function loadAddRecords() {
+
 		var iCount;
 		iCount = new Number($('#txtLoadCount').val());
 		$('#txtLoadCount').val(iCount + 1);
@@ -34,8 +35,8 @@
 	<input type='hidden' id="txtTableID" name="txtTableID" value="0">
 	<input type='hidden' id="txtViewID" name="txtViewID" value="0">
 	<input type='hidden' id="txtOrderID" name="txtOrderID" value="0">
-	<input type='hidden' id="txtSelectionType" name="txtSelectionType" value='<%=Request.Form("selectionType")%>'>
-	<input type='hidden' id="txtSelectionTableID" name="txtSelectionTableID" value='<%=Request.Form("selectionTableID")%>'>
+	<input type='hidden' id="txtSelectionType" name="txtSelectionType" value='<%:Model.Type%>'>
+	<input type='hidden' id="txtSelectionTableID" name="txtSelectionTableID" value='<%:Model.TableID%>'>
 </div>
 <div id="picklistworkframe" data-framesource="picklistSelection" style="display: block"><%Html.RenderPartial("~/views/home/picklistSelection.ascx")%></div>
 <div id="picklistdataframe" data-framesource="picklistSelectionData" style="display: none"><%Html.RenderPartial("~/views/home/picklistSelectionData.ascx")%></div>

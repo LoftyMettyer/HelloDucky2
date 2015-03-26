@@ -631,11 +631,11 @@
 						sFilterCalcID = Left(sFiltersAndCalcs, iCharIndex - 1)
 						sFiltersAndCalcs = Mid(sFiltersAndCalcs, iCharIndex + 1)
 
-						rstPromptedValue = objDataAccess.GetDataTable( _
-									"sp_ASRIntGetFilterPromptedValuesRecordset", _
-									CommandType.StoredProcedure, _
-									New SqlParameter("@piFilterID", SqlDbType.Int) With {.Value = CleanNumeric(CLng(sFilterCalcID))} _
-					)
+						rstPromptedValue = objDataAccess.GetDataTable("spASRIntGetUtilityPromptedValues", CommandType.StoredProcedure, _
+									New SqlParameter("piUtilType", SqlDbType.Int) With {.Value = UtilityType.utlFilter}, _
+									New SqlParameter("piUtilID", SqlDbType.Int) With {.Value = CleanNumeric(CLng(sFilterCalcID))}, _
+									New SqlParameter("piRecordID", SqlDbType.Int) With {.Value = 0})
+							
 
 						If rstPromptedValue.Rows.Count > 0 Then
 							If iPromptCount = 0 Then
