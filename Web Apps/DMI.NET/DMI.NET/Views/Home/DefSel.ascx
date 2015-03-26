@@ -195,7 +195,7 @@
 					onClickButton: function () {
 						this.clearToolbar();
 						this.toggleToolbar();
-            if ($('.ui-search-toolbar', this.grid.hDiv).is(':visible'))
+						if ($('.ui-search-toolbar', this.grid.hDiv).is(':visible'))
 						{
 							$('.ui-search-toolbar', this.grid.fhDiv).show();
 						} else {
@@ -210,11 +210,7 @@
 				$("#findGridRow").height("60%");
 				$(window).bind('resize', function () {
 					$("#DefSelRecords").setGridWidth($('#findGridRow').width(), true);
-					$("#DefSelRecords").setGridHeight($("#findGridRow").height(), true);
 				}).trigger('resize');
-
-				$("#DefSelRecords").setGridHeight($("#findGridRow").height());
-				$("#DefSelRecords").setGridWidth($("#findGridRow").width());
 
 				$("#DefSelRecords").closest('.ui-jqgrid-bdiv').width($("#DefSelRecords").closest('.ui-jqgrid-bdiv').width() + 1);
 
@@ -233,7 +229,7 @@
 						}
 						$("#DefSelRecords").jqGrid("setSelection", gotoID);
 
-					  // If no row is selected then select first row
+						// If no row is selected then select first row
 						if ($("#DefSelRecords").getGridParam('selrow') == null) {
 								$("#DefSelRecords").jqGrid("setSelection", $("#DefSelRecords").getDataIDs()[0]);
 						}
@@ -1085,6 +1081,10 @@
 	function attachDefSelGrid() {
 		var onlyMine = $("#OnlyMine").prop('checked');
 		
+		//resize grid		
+		var gridWidth = $("#findGridRow").width();
+		var gridHeight = $("#workframeset").height() * 0.6;	//findGridRow is hardcoded to 60% of workframeset.
+
 		$("#DefSelRecords").jqGrid({
 			url: 'GetDefinitionsForType?UtilityType=' + <%:CInt(iDefSelType)%> + '&&TableID=' + <%=iBaseTableID%> + '&&OnlyMine=' + onlyMine,
 			datatype: 'json',
@@ -1105,7 +1105,8 @@
 				{ name: 'Username', index: 'Username', hidden: true },
 				{ name: 'Access', index: 'Access', hidden: true }],
 			viewrecords: false,
-			width: 600,
+			width: gridWidth,
+			height: gridHeight,
 			sortname: 'Name',
 			sortorder: "asc",
 			rowNum: 10000,
@@ -1126,7 +1127,8 @@
 			pgbuttons: false,
 			pgtext: null,
 			loadonce: true,
-			autoencode: true
+			autoencode: true,
+			loadui: "disable"
 		});
 
 	}
