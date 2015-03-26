@@ -70090,6 +70090,11 @@ BEGIN
 		END		
 	END
 
+	IF @piUtilType = 11
+	BEGIN
+		IF (NOT @piUtilID IS NULL) AND (@piUtilID > 0)
+			EXEC [dbo].[sp_ASRIntGetFilterPromptedValues] @piUtilID, @sAllComponents OUTPUT;
+	END
 
 	IF @piUtilType = 15 OR @piUtilType = 16
 	BEGIN
