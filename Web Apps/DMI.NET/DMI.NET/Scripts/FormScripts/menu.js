@@ -295,6 +295,9 @@ function menu_MenuClick(sTool) {
 			javascript: relocateURL('WorkflowPendingSteps', 0);
 			return false;
 		} else {
+			$("#mnutoolHistory").hide();
+			$("[aria-labelledby='mnutoolHistory']").hide();
+			$("#mnutoolAdministration").click()
 			sToolName = 'mnutoolWorkflowPendingSteps';
 		}
 	}
