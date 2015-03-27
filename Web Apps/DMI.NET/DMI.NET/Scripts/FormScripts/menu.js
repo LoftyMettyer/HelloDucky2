@@ -286,6 +286,9 @@ function menu_MenuClick(sTool) {
 			relocateURL('PasswordChange');
 			return false;
 		} else {
+			$("#mnutoolHistory").hide();
+			$("[aria-labelledby='mnutoolHistory']").hide();
+			$("#mnutoolAdministration").click();
 			sToolName = 'mnutoolPasswordChange';
 		}
 	}
