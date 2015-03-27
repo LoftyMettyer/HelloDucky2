@@ -1485,7 +1485,7 @@ Namespace ScriptDB
 								"    BEGIN" & vbNewLine & _
 								"        SET @headcountMessage = 'You have reached or exceeded your headcount limit set within the terms of your licence agreement.' + char(13) + char(13)" & vbNewLine & _
 								"            + 'You are no longer able to add new employee records, but you may access the system for all other purposes.' + char(13) + char(13)" & vbNewLine & _
-								"            + 'Please contact your Account Manager as soon as possible to increase the licence headcount number.'" & vbNewLine & _
+								"            + 'Please contact OpenHR Customer Services on 08451 609 999 as soon as possible to increase the licence headcount number.'" & vbNewLine & _
 								"       RAISERROR(@headcountMessage , 16, 1);" & vbNewLine & _
 								"       RETURN;" & vbNewLine & _
 								"    END" & vbNewLine & vbNewLine
